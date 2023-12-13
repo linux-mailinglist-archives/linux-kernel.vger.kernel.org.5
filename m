@@ -2,288 +2,228 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C05E811154
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 13:48:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 73604811156
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 13:49:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378878AbjLMMs2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 07:48:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46900 "EHLO
+        id S1378883AbjLMMtU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 07:49:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59718 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377400AbjLMMs1 (ORCPT
+        with ESMTP id S1377400AbjLMMtT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 07:48:27 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BBFEA4;
-        Wed, 13 Dec 2023 04:48:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1702471712; x=1734007712;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=8oyQWIL48xbMuGTyRmr1kvqN7ATxDJQS7G1iOJWG82U=;
-  b=V45sfMEzDY+7T5YN1iOpvDgWIvR/XrCALfo+svksHsiWBVns9tfeY2qo
-   cP35OyLLJK/Jq2zwahTO1owVX37I/FD/FHf9Kz23+PZOYjHjmg7BFDZlY
-   3Bql1niSxHCcAXlwJhpOxM9RvjvOanrQzMc0rTwMsUzsKJpmtaOVN9X1/
-   XLt8aVYRosxoX1C2P56XQX+clJoNTYKUHmjm7KzvS0+qrrM1vwAkxDeEC
-   AYZYW7ASsyCYVc2e6GBwPXg110cOW6PH3litsYy3bVv9+v6GFDAF1Uee7
-   Ankuf4ByZjK3btlkvoBij9vqykSQV++tgeNgUqq9A3BSNX9ENmP9VWmdK
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10922"; a="392132510"
-X-IronPort-AV: E=Sophos;i="6.04,272,1695711600"; 
-   d="scan'208";a="392132510"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Dec 2023 04:48:31 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10922"; a="723637716"
-X-IronPort-AV: E=Sophos;i="6.04,272,1695711600"; 
-   d="scan'208";a="723637716"
-Received: from ahunter6-mobl1.ger.corp.intel.com (HELO [10.0.2.15]) ([10.252.50.13])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Dec 2023 04:48:20 -0800
-Message-ID: <84755553-3a79-4693-9396-084e9ae41235@intel.com>
-Date:   Wed, 13 Dec 2023 14:48:15 +0200
+        Wed, 13 Dec 2023 07:49:19 -0500
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93011A4;
+        Wed, 13 Dec 2023 04:49:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Date:Sender:Message-Id:Content-Type:
+        Content-Transfer-Encoding:MIME-Version:Subject:Cc:To:From:References:
+        In-Reply-To:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=7Aiu0hOT23ckQkcqYvFjFK3dZgn3o0k6iEaEs/f0wM4=; b=R6N7nL3Hj7r6PGZF3AQxR9xYGp
+        hz3VIljNGb8hg0+7xDjuT8525pBUgeBD+UIlhqsF/zdkVX1vEA4PMefDHWLw6eESWX/1AaRvJ2xvp
+        drQL6SkAjAlAaI2V+skWX+NQheiaNGiyFmbcghDlNq53IdbfD3RGfOI0sr2M81PLbH2+OjiOQSuF6
+        /Gyjb/SKH6KmE2xRrQzd43ITzOIHYT2giKcTbiBo+f70SVHRLq3gSmUv6s13SFY3S3PO1NASAJuRf
+        0QsynTB3Sjo9SskZetDQ+UgL519HLUw4PT5wxDx035hqiXN3EfAgIHCFhMU5KolSLXbJDE1D9hsuC
+        deJdumJQ==;
+Received: from e0022681537dd.dyn.armlinux.org.uk ([fd8f:7570:feb6:1:222:68ff:fe15:37dd]:36776 helo=rmk-PC.armlinux.org.uk)
+        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.96)
+        (envelope-from <rmk@armlinux.org.uk>)
+        id 1rDOfq-0008Cl-1H;
+        Wed, 13 Dec 2023 12:49:14 +0000
+Received: from rmk by rmk-PC.armlinux.org.uk with local (Exim 4.94.2)
+        (envelope-from <rmk@rmk-PC.armlinux.org.uk>)
+        id 1rDOfs-00DvjY-HQ; Wed, 13 Dec 2023 12:49:16 +0000
+In-Reply-To: <ZXmn46ptis59F0CO@shell.armlinux.org.uk>
+References: <ZXmn46ptis59F0CO@shell.armlinux.org.uk>
+From:   Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
+To:     linux-pm@vger.kernel.org, loongarch@lists.linux.dev,
+        linux-acpi@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-riscv@lists.infradead.org, kvmarm@lists.linux.dev,
+        x86@kernel.org, acpica-devel@lists.linuxfoundation.org,
+        linux-csky@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-ia64@vger.kernel.org, linux-parisc@vger.kernel.org
+Cc:     Salil Mehta <salil.mehta@huawei.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        jianyong.wu@arm.com, justin.he@arm.com,
+        James Morse <james.morse@arm.com>
+Subject: [PATCH RFC v3 01/21] ACPI: Only enumerate enabled (or functional)
+ devices
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 00/14] Clean up libperf cpumap's empty function
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Ian Rogers <irogers@google.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        James Clark <james.clark@arm.com>,
-        Leo Yan <leo.yan@linaro.org>,
-        John Garry <john.g.garry@oracle.com>,
-        Will Deacon <will@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Darren Hart <dvhart@infradead.org>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        =?UTF-8?Q?Andr=C3=A9_Almeida?= <andrealmeid@igalia.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        K Prateek Nayak <kprateek.nayak@amd.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Kajol Jain <kjain@linux.ibm.com>,
-        Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
-        Andrew Jones <ajones@ventanamicro.com>,
-        Alexandre Ghiti <alexghiti@rivosinc.com>,
-        Atish Patra <atishp@rivosinc.com>,
-        "Steinar H. Gunderson" <sesse@google.com>,
-        Yang Jihong <yangjihong1@huawei.com>,
-        Yang Li <yang.lee@linux.alibaba.com>,
-        Changbin Du <changbin.du@huawei.com>,
-        Sandipan Das <sandipan.das@amd.com>,
-        Ravi Bangoria <ravi.bangoria@amd.com>,
-        Paran Lee <p4ranlee@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Yanteng Si <siyanteng@loongson.cn>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
-        bpf@vger.kernel.org
-References: <20231129060211.1890454-1-irogers@google.com>
- <ZXifiVytVbebYE3U@kernel.org>
-Content-Language: en-US
-From:   Adrian Hunter <adrian.hunter@intel.com>
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
- Business Identity Code: 0357606 - 4, Domiciled in Helsinki
-In-Reply-To: <ZXifiVytVbebYE3U@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="utf-8"
+Message-Id: <E1rDOfs-00DvjY-HQ@rmk-PC.armlinux.org.uk>
+Sender: Russell King <rmk@armlinux.org.uk>
+Date:   Wed, 13 Dec 2023 12:49:16 +0000
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/12/23 19:59, Arnaldo Carvalho de Melo wrote:
-> Em Tue, Nov 28, 2023 at 10:01:57PM -0800, Ian Rogers escreveu:
->> Rename and clean up the use of libperf CPU map functions particularly
->> focussing on perf_cpu_map__empty that may return true for maps
->> containing CPUs but also with an "any CPU"/dummy value.
->>
->> perf_cpu_map__nr is also troubling in that iterating an empty CPU map
->> will yield the "any CPU"/dummy value. Reduce the appearance of some
->> calls to this by using the perf_cpu_map__for_each_cpu macro.
->>
->> Ian Rogers (14):
->>   libperf cpumap: Rename perf_cpu_map__dummy_new
->>   libperf cpumap: Rename and prefer sysfs for perf_cpu_map__default_new
->>   libperf cpumap: Rename perf_cpu_map__empty
->>   libperf cpumap: Replace usage of perf_cpu_map__new(NULL)
->>   libperf cpumap: Add for_each_cpu that skips the "any CPU" case
-> 
-> Applied 1-6, with James Reviewed-by tags, would be good to have Adrian
-> check the PT and BTS parts, testing the end result if he things its all
-> ok.
-> 
+From: James Morse <james.morse@arm.com>
 
-Changing the same lines of code twice in the same patch set is not
-really kernel style.
+Today the ACPI enumeration code 'visits' all devices that are present.
 
-Some of the churn could be reduced by applying and rebasing on the
-patch below.
+This is a problem for arm64, where CPUs are always present, but not
+always enabled. When a device-check occurs because the firmware-policy
+has changed and a CPU is now enabled, the following error occurs:
+| acpi ACPI0007:48: Enumeration failure
 
-Ideally the patches should be reordered so that the lines only
-change once i.e.
+This is ultimately because acpi_dev_ready_for_enumeration() returns
+true for a device that is not enabled. The ACPI Processor driver
+will not register such CPUs as they are not 'decoding their resources'.
 
-	perf_cpu_map__empty -> <replacement>
+Change acpi_dev_ready_for_enumeration() to also check the enabled bit.
+ACPI allows a device to be functional instead of maintaining the
+present and enabled bit. Make this behaviour an explicit check with
+a reference to the spec, and then check the present and enabled bits.
+This is needed to avoid enumerating present && functional devices that
+are not enabled.
 
-instead of
-
-	perf_cpu_map__empty -> <rename> -> <replacement>
-
-If that is too much trouble, please accept my ack instead:
-
-Acked-by: Adrian Hunter <adrian.hunter@intel.com>
-
-
-From: Adrian Hunter <adrian.hunter@intel.com>
-
-Factor out perf_cpu_map__empty() use to reduce the occurrences and make
-the code more readable.
-
-Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
+Signed-off-by: James Morse <james.morse@arm.com>
+Tested-by: Miguel Luis <miguel.luis@oracle.com>
+Tested-by: Vishnu Pajjuri <vishnu@os.amperecomputing.com>
+Tested-by: Jianyong Wu <jianyong.wu@arm.com>
+Signed-off-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
 ---
- tools/perf/arch/x86/util/intel-bts.c | 11 ++++++++---
- tools/perf/arch/x86/util/intel-pt.c  | 21 ++++++++++++---------
- 2 files changed, 20 insertions(+), 12 deletions(-)
+If this change causes problems on deployed hardware, I suggest an
+arch opt-in: ACPI_IGNORE_STA_ENABLED, that causes
+acpi_dev_ready_for_enumeration() to only check the present bit.
 
-diff --git a/tools/perf/arch/x86/util/intel-bts.c b/tools/perf/arch/x86/util/intel-bts.c
-index d2c8cac11470..cebe994eb9db 100644
---- a/tools/perf/arch/x86/util/intel-bts.c
-+++ b/tools/perf/arch/x86/util/intel-bts.c
-@@ -59,6 +59,11 @@ intel_bts_info_priv_size(struct auxtrace_record *itr __maybe_unused,
- 	return INTEL_BTS_AUXTRACE_PRIV_SIZE;
- }
+Changes since RFC v2:
+ * Incorporate comment suggestion by Gavin Shan.
+Other review comments from Jonathan Cameron not yet addressed.
+---
+ drivers/acpi/device_pm.c    |  2 +-
+ drivers/acpi/device_sysfs.c |  2 +-
+ drivers/acpi/internal.h     |  1 -
+ drivers/acpi/property.c     |  2 +-
+ drivers/acpi/scan.c         | 24 ++++++++++++++----------
+ 5 files changed, 17 insertions(+), 14 deletions(-)
+
+diff --git a/drivers/acpi/device_pm.c b/drivers/acpi/device_pm.c
+index 3b4d048c4941..e3c80f3b3b57 100644
+--- a/drivers/acpi/device_pm.c
++++ b/drivers/acpi/device_pm.c
+@@ -313,7 +313,7 @@ int acpi_bus_init_power(struct acpi_device *device)
+ 		return -EINVAL;
  
-+static bool intel_bts_per_cpu(struct evlist *evlist)
-+{
-+	return !perf_cpu_map__empty(evlist->core.user_requested_cpus);
-+}
-+
- static int intel_bts_info_fill(struct auxtrace_record *itr,
- 			       struct perf_session *session,
- 			       struct perf_record_auxtrace_info *auxtrace_info,
-@@ -109,8 +114,8 @@ static int intel_bts_recording_options(struct auxtrace_record *itr,
- 	struct intel_bts_recording *btsr =
- 			container_of(itr, struct intel_bts_recording, itr);
- 	struct perf_pmu *intel_bts_pmu = btsr->intel_bts_pmu;
-+	bool per_cpu_mmaps = intel_bts_per_cpu(evlist);
- 	struct evsel *evsel, *intel_bts_evsel = NULL;
--	const struct perf_cpu_map *cpus = evlist->core.user_requested_cpus;
- 	bool privileged = perf_event_paranoid_check(-1);
+ 	device->power.state = ACPI_STATE_UNKNOWN;
+-	if (!acpi_device_is_present(device)) {
++	if (!acpi_dev_ready_for_enumeration(device)) {
+ 		device->flags.initialized = false;
+ 		return -ENXIO;
+ 	}
+diff --git a/drivers/acpi/device_sysfs.c b/drivers/acpi/device_sysfs.c
+index 23373faa35ec..a0256d2493a7 100644
+--- a/drivers/acpi/device_sysfs.c
++++ b/drivers/acpi/device_sysfs.c
+@@ -141,7 +141,7 @@ static int create_pnp_modalias(const struct acpi_device *acpi_dev, char *modalia
+ 	struct acpi_hardware_id *id;
  
- 	if (opts->auxtrace_sample_mode) {
-@@ -143,7 +148,7 @@ static int intel_bts_recording_options(struct auxtrace_record *itr,
- 	if (!opts->full_auxtrace)
+ 	/* Avoid unnecessarily loading modules for non present devices. */
+-	if (!acpi_device_is_present(acpi_dev))
++	if (!acpi_dev_ready_for_enumeration(acpi_dev))
  		return 0;
  
--	if (opts->full_auxtrace && !perf_cpu_map__empty(cpus)) {
-+	if (opts->full_auxtrace && per_cpu_mmaps) {
- 		pr_err(INTEL_BTS_PMU_NAME " does not support per-cpu recording\n");
- 		return -EINVAL;
- 	}
-@@ -224,7 +229,7 @@ static int intel_bts_recording_options(struct auxtrace_record *itr,
- 		 * In the case of per-cpu mmaps, we need the CPU on the
- 		 * AUX event.
- 		 */
--		if (!perf_cpu_map__empty(cpus))
-+		if (per_cpu_mmaps)
- 			evsel__set_sample_bit(intel_bts_evsel, CPU);
- 	}
+ 	/*
+diff --git a/drivers/acpi/internal.h b/drivers/acpi/internal.h
+index 866c7c4ed233..a1b45e345bcc 100644
+--- a/drivers/acpi/internal.h
++++ b/drivers/acpi/internal.h
+@@ -107,7 +107,6 @@ int acpi_device_setup_files(struct acpi_device *dev);
+ void acpi_device_remove_files(struct acpi_device *dev);
+ void acpi_device_add_finalize(struct acpi_device *device);
+ void acpi_free_pnp_ids(struct acpi_device_pnp *pnp);
+-bool acpi_device_is_present(const struct acpi_device *adev);
+ bool acpi_device_is_battery(struct acpi_device *adev);
+ bool acpi_device_is_first_physical_node(struct acpi_device *adev,
+ 					const struct device *dev);
+diff --git a/drivers/acpi/property.c b/drivers/acpi/property.c
+index 6979a3f9f90a..14d6948fd88a 100644
+--- a/drivers/acpi/property.c
++++ b/drivers/acpi/property.c
+@@ -1420,7 +1420,7 @@ static bool acpi_fwnode_device_is_available(const struct fwnode_handle *fwnode)
+ 	if (!is_acpi_device_node(fwnode))
+ 		return false;
  
-diff --git a/tools/perf/arch/x86/util/intel-pt.c b/tools/perf/arch/x86/util/intel-pt.c
-index fa0c718b9e72..0ff9147c75da 100644
---- a/tools/perf/arch/x86/util/intel-pt.c
-+++ b/tools/perf/arch/x86/util/intel-pt.c
-@@ -312,6 +312,11 @@ static void intel_pt_tsc_ctc_ratio(u32 *n, u32 *d)
- 	*d = eax;
+-	return acpi_device_is_present(to_acpi_device_node(fwnode));
++	return acpi_dev_ready_for_enumeration(to_acpi_device_node(fwnode));
  }
  
-+static bool intel_pt_per_cpu(struct evlist *evlist)
-+{
-+	return !perf_cpu_map__empty(evlist->core.user_requested_cpus);
-+}
-+
- static int intel_pt_info_fill(struct auxtrace_record *itr,
- 			      struct perf_session *session,
- 			      struct perf_record_auxtrace_info *auxtrace_info,
-@@ -322,7 +327,8 @@ static int intel_pt_info_fill(struct auxtrace_record *itr,
- 	struct perf_pmu *intel_pt_pmu = ptr->intel_pt_pmu;
- 	struct perf_event_mmap_page *pc;
- 	struct perf_tsc_conversion tc = { .time_mult = 0, };
--	bool cap_user_time_zero = false, per_cpu_mmaps;
-+	bool per_cpu_mmaps = intel_pt_per_cpu(session->evlist);
-+	bool cap_user_time_zero = false;
- 	u64 tsc_bit, mtc_bit, mtc_freq_bits, cyc_bit, noretcomp_bit;
- 	u32 tsc_ctc_ratio_n, tsc_ctc_ratio_d;
- 	unsigned long max_non_turbo_ratio;
-@@ -369,8 +375,6 @@ static int intel_pt_info_fill(struct auxtrace_record *itr,
- 			ui__warning("Intel Processor Trace: TSC not available\n");
- 	}
+ static const void *
+diff --git a/drivers/acpi/scan.c b/drivers/acpi/scan.c
+index 02bb2cce423f..728649a2a251 100644
+--- a/drivers/acpi/scan.c
++++ b/drivers/acpi/scan.c
+@@ -304,7 +304,7 @@ static int acpi_scan_device_check(struct acpi_device *adev)
+ 	int error;
  
--	per_cpu_mmaps = !perf_cpu_map__empty(session->evlist->core.user_requested_cpus);
+ 	acpi_bus_get_status(adev);
+-	if (acpi_device_is_present(adev)) {
++	if (acpi_dev_ready_for_enumeration(adev)) {
+ 		/*
+ 		 * This function is only called for device objects for which
+ 		 * matching scan handlers exist.  The only situation in which
+@@ -338,7 +338,7 @@ static int acpi_scan_bus_check(struct acpi_device *adev, void *not_used)
+ 	int error;
+ 
+ 	acpi_bus_get_status(adev);
+-	if (!acpi_device_is_present(adev)) {
++	if (!acpi_dev_ready_for_enumeration(adev)) {
+ 		acpi_scan_device_not_enumerated(adev);
+ 		return 0;
+ 	}
+@@ -1913,11 +1913,6 @@ static bool acpi_device_should_be_hidden(acpi_handle handle)
+ 	return true;
+ }
+ 
+-bool acpi_device_is_present(const struct acpi_device *adev)
+-{
+-	return adev->status.present || adev->status.functional;
+-}
 -
- 	auxtrace_info->type = PERF_AUXTRACE_INTEL_PT;
- 	auxtrace_info->priv[INTEL_PT_PMU_TYPE] = intel_pt_pmu->type;
- 	auxtrace_info->priv[INTEL_PT_TIME_SHIFT] = tc.time_shift;
-@@ -604,8 +608,8 @@ static int intel_pt_recording_options(struct auxtrace_record *itr,
- 	struct perf_pmu *intel_pt_pmu = ptr->intel_pt_pmu;
- 	bool have_timing_info, need_immediate = false;
- 	struct evsel *evsel, *intel_pt_evsel = NULL;
--	const struct perf_cpu_map *cpus = evlist->core.user_requested_cpus;
- 	bool privileged = perf_event_paranoid_check(-1);
-+	bool per_cpu_mmaps = intel_pt_per_cpu(evlist);
- 	u64 tsc_bit;
- 	int err;
+ static bool acpi_scan_handler_matching(struct acpi_scan_handler *handler,
+ 				       const char *idstr,
+ 				       const struct acpi_device_id **matchid)
+@@ -2381,16 +2376,25 @@ EXPORT_SYMBOL_GPL(acpi_dev_clear_dependencies);
+  * acpi_dev_ready_for_enumeration - Check if the ACPI device is ready for enumeration
+  * @device: Pointer to the &struct acpi_device to check
+  *
+- * Check if the device is present and has no unmet dependencies.
++ * Check if the device is functional or enabled and has no unmet dependencies.
+  *
+- * Return true if the device is ready for enumeratino. Otherwise, return false.
++ * Return true if the device is ready for enumeration. Otherwise, return false.
+  */
+ bool acpi_dev_ready_for_enumeration(const struct acpi_device *device)
+ {
+ 	if (device->flags.honor_deps && device->dep_unmet)
+ 		return false;
  
-@@ -774,8 +778,7 @@ static int intel_pt_recording_options(struct auxtrace_record *itr,
- 	 * Per-cpu recording needs sched_switch events to distinguish different
- 	 * threads.
- 	 */
--	if (have_timing_info && !perf_cpu_map__empty(cpus) &&
--	    !record_opts__no_switch_events(opts)) {
-+	if (have_timing_info && per_cpu_mmaps && !record_opts__no_switch_events(opts)) {
- 		if (perf_can_record_switch_events()) {
- 			bool cpu_wide = !target__none(&opts->target) &&
- 					!target__has_task(&opts->target);
-@@ -832,7 +835,7 @@ static int intel_pt_recording_options(struct auxtrace_record *itr,
- 		 * In the case of per-cpu mmaps, we need the CPU on the
- 		 * AUX event.
- 		 */
--		if (!perf_cpu_map__empty(cpus))
-+		if (per_cpu_mmaps)
- 			evsel__set_sample_bit(intel_pt_evsel, CPU);
- 	}
+-	return acpi_device_is_present(device);
++	/*
++	 * ACPI 6.5's 6.3.7 "_STA (Device Status)" allows firmware to return
++	 * (!present && functional) for certain types of devices that should be
++	 * enumerated. Note that the enabled bit can't be sert until the present
++	 * bit is set.
++	 */
++	if (device->status.present)
++		return device->status.enabled;
++	else
++		return device->status.functional;
+ }
+ EXPORT_SYMBOL_GPL(acpi_dev_ready_for_enumeration);
  
-@@ -858,7 +861,7 @@ static int intel_pt_recording_options(struct auxtrace_record *itr,
- 			tracking_evsel->immediate = true;
- 
- 		/* In per-cpu case, always need the time of mmap events etc */
--		if (!perf_cpu_map__empty(cpus)) {
-+		if (per_cpu_mmaps) {
- 			evsel__set_sample_bit(tracking_evsel, TIME);
- 			/* And the CPU for switch events */
- 			evsel__set_sample_bit(tracking_evsel, CPU);
-@@ -870,7 +873,7 @@ static int intel_pt_recording_options(struct auxtrace_record *itr,
- 	 * Warn the user when we do not have enough information to decode i.e.
- 	 * per-cpu with no sched_switch (except workload-only).
- 	 */
--	if (!ptr->have_sched_switch && !perf_cpu_map__empty(cpus) &&
-+	if (!ptr->have_sched_switch && per_cpu_mmaps &&
- 	    !target__none(&opts->target) &&
- 	    !intel_pt_evsel->core.attr.exclude_user)
- 		ui__warning("Intel Processor Trace decoding will not be possible except for kernel tracing!\n");
 -- 
-2.34.1
-
-
+2.30.2
 
