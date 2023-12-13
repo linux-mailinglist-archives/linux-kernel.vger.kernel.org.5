@@ -2,298 +2,245 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D5EC3810E07
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 11:14:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E5B7810E1C
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 11:15:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232827AbjLMJjt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 04:39:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48376 "EHLO
+        id S233230AbjLMJk6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 04:40:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38464 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229458AbjLMJjs (ORCPT
+        with ESMTP id S233186AbjLMJky (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 04:39:48 -0500
-Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1D8FA4;
-        Wed, 13 Dec 2023 01:39:52 -0800 (PST)
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 3BD9dhir085627;
-        Wed, 13 Dec 2023 03:39:43 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1702460383;
-        bh=keK70TMfAzRZ9fQFbCwr3/WKxuyPl7w+gqqhjXBaF+o=;
-        h=Date:From:To:CC:Subject:References:In-Reply-To;
-        b=dL9S1UnId+6oLEC/nWRfqj5r5fTMdsBmqwsdF7q0qjp/MKkyJyytt1sEZTEwRvWHq
-         gNKhlP7J/srRMzaSxe5SojMWPFOFSTxLtxHrSxYFqrdur25/a+8XrgszYsXoaZAWf5
-         fk8gNyY7m5s80lBhlQ7uwLVIHS3/R7SMP2SkS7zI=
-Received: from DLEE110.ent.ti.com (dlee110.ent.ti.com [157.170.170.21])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 3BD9dhwq074915
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 13 Dec 2023 03:39:43 -0600
-Received: from DLEE113.ent.ti.com (157.170.170.24) by DLEE110.ent.ti.com
- (157.170.170.21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 13
- Dec 2023 03:39:43 -0600
-Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DLEE113.ent.ti.com
- (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Wed, 13 Dec 2023 03:39:43 -0600
-Received: from localhost (jluthra.dhcp.ti.com [172.24.227.12])
-        by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 3BD9dgGE009018;
-        Wed, 13 Dec 2023 03:39:42 -0600
-Date:   Wed, 13 Dec 2023 15:09:35 +0530
-From:   Jai Luthra <j-luthra@ti.com>
-To:     Vignesh Raghavendra <vigneshr@ti.com>
-CC:     Nishanth Menon <nm@ti.com>, Tero Kristo <kristo@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 3/3] arm64: dts: ti: k3-am6*: Add additional regs for DMA
- components
-Message-ID: <rtvhpdfxap73gbpxjungp3kcexwfqao3drfrolkwcjdrin3cyb@3lyy3xhspml7>
-References: <20231212111634.3515175-1-vigneshr@ti.com>
- <20231212111634.3515175-4-vigneshr@ti.com>
+        Wed, 13 Dec 2023 04:40:54 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D9C9BD
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 01:41:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1702460461; x=1733996461;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=lRVhHhVXAAxjuEI/zpKu1TQpBCIc9AVRkLnPeZrmsUI=;
+  b=S2oJTkOwBgHTWiECIhqcksRTJC6xp4TE6Dlj27DsaRzy8IgK+MwEj69t
+   ek6To0WU6U+O4XkEM5R14t0aU9FadYjFsIpxSVozXGX4P0GvW89kXL3Bi
+   bP5m6D4gKxR9CK6yPVqOe1jLgluIY7ehuQEqdzmaQ5fHlQA9keSm4j3NF
+   bY8nlPuVHV3PI4kKFAVgxP7ssuTstdPjEEe9clm3jNXQwFyEs6kCUiQiA
+   xVhMtwXgKNrDo22pYvkhXEvfyUIGe7XQR7X0UZzKZ0EzjCQdodUqPvrBM
+   UPpEIMrsNhrujeRu/kAh8aE7ZFV1FhmwRRx0aMg0MDhLJskhktICXkIk4
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10922"; a="481140632"
+X-IronPort-AV: E=Sophos;i="6.04,272,1695711600"; 
+   d="scan'208";a="481140632"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Dec 2023 01:41:00 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10922"; a="839799931"
+X-IronPort-AV: E=Sophos;i="6.04,272,1695711600"; 
+   d="scan'208";a="839799931"
+Received: from turnipsi.fi.intel.com (HELO kekkonen.fi.intel.com) ([10.237.72.44])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Dec 2023 01:40:59 -0800
+Received: from svinhufvud.ger.corp.intel.com (localhost [IPv6:::1])
+        by kekkonen.fi.intel.com (Postfix) with ESMTP id A685411F7E4;
+        Wed, 13 Dec 2023 11:40:55 +0200 (EET)
+From:   Sakari Ailus <sakari.ailus@linux.intel.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     gregkh@linuxfoundation.org, alexander.usyskin@intel.com,
+        tomas.winkler@intel.com, Arnd Bergmann <arnd@arndb.de>,
+        wentong.wu@intel.com
+Subject: [PATCH 1/1] mei: vsc: Rework firmware image names
+Date:   Wed, 13 Dec 2023 11:40:55 +0200
+Message-Id: <20231213094055.446611-1-sakari.ailus@linux.intel.com>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="72ifukys5se4casi"
-Content-Disposition: inline
-In-Reply-To: <20231212111634.3515175-4-vigneshr@ti.com>
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---72ifukys5se4casi
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Rework firmware image names with the users in mind---there's no need for
+variation between firmware names, apart from connected sensors. All
+supported SoCs use the same firmware, too.
 
-Hi Vignesh,
+Use a single set of firmware binaries and assume they'll be found under
+intel/vsc directory.
 
-Thanks for the patch, PKTDMA address region sizes don't seem to match=20
-the TRM. Not sure if the patch is wrong or TRM is wrong.
+Signed-off-by: Sakari Ailus <sakari.ailus@linux.intel.com>
+Tested-by: Wentong Wu <wentong.wu@intel.com>
+---
+Hi folks,
 
-On Dec 12, 2023 at 16:46:34 +0530, Vignesh Raghavendra wrote:
-> Add additional reg properties for BCDMA and PKTDMA nodes which are
-> mostly used by bootloader components before Device Manager firmware
-> services are available, in order to setup DMA transfers.
->=20
-> Signed-off-by: Vignesh Raghavendra <vigneshr@ti.com>
-> ---
->  arch/arm64/boot/dts/ti/k3-am62-main.dtsi  | 18 ++++++++++++++----
->  arch/arm64/boot/dts/ti/k3-am62a-main.dtsi | 18 ++++++++++++++----
->  arch/arm64/boot/dts/ti/k3-am62p-main.dtsi | 18 ++++++++++++++----
->  arch/arm64/boot/dts/ti/k3-am64-main.dtsi  | 18 ++++++++++++++----
->  4 files changed, 56 insertions(+), 16 deletions(-)
->=20
-> diff --git a/arch/arm64/boot/dts/ti/k3-am62-main.dtsi b/arch/arm64/boot/d=
-ts/ti/k3-am62-main.dtsi
-> index e5c64c86d1d5..4514a140ad38 100644
-> --- a/arch/arm64/boot/dts/ti/k3-am62-main.dtsi
-> +++ b/arch/arm64/boot/dts/ti/k3-am62-main.dtsi
-> @@ -121,8 +121,13 @@ main_bcdma: dma-controller@485c0100 {
->  			      <0x00 0x4c000000 0x00 0x20000>,
->  			      <0x00 0x4a820000 0x00 0x20000>,
->  			      <0x00 0x4aa40000 0x00 0x20000>,
-> -			      <0x00 0x4bc00000 0x00 0x100000>;
-> -			reg-names =3D "gcfg", "bchanrt", "rchanrt", "tchanrt", "ringrt";
-> +			      <0x00 0x4bc00000 0x00 0x100000>,
-> +			      <0x00 0x48600000 0x00 0x8000>,
-> +			      <0x00 0x484a4000 0x00 0x2000>,
-> +			      <0x00 0x484c2000 0x00 0x2000>,
-> +			      <0x00 0x48420000 0x00 0x2000>;
-> +			reg-names =3D "gcfg", "bchanrt", "rchanrt", "tchanrt", "ringrt",
-> +				    "ring", "tchan", "rchan", "bchan";
+The firmware isn't in linux-firmware yet (I'm working on it). The name can
+still be changed as this hasn't made its way to a release yet.
 
-BCDMA ranges LGTM, but PDMA ranges below are not matching with the TRM.
+ drivers/misc/mei/vsc-fw-loader.c | 72 +++++---------------------------
+ 1 file changed, 10 insertions(+), 62 deletions(-)
 
->  			msi-parent =3D <&inta_main_dmss>;
->  			#dma-cells =3D <3>;
-> =20
-> @@ -138,8 +143,13 @@ main_pktdma: dma-controller@485c0000 {
->  			reg =3D <0x00 0x485c0000 0x00 0x100>,
->  			      <0x00 0x4a800000 0x00 0x20000>,
->  			      <0x00 0x4aa00000 0x00 0x40000>,
-> -			      <0x00 0x4b800000 0x00 0x400000>;
-> -			reg-names =3D "gcfg", "rchanrt", "tchanrt", "ringrt";
-> +			      <0x00 0x4b800000 0x00 0x400000>,
-> +			      <0x00 0x485e0000 0x00 0x20000>,
+diff --git a/drivers/misc/mei/vsc-fw-loader.c b/drivers/misc/mei/vsc-fw-loader.c
+index 3e151f06e85b..ffa4ccd96a10 100644
+--- a/drivers/misc/mei/vsc-fw-loader.c
++++ b/drivers/misc/mei/vsc-fw-loader.c
+@@ -27,9 +27,6 @@
+ #define VSC_EFUSE_ADDR			(VSC_ADDR_BASE + 0x038)
+ #define VSC_STRAP_ADDR			(VSC_ADDR_BASE + 0x100)
+ 
+-#define VSC_STRAP_KEY_SRC_MASK		BIT(0)
+-#define VSC_STRAP_KEY_SRC_PRODUCT	1
+-
+ #define VSC_MAINSTEPPING_VERSION_MASK	GENMASK(7, 4)
+ #define VSC_MAINSTEPPING_VERSION_A	0
+ 
+@@ -49,22 +46,15 @@
+ #define VSC_ROM_PKG_SIZE		256u
+ #define VSC_FW_PKG_SIZE			512u
+ 
+-#define VSC_CSI_IMAGE_NAME_FMT		"ivsc_fw_a1.bin"
+-#define VSC_CSI_IMAGE_NAME_FMT_PROD	"ivsc_fw_a1_%s.bin"
+-#define VSC_ACE_IMAGE_NAME_FMT		"ivsc_pkg_%s_0_a1.bin"
+-#define VSC_ACE_IMAGE_NAME_FMT_PROD	"ivsc_pkg_%s_0_a1_%s.bin"
+-#define VSC_CFG_IMAGE_NAME_FMT		"ivsc_skucfg_%s_0_1_a1.bin"
+-#define VSC_CFG_IMAGE_NAME_FMT_PROD	"ivsc_skucfg_%s_0_1_a1_%s.bin"
++#define VSC_IMAGE_DIR			"intel/vsc/"
+ 
+-#define VSC_IMAGE_FOLDER_FMT		"vsc/soc_a1"
+-#define VSC_IMAGE_FOLDER_FMT_PROD	"vsc/soc_a1_%s"
++#define VSC_CSI_IMAGE_NAME		VSC_IMAGE_DIR "ivsc_fw.bin"
++#define VSC_ACE_IMAGE_NAME_FMT		VSC_IMAGE_DIR "ivsc_pkg_%s_0.bin"
++#define VSC_CFG_IMAGE_NAME_FMT		VSC_IMAGE_DIR "ivsc_skucfg_%s_0_1.bin"
+ 
+-#define VSC_IMAGE_NAME_MAX_LEN		64
+-#define VSC_IMAGE_PATH_MAX_LEN		128
++#define VSC_IMAGE_PATH_MAX_LEN		64
+ 
+ #define VSC_SENSOR_NAME_MAX_LEN		16
+-#define VSC_IMAGE_FOLDER_NAME_MAX_LEN	32
+-#define VSC_IMAGE_NAME_SUFFIX_MAX_LEN	8
+ 
+ /* command id */
+ enum {
+@@ -223,10 +213,7 @@ struct vsc_img_frag {
+  * @rx_buf: rx buffer
+  * @option: command option
+  * @count: total image count
+- * @key_src: key source
+- * @folder: image folder
+  * @sensor_name: camera sensor name
+- * @suffix: image name suffix
+  * @frags: image fragments
+  */
+ struct vsc_fw_loader {
+@@ -242,11 +229,8 @@ struct vsc_fw_loader {
+ 
+ 	u16 option;
+ 	u16 count;
+-	u32 key_src;
+ 
+-	char folder[VSC_IMAGE_FOLDER_NAME_MAX_LEN];
+ 	char sensor_name[VSC_SENSOR_NAME_MAX_LEN];
+-	char suffix[VSC_IMAGE_NAME_SUFFIX_MAX_LEN];
+ 
+ 	struct vsc_img_frag frags[VSC_IMG_FRAG_MAX];
+ };
+@@ -378,33 +362,18 @@ static int vsc_identify_silicon(struct vsc_fw_loader *fw_loader)
+ 	if (ack->token != VSC_TOKEN_DUMP_RESP)
+ 		return -EINVAL;
+ 
+-	fw_loader->key_src = FIELD_GET(VSC_STRAP_KEY_SRC_MASK, ack->payload[2]);
+-
+-	if (fw_loader->key_src == VSC_STRAP_KEY_SRC_PRODUCT)
+-		strscpy(fw_loader->suffix, "prod", sizeof(fw_loader->suffix));
+-
+ 	return 0;
+ }
+ 
+ static int vsc_identify_csi_image(struct vsc_fw_loader *fw_loader)
+ {
+-	char path[VSC_IMAGE_PATH_MAX_LEN];
+-	char name[VSC_IMAGE_NAME_MAX_LEN];
+ 	const struct firmware *image;
+ 	struct vsc_fw_sign *sign;
+ 	struct vsc_img *img;
+ 	unsigned int i;
+ 	int ret;
+ 
+-	if (fw_loader->key_src == VSC_STRAP_KEY_SRC_PRODUCT)
+-		snprintf(name, sizeof(name), VSC_CSI_IMAGE_NAME_FMT_PROD,
+-			 fw_loader->suffix);
+-	else
+-		snprintf(name, sizeof(name), VSC_CSI_IMAGE_NAME_FMT);
+-
+-	snprintf(path, sizeof(path), "%s/%s", fw_loader->folder, name);
+-
+-	ret = request_firmware(&image, path, fw_loader->dev);
++	ret = request_firmware(&image, VSC_CSI_IMAGE_NAME, fw_loader->dev);
+ 	if (ret)
+ 		return ret;
+ 
+@@ -480,21 +449,14 @@ static int vsc_identify_csi_image(struct vsc_fw_loader *fw_loader)
+ static int vsc_identify_ace_image(struct vsc_fw_loader *fw_loader)
+ {
+ 	char path[VSC_IMAGE_PATH_MAX_LEN];
+-	char name[VSC_IMAGE_NAME_MAX_LEN];
+ 	const struct firmware *image;
+ 	struct vsc_fw_sign *sign;
+ 	struct vsc_img *img;
+ 	unsigned int i;
+ 	int ret;
+ 
+-	if (fw_loader->key_src == VSC_STRAP_KEY_SRC_PRODUCT)
+-		snprintf(name, sizeof(name), VSC_ACE_IMAGE_NAME_FMT_PROD,
+-			 fw_loader->sensor_name, fw_loader->suffix);
+-	else
+-		snprintf(name, sizeof(name), VSC_ACE_IMAGE_NAME_FMT,
+-			 fw_loader->sensor_name);
+-
+-	snprintf(path, sizeof(path), "%s/%s", fw_loader->folder, name);
++	snprintf(path, sizeof(path), VSC_ACE_IMAGE_NAME_FMT,
++		 fw_loader->sensor_name);
+ 
+ 	ret = request_firmware(&image, path, fw_loader->dev);
+ 	if (ret)
+@@ -571,19 +533,12 @@ static int vsc_identify_cfg_image(struct vsc_fw_loader *fw_loader)
+ {
+ 	struct vsc_img_frag *frag = &fw_loader->frags[VSC_IMG_SKU_CFG_FRAG];
+ 	char path[VSC_IMAGE_PATH_MAX_LEN];
+-	char name[VSC_IMAGE_NAME_MAX_LEN];
+ 	const struct firmware *image;
+ 	u32 size;
+ 	int ret;
+ 
+-	if (fw_loader->key_src == VSC_STRAP_KEY_SRC_PRODUCT)
+-		snprintf(name, sizeof(name), VSC_CFG_IMAGE_NAME_FMT_PROD,
+-			 fw_loader->sensor_name, fw_loader->suffix);
+-	else
+-		snprintf(name, sizeof(name), VSC_CFG_IMAGE_NAME_FMT,
+-			 fw_loader->sensor_name);
+-
+-	snprintf(path, sizeof(path), "%s/%s", fw_loader->folder, name);
++	snprintf(path, sizeof(path), VSC_CFG_IMAGE_NAME_FMT,
++		 fw_loader->sensor_name);
+ 
+ 	ret = request_firmware(&image, path, fw_loader->dev);
+ 	if (ret)
+@@ -786,13 +741,6 @@ int vsc_tp_init(struct vsc_tp *tp, struct device *dev)
+ 	if (ret)
+ 		return ret;
+ 
+-	if (fw_loader->key_src == VSC_STRAP_KEY_SRC_PRODUCT)
+-		snprintf(fw_loader->folder, sizeof(fw_loader->folder),
+-			 VSC_IMAGE_FOLDER_FMT_PROD, fw_loader->suffix);
+-	else
+-		snprintf(fw_loader->folder, sizeof(fw_loader->folder),
+-			 VSC_IMAGE_FOLDER_FMT);
+-
+ 	ret = vsc_identify_csi_image(fw_loader);
+ 	if (ret)
+ 		return ret;
+-- 
+2.39.2
 
-PKTDMA RING region range 0x10000 in the TRM.
-
-> +			      <0x00 0x484a0000 0x00 0x4000>,
-
-PKTDMA TCHAN region range is 0x2000 in the TRM.
-
-> +			      <0x00 0x484c0000 0x00 0x2000>,
-
-This matches TRM.
-
-> +			      <0x00 0x48430000 0x00 0x4000>;
-
-PKGTMA RFLOW region range is 0x1000 in the TRM.
-
-> +			reg-names =3D "gcfg", "rchanrt", "tchanrt", "ringrt",
-> +				    "ring", "tchan", "rchan", "rflow";
->  			msi-parent =3D <&inta_main_dmss>;
->  			#dma-cells =3D <2>;
-> =20
-> diff --git a/arch/arm64/boot/dts/ti/k3-am62a-main.dtsi b/arch/arm64/boot/=
-dts/ti/k3-am62a-main.dtsi
-> index 4ae7fdc5221b..36947d9d644d 100644
-> --- a/arch/arm64/boot/dts/ti/k3-am62a-main.dtsi
-> +++ b/arch/arm64/boot/dts/ti/k3-am62a-main.dtsi
-> @@ -101,8 +101,13 @@ main_bcdma: dma-controller@485c0100 {
->  			      <0x00 0x4c000000 0x00 0x20000>,
->  			      <0x00 0x4a820000 0x00 0x20000>,
->  			      <0x00 0x4aa40000 0x00 0x20000>,
-> -			      <0x00 0x4bc00000 0x00 0x100000>;
-> -			reg-names =3D "gcfg", "bchanrt", "rchanrt", "tchanrt", "ringrt";
-> +			      <0x00 0x4bc00000 0x00 0x100000>,
-> +			      <0x00 0x48600000 0x00 0x8000>,
-> +			      <0x00 0x484a4000 0x00 0x2000>,
-> +			      <0x00 0x484c2000 0x00 0x2000>,
-> +			      <0x00 0x48420000 0x00 0x2000>;
-> +			reg-names =3D "gcfg", "bchanrt", "rchanrt", "tchanrt", "ringrt",
-> +				    "ring", "tchan", "rchan", "bchan";
->  			msi-parent =3D <&inta_main_dmss>;
->  			#dma-cells =3D <3>;
->  			ti,sci =3D <&dmsc>;
-> @@ -117,8 +122,13 @@ main_pktdma: dma-controller@485c0000 {
->  			reg =3D <0x00 0x485c0000 0x00 0x100>,
->  			      <0x00 0x4a800000 0x00 0x20000>,
->  			      <0x00 0x4aa00000 0x00 0x40000>,
-> -			      <0x00 0x4b800000 0x00 0x400000>;
-> -			reg-names =3D "gcfg", "rchanrt", "tchanrt", "ringrt";
-> +			      <0x00 0x4b800000 0x00 0x400000>,
-> +			      <0x00 0x485e0000 0x00 0x20000>,
-> +			      <0x00 0x484a0000 0x00 0x4000>,
-> +			      <0x00 0x484c0000 0x00 0x2000>,
-> +			      <0x00 0x48430000 0x00 0x4000>;
-
-Same issue as AM62, the TRM mentions a different size for these regions.
-
-> +			reg-names =3D "gcfg", "rchanrt", "tchanrt", "ringrt",
-> +				    "ring", "tchan", "rchan", "rflow";
->  			msi-parent =3D <&inta_main_dmss>;
->  			#dma-cells =3D <2>;
->  			ti,sci =3D <&dmsc>;
-> diff --git a/arch/arm64/boot/dts/ti/k3-am62p-main.dtsi b/arch/arm64/boot/=
-dts/ti/k3-am62p-main.dtsi
-> index 963758c7d377..21981489b4db 100644
-> --- a/arch/arm64/boot/dts/ti/k3-am62p-main.dtsi
-> +++ b/arch/arm64/boot/dts/ti/k3-am62p-main.dtsi
-> @@ -101,8 +101,13 @@ main_bcdma: dma-controller@485c0100 {
->  			      <0x00 0x4c000000 0x00 0x20000>,
->  			      <0x00 0x4a820000 0x00 0x20000>,
->  			      <0x00 0x4aa40000 0x00 0x20000>,
-> -			      <0x00 0x4bc00000 0x00 0x100000>;
-> -			reg-names =3D "gcfg", "bchanrt", "rchanrt", "tchanrt", "ringrt";
-> +			      <0x00 0x4bc00000 0x00 0x100000>,
-> +			      <0x00 0x48600000 0x00 0x8000>,
-> +			      <0x00 0x484a4000 0x00 0x2000>,
-> +			      <0x00 0x484c2000 0x00 0x2000>,
-> +			      <0x00 0x48420000 0x00 0x2000>;
-> +			reg-names =3D "gcfg", "bchanrt", "rchanrt", "tchanrt", "ringrt",
-> +				    "ring", "tchan", "rchan", "bchan";
->  			msi-parent =3D <&inta_main_dmss>;
->  			#dma-cells =3D <3>;
-> =20
-> @@ -119,8 +124,13 @@ main_pktdma: dma-controller@485c0000 {
->  			reg =3D <0x00 0x485c0000 0x00 0x100>,
->  			      <0x00 0x4a800000 0x00 0x20000>,
->  			      <0x00 0x4aa00000 0x00 0x40000>,
-> -			      <0x00 0x4b800000 0x00 0x400000>;
-> -			reg-names =3D "gcfg", "rchanrt", "tchanrt", "ringrt";
-> +			      <0x00 0x4b800000 0x00 0x400000>,
-> +			      <0x00 0x485e0000 0x00 0x20000>,
-> +			      <0x00 0x484a0000 0x00 0x4000>,
-> +			      <0x00 0x484c0000 0x00 0x2000>,
-> +			      <0x00 0x48430000 0x00 0x4000>;
-
-Same here as well.
-
-> +			reg-names =3D "gcfg", "rchanrt", "tchanrt", "ringrt",
-> +				    "ring", "tchan", "rchan", "rflow";
->  			msi-parent =3D <&inta_main_dmss>;
->  			#dma-cells =3D <2>;
->  			bootph-all;
-> diff --git a/arch/arm64/boot/dts/ti/k3-am64-main.dtsi b/arch/arm64/boot/d=
-ts/ti/k3-am64-main.dtsi
-> index 0be642bc1b86..bcdfd61c7d98 100644
-> --- a/arch/arm64/boot/dts/ti/k3-am64-main.dtsi
-> +++ b/arch/arm64/boot/dts/ti/k3-am64-main.dtsi
-> @@ -138,8 +138,13 @@ main_bcdma: dma-controller@485c0100 {
->  			      <0x00 0x4c000000 0x00 0x20000>,
->  			      <0x00 0x4a820000 0x00 0x20000>,
->  			      <0x00 0x4aa40000 0x00 0x20000>,
-> -			      <0x00 0x4bc00000 0x00 0x100000>;
-> -			reg-names =3D "gcfg", "bchanrt", "rchanrt", "tchanrt", "ringrt";
-> +			      <0x00 0x4bc00000 0x00 0x100000>,
-> +			      <0x00 0x48600000 0x00 0x8000>,
-> +			      <0x00 0x484a4000 0x00 0x2000>,
-> +			      <0x00 0x484c2000 0x00 0x2000>,
-> +			      <0x00 0x48420000 0x00 0x2000>;
-> +			reg-names =3D "gcfg", "bchanrt", "rchanrt", "tchanrt", "ringrt",
-> +				    "ring", "tchan", "rchan", "bchan";
->  			msi-parent =3D <&inta_main_dmss>;
->  			#dma-cells =3D <3>;
-> =20
-> @@ -155,8 +160,13 @@ main_pktdma: dma-controller@485c0000 {
->  			reg =3D <0x00 0x485c0000 0x00 0x100>,
->  			      <0x00 0x4a800000 0x00 0x20000>,
->  			      <0x00 0x4aa00000 0x00 0x40000>,
-> -			      <0x00 0x4b800000 0x00 0x400000>;
-> -			reg-names =3D "gcfg", "rchanrt", "tchanrt", "ringrt";
-> +			      <0x00 0x4b800000 0x00 0x400000>,
-> +			      <0x00 0x485e0000 0x00 0x20000>,
-> +			      <0x00 0x484a0000 0x00 0x4000>,
-> +			      <0x00 0x484c0000 0x00 0x2000>,
-> +			      <0x00 0x48430000 0x00 0x4000>;
-
-Did not check TRM for AM64, might need a fix here as well.
-
-> +			reg-names =3D "gcfg", "rchanrt", "tchanrt", "ringrt",
-> +				    "ring", "tchan", "rchan", "rflow";
->  			msi-parent =3D <&inta_main_dmss>;
->  			#dma-cells =3D <2>;
-> =20
-> --=20
-> 2.43.0
->=20
->=20
-
---=20
-Thanks,
-Jai
-
-GPG Fingerprint: 4DE0 D818 E5D5 75E8 D45A AFC5 43DE 91F9 249A 7145
-
---72ifukys5se4casi
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEETeDYGOXVdejUWq/FQ96R+SSacUUFAmV5e8kACgkQQ96R+SSa
-cUVKaw/+L/VlEwQWxas26FDBdMs4Icufi9oYTi2+SG7kLrk8FALytjWYKJACCWSD
-6i2qmL5XPzMgALgv80pH5x5r7EYKpD7r0pvMbaoz+LqGxxqQzg2bkw3Nkrf/RB7M
-j4JY4jkZOcGk9d7NF6XrpgibArXHZ/ouvpLh8owIOMnXBYKfV5g1xc5Jvy+yRbPe
-7S6jEcpZzSnyT4Qy06mBFGDNYZkemGf9msSmMGV5KeWAxREunOD9l6HDcwJ07SN1
-mW8dyndefZvHFOIAWmlue3lUqKrcIhOVMPM5b1e+TrNXIF1mgIm613TMb9phgQfT
-n3chHd8gAo/IbGJMbI/Gvo0oABFXZKYGlwIi0ErunLeWHfKDYKUVJDfwBQC1UL6L
-rg5PZWsmXUHnszLtQ6GfqfpgPKS0NuLHyMkk2hPKvHIhQ0JL9mq4Sv9T+kJkjeTM
-TmlnZdaWuJSOVS9AyEaan4UZ07Dv0LmfPgOhBrcqtsTQwB5UdNLA0vBPUdqqOWv5
-jHWuM6Rr6iPJD/Hazjzyv0sQfSXvoGLggbri05ltTE8yBTTZ3EPkFnoz/tMJ7/Bf
-vBlyJbpwwM4z6wXzVQNAHRVg3jjS6kbdQ277KQXRo96v0cgReJVQBpoijV6rduKo
-vH6AT3a2H3Ki1T1aEBApWHwkHZQ0qOvlDc5yGRXHcNgjM+ipoDM=
-=RT0t
------END PGP SIGNATURE-----
-
---72ifukys5se4casi--
