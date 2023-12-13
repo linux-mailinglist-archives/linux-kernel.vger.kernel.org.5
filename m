@@ -2,81 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B1C581130B
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 14:37:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 78E06811311
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 14:37:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379268AbjLMNhS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 08:37:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55354 "EHLO
+        id S1379276AbjLMNhi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 08:37:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49154 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379216AbjLMNhR (ORCPT
+        with ESMTP id S1379275AbjLMNhg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 08:37:17 -0500
-Received: from mail.alien8.de (mail.alien8.de [IPv6:2a01:4f9:3051:3f93::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0981010C;
-        Wed, 13 Dec 2023 05:37:20 -0800 (PST)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 4A62C40E00CB;
-        Wed, 13 Dec 2023 13:37:17 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-        header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id p0U30yDLCYky; Wed, 13 Dec 2023 13:37:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-        t=1702474635; bh=YsH4/BEojnoqKhDSs/A5b/HEN4SIud9JxkU6bHGIETQ=;
+        Wed, 13 Dec 2023 08:37:36 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B07CEB
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 05:37:42 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3FCFAC433C8;
+        Wed, 13 Dec 2023 13:37:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1702474661;
+        bh=8D28zVA3/D34uSBC1WEJ8ykZpQrL4Gv4bA1SewGPSEQ=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=k3ZzSSDZFMpQnaGW9BcncZOs/yVlI6yaQuxN6E4vcYoNlELe7nKhzl5Ik0qVn3oCj
-         j668Gcp+/P66Y/urrTJ/vDsLk9/u6n0FhhoHumDxwbG6N4kzmUxOYTDWxC6/YZ5kwB
-         P2RvyUbZAsO9a2zbTdYt/KEi46RNH17BK36Co1IQx9rA+FmaoEAwEs1YRgnUvX6QOH
-         nwmAuHRJ7f7lFi0bF1U52LiE2eaebb6Euoue6vucw+tjUql0v+bw4niwzaqnyJSzrm
-         oPSXD2Sf5804v4D77oHC+2hj2afMmDhzZcmCBap/0qpDNXkWSeZXPEozTQT7i3DFmy
-         NK1B3CIlO7Mur7agPdg7Cv5V5bYdtCkeOyVunRvDENHpzfqXPztmJASQTJko8b3MWs
-         2pVgAX2EDaCFdMS2yokm6/WC4MaLq34kZHykWEN9B+aNOhe2bBQ68ROFc21zpCATjq
-         Z6izNFCptB7hsGt5LHhLKuYrSpX3KSWtf/S1Ge7HqcvVBElo+FVS4SI2kbg7Ku6yS+
-         +BGSHFFPGfNLsa6Izyhk8ONszw2sMQAzHgctgg1JqPdFFDJJ+zcEm37XpBVmK5W66f
-         MRjOacIFonlsxm3SyICQvheBm5bJfg+y2x7srt0/+ep3HXHJ649sQOVzVCEUe35hmt
-         p2C8L6CILEGJSIBky90kQ8fs=
-Received: from zn.tnic (pd95304da.dip0.t-ipconnect.de [217.83.4.218])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-        (No client certificate requested)
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 8F45140E0030;
-        Wed, 13 Dec 2023 13:36:33 +0000 (UTC)
-Date:   Wed, 13 Dec 2023 14:36:28 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Michael Roth <michael.roth@amd.com>, kvm@vger.kernel.org,
-        linux-coco@lists.linux.dev, linux-mm@kvack.org,
-        linux-crypto@vger.kernel.org, x86@kernel.org,
-        linux-kernel@vger.kernel.org, tglx@linutronix.de, mingo@redhat.com,
-        jroedel@suse.de, thomas.lendacky@amd.com, hpa@zytor.com,
-        ardb@kernel.org, seanjc@google.com, vkuznets@redhat.com,
-        jmattson@google.com, luto@kernel.org, dave.hansen@linux.intel.com,
-        slp@redhat.com, pgonda@google.com, peterz@infradead.org,
-        srinivas.pandruvada@linux.intel.com, rientjes@google.com,
-        dovmurik@linux.ibm.com, tobin@ibm.com, vbabka@suse.cz,
-        kirill@shutemov.name, ak@linux.intel.com, tony.luck@intel.com,
-        marcorr@google.com, sathyanarayanan.kuppuswamy@linux.intel.com,
-        alpergun@google.com, jarkko@kernel.org, ashish.kalra@amd.com,
-        nikunj.dadhania@amd.com, pankaj.gupta@amd.com,
-        liam.merwick@oracle.com, zhi.a.wang@intel.com,
-        Brijesh Singh <brijesh.singh@amd.com>,
-        Jarkko Sakkinen <jarkko@profian.com>
-Subject: Re: [PATCH v10 04/50] x86/cpufeatures: Add SEV-SNP CPU feature
-Message-ID: <20231213133628.GEZXmzXFwA1p+crH/5@fat_crate.local>
-References: <20231016132819.1002933-1-michael.roth@amd.com>
- <20231016132819.1002933-5-michael.roth@amd.com>
- <0b2eb374-356c-46c6-9c4a-9512fbfece7a@redhat.com>
- <20231213131324.GDZXmt9LsMmJZyzCJw@fat_crate.local>
- <40915dc3-4083-4b9f-bc64-7542833566e1@redhat.com>
+        b=dU6A6nqfPwdapBIE6N5MQX1pPgpiei2rY3w1Dun0KrZbDxbcB1dhzPyz1J2EGaTQj
+         UPKZzVa039jVPJ33WfaTofzmcvZFSA/sLBnrGvxr16zaGokjdOl0SKR/ib2Xhd4pc3
+         SeyCrYIvK1T7imXgRQXe3wDjMIqDoeMuXfobvB10h24nt3i0W5VNcMCs1A+EjSLVk5
+         f5bcJfQFA0CN8h3S3SdylU7dYmBC9Cd6O+XAZDg7IVkEU8ruiejVfPviMrjE77eEXR
+         A5aDJUCFKs/hXAy8O8flLE5igxpFsClxETJo/OA439A7sHSLT3d8ZylWdGK4KyBm0k
+         t9qtTI5q/WF8g==
+Date:   Wed, 13 Dec 2023 13:37:32 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     Deepak Gupta <debug@rivosinc.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Arnd Bergmann <arnd@arndb.de>, Oleg Nesterov <oleg@redhat.com>,
+        Eric Biederman <ebiederm@xmission.com>,
+        Kees Cook <keescook@chromium.org>,
+        Shuah Khan <shuah@kernel.org>,
+        "Rick P. Edgecombe" <rick.p.edgecombe@intel.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Szabolcs Nagy <Szabolcs.Nagy@arm.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Florian Weimer <fweimer@redhat.com>,
+        Christian Brauner <brauner@kernel.org>,
+        Thiago Jung Bauermann <thiago.bauermann@linaro.org>,
+        linux-arm-kernel@lists.infradead.org, linux-doc@vger.kernel.org,
+        kvmarm@lists.linux.dev, linux-fsdevel@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-mm@kvack.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-riscv@lists.infradead.org
+Subject: Re: [PATCH v7 02/39] prctl: arch-agnostic prctl for shadow stack
+Message-ID: <0d0d8802-09e3-4ea5-a0b4-b3a08c8a282e@sirena.org.uk>
+References: <20231122-arm64-gcs-v7-0-201c483bd775@kernel.org>
+ <20231122-arm64-gcs-v7-2-201c483bd775@kernel.org>
+ <CAKC1njSC5cC_fXnyNAPt=WU6cD-OjLKFxo90oVPmsLJbuWf4nw@mail.gmail.com>
+ <d708b493-267a-4418-be91-9bde6b2cf50c@sirena.org.uk>
+ <CAKC1njSQPO8ja7AkTzQ724hhSsGjchH9dLbbH9LXP0ZiKj-zPQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="jOCIbEw8Unb2aajd"
 Content-Disposition: inline
-In-Reply-To: <40915dc3-4083-4b9f-bc64-7542833566e1@redhat.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+In-Reply-To: <CAKC1njSQPO8ja7AkTzQ724hhSsGjchH9dLbbH9LXP0ZiKj-zPQ@mail.gmail.com>
+X-Cookie: One size fits all.
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -85,23 +80,64 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 13, 2023 at 02:31:05PM +0100, Paolo Bonzini wrote:
-> Sure, I only queued it because you gave Acked-by for 05/50 and this is an
-> obvious dependency.  I would like to get things in as they are ready
-> (whenever it makes sense), so if you want to include those two in the x86
-> tree for 6.8, that would work for me.
 
-It doesn't make sense to include them into 6.8 because the two alone are
-simply dead code in 6.8.
+--jOCIbEw8Unb2aajd
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-The plan is to put the x86 patches first in the next submission, I'll
-pick them up for 6.9 and then give you an immutable branch to apply the
-KVM bits ontop. This way it all goes together.
+On Tue, Dec 12, 2023 at 04:50:38PM -0800, Deepak Gupta wrote:
 
-Thx.
+> A theoretical scenario (no current workloads should've this case
+> because no shadow stack)
 
--- 
-Regards/Gruss,
-    Boris.
+> - User mode did _ENABLE on the main thread. Shadow stack was allocated
+> for the current
+>   thread.
+> - User mode created a bunch worker threads to run untrusted contained
+> code. They shadow
+>   stack too.
+> - main thread had to do dlopen and now need to disable shadow stack on
+> itself due to
+>   incompatibility of incoming object in address space.
+> - main thread controls worker threads and knows they're contained and
+> should still be running
+>   with a shadow stack. Although once in a while the main thread needs
+> to perform writes to a shadow
+>   stack of worker threads for some fixup (in the same addr space).
+> main thread doesn't want to delegate
+>   this responsibility of ss writes to worker threads because they're untrusted.
 
-https://people.kernel.org/tglx/notes-about-netiquette
+> How will it do that (currently _ENABLE is married to _WRITE and _PUSH) ?
+
+That's feeling moderately firmly into "don't do that" territory to be
+honest, the problems of trying to modify the stack of another running
+thread while it's active just don't seem worth it - if you're
+coordinating enough to do the modifications it's probably possible to
+just ask the thread who's stack is being modified to do the modification
+itself and having an unprotected thread writing into shadow stack memory
+doesn't feel great.
+
+That said in terms of the API there would be nothing stopping us saying
+that _WRITE by itself is a valid combination of flags, in which case the
+thread would have permission to write to any shadow stack memory it
+could get to.  For arm64 I think we can implement that, I'm not sure
+about x86.  _PUSH without _ENABLE is a lot less clear, you would at the
+very least at some point have had a stack enabled to have a stack
+pointer.
+
+--jOCIbEw8Unb2aajd
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmV5s5sACgkQJNaLcl1U
+h9Av7gf+KhSSwAMSrKGbuD6mcS24/uKiaBK6VJvANYNhzxAxCIsGTekSDBnn5rx5
+JlxvhNT7TTqtigEvZs5VwVjBivsip6vCjdwW3bWOP1hBY1vThXm5vDpp6+hC/Xyq
+1dBwZcHedqhHVCH5AfwYiFDtW37k7rKggU19mKapXAMMLHcqniPH9vA8JNfwjvRk
+IZAXnqu2sqKKqhm79iZyFDFo2+8bZYgiZ2FaFCUSA853dm4ujBY2+W9uL4me61jV
+gAwO2vLgmoypMv3xyz83VV6rVoAP3icyuBVYgjuko58Xs74dY4FtD+Xyth9g93qO
+A5biKwps6ME8omCBijyTFUn4Ug8G4A==
+=M047
+-----END PGP SIGNATURE-----
+
+--jOCIbEw8Unb2aajd--
