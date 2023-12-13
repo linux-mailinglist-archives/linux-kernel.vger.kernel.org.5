@@ -2,46 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E396810F0D
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 11:57:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E45AD810ECF
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 11:49:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377925AbjLMK5m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 05:57:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54362 "EHLO
+        id S1377852AbjLMKta (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 05:49:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35492 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377980AbjLMK5l (ORCPT
+        with ESMTP id S1377827AbjLMKt2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 05:57:41 -0500
-X-Greylist: delayed 468 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 13 Dec 2023 02:57:45 PST
-Received: from mail-m49225.qiye.163.com (mail-m49225.qiye.163.com [45.254.49.225])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F88E9C;
-        Wed, 13 Dec 2023 02:57:44 -0800 (PST)
-Received: from localhost.localdomain (unknown [IPV6:240e:3b7:3270:b440:d83b:6c2e:b6f:d27e])
-        by mail-m12741.qiye.163.com (Hmail) with ESMTPA id 66C609E05CD;
-        Wed, 13 Dec 2023 18:49:29 +0800 (CST)
-From:   Ke Xiao <xiaoke@sangfor.com.cn>
-To:     jesse.brandeburg@intel.com, anthony.l.nguyen@intel.com,
-        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com
-Cc:     dinghui@sangfor.com.cn, zhudi2@huawei.com,
-        intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Ke Xiao <xiaoke@sangfor.com.cn>
-Subject: [net PATCH] i40e: fix use-after-free in i40e_aqc_add_filters()
-Date:   Wed, 13 Dec 2023 18:49:11 +0800
-Message-Id: <20231213104912.16153-1-xiaoke@sangfor.com.cn>
-X-Mailer: git-send-email 2.17.1
-X-HM-Spam-Status: e1kfGhgUHx5ZQUpXWQgPGg8OCBgUHx5ZQUlOS1dZFg8aDwILHllBWSg2Ly
-        tZV1koWUFITzdXWS1ZQUlXWQ8JGhUIEh9ZQVkZGh4ZVklOQhlMGE5JGhlCSFUTARMWGhIXJBQOD1
-        lXWRgSC1lBWUlPSx5BSBlMQUhJTEtBGU9PS0EfQ0gZQU0YSR5BGU0dQR9JTB5ZV1kWGg8SFR0UWU
-        FZT0tIVUpNT0lMTlVKS0tVSkJLS1kG
-X-HM-Tid: 0a8c62cbc175b214kuuu66c609e05cd
-X-HM-MType: 1
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6N006ERw5GDw3Sj1DDgwjDR9N
-        EzowCyNVSlVKTEtJT01PTkxLT0lLVTMWGhIXVQMSGhQQHjsIGhUcHRQJVRgUFlUYFUVZV1kSC1lB
-        WUlPSx5BSBlMQUhJTEtBGU9PS0EfQ0gZQU0YSR5BGU0dQR9JTB5ZV1kIAVlBT05PTjcG
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        Wed, 13 Dec 2023 05:49:28 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37C3E99
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 02:49:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1702464571;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=Jsenl4ryPejHUAvVnk0GRNLRuch6fMe21jriRXS4vNY=;
+        b=RhlJT0PvLGVVp0hI20MxX8lTSj2OwdZ/tT4k9Vsg6H5DfKawbQzlVOmo9fKRe5JJxoOFiD
+        OUHpUR0mTVn+a9hTYRgm3IfRi2scMptAoqXfUyPL0Yc7uRx4pEat6wuaTpVMW7S4iv1X7h
+        4UoItnA864AirPOGX0lBSvOiJhiLAlM=
+Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
+ [209.85.218.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-494-2Ix3hmQgN62f22wRCIVUFQ-1; Wed, 13 Dec 2023 05:49:30 -0500
+X-MC-Unique: 2Ix3hmQgN62f22wRCIVUFQ-1
+Received: by mail-ej1-f70.google.com with SMTP id a640c23a62f3a-a1e27c6de0eso141068466b.1
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 02:49:29 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702464569; x=1703069369;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Jsenl4ryPejHUAvVnk0GRNLRuch6fMe21jriRXS4vNY=;
+        b=LiHbuW5zvgSwy3qVMeiBVmEUE9htjqlmO9ehqH6VtMBNrr7WUqIyYi3moDGXnN+snw
+         Dixhwxtlu+RIewRAHSdIU62zoL0yZ3yk5/rP6cqqhe/cnRNsiFRfSMyZWzfvnHygomLo
+         MRhrjrITnRYdBksimKwdwP3v6uD4YCHWMfImUGQOidCm3BkzfiT5btmI5Xw4EmSEu7Yd
+         MzR0SAXwIsdyiWHgUQZSTNGdx8GLg2paWqOi52BmjTkzM8mOY3FB6QJbF0C6CTnEmsr8
+         o89VuSaRmBhlu+UDthI5eHnS90EkBKzhjsdIpUUWMDzb2h9saaPDVILkStXaUmvN9zD9
+         9Hqg==
+X-Gm-Message-State: AOJu0YwnNxE6Pc1cRR8eK9qK+cj4YH3SvZnSi418UCnDIMQuX1yKIL9R
+        5+W2n6DfuaNaxx3XmmSAAW6fQ6pElkeAJDS6CdCUjY55Jt4cit/rLNffxle0UbnldP+m9bRe4iV
+        agJ67rR2u3v1Dv0HFFRexII7q
+X-Received: by 2002:a17:906:99cf:b0:a1c:5944:29bb with SMTP id s15-20020a17090699cf00b00a1c594429bbmr8372971ejn.7.1702464568905;
+        Wed, 13 Dec 2023 02:49:28 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IFjgYBJbvfH0mH+1Rv7rE+9uQlzPl9IwjMtgaG3uNiiAi7RPtxxtWG9rSZgClhoFT2vsB4Rqw==
+X-Received: by 2002:a17:906:99cf:b0:a1c:5944:29bb with SMTP id s15-20020a17090699cf00b00a1c594429bbmr8372945ejn.7.1702464568536;
+        Wed, 13 Dec 2023 02:49:28 -0800 (PST)
+Received: from pstanner-thinkpadt14sgen1.remote.csb ([2a01:599:914:ed27:4fa9:dbce:10f5:d0b9])
+        by smtp.gmail.com with ESMTPSA id vu8-20020a170907a64800b00a1d5c52d628sm7527135ejc.3.2023.12.13.02.49.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Dec 2023 02:49:28 -0800 (PST)
+From:   Philipp Stanner <pstanner@redhat.com>
+To:     Bjorn Helgaas <bhelgaas@google.com>, Arnd Bergmann <arnd@arndb.de>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        NeilBrown <neilb@suse.de>, John Sanpe <sanpeqf@gmail.com>,
+        Kent Overstreet <kent.overstreet@gmail.com>,
+        Niklas Schnelle <schnelle@linux.ibm.com>,
+        Philipp Stanner <pstanner@redhat.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Uladzislau Koshchanka <koshchanka@gmail.com>,
+        "Masami Hiramatsu (Google)" <mhiramat@kernel.org>,
+        David Gow <davidgow@google.com>,
+        Kees Cook <keescook@chromium.org>, Rae Moar <rmoar@google.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        "wuqiang.matt" <wuqiang.matt@bytedance.com>,
+        Yury Norov <yury.norov@gmail.com>,
+        Jason Baron <jbaron@akamai.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Marco Elver <elver@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Ben Dooks <ben.dooks@codethink.co.uk>, dakr@redhat.com
+Cc:     linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-arch@vger.kernel.org, stable@vger.kernel.org
+Subject: [PATCH v5 0/5] Regather scattered PCI-Code
+Date:   Wed, 13 Dec 2023 11:49:17 +0100
+Message-ID: <20231213104922.13894-1-pstanner@redhat.com>
+X-Mailer: git-send-email 2.43.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -49,107 +95,159 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 3116f59c12bd ("i40e: fix use-after-free in
-i40e_sync_filters_subtask()") avoided use-after-free issues,
-by increasing refcount during update the VSI filter list to
-the HW. However, it missed the unicast situation.
+@Stable-Kernel:
+You receive this patch series because its first patch fixes leaks in
+PCI.
 
-When deleting an unicast FDB entry, the i40e driver will release
-the mac_filter, and i40e_service_task will concurrently request
-firmware to add the mac_filter, which will lead to the following
-use-after-free issue.
+Changes in v5:
+- Add forgotten update to MAINTAINERS file.
 
-Fix again for both netdev->uc and netdev->mc.
+Changes in v4:
+- Apply Arnd's Reviewed-by's
+- Add ifdef CONFIG_HAS_IOPORT_MAP guard in drivers/pci/iomap.c (build
+  error on openrisc)
+- Fix typo in patch no.5
 
-BUG: KASAN: use-after-free in i40e_aqc_add_filters+0x55c/0x5b0 [i40e]
-Read of size 2 at addr ffff888eb3452d60 by task kworker/8:7/6379
+Changes in v3:
+- Create a separate patch for the leaks in lib/iomap.c. Make it the
+  series' first patch. (Arnd)
+- Turns out the aforementioned bug wasn't just accidentally removing
+  iounmap() with the ifdef, it was also missing ioport_unmap() to begin
+  with. Add it.
+- Move the ARCH_WANTS_GENERIC_IOMEM_IS_IOPORT-mechanism from
+  asm-generic/io.h to asm-generic/ioport.h. (Arnd)
+- Adjust the implementation of iomem_is_ioport() in asm-generic/io.h so
+  that it matches exactly what pci_iounmap() previously did in
+  lib/pci_iomap.c. (Arnd)
+- Move the CONFIG_HAS_IOPORT guard in asm-generic/io.h so that
+  iomem_is_ioport() will always be compiled and just returns false if
+  there are no ports.
+- Add TODOs to several places informing about the generic
+  iomem_is_ioport() in lib/iomap.c not being generic.
+- Add TODO about the followup work to make drivers/pci/iomap.c's
+  pci_iounmap() actually generic.
 
-CPU: 8 PID: 6379 Comm: kworker/8:7 Kdump: loaded Tainted: G
-Workqueue: i40e i40e_service_task [i40e]
-Call Trace:
- dump_stack+0x71/0xab
- print_address_description+0x6b/0x290
- kasan_report+0x14a/0x2b0
- i40e_aqc_add_filters+0x55c/0x5b0 [i40e]
- i40e_sync_vsi_filters+0x1676/0x39c0 [i40e]
- i40e_service_task+0x1397/0x2bb0 [i40e]
- process_one_work+0x56a/0x11f0
- worker_thread+0x8f/0xf40
- kthread+0x2a0/0x390
- ret_from_fork+0x1f/0x40
+Changes in v2:
+- Replace patch 4, previously extending the comment about pci_iounmap()
+  in lib/iomap.c, with a patch that moves pci_iounmap() from that file
+  to drivers/pci/iomap.c, creating a unified version there. (Arnd)
+- Implement iomem_is_ioport() as a new helper in asm-generic/io.h and
+  lib/iomap.c. (Arnd)
+- Move the build rule in drivers/pci/Makefile for iomap.o under the
+  guard of #if PCI. This had to be done because when just checking for
+  GENERIC_PCI_IOMAP being defined, the functions don't disappear, which
+  was the case previously in lib/pci_iomap.c, where the entire file was
+  made empty if PCI was not set by the guard #ifdef PCI. (Intel's Bots)
+- Rephares all patches' commit messages a little bit.
 
-Allocated by task 21948:
- kasan_kmalloc+0xa6/0xd0
- kmem_cache_alloc_trace+0xdb/0x1c0
- i40e_add_filter+0x11e/0x520 [i40e]
- i40e_addr_sync+0x37/0x60 [i40e]
- __hw_addr_sync_dev+0x1f5/0x2f0
- i40e_set_rx_mode+0x61/0x1e0 [i40e]
- dev_uc_add_excl+0x137/0x190
- i40e_ndo_fdb_add+0x161/0x260 [i40e]
- rtnl_fdb_add+0x567/0x950
- rtnetlink_rcv_msg+0x5db/0x880
- netlink_rcv_skb+0x254/0x380
- netlink_unicast+0x454/0x610
- netlink_sendmsg+0x747/0xb00
- sock_sendmsg+0xe2/0x120
- __sys_sendto+0x1ae/0x290
- __x64_sys_sendto+0xdd/0x1b0
- do_syscall_64+0xa0/0x370
- entry_SYSCALL_64_after_hwframe+0x65/0xca
 
-Freed by task 21948:
- __kasan_slab_free+0x137/0x190
- kfree+0x8b/0x1b0
- __i40e_del_filter+0x116/0x1e0 [i40e]
- i40e_del_mac_filter+0x16c/0x300 [i40e]
- i40e_addr_unsync+0x134/0x1b0 [i40e]
- __hw_addr_sync_dev+0xff/0x2f0
- i40e_set_rx_mode+0x61/0x1e0 [i40e]
- dev_uc_del+0x77/0x90
- rtnl_fdb_del+0x6a5/0x860
- rtnetlink_rcv_msg+0x5db/0x880
- netlink_rcv_skb+0x254/0x380
- netlink_unicast+0x454/0x610
- netlink_sendmsg+0x747/0xb00
- sock_sendmsg+0xe2/0x120
- __sys_sendto+0x1ae/0x290
- __x64_sys_sendto+0xdd/0x1b0
- do_syscall_64+0xa0/0x370
- entry_SYSCALL_64_after_hwframe+0x65/0xca
+Sooooooooo. I reworked v1.
 
-Fixes: 3116f59c12bd ("i40e: fix use-after-free in i40e_sync_filters_subtask()")
-Fixes: 41c445ff0f48 ("i40e: main driver core")
-Signed-off-by: Ke Xiao <xiaoke@sangfor.com.cn>
-Signed-off-by: Ding Hui <dinghui@sangfor.com.cn>
-Cc: Di Zhu <zhudi2@huawei.com>
----
- drivers/net/ethernet/intel/i40e/i40e_main.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+Please review this carefully, the IO-Ranges are obviously a bit tricky,
+as is the build-system / ifdef-ery.
 
-diff --git a/drivers/net/ethernet/intel/i40e/i40e_main.c b/drivers/net/ethernet/intel/i40e/i40e_main.c
-index 1ab8dbe2d880..16b574d69843 100644
---- a/drivers/net/ethernet/intel/i40e/i40e_main.c
-+++ b/drivers/net/ethernet/intel/i40e/i40e_main.c
-@@ -108,11 +108,17 @@ static void netdev_hw_addr_refcnt(struct i40e_mac_filter *f,
- 				  struct net_device *netdev, int delta)
- {
- 	struct netdev_hw_addr *ha;
-+	struct netdev_hw_addr_list *ha_list;
- 
- 	if (!f || !netdev)
- 		return;
- 
--	netdev_for_each_mc_addr(ha, netdev) {
-+	if (is_unicast_ether_addr(f->macaddr) || is_link_local_ether_addr(f->macaddr))
-+		ha_list = &netdev->uc;
-+	else
-+		ha_list = &netdev->mc;
-+
-+	netdev_hw_addr_list_for_each(ha, ha_list) {
- 		if (ether_addr_equal(ha->addr, f->macaddr)) {
- 			ha->refcount += delta;
- 			if (ha->refcount <= 0)
+Arnd has suggested that architectures defining a custom inb() need their
+own iomem_is_ioport(), as well. I've grepped for inb() and found the
+following list of archs that define their own:
+  - alpha
+  - arm
+  - m68k <--
+  - parisc
+  - powerpc
+  - sh
+  - sparc
+  - x86 <--
+
+All of those have their own definitons of pci_iounmap(). Therefore, they
+don't need our generic version in the first place and, thus, also need
+no iomem_is_ioport().
+The two exceptions are x86 and m68k. The former uses lib/iomap.c through
+CONFIG_GENERIC_IOMAP, as Arnd pointed out in the previous discussion
+(thus, CONFIG_GENERIC_IOMAP is not really generic in this regard).
+
+So as I see it, only m68k WOULD need its own custom definition of
+iomem_is_ioport(). But as I understand it it doesn't because it uses the
+one from asm-generic/pci_iomap.h ??
+
+I wasn't entirely sure how to deal with the address ranges for the
+generic implementation in asm-generic/io.h. It's marked with a TODO.
+Input appreciated.
+
+I removed the guard around define pci_iounmap in asm-generic/io.h. An
+alternative would be to have it be guarded by CONFIG_GENERIC_IOMAP and
+CONFIG_GENERIC_PCI_IOMAP, both. Without such a guard, there is no
+collision however, because generic pci_iounmap() from
+drivers/pci/iomap.c will only get pulled in when
+CONFIG_GENERIC_PCI_IOMAP is actually set.
+
+I cross-built this for a variety of architectures, including the usual
+suspects (s390, m68k). So far successfully. But let's see what Intel's
+robots say :O
+
+P.
+
+
+Original cover letter:
+
+Hi!
+
+So it seems that since ca. 2007 the PCI code has been scattered a bit.
+PCI's devres code, which is only ever used by users of the entire
+PCI-subsystem anyways, resides in lib/devres.c and is guarded by an
+ifdef PCI, just as the content of lib/pci_iomap.c is.
+
+It, thus, seems reasonable to move all of that.
+
+As I were at it, I moved as much of the devres-specific code from pci.c
+to devres.c, too. The only exceptions are four functions that are
+currently difficult to move. More information about that can be read
+here [1].
+
+I noticed these scattered files while working on (new) PCI-specific
+devres functions. If we can get this here merged, I'll soon send another
+patch series that addresses some API-inconsistencies and could move the
+devres-part of the four remaining functions.
+
+I don't want to do that in this series as this here is only about moving
+code, whereas the next series would have to actually change API
+behavior.
+
+I successfully (cross-)built this for x86, x86_64, AARCH64 and ARM
+(allyesconfig). I booted a kernel with it on x86_64, with a Fedora
+desktop environment as payload. The OS came up fine
+
+I hope this is OK. If we can get it in, we'd soon have a very
+consistent PCI API again.
+
+Regards,
+P.
+
+
+
+Philipp Stanner (5):
+  lib/pci_iomap.c: fix cleanup bugs in pci_iounmap()
+  lib: move pci_iomap.c to drivers/pci/
+  lib: move pci-specific devres code to drivers/pci/
+  pci: move devres code from pci.c to devres.c
+  lib, pci: unify generic pci_iounmap()
+
+ MAINTAINERS                            |   1 -
+ drivers/pci/Kconfig                    |   5 +
+ drivers/pci/Makefile                   |   3 +-
+ drivers/pci/devres.c                   | 450 +++++++++++++++++++++++++
+ lib/pci_iomap.c => drivers/pci/iomap.c |  49 +--
+ drivers/pci/pci.c                      | 249 --------------
+ drivers/pci/pci.h                      |  24 ++
+ include/asm-generic/io.h               |  27 +-
+ include/asm-generic/iomap.h            |  21 ++
+ lib/Kconfig                            |   3 -
+ lib/Makefile                           |   1 -
+ lib/devres.c                           | 208 +-----------
+ lib/iomap.c                            |  28 +-
+ 13 files changed, 566 insertions(+), 503 deletions(-)
+ create mode 100644 drivers/pci/devres.c
+ rename lib/pci_iomap.c => drivers/pci/iomap.c (75%)
+
 -- 
-2.17.1
+2.43.0
 
