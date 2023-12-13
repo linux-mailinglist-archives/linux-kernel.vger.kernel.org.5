@@ -2,179 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F4092810E81
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 11:34:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CB7F1810E82
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 11:34:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233223AbjLMKeP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 05:34:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41674 "EHLO
+        id S233273AbjLMKe3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 05:34:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55046 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231863AbjLMKeO (ORCPT
+        with ESMTP id S233257AbjLMKe0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 05:34:14 -0500
-Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29DC4AD
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 02:34:20 -0800 (PST)
-Received: by mail-yb1-xb2c.google.com with SMTP id 3f1490d57ef6-d9caf5cc948so6435823276.0
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 02:34:20 -0800 (PST)
+        Wed, 13 Dec 2023 05:34:26 -0500
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56726109;
+        Wed, 13 Dec 2023 02:34:31 -0800 (PST)
+Received: by mail-wr1-x42a.google.com with SMTP id ffacd0b85a97d-33621d443a7so3080390f8f.3;
+        Wed, 13 Dec 2023 02:34:31 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1702463659; x=1703068459; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=MiCuJGdqU3JpN4sR605F4gpjnmDDPjE+WkJpEGI+07w=;
-        b=Al5DynLsK6MMCjJWHslSzhx12RKhrjNpAUjEmg7JHVtivmWyGFFvHz+26d4Gg7ZPHq
-         b8zTTDneMkAgxCaYVQAsG6zFctO1tHB3gXkDnOPC+yn/iEXIuSRtsTej9pQtwn8y3DZU
-         TfwBS+XbOPskq8SkH1UhjmhHpZbCAqp6aQaHZTBUn2RhNVFi1RVPAEHal/ZHKuMyl+KD
-         7TMieGoAXcirKaDllxlkDSoi11gD8S+qJ7Cj/x6RjQSUZ9lpVU5yjU8CMdBYQknzlOjc
-         7l+Xy+gg1YKyGHAyWvun9eEWAFx0awHSGmWTdQfdoO8x4gS9xpjeGcbTCIAy5ML4EP1h
-         7G8w==
+        d=gmail.com; s=20230601; t=1702463669; x=1703068469; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=ckIZir3fHYoQ4vMvvr6f6DTyBBvFbPk90dEHn04l7zA=;
+        b=V6d1bhnckJKdA0S3L7GicMCZmRyM/BvKbJ/lk+T/475BbfOVibrApy/yCHPhZTqwaG
+         p0ukyY31lgVEYzJzlmEioOoB5Lm0FBUIXSSutxaPCfSzXqI50+lQSkFqTjSeUDzNfeDf
+         J64d7GiFwJp7aDJcPql0sDEjB9waCB0HwXfeVe9dzl+I7azH+fAKiFPi771we0+ZFOnK
+         CETfkH4zB/Zv8g/Bex/jEQlui18lkK4Rd8/R2f6t1hTqXG3XDgxufW7tgtkzj7qTJEZ/
+         qqer8yOmcDNn2XfayR+K4Bwk0S9seEr80EkxaL4Y+ZGSikw90cy5zbmort669Z6H5GiN
+         2BLg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702463659; x=1703068459;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=MiCuJGdqU3JpN4sR605F4gpjnmDDPjE+WkJpEGI+07w=;
-        b=XLDB7R2P5fNG6XHCRlao5bxhRfsUbMMlsHoj8vp/dScv4l85FicuV61KVAnuQBxgGy
-         HfWaskEIF5CNW6GsOfHg9ZjpdwJkNJGggGF/OGED99NGuXL8s198NG4qWi0aw50aiDs0
-         bXhzuJP/gCgTgHHP+a+NsKnuj3vEpLGSFp9LFHWtLbq4bGm0qw5kC7j5Q/vWsTajtqua
-         25/JQt4vXKP5txs9Emd8Vw4v1SS8b1EWfmiZunSkLc5MDyoo+i0yFUTE2DzSm4h5Wn3A
-         yHKj99jY339K8/vXVHdxraRdWU9qAHiVzjGirAOvi/ngtOKMJE0tPQVvVj6O/1jHUYHz
-         6BHg==
-X-Gm-Message-State: AOJu0Yz8/tRe1IVJ5LUwEmKE96HjTaYeBrjZZxkZ7KokxYyGEomowzC6
-        Ro7+Xrk0ddUfvhDsziwUIt98rlCCs4BJRl0MD61xoQ==
-X-Google-Smtp-Source: AGHT+IFgD1jVe3bhFgxKF39rvDQ+ntKZdf/plcoM/+rcHzXjRXeTMPPO0CRFY6Bnj0jPZjnuV1UQVLT74ShuhRh7MPg=
-X-Received: by 2002:a25:bec3:0:b0:db5:49d8:bcd1 with SMTP id
- k3-20020a25bec3000000b00db549d8bcd1mr4676061ybm.55.1702463659338; Wed, 13 Dec
- 2023 02:34:19 -0800 (PST)
+        d=1e100.net; s=20230601; t=1702463669; x=1703068469;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ckIZir3fHYoQ4vMvvr6f6DTyBBvFbPk90dEHn04l7zA=;
+        b=OOYy3aG1Fe7rz0/YKShB84pcflt8QBIn6I4F4lD87juIncd+fcuXXX29LWuSlwRVvO
+         BS5VaMFhP2fk2RNE+3Bv7PtzSaTnN3Bp9hOA5wjsguzcpyNV7TLZWAnXrDNSh+iKecIg
+         pywrpqfa//tvopVN5TMtrRHSNGy44QjCKPwtuDWrfbDnzZ9W3zK1fFDSRHt/WMyhBkln
+         7gfnExQnoP9Y4dSqOpogTazcKU5Au/z/0gkFTx0k2HLYsOs7C+0P/XRutt1s1lp8Wq5r
+         Sl6cu4Y+Rh5rA6UcRMWyEIiU1AivitOHLO/4RtE38gI/0u8UNf+qpr0OCU26RXb6q3vR
+         UkBw==
+X-Gm-Message-State: AOJu0YyqbHrxyhnCoCwZatOEPn3qigj7cQIOwJMdC1dD6/TRD1Vn6NDx
+        RmJQmZyTJ64v8FiQRcK95Gk=
+X-Google-Smtp-Source: AGHT+IELWreSWcNp9EbxC3WgNIqUm8ForkdqMO7s+AUWs3bmQ6SV5jZJG6pOeKknV19qhqo9MGnY6Q==
+X-Received: by 2002:a7b:ce0f:0:b0:40c:45e:f89a with SMTP id m15-20020a7bce0f000000b0040c045ef89amr3591039wmc.50.1702463669141;
+        Wed, 13 Dec 2023 02:34:29 -0800 (PST)
+Received: from tom-HP-ZBook-Fury-15-G7-Mobile-Workstation (net-188-217-59-229.cust.vodafonedsl.it. [188.217.59.229])
+        by smtp.gmail.com with ESMTPSA id p16-20020a5d48d0000000b0033616ea5a0fsm9935893wrs.45.2023.12.13.02.34.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Dec 2023 02:34:28 -0800 (PST)
+Date:   Wed, 13 Dec 2023 11:34:26 +0100
+From:   Tommaso Merciai <tomm.merciai@gmail.com>
+To:     Sakari Ailus <sakari.ailus@linux.intel.com>
+Cc:     linuxfancy@googlegroups.com, Martin Hecht <martin.hecht@avnet.eu>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] media: i2c: alvium-csi2: adjust code style for alvium
+ driver
+Message-ID: <ZXmIsh5k//byCks7@tom-HP-ZBook-Fury-15-G7-Mobile-Workstation>
+References: <20231212125319.732390-1-tomm.merciai@gmail.com>
+ <ZXl5K7FqRzCNQsUZ@kekkonen.localdomain>
 MIME-Version: 1.0
-References: <20231127151931.47055-1-ulf.hansson@linaro.org>
-In-Reply-To: <20231127151931.47055-1-ulf.hansson@linaro.org>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Wed, 13 Dec 2023 11:33:43 +0100
-Message-ID: <CAPDyKFofR7AHDctZErs3QG_mXdnhY+yjqNYungim+yeLpx1gBQ@mail.gmail.com>
-Subject: Re: [PATCH] PM: domains: Drop the unused pm_genpd_opp_to_performance_state()
-To:     "Rafael J . Wysocki" <rafael@kernel.org>, linux-pm@vger.kernel.org
-Cc:     Kevin Hilman <khilman@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZXl5K7FqRzCNQsUZ@kekkonen.localdomain>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 27 Nov 2023 at 16:19, Ulf Hansson <ulf.hansson@linaro.org> wrote:
->
-> Since commit 7c41cdcd3bbe ("OPP: Simplify the over-designed pstate <->
-> level dance"), there is no longer any users of the
-> pm_genpd_opp_to_performance_state() API. Let's therefore drop it and its
-> corresponding ->opp_to_performance_state() callback, which also no longer
-> has any users.
->
-> Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
+Hi Sakari,
 
-So, I have applied this for next and by adding your ack.
+On Wed, Dec 13, 2023 at 09:28:11AM +0000, Sakari Ailus wrote:
+> On Tue, Dec 12, 2023 at 01:53:19PM +0100, Tommaso Merciai wrote:
+> > Make some formatting changes to fix issues generated by
+> > checkpatch.pl script
+> > 
+> > cmd:
+> >  - ./scripts/checkpatch.pl --strict --max-line-length=80
+> > 
+> > Signed-off-by: Tommaso Merciai <tomm.merciai@gmail.com>
+> 
+> Thanks, Tommaso. I've squashed this to the driver patch as I needed to
+> rework some patches in the branch anyway.
 
-Kind regards
-Uffe
+No problem :) Nice plan.
+Thanks for let me know.
 
+Regards,
+Tommaso
 
-> ---
->  drivers/base/power/domain.c | 32 --------------------------------
->  include/linux/pm_domain.h   | 12 ------------
->  2 files changed, 44 deletions(-)
->
-> diff --git a/drivers/base/power/domain.c b/drivers/base/power/domain.c
-> index da1777e39eaa..cf65b5a9783c 100644
-> --- a/drivers/base/power/domain.c
-> +++ b/drivers/base/power/domain.c
-> @@ -3042,38 +3042,6 @@ int of_genpd_parse_idle_states(struct device_node *dn,
->  }
->  EXPORT_SYMBOL_GPL(of_genpd_parse_idle_states);
->
-> -/**
-> - * pm_genpd_opp_to_performance_state - Gets performance state of the genpd from its OPP node.
-> - *
-> - * @genpd_dev: Genpd's device for which the performance-state needs to be found.
-> - * @opp: struct dev_pm_opp of the OPP for which we need to find performance
-> - *     state.
-> - *
-> - * Returns performance state encoded in the OPP of the genpd. This calls
-> - * platform specific genpd->opp_to_performance_state() callback to translate
-> - * power domain OPP to performance state.
-> - *
-> - * Returns performance state on success and 0 on failure.
-> - */
-> -unsigned int pm_genpd_opp_to_performance_state(struct device *genpd_dev,
-> -                                              struct dev_pm_opp *opp)
-> -{
-> -       struct generic_pm_domain *genpd = NULL;
-> -       int state;
-> -
-> -       genpd = container_of(genpd_dev, struct generic_pm_domain, dev);
-> -
-> -       if (unlikely(!genpd->opp_to_performance_state))
-> -               return 0;
-> -
-> -       genpd_lock(genpd);
-> -       state = genpd->opp_to_performance_state(genpd, opp);
-> -       genpd_unlock(genpd);
-> -
-> -       return state;
-> -}
-> -EXPORT_SYMBOL_GPL(pm_genpd_opp_to_performance_state);
-> -
->  static int __init genpd_bus_init(void)
->  {
->         return bus_register(&genpd_bus_type);
-> diff --git a/include/linux/pm_domain.h b/include/linux/pm_domain.h
-> index 34663d0d5c55..b97c5e9820f9 100644
-> --- a/include/linux/pm_domain.h
-> +++ b/include/linux/pm_domain.h
-> @@ -118,7 +118,6 @@ struct genpd_power_state {
->  };
->
->  struct genpd_lock_ops;
-> -struct dev_pm_opp;
->  struct opp_table;
->
->  struct generic_pm_domain {
-> @@ -146,8 +145,6 @@ struct generic_pm_domain {
->         int (*power_on)(struct generic_pm_domain *domain);
->         struct raw_notifier_head power_notifiers; /* Power on/off notifiers */
->         struct opp_table *opp_table;    /* OPP table of the genpd */
-> -       unsigned int (*opp_to_performance_state)(struct generic_pm_domain *genpd,
-> -                                                struct dev_pm_opp *opp);
->         int (*set_performance_state)(struct generic_pm_domain *genpd,
->                                      unsigned int state);
->         struct gpd_dev_ops dev_ops;
-> @@ -348,8 +345,6 @@ int of_genpd_remove_subdomain(struct of_phandle_args *parent_spec,
->  struct generic_pm_domain *of_genpd_remove_last(struct device_node *np);
->  int of_genpd_parse_idle_states(struct device_node *dn,
->                                struct genpd_power_state **states, int *n);
-> -unsigned int pm_genpd_opp_to_performance_state(struct device *genpd_dev,
-> -                                              struct dev_pm_opp *opp);
->
->  int genpd_dev_pm_attach(struct device *dev);
->  struct device *genpd_dev_pm_attach_by_id(struct device *dev,
-> @@ -395,13 +390,6 @@ static inline int of_genpd_parse_idle_states(struct device_node *dn,
->         return -ENODEV;
->  }
->
-> -static inline unsigned int
-> -pm_genpd_opp_to_performance_state(struct device *genpd_dev,
-> -                                 struct dev_pm_opp *opp)
-> -{
-> -       return 0;
-> -}
-> -
->  static inline int genpd_dev_pm_attach(struct device *dev)
->  {
->         return 0;
-> --
-> 2.34.1
->
+> 
+> -- 
+> Sakari Ailus
