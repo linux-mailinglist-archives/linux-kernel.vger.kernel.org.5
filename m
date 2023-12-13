@@ -2,60 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FC78811C9B
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 19:34:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FE9D811CAE
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 19:36:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232094AbjLMSeC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 13:34:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52064 "EHLO
+        id S233505AbjLMSff (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 13:35:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39498 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229872AbjLMSeB (ORCPT
+        with ESMTP id S229972AbjLMSfb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 13:34:01 -0500
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8976CB2
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 10:34:07 -0800 (PST)
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1rDU3L-0001yx-Og; Wed, 13 Dec 2023 19:33:51 +0100
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
-        by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1rDU3J-00FdAP-Jv; Wed, 13 Dec 2023 19:33:49 +0100
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1rDU3J-002QXw-AB; Wed, 13 Dec 2023 19:33:49 +0100
-Date:   Wed, 13 Dec 2023 19:33:49 +0100
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Nikita Shubin <nikita.shubin@maquefel.me>,
-        Hartley Sweeten <hsweeten@visionengravers.com>,
-        Alexander Sverdlin <alexander.sverdlin@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Sergey Shtylyov <s.shtylyov@omp.ru>,
-        Damien Le Moal <dlemoal@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-ide@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [PATCH v6 36/40] ata: pata_ep93xx: remove legacy pinctrl use
-Message-ID: <20231213183349.hdjoxxszrrc4hqrg@pengutronix.de>
-References: <20231212-ep93xx-v6-0-c307b8ac9aa8@maquefel.me>
- <20231212-ep93xx-v6-36-c307b8ac9aa8@maquefel.me>
- <ZXn0-pHxIztvRFLK@smile.fi.intel.com>
+        Wed, 13 Dec 2023 13:35:31 -0500
+Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED830D0
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 10:35:35 -0800 (PST)
+Received: by mail-lj1-x233.google.com with SMTP id 38308e7fff4ca-2ca04b1cc37so71972901fa.1
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 10:35:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google; t=1702492534; x=1703097334; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=mv+5XsUdJVuk8GOh1DuytA+yuMqTKKF6sR66teLcGMU=;
+        b=qv7D4Gyg7PjuBe8+/3qFwd8oRLfSAXelbFfnSkV+PDSmr9rJ7sypzaGeFiVb4vmwjn
+         03zTxKHs4E8X3uQuKChdTGFeX7Dki0eaW6/7Ta5q1dVpVI4NUaipTWv8a/5rccMowBC8
+         1LzzFvgm9bWC0anuRpGLRQj4yP4SwAReNcT88=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702492534; x=1703097334;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=mv+5XsUdJVuk8GOh1DuytA+yuMqTKKF6sR66teLcGMU=;
+        b=iVm4ZNXAhBqIGemzSGZ/iLdiJw6DWMANU1364exyp7skdYLgcboe817cdW2tasKU6A
+         +ttkCBYmqYK5KWHrCNSHRCrrPj89HTQsrnuaYDTzGC06c7uINzfOM2owE5gTeh1GvCWP
+         PP0yLScD+aEpJ1bkvRpBVKSaNqhFmr9q9bLN3qHOoa7zC6XUN+n86Vw1c+o1sECa5URw
+         eErRsdfv3gPGS3JtoMcF8UOyg3ZESvB4FAHmWf4OKtI+xfoTuAEXjCZfdJgRP/eqEiy0
+         1CPUuil2PPlKXX6xAVJb6KNoJLlG7A2Vj+lh6qq+V9W7Gko8b0OpYQxwPgs7CPdmBFyi
+         cGkA==
+X-Gm-Message-State: AOJu0YyG8wwiveRefkelRnD4oYsUZSPHLHNkWErQEoirveiT7AE5SPVH
+        sgW2ctVnvuDLSckOS7UtNe51fw+c4GPkB2jTKY4eKgDl/khT9s6v
+X-Google-Smtp-Source: AGHT+IF98/Eb//7DFZtThhYC5gn2eqT/lGOfRQfhM6QVrDzFFDAch/dR4KHz4VQs4C66M1mY9YscTVbF02261clQEW0=
+X-Received: by 2002:a2e:9f4a:0:b0:2cc:3dac:2e8 with SMTP id
+ v10-20020a2e9f4a000000b002cc3dac02e8mr351771ljk.26.1702492534092; Wed, 13 Dec
+ 2023 10:35:34 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="hwsnzd5s6bhsmoqq"
-Content-Disposition: inline
-In-Reply-To: <ZXn0-pHxIztvRFLK@smile.fi.intel.com>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+References: <20231212174750.GA11886@neeraj.linux> <20231212174817.11919-3-neeraj.iitr10@gmail.com>
+ <CAEXW_YRHjdM+NA3CqNuwaRNXkRWbtypmt5Ov=YXnrpn3Eo-==Q@mail.gmail.com> <2b2c1573-337d-409b-a8ee-daeff096c7f4@paulmck-laptop>
+In-Reply-To: <2b2c1573-337d-409b-a8ee-daeff096c7f4@paulmck-laptop>
+From:   Joel Fernandes <joel@joelfernandes.org>
+Date:   Wed, 13 Dec 2023 13:35:22 -0500
+Message-ID: <CAEXW_YQnR51F9xnODZd3iE+S5Jpd2NHRBTk6Jt2WHTSdB9H8kA@mail.gmail.com>
+Subject: Re: [PATCH rcu 3/3] srcu: Explain why callbacks invocations can't run concurrently
+To:     paulmck@kernel.org
+Cc:     "Neeraj Upadhyay (AMD)" <neeraj.iitr10@gmail.com>,
+        rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@meta.com, rostedt@goodmis.org, Neeraj.Upadhyay@amd.com,
+        Frederic Weisbecker <frederic@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -64,66 +69,69 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Dec 13, 2023 at 12:52=E2=80=AFPM Paul E. McKenney <paulmck@kernel.o=
+rg> wrote:
+>
+> On Wed, Dec 13, 2023 at 09:27:09AM -0500, Joel Fernandes wrote:
+> > On Tue, Dec 12, 2023 at 12:48=E2=80=AFPM Neeraj Upadhyay (AMD)
+> > <neeraj.iitr10@gmail.com> wrote:
+> > >
+> > > From: Frederic Weisbecker <frederic@kernel.org>
+> > >
+> > > If an SRCU barrier is queued while callbacks are running and a new
+> > > callbacks invocator for the same sdp were to run concurrently, the
+> > > RCU barrier might execute too early. As this requirement is non-obvio=
+us,
+> > > make sure to keep a record.
+> > >
+> > > Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+> > > Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+> > > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> > > Signed-off-by: Neeraj Upadhyay (AMD) <neeraj.iitr10@gmail.com>
+> > > ---
+> > >  kernel/rcu/srcutree.c | 6 ++++++
+> > >  1 file changed, 6 insertions(+)
+> > >
+> > > diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
+> > > index 2bfc8ed1eed2..0351a4e83529 100644
+> > > --- a/kernel/rcu/srcutree.c
+> > > +++ b/kernel/rcu/srcutree.c
+> > > @@ -1715,6 +1715,11 @@ static void srcu_invoke_callbacks(struct work_=
+struct *work)
+> > >         WARN_ON_ONCE(!rcu_segcblist_segempty(&sdp->srcu_cblist, RCU_N=
+EXT_TAIL));
+> > >         rcu_segcblist_advance(&sdp->srcu_cblist,
+> > >                               rcu_seq_current(&ssp->srcu_sup->srcu_gp=
+_seq));
+> > > +       /*
+> > > +        * Although this function is theoretically re-entrant, concur=
+rent
+> > > +        * callbacks invocation is disallowed to avoid executing an S=
+RCU barrier
+> > > +        * too early.
+> > > +        */
+> >
+> > Side comment:
+> > I guess even without the barrier reasoning, it is best not to allow
+> > concurrent CB execution anyway since it diverges from the behavior of
+> > straight RCU :)
+>
+> Good point!
+>
+> But please do not forget item 12 on the list in checklist.rst.  ;-)
+> (Which I just updated to include the other call_rcu*() functions.)
 
---hwsnzd5s6bhsmoqq
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+I think this is more so now with recent kernels (with the dynamic nocb
+switch) than with older kernels right? I haven't kept up with the
+checklist recently (which is my bad).
 
-On Wed, Dec 13, 2023 at 08:16:26PM +0200, Andy Shevchenko wrote:
-> On Tue, Dec 12, 2023 at 11:20:53AM +0300, Nikita Shubin wrote:
-> > Drop legacy acquire/release since we are using pinctrl for this now.
->=20
-> ...
->=20
-> > -	if (IS_ERR(drv_data->dma_rx_channel)) {
-> > +	if (PTR_ERR_OR_ZERO(drv_data->dma_rx_channel)) {
->=20
-> This seems incorrect.
->=20
-> >  		ret =3D PTR_ERR(drv_data->dma_rx_channel);
-> >  		return dev_err_probe(dev, ret, "rx DMA setup failed");
->=20
-> 		return dev_err_probe(...);
->=20
-> >  	}
->=20
-> I think you wanted
->=20
-> 	ret =3D PTR_ERR_OR_ZERO(drv_data->dma_rx_channel);
-> 	if (ret)
-> 		return dev_err_probe(dev, ret, "rx DMA setup failed");
+My understanding comes from the fact that the RCU barrier depends on
+callbacks on the same CPU executing in order with straight RCU
+otherwise it breaks. Hence my comment. But as you pointed out, that's
+outdated knowledge.
 
-How is that different from
+I should just shut up and hide in shame now.
 
-	if (IS_ERR(drv_data->dma_rx_channel))
-		return dev_err_probe(dev, PTR_ERR(drv_data->dma_rx_channel), "....");
+:-/
 
-(which seems to be more idiomatic to me)? While I was involved in
-creating PTR_ERR_OR_ZERO, I don't particularily like it (today).
-
-Also note that you want a \n at the end of error messages.
-
-Best regards
-Uwe
-
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---hwsnzd5s6bhsmoqq
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmV5+QwACgkQj4D7WH0S
-/k7P7wgAsKHiIZEGiHCPIsRxffuVGHyfChdfi9FNHXa6YOcrVkAqOlbOe3uq+ab2
-Ox0facnFCB5/BnVywxpivfme8J3KYfKvzG2KLLTzsVkCmIPA3L6ulgoSihKp/eWZ
-yWM+XYHag7xo2f4bGCOYPs68QOtZDDdOiQKo+ATvzAqhIhpjBd/5Ie3U3VNcrKT4
-TIajgdpwXYNaPZDUKy8JwQ8uVVUqQebW02xgNV1VhreG6/ywbX5mvWlnQLp5D/6c
-3aJXEJTwe9IcRo5W4mC8xQltsrrtiuRWW3Q/wPS1qsmqIS8Dmn3mmcBoKq7iGxmM
-1RZZFHo+yr0rRsB3Re0Q/E4Do2LnCQ==
-=BQyO
------END PGP SIGNATURE-----
-
---hwsnzd5s6bhsmoqq--
+ - Joel
