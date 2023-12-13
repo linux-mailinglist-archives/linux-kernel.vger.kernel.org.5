@@ -2,273 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F751811A5D
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 18:05:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EA41811A61
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 18:05:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233227AbjLMRFN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 12:05:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56322 "EHLO
+        id S233183AbjLMRFe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 12:05:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56766 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229458AbjLMRFM (ORCPT
+        with ESMTP id S233736AbjLMRFa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 12:05:12 -0500
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9405B7;
-        Wed, 13 Dec 2023 09:05:17 -0800 (PST)
-Received: from mail.maildlp.com (unknown [172.18.186.216])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Sr1yb1L7qz6K7Xr;
-        Thu, 14 Dec 2023 01:03:19 +0800 (CST)
-Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
-        by mail.maildlp.com (Postfix) with ESMTPS id 2C7FC1400CA;
-        Thu, 14 Dec 2023 01:05:15 +0800 (CST)
-Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
- (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Wed, 13 Dec
- 2023 17:05:14 +0000
-Date:   Wed, 13 Dec 2023 17:05:13 +0000
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     Vishal Verma <vishal.l.verma@intel.com>
-CC:     Dan Williams <dan.j.williams@intel.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        <linux-kernel@vger.kernel.org>, <nvdimm@lists.linux.dev>,
-        <linux-cxl@vger.kernel.org>, David Hildenbrand <david@redhat.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Huang Ying <ying.huang@intel.com>,
-        Joao Martins <joao.m.martins@oracle.com>
-Subject: Re: [PATCH v4 2/3] dax/bus: Introduce guard(device) for
- device_{lock,unlock} flows
-Message-ID: <20231213170513.000036e8@Huawei.com>
-In-Reply-To: <20231212-vv-dax_abi-v4-2-1351758f0c92@intel.com>
-References: <20231212-vv-dax_abi-v4-0-1351758f0c92@intel.com>
-        <20231212-vv-dax_abi-v4-2-1351758f0c92@intel.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
+        Wed, 13 Dec 2023 12:05:30 -0500
+Received: from mail-qt1-x833.google.com (mail-qt1-x833.google.com [IPv6:2607:f8b0:4864:20::833])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25477D0;
+        Wed, 13 Dec 2023 09:05:36 -0800 (PST)
+Received: by mail-qt1-x833.google.com with SMTP id d75a77b69052e-425952708afso50251451cf.0;
+        Wed, 13 Dec 2023 09:05:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1702487135; x=1703091935; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:feedback-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=zaZOg6uPTywifNeWY/lhqitjb+T4PmJ5HvOYe4JLoEc=;
+        b=fAN56HnYVTBYv89mKu8lHU6DwDhRB0utUi4cTovqijKV0NCXjiJoCaJSbAeV0iwCyy
+         dN7ccgDcXzOYJwpEmCii0HuHUqCc/ugge5ZihV9JVGnmy1w6SPYUuoPh5lzrrIhRCKaS
+         NOo+AthpA0VcfEz91ViHiTyP3G0jwBfVF6LNa/lhDDBDm+cD0ufX4PjX6C4ZNYU4QKYc
+         4wOSUwOwi+j2vb9MzbnQPV756KNoI2JqdvBfvkWBIJdPjXVjhr08ltVm6QBa/6VveiJ6
+         I2JLjdIhRQDVWURTtggZTXY7WQCCkEyR3bSk95Su4DbohnyLA2chyEKIrbHF6fPQMQZO
+         xcgA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702487135; x=1703091935;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:feedback-id:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=zaZOg6uPTywifNeWY/lhqitjb+T4PmJ5HvOYe4JLoEc=;
+        b=Ae+0TbIoyZMYjWVW3I8Or6P41RsrTs+vlkpzk9VK00RLaFach9GOE9rx8rq/eHfwga
+         v5/e9JFcbYWHeU5AR2BoA6uJgo8Fj81R3qhTJwUz8+lbhTUTAYhBWbCeC3Y9xOz6uozU
+         uv7KtcS+p2jTth/nM0E50nfYnBWx04dP1G+zmoXgggXlmI3Cw17L2bAUxx9SHks1DrfB
+         zafLRrjDRQUFSV1BT4CR/jWos0R4i5HBgSIxNOK/nQT1HFfNHQ4aUYhk6OxrN7lYnEUX
+         CAeXPbSfeF1mscoKM1ak+npYXhQ6wf6x86dt3A2ckSNNOLZcNSFOg9UBgSOBYc6xE8uc
+         pllQ==
+X-Gm-Message-State: AOJu0Ywzgou4diBG0rSnkfGpPerO9uabmlAf+g56ZCT7wyDPTeLEo8zo
+        XKGm7AiIuRiGSNuyTZ/AHmQ=
+X-Google-Smtp-Source: AGHT+IHtYdP9DEk855hTYxYHeMk1EY6txXkJrmfCGNPHjRbM0uyaFyTnbRsZP54z27JNtYS7Wxnkig==
+X-Received: by 2002:a05:622a:252:b0:425:88fc:8abb with SMTP id c18-20020a05622a025200b0042588fc8abbmr12875357qtx.12.1702487135165;
+        Wed, 13 Dec 2023 09:05:35 -0800 (PST)
+Received: from auth2-smtp.messagingengine.com (auth2-smtp.messagingengine.com. [66.111.4.228])
+        by smtp.gmail.com with ESMTPSA id e18-20020ac85992000000b004254b465059sm4890154qte.47.2023.12.13.09.05.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Dec 2023 09:05:34 -0800 (PST)
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
+        by mailauth.nyi.internal (Postfix) with ESMTP id 1088027C0054;
+        Wed, 13 Dec 2023 12:05:34 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute2.internal (MEProxy); Wed, 13 Dec 2023 12:05:34 -0500
+X-ME-Sender: <xms:XOR5ZfCZIyAZECwkunnTvOl9-G3WYlajIle5fpkVvUlRn29n7pBttQ>
+    <xme:XOR5ZVhHrPzD53EwKugaa0Ukv8Xv-8yhizxlLvJPifeVyBat9XheQFVGc2eNJHH32
+    sN5ISTH7e_El1JZbg>
+X-ME-Received: <xmr:XOR5ZanI82lXWVbKsflG3_ToDljlbkrzGgQftEau0GrSadQ5t-PFulWuPw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrudeljedgfeehucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvfevuffkfhggtggujgesthdtrodttddtvdenucfhrhhomhepuehoqhhu
+    nhcuhfgvnhhguceosghoqhhunhdrfhgvnhhgsehgmhgrihhlrdgtohhmqeenucggtffrrg
+    htthgvrhhnpeeitdefvefhteeklefgtefhgeelkeefffelvdevhfehueektdevhfettddv
+    teevvdenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
+    gsohhquhhnodhmvghsmhhtphgruhhthhhpvghrshhonhgrlhhithihqdeiledvgeehtdei
+    gedqudejjeekheehhedvqdgsohhquhhnrdhfvghngheppehgmhgrihhlrdgtohhmsehfih
+    igmhgvrdhnrghmvg
+X-ME-Proxy: <xmx:XOR5ZRyyw_H9ToCV6YMD2B6K8OVb-iMWFs9IzdGUhO37yFOG80EwzA>
+    <xmx:XOR5ZUTCa3jqzin7Nxho19RNwz4iyw7CbYNGzXUcPkX7qRFyFri8aQ>
+    <xmx:XOR5ZUZrAaZOmz0hCE2HgWTsmlh_5b-6ctOta8DTP8DPnCoDkzeWQQ>
+    <xmx:XuR5ZQp20kcE-tiT3ep6Q3jTPjX3Qd6tZbpZqz9JElX3dLcmynVGSQ>
+Feedback-ID: iad51458e:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 13 Dec 2023 12:05:31 -0500 (EST)
+Date:   Wed, 13 Dec 2023 09:05:30 -0800
+From:   Boqun Feng <boqun.feng@gmail.com>
+To:     Benno Lossin <benno.lossin@proton.me>
+Cc:     Alice Ryhl <aliceryhl@google.com>, Miguel Ojeda <ojeda@kernel.org>,
+        Alex Gaynor <alex.gaynor@gmail.com>,
+        Wedson Almeida Filho <wedsonaf@gmail.com>,
+        Gary Guo <gary@garyguo.net>,
+        =?iso-8859-1?Q?Bj=F6rn?= Roy Baron <bjorn3_gh@protonmail.com>,
+        Andreas Hindborg <a.hindborg@samsung.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Arve =?iso-8859-1?B?SGr4bm5lduVn?= <arve@android.com>,
+        Todd Kjos <tkjos@android.com>,
+        Martijn Coenen <maco@android.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Carlos Llamas <cmllamas@google.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Kees Cook <keescook@chromium.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org,
+        rust-for-linux@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH v2 7/7] rust: file: add abstraction for `poll_table`
+Message-ID: <ZXnkWsSvxbFDoDGU@Boquns-Mac-mini.home>
+References: <20231206-alice-file-v2-0-af617c0d9d94@google.com>
+ <20231206-alice-file-v2-7-af617c0d9d94@google.com>
+ <k_vpgbqKAKoTFzJIBCjvgxGhX73kgkcv6w9kru78lBmTjHHvXPy05g8KxAKJ-ODARBxlZUp3a5e4F9TemGqQiskkwFCpTOhzxlvy378tjHM=@proton.me>
+ <CAH5fLgiQ-7gbwP2RLoVDfDqoA+nXPboBW6eTKiv45Yam_Vjv_A@mail.gmail.com>
+ <E-jdYd0FVvs15f_pEC0Fo6k2DByCDEQoh_Ux9P9ldmC-otCvUfQghkJOUkiAi8gDI8J47wAaDe56XYC5NiJhuohyhIklGAWMvv9v1qi6yYM=@proton.me>
+ <ZXkKTSTCuQMt2ge6@boqun-archlinux>
+ <pxtBsqlawLf52Escu7kGkCv1iEorWkE4-g8Ke_IshhejEYz5zZGGX5q98hYtU_YGubwk770ufUezNXFB_GJFMnZno5G7OGuF2oPAOoVAGgc=@proton.me>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.202.227.76]
-X-ClientProxiedBy: lhrpeml500001.china.huawei.com (7.191.163.213) To
- lhrpeml500005.china.huawei.com (7.191.163.240)
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <pxtBsqlawLf52Escu7kGkCv1iEorWkE4-g8Ke_IshhejEYz5zZGGX5q98hYtU_YGubwk770ufUezNXFB_GJFMnZno5G7OGuF2oPAOoVAGgc=@proton.me>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 12 Dec 2023 12:08:31 -0700
-Vishal Verma <vishal.l.verma@intel.com> wrote:
-
-> Introduce a guard(device) macro to lock a 'struct device', and unlock it
-> automatically when going out of scope using Scope Based Resource
-> Management semantics. A lot of the sysfs attribute writes in
-> drivers/dax/bus.c benefit from a cleanup using these, so change these
-> where applicable.
+On Wed, Dec 13, 2023 at 09:12:45AM +0000, Benno Lossin wrote:
+[...]
+> > 
+> > Actually, there is an implied safety requirement here, it's about how
+> > qproc is implemented. As we can see, PollCondVar::drop() will wait for a
+> > RCU grace period, that means the waiter (a file or something) has to use
+> > RCU to access the cv.wait_list, otherwise, the synchronize_rcu() in
+> > PollCondVar::drop() won't help.
 > 
-> Cc: Joao Martins <joao.m.martins@oracle.com>
-> Suggested-by: Dan Williams <dan.j.williams@intel.com>
-> Signed-off-by: Vishal Verma <vishal.l.verma@intel.com>
-Hi Vishal,
-
-I'm a big fan of this cleanup.h stuff so very happen to see this getting used here.
-There are added opportunities for cleanup that result.
-
-Note that almost every time I see people using this stuff they don't look again
-at the code post the change so miss the wider cleanup that it enables. So you are
-in good company ;)
-
-Jonathan
-
-> ---
->  include/linux/device.h |   2 +
->  drivers/dax/bus.c      | 109 +++++++++++++++++++------------------------------
->  2 files changed, 44 insertions(+), 67 deletions(-)
-> 
-> diff --git a/include/linux/device.h b/include/linux/device.h
-> index d7a72a8749ea..a83efd9ae949 100644
-> --- a/include/linux/device.h
-> +++ b/include/linux/device.h
-> @@ -1131,6 +1131,8 @@ void set_secondary_fwnode(struct device *dev, struct fwnode_handle *fwnode);
->  void device_set_of_node_from_dev(struct device *dev, const struct device *dev2);
->  void device_set_node(struct device *dev, struct fwnode_handle *fwnode);
->  
-> +DEFINE_GUARD(device, struct device *, device_lock(_T), device_unlock(_T))
-
-Nice. I'd expect this to be widely adopted, so maybe to make things less painful
-for backporting changes that depend on it, make this a separate trivial patch
-rather than having this in here.
-
-> +
->  static inline int dev_num_vf(struct device *dev)
->  {
->  	if (dev->bus && dev->bus->num_vf)
-> diff --git a/drivers/dax/bus.c b/drivers/dax/bus.c
-> index 1ff1ab5fa105..ce1356ac6dc2 100644
-> --- a/drivers/dax/bus.c
-> +++ b/drivers/dax/bus.c
-> @@ -296,9 +296,8 @@ static ssize_t available_size_show(struct device *dev,
->  	struct dax_region *dax_region = dev_get_drvdata(dev);
->  	unsigned long long size;
->  
-> -	device_lock(dev);
-> +	guard(device)(dev);
->  	size = dax_region_avail_size(dax_region);
-> -	device_unlock(dev);
->  
->  	return sprintf(buf, "%llu\n", size);
-	return sprintf(buf, @%llu\n@, dax_region_avail_size(dax_region));
-and drop the local variable that adds little perhaps?
-
->  }
-> @@ -314,10 +313,9 @@ static ssize_t seed_show(struct device *dev,
->  	if (is_static(dax_region))
->  		return -EINVAL;
->  
-> -	device_lock(dev);
-> +	guard(device)(dev);
->  	seed = dax_region->seed;
->  	rc = sprintf(buf, "%s\n", seed ? dev_name(seed) : "");
-
-return sprintf();
-
-> -	device_unlock(dev);
->  
->  	return rc;
->  }
-> @@ -333,10 +331,9 @@ static ssize_t create_show(struct device *dev,
->  	if (is_static(dax_region))
->  		return -EINVAL;
->  
-> -	device_lock(dev);
-> +	guard(device)(dev);
->  	youngest = dax_region->youngest;
->  	rc = sprintf(buf, "%s\n", youngest ? dev_name(youngest) : "");
-
-return sprintf();
-
-> -	device_unlock(dev);
->  
->  	return rc;
->  }
-> @@ -345,7 +342,14 @@ static ssize_t create_store(struct device *dev, struct device_attribute *attr,
->  		const char *buf, size_t len)
->  {
->  	struct dax_region *dax_region = dev_get_drvdata(dev);
-> +	struct dev_dax_data data = {
-> +		.dax_region = dax_region,
-> +		.size = 0,
-> +		.id = -1,
-> +		.memmap_on_memory = false,
-> +	};
->  	unsigned long long avail;
-> +	struct dev_dax *dev_dax;
->  	ssize_t rc;
->  	int val;
->  
-> @@ -358,38 +362,26 @@ static ssize_t create_store(struct device *dev, struct device_attribute *attr,
->  	if (val != 1)
->  		return -EINVAL;
->  
-> -	device_lock(dev);
-> +	guard(device)(dev);
->  	avail = dax_region_avail_size(dax_region);
->  	if (avail == 0)
-> -		rc = -ENOSPC;
-> -	else {
-> -		struct dev_dax_data data = {
-> -			.dax_region = dax_region,
-> -			.size = 0,
-> -			.id = -1,
-> -			.memmap_on_memory = false,
-> -		};
-> -		struct dev_dax *dev_dax = devm_create_dev_dax(&data);
-> +		return -ENOSPC;
->  
-> -		if (IS_ERR(dev_dax))
-> -			rc = PTR_ERR(dev_dax);
-> -		else {
-> -			/*
-> -			 * In support of crafting multiple new devices
-> -			 * simultaneously multiple seeds can be created,
-> -			 * but only the first one that has not been
-> -			 * successfully bound is tracked as the region
-> -			 * seed.
-> -			 */
-> -			if (!dax_region->seed)
-> -				dax_region->seed = &dev_dax->dev;
-> -			dax_region->youngest = &dev_dax->dev;
-> -			rc = len;
-> -		}
-> -	}
-> -	device_unlock(dev);
-> +	dev_dax = devm_create_dev_dax(&data);
-> +	if (IS_ERR(dev_dax))
-> +		return PTR_ERR(dev_dax);
->  
-> -	return rc;
-> +	/*
-> +	 * In support of crafting multiple new devices
-
-rewrap this comment for the new indent.
-
-> +	 * simultaneously multiple seeds can be created,
-> +	 * but only the first one that has not been
-> +	 * successfully bound is tracked as the region
-> +	 * seed.
-> +	 */
-> +	if (!dax_region->seed)
-> +		dax_region->seed = &dev_dax->dev;
-> +	dax_region->youngest = &dev_dax->dev;
-
-Trivial but blank line here would be a nice to have
-
-> +	return len;
->  }
-
-
-...
-
-> @@ -1138,18 +1123,14 @@ static ssize_t mapping_store(struct device *dev, struct device_attribute *attr,
->  		return rc;
->  
->  	rc = -ENXIO;
-
-Not needed with suggested changes that follow.
-
-> -	device_lock(dax_region->dev);
-> -	if (!dax_region->dev->driver) {
-> -		device_unlock(dax_region->dev);
-> +	guard(device)(dax_region->dev);
-> +	if (!dax_region->dev->driver)
->  		return rc;
-		return -ENXIO;
-> -	}
-> -	device_lock(dev);
->  
-> +	guard(device)(dev);
->  	to_alloc = range_len(&r);
->  	if (alloc_is_aligned(dev_dax, to_alloc))
->  		rc = alloc_dev_dax_range(dev_dax, r.start, to_alloc);
-Flip logic here and I'd drop the ternary stuff as well - same in other
-similar cases in this patch (though that is just personal taste)
-
-	if (!alloc_is_aligned(dev_dax, to_allco))
-		return -ENXIO.
-
-	rc = alloc_dev_dax_range(dev_dax, r.start, to_allco)
-	if (rc)
-		return rc;
-
-	return len;
-
-> -	device_unlock(dev);
-> -	device_unlock(dax_region->dev);
->  
->  	return rc == 0 ? len : rc;
->  }
-
+> Good catch, this is rather important. I did not find the implementation
+> of `qproc`, since it is a function pointer. Since this pattern is
+> common, what is the way to find the implementation of those in general?
 > 
 
+Actually I don't find any. Ping vfs ;-)
+
+Personally, it took me a while to get a rough understanding of the API:
+it's similar to `Future::poll` (or at least the registering waker part),
+it basically should registers a waiter, so that when an event happens
+later, the waiter gets notified. Also the waiter registration can have a
+(optional?) cancel mechanism (like an async drop of Future ;-)), and
+that's what gives us headache here: cancellation needs to remove the
+waiter from the wait_queue_head, which means wait_queue_head must be
+valid during the removal, and that means the kfree of wait_queue_head
+must be delayed to a state where no one can access it in waiter removal.
+
+> I imagine that the pattern is used to enable dynamic selection of the
+> concrete implementation, but there must be some general specification of
+> what the function does, is this documented somewhere?
+> 
+> > To phrase it, it's more like:
+> > 
+> > (in the safety requirement of `PollTable::from_ptr` and the type
+> > invariant of `PollTable`):
+> > 
+> > ", further, if the qproc function in poll_table publishs the pointer of
+> > the wait_queue_head, it must publish it in a way that reads on the
+> > published pointer have to be in an RCU read-side critical section."
+> 
+> What do you mean by `publish`?
+> 
+
+Publishing a pointer is like `Send`ing a `&T` (or put pointer in a
+global variable), so that other threads can access it. Note that since
+the cancel mechanism is optional (best to my knowledge), so a qproc call
+may not pushlish the pointer.
+
+Regards,
+Boqun
