@@ -2,44 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 43279811EED
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 20:31:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DD88811EF5
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 20:32:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233840AbjLMTbB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 14:31:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46678 "EHLO
+        id S1442178AbjLMTck (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 14:32:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49388 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229671AbjLMTa7 (ORCPT
+        with ESMTP id S229671AbjLMTcj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 14:30:59 -0500
+        Wed, 13 Dec 2023 14:32:39 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6EBB129
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 11:31:05 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 51784C433C8;
-        Wed, 13 Dec 2023 19:31:05 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A4EFB0
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 11:32:46 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id C42BDC433C8;
+        Wed, 13 Dec 2023 19:32:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1702495865;
-        bh=ck/wlW7lhdixRCwMQVnEmgl26YYLiC5AomhVJrGXoWI=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=t50l+WwEfAt/LGh4Ix2wvMwsh/CHAo3nLKe60yRg+3qJWYBp/9vKdQ4ZZ9Bo+afXz
-         0qsXAlRxqeVqvkrSOIdrn3AKeQaXAr/jdXZ+X9LMPyIosDKqE2gxI/XuBXGz7ewjl0
-         nUaCBMhUlqExx00VdlFSxo3dA7fs28UMzU6ATnLQc2uV6He+KOYu6IJvSl/30LFuOy
-         Krpox1tNxidH4FckA5pHM3Lg/OhhZXAt+hMHO713K1ygfLo1H0hT6tMDUMmFjkOQgn
-         W3uvJwvSUKgBXgjILpjz+uE8xxVnfJxBXsD4SXjxdfwQ3YxMHBRn56FIb0ucV/1gT8
-         2cjSXGEudvYZg==
-Date:   Wed, 13 Dec 2023 13:31:03 -0600
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc:     lpieralisi@kernel.org, kw@linux.com, kishon@kernel.org,
-        bhelgaas@google.com, mhi@lists.linux.dev,
-        linux-arm-msm@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/9] bus: mhi: ep: Add async read/write support
-Message-ID: <20231213193103.GA1054774@bhelgaas>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231127124529.78203-1-manivannan.sadhasivam@linaro.org>
+        s=k20201202; t=1702495965;
+        bh=rbmHVytUb1V53aPqe32fijD88KUqOLYNVRjVaPk4Rt4=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=mm8TMtBMPlZ2BL9D1AEhA8qB1BvtXeT7HTWUqOmOtvKvZ4+EQZrNR1ROCS67cAEv1
+         NStmaw40UHlAzaxJQItrYRmm4r0/nksPsjKOGqARME7Gb3VSZGexXZmkSdsiDXZQQL
+         cRwXGtz6AuNhRscsyX6GouQjIJfFsVaSYM0mL5DR/lAnqNOdy7A3Vs2c2ZemeOPDPY
+         t8ZBCJmdlPccOKpzD6uEMootIxXIenZbx23wGqPPMFMWKUnBABMi3JDVzN+yqc23KV
+         b3Ebr5dCSQifZ43LackJsy2ixrdxKR4i5c0/LICAPRq2lKA+TciKDLwyNYw9yPtN+6
+         k1ow4dNnPAdvA==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id AFF70C4314C;
+        Wed, 13 Dec 2023 19:32:45 +0000 (UTC)
+Subject: Re: [git pull] ufs fix
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <20231213161857.GN1674809@ZenIV>
+References: <20231213161857.GN1674809@ZenIV>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20231213161857.GN1674809@ZenIV>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/viro/vfs.git tags/pull-fixes
+X-PR-Tracked-Commit-Id: 485053bb81c81a122edd982b263277e65d7485c5
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 5bd7ef53ffe5ca580e93e74eb8c81ed191ddc4bd
+Message-Id: <170249596571.3944.15321090833418459973.pr-tracker-bot@kernel.org>
+Date:   Wed, 13 Dec 2023 19:32:45 +0000
+To:     Al Viro <viro@zeniv.linux.org.uk>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -50,49 +56,15 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 27, 2023 at 06:15:20PM +0530, Manivannan Sadhasivam wrote:
-> Hi,
-> 
-> This series add async read/write support for the MHI endpoint stack by
-> modifying the MHI ep stack and the MHI EPF (controller) driver.
-> 
-> Currently, only sync read/write operations are supported by the stack,
-> this resulting in poor data throughput as the transfer is halted until
-> receiving the DMA completion. So this series adds async support such
-> that the MHI transfers can continue without waiting for the transfer
-> completion. And once the completion happens, host is notified by sending
-> the transfer completion event.
-> 
-> This series brings iperf throughput of ~4Gbps on SM8450 based dev platform,
-> where previously 1.6Gbps was achieved with sync operation.
-> 
-> - Mani
-> 
-> Manivannan Sadhasivam (9):
->   bus: mhi: ep: Pass mhi_ep_buf_info struct to read/write APIs
->   bus: mhi: ep: Rename read_from_host() and write_to_host() APIs
->   bus: mhi: ep: Introduce async read/write callbacks
->   PCI: epf-mhi: Simulate async read/write using iATU
->   PCI: epf-mhi: Add support for DMA async read/write operation
->   PCI: epf-mhi: Enable MHI async read/write support
->   bus: mhi: ep: Add support for async DMA write operation
->   bus: mhi: ep: Add support for async DMA read operation
->   bus: mhi: ep: Add checks for read/write callbacks while registering
->     controllers
-> 
->  drivers/bus/mhi/ep/internal.h                |   1 +
->  drivers/bus/mhi/ep/main.c                    | 256 +++++++++------
->  drivers/bus/mhi/ep/ring.c                    |  41 +--
->  drivers/pci/endpoint/functions/pci-epf-mhi.c | 314 ++++++++++++++++---
->  include/linux/mhi_ep.h                       |  33 +-
->  5 files changed, 485 insertions(+), 160 deletions(-)
+The pull request you sent on Wed, 13 Dec 2023 16:18:57 +0000:
 
-Mani, do you want to merge this via your MHI tree?  If so, you can
-include Krzysztof's Reviewed-by tags and my:
+> git://git.kernel.org/pub/scm/linux/kernel/git/viro/vfs.git tags/pull-fixes
 
-Acked-by: Bjorn Helgaas <bhelgaas@google.com>
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/5bd7ef53ffe5ca580e93e74eb8c81ed191ddc4bd
 
-If you think it'd be better via the PCI tree, let me know and we can
-do that, too.
+Thank you!
 
-Bjorn
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
