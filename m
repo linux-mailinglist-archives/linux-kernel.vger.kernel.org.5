@@ -2,183 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2319281106D
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 12:46:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D0DD81107A
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 12:47:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378167AbjLMLqE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 06:46:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55730 "EHLO
+        id S1378005AbjLMLro (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 06:47:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39500 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377447AbjLMLqA (ORCPT
+        with ESMTP id S233322AbjLMLrm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 06:46:00 -0500
-Received: from out30-113.freemail.mail.aliyun.com (out30-113.freemail.mail.aliyun.com [115.124.30.113])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5427AAF;
-        Wed, 13 Dec 2023 03:46:06 -0800 (PST)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R161e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046051;MF=alibuda@linux.alibaba.com;NM=1;PH=DS;RN=14;SR=0;TI=SMTPD_---0VyQzxum_1702467962;
-Received: from j66a10360.sqa.eu95.tbsite.net(mailfrom:alibuda@linux.alibaba.com fp:SMTPD_---0VyQzxum_1702467962)
-          by smtp.aliyun-inc.com;
-          Wed, 13 Dec 2023 19:46:03 +0800
-From:   "D. Wythe" <alibuda@linux.alibaba.com>
-To:     pablo@netfilter.org, kadlec@netfilter.org, fw@strlen.de
-Cc:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, coreteam@netfilter.org,
-        netfilter-devel@vger.kernel.org, davem@davemloft.net,
-        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-        ast@kernel.org, "D. Wythe" <alibuda@linux.alibaba.com>
-Subject: [RFC nf-next 2/2] selftests/bpf: Add netfilter link prog update test
-Date:   Wed, 13 Dec 2023 19:45:45 +0800
-Message-Id: <1702467945-38866-3-git-send-email-alibuda@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1702467945-38866-1-git-send-email-alibuda@linux.alibaba.com>
-References: <1702467945-38866-1-git-send-email-alibuda@linux.alibaba.com>
-X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        Wed, 13 Dec 2023 06:47:42 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5839B0
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 03:47:48 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7B7FAC433C8;
+        Wed, 13 Dec 2023 11:47:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1702468068;
+        bh=JyyObBeV7lx+piW0vGHGGe7J7czaHg1baDvRFTL1YFw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=r7rMuQG8++rxezs7n/Y9sURdpr7XIY9fEftxwfu1W5eXx4Y+9uZ3CtJyrCwuP9xWJ
+         aE/wcDKQULl2X4+3Kc/UN5ORX+LcVFbaN3Qo10IiJRgrOAODQRfyvKH7St5lgHiOs6
+         ojTwBd9rDcqql2hJSZrhFgKnp5q72PJFJ+Z/Mlb3z08YwvtNXlcKOU2NP811pDxw66
+         PkqMFn+ihwCmUdHaazAMubK69lhReNpD6dT8mWZzRQYdWqFRI+EgDLaTwm6erXOz/e
+         u9JfzsxmjIuNqS6jbqz+tIh3oDPhyjsB1nIb4l+WISuj9zjqGqU5VLzwrrVGan7Jm0
+         EHsZFsoRPpImQ==
+Date:   Wed, 13 Dec 2023 11:47:44 +0000
+From:   Lee Jones <lee@kernel.org>
+To:     Amitesh Singh <singh.amitesh@gmail.com>
+Cc:     Pavel Machek <pavel@ucw.cz>, linux-leds@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] feat(kernel/pca963x): implement power management
+Message-ID: <20231213114744.GK111411@google.com>
+References: <881c6ba1-1701-41be-a4ac-81cdca5f0eea@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <881c6ba1-1701-41be-a4ac-81cdca5f0eea@gmail.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "D. Wythe" <alibuda@linux.alibaba.com>
+On Sun, 10 Dec 2023, Amitesh Singh wrote:
 
-Update prog for active link and verify whether
-the prog has been successfully replaced.
+> From a22dbd7390ce875e81d67f14f05f593d7f03d5c1 Mon Sep 17 00:00:00 2001
+> From: Amitesh Singh <singh.amitesh@gmail.com>
+> Date: Fri, 8 Dec 2023 15:08:33 +0530
+> Subject: [PATCH] feat(kernel/pca963x): implement power management
 
-Expected output:
+What are you using to send this patch?
 
-./test_progs -t netfilter_link_update_prog
-Summary: 1/0 PASSED, 0 SKIPPED, 0 FAILED
+Please use the Git tools provided:
 
-Signed-off-by: D. Wythe <alibuda@linux.alibaba.com>
----
- .../bpf/prog_tests/netfilter_link_update_prog.c    | 83 ++++++++++++++++++++++
- .../bpf/progs/test_netfilter_link_update_prog.c    | 24 +++++++
- 2 files changed, 107 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/netfilter_link_update_prog.c
- create mode 100644 tools/testing/selftests/bpf/progs/test_netfilter_link_update_prog.c
+  git format-patch
+  git send-email
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/netfilter_link_update_prog.c b/tools/testing/selftests/bpf/prog_tests/netfilter_link_update_prog.c
-new file mode 100644
-index 00000000..d23b544
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/netfilter_link_update_prog.c
-@@ -0,0 +1,83 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+
-+#include <test_progs.h>
-+#include <linux/netfilter.h>
-+#include <network_helpers.h>
-+#include "test_netfilter_link_update_prog.skel.h"
-+
-+#define SERVER_ADDR "127.0.0.1"
-+#define SERVER_PORT 12345
-+
-+static const char dummy_message[] = "A dummy message";
-+
-+static int send_dummy(int client_fd)
-+{
-+	struct sockaddr_storage saddr;
-+	struct sockaddr *saddr_p;
-+	socklen_t saddr_len;
-+	int err;
-+
-+	saddr_p = (struct sockaddr *)&saddr;
-+	err = make_sockaddr(AF_INET, SERVER_ADDR, SERVER_PORT, &saddr, &saddr_len);
-+	if (!ASSERT_OK(err, "make_sockaddr"))
-+		return -1;
-+
-+	err = sendto(client_fd, dummy_message, sizeof(dummy_message) - 1, 0, saddr_p, saddr_len);
-+	if (!ASSERT_GE(err, 0, "sendto"))
-+		return -1;
-+
-+	return 0;
-+}
-+
-+void test_netfilter_link_update_prog(void)
-+{
-+	LIBBPF_OPTS(bpf_netfilter_opts, opts,
-+		.pf = NFPROTO_IPV4,
-+		.hooknum = NF_INET_LOCAL_OUT,
-+		.priority = 100);
-+	struct test_netfilter_link_update_prog *skel;
-+	struct bpf_program *prog;
-+	int server_fd, client_fd;
-+	int err;
-+
-+	skel = test_netfilter_link_update_prog__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "test_netfilter_link_update_prog__open_and_load"))
-+		goto out;
-+
-+	prog = skel->progs.nf_link_prog;
-+
-+	if (!ASSERT_OK_PTR(prog, "load program"))
-+		goto out;
-+
-+	skel->links.nf_link_prog = bpf_program__attach_netfilter(prog, &opts);
-+	if (!ASSERT_OK_PTR(skel->links.nf_link_prog, "attach netfilter program"))
-+		goto out;
-+
-+	server_fd = start_server(AF_INET, SOCK_DGRAM, SERVER_ADDR, SERVER_PORT, 0);
-+	if (!ASSERT_GE(server_fd, 0, "start_server"))
-+		goto out;
-+
-+	client_fd = connect_to_fd(server_fd, 0);
-+	if (!ASSERT_GE(client_fd, 0, "connect_to_fd"))
-+		goto out;
-+
-+	send_dummy(client_fd);
-+
-+	ASSERT_EQ(skel->bss->counter, 0, "counter should be zero");
-+
-+	err = bpf_link__update_program(skel->links.nf_link_prog, skel->progs.nf_link_prog_new);
-+	if (!ASSERT_OK(err, "bpf_link__update_program"))
-+		goto out;
-+
-+	send_dummy(client_fd);
-+	ASSERT_GE(skel->bss->counter, 0, "counter should be greater than zero");
-+out:
-+	if (client_fd > 0)
-+		close(client_fd);
-+	if (server_fd > 0)
-+		close(server_fd);
-+
-+	test_netfilter_link_update_prog__destroy(skel);
-+}
-+
-+
-diff --git a/tools/testing/selftests/bpf/progs/test_netfilter_link_update_prog.c b/tools/testing/selftests/bpf/progs/test_netfilter_link_update_prog.c
-new file mode 100644
-index 00000000..42ae332
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/test_netfilter_link_update_prog.c
-@@ -0,0 +1,24 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+
-+#include "vmlinux.h"
-+#include <bpf/bpf_helpers.h>
-+
-+#define NF_ACCEPT 1
-+
-+SEC("netfilter")
-+int nf_link_prog(struct bpf_nf_ctx *ctx)
-+{
-+	return NF_ACCEPT;
-+}
-+
-+u64 counter = 0;
-+
-+SEC("netfilter")
-+int nf_link_prog_new(struct bpf_nf_ctx *ctx)
-+{
-+	counter++;
-+	return NF_ACCEPT;
-+}
-+
-+char _license[] SEC("license") = "GPL";
-+
+The subject line is also totally incorrect.  Again Git can help:
+
+  git log --oneline -- <subsystem>
+
+Please fix the bot's complaints before re-submitting.
+
+Thank you.
+
+> This implements power management in upstream driver
+> for pca9633 which enables device sleep and resume
+> on system-wide sleep/hibernation
+> 
+> Signed-off-by: Amitesh Singh <singh.amitesh@gmail.com>
+> ---
+>  drivers/leds/leds-pca963x.c | 41 +++++++++++++++++++++++++++++++++++++
+>  1 file changed, 41 insertions(+)
+> 
+> diff --git a/drivers/leds/leds-pca963x.c b/drivers/leds/leds-pca963x.c
+> index 47223c850e4b..462f917dc986 100644
+> --- a/drivers/leds/leds-pca963x.c
+> +++ b/drivers/leds/leds-pca963x.c
+> @@ -39,6 +39,7 @@
+>  #define PCA963X_LED_PWM		0x2	/* Controlled through PWM */
+>  #define PCA963X_LED_GRP_PWM	0x3	/* Controlled through PWM/GRPPWM */
+> 
+> +#define PCA963X_MODE1_SLEEP     0x04    /* Normal mode or Low Power mode,
+> oscillator off */
+>  #define PCA963X_MODE2_OUTDRV	0x04	/* Open-drain or totem pole */
+>  #define PCA963X_MODE2_INVRT	0x10	/* Normal or inverted direction */
+>  #define PCA963X_MODE2_DMBLNK	0x20	/* Enable blinking */
+> @@ -380,6 +381,45 @@ static int pca963x_register_leds(struct i2c_client
+> *client,
+>  	return ret;
+>  }
+> 
+> +#ifdef CONFIG_PM
+> +static int pca963x_suspend(struct device *dev)
+> +{
+> +	struct pca963x *chip;
+> +	u8 reg;
+> +
+> +	chip = dev_get_drvdata(dev);
+> +
+> +	reg = i2c_smbus_read_byte_data(chip->client, PCA963X_MODE1);
+> +	reg = reg | (1 << PCA963X_MODE1_SLEEP);
+> +	i2c_smbus_write_byte_data(chip->client, PCA963X_MODE1, reg);
+> +
+> +	return 0;
+> +}
+> +
+> +static int pca963x_resume(struct device *dev)
+> +{
+> +	struct pca963x *chip;
+> +	u8 reg;
+> +
+> +	chip = dev_get_drvdata(dev);
+> +
+> +	reg = i2c_smbus_read_byte_data(chip->client, PCA963X_MODE1);
+> +	reg = reg & ~(1 << PCA963X_MODE1_SLEEP);
+> +	i2c_smbus_write_byte_data(chip->client, PCA963X_MODE1, reg);
+> +
+> +	return 0;
+> +}
+> +
+> +static const struct dev_pm_ops pca963x_pmops = {
+> +	SET_SYSTEM_SLEEP_PM_OPS(pca963x_suspend, pca963x_resume)
+> +};
+> +
+> +#define PCA963X_SMBUS_PMOPS (&pca963x_pmops)
+> +
+> +#else
+> +#define PCA963X_SMBUS_PMOPS NULL
+> +#endif
+> +
+>  static const struct of_device_id of_pca963x_match[] = {
+>  	{ .compatible = "nxp,pca9632", },
+>  	{ .compatible = "nxp,pca9633", },
+> @@ -430,6 +470,7 @@ static struct i2c_driver pca963x_driver = {
+>  	.driver = {
+>  		.name	= "leds-pca963x",
+>  		.of_match_table = of_pca963x_match,
+> +		.pm = PCA963X_SMBUS_PMOPS
+>  	},
+>  	.probe = pca963x_probe,
+>  	.id_table = pca963x_id,
+> -- 
+> 2.43.0
+> 
+
 -- 
-1.8.3.1
-
+Lee Jones [李琼斯]
