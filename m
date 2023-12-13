@@ -2,156 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B4E63811C6C
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 19:28:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 33C8F811C71
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 19:28:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442624AbjLMS1y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 13:27:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58676 "EHLO
+        id S1442323AbjLMS2k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 13:28:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52474 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235536AbjLMS1k (ORCPT
+        with ESMTP id S235678AbjLMS22 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 13:27:40 -0500
-Received: from 66-220-144-178.mail-mxout.facebook.com (66-220-144-178.mail-mxout.facebook.com [66.220.144.178])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6FDB11B
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 10:27:46 -0800 (PST)
-Received: by devbig1114.prn1.facebook.com (Postfix, from userid 425415)
-        id C6E0610CFA72F; Wed, 13 Dec 2023 10:27:33 -0800 (PST)
-From:   Stefan Roesch <shr@devkernel.io>
-To:     kernel-team@fb.com
-Cc:     shr@devkernel.io, akpm@linux-foundation.org, david@redhat.com,
-        hannes@cmpxchg.org, riel@surriel.com, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org
-Subject: [PATCH v4 4/4] mm/ksm: document ksm advisor and its sysfs knobs
-Date:   Wed, 13 Dec 2023 10:27:29 -0800
-Message-Id: <20231213182729.587081-5-shr@devkernel.io>
-X-Mailer: git-send-email 2.39.3
-In-Reply-To: <20231213182729.587081-1-shr@devkernel.io>
-References: <20231213182729.587081-1-shr@devkernel.io>
+        Wed, 13 Dec 2023 13:28:28 -0500
+Received: from mail-oo1-xc2f.google.com (mail-oo1-xc2f.google.com [IPv6:2607:f8b0:4864:20::c2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01FC0107
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 10:28:30 -0800 (PST)
+Received: by mail-oo1-xc2f.google.com with SMTP id 006d021491bc7-59067f03282so4269536eaf.0
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 10:28:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1702492110; x=1703096910; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=z2suwt8vSdQ/DeMNrSZbO0otw3V4vmPXaSVKVeklDiw=;
+        b=aXeFM2sgrn9xAEVa4MxlqreJNn+PbIJHmepHvKd+P+7G1ChnBzUwsHFRyErvg8ztx2
+         uj+X8ttgDynezFB0GtnX4hAMLs+Svk8Uk+0+PDfNmLTuJvvKCbdxkC2qWsowtJ83Yhiq
+         pMu9rz1FS7HvuFzOTl1g/aBl9A26xI4jF3REkyIh1dq2OGjexDTqXwQOc+As9C/QvxSn
+         tzhIKaOBOrOnXQotnvEtS5Dcdev73S3KxvKb6vLtCjWLaPtLm3f66KR97dxvF0zDG7a/
+         ix1lVyU6bloW6iK8sIJhKsEK/7I63iHbX7+wS8ElQe+GDTNVDNE+LZCs/XuBEwB2SYx7
+         MMPQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702492110; x=1703096910;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=z2suwt8vSdQ/DeMNrSZbO0otw3V4vmPXaSVKVeklDiw=;
+        b=R1THVMrsNW9CSvEuZoEUEpxhxvElrxIfBAUtw8vP3gJOYvl5ktigQjWdM4huqm3rPu
+         G3KtUStXbYJPc1CPeu1kxj8rlFGOWI+yFPw8wFN9lWlh7urFGc62kavbS78ZdbHe5s59
+         wrh+dHVWuq0s3gpdfIAOT1VrTEYy+vU1Dv9K2mPS8au7fxti53rEoISzDGX0kqn/vWbg
+         75sAOqwWU7XGfAqWjAmSKuFkeNWXcEu5vgdxFyiQ6OQ9xbwoeUG0GmNJVNfSrnVlMV/4
+         kLSynaOCDNfCTIZfSLKzt5Zq6buBidvSHre/ARKLwn1bP3E69e9UgSoAJFqSUuualcrW
+         uWXQ==
+X-Gm-Message-State: AOJu0Yy0H7cVPfMW55JwxaP9+6sLEsfV/6f30oLHxQcrawrZOICHyN/B
+        6g4QHQYjluA9q6orEou2lfWvAULlzqrnakjHMMI=
+X-Google-Smtp-Source: AGHT+IEE8NGbqkyFPIlrmSp4009XZ22BdueAT9TWg3vReqvOQyrtrSyGp1oHJ2Dq1q9nFO7I20ZYRQZL43VNElqArto=
+X-Received: by 2002:a05:6870:a68a:b0:203:294a:50da with SMTP id
+ i10-20020a056870a68a00b00203294a50damr1305331oam.75.1702492110198; Wed, 13
+ Dec 2023 10:28:30 -0800 (PST)
 MIME-Version: 1.0
+References: <90172f4c-7cf7-b4ac-d630-42198bb80d62@gmail.com> <b236ff60-085b-460a-b1eb-ddcea1c79094@amd.com>
+In-Reply-To: <b236ff60-085b-460a-b1eb-ddcea1c79094@amd.com>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Wed, 13 Dec 2023 13:28:18 -0500
+Message-ID: <CADnq5_OxNQGebrUT=F_ir9GGLGCHummgZpqsc-ma63t-H=mqGQ@mail.gmail.com>
+Subject: Re: [PATCH v2] drm/radeon: Prevent multiple debug error lines on suspend
+To:     =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
+Cc:     Woody Suwalski <terraluna977@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        amd-gfx@lists.freedesktop.org,
+        "Deucher, Alexander" <alexander.deucher@amd.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=0.1 required=5.0 tests=BAYES_00,HELO_MISC_IP,
-        RCVD_IN_DNSWL_BLOCKED,RDNS_DYNAMIC,SPF_HELO_PASS,SPF_NEUTRAL,
-        TVD_RCVD_IP,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This documents the KSM advisor and its new knobs in /sys/fs/kernel/mm.
+Applied manually.  Please double check how you are sending the
+patches.  git complained about a malformed patch.  I'd suggest using
+git-send-email.
 
-Signed-off-by: Stefan Roesch <shr@devkernel.io>
-Acked-by: David Hildenbrand <david@redhat.com>
----
- Documentation/admin-guide/mm/ksm.rst | 55 ++++++++++++++++++++++++++++
- 1 file changed, 55 insertions(+)
+Thanks,
 
-diff --git a/Documentation/admin-guide/mm/ksm.rst b/Documentation/admin-g=
-uide/mm/ksm.rst
-index e59231ac6bb71..a639cac124777 100644
---- a/Documentation/admin-guide/mm/ksm.rst
-+++ b/Documentation/admin-guide/mm/ksm.rst
-@@ -80,6 +80,9 @@ pages_to_scan
-         how many pages to scan before ksmd goes to sleep
-         e.g. ``echo 100 > /sys/kernel/mm/ksm/pages_to_scan``.
-=20
-+        The pages_to_scan value cannot be changed if ``advisor_mode`` ha=
-s
-+        been set to scan-time.
-+
-         Default: 100 (chosen for demonstration purposes)
-=20
- sleep_millisecs
-@@ -164,6 +167,29 @@ smart_scan
-         optimization is enabled.  The ``pages_skipped`` metric shows how
-         effective the setting is.
-=20
-+advisor_mode
-+        The ``advisor_mode`` selects the current advisor. Two modes are
-+        supported: none and scan-time. The default is none. By setting
-+        ``advisor_mode`` to scan-time, the scan time advisor is enabled.
-+        The section about ``advisor`` explains in detail how the scan ti=
-me
-+        advisor works.
-+
-+adivsor_max_cpu
-+        specifies the upper limit of the cpu percent usage of the ksmd
-+        background thread. The default is 70.
-+
-+advisor_target_scan_time
-+        specifies the target scan time in seconds to scan all the candid=
-ate
-+        pages. The default value is 200 seconds.
-+
-+advisor_min_pages_to_scan
-+        specifies the lower limit of the ``pages_to_scan`` parameter of =
-the
-+        scan time advisor. The default is 500.
-+
-+adivsor_max_pages_to_scan
-+        specifies the upper limit of the ``pages_to_scan`` parameter of =
-the
-+        scan time advisor. The default is 30000.
-+
- The effectiveness of KSM and MADV_MERGEABLE is shown in ``/sys/kernel/mm=
-/ksm/``:
-=20
- general_profit
-@@ -263,6 +289,35 @@ ksm_swpin_copy
- 	note that KSM page might be copied when swapping in because do_swap_pag=
-e()
- 	cannot do all the locking needed to reconstitute a cross-anon_vma KSM p=
-age.
-=20
-+Advisor
-+=3D=3D=3D=3D=3D=3D=3D
-+
-+The number of candidate pages for KSM is dynamic. It can be often observ=
-ed
-+that during the startup of an application more candidate pages need to b=
-e
-+processed. Without an advisor the ``pages_to_scan`` parameter needs to b=
-e
-+sized for the maximum number of candidate pages. The scan time advisor c=
-an
-+changes the ``pages_to_scan`` parameter based on demand.
-+
-+The advisor can be enabled, so KSM can automatically adapt to changes in=
- the
-+number of candidate pages to scan. Two advisors are implemented: none an=
-d
-+scan-time. With none, no advisor is enabled. The default is none.
-+
-+The scan time advisor changes the ``pages_to_scan`` parameter based on t=
-he
-+observed scan times. The possible values for the ``pages_to_scan`` param=
-eter is
-+limited by the ``advisor_max_cpu`` parameter. In addition there is also =
-the
-+``advisor_target_scan_time`` parameter. This parameter sets the target t=
-ime to
-+scan all the KSM candidate pages. The parameter ``advisor_target_scan_ti=
-me``
-+decides how aggressive the scan time advisor scans candidate pages. Lowe=
-r
-+values make the scan time advisor to scan more aggresively. This is the =
-most
-+important parameter for the configuration of the scan time advisor.
-+
-+The initial value and the maximum value can be changed with
-+``advisor_min_pages_to_scan`` and ``advisor_max_pages_to_scan``. The def=
-ault
-+values are sufficient for most workloads and use cases.
-+
-+The ``pages_to_scan`` parameter is re-calculated after a scan has been c=
-ompleted.
-+
-+
- --
- Izik Eidus,
- Hugh Dickins, 17 Nov 2009
---=20
-2.39.3
+Alex
 
+On Wed, Dec 13, 2023 at 1:45=E2=80=AFAM Christian K=C3=B6nig
+<christian.koenig@amd.com> wrote:
+>
+> Am 13.12.23 um 00:31 schrieb Woody Suwalski:
+> > Fix to avoid multiple debug error lines printed on every suspend by
+> > Radeon driver's debugfs.
+> >
+> > radeon_debugfs_init() calls debugfs_create_file() for every ring.
+> >
+> > This results in printing multiple error lines to the screen and dmesg
+> > similar to this:
+> >
+> > [   92.378726] debugfs: File 'radeon_ring_gfx' in directory
+> > '0000:00:01.0' already present!
+> > [   92.378732] debugfs: File 'radeon_ring_cp1' in directory
+> > '0000:00:01.0' already present!
+> > [   92.378734] debugfs: File 'radeon_ring_cp2' in directory
+> > '0000:00:01.0' already present!
+> > [   92.378737] debugfs: File 'radeon_ring_dma1' in directory
+> > '0000:00:01.0' already present!
+> > [   92.378739] debugfs: File 'radeon_ring_dma2' in directory
+> > '0000:00:01.0' already present!
+> > [   92.380775] debugfs: File 'radeon_ring_uvd' in directory
+> > '0000:00:01.0' already present!
+> > [   92.406620] debugfs: File 'radeon_ring_vce1' in directory
+> > '0000:00:01.0' already present!
+> > [   92.406624] debugfs: File 'radeon_ring_vce2' in directory
+> > '0000:00:01.0' already present!
+> >
+> >
+> > Patch v1: The fix was to run lookup() for the file before trying to
+> > (re)create that debug file.
+> > Patch v2: Call the radeon_debugfs_init() only once when radeon ring is
+> > initialized (as suggested  by Christian K. - thanks)
+> >
+> > Signed-off-by: Woody Suwalski <terraluna977@gmail.com>
+>
+> Reviewed-by: Christian K=C3=B6nig <christian.koenig@amd.com>
+>
+> Thanks for the help,
+> Christian.
+>
+> >
+> > diff --git a/drivers/gpu/drm/radeon/radeon_ring.c
+> > b/drivers/gpu/drm/radeon/radeon_ring.c
+> > index e6534fa9f1fb..38048593bb4a 100644
+> > --- a/drivers/gpu/drm/radeon/radeon_ring.c
+> > +++ b/drivers/gpu/drm/radeon/radeon_ring.c
+> > @@ -413,6 +413,7 @@ int radeon_ring_init(struct radeon_device *rdev,
+> > struct radeon_ring *ring, unsig
+> >              dev_err(rdev->dev, "(%d) ring map failed\n", r);
+> >              return r;
+> >          }
+> > +        radeon_debugfs_ring_init(rdev, ring);
+> >      }
+> >      ring->ptr_mask =3D (ring->ring_size / 4) - 1;
+> >      ring->ring_free_dw =3D ring->ring_size / 4;
+> > @@ -421,7 +422,6 @@ int radeon_ring_init(struct radeon_device *rdev,
+> > struct radeon_ring *ring, unsig
+> >          ring->next_rptr_gpu_addr =3D rdev->wb.gpu_addr + index;
+> >          ring->next_rptr_cpu_addr =3D &rdev->wb.wb[index/4];
+> >      }
+> > -    radeon_debugfs_ring_init(rdev, ring);
+> >      radeon_ring_lockup_update(rdev, ring);
+> >      return 0;
+> >  }
+> >
+>
