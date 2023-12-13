@@ -2,43 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 108A9811690
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 16:27:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CA86B811683
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 16:27:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442152AbjLMP1L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 10:27:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51590 "EHLO
+        id S1442571AbjLMP02 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 10:26:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33904 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1442684AbjLMPZK (ORCPT
+        with ESMTP id S1442707AbjLMPZX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 10:25:10 -0500
+        Wed, 13 Dec 2023 10:25:23 -0500
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3AC0F5
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 07:25:00 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78A1F10F4
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 07:25:16 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1702481099;
+        s=mimecast20190719; t=1702481115;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=PLa1FYhVvXUSTtOx9SWX7UrxEmhpA+746l5QW31q7Os=;
-        b=NEiInPIyDyBhSUeGrjWHeTsWRi2Z4WksekU8Dbm8LdYge1eaFiSUmveTBoqYRUDbDuc+WO
-        yfdZhtDbLoK0sPoxEyrRkRvHTFbWbMjvAbjmKi6W2Gk8dHvtiBNzPJl8g+pR7Ta44v2nRh
-        27d3k+GPqEBDo+OZ+OBOAzffLSwiUSE=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-471-JqQgBQZUPnO1fkGTGEhnIw-1; Wed,
- 13 Dec 2023 10:24:56 -0500
-X-MC-Unique: JqQgBQZUPnO1fkGTGEhnIw-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com [10.11.54.2])
+        bh=TyeDCrkCzlrF45NKmRnzOuDvS9hPtHcwk1ZYplID5CE=;
+        b=GeMCqEzQ5IT2M8IDSe1AF+rckD0skP/JoaQbVCxsq6/2TFqmZRM+Wzaucvl8FS1++LL43C
+        l8gjQA2udKBHcCfRxBsuY5TBpkaZKTbr2A9gaLms/F6zHdwgrui7g7/npOGOsANf5I8JHq
+        oFI0JHBlHx3mzt7BZbVkM9I5R446UM4=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-279-80XknK_sN16WwcytEyXF_A-1; Wed, 13 Dec 2023 10:25:11 -0500
+X-MC-Unique: 80XknK_sN16WwcytEyXF_A-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com [10.11.54.5])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 952AD280CFA0;
-        Wed, 13 Dec 2023 15:24:54 +0000 (UTC)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 74836863018;
+        Wed, 13 Dec 2023 15:24:58 +0000 (UTC)
 Received: from warthog.procyon.org.com (unknown [10.42.28.2])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id BD2A340C6EBA;
-        Wed, 13 Dec 2023 15:24:51 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 5FF89519D;
+        Wed, 13 Dec 2023 15:24:55 +0000 (UTC)
 From:   David Howells <dhowells@redhat.com>
 To:     Jeff Layton <jlayton@kernel.org>, Steve French <smfrench@gmail.com>
 Cc:     David Howells <dhowells@redhat.com>,
@@ -56,14 +56,14 @@ Cc:     David Howells <dhowells@redhat.com>,
         ceph-devel@vger.kernel.org, v9fs@lists.linux.dev,
         linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
         netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v4 14/39] netfs: Provide tools to create a buffer in an xarray
-Date:   Wed, 13 Dec 2023 15:23:24 +0000
-Message-ID: <20231213152350.431591-15-dhowells@redhat.com>
+Subject: [PATCH v4 15/39] netfs: Add bounce buffering support
+Date:   Wed, 13 Dec 2023 15:23:25 +0000
+Message-ID: <20231213152350.431591-16-dhowells@redhat.com>
 In-Reply-To: <20231213152350.431591-1-dhowells@redhat.com>
 References: <20231213152350.431591-1-dhowells@redhat.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.2
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.5
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
@@ -75,10 +75,9 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Provide tools to create a buffer in an xarray, with a function to add new
-folios with a mark.  This will be used to create bounce buffer and can be
-used more easily to create a list of folios the span of which would require
-more than a page's worth of bio_vec structs.
+Add a second xarray struct to netfs_io_request for the purposes of holding
+a bounce buffer for when we have to deal with encrypted/compressed data or
+if we have to up/download data in blocks larger than we were asked for.
 
 Signed-off-by: David Howells <dhowells@redhat.com>
 cc: Jeff Layton <jlayton@kernel.org>
@@ -86,140 +85,73 @@ cc: linux-cachefs@redhat.com
 cc: linux-fsdevel@vger.kernel.org
 cc: linux-mm@kvack.org
 ---
- fs/netfs/internal.h   | 13 +++++++
- fs/netfs/misc.c       | 81 +++++++++++++++++++++++++++++++++++++++++++
- include/linux/netfs.h |  4 +++
- 3 files changed, 98 insertions(+)
+ fs/netfs/io.c         | 6 +++++-
+ fs/netfs/objects.c    | 3 +++
+ include/linux/netfs.h | 2 ++
+ 3 files changed, 10 insertions(+), 1 deletion(-)
 
-diff --git a/fs/netfs/internal.h b/fs/netfs/internal.h
-index 937d9a22f178..20eb1fd6986e 100644
---- a/fs/netfs/internal.h
-+++ b/fs/netfs/internal.h
-@@ -56,6 +56,19 @@ static inline void netfs_proc_add_rreq(struct netfs_io_request *rreq) {}
- static inline void netfs_proc_del_rreq(struct netfs_io_request *rreq) {}
- #endif
+diff --git a/fs/netfs/io.c b/fs/netfs/io.c
+index e9d408e211b8..d8e9cd6ce338 100644
+--- a/fs/netfs/io.c
++++ b/fs/netfs/io.c
+@@ -643,7 +643,11 @@ int netfs_begin_read(struct netfs_io_request *rreq, bool sync)
+ 		return -EIO;
+ 	}
  
-+/*
-+ * misc.c
-+ */
-+#define NETFS_FLAG_PUT_MARK		BIT(0)
-+#define NETFS_FLAG_PAGECACHE_MARK	BIT(1)
-+int netfs_xa_store_and_mark(struct xarray *xa, unsigned long index,
-+			    struct folio *folio, unsigned int flags,
-+			    gfp_t gfp_mask);
-+int netfs_add_folios_to_buffer(struct xarray *buffer,
-+			       struct address_space *mapping,
-+			       pgoff_t index, pgoff_t to, gfp_t gfp_mask);
-+void netfs_clear_buffer(struct xarray *buffer);
-+
- /*
-  * objects.c
-  */
-diff --git a/fs/netfs/misc.c b/fs/netfs/misc.c
-index d946d85764de..96014c3d1683 100644
---- a/fs/netfs/misc.c
-+++ b/fs/netfs/misc.c
-@@ -8,6 +8,87 @@
- #include <linux/swap.h>
- #include "internal.h"
+-	rreq->io_iter = rreq->iter;
++	if (test_bit(NETFS_RREQ_USE_BOUNCE_BUFFER, &rreq->flags))
++		iov_iter_xarray(&rreq->io_iter, ITER_DEST, &rreq->bounce,
++				rreq->start, rreq->len);
++	else
++		rreq->io_iter = rreq->iter;
  
-+/*
-+ * Attach a folio to the buffer and maybe set marks on it to say that we need
-+ * to put the folio later and twiddle the pagecache flags.
-+ */
-+int netfs_xa_store_and_mark(struct xarray *xa, unsigned long index,
-+			    struct folio *folio, unsigned int flags,
-+			    gfp_t gfp_mask)
-+{
-+	XA_STATE_ORDER(xas, xa, index, folio_order(folio));
-+
-+retry:
-+	xas_lock(&xas);
-+	for (;;) {
-+		xas_store(&xas, folio);
-+		if (!xas_error(&xas))
-+			break;
-+		xas_unlock(&xas);
-+		if (!xas_nomem(&xas, gfp_mask))
-+			return xas_error(&xas);
-+		goto retry;
-+	}
-+
-+	if (flags & NETFS_FLAG_PUT_MARK)
-+		xas_set_mark(&xas, NETFS_BUF_PUT_MARK);
-+	if (flags & NETFS_FLAG_PAGECACHE_MARK)
-+		xas_set_mark(&xas, NETFS_BUF_PAGECACHE_MARK);
-+	xas_unlock(&xas);
-+	return xas_error(&xas);
-+}
-+
-+/*
-+ * Create the specified range of folios in the buffer attached to the read
-+ * request.  The folios are marked with NETFS_BUF_PUT_MARK so that we know that
-+ * these need freeing later.
-+ */
-+int netfs_add_folios_to_buffer(struct xarray *buffer,
-+			       struct address_space *mapping,
-+			       pgoff_t index, pgoff_t to, gfp_t gfp_mask)
-+{
-+	struct folio *folio;
-+	int ret;
-+
-+	if (to + 1 == index) /* Page range is inclusive */
-+		return 0;
-+
-+	do {
-+		/* TODO: Figure out what order folio can be allocated here */
-+		folio = filemap_alloc_folio(readahead_gfp_mask(mapping), 0);
-+		if (!folio)
-+			return -ENOMEM;
-+		folio->index = index;
-+		ret = netfs_xa_store_and_mark(buffer, index, folio,
-+					      NETFS_FLAG_PUT_MARK, gfp_mask);
-+		if (ret < 0) {
-+			folio_put(folio);
-+			return ret;
-+		}
-+
-+		index += folio_nr_pages(folio);
-+	} while (index <= to && index != 0);
-+
-+	return 0;
-+}
-+
-+/*
-+ * Clear an xarray buffer, putting a ref on the folios that have
-+ * NETFS_BUF_PUT_MARK set.
-+ */
-+void netfs_clear_buffer(struct xarray *buffer)
-+{
-+	struct folio *folio;
-+	XA_STATE(xas, buffer, 0);
-+
-+	rcu_read_lock();
-+	xas_for_each_marked(&xas, folio, ULONG_MAX, NETFS_BUF_PUT_MARK) {
-+		folio_put(folio);
-+	}
-+	rcu_read_unlock();
-+	xa_destroy(buffer);
-+}
-+
- /**
-  * netfs_dirty_folio - Mark folio dirty and pin a cache object for writeback
-  * @mapping: The mapping the folio belongs to.
+ 	INIT_WORK(&rreq->work, netfs_rreq_work);
+ 
+diff --git a/fs/netfs/objects.c b/fs/netfs/objects.c
+index 4df5e5eeada6..9f3f33c93317 100644
+--- a/fs/netfs/objects.c
++++ b/fs/netfs/objects.c
+@@ -35,12 +35,14 @@ struct netfs_io_request *netfs_alloc_request(struct address_space *mapping,
+ 	rreq->inode	= inode;
+ 	rreq->i_size	= i_size_read(inode);
+ 	rreq->debug_id	= atomic_inc_return(&debug_ids);
++	xa_init(&rreq->bounce);
+ 	INIT_LIST_HEAD(&rreq->subrequests);
+ 	refcount_set(&rreq->ref, 1);
+ 	__set_bit(NETFS_RREQ_IN_PROGRESS, &rreq->flags);
+ 	if (rreq->netfs_ops->init_request) {
+ 		ret = rreq->netfs_ops->init_request(rreq, file);
+ 		if (ret < 0) {
++			xa_destroy(&rreq->bounce);
+ 			kfree(rreq);
+ 			return ERR_PTR(ret);
+ 		}
+@@ -94,6 +96,7 @@ static void netfs_free_request(struct work_struct *work)
+ 		}
+ 		kvfree(rreq->direct_bv);
+ 	}
++	netfs_clear_buffer(&rreq->bounce);
+ 	kfree_rcu(rreq, rcu);
+ 	netfs_stat_d(&netfs_n_rh_rreq);
+ }
 diff --git a/include/linux/netfs.h b/include/linux/netfs.h
-index bbb33ccbf719..c05150f51beb 100644
+index c05150f51beb..8a5b8e7bc358 100644
 --- a/include/linux/netfs.h
 +++ b/include/linux/netfs.h
-@@ -109,6 +109,10 @@ static inline int wait_on_page_fscache_killable(struct page *page)
- 	return folio_wait_private_2_killable(page_folio(page));
- }
+@@ -194,6 +194,7 @@ struct netfs_io_request {
+ 	struct iov_iter		iter;		/* Unencrypted-side iterator */
+ 	struct iov_iter		io_iter;	/* I/O (Encrypted-side) iterator */
+ 	void			*netfs_priv;	/* Private data for the netfs */
++	struct xarray		bounce;		/* Bounce buffer (eg. for crypto/compression) */
+ 	struct bio_vec		*direct_bv	/* DIO buffer list (when handling iovec-iter) */
+ 	__counted_by(direct_bv_count);
+ 	unsigned int		direct_bv_count; /* Number of elements in direct_bv[] */
+@@ -216,6 +217,7 @@ struct netfs_io_request {
+ #define NETFS_RREQ_DONT_UNLOCK_FOLIOS	3	/* Don't unlock the folios on completion */
+ #define NETFS_RREQ_FAILED		4	/* The request failed */
+ #define NETFS_RREQ_IN_PROGRESS		5	/* Unlocked when the request completes */
++#define NETFS_RREQ_USE_BOUNCE_BUFFER	6	/* Use bounce buffer */
+ 	const struct netfs_request_ops *netfs_ops;
+ };
  
-+/* Marks used on xarray-based buffers */
-+#define NETFS_BUF_PUT_MARK	XA_MARK_0	/* - Page needs putting  */
-+#define NETFS_BUF_PAGECACHE_MARK XA_MARK_1	/* - Page needs wb/dirty flag wrangling */
-+
- enum netfs_io_source {
- 	NETFS_FILL_WITH_ZEROES,
- 	NETFS_DOWNLOAD_FROM_SERVER,
 
