@@ -2,129 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6159D811559
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 15:56:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ED2B281155A
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 15:56:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442046AbjLMO40 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 09:56:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48446 "EHLO
+        id S1442012AbjLMO4d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 09:56:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47558 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1442071AbjLMOz7 (ORCPT
+        with ESMTP id S1442004AbjLMO4c (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 09:55:59 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 007B1DD
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 06:56:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1702479365;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=seLSmd4NaxAGKV9tJbzWfT8nVms62NbVrReJ4pEC1u4=;
-        b=KEqEmJj4XjOLl50lZ/YtQ2WdTMP+XfYP/wrNbSpCTfceP7y/0AhzqbN8aLL9BYJc2UHip8
-        8tLnUBSd8G85NT9omOzG1Drp88c7blgmrXVR54J/qMZXD+5+HGqF1qAjDoxkBrWOOyPa2T
-        f+PJUvb5oPqFYw3xKQpr8QbxSltHX/g=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-392-ZSxqZL_JPsm3i3X75yMQ2Q-1; Wed, 13 Dec 2023 09:56:03 -0500
-X-MC-Unique: ZSxqZL_JPsm3i3X75yMQ2Q-1
-Received: by mail-wr1-f70.google.com with SMTP id ffacd0b85a97d-3335231c733so3221300f8f.0
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 06:55:59 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702479358; x=1703084158;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=seLSmd4NaxAGKV9tJbzWfT8nVms62NbVrReJ4pEC1u4=;
-        b=C/nduSMr4A7+XddJ7Hxr1riZ9LYLgRkDhnCBs8ikpmMs6uU1y5OskRmT/iCTTVzF1J
-         gXpnbPa6ctnwemdMTfXRrGqnNstaLyQYMCx11nTrx2luOmcnH+8k3wb7L4LSZbt63tWv
-         QPOF6p9z9jRjK8eLMz7QdiOJTegjjcJ44IislXohzYgC+9zGtC2kp4tA6DMAjokdj7Bu
-         ms7nx6zdnfB59io1umgxhvMiFat5JSmFeKlERIsLksLh9dHWa9rHhh/Gcd7LjxmqzsPA
-         SHjNBDi5Z1t4zymqjYW/9uUQLBpDw3zx7n1h+7bZo12HubOXEaYeXBzzIt3V+cGAlYGy
-         5xdw==
-X-Gm-Message-State: AOJu0Yx9HrKYrzQ5N4y0gWzPIoAJiWwPbi+vJAc1U0bQGKvMLwLDUKW3
-        E8nkonjmIHFE+G6oIRQ08r+KGnQqnRxjWrVjHK8X7MtWOb0/nwQX1VOB+fCvsCmvXBOKm7cPRoJ
-        6aVWLKS8P9/OFpQBdDjYUHiJW
-X-Received: by 2002:a5d:5643:0:b0:336:4196:b861 with SMTP id j3-20020a5d5643000000b003364196b861mr509841wrw.11.1702479358494;
-        Wed, 13 Dec 2023 06:55:58 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IHx9WUns+c31gzuLj/TybdHPWHND+pSU+GNTIKZApMqfbmTpuviAuYQQ6FI/50xHfhicnxj1A==
-X-Received: by 2002:a5d:5643:0:b0:336:4196:b861 with SMTP id j3-20020a5d5643000000b003364196b861mr509819wrw.11.1702479358176;
-        Wed, 13 Dec 2023 06:55:58 -0800 (PST)
-Received: from localhost ([2a01:e0a:b25:f902::ff])
-        by smtp.gmail.com with ESMTPSA id c4-20020adffb44000000b003362d0eefd3sm4125363wrs.20.2023.12.13.06.55.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Dec 2023 06:55:57 -0800 (PST)
-Date:   Wed, 13 Dec 2023 15:55:57 +0100
-From:   Maxime Ripard <mripard@redhat.com>
-To:     Donald Robson <donald.robson@imgtec.com>, nm@ti.com,
-        vigneshr@ti.com, kristo@kernel.org
-Cc:     linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, frank.binns@imgtec.com,
-        matt.coster@imgtec.com, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        catalin.marinas@arm.com, will@kernel.org,
-        quic_bjorande@quicinc.com, geert+renesas@glider.be,
-        konrad.dybcio@linaro.org, arnd@arndb.de, neil.armstrong@linaro.org,
-        dmitry.baryshkov@linaro.org, nfraprado@collabora.com,
-        m.szyprowski@samsung.com, u-kumar1@ti.com, peng.fan@nxp.com
-Subject: Re: [PATCH v2 0/2] Enable PowerVR driver for TI AM62x
-Message-ID: <zq3qtz7rherh2fp2yoe6ail5yvyfkfi46i7fqcbecdagflyj4x@htcfxyhunewx>
-References: <cover.1701773390.git.donald.robson@imgtec.com>
+        Wed, 13 Dec 2023 09:56:32 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A91DF93
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 06:56:38 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 35478C433C8;
+        Wed, 13 Dec 2023 14:56:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1702479398;
+        bh=RbqO8lhLpHDZIavrq3v7GldwAkkZy4gcb11Zs9mg9yQ=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=Hrd+mK15OXrooHgeQnsU/Nu8j0gvSF67u3rJRkr1x7BgKkJsKCMjnx94V7Hxi3Qu1
+         6LpfA/+/pAB1NJcwCRXFVfK8Sn/EMlmLr7IuZEdkl/pARDfRiVsv/FedIrC3RQqBFL
+         7N8ZRtfPmy4b+VvdQoS2RTupHG856iiRvGQbA+Qi2fsFKNWi+6s7VfjS9GqbbGv7x4
+         1znbv5REK8/qZEvQfKI+Im1Q1y8srpTP9g7IFJJFSggyNhOCk3I9n1lfI8IB+Io+7c
+         MOeS8gqCKcwLx+OLmyxMziV0y01viOoBHusbBcFhqUcoSreV/NQanCnypVYYmJ/aB7
+         szsxbI3LQoD3Q==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id B381DCE105C; Wed, 13 Dec 2023 06:56:37 -0800 (PST)
+Date:   Wed, 13 Dec 2023 06:56:37 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     David Sterba <dsterba@suse.cz>
+Cc:     kernel test robot <lkp@intel.com>, llvm@lists.linux.dev,
+        oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Josef Bacik <josef@toxicpanda.com>, julia.lawall@inria.fr,
+        clm@fb.com, dsterba@suse.com, baptiste.lepers@gmail.com
+Subject: Re: [paulmck-rcu:frederic.2023.12.08a 29/37]
+ fs/btrfs/transaction.c:496:6: error: call to '__compiletime_assert_329'
+ declared with 'error' attribute: Need native word sized stores/loads for
+ atomicity.
+Message-ID: <4c814394-6eab-4aca-96af-43f99fb94c01@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <202312091837.cKaPw0Tf-lkp@intel.com>
+ <0487d7cc-b906-4a4a-b284-9c79700b4ede@paulmck-laptop>
+ <20231213125358.GB3001@suse.cz>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="p53zjzgmum7iorxr"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <cover.1701773390.git.donald.robson@imgtec.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+In-Reply-To: <20231213125358.GB3001@suse.cz>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Dec 13, 2023 at 01:53:58PM +0100, David Sterba wrote:
+> On Sat, Dec 09, 2023 at 07:51:30AM -0800, Paul E. McKenney wrote:
+> > On Sat, Dec 09, 2023 at 06:20:37PM +0800, kernel test robot wrote:
+> > > tree:   https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git frederic.2023.12.08a
+> > > head:   37843b5f561a08ae899fb791eeeb5abd992eabe2
+> > > commit: 7dd87072d40809e26503f04b79d63290288dbbac [29/37] btrfs: Adjust ->last_trans ordering in btrfs_record_root_in_trans()
+> > > config: riscv-rv32_defconfig (https://download.01.org/0day-ci/archive/20231209/202312091837.cKaPw0Tf-lkp@intel.com/config)
+> > > compiler: clang version 17.0.0 (https://github.com/llvm/llvm-project.git 4a5ac14ee968ff0ad5d2cc1ffa0299048db4c88a)
+> > > reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231209/202312091837.cKaPw0Tf-lkp@intel.com/reproduce)
+> > > 
+> > > If you fix the issue in a separate patch/commit (i.e. not just a new version of
+> > > the same patch/commit), kindly add following tags
+> > > | Reported-by: kernel test robot <lkp@intel.com>
+> > > | Closes: https://lore.kernel.org/oe-kbuild-all/202312091837.cKaPw0Tf-lkp@intel.com/
+> > > 
+> > > All errors (new ones prefixed by >>):
+> > > 
+> > >    warning: unknown warning option '-Wpacked-not-aligned'; did you mean '-Wpacked-non-pod'? [-Wunknown-warning-option]
+> > >    warning: unknown warning option '-Wstringop-truncation'; did you mean '-Wstring-concatenation'? [-Wunknown-warning-option]
+> > >    warning: unknown warning option '-Wmaybe-uninitialized'; did you mean '-Wuninitialized'? [-Wunknown-warning-option]
+> > > >> fs/btrfs/transaction.c:496:6: error: call to '__compiletime_assert_329' declared with 'error' attribute: Need native word sized stores/loads for atomicity.
+> > >      496 |         if (smp_load_acquire(&root->last_trans) == trans->transid && /* ^^^ */
+> > >          |             ^
+> > 
+> > Ooooh!!!  :-/
+> > 
+> > From what I can see, the current code can tear this load on 32-bit
+> > systems, which can result in bad comparisons and then in failure to wait
+> > for a partially complete transaction.
+> > 
+> > So is btrfs actually supported on 32-bit systems?  If not, would the
+> > following patch be appropriate?
+> 
+> There are limitations on 32bit systems, eg. due to shorter inode numbers
+> (ino_t is unsigned long) and that radix-tree/xarray does support only
+> unsigned long keys, while we have 64bit identifiers for inodes or tree
+> roots.
+> 
+> So far we support that and dropping it completely is I think a big deal,
+> like with any possibly used feature. What I've seen there are NAS boxes
+> with low power ARM that are 32bit.
+> 
+> > If btrfs is to be supported on 32-bit systems, from what I can see some
+> > major surgery is required, even if a 32-bit counter is wrap-safe for
+> > this particular type of transaction.  (But SSDs?  In-memory btrfs
+> > filesystems?)
+> 
+> We won't probably do any major surgery to support 32bit systems.
 
---p53zjzgmum7iorxr
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Got it, and thank you for the background!  My takeaway is that 32-bit
+BTRFS must work in the common case, but might have issues on some
+workloads, for example, running out of inode numbers or load tearing.
 
-Hi Nishanth, Tero, Vignesh,
+> > ------------------------------------------------------------------------
+> > 
+> > diff --git a/fs/btrfs/Kconfig b/fs/btrfs/Kconfig
+> > index 4fb925e8c981..4d56158c34f9 100644
+> > --- a/fs/btrfs/Kconfig
+> > +++ b/fs/btrfs/Kconfig
+> > @@ -19,6 +19,7 @@ config BTRFS_FS
+> >  	select RAID6_PQ
+> >  	select XOR_BLOCKS
+> >  	depends on PAGE_SIZE_LESS_THAN_256KB
+> > +	depends on 64BIT
+> 
+> Can we keep the current inefficient smp_* barriers instead of dropping
+> the whole 32bit support as an alternative. If the smp_load_acquire are
+> better but not strictly necessary for the correctness (from the barriers
+> POV) I'd suggest to leave it as-is. We can put comments in case somebody
+> wants to optimize it in the future again.
 
-On Tue, Dec 05, 2023 at 11:39:31AM +0000, Donald Robson wrote:
-> These patches enable the new open source PowerVR driver for TI AM62x SoCs,
-> currently the only one supported.
->=20
-> Changes since v1:
-> - Added patch 1 for arm64 defconfig (requested by Nishanth Menon)
->=20
-> Donald Robson (1):
->   arm64: defconfig: enable DRM_POWERVR
->=20
-> Sarah Walker (1):
->   arm64: dts: ti: k3-am62-main: Add GPU device node
+We still have the barrier placement issue, given that smp_rmb() enforces
+only the ordering of earlier and later loads, correct?  Or am I missing
+some other ordering constraint that makes all that work?
 
-Any chance we can get that in 6.8?
+But I can make each of the current patch's smp_load_acquire() call instead
+be be a READ_ONCE() followed by an smp_rmb(), the test_bit_acquire()
+call be test_bit() followed by smp_rmb(), and the smp_store_release()
+call be an smp_wmb() followed by a WRITE_ONCE().  This provides the needed
+ordering, bullet-proofs the 64-bit code against compilers, but works on
+32-bit systems.  For example, on a 32-bit system the 64-bit READ_ONCE()
+and WRITE_ONCE() might still be compiled as a pair of 32-bit memory
+accesses, but they will both be guaranteed to be single memory accesses
+on 64-bit systems.
 
-Since the driver will reach 6.8 as well, it would be a bit of a bummer
-to not have it enabled anywhere.
+Would that work for you guys?
 
-Maxime
-
---p53zjzgmum7iorxr
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCZXnF/QAKCRDj7w1vZxhR
-xVqrAQD6EdMWC9m6qFxV3KiMi4/C/MPkTHRdno81R57dNuGj3wD/fwGlEnklNRir
-py8Ke+Q/cAOVgLS+I3Yt6fBTOsjxIgM=
-=LdLH
------END PGP SIGNATURE-----
-
---p53zjzgmum7iorxr--
-
+							Thanx, Paul
