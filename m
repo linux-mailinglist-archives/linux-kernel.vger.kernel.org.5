@@ -2,74 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 25D528122AC
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 00:13:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EC45E8122AD
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 00:14:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234012AbjLMXNh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 18:13:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40754 "EHLO
+        id S234018AbjLMXOK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 18:14:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57480 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229698AbjLMXNg (ORCPT
+        with ESMTP id S229698AbjLMXOJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 18:13:36 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDC59DC
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 15:13:42 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 14A87C433C8;
-        Wed, 13 Dec 2023 23:13:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1702509222;
-        bh=Md24tJ3+Wb3bNcBuVcozhmG9U30jugNyNDfv6aSjv34=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=rhPMeHMMQOTm7QU7wJbze11+WOwek1FnlonvO6rQJqj8BuLk7e4EKqa/aOnd5YUjo
-         J5BkV31id4OdPXqZcUxrGhqCcKrGdnAns7/so+JSp+61Ylc1YCX667pAyvnr5eKVsT
-         TiF0xFpVFUGjQMAn+RuF4joWh1UgsMEoBbvr4shc=
-Date:   Wed, 13 Dec 2023 15:13:41 -0800
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Minchan Kim <minchan@kernel.org>,
-        Yosry Ahmed <yosryahmed@google.com>,
-        "Huang, Ying" <ying.huang@intel.com>,
-        Liu Shixin <liushixin2@huawei.com>,
-        Yu Zhao <yuzhao@google.com>,
-        Sachin Sant <sachinp@linux.ibm.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        Mel Gorman <mgorman@techsingularity.net>
-Subject: Re: [PATCH v10] mm: vmscan: try to reclaim swapcache pages if no
- swap space
-Message-Id: <20231213151341.9ae5fa2bdc266d794a7eed39@linux-foundation.org>
-In-Reply-To: <ZWcPuYzWYAvOODsH@tiehlicka>
-References: <ZV3_6UH28KMt0ZDb@tiehlicka>
-        <87msv58068.fsf@yhuang6-desk2.ccr.corp.intel.com>
-        <ZWDPuR5Ssx07nBHb@tiehlicka>
-        <87h6l77wl5.fsf@yhuang6-desk2.ccr.corp.intel.com>
-        <ZWRdG49vlGzSY_Uj@tiehlicka>
-        <87r0ka64v9.fsf@yhuang6-desk2.ccr.corp.intel.com>
-        <ZWW95JPQ1B0cVPY-@tiehlicka>
-        <ZWZtdQKSSnLC8kZ6@google.com>
-        <CAJD7tkZA2DDk259QHLnkwVqCq=v_4gBKSUV0hos8G+B6n6=rAQ@mail.gmail.com>
-        <ZWZ0fJP9wq65rXtM@google.com>
-        <ZWcPuYzWYAvOODsH@tiehlicka>
-X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        Wed, 13 Dec 2023 18:14:09 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.11])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 882CFE3
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 15:14:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1702509255; x=1734045255;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=2HhgxzypDa5gBJlL3fVXaMJ/guTw/6vPdE6mdWuZ2Og=;
+  b=P8ETsBFpqSONdbiOjsQ9QKDtDrsmOhTOAkCbi81svJeBr4EVnHGZTWYN
+   kLiNmQltrIWDNtCITW+GUgvzZUUEfJSEnaApf5JSIfe/+ze7xCBrA54eX
+   StHPbbXaz03GE10XGX2vl7Bxb6byMw4jvdzf5JGLjnL6c4dLiBxe2eKPb
+   9Fu2tQ4KFUqKz7/pQotzP/Sdb0bfcWsuRM35gZzjPb7CJgcOdOaKj67iP
+   pGMo9oL3MmmU14JzGI4kwpFBLp2DOOUcjfklvhCArZBW6tH3B9qeW/Fqt
+   dKmkd9hxhT1B7Mb/AoxcFoPqut9ukZkgdyYJp6NB4CxT0IJSFwmtu4sxV
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10923"; a="1861556"
+X-IronPort-AV: E=Sophos;i="6.04,274,1695711600"; 
+   d="scan'208";a="1861556"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Dec 2023 15:14:15 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10923"; a="844496106"
+X-IronPort-AV: E=Sophos;i="6.04,274,1695711600"; 
+   d="scan'208";a="844496106"
+Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
+  by fmsmga004.fm.intel.com with ESMTP; 13 Dec 2023 15:14:14 -0800
+Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1rDYQe-000LGx-0I;
+        Wed, 13 Dec 2023 23:14:12 +0000
+Date:   Thu, 14 Dec 2023 07:13:58 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Arun Kumar Neelakantam <aneela@codeaurora.org>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Bjorn Andersson <andersson@kernel.org>
+Subject: drivers/rpmsg/qcom_glink_smem.c:93:17: sparse: sparse: incorrect
+ type in argument 2 (different address spaces)
+Message-ID: <202312140746.AMlosG0F-lkp@intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   5bd7ef53ffe5ca580e93e74eb8c81ed191ddc4bd
+commit: 928002a5e9dab2ddc1a0fe3e00739e89be30dc6b rpmsg: glink: smem: Support rx peak for size less than 4 bytes
+date:   5 years ago
+config: arm-randconfig-r131-20231117 (https://download.01.org/0day-ci/archive/20231214/202312140746.AMlosG0F-lkp@intel.com/config)
+compiler: arm-linux-gnueabi-gcc (GCC) 13.2.0
+reproduce: (https://download.01.org/0day-ci/archive/20231214/202312140746.AMlosG0F-lkp@intel.com/reproduce)
 
-tl;dr, what's the viewpoint on this patch now?
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202312140746.AMlosG0F-lkp@intel.com/
 
-I have a note here that we're hoping input from Johannes, Vlastimil and
-Mel (please).
+sparse warnings: (new ones prefixed by >>)
+>> drivers/rpmsg/qcom_glink_smem.c:93:17: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void const volatile [noderef] __iomem *from @@     got void * @@
+   drivers/rpmsg/qcom_glink_smem.c:93:17: sparse:     expected void const volatile [noderef] __iomem *from
+   drivers/rpmsg/qcom_glink_smem.c:93:17: sparse:     got void *
+>> drivers/rpmsg/qcom_glink_smem.c:96:17: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void const volatile [noderef] __iomem *from @@     got void *fifo @@
+   drivers/rpmsg/qcom_glink_smem.c:96:17: sparse:     expected void const volatile [noderef] __iomem *from
+   drivers/rpmsg/qcom_glink_smem.c:96:17: sparse:     got void *fifo
 
+vim +93 drivers/rpmsg/qcom_glink_smem.c
 
+    78	
+    79	static void glink_smem_rx_peak(struct qcom_glink_pipe *np,
+    80				       void *data, unsigned int offset, size_t count)
+    81	{
+    82		struct glink_smem_pipe *pipe = to_smem_pipe(np);
+    83		size_t len;
+    84		u32 tail;
+    85	
+    86		tail = le32_to_cpu(*pipe->tail);
+    87		tail += offset;
+    88		if (tail >= pipe->native.length)
+    89			tail -= pipe->native.length;
+    90	
+    91		len = min_t(size_t, count, pipe->native.length - tail);
+    92		if (len)
+  > 93			memcpy_fromio(data, pipe->fifo + tail, len);
+    94	
+    95		if (len != count)
+  > 96			memcpy_fromio(data + len, pipe->fifo, (count - len));
+    97	}
+    98	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
