@@ -2,155 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 93099811307
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 14:36:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F11A81130A
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 14:36:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379269AbjLMNgH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 08:36:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46886 "EHLO
+        id S1379273AbjLMNgJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 08:36:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46910 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379264AbjLMNgE (ORCPT
+        with ESMTP id S1379267AbjLMNgG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 08:36:04 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC730E8
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 05:36:10 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D310CC433C7;
-        Wed, 13 Dec 2023 13:36:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1702474570;
-        bh=FKo7DMS2ILBjt3i1R1vfFoKi54X0jPj1QGIZxzVw/k4=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=GZBgwDOY8aC9JG2n44f5T6Xpy/9P4Q5M5cHnhogqs4y2CS4DvUQGX808eF7fk4ALP
-         GYbqznrszsg1NpEWaQMHd7EYaOKMxLBT7eqZZ3VQn9u+GcJVRe7J7lVyfi750iRj3i
-         Qwf0+EBL8vC4qihwH89IRRH/sX++6ahIFlX82UDe45PuYsTJNmHKEn/D9wsbunhRU9
-         cQoxht6wNut+PD92exEr2w8Yks45e5VlzWOdpS2TvMIEAMAVbEUyDe3nngwobTE5ZE
-         lJX/yi2Xby2mfnwekyiyiKmCaJiVeE2p1iazSM8I0YbWmvFS1drZKWo50b2DRMislR
-         kuIUqGobfSZPA==
-Message-ID: <aefdf09b-3836-4f2c-ab12-7757448b9da2@kernel.org>
-Date:   Wed, 13 Dec 2023 15:36:04 +0200
+        Wed, 13 Dec 2023 08:36:06 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7CA5DC;
+        Wed, 13 Dec 2023 05:36:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1702474570; x=1734010570;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=NEtuRYz798pOKaCZjGgcl/J6ODZ0hj92ozwgXCg6Ui0=;
+  b=XdTk2gEk9pM5AuOBhy/TaqmUbuUVM1J/QiwqV/b3E3dNK+1DvbvykoHD
+   ie+cnsiYARFD0/Re77n3pl5XqxNsk6PjH5gbjYE0nFFQ0ZHObJF3GFa5G
+   YiBEgDUOxt7n4NZ425PLnZ9NTVgz8arXIiTBQTBbsBSML/J/JIJII9GTN
+   tHRyhGo0I2kaaolzWAwRVmMwKNZpRLBzy2ZrlXK6c2JpIYSpMvoUv19ws
+   98lblFJDIfDudk8JJeeNcZYr+nXAFqSYvILWXvyCY8iJb/d8HRLh4Ac99
+   hzU5ulMYjB9YGtBGx8mhlHNSUTnza16kWgIO8gsncql7REoNyQX/JXXN1
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10922"; a="8354476"
+X-IronPort-AV: E=Sophos;i="6.04,272,1695711600"; 
+   d="scan'208";a="8354476"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Dec 2023 05:36:10 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10922"; a="750108795"
+X-IronPort-AV: E=Sophos;i="6.04,272,1695711600"; 
+   d="scan'208";a="750108795"
+Received: from kuha.fi.intel.com ([10.237.72.185])
+  by orsmga006.jf.intel.com with SMTP; 13 Dec 2023 05:36:06 -0800
+Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Wed, 13 Dec 2023 15:36:05 +0200
+Date:   Wed, 13 Dec 2023 15:36:05 +0200
+From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
+To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        linux-usb@vger.kernel.org
+Subject: Re: [PATCH] usb: typec: Remove usage of the deprecated
+ ida_simple_xx() API
+Message-ID: <ZXmzRWDHsBwvUL7v@kuha.fi.intel.com>
+References: <c7b99c4f52649ce6405779fbf9170edc5633fdbb.1702229697.git.christophe.jaillet@wanadoo.fr>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 2/2] interconnect: qcom: Add SM6115 interconnect
- provider driver
-Content-Language: en-US
-To:     Rob Herring <robh+dt@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
-        Konrad Dybcio <konradybcio@kernel.org>
-References: <20231125-topic-6115icc-v3-0-bd8907b8cfd7@linaro.org>
- <20231125-topic-6115icc-v3-2-bd8907b8cfd7@linaro.org>
- <CAL_Jsq+FNYS-Ue1NQgDW_0D_NgONfsJj4Q-nzFWHHXpm0Ka=_Q@mail.gmail.com>
-From:   Georgi Djakov <djakov@kernel.org>
-In-Reply-To: <CAL_Jsq+FNYS-Ue1NQgDW_0D_NgONfsJj4Q-nzFWHHXpm0Ka=_Q@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <c7b99c4f52649ce6405779fbf9170edc5633fdbb.1702229697.git.christophe.jaillet@wanadoo.fr>
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11.12.23 19:55, Rob Herring wrote:
-> On Wed, Nov 29, 2023 at 8:41 AM Konrad Dybcio <konrad.dybcio@linaro.org> wrote:
->>
->> Add a driver for managing NoC providers on SM6115.
->>
->> Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
->> ---
->>   drivers/interconnect/qcom/Kconfig  |    9 +
->>   drivers/interconnect/qcom/Makefile |    2 +
->>   drivers/interconnect/qcom/sm6115.c | 1427 ++++++++++++++++++++++++++++++++++++
->>   3 files changed, 1438 insertions(+)
->>
->> diff --git a/drivers/interconnect/qcom/Kconfig b/drivers/interconnect/qcom/Kconfig
->> index 4d15ce2dab16..697f96c49f6f 100644
->> --- a/drivers/interconnect/qcom/Kconfig
->> +++ b/drivers/interconnect/qcom/Kconfig
->> @@ -191,6 +191,15 @@ config INTERCONNECT_QCOM_SDX75
->>            This is a driver for the Qualcomm Network-on-Chip on sdx75-based
->>            platforms.
->>
->> +config INTERCONNECT_QCOM_SM6115
->> +       tristate "Qualcomm SM6115 interconnect driver"
->> +       depends on INTERCONNECT_QCOM
->> +       depends on QCOM_SMD_RPM
->> +       select INTERCONNECT_QCOM_SMD_RPM
->> +       help
->> +         This is a driver for the Qualcomm Network-on-Chip on sm6115-based
->> +         platforms.
->> +
->>   config INTERCONNECT_QCOM_SM6350
->>          tristate "Qualcomm SM6350 interconnect driver"
->>          depends on INTERCONNECT_QCOM_RPMH_POSSIBLE
->> diff --git a/drivers/interconnect/qcom/Makefile b/drivers/interconnect/qcom/Makefile
->> index 3a8a6ef67543..704846165022 100644
->> --- a/drivers/interconnect/qcom/Makefile
->> +++ b/drivers/interconnect/qcom/Makefile
->> @@ -24,6 +24,7 @@ qnoc-sdm845-objs                      := sdm845.o
->>   qnoc-sdx55-objs                                := sdx55.o
->>   qnoc-sdx65-objs                                := sdx65.o
->>   qnoc-sdx75-objs                                := sdx75.o
->> +qnoc-sm6115-objs                       := sm6115.o
->>   qnoc-sm6350-objs                       := sm6350.o
->>   qnoc-sm8150-objs                       := sm8150.o
->>   qnoc-sm8250-objs                       := sm8250.o
->> @@ -55,6 +56,7 @@ obj-$(CONFIG_INTERCONNECT_QCOM_SDM845) += qnoc-sdm845.o
->>   obj-$(CONFIG_INTERCONNECT_QCOM_SDX55) += qnoc-sdx55.o
->>   obj-$(CONFIG_INTERCONNECT_QCOM_SDX65) += qnoc-sdx65.o
->>   obj-$(CONFIG_INTERCONNECT_QCOM_SDX75) += qnoc-sdx75.o
->> +obj-$(CONFIG_INTERCONNECT_QCOM_SM6115) += qnoc-sm6115.o
->>   obj-$(CONFIG_INTERCONNECT_QCOM_SM6350) += qnoc-sm6350.o
->>   obj-$(CONFIG_INTERCONNECT_QCOM_SM8150) += qnoc-sm8150.o
->>   obj-$(CONFIG_INTERCONNECT_QCOM_SM8250) += qnoc-sm8250.o
->> diff --git a/drivers/interconnect/qcom/sm6115.c b/drivers/interconnect/qcom/sm6115.c
->> new file mode 100644
->> index 000000000000..c49a83c87739
->> --- /dev/null
->> +++ b/drivers/interconnect/qcom/sm6115.c
->> @@ -0,0 +1,1427 @@
->> +// SPDX-License-Identifier: GPL-2.0-only
->> +/*
->> + * Copyright (c) 2021, The Linux Foundation. All rights reserved.
->> + * Copyright (c) 2022, Qualcomm Innovation Center, Inc. All rights reserved.
->> + * Copyright (c) 2023, Linaro Limited
->> + */
->> +
->> +#include <dt-bindings/interconnect/qcom,sm6115.h>
->> +#include <linux/clk.h>
->> +#include <linux/device.h>
->> +#include <linux/interconnect-provider.h>
->> +#include <linux/io.h>
->> +#include <linux/module.h>
->> +#include <linux/of_device.h>
+On Sun, Dec 10, 2023 at 06:36:15PM +0100, Christophe JAILLET wrote:
+> ida_alloc() and ida_free() should be preferred to the deprecated
+> ida_simple_get() and ida_simple_remove().
 > 
-> You probably don't need this header and the implicit includes it makes
-> are dropped now in linux-next. Please check what you actually need and
-> make them explicit.
+> This is less verbose.
 > 
->> +#include <linux/of_platform.h>
+> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+
+Acked-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+
+> ---
+>  drivers/usb/typec/class.c | 8 ++++----
+>  drivers/usb/typec/pd.c    | 4 ++--
+>  2 files changed, 6 insertions(+), 6 deletions(-)
 > 
-> Also probably not needed. Please double check.
-> 
-> Rob
+> diff --git a/drivers/usb/typec/class.c b/drivers/usb/typec/class.c
+> index 16a670828dde..5fe01bf795b9 100644
+> --- a/drivers/usb/typec/class.c
+> +++ b/drivers/usb/typec/class.c
+> @@ -476,7 +476,7 @@ static int altmode_id_get(struct device *dev)
+>  	else
+>  		ids = &to_typec_port(dev)->mode_ids;
+>  
+> -	return ida_simple_get(ids, 0, 0, GFP_KERNEL);
+> +	return ida_alloc(ids, GFP_KERNEL);
+>  }
+>  
+>  static void altmode_id_remove(struct device *dev, int id)
+> @@ -490,7 +490,7 @@ static void altmode_id_remove(struct device *dev, int id)
+>  	else
+>  		ids = &to_typec_port(dev)->mode_ids;
+>  
+> -	ida_simple_remove(ids, id);
+> +	ida_free(ids, id);
+>  }
+>  
+>  static void typec_altmode_release(struct device *dev)
+> @@ -1798,7 +1798,7 @@ static void typec_release(struct device *dev)
+>  {
+>  	struct typec_port *port = to_typec_port(dev);
+>  
+> -	ida_simple_remove(&typec_index_ida, port->id);
+> +	ida_free(&typec_index_ida, port->id);
+>  	ida_destroy(&port->mode_ids);
+>  	typec_switch_put(port->sw);
+>  	typec_mux_put(port->mux);
+> @@ -2297,7 +2297,7 @@ struct typec_port *typec_register_port(struct device *parent,
+>  	if (!port)
+>  		return ERR_PTR(-ENOMEM);
+>  
+> -	id = ida_simple_get(&typec_index_ida, 0, 0, GFP_KERNEL);
+> +	id = ida_alloc(&typec_index_ida, GFP_KERNEL);
+>  	if (id < 0) {
+>  		kfree(port);
+>  		return ERR_PTR(id);
+> diff --git a/drivers/usb/typec/pd.c b/drivers/usb/typec/pd.c
+> index 85d015cdbe1f..7f3d61f220f2 100644
+> --- a/drivers/usb/typec/pd.c
+> +++ b/drivers/usb/typec/pd.c
+> @@ -571,7 +571,7 @@ static void pd_release(struct device *dev)
+>  {
+>  	struct usb_power_delivery *pd = to_usb_power_delivery(dev);
+>  
+> -	ida_simple_remove(&pd_ida, pd->id);
+> +	ida_free(&pd_ida, pd->id);
+>  	kfree(pd);
+>  }
+>  
+> @@ -616,7 +616,7 @@ usb_power_delivery_register(struct device *parent, struct usb_power_delivery_des
+>  	if (!pd)
+>  		return ERR_PTR(-ENOMEM);
+>  
+> -	ret = ida_simple_get(&pd_ida, 0, 0, GFP_KERNEL);
+> +	ret = ida_alloc(&pd_ida, GFP_KERNEL);
+>  	if (ret < 0) {
+>  		kfree(pd);
+>  		return ERR_PTR(ret);
+> -- 
+> 2.34.1
 
-Yes, these are not needed. But we will need to include mod_devicetable.h
-for struct of_device_id. Now i notice also that other headers like clk.h
-io.h and slab.h are not really needed here as well.
-
-Konrad, could you please submit a follow-up patch to fix this?
-
-Thanks,
-Georgi
-
-
+-- 
+heikki
