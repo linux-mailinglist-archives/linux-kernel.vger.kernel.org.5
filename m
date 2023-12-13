@@ -2,71 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 092C6810A06
+	by mail.lfdr.de (Postfix) with ESMTP id B299E810A09
 	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 07:14:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378546AbjLMGML (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 01:12:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34056 "EHLO
+        id S1378552AbjLMGMr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 01:12:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54002 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229637AbjLMGMK (ORCPT
+        with ESMTP id S229637AbjLMGMr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 01:12:10 -0500
-Received: from mail-vs1-xe2e.google.com (mail-vs1-xe2e.google.com [IPv6:2607:f8b0:4864:20::e2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 720309A
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 22:12:16 -0800 (PST)
-Received: by mail-vs1-xe2e.google.com with SMTP id ada2fe7eead31-4649d22b78aso3670749137.0
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 22:12:16 -0800 (PST)
+        Wed, 13 Dec 2023 01:12:47 -0500
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EB47E8
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 22:12:52 -0800 (PST)
+Received: by mail-lf1-x132.google.com with SMTP id 2adb3069b0e04-50bf3efe2cbso7492512e87.2
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 22:12:52 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1702447935; x=1703052735; darn=vger.kernel.org;
+        d=ionos.com; s=google; t=1702447970; x=1703052770; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=2e7SuwWSkPy5d+O+99K5FQ0FXWBJpq2eT9M5oPNmEik=;
-        b=eQblFENhNu1WbJ1VPLysgfryBo0hlKC0LnBYeDDL9C2WoYRnKYFIPVsscESUeSmOoI
-         WqSoLf89mGd69gB4lFG5Y7TfxU9A4cy8ztDjAssTWkP/K8Q39kzoeGMpeOnM/vWzIus/
-         of0kvBshE51tByVFI4Zj5S5zszfvX2KWA/t2xBW4/qV7mXVNDuAgdKLuruuexu2JQqNR
-         jPGcjAkA9Fgv5E5SLmxd3hRVG331QhxjU1KFXGf5fdl/Vw/3Ii1LGVXEsFk4PxR3wgxj
-         LwWa7JGxnCxGc3a+GFQcFwnkfQT0mRh6qpksRR2RspZrnVe3kay/5AUfzUbSZ0Bn2I4k
-         /SLw==
+        bh=TTT65wA8EIe8/ctM3MiQnQZOYGeIHXCjEWPQ3P2f/hI=;
+        b=BfbtAoANjXTKCvTkJlLv61ykeu1JCwqw6kmcJuk3RJYnEWVt77F5gKl3QEjb2wfbNf
+         6xUx7vudnhtyctjcPInjWAGy+cC6/vyJfVUh6rZzHqeTd1mCdeDG/69LyThhm55TqwYZ
+         HoshbOITQZEpMt6lyf7GiWmo4eD5WdOCJPYMIP6AZoT4otyihhnk2nQW4BXdE5lmLOn+
+         sbjm4UKtBHm2LGuI9o6fwPbJljbDMS/+OHIuDFXMeQycgutVEcQlfxCEvidMyN7BmnOG
+         H0O7ZaWee/FbFgBQRsVj0p6eQ/GAGT+TmpjpxnaG5eAC35/qHHYK/j/lxMkv8YAjGxmo
+         5BwQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702447935; x=1703052735;
+        d=1e100.net; s=20230601; t=1702447970; x=1703052770;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=2e7SuwWSkPy5d+O+99K5FQ0FXWBJpq2eT9M5oPNmEik=;
-        b=ctFO4OksJGX+kDrqoeqOTcW569cPoSr7QECHLhEGg13P4MxUJn17vcjJGu2XAyPjih
-         Z5wn6wcJ8EggJGtpNcEo+9YokZZRPrkQzX2VrKFH4S4FoTpmT0Uprs8tUaWITvwdj9rm
-         paUZeZr0wLeWg73DKuPH18Rw3ybUWr1+A9vhkzxH5KlJ5HvqUE+gG0bJpg6QZTdFDp0Z
-         pXqmHmLHG0hhMwQVPN7A+lIEd0C3eHPeRe0JlOu1NHFxaYw1AkjUea16is5OpqCd0fGI
-         CiUFV0S3CxhUXCg3XIFq8HoGKTr2NlMsEP7fegUt+41TPg+xyzDnOErm8pPWnT+OBPZg
-         W2zw==
-X-Gm-Message-State: AOJu0YznA3QkiH+/t19cvsDaGyzVyjiju6+/DP31Q5NsQgGqXrDLPpBE
-        TP/I7+ToHx7RG8znTzAPCDENmB03HEx+s7EvyB3koA==
-X-Google-Smtp-Source: AGHT+IERYbh4u2SMTvwZfr1Ma3Voh9+wFrLovJl22BLO3gSoCKuEYxExiPzH4V+h+9ENf+T+rbjMEApN2MFVsruDW8A=
-X-Received: by 2002:a05:6102:6cf:b0:465:f182:c312 with SMTP id
- m15-20020a05610206cf00b00465f182c312mr5390083vsg.28.1702447935424; Tue, 12
- Dec 2023 22:12:15 -0800 (PST)
+        bh=TTT65wA8EIe8/ctM3MiQnQZOYGeIHXCjEWPQ3P2f/hI=;
+        b=ZlGEfgnHuFzj6JyxsEuR0PFIEVe8HqD8C144Jr/K0QG4ZHF/uVifPwmwuOwTTG2PJp
+         aFGSXRMhvkkdPUmvjLRproxOqaoW5TlqhEYXxxN0lmzdeW7oqQLQY3fbifQPhk8v4/A+
+         ZGpPcpfXYJnHWs+JH2kzyzCbl1X2v5astgHjfLqg2Kc6525o3cZhHwcZiyFZaCd3L6Bt
+         I/QPg5xoc4EcUzV4oP5aF/kj0D6ywIgw4LA27IytnWXAdhImr/YlKOFre3/NGVCKJPa0
+         53Rdjo6qkkSKP+fznlraZ5YPgjvcAwOrBFSnM+nRHH+Cqp8eRJTeeu4mWum0PgS145s+
+         s8tA==
+X-Gm-Message-State: AOJu0YxEvPLXVaHRn9bPs8psOn1J00+WD96zcw6CsiqWrnEQmhG9gUi6
+        jKNlRa6y7gIZB6UjCmp9pLHGol1K/SV/dF0G98twxZ1YJEJeS2xb
+X-Google-Smtp-Source: AGHT+IEcUkNKCZHN8Bp4pT2kYElut7LoUcMXapFH67UcXjx4Ss1cRjj6euMSoOvv2uED2517MvQNOWxGhcxjsF9Ez5E=
+X-Received: by 2002:ac2:5fd1:0:b0:50d:ddc:806f with SMTP id
+ q17-20020ac25fd1000000b0050d0ddc806fmr1310071lfg.279.1702447970612; Tue, 12
+ Dec 2023 22:12:50 -0800 (PST)
 MIME-Version: 1.0
-References: <20231212120210.556388977@linuxfoundation.org>
-In-Reply-To: <20231212120210.556388977@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Wed, 13 Dec 2023 11:42:04 +0530
-Message-ID: <CA+G9fYupTF+iuBxQ_dZadnVcjMaMZDDnVXDp_pYKs-LUqWPSsg@mail.gmail.com>
-Subject: Re: [PATCH 5.15 000/139] 5.15.143-rc2 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
-        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, f.fainelli@gmail.com,
-        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
-        conor@kernel.org, allen.lkml@gmail.com
+References: <20231212214738.work.169-kees@kernel.org>
+In-Reply-To: <20231212214738.work.169-kees@kernel.org>
+From:   Jinpu Wang <jinpu.wang@ionos.com>
+Date:   Wed, 13 Dec 2023 07:12:39 +0100
+Message-ID: <CAMGffEn3eUhMb-RO5eq8gtSqrF3rtf7rEjZAf1XQ6S-goifVZg@mail.gmail.com>
+Subject: Re: [PATCH] block/rnbd-srv: Check for unlikely string overflow
+To:     Kees Cook <keescook@chromium.org>
+Cc:     "Md. Haris Iqbal" <haris.iqbal@ionos.com>,
+        kernel test robot <lkp@intel.com>,
+        Jens Axboe <axboe@kernel.dk>, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -74,171 +71,93 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 12 Dec 2023 at 17:35, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
+On Tue, Dec 12, 2023 at 10:47=E2=80=AFPM Kees Cook <keescook@chromium.org> =
+wrote:
 >
-> This is the start of the stable review cycle for the 5.15.143 release.
-> There are 139 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+> Since "dev_search_path" can technically be as large as PATH_MAX,
+> there was a risk of truncation when copying it and a second string
+> into "full_path" since it was also PATH_MAX sized. The W=3D1 builds were
+> reporting this warning:
 >
-> Responses should be made by Thu, 14 Dec 2023 12:01:32 +0000.
-> Anything received after that time might be too late.
+> drivers/block/rnbd/rnbd-srv.c: In function 'process_msg_open.isra':
+> drivers/block/rnbd/rnbd-srv.c:616:51: warning: '%s' directive output may =
+be truncated writing up to 254 bytes into a region of size between 0 and 40=
+95 [-Wformat-truncation=3D]
+>   616 |                 snprintf(full_path, PATH_MAX, "%s/%s",
+>       |                                                   ^~
+> In function 'rnbd_srv_get_full_path',
+>     inlined from 'process_msg_open.isra' at drivers/block/rnbd/rnbd-srv.c=
+:721:14: drivers/block/rnbd/rnbd-srv.c:616:17: note: 'snprintf' output betw=
+een 2 and 4351 bytes into a destination of size 4096
+>   616 |                 snprintf(full_path, PATH_MAX, "%s/%s",
+>       |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>   617 |                          dev_search_path, dev_name);
+>       |                          ~~~~~~~~~~~~~~~~~~~~~~~~~~
 >
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
-5.15.143-rc2.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-5.15.y
-> and the diffstat can be found below.
+> To fix this, unconditionally check for truncation (as was already done
+> for the case where "%SESSNAME%" was present).
 >
-> thanks,
+> Reported-by: kernel test robot <lkp@intel.com>
+> Closes: https://lore.kernel.org/oe-kbuild-all/202312100355.lHoJPgKy-lkp@i=
+ntel.com/
+> Cc: "Md. Haris Iqbal" <haris.iqbal@ionos.com>
+> Cc: Jack Wang <jinpu.wang@ionos.com>
+> Cc: Jens Axboe <axboe@kernel.dk>
+> Cc: linux-block@vger.kernel.org
+> Signed-off-by: Kees Cook <keescook@chromium.org>
+lgtm.
+Acked-by: Jack Wang <jinpu.wang@ionos.com>
+> ---
+>  drivers/block/rnbd/rnbd-srv.c | 19 ++++++++++---------
+>  1 file changed, 10 insertions(+), 9 deletions(-)
 >
-> greg k-h
-
-
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
-
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
-
-## Build
-* kernel: 5.15.143-rc2
-* git: https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc
-* git branch: linux-5.15.y
-* git commit: 58ec986ace5fb848c4bef206a848b461883867e7
-* git describe: v5.15.142-140-g58ec986ace5f
-* test details:
-https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.15.y/build/v5.15=
-.142-140-g58ec986ace5f
-
-## Test Regressions (compared to v5.15.142)
-
-## Metric Regressions (compared to v5.15.142)
-
-## Test Fixes (compared to v5.15.142)
-
-## Metric Fixes (compared to v5.15.142)
-
-## Test result summary
-total: 95978, pass: 75790, fail: 2770, skip: 17353, xfail: 65
-
-## Build Summary
-* arc: 5 total, 5 passed, 0 failed
-* arm: 117 total, 117 passed, 0 failed
-* arm64: 44 total, 44 passed, 0 failed
-* i386: 34 total, 34 passed, 0 failed
-* mips: 24 total, 24 passed, 0 failed
-* parisc: 4 total, 4 passed, 0 failed
-* powerpc: 26 total, 26 passed, 0 failed
-* riscv: 11 total, 11 passed, 0 failed
-* s390: 11 total, 11 passed, 0 failed
-* sh: 10 total, 10 passed, 0 failed
-* sparc: 8 total, 8 passed, 0 failed
-* x86_64: 38 total, 38 passed, 0 failed
-
-## Test suites summary
-* boot
-* kselftest-android
-* kselftest-arm64
-* kselftest-breakpoints
-* kselftest-capabilities
-* kselftest-cgroup
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-cpufreq
-* kselftest-drivers-dma-buf
-* kselftest-efivarfs
-* kselftest-exec
-* kselftest-filesystems
-* kselftest-filesystems-binderfs
-* kselftest-filesystems-epoll
-* kselftest-firmware
-* kselftest-fpu
-* kselftest-ftrace
-* kselftest-futex
-* kselftest-gpio
-* kselftest-intel_pstate
-* kselftest-ipc
-* kselftest-ir
-* kselftest-kcmp
-* kselftest-kexec
-* kselftest-kvm
-* kselftest-lib
-* kselftest-membarrier
-* kselftest-memfd
-* kselftest-memory-hotplug
-* kselftest-mincore
-* kselftest-mount
-* kselftest-mqueue
-* kselftest-net
-* kselftest-net-forwarding
-* kselftest-net-mptcp
-* kselftest-netfilter
-* kselftest-nsfs
-* kselftest-openat2
-* kselftest-pid_namespace
-* kselftest-pidfd
-* kselftest-proc
-* kselftest-pstore
-* kselftest-ptrace
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-seccomp
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-splice
-* kselftest-static_keys
-* kselftest-sync
-* kselftest-sysctl
-* kselftest-tc-testing
-* kselftest-timens
-* kselftest-timers
-* kselftest-tmpfs
-* kselftest-tpm2
-* kselftest-user
-* kselftest-user_events
-* kselftest-vDSO
-* kselftest-vm
-* kselftest-watchdog
-* kselftest-x86
-* kselftest-zram
-* kunit
-* libgpiod
-* log-parser-boot
-* log-parser-test
-* ltp-cap_bounds
-* ltp-commands
-* ltp-containers
-* ltp-controllers
-* ltp-cpuhotplug
-* ltp-crypto
-* ltp-cve
-* ltp-dio
-* ltp-fcntl-locktests
-* ltp-filecaps
-* ltp-fs
-* ltp-fs_bind
-* ltp-fs_perms_simple
-* ltp-fsx
-* ltp-hugetlb
-* ltp-io
-* ltp-ipc
-* ltp-math
-* ltp-mm
-* ltp-nptl
-* ltp-pty
-* ltp-sched
-* ltp-securebits
-* ltp-smoke
-* ltp-syscalls
-* ltp-tracing
-* perf
-* rcutorture
-* v4l2-compliance
-
---
-Linaro LKFT
-https://lkft.linaro.org
+> diff --git a/drivers/block/rnbd/rnbd-srv.c b/drivers/block/rnbd/rnbd-srv.=
+c
+> index 65de51f3dfd9..ab78eab97d98 100644
+> --- a/drivers/block/rnbd/rnbd-srv.c
+> +++ b/drivers/block/rnbd/rnbd-srv.c
+> @@ -585,6 +585,7 @@ static char *rnbd_srv_get_full_path(struct rnbd_srv_s=
+ession *srv_sess,
+>  {
+>         char *full_path;
+>         char *a, *b;
+> +       int len;
+>
+>         full_path =3D kmalloc(PATH_MAX, GFP_KERNEL);
+>         if (!full_path)
+> @@ -596,19 +597,19 @@ static char *rnbd_srv_get_full_path(struct rnbd_srv=
+_session *srv_sess,
+>          */
+>         a =3D strnstr(dev_search_path, "%SESSNAME%", sizeof(dev_search_pa=
+th));
+>         if (a) {
+> -               int len =3D a - dev_search_path;
+> +               len =3D a - dev_search_path;
+>
+>                 len =3D snprintf(full_path, PATH_MAX, "%.*s/%s/%s", len,
+>                                dev_search_path, srv_sess->sessname, dev_n=
+ame);
+> -               if (len >=3D PATH_MAX) {
+> -                       pr_err("Too long path: %s, %s, %s\n",
+> -                              dev_search_path, srv_sess->sessname, dev_n=
+ame);
+> -                       kfree(full_path);
+> -                       return ERR_PTR(-EINVAL);
+> -               }
+>         } else {
+> -               snprintf(full_path, PATH_MAX, "%s/%s",
+> -                        dev_search_path, dev_name);
+> +               len =3D snprintf(full_path, PATH_MAX, "%s/%s",
+> +                              dev_search_path, dev_name);
+> +       }
+> +       if (len >=3D PATH_MAX) {
+> +               pr_err("Too long path: %s, %s, %s\n",
+> +                      dev_search_path, srv_sess->sessname, dev_name);
+> +               kfree(full_path);
+> +               return ERR_PTR(-EINVAL);
+>         }
+>
+>         /* eliminitate duplicated slashes */
+> --
+> 2.34.1
+>
