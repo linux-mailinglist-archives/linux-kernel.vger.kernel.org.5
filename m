@@ -2,199 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 07A37810F51
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 12:03:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D7F6C810F4D
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 12:03:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378582AbjLMLDK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 06:03:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41292 "EHLO
+        id S1378565AbjLMLCv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 06:02:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37462 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378487AbjLMLDG (ORCPT
+        with ESMTP id S1378473AbjLMLCs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 06:03:06 -0500
-Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A3D8114;
-        Wed, 13 Dec 2023 03:03:09 -0800 (PST)
-Received: from pps.filterd (m0246630.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3BD9SuhL027205;
-        Wed, 13 Dec 2023 11:02:45 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
- subject : to : cc : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=corp-2023-11-20;
- bh=txg7IFCNhytUg6AFTZ5BYk/sP5P8Aoy3yZJTQgunc8I=;
- b=cywEsdc9mozO0N1jzMaxc1elB1mZJ96jsVaezhdG/iDAgEG4dQP89tA59nBgDifE7KvE
- sFjYH21xBk4FLV3vajSWj2vMmiYIGQZvjAY7HhFeZT/XiGtVESlRGd7Iq2HXfEngaaJg
- 9a78NO+oB6R4jUmocClzejzTJ2aeXPU1pp/pEB2gA3jkPvPJ2kbW+72AgbHeqrMOdbfI
- z3fLJP4dfzxXotWsi84jePD/X4dQv9YdK785oTZIucsRIVSH/Sst28Cknb5EMgQmA7KT
- ZBBzkb9NQDF7UeiiELXAYuqc6UyyhrMCd4SAH4gjcA2LSHqH5h/n6eWxdFwGYczkNXtP JQ== 
-Received: from phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta03.appoci.oracle.com [138.1.37.129])
-        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3uwgn3p756-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 13 Dec 2023 11:02:45 +0000
-Received: from pps.filterd (phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-        by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 3BD9oUUP012849;
-        Wed, 13 Dec 2023 11:02:44 GMT
-Received: from nam10-dm6-obe.outbound.protection.outlook.com (mail-dm6nam10lp2100.outbound.protection.outlook.com [104.47.58.100])
-        by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3uvep83e2m-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 13 Dec 2023 11:02:44 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=WnzIHZRFKSfiTRGaXE+Qv8P7D15Xtdd3dz/F88/QqHcCjs7S2HXkCSH4VKy273sEALHNYWnEHYLivtIAeCiB6b/api1+ekw5tvYZrMA7WgceW1OCmXSC73M5RA2MeSc7ifH63t8M3p0zIfqw1jzyN9E5s+a0sDCPNXpi2PUTDer9XO2wAf0U1vYNY+G0/whHCZTa+VnS9n/xAZlCAQOYdG6rIKfPhTMUgpQPicXrIdhNimNLDTgmpWrWYJnkx0/FTlj9CeuaG7hrNbNRMDY9RZiv0ULilZsg1H9DFikknkKDD06opWmZ/HSLuap7x5emwSnpbs+mtXIpJWeJbK75Sw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=txg7IFCNhytUg6AFTZ5BYk/sP5P8Aoy3yZJTQgunc8I=;
- b=SbbOFSx0xXtPyyoZJNX0Eh/+eb1bKehoQqTsGl4lVNrAs8wFzA4zYfkBOMWMpZSlq/ON1OJsJhIXvgHLxokSVbNo6ZBbnAXNKVZM1qs6IFMJspdy6lTSJI55cCw+KfE+dxHz7NmDMdOPrmWQP29NwsYsMiJi9PVaoP++7ur/GzweZPmLIj5s/MpkMKk4SdBTa1BKOqHzqLhl2coVvWzVQWA4R0P2y6ZIMJHuzTHy2CdzCZQUVyyUuovEtFWPfPhDwqod4a0bX15BLC5/1a6I7hiXZ72VTx6djvbiFMokjXehgNa40C2wcu1+tMLtXe2qZJK+Kkay8bssuO4Ssy33MA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=txg7IFCNhytUg6AFTZ5BYk/sP5P8Aoy3yZJTQgunc8I=;
- b=SAYU2TQLijspYhJJjBKWZDPeWivSWBU1JFbD9/KuolGB7BMyBi8O2PomQikbZrCcEMNqhHhaamItYirlVRolBn+qs+huLYviXOUPtwuWPWv80WOU+f3HAEApdC0eliABIJWlHrkx0wT+Ouh+mOgTaASEWvNIuhXBtOVLKwWR43E=
-Received: from DM6PR10MB4313.namprd10.prod.outlook.com (2603:10b6:5:212::20)
- by BLAPR10MB4913.namprd10.prod.outlook.com (2603:10b6:208:307::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7091.26; Wed, 13 Dec
- 2023 11:02:41 +0000
-Received: from DM6PR10MB4313.namprd10.prod.outlook.com
- ([fe80::102a:f31:30c6:3187]) by DM6PR10MB4313.namprd10.prod.outlook.com
- ([fe80::102a:f31:30c6:3187%4]) with mapi id 15.20.7091.022; Wed, 13 Dec 2023
- 11:02:41 +0000
-Message-ID: <bb7c50da-1ee2-4ba1-9f54-8e98dff14b6d@oracle.com>
-Date:   Wed, 13 Dec 2023 11:02:36 +0000
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 03/16] fs/bdev: Add atomic write support info to statx
-To:     Jan Kara <jack@suse.cz>
-Cc:     axboe@kernel.dk, kbusch@kernel.org, hch@lst.de, sagi@grimberg.me,
-        jejb@linux.ibm.com, martin.petersen@oracle.com, djwong@kernel.org,
-        viro@zeniv.linux.org.uk, brauner@kernel.org, dchinner@redhat.com,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-nvme@lists.infradead.org, linux-xfs@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, tytso@mit.edu, jbongio@google.com,
-        linux-scsi@vger.kernel.org, ming.lei@redhat.com,
-        jaswin@linux.ibm.com, bvanassche@acm.org,
-        Prasad Singamsetty <prasad.singamsetty@oracle.com>
-References: <20231212110844.19698-1-john.g.garry@oracle.com>
- <20231212110844.19698-4-john.g.garry@oracle.com>
- <20231213102401.epkxytqq7e5lskw2@quack3>
-Content-Language: en-US
-From:   John Garry <john.g.garry@oracle.com>
-Organization: Oracle Corporation
-In-Reply-To: <20231213102401.epkxytqq7e5lskw2@quack3>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: LO2P265CA0100.GBRP265.PROD.OUTLOOK.COM
- (2603:10a6:600:c::16) To DM6PR10MB4313.namprd10.prod.outlook.com
- (2603:10b6:5:212::20)
+        Wed, 13 Dec 2023 06:02:48 -0500
+Received: from mout01.posteo.de (mout01.posteo.de [185.67.36.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D50B1B0
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 03:02:53 -0800 (PST)
+Received: from submission (posteo.de [185.67.36.169]) 
+        by mout01.posteo.de (Postfix) with ESMTPS id 7A8AD24002A
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 12:02:50 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=posteo.net; s=2017;
+        t=1702465370; bh=Xn11GfJCgZ19WHONmDGEs0lStFSo2QPNdFNP92RVqOI=;
+        h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:
+         Content-Disposition:From;
+        b=ovI9kRR2zf5MQRLepWAGGopPB4nh3rSpYbdIODMHFOiG+VpcqnXOBOMM2OMiG8BHb
+         eoO7hy3BFmHIEtBKk8eBYk1pKrywfomYk0kvXDVXPAePZ3u5nL2ZiPaR2SNk8hIQRj
+         sUppfBzC+meUzPCXDg6nOIJQ9AJ0ivoPEPJuuqq4dsLkJBs9iLoP0CCbRyLoNwrplU
+         imUajjGn02yKz9wQPVmPbBzjUorFxA6w02gio3tRta3Ot13rkcOF/m5fTE0SJ6GkU5
+         XcoBVDVcmrj3/spVZ1LHgh+tdrxLO1PPK9PIGYpJ7lx/lDS17wtL0pPctY49JV2kfa
+         vf3FpySCoZn8Q==
+Received: from customer (localhost [127.0.0.1])
+        by submission (posteo.de) with ESMTPSA id 4SqsyW26CGz6tvr;
+        Wed, 13 Dec 2023 12:02:42 +0100 (CET)
+Date:   Wed, 13 Dec 2023 11:02:39 +0000
+From:   Anne Macedo <retpolanne@posteo.net>
+To:     Andre Przywara <andre.przywara@arm.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Samuel Holland <samuel@sholland.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "moderated list:ARM/Allwinner sunXi SoC support" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "open list:ARM/Allwinner sunXi SoC support" 
+        <linux-sunxi@lists.linux.dev>,
+        open list <linux-kernel@vger.kernel.org>,
+        Corentin Labbe <clabbe@baylibre.com>
+Subject: Re: [PATCH] arm64: dts: allwinner: Orange Pi One Plus PHY support
+Message-ID: <ceuoq3xxgb5kkel7e7wqpslcg7h6dde3wgdqhyo7jgop6owovk@5a76ks5fiun4>
+References: <20231212122835.10850-2-retpolanne@posteo.net>
+ <20231212162200.10b3868b@donnerap.manchester.arm.com>
+ <axsvii25yrknfae6gdreti7lcskoscsdbsujwuispiieimsbdy@gwzm4l7mwlew>
+ <20231213013544.2fc7e0d1@minigeek.lan>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM6PR10MB4313:EE_|BLAPR10MB4913:EE_
-X-MS-Office365-Filtering-Correlation-Id: 35942ec9-4eab-47a2-38f7-08dbfbcb06a8
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: yCEy6y7RGebXcsmPXaDV7iMj/PJleD3mi3dEZsk2D7PbvjNlPr34P0sjYlqpkt7iYRGUL4WM1OqzMRPgovSo6zhZv+16lTUfRePAn/U5/RSrijf8cE8u+SgrtNif9Uw9aCdKXlyVd1vOoRwNd/d4jSHzzyhNartuyaUTS0aVk7n6aJkNHyTzdwKeixmn1Xk6WMcXqMBDbIU89mn+OK+fStbiPxjn95sy9+NPuTr4nYJeByn5VceU+R/aTyEj9Q8eB5dqgn33kDIorPNrSjZeXFD3Fs5Sq3gsJStsM/rQ0L/W7BN7s4cRXAmyeOs/lQCfHyM/f0bd7VWN1AjTr+G86iRRF0Q+yInuX/k5ZR/N8c5HdPSWfe9A4C6BYAeGZc6JY6WwESerh8EGMz1+bJkCmj+ODMtSKDgrkoAdxs7yLS/pOogocuUHNpIW/TKIaqGf8QRIXFR3LYpiKGPY565MjKrhjn3oXkziBxX/bVeMeeGUv/JvPfYSX0hs000sL5fmHrIWEc/kMupkbHbC20uRzWXGQlVFqGcKN2FSUJADRRex8x8mjJq3nPHyayeJ/ibS0zC0tmnQoYXqQwo36et2OZ+KjwTF6RbtojDR6ZWLAXkdJ9w8o0ytcLaV3eruEK9RSg+RC5Eiljh6tfdMya0oSA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR10MB4313.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(396003)(136003)(39860400002)(346002)(376002)(230922051799003)(64100799003)(1800799012)(451199024)(186009)(31686004)(31696002)(86362001)(36756003)(2616005)(66946007)(6666004)(36916002)(6512007)(6506007)(53546011)(41300700001)(66556008)(6486002)(26005)(38100700002)(107886003)(83380400001)(5660300002)(7416002)(4744005)(2906002)(8676002)(66476007)(478600001)(4326008)(8936002)(6916009)(316002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?eEZEdmVDSXlMeGRvSVJzK2ZQN3RaQXFmeFF2UXltSEp0WTZrRWxIbld2VTBv?=
- =?utf-8?B?cHJaRzRyeGtyS3VWK2dyZDV0WTF5NWRranB4YmYvQ203TU01c0JWNjlxaS9s?=
- =?utf-8?B?aVRlQi9ReUFJT1BvTUVMbWNqTjA5L1E5aXZsNW5KQ21sbVZIVmtqbjVTYU9z?=
- =?utf-8?B?dGlnb3FYT3VENlVPc1ExbjRUSnpzQitLb2d1Syt4V1p2aXZaQ0pIeUhoQzhk?=
- =?utf-8?B?OWNqMEdTbjNjaVAwc0xnK3FVVjgxWWxUUWRyenpiMGVSb0hIVW5OMTZaT1pD?=
- =?utf-8?B?Wk5Wakl1U3JldFVzcnlaS3hEODlQdTRDaTQxS1VXUHV3WjV3K3RjV05LTm5z?=
- =?utf-8?B?SE9tZXYwZUF4M0FBaHY3M3NJV2VURFI4bEpURW9PVko5SnR4SEJ5Snlubzlx?=
- =?utf-8?B?R1h0UmVvQzlMcE1vNVhkV0hOUDBlVmJFVk1TRWNZWUZvZmIvSFNYZDdtZ2dE?=
- =?utf-8?B?TnhXZU9weUpPRkRJdGlnWk1CWnh4NDU5cEYrQ28rWExVTkZJa2dHNFdvVkdF?=
- =?utf-8?B?RU8wMEM0UXZJKzA4UnFWVyt6YXhBZ3JvOE5wR3cwTTZBNXNyK1B0eERYayt3?=
- =?utf-8?B?enBadHJxOUNKZkpUSlF4M2htSWJ5MDA5enBCeDczbENsS1c1RVJ6TVdibXRy?=
- =?utf-8?B?a0NBV2xrNzMwQ2VNUlM0emt2c091OTdWbXRxSGxsbDFxZmRTTW9TTHY3bGh0?=
- =?utf-8?B?NUN1blBjbWdtL25jczdXY0wxRFVFcXQ5QjFDaGZRdmdoUnNZNExTZ0plQkFP?=
- =?utf-8?B?ekRrcFRHVkRZZytzT2oyS0lJdWgzRm1VWHhoR0ZPM0ZYbEZPZ1Zabm5oRUVH?=
- =?utf-8?B?a0YxK0JNbGkvei8rZkpvVDRRREpGRzY5aGtnQ1E0NlNYR05yRHdDYk1uenZh?=
- =?utf-8?B?T1JmVldCQ2ltL0ZlY3E3VERZdmwxSjFtZXNiZmY5QjFUK0RNdk45NkVZaHg3?=
- =?utf-8?B?SkVLKytjbitBdElVZ1F5YWNNNGVtWkEyOG5zN2g3aFQ2NXlaWlRkRUNjQUQx?=
- =?utf-8?B?Mm9JdWwrVnNMcGFsYTQyL1hFclhBNDAwS0ZQdWdCY1JmS1cxTHVMSENrNm1B?=
- =?utf-8?B?THZkTzJ3dC8zdWx3Y0YzNXJVOXBVU3VvNWN2RXA2Q2ZzZTlYZHBrN0VmRTVB?=
- =?utf-8?B?cW5QUUZqSXYvRXYzVkpueGd2NVhsVTc4aVdFNUVzcStHS2VsZ2MwMW5KL0xR?=
- =?utf-8?B?RFRNb1pXRWpmcmJMdkwvOTJuZ2VWZ3NCWWNoSDF5UXl2RHZTUzBjSFMxT0R1?=
- =?utf-8?B?Nkd6NW1VVFNHMDMveGZwbDZuZTVSa0xLSnBuZXBqOWdPWk83ZnpxbUpScTNK?=
- =?utf-8?B?Z3lsUnQ2TS9acXNHRVdlU3Y0dzd0YjBNRkJzUXVCYmNiaXdEaFM1WWVoL1dE?=
- =?utf-8?B?VmU5U0xIQzBGS2FJc2VpUWlBenU5eWZERll4Y0JaQ1c1Mm1QcFZESmFkRnlH?=
- =?utf-8?B?ZTZ6STJacUhSZDlTaENrcjd6RFNVbVpaQmkyTFpvUFd0SFBtYlBTK0EyZi8v?=
- =?utf-8?B?akVVYTBjWGkyRFVaYmY4ZVJFQTE5d0E3SWU4KzlmckJqa3BkaUtqSkMwM3B1?=
- =?utf-8?B?MEpjK29sQVdwVmQxcWtERENOME0zQ2lKOXhRcUtVeWpSbmliRTBoUnRQZnV2?=
- =?utf-8?B?WmFrQjlkZklNdDREUTVCSzljdVRYLzJGOHIreWIxVnNveXR5NHN4bVhuNitw?=
- =?utf-8?B?ZmozTFZEbGp1STl4Zml1SXplRWdWdHhlNzlqVnV5bmdJajJtU3l6L045U2xy?=
- =?utf-8?B?UWFYRVE1NkFObHEwczJyc2s0aHFoWUtPN1ZES2JyWHozMjM0M2JJd2hLUThq?=
- =?utf-8?B?ckVFSi93V0RmRnBUQjNPSys3bzZOU3JWQWVXRzVweEJiSnYxekpOQ0lSOUp0?=
- =?utf-8?B?cGZtUlVnZXRaMklOdHo5ejFNbEN5MVduc1VpR01VdGJJemFuMmhtUE1nZ1d5?=
- =?utf-8?B?dTZ6T3VqUFVEeUJNcDZ2ODNpY3RnQ1QwNHVFc3hVRmpYZFBtamV0QWkvRmdF?=
- =?utf-8?B?Um00K3EwM1lqOUx1VW5XMUlCclU0ZDFlUjdlaHhON3VoNUtXd252aEFGSjFn?=
- =?utf-8?B?TVFhM2lqRnRydGZvZzhRdzlyK3NsSzJoa3B4dmxPK3Q1YTJoVi9WNFZHcDZp?=
- =?utf-8?B?VndrTGJKTmZCUkg0eHUrSXh6ZFZDb1ZFemwya2ttY2pDTUNMZlFycU5PL056?=
- =?utf-8?B?cUE9PQ==?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: G50WKIcq7S+U4eoFTItgck1+T7VA+IXzEBfzsORlx43i2yRuYGXTEsBf2/ytUrDHWlykBOU+X4YSxyHut75fBl9PEPjQYdyEMkYpGf3skglLIjfQMFI5dxF8t5FQsJ7uT6dRhcYTlG/4HgeAfUefVCOUsdSmXXRuN6ao7qf/4b7Xo7EUBL3nKvYyidU3pQ2UshL7Gqlj27M7us+YnOaEQMwh7Dqi7dxG33y6Z4ONTdAcPxN+1yRY4/xjXJOblYHDQZVX2YK3yHCo3JKPv168l5lTk26Mn22atkLGpBqsD4B6XSgzQSl15r/EvGpI53iQTKiF1iY9pU6o6Hb4OzMKF41KSxU/52goYkFYB7ffTm68DF4DmT5O2ispPVf5g1Ule9Vm5M5/YBDcIbVnOjCCaXRd8e3xtJ7IissS41TnDjLu+PGJ/k3BZmKO43BzG2Tlcz6nzcqS4pqdyrNdiLTMhDeCCW2MP1LfqGH43CnUKYyhxsGUh7Fma/G2UAUjWFxdcS1teyNfMM2NMyzwgq31qFU/bUTlMc7TSAzg8G3IoW/ZTu/Ofo7Hk/7TiswxNRFKVt7csSKsTCxl3U8ewE0HuiwT5v1BkzMxTXjOb5Gi3tw=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 35942ec9-4eab-47a2-38f7-08dbfbcb06a8
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR10MB4313.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Dec 2023 11:02:41.3732
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 5OEQz0COXdZE/QX+PqkkxBdFbtBsEgg1TgiidC/wwzmuSDwsQc3bqSXFB3/E/FwTvw0SO10Fh16DdPTttUEuLw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BLAPR10MB4913
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-13_03,2023-12-13_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 bulkscore=0 spamscore=0
- mlxscore=0 adultscore=0 phishscore=0 malwarescore=0 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311290000
- definitions=main-2312130080
-X-Proofpoint-ORIG-GUID: gOqRUzekoNiOu0SKRpLtide7sHxJficy
-X-Proofpoint-GUID: gOqRUzekoNiOu0SKRpLtide7sHxJficy
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231213013544.2fc7e0d1@minigeek.lan>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 13/12/2023 10:24, Jan Kara wrote:
->> Signed-off-by: Prasad Singamsetty<prasad.singamsetty@oracle.com>
->> Signed-off-by: John Garry<john.g.garry@oracle.com>
-> Just some nits below.
+On Wed, Dec 13, 2023 at 01:35:44AM +0000, Andre Przywara wrote:
+> On Tue, 12 Dec 2023 19:27:14 +0000
+> Anne Macedo <retpolanne@posteo.net> wrote:
 > 
->> +#define BDEV_STATX_SUPPORTED_MSK (STATX_DIOALIGN | STATX_WRITE_ATOMIC)
->                                  ^^^
-> 				I believe saving one letter here is not
-> really beneficial so just spell out MASK here...
-
-ok
-
+> Hi Anne,
 > 
->>   /*
->> - * Handle STATX_DIOALIGN for block devices.
->> - *
->> - * Note that the inode passed to this is the inode of a block device node file,
->> - * not the block device's internal inode.  Therefore it is*not*  valid to use
->> - * I_BDEV() here; the block device has to be looked up by i_rdev instead.
->> + * Handle STATX_{DIOALIGN, WRITE_ATOMIC} for block devices.
->>    */
-> Please keep "Note ..." from the above comment (or you can move the note in
-> front of blkdev_get_no_open() if you want).
+> > On Tue, Dec 12, 2023 at 04:22:00PM +0000, Andre Przywara wrote:
+> > > On Tue, 12 Dec 2023 12:28:30 +0000
+> > > Anne Macedo <retpolanne@posteo.net> wrote:
+> > > 
+> > > Hi Anne,
+> > >   
+> > > > Adds compatible values to mdio subnodes for Ethernet PHY representing
+> > > > Realtek 8211 PHY to Orange Pi One Plus.  
+> > > 
+> > > So can you state why this would be needed? This is the RTL8211 ID,  
+> > 
+> > Apologies, I completely forgot to include some context. 
+> > 
+> > > right? Which should be autodetected via MDIO. Looking back in my inbox
+> > > you proposed this change before, for U-Boot, specifically, but I fail to
+> > > find a solution or explanation what really happens here. Two Renesas .dts
+> > > files have the same compatible, and the commit message talks about the
+> > > reset line there, is this related?
+> > > 
+> > > So can you please give some more background and explanation? That would be
+> > > part of a good commit message anyway ("why", not "what").  
+> > 
+> > Should I resend the commit with a more meaningful explanation? The
+> > context is the following:
+> > 
+> > currently, ethernet doesn't seem to work on both u-boot and Linux on the
+> > Orange Pi One Plus board. 
+> > 
+> > On the kernel, this error shows up:
+> > 
+> > Configuring network interfaces... [    5.992589] dwmac-sun8i 5020000.ethernet eth0: Register MEM_TYPE_PAGE_POOL RxQ-0
+> > [    6.000823] dwmac-sun8i 5020000.ethernet eth0: __stmmac_open: Cannot attach to PHY (error: -19)
+> > 
+> > After applying this fix, the PHY gets attached: 
+> > 
+> > Configuring network interfaces... [    6.060020] dwmac-sun8i 5020000.ethernet eth0: Register MEM_TYPE_PAGE_POOL RxQ-0
+> > [    6.069460] dwmac-sun8i 5020000.ethernet eth0: PHY [stmmac-0:01] driver [RTL8211E Gigabit Ethernet] (irq=POLL)
+> > 
+> > The previous compatible list that had ethernet-phy-ieee802.3-c22 fails
+> > to find a PHY, so this patch includes the correct PHY ID with the
+> > RTL8211 ID. 
+> > 
+> > The behaviour is described on [1].
+> 
+> So this is all an observation, but no real explanation, isn't it?
 
-ok, fine, I think that moving it to in front of blkdev_get_no_open() may 
-be best.
+I've made some analysis on [3] on this bug, but it was based solely on
+u-boot. I was having trouble with the regulator and on u-boot nothing
+would trigger the GPIO PD6 and the vcc-gmac-3v3 regulator, so the NIC
+was completely dead. Next I did an analysis based on [2] because the
+u-boot PHY initialization was flaky.
 
-Thanks,
-John
+> To cite [1]: "If the PHY reports an incorrect ID (or none at all) ...".
+> I am pretty sure this is not the case here, instead we are looking at
+> some missing platform bits, like a missing clock, reset, or most likely
+> regulator. Or one of the existing resources is wrongly assigned or
 
+As I mentioned, PHY initialization is flaky on u-boot, so maybe that
+assumption is correct. 
 
+> configured? If the PHY is not (yet?) powered correctly when the code
+> does the auto-detection via the MDIO bus, then the initialisation would
+
+If I recall correctly (I don't know if I kept it in my notes :c), that
+could be the case. regulator-boot-on makes the NIC work (LEDs blink, at
+least) but it doesn't get initialized. 
+
+> fail. But since it works when overriding the auto-detection, I feel
+> like we are papering over something here.
+> Do you have the schematics for this board? I can only find the one for
+> the Orange Pi Plus 2E, and I don't know how similar those two are. This
+> shows *two* regulators, but both are activated by the same GPIO.
+
+I do. It's available on [4]
+
+> It would also be interesting to see if any of Corentin's work for the
+> Orange Pi 3 helps here?
+
+Adding [5] for reference here, thanks! Will check it out. 
+> 
+> Cheers,
+> Andre
+> 
+
+[3] https://blog.retpolanne.com/hardware/embedded/2023/07/07/embedded-phy.html
+[4] https://linux-sunxi.org/images/7/7c/OrangePi_OnePlus_Schematics_v2.0.pdf
+[5] https://lore.kernel.org/netdev/20220509074857.195302-1-clabbe@baylibre.com/
+
+Regards, Anne
