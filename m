@@ -2,223 +2,254 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A7B2E811A85
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 18:12:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 286DA811A89
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 18:13:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233706AbjLMRMr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 12:12:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35288 "EHLO
+        id S233717AbjLMRNT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 12:13:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57702 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233669AbjLMRMq (ORCPT
+        with ESMTP id S230353AbjLMRNR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 12:12:46 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D900D0
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 09:12:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1702487573; x=1734023573;
-  h=date:from:to:cc:subject:message-id;
-  bh=5ghHmNBIbK4XMPh8B1adO8bJwnS9I92sb7OpHcXUmJg=;
-  b=HupNRpmdacUN/72hb+IwSGklC7uuL2OIXMnFyUgAjfmEYRyQq+v0jthr
-   ITp3Z2B5TbVNeUfmbwWYckFwQuqbiWVHRZltDyJSgaqKIkSyYRwluS4Qg
-   3KYYpBfPdIhi2nHxvnB7j9GMyTAzdhhPzGhTWmlz9sA4WVrpGwqednSEn
-   hqLaRpa68XC9qHccvdxZiySSyzaHMEE3Xcfyg9ZqoFw4nryTryefgkGuy
-   rys32BrMcOYguTFjdNkKelqvSPEgy/YUQzP7vN7W2FoDD/QNZxSHVMG9B
-   nrPi3RaHmiyZTSTfyMsYVstoLFIhsWsaX5g1arCYOflJXxM/S/0AHSkSw
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10923"; a="2080898"
-X-IronPort-AV: E=Sophos;i="6.04,273,1695711600"; 
-   d="scan'208";a="2080898"
-Received: from orviesa002.jf.intel.com ([10.64.159.142])
-  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Dec 2023 09:12:52 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.04,273,1695711600"; 
-   d="scan'208";a="15499683"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by orviesa002.jf.intel.com with ESMTP; 13 Dec 2023 09:12:51 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1rDSmu-000Kv4-1X;
-        Wed, 13 Dec 2023 17:12:48 +0000
-Date:   Thu, 14 Dec 2023 01:12:46 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:x86/tdx] BUILD SUCCESS
- cb8eb06d50fcf4a478813a612f68c38cca45c742
-Message-ID: <202312140144.Y1hkTcbD-lkp@intel.com>
-User-Agent: s-nail v14.9.24
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        Wed, 13 Dec 2023 12:13:17 -0500
+Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE848F5
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 09:13:22 -0800 (PST)
+Received: by mail-lj1-x231.google.com with SMTP id 38308e7fff4ca-2c9fe0b5b28so92493931fa.1
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 09:13:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1702487601; x=1703092401; darn=vger.kernel.org;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Bfr047CJmFVYGyC6u7HATirhSSdF2uxrBFBr8iqJs6o=;
+        b=AmbZDJpHYhU4OvPXu9KSJqIKTl82+fTkcT/ivzcVCHbe9h/8GxsL5EnU6Yn4j/gvSH
+         IRCV+R4bIDHi/mRg4S225QsmW/nVfh6f3i+VSLjwGkiXrMwApgbOj2T3dtvOUeTWVe/d
+         ZfCiu6aAjGn/c+3mUwdLsD4IrLJgIszYtUYphALNypo+qD3wHBF9rlmes2Ll/3TOXHDy
+         a+mqqEVMM/ZTmIngP9a/v9h+sDFAQ+KsxCZzyuAUjQPYnLjtRhiilnNMMS4atCBlMciO
+         TKMVGdt2cZ5YlrPpr+7zhkYQ7WA+I1lCkaclKAk85vS6ZkZDOrFQ+ERTPRy54b43NsJo
+         udbg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702487601; x=1703092401;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Bfr047CJmFVYGyC6u7HATirhSSdF2uxrBFBr8iqJs6o=;
+        b=PFiabOycI+RTM6qvso9RWn++VGyGnR8+/h9+qNeMv5MtWkFsdg/GlaUULTPOZWCEkF
+         XmwkSyYZ6ZqT4knxEkP1XKj768DvMlnke4XQKUG8wXmHebMurGURWuQqHMuNHelB9HRa
+         Rm65fHDiOmDRHeqeIang8WtKDh/oQi+7+UGMcsyOq5mmNaskrMRy9Ol5bQx0pvKTg1+r
+         S5PytNsDC3i3/sL97F5Ccrc0qT5JVNnYBMLcIwGXM6ddpwKFXojMq8QBCL1fSI2G6TKw
+         wpIll+/ROlBMq1UXJLwko1cRzkKDxN+B/hkN9UMRpndO2m1kn+ZF9Bak+/VCUpe0lK4J
+         GKsg==
+X-Gm-Message-State: AOJu0Ywj0KPcX7l3RML2CWRmQlKtOgJo03oiYJMmktC+pDTthn7SyefP
+        7OLGO0X9IsP81ynhjxLw6ikmlA==
+X-Google-Smtp-Source: AGHT+IHuvsNhveoE2ssuyookqE7k5MmOVDDPQahe1zDiITRQQdSxUcbASrzK4jWKuAjqrJqfaZUrzw==
+X-Received: by 2002:a2e:ab18:0:b0:2cc:219d:d42 with SMTP id ce24-20020a2eab18000000b002cc219d0d42mr4850151ljb.104.1702487600810;
+        Wed, 13 Dec 2023 09:13:20 -0800 (PST)
+Received: from arrakeen.starnux.net ([2a01:e0a:982:cbb0:52eb:f6ff:feb3:451a])
+        by smtp.gmail.com with ESMTPSA id fs27-20020a05600c3f9b00b0040b36050f1bsm20711039wmb.44.2023.12.13.09.13.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Dec 2023 09:13:20 -0800 (PST)
+From:   Neil Armstrong <neil.armstrong@linaro.org>
+Subject: [PATCH v13 0/4] Input: add initial support for Goodix Berlin
+ touchscreen IC
+Date:   Wed, 13 Dec 2023 18:13:14 +0100
+Message-Id: <20231213-topic-goodix-berlin-upstream-initial-v13-0-5d7a26a5eaa2@linaro.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIACrmeWUC/53TwW7DIAwA0F+pch6TTSDATvuPaQcgpkXqkoqkV
+ aeq/z6nh7UTl6xHLPRsbHxpJiqZpuZtc2kKnfKUx4EP2L5smrjzw5ZE7jnQSJAtdNCJeTzkKLb
+ j2OezCFT2eRDHwzQX8l8iD3nOfi+Cd4YsRZtUbJgKfiIRih/ijrHhuN9z8FAo5fMt+ccnn3d5m
+ sfyfavlhEv0n1lPKEAoD0ZhsJ5S/87XfBlfx7Jtlgwn+YwqWZVd4McQkgOq1PYZtWU1gTYmku8
+ NuEpVz6iKVXDKRGVdIDSVqu+qBVyp6kU1TmrpWq1dW6ndXXUoV6odq0FRTF65FFw9LfOrIsBa1
+ bDKpTKISZO1lWof1XalallFgzwIBEl9V6nuQZVr++oWtU3cBGsN6lpFeGTXFos8LWEtUZSkMUK
+ o3ft6Ia5fr2W/dFSGnAETof4HeF8wlODWusuGkU/JU9DcDv3HvV6vP5EPwGanBAAA
+To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        linux-input@vger.kernel.org
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Bastien Nocera <hadess@hadess.net>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Henrik Rydberg <rydberg@bitmath.org>,
+        Jeff LaBundy <jeff@labundy.com>, linux-arm-msm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Rob Herring <robh@kernel.org>
+X-Mailer: b4 0.12.4
+X-Developer-Signature: v=1; a=openpgp-sha256; l=6485;
+ i=neil.armstrong@linaro.org; h=from:subject:message-id;
+ bh=pU9H2UHzkCsD41LinXb2qliV6+2X2qipa6vZEOGJNVE=;
+ b=owEBbQKS/ZANAwAKAXfc29rIyEnRAcsmYgBleeYtmjdcpa4AmucGIHTpOVbLW/j/nWiGfglkR5zU
+ HFueerqJAjMEAAEKAB0WIQQ9U8YmyFYF/h30LIt33NvayMhJ0QUCZXnmLQAKCRB33NvayMhJ0RzhD/
+ wIcEUsR/4zpgij23fVG/KkaD9Yv5Ia2LELulabiLA6S0EXq9fxQ6LzVDQX1yq7lUetNBG1+kdYLkfv
+ N15xgMsuf+H9IO5o6jzOW4OqfJYfNfiXg0wlV/A3o7pEKkSEY22CIqp5cP20M7BOp97HhXpMYA2fBS
+ 7zSEgzSekUaKScym8M8BsdhthZUE6iKfr/4l0zS0LcggPEk+Y/TmjLIJH5WAd+emBFgCcWKE9W0hU8
+ PGC/mUs0JzMa63hehO2fnU4guWcPQckBE6DffJoaWQLKuK3mtGTwjiQHeEIEvSKTcbFRJzjuATYd21
+ N1zUuW1fOR/xvnBSFSlmwaDCjjh9Ooy99G62FTqQX1t8csHBrBqZoZ0XdGwKD6C6WdMMyCaJWe4810
+ 1nBBwL0y3cIRLcWGhGD0NJZBrMqALaITgjt9TRe3puXCw9yh9QOZqYKXOZrDlXhgw2+YHaRHE67JEH
+ n+8jzU9Z02FiJa1F6FDMlNUs9PcboCNBocneUeIbKtF7p+Xh8KdMfp3VDKrDdglbsrukeDplpX34Tm
+ RPD9uK2JgfwesOyYayAtrz2ngdeXujdjzM5Yu9NKZOTFyZX351K+KwsfTDEdzbuARLpPky36HHmq3y
+ WFGDrJOj8/2JFvrleduwiEwpH5YA68RIQCc8cKbtWPdYlAqSBA9WnOynJBEw==
+X-Developer-Key: i=neil.armstrong@linaro.org; a=openpgp;
+ fpr=89EC3D058446217450F22848169AB7B1A4CFF8AE
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/tdx
-branch HEAD: cb8eb06d50fcf4a478813a612f68c38cca45c742  x86/virt/tdx: Disable TDX host support when kexec is enabled
+These touchscreen ICs support SPI, I2C and I3C interface, up to
+10 finger touch, stylus and gestures events.
 
-elapsed time: 1459m
+This initial driver is derived from the Goodix goodix_ts_berlin
+available at [1] and [2] and only supports the GT9916 IC
+present on the Qualcomm SM8550/SM8650 MTP & QRD touch panel.
 
-configs tested: 147
-configs skipped: 1
+The current implementation only supports BerlinD, aka GT9916.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+Support for advanced features like:
+- Firmware & config update
+- Stylus events
+- Gestures events
+- Previous revisions support (BerlinA or BerlinB)
+is not included in current version.
 
-tested configs:
-alpha                             allnoconfig   gcc  
-alpha                            allyesconfig   gcc  
-alpha                               defconfig   gcc  
-arc                              allmodconfig   gcc  
-arc                               allnoconfig   gcc  
-arc                              allyesconfig   gcc  
-arc                                 defconfig   gcc  
-arc                     nsimosci_hs_defconfig   gcc  
-arc                   randconfig-001-20231213   gcc  
-arc                   randconfig-002-20231213   gcc  
-arm                              allmodconfig   gcc  
-arm                               allnoconfig   gcc  
-arm                              allyesconfig   gcc  
-arm                         bcm2835_defconfig   clang
-arm                                 defconfig   clang
-arm                   randconfig-001-20231213   clang
-arm                   randconfig-002-20231213   clang
-arm                   randconfig-003-20231213   clang
-arm                   randconfig-004-20231213   clang
-arm                        shmobile_defconfig   gcc  
-arm64                            allmodconfig   clang
-arm64                             allnoconfig   gcc  
-arm64                               defconfig   gcc  
-arm64                 randconfig-001-20231213   clang
-arm64                 randconfig-002-20231213   clang
-arm64                 randconfig-003-20231213   clang
-arm64                 randconfig-004-20231213   clang
-csky                             allmodconfig   gcc  
-csky                              allnoconfig   gcc  
-csky                             allyesconfig   gcc  
-csky                                defconfig   gcc  
-csky                  randconfig-001-20231213   gcc  
-csky                  randconfig-002-20231213   gcc  
-hexagon                          allmodconfig   clang
-hexagon                           allnoconfig   clang
-hexagon                          allyesconfig   clang
-hexagon                             defconfig   clang
-hexagon               randconfig-001-20231213   clang
-hexagon               randconfig-002-20231213   clang
-i386                             allmodconfig   clang
-i386                              allnoconfig   clang
-i386                             allyesconfig   clang
-i386                                defconfig   gcc  
-loongarch                        allmodconfig   gcc  
-loongarch                         allnoconfig   gcc  
-loongarch                           defconfig   gcc  
-loongarch             randconfig-001-20231213   gcc  
-loongarch             randconfig-002-20231213   gcc  
-m68k                             allmodconfig   gcc  
-m68k                              allnoconfig   gcc  
-m68k                             allyesconfig   gcc  
-m68k                                defconfig   gcc  
-m68k                       m5249evb_defconfig   gcc  
-m68k                          multi_defconfig   gcc  
-microblaze                       allmodconfig   gcc  
-microblaze                        allnoconfig   gcc  
-microblaze                       allyesconfig   gcc  
-microblaze                          defconfig   gcc  
-mips                              allnoconfig   clang
-mips                             allyesconfig   gcc  
-mips                     cu1000-neo_defconfig   clang
-mips                     cu1830-neo_defconfig   clang
-mips                 decstation_r4k_defconfig   gcc  
-nios2                            allmodconfig   gcc  
-nios2                             allnoconfig   gcc  
-nios2                            allyesconfig   gcc  
-nios2                               defconfig   gcc  
-nios2                 randconfig-001-20231213   gcc  
-nios2                 randconfig-002-20231213   gcc  
-openrisc                          allnoconfig   gcc  
-openrisc                         allyesconfig   gcc  
-parisc                           allmodconfig   gcc  
-parisc                            allnoconfig   gcc  
-parisc                           allyesconfig   gcc  
-parisc                randconfig-001-20231213   gcc  
-parisc                randconfig-002-20231213   gcc  
-powerpc                          allmodconfig   clang
-powerpc                          allyesconfig   clang
-powerpc                     asp8347_defconfig   gcc  
-powerpc                          g5_defconfig   clang
-powerpc                 mpc836x_rdk_defconfig   clang
-powerpc                      ppc6xx_defconfig   gcc  
-powerpc               randconfig-001-20231213   clang
-powerpc               randconfig-002-20231213   clang
-powerpc               randconfig-003-20231213   clang
-powerpc                    sam440ep_defconfig   gcc  
-powerpc64             randconfig-001-20231213   clang
-powerpc64             randconfig-002-20231213   clang
-powerpc64             randconfig-003-20231213   clang
-riscv                            allmodconfig   gcc  
-riscv                            allyesconfig   gcc  
-riscv                 randconfig-001-20231213   clang
-riscv                 randconfig-002-20231213   clang
-riscv                          rv32_defconfig   clang
-s390                             allmodconfig   gcc  
-s390                             allyesconfig   gcc  
-s390                          debug_defconfig   gcc  
-s390                  randconfig-001-20231213   gcc  
-s390                  randconfig-002-20231213   gcc  
-sh                               allmodconfig   gcc  
-sh                               allyesconfig   gcc  
-sh                         apsh4a3a_defconfig   gcc  
-sh                    randconfig-001-20231213   gcc  
-sh                    randconfig-002-20231213   gcc  
-sh                            titan_defconfig   gcc  
-sparc                            allmodconfig   gcc  
-sparc64                          allmodconfig   gcc  
-sparc64                          allyesconfig   gcc  
-sparc64               randconfig-001-20231213   gcc  
-sparc64               randconfig-002-20231213   gcc  
-um                               allmodconfig   clang
-um                               allyesconfig   clang
-um                    randconfig-001-20231213   clang
-um                    randconfig-002-20231213   clang
-x86_64                            allnoconfig   gcc  
-x86_64                           allyesconfig   clang
-x86_64       buildonly-randconfig-001-20231213   clang
-x86_64       buildonly-randconfig-002-20231213   clang
-x86_64       buildonly-randconfig-003-20231213   clang
-x86_64       buildonly-randconfig-004-20231213   clang
-x86_64       buildonly-randconfig-005-20231213   clang
-x86_64       buildonly-randconfig-006-20231213   clang
-x86_64                              defconfig   gcc  
-x86_64                                  kexec   gcc  
-x86_64                randconfig-001-20231213   gcc  
-x86_64                randconfig-002-20231213   gcc  
-x86_64                randconfig-003-20231213   gcc  
-x86_64                randconfig-004-20231213   gcc  
-x86_64                randconfig-005-20231213   gcc  
-x86_64                randconfig-006-20231213   gcc  
-x86_64                randconfig-011-20231213   clang
-x86_64                randconfig-012-20231213   clang
-x86_64                randconfig-013-20231213   clang
-x86_64                randconfig-014-20231213   clang
-x86_64                randconfig-015-20231213   clang
-x86_64                randconfig-016-20231213   clang
-x86_64                randconfig-071-20231213   clang
-x86_64                randconfig-072-20231213   clang
-x86_64                randconfig-073-20231213   clang
-x86_64                randconfig-074-20231213   clang
-x86_64                randconfig-075-20231213   clang
-x86_64                randconfig-076-20231213   clang
-x86_64                          rhel-8.3-rust   clang
-x86_64                               rhel-8.3   gcc  
-xtensa                           alldefconfig   gcc  
-xtensa                randconfig-001-20231213   gcc  
-xtensa                randconfig-002-20231213   gcc  
+The current support will work with currently flashed firmware
+and config, and bail out if firmware or config aren't flashed yet.
 
+[1] https://github.com/goodix/goodix_ts_berlin
+[2] https://git.codelinaro.org/clo/la/platform/vendor/opensource/touch-drivers
+
+Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
+---
+Changes in v13:
+- Thanks to Dmitry's suggestion:
+  - Move core defines and structs into goodix_berlin_core.c
+  - Comments typos and rephrasings
+  - Identation fixes
+  - Refactor of goodix_berlin_power_on
+  - goodix_berlin_get_ic_info move to __free(kfree) to avoid leaking
+- Added comment explaining how data is retrieved in irq handler
+- Link to v12: https://lore.kernel.org/r/20231209-topic-goodix-berlin-upstream-initial-v12-0-eaffaeb53fb5@linaro.org
+
+Changes in v12:
+- Rebased on next-20231208
+- Link to v11: https://lore.kernel.org/r/20231106-topic-goodix-berlin-upstream-initial-v11-0-5c47e9707c03@linaro.org
+
+Changes in v11:
+- Fixes according to Jeff's review:
+ - s/dev_info/dev_err/ in goodix_berlin_get_ic_info()
+ - remove spurious return instead of goto in goodix_berlin_get_ic_info()
+ - added back dropped msleep() in goodix_berlin_request_handle_reset()
+- Link to v10: https://lore.kernel.org/r/20231023-topic-goodix-berlin-upstream-initial-v10-0-88eec2e51c0b@linaro.org
+
+Changes in v10:
+- Fix according to Dmitry's review:
+ - move goodix_berlin_get_ic_info() afe_data to heap
+ - merge the goodix_berlin_parse_finger() loops and skip invalid fingers instead of returning
+ - remove unwanted goodix_berlin_touch_handler() "static" for buffer
+ - only call goodix_berlin_request_handle_reset() if gpio was provided
+ - use "error = func(); if(error) return error;" instead of "return func()" when function handles multiple error cases
+- Link to v9: https://lore.kernel.org/r/20231021-topic-goodix-berlin-upstream-initial-v9-0-13fb4e887156@linaro.org
+
+Changes in v9:
+- Rebased on next-20231020 
+- Link to v8: https://lore.kernel.org/r/20231003-topic-goodix-berlin-upstream-initial-v8-0-171606102ed6@linaro.org
+
+Changes in v8:
+- Add missing bitfield.h include in core
+- Link to v7: https://lore.kernel.org/r/20231002-topic-goodix-berlin-upstream-initial-v7-0-792fb91f5e88@linaro.org
+
+Changes in v7:
+- rebased on v6.6-rc3
+- Link to v6: https://lore.kernel.org/r/20230912-topic-goodix-berlin-upstream-initial-v6-0-b4ecfa49fb9d@linaro.org
+
+Changes in v6:
+- rebased on v6.6-rc1
+- changed commit message prefix to match the other Input commits
+- Link to v5: https://lore.kernel.org/r/20230801-topic-goodix-berlin-upstream-initial-v5-0-079252935593@linaro.org
+
+Changes in v5:
+- rebased on next-20230801
+- Link to v4: https://lore.kernel.org/r/20230606-topic-goodix-berlin-upstream-initial-v4-0-0947c489be17@linaro.org
+
+Changes in v4:
+- Core updates:
+ - drop kconfig depends, deps will be handled by _SPI and _I2C
+ - change power_on() error labels
+ - print errors on all dev_err() prints
+ - remove useless default variable initialization
+ - switch irq touch checksum error to dev_err()
+ - add Jeff's review tag
+- I2C changes
+ - change REGMAP_I2C Kconfig from depends to select
+ - add Jeff's review tag
+- SPI changes
+ - add select REGMAP to Kconfig
+ - added GOODIX_BERLIN_ prefix to defines
+ - switched from ret to error
+ - add Jeff's review tag
+- Link to v3: https://lore.kernel.org/r/20230606-topic-goodix-berlin-upstream-initial-v3-0-f0577cead709@linaro.org
+
+Changes in v3:
+- Another guge cleanups after Jeff's review:
+ - appended goodix_berlin_ before all defines
+ - removed some unused defines
+ - removed retries on most of read functions, can be added back later
+ - added __le to ic_info structures
+ - reworked and simplified irq handling, dropped enum and ts_event structs
+ - added struct for touch data
+ - simplified and cleaned goodix_berlin_check_checksum & goodix_berlin_is_dummy_data
+ - moved touch_data_addr to the end of the main code_data
+ - reworked probe to get_irq last and right before setip input device
+ - cleaned probe by removing the "cd->dev"
+ - added short paragraph to justify new driver for berlin devices
+ - defined all offsets & masks
+- Added bindings review tag
+- Link to v2: https://lore.kernel.org/r/20230606-topic-goodix-berlin-upstream-initial-v2-0-26bc8fe1e90e@linaro.org
+
+Changes in v2:
+- Huge cleanups after Jeff's review:
+ - switch to error instead of ret
+ - drop dummy vendor/product ids
+ - drop unused defined/enums
+ - drop unused ic_info and only keep needes values
+ - cleanup namings and use goodix_berlin_ everywhere
+ - fix regulator setup
+ - fix default variables value when assigned afterwars
+ - removed indirections
+ - dropped debugfs
+ - cleaned input_dev setup
+ - dropped _remove()
+ - sync'ed i2c and spi drivers
+- fixed yaml bindings
+- Link to v1: https://lore.kernel.org/r/20230606-topic-goodix-berlin-upstream-initial-v1-0-4a0741b8aefd@linaro.org
+
+---
+Neil Armstrong (4):
+      dt-bindings: input: document Goodix Berlin Touchscreen IC
+      Input: add core support for Goodix Berlin Touchscreen IC
+      Input: goodix-berlin - add I2C support for Goodix Berlin Touchscreen IC
+      Input: goodix-berlin - add SPI support for Goodix Berlin Touchscreen IC
+
+ .../bindings/input/touchscreen/goodix,gt9916.yaml  |  95 +++
+ drivers/input/touchscreen/Kconfig                  |  31 +
+ drivers/input/touchscreen/Makefile                 |   3 +
+ drivers/input/touchscreen/goodix_berlin.h          |  24 +
+ drivers/input/touchscreen/goodix_berlin_core.c     | 766 +++++++++++++++++++++
+ drivers/input/touchscreen/goodix_berlin_i2c.c      |  74 ++
+ drivers/input/touchscreen/goodix_berlin_spi.c      | 177 +++++
+ 7 files changed, 1170 insertions(+)
+---
+base-commit: bc63de6e6ba0b16652c5fb4b9c9916b9e7ca1f23
+change-id: 20230606-topic-goodix-berlin-upstream-initial-ba97e8ec8f4c
+
+Best regards,
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Neil Armstrong <neil.armstrong@linaro.org>
+
