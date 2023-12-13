@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2343A812137
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 23:09:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C56A5812138
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 23:09:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442741AbjLMWJE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 17:09:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33536 "EHLO
+        id S233923AbjLMWJU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 17:09:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53216 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230397AbjLMWJC (ORCPT
+        with ESMTP id S233993AbjLMWJS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 17:09:02 -0500
-Received: from mail-4316.protonmail.ch (mail-4316.protonmail.ch [185.70.43.16])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34A9DAF
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 14:09:08 -0800 (PST)
+        Wed, 13 Dec 2023 17:09:18 -0500
+Received: from mail-40134.protonmail.ch (mail-40134.protonmail.ch [185.70.40.134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78163EA;
+        Wed, 13 Dec 2023 14:09:24 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=proton.me;
-        s=5ij2hnl3gzgkvokoca6crcyvfa.protonmail; t=1702505346; x=1702764546;
-        bh=/sxUPUCZGGUcmNBROpNTSbutQhtb2lUVRGVV1RJCeAs=;
+        s=protonmail; t=1702505362; x=1702764562;
+        bh=HEh8GOBW89PGEJ9xzMl86G8ozQum0hgJyYTbj8sFLEs=;
         h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
          Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
          Message-ID:BIMI-Selector;
-        b=eVe3aIjzzfpnSaAPoKNkuOCaVOTNRVRQ7OBVrNOfRNGMvVVnJhid9GQkHQ9e3f5Ec
-         vFr2k082SBsYljRG7Au0EFKa+s9H32ZwigRPmskYl5N9ppBNr8IX1RoXz3aXTcD5cy
-         AXNgeySoFLHutIOPxsX7c500uC9Uhi3qeT7TWIDmIY7q4hfliMsinSPLdVbqfZ7jLh
-         XDLPvQPKn4414FtmQm0AfMXHQjXZDG13pwk1iahO6zupKC+nFBOjmLkMMLzwCAtztE
-         DmiIJXOD2I4jIgVo5jnjI38o8q6js+CNWP7yx49ch4qZMtsztWmMHH9qEauNSh8owG
-         rfEsUmfjdn7/g==
-Date:   Wed, 13 Dec 2023 22:08:53 +0000
+        b=eWv5PSEiLPvHNdz71xYJcidf281WJHTlXrjDyLIpSByBrLzTux4LrveZ/Prak6Zhk
+         AT/apxLngUyyqoeALLk/T/FuxULzpAvqDcL0Ps1nhgXqUKUAjuPhg7O7rgOz9y2rqt
+         lDgfZgJy2GQSRWFaZrJtjGiv8SYUaJ78W/Z0hrtsO+6X1UNYVlY7do9u0iDsZkGXTx
+         UkvmN0EwUBZhS1+5C6Y3Dwdf5UHaruT1Kn7V9W2wED9QSl/Wv2s7e9qaLLzHYAkqgZ
+         O5n1mUy/zbKPR4OaIt0cRx813c0TSlGJiHWIqOo+6b9vgXr+Y5X6cJtUdJuh8gbDZd
+         70Qk0nv/uTCig==
+Date:   Wed, 13 Dec 2023 22:09:04 +0000
 To:     Miguel Ojeda <ojeda@kernel.org>,
         Alex Gaynor <alex.gaynor@gmail.com>,
         Wedson Almeida Filho <wedsonaf@gmail.com>,
@@ -36,11 +36,13 @@ To:     Miguel Ojeda <ojeda@kernel.org>,
         Benno Lossin <benno.lossin@proton.me>,
         Andreas Hindborg <a.hindborg@samsung.com>,
         Alice Ryhl <aliceryhl@google.com>,
-        Martin Rodriguez Reboredo <yakoyoku@gmail.com>
+        Martin Rodriguez Reboredo <yakoyoku@gmail.com>,
+        Tejun Heo <tj@kernel.org>
 From:   Benno Lossin <benno.lossin@proton.me>
-Cc:     rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 2/3] rust: macros: allow generic parameter default values in `#[pin_data]`
-Message-ID: <20231213220447.3613500-2-benno.lossin@proton.me>
+Cc:     Wedson Almeida Filho <walmeida@microsoft.com>,
+        rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2 3/3] rust: workqueue: add `#[pin_data]` to `Work`
+Message-ID: <20231213220447.3613500-3-benno.lossin@proton.me>
 In-Reply-To: <20231213220447.3613500-1-benno.lossin@proton.me>
 References: <20231213220447.3613500-1-benno.lossin@proton.me>
 Feedback-ID: 71780778:user:proton
@@ -57,223 +59,78 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support for generic parameters defaults in `#[pin_data]` by using
-the newly introduced `decl_generics` instead of the `impl_generics`.
-
-Before this would not compile:
-
-    #[pin_data]
-    struct Foo<const N: usize =3D 0> {
-        // ...
-    }
-
-because it would be expanded to this:
-
-    struct Foo<const N: usize =3D 0> {
-        // ...
-    }
-
-    const _: () =3D {
-        struct __ThePinData<const N: usize =3D 0> {
-            __phantom: ::core::marker::PhantomData<fn(Foo<N>) -> Foo<N>>,
-        }
-        impl<const N: usize =3D 0> ::core::clone::Clone for __ThePinData<N>=
- {
-            fn clone(&self) -> Self {
-                *self
-            }
-        }
-
-        // [...] rest of expansion omitted
-    };
-
-The problem is with the `impl<const N: usize =3D 0>`, since that is
-invalid Rust syntax. It should not mention the default value at all,
-since default values only make sense on type definitions.
-
-The new `impl_generics` do not contain the default values, thus
-generating correct Rust code.
-
-This is used by the next commit that puts `#[pin_data]` on
-`kernel::workqueue::Work`.
+The previous two patches made it possible to add `#[pin_data]` on
+structs with default generic parameter values.
+This patch makes `Work` use `#[pin_data]` and removes an invocation of
+`pin_init_from_closure`. This function is intended as a low level manual
+escape hatch, so it is better to rely on the safe `pin_init!` macro.
 
 Signed-off-by: Benno Lossin <benno.lossin@proton.me>
 ---
 v1 -> v2:
-- clarify the change in the commit message
-- add motivation to the commit message
+- improve commit message wording
+- change `:` to `<-` in `pin_init!` invocation
 
- rust/kernel/init/macros.rs | 19 ++++++++++++++++++-
- rust/macros/pin_data.rs    |  3 ++-
- 2 files changed, 20 insertions(+), 2 deletions(-)
+ rust/kernel/workqueue.rs | 33 ++++++++++++++++++---------------
+ 1 file changed, 18 insertions(+), 15 deletions(-)
 
-diff --git a/rust/kernel/init/macros.rs b/rust/kernel/init/macros.rs
-index cb6e61b6c50b..624e9108e3b4 100644
---- a/rust/kernel/init/macros.rs
-+++ b/rust/kernel/init/macros.rs
-@@ -538,6 +538,7 @@ macro_rules! __pin_data {
-         ),
-         @impl_generics($($impl_generics:tt)*),
-         @ty_generics($($ty_generics:tt)*),
-+        @decl_generics($($decl_generics:tt)*),
-         @body({ $($fields:tt)* }),
-     ) =3D> {
-         // We now use token munching to iterate through all of the fields.=
- While doing this we
-@@ -560,6 +561,9 @@ macro_rules! __pin_data {
-             @impl_generics($($impl_generics)*),
-             // The 'ty generics', the generics that will need to be specif=
-ied on the impl blocks.
-             @ty_generics($($ty_generics)*),
-+            // The 'decl generics', the generics that need to be specified=
- on the struct
-+            // definition.
-+            @decl_generics($($decl_generics)*),
-             // The where clause of any impl block and the declaration.
-             @where($($($whr)*)?),
-             // The remaining fields tokens that need to be processed.
-@@ -585,6 +589,7 @@ macro_rules! __pin_data {
-         @name($name:ident),
-         @impl_generics($($impl_generics:tt)*),
-         @ty_generics($($ty_generics:tt)*),
-+        @decl_generics($($decl_generics:tt)*),
-         @where($($whr:tt)*),
-         // We found a PhantomPinned field, this should generally be pinned=
-!
-         @fields_munch($field:ident : $($($(::)?core::)?marker::)?PhantomPi=
-nned, $($rest:tt)*),
-@@ -607,6 +612,7 @@ macro_rules! __pin_data {
-             @name($name),
-             @impl_generics($($impl_generics)*),
-             @ty_generics($($ty_generics)*),
-+            @decl_generics($($decl_generics)*),
-             @where($($whr)*),
-             @fields_munch($($rest)*),
-             @pinned($($pinned)* $($accum)* $field: ::core::marker::Phantom=
-Pinned,),
-@@ -623,6 +629,7 @@ macro_rules! __pin_data {
-         @name($name:ident),
-         @impl_generics($($impl_generics:tt)*),
-         @ty_generics($($ty_generics:tt)*),
-+        @decl_generics($($decl_generics:tt)*),
-         @where($($whr:tt)*),
-         // We reached the field declaration.
-         @fields_munch($field:ident : $type:ty, $($rest:tt)*),
-@@ -640,6 +647,7 @@ macro_rules! __pin_data {
-             @name($name),
-             @impl_generics($($impl_generics)*),
-             @ty_generics($($ty_generics)*),
-+            @decl_generics($($decl_generics)*),
-             @where($($whr)*),
-             @fields_munch($($rest)*),
-             @pinned($($pinned)* $($accum)* $field: $type,),
-@@ -656,6 +664,7 @@ macro_rules! __pin_data {
-         @name($name:ident),
-         @impl_generics($($impl_generics:tt)*),
-         @ty_generics($($ty_generics:tt)*),
-+        @decl_generics($($decl_generics:tt)*),
-         @where($($whr:tt)*),
-         // We reached the field declaration.
-         @fields_munch($field:ident : $type:ty, $($rest:tt)*),
-@@ -673,6 +682,7 @@ macro_rules! __pin_data {
-             @name($name),
-             @impl_generics($($impl_generics)*),
-             @ty_generics($($ty_generics)*),
-+            @decl_generics($($decl_generics)*),
-             @where($($whr)*),
-             @fields_munch($($rest)*),
-             @pinned($($pinned)*),
-@@ -689,6 +699,7 @@ macro_rules! __pin_data {
-         @name($name:ident),
-         @impl_generics($($impl_generics:tt)*),
-         @ty_generics($($ty_generics:tt)*),
-+        @decl_generics($($decl_generics:tt)*),
-         @where($($whr:tt)*),
-         // We found the `#[pin]` attr.
-         @fields_munch(#[pin] $($rest:tt)*),
-@@ -705,6 +716,7 @@ macro_rules! __pin_data {
-             @name($name),
-             @impl_generics($($impl_generics)*),
-             @ty_generics($($ty_generics)*),
-+            @decl_generics($($decl_generics)*),
-             @where($($whr)*),
-             @fields_munch($($rest)*),
-             // We do not include `#[pin]` in the list of attributes, since=
- it is not actually an
-@@ -724,6 +736,7 @@ macro_rules! __pin_data {
-         @name($name:ident),
-         @impl_generics($($impl_generics:tt)*),
-         @ty_generics($($ty_generics:tt)*),
-+        @decl_generics($($decl_generics:tt)*),
-         @where($($whr:tt)*),
-         // We reached the field declaration with visibility, for simplicit=
-y we only munch the
-         // visibility and put it into `$accum`.
-@@ -741,6 +754,7 @@ macro_rules! __pin_data {
-             @name($name),
-             @impl_generics($($impl_generics)*),
-             @ty_generics($($ty_generics)*),
-+            @decl_generics($($decl_generics)*),
-             @where($($whr)*),
-             @fields_munch($field $($rest)*),
-             @pinned($($pinned)*),
-@@ -757,6 +771,7 @@ macro_rules! __pin_data {
-         @name($name:ident),
-         @impl_generics($($impl_generics:tt)*),
-         @ty_generics($($ty_generics:tt)*),
-+        @decl_generics($($decl_generics:tt)*),
-         @where($($whr:tt)*),
-         // Some other attribute, just put it into `$accum`.
-         @fields_munch(#[$($attr:tt)*] $($rest:tt)*),
-@@ -773,6 +788,7 @@ macro_rules! __pin_data {
-             @name($name),
-             @impl_generics($($impl_generics)*),
-             @ty_generics($($ty_generics)*),
-+            @decl_generics($($decl_generics)*),
-             @where($($whr)*),
-             @fields_munch($($rest)*),
-             @pinned($($pinned)*),
-@@ -789,6 +805,7 @@ macro_rules! __pin_data {
-         @name($name:ident),
-         @impl_generics($($impl_generics:tt)*),
-         @ty_generics($($ty_generics:tt)*),
-+        @decl_generics($($decl_generics:tt)*),
-         @where($($whr:tt)*),
-         // We reached the end of the fields, plus an optional additional c=
-omma, since we added one
-         // before and the user is also allowed to put a trailing comma.
-@@ -802,7 +819,7 @@ macro_rules! __pin_data {
-     ) =3D> {
-         // Declare the struct with all fields in the correct order.
-         $($struct_attrs)*
--        $vis struct $name <$($impl_generics)*>
-+        $vis struct $name <$($decl_generics)*>
-         where $($whr)*
-         {
-             $($fields)*
-diff --git a/rust/macros/pin_data.rs b/rust/macros/pin_data.rs
-index 022e68e9720d..1d4a3547c684 100644
---- a/rust/macros/pin_data.rs
-+++ b/rust/macros/pin_data.rs
-@@ -10,7 +10,7 @@ pub(crate) fn pin_data(args: TokenStream, input: TokenStr=
-eam) -> TokenStream {
-     let (
-         Generics {
-             impl_generics,
--            decl_generics: _,
-+            decl_generics,
-             ty_generics,
-         },
-         rest,
-@@ -77,6 +77,7 @@ pub(crate) fn pin_data(args: TokenStream, input: TokenStr=
-eam) -> TokenStream {
-         @sig(#(#rest)*),
-         @impl_generics(#(#impl_generics)*),
-         @ty_generics(#(#ty_generics)*),
-+        @decl_generics(#(#decl_generics)*),
-         @body(#last),
-     });
-     quoted.extend(errs);
+diff --git a/rust/kernel/workqueue.rs b/rust/kernel/workqueue.rs
+index b67fb1ba168e..4a9fb7d06d20 100644
+--- a/rust/kernel/workqueue.rs
++++ b/rust/kernel/workqueue.rs
+@@ -334,8 +334,10 @@ pub trait WorkItem<const ID: u64 =3D 0> {
+ /// Wraps the kernel's C `struct work_struct`.
+ ///
+ /// This is a helper type used to associate a `work_struct` with the [`Wor=
+kItem`] that uses it.
++#[pin_data]
+ #[repr(transparent)]
+ pub struct Work<T: ?Sized, const ID: u64 =3D 0> {
++    #[pin]
+     work: Opaque<bindings::work_struct>,
+     _inner: PhantomData<T>,
+ }
+@@ -357,21 +359,22 @@ pub fn new(name: &'static CStr, key: &'static LockCla=
+ssKey) -> impl PinInit<Self
+     where
+         T: WorkItem<ID>,
+     {
+-        // SAFETY: The `WorkItemPointer` implementation promises that `run=
+` can be used as the work
+-        // item function.
+-        unsafe {
+-            kernel::init::pin_init_from_closure(move |slot| {
+-                let slot =3D Self::raw_get(slot);
+-                bindings::init_work_with_key(
+-                    slot,
+-                    Some(T::Pointer::run),
+-                    false,
+-                    name.as_char_ptr(),
+-                    key.as_ptr(),
+-                );
+-                Ok(())
+-            })
+-        }
++        pin_init!(Self {
++            work <- Opaque::ffi_init(|slot| {
++                // SAFETY: The `WorkItemPointer` implementation promises t=
+hat `run` can be used as
++                // the work item function.
++                unsafe {
++                    bindings::init_work_with_key(
++                        slot,
++                        Some(T::Pointer::run),
++                        false,
++                        name.as_char_ptr(),
++                        key.as_ptr(),
++                    )
++                }
++            }),
++            _inner: PhantomData,
++        })
+     }
+=20
+     /// Get a pointer to the inner `work_struct`.
 --=20
 2.42.0
 
