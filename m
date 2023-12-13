@@ -2,222 +2,234 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B9EC81067D
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 01:33:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E9D1810680
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 01:33:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377825AbjLMAdL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 19:33:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39658 "EHLO
+        id S1377842AbjLMAdT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 19:33:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45778 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232620AbjLMAdK (ORCPT
+        with ESMTP id S235186AbjLMAdS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 19:33:10 -0500
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2122.outbound.protection.outlook.com [40.107.244.122])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CAD392;
-        Tue, 12 Dec 2023 16:33:16 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=maS1mDJF5rgFihSk6pFjFRV0x6iqEaWE66KQq7FcCjFsfzCjBzZ71JKY18suKgrXgxJryLOM7jzhs7X88K1CUKj8IMyUSXGDd5uiUa3HGoLfxbTjwsT9dx6j+n56KlPOehzFrztAK3y9ZQLDunLI/WbyH8ITWPaZDB3+IU0zQxJngPHM/xumti3XlzYey0FGh/eeHN9iJZM6tl2mZAovsw/K+rEMIaoCgMrPZnVSk5nzl+yK03Pu6VAWkfcGkH5thGMOTMMq6lx6GccP/dgierILFOv4nEWhEK8e2LQ9meP9cYpzibvgM14o3aWrvv0W+odoWd0DnXImga0DtIDtWA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=LdN9LXS/iNHY43+T1i0wM1BCMGidQ+Q1M6HpqQjXJ6U=;
- b=PkIJ2ar06VeMyQiD/Ix5UA//lGClSJReiKnGZMM1JZ058dFf6AUdfA/dByyEUaICXHWfeLxfLXhrBm2cqrA4GR288KLyr1U64AkeIzB5fAq7CcXl0B/ZnbZ1OjtqCaeRmKpONo19HZ+Pi3LuaNa/biEBeB9vWNTX31zSSAEyKvLNsrZ/nC5sDEa1vSz43uCDfKM7zhpN8Q0sD5qozfGVhfxT0Qv98wsN6nDQhbbsNir3sL4tpxOf2YcjB6R8ZurQDUPtsujcV2edP7SopjRyJ0BuK4cNJSfPFzN7BFXW99BLC2GjNCi1WFnMZLpHQbQ3kWh6H4sIdLyw1xdHldbBcg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=os.amperecomputing.com; dmarc=pass action=none
- header.from=os.amperecomputing.com; dkim=pass
- header.d=os.amperecomputing.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=os.amperecomputing.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=LdN9LXS/iNHY43+T1i0wM1BCMGidQ+Q1M6HpqQjXJ6U=;
- b=aFng+CfZpuJ52xYSlVtzLqZYiwQPq7yIfFfgwKd9NskGyMJ3ZTx1+4bypa6e0/uvjbjp9U08JDT38RyHc2nMYtAqKOn2G7kDUYa3vVcwpTzlnuV/ci+ADl8TSKRShirixN9CNcXFMQ3TsikiKdjidbErn2kUGlAOrCOUa8i2KH4=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=os.amperecomputing.com;
-Received: from DM5PR0102MB3590.prod.exchangelabs.com (2603:10b6:4:a4::25) by
- SJ0PR01MB7446.prod.exchangelabs.com (2603:10b6:a03:3d8::14) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7068.33; Wed, 13 Dec 2023 00:33:12 +0000
-Received: from DM5PR0102MB3590.prod.exchangelabs.com
- ([fe80::49fa:8dc0:6fd1:72e6]) by DM5PR0102MB3590.prod.exchangelabs.com
- ([fe80::49fa:8dc0:6fd1:72e6%4]) with mapi id 15.20.7068.033; Wed, 13 Dec 2023
- 00:33:11 +0000
-Date:   Tue, 12 Dec 2023 16:32:56 -0800 (PST)
-From:   Ilkka Koskinen <ilkka@os.amperecomputing.com>
-To:     Shuai Xue <xueshuai@linux.alibaba.com>
-cc:     ilkka@os.amperecomputing.com, kaishen@linux.alibaba.com,
-        helgaas@kernel.org, yangyicong@huawei.com, will@kernel.org,
-        Jonathan.Cameron@huawei.com, baolin.wang@linux.alibaba.com,
-        robin.murphy@arm.com, chengyou@linux.alibaba.com,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-pci@vger.kernel.org, rdunlap@infradead.org,
-        mark.rutland@arm.com, zhuo.song@linux.alibaba.com,
-        renyu.zj@linux.alibaba.com
-Subject: Re: [PATCH v12 4/5] drivers/perf: add DesignWare PCIe PMU driver
-In-Reply-To: <20231208025652.87192-5-xueshuai@linux.alibaba.com>
-Message-ID: <2bbd5a57-b2ce-6e52-ebf-5935335c148@os.amperecomputing.com>
-References: <20231208025652.87192-1-xueshuai@linux.alibaba.com> <20231208025652.87192-5-xueshuai@linux.alibaba.com>
-Content-Type: text/plain; format=flowed; charset=US-ASCII
-X-ClientProxiedBy: CH0P221CA0014.NAMP221.PROD.OUTLOOK.COM
- (2603:10b6:610:11c::12) To DM5PR0102MB3590.prod.exchangelabs.com
- (2603:10b6:4:a4::25)
-MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM5PR0102MB3590:EE_|SJ0PR01MB7446:EE_
-X-MS-Office365-Filtering-Correlation-Id: 4902cb90-d794-4640-aecd-08dbfb7315b1
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 84t8rbqCih4hYMUpJiA6PIiFmv7YEWYtI5yv/s2am6zsgO2Dzc8Hnc9vZMQl4maATv8EEI5wnLfRQ1eSDCtRYb/+fJ87fuamaywBK7VmWMYlQQs/M3Z8U7CSDFZTRyki+mvNmxT3ZY1wo2KESHDPVv2VfBDdWonlYFz+iTFm8g7vcgxNfKcphmFYfb43xk7+RGBHHC3Bt8rcWOsHzQoHoEm1TFm98ftD3AzTwNdpgzcZLVNoAWirokZd3j9rohODCZaOunDBDwX9wyl4NZ0uORGC0k73IHb7iFl4PByg6iVoziKieGunYm0Pmm43c5qPR04nHXVr7QpUk2wOegtxw94r4UY1Zjouw5N3XhcveJD2943L2UwBcup9zL+FH4hEp3aWE2ADVk13FVxzY4DGNT6yY2T349tlK6RPnFJWsrPZF7oP1Qj6DaZA2be05+qgmt7+2uOAywdGHbd6yzSLt6s8RabVZ/qGUAShgssF5PmBOKRci39G9MMqu0rdBROXF5YaM0rOQY+OY5Xx8iDlAeIFkhE5m15wWGdT8ywj8fM6d1T6YUkv6//aMBt9V0nOEzIA2B8+N3OIEU9wt9oK2VokYx8bMg2FWKcy4UeTKkQ=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR0102MB3590.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(136003)(396003)(39850400004)(366004)(346002)(230922051799003)(451199024)(1800799012)(64100799003)(186009)(41300700001)(38100700002)(316002)(8936002)(66556008)(6916009)(66946007)(478600001)(7416002)(66476007)(86362001)(26005)(6486002)(6506007)(5660300002)(8676002)(6512007)(2616005)(52116002)(6666004)(2906002)(83380400001)(4326008)(38350700005)(19627235002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?gUg6JZVXBC+YE2BG+lG9+QTQAoUzB3cfct0G1fsVvCwt1sc0+I+Y1datH/pz?=
- =?us-ascii?Q?4MQnTib5HpqI8rW7VuH1st5Fq1uyzNOuZj7YGQ1Lna1+PeWDinCRhLEDECIZ?=
- =?us-ascii?Q?mYtGjXHqWO6LK98V9Zi8cNfvyQ3zBwd3GqvfmS7t/kJ0Y69mBCZ9geCodZfG?=
- =?us-ascii?Q?qyMp+3jNJddDMeUr/xaaXL6I5xhvlwI+uVMIovl4iKdAAu2pHG4hu1kXSbSW?=
- =?us-ascii?Q?McL4jbMTfRqnzCgBwm8wThlSehk4b57Zqi7Ao6F2oHv8NR5qV3etmozJBZnZ?=
- =?us-ascii?Q?GUjcht0J2a1IKqTuAMExdHbKq2GpQEVJjf2nAyChFxKbuHiL5ug5DPKdz3cR?=
- =?us-ascii?Q?oQJ3QcRkBiUTrxRVIR8P6JsZgkSKxVfcI9lp4IkjxK6gfA0KGr9OMbnGbO+0?=
- =?us-ascii?Q?VvmoeBrcMmZfVDd+lNMFmL9vHR16xaqQR8tIUk/IChcIRUtH2aEgtLKMwa+v?=
- =?us-ascii?Q?5pMiCVASynbmGgeltWnoi9QBrqGR2uZWkmPVz2ttW7XprEKhLcH33OJ89Zt1?=
- =?us-ascii?Q?Cc2A1fGu7DJwZ9U93boME0+lcTP1Wg3bQ8/NsvXCprnm+Q5PoRZvyyKm3oDs?=
- =?us-ascii?Q?u7mxEmPGnIexmQYY2V4GfJOcrIUjeQV9nWFT7Ptm82wFtynGV4mUaW5zsXUX?=
- =?us-ascii?Q?N+Uh7U2Kr7xMRi2qwdabAwnryqjlizt1FYlHss5QjGMpa03CLd5iUBTIe4LI?=
- =?us-ascii?Q?zCkTAZxTkqaCULVNwvBdd+0t2JwonZYaiOColPQ2StZNVbn/kVoxOaT9uF1L?=
- =?us-ascii?Q?yy14cqM6Artfruc2ILQ3/DS6PUvYHYlyFY5la6n8uP/O0qr9qjj8yQn3krq6?=
- =?us-ascii?Q?SyZKkRlBlq0uHy9ijgKxtJ2RDZntO4Rv8Yxh9s3XJ/E2jH/Im2/5WhVmf7RN?=
- =?us-ascii?Q?tlbowA1n4RpUnrkIJASdFBmUaHXa+clKpJ362ja6rGV8awIXgKKqRhAac77k?=
- =?us-ascii?Q?O6iq3kPIQun006Zd/JMbikK10gqV4I8p2wt844uFiuKD3lg39pFgIoHHtTPm?=
- =?us-ascii?Q?ucGOGOgPltbvue8IZW7N3dsKlIiPF+/2JQK5NlJJrJb4LN0RObOZggyhMu5D?=
- =?us-ascii?Q?Rp1usUhuIKSMkZ0vOkZDKCx/oUG0IdzPx/OzvKldG58ojzeWsNd63rJiG9LL?=
- =?us-ascii?Q?kyYuE8dI9H7gLMAuufI1bJv++Q0uI3HZDdfCldp7q3JBGMq3aUSdQE2PKWNl?=
- =?us-ascii?Q?1WV94e2zSUli38oxIhz94O4R3DD5ZuQwTINHlcQJo6ybZ7HcKSgpxX6AsZtU?=
- =?us-ascii?Q?TjHxCzSf7rw/fkxJ8jmtjHbkDxQjBIXonmoszHi5vphuikMSB2PJUXrWxgiX?=
- =?us-ascii?Q?BIIdHj59xJDrwt20A9WkA6O1vpvRnSV23En66hmyXqWUH7Xp1CQ9h7V+Cf1r?=
- =?us-ascii?Q?lqN6lCUlZAOENjBtom/D0R08XyoUNg4WYKL/53fQMApkLTNPL2KHbUgvQ88Z?=
- =?us-ascii?Q?q2P99im3UtHdqNYCH+9zwB7rt9yR4oyjxj8XPT1yoFoe8WDRzCWrNIEqnbBU?=
- =?us-ascii?Q?5gk8gv6SHfb1QG1fAuGe7rpH6ovZLqHB+1n37Vj8kqkn7Bze1u+m3IGa852a?=
- =?us-ascii?Q?Lgw6lN5zc36srKlP3tZG5EsWV7QYhbvV5XmlJm+EY4MtTK3eOjyAttC5wR2x?=
- =?us-ascii?Q?E+JLs3HN2woq/64Caa5avgM=3D?=
-X-OriginatorOrg: os.amperecomputing.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4902cb90-d794-4640-aecd-08dbfb7315b1
-X-MS-Exchange-CrossTenant-AuthSource: DM5PR0102MB3590.prod.exchangelabs.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Dec 2023 00:33:11.3437
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3bc2b170-fd94-476d-b0ce-4229bdc904a7
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: G1PQNn5e3BdRCPDp3zmYFc4sR9EuxFtf/DtIHbsWBr5JJvYCCZVLtpIPH8kdD9soifUZZ29elYVLy+emVpXnU814lO67tUs8JhqWDovQBH2RWI8Jpu9hYil6uF/a+KVM
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR01MB7446
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        Tue, 12 Dec 2023 19:33:18 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5F97D2
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 16:33:23 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 798BAC433C7;
+        Wed, 13 Dec 2023 00:33:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1702427603;
+        bh=/gch5PMo75qh1vpvfQneJHiwUL9FOAxXlXs/kgl/O1k=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=Yqhq1906/UpijSAYZTgS1fwLQgHqXCoNx5S1ThPvmy4e/w9cTRzxbKEcxiH+Evw8N
+         hONh+h888uI+1zXySyFZXxrac5sRnJHYmGQ3VYP+5vvKedAjCEbFmkWrM2GnaQbWL/
+         UYE0gNsc2ipzcGr+rTkaMIUd16x7Bm+5WDGL+CY9iaf0eoXVqG2pGK88Hu+2IgDpf7
+         YrQBOKDtry5mvQlRh5HHMbj6e5ezJCtO4F6pfP9AR046a+pez9J474SwPJNuPCEmTm
+         eVSXuvigefv88abizg9f++F2QY0MoJNO0NR+sPEgVLMnolX38VMtzZ4kuGgtrqkeyT
+         EnrFu70XnpOFA==
+Date:   Wed, 13 Dec 2023 09:33:18 +0900
+From:   Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Linux Trace Kernel <linux-trace-kernel@vger.kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Shuah Khan <shuah@kernel.org>, linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH v2] tracing/selftests: Add test to test max subbuf size
+ with trace_marker
+Message-Id: <20231213093318.f30d29c5f80fff59571e62a7@kernel.org>
+In-Reply-To: <20231212151632.25c9b67d@gandalf.local.home>
+References: <20231212151632.25c9b67d@gandalf.local.home>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, 12 Dec 2023 15:16:32 -0500
+Steven Rostedt <rostedt@goodmis.org> wrote:
 
-On Fri, 8 Dec 2023, Shuai Xue wrote:
-> This commit adds the PCIe Performance Monitoring Unit (PMU) driver support
-> for T-Head Yitian SoC chip. Yitian is based on the Synopsys PCI Express
-> Core controller IP which provides statistics feature. The PMU is a PCIe
-> configuration space register block provided by each PCIe Root Port in a
-> Vendor-Specific Extended Capability named RAS D.E.S (Debug, Error
-> injection, and Statistics).
->
-> To facilitate collection of statistics the controller provides the
-> following two features for each Root Port:
->
-> - one 64-bit counter for Time Based Analysis (RX/TX data throughput and
->  time spent in each low-power LTSSM state) and
-> - one 32-bit counter for Event Counting (error and non-error events for
->  a specified lane)
->
-> Note: There is no interrupt for counter overflow.
->
-> This driver adds PMU devices for each PCIe Root Port. And the PMU device is
-> named based the BDF of Root Port. For example,
->
->    30:03.0 PCI bridge: Device 1ded:8000 (rev 01)
->
-> the PMU device name for this Root Port is dwc_rootport_3018.
->
-> Example usage of counting PCIe RX TLP data payload (Units of bytes)::
->
->    $# perf stat -a -e dwc_rootport_3018/Rx_PCIe_TLP_Data_Payload/
->
-> average RX bandwidth can be calculated like this:
->
->    PCIe TX Bandwidth = Rx_PCIe_TLP_Data_Payload / Measure_Time_Window
->
-> Signed-off-by: Shuai Xue <xueshuai@linux.alibaba.com>
-> Reviewed-by: Baolin Wang <baolin.wang@linux.alibaba.com>
-> Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-> Reviewed-by: Yicong Yang <yangyicong@hisilicon.com>
-> Reviewed-and-tested-by: Ilkka Koskinen <ilkka@os.amperecomputing.com>
+> From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
+> 
+> Now that the trace_marker can write up to the max size of the sub buffer.
+> Add a test to see if it actually can happen.
+> 
+> The README is updated to state that the trace_marker writes can be broken
+> up, and the test checks the README for that statement so that it does not
+> fail on older kernels that does not support this.
+
+I think it is better that the feature patch include README update or a separate
+patch because it identifies the feature is implemented or not.
+
+> 
+> If the README does not have the specified update, the test will still test
+> if all the string is written, as that should work with older kernels.
+> 
+> Cc: Shuah Khan <shuah@kernel.org>
+> Cc: linux-kselftest@vger.kernel.org
+> Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 > ---
-> drivers/perf/Kconfig        |   7 +
-> drivers/perf/Makefile       |   1 +
-> drivers/perf/dwc_pcie_pmu.c | 792 ++++++++++++++++++++++++++++++++++++
-> 3 files changed, 800 insertions(+)
-> create mode 100644 drivers/perf/dwc_pcie_pmu.c
->
-> diff --git a/drivers/perf/dwc_pcie_pmu.c b/drivers/perf/dwc_pcie_pmu.c
-> new file mode 100644
-> index 000000000000..6ee66c4b44bf
+> Changes since v1: https://lore.kernel.org/linux-trace-kernel/20231212135441.0337c3e9@gandalf.local.home/
+> 
+> - Fix description as it was a cut and paste from the subbuffer size tests
+>   that are not added yet.
+> 
+>  kernel/trace/trace.c                          |   1 +
+>  .../ftrace/test.d/00basic/trace_marker.tc     | 112 ++++++++++++++++++
+>  2 files changed, 113 insertions(+)
+>  create mode 100755 tools/testing/selftests/ftrace/test.d/00basic/trace_marker.tc
+> 
+> diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
+> index 2f8d59834c00..cbfcdd882590 100644
+> --- a/kernel/trace/trace.c
+> +++ b/kernel/trace/trace.c
+> @@ -5595,6 +5595,7 @@ static const char readme_msg[] =
+>  	"       delta:   Delta difference against a buffer-wide timestamp\n"
+>  	"    absolute:   Absolute (standalone) timestamp\n"
+>  	"\n  trace_marker\t\t- Writes into this file writes into the kernel buffer\n"
+> +	"\n           May be broken into multiple events based on sub-buffer size.\n"
+>  	"\n  trace_marker_raw\t\t- Writes into this file writes binary data into the kernel buffer\n"
+>  	"  tracing_cpumask\t- Limit which CPUs to trace\n"
+>  	"  instances\t\t- Make sub-buffers with: mkdir instances/foo\n"
+> diff --git a/tools/testing/selftests/ftrace/test.d/00basic/trace_marker.tc b/tools/testing/selftests/ftrace/test.d/00basic/trace_marker.tc
+> new file mode 100755
+> index 000000000000..bf7f6f50c88a
 > --- /dev/null
-> +++ b/drivers/perf/dwc_pcie_pmu.c
-> @@ -0,0 +1,792 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Synopsys DesignWare PCIe PMU driver
-> + *
-> + * Copyright (C) 2021-2023 Alibaba Inc.
-> + */
+> +++ b/tools/testing/selftests/ftrace/test.d/00basic/trace_marker.tc
+> @@ -0,0 +1,112 @@
+> +#!/bin/sh
+> +# SPDX-License-Identifier: GPL-2.0
+> +# description: Basic tests on writing to trace_marker
+> +# requires: trace_marker
+> +# flags: instance
 > +
+> +get_buffer_data_size() {
+> +	sed -ne 's/^.*data.*size:\([0-9][0-9]*\).*/\1/p' events/header_page
+> +}
+> +
+> +get_buffer_data_offset() {
+> +	sed -ne 's/^.*data.*offset:\([0-9][0-9]*\).*/\1/p' events/header_page
+> +}
+> +
+> +get_event_header_size() {
+> +	type_len=`sed -ne 's/^.*type_len.*:[^0-9]*\([0-9][0-9]*\).*/\1/p' events/header_event`
+> +	time_len=`sed -ne 's/^.*time_delta.*:[^0-9]*\([0-9][0-9]*\).*/\1/p' events/header_event`
+> +	array_len=`sed -ne 's/^.*array.*:[^0-9]*\([0-9][0-9]*\).*/\1/p' events/header_event`
+> +	total_bits=$((type_len+time_len+array_len))
+> +	total_bits=$((total_bits+7))
+> +	echo $((total_bits/8))
+> +}
+> +
+> +get_print_event_buf_offset() {
+> +	sed -ne 's/^.*buf.*offset:\([0-9][0-9]*\).*/\1/p' events/ftrace/print/format
+> +}
+> +
+> +event_header_size=`get_event_header_size`
+> +print_header_size=`get_print_event_buf_offset`
+> +
+> +# Find the README
+> +README=""
+> +if [ -f README ]; then
+> +	README="README"
+> +# instance?
+> +elif [ -f ../../README ]; then
+> +	README="../../README"
+> +fi
+> +
+> +testone=0
+> +if [ ! -z "$README" ]; then
+> +	if grep -q  "May be broken into multiple events based on sub-buffer size" $README; then
+> +		testone=1
+> +	fi
+> +fi
 
-...
+Hmm, this should be a common function if we see this pattern somewhere else.
 
-> +static int dwc_pcie_pmu_event_init(struct perf_event *event)
-> +{
-> +	struct dwc_pcie_pmu *pcie_pmu = to_dwc_pcie_pmu(event->pmu);
-> +	enum dwc_pcie_event_type type = DWC_PCIE_EVENT_TYPE(event);
-> +	struct perf_event *sibling;
-> +	u32 lane;
 > +
-> +	if (event->attr.type != event->pmu->type)
-> +		return -ENOENT;
+> +data_offset=`get_buffer_data_offset`
 > +
-> +	/* We don't support sampling */
-> +	if (is_sampling_event(event))
-> +		return -EINVAL;
+> +marker_meta=$((event_header_size+print_header_size))
 > +
-> +	/* We cannot support task bound events */
-> +	if (event->cpu < 0 || event->attach_state & PERF_ATTACH_TASK)
-> +		return -EINVAL;
+> +make_str() {
+> +        cnt=$1
+> +	# subtract two for \n\0 as marker adds these
+> +	cnt=$((cnt-2))
+> +	printf -- 'X%.0s' $(seq $cnt)
+> +}
 > +
-> +	if (event->group_leader != event &&
-> +	    !is_software_event(event->group_leader))
-> +		return -EINVAL;
+> +write_buffer() {
+> +	size=$1
 > +
-> +	for_each_sibling_event(sibling, event->group_leader) {
-> +		if (sibling->pmu != event->pmu && !is_software_event(sibling))
-> +			return -EINVAL;
-> +	}
+> +	str=`make_str $size`
 > +
-> +	if (type < 0 || type >= DWC_PCIE_EVENT_TYPE_MAX)
-> +		return -EINVAL;
+> +	# clear the buffer
+> +	echo > trace
 > +
-> +	if (type == DWC_PCIE_LANE_EVENT) {
-> +		lane = DWC_PCIE_EVENT_LANE(event);
-> +		if (lane < 0 || lane >= pcie_pmu->nr_lanes)
+> +	# write the string into the marker
+> +	echo -n $str > trace_marker
+> +
+> +	echo $str
+> +}
+> +
+> +test_buffer() {
+> +
+> +	size=`get_buffer_data_size`
+> +	oneline_size=$((size-marker_meta))
+> +	echo size = $size
+> +	echo meta size = $marker_meta
+> +
+> +	if [ $testone -eq 1 ]; then
+> +		echo oneline size = $oneline_size
+> +
+> +		str=`write_buffer $oneline_size`
+> +
+> +		# Should be in one single event
+> +		new_str=`awk ' /tracing_mark_write:/ { sub(/^.*tracing_mark_write: */,"");printf "%s", $0; exit}' trace`
+> +
+> +		if [ "$new_str" != "$str" ]; then
+> +			exit fail;
+> +		fi
+> +	fi
 
-Just a minor thing that doesn't really matter: 'lane' is unsigned and, 
-therefore, cannot be negative.
+Or, maybe we can split this part into another testcase.
 
-Otherwise, everything looks good and seems to work fine still.
+Thank you,
 
-Cheers, Ilkka
+> +
+> +	# Now add a little more the meta data overhead will overflow
+> +
+> +	str=`write_buffer $size`
+> +
+> +	# Make sure the line was broken
+> +	new_str=`awk ' /tracing_mark_write:/ { sub(/^.*tracing_mark_write: /,"");printf "%s", $0; exit}' trace`
+> +
+> +	if [ "$new_str" = "$str" ]; then
+> +		exit fail;
+> +	fi
+> +
+> +	# Make sure the entire line can be found
+> +	new_str=`awk ' /tracing_mark_write:/ { sub(/^.*tracing_mark_write: */,"");printf "%s", $0; }' trace`
+> +
+> +	if [ "$new_str" != "$str" ]; then
+> +		exit fail;
+> +	fi
+> +}
+> +
+> +test_buffer
+> +
+> -- 
+> 2.42.0
+> 
+
+
+-- 
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
