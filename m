@@ -2,103 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A310E8118D6
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 17:12:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E3D108118DD
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 17:14:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233423AbjLMQMu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 11:12:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41818 "EHLO
+        id S233370AbjLMQNx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 11:13:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51040 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233401AbjLMQMs (ORCPT
+        with ESMTP id S233658AbjLMQNo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 11:12:48 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88904DB;
-        Wed, 13 Dec 2023 08:12:54 -0800 (PST)
-X-IronPort-AV: E=McAfee;i="6600,9927,10923"; a="379978078"
-X-IronPort-AV: E=Sophos;i="6.04,273,1695711600"; 
-   d="scan'208";a="379978078"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Dec 2023 08:12:38 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10923"; a="947229929"
-X-IronPort-AV: E=Sophos;i="6.04,273,1695711600"; 
-   d="scan'208";a="947229929"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by orsmga005.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Dec 2023 08:12:36 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-        (envelope-from <andy@kernel.org>)
-        id 1rDRqc-00000005ZFp-1DbZ;
-        Wed, 13 Dec 2023 18:12:34 +0200
-Date:   Wed, 13 Dec 2023 18:12:34 +0200
-From:   Andy Shevchenko <andy@kernel.org>
-To:     Kent Gibson <warthog618@gmail.com>
-Cc:     Bartosz Golaszewski <brgl@bgdev.pl>, linux-kernel@vger.kernel.org,
-        linux-gpio@vger.kernel.org, linus.walleij@linaro.org
-Subject: Re: [PATCH 1/4] gpiolib: cdev: relocate debounce_period_us from
- struct gpio_desc
-Message-ID: <ZXnX8jPHxRLW8lhi@smile.fi.intel.com>
-References: <20231212054253.50094-1-warthog618@gmail.com>
- <20231212054253.50094-2-warthog618@gmail.com>
- <ZXm3rayrcvfO1t1Z@smile.fi.intel.com>
- <ZXm_WsIpgIyOUNHt@rigel>
- <CAMRc=Mfri8K4ZqcHb_eQY6gi+q_-uBZc2wiMrrb-+a7Tric3FA@mail.gmail.com>
- <ZXnU3tMYCc2Rw8Qv@rigel>
+        Wed, 13 Dec 2023 11:13:44 -0500
+Received: from mailbox.box.xen0n.name (mail.xen0n.name [115.28.160.31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4F39DC
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 08:13:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=xen0n.name; s=mail;
+        t=1702483992; bh=4XxyHnJEJKkc+5PvBy8tJ98Zzp6SReQrbmR5u3CSVkY=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=FdZA5oT75tJH3PJN0bxT2ijMm1wBFi9fAIDpRIiLKEJ8qcv7c86KrC4Caujnwy/Qz
+         h0yWOBpr5j9YQlGHX6bTEdnz+dQUQ431E11+MzKZsjI9OYJQRIedzGgmfPSOvFDP5W
+         xvNwB4vhFx3KjM5C9g2J1KLykNu0MN4NW1kORqlg=
+Received: from [IPV6:240e:388:8d05:a200:783a:c9a8:595e:71d0] (unknown [IPv6:240e:388:8d05:a200:783a:c9a8:595e:71d0])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mailbox.box.xen0n.name (Postfix) with ESMTPSA id E250E600D1;
+        Thu, 14 Dec 2023 00:13:11 +0800 (CST)
+Message-ID: <cc762327-796a-481b-9d79-3751361daff8@xen0n.name>
+Date:   Thu, 14 Dec 2023 00:13:11 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ZXnU3tMYCc2Rw8Qv@rigel>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_SOFTFAIL,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH 06/12] LoongArch: Implement
+ ARCH_HAS_KERNEL_FPU_SUPPORT
+To:     Samuel Holland <samuel.holland@sifive.com>,
+        linux-arm-kernel@lists.infradead.org, loongarch@lists.linux.dev,
+        linuxppc-dev@lists.ozlabs.org, x86@kernel.org,
+        linux-riscv@lists.infradead.org,
+        Christoph Hellwig <hch@infradead.org>
+Cc:     linux-kernel@vger.kernel.org, amd-gfx@lists.freedesktop.org,
+        linux-arch@vger.kernel.org
+References: <20231208055501.2916202-1-samuel.holland@sifive.com>
+ <20231208055501.2916202-7-samuel.holland@sifive.com>
+Content-Language: en-US
+From:   WANG Xuerui <kernel@xen0n.name>
+In-Reply-To: <20231208055501.2916202-7-samuel.holland@sifive.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 13, 2023 at 11:59:26PM +0800, Kent Gibson wrote:
-> On Wed, Dec 13, 2023 at 04:40:12PM +0100, Bartosz Golaszewski wrote:
-> > On Wed, Dec 13, 2023 at 3:27 PM Kent Gibson <warthog618@gmail.com> wrote:
-> > > On Wed, Dec 13, 2023 at 03:54:53PM +0200, Andy Shevchenko wrote:
-> > > > On Tue, Dec 12, 2023 at 01:42:50PM +0800, Kent Gibson wrote:
+On 12/8/23 13:54, Samuel Holland wrote:
+> LoongArch already provides kernel_fpu_begin() and kernel_fpu_end() in
+> asm/fpu.h, so it only needs to add kernel_fpu_available() and export
+> the CFLAGS adjustments.
+>
+> Signed-off-by: Samuel Holland <samuel.holland@sifive.com>
+> ---
+>
+>   arch/loongarch/Kconfig           | 1 +
+>   arch/loongarch/Makefile          | 5 ++++-
+>   arch/loongarch/include/asm/fpu.h | 1 +
+>   3 files changed, 6 insertions(+), 1 deletion(-)
 
-...
+This is all intuitive wrapping, so:
 
-> > > > > +static struct supinfo supinfo;
-> > > >
-> > > > Why supinfo should be a struct to begin with? Seems to me as an unneeded
-> > > > complication.
-> >
-> > I think we should keep it as a struct but defined the following way:
-> >
-> > struct {
-> >     spinlock_t lock;
-> >     struct rb_root tree;
-> > } supinfo;
-> 
-> That is what I meant be merging the struct definition with the variable
-> definition.  Or is there some other way to completely do away with the
-> struct that I'm missing?
+Acked-by: WANG Xuerui <git@xen0n.name>
 
-Look at the top of gpiolib.c:
-
-static DEFINE_MUTEX(gpio_lookup_lock);
-static LIST_HEAD(gpio_lookup_list);
-
-In the similar way you can simply do
-
-static DEFINE_SPINLOCK(gpio_sup_lock);
-static struct rb_root gpio_sup_tree;
-
-> > > Yeah, that is a hangover from an earlier iteration where supinfo was
-> > > contained in other object rather than being a global.
-> > > Could merge the struct definition into the variable now.
+Thanks!
 
 -- 
-With Best Regards,
-Andy Shevchenko
+WANG "xen0n" Xuerui
 
+Linux/LoongArch mailing list: https://lore.kernel.org/loongarch/
 
