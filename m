@@ -2,99 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 18B60811514
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 15:44:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BA8C781151B
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 15:45:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1441826AbjLMOob (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 09:44:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40768 "EHLO
+        id S235518AbjLMOov convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 13 Dec 2023 09:44:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44096 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379400AbjLMOoP (ORCPT
+        with ESMTP id S235470AbjLMOod (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 09:44:15 -0500
-Received: from smtp-relay-internal-0.canonical.com (smtp-relay-internal-0.canonical.com [185.125.188.122])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CB7A11D
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 06:43:56 -0800 (PST)
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com [209.85.221.72])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 7BDDE3F12E
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 14:43:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1702478634;
-        bh=Mq8kkShbdA3rJyVce+fgmgBoPNay+3LOO1K45+P/PiY=;
-        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version;
-        b=GZx70vXWwbdzlEGK7j65rKOJFt2BGPRi/vbKKSSC3snKWhh+rOzKWg8/vnk7biH7m
-         ovvujNQY6EOL+i0Wr/LEN6stKQnHuVH2W4F+Y17hAmXwXtbVsUwMSCZkRm/0iV2Wgz
-         hdYvdHA7qQXcApxMrsOqPnvCpe3EOamnAIDvGHT1dK9A2ZlYnnWxGTVjRUI5Y+1sZV
-         zTc02tToea+HAxIYD5MjEIR2VFTzyOjLS6snQqQ0qadf8C3oZmuqlPMbHr3I/a6rSA
-         qXxNZlDNxpAa6bGqVuQ1nhYX6OEyT6AecJ0JzLd3JxPonHqFLiK7usmlr0dFct9UcT
-         hS0FQg4zPsGeA==
-Received: by mail-wr1-f72.google.com with SMTP id ffacd0b85a97d-333501e22caso5560776f8f.2
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 06:43:54 -0800 (PST)
+        Wed, 13 Dec 2023 09:44:33 -0500
+Received: from mail-ot1-f49.google.com (mail-ot1-f49.google.com [209.85.210.49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D9D41A5;
+        Wed, 13 Dec 2023 06:44:07 -0800 (PST)
+Received: by mail-ot1-f49.google.com with SMTP id 46e09a7af769-6da09f8ce35so973953a34.0;
+        Wed, 13 Dec 2023 06:44:07 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702478633; x=1703083433;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Mq8kkShbdA3rJyVce+fgmgBoPNay+3LOO1K45+P/PiY=;
-        b=q3glnFDxtgCy0ondK69USW/Mb22X4CbIekVoaKkL7Ije9+dEWMYnMca0kRFWyfyXso
-         FmDB71OdznS6vV4mQ9b/hPErtdYEex1UvV6QlFW2EiNzXyJIxCEZVxUhvSY6BUIbAzKb
-         F14BMf+04gk/ddBs/DDS4CzjAtlYkAdeQRRzVAM5fLTDMyQzWsD4aJluLetNbSdLa106
-         mQctKvqYE9NY0yaSfCXVk9mRbvnYwfbRoAyj0cXNJcRSP2pEhgW66lgNqX458nA+PygM
-         U/4m7E1CNqiCpjqifB/Emm/OMivXURNgUl5+SUd7Vje4EnbmQIHZahJtEyL8JHKvwzfX
-         sjcg==
-X-Gm-Message-State: AOJu0YwcVUK7Uv0Fi6navf5TMW7Lgkzdc5+hlmCIAZVOXJhbvMFiM3oJ
-        AoW+ChTIPPzmF6HwePz6WCy/G8J8R70P4uzLBVZsPwwAWfFoGy4znJ0RJ7j9RXe9nV6UvhkcS37
-        7C8oW1YB4jCYX5FT+9VvyqHXvgrC2VrXtpgxvkIAwk4npUMksHg==
-X-Received: by 2002:a7b:c416:0:b0:40c:2e1c:8f7f with SMTP id k22-20020a7bc416000000b0040c2e1c8f7fmr3749328wmi.143.1702478633471;
-        Wed, 13 Dec 2023 06:43:53 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IHxje99wS4DP91jNbb0URn1aAUkttetXAiUa9hMds1BTuvDcsg2JBZMRUfMu4o7Kl+kXKLjxQ==
-X-Received: by 2002:a7b:c416:0:b0:40c:2e1c:8f7f with SMTP id k22-20020a7bc416000000b0040c2e1c8f7fmr3749320wmi.143.1702478633071;
-        Wed, 13 Dec 2023 06:43:53 -0800 (PST)
-Received: from localhost ([2001:67c:1560:8007::aac:c15c])
-        by smtp.gmail.com with ESMTPSA id bd21-20020a05600c1f1500b0040c25abd724sm23245849wmb.9.2023.12.13.06.43.52
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Dec 2023 06:43:52 -0800 (PST)
-From:   Dimitri John Ledkov <dimitri.ledkov@canonical.com>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [PATCH v2 0/3] objtool: make it more strict
-Date:   Wed, 13 Dec 2023 14:43:39 +0000
-Message-Id: <20231213144339.2345304-1-dimitri.ledkov@canonical.com>
-X-Mailer: git-send-email 2.34.1
+        d=1e100.net; s=20230601; t=1702478646; x=1703083446;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=BrMvvn49L6A1ecr+WgkAgMRVfZjFMImbqMy0wJWQpTA=;
+        b=ppqeeUV/8DSgCao+IF4zcsyZji6TdNIRCFCYNO5w6cc65lMkFR/eOKczFpJ5n2NHRe
+         zTjM7U4oxkcum8TcF+2bWUMvEKFFHIqr6XIH9jyZwvvIEEl7un742Sk733avTyVtnm9k
+         EwD+W3CBXp3Yg9p2BDj686zPqisBGEnwFkXYYvDwGmpJYolQuvC71CzG8qPdr51/5Juh
+         0xOgAZlx30N70q//7GePPDpGgmIzWT83WDiSRLkazOPlwRNoDstw9fzNoYM8F2bxX1ON
+         QYionq8y2lIYMH6fD2ym4bMPLoawer/9VbZESZs0XMe6pNi2ZYJFT3bh3mqYPMlHuB6T
+         lBPA==
+X-Gm-Message-State: AOJu0YxeNsMMXD3qiWrY1bz2IRmDFqKPSDoOjvLlK5U2jBGTa10tx7YY
+        8kh8OlsNWUSbVj/P/KR0j5Q98/T5jRKHPQf8g/s=
+X-Google-Smtp-Source: AGHT+IGPX5+mGS38O4fRWmfbsDU7CQdzXQC4+Vn2QMG5Z6qnEERa5c1Wl/XCOERwmpUEJ8wRKvefIPoyGD1ZMoFh/Wk=
+X-Received: by 2002:a05:6870:9607:b0:1fb:23ec:3318 with SMTP id
+ d7-20020a056870960700b001fb23ec3318mr15061199oaq.0.1702478645569; Wed, 13 Dec
+ 2023 06:44:05 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+References: <20231212221301.12581-1-ansuelsmth@gmail.com> <0e4cee10-4aa4-4979-9841-f1dbd207e0b7@linaro.org>
+ <6579bdb2.5d0a0220.1ae22.1f92@mx.google.com>
+In-Reply-To: <6579bdb2.5d0a0220.1ae22.1f92@mx.google.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Wed, 13 Dec 2023 15:43:54 +0100
+Message-ID: <CAJZ5v0gdLXBziENtZ9qmvntmaq6gNSXvGHq1eq8_o+xz0V_A0Q@mail.gmail.com>
+Subject: Re: [PATCH 1/2] thermal: core: add initial support for cold and
+ critical_cold trip point
+To:     Christian Marangi <ansuelsmth@gmail.com>
+Cc:     Daniel Lezcano <daniel.lezcano@linaro.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Lukasz Luba <lukasz.luba@arm.com>, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
-To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is attempt #626 to make objtool slightly more strict.
+On Wed, Dec 13, 2023 at 3:20 PM Christian Marangi <ansuelsmth@gmail.com> wrote:
+>
+> On Wed, Dec 13, 2023 at 03:12:41PM +0100, Daniel Lezcano wrote:
+> > On 12/12/2023 23:13, Christian Marangi wrote:
+> > > Add initial support for cold and critical_cold trip point. Many if not
+> > > all hwmon and thermal device have normally trip point for hot
+> > > temperature and for cold temperature.
+> > >
+> > > Till now only hot temperature were supported. Add support for also cold
+> > > temperature to permit complete definition of cold trip point in DT.
+> > >
+> > > Thermal driver may use these additional trip point to correctly set
+> > > interrupt for cold temperature values and react based on that with
+> > > various measure like enabling attached heater, forcing higher voltage
+> > > and other specialaized peripherals.
+> > >
+> > > For hwmon drivers this is needed as currently there is a problem with
+> > > setting the full operating range of the device for thermal devices
+> > > defined with hwmon. To better describe the problem, the following
+> > > example is needed:
+> > >
+> > > In the scenario of a simple hwmon with an active trip point declared
+> > > and a cooling device attached, the hwmon subsystem currently set the
+> > > min and max trip point based on the single active trip point.
+> > > Thermal subsystem parse all the trip points and calculate the lowest and
+> > > the highest trip point and calls the .set_trip of hwmon to setup the
+> > > trip points.
+> > >
+> > > The fact that we currently don't have a way to declare the cold/min
+> > > temperature values, makes the thermal subsystem to set the low value as
+> > > -INT_MAX.
+> > > For hwmon drivers that doesn't use clamp_value and actually reject
+> > > invalid values for the trip point, this results in the hwmon settings to
+> > > be rejected.
+> > >
+> > > To permit to pass the correct range of trip point, permit to set in DT
+> > > also cold and critical_cold trip point.
+> > >
+> > > Thermal driver may also define .cold and .critical_cold to act on these
+> > > trip point tripped and apply the required measure.
+> >
+> > Agree with the feature but we need to clarify the semantic of the trip
+> > points first. What actions do we expect for them in order to have like a
+> > mirror reflection of the existing hot trip points.
+> >
+> > What action do you expect with:
+> >
+> >  - 'cold' ?
+> >
+> >  - 'critical_cold' ?
+> >
+> >
+>
+> This is more of a sensible topic but I think it's the thermal driver
+> that needs to implement these. As said in the commit description,
+> examples are setting higher voltage from the attached regulator,
+> enabling some hardware heater.
 
-Changes since v1 patch:
- * fix the return statement & comment in check() function
- * attempt to make SLS & RETPOLINE strict
+So how is it different from an active trip point?  There are heating
+rather than cooling devices associated with it, but other than this??
 
-v1: https://lore.kernel.org/all/20231212185339.1562967-1-dimitri.ledkov@canonical.com/
+> Maybe with critical cold bigger measure can be applied. Currently for
+> critical trip point we shutdown the system (if the critical ops is not
+> declared) but with critical_cold condition I think it won't work... I
+> expect a system in -40°C would just lock up/glitch so rebooting in that
+> condition won't change a thing...
+>
+> Anyway yes we can define a shutdown by default for that but IMHO it
+> wouldn't make much sense.
 
-Dimitri John Ledkov (3):
-  objtool: Make objtool check actually fatal upon fatal errors
-  objtool: make objtool SLS validation fatal when building with
-    CONFIG_SLS=y
-  objtool: make objtool RETPOLINE validation fatal when building with
-    CONFIG_RETPOLINE=y
-
- tools/objtool/check.c | 26 ++++++++++++++------------
- 1 file changed, 14 insertions(+), 12 deletions(-)
-
--- 
-2.34.1
-
+So why do you want to add it at all?
