@@ -2,111 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3795D810D5B
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 10:27:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7141B810D5F
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 10:28:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232397AbjLMJ1i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 04:27:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55266 "EHLO
+        id S230029AbjLMJ2L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 04:28:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38394 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229671AbjLMJ1g (ORCPT
+        with ESMTP id S229975AbjLMJ2J (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 04:27:36 -0500
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B41A7D5;
-        Wed, 13 Dec 2023 01:27:42 -0800 (PST)
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id D79071FD42;
-        Wed, 13 Dec 2023 09:27:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1702459661; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=KrOl+eoYRZqzUPXxqHI+9Z2AX8/dXg0cgxXIwK8DDv4=;
-        b=VFvemXLo629tPCuIYNRBZ/XSV+Jp/pyfnJvCJ/RhE+N/p3jJJ7tbycmouDbzhell8yLF+Q
-        1WgB2GPPhgNbiaVyrkFo6umETjGTow2moLa2iobwR7rxXdpWDpL93EutEjN5HfCm6eEqlf
-        JsRbXd+q2BabgDJ735eNXiFgasfB498=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1702459661;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=KrOl+eoYRZqzUPXxqHI+9Z2AX8/dXg0cgxXIwK8DDv4=;
-        b=1B1tCJxInt+13rs5oBAZV6YLFHpVhVDVCYUcHhLTFLd/luC6TW8nYlOPuHL+xkjSTCxlUe
-        zEZ77S35s2p3Y4Bw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1702459660; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=KrOl+eoYRZqzUPXxqHI+9Z2AX8/dXg0cgxXIwK8DDv4=;
-        b=TpR1VS5H5nXhddpoXWhesVJwoEAESVO+VUEHpe8h8r/vncos4CkEqoZBJz4mHG8X3uGmu0
-        x/2uPqopvKKVAM43h5PpibGyv+xZ05qFiENlyJItYAn1dOhndQzRKUXtm6N6Kw5XPs7zl6
-        JCXm/sB1OfaFpZE7UjBjJxXJqDNydUw=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1702459660;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=KrOl+eoYRZqzUPXxqHI+9Z2AX8/dXg0cgxXIwK8DDv4=;
-        b=8u+CRDT7zaL+bxV3MIAYznIEotLGpRgj4958+NQ87j+RQ7ah8fyZMndTnKbw6ryn/9goWW
-        rKbyBVaDq3k2q1BQ==
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id C3B5B13240;
-        Wed, 13 Dec 2023 09:27:40 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-        by imap2.dmz-prg2.suse.org with ESMTPSA
-        id TFjELwx5eWXYYAAAn2gu4w
-        (envelope-from <jack@suse.cz>); Wed, 13 Dec 2023 09:27:40 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id 3559BA07E0; Wed, 13 Dec 2023 10:27:40 +0100 (CET)
-Date:   Wed, 13 Dec 2023 10:27:40 +0100
-From:   Jan Kara <jack@suse.cz>
-To:     Suraj Jitindar Singh <surajjs@amazon.com>
-Cc:     tytso@mit.edu, adilger.kernel@dilger.ca, jack@suse.cz,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
-        sjitindarsingh@smail.com, stable@vger.kernel.org
-Subject: Re: [PATCH] fs/ext4: Allow for the last group to be marked as trimmed
-Message-ID: <20231213092740.2q3lwn45hpmtqoxu@quack3>
-References: <20231213051635.37731-1-surajjs@amazon.com>
+        Wed, 13 Dec 2023 04:28:09 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 701ADF2;
+        Wed, 13 Dec 2023 01:28:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1702459696; x=1733995696;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=g8T7+RN/Amg9T6Fwcl3MQA6vW4Udl2Otlf/N/8Od3Nk=;
+  b=P14eFzF0xm2IbeI9/MwnbqpaW8WcOwivJECS1CQzEsksrzi8Q008yFTR
+   EQCHby8xUlBkmS8LvRBauo9T1FCPFS3WJEE2dDwiXDOE+LHL7yBHuq22e
+   ZsdG4SJRUDgGYs933qSS3dY3oK+J6FWkQHzXSWbZhhiqLyTWBOl5TEJQV
+   /KLkjxj3O+lKZisURmr3M5TJtIFG32bqMo/1x3S2ARejEt3e7T9mBEbL+
+   UKDXw3d7cyEkJdxKMNPWtRFJHmdwEwo+JbUde/eGpM4AUtFHn9bpysCsd
+   EWw8v/dXPyfRRZXhVqWR6d636ccnye34NY6dBcofBJT+HqovvcvUN4Dnk
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10922"; a="393810210"
+X-IronPort-AV: E=Sophos;i="6.04,272,1695711600"; 
+   d="scan'208";a="393810210"
+Received: from fmviesa001.fm.intel.com ([10.60.135.141])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Dec 2023 01:28:16 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.04,272,1695711600"; 
+   d="scan'208";a="17665299"
+Received: from turnipsi.fi.intel.com (HELO kekkonen.fi.intel.com) ([10.237.72.44])
+  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Dec 2023 01:28:14 -0800
+Received: from kekkonen.localdomain (localhost [127.0.0.1])
+        by kekkonen.fi.intel.com (Postfix) with SMTP id A72C711F7E4;
+        Wed, 13 Dec 2023 11:28:11 +0200 (EET)
+Date:   Wed, 13 Dec 2023 09:28:11 +0000
+From:   Sakari Ailus <sakari.ailus@linux.intel.com>
+To:     Tommaso Merciai <tomm.merciai@gmail.com>
+Cc:     linuxfancy@googlegroups.com, Martin Hecht <martin.hecht@avnet.eu>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] media: i2c: alvium-csi2: adjust code style for alvium
+ driver
+Message-ID: <ZXl5K7FqRzCNQsUZ@kekkonen.localdomain>
+References: <20231212125319.732390-1-tomm.merciai@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231213051635.37731-1-surajjs@amazon.com>
-X-Spam-Level: 
-X-Spam-Score: -0.60
-Authentication-Results: smtp-out2.suse.de;
-        none
-X-Spam-Level: 
-X-Spam-Score: -0.60
-X-Spamd-Result: default: False [-0.60 / 50.00];
-         ARC_NA(0.00)[];
-         RCVD_VIA_SMTP_AUTH(0.00)[];
-         FROM_HAS_DN(0.00)[];
-         TO_DN_SOME(0.00)[];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         NEURAL_HAM_LONG(-1.00)[-1.000];
-         MIME_GOOD(-0.10)[text/plain];
-         NEURAL_SPAM_SHORT(3.00)[1.000];
-         RCVD_COUNT_THREE(0.00)[3];
-         DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-         RCPT_COUNT_SEVEN(0.00)[8];
-         DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email];
-         FUZZY_BLOCKED(0.00)[rspamd.com];
-         FROM_EQ_ENVFROM(0.00)[];
-         MIME_TRACE(0.00)[0:+];
-         MID_RHS_NOT_FQDN(0.50)[];
-         RCVD_TLS_ALL(0.00)[];
-         BAYES_HAM(-3.00)[100.00%]
-X-Spam-Flag: NO
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+In-Reply-To: <20231212125319.732390-1-tomm.merciai@gmail.com>
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -114,90 +65,17 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 13-12-23 16:16:35, Suraj Jitindar Singh wrote:
-> The ext4 filesystem tracks the trim status of blocks at the group level.
-> When an entire group has been trimmed then it is marked as such and subsequent
-> trim invocations with the same minimum trim size will not be attempted on that
-> group unless it is marked as able to be trimmed again such as when a block is
-> freed.
+On Tue, Dec 12, 2023 at 01:53:19PM +0100, Tommaso Merciai wrote:
+> Make some formatting changes to fix issues generated by
+> checkpatch.pl script
 > 
-> Currently the last group can't be marked as trimmed due to incorrect logic
-> in ext4_last_grp_cluster(). ext4_last_grp_cluster() is supposed to return the
-> zero based index of the last cluster in a group. This is then used by
-> ext4_try_to_trim_range() to determine if the trim operation spans the entire
-> group and as such if the trim status of the group should be recorded.
+> cmd:
+>  - ./scripts/checkpatch.pl --strict --max-line-length=80
 > 
-> ext4_last_grp_cluster() takes a 0 based group index, thus the valid values
-> for grp are 0..(ext4_get_groups_count - 1). Any group index less than
-> (ext4_get_groups_count - 1) is not the last group and must have
-> EXT4_CLUSTERS_PER_GROUP(sb) clusters. For the last group we need to calculate
-> the number of clusters based on the number of blocks in the group. Finally
-> subtract 1 from the number of clusters as zero based indexing is expected.
-> Rearrange the function slightly to make it clear what we are calculating
-> and returning.
-> 
-> Reproducer:
-> // Create file system where the last group has fewer blocks than blocks per group
-> $ mkfs.ext4 -b 4096 -g 8192 /dev/nvme0n1 8191
-> $ mount /dev/nvme0n1 /mnt
-> 
-> Before Patch:
-> $ fstrim -v /mnt
-> /mnt: 25.9 MiB (27156480 bytes) trimmed
-> // Group not marked as trimmed so second invocation still discards blocks
-> $ fstrim -v /mnt
-> /mnt: 25.9 MiB (27156480 bytes) trimmed
-> 
-> After Patch:
-> fstrim -v /mnt
-> /mnt: 25.9 MiB (27156480 bytes) trimmed
-> // Group marked as trimmed so second invocation DOESN'T discard any blocks
-> fstrim -v /mnt
-> /mnt: 0 B (0 bytes) trimmed
-> 
-> Fixes: 45e4ab320c9b ("ext4: move setting of trimmed bit into ext4_try_to_trim_range()")
-> Cc: stable@vger.kernel.org # 4.19+
-> Signed-off-by: Suraj Jitindar Singh <surajjs@amazon.com>
+> Signed-off-by: Tommaso Merciai <tomm.merciai@gmail.com>
 
-Indeed. The fix looks good. Feel free to add:
+Thanks, Tommaso. I've squashed this to the driver patch as I needed to
+rework some patches in the branch anyway.
 
-Reviewed-by: Jan Kara <jack@suse.cz>
-
-								Honza
-
-> ---
->  fs/ext4/mballoc.c | 15 ++++++++++-----
->  1 file changed, 10 insertions(+), 5 deletions(-)
-> 
-> diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-> index 454d5612641ee..c15d8b6f887dd 100644
-> --- a/fs/ext4/mballoc.c
-> +++ b/fs/ext4/mballoc.c
-> @@ -6731,11 +6731,16 @@ __acquires(bitlock)
->  static ext4_grpblk_t ext4_last_grp_cluster(struct super_block *sb,
->  					   ext4_group_t grp)
->  {
-> -	if (grp < ext4_get_groups_count(sb))
-> -		return EXT4_CLUSTERS_PER_GROUP(sb) - 1;
-> -	return (ext4_blocks_count(EXT4_SB(sb)->s_es) -
-> -		ext4_group_first_block_no(sb, grp) - 1) >>
-> -					EXT4_CLUSTER_BITS(sb);
-> +	unsigned long nr_clusters_in_group;
-> +
-> +	if (grp < (ext4_get_groups_count(sb) - 1))
-> +		nr_clusters_in_group = EXT4_CLUSTERS_PER_GROUP(sb);
-> +	else
-> +		nr_clusters_in_group = (ext4_blocks_count(EXT4_SB(sb)->s_es) -
-> +					ext4_group_first_block_no(sb, grp))
-> +				       >> EXT4_CLUSTER_BITS(sb);
-> +
-> +	return nr_clusters_in_group - 1;
->  }
->  
->  static bool ext4_trim_interrupted(void)
-> -- 
-> 2.34.1
-> 
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+Sakari Ailus
