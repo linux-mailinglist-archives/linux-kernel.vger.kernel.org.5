@@ -2,159 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DE2FA811EAE
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 20:18:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C2640811EBA
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 20:20:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442110AbjLMTSc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 14:18:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39888 "EHLO
+        id S1442092AbjLMTUM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 14:20:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58278 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233820AbjLMTSa (ORCPT
+        with ESMTP id S1379292AbjLMTUK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 14:18:30 -0500
-Received: from wout5-smtp.messagingengine.com (wout5-smtp.messagingengine.com [64.147.123.21])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3931899;
-        Wed, 13 Dec 2023 11:18:35 -0800 (PST)
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
-        by mailout.west.internal (Postfix) with ESMTP id 3BD0E3200A87;
-        Wed, 13 Dec 2023 14:18:32 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute6.internal (MEProxy); Wed, 13 Dec 2023 14:18:33 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=tycho.pizza; h=
-        cc:cc:content-type:content-type:date:date:from:from:in-reply-to
-        :in-reply-to:message-id:mime-version:references:reply-to:subject
-        :subject:to:to; s=fm3; t=1702495111; x=1702581511; bh=rTKNnsrQRM
-        nS8HXpSk58pANoO1SStG84VUsz7kfxXxM=; b=ClLqg68gARRSVfy2COP9A3lr0P
-        Ir1J775L5oC6BkvE5DBCMFzJC/Kg2zPBJ6wRG5CsaeUIqWhVMgUSNb1YID/143+w
-        vSzoFS7WvI34FBktKH/F5/X4n5k7iHsSkfXvR9Tlg7IDuEleNhh9YiE/obYVmA64
-        fTMqxBHGKbuFELGM89Ztty8EZQJOsUTEur3P8RSlkVZECovtH6hVCFvj9v69wAUH
-        V6hKoKy2eN4TQDZB3PL7dxs2uZcoge/5H895xcRA7gktmWrgh3/eG88TcfF+vBca
-        LqZg7E6WagrSttnVqUJoTWSOaYW55luK1a1MY+h6VF2lhTaWiW4eCOvF2pFw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-type:content-type:date:date
-        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-        :message-id:mime-version:references:reply-to:subject:subject:to
-        :to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm1; t=1702495111; x=1702581511; bh=rTKNnsrQRMnS8HXpSk58pANoO1SS
-        tG84VUsz7kfxXxM=; b=Owk85+cJNwk+wQvXcZB7S38pZKIpiNd7oMm5ZjXlCYt2
-        X1afxwu1nvbz4jViVwLAYKhPhMAxwglo3vGuv/ZwTipJZCusYy6YGGWIa8E7dZSu
-        ejei6gRs5rvrCwmia0r4emvPf5OMrSvSkdddKvVnRxqZyNZ9KYZ5MpmeXLo8H3yw
-        Aiuy2P3cCC2/eHH6DoUVoY7oxwig2WtbKBf94GpS7Q8pvqv4S5sDESafxaN9RBGM
-        ZRiyWd9F18ThbJbrqbW1/XG0BBD7xHRYrU39xohMF43/Pevhy/7OUw0ykHxPuXcp
-        4RfiNMyvpUUoRtGQFDKDuHvFedvdivWmtpGwod1J2Q==
-X-ME-Sender: <xms:hwN6ZTCBO1LqDuRNiQ-g6pcGIu_h222gbkn8pYuZvjdu2eZoJ0Dl2Q>
-    <xme:hwN6ZZg9nXlUZy09TwSxvz7GzfCUpGRYFGxAN2Exj7tM1-Zw045LdhWS1ZjnK8Vmu
-    vT5IsNktr-uReNFLM0>
-X-ME-Received: <xmr:hwN6Zekhypx6Jn36t-L1YAbi4OX3x212uT6IuWIRahv6xiGW7H2wx3JVtE0>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrudeljedgiedvucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepvfihtghh
-    ohcutehnuggvrhhsvghnuceothihtghhohesthihtghhohdrphhiiiiirgeqnecuggftrf
-    grthhtvghrnhepveektdeihedvgeeffeejgfduheekheeiledtvefhuddtgeeftdfgudek
-    jeevhfetnecuffhomhgrihhnpehpihgufhgupghtvghsthdrfhgrihhlpdhgihhthhhusg
-    drtghomhdpkhgvrhhnvghlrdhorhhgpdhpihgufhgupghpohhllhgpthgvshhtrdhfrghi
-    lhenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehthi
-    gthhhosehthigthhhordhpihiiiigr
-X-ME-Proxy: <xmx:hwN6ZVwyN_LXKrS-j1E4N8FX2NKXML4qFy9GnwAPNWto2ktG2jvCjg>
-    <xmx:hwN6ZYTd0il5S5GoOr9Ap9C_CZYcQLj6PshFR1EHa0EUAVD0vdldLA>
-    <xmx:hwN6ZYaFY3AA7lGci3c7hxNJ_I3nmaTNFYiZ0ngiIlnQtqfOEYns4A>
-    <xmx:hwN6ZdRdsfaqGr7G05gyK_zuR-xnRKoyT2YqhWbcNRXmkEJ1hgQtRg>
-Feedback-ID: i21f147d5:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 13 Dec 2023 14:18:30 -0500 (EST)
-Date:   Wed, 13 Dec 2023 12:18:28 -0700
-From:   Tycho Andersen <tycho@tycho.pizza>
-To:     Christian Brauner <brauner@kernel.org>
-Cc:     kernel test robot <oliver.sang@intel.com>, oe-lkp@lists.linux.dev,
-        lkp@intel.com, linux-kernel@vger.kernel.org,
-        Oleg Nesterov <oleg@redhat.com>,
-        "Eric W . Biederman" <ebiederm@xmission.com>,
-        linux-api@vger.kernel.org, Tycho Andersen <tandersen@netflix.com>
-Subject: Re: [PATCH v2 1/3] pidfd: allow pidfd_open() on non-thread-group
- leaders
-Message-ID: <ZXoDhLkWJB5HM1i/@tycho.pizza>
-References: <20231207170946.130823-1-tycho@tycho.pizza>
- <202312111516.26dc3fd5-oliver.sang@intel.com>
- <20231213-famos-chillen-41adc67ac0ef@brauner>
+        Wed, 13 Dec 2023 14:20:10 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32116AD
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 11:20:17 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 192ACC433C8;
+        Wed, 13 Dec 2023 19:20:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1702495216;
+        bh=pvOifwzmhzVpqy1B65sXqWWUfUoqN1GPpaLpMOsu7M4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=NL1y6ZXgRJFSI8gechwwAiu4XkPxMrQCZ3LQNQoh+duY2ym7IXeYgeVkjmO2P1Zbp
+         hDB4oqmrb5FVjrgp7O203jYtSPqIGDoV9OS1/Jbw9Pm5ip8FfSqnjsP3MIsKZDrBGu
+         YEgcG/fnfM+jv2gl1iv6i4nPkj0CyWYn80MYGVmGbS+geBXWsswLAJ0tNb6cKFCrVV
+         flEZrv8+fHhFUjfVj5zJUxJ5DFdyyf8jl1rMuqrzWJFEZsL0DWeFuJy6wM7WghLieX
+         wYSBun4sk1TjGGVYkzyvgslg0iWFnwrQQgInI+Cc4cE4XgUtkpXL/nkWz2ovZm43vk
+         Iso4DkVscs6Kg==
+Date:   Wed, 13 Dec 2023 19:20:09 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     Neil Armstrong <neil.armstrong@linaro.org>
+Cc:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        Banajit Goswami <bgoswami@quicinc.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>, linux-arm-msm@vger.kernel.org,
+        alsa-devel@alsa-project.org, linux-sound@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 5/5] ASoC: codecs: Add WCD939x Codec driver
+Message-ID: <4dae5296-9984-4c3b-803a-f6024edd0dd9@sirena.org.uk>
+References: <20231207-topic-sm8650-upstream-wcd939x-codec-v3-0-6df9585ec7c8@linaro.org>
+ <20231207-topic-sm8650-upstream-wcd939x-codec-v3-5-6df9585ec7c8@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="QxFQz7KiJT5hHtQy"
 Content-Disposition: inline
-In-Reply-To: <20231213-famos-chillen-41adc67ac0ef@brauner>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20231207-topic-sm8650-upstream-wcd939x-codec-v3-5-6df9585ec7c8@linaro.org>
+X-Cookie: One size fits all.
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 13, 2023 at 01:18:03PM +0100, Christian Brauner wrote:
-> On Mon, Dec 11, 2023 at 03:28:09PM +0800, kernel test robot wrote:
-> > 
-> > 
-> > Hello,
-> > 
-> > kernel test robot noticed "kernel-selftests.pidfd.pidfd_test.fail" on:
-> > 
-> > commit: e6d9be676d2c1fa8332c63c4382b8d3227fca991 ("[PATCH v2 1/3] pidfd: allow pidfd_open() on non-thread-group leaders")
-> > url: https://github.com/intel-lab-lkp/linux/commits/Tycho-Andersen/selftests-pidfd-add-non-thread-group-leader-tests/20231208-011135
-> > patch link: https://lore.kernel.org/all/20231207170946.130823-1-tycho@tycho.pizza/
-> > patch subject: [PATCH v2 1/3] pidfd: allow pidfd_open() on non-thread-group leaders
-> > 
-> > in testcase: kernel-selftests
-> > version: kernel-selftests-x86_64-60acb023-1_20230329
-> > with following parameters:
-> > 
-> > 	group: pidfd
-> > 
-> > 
-> > 
-> > compiler: gcc-12
-> > test machine: 36 threads 1 sockets Intel(R) Core(TM) i9-10980XE CPU @ 3.00GHz (Cascade Lake) with 32G memory
-> > 
-> > (please refer to attached dmesg/kmsg for entire log/backtrace)
-> > 
-> > 
-> > 
-> > If you fix the issue in a separate patch/commit (i.e. not just a new version of
-> > the same patch/commit), kindly add following tags
-> > | Reported-by: kernel test robot <oliver.sang@intel.com>
-> > | Closes: https://lore.kernel.org/oe-lkp/202312111516.26dc3fd5-oliver.sang@intel.com
-> > 
-> > 
-> > besides, we also observed kernel-selftests.pidfd.pidfd_poll_test.fail on this
-> > commit, but clean on parent:
-> > 
-> > bee0e7762ad2c602 e6d9be676d2c1fa8332c63c4382
-> > ---------------- ---------------------------
-> >        fail:runs  %reproduction    fail:runs
-> >            |             |             |
-> >            :6          100%           6:6     kernel-selftests.pidfd.pidfd_poll_test.fail
-> >            :6          100%           6:6     kernel-selftests.pidfd.pidfd_test.fail
-> > 
-> > 
-> > 
-> > TAP version 13
-> > 1..7
-> > # timeout set to 300
-> > # selftests: pidfd: pidfd_test
-> > # TAP version 13
-> > # 1..8
-> > # # Parent: pid: 2191
-> > # # Parent: Waiting for Child (2192) to complete.
-> > # # Child (pidfd): starting. pid 2192 tid 2192
-> > # # Child Thread: starting. pid 2192 tid 2193 ; and sleeping
-> > # # Child Thread: doing exec of sleep
-> > # Bail out! pidfd_poll check for premature notification on child thread exec test: Unexpected epoll_wait result (c=0, events=0) (errno 0)
-> 
-> So it seems that this broke multi-threaded exit notifications.
 
-Yeah... I've been trying to figure out how to fix it.
+--QxFQz7KiJT5hHtQy
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-de_thread() calls release_task() for the original leader, which I
-didn't realize.
+On Thu, Dec 07, 2023 at 11:28:08AM +0100, Neil Armstrong wrote:
 
-Tycho
+> +static int wcd939x_rx_hph_mode_put(struct snd_kcontrol *kcontrol,
+> +				   struct snd_ctl_elem_value *ucontrol)
+> +{
+> +	struct snd_soc_component *component = snd_soc_kcontrol_component(kcontrol);
+> +	struct wcd939x_priv *wcd939x = snd_soc_component_get_drvdata(component);
+> +	u32 mode_val;
+> +
+> +	mode_val = ucontrol->value.enumerated.item[0];
+> +
+> +	if (wcd939x->variant == WCD9390) {
+> +		if (mode_val == CLS_H_HIFI || mode_val == CLS_AB_HIFI) {
+> +			dev_dbg(component->dev, "%s: Invalid HPH Mode\n", __func__);
+> +			return -EINVAL;
+> +		}
+> +	}
+> +	if (mode_val == CLS_H_NORMAL) {
+> +		dev_dbg(component->dev, "%s: Unsupported HPH Mode\n", __func__);
+> +		return -EINVAL;
+> +	}
+> +
+> +	wcd939x->hph_mode = mode_val;
+
+This seems strange - the code will accept any value other than a small
+number of specifically enumerated ones?  I would have expected us to
+check a defined list of modes and reject anything that isn't in that
+list.  This also means that the get() function can return out of bounds
+values which is buggy.  Please use the mixer-test selftest on a card
+with this driver running, it should identify at least that issue.
+
+> +
+> +	return 1;
+> +}
+
+This will also unconditionally report that the value of the mux changed,
+the function should return 0 if the value written is the control value
+hasn't changed.
+
+--QxFQz7KiJT5hHtQy
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmV6A+kACgkQJNaLcl1U
+h9BJKQf/U5px02gwHeH7uG4m5GauMpoUmEDiaVVF7tWk02l3M27zveuoN30yDTA1
+pfCa5jV8hUInQwgNXtIOyUZCfHkQN1+OHlvIdkse8NRlLja7PoAXNgu/iw6U0j66
+zSqNGkvYePeMg+AJV/ZGJKfNKFomFc33V3EUC1iVKSWgsDBFjfQqau4TA9/smuaU
+CT6RN5au6S7c5hg1Xyl2AK7RPadJM9rmmxJggOqNUYhYjmFMT7VWYhTta5yQXKak
+Q/2L1+p91ZUr/HYHhVXzY8x/ptX3G7+w2nbIlXkOPuvdw41wGLdAPgpFw9oRmswK
+OERs69V+GdvlY6g8PFruUFeS80qYgQ==
+=FDxZ
+-----END PGP SIGNATURE-----
+
+--QxFQz7KiJT5hHtQy--
