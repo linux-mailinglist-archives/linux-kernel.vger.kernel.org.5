@@ -2,141 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A60CC81107C
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 12:48:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C5B4381107F
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 12:49:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378140AbjLMLsC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 06:48:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55268 "EHLO
+        id S1378151AbjLMLs4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 06:48:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40982 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235348AbjLMLsA (ORCPT
+        with ESMTP id S233322AbjLMLsy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 06:48:00 -0500
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0C81EB;
-        Wed, 13 Dec 2023 03:48:06 -0800 (PST)
-Received: from pendragon.ideasonboard.com (213-243-189-158.bb.dnainternet.fi [213.243.189.158])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 91C4D4A9;
-        Wed, 13 Dec 2023 12:47:19 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1702468039;
-        bh=K5vzJMZCByu2FUPV6KuqqU9Oq1PbXacIfstj1rPq/7Y=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=bWhhRaBNUo2jZyMdx+toUqPxhZmYst0bqZgyUgb3ezFtaHvlU7NSFCNP57b15eWom
-         NQ2f7LRfvRz/iwNTe6U2cuHTsmf3kSPE0UCoCQnffcseia+6+317MIrVSjcyi3emRQ
-         GiasRiljz7r2+xTZ0y0xbvMgXJYwc1+edUps42yQ=
-Date:   Wed, 13 Dec 2023 13:48:12 +0200
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-Cc:     Arnd Bergmann <arnd@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Jacopo Mondi <jacopo.mondi@ideasonboard.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Wed, 13 Dec 2023 06:48:54 -0500
+Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88659AF;
+        Wed, 13 Dec 2023 03:48:59 -0800 (PST)
+Received: from mail.maildlp.com (unknown [172.19.163.44])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4SqtyY5ySQz29g0y;
+        Wed, 13 Dec 2023 19:47:49 +0800 (CST)
+Received: from dggpemm500005.china.huawei.com (unknown [7.185.36.74])
+        by mail.maildlp.com (Postfix) with ESMTPS id 5ECA31400DA;
+        Wed, 13 Dec 2023 19:48:57 +0800 (CST)
+Received: from [10.69.30.204] (10.69.30.204) by dggpemm500005.china.huawei.com
+ (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Wed, 13 Dec
+ 2023 19:48:57 +0800
+Subject: Re: [net-next v1 09/16] page_pool: device memory support
+To:     Mina Almasry <almasrymina@google.com>
+CC:     Shailend Chand <shailend@google.com>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-doc@vger.kernel.org>,
+        <linux-arch@vger.kernel.org>, <linux-kselftest@vger.kernel.org>,
+        <bpf@vger.kernel.org>, <linux-media@vger.kernel.org>,
+        <dri-devel@lists.freedesktop.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Jeroen de Borst <jeroendb@google.com>,
+        Praveen Kaligineedi <pkaligineedi@google.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
         Arnd Bergmann <arnd@arndb.de>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Bill Wendling <morbo@google.com>,
-        Justin Stitt <justinstitt@google.com>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        llvm@lists.linux.dev
-Subject: Re: [PATCH] [v2] media: i2c: mt9m114: use fsleep() in place of
- udelay()
-Message-ID: <20231213114812.GB769@pendragon.ideasonboard.com>
-References: <20231213112322.1655236-1-arnd@kernel.org>
- <5c5647d5-b389-4d71-9062-3a9921212079@ideasonboard.com>
+        David Ahern <dsahern@kernel.org>,
+        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
+        Harshitha Ramamurthy <hramamurthy@google.com>,
+        Shakeel Butt <shakeelb@google.com>
+References: <20231208005250.2910004-1-almasrymina@google.com>
+ <20231208005250.2910004-10-almasrymina@google.com>
+ <32211cbf-3a4e-8a86-6214-4304ddb18a98@huawei.com>
+ <CAHS8izOQcuLPwvDff96fuNB7r6EU9OWt3ShueQp=u7wat3L5LA@mail.gmail.com>
+ <92e30bd9-6df4-b72f-7bcd-f4fe5670eba2@huawei.com>
+ <CAHS8izPEFsqw50qgM+sPot6XVvOExpd+DrwrmPSR3zsWGLysRw@mail.gmail.com>
+ <CAHS8izN6Cbjy0FCYhJyNsP396XfgJ_nTFXWuHb5QWNct=PifAg@mail.gmail.com>
+ <59e07233-24cb-7fb2-1aee-e1cf7eb72fa9@huawei.com>
+ <CAHS8izMdpo0D7GYzMkOtg1ueCODAVNxtwSP_qPseSYXNMhPGCw@mail.gmail.com>
+ <2cdf173c-95e4-2141-56f7-0761705cd737@huawei.com>
+ <CAHS8izOTdqqbS6ajAo+c646UwXkK-aB8ET9uJRS6Auszfi0nfA@mail.gmail.com>
+From:   Yunsheng Lin <linyunsheng@huawei.com>
+Message-ID: <17adf1c0-e4ad-4baf-4d01-32d6544cc13e@huawei.com>
+Date:   Wed, 13 Dec 2023 19:48:56 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.2.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <5c5647d5-b389-4d71-9062-3a9921212079@ideasonboard.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <CAHS8izOTdqqbS6ajAo+c646UwXkK-aB8ET9uJRS6Auszfi0nfA@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.69.30.204]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggpemm500005.china.huawei.com (7.185.36.74)
+X-Spam-Status: No, score=-4.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 13, 2023 at 01:40:54PM +0200, Tomi Valkeinen wrote:
-> On 13/12/2023 13:23, Arnd Bergmann wrote:
-> > From: Arnd Bergmann <arnd@arndb.de>
-> > 
-> > With clang-16, building without COMMON_CLK triggers a range check on
-> > udelay() because of a constant division-by-zero calculation:
-> > 
-> > ld.lld: error: undefined symbol: __bad_udelay
-> >>>> referenced by mt9m114.c
-> >>>>                drivers/media/i2c/mt9m114.o:(mt9m114_power_on) in archive vmlinux.a
-> > 
-> > In this configuration, the driver already fails to probe, before
-> > this function gets called, so it's enough to suppress the assertion.
-> > 
-> > Do this by using fsleep(), which turns long delays into sleep() calls
-> > in place of the link failure.
-> > 
-> > This is probably a good idea regardless to avoid overly long dynamic
-> > udelay() calls on a slow clock.
-> > 
-> > Cc: Sakari Ailus <sakari.ailus@linux.intel.com>
-> > Fixes: 24d756e914fc ("media: i2c: Add driver for onsemi MT9M114 camera sensor")
-> > Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> > ---
-> >   drivers/media/i2c/mt9m114.c | 2 +-
-> >   1 file changed, 1 insertion(+), 1 deletion(-)
-> > 
-> > diff --git a/drivers/media/i2c/mt9m114.c b/drivers/media/i2c/mt9m114.c
-> > index 0a22f328981d..68adaecaf481 100644
-> > --- a/drivers/media/i2c/mt9m114.c
-> > +++ b/drivers/media/i2c/mt9m114.c
-> > @@ -2116,7 +2116,7 @@ static int mt9m114_power_on(struct mt9m114 *sensor)
-> >   		duration = DIV_ROUND_UP(2 * 50 * 1000000, freq);
-> >   
-> >   		gpiod_set_value(sensor->reset, 1);
-> > -		udelay(duration);
-> > +		fsleep(duration);
-> >   		gpiod_set_value(sensor->reset, 0);
-> >   	} else {
-> >   		/*
-> 
-> I think this is fine, so:
-> 
-> Reviewed-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-> 
-> But: If we don't have COMMON_CLK (or rather, I think, HAVE_CLK), the 
-> freq will be zero at compile time. So won't the compiler give a warning 
-> for the DIV_ROUND_UP() call?
-> 
-> Interestingly, for me, this doesn't give a div-by-zero warning:
-> 
-> 	int x;
-> 	int y = 0;
-> 	x = DIV_ROUND_UP(10, y);
-> 
-> but this does:
-> 
-> 	int x;
-> 	const int y = 0;
-> 	x = DIV_ROUND_UP(10, y);
-> 
-> And looks like this gives the warning too:
-> 
-> 	int x;
-> 	const int y = 0;
-> 	if (y)
-> 		x = DIV_ROUND_UP(10, y);
-> 
-> So, I think, the code in the driver could fail to compile at some later 
-> point, if the compiler warnings are improved (?), or if someone adds a 
-> 'const' in front of 'long freq = clk_get_rate(sensor->clk);' line.
-> 
-> Maybe worry about that if it actually happens =).
+On 2023/12/12 22:28, Mina Almasry wrote:
 
-Maybe :-) I would be tempted to make VIDEO_CAMERA_SENSOR depend on
-COMMON_CLK.
+...
 
--- 
-Regards,
+>>
+>> the page_ref_*() API may be avoided using the below patch:
+>> https://patchwork.kernel.org/project/netdevbpf/patch/20231113130041.58124-7-linyunsheng@huawei.com/
+>>
+> 
+> Even after the patch above, you're still calling page_ref_count() in
+> the page_pool to check for recycling, so after that patch you're still
+> using page->_refcount.
 
-Laurent Pinchart
+Yes, we still need page_ref_count(), which seems be a similar problem
+like the one for page_is_pfmemalloc(), can we deal with it like most
+of other fields?
+
+> 
+>> But I am not sure how to do that for tx part if devmem for tx is not
+>> intergating into page_pool, that is why I suggest having a tx implementation
+>> for the next version, so that we can have a whole picture of devmem.
+>>
+> 
+> I strongly prefer to keep the TX implementation in a separate series.
+> This series is complicated to implement and review as it is, and is
+> hitting the 15 patch limit anyway.
+
+I am not sure how complicated the TX implementation for devmem will be
+for the latest version, but from the RFCv1, it seems it is simple enough
+to keep it in one patchset.
+
+Anyway, it would be good to sort out the basic idea what is the tx API
+for devmem when designing/implementing the rx API for devmem.
+
+> 
