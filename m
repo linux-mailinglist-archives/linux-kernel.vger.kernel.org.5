@@ -2,43 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D848B811F80
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 20:54:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 47AEA811F7D
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 20:54:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442594AbjLMTxy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 14:53:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49824 "EHLO
+        id S235215AbjLMTxv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 14:53:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34318 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379389AbjLMTxX (ORCPT
+        with ESMTP id S235485AbjLMTxX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 13 Dec 2023 14:53:23 -0500
 Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28452D63;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC9E4D68;
         Wed, 13 Dec 2023 11:52:45 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1702497165; x=1734033165;
+  t=1702497166; x=1734033166;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=uwcMWELte6aNw2HK3dLsvtM1ULUIBD915KLrOBIIDv4=;
-  b=J4wjhkRNBz8fmZLoe80vVB3kn70bLcwUrnVUCgFXXlJRWYNNrODOZUpW
-   NqaPQJ7CyrKWWOJyrkA7c6N5HDGedsd4PjUp+3dbUDjkLkykyqAkeY0ai
-   ouFGUKIq71vUPIwzVMVdhUduX96aQ0FKg/AG0UBXWCR7m5Oddy3WaOyIB
-   TMg/48vy8ka0EeDwO5WNuxyA0VUqfns1jQqeGDqVde2wzCpevTr8D9qBm
-   BODba0Krs8HoKflrznL4So9JIXRXdpaVTjgHxd54qiQV842UgU62SNAI2
-   g/BnA31lY+pSdjkqzM6Z5YgI7PfWZH7pUvtVxytQVTHlI0+OQ3UFVy1lA
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10923"; a="8412949"
+  bh=3r6W+znWevT5zm8hTkKoHcQtnIrf5IlOIeTi31U9+ic=;
+  b=gLFmTrC+/MA7Lsoe5yXIVGJpqhpSJ4elHE4INGah4ungTjNqAjJwYr19
+   EHn96zjf/f3sYYXObKLeA/0RPq/lzouTRHDLnChEdZoysxCs5ClZdk8Oo
+   RPwFRUKcIdsxYMZJsY7fUYuehRZosmDJ3S+SX1AFhSbARIJTAqhDI0AY9
+   +i8sfswH1qGK8gGK43EAVpSrsORyqgR86heFb7I+pG/ECru6DSAbtbTw6
+   G+0xozuyhH36KrXGHUF3UULxdmsG22WQ0ZUwL2oXWpTkozkxs8FGoyCM6
+   uA4b9R0sJPIt65rVo3gFfHjVK9IfxqNdrM8lQKSr5YFfIHerG0CT4hxIA
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10923"; a="8412963"
 X-IronPort-AV: E=Sophos;i="6.04,273,1695711600"; 
-   d="scan'208";a="8412949"
+   d="scan'208";a="8412963"
 Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Dec 2023 11:52:09 -0800
+  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Dec 2023 11:52:10 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10923"; a="917772581"
+X-IronPort-AV: E=McAfee;i="6600,9927,10923"; a="917772584"
 X-IronPort-AV: E=Sophos;i="6.04,273,1695711600"; 
-   d="scan'208";a="917772581"
+   d="scan'208";a="917772584"
 Received: from kanliang-dev.jf.intel.com ([10.165.154.102])
-  by fmsmga001.fm.intel.com with ESMTP; 13 Dec 2023 11:52:08 -0800
+  by fmsmga001.fm.intel.com with ESMTP; 13 Dec 2023 11:52:09 -0800
 From:   kan.liang@linux.intel.com
 To:     acme@kernel.org, irogers@google.com, peterz@infradead.org,
         mingo@redhat.com, namhyung@kernel.org, jolsa@kernel.org,
@@ -50,9 +50,9 @@ To:     acme@kernel.org, irogers@google.com, peterz@infradead.org,
         linux-perf-users@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org
 Cc:     Kan Liang <kan.liang@linux.intel.com>
-Subject: [PATCH V3 6/7] perf mem: Clean up perf_mem_events__record_args()
-Date:   Wed, 13 Dec 2023 11:51:53 -0800
-Message-Id: <20231213195154.1085945-7-kan.liang@linux.intel.com>
+Subject: [PATCH V3 7/7] perf mem: Clean up perf_pmus__num_mem_pmus()
+Date:   Wed, 13 Dec 2023 11:51:54 -0800
+Message-Id: <20231213195154.1085945-8-kan.liang@linux.intel.com>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20231213195154.1085945-1-kan.liang@linux.intel.com>
 References: <20231213195154.1085945-1-kan.liang@linux.intel.com>
@@ -70,197 +70,132 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Kan Liang <kan.liang@linux.intel.com>
 
-The current code iterates all memory PMUs. It doesn't matter if the
-system has only one memory PMU or multiple PMUs. The check of
-perf_pmus__num_mem_pmus() is not required anymore.
+The number of mem PMUs can be calculated by searching the
+perf_pmus__scan_mem().
 
-The rec_tmp is not used in c2c and mem. Removing them as well.
+Remove the ARCH specific perf_pmus__num_mem_pmus()
 
-Suggested-by: Leo Yan <leo.yan@linaro.org>
 Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
 ---
- tools/perf/builtin-c2c.c     | 15 ++-------------
- tools/perf/builtin-mem.c     | 18 ++----------------
- tools/perf/util/mem-events.c | 34 ++++++++++++----------------------
- tools/perf/util/mem-events.h |  3 +--
- 4 files changed, 17 insertions(+), 53 deletions(-)
+ tools/perf/arch/x86/util/pmu.c | 10 ----------
+ tools/perf/builtin-c2c.c       |  2 +-
+ tools/perf/builtin-mem.c       |  2 +-
+ tools/perf/util/mem-events.c   | 14 ++++++++++++++
+ tools/perf/util/mem-events.h   |  1 +
+ tools/perf/util/pmus.c         |  6 ------
+ tools/perf/util/pmus.h         |  1 -
+ 7 files changed, 17 insertions(+), 19 deletions(-)
 
+diff --git a/tools/perf/arch/x86/util/pmu.c b/tools/perf/arch/x86/util/pmu.c
+index 0f49ff13cfe2..c3d89d6ba1bf 100644
+--- a/tools/perf/arch/x86/util/pmu.c
++++ b/tools/perf/arch/x86/util/pmu.c
+@@ -42,13 +42,3 @@ void perf_pmu__arch_init(struct perf_pmu *pmu __maybe_unused)
+ 			pmu->mem_events = perf_mem_events_intel;
+ 	}
+ }
+-
+-int perf_pmus__num_mem_pmus(void)
+-{
+-	/* AMD uses IBS OP pmu and not a core PMU for perf mem/c2c */
+-	if (x86__is_amd_cpu())
+-		return 1;
+-
+-	/* Intel uses core pmus for perf mem/c2c */
+-	return perf_pmus__num_core_pmus();
+-}
 diff --git a/tools/perf/builtin-c2c.c b/tools/perf/builtin-c2c.c
-index 838481505e08..3bcb903b6b38 100644
+index 3bcb903b6b38..16b40f5d43db 100644
 --- a/tools/perf/builtin-c2c.c
 +++ b/tools/perf/builtin-c2c.c
-@@ -3245,9 +3245,8 @@ static const char * const *record_mem_usage = __usage_record;
+@@ -3278,7 +3278,7 @@ static int perf_c2c__record(int argc, const char **argv)
+ 			     PARSE_OPT_KEEP_UNKNOWN);
  
- static int perf_c2c__record(int argc, const char **argv)
- {
--	int rec_argc, i = 0, j, rec_tmp_nr = 0;
-+	int rec_argc, i = 0, j;
- 	const char **rec_argv;
--	char **rec_tmp;
- 	int ret;
- 	bool all_user = false, all_kernel = false;
- 	bool event_set = false;
-@@ -3285,12 +3284,6 @@ static int perf_c2c__record(int argc, const char **argv)
+ 	/* Max number of arguments multiplied by number of PMUs that can support them. */
+-	rec_argc = argc + 11 * perf_pmus__num_mem_pmus();
++	rec_argc = argc + 11 * (perf_pmu__mem_events_num_mem_pmus(pmu) + 1);
+ 
+ 	rec_argv = calloc(rec_argc + 1, sizeof(char *));
  	if (!rec_argv)
- 		return -1;
- 
--	rec_tmp = calloc(rec_argc + 1, sizeof(char *));
--	if (!rec_tmp) {
--		free(rec_argv);
--		return -1;
--	}
--
- 	rec_argv[i++] = "record";
- 
- 	if (!event_set) {
-@@ -3319,7 +3312,7 @@ static int perf_c2c__record(int argc, const char **argv)
- 	rec_argv[i++] = "--phys-data";
- 	rec_argv[i++] = "--sample-cpu";
- 
--	ret = perf_mem_events__record_args(rec_argv, &i, rec_tmp, &rec_tmp_nr);
-+	ret = perf_mem_events__record_args(rec_argv, &i);
- 	if (ret)
- 		goto out;
- 
-@@ -3346,10 +3339,6 @@ static int perf_c2c__record(int argc, const char **argv)
- 
- 	ret = cmd_record(i, rec_argv);
- out:
--	for (i = 0; i < rec_tmp_nr; i++)
--		free(rec_tmp[i]);
--
--	free(rec_tmp);
- 	free(rec_argv);
- 	return ret;
- }
 diff --git a/tools/perf/builtin-mem.c b/tools/perf/builtin-mem.c
-index ef64bae77ca7..1d92e309c97c 100644
+index 1d92e309c97c..5b851e64e4a1 100644
 --- a/tools/perf/builtin-mem.c
 +++ b/tools/perf/builtin-mem.c
-@@ -72,10 +72,9 @@ static const char * const *record_mem_usage = __usage;
+@@ -106,7 +106,7 @@ static int __cmd_record(int argc, const char **argv, struct perf_mem *mem)
+ 			     PARSE_OPT_KEEP_UNKNOWN);
  
- static int __cmd_record(int argc, const char **argv, struct perf_mem *mem)
- {
--	int rec_argc, i = 0, j, tmp_nr = 0;
-+	int rec_argc, i = 0, j;
- 	int start, end;
- 	const char **rec_argv;
--	char **rec_tmp;
- 	int ret;
- 	bool all_user = false, all_kernel = false;
- 	struct perf_mem_event *e;
-@@ -116,15 +115,6 @@ static int __cmd_record(int argc, const char **argv, struct perf_mem *mem)
- 	if (!rec_argv)
- 		return -1;
+ 	/* Max number of arguments multiplied by number of PMUs that can support them. */
+-	rec_argc = argc + 9 * perf_pmus__num_mem_pmus();
++	rec_argc = argc + 9 * (perf_pmu__mem_events_num_mem_pmus(pmu) + 1);
  
--	/*
--	 * Save the allocated event name strings.
--	 */
--	rec_tmp = calloc(rec_argc + 1, sizeof(char *));
--	if (!rec_tmp) {
--		free(rec_argv);
--		return -1;
--	}
--
- 	rec_argv[i++] = "record";
- 
- 	e = perf_pmu__mem_events_ptr(pmu, PERF_MEM_EVENTS__LOAD_STORE);
-@@ -163,7 +153,7 @@ static int __cmd_record(int argc, const char **argv, struct perf_mem *mem)
- 		rec_argv[i++] = "--data-page-size";
- 
- 	start = i;
--	ret = perf_mem_events__record_args(rec_argv, &i, rec_tmp, &tmp_nr);
-+	ret = perf_mem_events__record_args(rec_argv, &i);
- 	if (ret)
- 		goto out;
- 	end = i;
-@@ -193,10 +183,6 @@ static int __cmd_record(int argc, const char **argv, struct perf_mem *mem)
- 
- 	ret = cmd_record(i, rec_argv);
- out:
--	for (i = 0; i < tmp_nr; i++)
--		free(rec_tmp[i]);
--
--	free(rec_tmp);
- 	free(rec_argv);
- 	return ret;
- }
+ 	if (mem->cpu_list)
+ 		rec_argc += 2;
 diff --git a/tools/perf/util/mem-events.c b/tools/perf/util/mem-events.c
-index 7d7df3d0b2b9..a20611b4fb1b 100644
+index a20611b4fb1b..637cbd4a7bfb 100644
 --- a/tools/perf/util/mem-events.c
 +++ b/tools/perf/util/mem-events.c
-@@ -218,14 +218,14 @@ void perf_pmu__mem_events_list(struct perf_pmu *pmu)
- 	}
+@@ -62,6 +62,20 @@ struct perf_pmu *perf_mem_events_find_pmu(void)
+ 	return perf_pmus__scan_mem(NULL);
  }
  
--int perf_mem_events__record_args(const char **rec_argv, int *argv_nr,
--				 char **rec_tmp, int *tmp_nr)
-+int perf_mem_events__record_args(const char **rec_argv, int *argv_nr)
++/**
++ * perf_pmu__mem_events_num_mem_pmus - Get the number of mem PMUs since the given pmu
++ * @pmu: Start pmu. If it's NULL, search the entire PMU list.
++ */
++int perf_pmu__mem_events_num_mem_pmus(struct perf_pmu *pmu)
++{
++	int num = 0;
++
++	while ((pmu = perf_pmus__scan_mem(pmu)) != NULL)
++		num++;
++
++	return num;
++}
++
+ static const char *perf_pmu__mem_events_name(int i, struct perf_pmu *pmu)
  {
- 	const char *mnt = sysfs__mount();
- 	struct perf_pmu *pmu = NULL;
--	int i = *argv_nr, k = 0;
  	struct perf_mem_event *e;
--
-+	int i = *argv_nr;
-+	const char *s;
-+	char *copy;
- 
- 	while ((pmu = perf_pmus__scan_mem(pmu)) != NULL) {
- 		for (int j = 0; j < PERF_MEM_EVENTS__MAX; j++) {
-@@ -240,30 +240,20 @@ int perf_mem_events__record_args(const char **rec_argv, int *argv_nr,
- 				return -1;
- 			}
- 
--			if (perf_pmus__num_mem_pmus() == 1) {
--				rec_argv[i++] = "-e";
--				rec_argv[i++] = perf_pmu__mem_events_name(j, pmu);
--			} else {
--				const char *s = perf_pmu__mem_events_name(j, pmu);
--
--				if (!perf_pmu__mem_events_supported(mnt, pmu, e))
--					continue;
-+			s = perf_pmu__mem_events_name(j, pmu);
-+			if (!s || !perf_pmu__mem_events_supported(mnt, pmu, e))
-+				continue;
- 
--				rec_argv[i++] = "-e";
--				if (s) {
--					char *copy = strdup(s);
--					if (!copy)
--						return -1;
-+			copy = strdup(s);
-+			if (!copy)
-+				return -1;
- 
--					rec_argv[i++] = copy;
--					rec_tmp[k++] = copy;
--				}
--			}
-+			rec_argv[i++] = "-e";
-+			rec_argv[i++] = copy;
- 		}
- 	}
- 
- 	*argv_nr = i;
--	*tmp_nr = k;
- 	return 0;
- }
- 
 diff --git a/tools/perf/util/mem-events.h b/tools/perf/util/mem-events.h
-index f817a507b106..c97cd3caa766 100644
+index c97cd3caa766..15d5f0320d27 100644
 --- a/tools/perf/util/mem-events.h
 +++ b/tools/perf/util/mem-events.h
-@@ -46,8 +46,7 @@ struct perf_pmu *perf_mem_events_find_pmu(void);
+@@ -43,6 +43,7 @@ int perf_pmu__mem_events_init(struct perf_pmu *pmu);
+ 
+ struct perf_mem_event *perf_pmu__mem_events_ptr(struct perf_pmu *pmu, int i);
+ struct perf_pmu *perf_mem_events_find_pmu(void);
++int perf_pmu__mem_events_num_mem_pmus(struct perf_pmu *pmu);
  bool is_mem_loads_aux_event(struct evsel *leader);
  
  void perf_pmu__mem_events_list(struct perf_pmu *pmu);
--int perf_mem_events__record_args(const char **rec_argv, int *argv_nr,
--				 char **rec_tmp, int *tmp_nr);
-+int perf_mem_events__record_args(const char **rec_argv, int *argv_nr);
+diff --git a/tools/perf/util/pmus.c b/tools/perf/util/pmus.c
+index ce4931461741..16505071d362 100644
+--- a/tools/perf/util/pmus.c
++++ b/tools/perf/util/pmus.c
+@@ -345,12 +345,6 @@ const struct perf_pmu *perf_pmus__pmu_for_pmu_filter(const char *str)
+ 	return NULL;
+ }
  
- int perf_mem__tlb_scnprintf(char *out, size_t sz, struct mem_info *mem_info);
- int perf_mem__lvl_scnprintf(char *out, size_t sz, struct mem_info *mem_info);
+-int __weak perf_pmus__num_mem_pmus(void)
+-{
+-	/* All core PMUs are for mem events. */
+-	return perf_pmus__num_core_pmus();
+-}
+-
+ /** Struct for ordering events as output in perf list. */
+ struct sevent {
+ 	/** PMU for event. */
+diff --git a/tools/perf/util/pmus.h b/tools/perf/util/pmus.h
+index 4c67153ac257..94d2a08d894b 100644
+--- a/tools/perf/util/pmus.h
++++ b/tools/perf/util/pmus.h
+@@ -17,7 +17,6 @@ struct perf_pmu *perf_pmus__scan_core(struct perf_pmu *pmu);
+ 
+ const struct perf_pmu *perf_pmus__pmu_for_pmu_filter(const char *str);
+ 
+-int perf_pmus__num_mem_pmus(void);
+ void perf_pmus__print_pmu_events(const struct print_callbacks *print_cb, void *print_state);
+ bool perf_pmus__have_event(const char *pname, const char *name);
+ int perf_pmus__num_core_pmus(void);
 -- 
 2.35.1
 
