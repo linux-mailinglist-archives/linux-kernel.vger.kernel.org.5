@@ -2,110 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 06009810F77
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 12:08:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DCA3A810F7E
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 12:09:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378814AbjLMLIn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 06:08:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37508 "EHLO
+        id S1378486AbjLMLJg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 06:09:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55344 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378900AbjLMLIO (ORCPT
+        with ESMTP id S1378884AbjLMLJZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 06:08:14 -0500
-Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 137C410DA;
-        Wed, 13 Dec 2023 03:08:10 -0800 (PST)
-Received: from pps.filterd (m0333520.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3BD9SrVn005079;
-        Wed, 13 Dec 2023 11:08:06 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-transfer-encoding;
- s=corp-2023-11-20; bh=mFa7+wZnRy8DezWqs2TWtFukUiLrknEYht2j11vwEQI=;
- b=OLfn1cUUaZvugeCxGCfUNANx67LReLoh222OPwAsmoPGjF6slgyZo8xyXFbhEXzviUdk
- lJfyFa+8AbN3cUmVzZdstlQyZQ9ETYunh9Lsh0q3LDEfigaXBkifuzIOLYeQS1Snn7rs
- A/U/ckE8tz5CFaK5JPzgmkUMDYS/PZWm+gUze28Wc6/whPQFyD9ffiIALBz1UXnqBG9P
- Jy7ZwqWXCKzS00/cVd3nZYkXkeHryMyXxOM4Jp1RLST3tOufbiHW5iXOh2LH/GTDL1UQ
- 5tj0lvxyTVBMYzTnvpR1MPwwrPvLfwaEm1ea4j3kL/y5R0Dg3SatinV7jz7+/caSR10z hQ== 
-Received: from phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta03.appoci.oracle.com [138.1.37.129])
-        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3uvg9d81wy-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 13 Dec 2023 11:08:05 +0000
-Received: from pps.filterd (phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-        by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 3BD9tffF012911;
-        Wed, 13 Dec 2023 11:08:04 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3uvep83quh-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 13 Dec 2023 11:08:04 +0000
-Received: from phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3BDB84jZ021286;
-        Wed, 13 Dec 2023 11:08:04 GMT
-Received: from ca-dev112.us.oracle.com (ca-dev112.us.oracle.com [10.129.136.47])
-        by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTP id 3uvep83qnv-1;
-        Wed, 13 Dec 2023 11:08:04 +0000
-From:   Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>
-To:     Joerg Roedel <joro@8bytes.org>, iommu@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org
-Cc:     dan.carpenter@linaro.org, kernel-janitors@vger.kernel.org,
-        error27@gmail.com, harshit.m.mogalapalli@oracle.com
-Subject: [PATCH] iommu/sva: Fix memory leak in iommu_sva_bind_device()
-Date:   Wed, 13 Dec 2023 03:07:25 -0800
-Message-ID: <20231213110725.2486815-1-harshit.m.mogalapalli@oracle.com>
-X-Mailer: git-send-email 2.42.0
+        Wed, 13 Dec 2023 06:09:25 -0500
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D7B3D4A;
+        Wed, 13 Dec 2023 03:09:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1702465751;
+        bh=NEHwKtbRnYhX3LWvP/fAiGtmTiEiGlfArlGHrTXrUNA=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=AIljSdK/n19r3+FHLdHy6sFro3d9Xknwrhfn+lvGWIJ47oCtK1u492nOkSoELAQkN
+         8pJMb0JW5iigzv9ssllNrsPkeDxxoDLoCWtPsBqkBgL2M+VGUjZ/siQ2W2bm4nE9oB
+         AffkJps4SxHvNZFpFLJNDBcd8B2sM9VJk/KDAl+hD/SRXf6cFComQy18fU5fiDXiN3
+         MZzLkul80r6gY8pJ61Mj97xrTVhTKzY9H7gJjst/e9YLA58B42Ta65HAPYGQPnjm0s
+         HTqhQUw+Rx8+9gCiaphCqOIxkWjLkFExDWJ/Xqnjc/HM5zxVucjG77tIqwxNMd/cM2
+         kkXyZdyUetn3Q==
+Received: from [100.113.186.2] (cola.collaboradmins.com [195.201.22.229])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: kholk11)
+        by madrid.collaboradmins.com (Postfix) with ESMTPSA id CBFAE3781453;
+        Wed, 13 Dec 2023 11:09:10 +0000 (UTC)
+Message-ID: <bc5dafe4-5487-4794-97f1-f4e4d967a665@collabora.com>
+Date:   Wed, 13 Dec 2023 12:09:10 +0100
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-13_03,2023-12-13_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 bulkscore=0 spamscore=0
- mlxscore=0 adultscore=0 phishscore=0 malwarescore=0 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311290000
- definitions=main-2312130080
-X-Proofpoint-GUID: QLpfW50ZWMtHc4F71hEPSqkn2dGhcpm7
-X-Proofpoint-ORIG-GUID: QLpfW50ZWMtHc4F71hEPSqkn2dGhcpm7
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] arm64: mediatek: remove broken pmic interrupt property
+Content-Language: en-US
+To:     Arnd Bergmann <arnd@kernel.org>, soc@kernel.org,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Ben Lok <ben.lok@mediatek.com>,
+        Macpaul Lin <macpaul.lin@mediatek.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+References: <20231212214737.230115-1-arnd@kernel.org>
+From:   AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+In-Reply-To: <20231212214737.230115-1-arnd@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Free the handle when the domain allocation fails before unlocking and
-returning.
+Il 12/12/23 22:47, Arnd Bergmann ha scritto:
+> From: Arnd Bergmann <arnd@arndb.de>
+> 
+> The pmic is connected to the GIC, which uses four-cell interrupt properties,
+> but its interrupt is specified as two-cell that would only make sense for
+> the GPIO irqchip:
+> 
+> arch/arm64/boot/dts/mediatek/mt8195.dtsi:464.4-27: Warning (interrupts_property): /soc/i2c@11d01000/pmic@34:#interrupt-cells: size is (8), expected multiple of 16
+> 
+> Remove the interrupt for now to shut up the warning. When someone figures out
+> what the correct interrupt and parent are, we can add it back.
+> 
 
-Fixes: 092edaddb660 ("iommu: Support mm PASID 1:n with sva domains")
-Signed-off-by: Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>
----
-This is based on static analysis with smatch, only compile tested.
----
- drivers/iommu/iommu-sva.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+Please, can anyone from MediaTek comment on that?
 
-diff --git a/drivers/iommu/iommu-sva.c b/drivers/iommu/iommu-sva.c
-index 5175e8d85247..c3fc9201d0be 100644
---- a/drivers/iommu/iommu-sva.c
-+++ b/drivers/iommu/iommu-sva.c
-@@ -101,7 +101,7 @@ struct iommu_sva *iommu_sva_bind_device(struct device *dev, struct mm_struct *mm
- 	domain = iommu_sva_domain_alloc(dev, mm);
- 	if (!domain) {
- 		ret = -ENOMEM;
--		goto out_unlock;
-+		goto out_free_handle;
- 	}
- 
- 	ret = iommu_attach_device_pasid(domain, dev, iommu_mm->pasid);
-@@ -118,6 +118,7 @@ struct iommu_sva *iommu_sva_bind_device(struct device *dev, struct mm_struct *mm
- 
- out_free_domain:
- 	iommu_domain_free(domain);
-+out_free_handle:
- 	kfree(handle);
- out_unlock:
- 	mutex_unlock(&iommu_sva_lock);
--- 
-2.39.3
+I see a mt6360_pins on PIO:
+			pinmux = <PINMUX_GPIO17__FUNC_GPIO17>,
+				 <PINMUX_GPIO128__FUNC_GPIO128>;
+
+...and that's GPIO128, which may effectively be the IRQ pin for MT6360.
+
+Still, I'm not sure whether the interrupt is on GIC or PIO, please clarify,
+otherwise we will have to get this commit upstream.
+
+Thanks,
+Angelo
+
+> Fixes: f2b543a191b6 ("arm64: dts: mediatek: add device-tree for Genio 1200 EVK board")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
+>   arch/arm64/boot/dts/mediatek/mt8395-genio-1200-evk.dts | 2 --
+>   1 file changed, 2 deletions(-)
+> 
+> diff --git a/arch/arm64/boot/dts/mediatek/mt8395-genio-1200-evk.dts b/arch/arm64/boot/dts/mediatek/mt8395-genio-1200-evk.dts
+> index 70b465f7c6a7..a409ef998746 100644
+> --- a/arch/arm64/boot/dts/mediatek/mt8395-genio-1200-evk.dts
+> +++ b/arch/arm64/boot/dts/mediatek/mt8395-genio-1200-evk.dts
+> @@ -238,8 +238,6 @@ &i2c6 {
+>   	mt6360: pmic@34 {
+>   		compatible = "mediatek,mt6360";
+>   		reg = <0x34>;
+> -		interrupts = <128 IRQ_TYPE_EDGE_FALLING>;
+> -		interrupt-names = "IRQB";
+>   		interrupt-controller;
+>   		#interrupt-cells = <1>;
+>   		pinctrl-0 = <&mt6360_pins>;
+
 
