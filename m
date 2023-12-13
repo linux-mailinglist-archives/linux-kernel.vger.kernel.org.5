@@ -2,171 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 36E938118B0
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 17:06:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EF6118118B5
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 17:08:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233240AbjLMQGn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 11:06:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44498 "EHLO
+        id S233060AbjLMQIF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 11:08:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44730 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230390AbjLMQGl (ORCPT
+        with ESMTP id S230390AbjLMQIE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 11:06:41 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE9B3DB
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 08:06:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1702483606;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=q106s0gS4HpONPoouMQtCupD8VBOdms/F16NVa2ymO4=;
-        b=ZKav7kQaqwd+PkeFrWOV2PtQ48KO1oE7iUFO4D49JnRvj06ZUNKMsiGrIfEdxfc87PGRYT
-        WoKo62zj71ntyk2xaFKMwfdAZGKQmRQss2JA+D5FvjL4uhkT+D+WtdIdakVoJKn7cG4e3G
-        GBhqDoK8EpBP6qDHMwK/UYMU/LJ9txQ=
-Received: from mail-lf1-f70.google.com (mail-lf1-f70.google.com
- [209.85.167.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-516-51ZHuW7OO4-uU25VlE44Yw-1; Wed, 13 Dec 2023 11:06:44 -0500
-X-MC-Unique: 51ZHuW7OO4-uU25VlE44Yw-1
-Received: by mail-lf1-f70.google.com with SMTP id 2adb3069b0e04-50bf860906aso6022680e87.0
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 08:06:44 -0800 (PST)
+        Wed, 13 Dec 2023 11:08:04 -0500
+Received: from mail-oo1-xc29.google.com (mail-oo1-xc29.google.com [IPv6:2607:f8b0:4864:20::c29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3039AB9
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 08:08:10 -0800 (PST)
+Received: by mail-oo1-xc29.google.com with SMTP id 006d021491bc7-5906e03a7a4so4034706eaf.1
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 08:08:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=dabbelt-com.20230601.gappssmtp.com; s=20230601; t=1702483689; x=1703088489; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:to:from:cc
+         :in-reply-to:subject:date:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=zx40J2tgT++jQyUHPjlcucWybX3M+OYwdkP2KsOFssw=;
+        b=v6xRjipYNqny2t3PLnE9a/GANgh0nGHxwvnw1hGpNXXJSgPu0Qx3RvHSTyP2xh26eQ
+         vwhodCOv+wJOwHlovI/Z3UaCbRGT6YhrdV4s8TqCnwSivxY1Pu5JxHi7//79avZrTjoL
+         sTycrbYnyKINncXeoQtjoeiok1UA67J34rLWj+sYKKJlgKUP2SQCuJdvX9mmReMLDph+
+         0rN/7JmeJ/omMwWAkLVrVozjl+esRVx587IlhAb6Z0FSEHhcZzkkGAe/ZXMXonZ1IAtX
+         KZb3HLqc/bcKgM+OYFONFz9UDocN1xsuOawkuDjY0bIDv1jg8bhhd/kSWBnt1ve3iZo3
+         L1aA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702483603; x=1703088403;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=q106s0gS4HpONPoouMQtCupD8VBOdms/F16NVa2ymO4=;
-        b=UtuHEP+4V9c5EB9tjwFwGmS+A2Q192v+5KGl/A61sxZely+PM7hg8K/5mlCxAdtFaD
-         2pll9tHk/zGTk/QCoon1/6zHRAqtvKSx58XJB4cA9Iup6eUdHSgIfSg+j3AhzTZFWPKo
-         POE+qrB6rUzP/BWal2sVTI95X/x+CXdC39Fm6dF9CSL8S6U0LKFJ29/mb1RhWPQ2IvCY
-         qmlz9FpIhTdEFeXDILyvNoiRzIlfqvKFzIr7fidzxamkPeCmNL5hnsqv0CJH+FjpzjBB
-         tl235P/pZY55EnV/DfGwxcAZpAQkE4AxBcv8fYIvMeOEI09dIBT6JDZ4NhRSLx3xhFIT
-         X0mQ==
-X-Gm-Message-State: AOJu0Yx9glsK6WbFhaDlbrUXir56xUar+jCzBrRvp2ldglY019mRXdvE
-        HhI2OIOa61z1JLXmXQz2A91irSmQc0XgEUgqWu+wK+sJ7C8S9PchBRWCC9qVNS1gWIA9Lps6/I5
-        bO+OIlt1lGuqM8jsXBGtv6X0zE4/3RDQ8q7BLOtW7
-X-Received: by 2002:a05:6512:110d:b0:50b:f858:f138 with SMTP id l13-20020a056512110d00b0050bf858f138mr4609482lfg.89.1702483603153;
-        Wed, 13 Dec 2023 08:06:43 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IFw3Ljc3eklHpFpuSFf+Z9BjZ7uARG614C+AsLZ+jCD1co83tLSpAVEHTYy81SLTprROZdRDO3ZqT6G3CREyFU=
-X-Received: by 2002:a05:6512:110d:b0:50b:f858:f138 with SMTP id
- l13-20020a056512110d00b0050bf858f138mr4609474lfg.89.1702483602853; Wed, 13
- Dec 2023 08:06:42 -0800 (PST)
-MIME-Version: 1.0
-References: <20231213003614.1648343-1-imammedo@redhat.com> <20231213003614.1648343-2-imammedo@redhat.com>
- <CAJZ5v0jQTiLqbBQ+xMord2apaQcdXNWumZPbHqu0GOxJ3apPFQ@mail.gmail.com>
-In-Reply-To: <CAJZ5v0jQTiLqbBQ+xMord2apaQcdXNWumZPbHqu0GOxJ3apPFQ@mail.gmail.com>
-From:   Igor Mammedov <imammedo@redhat.com>
-Date:   Wed, 13 Dec 2023 17:06:30 +0100
-Message-ID: <CAMLWh55+GkpBOqihsM8Nry310GQh1f5mT=3_2yxCnfiWbFg2JA@mail.gmail.com>
-Subject: Re: [RFC 1/2] PCI: acpiphp: enable slot only if it hasn't been
- enabled already
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Dongli Zhang <dongli.zhang@oracle.com>,
-        linux-acpi@vger.kernel.org, linux-pci@vger.kernel.org,
-        mst@redhat.com, lenb@kernel.org, bhelgaas@google.com,
-        mika.westerberg@linux.intel.com, boris.ostrovsky@oracle.com,
-        joe.jin@oracle.com, stable@vger.kernel.org,
-        Fiona Ebner <f.ebner@proxmox.com>,
-        Thomas Lamprecht <t.lamprecht@proxmox.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        d=1e100.net; s=20230601; t=1702483689; x=1703088489;
+        h=content-transfer-encoding:mime-version:message-id:to:from:cc
+         :in-reply-to:subject:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=zx40J2tgT++jQyUHPjlcucWybX3M+OYwdkP2KsOFssw=;
+        b=PB9fh05yS108K9bihhAa7DyCaTwrkc3d7RKrX2V4+GhMqU9WAqPVG2HzmDqckJpcGw
+         FCTMgu3wi07YxKd2P+4d9E9Dj8nX4qGfDKn6o3mzl48PQf2YynAWQL3tA9fculM0jcnN
+         Ojl02TvLDZB+dwxT4f/ACw+Tgdm7iGskj6FpZFJCl/TkMsjMTDazyK+YOwgQ8xidzyxS
+         AvDTs8c7dnTBVBSkAihuOl2YTIEwRw7ztW38b/cNjDnL4f248Tv9mgogQ4TTs21/kcS9
+         zdxYMC4Vwt51n8vmf1jkxhVvcmtKPhWOnVG7v3eWO9vNKJWvzsaEEMJ7bHYLTcxmpVMY
+         L+2w==
+X-Gm-Message-State: AOJu0YzHnNbMZ2Jsz1+cVzfLtH4Jv9oXSDrnPVRA1dYApPhjwYwkqRTH
+        tNo+693kwDXbl7iVnQlXUf6REA==
+X-Google-Smtp-Source: AGHT+IGITxIEovt83cuLdcufvp22b0EZLcRZg9QB7IG908WSa2cNw3Dz3M70QMDJmeNr8a0vmmx8vw==
+X-Received: by 2002:a4a:d2d7:0:b0:58e:1c47:879e with SMTP id j23-20020a4ad2d7000000b0058e1c47879emr5926912oos.19.1702483689339;
+        Wed, 13 Dec 2023 08:08:09 -0800 (PST)
+Received: from localhost ([192.184.165.199])
+        by smtp.gmail.com with ESMTPSA id x6-20020a4aea06000000b0059030f95ebfsm3002852ood.41.2023.12.13.08.08.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Dec 2023 08:08:08 -0800 (PST)
+Date:   Wed, 13 Dec 2023 08:08:08 -0800 (PST)
+X-Google-Original-Date: Wed, 13 Dec 2023 08:08:06 PST (-0800)
+Subject:     Re: [PATCH 0/3] Fix XIP boot and make XIP testable in QEMU
+In-Reply-To: <20231212-crabmeat-flatness-3c0d02966551@spud>
+CC:     vitaly.wool@konsulko.com,
+        Conor Dooley <conor.dooley@microchip.com>,
+        aou@eecs.berkeley.edu, alexghiti@rivosinc.com,
+        akpm@linux-foundation.org, andy.chiu@sifive.com,
+        anup@brainfault.org, bhe@redhat.com,
+        Bjorn Topel <bjorn@rivosinc.com>, chenjiahao16@huawei.com,
+        cleger@rivosinc.com, haxel@fzi.de, greentime.hu@sifive.com,
+        guoren@kernel.org, heiko@sntech.de, masahiroy@kernel.org,
+        namcaov@gmail.com, Paul Walmsley <paul.walmsley@sifive.com>,
+        samitolvanen@google.com, linux-kernel@vger.kernel.org,
+        linux-riscv@lists.infradead.org
+From:   Palmer Dabbelt <palmer@dabbelt.com>
+To:     Conor Dooley <conor@kernel.org>
+Message-ID: <mhng-62fcfc9e-eb18-48b6-878e-839f28666560@palmer-ri-x1c9>
+Mime-Version: 1.0 (MHng)
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 13, 2023 at 2:01=E2=80=AFPM Rafael J. Wysocki <rafael@kernel.or=
-g> wrote:
+On Tue, 12 Dec 2023 07:14:54 PST (-0800), Conor Dooley wrote:
 >
-> On Wed, Dec 13, 2023 at 1:36=E2=80=AFAM Igor Mammedov <imammedo@redhat.co=
-m> wrote:
-> >
-> > When SCSI_SCAN_ASYNC is enabled (either via config or via cmd line),
-> > adding device to bus and enabling it will kick in async host scan
-> >
-> >  scsi_scan_host+0x21/0x1f0
-> >  virtscsi_probe+0x2dd/0x350
-> >  ..
-> >  driver_probe_device+0x19/0x80
-> >  ...
-> >  driver_probe_device+0x19/0x80
-> >  pci_bus_add_device+0x53/0x80
-> >  pci_bus_add_devices+0x2b/0x70
-> >  ...
-> >
-> > which will schedule a job for async scan. That however breaks
-> > if there are more than one SCSI host behind bridge, since
-> > acpiphp_check_bridge() will walk over all slots and try to
-> > enable each of them regardless of whether they were already
-> > enabled.
-> > As result the bridge might be reconfigured several times
-> > and trigger following sequence:
-> >
-> >   [cpu 0] acpiphp_check_bridge()
-> >   [cpu 0]   enable_slot(a)
-> >   [cpu 0]     configure bridge
-> >   [cpu 0]     pci_bus_add_devices() -> scsi_scan_host(a1)
-> >   [cpu 0]   enable_slot(b)
-> >   ...
-> >   [cpu 1] do_scsi_scan_host(a1) <- async jib scheduled for slot a
-> >   ...
-> >   [cpu 0]     configure bridge <- temporaly disables bridge
-> >
-> > and cause do_scsi_scan_host() failure.
-> > The same race affects SHPC (but it manages to avoid hitting the race du=
-e to
-> > 1sec delay when enabling slot).
-> > To cover case of single device hotplug (at a time) do not attempt to
-> > enable slot that have already been enabled.
-> >
-> > Fixes: 40613da52b13 ("PCI: acpiphp: Reassign resources on bridge if nec=
-essary")
-> > Reported-by: Dongli Zhang <dongli.zhang@oracle.com>
-> > Reported-by: iona Ebner <f.ebner@proxmox.com>
-> > Signed-off-by: Igor Mammedov <imammedo@redhat.com>
-> > ---
-> >  drivers/pci/hotplug/acpiphp_glue.c | 4 +++-
-> >  1 file changed, 3 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/drivers/pci/hotplug/acpiphp_glue.c b/drivers/pci/hotplug/a=
-cpiphp_glue.c
-> > index 601129772b2d..6b11609927d6 100644
-> > --- a/drivers/pci/hotplug/acpiphp_glue.c
-> > +++ b/drivers/pci/hotplug/acpiphp_glue.c
-> > @@ -722,7 +722,9 @@ static void acpiphp_check_bridge(struct acpiphp_bri=
-dge *bridge)
-> >                                         trim_stale_devices(dev);
-> >
-> >                         /* configure all functions */
-> > -                       enable_slot(slot, true);
-> > +                       if (slot->flags !=3D SLOT_ENABLED) {
-> > +                               enable_slot(slot, true);
-> > +                       }
+> Firstly, no html mails, they're rejected by the lists and break people's
+> mail flows.
 >
-> Shouldn't this be following the acpiphp_enable_slot() pattern, that is
+> On Tue, Dec 12, 2023 at 03:16:13PM +0100, Vitaly Wool wrote:
+>> tis 12 dec. 2023 kl. 14:23 skrev Conor Dooley <conor.dooley@microchip.com<mailto:conor.dooley@microchip.com>>:
+>> > On Tue, Dec 12, 2023 at 02:01:11PM +0100, Frederik Haxel wrote:
+>> > > XIP boot seems to be broken for some time now. A likely reason why no one
+>> > > seems to have noticed this is that XIP is more difficult to test, as it is
+>> > > currently not easily testable with QEMU.
+>> > >
+>> > > These patches fix the XIP boot and allow an XIP build without BUILTIN_DTB,
+>> > > which in turn makes it easier to test an image with the QEMU virt machine.
+>> > 
+>> > 
+>> > Are you actually using XIP in something other than QEMU? The fact that
+>> > some of the blamed fixes are over 18 months old suggests that you are
+>> > not actively using XIP builds of the mainline kernel.
+>> > There is a desire to remove XIP support (among other things), so if you
+>> > do actually have a use case for it, speak up.
+>> 
+>> Yes, we surely do, on K210 for instance. It’s using an older kernel and
 >
-> if (!(slot->flags & SLOT_ENABLED))
->          enable_slot(slot, true);
->
-> Also the braces are redundant.
+> The k210 and nommu are on the block for removal too :)
+> Is your use case for either the k210 or XIP something other than
+> "ooh this works"? 
 
-I'll fix up on respin if Bjorn is fine with the approach in general.
+Ya, if someone is actually using the XIP (and/or K210 or NOMMU) stuff 
+then I'm fine keeping it.  We'd just figured it was probably broken 
+because nobody'd been posting patches and we didn't have any automated 
+tests.  Looks like it was broken, which is always a pretty strong sign 
+it's not being used.
 
-Patches need respin anyways to fix botched up white spacing.
-
+>> I haven’t checked the mainline status for a while
 >
-> >                 } else {
-> >                         disable_slot(slot);
-> >                 }
-> > --
+> I figured that when the request I sent asking if you could test XIP was
+> ignored. We've been 50-50 on whether it has been broken since Alex put
+> the dtb in the fixmap ~9 months ago.
 >
-
+>> but it is likely that I will come up with some XIP updates
+>> before Christmas.
+>
+> May I ask what you intend updating?
+>
+> Cheers,
+> Conor.
