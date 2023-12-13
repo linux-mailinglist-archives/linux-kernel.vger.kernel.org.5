@@ -2,50 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C7F948115A0
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 16:04:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BB348115A1
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 16:04:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442083AbjLMPEn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 10:04:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54198 "EHLO
+        id S1442091AbjLMPEr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 10:04:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38264 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1442073AbjLMPEl (ORCPT
+        with ESMTP id S1442073AbjLMPEo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 10:04:41 -0500
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBBB4A0
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 07:04:47 -0800 (PST)
-Received: by mail-pl1-x635.google.com with SMTP id d9443c01a7336-1d337dc9697so18515435ad.3
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 07:04:47 -0800 (PST)
+        Wed, 13 Dec 2023 10:04:44 -0500
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E185A0
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 07:04:50 -0800 (PST)
+Received: by mail-pl1-x62e.google.com with SMTP id d9443c01a7336-1d08a924fcfso65305615ad.2
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 07:04:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1702479887; x=1703084687; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=g5L5MwV7oIEpjp+BC3SquVGWCmTt0XhfETFBuojKbpg=;
-        b=P66102IWZGTv64SmOvyYRH8Z96ig9eJos5TaVsOXYcODJ+CO7YyHKPH4UVpozcYlKo
-         lA1rxbaXidlIqGNROV0xXYsFMy702weXsxIPDWMq8K3DG/tGVNHx/6WkYhT+tCfYAYg4
-         Tuy2zoK0ulrukaJRwurap+hGog+3+6ooYN+k4=
+        d=chromium.org; s=google; t=1702479890; x=1703084690; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=RaIqa889/Xel1qXaRfMAUx4gwV9LpaUtBao8QbW7li0=;
+        b=chmYBad3NlKoCwbX2VSCliQWPX02ZIp8kj0AYsMPCVgpB2jXdCB2cWLUXFWqeBku+w
+         2noztKABpHORAlS50kqmrJG0w8v9woFiTI1xXzLT1dYR1zT5ZcsIipstubpomBJLAcNW
+         v+41zJEuYpCPpAkeiP35EDRAAA/dblskIEwIQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702479887; x=1703084687;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=g5L5MwV7oIEpjp+BC3SquVGWCmTt0XhfETFBuojKbpg=;
-        b=RGPUV3YwPvSjTMJTA/hPUuQQmpfa6SaM22ykdVmM5p1aLmaNU8kHk3Tv1YtuNMYOdI
-         vGenAo0lTLBYCJXdeazR5UTEld9tAus/EZSllkPm2mRBjOXVGgSH8TOYRwb0yaUJosb/
-         HEUAE4w4HSEbuiok2s4sN76qG6vuuVeKB2vHw8om8FSikJhCke1J3nZEAlSIIdpSWTFa
-         wziC6n0B4U1qn1opj0e4VPKM9jq+gPJBZqapNcoeSvgCt/V9pfs9b17XV0TJSMFq6jTZ
-         gq/k6OL1zvnVblnXD5+4fCrkeVSTux84vNSbX3UQi2Dmmi+GBsW4IUpuy0IBPK6Y00Cp
-         ft2Q==
-X-Gm-Message-State: AOJu0YyuTBzAsoDDL/niJP6U4IobGYAFy51ScCXYlk7iLgJ5BMVSEvlu
-        DrMyOXUku/H7KOFB9y/4ayBoxg==
-X-Google-Smtp-Source: AGHT+IGEoKXQ/Fiaji0AAhxLgAPtUXjFyET2J3jxpyNfdsJesbYejcQKAoFvuZQ5QschoqSJhNZWOw==
-X-Received: by 2002:a17:902:ec8a:b0:1d0:d18c:bc5a with SMTP id x10-20020a170902ec8a00b001d0d18cbc5amr9776871plg.121.1702479887120;
-        Wed, 13 Dec 2023 07:04:47 -0800 (PST)
+        d=1e100.net; s=20230601; t=1702479890; x=1703084690;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=RaIqa889/Xel1qXaRfMAUx4gwV9LpaUtBao8QbW7li0=;
+        b=SmV6fGa4LoJSfzguST5IhXlOePzDThJigwKTuueh9yHvWvoOMYf6fXq96dyjq7fv/X
+         i6Jfa+ZqJo3eS6bDjJb5j0UX72A7BtPcD6lvm89EbxQ1HWXgvGzgUUYRObG5KBoZ9jyY
+         jcqhwJPk4iSkSgqmy11/POafsyyjlNKLIqQevbHNLAdyPTQ0B41amD1HNa8p1+PkgorK
+         FqFsbIsJAezDNwnQUxDuGGzBTKYawgaGdEoEP3sYi1HGXA4DcXsZsYGZNshM/9B2lx6U
+         uAChTxYnbTMZqSD1q3swCkHgzcxpknjZV9UbfUlH5Hau83np1dugiZ7chJF3G9IAJpnl
+         nFtg==
+X-Gm-Message-State: AOJu0YxxhO7Vmzcv4sWOh5Wac+Y04tqYNwp+kI/hO3WpQBrONQ5jBOxv
+        Jfqf+2x5NClsHLXpybUoF58jew==
+X-Google-Smtp-Source: AGHT+IFPslvGmSHSuJ6L7UZlvykY2i+KO9+vuT0SLddZnTt8oGEn1NhI93wX2VsqNAF5KCdg6GM+ow==
+X-Received: by 2002:a17:902:ab83:b0:1d0:6ffd:e2ef with SMTP id f3-20020a170902ab8300b001d06ffde2efmr7719522plr.137.1702479889748;
+        Wed, 13 Dec 2023 07:04:49 -0800 (PST)
 Received: from wenstp920.tpe.corp.google.com ([2401:fa00:1:10:1974:9e2:4915:58b0])
-        by smtp.gmail.com with ESMTPSA id z15-20020a1709027e8f00b001cc2dc61c99sm813808pla.22.2023.12.13.07.04.44
+        by smtp.gmail.com with ESMTPSA id z15-20020a1709027e8f00b001cc2dc61c99sm813808pla.22.2023.12.13.07.04.47
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Dec 2023 07:04:46 -0800 (PST)
+        Wed, 13 Dec 2023 07:04:49 -0800 (PST)
 From:   Chen-Yu Tsai <wenst@chromium.org>
 To:     Matthias Brugger <matthias.bgg@gmail.com>,
         AngeloGioacchino Del Regno 
@@ -56,144 +57,210 @@ Cc:     Chen-Yu Tsai <wenst@chromium.org>,
         Conor Dooley <conor+dt@kernel.org>, devicetree@vger.kernel.org,
         linux-mediatek@lists.infradead.org,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Eugen Hristev <eugen.hristev@collabora.com>
-Subject: [PATCH v4 0/9] arm64: dts: mediatek: Add MT8186 Corsola Chromebooks
-Date:   Wed, 13 Dec 2023 23:04:24 +0800
-Message-ID: <20231213150435.4134390-1-wenst@chromium.org>
+        Eugen Hristev <eugen.hristev@collabora.com>,
+        Conor Dooley <conor.dooley@microchip.com>
+Subject: [PATCH v4 1/9] dt-bindings: arm: mediatek: Sort entries by SoC then board compatibles
+Date:   Wed, 13 Dec 2023 23:04:25 +0800
+Message-ID: <20231213150435.4134390-2-wenst@chromium.org>
 X-Mailer: git-send-email 2.43.0.472.g3155946c3a-goog
+In-Reply-To: <20231213150435.4134390-1-wenst@chromium.org>
+References: <20231213150435.4134390-1-wenst@chromium.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi everyone,
+Some of the new MediaTek board entries were inserted in a chronological
+order, or just randomly. This makes it harder to search for an entry.
 
-This is v4 of the MT8186 Chromebook device tree series. Sending now in
-case you still want to apply more patches.
+Sort the entries by first grouping by SoC, then sorting by board
+compatible strings. Also add a comment at the top asking people to do
+the same.
 
+Signed-off-by: Chen-Yu Tsai <wenst@chromium.org>
+Acked-by: Conor Dooley <conor.dooley@microchip.com>
+Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+---
 Changes since v3:
 - Collected reviewed-by from Angelo
-- Reorder some properties to conform better to the newly proposed DT
-  style guidelines
-- Drop unused labels
-- Rename bt-sco node name to bt-sco-codec
-- Drop i2s*-share properties from afe node
-- Drop aud_gpio_tdm_{on,off} pinctrl nodes
-- Replace interrupts with interrupts-extended in tpm node
-- Enable adsp device
-
 Changes since v2:
-- Picked up Conor's ack
-- Renamed remaining "touchpad" nodes to "trackpad"
-- Dropped pinctrl from tentacruel/tentacool second source trackpad
-
+- none
 Changes since v1:
-- Reorder SKU numbers in descending order.
-- Fixed pinconfig node names
-- Moved pinctrl-* properties after interrupts-*
-- Switched to interrupts-extended for external components
-- Marked ADSP as explicitly disabled, with a comment explaining that it
-  stalls the system
-- Renamed "touchpad" to "trackpad"
-- Dropped bogus "no-laneswap" property from it6505 node
-- Moved "realtek,jd-src" property to after all the regulator supplies
-- Switched to macros for MT6366 regulator "regulator-allowed-modes"
-- Renamed "vgpu" regulator name to allow coupling, with a comment
-  containing the name used in the design
-- Renamed "cr50" node name to "tpm"
-- Moved trackpad_pins reference up to i2c2; workaround for second source
-  component resource sharing.
-- Fix copyright year
-- Fixed touchscreen supply name
-- Mark missing components as disabled instead of deleting the node
-- Dropped reset-gpios from touchscreen nodes
-- Drop status = "okay", which is the default
+- Collected ack from Conor
+---
+ .../devicetree/bindings/arm/mediatek.yaml     | 123 +++++++++---------
+ 1 file changed, 62 insertions(+), 61 deletions(-)
 
-
-This series adds device trees for the various MT8186 Chromebooks that
-were initially released. These are the Tentacruel / Tentacool devices
-released by ASUS, and the Steelix / Rusty / Magneton devices released
-by Lenovo. The device trees are taken from the downstream ChromeOS v5.15
-kernel, ported to mainline and cleaned up.
-
-Corsola is the Google codename given to the MT8186 platform. This
-platform has two reference designs, Krabby and Kingler. Kingler was not
-used in any actual product, and is therefor not included. Steelix is
-an alternative design put forward and is effectively a mix-and-match of
-the two reference designs.
-
-Most of the core design is shared between the variants. The differences
-are on which external components, such as the display bridges, are used.
-
-Patch 1 cleans up the current list of MediaTek boards. The entries are
-reordered by SoC model first, then by board name.
-
-Patch 2 through 5 add DT binding entries for the Tentacruel/Tentacool,
-Steelix, Rusty, and Magneton Chromebooks.
-
-Patch 6 through 9 add board device tree files for these devices. Patch 6
-also adds the corsola dtsi file for the commonalities between the designs,
-as well as a dtsi file for the krabby reference design.
-
-Currently external display support is missing. Audio is not working, as
-enabling the audio DSP causes my test systems to hang.
-
-Please have a look and test if possible.
-
-
-Regards
-ChenYu
-
-Chen-Yu Tsai (9):
-  dt-bindings: arm: mediatek: Sort entries by SoC then board compatibles
-  dt-bindings: arm: mediatek: Add MT8186 Tentacruel / Tentacool
-    Chromebooks
-  dt-bindings: arm: mediatek: Add MT8186 Steelix Chromebook
-  dt-bindings: arm: mediatek: Add MT8186 Rusty Chromebook
-  dt-bindings: arm: mediatek: Add MT8186 Magneton Chromebooks
-  arm64: dts: mediatek: Add MT8186 Krabby platform based Tentacruel /
-    Tentacool
-  arm64: dts: mediatek: Introduce MT8186 Steelix
-  arm64: dts: mediatek: Add MT8186 Steelix platform based Rusty
-  arm64: dts: mediatek: Add MT8186 Magneton Chromebooks
-
- .../devicetree/bindings/arm/mediatek.yaml     |  180 +-
- arch/arm64/boot/dts/mediatek/Makefile         |   10 +
- .../dts/mediatek/mt8186-corsola-krabby.dtsi   |  129 ++
- .../mt8186-corsola-magneton-sku393216.dts     |   39 +
- .../mt8186-corsola-magneton-sku393217.dts     |   39 +
- .../mt8186-corsola-magneton-sku393218.dts     |   26 +
- .../mt8186-corsola-rusty-sku196608.dts        |   26 +
- .../mt8186-corsola-steelix-sku131072.dts      |   18 +
- .../mt8186-corsola-steelix-sku131073.dts      |   18 +
- .../dts/mediatek/mt8186-corsola-steelix.dtsi  |  195 ++
- .../mt8186-corsola-tentacool-sku327681.dts    |   57 +
- .../mt8186-corsola-tentacool-sku327683.dts    |   24 +
- .../mt8186-corsola-tentacruel-sku262144.dts   |   44 +
- .../mt8186-corsola-tentacruel-sku262148.dts   |   26 +
- .../boot/dts/mediatek/mt8186-corsola.dtsi     | 1707 +++++++++++++++++
- 15 files changed, 2477 insertions(+), 61 deletions(-)
- create mode 100644 arch/arm64/boot/dts/mediatek/mt8186-corsola-krabby.dtsi
- create mode 100644 arch/arm64/boot/dts/mediatek/mt8186-corsola-magneton-sku393216.dts
- create mode 100644 arch/arm64/boot/dts/mediatek/mt8186-corsola-magneton-sku393217.dts
- create mode 100644 arch/arm64/boot/dts/mediatek/mt8186-corsola-magneton-sku393218.dts
- create mode 100644 arch/arm64/boot/dts/mediatek/mt8186-corsola-rusty-sku196608.dts
- create mode 100644 arch/arm64/boot/dts/mediatek/mt8186-corsola-steelix-sku131072.dts
- create mode 100644 arch/arm64/boot/dts/mediatek/mt8186-corsola-steelix-sku131073.dts
- create mode 100644 arch/arm64/boot/dts/mediatek/mt8186-corsola-steelix.dtsi
- create mode 100644 arch/arm64/boot/dts/mediatek/mt8186-corsola-tentacool-sku327681.dts
- create mode 100644 arch/arm64/boot/dts/mediatek/mt8186-corsola-tentacool-sku327683.dts
- create mode 100644 arch/arm64/boot/dts/mediatek/mt8186-corsola-tentacruel-sku262144.dts
- create mode 100644 arch/arm64/boot/dts/mediatek/mt8186-corsola-tentacruel-sku262148.dts
- create mode 100644 arch/arm64/boot/dts/mediatek/mt8186-corsola.dtsi
-
+diff --git a/Documentation/devicetree/bindings/arm/mediatek.yaml b/Documentation/devicetree/bindings/arm/mediatek.yaml
+index a5999b3afc35..60337b439744 100644
+--- a/Documentation/devicetree/bindings/arm/mediatek.yaml
++++ b/Documentation/devicetree/bindings/arm/mediatek.yaml
+@@ -17,6 +17,7 @@ properties:
+     const: '/'
+   compatible:
+     oneOf:
++      # Sort by SoC (last) compatible, then board compatible
+       - items:
+           - enum:
+               - mediatek,mt2701-evb
+@@ -129,71 +130,10 @@ properties:
+           - enum:
+               - mediatek,mt8173-evb
+           - const: mediatek,mt8173
+-      - items:
+-          - enum:
+-              - mediatek,mt8183-evb
+-          - const: mediatek,mt8183
+-      - description: Google Hayato rev5
+-        items:
+-          - const: google,hayato-rev5-sku2
+-          - const: google,hayato-sku2
+-          - const: google,hayato
+-          - const: mediatek,mt8192
+-      - description: Google Hayato
+-        items:
+-          - const: google,hayato-rev1
+-          - const: google,hayato
+-          - const: mediatek,mt8192
+-      - description: Google Spherion rev4 (Acer Chromebook 514)
+-        items:
+-          - const: google,spherion-rev4
+-          - const: google,spherion
+-          - const: mediatek,mt8192
+-      - description: Google Spherion (Acer Chromebook 514)
+-        items:
+-          - const: google,spherion-rev3
+-          - const: google,spherion-rev2
+-          - const: google,spherion-rev1
+-          - const: google,spherion-rev0
+-          - const: google,spherion
+-          - const: mediatek,mt8192
+-      - description: Acer Tomato (Acer Chromebook Spin 513 CP513-2H)
+-        items:
+-          - enum:
+-              - google,tomato-rev2
+-              - google,tomato-rev1
+-          - const: google,tomato
+-          - const: mediatek,mt8195
+-      - description: Acer Tomato rev3 - 4 (Acer Chromebook Spin 513 CP513-2H)
+-        items:
+-          - const: google,tomato-rev4
+-          - const: google,tomato-rev3
+-          - const: google,tomato
+-          - const: mediatek,mt8195
+-      - items:
+-          - enum:
+-              - mediatek,mt8186-evb
+-          - const: mediatek,mt8186
+-      - items:
+-          - enum:
+-              - mediatek,mt8192-evb
+-          - const: mediatek,mt8192
+-      - items:
+-          - enum:
+-              - mediatek,mt8195-demo
+-              - mediatek,mt8195-evb
+-          - const: mediatek,mt8195
+       - description: Google Burnet (HP Chromebook x360 11MK G3 EE)
+         items:
+           - const: google,burnet
+           - const: mediatek,mt8183
+-      - description: Google Krane (Lenovo IdeaPad Duet, 10e,...)
+-        items:
+-          - enum:
+-              - google,krane-sku0
+-              - google,krane-sku176
+-          - const: google,krane
+-          - const: mediatek,mt8183
+       - description: Google Cozmo (Acer Chromebook 314)
+         items:
+           - const: google,cozmo
+@@ -244,6 +184,13 @@ properties:
+               - google,kodama-sku32
+           - const: google,kodama
+           - const: mediatek,mt8183
++      - description: Google Krane (Lenovo IdeaPad Duet, 10e,...)
++        items:
++          - enum:
++              - google,krane-sku0
++              - google,krane-sku176
++          - const: google,krane
++          - const: mediatek,mt8183
+       - description: Google Willow (Acer Chromebook 311 C722/C722T)
+         items:
+           - enum:
+@@ -251,10 +198,64 @@ properties:
+               - google,willow-sku1
+           - const: google,willow
+           - const: mediatek,mt8183
++      - items:
++          - enum:
++              - mediatek,mt8183-evb
++          - const: mediatek,mt8183
+       - items:
+           - enum:
+               - mediatek,mt8183-pumpkin
+           - const: mediatek,mt8183
++      - items:
++          - enum:
++              - mediatek,mt8186-evb
++          - const: mediatek,mt8186
++      - description: Google Hayato
++        items:
++          - const: google,hayato-rev1
++          - const: google,hayato
++          - const: mediatek,mt8192
++      - description: Google Hayato rev5
++        items:
++          - const: google,hayato-rev5-sku2
++          - const: google,hayato-sku2
++          - const: google,hayato
++          - const: mediatek,mt8192
++      - description: Google Spherion (Acer Chromebook 514)
++        items:
++          - const: google,spherion-rev3
++          - const: google,spherion-rev2
++          - const: google,spherion-rev1
++          - const: google,spherion-rev0
++          - const: google,spherion
++          - const: mediatek,mt8192
++      - description: Google Spherion rev4 (Acer Chromebook 514)
++        items:
++          - const: google,spherion-rev4
++          - const: google,spherion
++          - const: mediatek,mt8192
++      - items:
++          - enum:
++              - mediatek,mt8192-evb
++          - const: mediatek,mt8192
++      - description: Acer Tomato (Acer Chromebook Spin 513 CP513-2H)
++        items:
++          - enum:
++              - google,tomato-rev2
++              - google,tomato-rev1
++          - const: google,tomato
++          - const: mediatek,mt8195
++      - description: Acer Tomato rev3 - 4 (Acer Chromebook Spin 513 CP513-2H)
++        items:
++          - const: google,tomato-rev4
++          - const: google,tomato-rev3
++          - const: google,tomato
++          - const: mediatek,mt8195
++      - items:
++          - enum:
++              - mediatek,mt8195-demo
++              - mediatek,mt8195-evb
++          - const: mediatek,mt8195
+       - items:
+           - enum:
+               - mediatek,mt8365-evk
 -- 
 2.43.0.472.g3155946c3a-goog
 
