@@ -2,174 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FCD08115E3
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 16:14:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B13368115E9
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 16:16:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442452AbjLMPOC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 10:14:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60258 "EHLO
+        id S1442278AbjLMPPx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 10:15:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57992 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1442095AbjLMPN7 (ORCPT
+        with ESMTP id S1442172AbjLMPPw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 10:13:59 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3534EE3
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 07:14:06 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id BE95BC433C7;
-        Wed, 13 Dec 2023 15:14:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1702480445;
-        bh=RCKOlm/rfJFGAluA0uC53gYGTmOCx5LlFHEsyolIc+I=;
-        h=From:Date:Subject:To:Cc:Reply-To:From;
-        b=gSEmqayp2smuoWiLQmUclE5sR26aeI0Yub9E4AkG18zY+z6p6Hhd8nSJxjIjTDxOp
-         4HScECyDsw5KjQFWXEpqy3nFPZ4VTG/3zN/wAoSZ9txm/CJiVMSYVKhFFLcpZVoQrQ
-         WrsIJO/E3DFQytgwC2B2+IbtJXiakHWK0JemlNrfnC2K9lGP+3WrIEiK7OQ9U3+5Nx
-         AMgbRr4eZkQyGHnf5h2BPZoFjWKp7GmhWq5mIdYEB9TLvwYOpW5uugVA3bIYP/77iN
-         a/+7RRqM9I7S4joIqRK0lpPxg678QyU7Zn43z+g7NE7nQgDYqrW22gunkhvi2vSeMd
-         WZZy21qbDipLQ==
-Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by smtp.lore.kernel.org (Postfix) with ESMTP id 9F443C4332F;
-        Wed, 13 Dec 2023 15:14:05 +0000 (UTC)
-From:   Nuno Sa via B4 Relay <devnull+nuno.sa.analog.com@kernel.org>
-Date:   Wed, 13 Dec 2023 16:13:59 +0100
-Subject: [PATCH RESEND RFC] driver: core: don't queue device links removal
- for dt overlays
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Message-Id: <20231213-fix-device-links-overlays-v1-1-f091b213777c@analog.com>
-X-B4-Tracking: v=1; b=H4sIADbKeWUC/32NMQ+CMBCF/4q52TNcAREnE8XRAUfD0NAWGrE1r
- WkkhP9uJc5Ol3f53vsm8NJp6WG/msDJoL22JgZar6DtuekkahEzsISlRCxDpd8oIthKHLS5e7R
- BuoGPHikVZaFUSRlJiP2nkxFetm9QV9fqcvq+6/MRmnh77V/WjYs50AL9JMUfSSAkFEWW7lS+F
- QnLD9zwwXab1j6gmef5A0ES52LSAAAA
-To:     linux-kernel@vger.kernel.org
+        Wed, 13 Dec 2023 10:15:52 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85661F7;
+        Wed, 13 Dec 2023 07:15:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1702480558; x=1734016558;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=Ga/06Gm65DZz6cxBTRPoAOr5ox5/yudCTiMMj5NoYNM=;
+  b=WuyxeKSDenD+U7sk1EJ3VZZUldlxwQTI0rb0ZQaNOF49XfJZ1XGZW2Zu
+   jHwCFeW5xL1Is1IBcZ+awz/WctrYr6RjOmDQDegOlKvKVnqymhIKlJxxW
+   2foi+Szr8Ju2g7ZWiNWkeSQ4QYR3HMfoZ3hdxUZOqbqW7gkZYWSgX3Rzv
+   OTnn2Si7eBQp5Cj77JofMPs8ywAHgVKEu1n4CUUmm6DUrawjKEXASea0G
+   WdyDhuBIvbqsCnxLAT0+fzm6sXU8gmaZZXJxllAFXrsedxsO29BJoEBFA
+   2qk8j7LCuaLiBUECmPn8pVvo0joBVbwMyUl4tvhnf/NliP/UhCS3wxTbk
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10923"; a="398820987"
+X-IronPort-AV: E=Sophos;i="6.04,273,1695711600"; 
+   d="scan'208";a="398820987"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Dec 2023 07:15:58 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10923"; a="750150031"
+X-IronPort-AV: E=Sophos;i="6.04,273,1695711600"; 
+   d="scan'208";a="750150031"
+Received: from kuha.fi.intel.com ([10.237.72.185])
+  by orsmga006.jf.intel.com with SMTP; 13 Dec 2023 07:15:55 -0800
+Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Wed, 13 Dec 2023 17:15:54 +0200
+Date:   Wed, 13 Dec 2023 17:15:54 +0200
+From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
+To:     Javier Carrasco <javier.carrasco@wolfvision.net>
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>
-X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1702480444; l=4326;
- i=nuno.sa@analog.com; s=20231116; h=from:subject:message-id;
- bh=8QbmA+HGKDxoC5NcwfVBHQDhv97DYzCEC3G4ZKRaqFg=;
- b=h7llQVIwtSkkBrHpTDv5Kmr8hPHmtfoiroWKx19gGJBYsjg71X5oGUH/+PQZ5SbkhnTrVfuBs
- SQwuaubmPnTDMaAvNPNwDS7BJvSQqKlhdvW9lZ1t9NfGy6SQJvA71FC
-X-Developer-Key: i=nuno.sa@analog.com; a=ed25519;
- pk=3NQwYA013OUYZsmDFBf8rmyyr5iQlxV/9H4/Df83o1E=
-X-Endpoint-Received: by B4 Relay for nuno.sa@analog.com/20231116 with auth_id=100
-X-Original-From: Nuno Sa <nuno.sa@analog.com>
-Reply-To: <nuno.sa@analog.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/4] usb: typec: tipd: add function to request firmware
+Message-ID: <ZXnKqsy2rEJxmXhG@kuha.fi.intel.com>
+References: <20231207-tps6598x_update-v1-0-dc21b5301d91@wolfvision.net>
+ <20231207-tps6598x_update-v1-2-dc21b5301d91@wolfvision.net>
+ <ZXMudF++A9/y4TNk@kuha.fi.intel.com>
+ <196acb44-fb0d-45b6-a9c3-b5a289a41917@wolfvision.net>
+ <ZXhq/IJp9KVCkQYb@kuha.fi.intel.com>
+ <f942ad57-e2e1-4896-83f5-a1acc0805afa@wolfvision.net>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <f942ad57-e2e1-4896-83f5-a1acc0805afa@wolfvision.net>
+X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nuno Sa <nuno.sa@analog.com>
+On Tue, Dec 12, 2023 at 03:41:35PM +0100, Javier Carrasco wrote:
+> 
+> 
+> On 12.12.23 15:15, Heikki Krogerus wrote:
+> > Hi,
+> > 
+> > On Fri, Dec 08, 2023 at 07:58:52PM +0100, Javier Carrasco wrote:
+> >> Hi Heikki,
+> >>
+> >> On 08.12.23 15:55, Heikki Krogerus wrote:
+> >>
+> >>>> +	ret = request_firmware(fw, firmware_name, tps->dev);
+> >>>> +	if (ret) {
+> >>>> +		dev_err(tps->dev, "failed to retrieve \"%s\"\n", firmware_name);
+> >>>> +		/* probe deferring in case the file system is not ready */
+> >>>> +		return (ret == -ENOENT) ? -EPROBE_DEFER : ret;
+> >>>
+> >>> It's more likely that the firmware really isn't available, and it will
+> >>> never be available in this case. I think there is only one place in
+> >>> kernel where failing request_firmware() can lead to deferred probe
+> >>> (drivers/tee/optee/smc_abi.c) and there the code can actually see the
+> >>> system state - that's actually the condition.
+> >>>
+> >>> So just return dev_err_probe() here:
+> >>>
+> >>> 	ret = request_firmware(fw, firmware_name, tps->dev);
+> >>> 	if (ret)
+> >>>                 return dev_err_probe(tps->dev, ret, "failed to retrieve \"%s\"", firmware_name);
+> >>>
+> >> Thank you for your feedback.
+> >>
+> >> This solution arose from a real use case: in the system I am using to
+> >> test the tps65987d, the filesystem is not ready when the probe function
+> >> is called. If I just return on -ENOENT, the device will never get the
+> >> update.
+> > 
+> > Just like all the other devices that require firmware. This driver is
+> > no different from the others, and it is also not the only one that
+> > needs the firmware only in special cases. Just make the firmware part
+> > of your ramdisk, or build the driver as a module.
+> 
+> I wonder why then there is no general solution that does not force the
+> driver to be built as a module.
 
-For device links, releasing the supplier/consumer devices references
-happens asynchronously in device_link_release_fn(). Hence, the possible
-release of an of_node is also asynchronous. If these nodes were added
-through overlays we have a problem because this does not respect the
-devicetree overlays assumptions that when a changeset is
-being removed in __of_changeset_entry_destroy(), it must hold the last
-reference to that node. Due to the async nature of device links that
-cannot be guaranteed.
+Why would you need anything like that? Are you saying that even if you
+put the firmware into your ramdisk, the driver still fails to find the
+firmware if it's statically build? If so, then there is something else
+wrong.
 
-Given the above, in case one of the link consumer/supplier is part of
-an overlay node we call directly device_link_release_fn() instead of
-queueing it. Yes, it might take some significant time for
-device_link_release_fn() to complete because of synchronize_srcu() but
-we would need to, anyways, wait for all OF references to be released if
-we want to respect overlays assumptions.
+> If there is none, the documentation
+> should mention that somehow (sorry if it does, I missed it). Actually a
+> solution like the one implemented in the driver you mentioned could be
+> used by any driver that can wait to be updated when the system is
+> running.
+> 
+> > Are these firmwares available linux-firmware (or are the going to be)?
+> > https://git.kernel.org/?p=linux/kernel/git/firmware/linux-firmware.git
+> > 
+> > thanks,
+> > 
+> The firmware (at least for the tps6598x) can be tailored with a TI
+> specific tool and it depends on the use case, so I suppose making it
+> public does not make much sense.
 
-Signed-off-by: Nuno Sa <nuno.sa@analog.com>
----
-This RFC is a follow up of a previous one that I sent to the devicetree
-folks [1]. It got rejected because it was not really fixing the root
-cause of the issue (which I do agree). Please see the link where I
-fully explain what the issue is.
+Okay.
 
-I did also some git blaming and did saw that commit
-80dd33cf72d1 ("drivers: base: Fix device link removal") introduced
-queue_work() as we could be releasing the last device reference and hence
-sleeping which is against SRCU callback requirements. However, that same
-commit is now making use of synchronize_srcu() which may take
-significant time (and I think that's the reason for the work item?).
+thanks,
 
-However, given the dt overlays requirements, I'm not seeing any
-reason to not be able to run device_link_release_fn() synchronously if we
-detect an OVERLAY node is being released. I mean, even if we come up
-(and I did some experiments in this regard) with some async mechanism to
-release the OF nodes refcounts, we still need a synchronization point
-somewhere.
-
-Anyways, I would like to have some feedback on how acceptable would this
-be or what else could I do so we can have a "clean" dt overlay removal.
-
-I'm also cc'ing dts folks so they can give some comments on the new
-device_node_overlay_removal() function. My goal is to try to detect when an
-overlay is being removed (maybe we could even have an explicit flag for
-it?) and only directly call device_link_release_fn() in that case.
-
-[1]: https://lore.kernel.org/linux-devicetree/20230511151047.1779841-1-nuno.sa@analog.com/
----
- drivers/base/core.c | 25 ++++++++++++++++++++++++-
- 1 file changed, 24 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/base/core.c b/drivers/base/core.c
-index 67ba592afc77..8466b63b89c3 100644
---- a/drivers/base/core.c
-+++ b/drivers/base/core.c
-@@ -497,6 +497,18 @@ static struct attribute *devlink_attrs[] = {
- };
- ATTRIBUTE_GROUPS(devlink);
- 
-+static bool device_node_overlay_removal(struct device *dev)
-+{
-+	if (!dev_of_node(dev))
-+		return false;
-+	if (!of_node_check_flag(dev->of_node, OF_DETACHED))
-+		return false;
-+	if (!of_node_check_flag(dev->of_node, OF_OVERLAY))
-+		return false;
-+
-+	return true;
-+}
-+
- static void device_link_release_fn(struct work_struct *work)
- {
- 	struct device_link *link = container_of(work, struct device_link, rm_work);
-@@ -532,8 +544,19 @@ static void devlink_dev_release(struct device *dev)
- 	 * synchronization in device_link_release_fn() and if the consumer or
- 	 * supplier devices get deleted when it runs, so put it into the "long"
- 	 * workqueue.
-+	 *
-+	 * However, if any of the supplier, consumer nodes is being removed
-+	 * through overlay removal, the expectation in
-+	 * __of_changeset_entry_destroy() is for the node 'kref' to be 1 which
-+	 * cannot be guaranteed with the async nature of
-+	 * device_link_release_fn(). Hence, do it synchronously for the overlay
-+	 * case.
- 	 */
--	queue_work(system_long_wq, &link->rm_work);
-+	if (device_node_overlay_removal(link->consumer) ||
-+	    device_node_overlay_removal(link->supplier))
-+		device_link_release_fn(&link->rm_work);
-+	else
-+		queue_work(system_long_wq, &link->rm_work);
- }
- 
- static struct class devlink_class = {
-
----
-base-commit: 98b1cc82c4affc16f5598d4fa14b1858671b2263
-change-id: 20231124-fix-device-links-overlays-13d97ff9141e
---
-
-Thanks!
-- Nuno Sá
-
+-- 
+heikki
