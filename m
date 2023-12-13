@@ -2,170 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D11068119B5
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 17:41:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 78CF88119B8
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 17:41:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379080AbjLMQlB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 11:41:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34114 "EHLO
+        id S229975AbjLMQlm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 11:41:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50460 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232663AbjLMQkl (ORCPT
+        with ESMTP id S229600AbjLMQll (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 11:40:41 -0500
-Received: from out03.mta.xmission.com (out03.mta.xmission.com [166.70.13.233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6761FDD
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 08:40:46 -0800 (PST)
-Received: from in01.mta.xmission.com ([166.70.13.51]:34198)
-        by out03.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1rDSHq-000F5P-IN; Wed, 13 Dec 2023 09:40:42 -0700
-Received: from ip68-227-168-167.om.om.cox.net ([68.227.168.167]:57650 helo=email.froward.int.ebiederm.org.xmission.com)
-        by in01.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1rDSHp-007ayE-7B; Wed, 13 Dec 2023 09:40:42 -0700
-From:   "Eric W. Biederman" <ebiederm@xmission.com>
-To:     James Gowans <jgowans@amazon.com>
-Cc:     "Sean Christopherson" <seanjc@google.com>,
-        <kexec@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Marc Zyngier <maz@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        Tony Luck <tony.luck@intel.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Samuel Holland <samuel@sholland.org>,
-        "Pavel Machek" <pavel@ucw.cz>, Sebastian Reichel <sre@kernel.org>,
-        Orson Zhai <orsonzhai@gmail.com>,
-        Alexander Graf <graf@amazon.de>,
-        "Jan H . Schoenherr" <jschoenh@amazon.de>
-References: <20231213064004.2419447-1-jgowans@amazon.com>
-Date:   Wed, 13 Dec 2023 10:39:52 -0600
-In-Reply-To: <20231213064004.2419447-1-jgowans@amazon.com> (James Gowans's
-        message of "Wed, 13 Dec 2023 08:40:04 +0200")
-Message-ID: <874jgm9huv.fsf@email.froward.int.ebiederm.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
+        Wed, 13 Dec 2023 11:41:41 -0500
+Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F61F98;
+        Wed, 13 Dec 2023 08:41:47 -0800 (PST)
+Received: by mail-pg1-x532.google.com with SMTP id 41be03b00d2f7-5be30d543c4so4014821a12.2;
+        Wed, 13 Dec 2023 08:41:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1702485707; x=1703090507; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=gr+U3ThNAiG15ak/Lw3/3fJKchrsxVjpre1fxBodeHk=;
+        b=i5fNo+ZRR2bjx4Ux+fmAKRYYZYjY6ihAzf3O46GVHgCHMjl8I5YuNa0CzUfxwpstVK
+         x6OWaFD8K8FUa0l6T4DEjQNt+R8ULgcLggNArT1fp1EIVTPx5p2wR2ISpiNIBkITQqPw
+         IoXncIfo3zNax4jjaMWaeTJBcZRseOHkAdUqbGYeY+jx+joj8T++/czndYrSi0CPJfcL
+         qGcUqmF52KKTqtu0lGcKDshlNolfyAm9zDDdFgPoysAG72ldkGfrnAt+fqBW5I3+v+R8
+         WweJREcSLmZlsmoOm6xtDQSGvl6K8l1nyz3XkwOvMVXC3j0ph9qWu0h3rULn0w7P0EBm
+         hs9Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702485707; x=1703090507;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=gr+U3ThNAiG15ak/Lw3/3fJKchrsxVjpre1fxBodeHk=;
+        b=WeBAZIqm5iLMq/5aaCLUROiqINqQe5KltwmErd6dIsMN3GiIClHYgfxrO4FKI0TAyK
+         Pwn2aVUgZRLPU3mLl8YY7L+x43WHkPHWF+tav5J350Rho8zjM/Df/9PkemQn/fwwl+qu
+         9lJo6aJFmZM/MzUP5opzr2J7NlrwrOjb7Y9kpalbUb7tgY6n4PqP6ojhzPgywuHxT4oh
+         YYgh9Pb7kfGNk/VDc4YVLM4xOPmKwgjGmzWkbFtZmxVh4WmQO1qBTcqQOT8hfocVFKhm
+         uOMsPm6w8xHwuJBF7rTFRX13lp/gMKE4DhohRZMCTAtyFAEatoSIbMkq4nu2reoZ+yS/
+         h0fA==
+X-Gm-Message-State: AOJu0Yy0YdSKQJHEo5ZqoZIypnNFnrbIXBpoivb6qNcM/LdFKry2RPmK
+        DP/H+AFDCXQUK+NdMUoLep0=
+X-Google-Smtp-Source: AGHT+IEd/aXZEAYYeKeL+Fq0SwOq+XspHrL1Lt7AF+acnSZ5Z0izCV8j8aJOzdEXlyG9NrNmjmtL5w==
+X-Received: by 2002:a05:6a21:7802:b0:191:e72c:24cf with SMTP id be2-20020a056a21780200b00191e72c24cfmr422281pzc.31.1702485706573;
+        Wed, 13 Dec 2023 08:41:46 -0800 (PST)
+Received: from dschatzberg-fedora-PF3DHTBV ([2620:10d:c090:500::5:4500])
+        by smtp.gmail.com with ESMTPSA id s35-20020a056a0017a300b006d0bff2cc81sm2027359pfg.123.2023.12.13.08.41.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Dec 2023 08:41:44 -0800 (PST)
+Date:   Wed, 13 Dec 2023 11:41:41 -0500
+From:   Dan Schatzberg <schatzberg.dan@gmail.com>
+To:     Huan Yang <11133793@vivo.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Yosry Ahmed <yosryahmed@google.com>, Huan Yang <link@vivo.com>,
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        linux-mm@kvack.org, Tejun Heo <tj@kernel.org>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Michal Hocko <mhocko@kernel.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <muchun.song@linux.dev>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        David Hildenbrand <david@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Chris Li <chrisl@kernel.org>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        Yue Zhao <findns94@gmail.com>, Hugh Dickins <hughd@google.com>
+Subject: Re: [PATCH V4 1/2] mm: add defines for min/max swappiness
+Message-ID: <ZXnexTxt3JE8mEMV@dschatzberg-fedora-PF3DHTBV>
+References: <20231213013807.897742-1-schatzberg.dan@gmail.com>
+ <20231213013807.897742-2-schatzberg.dan@gmail.com>
+ <86984d9b-c955-4b06-9097-2a757b1bacfe@vivo.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1rDSHp-007ayE-7B;;;mid=<874jgm9huv.fsf@email.froward.int.ebiederm.org>;;;hst=in01.mta.xmission.com;;;ip=68.227.168.167;;;frm=ebiederm@xmission.com;;;spf=pass
-X-XM-AID: U2FsdGVkX1+gZJHyqWjEBJwoHvIZu/SXC+PpnQcK/vQ=
-X-SA-Exim-Connect-IP: 68.227.168.167
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
-        lindbergh.monkeyblade.net
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <86984d9b-c955-4b06-9097-2a757b1bacfe@vivo.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
-X-Spam-DCC: XMission; sa07 1397; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: ;James Gowans <jgowans@amazon.com>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 786 ms - load_scoreonly_sql: 0.04 (0.0%),
-        signal_user_changed: 9 (1.1%), b_tie_ro: 8 (1.0%), parse: 1.37 (0.2%),
-        extract_message_metadata: 51 (6.5%), get_uri_detail_list: 7 (0.8%),
-        tests_pri_-2000: 79 (10.1%), tests_pri_-1000: 5.0 (0.6%),
-        tests_pri_-950: 1.65 (0.2%), tests_pri_-900: 1.33 (0.2%),
-        tests_pri_-90: 183 (23.3%), check_bayes: 172 (21.9%), b_tokenize: 22
-        (2.8%), b_tok_get_all: 14 (1.8%), b_comp_prob: 6 (0.7%),
-        b_tok_touch_all: 126 (16.0%), b_finish: 1.09 (0.1%), tests_pri_0: 436
-        (55.5%), check_dkim_signature: 0.52 (0.1%), check_dkim_adsp: 2.5
-        (0.3%), poll_dns_idle: 0.48 (0.1%), tests_pri_10: 2.8 (0.4%),
-        tests_pri_500: 10 (1.3%), rewrite_mail: 0.00 (0.0%)
-Subject: Re: [PATCH] kexec: do syscore_shutdown() in kernel_kexec
-X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
-X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+        lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-James Gowans <jgowans@amazon.com> writes:
+On Wed, Dec 13, 2023 at 09:58:26AM +0800, Huan Yang wrote:
+> 
+> 在 2023/12/13 9:38, Dan Schatzberg 写道:
+> > [????????? schatzberg.dan@gmail.com ????????? https://aka.ms/LearnAboutSenderIdentification,????????????]
+> > 
+> > We use the constants 0 and 200 in a few places in the mm code when
+> > referring to the min and max swappiness. This patch adds MIN_SWAPPINESS
+> > and MAX_SWAPPINESS #defines to improve clarity. There are no functional
+> > changes.
+> > 
+> > Signed-off-by: Dan Schatzberg <schatzberg.dan@gmail.com>
+> > ---
+> >   include/linux/swap.h |  2 ++
+> >   mm/memcontrol.c      |  2 +-
+> >   mm/vmscan.c          | 10 +++++-----
+> >   3 files changed, 8 insertions(+), 6 deletions(-)
+> > 
+> > diff --git a/include/linux/swap.h b/include/linux/swap.h
+> > index f6dd6575b905..e2ab76c25b4a 100644
+> > --- a/include/linux/swap.h
+> > +++ b/include/linux/swap.h
+> > @@ -407,6 +407,8 @@ extern unsigned long try_to_free_pages(struct zonelist *zonelist, int order,
+> > 
+> >   #define MEMCG_RECLAIM_MAY_SWAP (1 << 1)
+> >   #define MEMCG_RECLAIM_PROACTIVE (1 << 2)
+> > +#define MIN_SWAPPINESS 0
+> > +#define MAX_SWAPPINESS 200
+> 
+> Do MAX_SWAPPINESS apply for all swapppiness? If so, maybe better change
+> swappiness sysctl define:
+> ```
+> sysctl.c:
+> 
+> {
+>         .procname    = "swappiness",
+>         .data        = &vm_swappiness,
+>         .maxlen        = sizeof(vm_swappiness),
+>         .mode        = 0644,
+>         .proc_handler    = proc_dointvec_minmax,
+>         .extra1        = SYSCTL_ZERO,
+>         .extra2        = SYSCTL_TWO_HUNDRED,
+>     },
+> 
+> ```
+> 
+> Here hard code swappiness in [0, 200], and now add a new define.
 
-> syscore_shutdown() runs driver and module callbacks to get the system
-> into a state where it can be correctly shut down. In commit
-> 6f389a8f1dd2 ("PM / reboot: call syscore_shutdown() after disable_nonboot_cpus()")
-> syscore_shutdown() was removed from kernel_restart_prepare() and hence
-> got (incorrectly?) removed from the kexec flow. This was innocuous until
-> commit 6735150b6997 ("KVM: Use syscore_ops instead of reboot_notifier to hook restart/shutdown")
-> changed the way that KVM registered its shutdown callbacks, switching from
-> reboot notifiers to syscore_ops.shutdown. As syscore_shutdown() is
-> missing from kexec, KVM's shutdown hook is not run and virtualisation is
-> left enabled on the boot CPU which results in triple faults when
-> switching to the new kernel on Intel x86 VT-x with VMXE enabled.
->
-> Fix this by adding syscore_shutdown() to the kexec sequence. In terms of
-> where to add it, it is being added after migrating the kexec task to the
-> boot CPU, but before APs are shut down. It is not totally clear if this
-> is the best place: in commit 6f389a8f1dd2 ("PM / reboot: call syscore_shutdown() after disable_nonboot_cpus()")
-> it is stated that "syscore_ops operations should be carried with one
-> CPU on-line and interrupts disabled." APs are only offlined later in
-> machine_shutdown(), so this syscore_shutdown() is being run while APs
-> are still online. This seems to be the correct place as it matches where
-> syscore_shutdown() is run in the reboot and halt flows - they also run
-> it before APs are shut down. The assumption is that the commit message
-> in commit 6f389a8f1dd2 ("PM / reboot: call syscore_shutdown() after disable_nonboot_cpus()")
-> is no longer valid.
->
-> KVM has been discussed here as it is what broke loudly by not having
-> syscore_shutdown() in kexec, but this change impacts more than just KVM;
-> all drivers/modules which register a syscore_ops.shutdown callback will
-> now be invoked in the kexec flow. Looking at some of them like x86 MCE
-> it is probably more correct to also shut these down during kexec.
-> Maintainers of all drivers which use syscore_ops.shutdown are added on
-> CC for visibility. They are:
->
-> arch/powerpc/platforms/cell/spu_base.c  .shutdown = spu_shutdown,
-> arch/x86/kernel/cpu/mce/core.c	        .shutdown = mce_syscore_shutdown,
-> arch/x86/kernel/i8259.c                 .shutdown = i8259A_shutdown,
-> drivers/irqchip/irq-i8259.c	        .shutdown = i8259A_shutdown,
-> drivers/irqchip/irq-sun6i-r.c	        .shutdown = sun6i_r_intc_shutdown,
-> drivers/leds/trigger/ledtrig-cpu.c	.shutdown = ledtrig_cpu_syscore_shutdown,
-> drivers/power/reset/sc27xx-poweroff.c	.shutdown = sc27xx_poweroff_shutdown,
-> kernel/irq/generic-chip.c	        .shutdown = irq_gc_shutdown,
-> virt/kvm/kvm_main.c	                .shutdown = kvm_shutdown,
->
-> This has been tested by doing a kexec on x86_64 and aarch64.
+Yes, MAX_SWAPPINESS is a hard limit. I'm not sure what you're
+proposing here - the SYSCTL_ZERO and SYSCTL_TWO_HUNDRED values are a
+little different than the defines I added. I think most of the value
+is just consistently using the defines in the core mm code.
 
-From the 10,000 foot perspective:
-Acked-by: "Eric W. Biederman" <ebiederm@xmission.com>
+> 
+> And many other code hard reference 200 into max value of swappiness, like:
+> 
+> ```
+> memcontrol.c:
+> static int mem_cgroup_swappiness_write(struct cgroup_subsys_state *css,
+>                        struct cftype *cft, u64 val)
+> {
+>     struct mem_cgroup *memcg = mem_cgroup_from_css(css);
+> 
+>     if (val > 200)
+>         return -EINVAL;
+> 
+>     if (!mem_cgroup_is_root(memcg))
+>         memcg->swappiness = val;
+>     else
+>         vm_swappiness = val;
+> 
+>     return 0;
+> }
 
-
-Eric
-
-> Fixes: 6735150b6997 ("KVM: Use syscore_ops instead of reboot_notifier to hook restart/shutdown")
->
-> Signed-off-by: James Gowans <jgowans@amazon.com>
-> Cc: Eric Biederman <ebiederm@xmission.com>
-> Cc: Paolo Bonzini <pbonzini@redhat.com>
-> Cc: Sean Christopherson <seanjc@google.com>
-> Cc: Marc Zyngier <maz@kernel.org>
-> Cc: Arnd Bergmann <arnd@arndb.de>
-> Cc: Tony Luck <tony.luck@intel.com>
-> Cc: Borislav Petkov <bp@alien8.de>
-> Cc: Thomas Gleixner <tglx@linutronix.de>
-> Cc: Ingo Molnar <mingo@redhat.com>
-> Cc: Chen-Yu Tsai <wens@csie.org>
-> Cc: Jernej Skrabec <jernej.skrabec@gmail.com>
-> Cc: Samuel Holland <samuel@sholland.org>
-> Cc: Pavel Machek <pavel@ucw.cz>
-> Cc: Sebastian Reichel <sre@kernel.org>
-> Cc: Orson Zhai <orsonzhai@gmail.com>
-> Cc: Alexander Graf <graf@amazon.de>
-> Cc: Jan H. Schoenherr <jschoenh@amazon.de>
-> ---
->  kernel/kexec_core.c | 1 +
->  1 file changed, 1 insertion(+)
->
-> diff --git a/kernel/kexec_core.c b/kernel/kexec_core.c
-> index be5642a4ec49..b926c4db8a91 100644
-> --- a/kernel/kexec_core.c
-> +++ b/kernel/kexec_core.c
-> @@ -1254,6 +1254,7 @@ int kernel_kexec(void)
->  		kexec_in_progress = true;
->  		kernel_restart_prepare("kexec reboot");
->  		migrate_to_reboot_cpu();
-> +		syscore_shutdown();
->  
->  		/*
->  		 * migrate_to_reboot_cpu() disables CPU hotplug assuming that
+This one is already fixed in my patch.
