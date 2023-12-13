@@ -2,79 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AB1A811F47
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 20:48:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D378B811F4B
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 20:48:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378316AbjLMTse (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 14:48:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54316 "EHLO
+        id S1379004AbjLMTsi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 14:48:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54318 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229811AbjLMTsd (ORCPT
+        with ESMTP id S233658AbjLMTsh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 14:48:33 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2C039C
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 11:48:39 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7215AC433C7;
-        Wed, 13 Dec 2023 19:48:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1702496919;
-        bh=MZtzdUx4eKT5heieT9T5VOR43tMJJzsqr7+1whfzXas=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=V7uGFuNHvpesCeFV2U++2OplcF8v4oBAlDcXfknxMkfBwIOdoPbiDOhepHt8u3hhn
-         dJiojJM/VfCGpAMnMesfB4H5uCicK1y5jxuLv5FHILPBXat0VWi1iOAoOxU9gZgZUb
-         l8M7QsbawfZos/ahINA3IdeLESlKIPE1+bhtG7e0PXeiC1L6nRYSvOEzGoUYGsfozI
-         ekB6+Al5sf4osUXPOvKnkbVafY9lGZk41toCjgNPFfTlwkNnZHVtW7V8nOHGoDgxSp
-         wCdSCFc4lrTp0SYb/2qv/dL0X/a4SRA2op13Gh+K9k9gMcYs8U87M2mqMuH+YfwILd
-         GnU5OqCI0duSA==
-Date:   Wed, 13 Dec 2023 19:48:28 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     Deepak Gupta <debug@rivosinc.com>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Oliver Upton <oliver.upton@linux.dev>,
-        James Morse <james.morse@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Arnd Bergmann <arnd@arndb.de>, Oleg Nesterov <oleg@redhat.com>,
-        Eric Biederman <ebiederm@xmission.com>,
-        Kees Cook <keescook@chromium.org>,
-        Shuah Khan <shuah@kernel.org>,
-        "Rick P. Edgecombe" <rick.p.edgecombe@intel.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Szabolcs Nagy <Szabolcs.Nagy@arm.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Florian Weimer <fweimer@redhat.com>,
-        Christian Brauner <brauner@kernel.org>,
-        Thiago Jung Bauermann <thiago.bauermann@linaro.org>,
-        linux-arm-kernel@lists.infradead.org, linux-doc@vger.kernel.org,
-        kvmarm@lists.linux.dev, linux-fsdevel@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-mm@kvack.org,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-riscv@lists.infradead.org
-Subject: Re: [PATCH v7 02/39] prctl: arch-agnostic prctl for shadow stack
-Message-ID: <feb6d1fc-c144-4f2b-833f-b3e00646cf30@sirena.org.uk>
-References: <20231122-arm64-gcs-v7-0-201c483bd775@kernel.org>
- <20231122-arm64-gcs-v7-2-201c483bd775@kernel.org>
- <CAKC1njSC5cC_fXnyNAPt=WU6cD-OjLKFxo90oVPmsLJbuWf4nw@mail.gmail.com>
- <d708b493-267a-4418-be91-9bde6b2cf50c@sirena.org.uk>
- <CAKC1njSQPO8ja7AkTzQ724hhSsGjchH9dLbbH9LXP0ZiKj-zPQ@mail.gmail.com>
- <0d0d8802-09e3-4ea5-a0b4-b3a08c8a282e@sirena.org.uk>
- <CAKC1njRHs0R=VKfn4jBap9__oR0rBHmNy7_tqHR8=xEHdUE4+A@mail.gmail.com>
+        Wed, 13 Dec 2023 14:48:37 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BA429C;
+        Wed, 13 Dec 2023 11:48:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1702496923; x=1734032923;
+  h=message-id:subject:from:reply-to:to:cc:date:in-reply-to:
+   references:content-transfer-encoding:mime-version;
+  bh=aA4k2O4QxXBzZN4A6Xdv+7/OCMnepuyXKc9VbGVRZF4=;
+  b=UYs4BEp19kcR+yRy4vlWPCepMONrNnvgdWQxqvAroSEIsnlpwUNM7yjB
+   fK8QwVvVbNnToOWmAxThBEBYZzBUcsNuE5fkW4teXDbDStqlKgbu4GzT0
+   mqDF+vXKGFMUSwtLUXx33CkkgB1oBKXJ7MNJzuQv/7xADOYqbHssuxAwW
+   3hE8T7xLHCM4woBfHZcYf7nn4dDughXWE2o6tbDjYhtpZ8JXOfcR/YiGr
+   L9pBhuoY0TqQg3L1MJNcCkV6zcDdirnz8LsS/BwF57Z7kHxdnq9kt4cRB
+   ZV588yHRZb1+6NM7fbc7EDlYcTyPJLHTapsjehjYjn0z5oPCl0cl2XcKA
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10923"; a="8412616"
+X-IronPort-AV: E=Sophos;i="6.04,273,1695711600"; 
+   d="scan'208";a="8412616"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Dec 2023 11:48:43 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10923"; a="864730997"
+X-IronPort-AV: E=Sophos;i="6.04,273,1695711600"; 
+   d="scan'208";a="864730997"
+Received: from linux.intel.com ([10.54.29.200])
+  by FMSMGA003.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Dec 2023 11:48:42 -0800
+Received: from acharris-mobl.amr.corp.intel.com (unknown [10.255.228.183])
+        by linux.intel.com (Postfix) with ESMTP id DFF9B580DA9;
+        Wed, 13 Dec 2023 11:48:41 -0800 (PST)
+Message-ID: <970144d9b5c3d36dbd0d50f01c1c4355cd42de89.camel@linux.intel.com>
+Subject: Re: [PATCH v2 1/6] PCI/ASPM: Add locked helper for enabling link
+ state
+From:   "David E. Box" <david.e.box@linux.intel.com>
+Reply-To: david.e.box@linux.intel.com
+To:     Bjorn Helgaas <helgaas@kernel.org>,
+        Kai-Heng Feng <kai.heng.feng@canonical.com>
+Cc:     Johan Hovold <johan+linaro@kernel.org>,
+        Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        Krzysztof =?UTF-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Manivannan Sadhasivam <mani@kernel.org>,
+        Rob Herring <robh@kernel.org>,
+        Nirmal Patel <nirmal.patel@linux.intel.com>,
+        Jonathan Derrick <jonathan.derrick@linux.dev>,
+        linux-arm-msm@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Date:   Wed, 13 Dec 2023 11:48:41 -0800
+In-Reply-To: <20231212212707.GA1021099@bhelgaas>
+References: <20231212212707.GA1021099@bhelgaas>
+Organization: David E. Box
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.44.4-0ubuntu2 
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="PqL9xaSuINxjZ0qj"
-Content-Disposition: inline
-In-Reply-To: <CAKC1njRHs0R=VKfn4jBap9__oR0rBHmNy7_tqHR8=xEHdUE4+A@mail.gmail.com>
-X-Cookie: One size fits all.
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -82,50 +81,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, 2023-12-12 at 15:27 -0600, Bjorn Helgaas wrote:
+> On Tue, Dec 12, 2023 at 11:48:27AM +0800, Kai-Heng Feng wrote:
+> > On Fri, Dec 8, 2023 at 4:47=E2=80=AFAM Bjorn Helgaas <helgaas@kernel.or=
+g> wrote:
+> > ...
+>=20
+> > > I hope we can obsolete this whole idea someday.=C2=A0 Using pci_walk_=
+bus()
+> > > in qcom and vmd to enable ASPM is an ugly hack to work around this
+> > > weird idea that "the OS isn't allowed to enable more ASPM states than
+> > > the BIOS did because the BIOS might have left ASPM disabled because i=
+t
+> > > knows about hardware issues."=C2=A0 More history at
+> > > https://lore.kernel.org/linux-pci/20230615070421.1704133-1-kai.heng.f=
+eng@canonical.com/T/#u
+> > >=20
+> > > I think we need to get to a point where Linux enables all supported
+> > > ASPM features by default.=C2=A0 If we really think x86 BIOS assumes a=
+n
+> > > implicit contract that the OS will never enable ASPM more
+> > > aggressively, we might need some kind of arch quirk for that.
+> >=20
+> > The reality is that PC ODM toggles ASPM to workaround hardware
+> > defects, assuming that OS will honor what's set by the BIOS.
+> > If ASPM gets enabled for all devices, many devices will break.
+>=20
+> That's why I mentioned some kind of arch quirk.=C2=A0 Maybe we're forced =
+to
+> do that for x86, for instance.=C2=A0 But even that is a stop-gap.
+>=20
+> The idea that the BIOS ASPM config is some kind of handoff protocol is
+> really unsupportable.
 
---PqL9xaSuINxjZ0qj
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+To be clear, you are not talking about a situation where ACPI_FADT_NO_ASPM =
+or
+_OSC PCIe disallow OS ASPM control, right? Everyone agrees that this should=
+ be
+honored? The question is what to do by default when the OS is not restricte=
+d by
+these mechanisms?
 
-On Wed, Dec 13, 2023 at 11:43:49AM -0800, Deepak Gupta wrote:
-> On Wed, Dec 13, 2023 at 5:37=E2=80=AFAM Mark Brown <broonie@kernel.org> w=
-rote:
-> > On Tue, Dec 12, 2023 at 04:50:38PM -0800, Deepak Gupta wrote:
+Reading the mentioned thread, I too think that using the BIOS config as the
+default would be the safest option, but only to avoid breaking systems, not
+because of an implied contract between the BIOS and OS. However, enabling a=
+ll
+capable ASPM features is the ideal option. If the OS isn't limited by
+ACPI_FADT_NO_ASPM or _OSC PCIe, then ASPM enabling is fully under its contr=
+ol.
+If this doesn't work for some devices then they are broken and need a quirk=
+.
 
-> > > How will it do that (currently _ENABLE is married to _WRITE and _PUSH=
-) ?
-
-> > That's feeling moderately firmly into "don't do that" territory to be
-> > honest, the problems of trying to modify the stack of another running
-> > thread while it's active just don't seem worth it - if you're
-> > coordinating enough to do the modifications it's probably possible to
-> > just ask the thread who's stack is being modified to do the modification
-> > itself and having an unprotected thread writing into shadow stack memory
-> > doesn't feel great.
-
-> Yeah no leanings on my side. Just wanted to articulate this scenario.
-> Since this is new ground,
-> we can define what's appropriate. Let's keep it this way where a
-> thread can write to shadow
-> stack mappings only when it itself has shadow stack enabled.
-
-Sounds good to me - it's much easier to relax permissions later than to
-tighten them up.
-
---PqL9xaSuINxjZ0qj
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmV6CosACgkQJNaLcl1U
-h9ALhgf/X0uXQk/jQmE5Jq0LTM5Dq11ls+1yrW1dnXA7KxS0COIsEEUbdISRGMla
-V+YwOPaYph3UvrmaWSwwvJoYLBnF5otV9j195V9CyQ0+ffNtfzadl8v/tCaf9Kj8
-w3gJY/USQR8ILQtuKGWengTYUOgoygMfNi5bjUokSG8R06ZNY9d51H/aOjGUgnUQ
-8EaJ6bxBsbsqd4FlcP8EcxYfwdpfhEf9EKrHF+ZIlHTZdP4abSGD5mb7B1w4Tqpj
-iVf/C2FzA5H8OSh7cMg/9WfDUCs74i+AUc2sIVVpFNYvfcxyCqQIfdwk5Okiyc8t
-LBjtoBgkATaNC4M22Ino8jfc5Dasew==
-=qiqv
------END PGP SIGNATURE-----
-
---PqL9xaSuINxjZ0qj--
+David
