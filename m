@@ -2,107 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6296A810F9C
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 12:17:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DE4D810FA1
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 12:20:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377250AbjLMLRO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 06:17:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43098 "EHLO
+        id S1377177AbjLMLU0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 06:20:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39236 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230506AbjLMLRN (ORCPT
+        with ESMTP id S231947AbjLMLUY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 06:17:13 -0500
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AAE0A0;
-        Wed, 13 Dec 2023 03:17:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1702466238;
-        bh=96//esADRJOplqr88mspWyhOTMtK0mDFOs2Lc3N4+AY=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=vNl9EfAH7fdF7bv33WObj93Bnua/VyYYCEXrpSDln3sYpvj4A54iZAsB8mykb1KeN
-         qsuGpBxCteADgWJAfmzH6KiB9BpqLJ/7QGSmQpYoEm32bN4mpOMgCr2QlqGI0K5DF1
-         O49m5L82yWVhwcgFcQ4GelNCJ1k/Ud94FWbSUaC+1kKSo7RBDm5RuDE1kyh2Ny/uPV
-         iqpbG1cBDmS5vXiC161CfBFtYywhR9jz0zdw/BL2vwmPxEKRPxkL4bqHlrXhjvFA8T
-         dQemoSTN3Yh5GBWTTDRCqFYsDWsPok3cjCijVV2Dc3SDyJez5ohr0n0zd99qGg+pU8
-         F7oRQ68kF62ig==
-Received: from [100.113.186.2] (cola.collaboradmins.com [195.201.22.229])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+        Wed, 13 Dec 2023 06:20:24 -0500
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1E70B0;
+        Wed, 13 Dec 2023 03:20:29 -0800 (PST)
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:98])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        (Authenticated sender: kholk11)
-        by madrid.collaboradmins.com (Postfix) with ESMTPSA id C2B8637813F2;
-        Wed, 13 Dec 2023 11:17:17 +0000 (UTC)
-Message-ID: <5327b2fd-94c6-46fe-b987-52cfff042033@collabora.com>
-Date:   Wed, 13 Dec 2023 12:17:17 +0100
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 9DFE5222C4;
+        Wed, 13 Dec 2023 11:20:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1702466427; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=s+wcnESLYU9HhNaOkniwhzmqLjKQKrV+1x/FjwBd1I4=;
+        b=PXiYiycNHBs4OBe/8nDEB8SJNvw8dJxOHmyPDJ+dgrJDqQe3apXh6PoK2dhEzhZ9P/CzO7
+        NQqnGoQr72zNGTU8D4188xC1POrWSjibqFraYWBm24yAEmEmhMHigi2hHm2oEJcVaq0uIK
+        LEhT6UgyMgWKTbdIUTAifUZufNDcpsw=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1702466427;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=s+wcnESLYU9HhNaOkniwhzmqLjKQKrV+1x/FjwBd1I4=;
+        b=zVCLyiGwwrEGhLMywzjUCP20OIfFB6vB5teuBSMV930b801bP9H4YV8IQ5GLGKwhu137+y
+        uj8AibVXWRujGBDg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1702466427; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=s+wcnESLYU9HhNaOkniwhzmqLjKQKrV+1x/FjwBd1I4=;
+        b=PXiYiycNHBs4OBe/8nDEB8SJNvw8dJxOHmyPDJ+dgrJDqQe3apXh6PoK2dhEzhZ9P/CzO7
+        NQqnGoQr72zNGTU8D4188xC1POrWSjibqFraYWBm24yAEmEmhMHigi2hHm2oEJcVaq0uIK
+        LEhT6UgyMgWKTbdIUTAifUZufNDcpsw=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1702466427;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=s+wcnESLYU9HhNaOkniwhzmqLjKQKrV+1x/FjwBd1I4=;
+        b=zVCLyiGwwrEGhLMywzjUCP20OIfFB6vB5teuBSMV930b801bP9H4YV8IQ5GLGKwhu137+y
+        uj8AibVXWRujGBDg==
+Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 82EE713240;
+        Wed, 13 Dec 2023 11:20:27 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+        by imap2.dmz-prg2.suse.org with ESMTPSA
+        id j4LwH3uTeWXHBQAAn2gu4w
+        (envelope-from <jack@suse.cz>); Wed, 13 Dec 2023 11:20:27 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+        id EDAAFA07E0; Wed, 13 Dec 2023 12:20:26 +0100 (CET)
+Date:   Wed, 13 Dec 2023 12:20:26 +0100
+From:   Jan Kara <jack@suse.cz>
+To:     John Garry <john.g.garry@oracle.com>
+Cc:     axboe@kernel.dk, kbusch@kernel.org, hch@lst.de, sagi@grimberg.me,
+        jejb@linux.ibm.com, martin.petersen@oracle.com, djwong@kernel.org,
+        viro@zeniv.linux.org.uk, brauner@kernel.org, dchinner@redhat.com,
+        jack@suse.cz, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
+        linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        tytso@mit.edu, jbongio@google.com, linux-scsi@vger.kernel.org,
+        ming.lei@redhat.com, jaswin@linux.ibm.com, bvanassche@acm.org
+Subject: Re: [PATCH v2 04/16] fs: Increase fmode_t size
+Message-ID: <20231213112026.kkfcwtg64kiadhn5@quack3>
+References: <20231212110844.19698-1-john.g.garry@oracle.com>
+ <20231212110844.19698-5-john.g.garry@oracle.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/3] dt-bindings: usb: mtk-xhci: add a property for Gen1
- isoc-in transfer issue
-Content-Language: en-US
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Chunfeng Yun <chunfeng.yun@mediatek.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Mathias Nyman <mathias.nyman@intel.com>,
-        linux-usb@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Macpaul Lin <macpaul.lin@mediatek.com>,
-        Eddie Hung <eddie.hung@mediatek.com>
-References: <20231213063543.12435-1-chunfeng.yun@mediatek.com>
- <c1bc144d-07d6-422c-8294-42be47f83e59@linaro.org>
-From:   AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>
-In-Reply-To: <c1bc144d-07d6-422c-8294-42be47f83e59@linaro.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231212110844.19698-5-john.g.garry@oracle.com>
+X-Spam-Score: 8.24
+X-Spamd-Bar: +++++
+X-Rspamd-Queue-Id: 9DFE5222C4
+Authentication-Results: smtp-out1.suse.de;
+        dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=PXiYiycN;
+        dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=zVCLyiGw;
+        dmarc=none;
+        spf=softfail (smtp-out1.suse.de: 2a07:de40:b281:104:10:150:64:98 is neither permitted nor denied by domain of jack@suse.cz) smtp.mailfrom=jack@suse.cz
+X-Spam-Score: 5.99
+X-Spamd-Result: default: False [5.99 / 50.00];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         ARC_NA(0.00)[];
+         R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+         SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:98:from];
+         FROM_HAS_DN(0.00)[];
+         TO_DN_SOME(0.00)[];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         MIME_GOOD(-0.10)[text/plain];
+         DMARC_NA(1.20)[suse.cz];
+         R_SPF_SOFTFAIL(4.60)[~all];
+         RCVD_COUNT_THREE(0.00)[3];
+         DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+         DKIM_TRACE(0.00)[suse.cz:+];
+         MX_GOOD(-0.01)[];
+         RCPT_COUNT_TWELVE(0.00)[23];
+         DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim,suse.com:email];
+         FUZZY_BLOCKED(0.00)[rspamd.com];
+         FROM_EQ_ENVFROM(0.00)[];
+         MIME_TRACE(0.00)[0:+];
+         MID_RHS_NOT_FQDN(0.50)[];
+         RCVD_TLS_ALL(0.00)[];
+         RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:98:from]
+X-Spam-Flag: NO
+X-Rspamd-Server: rspamd1
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Il 13/12/23 09:05, Krzysztof Kozlowski ha scritto:
-> On 13/12/2023 07:35, Chunfeng Yun wrote:
->> For Gen1 isoc-in endpoint on controller before about SSUSB IPM v1.6.0, it
->> still send out unexpected ACK after receiving a short packet in burst
->> transfer, this will cause an exception on connected device, specially for
->> a 4k camera.
->> Add a quirk property "mediatek,rxfifo-depth" to work around this hardware
->> issue;
->> The side-effect is that may cause performance drop about 10%, including
->> bulk transfer.
->>
->> Signed-off-by: Chunfeng Yun <chunfeng.yun@mediatek.com>
->> ---
->>   .../devicetree/bindings/usb/mediatek,mtk-xhci.yaml     | 10 ++++++++++
->>   1 file changed, 10 insertions(+)
->>
->> diff --git a/Documentation/devicetree/bindings/usb/mediatek,mtk-xhci.yaml b/Documentation/devicetree/bindings/usb/mediatek,mtk-xhci.yaml
->> index e9644e333d78..b8ed68574ba4 100644
->> --- a/Documentation/devicetree/bindings/usb/mediatek,mtk-xhci.yaml
->> +++ b/Documentation/devicetree/bindings/usb/mediatek,mtk-xhci.yaml
->> @@ -124,6 +124,16 @@ properties:
->>         defined in the xHCI spec on MTK's controller.
->>       default: 5000
->>   
->> +  mediatek,rxfifo-depth:
->> +    description:
+On Tue 12-12-23 11:08:32, John Garry wrote:
+> Currently all bits are being used in fmode_t.
 > 
-> The property description and driver patch suggest you configure the
-> depth of FIFO, so this should be not bool, but some uint32. And then,
-> use generic "fifo-depth" property to set desired depth.
+> To allow for further expansion, increase from unsigned int to unsigned
+> long.
+> 
+> Since the dma-buf driver prints the file->f_mode member, change the print
+> as necessary to deal with the larger size.
+> 
+> Signed-off-by: John Garry <john.g.garry@oracle.com>
 
-Did you mean "rx-fifo-depth" instead, as used in net?
-This FIFO depth parameter is for RX only.
+Uh, Al has more experience with fmode_t changes so I'd defer final decision
+to him but to me this seems dangerous. Firstly, this breaks packing of
+struct file on 64-bit architectures and struct file is highly optimized for
+cache efficiency (see the comment before the struct definition). Secondly
+this will probably generate warnings on 32-bit architectures as there
+sizeof(unsigned long) == sizeof(unsigned int) and so your new flags won't
+fit anyway?
 
-Cheers,
-Angelo
+								Honza
 
-
+> ---
+>  drivers/dma-buf/dma-buf.c | 2 +-
+>  include/linux/types.h     | 2 +-
+>  2 files changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/dma-buf/dma-buf.c b/drivers/dma-buf/dma-buf.c
+> index 21916bba77d5..a5227ae3d637 100644
+> --- a/drivers/dma-buf/dma-buf.c
+> +++ b/drivers/dma-buf/dma-buf.c
+> @@ -1628,7 +1628,7 @@ static int dma_buf_debug_show(struct seq_file *s, void *unused)
+>  
+>  
+>  		spin_lock(&buf_obj->name_lock);
+> -		seq_printf(s, "%08zu\t%08x\t%08x\t%08ld\t%s\t%08lu\t%s\n",
+> +		seq_printf(s, "%08zu\t%08x\t%08lx\t%08ld\t%s\t%08lu\t%s\n",
+>  				buf_obj->size,
+>  				buf_obj->file->f_flags, buf_obj->file->f_mode,
+>  				file_count(buf_obj->file),
+> diff --git a/include/linux/types.h b/include/linux/types.h
+> index 253168bb3fe1..49c754fde1d6 100644
+> --- a/include/linux/types.h
+> +++ b/include/linux/types.h
+> @@ -153,7 +153,7 @@ typedef u32 dma_addr_t;
+>  
+>  typedef unsigned int __bitwise gfp_t;
+>  typedef unsigned int __bitwise slab_flags_t;
+> -typedef unsigned int __bitwise fmode_t;
+> +typedef unsigned long __bitwise fmode_t;
+>  
+>  #ifdef CONFIG_PHYS_ADDR_T_64BIT
+>  typedef u64 phys_addr_t;
+> -- 
+> 2.35.3
+> 
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
