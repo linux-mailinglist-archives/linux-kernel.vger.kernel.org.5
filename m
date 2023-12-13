@@ -2,70 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EFCBA8114E6
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 15:41:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 643A98114E8
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 15:42:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442109AbjLMOk7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 09:40:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41866 "EHLO
+        id S1442016AbjLMOlu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 09:41:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51218 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1442012AbjLMOkk (ORCPT
+        with ESMTP id S1441994AbjLMOlt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 09:40:40 -0500
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37A7EDD
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 06:40:46 -0800 (PST)
-Received: by mail-pl1-x635.google.com with SMTP id d9443c01a7336-1d32c5ce32eso22318665ad.0
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 06:40:46 -0800 (PST)
+        Wed, 13 Dec 2023 09:41:49 -0500
+Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00D56B0
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 06:41:55 -0800 (PST)
+Received: by mail-pg1-x531.google.com with SMTP id 41be03b00d2f7-5c66e7eafabso5740305a12.0
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 06:41:55 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702478445; x=1703083245; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1702478515; x=1703083315; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=t3mJDSsBd+gLTGFYfrkyu9tBgFHp0rV5RVCzftSRiIQ=;
-        b=JRDdaQ2B8FQu3KlKWYs8F6bw6Hci22Zt6KSu8+h5085vm02ORdC+xT7gMKPvMxmkiN
-         ivnjb+CLoh5sLw1tCoaVyDM7cjXd103faHI1wwzfv2KgmUXJhBX1PtVK4xfa0gBQ5iav
-         C00PPhVfcbO1rBftn8plUb24x2BrGVDnGOunB+43Wn8Lq4lSMDWLF07lWnzF8sL3E25f
-         zP2QpImegtl5gLmoAWdPHjJpGI86k9ZA5imCxpmXBeD3n9kUITL7ywBSVnvc93Vzb/Gl
-         GhsSG0W93y5EiAVv3LrGBOAY1x2u+SkwebyL/eobzovY7Z7gmSetS+YQ7w18Dcn6M22V
-         m+5Q==
+        bh=ti4WWgukFD9JVeDjV7lFsBG44Mu7OstpF0433QBdo70=;
+        b=e6dNv0U0zyGfzRgX1MVlgtOeX6pIzmVt3lwdd+HfLaUOEmYJ5OL/uh2y1tdLZe9mAi
+         ahnHmUcQKlyNrSODG/Q98wPhn7fibVJJd16N2IrXNvvp3Wa0HBBLOYg/qMW9dGsP0RPI
+         fN9LamdFCo6rA3O1p3WFzwgJ69XfRC5OLrBLwh15HzDoDV/tGYeC5PeW3IQG4NTWFxVO
+         +i3dfAfwP1hcypyTGsB8BnWRXUHGdl37nAvXHXxGz3SN0aHy6WSxe1CErsO/AcE/eyv6
+         oJRk1gBlwHYnzzW9nUqvc3VopJvtprVv+KYuuJO+7jNAUfOWX+iVB8ysVRZzkds5ktSc
+         6mUg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702478445; x=1703083245;
+        d=1e100.net; s=20230601; t=1702478515; x=1703083315;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=t3mJDSsBd+gLTGFYfrkyu9tBgFHp0rV5RVCzftSRiIQ=;
-        b=ZCxeMtbAdFrG4v8fwubEoKVHBpCBu6tPcmqiS1KcuAEUPNeQETPKAG7+OrlBOC4/JR
-         djnwrsA2rK++gWM9C3gYQioSuq0c5sOvQcEGCsx57U6IF51JZl2sFmz4mV/OVp+dB7qw
-         cfF+OSmgHDSWuxe7emHFDkFvIiTPjoDovzSRvBTiXChtu+jUPkZehjHukqcl2UHAVW0m
-         AuyJNKIePGZ+JoKFdjfjtwbjXULvm//0TyzqQGIQnixVg8ZjNfM/J4EUSOCn/w2gejAo
-         LVVEn1o5Bg7cMZGKT1BLi9AryrBjA4tp0Vk/nzB3Hyjxf9gJ9Jl8f1inn2WAEVl0F4NL
-         U8VA==
-X-Gm-Message-State: AOJu0YyZu8IFlXwbeAGRIKuCTO418gs+aprGwGGcOW2oYwnokNUuOUTo
-        kJc9ITfvveDtjwQoR9SJ+Xk9bvAhpGrsYsIW4Nc=
-X-Google-Smtp-Source: AGHT+IF6caqmkOkKchSE4mSM69yXAgz5JoYHbVboHyzfw8Axgg+y5yFAUSGQz+qEjv5WV2j5pYSexT6qvPQj785jqew=
-X-Received: by 2002:a17:90b:e0e:b0:28a:dcda:a101 with SMTP id
- ge14-20020a17090b0e0e00b0028adcdaa101mr1926855pjb.47.1702478445662; Wed, 13
- Dec 2023 06:40:45 -0800 (PST)
+        bh=ti4WWgukFD9JVeDjV7lFsBG44Mu7OstpF0433QBdo70=;
+        b=N2RM7Kl3/++a/bChABC8D3h/cQIn0jC1VQIu8GfaA6+mBI/ugA554/harmzBKuW75f
+         wB5N6anpy7bz6FBVmXn+aK2U88QBS373g9x2UBdyCZgV2zeZUyk45OhLWynfnZy/7ZW7
+         T+q2IYG+R//dQeSsKb+EeMSH0t/+Eia/QMI8JYLh/W3jF8Tj9GLdQH5h/3zbKjHXrQjk
+         TyB/5OC/B2K7lsCvdAaj+1zfJIyUW3h//umUJQgvEyFlgUeennA9GYE0tuUKyVEAaQVw
+         PePFrGYij6dLhAnSWppdosyfcaP2+OpZoqQVc6Zj2Qvi+ovkUNYW/w20zvDzDdvu58yi
+         2jsQ==
+X-Gm-Message-State: AOJu0YwjQ6MqOE7w+NOh+jwEzRDpqJHFmjoTH4E38YVVJNg8zTeoGv8F
+        qVSOJEmcfATFU8kA2MbFXnn7M8syIgJQjEWNIpY=
+X-Google-Smtp-Source: AGHT+IHrfU+uljWMKsJP4r9Y6j8of4YygdL0gChR4SfRHkHP7ldH7o9FG4rZYsnJqwOKzNQbU3GjbGIXVkcS8MvVcQo=
+X-Received: by 2002:a05:6a20:9706:b0:18a:e86f:f246 with SMTP id
+ hr6-20020a056a20970600b0018ae86ff246mr7813053pzc.10.1702478515453; Wed, 13
+ Dec 2023 06:41:55 -0800 (PST)
 MIME-Version: 1.0
-References: <cover.1702339432.git.andreyknvl@google.com> <432a89fafce11244287c8af757e73a2eb22a5354.1702339432.git.andreyknvl@google.com>
- <CANpmjNM9Kq9C4f9AMYE9U3JrqofbsrC7cmrP28ZP4ep1CZTWaA@mail.gmail.com>
-In-Reply-To: <CANpmjNM9Kq9C4f9AMYE9U3JrqofbsrC7cmrP28ZP4ep1CZTWaA@mail.gmail.com>
+References: <cover.1702339432.git.andreyknvl@google.com> <6c38c31e304a55449f76f60b6f72e35f992cad99.1702339432.git.andreyknvl@google.com>
+ <CANpmjNNXiRxwTk4wGHL3pXmXo5YUY=VNLCf+g+kB6inXJnC2YA@mail.gmail.com> <20231212125728.1a275e704db4a5f5ca30e15c@linux-foundation.org>
+In-Reply-To: <20231212125728.1a275e704db4a5f5ca30e15c@linux-foundation.org>
 From:   Andrey Konovalov <andreyknvl@gmail.com>
-Date:   Wed, 13 Dec 2023 15:40:34 +0100
-Message-ID: <CA+fCnZcGWXbpwCxk5eoBEMr2_4+8hhEpTefE2h4QQ-9fRv-2Uw@mail.gmail.com>
-Subject: Re: [PATCH mm 2/4] kasan: handle concurrent kasan_record_aux_stack calls
-To:     Marco Elver <elver@google.com>
-Cc:     andrey.konovalov@linux.dev,
-        Andrew Morton <akpm@linux-foundation.org>,
+Date:   Wed, 13 Dec 2023 15:41:44 +0100
+Message-ID: <CA+fCnZf85vFovXaxCuxTDCEQtMZMFKeKvo8UZ_9j8uhPEnqb+Q@mail.gmail.com>
+Subject: Re: [PATCH mm 1/4] lib/stackdepot: add printk_deferred_enter/exit guards
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Marco Elver <elver@google.com>, andrey.konovalov@linux.dev,
         Alexander Potapenko <glider@google.com>,
         Dmitry Vyukov <dvyukov@google.com>,
         Vlastimil Babka <vbabka@suse.cz>, kasan-dev@googlegroups.com,
         Evgenii Stepanov <eugenis@google.com>,
         Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
         linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Andrey Konovalov <andreyknvl@google.com>,
-        syzbot+186b55175d8360728234@syzkaller.appspotmail.com
+        Andrey Konovalov <andreyknvl@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -78,51 +76,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 12, 2023 at 8:29=E2=80=AFPM Marco Elver <elver@google.com> wrot=
-e:
+On Tue, Dec 12, 2023 at 9:57=E2=80=AFPM Andrew Morton <akpm@linux-foundatio=
+n.org> wrote:
 >
-> > -       stack_depot_put(alloc_meta->aux_stack[1]);
-> > +       new_handle =3D kasan_save_stack(0, depot_flags);
-> > +
-> > +       spin_lock_irqsave(&aux_lock, flags);
+> On Tue, 12 Dec 2023 19:59:29 +0100 Marco Elver <elver@google.com> wrote:
 >
-> This is a unnecessary global lock. What's the problem here? As far as
-> I can understand a race is possible where we may end up with
-> duplicated or lost stack handles.
-
-Yes, this is the problem. And this leads to refcount underflows in the
-stack depot code, as we fail to keep precise track of the stack
-traces.
-
-> Since storing this information is best effort anyway, and bugs are
-> rare, a global lock protecting this is overkill.
+> > On Tue, 12 Dec 2023 at 01:14, <andrey.konovalov@linux.dev> wrote:
+> > >
+> > > From: Andrey Konovalov <andreyknvl@google.com>
+> > >
+> > > Stack depot functions can be called from various contexts that do
+> > > allocations, including with console locks taken. At the same time, st=
+ack
+> > > depot functions might print WARNING's or refcount-related failures.
+> > >
+> > > This can cause a deadlock on console locks.
+> > >
+> > > Add printk_deferred_enter/exit guards to stack depot to avoid this.
+> > >
+> > > Reported-by: Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+> > > Closes: https://lore.kernel.org/all/000000000000f56750060b9ad216@goog=
+le.com/
+> > > Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+> >
+> > Reviewed-by: Marco Elver <elver@google.com>
+> >
+> > Doesn't need Fixes, because the series is not yet in mainline, right?
 >
-> I'd just accept the racyness and use READ_ONCE() / WRITE_ONCE() just
-> to make sure we don't tear any reads/writes and the depot handles are
-> valid.
-
-This will help with the potential tears but will not help with the
-refcount issues.
-
-> There are other more complex schemes [1], but I think they are
-> overkill as well.
+> I've moved the series "stackdepot: allow evicting stack traces, v4"
+> (please, not "the stack depot eviction series") into mm-nonmm-stable.
+> Which is allegedly non-rebasing.
 >
-> [1]: Since a depot stack handle is just an u32, we can have a
->
->  union {
->    depot_stack_handle_t handles[2];
->    atomic64_t atomic_handle;
->   } aux_stack;
-> (BUILD_BUG_ON somewhere if sizeof handles and atomic_handle mismatch.)
->
-> Then in the code here create the same union and load atomic_handle.
-> Swap handle[1] into handle[0] and write the new one in handles[1].
-> Then do a cmpxchg loop to store the new atomic_handle.
+> So yes please, provide Fixes: on each patch.
 
-This approach should work. If you prefer, I can do this instead of a spinlo=
-ck.
-
-But we do need some kind of atomicity while rotating the aux handles
-to make sure nothing gets lost.
-
-Thanks!
+Sure, I'll add them when I mail v2 after we figure out what to do with
+patch #2. Thanks!
