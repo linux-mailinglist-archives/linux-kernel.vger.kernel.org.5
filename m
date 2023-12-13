@@ -2,170 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ACF52811C90
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 19:32:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E8D47811C94
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 19:32:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231744AbjLMSb6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 13:31:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59372 "EHLO
+        id S233451AbjLMScN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 13:32:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57308 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229872AbjLMSb4 (ORCPT
+        with ESMTP id S229744AbjLMScL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 13:31:56 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D4A1A7
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 10:32:03 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5208EC433C8;
-        Wed, 13 Dec 2023 18:31:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1702492322;
-        bh=ifQ03YNqYLUrOhvZyIXd73qLNP7qCnbov3Va+e518Ic=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=MgVCGTzeIdBMbEKxhlAH2d++VdjHo78ZMiiPDx89AZE26DvEHAa+0kabaVbgRA9VC
-         PAFguBz/4f7xs7dsPQAFGxu0a3rerda3MHmDLH2tnji1wKDy+BokXNwBsQx+9ntfO6
-         0auOrpzOKqXl4jol5rR6QgjWPvBSM+WS9TNeSYdyBJG/4Q+gCzp5O6WyJww3qyKEzK
-         +ALpLjY6sF6bwVa9XEfqBAGhGieSz7QsOi+2qyifQld92BluqUjMXisf7CXiupo9o8
-         xp3Z5bRkWzPr5+Mnx/UEhsDSKx61RNsfIipWJeUWK8FtSVeOfCR33rah743hdkGXA4
-         kLSbhezI46CjA==
-Date:   Wed, 13 Dec 2023 18:31:56 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     Neil Armstrong <neil.armstrong@linaro.org>
-Cc:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Banajit Goswami <bgoswami@quicinc.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>, linux-arm-msm@vger.kernel.org,
-        alsa-devel@alsa-project.org, linux-sound@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 4/5] ASoC: codecs: Add WCD939x Soundwire devices driver
-Message-ID: <e8b5099c-ceb2-4605-94bc-efd09ad55cb7@sirena.org.uk>
-References: <20231207-topic-sm8650-upstream-wcd939x-codec-v3-0-6df9585ec7c8@linaro.org>
- <20231207-topic-sm8650-upstream-wcd939x-codec-v3-4-6df9585ec7c8@linaro.org>
+        Wed, 13 Dec 2023 13:32:11 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D458CB9
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 10:32:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1702492337;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=dJhCQPbtOQfgKm8z4OfKiUr7HEqaHFUnnxRgNKGT468=;
+        b=Vy+jNB5Zn6rN8xcAVmNnRtVMHmDQKyDjAI28+bl7GyDirpZWKOufjR3iq1bvWD9wpwK6PX
+        b/c3icbcXYQ3CQb/Ct/HcpesspOQzbbOAEONfxLKVcuvfMQm3TzgzWAgeRjmBLJiFIVG+D
+        yk8QDQIsy3NOfSRg/pRghBeidvrv35M=
+Received: from mail-qk1-f197.google.com (mail-qk1-f197.google.com
+ [209.85.222.197]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-421-3jyEvenuOSeCZRjXHIITDA-1; Wed, 13 Dec 2023 13:32:15 -0500
+X-MC-Unique: 3jyEvenuOSeCZRjXHIITDA-1
+Received: by mail-qk1-f197.google.com with SMTP id af79cd13be357-77f515c2a5fso742314485a.1
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 10:32:15 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702492335; x=1703097135;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=dJhCQPbtOQfgKm8z4OfKiUr7HEqaHFUnnxRgNKGT468=;
+        b=PTk29oXlfgp1/sXf4vu8lE503ILHDOmnpx2V0m5wGztB5Er1ZEvyxC4vv3YgvjWMsC
+         VLFn2kiYdmG0ZaEtuTROvCbSv+vCPfGNkguGF7QaK2pMMLdu4FwNi4Pgt7yG9LVQ3nFc
+         +qNtuP3WUCnTpKmXNRz778jpNXbwo7IIQo5ReJU6rA7TV5dH02fVXakksPNZu1TmYeA5
+         txXxaIrR2dF927pFEIitalO91QnRV331/0TVHwbxjQEfV1Gi+YxZrwiGJNcefRV+4BT8
+         kEfFV1w0qgxWlxd8tOCHG5pJVN7WpLHsEKAE5ARRdwR46xBpkrHevN2llF/H2Sxu/48O
+         dzUw==
+X-Gm-Message-State: AOJu0Yz4JttO3EiJeganOtW2oLYRWKpPFjQZoWQfZvMbWtTY0mFdO5Ma
+        nhS1y1A581OT4jwi5vR6w+PQGz49yZ+nrlMk+zcPtbxqKW4oLuwwr0Mdf7iAy7Wjt5dWvPEQbSR
+        lp5REEhODB5tiVIEkq0la+IfI
+X-Received: by 2002:a05:620a:839b:b0:77f:3bc0:4be0 with SMTP id pb27-20020a05620a839b00b0077f3bc04be0mr10510564qkn.63.1702492334899;
+        Wed, 13 Dec 2023 10:32:14 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IESFoDoQ7hf4ltxCiuxXv1SL4DQdY0uyjdMI86HCCGd+JMnuPhPootCPLYF1jHsRRedJikYvA==
+X-Received: by 2002:a05:620a:839b:b0:77f:3bc0:4be0 with SMTP id pb27-20020a05620a839b00b0077f3bc04be0mr10510555qkn.63.1702492334583;
+        Wed, 13 Dec 2023 10:32:14 -0800 (PST)
+Received: from localhost.localdomain ([151.29.78.8])
+        by smtp.gmail.com with ESMTPSA id g3-20020a05620a278300b0077f435ed844sm4674999qkp.112.2023.12.13.10.32.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Dec 2023 10:32:14 -0800 (PST)
+Date:   Wed, 13 Dec 2023 19:32:10 +0100
+From:   Juri Lelli <juri.lelli@redhat.com>
+To:     Tejun Heo <tj@kernel.org>
+Cc:     Aaron Tomlin <atomlin@atomlin.com>, linux-kernel@vger.kernel.org,
+        jiangshanlai@gmail.com, peterz@infradead.org
+Subject: Re: [RFC PATCH 0/2] workqueue: Introduce PF_WQ_RESCUE_WORKER
+Message-ID: <ZXn4qiMetd7zY1sb@localhost.localdomain>
+References: <20230729135334.566138-1-atomlin@atomlin.com>
+ <um77hym4t6zyypfbhwbaeqxpfdzc657oa7vgowdfah7cuctjak@pexots3mfb24>
+ <ZXdXdBzvbkI4Y4fL@slm.duckdns.org>
+ <ZXguMgcKLCLn16T4@localhost.localdomain>
+ <ZXiVCOKk90Fjpmhw@slm.duckdns.org>
+ <ZXlyfjDsFGbYcMU6@localhost.localdomain>
+ <ZXnPVtISKQ2JFDNn@slm.duckdns.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="sQ2KlFK10iJSaHjV"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231207-topic-sm8650-upstream-wcd939x-codec-v3-4-6df9585ec7c8@linaro.org>
-X-Cookie: One size fits all.
+In-Reply-To: <ZXnPVtISKQ2JFDNn@slm.duckdns.org>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 13/12/23 05:35, Tejun Heo wrote:
+> Hello,
+> 
+> On Wed, Dec 13, 2023 at 09:59:42AM +0100, Juri Lelli wrote:
+> > Something like the following then maybe?
+> > 
+> > ---
+> >  kernel/workqueue.c | 6 ++++++
+> >  1 file changed, 6 insertions(+)
+> > 
+> > diff --git a/kernel/workqueue.c b/kernel/workqueue.c
+> > index 2989b57e154a7..ed73f7f80d57d 100644
+> > --- a/kernel/workqueue.c
+> > +++ b/kernel/workqueue.c
+> > @@ -4405,6 +4405,12 @@ static void apply_wqattrs_commit(struct apply_wqattrs_ctx *ctx)
+> >         link_pwq(ctx->dfl_pwq);
+> >         swap(ctx->wq->dfl_pwq, ctx->dfl_pwq);
+> > 
+> > +       /* rescuer needs to respect wq cpumask changes */
+> > +       if (ctx->wq->rescuer) {
+> > +               kthread_bind_mask(ctx->wq->rescuer->task, ctx->attrs->cpumask);
+> > +               wake_up_process(ctx->wq->rescuer->task);
+> > +       }
+> > +
+> >         mutex_unlock(&ctx->wq->mutex);
+> >  }
+> 
+> I'm not sure kthread_bind_mask() would be safe here. The rescuer might be
+> running a work item. wait_task_inactive() might fail and we don't want to
+> change cpumask while the rescuer is active anyway.
+> 
+> Maybe the easiest way to do this is making rescuer_thread() restore the wq's
+> cpumask right before going to sleep, and making apply_wqattrs_commit() just
+> wake up the rescuer.
 
---sQ2KlFK10iJSaHjV
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Hummm, don't think we can call that either while the rescuer is actually
+running. Maybe we can simply s/kthread_bind_mask/set_cpus_allowed_ptr/
+in the above?
 
-On Thu, Dec 07, 2023 at 11:28:07AM +0100, Neil Armstrong wrote:
-> Add Soundwire Slave driver for the WCD9390/WCD9395 Audio Codec.
->=20
-> The WCD9390/WCD9395 Soundwire devices will be used by the
-> main WCD9390/WCD9395 Audio Codec driver to access registers
-> and configure Soundwire RX and TX ports.
+Thanks,
+Juri
 
-> +static const struct reg_default wcd939x_defaults[] =3D {
-
-> +	{ WCD939X_DIGITAL_MODE_STATUS_0, 0x00 },
-> +	{ WCD939X_DIGITAL_MODE_STATUS_1, 0x00 },
-
-There's a bunch of registers like this which look like they should be
-volatile and are actually volatile which makes supplying defaults rather
-strange - in general volatile registers shouldn't have defaults.
-
-> +	{ WCD939X_DIGITAL_EFUSE_REG_0, 0x00 },
-> +	{ WCD939X_DIGITAL_EFUSE_REG_1, 0xff },
-> +	{ WCD939X_DIGITAL_EFUSE_REG_2, 0xff },
-
-With the fuse registers even though I'd expect them to be cachable the
-whole point is usually that these are programmable per device and
-therefore I'd not expect defaults, I'd expect them to be cached on first
-use.
-
-> +static bool wcd939x_readonly_register(struct device *dev, unsigned int r=
-eg)
-> +{
-
-> +	case WCD939X_DIGITAL_CHIP_ID0:
-> +	case WCD939X_DIGITAL_CHIP_ID1:
-> +	case WCD939X_DIGITAL_CHIP_ID2:
-> +	case WCD939X_DIGITAL_CHIP_ID3:
-
-> +	case WCD939X_DIGITAL_EFUSE_REG_0:
-> +	case WCD939X_DIGITAL_EFUSE_REG_1:
-> +	case WCD939X_DIGITAL_EFUSE_REG_2:
-
-> +	/* Consider all readonly registers as volatile */
-> +	.volatile_reg =3D wcd939x_readonly_register,
-
-There's a bunch of the readonly registers that I'd expect to be cachable
-at runtime - I *hope* the chip ID doesn't change at runtime!  OTOH it
-likely doesn't matter so perhaps it's fine but the comment could use
-some improvement.
-
-> +static int wcd939x_sdw_component_bind(struct device *dev, struct device =
-*master,
-> +				      void *data)
-> +{
-> +	/* Bind is required by component framework */
-> +	return 0;
-> +}
-> +
-> +static void wcd939x_sdw_component_unbind(struct device *dev,
-> +					 struct device *master, void *data)
-> +{
-> +	/* Unbind is required by component framework */
-> +}
-> +
-> +static const struct component_ops wcd939x_sdw_component_ops =3D {
-> +	.bind =3D wcd939x_sdw_component_bind,
-> +	.unbind =3D wcd939x_sdw_component_unbind,
-> +};
-
-So what exactly is the component framework *doing* here then?  It really
-would be better to get this fixed in the component framework if this is
-a sensible usage.
-
-> +static int __maybe_unused wcd939x_sdw_runtime_resume(struct device *dev)
-> +{
-> +	struct wcd939x_sdw_priv *wcd =3D dev_get_drvdata(dev);
-> +
-> +	if (wcd->regmap) {
-> +		regcache_cache_only(wcd->regmap, false);
-> +		regcache_sync(wcd->regmap);
-> +	}
-> +
-> +	pm_runtime_mark_last_busy(dev);
-
-The pm_runtime_mark_last_busy() in the resume function is a bit of a
-weird pattern - usually this is something that the user updates and more
-normally when releasing a runtime PM reference.
-
---sQ2KlFK10iJSaHjV
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmV5+JsACgkQJNaLcl1U
-h9AZHAf/dqGYnJAhnxL3jXejmEUS2P90Yl/AEr2sT51NqeW+UrCpMcHO7imgWxuG
-/rNZuT74e37+elaS9qe6ybzxZAeppNq7yLWrTdthgB23ZzjcqpZFzU95o53tMJro
-FNgbayZlwo5mlvAs4MikKn7uVRfWJZGicIP28T8HOD3wHYLOISYW0DpWXpL96RKa
-RTUhnGe8HzQKvtywHmFyWKbv48TFpVh1ePMVaOQCkqFFkuHi1IrIUN9ERheQyBRW
-66Fl7rtna52zcf2rTVkkFeMtha68z9m/c4wDiTbezbhEwh2pDAozKcMkz/SJKJex
-/xuJzzlnSEYeJsJ5fig3Gq+5FhG9qA==
-=+f9g
------END PGP SIGNATURE-----
-
---sQ2KlFK10iJSaHjV--
