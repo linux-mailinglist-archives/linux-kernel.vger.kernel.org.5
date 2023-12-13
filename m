@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 765A28119D7
+	by mail.lfdr.de (Postfix) with ESMTP id CC76A8119D8
 	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 17:43:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233644AbjLMQnb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 11:43:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55946 "EHLO
+        id S1379406AbjLMQnd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 11:43:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56222 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235406AbjLMQnI (ORCPT
+        with ESMTP id S1377827AbjLMQnL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 11:43:08 -0500
+        Wed, 13 Dec 2023 11:43:11 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEA8A10C
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 08:43:14 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8150DC433C9;
-        Wed, 13 Dec 2023 16:43:13 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9447F120
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 08:43:16 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F38E4C433CB;
+        Wed, 13 Dec 2023 16:43:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1702485794;
-        bh=+jJ0AZEvag610YYMeIA2DZY9vRhnQ1MUWo6qd+Qzkcs=;
+        s=k20201202; t=1702485796;
+        bh=/VgfUvsmvX2n019MxXLrjKmvUFShp1H3MaszHsAPHGk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Plg/RkoEgxcb5oLFgT/r2pbwVa+OiOKfDqeFr23Y4XhEqyZ5uVBDN++Xkp9njtYA/
-         e/ZmXCZgAUTOyvm1+MRDRVjk/Goo8EXcyPKp/Z5Jq6vkTd7Z0kpFegYh/Cr9+MFWQC
-         ExHTW5hlY3r+qo8ZKQSDl3P2AIFZRW2roFNhvsQBR8o6zm7rZPMr8nRhSijOrPYRQB
-         jum+fusgZZy+M4y8zPPL3U6Btq5SJH2c8BRlGS5oiDRK4vX1rVhGb5qPcu+A+1FypL
-         eGsgpAVmBSsoR8RBqoGoAYvcP7xcmaFTF+SCgp92suHe8vT62kPWYfSnmce8dWivHj
-         6fNgbUfjI7k1Q==
+        b=XsBXlv5DeBhXUIpcPuRuzSfg8SfGeHati6aAXIoHbRuo9LG+Q0hQq9DwpNqR5erpU
+         1bZAemhQZ6c0x1GGAjt+lCl0lAouPl3cx+lmaBEONDONKH8hfJWdy2hdycCC/rs+H+
+         4bHr8O1sItmqYGRbqHcIjQundVi/ie3WWHbOQXATp3WoH7wraD7/o3wS71+qjUBdue
+         QcXqX5sN1aoPYitYQN+lqR9tMtWuq7I65TDfDkgWhq2GlcxRTfk1l8ywfHZmGrh9qY
+         iqwVKRqva9DnVXB4Nsomot0VsTMY2oV/ivfmHUv+s5qNVvPUpNvON73Pzosf9dk57q
+         h1PRp1wcEK3Ew==
 From:   Lee Jones <lee@kernel.org>
 To:     lee@kernel.org, gregkh@linuxfoundation.org
 Cc:     linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org
-Subject: [PATCH 09/12] usb: mon_stat: Replace snprintf() with the safer scnprintf() variant
-Date:   Wed, 13 Dec 2023 16:42:38 +0000
-Message-ID: <20231213164246.1021885-10-lee@kernel.org>
+Subject: [PATCH 10/12] usb: mon_text: Replace snprintf() with the safer scnprintf() variant
+Date:   Wed, 13 Dec 2023 16:42:39 +0000
+Message-ID: <20231213164246.1021885-11-lee@kernel.org>
 X-Mailer: git-send-email 2.43.0.472.g3155946c3a-goog
 In-Reply-To: <20231213164246.1021885-1-lee@kernel.org>
 References: <20231213164246.1021885-1-lee@kernel.org>
@@ -61,26 +61,73 @@ Link: https://lwn.net/Articles/69419/
 Link: https://github.com/KSPP/linux/issues/105
 Signed-off-by: Lee Jones <lee@kernel.org>
 ---
- drivers/usb/mon/mon_stat.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/usb/mon/mon_text.c | 28 +++++-----------------------
+ 1 file changed, 5 insertions(+), 23 deletions(-)
 
-diff --git a/drivers/usb/mon/mon_stat.c b/drivers/usb/mon/mon_stat.c
-index 98ab0cc473d67..3c23805ab1a44 100644
---- a/drivers/usb/mon/mon_stat.c
-+++ b/drivers/usb/mon/mon_stat.c
-@@ -35,9 +35,9 @@ static int mon_stat_open(struct inode *inode, struct file *file)
+diff --git a/drivers/usb/mon/mon_text.c b/drivers/usb/mon/mon_text.c
+index 39cb141646526..2fe9b95bac1d5 100644
+--- a/drivers/usb/mon/mon_text.c
++++ b/drivers/usb/mon/mon_text.c
+@@ -352,7 +352,7 @@ static int mon_text_open(struct inode *inode, struct file *file)
+ 	rp->r.rnf_error = mon_text_error;
+ 	rp->r.rnf_complete = mon_text_complete;
  
- 	mbus = inode->i_private;
+-	snprintf(rp->slab_name, SLAB_NAME_SZ, "mon_text_%p", rp);
++	scnprintf(rp->slab_name, SLAB_NAME_SZ, "mon_text_%p", rp);
+ 	rp->e_slab = kmem_cache_create(rp->slab_name,
+ 	    sizeof(struct mon_event_text), sizeof(long), 0,
+ 	    mon_text_ctor);
+@@ -700,46 +700,28 @@ static const struct file_operations mon_fops_text_u = {
  
--	sp->slen = snprintf(sp->str, STAT_BUF_SIZE,
--	    "nreaders %d events %u text_lost %u\n",
--	    mbus->nreaders, mbus->cnt_events, mbus->cnt_text_lost);
-+	sp->slen = scnprintf(sp->str, STAT_BUF_SIZE,
-+			     "nreaders %d events %u text_lost %u\n",
-+			     mbus->nreaders, mbus->cnt_events, mbus->cnt_text_lost);
+ int mon_text_add(struct mon_bus *mbus, const struct usb_bus *ubus)
+ {
+-	enum { NAMESZ = 10 };
++	enum { NAMESZ = 12 };
+ 	char name[NAMESZ];
+ 	int busnum = ubus? ubus->busnum: 0;
+-	int rc;
  
- 	file->private_data = sp;
- 	return 0;
+ 	if (mon_dir == NULL)
+ 		return 0;
+ 
+ 	if (ubus != NULL) {
+-		rc = snprintf(name, NAMESZ, "%dt", busnum);
+-		if (rc <= 0 || rc >= NAMESZ)
+-			goto err_print_t;
++		scnprintf(name, NAMESZ, "%dt", busnum);
+ 		mbus->dent_t = debugfs_create_file(name, 0600, mon_dir, mbus,
+ 							     &mon_fops_text_t);
+ 	}
+ 
+-	rc = snprintf(name, NAMESZ, "%du", busnum);
+-	if (rc <= 0 || rc >= NAMESZ)
+-		goto err_print_u;
++	scnprintf(name, NAMESZ, "%du", busnum);
+ 	mbus->dent_u = debugfs_create_file(name, 0600, mon_dir, mbus,
+ 					   &mon_fops_text_u);
+ 
+-	rc = snprintf(name, NAMESZ, "%ds", busnum);
+-	if (rc <= 0 || rc >= NAMESZ)
+-		goto err_print_s;
++	scnprintf(name, NAMESZ, "%ds", busnum);
+ 	mbus->dent_s = debugfs_create_file(name, 0600, mon_dir, mbus,
+ 					   &mon_fops_stat);
+ 
+ 	return 1;
+-
+-err_print_s:
+-	debugfs_remove(mbus->dent_u);
+-	mbus->dent_u = NULL;
+-err_print_u:
+-	if (ubus != NULL) {
+-		debugfs_remove(mbus->dent_t);
+-		mbus->dent_t = NULL;
+-	}
+-err_print_t:
+-	return 0;
+ }
+ 
+ void mon_text_del(struct mon_bus *mbus)
 -- 
 2.43.0.472.g3155946c3a-goog
 
