@@ -2,152 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 96066811FAA
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 21:06:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B63E2811FAE
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 21:07:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442269AbjLMUGS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 15:06:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38460 "EHLO
+        id S1442293AbjLMUHL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 15:07:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55762 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233702AbjLMUGQ (ORCPT
+        with ESMTP id S233702AbjLMUHK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 15:06:16 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69E43F2
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 12:06:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1702497981;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Wamy6ZLjsCqbPaUGOHqCPQWdjqfo0kYV5q8insG9vzg=;
-        b=b1ZPrJXkxczM1eX1uoJgCGOBaYF4chQ1K6ZRq6Qe8xs620eHxTXrXV5yY8TJmA1QA5iuz7
-        KFlkUFozNy7uzet0PfJd+xH7/AaiBGk4+jWGqefs2vuLYkAURGwe+G4LF0aWAS6EcFCfGR
-        GtacPyLX1bQQszeacGCXP9Pat6wdaZY=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-169-eViGQ28KPNWBegcPkOC9Fw-1; Wed,
- 13 Dec 2023 15:06:18 -0500
-X-MC-Unique: eViGQ28KPNWBegcPkOC9Fw-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com [10.11.54.5])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id A06481C294A1;
-        Wed, 13 Dec 2023 20:06:17 +0000 (UTC)
-Received: from rhel-developer-toolbox-latest (unknown [10.2.17.21])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id B86B251E3;
-        Wed, 13 Dec 2023 20:06:16 +0000 (UTC)
-Date:   Wed, 13 Dec 2023 12:06:14 -0800
-From:   Chris Leech <cleech@redhat.com>
-To:     lduncan@suse.com
-Cc:     target-devel@vger.kernel.org, linux-scsi@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dbond@suse.com, hare@suse.de,
-        michael.christie@oracle.com
-Subject: Re: [PATCH 1/2] scsi: target: iscsi: handle SCSI immediate commands
-Message-ID: <ZXoOtgVZW_QpkU11@rhel-developer-toolbox-latest>
-References: <cover.1701540918.git.lduncan@suse.com>
- <dc0006176e90cf3fb90e5b1c1917b54fe07c91cd.1701540918.git.lduncan@suse.com>
+        Wed, 13 Dec 2023 15:07:10 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEF39C9;
+        Wed, 13 Dec 2023 12:07:16 -0800 (PST)
+X-IronPort-AV: E=McAfee;i="6600,9927,10923"; a="374526113"
+X-IronPort-AV: E=Sophos;i="6.04,273,1695711600"; 
+   d="scan'208";a="374526113"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Dec 2023 12:07:16 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10923"; a="1105425546"
+X-IronPort-AV: E=Sophos;i="6.04,273,1695711600"; 
+   d="scan'208";a="1105425546"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmsmga005.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Dec 2023 12:07:14 -0800
+Received: from andy by smile.fi.intel.com with local (Exim 4.97)
+        (envelope-from <andy@kernel.org>)
+        id 1rDVVg-00000005dLp-1J2A;
+        Wed, 13 Dec 2023 22:07:12 +0200
+Date:   Wed, 13 Dec 2023 22:07:12 +0200
+From:   Andy Shevchenko <andy@kernel.org>
+To:     Bartosz Golaszewski <brgl@bgdev.pl>
+Cc:     Kent Gibson <warthog618@gmail.com>, linux-kernel@vger.kernel.org,
+        linux-gpio@vger.kernel.org, linus.walleij@linaro.org
+Subject: Re: [PATCH 1/4] gpiolib: cdev: relocate debounce_period_us from
+ struct gpio_desc
+Message-ID: <ZXoO8B0N3S49GnvX@smile.fi.intel.com>
+References: <20231212054253.50094-1-warthog618@gmail.com>
+ <20231212054253.50094-2-warthog618@gmail.com>
+ <ZXm3rayrcvfO1t1Z@smile.fi.intel.com>
+ <ZXm_WsIpgIyOUNHt@rigel>
+ <CAMRc=Mfri8K4ZqcHb_eQY6gi+q_-uBZc2wiMrrb-+a7Tric3FA@mail.gmail.com>
+ <ZXnU3tMYCc2Rw8Qv@rigel>
+ <ZXnX8jPHxRLW8lhi@smile.fi.intel.com>
+ <CAMRc=Mfj_4YvQVP=UWkULBwJniDDjapttU+qSgqfN5ZWNgikKw@mail.gmail.com>
+ <ZXnb-ks_noYLWZZ2@smile.fi.intel.com>
+ <CAMRc=MfaHKKKNkXW0L1FPjCH4VvG22Vn9q8z9tupZCtCEKZU2g@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <dc0006176e90cf3fb90e5b1c1917b54fe07c91cd.1701540918.git.lduncan@suse.com>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.5
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAMRc=MfaHKKKNkXW0L1FPjCH4VvG22Vn9q8z9tupZCtCEKZU2g@mail.gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_SOFTFAIL,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 07, 2023 at 09:42:34AM -0800, lduncan@suse.com wrote:
-> From: Lee Duncan <lduncan@suse.com>
+On Wed, Dec 13, 2023 at 08:03:44PM +0100, Bartosz Golaszewski wrote:
+> On Wed, Dec 13, 2023 at 5:29 PM Andy Shevchenko <andy@kernel.org> wrote:
+> > On Wed, Dec 13, 2023 at 05:15:38PM +0100, Bartosz Golaszewski wrote:
+> > > On Wed, Dec 13, 2023 at 5:12 PM Andy Shevchenko <andy@kernel.org> wrote:
+> > > > On Wed, Dec 13, 2023 at 11:59:26PM +0800, Kent Gibson wrote:
+> > > > > On Wed, Dec 13, 2023 at 04:40:12PM +0100, Bartosz Golaszewski wrote:
+> > > > > > On Wed, Dec 13, 2023 at 3:27 PM Kent Gibson <warthog618@gmail.com> wrote:
+> > > > > > > On Wed, Dec 13, 2023 at 03:54:53PM +0200, Andy Shevchenko wrote:
+> > > > > > > > On Tue, Dec 12, 2023 at 01:42:50PM +0800, Kent Gibson wrote:
+
+...
+
+> > > > > > > > > +static struct supinfo supinfo;
+> > > > > > > >
+> > > > > > > > Why supinfo should be a struct to begin with? Seems to me as an unneeded
+> > > > > > > > complication.
+> > > > > >
+> > > > > > I think we should keep it as a struct but defined the following way:
+> > > > > >
+> > > > > > struct {
+> > > > > >     spinlock_t lock;
+> > > > > >     struct rb_root tree;
+> > > > > > } supinfo;
+> > > > >
+> > > > > That is what I meant be merging the struct definition with the variable
+> > > > > definition.  Or is there some other way to completely do away with the
+> > > > > struct that I'm missing?
+> > > >
+> > > > Look at the top of gpiolib.c:
+> > > >
+> > > > static DEFINE_MUTEX(gpio_lookup_lock);
+> > > > static LIST_HEAD(gpio_lookup_list);
+> > > >
+> > > > In the similar way you can simply do
+> > > >
+> > > > static DEFINE_SPINLOCK(gpio_sup_lock);
+> > > > static struct rb_root gpio_sup_tree;
+> > >
+> > > The fact that this has been like this, doesn't mean it's the only
+> > > right way. IMO putting these into the same structure makes logical
+> > > sense.
+> >
+> > I disagree on the struct like this on the grounds:
+> > - it's global
+> > - it's one time use
+> > - it adds complications for no benefit
+> > - it makes code uglier and longer
+> >
 > 
-> Some iSCSI initiators send SCSI PDUs with the "immediate" bit
-> set, and this is allowed according to RFC 3720. Commands with
-> the "Immediate" bit set are called "immediate commands". From
-> section 3.2.2.1. "Command Numbering and Acknowledging":
-> 
->    The target MUST NOT transmit a MaxCmdSN that is less than
->    ExpCmdSN-1.  For non-immediate commands, the CmdSN field can take any
->    value from ExpCmdSN to MaxCmdSN inclusive.  The target MUST silently
->    ignore any non-immediate command outside of this range or non-
->    immediate duplicates within the range.  The CmdSN carried by
->    immediate commands may lie outside the ExpCmdSN to MaxCmdSN range.
->    For example, if the initiator has previously sent a non-immediate
->    command carrying the CmdSN equal to MaxCmdSN, the target window is
->    closed.  For group task management commands issued as immediate
->    commands, CmdSN indicates the scope of the group action (e.g., on
->    ABORT TASK SET indicates which commands are aborted).
-> 
-> This fixed an issue with fastlinq qedi Converged Network Adapter
-> initiator firmware, trying to use an LIO target for booting. These
-> changes made booting possible, with or without ImmediateData enabled.
-> 
-> Signed-off-by: Lee Duncan <lduncan@suse.com>
-> Reviewed-by: David Bond <dbond@suse.com>
-> ---
->  drivers/target/iscsi/iscsi_target.c      | 12 +++---------
->  drivers/target/iscsi/iscsi_target_util.c | 10 ++++++++--
->  2 files changed, 11 insertions(+), 11 deletions(-)
-> 
-> diff --git a/drivers/target/iscsi/iscsi_target.c b/drivers/target/iscsi/iscsi_target.c
-> index 1d25e64b068a..f246e5015868 100644
-> --- a/drivers/target/iscsi/iscsi_target.c
-> +++ b/drivers/target/iscsi/iscsi_target.c
-> @@ -1060,13 +1060,6 @@ int iscsit_setup_scsi_cmd(struct iscsit_conn *conn, struct iscsit_cmd *cmd,
->  					     ISCSI_REASON_BOOKMARK_INVALID, buf);
->  	}
->  
-> -	if (hdr->opcode & ISCSI_OP_IMMEDIATE) {
-> -		pr_err("Illegally set Immediate Bit in iSCSI Initiator"
-> -				" Scsi Command PDU.\n");
-> -		return iscsit_add_reject_cmd(cmd,
-> -					     ISCSI_REASON_BOOKMARK_INVALID, buf);
-> -	}
-> -
->  	if (payload_length && !conn->sess->sess_ops->ImmediateData) {
->  		pr_err("ImmediateData=No but DataSegmentLength=%u,"
->  			" protocol error.\n", payload_length);
+> It boils down to supinfo.lock vs supinfo_lock. I do prefer the former
+> but it's a weak opinion, I won't die on that hill.
 
-This seems right, as the flag is checked again later in the same
-function.
+Me neither, just showing rationale from my side.
 
-> @@ -1255,14 +1248,15 @@ int iscsit_process_scsi_cmd(struct iscsit_conn *conn, struct iscsit_cmd *cmd,
->  	/*
->  	 * Check the CmdSN against ExpCmdSN/MaxCmdSN here if
->  	 * the Immediate Bit is not set, and no Immediate
-> -	 * Data is attached.
-> +	 * Data is attached. Also skip the check if this is
-> +	 * an immediate command.
+> > What we probably want to have is a singleton objects in C language or at least
+> > inside Linux kernel project. But I'm not sure it's feasible.
+> >
+> > > > > > > Yeah, that is a hangover from an earlier iteration where supinfo was
+> > > > > > > contained in other object rather than being a global.
+> > > > > > > Could merge the struct definition into the variable now.
 
-This comment addition seems redundant, isn't that what the "Immediate
-Bit is not set" already means?
+-- 
+With Best Regards,
+Andy Shevchenko
 
->  	 *
->  	 * A PDU/CmdSN carrying Immediate Data can only
->  	 * be processed after the DataCRC has passed.
->  	 * If the DataCRC fails, the CmdSN MUST NOT
->  	 * be acknowledged. (See below)
->  	 */
-> -	if (!cmd->immediate_data) {
-> +	if (!cmd->immediate_data && !cmd->immediate_cmd) {
->  		cmdsn_ret = iscsit_sequence_cmd(conn, cmd,
->  					(unsigned char *)hdr, hdr->cmdsn);
->  		if (cmdsn_ret == CMDSN_ERROR_CANNOT_RECOVER)
-
-Are you sure this needs to be checking both conditions here?  I'm
-struggling to understand why CmdSN checking would be bypassed for
-immediate data.  Is this a longstanding bug where the condition should
-have been on immediate_cmd (and only immediate_cmd) instead?
-
-Or is this because of the handling the immediate data with DataCRC case
-mentioned?  I do see iscsit_sequence_cmd also being called in
-iscsit_get_immediate_data.
-
-- Chris Leech
 
