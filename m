@@ -2,64 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DA49810B30
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 08:13:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5446E810B33
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 08:13:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378678AbjLMHNg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 02:13:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58460 "EHLO
+        id S1378701AbjLMHNp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 02:13:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58536 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235268AbjLMHNd (ORCPT
+        with ESMTP id S1378676AbjLMHNg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 02:13:33 -0500
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A984109
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 23:13:38 -0800 (PST)
-Received: by mail-ed1-x531.google.com with SMTP id 4fb4d7f45d1cf-54c77d011acso5689a12.1
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 23:13:38 -0800 (PST)
+        Wed, 13 Dec 2023 02:13:36 -0500
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E65DBAC
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 23:13:41 -0800 (PST)
+Received: by mail-wm1-x32d.google.com with SMTP id 5b1f17b1804b1-40c38e520e2so45175e9.0
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 23:13:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1702451616; x=1703056416; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1702451620; x=1703056420; darn=vger.kernel.org;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=CySHbFNihEKJypUz43arLxA13iJ+ywCfajnfMajq70Q=;
-        b=ZsjSB0u1gaon2FcFB8ZlchO6Y5YCCj8JZqQExxZlfZLrvzvIcJKIg6A6kn4i6q4bxN
-         j3ea8Kl3M1lN4rxSMkN4ZmB/4YkBv9QYHOm4PF8uNXrGRkRRJY+aOuES1AuLBbStKLwI
-         EUj0RukDTZBZ5y7DGpUKJvsRtrqg7kf4gv/deZ0JjKIku+U8CgS9rj1u4zq54VJ1AzCh
-         Fg7Y03J7lHSnmOtb5uMf3Vitga3WK7Jb/Z0Lu7uN/hIRCju7Fyr2/uYCoaYpjNMj2U87
-         RXj3BwZVYy9Yj52wUjd1macFfqgbkKYaZ5YAbxAXex3ZSnauPclaHsaP+LSGB+JRKsHZ
-         jzeA==
+        bh=3emsIA0tpPFfsgbSI8KO5mFdHSENMp/EvsoXNAH3aJc=;
+        b=VV76p+gm2ti+O1yvrybUCSgmMX9jOgTFJsjy6LcMBWSICQs1HInEHSn2eqL0bzpF5q
+         9E5QpxJgcKCPUA6jQHmBDK4UABJlKQ1nnw1vOriuKcwG2stdLgpGZPCSrIA+L6sIR+vQ
+         /wKbN1NKyqNooyhuUuc+/4CxiCbprq3lMQ+jOSkyZhxWDLxs66baTKDfnhKMS0iFz82B
+         1gsaorPahzvAB2ebFYXooI3OX4pFZ+WLsfzax8QChGy5GRRKSszx6/YY2AvAD8R+RgCs
+         QKmqfG3+kaImZqNytQXWAcWYcyyiTE1QK1ZQQUt4CJLauB03a0+adwlzxHlIYDHiHV1I
+         pw4Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702451616; x=1703056416;
+        d=1e100.net; s=20230601; t=1702451620; x=1703056420;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=CySHbFNihEKJypUz43arLxA13iJ+ywCfajnfMajq70Q=;
-        b=lJlWNKEu0yA1MA/Fy8oVVaV20nmCyr0yu0wikE/h81c8WB4T5a87SNp1WqwZvN+oHK
-         jixvhh4aqdO2f/NjVDbzKsyJpHuOrSE+73qR/LJFikKgQiNF1OT+utQy+PauBiykao8f
-         7jSt/B3/VOmnmTVpIT9fksFK5tx9vGGyu59hDM+QeNTR+RGOefjJR5TXpnXy+8vRvkiP
-         aHP5EeP0JVfW6H6pfN6Qyasa0C2HglGWdPWlTfFC9nBpYFO6idOxCQguM43TeD5Ormyx
-         q4kJDNG61YsRBTERrP73DxpLeFnVPDwBkYpMHxlE49TkMdLmvEZHo1o57esRmPMsc9eM
-         qLmg==
-X-Gm-Message-State: AOJu0YxWidBn7vkzUgFtlMoapxyAytZugMWG9uzXzZsU1dLSOJaKffAU
-        pAy5ImeHmwqfS9VBtmU+198NAfw3oNSV+jj9uvb1iQ==
-X-Google-Smtp-Source: AGHT+IEM1kOIuphEqfzrZd8Lq3/vYg/WFrUXV4kjMhsDwYBCMUeA7vM00dEA1sSZwBeUnhsh1M+TUTrJDhLbPt/1Pcg=
-X-Received: by 2002:a50:c192:0:b0:54c:f4fd:3427 with SMTP id
- m18-20020a50c192000000b0054cf4fd3427mr458949edf.7.1702451616197; Tue, 12 Dec
- 2023 23:13:36 -0800 (PST)
+        bh=3emsIA0tpPFfsgbSI8KO5mFdHSENMp/EvsoXNAH3aJc=;
+        b=NGCZzTfZ7cu3Ng7ClhcNbvsi2Hj5tB1zn1RRX5279F3q3wqAE9u8O1TmL7fN3LLz8k
+         VKyr27pNSgo6ynobYyISb/OJxnhHGHr0PiL7XlrArz6Gppp16nwKF/DPDbZOUq++XmTg
+         aUWFW8QnqNAdg7CXq6J70pFQschbZOja4A5Ttw2S/NS+ULRwPqGK78MrvStrQACEnzwt
+         RgIvUHZxFoYjggwnuhXP8dG8hotvAnMvyFaeArwn8FqamGTu9PHF7iIuMLYLcBclZoeJ
+         4SNyt0ujLmt4pS8/Qxe1OQoXyFGj/7IqKYHsworfYfWwIMkcJyU+B8WbPYWR6V3W2mbU
+         gnhQ==
+X-Gm-Message-State: AOJu0YyuuWnC99pliswJC6PowuObz7Ri30nJsU/j10GCJLjuN5v8kB58
+        EiQgdX6GiJruBQ44QPi4+OWsMMLOjcf8NTGO7N+wPA==
+X-Google-Smtp-Source: AGHT+IH6cU5yT26gEL4w70saIePwUBz+6dg6SpOhlVQVZUMH76+ZwhwaEdN1X6LuGQCHhTjRLohRAHouh26eGjRXkYk=
+X-Received: by 2002:a05:600c:3b20:b0:40c:1e46:508e with SMTP id
+ m32-20020a05600c3b2000b0040c1e46508emr399018wms.0.1702451620401; Tue, 12 Dec
+ 2023 23:13:40 -0800 (PST)
 MIME-Version: 1.0
-References: <20231213010201.1802507-1-rmoar@google.com> <20231213010201.1802507-3-rmoar@google.com>
-In-Reply-To: <20231213010201.1802507-3-rmoar@google.com>
+References: <20231213010201.1802507-1-rmoar@google.com> <20231213010201.1802507-4-rmoar@google.com>
+In-Reply-To: <20231213010201.1802507-4-rmoar@google.com>
 From:   David Gow <davidgow@google.com>
-Date:   Wed, 13 Dec 2023 15:13:24 +0800
-Message-ID: <CABVgOS=tUmp1noFpOiQfxnBi29fYWoWtVaz7-VTr1ckN6pVkJA@mail.gmail.com>
-Subject: Re: [PATCH v4 3/6] kunit: add example suite to test init suites
+Date:   Wed, 13 Dec 2023 15:13:29 +0800
+Message-ID: <CABVgOS=7cGp6M1dwPFPk8TYFj3=teFhVc55dKQMED2rNmO3Rfw@mail.gmail.com>
+Subject: Re: [PATCH v4 4/6] kunit: add is_init test attribute
 To:     Rae Moar <rmoar@google.com>
 Cc:     shuah@kernel.org, dlatypov@google.com, brendan.higgins@linux.dev,
         sadiyakazi@google.com, keescook@chromium.org, arnd@arndb.de,
         linux-kselftest@vger.kernel.org, linux-arch@vger.kernel.org,
         kunit-dev@googlegroups.com, linux-kernel@vger.kernel.org
 Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="000000000000db25da060c5ee758"
+        boundary="00000000000019a748060c5ee8cb"
 X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
@@ -71,99 +71,191 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---000000000000db25da060c5ee758
+--00000000000019a748060c5ee8cb
 Content-Type: text/plain; charset="UTF-8"
 
 On Wed, 13 Dec 2023 at 09:02, Rae Moar <rmoar@google.com> wrote:
 >
-> Add example_init_test_suite to allow for testing the feature of running
-> test suites marked as init to indicate they use init data and/or
-> functions.
+> Add is_init test attribute of type bool. Add to_string, get, and filter
+> methods to lib/kunit/attributes.c.
 >
-> This suite should always pass and uses a simple init function.
+> Mark each of the tests in the init section with the is_init=true attribute.
 >
-> This suite can also be used to test the is_init attribute introduced in
-> the next patch.
+> Add is_init to the attributes documentation.
 >
 > Signed-off-by: Rae Moar <rmoar@google.com>
 > ---
-> Changes since v3:
-> - I ended up not changing anything as adding __init to the test gave
->   a build warning. It did still work so I could add it back if wanted.
 
-I had another look at this, and I think the most correct solution here
-is to make the test __init, and the array of tests __refdata.
+This looks much better, thanks.
 
-(Ideally this would be something we could wrap in a macro, but I think
-it's fine to just have it written here for now, so it's explicit in
-the example._
+Maybe in the future, we'll want to collate several suite-level
+attributes (in a suite_attributes struct or a bitfield), but I think
+that should wait until after we have more examples.
 
-How does that sound?
+Reviewed-by: David Gow <davidgow@google.com>
 
+Cheers,
 -- David
 
+
+> Changes since v3:
+> - Move the attribute from kunit_attributes to a suite field.
 >
->  lib/kunit/kunit-example-test.c | 37 ++++++++++++++++++++++++++++++++++
->  1 file changed, 37 insertions(+)
+>  .../dev-tools/kunit/running_tips.rst          |  7 +++
+>  include/kunit/test.h                          |  1 +
+>  lib/kunit/attributes.c                        | 60 +++++++++++++++++++
+>  lib/kunit/executor.c                          |  6 +-
+>  4 files changed, 73 insertions(+), 1 deletion(-)
 >
-> diff --git a/lib/kunit/kunit-example-test.c b/lib/kunit/kunit-example-test.c
-> index 6bb5c2ef6696..18495778de7c 100644
-> --- a/lib/kunit/kunit-example-test.c
-> +++ b/lib/kunit/kunit-example-test.c
-> @@ -287,4 +287,41 @@ static struct kunit_suite example_test_suite = {
->   */
->  kunit_test_suites(&example_test_suite);
+> diff --git a/Documentation/dev-tools/kunit/running_tips.rst b/Documentation/dev-tools/kunit/running_tips.rst
+> index 766f9cdea0fa..024e9ad1d1e9 100644
+> --- a/Documentation/dev-tools/kunit/running_tips.rst
+> +++ b/Documentation/dev-tools/kunit/running_tips.rst
+> @@ -428,3 +428,10 @@ This attribute indicates the name of the module associated with the test.
 >
-> +static int __init init_add(int x, int y)
+>  This attribute is automatically saved as a string and is printed for each suite.
+>  Tests can also be filtered using this attribute.
+> +
+> +``is_init``
+> +
+> +This attribute indicates whether the test uses init data or functions.
+> +
+> +This attribute is automatically saved as a boolean and tests can also be
+> +filtered using this attribute.
+> diff --git a/include/kunit/test.h b/include/kunit/test.h
+> index fe79cd736e94..b163b9984b33 100644
+> --- a/include/kunit/test.h
+> +++ b/include/kunit/test.h
+> @@ -253,6 +253,7 @@ struct kunit_suite {
+>         struct dentry *debugfs;
+>         struct string_stream *log;
+>         int suite_init_err;
+> +       bool is_init;
+>  };
+>
+>  /* Stores an array of suites, end points one past the end */
+> diff --git a/lib/kunit/attributes.c b/lib/kunit/attributes.c
+> index 1b512f7e1838..2cf04cc09372 100644
+> --- a/lib/kunit/attributes.c
+> +++ b/lib/kunit/attributes.c
+> @@ -58,6 +58,16 @@ static const char *attr_enum_to_string(void *attr, const char * const str_list[]
+>         return str_list[val];
+>  }
+>
+> +static const char *attr_bool_to_string(void *attr, bool *to_free)
 > +{
-> +       return (x + y);
+> +       bool val = (bool)attr;
+> +
+> +       *to_free = false;
+> +       if (val)
+> +               return "true";
+> +       return "false";
 > +}
 > +
-> +/*
-> + * This test should always pass. Can be used to test init suites.
-> + */
-> +static void example_init_test(struct kunit *test)
-
-Add __init here.
-
+>  static const char *attr_speed_to_string(void *attr, bool *to_free)
+>  {
+>         return attr_enum_to_string(attr, speed_str_list, to_free);
+> @@ -166,6 +176,37 @@ static int attr_string_filter(void *attr, const char *input, int *err)
+>         return false;
+>  }
+>
+> +static int attr_bool_filter(void *attr, const char *input, int *err)
 > +{
-> +       KUNIT_EXPECT_EQ(test, init_add(1, 1), 2);
+> +       int i, input_int = -1;
+> +       long val = (long)attr;
+> +       const char *input_str = NULL;
+> +
+> +       for (i = 0; input[i]; i++) {
+> +               if (!strchr(op_list, input[i])) {
+> +                       input_str = input + i;
+> +                       break;
+> +               }
+> +       }
+> +
+> +       if (!input_str) {
+> +               *err = -EINVAL;
+> +               pr_err("kunit executor: filter value not found: %s\n", input);
+> +               return false;
+> +       }
+> +
+> +       if (!strcmp(input_str, "true"))
+> +               input_int = (int)true;
+> +       else if (!strcmp(input_str, "false"))
+> +               input_int = (int)false;
+> +       else {
+> +               *err = -EINVAL;
+> +               pr_err("kunit executor: invalid filter input: %s\n", input);
+> +               return false;
+> +       }
+> +
+> +       return int_filter(val, input, input_int, err);
+> +}
+>
+>  /* Get Attribute Methods */
+>
+> @@ -194,6 +235,17 @@ static void *attr_module_get(void *test_or_suite, bool is_test)
+>                 return (void *) "";
+>  }
+>
+> +static void *attr_is_init_get(void *test_or_suite, bool is_test)
+> +{
+> +       struct kunit_suite *suite = is_test ? NULL : test_or_suite;
+> +       struct kunit_case *test = is_test ? test_or_suite : NULL;
+> +
+> +       if (test)
+> +               return ((void *) NULL);
+> +       else
+> +               return ((void *) suite->is_init);
 > +}
 > +
-> +/*
-> + * The kunit_case struct cannot be marked as __initdata as this will be
-> + * used in debugfs to retrieve results after test has run
-> + */
-> +static struct kunit_case example_init_test_cases[] = {
-
-Make this 'static struct kunit_case __refdata example_init_test_cases[] = {'...
-
-
-> +       KUNIT_CASE(example_init_test),
-> +       {}
-> +};
+>  /* List of all Test Attributes */
+>
+>  static struct kunit_attr kunit_attr_list[] = {
+> @@ -212,6 +264,14 @@ static struct kunit_attr kunit_attr_list[] = {
+>                 .filter = attr_string_filter,
+>                 .attr_default = (void *)"",
+>                 .print = PRINT_SUITE,
+> +       },
+> +       {
+> +               .name = "is_init",
+> +               .get_attr = attr_is_init_get,
+> +               .to_string = attr_bool_to_string,
+> +               .filter = attr_bool_filter,
+> +               .attr_default = (void *)false,
+> +               .print = PRINT_SUITE,
+>         }
+>  };
+>
+> diff --git a/lib/kunit/executor.c b/lib/kunit/executor.c
+> index 847329c51e91..717b9599036b 100644
+> --- a/lib/kunit/executor.c
+> +++ b/lib/kunit/executor.c
+> @@ -300,6 +300,7 @@ struct kunit_suite_set kunit_merge_suite_sets(struct kunit_suite_set init_suite_
+>         struct kunit_suite_set total_suite_set = {NULL, NULL};
+>         struct kunit_suite **total_suite_start = NULL;
+>         size_t init_num_suites, num_suites, suite_size;
+> +       int i = 0;
+>
+>         init_num_suites = init_suite_set.end - init_suite_set.start;
+>         num_suites = suite_set.end - suite_set.start;
+> @@ -310,8 +311,11 @@ struct kunit_suite_set kunit_merge_suite_sets(struct kunit_suite_set init_suite_
+>         if (!total_suite_start)
+>                 return total_suite_set;
+>
+> -       /* Append init suites and then all other kunit suites */
+> +       /* Append and mark init suites and then append all other kunit suites */
+>         memcpy(total_suite_start, init_suite_set.start, init_num_suites * suite_size);
+> +       for (i = 0; i < init_num_suites; i++)
+> +               total_suite_start[i]->is_init = true;
 > +
-> +/*
-> + * The kunit_suite struct cannot be marked as __initdata as this will be
-> + * used in debugfs to retrieve results after test has run
-> + */
-> +static struct kunit_suite example_init_test_suite = {
-> +       .name = "example_init",
-> +       .test_cases = example_init_test_cases,
-> +};
-> +
-> +/*
-> + * This registers the test suite and marks the suite as using init data
-> + * and/or functions.
-> + */
-> +kunit_test_init_section_suites(&example_init_test_suite);
-> +
->  MODULE_LICENSE("GPL v2");
+>         memcpy(total_suite_start + init_num_suites, suite_set.start, num_suites * suite_size);
+>
+>         /* Set kunit suite set start and end */
 > --
 > 2.43.0.472.g3155946c3a-goog
 >
 
---000000000000db25da060c5ee758
+--00000000000019a748060c5ee8cb
 Content-Type: application/pkcs7-signature; name="smime.p7s"
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="smime.p7s"
@@ -230,14 +322,14 @@ impZAng7ccvvK09K3ZuhwTIxJMsPXCZYsrXWORTw5sczRAP6XvKbPBJnsJoSTe5dFBPBHOQJOGhU
 qWfEfWnWMJPF3LxSGLpLFQXO3RwQqmxv08avwXfVPouh1xuB3FX7rpDabT8YDhu9JgIZkLEKko7L
 yQt6zWwng7k8YF/jGbiAta6VMYICajCCAmYCAQEwaDBUMQswCQYDVQQGEwJCRTEZMBcGA1UEChMQ
 R2xvYmFsU2lnbiBudi1zYTEqMCgGA1UEAxMhR2xvYmFsU2lnbiBBdGxhcyBSMyBTTUlNRSBDQSAy
-MDIwAhABzgV+4+mJnUzG7XDy6d2uMA0GCWCGSAFlAwQCAQUAoIHUMC8GCSqGSIb3DQEJBDEiBCAB
-opzJXx00VyA7Vn6SnDcgNQP8PsnMGMOuo71Ec++DOjAYBgkqhkiG9w0BCQMxCwYJKoZIhvcNAQcB
-MBwGCSqGSIb3DQEJBTEPFw0yMzEyMTMwNzEzMzZaMGkGCSqGSIb3DQEJDzFcMFowCwYJYIZIAWUD
+MDIwAhABzgV+4+mJnUzG7XDy6d2uMA0GCWCGSAFlAwQCAQUAoIHUMC8GCSqGSIb3DQEJBDEiBCDg
+tlnHncXMImskPFESUda26iwnUkiq4M9XHSUd95bwZjAYBgkqhkiG9w0BCQMxCwYJKoZIhvcNAQcB
+MBwGCSqGSIb3DQEJBTEPFw0yMzEyMTMwNzEzNDBaMGkGCSqGSIb3DQEJDzFcMFowCwYJYIZIAWUD
 BAEqMAsGCWCGSAFlAwQBFjALBglghkgBZQMEAQIwCgYIKoZIhvcNAwcwCwYJKoZIhvcNAQEKMAsG
-CSqGSIb3DQEBBzALBglghkgBZQMEAgEwDQYJKoZIhvcNAQEBBQAEggEApLzgiwU5c2fMe8dm0br5
-GeblHCl33Rx6hl4bSkoup31jDW8+qDljh/UswNUI5KbT4MmMC+sL1eKkyqJU6J6c+vv4VCjy5liC
-8vWYOF5RiTo2Tba4A9pbq2v32nI6Z//fDEmBXElId7fqQECa+eJ6QMU0X+GA2/lNcOYLeUpz5kwC
-EAA9gQgPgTpgq83y09ojt/hfQnmO3ENpb7oUe3ForTvcLr7dsgemO5tUTdtppZOUn8pk9G7OPadx
-ryBO2KGm3eKtB7zLJ88GUeqNXbE/aNCiNP7Ox0/qZKGDN8GpIrraK4I2+B5gpVV28NIidmTMJeOu
-svhopC3SOUYObeKwHw==
---000000000000db25da060c5ee758--
+CSqGSIb3DQEBBzALBglghkgBZQMEAgEwDQYJKoZIhvcNAQEBBQAEggEANMPkzxQqBN/vpJc/m361
+WIJSIuorH6+XtbcWQqgJEnZ3YCD1ACy35PttmId1wmzcqzDjkpCIUDPHFUi6Azedoi38Hh35JAcM
+TJXwgUK1yg55ki8Ch19dkmWiS4rvrhp4N9mMNsJALlGs2pm3NdjRSnbu+eJCDnSyPQSd8lfkLjxw
+wrR700u0dWBwb69zd2CaerSBKvfCHqL9VRhnOoIIXrMSqcYBqNheq8j27AikJFSF6F5jaBWe/Ir5
+StiUMSFH7/iA92kr80iyG1CgLVxjrerb6oTBz0MG6is564u3GuYHbayQT9R8YYMxYO1VzueIr5Zj
+DvqoRc97EJGwx6JSqA==
+--00000000000019a748060c5ee8cb--
