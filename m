@@ -2,158 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 16CEA810D11
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 10:10:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D785810D15
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 10:13:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232600AbjLMJKV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 04:10:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53570 "EHLO
+        id S231786AbjLMJMy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 04:12:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52214 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230161AbjLMJKU (ORCPT
+        with ESMTP id S229458AbjLMJMx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 04:10:20 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FD97AD;
-        Wed, 13 Dec 2023 01:10:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1702458626; x=1733994626;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=NK5CGOWZzJtFJ+tQVFBiqQ0S1RcmUfzssbY3bSCif/4=;
-  b=FRG1auieslK682NORMlXcVAxYy4AXf6kcUFdSr+vm9PLjStXMxayizPx
-   NxF42bS/ZO4bL/2xtuYO2V+8B3j4GjEextBHroqPEYbaJ9leIOC+eFKPD
-   BU8huyDsigoL85Q6TYFETkM7sdJ7T3G636wbbdfnquhXH8p8d7R+81stH
-   U4lf2jAGeUMxqfyqVsHk+gj4viH4dD3ZRGQ9pZ9Z7EbZMOorkwqusD4Bm
-   25qdMwVLvXSaZniqYzkQF9+MPakI4GmzT4n/MKVCzzd9+nC2koPsid21j
-   Z3RMo1peSgJd8d+QJweYOgxJxh6aYaG4eoom7Ovcxst1tpqyfxXXb0zs1
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10922"; a="481136912"
-X-IronPort-AV: E=Sophos;i="6.04,272,1695711600"; 
-   d="scan'208";a="481136912"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Dec 2023 01:10:26 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10922"; a="844238327"
-X-IronPort-AV: E=Sophos;i="6.04,272,1695711600"; 
-   d="scan'208";a="844238327"
-Received: from turnipsi.fi.intel.com (HELO kekkonen.fi.intel.com) ([10.237.72.44])
-  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Dec 2023 01:10:22 -0800
-Received: from kekkonen.localdomain (localhost [127.0.0.1])
-        by kekkonen.fi.intel.com (Postfix) with SMTP id 8768D11F7E4;
-        Wed, 13 Dec 2023 11:10:19 +0200 (EET)
-Date:   Wed, 13 Dec 2023 09:10:19 +0000
-From:   Sakari Ailus <sakari.ailus@linux.intel.com>
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     Arnd Bergmann <arnd@kernel.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Jacopo Mondi <jacopo.mondi@ideasonboard.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        "laurent.pinchart" <laurent.pinchart@ideasonboard.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Bill Wendling <morbo@google.com>,
-        Justin Stitt <justinstitt@google.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        llvm@lists.linux.dev
-Subject: Re: [PATCH] media: i2c: mt9m114: add CONFIG_COMMON_CLK dependency
-Message-ID: <ZXl0-8VgzF3YH18i@kekkonen.localdomain>
-References: <20231212213625.3653558-1-arnd@kernel.org>
- <ZXlmnmGepRnMyNfr@kekkonen.localdomain>
- <97a826ab-cd68-4494-884e-f7bd512a7bef@app.fastmail.com>
+        Wed, 13 Dec 2023 04:12:53 -0500
+Received: from mail-4322.protonmail.ch (mail-4322.protonmail.ch [185.70.43.22])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0104BAD;
+        Wed, 13 Dec 2023 01:12:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=proton.me;
+        s=protonmail; t=1702458773; x=1702717973;
+        bh=MEAwN2FYlBpSwYoH9a2PEuQpzLdTwET0cZNUdnLD5cQ=;
+        h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+         Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
+         Message-ID:BIMI-Selector;
+        b=TNE8211i36nwjpY1JK6pg5ubksVz22Xteuzh7eG3Dx6D16cLt/98MFjBnFFh0TYDI
+         u88OAAePGhRGa1h2qs7ZKQT72O/Psf9cAk/QNwVGPO1Kx/6qw4FYvta40OW/JXdijc
+         IPFVOXjaJO1vn9+28PLVCW4oMrgQAh4kiNIjKNgIBkL9kQUPb0b7IMukn1nRU3zxE9
+         NjMx1ToEuUf5AoW56NP9I8bh8QZ1CM2Ti7r4cKaFC1dYWPzF+/OTaQtGMAhDh8FPWZ
+         0pkNK965rJf6+yPB2kv7avltEGgYoMJQzna+9Fc/i8GGszfqGnjoe969P9ZBNyPKJ9
+         XatbtEdnyTAig==
+Date:   Wed, 13 Dec 2023 09:12:45 +0000
+To:     Boqun Feng <boqun.feng@gmail.com>
+From:   Benno Lossin <benno.lossin@proton.me>
+Cc:     Alice Ryhl <aliceryhl@google.com>, Miguel Ojeda <ojeda@kernel.org>,
+        Alex Gaynor <alex.gaynor@gmail.com>,
+        Wedson Almeida Filho <wedsonaf@gmail.com>,
+        Gary Guo <gary@garyguo.net>,
+        =?utf-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
+        Andreas Hindborg <a.hindborg@samsung.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        =?utf-8?Q?Arve_Hj=C3=B8nnev=C3=A5g?= <arve@android.com>,
+        Todd Kjos <tkjos@android.com>,
+        Martijn Coenen <maco@android.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Carlos Llamas <cmllamas@google.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Kees Cook <keescook@chromium.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org,
+        rust-for-linux@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH v2 7/7] rust: file: add abstraction for `poll_table`
+Message-ID: <pxtBsqlawLf52Escu7kGkCv1iEorWkE4-g8Ke_IshhejEYz5zZGGX5q98hYtU_YGubwk770ufUezNXFB_GJFMnZno5G7OGuF2oPAOoVAGgc=@proton.me>
+In-Reply-To: <ZXkKTSTCuQMt2ge6@boqun-archlinux>
+References: <20231206-alice-file-v2-0-af617c0d9d94@google.com> <20231206-alice-file-v2-7-af617c0d9d94@google.com> <k_vpgbqKAKoTFzJIBCjvgxGhX73kgkcv6w9kru78lBmTjHHvXPy05g8KxAKJ-ODARBxlZUp3a5e4F9TemGqQiskkwFCpTOhzxlvy378tjHM=@proton.me> <CAH5fLgiQ-7gbwP2RLoVDfDqoA+nXPboBW6eTKiv45Yam_Vjv_A@mail.gmail.com> <E-jdYd0FVvs15f_pEC0Fo6k2DByCDEQoh_Ux9P9ldmC-otCvUfQghkJOUkiAi8gDI8J47wAaDe56XYC5NiJhuohyhIklGAWMvv9v1qi6yYM=@proton.me> <ZXkKTSTCuQMt2ge6@boqun-archlinux>
+Feedback-ID: 71780778:user:proton
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <97a826ab-cd68-4494-884e-f7bd512a7bef@app.fastmail.com>
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Arnd,
+On 12/13/23 02:35, Boqun Feng wrote:
+> On Tue, Dec 12, 2023 at 05:01:28PM +0000, Benno Lossin wrote:
+>> On 12/12/23 10:59, Alice Ryhl wrote:
+>>> On Fri, Dec 8, 2023 at 6:53=E2=80=AFPM Benno Lossin <benno.lossin@proto=
+n.me> wrote:
+>>>> On 12/6/23 12:59, Alice Ryhl wrote:
+>>>>> +    fn get_qproc(&self) -> bindings::poll_queue_proc {
+>>>>> +        let ptr =3D self.0.get();
+>>>>> +        // SAFETY: The `ptr` is valid because it originates from a r=
+eference, and the `_qproc`
+>>>>> +        // field is not modified concurrently with this call since w=
+e have an immutable reference.
+>>>>
+>>>> This needs an invariant on `PollTable` (i.e. `self.0` is valid).
+>>>
+>>> How would you phrase it?
+>>
+>> - `self.0` contains a valid `bindings::poll_table`.
+>> - `self.0` is only modified via references to `Self`.
+>>
+>>>>> +        unsafe { (*ptr)._qproc }
+>>>>> +    }
+>>>>> +
+>>>>> +    /// Register this [`PollTable`] with the provided [`PollCondVar`=
+], so that it can be notified
+>>>>> +    /// using the condition variable.
+>>>>> +    pub fn register_wait(&mut self, file: &File, cv: &PollCondVar) {
+>>>>> +        if let Some(qproc) =3D self.get_qproc() {
+>>>>> +            // SAFETY: The pointers to `self` and `file` are valid b=
+ecause they are references.
+>>>>
+>>>> What about cv.wait_list...
+>>>
+>>> I can add it to the list of things that are valid due to references.
+>>
+>=20
+> Actually, there is an implied safety requirement here, it's about how
+> qproc is implemented. As we can see, PollCondVar::drop() will wait for a
+> RCU grace period, that means the waiter (a file or something) has to use
+> RCU to access the cv.wait_list, otherwise, the synchronize_rcu() in
+> PollCondVar::drop() won't help.
 
-On Wed, Dec 13, 2023 at 09:39:01AM +0100, Arnd Bergmann wrote:
-> On Wed, Dec 13, 2023, at 09:09, Sakari Ailus wrote:
-> > On Tue, Dec 12, 2023 at 10:18:04PM +0100, Arnd Bergmann wrote:
-> >> From: Arnd Bergmann <arnd@arndb.de>
-> >> 
-> >> With clang-16, building without COMMON_CLK triggers a range check on
-> >> udelay() because of a constant division-by-zero calculation:
-> >> 
-> >> ld.lld: error: undefined symbol: __bad_udelay
-> >> >>> referenced by mt9m114.c
-> >> >>>               drivers/media/i2c/mt9m114.o:(mt9m114_power_on) in archive vmlinux.a
-> >> 
-> >> Avoid this by adding a Kconfig dependency that avoids the broken build.
-> >
-> > This sounds like an odd way to fix an issue with udelay(). On which arch
-> > does it happen? Wouldn't it be better to fix the udelay() problem in the
-> > source?
-> >
-> > A quick check reveals there are about 2400 files using udelay.
-> 
-> I observed this on arm, but same sanity check exists on arc, m68k,
-> microblaze, nios2 and xtensa, all of which try to discourage
-> overly large constant delays busy loops. On Arm that limit is
-> any delay of over 2 miliseconds, at which time a driver should
-> generally use either msleep() to avoid a busy-loop, or (in extreme
-> cases) mdelay().
-> 
-> I first tried to rewrite the mt9m114_power_on() function to
-> have an upper bound on the udelay, but that didn't avoid the
-> link error because it still got into undefined C. Disabling
-> the driver without COMMON_CLK seemed easier since it already
-> fails to probe if mt9m114_clk_init() runs into a zero clk.
-> 
-> Maybe we could just fall back to the soft reset when the
-> clock rate is unknown?
+Good catch, this is rather important. I did not find the implementation
+of `qproc`, since it is a function pointer. Since this pattern is
+common, what is the way to find the implementation of those in general?
 
-The datasheet says the input clock range is between 6 MHz and 54 MHz. We
-could check that, and return an error if it's not in the range. The rate is
-needed for other reasons, too, and the sensor is unlikely to work if it's
-(more than little) off.
+I imagine that the pattern is used to enable dynamic selection of the
+concrete implementation, but there must be some general specification of
+what the function does, is this documented somewhere?
 
-I wonder if this could address the Clang 16 issue, too? I'd replace
-udelay() with fsleep() in any case, and at the very least Clang should be
-happy with this.
+> To phrase it, it's more like:
+>=20
+> (in the safety requirement of `PollTable::from_ptr` and the type
+> invariant of `PollTable`):
+>=20
+> ", further, if the qproc function in poll_table publishs the pointer of
+> the wait_queue_head, it must publish it in a way that reads on the
+> published pointer have to be in an RCU read-side critical section."
 
-> 
-> diff --git a/drivers/media/i2c/mt9m114.c b/drivers/media/i2c/mt9m114.c
-> index 0a22f328981d..88a67568edf8 100644
-> --- a/drivers/media/i2c/mt9m114.c
-> +++ b/drivers/media/i2c/mt9m114.c
-> @@ -2092,6 +2092,7 @@ static void mt9m114_ifp_cleanup(struct mt9m114 *sensor)
->  
->  static int mt9m114_power_on(struct mt9m114 *sensor)
->  {
-> +       long freq;
->         int ret;
->  
->         /* Enable power and clocks. */
-> @@ -2104,9 +2105,10 @@ static int mt9m114_power_on(struct mt9m114 *sensor)
->         if (ret < 0)
->                 goto error_regulator;
->  
-> +       freq = clk_get_rate(sensor->clk);
-> +
->         /* Perform a hard reset if available, or a soft reset otherwise. */
-> -       if (sensor->reset) {
-> -               long freq = clk_get_rate(sensor->clk);
-> +       if (sensor->reset && freq) {
->                 unsigned int duration;
->  
->                 /*
-> 
->     Arnd
+What do you mean by `publish`?
 
--- 
-Regards,
+> and here we can said,
+>=20
+> "per type invariant, `qproc` cannot publish `cv.wait_list` without
+> proper RCU protection, so it's safe to use `cv.wait_list` here, and with
+> the synchronize_rcu() in PollCondVar::drop(), free of the wait_list will
+> be delayed until all usages are done."
 
-Sakari Ailus
+I think I am missing how the call to `__wake_up_pollfree` ensures that
+nobody uses the `PollCondVar` any longer. How is it removed from the
+table?
+
+--=20
+Cheers,
+Benno
+
+> I know, this is quite verbose, but just imagine some one removes the
+> rcu_read_lock() and rcu_read_unlock() in ep_remove_wait_queue(), the
+> poll table from epoll (using ep_ptable_queue_proc()) is still valid one
+> according to the current safety requirement, but now there is a
+> use-after-free in the following case:
+>=20
+> =09CPU 0                        CPU1
+> =09                             ep_remove_wait_queue():
+> =09=09=09=09       struct wait_queue_head *whead;
+> =09                               whead =3D smp_load_acquire(...);
+> =09                               if (whead) { // not null
+> =09PollCondVar::drop():
+> =09  __wake_pollfree();
+> =09  synchronize_rcu(); // no current RCU readers, yay.
+> =09  <free the wait_queue_head>
+> =09                                 remove_wait_queue(whead, ...); // BOO=
+M, use-after-free
