@@ -2,275 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F04268107E8
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 02:58:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DCFD68107E5
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 02:58:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378171AbjLMB6k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 20:58:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56402 "EHLO
+        id S232762AbjLMB6Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 20:58:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37056 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232805AbjLMB6i (ORCPT
+        with ESMTP id S231738AbjLMB6W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 20:58:38 -0500
-Received: from APC01-SG2-obe.outbound.protection.outlook.com (mail-sgaapc01on2123.outbound.protection.outlook.com [40.107.215.123])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A106BBC;
-        Tue, 12 Dec 2023 17:58:43 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Ndh5Gl1WcMLjhvFN7DjuRYi98Ae1/hDtwsHeScBm+VRszK7Alf4EWqotuxzuDMTrfAS+oMsmCyvOf+GwGpug6E/i8TFFaIYpzvyoNYtQDAFG4Yqz5jQPCQGj/LmSwMDgjM67eu0/IUHnZwZcCaGCykO8mMGZJe4PR4oLbAMf0SQhzhuCf7kY4ExPwzn5eFI/5QzZEuHoLQ2Be2eJ/ML5ymN6kvp9uuJilxqNMJaiM+dYAmv8wPzNgDNP0LOKeDRJJyL52EBJdxpyow4TBzkSq/8L7cSXE83t1V84pOWl6zq8K0N625DxvzG7J8bP1kE4g+QZJ3YfoozvZa/6w3NamQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=nnuD6vvpDO0TghFg1wH9FoZiAc95vN0a8uFinFOMLV4=;
- b=ArR5e5bjt10+o2adRuOfsRbD+HIR5geDRKLzGiwyyJQRN7PuKVuGVkLU1hcG9iuzoA95wAUNd6+77lkeQsxLFqZQw5D3DjJP1ctOJJQsEDlHOT0aVMhZU28cQyXl5/fgUSwwNZLTJgWApGOlAOEjEbkDM+RBInNYlVKJz3SWKLYAoaW2Vho57Uf/YyctV2kbI1mKYo/1yjiXsCiAYuTYRGFswjT7+ddXLuuJlz8VOkB5rJJ9oHzHZT5Svc9apl3nJh2Kl7lFXC4vcGfxyp4PKFDxQFCiXW5E+uq6SfBp/6oIWM0VMMj06otTB6B+hG7CVeAOXBdx+tYzPVL5Sz9DQw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
- dkim=pass header.d=vivo.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=nnuD6vvpDO0TghFg1wH9FoZiAc95vN0a8uFinFOMLV4=;
- b=CJ6kv5A4sQ8O3IbwTpb2azqxC1IVEqWJEh8Gv3aW3+trwKPfpYxZIePmI9yWiZA0wCUqMrDWv+6nmhSUML3fGoXO71IMAt8YbZKgBcxpyMuBChiD7h+id4L+wn23Djtq2bYwThW7fN/0m4mrS36N14Y5/KagER+A9cGiHTOj+z7JOVjCsK1driRcC99admKqn92luwdZsikyCykgEtpGoBeOapngR7bngtBRVXu2rvwxD/wzCojJRrhwe342dXUuaJpKkLyiPx4liLdl2MBEhc89zxuED8yiqxIJFfJBtrpKOMiuX1nmQOP9qothAp4kc8I3uYb16VeH0G4fI4iAtQ==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=vivo.com;
-Received: from PUZPR06MB5676.apcprd06.prod.outlook.com (2603:1096:301:f8::10)
- by JH0PR06MB6655.apcprd06.prod.outlook.com (2603:1096:990:3d::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7091.26; Wed, 13 Dec
- 2023 01:58:36 +0000
-Received: from PUZPR06MB5676.apcprd06.prod.outlook.com
- ([fe80::d754:7b3:dc4c:6b48]) by PUZPR06MB5676.apcprd06.prod.outlook.com
- ([fe80::d754:7b3:dc4c:6b48%7]) with mapi id 15.20.7091.022; Wed, 13 Dec 2023
- 01:58:36 +0000
-Message-ID: <86984d9b-c955-4b06-9097-2a757b1bacfe@vivo.com>
-Date:   Wed, 13 Dec 2023 09:58:26 +0800
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH V4 1/2] mm: add defines for min/max swappiness
-To:     Dan Schatzberg <schatzberg.dan@gmail.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Yosry Ahmed <yosryahmed@google.com>, Huan Yang <link@vivo.com>
-Cc:     linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        linux-mm@kvack.org, Tejun Heo <tj@kernel.org>,
-        Zefan Li <lizefan.x@bytedance.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Michal Hocko <mhocko@kernel.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <muchun.song@linux.dev>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        David Hildenbrand <david@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Chris Li <chrisl@kernel.org>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        Yue Zhao <findns94@gmail.com>, Hugh Dickins <hughd@google.com>
-References: <20231213013807.897742-1-schatzberg.dan@gmail.com>
- <20231213013807.897742-2-schatzberg.dan@gmail.com>
-From:   Huan Yang <11133793@vivo.com>
-In-Reply-To: <20231213013807.897742-2-schatzberg.dan@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: SI1PR02CA0003.apcprd02.prod.outlook.com
- (2603:1096:4:1f7::20) To PUZPR06MB5676.apcprd06.prod.outlook.com
- (2603:1096:301:f8::10)
+        Tue, 12 Dec 2023 20:58:22 -0500
+Received: from mail-oa1-f69.google.com (mail-oa1-f69.google.com [209.85.160.69])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C5D4BC
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 17:58:28 -0800 (PST)
+Received: by mail-oa1-f69.google.com with SMTP id 586e51a60fabf-1fb2b95e667so11925987fac.3
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 17:58:28 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702432707; x=1703037507;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=7PrtuHHvlJSMCcRmxVI9cTjTpHHaK6QJDP9Ybf63EDQ=;
+        b=ho7K7J/BoVBywJLSGCy96JaxuukuVZi7RpdT3P168qCjn2ckaJ0N0qxS12hlWWeYAu
+         Zc27XO+Min0y8nX2qJhtfcRr/5dEM0sddBrcdMaodx3Te1wNkfm0tfDyyuI7cofZLqT7
+         z82nU7BELWckCLYx4AXHKL1mVl45kuvKWXsgyr/yinxapLb8PN4oNTyfU4LvxsAI/azm
+         VZtZ0zgBaQ1wEfBc+c1a2JXYVTcFS7so3jHt0vvYea7x2fyvymfhaXD6Ium9VZN6jpOz
+         hWIpw9snVrcKcfb0M+y5cZigTs6fqzMO5BkGBXkGHIrH9pRUauL2FgEp23QriZNMOKs4
+         8Efg==
+X-Gm-Message-State: AOJu0Yyp8FG13CJbZvfRTp7Pxrm8QTVV6FOhP3aNSn2MLGdV8krsWrlI
+        24t8eoxh3pVZAieN05eCWullEZz/JmaBk5CXKaa1albhkHR0
+X-Google-Smtp-Source: AGHT+IHQJk1gbg4Wx6lUKmYs13gpjy4Av/Pw1eg8OFwM0J4J7KWB/N8rxnbR3QT94q1YH4IaXCN015JSQi8xSf+ab5+ygeGaf56P
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PUZPR06MB5676:EE_|JH0PR06MB6655:EE_
-X-MS-Office365-Filtering-Correlation-Id: 85b85bfb-1f23-41d0-7bd4-08dbfb7f0472
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: cMVyrlBw+570TONArruBa7DzP3dJyVCV7Z3r5vivnDhIWQJQS/DozFF+SQRr49qiZxNi0dfauv6db+uSxR168fZnNmFxGSJ9TzcpxMZ08MgoqtHI4kiNtxU9ZymOrWxNUY49YlMfO8NJqRLGn8mLUNBNXLzLQLZK+3H4r7+uqBFxMgyNBUlOjQvXi5Ue7LlEy+jkUFZT49uLrQrIJc4Jt05pk0dmIY8+RrRWNWsgotDsVl+TAJTnsl6Rjm+diVqZJGI1no6QL4ppSHPgvFFXnlvs5Go/J3q968QYe5F161d8eUtYXK/A5pY1a9O8m21Z0+QZ6kbS+ik28dsvoh1+Z9k8mcrjm2/H+hf+Sdra4nKBq2PPTTFqE+JXLIRpCtegjxquzS/oWRQqoApl7ezGjTfa35nE424UWBFAboBlKSSubmw+2MMx+mK1Bbw+18W47NCQQSSplmwTC3fYriE3cHxC7hZANYgJtsUHCt6RYtLkygsvBSKxoJ5m+k3LUp+qrTxlRj/dRMqsZ078WNFoONwX3SoRXnX2KhugMmpt27tyuj7dxHkTGgpXFOgrbT0ER3g36brvCvaZYoSJcF+uMFgV1kRlAK0EiRnu7W6cs0+iowij0wWsfthjx8OH3PcuXbSYcT92nRz1lTT+SkoyJtDgS4xSPgwQYPfdkY1lKbXEMEliOB9ewpLRjHEjN4OhqnVbhWrmZ4EAr5nnDoRmeGunNVdWW1gX6KTBOtwnQJF1ZmBYjSmQN24PYJ+KqR7t
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PUZPR06MB5676.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(366004)(136003)(376002)(346002)(39860400002)(230922051799003)(451199024)(64100799003)(186009)(1800799012)(2616005)(26005)(6512007)(6506007)(6666004)(52116002)(83380400001)(7416002)(4326008)(5660300002)(8936002)(8676002)(41300700001)(2906002)(478600001)(110136005)(966005)(6486002)(66556008)(66946007)(54906003)(316002)(6636002)(66476007)(38100700002)(31696002)(36756003)(38350700005)(31686004)(45980500001)(43740500002)(81742002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?b1hDR0svSHNBWnlTRXFxYk41eXgzR2hRSUV4WG01R043Q28ya0lQaFV0eDlT?=
- =?utf-8?B?UmVOWWk5QW5BU3FEK1o5cVJOWGJGcDJBcWVKcXJZQnJVOGRhekErVkdDc1RV?=
- =?utf-8?B?OHZGNzVhdHR1TmJsK3EzUSs5OFhLTHBtMllPK2tncVRVN1Z5bEptTDBscUxC?=
- =?utf-8?B?K1lvQkdEQ3Y0Y2N2OEFCWFhTM0I4NVFGMTJIOHgrR3VRN2RMVmE0dVZiTFVY?=
- =?utf-8?B?b1p4c3U4Ym45b1dCeW8venFvQTJuaXdLVDVEV0M1a2VxSi8yQVlhZVQ3aVYx?=
- =?utf-8?B?dG4vR05Ma1BsSFF6NjNZNkZCSExwYmE5T054NWdMSGRGcVJPMXN3Vkpldk9Q?=
- =?utf-8?B?Y0pCRzFIQlM3Z3htQTZSUlRKTmlhZGprUnF2bXVjTGM5Rk1yOUR2eW95aXlr?=
- =?utf-8?B?bWlqWXRaa2p2aDE4S0Y4T2hKOXdVMllMR1NDenJBOHhNNG51eEJ6eXFUNGVV?=
- =?utf-8?B?VVBEazhHY2dEV1h1SmdCT3lUSyt2Uy9RSDFsMm5BSFY4My9ENXRPS1lxS1A1?=
- =?utf-8?B?NXFiRzZrTDhseGNqc0RyNWpidjg2RndWWHI1ZnRic01nUW1JeDJ4RStnTUtM?=
- =?utf-8?B?T1hVbG4vMFZLYWxYQ0txWW5JRzF3Z3hhSm05RExTRlVBdWE2L0RHUFB1bkl5?=
- =?utf-8?B?eEVrZzVvTmRCK1hLVncrc0RnT05oZjM2TGREL2t4UG5Lc3NtMHo4MkNDSlhu?=
- =?utf-8?B?eFV5Y1RaVmlaRGU2a3E5N1RlWThTblRQRFVveWFpSkx0YzdaRmNmeFd1SDR6?=
- =?utf-8?B?SWhOTzBDZFNWR25IV3l1SFcwVzZqaTZ0Mk5HekJaalFCdkxoVXVNSVE4R2Fz?=
- =?utf-8?B?dlpyWDk5SThhcU13Qlh4ZW5JOXdEbnlXWk1hc2FBVjhJQm9lNlQvZXA4U1Q5?=
- =?utf-8?B?SERwNTRnc21Eb2tKczBaYjBhSXFwNkVFcmJNU29pZFRIUm11QzFROXFkbzA0?=
- =?utf-8?B?VUZ5M1ZOUGxaV1VtVEtaQ1huOFhMbEdBdzF0Z1pjVDdWWXF3NXFaRlNiOCtr?=
- =?utf-8?B?ZHlKaFdNYldwbFVCeEtqQlhSRWJtellmalhuRk5sWHlTaW1zbUo4cSt0Vjc4?=
- =?utf-8?B?c2MwNkpzZHNJZVk5dlRPNms0QWFFMFNHbCtBbWJ5dTBBeUxrYWRndDB1Y01J?=
- =?utf-8?B?S3JYaGlVeDZqbmVNaGpYSmFGQWliZGdTUmtPN0RraTBXc2gzdDV3VUsvUmE4?=
- =?utf-8?B?NHBpcHlWWElHd29CVEEvQTFRalpJR09RZ0ZNTjFxaUpvTml0bDA3eEVJWGJy?=
- =?utf-8?B?ejliUzh1WmhjZy9ZalBLb25NaXAxM2VpbG9yVmRJNC8zd0dPcGlpd0s5ZGxE?=
- =?utf-8?B?OUovRGRzVHlsU0NqMWpsOW12U2srNkdzZ3FlZ2dKRU9NUjdZbndCTGkzZm5X?=
- =?utf-8?B?TmEwRTQyOHNmRXJ6enZCandsSm96TzBJOGdSOXl0K1BuZ25GZ2sxV0QwbXVm?=
- =?utf-8?B?a2tBVFNGUmJGU3h4RkI1bUQ4L3pmNldFOXloZGRTZmxWZmZuZFZScll1RGU0?=
- =?utf-8?B?YVU0THZmUFBoSHU4UTVWanpnblhzbUs2bjNteHZPUHRoSGQ1U09DeUtDZ2Ju?=
- =?utf-8?B?N0Q2RGRmN3hGYWEzbm1iM09oUW5EUEJodjRiTGlEd09DdVl5YmlSdEJ6UVdX?=
- =?utf-8?B?bm9yTHBKMm9yaks0UGcrR09FazNVekNHNWdRcmdSNThqNTRtUkZxQ0RBcFFl?=
- =?utf-8?B?S3dhSldFdUE3MjlJcGZVT3hhZnhJU2JLWWkxeExaY1YzbmJtbDk3NW9qZHE1?=
- =?utf-8?B?akFrS2JhcFBPT0RYZTNWaEJzdHNPNFNaSXljVEJWWll6NjVyaG9Jemd0SnZn?=
- =?utf-8?B?dEhCbGFmZmVoaDNRZFBxK29iend2UFBPd212WTBIb3hESzdNVk9Cd1dWTEtY?=
- =?utf-8?B?L1pNRGhZOXVTS0QxbTVjNjBBaWJWRkZtdXJhU0Q1aWRkbUVaQXd0V2cvai9X?=
- =?utf-8?B?VGZ6Vy9tQjFabmN5RTM2enhaQmk3QmxrMGYyalRRa1BZeHlLWTF2TktvNisz?=
- =?utf-8?B?SFp3NWErQXVzRXBTSUZZYmE2ZWc4RDhJbmlVSGlmYlh5aE1ySmlDQlpvY1d4?=
- =?utf-8?B?VlJvTktHRG5adVFqNnFiYWxnYjEvQk1LYVZsL3FoL09VMHJMNlJ6bk1RbEEz?=
- =?utf-8?Q?bbS02joSerUIp6lP9UQ6Jwq9B?=
-X-OriginatorOrg: vivo.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 85b85bfb-1f23-41d0-7bd4-08dbfb7f0472
-X-MS-Exchange-CrossTenant-AuthSource: PUZPR06MB5676.apcprd06.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Dec 2023 01:58:36.1383
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: O5gZHgk7FUxWBvOcMHKIWwplh59J7T4zZy5/jvoP+BP+ajLIPqZuIPQfo5cFmkhCzsTK92xH8TdQxjUt774woQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: JH0PR06MB6655
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Received: by 2002:a05:6871:798c:b0:1fa:de51:f90b with SMTP id
+ pb12-20020a056871798c00b001fade51f90bmr8315757oac.11.1702432707268; Tue, 12
+ Dec 2023 17:58:27 -0800 (PST)
+Date:   Tue, 12 Dec 2023 17:58:27 -0800
+In-Reply-To: <000000000000169326060971d07a@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000c5542e060c5a80fc@google.com>
+Subject: Re: [syzbot] [btrfs?] kernel BUG in __extent_writepage_io
+From:   syzbot <syzbot+06006fc4a90bff8e8f17@syzkaller.appspotmail.com>
+To:     clm@fb.com, dsterba@suse.com, josef@toxicpanda.com,
+        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=2.3 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,RCVD_IN_SORBS_WEB,SORTED_RECIPS,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
+X-Spam-Level: **
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+syzbot has found a reproducer for the following issue on:
 
-在 2023/12/13 9:38, Dan Schatzberg 写道:
-> [????????? schatzberg.dan@gmail.com ????????? https://aka.ms/LearnAboutSenderIdentification,????????????]
->
-> We use the constants 0 and 200 in a few places in the mm code when
-> referring to the min and max swappiness. This patch adds MIN_SWAPPINESS
-> and MAX_SWAPPINESS #defines to improve clarity. There are no functional
-> changes.
->
-> Signed-off-by: Dan Schatzberg <schatzberg.dan@gmail.com>
-> ---
->   include/linux/swap.h |  2 ++
->   mm/memcontrol.c      |  2 +-
->   mm/vmscan.c          | 10 +++++-----
->   3 files changed, 8 insertions(+), 6 deletions(-)
->
-> diff --git a/include/linux/swap.h b/include/linux/swap.h
-> index f6dd6575b905..e2ab76c25b4a 100644
-> --- a/include/linux/swap.h
-> +++ b/include/linux/swap.h
-> @@ -407,6 +407,8 @@ extern unsigned long try_to_free_pages(struct zonelist *zonelist, int order,
->
->   #define MEMCG_RECLAIM_MAY_SWAP (1 << 1)
->   #define MEMCG_RECLAIM_PROACTIVE (1 << 2)
-> +#define MIN_SWAPPINESS 0
-> +#define MAX_SWAPPINESS 200
+HEAD commit:    eaadbbaaff74 Merge tag 'fuse-fixes-6.7-rc6' of git://git.k..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=15f9a15ce80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=53ec3da1d259132f
+dashboard link: https://syzkaller.appspot.com/bug?extid=06006fc4a90bff8e8f17
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=12cc9deae80000
 
-Do MAX_SWAPPINESS apply for all swapppiness? If so, maybe better change 
-swappiness sysctl define:
-```
-sysctl.c:
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/2a3a26b045d0/disk-eaadbbaa.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/7ca3ec5e1332/vmlinux-eaadbbaa.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/c8cfd867e4c2/bzImage-eaadbbaa.xz
+mounted in repro: https://storage.googleapis.com/syzbot-assets/fafd72a5cce8/mount_0.gz
 
-{
-         .procname    = "swappiness",
-         .data        = &vm_swappiness,
-         .maxlen        = sizeof(vm_swappiness),
-         .mode        = 0644,
-         .proc_handler    = proc_dointvec_minmax,
-         .extra1        = SYSCTL_ZERO,
-         .extra2        = SYSCTL_TWO_HUNDRED,
-     },
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+06006fc4a90bff8e8f17@syzkaller.appspotmail.com
 
-```
-
-Here hard code swappiness in [0, 200], and now add a new define.
-
-And many other code hard reference 200 into max value of swappiness, like:
-
-```
-memcontrol.c:
-static int mem_cgroup_swappiness_write(struct cgroup_subsys_state *css,
-                        struct cftype *cft, u64 val)
-{
-     struct mem_cgroup *memcg = mem_cgroup_from_css(css);
-
-     if (val > 200)
-         return -EINVAL;
-
-     if (!mem_cgroup_is_root(memcg))
-         memcg->swappiness = val;
-     else
-         vm_swappiness = val;
-
-     return 0;
-}
-vmscan.c:
-
-/*
-  * From 0 .. 200.  Higher means more swappy.
-  */
-int vm_swappiness = 60;
-
-```
+assertion failed: block_start != EXTENT_MAP_HOLE, in fs/btrfs/extent_io.c:1356
+------------[ cut here ]------------
+kernel BUG at fs/btrfs/extent_io.c:1356!
+invalid opcode: 0000 [#1] PREEMPT SMP KASAN
+CPU: 0 PID: 12 Comm: kworker/u4:1 Not tainted 6.7.0-rc5-syzkaller-00030-geaadbbaaff74 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 11/10/2023
+Workqueue: writeback wb_workfn (flush-btrfs-137)
+RIP: 0010:__extent_writepage_io+0xcd5/0xd00 fs/btrfs/extent_io.c:1356
+Code: 77 07 90 0f 0b e8 fb 23 f1 fd 48 c7 c7 80 c5 ab 8b 48 c7 c6 80 d2 ab 8b 48 c7 c2 20 c5 ab 8b b9 4c 05 00 00 e8 7c 49 77 07 90 <0f> 0b e8 d4 23 f1 fd 48 8b 3c 24 e8 db 22 01 00 48 89 c7 48 c7 c6
+RSP: 0018:ffffc90000116f40 EFLAGS: 00010246
+RAX: 000000000000004e RBX: 0000000000000000 RCX: 759e2408fa89b300
+RDX: 0000000000000000 RSI: 0000000080000000 RDI: 0000000000000000
+RBP: fffffffffffffffd R08: ffffffff81713a3c R09: 1ffff92000022d3c
+R10: dffffc0000000000 R11: fffff52000022d3d R12: 0000000000007000
+R13: 0000000000007000 R14: ffffea00019cd168 R15: ffff888027a0b680
+FS:  0000000000000000(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f54a22c2723 CR3: 000000001d013000 CR4: 00000000003506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ __extent_writepage fs/btrfs/extent_io.c:1446 [inline]
+ extent_write_cache_pages fs/btrfs/extent_io.c:2108 [inline]
+ extent_writepages+0x1260/0x26a0 fs/btrfs/extent_io.c:2230
+ do_writepages+0x3a6/0x670 mm/page-writeback.c:2553
+ __writeback_single_inode+0x155/0xfc0 fs/fs-writeback.c:1625
+ writeback_sb_inodes+0x8e3/0x1220 fs/fs-writeback.c:1916
+ wb_writeback+0x44d/0xc70 fs/fs-writeback.c:2092
+ wb_do_writeback fs/fs-writeback.c:2239 [inline]
+ wb_workfn+0x400/0xfb0 fs/fs-writeback.c:2279
+ process_one_work kernel/workqueue.c:2627 [inline]
+ process_scheduled_works+0x90f/0x1420 kernel/workqueue.c:2700
+ worker_thread+0xa5f/0x1000 kernel/workqueue.c:2781
+ kthread+0x2d3/0x370 kernel/kthread.c:388
+ ret_from_fork+0x48/0x80 arch/x86/kernel/process.c:147
+ ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:242
+ </TASK>
+Modules linked in:
+---[ end trace 0000000000000000 ]---
+RIP: 0010:__extent_writepage_io+0xcd5/0xd00 fs/btrfs/extent_io.c:1356
+Code: 77 07 90 0f 0b e8 fb 23 f1 fd 48 c7 c7 80 c5 ab 8b 48 c7 c6 80 d2 ab 8b 48 c7 c2 20 c5 ab 8b b9 4c 05 00 00 e8 7c 49 77 07 90 <0f> 0b e8 d4 23 f1 fd 48 8b 3c 24 e8 db 22 01 00 48 89 c7 48 c7 c6
+RSP: 0018:ffffc90000116f40 EFLAGS: 00010246
+RAX: 000000000000004e RBX: 0000000000000000 RCX: 759e2408fa89b300
+RDX: 0000000000000000 RSI: 0000000080000000 RDI: 0000000000000000
+RBP: fffffffffffffffd R08: ffffffff81713a3c R09: 1ffff92000022d3c
+R10: dffffc0000000000 R11: fffff52000022d3d R12: 0000000000007000
+R13: 0000000000007000 R14: ffffea00019cd168 R15: ffff888027a0b680
+FS:  0000000000000000(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007fac72b5f000 CR3: 000000001d013000 CR4: 00000000003506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
 
 
->   extern unsigned long try_to_free_mem_cgroup_pages(struct mem_cgroup *memcg,
->                                                    unsigned long nr_pages,
->                                                    gfp_t gfp_mask,
-> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index 1c1061df9cd1..9748a6b88bb8 100644
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -4337,7 +4337,7 @@ static int mem_cgroup_swappiness_write(struct cgroup_subsys_state *css,
->   {
->          struct mem_cgroup *memcg = mem_cgroup_from_css(css);
->
-> -       if (val > 200)
-> +       if (val > MAX_SWAPPINESS)
->                  return -EINVAL;
->
->          if (!mem_cgroup_is_root(memcg))
-> diff --git a/mm/vmscan.c b/mm/vmscan.c
-> index 506f8220c5fe..2aa671fe938b 100644
-> --- a/mm/vmscan.c
-> +++ b/mm/vmscan.c
-> @@ -2403,7 +2403,7 @@ static void get_scan_count(struct lruvec *lruvec, struct scan_control *sc,
->          ap = swappiness * (total_cost + 1);
->          ap /= anon_cost + 1;
->
-> -       fp = (200 - swappiness) * (total_cost + 1);
-> +       fp = (MAX_SWAPPINESS - swappiness) * (total_cost + 1);
->          fp /= file_cost + 1;
->
->          fraction[0] = ap;
-> @@ -4400,7 +4400,7 @@ static int get_type_to_scan(struct lruvec *lruvec, int swappiness, int *tier_idx
->   {
->          int type, tier;
->          struct ctrl_pos sp, pv;
-> -       int gain[ANON_AND_FILE] = { swappiness, 200 - swappiness };
-> +       int gain[ANON_AND_FILE] = { swappiness, MAX_SWAPPINESS - swappiness };
->
->          /*
->           * Compare the first tier of anon with that of file to determine which
-> @@ -4444,7 +4444,7 @@ static int isolate_folios(struct lruvec *lruvec, struct scan_control *sc, int sw
->                  type = LRU_GEN_ANON;
->          else if (swappiness == 1)
->                  type = LRU_GEN_FILE;
-> -       else if (swappiness == 200)
-> +       else if (swappiness == MAX_SWAPPINESS)
->                  type = LRU_GEN_ANON;
->          else
->                  type = get_type_to_scan(lruvec, swappiness, &tier);
-> @@ -5368,9 +5368,9 @@ static int run_cmd(char cmd, int memcg_id, int nid, unsigned long seq,
->
->          lruvec = get_lruvec(memcg, nid);
->
-> -       if (swappiness < 0)
-> +       if (swappiness < MIN_SWAPPINESS)
->                  swappiness = get_swappiness(lruvec, sc);
-> -       else if (swappiness > 200)
-> +       else if (swappiness > MAX_SWAPPINESS)
->                  goto done;
->
->          switch (cmd) {
-> --
-> 2.34.1
->
+---
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
