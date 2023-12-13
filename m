@@ -2,128 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EA24F8107F7
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 03:09:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E2EF28107F3
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 03:06:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378246AbjLMCJ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 21:09:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40184 "EHLO
+        id S1378243AbjLMCGK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 21:06:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36852 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232721AbjLMCJ1 (ORCPT
+        with ESMTP id S235189AbjLMCGI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 21:09:27 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7179AA;
-        Tue, 12 Dec 2023 18:09:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1702433373; x=1733969373;
-  h=message-id:date:mime-version:cc:subject:to:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=MNAA322q9vhdRNtkpV3N3RglXmc+rKBeo/qJoA/OlJw=;
-  b=gwm6+En17XvjuXVfFjRkrYbSBNOcYT6xFYUMRpxwqpXF8gRFh+B1cjmc
-   Qs4ksM2Pw+ji66HNoKGc/Tsi1KhkkRU5cXjHMLCMwMeyteuqe/3rXGtV1
-   InAth1EVw3M+oLx/0PJom1s6YCMpUmsfu+qJlBF293KIKQoThzIwbw7Z9
-   DHpDNmgF0PDyGOmvr3Zg5bBc8ZSxgp2ErDo3VEu9xxX0KSYKm3Shn0Tic
-   OXqfAXWX075EUejGKoxU0WLcbpEB7hSBsEhq62jxu/0Ixm2MVnXYkK7yV
-   0DBeQK28gVqerRycOurhw+YhPdLkkxCXV1tEBsdWCt9PoXZs+OAqDCegx
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10922"; a="392078357"
-X-IronPort-AV: E=Sophos;i="6.04,271,1695711600"; 
-   d="scan'208";a="392078357"
-Received: from orviesa001.jf.intel.com ([10.64.159.141])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Dec 2023 18:09:33 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.04,271,1695711600"; 
-   d="scan'208";a="21756369"
-Received: from allen-box.sh.intel.com (HELO [10.239.159.127]) ([10.239.159.127])
-  by orviesa001.jf.intel.com with ESMTP; 12 Dec 2023 18:09:29 -0800
-Message-ID: <276597d0-9947-44f1-a6b9-16d245394b22@linux.intel.com>
-Date:   Wed, 13 Dec 2023 10:04:49 +0800
+        Tue, 12 Dec 2023 21:06:08 -0500
+Received: from mail-qt1-x82a.google.com (mail-qt1-x82a.google.com [IPv6:2607:f8b0:4864:20::82a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C4B7CE
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 18:06:14 -0800 (PST)
+Received: by mail-qt1-x82a.google.com with SMTP id d75a77b69052e-42598c2b0b7so93731cf.1
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 18:06:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1702433173; x=1703037973; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=8w1+yfAr2SPzVB4dpYvx6YaKAjN+fhfuOqchPg5V3ac=;
+        b=G/PYG8LCOvc9QQHCceMnLZDqLs9MpWjTZ0PC84E1dM01lSAK2XCB/tQ1lj8oyXfVjv
+         60R42JaFPPlFKDwwS3Y2DrfxHgE651pHMIyFTSonTgfXjdp9MRgIpIzq8HIGru3Hohv6
+         OgiTzefahr7uAlaUARWiOYJx/IxtibKhg9C1CsSV2QzMVCVU+KtW9EAjKfJWDyjI5CFU
+         5DzUxwTluj3PHQsCuisrfyD71XFgdKSUq9gaFmNi0V4ZwBan5HIburBCx7VkdjnZ/TnA
+         5fQQd8F2lwOAZLPAMWi5nqst9wT8SLlPzhAV14Jga3v0rUVqKG62yHnGjMxhM63QX4Yl
+         dXHA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702433173; x=1703037973;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=8w1+yfAr2SPzVB4dpYvx6YaKAjN+fhfuOqchPg5V3ac=;
+        b=WuPJfeKw4FRIAEWP8KOU0oHS/DJEIft0BPM3Kl2rCbzF06BuUORbhvsSBgDZNkRLaZ
+         dfFN/hHEPMPPBjylnXVBMI3D6UzWUTDYzyRa1wrx7QgDFevh72HXNmyu1jUqnD/Ig9ZE
+         QI/s2QMCjVdqUXt8BDwHQFq0ct5DjfVh5zj4Eb93M66DMzPeg5PYre5FCqUfPH3CrN8b
+         mSzcsj+YdSFEKxXywrB1wKOkLlMJgEbf+D+jLnFsN9hf1nxL1l3HiYckXjV4K0kmawjQ
+         ztOuyziWCq82bjBjYCUissqjQipZXMyyhi0Sy1ztjq8/j0Si29+XPFGK847v8SWdJboo
+         vsKg==
+X-Gm-Message-State: AOJu0YzBoOtIJ61yZ5QDGV+mbbZr0XHnAD/HTDYy02pBRWbdzPHZkWxF
+        8xmsMJ0uCzXgFgpO9WbHfti3nlTVTGzENJ4+Pgbutg==
+X-Google-Smtp-Source: AGHT+IG3y4UdjpV0X9gFbF4eOb8+BdZkR190RHWRGUNro5VSrV3slPFDuCaeH/KRi7c4WLSMSpvCPYZ95Vd4vDp2clc=
+X-Received: by 2002:a05:622a:303:b0:41e:36cd:4284 with SMTP id
+ q3-20020a05622a030300b0041e36cd4284mr1355674qtw.6.1702433173482; Tue, 12 Dec
+ 2023 18:06:13 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Cc:     baolu.lu@linux.intel.com, Kevin Tian <kevin.tian@intel.com>,
-        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Nicolin Chen <nicolinc@nvidia.com>,
-        Yi Liu <yi.l.liu@intel.com>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        iommu@lists.linux.dev, linux-kselftest@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 3/6] iommufd: Initializing and releasing IO page fault
- data
-Content-Language: en-US
-To:     Jason Gunthorpe <jgg@ziepe.ca>,
-        Joel Granados <j.granados@samsung.com>
-References: <20231026024930.382898-1-baolu.lu@linux.intel.com>
- <20231026024930.382898-4-baolu.lu@linux.intel.com>
- <CGME20231212131010eucas1p104d069ac6d6c97fce4987caa62c996ee@eucas1p1.samsung.com>
- <20231212131008.k6s5xwjgolp6geps@localhost>
- <20231212141208.GA3013885@ziepe.ca>
-From:   Baolu Lu <baolu.lu@linux.intel.com>
-In-Reply-To: <20231212141208.GA3013885@ziepe.ca>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20231213013807.897742-1-schatzberg.dan@gmail.com> <20231213013807.897742-3-schatzberg.dan@gmail.com>
+In-Reply-To: <20231213013807.897742-3-schatzberg.dan@gmail.com>
+From:   Yu Zhao <yuzhao@google.com>
+Date:   Tue, 12 Dec 2023 19:05:36 -0700
+Message-ID: <CAOUHufarKA5-NGErYzvqeKKJze1XSUcMx4ntBHx2jmAUeqAioA@mail.gmail.com>
+Subject: Re: [PATCH V4 2/2] mm: add swapiness= arg to memory.reclaim
+To:     Dan Schatzberg <schatzberg.dan@gmail.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Yosry Ahmed <yosryahmed@google.com>, Huan Yang <link@vivo.com>,
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        linux-mm@kvack.org, Tejun Heo <tj@kernel.org>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Michal Hocko <mhocko@kernel.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <muchun.song@linux.dev>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        David Hildenbrand <david@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        Yue Zhao <findns94@gmail.com>, Hugh Dickins <hughd@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/12/23 10:12 PM, Jason Gunthorpe wrote:
-> On Tue, Dec 12, 2023 at 02:10:08PM +0100, Joel Granados wrote:
-> 
->>> diff --git a/drivers/iommu/iommufd/device.c b/drivers/iommu/iommufd/device.c
->>> index 645ab5d290fe..0a8e03d5e7c5 100644
->>> --- a/drivers/iommu/iommufd/device.c
->>> +++ b/drivers/iommu/iommufd/device.c
->>> @@ -456,6 +456,16 @@ int iommufd_hw_pagetable_attach(struct iommufd_hw_pagetable *hwpt,
->>>   	if (rc)
->>>   		goto err_unlock;
->>>   
->>> +	if (hwpt->fault) {
->>> +		void *curr;
->>> +
->>> +		curr = iopf_pasid_cookie_set(idev->dev, IOMMU_NO_PASID, idev);
->> I'm hitting an error here when I try to attach to a hwpt that I created
->> previously with the `IOMMU_HWPT_ALLOC_IOPF_CAPABLE` flag.
->>
->> I get an -ENODEV from iopf_pasid_cookie_set which is triggered by
->> dev->iommu->fault_param being 0x0.
->>
->> I looked around and I see that the fault param gets set in
->> iopf_queue_add_device which is called from iommu_dev_enable_feature
->> only. Furthermore iommu_dev_enable_feature is only called in idxd and
->> uacce drivers.
->>
->> Questions:
->> 1. Should iopf_queue_add_device get called from the
->>     IOMMU_HWPT_ALLOC_IOPF_CAPABLE ioctl call? This make sense to me as
->>     this is where the device and the IOPF are related from user space.
-> It probably needs to call the set feature thing in the short term.
-> 
-> In the medium term I would like the drivers to manage the iopf based
-> on domain attachment not explicit feature asks
+On Tue, Dec 12, 2023 at 6:39=E2=80=AFPM Dan Schatzberg <schatzberg.dan@gmai=
+l.com> wrote:
+>
+> Allow proactive reclaimers to submit an additional swappiness=3D<val>
+> argument to memory.reclaim. This overrides the global or per-memcg
+> swappiness setting for that reclaim attempt.
+>
+> For example:
+>
+> echo "2M swappiness=3D0" > /sys/fs/cgroup/memory.reclaim
+>
+> will perform reclaim on the rootcg with a swappiness setting of 0 (no
+> swap) regardless of the vm.swappiness sysctl setting.
+>
+> Signed-off-by: Dan Schatzberg <schatzberg.dan@gmail.com>
 
-Yes, it's the same as my plan.
+NAK.
 
-> 
->> 2. This is not intended to work only with idxd and uacce. right?
-> It should work everywhere, I suspect Intel Team didn't hit this
-> because they are testing IDXD SIOV?
-
-Yes.
-
-> Can you guys also test it as a PF
-> assignment?
-
-For PF assignment, probably the driver (vfio-pci) needs to enable iopf.
-
-Best regards,
-baolu
+Please initialize new variables properly and test code changes
+thoroughly before submission.
