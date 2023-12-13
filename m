@@ -2,56 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 28BF18118CC
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 17:11:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FE2F8118D1
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 17:12:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232892AbjLMQLl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 11:11:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55272 "EHLO
+        id S233259AbjLMQMa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 11:12:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60924 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233113AbjLMQLj (ORCPT
+        with ESMTP id S229531AbjLMQM3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 11:11:39 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6AC391
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 08:11:45 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EF873C433C8;
-        Wed, 13 Dec 2023 16:11:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1702483905;
-        bh=81xPCJRD7sl164kIgTp1GjUGAC/Vhq0axvltDwrUq6E=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=KzF+ocBP2mjoUW7K6RrQnV1IecVV9GUl7VbnGppZXWa9pFdZ/9oqsPkdpKaNjNG9F
-         sDnv+khOdzHKBkx/qW3goyvSyP+kSr2TFJwb6+iFJXAkSpwU4uhLmLpcBzE4uFJwxs
-         Ldbqq1qKObWZbW5OpTFV7fwuAGj17EBuzWiJknnlhNBUXz51OZbc7Ri/SgKhuV1OQR
-         miGZlwfVq5+IWZ9Y3moitNR97Hkv5ewYYM5W4X7ni3pXx03hFk+fS23T6G3q/48gt/
-         rb5SOoCl6uGLokBwxdad36Qzv4ikjEhSaEjLuQ4crLA6Saiyc13X69hGOPfx+Tb3KT
-         HAY+glTMvRqpw==
-Date:   Wed, 13 Dec 2023 16:11:40 +0000
-From:   Conor Dooley <conor@kernel.org>
-To:     David Lechner <dlechner@baylibre.com>
-Cc:     linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Michael Hennerich <michael.hennerich@analog.com>,
-        Nuno =?iso-8859-1?Q?S=E1?= <nuno.sa@analog.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 2/3] dt-bindings: iio: adc: Add binding for AD7380 ADCs
-Message-ID: <20231213-harmless-aspect-b7cee2d0173f@spud>
-References: <20231213-ad7380-mainline-v2-0-cd32150d84a3@baylibre.com>
- <20231213-ad7380-mainline-v2-2-cd32150d84a3@baylibre.com>
- <20231213-grooving-bulk-58fcfc20be11@spud>
+        Wed, 13 Dec 2023 11:12:29 -0500
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84ACACF;
+        Wed, 13 Dec 2023 08:12:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=1vrOiSisAVsmWgexef/gsX29GgUfsLmdvZF3qsbjTJ0=; b=qbB4sQwpo0TQONpnefMuazB4i7
+        4omduYqjHcOb0sF5jrGtudYXP6lqdTlTm1ubaC+T5C5sLiEGWJVFwp0kE6DUU+/RrYWd6aLX7f8dE
+        1O46o/WuMevXvWn67r0tXeMUAF7/rXTjsuKG8JwMzj7uWMace9o6b+Kf13aiMpvDKxnLLis8qxYyn
+        h7ZBLKU+RvJfcrsmN1fShqob074w4Ln4AnXEwjCwRVLLlaRA7phdFchdVBY0EYkklkyy07SKiDV4v
+        wX/F1ItJo2j9xmvYO/txDPXPZiVpUxONjeEIR1kfJ49zXtm1dnL9wuLuCcZSTCVfiE+lx0SKqlgfd
+        9sD23HeA==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:36092)
+        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.96)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1rDRqS-0000ES-04;
+        Wed, 13 Dec 2023 16:12:24 +0000
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1rDRqS-0001du-DO; Wed, 13 Dec 2023 16:12:24 +0000
+Date:   Wed, 13 Dec 2023 16:12:24 +0000
+From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
+To:     Christian Marangi <ansuelsmth@gmail.com>
+Cc:     Florian Fainelli <florian.fainelli@broadcom.com>,
+        Broadcom internal kernel review list 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        David Epping <david.epping@missinglinkelectronics.com>,
+        Harini Katakam <harini.katakam@amd.com>,
+        Simon Horman <horms@kernel.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [net-next PATCH v6 1/3] net: phy: extend PHY package API to
+ support multiple global address
+Message-ID: <ZXnX6GuooQQwu8Bs@shell.armlinux.org.uk>
+References: <20231213105730.1731-1-ansuelsmth@gmail.com>
+ <ZXnRlERUGhwxKJxi@shell.armlinux.org.uk>
+ <6579d2cc.050a0220.e6ea.d8cf@mx.google.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="qvGfKPR0cMEVlYu+"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231213-grooving-bulk-58fcfc20be11@spud>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+In-Reply-To: <6579d2cc.050a0220.e6ea.d8cf@mx.google.com>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -59,108 +74,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Dec 13, 2023 at 04:50:33PM +0100, Christian Marangi wrote:
+> On Wed, Dec 13, 2023 at 03:45:24PM +0000, Russell King (Oracle) wrote:
+> > On Wed, Dec 13, 2023 at 11:57:28AM +0100, Christian Marangi wrote:
+> > > -static inline int phy_package_read(struct phy_device *phydev, u32 regnum)
+> > > +static inline int phy_package_read(struct phy_device *phydev,
+> > > +				   unsigned int addr_offset, u32 regnum)
+> > >  {
+> > >  	struct phy_package_shared *shared = phydev->shared;
+> > > +	int addr = shared->base_addr + addr_offset;
+> > >  
+> > > -	if (!shared)
+> > > +	if (addr >= PHY_MAX_ADDR)
+> > >  		return -EIO;
+> > 
+> > If we're going to check the address, I think we should check it
+> > properly, which means also checking whether it's become negative.
+> > 
+> > Alternatively, we could consider making "addr" and "base_addr"
+> > unsigned types, since they should never be negative. However,
+> > that probably should be done as a separate patch before this one.
+> >
+> 
+> Maybe I'm confused but isn't already like that?
+> On phy_package_join base_addr is already checked if it's negative (and
+> rejected)
+> 
+> addr_offset is unsigned so it can't be negative.
 
---qvGfKPR0cMEVlYu+
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+True, but with base_addr being an int, addr_offset being unsigned int,
+and addr being an int, if addr_offset is a very large number,
+2-complement arithmetic will have the effect of treating it as a
+negative number.
 
-On Wed, Dec 13, 2023 at 04:10:40PM +0000, Conor Dooley wrote:
-> On Wed, Dec 13, 2023 at 05:21:19AM -0600, David Lechner wrote:
-> > This adds a binding specification for the Analog Devices Inc. AD7380
-> > family of ADCs.
-> >=20
-> > Signed-off-by: David Lechner <dlechner@baylibre.com>
-> > ---
-> >=20
-> > v2 changes:
-> > - Added maxItems to reg property
-> > - Replaced adi,sdo-mode property with spi-rx-bus-channels
-> > - Made spi-rx-bus-channels property optional with default value of 1
-> >     (this made the if: check more complex)
-> > - Changed example to use gpio for interrupt
-> >=20
-> >  .../devicetree/bindings/iio/adc/adi,ad7380.yaml    | 107 +++++++++++++=
-++++++++
-> >  MAINTAINERS                                        |   9 ++
-> >  2 files changed, 116 insertions(+)
-> >=20
-> > diff --git a/Documentation/devicetree/bindings/iio/adc/adi,ad7380.yaml =
-b/Documentation/devicetree/bindings/iio/adc/adi,ad7380.yaml
-> > new file mode 100644
-> > index 000000000000..43d58c52f7dd
-> > --- /dev/null
-> > +++ b/Documentation/devicetree/bindings/iio/adc/adi,ad7380.yaml
-> > @@ -0,0 +1,107 @@
-> > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> > +%YAML 1.2
-> > +---
-> > +$id: http://devicetree.org/schemas/iio/adc/adi,ad7380.yaml#
-> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > +
-> > +title: Analog Devices Simultaneous Sampling Analog to Digital Converte=
-rs
-> > +
-> > +maintainers:
-> > +  - Michael Hennerich <Michael.Hennerich@analog.com>
-> > +  - Nuno S=E1 <nuno.sa@analog.com>
-> > +
-> > +description: |
-> > +  * https://www.analog.com/en/products/ad7380.html
-> > +  * https://www.analog.com/en/products/ad7381.html
-> > +  * https://www.analog.com/en/products/ad7383.html
-> > +  * https://www.analog.com/en/products/ad7384.html
-> > +
-> > +$ref: /schemas/spi/spi-peripheral-props.yaml#
-> > +
-> > +properties:
-> > +  compatible:
-> > +    enum:
-> > +      - adi,ad7380
-> > +      - adi,ad7381
-> > +      - adi,ad7383
-> > +      - adi,ad7384
-> > +
-> > +  reg:
-> > +    maxItems: 1
-> > +
-> > +  spi-max-frequency:
-> > +    maximum: 80000000
-> > +  spi-cpol: true
-> > +  spi-cpha: true
-> > +
-> > +  spi-rx-bus-channels:
->=20
-> This is now being framed as a standard property, so I think it should be
-> in spi-peripheral-props, no? Granted, you'd need a rather more
-> generalised explanation of the property in that case.
->=20
-> > +    description:
-> > +      In 1-wire mode, the SDOA pin acts as the sole data line and the =
-SDOB/ALERT
-> > +      pin acts as the ALERT interrupt signal. In 2-wire mode, data for=
- input A
-> > +      is read from SDOA and data for input B is read from SDOB/ALERT (=
-and the
-> > +      ALERT interrupt signal is not available).
-> > +    enum: [1, 2]
->=20
-> Jonathan also mentioned specifying that this defaults to 1-wire. I
-> didn't see a response or that implemented. Did you miss that comment
-> from him?
+So, base_addr=0, addr_offset=~0 results in addr being -1.
 
-Ah, I read the patchset backwards, d'oh. I see you did in fact do both
-of these things. Apologies!
+If "addr" were unsigned int, and as we've already established,
+"base_addr" can't be less than zero because of the checks already done
+(thus it can also be unsigned int) then we'll end up with the checks
+you're adding automatically doing the right thing, because...
 
---qvGfKPR0cMEVlYu+
-Content-Type: application/pgp-signature; name="signature.asc"
+base_addr=0, addr_offset=~0 results in addr being ~0 (a large
+positive unsigned number).
 
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZXnXvAAKCRB4tDGHoIJi
-0gCaAP99Nw069HRWHRkR+FtYfcruPmekFSXXFB33zvwWkx5HwAEAgxNJu+bcPA7w
-U/bdib1bIPbUfCwaFj1cLZ9bDIzd2A8=
-=0aeo
------END PGP SIGNATURE-----
-
---qvGfKPR0cMEVlYu+--
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
