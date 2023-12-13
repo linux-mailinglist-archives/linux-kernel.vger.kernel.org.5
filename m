@@ -2,85 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A2F7810671
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 01:27:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 179B8810673
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 01:28:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232632AbjLMA1M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 19:27:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33284 "EHLO
+        id S232690AbjLMA2I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 19:28:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60074 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232505AbjLMA1L (ORCPT
+        with ESMTP id S232505AbjLMA2G (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 19:27:11 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A769192
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 16:27:17 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1AF93C433C7;
-        Wed, 13 Dec 2023 00:27:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1702427237;
-        bh=/H2khaMF8vfAJM4ApUDC7NOWw3ck3r3U1TwZFrVK9ms=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=KcSt3eln+BKAmUyTk71p1Gk6qbrqaamO+PJwTOuVkOnIffWJDeE62pLLyzF5/FhUi
-         fsutcvPuqwu5Hqg24mMh/3PIZYYx/IcaaIR860xHfY7BFU7mFYc7gybnZtfp2YbZ8M
-         liIcHj/63BIVsyCESyZK0XofpkNuWXua+5mpfinuRr958yMdB312N89rNSABjwiTe7
-         aHk3t5Rj8NmqYNVC102m/ereHCjTixuse6KsbFC4NXlCRTVBCqpAmKLuKhjmW29+qD
-         6Uzdo4WaPrsBYUaLLgtUA49Rbm4bxhZMyB4G2NTjwu/0Dv6NfrW0w90wfYXCcb/NFP
-         NdkHfVNSrK+yg==
-Date:   Tue, 12 Dec 2023 16:27:15 -0800
-From:   Josh Poimboeuf <jpoimboe@kernel.org>
-To:     Dimitri John Ledkov <dimitri.ledkov@canonical.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] objtool: Make objtool check actually fatal upon fatal
- errors
-Message-ID: <20231213002715.w5cqo5ataaevivop@treble>
-References: <20231212185339.1562967-1-dimitri.ledkov@canonical.com>
- <20231212203031.uudk57xhegi5yziz@treble>
- <CADWks+aDuPcwmOCSmnQ4T-mKZ-N55-L+cS1ww2huEAXQnc_q8Q@mail.gmail.com>
+        Tue, 12 Dec 2023 19:28:06 -0500
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFC58AD;
+        Tue, 12 Dec 2023 16:28:12 -0800 (PST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 567BA1FD04;
+        Wed, 13 Dec 2023 00:28:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1702427291; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=nk1IyI/Qw8q4KfaqeA0p6yZTB4fXE68g6N6s8m6YJss=;
+        b=sbO4uE9gS9knOM9eF/X/gHFAtd5CarW7KjoagfnTy66elmcq1gl8I4xLP+RiVfMnApK9B0
+        vBgjAsHAg/GJSL2cgTJXxB3vR5ZBbBvnYz/AOcRhWFcZwR7qAYpFnMg9s4Ph3y6fSpcxjk
+        vQWmMNuOPgPl7jqpcWeYASpxB8eqSQI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1702427291;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=nk1IyI/Qw8q4KfaqeA0p6yZTB4fXE68g6N6s8m6YJss=;
+        b=wrw+HDkOAM35jSetsfybXlJ0VUlo+g3B8JEf53EawQqIf8Jkq8jFf+OJRpWTQhRCIawUa6
+        S3ZGW6grbkruPlDg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1702427291; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=nk1IyI/Qw8q4KfaqeA0p6yZTB4fXE68g6N6s8m6YJss=;
+        b=sbO4uE9gS9knOM9eF/X/gHFAtd5CarW7KjoagfnTy66elmcq1gl8I4xLP+RiVfMnApK9B0
+        vBgjAsHAg/GJSL2cgTJXxB3vR5ZBbBvnYz/AOcRhWFcZwR7qAYpFnMg9s4Ph3y6fSpcxjk
+        vQWmMNuOPgPl7jqpcWeYASpxB8eqSQI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1702427291;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=nk1IyI/Qw8q4KfaqeA0p6yZTB4fXE68g6N6s8m6YJss=;
+        b=wrw+HDkOAM35jSetsfybXlJ0VUlo+g3B8JEf53EawQqIf8Jkq8jFf+OJRpWTQhRCIawUa6
+        S3ZGW6grbkruPlDg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 19DDF137E8;
+        Wed, 13 Dec 2023 00:28:07 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+        by imap1.dmz-prg2.suse.org with ESMTPSA
+        id 2nf1LZf6eGXuPAAAD6G6ig
+        (envelope-from <neilb@suse.de>); Wed, 13 Dec 2023 00:28:07 +0000
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CADWks+aDuPcwmOCSmnQ4T-mKZ-N55-L+cS1ww2huEAXQnc_q8Q@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+From:   "NeilBrown" <neilb@suse.de>
+To:     "Al Viro" <viro@zeniv.linux.org.uk>
+Cc:     "Chuck Lever" <chuck.lever@oracle.com>,
+        "Christian Brauner" <brauner@kernel.org>,
+        "Jens Axboe" <axboe@kernel.dk>, "Oleg Nesterov" <oleg@redhat.com>,
+        "Jeff Layton" <jlayton@kernel.org>, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-nfs@vger.kernel.org
+Subject: Re: [PATCH 1/3] nfsd: use __fput_sync() to avoid delayed closing of files.
+In-reply-to: <20231211232135.GF1674809@ZenIV>
+References: <20231208033006.5546-1-neilb@suse.de>,
+ <20231208033006.5546-2-neilb@suse.de>,
+ <ZXMv4psmTWw4mlCd@tissot.1015granger.net>,
+ <170224845504.12910.16483736613606611138@noble.neil.brown.name>,
+ <20231211191117.GD1674809@ZenIV>,
+ <170233343177.12910.2316815312951521227@noble.neil.brown.name>,
+ <20231211231330.GE1674809@ZenIV>, <20231211232135.GF1674809@ZenIV>
+Date:   Wed, 13 Dec 2023 11:28:04 +1100
+Message-id: <170242728484.12910.12134295135043081177@noble.neil.brown.name>
+X-Spam-Level: 
+X-Spam-Score: -4.01
+X-Spam-Level: 
+X-Rspamd-Server: rspamd1
+X-Rspamd-Queue-Id: 567BA1FD04
+X-Spam-Flag: NO
+Authentication-Results: smtp-out2.suse.de;
+        dkim=pass header.d=suse.de header.s=susede2_rsa header.b=sbO4uE9g;
+        dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=wrw+HDkO;
+        dmarc=pass (policy=none) header.from=suse.de;
+        spf=softfail (smtp-out2.suse.de: 2a07:de40:b281:104:10:150:64:97 is neither permitted nor denied by domain of neilb@suse.de) smtp.mailfrom=neilb@suse.de
+X-Spamd-Result: default: False [-11.81 / 50.00];
+         ARC_NA(0.00)[];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+         SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+         FROM_HAS_DN(0.00)[];
+         TO_DN_SOME(0.00)[];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         NEURAL_HAM_LONG(-1.00)[-1.000];
+         MIME_GOOD(-0.10)[text/plain];
+         R_SPF_SOFTFAIL(0.00)[~all:c];
+         DNSWL_BLOCKED(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+         RCVD_COUNT_THREE(0.00)[3];
+         DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+         DKIM_TRACE(0.00)[suse.de:+];
+         DMARC_POLICY_ALLOW(0.00)[suse.de,none];
+         RCPT_COUNT_SEVEN(0.00)[9];
+         WHITELIST_DMARC(-7.00)[suse.de:D:+];
+         DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:dkim];
+         DMARC_POLICY_ALLOW_WITH_FAILURES(-0.50)[];
+         MX_GOOD(-0.01)[];
+         FUZZY_BLOCKED(0.00)[rspamd.com];
+         FROM_EQ_ENVFROM(0.00)[];
+         MIME_TRACE(0.00)[0:+];
+         RCVD_TLS_ALL(0.00)[];
+         BAYES_HAM(-3.00)[100.00%]
+X-Spam-Score: -11.81
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 12, 2023 at 08:39:30PM +0000, Dimitri John Ledkov wrote:
-> Well, I'm hoping to add --error option next, and yeah, make warnings
-> fatal. Or for example at least make the retpoline, sls, rethumb ones
-> to be fatal - because i found myself in a very surprising situation
-> where retpoline enabled build of kernel, had non-retpoline paths
-> remaining and not otherwise silenced as safe.
+On Tue, 12 Dec 2023, Al Viro wrote:
+> On Mon, Dec 11, 2023 at 11:13:30PM +0000, Al Viro wrote:
 > 
-> Maybe I should finish that second patch and make it available as a
-> config option.
+> > dentry_kill() means ->d_release(), ->d_iput() and anything final iput()
+> > could do.  Including e.g. anything that might be done by afs_silly_iput(),
+> > with its "send REMOVE to server, wait for completion".  No, that's not
+> > a deadlock per se, but it can stall you a bit more than you would
+> > probably consider tolerable...  Sure, you could argue that AFS ought to
+> > make that thing asynchronous, but...
+> > 
+> > Anyway, it won't be "safe to use in most contexts".  ->mmap_lock alone
+> > is enough for that, and that's just the one I remember to have given
+> > us a lot of headache.  And that's without bringing the "nfsd won't
+> > touch those files" cases - make it generally accessible and you get
+> > to audit all locks that might be taken when we close a socket, etc.
 > 
-> At least right now, with Ubuntu Noble (development series) and
-> v6.7-rc4 everything is squeaky clean to enable CONFIG_OBJTOOL_WERROR=y
-> and make all warnings, fatal.
+> PS: put it that way - I can buy "nfsd is doing that only to regular
+> files and not on an arbitrary filesystem, at that; having the thread
+> wait on that sucker is not going to cause too much trouble"; I do *not*
+> buy turning it into a thing usable outside of a very narrow set of
+> circumstances.
 > 
-> Also i think having it as a config option will result in various
-> automation tools able to flip it on, and submit bug reports when
-> something somewhere regresses.
 
-Right, the warnings should never be ignored.
+Can you say more about "not on an arbitrary filesystem" ?
+I guess you means that procfs and/or sysfs might be problematic as may
+similar virtual filesystems (nfsd maybe).
 
-I agree we need CONFIG_OBJTOOL_WERROR.  Problem is, upstream supports a
-lot more than just Ubuntu configs, and there are several outstanding
-warnings, reported by both bots and humans.
+Could we encode some of this in the comment for __fput_sync ??
 
-Fixing them is on my TODO list, it's just that other things are taking
-priority.
+/**
+ * __fput_sync : drop reference to a file synchronously
+ * @f: file to drop
+ *
+ * Drop a reference on a file and do most cleanup work before returning.
+ *
+ * Due the the wide use of files in the design of Linux, dropping the
+ * final reference to a file can result in dropping the final reference
+ * to any of a large variety of other objects.  Dropping those final
+ * references can result in nearly arbitrary work.  It should be assumed
+ * that, unless prior checks or actions confirm otherwise, calling
+ * __fput_sync() might:
+ * - allocate memory
+ * - perform synchronous IO
+ * - wait for a remote service (for networked filesystems)
+ * - take ->i_rwsem and other related VFS and filesystem locks
+ * - take ->s_umount (if file is on a MNT_INTERNAL filesystem)
+ * - take locks in a device driver if the file is CHR, BLK or SOCK
+ *
+ * If the caller cannot be confident that none of these will cause a
+ * problem, it should use fput() instead.
+ *
+ * Note that the final unmount of a lazy-unmounted non-MNT_INTERNAL
+ * filesystem will always be handled asynchronously.  Individual drivers
+ * might also leave some clean up to asynchronous threads.
+ */
 
-If we introduce CONFIG_OBJTOOL_WERROR now, build bots will start
-reporting build failures and people will start complaining more loudly.
-Without more help I'm lacking the bandwidth to stay on top of that.
-
--- 
-Josh
+Thanks,
+NeilBrown
