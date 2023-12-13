@@ -2,133 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AF33B810E67
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 11:26:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CF6F810E6E
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 11:28:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235336AbjLMK0S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 05:26:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39388 "EHLO
+        id S233151AbjLMK2Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 05:28:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55946 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235342AbjLMK0Q (ORCPT
+        with ESMTP id S231863AbjLMK2X (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 05:26:16 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F6A3DB;
-        Wed, 13 Dec 2023 02:26:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1702463182; x=1733999182;
-  h=date:from:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=1tYxh5KDFW8jW7XIdLhEhe4VnSkz8vV7KmPG573q+vc=;
-  b=n2Kuf9WkYzq/SyPgzCXoKmlyZeOueYBPZsyGkzlldf3rXy4Ybq7EQUP2
-   N1nFINaUQf2214ZoL3E01uM56Ga1HfH+ESLQRkUR+uRW1amUNwjm80bg9
-   S8q4QXucub4QbXtWL9QIZCpAeV43xT/wxhgpgKcZA8cW1qPS3eLsA4irg
-   otCTRZ8LO9ZWYZyzNMJvDFjb2Sr+iS2kIzQXbCCNYYKTUghfdK8PQtdGE
-   FyQkUB9Cp9Rhq3Xs6kZxHA5fpUJbT1IenHz00SA+mfVdJz1uG7m1/pCpN
-   n1Gmv9B9XpRLMMy5PynzdqwlR5Ilv+VIzBOMUzn9UBqfAHSF5xeyXzyXG
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10922"; a="16497467"
-X-IronPort-AV: E=Sophos;i="6.04,272,1695711600"; 
-   d="scan'208";a="16497467"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Dec 2023 02:26:22 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10922"; a="897276991"
-X-IronPort-AV: E=Sophos;i="6.04,272,1695711600"; 
-   d="scan'208";a="897276991"
-Received: from stetter-mobl1.ger.corp.intel.com ([10.252.50.95])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Dec 2023 02:26:17 -0800
-Date:   Wed, 13 Dec 2023 12:26:16 +0200 (EET)
-From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
-To:     Lino Sanfilippo <l.sanfilippo@kunbus.com>
-cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        u.kleine-koenig@pengutronix.de, shawnguo@kernel.org,
-        s.hauer@pengutronix.de, mcoquelin.stm32@gmail.com,
-        alexandre.torgue@foss.st.com, cniedermaier@dh-electronics.com,
-        hugo@hugovil.com, LKML <linux-kernel@vger.kernel.org>,
-        linux-serial <linux-serial@vger.kernel.org>,
-        LinoSanfilippo@gmx.de, Lukas Wunner <lukas@wunner.de>,
-        p.rosenberger@kunbus.com, stable@vger.kernel.org
-Subject: Re: [PATCH v5 6/7] serial: omap: do not override settings for RS485
- support
-In-Reply-To: <20231209125836.16294-7-l.sanfilippo@kunbus.com>
-Message-ID: <e1e8d86e-2cb-db8d-77a5-dcb5cd3fbb22@linux.intel.com>
-References: <20231209125836.16294-1-l.sanfilippo@kunbus.com> <20231209125836.16294-7-l.sanfilippo@kunbus.com>
+        Wed, 13 Dec 2023 05:28:23 -0500
+Received: from mail-oo1-xc2e.google.com (mail-oo1-xc2e.google.com [IPv6:2607:f8b0:4864:20::c2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBF40AC;
+        Wed, 13 Dec 2023 02:28:29 -0800 (PST)
+Received: by mail-oo1-xc2e.google.com with SMTP id 006d021491bc7-58d956c8c38so4196094eaf.2;
+        Wed, 13 Dec 2023 02:28:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1702463308; x=1703068108; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=j52kBrLhvINeYhhXoP/zRAgkW5tGnEgR5el1VW0SsAI=;
+        b=SmdJzfFa9vTJuUM3TwLYOZeFhSHCXF5p7RXUSl/88TaP9QTwmtKnIahjwRXV9irFTC
+         ZLF6v20lnMv/roIvBWX8jC8nQ159daoLM4ZPSCxzXeEKvBlSZMBYKdJDfYhyD6m8RML2
+         y2z6AMRGVicRLYRH1l34NiSdiV6cAlATgO7K4lzkVkLdzPSw9dmtZekIJgD2PokjDCPB
+         6BWBwAMDk7gKGNThjT3fwX8EYf2f0Qr0MYC4JuiG/K9MsG14+saHMds8qEWKYqVuhK7t
+         m3Y8tjoRbqeoP4irPGBuCUgYChe6R9+2Jx/1X3Yz9RDV/n75Eb80SYQ0Cjgk3yA4QGfu
+         S83Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702463308; x=1703068108;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=j52kBrLhvINeYhhXoP/zRAgkW5tGnEgR5el1VW0SsAI=;
+        b=lzU+g4Djwkfx0bY/mdAUdvGzJX8xyyZ0b4xvmT+LplYOUnhevXnThbgxx3bJJxHLon
+         zWUfoMvK0xX2R1yOWcCKXI1OQvNNJpkGjQmMogGulH+O7kdgKDVc1iH8Xt5oT+gwBSv4
+         mWtuP480pXKEGgCYnOuYhj92OctMnEYeza3ywTA9cnRZ2VhyC/RIIruaNgIAFhmoAt1m
+         ZlKzSAtYT6H4wbL3EUQ6Wc4T3mNr2lFPpYzhUQIiWxj2WEfBFL3cv4Plvnk0nw8AcvQF
+         oPt4+SIHgfIZssO5Qwy7gxf0LS6Lfcy9M1zrvAzWPKuxAihOn4TB2hErbmQU0qR01Tki
+         +CpA==
+X-Gm-Message-State: AOJu0Yx15oQ3SQXHAqux9J5Mu8a21aLKq6qgNx73Pjthu0Ep2ymxZU/T
+        8hYei5Akzntl0WYhoxrCUCU=
+X-Google-Smtp-Source: AGHT+IGB543tj4Ly9paP+7Q7IOwL0KImlvH+5vEtMzVAk31V5C3AJXKNrb8FXKU4x/Yh/oLiqUsnFg==
+X-Received: by 2002:a05:6358:e814:b0:170:2f92:3edb with SMTP id gi20-20020a056358e81400b001702f923edbmr6722618rwb.57.1702463307935;
+        Wed, 13 Dec 2023 02:28:27 -0800 (PST)
+Received: from localhost.localdomain ([129.227.63.229])
+        by smtp.gmail.com with ESMTPSA id l12-20020a170902f68c00b001d09b006bc1sm10169300plg.21.2023.12.13.02.28.25
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 13 Dec 2023 02:28:27 -0800 (PST)
+From:   Zhenguo Yao <yaozhenguo1@gmail.com>
+To:     srinivas.pandruvada@linux.intel.com, lenb@kernel.org
+Cc:     rafael@kernel.org, viresh.kumar@linaro.org,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        yaozhenguo@jd.com, Zhenguo Yao <yaozhenguo1@gmail.com>
+Subject: [PATCH] cpufreq: intel_pstate: Add Emerald Rapids support in no-HWP mode
+Date:   Wed, 13 Dec 2023 18:28:08 +0800
+Message-Id: <20231213102808.94695-1-yaozhenguo1@gmail.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 9 Dec 2023, Lino Sanfilippo wrote:
+Users may disable HWP in firmware, in which case intel_pstate wouldn't load
+unless the CPU model is explicitly supported.
 
-> In serial_omap_rs485() RS485 support may be deactivated due to a missing
+See also the following past commits:
 
-There's no serial_omap_rs485() function. I assume/know you meant 
-serial_omap_probe_rs485() but please correct.
+commit df51f287b5de ("cpufreq: intel_pstate: Add Sapphire Rapids support
+in no-HWP mode")
+commit d8de7a44e11f ("cpufreq: intel_pstate: Add Skylake servers support")
+commit 706c5328851d ("cpufreq: intel_pstate: Add Cometlake support in
+no-HWP mode")
+commit fbdc21e9b038 ("cpufreq: intel_pstate: Add Icelake servers support in
+no-HWP mode")
+commit 71bb5c82aaae ("cpufreq: intel_pstate: Add Tigerlake support in
+no-HWP mode")
 
-> RTS GPIO. This is done by nullifying the ports rs485_supported struct.
-> After that however the serial_omap_rs485_supported struct is assigned to
-> the same structure unconditionally, which results in an unintended
-> reactivation of RS485 support.
->
-> Fix this by callling serial_omap_rs485() after the assignment of
+Signed-off-by: Zhenguo Yao <yaozhenguo1@gmail.com>
+---
+ drivers/cpufreq/intel_pstate.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-callling -> calling.
-
-Again, the function name is incorrect.
-
-> rs485_supported.
-
-Wouldn't it be better if all rs485 init/setups would occur in the same 
-place rather than being spread around? That is, move the rs485_config and 
-rs485_supported setup into serial_omap_probe_rs485()?
-
+diff --git a/drivers/cpufreq/intel_pstate.c b/drivers/cpufreq/intel_pstate.c
+index a534a1f7f1ee..39e0a2cf7236 100644
+--- a/drivers/cpufreq/intel_pstate.c
++++ b/drivers/cpufreq/intel_pstate.c
+@@ -2406,6 +2406,7 @@ static const struct x86_cpu_id intel_pstate_cpu_ids[] = {
+ 	X86_MATCH(ICELAKE_X,		core_funcs),
+ 	X86_MATCH(TIGERLAKE,		core_funcs),
+ 	X86_MATCH(SAPPHIRERAPIDS_X,	core_funcs),
++	X86_MATCH(EMERALDRAPIDS_X,      core_funcs),
+ 	{}
+ };
+ MODULE_DEVICE_TABLE(x86cpu, intel_pstate_cpu_ids);
 -- 
- i.
+2.39.3
 
-> Fixes: e2752ae3cfc9 ("serial: omap: Disallow RS-485 if rts-gpio is not specified")
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Lino Sanfilippo <l.sanfilippo@kunbus.com>
-> ---
->  drivers/tty/serial/omap-serial.c | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/tty/serial/omap-serial.c b/drivers/tty/serial/omap-serial.c
-> index ad4c1c5d0a7f..d9b2936308c4 100644
-> --- a/drivers/tty/serial/omap-serial.c
-> +++ b/drivers/tty/serial/omap-serial.c
-> @@ -1604,10 +1604,6 @@ static int serial_omap_probe(struct platform_device *pdev)
->  		dev_info(up->port.dev, "no wakeirq for uart%d\n",
->  			 up->port.line);
->  
-> -	ret = serial_omap_probe_rs485(up, &pdev->dev);
-> -	if (ret < 0)
-> -		goto err_rs485;
-> -
->  	sprintf(up->name, "OMAP UART%d", up->port.line);
->  	up->port.mapbase = mem->start;
->  	up->port.membase = base;
-> @@ -1622,6 +1618,10 @@ static int serial_omap_probe(struct platform_device *pdev)
->  			 DEFAULT_CLK_SPEED);
->  	}
->  
-> +	ret = serial_omap_probe_rs485(up, &pdev->dev);
-> +	if (ret < 0)
-> +		goto err_rs485;
-> +
->  	up->latency = PM_QOS_CPU_LATENCY_DEFAULT_VALUE;
->  	up->calc_latency = PM_QOS_CPU_LATENCY_DEFAULT_VALUE;
->  	cpu_latency_qos_add_request(&up->pm_qos_request, up->latency);
-> -- 
-> 2.42.0
-> 
-> 
