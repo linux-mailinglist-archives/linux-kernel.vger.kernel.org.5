@@ -2,92 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 993678118DF
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 17:14:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 414918118E2
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 17:14:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235435AbjLMQN5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 11:13:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40070 "EHLO
+        id S235432AbjLMQOH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 11:14:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40216 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233721AbjLMQNp (ORCPT
+        with ESMTP id S235223AbjLMQNv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 11:13:45 -0500
-Received: from mail-ot1-f50.google.com (mail-ot1-f50.google.com [209.85.210.50])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FF5810C;
-        Wed, 13 Dec 2023 08:13:50 -0800 (PST)
-Received: by mail-ot1-f50.google.com with SMTP id 46e09a7af769-6d84ddd642fso5401517a34.0;
-        Wed, 13 Dec 2023 08:13:50 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702484030; x=1703088830;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=yKFwCtE90EPD9y2XJTF44lWNSwXrZ/Ik0w5o/94t9wo=;
-        b=rLZ6s6hq/+A38IhIqZVpVkgN+VX8AoxjGU3N+/LbhM25VpWREgQRJtSHby3lCgobnx
-         nX/9Lj1F0oYr88SSYoDDRPsBp616pYKM/KV+lh6Qc1NKyTpXosVV3mMJhIMbUTObiGIb
-         qXN3TQt4yqMdltmAs6WfvORcYJgM1i1doHR9cnHs1VzAJ+bVb8ClN1U/CevilJ+LLZod
-         wa47GVOU5+NddKS8Obp5UFTsUtrmVbyBWr/iyxyXd4dK8AaqRcc2xCXPrCz9tK2coygw
-         NLuWi3zkS4UPXjpGp1mBKaGMh+eJ0Jwpg2Yn9aEM9IdP3vM7sIW7no9oJkBKBnVp6WyD
-         fvqw==
-X-Gm-Message-State: AOJu0Yx/oYmJxqOTsLOMMRqP96FcxL8ovJlR6rWNiAg2LOVb65qdc/0B
-        x9xP/8njEvAX9s+MrifTLw==
-X-Google-Smtp-Source: AGHT+IHvwtas0Wz/5QoHKT/kRL+DgeC/VW8MvnUtSILOIvJ0GIakLipYqdQA3Ql3Vum+yJU0aDi0bQ==
-X-Received: by 2002:a05:6871:6b90:b0:1fa:ff63:2d3b with SMTP id zh16-20020a0568716b9000b001faff632d3bmr7032507oab.44.1702484029822;
-        Wed, 13 Dec 2023 08:13:49 -0800 (PST)
-Received: from herring.priv (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
-        by smtp.gmail.com with ESMTPSA id zl10-20020a0568716d8a00b001fb42001fa7sm3978002oab.36.2023.12.13.08.13.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Dec 2023 08:13:49 -0800 (PST)
-Received: (nullmailer pid 1207750 invoked by uid 1000);
-        Wed, 13 Dec 2023 16:13:47 -0000
-Date:   Wed, 13 Dec 2023 10:13:47 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Ninad Palsule <ninad@linux.ibm.com>
-Cc:     krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        joel@jms.id.au, andrew@codeconstruct.com.au, peterhuewe@gmx.de,
-        jarkko@kernel.org, jgg@ziepe.ca, keescook@chromium.org,
-        tony.luck@intel.com, gpiccoli@igalia.com,
-        johannes.holland@infineon.com, linux@roeck-us.net,
-        broonie@kernel.org, patrick.rudolph@9elements.com,
-        vincent@vtremblay.dev, peteryin.openbmc@gmail.com,
-        lakshmiy@us.ibm.com, bhelgaas@google.com,
-        naresh.solanki@9elements.com, alexander.stein@ew.tq-group.com,
-        festevam@denx.de, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        linux-integrity@vger.kernel.org, linux-hardening@vger.kernel.org,
-        geissonator@yahoo.com
-Subject: Re: [PATCH v1 2/8] dt-bindings: tpm: Add schema for TIS I2C devices
-Message-ID: <20231213161347.GA1204384-robh@kernel.org>
-References: <20231212164004.1683589-1-ninad@linux.ibm.com>
- <20231212164004.1683589-3-ninad@linux.ibm.com>
+        Wed, 13 Dec 2023 11:13:51 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D32E0B9
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 08:13:56 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 63BF1C433C8;
+        Wed, 13 Dec 2023 16:13:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1702484036;
+        bh=qrD0MrsY/L+ptpyJGJ+B+8mNoxKA92VdRp7Ypgf5fYY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=f2Y/VWIUrFnciX2ebT4ABNR8Osjl7qn5YgrItr8tv5vMeIikgDgkpPW6nFZagRniS
+         XGUs6B5SL/B4sU2eRQM+tf1Y3YTUIPdQyIfeNAnw9kOp7+00GArd7aNY6e1KXasDmL
+         cAs8L8NOy9/K5gmzfS60qGg5khi4gJtqUBs3guwdQHdEgfvX5IyuJTtiLrTJWJLQmH
+         Zq+zI6KvT+0BHJ7W1rZOOugcmjObEzgpyFGWJ3vsg5IYNexoRWyAJDEvUi0PfqONkS
+         1x/aKwzDIDGpKEBt2KuLYTbKfLSvyqoIokb9I1dFwgv3wsUNXrR5xT/pvV7+WEt0f+
+         8Mhx8enV1AvqQ==
+Date:   Wed, 13 Dec 2023 16:13:52 +0000
+From:   Lee Jones <lee@kernel.org>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Alex Vinarskis <alex.vinarskis@gmail.com>
+Subject: Re: [PATCH v1 1/1] mfd: intel-lpss: Fix the fractional clock divider
+ flags
+Message-ID: <20231213161352.GQ111411@google.com>
+References: <20231211111441.3910083-1-andriy.shevchenko@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20231212164004.1683589-3-ninad@linux.ibm.com>
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,
-        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20231211111441.3910083-1-andriy.shevchenko@linux.intel.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 12, 2023 at 10:39:58AM -0600, Ninad Palsule wrote:
-> From: Johannes Holland <johannes.holland@infineon.com>
+On Mon, 11 Dec 2023, Andy Shevchenko wrote:
+
+> The conversion to CLK_FRAC_DIVIDER_POWER_OF_TWO_PS uses wrong flags
+> in the parameters and hence miscalculates the values in the clock
+> divider. Fix this by applying the flag to the proper parameter.
 > 
-> Add a dt schema to support device tree bindings for the generic I2C
-> physical layer. Refer to the TCG PC Client Platform TPM Profile (PTP)
-> Specification for TPM 2.0 v1.04 Revision 14.
+> Fixes: 82f53f9ee577 ("clk: fractional-divider: Introduce POWER_OF_TWO_PS flag")
+> Reported-by: Alex Vinarskis <alex.vinarskis@gmail.com>
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> ---
+>  drivers/mfd/intel-lpss.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> This includes descriptions for the Nuvoton and Infineon devices.
+> diff --git a/drivers/mfd/intel-lpss.c b/drivers/mfd/intel-lpss.c
+> index 177915845ba2..eff423f7dd28 100644
+> --- a/drivers/mfd/intel-lpss.c
+> +++ b/drivers/mfd/intel-lpss.c
+> @@ -309,8 +309,8 @@ static int intel_lpss_register_clock_divider(struct intel_lpss *lpss,
+>  
+>  	snprintf(name, sizeof(name), "%s-div", devname);
+>  	tmp = clk_register_fractional_divider(NULL, name, __clk_get_name(tmp),
+> +					      0, lpss->priv, 1, 15, 16, 15,
+>  					      CLK_FRAC_DIVIDER_POWER_OF_TWO_PS,
+> -					      lpss->priv, 1, 15, 16, 15, 0,
+>  					      NULL);
 
-This is incomplete and conflicts with this series[1]. Please help 
-review and make sure it works for the cases you care about.
+What an ugly interface.  Intel-only too, right?
 
-Rob
+Have you also fixed this in: drivers/acpi/acpi_lpss.c
 
-[1] https://lore.kernel.org/all/cover.1701093036.git.lukas@wunner.de/
+>  	if (IS_ERR(tmp))
+>  		return PTR_ERR(tmp);
+> -- 
+> 2.43.0.rc1.1.gbec44491f096
+> 
+
+-- 
+Lee Jones [李琼斯]
