@@ -2,96 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 41878811F14
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 20:40:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B0FDE811F23
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 20:44:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442582AbjLMTk1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 14:40:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39588 "EHLO
+        id S233608AbjLMTn6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 14:43:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50638 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229671AbjLMTkZ (ORCPT
+        with ESMTP id S229811AbjLMTn5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 14:40:25 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFB40E0;
-        Wed, 13 Dec 2023 11:40:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1702496431; x=1734032431;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=TB6pdHRQrOCaGMVFpuGPsB29t4yb42FXCMwWcj1ZwFY=;
-  b=lL9acd/50tmS4n/6fGFTtWucnFVoEQCDfLYwD7PcbN9NzMmT4AaSVdTB
-   sul3FnkseHcKHYeunYtKenLYEdMD7PnIFbYK24xFbPTq0Zq0ybTp7uFjp
-   03ZQkZYe8n0WA0RUTNHlI9ySgPUTHeo+GQ05naxJCVgtu47VLxKZVAPhw
-   xMiapz95LrC8QBSx+SOUJHjo3YRYTHM9q1na040jXRgf2uOwIq8tDk/03
-   qJDsIy0UQ0J2yTl0qWfuUbcT8Q+quiY9Dj7yGQc0H32zTzDelB85yfn+N
-   +KgN+4p7Vbh+vrllAUkaU9Elbqe7ctPx17xbQS3MrRLNzPIh9yTjgIMyg
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10923"; a="380003847"
-X-IronPort-AV: E=Sophos;i="6.04,273,1695711600"; 
-   d="scan'208";a="380003847"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Dec 2023 11:40:31 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10923"; a="802985825"
-X-IronPort-AV: E=Sophos;i="6.04,273,1695711600"; 
-   d="scan'208";a="802985825"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by orsmga008.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Dec 2023 11:40:28 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1rDV5l-00000005cxH-1HEp;
-        Wed, 13 Dec 2023 21:40:25 +0200
-Date:   Wed, 13 Dec 2023 21:40:25 +0200
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Mark Hasemeyer <markhas@chromium.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Raul Rangel <rrangel@chromium.org>,
-        Bartosz Golaszewski <brgl@bgdev.pl>,
-        Len Brown <lenb@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Wolfram Sang <wsa@kernel.org>, linux-acpi@vger.kernel.org,
-        linux-gpio@vger.kernel.org, linux-i2c@vger.kernel.org
-Subject: Re: [PATCH v1 1/6] gpiolib: acpi: Modify acpi_dev_irq_wake_get_by to
- use resource
-Message-ID: <ZXoIqfXVYiYAuL86@smile.fi.intel.com>
-References: <20231213110009.v1.1.Ifd0903f1c351e84376d71dbdadbd43931197f5ea@changeid>
+        Wed, 13 Dec 2023 14:43:57 -0500
+Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15E26DD
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 11:44:02 -0800 (PST)
+Received: by mail-yb1-xb2d.google.com with SMTP id 3f1490d57ef6-dbcc63b7c68so1675205276.1
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 11:44:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1702496641; x=1703101441; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=7KwJmg/AmRci9oth6e0vim63G1m84y3oNQcN/OKV3e0=;
+        b=YEamIdU7C239wWPhqUHdM5mUnEJHCDsS6mV07MZk3u2h4XsRiQFtYsKTRzDqF0SWvz
+         8xo+oS9bCU9hLMZjmxNcqhlYARs7r1jd0M/EmCgne2ivcV9Jwg41OYIK08nVin/QqOKP
+         WRHp6VQRqdsdWCZMf5ig8td+pC8U6YnOfKYU4+BaqmyWYC3uGP+34m4+wxeI2Ccw32AQ
+         8miGZdidSEs2mBdcowgm7+DNQSD2Y8clzNrR9t+tmgLM0J8MLFDJhbjT/Q4ZhzS6GQoQ
+         dTbInR8BqVr0ts7LZpq7jntHS13SHrK82556ERAkjzACnvr3uLp8mJvvHkrucMbHcMAi
+         Viig==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702496641; x=1703101441;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=7KwJmg/AmRci9oth6e0vim63G1m84y3oNQcN/OKV3e0=;
+        b=opagfUPbGB6FAY02pcdKeEtfyX6xVegy+s/WNy+hB+bY6HLJHg4i8XtF0bCkSBuBqq
+         fIj1WRTPIt8++JZLbRMB/Fo4adtlyCvPpi0kblqjtJZtwoeAmHf+dNLPKPoSb2xUPSJg
+         pDZ2zkPZZOH2Ekknx77q682YRlQaCLl+MyBFxdhN/j4yJ9XyGA8uzacec3hpL8iG4EyS
+         2uzZ2QhGOH/HPEz2LtM7m0EpUaeNl7eBuTdjhZJIx2ruCwSljoy3HoRg6/d+C6kQ1ack
+         yqXNW1Z6qr+1P3a4b3QUsGzIFRbFnFeeFSI/iCKHoQxH+WQ8IBeEOqrtKqQ1hdDp2Ycw
+         pOXg==
+X-Gm-Message-State: AOJu0YyUOVbBhBwIkkoBDkwHe/rElZY5zHeIizeSLoaTaOUEwraKFPTF
+        xNqALBaFuZCjRGc96iP2rTwlLOioTjC3S5sdeD0ciw==
+X-Google-Smtp-Source: AGHT+IFSmPxfZTBIe3gumpwK2nVwVDcDb9+yDl2yaVi4US6Ez2/rKUahNn9IJ0xE08iqlW2A2FfQ7xQQ2M/z/jnykQ4=
+X-Received: by 2002:a25:8c91:0:b0:db7:dacf:59de with SMTP id
+ m17-20020a258c91000000b00db7dacf59demr4990232ybl.82.1702496641231; Wed, 13
+ Dec 2023 11:44:01 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231213110009.v1.1.Ifd0903f1c351e84376d71dbdadbd43931197f5ea@changeid>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+References: <20231122-arm64-gcs-v7-0-201c483bd775@kernel.org>
+ <20231122-arm64-gcs-v7-2-201c483bd775@kernel.org> <CAKC1njSC5cC_fXnyNAPt=WU6cD-OjLKFxo90oVPmsLJbuWf4nw@mail.gmail.com>
+ <d708b493-267a-4418-be91-9bde6b2cf50c@sirena.org.uk> <CAKC1njSQPO8ja7AkTzQ724hhSsGjchH9dLbbH9LXP0ZiKj-zPQ@mail.gmail.com>
+ <0d0d8802-09e3-4ea5-a0b4-b3a08c8a282e@sirena.org.uk>
+In-Reply-To: <0d0d8802-09e3-4ea5-a0b4-b3a08c8a282e@sirena.org.uk>
+From:   Deepak Gupta <debug@rivosinc.com>
+Date:   Wed, 13 Dec 2023 11:43:49 -0800
+Message-ID: <CAKC1njRHs0R=VKfn4jBap9__oR0rBHmNy7_tqHR8=xEHdUE4+A@mail.gmail.com>
+Subject: Re: [PATCH v7 02/39] prctl: arch-agnostic prctl for shadow stack
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Arnd Bergmann <arnd@arndb.de>, Oleg Nesterov <oleg@redhat.com>,
+        Eric Biederman <ebiederm@xmission.com>,
+        Kees Cook <keescook@chromium.org>,
+        Shuah Khan <shuah@kernel.org>,
+        "Rick P. Edgecombe" <rick.p.edgecombe@intel.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Szabolcs Nagy <Szabolcs.Nagy@arm.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Florian Weimer <fweimer@redhat.com>,
+        Christian Brauner <brauner@kernel.org>,
+        Thiago Jung Bauermann <thiago.bauermann@linaro.org>,
+        linux-arm-kernel@lists.infradead.org, linux-doc@vger.kernel.org,
+        kvmarm@lists.linux.dev, linux-fsdevel@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-mm@kvack.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-riscv@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 13, 2023 at 11:00:19AM -0700, Mark Hasemeyer wrote:
-> Other information besides wake capability can be provided about GPIO
-> IRQs such as triggering, polarity, and sharability. Use resource flags
-> to provide this information to the caller if they want it.
-> 
-> This should keep the API more robust over time as flags are added,
-> modified, or removed. It also more closely matches acpi_irq_get which
-> take a resource as an argument.
-> 
-> Rename the function to acpi_dev_get_gpio_irq_resource to better describe
-> the function's new behavior.
+On Wed, Dec 13, 2023 at 5:37=E2=80=AFAM Mark Brown <broonie@kernel.org> wro=
+te:
+>
+> On Tue, Dec 12, 2023 at 04:50:38PM -0800, Deepak Gupta wrote:
+>
+> > A theoretical scenario (no current workloads should've this case
+> > because no shadow stack)
+>
+> > - User mode did _ENABLE on the main thread. Shadow stack was allocated
+> > for the current
+> >   thread.
+> > - User mode created a bunch worker threads to run untrusted contained
+> > code. They shadow
+> >   stack too.
+> > - main thread had to do dlopen and now need to disable shadow stack on
+> > itself due to
+> >   incompatibility of incoming object in address space.
+> > - main thread controls worker threads and knows they're contained and
+> > should still be running
+> >   with a shadow stack. Although once in a while the main thread needs
+> > to perform writes to a shadow
+> >   stack of worker threads for some fixup (in the same addr space).
+> > main thread doesn't want to delegate
+> >   this responsibility of ss writes to worker threads because they're un=
+trusted.
+>
+> > How will it do that (currently _ENABLE is married to _WRITE and _PUSH) =
+?
+>
+> That's feeling moderately firmly into "don't do that" territory to be
+> honest, the problems of trying to modify the stack of another running
+> thread while it's active just don't seem worth it - if you're
+> coordinating enough to do the modifications it's probably possible to
+> just ask the thread who's stack is being modified to do the modification
+> itself and having an unprotected thread writing into shadow stack memory
+> doesn't feel great.
+>
 
-I have got only one patch out of 6.
-Also the series is missing a cover letter.
-
-Please, fix both issues in the next version of the series.
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+Yeah no leanings on my side. Just wanted to articulate this scenario.
+Since this is new ground,
+we can define what's appropriate. Let's keep it this way where a
+thread can write to shadow
+stack mappings only when it itself has shadow stack enabled.
