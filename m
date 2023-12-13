@@ -2,101 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E918A81229C
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 00:10:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 187A58122A9
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 00:12:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233997AbjLMXKX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 18:10:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58128 "EHLO
+        id S234006AbjLMXMk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 18:12:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47022 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229698AbjLMXKW (ORCPT
+        with ESMTP id S234033AbjLMXKn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 18:10:22 -0500
-Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 113BDD0
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 15:10:28 -0800 (PST)
-Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-5e19414f714so39479847b3.0
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 15:10:28 -0800 (PST)
+        Wed, 13 Dec 2023 18:10:43 -0500
+Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BA64E4;
+        Wed, 13 Dec 2023 15:10:48 -0800 (PST)
+Received: by mail-wm1-x32f.google.com with SMTP id 5b1f17b1804b1-40c2bb872e2so70452215e9.3;
+        Wed, 13 Dec 2023 15:10:48 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1702509027; x=1703113827; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=CUqoDbZM9AopeA8SWQ56D3q7Q5pOcG2dnxXupG6r4AM=;
-        b=Ps6YFuZWcYOBgvbAejx+2etW7sQb71fvhn6DU5QSVgdDdRoCp7E4/qn/oWnb/4/q32
-         +dCCQp1pBFtMaBanO9n96vbs3G8/NT9JlMw5vq9FaNDGdyr2qRZHDK5xxtXc1X+7Ie/j
-         PRRjCvb+EZj3x9ruEH5cvuagLa7nvEhRGDfXxRrUlCI+78JpZbY9A1tExCvvfKRxcBI6
-         hkMXGUVETtq/SAE1bwd1uYWwMZDh3TUaOQqJyqUj0ZGcT6g8Xws7thBAP4HdPz61Cdys
-         yXtPnXIpj29B+1zO9I55kZvDjXzkZ2b4vSfVIcbfI4UlMYMbpyyKkG+YmtBqACwROnH8
-         PCEg==
+        d=gmail.com; s=20230601; t=1702509047; x=1703113847; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:subject:cc
+         :to:from:date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=27lXn/0eKgoZmqmgopJ3Fi7Q+GCy31HzcvAZfnCfdRk=;
+        b=Q009b1o/ppPGuKd9J3rm/tlBzNBBjNdEKbl1c3L8I8UUMizeN1CGtUojrpX5mpGgEq
+         TY39N2jjtp56bFNrzQAc2hnLOw34zqJw8ViZVJH3rSBSO817fvQOURcrULsMdrewajNd
+         +RmL4BjGgVrvdJuWKR+Q9gZTN9yd/6Jksf2jfOCqlSsEH3G0cxwfupWPNVboOt781LgK
+         ooNZV7/VesJhBKpJyr/tnLYKLVYM9KLP3MnPsZkfADO7EOnj3uEXpcjGI3wjKcR3Lgr0
+         DxfOLSpmMXV6lWAWyxU9IDk+c2ZtEN/9HxfhoGOfDD1x/m+NFgE8f/E9Vtd7N8QPTbhO
+         r7yQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702509027; x=1703113827;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=CUqoDbZM9AopeA8SWQ56D3q7Q5pOcG2dnxXupG6r4AM=;
-        b=LP5MzPGUcDz8dmChWrhTfnf+3+eoIdnH903tadegelqyvkVdh9GlqxPQV2sy7B4A1y
-         dfAEv9Jf+Y8Rfbtlc18yXWnAjR2Cl2GWi0db2IYeqxRP2Ns08q+w/Sxk6OatQQ2uTRI3
-         us4qbxJWz+hnyZ2ZkQOh3TkiEs+rSe0FzBNH8FzOiAP0WEvnNlo31PKlxN4zeA6bsUQG
-         WAsAHSc9Nlol/TIVNe2xqnn0CFGs6j3uOLEUAsTmeU3B4H6DK60drP39XlSnt8LB2iuK
-         VB5I4mR9wlNgMTHcGVUe5Uj+2+zyRYqZdWmHv0x9IJJ87TC3aMANMrqPxKwQKe5CAP8z
-         19ww==
-X-Gm-Message-State: AOJu0Yzbbpy+kJ6YcwMpeVJh6NAr19vHjGR/Y/b9kap1mAxA9Nf1Vte/
-        nLAd9lYgXaK/rUM2D/o7/RMCq+uygPM=
-X-Google-Smtp-Source: AGHT+IF4eGkuED2YgGkikQHjB/qkyEMf7VDdEnq9on8ks3iMiGrniK1KQ/mlVQ/drqNz1BaE3Btrpi0R9vk=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a05:690c:d0e:b0:5d7:9a6c:54aa with SMTP id
- cn14-20020a05690c0d0e00b005d79a6c54aamr98099ywb.5.1702509027129; Wed, 13 Dec
- 2023 15:10:27 -0800 (PST)
-Date:   Wed, 13 Dec 2023 15:10:25 -0800
-In-Reply-To: <938efd3cfcb25d828deab0cc0ba797177cc69602.camel@redhat.com>
-Mime-Version: 1.0
-References: <cover.1699936040.git.isaku.yamahata@intel.com>
- <1c12f378af7de16d7895f8badb18c3b1715e9271.1699936040.git.isaku.yamahata@intel.com>
- <938efd3cfcb25d828deab0cc0ba797177cc69602.camel@redhat.com>
-Message-ID: <ZXo54VNuIqbMsYv-@google.com>
-Subject: Re: [PATCH v2 1/3] KVM: x86: Make the hardcoded APIC bus frequency vm variable
-From:   Sean Christopherson <seanjc@google.com>
-To:     Maxim Levitsky <mlevitsk@redhat.com>
-Cc:     isaku.yamahata@intel.com, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, isaku.yamahata@gmail.com,
-        Paolo Bonzini <pbonzini@redhat.com>, erdemaktas@google.com,
-        Vishal Annapurve <vannapurve@google.com>,
-        Jim Mattson <jmattson@google.com>
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no version=3.4.6
+        d=1e100.net; s=20230601; t=1702509047; x=1703113847;
+        h=in-reply-to:content-disposition:mime-version:references:subject:cc
+         :to:from:date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=27lXn/0eKgoZmqmgopJ3Fi7Q+GCy31HzcvAZfnCfdRk=;
+        b=nAJ/yFEhz0CZ0SNA4TGrIu3M35qzKp1I9Xy08yqEFr3UCyI0X1xllRmbA4FyMTKocE
+         xcwR/b8BViUQgdnDXgk+6DkcEYCx7dPBvUzSQPysbfoEIHjoR9WPAjisxd25g9GKr+uY
+         pRagCCF2eqZSlN4hJYb5Fw5I9OFUGGPZyC8Pon1T5OZ3OxC1ZINLR0yweCpXa1kAAx6+
+         1AYs97sQeU98IQh6/nyOOkY/3R8Ljqm/UHoCJ3Ec5NIy+Wc2z6+pxGcXJOf4vhebgBVO
+         DHqExoOPh7SIiX1Am2tH77LLQ59xnT9acpLzdRoY83Z1HmRFKeSydJQM9rRYQMYj0Dxb
+         siPg==
+X-Gm-Message-State: AOJu0YwpMaESuS4Wc4BDNyAAler16bhHh+AosqpAq/oEtHR57MhXDK5l
+        +3k4AKzHdlqdjQKCBbVve1c=
+X-Google-Smtp-Source: AGHT+IHZVV3mGhIMNdNFGZ8VFWEtdvmavOMakWVXsv72jmuTYkwHpGivTKnraBmLNvZzfMc+vraUxQ==
+X-Received: by 2002:a05:600c:450e:b0:40b:5f03:b3c8 with SMTP id t14-20020a05600c450e00b0040b5f03b3c8mr2176250wmo.234.1702509046514;
+        Wed, 13 Dec 2023 15:10:46 -0800 (PST)
+Received: from Ansuel-xps. (93-34-89-13.ip49.fastwebnet.it. [93.34.89.13])
+        by smtp.gmail.com with ESMTPSA id w10-20020a05600c474a00b0040b2c195523sm24407629wmo.31.2023.12.13.15.10.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Dec 2023 15:10:46 -0800 (PST)
+Message-ID: <657a39f6.050a0220.50ffc.9232@mx.google.com>
+X-Google-Original-Message-ID: <ZXo588MHn3AuZLOm@Ansuel-xps.>
+Date:   Thu, 14 Dec 2023 00:10:43 +0100
+From:   Christian Marangi <ansuelsmth@gmail.com>
+To:     Andrew Lunn <andrew@lunn.ch>
+Cc:     Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>,
+        Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
+        Kees Cook <keescook@chromium.org>,
+        Piergiorgio Beruto <piergiorgio.beruto@gmail.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [net-next PATCH 0/2] net: add define to describe link speed modes
+References: <20231213181554.4741-1-ansuelsmth@gmail.com>
+ <a4661402-414a-4b0d-82e8-97031fa46230@lunn.ch>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <a4661402-414a-4b0d-82e8-97031fa46230@lunn.ch>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 14, 2023, Maxim Levitsky wrote:
-> On Mon, 2023-11-13 at 20:35 -0800, isaku.yamahata@intel.com wrote:
-> > From: Isaku Yamahata <isaku.yamahata@intel.com>
+On Thu, Dec 14, 2023 at 12:05:52AM +0100, Andrew Lunn wrote:
+> On Wed, Dec 13, 2023 at 07:15:52PM +0100, Christian Marangi wrote:
+> > This is a simple series to add define to describe link speed modes.
 > > 
-> > TDX virtualizes the advertised APIC bus frequency to be 25MHz. 
+> > Hope the proposed way is acceptable with the enum and define.
+> > 
+> > This is also needed in the upcoming changes in the netdev trigger for LEDs
+> > where phy_speeds functions is used to declare a more compact array instead
+> > of using a "big enough" approach.
 > 
-> Can you explain a bit better why TDX needs this? I am not familiar
-> with TDX well enough yet to fully understand.
+> I'm trying to figure out the 'big picture' here.
+> 
+> The LED trigger will call ksetting_get to get a list of supported link
+> modes. You can then use the table struct phy_setting settings[] in
+> phy-core.c to translate the link mode to a speed. You are likely to
+> get a lot of duplicate speeds, but you can remove them. For each speed
+> you need to create a sysfs file. Why not just create a linked list,
+> rather than an array? Or just walk the table and find out how many
+> different speeds there are and allocate an array of that size. Its
+> currently 15, which is not that big. And then just use the is_visible
+> method to hide the ones which are not relevant.
+> 
+> I don't see any need for new enums or tables here, just a function to
+> look up a link mode in that table and return the speed.
+>
 
-TDX (the module/architecture) hardcodes the core crystal frequency to 25Mhz,
-whereas KVM hardcodes the APIC bus frequency to 1Ghz.  And TDX (again, the module)
-*unconditionally* enumerates CPUID 0x15 to TDX guests, i.e. _tells_ the guest that
-the frequency is 25MHz regardless of what the VMM/hypervisor actually emulates.
-And so the guest skips calibrating the APIC timer, which results in the guest
-scheduling timer interrupts waaaaaaay too frequently, i.e. the guest ends up
-gettings interrupts at 40x the rate it wants.
+The big picture was to have an handy define and statically allocate the
+array with the max amount of link modes possible without having to
+allocate kernel memory at runtime.
 
-Upstream KVM's non-TDX behavior is fine, because KVM doesn't advertise support
-for CPUID 0x15, i.e. doesn't announce to host userspace that it's safe to expose
-CPUID 0x15 to the guest.  Because TDX makes exposing CPUID 0x15 mandatory, KVM
-needs to be taught to correctly emulate the guest's APIC bus frequency, a.k.a.
-the TDX guest core crystal frequency of 25Mhz.
+With the current way of allocating only the needed space, I have to
+parse the settings table 2 times (one to get the number and the second
+time to compose the actual array)
 
-I halfheartedly floated the idea of "fixing" the TDX module/architecture to either
-use 1Ghz as the base frequency (off list), but it definitely isn't a hill worth
-dying on since the KVM changes are relatively simple.
+Not a problem since these are called only on LED register or when the
+device name is called... Just extra code and the fact that kmalloc can
+fail with ENOMEM. (but that is almost imposible and would be in an OOM
+condition)
 
-https://lore.kernel.org/all/ZSnIKQ4bUavAtBz6@google.com
+-- 
+	Ansuel
