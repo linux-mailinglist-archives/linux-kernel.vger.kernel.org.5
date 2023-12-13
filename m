@@ -2,68 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 33C8F811C71
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 19:28:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EC47811C72
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 19:28:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442323AbjLMS2k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 13:28:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52474 "EHLO
+        id S1442363AbjLMS2o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 13:28:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59868 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235678AbjLMS22 (ORCPT
+        with ESMTP id S229480AbjLMS2m (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 13:28:28 -0500
-Received: from mail-oo1-xc2f.google.com (mail-oo1-xc2f.google.com [IPv6:2607:f8b0:4864:20::c2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01FC0107
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 10:28:30 -0800 (PST)
-Received: by mail-oo1-xc2f.google.com with SMTP id 006d021491bc7-59067f03282so4269536eaf.0
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 10:28:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702492110; x=1703096910; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=z2suwt8vSdQ/DeMNrSZbO0otw3V4vmPXaSVKVeklDiw=;
-        b=aXeFM2sgrn9xAEVa4MxlqreJNn+PbIJHmepHvKd+P+7G1ChnBzUwsHFRyErvg8ztx2
-         uj+X8ttgDynezFB0GtnX4hAMLs+Svk8Uk+0+PDfNmLTuJvvKCbdxkC2qWsowtJ83Yhiq
-         pMu9rz1FS7HvuFzOTl1g/aBl9A26xI4jF3REkyIh1dq2OGjexDTqXwQOc+As9C/QvxSn
-         tzhIKaOBOrOnXQotnvEtS5Dcdev73S3KxvKb6vLtCjWLaPtLm3f66KR97dxvF0zDG7a/
-         ix1lVyU6bloW6iK8sIJhKsEK/7I63iHbX7+wS8ElQe+GDTNVDNE+LZCs/XuBEwB2SYx7
-         MMPQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702492110; x=1703096910;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=z2suwt8vSdQ/DeMNrSZbO0otw3V4vmPXaSVKVeklDiw=;
-        b=R1THVMrsNW9CSvEuZoEUEpxhxvElrxIfBAUtw8vP3gJOYvl5ktigQjWdM4huqm3rPu
-         G3KtUStXbYJPc1CPeu1kxj8rlFGOWI+yFPw8wFN9lWlh7urFGc62kavbS78ZdbHe5s59
-         wrh+dHVWuq0s3gpdfIAOT1VrTEYy+vU1Dv9K2mPS8au7fxti53rEoISzDGX0kqn/vWbg
-         75sAOqwWU7XGfAqWjAmSKuFkeNWXcEu5vgdxFyiQ6OQ9xbwoeUG0GmNJVNfSrnVlMV/4
-         kLSynaOCDNfCTIZfSLKzt5Zq6buBidvSHre/ARKLwn1bP3E69e9UgSoAJFqSUuualcrW
-         uWXQ==
-X-Gm-Message-State: AOJu0Yy0H7cVPfMW55JwxaP9+6sLEsfV/6f30oLHxQcrawrZOICHyN/B
-        6g4QHQYjluA9q6orEou2lfWvAULlzqrnakjHMMI=
-X-Google-Smtp-Source: AGHT+IEE8NGbqkyFPIlrmSp4009XZ22BdueAT9TWg3vReqvOQyrtrSyGp1oHJ2Dq1q9nFO7I20ZYRQZL43VNElqArto=
-X-Received: by 2002:a05:6870:a68a:b0:203:294a:50da with SMTP id
- i10-20020a056870a68a00b00203294a50damr1305331oam.75.1702492110198; Wed, 13
- Dec 2023 10:28:30 -0800 (PST)
+        Wed, 13 Dec 2023 13:28:42 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9478DF2;
+        Wed, 13 Dec 2023 10:28:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1702492127; x=1734028127;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=/Iixiy3lpwH6hkXLSCKzUJWx2sVNb5UeaxLaBRkE5tE=;
+  b=P6m+w4nQyzFZSp8qWws6KpmkEcFJgmL1KRD1akY1zsKWL7+UevuGdvKl
+   8qHU+zVZy349ZGgo8nhyyO2XvWl2ruLTCUsBEaTXSHQ9PDwBoB1tP91QH
+   NM/Ktbgg3P88RSksI0ifr+hEgX0c13S/mKkrSfczZZ85IBdJgJ32fti0n
+   lcqv14eNphljCTnptT11Jw4DZRMY7fMR4GC9TdIVhQakyt53/v6zUnWYl
+   ZWX5Hsog9tSBJJkc/7zb61BK6Zf7W4s3cxzc7njqUiDU4CGLdGsgVPm0C
+   ZD9GOLIENnqc7SuQze1l4aIdLqykm4JLgyeJmuDhWS7WczoyDKShbfsxx
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10923"; a="13705869"
+X-IronPort-AV: E=Sophos;i="6.04,273,1695711600"; 
+   d="scan'208";a="13705869"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Dec 2023 10:28:47 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10923"; a="839985114"
+X-IronPort-AV: E=Sophos;i="6.04,273,1695711600"; 
+   d="scan'208";a="839985114"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmsmga008.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Dec 2023 10:28:45 -0800
+Received: from andy by smile.fi.intel.com with local (Exim 4.97)
+        (envelope-from <andriy.shevchenko@intel.com>)
+        id 1rDTyM-00000005blx-0oTq;
+        Wed, 13 Dec 2023 20:28:42 +0200
+Date:   Wed, 13 Dec 2023 20:28:41 +0200
+From:   Andy Shevchenko <andriy.shevchenko@intel.com>
+To:     Nikita Shubin <nikita.shubin@maquefel.me>
+Cc:     Vinod Koul <vkoul@kernel.org>,
+        Alexander Sverdlin <alexander.sverdlin@gmail.com>,
+        dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [PATCH v6 10/40] dma: cirrus: Convert to DT for Cirrus EP93xx
+Message-ID: <ZXn32V0giIF754jR@smile.fi.intel.com>
+References: <20231212-ep93xx-v6-0-c307b8ac9aa8@maquefel.me>
+ <20231212-ep93xx-v6-10-c307b8ac9aa8@maquefel.me>
 MIME-Version: 1.0
-References: <90172f4c-7cf7-b4ac-d630-42198bb80d62@gmail.com> <b236ff60-085b-460a-b1eb-ddcea1c79094@amd.com>
-In-Reply-To: <b236ff60-085b-460a-b1eb-ddcea1c79094@amd.com>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Wed, 13 Dec 2023 13:28:18 -0500
-Message-ID: <CADnq5_OxNQGebrUT=F_ir9GGLGCHummgZpqsc-ma63t-H=mqGQ@mail.gmail.com>
-Subject: Re: [PATCH v2] drm/radeon: Prevent multiple debug error lines on suspend
-To:     =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
-Cc:     Woody Suwalski <terraluna977@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        amd-gfx@lists.freedesktop.org,
-        "Deucher, Alexander" <alexander.deucher@amd.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231212-ep93xx-v6-10-c307b8ac9aa8@maquefel.me>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -71,79 +69,93 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Applied manually.  Please double check how you are sending the
-patches.  git complained about a malformed patch.  I'd suggest using
-git-send-email.
+On Tue, Dec 12, 2023 at 11:20:27AM +0300, Nikita Shubin wrote:
+> Convert Cirrus EP93xx DMA to device tree usage:
+> 
+> - add OF ID match table with data
+> - add of_probe for device tree
+> - add xlate for m2m/m2p
+> - drop subsys_initcall code
+> - drop platform probe
+> - drop platform structs usage
+> 
+> >From now only it supports only device tree probing.
 
-Thanks,
+"From now on it only..." (and single "only" is enough).
 
-Alex
+...
 
-On Wed, Dec 13, 2023 at 1:45=E2=80=AFAM Christian K=C3=B6nig
-<christian.koenig@amd.com> wrote:
->
-> Am 13.12.23 um 00:31 schrieb Woody Suwalski:
-> > Fix to avoid multiple debug error lines printed on every suspend by
-> > Radeon driver's debugfs.
-> >
-> > radeon_debugfs_init() calls debugfs_create_file() for every ring.
-> >
-> > This results in printing multiple error lines to the screen and dmesg
-> > similar to this:
-> >
-> > [   92.378726] debugfs: File 'radeon_ring_gfx' in directory
-> > '0000:00:01.0' already present!
-> > [   92.378732] debugfs: File 'radeon_ring_cp1' in directory
-> > '0000:00:01.0' already present!
-> > [   92.378734] debugfs: File 'radeon_ring_cp2' in directory
-> > '0000:00:01.0' already present!
-> > [   92.378737] debugfs: File 'radeon_ring_dma1' in directory
-> > '0000:00:01.0' already present!
-> > [   92.378739] debugfs: File 'radeon_ring_dma2' in directory
-> > '0000:00:01.0' already present!
-> > [   92.380775] debugfs: File 'radeon_ring_uvd' in directory
-> > '0000:00:01.0' already present!
-> > [   92.406620] debugfs: File 'radeon_ring_vce1' in directory
-> > '0000:00:01.0' already present!
-> > [   92.406624] debugfs: File 'radeon_ring_vce2' in directory
-> > '0000:00:01.0' already present!
-> >
-> >
-> > Patch v1: The fix was to run lookup() for the file before trying to
-> > (re)create that debug file.
-> > Patch v2: Call the radeon_debugfs_init() only once when radeon ring is
-> > initialized (as suggested  by Christian K. - thanks)
-> >
-> > Signed-off-by: Woody Suwalski <terraluna977@gmail.com>
->
-> Reviewed-by: Christian K=C3=B6nig <christian.koenig@amd.com>
->
-> Thanks for the help,
-> Christian.
->
-> >
-> > diff --git a/drivers/gpu/drm/radeon/radeon_ring.c
-> > b/drivers/gpu/drm/radeon/radeon_ring.c
-> > index e6534fa9f1fb..38048593bb4a 100644
-> > --- a/drivers/gpu/drm/radeon/radeon_ring.c
-> > +++ b/drivers/gpu/drm/radeon/radeon_ring.c
-> > @@ -413,6 +413,7 @@ int radeon_ring_init(struct radeon_device *rdev,
-> > struct radeon_ring *ring, unsig
-> >              dev_err(rdev->dev, "(%d) ring map failed\n", r);
-> >              return r;
-> >          }
-> > +        radeon_debugfs_ring_init(rdev, ring);
-> >      }
-> >      ring->ptr_mask =3D (ring->ring_size / 4) - 1;
-> >      ring->ring_free_dw =3D ring->ring_size / 4;
-> > @@ -421,7 +422,6 @@ int radeon_ring_init(struct radeon_device *rdev,
-> > struct radeon_ring *ring, unsig
-> >          ring->next_rptr_gpu_addr =3D rdev->wb.gpu_addr + index;
-> >          ring->next_rptr_cpu_addr =3D &rdev->wb.wb[index/4];
-> >      }
-> > -    radeon_debugfs_ring_init(rdev, ring);
-> >      radeon_ring_lockup_update(rdev, ring);
-> >      return 0;
-> >  }
-> >
->
+> +		edmac->clk = devm_clk_get(dev, dma_clk_name);
+>  		if (IS_ERR(edmac->clk)) {
+> +			dev_warn(dev, "failed to get clock\n");
+>  			continue;
+>  		}
+
+This is incorrect, it doesn't handle deferred probe in two aspects:
+- spamming the logs;
+- not really trying to reprobe.
+
+...
+
+> +static bool ep93xx_m2p_dma_filter(struct dma_chan *chan, void *filter_param)
+> +{
+> +	struct ep93xx_dma_chan *echan = to_ep93xx_dma_chan(chan);
+> +	struct ep93xx_dma_chan_cfg *cfg = filter_param;
+> +
+> +	if (cfg->dir == ep93xx_dma_chan_direction(chan)) {
+> +		echan->dma_cfg = *cfg;
+> +		return true;
+> +	}
+> +
+> +	return false;
+
+Perhaps
+
+	if (cfg->dir != ep93xx_dma_chan_direction(chan))
+		return false;
+
+	echan->dma_cfg = *cfg;
+	return true;
+
+> +}
+
+...
+
+> +	if (!is_slave_direction(direction))
+> +		return NULL;
+> +
+> +
+
+One blank line is enough.
+
+...
+
+> +	switch (port) {
+> +	case EP93XX_DMA_SSP:
+> +	case EP93XX_DMA_IDE:
+> +		break;
+> +	default:
+> +		return NULL;
+> +	}
+
+> +	if (!is_slave_direction(direction))
+> +		return NULL;
+
+This can be performed before switch, no?
+
+...
+
+> +#include <linux/device.h>
+> +#include <linux/property.h>
+> +#include <linux/string.h>
+>  #include <linux/types.h>
+>  #include <linux/dmaengine.h>
+>  #include <linux/dma-mapping.h>
+
+Perhaps make it a bit more ordered by squeezing to the (most) ordered parts?
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
