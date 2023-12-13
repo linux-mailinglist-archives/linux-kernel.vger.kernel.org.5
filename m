@@ -2,55 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C68788107B6
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 02:36:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 303048107BC
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 02:38:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378203AbjLMBgn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 20:36:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57308 "EHLO
+        id S1378196AbjLMBic (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 20:38:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55888 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378145AbjLMBgm (ORCPT
+        with ESMTP id S1378145AbjLMBib (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 20:36:42 -0500
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id D5DA3B2;
-        Tue, 12 Dec 2023 17:36:47 -0800 (PST)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B6767C15;
-        Tue, 12 Dec 2023 17:37:33 -0800 (PST)
-Received: from minigeek.lan (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D7AB43F762;
-        Tue, 12 Dec 2023 17:36:45 -0800 (PST)
-Date:   Wed, 13 Dec 2023 01:35:44 +0000
-From:   Andre Przywara <andre.przywara@arm.com>
-To:     Anne Macedo <retpolanne@posteo.net>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Samuel Holland <samuel@sholland.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "moderated list:ARM/Allwinner sunXi SoC support" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "open list:ARM/Allwinner sunXi SoC support" 
-        <linux-sunxi@lists.linux.dev>,
-        open list <linux-kernel@vger.kernel.org>,
-        Corentin Labbe <clabbe@baylibre.com>
-Subject: Re: [PATCH] arm64: dts: allwinner: Orange Pi One Plus PHY support
-Message-ID: <20231213013544.2fc7e0d1@minigeek.lan>
-In-Reply-To: <axsvii25yrknfae6gdreti7lcskoscsdbsujwuispiieimsbdy@gwzm4l7mwlew>
-References: <20231212122835.10850-2-retpolanne@posteo.net>
-        <20231212162200.10b3868b@donnerap.manchester.arm.com>
-        <axsvii25yrknfae6gdreti7lcskoscsdbsujwuispiieimsbdy@gwzm4l7mwlew>
-Organization: Arm Ltd.
-X-Mailer: Claws Mail 4.2.0 (GTK 3.24.31; x86_64-slackware-linux-gnu)
+        Tue, 12 Dec 2023 20:38:31 -0500
+Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79327B7;
+        Tue, 12 Dec 2023 17:38:37 -0800 (PST)
+Received: by mail-pl1-x635.google.com with SMTP id d9443c01a7336-1d04c097e34so50739475ad.0;
+        Tue, 12 Dec 2023 17:38:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1702431517; x=1703036317; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=gVAw6lRJ7pahWlf8sMC/DMXTEVU+Aq26rrCAm60sOZA=;
+        b=YdF7K4E6l+QhrvxnRq79rkDqeLY9d0lsCL/ouXRi6SJRKE63jkJdOBDDBNS8z9bUg4
+         80hn5cDRMZTO6nu21Aa2Gx5vnViakb1Q7zXw2oHDr/8aYNc9MOsanR5x2E+oYbJWth8S
+         g77HOZgZhqkOvryTFctnSf3qFyxO15Q3Gc84q/1I5GASgFbABsz0D70p8bjBvsB/Spz5
+         0HkSk3xypxdbiDS8vwmbJ30xG+3QGOjqBvbolX+fIgKDghJP+bFWTZMU6FMUVuviPd0G
+         vQlD89jAeyyNpfa1KBWubgdfhL9nDs54o1aGRbUMMAV0IQmCH8CyPRzLxs2bWtksNDBd
+         bjKA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702431517; x=1703036317;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=gVAw6lRJ7pahWlf8sMC/DMXTEVU+Aq26rrCAm60sOZA=;
+        b=Xeju37ldoyUIFPI4SWSRQUgxsbsBmfRGVxJSjByaTeAwuQNGXuLDYLpNheHnaMZi0N
+         YuMeDRfP9R3ptAynPd3ZzQQcGnG8rcUkZHZHoNoBWNOUB7y/hIdju7Q22HhdrQTjQAUI
+         Vs4wtrZ25jbb2XhaI3BiqTUPKvuPsaZv+gJ17rwsemh3ZOX3bLASDxmoxKSFLFHnmQhZ
+         Lk40nn8ypF/GU3oFwy4u3h6eZqdX6KmB0xT/qhJoazo2jOeCuj4cwbU4RFKMUOobjRqN
+         ovnluNILcHQTHMy2g97YHIctW/jCaqgmy4zSx5DfEGCgFvPU2Q1+5cJj6rxel3jcdAQ5
+         PGCg==
+X-Gm-Message-State: AOJu0YzOqwVfXiC0UME+nX4CcrgACm9gwQqoEScPH6M/3HG3hnLnE8KI
+        iNQ0Ih0fzv14ew0HGNbbIx8=
+X-Google-Smtp-Source: AGHT+IG+Utuvu8ZvE9vrymMXlr3GYp04H1W7WNZnphwE7A9ZGjxfEuhstXGM/YzQUUo4jJbO2uKA9g==
+X-Received: by 2002:a17:902:c081:b0:1cf:f868:5b8c with SMTP id j1-20020a170902c08100b001cff8685b8cmr7770470pld.8.1702431516563;
+        Tue, 12 Dec 2023 17:38:36 -0800 (PST)
+Received: from localhost ([2620:10d:c090:500::7:1c76])
+        by smtp.gmail.com with ESMTPSA id b18-20020a170902d51200b001cf511aa772sm9254767plg.145.2023.12.12.17.38.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 Dec 2023 17:38:34 -0800 (PST)
+From:   Dan Schatzberg <schatzberg.dan@gmail.com>
+To:     Johannes Weiner <hannes@cmpxchg.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Yosry Ahmed <yosryahmed@google.com>, Huan Yang <link@vivo.com>
+Cc:     linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        linux-mm@kvack.org, Tejun Heo <tj@kernel.org>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Michal Hocko <mhocko@kernel.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <muchun.song@linux.dev>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        David Hildenbrand <david@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Chris Li <chrisl@kernel.org>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        Dan Schatzberg <schatzberg.dan@gmail.com>,
+        Hugh Dickins <hughd@google.com>, Yue Zhao <findns94@gmail.com>
+Subject: [PATCH V4 0/1] Add swappiness argument to memory.reclaim
+Date:   Tue, 12 Dec 2023 17:38:01 -0800
+Message-Id: <20231213013807.897742-1-schatzberg.dan@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -58,106 +83,97 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 12 Dec 2023 19:27:14 +0000
-Anne Macedo <retpolanne@posteo.net> wrote:
+Changes since V3:
+  * Added #define for MIN_SWAPPINESS and MAX_SWAPPINESS
+  * Added explicit calls to mem_cgroup_swappiness
 
-Hi Anne,
+Changes since V2:
+  * No functional change
+  * Used int consistently rather than a pointer
 
-> On Tue, Dec 12, 2023 at 04:22:00PM +0000, Andre Przywara wrote:
-> > On Tue, 12 Dec 2023 12:28:30 +0000
-> > Anne Macedo <retpolanne@posteo.net> wrote:
-> > 
-> > Hi Anne,
-> >   
-> > > Adds compatible values to mdio subnodes for Ethernet PHY representing
-> > > Realtek 8211 PHY to Orange Pi One Plus.  
-> > 
-> > So can you state why this would be needed? This is the RTL8211 ID,  
-> 
-> Apologies, I completely forgot to include some context. 
-> 
-> > right? Which should be autodetected via MDIO. Looking back in my inbox
-> > you proposed this change before, for U-Boot, specifically, but I fail to
-> > find a solution or explanation what really happens here. Two Renesas .dts
-> > files have the same compatible, and the commit message talks about the
-> > reset line there, is this related?
-> > 
-> > So can you please give some more background and explanation? That would be
-> > part of a good commit message anyway ("why", not "what").  
-> 
-> Should I resend the commit with a more meaningful explanation? The
-> context is the following:
-> 
-> currently, ethernet doesn't seem to work on both u-boot and Linux on the
-> Orange Pi One Plus board. 
-> 
-> On the kernel, this error shows up:
-> 
-> Configuring network interfaces... [    5.992589] dwmac-sun8i 5020000.ethernet eth0: Register MEM_TYPE_PAGE_POOL RxQ-0
-> [    6.000823] dwmac-sun8i 5020000.ethernet eth0: __stmmac_open: Cannot attach to PHY (error: -19)
-> 
-> After applying this fix, the PHY gets attached: 
-> 
-> Configuring network interfaces... [    6.060020] dwmac-sun8i 5020000.ethernet eth0: Register MEM_TYPE_PAGE_POOL RxQ-0
-> [    6.069460] dwmac-sun8i 5020000.ethernet eth0: PHY [stmmac-0:01] driver [RTL8211E Gigabit Ethernet] (irq=POLL)
-> 
-> The previous compatible list that had ethernet-phy-ieee802.3-c22 fails
-> to find a PHY, so this patch includes the correct PHY ID with the
-> RTL8211 ID. 
-> 
-> The behaviour is described on [1].
+Changes since V1:
+  * Added documentation
 
-So this is all an observation, but no real explanation, isn't it?
-To cite [1]: "If the PHY reports an incorrect ID (or none at all) ...".
-I am pretty sure this is not the case here, instead we are looking at
-some missing platform bits, like a missing clock, reset, or most likely
-regulator. Or one of the existing resources is wrongly assigned or
-configured? If the PHY is not (yet?) powered correctly when the code
-does the auto-detection via the MDIO bus, then the initialisation would
-fail. But since it works when overriding the auto-detection, I feel
-like we are papering over something here.
-Do you have the schematics for this board? I can only find the one for
-the Orange Pi Plus 2E, and I don't know how similar those two are. This
-shows *two* regulators, but both are activated by the same GPIO.
-It would also be interesting to see if any of Corentin's work for the
-Orange Pi 3 helps here?
+This patch proposes augmenting the memory.reclaim interface with a
+swappiness=<val> argument that overrides the swappiness value for that instance
+of proactive reclaim.
 
-Cheers,
-Andre
+Userspace proactive reclaimers use the memory.reclaim interface to trigger
+reclaim. The memory.reclaim interface does not allow for any way to effect the
+balance of file vs anon during proactive reclaim. The only approach is to adjust
+the vm.swappiness setting. However, there are a few reasons we look to control
+the balance of file vs anon during proactive reclaim, separately from reactive
+reclaim:
 
+* Swapout should be limited to manage SSD write endurance. In near-OOM
+  situations we are fine with lots of swap-out to avoid OOMs. As these are
+  typically rare events, they have relatively little impact on write endurance.
+  However, proactive reclaim runs continuously and so its impact on SSD write
+  endurance is more significant. Therefore it is desireable to control swap-out
+  for proactive reclaim separately from reactive reclaim
 
-> U-boot fails completely if the
-> correct PHY ID is not correct, and in order to fix U-boot we need to fix
-> the upstream dts [2].
-> 
-> [1] https://elixir.bootlin.com/linux/v4.14/source/Documentation/devicetree/bindings/net/phy.txt#L20
-> [2] https://elixir.bootlin.com/u-boot/latest/source/drivers/core/ofnode.c#L1258
-> 
-> > 
-> > Cheers,
-> > Andre
-> >   
-> > > Signed-off-by: Anne Macedo <retpolanne@posteo.net>
-> > > ---
-> > >  arch/arm64/boot/dts/allwinner/sun50i-h6-orangepi-one-plus.dts | 3 ++-
-> > >  1 file changed, 2 insertions(+), 1 deletion(-)
-> > > 
-> > > diff --git a/arch/arm64/boot/dts/allwinner/sun50i-h6-orangepi-one-plus.dts b/arch/arm64/boot/dts/allwinner/sun50i-h6-orangepi-one-plus.dts
-> > > index 29a081e72..7248ab72f 100644
-> > > --- a/arch/arm64/boot/dts/allwinner/sun50i-h6-orangepi-one-plus.dts
-> > > +++ b/arch/arm64/boot/dts/allwinner/sun50i-h6-orangepi-one-plus.dts
-> > > @@ -37,7 +37,8 @@ &emac {
-> > >  
-> > >  &mdio {
-> > >  	ext_rgmii_phy: ethernet-phy@1 {
-> > > -		compatible = "ethernet-phy-ieee802.3-c22";
-> > > +		compatible = "ethernet-phy-id001c.c915",
-> > > +			     "ethernet-phy-ieee802.3-c22";
-> > >  		reg = <1>;
-> > >  	};
-> > >  };  
-> >   
-> 
-> Regards, Anne
-> 
+* Some userspace OOM killers like systemd-oomd[1] support OOM killing on swap
+  exhaustion. This makes sense if the swap exhaustion is triggered due to
+  reactive reclaim but less so if it is triggered due to proactive reclaim (e.g.
+  one could see OOMs when free memory is ample but anon is just particularly
+  cold). Therefore, it's desireable to have proactive reclaim reduce or stop
+  swap-out before the threshold at which OOM killing occurs.
+
+In the case of Meta's Senpai proactive reclaimer, we adjust vm.swappiness before
+writes to memory.reclaim[2]. This has been in production for nearly two years
+and has addressed our needs to control proactive vs reactive reclaim behavior
+but is still not ideal for a number of reasons:
+
+* vm.swappiness is a global setting, adjusting it can race/interfere with other
+  system administration that wishes to control vm.swappiness. In our case, we
+  need to disable Senpai before adjusting vm.swappiness.
+
+* vm.swappiness is stateful - so a crash or restart of Senpai can leave a
+  misconfigured setting. This requires some additional management to record the
+  "desired" setting and ensure Senpai always adjusts to it.
+
+With this patch, we avoid these downsides of adjusting vm.swappiness globally.
+
+Previously, this exact interface addition was proposed by Yosry[3]. In response,
+Roman proposed instead an interface to specify precise file/anon/slab reclaim
+amounts[4]. More recently Huan also proposed this as well[5] and others
+similarly questioned if this was the proper interface.
+
+Previous proposals sought to use this to allow proactive reclaimers to
+effectively perform a custom reclaim algorithm by issuing proactive reclaim with
+different settings to control file vs anon reclaim (e.g. to only reclaim anon
+from some applications). Responses argued that adjusting swappiness is a poor
+interface for custom reclaim.
+
+In contrast, I argue in favor of a swappiness setting not as a way to implement
+custom reclaim algorithms but rather to bias the balance of anon vs file due to
+differences of proactive vs reactive reclaim. In this context, swappiness is the
+existing interface for controlling this balance and this patch simply allows for
+it to be configured differently for proactive vs reactive reclaim.
+
+Specifying explicit amounts of anon vs file pages to reclaim feels inappropriate
+for this prupose. Proactive reclaimers are un-aware of the relative age of file
+vs anon for a cgroup which makes it difficult to manage proactive reclaim of
+different memory pools. A proactive reclaimer would need some amount of anon
+reclaim attempts separate from the amount of file reclaim attempts which seems
+brittle given that it's difficult to observe the impact.
+
+[1]https://www.freedesktop.org/software/systemd/man/latest/systemd-oomd.service.html
+[2]https://github.com/facebookincubator/oomd/blob/main/src/oomd/plugins/Senpai.cpp#L585-L598
+[3]https://lore.kernel.org/linux-mm/CAJD7tkbDpyoODveCsnaqBBMZEkDvshXJmNdbk51yKSNgD7aGdg@mail.gmail.com/
+[4]https://lore.kernel.org/linux-mm/YoPHtHXzpK51F%2F1Z@carbon/
+[5]https://lore.kernel.org/lkml/20231108065818.19932-1-link@vivo.com/
+
+Dan Schatzberg (2):
+  mm: add defines for min/max swappiness
+  mm: add swapiness= arg to memory.reclaim
+
+ Documentation/admin-guide/cgroup-v2.rst | 19 +++++---
+ include/linux/swap.h                    |  5 +-
+ mm/memcontrol.c                         | 63 ++++++++++++++++++++-----
+ mm/vmscan.c                             | 21 +++++----
+ 4 files changed, 80 insertions(+), 28 deletions(-)
+
+-- 
+2.34.1
 
