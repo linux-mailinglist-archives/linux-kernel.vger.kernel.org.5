@@ -2,119 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DCC9281182B
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 16:49:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 96D6C811848
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 16:50:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442330AbjLMPtB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 10:49:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38124 "EHLO
+        id S1442334AbjLMPuf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 10:50:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57144 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1442208AbjLMPs7 (ORCPT
+        with ESMTP id S1442173AbjLMPuc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 10:48:59 -0500
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D7F0A6;
-        Wed, 13 Dec 2023 07:49:05 -0800 (PST)
-Received: by mail-ed1-x531.google.com with SMTP id 4fb4d7f45d1cf-54c846da5e9so6658619a12.3;
-        Wed, 13 Dec 2023 07:49:05 -0800 (PST)
+        Wed, 13 Dec 2023 10:50:32 -0500
+Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9442AC;
+        Wed, 13 Dec 2023 07:50:38 -0800 (PST)
+Received: by mail-lf1-x134.google.com with SMTP id 2adb3069b0e04-50bfa7f7093so9155897e87.0;
+        Wed, 13 Dec 2023 07:50:38 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702482544; x=1703087344; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=s9iR+5KGML8v1o9tlCUEO5WL6IJXmJpUVhIt0ZphogY=;
-        b=Hzerjiu9wo/CrRApXtjWcmD2oFh3n1LrZ3FwJplPytlA99bcW/ZMKjJhTbw2NqAG5s
-         S+P8VLXi+nQB4KO/ds+kjaNdB7T4DfjrbAXJEgqnAfHXosOh/kYqcOb3MbQ1kL13HcAY
-         YzyUPmUwUE71pDHqaXcnp8WSIOljL400OJNObgdwVwie2EFCU9nuMj+Lnj5jwTzOG3/Z
-         vBm+19SwbvLd7Ko1YhJ6HlgqVzgFtfS3uhXdwLkHYVxvqnLquT1wSKPv5RF9iVElNRCN
-         3/WbFftUja12e5VrlhrWVYHVqa0Afn0J3q9XKagX/mkvBunC2mghgZTwaEDQlliNHpZH
-         g/XA==
+        d=gmail.com; s=20230601; t=1702482637; x=1703087437; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:subject:cc
+         :to:from:date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=dOakPEBgPAHiEGOD9TL6ZF5Zc40kCskBgDb8Dym+yf4=;
+        b=H2i54W6vFufuYo0HrUXW1b9bxvEQrJ5upMhwn8E2SoL3ujZuqO1EXU484FUQgbR9rr
+         ofnKBtrwVn9BhsRD1RZazyTxajkpKI1GZ/hf+bGkv+67HPjCq6FBZWIYvwke382low4h
+         LRcVajc2BmYijXOiu7hUuTq8cjHVhrwhZKihZF37XIEvYLCY1hxdlJVQ0KIKywkunJVG
+         oSWM+kVN6wOXHZs8REnxd0OHRWnHb4XQiMvhrl67O4kZz+At56IV/AmPdyFE20mPNADP
+         St1GWdzLSB6PAuwf/c0H1iPIhfLNPg4Nv7oINo6kQBAXssj3GW4g0OwsQoK4194AWeOk
+         L+uQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702482544; x=1703087344;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=s9iR+5KGML8v1o9tlCUEO5WL6IJXmJpUVhIt0ZphogY=;
-        b=qTAiRHC/uRFkWn9LJfxp0wBB/sSs6tqUG7ql9Zkqnj+rMwM9kiI6icCea8YGEUloBl
-         1fmjZaYdS2A7ivC2RSJ+YgzzEqx5OkyvPdwOgE9E/GX4Cfp19MTBP+KLpJsrYPXR5sYB
-         KVcrrtLYo4gJsw2purDJWZ3x0IaZml08OsbpmftlT51QL9my5sdlyAgAUXHk3OymBeKY
-         GaaXfEHE9Qp+o+akmelfVTNi0Yx6BI+p6dwguDBpPUGTnJCFQRBViK0l3fwF1xFLkuph
-         8V2S/GhI/gA0vPijV8BjebyQoyUbwpYWP+6tp52gF4eTR7BE/4RHNRSGn1jO7C3fUZH/
-         bW5g==
-X-Gm-Message-State: AOJu0YynuOPKsHw0XKVJ76BOF14TxxzDpeZHCAt/AJgLXM1C5s8hDjLy
-        OKDyyEuSYWMIqStOxuDmxoA=
-X-Google-Smtp-Source: AGHT+IG3MFsBVaimnIUy8W5UOMpF6dkWeWal9zkx9ktdXSWC3Tuxb+m59yq3kIdwtCqkHtbYALcBGw==
-X-Received: by 2002:a50:cd11:0:b0:552:5c27:38c5 with SMTP id z17-20020a50cd11000000b005525c2738c5mr38074edi.38.1702482543681;
-        Wed, 13 Dec 2023 07:49:03 -0800 (PST)
-Received: from [192.168.26.149] (031011218106.poznan.vectranet.pl. [31.11.218.106])
-        by smtp.googlemail.com with ESMTPSA id q26-20020a50aa9a000000b0054c6261d245sm6124332edc.37.2023.12.13.07.49.02
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 13 Dec 2023 07:49:03 -0800 (PST)
-Message-ID: <9b7676f4-4922-40cc-98b2-67224c901773@gmail.com>
-Date:   Wed, 13 Dec 2023 16:49:02 +0100
+        d=1e100.net; s=20230601; t=1702482637; x=1703087437;
+        h=in-reply-to:content-disposition:mime-version:references:subject:cc
+         :to:from:date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=dOakPEBgPAHiEGOD9TL6ZF5Zc40kCskBgDb8Dym+yf4=;
+        b=aHItIGalCPc30IYEtcUFN0vMosl4kZawlbqJNNZdpuZ96vMGL0TPS9xyvSb/HegXcl
+         kVzmKPmDVBylJk6Mc+nPPAkX99CQfEplivn3XlO5yrcjdbvDx85cz8ZfKqtKeSnhijeU
+         c+Z0R+giSXyV7CNAEWtd5O0H43R5vFtHbtqKYCOCREChjDGhg2GhI3sy72LsxpSQTDRL
+         tY9g324NErGv/QrGnchnAr68csye+wOhAR6+F00TlhxXlDi1YM4ojYhVCVzuIDldnvGv
+         wN3emYHSMJ7sLDuvn4j0JXVzZlbpfgZn3z9w6HseUmBo9VCFRfXQLTpM4dKYrf2M8gQI
+         g6vQ==
+X-Gm-Message-State: AOJu0YyfKIMsCail8gfuSNTfSZWghFGwvgW/4O6zI+fNfdXP2dDki7ka
+        XYRvdKn0vtI39rD+zV7A5Kw=
+X-Google-Smtp-Source: AGHT+IFmkUOat3pu7EkXnPLBDOtDWZRm0ytKRWIJIJFUg08MsAjULnoRyTNw6dcjEDTYuhyNRoGU/g==
+X-Received: by 2002:a2e:bcc9:0:b0:2cc:2af3:5edb with SMTP id z9-20020a2ebcc9000000b002cc2af35edbmr2510066ljp.14.1702482636607;
+        Wed, 13 Dec 2023 07:50:36 -0800 (PST)
+Received: from Ansuel-xps. (93-34-89-13.ip49.fastwebnet.it. [93.34.89.13])
+        by smtp.gmail.com with ESMTPSA id v6-20020a05600c444600b0040c46ba7b66sm12056425wmn.48.2023.12.13.07.50.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Dec 2023 07:50:36 -0800 (PST)
+Message-ID: <6579d2cc.050a0220.e6ea.d8cf@mx.google.com>
+X-Google-Original-Message-ID: <ZXnSyTba0DnbC5DU@Ansuel-xps.>
+Date:   Wed, 13 Dec 2023 16:50:33 +0100
+From:   Christian Marangi <ansuelsmth@gmail.com>
+To:     "Russell King (Oracle)" <linux@armlinux.org.uk>
+Cc:     Florian Fainelli <florian.fainelli@broadcom.com>,
+        Broadcom internal kernel review list 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        David Epping <david.epping@missinglinkelectronics.com>,
+        Harini Katakam <harini.katakam@amd.com>,
+        Simon Horman <horms@kernel.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [net-next PATCH v6 1/3] net: phy: extend PHY package API to
+ support multiple global address
+References: <20231213105730.1731-1-ansuelsmth@gmail.com>
+ <ZXnRlERUGhwxKJxi@shell.armlinux.org.uk>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/2] dt-bindings: nvmem: add "data-size" property
-To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org,
-        =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>,
-        Christian Marangi <ansuelsmth@gmail.com>
-References: <20231213154721.5037-1-zajec5@gmail.com>
-Content-Language: en-US
-From:   =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-In-Reply-To: <20231213154721.5037-1-zajec5@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZXnRlERUGhwxKJxi@shell.armlinux.org.uk>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 13.12.2023 16:47, Rafał Miłecki wrote:
-> From: Rafał Miłecki <rafal@milecki.pl>
+On Wed, Dec 13, 2023 at 03:45:24PM +0000, Russell King (Oracle) wrote:
+> On Wed, Dec 13, 2023 at 11:57:28AM +0100, Christian Marangi wrote:
+> > -static inline int phy_package_read(struct phy_device *phydev, u32 regnum)
+> > +static inline int phy_package_read(struct phy_device *phydev,
+> > +				   unsigned int addr_offset, u32 regnum)
+> >  {
+> >  	struct phy_package_shared *shared = phydev->shared;
+> > +	int addr = shared->base_addr + addr_offset;
+> >  
+> > -	if (!shared)
+> > +	if (addr >= PHY_MAX_ADDR)
+> >  		return -EIO;
 > 
-> Allow specifying NVMEM device content size in case it differs from
-> device total size.
+> If we're going to check the address, I think we should check it
+> properly, which means also checking whether it's become negative.
 > 
-> Cc: Christian Marangi <ansuelsmth@gmail.com>
-> Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
+> Alternatively, we could consider making "addr" and "base_addr"
+> unsigned types, since they should never be negative. However,
+> that probably should be done as a separate patch before this one.
+>
 
-I forgot to link Rob's comment where he suggested we may need such a property:
-https://patchwork.ozlabs.org/comment/3154781/
+Maybe I'm confused but isn't already like that?
+On phy_package_join base_addr is already checked if it's negative (and
+rejected)
 
-Let's now see if I got it right.
+addr_offset is unsigned so it can't be negative.
 
+We can switch addr to unsigned just for the sake of it but if I'm not
+wrong all the sanity check are already done.
 
-> ---
->   Documentation/devicetree/bindings/nvmem/nvmem.yaml | 7 +++++++
->   1 file changed, 7 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/nvmem/nvmem.yaml b/Documentation/devicetree/bindings/nvmem/nvmem.yaml
-> index 4fd015d402ce..095aed4250de 100644
-> --- a/Documentation/devicetree/bindings/nvmem/nvmem.yaml
-> +++ b/Documentation/devicetree/bindings/nvmem/nvmem.yaml
-> @@ -26,6 +26,13 @@ properties:
->     "#size-cells":
->       const: 1
->   
-> +  data-size:
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-> +    description:
-> +      NVMEM device actual data (content) size. It may be need to be specified
-> +      if it differs by design from the total NVMEM device size and it's
-> +      impossible to determine it on runtime.
-> +
->     read-only:
->       $ref: /schemas/types.yaml#/definitions/flag
->       description:
-
+-- 
+	Ansuel
