@@ -2,171 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D2CA812375
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 00:42:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 52DF6812368
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 00:42:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442761AbjLMXmn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 18:42:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53728 "EHLO
+        id S234157AbjLMXmR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 18:42:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52390 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235351AbjLMXmY (ORCPT
+        with ESMTP id S234175AbjLMXmE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 18:42:24 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A3AD10DE;
-        Wed, 13 Dec 2023 15:42:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1702510920; x=1734046920;
-  h=message-id:subject:from:reply-to:to:cc:date:in-reply-to:
-   references:content-transfer-encoding:mime-version;
-  bh=658FEJlu8iPbmeFy2fG1Ncs6XwLiyF4+NhBOJaUrxWI=;
-  b=eDh8fRtHEn4fbwgOb4ATn8MB0MkwaekdMWOSRwWyXOu1fmdDXXPe9BBq
-   TBtdgHFYfejAFVWHneEweGJkTouWWa6ze9ERWdU3BE845QhWs97qGD0XV
-   SamLc0guLmzk3w3YXwn1swZVod7w55ZXDk//Ko6qmNQseKSjQ9vSQ5Oqa
-   yReLeFcmvf7yAz15maEHASelaWlpAQSe0KrImQ7COwocE4fc1Mh1QWhEy
-   4JdARxlxyaMUqhNO7/N/xpoe+jDjm8R+NLkCWnFqYaDGnRvBmWkndOVah
-   IIscIjw59Ppl7feQ1XP8nHBX4XCJrYr6wuvMFpV92RGTgsFey69EC8FnW
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10923"; a="8402768"
-X-IronPort-AV: E=Sophos;i="6.04,274,1695711600"; 
-   d="scan'208";a="8402768"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Dec 2023 15:39:26 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10923"; a="1021305090"
-X-IronPort-AV: E=Sophos;i="6.04,274,1695711600"; 
-   d="scan'208";a="1021305090"
-Received: from linux.intel.com ([10.54.29.200])
-  by fmsmga006.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Dec 2023 15:39:25 -0800
-Received: from acharris-mobl.amr.corp.intel.com (unknown [10.255.228.183])
-        by linux.intel.com (Postfix) with ESMTP id C5161580DAA;
-        Wed, 13 Dec 2023 15:39:24 -0800 (PST)
-Message-ID: <eb42db34f456c3a157cc574893fd73d877b85b75.camel@linux.intel.com>
-Subject: Re: [PATCH v2 1/6] PCI/ASPM: Add locked helper for enabling link
- state
-From:   "David E. Box" <david.e.box@linux.intel.com>
-Reply-To: david.e.box@linux.intel.com
-To:     Bjorn Helgaas <helgaas@kernel.org>
-Cc:     Kai-Heng Feng <kai.heng.feng@canonical.com>,
-        Johan Hovold <johan+linaro@kernel.org>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        Krzysztof =?UTF-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Manivannan Sadhasivam <mani@kernel.org>,
-        Rob Herring <robh@kernel.org>,
-        Nirmal Patel <nirmal.patel@linux.intel.com>,
-        Jonathan Derrick <jonathan.derrick@linux.dev>,
-        linux-arm-msm@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Date:   Wed, 13 Dec 2023 15:39:24 -0800
-In-Reply-To: <20231213204512.GA1056289@bhelgaas>
-References: <20231213204512.GA1056289@bhelgaas>
-Organization: David E. Box
+        Wed, 13 Dec 2023 18:42:04 -0500
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9AAC10F0;
+        Wed, 13 Dec 2023 15:40:47 -0800 (PST)
+Received: by mail-ed1-x52b.google.com with SMTP id 4fb4d7f45d1cf-54c5ed26cf6so9554255a12.3;
+        Wed, 13 Dec 2023 15:40:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1702510846; x=1703115646; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=UW8yg2nE5XYpvubYPqjC521h9OK/OsxXdk/i+77n0Io=;
+        b=BdzD45WJYzsmeor1jnJ1sjTUjCMp+63Sggb6g/WT9NxQEdc1jqFbVVagrFiAbJ+O1l
+         WpzyZuB01rKEdlbHlo9qNWwriioT9cpSYdibvbi/TaK6dT5nutZo7thyrjYCt9jFf4cn
+         SFbN0xD8yhNo6s8WhF93HcpNm1yr3rKCCcyDY06bD+PNus78q9Cvd1oriZMJRHpMkfLj
+         eZJD6uWdx5iWcXLuleryxIlDB5TZWstS2xoVbIjoWK2+IPMHavkcXJ7os/BNvw1f6ulU
+         Lr0F3lDmj2kFBv6a8haumEtFsjteLS1dnGmuCq2mgXHL5ci5vZr7+ZlIQZK3xuERorfF
+         O+lQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702510846; x=1703115646;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=UW8yg2nE5XYpvubYPqjC521h9OK/OsxXdk/i+77n0Io=;
+        b=BSwFfjRI6fZzKz6URRHPFgffwemnPf+GM2HaTqafriivbjwRC2bC4EPlfPv6HEtjfO
+         CIUGeArweQHEeKjKw39HJymi6PqbdVxBBJjybZXkA88HNEEN88J872gXyggFi9NH2B76
+         fPVE+HxWnxeDyvuZwN+OukS0+uvN5cmC7YIxWgohKN1gg1G14UdWvwpxQFnV8ydsNwww
+         +iV8Gzvjnv2K4W5zvICm56y9UfvYD8uDvqa4GRlGJB/8cokUiJNRmVbKIkRk3vz0f33B
+         IUb6Ei3j5kcLBeoEuZBzTHXo0Dy3bo1xpFQKIrp/9AUxx2u9XdlmBAv3fhOzx507g8Gj
+         9jDw==
+X-Gm-Message-State: AOJu0YyRWFHJAoYI/KA9KKuVg8XndE6/16kiPS6SxZ//kntW1ed9Hhlt
+        bgSLbTMHYjv6B7O5q/H7C1a9bWz6vgdY7g6VVkZw8BgbqNk=
+X-Google-Smtp-Source: AGHT+IElLc1SIIkcpOaYUCC71XEtTs2vU5Ol+skni0PoF6L84idW5x045blq1+i0OQXB0I32nbVkEWq40mP/MQmKIOo=
+X-Received: by 2002:a17:906:491b:b0:9fd:8cd9:7842 with SMTP id
+ b27-20020a170906491b00b009fd8cd97842mr4307680ejq.44.1702510845980; Wed, 13
+ Dec 2023 15:40:45 -0800 (PST)
+MIME-Version: 1.0
+References: <CACkBjsbj4y4EhqpV-ZVt645UtERJRTxfEab21jXD1ahPyzH4_g@mail.gmail.com>
+ <CAEf4BzZ0xidVCqB47XnkXcNhkPWF6_nTV7yt+_Lf0kcFEut2Mg@mail.gmail.com>
+ <CACkBjsaEQxCaZ0ERRnBXduBqdw3MXB5r7naJx_anqxi0Wa-M_Q@mail.gmail.com> <480a5cfefc23446f7c82c5b87eef6306364132b9.camel@gmail.com>
+In-Reply-To: <480a5cfefc23446f7c82c5b87eef6306364132b9.camel@gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Wed, 13 Dec 2023 15:40:34 -0800
+Message-ID: <CAEf4BzbfF=aNa-jAkka6YrK6Vbisi=v7PFsEDR-RFuHtAub2Xw@mail.gmail.com>
+Subject: Re: [Bug Report] bpf: incorrectly pruning runtime execution path
+To:     Eduard Zingerman <eddyz87@gmail.com>
+Cc:     Hao Sun <sunhao.th@gmail.com>, Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        bpf <bpf@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.4-0ubuntu2 
-MIME-Version: 1.0
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2023-12-13 at 14:45 -0600, Bjorn Helgaas wrote:
-> On Wed, Dec 13, 2023 at 11:48:41AM -0800, David E. Box wrote:
-> > On Tue, 2023-12-12 at 15:27 -0600, Bjorn Helgaas wrote:
-> > > On Tue, Dec 12, 2023 at 11:48:27AM +0800, Kai-Heng Feng wrote:
-> > > > On Fri, Dec 8, 2023 at 4:47=E2=80=AFAM Bjorn Helgaas <helgaas@kerne=
-l.org> wrote:
-> > > > ...
-> > >=20
-> > > > > I hope we can obsolete this whole idea someday.=C2=A0 Using pci_w=
-alk_bus()
-> > > > > in qcom and vmd to enable ASPM is an ugly hack to work around thi=
-s
-> > > > > weird idea that "the OS isn't allowed to enable more ASPM states =
-than
-> > > > > the BIOS did because the BIOS might have left ASPM disabled becau=
-se it
-> > > > > knows about hardware issues."=C2=A0 More history at
-> > > > > https://lore.kernel.org/linux-pci/20230615070421.1704133-1-kai.he=
-ng.feng@canonical.com/T/#u
-> > > > >=20
-> > > > > I think we need to get to a point where Linux enables all support=
-ed
-> > > > > ASPM features by default.=C2=A0 If we really think x86 BIOS assum=
-es an
-> > > > > implicit contract that the OS will never enable ASPM more
-> > > > > aggressively, we might need some kind of arch quirk for that.
-> > > >=20
-> > > > The reality is that PC ODM toggles ASPM to workaround hardware
-> > > > defects, assuming that OS will honor what's set by the BIOS.
-> > > > If ASPM gets enabled for all devices, many devices will break.
-> > >=20
-> > > That's why I mentioned some kind of arch quirk.=C2=A0 Maybe we're for=
-ced to
-> > > do that for x86, for instance.=C2=A0 But even that is a stop-gap.
-> > >=20
-> > > The idea that the BIOS ASPM config is some kind of handoff protocol i=
-s
-> > > really unsupportable.
-> >=20
-> > To be clear, you are not talking about a situation where
-> > ACPI_FADT_NO_ASPM or _OSC PCIe disallow OS ASPM control, right?
-> > Everyone agrees that this should be honored? The question is what to
-> > do by default when the OS is not restricted by these mechanisms?
->=20
-> Exactly.=C2=A0 The OS should respect ACPI_FADT_NO_ASPM and _OSC.
->=20
-> I think there are a couple exceptions where we want to disable ASPM
-> even if the platform said the OS shouldn't touch ASPM at all, but
-> that's a special case.
->=20
-> > Reading the mentioned thread, I too think that using the BIOS config
-> > as the default would be the safest option, but only to avoid
-> > breaking systems, not because of an implied contract between the
-> > BIOS and OS. However, enabling all capable ASPM features is the
-> > ideal option. If the OS isn't limited by ACPI_FADT_NO_ASPM or _OSC
-> > PCIe, then ASPM enabling is fully under its control.=C2=A0 If this
-> > doesn't work for some devices then they are broken and need a quirk.
->=20
-> Agreed.=C2=A0 It may not be practical to identify such devices, so we may
-> need a broader arch-based and/or date-based quirk.
->=20
-> I'd be shocked if Windows treated the BIOS config as a "do not exceed
-> this" situation, so my secret hope is that some of these "broken"
-> devices are really caused by defects in the Linux ASPM support or the
-> driver, and that we can fix them if we find out about them.
->=20
-> But I have no details about any of these alleged broken devices, so
-> it's hard to make progress on them.=C2=A0=C2=A0
+On Wed, Dec 13, 2023 at 3:35=E2=80=AFPM Eduard Zingerman <eddyz87@gmail.com=
+> wrote:
+>
+> On Wed, 2023-12-13 at 11:25 +0100, Hao Sun wrote:
+> [...]
+>
+> > I tried to convert the repro to a valid test case in inline asm, but se=
+ems
+> > JSET (if r0 & 0xfffffffe goto pc+3) is currently not supported in clang=
+-17.
+> > Will try after clang-18 is released.
+> >
+> > #30 is expected to be executed, see below where everything after ";" is
+> > the runtime value:
+> >    ...
+> >    6: (36) if w8 >=3D 0x69 goto pc+1    ; w8 =3D 0xbe, always taken
+> >    ...
+> >   11: (45) if r0 & 0xfffffffe goto pc+3  ; r0 =3D 0x616, taken
+> >   ...
+> >   18: (56) if w8 !=3D 0xf goto pc+3     ; w8 not touched, taken
+> >   ...
+> >   23: (bf) r5 =3D r8     ; w5 =3D 0xbe
+> >   24: (18) r2 =3D 0x4
+> >   26: (7e) if w8 s>=3D w0 goto pc+5    ; non-taken
+> >   27: (4f) r8 |=3D r8
+> >   28: (0f) r8 +=3D r8
+> >   29: (d6) if w5 s<=3D 0x1d goto pc+2  ; non-taken
+> >   30: (18) r0 =3D 0x4      ; executed
+> >
+> > Since the verifier prunes at #26, #30 is dead and eliminated. So, #30
+> > is executed after manually commenting out the dead code rewrite pass.
+> >
+> > From my understanding, I think r0 should be marked as precise when
+> > first backtrack from #29, because r5 range at this point depends on w0
+> > as r8 and r5 share the same id at #26.
+>
+> Hi Hao, Andrii,
+>
+> I converted program in question to a runnable test, here is a link to
+> the patch adding it and disabling dead code removal:
+> https://gist.github.com/eddyz87/e888ad70c947f28f94146a47e33cd378
+>
+> Run the test as follows:
+>   ./test_progs -vvv -a verifier_and/pruning_test
+>
+> And inspect the retval:
+>   do_prog_test_run:PASS:bpf_prog_test_run 0 nsec
+>   run_subtest:FAIL:647 Unexpected retval: 1353935089 !=3D 4
+>
+> Note that I tried this test with two functions:
+> - bpf_get_current_cgroup_id, with this function I get retval 2, not 4 :)
+> - bpf_get_prandom_u32, with this function I get a random retval each time=
+.
+>
+> What is the expectation when 'bpf_get_current_cgroup_id' is used?
+> That it is some known (to us) number, but verifier treats it as unknown s=
+calar?
+>
+> Also, I find this portion of the verification log strange:
+>
+>     ...
+>     13: (0f) r0 +=3D r0                     ; R0_w=3Dscalar(smin=3Dsmin32=
+=3D0,smax=3Dumax=3Dsmax32=3Dumax32=3D2,
+>                                                         var_off=3D(0x0; 0=
+x3))
+>     14: (2f) r4 *=3D r4                     ; R4_w=3Dscalar()
+>     15: (18) r3 =3D 0x1f00000034            ; R3_w=3D0x1f00000034
+>     17: (c4) w4 s>>=3D 29                   ; R4_w=3Dscalar(smin=3D0,smax=
+=3Dumax=3D0xffffffff,smin32=3D-4,smax32=3D3,
+>                                                         var_off=3D(0x0; 0=
+xffffffff))
+>     18: (56) if w8 !=3D 0xf goto pc+3       ; R8_w=3Dscalar(smin=3D0x8000=
+00000000000f,smax=3D0x7fffffff0000000f,
+>                                                         umin=3Dsmin32=3Du=
+min32=3D15,umax=3D0xffffffff0000000f,
+>                                                         smax32=3Dumax32=
+=3D15,var_off=3D(0xf; 0xffffffff00000000))
+>     19: (d7) r3 =3D bswap32 r3              ; R3_w=3Dscalar()
+>     20: (18) r2 =3D 0x1c                    ; R2=3D28
+>     22: (67) r4 <<=3D 2                     ; R4_w=3Dscalar(smin=3D0,smax=
+=3Dumax=3D0x3fffffffc,
+>                                                         smax32=3D0x7fffff=
+fc,umax32=3D0xfffffffc,
+>                                                         var_off=3D(0x0; 0=
+x3fffffffc))
+>     23: (bf) r5 =3D r8                      ; R5_w=3Dscalar(id=3D1,smin=
+=3D0x800000000000000f,
+>                                                         smax=3D0x7fffffff=
+0000000f,
+>                                                         umin=3Dsmin32=3Du=
+min32=3D15,
+>                                                         umax=3D0xffffffff=
+0000000f,
+>                                                         smax32=3Dumax32=
+=3D15,
+>                                                         var_off=3D(0xf; 0=
+xffffffff00000000))
+>                                             R8=3Dscalar(id=3D1,smin=3D0x8=
+00000000000000f,
+>                                                       smax=3D0x7fffffff00=
+00000f,
+>                                                       umin=3Dsmin32=3Dumi=
+n32=3D15,
+>                                                       umax=3D0xffffffff00=
+00000f,
+>                                                       smax32=3Dumax32=3D1=
+5,
+>                                                       var_off=3D(0xf; 0xf=
+fffffff00000000))
+>     24: (18) r2 =3D 0x4                     ; R2_w=3D4
+>     26: (7e) if w8 s>=3D w0 goto pc+5
+>     mark_precise: frame0: last_idx 26 first_idx 22 subseq_idx -1
+>     mark_precise: frame0: regs=3Dr5,r8 stack=3D before 24: (18) r2 =3D 0x=
+4
+>     ...                   ^^^^^^^^^^
+>                           ^^^^^^^^^^
+> Here w8 =3D=3D 15, w0 in range [0, 2], so the jump is being predicted,
+> but for some reason R0 is not among the registers that would be marked pr=
+ecise.
 
-I don't have a sense of the scope either. But I could see BIOS not enabling
-features that would provide no added power savings benefit. We use ASPM to
-manage package power. There are Intel devices that certainly don't require =
-L1SS
-for the SoC to achieve the deepest power savings. L1 alone is fine for them=
-. I
-don't know what the test coveragae is for unenabled features. I've sent the=
-se
-questions to our BIOS folks.
+It is, as a second step. There are two concatenated precision logs:
 
-> Maybe we should log a debug note
-> if the device advertises ASPM support that BIOS didn't enable.
+mark_precise: frame0: last_idx 26 first_idx 22 subseq_idx -1
+mark_precise: frame0: regs=3Dr0 stack=3D before 24: (18) r2 =3D 0x4
+mark_precise: frame0: regs=3Dr0 stack=3D before 23: (bf) r5 =3D r8
+mark_precise: frame0: regs=3Dr0 stack=3D before 22: (67) r4 <<=3D 2
 
-Good idea.
 
-David
-
->=20
-> Bjorn
-
+The issue is elsewhere, see my last email.
