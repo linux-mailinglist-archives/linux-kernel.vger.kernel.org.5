@@ -2,199 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 66444811CD1
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 19:39:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CD171811CC7
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 19:38:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233620AbjLMSjf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 13:39:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55566 "EHLO
+        id S233498AbjLMSig (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 13:38:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46264 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233511AbjLMSjc (ORCPT
+        with ESMTP id S233604AbjLMSi1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 13:39:32 -0500
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46C93D0;
-        Wed, 13 Dec 2023 10:39:39 -0800 (PST)
-Received: from pps.filterd (m0360083.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3BDI7u2S015354;
-        Wed, 13 Dec 2023 18:38:27 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- subject : to : cc : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=pp1;
- bh=fEx/rim947811PkyR5Ib8bCcfmjQUMsWMBx0jmD8wro=;
- b=mcTMy7EbuN77YCarY71ife9P537tehZ9gPelI4hUPLtwBuKD3pmaNIXB6j2xH2EooC6m
- YTq2aUv4iVns6b18vuuo52Tr6LWQq85YkglTM6cr0tPEgYqw5NBnVYfLc3fDwo4MCugH
- oKDdlECb8Kk/V8/AKp87AXjFAfGAdG6ju/gy3uJ55WmgnaXKI4/rOAw8bW5jB956BuaB
- lAPkqxYDqbus/TeoFEwJ3Y2LvbLuK9M3qpf+hY9VjjCRG1g5RfS3GCOUXTKkmG8VXe8j
- GON7Tlq00hlb6Ycqc2ZcIehSpycgDWFaUOZVQvs+Gk9shdN+S3L9T8IZ8rOzq04LTf9t Ww== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3uyhm8gu24-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 13 Dec 2023 18:38:27 +0000
-Received: from m0360083.ppops.net (m0360083.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3BDI8ZAO018923;
-        Wed, 13 Dec 2023 18:38:26 GMT
-Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3uyhm8gu1n-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 13 Dec 2023 18:38:26 +0000
-Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
-        by ppma12.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3BDGZU24008450;
-        Wed, 13 Dec 2023 18:38:25 GMT
-Received: from smtprelay05.dal12v.mail.ibm.com ([172.16.1.7])
-        by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 3uw2jtk6q8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 13 Dec 2023 18:38:25 +0000
-Received: from smtpav06.wdc07v.mail.ibm.com (smtpav06.wdc07v.mail.ibm.com [10.39.53.233])
-        by smtprelay05.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3BDIcOvk21627514
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 13 Dec 2023 18:38:24 GMT
-Received: from smtpav06.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 0C75E58054;
-        Wed, 13 Dec 2023 18:38:24 +0000 (GMT)
-Received: from smtpav06.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id B9AB55803F;
-        Wed, 13 Dec 2023 18:38:22 +0000 (GMT)
-Received: from [9.24.12.86] (unknown [9.24.12.86])
-        by smtpav06.wdc07v.mail.ibm.com (Postfix) with ESMTP;
-        Wed, 13 Dec 2023 18:38:22 +0000 (GMT)
-Message-ID: <719949a9-ddd5-451f-a765-d875cea85ba5@linux.ibm.com>
-Date:   Wed, 13 Dec 2023 12:38:22 -0600
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 2/8] dt-bindings: tpm: Add schema for TIS I2C devices
-Content-Language: en-US
-To:     Jarkko Sakkinen <jarkko@kernel.org>, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        joel@jms.id.au, andrew@codeconstruct.com.au, peterhuewe@gmx.de,
-        jgg@ziepe.ca, keescook@chromium.org, tony.luck@intel.com,
-        gpiccoli@igalia.com, johannes.holland@infineon.com,
-        linux@roeck-us.net, broonie@kernel.org
-Cc:     patrick.rudolph@9elements.com, vincent@vtremblay.dev,
-        peteryin.openbmc@gmail.com, lakshmiy@us.ibm.com,
-        bhelgaas@google.com, naresh.solanki@9elements.com,
-        alexander.stein@ew.tq-group.com, festevam@denx.de,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        linux-integrity@vger.kernel.org, linux-hardening@vger.kernel.org,
-        geissonator@yahoo.com
-References: <20231212164004.1683589-1-ninad@linux.ibm.com>
- <20231212164004.1683589-3-ninad@linux.ibm.com>
- <CXNEWTC7G66C.8KM5X4BWMK7P@suppilovahvero>
-From:   Ninad Palsule <ninad@linux.ibm.com>
-In-Reply-To: <CXNEWTC7G66C.8KM5X4BWMK7P@suppilovahvero>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: TA5ugVitoI4LBCCP5dmzUD_ldTLYTHkW
-X-Proofpoint-ORIG-GUID: Qxhptd4olsjIjL_1qbdboQzdGrQTp--Y
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        Wed, 13 Dec 2023 13:38:27 -0500
+Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FCA210D
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 10:38:34 -0800 (PST)
+Received: by mail-pf1-x429.google.com with SMTP id d2e1a72fcca58-6ceb27ec331so4724014b3a.1
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 10:38:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1702492714; x=1703097514; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=aP0+DaLfepHxP70wW1Gax8IzK3ru38iVVmbmgXj+IhY=;
+        b=TgbHx0u7m22dJFWYt6TRDACn88IhEI6UHj0hqxR7kxazhiUopMX0eHc+uEZVxa4Ldp
+         5tPdpxCMZokWscIuOvpjoOa0b2HNOpxquWAU7p/hd1Y3tiU5HvjpDLdrdNz1xlj4UIny
+         JIF6DataVDEpE2oMNFvW3mf+LfFUbAMBR9EQ0tp3det/Hg9xjYmHcKgJVC3AQo8Je/j3
+         Im43d3yr/NyeZjMDL1d6Ep5vQtW1POEQNiHeYCPi64ZU6NrBPbziVvDbw7ixt90xCEA5
+         RoQezo23eM9lVJnvuN/2K1TJpDKMnYqdtPRaATOCVm2ituUeVWlo60LcRSu7OYdF/xqA
+         G1Nw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702492714; x=1703097514;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=aP0+DaLfepHxP70wW1Gax8IzK3ru38iVVmbmgXj+IhY=;
+        b=Qjq3VM8wBoKjLjNnW+hI57yRSfhmgnAPZqh82pZapAbJqWXw+eCdQrale19x3PNho1
+         Ebc2HQP5dHB5HPGmhfDzdVL5sOKomR4YmRuBGhGmuawEbF7BghynOKBQXLleQwhjlNkA
+         uWA0r2qpj8wcaKS+YMFd31ehgu3cvL9N/5mB6KxvFWHWbWDVXxKONtq2kR2n4E6R3anW
+         2rbWoCyRTm0hGZBoB5MP06Oh15bHs4UnKujhQL5LCTdz4Cl3LeVrZ4RFzOJjrcwhJTve
+         WqYMLy6ipG9FU/QQgoOdG/TDP4rW3x0A9Wb7rl6kefyNJviN6pGS1Rhmopyml152rgfZ
+         EAjA==
+X-Gm-Message-State: AOJu0YyRul1Jy97i6wCqbgI3bb6BWgk4tbKek88Fmtkg0wc2PmJfaM0G
+        eY620q15I0uNS0pc9ftfHVQ=
+X-Google-Smtp-Source: AGHT+IEdiNTWejF/6XdIcn6jNFbc4LTqKtHXG9tvAyyxAe5Rib8ovN4qD47DkMbaMIMFXN2v9qyMUw==
+X-Received: by 2002:a05:6a20:8f0f:b0:18c:159b:777 with SMTP id b15-20020a056a208f0f00b0018c159b0777mr4979433pzk.26.1702492713524;
+        Wed, 13 Dec 2023 10:38:33 -0800 (PST)
+Received: from localhost (dhcp-72-253-202-210.hawaiiantel.net. [72.253.202.210])
+        by smtp.gmail.com with ESMTPSA id k8-20020a63ba08000000b005b1bf3a200fsm8959166pgf.1.2023.12.13.10.38.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Dec 2023 10:38:33 -0800 (PST)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Wed, 13 Dec 2023 08:38:31 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     Juri Lelli <juri.lelli@redhat.com>
+Cc:     Aaron Tomlin <atomlin@atomlin.com>, linux-kernel@vger.kernel.org,
+        jiangshanlai@gmail.com, peterz@infradead.org
+Subject: Re: [RFC PATCH 0/2] workqueue: Introduce PF_WQ_RESCUE_WORKER
+Message-ID: <ZXn6J5bN-dPC1WSk@slm.duckdns.org>
+References: <20230729135334.566138-1-atomlin@atomlin.com>
+ <um77hym4t6zyypfbhwbaeqxpfdzc657oa7vgowdfah7cuctjak@pexots3mfb24>
+ <ZXdXdBzvbkI4Y4fL@slm.duckdns.org>
+ <ZXguMgcKLCLn16T4@localhost.localdomain>
+ <ZXiVCOKk90Fjpmhw@slm.duckdns.org>
+ <ZXlyfjDsFGbYcMU6@localhost.localdomain>
+ <ZXnPVtISKQ2JFDNn@slm.duckdns.org>
+ <ZXn4qiMetd7zY1sb@localhost.localdomain>
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-13_12,2023-12-13_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 adultscore=0
- bulkscore=0 priorityscore=1501 mlxscore=0 spamscore=0 mlxlogscore=999
- suspectscore=0 malwarescore=0 lowpriorityscore=0 clxscore=1015
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311290000 definitions=main-2312130133
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZXn4qiMetd7zY1sb@localhost.localdomain>
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Jarkko,
+On Wed, Dec 13, 2023 at 07:32:10PM +0100, Juri Lelli wrote:
+> > Maybe the easiest way to do this is making rescuer_thread() restore the wq's
+> > cpumask right before going to sleep, and making apply_wqattrs_commit() just
+> > wake up the rescuer.
+> 
+> Hummm, don't think we can call that either while the rescuer is actually
+> running. Maybe we can simply s/kthread_bind_mask/set_cpus_allowed_ptr/
+> in the above?
 
-On 12/13/23 12:20, Jarkko Sakkinen wrote:
-> On Tue Dec 12, 2023 at 6:39 PM EET, Ninad Palsule wrote:
->> From: Johannes Holland <johannes.holland@infineon.com>
->>
->> Add a dt schema to support device tree bindings for the generic I2C
->> physical layer. Refer to the TCG PC Client Platform TPM Profile (PTP)
->> Specification for TPM 2.0 v1.04 Revision 14.
->>
->> This includes descriptions for the Nuvoton and Infineon devices.
->>
->> OpenBMC-Staging-Count: 3
-> Please don't invent your own tags.
+So, we have to use set_cpus_allowed_ptr() but we still don't want to change
+the affinity of a rescuer which is already running a task for a pool.
 
-Yes, Sorry. I have cherry-picked this commit from openbmc. Now I have 
-removed this line.
+Thanks.
 
-Thanks for the review.
-
-Thanks & Regards,
-
-Ninad
-
->
->> Signed-off-by: Johannes Holland <johannes.holland@infineon.com>
->> Signed-off-by: Joel Stanley <joel@jms.id.au>
->> Signed-off-by: Ninad Palsule <ninad@linux.ibm.com>
->> ---
->>   .../bindings/security/tpm/tpm-tis-i2c.yaml    | 50 +++++++++++++++++++
->>   1 file changed, 50 insertions(+)
->>   create mode 100644 Documentation/devicetree/bindings/security/tpm/tpm-tis-i2c.yaml
->>
->> diff --git a/Documentation/devicetree/bindings/security/tpm/tpm-tis-i2c.yaml b/Documentation/devicetree/bindings/security/tpm/tpm-tis-i2c.yaml
->> new file mode 100644
->> index 000000000000..de1e34065748
->> --- /dev/null
->> +++ b/Documentation/devicetree/bindings/security/tpm/tpm-tis-i2c.yaml
->> @@ -0,0 +1,50 @@
->> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
->> +%YAML 1.2
->> +---
->> +$id: http://devicetree.org/schemas/security/tpm/tpm-tis-i2c.yaml#
->> +$schema: http://devicetree.org/meta-schemas/core.yaml#
->> +
->> +title: I2C PTP based TPM Devices
->> +
->> +maintainers:
->> +  - Johannes Holland <johannes.holland@infineon.com>
->> +
->> +description:
->> +  Device Tree Bindings for I2C based Trusted Platform Module (TPM).
->> +
->> +properties:
->> +  $nodename:
->> +    pattern: "^tpm(@[0-9a-f]+)?$"
->> +
->> +  compatible:
->> +    oneOf:
->> +      - description: Infineon's Trusted Platform Module (TPM) (SLB9673).
->> +        items:
->> +          - const: infineon,slb9673
->> +          - const: tcg,tpm-tis-i2c
->> +      - description: Nuvoton's Trusted Platform Module (TPM) (NPCT75x).
->> +        items:
->> +          - const: nuvoton,npct75x
->> +          - const: tcg,tpm-tis-i2c
->> +      - const: tcg,tpm-tis-i2c
->> +  reg:
->> +    maxItems: 1
->> +
->> +required:
->> +  - compatible
->> +  - reg
->> +
->> +additionalProperties: false
->> +
->> +examples:
->> +  - |
->> +    i2c {
->> +      #address-cells = <1>;
->> +      #size-cells = <0>;
->> +
->> +      tpm@2e {
->> +        compatible = "nuvoton,npct75x", "tcg,tpm-tis-i2c";
->> +        reg = <0x2e>;
->> +      };
->> +    };
->> +...
->
-> BR, Jarkko
+-- 
+tejun
