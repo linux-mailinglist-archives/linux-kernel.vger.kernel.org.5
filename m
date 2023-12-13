@@ -2,100 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F1ED8113FB
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 15:01:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D07438113FC
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 15:01:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379052AbjLMOBd convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 13 Dec 2023 09:01:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57436 "EHLO
+        id S235402AbjLMOBn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 09:01:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60012 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379212AbjLMOBK (ORCPT
+        with ESMTP id S235430AbjLMOB1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 09:01:10 -0500
-Received: from mail-yb1-f171.google.com (mail-yb1-f171.google.com [209.85.219.171])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5091CDC;
-        Wed, 13 Dec 2023 06:01:05 -0800 (PST)
-Received: by mail-yb1-f171.google.com with SMTP id 3f1490d57ef6-dbcc63b7c68so1274186276.1;
-        Wed, 13 Dec 2023 06:01:05 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702476064; x=1703080864;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=LMmwUrV5CRxo8tqF2JhkTTOms97Pc/NRUWXWg3QDi0I=;
-        b=t9hy22/LqXxW7CDjRuL+tUmkeA3G0fIoBOAJ1xBVZBaecQnU6XMFbsfwl8rmiLDzbv
-         XI4uzmqDaqkxMA0688hzM5fo2D+OWZv/ctMbwm2PalMcMl27IuvkB2yZSDiqHf2DMuXR
-         KOyLKxnC2iXOjZdonlUjcoGr5TADkMp5V5CXxY76WNSsLRyBS5RKi2Ib1P8j8ujL6iXJ
-         FT86fsePifCYQ2BBelvhBuofVKUgEkf4DxjR9vRPNWfrkEHJ2b6RsIOEuChwVtRuQr67
-         TlIGZxDbnwviesSvgLEBupnKGImBNo3Y9J2+/X542MjVsZa8RJAoUqHACvZ2OEZJzrSp
-         3ZOw==
-X-Gm-Message-State: AOJu0Yxv3lVHAUCbvQq/7+5ZTiYNf0/JK5/fOJFWE4OxEl3xwFNqZu02
-        l4Y2vVq17+WYQQW6jJtsbmzPKzyGTaK8/A==
-X-Google-Smtp-Source: AGHT+IHU5dpCs/G2K+qi63p2PFcNo/f8adtTk2eu8lutu1dnCSYMF2ZPuD1wPSePhTctkUvdXXTm7w==
-X-Received: by 2002:a5b:7c6:0:b0:db5:4dc4:13e6 with SMTP id t6-20020a5b07c6000000b00db54dc413e6mr4897781ybq.32.1702476064311;
-        Wed, 13 Dec 2023 06:01:04 -0800 (PST)
-Received: from mail-yw1-f172.google.com (mail-yw1-f172.google.com. [209.85.128.172])
-        by smtp.gmail.com with ESMTPSA id p13-20020a259e8d000000b00da082362238sm3971826ybq.0.2023.12.13.06.01.03
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 13 Dec 2023 06:01:03 -0800 (PST)
-Received: by mail-yw1-f172.google.com with SMTP id 00721157ae682-5df49931b4eso46933187b3.0;
-        Wed, 13 Dec 2023 06:01:03 -0800 (PST)
-X-Received: by 2002:a0d:cb0c:0:b0:5e2:bd18:b253 with SMTP id
- n12-20020a0dcb0c000000b005e2bd18b253mr888130ywd.24.1702476063304; Wed, 13 Dec
- 2023 06:01:03 -0800 (PST)
+        Wed, 13 Dec 2023 09:01:27 -0500
+Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8507010CB;
+        Wed, 13 Dec 2023 06:01:33 -0800 (PST)
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 3BDE1IuP028512;
+        Wed, 13 Dec 2023 08:01:18 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1702476078;
+        bh=IV6ikSPAmmlnSTHeM2+mRbfELz8qQ4FfHSx+eC/mlUY=;
+        h=From:To:CC:Subject:Date;
+        b=PwE8pVzJjyJcbHyHaYGXhmnl9I4NXVj0bMxdcSvf3SRMv9kea1UaeNu9GrnX+0qsI
+         eJN9sfaQhIQsiVUl+b68pIvQ/Thx573uswizppIYRvuFSVDDHu1cS/eOrAyEN7G+bX
+         fhsGHp6jU3bhBS5sfO4Rs2o+F/32YquXVXRr39N4=
+Received: from DFLE110.ent.ti.com (dfle110.ent.ti.com [10.64.6.31])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 3BDE1Ibe015489
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 13 Dec 2023 08:01:18 -0600
+Received: from DFLE110.ent.ti.com (10.64.6.31) by DFLE110.ent.ti.com
+ (10.64.6.31) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 13
+ Dec 2023 08:01:18 -0600
+Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DFLE110.ent.ti.com
+ (10.64.6.31) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Wed, 13 Dec 2023 08:01:18 -0600
+Received: from uda0132425.dhcp.ti.com (uda0132425.dhcp.ti.com [172.24.227.94])
+        by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 3BDE1FwW047173;
+        Wed, 13 Dec 2023 08:01:16 -0600
+From:   Vignesh Raghavendra <vigneshr@ti.com>
+To:     Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Guenter Roeck <linux@roeck-us.net>
+CC:     Manorit Chawdhry <m-chawdhry@ti.com>,
+        <linux-watchdog@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        <linux-arm-kernel@lists.infradead.org>
+Subject: [PATCH v3] watchdog: rti_wdt: Drop runtime pm reference count when watchdog is unused
+Date:   Wed, 13 Dec 2023 19:31:10 +0530
+Message-ID: <20231213140110.938129-1-vigneshr@ti.com>
+X-Mailer: git-send-email 2.43.0
 MIME-Version: 1.0
-References: <20231207070700.4156557-1-claudiu.beznea.uj@bp.renesas.com> <20231207070700.4156557-10-claudiu.beznea.uj@bp.renesas.com>
-In-Reply-To: <20231207070700.4156557-10-claudiu.beznea.uj@bp.renesas.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Wed, 13 Dec 2023 15:00:52 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdU+7RsiKhCidRJaCk_wMQbovqbGtn0qF63RzXEq3SQVWw@mail.gmail.com>
-Message-ID: <CAMuHMdU+7RsiKhCidRJaCk_wMQbovqbGtn0qF63RzXEq3SQVWw@mail.gmail.com>
-Subject: Re: [PATCH v2 09/11] arm64: renesas: r9a08g045: Add the Ethernet nodes
-To:     Claudiu <claudiu.beznea@tuxon.dev>
-Cc:     s.shtylyov@omp.ru, davem@davemloft.net, edumazet@google.com,
-        kuba@kernel.org, pabeni@redhat.com, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        magnus.damm@gmail.com, mturquette@baylibre.com, sboyd@kernel.org,
-        linus.walleij@linaro.org, prabhakar.mahadev-lad.rj@bp.renesas.com,
-        biju.das.jz@bp.renesas.com, linux-renesas-soc@vger.kernel.org,
-        netdev@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
-        linux-gpio@vger.kernel.org,
-        Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 7, 2023 at 8:08 AM Claudiu <claudiu.beznea@tuxon.dev> wrote:
-> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
->
-> Add the Ethernet nodes available on RZ/G3S (R9A08G045).
->
-> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-> ---
->
-> Changes in v2:
-> - added phy-mode = "rgmii" and #address-cells, #size-cells for both
->   Ethernet nodes
+Call runtime_pm_put*() if watchdog is not already started during probe and re
+enable it in watchdog start as required.
 
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
-i.e. will queue in renesas-devel for v6.8.
+On K3 SoCs, watchdogs and their corresponding CPUs are under same
+power-domain, so if the reference count of unused watchdogs aren't
+dropped, it will lead to CPU hotplug failures as Device Management
+firmware won't allow to turn off the power-domain due to dangling
+reference count.
 
-Gr{oetje,eeting}s,
+Fixes: 2d63908bdbfb ("watchdog: Add K3 RTI watchdog support")
+Signed-off-by: Vignesh Raghavendra <vigneshr@ti.com>
+Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+Tested-by: Manorit Chawdhry <m-chawdhry@ti.com>
+---
+v3:
+Reword commit message to expand non std acronyms
+Collect Reviewed-by and Tested-by tags
+No code change
 
-                        Geert
+v2: https://lore.kernel.org/r/20231122041642.2015936-1-vigneshr@ti.com
 
+v2:
+* Drop 1/2 (will be posted along with runtime_pm callbacks)
+* Use pm_runtime_resume_and_get() instead of pm_runtime_get_sync() which
+ takes care of err handling
+
+v1: https://lore.kernel.org/r/20231110100726.2930218-1-vigneshr@ti.com
+
+ drivers/watchdog/rti_wdt.c | 13 ++++++++++++-
+ 1 file changed, 12 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/watchdog/rti_wdt.c b/drivers/watchdog/rti_wdt.c
+index 8e1be7ba0103..9215793a1c81 100644
+--- a/drivers/watchdog/rti_wdt.c
++++ b/drivers/watchdog/rti_wdt.c
+@@ -77,6 +77,11 @@ static int rti_wdt_start(struct watchdog_device *wdd)
+ {
+ 	u32 timer_margin;
+ 	struct rti_wdt_device *wdt = watchdog_get_drvdata(wdd);
++	int ret;
++
++	ret = pm_runtime_resume_and_get(wdd->parent);
++	if (ret)
++		return ret;
+ 
+ 	/* set timeout period */
+ 	timer_margin = (u64)wdd->timeout * wdt->freq;
+@@ -343,6 +348,9 @@ static int rti_wdt_probe(struct platform_device *pdev)
+ 	if (last_ping)
+ 		watchdog_set_last_hw_keepalive(wdd, last_ping);
+ 
++	if (!watchdog_hw_running(wdd))
++		pm_runtime_put_sync(&pdev->dev);
++
+ 	return 0;
+ 
+ err_iomap:
+@@ -357,7 +365,10 @@ static void rti_wdt_remove(struct platform_device *pdev)
+ 	struct rti_wdt_device *wdt = platform_get_drvdata(pdev);
+ 
+ 	watchdog_unregister_device(&wdt->wdd);
+-	pm_runtime_put(&pdev->dev);
++
++	if (!pm_runtime_suspended(&pdev->dev))
++		pm_runtime_put(&pdev->dev);
++
+ 	pm_runtime_disable(&pdev->dev);
+ }
+ 
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+2.43.0
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
