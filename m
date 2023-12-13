@@ -2,122 +2,230 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DD058107BE
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 02:38:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E6B4E8107C8
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 02:40:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378213AbjLMBim convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 12 Dec 2023 20:38:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34898 "EHLO
+        id S1378218AbjLMBkj convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 12 Dec 2023 20:40:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45346 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378218AbjLMBik (ORCPT
+        with ESMTP id S1378199AbjLMBkh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 20:38:40 -0500
-Received: from mail-ot1-f54.google.com (mail-ot1-f54.google.com [209.85.210.54])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFB3DDC;
-        Tue, 12 Dec 2023 17:38:45 -0800 (PST)
-Received: by mail-ot1-f54.google.com with SMTP id 46e09a7af769-6d855efb920so5079384a34.1;
-        Tue, 12 Dec 2023 17:38:45 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702431525; x=1703036325;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=YIWyx+xVFC2u/BA+JksVQths0h28NvpxYOOQa54kPF4=;
-        b=EFGQfdiiwRYwCoFGDdwWFDPhVvXuqtpK/4c+YrkBGlUdNMn3AzZTac1zEleEFCf6aY
-         CG0oT5mypW+NZCNRiTDgj6HxB4R8pOQw1hgeH9HyqafgLcGWns1egL8BK5lfgmPEQX6H
-         RC5700fwaRQ7ScFJGBwvHhaT+zlKj3dMhcsCeSIkqN2nYHlMvCAw92sVTxlM6yxcr2xJ
-         T/Z9rwLWyrtB0hTgtyz8fifxhVMn8BuNUTb9Wh9ArooLfUPUeFntFZgAOj1xGoCoIDIM
-         0fK+nPK9NpyIc14UiPZiAYBBi3y24Djz/CBGgqHE5AIlBJ9czMdUsU4ttAOgWDIXb4H8
-         baTw==
-X-Gm-Message-State: AOJu0YxurFebBOG1eT4G+UHREMKsUX8TA+QX6wMASPXzG5fkmHdj8478
-        03W4k6xIyLeZYj7bN0E/O+xQV2OGo5UbBbme6OY=
-X-Google-Smtp-Source: AGHT+IGlZ816ibGJ8fDaIkml7iSqJhiWarKEM7x1sTAEAA3o0fynxk7QISFQW23IR7l5lf+U58/lXVVtZGhr9A5i4Hg=
-X-Received: by 2002:a9d:6349:0:b0:6d9:d567:7c36 with SMTP id
- y9-20020a9d6349000000b006d9d5677c36mr7620957otk.71.1702431525092; Tue, 12 Dec
- 2023 17:38:45 -0800 (PST)
+        Tue, 12 Dec 2023 20:40:37 -0500
+Received: from fd01.gateway.ufhost.com (fd01.gateway.ufhost.com [61.152.239.71])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0B77BE;
+        Tue, 12 Dec 2023 17:40:39 -0800 (PST)
+Received: from EXMBX165.cuchost.com (unknown [175.102.18.54])
+        (using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+        (Client CN "EXMBX165", Issuer "EXMBX165" (not verified))
+        by fd01.gateway.ufhost.com (Postfix) with ESMTP id 01BF07FF9;
+        Wed, 13 Dec 2023 09:40:32 +0800 (CST)
+Received: from EXMBX061.cuchost.com (172.16.6.61) by EXMBX165.cuchost.com
+ (172.16.6.75) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Wed, 13 Dec
+ 2023 09:40:31 +0800
+Received: from [192.168.60.110] (180.164.60.184) by EXMBX061.cuchost.com
+ (172.16.6.61) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Wed, 13 Dec
+ 2023 09:40:31 +0800
+Message-ID: <10e2ab3c-950f-4a1c-8806-74e5bba2c24a@starfivetech.com>
+Date:   Wed, 13 Dec 2023 09:40:31 +0800
 MIME-Version: 1.0
-References: <20231211045543.31741-1-khuey@kylehuey.com>
-In-Reply-To: <20231211045543.31741-1-khuey@kylehuey.com>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Tue, 12 Dec 2023 17:38:34 -0800
-Message-ID: <CAM9d7ciZaK5=TkX8RhmszKKYP12k4k6A1monOP7vJJ+ivZG_bQ@mail.gmail.com>
-Subject: Re: [PATCH v3 0/4] Combine perf and bpf for fast eval of hw
- breakpoint conditions
-To:     Kyle Huey <me@kylehuey.com>
-Cc:     Kyle Huey <khuey@kylehuey.com>, linux-kernel@vger.kernel.org,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Jiri Olsa <jolsa@kernel.org>, Marco Elver <elver@google.com>,
-        Yonghong Song <yonghong.song@linux.dev>,
-        "Robert O'Callahan" <robert@ocallahan.org>, bpf@vger.kernel.org
+User-Agent: Mozilla Thunderbird
+Subject: Re: [v3 5/6] drm/vs: Add hdmi driver
+To:     Andy Yan <andyshrk@163.com>
+CC:     Maxime Ripard <mripard@kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
+        "tzimmermann@suse.de" <tzimmermann@suse.de>,
+        "airlied@gmail.com" <airlied@gmail.com>,
+        "krzysztof.kozlowski+dt@linaro.org" 
+        <krzysztof.kozlowski+dt@linaro.org>,
+        William Qiu <william.qiu@starfivetech.com>,
+        Xingyu Wu <xingyu.wu@starfivetech.com>,
+        "paul.walmsley@sifive.com" <paul.walmsley@sifive.com>,
+        "aou@eecs.berkeley.edu" <aou@eecs.berkeley.edu>,
+        "palmer@dabbelt.com" <palmer@dabbelt.com>,
+        "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>,
+        Shengyang Chen <shengyang.chen@starfivetech.com>,
+        Jack Zhu <jack.zhu@starfivetech.com>,
+        Changhuang Liang <changhuang.liang@starfivetech.com>,
+        "maarten.lankhorst@linux.intel.com" 
+        <maarten.lankhorst@linux.intel.com>,
+        "suijingfeng@loongson.cn" <suijingfeng@loongson.cn>
+References: <20231204123315.28456-6-keith.zhao@starfivetech.com>
+ <esetsiqgqpk35zue4c6aq7l6zn4kezhxkqqa7ompaz2vhdy3lr@4d5awfqgs2ss>
+ <94a1f9fc-82fb-4a04-a44b-f9b20c2bdfdd@starfivetech.com>
+ <abdl6kmighvpwojvafq443q7grn6w3abwpvw7zwbna4jvtsvjf@fa42rv46n2wh>
+ <40cdd3c7-174e-4611-9ea6-22cb56d1f62b@starfivetech.com>
+ <e90142d.44b1.18c43833b63.Coremail.andyshrk@163.com>
+ <e0b84511-dbb4-46fa-9465-713369232f6f@starfivetech.com>
+ <43e42269.314.18c46dbb4c5.Coremail.andyshrk@163.com>
+ <e1c362dc-8aac-4d13-9356-8b7ccae4727f@starfivetech.com>
+ <5a79a4b9.1bd7.18c4773c1ea.Coremail.andyshrk@163.com>
+ <xevxqusbizjfs4qt5rufhntd3vd656o2smocvivvulzceh3aeu@uuihphhat5wi>
+ <2dc5ea49-9a5f-484a-98dc-1b35b79d0945@starfivetech.com>
+ <6f7acc9d.5648.18c58cba9be.Coremail.andyshrk@163.com>
+Content-Language: en-US
+From:   Keith Zhao <keith.zhao@starfivetech.com>
+In-Reply-To: <6f7acc9d.5648.18c58cba9be.Coremail.andyshrk@163.com>
 Content-Type: text/plain; charset="UTF-8"
+X-Originating-IP: [180.164.60.184]
+X-ClientProxiedBy: EXCAS064.cuchost.com (172.16.6.24) To EXMBX061.cuchost.com
+ (172.16.6.61)
+X-YovoleRuleAgent: yovoleflag
 Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
 
-On Sun, Dec 10, 2023 at 8:55 PM Kyle Huey <me@kylehuey.com> wrote:
->
-> rr, a userspace record and replay debugger[0], replays asynchronous events
-> such as signals and context switches by essentially[1] setting a breakpoint
-> at the address where the asynchronous event was delivered during recording
-> with a condition that the program state matches the state when the event
-> was delivered.
->
-> Currently, rr uses software breakpoints that trap (via ptrace) to the
-> supervisor, and evaluates the condition from the supervisor. If the
-> asynchronous event is delivered in a tight loop (thus requiring the
-> breakpoint condition to be repeatedly evaluated) the overhead can be
-> immense. A patch to rr that uses hardware breakpoints via perf events with
-> an attached BPF program to reject breakpoint hits where the condition is
-> not satisfied reduces rr's replay overhead by 94% on a pathological (but a
-> real customer-provided, not contrived) rr trace.
->
-> The only obstacle to this approach is that while the kernel allows a BPF
-> program to suppress sample output when a perf event overflows it does not
-> suppress signalling the perf event fd or sending the perf event's SIGTRAP.
-> This patch set redesigns __perf_overflow_handler() and
-> bpf_overflow_handler() so that the former invokes the latter directly when
-> appropriate rather than through the generic overflow handler machinery,
-> passes the return code of the BPF program back to __perf_overflow_handler()
-> to allow it to decide whether to execute the regular overflow handler,
-> reorders bpf_overflow_handler() and the side effects of perf event
-> overflow, changes __perf_overflow_handler() to suppress those side effects
-> if the BPF program returns zero, and adds a selftest.
->
-> The previous version of this patchset can be found at
-> https://lore.kernel.org/linux-kernel/20231207163458.5554-1-khuey@kylehuey.com/
->
-> Changes since v2:
->
-> Patches 1 and 2 were added from a suggestion by Namhyung Kim to refactor
-> this code to implement this feature in a cleaner way. Patch 2 is separated
-> for the benefit of the ARM arch maintainers.
->
-> Patch 3 conceptually supercedes v2's patches 1 and 2, now with a cleaner
-> implementation thanks to the earlier refactoring.
->
-> Patch 4 is v2's patch 3, and addresses review comments about C++ style
-> comments, getting a TRAP_PERF definition into the test, and unnecessary
-> NULL checks.
 
-Acked-by: Namhyung Kim <namhyung@kernel.org>
+On 2023/12/11 20:13, Andy Yan wrote:
+> Hi Keith：
+> 
+> 在 2023-12-11 18:24:35，"Keith Zhao" <keith.zhao@starfivetech.com> 写道：
+>>hi Maxime:
+>>hi Andy:
+>>
+>>On 2023/12/8 17:14, Maxime Ripard wrote:
+>>> Hi,
+>>> 
+>>> On Fri, Dec 08, 2023 at 11:23:37AM +0800, Andy Yan wrote:
+>>>> 在 2023-12-08 11:00:31，"Keith Zhao" <keith.zhao@starfivetech.com> 写道：
+>>>> >
+>>>> >
+>>>> >On 2023/12/8 8:37, Andy Yan wrote:
+>>>> >> Hi Keth：
+>>>> >> 
+>>>> >> 
+>>>> >> 
+>>>> >> 
+>>>> >> 
+>>>> >> 
+>>>> >> 在 2023-12-07 18:48:13，"Keith Zhao" <keith.zhao@starfivetech.com> 写道：
+>>>> >>>
+>>>> >>>
+>>>> >>>On 2023/12/7 17:02, Andy Yan wrote:
+>>>> >>>> 
+>>>> >>>> 
+>>>> >>>> 
+>>>> >>>> 
+>>>> >>>> Hi Keith：
+>>>> >>>> 
+>>>> >>>> 
+>>>> >>>> 
+>>>> >>>> 
+>>>> >>>> 
+>>>> >>>> 
+>>>> >>>> 
+>>>> >>>> 
+>>>> >>>> 
+>>>> >>>> 
+>>>> >>>> 
+>>>> >>>> At 2023-12-06 22:11:33, "Keith Zhao" <keith.zhao@starfivetech.com> wrote:
+>>>> >>>>>
+>>>> >>>>>
+>>>> >>>>>On 2023/12/6 20:56, Maxime Ripard wrote:
+>>>> >>>>>> On Wed, Dec 06, 2023 at 08:02:55PM +0800, Keith Zhao wrote:
+>>>> >>>>>>> >> +static const struct of_device_id starfive_hdmi_dt_ids[] = {
+>>>> >>>>>>> >> +	{ .compatible = "starfive,jh7110-inno-hdmi",},
+>>>> >>>>>>> > 
+>>>> >>>>>>> > So it's inno hdmi, just like Rockchip then?
+>>>> >>>>>>> > 
+>>>> >>>>>>> > This should be a common driver.
+>>>> >>>>>>>
+>>>> >>>>>>> Rockchip has a inno hdmi IP. and Starfive has a inno hdmi IP.
+>>>> >>>>>>> but the harewawre difference of them is big , it is not easy to use the common driver
+>>>> >>>>>>> maybe i need the inno hdmi version here to make a distinction
+>>>> >>>>>> 
+>>>> >>>>>> I just had a look at the rockchip header file: all the registers but the
+>>>> >>>>>> STARFIVE_* ones are identical.
+>>>> >>>>>> 
+>>>> >>>>>> There's no need to have two identical drivers then, please use the
+>>>> >>>>>> rockchip driver instead.
+>>>> >>>>>> 
+>>>> >>>>>> Maxime
+>>>> >>>>>
+>>>> >>>>>ok, have a simple test , edid can get . i will continue 
+>>>> >>>> 
+>>>> >>>> Maybe you can take drivers/gpu/drm/bridge/synopsys/dw-hdmi as a reference， this
+>>>> >>>> is also a hdmi ip used by rockchip/meson/sunxi/jz/imx。
+>>>> >>>> We finally make it share one driver。
+>>>> >>>>>
+>>>> >>>hi Andy:
+>>>> >>>
+>>>> >>>dw_hdmi seems a good choice , it can handle inno hdmi hardware by define its dw_hdmi_plat_data.
+>>>> >>>does it means i can write own driver files such as(dw_hdmi-starfive.c) based on dw_hdmi instead of add plat_data in inno_hdmi.c
+>>>> >>>
+>>>> >> 
+>>>> >> I think the process maybe like this：
+>>>> >> 
+>>>> >> 1. split the inno_hdmi.c under rockchip to  inno_hdmi.c(the common part), inno_hdmi-rockchip.c(the soc specific part)
+>>>> >> 2. move the common part inno_hdmi.c to drivers/gpu/drm/bridge/innosilicon/
+>>>> >> 3. add startfive specific part, inno_hdmi-startfive.c
+>>>> >> 
+>>>> >> bellow git log from kernel three show how we convert  dw_hdmi to a common driver: 
+>>>> >> 
+>>>> >> 
+>>>> >> 
+>>>> >> 12b9f204e804 drm: bridge/dw_hdmi: add rockchip rk3288 support
+>>>> >> 74af9e4d03b8 dt-bindings: Add documentation for rockchip dw hdmi
+>>>> >> d346c14eeea9 drm: bridge/dw_hdmi: add function dw_hdmi_phy_enable_spare
+>>>> >> a4d3b8b050d5 drm: bridge/dw_hdmi: clear i2cmphy_stat0 reg in hdmi_phy_wait_i2c_done
+>>>> >> 632d035bace2 drm: bridge/dw_hdmi: add mode_valid support
+>>>> >> 0cd9d1428322 drm: bridge/dw_hdmi: add support for multi-byte register width access
+>>>> >> cd152393967e dt-bindings: add document for dw_hdmi
+>>>> >> b21f4b658df8 drm: imx: imx-hdmi: move imx-hdmi to bridge/dw_hdmi
+>>>> >> aaa757a092c2 drm: imx: imx-hdmi: split phy configuration to platform driver
+>>>> >> 3d1b35a3d9f3 drm: imx: imx-hdmi: convert imx-hdmi to drm_bridge mode
+>>>> >> c2c3848851a7 drm: imx: imx-hdmi: return defer if can't get ddc i2c adapter
+>>>> >> b587833933de drm: imx: imx-hdmi: make checkpatch happy
+>>>> >> 
+>>>> >hi Andy:
+>>>> >I got you means, 
+>>>> >as I don't have a rockchip board on hand , to split the inno_hdmi.c can not be tested.
+>>>> >
+>>>> >how adout this idea:
+>>>> >1、split the starfive_hdmi.c under verisilicion to  inno_hdmi.c(the common part), inno_hdmi-starfive.c(the soc specific part)
+>>>> >2. move the common part inno_hdmi.c to drivers/gpu/drm/bridge/innosilicon/
+>>>> >3. In the future, inno hdmi.c under rockchip will reuse the public driver.
+>>>> 
+>>>> I am not sure if drm maintainers are happy with this。
+>>> 
+>>> Not really, no.
+>>> 
+>>> Because we would still have two drivers for the same controller, and a
+>>> common one that haven't really been tested on anything but a single
+>>> platform. So arguably a worse situation than what you were suggesting in
+>>> the first place.
+>>> 
+>>> The best solution would be to find someone with a Rockchip board to test
+>>> your changes, or to get one if it's doable so you can test yourself.
+>>
+>>ok I will also try to buy a Rockchip 3036 board for self-test.
+>>According to the commit log idea provided by Andy before, make the inno_hdmi driver common module.
+> 
+> I finally  make my rk3036 based kylin board bootup （use a linux 4.4 downstream bsp，I will find time to try boot
+> it with mainline）。 So I can help do the test for rockchip side。
+> 
+> It seems not that easy to buy a rk3036 based board from market now。
+en, The online store seems to have stopped selling rk3036 
+really not easy to buy one , I write the code first , need help testing rk3036 in the future.
 
-Thanks,
-Namhyung
-
->
-> [0] https://rr-project.org/
-> [1] Various optimizations exist to skip as much as execution as possible
-> before setting a breakpoint, and to determine a set of program state that
-> is practical to check and verify.
->
->
+thanks
+> 
+>>
+>>would the steps be ok? (if I tested rockchip and starifve pass)
+>>1. split the inno_hdmi.c under rockchip to  inno_hdmi.c(the common part), inno_hdmi-rockchip.c(the soc specific part)
+>>2. move the common part inno_hdmi.c to drivers/gpu/drm/bridge/innosilicon/
+>>3. add startfive specific part, inno_hdmi-startfive.c
+>>
+>>Thanks
+>>> 
+>>> Maxime
