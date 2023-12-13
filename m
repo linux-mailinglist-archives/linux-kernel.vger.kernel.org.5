@@ -2,53 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EA7EF811947
+	by mail.lfdr.de (Postfix) with ESMTP id 95D3A811946
 	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 17:26:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233180AbjLMQZh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 11:25:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59792 "EHLO
+        id S233589AbjLMQ0E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 11:26:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59850 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232371AbjLMQZf (ORCPT
+        with ESMTP id S232371AbjLMQZj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 11:25:35 -0500
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6847C91
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 08:25:41 -0800 (PST)
-Received: by mail-lf1-x136.google.com with SMTP id 2adb3069b0e04-50bee606265so7595053e87.2
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 08:25:41 -0800 (PST)
+        Wed, 13 Dec 2023 11:25:39 -0500
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7665AC
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 08:25:44 -0800 (PST)
+Received: by mail-ed1-x52d.google.com with SMTP id 4fb4d7f45d1cf-55225ed7ef9so919814a12.3
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 08:25:44 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1702484739; x=1703089539; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=NEzLaoNa4BA2w8OvaI5sizwaYC3nqK5NDpqXu6xPo90=;
-        b=bwDCU34TKOnn+rqduMXMYWzpqQM5AzEVU6bc5VmcCt0BSjXQyWIh1SuUPpoammUKh4
-         wUgWCytNMULSJZmgDwWstN/JWh86Ll9VA6tXLfDHLC78tY07rpS8focHK1HPMvldES3g
-         E60GLPnWZVEWAU+ziYQ4qrqDKOM1OSWhN4r4kapHVW2dGRGAVknLQ6qA5VUGmcvb6smC
-         5v59m2nhyScF4oq3ic+G76k9p724JEFisBcbgqmjE69zUiUrzW9YT61V+5ULRCVMEC7z
-         M8SDj9Pp9UuID+zyC1ynobqBZjuLYmGKpSHHfn5Tg8LEvH4seFz81/VjmK8YzyRon41+
-         gtXA==
+        d=linaro.org; s=google; t=1702484743; x=1703089543; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=uDQI7CGNXE5QtDrGTA7vjhneNjlnGJyq3B8Gpd+RnjY=;
+        b=pzuNlUOhIoTE4WWFVONCAdtW6UTIvY2igyhxfa08zkdkKM+BAjSBHODmWqaIU+iXcb
+         6BnHlv64y7fq50Wn286F5ME9RGmDLbLojh4we1hF2gB+zd0lij1dSWRwZpnq7Wb3DNyX
+         NF3nyrE+OH7VljP4LBlyg6Y24cL6QcpCEntCIFCMqnb3rzzd+8S6xKDRPUDRrvf8fofQ
+         wWDg+H4ZNGW40RIhmhaCHafBwmmt82LuW2Fjb7o0kLlzSeAhB17gNYJiiSe4fs8eZg7B
+         RGA+55w2qEJw1jvjqybp32MLflhvQIDkCmDQ+tMEQj02vzFsOTyayAMGr8uwQQNPyW6A
+         0HFg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702484739; x=1703089539;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=NEzLaoNa4BA2w8OvaI5sizwaYC3nqK5NDpqXu6xPo90=;
-        b=B/MP9kRPLD0oTTPXSRcAVt9LixvK47mup9rEDqDnBc2Y5rzKnP3IW2v7/NYT9UuvrM
-         SSGDmEisas8ulE9UW+pI5/VkYqAAKMPtWpTM3xqQcx5C6eydO7DJx/At3FRB85bjk857
-         5JDjOTkdAaiwsT0sn7ZOCoUZHtZcBev01s94gEBGH3X6eSdba2x4ZFG/I+r/GuNKrVyg
-         GcwWcN5dFevwTYC57FVh5PCH6f5QhsAtJuMrWWhrVXdnWY/r6pvOa/ID73JtlPGh77Xg
-         1pn8GWH/z0MQ8GX1QpDSX8eGx3qPbo3I3r6kwYl5sxwW2x5tEMjYY79hMBgqlAzQaSdi
-         f+AQ==
-X-Gm-Message-State: AOJu0YwRpNCldepzLrJ1QDNiHpsWnfsRfVmkhVUitJBuSck9Xs/txaVW
-        G6LY6ZIa693+oSkNrsR8tLD/MQ==
-X-Google-Smtp-Source: AGHT+IG5E98UlR0GcrnhVIDtGNzI9Lp1cS9Z1Gd+hPYxMOSd7wpz4W9RmVacJEy0D/WAkK4N263y/Q==
-X-Received: by 2002:a05:6512:110d:b0:50b:f858:f138 with SMTP id l13-20020a056512110d00b0050bf858f138mr4628794lfg.89.1702484739673;
-        Wed, 13 Dec 2023 08:25:39 -0800 (PST)
+        d=1e100.net; s=20230601; t=1702484743; x=1703089543;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=uDQI7CGNXE5QtDrGTA7vjhneNjlnGJyq3B8Gpd+RnjY=;
+        b=VCJzw60HW83oeHd5FtDV0hO+KoxTaeolH/KxPsNzHLVckoJPxLmr9mGDHKaJCKFSDu
+         oCKMT+VOxBumX3Bp/k/ySBPwGR7MwBoPqb7XW26H2hiyKsGFiH5q02fzgpzxSwwFw9DJ
+         iMdPj+uXLpxTObAi/7/jDeXtLXjXr/mlvlPNVVPxEwxk9j0ZNFa9Hqjj0gDAbY4Sb/S5
+         DRjz4ERiSyIq4uiFIoU8k5cBBKC0/rllwdQefQfb9fkOQ7IHDGJd5QOkhcz3uN9f97sP
+         n9rFbwzN3RZFtk/7Ppefilt4DOopdkDhJqG4r9Rm56q3Y+OLhyzImH5zGjdGzjkQ2Lv6
+         ldYg==
+X-Gm-Message-State: AOJu0YwjH6KoNPyHWPFdSraD3lpsPPpIMwYxd/NokpZTx55EvZ4tbylZ
+        2XE+8EHt04dP8vxBJHrzZGEv2A==
+X-Google-Smtp-Source: AGHT+IFYR8rsO1VF//8r3xp61FMiOmVTtJhWR3SeKc7XhW8dyZuYFpYd2aa1O950RUJUMP4pn9sS4A==
+X-Received: by 2002:a17:906:c30a:b0:a1e:26ae:3ac5 with SMTP id s10-20020a170906c30a00b00a1e26ae3ac5mr4881307ejz.39.1702484743452;
+        Wed, 13 Dec 2023 08:25:43 -0800 (PST)
 Received: from krzk-bin.. ([178.197.218.27])
-        by smtp.gmail.com with ESMTPSA id kv18-20020a17090778d200b00a1dfc541282sm8048914ejc.225.2023.12.13.08.25.38
+        by smtp.gmail.com with ESMTPSA id kv18-20020a17090778d200b00a1dfc541282sm8048914ejc.225.2023.12.13.08.25.42
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Dec 2023 08:25:39 -0800 (PST)
+        Wed, 13 Dec 2023 08:25:43 -0800 (PST)
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 To:     Andy Gross <agross@kernel.org>,
         Bjorn Andersson <andersson@kernel.org>,
@@ -59,10 +60,12 @@ To:     Andy Gross <agross@kernel.org>,
         linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org
 Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: [PATCH 1/4] arm64: dts: qcom: sm8450: move Soundwire pinctrl to its nodes
-Date:   Wed, 13 Dec 2023 17:25:32 +0100
-Message-Id: <20231213162536.171475-1-krzysztof.kozlowski@linaro.org>
+Subject: [PATCH 3/4] arm64: dts: qcom: sm8550: move Soundwire pinctrl to its nodes
+Date:   Wed, 13 Dec 2023 17:25:35 +0100
+Message-Id: <20231213162536.171475-4-krzysztof.kozlowski@linaro.org>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20231213162536.171475-1-krzysztof.kozlowski@linaro.org>
+References: <20231213162536.171475-1-krzysztof.kozlowski@linaro.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -86,19 +89,15 @@ state.
 We also follow similar approach in newer SoCs, like Qualcomm SM8650.
 
 Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-
 ---
-
-Not tested on HW.
----
- arch/arm64/boot/dts/qcom/sm8450.dtsi | 20 ++++++++++++--------
+ arch/arm64/boot/dts/qcom/sm8550.dtsi | 20 ++++++++++++--------
  1 file changed, 12 insertions(+), 8 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/qcom/sm8450.dtsi b/arch/arm64/boot/dts/qcom/sm8450.dtsi
-index 12e55a0c7417..3b6ea9653d2a 100644
---- a/arch/arm64/boot/dts/qcom/sm8450.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sm8450.dtsi
-@@ -2160,8 +2160,6 @@ wsa2macro: codec@31e0000 {
+diff --git a/arch/arm64/boot/dts/qcom/sm8550.dtsi b/arch/arm64/boot/dts/qcom/sm8550.dtsi
+index 1f06fd33d1ce..d8f79b5895f5 100644
+--- a/arch/arm64/boot/dts/qcom/sm8550.dtsi
++++ b/arch/arm64/boot/dts/qcom/sm8550.dtsi
+@@ -2050,8 +2050,6 @@ lpass_wsa2macro: codec@6aa0000 {
  
  			#clock-cells = <0>;
  			clock-output-names = "wsa2-mclk";
@@ -107,17 +106,17 @@ index 12e55a0c7417..3b6ea9653d2a 100644
  			#sound-dai-cells = <1>;
  		};
  
-@@ -2173,6 +2171,9 @@ swr4: soundwire-controller@31f0000 {
+@@ -2063,6 +2061,9 @@ swr3: soundwire-controller@6ab0000 {
  			clock-names = "iface";
  			label = "WSA2";
  
 +			pinctrl-0 = <&wsa2_swr_active>;
 +			pinctrl-names = "default";
 +
- 			qcom,din-ports = <2>;
- 			qcom,dout-ports = <6>;
+ 			qcom,din-ports = <4>;
+ 			qcom,dout-ports = <9>;
  
-@@ -2208,8 +2209,6 @@ rxmacro: codec@3200000 {
+@@ -2096,8 +2097,6 @@ lpass_rxmacro: codec@6ac0000 {
  
  			#clock-cells = <0>;
  			clock-output-names = "mclk";
@@ -126,17 +125,17 @@ index 12e55a0c7417..3b6ea9653d2a 100644
  			#sound-dai-cells = <1>;
  		};
  
-@@ -2223,6 +2222,9 @@ swr1: soundwire-controller@3210000 {
- 			qcom,din-ports = <0>;
- 			qcom,dout-ports = <5>;
+@@ -2109,6 +2108,9 @@ swr1: soundwire-controller@6ad0000 {
+ 			clock-names = "iface";
+ 			label = "RX";
  
 +			pinctrl-0 = <&rx_swr_active>;
 +			pinctrl-names = "default";
 +
- 			qcom,ports-sinterval-low =	/bits/ 8 <0x03 0x1f 0x1f 0x07 0x00>;
- 			qcom,ports-offset1 =		/bits/ 8 <0x00 0x00 0x0b 0x01 0x00>;
- 			qcom,ports-offset2 =		/bits/ 8 <0x00 0x00 0x0b 0x00 0x00>;
-@@ -2254,8 +2256,6 @@ txmacro: codec@3220000 {
+ 			qcom,din-ports = <1>;
+ 			qcom,dout-ports = <11>;
+ 
+@@ -2142,8 +2144,6 @@ lpass_txmacro: codec@6ae0000 {
  
  			#clock-cells = <0>;
  			clock-output-names = "mclk";
@@ -145,7 +144,7 @@ index 12e55a0c7417..3b6ea9653d2a 100644
  			#sound-dai-cells = <1>;
  		};
  
-@@ -2275,8 +2275,6 @@ wsamacro: codec@3240000 {
+@@ -2161,8 +2161,6 @@ lpass_wsamacro: codec@6b00000 {
  
  			#clock-cells = <0>;
  			clock-output-names = "mclk";
@@ -154,17 +153,17 @@ index 12e55a0c7417..3b6ea9653d2a 100644
  			#sound-dai-cells = <1>;
  		};
  
-@@ -2288,6 +2286,9 @@ swr0: soundwire-controller@3250000 {
+@@ -2174,6 +2172,9 @@ swr0: soundwire-controller@6b10000 {
  			clock-names = "iface";
  			label = "WSA";
  
 +			pinctrl-0 = <&wsa_swr_active>;
 +			pinctrl-names = "default";
 +
- 			qcom,din-ports = <2>;
- 			qcom,dout-ports = <6>;
+ 			qcom,din-ports = <4>;
+ 			qcom,dout-ports = <9>;
  
-@@ -2318,6 +2319,9 @@ swr2: soundwire-controller@33b0000 {
+@@ -2203,6 +2204,9 @@ swr2: soundwire-controller@6d30000 {
  			clock-names = "iface";
  			label = "TX";
  
