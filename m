@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ABC57811325
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 14:41:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D698811326
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 14:42:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233448AbjLMNlh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 08:41:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34424 "EHLO
+        id S233521AbjLMNmj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 08:42:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53920 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233511AbjLMNld (ORCPT
+        with ESMTP id S233465AbjLMNmh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 08:41:33 -0500
-Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E88EF5
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 05:41:39 -0800 (PST)
-Received: by mail-wr1-x42b.google.com with SMTP id ffacd0b85a97d-3363ebb277bso372257f8f.2
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 05:41:39 -0800 (PST)
+        Wed, 13 Dec 2023 08:42:37 -0500
+Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1901695
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 05:42:44 -0800 (PST)
+Received: by mail-wm1-x333.google.com with SMTP id 5b1f17b1804b1-40c236624edso68565785e9.1
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 05:42:44 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1702474898; x=1703079698; darn=vger.kernel.org;
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1702474962; x=1703079762; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=YQ49MRAnZaoKSqZNsnflibhrI2GDBa//jCKbcK+lB+o=;
-        b=eZ6eGpEurp11HPKzhLqCy/FIwIvrgmvRNkqTxnNllZt0+89VSoYQ9hmtkcJeH+eezp
-         KkNopDSGu7/Olrr3OgKy5Ys1X1vCszIWDIYR8uF3X2SDuzU4y9dglBBF9RlopNAx/ZKB
-         3+y7MKVlCKSwPhXKWsuu0KzvwpKn32+/kQ5topk09kApy/Rp5fyrusJqUzysiY5o0tdl
-         0r47XK0NKRQDK7u4fWFBW2RH7OiCi1ZeFY7wjmBXuMYUqbMQhtS811WPvbgQU6U8Hvg0
-         swZzQq1D3dl9OM0cVgyHGGLgrbAOA8VGLlz46+9MoQMqCVsGkfDgHQFC//gzj9RdqD7H
-         5vpw==
+        bh=gB+51HnZ1EhLqxZjb5NMil26fuA19Nyv7p+UCHztgCI=;
+        b=XjtPyqXajYNJFRAYFLLQcIDg+K/zRzkddvXWVyWin6SoI1e6HSj5mfVYtiyhL3xiXb
+         EC/eTzMe9ZsY2BHfkKGKX9URtdDJffx/jJjonm9hI4lAiDBKMKO3W+wOWvCks+SmmNHr
+         ofJqcteN+B4r6su1mchbS4z6xzhltDtvtjxai5yYDWZ8Uk1cacjef58Ycyjha92p0OQ8
+         TeKQ+643v/H9iRc9JExiKIGHQwLzszqcAiHStR5jwtNI0vto19jghmLa5iXoeu69z+Qv
+         2w37LUQP8jxjN/4//Cflw3AdGRs6DiVE4aWTsjQbBKy9IaDbyuuyzo4EuuqjsHs5uco4
+         TXzg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702474898; x=1703079698;
+        d=1e100.net; s=20230601; t=1702474962; x=1703079762;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=YQ49MRAnZaoKSqZNsnflibhrI2GDBa//jCKbcK+lB+o=;
-        b=vJnWroRjVkS+lyAnPPprFgEI+qZtTvPtWiTRVbsS2mgJlo5C2qThK9m6689kKRKFxM
-         mwZ75c/himJ7kTte2QQQIDp11V97qkYnfuBMF3jIBZUpAUtycd8AVsXwdV1TEazqLIuk
-         FMIUkgLBoADv6ylyyBLe1usMcpgYs+3mecjKSPmD/cKwnGPQ41tbTM2QmC2g6q8CrhU2
-         AoJABghQIvHHV/VRiEUpNusEBfliUOsRmENp8ia088/P3Wxyf5Ww/l1ulPg+gc2vdg0P
-         sNsyqHi0GWI3ceC04f7q263BuiXbiNzQvFDawiMVzaEr270EctG/xFeJCYdex/Y0/Dnq
-         zTCg==
-X-Gm-Message-State: AOJu0YxFlHXCNSn3g4Z3F7SGn8/PG51gIEd+wfG22QKfgK3NMMJQrEyY
-        bHQUbnXtDBYQQqj5BHRUb6MICgEb/jUDuAfW10w=
-X-Google-Smtp-Source: AGHT+IFledKSQxkLvWN5/hdYdgtJiVfumPSWSLZ+0cxSIF4oZd6/yqylAtH64M3UQVWfAY1CCImLFA==
-X-Received: by 2002:a7b:c4ca:0:b0:40c:386b:9356 with SMTP id g10-20020a7bc4ca000000b0040c386b9356mr3819421wmk.72.1702474897639;
-        Wed, 13 Dec 2023 05:41:37 -0800 (PST)
+        bh=gB+51HnZ1EhLqxZjb5NMil26fuA19Nyv7p+UCHztgCI=;
+        b=IAqw1Ua/Iwww+tVFTwZd5vru3eQ2+VCRahJNsQoUbIK7NuMjeAS3WpGbVvyn1ScNzu
+         Wsl8mExfPRO4y9w2rQQJb21JsLZ7dagrzYgPwC/JmObJA23z5c7Usmjxn1hF+Bjts9FQ
+         fZzMpPk2IGvNRyTOeuUMPwNpCM5ueWLV3fdx2Mqg2W6ZgoFnrOusmSa0suSSeOrAr1F/
+         6BdkG6pJ4VHNEvmssCR+Vgh7YyRYmdZtsIznkAyUkRVM832d9e8oRj2s4gIV8lMKgnO0
+         5rKwd2W+htoH6nP/KutN/up9yVXYdMaKVygZWLJEqhdNlZYA7tEfUZVB9cZhCQKIHysE
+         Yqyg==
+X-Gm-Message-State: AOJu0YwNzYYcrIayVwifTPtmBZImCLUm/wzl0Ccvq7LGlSG15b9PY2Cs
+        Zsy0mJyHBeppy15uadJE0XyslQ==
+X-Google-Smtp-Source: AGHT+IETI3kyqEYJ/qlZfh0+NlonQyfI339qGsyMbMK4dWWwNoP12b0YuZDoOk4QRJyA0AaWi9ozAQ==
+X-Received: by 2002:a05:600c:35d6:b0:40b:5e21:cc40 with SMTP id r22-20020a05600c35d600b0040b5e21cc40mr4337934wmq.107.1702474962563;
+        Wed, 13 Dec 2023 05:42:42 -0800 (PST)
 Received: from alex-rivos.ba.rivosinc.com (amontpellier-656-1-456-62.w92-145.abo.wanadoo.fr. [92.145.124.62])
-        by smtp.gmail.com with ESMTPSA id bd21-20020a05600c1f1500b0040c25abd724sm23043332wmb.9.2023.12.13.05.41.36
+        by smtp.gmail.com with ESMTPSA id t15-20020a05600c198f00b0040c4620b9fasm11988105wmq.11.2023.12.13.05.42.40
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Dec 2023 05:41:37 -0800 (PST)
+        Wed, 13 Dec 2023 05:42:42 -0800 (PST)
 From:   Alexandre Ghiti <alexghiti@rivosinc.com>
 To:     Paul Walmsley <paul.walmsley@sifive.com>,
         Palmer Dabbelt <palmer@dabbelt.com>,
@@ -58,16 +58,16 @@ To:     Paul Walmsley <paul.walmsley@sifive.com>,
         Zong Li <zong.li@sifive.com>, linux-riscv@lists.infradead.org,
         linux-kernel@vger.kernel.org
 Cc:     Alexandre Ghiti <alexghiti@rivosinc.com>
-Subject: [PATCH -fixes 1/2] riscv: Fix module_alloc() that did not reset the linear mapping permissions
-Date:   Wed, 13 Dec 2023 14:40:26 +0100
-Message-Id: <20231213134027.155327-2-alexghiti@rivosinc.com>
+Subject: [PATCH -fixes 2/2] riscv: Fix set_direct_map_default_noflush() to reset _PAGE_EXEC
+Date:   Wed, 13 Dec 2023 14:40:27 +0100
+Message-Id: <20231213134027.155327-3-alexghiti@rivosinc.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20231213134027.155327-1-alexghiti@rivosinc.com>
 References: <20231213134027.155327-1-alexghiti@rivosinc.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -75,46 +75,29 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-After unloading a module, we must reset the linear mapping permissions,
-see the example below:
+When resetting the linear mapping permissions, we must make sure that we
+clear the X bit so that do not end up with WX mappings (since we set
+PAGE_KERNEL).
 
-Before unloading a module:
-
-0xffffaf809d65d000-0xffffaf809d6dc000    0x000000011d65d000       508K PTE .   ..     ..   D A G . . W R V
-0xffffaf809d6dc000-0xffffaf809d6dd000    0x000000011d6dc000         4K PTE .   ..     ..   D A G . . . R V
-0xffffaf809d6dd000-0xffffaf809d6e1000    0x000000011d6dd000        16K PTE .   ..     ..   D A G . . W R V
-0xffffaf809d6e1000-0xffffaf809d6e7000    0x000000011d6e1000        24K PTE .   ..     ..   D A G . X . R V
-
-After unloading a module:
-
-0xffffaf809d65d000-0xffffaf809d6e1000    0x000000011d65d000       528K PTE .   ..     ..   D A G . . W R V
-0xffffaf809d6e1000-0xffffaf809d6e7000    0x000000011d6e1000        24K PTE .   ..     ..   D A G . X W R V
-
-The last mapping is not reset and we end up with WX mappings in the linear
-mapping.
-
-So add VM_FLUSH_RESET_PERMS to our module_alloc() definition.
-
-Fixes: 0cff8bff7af8 ("riscv: avoid the PIC offset of static percpu data in module beyond 2G limits")
+Fixes: 395a21ff859c ("riscv: add ARCH_HAS_SET_DIRECT_MAP support")
 Signed-off-by: Alexandre Ghiti <alexghiti@rivosinc.com>
 ---
- arch/riscv/kernel/module.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ arch/riscv/mm/pageattr.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/riscv/kernel/module.c b/arch/riscv/kernel/module.c
-index aac019ed63b1..862834bb1d64 100644
---- a/arch/riscv/kernel/module.c
-+++ b/arch/riscv/kernel/module.c
-@@ -894,7 +894,8 @@ void *module_alloc(unsigned long size)
+diff --git a/arch/riscv/mm/pageattr.c b/arch/riscv/mm/pageattr.c
+index 96cbda683936..01398fee5cf8 100644
+--- a/arch/riscv/mm/pageattr.c
++++ b/arch/riscv/mm/pageattr.c
+@@ -383,7 +383,7 @@ int set_direct_map_invalid_noflush(struct page *page)
+ int set_direct_map_default_noflush(struct page *page)
  {
- 	return __vmalloc_node_range(size, 1, MODULES_VADDR,
- 				    MODULES_END, GFP_KERNEL,
--				    PAGE_KERNEL, 0, NUMA_NO_NODE,
-+				    PAGE_KERNEL, VM_FLUSH_RESET_PERMS,
-+				    NUMA_NO_NODE,
- 				    __builtin_return_address(0));
+ 	return __set_memory((unsigned long)page_address(page), 1,
+-			    PAGE_KERNEL, __pgprot(0));
++			    PAGE_KERNEL, __pgprot(_PAGE_EXEC));
  }
- #endif
+ 
+ #ifdef CONFIG_DEBUG_PAGEALLOC
 -- 
 2.39.2
 
