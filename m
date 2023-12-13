@@ -2,106 +2,313 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 32FD2810E19
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 11:15:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 93837810E1D
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 11:15:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235193AbjLMJ7r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 04:59:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52232 "EHLO
+        id S235122AbjLMKBt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 05:01:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41740 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232663AbjLMJ7p (ORCPT
+        with ESMTP id S232663AbjLMKBs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 04:59:45 -0500
-Received: from relay1-d.mail.gandi.net (relay1-d.mail.gandi.net [217.70.183.193])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B5A583;
-        Wed, 13 Dec 2023 01:59:50 -0800 (PST)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 40D6E240011;
-        Wed, 13 Dec 2023 09:59:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1702461589;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=nTAnT1PVzX6vcK0RfwUZyNxxQAd/jwvrT19yLQs+C4Q=;
-        b=UnbSIH0Y1HCLvwbULwx2H3B1LWY96fVr8vLzUfF1/SFv9nka4g4DdQJDAkDjs38Kwm7Atk
-        mp872UwH9UE7oDt7zK1SxubMXoShq3w2Pf6m+cjSwM9ao27/SiTzLqo6hudA7QuKA9970g
-        WLgHOC/5FRwEvcpYnSuJl2adqREKc1qWIfhSrEH3UKLlUyZNJqhX/qETogIopr1bq4EM8o
-        paXnwt/VrPgrAuR6/J/miZPdF5CQfKhOi4JbzoXemoCK4cqva1TYYlUTSbwap+ZOdKVdxj
-        aaB00qqbkN0rmExstwn1PdamLsNOfLzeb1N//3GTUIKOvxgUPuKgyzf4C/bdQg==
-Date:   Wed, 13 Dec 2023 10:59:48 +0100
-From:   Kamel Bouhara <kamel.bouhara@bootlin.com>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc:     Conor Dooley <conor@kernel.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Henrik Rydberg <rydberg@bitmath.org>,
-        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, Marco Felsch <m.felsch@pengutronix.de>,
-        Jeff LaBundy <jeff@labundy.com>,
-        catalin.popescu@leica-geosystems.com,
-        mark.satterthwaite@touchnetix.com, bartp@baasheep.co.uk,
-        hannah.rossiter@touchnetix.com,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Gregory Clement <gregory.clement@bootlin.com>,
-        bsp-development.geo@leica-geosystems.com
-Subject: Re: [PATCH v5 2/3] dt-bindings: input: Add TouchNetix axiom
- touchscreen
-Message-ID: <20231213095948.GD2340704@kb-xps>
-References: <20231211121430.1689139-1-kamel.bouhara@bootlin.com>
- <20231211121430.1689139-3-kamel.bouhara@bootlin.com>
- <20231212-rework-bounce-f4d9d12362a4@spud>
- <ce238248-6bac-41df-94ba-b494c5c09631@linaro.org>
- <20231213082256.GB2340704@kb-xps>
- <656f2245-ff76-48cf-9a1f-05259765c622@linaro.org>
- <20231213091417.GC2340704@kb-xps>
- <de1ee415-31b0-45fd-b376-f7aa83b64c64@linaro.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <de1ee415-31b0-45fd-b376-f7aa83b64c64@linaro.org>
-X-GND-Sasl: kamel.bouhara@bootlin.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        Wed, 13 Dec 2023 05:01:48 -0500
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id B1B3E83;
+        Wed, 13 Dec 2023 02:01:54 -0800 (PST)
+Received: from linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net (linux.microsoft.com [13.77.154.182])
+        by linux.microsoft.com (Postfix) with ESMTPSA id D9FAC20B74C0;
+        Wed, 13 Dec 2023 02:01:53 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com D9FAC20B74C0
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1702461713;
+        bh=W76rnqlsU93altV/2qDWt6+X+GwQAHiWQz5/saK9YpA=;
+        h=From:To:Cc:Subject:Date:From;
+        b=BEIll5Vo3uXoX3e04Vuj3HajXdbhmOkMB/PmrDnLfOK5t3VQbVawsSsp0xoJ//UvQ
+         qtSxCc3FMfwaXE3qOD6NiJhmwsxq+E+kOIvulaCUV2qY509ZEGGQKsDMlUFdFcMW/V
+         IPwH7SI3iR3BqrIJQuN4cexjtEGvKFGVbiyykiQE=
+From:   Konstantin Taranov <kotaranov@linux.microsoft.com>
+To:     kotaranov@microsoft.com, kys@microsoft.com, haiyangz@microsoft.com,
+        wei.liu@kernel.org, kuba@kernel.org, leon@kernel.org,
+        decui@microsoft.com, edumazet@google.com, cai.huoqing@linux.dev,
+        pabeni@redhat.com, davem@davemloft.net, longli@microsoft.com
+Cc:     linux-hyperv@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org
+Subject: [PATCH for-next v2] net: mana: add msix index sharing between EQs
+Date:   Wed, 13 Dec 2023 02:01:47 -0800
+Message-Id: <1702461707-2692-1-git-send-email-kotaranov@linux.microsoft.com>
+X-Mailer: git-send-email 1.8.3.1
+X-Spam-Status: No, score=-17.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,
+        USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Le Wed, Dec 13, 2023 at 10:15:35AM +0100, Krzysztof Kozlowski a écrit :
-> On 13/12/2023 10:14, Kamel Bouhara wrote:
-> > Le Wed, Dec 13, 2023 at 09:46:03AM +0100, Krzysztof Kozlowski a écrit :
-> >> On 13/12/2023 09:22, Kamel Bouhara wrote:
-> >>>> It still brings the type of some fields or the constraints. However need
-> >>>> of specifying "poll-interval" already points to missing
-> >>>> unevaluatedProperties.
-> >>>
-> >>> Ok, this wasn't clear for me wether or not I should pick
-> >>> unevaluatedProperties
-> >>
-> >> Yes
-> >>
-> >>> as I still reference "poll-interval" from the
-> >>> input.yaml schema ?
-> >>
-> >> You should drop it from your binding.
-> >
-> > The driver use it could you explain why I should drop it ?
->
-> Because it comes from input.yaml and you did not add any constraints, so
-> poll-interval here is redundant.
->
+From: Konstantin Taranov <kotaranov@microsoft.com>
 
-Ok clear, thanks !
+This patch allows to assign and poll more than one EQ on the same
+msix index.
+It is achieved by introducing a list of attached EQs in each IRQ context.
+It also removes the existing msix_index map that tried to ensure that there
+is only one EQ at each msix_index.
+This patch exports symbols for creating EQs from other MANA kernel modules.
 
-Regards,
---
-Kamel Bouhara, Bootlin
-Embedded Linux and kernel engineering
-https://bootlin.com
+Signed-off-by: Konstantin Taranov <kotaranov@microsoft.com>
+---
+V1 -> V2: removed msix_index map and improved thread-safety of rcu lists
+---
+ .../net/ethernet/microsoft/mana/gdma_main.c   | 76 +++++++++----------
+ .../net/ethernet/microsoft/mana/hw_channel.c  |  1 +
+ drivers/net/ethernet/microsoft/mana/mana_en.c |  1 +
+ include/net/mana/gdma.h                       |  7 +-
+ 4 files changed, 43 insertions(+), 42 deletions(-)
+
+diff --git a/drivers/net/ethernet/microsoft/mana/gdma_main.c b/drivers/net/ethernet/microsoft/mana/gdma_main.c
+index 6367de0..a686301 100644
+--- a/drivers/net/ethernet/microsoft/mana/gdma_main.c
++++ b/drivers/net/ethernet/microsoft/mana/gdma_main.c
+@@ -414,8 +414,12 @@ static void mana_gd_process_eq_events(void *arg)
+ 
+ 		old_bits = (eq->head / num_eqe - 1) & GDMA_EQE_OWNER_MASK;
+ 		/* No more entries */
+-		if (owner_bits == old_bits)
++		if (owner_bits == old_bits) {
++			/* return here without ringing the doorbell */
++			if (i == 0)
++				return;
+ 			break;
++		}
+ 
+ 		new_bits = (eq->head / num_eqe) & GDMA_EQE_OWNER_MASK;
+ 		if (owner_bits != new_bits) {
+@@ -445,42 +449,29 @@ static int mana_gd_register_irq(struct gdma_queue *queue,
+ 	struct gdma_dev *gd = queue->gdma_dev;
+ 	struct gdma_irq_context *gic;
+ 	struct gdma_context *gc;
+-	struct gdma_resource *r;
+ 	unsigned int msi_index;
+ 	unsigned long flags;
+ 	struct device *dev;
+ 	int err = 0;
+ 
+ 	gc = gd->gdma_context;
+-	r = &gc->msix_resource;
+ 	dev = gc->dev;
++	msi_index = spec->eq.msix_index;
+ 
+-	spin_lock_irqsave(&r->lock, flags);
+-
+-	msi_index = find_first_zero_bit(r->map, r->size);
+-	if (msi_index >= r->size || msi_index >= gc->num_msix_usable) {
++	if (msi_index >= gc->num_msix_usable) {
+ 		err = -ENOSPC;
+-	} else {
+-		bitmap_set(r->map, msi_index, 1);
+-		queue->eq.msix_index = msi_index;
+-	}
+-
+-	spin_unlock_irqrestore(&r->lock, flags);
+-
+-	if (err) {
+-		dev_err(dev, "Register IRQ err:%d, msi:%u rsize:%u, nMSI:%u",
+-			err, msi_index, r->size, gc->num_msix_usable);
++		dev_err(dev, "Register IRQ err:%d, msi:%u nMSI:%u",
++			err, msi_index, gc->num_msix_usable);
+ 
+ 		return err;
+ 	}
+ 
++	queue->eq.msix_index = msi_index;
+ 	gic = &gc->irq_contexts[msi_index];
+ 
+-	WARN_ON(gic->handler || gic->arg);
+-
+-	gic->arg = queue;
+-
+-	gic->handler = mana_gd_process_eq_events;
++	spin_lock_irqsave(&gic->lock, flags);
++	list_add_rcu(&queue->entry, &gic->eq_list);
++	spin_unlock_irqrestore(&gic->lock, flags);
+ 
+ 	return 0;
+ }
+@@ -490,12 +481,11 @@ static void mana_gd_deregiser_irq(struct gdma_queue *queue)
+ 	struct gdma_dev *gd = queue->gdma_dev;
+ 	struct gdma_irq_context *gic;
+ 	struct gdma_context *gc;
+-	struct gdma_resource *r;
+ 	unsigned int msix_index;
+ 	unsigned long flags;
++	struct gdma_queue *eq;
+ 
+ 	gc = gd->gdma_context;
+-	r = &gc->msix_resource;
+ 
+ 	/* At most num_online_cpus() + 1 interrupts are used. */
+ 	msix_index = queue->eq.msix_index;
+@@ -503,14 +493,17 @@ static void mana_gd_deregiser_irq(struct gdma_queue *queue)
+ 		return;
+ 
+ 	gic = &gc->irq_contexts[msix_index];
+-	gic->handler = NULL;
+-	gic->arg = NULL;
+-
+-	spin_lock_irqsave(&r->lock, flags);
+-	bitmap_clear(r->map, msix_index, 1);
+-	spin_unlock_irqrestore(&r->lock, flags);
++	spin_lock_irqsave(&gic->lock, flags);
++	list_for_each_entry_rcu(eq, &gic->eq_list, entry) {
++		if (queue == eq) {
++			list_del_rcu(&eq->entry);
++			break;
++		}
++	}
++	spin_unlock_irqrestore(&gic->lock, flags);
+ 
+ 	queue->eq.msix_index = INVALID_PCI_MSIX_INDEX;
++	synchronize_rcu();
+ }
+ 
+ int mana_gd_test_eq(struct gdma_context *gc, struct gdma_queue *eq)
+@@ -588,6 +581,7 @@ static int mana_gd_create_eq(struct gdma_dev *gd,
+ 	int err;
+ 
+ 	queue->eq.msix_index = INVALID_PCI_MSIX_INDEX;
++	queue->id = INVALID_QUEUE_ID;
+ 
+ 	log2_num_entries = ilog2(queue->queue_size / GDMA_EQE_SIZE);
+ 
+@@ -819,6 +813,7 @@ free_q:
+ 	kfree(queue);
+ 	return err;
+ }
++EXPORT_SYMBOL_NS(mana_gd_create_mana_eq, NET_MANA);
+ 
+ int mana_gd_create_mana_wq_cq(struct gdma_dev *gd,
+ 			      const struct gdma_queue_spec *spec,
+@@ -895,6 +890,7 @@ void mana_gd_destroy_queue(struct gdma_context *gc, struct gdma_queue *queue)
+ 	mana_gd_free_memory(gmi);
+ 	kfree(queue);
+ }
++EXPORT_SYMBOL_NS(mana_gd_destroy_queue, NET_MANA);
+ 
+ int mana_gd_verify_vf_version(struct pci_dev *pdev)
+ {
+@@ -1217,9 +1213,14 @@ int mana_gd_poll_cq(struct gdma_queue *cq, struct gdma_comp *comp, int num_cqe)
+ static irqreturn_t mana_gd_intr(int irq, void *arg)
+ {
+ 	struct gdma_irq_context *gic = arg;
++	struct list_head *eq_list = &gic->eq_list;
++	struct gdma_queue *eq;
+ 
+-	if (gic->handler)
+-		gic->handler(gic->arg);
++	rcu_read_lock();
++	list_for_each_entry_rcu(eq, eq_list, entry) {
++		gic->handler(eq);
++	}
++	rcu_read_unlock();
+ 
+ 	return IRQ_HANDLED;
+ }
+@@ -1271,8 +1272,9 @@ static int mana_gd_setup_irqs(struct pci_dev *pdev)
+ 
+ 	for (i = 0; i < nvec; i++) {
+ 		gic = &gc->irq_contexts[i];
+-		gic->handler = NULL;
+-		gic->arg = NULL;
++		gic->handler = mana_gd_process_eq_events;
++		INIT_LIST_HEAD(&gic->eq_list);
++		spin_lock_init(&gic->lock);
+ 
+ 		if (!i)
+ 			snprintf(gic->name, MANA_IRQ_NAME_SZ, "mana_hwc@pci:%s",
+@@ -1295,10 +1297,6 @@ static int mana_gd_setup_irqs(struct pci_dev *pdev)
+ 		irq_set_affinity_and_hint(irq, cpumask_of(cpu));
+ 	}
+ 
+-	err = mana_gd_alloc_res_map(nvec, &gc->msix_resource);
+-	if (err)
+-		goto free_irq;
+-
+ 	gc->max_num_msix = nvec;
+ 	gc->num_msix_usable = nvec;
+ 
+@@ -1329,8 +1327,6 @@ static void mana_gd_remove_irqs(struct pci_dev *pdev)
+ 	if (gc->max_num_msix < 1)
+ 		return;
+ 
+-	mana_gd_free_res_map(&gc->msix_resource);
+-
+ 	for (i = 0; i < gc->max_num_msix; i++) {
+ 		irq = pci_irq_vector(pdev, i);
+ 		if (irq < 0)
+diff --git a/drivers/net/ethernet/microsoft/mana/hw_channel.c b/drivers/net/ethernet/microsoft/mana/hw_channel.c
+index 9d1cd3b..2729a2c 100644
+--- a/drivers/net/ethernet/microsoft/mana/hw_channel.c
++++ b/drivers/net/ethernet/microsoft/mana/hw_channel.c
+@@ -300,6 +300,7 @@ static int mana_hwc_create_gdma_eq(struct hw_channel_context *hwc,
+ 	spec.eq.context = ctx;
+ 	spec.eq.callback = cb;
+ 	spec.eq.log2_throttle_limit = DEFAULT_LOG2_THROTTLING_FOR_ERROR_EQ;
++	spec.eq.msix_index = 0;
+ 
+ 	return mana_gd_create_hwc_queue(hwc->gdma_dev, &spec, queue);
+ }
+diff --git a/drivers/net/ethernet/microsoft/mana/mana_en.c b/drivers/net/ethernet/microsoft/mana/mana_en.c
+index fc3d290..2c04bdb 100644
+--- a/drivers/net/ethernet/microsoft/mana/mana_en.c
++++ b/drivers/net/ethernet/microsoft/mana/mana_en.c
+@@ -1244,6 +1244,7 @@ static int mana_create_eq(struct mana_context *ac)
+ 	spec.eq.log2_throttle_limit = LOG2_EQ_THROTTLE;
+ 
+ 	for (i = 0; i < gc->max_num_queues; i++) {
++		spec.eq.msix_index = (i + 1) % gc->num_msix_usable;
+ 		err = mana_gd_create_mana_eq(gd, &spec, &ac->eqs[i].eq);
+ 		if (err)
+ 			goto out;
+diff --git a/include/net/mana/gdma.h b/include/net/mana/gdma.h
+index 88b6ef7..76f2fd2 100644
+--- a/include/net/mana/gdma.h
++++ b/include/net/mana/gdma.h
+@@ -293,6 +293,7 @@ struct gdma_queue {
+ 
+ 	u32 head;
+ 	u32 tail;
++	struct list_head entry;
+ 
+ 	/* Extra fields specific to EQ/CQ. */
+ 	union {
+@@ -328,6 +329,7 @@ struct gdma_queue_spec {
+ 			void *context;
+ 
+ 			unsigned long log2_throttle_limit;
++			unsigned int msix_index;
+ 		} eq;
+ 
+ 		struct {
+@@ -344,7 +346,9 @@ struct gdma_queue_spec {
+ 
+ struct gdma_irq_context {
+ 	void (*handler)(void *arg);
+-	void *arg;
++	/* Protect the eq_list */
++	spinlock_t lock;
++	struct list_head eq_list;
+ 	char name[MANA_IRQ_NAME_SZ];
+ };
+ 
+@@ -355,7 +359,6 @@ struct gdma_context {
+ 	unsigned int		max_num_queues;
+ 	unsigned int		max_num_msix;
+ 	unsigned int		num_msix_usable;
+-	struct gdma_resource	msix_resource;
+ 	struct gdma_irq_context	*irq_contexts;
+ 
+ 	/* L2 MTU */
+-- 
+2.43.0
+
