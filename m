@@ -2,113 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E8AA78117E5
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 16:45:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 02EA6811818
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 16:47:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442310AbjLMPpF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 10:45:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39346 "EHLO
+        id S1442430AbjLMPrr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 10:47:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37740 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235404AbjLMPov (ORCPT
+        with ESMTP id S1442351AbjLMPrh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 10:44:51 -0500
-Received: from verein.lst.de (verein.lst.de [213.95.11.211])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B27A26AE;
-        Wed, 13 Dec 2023 07:44:16 -0800 (PST)
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 3036768B05; Wed, 13 Dec 2023 16:44:09 +0100 (CET)
-Date:   Wed, 13 Dec 2023 16:44:09 +0100
-From:   Christoph Hellwig <hch@lst.de>
-To:     John Garry <john.g.garry@oracle.com>
-Cc:     Christoph Hellwig <hch@lst.de>, axboe@kernel.dk, kbusch@kernel.org,
-        sagi@grimberg.me, jejb@linux.ibm.com, martin.petersen@oracle.com,
-        djwong@kernel.org, viro@zeniv.linux.org.uk, brauner@kernel.org,
-        dchinner@redhat.com, jack@suse.cz, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
-        linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        tytso@mit.edu, jbongio@google.com, linux-scsi@vger.kernel.org,
-        ming.lei@redhat.com, jaswin@linux.ibm.com, bvanassche@acm.org
-Subject: Re: [PATCH v2 00/16] block atomic writes
-Message-ID: <20231213154409.GA7724@lst.de>
-References: <20231212110844.19698-1-john.g.garry@oracle.com> <20231212163246.GA24594@lst.de> <b8b0a9d7-88d2-45a9-877a-ecc5e0f1e645@oracle.com>
+        Wed, 13 Dec 2023 10:47:37 -0500
+Received: from Atcsqr.andestech.com (60-248-80-70.hinet-ip.hinet.net [60.248.80.70])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AB42F2;
+        Wed, 13 Dec 2023 07:47:42 -0800 (PST)
+Received: from mail.andestech.com (ATCPCS16.andestech.com [10.0.1.222])
+        by Atcsqr.andestech.com with ESMTP id 3BDFis7u072509;
+        Wed, 13 Dec 2023 23:44:54 +0800 (+08)
+        (envelope-from peterlin@andestech.com)
+Received: from APC323 (10.0.12.98) by ATCPCS16.andestech.com (10.0.1.222) with
+ Microsoft SMTP Server id 14.3.498.0; Wed, 13 Dec 2023 23:44:53 +0800
+Date:   Wed, 13 Dec 2023 23:44:49 +0800
+From:   Yu-Chien Peter Lin <peterlin@andestech.com>
+To:     Anup Patel <apatel@ventanamicro.com>
+CC:     <acme@kernel.org>, <adrian.hunter@intel.com>,
+        <ajones@ventanamicro.com>, <alexander.shishkin@linux.intel.com>,
+        <andre.przywara@arm.com>, <anup@brainfault.org>,
+        <aou@eecs.berkeley.edu>, <atishp@atishpatra.org>,
+        <conor+dt@kernel.org>, <conor.dooley@microchip.com>,
+        <conor@kernel.org>, <devicetree@vger.kernel.org>,
+        <dminus@andestech.com>, <evan@rivosinc.com>,
+        <geert+renesas@glider.be>, <guoren@kernel.org>, <heiko@sntech.de>,
+        <irogers@google.com>, <jernej.skrabec@gmail.com>,
+        <jolsa@kernel.org>, <jszhang@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <linux-perf-users@vger.kernel.org>,
+        <linux-renesas-soc@vger.kernel.org>,
+        <linux-riscv@lists.infradead.org>, <linux-sunxi@lists.linux.dev>,
+        <locus84@andestech.com>, <magnus.damm@gmail.com>,
+        <mark.rutland@arm.com>, <mingo@redhat.com>, <n.shubin@yadro.com>,
+        <namhyung@kernel.org>, <palmer@dabbelt.com>,
+        <paul.walmsley@sifive.com>, <peterz@infradead.org>,
+        <prabhakar.mahadev-lad.rj@bp.renesas.com>, <rdunlap@infradead.org>,
+        <robh+dt@kernel.org>, <samuel@sholland.org>,
+        <sunilvl@ventanamicro.com>, <tglx@linutronix.de>,
+        <tim609@andestech.com>, <uwu@icenowy.me>, <wens@csie.org>,
+        <will@kernel.org>, <ycliang@andestech.com>, <inochiama@outlook.com>
+Subject: Re: [PATCH v5 03/16] irqchip/riscv-intc: Introduce Andes hart-level
+ interrupt controller
+Message-ID: <ZXnRcfuvQBo6UDCx@APC323>
+References: <20231213070301.1684751-1-peterlin@andestech.com>
+ <20231213070301.1684751-4-peterlin@andestech.com>
+ <CAK9=C2WC2i7XkjDgbjccVn03BYfnE_YS4YiA6ZWMj6GDyTjJKA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="utf-8"
 Content-Disposition: inline
-In-Reply-To: <b8b0a9d7-88d2-45a9-877a-ecc5e0f1e645@oracle.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAK9=C2WC2i7XkjDgbjccVn03BYfnE_YS4YiA6ZWMj6GDyTjJKA@mail.gmail.com>
+User-Agent: Mutt/2.2.12 (2023-09-09)
+X-Originating-IP: [10.0.12.98]
+X-DNSRBL: 
+X-SPAM-SOURCE-CHECK: pass
+X-MAIL: Atcsqr.andestech.com 3BDFis7u072509
+X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RDNS_DYNAMIC,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 13, 2023 at 09:32:06AM +0000, John Garry wrote:
->>> - How to make API extensible for when we have no HW support? In that case,
->>>    we would prob not have to follow rule of power-of-2 length et al.
->>>    As a possible solution, maybe we can say that atomic writes are
->>>    supported for the file via statx, but not set unit_min and max values,
->>>    and this means that writes need to be just FS block aligned there.
->> I don't think the power of two length is much of a problem to be
->> honest, and if we every want to lift it we can still do that easily
->> by adding a new flag or limit.
->
-> ok, but it would be nice to have some idea on what that flag or limit 
-> change would be.
+On Wed, Dec 13, 2023 at 08:15:28PM +0530, Anup Patel wrote:
+> On Wed, Dec 13, 2023 at 12:35 PM Yu Chien Peter Lin
+> <peterlin@andestech.com> wrote:
+> >
+> > Add support for the Andes hart-level interrupt controller. This
+> > controller provides interrupt mask/unmask functions to access the
+> > custom register (SLIE) where the non-standard S-mode local interrupt
+> > enable bits are located.
+> >
+> > To share the riscv_intc_domain_map() with the generic RISC-V INTC and
+> > ACPI, add a chip parameter to riscv_intc_init_common(), so it can be
+> > passed to the irq_domain_set_info() as private data.
+> >
+> > Andes hart-level interrupt controller requires the "andestech,cpu-intc"
+> > compatible string to be present in interrupt-controller of cpu node.
+> > e.g.,
+> >
+> >   cpu0: cpu@0 {
+> >       compatible = "andestech,ax45mp", "riscv";
+> >       ...
+> >       cpu0-intc: interrupt-controller {
+> >           #interrupt-cells = <0x01>;
+> >           compatible = "andestech,cpu-intc", "riscv,cpu-intc";
+> >           interrupt-controller;
+> >       };
+> >   };
+> >
+> > Signed-off-by: Yu Chien Peter Lin <peterlin@andestech.com>
+> > Reviewed-by: Charles Ci-Jyun Wu <dminus@andestech.com>
+> > Reviewed-by: Leo Yu-Chi Liang <ycliang@andestech.com>
+> > ---
+> > Changes v1 -> v2:
+> >   - New patch
+> > Changes v2 -> v3:
+> >   - Return -ENXIO if no valid compatible INTC found
+> >   - Allow falling back to generic RISC-V INTC
+> > Changes v3 -> v4: (Suggested by Thomas [1])
+> >   - Add comment to andes irq chip function
+> >   - Refine code flow to share with generic RISC-V INTC and ACPI
+> >   - Move Andes specific definitions to include/linux/soc/andes/irq.h
+> > Changes v4 -> v5: (Suggested by Thomas)
+> >   - Fix commit message
+> >   - Subtract ANDES_SLI_CAUSE_BASE from d->hwirq to calculate the value of mask
+> >   - Do not set chip_data to the chip itself with irq_domain_set_info()
+> >   - Follow reverse fir tree order variable declarations
+> >
+> > [1] https://patchwork.kernel.org/project/linux-riscv/patch/20231019135723.3657156-1-peterlin@andestech.com/
+> > ---
+> >  drivers/irqchip/irq-riscv-intc.c | 53 ++++++++++++++++++++++++++++----
+> >  include/linux/soc/andes/irq.h    | 17 ++++++++++
+> >  2 files changed, 64 insertions(+), 6 deletions(-)
+> >  create mode 100644 include/linux/soc/andes/irq.h
+> >
+> > diff --git a/drivers/irqchip/irq-riscv-intc.c b/drivers/irqchip/irq-riscv-intc.c
+> > index 2fdd40f2a791..0b6bf3fb1dba 100644
+> > --- a/drivers/irqchip/irq-riscv-intc.c
+> > +++ b/drivers/irqchip/irq-riscv-intc.c
+> > @@ -17,6 +17,7 @@
+> >  #include <linux/module.h>
+> >  #include <linux/of.h>
+> >  #include <linux/smp.h>
+> > +#include <linux/soc/andes/irq.h>
+> >
+> >  static struct irq_domain *intc_domain;
+> >
+> > @@ -46,6 +47,31 @@ static void riscv_intc_irq_unmask(struct irq_data *d)
+> >         csr_set(CSR_IE, BIT(d->hwirq));
+> >  }
+> >
+> > +static void andes_intc_irq_mask(struct irq_data *d)
+> > +{
+> > +       /*
+> > +        * Andes specific S-mode local interrupt causes (hwirq)
+> > +        * are defined as (256 + n) and controlled by n-th bit
+> > +        * of SLIE.
+> > +        */
+> > +       unsigned int mask = BIT(d->hwirq - ANDES_SLI_CAUSE_BASE);
+> > +
+> > +       if (d->hwirq < ANDES_SLI_CAUSE_BASE)
+> > +               csr_clear(CSR_IE, mask);
+> > +       else
+> > +               csr_clear(ANDES_CSR_SLIE, mask);
+> > +}
+> > +
+> > +static void andes_intc_irq_unmask(struct irq_data *d)
+> > +{
+> > +       unsigned int mask = BIT(d->hwirq - ANDES_SLI_CAUSE_BASE);
+> > +
+> > +       if (d->hwirq < ANDES_SLI_CAUSE_BASE)
+> > +               csr_set(CSR_IE, mask);
+> > +       else
+> > +               csr_set(ANDES_CSR_SLIE, mask);
+> 
+> Clearly, Andes does not have any CSR for:
+> XLEN <= local interrupt <ANDES_SLI_CAUSE_BASE
+> and
+> ANDES_SLI_CAUSE_BASE + XLEN <= local interrupt
 
-That would require a concrete use case.  The simples thing for a file
-system that can or does log I/O it would simply be a flag waving all
-the alignment and size requirements.
+Ah, what am I doing here.
+sorry for that silly patch.
 
->> I suspect we need an on-disk flag that forces allocations to be
->> aligned to the atomic write limit, in some ways similar how the
->> XFS rt flag works.  You'd need to set it on an empty file, and all
->> allocations after that are guaranteed to be properly aligned.
->
-> Hmmm... so how is this different to the XFS forcealign feature?
+Regards,
+Peter Lin
 
-Maybe not much.  But that's not what it is about - we need a common
-API for this and not some XFS internal flag.  So if this is something
-we could support in ext4 as well that would be a good step.  And for
-btrfs you'd probably want to support something like it in nocow mode
-if people care enough, or always support atomics and write out of
-place.
-
-> For XFS, I thought that your idea was to always CoW new extents for 
-> misaligned extents or writes which spanned multiple extents.
-
-Well, that is useful for two things:
-
- - atomic writes on hardware that does not support it
- - atomic writes for bufferd I/O
- - supporting other sizes / alignments than the strict power of
-   two above.
-
-> Right, so we should limit atomic write queue limits to max_hw_sectors. But 
-> people can still tweak max_sectors, and I am inclined to say that 
-> atomic_write_unit_max et al should be (dynamically) limited to max_sectors 
-> also.
-
-Allowing people to tweak it seems to be asking for trouble.
-
->> have that silly limit.  For NVMe that would require SGL support
->> (and some driver changes I've been wanting to make for long where
->> we always use SGLs for transfers larger than a single PRP if supported)
->
-> If we could avoid dealing with a virt boundary, then that would be nice.
->
-> Are there any patches yet for the change to always use SGLs for transfers 
-> larger than a single PRP?
-
-No.
-
-> On a related topic, I am not sure about how - or if we even should - 
-> enforce iovec PAGE-alignment or length; rather, the user could just be 
-> advised that iovecs must be PAGE-aligned and min PAGE length to achieve 
-> atomic_write_unit_max.
-
-Anything that just advices the user an it not clear cut and results in
-an error is data loss waiting to happen.  Even more so if it differs
-from device to device.
+> Regards,
+> Anup
