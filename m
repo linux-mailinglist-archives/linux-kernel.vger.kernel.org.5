@@ -2,170 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 74013811544
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 15:53:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A879F811545
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 15:53:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1441920AbjLMOxe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 09:53:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42324 "EHLO
+        id S1441934AbjLMOxt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 09:53:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54544 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233502AbjLMOxc (ORCPT
+        with ESMTP id S235368AbjLMOxr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 09:53:32 -0500
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8074293
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 06:53:37 -0800 (PST)
-Received: by mail-wr1-x434.google.com with SMTP id ffacd0b85a97d-3363880e9f3so694240f8f.3
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 06:53:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ventanamicro.com; s=google; t=1702479216; x=1703084016; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=AhlOkscoUfjpVGzLbSN2huPD+4bK2j9Udj5/KiwJMTU=;
-        b=l9Enddh8TyPaIMGcB7PaoXLGQUcmziKz7jdEwl6XZG/7oW1Tkapp9+0vkF5CPCHPVN
-         eQo9DGKxsqXGZdKmaxWrNJs6JNZ+NhZrPCjde7oDexa25Dx9QREvSfyqNYLJghL5Uy2x
-         pSIhbgDxihZRXE+JoQs0AQLNFioOC+boY7V8d38GqBpO2r1xoyKSDjVXVWQ/+4rA4k5p
-         SEduRXJJUQ4GsNKLcYG7kNDmiZLjYvAJcLOZV2VGApj5uxqIAg1nIHoOYcd66QeIq14W
-         KVyd59Y0FO7rIZ/vw7WRedJYeEZ3CIDl9jz08qPAm/XOYgcr3uaQ3atkzaWFAUFi4uqW
-         CLfA==
+        Wed, 13 Dec 2023 09:53:47 -0500
+Received: from mail-ot1-f49.google.com (mail-ot1-f49.google.com [209.85.210.49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C92EDD;
+        Wed, 13 Dec 2023 06:53:52 -0800 (PST)
+Received: by mail-ot1-f49.google.com with SMTP id 46e09a7af769-6d7fa93afe9so5193932a34.2;
+        Wed, 13 Dec 2023 06:53:52 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702479216; x=1703084016;
+        d=1e100.net; s=20230601; t=1702479232; x=1703084032;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=AhlOkscoUfjpVGzLbSN2huPD+4bK2j9Udj5/KiwJMTU=;
-        b=L2Gg4g1lk69dZqaFJiOkBxqeJOf8tWi+V7vwP6vI/4QfRU4hp3o7hjOAsW76KOgHEm
-         6ahd7aUb9VKVrB4/tg3BiHqws7PZQ1f/vJCteaMKbI4J/le+NiwTyCA56wM8BVphSdhc
-         GdPpsK0MComihkhm0UwixrncK0CRPcHNdC/6nqK3eAwSzELezJtRuV5qHOzoRhfGhDQe
-         0JcVNvVo9SWa1p+9KjADu3AmqXZWXdihfQNiHYFfNJYp/TUSGUkScDPcmTy6u36FOA93
-         xkLqfCGD/rEUpY9RnIFAwZiFlal9LgRR0bS5GneDIcSJQWb+2Aaj45Rro732JRR8o9tV
-         g0zQ==
-X-Gm-Message-State: AOJu0YzcImIpdGT64kD60HHGaXBPVY9AM4zcQQxTd8/62TSEIvVMXx62
-        TXItSStxhwKtZlH6h0Mjb+o5Dw==
-X-Google-Smtp-Source: AGHT+IFJaHAGSF4+C+q14MpFvBK1EjMX0mkGLB00ScBYwZtJnyS3hfOb1jvveNLZlYXxoeDIuOj4CQ==
-X-Received: by 2002:adf:ebd0:0:b0:333:4fd1:1c6d with SMTP id v16-20020adfebd0000000b003334fd11c6dmr4089376wrn.31.1702479215933;
-        Wed, 13 Dec 2023 06:53:35 -0800 (PST)
-Received: from localhost (2001-1ae9-1c2-4c00-20f-c6b4-1e57-7965.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:20f:c6b4:1e57:7965])
-        by smtp.gmail.com with ESMTPSA id k14-20020a5d524e000000b00333479734a7sm13480574wrc.99.2023.12.13.06.53.35
+        bh=C7eF1sr6RjgS4rFcgIiGFaIc2GmVoQDjgQdR45bMb7w=;
+        b=rrHgetc7PfISuyQitl4JMiEKbo9yYWv2TK6eO20Oy3HKedVedfO8cMRothvg/Pc/Zk
+         b64hBHREnUh9GogGEiqXMCGtzGBD5RMUiT1uHaHrk+1Fyw3ITIVDgqNuEB8db3IsBQmW
+         b2hjt4jw4TEr9AhrL0zpB5QQ+PAy8uM/BWnPq7ilWaC33aEFfdymCVJ6kxol9E0Oyv1J
+         Qj6mfHeaFcDM/O3r4xIf0SPoiYBioswFf+xJWUocmQzcN2eMMSWhy7KPXCtMlns2tCmv
+         Dv4yp0KYSvKi1qM+LJZ8b4cNMWgLM9WEN/ZIRYpXcQc01Y+Nsaw1b9AklL0UDRjr/2mE
+         sk2Q==
+X-Gm-Message-State: AOJu0Yz+FZlAvYdWD5E0PK8HbXl4ZSpdJU8rW6VG1yvR4UfsZUUEjgU3
+        s6GxdI0uw/KFOe5qX/9AnzlW+fSpWg==
+X-Google-Smtp-Source: AGHT+IHjJzuUOUOtUnsfLKwrky5w1ClJWBJ+R/A5M3/AIk8/vRzcUwGi1xuOCyrENkM3QBoI5z+p0Q==
+X-Received: by 2002:a9d:6284:0:b0:6d9:e2ee:3d23 with SMTP id x4-20020a9d6284000000b006d9e2ee3d23mr7076020otk.36.1702479231786;
+        Wed, 13 Dec 2023 06:53:51 -0800 (PST)
+Received: from herring.priv (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
+        by smtp.gmail.com with ESMTPSA id x6-20020a4aea06000000b0059030f95ebfsm2977608ood.41.2023.12.13.06.53.50
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Dec 2023 06:53:35 -0800 (PST)
-Date:   Wed, 13 Dec 2023 15:53:34 +0100
-From:   Andrew Jones <ajones@ventanamicro.com>
-To:     Yong-Xuan Wang <yongxuan.wang@sifive.com>
-Cc:     linux-riscv@lists.infradead.org, kvm-riscv@lists.infradead.org,
-        greentime.hu@sifive.com, vincent.chen@sifive.com, tjytimi@163.com,
-        alex@ghiti.fr, conor.dooley@microchip.com,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Anup Patel <apatel@ventanamicro.com>,
-        Guo Ren <guoren@kernel.org>,
-        Daniel Henrique Barboza <dbarboza@ventanamicro.com>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Jisheng Zhang <jszhang@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexandre Ghiti <alexghiti@rivosinc.com>,
-        Kemeng Shi <shikemeng@huaweicloud.com>,
-        David Hildenbrand <david@redhat.com>,
-        Charlie Jenkins <charlie@rivosinc.com>,
-        Sergey Matyukevich <sergey.matyukevich@syntacore.com>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Qinglin Pan <panqinglin2020@iscas.ac.cn>,
-        Rick Edgecombe <rick.p.edgecombe@intel.com>,
-        Evan Green <evan@rivosinc.com>,
-        Sunil V L <sunilvl@ventanamicro.com>,
+        Wed, 13 Dec 2023 06:53:51 -0800 (PST)
+Received: (nullmailer pid 1116961 invoked by uid 1000);
+        Wed, 13 Dec 2023 14:53:50 -0000
+Date:   Wed, 13 Dec 2023 08:53:50 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Mike Looijmans <mike.looijmans@topic.nl>
+Cc:     devicetree@vger.kernel.org, linux-iio@vger.kernel.org,
+        Conor Dooley <conor+dt@kernel.org>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 1/4] RISC-V: Detect and Enable Svadu Extension Support
-Message-ID: <20231213-0160e1e392ad2172c27807c2@orel>
-References: <20231102120129.11261-1-yongxuan.wang@sifive.com>
- <20231102120129.11261-2-yongxuan.wang@sifive.com>
+Subject: Re: [PATCH 1/2] dt-bindings: iio: spi-dac: Add driver for SPI shift
+ register DACs
+Message-ID: <20231213145350.GA1102482-robh@kernel.org>
+References: <1b153bce-a66a-45ee-a5c6-963ea6fb1c82.949ef384-8293-46b8-903f-40a477c056ae.3aa8b2c3-ac7e-4139-afe5-048730c85889@emailsignatures365.codetwo.com>
+ <20231213090910.25410-1-mike.looijmans@topic.nl>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231102120129.11261-2-yongxuan.wang@sifive.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20231213090910.25410-1-mike.looijmans@topic.nl>
+X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,
+        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 02, 2023 at 12:01:22PM +0000, Yong-Xuan Wang wrote:
-> Svadu is a RISC-V extension for hardware updating of PTE A/D bits.
-> 
-> In this patch we detect Svadu extension support from DTB and
-> add arch_has_hw_pte_young() to enable optimization in MGLRU and
-> __wp_page_copy_user() if Svadu extension is available.
-> 
-> Co-developed-by: Jinyu Tang <tjytimi@163.com>
-> Signed-off-by: Jinyu Tang <tjytimi@163.com>
-> Signed-off-by: Yong-Xuan Wang <yongxuan.wang@sifive.com>
-> Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
-> ---
->  arch/riscv/include/asm/csr.h     | 1 +
->  arch/riscv/include/asm/hwcap.h   | 1 +
->  arch/riscv/include/asm/pgtable.h | 6 ++++++
->  arch/riscv/kernel/cpufeature.c   | 1 +
->  4 files changed, 9 insertions(+)
-> 
-> diff --git a/arch/riscv/include/asm/csr.h b/arch/riscv/include/asm/csr.h
-> index 777cb8299551..e6935fd48c0c 100644
-> --- a/arch/riscv/include/asm/csr.h
-> +++ b/arch/riscv/include/asm/csr.h
-> @@ -194,6 +194,7 @@
->  /* xENVCFG flags */
->  #define ENVCFG_STCE			(_AC(1, ULL) << 63)
->  #define ENVCFG_PBMTE			(_AC(1, ULL) << 62)
-> +#define ENVCFG_ADUE			(_AC(1, ULL) << 61)
->  #define ENVCFG_CBZE			(_AC(1, UL) << 7)
->  #define ENVCFG_CBCFE			(_AC(1, UL) << 6)
->  #define ENVCFG_CBIE_SHIFT		4
-> diff --git a/arch/riscv/include/asm/hwcap.h b/arch/riscv/include/asm/hwcap.h
-> index b7b58258f6c7..1013661d6516 100644
-> --- a/arch/riscv/include/asm/hwcap.h
-> +++ b/arch/riscv/include/asm/hwcap.h
-> @@ -58,6 +58,7 @@
->  #define RISCV_ISA_EXT_ZICSR		40
->  #define RISCV_ISA_EXT_ZIFENCEI		41
->  #define RISCV_ISA_EXT_ZIHPM		42
-> +#define RISCV_ISA_EXT_SVADU		43
->  
->  #define RISCV_ISA_EXT_MAX		64
->  
-> diff --git a/arch/riscv/include/asm/pgtable.h b/arch/riscv/include/asm/pgtable.h
-> index b2ba3f79cfe9..028b700cd27b 100644
-> --- a/arch/riscv/include/asm/pgtable.h
-> +++ b/arch/riscv/include/asm/pgtable.h
-> @@ -629,6 +629,12 @@ static inline pgprot_t pgprot_writecombine(pgprot_t _prot)
->  	return __pgprot(prot);
->  }
->  
-> +#define arch_has_hw_pte_young arch_has_hw_pte_young
-> +static inline bool arch_has_hw_pte_young(void)
-> +{
-> +	return riscv_has_extension_unlikely(RISCV_ISA_EXT_SVADU);
-> +}
-> +
->  /*
->   * THP functions
->   */
-> diff --git a/arch/riscv/kernel/cpufeature.c b/arch/riscv/kernel/cpufeature.c
-> index 1cfbba65d11a..ead378c04991 100644
-> --- a/arch/riscv/kernel/cpufeature.c
-> +++ b/arch/riscv/kernel/cpufeature.c
-> @@ -178,6 +178,7 @@ const struct riscv_isa_ext_data riscv_isa_ext[] = {
->  	__RISCV_ISA_EXT_DATA(ssaia, RISCV_ISA_EXT_SSAIA),
->  	__RISCV_ISA_EXT_DATA(sscofpmf, RISCV_ISA_EXT_SSCOFPMF),
->  	__RISCV_ISA_EXT_DATA(sstc, RISCV_ISA_EXT_SSTC),
-> +	__RISCV_ISA_EXT_DATA(svadu, RISCV_ISA_EXT_SVADU),
->  	__RISCV_ISA_EXT_DATA(svinval, RISCV_ISA_EXT_SVINVAL),
->  	__RISCV_ISA_EXT_DATA(svnapot, RISCV_ISA_EXT_SVNAPOT),
->  	__RISCV_ISA_EXT_DATA(svpbmt, RISCV_ISA_EXT_SVPBMT),
-> -- 
-> 2.17.1
->
+On Wed, Dec 13, 2023 at 10:09:09AM +0100, Mike Looijmans wrote:
+> Add a driver for generic serial shift register DACs like TI DAC714.
 
-Reviewed-by: Andrew Jones <ajones@ventanamicro.com>
+This is not a driver.
+
+> 
+> Signed-off-by: Mike Looijmans <mike.looijmans@topic.nl>
+> 
+> ---
+> 
+>  .../devicetree/bindings/iio/dac/spidac.yaml   | 69 +++++++++++++++++++
+>  1 file changed, 69 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/iio/dac/spidac.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/iio/dac/spidac.yaml b/Documentation/devicetree/bindings/iio/dac/spidac.yaml
+> new file mode 100644
+> index 000000000000..be98da728594
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/iio/dac/spidac.yaml
+> @@ -0,0 +1,69 @@
+> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/iio/dac/spidac.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Generic "shift register" SPI DAC
+> +
+> +description:
+> +  Supports simple SPI "shift register" DACs, like TI's DAC714. These DACs have
+> +  no control registers or commands, they just use a clock and serial data to
+> +  shift in a raw DAC value. Multiple DACs can be daisy-chained together.
+> +
+> +maintainers:
+> +  - Mike Looijmans <mike.looijmans@topic.nl>
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - spi-dac
+> +      - ti,dac714
+
+Why does TI chip need a specific compatible and others don't?
+
+Are power supplies on these chips the same?
+
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  ldac-gpios:
+> +    description:
+> +      LDAC pin to be used as a hardware trigger to update the DAC outputs. Not
+> +      needed when the DACs use the chip select to update their output.
+> +    maxItems: 1
+> +
+> +  reset-gpios:
+> +    description:
+> +      Optional reset pin that resets all DACs.
+> +    maxItems: 1
+> +
+> +  num-channels:
+> +    description:
+> +      Number of channels (usually the number of DAC chips in series)
+
+usually? What other possible option is there? If something else, how is 
+the driver going to distinguish that?
+
+default: 1
+
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +
+> +  bits-per-channel:
+
+Perhaps 'channel-bits' as -bits is a standard unit suffix.
+
+> +    description:
+> +       Number of bits for each DAC output.
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+
+Constraints? I assume all DACs are much less than 2^32 bits. default?
+
+> +
+> +required:
+> +  - compatible
+> +  - reg
+
+Don't you always need to know how many bits?
+
+> +
+> +allOf:
+> +  - $ref: /schemas/spi/spi-peripheral-props.yaml#
+> +
+> +unevaluatedProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/gpio/gpio.h>
+> +    spi {
+> +        #address-cells = <1>;
+> +        #size-cells = <0>;
+> +
+> +        dac@1 {
+> +            compatible = "spidac";
+> +            reg = <0x1>;
+> +            ldac-gpios = <&gpio 42 GPIO_ACTIVE_LOW>;
+> +        };
+> +    };
+> +...
+> -- 
+> 2.34.1
+> 
+> 
+> Met vriendelijke groet / kind regards,
+> 
+> Mike Looijmans
+> System Expert
+> 
+> 
+> TOPIC Embedded Products B.V.
+> Materiaalweg 4, 5681 RJ Best
+> The Netherlands
+> 
+> T: +31 (0) 499 33 69 69
+> E: mike.looijmans@topic.nl
+> W: www.topic.nl
+> 
+> Please consider the environment before printing this e-mail
