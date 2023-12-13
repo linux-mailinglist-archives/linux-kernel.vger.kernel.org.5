@@ -2,195 +2,206 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8016A811A23
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 17:54:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E923811A29
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 17:55:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233484AbjLMQyq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 11:54:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45538 "EHLO
+        id S233737AbjLMQzS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 11:55:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51984 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230506AbjLMQyp (ORCPT
+        with ESMTP id S230506AbjLMQzP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 11:54:45 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C9EFB9
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 08:54:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1702486488;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=TDCWZoZHEnL9q9UlZCk5o8FDqw1MfF12zxN5vbn51B8=;
-        b=STtM/iAE0PFB4xeBQcpBr0HYaWDSkP04f7kzZyT7+ZVrYzSErpi/9KS/J6fvGQGAvNM5gd
-        FHn8KM7NZa+VJswzymlH/oGM81Z2hHM69Yu+LkEiNt7u0uZl+nm7xG6OtdTe/P2bEnS2BW
-        Ljv7oa5wBdVxbe4qhXnJmYMAGIC5dyM=
-Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
- [209.85.218.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-450-fjp2xJ6eNeWs7960RxHlcQ-1; Wed, 13 Dec 2023 11:54:47 -0500
-X-MC-Unique: fjp2xJ6eNeWs7960RxHlcQ-1
-Received: by mail-ej1-f69.google.com with SMTP id a640c23a62f3a-a1f9ab28654so172773966b.0
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 08:54:46 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702486486; x=1703091286;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=TDCWZoZHEnL9q9UlZCk5o8FDqw1MfF12zxN5vbn51B8=;
-        b=S4+3MKlC4Bv/3LGgpQFutxzzhQIiRLtggGs7mKSah2iIqTSG3e7xt8bl82zj+H7tcN
-         15HmJGReL28savJTJoJWPze4/OVmW95t1i/CYYEmh0vsyhnbhhYYsqOxbOV9kwgSQemi
-         Y78Ti40YsuX7OgyVB3BJ2KXtw7L59LszT79sfTulK+O8RQRV6wCoSnKNHRsfe21oZ9yi
-         yxSiCAjc4KtLIMT+xkXlYRXF+KRXbdAUWETJGVN271r2mJtC+sCRRDTHv8SfP/WMEb/8
-         HrscK2Y1VBdTcFb6J5CcSzPYt5e/nQkdrnHQPLesYA5FqevUxjRBEvPvaW2mCyFnIut5
-         vhCQ==
-X-Gm-Message-State: AOJu0YyUUNzd5qAzoAY+ymoTm/IF0ywU1X9e5U4eSfSt7wMHS1qc/mCC
-        DtxdlWOkejjxZVr9WPaIgzap5/dpb/ipNXjgwbsUVKfs/fBtwRfA4sYEpP2eCi4NAHeh2eDGj0K
-        7S4Bnd0vJnyOszM+9wfo086WC
-X-Received: by 2002:a17:906:2247:b0:a1f:a03d:2fdb with SMTP id 7-20020a170906224700b00a1fa03d2fdbmr2758553ejr.14.1702486485863;
-        Wed, 13 Dec 2023 08:54:45 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IFDrym3BHQqr1gGWd0AZbVrLuc3zfrg6EtZUmOadG4ycS5fHuh89Cl4oMrZuV8jvPmVaQKjWA==
-X-Received: by 2002:a17:906:2247:b0:a1f:a03d:2fdb with SMTP id 7-20020a170906224700b00a1fa03d2fdbmr2758543ejr.14.1702486485461;
-        Wed, 13 Dec 2023 08:54:45 -0800 (PST)
-Received: from redhat.com ([2a02:14f:16d:d414:dc39:9ae8:919b:572d])
-        by smtp.gmail.com with ESMTPSA id hw18-20020a170907a0d200b00a1cbe52300csm8108840ejc.56.2023.12.13.08.54.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Dec 2023 08:54:44 -0800 (PST)
-Date:   Wed, 13 Dec 2023 11:54:40 -0500
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Igor Mammedov <imammedo@redhat.com>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        linux-kernel@vger.kernel.org,
-        Dongli Zhang <dongli.zhang@oracle.com>,
-        linux-acpi@vger.kernel.org, linux-pci@vger.kernel.org,
-        lenb@kernel.org, bhelgaas@google.com,
-        mika.westerberg@linux.intel.com, boris.ostrovsky@oracle.com,
-        joe.jin@oracle.com, stable@vger.kernel.org,
-        Fiona Ebner <f.ebner@proxmox.com>,
-        Thomas Lamprecht <t.lamprecht@proxmox.com>
-Subject: Re: [RFC 2/2] PCI: acpiphp: slowdown hotplug if hotplugging multiple
- devices at a time
-Message-ID: <20231213115248-mutt-send-email-mst@kernel.org>
-References: <20231213003614.1648343-1-imammedo@redhat.com>
- <20231213003614.1648343-3-imammedo@redhat.com>
- <CAJZ5v0gowV0WJd8pjwrDyHSJPvwgkCXYu9bDG7HHfcyzkSSY6w@mail.gmail.com>
- <CAMLWh55dr2e_R+TYVj=8cFfV==D-DfOZvAeq9JEehYs3nw6-OQ@mail.gmail.com>
+        Wed, 13 Dec 2023 11:55:15 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8DCDD0;
+        Wed, 13 Dec 2023 08:55:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1702486522; x=1734022522;
+  h=message-id:date:subject:to:cc:references:from:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=6YC6aCPDxU42a4qt+JoaUd94uuWHnHRRaz7zBFO2jSE=;
+  b=SgOShYqMevgbOKjXckh4QoJv0CUEP+CFnntlqdQWQPLDEpYoGwj7XxpH
+   ysDL70CW15Rx1S9/PjLMRH9uRTjj0+y2p+zUWjAMEeF2R3KuEdR1DcQg5
+   08b3dNbXLwE0RDltAOWM6A00YWgvh9c+yQ+xYaqpEw//NzJyHosZi6uUD
+   tR7ly7g9aLLDSf3HajKc4NON7Ua1yb5R4A/8g56+TWUALp+P6m8aTGi8P
+   kjGz+tFYdD/vSTjFcsPDkCD3tJxrggT91f/pputaZQB5D6yeYQ0r6iDIn
+   hw05hzLlIRczHE89090tnGvTCYozNymZKZZIxJkdQzdOoU1mzXczzjQkI
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10923"; a="8384567"
+X-IronPort-AV: E=Sophos;i="6.04,273,1695711600"; 
+   d="scan'208";a="8384567"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Dec 2023 08:55:22 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10923"; a="947244346"
+X-IronPort-AV: E=Sophos;i="6.04,273,1695711600"; 
+   d="scan'208";a="947244346"
+Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
+  by orsmga005.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 13 Dec 2023 08:55:21 -0800
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Wed, 13 Dec 2023 08:55:20 -0800
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Wed, 13 Dec 2023 08:55:19 -0800
+Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
+ fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Wed, 13 Dec 2023 08:55:19 -0800
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (104.47.57.169)
+ by edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Wed, 13 Dec 2023 08:55:14 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=D3hDDZ8xz4xM91AhzmMvYYfz3TgOPFLLdUg/2DgMvWGl9cai5/R8CRC0kG/+kouEvjwdjFLg0qEHxlgAgLJ1v0fh8T9wibE7gl+2KELS3qHL6PyFNqZO/plwT1rRlistEm4MbbWFdnX2UMnVBcoAS/IVeRrroK9OtW2zkjG7Mzsq2iFaTRI1XT6bQ6eif0kzqFMEQxx0YGPcjgnILBYB2iCjVo/DiZBYVe3QMO8m0k5cQamET4QwsbfKX50ikYBe1mQNcHrs8Dtr3Cit3mGVldnOo2DYYz4p2hnrE3guATaEqIBaKPkBO6EWHIxogKZjHffijeNgULGTU8x8Bk+I2g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=PbR/v2yJSgpgG274eAYXGKVkjXju8YPUQL75GLcXMmw=;
+ b=ee1nKy1umCGN46rRDPIIGStkGoXfjH1BywByZd3QG8g/JWxPFYSUx7mWAnFzUwUHhF4VzAl0JHUYskoB+8JSt0qdCR2t2J05n8ZErN8/EP7vQ+UlxIRDNTTQWPvH75bInnT1VAoEAvYE5NHyMTqcmtL4nbGKKYj9eWXyhzgPnItGRuPlgG50AGdRzJKapjkmuUN4EwT53VOqNTvg6cHSgGUkc9dRxIMa3nLNvjKK4bEfRJlCmVoQsIuStM5QmVk3jhO/RuC/6vXdseTisQ5leMoBzBuQwzZfQ8bhnB1Zrw2lk/Vkxg6oc0RGNg4Q/83j4UC/oee3XJqcJqtHnYpWDw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from PH7PR11MB5984.namprd11.prod.outlook.com (2603:10b6:510:1e3::15)
+ by PH8PR11MB7117.namprd11.prod.outlook.com (2603:10b6:510:217::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7046.37; Wed, 13 Dec
+ 2023 16:55:12 +0000
+Received: from PH7PR11MB5984.namprd11.prod.outlook.com
+ ([fe80::6f7b:337d:383c:7ad1]) by PH7PR11MB5984.namprd11.prod.outlook.com
+ ([fe80::6f7b:337d:383c:7ad1%4]) with mapi id 15.20.7091.022; Wed, 13 Dec 2023
+ 16:55:12 +0000
+Message-ID: <be59d5ac-fabb-4a05-99d4-fb281f7ea507@intel.com>
+Date:   Wed, 13 Dec 2023 09:55:08 -0700
+User-Agent: Betterbird (Linux)
+Subject: Re: [PATCH] dmaengine: fix NULL pointer in channel unregistration
+ function
+To:     Amelie Delaunay <amelie.delaunay@foss.st.com>,
+        Vinod Koul <vkoul@kernel.org>
+CC:     <linux-stm32@st-md-mailman.stormreply.com>,
+        <dmaengine@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20231213160452.2598073-1-amelie.delaunay@foss.st.com>
+Content-Language: en-US
+From:   Dave Jiang <dave.jiang@intel.com>
+In-Reply-To: <20231213160452.2598073-1-amelie.delaunay@foss.st.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SJ0PR05CA0116.namprd05.prod.outlook.com
+ (2603:10b6:a03:334::31) To PH7PR11MB5984.namprd11.prod.outlook.com
+ (2603:10b6:510:1e3::15)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAMLWh55dr2e_R+TYVj=8cFfV==D-DfOZvAeq9JEehYs3nw6-OQ@mail.gmail.com>
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH7PR11MB5984:EE_|PH8PR11MB7117:EE_
+X-MS-Office365-Filtering-Correlation-Id: 5596d7ac-654b-4b78-8e42-08dbfbfc4571
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: q2KSco+GIORbfLvCldrtSABhiN4ScwcwNo2C0ph29B+Rt4iPyyH1qPKFqkCj5gcidAcH2Jpwj0EPFjLHB6/fN2Aymhdwc4pWdoapvlft2zYt4WBAbPIZIIAc0p8NXfnNMaDZ6ZeYs17h+zvwCv84T1kgw47kQ2t9ptoIQ0gKmPp5WmYREwI5ST1hkioa3JtNtwBCCDhuTsXWtSK3fmHBFtBnm01A5JbQ/Do5BD5Kyy+LlNiVUP9ei9U3W7WjPUN7cNb4h6TEmc8Rcq2FBOSrURUQgDa0cTLazzrRIt4HvObgZZz+TSBRRbpA22t78zx1dXlPJJCZZJ7c+n7MTsOf7Iwt/YfM9QDKroT99ksJ+eNgo0LxpQcy2pPpunLpflP9sfnAiOX7zyl5qGn+/FkwxrnwhM1x9UFfsAbWX47ewwwMtWuDJ0muY3HzoPlH/13uPQyu+2nFCuHC/8TJP3q02RTuqhdviRtxR19HUnxPwZwqaISk+Yjts9xL/P57XfRAOe2fjbjpwHWNDOGAvTKOkefo2s5lDY55RxRv6CvK65JXVuLrUH4D7sNoQHXlOG3dV5cngQPquMc/ws1JFbCEdBR0m+sjygQh96daivHMFXQ6zPz+emaJqJN8CZUlTqei
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH7PR11MB5984.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(396003)(376002)(136003)(366004)(346002)(230922051799003)(1800799012)(64100799003)(451199024)(186009)(478600001)(6506007)(6486002)(38100700002)(31686004)(26005)(83380400001)(2616005)(316002)(6512007)(53546011)(4326008)(8936002)(5660300002)(8676002)(86362001)(2906002)(41300700001)(31696002)(36756003)(44832011)(6666004)(82960400001)(66946007)(110136005)(66556008)(66476007)(45980500001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?SHd2a2N4UFFsQ3Bud09vNE1iUU4yQWdmM2NJclZYSnlpRjR0L0dkSTVsSksv?=
+ =?utf-8?B?MWF2MTIyb3JZYXJuRDlyUTZXLzc1TnRjWk1HVjNFWW4vSWdrMk9hNWQzbTZt?=
+ =?utf-8?B?dEdCSkE3WGJMdzM3UmhyUUpZU01ORHNPKzNLUTV5c2U2ZitrTXBCOWxJK0Ft?=
+ =?utf-8?B?Q0l1bTVJbWEyOUhQYkI1N0FESEMzZWRYMUpCQlZoeXFVclRlUkJYUGRhRFFa?=
+ =?utf-8?B?RW00TUNGdXZTRSsyWlRlZi95V1ljYjJ5Y2R5YmJQd2Y0Yk51M2UrMHVuSits?=
+ =?utf-8?B?c3I4Y2Z6aGpvK1FuVEt6cnhBV0U1R1U4VkhBbDV5VmlLQVp3MUswN2xOQnQx?=
+ =?utf-8?B?K2F3MEtyU1dQRlZmd2xMTFhON1dYRW5oZ2lJa0dIL3U1U0t4UU5Ta3VjaDJm?=
+ =?utf-8?B?bFc2MFJXUGt0MlVjWHlZeEQ1Y0pZc3lVRjFFRjV5eDBudU40aHdpTEVWYUY1?=
+ =?utf-8?B?SkxCSTBWRE1oOVRGWmNscXdZQXo4eFp4cGFpS296U3hEN1VSd2VUemorZzdh?=
+ =?utf-8?B?QVJKWThtSjk1SkZFWDJyL0JyUHJNZno1RUZlbkVadTBxYlhhTTNsTmRuc1B5?=
+ =?utf-8?B?S2tIOXdQWStXbm5uWGF6SG5RQVJNbG15RVRtdjJFb0ptdEVxVGJ4YnNhdnpF?=
+ =?utf-8?B?RDFVWWxhYXFrVXRKQmNQZmZRK1FEalNKamkreHNEUCt5dHJlZ0pIYndERzkx?=
+ =?utf-8?B?VG93SUlmMTVXekJXWHlCZWF4VDBVWlRoZHBpaGtmdFRPc29sQ3FwSlI5L3N4?=
+ =?utf-8?B?Rk9nYlZSSmxtQVJCVHlTZGoreElHMUNwbWVJTE1NMTRRb2NpT2o4czBVQnQr?=
+ =?utf-8?B?dWNqemh5bG4xTG4vdU5WQTFmTXpVbExNK2pUeWwxZkJsZGV4blVvWmx4YVIv?=
+ =?utf-8?B?S0VLQ2pJOEZ5VmtDNHRSUkZ0Z0lCRUxveElGTld0TW8wYWlRb2RQMW1PVjZ6?=
+ =?utf-8?B?NkVDc2JXK1VIVkpIcUQxQXNaU1NlRS81WkI0Um9YS2l6RTF4NGtKcHZXdWRH?=
+ =?utf-8?B?V1JGckl1TVVJNGhLalEveUozMDR4Z2EwZ3JRZXByN0dNWkg1QVVtZmt5QThW?=
+ =?utf-8?B?dkM2Ykcxa0JBeTFzUW5nWWZMa2tDb1U4Wk9GRzFBdzdYMDJVbSszN2NLRUFu?=
+ =?utf-8?B?ZCtXTlhNemFrdGpwcW5XaHV5RnF5VmtWdTlhMlR2T3pzUTN1cW5saFk0aHBE?=
+ =?utf-8?B?MHlOQ0JFbERBVThJZ1RBZk0yWkZXemt4V3pmVFFMYXRkTURWRHpVRVRDQjhP?=
+ =?utf-8?B?OVE0VnJZMnZITWpJR3p2T1RVL3UyWnZIaEFEYmpIRUZ5T0hqN3dBNE5LdTFI?=
+ =?utf-8?B?dEo1L0RDajBHb2F3Y2FUQTFieEwvR3NOaHlFMHR0Z3ZSN0hzQSt0ZHV5R0N6?=
+ =?utf-8?B?VjZRcVhzeFEweHYwZDZjVVZIaDQvQzN2K0haL2dEbDc1bEF4VHlzZENsUFVC?=
+ =?utf-8?B?YnljelBiWFFvYTBIbFpQYVV4bXdYckxxSHhsZnhPcTVRZmtPRS9FZFJYbUZu?=
+ =?utf-8?B?aHhxWUg1R1BVcW9JMlNNY3dWTmQ0SDF3VXEwcGpsRUFTTkpJMzRXeGtTUDVj?=
+ =?utf-8?B?SW96L0JnUk0xeDNRMVl0UWRQZVkvT2hOY3FkcGh2QXZ5Ym9venArajRXZ3hm?=
+ =?utf-8?B?SHQrZ0U2MnlET1U1bFJMclBrVFFFRTQ4MVYvcHhDUnM5ME1OMTcrVCtTTnpi?=
+ =?utf-8?B?ZWoyYTZwZzUwRFU2ZVRGVDlDbDNpc2prUWVpRmszV3kvZWdkUWNIQWNHcDI1?=
+ =?utf-8?B?aUVwdXpSL3d0MnZhT3pLMENudVRMYmRneUl0TVJlYVp6TS8wanBHVXJuOXNI?=
+ =?utf-8?B?NEZ6aTEzTGt0eFFEZHpzWVk1SnZrbFM2OFFmNTNENkhHWnkwQytHaFRKZ0FE?=
+ =?utf-8?B?Mzk3TFVodFlJQWg1VFVjeExZN29zekNiMThPSTA4MU0rbWVTSkc2VWt0Tjhh?=
+ =?utf-8?B?dVVzcVVKTmFSRi9GTnN0cGlCbnBQM0NEdVZQSGRqQmgrSW16K2NCMnRTK1Ja?=
+ =?utf-8?B?TVlDdDVIa2p2QTQrYXd1R09jdVMvaFNPamhRQmF4dWxnVzU0MzdiS1JBWVVC?=
+ =?utf-8?B?Q1ZwOUVOMUJBdXUrSDYzS3B3RVl3V3J2dlQ4MzVhbS9xaVBVWkU0dW40QmVP?=
+ =?utf-8?Q?SHkfH0cm2UlHxbRHp/nSTpiyp?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5596d7ac-654b-4b78-8e42-08dbfbfc4571
+X-MS-Exchange-CrossTenant-AuthSource: PH7PR11MB5984.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Dec 2023 16:55:12.0801
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: wjYGiwlLCROQp538OSVKKHYoQ+9geoljcDu0kKxTjQ439yaQfwFvHE6Q1cgd30XOZwPCmWMrgclpgGhC+0d1bQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH8PR11MB7117
+X-OriginatorOrg: intel.com
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 13, 2023 at 05:49:39PM +0100, Igor Mammedov wrote:
-> On Wed, Dec 13, 2023 at 2:08 PM Rafael J. Wysocki <rafael@kernel.org> wrote:
-> >
-> > On Wed, Dec 13, 2023 at 1:36 AM Igor Mammedov <imammedo@redhat.com> wrote:
-> > >
-> > > previous commit ("PCI: acpiphp: enable slot only if it hasn't been enabled already"
-> > > introduced a workaround to avoid a race between SCSI_SCAN_ASYNC job and
-> > > bridge reconfiguration in case of single HBA hotplug.
-> > > However in virt environment it's possible to pause machine hotplug several
-> > > HBAs and let machine run. That can hit the same race when 2nd hotplugged
-> > > HBA will start re-configuring bridge.
-> > > Do the same thing as SHPC and throttle down hotplug of 2nd and up
-> > > devices within single hotplug event.
-> > >
-> > > Signed-off-by: Igor Mammedov <imammedo@redhat.com>
-> > > ---
-> > >  drivers/pci/hotplug/acpiphp_glue.c | 6 ++++++
-> > >  1 file changed, 6 insertions(+)
-> > >
-> > > diff --git a/drivers/pci/hotplug/acpiphp_glue.c b/drivers/pci/hotplug/acpiphp_glue.c
-> > > index 6b11609927d6..30bca2086b24 100644
-> > > --- a/drivers/pci/hotplug/acpiphp_glue.c
-> > > +++ b/drivers/pci/hotplug/acpiphp_glue.c
-> > > @@ -37,6 +37,7 @@
-> > >  #include <linux/mutex.h>
-> > >  #include <linux/slab.h>
-> > >  #include <linux/acpi.h>
-> > > +#include <linux/delay.h>
-> > >
-> > >  #include "../pci.h"
-> > >  #include "acpiphp.h"
-> > > @@ -700,6 +701,7 @@ static void trim_stale_devices(struct pci_dev *dev)
-> > >  static void acpiphp_check_bridge(struct acpiphp_bridge *bridge)
-> > >  {
-> > >         struct acpiphp_slot *slot;
-> > > +        int nr_hp_slots = 0;
-> > >
-> > >         /* Bail out if the bridge is going away. */
-> > >         if (bridge->is_going_away)
-> > > @@ -723,6 +725,10 @@ static void acpiphp_check_bridge(struct acpiphp_bridge *bridge)
-> > >
-> > >                         /* configure all functions */
-> > >                         if (slot->flags != SLOT_ENABLED) {
-> > > +                               if (nr_hp_slots)
-> > > +                                       msleep(1000);
-> >
-> > Why is 1000 considered the most suitable number here?  Any chance to
-> > define a symbol for it?
-> 
-> Timeout was borrowed from SHPC hotplug workflow where it apparently
-> makes race harder to reproduce.
-> (though it's not excuse to add more timeouts elsewhere)
-> 
-> > And won't this affect the cases when the race in question is not a concern?
-> 
-> In practice it's not likely, since even in virt scenario hypervisor won't
-> stop VM to hotplug device (which beats whole purpose of hotplug).
-> 
-> But in case of a very slow VM (overcommit case) it's possible for
-> several HBA's to be hotplugged by the time acpiphp gets a chance
-> to handle the 1st hotplug event. SHPC is more or less 'safe' with its
-> 1sec delay.
-> 
-> > Also, adding arbitrary timeouts is not the most robust way of
-> > addressing race conditions IMV.  Wouldn't it be better to add some
-> > proper synchronization between the pieces of code that can race with
-> > each other?
-> 
-> I don't like it either, it's a stop gap measure to hide regression on
-> short notice,
-> which I can fixup without much risk in short time left, before folks
-> leave on holidays.
-> It's fine to drop the patch as chances of this happening are small.
-> [1/2] should cover reported cases.
-> 
-> Since it's RFC, I basically ask for opinions on a proper way to fix
-> SCSI_ASYNC_SCAN
-> running wild while the hotplug is in progress (and maybe SCSI is not
-> the only user that
-> schedules async job from device probe).
 
-Of course not. And things don't have to be scheduled from probe right?
-Can be triggered by an interrupt or userspace activity.
 
-> So adding synchronisation and testing
-> would take time (not something I'd do this late in the cycle).
+On 12/13/23 09:04, Amelie Delaunay wrote:
+> __dma_async_device_channel_register() can fail. In case of failure,
+> chan->local is freed (with free_percpu()), and chan->local is nullified.
+> When dma_async_device_unregister() is called (because of managed API or
+> intentionally by DMA controller driver), channels are unconditionally
+> unregistered, leading to this NULL pointer:
+> [    1.318693] Unable to handle kernel NULL pointer dereference at virtual address 00000000000000d0
+> [...]
+> [    1.484499] Call trace:
+> [    1.486930]  device_del+0x40/0x394
+> [    1.490314]  device_unregister+0x20/0x7c
+> [    1.494220]  __dma_async_device_channel_unregister+0x68/0xc0
 > 
-> So far I'm thinking about adding rw mutex to bridge with the PCI
-> hotplug subsystem
-> being a writer while scsi scan jobs would be readers and wait till hotplug code
-> says it's safe to proceed.
-> I plan to work in this direction and give it some testing, unless
-> someone has a better idea.
+> Look at dma_async_device_register() function error path, channel device
+> unregistration is done only if chan->local is not NULL.
+> 
+> Then add the same condition at the beginning of
+> __dma_async_device_channel_unregister() function, to avoid NULL pointer
+> issue whatever the API used to reach this function.
+> 
+> Fixes: d2fb0a043838 ("dmaengine: break out channel registration")
+> Signed-off-by: Amelie Delaunay <amelie.delaunay@foss.st.com>
 
-> >
-> > > +
-> > > +                                ++nr_hp_slots;
-> > >                                 enable_slot(slot, true);
-> > >                         }
-> > >                 } else {
-> > > --
-> >
-
+Reviewed-by: Dave Jiang <dave.jiang@intel.com>
+> ---
+>  drivers/dma/dmaengine.c | 3 +++
+>  1 file changed, 3 insertions(+)
+> 
+> diff --git a/drivers/dma/dmaengine.c b/drivers/dma/dmaengine.c
+> index b7388ae62d7f..491b22240221 100644
+> --- a/drivers/dma/dmaengine.c
+> +++ b/drivers/dma/dmaengine.c
+> @@ -1103,6 +1103,9 @@ EXPORT_SYMBOL_GPL(dma_async_device_channel_register);
+>  static void __dma_async_device_channel_unregister(struct dma_device *device,
+>  						  struct dma_chan *chan)
+>  {
+> +	if (chan->local == NULL)
+> +		return;
+> +
+>  	WARN_ONCE(!device->device_release && chan->client_count,
+>  		  "%s called while %d clients hold a reference\n",
+>  		  __func__, chan->client_count);
