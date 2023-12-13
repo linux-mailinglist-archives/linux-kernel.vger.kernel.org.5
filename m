@@ -2,46 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 22BC8810D2F
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 10:17:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AB77810D32
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 10:18:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232897AbjLMJRT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 04:17:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47676 "EHLO
+        id S232893AbjLMJS1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 04:18:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33656 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231648AbjLMJRS (ORCPT
+        with ESMTP id S230370AbjLMJSZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 04:17:18 -0500
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1E00B7;
-        Wed, 13 Dec 2023 01:17:23 -0800 (PST)
-Received: from umang.jain (unknown [103.251.226.48])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 22F806CF;
-        Wed, 13 Dec 2023 10:16:32 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1702458995;
-        bh=MhDhknZ+gOsAGUMT//2O4b3ld5ECujPtbxvEVhSKKdQ=;
-        h=From:To:Cc:Subject:Date:From;
-        b=aCYDJb/lt41N1CPOumW4uGcfqdV51bL7NYtUMY7a5oVuPt5LyzVZ+x8xhLkLrJLj3
-         I+kMWhhELLep3ZFW+tIHk8Ip1Yb6a7gXqUSQ9ZrVod4oaNfhQ9NGTNZhbfKEZsJNuz
-         kv1CqSV5GckJHTj3bUH8zM9IP3NEo7q71USSU7JY=
-From:   Umang Jain <umang.jain@ideasonboard.com>
-To:     linux-media@vger.kernel.org
-Cc:     "Paul J . Murphy" <paul.j.murphy@intel.com>,
-        Daniele Alessandrelli <daniele.alessandrelli@intel.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Kieran Bingham <kieran.bingham@ideasonboard.com>,
-        Umang Jain <umang.jain@ideasonboard.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH v3] media: i2c: imx335: Support multiple link frequency
-Date:   Wed, 13 Dec 2023 14:47:12 +0530
-Message-ID: <20231213091712.55529-1-umang.jain@ideasonboard.com>
-X-Mailer: git-send-email 2.41.0
+        Wed, 13 Dec 2023 04:18:25 -0500
+Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05AADB7;
+        Wed, 13 Dec 2023 01:18:32 -0800 (PST)
+Received: from pps.filterd (m0246627.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3BD7ELcN004118;
+        Wed, 13 Dec 2023 09:18:24 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
+ subject : to : cc : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=corp-2023-11-20;
+ bh=bd/eppqzQobGUowlK5NSE/My+NzlMbKyE6r/OASWIfQ=;
+ b=fTNzwVxBLi/iLaKlb+jIx5jWdtU6nPWdOJoZ/64i/ajDkS83kFwY3xpKkgUyflG086vy
+ 7t09FyhnBMcqX51r5IrVSmrMF0A3N5qMStG73HouAAPobxwiwpRE7n5wid8R7WFjomlW
+ zRSwnefY/x+hEkXNI9jbiYWIQMax+YiirvK0k4Is+qRaSGybM0p6gxPreYAFKuNVvYBt
+ smaxIsgdQ1veXbMvbdwiQfcLMUZy+asI5pJZ8KPVJbMp5yKofbNAAndNBgBcvGSfjvSz
+ GSL7IxkFTQPgtqVVYV5No62YXj1isKr2s/D4Qv4Sd6d3uYM8DfN+gUMj5rSAK1xboIFY rQ== 
+Received: from iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta02.appoci.oracle.com [147.154.18.20])
+        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3uveu27nx4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 13 Dec 2023 09:18:24 +0000
+Received: from pps.filterd (iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+        by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 3BD8L1ls003153;
+        Wed, 13 Dec 2023 09:18:22 GMT
+Received: from nam12-dm6-obe.outbound.protection.outlook.com (mail-dm6nam12lp2169.outbound.protection.outlook.com [104.47.59.169])
+        by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3uvep7ywvm-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 13 Dec 2023 09:18:22 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=MetWVtmO1kusWKgQ1ibBVryV8NOmxoWwcDe9Xu7jsAjcrWbYnAq9Gv7/5EMyvsOB4v/8oDKa8K7MQHMPnToGhmp7kNvszAgr/BoFWKjVBJq1yQ2xxdoGkR6P7ysV39ig78HssKhEYiw4rSlQqtCrRM4rDc7smUxZM0FNkSgpSYFSB55oEIY6FJJx+7nHX2URIemAJrfddBbeGkPTvXl2AapmX//KLg8t/I1F5Ksd+6tCUanRkzDCshW3Wdebynw1jZ6wnHsxTJHskMwMEftQTGj4tATQQJeysLiq5v6IIYQdpgO0XoROgtMrFzi24YcgwUPWX+5No9vKYPINIZ56kA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=bd/eppqzQobGUowlK5NSE/My+NzlMbKyE6r/OASWIfQ=;
+ b=FJnBgGbewc6GNFr4NYdAG/AUpFNnn4uisxZbkX9BnJummOQHozxnuBZodOcjjqgoeB196BQ/JdNKmDXhKAqiX1B/mEh/as8jjPjkCnXI5kGLhQeHDmPHxSu/ItytSEvF702L3Afh9hnOWlTya+OJGsj/Zl5y9y0kJpqVoUg+lUp2Lmv7MoLpZqA1XBIEmv8RVXVh08KK0ETbnQJWSTRYQ4m4OI8VmHyk4v93MRWQsZqcibmN5fj7Y7Z+TfSyMmLRtmstaeCNjU5Rir7JWzs11zmsNsp1QQ707eD9aPItdRf+rgXI1qzFsvSJNf0IXpzOUAM/XrZ3mb9jdQhtp4bb1g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=bd/eppqzQobGUowlK5NSE/My+NzlMbKyE6r/OASWIfQ=;
+ b=sE/J+g99uWYMlq2nD1HrzlYBs75gIBTMgiTfRUoeIDboUo74dSxJktS6vfct9hlvlp67weKUYMHCRNabUbSr4iRJ0tarEKXAE3l/g8kJ6LO6Vb+xshj8quLrLgLBOi9VTRcowRI4rINKjdQW9CV+Doq995TJfhHZAz8XjEHonSs=
+Received: from DM6PR10MB4313.namprd10.prod.outlook.com (2603:10b6:5:212::20)
+ by PH0PR10MB4661.namprd10.prod.outlook.com (2603:10b6:510:42::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7091.26; Wed, 13 Dec
+ 2023 09:17:57 +0000
+Received: from DM6PR10MB4313.namprd10.prod.outlook.com
+ ([fe80::102a:f31:30c6:3187]) by DM6PR10MB4313.namprd10.prod.outlook.com
+ ([fe80::102a:f31:30c6:3187%4]) with mapi id 15.20.7091.022; Wed, 13 Dec 2023
+ 09:17:56 +0000
+Message-ID: <23367b48-83c0-4f7d-b75d-c8980b05f3e8@oracle.com>
+Date:   Wed, 13 Dec 2023 09:17:53 +0000
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC 0/7] ext4: Allocator changes for atomic write support with
+ DIO
+Content-Language: en-US
+To:     Ojaswin Mujoo <ojaswin@linux.ibm.com>
+Cc:     linux-ext4@vger.kernel.org, Theodore Ts'o <tytso@mit.edu>,
+        Ritesh Harjani <ritesh.list@gmail.com>,
+        linux-kernel@vger.kernel.org,
+        "Darrick J . Wong" <djwong@kernel.org>,
+        linux-block@vger.kernel.org, linux-xfs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, dchinner@redhat.com
+References: <cover.1701339358.git.ojaswin@linux.ibm.com>
+ <8c06c139-f994-442b-925e-e177ef2c5adb@oracle.com>
+ <ZW3WZ6prrdsPc55Z@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
+ <de90e79b-83f2-428f-bac6-0754708aa4a8@oracle.com>
+ <ZXbqVs0TdoDcJ352@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
+ <c4cf3924-f67d-4f04-8460-054dbad70b93@oracle.com>
+ <ZXlIXWIqP9xipYzL@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
+From:   John Garry <john.g.garry@oracle.com>
+Organization: Oracle Corporation
+In-Reply-To: <ZXlIXWIqP9xipYzL@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: LO4P123CA0580.GBRP123.PROD.OUTLOOK.COM
+ (2603:10a6:600:276::16) To DM6PR10MB4313.namprd10.prod.outlook.com
+ (2603:10b6:5:212::20)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DM6PR10MB4313:EE_|PH0PR10MB4661:EE_
+X-MS-Office365-Filtering-Correlation-Id: 2eb4d939-3e17-416a-3101-08dbfbbc649d
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: MX5UNxVbCMA62CrlQER+L4BgSc/eDhlE0e76RoAKRAfo9Zs/aHn4xbtgM2YEai+b/epnyv6V7mLf1Wm1ERZ9iyTtoCjZBlSYWmBvDSeXaBTAIaJAjqJK64FQk4CL08aKFezjVCHlqo3unLZD+DGAT37ZWrUd4EQIFCEkNgGRWVI6lHVErtjEVFcwU8Etj6R7px0HTFqa9NXU78SYK5K6UYHQpIur68o1BAanm9SKmhTkHPBf7IFfHYwcSiOwA9rECeJacUsUh4x8zklQK7Qtxul5l5mQAWirsWSXgHBTP7dStFNebuSMfCtXUG+l9mMDlo66/f3BBAGtkRk0sy4nITX3cucyAOnW0OuLKJyd+mTJdnt3KRHAm7rR/2xHt/h+SBfX9krlUO+EEVkf0kmknLm3pPda2dhWkVtQ/0T0zqn4f0XoObrmuxU789j7R/PP2LpBl5KGG9QPIl20wBkAuKn3Fn9dJ8zsYjY3Tal5IhHmltqvOw2iQankP22l173vERfo6jG8QMqmH3yMOMIHb5XlQ+Nqpm07k66etQm5E6GfzIoMoaatpE+0518COp0fjkuLrnItlBNwDifFVBhJBueY1u2XJbK4KpborP7YcF15hHKItA8NXIyx8ilP3QUiUxABDwy4xpcmgyLcUVa+kqj0JxAY6XTEkYREInRh77X6BSjDuM4s+F68PJM59zL5
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR10MB4313.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(366004)(396003)(39860400002)(346002)(376002)(230273577357003)(230173577357003)(230922051799003)(186009)(64100799003)(451199024)(1800799012)(31686004)(66946007)(66476007)(54906003)(66556008)(6916009)(31696002)(36756003)(86362001)(38100700002)(83380400001)(26005)(6512007)(2616005)(53546011)(36916002)(6506007)(6486002)(2906002)(316002)(478600001)(6666004)(7416002)(5660300002)(4326008)(8676002)(41300700001)(8936002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?ZVVkRXhvTlBmT3M1TC9pd0NoaCtnNUZncnp5cmpSY21XcE1YZmNnV29RM1hr?=
+ =?utf-8?B?Z1JvK3Y3b3RuYXBid1F1bUVBcUdpWElRQmlSYWtRU29ybkxJM0h5YzEzbFdY?=
+ =?utf-8?B?d2R2d2xCT0xsMnBnbXlyWHNDRTd3YlRiNGtxK3pvbThVblkwOFRtUHZ1Y0hN?=
+ =?utf-8?B?dTE2YlRuRk1QY0ZGTDJhRks5dWkvUWpDWVFhaVBBM2tmcGkraGhPWW02eFVY?=
+ =?utf-8?B?cWcyNkdwK0cwalNjbVVOMGRXYm1RQXF5V1IxbUwrM2hvUzFad01Oakd6My9i?=
+ =?utf-8?B?bE0xRkVIekZveUw5NmxsYUdweXV5NFp5VnZjSTBhU2kxRHFnbzJLY1UyMFdo?=
+ =?utf-8?B?L0NUQUV6VkFUemE5QmlqSHVIS0pwcCtlYmVFOGpDbms3UlNPcVNMMVZyYklQ?=
+ =?utf-8?B?U0hsYXZyYWRObGtWMExPZnlidWZCT1l2bk0ySlRNd2xPSWxYMmJXNkExWDVR?=
+ =?utf-8?B?Yi9yUHIrdnRSTGpRN2QybmFySllUMHZDdmhlM2lsSE1Nem5PNU1FaHF4RmRF?=
+ =?utf-8?B?VkMwbFAreHdSMjNaa1g2R040TDdZQ3BiNWg4ejlSVVNCdk5IcFJ6VmRlRmxV?=
+ =?utf-8?B?aytxKy94c3VKaGVlemdVUkZUTHNjb2xiRmdmZE5makJkZmZ2WGw5UWFWeENj?=
+ =?utf-8?B?eS81ZEJyeVB5ZkFEVURoNFQ3TUJSRjY0OXc1Yk1hdWRtR3BRUWVZQWlyN01N?=
+ =?utf-8?B?cG9oU1dMSlo5RVUxd1d1Qjh1dDNGSG9UQS9kckhDcHo2OGNhc0RWdzFEQ0dw?=
+ =?utf-8?B?Sy9wTWd4QnR3MlZ4dDBkTjNzbkNDNjVET0pmVlAyS05ibEQ0SUdIcEFIRTBj?=
+ =?utf-8?B?Rkk2NlJsS09XSGprNXMzb25PczRHZlNBWlIvc1AwOWltQnlQd1dNSUlYKzhv?=
+ =?utf-8?B?NG1hOGRUZ04wQVVMMjlnKzhmRFpJMERtTldGbGpiTHBsQjZuYXJlem1mQ3Nu?=
+ =?utf-8?B?RUlsSG9xUjYyS1RXbU1Vd3ZtZllYUHZWZnVMSTFXcGhQQ01SVThYNFltN200?=
+ =?utf-8?B?d2ZCcFJOaFVKaTVoRWR1WmFhczNJMWRsN2E1YVd4eWFwcXJmeTk4UWM5QXVh?=
+ =?utf-8?B?UE1RR1h5SFlEc1ZwTVUzV0pkaE9PeDJLRysrQzZwWVExTkxEOE9NSGNWb1Jp?=
+ =?utf-8?B?N3F3T0RUYmxGMHVHamVTNHVteTN2c1ZTY1kxQy9MMVFGYjdmMWdjZWtBYjls?=
+ =?utf-8?B?bUNvejI2N0tIS0x4dUlsd3pJWVlZZ2FXRW5oNnZOMExXSmpab2pPTHV3djhj?=
+ =?utf-8?B?bzd3Z29Sa1JlU3RnMXlBSzVoTlV1NGVDWGpoY0hDUU5mWjlvOE5NZTVJNmpN?=
+ =?utf-8?B?eExZSy85dXRQQVpSamNLREp3L241TlZKdEZxczZtSWg5N29sL2pwRWdRcDRx?=
+ =?utf-8?B?b0dOanBFR2kxSUVqQk04NzdXUVdnem8rUGhYbXdzZ1ZsQWNVMXJMN1R2TVFy?=
+ =?utf-8?B?MzF1cGt5RGIyelUzaEMrUllnUENBQ2pqNXlCcmJ0RnJnMmhncEtwN3E0dzhR?=
+ =?utf-8?B?WVJRMzQ1eVQrQkZwUnhTOEh2YUl1K2psa1N4ay9ObzRieGhTMmtBd01lYUNx?=
+ =?utf-8?B?eGd0ZGkzTmtMbGJrT0tGMEdBNW5ud3VlT0s0Smo1L1pmekluRi9zZ2NJb2RM?=
+ =?utf-8?B?Z1htR1p6SU5Hd1AyRzBvYkRvcGVNQTZKNnVZbmxVUGUvVjkvdVloWVNwRTVX?=
+ =?utf-8?B?eWtpUGtIM1BBNkhlSGVLK2Y3UXE1SGN5K1daSXpwTzVHN0NPZU82cmh5SGRh?=
+ =?utf-8?B?bUxIdU5mTEwyeG5oMHQ0aGN0bkdER1RWY0NoLzlTMkdsV2NTajVoV1J4UE1u?=
+ =?utf-8?B?Y05aQVlkV05yekZ5Ky9lYUNLRE5LNmhKckZ5dUJ0eTNXYUMyQ2VGcnBjdEVs?=
+ =?utf-8?B?MHNnaVN6VHN2cHhEeFdpWGVtSmlnc09IMy9PRGVYeXFLUUhnRDNTSTRwWkpG?=
+ =?utf-8?B?TUNBU2ZXT0ZqSGlXK3FGc2taSDZBYThvWWVlTnlxUlBYQmxqRTlrTTJXVDBl?=
+ =?utf-8?B?ejZiYzNMelY3Vmd4K0Z0UGRROGNQNjZQYzMwOU9BbEl3TDVoQUFWSmRtb0My?=
+ =?utf-8?B?c3M5TFRFN1BCVlEvVStGanhUVllhMXRDWER5TjNHYmVPamlCT2kxSmcvT04y?=
+ =?utf-8?B?NHkzWWIzL3VRVzYrekt2ZnNCNzZwd2hNUUpzQUxaUGtuanE5Yk1scjh4VFdi?=
+ =?utf-8?B?Mmc9PQ==?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: b4MWe1pIdlKzB4z5fXSycU76y+qdPxu861kDCaE7OpzHIPZOJ9zlbWZ9WDC3HGt/m4eBgKem/8yt4e193LUsitry9Fhyv9DnzLSY3rItxWOob/DDI3J/SjeNfeElntmVYUDq2HaFnbbYT/62MAPZevLc1JpzxSBsch04SJtN8PVPCGmqlIV7DsAmRykogXgpb5Y5IiI+EriD1BuMKksl5FN1iEnjHaeiultPQ1VcgEU46m9KnsOCVKD3ceJWO7wQKs+erXswuJF3OpAaogSiMflwy80KAU/f83YALCLshOxcMSfkgKcdkhjK3cTjPoJsATYIdYwbNJL9RnscOliuOxuRbtzK/8PFqNDhprMn/uDeTlS855mdhY0jvlGEwdZ5Q6lFOpFX+L5M6EcFEdEgsgFYWqVR0TlWZEp8k1kiN+kTVu6SRt033mUwVqdsV0EMWtYYWFIZoGlrwK0QYK1H9OBvGQMad4/4t4JkhE6suJ2Ap7Er1nJxTq1k1yLatKPoJQsmRPDHulvt03g2Nfj6pYaa3JFRy1drWbw2tObHd+qwvOVlKCy2k/HPmsXShWedT33mtScQiy9lJ7Gn5RX+1zxyEzdlevpbcqc6pA2zVDg=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2eb4d939-3e17-416a-3101-08dbfbbc649d
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR10MB4313.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Dec 2023 09:17:56.5369
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: ynKBz88sWKZ2OVZrNzBYYWY09OZpOOqUbw2sn7DNrdvvCyFNo+3gOD2NFR36wECriwK/A+32VQlWe9IS+DiIzg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR10MB4661
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-13_01,2023-12-12_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 bulkscore=0 spamscore=0
+ malwarescore=0 mlxscore=0 mlxlogscore=999 adultscore=0 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311290000
+ definitions=main-2312130067
+X-Proofpoint-ORIG-GUID: WK37Yy2v2icDNRKIPOfweQxeCLH2KH5p
+X-Proofpoint-GUID: WK37Yy2v2icDNRKIPOfweQxeCLH2KH5p
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -49,239 +169,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Support link frequency of 445MHz in addition to 594MHz.
-Break out the register set specific to each data lane rate and also add
-the general timing register set corresponding to the each data
-lane rate.
+On 13/12/2023 05:59, Ojaswin Mujoo wrote:
+>> However - as we have seen with a trial user - it can create a problem if we
+>> don't do that and we write 4K and then overwrite with a 16K atomic write to
+>> a file, as 2x extents may be allocated for the complete 16K and it cannot be
+>> issued as a single BIO.
+> So currently, if we don't fallocate beforehand in xfs and the user
+> tries to do the 16k overwrite to an offset having a 4k extent, how are
+> we handling it?
+> 
+> Here ext4 will return an error indicating atomic write can't happen at
+> this particular offset. The way I see it is if the user passes atomic
+> flag to pwritev2 and we are unable to ensure atomicity for any reason we
+> return error, which seems like a fair approach for a generic interface.
 
-Signed-off-by: Umang Jain <umang.jain@ideasonboard.com>
----
-Changes in v3:
-- Use tabspace for indent as denoted by checkpatch.
+ok, but this does not seem like a good user experience.
 
-Changes in v2:
-- Split out from [PATCH v3 0/8] media: Sony IMX335 improvements
-  where original patch was introduced.
-- Add general timing registers to each data lane rate configuration
-- Reword commit message. 
----
- drivers/media/i2c/imx335.c | 108 +++++++++++++++++++++++++++++--------
- 1 file changed, 87 insertions(+), 21 deletions(-)
+> 
+>>> We didn't want to overly restrict the users of atomic writes by
+>>> forcing
+>>> the extents to be of a certain alignment/size irrespective of the
+>>> size
+>>> of write. The design in this patchset provides this flexibility at
+>>> the
+>>> cost of some added precautions that the user should take (eg not
+>>> doing
+>>> an atomic write on a pre existing unaligned extent etc).
+>> Doesn't bigalloc already give you what you require here?
+> Yes, but its an mkfs time feature and it also applies to each an every
+> file which might not be desirable for all use cases.
 
-diff --git a/drivers/media/i2c/imx335.c b/drivers/media/i2c/imx335.c
-index 7a37eb327ff4..ffceeb8a15c7 100644
---- a/drivers/media/i2c/imx335.c
-+++ b/drivers/media/i2c/imx335.c
-@@ -49,7 +49,8 @@
- #define IMX335_INCLK_RATE	24000000
- 
- /* CSI2 HW configuration */
--#define IMX335_LINK_FREQ	594000000
-+#define IMX335_LINK_FREQ_594MHz	594000000
-+#define IMX335_LINK_FREQ_445MHz	445500000
- #define IMX335_NUM_DATA_LANES	4
- 
- #define IMX335_REG_MIN		0x00
-@@ -99,7 +100,6 @@ static const char * const imx335_supply_name[] = {
-  * @vblank_min: Minimum vertical blanking in lines
-  * @vblank_max: Maximum vertical blanking in lines
-  * @pclk: Sensor pixel clock
-- * @link_freq_idx: Link frequency index
-  * @reg_list: Register list for sensor mode
-  */
- struct imx335_mode {
-@@ -111,7 +111,6 @@ struct imx335_mode {
- 	u32 vblank_min;
- 	u32 vblank_max;
- 	u64 pclk;
--	u32 link_freq_idx;
- 	struct imx335_reg_list reg_list;
- };
- 
-@@ -133,6 +132,7 @@ struct imx335_mode {
-  * @again_ctrl: Pointer to analog gain control
-  * @vblank: Vertical blanking in lines
-  * @cur_mode: Pointer to current selected sensor mode
-+ * @link_freq_idx: Selected link frequency index
-  * @mutex: Mutex for serializing sensor controls
-  * @cur_mbus_code: Currently selected media bus format code
-  */
-@@ -156,20 +156,16 @@ struct imx335 {
- 	};
- 	u32 vblank;
- 	const struct imx335_mode *cur_mode;
-+	u32 link_freq_idx;
- 	struct mutex mutex;
- 	u32 cur_mbus_code;
- };
- 
--static const s64 link_freq[] = {
--	IMX335_LINK_FREQ,
--};
- 
- /* Sensor mode registers */
- static const struct imx335_reg mode_2592x1940_regs[] = {
- 	{0x3000, 0x01},
- 	{0x3002, 0x00},
--	{0x300c, 0x3b},
--	{0x300d, 0x2a},
- 	{0x3018, 0x04},
- 	{0x302c, 0x3c},
- 	{0x302e, 0x20},
-@@ -177,10 +173,6 @@ static const struct imx335_reg mode_2592x1940_regs[] = {
- 	{0x3074, 0xc8},
- 	{0x3076, 0x28},
- 	{0x304c, 0x00},
--	{0x314c, 0xc6},
--	{0x315a, 0x02},
--	{0x3168, 0xa0},
--	{0x316a, 0x7e},
- 	{0x31a1, 0x00},
- 	{0x3288, 0x21},
- 	{0x328a, 0x02},
-@@ -266,6 +258,65 @@ static const struct imx335_reg raw12_framefmt_regs[] = {
- 	{0x341d, 0x00},
- };
- 
-+static const struct imx335_reg mipi_data_rate_1188Mbps[] = {
-+	{0x300c, 0x3b},
-+	{0x300d, 0x2a},
-+	{0x314c, 0xc6},
-+	{0x314d, 0x00},
-+	{0x315a, 0x02},
-+	{0x3168, 0xa0},
-+	{0x316a, 0x7e},
-+	{0x319e, 0x01},
-+	{0x3a18, 0x8f},
-+	{0x3a1a, 0x4f},
-+	{0x3a1c, 0x47},
-+	{0x3a1e, 0x37},
-+	{0x3a1f, 0x01},
-+	{0x3a20, 0x4f},
-+	{0x3a22, 0x87},
-+	{0x3a24, 0x4f},
-+	{0x3a26, 0x7f},
-+	{0x3a28, 0x3f},
-+};
-+
-+static const struct imx335_reg mipi_data_rate_891Mbps[] = {
-+	{0x300c, 0x3b},
-+	{0x300d, 0x2a},
-+	{0x314c, 0x29},
-+	{0x314d, 0x01},
-+	{0x315a, 0x06},
-+	{0x3168, 0xa0},
-+	{0x316a, 0x7e},
-+	{0x319e, 0x02},
-+	{0x3a18, 0x7f},
-+	{0x3a1a, 0x37},
-+	{0x3a1c, 0x37},
-+	{0x3a1e, 0xf7},
-+	{0x3a20, 0x3f},
-+	{0x3a22, 0x6f},
-+	{0x3a24, 0x3f},
-+	{0x3a26, 0x5f},
-+	{0x3a28, 0x2f},
-+};
-+
-+static const s64 link_freq[] = {
-+	/* Corresponds to 1188Mbps data lane rate */
-+	IMX335_LINK_FREQ_594MHz,
-+	/* Corresponds to 891Mbps data lane rate */
-+	IMX335_LINK_FREQ_445MHz,
-+};
-+
-+static const struct imx335_reg_list link_freq_reglist[] = {
-+	{
-+		.num_of_regs = ARRAY_SIZE(mipi_data_rate_1188Mbps),
-+		.regs = mipi_data_rate_1188Mbps,
-+	},
-+	{
-+		.num_of_regs = ARRAY_SIZE(mipi_data_rate_891Mbps),
-+		.regs = mipi_data_rate_891Mbps,
-+	},
-+};
-+
- static const u32 imx335_mbus_codes[] = {
- 	MEDIA_BUS_FMT_SRGGB12_1X12,
- 	MEDIA_BUS_FMT_SRGGB10_1X10,
-@@ -280,7 +331,6 @@ static const struct imx335_mode supported_mode = {
- 	.vblank_min = 2560,
- 	.vblank_max = 133060,
- 	.pclk = 396000000,
--	.link_freq_idx = 0,
- 	.reg_list = {
- 		.num_of_regs = ARRAY_SIZE(mode_2592x1940_regs),
- 		.regs = mode_2592x1940_regs,
-@@ -405,7 +455,7 @@ static int imx335_update_controls(struct imx335 *imx335,
- {
- 	int ret;
- 
--	ret = __v4l2_ctrl_s_ctrl(imx335->link_freq_ctrl, mode->link_freq_idx);
-+	ret = __v4l2_ctrl_s_ctrl(imx335->link_freq_ctrl, imx335->link_freq_idx);
- 	if (ret)
- 		return ret;
- 
-@@ -755,6 +805,14 @@ static int imx335_start_streaming(struct imx335 *imx335)
- 	const struct imx335_reg_list *reg_list;
- 	int ret;
- 
-+	/* Setup PLL */
-+	reg_list = &link_freq_reglist[imx335->link_freq_idx];
-+	ret = imx335_write_regs(imx335, reg_list->regs, reg_list->num_of_regs);
-+	if (ret) {
-+		dev_err(imx335->dev, "%s failed to set plls\n", __func__);
-+		return ret;
-+	}
-+
- 	/* Write sensor mode registers */
- 	reg_list = &imx335->cur_mode->reg_list;
- 	ret = imx335_write_regs(imx335, reg_list->regs,
-@@ -881,7 +939,7 @@ static int imx335_parse_hw_config(struct imx335 *imx335)
- 	};
- 	struct fwnode_handle *ep;
- 	unsigned long rate;
--	unsigned int i;
-+	unsigned int i, j;
- 	int ret;
- 
- 	if (!fwnode)
-@@ -945,13 +1003,21 @@ static int imx335_parse_hw_config(struct imx335 *imx335)
- 		goto done_endpoint_free;
- 	}
- 
--	for (i = 0; i < bus_cfg.nr_of_link_frequencies; i++)
--		if (bus_cfg.link_frequencies[i] == IMX335_LINK_FREQ)
--			goto done_endpoint_free;
- 
--	dev_err(imx335->dev, "no compatible link frequencies found\n");
-+	for (i = 0; i < bus_cfg.nr_of_link_frequencies; i++) {
-+		for (j = 0; j < ARRAY_SIZE(link_freq); j++) {
-+			if (bus_cfg.link_frequencies[i] == link_freq[j]) {
-+				imx335->link_freq_idx = j;
-+				break;
-+			}
-+		}
- 
--	ret = -EINVAL;
-+		if (j == ARRAY_SIZE(link_freq)) {
-+			ret = dev_err_probe(imx335->dev, -EINVAL,
-+					    "no supported link freq found\n");
-+			goto done_endpoint_free;
-+		}
-+	}
- 
- done_endpoint_free:
- 	v4l2_fwnode_endpoint_free(&bus_cfg);
-@@ -1101,7 +1167,7 @@ static int imx335_init_controls(struct imx335 *imx335)
- 							V4L2_CID_LINK_FREQ,
- 							ARRAY_SIZE(link_freq) -
- 							1,
--							mode->link_freq_idx,
-+							imx335->link_freq_idx,
- 							link_freq);
- 	if (imx335->link_freq_ctrl)
- 		imx335->link_freq_ctrl->flags |= V4L2_CTRL_FLAG_READ_ONLY;
--- 
-2.41.0
+Sure, but to get started could you initially support that option (as 
+long as it does not conflict with other per-file option)?
 
+Thanks,
+John
