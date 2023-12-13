@@ -2,134 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 83CDE812374
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 00:42:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 997CA8122C7
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 00:25:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235379AbjLMXmf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 18:42:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40814 "EHLO
+        id S234050AbjLMXZO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 18:25:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47746 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1442889AbjLMXmP (ORCPT
+        with ESMTP id S229896AbjLMXZM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 18:42:15 -0500
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3547219A7;
-        Wed, 13 Dec 2023 15:40:41 -0800 (PST)
-Received: from pps.filterd (m0360083.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3BDMdHfe017114;
-        Wed, 13 Dec 2023 23:39:30 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=pp1;
- bh=gYyFgOCVso5JtRE0tmyb4wuw79KiFxJvcJzKqQ9U3hM=;
- b=Y2y+vBrIpCcMGXF3NRSV10FFkPdM73O3qLUMGvHbcQyh8ta3xGTfLZrNiyo87jvc8syI
- FRzeqomhRZduRUtY/dUzVfgr0fdV7LA0rZVKTDSw/1sTDbiGFyrwBX91oYj0bL30cQj7
- C9LxCEbYprnIvqxvcgSgJUSumx9hQn0hhNCHWiJqGUm9oUvyMqxLAtaN2ANhdetotDxi
- WGlcfKBGWtKeeihq80fcGT9w3VJGA+z54azbD+YRIsygeblUzMxfBFeEehKa5F46Q4jG
- gz3InB755FjlQc3o7JxlN7j/nixnoujlyi/9Kk4UHCXwpJueAUy563ZLRGOKLh0BcL7m 1Q== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3uykvmuvsd-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 13 Dec 2023 23:39:29 +0000
-Received: from m0360083.ppops.net (m0360083.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3BDNdSJk015295;
-        Wed, 13 Dec 2023 23:39:29 GMT
-Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3uykvmuvp5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 13 Dec 2023 23:39:28 +0000
-Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
-        by ppma21.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3BDLX5Hc012593;
-        Wed, 13 Dec 2023 23:37:05 GMT
-Received: from smtprelay03.fra02v.mail.ibm.com ([9.218.2.224])
-        by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3uw3jp4ndc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 13 Dec 2023 23:37:05 +0000
-Received: from smtpav02.fra02v.mail.ibm.com (smtpav02.fra02v.mail.ibm.com [10.20.54.101])
-        by smtprelay03.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3BDNb2jL7471776
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 13 Dec 2023 23:37:02 GMT
-Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 7A00620043;
-        Wed, 13 Dec 2023 23:37:02 +0000 (GMT)
-Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 153A920040;
-        Wed, 13 Dec 2023 23:37:01 +0000 (GMT)
-Received: from heavy.boeblingen.de.ibm.com (unknown [9.171.70.156])
-        by smtpav02.fra02v.mail.ibm.com (Postfix) with ESMTP;
-        Wed, 13 Dec 2023 23:37:00 +0000 (GMT)
-From:   Ilya Leoshkevich <iii@linux.ibm.com>
-To:     Alexander Gordeev <agordeev@linux.ibm.com>,
-        Alexander Potapenko <glider@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Christoph Lameter <cl@linux.com>,
-        David Rientjes <rientjes@google.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Marco Elver <elver@google.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Pekka Enberg <penberg@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Vlastimil Babka <vbabka@suse.cz>
-Cc:     Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Hyeonggon Yoo <42.hyeyoo@gmail.com>,
-        kasan-dev@googlegroups.com, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linux-s390@vger.kernel.org,
-        linux-trace-kernel@vger.kernel.org,
-        Mark Rutland <mark.rutland@arm.com>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Sven Schnelle <svens@linux.ibm.com>,
-        Ilya Leoshkevich <iii@linux.ibm.com>
-Subject: [PATCH v3 34/34] kmsan: Enable on s390
-Date:   Thu, 14 Dec 2023 00:24:54 +0100
-Message-ID: <20231213233605.661251-35-iii@linux.ibm.com>
+        Wed, 13 Dec 2023 18:25:12 -0500
+Received: from mail-oo1-f52.google.com (mail-oo1-f52.google.com [209.85.161.52])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC094EA;
+        Wed, 13 Dec 2023 15:25:18 -0800 (PST)
+Received: by mail-oo1-f52.google.com with SMTP id 006d021491bc7-5910b21896eso2343275eaf.0;
+        Wed, 13 Dec 2023 15:25:18 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702509918; x=1703114718;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=c+ujX2KdbWl+FCDRkPG1EwpBH+yzRnhRj9laF4akgZg=;
+        b=J8AuLG1oFZynBjB+2IRB6TgTuHbv4IxN4N6LHeUVSeyMy+86xMUaJLEfqqrNvR3urT
+         Bovv2Q16Bgu4QtjKCcFlJMRV/utKHS728bgpvLJ1dlyX9kg0WkTdjzaE57SEd8MO/8Jo
+         9/+uZJFTuLe2GmnZsSukM9H4OxWOCP2mZnz5mdwQS26yrEqnlipKfDXW11ITQj58uo/v
+         qKFPbAhaHs7OkkPDzcgkwGf7b0kUQaMU3EH7arpDgD0aKjyyXefQbNWC+qoZ2FrlF6Ta
+         HJIuTTnYDCfurGeC0/C1QQXH4YmVwXdzgHW/27fZWujrPIgLpPhPr6RdmsI0V6TOTH54
+         zsCw==
+X-Gm-Message-State: AOJu0Yw2BrD8qLg+ccSaEdcFGWdqJGGMn3DFVl1PQShW/IsfE2g3zzdH
+        lfUyz3Jl4UbRaXq9Es7AGVwK/xjytg==
+X-Google-Smtp-Source: AGHT+IGghdFnEQBv2Q1gGQFkdtduPobZx6ZkqkdA1mh/zFQx4tpk5DqrUHn56S1Ix93YoI+J2tsdhQ==
+X-Received: by 2002:a4a:55ca:0:b0:590:67db:1dcb with SMTP id e193-20020a4a55ca000000b0059067db1dcbmr5555100oob.4.1702509918208;
+        Wed, 13 Dec 2023 15:25:18 -0800 (PST)
+Received: from herring.priv (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
+        by smtp.gmail.com with ESMTPSA id r124-20020a4a4e82000000b0058cbbf9b4e4sm3251624ooa.48.2023.12.13.15.25.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Dec 2023 15:25:17 -0800 (PST)
+Received: (nullmailer pid 2248461 invoked by uid 1000);
+        Wed, 13 Dec 2023 23:25:16 -0000
+From:   Rob Herring <robh@kernel.org>
+To:     "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Andrew Lunn <andrew@lunn.ch>
+Cc:     netdev@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH net-next] dt-bindings: net: marvell,orion-mdio: Drop "reg" sizes schema
+Date:   Wed, 13 Dec 2023 17:24:55 -0600
+Message-ID: <20231213232455.2248056-1-robh@kernel.org>
 X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20231213233605.661251-1-iii@linux.ibm.com>
-References: <20231213233605.661251-1-iii@linux.ibm.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: CTCQr_1RVlp-5vBpdhAQv5G_JXLdChBk
-X-Proofpoint-ORIG-GUID: FOlLAufKv9YIP5YH16oRSkto3lOlE6sn
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-13_14,2023-12-13_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- phishscore=0 mlxscore=0 adultscore=0 spamscore=0 mlxlogscore=755
- clxscore=1015 priorityscore=1501 suspectscore=0 impostorscore=0
- malwarescore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311290000 definitions=main-2312130167
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,
+X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,
+        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
         RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now that everything else is in place, enable KMSAN in Kconfig.
+Defining the size of register regions is not really in scope of what
+bindings need to cover. The schema for this is also not completely correct
+as a reg entry can be variable number of cells for the address and size,
+but the schema assumes 1 cell.
 
-Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
+Signed-off-by: Rob Herring <robh@kernel.org>
 ---
- arch/s390/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+ .../bindings/net/marvell,orion-mdio.yaml      | 22 -------------------
+ 1 file changed, 22 deletions(-)
 
-diff --git a/arch/s390/Kconfig b/arch/s390/Kconfig
-index 3bec98d20283..160ad2220c53 100644
---- a/arch/s390/Kconfig
-+++ b/arch/s390/Kconfig
-@@ -153,6 +153,7 @@ config S390
- 	select HAVE_ARCH_KASAN
- 	select HAVE_ARCH_KASAN_VMALLOC
- 	select HAVE_ARCH_KCSAN
-+	select HAVE_ARCH_KMSAN
- 	select HAVE_ARCH_KFENCE
- 	select HAVE_ARCH_RANDOMIZE_KSTACK_OFFSET
- 	select HAVE_ARCH_SECCOMP_FILTER
+diff --git a/Documentation/devicetree/bindings/net/marvell,orion-mdio.yaml b/Documentation/devicetree/bindings/net/marvell,orion-mdio.yaml
+index e35da8b01dc2..73429855d584 100644
+--- a/Documentation/devicetree/bindings/net/marvell,orion-mdio.yaml
++++ b/Documentation/devicetree/bindings/net/marvell,orion-mdio.yaml
+@@ -39,28 +39,6 @@ required:
+ allOf:
+   - $ref: mdio.yaml#
+ 
+-  - if:
+-      required:
+-        - interrupts
+-
+-    then:
+-      properties:
+-        reg:
+-          items:
+-            - items:
+-                - $ref: /schemas/types.yaml#/definitions/cell
+-                - const: 0x84
+-
+-    else:
+-      properties:
+-        reg:
+-          items:
+-            - items:
+-                - $ref: /schemas/types.yaml#/definitions/cell
+-                - enum:
+-                    - 0x4
+-                    - 0x10
+-
+ unevaluatedProperties: false
+ 
+ examples:
 -- 
 2.43.0
 
