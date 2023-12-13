@@ -2,266 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 320CB812061
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 22:04:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 41C14812059
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 22:04:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442719AbjLMVEc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 16:04:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46988 "EHLO
+        id S1442707AbjLMVEQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 16:04:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46848 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234071AbjLMVE0 (ORCPT
+        with ESMTP id S233985AbjLMVEN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 16:04:26 -0500
-Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B824139;
-        Wed, 13 Dec 2023 13:04:31 -0800 (PST)
-Received: from pps.filterd (m0246617.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3BDKO3LO029114;
-        Wed, 13 Dec 2023 21:03:45 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
- subject : to : cc : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=corp-2023-11-20;
- bh=8ehfqSngDzy4gtJac7CjJCj9JYLiA0TOLQsN9Uhm81o=;
- b=ZbNJiR2v62CSKYch7R87b/P782UsqH9f1V9xE0q3VrtXfb/ICyhccnyeYY3QZkkpsAf+
- ZFRN1AicKOAz/j5nWSD7c/eftWHOmxiSR6zwTj94M4QfsUSVrgpR1Qjs6dTi5Hb0wrbI
- MNanzyDwuOIdheifiM6ar6FMg4rESC2pbW2yjlnAk9rMnLskXg2RFFCJT1fmrDLqa3dW
- LdoOwJzLmxeQ89TfSrgjoXieOyAfyXLO1Ut5CZ0f0YwsmI/ohQfOb6+gF59MkmZxR1kD
- WsuKPrmn3xfkte7JQneaeS3XZ1ECY/sAmcGOf5rardboznS642ts+8n8HV6OeoNSbuaF Vg== 
-Received: from phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta03.appoci.oracle.com [138.1.37.129])
-        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3uvgsuh9d1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 13 Dec 2023 21:03:44 +0000
-Received: from pps.filterd (phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-        by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 3BDKAtWj012781;
-        Wed, 13 Dec 2023 21:03:44 GMT
-Received: from nam10-dm6-obe.outbound.protection.outlook.com (mail-dm6nam10lp2101.outbound.protection.outlook.com [104.47.58.101])
-        by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3uvep8yuv7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 13 Dec 2023 21:03:44 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=kVfcftAPSx/rPxw0CBYFLbc4bnOtj7A5UJBRKixQwqdRosirHAgBo++sQJifREbsBmaf9s9s36PHziISwY9l0zxa7ZmYlbsDMIAQMuHDkEhCvLF0O7DThoepbCbUsulSNI2vv81FUGgZsWcf6LjabkZsdwdi8HyRsVU7nYbt+cADw3cug31U9r22kk+eI3eH+Lrqw0IK2gvZcN2JVZ+BUbDPHgQm9RIGIc9XpxGQXyd9f7Y06+ysh24owvIfT6qsAUELPvgQECwBE7f90TMotUBEtxsKLWTh6s+w0ZtS/+7d3m5zbKOEZBMZIxFHCMu0OY/FKGbv5xcr44gFANLW1g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=8ehfqSngDzy4gtJac7CjJCj9JYLiA0TOLQsN9Uhm81o=;
- b=O251KzS9xSnoL8R2E77VTjuDvbZExbuLQ/JYRaN5Y9o3ihB+OLXoDEOlFKyS1XnzQXvXHHTHeB9y3lDKAiqVm83j9eUb+ZUlMu0uzx3935yE8RgtcROaBYddZJcoAEyYH7r7EHIF+oh1eEOtsozeYbE8K146Z0oKB6Zf02vwUJOMcLU4MJtTg74Vn1dLryHqO/C1m6M2HarREntw2FfQ/dNjyOfsXo+vIEwWMy5huGXLt0t6iaYo3+D0qtOkH/1lIBc7PUruPfO93WsUs+mPLvV0Xy0IkVlwJ4KW2ItWq345147qSA3kOamvuzmmOmsAfZ21h33/MQy6uNGTW2A3fA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=8ehfqSngDzy4gtJac7CjJCj9JYLiA0TOLQsN9Uhm81o=;
- b=iB3GZ5PRcENUcxp3QtR5str+VgZePsKOKWUG9TSuqYVg06p/wKwq3i7LKdoFTWC9MT/4vGJNwqVDwLalmlRPApjC8NMZBZ3m9un5ZOEqMs0vB3e6zRTEYc+mAPxbIWfWUVfzsp4pC2TbITbYOs6YOuMhOc6xJgqkyQrlOKqm09I=
-Received: from CH0PR10MB5113.namprd10.prod.outlook.com (2603:10b6:610:c9::8)
- by PH8PR10MB6290.namprd10.prod.outlook.com (2603:10b6:510:1c1::7) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7068.36; Wed, 13 Dec
- 2023 21:03:41 +0000
-Received: from CH0PR10MB5113.namprd10.prod.outlook.com
- ([fe80::7361:23aa:7669:bcce]) by CH0PR10MB5113.namprd10.prod.outlook.com
- ([fe80::7361:23aa:7669:bcce%7]) with mapi id 15.20.7091.022; Wed, 13 Dec 2023
- 21:03:40 +0000
-Message-ID: <31d24c29-5b7c-328c-b830-276acab43203@oracle.com>
-Date:   Wed, 13 Dec 2023 13:03:29 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH V2] maple_tree: do not preallocate nodes for slot stores
-Content-Language: en-US
-To:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        maple-tree@lists.infradead.org
-Cc:     akpm@linux-foundation.org, willy@infradead.org,
-        liam.howlett@oracle.com, zhangpeng.00@bytedance.com,
-        stable@vger.kernel.org
-References: <20231213205058.386589-1-sidhartha.kumar@oracle.com>
-From:   Sidhartha Kumar <sidhartha.kumar@oracle.com>
-In-Reply-To: <20231213205058.386589-1-sidhartha.kumar@oracle.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SJ0PR03CA0012.namprd03.prod.outlook.com
- (2603:10b6:a03:33a::17) To CH0PR10MB5113.namprd10.prod.outlook.com
- (2603:10b6:610:c9::8)
+        Wed, 13 Dec 2023 16:04:13 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FAA3EA;
+        Wed, 13 Dec 2023 13:04:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1702501459; x=1734037459;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=y1mtcoT8ZE06ocUFqW4eqbX762VeIRsfO2sl4kVHv9k=;
+  b=f6aT5kUahyZ3PDV3xHkPYsF0fnFwogrjsBziC6m3UMicPAxo/e7LyJPk
+   QiHIa9iSqet9eBp6+UEB5to1QEiFPCoFJJuc/VAbNuM4hazTQKFzgYS/F
+   6vVHkMHPtq99C1VfsN4rvto7KQxNy8PvrFojeGb/s97rcycEbCNYXojxU
+   SwFtHZFQb36wP2zM/YyfbHVOfVhamZs1UQAiEIBwvAqNKaWmEI9Eq5Q+N
+   LF9UhbmJLohsdDf8H9XLlYG3zm38v1a9FuwCHOAA+N0NflDGNQ4A79xSL
+   TLSFkF43ctEvCxCWeFy2DliIY90BFNfF2QVEewn/cPiUePVd4OYp91Use
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10923"; a="461495928"
+X-IronPort-AV: E=Sophos;i="6.04,273,1695711600"; 
+   d="scan'208";a="461495928"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Dec 2023 13:04:19 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10923"; a="947311374"
+X-IronPort-AV: E=Sophos;i="6.04,273,1695711600"; 
+   d="scan'208";a="947311374"
+Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
+  by orsmga005.jf.intel.com with ESMTP; 13 Dec 2023 13:04:14 -0800
+Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1rDWOp-000L8F-2x;
+        Wed, 13 Dec 2023 21:04:11 +0000
+Date:   Thu, 14 Dec 2023 05:03:33 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Sherry Sun <sherry.sun@nxp.com>, hongxing.zhu@nxp.com,
+        l.stach@pengutronix.de, lpieralisi@kernel.org, kw@linux.com,
+        robh@kernel.org, bhelgaas@google.com,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
+        festevam@gmail.com
+Cc:     oe-kbuild-all@lists.linux.dev, linux-imx@nxp.com,
+        linux-pci@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH V2 1/4] PCI: imx6: Add pci host wakeup support on imx
+ platforms.
+Message-ID: <202312140402.hZsD0IVQ-lkp@intel.com>
+References: <20231213092850.1706042-2-sherry.sun@nxp.com>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CH0PR10MB5113:EE_|PH8PR10MB6290:EE_
-X-MS-Office365-Filtering-Correlation-Id: 95845e24-9721-4524-f18f-08dbfc1efbcf
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: JlVKPapuOAh+J9Nnq2F/7/gO5Gk/fz87Kl8uuWugc0ir0/h+oOmngKNZjsgxNgxJLQkS5MSx8vLr+lIlCO1TFtX5jP0qz1XXiWEsod5QxIjt/sm4itexqUEN2Y92zHpqrAG/skuYZmhxxRUgktoJ74j2ULek01CQzOFhUhSb4+ubIiY746kRVvP9KLds0ZtBHR3j+nkpq4SuI+wRNqLcWQpk64ZsTpNce/IRuBlQONu7O4UuA3kcrX/lppKRBgUEVOgpd9HdeqBeHkPVa/a/+703xKftse2sar0Fet7NEqGzOrUENI2nU3D1Cc8DqOouzIG2yc/QpWOUoKnNe8Md9xnrluN1niQcrjV6/9NJ75Yc2gzYdWjq9gGj26dCo1GEBxBRnVeyyQ+OSnmG50pfjOORjiE8p5WbztKvHWfezBB3ak8ZpBJ/tCPbc7653pzSpj/VXG/sz9OXX21W7vhainoMaoRPOGeibY+DmfTFs3klqYMuHUOCWg20F/xa+ATf/+38tStkQt3TZ84tGrNqK0zwAqqPo/aWA/sEjIbf/27g8jenyWypCmtHw1eOkPZwrtZlFWnw+xC2pC6Nt7BHzqMHfs4GklDGXD0U4xoTJZR4gKLjIBuvSyLPZeU6qnenT5JfQ8MOffbB4oLOZBVhlQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH0PR10MB5113.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(136003)(39860400002)(346002)(396003)(376002)(230922051799003)(64100799003)(186009)(451199024)(1800799012)(31686004)(66946007)(66476007)(66556008)(36756003)(86362001)(31696002)(966005)(2616005)(6512007)(6486002)(6506007)(53546011)(83380400001)(38100700002)(478600001)(2906002)(6666004)(316002)(8936002)(5660300002)(44832011)(8676002)(41300700001)(4326008)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?aUd1Y0JoQ3JoT25sUGcwNGFnV2FkQ2E2S1RmUHhwOEtRRldPQWg0L3hVdkZj?=
- =?utf-8?B?MForb3krOUp1ekh4cFgzdGZsZGVCTlFIb2JQcWx2d2lOaXRpVUd1L1o3ZmFV?=
- =?utf-8?B?YWRuUU5XS3FsQ3FtV2ZxTDhIdFduZFVCcURRaHJON0FYYkVYeW1sY0UrdWJp?=
- =?utf-8?B?RGdXdS9WSytNSHU5dVErZkY2cm9HVzA0VzBPcy9HTi9tTUJTQkRkV1lHV2Nv?=
- =?utf-8?B?S0gvY1A3eUVBbGR4S2xxQTB5Uzl6aG5QWEFyWTl5QnBzaTdkeThseUNjSzBM?=
- =?utf-8?B?bjl6WkErZGxhUFhFeDFNd3BjZUtSV0t1ZkxicDRzeVJ2d2xCdGd5U3BnT08r?=
- =?utf-8?B?dVFOWi9IRUhiRzlheE4rTzFpdzVOVHFwKzQvVGhvM2dRdmZuYWFYQklpVGVD?=
- =?utf-8?B?YmdTM3JyTFVUT2dsUjZVQmkyRDJiRWYvaUdXUncrN3hZeGo1Y1JleUt5WnZ6?=
- =?utf-8?B?WEt6ZWhJL3VrZGZTUEl3dVZ0THJZQ2tDamhtNGZtVE9HMnk2cU1yQkxKVDU4?=
- =?utf-8?B?K21sL0JoUTJLRDFwMlZRUVg3dkN4YVB0Zk1ONGM4bFFBK1VZV1ZZdWxlSjZa?=
- =?utf-8?B?bWszdkUzb0UxQVowN1Jra2FrZnNSSUZMSEZUc09zWWZXVkE2VGcyU3MwYXZR?=
- =?utf-8?B?UVJaZGtuc0x1UXZKanhGcDJYT0RwMTBnUW9UWTRTdU1RTkU1NjU5UEN3VmVx?=
- =?utf-8?B?RGQwZ2pYVGhreE1HQzBUd2ZuVFVnZENBeW9XTmlHTVJhV1BmOTNOR2k1NWlY?=
- =?utf-8?B?RTB5c1JMbGdHQTJ5WkVUWGVYajVldjAwV1pyVUpIRzdyaHlqRWhEWElIRUFF?=
- =?utf-8?B?WFpmN21kdW90eHNHUnFkaEU3enBOWG5nbkpVL0xYd3hKcmdUQ2JvREhUNFFt?=
- =?utf-8?B?dDc2R1N1eXVMSm9RSXA5ekZReTgvK3RmcVF3WkhKZ2E2L3VnODJzN3N0M3cv?=
- =?utf-8?B?Y1pWdDFEQzQvdWh0bkNoQ2VvOUFSMkRZbjJLZ1RnMmplRm9nL29aMlVYQ2Np?=
- =?utf-8?B?aVBySS9kTEx2L2ZwaEJDOVl0TEdIaWgrK1VEeTZpZnZPQ3UxbVpGUmpIclVp?=
- =?utf-8?B?RWI2WFJRY3haUjNKRmozWmZsbi8xU1dlbDV3S2xSOVpBVnpIalRLYWlrNkJw?=
- =?utf-8?B?UUNyaWNUaW5sZkJnMHNGT0VXSXZFVmRaV0J1Q1NSVTRXVXdWcmxFZWxRWXpj?=
- =?utf-8?B?YUNoMGJWNER5WkFaRzdTaGh4eTBwOG4rNmh2aUxkUTU2Z3JRWEVDWUxBWWhR?=
- =?utf-8?B?WitySVV3YVllZHp0Zkl0NUEzUXhKUXZmWlVocEtaNWQ3SXBGMEl6K2lkOHlN?=
- =?utf-8?B?TUltVGlSQ2oxc082VTh2Y1JoSWFBUlg0cnluampnZG5VbWJDazVxZk1MOWI0?=
- =?utf-8?B?bDVXOGdiZ1lGdVYvbjVsd0s4OUttSEF1N25idm9Pb0UyWjhyOWhYT0VWSWZG?=
- =?utf-8?B?OTk4bytKL1NIZVFPUkVkQklPMDZCbk40ZTIwNXd1dG9XelRPQ3lXa2JEdjcw?=
- =?utf-8?B?RE9CalZZWklQMXlSUURBUC83aFQ2dm94bHhpZElEa1Q5Nnh3V3U2SEZFZldl?=
- =?utf-8?B?NFIzOUZvQnhrS0xpbDN1dTN1ZERqU041UTRpTnJxOHFzSmF1U0ZSWUNEUlFG?=
- =?utf-8?B?RElObkZXbVlPNERLQWlxNDNiL2dJOUZNbmNiY3dsS0phV05PNTY3cytmVlhs?=
- =?utf-8?B?ZTh2YmNBM2g5dXZnYmovb3JhL3M0c3pvT2lMZVBmKzZoT1hkQ0F6c0FXOEZK?=
- =?utf-8?B?WXZZbW1rcVJlU1MwZVRMS0t3eFV6TkpUSDF6Q1BUREJpNHpmMnBHdHZrRkZK?=
- =?utf-8?B?OUN4S0hNWUdmZGExQlA3bzJmRmZSaHlYMU56c3NvUzJVQ2dGUFhEZ2FScy9h?=
- =?utf-8?B?dzliSklYWFpvdU15eHhHTUpHc0ZMak13RG5KUk4xRTVxd3Q1OVk4TGtlTFdp?=
- =?utf-8?B?cWVhdTZjVjh3bSsvVnBSN21HZ1g2alBMYWZaa2lVZnJrMGVlSHhmbHQrY0tM?=
- =?utf-8?B?ekNQRFF0MzJYeGtYRHhmcGtuTHhrL3ZrYnR6bDlHdFFnS3FPQUkxKzhNNGc3?=
- =?utf-8?B?bXBvODQ3UW9NWVI1dU1FZEVMYTJCb3dxNVoydXZqOW1MTHVHKzd4ZkRKTnBF?=
- =?utf-8?B?SzBYWE10bkpNUWRHelM0Z1NVbGptcG5WTVBhUi82dFBweHdRSFVwMUVyU09Q?=
- =?utf-8?Q?REPnZ2qk1AbAcvGWwOuR9qg=3D?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: =?utf-8?B?N2hzY2JPUGM2QnZ3VzZIZVNWcUwzNEJHZTdPcWx4Qm5QVThDVUNhQ2dqZDBY?=
- =?utf-8?B?amhML1BZdjl1RmVaSFk4QmQyTkcrSzBKQTNzWGswc29vQ1J2S3BNSnBuZlB5?=
- =?utf-8?B?WVRvc2N2ZjdQSFVkc002NTFsdDVBQ0xVdEg3SldTTTdhcmp4MTRqd0xtNkFJ?=
- =?utf-8?B?dGFhRDF2UytDQnlRckk3RHRwVjFMM3E1eW1KYkg0YWcvT0J6a0d3N3NTNVBW?=
- =?utf-8?B?U0htbWlFWjREYUVtcExjYVAvMnM3Vjhtam8xaThqWnRtTnc5Z3ZmaWh4RGhT?=
- =?utf-8?B?V3h3UWNjemhXbENiMjVLZGpTOEpnSm8rUHp3NVdxYTFKN0VrV2VWUVUrZXlh?=
- =?utf-8?B?N1M2Q0dHSVdwQ0FWWXhSR2w1MC9jY3NZa1V4TVFjaXVRVDJQeEsrL25ScytO?=
- =?utf-8?B?MmdUZjFva1pydFo1dDlEcWVFSEJ6QlVENVprS0FoK0JEWFRtemZCN25MZUhp?=
- =?utf-8?B?UUNkaW02U0tCV0U2ZjBqQmpOd2Q3RVJIRmRWem1XREh6RVRoMHhVUE84d3E0?=
- =?utf-8?B?ZHI5R1g3L2E1L05qWGROTXhOYkpwRHZockdIM0IwakNsck8xSGNOZE91RjVu?=
- =?utf-8?B?MTdXVGFFREhGeTd1SkZKVStrYUNYeUIrNVlZckJCOEJZZDhVazZIQVBmMFZs?=
- =?utf-8?B?RXJ1bkVRNThHbkpQbmdlendub0NGNTJwYW1hQnJPNVZkbTN3a3VWR0phcS8x?=
- =?utf-8?B?b21Dd3JDZnpVQkJCcFNVb1h0dmJmZWgwTHRGVm5zc3dDSU1JNFBXVEtIOVNO?=
- =?utf-8?B?UkM2K1ZJamFyMTAvNWdoQ2VwZTRZUEk1VW1LUXN3N2NiZWU2TUY5VUZwak9u?=
- =?utf-8?B?cDM0LzJjMnVlSHAxSU9jMjNCajlvZ0lCemdMaFptdGlySm9BVVhONlRpSm1V?=
- =?utf-8?B?RmVVVlltWkpCakhNSFpzNHhPNWlSSi92WEdZbVdETDBJcjloZXdkNlFWZHV3?=
- =?utf-8?B?bWVJWmJHVWNMbEEzU1FFcnd2ZmhqaGgwdFBvVEhaV3VTL2ovTGJOVzFWMyt3?=
- =?utf-8?B?T21pSDJ3VTVKeXIvTGVzak1pbjhZL25CYUVFNGRtWEk4OGlRcTlYL1U1M1pa?=
- =?utf-8?B?eFozU0dOS3FzbDVGK3g1eG5FeUYyMm1lOVQ3ZUZNK2cxOUpIekFuc1AwWE5l?=
- =?utf-8?B?bHd4S1hoSDZoRkVkbFhGdWRxZ1IrczlOcU5HL3RDZ2VnQmZSM2NUcWlJYy84?=
- =?utf-8?B?Zlp4OVFDSTBNL0pqNFhpK2JVV3Z5RlRNaXkrbkdzYlFSeEloQkNkaVhhMEVN?=
- =?utf-8?B?VWFBeFNNOTk2Rmg3T0toUGpQN2tLMElycE41bUE4a2tuckNiYVJMemxpc1BM?=
- =?utf-8?Q?iBRPx84uov+R0=3D?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 95845e24-9721-4524-f18f-08dbfc1efbcf
-X-MS-Exchange-CrossTenant-AuthSource: CH0PR10MB5113.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Dec 2023 21:03:40.8995
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: ZwtHkmutcUWj3nHoHttMFR3NRj8olLafbaPDgLeqxyswwkzEMMR2XpfzYfyysltgQP00z3fIR6huQr0lioeqflewkIPBLvaBTfb6UYBx/EI=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH8PR10MB6290
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-13_14,2023-12-13_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 bulkscore=0 spamscore=0
- mlxscore=0 adultscore=0 phishscore=0 malwarescore=0 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311290000
- definitions=main-2312130149
-X-Proofpoint-ORIG-GUID: 0fgnIOtxuJUNfu-1gRI4GZEZAgliJyAX
-X-Proofpoint-GUID: 0fgnIOtxuJUNfu-1gRI4GZEZAgliJyAX
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231213092850.1706042-2-sherry.sun@nxp.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/13/23 12:50 PM, Sidhartha Kumar wrote:
-> mas_preallocate() defaults to requesting 1 node for preallocation and then
-> ,depending on the type of store, will update the request variable. There
-> isn't a check for a slot store type, so slot stores are preallocating the
-> default 1 node. Slot stores do not require any additional nodes, so add a
-> check for the slot store case that will bypass node_count_gfp(). Update
-> the tests to reflect that slot stores do not require allocations.
-> 
-> User visible effects of this bug include increased memory usage from the
-> unneeded node that was allocated.
-> 
-> Fixes: 0b8bb544b1a7 ("maple_tree: update mas_preallocate() testing")
-> Cc: <stable@vger.kernel.org> # 6.6+
-> Signed-off-by: Sidhartha Kumar <sidhartha.kumar@oracle.com>
-> ---
-> v1->v2:
-> 	fix coding style per Matthew and Andrew
-> 	use wr_mas->node_end to fix build error
-> 
+Hi Sherry,
 
-When this is merged to mm-unstable could the following fixlet be applied to be 
-compatible with Liam's series[1]:
+kernel test robot noticed the following build warnings:
 
-[1]: 
-https://lore.kernel.org/all/20231101171629.3612299-5-Liam.Howlett@oracle.com/T/#mc0e5000f6de822182bf7579c230030c5ec4ec1a7
+[auto build test WARNING on pci/next]
+[also build test WARNING on pci/for-linus shawnguo/for-next robh/for-next linus/master v6.7-rc5 next-20231213]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-diff --git a/lib/maple_tree.c b/lib/maple_tree.c
-index 1130803b9d3f7..c9a970ea20dd5 100644
---- a/lib/maple_tree.c
-+++ b/lib/maple_tree.c
-@@ -5477,7 +5477,7 @@ int mas_preallocate(struct ma_state *mas, void *entry, 
-gfp_t gfp)
-         node_size = mas_wr_new_end(&wr_mas);
+url:    https://github.com/intel-lab-lkp/linux/commits/Sherry-Sun/PCI-imx6-Add-pci-host-wakeup-support-on-imx-platforms/20231213-173031
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/pci/pci.git next
+patch link:    https://lore.kernel.org/r/20231213092850.1706042-2-sherry.sun%40nxp.com
+patch subject: [PATCH V2 1/4] PCI: imx6: Add pci host wakeup support on imx platforms.
+config: arm64-defconfig (https://download.01.org/0day-ci/archive/20231214/202312140402.hZsD0IVQ-lkp@intel.com/config)
+compiler: aarch64-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231214/202312140402.hZsD0IVQ-lkp@intel.com/reproduce)
 
-         /* Slot store, does not require additional nodes */
--       if (node_size == wr_mas.node_end) {
-+       if (node_size == mas->end) {
-                 /* reuse node */
-                 if (!mt_in_rcu(mas->tree))
-                         return 0;
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202312140402.hZsD0IVQ-lkp@intel.com/
 
-> 
->   lib/maple_tree.c                 | 11 +++++++++++
->   tools/testing/radix-tree/maple.c |  2 +-
->   2 files changed, 12 insertions(+), 1 deletion(-)
-> 
-> diff --git a/lib/maple_tree.c b/lib/maple_tree.c
-> index bb24d84a4922f..684689457d77f 100644
-> --- a/lib/maple_tree.c
-> +++ b/lib/maple_tree.c
-> @@ -5501,6 +5501,17 @@ int mas_preallocate(struct ma_state *mas, void *entry, gfp_t gfp)
->   
->   	mas_wr_end_piv(&wr_mas);
->   	node_size = mas_wr_new_end(&wr_mas);
-> +
-> +	/* Slot store, does not require additional nodes */
-> +	if (node_size == wr_mas.node_end) {
-> +		/* reuse node */
-> +		if (!mt_in_rcu(mas->tree))
-> +			return 0;
-> +		/* shifting boundary */
-> +		if (wr_mas.offset_end - mas->offset == 1)
-> +			return 0;
-> +	}
-> +
->   	if (node_size >= mt_slots[wr_mas.type]) {
->   		/* Split, worst case for now. */
->   		request = 1 + mas_mt_height(mas) * 2;
-> diff --git a/tools/testing/radix-tree/maple.c b/tools/testing/radix-tree/maple.c
-> index e5da1cad70baf..76a8990bb14e8 100644
-> --- a/tools/testing/radix-tree/maple.c
-> +++ b/tools/testing/radix-tree/maple.c
-> @@ -35538,7 +35538,7 @@ static noinline void __init check_prealloc(struct maple_tree *mt)
->   	MT_BUG_ON(mt, mas_preallocate(&mas, ptr, GFP_KERNEL) != 0);
->   	allocated = mas_allocated(&mas);
->   	height = mas_mt_height(&mas);
-> -	MT_BUG_ON(mt, allocated != 1);
-> +	MT_BUG_ON(mt, allocated != 0);
->   	mas_store_prealloc(&mas, ptr);
->   	MT_BUG_ON(mt, mas_allocated(&mas) != 0);
->   
+All warnings (new ones prefixed by >>):
 
+>> drivers/pci/controller/dwc/pci-imx6.c:1267:13: warning: no previous prototype for 'host_wake_irq_handler' [-Wmissing-prototypes]
+    1267 | irqreturn_t host_wake_irq_handler(int irq, void *priv)
+         |             ^~~~~~~~~~~~~~~~~~~~~
+
+
+vim +/host_wake_irq_handler +1267 drivers/pci/controller/dwc/pci-imx6.c
+
+  1266	
+> 1267	irqreturn_t host_wake_irq_handler(int irq, void *priv)
+  1268	{
+  1269		struct imx6_pcie *imx6_pcie = priv;
+  1270		struct device *dev = imx6_pcie->pci->dev;
+  1271	
+  1272		/* Notify PM core we are wakeup source */
+  1273		pm_wakeup_event(dev, 0);
+  1274		pm_system_wakeup();
+  1275	
+  1276		return IRQ_HANDLED;
+  1277	}
+  1278	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
