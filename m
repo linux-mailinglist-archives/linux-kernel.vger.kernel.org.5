@@ -2,108 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E1CA481066B
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 01:19:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 941E381066E
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 01:22:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377747AbjLMATc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 19:19:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59394 "EHLO
+        id S1377860AbjLMAWb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 19:22:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58476 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232620AbjLMATb (ORCPT
+        with ESMTP id S232620AbjLMAW3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 19:19:31 -0500
+        Tue, 12 Dec 2023 19:22:29 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27F5F92
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 16:19:38 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E9CD9C433C7;
-        Wed, 13 Dec 2023 00:19:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1702426777;
-        bh=KwtZWAAG5PiyCTGlYkniFka6wa++0vZfqBICOqF8/x4=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=BeSUIvLZ1NoM6V6v7A9nSVVBzoZDVZnOdHQ67v0+NdjoX8h5EgrQZOLC/ktkOdNf6
-         5fFGknlDEt7N6frDoH9SmBCVXcMQQjgsj7gmu91ebRKIf/nimlTTMXzFwB1uvEkGm0
-         A5ivyJOoYitgF9o6XCWGjnnaIh6XXdsnYdvh+yR9pRNJraUbuYx9w9f6gtmKLj4BnK
-         fBr0LhBUZYR+qeC1ooXJP7yF+AGcHlqdDfzdxqZ1Kvga9nUFfurrxWyCt14fBEtjzk
-         c7YAkNN0C0hSZp0eoUCB72pD8WrCcdcM1fAZnT0iOeN2yvknp1ikVxP42U88d2Tw1u
-         jZ8vCVXlT/4qg==
-Date:   Wed, 13 Dec 2023 09:19:33 +0900
-From:   Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Linux Trace Kernel <linux-trace-kernel@vger.kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 503CE92
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 16:22:36 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 04D0FC433C7;
+        Wed, 13 Dec 2023 00:22:34 +0000 (UTC)
+Date:   Tue, 12 Dec 2023 19:23:17 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     LKML <linux-kernel@vger.kernel.org>,
+        Linux Trace Kernel <linux-trace-kernel@vger.kernel.org>
+Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
         Mark Rutland <mark.rutland@arm.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Subject: Re: [PATCH] tracing: Have trace_marker break up by lines by size of
- trace_seq
-Message-Id: <20231213091933.e3c78e210683b75b9dcbf59f@kernel.org>
-In-Reply-To: <20231212190422.1eaf224f@gandalf.local.home>
-References: <20231212190422.1eaf224f@gandalf.local.home>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Shuah Khan <shuah@kernel.org>, linux-kselftest@vger.kernel.org
+Subject: [PATCH v3] tracing/selftests: Add test to test the trace_marker
+Message-ID: <20231212192317.0fb6b101@gandalf.local.home>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 12 Dec 2023 19:04:22 -0500
-Steven Rostedt <rostedt@goodmis.org> wrote:
+From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 
-> From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
-> 
-> If a trace_marker write is bigger than what trace_seq can hold, then it
-> will print "LINE TOO BIG" message and not what was written.
-> 
-> Instead, if check if the write is bigger than the trace_seq and break it
+Add a test that writes longs strings, some over the size of the sub buffer
+and make sure that the entire content is there.
 
-Instead, check if ... ?
+Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+---
+Changes since v2: https://lore.kernel.org/linux-trace-kernel/20231212151632.25c9b67d@gandalf.local.home
 
-> up by that size.
-> 
-> Ideally, we could make the trace_seq dynamic that could hold this. But
-> that's for another time.
+- Realized with the upcoming change of the dynamic subbuffer sizes, that
+  this test will fail if the subbuffer is bigger than what the trace_seq
+  can hold. Now the trace_marker does not always utilize the full subbuffer
+  but the size of the trace_seq instead. As that size isn't available to
+  user space, we can only just make sure all content is there.
 
-I think this is OK, but if possible it is better to be merged with the
-"LINE TOO BIG" patch (by updating the version).
+ .../ftrace/test.d/00basic/trace_marker.tc     | 82 +++++++++++++++++++
+ 1 file changed, 82 insertions(+)
+ create mode 100755 tools/testing/selftests/ftrace/test.d/00basic/trace_marker.tc
 
-Reviewed-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-
-Thank you,
-
-> 
-> Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
-> ---
->  kernel/trace/trace.c | 5 +++++
->  1 file changed, 5 insertions(+)
-> 
-> diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
-> index 893e749713d3..2a21bc840fe7 100644
-> --- a/kernel/trace/trace.c
-> +++ b/kernel/trace/trace.c
-> @@ -7298,6 +7298,11 @@ tracing_mark_write(struct file *filp, const char __user *ubuf,
->  	if (cnt < FAULTED_SIZE)
->  		size += FAULTED_SIZE - cnt;
->  
-> +	if (size > TRACE_SEQ_BUFFER_SIZE) {
-> +		cnt -= size - TRACE_SEQ_BUFFER_SIZE;
-> +		goto again;
-> +	}
-> +
->  	buffer = tr->array_buffer.buffer;
->  	event = __trace_buffer_lock_reserve(buffer, TRACE_PRINT, size,
->  					    tracing_gen_ctx());
-> -- 
-> 2.42.0
-> 
-
-
+diff --git a/tools/testing/selftests/ftrace/test.d/00basic/trace_marker.tc b/tools/testing/selftests/ftrace/test.d/00basic/trace_marker.tc
+new file mode 100755
+index 000000000000..b24aff5807df
+--- /dev/null
++++ b/tools/testing/selftests/ftrace/test.d/00basic/trace_marker.tc
+@@ -0,0 +1,82 @@
++#!/bin/sh
++# SPDX-License-Identifier: GPL-2.0
++# description: Basic tests on writing to trace_marker
++# requires: trace_marker
++# flags: instance
++
++get_buffer_data_size() {
++	sed -ne 's/^.*data.*size:\([0-9][0-9]*\).*/\1/p' events/header_page
++}
++
++get_buffer_data_offset() {
++	sed -ne 's/^.*data.*offset:\([0-9][0-9]*\).*/\1/p' events/header_page
++}
++
++get_event_header_size() {
++	type_len=`sed -ne 's/^.*type_len.*:[^0-9]*\([0-9][0-9]*\).*/\1/p' events/header_event`
++	time_len=`sed -ne 's/^.*time_delta.*:[^0-9]*\([0-9][0-9]*\).*/\1/p' events/header_event`
++	array_len=`sed -ne 's/^.*array.*:[^0-9]*\([0-9][0-9]*\).*/\1/p' events/header_event`
++	total_bits=$((type_len+time_len+array_len))
++	total_bits=$((total_bits+7))
++	echo $((total_bits/8))
++}
++
++get_print_event_buf_offset() {
++	sed -ne 's/^.*buf.*offset:\([0-9][0-9]*\).*/\1/p' events/ftrace/print/format
++}
++
++event_header_size=`get_event_header_size`
++print_header_size=`get_print_event_buf_offset`
++
++data_offset=`get_buffer_data_offset`
++
++marker_meta=$((event_header_size+print_header_size))
++
++make_str() {
++        cnt=$1
++	# subtract two for \n\0 as marker adds these
++	cnt=$((cnt-2))
++	printf -- 'X%.0s' $(seq $cnt)
++}
++
++write_buffer() {
++	size=$1
++
++	str=`make_str $size`
++
++	# clear the buffer
++	echo > trace
++
++	# write the string into the marker
++	echo -n $str > trace_marker
++
++	echo $str
++}
++
++test_buffer() {
++
++	size=`get_buffer_data_size`
++	oneline_size=$((size-marker_meta))
++	echo size = $size
++	echo meta size = $marker_meta
++
++	# Now add a little more the meta data overhead will overflow
++
++	str=`write_buffer $size`
++
++	# Make sure the line was broken
++	new_str=`awk ' /tracing_mark_write:/ { sub(/^.*tracing_mark_write: /,"");printf "%s", $0; exit}' trace`
++
++	if [ "$new_str" = "$str" ]; then
++		exit fail;
++	fi
++
++	# Make sure the entire line can be found
++	new_str=`awk ' /tracing_mark_write:/ { sub(/^.*tracing_mark_write: */,"");printf "%s", $0; }' trace`
++
++	if [ "$new_str" != "$str" ]; then
++		exit fail;
++	fi
++}
++
++test_buffer
 -- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
+2.42.0
+
