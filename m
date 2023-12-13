@@ -2,146 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C2F9811032
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 12:34:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1701181102A
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 12:34:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378157AbjLMLeS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 06:34:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52664 "EHLO
+        id S1378098AbjLMLdv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 06:33:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49898 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377741AbjLMLdf (ORCPT
+        with ESMTP id S1377700AbjLMLdb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 06:33:35 -0500
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 537DF138;
-        Wed, 13 Dec 2023 03:33:30 -0800 (PST)
-Received: from pps.filterd (m0353725.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3BDAvp0Z009198;
-        Wed, 13 Dec 2023 11:33:06 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- content-transfer-encoding : mime-version; s=pp1;
- bh=ikSRKh6y4aKglI7xPKlgKug+5Qtzfc2XgYxtrc2kCH0=;
- b=sXinkoKfYE9Ey1mVhkffB6FjSEBfy5cNHk6u4TMzWljvUBDZejTGHV0Yw9Yj5/MiIyKy
- TCHk7fslcoSlZNqu/mCNa2u8mJ+HWQTSiJFt4x/BYuLJSSpsYA/cbprOGnqBkPG4KsHW
- qp6FKMieYrXVkGOkegzl7Rk0sdT89wjWY56zo+SioKxfb9gvHW21iGiScCzlU67Kffob
- fl0/7WHCJ2A9nh3oZ572FJpnt6RnTGsWhiBe8OLTcqBg3asTgFIdZMt7fEeI4/K6AXYF
- Thnl27nUONUKI53FCOUVXurGbhxW5Rk19SxArNcgg5vIHMNTbC/lgI+IB+ENVqMwrz6u tw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3uybam8y8r-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 13 Dec 2023 11:33:06 +0000
-Received: from m0353725.ppops.net (m0353725.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3BDBKp9W013582;
-        Wed, 13 Dec 2023 11:33:05 GMT
-Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3uybam8y88-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 13 Dec 2023 11:33:05 +0000
-Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
-        by ppma13.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3BDAcu8Q004701;
-        Wed, 13 Dec 2023 11:33:04 GMT
-Received: from smtprelay02.fra02v.mail.ibm.com ([9.218.2.226])
-        by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 3uw4skg1kj-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 13 Dec 2023 11:33:04 +0000
-Received: from smtpav01.fra02v.mail.ibm.com (smtpav01.fra02v.mail.ibm.com [10.20.54.100])
-        by smtprelay02.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3BDBX18E17891860
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 13 Dec 2023 11:33:01 GMT
-Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 8E83E2004B;
-        Wed, 13 Dec 2023 11:33:01 +0000 (GMT)
-Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 2C74C20040;
-        Wed, 13 Dec 2023 11:33:00 +0000 (GMT)
-Received: from [9.171.70.156] (unknown [9.171.70.156])
-        by smtpav01.fra02v.mail.ibm.com (Postfix) with ESMTP;
-        Wed, 13 Dec 2023 11:33:00 +0000 (GMT)
-Message-ID: <46ede95a4c1d0a9d05d6cc11de1a8d39ce6c0e85.camel@linux.ibm.com>
-Subject: Re: [PATCH v2 13/33] kmsan: Introduce memset_no_sanitize_memory()
-From:   Ilya Leoshkevich <iii@linux.ibm.com>
-To:     Alexander Potapenko <glider@google.com>
-Cc:     Alexander Gordeev <agordeev@linux.ibm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Christoph Lameter <cl@linux.com>,
-        David Rientjes <rientjes@google.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Marco Elver <elver@google.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Pekka Enberg <penberg@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Hyeonggon Yoo <42.hyeyoo@gmail.com>,
-        kasan-dev@googlegroups.com, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linux-s390@vger.kernel.org,
-        linux-trace-kernel@vger.kernel.org,
-        Mark Rutland <mark.rutland@arm.com>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Sven Schnelle <svens@linux.ibm.com>
-Date:   Wed, 13 Dec 2023 12:32:59 +0100
-In-Reply-To: <626be6deb066627a77470bf80bb76c27222a5e3e.camel@linux.ibm.com>
-References: <20231121220155.1217090-1-iii@linux.ibm.com>
-         <20231121220155.1217090-14-iii@linux.ibm.com>
-         <CAG_fn=Vaj3hTRAMxUwofpSMPhFBOizDOWR_An-V9qLNQv-suYw@mail.gmail.com>
-         <69e7bc8e8c8a38c429a793e991e0509cb97a53e1.camel@linux.ibm.com>
-         <CAG_fn=UbJ+z8Gmfjodu-jBQz75HApXADw8Abj38BCLHmY_ZW9w@mail.gmail.com>
-         <626be6deb066627a77470bf80bb76c27222a5e3e.camel@linux.ibm.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+        Wed, 13 Dec 2023 06:33:31 -0500
+Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82BD9F5
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 03:33:18 -0800 (PST)
+Received: by mail-wm1-x336.google.com with SMTP id 5b1f17b1804b1-40c1e8458b9so11300185e9.0
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 03:33:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1702467197; x=1703071997; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=zJ7qFvLPI16XitLVU7jac70czdbEyCJmCnGlh/kcFn4=;
+        b=ldWMEEcskgoxwTZ2P3sw0LVoHH117VtNo3HnAAcqFCCNj6LUh5XOcI7ZkH5WEsgz/B
+         yNJDQXh6tpS4gZ4ZWFyWLfTsn1tAZT23uhxsBlXvxqpyRY9xV7Qgnv90X4UvBcK0cptR
+         fQUIoQ7tFy55U0RzRmDo29JYdd6APD37uWJY6GYg2pb3F01ojLZpyePGYYD6wAJ7xXUF
+         bT3YMzRZQ9cLj7RBAcwzyKJDyee5LPeEcItbEPNYJlkhIf6LM6zPYdQVRRCIpqm/j2Iz
+         GMP1Advf5CA2Egd9nzsbt8lAT6sanyuWbAka+hFjUgqgbS5jCYLi88uRkWqAH5931y/7
+         go+g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702467197; x=1703071997;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=zJ7qFvLPI16XitLVU7jac70czdbEyCJmCnGlh/kcFn4=;
+        b=Qdr0IXkLi/0utSbflj0ZoGlOX88mbkhHvoWgv1Q9KteFmYYPTL9nrrsjWHekuYoCpO
+         S53CjlTW6dXzx93JAXUscn4EENRG5kSX3TKJS4opLMhPVoFuaRGqFv3DkyiMcngcIBMV
+         Pd67A2KOBJ2F4qxhg6rKmfM5f4P8XWT6YK516tJ//c2S4X12Ep9cytERCTY/WL8T+QFR
+         MShZb6WPiYl5pGN1ZPcZ8oqsDuVL6hf3QDV+9KXj6xW9XJ60jXzCtez6LfpXMUx3FJbV
+         /ADBlZsm9+j+agF14TC2FnYkuxSCbt3wwQDJ1AJYSee93hcEjBVzmrHOzmU0rPl1aXjB
+         ksQQ==
+X-Gm-Message-State: AOJu0YxPipIApg4wpQ1VWkBLWDOi+AZih4DgCpuTaLDN4dCFlBMEzqtP
+        zmFjJwMtfydfDkP+25J/k8dNcg==
+X-Google-Smtp-Source: AGHT+IFSZAznHPSK5PUles9w0ak3hYXLoPc4Qu5KPjMvXQBkR/ftanO0CSh3prHsJkQveJSFnBCRzQ==
+X-Received: by 2002:a05:600c:1d9b:b0:40c:2960:9603 with SMTP id p27-20020a05600c1d9b00b0040c29609603mr9614366wms.3.1702467197077;
+        Wed, 13 Dec 2023 03:33:17 -0800 (PST)
+Received: from carbon-x1.. ([2a01:e0a:999:a3a0:c564:f167:d072:5672])
+        by smtp.gmail.com with ESMTPSA id m27-20020a05600c3b1b00b0040b38292253sm22433137wms.30.2023.12.13.03.33.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Dec 2023 03:33:16 -0800 (PST)
+From:   =?UTF-8?q?Cl=C3=A9ment=20L=C3=A9ger?= <cleger@rivosinc.com>
+To:     linux-doc@vger.kernel.org, linux-riscv@lists.infradead.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+Cc:     =?UTF-8?q?Cl=C3=A9ment=20L=C3=A9ger?= <cleger@rivosinc.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Conor Dooley <conor@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Robbin Ehn <rehn@rivosinc.com>
+Subject: [PATCH 4/9] riscv: add ISA extension parsing for Zam
+Date:   Wed, 13 Dec 2023 12:33:00 +0100
+Message-ID: <20231213113308.133176-5-cleger@rivosinc.com>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20231213113308.133176-1-cleger@rivosinc.com>
+References: <20231213113308.133176-1-cleger@rivosinc.com>
 MIME-Version: 1.0
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: uhw5klWQb4Ew4DGEdGMVbEtWPetNaOqp
-X-Proofpoint-ORIG-GUID: 48mwCSMvhaKch1ti_YtF_MIEY-bAV7Sf
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-13_03,2023-12-13_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=766 clxscore=1015
- lowpriorityscore=0 bulkscore=0 priorityscore=1501 phishscore=0
- malwarescore=0 suspectscore=0 spamscore=0 mlxscore=0 adultscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311290000 definitions=main-2312130084
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2023-12-13 at 02:31 +0100, Ilya Leoshkevich wrote:
-> On Fri, 2023-12-08 at 16:25 +0100, Alexander Potapenko wrote:
-> > > A problem with __memset() is that, at least for me, it always
-> > > ends
-> > > up being a call. There is a use case where we need to write only
-> > > 1
-> > > byte, so I thought that introducing a call there (when compiling
-> > > without KMSAN) would be unacceptable.
+Add parsing for Zam ISA extension which is part of the riscv-isa manual
+but was not added to ISA parsing up to now.
 
-[...]
+Signed-off-by: Clément Léger <cleger@rivosinc.com>
+---
+ arch/riscv/include/asm/hwcap.h | 1 +
+ arch/riscv/kernel/cpufeature.c | 1 +
+ 2 files changed, 2 insertions(+)
 
-> > As stated above, I don't think this is more or less working as
-> > intended.
-> > If we really want the ability to inline __memset(), we could
-> > transform
-> > it into memset() in non-sanitizer builds, but perhaps having a call
-> > is
-> > also acceptable?
->=20
-> Thanks for the detailed explanation and analysis. I will post
-> a version with a __memset() and let the slab maintainers decide if
-> the additional overhead is acceptable.
+diff --git a/arch/riscv/include/asm/hwcap.h b/arch/riscv/include/asm/hwcap.h
+index 3b31efe2f716..016faa08c8ba 100644
+--- a/arch/riscv/include/asm/hwcap.h
++++ b/arch/riscv/include/asm/hwcap.h
+@@ -85,6 +85,7 @@
+ #define RISCV_ISA_EXT_ZVFHMIN		70
+ #define RISCV_ISA_EXT_ZFA		71
+ #define RISCV_ISA_EXT_ZTSO		72
++#define RISCV_ISA_EXT_ZAM		73
+ 
+ #define RISCV_ISA_EXT_MAX		128
+ #define RISCV_ISA_EXT_INVALID		U32_MAX
+diff --git a/arch/riscv/kernel/cpufeature.c b/arch/riscv/kernel/cpufeature.c
+index 3eb48a0eecb3..e999320398b7 100644
+--- a/arch/riscv/kernel/cpufeature.c
++++ b/arch/riscv/kernel/cpufeature.c
+@@ -259,6 +259,7 @@ const struct riscv_isa_ext_data riscv_isa_ext[] = {
+ 	__RISCV_ISA_EXT_DATA(zihintntl, RISCV_ISA_EXT_ZIHINTNTL),
+ 	__RISCV_ISA_EXT_DATA(zihintpause, RISCV_ISA_EXT_ZIHINTPAUSE),
+ 	__RISCV_ISA_EXT_DATA(zihpm, RISCV_ISA_EXT_ZIHPM),
++	__RISCV_ISA_EXT_DATA(zam, RISCV_ISA_EXT_ZAM),
+ 	__RISCV_ISA_EXT_DATA(zfa, RISCV_ISA_EXT_ZFA),
+ 	__RISCV_ISA_EXT_DATA(zfh, RISCV_ISA_EXT_ZFH),
+ 	__RISCV_ISA_EXT_DATA(zfhmin, RISCV_ISA_EXT_ZFHMIN),
+-- 
+2.43.0
 
-I noticed I had the same problem in the get_user()/put_user() and
-check_canary() patches.
-
-The annotation being silently ignored is never what a programmer
-intends, so what do you think about adding noinline to
-__no_kmsan_checks and __no_sanitize_memory?
