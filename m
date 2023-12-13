@@ -2,68 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8259F810B39
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 08:14:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C6757810B3E
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 08:14:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378735AbjLMHNw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 02:13:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58544 "EHLO
+        id S1378662AbjLMHOq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 02:14:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45932 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235270AbjLMHNm (ORCPT
+        with ESMTP id S233290AbjLMHOi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 02:13:42 -0500
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A86B211B
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 23:13:48 -0800 (PST)
-Received: by mail-ed1-x534.google.com with SMTP id 4fb4d7f45d1cf-551d5cd1c42so8695a12.0
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 23:13:48 -0800 (PST)
+        Wed, 13 Dec 2023 02:14:38 -0500
+Received: from mail-yw1-x112d.google.com (mail-yw1-x112d.google.com [IPv6:2607:f8b0:4864:20::112d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3648D4B;
+        Tue, 12 Dec 2023 23:14:28 -0800 (PST)
+Received: by mail-yw1-x112d.google.com with SMTP id 00721157ae682-5e176babd4eso23797907b3.2;
+        Tue, 12 Dec 2023 23:14:28 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1702451627; x=1703056427; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=fUx/Blh/1mV8Ry577NWMA8ko1+aQzz/4oxSKVEc/2Og=;
-        b=wxymG1wzLNuvB97KcEJiKAm74EtViIPY9naBUoSwrWqGoci83YEd/znxyYi1GcUfVC
-         qjGC/fvQoyrcGNTPoiWPBbIjtZRJEI8Dz4tvSEurBdWnqflHK1rVe02SheRMM02PsowM
-         P/QqHZFCayaQHZnRe7OEBGuxzYMpOIfHKfy/oajwUyd1PnK78o64oUtdlmaM7lXoBa1L
-         WVzblNZhz4e1TTByJtnDmnrsnNpWVrCqo6B6pSS4Vjj+KHfb9/RS3nIbSttCc5m+ETCh
-         ZZmgr523B9OIduis7v3jFn9DXilC/11kVJWd0WuPfZEERrcn/j3ridWmqhHtbeU9jsvd
-         3v+g==
+        d=gmail.com; s=20230601; t=1702451668; x=1703056468; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=+4lQ/n2/Aooh3HLrGXdGkcUlpQ+xQAxZM0f/fJu9eb8=;
+        b=lY+TJdQf8e7CJYW2MpDVB7jOjPt4v45zvtXqpctdwmQhY0FKrp2nGgcpY42njiiQDy
+         UFXge8o9Jcw7NDnLm+zAtQDWg2b1mNXk7xmioBo6/+YLa1RmdnO6hubTbq+mBhimLR6b
+         74kiChPu5mZJk3OEMQA40W5wW4kb7bH5BNVJO/8W7kslTnbSjwbuNmrnAPZKVU7ETUk9
+         XZ48l3o0JN+aK7evHkA72PirOU3JjiNO+5JeRciX03i0V4xgRll0S+fNRKSNJ5do3UkE
+         9BtsZuiRmQMpUgdc7Z5oAwIp49kRYiH7axCp1yHmB9y//pmR5JqzzcgItDMtknWtvEwv
+         y8tw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702451627; x=1703056427;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=fUx/Blh/1mV8Ry577NWMA8ko1+aQzz/4oxSKVEc/2Og=;
-        b=pftMwcxeqJjBzd2dlC+Zd7IXyBRjZwGF0wLzFO8NJh0CWVH+6cWuh8igiA4+eIJ8A6
-         kjuUSbGmEYz0t4cBolcPcDrnz7Piiu7oRHUC/MIWvQWMDZTYEmskVMsZta6bMpl/U9P6
-         zHuQMoP+snKiBAD142m/I2vEFW5LwqbN/ddoywhkyBw3znEzNnPmbPcwm1RLLp5b23/V
-         WMtVyPQaEUooOr5E5/ODGK5/TLTm7mK11bNUTJPjlQNQxM8lsP1YlG21IbkdVwRKF5VM
-         bRrcFtc+mB8NSGGljtVFLZCgPoIwMwAsq82KrvaSaXqFVxZhK4DhdJHzxADcj5mgoHBj
-         kZ7w==
-X-Gm-Message-State: AOJu0Yx10nTWS55Oo8VNjnEOc+xEu2tPpmia5rmCRwtSQzCTs3PF2Dm8
-        HoERHLOmPTzFD3dlrcFvQifQ/yO+kZsj3aRz1t/GYw==
-X-Google-Smtp-Source: AGHT+IEFaZ0qHoom+HM+E0woEYOJYz22khOAe/sgkZjS6y2gXHTQknIH42LzGWy5AHp3YfUi6mz7x/RkQ5J7hFPu1e4=
-X-Received: by 2002:a50:d7c3:0:b0:54a:ee8b:7a99 with SMTP id
- m3-20020a50d7c3000000b0054aee8b7a99mr447876edj.0.1702451626993; Tue, 12 Dec
- 2023 23:13:46 -0800 (PST)
+        d=1e100.net; s=20230601; t=1702451668; x=1703056468;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=+4lQ/n2/Aooh3HLrGXdGkcUlpQ+xQAxZM0f/fJu9eb8=;
+        b=eGiyyIzDXqPlSRL3AZcew8fSblMeuJGAyJIhKV2YE/j13ePvEtSgvXhSTvKXHsUbVN
+         GezOCc3YjXWL12fnjlax4HIN0iJv5LDJO63/HO5izL1OjnQeQn6fg7RW/of4dty2bsFi
+         rNJ4uC4MGgE/YELXAkAZ40oh50X7psjdfUt0YQq4NL7TZb/g/P1sO0m3v2vg41j68+b8
+         /HhRdirohaOzb826AL+cnneVaU7R5gr5d+je2LsewYMn/sPUtVI58z5khmqyVx1j/ZF8
+         aDnP4KhicVqn1i9TmYMQUDXSaU6abGk41uDDsRldkU48l9VKzxeMpmQqqypZIokyspCL
+         XoKA==
+X-Gm-Message-State: AOJu0Yw4GALO3Mz9ZCDRkWamzANXxl/z691psP82tKvzhB8Rfx/TPeJd
+        +w14pcSSyfxoNRbVCyTPjflTmSJAAuiXZg==
+X-Google-Smtp-Source: AGHT+IHfDPJCUPSeq4XDUWQHJAokM3yftuwn8RagApGbgpYHpfYiBx5vbT6ITl4KZKWwd62YkOVYXg==
+X-Received: by 2002:a0d:f347:0:b0:5d7:1940:53df with SMTP id c68-20020a0df347000000b005d7194053dfmr6509375ywf.87.1702451667654;
+        Tue, 12 Dec 2023 23:14:27 -0800 (PST)
+Received: from google.com ([2620:15c:9d:2:96c1:256f:67e0:c0db])
+        by smtp.gmail.com with ESMTPSA id t6-20020a170902bc4600b001d343a978a7sm1668374plz.220.2023.12.12.23.14.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 Dec 2023 23:14:27 -0800 (PST)
+Date:   Tue, 12 Dec 2023 23:14:24 -0800
+From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To:     Tony Lindgren <tony@atomide.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Rob Herring <robh@kernel.org>, linux-input@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5 1/2] dt-bindings: input: gpio-keys: Allow optional
+ dedicated wakeirq
+Message-ID: <ZXlZ0I1mdtvbSL6H@google.com>
+References: <20231129110618.27551-1-tony@atomide.com>
 MIME-Version: 1.0
-References: <20231213010201.1802507-1-rmoar@google.com> <20231213010201.1802507-6-rmoar@google.com>
-In-Reply-To: <20231213010201.1802507-6-rmoar@google.com>
-From:   David Gow <davidgow@google.com>
-Date:   Wed, 13 Dec 2023 15:13:35 +0800
-Message-ID: <CABVgOS=HsVKyjQYouv8Y8vABQCsZe-+24qZbAaHMYCfzBADrmQ@mail.gmail.com>
-Subject: Re: [PATCH v4 6/6] Documentation: Add debugfs docs with run after boot
-To:     Rae Moar <rmoar@google.com>
-Cc:     shuah@kernel.org, dlatypov@google.com, brendan.higgins@linux.dev,
-        sadiyakazi@google.com, keescook@chromium.org, arnd@arndb.de,
-        linux-kselftest@vger.kernel.org, linux-arch@vger.kernel.org,
-        kunit-dev@googlegroups.com, linux-kernel@vger.kernel.org
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="0000000000007df947060c5ee85a"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231129110618.27551-1-tony@atomide.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,FSL_HELO_FAKE,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -71,176 +75,21 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---0000000000007df947060c5ee85a
-Content-Type: text/plain; charset="UTF-8"
+On Wed, Nov 29, 2023 at 01:06:14PM +0200, Tony Lindgren wrote:
+> Allow configuring an optional dedicated wakeirq for gpio-keys that
+> some SoCs have.
+> 
+> Let's use the common interrupt naming "irq" and "wakeup" that we already
+> have in use for some drivers and subsystems like i2c framework.
+> 
+> Note that the gpio-keys interrupt property is optional. If only a gpio
+> property is specified, the driver tries to translate the gpio into an
+> interrupt.
+> 
+> Reviewed-by: Rob Herring <robh@kernel.org>
+> Signed-off-by: Tony Lindgren <tony@atomide.com>
 
-On Wed, 13 Dec 2023 at 09:02, Rae Moar <rmoar@google.com> wrote:
->
-> Expand the documentation on the KUnit debugfs filesystem on the
-> run_manual.rst page.
->
-> Add section describing how to access results using debugfs.
->
-> Add section describing how to run tests after boot using debugfs.
->
-> Signed-off-by: Rae Moar <rmoar@google.com>
-> ---
+Applied, thank you.
 
-Looks good!
-
-Reviewed-by: David Gow <davidgow@google.com>
-
-Thanks,
--- David
-
-
-> Changes since v3:
-> - Change the introduction of the debugfs section
-> - Add detail to not being able to run concurrently or run with init data
->
->  Documentation/dev-tools/kunit/run_manual.rst | 51 ++++++++++++++++++--
->  1 file changed, 47 insertions(+), 4 deletions(-)
->
-> diff --git a/Documentation/dev-tools/kunit/run_manual.rst b/Documentation/dev-tools/kunit/run_manual.rst
-> index e7b46421f247..699d92885075 100644
-> --- a/Documentation/dev-tools/kunit/run_manual.rst
-> +++ b/Documentation/dev-tools/kunit/run_manual.rst
-> @@ -49,9 +49,52 @@ loaded.
->
->  The results will appear in TAP format in ``dmesg``.
->
-> +debugfs
-> +=======
-> +
-> +KUnit can be accessed from userspace via the debugfs filesystem (See more
-> +information about debugfs at Documentation/filesystems/debugfs.rst).
-> +
-> +If ``CONFIG_KUNIT_DEBUGFS`` is enabled, the KUnit debugfs filesystem is
-> +mounted at /sys/kernel/debug/kunit. You can use this filesystem to perform
-> +the following actions.
-> +
-> +Retrieve Test Results
-> +=====================
-> +
-> +You can use debugfs to retrieve KUnit test results. The test results are
-> +accessible from the debugfs filesystem in the following read-only file:
-> +
-> +.. code-block :: bash
-> +
-> +       /sys/kernel/debug/kunit/<test_suite>/results
-> +
-> +The test results are printed in a KTAP document. Note this document is separate
-> +to the kernel log and thus, may have different test suite numbering.
-> +
-> +Run Tests After Kernel Has Booted
-> +=================================
-> +
-> +You can use the debugfs filesystem to trigger built-in tests to run after
-> +boot. To run the test suite, you can use the following command to write to
-> +the ``/sys/kernel/debug/kunit/<test_suite>/run`` file:
-> +
-> +.. code-block :: bash
-> +
-> +       echo "any string" > /sys/kernel/debugfs/kunit/<test_suite>/run
-> +
-> +As a result, the test suite runs and the results are printed to the kernel
-> +log.
-> +
-> +However, this feature is not available with KUnit suites that use init data,
-> +because init data may have been discarded after the kernel boots. KUnit
-> +suites that use init data should be defined using the
-> +kunit_test_init_section_suites() macro.
-> +
-> +Also, you cannot use this feature to run tests concurrently. Instead a test
-> +will wait to run until other tests have completed or failed.
-> +
->  .. note ::
->
-> -       If ``CONFIG_KUNIT_DEBUGFS`` is enabled, KUnit test results will
-> -       be accessible from the ``debugfs`` filesystem (if mounted).
-> -       They will be in ``/sys/kernel/debug/kunit/<test_suite>/results``, in
-> -       TAP format.
-> +       For test authors, to use this feature, tests will need to correctly initialise
-> +       and/or clean up any data, so the test runs correctly a second time.
-> --
-> 2.43.0.472.g3155946c3a-goog
->
-
---0000000000007df947060c5ee85a
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
-
-MIIPnwYJKoZIhvcNAQcCoIIPkDCCD4wCAQExDzANBglghkgBZQMEAgEFADALBgkqhkiG9w0BBwGg
-ggz5MIIEtjCCA56gAwIBAgIQeAMYYHb81ngUVR0WyMTzqzANBgkqhkiG9w0BAQsFADBMMSAwHgYD
-VQQLExdHbG9iYWxTaWduIFJvb3QgQ0EgLSBSMzETMBEGA1UEChMKR2xvYmFsU2lnbjETMBEGA1UE
-AxMKR2xvYmFsU2lnbjAeFw0yMDA3MjgwMDAwMDBaFw0yOTAzMTgwMDAwMDBaMFQxCzAJBgNVBAYT
-AkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMSowKAYDVQQDEyFHbG9iYWxTaWduIEF0bGFz
-IFIzIFNNSU1FIENBIDIwMjAwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQCvLe9xPU9W
-dpiHLAvX7kFnaFZPuJLey7LYaMO8P/xSngB9IN73mVc7YiLov12Fekdtn5kL8PjmDBEvTYmWsuQS
-6VBo3vdlqqXZ0M9eMkjcKqijrmDRleudEoPDzTumwQ18VB/3I+vbN039HIaRQ5x+NHGiPHVfk6Rx
-c6KAbYceyeqqfuJEcq23vhTdium/Bf5hHqYUhuJwnBQ+dAUcFndUKMJrth6lHeoifkbw2bv81zxJ
-I9cvIy516+oUekqiSFGfzAqByv41OrgLV4fLGCDH3yRh1tj7EtV3l2TngqtrDLUs5R+sWIItPa/4
-AJXB1Q3nGNl2tNjVpcSn0uJ7aFPbAgMBAAGjggGKMIIBhjAOBgNVHQ8BAf8EBAMCAYYwHQYDVR0l
-BBYwFAYIKwYBBQUHAwIGCCsGAQUFBwMEMBIGA1UdEwEB/wQIMAYBAf8CAQAwHQYDVR0OBBYEFHzM
-CmjXouseLHIb0c1dlW+N+/JjMB8GA1UdIwQYMBaAFI/wS3+oLkUkrk1Q+mOai97i3Ru8MHsGCCsG
-AQUFBwEBBG8wbTAuBggrBgEFBQcwAYYiaHR0cDovL29jc3AyLmdsb2JhbHNpZ24uY29tL3Jvb3Ry
-MzA7BggrBgEFBQcwAoYvaHR0cDovL3NlY3VyZS5nbG9iYWxzaWduLmNvbS9jYWNlcnQvcm9vdC1y
-My5jcnQwNgYDVR0fBC8wLTAroCmgJ4YlaHR0cDovL2NybC5nbG9iYWxzaWduLmNvbS9yb290LXIz
-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
-ddIn9n5Jt6Z1o79zxraLMEwGA1UdIARFMEMwQQYJKwYBBAGgMgEoMDQwMgYIKwYBBQUHAgEWJmh0
-dHBzOi8vd3d3Lmdsb2JhbHNpZ24uY29tL3JlcG9zaXRvcnkvMAwGA1UdEwEB/wQCMAAwgZoGCCsG
-AQUFBwEBBIGNMIGKMD4GCCsGAQUFBzABhjJodHRwOi8vb2NzcC5nbG9iYWxzaWduLmNvbS9jYS9n
-c2F0bGFzcjNzbWltZWNhMjAyMDBIBggrBgEFBQcwAoY8aHR0cDovL3NlY3VyZS5nbG9iYWxzaWdu
-LmNvbS9jYWNlcnQvZ3NhdGxhc3Izc21pbWVjYTIwMjAuY3J0MB8GA1UdIwQYMBaAFHzMCmjXouse
-LHIb0c1dlW+N+/JjMEYGA1UdHwQ/MD0wO6A5oDeGNWh0dHA6Ly9jcmwuZ2xvYmFsc2lnbi5jb20v
-Y2EvZ3NhdGxhc3Izc21pbWVjYTIwMjAuY3JsMA0GCSqGSIb3DQEBCwUAA4IBAQBtHFwIgQZjer5K
-H+4Q+wns10k7qN+4wN2Uf+JsyOYjukaMEgdLErfA1wwtQ9uHkoYQZcWBuVVkQFa5hI+sqI2m1Weq
-riMCFSiU38s1tADdMX12IMfJRN60Nznhrw+nPyDRZqRhUTW24TwnHorkDnFPW8PHo7fAw4FrpI0n
-impZAng7ccvvK09K3ZuhwTIxJMsPXCZYsrXWORTw5sczRAP6XvKbPBJnsJoSTe5dFBPBHOQJOGhU
-qWfEfWnWMJPF3LxSGLpLFQXO3RwQqmxv08avwXfVPouh1xuB3FX7rpDabT8YDhu9JgIZkLEKko7L
-yQt6zWwng7k8YF/jGbiAta6VMYICajCCAmYCAQEwaDBUMQswCQYDVQQGEwJCRTEZMBcGA1UEChMQ
-R2xvYmFsU2lnbiBudi1zYTEqMCgGA1UEAxMhR2xvYmFsU2lnbiBBdGxhcyBSMyBTTUlNRSBDQSAy
-MDIwAhABzgV+4+mJnUzG7XDy6d2uMA0GCWCGSAFlAwQCAQUAoIHUMC8GCSqGSIb3DQEJBDEiBCAy
-FfSSbjrNAzwWwPrVZE6PjSTBMbr1KwB1ZReT3w6LyTAYBgkqhkiG9w0BCQMxCwYJKoZIhvcNAQcB
-MBwGCSqGSIb3DQEJBTEPFw0yMzEyMTMwNzEzNDdaMGkGCSqGSIb3DQEJDzFcMFowCwYJYIZIAWUD
-BAEqMAsGCWCGSAFlAwQBFjALBglghkgBZQMEAQIwCgYIKoZIhvcNAwcwCwYJKoZIhvcNAQEKMAsG
-CSqGSIb3DQEBBzALBglghkgBZQMEAgEwDQYJKoZIhvcNAQEBBQAEggEAM5IYKhUPOe9am8sS5R5i
-06Q8rSuhNv+FZ5FzipTBVTjAgJoRPDsAiR9fPcGeGBzAj/0iIssJJ5iD2PEmqCPivcga+AxAXFtP
-KPDEhh5YluhYoskbvXBEKtaLeJHKS+2LlNvKWwflShfXUHFplK5mA+USppAgv/alJ0VoZAaSn7iT
-6lTmb7NYmK6OO4ktmFM6VQMvfCNST29gBOj+fMloeAnvyGkgp5WE9SX1CkDTj39YjqsWCBXk99zo
-hx9KZ3DOlyBk90Nfdj00T0iEHleKIMm7Ndm52HZljzf2h4SgBs+Xn6R6Vt1VT/MV/ymtv966z37c
-2B/o6Up9fxzhtScmeQ==
---0000000000007df947060c5ee85a--
+-- 
+Dmitry
