@@ -2,235 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C809810ECD
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 11:49:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E396810F0D
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 11:57:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377814AbjLMKtA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 05:49:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53694 "EHLO
+        id S1377925AbjLMK5m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 05:57:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54362 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233311AbjLMKs6 (ORCPT
+        with ESMTP id S1377980AbjLMK5l (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 05:48:58 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1942799
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 02:49:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1702464543; x=1734000543;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=KUh5tvimxAf3MbeVJV4qN4C/AzAsXEXceasJd+D8H5Q=;
-  b=IAQPNy6EzoKH1QrkkFYyMYnfuakHJmPWDJMKABXBpb9uAYYje+qXh2Z3
-   y7ajqREuRdO2pcwP8BnIzaKvteAgMO9lgFeA6ZUgLOT651jLBu5RQ84y3
-   STBGeUEMsaRqz9LJCKkvlO4dq7DuMLQJz1vWRs7hyWKaWOB/V+GxISHlw
-   jpLhtKL9TStUHDvuzTxhmJ4fe3DiJRsUVhoUp/JABc9Qet1NzIT2sfU9g
-   bJtxGPkDdRxwihHuEqOYUS8b2PyUriT1mDlgCEzrVBAd2yEOTxJ0GSXQ+
-   jVkspTH8ypn+THAfuo0e4KT9jy6LxCD9JbowK1HtgLPfHTbK2/iDPcxQL
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10922"; a="375099901"
-X-IronPort-AV: E=Sophos;i="6.04,272,1695711600"; 
-   d="scan'208";a="375099901"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Dec 2023 02:49:02 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10922"; a="839820088"
-X-IronPort-AV: E=Sophos;i="6.04,272,1695711600"; 
-   d="scan'208";a="839820088"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by fmsmga008.fm.intel.com with ESMTP; 13 Dec 2023 02:49:01 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1rDMnT-000KQZ-08;
-        Wed, 13 Dec 2023 10:48:59 +0000
-Date:   Wed, 13 Dec 2023 18:48:17 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Miquel Raynal <miquel.raynal@bootlin.com>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: drivers/mtd/nand/raw/r852.c:63:16: sparse: sparse: incorrect type in
- argument 1 (different base types)
-Message-ID: <202312131846.d1bazU5H-lkp@intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        Wed, 13 Dec 2023 05:57:41 -0500
+X-Greylist: delayed 468 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 13 Dec 2023 02:57:45 PST
+Received: from mail-m49225.qiye.163.com (mail-m49225.qiye.163.com [45.254.49.225])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F88E9C;
+        Wed, 13 Dec 2023 02:57:44 -0800 (PST)
+Received: from localhost.localdomain (unknown [IPV6:240e:3b7:3270:b440:d83b:6c2e:b6f:d27e])
+        by mail-m12741.qiye.163.com (Hmail) with ESMTPA id 66C609E05CD;
+        Wed, 13 Dec 2023 18:49:29 +0800 (CST)
+From:   Ke Xiao <xiaoke@sangfor.com.cn>
+To:     jesse.brandeburg@intel.com, anthony.l.nguyen@intel.com,
+        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com
+Cc:     dinghui@sangfor.com.cn, zhudi2@huawei.com,
+        intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Ke Xiao <xiaoke@sangfor.com.cn>
+Subject: [net PATCH] i40e: fix use-after-free in i40e_aqc_add_filters()
+Date:   Wed, 13 Dec 2023 18:49:11 +0800
+Message-Id: <20231213104912.16153-1-xiaoke@sangfor.com.cn>
+X-Mailer: git-send-email 2.17.1
+X-HM-Spam-Status: e1kfGhgUHx5ZQUpXWQgPGg8OCBgUHx5ZQUlOS1dZFg8aDwILHllBWSg2Ly
+        tZV1koWUFITzdXWS1ZQUlXWQ8JGhUIEh9ZQVkZGh4ZVklOQhlMGE5JGhlCSFUTARMWGhIXJBQOD1
+        lXWRgSC1lBWUlPSx5BSBlMQUhJTEtBGU9PS0EfQ0gZQU0YSR5BGU0dQR9JTB5ZV1kWGg8SFR0UWU
+        FZT0tIVUpNT0lMTlVKS0tVSkJLS1kG
+X-HM-Tid: 0a8c62cbc175b214kuuu66c609e05cd
+X-HM-MType: 1
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6N006ERw5GDw3Sj1DDgwjDR9N
+        EzowCyNVSlVKTEtJT01PTkxLT0lLVTMWGhIXVQMSGhQQHjsIGhUcHRQJVRgUFlUYFUVZV1kSC1lB
+        WUlPSx5BSBlMQUhJTEtBGU9PS0EfQ0gZQU0YSR5BGU0dQR9JTB5ZV1kIAVlBT05PTjcG
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Miquel,
+Commit 3116f59c12bd ("i40e: fix use-after-free in
+i40e_sync_filters_subtask()") avoided use-after-free issues,
+by increasing refcount during update the VSI filter list to
+the HW. However, it missed the unicast situation.
 
-First bad commit (maybe != root cause):
+When deleting an unicast FDB entry, the i40e driver will release
+the mac_filter, and i40e_service_task will concurrently request
+firmware to add the mac_filter, which will lead to the following
+use-after-free issue.
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   88035e5694a86a7167d490bb95e9df97a9bb162b
-commit: 72c5af00272339af6bbed6fe7275cd731f57be2d mtd: rawnand: Clarify Kconfig entry MTD_NAND
-date:   4 years, 8 months ago
-config: sparc-randconfig-r121-20231119 (https://download.01.org/0day-ci/archive/20231213/202312131846.d1bazU5H-lkp@intel.com/config)
-compiler: sparc64-linux-gcc (GCC) 13.2.0
-reproduce: (https://download.01.org/0day-ci/archive/20231213/202312131846.d1bazU5H-lkp@intel.com/reproduce)
+Fix again for both netdev->uc and netdev->mc.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202312131846.d1bazU5H-lkp@intel.com/
+BUG: KASAN: use-after-free in i40e_aqc_add_filters+0x55c/0x5b0 [i40e]
+Read of size 2 at addr ffff888eb3452d60 by task kworker/8:7/6379
 
-sparse warnings: (new ones prefixed by >>)
-   drivers/mtd/nand/raw/r852.c:110:25: sparse: sparse: incorrect type in argument 3 (different base types) @@     expected unsigned int [usertype] value @@     got restricted __le32 [usertype] @@
-   drivers/mtd/nand/raw/r852.c:110:25: sparse:     expected unsigned int [usertype] value
-   drivers/mtd/nand/raw/r852.c:110:25: sparse:     got restricted __le32 [usertype]
-   drivers/mtd/nand/raw/r852.c:114:25: sparse: sparse: incorrect type in argument 3 (different base types) @@     expected unsigned int [usertype] value @@     got restricted __le32 [usertype] @@
-   drivers/mtd/nand/raw/r852.c:114:25: sparse:     expected unsigned int [usertype] value
-   drivers/mtd/nand/raw/r852.c:114:25: sparse:     got restricted __le32 [usertype]
-   drivers/mtd/nand/raw/r852.c:147:17: sparse: sparse: incorrect type in argument 3 (different base types) @@     expected unsigned int [usertype] value @@     got restricted __le32 [usertype] @@
-   drivers/mtd/nand/raw/r852.c:147:17: sparse:     expected unsigned int [usertype] value
-   drivers/mtd/nand/raw/r852.c:147:17: sparse:     got restricted __le32 [usertype]
-   drivers/mtd/nand/raw/r852.c:55:24: sparse: sparse: cast to restricted __le32
-   drivers/mtd/nand/raw/r852.c:55:24: sparse: sparse: cast to restricted __le32
-   drivers/mtd/nand/raw/r852.c:55:24: sparse: sparse: cast to restricted __le32
-   drivers/mtd/nand/raw/r852.c:55:24: sparse: sparse: cast to restricted __le32
-   drivers/mtd/nand/raw/r852.c:55:24: sparse: sparse: cast to restricted __le32
-   drivers/mtd/nand/raw/r852.c:55:24: sparse: sparse: cast to restricted __le32
->> drivers/mtd/nand/raw/r852.c:63:16: sparse: sparse: incorrect type in argument 1 (different base types) @@     expected unsigned int [usertype] l @@     got restricted __le32 [usertype] @@
-   drivers/mtd/nand/raw/r852.c:63:16: sparse:     expected unsigned int [usertype] l
-   drivers/mtd/nand/raw/r852.c:63:16: sparse:     got restricted __le32 [usertype]
->> drivers/mtd/nand/raw/r852.c:63:16: sparse: sparse: incorrect type in argument 1 (different base types) @@     expected unsigned int [usertype] l @@     got restricted __le32 [usertype] @@
-   drivers/mtd/nand/raw/r852.c:63:16: sparse:     expected unsigned int [usertype] l
-   drivers/mtd/nand/raw/r852.c:63:16: sparse:     got restricted __le32 [usertype]
-   drivers/mtd/nand/raw/r852.c:55:24: sparse: sparse: cast to restricted __le32
-   drivers/mtd/nand/raw/r852.c:55:24: sparse: sparse: cast to restricted __le32
-   drivers/mtd/nand/raw/r852.c:55:24: sparse: sparse: cast to restricted __le32
-   drivers/mtd/nand/raw/r852.c:55:24: sparse: sparse: cast to restricted __le32
-   drivers/mtd/nand/raw/r852.c:55:24: sparse: sparse: cast to restricted __le32
-   drivers/mtd/nand/raw/r852.c:55:24: sparse: sparse: cast to restricted __le32
->> drivers/mtd/nand/raw/r852.c:63:16: sparse: sparse: incorrect type in argument 1 (different base types) @@     expected unsigned int [usertype] l @@     got restricted __le32 [usertype] @@
-   drivers/mtd/nand/raw/r852.c:63:16: sparse:     expected unsigned int [usertype] l
-   drivers/mtd/nand/raw/r852.c:63:16: sparse:     got restricted __le32 [usertype]
-   drivers/mtd/nand/raw/r852.c:55:24: sparse: sparse: cast to restricted __le32
-   drivers/mtd/nand/raw/r852.c:55:24: sparse: sparse: cast to restricted __le32
-   drivers/mtd/nand/raw/r852.c:55:24: sparse: sparse: cast to restricted __le32
-   drivers/mtd/nand/raw/r852.c:55:24: sparse: sparse: cast to restricted __le32
-   drivers/mtd/nand/raw/r852.c:55:24: sparse: sparse: cast to restricted __le32
-   drivers/mtd/nand/raw/r852.c:55:24: sparse: sparse: cast to restricted __le32
->> drivers/mtd/nand/raw/r852.c:63:16: sparse: sparse: incorrect type in argument 1 (different base types) @@     expected unsigned int [usertype] l @@     got restricted __le32 [usertype] @@
-   drivers/mtd/nand/raw/r852.c:63:16: sparse:     expected unsigned int [usertype] l
-   drivers/mtd/nand/raw/r852.c:63:16: sparse:     got restricted __le32 [usertype]
-   drivers/mtd/nand/raw/r852.c:55:24: sparse: sparse: cast to restricted __le32
-   drivers/mtd/nand/raw/r852.c:55:24: sparse: sparse: cast to restricted __le32
-   drivers/mtd/nand/raw/r852.c:55:24: sparse: sparse: cast to restricted __le32
-   drivers/mtd/nand/raw/r852.c:55:24: sparse: sparse: cast to restricted __le32
-   drivers/mtd/nand/raw/r852.c:55:24: sparse: sparse: cast to restricted __le32
-   drivers/mtd/nand/raw/r852.c:55:24: sparse: sparse: cast to restricted __le32
->> drivers/mtd/nand/raw/r852.c:63:16: sparse: sparse: incorrect type in argument 1 (different base types) @@     expected unsigned int [usertype] l @@     got restricted __le32 [usertype] @@
-   drivers/mtd/nand/raw/r852.c:63:16: sparse:     expected unsigned int [usertype] l
-   drivers/mtd/nand/raw/r852.c:63:16: sparse:     got restricted __le32 [usertype]
->> drivers/mtd/nand/raw/r852.c:63:16: sparse: sparse: incorrect type in argument 1 (different base types) @@     expected unsigned int [usertype] l @@     got restricted __le32 [usertype] @@
-   drivers/mtd/nand/raw/r852.c:63:16: sparse:     expected unsigned int [usertype] l
-   drivers/mtd/nand/raw/r852.c:63:16: sparse:     got restricted __le32 [usertype]
->> drivers/mtd/nand/raw/r852.c:63:16: sparse: sparse: incorrect type in argument 1 (different base types) @@     expected unsigned int [usertype] l @@     got restricted __le32 [usertype] @@
-   drivers/mtd/nand/raw/r852.c:63:16: sparse:     expected unsigned int [usertype] l
-   drivers/mtd/nand/raw/r852.c:63:16: sparse:     got restricted __le32 [usertype]
->> drivers/mtd/nand/raw/r852.c:63:16: sparse: sparse: incorrect type in argument 1 (different base types) @@     expected unsigned int [usertype] l @@     got restricted __le32 [usertype] @@
-   drivers/mtd/nand/raw/r852.c:63:16: sparse:     expected unsigned int [usertype] l
-   drivers/mtd/nand/raw/r852.c:63:16: sparse:     got restricted __le32 [usertype]
-   drivers/mtd/nand/raw/r852.c:55:24: sparse: sparse: cast to restricted __le32
-   drivers/mtd/nand/raw/r852.c:55:24: sparse: sparse: cast to restricted __le32
-   drivers/mtd/nand/raw/r852.c:55:24: sparse: sparse: cast to restricted __le32
-   drivers/mtd/nand/raw/r852.c:55:24: sparse: sparse: cast to restricted __le32
-   drivers/mtd/nand/raw/r852.c:55:24: sparse: sparse: cast to restricted __le32
-   drivers/mtd/nand/raw/r852.c:55:24: sparse: sparse: cast to restricted __le32
->> drivers/mtd/nand/raw/r852.c:63:16: sparse: sparse: incorrect type in argument 1 (different base types) @@     expected unsigned int [usertype] l @@     got restricted __le32 [usertype] @@
-   drivers/mtd/nand/raw/r852.c:63:16: sparse:     expected unsigned int [usertype] l
-   drivers/mtd/nand/raw/r852.c:63:16: sparse:     got restricted __le32 [usertype]
-   drivers/mtd/nand/raw/r852.c:55:24: sparse: sparse: cast to restricted __le32
-   drivers/mtd/nand/raw/r852.c:55:24: sparse: sparse: cast to restricted __le32
-   drivers/mtd/nand/raw/r852.c:55:24: sparse: sparse: cast to restricted __le32
-   drivers/mtd/nand/raw/r852.c:55:24: sparse: sparse: cast to restricted __le32
-   drivers/mtd/nand/raw/r852.c:55:24: sparse: sparse: cast to restricted __le32
-   drivers/mtd/nand/raw/r852.c:55:24: sparse: sparse: cast to restricted __le32
-   drivers/mtd/nand/raw/r852.c:55:24: sparse: sparse: cast to restricted __le32
-   drivers/mtd/nand/raw/r852.c:55:24: sparse: sparse: cast to restricted __le32
-   drivers/mtd/nand/raw/r852.c:55:24: sparse: sparse: cast to restricted __le32
-   drivers/mtd/nand/raw/r852.c:55:24: sparse: sparse: cast to restricted __le32
-   drivers/mtd/nand/raw/r852.c:55:24: sparse: sparse: cast to restricted __le32
-   drivers/mtd/nand/raw/r852.c:55:24: sparse: sparse: cast to restricted __le32
-   drivers/mtd/nand/raw/r852.c:55:24: sparse: sparse: cast to restricted __le32
-   drivers/mtd/nand/raw/r852.c:55:24: sparse: sparse: cast to restricted __le32
-   drivers/mtd/nand/raw/r852.c:55:24: sparse: sparse: cast to restricted __le32
-   drivers/mtd/nand/raw/r852.c:55:24: sparse: sparse: cast to restricted __le32
-   drivers/mtd/nand/raw/r852.c:55:24: sparse: sparse: cast to restricted __le32
-   drivers/mtd/nand/raw/r852.c:55:24: sparse: sparse: cast to restricted __le32
-   drivers/mtd/nand/raw/r852.c:55:24: sparse: sparse: cast to restricted __le32
-   drivers/mtd/nand/raw/r852.c:55:24: sparse: sparse: cast to restricted __le32
-   drivers/mtd/nand/raw/r852.c:55:24: sparse: sparse: cast to restricted __le32
-   drivers/mtd/nand/raw/r852.c:55:24: sparse: sparse: cast to restricted __le32
-   drivers/mtd/nand/raw/r852.c:55:24: sparse: sparse: cast to restricted __le32
-   drivers/mtd/nand/raw/r852.c:55:24: sparse: sparse: cast to restricted __le32
-   drivers/mtd/nand/raw/r852.c:55:24: sparse: sparse: cast to restricted __le32
-   drivers/mtd/nand/raw/r852.c:55:24: sparse: sparse: cast to restricted __le32
-   drivers/mtd/nand/raw/r852.c:55:24: sparse: sparse: cast to restricted __le32
-   drivers/mtd/nand/raw/r852.c:55:24: sparse: sparse: cast to restricted __le32
-   drivers/mtd/nand/raw/r852.c:55:24: sparse: sparse: cast to restricted __le32
-   drivers/mtd/nand/raw/r852.c:55:24: sparse: sparse: cast to restricted __le32
-   drivers/mtd/nand/raw/r852.c:55:24: sparse: sparse: cast to restricted __le32
-   drivers/mtd/nand/raw/r852.c:55:24: sparse: sparse: cast to restricted __le32
-   drivers/mtd/nand/raw/r852.c:55:24: sparse: sparse: cast to restricted __le32
-   drivers/mtd/nand/raw/r852.c:55:24: sparse: sparse: cast to restricted __le32
-   drivers/mtd/nand/raw/r852.c:55:24: sparse: sparse: cast to restricted __le32
-   drivers/mtd/nand/raw/r852.c:55:24: sparse: sparse: cast to restricted __le32
->> drivers/mtd/nand/raw/r852.c:63:16: sparse: sparse: incorrect type in argument 1 (different base types) @@     expected unsigned int [usertype] l @@     got restricted __le32 [usertype] @@
-   drivers/mtd/nand/raw/r852.c:63:16: sparse:     expected unsigned int [usertype] l
-   drivers/mtd/nand/raw/r852.c:63:16: sparse:     got restricted __le32 [usertype]
->> drivers/mtd/nand/raw/r852.c:63:16: sparse: sparse: incorrect type in argument 1 (different base types) @@     expected unsigned int [usertype] l @@     got restricted __le32 [usertype] @@
-   drivers/mtd/nand/raw/r852.c:63:16: sparse:     expected unsigned int [usertype] l
-   drivers/mtd/nand/raw/r852.c:63:16: sparse:     got restricted __le32 [usertype]
->> drivers/mtd/nand/raw/r852.c:63:16: sparse: sparse: incorrect type in argument 1 (different base types) @@     expected unsigned int [usertype] l @@     got restricted __le32 [usertype] @@
-   drivers/mtd/nand/raw/r852.c:63:16: sparse:     expected unsigned int [usertype] l
-   drivers/mtd/nand/raw/r852.c:63:16: sparse:     got restricted __le32 [usertype]
-   drivers/mtd/nand/raw/r852.c:55:24: sparse: sparse: cast to restricted __le32
-   drivers/mtd/nand/raw/r852.c:55:24: sparse: sparse: cast to restricted __le32
-   drivers/mtd/nand/raw/r852.c:55:24: sparse: sparse: cast to restricted __le32
-   drivers/mtd/nand/raw/r852.c:55:24: sparse: sparse: cast to restricted __le32
-   drivers/mtd/nand/raw/r852.c:55:24: sparse: sparse: cast to restricted __le32
-   drivers/mtd/nand/raw/r852.c:55:24: sparse: sparse: cast to restricted __le32
->> drivers/mtd/nand/raw/r852.c:63:16: sparse: sparse: incorrect type in argument 1 (different base types) @@     expected unsigned int [usertype] l @@     got restricted __le32 [usertype] @@
-   drivers/mtd/nand/raw/r852.c:63:16: sparse:     expected unsigned int [usertype] l
-   drivers/mtd/nand/raw/r852.c:63:16: sparse:     got restricted __le32 [usertype]
->> drivers/mtd/nand/raw/r852.c:63:16: sparse: sparse: incorrect type in argument 1 (different base types) @@     expected unsigned int [usertype] l @@     got restricted __le32 [usertype] @@
-   drivers/mtd/nand/raw/r852.c:63:16: sparse:     expected unsigned int [usertype] l
-   drivers/mtd/nand/raw/r852.c:63:16: sparse:     got restricted __le32 [usertype]
-   drivers/mtd/nand/raw/r852.c:55:24: sparse: sparse: cast to restricted __le32
-   drivers/mtd/nand/raw/r852.c:55:24: sparse: sparse: cast to restricted __le32
-   drivers/mtd/nand/raw/r852.c:55:24: sparse: sparse: cast to restricted __le32
-   drivers/mtd/nand/raw/r852.c:55:24: sparse: sparse: cast to restricted __le32
-   drivers/mtd/nand/raw/r852.c:55:24: sparse: sparse: cast to restricted __le32
-   drivers/mtd/nand/raw/r852.c:55:24: sparse: sparse: cast to restricted __le32
->> drivers/mtd/nand/raw/r852.c:63:16: sparse: sparse: incorrect type in argument 1 (different base types) @@     expected unsigned int [usertype] l @@     got restricted __le32 [usertype] @@
-   drivers/mtd/nand/raw/r852.c:63:16: sparse:     expected unsigned int [usertype] l
-   drivers/mtd/nand/raw/r852.c:63:16: sparse:     got restricted __le32 [usertype]
+CPU: 8 PID: 6379 Comm: kworker/8:7 Kdump: loaded Tainted: G
+Workqueue: i40e i40e_service_task [i40e]
+Call Trace:
+ dump_stack+0x71/0xab
+ print_address_description+0x6b/0x290
+ kasan_report+0x14a/0x2b0
+ i40e_aqc_add_filters+0x55c/0x5b0 [i40e]
+ i40e_sync_vsi_filters+0x1676/0x39c0 [i40e]
+ i40e_service_task+0x1397/0x2bb0 [i40e]
+ process_one_work+0x56a/0x11f0
+ worker_thread+0x8f/0xf40
+ kthread+0x2a0/0x390
+ ret_from_fork+0x1f/0x40
 
-vim +63 drivers/mtd/nand/raw/r852.c
+Allocated by task 21948:
+ kasan_kmalloc+0xa6/0xd0
+ kmem_cache_alloc_trace+0xdb/0x1c0
+ i40e_add_filter+0x11e/0x520 [i40e]
+ i40e_addr_sync+0x37/0x60 [i40e]
+ __hw_addr_sync_dev+0x1f5/0x2f0
+ i40e_set_rx_mode+0x61/0x1e0 [i40e]
+ dev_uc_add_excl+0x137/0x190
+ i40e_ndo_fdb_add+0x161/0x260 [i40e]
+ rtnl_fdb_add+0x567/0x950
+ rtnetlink_rcv_msg+0x5db/0x880
+ netlink_rcv_skb+0x254/0x380
+ netlink_unicast+0x454/0x610
+ netlink_sendmsg+0x747/0xb00
+ sock_sendmsg+0xe2/0x120
+ __sys_sendto+0x1ae/0x290
+ __x64_sys_sendto+0xdd/0x1b0
+ do_syscall_64+0xa0/0x370
+ entry_SYSCALL_64_after_hwframe+0x65/0xca
 
-67e054e919248f drivers/mtd/nand/r852.c Maxim Levitsky 2010-02-22  58  
-67e054e919248f drivers/mtd/nand/r852.c Maxim Levitsky 2010-02-22  59  /* write dword sized register */
-67e054e919248f drivers/mtd/nand/r852.c Maxim Levitsky 2010-02-22  60  static inline void r852_write_reg_dword(struct r852_device *dev,
-67e054e919248f drivers/mtd/nand/r852.c Maxim Levitsky 2010-02-22  61  							int address, uint32_t value)
-67e054e919248f drivers/mtd/nand/r852.c Maxim Levitsky 2010-02-22  62  {
-67e054e919248f drivers/mtd/nand/r852.c Maxim Levitsky 2010-02-22 @63  	writel(cpu_to_le32(value), dev->mmio + address);
-67e054e919248f drivers/mtd/nand/r852.c Maxim Levitsky 2010-02-22  64  	mmiowb();
-67e054e919248f drivers/mtd/nand/r852.c Maxim Levitsky 2010-02-22  65  }
-67e054e919248f drivers/mtd/nand/r852.c Maxim Levitsky 2010-02-22  66  
+Freed by task 21948:
+ __kasan_slab_free+0x137/0x190
+ kfree+0x8b/0x1b0
+ __i40e_del_filter+0x116/0x1e0 [i40e]
+ i40e_del_mac_filter+0x16c/0x300 [i40e]
+ i40e_addr_unsync+0x134/0x1b0 [i40e]
+ __hw_addr_sync_dev+0xff/0x2f0
+ i40e_set_rx_mode+0x61/0x1e0 [i40e]
+ dev_uc_del+0x77/0x90
+ rtnl_fdb_del+0x6a5/0x860
+ rtnetlink_rcv_msg+0x5db/0x880
+ netlink_rcv_skb+0x254/0x380
+ netlink_unicast+0x454/0x610
+ netlink_sendmsg+0x747/0xb00
+ sock_sendmsg+0xe2/0x120
+ __sys_sendto+0x1ae/0x290
+ __x64_sys_sendto+0xdd/0x1b0
+ do_syscall_64+0xa0/0x370
+ entry_SYSCALL_64_after_hwframe+0x65/0xca
 
-:::::: The code at line 63 was first introduced by commit
-:::::: 67e054e919248fa1db93de727fb9ad49eb700642 mtd: nand: Add driver for Ricoh xD/SmartMedia reader
+Fixes: 3116f59c12bd ("i40e: fix use-after-free in i40e_sync_filters_subtask()")
+Fixes: 41c445ff0f48 ("i40e: main driver core")
+Signed-off-by: Ke Xiao <xiaoke@sangfor.com.cn>
+Signed-off-by: Ding Hui <dinghui@sangfor.com.cn>
+Cc: Di Zhu <zhudi2@huawei.com>
+---
+ drivers/net/ethernet/intel/i40e/i40e_main.c | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
-:::::: TO: Maxim Levitsky <maximlevitsky@gmail.com>
-:::::: CC: David Woodhouse <David.Woodhouse@intel.com>
-
+diff --git a/drivers/net/ethernet/intel/i40e/i40e_main.c b/drivers/net/ethernet/intel/i40e/i40e_main.c
+index 1ab8dbe2d880..16b574d69843 100644
+--- a/drivers/net/ethernet/intel/i40e/i40e_main.c
++++ b/drivers/net/ethernet/intel/i40e/i40e_main.c
+@@ -108,11 +108,17 @@ static void netdev_hw_addr_refcnt(struct i40e_mac_filter *f,
+ 				  struct net_device *netdev, int delta)
+ {
+ 	struct netdev_hw_addr *ha;
++	struct netdev_hw_addr_list *ha_list;
+ 
+ 	if (!f || !netdev)
+ 		return;
+ 
+-	netdev_for_each_mc_addr(ha, netdev) {
++	if (is_unicast_ether_addr(f->macaddr) || is_link_local_ether_addr(f->macaddr))
++		ha_list = &netdev->uc;
++	else
++		ha_list = &netdev->mc;
++
++	netdev_hw_addr_list_for_each(ha, ha_list) {
+ 		if (ether_addr_equal(ha->addr, f->macaddr)) {
+ 			ha->refcount += delta;
+ 			if (ha->refcount <= 0)
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.17.1
+
