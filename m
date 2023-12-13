@@ -2,70 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FC82811A04
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 17:49:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B321811A08
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 17:50:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378177AbjLMQsz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 11:48:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59904 "EHLO
+        id S1377827AbjLMQtt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 11:49:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56940 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229458AbjLMQsx (ORCPT
+        with ESMTP id S229458AbjLMQts (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 11:48:53 -0500
-Received: from mail.alien8.de (mail.alien8.de [IPv6:2a01:4f9:3051:3f93::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F9488E;
-        Wed, 13 Dec 2023 08:49:00 -0800 (PST)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 5C78A40E0030;
-        Wed, 13 Dec 2023 16:48:58 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-        header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id UBofbvajwNLn; Wed, 13 Dec 2023 16:48:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-        t=1702486136; bh=5RmfJgzhCJhL1FocTS8kiTdsbL/Jz464PcnULFHHGVo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=RE1D1MJWUO5nGqj+MuKKKRI0zK4hzQi0DQWxRDxgPKk6zc4WuDyE5zk6pzVQvhHvO
-         F2Ivln80YM97/PQes7MWh4j8TsI2n8ukuJ7mZXe+rF2gShLQzcRn7kiwT7nxM9F62A
-         5Vcos6FlN677+IdJobG+NolWiFlNtvowduEENRbl8bfoN7rLnPf4lp1xN+5AjvqJb+
-         WYFKfKJ8ey0MWwFiWRkMan2PvaB5uHWDwp0bzGJEN7tybyqaZUuG8o/z+Fw2C//+HX
-         C+dPPU5nR9XbohTECvxZxtTpf+4SAfaSY5z3QDATk2gBFJlktLDZBpGYuruBMdGdVy
-         lif0f1vN81T9hscOyuwMUOfxk1tgnG3ZScQ2uzY6/aQfRnBcUmTScKt+uCXlRzbYKj
-         IdtlMmIiLdS2WQAVJfpA9u9jLKgPqHyBsCn/ggBam37o16gfrd+9tz5+N35StdhEz3
-         Imke9bpj9BieFXfzqKVlWxMXFsYsCckW94+Z7NCpuYIbsEs4TJ+LhXM0WDcAmGdmdB
-         BWp+CFYL1yv+D7S0pc/g4as21z57JU1a/POcpcJYcRuAaNqaAeJDeo3ZuZnHse+ZI7
-         zyjZYNPSX3QQVbNakVk6qyh7SZn0A+/B9takbEY18JC+o3Q+mCXWnZIgdy0MJTliYD
-         fWXoO1cRxVEVQO9onoBwbRrs=
-Received: from zn.tnic (pd95304da.dip0.t-ipconnect.de [217.83.4.218])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-        (No client certificate requested)
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 268A040E0140;
-        Wed, 13 Dec 2023 16:48:47 +0000 (UTC)
-Date:   Wed, 13 Dec 2023 17:48:37 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     Yazen Ghannam <yazen.ghannam@amd.com>
-Cc:     linux-edac@vger.kernel.org, linux-kernel@vger.kernel.org,
-        tony.luck@intel.com, x86@kernel.org, avadhut.naik@amd.com,
-        john.allen@amd.com, william.roche@oracle.com,
-        muralidhara.mk@amd.com
-Subject: Re: [PATCH v3 1/3] RAS: Introduce AMD Address Translation Library
-Message-ID: <20231213164837.GHZXngZW3TYvBN41Ma@fat_crate.local>
-References: <20231210194932.43992-1-yazen.ghannam@amd.com>
- <20231210194932.43992-2-yazen.ghannam@amd.com>
- <20231211195739.GIZXdps9DNvOgCR5Xs@fat_crate.local>
- <295f3cc9-6140-4813-b107-8c8b60f8aaa1@amd.com>
- <20231212153449.GEZXh9mSJ5epD13Dp7@fat_crate.local>
- <b9beb435-30e4-44a3-b27d-0567a8e873bd@amd.com>
+        Wed, 13 Dec 2023 11:49:48 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4A6498
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 08:49:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1702486194;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=sAUBw1JbqJkoLEh9unPbe/skVaLgSM4WAzbnqm5FIlk=;
+        b=eRc0XR/4y54juTn1111ME2sl3K7tSVLvKtz5d43JszKiXv48yXAmHy10ijO7dQ7drREhkn
+        vgXqZHLKKQQ++Qhgkr9W94V807yv3YXUiyth5e40I0AOwmbIi6uAUOdoqN8r8R729zc391
+        wOQmaNt/AZmB5e6hZMLJ7sp2yvONhWs=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-507-tKs3Pz5VMAqGy4O5wSIBnA-1; Wed, 13 Dec 2023 11:49:52 -0500
+X-MC-Unique: tKs3Pz5VMAqGy4O5wSIBnA-1
+Received: by mail-wr1-f71.google.com with SMTP id ffacd0b85a97d-3333c009305so6022357f8f.1
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 08:49:52 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702486191; x=1703090991;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=sAUBw1JbqJkoLEh9unPbe/skVaLgSM4WAzbnqm5FIlk=;
+        b=S+bKn1jwizjtLJbqIbzjjXdoEdkWC8xZqKYgZmVuCssggLjyBtpSL0Hk2npwY2OO6S
+         nfCs46zd9YgPtqT281JxlWsAeRkp2mH1Z/s8lZEfByLArpKPJSGNCpZbvrVtSxAalhdu
+         R0ctrBZ19iEDsMxNjKlBYNqpgWjjcrkqKee6+j/keKl0xHPq9zbPyAcsgSwV2dky9scJ
+         sF7NWgVCZom49Sld/oBy7U5E9VrKwzabv+73+A77kV4Cv6Rj7Q3ea0fXG+TmgfZ+memp
+         tfnpHzWrsrCVC2FLONjnqi0uIoABxZKwpjbvobfl+7s9wUJm2IBAyB+QoidOoPQ871pJ
+         JWxA==
+X-Gm-Message-State: AOJu0YyamUBrlzA5eXgKWf53rtA8i2s8faqn4jZqkzh5ajePRLO+Jd9t
+        rgOsUvN10gacgPYgPDC8/MPJbRk2lnEefuGcNwtAI9zJTl2z+T7RRvN52WeIN1PRfTpFTsCOsS0
+        5Nonf2gXjXm4p+hPnVj/RV5h6b/3UOvjVgNxOfVia
+X-Received: by 2002:adf:e712:0:b0:336:30b5:3c19 with SMTP id c18-20020adfe712000000b0033630b53c19mr1551570wrm.126.1702486191419;
+        Wed, 13 Dec 2023 08:49:51 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IHbtWOXbTiO49SRgCwSfAmRnGuTCtdSJbwL1Csvygxz4hMPMjM2yAakU6yql6/c0bJAuDlRelMBxmGAX8X5oPw=
+X-Received: by 2002:adf:e712:0:b0:336:30b5:3c19 with SMTP id
+ c18-20020adfe712000000b0033630b53c19mr1551559wrm.126.1702486191114; Wed, 13
+ Dec 2023 08:49:51 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <b9beb435-30e4-44a3-b27d-0567a8e873bd@amd.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+References: <20231213003614.1648343-1-imammedo@redhat.com> <20231213003614.1648343-3-imammedo@redhat.com>
+ <CAJZ5v0gowV0WJd8pjwrDyHSJPvwgkCXYu9bDG7HHfcyzkSSY6w@mail.gmail.com>
+In-Reply-To: <CAJZ5v0gowV0WJd8pjwrDyHSJPvwgkCXYu9bDG7HHfcyzkSSY6w@mail.gmail.com>
+From:   Igor Mammedov <imammedo@redhat.com>
+Date:   Wed, 13 Dec 2023 17:49:39 +0100
+Message-ID: <CAMLWh55dr2e_R+TYVj=8cFfV==D-DfOZvAeq9JEehYs3nw6-OQ@mail.gmail.com>
+Subject: Re: [RFC 2/2] PCI: acpiphp: slowdown hotplug if hotplugging multiple
+ devices at a time
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Dongli Zhang <dongli.zhang@oracle.com>,
+        linux-acpi@vger.kernel.org, linux-pci@vger.kernel.org,
+        mst@redhat.com, lenb@kernel.org, bhelgaas@google.com,
+        mika.westerberg@linux.intel.com, boris.ostrovsky@oracle.com,
+        joe.jin@oracle.com, stable@vger.kernel.org,
+        Fiona Ebner <f.ebner@proxmox.com>,
+        Thomas Lamprecht <t.lamprecht@proxmox.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -73,26 +84,110 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 13, 2023 at 10:35:55AM -0500, Yazen Ghannam wrote:
-> I agree in principle. But I don't think it hurts to include an additional
-> line to avoid the confusion when the module doesn't load.
+On Wed, Dec 13, 2023 at 2:08=E2=80=AFPM Rafael J. Wysocki <rafael@kernel.or=
+g> wrote:
+>
+> On Wed, Dec 13, 2023 at 1:36=E2=80=AFAM Igor Mammedov <imammedo@redhat.co=
+m> wrote:
+> >
+> > previous commit ("PCI: acpiphp: enable slot only if it hasn't been enab=
+led already"
+> > introduced a workaround to avoid a race between SCSI_SCAN_ASYNC job and
+> > bridge reconfiguration in case of single HBA hotplug.
+> > However in virt environment it's possible to pause machine hotplug seve=
+ral
+> > HBAs and let machine run. That can hit the same race when 2nd hotplugge=
+d
+> > HBA will start re-configuring bridge.
+> > Do the same thing as SHPC and throttle down hotplug of 2nd and up
+> > devices within single hotplug event.
+> >
+> > Signed-off-by: Igor Mammedov <imammedo@redhat.com>
+> > ---
+> >  drivers/pci/hotplug/acpiphp_glue.c | 6 ++++++
+> >  1 file changed, 6 insertions(+)
+> >
+> > diff --git a/drivers/pci/hotplug/acpiphp_glue.c b/drivers/pci/hotplug/a=
+cpiphp_glue.c
+> > index 6b11609927d6..30bca2086b24 100644
+> > --- a/drivers/pci/hotplug/acpiphp_glue.c
+> > +++ b/drivers/pci/hotplug/acpiphp_glue.c
+> > @@ -37,6 +37,7 @@
+> >  #include <linux/mutex.h>
+> >  #include <linux/slab.h>
+> >  #include <linux/acpi.h>
+> > +#include <linux/delay.h>
+> >
+> >  #include "../pci.h"
+> >  #include "acpiphp.h"
+> > @@ -700,6 +701,7 @@ static void trim_stale_devices(struct pci_dev *dev)
+> >  static void acpiphp_check_bridge(struct acpiphp_bridge *bridge)
+> >  {
+> >         struct acpiphp_slot *slot;
+> > +        int nr_hp_slots =3D 0;
+> >
+> >         /* Bail out if the bridge is going away. */
+> >         if (bridge->is_going_away)
+> > @@ -723,6 +725,10 @@ static void acpiphp_check_bridge(struct acpiphp_br=
+idge *bridge)
+> >
+> >                         /* configure all functions */
+> >                         if (slot->flags !=3D SLOT_ENABLED) {
+> > +                               if (nr_hp_slots)
+> > +                                       msleep(1000);
+>
+> Why is 1000 considered the most suitable number here?  Any chance to
+> define a symbol for it?
 
-It does hurt because this turns into constant family updating the moment
-a new family appears. This is one of the major reasons why we do CPUID
-bits.
+Timeout was borrowed from SHPC hotplug workflow where it apparently
+makes race harder to reproduce.
+(though it's not excuse to add more timeouts elsewhere)
 
-> Also, the SMCA feature is used here as a short-cut to match on systems with
-> a Data Fabric. We could use the Zen feature in the same way.
+> And won't this affect the cases when the race in question is not a concer=
+n?
 
-We could.
+In practice it's not likely, since even in virt scenario hypervisor won't
+stop VM to hotplug device (which beats whole purpose of hotplug).
 
-What is the main description of the environment an ATL library belongs
-into: a SMCA system or a Zen-based system?
+But in case of a very slow VM (overcommit case) it's possible for
+several HBA's to be hotplugged by the time acpiphp gets a chance
+to handle the 1st hotplug event. SHPC is more or less 'safe' with its
+1sec delay.
 
-Thx.
+> Also, adding arbitrary timeouts is not the most robust way of
+> addressing race conditions IMV.  Wouldn't it be better to add some
+> proper synchronization between the pieces of code that can race with
+> each other?
 
--- 
-Regards/Gruss,
-    Boris.
+I don't like it either, it's a stop gap measure to hide regression on
+short notice,
+which I can fixup without much risk in short time left, before folks
+leave on holidays.
+It's fine to drop the patch as chances of this happening are small.
+[1/2] should cover reported cases.
 
-https://people.kernel.org/tglx/notes-about-netiquette
+Since it's RFC, I basically ask for opinions on a proper way to fix
+SCSI_ASYNC_SCAN
+running wild while the hotplug is in progress (and maybe SCSI is not
+the only user that
+schedules async job from device probe). So adding synchronisation and testi=
+ng
+would take time (not something I'd do this late in the cycle).
+
+So far I'm thinking about adding rw mutex to bridge with the PCI
+hotplug subsystem
+being a writer while scsi scan jobs would be readers and wait till hotplug =
+code
+says it's safe to proceed.
+I plan to work in this direction and give it some testing, unless
+someone has a better idea.
+
+>
+> > +
+> > +                                ++nr_hp_slots;
+> >                                 enable_slot(slot, true);
+> >                         }
+> >                 } else {
+> > --
+>
+
