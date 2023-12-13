@@ -2,43 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AA7E381100A
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 12:32:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C57C81100B
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 12:32:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377678AbjLMLcD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 06:32:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54430 "EHLO
+        id S1377782AbjLMLcI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 06:32:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44696 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378008AbjLMLbm (ORCPT
+        with ESMTP id S1378140AbjLMLbn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 06:31:42 -0500
+        Wed, 13 Dec 2023 06:31:43 -0500
 Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1C8CD69;
-        Wed, 13 Dec 2023 03:31:24 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A83910DD;
+        Wed, 13 Dec 2023 03:31:29 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1702467084; x=1734003084;
+  t=1702467089; x=1734003089;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=wqWe+I/UHPvQw6gjoo1ner/8yLTJmp59IEP+EBAhMOE=;
-  b=cTg74aZjAaGnFv9wosWbQ7WaIzXHv+lMVvwx2IkrBtWOrzC6TwNuGbYX
-   U4MU/Wd+20eERAT69aKr57UNIpS7FqzWyx1UN6SZikS4oupKZCGI1mgl1
-   1pjUj1UIEaYhDilIH7kWNih5eDV+vu6McTQ0kpGFv6IL4OOIy/3+cczJJ
-   icFPbcvbsp08RllwgdYVmhuktmNiKDTEL/7EmEF38QaB/oLQxDxujMlJ8
-   NzzCIxlEQSy9avVG9azBx/gK+9WwJ8P09UDjUYhPJBUvgdPXwRboI/i6Y
-   EcY/HGVQtXKWDzEgmOsyVrrX6moc4VGLfkt4Ge3Q+DNwlKj6dtNc/8e00
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10922"; a="375104093"
+  bh=HXBcfuv6XIwkdiVEgiQymuvuYK2FvvefgUBLlFTwa4U=;
+  b=Zt1DvQ++u5rT4tjZbxSjW5rcWcpggUiA79PDj3dSxrJnSsyQs6DPRVUl
+   YKOU08hknHMDpbRZE7l6iDPs0P98rjoVsZYBGzbzHlnxQWdn4c9U1x8TB
+   YOLun463tE2BQ6T3UBM+5Q9+HJI6KTDhOselvN6Zu2NJurGE4A00R5fT8
+   9NG1CTWtTj2y2qN+MKjLR2d0u4ix51mF9t8kUCEkokeCOOthfYDpQ3uyx
+   wN2r36Y2E3V0bKHN5mQjdKjenQDEVDJyVA1zTdNt19iwvGJdv8rDhqK3j
+   /R6IILc7CAKcBtQDL5hJp5GLjLENDO9abg4kKQoeXMQBf8Xr+/6vB64z9
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10922"; a="375104114"
 X-IronPort-AV: E=Sophos;i="6.04,272,1695711600"; 
-   d="scan'208";a="375104093"
+   d="scan'208";a="375104114"
 Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Dec 2023 03:31:24 -0800
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Dec 2023 03:31:28 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10922"; a="844279659"
+X-IronPort-AV: E=McAfee;i="6600,9927,10922"; a="844279686"
 X-IronPort-AV: E=Sophos;i="6.04,272,1695711600"; 
-   d="scan'208";a="844279659"
+   d="scan'208";a="844279686"
 Received: from newjersey.igk.intel.com ([10.102.20.203])
-  by fmsmga004.fm.intel.com with ESMTP; 13 Dec 2023 03:31:20 -0800
+  by fmsmga004.fm.intel.com with ESMTP; 13 Dec 2023 03:31:24 -0800
 From:   Alexander Lobakin <aleksander.lobakin@intel.com>
 To:     "David S. Miller" <davem@davemloft.net>,
         Eric Dumazet <edumazet@google.com>,
@@ -55,9 +55,9 @@ Cc:     Alexander Lobakin <aleksander.lobakin@intel.com>,
         Ilias Apalodimas <ilias.apalodimas@linaro.org>,
         Paul Menzel <pmenzel@molgen.mpg.de>, netdev@vger.kernel.org,
         intel-wired-lan@lists.osuosl.org, linux-kernel@vger.kernel.org
-Subject: [PATCH net-next v7 11/12] libie: add common queue stats
-Date:   Wed, 13 Dec 2023 12:28:34 +0100
-Message-ID: <20231213112835.2262651-12-aleksander.lobakin@intel.com>
+Subject: [PATCH net-next v7 12/12] iavf: switch queue stats to libie
+Date:   Wed, 13 Dec 2023 12:28:35 +0100
+Message-ID: <20231213112835.2262651-13-aleksander.lobakin@intel.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20231213112835.2262651-1-aleksander.lobakin@intel.com>
 References: <20231213112835.2262651-1-aleksander.lobakin@intel.com>
@@ -73,347 +73,503 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Next stop, per-queue private stats. They have only subtle differences
-from driver to driver and can easily be resolved.
-Define common structures, inline helpers and Ethtool helpers to collect,
-update and export the statistics. Use u64_stats_t right from the start,
-as well as the corresponding helpers to ensure tear-free operations.
-For the NAPI parts of both Rx and Tx, also define small onstack
-containers to update them in polling loops and then sync the actual
-containers once a loop ends.
-The drivers will be switched to use this API later on a per-driver
-basis, along with conversion to PP.
+iavf is pretty much ready for using the generic libie stats, so drop all
+the custom code and just use generic definitions. The only thing is that
+it previously lacked the counter of Tx queue stops. It's present in the
+other drivers, so add it here as well.
+The rest is straightforward. Note that it makes the ring structure 1 CL
+bigger, but no layout changes since the stats structures are 32-byte
+aligned.
 
 Signed-off-by: Alexander Lobakin <aleksander.lobakin@intel.com>
 ---
- drivers/net/ethernet/intel/libie/Makefile |   1 +
- drivers/net/ethernet/intel/libie/stats.c  | 121 +++++++++++++++
- include/linux/net/intel/libie/stats.h     | 179 ++++++++++++++++++++++
- 3 files changed, 301 insertions(+)
- create mode 100644 drivers/net/ethernet/intel/libie/stats.c
- create mode 100644 include/linux/net/intel/libie/stats.h
+ .../net/ethernet/intel/iavf/iavf_ethtool.c    | 94 +++++--------------
+ drivers/net/ethernet/intel/iavf/iavf_main.c   |  2 +
+ drivers/net/ethernet/intel/iavf/iavf_txrx.c   | 84 +++++++++--------
+ drivers/net/ethernet/intel/iavf/iavf_txrx.h   | 28 +-----
+ 4 files changed, 72 insertions(+), 136 deletions(-)
 
-diff --git a/drivers/net/ethernet/intel/libie/Makefile b/drivers/net/ethernet/intel/libie/Makefile
-index 95e81d09b474..76f32253481b 100644
---- a/drivers/net/ethernet/intel/libie/Makefile
-+++ b/drivers/net/ethernet/intel/libie/Makefile
-@@ -4,3 +4,4 @@
- obj-$(CONFIG_LIBIE)	+= libie.o
+diff --git a/drivers/net/ethernet/intel/iavf/iavf_ethtool.c b/drivers/net/ethernet/intel/iavf/iavf_ethtool.c
+index 4b8b068e9d11..87e514e4d371 100644
+--- a/drivers/net/ethernet/intel/iavf/iavf_ethtool.c
++++ b/drivers/net/ethernet/intel/iavf/iavf_ethtool.c
+@@ -2,9 +2,10 @@
+ /* Copyright(c) 2013 - 2018 Intel Corporation. */
  
- libie-objs		+= rx.o
-+libie-objs		+= stats.o
-diff --git a/drivers/net/ethernet/intel/libie/stats.c b/drivers/net/ethernet/intel/libie/stats.c
-new file mode 100644
-index 000000000000..85f5d279406f
---- /dev/null
-+++ b/drivers/net/ethernet/intel/libie/stats.c
-@@ -0,0 +1,121 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/* Copyright(c) 2023 Intel Corporation. */
-+
-+#include <linux/ethtool.h>
-+
+ /* ethtool support for iavf */
+-#include "iavf.h"
+ 
+-#include <linux/uaccess.h>
 +#include <linux/net/intel/libie/rx.h>
++
++#include "iavf.h"
+ 
+ /* ethtool statistics helpers */
+ 
+@@ -46,16 +47,6 @@ struct iavf_stats {
+ 	.stat_offset = offsetof(_type, _stat) \
+ }
+ 
+-/* Helper macro for defining some statistics related to queues */
+-#define IAVF_QUEUE_STAT(_name, _stat) \
+-	IAVF_STAT(struct iavf_ring, _name, _stat)
+-
+-/* Stats associated with a Tx or Rx ring */
+-static const struct iavf_stats iavf_gstrings_queue_stats[] = {
+-	IAVF_QUEUE_STAT("%s-%u.packets", stats.packets),
+-	IAVF_QUEUE_STAT("%s-%u.bytes", stats.bytes),
+-};
+-
+ /**
+  * iavf_add_one_ethtool_stat - copy the stat into the supplied buffer
+  * @data: location to store the stat value
+@@ -141,43 +132,6 @@ __iavf_add_ethtool_stats(u64 **data, void *pointer,
+ #define iavf_add_ethtool_stats(data, pointer, stats) \
+ 	__iavf_add_ethtool_stats(data, pointer, stats, ARRAY_SIZE(stats))
+ 
+-/**
+- * iavf_add_queue_stats - copy queue statistics into supplied buffer
+- * @data: ethtool stats buffer
+- * @ring: the ring to copy
+- *
+- * Queue statistics must be copied while protected by
+- * u64_stats_fetch_begin, so we can't directly use iavf_add_ethtool_stats.
+- * Assumes that queue stats are defined in iavf_gstrings_queue_stats. If the
+- * ring pointer is null, zero out the queue stat values and update the data
+- * pointer. Otherwise safely copy the stats from the ring into the supplied
+- * buffer and update the data pointer when finished.
+- *
+- * This function expects to be called while under rcu_read_lock().
+- **/
+-static void
+-iavf_add_queue_stats(u64 **data, struct iavf_ring *ring)
+-{
+-	const unsigned int size = ARRAY_SIZE(iavf_gstrings_queue_stats);
+-	const struct iavf_stats *stats = iavf_gstrings_queue_stats;
+-	unsigned int start;
+-	unsigned int i;
+-
+-	/* To avoid invalid statistics values, ensure that we keep retrying
+-	 * the copy until we get a consistent value according to
+-	 * u64_stats_fetch_retry. But first, make sure our ring is
+-	 * non-null before attempting to access its syncp.
+-	 */
+-	do {
+-		start = !ring ? 0 : u64_stats_fetch_begin(&ring->syncp);
+-		for (i = 0; i < size; i++)
+-			iavf_add_one_ethtool_stat(&(*data)[i], ring, &stats[i]);
+-	} while (ring && u64_stats_fetch_retry(&ring->syncp, start));
+-
+-	/* Once we successfully copy the stats in, update the data pointer */
+-	*data += size;
+-}
+-
+ /**
+  * __iavf_add_stat_strings - copy stat strings into ethtool buffer
+  * @p: ethtool supplied buffer
+@@ -237,8 +191,6 @@ static const struct iavf_stats iavf_gstrings_stats[] = {
+ 
+ #define IAVF_STATS_LEN	ARRAY_SIZE(iavf_gstrings_stats)
+ 
+-#define IAVF_QUEUE_STATS_LEN	ARRAY_SIZE(iavf_gstrings_queue_stats)
+-
+ /**
+  * iavf_get_link_ksettings - Get Link Speed and Duplex settings
+  * @netdev: network interface device structure
+@@ -308,18 +260,22 @@ static int iavf_get_link_ksettings(struct net_device *netdev,
+  **/
+ static int iavf_get_sset_count(struct net_device *netdev, int sset)
+ {
+-	/* Report the maximum number queues, even if not every queue is
+-	 * currently configured. Since allocation of queues is in pairs,
+-	 * use netdev->real_num_tx_queues * 2. The real_num_tx_queues is set
+-	 * at device creation and never changes.
+-	 */
++	u32 num;
+ 
+-	if (sset == ETH_SS_STATS)
+-		return IAVF_STATS_LEN +
+-			(IAVF_QUEUE_STATS_LEN * 2 *
+-			 netdev->real_num_tx_queues);
+-	else
++	switch (sset) {
++	case ETH_SS_STATS:
++		/* Per-queue */
++		num = libie_rq_stats_get_sset_count();
++		num += libie_sq_stats_get_sset_count();
++		num *= netdev->real_num_tx_queues;
++
++		/* Global */
++		num += IAVF_STATS_LEN;
++
++		return num;
++	default:
+ 		return -EINVAL;
++	}
+ }
+ 
+ /**
+@@ -346,15 +302,11 @@ static void iavf_get_ethtool_stats(struct net_device *netdev,
+ 	 * it to iterate over rings' stats.
+ 	 */
+ 	for (i = 0; i < adapter->num_active_queues; i++) {
+-		struct iavf_ring *ring;
++		/* Rx rings stats */
++		libie_rq_stats_get_data(&data, &adapter->rx_rings[i].rq_stats);
+ 
+ 		/* Tx rings stats */
+-		ring = &adapter->tx_rings[i];
+-		iavf_add_queue_stats(&data, ring);
+-
+-		/* Rx rings stats */
+-		ring = &adapter->rx_rings[i];
+-		iavf_add_queue_stats(&data, ring);
++		libie_sq_stats_get_data(&data, &adapter->tx_rings[i].sq_stats);
+ 	}
+ 	rcu_read_unlock();
+ }
+@@ -376,10 +328,8 @@ static void iavf_get_stat_strings(struct net_device *netdev, u8 *data)
+ 	 * real_num_tx_queues for both Tx and Rx queues.
+ 	 */
+ 	for (i = 0; i < netdev->real_num_tx_queues; i++) {
+-		iavf_add_stat_strings(&data, iavf_gstrings_queue_stats,
+-				      "tx", i);
+-		iavf_add_stat_strings(&data, iavf_gstrings_queue_stats,
+-				      "rx", i);
++		libie_rq_stats_get_strings(&data, i);
++		libie_sq_stats_get_strings(&data, i);
+ 	}
+ }
+ 
+diff --git a/drivers/net/ethernet/intel/iavf/iavf_main.c b/drivers/net/ethernet/intel/iavf/iavf_main.c
+index 0becfdf2ed99..73563ae2ea03 100644
+--- a/drivers/net/ethernet/intel/iavf/iavf_main.c
++++ b/drivers/net/ethernet/intel/iavf/iavf_main.c
+@@ -1603,12 +1603,14 @@ static int iavf_alloc_queues(struct iavf_adapter *adapter)
+ 		tx_ring->itr_setting = IAVF_ITR_TX_DEF;
+ 		if (adapter->flags & IAVF_FLAG_WB_ON_ITR_CAPABLE)
+ 			tx_ring->flags |= IAVF_TXR_FLAGS_WB_ON_ITR;
++		u64_stats_init(&tx_ring->sq_stats.syncp);
+ 
+ 		rx_ring = &adapter->rx_rings[i];
+ 		rx_ring->queue_index = i;
+ 		rx_ring->netdev = adapter->netdev;
+ 		rx_ring->count = adapter->rx_desc_count;
+ 		rx_ring->itr_setting = IAVF_ITR_RX_DEF;
++		u64_stats_init(&rx_ring->rq_stats.syncp);
+ 	}
+ 
+ 	adapter->num_active_queues = num_active_queues;
+diff --git a/drivers/net/ethernet/intel/iavf/iavf_txrx.c b/drivers/net/ethernet/intel/iavf/iavf_txrx.c
+index aa86a0f926c6..97f8241ba56f 100644
+--- a/drivers/net/ethernet/intel/iavf/iavf_txrx.c
++++ b/drivers/net/ethernet/intel/iavf/iavf_txrx.c
+@@ -176,6 +176,9 @@ void iavf_detect_recover_hung(struct iavf_vsi *vsi)
+ 	for (i = 0; i < vsi->back->num_active_queues; i++) {
+ 		tx_ring = &vsi->back->tx_rings[i];
+ 		if (tx_ring && tx_ring->desc) {
++			const struct libie_sq_stats *st = &tx_ring->sq_stats;
++			u32 start;
++
+ 			/* If packet counter has not changed the queue is
+ 			 * likely stalled, so force an interrupt for this
+ 			 * queue.
+@@ -183,7 +186,12 @@ void iavf_detect_recover_hung(struct iavf_vsi *vsi)
+ 			 * prev_pkt_ctr would be negative if there was no
+ 			 * pending work.
+ 			 */
+-			packets = tx_ring->stats.packets & INT_MAX;
++			do {
++				start = u64_stats_fetch_begin(&st->syncp);
++				packets = u64_stats_read(&st->packets) &
++					  INT_MAX;
++			} while (u64_stats_fetch_retry(&st->syncp, start));
++
+ 			if (tx_ring->prev_pkt_ctr == packets) {
+ 				iavf_force_wb(vsi, tx_ring->q_vector);
+ 				continue;
+@@ -212,11 +220,11 @@ void iavf_detect_recover_hung(struct iavf_vsi *vsi)
+ static bool iavf_clean_tx_irq(struct iavf_vsi *vsi,
+ 			      struct iavf_ring *tx_ring, int napi_budget)
+ {
++	unsigned int budget = IAVF_DEFAULT_IRQ_WORK;
++	struct libie_sq_onstack_stats stats = { };
+ 	int i = tx_ring->next_to_clean;
+ 	struct iavf_tx_buffer *tx_buf;
+ 	struct iavf_tx_desc *tx_desc;
+-	unsigned int total_bytes = 0, total_packets = 0;
+-	unsigned int budget = IAVF_DEFAULT_IRQ_WORK;
+ 
+ 	tx_buf = &tx_ring->tx_bi[i];
+ 	tx_desc = IAVF_TX_DESC(tx_ring, i);
+@@ -242,8 +250,8 @@ static bool iavf_clean_tx_irq(struct iavf_vsi *vsi,
+ 		tx_buf->next_to_watch = NULL;
+ 
+ 		/* update the statistics for this packet */
+-		total_bytes += tx_buf->bytecount;
+-		total_packets += tx_buf->gso_segs;
++		stats.bytes += tx_buf->bytecount;
++		stats.packets += tx_buf->gso_segs;
+ 
+ 		/* free the skb */
+ 		napi_consume_skb(tx_buf->skb, napi_budget);
+@@ -300,12 +308,9 @@ static bool iavf_clean_tx_irq(struct iavf_vsi *vsi,
+ 
+ 	i += tx_ring->count;
+ 	tx_ring->next_to_clean = i;
+-	u64_stats_update_begin(&tx_ring->syncp);
+-	tx_ring->stats.bytes += total_bytes;
+-	tx_ring->stats.packets += total_packets;
+-	u64_stats_update_end(&tx_ring->syncp);
+-	tx_ring->q_vector->tx.total_bytes += total_bytes;
+-	tx_ring->q_vector->tx.total_packets += total_packets;
++	libie_sq_napi_stats_add(&tx_ring->sq_stats, &stats);
++	tx_ring->q_vector->tx.total_bytes += stats.bytes;
++	tx_ring->q_vector->tx.total_packets += stats.packets;
+ 
+ 	if (tx_ring->flags & IAVF_TXR_FLAGS_WB_ON_ITR) {
+ 		/* check to see if there are < 4 descriptors
+@@ -324,10 +329,10 @@ static bool iavf_clean_tx_irq(struct iavf_vsi *vsi,
+ 
+ 	/* notify netdev of completed buffers */
+ 	netdev_tx_completed_queue(txring_txq(tx_ring),
+-				  total_packets, total_bytes);
++				  stats.packets, stats.bytes);
+ 
+ #define TX_WAKE_THRESHOLD ((s16)(DESC_NEEDED * 2))
+-	if (unlikely(total_packets && netif_carrier_ok(tx_ring->netdev) &&
++	if (unlikely(stats.packets && netif_carrier_ok(tx_ring->netdev) &&
+ 		     (IAVF_DESC_UNUSED(tx_ring) >= TX_WAKE_THRESHOLD))) {
+ 		/* Make sure that anybody stopping the queue after this
+ 		 * sees the new next_to_clean.
+@@ -338,7 +343,7 @@ static bool iavf_clean_tx_irq(struct iavf_vsi *vsi,
+ 		   !test_bit(__IAVF_VSI_DOWN, vsi->state)) {
+ 			netif_wake_subqueue(tx_ring->netdev,
+ 					    tx_ring->queue_index);
+-			++tx_ring->tx_stats.restart_queue;
++			libie_stats_inc_one(&tx_ring->sq_stats, restarts);
+ 		}
+ 	}
+ 
+@@ -766,8 +771,6 @@ int iavf_setup_rx_descriptors(struct iavf_ring *rx_ring)
+ 	if (!rx_ring->rx_bi)
+ 		goto err;
+ 
+-	u64_stats_init(&rx_ring->syncp);
+-
+ 	/* Round up to nearest 4K */
+ 	rx_ring->size = rx_ring->count * sizeof(union iavf_32byte_rx_desc);
+ 	rx_ring->size = ALIGN(rx_ring->size, 4096);
+@@ -893,7 +896,7 @@ bool iavf_alloc_rx_buffers(struct iavf_ring *rx_ring, u16 cleaned_count)
+ 	if (rx_ring->next_to_use != ntu)
+ 		iavf_release_rx_desc(rx_ring, ntu);
+ 
+-	rx_ring->rx_stats.alloc_page_failed++;
++	libie_stats_inc_one(&rx_ring->rq_stats, alloc_page_fail);
+ 
+ 	/* make sure to come back via polling to try again after
+ 	 * allocation failure
+@@ -1101,7 +1104,7 @@ static struct sk_buff *iavf_build_skb(const struct libie_rx_buffer *rx_buffer,
+  * iavf_is_non_eop - process handling of non-EOP buffers
+  * @rx_ring: Rx ring being processed
+  * @rx_desc: Rx descriptor for current buffer
+- * @skb: Current socket buffer containing buffer in progress
++ * @stats: NAPI poll local stats to update
+  *
+  * This function updates next to clean.  If the buffer is an EOP buffer
+  * this function exits returning false, otherwise it will place the
+@@ -1110,7 +1113,7 @@ static struct sk_buff *iavf_build_skb(const struct libie_rx_buffer *rx_buffer,
+  **/
+ static bool iavf_is_non_eop(struct iavf_ring *rx_ring,
+ 			    union iavf_rx_desc *rx_desc,
+-			    struct sk_buff *skb)
++			    struct libie_rq_onstack_stats *stats)
+ {
+ 	u32 ntc = rx_ring->next_to_clean + 1;
+ 
+@@ -1125,7 +1128,7 @@ static bool iavf_is_non_eop(struct iavf_ring *rx_ring,
+ 	if (likely(iavf_test_staterr(rx_desc, IAVF_RXD_EOF)))
+ 		return false;
+ 
+-	rx_ring->rx_stats.non_eop_descs++;
++	stats->fragments++;
+ 
+ 	return true;
+ }
+@@ -1144,12 +1147,12 @@ static bool iavf_is_non_eop(struct iavf_ring *rx_ring,
+  **/
+ static int iavf_clean_rx_irq(struct iavf_ring *rx_ring, int budget)
+ {
+-	unsigned int total_rx_bytes = 0, total_rx_packets = 0;
+-	struct sk_buff *skb = rx_ring->skb;
+ 	u16 cleaned_count = IAVF_DESC_UNUSED(rx_ring);
++	struct libie_rq_onstack_stats stats = { };
++	struct sk_buff *skb = rx_ring->skb;
+ 	bool failure = false;
+ 
+-	while (likely(total_rx_packets < (unsigned int)budget)) {
++	while (likely(stats.packets < budget)) {
+ 		struct libie_rx_buffer *rx_buffer;
+ 		union iavf_rx_desc *rx_desc;
+ 		unsigned int size;
+@@ -1199,14 +1202,15 @@ static int iavf_clean_rx_irq(struct iavf_ring *rx_ring, int budget)
+ 
+ 		/* exit if we failed to retrieve a buffer */
+ 		if (!skb) {
+-			rx_ring->rx_stats.alloc_buff_failed++;
++			libie_stats_inc_one(&rx_ring->rq_stats,
++					    build_skb_fail);
+ 			break;
+ 		}
+ 
+ skip_data:
+ 		cleaned_count++;
+ 
+-		if (iavf_is_non_eop(rx_ring, rx_desc, skb))
++		if (iavf_is_non_eop(rx_ring, rx_desc, &stats))
+ 			continue;
+ 
+ 		/* ERR_MASK will only have valid bits if EOP set, and
+@@ -1226,7 +1230,7 @@ static int iavf_clean_rx_irq(struct iavf_ring *rx_ring, int budget)
+ 		}
+ 
+ 		/* probably a little skewed due to removing CRC */
+-		total_rx_bytes += skb->len;
++		stats.bytes += skb->len;
+ 
+ 		qword = le64_to_cpu(rx_desc->wb.qword1.status_error_len);
+ 		rx_ptype = (qword & IAVF_RXD_QW1_PTYPE_MASK) >>
+@@ -1248,20 +1252,20 @@ static int iavf_clean_rx_irq(struct iavf_ring *rx_ring, int budget)
+ 		skb = NULL;
+ 
+ 		/* update budget accounting */
+-		total_rx_packets++;
++		stats.packets++;
+ 	}
+ 
+ 	rx_ring->skb = skb;
+ 
+-	u64_stats_update_begin(&rx_ring->syncp);
+-	rx_ring->stats.packets += total_rx_packets;
+-	rx_ring->stats.bytes += total_rx_bytes;
+-	u64_stats_update_end(&rx_ring->syncp);
+-	rx_ring->q_vector->rx.total_packets += total_rx_packets;
+-	rx_ring->q_vector->rx.total_bytes += total_rx_bytes;
++	libie_rq_napi_stats_add(&rx_ring->rq_stats, &stats);
++	rx_ring->q_vector->rx.total_packets += stats.packets;
++	rx_ring->q_vector->rx.total_bytes += stats.bytes;
+ 
+ 	/* guarantee a trip back through this routine if there was a failure */
+-	return failure ? budget : (int)total_rx_packets;
++	if (unlikely(failure))
++		return budget;
++
++	return stats.packets;
+ }
+ 
+ static inline u32 iavf_buildreg_itr(const int type, u16 itr)
+@@ -1438,10 +1442,8 @@ int iavf_napi_poll(struct napi_struct *napi, int budget)
+ 			return budget - 1;
+ 		}
+ tx_only:
+-		if (arm_wb) {
+-			q_vector->tx.ring[0].tx_stats.tx_force_wb++;
++		if (arm_wb)
+ 			iavf_enable_wb_on_itr(vsi, q_vector);
+-		}
+ 		return budget;
+ 	}
+ 
+@@ -1900,6 +1902,7 @@ bool __iavf_chk_linearize(struct sk_buff *skb)
+ int __iavf_maybe_stop_tx(struct iavf_ring *tx_ring, int size)
+ {
+ 	netif_stop_subqueue(tx_ring->netdev, tx_ring->queue_index);
++	libie_stats_inc_one(&tx_ring->sq_stats, stops);
+ 	/* Memory barrier before checking head and tail */
+ 	smp_mb();
+ 
+@@ -1909,7 +1912,8 @@ int __iavf_maybe_stop_tx(struct iavf_ring *tx_ring, int size)
+ 
+ 	/* A reprieve! - use start_queue because it doesn't call schedule */
+ 	netif_start_subqueue(tx_ring->netdev, tx_ring->queue_index);
+-	++tx_ring->tx_stats.restart_queue;
++	libie_stats_inc_one(&tx_ring->sq_stats, restarts);
++
+ 	return 0;
+ }
+ 
+@@ -2090,7 +2094,7 @@ static netdev_tx_t iavf_xmit_frame_ring(struct sk_buff *skb,
+ 			return NETDEV_TX_OK;
+ 		}
+ 		count = iavf_txd_use_count(skb->len);
+-		tx_ring->tx_stats.tx_linearize++;
++		libie_stats_inc_one(&tx_ring->sq_stats, linearized);
+ 	}
+ 
+ 	/* need: 1 descriptor per page * PAGE_SIZE/IAVF_MAX_DATA_PER_TXD,
+@@ -2100,7 +2104,7 @@ static netdev_tx_t iavf_xmit_frame_ring(struct sk_buff *skb,
+ 	 * otherwise try next time
+ 	 */
+ 	if (iavf_maybe_stop_tx(tx_ring, count + 4 + 1)) {
+-		tx_ring->tx_stats.tx_busy++;
++		libie_stats_inc_one(&tx_ring->sq_stats, busy);
+ 		return NETDEV_TX_BUSY;
+ 	}
+ 
+diff --git a/drivers/net/ethernet/intel/iavf/iavf_txrx.h b/drivers/net/ethernet/intel/iavf/iavf_txrx.h
+index 1045ccb43f29..f2d54b136289 100644
+--- a/drivers/net/ethernet/intel/iavf/iavf_txrx.h
++++ b/drivers/net/ethernet/intel/iavf/iavf_txrx.h
+@@ -4,6 +4,8 @@
+ #ifndef _IAVF_TXRX_H_
+ #define _IAVF_TXRX_H_
+ 
 +#include <linux/net/intel/libie/stats.h>
 +
-+/* Rx per-queue stats */
-+
-+static const char * const libie_rq_stats_str[] = {
-+#define act(s)	__stringify(s),
-+	DECLARE_LIBIE_RQ_STATS(act)
-+#undef act
-+};
-+
-+#define LIBIE_RQ_STATS_NUM	ARRAY_SIZE(libie_rq_stats_str)
-+
-+/**
-+ * libie_rq_stats_get_sset_count - get the number of Ethtool RQ stats provided
-+ *
-+ * Return: number of per-queue Rx stats supported by the library.
-+ */
-+u32 libie_rq_stats_get_sset_count(void)
-+{
-+	return LIBIE_RQ_STATS_NUM;
-+}
-+EXPORT_SYMBOL_NS_GPL(libie_rq_stats_get_sset_count, LIBIE);
-+
-+/**
-+ * libie_rq_stats_get_strings - get the name strings of Ethtool RQ stats
-+ * @data: reference to the cursor pointing to the output buffer
-+ * @qid: RQ number to print in the prefix
-+ */
-+void libie_rq_stats_get_strings(u8 **data, u32 qid)
-+{
-+	for (u32 i = 0; i < LIBIE_RQ_STATS_NUM; i++)
-+		ethtool_sprintf(data, "rq%u_%s", qid, libie_rq_stats_str[i]);
-+}
-+EXPORT_SYMBOL_NS_GPL(libie_rq_stats_get_strings, LIBIE);
-+
-+/**
-+ * libie_rq_stats_get_data - get the RQ stats in Ethtool format
-+ * @data: reference to the cursor pointing to the output array
-+ * @stats: RQ stats container from the queue
-+ */
-+void libie_rq_stats_get_data(u64 **data, const struct libie_rq_stats *stats)
-+{
-+	u64 sarr[LIBIE_RQ_STATS_NUM];
-+	u32 start;
-+
-+	do {
-+		start = u64_stats_fetch_begin(&stats->syncp);
-+
-+		for (u32 i = 0; i < LIBIE_RQ_STATS_NUM; i++)
-+			sarr[i] = u64_stats_read(&stats->raw[i]);
-+	} while (u64_stats_fetch_retry(&stats->syncp, start));
-+
-+	for (u32 i = 0; i < LIBIE_RQ_STATS_NUM; i++)
-+		(*data)[i] += sarr[i];
-+
-+	*data += LIBIE_RQ_STATS_NUM;
-+}
-+EXPORT_SYMBOL_NS_GPL(libie_rq_stats_get_data, LIBIE);
-+
-+/* Tx per-queue stats */
-+
-+static const char * const libie_sq_stats_str[] = {
-+#define act(s)	__stringify(s),
-+	DECLARE_LIBIE_SQ_STATS(act)
-+#undef act
-+};
-+
-+#define LIBIE_SQ_STATS_NUM	ARRAY_SIZE(libie_sq_stats_str)
-+
-+/**
-+ * libie_sq_stats_get_sset_count - get the number of Ethtool SQ stats provided
-+ *
-+ * Return: number of per-queue Tx stats supported by the library.
-+ */
-+u32 libie_sq_stats_get_sset_count(void)
-+{
-+	return LIBIE_SQ_STATS_NUM;
-+}
-+EXPORT_SYMBOL_NS_GPL(libie_sq_stats_get_sset_count, LIBIE);
-+
-+/**
-+ * libie_sq_stats_get_strings - get the name strings of Ethtool SQ stats
-+ * @data: reference to the cursor pointing to the output buffer
-+ * @qid: SQ number to print in the prefix
-+ */
-+void libie_sq_stats_get_strings(u8 **data, u32 qid)
-+{
-+	for (u32 i = 0; i < LIBIE_SQ_STATS_NUM; i++)
-+		ethtool_sprintf(data, "sq%u_%s", qid, libie_sq_stats_str[i]);
-+}
-+EXPORT_SYMBOL_NS_GPL(libie_sq_stats_get_strings, LIBIE);
-+
-+/**
-+ * libie_sq_stats_get_data - get the SQ stats in Ethtool format
-+ * @data: reference to the cursor pointing to the output array
-+ * @stats: SQ stats container from the queue
-+ */
-+void libie_sq_stats_get_data(u64 **data, const struct libie_sq_stats *stats)
-+{
-+	u64 sarr[LIBIE_SQ_STATS_NUM];
-+	u32 start;
-+
-+	do {
-+		start = u64_stats_fetch_begin(&stats->syncp);
-+
-+		for (u32 i = 0; i < LIBIE_SQ_STATS_NUM; i++)
-+			sarr[i] = u64_stats_read(&stats->raw[i]);
-+	} while (u64_stats_fetch_retry(&stats->syncp, start));
-+
-+	for (u32 i = 0; i < LIBIE_SQ_STATS_NUM; i++)
-+		(*data)[i] += sarr[i];
-+
-+	*data += LIBIE_SQ_STATS_NUM;
-+}
-+EXPORT_SYMBOL_NS_GPL(libie_sq_stats_get_data, LIBIE);
-diff --git a/include/linux/net/intel/libie/stats.h b/include/linux/net/intel/libie/stats.h
-new file mode 100644
-index 000000000000..dbbc98bbd3a7
---- /dev/null
-+++ b/include/linux/net/intel/libie/stats.h
-@@ -0,0 +1,179 @@
-+/* SPDX-License-Identifier: GPL-2.0-only */
-+/* Copyright(c) 2023 Intel Corporation. */
-+
-+#ifndef __LIBIE_STATS_H
-+#define __LIBIE_STATS_H
-+
-+#include <linux/u64_stats_sync.h>
-+
-+/* Common */
-+
-+/* Use 32-byte alignment to reduce false sharing */
-+#define __libie_stats_aligned	__aligned(4 * sizeof(u64_stats_t))
-+
-+/**
-+ * libie_stats_add - update one structure counter from a local struct
-+ * @qs: queue stats structure to update (&libie_rq_stats or &libie_sq_stats)
-+ * @ss: local/onstack stats structure
-+ * @f: name of the field to update
-+ *
-+ * If a local/onstack stats structure is used to collect statistics during
-+ * hotpath loops, this macro can be used to shorthand updates, given that
-+ * the fields have the same name.
-+ * Must be guarded with u64_stats_update_{begin,end}().
-+ */
-+#define libie_stats_add(qs, ss, f)			\
-+	u64_stats_add(&(qs)->f, (ss)->f)
-+
-+/**
-+ * __libie_stats_inc_one - safely increment one stats structure counter
-+ * @s: queue stats structure to update (&libie_rq_stats or &libie_sq_stats)
-+ * @f: name of the field to increment
-+ * @n: name of the temporary variable, result of __UNIQUE_ID()
-+ *
-+ * To be used on exception or slow paths -- allocation fails, queue stops etc.
-+ */
-+#define __libie_stats_inc_one(s, f, n) ({		\
-+	typeof(*(s)) *n = (s);				\
-+							\
-+	u64_stats_update_begin(&n->syncp);		\
-+	u64_stats_inc(&n->f);				\
-+	u64_stats_update_end(&n->syncp);		\
-+})
-+#define libie_stats_inc_one(s, f)			\
-+	__libie_stats_inc_one(s, f, __UNIQUE_ID(qs_))
-+
-+/* Rx per-queue stats:
-+ * packets: packets received on this queue
-+ * bytes: bytes received on this queue
-+ * fragments: number of processed descriptors carrying only a fragment
-+ * alloc_page_fail: number of Rx page allocation fails
-+ * build_skb_fail: number of build_skb() fails
-+ */
-+
-+#define DECLARE_LIBIE_RQ_NAPI_STATS(act)		\
-+	act(packets)					\
-+	act(bytes)					\
-+	act(fragments)
-+
-+#define DECLARE_LIBIE_RQ_FAIL_STATS(act)		\
-+	act(alloc_page_fail)				\
-+	act(build_skb_fail)
-+
-+#define DECLARE_LIBIE_RQ_STATS(act)			\
-+	DECLARE_LIBIE_RQ_NAPI_STATS(act)		\
-+	DECLARE_LIBIE_RQ_FAIL_STATS(act)
-+
-+struct libie_rq_stats {
-+	struct u64_stats_sync	syncp;
-+
-+	union {
-+		struct {
-+#define act(s)	u64_stats_t	s;
-+			DECLARE_LIBIE_RQ_NAPI_STATS(act);
-+			DECLARE_LIBIE_RQ_FAIL_STATS(act);
-+#undef act
-+		};
-+		DECLARE_FLEX_ARRAY(u64_stats_t, raw);
-+	};
-+} __libie_stats_aligned;
-+
-+/* Rx stats being modified frequently during the NAPI polling, to sync them
-+ * with the queue stats once after the loop is finished.
-+ */
-+struct libie_rq_onstack_stats {
-+	union {
-+		struct {
-+#define act(s)	u32		s;
-+			DECLARE_LIBIE_RQ_NAPI_STATS(act);
-+#undef act
-+		};
-+		DECLARE_FLEX_ARRAY(u32, raw);
-+	};
-+};
-+
-+/**
-+ * libie_rq_napi_stats_add - add onstack Rx stats to the queue container
-+ * @qs: Rx queue stats structure to update
-+ * @ss: onstack structure to get the values from, updated during the NAPI loop
-+ */
-+static inline void
-+libie_rq_napi_stats_add(struct libie_rq_stats *qs,
-+			const struct libie_rq_onstack_stats *ss)
-+{
-+	u64_stats_update_begin(&qs->syncp);
-+	libie_stats_add(qs, ss, packets);
-+	libie_stats_add(qs, ss, bytes);
-+	libie_stats_add(qs, ss, fragments);
-+	u64_stats_update_end(&qs->syncp);
-+}
-+
-+u32 libie_rq_stats_get_sset_count(void);
-+void libie_rq_stats_get_strings(u8 **data, u32 qid);
-+void libie_rq_stats_get_data(u64 **data, const struct libie_rq_stats *stats);
-+
-+/* Tx per-queue stats:
-+ * packets: packets sent from this queue
-+ * bytes: bytes sent from this queue
-+ * busy: number of xmit failures due to the ring being full
-+ * stops: number times the ring was stopped from the driver
-+ * restarts: number times it was started after being stopped
-+ * linearized: number of skbs linearized due to HW limits
-+ */
-+
-+#define DECLARE_LIBIE_SQ_NAPI_STATS(act)		\
-+	act(packets)					\
-+	act(bytes)
-+
-+#define DECLARE_LIBIE_SQ_XMIT_STATS(act)		\
-+	act(busy)					\
-+	act(stops)					\
-+	act(restarts)					\
-+	act(linearized)
-+
-+#define DECLARE_LIBIE_SQ_STATS(act)			\
-+	DECLARE_LIBIE_SQ_NAPI_STATS(act)		\
-+	DECLARE_LIBIE_SQ_XMIT_STATS(act)
-+
-+struct libie_sq_stats {
-+	struct u64_stats_sync	syncp;
-+
-+	union {
-+		struct {
-+#define act(s)	u64_stats_t	s;
-+			DECLARE_LIBIE_SQ_STATS(act);
-+#undef act
-+		};
-+		DECLARE_FLEX_ARRAY(u64_stats_t, raw);
-+	};
-+} __libie_stats_aligned;
-+
-+struct libie_sq_onstack_stats {
-+#define act(s)	u32		s;
-+	DECLARE_LIBIE_SQ_NAPI_STATS(act);
-+#undef act
-+};
-+
-+/**
-+ * libie_sq_napi_stats_add - add onstack Tx stats to the queue container
-+ * @qs: Tx queue stats structure to update
-+ * @ss: onstack structure to get the values from, updated during the NAPI loop
-+ */
-+static inline void
-+libie_sq_napi_stats_add(struct libie_sq_stats *qs,
-+			const struct libie_sq_onstack_stats *ss)
-+{
-+	if (unlikely(!ss->packets))
-+		return;
-+
-+	u64_stats_update_begin(&qs->syncp);
-+	libie_stats_add(qs, ss, packets);
-+	libie_stats_add(qs, ss, bytes);
-+	u64_stats_update_end(&qs->syncp);
-+}
-+
-+u32 libie_sq_stats_get_sset_count(void);
-+void libie_sq_stats_get_strings(u8 **data, u32 qid);
-+void libie_sq_stats_get_data(u64 **data, const struct libie_sq_stats *stats);
-+
-+#endif /* __LIBIE_STATS_H */
+ /* Interrupt Throttling and Rate Limiting Goodies */
+ #define IAVF_DEFAULT_IRQ_WORK      256
+ 
+@@ -200,26 +202,6 @@ struct iavf_tx_buffer {
+ 	u32 tx_flags;
+ };
+ 
+-struct iavf_queue_stats {
+-	u64 packets;
+-	u64 bytes;
+-};
+-
+-struct iavf_tx_queue_stats {
+-	u64 restart_queue;
+-	u64 tx_busy;
+-	u64 tx_done_old;
+-	u64 tx_linearize;
+-	u64 tx_force_wb;
+-	u64 tx_lost_interrupt;
+-};
+-
+-struct iavf_rx_queue_stats {
+-	u64 non_eop_descs;
+-	u64 alloc_page_failed;
+-	u64 alloc_buff_failed;
+-};
+-
+ /* some useful defines for virtchannel interface, which
+  * is the only remaining user of header split
+  */
+@@ -271,11 +253,9 @@ struct iavf_ring {
+ #define IAVF_RXR_FLAGS_VLAN_TAG_LOC_L2TAG2_2	BIT(5)
+ 
+ 	/* stats structs */
+-	struct iavf_queue_stats	stats;
+-	struct u64_stats_sync syncp;
+ 	union {
+-		struct iavf_tx_queue_stats tx_stats;
+-		struct iavf_rx_queue_stats rx_stats;
++		struct libie_rq_stats rq_stats;
++		struct libie_sq_stats sq_stats;
+ 	};
+ 
+ 	int prev_pkt_ctr;		/* For Tx stall detection */
 -- 
 2.43.0
 
