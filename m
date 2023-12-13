@@ -2,110 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 327888118D9
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 17:13:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 993678118DF
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 17:14:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233527AbjLMQNb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 11:13:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49396 "EHLO
+        id S235435AbjLMQN5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 11:13:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40070 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233604AbjLMQN3 (ORCPT
+        with ESMTP id S233721AbjLMQNp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 11:13:29 -0500
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27FD5F2;
-        Wed, 13 Dec 2023 08:13:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=xV3wbVp3koIwVhD4qHfAMLfeq9KzkKaD2awlRFNRYZI=; b=aQ4Neh/EiRyFSY/SqHAJkSfh08
-        Qf1GJpr6hYLA0xRB1eCDCFt23Lj8KGxoSQOmWtzH+I0LXyUARfiUR3/25hgXi9U7UIE5XWlW+3+21
-        r71zkLs6JS4HnBxMO8U6P/9nISJdyQlpGSv0PvOgMyNWwP2fpd95/QA6jWkuwAQCjY9Kv0JWdXI+E
-        LKe9Ml+IBJGRaZNOD1OKoXgR+ewr2hSsRuqeQU/zUkFWMUn6Us1KUJx8+gd1URkblm5WHQ7Ev7VIj
-        sBHQ58IggmT+SqDs770buUqtd61FcSUTzP6opdgogyd+TKGoWXbnYKSv1/U03pKsw70GVGe/xWpMS
-        3S9gcwHA==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:53782)
-        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.96)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1rDRrS-0000Em-1z;
-        Wed, 13 Dec 2023 16:13:26 +0000
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1rDRrU-0001e1-NA; Wed, 13 Dec 2023 16:13:28 +0000
-Date:   Wed, 13 Dec 2023 16:13:28 +0000
-From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
-To:     Christian Marangi <ansuelsmth@gmail.com>
-Cc:     Florian Fainelli <florian.fainelli@broadcom.com>,
-        Broadcom internal kernel review list 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        David Epping <david.epping@missinglinkelectronics.com>,
-        Harini Katakam <harini.katakam@amd.com>,
-        Simon Horman <horms@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [net-next PATCH v6 3/3] net: phy: add support for PHY package
- MMD read/write
-Message-ID: <ZXnYKLOeStCuVXY7@shell.armlinux.org.uk>
-References: <20231213105730.1731-1-ansuelsmth@gmail.com>
- <20231213105730.1731-3-ansuelsmth@gmail.com>
- <ZXnSB4YsuWZ0vdj2@shell.armlinux.org.uk>
- <6579d3df.050a0220.41f9b.a309@mx.google.com>
+        Wed, 13 Dec 2023 11:13:45 -0500
+Received: from mail-ot1-f50.google.com (mail-ot1-f50.google.com [209.85.210.50])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FF5810C;
+        Wed, 13 Dec 2023 08:13:50 -0800 (PST)
+Received: by mail-ot1-f50.google.com with SMTP id 46e09a7af769-6d84ddd642fso5401517a34.0;
+        Wed, 13 Dec 2023 08:13:50 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702484030; x=1703088830;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=yKFwCtE90EPD9y2XJTF44lWNSwXrZ/Ik0w5o/94t9wo=;
+        b=rLZ6s6hq/+A38IhIqZVpVkgN+VX8AoxjGU3N+/LbhM25VpWREgQRJtSHby3lCgobnx
+         nX/9Lj1F0oYr88SSYoDDRPsBp616pYKM/KV+lh6Qc1NKyTpXosVV3mMJhIMbUTObiGIb
+         qXN3TQt4yqMdltmAs6WfvORcYJgM1i1doHR9cnHs1VzAJ+bVb8ClN1U/CevilJ+LLZod
+         wa47GVOU5+NddKS8Obp5UFTsUtrmVbyBWr/iyxyXd4dK8AaqRcc2xCXPrCz9tK2coygw
+         NLuWi3zkS4UPXjpGp1mBKaGMh+eJ0Jwpg2Yn9aEM9IdP3vM7sIW7no9oJkBKBnVp6WyD
+         fvqw==
+X-Gm-Message-State: AOJu0Yx/oYmJxqOTsLOMMRqP96FcxL8ovJlR6rWNiAg2LOVb65qdc/0B
+        x9xP/8njEvAX9s+MrifTLw==
+X-Google-Smtp-Source: AGHT+IHvwtas0Wz/5QoHKT/kRL+DgeC/VW8MvnUtSILOIvJ0GIakLipYqdQA3Ql3Vum+yJU0aDi0bQ==
+X-Received: by 2002:a05:6871:6b90:b0:1fa:ff63:2d3b with SMTP id zh16-20020a0568716b9000b001faff632d3bmr7032507oab.44.1702484029822;
+        Wed, 13 Dec 2023 08:13:49 -0800 (PST)
+Received: from herring.priv (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
+        by smtp.gmail.com with ESMTPSA id zl10-20020a0568716d8a00b001fb42001fa7sm3978002oab.36.2023.12.13.08.13.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Dec 2023 08:13:49 -0800 (PST)
+Received: (nullmailer pid 1207750 invoked by uid 1000);
+        Wed, 13 Dec 2023 16:13:47 -0000
+Date:   Wed, 13 Dec 2023 10:13:47 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Ninad Palsule <ninad@linux.ibm.com>
+Cc:     krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        joel@jms.id.au, andrew@codeconstruct.com.au, peterhuewe@gmx.de,
+        jarkko@kernel.org, jgg@ziepe.ca, keescook@chromium.org,
+        tony.luck@intel.com, gpiccoli@igalia.com,
+        johannes.holland@infineon.com, linux@roeck-us.net,
+        broonie@kernel.org, patrick.rudolph@9elements.com,
+        vincent@vtremblay.dev, peteryin.openbmc@gmail.com,
+        lakshmiy@us.ibm.com, bhelgaas@google.com,
+        naresh.solanki@9elements.com, alexander.stein@ew.tq-group.com,
+        festevam@denx.de, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        linux-integrity@vger.kernel.org, linux-hardening@vger.kernel.org,
+        geissonator@yahoo.com
+Subject: Re: [PATCH v1 2/8] dt-bindings: tpm: Add schema for TIS I2C devices
+Message-ID: <20231213161347.GA1204384-robh@kernel.org>
+References: <20231212164004.1683589-1-ninad@linux.ibm.com>
+ <20231212164004.1683589-3-ninad@linux.ibm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <6579d3df.050a0220.41f9b.a309@mx.google.com>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20231212164004.1683589-3-ninad@linux.ibm.com>
+X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,
+        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 13, 2023 at 04:55:08PM +0100, Christian Marangi wrote:
-> On Wed, Dec 13, 2023 at 03:47:19PM +0000, Russell King (Oracle) wrote:
-> > On Wed, Dec 13, 2023 at 11:57:30AM +0100, Christian Marangi wrote:
-> > > Some PHY in PHY package may require to read/write MMD regs to correctly
-> > > configure the PHY package.
-> > > 
-> > > Add support for these additional required function in both lock and no
-> > > lock variant.
-> > > 
-> > > It's assumed that the entire PHY package is either C22 or C45. We use
-> > > C22 or C45 way of writing/reading to mmd regs based on the passed phydev
-> > > whether it's C22 or C45.
-> > > 
-> > > Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
-> > 
-> > I don't recall what has been said in previous postings of this, but
-> > introducing new helpers without an example user is normally frowned
-> > upon. The lack of cover message for this three patch series also
-> > doesn't help (the cover message could explain why there's no users
-> > being proposed with this addition of helpers.)
-> >
+On Tue, Dec 12, 2023 at 10:39:58AM -0600, Ninad Palsule wrote:
+> From: Johannes Holland <johannes.holland@infineon.com>
 > 
-> These are prereq for the qca803x PHY driver and the PHY package series.
+> Add a dt schema to support device tree bindings for the generic I2C
+> physical layer. Refer to the TCG PC Client Platform TPM Profile (PTP)
+> Specification for TPM 2.0 v1.04 Revision 14.
 > 
-> I can move this single patch in those series, but it was suggested to
-> move these simple change to a separate patch to lower the patch number
-> since they were orthogonal to the PHY package series proposal.
+> This includes descriptions for the Nuvoton and Infineon devices.
 
-... so adding a cover message (your series in general seem to lack
-those) would be a good idea to explain that.
+This is incomplete and conflicts with this series[1]. Please help 
+review and make sure it works for the cases you care about.
 
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
+Rob
+
+[1] https://lore.kernel.org/all/cover.1701093036.git.lukas@wunner.de/
