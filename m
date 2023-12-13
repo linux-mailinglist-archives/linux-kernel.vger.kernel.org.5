@@ -2,151 +2,290 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 401D5810D6F
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 10:29:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B890E810D73
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 10:30:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232909AbjLMJ24 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 04:28:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50074 "EHLO
+        id S232788AbjLMJas (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 04:30:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46980 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232941AbjLMJ2y (ORCPT
+        with ESMTP id S232371AbjLMJaq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 04:28:54 -0500
-Received: from EUR04-HE1-obe.outbound.protection.outlook.com (mail-he1eur04on2051.outbound.protection.outlook.com [40.107.7.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1447C10B;
-        Wed, 13 Dec 2023 01:29:00 -0800 (PST)
+        Wed, 13 Dec 2023 04:30:46 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 018E2BD;
+        Wed, 13 Dec 2023 01:30:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1702459852; x=1733995852;
+  h=message-id:date:subject:to:cc:references:from:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=bRZgSmLANNB0dNiTIpClwV7lVHiYSnAdrG1UVZ+fK4Y=;
+  b=fnO1UKqh3IzOAfU40Kv0XDhXlDOobmRxu9vxoqz77DhWdz3PeqawQNW5
+   XnGwXZph7oQzQJ5TMG97jDvQx9/RXrXaKyD9aGbBFmHPaC7ytGRMKxW3f
+   iPcMsKUMDMv4c3ABJIzoFNRACpbZ3N6VJIeP6J84ZZZyOaiF0xDqw8ONs
+   AjT8AJhI54IsCJVfTbnCaz1jDCZUuB684UARyYW0ZUEehq7jdo2OsLQHC
+   hJ/7zJUnDv7T0s6Ev6oMrAIwN7B1YiQbJcToIr2pLWwa8/mwVAMKBe+v+
+   uKFb+ohRNQVB3inRWEREV7CHHKMZW51dcgsbQ4RLqL0zo1tlhMC7pxvAm
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10922"; a="397721793"
+X-IronPort-AV: E=Sophos;i="6.04,272,1695711600"; 
+   d="scan'208";a="397721793"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Dec 2023 01:30:51 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10922"; a="839796718"
+X-IronPort-AV: E=Sophos;i="6.04,272,1695711600"; 
+   d="scan'208";a="839796718"
+Received: from fmsmsx603.amr.corp.intel.com ([10.18.126.83])
+  by fmsmga008.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 13 Dec 2023 01:30:46 -0800
+Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
+ fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Wed, 13 Dec 2023 01:30:45 -0800
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Wed, 13 Dec 2023 01:30:45 -0800
+Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
+ fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Wed, 13 Dec 2023 01:30:45 -0800
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (104.47.55.101)
+ by edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Wed, 13 Dec 2023 01:30:42 -0800
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=bU8Yln7yfwOMTfZhisWzCYgYtaj0cn50Y1uCi2M71aY0cMf23F5o78oKN0rGOix9D5Z7K+z2KJkf2z6Bgcef2R8fy3ecoPKBPUBkhDC4Vp+Gvn+zI0KEUFQZFQ9EVlBK8SDHRmZ5Qm8D+Ap9+zKCdfn0fEuBJpxBC84eqRa9qVTqXg/UsvewJUAjzUt3LI4W9Eu8AKXVuOelqMFPIecgWkOqILK0JtPE0soKHGTtixVQHArfkNIuPp6SNpXB5QV4tleF88/XLkynrB9jaAosA3YT+AgmaFOpt7HJEP0jeo1es1SlXl/gLShd3AZYxaqdn4VV1insWTTrVkxf89jTJQ==
+ b=OFwJ/F8K4xuHQkGNSd5jrsmJNKPx3fiYQrdwj9Pr23AtuTr+Gpr0dECKsY5n5T/RIfIf6yXoxYgLwucZpBC1v/GkAkkQor/7xgmSBCy+lbHsisX79fh5+6R9BISJs+eCUIISTRKPtFlJ1d11AWVGM4WV3ytsYtblfry7YPoWXnQ0r/U6QeFL/WgjlIjVgxxKjG6vwsJWN3BPUskzN2gwxYVcIlgUHJavVcOy7143KxgiFyOEXt7aEaXKT/x3VNRKlJK4jX38OZ2BgCoZF00TDBK571m/EGqY1TU59ckk+88nWh0XFjOKVCROeICPXVySyd/A1je8CkbjDRLHaRJN6w==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=AoGfmhiQWI/PSQLmPJdRfBLiVcEEYs92wNByii4Vz0Q=;
- b=O9mb4XF6xT+MUGkLwlVnRO+eNKOnkWZG9mZj9TZqjisaLZcG3g3ezbnGcBHfDBWejdemnWUrYrm0yEHw5hEIQog97TuYPBsKXWNlUo186W5xur9emfTgudayvXRHTxwev1KlJSHD+9cJMxXOMnfJA4lCD3o9n6UNwnYiuatWxRkYGcWmjKOzBbqi16/OCbspvnnwrM2zAEbeL00fz7URO9l/cBz791wXjk3qfMy169hIuucGtQWYq2jykgU/HgHEo/2LE0sFJ0C+dg1qb3ABiymCPpjiS+OSrS324Otpjdt1/tIQDx8nTQGzPtoUadCankZP+EX+sHkZDAQjIpa05A==
+ bh=UVRL5RKE8Eak3xHiE4fpmZXUEgJcMtvlVcvIifp9/8A=;
+ b=Mdur+2hVEiIJez1xQ8qVnip8Bhe9q3/IvrYk9dWtwyZfD/e01ubozTJ5lB6ovu30udPfy35/ls/EzvjCmnU2NUhk8xuJcZuaIAqTIsacojKO1uoEhPEewWDy8Esnk7QcYEIAJ7QxzrjojsrT3WBrD5vcHRXHUa4JueJkXgRnN1kewHX9yfDYvTegIFuV8iNnaL1MIx3OrS5mKvHA32IMnMs+6iMKLZ80Ah+HRvyYLiWJzETr2EJmmK9uEHdKTe0uiJgvFxoe503saM75BkbAS6w/pDl+0PyLUjsWbzkZ4xhDuoss8PnqNthLGcnUh0JRkUeGDKDTnEGp7u5AHECFkQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=AoGfmhiQWI/PSQLmPJdRfBLiVcEEYs92wNByii4Vz0Q=;
- b=l2lVBEfyFYxK451l6zV8XQv+hlUV1o4IaBguxIMy7a7TgV8TqQWFDR/JjquU+pqfccitfT5yWJUNH2yaD+PjDNoZt3/dEMId6rMym7BAmKkebkakUpMNup5uz6GhiVImKYu40ql1IJaPliyOvVb+IWRwRX9NJ7mJrvLifZQV5Pk=
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
 Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-Received: from AS8PR04MB8404.eurprd04.prod.outlook.com (2603:10a6:20b:3f8::7)
- by PAXPR04MB8269.eurprd04.prod.outlook.com (2603:10a6:102:1c4::15) with
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from PH0PR11MB4965.namprd11.prod.outlook.com (2603:10b6:510:34::7)
+ by PH7PR11MB6906.namprd11.prod.outlook.com (2603:10b6:510:202::11) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7091.26; Wed, 13 Dec
- 2023 09:28:57 +0000
-Received: from AS8PR04MB8404.eurprd04.prod.outlook.com
- ([fe80::3627:208e:4d62:1e2a]) by AS8PR04MB8404.eurprd04.prod.outlook.com
- ([fe80::3627:208e:4d62:1e2a%7]) with mapi id 15.20.7091.022; Wed, 13 Dec 2023
- 09:28:57 +0000
-From:   Sherry Sun <sherry.sun@nxp.com>
-To:     hongxing.zhu@nxp.com, l.stach@pengutronix.de,
-        lpieralisi@kernel.org, kw@linux.com, robh@kernel.org,
-        bhelgaas@google.com, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de,
-        kernel@pengutronix.de, festevam@gmail.com
-Cc:     linux-imx@nxp.com, linux-pci@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH V2 4/4] arm64: dts: imx8mq-evk: add wake-gpios property for pci bus
-Date:   Wed, 13 Dec 2023 17:28:50 +0800
-Message-Id: <20231213092850.1706042-5-sherry.sun@nxp.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231213092850.1706042-1-sherry.sun@nxp.com>
-References: <20231213092850.1706042-1-sherry.sun@nxp.com>
+ 2023 09:30:35 +0000
+Received: from PH0PR11MB4965.namprd11.prod.outlook.com
+ ([fe80::ea04:122f:f20c:94e8]) by PH0PR11MB4965.namprd11.prod.outlook.com
+ ([fe80::ea04:122f:f20c:94e8%2]) with mapi id 15.20.7068.033; Wed, 13 Dec 2023
+ 09:30:35 +0000
+Message-ID: <917a9dc4-bcae-4a1d-b5b5-d086431e8650@intel.com>
+Date:   Wed, 13 Dec 2023 17:30:24 +0800
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v7 02/26] x86/fpu/xstate: Refine CET user xstate bit
+ enabling
+To:     Maxim Levitsky <mlevitsk@redhat.com>, <chang.seok.bae@intel.com>
+CC:     <linux-kernel@vger.kernel.org>, <kvm@vger.kernel.org>,
+        <dave.hansen@intel.com>, <pbonzini@redhat.com>,
+        <seanjc@google.com>, <peterz@infradead.org>, <chao.gao@intel.com>,
+        <rick.p.edgecombe@intel.com>, <john.allen@amd.com>
+References: <20231124055330.138870-1-weijiang.yang@intel.com>
+ <20231124055330.138870-3-weijiang.yang@intel.com>
+ <c22d17ab04bf5f27409518e3e79477d579b55071.camel@redhat.com>
+ <cdf53e44-62d0-452d-9c06-5c2d2ce3ce66@intel.com>
+ <20d45cb6adaa4a8203822535e069cdbbf3b8ba2d.camel@redhat.com>
+ <a3a14562-db72-4c19-9f40-7778f14fc516@intel.com>
+ <039eaa7c35020774b74dc5e2d03bb0ecfa7c6d60.camel@redhat.com>
+ <eb30c3e0-8e13-402c-b23d-48b21e0a1498@intel.com>
+ <e7d7709a5962e8518ccb062e3818811cdbe110f8.camel@redhat.com>
+Content-Language: en-US
+From:   "Yang, Weijiang" <weijiang.yang@intel.com>
+In-Reply-To: <e7d7709a5962e8518ccb062e3818811cdbe110f8.camel@redhat.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: SG2P153CA0021.APCP153.PROD.OUTLOOK.COM (2603:1096:4:c7::8)
- To AS8PR04MB8404.eurprd04.prod.outlook.com (2603:10a6:20b:3f8::7)
+X-ClientProxiedBy: SG3P274CA0005.SGPP274.PROD.OUTLOOK.COM (2603:1096:4:be::17)
+ To PH0PR11MB4965.namprd11.prod.outlook.com (2603:10b6:510:34::7)
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: AS8PR04MB8404:EE_|PAXPR04MB8269:EE_
-X-MS-Office365-Filtering-Correlation-Id: cf469b71-a09d-4c92-58d4-08dbfbbdee40
+X-MS-TrafficTypeDiagnostic: PH0PR11MB4965:EE_|PH7PR11MB6906:EE_
+X-MS-Office365-Filtering-Correlation-Id: 3fd707bf-204f-417f-f36f-08dbfbbe291b
+X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: qc+ooaVxw44hWKMZtxYEmcXQQYtoaq+fm7QnxhSkbPfmPJfq8E46n2QxKXf/UiQDexn0+yGipRJcX4s7Pha9gXK5dV52BTlUCiRL6eOcWH7dV8Ey0iaiIzkvJ5a9XDWtv0rBKxI8gvOHN8br22pNEeNV4+/+sjRQWQidTTy9J43NShA8buFCJlo8Pb++j8Jcr3J3/I80KlAgIp8WizT0Pf/LwpX6ajQqqH35eTPVxaB0X3pEL8pyyEyVA7ipP38ZOO4MeTffeMK3oVeFWOGcB/TPY9yaOYOoqqnWFGbR3aNzDhWqXXMJhdJ9zODmmKILjZyZPS4fhzXb2xSWMNxVCX1+FrPBNZ1Cw1nm8PE9DaX6xrTtUvXESYzf8ZCfNWee5jKQy57vQGpt/vg/rXa9BfqM+9LQ23hnxcuyGcwkwU2pCuIGpPhEBYf77iY9gIhwTNwfpALV8oagA4fkD0fELE2VGfFqrm8J2GfykVkhh66yM+eaNVl0V7HZInR8LiKmutN7ENcfXFYzXBbdZ/mJzXaV+Vi9k804WFsMppX6QiOjknCuP5AIh9Qm/dieCOtARfrOscLWUGCjKvbW1c0NrwdIJOTbBdWc8SDY0migRX19TBYbh+hGKQ7QfLKC/eHEcydz+VyJoZ3iikz0vMbP/aT94ZBfCFo1+rwtW7RK6y6lbwOl+5xgIg208hE1d9f+
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AS8PR04MB8404.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(136003)(366004)(346002)(396003)(39860400002)(230922051799003)(64100799003)(186009)(1800799012)(451199024)(36756003)(921008)(38350700005)(26005)(2616005)(1076003)(6666004)(2906002)(478600001)(6486002)(6506007)(66946007)(4326008)(8676002)(8936002)(66556008)(52116002)(316002)(6512007)(66476007)(7416002)(38100700002)(5660300002)(44832011)(83380400001)(41300700001)(86362001)(32563001)(473944003);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: SaGto2yD/wBhDpM0P7DyFPQHMKloBWzBPpDk+rOy672V67opNzhDUXpnvpuD7Png+sBf2aspXkcR7QUb47BaWaWYMk3R06a4HDrycxBVv9+8SyfW8gNNaWUirkSdYp7c9+YP3806DdjSW5DoMmNZAwG43VG19kSA22+I1whvTCg4ZzNVtthcZY+CYWe9ZT+TFudXW/zzCUubRSN944HREM/fkxC40HYtHgwWreLHXMVtiDq6EnQcaX7lhsdXJc6idcNQ0Qq7Li2VDjORXm7k3WCzsKKEQRv6kKo+H7I+i+faoPydhsWpp0aNGwWadwnA/lDYQCzfGrNcUyXCPqfmATQGSIsEhMV2qWZ2r/vLrh2EVGHvKHiblT1xKR3O0bH9JD8BR5LQFCA81CWXqStP7DlJrN5oq5Ux+AoLuNPvfoNUIL3wLMWq0kF2u79Lk+RlhvlCaVmRqQs5SCd6EeOtHF5Wc9YcJeqd2y20OL4E1b6+jZirry2ZXovbIKnRRENNagwGwzNHRliIv0vTAaPFLeQQI5y2DxMCVgx6ENyJVddJbuSFZAH2zne1pgL0+RRqesnSQECotC3oWizKT5kBjyfd/iqDdWvu7kniq1VvAxlfVuE7FA2qJp4Yw700eVAHvBfjb98CIj7MQGyOyVdgfQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR11MB4965.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(346002)(376002)(136003)(396003)(366004)(230922051799003)(451199024)(1800799012)(64100799003)(186009)(26005)(83380400001)(6512007)(6506007)(53546011)(2616005)(38100700002)(5660300002)(8936002)(4326008)(8676002)(41300700001)(316002)(4001150100001)(2906002)(6666004)(6486002)(478600001)(6636002)(66476007)(66556008)(66946007)(82960400001)(31696002)(86362001)(36756003)(31686004)(43740500002)(45980500001);DIR:OUT;SFP:1102;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?5u+5GNTFBSLboJ/mJcM/U8ECtMuYd+aBdDkl8FjKAJELhjxAIxJMK8GPyfhj?=
- =?us-ascii?Q?lzjbldgnZygKSE0Yn//BHq/cJoZHBVUiMXwEywX4NdvzDf+gdjCW7uu4/U84?=
- =?us-ascii?Q?1DfsbUkuk2jo/xzodM/5267xXz5EMQJKTlpX0eqbBJCy4oUgwG0EplWMAVk4?=
- =?us-ascii?Q?mYxciSpFNlqd8R4zi84gyZoMH9YNqp6G8hTJ82YNP2RyzuuVDjVrlHboouk1?=
- =?us-ascii?Q?wP8Ffvo6OmVNA5/v/07AiTOSN0T01GI+Lm4yVsXm4tfkLi+UgPFuprwQ32oi?=
- =?us-ascii?Q?VHXR/xQzTFA8dYoytjY5wZ1WtEszz8E+aZgSxQSB0vzp8tNfgQErcGG/HukC?=
- =?us-ascii?Q?V/z1/GU8Id3YHYNXKAUV5+j/fP2RPV5VvOPfTVJXo8/z6rzNlIAGkHfda5EK?=
- =?us-ascii?Q?iJ5fJXN9/AJt70J1Jo7BlzkQYYk7cghG01t7F3zpDt0rgelf7CMIPoOcjU8d?=
- =?us-ascii?Q?FYiwX+2RxHQkV6XUSozyNFEeTHIaSANmz88xOHwnH5nd191oEXsd5GUUDDuX?=
- =?us-ascii?Q?DK/jPlscBfZ1QWbKH4ulfV2ukGjzFpvkpPCb/EIMsjwIeOCl3AD4hpiZ734V?=
- =?us-ascii?Q?Cgny1KJ+jfDRuKbxihECRlkwA2gZTRh6689l0lbsq5D5xXVHE9mpsp+1JmFI?=
- =?us-ascii?Q?iAxbe+T5VKJb9QRan8GD0eNGclJWalJXwnKdjE+k1bRCMzPKxmsZGyxLIrUi?=
- =?us-ascii?Q?XxbVv5FTGdfuz+7jHj2bPkjTmGo6WuxrNnoP5ZEHKZSCnye5zfevexswzF2E?=
- =?us-ascii?Q?pT37EFjXT/7puRffQ019ga6vNouHzoD3eF2aR97u+xz4U/I8IOdtquynB9RT?=
- =?us-ascii?Q?EhVoCwF0RSEpLLTyARaTUMqKV4yzgCScenQDBHiNOdSQuVdCrcjS4QSeEk6R?=
- =?us-ascii?Q?xwrh+usipraiQDRDqvt+hsE1gyyrUI28+5oapEiQZcthxqnso4EGJJHgKqZ1?=
- =?us-ascii?Q?Kz5JR1IZ4s22PeRLoU0WpIpOJ96expAkeSrmrHA8B0Zlec0/rZ/QjoyBILEH?=
- =?us-ascii?Q?hRbpayoFvYP3hLjLbXMyjwi3AOzOwAC2urKmMp7kxoW2FIBSlrNo2bnqwFHC?=
- =?us-ascii?Q?Vv8BE5mwZJuZy45C93VEvEeGCoeV9nH3zo51CggI3yDOjdsOHrhpJ8Kla2j8?=
- =?us-ascii?Q?bC0CPGhAnL9w7PPu/AWbKua3aKwvR6QpgB2Y935vQOV4daEpl9rUeIPtaa8W?=
- =?us-ascii?Q?ZUupjV4YsnNT6QjR8caxrjpbWYz9w53bzQb3v8VJgpFAIGLPn7JPyAstAYmy?=
- =?us-ascii?Q?BotkjkoxHEvjVLZf2sQw9/WIP7wgqSZx4WfrMvdIGO74kjEUdWqD3hHafG9S?=
- =?us-ascii?Q?VCaQxreglMFAKi+3IWsJiKAQfoL2XIx1EnmOSsWe2HIQqf6ZeUP7CfGhX5Ei?=
- =?us-ascii?Q?YgEtc5cEIdFv+FguLM4lKuvEi8Wbs9/tb2owC9AXUw2w1rrkmjKpK6dDFmMK?=
- =?us-ascii?Q?OrT8wTH353oB/XK/gm3P7SemX1yTo28IBY721Z04cHnH3qFpOAYlfBNSiIG8?=
- =?us-ascii?Q?Iusrt6E+TjCEYFk9vf0CISurLZV2pxkWKLd3hn/TkTNX1OOH3j9nf6q6UU1/?=
- =?us-ascii?Q?ISQExwFCQKV2eaXNdLwfkuPcsBuN/ngqvCGDJ2zp?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: cf469b71-a09d-4c92-58d4-08dbfbbdee40
-X-MS-Exchange-CrossTenant-AuthSource: AS8PR04MB8404.eurprd04.prod.outlook.com
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?WTRHb2hWdEhsM1BrR2twUzJvRndDMmJWWWFZU2tsRGdwRGltdWpOU0xKNGgy?=
+ =?utf-8?B?TG5kWG1rajd3YjBGeERYWlRiNmN3S1lkUXY4QXpSTCt1QzhxeERGUWJtbk81?=
+ =?utf-8?B?Mko2L2xlWnE0NEFBWGx1UFh2QXRrRXFON2hwSklMV0d0bGdaM01XL2Nacldx?=
+ =?utf-8?B?eDZmYnBwQnIxYkF6RzNLamtKUlRXVFBQVWxwOUpaaSs2TDdxU3puUXJHMUVt?=
+ =?utf-8?B?UllQUWUrWHVHZjZDZTZ0UnloL1o5ejJuR2Q5RlZSOEVvcUI5d3lqV2tiMzA2?=
+ =?utf-8?B?K3VYVkVaWHAwTFNHS0J2RXh6dHZpZ3JObFNIemhoeWZxNSs2eVB2NXlBS1lE?=
+ =?utf-8?B?R3U4S2hQa0lUbVU5NkkrNzR5MUl6dVRSQUlnU2R2ZFFrWldqUE1yQytreEJR?=
+ =?utf-8?B?dWhzVmJmbTUzc1duUmFNdDhVS0dmZFcvTGx2eVFieHhLbzdZSW9WcjhBcDNV?=
+ =?utf-8?B?VFVHdWFlWFpsK3VpYnBEWDBxQ2JYL0ovQjI4ZXlkd3pIQUgrb1ZuNVlWVldS?=
+ =?utf-8?B?SEMzK1ZwT0RwSjYveFNJN3FhTFlDT1hLWE0waEdBa1lFVkc5MWptbkZPbWtl?=
+ =?utf-8?B?emVQSjlGRzNNTUlGYnJKSk85NmYzRXh2ejE0eTNtSktoWHVJLzJtSFFrZnVR?=
+ =?utf-8?B?dUhtMm0weDRac0xrbEI3UUY2dHVEODdqR09SRWM4ci8xZTV1djJEb0JnWVlV?=
+ =?utf-8?B?U1BXYXkyMHBwSWVkRzNvOWkzNzZkQk83QTlzbm9ZVDNFUUN4bWJhakc3b3lQ?=
+ =?utf-8?B?c2dRRzBZMmxJQlRJaFR5Tytsajh2VmlVaTd4ZVA4QlpKRHpJTGYzWEI4Wncy?=
+ =?utf-8?B?QU5oQWJMNy8xWklJaCsvRkJjM2g4b1FyZitSYjlhcFhZTkJOa05URFpGVlNi?=
+ =?utf-8?B?Y3Q1ZFBtK2dsSU90a2JKY2Jhc2RrUDNSaTI5M1RuZkViTU1XdHc4S29ZV3NT?=
+ =?utf-8?B?VXJMZXFCK000VEdZWHIzNGZYanB6SHQweldYL0Fsa2lVV0hDNzdBYkExN0tD?=
+ =?utf-8?B?bm9tVktzb2hIU1dHOWZvczZ4QkwzWnB2MURnTnp3YW9EMndUbk53Uk1sU0I4?=
+ =?utf-8?B?V1ErMWMwR3VEOG8zT3pGeTEwWUdpYmJOTUN1d2d0VTNuSXJNWjNFTUtkbWgw?=
+ =?utf-8?B?ajRvUE1SMXB0a2tSRmNUS0JYbEs1K1h6eisxaVJod3Q4VzQ2N01BOXlQYVRt?=
+ =?utf-8?B?cDZNbzI2T0NaNFBqZUtnNjhqbDZGTk9vTjZmTFRWL0Z3RURXaEN2WVpmZ2Fv?=
+ =?utf-8?B?S2JKd1liYk1mWStIV2dGeVd0R0VUUlJrc2QxQzZtTlczT28rNUNYK0VzRWo4?=
+ =?utf-8?B?WmhJN0ZUTnRxb3FzaThhMlU3am1aYUtXQ29BWTdaanF0SFRSZTVsYzBNaWVS?=
+ =?utf-8?B?emNPWXRuTFFMZExaNEN3bzZxalE2STJJb1pDU1VoWldrWUYvaFgrdzFEeWg0?=
+ =?utf-8?B?M0UybmNnYUR0cC9FcjBrNlpGNzlteTZaNzNzV2VuKzBQaVBldGs2eXUyaGh0?=
+ =?utf-8?B?RHFKQUFFaU92WmFlYU5jOGoydi9Ic0h2THpNcm9qMjhvc0QwYnp4OVA4aUsx?=
+ =?utf-8?B?TTc0Zm5tN2hMTUJIaTlWRDZkdXRJSnlvUk9yZnp4SXdSZ1kxQjJpUFNIM2Fi?=
+ =?utf-8?B?MDBrV3AyN3JiK2VDeFFWYWcrN3pBZFR5eTlZSGxSTE5hNEdBdjhZb1BSMWlu?=
+ =?utf-8?B?R25weXN6cHVlM0xRTDJ3eGlzdTdoMVBEV2dLSnJxcFY3c1ZZUXpsNDltZTB6?=
+ =?utf-8?B?MnI3b2YzTjdNNDN0WHd3WXRZcmxRTkd5WW5weXFlL2V0Qk9ia0RJOE9aTnZs?=
+ =?utf-8?B?bitHTHk1VVYyaXlCNUpqZWVYSkFjMkpINEVPZ1ZnaGdINktiSE1WQXZSZXo0?=
+ =?utf-8?B?ZndCVXhkbjV4MGd6OWdkWVlFbDNkSnlaaDZEOC9ReFA3OXFVakVvckRpdHF1?=
+ =?utf-8?B?TWI2QytsekVBTmxDaEFXM3lxc2pQWCt3Q2dKeHlML3lWZHkzUm0vQStRSG9F?=
+ =?utf-8?B?SnBJbjEwMEt2Qk1GVDBkV0NEaWM4TnI2cUxSUStNQ0NaZTZCUDNVZE5ObjA3?=
+ =?utf-8?B?RnIrMmNEWm1yV1NNRzJFT0RWMkoxMDhVWkRxdTg3N0lQSkdWNS80L3JmM1hr?=
+ =?utf-8?B?SEZnZVBqV2tkaWZ1d3cybzVJd0RyVHR0NjdJU3FRZXhNY1ltOUpMVGpGOTdL?=
+ =?utf-8?B?bXc9PQ==?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3fd707bf-204f-417f-f36f-08dbfbbe291b
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR11MB4965.namprd11.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Dec 2023 09:28:57.1040
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Dec 2023 09:30:35.8482
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: AeKmWv4IpBPnO/cvLcFSDCqsV7QVBfuqIw1oK7tQXZsXiq3fNL7LNaGa/UVdFUWoi659SUDl1P4dbRcyCtvxDA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PAXPR04MB8269
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-MS-Exchange-CrossTenant-UserPrincipalName: SGkMf7Xm5RPkOy97U0G5rypEB/WEl8H8zTgQ362GC2+jUOOQAPv8jkSNWZzjvIK2F2vIItT7Y2vVPU98PEDNZA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR11MB6906
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The host wake pin is a standard feature in the PCIe bus specification,
-so we add this property under PCI dts node to enable the host wake
-function.
+On 12/8/2023 11:15 PM, Maxim Levitsky wrote:
+> On Fri, 2023-12-08 at 22:57 +0800, Yang, Weijiang wrote:
+>> On 12/6/2023 11:57 PM, Maxim Levitsky wrote:
+>>> On Wed, 2023-12-06 at 09:03 +0800, Yang, Weijiang wrote:
+>>>> On 12/5/2023 5:53 PM, Maxim Levitsky wrote:
+>>>>> On Fri, 2023-12-01 at 14:51 +0800, Yang, Weijiang wrote:
+>>>>>> On 12/1/2023 1:26 AM, Maxim Levitsky wrote:
+>>>>>>> On Fri, 2023-11-24 at 00:53 -0500, Yang Weijiang wrote:
+>>>>>>>> Remove XFEATURE_CET_USER entry from dependency array as the entry doesn't
+>>>>>>>> reflect true dependency between CET features and the user xstate bit.
+>>>>>>>> Enable the bit in fpu_kernel_cfg.max_features when either SHSTK or IBT is
+>>>>>>>> available.
+>>>>>>>>
+>>>>>>>> Both user mode shadow stack and indirect branch tracking features depend
+>>>>>>>> on XFEATURE_CET_USER bit in XSS to automatically save/restore user mode
+>>>>>>>> xstate registers, i.e., IA32_U_CET and IA32_PL3_SSP whenever necessary.
+>>>>>>>>
+>>>>>>>> Note, the issue, i.e., CPUID only enumerates IBT but no SHSTK is resulted
+>>>>>>>> from CET KVM series which synthesizes guest CPUIDs based on userspace
+>>>>>>>> settings,in real world the case is rare. In other words, the exitings
+>>>>>>>> dependency check is correct when only user mode SHSTK is available.
+>>>>>>>>
+>>>>>>>> Signed-off-by: Yang Weijiang <weijiang.yang@intel.com>
+>>>>>>>> Reviewed-by: Rick Edgecombe <rick.p.edgecombe@intel.com>
+>>>>>>>> Tested-by: Rick Edgecombe <rick.p.edgecombe@intel.com>
+>>>>>>>> ---
+>>>>>>>>      arch/x86/kernel/fpu/xstate.c | 9 ++++++++-
+>>>>>>>>      1 file changed, 8 insertions(+), 1 deletion(-)
+>>>>>>>>
+>>>>>>>> diff --git a/arch/x86/kernel/fpu/xstate.c b/arch/x86/kernel/fpu/xstate.c
+>>>>>>>> index 73f6bc00d178..6e50a4251e2b 100644
+>>>>>>>> --- a/arch/x86/kernel/fpu/xstate.c
+>>>>>>>> +++ b/arch/x86/kernel/fpu/xstate.c
+>>>>>>>> @@ -73,7 +73,6 @@ static unsigned short xsave_cpuid_features[] __initdata = {
+>>>>>>>>      	[XFEATURE_PT_UNIMPLEMENTED_SO_FAR]	= X86_FEATURE_INTEL_PT,
+>>>>>>>>      	[XFEATURE_PKRU]				= X86_FEATURE_OSPKE,
+>>>>>>>>      	[XFEATURE_PASID]			= X86_FEATURE_ENQCMD,
+>>>>>>>> -	[XFEATURE_CET_USER]			= X86_FEATURE_SHSTK,
+>>>>>>>>      	[XFEATURE_XTILE_CFG]			= X86_FEATURE_AMX_TILE,
+>>>>>>>>      	[XFEATURE_XTILE_DATA]			= X86_FEATURE_AMX_TILE,
+>>>>>>>>      };
+>>>>>>>> @@ -798,6 +797,14 @@ void __init fpu__init_system_xstate(unsigned int legacy_size)
+>>>>>>>>      			fpu_kernel_cfg.max_features &= ~BIT_ULL(i);
+>>>>>>>>      	}
+>>>>>>>>      
+>>>>>>>> +	/*
+>>>>>>>> +	 * CET user mode xstate bit has been cleared by above sanity check.
+>>>>>>>> +	 * Now pick it up if either SHSTK or IBT is available. Either feature
+>>>>>>>> +	 * depends on the xstate bit to save/restore user mode states.
+>>>>>>>> +	 */
+>>>>>>>> +	if (boot_cpu_has(X86_FEATURE_SHSTK) || boot_cpu_has(X86_FEATURE_IBT))
+>>>>>>>> +		fpu_kernel_cfg.max_features |= BIT_ULL(XFEATURE_CET_USER);
+>>>>>>>> +
+>>>>>>>>      	if (!cpu_feature_enabled(X86_FEATURE_XFD))
+>>>>>>>>      		fpu_kernel_cfg.max_features &= ~XFEATURE_MASK_USER_DYNAMIC;
+>>>>>>>>      
+>>>>>>> I am curious:
+>>>>>>>
+>>>>>>> Any reason why my review feedback was not applied even though you did agree
+>>>>>>> that it is reasonable?
+>>>>>> My apology! I changed the patch per you feedback but found XFEATURE_CET_USER didn't
+>>>>>> work before sending out v7 version, after a close look at the existing code:
+>>>>>>
+>>>>>>             for (i = 0; i < ARRAY_SIZE(xsave_cpuid_features); i++) {
+>>>>>>                     unsigned short cid = xsave_cpuid_features[i];
+>>>>>>
+>>>>>>                     /* Careful: X86_FEATURE_FPU is 0! */
+>>>>>>                     if ((i != XFEATURE_FP && !cid) || !boot_cpu_has(cid))
+>>>>>>                             fpu_kernel_cfg.max_features &= ~BIT_ULL(i);
+>>>>>>             }
+>>>>>>
+>>>>>> With removal of XFEATURE_CET_USER entry from xsave_cpuid_features, actually
+>>>>>> above check will clear the bit from fpu_kernel_cfg.max_features.
+>>>>> Are you sure about this? If we remove the XFEATURE_CET_USER from the xsave_cpuid_features,
+>>>>> then the above loop will not touch it - it loops only over the items in the xsave_cpuid_features
+>>>>> array.
+>>>> No,  the code is a bit tricky, the actual array size is XFEATURE_XTILE_DATA( ie, 18) + 1, those xfeature bits not listed in init code leave a blank entry with xsave_cpuid_features[i] == 0, so for the blank elements, the loop hits (i != XFEATURE_FP && !cid) then the relevant xfeature bit for i is cleared in fpu_kernel_cfg.max_features. I had the same illusion at first when I replied your comments in v6, and modified the code as you suggested but found the issue during tests. Please double check it.
+>>> Oh I see now. IMHO the current code is broken, or at least it violates the
+>>> 'Clear XSAVE features that are disabled in the normal CPUID' comment, because
+>>> it also clears all xfeatures which have no CPUID bit in the table (except FPU,
+>>> for which we have a workaround).
+>>>
+>>>
+>>> How about we do this instead:
+>>>
+>>> 	for (i = 0; i < ARRAY_SIZE(xsave_cpuid_features); i++) {
+>>> 		unsigned short cid = xsave_cpuid_features[i];
+>>>
+>>> 		if (cid && !boot_cpu_has(cid))
+>>> 			fpu_kernel_cfg.max_features &= ~BIT_ULL(i);
+>>> 	}
+>> I think existing code is more reasonable,  the side-effect of current code, i.e., masking out
+>> the unclaimed xfeature bits, sanitizes the bits in max_features at the first place, then following calculations derived from it become reasonable too.
+>
+> I strongly disagree with that. Kernel already removes all features bits which it knows nothing about.
+>
+> There is no need to also remove the xfeatures that it knows about but knows nothing about a CPUID bit.
+> For such features the kernel needs either to accept it (like FPU) or remove the feature from set of supported features.
 
-Signed-off-by: Sherry Sun <sherry.sun@nxp.com>
-Reviewed-by: Richard Zhu <hongxing.zhu@nxp.com>
----
- arch/arm64/boot/dts/freescale/imx8mq-evk.dts | 2 ++
- 1 file changed, 2 insertions(+)
+Let me involve Chang, the author of the code in question.
 
-diff --git a/arch/arm64/boot/dts/freescale/imx8mq-evk.dts b/arch/arm64/boot/dts/freescale/imx8mq-evk.dts
-index 7507548cdb16..b8463ef230c5 100644
---- a/arch/arm64/boot/dts/freescale/imx8mq-evk.dts
-+++ b/arch/arm64/boot/dts/freescale/imx8mq-evk.dts
-@@ -367,6 +367,7 @@ &pcie1 {
- 	pinctrl-names = "default";
- 	pinctrl-0 = <&pinctrl_pcie1>;
- 	reset-gpio = <&gpio5 12 GPIO_ACTIVE_LOW>;
-+	wake-gpios = <&gpio5 11 GPIO_ACTIVE_LOW>;
- 	clocks = <&clk IMX8MQ_CLK_PCIE2_ROOT>,
- 		 <&pcie0_refclk>,
- 		 <&clk IMX8MQ_CLK_PCIE2_PHY>,
-@@ -545,6 +546,7 @@ pinctrl_pcie1: pcie1grp {
- 		fsl,pins = <
- 			MX8MQ_IOMUXC_I2C4_SDA_PCIE2_CLKREQ_B		0x76
- 			MX8MQ_IOMUXC_ECSPI2_MISO_GPIO5_IO12		0x16
-+			MX8MQ_IOMUXC_ECSPI2_MOSI_GPIO5_IO11		0x41
- 		>;
- 	};
- 
--- 
-2.34.1
+Hi, Chang,
+In commit 70c3f1671b0c ("x86/fpu/xstate: Prepare XSAVE feature table for gaps in state component numbers"),
+you modified the loop as below:
+         for (i = 0; i < ARRAY_SIZE(xsave_cpuid_features); i++) {
+-               if (!boot_cpu_has(xsave_cpuid_features[i]))
++               unsigned short cid = xsave_cpuid_features[i];
++
++               /* Careful: X86_FEATURE_FPU is 0! */
++               if ((i != XFEATURE_FP && !cid) || !boot_cpu_has(cid))
+                         fpu_kernel_cfg.max_features &= ~BIT_ULL(i);
+         }
+
+IMHO the change resulted functional change of the loop, i.e., before that only it only clears the bits without CPUIDs,
+but after the change, the side-effect of the loop will clear the bits of blank entries ( where xsave_cpuid_features[i] == 0 )
+since the loop hits (i != XFEATURE_FP && !cid), is it intended or something else?
+
 
