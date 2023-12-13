@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DCE2811130
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 13:36:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A493E811131
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 13:36:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233476AbjLMMgd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 07:36:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42428 "EHLO
+        id S233507AbjLMMgr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 07:36:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43866 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233438AbjLMMgb (ORCPT
+        with ESMTP id S233437AbjLMMgp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 07:36:31 -0500
-Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5A18E4;
-        Wed, 13 Dec 2023 04:36:36 -0800 (PST)
-Received: by mail-pf1-x434.google.com with SMTP id d2e1a72fcca58-6ce26a03d9eso4326198b3a.0;
-        Wed, 13 Dec 2023 04:36:36 -0800 (PST)
+        Wed, 13 Dec 2023 07:36:45 -0500
+Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2D79113;
+        Wed, 13 Dec 2023 04:36:50 -0800 (PST)
+Received: by mail-pg1-x535.google.com with SMTP id 41be03b00d2f7-5c66e7eafabso5634605a12.0;
+        Wed, 13 Dec 2023 04:36:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702470996; x=1703075796; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1702471010; x=1703075810; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=6o9+b/zVNvA4/sI4WpDCuE/Pf6Swn7qoeIeF6jMIaTc=;
-        b=UC5Fa1JZNxtJ5dxppPYVEvY+na6kHQuy6yE56hh2nlcCq5ZmjPYz3Ea+90G6+L7Azr
-         JDjXS0uGvmpqHQ97gnyz2q0UL/Wh5hD6Ast0suEmWBfXMeoZm+eulbmluf1PZb8jImTs
-         Mje3TH9VJUeeZdpXRhBJrXFkrCCWaa0vo4n/NryR+oq+q7ZyLvpzGLw6pVoL4Dgi8zML
-         Xvy1sZEb7ibBqv6t7kbV4kaIsdsdfYi+15mSDYAJlMNY/ajbRhJLL1MlovCxxVm+ImHd
-         aV3TovjOHy00k67Y5sFrlP8s4LSom1KQxrbXhcJvMtSdBbRkkcp1LoTyuORE6hbhIxNS
-         sKCw==
+        bh=QZihwxl0v63j7g6/9Ub3zyT34OyL1Z04NfBICmYEzJk=;
+        b=Yjqi5CFL/PE1vUIRj+mjZ9GU2RM3WNzdRqOYkNos9IR7UrSyzqIweP4xDOci2mtN8m
+         x7fzCQFwFNv3Sju6HGgVcCj1bDF5qnaP6bbwSu5+852srDk9c15JL/1XNZAzNR1NZtMR
+         p+PuaFRpdGs/9KhuWZr2mUIY0746h4uiru7ofstA2gh9vaRJxVDD1Mq6OQ5GCyIIop89
+         uZwNL0vCIQZuY5Alc19fBOvgTasUwg8YGA/YiKyJAXAnsCS0v4St66GXAZ/YhgAMhR+e
+         FJIeL0P3zGcZ0/3UML9K19A1gQ27m9FTU9edyFFxtIIoCObb4a2LWkN3W3sRkUZFOfHa
+         g8MQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702470996; x=1703075796;
+        d=1e100.net; s=20230601; t=1702471010; x=1703075810;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=6o9+b/zVNvA4/sI4WpDCuE/Pf6Swn7qoeIeF6jMIaTc=;
-        b=C/zV1HLynB30mvKlpyw80I19q6JamLnyFJrnMwIdBYKMbHegre96nYjV4B4r8m07VC
-         a+x2K6cv+m4fRti8A4mqG61mQ39vuiHsxyIRWqc1wf5sAuDno0ImBEBh6amcT+v7eRaC
-         ElkdNDXvK7ULKVXLoUdxbUdWGdsNU3D4NmrKeC9wEROhqkj5dj9kXHrGLRIV0oY+z9Q/
-         ol2kL/9EtqjelobAnmp7T6o6Qmhew9/kO9osFUw7XYDeUKm8yHmw3Y0bEzpwQ3v4DHpz
-         q3jIpiRRk6UA42Ps/3A4eUHoc2fW8odxwIrKUgEvmTmZ+BL9jFBa+5+q/TDG3HXUIxIS
-         21kg==
-X-Gm-Message-State: AOJu0Yw0Reo5+ewOdg8eepp+VblUgQhqxNnpdtqutcxtvtBoQpb+ube3
-        9UR2RdGzCcqGPrmYS9hPz/s2HPQn6HATgVF1
-X-Google-Smtp-Source: AGHT+IGoI9nmTylJCkQMFXcqOVFTf2O9jztpOZQGEDTcSur6zbqLpwGGseS6UD76b141XTMjdovkrQ==
-X-Received: by 2002:a05:6a00:3305:b0:6ce:6007:9bb with SMTP id cq5-20020a056a00330500b006ce600709bbmr4308409pfb.60.1702470996273;
-        Wed, 13 Dec 2023 04:36:36 -0800 (PST)
+        bh=QZihwxl0v63j7g6/9Ub3zyT34OyL1Z04NfBICmYEzJk=;
+        b=b7PFkwGb9XpAPzkzlhGFnrnGPdSgSK0C1B7iaFw+fuk8RexGjpWcGCNee0HlID849F
+         E75tNjnGIy2zScpKLcQvQJmxJxUPrRqU5yF1fUJBBkjud127DavOw/00g6lVH6xu+Mg2
+         UK1UkEdCzl9eCTUzeq83+m795YmN5IhOGk28iiIf4JhQITRZV1KFDKArjWECP7Ciq95P
+         5d5FTvilFOKPDK+W18/MnzfJYNzYOPQqe3fn2RSRlZTIgiOGmwp9Aj28bgeDfTrq8lU8
+         lWHwmQRH+JjmSgCQ0TJqHUkdJKaBVoqNpN2bFei9ADHuMkJOItjeexYDGnE+jmaxqWJ3
+         U8Xw==
+X-Gm-Message-State: AOJu0YzpDhxJog+QEzY+1QwuO9SzOYOi2oJXRJUcvzH0yhHm307qCKr2
+        vTpSLbN6MUTLV9iKjOAdTM4=
+X-Google-Smtp-Source: AGHT+IEm5mEDtS1LOQPlg62W3tJlZX2ZCSTzqHOg/4SL8BX/XhHwx2CVtF+Cuq8ajRix5XT7ni3shg==
+X-Received: by 2002:a05:6a20:9481:b0:18b:4a28:6e15 with SMTP id hs1-20020a056a20948100b0018b4a286e15mr8029288pzb.34.1702471009861;
+        Wed, 13 Dec 2023 04:36:49 -0800 (PST)
 Received: from localhost.localdomain ([117.189.237.103])
-        by smtp.gmail.com with ESMTPSA id x3-20020a056a00188300b0068fe5a5a566sm10193584pfh.142.2023.12.13.04.36.30
+        by smtp.gmail.com with ESMTPSA id x3-20020a056a00188300b0068fe5a5a566sm10193584pfh.142.2023.12.13.04.36.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Dec 2023 04:36:35 -0800 (PST)
+        Wed, 13 Dec 2023 04:36:49 -0800 (PST)
 From:   Jianhua Lu <lujianhua000@gmail.com>
 To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
         Banajit Goswami <bgoswami@quicinc.com>,
@@ -58,9 +58,9 @@ To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
         Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
 Cc:     alsa-devel@alsa-project.org, linux-sound@vger.kernel.org,
         linux-kernel@vger.kernel.org, Jianhua Lu <lujianhua000@gmail.com>
-Subject: [PATCH v3 3/4] Asoc: qcom: sdw: Add TDM support
-Date:   Wed, 13 Dec 2023 20:35:55 +0800
-Message-ID: <20231213123556.20469-3-lujianhua000@gmail.com>
+Subject: [PATCH v3 4/4] ASoC: qcom: sm8250: Add TERTIARY_TDM_RX_0 support
+Date:   Wed, 13 Dec 2023 20:35:56 +0800
+Message-ID: <20231213123556.20469-4-lujianhua000@gmail.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20231213123556.20469-1-lujianhua000@gmail.com>
 References: <20231213123556.20469-1-lujianhua000@gmail.com>
@@ -76,56 +76,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Setup TDM ports when dai id is matched to *_TDM_*.
+Add TERTIARY_TDM_RX_0 case to make speaker amplifiers working
+on Xiaomi Pad 5 Pro tablet.
 
 Signed-off-by: Jianhua Lu <lujianhua000@gmail.com>
 ---
-Changes in v3:
-  1. split qcom_snd_tdm_hw_params function to common.c
+No changes in v3.
 
-Changes in v2:
-  1. remove EXPORT_SYMBOL_GPL
-  2. remove static modifier
+No changes in v2.
 
- sound/soc/qcom/sdw.c | 11 ++++++++++-
- 1 file changed, 10 insertions(+), 1 deletion(-)
+ sound/soc/qcom/sm8250.c | 19 +++++++++++++++++++
+ 1 file changed, 19 insertions(+)
 
-diff --git a/sound/soc/qcom/sdw.c b/sound/soc/qcom/sdw.c
-index 77dbe0c28b29..c07d878a1c18 100644
---- a/sound/soc/qcom/sdw.c
-+++ b/sound/soc/qcom/sdw.c
-@@ -5,6 +5,7 @@
- #include <dt-bindings/sound/qcom,q6afe.h>
- #include <linux/module.h>
- #include <sound/soc.h>
-+#include "common.h"
- #include "sdw.h"
+diff --git a/sound/soc/qcom/sm8250.c b/sound/soc/qcom/sm8250.c
+index f298167c2a23..00c89c073e72 100644
+--- a/sound/soc/qcom/sm8250.c
++++ b/sound/soc/qcom/sm8250.c
+@@ -16,6 +16,7 @@
  
- /**
-@@ -109,7 +110,7 @@ int qcom_snd_sdw_hw_params(struct snd_pcm_substream *substream,
- 	struct snd_soc_dai *codec_dai;
+ #define DRIVER_NAME		"sm8250"
+ #define MI2S_BCLK_RATE		1536000
++#define TDM_BCLK_RATE		12288000
+ 
+ struct sm8250_snd_data {
+ 	bool stream_prepared[AFE_PORT_MAX];
+@@ -53,6 +54,7 @@ static int sm8250_snd_startup(struct snd_pcm_substream *substream)
+ 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
  	struct snd_soc_dai *cpu_dai = snd_soc_rtd_to_cpu(rtd, 0);
- 	struct sdw_stream_runtime *sruntime;
--	int i;
-+	int ret, i;
+ 	struct snd_soc_dai *codec_dai = snd_soc_rtd_to_codec(rtd, 0);
++	int ret, j;
  
  	switch (cpu_dai->id) {
- 	case WSA_CODEC_DMA_RX_0:
-@@ -125,6 +126,14 @@ int qcom_snd_sdw_hw_params(struct snd_pcm_substream *substream,
- 				*psruntime = sruntime;
- 		}
+ 	case TERTIARY_MI2S_RX:
+@@ -63,6 +65,23 @@ static int sm8250_snd_startup(struct snd_pcm_substream *substream)
+ 		snd_soc_dai_set_fmt(cpu_dai, fmt);
+ 		snd_soc_dai_set_fmt(codec_dai, codec_dai_fmt);
  		break;
-+	case PRIMARY_TDM_RX_0...QUINARY_TDM_TX_7:
-+		ret = qcom_snd_tdm_hw_params(substream, params);
-+		if (ret < 0) {
-+			dev_err(rtd->dev, "%s: failed to setup TDM err:%d\n",
-+				__func__, ret);
-+			return ret;
++	case TERTIARY_TDM_RX_0:
++		codec_dai_fmt |= SND_SOC_DAIFMT_NB_NF | SND_SOC_DAIFMT_DSP_A;
++		snd_soc_dai_set_sysclk(cpu_dai,
++			Q6AFE_LPASS_CLK_ID_TER_TDM_IBIT,
++			TDM_BCLK_RATE, SNDRV_PCM_STREAM_PLAYBACK);
++
++		for_each_rtd_codec_dais(rtd, j, codec_dai) {
++			ret = snd_soc_dai_set_fmt(codec_dai, codec_dai_fmt);
++			snd_soc_dai_set_sysclk(codec_dai,
++				0,
++				TDM_BCLK_RATE, SNDRV_PCM_STREAM_PLAYBACK);
++			if (ret < 0) {
++				dev_err(rtd->dev, "TDM fmt err:%d\n", ret);
++				return ret;
++			}
 +		}
 +		break;
+ 	default:
+ 		break;
  	}
- 
- 	return 0;
 -- 
 2.41.0
 
