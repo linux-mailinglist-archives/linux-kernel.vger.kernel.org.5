@@ -2,48 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E2E3580FBD5
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 01:06:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A500E80FBDA
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 01:07:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377665AbjLMAGp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 19:06:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40404 "EHLO
+        id S1377748AbjLMAG4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 19:06:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43544 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377734AbjLMAGh (ORCPT
+        with ESMTP id S1377735AbjLMAGs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 19:06:37 -0500
-Received: from smtp-fw-9102.amazon.com (smtp-fw-9102.amazon.com [207.171.184.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4883811A;
-        Tue, 12 Dec 2023 16:06:33 -0800 (PST)
+        Tue, 12 Dec 2023 19:06:48 -0500
+Received: from smtp-fw-33001.amazon.com (smtp-fw-33001.amazon.com [207.171.190.10])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F428BE;
+        Tue, 12 Dec 2023 16:06:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
   d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1702425994; x=1733961994;
+  t=1702426007; x=1733962007;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=IHxE/iueMjg5jk3J7QeMpZujdfbmXnsIes6SvH8utzQ=;
-  b=h2YU4YR9wcBn2kwVG+LxOLzaht5wGiWplBrw1iQvgQEnfE/GWJhznk7r
-   kn/3+aUb/TwmwTlEEOclmOuQ+rDPLPiAmR4MVtM96JUaXdrOc1suHL+nf
-   PDnNuuXCoW2qfXJwrjg0vijQQq3Vka0KecZGru6djuNuZyuShw/931eWC
-   s=;
+  bh=W4f7NpctXKZH3cmvw+OkpzmI5P36spomZeCIdEWiFNg=;
+  b=DkbR7zzfwsrmsGshX3hhRfCzBMcF7zk+VBbnG4zcEKOkwWOOS0Lfdhrw
+   qlO/PG95sHD3MdIQFzZA51dRINcNWCTELZ0NXPFn9gfITZpHDHUlUZ4Iv
+   HB6jDwD1t7CuMndMzQ0C/nkw4BvFnwtk7KddlrioPDHu+hm4LLRfxCDpi
+   g=;
 X-IronPort-AV: E=Sophos;i="6.04,271,1695686400"; 
-   d="scan'208";a="382524268"
-Received: from pdx4-co-svc-p1-lb2-vlan3.amazon.com (HELO email-inbound-relay-iad-1d-m6i4x-e651a362.us-east-1.amazon.com) ([10.25.36.214])
-  by smtp-border-fw-9102.sea19.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Dec 2023 00:06:27 +0000
-Received: from smtpout.prod.us-west-2.prod.farcaster.email.amazon.dev (iad7-ws-svc-p70-lb3-vlan3.iad.amazon.com [10.32.235.38])
-        by email-inbound-relay-iad-1d-m6i4x-e651a362.us-east-1.amazon.com (Postfix) with ESMTPS id E9CFD8179B;
-        Wed, 13 Dec 2023 00:06:13 +0000 (UTC)
-Received: from EX19MTAUWB002.ant.amazon.com [10.0.7.35:11247]
- by smtpin.naws.us-west-2.prod.farcaster.email.amazon.dev [10.0.18.147:2525] with esmtp (Farcaster)
- id 7d1c1fe5-8e35-45c9-ab5b-5b98cbcd951c; Wed, 13 Dec 2023 00:06:12 +0000 (UTC)
-X-Farcaster-Flow-ID: 7d1c1fe5-8e35-45c9-ab5b-5b98cbcd951c
+   d="scan'208";a="316893079"
+Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-pdx-2b-m6i4x-cadc3fbd.us-west-2.amazon.com) ([10.43.8.6])
+  by smtp-border-fw-33001.sea14.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Dec 2023 00:06:43 +0000
+Received: from smtpout.prod.us-west-2.prod.farcaster.email.amazon.dev (pdx2-ws-svc-p26-lb5-vlan2.pdx.amazon.com [10.39.38.66])
+        by email-inbound-relay-pdx-2b-m6i4x-cadc3fbd.us-west-2.amazon.com (Postfix) with ESMTPS id 1B5EEA0AE1;
+        Wed, 13 Dec 2023 00:06:38 +0000 (UTC)
+Received: from EX19MTAUWA002.ant.amazon.com [10.0.38.20:30423]
+ by smtpin.naws.us-west-2.prod.farcaster.email.amazon.dev [10.0.11.243:2525] with esmtp (Farcaster)
+ id f27b5327-6195-40ac-be88-dcf792d94fa4; Wed, 13 Dec 2023 00:06:38 +0000 (UTC)
+X-Farcaster-Flow-ID: f27b5327-6195-40ac-be88-dcf792d94fa4
 Received: from EX19D020UWC004.ant.amazon.com (10.13.138.149) by
- EX19MTAUWB002.ant.amazon.com (10.250.64.231) with Microsoft SMTP Server
+ EX19MTAUWA002.ant.amazon.com (10.250.64.202) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Wed, 13 Dec 2023 00:06:12 +0000
+ 15.2.1118.40; Wed, 13 Dec 2023 00:06:38 +0000
 Received: from dev-dsk-graf-1a-5ce218e4.eu-west-1.amazon.com (10.253.83.51) by
  EX19D020UWC004.ant.amazon.com (10.13.138.149) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Wed, 13 Dec 2023 00:06:08 +0000
+ 15.2.1118.40; Wed, 13 Dec 2023 00:06:34 +0000
 From:   Alexander Graf <graf@amazon.com>
 To:     <linux-kernel@vger.kernel.org>
 CC:     <linux-trace-kernel@vger.kernel.org>, <linux-mm@kvack.org>,
@@ -68,15 +68,15 @@ CC:     <linux-trace-kernel@vger.kernel.org>, <linux-mm@kvack.org>,
         Usama Arif <usama.arif@bytedance.com>,
         David Woodhouse <dwmw@amazon.co.uk>,
         Benjamin Herrenschmidt <benh@kernel.crashing.org>
-Subject: [PATCH 08/15] tracing: Introduce names for ring buffers
-Date:   Wed, 13 Dec 2023 00:04:45 +0000
-Message-ID: <20231213000452.88295-9-graf@amazon.com>
+Subject: [PATCH 09/15] tracing: Introduce names for events
+Date:   Wed, 13 Dec 2023 00:04:46 +0000
+Message-ID: <20231213000452.88295-10-graf@amazon.com>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20231213000452.88295-1-graf@amazon.com>
 References: <20231213000452.88295-1-graf@amazon.com>
 MIME-Version: 1.0
 X-Originating-IP: [10.253.83.51]
-X-ClientProxiedBy: EX19D042UWA003.ant.amazon.com (10.13.139.44) To
+X-ClientProxiedBy: EX19D036UWB002.ant.amazon.com (10.13.139.139) To
  EX19D020UWC004.ant.amazon.com (10.13.138.149)
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -91,107 +91,291 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-With KHO (Kexec HandOver), we want to preserve trace buffers across
-kexec. To carry over their state between kernels, the kernel needs a
-common handle for them that exists on both sides. As handle we introduce
-names for ring buffers. In a follow-up patch, the kernel can then use
-these names to recover buffer contents for specific ring buffers.
+With KHO (Kexec HandOver), we want to preserve trace buffers. To parse
+them, we need to ensure that all trace events that exist in the logs are
+identical to the ones we parse as. That means we need to match the
+events before and after kexec.
+
+As a first step towards that, let's give every event a unique name. That
+way we can clearly identify the event before and after kexec and restore
+its ID post-kexec.
 
 Signed-off-by: Alexander Graf <graf@amazon.com>
 ---
- include/linux/ring_buffer.h | 7 ++++---
- kernel/trace/ring_buffer.c  | 5 ++++-
- kernel/trace/trace.c        | 7 ++++---
- 3 files changed, 12 insertions(+), 7 deletions(-)
+ include/linux/trace_events.h         |  1 +
+ include/trace/trace_events.h         |  2 ++
+ kernel/trace/blktrace.c              |  1 +
+ kernel/trace/trace_branch.c          |  1 +
+ kernel/trace/trace_events.c          |  3 +++
+ kernel/trace/trace_functions_graph.c |  4 +++-
+ kernel/trace/trace_output.c          | 13 +++++++++++++
+ kernel/trace/trace_probe.c           |  3 +++
+ kernel/trace/trace_syscalls.c        | 29 ++++++++++++++++++++++++++++
+ 9 files changed, 56 insertions(+), 1 deletion(-)
 
-diff --git a/include/linux/ring_buffer.h b/include/linux/ring_buffer.h
-index 782e14f62201..f34538f97c75 100644
---- a/include/linux/ring_buffer.h
-+++ b/include/linux/ring_buffer.h
-@@ -85,17 +85,18 @@ void ring_buffer_discard_commit(struct trace_buffer *buffer,
-  * size is in bytes for each per CPU buffer.
-  */
- struct trace_buffer *
--__ring_buffer_alloc(unsigned long size, unsigned flags, struct lock_class_key *key);
-+__ring_buffer_alloc(const char *name, unsigned long size, unsigned flags,
-+		    struct lock_class_key *key);
- 
- /*
-  * Because the ring buffer is generic, if other users of the ring buffer get
-  * traced by ftrace, it can produce lockdep warnings. We need to keep each
-  * ring buffer's lock class separate.
-  */
--#define ring_buffer_alloc(size, flags)			\
-+#define ring_buffer_alloc(name, size, flags)			\
- ({							\
- 	static struct lock_class_key __key;		\
--	__ring_buffer_alloc((size), (flags), &__key);	\
-+	__ring_buffer_alloc((name), (size), (flags), &__key);	\
- })
- 
- int ring_buffer_wait(struct trace_buffer *buffer, int cpu, int full);
-diff --git a/kernel/trace/ring_buffer.c b/kernel/trace/ring_buffer.c
-index 43cc47d7faaf..eaaf823ddedb 100644
---- a/kernel/trace/ring_buffer.c
-+++ b/kernel/trace/ring_buffer.c
-@@ -557,6 +557,7 @@ struct trace_buffer {
- 
- 	struct rb_irq_work		irq_work;
- 	bool				time_stamp_abs;
+diff --git a/include/linux/trace_events.h b/include/linux/trace_events.h
+index d68ff9b1247f..7670224aa92d 100644
+--- a/include/linux/trace_events.h
++++ b/include/linux/trace_events.h
+@@ -149,6 +149,7 @@ struct trace_event {
+ 	struct hlist_node		node;
+ 	int				type;
+ 	struct trace_event_functions	*funcs;
 +	const char			*name;
  };
  
- struct ring_buffer_iter {
-@@ -1801,7 +1802,8 @@ static void rb_free_cpu_buffer(struct ring_buffer_per_cpu *cpu_buffer)
-  * when the buffer wraps. If this flag is not set, the buffer will
-  * drop data when the tail hits the head.
-  */
--struct trace_buffer *__ring_buffer_alloc(unsigned long size, unsigned flags,
-+struct trace_buffer *__ring_buffer_alloc(const char *name,
-+					unsigned long size, unsigned flags,
- 					struct lock_class_key *key)
+ extern int register_trace_event(struct trace_event *event);
+diff --git a/include/trace/trace_events.h b/include/trace/trace_events.h
+index c2f9cabf154d..bb4e6a33eef9 100644
+--- a/include/trace/trace_events.h
++++ b/include/trace/trace_events.h
+@@ -443,6 +443,7 @@ static struct trace_event_call __used event_##call = {			\
+ 		.tp			= &__tracepoint_##call,		\
+ 	},								\
+ 	.event.funcs		= &trace_event_type_funcs_##template,	\
++	.event.name		= __stringify(call),			\
+ 	.print_fmt		= print_fmt_##template,			\
+ 	.flags			= TRACE_EVENT_FL_TRACEPOINT,		\
+ };									\
+@@ -460,6 +461,7 @@ static struct trace_event_call __used event_##call = {			\
+ 		.tp			= &__tracepoint_##call,		\
+ 	},								\
+ 	.event.funcs		= &trace_event_type_funcs_##call,	\
++	.event.name		= __stringify(template),		\
+ 	.print_fmt		= print_fmt_##call,			\
+ 	.flags			= TRACE_EVENT_FL_TRACEPOINT,		\
+ };									\
+diff --git a/kernel/trace/blktrace.c b/kernel/trace/blktrace.c
+index d5d94510afd3..7f86fd41b38e 100644
+--- a/kernel/trace/blktrace.c
++++ b/kernel/trace/blktrace.c
+@@ -1584,6 +1584,7 @@ static struct trace_event_functions trace_blk_event_funcs = {
+ static struct trace_event trace_blk_event = {
+ 	.type		= TRACE_BLK,
+ 	.funcs		= &trace_blk_event_funcs,
++	.name		= "blk",
+ };
+ 
+ static int __init init_blk_tracer(void)
+diff --git a/kernel/trace/trace_branch.c b/kernel/trace/trace_branch.c
+index e47fdb4c92fb..3372070f2e85 100644
+--- a/kernel/trace/trace_branch.c
++++ b/kernel/trace/trace_branch.c
+@@ -168,6 +168,7 @@ static struct trace_event_functions trace_branch_funcs = {
+ static struct trace_event trace_branch_event = {
+ 	.type		= TRACE_BRANCH,
+ 	.funcs		= &trace_branch_funcs,
++	.name		= "branch",
+ };
+ 
+ static struct tracer branch_trace __read_mostly =
+diff --git a/kernel/trace/trace_events.c b/kernel/trace/trace_events.c
+index f29e815ca5b2..4f5d37f96a17 100644
+--- a/kernel/trace/trace_events.c
++++ b/kernel/trace/trace_events.c
+@@ -2658,6 +2658,9 @@ static int event_init(struct trace_event_call *call)
+ 	if (WARN_ON(!name))
+ 		return -EINVAL;
+ 
++	if (!call->event.name)
++		call->event.name = name;
++
+ 	if (call->class->raw_init) {
+ 		ret = call->class->raw_init(call);
+ 		if (ret < 0 && ret != -ENOSYS)
+diff --git a/kernel/trace/trace_functions_graph.c b/kernel/trace/trace_functions_graph.c
+index c35fbaab2a47..088dfd4a1a56 100644
+--- a/kernel/trace/trace_functions_graph.c
++++ b/kernel/trace/trace_functions_graph.c
+@@ -1342,11 +1342,13 @@ static struct trace_event_functions graph_functions = {
+ static struct trace_event graph_trace_entry_event = {
+ 	.type		= TRACE_GRAPH_ENT,
+ 	.funcs		= &graph_functions,
++	.name		= "graph_ent",
+ };
+ 
+ static struct trace_event graph_trace_ret_event = {
+ 	.type		= TRACE_GRAPH_RET,
+-	.funcs		= &graph_functions
++	.funcs		= &graph_functions,
++	.name		= "graph_ret",
+ };
+ 
+ static struct tracer graph_trace __tracer_data = {
+diff --git a/kernel/trace/trace_output.c b/kernel/trace/trace_output.c
+index d8b302d01083..f3677e0da795 100644
+--- a/kernel/trace/trace_output.c
++++ b/kernel/trace/trace_output.c
+@@ -1067,6 +1067,7 @@ static struct trace_event_functions trace_fn_funcs = {
+ static struct trace_event trace_fn_event = {
+ 	.type		= TRACE_FN,
+ 	.funcs		= &trace_fn_funcs,
++	.name		= "fn",
+ };
+ 
+ /* TRACE_CTX an TRACE_WAKE */
+@@ -1207,6 +1208,7 @@ static struct trace_event_functions trace_ctx_funcs = {
+ static struct trace_event trace_ctx_event = {
+ 	.type		= TRACE_CTX,
+ 	.funcs		= &trace_ctx_funcs,
++	.name		= "ctx",
+ };
+ 
+ static struct trace_event_functions trace_wake_funcs = {
+@@ -1219,6 +1221,7 @@ static struct trace_event_functions trace_wake_funcs = {
+ static struct trace_event trace_wake_event = {
+ 	.type		= TRACE_WAKE,
+ 	.funcs		= &trace_wake_funcs,
++	.name		= "wake",
+ };
+ 
+ /* TRACE_STACK */
+@@ -1256,6 +1259,7 @@ static struct trace_event_functions trace_stack_funcs = {
+ static struct trace_event trace_stack_event = {
+ 	.type		= TRACE_STACK,
+ 	.funcs		= &trace_stack_funcs,
++	.name		= "stack",
+ };
+ 
+ /* TRACE_USER_STACK */
+@@ -1309,6 +1313,7 @@ static struct trace_event_functions trace_user_stack_funcs = {
+ static struct trace_event trace_user_stack_event = {
+ 	.type		= TRACE_USER_STACK,
+ 	.funcs		= &trace_user_stack_funcs,
++	.name		= "user_stack",
+ };
+ 
+ /* TRACE_HWLAT */
+@@ -1373,6 +1378,7 @@ static struct trace_event_functions trace_hwlat_funcs = {
+ static struct trace_event trace_hwlat_event = {
+ 	.type		= TRACE_HWLAT,
+ 	.funcs		= &trace_hwlat_funcs,
++	.name		= "hwlat",
+ };
+ 
+ /* TRACE_OSNOISE */
+@@ -1443,6 +1449,7 @@ static struct trace_event_functions trace_osnoise_funcs = {
+ static struct trace_event trace_osnoise_event = {
+ 	.type		= TRACE_OSNOISE,
+ 	.funcs		= &trace_osnoise_funcs,
++	.name		= "osnoise",
+ };
+ 
+ /* TRACE_TIMERLAT */
+@@ -1491,6 +1498,7 @@ static struct trace_event_functions trace_timerlat_funcs = {
+ static struct trace_event trace_timerlat_event = {
+ 	.type		= TRACE_TIMERLAT,
+ 	.funcs		= &trace_timerlat_funcs,
++	.name		= "timerlat",
+ };
+ 
+ /* TRACE_BPUTS */
+@@ -1535,6 +1543,7 @@ static struct trace_event_functions trace_bputs_funcs = {
+ static struct trace_event trace_bputs_event = {
+ 	.type		= TRACE_BPUTS,
+ 	.funcs		= &trace_bputs_funcs,
++	.name		= "bputs",
+ };
+ 
+ /* TRACE_BPRINT */
+@@ -1579,6 +1588,7 @@ static struct trace_event_functions trace_bprint_funcs = {
+ static struct trace_event trace_bprint_event = {
+ 	.type		= TRACE_BPRINT,
+ 	.funcs		= &trace_bprint_funcs,
++	.name		= "bprint",
+ };
+ 
+ /* TRACE_PRINT */
+@@ -1616,6 +1626,7 @@ static struct trace_event_functions trace_print_funcs = {
+ static struct trace_event trace_print_event = {
+ 	.type	 	= TRACE_PRINT,
+ 	.funcs		= &trace_print_funcs,
++	.name		= "print",
+ };
+ 
+ static enum print_line_t trace_raw_data(struct trace_iterator *iter, int flags,
+@@ -1645,6 +1656,7 @@ static struct trace_event_functions trace_raw_data_funcs = {
+ static struct trace_event trace_raw_data_event = {
+ 	.type	 	= TRACE_RAW_DATA,
+ 	.funcs		= &trace_raw_data_funcs,
++	.name		= "raw_data",
+ };
+ 
+ static enum print_line_t
+@@ -1691,6 +1703,7 @@ static struct trace_event_functions trace_func_repeats_funcs = {
+ static struct trace_event trace_func_repeats_event = {
+ 	.type	 	= TRACE_FUNC_REPEATS,
+ 	.funcs		= &trace_func_repeats_funcs,
++	.name		= "func_repeats",
+ };
+ 
+ static struct trace_event *events[] __initdata = {
+diff --git a/kernel/trace/trace_probe.c b/kernel/trace/trace_probe.c
+index 4dc74d73fc1d..9356f3f2fdc0 100644
+--- a/kernel/trace/trace_probe.c
++++ b/kernel/trace/trace_probe.c
+@@ -1835,6 +1835,9 @@ int trace_probe_register_event_call(struct trace_probe *tp)
+ 				  trace_probe_name(tp)))
+ 		return -EEXIST;
+ 
++	if (!call->event.name)
++		call->event.name = call->name;
++
+ 	ret = register_trace_event(&call->event);
+ 	if (!ret)
+ 		return -ENODEV;
+diff --git a/kernel/trace/trace_syscalls.c b/kernel/trace/trace_syscalls.c
+index 9c581d6da843..3e7e10b691f5 100644
+--- a/kernel/trace/trace_syscalls.c
++++ b/kernel/trace/trace_syscalls.c
+@@ -441,8 +441,29 @@ static void unreg_event_syscall_exit(struct trace_event_file *file,
+ 	mutex_unlock(&syscall_trace_lock);
+ }
+ 
++/**
++ * trace_csum - a simple checksum generator
++ *
++ * This returns a checksum for data that should not generate
++ * a lot of collisions, but is trivial to read.
++ */
++static u32 __init trace_csum(void *data, u32 len)
++{
++	u32 r = 0, i;
++	char *p = data;
++
++	if (!data)
++		return 0;
++
++	for (i = 0; i < len; i++)
++		r = (r >> 31) + (r << 1) + p[i];
++
++	return (r << 4) + len;
++}
++
+ static int __init init_syscall_trace(struct trace_event_call *call)
  {
- 	struct trace_buffer *buffer;
-@@ -1823,6 +1825,7 @@ struct trace_buffer *__ring_buffer_alloc(unsigned long size, unsigned flags,
- 	buffer->flags = flags;
- 	buffer->clock = trace_clock_local;
- 	buffer->reader_lock_key = key;
-+	buffer->name = name;
++	u32 csum;
+ 	int id;
+ 	int num;
  
- 	init_irq_work(&buffer->irq_work.work, rb_wake_up_waiters);
- 	init_waitqueue_head(&buffer->irq_work.waiters);
-diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
-index 9aebf904ff97..7700ca1be2a5 100644
---- a/kernel/trace/trace.c
-+++ b/kernel/trace/trace.c
-@@ -9384,7 +9384,8 @@ allocate_trace_buffer(struct trace_array *tr, struct array_buffer *buf, int size
- 
- 	buf->tr = tr;
- 
--	buf->buffer = ring_buffer_alloc(size, rb_flags);
-+	buf->buffer = ring_buffer_alloc(tr->name ? tr->name : "global_trace",
-+					size, rb_flags);
- 	if (!buf->buffer)
+@@ -456,9 +477,17 @@ static int __init init_syscall_trace(struct trace_event_call *call)
+ 	if (set_syscall_print_fmt(call) < 0)
  		return -ENOMEM;
  
-@@ -9421,7 +9422,7 @@ static int allocate_trace_buffers(struct trace_array *tr, int size)
- 		return ret;
++	csum = (trace_csum(call->print_fmt, strlen(call->print_fmt)) << 4) + num;
++	call->event.name = kasprintf(GFP_KERNEL, "sc-%x", csum);
++	if (!call->event.name) {
++		free_syscall_print_fmt(call);
++		return -ENOMEM;
++	}
++
+ 	id = trace_event_raw_init(call);
  
- #ifdef CONFIG_TRACER_MAX_TRACE
--	ret = allocate_trace_buffer(tr, &tr->max_buffer,
-+	ret = allocate_trace_buffer(NULL, &tr->max_buffer,
- 				    allocate_snapshot ? size : 1);
- 	if (MEM_FAIL(ret, "Failed to allocate trace buffer\n")) {
- 		free_trace_buffer(&tr->array_buffer);
-@@ -10473,7 +10474,7 @@ __init static int tracer_alloc_buffers(void)
- 		goto out_free_cpumask;
- 	/* Used for event triggers */
- 	ret = -ENOMEM;
--	temp_buffer = ring_buffer_alloc(PAGE_SIZE, RB_FL_OVERWRITE);
-+	temp_buffer = ring_buffer_alloc("temp_buffer", PAGE_SIZE, RB_FL_OVERWRITE);
- 	if (!temp_buffer)
- 		goto out_rm_hp_state;
- 
+ 	if (id < 0) {
++		kfree(call->event.name);
+ 		free_syscall_print_fmt(call);
+ 		return id;
+ 	}
 -- 
 2.40.1
 
