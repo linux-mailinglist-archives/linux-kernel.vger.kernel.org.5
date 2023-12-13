@@ -2,106 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 910738112E4
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 14:31:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6277E8112E6
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 14:31:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379062AbjLMNbW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 08:31:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52304 "EHLO
+        id S1379120AbjLMNba (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 08:31:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35866 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378978AbjLMNbU (ORCPT
+        with ESMTP id S1378978AbjLMNb2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 08:31:20 -0500
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C792FE3
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 05:31:23 -0800 (PST)
-Received: by mail-wr1-x434.google.com with SMTP id ffacd0b85a97d-3333131e08dso7389562f8f.2
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 05:31:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1702474282; x=1703079082; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=gT1+x2jNVKALOWKjd6FkOQOQNIpKL6HodGq+cYC6MoM=;
-        b=qamF2V5PuQKFeC4U/9RO4DQ5g1CTlQrC9LpLjwo5ZY51pPFIUWO1gKuWWXFb55DxWh
-         DWQcEnTZW8qg+yM/moCYvmu/+GnrWk5Db4WKmR6IEelFjmt9USwwzp1b9gG3PQ4QQJcQ
-         h67wU+vlQnTmrOXQKqa0VSknRlL/Z5x+zn8RjC4jxTXgxBvWItd3jTI5j8YAj5ymHPmy
-         Si/ZJCGye5VqS5Vi84PvJaCdF+c2dG/obaJ99biIRNt31hxZPXahuhEBob6Qx239uR08
-         Mot+GhV/S8ZbLjvS72jtaBBCO4NuM55fa9+dNelWD9CrZ6eNBrtZBsdI2rYXOmF5KNIF
-         o27g==
+        Wed, 13 Dec 2023 08:31:28 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57AD5AB
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 05:31:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1702474293;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=dC8eAG+rdDz771HyG+6UKW1N21lq1IFcm8wzo/9j4Ag=;
+        b=gJJqpHn6P9DZfGowORawvXOVVYLVpHsrgWGfPv+L9Tw8bl/SgW2brt7Or4lI6SvhR/AYc+
+        RGKVpGBkSLbzBkTPpDmDt24zKaGS4Ll8D1g+nIUpNEe6tkAyZmcKDUvll3Rmq35D7nOBwy
+        XkHA/A1hvcafWQYiPQPyrBjJKnXcAKE=
+Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
+ [209.85.218.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-511-F4EK995WPh-5vfdLlp9vAA-1; Wed, 13 Dec 2023 08:31:32 -0500
+X-MC-Unique: F4EK995WPh-5vfdLlp9vAA-1
+Received: by mail-ej1-f71.google.com with SMTP id a640c23a62f3a-a1f93205e60so160562566b.3
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 05:31:31 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702474282; x=1703079082;
+        d=1e100.net; s=20230601; t=1702474291; x=1703079091;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=gT1+x2jNVKALOWKjd6FkOQOQNIpKL6HodGq+cYC6MoM=;
-        b=qM3Uc5arwYttlB1gc+s0vo+Yev/vlGRGA8jAzc25Q0wMibUjplkN4y32NBbSeIsoqn
-         ln5YkdZ9oJC3oqVwcP63XX+humIw1620hn/JI/cq3ONeYetUVfXRuh0Hc9xTJaRbtCor
-         qM7tXhL5PAn5rwLgNO8NyuGUQA0Vcql3BVtW8q2n2ujdYFkGYveC3cM7sozDAQ2UvDKT
-         L75tMMbGvnOREadUWeUkEcubs6UBj5ZkOsEEyQGurJxwXcuibM/6BDOiumMIHKmYv1xj
-         z3X1twTJpbXkTimHBdZ2YKlY/Ef2OvupllZRcunC3USFvI31t5pAtxo/SyON12SmfLa4
-         gSdw==
-X-Gm-Message-State: AOJu0Yxqz3wTrSnazF3vxTnnRd2InJlWof2mMpGc/1HEhBuzq9EpOy6T
-        DhrVqpKwWCtZzDJQ5yS9tbUMDg==
-X-Google-Smtp-Source: AGHT+IE+E11nyqtn0hlYZuSK8aM31EzC/BzujBRteSYaLrs3lmlbx+QqDB2/JYVsDQYVeP2ePPFp+Q==
-X-Received: by 2002:a05:600c:43d4:b0:40b:5e21:bde9 with SMTP id f20-20020a05600c43d400b0040b5e21bde9mr3652331wmn.120.1702474282158;
-        Wed, 13 Dec 2023 05:31:22 -0800 (PST)
-Received: from ?IPV6:2a05:6e02:1041:c10:c49e:e1a5:3210:b8c0? ([2a05:6e02:1041:c10:c49e:e1a5:3210:b8c0])
-        by smtp.googlemail.com with ESMTPSA id fc7-20020a05600c524700b0040c44cb251dsm12863860wmb.46.2023.12.13.05.31.21
+        bh=dC8eAG+rdDz771HyG+6UKW1N21lq1IFcm8wzo/9j4Ag=;
+        b=B+ShOHUR6WXclecGlQPge5Q8Waw9gwchDFK3SHtD3f26rZIQILdrymQBnf5BesC/9x
+         tk74VwQfY8hloid+aqs5MYMlODpVUYI6DAROSMPM4hSpc0vbsx1PQ1bCCAGVt5Tz6Mea
+         e11X6SGIr8cIeoQ2tTsXO/erIHL79simZlqASJQ2n/sQXGiZ9eaQjXRuzgD47o5JdEXS
+         FzMmLoL2YMHPed69/i8L5HN0oDyOiGw/l7FEE/1YsdOzg7P9qtAJXNfMmotc+xoNmkUk
+         7fO66WZKRakQijCIIceOTjJhGy38IkF2ZAve7hqJ4f/aojUscnFi+bFpQjPmCKXfXow/
+         WRuw==
+X-Gm-Message-State: AOJu0Yw3Mp0Y5gJodJ56e0i3QNU+OBmWYW3P2mGMhL5itnnyYo9brJn0
+        zh+sBvR6FJShxLWZ2O2vIc0XiX1uu9ArxT/YLEdsGRoP4uI0+w2DFKQOk8gwXfHn5onI4ZvfVXn
+        q1DVYqTFEsdmli8SImtjdf40b
+X-Received: by 2002:a17:906:b204:b0:a19:a1ba:8ce0 with SMTP id p4-20020a170906b20400b00a19a1ba8ce0mr3653207ejz.126.1702474290993;
+        Wed, 13 Dec 2023 05:31:30 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IEMRBYvxquPjKh2oUpzsQZ4YofuMOR/BRB0u9Mr+JzAm33S9FD+0/e2kUugVLkdr9DckuEDFQ==
+X-Received: by 2002:a17:906:b204:b0:a19:a1ba:8ce0 with SMTP id p4-20020a170906b20400b00a19a1ba8ce0mr3653199ejz.126.1702474290682;
+        Wed, 13 Dec 2023 05:31:30 -0800 (PST)
+Received: from ?IPV6:2001:b07:6468:f312:63a7:c72e:ea0e:6045? ([2001:b07:6468:f312:63a7:c72e:ea0e:6045])
+        by smtp.googlemail.com with ESMTPSA id tg10-20020a1709078dca00b00a178b965899sm7819372ejc.100.2023.12.13.05.31.27
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 13 Dec 2023 05:31:21 -0800 (PST)
-Message-ID: <c7e4a344-ef15-4316-ac41-6ec9c062eabe@linaro.org>
-Date:   Wed, 13 Dec 2023 14:31:21 +0100
+        Wed, 13 Dec 2023 05:31:30 -0800 (PST)
+Message-ID: <a2e25f7c-dd5b-4c88-b25a-4d8ddc8b7f29@redhat.com>
+Date:   Wed, 13 Dec 2023 14:31:26 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] thermal/core: Check get_temp ops is present when
- registering a tz
+Subject: Re: [PATCH RESEND v3] KVM: selftests: Initialise dynamically
+ allocated configuration names
 Content-Language: en-US
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     Zhang Rui <rui.zhang@intel.com>, Lukasz Luba <lukasz.luba@arm.com>,
-        "open list:THERMAL" <linux-pm@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-References: <20231213121322.2486967-1-daniel.lezcano@linaro.org>
- <CAJZ5v0gjeiCb9wBjdG+yWp5E_g2SPUMNNf-Stm_xkGau0Cbr2g@mail.gmail.com>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-In-Reply-To: <CAJZ5v0gjeiCb9wBjdG+yWp5E_g2SPUMNNf-Stm_xkGau0Cbr2g@mail.gmail.com>
+To:     Mark Brown <broonie@kernel.org>, Shuah Khan <shuah@kernel.org>,
+        Haibo Xu <haibo1.xu@intel.com>,
+        Andrew Jones <ajones@ventanamicro.com>,
+        Anup Patel <anup@brainfault.org>
+Cc:     kvm@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20231211-kvm-get-reg-list-str-init-v3-1-6554c71c77b1@kernel.org>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+In-Reply-To: <20231211-kvm-get-reg-list-str-init-v3-1-6554c71c77b1@kernel.org>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 13/12/2023 13:46, Rafael J. Wysocki wrote:
-> On Wed, Dec 13, 2023 at 1:13 PM Daniel Lezcano
-> <daniel.lezcano@linaro.org> wrote:
->>
->> Initially the check against the get_temp ops in the
->> thermal_zone_device_update() was put in there in order to catch
->> drivers not providing this method.
->>
->> Instead of checking again and again the function if the ops exists in
->> the update function, let's do the check at registration time, so it is
->> checked one time and for all.
->>
->> Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
+On 12/11/23 14:08, Mark Brown wrote:
+> When we dynamically generate a name for a configuration in get-reg-list
+> we use strcat() to append to a buffer allocated using malloc() but we
+> never initialise that buffer. Since malloc() offers no guarantees
+> regarding the contents of the memory it returns this can lead to us
+> corrupting, and likely overflowing, the buffer:
 > 
-> Looks good.  Do you want me to pick it up?
+>    vregs: PASS
+>    vregs+pmu: PASS
+>    sve: PASS
+>    sve+pmu: PASS
+>    vregs+pauth_address+pauth_generic: PASS
+>    X�vr+gspauth_addre+spauth_generi+pmu: PASS
+> 
+> Initialise the buffer to an empty string to avoid this.
 
-Yes please
+> diff --git a/tools/testing/selftests/kvm/get-reg-list.c b/tools/testing/selftests/kvm/get-reg-list.c
+> index be7bf5224434..dd62a6976c0d 100644
+> --- a/tools/testing/selftests/kvm/get-reg-list.c
+> +++ b/tools/testing/selftests/kvm/get-reg-list.c
+> @@ -67,6 +67,7 @@ static const char *config_name(struct vcpu_reg_list *c)
+>   
+>   	c->name = malloc(len);
+>   
+> +	c->name[0] = '\0';
+>   	len = 0;
+>   	for_each_sublist(c, s) {
+>   		if (!strcmp(s->name, "base"))
+>  			continue;
+>  		strcat(c->name + len, s->name);
 
-Thanks
+This can be fixed just by s/strcat/strcpy/, but there's also an ugly 
+hidden assumption that for_each_sublist runs at least one iteration of 
+the loop; otherwise, the loop ends with a c->name[-1] = '\0';
 
+>                 len += strlen(s->name) + 1;
+>                 c->name[len - 1] = '+';
+>         }
+>         c->name[len - 1] = '\0';
 
--- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+Now this *is* a bit academic, but it remains the fact that all the 
+invariants are screwed up and while we're fixing it we might at least 
+fix it well.
 
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
+So let's make the invariant that c->name[0..len-1] is initialized.  Then 
+every write is done with either strcpy of c->name[len++] = '...'.
+
+> ---
+> base-commit: b85ea95d086471afb4ad062012a4d73cd328fa86
+> change-id: 20231012-kvm-get-reg-list-str-init-76c8ed4e19d6
+> 
+> Best regards,
 
