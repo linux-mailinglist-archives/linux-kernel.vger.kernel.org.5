@@ -2,130 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 255BC811D85
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 19:53:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 52474811D8E
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 19:54:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379222AbjLMSxT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 13:53:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56946 "EHLO
+        id S233671AbjLMSyM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 13:54:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36540 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229671AbjLMSxR (ORCPT
+        with ESMTP id S233264AbjLMSyK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 13:53:17 -0500
-Received: from mail-pl1-f200.google.com (mail-pl1-f200.google.com [209.85.214.200])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 639D2B2
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 10:53:23 -0800 (PST)
-Received: by mail-pl1-f200.google.com with SMTP id d9443c01a7336-1d30efd624fso18556265ad.0
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 10:53:23 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702493603; x=1703098403;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=VTv6ovblVvKA179oLhmxkIJrl4mAKz3esEqgRyhM1CM=;
-        b=nFiIkKptvYNp7bmTPPm/4DyrMkeCDsom8X/ykQ3IduGVzmn8f9muOEUVyqkMB3Ka98
-         tniVagnfEGHHxdfIr1iRBkx+m4n9E4VGo5HBBhLueLk7orwDebEfvyIcX434rc4ULbfM
-         o+8Fw2yWGZ53dzghx1imkY5EQRpTd683atpk2Tho0k+4ujBSI5gvfr1VMla9puQFtXDs
-         4mxxSMbDB9rBs+CY5ePWhPrPzIffHHQnsvEYlKwZJtaqa0NanOpxiYCQGZwx0otMtZE6
-         Op+NUDtP3BDayoYHc0nfHDmM67RApsiuJ+9oymV2/2HuKiqACY/23N4dJ5Bfv8fh7Trx
-         EUXQ==
-X-Gm-Message-State: AOJu0YyjFfl0q8EwwwMuus0QciCfrT+M1/JU6GwX9/iTwyDvB4/tnkfH
-        FBey+gdH4uMz+vqmsAE+OaKTC73x7Q8PEPPEW+Ini3YlNtEB
-X-Google-Smtp-Source: AGHT+IGQtW1JMfTiwBqo43nYV6+CU59vOxaGjjvGuLQHPRQ+1JMfzGlc0LwPq7YpyiyME/HiTZHDVkLzy9quJKYTCbNIbc803R6G
+        Wed, 13 Dec 2023 13:54:10 -0500
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 194CEB2;
+        Wed, 13 Dec 2023 10:54:17 -0800 (PST)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 4F63840E00CB;
+        Wed, 13 Dec 2023 18:54:14 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+        header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id zcoG-nFJKqRJ; Wed, 13 Dec 2023 18:54:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+        t=1702493652; bh=e8bfGWqQN7jlEtFTw8d4r238b6Fxps9y+tq5Io28pc4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=EXaP/+FbQNMwCok52oVms60raXIzpNrcn6C1msPBFP16C6xPhDXgtGL+GYz+x5E+0
+         l6AOXSLgWbEaGwG8GAjkmDLoR6eqKJZO8cb+AMzilLSoMazjwWHgf9STXDsOKtEh76
+         HimWjiZwf62VtXnzdU6Z/2/8dbeYqs2do8BuszSxR4mjBRbw126uAIGlVgPlK6iU7+
+         E7qi+bgtiMQaDzPdAGwZBnQdfThGizgdwCDclUEBLi+PpyDwSfS9CvSoEGzAI04+lO
+         bZ9pROCPQIoAawMIS+9dPulUiYLN0zmTUh1unxtB/iShJTI5wI6BUtf3v59xd6eVN7
+         BY2lgPAGZl39yYzsNeHW6R2b650YUWykd0kkZdnMFPINLy8kiGqJpT7/FSii5eSHKC
+         d4BnojkUm/Xy85qs4br4KoR1EYV7PqXCFjeKA4f6BlkAZRrGzFgg94AmPGgiQyELo3
+         l4YkkdKX3BHrefOYp3eXpygrDFySXD9IoQIoGDUmWAoNTc3F3U3ojcKX9Cvt2C+cYO
+         2f/o5KYscSu/daZcGnfboAa3C8DCDuyMQ8ert2AgryZ72eHmRB96dbAQx3IxJuzghS
+         0f00YqTMHhOWdaR0Z3Qtel14h1zTzT7Lk8TA8LQJs3SYDbjxEqaRtsncV0HN4XMC94
+         nLjoNX1NlmyFijuh9Sr5lavU=
+Received: from zn.tnic (pd95304da.dip0.t-ipconnect.de [217.83.4.218])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+        (No client certificate requested)
+        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 73AE840E0140;
+        Wed, 13 Dec 2023 18:53:30 +0000 (UTC)
+Date:   Wed, 13 Dec 2023 19:53:25 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Michael Roth <michael.roth@amd.com>, kvm@vger.kernel.org,
+        linux-coco@lists.linux.dev, linux-mm@kvack.org,
+        linux-crypto@vger.kernel.org, x86@kernel.org,
+        linux-kernel@vger.kernel.org, tglx@linutronix.de, mingo@redhat.com,
+        jroedel@suse.de, thomas.lendacky@amd.com, hpa@zytor.com,
+        ardb@kernel.org, seanjc@google.com, vkuznets@redhat.com,
+        jmattson@google.com, luto@kernel.org, dave.hansen@linux.intel.com,
+        slp@redhat.com, pgonda@google.com, peterz@infradead.org,
+        srinivas.pandruvada@linux.intel.com, rientjes@google.com,
+        dovmurik@linux.ibm.com, tobin@ibm.com, vbabka@suse.cz,
+        kirill@shutemov.name, ak@linux.intel.com, tony.luck@intel.com,
+        marcorr@google.com, sathyanarayanan.kuppuswamy@linux.intel.com,
+        alpergun@google.com, jarkko@kernel.org, ashish.kalra@amd.com,
+        nikunj.dadhania@amd.com, pankaj.gupta@amd.com,
+        liam.merwick@oracle.com, zhi.a.wang@intel.com,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        Jarkko Sakkinen <jarkko@profian.com>
+Subject: Re: [PATCH v10 04/50] x86/cpufeatures: Add SEV-SNP CPU feature
+Message-ID: <20231213185325.GJZXn9pbqnjBGrQv4A@fat_crate.local>
+References: <20231016132819.1002933-5-michael.roth@amd.com>
+ <0b2eb374-356c-46c6-9c4a-9512fbfece7a@redhat.com>
+ <20231213131324.GDZXmt9LsMmJZyzCJw@fat_crate.local>
+ <40915dc3-4083-4b9f-bc64-7542833566e1@redhat.com>
+ <20231213133628.GEZXmzXFwA1p+crH/5@fat_crate.local>
+ <9ac2311c-9ccc-4468-9b26-6cb0872e207f@redhat.com>
+ <20231213134945.GFZXm2eTkd+IfdsjVE@fat_crate.local>
+ <b4aab361-4494-4a4b-b180-d7df05fd3d5b@redhat.com>
+ <20231213154107.GGZXnQkxEuw6dJfbc7@fat_crate.local>
+ <e4b8326b-5b7b-4004-b0e1-b60e63bdcdd1@redhat.com>
 MIME-Version: 1.0
-X-Received: by 2002:a17:902:f68d:b0:1d0:5d31:4671 with SMTP id
- l13-20020a170902f68d00b001d05d314671mr491502plg.4.1702493602983; Wed, 13 Dec
- 2023 10:53:22 -0800 (PST)
-Date:   Wed, 13 Dec 2023 10:53:22 -0800
-In-Reply-To: <0000000000004f4579060c68431b@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000703582060c68aeab@google.com>
-Subject: Re: [syzbot] [mptcp?] WARNING in mptcp_check_listen_stop
-From:   syzbot <syzbot+5a01c3a666e726bc8752@syzkaller.appspotmail.com>
-To:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, martineau@kernel.org,
-        matttbe@kernel.org, mptcp@lists.linux.dev, netdev@vger.kernel.org,
-        pabeni@redhat.com, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <e4b8326b-5b7b-4004-b0e1-b60e63bdcdd1@redhat.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot has found a reproducer for the following issue on:
+On Wed, Dec 13, 2023 at 06:35:35PM +0100, Paolo Bonzini wrote:
+> 1) patch 4 should have unconditionally cleared the feature (until the
+> initialization code comes around in patch 6); and it should have mentioned
+> in the commit message that we don't want X86_FEATURE_SEV_SNP to be set,
+> unless SNP can be enabled via MSR_AMD64_SYSCFG.
 
-HEAD commit:    2513974cc3e1 Merge branch 'stmmac-bug-fixes'
-git tree:       net
-console+strace: https://syzkaller.appspot.com/x/log.txt?x=116337fae80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=b50bd31249191be8
-dashboard link: https://syzkaller.appspot.com/bug?extid=5a01c3a666e726bc8752
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1119061ee80000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=110ca006e80000
+I guess.
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/fbf7f04433a8/disk-2513974c.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/f839967d18d6/vmlinux-2513974c.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/10f6c15a1f15/bzImage-2513974c.xz
+> 2) possibly, the commit message of patch 5 could have said something like
+> "at this point in the kernel SNP is never enabled".
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+5a01c3a666e726bc8752@syzkaller.appspotmail.com
+Sure.
 
-------------[ cut here ]------------
-WARNING: CPU: 0 PID: 5075 at net/mptcp/protocol.c:2999 mptcp_check_listen_stop.part.0+0x17b/0x240 net/mptcp/protocol.c:2999
-Modules linked in:
-CPU: 0 PID: 5075 Comm: syz-executor686 Not tainted 6.7.0-rc4-syzkaller-00167-g2513974cc3e1 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 11/10/2023
-RIP: 0010:mptcp_check_listen_stop.part.0+0x17b/0x240 net/mptcp/protocol.c:2999
-Code: 00 00 00 0f b6 45 12 88 44 24 20 44 0f b6 6c 24 20 bf 0a 00 00 00 44 89 ee e8 c1 66 24 f7 41 80 fd 0a 74 2b e8 86 6b 24 f7 90 <0f> 0b 90 e8 7d 6b 24 f7 48 b8 00 00 00 00 00 fc ff df 49 c7 04 04
-RSP: 0018:ffffc900039efb50 EFLAGS: 00010293
-RAX: 0000000000000000 RBX: ffff8880187b8000 RCX: ffffffff8a63221f
-RDX: ffff8880137a0000 RSI: ffffffff8a63222a RDI: 0000000000000001
-RBP: ffff888018b30000 R08: 0000000000000001 R09: 000000000000000a
-R10: 0000000000000007 R11: 0000000000000002 R12: 1ffff9200073df6a
-R13: 0000000000000007 R14: ffff8880187b8012 R15: 000000000000000a
-FS:  0000000000000000(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f8ccb1dd0f0 CR3: 000000000cd77000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- mptcp_check_listen_stop net/mptcp/protocol.c:3032 [inline]
- __mptcp_close+0x888/0xa10 net/mptcp/protocol.c:3020
- mptcp_close+0x28/0xf0 net/mptcp/protocol.c:3087
- inet_release+0x132/0x270 net/ipv4/af_inet.c:433
- inet6_release+0x4f/0x70 net/ipv6/af_inet6.c:485
- __sock_release+0xae/0x260 net/socket.c:659
- sock_close+0x1c/0x20 net/socket.c:1419
- __fput+0x270/0xbb0 fs/file_table.c:394
- task_work_run+0x14d/0x240 kernel/task_work.c:180
- exit_task_work include/linux/task_work.h:38 [inline]
- do_exit+0xa92/0x2ae0 kernel/exit.c:871
- do_group_exit+0xd4/0x2a0 kernel/exit.c:1021
- __do_sys_exit_group kernel/exit.c:1032 [inline]
- __se_sys_exit_group kernel/exit.c:1030 [inline]
- __x64_sys_exit_group+0x3e/0x50 kernel/exit.c:1030
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0x40/0x110 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x63/0x6b
-RIP: 0033:0x7f8ccb161d79
-Code: Unable to access opcode bytes at 0x7f8ccb161d4f.
-RSP: 002b:00007ffce6b9dbd8 EFLAGS: 00000246 ORIG_RAX: 00000000000000e7
-RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007f8ccb161d79
-RDX: 000000000000003c RSI: 00000000000000e7 RDI: 0000000000000000
-RBP: 00007f8ccb1dc290 R08: ffffffffffffffb8 R09: 00007ffce6b9ddf8
-R10: 00007ffce6b9ddf8 R11: 0000000000000246 R12: 00007f8ccb1dc290
-R13: 0000000000000000 R14: 00007f8ccb1dcce0 R15: 00007f8ccb133b40
- </TASK>
+> 3) Patch 23 should have been placed before the SNP initialization, because
+> as things stand the patches (mildly) break bisectability.
 
+Ok, I still haven't reached that one.
 
----
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
+> Understood now.  With the patch ordering and commit message edits I
+> suggested above, indeed I would not have picked up patch 4.
+
+In the future, please simply refrain from picking up x86 patches if you
+haven't gotten an explicit ACK.
+
+We could have conflicting changes in tip, we could be reworking that
+part of the code and the thing the patch touches could be completely
+gone, and so on and so on...
+
+Also, we want to have a full picture of what goes in. Exactly the same
+as how you'd like to have a full picture of what goes into kvm and how
+we don't apply kvm patches unless there's some extraordinary
+circumstance or we have received an explicit ACK.
+  
+> But with your explanation, I would even say that "4/50 needs to go
+> together with the rest" *for correctness*, not just to mean something.
+
+Yes, but for ease of integration it would be easier if they go in two
+groups - kvm and x86 bits. Not: some x86 bits first, then kvm bits
+through your tree and then some more x86 bits. That would be
+a logistical nightmare.
+
+And even if you bisect and land at 4/50 and you disable AIBRS even
+without SNP being really enabled, that is not a big deal - you're only
+bisecting and not really using that kernel and it's not like it breaks
+builds so...
+
+Thx.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
