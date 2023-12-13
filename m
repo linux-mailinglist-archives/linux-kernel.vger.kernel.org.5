@@ -2,104 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EB7FC81178D
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 16:41:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 40D858117B7
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 16:43:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442240AbjLMPla (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 10:41:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37826 "EHLO
+        id S1442539AbjLMPmu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 10:42:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53696 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1442177AbjLMPl3 (ORCPT
+        with ESMTP id S1442635AbjLMPm1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 10:41:29 -0500
+        Wed, 13 Dec 2023 10:42:27 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7226BBD
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 07:41:35 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7B580C433C8;
-        Wed, 13 Dec 2023 15:41:34 +0000 (UTC)
-Date:   Wed, 13 Dec 2023 10:42:18 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     LKML <linux-kernel@vger.kernel.org>,
-        Linux Trace Kernel <linux-trace-kernel@vger.kernel.org>
-Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Subject: [PATCH v2] tracing: Increase size of trace_marker_raw to max ring
- buffer entry
-Message-ID: <20231213104218.2efc70c1@gandalf.local.home>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 185DAD56
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 07:42:27 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 23AB6C433C9;
+        Wed, 13 Dec 2023 15:42:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1702482146;
+        bh=GcusTtDa/xUz/eWeRnRe/jGZ7M5e05jlT9WsJ3wX1Aw=;
+        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+        b=ffta2sAir1jM4m+st2G1XjKJwbMxZHgj5f/t5FIM8J+TcIpJrMm8ZOXt4C8IZbTZ0
+         4/6nUIZ29UyleFKeoEJh151Bb5llzinRSD+j7HupWYTI0AUbMDl3X+25t/AeCfiAPj
+         qRgrcm+QNlJaBI+gdjJ5TxOLmrGcWtiyXdzbHBVrLS2d3YhZhGOe0c3yDWjAAPGO+N
+         V96sYnmzxLWgMsOkZOCKuBHivNFd8XHm/eEGh0c9dhTahunm4NCvdY35yMb/XSiKhG
+         13Rb3fQ5R2FdKldI6F1mbkyCiZ/FM62m3qEwDmsjVfUh7Sar3EBewWHexBp8X3JSel
+         gGGnrJxo0E0BQ==
+From:   Lee Jones <lee@kernel.org>
+To:     Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <brgl@bgdev.pl>,
+        Andy Shevchenko <andy@kernel.org>, Lee Jones <lee@kernel.org>,
+        Jingoo Han <jingoohan1@gmail.com>, Helge Deller <deller@gmx.de>
+In-Reply-To: <20231207161513.3195509-2-andriy.shevchenko@linux.intel.com>
+References: <20231207161513.3195509-2-andriy.shevchenko@linux.intel.com>
+Subject: Re: (subset) [PATCH v2 1/1] backlight: hx8357: Convert to agnostic
+ GPIO API
+Message-Id: <170248214388.988965.2531555627636674132.b4-ty@kernel.org>
+Date:   Wed, 13 Dec 2023 15:42:23 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-Mailer: b4 0.12.3
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
+On Thu, 07 Dec 2023 18:14:32 +0200, Andy Shevchenko wrote:
+> The of_gpio.h is going to be removed. In preparation of that convert
+> the driver to the agnostic API.
+> 
+> 
 
-There's no reason to give an arbitrary limit to the size of a raw trace
-marker. Just let it be as big as the size that is allowed by the ring
-buffer itself.
+Applied, thanks!
 
-And there's also no reason to artificially break up the write to
-TRACE_BUF_SIZE, as that's not even used.
+[1/1] backlight: hx8357: Convert to agnostic GPIO API
+      commit: 7d84a63a39b78443d09f2b4edf7ecb1d586379b4
 
-Reviewed-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
----
-Changes since v1: https://lore.kernel.org/linux-trace-kernel/20231209175716.09ac455b@gandalf.local.home
-
-- Moved "if (size > ring_buffer_max_event_size(buffer))" to after
-  "buffer" is assigned, otherwise it creates an uninitialized warning
-  error. (kernel test robot)
-
- kernel/trace/trace.c | 14 +++++---------
- 1 file changed, 5 insertions(+), 9 deletions(-)
-
-diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
-index e07baf388ab3..95d02804d3ae 100644
---- a/kernel/trace/trace.c
-+++ b/kernel/trace/trace.c
-@@ -7359,9 +7359,6 @@ tracing_mark_write(struct file *filp, const char __user *ubuf,
- 	return written;
- }
- 
--/* Limit it for now to 3K (including tag) */
--#define RAW_DATA_MAX_SIZE (1024*3)
--
- static ssize_t
- tracing_mark_raw_write(struct file *filp, const char __user *ubuf,
- 					size_t cnt, loff_t *fpos)
-@@ -7383,19 +7380,18 @@ tracing_mark_raw_write(struct file *filp, const char __user *ubuf,
- 		return -EINVAL;
- 
- 	/* The marker must at least have a tag id */
--	if (cnt < sizeof(unsigned int) || cnt > RAW_DATA_MAX_SIZE)
-+	if (cnt < sizeof(unsigned int))
- 		return -EINVAL;
- 
--	if (cnt > TRACE_BUF_SIZE)
--		cnt = TRACE_BUF_SIZE;
--
--	BUILD_BUG_ON(TRACE_BUF_SIZE >= PAGE_SIZE);
--
- 	size = sizeof(*entry) + cnt;
- 	if (cnt < FAULT_SIZE_ID)
- 		size += FAULT_SIZE_ID - cnt;
- 
- 	buffer = tr->array_buffer.buffer;
-+
-+	if (size > ring_buffer_max_event_size(buffer))
-+		return -EINVAL;
-+
- 	event = __trace_buffer_lock_reserve(buffer, TRACE_RAW_DATA, size,
- 					    tracing_gen_ctx());
- 	if (!event)
--- 
-2.42.0
+--
+Lee Jones [李琼斯]
 
