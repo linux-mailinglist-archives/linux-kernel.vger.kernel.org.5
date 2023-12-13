@@ -2,171 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 00F01810858
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 03:46:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E5997810853
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 03:45:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378281AbjLMCql (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 21:46:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42572 "EHLO
+        id S1378292AbjLMCpH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 21:45:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33934 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232295AbjLMCqj (ORCPT
+        with ESMTP id S232295AbjLMCpE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 21:46:39 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD5B0A1;
-        Tue, 12 Dec 2023 18:46:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1702435606; x=1733971606;
-  h=from:to:cc:subject:in-reply-to:references:date:
-   message-id:mime-version;
-  bh=HeA8jqVHlKL8RuAwlVwqlEfSLUf01LuyOK0z4h52XBU=;
-  b=E9K1L8NkXiwvE8fDUPMWUEOiMS9H8D41NxJxxGD7pTJwcIqp9QlaqDsq
-   h0vDJhhzXywSBBP5IwyqZrCPG3szk7RQ/B+ZdJEbd/6DGfYw/+b6Ua5c4
-   JmN2q3cO72YukyM13Kq60uMkctSEzYqBlEm1anIxY6JbmNLjXgVZGDwje
-   sPDW3Q/xhfhTa8wlmaMBErgIkgVicdDupxArRzxvj7KxJ2hk0UpZR4nrT
-   bzXXWyVOzTdNLIdRZLZxJPZQMdPb23GxAiIiWQEtKpwPGPSuCSxWAT5Z3
-   GotW5FtEWlSxoeQwdStJKVDIFnD1ZY3AmcbR1Y7CSEll62/6WkBifmf7e
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10922"; a="8281547"
-X-IronPort-AV: E=Sophos;i="6.04,271,1695711600"; 
-   d="scan'208";a="8281547"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Dec 2023 18:46:45 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10922"; a="808005595"
-X-IronPort-AV: E=Sophos;i="6.04,271,1695711600"; 
-   d="scan'208";a="808005595"
-Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Dec 2023 18:46:35 -0800
-From:   "Huang, Ying" <ying.huang@intel.com>
-To:     Gregory Price <gregory.price@memverge.com>
-Cc:     Gregory Price <gourry.memverge@gmail.com>, <linux-mm@kvack.org>,
-        <linux-doc@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>,
-        <linux-api@vger.kernel.org>, <linux-arch@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <akpm@linux-foundation.org>,
-        <arnd@arndb.de>, <tglx@linutronix.de>, <luto@kernel.org>,
-        <mingo@redhat.com>, <bp@alien8.de>, <dave.hansen@linux.intel.com>,
-        <x86@kernel.org>, <hpa@zytor.com>, <mhocko@kernel.org>,
-        <tj@kernel.org>, <corbet@lwn.net>, <rakie.kim@sk.com>,
-        <hyeongtak.ji@sk.com>, <honggyu.kim@sk.com>,
-        <vtavarespetr@micron.com>, <peterz@infradead.org>,
-        <jgroves@micron.com>, <ravis.opensrc@micron.com>,
-        <sthanneeru@micron.com>, <emirakhur@micron.com>,
-        <Hasan.Maruf@amd.com>, <seungjun.ha@samsung.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        "Hasan Al Maruf" <hasanalmaruf@fb.com>, Hao Wang <haowang3@fb.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Zhongkun He <hezhongkun.hzk@bytedance.com>,
-        Frank van der Linden <fvdl@google.com>,
-        "John Groves" <john@jagalactic.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Subject: Re: [PATCH v2 00/11] mempolicy2, mbind2, and weighted interleave
-In-Reply-To: <ZXiDSrdNfbv8/Ple@memverge.com> (Gregory Price's message of "Tue,
-        12 Dec 2023 10:59:06 -0500")
-References: <20231209065931.3458-1-gregory.price@memverge.com>
-        <87r0jtxp23.fsf@yhuang6-desk2.ccr.corp.intel.com>
-        <ZXc74yJzXDkCm+BA@memverge.com>
-        <87plzbx5hz.fsf@yhuang6-desk2.ccr.corp.intel.com>
-        <ZXiDSrdNfbv8/Ple@memverge.com>
-Date:   Wed, 13 Dec 2023 10:44:35 +0800
-Message-ID: <87zfyestws.fsf@yhuang6-desk2.ccr.corp.intel.com>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+        Tue, 12 Dec 2023 21:45:04 -0500
+Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D986EA6
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 18:45:09 -0800 (PST)
+Received: by mail-pf1-x434.google.com with SMTP id d2e1a72fcca58-6cebcf8a48aso5181666b3a.3
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 18:45:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1702435509; x=1703040309; darn=vger.kernel.org;
+        h=mime-version:message-id:date:in-reply-to:subject:cc:to:from
+         :user-agent:references:from:to:cc:subject:date:message-id:reply-to;
+        bh=CJ7qwCmvq20mGgi3dRymJGPN14h9pbhwL4VM2txPZCM=;
+        b=ZcidFv8JCRaEhFx285fX5LJKtnAW/6xdQ+f7UfXQ943HmZyW9UeCMTAYCaHECv8vLb
+         URWXgHbvPOMeXQuHw0S2vjSjHuBlCXvquyzPVXx4sAqi1JBubDTEmBqHBx1KrJeEMFSr
+         062t+bhgVI5fKT3UeJt5TWjN/EyiUIycC4uMBVg7+ZpGfANAqH9sq327mW42WX36tCBA
+         EmOhUf9rvG1Eo7TCMc5XNLm9Olzb5gcmAmGaze1GIY+DTTPP25On2mTimeGQpBImvEr/
+         eUYhQKfZ/0EQF0sRexHfXempTf+gySR6FEDkr6mkUt0DHZ4wXN6L7dp0zbLaL0qsZsT+
+         vaEg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702435509; x=1703040309;
+        h=mime-version:message-id:date:in-reply-to:subject:cc:to:from
+         :user-agent:references:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=CJ7qwCmvq20mGgi3dRymJGPN14h9pbhwL4VM2txPZCM=;
+        b=vMk9HwqWaBvVI2JcZvtCCB64qTyvqjBQy6j8LoEHt6gMP1KJdgLadaKktpZf+Vxq1N
+         FIudn4BMPLNdKYtjEFFcddyNwXn8Hd+usc2IMzK4ITdzhEdVnLNCweqN13X+YkUGo59b
+         lLLbiWZzGUKZ8Jtmm6UN43VSrG75ZGlDE0mGvZmfmJdnHYh+DKWrxhs/sKHX+n8HHZpx
+         AOlo2W3CDySglDHZJgNFm+Mq4kNTbiqXkHFTN+caQ8n6tQTx9oLb+xJZ0gKnlO7DT/AF
+         +M45iVry7D2bxVudCFb2XbiknVjeGEjFtjOIrE/l90OUz8/tsrhhihlVQTZkBc14wrSK
+         XJFA==
+X-Gm-Message-State: AOJu0YzcYYD9BBQ1hbO0WYCSrro73AEGZq6n1nXy1R8DDGzxQacyFy43
+        ovsTA53FEqMwhoz2kSVE7pNgow==
+X-Google-Smtp-Source: AGHT+IGi//6HE3KINOZpirefGAX+e3jIHwZFWzUp/AR1xA1scaFysKSWvBw9/QjFkCNOqGCFGdEidA==
+X-Received: by 2002:a05:6a00:c81:b0:6cb:a2f4:8579 with SMTP id a1-20020a056a000c8100b006cba2f48579mr8585102pfv.15.1702435509333;
+        Tue, 12 Dec 2023 18:45:09 -0800 (PST)
+Received: from localhost ([2804:14d:7e39:8470:cddd:ffc9:f19e:a4dc])
+        by smtp.gmail.com with ESMTPSA id y72-20020a62ce4b000000b006cb7bdbc3besm9528817pfg.17.2023.12.12.18.45.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 Dec 2023 18:45:08 -0800 (PST)
+References: <20231122-arm64-gcs-v7-0-201c483bd775@kernel.org>
+ <20231122-arm64-gcs-v7-37-201c483bd775@kernel.org>
+User-agent: mu4e 1.10.8; emacs 29.1
+From:   Thiago Jung Bauermann <thiago.bauermann@linaro.org>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Arnd Bergmann <arnd@arndb.de>, Oleg Nesterov <oleg@redhat.com>,
+        Eric Biederman <ebiederm@xmission.com>,
+        Kees Cook <keescook@chromium.org>,
+        Shuah Khan <shuah@kernel.org>,
+        "Rick P. Edgecombe" <rick.p.edgecombe@intel.com>,
+        Deepak Gupta <debug@rivosinc.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Szabolcs Nagy <Szabolcs.Nagy@arm.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Florian Weimer <fweimer@redhat.com>,
+        Christian Brauner <brauner@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-doc@vger.kernel.org,
+        kvmarm@lists.linux.dev, linux-fsdevel@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-mm@kvack.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-riscv@lists.infradead.org
+Subject: Re: [PATCH v7 37/39] kselftest/arm64: Add a GCS stress test
+In-reply-to: <20231122-arm64-gcs-v7-37-201c483bd775@kernel.org>
+Date:   Tue, 12 Dec 2023 23:45:06 -0300
+Message-ID: <87zfyex1l9.fsf@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ascii
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Gregory Price <gregory.price@memverge.com> writes:
 
-> On Tue, Dec 12, 2023 at 03:08:24PM +0800, Huang, Ying wrote:
->> Gregory Price <gregory.price@memverge.com> writes:
->> 
->> >> For example, can we use something as below?
->> >> 
->> >>   long set_mempolicy2(int mode, const unsigned long *nodemask, unsigned int *il_weights,
->> >>                           unsigned long maxnode, unsigned long home_node,
->> >>                           unsigned long flags);
->> >> 
->> >>   long mbind2(unsigned long start, unsigned long len,
->> >>                           int mode, const unsigned long *nodemask, unsigned int *il_weights,
->> >>                           unsigned long maxnode, unsigned long home_node,
->> >>                           unsigned long flags);
->> >> 
->> >
->> > Your definition of mbind2 is impossible.
->> >
->> > Neither of these interfaces solve the extensibility issue.  If a new
->> > policy which requires a new format of data arrives, we can look forward
->> > to set_mempolicy3 and mbind3.
->> 
->> IIUC, we will not over-engineering too much.  It's hard to predict the
->> requirements in the future.
->> 
->
-> Sure, but having the mempolicy struct at least gives us more flexibility
-> than the original interface.
->
->> >> A struct may be defined to hold mempolicy iteself.
->> >> 
->> >> struct mpol {
->> >>         int mode;
->> >>         unsigned int home_node;
->> >>         const unsigned long *nodemask;
->> >>         unsigned int *il_weights;
->> >>         unsigned int maxnode;
->> >> };
->> >> 
->> >
->> > addr could be pulled out for get_mempolicy2, so i will do that
->> >
->> > 'addr_node' and 'policy_node' are warts that came from the original
->> > get_mempolicy.  Removing them increases the complexity of handling
->> > arguments in the common get_mempolicy code.
->> >
->> > I could probably just drop support for retrieving the addr_node from
->> > get_mempolicy2, since it's already possible with get_mempolicy.  So I
->> > will do that.
->> 
->> If it's necessary, we can add another struct for get_mempolicy2().  But
->> I don't think that it's necessary to add get_mempolicy2() specific
->> parameters for set_mempolicy2() or mbind2().
->
-> After edits, the only parameter that doesn't have parity between
-> interfaces is `addr_node` and `policy_node`.  This was an unfortunate
-> wart on the original get_mempolicy() that multiplexed the output of
-> (*mode) based on whether MPOL_F_NODE was set.
->
-> Example:
-> if (MPOL_F_ADDR | MPOL_F_NODE), then get_mempolicy() would return
-> details about a VMA mempolicy + the node of that address in (*mode).
->
-> Right now in get_mempolicy2() I fetch this unconditionally instead of
-> requiring MPOL_F_NODE.  I did not want to multiplexing (*mode) output.
->
-> I see two options:
-> 1) Get rid of MPOL_F_NODE functionality in get_mempolicy2()
->    If a user wants that information, they can still use get_mempolicy()
->
-> 2) Keep MPOL_F_NODE and mpol_args->addr_node/policy_node, but don't allow
->    any future extensions that create this kind of situation.
+I'm going a bit out-of-order to report a build failure in a test:
 
-3) Add another parameter to get_mempolicy2(), such as "unsigned long
-*value" to retrieve addr_node or policy_node.  We can extend it to be a
-"struct *" in the future if necessary.
+Mark Brown <broonie@kernel.org> writes:
 
-> I'm fine with either.  I originally aimed for get_mempolicy2() to be
-> all of get_mempolicy() features + new data, but that obviously isn't
-> required.
+> +// Recurse x20 times
+> +.macro recurse id
 
---
-Best Regards,
-Huang, Ying
+I get an assembler error here:
+
+gcc -nostdlib gcs-stress-thread.S -o /home/thiago.bauermann/src/linux/tools/testing/selftests/arm64/gcs/gcs-stress-thread
+gcs-stress-thread.S: Assembler messages:
+gcs-stress-thread.S:236: Error: unexpected end of file in macro `recurse' definition
+make[2]: *** [Makefile:24: /home/thiago.bauermann/src/linux/tools/testing/selftests/arm64/gcs/gcs-stress-thread] Error 1
+
+This is with gas from Ubuntu 22.04, which ships binutils 2.38.
+
+> +function recurse\id
+> +	stp	x29, x30, [sp, #-16]!
+> +	mov	x29, sp
+> +
+> +	cmp	x20, 0
+> +	beq	1f
+> +	sub	x20, x20, 1
+> +	bl	recurse\id
+> +
+> +1:
+> +	ldp	x29, x30, [sp], #16
+> +
+> +	// Do a syscall immediately prior to returning to try to provoke
+> +	// scheduling and migration at a point where coherency issues
+> +	// might trigger.
+> +	mov	x8, #__NR_getpid
+> +	svc	#0
+> +
+> +	ret
+> +endfunction
+> +.endmacro
+> +
+> +// Generate and use two copies so we're changing the GCS contents
+> +recurse 1
+> +recurse 2
+
+-- 
+Thiago
