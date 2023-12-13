@@ -2,218 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B0E280FBFD
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 01:09:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EB45780FBFF
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 01:10:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378039AbjLMAJS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 19:09:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55454 "EHLO
+        id S1377689AbjLMAKU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 19:10:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49556 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377704AbjLMAI6 (ORCPT
+        with ESMTP id S1377647AbjLMAKS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 19:08:58 -0500
-Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [IPv6:2a03:a000:7:0:5054:ff:fe1c:15ff])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16E28D6E;
-        Tue, 12 Dec 2023 16:08:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=linux.org.uk; s=zeniv-20220401; h=Sender:Content-Transfer-Encoding:
-        MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:
-        Reply-To:Content-Type:Content-ID:Content-Description;
-        bh=rvXeUqtEC+dRyenBVr0uZJ7uutUWHkARWVLiznoStTU=; b=A01MbGvsdycCUVwNSggJnOKrG4
-        FnmZb47R5fhWo6XRI14Jr6Np34m/QSuOOAZDAloM8Lfuon9BQ4FFZzXWRLpMNpt0Iz87M5sNXfLwj
-        bJAxA5OHeil8MPxAZUWE/pv3iGvehTekO4ajOEKWEO5cvLHtzWWKheEUN6k2yvWmxZ7gEJXeCL7ET
-        Hgio+iMND7jL3aL+z6hwDFmUzyrP9/WlkIG5gxJYiSsKBANG6KRwVLyBtgfbW9XnMILBx2Et53QTI
-        ThVPU10apMf0y2ezAWTHbm2aBVISQha1kwpVNV6gG17d4JjLKL1N/DLXo+OS7D8yWBbTQ+qPPLBNA
-        WIN80OCw==;
-Received: from viro by zeniv.linux.org.uk with local (Exim 4.96 #2 (Red Hat Linux))
-        id 1rDCny-00BX29-1d;
-        Wed, 13 Dec 2023 00:08:50 +0000
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     linux-fsdevel@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org
-Subject: [PATCH 4/4] minixfs: switch to kmap_local_page()
-Date:   Wed, 13 Dec 2023 00:08:49 +0000
-Message-Id: <20231213000849.2748576-4-viro@zeniv.linux.org.uk>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20231213000849.2748576-1-viro@zeniv.linux.org.uk>
-References: <20231213000656.GI1674809@ZenIV>
- <20231213000849.2748576-1-viro@zeniv.linux.org.uk>
+        Tue, 12 Dec 2023 19:10:18 -0500
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7951E83
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 16:10:24 -0800 (PST)
+Received: by mail-pl1-x62d.google.com with SMTP id d9443c01a7336-1d34ae77fbaso60975ad.0
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 16:10:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1702426224; x=1703031024; darn=vger.kernel.org;
+        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=/awqNNuuBVdOMOwDFb7/1nEW8nsApwi+stmH8yh+pvA=;
+        b=L2noTP3GJrJzyCfeQ5/yiu5FlEhFHMY2aRSM6xdpXoi1Nz3KvzqwoNQnz4ddzl9ZMF
+         LU5FBFswH996Lu84NVJqEnaVxcwrEr4ZG/hzS+eYT6c+izcNucMhRyBNnEi5WsJze+3W
+         dvIHde0PUhitl9ZdA1FKFt/alrD3PQDNF8TQusekMinjspgAJ4Jqf1hmPxWCy7r83EIb
+         vFR+UtCcb6acwiCzfJmQDpUIIkcDgDT6kGRKbHBh+HctOf7zaukf9kLNnpA9avN6CHnw
+         NYrtLpkRD/J4IuHjIFlbq0LZZUar5QbXJWcM3Hx6Ru06bIvO4hJ1mgVpc+j/quXa8YK9
+         aNDA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702426224; x=1703031024;
+        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=/awqNNuuBVdOMOwDFb7/1nEW8nsApwi+stmH8yh+pvA=;
+        b=dIci5eBOizW86/4sTVolgPm5+Ve0wK73Wum7VWWKqsK9WnDp5Ds8UwwNNj9fooF56i
+         JTgvvXqv8nxf4OW/sv905JeF2kVQfU7SMQkL00gaJY8Lk6fSnOz8WQrGWHLt6HtXazQE
+         7HFIYU2dMojyk4JbVBLDCCt2tAcZcUHKLRXYcpsUrfQTVu9sNN8diNnoBFUmAs45KwV5
+         pBfY/+QxftGtsGEyaYh05COZawTMTCrmExdyrY7/0BTyrghKMZMTGoB8EDAcWiUSZqSe
+         fJ1bm+FrR/vsiDlY/tznDj8dLjmp1cM3cMaAszHWEXtpTnEdH84ZXVyeya9eltWLmxzJ
+         yH7Q==
+X-Gm-Message-State: AOJu0Yx044XRHadywUP7TxCESm2xOohcurS+EmVtazhwBnJGXx07dkxe
+        45XQI5QfC6kYDBO+m0Tap/U0MA==
+X-Google-Smtp-Source: AGHT+IGcYgMZfthZW8oEln3UOI7eJLeysSJbN4H/5YvLwIiX4bJrWyLcr2xf3zrBbGW7JFZ5tRClKQ==
+X-Received: by 2002:a17:902:d2c2:b0:1d0:c25b:5733 with SMTP id n2-20020a170902d2c200b001d0c25b5733mr973517plc.18.1702426223687;
+        Tue, 12 Dec 2023 16:10:23 -0800 (PST)
+Received: from [2620:0:1008:15:fc81:e0ce:797b:3b4b] ([2620:0:1008:15:fc81:e0ce:797b:3b4b])
+        by smtp.gmail.com with ESMTPSA id h2-20020a170902704200b001d06b63bb98sm9178392plt.71.2023.12.12.16.10.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 Dec 2023 16:10:23 -0800 (PST)
+Date:   Tue, 12 Dec 2023 16:10:22 -0800 (PST)
+From:   David Rientjes <rientjes@google.com>
+To:     Mike Kravetz <mike.kravetz@oracle.com>
+cc:     Gang Li <gang.li@linux.dev>, David Hildenbrand <david@redhat.com>,
+        Muchun Song <muchun.song@linux.dev>,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, ligang.bdlg@bytedance.com
+Subject: Re: [RFC PATCH v2 0/5] hugetlb: parallelize hugetlb page init on
+ boot
+In-Reply-To: <20231212230813.GB7043@monkey>
+Message-ID: <55c6c1f6-0792-61c3-86ed-4729d4a3fdf5@google.com>
+References: <20231208025240.4744-1-gang.li@linux.dev> <996ba32c-78f0-1807-5e64-af5841a820e7@google.com> <20231212230813.GB7043@monkey>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Sender: Al Viro <viro@ftp.linux.org.uk>
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Again, a counterpart of Fabio's fs/sysv patch
+On Tue, 12 Dec 2023, Mike Kravetz wrote:
 
-Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
----
- fs/minix/dir.c   | 27 +++++++++++++--------------
- fs/minix/minix.h |  5 -----
- fs/minix/namei.c |  6 +++---
- 3 files changed, 16 insertions(+), 22 deletions(-)
+> On 12/12/23 14:14, David Rientjes wrote:
+> > On Fri, 8 Dec 2023, Gang Li wrote:
+> > 
+> > > Hi all, hugetlb init parallelization has now been updated to v2.
+> > > 
+> > > To David Hildenbrand: padata multithread utilities has been used to reduce
+> > > code complexity.
+> > > 
+> > > To David Rientjes: The patch for measuring time will be separately included
+> > > in the reply. Please test during your free time, thanks.
+> > > 
+> > 
+> > I'd love to, but what kernel is this based on?  :)  I can't get this to 
+> > apply to any kernels that I have recently benchmarked with.
+> 
+> I was able to apply and build on top of v6.7-rc5.
+> 
+> Gang Li,
+> Since hugetlb now depends on CONFIG_PADATA, the Kconfig file should be
+> updated to reflect this.
 
-diff --git a/fs/minix/dir.c b/fs/minix/dir.c
-index ccb6c47fd7fe..a224cf222570 100644
---- a/fs/minix/dir.c
-+++ b/fs/minix/dir.c
-@@ -70,9 +70,8 @@ static void *dir_get_page(struct inode *dir, unsigned long n, struct page **p)
- 	struct page *page = read_mapping_page(mapping, n, NULL);
- 	if (IS_ERR(page))
- 		return ERR_CAST(page);
--	kmap(page);
- 	*p = page;
--	return page_address(page);
-+	return kmap_local_page(page);
- }
- 
- static inline void *minix_next_entry(void *de, struct minix_sb_info *sbi)
-@@ -123,13 +122,13 @@ static int minix_readdir(struct file *file, struct dir_context *ctx)
- 				unsigned l = strnlen(name, sbi->s_namelen);
- 				if (!dir_emit(ctx, name, l,
- 					      inumber, DT_UNKNOWN)) {
--					dir_put_page(page);
-+					unmap_and_put_page(page, p);
- 					return 0;
- 				}
- 			}
- 			ctx->pos += chunk_size;
- 		}
--		dir_put_page(page);
-+		unmap_and_put_page(page, kaddr);
- 	}
- 	return 0;
- }
-@@ -189,7 +188,7 @@ minix_dirent *minix_find_entry(struct dentry *dentry, struct page **res_page)
- 			if (namecompare(namelen, sbi->s_namelen, name, namx))
- 				goto found;
- 		}
--		dir_put_page(page);
-+		unmap_and_put_page(page, kaddr);
- 	}
- 	return NULL;
- 
-@@ -255,7 +254,7 @@ int minix_add_link(struct dentry *dentry, struct inode *inode)
- 				goto out_unlock;
- 		}
- 		unlock_page(page);
--		dir_put_page(page);
-+		unmap_and_put_page(page, kaddr);
- 	}
- 	BUG();
- 	return -EINVAL;
-@@ -278,7 +277,7 @@ int minix_add_link(struct dentry *dentry, struct inode *inode)
- 	mark_inode_dirty(dir);
- 	err = minix_handle_dirsync(dir);
- out_put:
--	dir_put_page(page);
-+	unmap_and_put_page(page, kaddr);
- 	return err;
- out_unlock:
- 	unlock_page(page);
-@@ -324,7 +323,7 @@ int minix_make_empty(struct inode *inode, struct inode *dir)
- 		goto fail;
- 	}
- 
--	kaddr = kmap_atomic(page);
-+	kaddr = kmap_local_page(page);
- 	memset(kaddr, 0, PAGE_SIZE);
- 
- 	if (sbi->s_version == MINIX_V3) {
-@@ -344,7 +343,7 @@ int minix_make_empty(struct inode *inode, struct inode *dir)
- 		de->inode = dir->i_ino;
- 		strcpy(de->name, "..");
- 	}
--	kunmap_atomic(kaddr);
-+	kunmap_local(kaddr);
- 
- 	dir_commit_chunk(page, 0, 2 * sbi->s_dirsize);
- 	err = minix_handle_dirsync(inode);
-@@ -361,11 +360,11 @@ int minix_empty_dir(struct inode * inode)
- 	struct page *page = NULL;
- 	unsigned long i, npages = dir_pages(inode);
- 	struct minix_sb_info *sbi = minix_sb(inode->i_sb);
--	char *name;
-+	char *name, *kaddr;
- 	__u32 inumber;
- 
- 	for (i = 0; i < npages; i++) {
--		char *p, *kaddr, *limit;
-+		char *p, *limit;
- 
- 		kaddr = dir_get_page(inode, i, &page);
- 		if (IS_ERR(kaddr))
-@@ -396,12 +395,12 @@ int minix_empty_dir(struct inode * inode)
- 					goto not_empty;
- 			}
- 		}
--		dir_put_page(page);
-+		unmap_and_put_page(page, kaddr);
- 	}
- 	return 1;
- 
- not_empty:
--	dir_put_page(page);
-+	unmap_and_put_page(page, kaddr);
- 	return 0;
- }
- 
-@@ -455,7 +454,7 @@ ino_t minix_inode_by_name(struct dentry *dentry)
- 			res = ((minix3_dirent *) de)->inode;
- 		else
- 			res = de->inode;
--		dir_put_page(page);
-+		unmap_and_put_page(page, de);
- 	}
- 	return res;
- }
-diff --git a/fs/minix/minix.h b/fs/minix/minix.h
-index cb42b6cf7909..d493507c064f 100644
---- a/fs/minix/minix.h
-+++ b/fs/minix/minix.h
-@@ -64,11 +64,6 @@ extern int V2_minix_get_block(struct inode *, long, struct buffer_head *, int);
- extern unsigned V1_minix_blocks(loff_t, struct super_block *);
- extern unsigned V2_minix_blocks(loff_t, struct super_block *);
- 
--static inline void dir_put_page(struct page *page)
--{
--	kunmap(page);
--	put_page(page);
--}
- extern struct minix_dir_entry *minix_find_entry(struct dentry*, struct page**);
- extern int minix_add_link(struct dentry*, struct inode*);
- extern int minix_delete_entry(struct minix_dir_entry*, struct page*);
-diff --git a/fs/minix/namei.c b/fs/minix/namei.c
-index 20923a15e30a..d6031acc34f0 100644
---- a/fs/minix/namei.c
-+++ b/fs/minix/namei.c
-@@ -149,7 +149,7 @@ static int minix_unlink(struct inode * dir, struct dentry *dentry)
- 	if (!de)
- 		return -ENOENT;
- 	err = minix_delete_entry(de, page);
--	dir_put_page(page);
-+	unmap_and_put_page(page, de);
- 
- 	if (err)
- 		return err;
-@@ -242,9 +242,9 @@ static int minix_rename(struct mnt_idmap *idmap,
- 	}
- out_dir:
- 	if (dir_de)
--		dir_put_page(dir_page);
-+		unmap_and_put_page(dir_page, dir_de);
- out_old:
--	dir_put_page(old_page);
-+	unmap_and_put_page(old_page, old_de);
- out:
- 	return err;
- }
--- 
-2.39.2
+Gotcha, thanks.
 
+I got this:
+
+ld: error: undefined symbol: padata_do_multithreaded
+referenced by hugetlb.c:3470 (./mm/hugetlb.c:3470)
+              vmlinux.o:(gather_bootmem_prealloc)
+referenced by hugetlb.c:3592 (./mm/hugetlb.c:3592)
+              vmlinux.o:(hugetlb_hstate_alloc_pages_non_gigantic)
+referenced by hugetlb.c:3599 (./mm/hugetlb.c:3599)
+              vmlinux.o:(hugetlb_hstate_alloc_pages_non_gigantic)
+
+So, yeah we need to enable DEFERRED_STRUCT_PAGE_INIT for this to build.
+
+On 6.6 I measured "hugepagesz=1G hugepages=11776" on as 12TB host to be 
+77s this time around.
+
+A latest Linus build with this patch set does not boot successfully, so 
+I'll need to look into that and try to capture the failure.  Not sure if 
+it's related to this patch or the latest Linus build in general.
