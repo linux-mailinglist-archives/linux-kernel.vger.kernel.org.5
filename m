@@ -2,254 +2,229 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D1AC8115CF
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 16:08:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 843748115D2
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 16:10:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442220AbjLMPIe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 10:08:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60628 "EHLO
+        id S1442223AbjLMPKC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 10:10:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33572 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1442172AbjLMPIc (ORCPT
+        with ESMTP id S1442095AbjLMPJ7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 10:08:32 -0500
-Received: from mail-qt1-x830.google.com (mail-qt1-x830.google.com [IPv6:2607:f8b0:4864:20::830])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FFA0A0
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 07:08:38 -0800 (PST)
-Received: by mail-qt1-x830.google.com with SMTP id d75a77b69052e-425a1e571f0so41508691cf.3
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 07:08:38 -0800 (PST)
+        Wed, 13 Dec 2023 10:09:59 -0500
+Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91D17B0;
+        Wed, 13 Dec 2023 07:10:05 -0800 (PST)
+Received: from pps.filterd (m0333520.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3BDERBp9006290;
+        Wed, 13 Dec 2023 15:09:42 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
+ subject : to : cc : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=corp-2023-11-20;
+ bh=f62rBtoB0l4C/RfzWe2QQjrskkz8oZsnk2LUnqf75Q0=;
+ b=QulKjfwkh6ghx3htaVD5H+iaE9d65yBOC4T4ZbShAOm+8/KO7YdrSWHn5iEz/F91SW70
+ ABqpdiYVJW7Bm2G7hCmD/2pFcUpkyfVrwImGZGRK1ZRe7mHBEZjYJzDQDh0fUiJmDoXs
+ msgDro8KTYWAs/vGIzttPchSqYrZz6cNLyejyvfoz2OpkpNJRe1fLZyfrm2dRCz2Nq7R
+ ekUq1+Uv55S/+wHmUciTz0W9Q3hGyR1rdu5ECoO+/ePM9TUugKqDJIgMKm5vj9Ty8ycT
+ Thnx93ackS0NV6fmdiqParV0+8zKoauhHRfWenf3M8780RJLWX/HAh4toCMx0k7BdqYI cw== 
+Received: from phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta03.appoci.oracle.com [138.1.37.129])
+        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3uvg9d8h3c-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 13 Dec 2023 15:09:42 +0000
+Received: from pps.filterd (phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+        by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 3BDEhQw6012799;
+        Wed, 13 Dec 2023 15:09:41 GMT
+Received: from nam11-co1-obe.outbound.protection.outlook.com (mail-co1nam11lp2169.outbound.protection.outlook.com [104.47.56.169])
+        by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3uvep8dx9b-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 13 Dec 2023 15:09:41 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=KYza6yKXClZqZ3qJoJEceBhqMfwXVJld93mtXP2ES5Dq95FbdEsX8Yz63Pl8npVmwz6wldKKuoyb6EU2R5O3MwMe8EtCm/nnPTGcKO/FsXzxjoMvkA7b3ChbYgr0Ktz59Kzc0gbJYNO/t7K38rrgEMqPF+Ed5dNxZaeYeijudgKC/53HF15PGap20AWkvuJR/INz5QXn5cvlOnJjO9dRbekm06Ma2z5mfjXOQqcZFxgBzpROj1uiLrEGs/IB7bNSL9IzNr+E+/sNU92Ha8xrMORj6OsiYx8kajqW21tYe/5XnD+7NaxepkHmOL9AbU9e2YXkjF4RiQAvyexcDu9cZA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=f62rBtoB0l4C/RfzWe2QQjrskkz8oZsnk2LUnqf75Q0=;
+ b=FtzjA7Rq5aEZbqJ/1C/6d4Z8ElAmLagNRaHZxEdzsX4/VwWGeFnEL75Lg6EnRRZfIAXgchJmmWREY0tYPHcRsMAFK5obug+/WVvxMwpGBN6iRFqYFonyVH7vH9/vG7/wbLQzau4S9xTNbyVtDDxvkfEMH0TmoGY/1UF5ly15wGvxhO3bue0LMYSp07JgScW+pE188WOkJrObPwOqwY2yi7EPN81M5Gu7MQEQSdkY9i9Ucb5oqSCkSK2O4uLv6yEKU6soPTe0Wxg8zhrBxKdZ+HO+GcTkTpOuAe5xIIjV30ISgmXW+JK7YTLI9SKhMxwu0cLh3TO2xRCL+B9zldoQKw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=maine.edu; s=google; t=1702480117; x=1703084917; darn=vger.kernel.org;
-        h=mime-version:message-id:subject:cc:to:date:from:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=VWpfNRmXJcxOWNkHye+Wl0H5eT0b+/UhE9icjmwdc9c=;
-        b=FKv4m5ZelyfVOCcSu7ISqv8Wr34aCxoSFNjPcBB63lS2+r8njfAAhuklDi7TkIURgi
-         tO/V6R44AvackEIeIHGulXX0CBZUdyAliuKaff5WXHZEX9PPFRI5TagvHxw4VXxX66ki
-         gHegySQOo0RH6CLFC8PuiuIqQGmnvmoPIGR7o=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702480117; x=1703084917;
-        h=mime-version:message-id:subject:cc:to:date:from:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=VWpfNRmXJcxOWNkHye+Wl0H5eT0b+/UhE9icjmwdc9c=;
-        b=cH0zo3CE0uzsf0eSchRyy4nCM1tapHe9uy7amsFamLyL65Mbn9a2lW47RIE/1MDnV/
-         XE9FWYqtbdGfIe4MMn5lfUw7J5ipVQht7j2/rs/yY2lbicM3N/Bhs2fZXkHe29lkUQRR
-         lpp0px8PrtFWodzs1E+JgJs2I+UvD8HKS88qYcdAXFHu0MQmq4lWDQ+po90jEoWTOdCv
-         VxjQEbmAyaZq0pOwI5/urLUgUE0caC4dWh3iu9nPWy1NFgQQRt6cJZviEOfuLPwUY129
-         Z+GRkGoBvOh6DCS0TbgPEBhtdmGo6kimPYBYKMK+Jku1vtRZnbLAHuadVskW+/BOVwOc
-         s7jw==
-X-Gm-Message-State: AOJu0Yzx87KDeUPY1mdrVyVViTpWpn/RA8ytKU8yvUS1ss9C0AAQ0nlt
-        qwYb0z/q//OIy5mnUT0SQ90hJg==
-X-Google-Smtp-Source: AGHT+IEhMiUPSmDLDJi6L65D3bVKmMFo74cNEP1kSSeEbPxyh8c/UEVMaVe+WTDqG09GBwu0acJuyg==
-X-Received: by 2002:a05:622a:1309:b0:425:9426:91aa with SMTP id v9-20020a05622a130900b00425942691aamr9859117qtk.34.1702480117420;
-        Wed, 13 Dec 2023 07:08:37 -0800 (PST)
-Received: from macbook-air.local (weaver.eece.maine.edu. [130.111.218.23])
-        by smtp.gmail.com with ESMTPSA id o15-20020ac8698f000000b0042388bce404sm4985441qtq.57.2023.12.13.07.08.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Dec 2023 07:08:37 -0800 (PST)
-From:   Vince Weaver <vincent.weaver@maine.edu>
-X-Google-Original-From: Vince Weaver <vince@maine.edu>
-Date:   Wed, 13 Dec 2023 10:08:35 -0500 (EST)
-To:     peterz@infradead.org, mingo@redhat.com, acme@kernel.org,
-        mark.rutland@arm.com,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        jolsa@kernel.org, namhyung@kernel.org, irogers@google.com,
-        adrian.hunter@intel.com
-cc:     linux-kernel@vger.kernel.org
-Subject: [perf] vsyscall, possible circular locking dependency detected
-Message-ID: <30bcec9b-30ef-ad13-ec0b-59c6b94b05d1@maine.edu>
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=f62rBtoB0l4C/RfzWe2QQjrskkz8oZsnk2LUnqf75Q0=;
+ b=rnj95ZPAkIHuXcuOYzusFqMbOfaFcue/6vllDg0w0foVG9UzMIn2g4VOq2o9d8DXmVH+BjMHHk90NbLBtkO01DKI55OxX98TUTNp3blDP5Ri87UKOL1DJXVK4krrNnQYVHciGIBdwRAK+dEpioDsUgJUbJmA3l64SKfK7kYYAsM=
+Received: from PH0PR10MB5433.namprd10.prod.outlook.com (2603:10b6:510:e0::9)
+ by BY5PR10MB4370.namprd10.prod.outlook.com (2603:10b6:a03:20b::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7091.26; Wed, 13 Dec
+ 2023 15:09:39 +0000
+Received: from PH0PR10MB5433.namprd10.prod.outlook.com
+ ([fe80::5997:266c:f3fd:6bf4]) by PH0PR10MB5433.namprd10.prod.outlook.com
+ ([fe80::5997:266c:f3fd:6bf4%4]) with mapi id 15.20.7091.022; Wed, 13 Dec 2023
+ 15:09:39 +0000
+Message-ID: <e07c1f0f-19e3-4af8-9d57-fa66d50edec2@oracle.com>
+Date:   Wed, 13 Dec 2023 16:09:34 +0100
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] dcache: remove unnecessary NULL check in dget_dlock()
+Content-Language: en-US
+To:     Al Viro <viro@zeniv.linux.org.uk>
+Cc:     Christian Brauner <brauner@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-doc@vger.kernel.org, Nicholas Piggin <npiggin@gmail.com>,
+        Waiman Long <longman@redhat.com>
+References: <20231106134417.98833-1-vegard.nossum@oracle.com>
+ <fb2cf7c5-cced-4ea3-bf5a-a442a0e64bda@oracle.com>
+ <20231213150515.GM1674809@ZenIV>
+From:   Vegard Nossum <vegard.nossum@oracle.com>
+Autocrypt: addr=vegard.nossum@oracle.com; keydata=
+ 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 8A==
+In-Reply-To: <20231213150515.GM1674809@ZenIV>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: PA7P264CA0067.FRAP264.PROD.OUTLOOK.COM
+ (2603:10a6:102:2de::12) To PH0PR10MB5433.namprd10.prod.outlook.com
+ (2603:10b6:510:e0::9)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH0PR10MB5433:EE_|BY5PR10MB4370:EE_
+X-MS-Office365-Filtering-Correlation-Id: 0aeba598-1ede-4f28-152b-08dbfbed86cd
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: QbkzUEEjSPhuLOj55mF2hrOURjeTrBLAeIlTzWuC+BaKMpUnJ6gKTSn2ktjn/5NZEgA6ntRytS6Ryn08EMQ9VBD6hHYmkOBhnCgNJc1u5wffZVvz6KpM+JQwgUnn0kz96YFGwCuz1Uv/DKlh+mkinrvMo/HetrokDvn3DP1L/FtUWCoNEmP5Zi5ryXWR6AyVCbj6+t8Xggh4HG/MHjv6SSXMhysToepJ3vlyVSACWg+iSFEnyk0esJYw6VaDFFEz/ZwGZ9joWoLDO1bdoyC1vflpdsoUIy6kYIDgl1StkTqby+/8h6zGeR6hTWFpIVfehwE7IDNVWRqSPHHTBCIx3rkd2OFD2u0RAjNf2oXBqXyHOlQjA87KnE9ERVygfx/9Pr2/xtOYSqAVDNqZ+58qzxt9PFsz6Ct6HdXIk7rwJag/kY5J0lAMFRWJmrveyoJU9k7JQHZwxOXBIlgX3r8Didq2i2M9Gzmo9Scmrtn2p3niHARsoZrhhX3HfjaALeOv0KsaGZivfmNHMeuEVazDM0QIJQN9A44uqxT+Xg+TgH17Sbs9u6jO8AOKfwk/iM2zK49K3fE0XTBWHdyFVv5i1dnmgsh2Sf2E5fIq01NTWzo6dAiQLL+bH9bl2+VrQwZ+o4QUpjYbbIYn0pjfRGUigw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB5433.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(346002)(136003)(366004)(396003)(39860400002)(230922051799003)(451199024)(186009)(1800799012)(64100799003)(31686004)(2616005)(26005)(6666004)(6512007)(6506007)(86362001)(31696002)(36756003)(38100700002)(5660300002)(8936002)(8676002)(44832011)(4326008)(53546011)(83380400001)(66476007)(54906003)(66556008)(66946007)(6916009)(41300700001)(4744005)(2906002)(316002)(6486002)(478600001)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?NVJKa0ppanBEc0dHUDlGTEVwdVM4K1NTVDk1cmE5QXhGSFdSUlNETGkvQXpC?=
+ =?utf-8?B?U05mOGh3a0RPbE9BWDJrbDRDVnFqenpQQTgySk5Hby9aK2kxQkVhNlRRTms2?=
+ =?utf-8?B?Vnh0RWNEUjVwcDg1d3U3bkNDdS9sYldtZzJrcnlqc0VkMmR0dDVJbm00Q0ZC?=
+ =?utf-8?B?YzBueHNNZXN1Q24vdS85a0Y3cHNaeTJGNEs3UHAyWGVMTE9HL0FJZk9SdmNR?=
+ =?utf-8?B?K25URU5CMnduNlRuVndwTUduSVpwUUFVK2lDQVBoeWRGOFpPaWFXc1pBNzYz?=
+ =?utf-8?B?b2ovbGFIeWFPWWRYMXRqczNuYlo3b0lFWlhhdllXb2NZTlZocE5sN3pjQ0di?=
+ =?utf-8?B?bFVwTXFQVnpYaUVVcGJKY1o0bGJBU0tPeFVEUHNWaUpJWm1KVFFEa1BOZ1FM?=
+ =?utf-8?B?ODdhbmVOZnJ0c0hqSXY1dEhGM1FPRmV4bFphQU9oTU1xUzNHR1F5ZXFvdUJZ?=
+ =?utf-8?B?c2J5UkdKanFROG1Tc3NkQWRMWHp6d3FlTFE2TzBGZkpicVJlem1MbUVIR2VW?=
+ =?utf-8?B?eGtMN0hyZFEycTFRdUxyWEdMZXJyR3Z0Z1dYbEF1bDU0bGtrQWRIc1hzL3Nh?=
+ =?utf-8?B?OHQ3VmdHQ1dYNlFBRVcrSzF5TXZzanBvdmhTSVBUZjVvUE5LVlpxTEsxdm83?=
+ =?utf-8?B?YXQzZk9WbVBBQWF3Ry9wLzBPTDF3ZDJad1RNcEdyeWdvd1hTVjN6UzZvSTc5?=
+ =?utf-8?B?d2dUV0tSQTdUUzJOUHNCTGtCcFlHaGVLMnFQeTRlakwwNjhsV0duSkIwbyt6?=
+ =?utf-8?B?M1BoZm5ReW5jUDBsdi9mUytBNFBoUS9INGs3Q1BVK0NwY0NMNGVQUWpqUlN2?=
+ =?utf-8?B?OXZsQllsNTU0bERGVGNDZFozdTIyTUx3RU9MUDVXZ3FRMzJkM2ZzcTdyWkgz?=
+ =?utf-8?B?L2ROZUNmVW5zUHpsMDJCQWl2OENOMVZwVmZEdWx5ZHVWS1FEbG1YcWluMUVh?=
+ =?utf-8?B?NXlaTWptT1IxTGNCVmE2WTd5QUxrcXlXV245ckhuZXlTS005K05DRVAwSFlr?=
+ =?utf-8?B?Sm9ubUVvK3plRjJxWVpEdFhaeUo0OVMyaXpIbmtmRGhDdVpXeUVDVGc3aUxh?=
+ =?utf-8?B?bHZCbWxhTHMvR0hBbXdRUUxEc00rVGMraDVVVDVVYitQbmRVWDVkb3piZXFG?=
+ =?utf-8?B?anpkemNoQ2MwcVAxTTQzNFI0em1aZWQyenNoYmZZeXdtcXo1cEZnYWJtMkhQ?=
+ =?utf-8?B?aFdaY1RZNExMeEExR2s5bnpGcjBMczZOV2xiaXN2eXpxZFhlYUxlTDNVd3lO?=
+ =?utf-8?B?ZklCTU9yNk1Lcm5ES2pqWk1nSml4WlRyWWxUSnlFVEg0NXhXcmV0cklJMzdD?=
+ =?utf-8?B?RUd5MFJtWXVJN2FSUTNNcHZxWHEweDY2dDQrc1BGRTNJSWk5V2RxVG12a3hY?=
+ =?utf-8?B?cmFpTDQzMGtFa3hWdzFqVmovakg0amhjRExRNC9TT280TTZaeU9oWkZ4M21v?=
+ =?utf-8?B?UnR0bmd1azdUcnpxemREYmtYK2o1cFZtMUhMK3lkbXVDclJwa3BEb0hNOGt3?=
+ =?utf-8?B?N05FMGJ2Um9TWEtYQzh3WkorTEEwTkZUbDRnRUcySVcvZW9mVXFpK05pREgw?=
+ =?utf-8?B?ZHhQUGtQNWZoeVMxNCttSnQxcEthQmQwZDFwdEtJU2hoVlpoZXowZUl0WkxP?=
+ =?utf-8?B?RGlVOGdpclN2U0VwYVhUM21ZV01tOFpVWGNhWktiT2lGc3FEZldVcHdRT1d2?=
+ =?utf-8?B?TUNvZGZ3MnhOQ0E4a2daUTU4M2ZMUTRacVNjWGk5QzBMQWdDdTYvYXV0OEdD?=
+ =?utf-8?B?RlhBS0NkaDJHY1REQ0p5YTNzZitoT3ZhdHAxdjdHQWQvQVJ3NzZrQytPc21Q?=
+ =?utf-8?B?SnAxRmY4QUxOcisyci8xR052bWtEUHJmUklhSTlqcGtVVHp3NnY3eXNKdnp6?=
+ =?utf-8?B?UnVZUUZsY2tWckRCdHNzZTJzaUxnak1PcmZMZUJqUWY0bDliR0hhcmI3L2hE?=
+ =?utf-8?B?YU4zbU11N1htUEozLzg5QmNXTjdDbWQ0aXdFeHlsbCtpakY5TDBJQk9vNEVX?=
+ =?utf-8?B?RC9IcmlZMlllV3llc0JrU1RLSlpjbTUvWWxwODBrcklGdDA2UitxWWdKZXlK?=
+ =?utf-8?B?eExXL2Z5YTdKVHA0aVQ2Mk5RVkxoL1BKb2xUN2phTXhKbzljbGlpRWV6dmdT?=
+ =?utf-8?B?SW45R0hqR2pPVXR0WjYwVW9jbDNXRHdBY3ArWjhsOUMwYmx0Y2hJL3FFWFVO?=
+ =?utf-8?B?d0E9PQ==?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: OIYYa98gxUZcWBTrHvqQs+E9M6/A0jguMOv7OGsauK716Jsu6BUlHcf3kYKYFI3k0La9AKIIyF52RD27oHAi/c1h9D2JHsKkyMW8RpuRTEPOprK1Kw5Npnjz05f9HWPcGGgWINnbuGJZ8yJOxrXuDdGCXVWYlj/gJeW2s8HaOoYOqS2UCMdq5ql0GLYOQ6EI4EKwTJLjp5eBgyaY//hnC+VxMZilu0WRzQ772s4KwVdj7aRQWbGQi7JfBkP+rZ++Mpfm9ajNjY43eAlNDDp5jVP40ZXDIBoi/hwa6DspNdbOOqsc+6/PZzvZkYeJ//5jKo6KRUIvpDiLsa+zYT0+UeyUj1Vq9RQUtyRXyI4k2CFK6uEFc3Ut57IZZYZMGspT0aieJWlEIhoLoXZ0QZN7UoytGFVlIliG+tO6IEadSiiKkf0eNtdP9Mz/q4qCHvjA+/w7rpxfSMTQ6NFyycpF4Rqde0OnnzLv0jJInaKfUocnojCm3b21DcHQeY28Rx4oE39rsVlbOQYkVhUuUyjPb+ts+F25e6clmNwXJwmRBObWhLF2xfrnJIMIZyPXirOJOLciOORxUfP1Ek1YiYKRzAVPqTMwgpdFYpRnMrQKnrk=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0aeba598-1ede-4f28-152b-08dbfbed86cd
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB5433.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Dec 2023 15:09:39.1552
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: vXddW0efT195ZdC8qn3raWBSpxwB1XB6giHZdLRt8mABULuHbTcUDuC54nudd/LvsXqZ+HK+KJY7HEbtNy5Im/Rqn2WSq8pYn1SEEhNcxkg=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR10MB4370
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-13_08,2023-12-13_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 bulkscore=0 spamscore=0
+ mlxscore=0 adultscore=0 phishscore=0 malwarescore=0 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311290000
+ definitions=main-2312130107
+X-Proofpoint-GUID: TlbXwvn16BZpFYVmxwm-UXylbgsJTYRI
+X-Proofpoint-ORIG-GUID: TlbXwvn16BZpFYVmxwm-UXylbgsJTYRI
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello
 
-I recently added vsyscall fuzzing support to the perf_fuzzer and it gave 
-me this dump when fuzzing on a haswell machine running current git
-(6.7.0-rc5+)
+On 13/12/2023 16:05, Al Viro wrote:
+> On Wed, Dec 13, 2023 at 03:40:33PM +0100, Vegard Nossum wrote:
+>> [Fixed up a couple of bad addresses in Cc]
+>>
+>> Hi,
+>>
+>> I didn't get a response to this v2 of the patch below and I don't see it
+>> in vfs.git.
+>>
+>> Was there something wrong or is it just awaiting review? Is there
+>> anything I can do or help with? I would be happy to try to review other
+>> patches if there is anything outstanding.
+> 
+> commit 1b6ae9f6e6c3e3c35aad0f11b116a81780b8aa03 (work.dcache)
+> Author: Vegard Nossum <vegard.nossum@oracle.com>
+> Date:   Mon Nov 6 14:44:17 2023 +0100
+> 
+>      dcache: remove unnecessary NULL check in dget_dlock()
+> 
 
-[12559.226693] ======================================================
-[12559.232906] WARNING: possible circular locking dependency detected
-[12559.239116] 6.7.0-rc5+ #1 Tainted: G        W         
-[12559.244286] ------------------------------------------------------
-[12559.250493] perf_fuzzer/284551 is trying to acquire lock:
-[12559.255923] ffff88800aff65d8 (&sighand->siglock){-.-.}-{2:2}, at: force_sig_info_to_task+0x41/0x260
-[12559.265034] 
-               but task is already holding lock:
-[12559.270891] ffff8880d08bd4d8 (&rq->__lock){-.-.}-{2:2}, at: raw_spin_rq_lock_nested+0x26/0xb0
-[12559.279463] 
-               which lock already depends on the new lock.
+Ahh, there are two vfs.git -- my bad. Thanks!
 
-[12559.287670] 
-               the existing dependency chain (in reverse order) is:
-[12559.295182] 
-               -> #1 (&rq->__lock){-.-.}-{2:2}:
-[12559.300966]        _raw_spin_lock_nested+0x32/0x40
-[12559.305789]        raw_spin_rq_lock_nested+0x26/0xb0
-[12559.310783]        _raw_spin_rq_lock_irqsave+0x23/0x60
-[12559.315959]        sched_mm_cid_before_execve+0xcd/0x3d0
-[12559.321306]        exit_signals+0x1a3/0x450
-[12559.325521]        do_exit+0x24b/0x1100
-[12559.329389]        __x64_sys_exit+0x2c/0x30
-[12559.333600]        do_syscall_64+0x41/0x120
-[12559.337814]        entry_SYSCALL_64_after_hwframe+0x6e/0x76
-[12559.343423] 
-               -> #0 (&sighand->siglock){-.-.}-{2:2}:
-[12559.349732]        __lock_acquire+0x1d8d/0x31f0
-[12559.354296]        lock_acquire+0x16c/0x3e0
-[12559.358506]        _raw_spin_lock_irqsave+0x47/0x70
-[12559.363416]        force_sig_info_to_task+0x41/0x260
-[12559.368418]        force_sig_fault+0xaa/0xf0
-[12559.372722]        exc_page_fault+0x61/0xf0
-[12559.376932]        asm_exc_page_fault+0x22/0x30
-[12559.381494]        __get_user_handle_exception+0x0/0x20
-[12559.386755]        perf_callchain_user+0x2d3/0x390
-[12559.391581]        get_perf_callchain+0x21a/0x2d0
-[12559.396312]        perf_callchain+0xc3/0xe0
-[12559.400526]        perf_prepare_sample+0x4f1/0xc70
-[12559.405346]        perf_event_output_forward+0xbf/0x270
-[12559.410599]        __perf_event_overflow+0x1ad/0x3c0
-[12559.415597]        ___perf_sw_event+0x1f7/0x390
-[12559.420154]        __schedule+0x12d3/0x2560
-[12559.424367]        preempt_schedule_irq+0x47/0x90
-[12559.429098]        irqentry_exit+0x31/0x80
-[12559.433223]        asm_sysvec_apic_timer_interrupt+0x16/0x20
-[12559.438912]        seqcount_lockdep_reader_access.constprop.0+0x88/0x90
-[12559.445562]        ktime_get_real_ts64+0x28/0x120
-[12559.450297]        __x64_sys_gettimeofday+0x86/0x150
-[12559.455292]        emulate_vsyscall+0x258/0x590
-[12559.459858]        do_user_addr_fault+0x346/0x8c0
-[12559.464588]        exc_page_fault+0x61/0xf0
-[12559.468798]        asm_exc_page_fault+0x22/0x30
-[12559.473360]        _end+0x7a5da000/0x0
-[12559.477135] 
-               other info that might help us debug this:
 
-[12559.485163]  Possible unsafe locking scenario:
-
-[12559.491115]        CPU0                    CPU1
-[12559.495670]        ----                    ----
-[12559.500228]   lock(&rq->__lock);
-[12559.503492]                                lock(&sighand->siglock);
-[12559.509791]                                lock(&rq->__lock);
-[12559.515569]   lock(&sighand->siglock);
-[12559.519352] 
-                *** DEADLOCK ***
-
-[12559.525303] 3 locks held by perf_fuzzer/284551:
-[12559.529867]  #0: ffff8880d08bd4d8 (&rq->__lock){-.-.}-{2:2}, at: raw_spin_rq_lock_nested+0x26/0xb0
-[12559.538873]  #1: ffffffff831a3ec0 (rcu_read_lock){....}-{1:2}, at: ___perf_sw_event+0x10f/0x390
-[12559.547618]  #2: ffffffff831a3ec0 (rcu_read_lock){....}-{1:2}, at: perf_event_output_forward+0x8f/0x270
-[12559.557058] 
-               stack backtrace:
-[12559.561439] CPU: 5 PID: 284551 Comm: perf_fuzzer Tainted: G        W          6.7.0-rc5+ #1
-[12559.569823] Hardware name: LENOVO 10AM000AUS/SHARKBAY, BIOS FBKT72AUS 01/26/2014
-[12559.577248] Call Trace:
-[12559.579720]  <TASK>
-[12559.581846]  dump_stack_lvl+0x57/0x90
-[12559.585539]  check_noncircular+0x24f/0x290
-[12559.589668]  ? __pfx_check_noncircular+0x10/0x10
-[12559.594327]  ? lockdep_lock+0xb3/0x170
-[12559.598106]  ? __pfx_lockdep_lock+0x10/0x10
-[12559.602323]  ? add_chain_block+0x2dc/0x300
-[12559.606456]  __lock_acquire+0x1d8d/0x31f0
-[12559.610508]  ? __pfx___lock_acquire+0x10/0x10
-[12559.614896]  ? __pfx_mark_lock+0x10/0x10
-[12559.618849]  lock_acquire+0x16c/0x3e0
-[12559.622548]  ? force_sig_info_to_task+0x41/0x260
-[12559.627197]  ? __pfx_lock_acquire+0x10/0x10
-[12559.631414]  ? __pfx_mark_lock+0x10/0x10
-[12559.635370]  ? mark_lock+0x10b/0xd40
-[12559.638981]  ? mark_lock+0x10b/0xd40
-[12559.642586]  _raw_spin_lock_irqsave+0x47/0x70
-[12559.646971]  ? force_sig_info_to_task+0x41/0x260
-[12559.651618]  force_sig_info_to_task+0x41/0x260
-[12559.656101]  force_sig_fault+0xaa/0xf0
-[12559.659882]  ? __pfx_force_sig_fault+0x10/0x10
-[12559.664360]  ? kernelmode_fixup_or_oops+0x10a/0x150
-[12559.669272]  exc_page_fault+0x61/0xf0
-[12559.672964]  asm_exc_page_fault+0x22/0x30
-[12559.677007] RIP: 0010:__get_user_handle_exception+0x0/0x20
-[12559.682524] Code: 90 90 90 90 90 90 90 90 90 90 0f 1f 00 0f ae e8 48 8b 10 31 c0 0f 1f 00 c3 cc cc cc cc 66 66 2e 0f 1f 84 00 00 00 00 00 66 90 <0f> 1f 00 31 d2 48 c7 c0 f2 ff ff ff c3 cc cc cc cc cc cc cc cc cc
-[12559.701336] RSP: 0000:ffffc90021bef5d0 EFLAGS: 00010006
-[12559.706592] RAX: 0000000000000005 RBX: ffffc90021bef680 RCX: ffffffff8100a5a3
-[12559.713764] RDX: 0000000000000011 RSI: ffffffff8100a55d RDI: ffff8880138d8090
-[12559.720931] RBP: 0000000000000005 R08: 0000000000000000 R09: fffffbfff0799b5c
-[12559.728098] R10: ffffffff83ccdae1 R11: 0000000000000000 R12: ffffc90021bef68c
-[12559.735266] R13: ffffc90021bef688 R14: 0000000000000005 R15: ffff8880138d8000
-[12559.742436]  ? perf_callchain_user+0x353/0x390
-[12559.746914]  ? perf_callchain_user+0x30d/0x390
-[12559.751391]  perf_callchain_user+0x2d3/0x390
-[12559.755699]  get_perf_callchain+0x21a/0x2d0
-[12559.759917]  ? __pfx_get_perf_callchain+0x10/0x10
-[12559.764662]  ? lock_is_held_type+0xe3/0x140
-[12559.768882]  ? preempt_schedule_irq+0x47/0x90
-[12559.773269]  perf_callchain+0xc3/0xe0
-[12559.776961]  perf_prepare_sample+0x4f1/0xc70
-[12559.781263]  ? __pfx_perf_prepare_sample+0x10/0x10
-[12559.786084]  ? __pfx___lock_acquire+0x10/0x10
-[12559.790478]  perf_event_output_forward+0xbf/0x270
-[12559.795214]  ? __pfx_perf_event_output_forward+0x10/0x10
-[12559.800554]  ? lock_acquire+0x16c/0x3e0
-[12559.804420]  ? lock_acquire+0x17c/0x3e0
-[12559.808295]  ? __pfx_lock_acquire+0x10/0x10
-[12559.812511]  ? ___perf_sw_event+0x22f/0x390
-[12559.816727]  ? __pfx_lock_release+0x10/0x10
-[12559.820951]  __perf_event_overflow+0x1ad/0x3c0
-[12559.825428]  ___perf_sw_event+0x1f7/0x390
-[12559.829467]  ? __pfx____perf_sw_event+0x10/0x10
-[12559.834037]  ? preempt_schedule_irq+0x47/0x90
-[12559.838426]  ? __update_load_avg_se+0x86/0x5c0
-[12559.842900]  ? __update_load_avg_cfs_rq+0x70/0x570
-[12559.847726]  ? lock_acquire+0x16c/0x3e0
-[12559.851590]  ? __update_load_avg_se+0x15f/0x5c0
-[12559.856154]  ? lock_is_held_type+0xe3/0x140
-[12559.860372]  ? update_load_avg+0x154/0xdc0
-[12559.864499]  ? lock_is_held_type+0xe3/0x140
-[12559.868721]  ? set_next_entity+0xec/0x1e0
-[12559.872764]  ? preempt_schedule_irq+0x47/0x90
-[12559.877149]  ? __schedule+0x12d3/0x2560
-[12559.881012]  __schedule+0x12d3/0x2560
-[12559.884717]  ? __pfx___schedule+0x10/0x10
-[12559.888754]  ? __pfx___lock_acquire+0x10/0x10
-[12559.893139]  ? lock_is_held_type+0xe3/0x140
-[12559.897353]  ? mark_held_locks+0x24/0x90
-[12559.901316]  preempt_schedule_irq+0x47/0x90
-[12559.905531]  irqentry_exit+0x31/0x80
-[12559.909136]  asm_sysvec_apic_timer_interrupt+0x16/0x20
-[12559.914305] RIP: 0010:seqcount_lockdep_reader_access.constprop.0+0x88/0x90
-[12559.921217] Code: 31 f6 48 c7 c7 48 7c 1c 83 e8 84 25 f8 ff 48 8b 74 24 08 48 c7 c7 48 7c 1c 83 e8 93 1c f8 ff e8 6e d2 0c 00 fb 0f 1f 44 00 00 <5a> c3 cc cc cc cc 66 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90
-[12559.940025] RSP: 0000:ffffc90021befdb8 EFLAGS: 00000202
-[12559.945281] RAX: 000000000182a8d9 RBX: ffffc90021befe18 RCX: dffffc0000000000
-[12559.952453] RDX: 0000000000000000 RSI: ffffffff826804e0 RDI: ffffffff828c8620
-[12559.959619] RBP: 00007ffcf0f36fd0 R08: 0000000000000001 R09: 0000000000000001
-[12559.966786] R10: ffffffff8371fd27 R11: 0000000000000000 R12: 0000000000000000
-[12559.973953] R13: 0000000000000000 R14: ffff88800aa55340 R15: ffffc90021befff0
-[12559.981129]  ? seqcount_lockdep_reader_access.constprop.0+0x82/0x90
-[12559.987426]  ? ktime_get_real_ts64+0x28/0x120
-[12559.991820]  ktime_get_real_ts64+0x28/0x120
-[12559.996032]  __x64_sys_gettimeofday+0x86/0x150
-[12560.000512]  ? __pfx___x64_sys_gettimeofday+0x10/0x10
-[12560.005602]  ? do_user_addr_fault+0x3c5/0x8c0
-[12560.009994]  emulate_vsyscall+0x258/0x590
-[12560.014034]  ? 0xffffffffff600000
-[12560.017376]  do_user_addr_fault+0x346/0x8c0
-[12560.021587]  ? rcu_is_watching+0x34/0x60
-[12560.025541]  ? 0xffffffffff600000
-[12560.028882]  exc_page_fault+0x61/0xf0
-[12560.032578]  asm_exc_page_fault+0x22/0x30
-[12560.036616] RIP: 0033:_end+0x7a5da000/0x0
-[12560.040653] Code: Unable to access opcode bytes at 0xffffffffff5fffd6.
-[12560.047210] RSP: 002b:00007ffcf0f36fb8 EFLAGS: 00010246
-[12560.052470] RAX: ffffffffffffffda RBX: 000000000000000d RCX: 000000000000000a
-[12560.059632] RDX: 0000000000000010 RSI: 0000000000000000 RDI: 00007ffcf0f36fd0
-[12560.066799] RBP: 00007ffcf0f36fc0 R08: 00007f482684b274 R09: 00007f482684b280
-[12560.073966] R10: 00007f4826675a10 R11: 0000000000000246 R12: 0000000000000000
-[12560.081132] R13: 00007ffcf0f39448 R14: 000055f2641d2dd8 R15: 00007f48268a3000
-[12560.088304]  </TASK>
+Vegard
