@@ -2,137 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DF1B811A32
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 17:59:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BB70811A4E
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 18:01:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233298AbjLMQ7f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 11:59:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52756 "EHLO
+        id S233142AbjLMRBQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 12:01:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46990 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229671AbjLMQ7d (ORCPT
+        with ESMTP id S229458AbjLMRBO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 11:59:33 -0500
-Received: from out-177.mta0.migadu.com (out-177.mta0.migadu.com [91.218.175.177])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73B94AC
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 08:59:39 -0800 (PST)
-Message-ID: <6960ef41-fe22-4297-adc7-c85264288b6d@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1702486777;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=p4lJ6fuy6gVgOBLJgySJCzr4DpnAgH48SfeJ2oQaas8=;
-        b=A1inhCL90hXyszEVY0knTkLQ/A4/3UIByKIh3eamKJfjCkdCG6PcVsh9j0f3y2gNyDIzPQ
-        SwWY3FuNgxxpjGm06LZu4YviM+nKHDMxGRJfSDmQJDzw2qqwM9l3oYy4MNIt3X4z9mgpEj
-        8QxbZSU2G6ruY81+VFFeNt4dzBwTc6w=
-Date:   Wed, 13 Dec 2023 08:59:26 -0800
-MIME-Version: 1.0
-Subject: Re: [RFC PATCH v3 1/3] bpf: cgroup: Introduce helper
- cgroup_bpf_current_enabled()
-Content-Language: en-GB
-To:     =?UTF-8?Q?Michael_Wei=C3=9F?= <michael.weiss@aisec.fraunhofer.de>,
-        Christian Brauner <brauner@kernel.org>,
-        Alexander Mikhalitsyn <alexander@mihalicyn.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Paul Moore <paul@paul-moore.com>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Quentin Monnet <quentin@isovalent.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Amir Goldstein <amir73il@gmail.com>,
-        "Serge E. Hallyn" <serge@hallyn.com>, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        gyroidos@aisec.fraunhofer.de,
-        Alexander Mikhalitsyn <aleksandr.mikhalitsyn@canonical.com>
-References: <20231213143813.6818-1-michael.weiss@aisec.fraunhofer.de>
- <20231213143813.6818-2-michael.weiss@aisec.fraunhofer.de>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Yonghong Song <yonghong.song@linux.dev>
-In-Reply-To: <20231213143813.6818-2-michael.weiss@aisec.fraunhofer.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        Wed, 13 Dec 2023 12:01:14 -0500
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2319B9C
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 09:01:21 -0800 (PST)
+Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-dbcdcc99e29so264614276.1
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 09:01:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1702486880; x=1703091680; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=tBbCvvAbfrdh23iT+WwFecyH8e6C96pOJEulkEptHYE=;
+        b=f3YD/9f2F1vfPHFmM9wYBfYZFdwfWMm+ekF8Km1XgAbVEEzPJdSmTPFWRO6rkUqiRx
+         3isrpcBEc0R5vgiCikWWCeVy7ZnM24qlbfKxa5/Wu1rEvv2ha5UiKOfEVtwkj1hXWJnc
+         JX67IZrZbK3EaNsDHByAozeDi0+nDvG6zOy46YIfNFU+VHQrH99HcJpkEatWJ4c4mSMX
+         Yq9QIa7bjn/58FG0gBFe0TzUAvXI8DKfvFRdfrqcZ+w4x/XpiQSRqccOcwFlnQ9n+Sep
+         xx8XQAmxHivLYV51Qwm+v5zezjoPYeBiAYBn1OFnlwMM2RAuzwJI7V75NLv0Biozr1NH
+         +RnA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702486880; x=1703091680;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=tBbCvvAbfrdh23iT+WwFecyH8e6C96pOJEulkEptHYE=;
+        b=u+8+ibRZ6IJFfuRRyaXxzrZrLtklg/hULEO3HfDHxW+Lk25DD2zVzGlmHa5dUiawGD
+         q+9/TVMdet4cY+/q8po9GCjBAZfoW+R+bOBYXCffAB6YU6cEG95nLA7ojDFEynqFN97J
+         XkwhrfbOorXeNxYEWu+6+qrgkwFkODo97iIcBYQS9QVCkpJmhuzVy8NIza3MgPR0j6BE
+         fO0+eRB1KrAHyMXqLx2/8d6Ozvrwt1/pj+DKguB+e2+RZjsKTOeonaJfWXHYKu5S4eKV
+         YZChX8TImrwKTervAv7wFLEiS6T1oTWUInBtYse2KnziizHVBaiedFwN/wxUcDDO7wmU
+         z3Sg==
+X-Gm-Message-State: AOJu0YzGEEf43WFgXbC8B6wtdssgikpL97cQGs40L8OP4+HEqHZU45vR
+        sd5TMlVpu88ucss9RbvAv29HBQQmZ8M=
+X-Google-Smtp-Source: AGHT+IEyZ+uONV8Dhhp5xu8cUqXpYmvSlrh5N8bZOFr3e6ylPDRYbfi5xXr7UbRWLhU/SyrWbxX3k3h8RAw=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a05:6902:14d:b0:db5:3aaf:5207 with SMTP id
+ p13-20020a056902014d00b00db53aaf5207mr135703ybh.3.1702486880334; Wed, 13 Dec
+ 2023 09:01:20 -0800 (PST)
+Date:   Wed, 13 Dec 2023 09:01:18 -0800
+In-Reply-To: <0591cb18-77e1-4e98-a405-4a39cfb512e1@gmail.com>
+Mime-Version: 1.0
+References: <20231206032054.55070-1-likexu@tencent.com> <6d3417f7-062e-9934-01ab-20e3a46656a7@oracle.com>
+ <0591cb18-77e1-4e98-a405-4a39cfb512e1@gmail.com>
+Message-ID: <ZXnjXuLXl4mfVUJC@google.com>
+Subject: Re: [PATCH v2] KVM: x86/intr: Explicitly check NMI from guest to
+ eliminate false positives
+From:   Sean Christopherson <seanjc@google.com>
+To:     Like Xu <like.xu.linux@gmail.com>
+Cc:     Dongli Zhang <dongli.zhang@oracle.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Andi Kleen <ak@linux.intel.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        USER_IN_DEF_DKIM_WL autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Dec 13, 2023, Like Xu wrote:
+> 
+> 
+> On 13/12/2023 3:28 pm, Dongli Zhang wrote:
+> > Hi Like,
+> > 
+> > On 12/5/23 19:20, Like Xu wrote:
+> > > From: Like Xu <likexu@tencent.com>
+> > > 
+> > > Explicitly checking the source of external interrupt is indeed NMI and not
+> > > other types in the kvm_arch_pmi_in_guest(), which prevents perf-kvm false
+> > > positive samples generated in perf/core NMI mode after vm-exit but before
+> > > kvm_before_interrupt() from being incorrectly labelled as guest samples:
+> > 
+> > About the before kvm_before_interrupt() ...
+> > 
+> > > 
+> > > # test: perf-record + cpu-cycles:HP (which collects host-only precise samples)
+> > > # Symbol                                   Overhead       sys       usr  guest sys  guest usr
+> > > # .......................................  ........  ........  ........  .........  .........
+> > > #
+> > > # Before:
+> > >    [g] entry_SYSCALL_64                       24.63%     0.00%     0.00%     24.63%      0.00%
+> > >    [g] syscall_return_via_sysret              23.23%     0.00%     0.00%     23.23%      0.00%
+> > >    [g] files_lookup_fd_raw                     6.35%     0.00%     0.00%      6.35%      0.00%
+> > > # After:
+> > >    [k] perf_adjust_freq_unthr_context         57.23%    57.23%     0.00%      0.00%      0.00%
+> > >    [k] __vmx_vcpu_run                          4.09%     4.09%     0.00%      0.00%      0.00%
+> > >    [k] vmx_update_host_rsp                     3.17%     3.17%     0.00%      0.00%      0.00%
+> > > 
+> > > In the above case, perf records the samples labelled '[g]', the RIPs behind
+> > > the weird samples are actually being queried by perf_instruction_pointer()
+> > > after determining whether it's in GUEST state or not, and here's the issue:
+> > > 
+> > > If vm-exit is caused by a non-NMI interrupt (such as hrtimer_interrupt) and
+> > > at least one PMU counter is enabled on host, the kvm_arch_pmi_in_guest()
+> > > will remain true (KVM_HANDLING_IRQ is set) until kvm_before_interrupt().
+> > 
+> > ... and here.
+> > 
+> > Would you mind helping why kvm_arch_pmi_in_guest() remains true before
+> > *kvm_before_interrupt()*.
+> > 
+> > According to the source code, the vcpu->arch.handling_intr_from_guest
+> > is set to non-zero only at kvm_before_interrupt(), and cleared at
+> > kvm_after_interrupt().
+> > 
+> > Or would you mean kvm_after_interrupt()?
+> 
+> Oops, it should refer to kvm_after_interrupt() as the code fixed. Thank you.
 
-On 12/13/23 6:38 AM, Michael Weiß wrote:
-> This helper can be used to check if a cgroup-bpf specific program is
-> active for the current task.
->
-> Signed-off-by: Michael Weiß <michael.weiss@aisec.fraunhofer.de>
-> Reviewed-by: Alexander Mikhalitsyn <aleksandr.mikhalitsyn@canonical.com>
-> ---
->   include/linux/bpf-cgroup.h |  2 ++
->   kernel/bpf/cgroup.c        | 14 ++++++++++++++
->   2 files changed, 16 insertions(+)
->
-> diff --git a/include/linux/bpf-cgroup.h b/include/linux/bpf-cgroup.h
-> index a789266feac3..7cb49bde09ff 100644
-> --- a/include/linux/bpf-cgroup.h
-> +++ b/include/linux/bpf-cgroup.h
-> @@ -191,6 +191,8 @@ static inline bool cgroup_bpf_sock_enabled(struct sock *sk,
->   	return array != &bpf_empty_prog_array.hdr;
->   }
->   
-> +bool cgroup_bpf_current_enabled(enum cgroup_bpf_attach_type type);
-> +
->   /* Wrappers for __cgroup_bpf_run_filter_skb() guarded by cgroup_bpf_enabled. */
->   #define BPF_CGROUP_RUN_PROG_INET_INGRESS(sk, skb)			      \
->   ({									      \
-> diff --git a/kernel/bpf/cgroup.c b/kernel/bpf/cgroup.c
-> index 491d20038cbe..9007165abe8c 100644
-> --- a/kernel/bpf/cgroup.c
-> +++ b/kernel/bpf/cgroup.c
-> @@ -24,6 +24,20 @@
->   DEFINE_STATIC_KEY_ARRAY_FALSE(cgroup_bpf_enabled_key, MAX_CGROUP_BPF_ATTACH_TYPE);
->   EXPORT_SYMBOL(cgroup_bpf_enabled_key);
->   
-> +bool cgroup_bpf_current_enabled(enum cgroup_bpf_attach_type type)
-> +{
-> +	struct cgroup *cgrp;
-> +	struct bpf_prog_array *array;
-> +
-> +	rcu_read_lock();
-> +	cgrp = task_dfl_cgroup(current);
-> +	rcu_read_unlock();
-> +
-> +	array = rcu_access_pointer(cgrp->bpf.effective[type]);
-
-This seems wrong here. The cgrp could become invalid once leaving
-rcu critical section.
-
-> +	return array != &bpf_empty_prog_array.hdr;
-
-I guess you need include 'array' usage as well in the rcu cs.
-So overall should look like:
-
-	rcu_read_lock();
-	cgrp = task_dfl_cgroup(current);
-	array = rcu_access_pointer(cgrp->bpf.effective[type]);
-	bpf_prog_exists = array != &bpf_empty_prog_array.hdr;
-	rcu_read_unlock();
-
-	return bpf_prog_exists;
-
-> +}
-> +EXPORT_SYMBOL(cgroup_bpf_current_enabled);
-> +
->   /* __always_inline is necessary to prevent indirect call through run_prog
->    * function pointer.
->    */
+No need for another version if that's the only hiccup, I can fixup when applying.
