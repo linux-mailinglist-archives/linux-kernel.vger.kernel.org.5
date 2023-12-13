@@ -2,143 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D21981196A
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 17:29:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E3BD5811971
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 17:30:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232736AbjLMQ3T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 11:29:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46166 "EHLO
+        id S232858AbjLMQ34 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 11:29:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50114 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235459AbjLMQ3H (ORCPT
+        with ESMTP id S235433AbjLMQ3w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 11:29:07 -0500
-Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EAB7110
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 08:29:12 -0800 (PST)
-Received: by mail-lf1-x12d.google.com with SMTP id 2adb3069b0e04-50c0f13ea11so8248064e87.3
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 08:29:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1702484950; x=1703089750; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=HKKYqdbc3N4hC1UQxae75xN4voBqyRjMYCSX3oX7340=;
-        b=JUZy9Kz6HdBfUuhevjMlVkUcD+81IIaH2omoXkJCS1JsxcMzC6q9zmNwONYQ51QFNz
-         eaLAiYwH8LH9902JI+F4O6Rh91x9BqkBY/+gIi1uDtwF2RHp0Wfthy3f4PAJOh3ZJCdi
-         P7eQD31WO7V3wySlzVr1ktB4WnhbldY/E1rD3Gb+XcgtoZ7fLUUbmksG0jkm/aGB0Eng
-         t2sc9gd0JsWnHMPEBr36ut8vuX6Hx8+jcdtFH2xKsiX9YD3VPzmv9p6dyQb2hr/1jXCS
-         zgGip/uUbqqHLwZeR7vUtd9EsBU6Bbs2/GLeCyfTHjmPXztAeILAvPAPq7lhcUyHacUV
-         Mwmg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702484950; x=1703089750;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=HKKYqdbc3N4hC1UQxae75xN4voBqyRjMYCSX3oX7340=;
-        b=RA8Y4b4VfWdFZB+niF+KaxSBmKFOohpB4dhDNPRAkFVgbj9aN2ooeyCNqfUCQY97lV
-         W1dIfrGvDGOIn4KYhUPB+nFYEHwNXp4qND/SY/2VOkrc4KEcArI1dAaFnuRC7j6t38Uk
-         R+xtuZNqwp1dm4i1iAblkgjlx6Ctv8FIr7QaAEdcdF7Xl8vmwuUFfSlrCZAOopRzMbEX
-         Ag3OMNDkLMnlvgxLt63rZIC9yTCBTTM87FLz6iLdfQtWo+v2NfPRAq2aVw1OBFLDljbJ
-         s9CqIeUw37VkXRS9d0tWN3D6yk8bznxaqPgK1pdoUefVVLWjo4XqkxkkPLqDzt6HTv5q
-         f+5Q==
-X-Gm-Message-State: AOJu0YxsXhYth0W+Zp7ySrMqHjF5PHHn83i+JBs3pxiqBhTDgoWvWBjF
-        wz2dRG4gpG7PjTH49kzNBBRsbQ==
-X-Google-Smtp-Source: AGHT+IFhiIHvz0lgDTjS66FZRNJnwWFEoOQlmEuaGIwBD+A+MfQB0UBwiU1ZeyyiB/CaBHRAQcATAg==
-X-Received: by 2002:a05:6512:2211:b0:50c:a89:a70e with SMTP id h17-20020a056512221100b0050c0a89a70emr5033349lfu.94.1702484950440;
-        Wed, 13 Dec 2023 08:29:10 -0800 (PST)
-Received: from krzk-bin.. ([178.197.218.27])
-        by smtp.gmail.com with ESMTPSA id br7-20020a056512400700b0050bfe37d28asm1641026lfb.34.2023.12.13.08.29.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Dec 2023 08:29:10 -0800 (PST)
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: [PATCH v2 4/4] arm64: dts: qcom: sm8550: drop unneeded assigned-clocks from codec macros
-Date:   Wed, 13 Dec 2023 17:28:56 +0100
-Message-Id: <20231213162856.188566-5-krzysztof.kozlowski@linaro.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231213162856.188566-1-krzysztof.kozlowski@linaro.org>
-References: <20231213162856.188566-1-krzysztof.kozlowski@linaro.org>
+        Wed, 13 Dec 2023 11:29:52 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F12BF199;
+        Wed, 13 Dec 2023 08:29:50 -0800 (PST)
+X-IronPort-AV: E=McAfee;i="6600,9927,10923"; a="16540646"
+X-IronPort-AV: E=Sophos;i="6.04,273,1695711600"; 
+   d="scan'208";a="16540646"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Dec 2023 08:29:51 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10923"; a="839939338"
+X-IronPort-AV: E=Sophos;i="6.04,273,1695711600"; 
+   d="scan'208";a="839939338"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmsmga008.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Dec 2023 08:29:49 -0800
+Received: from andy by smile.fi.intel.com with local (Exim 4.97)
+        (envelope-from <andy@kernel.org>)
+        id 1rDS7G-00000005ZZv-2YRa;
+        Wed, 13 Dec 2023 18:29:46 +0200
+Date:   Wed, 13 Dec 2023 18:29:46 +0200
+From:   Andy Shevchenko <andy@kernel.org>
+To:     Bartosz Golaszewski <brgl@bgdev.pl>
+Cc:     Kent Gibson <warthog618@gmail.com>, linux-kernel@vger.kernel.org,
+        linux-gpio@vger.kernel.org, linus.walleij@linaro.org
+Subject: Re: [PATCH 1/4] gpiolib: cdev: relocate debounce_period_us from
+ struct gpio_desc
+Message-ID: <ZXnb-ks_noYLWZZ2@smile.fi.intel.com>
+References: <20231212054253.50094-1-warthog618@gmail.com>
+ <20231212054253.50094-2-warthog618@gmail.com>
+ <ZXm3rayrcvfO1t1Z@smile.fi.intel.com>
+ <ZXm_WsIpgIyOUNHt@rigel>
+ <CAMRc=Mfri8K4ZqcHb_eQY6gi+q_-uBZc2wiMrrb-+a7Tric3FA@mail.gmail.com>
+ <ZXnU3tMYCc2Rw8Qv@rigel>
+ <ZXnX8jPHxRLW8lhi@smile.fi.intel.com>
+ <CAMRc=Mfj_4YvQVP=UWkULBwJniDDjapttU+qSgqfN5ZWNgikKw@mail.gmail.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+In-Reply-To: <CAMRc=Mfj_4YvQVP=UWkULBwJniDDjapttU+qSgqfN5ZWNgikKw@mail.gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_SOFTFAIL,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The MCLK clocks of codec macros have fixed 19.2 MHz frequency and
-assigning clock rates is redundant.
+On Wed, Dec 13, 2023 at 05:15:38PM +0100, Bartosz Golaszewski wrote:
+> On Wed, Dec 13, 2023 at 5:12 PM Andy Shevchenko <andy@kernel.org> wrote:
+> > On Wed, Dec 13, 2023 at 11:59:26PM +0800, Kent Gibson wrote:
+> > > On Wed, Dec 13, 2023 at 04:40:12PM +0100, Bartosz Golaszewski wrote:
+> > > > On Wed, Dec 13, 2023 at 3:27 PM Kent Gibson <warthog618@gmail.com> wrote:
+> > > > > On Wed, Dec 13, 2023 at 03:54:53PM +0200, Andy Shevchenko wrote:
+> > > > > > On Tue, Dec 12, 2023 at 01:42:50PM +0800, Kent Gibson wrote:
 
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
----
- arch/arm64/boot/dts/qcom/sm8550.dtsi | 14 --------------
- 1 file changed, 14 deletions(-)
+...
 
-diff --git a/arch/arm64/boot/dts/qcom/sm8550.dtsi b/arch/arm64/boot/dts/qcom/sm8550.dtsi
-index d8f79b5895f5..68b05ab5f65f 100644
---- a/arch/arm64/boot/dts/qcom/sm8550.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sm8550.dtsi
-@@ -2045,8 +2045,6 @@ lpass_wsa2macro: codec@6aa0000 {
- 				 <&q6prmcc LPASS_HW_DCODEC_VOTE LPASS_CLK_ATTRIBUTE_COUPLE_NO>,
- 				 <&lpass_vamacro>;
- 			clock-names = "mclk", "macro", "dcodec", "fsgen";
--			assigned-clocks = <&q6prmcc LPASS_CLK_ID_WSA2_CORE_TX_MCLK LPASS_CLK_ATTRIBUTE_COUPLE_NO>;
--			assigned-clock-rates = <19200000>;
- 
- 			#clock-cells = <0>;
- 			clock-output-names = "wsa2-mclk";
-@@ -2092,9 +2090,6 @@ lpass_rxmacro: codec@6ac0000 {
- 				 <&lpass_vamacro>;
- 			clock-names = "mclk", "macro", "dcodec", "fsgen";
- 
--			assigned-clocks = <&q6prmcc LPASS_CLK_ID_RX_CORE_TX_MCLK LPASS_CLK_ATTRIBUTE_COUPLE_NO>;
--			assigned-clock-rates = <19200000>;
--
- 			#clock-cells = <0>;
- 			clock-output-names = "mclk";
- 			#sound-dai-cells = <1>;
-@@ -2138,9 +2133,6 @@ lpass_txmacro: codec@6ae0000 {
- 				 <&q6prmcc LPASS_HW_DCODEC_VOTE LPASS_CLK_ATTRIBUTE_COUPLE_NO>,
- 				 <&lpass_vamacro>;
- 			clock-names = "mclk", "macro", "dcodec", "fsgen";
--			assigned-clocks = <&q6prmcc LPASS_CLK_ID_TX_CORE_MCLK LPASS_CLK_ATTRIBUTE_COUPLE_NO>;
--
--			assigned-clock-rates = <19200000>;
- 
- 			#clock-cells = <0>;
- 			clock-output-names = "mclk";
-@@ -2156,9 +2148,6 @@ lpass_wsamacro: codec@6b00000 {
- 				 <&lpass_vamacro>;
- 			clock-names = "mclk", "macro", "dcodec", "fsgen";
- 
--			assigned-clocks = <&q6prmcc LPASS_CLK_ID_WSA_CORE_TX_MCLK LPASS_CLK_ATTRIBUTE_COUPLE_NO>;
--			assigned-clock-rates = <19200000>;
--
- 			#clock-cells = <0>;
- 			clock-output-names = "mclk";
- 			#sound-dai-cells = <1>;
-@@ -2233,9 +2222,6 @@ lpass_vamacro: codec@6d44000 {
- 				 <&q6prmcc LPASS_HW_DCODEC_VOTE LPASS_CLK_ATTRIBUTE_COUPLE_NO>;
- 			clock-names = "mclk", "macro", "dcodec";
- 
--			assigned-clocks = <&q6prmcc LPASS_CLK_ID_TX_CORE_MCLK LPASS_CLK_ATTRIBUTE_COUPLE_NO>;
--			assigned-clock-rates = <19200000>;
--
- 			#clock-cells = <0>;
- 			clock-output-names = "fsgen";
- 			#sound-dai-cells = <1>;
+> > > > > > > +static struct supinfo supinfo;
+> > > > > >
+> > > > > > Why supinfo should be a struct to begin with? Seems to me as an unneeded
+> > > > > > complication.
+> > > >
+> > > > I think we should keep it as a struct but defined the following way:
+> > > >
+> > > > struct {
+> > > >     spinlock_t lock;
+> > > >     struct rb_root tree;
+> > > > } supinfo;
+> > >
+> > > That is what I meant be merging the struct definition with the variable
+> > > definition.  Or is there some other way to completely do away with the
+> > > struct that I'm missing?
+> >
+> > Look at the top of gpiolib.c:
+> >
+> > static DEFINE_MUTEX(gpio_lookup_lock);
+> > static LIST_HEAD(gpio_lookup_list);
+> >
+> > In the similar way you can simply do
+> >
+> > static DEFINE_SPINLOCK(gpio_sup_lock);
+> > static struct rb_root gpio_sup_tree;
+> 
+> The fact that this has been like this, doesn't mean it's the only
+> right way. IMO putting these into the same structure makes logical
+> sense.
+
+I disagree on the struct like this on the grounds:
+- it's global
+- it's one time use
+- it adds complications for no benefit
+- it makes code uglier and longer
+
+What we probably want to have is a singleton objects in C language or at least
+inside Linux kernel project. But I'm not sure it's feasible.
+
+> > > > > Yeah, that is a hangover from an earlier iteration where supinfo was
+> > > > > contained in other object rather than being a global.
+> > > > > Could merge the struct definition into the variable now.
+
 -- 
-2.34.1
+With Best Regards,
+Andy Shevchenko
+
 
