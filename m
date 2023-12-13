@@ -2,151 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 717FA811CB6
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 19:37:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BF37811CB9
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 19:37:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233489AbjLMShN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 13:37:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43486 "EHLO
+        id S233546AbjLMSho (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 13:37:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36948 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229671AbjLMShL (ORCPT
+        with ESMTP id S233504AbjLMShm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 13:37:11 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67EE2AB
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 10:37:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1702492638; x=1734028638;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=EOhMcZbrvHstdBAULniZzSThfnXX++EnI56G1uShkgc=;
-  b=fIdZb9ZbdyXWiYCE9jNQonZa1028zhwzNqjWvOiIJ2LZfqfGdHOxAS0p
-   biiYKpqSa3i+sTGo+H7dZGY89A0hZCGSeUAtAgobdPaHjnuYgSRr9IND2
-   76lVk4cONGP+SgSDQF8vVsWyzV5yG5HQBQlZr/uECZvZVqpM/P2e+4tMN
-   Wxe82oVV/65W0LAjDrcMIzwIX5OAalMkzCfMFaInGnXM60soU92fUJnDi
-   QD/4qIuWKYFDtEvpEk2aJ1wjMBNDyVaZ+hq5Ky2sgUcNC3xQ31dr74GMq
-   MlSeQK+PrGXWqMwiy1MQHMgn8b1pDTNFkoccp2Zg1NsYGDklKp7kdyHU7
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10923"; a="13706839"
-X-IronPort-AV: E=Sophos;i="6.04,273,1695711600"; 
-   d="scan'208";a="13706839"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Dec 2023 10:37:18 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10923"; a="839986312"
-X-IronPort-AV: E=Sophos;i="6.04,273,1695711600"; 
-   d="scan'208";a="839986312"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga008.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Dec 2023 10:37:14 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-        (envelope-from <andriy.shevchenko@intel.com>)
-        id 1rDU6Z-00000005bto-03zh;
-        Wed, 13 Dec 2023 20:37:11 +0200
-Date:   Wed, 13 Dec 2023 20:37:10 +0200
-From:   Andy Shevchenko <andriy.shevchenko@intel.com>
-To:     Nikita Shubin <nikita.shubin@maquefel.me>
-Cc:     Conor Dooley <conor.dooley@microchip.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Joel Stanley <joel@jms.id.au>,
-        Walker Chen <walker.chen@starfivetech.com>,
-        Jonathan =?iso-8859-1?Q?Neusch=E4fer?= <j.neuschaefer@gmx.net>,
-        Huisong Li <lihuisong@huawei.com>,
-        Arnd Bergmann <arnd@arndb.de>, Wei Xu <xuwei5@hisilicon.com>,
-        Emil Renner Berthing <kernel@esmil.dk>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Alexander Sverdlin <alexander.sverdlin@gmail.com>,
-        Hal Feng <hal.feng@starfivetech.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v6 08/40] soc: Add SoC driver for Cirrus ep93xx
-Message-ID: <ZXn51mcYslZzQ3y-@smile.fi.intel.com>
-References: <20231212-ep93xx-v6-0-c307b8ac9aa8@maquefel.me>
- <20231212-ep93xx-v6-8-c307b8ac9aa8@maquefel.me>
+        Wed, 13 Dec 2023 13:37:42 -0500
+Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00667AB
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 10:37:48 -0800 (PST)
+Received: by mail-wm1-x332.google.com with SMTP id 5b1f17b1804b1-40c60dfa5bfso292735e9.0
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 10:37:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=amarulasolutions.com; s=google; t=1702492667; x=1703097467; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=3CX2gA6r/dtvGkH0YEYWwI6mzbAd5lMyIJziHnyg55Q=;
+        b=EUMycRy+uCVdUqM2QNIk0/jxQorodOwwT9VEuRM9NWetk7twBQpDDZ0G32RUzQo3gh
+         vcCN5afXuIjGOdYHGs5dYn0W7qR77g8e6aYwMyNd+NxOsjuupoBnxHMT2KExALohPyJV
+         lcDNew8FcgrbLO7qRk1oIYZKZhdUaxgKxh/xU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702492667; x=1703097467;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=3CX2gA6r/dtvGkH0YEYWwI6mzbAd5lMyIJziHnyg55Q=;
+        b=Fb13m/BR59JDOq95Sx1xZLikLaAZ+twGzo2nJ31eyXZzUkp07c4nJJ1PaezQm7t13i
+         XYJbzxE3CDmHv0o+0I8o3ZgYBuyEwe9YzyCJ54/dfVFOC6AIWFNTTQr9NImMoPk9Pt/M
+         3XKE/RFzbkBPtHw1/kbyYfb0a4YeHXQc0/67oDh97dyUnNrsgRvkFM0AwYQ1cIz12vl4
+         +/yYkxWuKq4qrdqwgPhZOQ3mrPhEcxhdQu/O13jfXGOSEnOL2wU3QTveWv7cSPVuN6Kq
+         2qK89OT0FJq1tasyjfRM2kb98rL1wWSXaNZFhR38mxH0h5JKO78cvqXEX5pAzLNFl+S6
+         956g==
+X-Gm-Message-State: AOJu0YxmiXjRCNLbmRWxvnAeONvnYfbdVnNXUu+NKCfJt1/gB8bS4duh
+        gCviF0T/ho8rdtvCPdVWs/ttcWM1gQiRgpG1etb4MQ==
+X-Google-Smtp-Source: AGHT+IE+J4Woryx8k3nQok0JpDxG9f7+4C+WiVZ5+R55mCmmVcahxqDdZTlITFn3sJKNsDxHtoZQdA==
+X-Received: by 2002:a7b:c3d5:0:b0:40c:3774:8ae9 with SMTP id t21-20020a7bc3d5000000b0040c37748ae9mr4703544wmj.7.1702492667147;
+        Wed, 13 Dec 2023 10:37:47 -0800 (PST)
+Received: from dario-ThinkPad-T14s-Gen-2i.homenet.telecomitalia.it (host-80-182-13-188.pool80182.interbusiness.it. [80.182.13.188])
+        by smtp.gmail.com with ESMTPSA id rd12-20020a170907a28c00b00a11b2677acbsm8152775ejc.163.2023.12.13.10.37.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Dec 2023 10:37:46 -0800 (PST)
+From:   Dario Binacchi <dario.binacchi@amarulasolutions.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Amarula patchwork <linux-amarula@amarulasolutions.com>,
+        michael@amarulasolutions.com,
+        Dario Binacchi <dario.binacchi@amarulasolutions.com>,
+        Andrzej Hajda <andrzej.hajda@intel.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@gmail.com>,
+        Inki Dae <inki.dae@samsung.com>,
+        Jagan Teki <jagan@amarulasolutions.com>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Robert Foss <rfoss@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        dri-devel@lists.freedesktop.org
+Subject: [PATCH v7 1/3] drm: bridge: samsung-dsim: enter display mode in the enable() callback
+Date:   Wed, 13 Dec 2023 19:37:10 +0100
+Message-ID: <20231213183737.4182996-2-dario.binacchi@amarulasolutions.com>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20231213183737.4182996-1-dario.binacchi@amarulasolutions.com>
+References: <20231213183737.4182996-1-dario.binacchi@amarulasolutions.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231212-ep93xx-v6-8-c307b8ac9aa8@maquefel.me>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 12, 2023 at 11:20:25AM +0300, Nikita Shubin wrote:
-> Add an SoC driver for the ep93xx. Currently there is only one thing
-> not fitting into any other framework, and that is the swlock setting.
+The synaptics-r63353 (panel-bridge) can only be configured in command mode.
+So, samsung-dsim (bridge) must not be in display mode during the
+prepare()/unprepare() of the panel-bridge. Setting the
+"pre_enable_prev_first" flag to true allows the prepare() of the
+panel-bridge to be called between the pre_enabled() and enabled() of the
+bridge. So, the bridge can enter display mode only in the enabled().
+The unprepare() of the panel-bridge is instead called between the disable()
+and post_disable() of the bridge. So, the disable() must exit the display
+mode (i .e. enter command mode) to allow the panel-bridge to receive DSI
+commands.
 
-...
+samsung_dsim_atomic_pre_enable   -> command mode
+r63353_panel_prepare             -> send DSI commands
+samsung_dsim_atomic_enable       -> enter display mode
 
-> +/*
-> + * SoC driver for Cirrus EP93xx chips.
-> + * Copyright (C) 2022 Nikita Shubin <nikita.shubin@maquefel.me>
-> + *
-> + * Based on a rewrite of arch/arm/mach-ep93xx/core.c
-> + * Copyright (C) 2006 Lennert Buytenhek <buytenh@wantstofly.org>
-> + * Copyright (C) 2007 Herbert Valerio Riedel <hvr@gnu.org>
-> + *
-> + * Thanks go to Michael Burian and Ray Lehtiniemi for their key
-> + * role in the ep93xx Linux community
+samsung_dsim_atomic_disable      -> exit display mode (command mode)
+r63353_panel_unprepare           -> send DSI commands
+samsung_dsim_atomic_post_disable
 
-Missing period.
+Co-developed-by: Michael Trimarchi <michael@amarulasolutions.com>
+Signed-off-by: Michael Trimarchi <michael@amarulasolutions.com>
+Signed-off-by: Dario Binacchi <dario.binacchi@amarulasolutions.com>
+---
 
-> + */
+(no changes since v1)
 
-...
+ drivers/gpu/drm/bridge/samsung-dsim.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
-> +#include <linux/bits.h>
-> +#include <linux/init.h>
-> +#include <linux/mfd/syscon.h>
-> +#include <linux/of.h>
-> +#include <linux/of_fdt.h>
-> +#include <linux/platform_device.h>
-
-Isn't this an incorrect header and should be auxiliary one?
-
-> +#include <linux/regmap.h>
-> +#include <linux/slab.h>
-
-+ spinlock.h ?
-
-But since it's a new code, why not cleanup.h?
-
-> +#include <linux/sys_soc.h>
-
-...
-
-> +	enum ep93xx_soc_model model = (int)(uintptr_t)of_device_get_match_data(&pdev->dev);
-
-int?
-
-Maybe
-
-	strict device *dev = &pdev->dev;
-	enum ep93xx_soc_model model;
-	...
-	model = (enum ep93xx_soc_model)(uintptr_t)device_get_match_data(dev);
-
-?
-
-...
-
-> +	struct device *dev = &pdev->dev;
-
-Ah you even have this already!
-
-...
-
-> +	dev_info(dev, "EP93xx SoC revision %s\n", attrs->revision);
-
-Hmm... Is this message anyhow useful?
-
+diff --git a/drivers/gpu/drm/bridge/samsung-dsim.c b/drivers/gpu/drm/bridge/samsung-dsim.c
+index be5914caa17d..15bf05b2bbe4 100644
+--- a/drivers/gpu/drm/bridge/samsung-dsim.c
++++ b/drivers/gpu/drm/bridge/samsung-dsim.c
+@@ -1494,7 +1494,6 @@ static void samsung_dsim_atomic_pre_enable(struct drm_bridge *bridge,
+ 			return;
+ 
+ 		samsung_dsim_set_display_mode(dsi);
+-		samsung_dsim_set_display_enable(dsi, true);
+ 	}
+ }
+ 
+@@ -1507,6 +1506,7 @@ static void samsung_dsim_atomic_enable(struct drm_bridge *bridge,
+ 		samsung_dsim_set_display_mode(dsi);
+ 		samsung_dsim_set_display_enable(dsi, true);
+ 	} else {
++		samsung_dsim_set_display_enable(dsi, true);
+ 		samsung_dsim_set_stop_state(dsi, false);
+ 	}
+ 
+@@ -1524,6 +1524,8 @@ static void samsung_dsim_atomic_disable(struct drm_bridge *bridge,
+ 	if (!samsung_dsim_hw_is_exynos(dsi->plat_data->hw_type))
+ 		samsung_dsim_set_stop_state(dsi, true);
+ 
++	samsung_dsim_set_display_enable(dsi, false);
++
+ 	dsi->state &= ~DSIM_STATE_VIDOUT_AVAILABLE;
+ }
+ 
+@@ -1532,7 +1534,8 @@ static void samsung_dsim_atomic_post_disable(struct drm_bridge *bridge,
+ {
+ 	struct samsung_dsim *dsi = bridge_to_dsi(bridge);
+ 
+-	samsung_dsim_set_display_enable(dsi, false);
++	if (!samsung_dsim_hw_is_exynos(dsi->plat_data->hw_type))
++		samsung_dsim_set_stop_state(dsi, true);
+ 
+ 	dsi->state &= ~DSIM_STATE_ENABLED;
+ 	pm_runtime_put_sync(dsi->dev);
 -- 
-With Best Regards,
-Andy Shevchenko
-
+2.43.0
 
