@@ -2,64 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 215578109BE
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 06:59:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 92CA98109C0
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 06:59:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235328AbjLMF7D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 00:59:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52306 "EHLO
+        id S233189AbjLMF7l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 00:59:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43298 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235270AbjLMF6t (ORCPT
+        with ESMTP id S235253AbjLMF7k (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 00:58:49 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 946C613D
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 21:58:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1702447120;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=9wq173fKfMY/V8PZpOVGpQY9CuUl3htgyY5RhWvRDUQ=;
-        b=K1e6KLJPWQAWMOwAbhP5vJf4lpUqkLSKZ1FE/ytpzif7ryRyk9VtE1bmapxR8sGs0WpxIZ
-        MncULgi2L2e2pF9XxE1yG6Q3U49+2rlRgw2P6N5GhUrZcwFNHND6PcU7Gws21vf3Wu7ewF
-        mlKNfftl0SnKDexBioxCYT1Ku/b232w=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-93-c-eIGM3BMlOy0Lj4s5h52g-1; Wed, 13 Dec 2023 00:58:36 -0500
-X-MC-Unique: c-eIGM3BMlOy0Lj4s5h52g-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.rdu2.redhat.com [10.11.54.7])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id A9DC9803927;
-        Wed, 13 Dec 2023 05:58:35 +0000 (UTC)
-Received: from MiWiFi-R3L-srv.redhat.com (unknown [10.72.116.83])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 0BF541C060AF;
-        Wed, 13 Dec 2023 05:58:30 +0000 (UTC)
-From:   Baoquan He <bhe@redhat.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     kexec@lists.infradead.org, x86@kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-riscv@lists.infradead.org, linuxppc-dev@lists.ozlabs.org,
-        linux-parisc@vger.kernel.org, akpm@linux-foundation.org,
-        joe@perches.com, nathan@kernel.org, conor@kernel.org,
-        Baoquan He <bhe@redhat.com>
-Subject: [PATCH v4 7/7] kexec_file, parisc: print out debugging message if required
-Date:   Wed, 13 Dec 2023 13:57:47 +0800
-Message-ID: <20231213055747.61826-8-bhe@redhat.com>
-In-Reply-To: <20231213055747.61826-1-bhe@redhat.com>
-References: <20231213055747.61826-1-bhe@redhat.com>
+        Wed, 13 Dec 2023 00:59:40 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15388ED;
+        Tue, 12 Dec 2023 21:59:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1702447186; x=1733983186;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=xFB78RRny3RcIBKLfnK8gcknt209whVVbyKNAjVGXJI=;
+  b=NGtisIUHl/vk7vggzYzSHzA90YcSzxKQcNWoxMzk9O+YLag/r3dQuZwl
+   Q3GibtOwh5Ui9ZspqVpRsQ4+IvtxxopVcFQ3ZJSSPke+yDSdc+/47pLgS
+   1wKyAflTm1XTXWoc9rnwrDq6uePBJ0BPYYLBgLPORZWSjzCPNnbvEYMh2
+   Ag43Vc6BoMuujsb+c2KcW5oabauRtGQdNP6kmPbH0Nrx9n8Sj7a58fdqD
+   bQzgd4Z2O0Jm9dvzTtgz2++fGvANcxkDiEWhv7Z3bWCGhjI9vRI4GuvUu
+   XmA1wtMFPliMZAQSbVD3U2UQQEEw47XWh5I/2yg8wIO8+LugSPWcBHiX6
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10922"; a="2057671"
+X-IronPort-AV: E=Sophos;i="6.04,272,1695711600"; 
+   d="scan'208";a="2057671"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Dec 2023 21:59:46 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10922"; a="777373539"
+X-IronPort-AV: E=Sophos;i="6.04,272,1695711600"; 
+   d="scan'208";a="777373539"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by fmsmga007.fm.intel.com with ESMTP; 12 Dec 2023 21:59:43 -0800
+Received: by black.fi.intel.com (Postfix, from userid 1001)
+        id 366691A7; Wed, 13 Dec 2023 07:59:41 +0200 (EET)
+Date:   Wed, 13 Dec 2023 07:59:41 +0200
+From:   Mika Westerberg <mika.westerberg@linux.intel.com>
+To:     Sanath S <Sanath.S@amd.com>
+Cc:     mario.limonciello@amd.com, andreas.noever@gmail.com,
+        michael.jamet@intel.com, YehezkelShB@gmail.com,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [Patch v2 1/2] thunderbolt: Introduce tb_switch_reset_ports(),
+ tb_port_reset() and usb4_port_reset()
+Message-ID: <20231213055941.GJ1074920@black.fi.intel.com>
+References: <20231212191635.2022520-1-Sanath.S@amd.com>
+ <20231212191635.2022520-2-Sanath.S@amd.com>
 MIME-Version: 1.0
-Content-type: text/plain
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.7
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20231212191635.2022520-2-Sanath.S@amd.com>
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -67,51 +66,205 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Then when specifying '-d' for kexec_file_load interface, loaded
-locations of kernel/initrd/cmdline etc can be printed out to help
-debug.
+On Wed, Dec 13, 2023 at 12:46:34AM +0530, Sanath S wrote:
+> Introduce the tb_switch_reset_ports() function that resets the
+> downstream ports of a given switch. This helps us reset the USB4
+> links created by boot firmware during the init sequence.
+> 
+> Introduce the tb_port_reset() helper function that resets the
+> given port.
+> 
+> Introduce the usb4_port_reset() function that performs the DPR
+> of a given port. This function follows the CM guide specification 7.3
+> 
+> Suggested-by: Mario Limonciello <mario.limonciello@amd.com>
+> Signed-off-by: Sanath S <Sanath.S@amd.com>
+> ---
+>  drivers/thunderbolt/switch.c  | 35 +++++++++++++++++++++++++++++++
+>  drivers/thunderbolt/tb.h      |  2 ++
+>  drivers/thunderbolt/tb_regs.h |  1 +
+>  drivers/thunderbolt/usb4.c    | 39 +++++++++++++++++++++++++++++++++++
+>  4 files changed, 77 insertions(+)
+> 
+> diff --git a/drivers/thunderbolt/switch.c b/drivers/thunderbolt/switch.c
+> index 44e9b09de47a..ef7ed92fd48e 100644
+> --- a/drivers/thunderbolt/switch.c
+> +++ b/drivers/thunderbolt/switch.c
+> @@ -626,6 +626,19 @@ int tb_port_unlock(struct tb_port *port)
+>  	return 0;
+>  }
+>  
+> +/**
+> + * tb_port_reset() - Reset downstream port
+> + * @port: Port to reset
+> + *
+> + * Helps to reconfigure the USB4 link by resetting the downstream port.
+> + *
+> + * Return: Returns 0 on success or an error code on failure.
+> + */
+> +static int tb_port_reset(struct tb_port *port)
+> +{
+> +	return usb4_port_reset(port);
+> +}
+> +
+>  static int __tb_port_enable(struct tb_port *port, bool enable)
+>  {
+>  	int ret;
+> @@ -1547,6 +1560,28 @@ static void tb_dump_switch(const struct tb *tb, const struct tb_switch *sw)
+>  	       regs->__unknown1, regs->__unknown4);
+>  }
+>  
+> +/**
+> + * tb_switch_reset_ports() - Reset downstream ports of switch.
 
-Here replace pr_debug() with the newly added kexec_dprintk() in
-kexec_file loading related codes.
+Drop the '.'
 
-Signed-off-by: Baoquan He <bhe@redhat.com>
----
- arch/parisc/kernel/kexec_file.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+> + * @sw: Switch whose ports need to be reset.
+> + *
+> + * This is applicable only for USB4 routers.
+> + * tb_switch_is_usb4() needs to be called before calling this
+> + * function.
 
-diff --git a/arch/parisc/kernel/kexec_file.c b/arch/parisc/kernel/kexec_file.c
-index 8c534204f0fd..3fc82130b6c3 100644
---- a/arch/parisc/kernel/kexec_file.c
-+++ b/arch/parisc/kernel/kexec_file.c
-@@ -38,8 +38,8 @@ static void *elf_load(struct kimage *image, char *kernel_buf,
- 	for (i = 0; i < image->nr_segments; i++)
- 		image->segment[i].mem = __pa(image->segment[i].mem);
- 
--	pr_debug("Loaded the kernel at 0x%lx, entry at 0x%lx\n",
--		 kernel_load_addr, image->start);
-+	kexec_dprintk("Loaded the kernel at 0x%lx, entry at 0x%lx\n",
-+		      kernel_load_addr, image->start);
- 
- 	if (initrd != NULL) {
- 		kbuf.buffer = initrd;
-@@ -51,7 +51,7 @@ static void *elf_load(struct kimage *image, char *kernel_buf,
- 		if (ret)
- 			goto out;
- 
--		pr_debug("Loaded initrd at 0x%lx\n", kbuf.mem);
-+		kexec_dprintk("Loaded initrd at 0x%lx\n", kbuf.mem);
- 		image->arch.initrd_start = kbuf.mem;
- 		image->arch.initrd_end = kbuf.mem + initrd_len;
- 	}
-@@ -68,7 +68,7 @@ static void *elf_load(struct kimage *image, char *kernel_buf,
- 		if (ret)
- 			goto out;
- 
--		pr_debug("Loaded cmdline at 0x%lx\n", kbuf.mem);
-+		kexec_dprintk("Loaded cmdline at 0x%lx\n", kbuf.mem);
- 		image->arch.cmdline = kbuf.mem;
- 	}
- out:
--- 
-2.41.0
+This should fit into 2 lines:
 
+	* This is applicable only for USB4 routers. tb_switch_is_usb4()
+	* needs to be called before calling this function.
+
+> + *
+> + * Return: Returns 0 on success or an error code on failure.
+
+Specifically returns %-EOPNOTSUPP if the router does not support this
+(e.g is not USB4 router).
+
+> + */
+> +int tb_switch_reset_ports(struct tb_switch *sw)
+> +{
+> +	struct tb_port *port;
+> +	int ret = -EOPNOTSUPP;
+
+Reverse christmas tree:
+
+	int ret = -EOPNOTSUPP;
+	struct tb_port *port;
+
+> +
+> +	tb_switch_for_each_port(sw, port) {
+> +		if (tb_port_is_null(port) && port->cap_usb4)
+> +			return tb_port_reset(port);
+
+Now you run this only once for the first lane adapter it finds.
+
+How much you actually tested this patch series? :(
+
+Since we are already in -rc5 it is unlikely that behavioral changes like
+this will go to the next release (v6.8-rc1), so you have all that time
+to make sure your patches work as expected.
+
+> +	}
+> +	return ret;
+> +}
+> +
+>  /**
+>   * tb_switch_reset() - reconfigure route, enable and send TB_CFG_PKG_RESET
+>   * @sw: Switch to reset
+> diff --git a/drivers/thunderbolt/tb.h b/drivers/thunderbolt/tb.h
+> index e299e53473ae..f2687ec4ac53 100644
+> --- a/drivers/thunderbolt/tb.h
+> +++ b/drivers/thunderbolt/tb.h
+> @@ -797,6 +797,7 @@ void tb_switch_remove(struct tb_switch *sw);
+>  void tb_switch_suspend(struct tb_switch *sw, bool runtime);
+>  int tb_switch_resume(struct tb_switch *sw);
+>  int tb_switch_reset(struct tb_switch *sw);
+> +int tb_switch_reset_ports(struct tb_switch *sw);
+>  int tb_switch_wait_for_bit(struct tb_switch *sw, u32 offset, u32 bit,
+>  			   u32 value, int timeout_msec);
+>  void tb_sw_set_unplugged(struct tb_switch *sw);
+> @@ -1281,6 +1282,7 @@ struct tb_port *usb4_switch_map_usb3_down(struct tb_switch *sw,
+>  int usb4_switch_add_ports(struct tb_switch *sw);
+>  void usb4_switch_remove_ports(struct tb_switch *sw);
+>  
+> +int usb4_port_reset(struct tb_port *port);
+>  int usb4_port_unlock(struct tb_port *port);
+>  int usb4_port_hotplug_enable(struct tb_port *port);
+>  int usb4_port_configure(struct tb_port *port);
+> diff --git a/drivers/thunderbolt/tb_regs.h b/drivers/thunderbolt/tb_regs.h
+> index 87e4795275fe..d49530bc0d53 100644
+> --- a/drivers/thunderbolt/tb_regs.h
+> +++ b/drivers/thunderbolt/tb_regs.h
+> @@ -389,6 +389,7 @@ struct tb_regs_port_header {
+>  #define PORT_CS_18_CSA				BIT(22)
+>  #define PORT_CS_18_TIP				BIT(24)
+>  #define PORT_CS_19				0x13
+> +#define PORT_CS_19_DPR				BIT(0)
+>  #define PORT_CS_19_PC				BIT(3)
+>  #define PORT_CS_19_PID				BIT(4)
+>  #define PORT_CS_19_WOC				BIT(16)
+> diff --git a/drivers/thunderbolt/usb4.c b/drivers/thunderbolt/usb4.c
+> index 4277733d0021..c8a4bf33ed1c 100644
+> --- a/drivers/thunderbolt/usb4.c
+> +++ b/drivers/thunderbolt/usb4.c
+> @@ -1073,6 +1073,45 @@ void usb4_switch_remove_ports(struct tb_switch *sw)
+>  	}
+>  }
+>  
+> +/**
+> + * usb4_port_reset() - Reset USB4 downsteam port
+> + * @port: USB4 port to reset.
+> + *
+> + * Helps to reconfigure USB4 link by resetting downstream port.
+> + *
+> + * Return: Returns 0 on success or an error code on failure.
+> + */
+> +int usb4_port_reset(struct tb_port *port)
+> +{
+> +	u32 val = 0;
+
+This initialization is actually not needed.
+
+> +	int ret;
+> +
+> +	ret = tb_port_read(port, &val, TB_CFG_PORT,
+> +			port->cap_usb4 + PORT_CS_19, 1);
+> +	if (ret)
+> +		return ret;
+> +
+> +	val = val | PORT_CS_19_DPR;
+
+val |= PORT_CS_19_DPR;
+
+Same as you do below with &= ~..
+
+> +	ret = tb_port_write(port, &val, TB_CFG_PORT,
+> +			port->cap_usb4 + PORT_CS_19, 1);
+> +	if (ret)
+> +		return ret;
+> +
+> +	/* Wait for 10ms after requesting downstream port reset */
+> +	usleep_range(10000, 15000);
+> +
+> +	ret = tb_port_read(port, &val, TB_CFG_PORT,
+> +			port->cap_usb4 + PORT_CS_19, 1);
+> +	if (ret)
+> +		return ret;
+
+Do you really need to read it back from the hardware here?
+
+> +
+> +	val &= ~PORT_CS_19_DPR;
+> +	ret = tb_port_write(port, &val, TB_CFG_PORT,
+> +			port->cap_usb4 + PORT_CS_19, 1);
+> +
+> +	return ret;
+
+This can be simply
+
+	return tb_port_write(port, &val, TB_CFG_PORT,
+			     port->cap_usb4 + PORT_CS_19, 1);
+
+> +}
+> +
+>  /**
+>   * usb4_port_unlock() - Unlock USB4 downstream port
+>   * @port: USB4 port to unlock
+> -- 
+> 2.34.1
