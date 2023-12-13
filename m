@@ -2,448 +2,285 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 57478810C6B
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 09:29:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 745A2810C72
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 09:30:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232144AbjLMI2w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 03:28:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60876 "EHLO
+        id S232684AbjLMI3t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 03:29:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44916 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229637AbjLMI2u (ORCPT
+        with ESMTP id S229806AbjLMI3q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 03:28:50 -0500
-Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5821EA;
-        Wed, 13 Dec 2023 00:28:54 -0800 (PST)
-Received: by mail-wr1-x42d.google.com with SMTP id ffacd0b85a97d-3363397426eso1350317f8f.1;
-        Wed, 13 Dec 2023 00:28:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702456133; x=1703060933; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Hr0EkM0AW4NJjEhu011HxfMqaEPMpfdcZOlpEJK/FFw=;
-        b=k6bNP2ALuXf2nONnqbkSlm4DWTyRCRsv9eav/G1NWLTyCzgO6Aq4Y9UcrzB0bd6CSV
-         3kR4O/t4JdB17EKV249y4o0GcApWhIhemiK+4lcG2Clokme5Gaa6ykVqzDdDipIurQDk
-         Pz1bnsNjuWykF8HhZNdar7KBcP1xenGYLoeadiNXWNZrXBNvgctykwk+opOjnSt10PVj
-         jqzVTDyJBY7+hZOgLyZCxO5dYIPGeZIz9otVYSwyFlZE71ieavkieLr6BG6EFF+ik97l
-         iIcDZhShj/JrobAW6ygybRk/a/ArulkV6ajcBGl8HjyoGEcGm+IsONkEsiE1Z3IZXHM5
-         Ft8w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702456133; x=1703060933;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Hr0EkM0AW4NJjEhu011HxfMqaEPMpfdcZOlpEJK/FFw=;
-        b=LyWgGF9/QBDI9ZGjk4ivRV0nEGmnU/S8uz9J+hRS4wLrV8sgYAiAsoSFbBBU7qF5cN
-         p3hTUjiJzKdzu82u6Uj4p5iCPs+6u6vLVjo+UY96adPS/VL6NWMqIkv988wj7f5gN+vh
-         RNx08Y2Ujpc2wdky67OtvNPL/HORS81mYRpol/I1/UjsLfqZ/OpkiyFKvwkZXuxdWy89
-         UkKfxoP2aYC3hJNubaXqiEOkELAKG0FNY1RWXmENDixs/V3x8yY/eMkdnagGFmxxNafN
-         3sI2PvoeZLd5Nt49VAuv+ZodvLQRFdLX2rH/jUAanyrdN4RVJagyjQOU97TCQTmPBiMM
-         Ty+g==
-X-Gm-Message-State: AOJu0Ywdu1SiF+HmwVkiX0gagcnMKwnLJJb6lUp8OfgA5k5j22/LVyX8
-        bwiSPEDCOxYWDHVer6qfwXsgh3sj0qOqkfdsEbQ=
-X-Google-Smtp-Source: AGHT+IF6OU7e61gRhfLt8Ut2SGsCwbw2KIL2DFOd3md2kYPMnnta9DMW0C41gamy9EzjlgT+crWKmWy9dzyoihsdnUM=
-X-Received: by 2002:adf:ebc2:0:b0:333:1bd5:b825 with SMTP id
- v2-20020adfebc2000000b003331bd5b825mr3616512wrn.69.1702456132974; Wed, 13 Dec
- 2023 00:28:52 -0800 (PST)
+        Wed, 13 Dec 2023 03:29:46 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BE36F4;
+        Wed, 13 Dec 2023 00:29:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1702456192; x=1733992192;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=I6fYYnPqRckfY4Rb+ihD3QNPkzsJczlQfdOs+BmvvqM=;
+  b=PmwYGScmdfkLiAG6FJDiiOnEGj4QzDl2CH/RhDPwj0V0KHw/ZNl/ycZx
+   iWFYavHydC1nlvs++XTVYJmjhRF8rxTnt5SspJ1mf0281RPPrUpIULhA3
+   7VXAqxfvhfo5frACfvUELGMUsjOxtWlDcyR/94xCThUDvHMmTGw9mIeT6
+   hGWDn44kw0orlvcJqGHis+bdhVuPLdiYk4lGFvtY25LELy9OGA7WtMe5S
+   3gzFg0RHfVN+/jfQz+w3yhcvURfG7ilcv2H93j0JwS6gs70X2xmzmzd36
+   iIKFDgQ8NIAqpoRYFhmQkYWMelCa4Bx9ZCgIKM2lO6RGbMgokQ7n05SGb
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10922"; a="461406357"
+X-IronPort-AV: E=Sophos;i="6.04,272,1695711600"; 
+   d="scan'208";a="461406357"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Dec 2023 00:29:51 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10922"; a="777409496"
+X-IronPort-AV: E=Sophos;i="6.04,272,1695711600"; 
+   d="scan'208";a="777409496"
+Received: from binbinwu-mobl.ccr.corp.intel.com (HELO [10.238.2.128]) ([10.238.2.128])
+  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Dec 2023 00:29:47 -0800
+Message-ID: <73dadd10-0b67-4338-a3e8-38c174c04f59@linux.intel.com>
+Date:   Wed, 13 Dec 2023 16:29:45 +0800
 MIME-Version: 1.0
-References: <20221219061758.23321-1-ashimida.1990@gmail.com>
-In-Reply-To: <20221219061758.23321-1-ashimida.1990@gmail.com>
-From:   Dan Li <ashimida.1990@gmail.com>
-Date:   Wed, 13 Dec 2023 16:28:41 +0800
-Message-ID: <CAE+Z0PGx02FuQt3J8qzckH-YDbRpMyESCJgM1tRZu6xAS_JciA@mail.gmail.com>
-Subject: Re: [RFC/RFT] CFI: Add support for gcc CFI in aarch64
-To:     Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Kees Cook <keescook@chromium.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Tom Rix <trix@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Josh Poimboeuf <jpoimboe@kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Dan Li <ashimida.1990@gmail.com>,
-        Marco Elver <elver@google.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Song Liu <song@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Uros Bizjak <ubizjak@gmail.com>,
-        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-        Juergen Gross <jgross@suse.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Borislav Petkov <bp@suse.de>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Aaron Tomlin <atomlin@redhat.com>,
-        Kalesh Singh <kaleshsingh@google.com>,
-        Yuntao Wang <ytcoode@gmail.com>,
-        Changbin Du <changbin.du@intel.com>, wanglikun@lixiang.com
-Cc:     linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, llvm@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v17 025/116] KVM: TDX: allocate/free TDX vcpu structure
+To:     isaku.yamahata@intel.com
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        isaku.yamahata@gmail.com, Paolo Bonzini <pbonzini@redhat.com>,
+        erdemaktas@google.com, Sean Christopherson <seanjc@google.com>,
+        Sagi Shahar <sagis@google.com>,
+        David Matlack <dmatlack@google.com>,
+        Kai Huang <kai.huang@intel.com>,
+        Zhi Wang <zhi.wang.linux@gmail.com>, chen.bo@intel.com,
+        hang.yuan@intel.com, tina.zhang@intel.com
+References: <cover.1699368322.git.isaku.yamahata@intel.com>
+ <2d8b9860be7fac4b43264b68dc413a228d3e979e.1699368322.git.isaku.yamahata@intel.com>
+From:   Binbin Wu <binbin.wu@linux.intel.com>
+In-Reply-To: <2d8b9860be7fac4b43264b68dc413a228d3e979e.1699368322.git.isaku.yamahata@intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi all,
 
-I am happy to introduce to you that I have contacted a colleague Likun Wang=
-, who
- is willing to continue completing this patch.
-This patch has been delayed for a long time. I hope that gcc will
-support this feature
-in the near future.
 
-Thanks.
-Dan.
+On 11/7/2023 10:55 PM, isaku.yamahata@intel.com wrote:
+> From: Isaku Yamahata <isaku.yamahata@intel.com>
+>
+> The next step of TDX guest creation is to create vcpu.  Allocate TDX vcpu
+> structures, initialize it that doesn't require TDX SEAMCALL.
+Didn't see any allocation happens for TDX in this patch.
 
-On Mon, 19 Dec 2022 at 14:18, Dan Li <ashimida.1990@gmail.com> wrote:
+
+>   TDX specific
+> vcpu initialization will be implemented as independent KVM_TDX_INIT_VCPU
+> so that when error occurs it's easy to determine which component has the
+> issue, KVM or TDX.
 >
-> Based on Sami's patch[1], this patch makes the corresponding kernel
-> configuration of CFI available when compiling the kernel with the gcc[2].
->
-> The code after enabling cfi is as follows:
->
-> int (*p)(void);
-> int func (int)
-> {
->         p();
-> }
->
-> __cfi_func:
->         .4byte 0x439d3502
-> func:
->         ......
->         adrp    x0, p
->         add     x0, x0, :lo12:p
->         mov     w1, 23592
->         movk    w1, 0x4601, lsl 16
->         cmp     w0, w1
->         beq     .L2
->         ......
->         bl      cfi_check_failed
-> .L2:
->         blr     x19
->         ret
->
-> In the compiler part[4], there are some differences from Sami's
-> implementation[3], mainly including:
->
-> 1. When a typeid mismatch is detected, the cfi_check_failed function
->    will be called instead of the brk instruction. This function needs
->    to be implemented by the compiler user.
->    If there are user mode programs or other systems that want to use
->    this feature, it may be more convenient to use a callback (so this
->    compilation option is set to -fsanitize=3Dcfi instead of kcfi).
->
-> 2. A reserved typeid (such as 0x0U on the aarch64 platform) is always
->    inserted in front of functions that should not be called indirectly.
->    Functions that can be called indirectly will not use this hash value,
->    which prevents instructions/data before the function from being used
->    as a typeid by an attacker.
->
-> 3. Some bits are ignored in the typeid to avoid conflicts between the
->    typeid and the instruction set of a specific platform, thereby
->    preventing an attacker from bypassing the CFI check by using the
->    instruction as a typeid, such as on the aarch64 platform:
->    * If the following instruction sequence exists:
->           400620:       a9be7bfd        stp     x29, x30, [sp, #-32]!
->           400624:       910003fd        mov     x29, sp
->           400628:       f9000bf3        str     x19, [sp, #16]
->    * If the expected typeid of the indirect call is exactly 0x910003fd,
->      the attacker can jump to the next instruction position of any
->      "mov x29,sp" instruction (such as 0x400628 here).
->
-> 4. Insert a symbol __cfi_<function> before each function's typeid,
->    which may be helpful for fine-grained KASLR implementations (or not?).
->
-> 5. The current implementation of gcc only supports the aarch64 platform.
->
-> This produces the following oops on CFI failure (generated using lkdtm):
->
-> /kselftest_install/lkdtm # ./CFI_FORWARD_PROTO.sh
-> [   74.856516] lkdtm: Performing direct entry CFI_FORWARD_PROTO
-> [   74.856878] lkdtm: Calling matched prototype ...
-> [   74.857011] lkdtm: Calling mismatched prototype ...
-> [   74.857133] CFI failure at lkdtm_indirect_call+0x30/0x50 (target: lkdt=
-m_increment_int+0x0/0x1c; expected type: 0xc59c68f1)
-> [   74.858185] Kernel panic - not syncing: Oops - CFI
-> [   74.859240] CPU: 0 PID: 129 Comm: cat Not tainted 6.0.0-rc4-00024-g32b=
-f7f14f497-dirty #150
-> [   74.859481] Hardware name: linux,dummy-virt (DT)
-> [   74.859795] Call trace:
-> [   74.859959]  dump_backtrace.part.0+0xcc/0xe0
-> [   74.860212]  show_stack+0x18/0x5c
-> [   74.860327]  dump_stack_lvl+0x64/0x84
-> [   74.860398]  dump_stack+0x18/0x38
-> [   74.860443]  panic+0x170/0x36c
-> [   74.860496]  cfi_check_failed+0x38/0x44
-> [   74.860564]  lkdtm_indirect_call+0x30/0x50
-> [   74.860614]  lkdtm_CFI_FORWARD_PROTO+0x3c/0x6c
-> [   74.860701]  lkdtm_do_action+0x44/0x58
-> [   74.860764]  direct_entry+0x148/0x160
-> [   74.860814]  full_proxy_write+0x74/0xe0
-> [   74.860874]  vfs_write+0xd8/0x2d0
-> [   74.860942]  ksys_write+0x70/0x110
-> [   74.861000]  __arm64_sys_write+0x1c/0x30
-> [   74.861067]  invoke_syscall+0x5c/0x140
-> [   74.861117]  el0_svc_common.constprop.0+0x44/0xf0
-> [   74.861190]  do_el0_svc+0x2c/0xc0
-> [   74.861233]  el0_svc+0x20/0x60
-> [   74.861287]  el0t_64_sync_handler+0xf4/0x124
-> [   74.861340]  el0t_64_sync+0x160/0x164
-> [   74.861782] SMP: stopping secondary CPUs
-> [   74.862336] Kernel Offset: disabled
-> [   74.862439] CPU features: 0x0000,00075024,699418af
-> [   74.862799] Memory Limit: none
-> [   74.863373] ---[ end Kernel panic - not syncing: Oops - CFI ]---
->
-> The gcc-related patches[4] are based on tag: releases/gcc-12.2.0.
->
-> Any suggestion please let me know :).
->
-> Thanks, Dan.
->
-> [1] https://lore.kernel.org/all/20220908215504.3686827-1-samitolvanen@goo=
-gle.com/
-> [2] https://gcc.gnu.org/bugzilla/show_bug.cgi?id=3D107048
-> [3] https://reviews.llvm.org/D119296
-> [4] https://lore.kernel.org/linux-hardening/20221219055431.22596-1-ashimi=
-da.1990@gmail.com/
->
-> Signed-off-by: Dan Li <ashimida.1990@gmail.com>
+> Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
 > ---
->  Makefile                     |  6 ++++++
->  arch/Kconfig                 | 24 +++++++++++++++++++++++-
->  arch/arm64/Kconfig           |  1 +
->  include/linux/cfi_types.h    | 15 +++++++++++----
->  include/linux/compiler-gcc.h |  4 ++++
->  kernel/Makefile              |  1 +
->  kernel/cfi.c                 | 23 +++++++++++++++++++++++
->  scripts/kallsyms.c           |  4 +++-
->  8 files changed, 72 insertions(+), 6 deletions(-)
+> v15 -> v16:
+> - Add AMX support as the KVM upstream supports it.
+> ---
+>   arch/x86/kvm/vmx/main.c    | 44 ++++++++++++++++++++++++++++++----
+>   arch/x86/kvm/vmx/tdx.c     | 49 ++++++++++++++++++++++++++++++++++++++
+>   arch/x86/kvm/vmx/x86_ops.h | 10 ++++++++
+>   arch/x86/kvm/x86.c         |  2 ++
+>   4 files changed, 101 insertions(+), 4 deletions(-)
 >
-> diff --git a/Makefile b/Makefile
-> index 43e08c9f95e9..7c74dac57aa4 100644
-> --- a/Makefile
-> +++ b/Makefile
-> @@ -926,6 +926,12 @@ KBUILD_CFLAGS      +=3D $(CC_FLAGS_CFI)
->  export CC_FLAGS_CFI
->  endif
->
-> +ifdef CONFIG_CFI_GCC
-> +CC_FLAGS_CFI   :=3D -fsanitize=3Dcfi
-> +KBUILD_CFLAGS  +=3D $(CC_FLAGS_CFI)
-> +export CC_FLAGS_CFI
-> +endif
-> +
->  ifdef CONFIG_DEBUG_FORCE_FUNCTION_ALIGN_64B
->  KBUILD_CFLAGS +=3D -falign-functions=3D64
->  endif
-> diff --git a/arch/Kconfig b/arch/Kconfig
-> index 1c1eca0c0019..8b43a9fd3b54 100644
-> --- a/arch/Kconfig
-> +++ b/arch/Kconfig
-> @@ -756,9 +756,31 @@ config CFI_CLANG
->
->             https://clang.llvm.org/docs/ControlFlowIntegrity.html
->
-> +config ARCH_SUPPORTS_CFI_GCC
-> +       bool
-> +       help
-> +         An architecture should select this option if it can support GCC=
-'s
-> +         Control-Flow Integrity (CFI) checking.
-> +
-> +config CFI_GCC
-> +       bool "Use GCC's Control Flow Integrity (CFI)"
-> +       depends on ARCH_SUPPORTS_CFI_GCC
-> +       depends on $(cc-option,-fsanitize=3Dcfi)
-> +       help
-> +         This option enables GCC=E2=80=99s forward-edge Control Flow Int=
-egrity
-> +         (CFI) checking, where the compiler injects a runtime check to e=
-ach
-> +         indirect function call to ensure the target is a valid function=
- with
-> +         the correct static type. This restricts possible call targets a=
-nd
-> +         makes it more difficult for an attacker to exploit bugs that al=
-low
-> +         the modification of stored function pointers. More information =
-can be
-> +         found from the compiler's documentation:
-> +
-> +         - Clang: https://clang.llvm.org/docs/ControlFlowIntegrity.html
-> +         - GCC: https://gcc.gnu.org/onlinedocs/gcc/Instrumentation-Optio=
-ns.html#Instrumentation-Options
-> +
->  config CFI_PERMISSIVE
->         bool "Use CFI in permissive mode"
-> -       depends on CFI_CLANG
-> +       depends on CFI_CLANG || CFI_GCC
->         help
->           When selected, Control Flow Integrity (CFI) violations result i=
-n a
->           warning instead of a kernel panic. This option should only be u=
-sed
-> diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
-> index 9fb9fff08c94..60fdfb01cecb 100644
-> --- a/arch/arm64/Kconfig
-> +++ b/arch/arm64/Kconfig
-> @@ -89,6 +89,7 @@ config ARM64
->         select ARCH_SUPPORTS_LTO_CLANG if CPU_LITTLE_ENDIAN
->         select ARCH_SUPPORTS_LTO_CLANG_THIN
->         select ARCH_SUPPORTS_CFI_CLANG
-> +       select ARCH_SUPPORTS_CFI_GCC
->         select ARCH_SUPPORTS_ATOMIC_RMW
->         select ARCH_SUPPORTS_INT128 if CC_HAS_INT128
->         select ARCH_SUPPORTS_NUMA_BALANCING
-> diff --git a/include/linux/cfi_types.h b/include/linux/cfi_types.h
-> index 6b8713675765..1c3b7ea6a79f 100644
-> --- a/include/linux/cfi_types.h
-> +++ b/include/linux/cfi_types.h
-> @@ -8,18 +8,25 @@
->  #ifdef __ASSEMBLY__
->  #include <linux/linkage.h>
->
-> -#ifdef CONFIG_CFI_CLANG
-> +#if defined(CONFIG_CFI_CLANG) || defined(CONFIG_CFI_GCC)
->  /*
-> - * Use the __kcfi_typeid_<function> type identifier symbol to
-> + * Use the __[k]cfi_typeid_<function> type identifier symbol to
->   * annotate indirectly called assembly functions. The compiler emits
->   * these symbols for all address-taken function declarations in C
->   * code.
->   */
->  #ifndef __CFI_TYPE
-> +
-> +#ifdef CONFIG_CFI_GCC
-> +#define __CFI_TYPE(name)                               \
-> +       .4byte __cfi_typeid_##name
-> +#else
->  #define __CFI_TYPE(name)                               \
->         .4byte __kcfi_typeid_##name
->  #endif
->
-> +#endif
-> +
->  #define SYM_TYPED_ENTRY(name, linkage, align...)       \
->         linkage(name) ASM_NL                            \
->         align ASM_NL                                    \
-> @@ -29,12 +36,12 @@
->  #define SYM_TYPED_START(name, linkage, align...)       \
->         SYM_TYPED_ENTRY(name, linkage, align)
->
-> -#else /* CONFIG_CFI_CLANG */
-> +#else /* defined(CONFIG_CFI_CLANG) || defined(CONFIG_CFI_GCC) */
->
->  #define SYM_TYPED_START(name, linkage, align...)       \
->         SYM_START(name, linkage, align)
->
-> -#endif /* CONFIG_CFI_CLANG */
-> +#endif /* defined(CONFIG_CFI_CLANG) || defined(CONFIG_CFI_GCC) */
->
->  #ifndef SYM_TYPED_FUNC_START
->  #define SYM_TYPED_FUNC_START(name)                     \
-> diff --git a/include/linux/compiler-gcc.h b/include/linux/compiler-gcc.h
-> index 9b157b71036f..aec1ce327b1a 100644
-> --- a/include/linux/compiler-gcc.h
-> +++ b/include/linux/compiler-gcc.h
-> @@ -82,6 +82,10 @@
->  #define __noscs __attribute__((__no_sanitize__("shadow-call-stack")))
->  #endif
->
-> +#ifdef CONFIG_CFI_GCC
-> +#define __nocfi __attribute__((no_sanitize("cfi")))
-> +#endif
-> +
->  #if __has_attribute(__no_sanitize_address__)
->  #define __no_sanitize_address __attribute__((no_sanitize_address))
->  #else
-> diff --git a/kernel/Makefile b/kernel/Makefile
-> index 318789c728d3..923d3e060852 100644
-> --- a/kernel/Makefile
-> +++ b/kernel/Makefile
-> @@ -114,6 +114,7 @@ obj-$(CONFIG_SHADOW_CALL_STACK) +=3D scs.o
->  obj-$(CONFIG_HAVE_STATIC_CALL) +=3D static_call.o
->  obj-$(CONFIG_HAVE_STATIC_CALL_INLINE) +=3D static_call_inline.o
->  obj-$(CONFIG_CFI_CLANG) +=3D cfi.o
-> +obj-$(CONFIG_CFI_GCC) +=3D cfi.o
->
->  obj-$(CONFIG_PERF_EVENTS) +=3D events/
->
-> diff --git a/kernel/cfi.c b/kernel/cfi.c
-> index 08caad776717..9bff35736756 100644
-> --- a/kernel/cfi.c
-> +++ b/kernel/cfi.c
-> @@ -25,6 +25,7 @@ enum bug_trap_type report_cfi_failure(struct pt_regs *r=
-egs, unsigned long addr,
->         return BUG_TRAP_TYPE_BUG;
->  }
->
-> +#ifdef CONFIG_CFI_CLANG
->  #ifdef CONFIG_ARCH_USES_CFI_TRAPS
->  static inline unsigned long trap_address(s32 *p)
->  {
-> @@ -99,3 +100,25 @@ bool is_cfi_trap(unsigned long addr)
->         return is_module_cfi_trap(addr);
->  }
->  #endif /* CONFIG_ARCH_USES_CFI_TRAPS */
-> +#endif /* CONFIG_CFI_CLANG */
-> +
-> +
-> +#ifdef CONFIG_CFI_GCC
-> +void cfi_check_failed(u32 caller_hash, u32 callee_hash, void *callee_add=
-r)
+> diff --git a/arch/x86/kvm/vmx/main.c b/arch/x86/kvm/vmx/main.c
+> index c8213d6ea301..f60de0232f7f 100644
+> --- a/arch/x86/kvm/vmx/main.c
+> +++ b/arch/x86/kvm/vmx/main.c
+> @@ -98,6 +98,42 @@ static void vt_vm_free(struct kvm *kvm)
+>   		tdx_vm_free(kvm);
+>   }
+>   
+> +static int vt_vcpu_precreate(struct kvm *kvm)
 > +{
-> +       unsigned long pc, target;
+> +	if (is_td(kvm))
+> +		return 0;
 > +
-> +       pc =3D (unsigned long)__builtin_return_address(0);
-> +       target =3D (unsigned long)callee_addr;
-> +
-> +       switch (report_cfi_failure(NULL, pc, &target, caller_hash)) {
-> +       case BUG_TRAP_TYPE_WARN:
-> +               break;
-> +
-> +       default:
-> +               panic("Oops - CFI");
-> +       }
+> +	return vmx_vcpu_precreate(kvm);
 > +}
-> +EXPORT_SYMBOL(cfi_check_failed);
 > +
-> +#endif /* CONFIG_CFI_GCC */
-> diff --git a/scripts/kallsyms.c b/scripts/kallsyms.c
-> index ccdf0c897f31..ed8db513b918 100644
-> --- a/scripts/kallsyms.c
-> +++ b/scripts/kallsyms.c
-> @@ -119,7 +119,9 @@ static bool is_ignored_symbol(const char *name, char =
-type)
->                 "__ThumbV7PILongThunk_",
->                 "__LA25Thunk_",         /* mips lld */
->                 "__microLA25Thunk_",
-> -               "__kcfi_typeid_",       /* CFI type identifiers */
-> +               "__kcfi_typeid_",       /* CFI type identifiers in Clang =
-*/
-> +               "__cfi_",               /* CFI type identifiers in GCC */
-> +               "__pi___cfi",           /* CFI type identifiers in GCC */
->                 NULL
->         };
->
-> --
-> 2.17.1
->
+> +static int vt_vcpu_create(struct kvm_vcpu *vcpu)
+> +{
+> +	if (is_td_vcpu(vcpu))
+> +		return tdx_vcpu_create(vcpu);
+> +
+> +	return vmx_vcpu_create(vcpu);
+> +}
+> +
+> +static void vt_vcpu_free(struct kvm_vcpu *vcpu)
+> +{
+> +	if (is_td_vcpu(vcpu)) {
+> +		tdx_vcpu_free(vcpu);
+> +		return;
+> +	}
+> +
+> +	vmx_vcpu_free(vcpu);
+> +}
+
+I'm wondering for such wrapper functions without a return value,
+is the following style cleaner?
+It can save two lines of code.
+
++static void vt_vcpu_free(struct kvm_vcpu *vcpu)
++{
++    if (is_td_vcpu(vcpu))
++        tdx_vcpu_free(vcpu);
++    else
++        vmx_vcpu_free(vcpu);
++}
+
+
+> +
+> +static void vt_vcpu_reset(struct kvm_vcpu *vcpu, bool init_event)
+> +{
+> +	if (is_td_vcpu(vcpu)) {
+> +		tdx_vcpu_reset(vcpu, init_event);
+> +		return;
+> +	}
+> +
+> +	vmx_vcpu_reset(vcpu, init_event);
+> +}
+> +
+ditto
+
+>   static int vt_mem_enc_ioctl(struct kvm *kvm, void __user *argp)
+>   {
+>   	if (!is_td(kvm))
+> @@ -136,10 +172,10 @@ struct kvm_x86_ops vt_x86_ops __initdata = {
+>   	.vm_destroy = vt_vm_destroy,
+>   	.vm_free = vt_vm_free,
+>   
+> -	.vcpu_precreate = vmx_vcpu_precreate,
+> -	.vcpu_create = vmx_vcpu_create,
+> -	.vcpu_free = vmx_vcpu_free,
+> -	.vcpu_reset = vmx_vcpu_reset,
+> +	.vcpu_precreate = vt_vcpu_precreate,
+> +	.vcpu_create = vt_vcpu_create,
+> +	.vcpu_free = vt_vcpu_free,
+> +	.vcpu_reset = vt_vcpu_reset,
+>   
+>   	.prepare_switch_to_guest = vmx_prepare_switch_to_guest,
+>   	.vcpu_load = vmx_vcpu_load,
+> diff --git a/arch/x86/kvm/vmx/tdx.c b/arch/x86/kvm/vmx/tdx.c
+> index 51aa114feb86..b7f8ac4b9f95 100644
+> --- a/arch/x86/kvm/vmx/tdx.c
+> +++ b/arch/x86/kvm/vmx/tdx.c
+> @@ -335,6 +335,55 @@ int tdx_vm_init(struct kvm *kvm)
+>   	return 0;
+>   }
+>   
+> +int tdx_vcpu_create(struct kvm_vcpu *vcpu)
+> +{
+> +	struct kvm_tdx *kvm_tdx = to_kvm_tdx(vcpu->kvm);
+> +
+> +	/*
+> +	 * On cpu creation, cpuid entry is blank.  Forcibly enable
+> +	 * X2APIC feature to allow X2APIC.
+> +	 * Because vcpu_reset() can't return error, allocation is done here.
+> +	 */
+> +	WARN_ON_ONCE(vcpu->arch.cpuid_entries);
+> +	WARN_ON_ONCE(vcpu->arch.cpuid_nent);
+> +
+> +	/* TDX only supports x2APIC, which requires an in-kernel local APIC. */
+> +	if (!vcpu->arch.apic)
+> +		return -EINVAL;
+> +
+> +	fpstate_set_confidential(&vcpu->arch.guest_fpu);
+> +
+> +	vcpu->arch.efer = EFER_SCE | EFER_LME | EFER_LMA | EFER_NX;
+> +
+> +	vcpu->arch.cr0_guest_owned_bits = -1ul;
+> +	vcpu->arch.cr4_guest_owned_bits = -1ul;
+> +
+> +	vcpu->arch.tsc_offset = to_kvm_tdx(vcpu->kvm)->tsc_offset;
+> +	vcpu->arch.l1_tsc_offset = vcpu->arch.tsc_offset;
+> +	vcpu->arch.guest_state_protected =
+> +		!(to_kvm_tdx(vcpu->kvm)->attributes & TDX_TD_ATTRIBUTE_DEBUG);
+> +
+> +	if ((kvm_tdx->xfam & XFEATURE_MASK_XTILE) == XFEATURE_MASK_XTILE)
+> +		vcpu->arch.xfd_no_write_intercept = true;
+> +
+> +	return 0;
+> +}
+> +
+> +void tdx_vcpu_free(struct kvm_vcpu *vcpu)
+> +{
+> +	/* This is stub for now.  More logic will come. */
+> +}
+> +
+> +void tdx_vcpu_reset(struct kvm_vcpu *vcpu, bool init_event)
+> +{
+> +
+> +	/* Ignore INIT silently because TDX doesn't support INIT event. */
+> +	if (init_event)
+> +		return;
+> +
+> +	/* This is stub for now. More logic will come here. */
+> +}
+> +
+>   static int tdx_get_capabilities(struct kvm_tdx_cmd *cmd)
+>   {
+>   	struct kvm_tdx_capabilities __user *user_caps;
+> diff --git a/arch/x86/kvm/vmx/x86_ops.h b/arch/x86/kvm/vmx/x86_ops.h
+> index ffba64008682..ebb963848316 100644
+> --- a/arch/x86/kvm/vmx/x86_ops.h
+> +++ b/arch/x86/kvm/vmx/x86_ops.h
+> @@ -144,7 +144,12 @@ int tdx_vm_enable_cap(struct kvm *kvm, struct kvm_enable_cap *cap);
+>   int tdx_vm_init(struct kvm *kvm);
+>   void tdx_mmu_release_hkid(struct kvm *kvm);
+>   void tdx_vm_free(struct kvm *kvm);
+> +
+>   int tdx_vm_ioctl(struct kvm *kvm, void __user *argp);
+> +
+> +int tdx_vcpu_create(struct kvm_vcpu *vcpu);
+> +void tdx_vcpu_free(struct kvm_vcpu *vcpu);
+> +void tdx_vcpu_reset(struct kvm_vcpu *vcpu, bool init_event);
+>   #else
+>   static inline int tdx_hardware_setup(struct kvm_x86_ops *x86_ops) { return -EOPNOTSUPP; }
+>   static inline void tdx_hardware_unsetup(void) {}
+> @@ -158,7 +163,12 @@ static inline int tdx_vm_enable_cap(struct kvm *kvm, struct kvm_enable_cap *cap)
+>   static inline int tdx_vm_init(struct kvm *kvm) { return -EOPNOTSUPP; }
+>   static inline void tdx_mmu_release_hkid(struct kvm *kvm) {}
+>   static inline void tdx_vm_free(struct kvm *kvm) {}
+> +
+>   static inline int tdx_vm_ioctl(struct kvm *kvm, void __user *argp) { return -EOPNOTSUPP; }
+> +
+> +static inline int tdx_vcpu_create(struct kvm_vcpu *vcpu) { return -EOPNOTSUPP; }
+> +static inline void tdx_vcpu_free(struct kvm_vcpu *vcpu) {}
+> +static inline void tdx_vcpu_reset(struct kvm_vcpu *vcpu, bool init_event) {}
+>   #endif
+>   
+>   #endif /* __KVM_X86_VMX_X86_OPS_H */
+> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> index 191ac1e0d96d..0414822e7a03 100644
+> --- a/arch/x86/kvm/x86.c
+> +++ b/arch/x86/kvm/x86.c
+> @@ -502,6 +502,7 @@ int kvm_set_apic_base(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
+>   	kvm_recalculate_apic_map(vcpu->kvm);
+>   	return 0;
+>   }
+> +EXPORT_SYMBOL_GPL(kvm_set_apic_base);
+>   
+>   /*
+>    * Handle a fault on a hardware virtualization (VMX or SVM) instruction.
+> @@ -12430,6 +12431,7 @@ bool kvm_vcpu_is_reset_bsp(struct kvm_vcpu *vcpu)
+>   {
+>   	return vcpu->kvm->arch.bsp_vcpu_id == vcpu->vcpu_id;
+>   }
+> +EXPORT_SYMBOL_GPL(kvm_vcpu_is_reset_bsp);
+>   
+>   bool kvm_vcpu_is_bsp(struct kvm_vcpu *vcpu)
+>   {
+
