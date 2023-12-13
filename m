@@ -2,166 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 20135810ACD
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 08:02:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A87C810A88
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 07:42:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233004AbjLMHCl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 02:02:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41288 "EHLO
+        id S233144AbjLMGml (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 01:42:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40640 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235287AbjLMGku (ORCPT
+        with ESMTP id S232909AbjLMGmj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 01:40:50 -0500
-Received: from smtp-fw-52004.amazon.com (smtp-fw-52004.amazon.com [52.119.213.154])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BB78AB
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 22:40:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1702449655; x=1733985655;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=94amqqZKB2zJhADw4oYeciSDrXheAqykdeuVtMiJBwE=;
-  b=YewaEIIb3vMLMNA8xGcEHKQgCbXPhZe7rnM/9qasdjdcJS+UJjq3BO2k
-   uueMVMAckvXiVBDmeJyIOigD7t7faqcMbWwELxFcVtENaUUufqjlJhDlR
-   DDkc2gz8+UR4MTm71Gpio8MxUGvyIzBaAdUX5NNR+BlqSf3uOC8PTSCMG
-   g=;
-X-IronPort-AV: E=Sophos;i="6.04,272,1695686400"; 
-   d="scan'208";a="171634859"
-Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-iad-1d-m6i4x-00fceed5.us-east-1.amazon.com) ([10.43.8.2])
-  by smtp-border-fw-52004.iad7.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Dec 2023 06:40:53 +0000
-Received: from smtpout.prod.us-east-1.prod.farcaster.email.amazon.dev (iad7-ws-svc-p70-lb3-vlan3.iad.amazon.com [10.32.235.38])
-        by email-inbound-relay-iad-1d-m6i4x-00fceed5.us-east-1.amazon.com (Postfix) with ESMTPS id E9EAFA0B0C;
-        Wed, 13 Dec 2023 06:40:48 +0000 (UTC)
-Received: from EX19MTAEUA002.ant.amazon.com [10.0.43.254:56758]
- by smtpin.naws.eu-west-1.prod.farcaster.email.amazon.dev [10.0.22.100:2525] with esmtp (Farcaster)
- id 9438de3e-ca1c-46b1-a8b0-23d75734eed4; Wed, 13 Dec 2023 06:40:47 +0000 (UTC)
-X-Farcaster-Flow-ID: 9438de3e-ca1c-46b1-a8b0-23d75734eed4
-Received: from EX19D014EUC004.ant.amazon.com (10.252.51.182) by
- EX19MTAEUA002.ant.amazon.com (10.252.50.126) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Wed, 13 Dec 2023 06:40:47 +0000
-Received: from u5d18b891348c5b.ant.amazon.com (10.146.13.114) by
- EX19D014EUC004.ant.amazon.com (10.252.51.182) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Wed, 13 Dec 2023 06:40:37 +0000
-From:   James Gowans <jgowans@amazon.com>
-To:     <jgowans@amazon.com>, Eric Biederman <ebiederm@xmission.com>,
-        "Sean Christopherson" <seanjc@google.com>
-CC:     <kexec@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Marc Zyngier <maz@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        Tony Luck <tony.luck@intel.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Samuel Holland <samuel@sholland.org>,
-        "Pavel Machek" <pavel@ucw.cz>, Sebastian Reichel <sre@kernel.org>,
-        Orson Zhai <orsonzhai@gmail.com>,
-        Alexander Graf <graf@amazon.de>,
-        "Jan H . Schoenherr" <jschoenh@amazon.de>
-Subject: [PATCH] kexec: do syscore_shutdown() in kernel_kexec
-Date:   Wed, 13 Dec 2023 08:40:04 +0200
-Message-ID: <20231213064004.2419447-1-jgowans@amazon.com>
-X-Mailer: git-send-email 2.34.1
+        Wed, 13 Dec 2023 01:42:39 -0500
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 200C4AD;
+        Tue, 12 Dec 2023 22:42:43 -0800 (PST)
+Received: from pps.filterd (m0360072.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3BD6RlAF022278;
+        Wed, 13 Dec 2023 06:42:25 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=pp1; bh=9GUj/Aho7/1TYDtk21H9qY+L2WM+l5YYCwXwZpStc8c=;
+ b=r64kdaJG4nS+IPu+vyvPL88pPYTf4wOVarKYxhyEHuln+0bowUEpweWYEXFboKURLtQz
+ zX+0XArNnkgTBQxDDil62guVrYrBBdwSz10iwj92JURSxYJ6w8q2SzlUw/vsjAPVtApf
+ JrUt3ew+oX4Xck51K1DeX49Q3MS2s995pz2zoNYFX0HCshblY/6R68LoHVL5g0fDwP0y
+ ClDkBpaudbhpaTySXhlMfgKukYdXIlvqSaldP8sK09kIgwfqhPLtguqj+opkJa9DlaIQ
+ XSC5NxLrdDcV1R3aYZfJWs+Nh590BsYs0LqNBJST/XTbP1JpGL93H54JNSpqRv4EOp7a ig== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3uy7c58c9s-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 13 Dec 2023 06:42:25 +0000
+Received: from m0360072.ppops.net (m0360072.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3BD6T0Me025162;
+        Wed, 13 Dec 2023 06:42:24 GMT
+Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3uy7c58c9b-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 13 Dec 2023 06:42:24 +0000
+Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
+        by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3BD5Q3YA013864;
+        Wed, 13 Dec 2023 06:42:23 GMT
+Received: from smtprelay06.fra02v.mail.ibm.com ([9.218.2.230])
+        by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3uw5926bu9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 13 Dec 2023 06:42:23 +0000
+Received: from smtpav05.fra02v.mail.ibm.com (smtpav05.fra02v.mail.ibm.com [10.20.54.104])
+        by smtprelay06.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3BD6gLEi43188908
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 13 Dec 2023 06:42:22 GMT
+Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id E13E120040;
+        Wed, 13 Dec 2023 06:42:21 +0000 (GMT)
+Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 42A8420043;
+        Wed, 13 Dec 2023 06:42:19 +0000 (GMT)
+Received: from li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com (unknown [9.43.51.82])
+        by smtpav05.fra02v.mail.ibm.com (Postfix) with ESMTPS;
+        Wed, 13 Dec 2023 06:42:19 +0000 (GMT)
+Date:   Wed, 13 Dec 2023 12:12:15 +0530
+From:   Ojaswin Mujoo <ojaswin@linux.ibm.com>
+To:     John Garry <john.g.garry@oracle.com>
+Cc:     linux-ext4@vger.kernel.org, "Theodore Ts'o" <tytso@mit.edu>,
+        Ritesh Harjani <ritesh.list@gmail.com>,
+        linux-kernel@vger.kernel.org,
+        "Darrick J . Wong" <djwong@kernel.org>,
+        linux-block@vger.kernel.org, linux-xfs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, dchinner@redhat.com
+Subject: Re: [RFC 0/7] ext4: Allocator changes for atomic write support with
+ DIO
+Message-ID: <ZXlSR8CTXjkeKxwk@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
+References: <cover.1701339358.git.ojaswin@linux.ibm.com>
+ <8c06c139-f994-442b-925e-e177ef2c5adb@oracle.com>
+ <ZW3WZ6prrdsPc55Z@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
+ <de90e79b-83f2-428f-bac6-0754708aa4a8@oracle.com>
+ <ZXbqVs0TdoDcJ352@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZXbqVs0TdoDcJ352@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: vAkBMKIFJ8wO00RLRC6t6Gf6QM4RHrja
+X-Proofpoint-GUID: Zf8h5KpoaOoIeOwSSmnViO2i-V5AgsRi
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.146.13.114]
-X-ClientProxiedBy: EX19D031UWC004.ant.amazon.com (10.13.139.246) To
- EX19D014EUC004.ant.amazon.com (10.252.51.182)
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-12_14,2023-12-12_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 adultscore=0
+ mlxscore=0 priorityscore=1501 bulkscore=0 spamscore=0 malwarescore=0
+ phishscore=0 clxscore=1015 lowpriorityscore=0 impostorscore=0
+ mlxlogscore=965 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311290000 definitions=main-2312130047
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syscore_shutdown() runs driver and module callbacks to get the system
-into a state where it can be correctly shut down. In commit
-6f389a8f1dd2 ("PM / reboot: call syscore_shutdown() after disable_nonboot_cpus()")
-syscore_shutdown() was removed from kernel_restart_prepare() and hence
-got (incorrectly?) removed from the kexec flow. This was innocuous until
-commit 6735150b6997 ("KVM: Use syscore_ops instead of reboot_notifier to hook restart/shutdown")
-changed the way that KVM registered its shutdown callbacks, switching from
-reboot notifiers to syscore_ops.shutdown. As syscore_shutdown() is
-missing from kexec, KVM's shutdown hook is not run and virtualisation is
-left enabled on the boot CPU which results in triple faults when
-switching to the new kernel on Intel x86 VT-x with VMXE enabled.
+On Mon, Dec 11, 2023 at 04:24:14PM +0530, Ojaswin Mujoo wrote:
+> > > > looks ok so far, then write 4KB at offset 0:
+> > > > 
+> > > > # /test-pwritev2 -a -d -p 0 -l 4096  /root/mnt/file
+> > > > file=/root/mnt/file write_size=4096 offset=0 o_flags=0x4002 wr_flags=0x24
+> > 
+> > ...
+> > 
+> > > > Please note that I tested on my own dev branch, which contains changes over
+> > > > [1], but I expect it would not make a difference for this test.
+> > > Hmm this should not ideally happen, can you please share your test
+> > > script with me if possible?
+> > 
+> > It's doing nothing special, just RWF_ATOMIC flag is set for DIO write:
+> > 
+> > https://github.com/johnpgarry/linux/blob/236870d48ecb19c1cf89dc439e188182a0524cd4/samples/vfs/test-pwritev2.c
+> 
+> Thanks for the script, will try to replicate this today and get back to
+> you.
+> 
 
-Fix this by adding syscore_shutdown() to the kexec sequence. In terms of
-where to add it, it is being added after migrating the kexec task to the
-boot CPU, but before APs are shut down. It is not totally clear if this
-is the best place: in commit 6f389a8f1dd2 ("PM / reboot: call syscore_shutdown() after disable_nonboot_cpus()")
-it is stated that "syscore_ops operations should be carried with one
-CPU on-line and interrupts disabled." APs are only offlined later in
-machine_shutdown(), so this syscore_shutdown() is being run while APs
-are still online. This seems to be the correct place as it matches where
-syscore_shutdown() is run in the reboot and halt flows - they also run
-it before APs are shut down. The assumption is that the commit message
-in commit 6f389a8f1dd2 ("PM / reboot: call syscore_shutdown() after disable_nonboot_cpus()")
-is no longer valid.
+Hi John,
 
-KVM has been discussed here as it is what broke loudly by not having
-syscore_shutdown() in kexec, but this change impacts more than just KVM;
-all drivers/modules which register a syscore_ops.shutdown callback will
-now be invoked in the kexec flow. Looking at some of them like x86 MCE
-it is probably more correct to also shut these down during kexec.
-Maintainers of all drivers which use syscore_ops.shutdown are added on
-CC for visibility. They are:
+So I don't seem to be able to hit the warn on:
 
-arch/powerpc/platforms/cell/spu_base.c  .shutdown = spu_shutdown,
-arch/x86/kernel/cpu/mce/core.c	        .shutdown = mce_syscore_shutdown,
-arch/x86/kernel/i8259.c                 .shutdown = i8259A_shutdown,
-drivers/irqchip/irq-i8259.c	        .shutdown = i8259A_shutdown,
-drivers/irqchip/irq-sun6i-r.c	        .shutdown = sun6i_r_intc_shutdown,
-drivers/leds/trigger/ledtrig-cpu.c	.shutdown = ledtrig_cpu_syscore_shutdown,
-drivers/power/reset/sc27xx-poweroff.c	.shutdown = sc27xx_poweroff_shutdown,
-kernel/irq/generic-chip.c	        .shutdown = irq_gc_shutdown,
-virt/kvm/kvm_main.c	                .shutdown = kvm_shutdown,
+$ touch mnt/testfile
+$ ./test-pwritev2 -a -d -p 0 -l 4096 mnt/testfile
 
-This has been tested by doing a kexec on x86_64 and aarch64.
+	file=mnt/testfile write_size=4096 offset=0 o_flags=0x4002 wr_flags=0x24
+	main wrote 4096 bytes at offset 0
 
-Fixes: 6735150b6997 ("KVM: Use syscore_ops instead of reboot_notifier to hook restart/shutdown")
+$ filefrag -v mnt/testfile
 
-Signed-off-by: James Gowans <jgowans@amazon.com>
-Cc: Eric Biederman <ebiederm@xmission.com>
-Cc: Paolo Bonzini <pbonzini@redhat.com>
-Cc: Sean Christopherson <seanjc@google.com>
-Cc: Marc Zyngier <maz@kernel.org>
-Cc: Arnd Bergmann <arnd@arndb.de>
-Cc: Tony Luck <tony.luck@intel.com>
-Cc: Borislav Petkov <bp@alien8.de>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: Chen-Yu Tsai <wens@csie.org>
-Cc: Jernej Skrabec <jernej.skrabec@gmail.com>
-Cc: Samuel Holland <samuel@sholland.org>
-Cc: Pavel Machek <pavel@ucw.cz>
-Cc: Sebastian Reichel <sre@kernel.org>
-Cc: Orson Zhai <orsonzhai@gmail.com>
-Cc: Alexander Graf <graf@amazon.de>
-Cc: Jan H. Schoenherr <jschoenh@amazon.de>
----
- kernel/kexec_core.c | 1 +
- 1 file changed, 1 insertion(+)
+	Filesystem type is: ef53
+	File size of testfile is 4096 (1 block of 4096 bytes)
+	ext:     logical_offset:        physical_offset: length:   expected: flags:
+		0:        0..       0:      32900..     32900:      1: last,eof
 
-diff --git a/kernel/kexec_core.c b/kernel/kexec_core.c
-index be5642a4ec49..b926c4db8a91 100644
---- a/kernel/kexec_core.c
-+++ b/kernel/kexec_core.c
-@@ -1254,6 +1254,7 @@ int kernel_kexec(void)
- 		kexec_in_progress = true;
- 		kernel_restart_prepare("kexec reboot");
- 		migrate_to_reboot_cpu();
-+		syscore_shutdown();
- 
- 		/*
- 		 * migrate_to_reboot_cpu() disables CPU hotplug assuming that
--- 
-2.34.1
+$ ./test-pwritev2 -a -d -p 8192 -l 8192 mnt/testfile
 
+	file=mnt/testfile write_size=8192 offset=8192 o_flags=0x4002 wr_flags=0x24
+	main wrote 8192 bytes at offset 8192
+
+$ filefrag -v mnt/testfile
+
+	Filesystem type is: ef53
+	File size of mnt/testfile is 16384 (4 blocks of 4096 bytes)
+	 ext:     logical_offset:        physical_offset: length:   expected: flags:
+		0:        0..       0:      32900..     32900:      1:
+		1:        2..       3:      33288..     33289:      2: 32902: last,eof
+	mnt/testfile: 2 extents found
+
+Not sure why you are hitting the WARN_ON. The tree I used is:
+
+Latest ted/dev + your atomic patchset v1 + this patchset
+
+Regards,
+ojaswin
