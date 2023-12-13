@@ -2,65 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DEA74810A35
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 07:23:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B279810A37
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 07:23:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378579AbjLMGXH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 01:23:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36350 "EHLO
+        id S1378586AbjLMGXQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 01:23:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37762 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378551AbjLMGXF (ORCPT
+        with ESMTP id S1378551AbjLMGXO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 01:23:05 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0855AD;
-        Tue, 12 Dec 2023 22:23:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1702448590; x=1733984590;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=wv/18E5p3sNl8d3AG1X8KZ8Wa0o3+44iLInD7qAokHU=;
-  b=aWdgsnsaLyiBCeiQNCW74zgdXsRm+6K49/SWpgiclG6pqnWC1SJpv6Tr
-   GvkWeAkT5W697ROSF+r847SyfrESbSXypkoetL4uDqemtNJimYzKsezvK
-   huTjfZBv+/FNmcdAxtngUfO+BNdZGS+OZbO2xqN24Ii0Z4E0vDEKh8mOF
-   vBPcryHEGAWVTZMfj52z1pgOw06pfUEaAjdAJlYgwH/PB+RzjvxVGgiOx
-   Q6AvkQM3E1U2Fxs5Xuoljd1IMqjAiGAd7ICWXs9T4D1sjovqBAdhD7z3I
-   KyYfOBkFQkiJf5EzcAsSqCp+JsJ+i8EMjKxcGntFR1ZqSPkL/VamgFpF8
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10922"; a="16471901"
-X-IronPort-AV: E=Sophos;i="6.04,272,1695711600"; 
-   d="scan'208";a="16471901"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Dec 2023 22:23:09 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10922"; a="777380515"
-X-IronPort-AV: E=Sophos;i="6.04,272,1695711600"; 
-   d="scan'208";a="777380515"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by fmsmga007.fm.intel.com with ESMTP; 12 Dec 2023 22:23:08 -0800
-Received: by black.fi.intel.com (Postfix, from userid 1001)
-        id 5D2C81A7; Wed, 13 Dec 2023 08:23:06 +0200 (EET)
-Date:   Wed, 13 Dec 2023 08:23:06 +0200
-From:   Mika Westerberg <mika.westerberg@linux.intel.com>
-To:     Sanath S <Sanath.S@amd.com>
-Cc:     mario.limonciello@amd.com, andreas.noever@gmail.com,
-        michael.jamet@intel.com, YehezkelShB@gmail.com,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [Patch v2 2/2] thunderbolt: Teardown tunnels and reset
- downstream ports created by boot firmware
-Message-ID: <20231213062306.GL1074920@black.fi.intel.com>
-References: <20231212191635.2022520-1-Sanath.S@amd.com>
- <20231212191635.2022520-3-Sanath.S@amd.com>
- <20231213054914.GI1074920@black.fi.intel.com>
- <20231213061805.GK1074920@black.fi.intel.com>
+        Wed, 13 Dec 2023 01:23:14 -0500
+Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AA6BEA
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 22:23:20 -0800 (PST)
+Received: by mail-wr1-x42f.google.com with SMTP id ffacd0b85a97d-333536432e0so5974178f8f.3
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 22:23:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1702448599; x=1703053399; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=OOeFpJK4OYoAw3qn3oCy1TCCDOQeXt6aQHprsTtnDUE=;
+        b=f9PwBLkOm51cobyqkGF1oGiWRE0BJ0QUqduOv0HDezLOVAmCZ0aCiBnHtsrPGI7fH4
+         zQbDex2aTijmFgR+tewBsPc6qZ4QOqhGbBNTehd7SFlOkOOJ/uswsi7tthpSp1LKHEkF
+         NNQGeeQZkz5+9P68FX5u0E1jPPwwXPplsx0nVxmKm4E8a2KDTznvMIhJwdzNPy+wttlM
+         7Brs+1LM6mqsiyYMysspGRzEEarWMfzhPPefte1EcMtOZJn38Q25J0hAwqFNayCzDAz/
+         8B0BpNHlIXJqEvXeALa0C+krN24U7gdfRqS4mYU6aQWF/ddWORTEpBfy9ODYMH61j1Mk
+         vZkw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702448599; x=1703053399;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=OOeFpJK4OYoAw3qn3oCy1TCCDOQeXt6aQHprsTtnDUE=;
+        b=mWHdo6y8GzhxdTy46ugjpPH2nlaeVWhRA8hDVdQmYTGaa5MpIPbyXHFHi0+XsHc43Y
+         7CaeNvJBh+Gsg/ylZIn7S/5hlv52t9HWz7txd75XFxWe3DNJvL3LtR7W2+Rw1M1VSIGF
+         nuFUBsmg0s2UkW2I/pjZjim7M2DJ4HWriYNwxuW6VHXxnS+geB7qz0Rmyr2Aj37xawBw
+         nYU/5eyIOGgddLQ5sTnhQNjw8b97XPyPYY8rixz09RXVnUr4yT3g3o7zUb0XnScvDUCU
+         qC6o4+L90zhDd073aEPi014XdVFptjcH1lw10ZVUQFBIlOwdlQvD2GBIka6fpwusVX8K
+         rqNw==
+X-Gm-Message-State: AOJu0YyazUDx1Q9O3gHgISyawubs5UsQjXMONhI8lO5+9NraFR+OhNvb
+        9LZ8y/WYwSuH1hxfGOyFs1HLKw==
+X-Google-Smtp-Source: AGHT+IHizJKfXzdrkxg67JeIOicbOp8AjE+tlskqBNgEFMLN9azUW98KEjGCmuWVK9irIdOHQvedrQ==
+X-Received: by 2002:a05:6000:b0f:b0:333:5eea:921d with SMTP id dj15-20020a0560000b0f00b003335eea921dmr3597691wrb.61.1702448598836;
+        Tue, 12 Dec 2023 22:23:18 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.218.27])
+        by smtp.gmail.com with ESMTPSA id m1-20020a056000008100b00334b3208700sm12332952wrx.49.2023.12.12.22.23.16
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 12 Dec 2023 22:23:18 -0800 (PST)
+Message-ID: <3ccfae77-eaa3-4928-9ad6-c61c73d96bcb@linaro.org>
+Date:   Wed, 13 Dec 2023 07:23:16 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20231213061805.GK1074920@black.fi.intel.com>
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 1/3] dt-bindings: soc: nuvoton: Add NPCM BPC
+Content-Language: en-US
+To:     Tomer Maimon <tmaimon77@gmail.com>, arnd@arndb.de,
+        pmenzel@molgen.mpg.de, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        avifishman70@gmail.com, tali.perry1@gmail.com, joel@jms.id.au,
+        venture@google.com, yuenn@google.com, benjaminfair@google.com,
+        j.neuschaefer@gmx.net
+Cc:     openbmc@lists.ozlabs.org, linux-gpio@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20231212100703.3374555-1-tmaimon77@gmail.com>
+ <20231212100703.3374555-2-tmaimon77@gmail.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20231212100703.3374555-2-tmaimon77@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -68,66 +124,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 13, 2023 at 08:18:06AM +0200, Mika Westerberg wrote:
-> On Wed, Dec 13, 2023 at 07:49:14AM +0200, Mika Westerberg wrote:
-> > On Wed, Dec 13, 2023 at 12:46:35AM +0530, Sanath S wrote:
-> > > Boot firmware might have created tunnels of its own. Since we cannot
-> > > be sure they are usable for us. Tear them down and reset the ports
-> > > to handle it as a new hotplug for USB3 routers.
-> > > 
-> > > Suggested-by: Mario Limonciello <mario.limonciello@amd.com>
-> > > Signed-off-by: Sanath S <Sanath.S@amd.com>
-> > > ---
-> > >  drivers/thunderbolt/tb.c | 11 +++++++++++
-> > >  1 file changed, 11 insertions(+)
-> > > 
-> > > diff --git a/drivers/thunderbolt/tb.c b/drivers/thunderbolt/tb.c
-> > > index fd49f86e0353..febd0b6972e3 100644
-> > > --- a/drivers/thunderbolt/tb.c
-> > > +++ b/drivers/thunderbolt/tb.c
-> > > @@ -2598,6 +2598,17 @@ static int tb_start(struct tb *tb)
-> > >  	tb_switch_tmu_enable(tb->root_switch);
-> > >  	/* Full scan to discover devices added before the driver was loaded. */
-> > >  	tb_scan_switch(tb->root_switch);
-> > > +	/*
-> > > +	 * Boot firmware might have created tunnels of its own. Since we cannot
-> > > +	 * be sure they are usable for us, Tear them down and reset the ports
-> > > +	 * to handle it as new hotplug for USB4 routers.
-> > > +	 */
-> > > +	if (tb_switch_is_usb4(tb->root_switch)) {
-> > > +		tb_switch_discover_tunnels(tb->root_switch,
-> > > +					   &tcm->tunnel_list, false);
-> > 
-> > Why this is needed?
-> > 
-> > It should be enough, to do simply something like this:
-> > 
-> > 	if (tb_switch_is_usb4(tb->root_switch))
-> > 		tb_switch_reset(tb->root_switch);
+On 12/12/2023 11:07, Tomer Maimon wrote:
+> Added device tree binding documentation for Nuvoton BMC NPCM BIOS Post
+> Code (BPC).
 > 
-> Actually this needs to be done only for USB4 v1 routers since we already
-> reset USB4 v2 hosts so something like:
+> The NPCM BPC monitoring two configurable I/O addresses written by the
+> host on the bus.
 > 
-> 	/*
-> 	 * Reset USB4 v1 host router to get rid of possible tunnels the
-> 	 * boot firmware created. This makes sure all the tunnels are
-> 	 * created by us and thus have known configuration.
-> 	 *
-> 	 * For USB4 v2 and beyond we do this in nhi_reset() using the
-> 	 * host router reset interface.
-> 	 */
-> 	if (usb4_switch_version(tb->root_switch) == 1)
-> 		tb_switch_reset(tb->root_switch);
+> Signed-off-by: Tomer Maimon <tmaimon77@gmail.com>
+> ---
+
+It's v2, so changelog?
+
+>  .../soc/nuvoton/nuvoton,npcm-bpc.yaml         | 63 +++++++++++++++++++
+>  1 file changed, 63 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/soc/nuvoton/nuvoton,npcm-bpc.yaml
 > 
-> (possibly add similar comment to the nhi_reset() to refer this one).
+> diff --git a/Documentation/devicetree/bindings/soc/nuvoton/nuvoton,npcm-bpc.yaml b/Documentation/devicetree/bindings/soc/nuvoton/nuvoton,npcm-bpc.yaml
+> new file mode 100644
+> index 000000000000..30033cdac8f5
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/soc/nuvoton/nuvoton,npcm-bpc.yaml
+> @@ -0,0 +1,63 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/soc/nuvoton/nuvoton,npcm-bpc.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Nuvoton BMC NPCM BIOS Post Code (bpc) controller
 
-Oh, and would it be possible to tie this with the "host_reset" parameter
-too somehow? I guess it could be moved to "tb.c" and "tb.h" and then
-check it from nhi.c as already done and then here so this would become:
+s/bpc/BPC/
 
- 	if (host_reset && usb4_switch_version(tb->root_switch) == 1)
- 		tb_switch_reset(tb->root_switch);
+> +
+> +maintainers:
+> +  - Tomer Maimon <tmaimon77@gmail.com>
+> +
+> +description:
+> +  Nuvoton BMC NPCM BIOS Post Code (BPC) monitoring two configurable I/O
+> +  addresses written by the host on the bus, the capture data stored in
+> +  128-word FIFO.
+> +
+> +  NPCM BPC supports capture double words, when using capture
+> +  double word only I/O address 1 is monitored.
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - nuvoton,npcm750-bpc
+> +      - nuvoton,npcm845-bpc
 
-With the idea that the user has a "chicken bit" to disable this
-behaviour (and consistent one with USB4 v2). Feel free to make it look
-nicer though.
+Your device driver suggests these are compatible, so express it in the
+bindings and modify driver respectively.
+
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+
+
+Best regards,
+Krzysztof
+
