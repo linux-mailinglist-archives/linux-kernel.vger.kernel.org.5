@@ -2,98 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 74368811DE3
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 20:02:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 76855811F20
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 20:42:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235446AbjLMTBz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 14:01:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54998 "EHLO
+        id S233516AbjLMTmm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 14:42:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38028 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235434AbjLMTBv (ORCPT
+        with ESMTP id S235370AbjLMSkm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 14:01:51 -0500
-Received: from pidgin.makrotopia.org (pidgin.makrotopia.org [185.142.180.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4ED13E8;
-        Wed, 13 Dec 2023 11:01:55 -0800 (PST)
-Received: from local
-        by pidgin.makrotopia.org with esmtpsa (TLS1.3:TLS_AES_256_GCM_SHA384:256)
-         (Exim 4.96.2)
-        (envelope-from <daniel@makrotopia.org>)
-        id 1rDUUC-0004pP-1q;
-        Wed, 13 Dec 2023 19:01:37 +0000
-Date:   Wed, 13 Dec 2023 19:01:29 +0000
-From:   Daniel Golle <daniel@makrotopia.org>
-To:     "Russell King (Oracle)" <linux@armlinux.org.uk>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Maxime Chevallier <maxime.chevallier@bootlin.com>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net] net: phy: skip LED triggers on PHYs on SFP modules
-Message-ID: <ZXn_id6-XWYr2Seo@makrotopia.org>
-References: <102a9dce38bdf00215735d04cd4704458273ad9c.1702339354.git.daniel@makrotopia.org>
- <20231212153512.67a7a35b@device.home>
- <ec909d14-e571-4a50-926d-fbef4f4f9e0a@lunn.ch>
- <ZXnNYJer0JrJxOsl@shell.armlinux.org.uk>
+        Wed, 13 Dec 2023 13:40:42 -0500
+Received: from mail-ot1-f42.google.com (mail-ot1-f42.google.com [209.85.210.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F177186;
+        Wed, 13 Dec 2023 10:40:48 -0800 (PST)
+Received: by mail-ot1-f42.google.com with SMTP id 46e09a7af769-6d9d29a2332so3331095a34.0;
+        Wed, 13 Dec 2023 10:40:48 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702492847; x=1703097647;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=MkULXo4mhKcg71U73w4rkp43EOuli/ib4+NFro1doXU=;
+        b=h4oqfXX6pYxgNqIFmdJFNGgWreDQUTU5C+FimfIbI1zSxh4JMKEKcqVay8PqDRwIJw
+         D936Qj6QfxUeq8DegVByNNqiSOnQMRJHoPGLdCtOXUMKt/mIa9NmPACz3Zl+SCPSet5x
+         9eWRDWMWAiMXUk886uhX3rOGKNQYpvvZTz67TfLqKClSFXSnbsDxg5C1AmlnaNNmPxPr
+         bssXT0rg1E17qu+doQe6OtEPahfH4wkYumkdRDwVg/V26r4IlXYFUNdCBaQLCVgvnBLL
+         AOdOXpAndALOhdlxCEQZ3SUX3vAunFgEmMbKyhu/0Irvd7C2T+kz7TAJxbsQbQRILyyk
+         PFEg==
+X-Gm-Message-State: AOJu0YwJFVY/QT3Az1epuLHJeMgK6wqJ45ZSfmoJG0bexUG1jgXGCpeS
+        x0sQo/7RAJVEkUumGJSNIg==
+X-Google-Smtp-Source: AGHT+IELENIrqmlyue3dNgttQHCnHTUptGZ/xiBYpYZKegTnwRp23rEHAfgBChxnnkwfpFvLdwrpmw==
+X-Received: by 2002:a05:6830:641c:b0:6da:262d:123b with SMTP id cj28-20020a056830641c00b006da262d123bmr2238780otb.31.1702492847650;
+        Wed, 13 Dec 2023 10:40:47 -0800 (PST)
+Received: from herring.priv (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
+        by smtp.gmail.com with ESMTPSA id w5-20020a056830110500b006c619f17669sm2867203otq.74.2023.12.13.10.40.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Dec 2023 10:40:47 -0800 (PST)
+Received: (nullmailer pid 1699707 invoked by uid 1000);
+        Wed, 13 Dec 2023 18:40:45 -0000
+Date:   Wed, 13 Dec 2023 12:40:45 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc:     Andy Gross <agross@kernel.org>, Shawn Guo <shawn.guo@linaro.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Stephan Gerhold <stephan@gerhold.net>,
+        linux-kernel@vger.kernel.org,
+        Rajendra Nayak <quic_rjendra@quicinc.com>,
+        linux-arm-msm@vger.kernel.org,
+        Rohit Agarwal <quic_rohiagar@quicinc.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Richard Acayan <mailingradian@gmail.com>,
+        Abel Vesa <abel.vesa@linaro.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        krishna Lanka <quic_vamslank@quicinc.com>,
+        devicetree@vger.kernel.org, Danila Tikhonov <danila@jiaxyga.com>,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Martin Botka <martin.botka@somainline.org>,
+        Melody Olvera <quic_molvera@quicinc.com>,
+        Iskren Chernev <me@iskren.info>, linux-gpio@vger.kernel.org
+Subject: Re: [PATCH 06/10] dt-bindings: pinctrl: qcom,sm8650-tlmm: restrict
+ number of interrupts
+Message-ID: <170249284530.1699674.6881848735473134289.robh@kernel.org>
+References: <20231208215534.195854-1-krzysztof.kozlowski@linaro.org>
+ <20231208215534.195854-6-krzysztof.kozlowski@linaro.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZXnNYJer0JrJxOsl@shell.armlinux.org.uk>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20231208215534.195854-6-krzysztof.kozlowski@linaro.org>
+X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,
+        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 13, 2023 at 03:27:28PM +0000, Russell King (Oracle) wrote:
-> On Wed, Dec 13, 2023 at 10:08:25AM +0100, Andrew Lunn wrote:
-> > On Tue, Dec 12, 2023 at 03:35:12PM +0100, Maxime Chevallier wrote:
-> > > Hi Daniel
-> > > 
-> > > On Tue, 12 Dec 2023 00:05:35 +0000
-> > > Daniel Golle <daniel@makrotopia.org> wrote:
-> > > 
-> > > > Calling led_trigger_register() when attaching a PHY located on an SFP
-> > > > module potentially (and practically) leads into a deadlock.
-> > > > Fix this by not calling led_trigger_register() for PHYs localted on SFP
-> > > > modules as such modules actually never got any LEDs.
-> > > 
-> > > While I don't have a fix for this issue, I think your justification
-> > > isn't good. This isn't about having LEDs on the module or not, but
-> > > rather the PHY triggering LED events for LEDS that can be located
-> > > somewhere else on the system (like the front pannel of a switch).
-> > 
-> > SFP LEDs are very unlikely to be on the front panel, since there is no
-> > such pins on the SFP cage.
-> > 
-> > Russell, in your collection of SFPs do you have any with LEDs?
-> 
-> No, and we should _not_ mess around with the "LED" configuration on
-> PHYs on SFPs. It's possible that the LED output is wired to the LOS
-> pin on the module, and messing around with the configuration of that
-> would be asking for trouble.
-> 
-> In any case, I thought we didn't drive the LED configuration on PHYs
-> where the LED configuration isn't described by firmware - and as the
-> PHY on SFP modules would never be described by firmware, hooking
-> such a PHY up to the LED framework sounds like a waste of resources
-> to me.
 
-This was exactly my line of thought when posting the patch, however,
-Maxime correctly pointed out that the issue with locking and also
-what the patch prevents is registration of LED *triggers* rather than
-the PHY-controlled LEDs themselves. And having the triggers available
-is desirable even beyond the hardware offloaded case (which is probably
-the aspect we both were dealing with the most recently and hence had in
-mind). It is common to control another system SoC GPIO driven LED(s)
-representing the link status and rx/tx traffic, for example.
+On Fri, 08 Dec 2023 22:55:30 +0100, Krzysztof Kozlowski wrote:
+> SM8650 TLMM pin controller comes with only one interrupt, so narrow
+> the number of interrupts previously defined in common TLMM bindings.
+> 
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> ---
+>  .../devicetree/bindings/pinctrl/qcom,sm8650-tlmm.yaml         | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
+> 
 
-So better we get to the core of it and fix the locking issue
-(for example by registering LED trigger asynchronously using
-delayed_work)...
+Reviewed-by: Rob Herring <robh@kernel.org>
+
