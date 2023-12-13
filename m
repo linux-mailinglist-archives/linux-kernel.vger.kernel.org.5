@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 90587811647
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 16:25:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AF90881168F
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 16:27:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442629AbjLMPYv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 10:24:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33912 "EHLO
+        id S1442182AbjLMP1U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 10:27:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37382 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1442549AbjLMPYb (ORCPT
+        with ESMTP id S1442523AbjLMPZR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 10:24:31 -0500
+        Wed, 13 Dec 2023 10:25:17 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D137BAF
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 07:24:36 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 80C5EC433C7;
-        Wed, 13 Dec 2023 15:24:27 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50F0FB2
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 07:25:09 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2FE5DC433C7;
+        Wed, 13 Dec 2023 15:25:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1702481076;
-        bh=34+Ib4YFyZmhdk4OinGdvnrlMwYrXexKV9Hm36OaH5g=;
+        s=k20201202; t=1702481109;
+        bh=k3475fUWjt6cqtLAtUFoDPFZz/q8UFyFG6t5hNV1fdg=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=lbVMXI1QdImCKCnxDnc0Lcmg1UQx/Ebc/1WfRY7aP22xJ9CQqvAU/p0vLVIK2oazI
-         +Nvx5UUNTQD/u6Zc39LWmbWeVeXI0lbNrM9gaZNiDVspkktzrpm6r7V+E1P4gxNRKA
-         QCbOKlO7o0cCJz5GJ2rR+piofMGHy/U09GjH9T+teywtW6IBF4MPfXo2k4LaDZyXLK
-         sBxeEi0kwaEDgtMLm9nIyEn8y86cV9cokmRcAilGQ4Psin99aXIKfphklULADpIHl8
-         Id2KzVq14cQH60JxHyXVIveRWNY58GVraISLyvPkVHhgDCEp9dvoygNJD8ej29I1UK
-         RO+1ozDPDjj9A==
-Date:   Wed, 13 Dec 2023 15:24:25 +0000
+        b=IhEL5Jr+r1wwkykwxdY9oQmsfodd9RscQA12rUVSylaaZzmWiWpnlGhVa+sp+3r7b
+         v98l3JDxaUBwRrSzu+mVf2fO350PgvFHe6HkXQltyVGpjer10RytkbZiEdJ1J46xxB
+         Rwnd4MPP43z9LtQY4FzMMoqGpyvLzymWkT+GZhRXDFwftlnk0o61XcKDpTOJ4c3VFV
+         WJek1HcyaFQE9cN2hOQhehvJFy7ICm8oKjfbFVNg9P51rjkPVfb0+1FG4ftPbraIGI
+         h+9bCQ4O85y3TPmEFTZdDXAyKrldhroD8lPJl7ea9llzgrX9j0sI3kcrN2TuQrnLCe
+         RPgdAjfZ6EasQ==
+Date:   Wed, 13 Dec 2023 15:24:57 +0000
 From:   Conor Dooley <conor@kernel.org>
 To:     Yu Chien Peter Lin <peterlin@andestech.com>
 Cc:     acme@kernel.org, adrian.hunter@intel.com, ajones@ventanamicro.com,
@@ -51,16 +51,16 @@ Cc:     acme@kernel.org, adrian.hunter@intel.com, ajones@ventanamicro.com,
         tglx@linutronix.de, tim609@andestech.com, uwu@icenowy.me,
         wens@csie.org, will@kernel.org, ycliang@andestech.com,
         inochiama@outlook.com
-Subject: Re: [PATCH v5 13/16] riscv: dts: sophgo: Add T-Head PMU extension
- for sg2042
-Message-ID: <20231213-maturely-freezing-07edd52717d9@spud>
+Subject: Re: [PATCH v5 15/16] riscv: dts: renesas: Add Andes PMU extension
+ for r9a07g043f
+Message-ID: <20231213-porous-panic-015409053e1d@spud>
 References: <20231213070301.1684751-1-peterlin@andestech.com>
- <20231213070301.1684751-14-peterlin@andestech.com>
+ <20231213070301.1684751-16-peterlin@andestech.com>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="0Rcnxco1nl347ZKK"
+        protocol="application/pgp-signature"; boundary="CdyUBDMnoeaw9TCE"
 Content-Disposition: inline
-In-Reply-To: <20231213070301.1684751-14-peterlin@andestech.com>
+In-Reply-To: <20231213070301.1684751-16-peterlin@andestech.com>
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -72,33 +72,35 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---0Rcnxco1nl347ZKK
+--CdyUBDMnoeaw9TCE
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Dec 13, 2023 at 03:02:58PM +0800, Yu Chien Peter Lin wrote:
-> xtheadpmu stands for T-Head Performance Monitor Unit extension.
-> Based on the added T-Head PMU ISA string, the SBI PMU driver
+On Wed, Dec 13, 2023 at 03:03:00PM +0800, Yu Chien Peter Lin wrote:
+> xandespmu stands for Andes Performance Monitor Unit extension.
+> Based on the added Andes PMU ISA string, the SBI PMU driver
 > will make use of the non-standard irq source.
 >=20
 > Signed-off-by: Yu Chien Peter Lin <peterlin@andestech.com>
+> Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+> Reviewed-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> Tested-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
 
 Acked-by: Conor Dooley <conor.dooley@microchip.com>
 
 Cheers,
 Conor.
 
-
---0Rcnxco1nl347ZKK
+--CdyUBDMnoeaw9TCE
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZXnMqAAKCRB4tDGHoIJi
-0qyQAP9X4Da6uFGwYd7MFmvCTiSfe1B6LzKyCFwLDqOUywJ6EQEAp9f/B1dFBqB1
-ueKxuTYAXyXZJ6C9gMiRZQAQv5ecrwY=
-=EGtr
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZXnMyQAKCRB4tDGHoIJi
+0iyVAQCorZx0jwXEAp2RWyzoTrHFg9KDdgLQHzCY1iV7IeT9DgD/SalZhcE47FKy
+2wTkZDKDhXwkKbx9fAYA++KOZn1smA8=
+=pQrz
 -----END PGP SIGNATURE-----
 
---0Rcnxco1nl347ZKK--
+--CdyUBDMnoeaw9TCE--
