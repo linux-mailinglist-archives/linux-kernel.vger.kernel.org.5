@@ -2,113 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AF608119AC
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 17:38:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F6C28119AE
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 17:39:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232777AbjLMQid (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 11:38:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33746 "EHLO
+        id S233087AbjLMQjH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 11:39:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42568 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229671AbjLMQic (ORCPT
+        with ESMTP id S231482AbjLMQjF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 11:38:32 -0500
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F18688E;
-        Wed, 13 Dec 2023 08:38:38 -0800 (PST)
-Received: by mail-pl1-x632.google.com with SMTP id d9443c01a7336-1d348653591so11433665ad.1;
-        Wed, 13 Dec 2023 08:38:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702485518; x=1703090318; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=WngvNIIdUAOImz6VKCR6KlDDLoKgFI0GBra4+hjHdaY=;
-        b=NzLYDsBPHGzS50irHggm2iGtEK3B4zIDR0Bq+Uc0Yv6/W5Tpp4LCsJn1MxEErCUNJ+
-         MTgsiDSJzhWpDuEQPfpN2GWEl0GbqzqKUrm7WEpPbByTIXYH5dbReQAi3GXZn0yroXMI
-         x2vKWxSDFr0t3xs2AoAdC/odWnsiqbLQvCB5jcBeOoymtfTRgFJF2KXDdvtC8QCasbnN
-         NY5Weu5dmhKIhyjxJ165kthOjz3+zoo53I8NB4/vKWfqr8HVE3eq1MczJ4jnhG2TJcan
-         BpltIBFY0BsCnL8qP0m+j0GpL4Xr2BQZxQXZ742USicR3YvBQDm7fqhTkE4mvhFSqaXk
-         aoyg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702485518; x=1703090318;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=WngvNIIdUAOImz6VKCR6KlDDLoKgFI0GBra4+hjHdaY=;
-        b=K800IrK64mE0Ew6GYDR2t02M0fDrBFg9l3YhTgbY4u5ZoDpuXO3hSCVr5qBSrkfPtK
-         2S+ZD2A390ebOWPXzLgfso2TmG/BDvarbPXALl4QsfATc5r0dAqtb/AA0mehgFwpz5Q6
-         JGBY7M6gNNxxlf3Zrg9Zyxz8xEjHdcbcDpn6QrZtA78RxQY0jQ5UlRdqIGPGsr4vwJBU
-         n+e6QLwICRFy5t3jiHO52WORTwCXIU4HU8zJNTlD+dW0jlAU65GHoRun65VqRU1WkXYX
-         BJ2l6vMSxFNkuTLJqyKP2HEzFO85LGNvpnBAPQIhsUElAcD7EMmZ+VvdHE1MW7xyE3BV
-         F2Sg==
-X-Gm-Message-State: AOJu0Yz/8cQzqNhlXt+njLRzfxGYzsHpxKNtOgWSIXOm+C7NwRklS6TZ
-        2QjMegyb6etjzrs82fS6XNw=
-X-Google-Smtp-Source: AGHT+IG40cDam0iwIQQ0yixGvC12xVks7Auh91vEMpA9cC4FQkIMzHTpnOC5tJomQzgVmo/Fg54fjQ==
-X-Received: by 2002:a17:902:e887:b0:1d3:3768:90a0 with SMTP id w7-20020a170902e88700b001d3376890a0mr3641678plg.40.1702485518164;
-        Wed, 13 Dec 2023 08:38:38 -0800 (PST)
-Received: from dschatzberg-fedora-PF3DHTBV ([2620:10d:c090:500::5:4500])
-        by smtp.gmail.com with ESMTPSA id az4-20020a170902a58400b001c71ec1866fsm10810814plb.258.2023.12.13.08.38.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Dec 2023 08:38:37 -0800 (PST)
-Date:   Wed, 13 Dec 2023 11:38:33 -0500
-From:   Dan Schatzberg <schatzberg.dan@gmail.com>
-To:     Yu Zhao <yuzhao@google.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Yosry Ahmed <yosryahmed@google.com>, Huan Yang <link@vivo.com>,
-        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        linux-mm@kvack.org, Tejun Heo <tj@kernel.org>,
-        Zefan Li <lizefan.x@bytedance.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Michal Hocko <mhocko@kernel.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <muchun.song@linux.dev>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        David Hildenbrand <david@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        Yue Zhao <findns94@gmail.com>, Hugh Dickins <hughd@google.com>
-Subject: Re: [PATCH V4 2/2] mm: add swapiness= arg to memory.reclaim
-Message-ID: <ZXneCaeJjHvFvecK@dschatzberg-fedora-PF3DHTBV>
-References: <20231213013807.897742-1-schatzberg.dan@gmail.com>
- <20231213013807.897742-3-schatzberg.dan@gmail.com>
- <CAOUHufarKA5-NGErYzvqeKKJze1XSUcMx4ntBHx2jmAUeqAioA@mail.gmail.com>
+        Wed, 13 Dec 2023 11:39:05 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A725DAC
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 08:39:10 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A428BC433C8;
+        Wed, 13 Dec 2023 16:39:07 +0000 (UTC)
+Message-ID: <839535af-acba-4240-b9c6-d592d898dc4c@xs4all.nl>
+Date:   Wed, 13 Dec 2023 17:39:05 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAOUHufarKA5-NGErYzvqeKKJze1XSUcMx4ntBHx2jmAUeqAioA@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v5 1/3] videobuf2: core: Rename min_buffers_needed field
+ to vb2_queue
+Content-Language: en-US, nl
+To:     Benjamin Gaignard <benjamin.gaignard@collabora.com>,
+        mchehab@kernel.org, tfiga@chromium.org
+Cc:     linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-staging@lists.linux.dev, kernel@collabora.com
+References: <20231211133251.150999-1-benjamin.gaignard@collabora.com>
+ <20231211133251.150999-2-benjamin.gaignard@collabora.com>
+From:   Hans Verkuil <hverkuil@xs4all.nl>
+Autocrypt: addr=hverkuil@xs4all.nl; keydata=
+ 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
+In-Reply-To: <20231211133251.150999-2-benjamin.gaignard@collabora.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 12, 2023 at 07:05:36PM -0700, Yu Zhao wrote:
-> On Tue, Dec 12, 2023 at 6:39 PM Dan Schatzberg <schatzberg.dan@gmail.com> wrote:
-> >
-> > Allow proactive reclaimers to submit an additional swappiness=<val>
-> > argument to memory.reclaim. This overrides the global or per-memcg
-> > swappiness setting for that reclaim attempt.
-> >
-> > For example:
-> >
-> > echo "2M swappiness=0" > /sys/fs/cgroup/memory.reclaim
-> >
-> > will perform reclaim on the rootcg with a swappiness setting of 0 (no
-> > swap) regardless of the vm.swappiness sysctl setting.
-> >
-> > Signed-off-by: Dan Schatzberg <schatzberg.dan@gmail.com>
-> 
-> NAK.
-> 
-> Please initialize new variables properly and test code changes
-> thoroughly before submission.
+Hi Benjamin,
 
-Could you be a bit more specific? The patch is compiling and working
-locally but perhaps there's some configuration or behavior that I
-haven't been testing.
+On 11/12/2023 14:32, Benjamin Gaignard wrote:
+> Rename min_buffers_needed into min_queued_buffers and update
+> the documentation about it.
+
+I merged this patch, but not the others. I also dropped one functional
+change:
+
+<snip>
+
+> diff --git a/drivers/media/common/videobuf2/videobuf2-core.c b/drivers/media/common/videobuf2/videobuf2-core.c
+> index 40d89f29fa33..8912dff5bde3 100644
+> --- a/drivers/media/common/videobuf2/videobuf2-core.c
+> +++ b/drivers/media/common/videobuf2/videobuf2-core.c
+> @@ -865,7 +865,7 @@ int vb2_core_reqbufs(struct vb2_queue *q, enum vb2_memory memory,
+>  	/*
+>  	 * Make sure the requested values and current defaults are sane.
+>  	 */
+> -	num_buffers = max_t(unsigned int, *count, q->min_buffers_needed);
+> +	num_buffers = max_t(unsigned int, *count, q->min_queued_buffers + 1);
+>  	num_buffers = min_t(unsigned int, num_buffers, q->max_num_buffers);
+>  	memset(q->alloc_devs, 0, sizeof(q->alloc_devs));
+>  	/*
+
+That "+ 1" didn't really belong here, since everything else was just renaming a
+field. Such a patch shouldn't make any other changes.
+
+There were also three more occurrences of min_buffers_needed (one in a comment,
+two in a vivid function argument), and I renamed those as well.
+
+'git grep min_buffers_needed' now no longer shows any hits.
+
+I decided not to take the other patches, I think it is best if you rebase
+and repost the series on top of staging and in the new year we'll continue with
+it. I did not feel that I had enough time to really review the remaining patches.
+
+However, it is nice to have this large rename patch merged. It touches on a lot
+of files, so it is annoying to have to carry that around. And now was a good
+moment to merge it.
+
+Regards,
+
+	Hans
