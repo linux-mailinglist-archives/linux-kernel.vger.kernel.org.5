@@ -2,94 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 096A98106CA
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 01:39:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3772A8106CC
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 01:40:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377887AbjLMAjr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 19:39:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36738 "EHLO
+        id S1377899AbjLMAkh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 19:40:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40218 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377843AbjLMAjq (ORCPT
+        with ESMTP id S1377870AbjLMAkg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 19:39:46 -0500
-Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 692BAAC
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 16:39:52 -0800 (PST)
-Received: by mail-ej1-x634.google.com with SMTP id a640c23a62f3a-a1da1017a09so760605366b.3
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 16:39:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1702427991; x=1703032791; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=vbEQ0KJGdaL7UqnKRRl9MeOERVPcRtBuLGCRgVFRaFo=;
-        b=HRqBps9/RM7log+30PRlJuUCddgtcc+8DQP/pSC/VXZ3Ab1gjmGtlWkPanrFPEjaVC
-         +q1egYkLO1fcKxtA33LqZ/esbRnzj1uLzwfy77oxm2BIBcpT0oZin2BENupfkVHk/205
-         M1mGIU3zOGt3h72WccV2wwEQaVnrktpw6KjT8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702427991; x=1703032791;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=vbEQ0KJGdaL7UqnKRRl9MeOERVPcRtBuLGCRgVFRaFo=;
-        b=B7Jc6/sOxJpwvgbmkD++77T/run+BcQe3tpybEML+mPEyn6fpYxSpGVc9cWQR1PFxZ
-         SUV3ENUFhTUQXVEHxI5CcajSUJlvDIsIuAhsQDj8Y+KktZdN1UU/ZzxcET1gRP8QCIFr
-         VM7k/abZi2tySGTT6upyd+UvaY+JQuso8E1cxtxVPW3UDjNv/0uOMmOjDGsgNqdJRU3M
-         djWeIlwjdo0ovbxGIMiQktkFTm8bUXqc+f0MlE3bDtJiSV+sNWRh23Q8y2QmWheSPFzb
-         Wh3MB84C/ITtgA60rLslm9gU8fKPSaVCR2Z4bPKbCwyVuznWFgHEP3aa8Jziu7gYhgvV
-         bydg==
-X-Gm-Message-State: AOJu0YyW6Kz67ftLPGfRhACXPfsadVSYALWZOt48npttq/AIVPd/4ZE4
-        nFTrK4ounoQSfat4KzNxMpfW89uD2T+FlWfw3exRxhol
-X-Google-Smtp-Source: AGHT+IFYYR4KPMZExf9OHrNMkByIy1dP/U9MexXcj3HjAr975M3e7bNI+BPHuUF/mdUzyuUBDoCc9w==
-X-Received: by 2002:a17:906:741:b0:a1e:36e0:1c7b with SMTP id z1-20020a170906074100b00a1e36e01c7bmr4115592ejb.19.1702427990865;
-        Tue, 12 Dec 2023 16:39:50 -0800 (PST)
-Received: from mail-ej1-f41.google.com (mail-ej1-f41.google.com. [209.85.218.41])
-        by smtp.gmail.com with ESMTPSA id qo14-20020a170907874e00b00a1f6737be65sm6689737ejc.82.2023.12.12.16.39.48
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 12 Dec 2023 16:39:48 -0800 (PST)
-Received: by mail-ej1-f41.google.com with SMTP id a640c23a62f3a-a1e2ded3d9fso762813966b.0
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 16:39:48 -0800 (PST)
-X-Received: by 2002:a17:906:d8cd:b0:a19:a19b:78bb with SMTP id
- re13-20020a170906d8cd00b00a19a19b78bbmr3094683ejb.126.1702427988541; Tue, 12
- Dec 2023 16:39:48 -0800 (PST)
-MIME-Version: 1.0
-References: <20231212231706.2680890-1-jeffxu@chromium.org> <20231212231706.2680890-12-jeffxu@chromium.org>
-In-Reply-To: <20231212231706.2680890-12-jeffxu@chromium.org>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Tue, 12 Dec 2023 16:39:31 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wgn02cpoFEDQGgS+5BUqA2z-=Ks9+PNd-pEJy8h+NOs5g@mail.gmail.com>
-Message-ID: <CAHk-=wgn02cpoFEDQGgS+5BUqA2z-=Ks9+PNd-pEJy8h+NOs5g@mail.gmail.com>
-Subject: Re: [RFC PATCH v3 11/11] mseal:add documentation
-To:     jeffxu@chromium.org
-Cc:     akpm@linux-foundation.org, keescook@chromium.org, jannh@google.com,
-        sroettger@google.com, willy@infradead.org,
-        gregkh@linuxfoundation.org, jeffxu@google.com,
-        jorgelo@chromium.org, groeck@chromium.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-mm@kvack.org, pedro.falcato@gmail.com, dave.hansen@intel.com,
-        linux-hardening@vger.kernel.org, deraadt@openbsd.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        Tue, 12 Dec 2023 19:40:36 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E28EEAC
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 16:40:42 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DE4A1C433C7;
+        Wed, 13 Dec 2023 00:40:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1702428042;
+        bh=yaOwyRdIE6NOk7geX4K1Pt2wgBpMW9U+4MntbxQURCg=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=Yj1K/lmw3/ETwXTyAQSKFVJX2kJMUqhNhBGdxKl6cdMPT2LkbWQBAFima855XXjIU
+         F8XcRe+llUb+ob2bgnSv/EQps95hU5ddAvcJSL+XdKJDtbutXD3utC80d6xkVGn77m
+         xFgIv49utMavdx0BC6nvK7KyrtpqPP7Q78/ifBWh0e9Xh5kG62w0WGYsjHMTXIKtSL
+         UQAiYUJdUPaGlXDDgtVLCU1GxBJn1x5rAZvQq54PBUxnN4xOy2XUDxQmUA5FAQrKuy
+         XoHoJ8gd+zYnbEi9RIQ71imytOLyKR/hKF1n4E/l+8S6sKzdMaKto4bPUN4IrSsxQf
+         n4YuThzp87x1Q==
+Date:   Wed, 13 Dec 2023 09:40:38 +0900
+From:   Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To:     Naveen N Rao <naveen@kernel.org>
+Cc:     <linux-kselftest@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Subject: Re: [PATCH] selftests/ftrace: Add test to exercize function tracer
+ across cpu hotplug
+Message-Id: <20231213094038.6c9518a2042b84c8388ec6ae@kernel.org>
+In-Reply-To: <20231212085607.1213210-1-naveen@kernel.org>
+References: <20231212085607.1213210-1-naveen@kernel.org>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 12 Dec 2023 at 15:17, <jeffxu@chromium.org> wrote:
+Hi Naveen,
+
+On Tue, 12 Dec 2023 14:26:07 +0530
+Naveen N Rao <naveen@kernel.org> wrote:
+
+> Add a test to exercize cpu hotplug with the function tracer active to
+> ensure that sensitive functions in idle path are excluded from being
+> traced. This helps catch issues such as the one fixed by commit
+> 4b3338aaa74d ("powerpc/ftrace: Fix stack teardown in ftrace_no_trace").
+> 
+> Signed-off-by: Naveen N Rao <naveen@kernel.org>
+> ---
+>  .../ftrace/test.d/ftrace/func_hotplug.tc      | 30 +++++++++++++++++++
+>  1 file changed, 30 insertions(+)
+>  create mode 100644 tools/testing/selftests/ftrace/test.d/ftrace/func_hotplug.tc
+> 
+> diff --git a/tools/testing/selftests/ftrace/test.d/ftrace/func_hotplug.tc b/tools/testing/selftests/ftrace/test.d/ftrace/func_hotplug.tc
+> new file mode 100644
+> index 000000000000..49731a2b5c23
+> --- /dev/null
+> +++ b/tools/testing/selftests/ftrace/test.d/ftrace/func_hotplug.tc
+> @@ -0,0 +1,30 @@
+> +#!/bin/sh
+> +# SPDX-License-Identifier: GPL-2.0
+> +# description: ftrace - function trace across cpu hotplug
+> +# requires: function:tracer
 > +
-> +**types**: bit mask to specify the sealing types, they are:
+> +if ! which nproc ; then
+> +  nproc() {
+> +    ls -d /sys/devices/system/cpu/cpu[0-9]* | wc -l
+> +  }
+> +fi
+> +
+> +NP=`nproc`
+> +
+> +if [ $NP -eq 1 ] ;then
+> +  echo "We can not test cpu hotplug in UP environment"
+> +  exit_unresolved
+> +fi
 
-I really want a real-life use-case for more than one bit of "don't modify".
+This looks good, but can you find the 2nd online CPU before
+this test?
+I mean, there is a case that cpu1 is already offlined and others
+like cpu2 is onlined. So we need to use the 2nd online cpu.
 
-IOW, when would you *ever* say "seal this area, but MADV_DONTNEED is ok"?
+Thank you,
 
-Or when would you *ever* say "seal this area, but mprotect()" is ok.
+> +
+> +echo 0 > tracing_on
+> +echo > trace
+> +: "Set CPU1 offline/online with function tracer enabled"
+> +echo function > current_tracer
+> +echo 1 > tracing_on
+> +(echo 0 > /sys/devices/system/cpu/cpu1/online)
+> +(echo "forked"; sleep 1)
+> +(echo 1 > /sys/devices/system/cpu/cpu1/online)
+> +echo 0 > tracing_on
+> +
+> +: "Check CPU1 events are recorded"
+> +grep -q -e "\[001\]" trace
+> 
+> base-commit: b85ea95d086471afb4ad062012a4d73cd328fa86
+> -- 
+> 2.43.0
+> 
 
-IOW, I want to know why we don't just do the BSD immutable thing, and
-why we need this multi-level sealing thing.
 
-               Linus
+-- 
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
