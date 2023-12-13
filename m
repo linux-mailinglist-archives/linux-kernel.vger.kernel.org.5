@@ -2,287 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D3C5811C48
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 19:21:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E0DC811C28
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 19:18:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442533AbjLMSVm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 13:21:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52590 "EHLO
+        id S1442144AbjLMSSH convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 13 Dec 2023 13:18:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53010 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1442175AbjLMSUi (ORCPT
+        with ESMTP id S233481AbjLMSSG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 13:20:38 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D5C3F2
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 10:20:41 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 261B8C433CC;
-        Wed, 13 Dec 2023 18:20:41 +0000 (UTC)
-Received: from rostedt by gandalf with local (Exim 4.97)
-        (envelope-from <rostedt@goodmis.org>)
-        id 1rDTrK-00000002aDI-2Ez2;
-        Wed, 13 Dec 2023 13:21:26 -0500
-Message-ID: <20231213182126.320278952@goodmis.org>
-User-Agent: quilt/0.67
-Date:   Wed, 13 Dec 2023 13:17:52 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org
-Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Tzvetomir Stoyanov <tz.stoyanov@gmail.com>,
-        Vincent Donnefort <vdonnefort@google.com>,
-        Kent Overstreet <kent.overstreet@gmail.com>
-Subject: [PATCH v3 15/15] tracing: Update subbuffer with kilobytes not page order
-References: <20231213181737.791847466@goodmis.org>
+        Wed, 13 Dec 2023 13:18:06 -0500
+Received: from out03.mta.xmission.com (out03.mta.xmission.com [166.70.13.233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C435AF;
+        Wed, 13 Dec 2023 10:18:12 -0800 (PST)
+Received: from in01.mta.xmission.com ([166.70.13.51]:55092)
+        by out03.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1rDToA-000YZK-3k; Wed, 13 Dec 2023 11:18:10 -0700
+Received: from ip68-227-168-167.om.om.cox.net ([68.227.168.167]:53124 helo=email.froward.int.ebiederm.org.xmission.com)
+        by in01.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1rDTo9-007oxM-1R; Wed, 13 Dec 2023 11:18:09 -0700
+From:   "Eric W. Biederman" <ebiederm@xmission.com>
+To:     Luis Chamberlain <mcgrof@kernel.org>
+Cc:     Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <linux@weissschuh.net>,
+        Joel Granados <j.granados@samsung.com>,
+        Kees Cook <keescook@chromium.org>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Iurii Zaikin <yzaikin@google.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org
+References: <CGME20231204075237eucas1p27966f7e7da014b5992d3eef89a8fde25@eucas1p2.samsung.com>
+        <20231204-const-sysctl-v2-0-7a5060b11447@weissschuh.net>
+        <20231207104357.kndqvzkhxqkwkkjo@localhost>
+        <fa911908-a14d-4746-a58e-caa7e1d4b8d4@t-8ch.de>
+        <20231208095926.aavsjrtqbb5rygmb@localhost>
+        <8509a36b-ac23-4fcd-b797-f8915662d5e1@t-8ch.de>
+        <ZXlhkJm2KjCymcqu@bombadil.infradead.org>
+Date:   Wed, 13 Dec 2023 12:18:00 -0600
+In-Reply-To: <ZXlhkJm2KjCymcqu@bombadil.infradead.org> (Luis Chamberlain's
+        message of "Tue, 12 Dec 2023 23:47:28 -0800")
+Message-ID: <87v8927yqv.fsf@email.froward.int.ebiederm.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8BIT
+X-XM-SPF: eid=1rDTo9-007oxM-1R;;;mid=<87v8927yqv.fsf@email.froward.int.ebiederm.org>;;;hst=in01.mta.xmission.com;;;ip=68.227.168.167;;;frm=ebiederm@xmission.com;;;spf=pass
+X-XM-AID: U2FsdGVkX19i6qfGdObJtlqwV73cM5HlVuthNRxr54M=
+X-SA-Exim-Connect-IP: 68.227.168.167
+X-SA-Exim-Mail-From: ebiederm@xmission.com
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-DCC: XMission; sa07 1397; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: ;Luis Chamberlain <mcgrof@kernel.org>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 472 ms - load_scoreonly_sql: 0.04 (0.0%),
+        signal_user_changed: 11 (2.4%), b_tie_ro: 10 (2.1%), parse: 1.41
+        (0.3%), extract_message_metadata: 26 (5.5%), get_uri_detail_list: 2.4
+        (0.5%), tests_pri_-2000: 39 (8.3%), tests_pri_-1000: 4.2 (0.9%),
+        tests_pri_-950: 1.79 (0.4%), tests_pri_-900: 1.50 (0.3%),
+        tests_pri_-90: 133 (28.2%), check_bayes: 132 (27.9%), b_tokenize: 12
+        (2.6%), b_tok_get_all: 9 (2.0%), b_comp_prob: 4.2 (0.9%),
+        b_tok_touch_all: 102 (21.6%), b_finish: 0.96 (0.2%), tests_pri_0: 238
+        (50.4%), check_dkim_signature: 0.50 (0.1%), check_dkim_adsp: 2.8
+        (0.6%), poll_dns_idle: 1.21 (0.3%), tests_pri_10: 2.3 (0.5%),
+        tests_pri_500: 9 (1.9%), rewrite_mail: 0.00 (0.0%)
+Subject: Re: [PATCH v2 00/18] sysctl: constify sysctl ctl_tables
+X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
+X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
+Luis Chamberlain <mcgrof@kernel.org> writes:
 
-Using page order for deciding what the size of the ring buffer sub buffers
-are is exposing a bit too much of the implementation. Although the sub
-buffers are only allocated in orders of pages, allow the user to specify
-the minimum size of each sub-buffer via kilobytes like they can with the
-buffer size itself.
+> On Mon, Dec 11, 2023 at 12:25:10PM +0100, Thomas Weißschuh wrote:
+>> Before sending it I'd like to get feedback on the internal rework of the
+>> is_empty detection from you and/or Luis.
+>> 
+>> https://git.sr.ht/~t-8ch/linux/commit/ea27507070f3c47be6febebe451bbb88f6ea707e
+>> or the attached patch.
+>
+> Please send as a new patch as RFC and please ensure on the To field is
+> first "Eric W. Biederman" <ebiederm@xmission.com> with a bit more
+> elaborate commit log as suggested from my review below. If there are
+> any hidden things me and Joel could probably miss I'm sure Eric will
+> be easily able to spot it.
+>
+>> From ea27507070f3c47be6febebe451bbb88f6ea707e Mon Sep 17 00:00:00 2001
+>> From: =?UTF-8?q?Thomas=20Wei=C3=9Fschuh?= <linux@weissschuh.net>
+>> Date: Sun, 3 Dec 2023 21:56:46 +0100
+>> Subject: [PATCH] sysctl: move permanently empty flag to ctl_dir
+>> MIME-Version: 1.0
+>> Content-Type: text/plain; charset=UTF-8
+>> Content-Transfer-Encoding: 8bit
+>> 
+>> Simplify the logic by always keeping the permanently_empty flag on the
+>> ctl_dir.
+>> The previous logic kept the flag in the leaf ctl_table and from there
+>> transferred it to the ctl_table from the directory.
+>> 
+>> This also removes the need to have a mutable ctl_table and will allow
+>> the constification of those structs.
 
-If the user specifies 3 via:
+> Please elaborate a bit more on this here in your next RFC.
 
-  echo 3 > buffer_subbuf_size_kb
+> It's a pretty aggressive cleanup, specially with the new hipster guard()
+> call but I'd love Eric's eyeballs on a proper v2.
 
-Then the sub-buffer size will round up to 4kb (on a 4kb page size system).
+I will look at a v2 time permitting.
 
-If they specify:
+My sense is that changing the locking probably make sense as a separate
+patch.
 
-  echo 6 > buffer_subbuf_size_kb
-
-The sub-buffer size will become 8kb.
-
-and so on.
-
-Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
----
- Documentation/trace/ftrace.rst                | 46 ++++++++-----------
- kernel/trace/trace.c                          | 38 +++++++++------
- ...fer_order.tc => ringbuffer_subbuf_size.tc} | 18 ++++----
- 3 files changed, 54 insertions(+), 48 deletions(-)
- rename tools/testing/selftests/ftrace/test.d/00basic/{ringbuffer_order.tc => ringbuffer_subbuf_size.tc} (85%)
-
-diff --git a/Documentation/trace/ftrace.rst b/Documentation/trace/ftrace.rst
-index 231d26ceedb0..933e7efb9f1b 100644
---- a/Documentation/trace/ftrace.rst
-+++ b/Documentation/trace/ftrace.rst
-@@ -203,32 +203,26 @@ of ftrace. Here is a list of some of the key files:
- 
- 	This displays the total combined size of all the trace buffers.
- 
--  buffer_subbuf_order:
--
--	This sets or displays the sub buffer page size order. The ring buffer
--	is broken up into several same size "sub buffers". An event can not be
--	bigger than the size of the sub buffer. Normally, the sub buffer is
--	the size of the architecture's page (4K on x86). The sub buffer also
--	contains meta data at the start which also limits the size of an event.
--	That means when the sub buffer is a page size, no event can be larger
--	than the page size minus the sub buffer meta data.
--
--	The buffer_subbuf_order allows the user to change the size of the sub
--	buffer. As the sub buffer is a set of pages by the power of 2, thus
--	the sub buffer total size is defined by the order:
--
--	order		size
--	----		----
--	0		PAGE_SIZE
--	1		PAGE_SIZE * 2
--	2		PAGE_SIZE * 4
--	3		PAGE_SIZE * 8
--
--	Changing the order will change the sub buffer size allowing for events
--	to be larger than the page size.
--
--	Note: When changing the order, tracing is stopped and any data in the
--	ring buffer and the snapshot buffer will be discarded.
-+  buffer_subbuf_size_kb:
-+
-+	This sets or displays the sub buffer size. The ring buffer is broken up
-+	into several same size "sub buffers". An event can not be bigger than
-+	the size of the sub buffer. Normally, the sub buffer is the size of the
-+	architecture's page (4K on x86). The sub buffer also contains meta data
-+	at the start which also limits the size of an event.  That means when
-+	the sub buffer is a page size, no event can be larger than the page
-+	size minus the sub buffer meta data.
-+
-+	Note, the buffer_subbuf_size_kb is a way for the user to specify the
-+	minimum size of the subbuffer. The kernel may make it bigger due to the
-+	implementation details, or simply fail the operation if the kernel can
-+	not handle the request.
-+
-+	Changing the sub buffer size allows for events to be larger than the
-+	page size.
-+
-+	Note: When changing the sub-buffer size, tracing is stopped and any
-+	data in the ring buffer and the snapshot buffer will be discarded.
- 
-   free_buffer:
- 
-diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
-index 020350da99e3..b4b2b2307b7b 100644
---- a/kernel/trace/trace.c
-+++ b/kernel/trace/trace.c
-@@ -9378,42 +9378,54 @@ static const struct file_operations buffer_percent_fops = {
- };
- 
- static ssize_t
--buffer_order_read(struct file *filp, char __user *ubuf, size_t cnt, loff_t *ppos)
-+buffer_subbuf_size_read(struct file *filp, char __user *ubuf, size_t cnt, loff_t *ppos)
- {
- 	struct trace_array *tr = filp->private_data;
-+	size_t size;
- 	char buf[64];
-+	int order;
- 	int r;
- 
--	r = sprintf(buf, "%d\n", ring_buffer_subbuf_order_get(tr->array_buffer.buffer));
-+	order = ring_buffer_subbuf_order_get(tr->array_buffer.buffer);
-+	size = (PAGE_SIZE << order) / 1024;
-+
-+	r = sprintf(buf, "%zd\n", size);
- 
- 	return simple_read_from_buffer(ubuf, cnt, ppos, buf, r);
- }
- 
- static ssize_t
--buffer_order_write(struct file *filp, const char __user *ubuf,
--		   size_t cnt, loff_t *ppos)
-+buffer_subbuf_size_write(struct file *filp, const char __user *ubuf,
-+			 size_t cnt, loff_t *ppos)
- {
- 	struct trace_array *tr = filp->private_data;
- 	unsigned long val;
- 	int old_order;
-+	int order;
-+	int pages;
- 	int ret;
- 
- 	ret = kstrtoul_from_user(ubuf, cnt, 10, &val);
- 	if (ret)
- 		return ret;
- 
-+	val *= 1024; /* value passed in is in KB */
-+
-+	pages = DIV_ROUND_UP(val, PAGE_SIZE);
-+	order = fls(pages - 1);
-+
- 	/* limit between 1 and 128 system pages */
--	if (val < 0 || val > 7)
-+	if (order < 0 || order > 7)
- 		return -EINVAL;
- 
- 	/* Do not allow tracing while changing the order of the ring buffer */
- 	tracing_stop_tr(tr);
- 
- 	old_order = ring_buffer_subbuf_order_get(tr->array_buffer.buffer);
--	if (old_order == val)
-+	if (old_order == order)
- 		goto out;
- 
--	ret = ring_buffer_subbuf_order_set(tr->array_buffer.buffer, val);
-+	ret = ring_buffer_subbuf_order_set(tr->array_buffer.buffer, order);
- 	if (ret)
- 		goto out;
- 
-@@ -9422,7 +9434,7 @@ buffer_order_write(struct file *filp, const char __user *ubuf,
- 	if (!tr->allocated_snapshot)
- 		goto out_max;
- 
--	ret = ring_buffer_subbuf_order_set(tr->max_buffer.buffer, val);
-+	ret = ring_buffer_subbuf_order_set(tr->max_buffer.buffer, order);
- 	if (ret) {
- 		/* Put back the old order */
- 		cnt = ring_buffer_subbuf_order_set(tr->array_buffer.buffer, old_order);
-@@ -9454,10 +9466,10 @@ buffer_order_write(struct file *filp, const char __user *ubuf,
- 	return cnt;
- }
- 
--static const struct file_operations buffer_order_fops = {
-+static const struct file_operations buffer_subbuf_size_fops = {
- 	.open		= tracing_open_generic_tr,
--	.read		= buffer_order_read,
--	.write		= buffer_order_write,
-+	.read		= buffer_subbuf_size_read,
-+	.write		= buffer_subbuf_size_write,
- 	.release	= tracing_release_generic_tr,
- 	.llseek		= default_llseek,
- };
-@@ -9928,8 +9940,8 @@ init_tracer_tracefs(struct trace_array *tr, struct dentry *d_tracer)
- 	trace_create_file("buffer_percent", TRACE_MODE_WRITE, d_tracer,
- 			tr, &buffer_percent_fops);
- 
--	trace_create_file("buffer_subbuf_order", TRACE_MODE_WRITE, d_tracer,
--			  tr, &buffer_order_fops);
-+	trace_create_file("buffer_subbuf_size_kb", TRACE_MODE_WRITE, d_tracer,
-+			  tr, &buffer_subbuf_size_fops);
- 
- 	create_trace_options_dir(tr);
- 
-diff --git a/tools/testing/selftests/ftrace/test.d/00basic/ringbuffer_order.tc b/tools/testing/selftests/ftrace/test.d/00basic/ringbuffer_subbuf_size.tc
-similarity index 85%
-rename from tools/testing/selftests/ftrace/test.d/00basic/ringbuffer_order.tc
-rename to tools/testing/selftests/ftrace/test.d/00basic/ringbuffer_subbuf_size.tc
-index ecbcc810e6c1..d44d09a33a74 100644
---- a/tools/testing/selftests/ftrace/test.d/00basic/ringbuffer_order.tc
-+++ b/tools/testing/selftests/ftrace/test.d/00basic/ringbuffer_subbuf_size.tc
-@@ -1,7 +1,7 @@
- #!/bin/sh
- # SPDX-License-Identifier: GPL-2.0
--# description: Change the ringbuffer sub-buffer order
--# requires: buffer_subbuf_order
-+# description: Change the ringbuffer sub-buffer size
-+# requires: buffer_subbuf_size_kb
- # flags: instance
- 
- get_buffer_data_size() {
-@@ -52,8 +52,8 @@ write_buffer() {
- }
- 
- test_buffer() {
--	orde=$1
--	page_size=$((4096<<order))
-+	size_kb=$1
-+	page_size=$((size_kb*1024))
- 
- 	size=`get_buffer_data_size`
- 
-@@ -82,14 +82,14 @@ test_buffer() {
- 	fi
- }
- 
--ORIG=`cat buffer_subbuf_order`
-+ORIG=`cat buffer_subbuf_size_kb`
- 
--# Could test bigger orders than 3, but then creating the string
-+# Could test bigger sizes than 32K, but then creating the string
- # to write into the ring buffer takes too long
--for a in 0 1 2 3 ; do
--	echo $a > buffer_subbuf_order
-+for a in 4 8 16 32 ; do
-+	echo $a > buffer_subbuf_size_kb
- 	test_buffer $a
- done
- 
--echo $ORIG > buffer_subbuf_order
-+echo $ORIG > buffer_subbuf_size_kb
- 
--- 
-2.42.0
-
-
+Eric
