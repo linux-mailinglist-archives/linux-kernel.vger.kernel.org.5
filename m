@@ -2,172 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D78D5811484
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 15:24:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B615811488
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 15:24:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1441891AbjLMOYL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 09:24:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42378 "EHLO
+        id S1441909AbjLMOYU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 09:24:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43466 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1441849AbjLMOYJ (ORCPT
+        with ESMTP id S1441913AbjLMOYR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 09:24:09 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EAD94B9;
-        Wed, 13 Dec 2023 06:24:15 -0800 (PST)
-X-IronPort-AV: E=McAfee;i="6600,9927,10922"; a="8330526"
-X-IronPort-AV: E=Sophos;i="6.04,272,1695711600"; 
-   d="scan'208";a="8330526"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Dec 2023 06:24:15 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10922"; a="897344794"
-X-IronPort-AV: E=Sophos;i="6.04,272,1695711600"; 
-   d="scan'208";a="897344794"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by orsmga004.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Dec 2023 06:24:10 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-        (envelope-from <andy@kernel.org>)
-        id 1rDQ9e-00000005Xtn-0GjE;
-        Wed, 13 Dec 2023 16:24:06 +0200
-Date:   Wed, 13 Dec 2023 16:24:05 +0200
-From:   Andy Shevchenko <andy@kernel.org>
-To:     Dumitru Ceclan <mitrutzceclan@gmail.com>
-Cc:     linus.walleij@linaro.org, brgl@bgdev.pl,
-        linux-gpio@vger.kernel.org, Lars-Peter Clausen <lars@metafoo.de>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Michael Walle <michael@walle.cc>,
-        Arnd Bergmann <arnd@arndb.de>,
-        ChiaEn Wu <chiaen_wu@richtek.com>,
-        Niklas Schnelle <schnelle@linux.ibm.com>,
-        Leonard =?iso-8859-1?Q?G=F6hrs?= <l.goehrs@pengutronix.de>,
-        Mike Looijmans <mike.looijmans@topic.nl>,
-        Haibo Chen <haibo.chen@nxp.com>,
-        Hugo Villeneuve <hvilleneuve@dimonoff.com>,
-        Ceclan Dumitru <dumitru.ceclan@analog.com>,
-        linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v8 2/2] iio: adc: ad7173: add AD7173 driver
-Message-ID: <ZXm-hf8UQ3VEyP-2@smile.fi.intel.com>
-References: <20231212104451.22522-1-mitrutzceclan@gmail.com>
- <20231212104451.22522-2-mitrutzceclan@gmail.com>
+        Wed, 13 Dec 2023 09:24:17 -0500
+Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52D15EA
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 06:24:23 -0800 (PST)
+Received: by mail-pf1-x434.google.com with SMTP id d2e1a72fcca58-6ceba6c4b8dso5707614b3a.1
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 06:24:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1702477462; x=1703082262; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=omVCJTcadojwMs4cotPLuLe245QnocRQoPFqqhmcrRo=;
+        b=gIkx7oNzAJDSQ1ualEoP+hNNiDL2eywxRkA3p+lrAYb5RmS6MTiCXCRDWI2hFeHYsz
+         hYrNhsiuC3lN5da4s/jx2aFul33bcTHbupDqsy1YRbdLXrbZSUlD7aG8sX9kuDtbfvKF
+         MuuFxrZots320r6Q4qy49nmRXD4PnhdvF6w4yU2S9xBf5yXq5NMmg5Nsms6MYp2wv23u
+         sXA8AWP2Ef9dbrDvNKFXYm/w4GxTddFT5+Ona31ebXJBnqUmcOWJKj9vHW6R8hLdKBV+
+         ST73HiAKnXsR2RaC7C9HVRxLPc1ArA6UL3DVDPTWp5UVv5KbpII0kbHvbfm6L+22kIxh
+         UbHw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702477462; x=1703082262;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=omVCJTcadojwMs4cotPLuLe245QnocRQoPFqqhmcrRo=;
+        b=RzEfUBNpHo6imCCHLnqeHWoU+C/z0W3D50wEty0Pr8sL4SH6L9WCcvhhrURAri8P0x
+         aFJdiFYu8do7Ljhaf3iXyNhQOei5ezPjwD3RNJXf1frmDeYogQsAiPJWyIi5Dx81g7Uk
+         ACWzMEfmViWEpbf5EFlqd/f6ssYmBJAe76Y3gI/j2t+qq8xTv6ybX/lGLZ+7a8aBrH3V
+         o0FDa2AjYWXC06j26/s04ZQZQHhWY2bkwdSUPJz+83Zn32b8HCTbsxTnZ6/eitjHHju3
+         s4VSb2bBu7EiOLtYlF3MDNCa+EF42JOrPk/2FEvhltv4Dl4p/jOqwA4yXxpt0ehDEzEI
+         gEMg==
+X-Gm-Message-State: AOJu0Yxhg0kWa/DOvLxotVwrEmY4J/NaWSz/7Y81g0i5g6ryybttIn6I
+        RJR+LfRpVMRxR78k94/xGy8CSA==
+X-Google-Smtp-Source: AGHT+IEokrztG2NalxBWDVh3WZZbmZHm92HATaoA6DvdnHp2D8etNOA2/Q/wsQln/1NOEu7stvbvOA==
+X-Received: by 2002:aa7:8706:0:b0:6ce:2732:590 with SMTP id b6-20020aa78706000000b006ce27320590mr6836022pfo.65.1702477462485;
+        Wed, 13 Dec 2023 06:24:22 -0800 (PST)
+Received: from leoy-huanghe.lan (211-75-219-200.hinet-ip.hinet.net. [211.75.219.200])
+        by smtp.gmail.com with ESMTPSA id g17-20020a056a0023d100b006cb6e83bf7fsm9973836pfc.192.2023.12.13.06.24.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Dec 2023 06:24:21 -0800 (PST)
+Date:   Wed, 13 Dec 2023 22:24:14 +0800
+From:   Leo Yan <leo.yan@linaro.org>
+To:     "Liang, Kan" <kan.liang@linux.intel.com>
+Cc:     acme@kernel.org, irogers@google.com, peterz@infradead.org,
+        mingo@redhat.com, namhyung@kernel.org, jolsa@kernel.org,
+        adrian.hunter@intel.com, john.g.garry@oracle.com, will@kernel.org,
+        james.clark@arm.com, mike.leach@linaro.org,
+        yuhaixin.yhx@linux.alibaba.com, renyu.zj@linux.alibaba.com,
+        tmricht@linux.ibm.com, ravi.bangoria@amd.com,
+        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH V2 1/5] perf mem: Add mem_events into the supported
+ perf_pmu
+Message-ID: <20231213142414.GH86143@leoy-huanghe.lan>
+References: <20231207192338.400336-1-kan.liang@linux.intel.com>
+ <20231207192338.400336-2-kan.liang@linux.intel.com>
+ <20231208102922.GB769184@leoy-huanghe.lan>
+ <98863f44-4a35-4910-8db0-dbbf0474f6ae@linux.intel.com>
+ <20231209063440.GE2116834@leoy-yangtze.lan>
+ <ee9db34a-2b3d-46b3-ba36-22a22b080d70@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231212104451.22522-2-mitrutzceclan@gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_SOFTFAIL,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+In-Reply-To: <ee9db34a-2b3d-46b3-ba36-22a22b080d70@linux.intel.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 12, 2023 at 12:44:36PM +0200, Dumitru Ceclan wrote:
-> The AD7173 family offer a complete integrated Sigma-Delta ADC solution
-> which can be used in high precision, low noise single channel
-> applications or higher speed multiplexed applications. The Sigma-Delta
-> ADC is intended primarily for measurement of signals close to DC but also
-> delivers outstanding performance with input bandwidths out to ~10kHz.
+On Mon, Dec 11, 2023 at 02:01:37PM -0500, Liang, Kan wrote:
 
-I do not see any major problem in the code,
-Reviewed-by: Andy Shevchenko <andy@kernel.org>
+[...]
 
-Some nit-picks below, but it's fine if it get addressed later on. Up to you
-and Jonathan.
+> > I will hold on a bit for the test until this patch set addresses the
+> > concern for the breakage issues on Arm64. Please check my review in
+> > other replies.
+> 
+> The reviews in the other replies don't look like break any current usage
+> on Arm64. I think the breakage issue is what you described in this
+> patch, right?
 
-...
+I mentioned the breakage is in the patch 04, but I think the concern
+is dismissed.
 
-> +static const unsigned int ad7173_sinc5_data_rates[] = {
-> +	6211000, 6211000, 6211000, 6211000, 6211000, 6211000, 5181000, 4444000,
-> +	3115000, 2597000, 1007000, 503800,  381000,  200300,  100500,  59520,
-> +	49680,	 20010,	  16333,   10000,   5000,    2500,    1250,
-> +};
-> +
-> +static const unsigned int ad7175_sinc5_data_rates[] = {
-> +	50000000, 41667000, 31250000, 27778000, 20833000, 17857000, 12500000,
+> If we move the check of "arm_spe_0" to arch/arm/util/pmu.c, it seems we
+> have to move the perf_mem_events_arm[] into arch/arm/util/mem-events.c
+> as well. Is it OK?
 
-I would add a comment with offsets, like
+No.  For fixing Arm64 building, please refer:
 
-	... /* 0-6 */
+https://termbin.com/0dkn
 
-But better to make it power of two, like each 4 on one line or 8.
+> I'm not familiar with ARM and have no idea how those events are
+> organized under arm64 and arm. Could you please send a fix for the
+> building failure on aarch64? I will fold it into the V3.
 
-> +	10000000, 5000000,  2500000,  1000000,	500000,	  397500,   200000,
-> +	100000,	  59920,    49960,    20000,	16666,	  10000,    5000,
-> +};
+After apply the change in above link on the top of your patch set,
+it can build successfully at my side. Hope it's helpful.
 
-Not that I insist, just consider readability of these tables.
-
-...
-
-> +		if (chan->type == IIO_TEMP) {
-> +			temp = ((u32)AD7173_VOLTAGE_INT_REF_uV) * MILLI;
-
-Hmm... Is the casting mandatory here?
-
-> +			temp /= AD7173_TEMP_SENSIIVITY_uV_per_C;
-> +			*val = temp;
-> +			*val2 = chan->scan_type.realbits;
-> +		} else {
-> +			*val = ad7173_get_ref_voltage_milli(st, ch->cfg.ref_sel);
-> +			*val2 = chan->scan_type.realbits - !!(ch->cfg.bipolar);
-> +		}
-
-...
-
-> +		if (chan->type == IIO_TEMP)
-> +			*val = -874379; //-milli_kelvin_to_millicelsius(0)/scale
-
-Hmm... Besides C99 comment format, can we actually use the mentioned API?
-In such a case the comment won't be needed and the value semantics is better
-to get.
-
-> +		else
-> +			*val = -BIT(chan->scan_type.realbits - 1);
-
-...
-
-> +static int ad7173_debug_reg_access(struct iio_dev *indio_dev, unsigned int reg,
-> +				   unsigned int writeval, unsigned int *readval)
-> +{
-> +	struct ad7173_state *st = iio_priv(indio_dev);
-> +	u8 reg_size;
-> +
-> +	if (reg == 0)
-
-0 does not have its definition, does it?
-
-> +		reg_size = 1;
-> +	else if (reg == AD7173_REG_CRC || reg == AD7173_REG_DATA ||
-> +		 reg >= AD7173_REG_OFFSET(0))
-> +		reg_size = 3;
-> +	else
-> +		reg_size = 2;
-> +
-> +	if (readval)
-> +		return ad_sd_read_reg(&st->sd, reg, reg_size, readval);
-> +
-> +	return ad_sd_write_reg(&st->sd, reg, reg_size, writeval);
-> +}
-
-...
-
-> +	channels_st_priv_arr = devm_kcalloc(dev, num_channels,
-> +					    sizeof(*channels_st_priv_arr),
-> +					    GFP_KERNEL);
-> +	if (!channels_st_priv_arr)
-> +		return -ENOMEM;
-
-The variable name can be made shorter and hence the above will take less LoCs.
-
--- 
-With Best Regards,
-Andy Shevchenko
+Thanks,
+Leo
 
 
+> 
+> Thanks,
+> Kan
+> > 
+> > Thanks,
+> > Leo
+> > 
