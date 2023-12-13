@@ -2,146 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 82C64811337
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 14:46:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 42AAE811342
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 14:46:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378886AbjLMNqA convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 13 Dec 2023 08:46:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41810 "EHLO
+        id S1378923AbjLMNqq convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 13 Dec 2023 08:46:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34958 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233465AbjLMNp7 (ORCPT
+        with ESMTP id S233465AbjLMNqo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 08:45:59 -0500
-Received: from mail-oa1-f54.google.com (mail-oa1-f54.google.com [209.85.160.54])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 810B7B2;
-        Wed, 13 Dec 2023 05:46:05 -0800 (PST)
-Received: by mail-oa1-f54.google.com with SMTP id 586e51a60fabf-203223f3299so16224fac.0;
-        Wed, 13 Dec 2023 05:46:05 -0800 (PST)
+        Wed, 13 Dec 2023 08:46:44 -0500
+Received: from mail-yb1-f181.google.com (mail-yb1-f181.google.com [209.85.219.181])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41985B2;
+        Wed, 13 Dec 2023 05:46:51 -0800 (PST)
+Received: by mail-yb1-f181.google.com with SMTP id 3f1490d57ef6-da077db5145so5753191276.0;
+        Wed, 13 Dec 2023 05:46:51 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702475165; x=1703079965;
+        d=1e100.net; s=20230601; t=1702475210; x=1703080010;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=9aBnUrw2auNmCR4JylYCwXdWoHJEVE3iA2QJaSTM4hc=;
-        b=POzbZFz9i2zHRpTD0Zqi30aSg8GWH+eP1LFs+QbnROgKJGl/KPjWEg2GoB99YuvpzA
-         TWhwTzXZ3aQckzomUhD21HlQwRKAiE1eM79ii1vrNvg0NBx1DDmcjlnVHnkk8wJcUAvB
-         lIvVgGWsZ7ZY4JDTDa6yP/SXl1FQ07hZuE5Wt1l7qF3fuk0FX2s90446WpZB7Cem2Y33
-         BSaim1tygk2hTHKSCkXuUU/F6fvUjr6fXpZyGKk78B9GBGsFPWbJPgQFz8ZPa5q4CnTq
-         sanUpExtjf6L5EqIYC3cJXw0u3EcWZR0SXBqMB6RP8+Wby1SUgBFhr7ylDiH/hz6EIkZ
-         uUpw==
-X-Gm-Message-State: AOJu0YyWqsX9BxfQtRxjNMuGn9QPkGHcP85oCA3qAEoFfwDb2LY7bcof
-        nOLLBqeWsOmIPx1j0SJ478cf4B6D/gsnNh19v6I=
-X-Google-Smtp-Source: AGHT+IFF1OU+JaCmlcPBJbNEsSUHPZJuxNB/1NU04QyHKBRsKos5UWHlHLDlzxP1EQZKrj0x9KfkOm85RsELDq0nhAY=
-X-Received: by 2002:a05:6871:208c:b0:1fb:19d6:8715 with SMTP id
- ry12-20020a056871208c00b001fb19d68715mr14367276oab.4.1702475164701; Wed, 13
- Dec 2023 05:46:04 -0800 (PST)
+        bh=6f0aX6F0PLvtVg2TcWf9VRPha1R8pflF1aDUZgJex4I=;
+        b=A5pDVC+IWh5LeZsBh6lBqqcKoR1/vEEgOmkTq3xispZSpcRrXQKB+pNv/ZVbgJ6+Bl
+         SmNAFN8sfL6+FebdzUOXfI+vrsYWxWXuYyNo1lFwJBJWxJsAv1zvy2JBlCUzR2FLLt3L
+         BSBn/SeKrj2CBmEO9UCTy9NE08qRWX/bVJ62g3d8XGAoyNGMHknPzkRv6g7Fs0ubPNCl
+         rpBrFJBGvotFvm6ibvO+sVCb7tXBLf+kkJVQbu6W/KiXxGNfgtFfVhkAXJhS6wZeuAfU
+         qy+LZb+ERBQmUqLaTHz4tIretTxsUIfBgoOjikJYM1h9AcUVtRZvkIOAlactw7Pe19v+
+         UKpQ==
+X-Gm-Message-State: AOJu0Yyw6W2GMj2eYr+Cs0PM5f4f9EIpMlAhEH7bloaXvUgzB8TyV1yV
+        J07JryH93HSlewUo2fjSdei7tMG62bOJjQ==
+X-Google-Smtp-Source: AGHT+IGThthHytDv5aTTKd2JXrvzIsiB5sfzv3nUUC3ZDETO3hKN5SMX9M36a2z/Zdchm/eloaLBQg==
+X-Received: by 2002:a05:6902:4f4:b0:dbc:d8cd:d9 with SMTP id w20-20020a05690204f400b00dbcd8cd00d9mr314632ybs.55.1702475210305;
+        Wed, 13 Dec 2023 05:46:50 -0800 (PST)
+Received: from mail-yb1-f176.google.com (mail-yb1-f176.google.com. [209.85.219.176])
+        by smtp.gmail.com with ESMTPSA id v187-20020a2548c4000000b00db3fa34142bsm4028960yba.49.2023.12.13.05.46.50
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 13 Dec 2023 05:46:50 -0800 (PST)
+Received: by mail-yb1-f176.google.com with SMTP id 3f1490d57ef6-da077db5145so5753183276.0;
+        Wed, 13 Dec 2023 05:46:50 -0800 (PST)
+X-Received: by 2002:a5b:309:0:b0:db7:dad0:76c8 with SMTP id
+ j9-20020a5b0309000000b00db7dad076c8mr5359241ybp.100.1702475209930; Wed, 13
+ Dec 2023 05:46:49 -0800 (PST)
 MIME-Version: 1.0
-References: <20231213083251.186935-1-chris.feng@mediatek.com>
-In-Reply-To: <20231213083251.186935-1-chris.feng@mediatek.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Wed, 13 Dec 2023 14:45:53 +0100
-Message-ID: <CAJZ5v0jfEDYkDRPrqb0KirDG+o8W7aRUP9vqGBOiFOV-gHBDGg@mail.gmail.com>
-Subject: Re: [PATCH v4] PM: hibernate: Avoid missing wakeup events during hibernation
-To:     Chris Feng <chris.feng@mediatek.com>
-Cc:     rafael@kernel.org, pavel@ucw.cz, len.brown@intel.com,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        stable@kernel.org, hua.yang@mediatek.com, ting.wang@mediatek.com,
-        liang.lu@mediatek.com, chetan.kumar@mediatek.com
+References: <20231207070700.4156557-1-claudiu.beznea.uj@bp.renesas.com> <20231207070700.4156557-6-claudiu.beznea.uj@bp.renesas.com>
+In-Reply-To: <20231207070700.4156557-6-claudiu.beznea.uj@bp.renesas.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Wed, 13 Dec 2023 14:46:38 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdUmFa8LZXqzFFy-WOspJA_ODs=zRtPAjQo+e5jxCd=6FQ@mail.gmail.com>
+Message-ID: <CAMuHMdUmFa8LZXqzFFy-WOspJA_ODs=zRtPAjQo+e5jxCd=6FQ@mail.gmail.com>
+Subject: Re: [PATCH v2 05/11] pinctrl: renesas: rzg2l: Add support to select
+ power source for Ethernet pins
+To:     Claudiu <claudiu.beznea@tuxon.dev>
+Cc:     s.shtylyov@omp.ru, davem@davemloft.net, edumazet@google.com,
+        kuba@kernel.org, pabeni@redhat.com, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        magnus.damm@gmail.com, mturquette@baylibre.com, sboyd@kernel.org,
+        linus.walleij@linaro.org, prabhakar.mahadev-lad.rj@bp.renesas.com,
+        biju.das.jz@bp.renesas.com, linux-renesas-soc@vger.kernel.org,
+        netdev@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
+        linux-gpio@vger.kernel.org,
+        Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8BIT
 X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
         FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 13, 2023 at 9:33 AM Chris Feng <chris.feng@mediatek.com> wrote:
+On Thu, Dec 7, 2023 at 8:08 AM Claudiu <claudiu.beznea@tuxon.dev> wrote:
+> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
 >
-> Wakeup events that occur in the hibernation process's
-> hibernation_platform_enter() cannot wake up the system. Although the
-> current hibernation framework will execute part of the recovery process
-> after a wakeup event occurs, it ultimately performs a shutdown operation
-> because the system does not check the return value of
-> hibernation_platform_enter(). In short, if a wakeup event occurs before
-> putting the system into the final low-power state, it will be missed.
+> The GPIO controller available on RZ/G3S (but also on RZ/G2L) allows setting
+> the power source for Ethernet pins. Based on the interface b/w the Ethernet
+> controller and the Ethernet PHY and board design specific power source need
+> to be selected. The GPIO controller allows 1.8V, 2.5V and 3.3V power source
+> selection for Ethernet pins. This could be selected though ETHX_POC
+> registers (X={0, 1}).
 >
-> To solve this problem, check the return value of
-> hibernation_platform_enter(). When it returns -EAGAIN or -EBUSY (indicate
-> the occurrence of a wakeup event), execute the hibernation recovery
-> process, discard the previously saved image, and ultimately return to the
-> working state.
+> Commit adjust the driver to support this and does proper instantiation for
+> RZ/G3S and RZ/G2L SoC. On RZ/G2L only get operation has been tested at the
+> moment.
 >
-> Signed-off-by: Chris Feng <chris.feng@mediatek.com>
+> While at it, as the power registers on RZ/G2L support access sizes of 8
+> bits and RZ/G3S support access sizes of 8/16/32 bits, changed
+> writel()/readl() on these registers with writeb()/readb(). This should
+> allow using the same code for both SoCs w/o any issues.
+>
+> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
 > ---
-> [PATCH v2]:
->  - Optimize the "if" condition logic.
->  - Link to v1: https://lore.kernel.org/all/20231024091447.108072-1-chris.feng@mediatek.com
-> [PATCH v3]:
->  - Use pr_info instead of pr_err.
->  - Fix undeclared function 'swsusp_unmark' build error.
->  - Refine commit and printing message.
->  - Change the subject.
->  - Link to v2: https://lore.kernel.org/all/20231120081516.55172-1-chris.feng@mediatek.com
-> [PATCH v4]:
->  - Define an empty swsusp_unmark() function for scenarios where
->    CONFIG_SUSPEND is not defined.
->  - Link to v3: https://lore.kernel.org/all/20231204021155.10434-1-chris.feng@mediatek.com
-> ---
->  kernel/power/hibernate.c | 10 ++++++++--
->  kernel/power/power.h     |  2 ++
->  2 files changed, 10 insertions(+), 2 deletions(-)
 >
-> diff --git a/kernel/power/hibernate.c b/kernel/power/hibernate.c
-> index dee341ae4ace..621326b3e679 100644
-> --- a/kernel/power/hibernate.c
-> +++ b/kernel/power/hibernate.c
-> @@ -642,9 +642,9 @@ int hibernation_platform_enter(void)
->   */
->  static void power_down(void)
->  {
-> -#ifdef CONFIG_SUSPEND
->         int error;
->
-> +#ifdef CONFIG_SUSPEND
->         if (hibernation_mode == HIBERNATION_SUSPEND) {
->                 error = suspend_devices_and_enter(mem_sleep_current);
->                 if (error) {
-> @@ -667,7 +667,13 @@ static void power_down(void)
->                 kernel_restart(NULL);
->                 break;
->         case HIBERNATION_PLATFORM:
-> -               hibernation_platform_enter();
-> +               error = hibernation_platform_enter();
-> +               if (error == -EAGAIN || error == -EBUSY) {
-> +                       swsusp_unmark();
-> +                       events_check_enabled = false;
-> +                       pr_info("Hibernation process aborted due to detected wakeup event.\n");
-> +                       return;
-> +               }
->                 fallthrough;
->         case HIBERNATION_SHUTDOWN:
->                 if (kernel_can_power_off())
-> diff --git a/kernel/power/power.h b/kernel/power/power.h
-> index 17fd9aaaf084..8499a39c62f4 100644
-> --- a/kernel/power/power.h
-> +++ b/kernel/power/power.h
-> @@ -175,6 +175,8 @@ extern int swsusp_write(unsigned int flags);
->  void swsusp_close(void);
->  #ifdef CONFIG_SUSPEND
->  extern int swsusp_unmark(void);
-> +#else
-> +static inline int swsusp_unmark(void) { return 0; }
->  #endif
->
->  struct __kernel_old_timeval;
-> --
+> Changes in v2:
+> - removed PVDD_MASK
+> - use 8 bit helpers to get/set value of power register
+> - replaced if/else with switch/case everywhere
 
-Applied as 6.8 material, but I have rephrased the pr_info() message
-added by this patch.
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+i.e. will queue in renesas-pinctrl-for-v6.8.
 
-Thanks!
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
