@@ -2,136 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 18EC6811162
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 13:49:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ADF9681117E
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 13:49:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378898AbjLMMt3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 07:49:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49550 "EHLO
+        id S1378897AbjLMMtn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 07:49:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34594 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378893AbjLMMt0 (ORCPT
+        with ESMTP id S1378916AbjLMMtj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 07:49:26 -0500
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBD94A4;
-        Wed, 13 Dec 2023 04:49:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Date:Sender:Message-Id:Content-Type:
-        Content-Transfer-Encoding:MIME-Version:Subject:Cc:To:From:References:
-        In-Reply-To:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=TBP+R/WnvXUfMyTGAeqg+zDZHJCc+YgTDDU9BjPnE9g=; b=ksm1NKE0scGCsyGD98yGeYXubr
-        hB68rislLCulb5Vrhre3UZbE0fxzcZ56LCzd5+Jx/UWiG25ops81IW195eVeI8hCQ5EANLwLRWDLA
-        BmC4J9EmHzrINYzT6DlHEOYKjkDSM0BA4JczIJo4NcTNxODYtV4qUZxAeg1J7TH+VUw4KpKxTHLPz
-        mpmzh+ajIEmyMMSsM4T56yj66lxMZNRqG8qaewbcE/l7g7lRVI3rtAua0Mp747FPjrkKFWvOHFqFD
-        2bv0xOQ5zwDWdKfZo9UeZUjaRSQLgY0cl+j0aJ56oPkOTkQW4csde5cwMAKUOpa9x8rBSwoAiid2c
-        Df8GEnuA==;
-Received: from e0022681537dd.dyn.armlinux.org.uk ([fd8f:7570:feb6:1:222:68ff:fe15:37dd]:43366 helo=rmk-PC.armlinux.org.uk)
-        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.96)
-        (envelope-from <rmk@armlinux.org.uk>)
-        id 1rDOg0-0008D5-24;
-        Wed, 13 Dec 2023 12:49:24 +0000
-Received: from rmk by rmk-PC.armlinux.org.uk with local (Exim 4.94.2)
-        (envelope-from <rmk@rmk-PC.armlinux.org.uk>)
-        id 1rDOg2-00Dvjk-RI; Wed, 13 Dec 2023 12:49:26 +0000
-In-Reply-To: <ZXmn46ptis59F0CO@shell.armlinux.org.uk>
-References: <ZXmn46ptis59F0CO@shell.armlinux.org.uk>
-From:   Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
-To:     linux-pm@vger.kernel.org, loongarch@lists.linux.dev,
-        linux-acpi@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-riscv@lists.infradead.org, kvmarm@lists.linux.dev,
-        x86@kernel.org, acpica-devel@lists.linuxfoundation.org,
-        linux-csky@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-ia64@vger.kernel.org, linux-parisc@vger.kernel.org
-Cc:     Salil Mehta <salil.mehta@huawei.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        jianyong.wu@arm.com, justin.he@arm.com,
-        James Morse <james.morse@arm.com>
-Subject: [PATCH RFC v3 03/21] ACPI: processor: Register CPUs that are online,
- but not described in the DSDT
+        Wed, 13 Dec 2023 07:49:39 -0500
+Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CE4E10C;
+        Wed, 13 Dec 2023 04:49:42 -0800 (PST)
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 3BDCnVO6085317;
+        Wed, 13 Dec 2023 06:49:31 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1702471771;
+        bh=OIRYLUKZ5INmTYZOwweJDDv9as22X7DSzbTpPm9Id1Y=;
+        h=From:To:CC:Subject:Date;
+        b=Ot3yupretPRMzTnRSnaIGCfcXf5QSquZCWSgFp63j2TD1lvrQOXv9QuTCU85LcwOs
+         SlF2l6wT1J8UcrgSllruIBH2ev5Att/PCOOg3DArlr/wjlSr4mfdTZZ19o//KrQmLH
+         jnS1qE6vQOgcIn9PlLgh8XZfJhiY4wELYZBHrJEI=
+Received: from DFLE114.ent.ti.com (dfle114.ent.ti.com [10.64.6.35])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 3BDCnV4T091743
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 13 Dec 2023 06:49:31 -0600
+Received: from DFLE111.ent.ti.com (10.64.6.32) by DFLE114.ent.ti.com
+ (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 13
+ Dec 2023 06:49:31 -0600
+Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DFLE111.ent.ti.com
+ (10.64.6.32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Wed, 13 Dec 2023 06:49:31 -0600
+Received: from localhost ([10.24.69.141])
+        by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 3BDCnUkg092357;
+        Wed, 13 Dec 2023 06:49:31 -0600
+From:   Vaishnav Achath <vaishnav.a@ti.com>
+To:     <nm@ti.com>, <vigneshr@ti.com>, <kristo@kernel.org>,
+        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
+        <conor+dt@kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>
+CC:     <linux-kernel@vger.kernel.org>, <j-choudhary@ti.com>,
+        <u-kumar1@ti.com>, <vaishnav.a@ti.com>
+Subject: [PATCH 0/3] arm64: dts: ti: Introduce J722S SoC and EVM
+Date:   Wed, 13 Dec 2023 18:19:27 +0530
+Message-ID: <20231213124930.3012-1-vaishnav.a@ti.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain; charset="utf-8"
-Message-Id: <E1rDOg2-00Dvjk-RI@rmk-PC.armlinux.org.uk>
-Sender: Russell King <rmk@armlinux.org.uk>
-Date:   Wed, 13 Dec 2023 12:49:26 +0000
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: James Morse <james.morse@arm.com>
+This series adds basic support for J722S family of SoCs. Also add
+J722S EVM support with basic peripheral like MMC and UART.
 
-ACPI has two descriptions of CPUs, one in the MADT/APIC table, the other
-in the DSDT. Both are required. (ACPI 6.5's 8.4 "Declaring Processors"
-says "Each processor in the system must be declared in the ACPI
-namespace"). Having two descriptions allows firmware authors to get
-this wrong.
+TRM: https://www.ti.com/lit/zip/sprujb3
+EVM Schematics: https://www.ti.com/lit/zip/sprr495
 
-If CPUs are described in the MADT/APIC, they will be brought online
-early during boot. Once the register_cpu() calls are moved to ACPI,
-they will be based on the DSDT description of the CPUs. When CPUs are
-missing from the DSDT description, they will end up online, but not
-registered.
+Bootlog:
+https://gist.github.com/vaishnavachath/23d859925277df9ccd628190e7c23371
 
-Add a helper that runs after acpi_init() has completed to register
-CPUs that are online, but weren't found in the DSDT. Any CPU that
-is registered by this code triggers a firmware-bug warning and kernel
-taint.
+Depends on:
+https://lore.kernel.org/all/20231211132600.25289-1-vaishnav.a@ti.com/
+https://lore.kernel.org/all/20231213081318.26203-1-vaishnav.a@ti.com/
 
-Qemu TCG only describes the first CPU in the DSDT, unless cpu-hotplug
-is configured.
+Vaishnav Achath (3):
+  dt-bindings: arm: ti: Add bindings for J722S SoCs
+  arm64: dts: ti: Introduce J722S family of SoCs
+  arm64: dts: ti: Add support for TI J722S Evaluation Module
 
-Signed-off-by: James Morse <james.morse@arm.com>
-Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Reviewed-by: Gavin Shan <gshan@redhat.com>
-Tested-by: Miguel Luis <miguel.luis@oracle.com>
-Tested-by: Vishnu Pajjuri <vishnu@os.amperecomputing.com>
-Tested-by: Jianyong Wu <jianyong.wu@arm.com>
-Signed-off-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
----
- drivers/acpi/acpi_processor.c | 19 +++++++++++++++++++
- 1 file changed, 19 insertions(+)
+ .../devicetree/bindings/arm/ti/k3.yaml        |   6 +
+ arch/arm64/boot/dts/ti/Makefile               |   3 +
+ arch/arm64/boot/dts/ti/k3-j722s-evm.dts       | 253 ++++++++++++++++
+ arch/arm64/boot/dts/ti/k3-j722s.dtsi          | 275 ++++++++++++++++++
+ arch/arm64/boot/dts/ti/k3-pinctrl.h           |   3 +
+ 5 files changed, 540 insertions(+)
+ create mode 100644 arch/arm64/boot/dts/ti/k3-j722s-evm.dts
+ create mode 100644 arch/arm64/boot/dts/ti/k3-j722s.dtsi
 
-diff --git a/drivers/acpi/acpi_processor.c b/drivers/acpi/acpi_processor.c
-index 6a542e0ce396..0511f2bc10bc 100644
---- a/drivers/acpi/acpi_processor.c
-+++ b/drivers/acpi/acpi_processor.c
-@@ -791,6 +791,25 @@ void __init acpi_processor_init(void)
- 	acpi_pcc_cpufreq_init();
- }
- 
-+static int __init acpi_processor_register_missing_cpus(void)
-+{
-+	int cpu;
-+
-+	if (acpi_disabled)
-+		return 0;
-+
-+	for_each_online_cpu(cpu) {
-+		if (!get_cpu_device(cpu)) {
-+			pr_err_once(FW_BUG "CPU %u has no ACPI namespace description!\n", cpu);
-+			add_taint(TAINT_FIRMWARE_WORKAROUND, LOCKDEP_STILL_OK);
-+			arch_register_cpu(cpu);
-+		}
-+	}
-+
-+	return 0;
-+}
-+subsys_initcall_sync(acpi_processor_register_missing_cpus);
-+
- #ifdef CONFIG_ACPI_PROCESSOR_CSTATE
- /**
-  * acpi_processor_claim_cst_control - Request _CST control from the platform.
 -- 
-2.30.2
+2.17.1
 
