@@ -2,155 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B8A24810E89
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 11:34:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AF41810E8A
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 11:35:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235184AbjLMKeq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 05:34:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55046 "EHLO
+        id S233258AbjLMKfK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 05:35:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47328 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235168AbjLMKej (ORCPT
+        with ESMTP id S235220AbjLMKfD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 05:34:39 -0500
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 473CD10C
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 02:34:39 -0800 (PST)
-Received: by mail-wm1-x32c.google.com with SMTP id 5b1f17b1804b1-40c3f68b69aso39065105e9.1
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 02:34:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1702463677; x=1703068477; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt
-         :references:cc:to:content-language:subject:reply-to:from:user-agent
-         :mime-version:date:message-id:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=C4iHwSi1orpKZdBjvEhFkZBhQdysnUmpyPPK1U/Sy2c=;
-        b=IzZGiDPbU/3QLPcAtg85PkEWB92UT8LPC5kCFBsg+F7zgFFnSP36e3HpvaH8Iq6MVM
-         xinhFqjrUgTQunqHx03jbdnASS6eyvrFvRxxITYw5ltbhY7zNLTW8GJc+MQaxu9lVpdO
-         ecLEBzLgJUzvIxSgx6IoS6j+iaEFvbo95jZIQLIDe0ktlEY9U+l+fybR5A1mqj9Pt/Zh
-         1UDXbQivx+8QLcebhriCcpNyxidU88hrFcFPbOZ6vuhSCqfAsPtmO+tpfEgL1uSoO7/f
-         zhdUE8WKugKcDMZgZwp+UaEDHefgbeDInfGcxYHY700JUKny6iWq+/Eb/QGKY17U2gFJ
-         JjZQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702463677; x=1703068477;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt
-         :references:cc:to:content-language:subject:reply-to:from:user-agent
-         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=C4iHwSi1orpKZdBjvEhFkZBhQdysnUmpyPPK1U/Sy2c=;
-        b=AjbLezd/UKPkuTGmSoCGVYwT1l83gb3SS+/tYs/PyhP2wzjFfioG+10w0IWoy+YgpE
-         p/3Y2JXvb4Pebo7Pp7zIKNNqDlj/lph4i9pYqb1IbNbh1A1Rb/ZxyEakEwyIWeKr+EOq
-         CWJwlnpQs8HV6AhyUTlLspK44nCVicXc2sgr5Q9GTCywe3KBp8phvnEezqnkjdbFxp40
-         J7htX9L7XrR/k8F4hSBmJFFY0wxK7UdX0fHoUO9Eg72lfis6u5Tn6Xme1ZS8U97/8NDT
-         W3S6DZpoFiyLuUvtQclWxskUTKjIR3l34OBdzSfatfQHXwwNqe769ulPI2boOVXUYQBy
-         +www==
-X-Gm-Message-State: AOJu0YzIGAM2fqBd0x4ovtdfeU+v2E2FcWqmVLVRx0Dg6oNu7D0V7ubD
-        h7/DkY45xYCvXassDSOJNq2fRwnGttvSVYbW5SJ9bE2C
-X-Google-Smtp-Source: AGHT+IEWrQvGXDSyxXqaXF1f+EAzOJFKjPH7ZFU/HjQgMdjslGSprih7nNhvsmKw57QCZClYojIO8g==
-X-Received: by 2002:a1c:7916:0:b0:40c:55a7:7735 with SMTP id l22-20020a1c7916000000b0040c55a77735mr1160485wme.118.1702463677504;
-        Wed, 13 Dec 2023 02:34:37 -0800 (PST)
-Received: from ?IPV6:2a01:e0a:982:cbb0:596e:6d4f:fc0a:ec65? ([2a01:e0a:982:cbb0:596e:6d4f:fc0a:ec65])
-        by smtp.gmail.com with ESMTPSA id o3-20020a05600c4fc300b004042dbb8925sm22075386wmq.38.2023.12.13.02.34.36
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 13 Dec 2023 02:34:37 -0800 (PST)
-Message-ID: <ffa8a339-6415-4c6c-913f-245deee9e046@linaro.org>
-Date:   Wed, 13 Dec 2023 11:34:36 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-From:   Neil Armstrong <neil.armstrong@linaro.org>
-Reply-To: neil.armstrong@linaro.org
-Subject: Re: [PATCH 1/3] soc: qcom: pmic_pdcharger_ulog: Search current
- directory for headers
-Content-Language: en-US, fr
-To:     Andrew Halaney <ahalaney@redhat.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20231205-pmicpdcharger-ulog-fixups-v1-0-71c95162cb84@redhat.com>
- <20231205-pmicpdcharger-ulog-fixups-v1-1-71c95162cb84@redhat.com>
-Autocrypt: addr=neil.armstrong@linaro.org; keydata=
- xsBNBE1ZBs8BCAD78xVLsXPwV/2qQx2FaO/7mhWL0Qodw8UcQJnkrWmgTFRobtTWxuRx8WWP
- GTjuhvbleoQ5Cxjr+v+1ARGCH46MxFP5DwauzPekwJUD5QKZlaw/bURTLmS2id5wWi3lqVH4
- BVF2WzvGyyeV1o4RTCYDnZ9VLLylJ9bneEaIs/7cjCEbipGGFlfIML3sfqnIvMAxIMZrvcl9
- qPV2k+KQ7q+aXavU5W+yLNn7QtXUB530Zlk/d2ETgzQ5FLYYnUDAaRl+8JUTjc0CNOTpCeik
- 80TZcE6f8M76Xa6yU8VcNko94Ck7iB4vj70q76P/J7kt98hklrr85/3NU3oti3nrIHmHABEB
- AAHNKk5laWwgQXJtc3Ryb25nIDxuZWlsLmFybXN0cm9uZ0BsaW5hcm8ub3JnPsLAkQQTAQoA
- OwIbIwULCQgHAwUVCgkICwUWAgMBAAIeAQIXgBYhBInsPQWERiF0UPIoSBaat7Gkz/iuBQJk
- Q5wSAhkBAAoJEBaat7Gkz/iuyhMIANiD94qDtUTJRfEW6GwXmtKWwl/mvqQtaTtZID2dos04
- YqBbshiJbejgVJjy+HODcNUIKBB3PSLaln4ltdsV73SBcwUNdzebfKspAQunCM22Mn6FBIxQ
- GizsMLcP/0FX4en9NaKGfK6ZdKK6kN1GR9YffMJd2P08EO8mHowmSRe/ExAODhAs9W7XXExw
- UNCY4pVJyRPpEhv373vvff60bHxc1k/FF9WaPscMt7hlkbFLUs85kHtQAmr8pV5Hy9ezsSRa
- GzJmiVclkPc2BY592IGBXRDQ38urXeM4nfhhvqA50b/nAEXc6FzqgXqDkEIwR66/Gbp0t3+r
- yQzpKRyQif3OwE0ETVkGzwEIALyKDN/OGURaHBVzwjgYq+ZtifvekdrSNl8TIDH8g1xicBYp
- QTbPn6bbSZbdvfeQPNCcD4/EhXZuhQXMcoJsQQQnO4vwVULmPGgtGf8PVc7dxKOeta+qUh6+
- SRh3vIcAUFHDT3f/Zdspz+e2E0hPV2hiSvICLk11qO6cyJE13zeNFoeY3ggrKY+IzbFomIZY
- 4yG6xI99NIPEVE9lNBXBKIlewIyVlkOaYvJWSV+p5gdJXOvScNN1epm5YHmf9aE2ZjnqZGoM
- Mtsyw18YoX9BqMFInxqYQQ3j/HpVgTSvmo5ea5qQDDUaCsaTf8UeDcwYOtgI8iL4oHcsGtUX
- oUk33HEAEQEAAcLAXwQYAQIACQUCTVkGzwIbDAAKCRAWmrexpM/4rrXiB/sGbkQ6itMrAIfn
- M7IbRuiSZS1unlySUVYu3SD6YBYnNi3G5EpbwfBNuT3H8//rVvtOFK4OD8cRYkxXRQmTvqa3
- 3eDIHu/zr1HMKErm+2SD6PO9umRef8V82o2oaCLvf4WeIssFjwB0b6a12opuRP7yo3E3gTCS
- KmbUuLv1CtxKQF+fUV1cVaTPMyT25Od+RC1K+iOR0F54oUJvJeq7fUzbn/KdlhA8XPGzwGRy
- 4zcsPWvwnXgfe5tk680fEKZVwOZKIEuJC3v+/yZpQzDvGYJvbyix0lHnrCzq43WefRHI5XTT
- QbM0WUIBIcGmq38+OgUsMYu4NzLu7uZFAcmp6h8g
-Organization: Linaro Developer Services
-In-Reply-To: <20231205-pmicpdcharger-ulog-fixups-v1-1-71c95162cb84@redhat.com>
+        Wed, 13 Dec 2023 05:35:03 -0500
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2070.outbound.protection.outlook.com [40.107.237.70])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E547812B;
+        Wed, 13 Dec 2023 02:35:08 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Ygfg6hkyLsZtOvAvAG8JQ7fb9KesUajYU1VHFgpDIj6JnqVyCJXBGgWy85q0BuThU0nha2qxKHNJzKxiOrtsIVXWqY6zvi7SGQRSkXfeIoNBn9/Ey7InVQsl0L3V2Y7FX5DPAK+Ym/np+uyeHRazjVI+WcRYNekR8M6JI+7l3DCiZBoDq6F3ik4LfKcuR0ZdJ21ZsjwFKvRV4Tzyve3DNCXBDJm93rbBkDrE72TjFvhPqRK5gQC9Bq6NpbsLBRsTAlrOPnyufZrkBMfIh+Op3H1dlHkm5Q+DjaAsPC6/hJJLwo8c8BR6H14JxADed4uGpPpcMQ7XjYIlT/9D1pRS5A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=oJWm9Rx+UtwUZYZFJkczuFMdP7EjzEq2ZomOQRsasbU=;
+ b=XhKjRMhrmxCghHt7o/Pr79QH1ie3dh6UvxWjdBsHdQrvvPR/pwZX2pyom+4RY/7llUvUrBV9H2lV052iERomtBiBxXXHyZMMBtlnG1SBDcetQijzoDhcEEtZCyGy+kv7S8rjCJG7CRKsKzKIBzL1B2CVIKWVT3iY97TCOjxbElvX9uh0JRTpa5f4Ac6IResPHAWQeKcOQhi96AX/0GPvyQvewYh7/ZaW8KBz8Q1UaF3RE9xFxdkGC3UVqywLrbw47OHKA66jBh6nuKqN5KxaLGZdDxgbo5BOU/YBQmapC3T5qjKDWLE4/0zDM0BojBequ+GZ5DUt73R8Ke4R8VQCVQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=oJWm9Rx+UtwUZYZFJkczuFMdP7EjzEq2ZomOQRsasbU=;
+ b=n4dmVWyRbLZpLmczzUyTYl/wW97IEOBWbi74rcEIEAh2yLY1Fzjg9JRatNoLb0ACiVwqXHq4+TDlB/UF4pMUfJgpJuD3I/b/Km9XWsAxxUspXQnKCWjGuGeS30W9qACP77hXNeQ2Ths1zawSBHzLWg/6x4narJqNWRACt/1RFeU=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from MW4PR12MB7016.namprd12.prod.outlook.com (2603:10b6:303:218::14)
+ by SA1PR12MB6895.namprd12.prod.outlook.com (2603:10b6:806:24e::5) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7091.26; Wed, 13 Dec
+ 2023 10:35:06 +0000
+Received: from MW4PR12MB7016.namprd12.prod.outlook.com
+ ([fe80::1f1b:e85b:abf0:3d3c]) by MW4PR12MB7016.namprd12.prod.outlook.com
+ ([fe80::1f1b:e85b:abf0:3d3c%6]) with mapi id 15.20.7091.022; Wed, 13 Dec 2023
+ 10:35:06 +0000
+Message-ID: <adcc6446-8c30-a258-e19b-76fca2c50d21@amd.com>
+Date:   Wed, 13 Dec 2023 16:04:57 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [Patch v2 2/2] thunderbolt: Teardown tunnels and reset downstream
+ ports created by boot firmware
+Content-Language: en-US
+To:     Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Sanath S <Sanath.S@amd.com>
+Cc:     mario.limonciello@amd.com, andreas.noever@gmail.com,
+        michael.jamet@intel.com, YehezkelShB@gmail.com,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20231212191635.2022520-1-Sanath.S@amd.com>
+ <20231212191635.2022520-3-Sanath.S@amd.com>
+ <20231213054914.GI1074920@black.fi.intel.com>
+ <20231213061805.GK1074920@black.fi.intel.com>
+ <20231213062306.GL1074920@black.fi.intel.com>
+From:   Sanath S <sanaths2@amd.com>
+In-Reply-To: <20231213062306.GL1074920@black.fi.intel.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: PN2PR01CA0218.INDPRD01.PROD.OUTLOOK.COM
+ (2603:1096:c01:ea::10) To MW4PR12MB7016.namprd12.prod.outlook.com
+ (2603:10b6:303:218::14)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: MW4PR12MB7016:EE_|SA1PR12MB6895:EE_
+X-MS-Office365-Filtering-Correlation-Id: bd63527b-82d5-4077-ec11-08dbfbc72bff
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: bQ1yueQKTDarkYS34B2LhfUJGWOZ7XQc70uuVXtZgiBQvooL1oJW2qGy/McUYewwBGObGb36WP8y1uWXHirHbNI56fM0NFcsxQOchrJXlBKVURIKl17vLQIlR306231obt6QcHdv92lAee8G/qSElcy3/udv6J27kV63VQ9LCObDdxEeZeETp2ioaGTRnRDFJgLKu5bvs3b4C/iRMZPU3gXDWAzBNAGZ3plzYyN+HEPG8UEc3Q346CPR7GQh2R6DQnqwOt+ugSQn5iXN7zxMijIJxqp1pGpqn5PkvHDOnJj9nMQJivojlQk//5bNTxYrkYxYuBaloguDdHPK81OX23cURVmBFFxNKCPQxLxn3O8HBrHjqaPJgnPAwh4eJT5dcNwYDMhcR2rSAHNmK/vPzASpi7NRzKZYsJ9eST8uaR1Fgu7BO/mhj20M/7PJe045qAFMg74qdv/W01jyChUhj9C7GcGDcwkP1smcOX0MhmBVL0jNEarFYESJhsEbaraNrxCSRvDsr2BNLTVYALhAMzgSUYeKZ3bX96GVpdO31bbCaoTwf/uBV9PS330zWQ0cdkC1ndEFkTfXDyQaFGfoB0MxoUmG7AvpU/a11QOgzmFPs4jYq/9J+dKT2pc55rYJD506YtR3cnOgN0ITB6imLw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW4PR12MB7016.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(396003)(346002)(366004)(136003)(376002)(230922051799003)(64100799003)(1800799012)(186009)(451199024)(66574015)(2616005)(26005)(6506007)(6512007)(6666004)(53546011)(83380400001)(8676002)(5660300002)(4326008)(8936002)(41300700001)(2906002)(6486002)(478600001)(316002)(6636002)(66556008)(66946007)(110136005)(66476007)(31696002)(38100700002)(36756003)(31686004)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?aTdRUU9oSjZRUG9CQzNxem5CZHZMcUx6ckVmNVJ5cVJiaUMyRUR5L256a1dx?=
+ =?utf-8?B?dHJTVWFrYjd4bVZaRllNSTFRTnFGVFJkK0hRbWxaOFAxdUdKRExEamZ1VlA2?=
+ =?utf-8?B?MkFCcE5uckhOUGhnZHlRNE9GaFNzZnU5T1h0NVBXUnVBNWRHcUgvTno0Yys0?=
+ =?utf-8?B?VUdKK1MzUUcrblV5WkpsZzU1ZUJ0c01SczlUNmhwNFFwdmk4dnBYd1oxUk9l?=
+ =?utf-8?B?QzQzYVFRWVF0THJYWWFLbU1QYmVKT0JpTmFYTW50U3VIUzhXaDVUUktiT3VN?=
+ =?utf-8?B?YmhaVXRGZUtZaDFOVGlDNHpqaXVxN3pRdkFpYysxNWhub0ZqdWdlNUkzUTF2?=
+ =?utf-8?B?U2FXWE96VWY5bHQ4WDdabTJaMFdBK2pZWUpDQWt2Wi9Qak1VZitEbkYyeFlh?=
+ =?utf-8?B?UXFRc3hkM2gwWWxIWktsRDZkMW1YZTBYRnZqM2QzbVYvTGlNU3I1U3pHK0lR?=
+ =?utf-8?B?b2t2ekVCTVhJNTJ4ajU5dGZnTFBxVkxSYWZKNitzaXhsV2ZRMWpWZGFtcVN2?=
+ =?utf-8?B?ZlNpRy9TMEZVUUJ6TDd4TGVPZGk5eFFSZ3JSL1VXblBIQVg3aWd2dmdQQUtW?=
+ =?utf-8?B?S2xaYVI4TkdRd0lZdU9TdTZHUVdpbzRVVVpGczBWLzVWQ2VvdGxia2pWNTJQ?=
+ =?utf-8?B?T3dYOGJCL3BBbHkrckpUREdtRkV4L0pMN0oxd3JCMy9NQUFJK3V1YU1Jd245?=
+ =?utf-8?B?ZCtuQVpkUXVXdGE0ejFpQnpMckhIN0dhSjFWWU1ieWxVelRmeXdsS0pDcnlp?=
+ =?utf-8?B?bU11bEJQa2cvcHRIcEV3TWtIb3ZBZzN1NGZXMmxKa0VjOE0ybXdxVU9meDZX?=
+ =?utf-8?B?VExOVTZhdnZWSEhUQTdFanBib2VhRCtiaEIxaWNuT3NUdDh0TXZpUHJMdTdP?=
+ =?utf-8?B?ZndSUnJLZTZaQ1liWHJnbElXQkpJa2lOZU54cHorNmNVQUpXQktrNkRGcVAr?=
+ =?utf-8?B?RGhyU1hia2lMekNCU29Ud2VjNG5hbnJ0dlkvU3NIVEhOV3Y1Z1J2Y1pQcDVG?=
+ =?utf-8?B?b3dJdkN3ZzBNazBDU3pvTmJOM3oxQlFzdVRQR0xLTis3VDlTbVNHUG4yZitR?=
+ =?utf-8?B?YjFvU3hXMWZ6Tm5BTFZya1l2T1RSbGduZ1VYc0IydVVBOUg1SkhibkJoWGtk?=
+ =?utf-8?B?Y0QzNGRwT2xHbGovRHZ4THU0cGZlb2ZlMDQ2eTlVbFBycmNPck1qbDlPdXJh?=
+ =?utf-8?B?UzRCalZjRVZGTzkvM0dnRERzTUpQZ1lCS2hWZDBkemNQUGpWUHpra3hyVjg1?=
+ =?utf-8?B?b0JleHQzb1E0cXZNaW04NkQrL25PbmppYWZ2TlY0eE05dGNYR2cyRS9lVlRL?=
+ =?utf-8?B?eTRsNHlLVXdkdTY4S3F2Tno0akliWFl2T1dPWEVKNTB4alNPeHpQdUppMFBw?=
+ =?utf-8?B?MHRCN1VrZjJ2ZmZrYUJhQk1PSU53bGFmZDF4WTBBWVF3U2hNSDlWSkp0WmtB?=
+ =?utf-8?B?cDlPLzNtKzBFTW00b2xJcXNUR3RtZTVXYjN3QWJHMEdpK3JQSFNibGhNV0h1?=
+ =?utf-8?B?WngvclNEYW1xWUljbHJYbmFyUGtJcG9PVkE2ajh5ZEc5SDVDalJVTm9tOW1m?=
+ =?utf-8?B?RTQxZ2cwbFR3VEpuSEFMa2JKZE1JSlROZnVNcHBsT3JkQTNvNlBtKytWUU12?=
+ =?utf-8?B?YkdQWlR3NC9nNk5nc3hqWkhYVC9Xb1ROWWF0bitPYUgvOFRHZHZUZlJFaEl0?=
+ =?utf-8?B?d1NVZzNuUy9hZUhreWZxUG5xemM5VHpSOXQ5aW5EZWRQWGVMSGpWbmpCcnVi?=
+ =?utf-8?B?S3RWYWRyNmw2V2tMaFB1bkVZZlFuQ1pTT2NRRGpuQTJuT3RoZCtQcjBNTUhp?=
+ =?utf-8?B?WUdxcnNLRjNoVVlPdGEzNXNjQlBsTG5UbE4xMWprZEN1ZmNMUVV0NjhkZmxJ?=
+ =?utf-8?B?WDZuZVdkN01wQmwyMUtqeDhFbk5WaDdwQWZVTElFSHFXMlJrRlJMZ2dTK0JK?=
+ =?utf-8?B?Z0VIY0ZiN01ocTBYZFhOdDdXODl6dmF6b0Vac2c3V1JpajhGNEJ3V1BBRStQ?=
+ =?utf-8?B?WlhlZ2JiekZzV01RblBCU0R4N05BM0NxOG8rUDIrVW9SSlhqd3BsL0F1OTcz?=
+ =?utf-8?B?bW4zYTVMbVR5NEdtK0t0OGVabUdqOXd0M0xWNjBJQ3JiMFlUZForYkJLdFR4?=
+ =?utf-8?Q?K9MidB1Oq7xSWGCKnV60w5mr3?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: bd63527b-82d5-4077-ec11-08dbfbc72bff
+X-MS-Exchange-CrossTenant-AuthSource: MW4PR12MB7016.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Dec 2023 10:35:06.3567
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: /sPjR0WE0h4UDwaoFjr+5mHTgOtajIDHhrEN4X4lwEbG08tfx5W1aq99V91+izCjx+jBa773pLNOTJhTk8mKpA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR12MB6895
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 06/12/2023 00:05, Andrew Halaney wrote:
-> As specified in samples/trace_events/Makefile:
-> 
->      If you include a trace header outside of include/trace/events
->      then the file that does the #define CREATE_TRACE_POINTS must
->      have that tracer file in its main search path. This is because
->      define_trace.h will include it, and must be able to find it from
->      the include/trace directory.
-> 
-> Without this the following compilation error is seen:
-> 
->        CC      drivers/soc/qcom/pmic_pdcharger_ulog.o
->      In file included from drivers/soc/qcom/pmic_pdcharger_ulog.h:36,
->                       from drivers/soc/qcom/pmic_pdcharger_ulog.c:15:
->      ./include/trace/define_trace.h:95:42: fatal error: ./pmic_pdcharger_ulog.h: No such file or directory
->         95 | #include TRACE_INCLUDE(TRACE_INCLUDE_FILE)
->            |                                          ^
->      compilation terminated.
-> 
-> Fixes: 086fdb48bc65 ("soc: qcom: add ADSP PDCharger ULOG driver")
-> Signed-off-by: Andrew Halaney <ahalaney@redhat.com>
-> ---
->   drivers/soc/qcom/Makefile | 1 +
->   1 file changed, 1 insertion(+)
-> 
-> diff --git a/drivers/soc/qcom/Makefile b/drivers/soc/qcom/Makefile
-> index 110108e23669..05b3d54e8dc9 100644
-> --- a/drivers/soc/qcom/Makefile
-> +++ b/drivers/soc/qcom/Makefile
-> @@ -10,6 +10,7 @@ obj-$(CONFIG_QCOM_PDR_HELPERS)	+= pdr_interface.o
->   obj-$(CONFIG_QCOM_PMIC_GLINK)	+= pmic_glink.o
->   obj-$(CONFIG_QCOM_PMIC_GLINK)	+= pmic_glink_altmode.o
->   obj-$(CONFIG_QCOM_PMIC_PDCHARGER_ULOG)	+= pmic_pdcharger_ulog.o
-> +CFLAGS_pmic_pdcharger_ulog.o	:=  -I$(src)
->   obj-$(CONFIG_QCOM_QMI_HELPERS)	+= qmi_helpers.o
->   qmi_helpers-y	+= qmi_encdec.o qmi_interface.o
->   obj-$(CONFIG_QCOM_RAMP_CTRL)	+= ramp_controller.o
-> 
 
-I was able to reproduced it, and it only happens when we build in-tree, and checked
-over the tree and indeed all the other trace drivers uses this flag to compile:
+On 12/13/2023 11:53 AM, Mika Westerberg wrote:
+> On Wed, Dec 13, 2023 at 08:18:06AM +0200, Mika Westerberg wrote:
+>> On Wed, Dec 13, 2023 at 07:49:14AM +0200, Mika Westerberg wrote:
+>>> On Wed, Dec 13, 2023 at 12:46:35AM +0530, Sanath S wrote:
+>>>> Boot firmware might have created tunnels of its own. Since we cannot
+>>>> be sure they are usable for us. Tear them down and reset the ports
+>>>> to handle it as a new hotplug for USB3 routers.
+>>>>
+>>>> Suggested-by: Mario Limonciello <mario.limonciello@amd.com>
+>>>> Signed-off-by: Sanath S <Sanath.S@amd.com>
+>>>> ---
+>>>>   drivers/thunderbolt/tb.c | 11 +++++++++++
+>>>>   1 file changed, 11 insertions(+)
+>>>>
+>>>> diff --git a/drivers/thunderbolt/tb.c b/drivers/thunderbolt/tb.c
+>>>> index fd49f86e0353..febd0b6972e3 100644
+>>>> --- a/drivers/thunderbolt/tb.c
+>>>> +++ b/drivers/thunderbolt/tb.c
+>>>> @@ -2598,6 +2598,17 @@ static int tb_start(struct tb *tb)
+>>>>   	tb_switch_tmu_enable(tb->root_switch);
+>>>>   	/* Full scan to discover devices added before the driver was loaded. */
+>>>>   	tb_scan_switch(tb->root_switch);
+>>>> +	/*
+>>>> +	 * Boot firmware might have created tunnels of its own. Since we cannot
+>>>> +	 * be sure they are usable for us, Tear them down and reset the ports
+>>>> +	 * to handle it as new hotplug for USB4 routers.
+>>>> +	 */
+>>>> +	if (tb_switch_is_usb4(tb->root_switch)) {
+>>>> +		tb_switch_discover_tunnels(tb->root_switch,
+>>>> +					   &tcm->tunnel_list, false);
+>>> Why this is needed?
+>>>
+>>> It should be enough, to do simply something like this:
+>>>
+>>> 	if (tb_switch_is_usb4(tb->root_switch))
+>>> 		tb_switch_reset(tb->root_switch);
+If we don't tear down of tunnels before performing the DPR, the PCIe 
+enumeration is failing.
 
-Reviewed-by: Neil Armstrong <neil.armstrong@linaro.org>
+PCIe link is not coming up after DPR. Below log is missing without 
+performing path
+deactivation before performing DPR and hence PCIe enumeration is not 
+initiated.
 
-Thanks for the fix!
+[  746.630865] pcieport 0000:00:03.1: pciehp: Slot(0-1): Card present
+[  746.630885] pcieport 0000:00:03.1: pciehp: Slot(0-1): Link Up
 
-Neil
+I think when we do a DPR, it internally does some handling with PCI Path 
+Enable bit(PE).
+So, deactivation of PCIe path is necessary for DPR to work.
+
+>> Actually this needs to be done only for USB4 v1 routers since we already
+>> reset USB4 v2 hosts so something like:
+>>
+>> 	/*
+>> 	 * Reset USB4 v1 host router to get rid of possible tunnels the
+>> 	 * boot firmware created. This makes sure all the tunnels are
+>> 	 * created by us and thus have known configuration.
+>> 	 *
+>> 	 * For USB4 v2 and beyond we do this in nhi_reset() using the
+>> 	 * host router reset interface.
+>> 	 */
+>> 	if (usb4_switch_version(tb->root_switch) == 1)
+>> 		tb_switch_reset(tb->root_switch);
+>>
+>> (possibly add similar comment to the nhi_reset() to refer this one).
+> Oh, and would it be possible to tie this with the "host_reset" parameter
+> too somehow? I guess it could be moved to "tb.c" and "tb.h" and then
+> check it from nhi.c as already done and then here so this would become:
+>
+>   	if (host_reset && usb4_switch_version(tb->root_switch) == 1)
+>   		tb_switch_reset(tb->root_switch);
+
+Is host_reset necessary for USB4 v1 routers ? I did not use host_reset 
+in this case.
+If its needed, then we have to modify to enable host_reset in nhi.c as well.
+
+> With the idea that the user has a "chicken bit" to disable this
+> behaviour (and consistent one with USB4 v2). Feel free to make it look
+> nicer though.
