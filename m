@@ -2,213 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CDB0811C0F
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 19:13:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 17F53811C14
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 19:15:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379112AbjLMSNe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 13:13:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53068 "EHLO
+        id S1379326AbjLMSPM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 13:15:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48712 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233776AbjLMSNb (ORCPT
+        with ESMTP id S233585AbjLMSPJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 13:13:31 -0500
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E3C5F2;
-        Wed, 13 Dec 2023 10:13:37 -0800 (PST)
-Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BDEdBZJ001943;
-        Wed, 13 Dec 2023 18:13:33 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-        from:to:cc:subject:date:message-id:mime-version
-        :content-transfer-encoding:content-type; s=qcppdkim1; bh=iXUSdzl
-        Whi9I84iGPxMHNa5qw5UEecWxK8/qXwJLZSc=; b=UScuhTB2JCMTA2RwUI2hBYM
-        k9vjjcXjQjK8ccwmhv5LfoyRSiIYTVHLjsCBIbKxivc/d49AKvZBNvQ6fR+XZXVJ
-        2k5OCM66uvJS+Ce4V0XSmRc5X3HmLbvKVo2raB3hazYdiSyLEzHW7YcTNjStpa8H
-        tvaitdnaN7ppB2FtPGRnMUBj+Uor0iJjLmMKelXGyYWzbnvBNgl3RWSEtWg4BDy6
-        vu9aTCcf04LdvMYGs01s2+812W6ZVlBSvfHMtmX9Zl0e8X5YSGZIUlE16HBPuivk
-        6OX8zwIqWW8Sa/elImi3XUuleR/BbodNQh19bU4L2kpXZHWsgGahKnHT2FDIabQ=
-        =
-Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3uy7j7skm9-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 13 Dec 2023 18:13:33 +0000 (GMT)
-Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
-        by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3BDIDWL1025998
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 13 Dec 2023 18:13:32 GMT
-Received: from hu-viswanat-blr.qualcomm.com (10.80.80.8) by
- nalasex01c.na.qualcomm.com (10.47.97.35) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Wed, 13 Dec 2023 10:13:28 -0800
-From:   Vignesh Viswanathan <quic_viswanat@quicinc.com>
-To:     <agross@kernel.org>, <andersson@kernel.org>,
-        <konrad.dybcio@linaro.org>, <mathieu.poirier@linaro.org>,
-        <linux-arm-msm@vger.kernel.org>,
-        <linux-remoteproc@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     <quic_varada@quicinc.com>, <quic_srichara@quicinc.com>,
-        "Vignesh Viswanathan" <quic_viswanat@quicinc.com>
-Subject: [PATCH] remoteproc: qcom: q6v5_mpd: Add custom coredump segments
-Date:   Wed, 13 Dec 2023 23:43:14 +0530
-Message-ID: <20231213181314.271484-1-quic_viswanat@quicinc.com>
-X-Mailer: git-send-email 2.41.0
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01c.na.qualcomm.com (10.47.97.35)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: kHQ0fPJlbkhyp9k2wsUktSa-KRB2btFJ
-X-Proofpoint-ORIG-GUID: kHQ0fPJlbkhyp9k2wsUktSa-KRB2btFJ
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-09_02,2023-12-07_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011
- lowpriorityscore=0 mlxscore=0 mlxlogscore=799 phishscore=0 malwarescore=0
- impostorscore=0 priorityscore=1501 bulkscore=0 adultscore=0 spamscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2311290000 definitions=main-2312130129
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        Wed, 13 Dec 2023 13:15:09 -0500
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4B64B2
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 10:15:15 -0800 (PST)
+Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-dbcd44cdca3so778729276.1
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 10:15:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1702491315; x=1703096115; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=blvS/vSMP5wGXcIzzo9Bxe4pmP25PsC7/K8dybntrXg=;
+        b=g+yrA8Mfg6goxn3eK0IeQIAef/SB81WKRvOAU9basbrL3SvJfGjR9Hh+PZj1lfg/1a
+         +nEXbap7dAoDFVI3VIL9MBY7/SIFSfdZ2HoBNujd6dNFghHPI9f/+ZsMJZTZ39aslPHp
+         AA+UAxijsA96WJXJ4lFn5DXS+DvAVTs5RsuL8deviqj8Vt1ezltOChUJ8BDO3WzzTlTW
+         UXYik3PIsqVuxgqJYuYqSv1UB5/e8vORnVUZ2bkm5QpIPe2vgqbU2JcGokAVMLvXMD7I
+         C+B+S1xcmfb8DepfK4ehxXgjwn9w2+MfNZjD5kV2POa+432AXdY9MVcyBa71U79sTCD4
+         GKfw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702491315; x=1703096115;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=blvS/vSMP5wGXcIzzo9Bxe4pmP25PsC7/K8dybntrXg=;
+        b=A48YCjtYp3SB+rtztjZF01DsXRrBW3iZS8ydGlT4Oj7Eo97PkEgfRIGXk2xhnf+1Wo
+         uo/TgQ4nJhAgHeDYqMYPrnTrHCXohRLi7YSegqUC3hU3wspzhhxYmW0k5BQ4j9q7uWk+
+         H6RVdTQmQ1tMdkqbhppS6D66v9ORB5uFa2qilD9hbx+iPFgn1bOcFc6XDKg86kmwhybf
+         FcUCtgIGWHg9qEF6XdH79fBZ25lgITzifmfKIOHoXYXqXQ/cjOsxbScqTQ8EIlMQqjFv
+         3hnvl0ew7MZF/ZQWpEvc/qga+1MoVInOqg6cfTFw7Im/HStE/XkAXUG3K4P2sXqYx9Ao
+         6YTg==
+X-Gm-Message-State: AOJu0YyJIb0ZjJ9W9szXe+7vhWUa/meiF3fBmHgpmmRrfA+nGl7Xso+c
+        /vnJ1I6BE2VcVDmnlgFzHNZ6AI//1Pk=
+X-Google-Smtp-Source: AGHT+IGFZeUrJrNyb9PFJw/6+D7tjY6iEaOBrvsPZLWtjmp8gFpRySGHdxgk85AyIfxdxLa5ETqGrWwR6y4=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a25:1e46:0:b0:db5:4a39:feb8 with SMTP id
+ e67-20020a251e46000000b00db54a39feb8mr64580ybe.8.1702491314920; Wed, 13 Dec
+ 2023 10:15:14 -0800 (PST)
+Date:   Wed, 13 Dec 2023 10:15:13 -0800
+In-Reply-To: <84ad3082-794b-443f-874a-d304934a395b@redhat.com>
+Mime-Version: 1.0
+References: <20231208184628.2297994-1-pbonzini@redhat.com> <ZXPRGzgWFqFdI_ep@google.com>
+ <184e253d-06c4-419e-b2b4-7cce1f875ba5@redhat.com> <ZXnoCadq2J3cPz2r@google.com>
+ <84ad3082-794b-443f-874a-d304934a395b@redhat.com>
+Message-ID: <ZXn0sR6IyzLzVHW-@google.com>
+Subject: Re: [PATCH] KVM: selftests: fix supported_flags for aarch64
+From:   Sean Christopherson <seanjc@google.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Shaoqin Huang <shahuang@redhat.com>, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        USER_IN_DEF_DKIM_WL autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-IPQ9574 and IPQ5332 can have multiple reserved memory regions that needs
-to be collected as part of the coredump.
+On Wed, Dec 13, 2023, Paolo Bonzini wrote:
+> On 12/13/23 18:21, Sean Christopherson wrote:
+> > On Tue, Dec 12, 2023, Paolo Bonzini wrote:
+> > > On 12/9/23 03:29, Sean Christopherson wrote:
+> > > > On Fri, Dec 08, 2023, Paolo Bonzini wrote:
+> > > > > KVM/Arm supports readonly memslots; fix the calculation of
+> > > > > supported_flags in set_memory_region_test.c, otherwise the
+> > > > > test fails.
+> > > > 
+> > > > You got beat by a few hours, and by a better solution ;-)
+> > > > 
+> > > > https://lore.kernel.org/all/20231208033505.2930064-1-shahuang@redhat.com
+> > > 
+> > > Better but also wrong---and my patch has the debatable merit of more
+> > > clearly exposing the wrongness.  Testing individual architectures is bad,
+> > > but testing __KVM_HAVE_READONLY_MEM makes the test fail when running a new
+> > > test on an old kernel.
+> > 
+> > But we already crossed that bridge and burned it for good measure by switching
+> > to KVM_SET_USER_MEMORY_REGION2, i.e. as of commit
+> > 
+> >    8d99e347c097 ("KVM: selftests: Convert lib's mem regions to KVM_SET_USER_MEMORY_REGION2")
+> > 
+> > selftests built against a new kernel can't run on an old kernel.  Building KVM
+> > selftests requires kernel headers, so while not having a hard requirement that
+> > the uapi headers are fresh would be nice, I don't think it buys all that much.
+> > 
+> > If we wanted to assert that x86, arm64, etc. enumerate __KVM_HAVE_READONLY_MEM,
+> > i.e. ensure that read-only memory is supported as expected, then that can be done
+> > as a completely unrelated test.
+> 
+> selftests have the luxury of having sync-ed kernel headers, but in general
+> userspace won't, and that means __KVM_HAVE_READONLY_MEM would be a very poor
+> userspace API.  Fortunately it has "__" so it is not userspace API at all,
+> and I don't want selftests to treat it as one.
 
-Loop through all the regions defined under reserved-memory node in the
-devicetree for the remoteproc and add each as a custom segment for
-coredump.
+Wait, what?  How does double underscores exempt it from being uAPI?  AIUI, the C
+standard effectively ensures that userspace won't define/declare symbols with
+double underscores, i.e. ensures there won't be conflicts.  But pretty much all
+of the kernel-defined types are prefixed with "__", e.g. __u8 and friends, so I
+don't see how prefixing with "__" exempts something from becoming uAPI.
 
-Also, update the ELF info for coredump collection for multipd
-remoteprocs.
-
-This patch depends on [1] which adds support for IPQ9574 and IPQ5332
-remoteproc q5v5_mpd driver.
-
-[1]: https://lore.kernel.org/all/20231110091939.3025413-1-quic_mmanikan@quicinc.com/
-
-Signed-off-by: Vignesh Viswanathan <quic_viswanat@quicinc.com>
----
- drivers/remoteproc/qcom_q6v5_mpd.c | 71 +++++++++++++++++++++++++++++-
- 1 file changed, 70 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/remoteproc/qcom_q6v5_mpd.c b/drivers/remoteproc/qcom_q6v5_mpd.c
-index 839f6a15b88d..901b0b0da8f2 100644
---- a/drivers/remoteproc/qcom_q6v5_mpd.c
-+++ b/drivers/remoteproc/qcom_q6v5_mpd.c
-@@ -443,11 +443,77 @@ static unsigned long q6_wcss_panic(struct rproc *rproc)
- 	return qcom_q6v5_panic(&wcss->q6);
- }
- 
-+static void q6_wcss_copy_segment(struct rproc *rproc,
-+				 struct rproc_dump_segment *segment,
-+				 void *dest, size_t offset, size_t size)
-+{
-+	struct q6_wcss *wcss = rproc->priv;
-+	struct device *dev = wcss->dev;
-+	int base;
-+	void *ptr;
-+
-+	base = segment->da + offset - wcss->mem_reloc;
-+
-+	if (base < 0 || base + size > wcss->mem_size) {
-+		ptr = devm_ioremap_wc(dev, segment->da, segment->size);
-+		memcpy(dest, ptr + offset, size);
-+		devm_iounmap(dev, ptr);
-+	} else {
-+		memcpy(dest, wcss->mem_region + offset, size);
-+	}
-+}
-+
-+static int q6_wcss_dump_segments(struct rproc *rproc,
-+				 const struct firmware *fw)
-+{
-+	struct device *dev = rproc->dev.parent;
-+	struct reserved_mem *rmem = NULL;
-+	struct device_node *node;
-+	int num_segs, index = 0;
-+	int ret;
-+
-+	/* Parse through additional reserved memory regions for the rproc
-+	 * and add them to the coredump segments
-+	 */
-+	num_segs = of_count_phandle_with_args(dev->of_node,
-+					      "memory-region", NULL);
-+	while (index < num_segs) {
-+		node = of_parse_phandle(dev->of_node,
-+					"memory-region", index);
-+		if (!node)
-+			return -EINVAL;
-+
-+		rmem = of_reserved_mem_lookup(node);
-+		if (!rmem) {
-+			dev_err(dev, "unable to acquire memory-region index %d num_segs %d\n",
-+				index, num_segs);
-+			return -EINVAL;
-+		}
-+
-+		of_node_put(node);
-+
-+		dev_dbg(dev, "Adding segment 0x%pa size 0x%pa",
-+			&rmem->base, &rmem->size);
-+		ret = rproc_coredump_add_custom_segment(rproc,
-+							rmem->base,
-+							rmem->size,
-+							q6_wcss_copy_segment,
-+							NULL);
-+		if (ret)
-+			return ret;
-+
-+		index++;
-+	}
-+
-+	return 0;
-+}
-+
- static const struct rproc_ops wcss_ops = {
- 	.start = wcss_pd_start,
- 	.stop = wcss_pd_stop,
- 	.load = wcss_pd_load,
- 	.get_boot_addr = rproc_elf_get_boot_addr,
-+	.parse_fw = q6_wcss_dump_segments,
- };
- 
- static const struct rproc_ops q6_wcss_ops = {
-@@ -457,6 +523,7 @@ static const struct rproc_ops q6_wcss_ops = {
- 	.load = q6_wcss_load,
- 	.get_boot_addr = rproc_elf_get_boot_addr,
- 	.panic = q6_wcss_panic,
-+	.parse_fw = q6_wcss_dump_segments,
- };
- 
- static int q6_alloc_memory_region(struct q6_wcss *wcss)
-@@ -672,6 +739,7 @@ static int q6_register_userpd(struct platform_device *pdev,
- 		goto free_rproc;
- 
- 	rproc->auto_boot = false;
-+	rproc_coredump_set_elf_info(rproc, ELFCLASS32, EM_NONE);
- 	ret = rproc_add(rproc);
- 	if (ret)
- 		goto free_rproc;
-@@ -731,9 +799,10 @@ static int q6_wcss_probe(struct platform_device *pdev)
- 		goto free_rproc;
- 
- 	qcom_add_glink_subdev(rproc, &wcss->glink_subdev, "q6wcss");
--	qcom_add_ssr_subdev(rproc, &wcss->ssr_subdev, "q6wcss");
-+	qcom_add_ssr_subdev(rproc, &wcss->ssr_subdev, pdev->name);
- 
- 	rproc->auto_boot = false;
-+	rproc_coredump_set_elf_info(rproc, ELFCLASS32, EM_NONE);
- 	ret = rproc_add(rproc);
- 	if (ret)
- 		goto free_rproc;
--- 
-2.41.0
-
+I completely agree that __KVM_HAVE_READONLY_MEM shouldn't be uAPI, but then it
+really, really shouldn't be defined in arch/x86/include/uapi/asm/kvm.h.
