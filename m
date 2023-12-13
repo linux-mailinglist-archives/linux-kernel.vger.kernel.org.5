@@ -2,159 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E5978121E3
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 23:43:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C05168121F3
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 23:44:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235508AbjLMWnK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 17:43:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33600 "EHLO
+        id S235374AbjLMWoZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 17:44:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45108 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1442836AbjLMWnA (ORCPT
+        with ESMTP id S229817AbjLMWoX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 17:43:00 -0500
-Received: from mail-oo1-f47.google.com (mail-oo1-f47.google.com [209.85.161.47])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CAB0D5A;
-        Wed, 13 Dec 2023 14:42:36 -0800 (PST)
-Received: by mail-oo1-f47.google.com with SMTP id 006d021491bc7-5913e3a9e05so1448353eaf.1;
-        Wed, 13 Dec 2023 14:42:36 -0800 (PST)
+        Wed, 13 Dec 2023 17:44:23 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B861DB
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 14:44:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1702507458;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=wJ/noKt4RR9yP36R44EoDN70UzFeuyznjnW/8U/CnAQ=;
+        b=cpmQelrFh2kfK6YmAaEdPqt7RajsqRJSunkeJfJTASYW94TaRPxGBt+fOxSasRF2ErfZvi
+        TW3qd5Yh3eisKlbeLrxWoYrpZKVqD2+KBIc+puJfCu6ZvF0wcEjBM3fzSsOikvm5CTq5NR
+        g9mllIu7kG63mgYKm/fNqytDuVrI6BQ=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-211-_UmQjqLVM-G8YawqVKi6LA-1; Wed, 13 Dec 2023 17:44:17 -0500
+X-MC-Unique: _UmQjqLVM-G8YawqVKi6LA-1
+Received: by mail-wr1-f69.google.com with SMTP id ffacd0b85a97d-3333c009305so6249024f8f.1
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 14:44:16 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702507356; x=1703112156;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=FW/pmmw2V+DW6nT308vGzDaKBo2V/WiIuPZcl8Qc+Ug=;
-        b=vUUA+SuwjoKWSZNJoPn2tjGdbjAES65/oCF4QfLYaMxUIWQKvHNeNJ6EHQ749XkiOd
-         fKSnafTNHU5iUVE1VBsGKkRznGwCzbrCY45PeVp7SeRIokQGpnOhHMTSbFy7MX8YTCqD
-         o0VcceyI9gZnGqxHQ3LnFxdcQa3My7wYjTPd2bvvm3TCe5F+8L/MFJRpx4aw54uo4WCc
-         fhC8fz4eFPVpv81c0tIuwyWYipfBPnkpAxlVfSsZisjaxtDvyHNgTIWhEqkhTjoTi+Di
-         bKoY/OywjzB7gR9Hs87VpeA1nKcqE35u/AvLkCqftkDLVT+MC56paUE/Qm3kbQk6HiXA
-         3EZw==
-X-Gm-Message-State: AOJu0YxZmN7opb2o27sMNkegmmT8UWYqvCaTnAQJnljiQJg7wMXTPVJ3
-        KiB8DgBYQjW/0Hdl+7ulig==
-X-Google-Smtp-Source: AGHT+IHaJX2FfX/ctN3Th93fsrv8ZHkMh+5Fl3XcKJvoRGEVgImi2x4SvuBQgy8Lp1Sfb2Yj9+MGKQ==
-X-Received: by 2002:a4a:245c:0:b0:590:9a90:16d with SMTP id v28-20020a4a245c000000b005909a90016dmr5562296oov.5.1702507355754;
-        Wed, 13 Dec 2023 14:42:35 -0800 (PST)
-Received: from herring.priv (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
-        by smtp.gmail.com with ESMTPSA id j11-20020a4ad2cb000000b005907ad9f302sm3233886oos.37.2023.12.13.14.42.34
+        d=1e100.net; s=20230601; t=1702507456; x=1703112256;
+        h=content-transfer-encoding:mime-version:user-agent:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=wJ/noKt4RR9yP36R44EoDN70UzFeuyznjnW/8U/CnAQ=;
+        b=RKQQmTYJuvwVkkNDmDVmHJB+aVTny9+L7GoTdOhTaWDm/P1KdkD8CLBZTcA5jR4c1g
+         BOx6Uek+JZWO2l2ze+z5ADna4NfeM44+27Xn0hXSHZyp3DWlRGtnf/ARvJiohN8dEuBa
+         GZHEQBhFlRhK3+y5/5bBrc07I445PiNRrMSHZQol10FTfuoeQDAM5je8NXE9Qm+slUam
+         T/4fUCKLANrX1jhUAc9pi8Tt8vZ53l7dt2LHk9pO9cqM/DXhiH82kLhbJjdnXVLSsw12
+         qT+Q+R74waov7LYcBBwGlgImB2//K0P+3Mp5AmvNeJIKEDgsHmIfmEC4tfWeoj9s0Ubf
+         zTbQ==
+X-Gm-Message-State: AOJu0Yywntn4HkLMJ9bncKydmq2K6iwUee4jDfA+BT33aoga9mZCui7Z
+        xfEGNv0+ZhUQ0CSRuMoCfv5NATXCZBO6HsFCuTYN2mcXQk7CYtj3D0MXz7tzmWQxS9VfelDhGyG
+        U2t7uxbE/gSs0NfQnZsIPF2Io
+X-Received: by 2002:a7b:cd91:0:b0:40c:3399:d5a0 with SMTP id y17-20020a7bcd91000000b0040c3399d5a0mr3902497wmj.100.1702507455962;
+        Wed, 13 Dec 2023 14:44:15 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IF5EdNQIMrjofmVv1zrJdv8ykEuwHCs2ZxHKs/y4nPdIAePbusp9PWe8bHPWPpyIDEswd1Chw==
+X-Received: by 2002:a7b:cd91:0:b0:40c:3399:d5a0 with SMTP id y17-20020a7bcd91000000b0040c3399d5a0mr3902490wmj.100.1702507455621;
+        Wed, 13 Dec 2023 14:44:15 -0800 (PST)
+Received: from starship ([77.137.131.62])
+        by smtp.gmail.com with ESMTPSA id az23-20020a05600c601700b0040c0902dc22sm22569330wmb.31.2023.12.13.14.44.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Dec 2023 14:42:35 -0800 (PST)
-Received: (nullmailer pid 2192084 invoked by uid 1000);
-        Wed, 13 Dec 2023 22:42:34 -0000
-From:   Rob Herring <robh@kernel.org>
-To:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Aakarsh Jain <aakarsh.jain@samsung.com>
-Cc:     linux-media@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] media: dt-bindings: samsung,s5p-mfc: Fix iommu properties schemas
-Date:   Wed, 13 Dec 2023 16:42:26 -0600
-Message-ID: <20231213224227.2191897-1-robh@kernel.org>
-X-Mailer: git-send-email 2.43.0
+        Wed, 13 Dec 2023 14:44:15 -0800 (PST)
+Message-ID: <0c86e5ffb65f07cd3e444038d1f0ed39f0f4130a.camel@redhat.com>
+Subject: Re: [PATCH v4 10/12] KVM: x86: never write to memory from
+ kvm_vcpu_check_block()
+From:   Maxim Levitsky <mlevitsk@redhat.com>
+To:     Jim Mattson <jmattson@google.com>
+Cc:     Sean Christopherson <seanjc@google.com>, alexandru.elisei@arm.com,
+        anup@brainfault.org, aou@eecs.berkeley.edu, atishp@atishpatra.org,
+        borntraeger@linux.ibm.com, chenhuacai@kernel.org, david@redhat.com,
+        frankja@linux.ibm.com, imbrenda@linux.ibm.com, james.morse@arm.com,
+        kvm-riscv@lists.infradead.org, kvm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mips@vger.kernel.org, linux-riscv@lists.infradead.org,
+        linuxppc-dev@lists.ozlabs.org, maz@kernel.org,
+        oliver.upton@linux.dev, palmer@dabbelt.com,
+        paul.walmsley@sifive.com, pbonzini@redhat.com,
+        suzuki.poulose@arm.com
+Date:   Thu, 14 Dec 2023 00:44:12 +0200
+In-Reply-To: <CALMp9eQ69dGSix-9pJdEtEw9T1Mqz9E1eaf1-yGP9k4_nMZogw@mail.gmail.com>
+References: <20220921003201.1441511-11-seanjc@google.com>
+         <20231207010302.2240506-1-jmattson@google.com>
+         <ZXHw7tykubfG04Um@google.com>
+         <CALMp9eTT97oDmQT7pxeOMLQbt-371aMtC2Kev+-kWXVRDVrjeg@mail.gmail.com>
+         <ZXh8Nq_y_szj1WN0@google.com>
+         <5ca5592b21131f515e296afae006e5bb28b1fb87.camel@redhat.com>
+         <CALMp9eQ69dGSix-9pJdEtEw9T1Mqz9E1eaf1-yGP9k4_nMZogw@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,
-        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The iommus and iommu-names property schemas have several issues. First,
-'iommus-names' in the if/then schemas is the wrong name. As all the names
-are the same, they can be defined at the top level instead. Then the
-if/then schemas just need to define how many entries. The iommus if/then
-schemas are also redundant. Best I can tell, the desire was to require 2
-entries for "samsung,exynos5433-mfc", "samsung,mfc-v5", "samsung,mfc-v6",
-and "samsung,mfc-v8".
+On Wed, 2023-12-13 at 14:31 -0800, Jim Mattson wrote:
+> On Wed, Dec 13, 2023 at 2:25 PM Maxim Levitsky <mlevitsk@redhat.com> wrote:
+> > On Tue, 2023-12-12 at 07:28 -0800, Sean Christopherson wrote:
+> > > On Sun, Dec 10, 2023, Jim Mattson wrote:
+> > > > On Thu, Dec 7, 2023 at 8:21 AM Sean Christopherson <seanjc@google.com> wrote:
+> > > > > Doh.  We got the less obvious cases and missed the obvious one.
+> > > > > 
+> > > > > Ugh, and we also missed a related mess in kvm_guest_apic_has_interrupt().  That
+> > > > > thing should really be folded into vmx_has_nested_events().
+> > > > > 
+> > > > > Good gravy.  And vmx_interrupt_blocked() does the wrong thing because that
+> > > > > specifically checks if L1 interrupts are blocked.
+> > > > > 
+> > > > > Compile tested only, and definitely needs to be chunked into multiple patches,
+> > > > > but I think something like this mess?
+> > > > 
+> > > > The proposed patch does not fix the problem. In fact, it messes things
+> > > > up so much that I don't get any test results back.
+> > > 
+> > > Drat.
+> > > 
+> > > > Google has an internal K-U-T test that demonstrates the problem. I
+> > > > will post it soon.
+> > > 
+> > > Received, I'll dig in soonish, though "soonish" might unfortunately might mean
+> > > 2024.
+> > > 
+> > 
+> > Hi,
+> > 
+> > So this is what I think:
+> > 
+> > 
+> > KVM does have kvm_guest_apic_has_interrupt() for this exact purpose,
+> > to check if nested APICv has a pending interrupt before halting.
+> > 
+> > 
+> > However the problem is bigger - with APICv we have in essence 2 pending interrupt
+> > bitmaps - the PIR and the IRR, and to know if the guest has a pending interrupt
+> > one has in theory to copy PIR to IRR, then see if the max is larger then the current PPR.
+> > 
+> > Since we don't want to write to guest memory, and the IRR here resides in the guest memory,
+> > I guess we have to do a 'dry-run' version of 'vmx_complete_nested_posted_interrupt' and call
+> > it from  kvm_guest_apic_has_interrupt().
+> > 
+> > What do you think? I can prepare a patch for this.
+> > 
+> > Can you share a reproducer or write a new one that can be shared?
+> 
+> See https://lore.kernel.org/kvm/20231211185552.3856862-1-jmattson@google.com/.
 
-Signed-off-by: Rob Herring <robh@kernel.org>
----
- .../bindings/media/samsung,s5p-mfc.yaml       | 29 +++++++------------
- 1 file changed, 11 insertions(+), 18 deletions(-)
+Thank you!
 
-diff --git a/Documentation/devicetree/bindings/media/samsung,s5p-mfc.yaml b/Documentation/devicetree/bindings/media/samsung,s5p-mfc.yaml
-index 084b44582a43..a970d80692d3 100644
---- a/Documentation/devicetree/bindings/media/samsung,s5p-mfc.yaml
-+++ b/Documentation/devicetree/bindings/media/samsung,s5p-mfc.yaml
-@@ -49,7 +49,9 @@ properties:
- 
-   iommu-names:
-     minItems: 1
--    maxItems: 2
-+    items:
-+      - const: left
-+      - const: right
- 
-   power-domains:
-     maxItems: 1
-@@ -84,7 +86,7 @@ allOf:
-             - const: sclk_mfc
-         iommus:
-           maxItems: 1
--        iommus-names: false
-+        iommu-names: false
- 
-   - if:
-       properties:
-@@ -102,11 +104,9 @@ allOf:
-             - const: aclk
-             - const: aclk_xiu
-         iommus:
--          maxItems: 2
--        iommus-names:
--          items:
--            - const: left
--            - const: right
-+          minItems: 2
-+        iommu-names:
-+          minItems: 2
- 
-   - if:
-       properties:
-@@ -123,11 +123,9 @@ allOf:
-             - const: mfc
-             - const: sclk_mfc
-         iommus:
--          maxItems: 2
-+          minItems: 2
-         iommus-names:
--          items:
--            - const: left
--            - const: right
-+          minItems: 2
- 
-   - if:
-       properties:
-@@ -144,11 +142,9 @@ allOf:
-           items:
-             - const: mfc
-         iommus:
--          maxItems: 2
-+          minItems: 2
-         iommus-names:
--          items:
--            - const: left
--            - const: right
-+          minItems: 2
- 
-   - if:
-       properties:
-@@ -161,9 +157,6 @@ allOf:
-         clocks:
-           minItems: 1
-           maxItems: 2
--        iommus:
--          minItems: 1
--          maxItems: 2
- 
- examples:
-   - |
--- 
-2.43.0
+Best regards,
+	Maxim Levitsky
+
+> 
+> > Best regards,
+> >         Maxim Levitsky
+> > 
+
 
