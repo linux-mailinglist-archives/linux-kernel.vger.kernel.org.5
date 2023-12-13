@@ -2,290 +2,217 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 66F618108CD
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 04:46:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 98F1F8108CE
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 04:47:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378409AbjLMDpv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 22:45:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42248 "EHLO
+        id S1378424AbjLMDr3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 22:47:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37964 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230510AbjLMDpu (ORCPT
+        with ESMTP id S230510AbjLMDr1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 22:45:50 -0500
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 026359C;
-        Tue, 12 Dec 2023 19:45:55 -0800 (PST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id EBE471FD33;
-        Wed, 13 Dec 2023 03:45:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1702439154; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=rB/CuiPsCVYhhs8X0d5ijJC7gSRRgR/wwL/5IAyij/Y=;
-        b=z1GSwrIhHoadFf+Zz90vurdfah6C/mBdRxuIlMKM1jGLa9aCCZ4/1QIHNaaNmmBCsW45Vw
-        B1VafVo6edCiemPPi+A8WCrBDz94dqbuMWMoTQ2hfm+34ziu7VF3VBJ3Ye1C15oAJjKjTg
-        kujYuf1i+jfhhHdgd4QQmv2yhS5QkPQ=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1702439154;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=rB/CuiPsCVYhhs8X0d5ijJC7gSRRgR/wwL/5IAyij/Y=;
-        b=+0/ZzvbZoI5IoMv9E1ci4Pe4TyjFeVVBCz8cXBzbusoLJYx/xF0TQ2+dKconSds42NN3Ai
-        lLmGKYNnB9P/toCQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1702439153; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=rB/CuiPsCVYhhs8X0d5ijJC7gSRRgR/wwL/5IAyij/Y=;
-        b=PRUQt/0GPjZOlP7W2X7bEsAT8FsO8+wNI1IAZhauYlUQ9D4mDtmt0dbDpEAI3OIcGdXKv8
-        n94Zzz35ZCVTrPjnPdxo3YL0TV67P/Cw2jdqazyC1+nEfOedw1qoT5sim1zLkt8zIOwcEg
-        IyU+GQRWOuy/EiSGjDzt9LpWq+ZnShQ=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1702439153;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=rB/CuiPsCVYhhs8X0d5ijJC7gSRRgR/wwL/5IAyij/Y=;
-        b=wbKR+itKky0GzyREaVkaWOPIW0Jjo+hkcuCHlX1tFHuYtWnrApsby/3TBT04STsFCPu8Jh
-        RlK2kw3sOnKnmrCw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 4C0591388B;
-        Wed, 13 Dec 2023 03:45:51 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-        by imap1.dmz-prg2.suse.org with ESMTPSA
-        id MD7PAO8oeWVjbAAAD6G6ig
-        (envelope-from <neilb@suse.de>); Wed, 13 Dec 2023 03:45:51 +0000
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+        Tue, 12 Dec 2023 22:47:27 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F24D8B7;
+        Tue, 12 Dec 2023 19:47:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1702439254; x=1733975254;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=je5nKRidUNnG58JMaYYxuhlKzpazqskKw4rSM3Yy+H0=;
+  b=SZyyRtwsXeTKHV0Li3Mb+u1u9IbFqwek1C54N7wwsVmHYV3lCReyQ6SV
+   vNKp1Fb/9a29mHti0T/RZWy1Cw4+AkDrcwZgtkgEydz80VAk8HCUhlx67
+   LSFmYwh5YfaVWX3ZDF5+l9++KRDeCMfS8KpAariUctFHLc8ywqcyYi2jk
+   JNzxRX28o5lsNvMHIMVl/yaIyBOFRvRVCKn0uzH2DLWSobyRyl6VGUdui
+   DjmnFEup/kMyeX6JiI3zjxkhR4O+eZ4A/6WwOj4a3nA3DQPl3zpwOjuU/
+   dNqFEeVv/UJG1Ap5vn6X0llW9r6BJQ1ddwYh7X4yIWrsRBtaWvj22aNnG
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10922"; a="459227270"
+X-IronPort-AV: E=Sophos;i="6.04,272,1695711600"; 
+   d="scan'208";a="459227270"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Dec 2023 19:47:33 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10922"; a="897175455"
+X-IronPort-AV: E=Sophos;i="6.04,272,1695711600"; 
+   d="scan'208";a="897175455"
+Received: from ply01-vm-store.bj.intel.com ([10.238.153.201])
+  by orsmga004.jf.intel.com with ESMTP; 12 Dec 2023 19:47:30 -0800
+From:   Ethan Zhao <haifeng.zhao@linux.intel.com>
+To:     bhelgaas@google.com, baolu.lu@linux.intel.com, dwmw2@infradead.org,
+        will@kernel.org, robin.murphy@arm.com
+Cc:     linux-pci@vger.kernel.org, iommu@lists.linux.dev,
+        linux-kernel@vger.kernel.org, haifeng.zhao@linux.intel.com
+Subject: [PATCH RFC 0/2] fix vt-d hard lockup when hotplug ATS capable device
+Date:   Tue, 12 Dec 2023 22:46:35 -0500
+Message-Id: <20231213034637.2603013-1-haifeng.zhao@linux.intel.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-From:   "NeilBrown" <neilb@suse.de>
-To:     "Chuck Lever" <chuck.lever@oracle.com>
-Cc:     "Jeff Layton" <jlayton@kernel.org>,
-        "Olga Kornievskaia" <kolga@netapp.com>,
-        "Dai Ngo" <Dai.Ngo@oracle.com>, "Tom Talpey" <tom@talpey.com>,
-        linux-nfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "Zhi Li" <yieli@redhat.com>
-Subject: Re: [PATCH] nfsd: properly tear down server when write_ports fails
-In-reply-to: <ZXhot6zUt6G1xaos@tissot.1015granger.net>
-References: <20231211-nfsd-fixes-v1-1-c87a802f4977@kernel.org>,
- <170233558429.12910.17902271117186364002@noble.neil.brown.name>,
- <a2b59634a697ae07a315d6f663afaff5cd5bf375.camel@kernel.org>,
- <ZXhlNtQ9o+howGbH@tissot.1015granger.net>,
- <ZXhot6zUt6G1xaos@tissot.1015granger.net>
-Date:   Wed, 13 Dec 2023 14:45:48 +1100
-Message-id: <170243914810.12910.1721447953189600231@noble.neil.brown.name>
-X-Spam-Level: **********
-X-Spam-Score: 10.29
-X-Spam-Level: 
-Authentication-Results: smtp-out2.suse.de;
-        dkim=pass header.d=suse.de header.s=susede2_rsa header.b="PRUQt/0G";
-        dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=wbKR+itK;
-        dmarc=pass (policy=none) header.from=suse.de;
-        spf=softfail (smtp-out2.suse.de: 2a07:de40:b281:104:10:150:64:97 is neither permitted nor denied by domain of neilb@suse.de) smtp.mailfrom=neilb@suse.de
-X-Rspamd-Server: rspamd2
-X-Spamd-Result: default: False [-15.51 / 50.00];
-         RCVD_VIA_SMTP_AUTH(0.00)[];
-         SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-         TO_DN_SOME(0.00)[];
-         R_SPF_SOFTFAIL(0.00)[~all:c];
-         RCVD_COUNT_THREE(0.00)[3];
-         DKIM_TRACE(0.00)[suse.de:+];
-         DMARC_POLICY_ALLOW(0.00)[suse.de,none];
-         RCPT_COUNT_SEVEN(0.00)[8];
-         MX_GOOD(-0.01)[];
-         DMARC_POLICY_ALLOW_WITH_FAILURES(-0.50)[];
-         NEURAL_HAM_SHORT(-0.20)[-1.000];
-         FROM_EQ_ENVFROM(0.00)[];
-         MIME_TRACE(0.00)[0:+];
-         BAYES_HAM(-3.00)[100.00%];
-         ARC_NA(0.00)[];
-         R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-         FROM_HAS_DN(0.00)[];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         NEURAL_HAM_LONG(-1.00)[-1.000];
-         MIME_GOOD(-0.10)[text/plain];
-         DWL_DNSWL_HI(-3.50)[suse.de:dkim];
-         DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-         WHITELIST_DMARC(-7.00)[suse.de:D:+];
-         DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:dkim];
-         FUZZY_BLOCKED(0.00)[rspamd.com];
-         RCVD_TLS_ALL(0.00)[]
-X-Spam-Score: -15.51
-X-Rspamd-Queue-Id: EBE471FD33
-X-Spam-Flag: NO
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 13 Dec 2023, Chuck Lever wrote:
-> On Tue, Dec 12, 2023 at 08:50:46AM -0500, Chuck Lever wrote:
-> > On Mon, Dec 11, 2023 at 06:11:04PM -0500, Jeff Layton wrote:
-> > > On Tue, 2023-12-12 at 09:59 +1100, NeilBrown wrote:
-> > > > On Tue, 12 Dec 2023, Jeff Layton wrote:
-> > > > > When the initial write to the "portlist" file fails, we'll currentl=
-y put
-> > > > > the reference to the nn->nfsd_serv, but leave the pointer intact. T=
-his
-> > > > > leads to a UAF if someone tries to write to "portlist" again.
-> > > > >=20
-> > > > > Simple reproducer, from a host with nfsd shut down:
-> > > > >=20
-> > > > >     # echo "foo 2049" > /proc/fs/nfsd/portlist
-> > > > >     # echo "foo 2049" > /proc/fs/nfsd/portlist
-> > > > >=20
-> > > > > The kernel will oops on the second one when it trips over the dangl=
-ing
-> > > > > nn->nfsd_serv pointer. There is a similar bug in __write_ports_addf=
-d.
-> > > > >=20
-> > > > > This patch fixes it by adding some extra logic to nfsd_put to ensure
-> > > > > that nfsd_last_thread is called prior to putting the reference when=
- the
-> > > > > conditions are right.
-> > > > >=20
-> > > > > Fixes: 9f28a971ee9f ("nfsd: separate nfsd_last_thread() from nfsd_p=
-ut()")
-> > > > > Closes: https://issues.redhat.com/browse/RHEL-19081
-> > > > > Reported-by: Zhi Li <yieli@redhat.com>
-> > > > > Signed-off-by: Jeff Layton <jlayton@kernel.org>
-> > > > > ---
-> > > > > This should probably go to stable, but we'll need to backport for v=
-6.6
-> > > > > since older kernels don't have nfsd_nl_rpc_status_get_done. We shou=
-ld
-> > > > > just be able to drop that hunk though.
-> > > > > ---
-> > > > >  fs/nfsd/nfsctl.c | 32 ++++++++++++++++++++++++++++----
-> > > > >  fs/nfsd/nfsd.h   |  8 +-------
-> > > > >  fs/nfsd/nfssvc.c |  2 +-
-> > > > >  3 files changed, 30 insertions(+), 12 deletions(-)
-> > > >=20
-> > > > This is much the same as
-> > > >=20
-> > > > https://lore.kernel.org/linux-nfs/20231030011247.9794-2-neilb@suse.de/
-> > > >=20
-> > > > It seems that didn't land.  Maybe I dropped the ball...
-> > >=20
-> > > Indeed it is. I thought the problem seemed familiar. Your set is
-> > > considerably more comprehensive. Looks like I even sent some Reviewed-
-> > > bys when you sent it.
-> > >=20
-> > > Chuck, can we get these in or was there a problem with them?
-> >=20
-> > Offhand, I'd say either I was waiting for some review comments
-> > to be addressed or the mail got lost (vger or Exchange or I
-> > accidentally deleted the series). I'll go take a look.
->=20
-> I reviewed the thread:
->=20
-> https://lore.kernel.org/linux-nfs/20231030011247.9794-1-neilb@suse.de/
->=20
-> From the looks of it, I was expecting Neil to address a couple of
-> review comments and repost. These are the two comments that stand
-> out to me now:
->=20
-> On 1/5:
->=20
-> > > Then let's add
-> > >=20
-> > > Fixes: ec52361df99b ("SUNRPC: stop using ->sv_nrthreads as a refcount")
-> > >=20
-> > > to this one, since it addresses a crasher seen in the wild.
-> >=20
-> > Sounds good.
-> >=20
-> > > > but it won't fix the hinky error cleanup in nfsd_svc. It looks like t=
-hat
-> > > > does get fixed in patch #4 though, so I'm not too concerned.
-> > >=20
-> > > Does that fix also need to be backported?
-> >=20
-> > I think so, but we might want to split that out into a more targeted
-> > patch and apply it ahead of the rest of the series. Our QA folks seem to
-> > be able to hit the problem somehow, so it's likely to be triggered by
-> > people in the field too.
->=20
-> This last paragraph requests a bit of reorganization to enable an
-> easier backport.
+ This patch is used to fix vt-d hard lockup reported when ATS capable 
+ endpoint device connects to system via PCIe switch populates in root port
+ as following topology.
 
-I think the "error cleanup" was addressed in a different series.  Maybe
-it hasn't landed either.
+     +-[0000:15]-+-00.0  Intel Corporation Ice Lake Memory Map/VT-d
+     |           +-00.1  Intel Corporation Ice Lake Mesh 2 PCIe
+     |           +-00.2  Intel Corporation Ice Lake RAS
+     |           +-00.4  Intel Corporation Device 0b23
+     |           \-01.0-[16-1b]----00.0-[17-1b]--+-00.0-[18]----00.0 
+                                           NVIDIA Corporation Device 2324
+     |                                           +-01.0-[19]----00.0
+                          Mellanox Technologies MT2910 Family [ConnectX-7]
 
->=20
-> And on 2/5:
->=20
-> > > > > +struct pool_private {
-> > > > > +	struct svc_serv *(*get_serv)(struct seq_file *, bool);
-> > > >=20
-> > > > This bool is pretty ugly. I think I'd rather see two operations here
-> > > > (get_serv/put_serv). Also, this could use a kerneldoc comment.
-> > >=20
-> > > I agree that bool is ugly, but two function pointers as function args
-> > > seemed ugly, and stashing them in 'struct svc_serv' seemed ugly.
-> > > So I picked one.  I'd be keen to find an approach that didn't require a
-> > > function pointer.
-> > >=20
-> > > Maybe sunrpc could declare
-> > >=20
-> > >    struct svc_ref {
-> > >          struct mutex mutex;
-> > >          struct svc_serv *serv;
-> > >    }
-> > >=20
-> > > and nfsd could use one of those instead of nfsd_mutex and nfsd_serv, and
-> > > pass a pointer to it to the open function.
-> > >=20
-> > > But then the mutex would have to be in the per-net structure.  And maybe
-> > > that isn't a bad idea, but it is a change...
-> > >=20
-> > > I guess I could pass pointers to nfsd_mutex and nn->nfsd_serv to the
-> > > open function....
-> > >=20
-> > > Any other ideas?
-> >=20
-> > I think just passing two function pointers to svc_pool_stats_open, and
-> > storing them both in the serv is the best solution (for now). Like you
-> > said, there are no clean options here. That function only has one caller
-> > though, so at least the nastiness will be confined to that.
-> >=20
+ User brought endpoint device 19:00.0's link down by flap it's hotplug 
+ capable slot 17:01.0 link control register, as sequence DLLSC response, 
+ pciehp_ist() will unload device driver and power it off, durning device
+ driver is unloading an iommu devTlb flush request isssed to that link 
+ down device, thus a long time completion/timeout waiting in interrupt
+ context causes continuous lock lockup warnning and system hang.
 
-We can't store the function pointers in the serv because the purpose of
-the first function is to find the serv.
+[ 4211.433662] pcieport 0000:17:01.0: pciehp: Slot(108): Link Down
+[ 4211.433664] pcieport 0000:17:01.0: pciehp: Slot(108): Card not present
+[ 4223.822591] NMI watchdog: Watchdog detected hard LOCKUP on cpu 144
+[ 4223.822622] CPU: 144 PID: 1422 Comm: irq/57-pciehp Kdump: loaded Tainted: G S
+         OE    kernel version xxxx
+[ 4223.822623] Hardware name: vendorname xxxx 666-106,
+BIOS 01.01.02.03.01 05/15/2023
+[ 4223.822623] RIP: 0010:qi_submit_sync+0x2c0/0x490
+[ 4223.822624] Code: 48 be 00 00 00 00 00 08 00 00 49 85 74 24 20 0f 95 c1 48 8b
+ 57 10 83 c1 04 83 3c 1a 03 0f 84 a2 01 00 00 49 8b 04 24 8b 70 34 <40> f6 c6 1
+0 74 17 49 8b 04 24 8b 80 80 00 00 00 89 c2 d3 fa 41 39
+[ 4223.822624] RSP: 0018:ffffc4f074f0bbb8 EFLAGS: 00000093
+[ 4223.822625] RAX: ffffc4f040059000 RBX: 0000000000000014 RCX: 0000000000000005
+[ 4223.822625] RDX: ffff9f3841315800 RSI: 0000000000000000 RDI: ffff9f38401a8340
+[ 4223.822625] RBP: ffff9f38401a8340 R08: ffffc4f074f0bc00 R09: 0000000000000000
+[ 4223.822626] R10: 0000000000000010 R11: 0000000000000018 R12: ffff9f384005e200
+[ 4223.822626] R13: 0000000000000004 R14: 0000000000000046 R15: 0000000000000004
+[ 4223.822626] FS:  0000000000000000(0000) GS:ffffa237ae400000(0000)
+knlGS:0000000000000000
+[ 4223.822627] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[ 4223.822627] CR2: 00007ffe86515d80 CR3: 000002fd3000a001 CR4: 0000000000770ee0
+[ 4223.822627] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+[ 4223.822628] DR3: 0000000000000000 DR6: 00000000fffe07f0 DR7: 0000000000000400
+[ 4223.822628] PKRU: 55555554
+[ 4223.822628] Call Trace:
+[ 4223.822628]  qi_flush_dev_iotlb+0xb1/0xd0
+[ 4223.822628]  __dmar_remove_one_dev_info+0x224/0x250
+[ 4223.822629]  dmar_remove_one_dev_info+0x3e/0x50
+[ 4223.822629]  intel_iommu_release_device+0x1f/0x30
+[ 4223.822629]  iommu_release_device+0x33/0x60
+[ 4223.822629]  iommu_bus_notifier+0x7f/0x90
+[ 4223.822630]  blocking_notifier_call_chain+0x60/0x90
+[ 4223.822630]  device_del+0x2e5/0x420
+[ 4223.822630]  pci_remove_bus_device+0x70/0x110
+[ 4223.822630]  pciehp_unconfigure_device+0x7c/0x130
+[ 4223.822631]  pciehp_disable_slot+0x6b/0x100
+[ 4223.822631]  pciehp_handle_presence_or_link_change+0xd8/0x320
+[ 4223.822631]  pciehp_ist+0x176/0x180
+[ 4223.822631]  ? irq_finalize_oneshot.part.50+0x110/0x110
+[ 4223.822632]  irq_thread_fn+0x19/0x50
+[ 4223.822632]  irq_thread+0x104/0x190
+[ 4223.822632]  ? irq_forced_thread_fn+0x90/0x90
+[ 4223.822632]  ? irq_thread_check_affinity+0xe0/0xe0
+[ 4223.822633]  kthread+0x114/0x130
+[ 4223.822633]  ? __kthread_cancel_work+0x40/0x40
+[ 4223.822633]  ret_from_fork+0x1f/0x30
+[ 4223.822633] Kernel panic - not syncing: Hard LOCKUP
+[ 4223.822634] CPU: 144 PID: 1422 Comm: irq/57-pciehp Kdump: loaded Tainted: G S
+         OE     kernel version xxxx
+[ 4223.822634] Hardware name: vendorname xxxx 666-106,
+BIOS 01.01.02.03.01 05/15/2023
+[ 4223.822634] Call Trace:
+[ 4223.822634]  <NMI>
+[ 4223.822635]  dump_stack+0x6d/0x88
+[ 4223.822635]  panic+0x101/0x2d0
+[ 4223.822635]  ? ret_from_fork+0x11/0x30
+[ 4223.822635]  nmi_panic.cold.14+0xc/0xc
+[ 4223.822636]  watchdog_overflow_callback.cold.8+0x6d/0x81
+[ 4223.822636]  __perf_event_overflow+0x4f/0xf0
+[ 4223.822636]  handle_pmi_common+0x1ef/0x290
+[ 4223.822636]  ? __set_pte_vaddr+0x28/0x40
+[ 4223.822637]  ? flush_tlb_one_kernel+0xa/0x20
+[ 4223.822637]  ? __native_set_fixmap+0x24/0x30
+[ 4223.822637]  ? ghes_copy_tofrom_phys+0x70/0x100
+[ 4223.822637]  ? __ghes_peek_estatus.isra.16+0x49/0xa0
+[ 4223.822637]  intel_pmu_handle_irq+0xba/0x2b0
+[ 4223.822638]  perf_event_nmi_handler+0x24/0x40
+[ 4223.822638]  nmi_handle+0x4d/0xf0
+[ 4223.822638]  default_do_nmi+0x49/0x100
+[ 4223.822638]  exc_nmi+0x134/0x180
+[ 4223.822639]  end_repeat_nmi+0x16/0x67
+[ 4223.822639] RIP: 0010:qi_submit_sync+0x2c0/0x490
+[ 4223.822639] Code: 48 be 00 00 00 00 00 08 00 00 49 85 74 24 20 0f 95 c1 48 8b
+ 57 10 83 c1 04 83 3c 1a 03 0f 84 a2 01 00 00 49 8b 04 24 8b 70 34 <40> f6 c6 10
+ 74 17 49 8b 04 24 8b 80 80 00 00 00 89 c2 d3 fa 41 39
+[ 4223.822640] RSP: 0018:ffffc4f074f0bbb8 EFLAGS: 00000093
+[ 4223.822640] RAX: ffffc4f040059000 RBX: 0000000000000014 RCX: 0000000000000005
+[ 4223.822640] RDX: ffff9f3841315800 RSI: 0000000000000000 RDI: ffff9f38401a8340
+[ 4223.822641] RBP: ffff9f38401a8340 R08: ffffc4f074f0bc00 R09: 0000000000000000
+[ 4223.822641] R10: 0000000000000010 R11: 0000000000000018 R12: ffff9f384005e200
+[ 4223.822641] R13: 0000000000000004 R14: 0000000000000046 R15: 0000000000000004
+[ 4223.822641]  ? qi_submit_sync+0x2c0/0x490
+[ 4223.822642]  ? qi_submit_sync+0x2c0/0x490
+[ 4223.822642]  </NMI>
+[ 4223.822642]  qi_flush_dev_iotlb+0xb1/0xd0
+[ 4223.822642]  __dmar_remove_one_dev_info+0x224/0x250
+[ 4223.822643]  dmar_remove_one_dev_info+0x3e/0x50
+[ 4223.822643]  intel_iommu_release_device+0x1f/0x30
+[ 4223.822643]  iommu_release_device+0x33/0x60
+[ 4223.822643]  iommu_bus_notifier+0x7f/0x90
+[ 4223.822644]  blocking_notifier_call_chain+0x60/0x90
+[ 4223.822644]  device_del+0x2e5/0x420
+[ 4223.822644]  pci_remove_bus_device+0x70/0x110
+[ 4223.822644]  pciehp_unconfigure_device+0x7c/0x130
+[ 4223.822644]  pciehp_disable_slot+0x6b/0x100
+[ 4223.822645]  pciehp_handle_presence_or_link_change+0xd8/0x320
+[ 4223.822645]  pciehp_ist+0x176/0x180
+[ 4223.822645]  ? irq_finalize_oneshot.part.50+0x110/0x110
+[ 4223.822645]  irq_thread_fn+0x19/0x50
+[ 4223.822646]  irq_thread+0x104/0x190
+[ 4223.822646]  ? irq_forced_thread_fn+0x90/0x90
+[ 4223.822646]  ? irq_thread_check_affinity+0xe0/0xe0
+[ 4223.822646]  kthread+0x114/0x130
+[ 4223.822647]  ? __kthread_cancel_work+0x40/0x40
+[ 4223.822647]  ret_from_fork+0x1f/0x30
+[ 4223.822647] Kernel Offset: 0x6400000 from 0xffffffff81000000 (relocation
+range: 0xffffffff80000000-0xffffffffbfffffff)
 
-I guess I should just repost everything again....  but it isn't a good
-time for year for sustained debates.
+Fix it by checking the device's error_state in
+devtlb_invalidation_with_pasid() to avoid sending meaningless devTLB flush
+request to link down device that is set to pci_channel_io_perm_failure and
+then powered off in
 
-NeilBrown
+pciehp_ist()
+   pciehp_handle_presence_or_link_change()
+     pciehp_disable_slot()
+       remove_board()
+         pciehp_unconfigure_device()
+ 
 
+This patchset was tested by yehaorong@bytedance.com on stable-6.7rc4.
+And is sent for more comment.
 
-> > Moving the mutex to be per-net does make a lot of sense, but I think
-> > that's a separate project. If you decide to do that and it allows you to
-> > make a simpler interface for handling the get/put_serv pointers, then
-> > the interface can be reworked at that point.
->=20
-> The other requests I see in that thread have already been answered
-> adequately.
->=20
->=20
-> --=20
-> Chuck Lever
->=20
+Ethan Zhao (2):
+  PCI: make pci_dev_is_disconnected() helper public for other drivers
+  iommu/vt-d: don's issue devTLB flush request when device is
+    disconnected
+
+ drivers/iommu/intel/pasid.c | 21 ++++++++++++++++++++-
+ drivers/pci/pci.h           |  5 -----
+ include/linux/pci.h         |  5 +++++
+ 3 files changed, 25 insertions(+), 6 deletions(-)
+
+-- 
+2.31.1
 
