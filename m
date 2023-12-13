@@ -2,210 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B4E58107D8
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 02:51:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E1E9F8107E1
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 02:53:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378235AbjLMBuw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 20:50:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56890 "EHLO
+        id S1378247AbjLMBw6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 20:52:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44504 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378199AbjLMBuv (ORCPT
+        with ESMTP id S1378243AbjLMBw4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 20:50:51 -0500
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F881AD;
-        Tue, 12 Dec 2023 17:50:56 -0800 (PST)
-Received: from mail.maildlp.com (unknown [172.19.163.48])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Sqdjf4hdXzsSGS;
-        Wed, 13 Dec 2023 09:50:46 +0800 (CST)
-Received: from dggpeml500012.china.huawei.com (unknown [7.185.36.15])
-        by mail.maildlp.com (Postfix) with ESMTPS id 0D2D6180032;
-        Wed, 13 Dec 2023 09:50:54 +0800 (CST)
-Received: from localhost.localdomain (10.67.175.61) by
- dggpeml500012.china.huawei.com (7.185.36.15) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Wed, 13 Dec 2023 09:50:53 +0800
-From:   Zheng Yejian <zhengyejian1@huawei.com>
-To:     <rostedt@goodmis.org>
-CC:     <linux-kernel@vger.kernel.org>,
-        <linux-trace-kernel@vger.kernel.org>,
-        <mathieu.desnoyers@efficios.com>, <mhiramat@kernel.org>,
-        <yeweihua4@huawei.com>, <zhengyejian1@huawei.com>
-Subject: [PATCH v2] tracing: Fix uaf issue when open the hist or hist_debug file
-Date:   Wed, 13 Dec 2023 09:51:38 +0800
-Message-ID: <20231213015138.281888-1-zhengyejian1@huawei.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20231212113546.6a51d359@gandalf.local.home>
-References: <20231212113546.6a51d359@gandalf.local.home>
+        Tue, 12 Dec 2023 20:52:56 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFE8ABC;
+        Tue, 12 Dec 2023 17:53:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1702432382; x=1733968382;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=vOD639SEH38rqVLAvQsG8+duD14pLGfWQv7GhTo/BAM=;
+  b=fsgveYwC2ugVzIoTiX4RXKgtx5w/AHJd9cy+UikN+cKnbo2RcwBSBG6b
+   lWP7N46sk7AwC6zBExHDDzSHeLdeeppEfs7DnIyWvogTw2NKFaI6JKvHf
+   R+WerVIDWQjUSarodgUACWFCNCMSSUU8Q+MTHm7jpcgWd3DojWwbNPyPf
+   ok7/106QZ+BCfASFLWYh3kuOkj0UOrmb35qz3CVlBTsrwuD7ChvLXdZu8
+   HxHRNWaILyh/H0KCFgRK8G5Mi1XfxPVNKdD44crKD6FX0yK/++ZeMyPMr
+   ntaiYVViLpcBZySefXP+gJ5/8QLtvQe2tq6UV81Tgf/OtQCaXBtLK4e7l
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10922"; a="374407361"
+X-IronPort-AV: E=Sophos;i="6.04,271,1695711600"; 
+   d="scan'208";a="374407361"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Dec 2023 17:52:47 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10922"; a="749923851"
+X-IronPort-AV: E=Sophos;i="6.04,271,1695711600"; 
+   d="scan'208";a="749923851"
+Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
+  by orsmga006.jf.intel.com with ESMTP; 12 Dec 2023 17:52:43 -0800
+Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1rDEQU-000Jyp-2Q;
+        Wed, 13 Dec 2023 01:52:42 +0000
+Date:   Wed, 13 Dec 2023 09:52:25 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Kai-Heng Feng <kai.heng.feng@canonical.com>,
+        adrian.hunter@intel.com, ulf.hansson@linaro.org
+Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+        Kai-Heng Feng <kai.heng.feng@canonical.com>,
+        Victor Shih <victor.shih@genesyslogic.com.tw>,
+        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mmc: sdhci-pci-gli: GL9750: Mask rootport's replay timer
+ timeout during suspend
+Message-ID: <202312130937.AU6tt2Ik-lkp@intel.com>
+References: <20231212141029.239235-1-kai.heng.feng@canonical.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.67.175.61]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- dggpeml500012.china.huawei.com (7.185.36.15)
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231212141029.239235-1-kai.heng.feng@canonical.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-KASAN report following issue. The root cause is when opening 'hist'
-file of an instance and accessing 'trace_event_file' in hist_show(),
-but 'trace_event_file' has been freed due to the instance being removed.
-'hist_debug' file has the same problem. To fix it, call
-tracing_{open,release}_file_tr() in file_operations callback to have
-the ref count and avoid 'trace_event_file' being freed.
+Hi Kai-Heng,
 
-  BUG: KASAN: slab-use-after-free in hist_show+0x11e0/0x1278
-  Read of size 8 at addr ffff242541e336b8 by task head/190
+kernel test robot noticed the following build errors:
 
-  CPU: 4 PID: 190 Comm: head Not tainted 6.7.0-rc5-g26aff849438c #133
-  Hardware name: linux,dummy-virt (DT)
-  Call trace:
-   dump_backtrace+0x98/0xf8
-   show_stack+0x1c/0x30
-   dump_stack_lvl+0x44/0x58
-   print_report+0xf0/0x5a0
-   kasan_report+0x80/0xc0
-   __asan_report_load8_noabort+0x1c/0x28
-   hist_show+0x11e0/0x1278
-   seq_read_iter+0x344/0xd78
-   seq_read+0x128/0x1c0
-   vfs_read+0x198/0x6c8
-   ksys_read+0xf4/0x1e0
-   __arm64_sys_read+0x70/0xa8
-   invoke_syscall+0x70/0x260
-   el0_svc_common.constprop.0+0xb0/0x280
-   do_el0_svc+0x44/0x60
-   el0_svc+0x34/0x68
-   el0t_64_sync_handler+0xb8/0xc0
-   el0t_64_sync+0x168/0x170
+[auto build test ERROR on linus/master]
+[also build test ERROR on v6.7-rc5 next-20231212]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-  Allocated by task 188:
-   kasan_save_stack+0x28/0x50
-   kasan_set_track+0x28/0x38
-   kasan_save_alloc_info+0x20/0x30
-   __kasan_slab_alloc+0x6c/0x80
-   kmem_cache_alloc+0x15c/0x4a8
-   trace_create_new_event+0x84/0x348
-   __trace_add_new_event+0x18/0x88
-   event_trace_add_tracer+0xc4/0x1a0
-   trace_array_create_dir+0x6c/0x100
-   trace_array_create+0x2e8/0x568
-   instance_mkdir+0x48/0x80
-   tracefs_syscall_mkdir+0x90/0xe8
-   vfs_mkdir+0x3c4/0x610
-   do_mkdirat+0x144/0x200
-   __arm64_sys_mkdirat+0x8c/0xc0
-   invoke_syscall+0x70/0x260
-   el0_svc_common.constprop.0+0xb0/0x280
-   do_el0_svc+0x44/0x60
-   el0_svc+0x34/0x68
-   el0t_64_sync_handler+0xb8/0xc0
-   el0t_64_sync+0x168/0x170
+url:    https://github.com/intel-lab-lkp/linux/commits/Kai-Heng-Feng/mmc-sdhci-pci-gli-GL9750-Mask-rootport-s-replay-timer-timeout-during-suspend/20231212-221223
+base:   linus/master
+patch link:    https://lore.kernel.org/r/20231212141029.239235-1-kai.heng.feng%40canonical.com
+patch subject: [PATCH] mmc: sdhci-pci-gli: GL9750: Mask rootport's replay timer timeout during suspend
+config: arm64-randconfig-002-20231213 (https://download.01.org/0day-ci/archive/20231213/202312130937.AU6tt2Ik-lkp@intel.com/config)
+compiler: clang version 17.0.0 (https://github.com/llvm/llvm-project.git 4a5ac14ee968ff0ad5d2cc1ffa0299048db4c88a)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231213/202312130937.AU6tt2Ik-lkp@intel.com/reproduce)
 
-  Freed by task 191:
-   kasan_save_stack+0x28/0x50
-   kasan_set_track+0x28/0x38
-   kasan_save_free_info+0x34/0x58
-   __kasan_slab_free+0xe4/0x158
-   kmem_cache_free+0x19c/0x508
-   event_file_put+0xa0/0x120
-   remove_event_file_dir+0x180/0x320
-   event_trace_del_tracer+0xb0/0x180
-   __remove_instance+0x224/0x508
-   instance_rmdir+0x44/0x78
-   tracefs_syscall_rmdir+0xbc/0x140
-   vfs_rmdir+0x1cc/0x4c8
-   do_rmdir+0x220/0x2b8
-   __arm64_sys_unlinkat+0xc0/0x100
-   invoke_syscall+0x70/0x260
-   el0_svc_common.constprop.0+0xb0/0x280
-   do_el0_svc+0x44/0x60
-   el0_svc+0x34/0x68
-   el0t_64_sync_handler+0xb8/0xc0
-   el0t_64_sync+0x168/0x170
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202312130937.AU6tt2Ik-lkp@intel.com/
 
-Suggested-by: Steven Rostedt <rostedt@goodmis.org>
-Signed-off-by: Zheng Yejian <zhengyejian1@huawei.com>
----
- kernel/trace/trace_events_hist.c | 18 ++++++++++++++----
- 1 file changed, 14 insertions(+), 4 deletions(-)
+All errors (new ones prefixed by >>):
 
-Steve, thanks for your review!
+>> drivers/mmc/host/sdhci-pci-gli.c:1437:26: error: no member named 'aer_cap' in 'struct pci_dev'
+    1437 |         if (!parent || !parent->aer_cap)
+         |                         ~~~~~~  ^
+   drivers/mmc/host/sdhci-pci-gli.c:1440:40: error: no member named 'aer_cap' in 'struct pci_dev'
+    1440 |         pci_read_config_dword(parent, parent->aer_cap + PCI_ERR_COR_MASK, &val);
+         |                                       ~~~~~~  ^
+   drivers/mmc/host/sdhci-pci-gli.c:1442:41: error: no member named 'aer_cap' in 'struct pci_dev'
+    1442 |         pci_write_config_dword(parent, parent->aer_cap + PCI_ERR_COR_MASK, val);
+         |                                        ~~~~~~  ^
+   drivers/mmc/host/sdhci-pci-gli.c:1450:26: error: no member named 'aer_cap' in 'struct pci_dev'
+    1450 |         if (!parent || !parent->aer_cap)
+         |                         ~~~~~~  ^
+   drivers/mmc/host/sdhci-pci-gli.c:1453:38: error: no member named 'aer_cap' in 'struct pci_dev'
+    1453 |         pci_read_config_dword(pdev, parent->aer_cap + PCI_ERR_COR_MASK, &val);
+         |                                     ~~~~~~  ^
+   drivers/mmc/host/sdhci-pci-gli.c:1455:39: error: no member named 'aer_cap' in 'struct pci_dev'
+    1455 |         pci_write_config_dword(pdev, parent->aer_cap + PCI_ERR_COR_MASK, val);
+         |                                      ~~~~~~  ^
+   6 errors generated.
 
-v2:
-  - Introduce tracing_single_release_file_tr() to add the missing call for
-    single_release() as suggested by Steve;
-    Link: https://lore.kernel.org/all/20231212113546.6a51d359@gandalf.local.home/
-  - Slightly modify the commit message and comments.
 
-v1:
-  Link: https://lore.kernel.org/all/20231212113317.4159890-1-zhengyejian1@huawei.com/
+vim +1437 drivers/mmc/host/sdhci-pci-gli.c
 
-diff --git a/kernel/trace/trace_events_hist.c b/kernel/trace/trace_events_hist.c
-index 1abc07fba1b9..5296a08c0641 100644
---- a/kernel/trace/trace_events_hist.c
-+++ b/kernel/trace/trace_events_hist.c
-@@ -5619,14 +5619,22 @@ static int hist_show(struct seq_file *m, void *v)
- 	return ret;
- }
- 
-+static int tracing_single_release_file_tr(struct inode *inode, struct file *filp)
-+{
-+	tracing_release_file_tr(inode, filp);
-+	return single_release(inode, filp);
-+}
-+
- static int event_hist_open(struct inode *inode, struct file *file)
- {
- 	int ret;
- 
--	ret = security_locked_down(LOCKDOWN_TRACEFS);
-+	ret = tracing_open_file_tr(inode, file);
- 	if (ret)
- 		return ret;
- 
-+	/* Clear private_data to avoid warning in single_open() */
-+	file->private_data = NULL;
- 	return single_open(file, hist_show, file);
- }
- 
-@@ -5634,7 +5642,7 @@ const struct file_operations event_hist_fops = {
- 	.open = event_hist_open,
- 	.read = seq_read,
- 	.llseek = seq_lseek,
--	.release = single_release,
-+	.release = tracing_single_release_file_tr,
- };
- 
- #ifdef CONFIG_HIST_TRIGGERS_DEBUG
-@@ -5900,10 +5908,12 @@ static int event_hist_debug_open(struct inode *inode, struct file *file)
- {
- 	int ret;
- 
--	ret = security_locked_down(LOCKDOWN_TRACEFS);
-+	ret = tracing_open_file_tr(inode, file);
- 	if (ret)
- 		return ret;
- 
-+	/* Clear private_data to avoid warning in single_open() */
-+	file->private_data = NULL;
- 	return single_open(file, hist_debug_show, file);
- }
- 
-@@ -5911,7 +5921,7 @@ const struct file_operations event_hist_debug_fops = {
- 	.open = event_hist_debug_open,
- 	.read = seq_read,
- 	.llseek = seq_lseek,
--	.release = single_release,
-+	.release = tracing_single_release_file_tr,
- };
- #endif
- 
+  1431	
+  1432	static void mask_replay_timer_timeout(struct pci_dev *pdev)
+  1433	{
+  1434		struct pci_dev *parent = pci_upstream_bridge(pdev);
+  1435		u32 val;
+  1436	
+> 1437		if (!parent || !parent->aer_cap)
+  1438			return;
+  1439	
+  1440		pci_read_config_dword(parent, parent->aer_cap + PCI_ERR_COR_MASK, &val);
+  1441		val |= PCI_ERR_COR_REP_TIMER;
+  1442		pci_write_config_dword(parent, parent->aer_cap + PCI_ERR_COR_MASK, val);
+  1443	}
+  1444	
+
 -- 
-2.25.1
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
