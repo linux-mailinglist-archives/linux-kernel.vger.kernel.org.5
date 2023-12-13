@@ -2,77 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 78E06811311
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 14:37:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E578811313
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 14:38:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379276AbjLMNhi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 08:37:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49154 "EHLO
+        id S1379285AbjLMNhw convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 13 Dec 2023 08:37:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36980 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379275AbjLMNhg (ORCPT
+        with ESMTP id S1379284AbjLMNhu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 08:37:36 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B07CEB
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 05:37:42 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3FCFAC433C8;
-        Wed, 13 Dec 2023 13:37:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1702474661;
-        bh=8D28zVA3/D34uSBC1WEJ8ykZpQrL4Gv4bA1SewGPSEQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=dU6A6nqfPwdapBIE6N5MQX1pPgpiei2rY3w1Dun0KrZbDxbcB1dhzPyz1J2EGaTQj
-         UPKZzVa039jVPJ33WfaTofzmcvZFSA/sLBnrGvxr16zaGokjdOl0SKR/ib2Xhd4pc3
-         SeyCrYIvK1T7imXgRQXe3wDjMIqDoeMuXfobvB10h24nt3i0W5VNcMCs1A+EjSLVk5
-         f5bcJfQFA0CN8h3S3SdylU7dYmBC9Cd6O+XAZDg7IVkEU8ruiejVfPviMrjE77eEXR
-         A5aDJUCFKs/hXAy8O8flLE5igxpFsClxETJo/OA439A7sHSLT3d8ZylWdGK4KyBm0k
-         t9qtTI5q/WF8g==
-Date:   Wed, 13 Dec 2023 13:37:32 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     Deepak Gupta <debug@rivosinc.com>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Oliver Upton <oliver.upton@linux.dev>,
-        James Morse <james.morse@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Arnd Bergmann <arnd@arndb.de>, Oleg Nesterov <oleg@redhat.com>,
-        Eric Biederman <ebiederm@xmission.com>,
-        Kees Cook <keescook@chromium.org>,
-        Shuah Khan <shuah@kernel.org>,
-        "Rick P. Edgecombe" <rick.p.edgecombe@intel.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Szabolcs Nagy <Szabolcs.Nagy@arm.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Florian Weimer <fweimer@redhat.com>,
-        Christian Brauner <brauner@kernel.org>,
-        Thiago Jung Bauermann <thiago.bauermann@linaro.org>,
-        linux-arm-kernel@lists.infradead.org, linux-doc@vger.kernel.org,
-        kvmarm@lists.linux.dev, linux-fsdevel@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-mm@kvack.org,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-riscv@lists.infradead.org
-Subject: Re: [PATCH v7 02/39] prctl: arch-agnostic prctl for shadow stack
-Message-ID: <0d0d8802-09e3-4ea5-a0b4-b3a08c8a282e@sirena.org.uk>
-References: <20231122-arm64-gcs-v7-0-201c483bd775@kernel.org>
- <20231122-arm64-gcs-v7-2-201c483bd775@kernel.org>
- <CAKC1njSC5cC_fXnyNAPt=WU6cD-OjLKFxo90oVPmsLJbuWf4nw@mail.gmail.com>
- <d708b493-267a-4418-be91-9bde6b2cf50c@sirena.org.uk>
- <CAKC1njSQPO8ja7AkTzQ724hhSsGjchH9dLbbH9LXP0ZiKj-zPQ@mail.gmail.com>
+        Wed, 13 Dec 2023 08:37:50 -0500
+Received: from mail-ot1-f54.google.com (mail-ot1-f54.google.com [209.85.210.54])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2694B95;
+        Wed, 13 Dec 2023 05:37:57 -0800 (PST)
+Received: by mail-ot1-f54.google.com with SMTP id 46e09a7af769-6d9db2f1ddfso1032486a34.0;
+        Wed, 13 Dec 2023 05:37:57 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702474676; x=1703079476;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=4ZUkkC62WrEEa3c6+GRaTxNGlZbmcSMO/iY5g7nd1ts=;
+        b=XxeevKb7UA3TH/JjArIFdSLcI4rXKjlcG3cYQP6QszRqbhFISURYz4XypfoG9xTQRs
+         7v6oHgoH/JCrzYYB4sgMhttehXZDIeKkqpRHC2itb2IHQ4dRgpfowcgmaqjiCU1fHfiP
+         il33NlHt4+YyaVzfKjtL7GoNnOaI25qY1m7jX8eNZLxRr7uEovpb0xe39CuiPfQCpULk
+         tAU+T/195wPNDfa+6IxSbc36QqpsE9kN+aFFzcNivO0oJ5t5+LOVKbl1F6u1iBgeqwTD
+         6MsM/iWTZ/DgDEtK1AZUitb+K/pJQUvZhGxeudpI/LKCR1T98o4DkddcUwxqccIp68pb
+         k3YA==
+X-Gm-Message-State: AOJu0YzOoDt9bBX7aX9XO6toTbYf4QlyeXR3VngEh9H4tJwun6eCKYr2
+        dSePhvSlqFnPDQ5VuLBDJlusafODM1+SXgnVgF4=
+X-Google-Smtp-Source: AGHT+IFmc+A9rorq/rOdGz8gjI08UuZ4ZgrInVsHLw0n8i3P7dAy8xko9rmmdYPzruTZNBiDN83j7nxY/28jo2J/kqM=
+X-Received: by 2002:a05:6871:600d:b0:1ff:6527:3519 with SMTP id
+ qx13-20020a056871600d00b001ff65273519mr14455355oab.0.1702474676254; Wed, 13
+ Dec 2023 05:37:56 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="jOCIbEw8Unb2aajd"
-Content-Disposition: inline
-In-Reply-To: <CAKC1njSQPO8ja7AkTzQ724hhSsGjchH9dLbbH9LXP0ZiKj-zPQ@mail.gmail.com>
-X-Cookie: One size fits all.
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+References: <20231213121322.2486967-1-daniel.lezcano@linaro.org>
+ <CAJZ5v0gjeiCb9wBjdG+yWp5E_g2SPUMNNf-Stm_xkGau0Cbr2g@mail.gmail.com> <c7e4a344-ef15-4316-ac41-6ec9c062eabe@linaro.org>
+In-Reply-To: <c7e4a344-ef15-4316-ac41-6ec9c062eabe@linaro.org>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Wed, 13 Dec 2023 14:37:45 +0100
+Message-ID: <CAJZ5v0jOAEJx1xcRZ5ybz2dKXMG4CbEmShE+zQJy=0gdqqzbPA@mail.gmail.com>
+Subject: Re: [PATCH] thermal/core: Check get_temp ops is present when
+ registering a tz
+To:     Daniel Lezcano <daniel.lezcano@linaro.org>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Lukasz Luba <lukasz.luba@arm.com>,
+        "open list:THERMAL" <linux-pm@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -80,64 +63,25 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Dec 13, 2023 at 2:31 PM Daniel Lezcano
+<daniel.lezcano@linaro.org> wrote:
+>
+> On 13/12/2023 13:46, Rafael J. Wysocki wrote:
+> > On Wed, Dec 13, 2023 at 1:13 PM Daniel Lezcano
+> > <daniel.lezcano@linaro.org> wrote:
+> >>
+> >> Initially the check against the get_temp ops in the
+> >> thermal_zone_device_update() was put in there in order to catch
+> >> drivers not providing this method.
+> >>
+> >> Instead of checking again and again the function if the ops exists in
+> >> the update function, let's do the check at registration time, so it is
+> >> checked one time and for all.
+> >>
+> >> Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
+> >
+> > Looks good.  Do you want me to pick it up?
+>
+> Yes please
 
---jOCIbEw8Unb2aajd
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Tue, Dec 12, 2023 at 04:50:38PM -0800, Deepak Gupta wrote:
-
-> A theoretical scenario (no current workloads should've this case
-> because no shadow stack)
-
-> - User mode did _ENABLE on the main thread. Shadow stack was allocated
-> for the current
->   thread.
-> - User mode created a bunch worker threads to run untrusted contained
-> code. They shadow
->   stack too.
-> - main thread had to do dlopen and now need to disable shadow stack on
-> itself due to
->   incompatibility of incoming object in address space.
-> - main thread controls worker threads and knows they're contained and
-> should still be running
->   with a shadow stack. Although once in a while the main thread needs
-> to perform writes to a shadow
->   stack of worker threads for some fixup (in the same addr space).
-> main thread doesn't want to delegate
->   this responsibility of ss writes to worker threads because they're untrusted.
-
-> How will it do that (currently _ENABLE is married to _WRITE and _PUSH) ?
-
-That's feeling moderately firmly into "don't do that" territory to be
-honest, the problems of trying to modify the stack of another running
-thread while it's active just don't seem worth it - if you're
-coordinating enough to do the modifications it's probably possible to
-just ask the thread who's stack is being modified to do the modification
-itself and having an unprotected thread writing into shadow stack memory
-doesn't feel great.
-
-That said in terms of the API there would be nothing stopping us saying
-that _WRITE by itself is a valid combination of flags, in which case the
-thread would have permission to write to any shadow stack memory it
-could get to.  For arm64 I think we can implement that, I'm not sure
-about x86.  _PUSH without _ENABLE is a lot less clear, you would at the
-very least at some point have had a stack enabled to have a stack
-pointer.
-
---jOCIbEw8Unb2aajd
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmV5s5sACgkQJNaLcl1U
-h9Av7gf+KhSSwAMSrKGbuD6mcS24/uKiaBK6VJvANYNhzxAxCIsGTekSDBnn5rx5
-JlxvhNT7TTqtigEvZs5VwVjBivsip6vCjdwW3bWOP1hBY1vThXm5vDpp6+hC/Xyq
-1dBwZcHedqhHVCH5AfwYiFDtW37k7rKggU19mKapXAMMLHcqniPH9vA8JNfwjvRk
-IZAXnqu2sqKKqhm79iZyFDFo2+8bZYgiZ2FaFCUSA853dm4ujBY2+W9uL4me61jV
-gAwO2vLgmoypMv3xyz83VV6rVoAP3icyuBVYgjuko58Xs74dY4FtD+Xyth9g93qO
-A5biKwps6ME8omCBijyTFUn4Ug8G4A==
-=M047
------END PGP SIGNATURE-----
-
---jOCIbEw8Unb2aajd--
+Applied, thanks!
