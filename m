@@ -2,45 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E9D1810680
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 01:33:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C3D91810696
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 01:34:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377842AbjLMAdT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 19:33:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45778 "EHLO
+        id S1377838AbjLMAei (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 19:34:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33262 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235186AbjLMAdS (ORCPT
+        with ESMTP id S232683AbjLMAeg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 19:33:18 -0500
+        Tue, 12 Dec 2023 19:34:36 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5F97D2
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 16:33:23 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 798BAC433C7;
-        Wed, 13 Dec 2023 00:33:21 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B95E94
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 16:34:43 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 56BC1C433CA;
+        Wed, 13 Dec 2023 00:34:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1702427603;
-        bh=/gch5PMo75qh1vpvfQneJHiwUL9FOAxXlXs/kgl/O1k=;
+        s=k20201202; t=1702427682;
+        bh=/ISph84pf0nDZCF1PN/J4y6GYDwltF6+GD1dyW4BTAw=;
         h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=Yqhq1906/UpijSAYZTgS1fwLQgHqXCoNx5S1ThPvmy4e/w9cTRzxbKEcxiH+Evw8N
-         hONh+h888uI+1zXySyFZXxrac5sRnJHYmGQ3VYP+5vvKedAjCEbFmkWrM2GnaQbWL/
-         UYE0gNsc2ipzcGr+rTkaMIUd16x7Bm+5WDGL+CY9iaf0eoXVqG2pGK88Hu+2IgDpf7
-         YrQBOKDtry5mvQlRh5HHMbj6e5ezJCtO4F6pfP9AR046a+pez9J474SwPJNuPCEmTm
-         eVSXuvigefv88abizg9f++F2QY0MoJNO0NR+sPEgVLMnolX38VMtzZ4kuGgtrqkeyT
-         EnrFu70XnpOFA==
-Date:   Wed, 13 Dec 2023 09:33:18 +0900
+        b=sNTL2WylqR2XS7e09Ednj0KkXPDi9k2B4n7+HmnIInUZZdW9h4S/HxEIfWO1yuEFR
+         zpOdVjvNVQCMPz+R9OAN0QzBI76nZZ+LbMlWYPbYUxGLiM55UcSiS4YSzDYDI+sQ/U
+         Tll5LhxGIcf1PUiXANdRW+ZCAc0Hsx+LtFjDbtbjc16KEK0KXMIOagMu/RTBbNXtn+
+         ezMXpwz6WHXiFlVTkdYfF5Nx+18g50qV5j38soNtXRFlsaVkVIic5XcDkifQnz8kBP
+         SqlDEXtXBcUCnhZHwLb/4+IB+F0sERTOCbjZMJuvotfhF5Yk1bb4sj4llXhrlyHNQ5
+         7Hk/JyTU9Gnmg==
+Date:   Wed, 13 Dec 2023 09:34:39 +0900
 From:   Masami Hiramatsu (Google) <mhiramat@kernel.org>
 To:     Steven Rostedt <rostedt@goodmis.org>
 Cc:     LKML <linux-kernel@vger.kernel.org>,
         Linux Trace Kernel <linux-trace-kernel@vger.kernel.org>,
         Masami Hiramatsu <mhiramat@kernel.org>,
         Mark Rutland <mark.rutland@arm.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Shuah Khan <shuah@kernel.org>, linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH v2] tracing/selftests: Add test to test max subbuf size
- with trace_marker
-Message-Id: <20231213093318.f30d29c5f80fff59571e62a7@kernel.org>
-In-Reply-To: <20231212151632.25c9b67d@gandalf.local.home>
-References: <20231212151632.25c9b67d@gandalf.local.home>
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Subject: Re: [PATCH] ring-buffer: Do not update before stamp when switching
+ sub-buffers
+Message-Id: <20231213093439.9c14b3dd0ac09d92aea70ec1@kernel.org>
+In-Reply-To: <20231211114420.36dde01b@gandalf.local.home>
+References: <20231211114420.36dde01b@gandalf.local.home>
 X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Mime-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
@@ -55,177 +54,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 12 Dec 2023 15:16:32 -0500
+On Mon, 11 Dec 2023 11:44:20 -0500
 Steven Rostedt <rostedt@goodmis.org> wrote:
 
 > From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 > 
-> Now that the trace_marker can write up to the max size of the sub buffer.
-> Add a test to see if it actually can happen.
+> The ring buffer timestamps are synchronized by two timestamp placeholders.
+> One is the "before_stamp" and the other is the "write_stamp" (sometimes
+> referred to as the "after stamp" but only in the comments. These two
+> stamps are key to knowing how to handle nested events coming in with a
+> lockless system.
 > 
-> The README is updated to state that the trace_marker writes can be broken
-> up, and the test checks the README for that statement so that it does not
-> fail on older kernels that does not support this.
+> When moving across sub-buffers, the before stamp is updated but the write
+> stamp is not. There's an effort to put back the before stamp to something
+> that seems logical in case there's nested events. But as the current event
+> is about to cross sub-buffers, and so will any new nested event that happens,
+> updating the before stamp is useless, and could even introduce new race
+> conditions.
+> 
+> The first event on a sub-buffer simply uses the sub-buffer's timestamp
+> and keeps a "delta" of zero. The "before_stamp" and "write_stamp" are not
+> used in the algorithm in this case. There's no reason to try to fix the
+> before_stamp when this happens.
+> 
+> As a bonus, it removes a cmpxchg() when crossing sub-buffers!
+> 
 
-I think it is better that the feature patch include README update or a separate
-patch because it identifies the feature is implemented or not.
+Looks good to me.
 
-> 
-> If the README does not have the specified update, the test will still test
-> if all the string is written, as that should work with older kernels.
-> 
-> Cc: Shuah Khan <shuah@kernel.org>
-> Cc: linux-kselftest@vger.kernel.org
+Reviewed-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+
+Thank you
+
+> Cc: stable@vger.kernel.org
+> Fixes: a389d86f7fd09 ("ring-buffer: Have nested events still record running time stamp")
 > Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 > ---
-> Changes since v1: https://lore.kernel.org/linux-trace-kernel/20231212135441.0337c3e9@gandalf.local.home/
+>  kernel/trace/ring_buffer.c | 9 +--------
+>  1 file changed, 1 insertion(+), 8 deletions(-)
 > 
-> - Fix description as it was a cut and paste from the subbuffer size tests
->   that are not added yet.
-> 
->  kernel/trace/trace.c                          |   1 +
->  .../ftrace/test.d/00basic/trace_marker.tc     | 112 ++++++++++++++++++
->  2 files changed, 113 insertions(+)
->  create mode 100755 tools/testing/selftests/ftrace/test.d/00basic/trace_marker.tc
-> 
-> diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
-> index 2f8d59834c00..cbfcdd882590 100644
-> --- a/kernel/trace/trace.c
-> +++ b/kernel/trace/trace.c
-> @@ -5595,6 +5595,7 @@ static const char readme_msg[] =
->  	"       delta:   Delta difference against a buffer-wide timestamp\n"
->  	"    absolute:   Absolute (standalone) timestamp\n"
->  	"\n  trace_marker\t\t- Writes into this file writes into the kernel buffer\n"
-> +	"\n           May be broken into multiple events based on sub-buffer size.\n"
->  	"\n  trace_marker_raw\t\t- Writes into this file writes binary data into the kernel buffer\n"
->  	"  tracing_cpumask\t- Limit which CPUs to trace\n"
->  	"  instances\t\t- Make sub-buffers with: mkdir instances/foo\n"
-> diff --git a/tools/testing/selftests/ftrace/test.d/00basic/trace_marker.tc b/tools/testing/selftests/ftrace/test.d/00basic/trace_marker.tc
-> new file mode 100755
-> index 000000000000..bf7f6f50c88a
-> --- /dev/null
-> +++ b/tools/testing/selftests/ftrace/test.d/00basic/trace_marker.tc
-> @@ -0,0 +1,112 @@
-> +#!/bin/sh
-> +# SPDX-License-Identifier: GPL-2.0
-> +# description: Basic tests on writing to trace_marker
-> +# requires: trace_marker
-> +# flags: instance
-> +
-> +get_buffer_data_size() {
-> +	sed -ne 's/^.*data.*size:\([0-9][0-9]*\).*/\1/p' events/header_page
-> +}
-> +
-> +get_buffer_data_offset() {
-> +	sed -ne 's/^.*data.*offset:\([0-9][0-9]*\).*/\1/p' events/header_page
-> +}
-> +
-> +get_event_header_size() {
-> +	type_len=`sed -ne 's/^.*type_len.*:[^0-9]*\([0-9][0-9]*\).*/\1/p' events/header_event`
-> +	time_len=`sed -ne 's/^.*time_delta.*:[^0-9]*\([0-9][0-9]*\).*/\1/p' events/header_event`
-> +	array_len=`sed -ne 's/^.*array.*:[^0-9]*\([0-9][0-9]*\).*/\1/p' events/header_event`
-> +	total_bits=$((type_len+time_len+array_len))
-> +	total_bits=$((total_bits+7))
-> +	echo $((total_bits/8))
-> +}
-> +
-> +get_print_event_buf_offset() {
-> +	sed -ne 's/^.*buf.*offset:\([0-9][0-9]*\).*/\1/p' events/ftrace/print/format
-> +}
-> +
-> +event_header_size=`get_event_header_size`
-> +print_header_size=`get_print_event_buf_offset`
-> +
-> +# Find the README
-> +README=""
-> +if [ -f README ]; then
-> +	README="README"
-> +# instance?
-> +elif [ -f ../../README ]; then
-> +	README="../../README"
-> +fi
-> +
-> +testone=0
-> +if [ ! -z "$README" ]; then
-> +	if grep -q  "May be broken into multiple events based on sub-buffer size" $README; then
-> +		testone=1
-> +	fi
-> +fi
-
-Hmm, this should be a common function if we see this pattern somewhere else.
-
-> +
-> +data_offset=`get_buffer_data_offset`
-> +
-> +marker_meta=$((event_header_size+print_header_size))
-> +
-> +make_str() {
-> +        cnt=$1
-> +	# subtract two for \n\0 as marker adds these
-> +	cnt=$((cnt-2))
-> +	printf -- 'X%.0s' $(seq $cnt)
-> +}
-> +
-> +write_buffer() {
-> +	size=$1
-> +
-> +	str=`make_str $size`
-> +
-> +	# clear the buffer
-> +	echo > trace
-> +
-> +	# write the string into the marker
-> +	echo -n $str > trace_marker
-> +
-> +	echo $str
-> +}
-> +
-> +test_buffer() {
-> +
-> +	size=`get_buffer_data_size`
-> +	oneline_size=$((size-marker_meta))
-> +	echo size = $size
-> +	echo meta size = $marker_meta
-> +
-> +	if [ $testone -eq 1 ]; then
-> +		echo oneline size = $oneline_size
-> +
-> +		str=`write_buffer $oneline_size`
-> +
-> +		# Should be in one single event
-> +		new_str=`awk ' /tracing_mark_write:/ { sub(/^.*tracing_mark_write: */,"");printf "%s", $0; exit}' trace`
-> +
-> +		if [ "$new_str" != "$str" ]; then
-> +			exit fail;
-> +		fi
-> +	fi
-
-Or, maybe we can split this part into another testcase.
-
-Thank you,
-
-> +
-> +	# Now add a little more the meta data overhead will overflow
-> +
-> +	str=`write_buffer $size`
-> +
-> +	# Make sure the line was broken
-> +	new_str=`awk ' /tracing_mark_write:/ { sub(/^.*tracing_mark_write: /,"");printf "%s", $0; exit}' trace`
-> +
-> +	if [ "$new_str" = "$str" ]; then
-> +		exit fail;
-> +	fi
-> +
-> +	# Make sure the entire line can be found
-> +	new_str=`awk ' /tracing_mark_write:/ { sub(/^.*tracing_mark_write: */,"");printf "%s", $0; }' trace`
-> +
-> +	if [ "$new_str" != "$str" ]; then
-> +		exit fail;
-> +	fi
-> +}
-> +
-> +test_buffer
-> +
+> diff --git a/kernel/trace/ring_buffer.c b/kernel/trace/ring_buffer.c
+> index 2596fa7b748a..02bc9986fe0d 100644
+> --- a/kernel/trace/ring_buffer.c
+> +++ b/kernel/trace/ring_buffer.c
+> @@ -3607,14 +3607,7 @@ __rb_reserve_next(struct ring_buffer_per_cpu *cpu_buffer,
+>  
+>  	/* See if we shot pass the end of this buffer page */
+>  	if (unlikely(write > BUF_PAGE_SIZE)) {
+> -		/* before and after may now different, fix it up*/
+> -		b_ok = rb_time_read(&cpu_buffer->before_stamp, &info->before);
+> -		a_ok = rb_time_read(&cpu_buffer->write_stamp, &info->after);
+> -		if (a_ok && b_ok && info->before != info->after)
+> -			(void)rb_time_cmpxchg(&cpu_buffer->before_stamp,
+> -					      info->before, info->after);
+> -		if (a_ok && b_ok)
+> -			check_buffer(cpu_buffer, info, CHECK_FULL_PAGE);
+> +		check_buffer(cpu_buffer, info, CHECK_FULL_PAGE);
+>  		return rb_move_tail(cpu_buffer, tail, info);
+>  	}
+>  
 > -- 
 > 2.42.0
 > 
