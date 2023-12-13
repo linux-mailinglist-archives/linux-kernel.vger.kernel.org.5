@@ -2,150 +2,301 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 32D2C811B63
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 18:41:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D939811B68
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 18:42:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379251AbjLMRlB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 12:41:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59624 "EHLO
+        id S1441991AbjLMRmP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 12:42:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47308 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1442028AbjLMRkv (ORCPT
+        with ESMTP id S233682AbjLMRmO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 12:40:51 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51ADA109
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 09:40:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1702489256;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=5somQ2S3bpJ+yVpaee1GysURi5+Ex675PUxdDG+ZeIQ=;
-        b=K77hnSQANZKQkDC2j+kRNN7PRid2l7MdRvsrXlg+bpcwJia7y9axkWkb7uN+01bFzw1yhA
-        iP1cNUCiDh0p0eM9btZ6yBbMjhGKlCv7XjUyADrdSV+kXrwVoWIf9fI3fhooVXaIMmYUXB
-        BRkazJVrlYU/3neUi56kb0QNzuJpAqc=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-695-LebREclqPFqe74WmAAvL1w-1; Wed, 13 Dec 2023 12:40:53 -0500
-X-MC-Unique: LebREclqPFqe74WmAAvL1w-1
-Received: by mail-ed1-f69.google.com with SMTP id 4fb4d7f45d1cf-54cb8899c20so3350414a12.3
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 09:40:53 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702489252; x=1703094052;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=5somQ2S3bpJ+yVpaee1GysURi5+Ex675PUxdDG+ZeIQ=;
-        b=aECcqe7I+d581ImPkQjtUKG0t79xvRsU0yD98jqDVQvGSvNWxfLYZvY3L/bXQBSUa6
-         /w68SbhG9A/S+mV4i71/Fv10ZGlB+JW6dp+XwwBmRIukLLft08hSBsgnHDte4EBetc2v
-         CIf4O9XrW4yASdWKM79c4EHVImmOeT9q1ZZ/KsUcFaz6J8OMochzW3Mg1+7HcJQZlv8w
-         au/l1kddNm3EfOZLmqz56YC9n6QZbnnqbD9z2pLHKGUQZudbwlm4+h9K6vtyZtowSP4S
-         m8gZn3ikGq/1vk6vwT+zZgivpGcs5Es3foEC7bXPOwqCx4j5EbJ0CJY9lukotmBM8PtL
-         XqVA==
-X-Gm-Message-State: AOJu0YywO9t1nho7RKTSWSQEMFELVke+iGoDbg3/tZzmKtuBYCYlP8gF
-        EmGngnjCgME/C6zBBY6GmXqW4pI/nC0Mfw4z/+Ea/l1YOa4vZ/RCfrWRY//+eHXR4Ik9j8v5cl2
-        2s+UW1M2ilOGH1Sk5Ib0ZmTcp
-X-Received: by 2002:a50:d089:0:b0:552:27d2:a10d with SMTP id v9-20020a50d089000000b0055227d2a10dmr704237edd.12.1702489252473;
-        Wed, 13 Dec 2023 09:40:52 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IEJkEAJ6CTdBfyQKvtHpMnagmfVq2yCVoMPjKxPagyIMlry/rmA+m2NFU3o+SUgvBr7eRY7SA==
-X-Received: by 2002:a50:d089:0:b0:552:27d2:a10d with SMTP id v9-20020a50d089000000b0055227d2a10dmr704204edd.12.1702489252175;
-        Wed, 13 Dec 2023 09:40:52 -0800 (PST)
-Received: from ?IPV6:2001:b07:6468:f312:63a7:c72e:ea0e:6045? ([2001:b07:6468:f312:63a7:c72e:ea0e:6045])
-        by smtp.googlemail.com with ESMTPSA id dc23-20020a056402311700b005525a9abf73sm171094edb.11.2023.12.13.09.40.47
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 13 Dec 2023 09:40:51 -0800 (PST)
-Message-ID: <13d72960-c7bc-4bc2-8404-931d3de04ecf@redhat.com>
-Date:   Wed, 13 Dec 2023 18:40:47 +0100
+        Wed, 13 Dec 2023 12:42:14 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B2F899;
+        Wed, 13 Dec 2023 09:42:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1702489340; x=1734025340;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=jBtGP8WM+RYBuZNY+rEd0+l1PJWe6enNGl91hLRWMnw=;
+  b=gcgBs36E88/YKFlh1UAXDRAVSMX/JLaNisK4hiMw9e4Vxh0Xc9njYKnx
+   x4SOkyBpiQ1h3Vjpo5eoJElSDrCDVKH+7kNfgQx7bqTj5f/iGqXRxKo6F
+   lQ7ktjRaZW0hCQNkmVHo0OctItNq+bc76cT3XpM6tv2K3fTI2JpYWihfB
+   /QMBLJEQeOQxrrzZXwV1Vt+YZLX3LoIsZjia9HMAjjs4I0DN02e4Xmh45
+   Xh5SQIc2wDKYMVvmP94iq6ZmZ8T5RmwT7TVlTRRi9JFz73GMkX4xOkcTk
+   RtWWSJhUY+0FLhT7brXksHFTmT5zi5+5xA631dP5UtC5wMrmiejQrQSgL
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10923"; a="459317604"
+X-IronPort-AV: E=Sophos;i="6.04,273,1695711600"; 
+   d="scan'208";a="459317604"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Dec 2023 09:42:19 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10923"; a="844398862"
+X-IronPort-AV: E=Sophos;i="6.04,273,1695711600"; 
+   d="scan'208";a="844398862"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmsmga004.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Dec 2023 09:42:17 -0800
+Received: from andy by smile.fi.intel.com with local (Exim 4.97)
+        (envelope-from <andriy.shevchenko@intel.com>)
+        id 1rDTFP-00000005b77-08xn;
+        Wed, 13 Dec 2023 19:42:15 +0200
+Date:   Wed, 13 Dec 2023 19:42:14 +0200
+From:   Andy Shevchenko <andriy.shevchenko@intel.com>
+To:     Nikita Shubin <nikita.shubin@maquefel.me>
+Cc:     Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>, linux-kernel@vger.kernel.org,
+        linux-clk@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [PATCH v6 04/40] clk: ep93xx: add DT support for Cirrus EP93xx
+Message-ID: <ZXns9klLAhuK-Alz@smile.fi.intel.com>
+References: <20231212-ep93xx-v6-0-c307b8ac9aa8@maquefel.me>
+ <20231212-ep93xx-v6-4-c307b8ac9aa8@maquefel.me>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v10 03/50] KVM: SEV: Do not intercept accesses to
- MSR_IA32_XSS for SEV-ES guests
-Content-Language: en-US
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Michael Roth <michael.roth@amd.com>, kvm@vger.kernel.org,
-        linux-coco@lists.linux.dev, linux-mm@kvack.org,
-        linux-crypto@vger.kernel.org, x86@kernel.org,
-        linux-kernel@vger.kernel.org, tglx@linutronix.de, mingo@redhat.com,
-        jroedel@suse.de, thomas.lendacky@amd.com, hpa@zytor.com,
-        ardb@kernel.org, vkuznets@redhat.com, jmattson@google.com,
-        luto@kernel.org, dave.hansen@linux.intel.com, slp@redhat.com,
-        pgonda@google.com, peterz@infradead.org,
-        srinivas.pandruvada@linux.intel.com, rientjes@google.com,
-        dovmurik@linux.ibm.com, tobin@ibm.com, bp@alien8.de,
-        vbabka@suse.cz, kirill@shutemov.name, ak@linux.intel.com,
-        tony.luck@intel.com, marcorr@google.com,
-        sathyanarayanan.kuppuswamy@linux.intel.com, alpergun@google.com,
-        jarkko@kernel.org, ashish.kalra@amd.com, nikunj.dadhania@amd.com,
-        pankaj.gupta@amd.com, liam.merwick@oracle.com,
-        zhi.a.wang@intel.com, Alexey Kardashevskiy <aik@amd.com>
-References: <20231016132819.1002933-1-michael.roth@amd.com>
- <20231016132819.1002933-4-michael.roth@amd.com>
- <e094dc8b-6758-4dd8-89a5-8aab05b2626b@redhat.com>
- <ZXnqJMKD6lO6a0oq@google.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Autocrypt: addr=pbonzini@redhat.com; keydata=
- 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
-In-Reply-To: <ZXnqJMKD6lO6a0oq@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231212-ep93xx-v6-4-c307b8ac9aa8@maquefel.me>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/13/23 18:30, Sean Christopherson wrote:
->> For now, all we can do is document our wishes, with which userspace had
->> better comply.  Please send a patch to QEMU that makes it obey.
-> Discussed this early today with Paolo at PUCK and pointed out that (a) the CPU
-> context switches the underlying state, (b) SVM doesn't allow intercepting*just*
-> XSAVES, and (c) SNP's AP creation can bypass XSS interception.
+On Tue, Dec 12, 2023 at 11:20:21AM +0300, Nikita Shubin wrote:
+> Rewrite EP93xx clock driver located in arch/arm/mach-ep93xx/clock.c
+> trying to do everything the device tree way:
 > 
-> So while we all (all == KVM folks) agree that this is rather terrifying, e.g.
-> gives KVM zero option if there is a hardware issue, it's "fine" to let the guest
-> use XSAVES/XSS.
+> - provide clock acces via of
+> - drop clk_hw_register_clkdev
+> - drop init code and use module_auxiliary_driver
 
-Indeed; looks like I've got to queue this for 6.7 after all.
+...
 
-Paolo
+> +#define EP93XX_I2SCLKDIV_SDIV		(1 << 16)
+
+BIT() ?
+
+...
+
+> +static u8 ep93xx_mux_get_parent(struct clk_hw *hw)
+> +{
+> +	struct ep93xx_clk *clk = ep93xx_clk_from(hw);
+> +	struct ep93xx_clk_priv *priv = ep93xx_priv_from(clk);
+> +	u32 val;
+> +
+> +	regmap_read(priv->map, clk->reg, &val);
+> +
+> +	val &= EP93XX_SYSCON_CLKDIV_MASK;
+> +
+> +	switch (val) {
+> +	case EP93XX_SYSCON_CLKDIV_ESEL:
+> +		return 1; /* PLL1 */
+> +	case EP93XX_SYSCON_CLKDIV_MASK:
+> +		return 2; /* PLL2 */
+
+> +	default:
+> +		break;
+> +	};
+> +
+> +	return 0; /* XTALI */
+
+You may return directly from default.
+
+> +}
+
+...
+
+> +static int ep93xx_mux_set_parent_lock(struct clk_hw *hw, u8 index)
+> +{
+> +	struct ep93xx_clk *clk = ep93xx_clk_from(hw);
+> +	struct ep93xx_clk_priv *priv = ep93xx_priv_from(clk);
+> +	unsigned long flags;
+> +	u32 val;
+> +
+> +	if (index >= 3)
+> +		return -EINVAL;
+
+> +	spin_lock_irqsave(&priv->lock, flags);
+
+Why not guard() ?
+
+> +	regmap_read(priv->map, clk->reg, &val);
+> +	val &= ~(EP93XX_SYSCON_CLKDIV_MASK);
+> +	val |= index > 0 ? EP93XX_SYSCON_CLKDIV_ESEL : 0;
+> +	val |= index > 1 ? EP93XX_SYSCON_CLKDIV_PSEL : 0;
+> +
+> +	ep93xx_clk_write(priv, clk->reg, val);
+> +
+> +	spin_unlock_irqrestore(&priv->lock, flags);
+> +
+> +	return 0;
+> +}
+
+...
+
+> +static bool is_best(unsigned long rate, unsigned long now,
+> +		     unsigned long best)
+> +{
+> +	return abs_diff(rate, now) < abs_diff(rate, best);
+
+Have you included necessary header for this?
+
+> +}
+
+...
+
+> +static int ep93xx_mux_determine_rate(struct clk_hw *hw,
+> +				struct clk_rate_request *req)
+> +{
+> +	unsigned long best_rate = 0, actual_rate, mclk_rate;
+> +	unsigned long rate = req->rate;
+
+> +	struct clk_hw *parent_best = NULL;
+
+Strictly speaking you don't need an assignment here as you can compare the loop
+variable value against the maximum. But I don't know how heave the respective
+CLk call is and if it has no side-effects due to operations inside the loop body.
+
+> +	unsigned long parent_rate_best;
+> +	unsigned long parent_rate;
+> +	int div, pdiv;
+> +	unsigned int i;
+> +
+> +	/*
+> +	 * Try the two pll's and the external clock
+
+Either comma + 'b' or missing period.
+
+> +	 * Because the valid predividers are 2, 2.5 and 3, we multiply
+> +	 * all the clocks by 2 to avoid floating point math.
+> +	 *
+> +	 * This is based on the algorithm in the ep93xx raster guide:
+> +	 * http://be-a-maverick.com/en/pubs/appNote/AN269REV1.pdf
+> +	 *
+> +	 */
+> +	for (i = 0; i < clk_hw_get_num_parents(hw); i++) {
+> +		struct clk_hw *parent = clk_hw_get_parent_by_index(hw, i);
+> +
+> +		parent_rate = clk_hw_get_rate(parent);
+> +		mclk_rate = parent_rate * 2;
+> +
+> +		/* Try each predivider value */
+> +		for (pdiv = 4; pdiv <= 6; pdiv++) {
+> +			div = DIV_ROUND_CLOSEST(mclk_rate, rate * pdiv);
+
+> +			if (!in_range(div, 1, 127))
+
+Same header as for abs_diff()?
+
+> +				continue;
+> +
+> +			actual_rate = DIV_ROUND_CLOSEST(mclk_rate, pdiv * div);
+> +			if (is_best(rate, actual_rate, best_rate)) {
+> +				best_rate = actual_rate;
+> +				parent_rate_best = parent_rate;
+> +				parent_best = parent;
+> +			}
+> +		}
+
+(1)
+
+> +	}
+> +
+> +	if (!parent_best)
+> +		return -EINVAL;
+> +
+> +	req->best_parent_rate = parent_rate_best;
+> +	req->best_parent_hw = parent_best;
+> +	req->rate = best_rate;
+> +
+> +	return 0;
+> +}
+
+...
+
+> +	mclk_rate = parent_rate * 2;
+> +
+> +	for (pdiv = 4; pdiv <= 6; pdiv++) {
+> +		div = DIV_ROUND_CLOSEST(mclk_rate, rate * pdiv);
+> +		if (!in_range(div, 1, 127))
+> +			continue;
+> +
+> +		actual_rate = DIV_ROUND_CLOSEST(mclk_rate, pdiv * div);
+> +		if (abs(actual_rate - rate) < rate_err) {
+> +			npdiv = pdiv - 3;
+> +			ndiv = div;
+> +			rate_err = abs(actual_rate - rate);
+> +		}
+> +	}
+
+Looks very similar to (1). Can be deduplicated?
+
+...
+
+> +	/*
+> +	 * Clear old dividers
+> +	 * Bit 7 is reserved bit in all ClkDiv registers
+
+Missing periods.
+
+> +	 */
+
+...
+
+> +static unsigned long calc_pll_rate(u64 rate, u32 config_word)
+> +{
+> +	rate *= ((config_word >> 11) & GENMASK(4, 0)) + 1;	/* X1FBD */
+> +	rate *= ((config_word >> 5) & GENMASK(5, 0)) + 1;	/* X2FBD */
+> +	do_div(rate, (config_word & GENMASK(4, 0)) + 1);	/* X2IPD */
+
+> +	rate >>= ((config_word >> 16) & GENMASK(1, 0));		/* PS */
+
+Outer parentheses are redundant.
+
+> +	return rate;
+> +}
+
+...
+
+> +	/*
+> +	 * EP93xx SSP clock rate was doubled in version E2. For more information
+> +	 * see:
+> +	 *     http://www.cirrus.com/en/pubs/appNote/AN273REV4.pdf
+
+Can you point to the specific section? Like
+
+	 * see section 1.2.3 "Foo bar":
+
+> +	 */
+
+...
+
+> +	/* touchscreen/adc clock */
+
+ADC
+
+...
+
+> +	/*
+> +	 * On reset PDIV and VDIV is set to zero, while PDIV zero
+> +	 * means clock disable, VDIV shouldn't be zero.
+> +	 * So we set both video and is2 dividers to minimum.
+
+i2s?
+
+> +	 * ENA - Enable CLK divider.
+> +	 * PDIV - 00 - Disable clock
+> +	 * VDIV - at least 2
+> +	 */
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
 
