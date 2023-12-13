@@ -2,57 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 537F9810962
+	by mail.lfdr.de (Postfix) with ESMTP id A7FC6810963
 	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 06:17:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378516AbjLMFML (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 00:12:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43058 "EHLO
+        id S230451AbjLMFRE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 00:17:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54196 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229458AbjLMFMJ (ORCPT
+        with ESMTP id S229458AbjLMFRC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 00:12:09 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DE6CB7
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 21:12:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1702444335; x=1733980335;
-  h=date:from:to:cc:subject:message-id;
-  bh=RUNDLpUREchmFTAk8PjnI+pkEBJswggDrYHCfo+yu64=;
-  b=Tbzf4j1y5AX/8o91NNUck3WWSwJuWbwrjR8GcWgqUH8tDhczpInHF8gM
-   h90cbRmcqK6jmZzLWqXxgaSz/WgQOqMGFGT0uHEBSo7hbZTCeFaOOnXFb
-   KBJwIifESI1b5oJxZ9ONffi4zUnJ4tiYqJr8OpPYxV1KDSxhZ7yrCp7T7
-   XbtYgev1lBEBT9NuHAfpircY1anhQbn0t9ZqRZ57UVSvLb8rGS+V6uGuC
-   HJxdAMtwpvXPfUDpio8gx5aPqVdORouQkkjfyOP+0rzQYx7ka4bWhcWw9
-   MPAp0Vlv4RUGJPEpgw0bO1GDE740FM0gPHL5VwFMJy7LyDYGmT8EZ3NuW
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10922"; a="398754816"
-X-IronPort-AV: E=Sophos;i="6.04,272,1695711600"; 
-   d="scan'208";a="398754816"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Dec 2023 21:12:15 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10922"; a="749981565"
-X-IronPort-AV: E=Sophos;i="6.04,272,1695711600"; 
-   d="scan'208";a="749981565"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by orsmga006.jf.intel.com with ESMTP; 12 Dec 2023 21:12:14 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1rDHXX-000K6A-2l;
-        Wed, 13 Dec 2023 05:12:11 +0000
-Date:   Wed, 13 Dec 2023 13:12:01 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [paulmck-rcu:dev.2023.12.08a] BUILD SUCCESS
- dfcb2c9024dc297438d23f18fde05c501cee0bd9
-Message-ID: <202312131359.LA7CUjth-lkp@intel.com>
-User-Agent: s-nail v14.9.24
+        Wed, 13 Dec 2023 00:17:02 -0500
+Received: from smtp-fw-6002.amazon.com (smtp-fw-6002.amazon.com [52.95.49.90])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E59EECD;
+        Tue, 12 Dec 2023 21:17:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1702444629; x=1733980629;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=H/EH6tQoOujC8sN9THaYTQOj3Fa4ltukpYjXl3eXRIQ=;
+  b=eSm+mNYYEP97DVsEDuPT9rL5SBEODiDy3rD1qKaHb2wYejU6rwiZ+BKI
+   td0U4uqlA43sicaDKILskgtnYGQN3vibR92d8hu9pbejrKAKRhKBZpqK9
+   P3HPAUoElx87PT/QxgUg+xtl1kYKTGga9PngpeQF61MH+LQnutxUbJhhT
+   U=;
+X-IronPort-AV: E=Sophos;i="6.04,272,1695686400"; 
+   d="scan'208";a="373447902"
+Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-iad-1e-m6i4x-9694bb9e.us-east-1.amazon.com) ([10.43.8.6])
+  by smtp-border-fw-6002.iad6.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Dec 2023 05:17:08 +0000
+Received: from smtpout.prod.us-west-2.prod.farcaster.email.amazon.dev (iad7-ws-svc-p70-lb3-vlan2.iad.amazon.com [10.32.235.34])
+        by email-inbound-relay-iad-1e-m6i4x-9694bb9e.us-east-1.amazon.com (Postfix) with ESMTPS id 2ABD4806BB;
+        Wed, 13 Dec 2023 05:17:05 +0000 (UTC)
+Received: from EX19MTAUWA001.ant.amazon.com [10.0.21.151:23380]
+ by smtpin.naws.us-west-2.prod.farcaster.email.amazon.dev [10.0.27.95:2525] with esmtp (Farcaster)
+ id 650e561f-6b55-43b2-8323-f20778c0f1b5; Wed, 13 Dec 2023 05:17:05 +0000 (UTC)
+X-Farcaster-Flow-ID: 650e561f-6b55-43b2-8323-f20778c0f1b5
+Received: from EX19D030UWB002.ant.amazon.com (10.13.139.182) by
+ EX19MTAUWA001.ant.amazon.com (10.250.64.217) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Wed, 13 Dec 2023 05:17:04 +0000
+Received: from u1e958862c3245e.ant.amazon.com (10.43.143.133) by
+ EX19D030UWB002.ant.amazon.com (10.13.139.182) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Wed, 13 Dec 2023 05:17:02 +0000
+From:   Suraj Jitindar Singh <surajjs@amazon.com>
+To:     <tytso@mit.edu>
+CC:     <adilger.kernel@dilger.ca>, <jack@suse.cz>,
+        <linux-ext4@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <sjitindarsingh@smail.com>,
+        "Suraj Jitindar Singh" <surajjs@amazon.com>,
+        <stable@vger.kernel.org>
+Subject: [PATCH] fs/ext4: Allow for the last group to be marked as trimmed
+Date:   Wed, 13 Dec 2023 16:16:35 +1100
+Message-ID: <20231213051635.37731-1-surajjs@amazon.com>
+X-Mailer: git-send-email 2.34.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.43.143.133]
+X-ClientProxiedBy: EX19D045UWA003.ant.amazon.com (10.13.139.46) To
+ EX19D030UWB002.ant.amazon.com (10.13.139.182)
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -60,225 +72,79 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git dev.2023.12.08a
-branch HEAD: dfcb2c9024dc297438d23f18fde05c501cee0bd9  EXP btrfs: Enable BTRFS only on 64-bit systems
+The ext4 filesystem tracks the trim status of blocks at the group level.
+When an entire group has been trimmed then it is marked as such and subsequent
+trim invocations with the same minimum trim size will not be attempted on that
+group unless it is marked as able to be trimmed again such as when a block is
+freed.
 
-elapsed time: 1461m
+Currently the last group can't be marked as trimmed due to incorrect logic
+in ext4_last_grp_cluster(). ext4_last_grp_cluster() is supposed to return the
+zero based index of the last cluster in a group. This is then used by
+ext4_try_to_trim_range() to determine if the trim operation spans the entire
+group and as such if the trim status of the group should be recorded.
 
-configs tested: 206
-configs skipped: 3
+ext4_last_grp_cluster() takes a 0 based group index, thus the valid values
+for grp are 0..(ext4_get_groups_count - 1). Any group index less than
+(ext4_get_groups_count - 1) is not the last group and must have
+EXT4_CLUSTERS_PER_GROUP(sb) clusters. For the last group we need to calculate
+the number of clusters based on the number of blocks in the group. Finally
+subtract 1 from the number of clusters as zero based indexing is expected.
+Rearrange the function slightly to make it clear what we are calculating
+and returning.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+Reproducer:
+// Create file system where the last group has fewer blocks than blocks per group
+$ mkfs.ext4 -b 4096 -g 8192 /dev/nvme0n1 8191
+$ mount /dev/nvme0n1 /mnt
 
-tested configs:
-alpha                             allnoconfig   gcc  
-alpha                            allyesconfig   gcc  
-alpha                               defconfig   gcc  
-arc                              allmodconfig   gcc  
-arc                               allnoconfig   gcc  
-arc                              allyesconfig   gcc  
-arc                          axs103_defconfig   gcc  
-arc                                 defconfig   gcc  
-arc                        nsimosci_defconfig   gcc  
-arc                     nsimosci_hs_defconfig   gcc  
-arc                   randconfig-001-20231212   gcc  
-arc                   randconfig-001-20231213   gcc  
-arc                   randconfig-002-20231212   gcc  
-arc                   randconfig-002-20231213   gcc  
-arc                    vdk_hs38_smp_defconfig   gcc  
-arm                              allmodconfig   gcc  
-arm                               allnoconfig   gcc  
-arm                              allyesconfig   gcc  
-arm                                 defconfig   clang
-arm                       omap2plus_defconfig   gcc  
-arm                   randconfig-001-20231212   gcc  
-arm                   randconfig-002-20231212   gcc  
-arm                   randconfig-003-20231212   gcc  
-arm                   randconfig-004-20231212   gcc  
-arm                         vf610m4_defconfig   gcc  
-arm64                            allmodconfig   clang
-arm64                             allnoconfig   gcc  
-arm64                               defconfig   gcc  
-arm64                 randconfig-001-20231212   gcc  
-arm64                 randconfig-002-20231212   gcc  
-arm64                 randconfig-003-20231212   gcc  
-arm64                 randconfig-004-20231212   gcc  
-csky                             allmodconfig   gcc  
-csky                              allnoconfig   gcc  
-csky                             allyesconfig   gcc  
-csky                                defconfig   gcc  
-csky                  randconfig-001-20231212   gcc  
-csky                  randconfig-001-20231213   gcc  
-csky                  randconfig-002-20231212   gcc  
-csky                  randconfig-002-20231213   gcc  
-hexagon                          allmodconfig   clang
-hexagon                           allnoconfig   clang
-hexagon                          allyesconfig   clang
-hexagon                             defconfig   clang
-i386                             allmodconfig   clang
-i386                              allnoconfig   clang
-i386                             allyesconfig   clang
-i386         buildonly-randconfig-001-20231212   gcc  
-i386         buildonly-randconfig-002-20231212   gcc  
-i386         buildonly-randconfig-003-20231212   gcc  
-i386         buildonly-randconfig-004-20231212   gcc  
-i386         buildonly-randconfig-005-20231212   gcc  
-i386         buildonly-randconfig-006-20231212   gcc  
-i386                                defconfig   gcc  
-i386                  randconfig-001-20231212   gcc  
-i386                  randconfig-002-20231212   gcc  
-i386                  randconfig-003-20231212   gcc  
-i386                  randconfig-004-20231212   gcc  
-i386                  randconfig-005-20231212   gcc  
-i386                  randconfig-006-20231212   gcc  
-i386                  randconfig-011-20231212   clang
-i386                  randconfig-011-20231213   gcc  
-i386                  randconfig-012-20231212   clang
-i386                  randconfig-012-20231213   gcc  
-i386                  randconfig-013-20231212   clang
-i386                  randconfig-013-20231213   gcc  
-i386                  randconfig-014-20231212   clang
-i386                  randconfig-014-20231213   gcc  
-i386                  randconfig-015-20231212   clang
-i386                  randconfig-015-20231213   gcc  
-i386                  randconfig-016-20231212   clang
-i386                  randconfig-016-20231213   gcc  
-loongarch                        allmodconfig   gcc  
-loongarch                         allnoconfig   gcc  
-loongarch                        allyesconfig   gcc  
-loongarch                           defconfig   gcc  
-loongarch             randconfig-001-20231212   gcc  
-loongarch             randconfig-001-20231213   gcc  
-loongarch             randconfig-002-20231212   gcc  
-loongarch             randconfig-002-20231213   gcc  
-m68k                             allmodconfig   gcc  
-m68k                              allnoconfig   gcc  
-m68k                             allyesconfig   gcc  
-m68k                                defconfig   gcc  
-m68k                        m5307c3_defconfig   gcc  
-m68k                        m5407c3_defconfig   gcc  
-m68k                          sun3x_defconfig   gcc  
-microblaze                       allmodconfig   gcc  
-microblaze                        allnoconfig   gcc  
-microblaze                       allyesconfig   gcc  
-microblaze                          defconfig   gcc  
-mips                             allmodconfig   gcc  
-mips                              allnoconfig   clang
-mips                             allyesconfig   gcc  
-mips                         db1xxx_defconfig   gcc  
-mips                     decstation_defconfig   gcc  
-mips                            gpr_defconfig   gcc  
-nios2                            allmodconfig   gcc  
-nios2                             allnoconfig   gcc  
-nios2                            allyesconfig   gcc  
-nios2                               defconfig   gcc  
-nios2                 randconfig-001-20231212   gcc  
-nios2                 randconfig-001-20231213   gcc  
-nios2                 randconfig-002-20231212   gcc  
-nios2                 randconfig-002-20231213   gcc  
-openrisc                         allmodconfig   gcc  
-openrisc                          allnoconfig   gcc  
-openrisc                         allyesconfig   gcc  
-openrisc                            defconfig   gcc  
-parisc                           allmodconfig   gcc  
-parisc                            allnoconfig   gcc  
-parisc                           allyesconfig   gcc  
-parisc                              defconfig   gcc  
-parisc                randconfig-001-20231212   gcc  
-parisc                randconfig-001-20231213   gcc  
-parisc                randconfig-002-20231212   gcc  
-parisc                randconfig-002-20231213   gcc  
-parisc64                            defconfig   gcc  
-powerpc                          allmodconfig   clang
-powerpc                           allnoconfig   gcc  
-powerpc                          allyesconfig   clang
-powerpc                         ps3_defconfig   gcc  
-powerpc               randconfig-001-20231212   gcc  
-powerpc               randconfig-002-20231212   gcc  
-powerpc               randconfig-003-20231212   gcc  
-powerpc64             randconfig-001-20231212   gcc  
-powerpc64             randconfig-002-20231212   gcc  
-powerpc64             randconfig-003-20231212   gcc  
-riscv                            allmodconfig   gcc  
-riscv                             allnoconfig   clang
-riscv                            allyesconfig   gcc  
-riscv                               defconfig   gcc  
-riscv                 randconfig-001-20231212   gcc  
-riscv                 randconfig-002-20231212   gcc  
-riscv                          rv32_defconfig   clang
-s390                             allmodconfig   gcc  
-s390                              allnoconfig   gcc  
-s390                             allyesconfig   gcc  
-s390                                defconfig   gcc  
-s390                  randconfig-001-20231213   gcc  
-s390                  randconfig-002-20231213   gcc  
-sh                               allmodconfig   gcc  
-sh                                allnoconfig   gcc  
-sh                               allyesconfig   gcc  
-sh                                  defconfig   gcc  
-sh                        dreamcast_defconfig   gcc  
-sh                        edosk7760_defconfig   gcc  
-sh                 kfr2r09-romimage_defconfig   gcc  
-sh                    randconfig-001-20231212   gcc  
-sh                    randconfig-001-20231213   gcc  
-sh                    randconfig-002-20231212   gcc  
-sh                    randconfig-002-20231213   gcc  
-sh                          rsk7269_defconfig   gcc  
-sh                           se7724_defconfig   gcc  
-sh                        sh7763rdp_defconfig   gcc  
-sh                   sh7770_generic_defconfig   gcc  
-sparc                            allmodconfig   gcc  
-sparc                            allyesconfig   gcc  
-sparc64                          allmodconfig   gcc  
-sparc64                          allyesconfig   gcc  
-sparc64                             defconfig   gcc  
-sparc64               randconfig-001-20231212   gcc  
-sparc64               randconfig-001-20231213   gcc  
-sparc64               randconfig-002-20231212   gcc  
-sparc64               randconfig-002-20231213   gcc  
-um                               allmodconfig   clang
-um                                allnoconfig   clang
-um                               allyesconfig   clang
-um                                  defconfig   gcc  
-um                             i386_defconfig   gcc  
-um                    randconfig-001-20231212   gcc  
-um                    randconfig-002-20231212   gcc  
-um                           x86_64_defconfig   gcc  
-x86_64                            allnoconfig   gcc  
-x86_64                           allyesconfig   clang
-x86_64       buildonly-randconfig-001-20231212   gcc  
-x86_64       buildonly-randconfig-002-20231212   gcc  
-x86_64       buildonly-randconfig-003-20231212   gcc  
-x86_64       buildonly-randconfig-004-20231212   gcc  
-x86_64       buildonly-randconfig-005-20231212   gcc  
-x86_64       buildonly-randconfig-006-20231212   gcc  
-x86_64                              defconfig   gcc  
-x86_64                                  kexec   gcc  
-x86_64                randconfig-011-20231212   gcc  
-x86_64                randconfig-012-20231212   gcc  
-x86_64                randconfig-013-20231212   gcc  
-x86_64                randconfig-014-20231212   gcc  
-x86_64                randconfig-015-20231212   gcc  
-x86_64                randconfig-016-20231212   gcc  
-x86_64                randconfig-071-20231212   gcc  
-x86_64                randconfig-072-20231212   gcc  
-x86_64                randconfig-073-20231212   gcc  
-x86_64                randconfig-074-20231212   gcc  
-x86_64                randconfig-075-20231212   gcc  
-x86_64                randconfig-076-20231212   gcc  
-x86_64                           rhel-8.3-bpf   gcc  
-x86_64                          rhel-8.3-rust   clang
-x86_64                               rhel-8.3   gcc  
-xtensa                            allnoconfig   gcc  
-xtensa                           allyesconfig   gcc  
-xtensa                  cadence_csp_defconfig   gcc  
-xtensa                          iss_defconfig   gcc  
-xtensa                randconfig-001-20231212   gcc  
-xtensa                randconfig-001-20231213   gcc  
-xtensa                randconfig-002-20231212   gcc  
-xtensa                randconfig-002-20231213   gcc  
+Before Patch:
+$ fstrim -v /mnt
+/mnt: 25.9 MiB (27156480 bytes) trimmed
+// Group not marked as trimmed so second invocation still discards blocks
+$ fstrim -v /mnt
+/mnt: 25.9 MiB (27156480 bytes) trimmed
 
+After Patch:
+fstrim -v /mnt
+/mnt: 25.9 MiB (27156480 bytes) trimmed
+// Group marked as trimmed so second invocation DOESN'T discard any blocks
+fstrim -v /mnt
+/mnt: 0 B (0 bytes) trimmed
+
+Fixes: 45e4ab320c9b ("ext4: move setting of trimmed bit into ext4_try_to_trim_range()")
+Cc: stable@vger.kernel.org # 4.19+
+Signed-off-by: Suraj Jitindar Singh <surajjs@amazon.com>
+---
+ fs/ext4/mballoc.c | 15 ++++++++++-----
+ 1 file changed, 10 insertions(+), 5 deletions(-)
+
+diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
+index 454d5612641ee..c15d8b6f887dd 100644
+--- a/fs/ext4/mballoc.c
++++ b/fs/ext4/mballoc.c
+@@ -6731,11 +6731,16 @@ __acquires(bitlock)
+ static ext4_grpblk_t ext4_last_grp_cluster(struct super_block *sb,
+ 					   ext4_group_t grp)
+ {
+-	if (grp < ext4_get_groups_count(sb))
+-		return EXT4_CLUSTERS_PER_GROUP(sb) - 1;
+-	return (ext4_blocks_count(EXT4_SB(sb)->s_es) -
+-		ext4_group_first_block_no(sb, grp) - 1) >>
+-					EXT4_CLUSTER_BITS(sb);
++	unsigned long nr_clusters_in_group;
++
++	if (grp < (ext4_get_groups_count(sb) - 1))
++		nr_clusters_in_group = EXT4_CLUSTERS_PER_GROUP(sb);
++	else
++		nr_clusters_in_group = (ext4_blocks_count(EXT4_SB(sb)->s_es) -
++					ext4_group_first_block_no(sb, grp))
++				       >> EXT4_CLUSTER_BITS(sb);
++
++	return nr_clusters_in_group - 1;
+ }
+ 
+ static bool ext4_trim_interrupted(void)
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.34.1
+
