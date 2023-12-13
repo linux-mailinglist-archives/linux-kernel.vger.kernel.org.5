@@ -2,99 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 807E981125A
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 14:02:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BECC1811263
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 14:03:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379047AbjLMNCk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 08:02:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59384 "EHLO
+        id S1379113AbjLMNDP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 08:03:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52546 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379027AbjLMNCj (ORCPT
+        with ESMTP id S1379098AbjLMNDN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 08:02:39 -0500
-Received: from outbound-smtp61.blacknight.com (outbound-smtp61.blacknight.com [46.22.136.249])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85C5B10C8
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 05:02:35 -0800 (PST)
-Received: from mail.blacknight.com (pemlinmail05.blacknight.ie [81.17.254.26])
-        by outbound-smtp61.blacknight.com (Postfix) with ESMTPS id DA549FAC6E
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 13:02:33 +0000 (GMT)
-Received: (qmail 17601 invoked from network); 13 Dec 2023 13:02:33 -0000
-Received: from unknown (HELO mail.blacknight.com) (mgorman@techsingularity.net@[81.17.254.22])
-  by 81.17.254.26 with ESMTPA; 13 Dec 2023 13:02:33 -0000
-Date:   Wed, 13 Dec 2023 13:02:31 +0000
-From:   Mel Gorman <mgorman@techsingularity.net>
-To:     Barry Song <21cnbao@gmail.com>
-Cc:     akpm@linux-foundation.org, baolin.wang@linux.alibaba.com,
-        linux-mm@kvack.org, david@redhat.com, hannes@cmpxchg.org,
-        huzhanyuan@oppo.com, linux-kernel@vger.kernel.org,
-        shikemeng@huaweicloud.com, v-songbaohua@oppo.com,
-        willy@infradead.org
-Subject: Re: [PATCH] mm: compaction: avoid fast_isolate_freepages blindly
- choose improper pageblock
-Message-ID: <20231213130231.ksban2ovad4q4rxj@techsingularity.net>
-References: <20231206110054.61617-1-v-songbaohua@oppo.com>
+        Wed, 13 Dec 2023 08:03:13 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22CC8199F
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 05:02:56 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B73FFC433C8;
+        Wed, 13 Dec 2023 13:02:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1702472575;
+        bh=SYhlR91tO42bA8AfGZXjJpENUJXvfJwI9ZrVd2yDl7o=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=pOAZ793fHzKh/HYPbFWxrP57xdIvDGz7zJAPafMIdiXo/gdClWfHHvXyABgyiaI3d
+         IzjD7flCvOmUtRPQK/nwxFG4P+/wjewBRhds66wynKr/e/B9HcmsYwbGWOiDfrcGgF
+         Mad+vti/3CHqhV9Mc8DmDCiHi5Llrhj8bBvRK8yG2/BfMYB5kldfx6AoNVi3LS5Yed
+         voYZzMviyN03AtFIwzndO9A1hh6wyeIOadgNlhvE3YVLQFoRmcz/zTpvLmVk2qGecJ
+         c2p65kbrZ/i6niLm0i+F8ERk9GXSfIiwFL6+xEZru50pieVHqYJCoculVkT2y+ID+D
+         uMM7/fLCxbELQ==
+Date:   Wed, 13 Dec 2023 13:02:49 +0000
+From:   Conor Dooley <conor@kernel.org>
+To:     Marc Kleine-Budde <mkl@pengutronix.de>
+Cc:     linux-riscv@lists.infradead.org,
+        Conor Dooley <conor.dooley@microchip.com>,
+        Daire McNamara <daire.mcnamara@microchip.com>,
+        Wolfgang Grandegger <wg@grandegger.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>, linux-can@vger.kernel.org,
+        netdev@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org
+Subject: Re: [PATCH RESEND v1 2/7] dt-bindings: can: mpfs: add missing
+ required clock
+Message-ID: <20231213-waffle-grueling-3a5c3879395b@spud>
+References: <20231208-reenter-ajar-b6223e5134b3@spud>
+ <20231208-palpitate-passable-c79bacf2036c@spud>
+ <20231212-unreeling-depose-8b6b2e032555-mkl@pengutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="AuzXFLC6CIKr68l9"
 Content-Disposition: inline
-In-Reply-To: <20231206110054.61617-1-v-songbaohua@oppo.com>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20231212-unreeling-depose-8b6b2e032555-mkl@pengutronix.de>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 07, 2023 at 12:00:54AM +1300, Barry Song wrote:
-> Testing shows fast_isolate_freepages can blindly choose an unsuitable
-> pageblock from time to time particularly while the min mark is used
-> from XXX path:
->  if (!page) {
->          cc->fast_search_fail++;
->          if (scan_start) {
->                  /*
->                   * Use the highest PFN found above min. If one was
->                   * not found, be pessimistic for direct compaction
->                   * and use the min mark.
->                   */
->                  if (highest >= min_pfn) {
->                          page = pfn_to_page(highest);
->                          cc->free_pfn = highest;
->                  } else {
->                          if (cc->direct_compaction && pfn_valid(min_pfn)) { /* XXX */
->                                  page = pageblock_pfn_to_page(min_pfn,
->                                          min(pageblock_end_pfn(min_pfn),
->                                              zone_end_pfn(cc->zone)),
->                                          cc->zone);
->                                  cc->free_pfn = min_pfn;
->                          }
->                  }
->          }
->  }
-> 
-> The reason is that no code is doing any check on the min_pfn
->  min_pfn = pageblock_start_pfn(cc->free_pfn - (distance >> 1));
-> 
-> In contrast, slow path of isolate_freepages() is always skipping unsuitable
-> pageblocks in a decent way.
-> 
-> This issue doesn't happen quite often. When running 25 machines with 16GiB
-> memory for one night, most of them can hit this unexpected code path.
-> However the frequency isn't like many times per second. It might be one
-> time in a couple of hours. Thus, it is very hard to measure the visible
-> performance impact in my machines though the affection of choosing the
-> unsuitable migration_target should be negative in theory.
-> 
-> I feel it's still worth fixing this to at least make the code theoretically
-> self-explanatory as it is quite odd an unsuitable migration_target can be
-> still migration_target.
-> 
-> Reported-by: Zhanyuan Hu <huzhanyuan@oppo.com>
-> Signed-off-by: Barry Song <v-songbaohua@oppo.com>
 
-Acked-by: Mel Gorman <mgorman@techsingularity.net>
+--AuzXFLC6CIKr68l9
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
--- 
-Mel Gorman
-SUSE Labs
+On Tue, Dec 12, 2023 at 09:49:41PM +0100, Marc Kleine-Budde wrote:
+> On 08.12.2023 17:12:24, Conor Dooley wrote:
+> > From: Conor Dooley <conor.dooley@microchip.com>
+> >=20
+> > The CAN controller on PolarFire SoC has an AHB peripheral clock _and_ a
+> > CAN bus clock. The bus clock was omitted when the binding was written,
+> > but is required for operation. Make up for lost time and add it.
+> >=20
+> > Cautionary tale in adding bindings without having implemented a real
+> > user for them perhaps.
+> >=20
+> > Fixes: c878d518d7b6 ("dt-bindings: can: mpfs: document the mpfs CAN con=
+troller")
+> > Signed-off-by: Conor Dooley <conor.dooley@microchip.com>
+> > ---
+> >  .../devicetree/bindings/net/can/microchip,mpfs-can.yaml    | 7 +++++--
+> >  1 file changed, 5 insertions(+), 2 deletions(-)
+> >=20
+> > diff --git a/Documentation/devicetree/bindings/net/can/microchip,mpfs-c=
+an.yaml b/Documentation/devicetree/bindings/net/can/microchip,mpfs-can.yaml
+> > index 45aa3de7cf01..05f680f15b17 100644
+> > --- a/Documentation/devicetree/bindings/net/can/microchip,mpfs-can.yaml
+> > +++ b/Documentation/devicetree/bindings/net/can/microchip,mpfs-can.yaml
+> > @@ -24,7 +24,10 @@ properties:
+> >      maxItems: 1
+> > =20
+> >    clocks:
+> > -    maxItems: 1
+> > +    maxItems: 2
+> > +    items:
+> > +      - description: AHB peripheral clock
+> > +      - description: CAN bus clock
+>=20
+> Do we we want to have a "clock-names" property, as we need the clock
+> rate of the CAN bus clock.
+
+We should not need the clock-names property to be able to get both of
+the clocks. clk_bulk_get_all() for example should be usable here.
+
+Cheers,
+Conor.
+
+--AuzXFLC6CIKr68l9
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZXmreQAKCRB4tDGHoIJi
+0pybAQCaXK2xUCp5W6797bY/KOydLDfzz6/zpgo3/ym1K/7tCgEAs+ZQmqrTvSuQ
+t2sr42Cf8RWYaRCGrwl6zg97g0jV0As=
+=jW/W
+-----END PGP SIGNATURE-----
+
+--AuzXFLC6CIKr68l9--
