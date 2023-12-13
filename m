@@ -2,61 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A150812204
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 23:47:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EBC66812208
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 23:48:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442833AbjLMWru (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 17:47:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39608 "EHLO
+        id S235419AbjLMWr4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 17:47:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39612 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229913AbjLMWrs (ORCPT
+        with ESMTP id S1442831AbjLMWru (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 17:47:48 -0500
-Received: from mail-oo1-xc33.google.com (mail-oo1-xc33.google.com [IPv6:2607:f8b0:4864:20::c33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B78FBB7
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 14:47:54 -0800 (PST)
-Received: by mail-oo1-xc33.google.com with SMTP id 006d021491bc7-59052ab970eso13286eaf.1
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 14:47:54 -0800 (PST)
+        Wed, 13 Dec 2023 17:47:50 -0500
+Received: from mail-ot1-x330.google.com (mail-ot1-x330.google.com [IPv6:2607:f8b0:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A62B6E4
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 14:47:55 -0800 (PST)
+Received: by mail-ot1-x330.google.com with SMTP id 46e09a7af769-6d9e756cf32so4964685a34.2
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 14:47:55 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1702507674; x=1703112474; darn=vger.kernel.org;
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1702507675; x=1703112475; darn=vger.kernel.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=hkqjL8gpQ8sLlCN1GXOrltvBjG/ddi2Ymbga0d7cLo0=;
-        b=OltShoEG/JB5QsL61CJ1RT8eV/Fx8XCcEpRy5rniXqyh4z9r/XmE8lCEdPDEyX8yQ/
-         z5cEyPFS/UPGy4z0+haNpBs3N4iMKVj7ARWezsxIjdRq+QdkTien78vrkoi9LQQ23Atc
-         s8H+XAaPctgD9ZgtiiPkkIUdGUeg2UTXCjCFPUxxgGs2ZTS5GuNaid+jck6Z8m4uvb4P
-         E0vx+DcnkCnLkUZbOHFBPN58l3PG6wDAKo8sh8z0jDl/IqbhIike0kdVZ68YlNu2NClw
-         jYN65oD7JjNfFXXbc+sfL8xGPrUrpG5qUPWi4iFE2/GwNFLyKudGjvwIJh15BIu7+mwo
-         YjUA==
+        bh=3S3MR9WYTuBImuNJhXJPIP3GzfMK1QacwIWQCdBwVhY=;
+        b=srqHirtxC7GROnNMHJ6RKmFGNx7R+EtXMAzhPcEdtg6jwmV/C+XEpg88rKMd2fDdk5
+         YVNmsxOHKFsZwytuTsCioAIUSb5g2i/kEkiHJ+UV2K4qAiCpI35l7PatMno0Vor+hH6b
+         OkKGMAxdzzFf9Mkn7HgajA0UnHa+NlY1NIIBnE9gMEyVFibg92n90bJWOGMMiSxAH0t4
+         GAVhOBdOqeYuVkRJ8PCZrX9xLAS4N304R0ojqiEjaHKSCLpf0hxJj9G70Iv46peX8zrL
+         i4sFIDILWl7ExFi30u7ym2PkasArPGoKd8lzGnfVCo/Q3Oo5KttzwQU3HMy/QMIJipKg
+         PNTg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702507674; x=1703112474;
+        d=1e100.net; s=20230601; t=1702507675; x=1703112475;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=hkqjL8gpQ8sLlCN1GXOrltvBjG/ddi2Ymbga0d7cLo0=;
-        b=RfWBCqX/rfdr247GUUdKEYzhIrr7a1hdtJfWUUD39sy8y/uJeCs0T1ElpEALCp1eba
-         1uArkfgSHceRZ1natJvRQF5nBprLHqhxjsT6X3LIaGHMqd4JrEsOda0SuQCpaf8iw2L9
-         wc2VDcgNgPRME3VhuobWLs0228Eq34e5IgmIqTDXAN+KaYUE5eIiPxRRvra8K48hThUZ
-         irSYaLKUsDBXnQcmut/HiWxdO6sj+3kCpNX9rHUN5iVKRAuwJz6E8NNMyTJZlhuqGu56
-         klebybumvaAJEnYWnM3W+MJCq3Ws3tVvX9OKrowm8TDr7L0oe05Rc3oAUWdkgyloYuDk
-         xEDA==
-X-Gm-Message-State: AOJu0YwsibqPf8jbzFbcjI5LchIbmVzydiMSSh9pNdQ5BFc/qi7SEbmB
-        O54t164khERgpzVaatqnxvHvuw==
-X-Google-Smtp-Source: AGHT+IFS1dCeyzbePTtf03iMwFTzrcxSuGKaXk9blFVfCfy6vB9c1qH69Mo+m244rXn8GdgeEBhwUw==
-X-Received: by 2002:a05:6870:70a0:b0:1fa:ed5d:5b60 with SMTP id v32-20020a05687070a000b001faed5d5b60mr4052430oae.7.1702507673573;
-        Wed, 13 Dec 2023 14:47:53 -0800 (PST)
+        bh=3S3MR9WYTuBImuNJhXJPIP3GzfMK1QacwIWQCdBwVhY=;
+        b=h5Flcffk3W8M2VSYBF2ECi5MdVQgEkQ26xoqZMYQRAaFLFq+bya6E9E13XA4lz9QqY
+         3F2hQHVKCzMydcYyj6CRsAHrCzEgP/51eIHEZOHj0tqRXF/4XbcyHOZ6pAOh4zWQW/Ca
+         4ZW0x2IENxHrGmBrsGTeCC1fnLN0TtZJY5iYFb/wXrvDRsWfB/NUNaE0uNsjfbTL/9Ps
+         BRIdMVX81byAlFc94N1kCBt5bOTwQAD7UakWPC1lHLRCvOZidpmtOQoOh6u1MLqfXmIX
+         WpdJun0+2yMVtEF1rjCuKlov+cNmxhP0475IWCgvnqoOqD8Riuq4NM3U2MXy7N9xmRgj
+         9Q5g==
+X-Gm-Message-State: AOJu0Yx3RWS5IZqnouvyZ0MPGE9R4IkF03ArBg0t9oMXngGFGJHMOJYX
+        ZzSIEVASzKJ+1Ai7voYBNE5PWQ==
+X-Google-Smtp-Source: AGHT+IFsn7UhU0Ie5QCtN/RuNeDeBGWw7ehUM+N3a+e7KmmkwDZidr+e3/soiq9sgtalKfq7R2rm0w==
+X-Received: by 2002:a05:6830:10cb:b0:6d9:e37f:5c54 with SMTP id z11-20020a05683010cb00b006d9e37f5c54mr8981554oto.9.1702507674986;
+        Wed, 13 Dec 2023 14:47:54 -0800 (PST)
 Received: from charlie.ba.rivosinc.com ([64.71.180.162])
-        by smtp.gmail.com with ESMTPSA id bk21-20020a056830369500b006d855e2c56csm2375157otb.31.2023.12.13.14.47.52
+        by smtp.gmail.com with ESMTPSA id bk21-20020a056830369500b006d855e2c56csm2375157otb.31.2023.12.13.14.47.53
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Dec 2023 14:47:53 -0800 (PST)
+        Wed, 13 Dec 2023 14:47:54 -0800 (PST)
 From:   Charlie Jenkins <charlie@rivosinc.com>
-Date:   Wed, 13 Dec 2023 14:47:47 -0800
-Subject: [PATCH v3 1/2] riscv: Include riscv_set_icache_flush_ctx prctl
+Date:   Wed, 13 Dec 2023 14:47:48 -0800
+Subject: [PATCH v3 2/2] documentation: Document
+ PR_RISCV_SET_ICACHE_FLUSH_CTX prctl
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20231213-fencei-v3-1-b75158238eb7@rivosinc.com>
+Message-Id: <20231213-fencei-v3-2-b75158238eb7@rivosinc.com>
 References: <20231213-fencei-v3-0-b75158238eb7@rivosinc.com>
 In-Reply-To: <20231213-fencei-v3-0-b75158238eb7@rivosinc.com>
 To:     Paul Walmsley <paul.walmsley@sifive.com>,
@@ -68,190 +69,147 @@ To:     Paul Walmsley <paul.walmsley@sifive.com>,
 Cc:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
         linux-doc@vger.kernel.org, Charlie Jenkins <charlie@rivosinc.com>
 X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1702507670; l=6131;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1702507670; l=4185;
  i=charlie@rivosinc.com; s=20231120; h=from:subject:message-id;
- bh=ZybT6osscsbJNHD3FXkr0XheDxo9P/aKXBzramQFt5M=;
- b=vT9DEQt8t4gBJEHrLW8uYG6Rg8GxYnxBgsn2bssPDyU8xoqAGX5wkHKXCJPul/XI9snTFo12G
- 59UhcgTkcUbBYMZCQ9z8deGm5qkruYbTrjwUeY2kHWPBoPXnIy/5I/3
+ bh=zPaRO2ks3l/75pkgWBpZ4nSSEIYV6K0VRBbOkUO2jEY=;
+ b=FhysUS+fsKXjyq0qV4ESXY/r9f9YHqD57UdPggn5+823NiPGLggILNdzlx/BcMFogfJIEdvRy
+ M8mdMMi6/hrBe52bmDrZrvSpfL+Om8qXAVgapW/bkUDvXMgqvt+LFBA
 X-Developer-Key: i=charlie@rivosinc.com; a=ed25519;
  pk=t4RSWpMV1q5lf/NWIeR9z58bcje60/dbtxxmoSfBEcs=
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Support new prctl with key PR_RISCV_SET_ICACHE_FLUSH_CTX to enable
-optimization of cross modifying code. This prctl enables userspace code
-to use icache flushing instructions such as fence.i with the guarantee
-that the icache will continue to be clean after thread migration.
+Provide documentation that explains how to properly do CMODX in riscv.
 
 Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
 ---
- arch/riscv/include/asm/mmu.h       |  2 ++
- arch/riscv/include/asm/processor.h |  6 ++++++
- arch/riscv/mm/cacheflush.c         | 37 +++++++++++++++++++++++++++++++++++++
- arch/riscv/mm/context.c            |  8 +++++---
- include/uapi/linux/prctl.h         |  3 +++
- kernel/sys.c                       |  6 ++++++
- 6 files changed, 59 insertions(+), 3 deletions(-)
+ Documentation/arch/riscv/cmodx.rst | 98 ++++++++++++++++++++++++++++++++++++++
+ Documentation/arch/riscv/index.rst |  1 +
+ 2 files changed, 99 insertions(+)
 
-diff --git a/arch/riscv/include/asm/mmu.h b/arch/riscv/include/asm/mmu.h
-index 355504b37f8e..60be458e94da 100644
---- a/arch/riscv/include/asm/mmu.h
-+++ b/arch/riscv/include/asm/mmu.h
-@@ -19,6 +19,8 @@ typedef struct {
- #ifdef CONFIG_SMP
- 	/* A local icache flush is needed before user execution can resume. */
- 	cpumask_t icache_stale_mask;
-+	/* Force local icache flush on all migrations. */
-+	bool force_icache_flush;
- #endif
- #ifdef CONFIG_BINFMT_ELF_FDPIC
- 	unsigned long exec_fdpic_loadmap;
-diff --git a/arch/riscv/include/asm/processor.h b/arch/riscv/include/asm/processor.h
-index f19f861cda54..7eda6c75e0f2 100644
---- a/arch/riscv/include/asm/processor.h
-+++ b/arch/riscv/include/asm/processor.h
-@@ -84,6 +84,9 @@ struct thread_struct {
- 	unsigned long vstate_ctrl;
- 	struct __riscv_v_ext_state vstate;
- 	unsigned long align_ctl;
-+#ifdef CONFIG_SMP
-+	bool force_icache_flush;
-+#endif
- };
- 
- /* Whitelist the fstate from the task_struct for hardened usercopy */
-@@ -145,6 +148,9 @@ extern int set_unalign_ctl(struct task_struct *tsk, unsigned int val);
- #define GET_UNALIGN_CTL(tsk, addr)	get_unalign_ctl((tsk), (addr))
- #define SET_UNALIGN_CTL(tsk, val)	set_unalign_ctl((tsk), (val))
- 
-+#define RISCV_SET_ICACHE_FLUSH_CTX(arg1, arg2)	riscv_set_icache_flush_ctx(arg1, arg2)
-+extern int riscv_set_icache_flush_ctx(unsigned long ctx, unsigned long per_thread);
+diff --git a/Documentation/arch/riscv/cmodx.rst b/Documentation/arch/riscv/cmodx.rst
+new file mode 100644
+index 000000000000..20f327d85116
+--- /dev/null
++++ b/Documentation/arch/riscv/cmodx.rst
+@@ -0,0 +1,98 @@
++.. SPDX-License-Identifier: GPL-2.0
 +
- #endif /* __ASSEMBLY__ */
- 
- #endif /* _ASM_RISCV_PROCESSOR_H */
-diff --git a/arch/riscv/mm/cacheflush.c b/arch/riscv/mm/cacheflush.c
-index 55a34f2020a8..3b2bf8256a10 100644
---- a/arch/riscv/mm/cacheflush.c
-+++ b/arch/riscv/mm/cacheflush.c
-@@ -5,6 +5,7 @@
- 
- #include <linux/acpi.h>
- #include <linux/of.h>
-+#include <linux/prctl.h>
- #include <asm/acpi.h>
- #include <asm/cacheflush.h>
- 
-@@ -152,3 +153,39 @@ void __init riscv_init_cbo_blocksizes(void)
- 	if (cboz_block_size)
- 		riscv_cboz_block_size = cboz_block_size;
- }
++==============================================================================
++Concurrent Modification and Execution of Instructions (CMODX) for RISC-V Linux
++==============================================================================
 +
-+/**
-+ * riscv_set_icache_flush_ctx() - Enable userspace to emit icache flushing instructions.
-+ * @ctx: Sets the type of context
-+ *  - PR_RISCV_CTX_SW_FENCEI: Allow fence.i in userspace. Another fence.i will
-+ *			      emitted on thread/process migration.
-+ * @per_thread: When set to 0, will use the default behavior of setting the
-+ *  icache flush context per process. When set to 1, will use a per thread
-+ *  context.
-+ *
-+ * When in per-process context, there may be multiple threads using the same mm.
-+ * Therefore, the icache can never be assumed clean when. Multiple threads in
-+ * the process may modify instructions in the mm concurrently.
-+ *
-+ * In per-thread context, it can be assumed that all modifications to
-+ * instructions in memory will be performed by this thread. When the thread is
-+ * migrated the icache will be flushed.
-+ *
-+ */
-+int riscv_set_icache_flush_ctx(unsigned long ctx, unsigned long per_thread)
-+{
-+#ifdef CONFIG_SMP
-+	switch (ctx) {
-+	case PR_RISCV_CTX_SW_FENCEI:
-+		if (per_thread)
-+			current->thread.force_icache_flush = true;
-+		else
-+			current->mm->context.force_icache_flush = true;
-+		break;
++CMODX is a programming technique where a program executes instructions that were
++modified by the program itself. Instruction storage and the instruction cache
++(icache) is not guaranteed to be synchronized on RISC-V hardware. Therefore, the
++program must enforce its own synchonization with the unprivileged fence.i
++instruction.
 +
-+	default:
-+		break;
++However, the default Linux ABI prohibits the use of fence.i in userspace
++applications. At any point the scheduler may migrate a task onto a new hart. If
++migration occurs after the userspace synchronized the icache and instruction
++storage with fence.i, the icache will no longer be clean. This is due to the
++behavior of fence.i only affecting the hart that it is called on. Thus, the hart
++that the task has been migrated to, may not have synchronized instruction
++storage and icache.
++
++There are two ways to solve this problem: use the riscv_flush_icache() syscall,
++or use the ``PR_RISCV_SET_ICACHE_FLUSH_CTX`` prctl(). The syscall should be used
++when the application very rarely needs to flush the icache. If the icache will
++need to be flushed many times in the lifetime of the application, the prctl
++should be used.
++
++The prctl informs the kernel that it must emit synchronizing instructions upon
++task migration. The program itself must emit synchonizing instructions when
++necessary as well.
++
++1.  prctl() Interface
++---------------------
++
++Before the program emits their first icache flushing instruction, the program
++must call this prctl().
++
++* prctl(PR_RISCV_SET_ICACHE_FLUSH_CTX, unsigned long ctx, unsigned long per_thread)
++
++	Sets the icache flushing context. If per_thread is 0, context will be
++	applied per process, otherwise if per_thread is 1 context will be
++	per-thread. Any other number will have undefined behavior.
++
++	* :c:macro:`PR_RISCV_CTX_SW_FENCEI`: Allow fence.i to be called in
++	  userspace.
++
++Example usage:
++
++The following files are meant to be compiled and linked with each other. The
++modify_instruction() function replaces an add with 0 with an add with one,
++causing the instruction sequence in get_value() to change from returning a zero
++to returning a one.
++
++cmodx.c::
++
++	#include <stdio.h>
++	#include <sys/prctl.h>
++
++	extern int get_value();
++	extern void modify_instruction();
++
++	int main()
++	{
++		int value = get_value();
++		printf("Value before cmodx: %d\n", value);
++
++		// Call prctl before first fence.i is called inside modify_instruction
++		prctl(PR_RISCV_SET_ICACHE_FLUSH_CTX, PR_RISCV_CTX_SW_FENCEI, 0);
++		modify_instruction();
++
++		value = get_value();
++		printf("Value after cmodx: %d\n", value);
++		return 0;
 +	}
-+#endif
-+	return 0;
-+}
-diff --git a/arch/riscv/mm/context.c b/arch/riscv/mm/context.c
-index 217fd4de6134..0146c61be0ab 100644
---- a/arch/riscv/mm/context.c
-+++ b/arch/riscv/mm/context.c
-@@ -297,12 +297,14 @@ static inline void set_mm(struct mm_struct *prev,
-  *
-  * The "cpu" argument must be the current local CPU number.
-  */
--static inline void flush_icache_deferred(struct mm_struct *mm, unsigned int cpu)
-+static inline void flush_icache_deferred(struct mm_struct *mm, unsigned int cpu,
-+					 struct task_struct *task)
- {
- #ifdef CONFIG_SMP
- 	cpumask_t *mask = &mm->context.icache_stale_mask;
- 
--	if (cpumask_test_cpu(cpu, mask)) {
-+	if (cpumask_test_cpu(cpu, mask) || mm->context.force_icache_flush ||
-+	    (task && task->thread.force_icache_flush)) {
- 		cpumask_clear_cpu(cpu, mask);
- 		/*
- 		 * Ensure the remote hart's writes are visible to this hart.
-@@ -332,5 +334,5 @@ void switch_mm(struct mm_struct *prev, struct mm_struct *next,
- 
- 	set_mm(prev, next, cpu);
- 
--	flush_icache_deferred(next, cpu);
-+	flush_icache_deferred(next, cpu, task);
- }
-diff --git a/include/uapi/linux/prctl.h b/include/uapi/linux/prctl.h
-index 370ed14b1ae0..472801ea78cc 100644
---- a/include/uapi/linux/prctl.h
-+++ b/include/uapi/linux/prctl.h
-@@ -306,4 +306,7 @@ struct prctl_mm_map {
- # define PR_RISCV_V_VSTATE_CTRL_NEXT_MASK	0xc
- # define PR_RISCV_V_VSTATE_CTRL_MASK		0x1f
- 
-+#define PR_RISCV_SET_ICACHE_FLUSH_CTX	71
-+# define PR_RISCV_CTX_SW_FENCEI		0
 +
- #endif /* _LINUX_PRCTL_H */
-diff --git a/kernel/sys.c b/kernel/sys.c
-index 420d9cb9cc8e..e806a8a67c36 100644
---- a/kernel/sys.c
-+++ b/kernel/sys.c
-@@ -146,6 +146,9 @@
- #ifndef RISCV_V_GET_CONTROL
- # define RISCV_V_GET_CONTROL()		(-EINVAL)
- #endif
-+#ifndef RISCV_SET_ICACHE_FLUSH_CTX
-+# define RISCV_SET_ICACHE_FLUSH_CTX(a, b)	(-EINVAL)
-+#endif
++cmodx.S::
++
++	.option norvc
++
++	.text
++	.global modify_instruction
++	modify_instruction:
++	lw a0, new_insn
++	lui a5,%hi(old_insn)
++	sw  a0,%lo(old_insn)(a5)
++	fence.i
++	ret
++
++	.section modifiable, "awx"
++	.global get_value
++	get_value:
++	li a0, 0
++	old_insn:
++	addi a0, a0, 0
++	ret
++
++	.data
++	new_insn:
++	addi a0, a0, 1
+diff --git a/Documentation/arch/riscv/index.rst b/Documentation/arch/riscv/index.rst
+index 4dab0cb4b900..eecf347ce849 100644
+--- a/Documentation/arch/riscv/index.rst
++++ b/Documentation/arch/riscv/index.rst
+@@ -13,6 +13,7 @@ RISC-V architecture
+     patch-acceptance
+     uabi
+     vector
++    cmodx
  
- /*
-  * this is where the system-wide overflow UID and GID are defined, for
-@@ -2739,6 +2742,9 @@ SYSCALL_DEFINE5(prctl, int, option, unsigned long, arg2, unsigned long, arg3,
- 	case PR_RISCV_V_GET_CONTROL:
- 		error = RISCV_V_GET_CONTROL();
- 		break;
-+	case PR_RISCV_SET_ICACHE_FLUSH_CTX:
-+		error = RISCV_SET_ICACHE_FLUSH_CTX(arg2, arg3);
-+		break;
- 	default:
- 		error = -EINVAL;
- 		break;
+     features
+ 
 
 -- 
 2.43.0
