@@ -2,183 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D4B8F810BD5
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 08:52:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 799CA810BDD
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 08:52:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378786AbjLMHwD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 02:52:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40640 "EHLO
+        id S1378859AbjLMHw0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 02:52:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42802 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378554AbjLMHwB (ORCPT
+        with ESMTP id S1378852AbjLMHwY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 02:52:01 -0500
-Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A20FE8
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 23:52:07 -0800 (PST)
-Received: by mail-wr1-x42a.google.com with SMTP id ffacd0b85a97d-333630e9e43so6455872f8f.2
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 23:52:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1702453925; x=1703058725; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Ql92QE11Pfcxbyxo2UbUycGoJKHMns1dhoo8IwBkLNY=;
-        b=RElFpwnsEM33nuWZ9vZKODyjar5v6FiJj6WPXlEDDyw5vzSRp8W6e/AymlbCigsSnJ
-         x6WvrEfosVqxfeUtkLh0vFnGasS5LKs9nQwZ8aCdyGKmKrVBkD+92NO4JUuKVKUE5QmK
-         LUxaGfcN1VLwO90use2altojqCN6gnt47F9EdXPTVDh4viLib/ACms8PvWeC7sr9JOAT
-         fQ3IVbC05UILYsTEqS+3kY6ohnOD02rVWYL9IMgFiNvcbv7dwQMiUN5zjihWlAzwM4ZJ
-         V/XE6g5jsB+lrpB7bxnA+m+Di/Wjvm8MVCmhTDGNQc8gQjhhmCIogqmbZQoPubW6tmq6
-         2U+w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702453925; x=1703058725;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Ql92QE11Pfcxbyxo2UbUycGoJKHMns1dhoo8IwBkLNY=;
-        b=Pd4hg1pjtCUNDiuTdDWusK+FGWFmc0Ec3PS5dy6eybCO6kKAZakto/hROEDSsgZA7p
-         2wzCgg7TCLDr5kgz/feLB8/oSfdhQyeVu2fP+0Bi4avsWHp9fWkDNsDAA8SlFnBnaOAx
-         s5xdD+IWlgu2X2e4I9vUw4ZGTSLPTrn/v4j0OOYgkty4XQHr9GBc9OgR9KmhQlS2tgYk
-         51ZV80exWOjpMZsRbb2XNGDOnIVHnEnmai82IqzsgsKsMN3BFJVIE3c1i9sjv2D1s/y2
-         SmN1Jtca2w6HbP/O9E1QrK+V6mlABzRf4bUFR800V4RlGrfcCI/T5Osepn2UTkjcSxGy
-         d5cQ==
-X-Gm-Message-State: AOJu0YwH/GT0sS+wMC3Ad6DTx1VEGMFdqiRrAJAadc5m7Oa09nGIdHWb
-        TXMDdPm+veCSEtTx4UWGEKQd9w==
-X-Google-Smtp-Source: AGHT+IHO41iV6A/MyiLx8wmxwoSxX4d+wdAumnLCMstjy2sDK2aHe8UD9Agtk2NmskuQ70eGcjgfmQ==
-X-Received: by 2002:a5d:6891:0:b0:333:6338:f1ad with SMTP id h17-20020a5d6891000000b003336338f1admr2575214wru.53.1702453925491;
-        Tue, 12 Dec 2023 23:52:05 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.218.27])
-        by smtp.gmail.com with ESMTPSA id s15-20020a5d69cf000000b0033641783aeesm331628wrw.7.2023.12.12.23.52.03
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 12 Dec 2023 23:52:05 -0800 (PST)
-Message-ID: <68a36910-e528-45ff-8b59-e7cd95aaef0b@linaro.org>
-Date:   Wed, 13 Dec 2023 08:52:03 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 2/2] pinctrl: samsung: add exynosautov920 pinctrl
-Content-Language: en-US
-To:     Jaewon Kim <jaewon02.kim@samsung.com>,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Tomasz Figa <tomasz.figa@gmail.com>,
-        Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Uwe Kleine-K?nig <u.kleine-koenig@pengutronix.de>,
+        Wed, 13 Dec 2023 02:52:24 -0500
+Received: from jabberwock.ucw.cz (jabberwock.ucw.cz [46.255.230.98])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDA3CEB;
+        Tue, 12 Dec 2023 23:52:28 -0800 (PST)
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 16E561C0071; Wed, 13 Dec 2023 08:52:27 +0100 (CET)
+Date:   Wed, 13 Dec 2023 08:52:25 +0100
+From:   Pavel Machek <pavel@denx.de>
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Pavel Machek <pavel@denx.de>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>
-Cc:     linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-pwm@vger.kernel.org, linux-serial@vger.kernel.org
-References: <20231211114145.106255-1-jaewon02.kim@samsung.com>
- <CGME20231211114216epcas2p300bbf4c592d495991c6cc2d96e0b1f85@epcas2p3.samsung.com>
- <20231211114145.106255-3-jaewon02.kim@samsung.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231211114145.106255-3-jaewon02.kim@samsung.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        dianders@chromium.org, grundler@chromium.org, davem@davemloft.net,
+        stable@vger.kernel.org, patches@lists.linux.dev,
+        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
+        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org,
+        allen.lkml@gmail.com
+Subject: Re: RTL8152_INACCESSIBLE was Re: [PATCH 6.1 000/194] 6.1.68-rc1
+ review
+Message-ID: <ZXliuTqyO_IjlIz7@amd.ucw.cz>
+References: <20231211182036.606660304@linuxfoundation.org>
+ <ZXi9wyS7vjGyUWU8@duo.ucw.cz>
+ <a6af01bf-7785-4531-8514-8e5eb09e207e@roeck-us.net>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="3xxmwakYu/j4Nqz2"
+Content-Disposition: inline
+In-Reply-To: <a6af01bf-7785-4531-8514-8e5eb09e207e@roeck-us.net>
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,SPF_HELO_PASS,
+        SPF_NEUTRAL,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/12/2023 12:41, Jaewon Kim wrote:
-> Add pinctrl data for ExynosAutov920 SoC.
-> It has a newly applied pinctrl register layer for ExynosAuto series.
-> 
-> Pinctrl data for ExynosAutoV920 SoC.
->  - GPA0,GPA1 (10): External wake up interrupt
->  - GPQ0 (2): SPMI (PMIC I/F)
->  - GPB0,GPB1,GPB2,GPB3,GPB4,GPB5,GPB6 (47): I2S Audio
->  - GPH0,GPH1,GPH2,GPH3,GPH4,GPH5,GPH6,GPH8 (49): PCIE, UFS, Ethernet
->  - GPG0,GPG1,GPG2,GPG3,GPG4,GPG5 (29): General purpose
->  - GPP0,GPP1,GPP2,GPP3,GPP4,GPP5,GPP6,GPP7,GPP8,GPP9,GPP10 (77): USI
-> 
-> Signed-off-by: Jaewon Kim <jaewon02.kim@samsung.com>
-> ---
->  .../pinctrl/samsung/pinctrl-exynos-arm64.c    | 140 ++++++++++++++++++
->  drivers/pinctrl/samsung/pinctrl-exynos.c      |  23 ++-
->  drivers/pinctrl/samsung/pinctrl-exynos.h      |  25 ++++
->  drivers/pinctrl/samsung/pinctrl-samsung.c     |   2 +
->  drivers/pinctrl/samsung/pinctrl-samsung.h     |   1 +
->  5 files changed, 190 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/pinctrl/samsung/pinctrl-exynos-arm64.c b/drivers/pinctrl/samsung/pinctrl-exynos-arm64.c
-> index cb965cf93705..a998c296dd05 100644
-> --- a/drivers/pinctrl/samsung/pinctrl-exynos-arm64.c
-> +++ b/drivers/pinctrl/samsung/pinctrl-exynos-arm64.c
-> @@ -796,3 +796,143 @@ const struct samsung_pinctrl_of_match_data fsd_of_data __initconst = {
->  	.ctrl		= fsd_pin_ctrl,
->  	.num_ctrl	= ARRAY_SIZE(fsd_pin_ctrl),
->  };
-> +
-> +/* pin banks of exynosautov920 pin-controller 0 (ALIVE) */
-> +static const struct samsung_pin_bank_data exynosautov920_pin_banks0[] = {
-> +	EXYNOSV920_PIN_BANK_EINTW(8, 0x0000, "gpa0", 0x18, 0x24, 0x28),
-> +	EXYNOSV920_PIN_BANK_EINTW(2, 0x1000, "gpa1", 0x18, 0x20, 0x24),
-> +	EXYNOS850_PIN_BANK_EINTN(2, 0x2000, "gpq0"),
-> +};
 
-Applied with re-ordering it, to keep it after ExynosAutov9. For the
-future: don't add entries to the end of lists because it causes exactly
-this issue we have here: unnecessary conflicts. Please keep this rule
-for entire development, not only pinctrl.
+--3xxmwakYu/j4Nqz2
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-If both you and Peter were observing this basic rule, I would not have
-work of reshuffling and fixing conflicts.
+Hi!
 
-Please check the result if I reshuffled/solved conflicts correctly.
+> > > This is the start of the stable review cycle for the 6.1.68 release.
+> > > There are 194 patches in this series, all will be posted as a response
+> > > to this one.  If anyone has any issues with these being applied, plea=
+se
+> > > let me know.
+> >=20
+> >=20
+> > > Douglas Anderson <dianders@chromium.org>
+> > >      r8152: Add RTL8152_INACCESSIBLE to r8153_aldps_en()
+> > >=20
+> > > Douglas Anderson <dianders@chromium.org>
+> > >      r8152: Add RTL8152_INACCESSIBLE to r8153_pre_firmware_1()
+> > >=20
+> > > Douglas Anderson <dianders@chromium.org>
+> > >      r8152: Add RTL8152_INACCESSIBLE to r8156b_wait_loading_flash()
+> > >=20
+> > > Douglas Anderson <dianders@chromium.org>
+> > >      r8152: Add RTL8152_INACCESSIBLE checks to more loops
+> > >=20
+> > > Douglas Anderson <dianders@chromium.org>
+> > >      r8152: Rename RTL8152_UNPLUG to RTL8152_INACCESSIBLE
+> >=20
+> > Central patch that actually fixes something is:
+> >=20
+> > commit d9962b0d42029bcb40fe3c38bce06d1870fa4df4
+> > Author: Douglas Anderson <dianders@chromium.org>
+> > Date:   Fri Oct 20 14:06:59 2023 -0700
+> >=20
+> >      r8152: Block future register access if register access fails
+> >=20
+> > ...but we don't have that in 6.1. So we should not need the rest,
+> > either.
+> >=20
+>=20
+> Also, the missing patch is fixed subsequently by another patch, so it can=
+ not
+> be added on its own.
+
+For the record I'm trying to advocate "drop all patches listed as they
+don't fix the bug", not "add more", as this does not meet stable
+criteria.
 
 Best regards,
-Krzysztof
+								Pavel
+--=20
+DENX Software Engineering GmbH,        Managing Director: Erika Unter
+HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
 
+--3xxmwakYu/j4Nqz2
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCZXliuQAKCRAw5/Bqldv6
+8ptyAKCIbKNVJODY4G/czTtiQuc0PLcH/wCeJ76TeC9JOZ9MVPpDBkm90ermodc=
+=cOtU
+-----END PGP SIGNATURE-----
+
+--3xxmwakYu/j4Nqz2--
