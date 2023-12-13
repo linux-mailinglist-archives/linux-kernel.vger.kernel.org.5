@@ -2,26 +2,26 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E3EA2810AFE
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 08:06:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A547810B00
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 08:06:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378531AbjLMHGF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 02:06:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35174 "EHLO
+        id S1378667AbjLMHGO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 02:06:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55038 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235322AbjLMHFa (ORCPT
+        with ESMTP id S235268AbjLMHFe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 02:05:30 -0500
+        Wed, 13 Dec 2023 02:05:34 -0500
 Received: from Atcsqr.andestech.com (60-248-80-70.hinet-ip.hinet.net [60.248.80.70])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9D3C12D;
-        Tue, 12 Dec 2023 23:05:16 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4386213A;
+        Tue, 12 Dec 2023 23:05:20 -0800 (PST)
 Received: from mail.andestech.com (ATCPCS16.andestech.com [10.0.1.222])
-        by Atcsqr.andestech.com with ESMTP id 3BD73rxS032328;
-        Wed, 13 Dec 2023 15:03:53 +0800 (+08)
+        by Atcsqr.andestech.com with ESMTP id 3BD73wCq032352;
+        Wed, 13 Dec 2023 15:03:58 +0800 (+08)
         (envelope-from peterlin@andestech.com)
 Received: from swlinux02.andestech.com (10.0.15.183) by ATCPCS16.andestech.com
  (10.0.1.222) with Microsoft SMTP Server id 14.3.498.0; Wed, 13 Dec 2023
- 15:03:49 +0800
+ 15:03:54 +0800
 From:   Yu Chien Peter Lin <peterlin@andestech.com>
 To:     <acme@kernel.org>, <adrian.hunter@intel.com>,
         <ajones@ventanamicro.com>, <alexander.shishkin@linux.intel.com>,
@@ -48,9 +48,9 @@ To:     <acme@kernel.org>, <adrian.hunter@intel.com>,
         <tglx@linutronix.de>, <tim609@andestech.com>, <uwu@icenowy.me>,
         <wens@csie.org>, <will@kernel.org>, <ycliang@andestech.com>,
         <inochiama@outlook.com>
-Subject: [PATCH v5 09/16] dt-bindings: riscv: Add T-Head PMU extension description
-Date:   Wed, 13 Dec 2023 15:02:54 +0800
-Message-ID: <20231213070301.1684751-10-peterlin@andestech.com>
+Subject: [PATCH v5 10/16] dt-bindings: riscv: Add Andes PMU extension description
+Date:   Wed, 13 Dec 2023 15:02:55 +0800
+Message-ID: <20231213070301.1684751-11-peterlin@andestech.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20231213070301.1684751-1-peterlin@andestech.com>
 References: <20231213070301.1684751-1-peterlin@andestech.com>
@@ -60,7 +60,7 @@ Content-Type:   text/plain; charset=US-ASCII
 X-Originating-IP: [10.0.15.183]
 X-DNSRBL: 
 X-SPAM-SOURCE-CHECK: pass
-X-MAIL: Atcsqr.andestech.com 3BD73rxS032328
+X-MAIL: Atcsqr.andestech.com 3BD73wCq032352
 X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,
         RCVD_IN_DNSWL_BLOCKED,RDNS_DYNAMIC,SPF_HELO_NONE,SPF_PASS,
         T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
@@ -70,41 +70,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Document the ISA string for T-Head performance monitor extension
-which provides counter overflow interrupt mechanism.
+Document the ISA string for Andes Technology performance monitor
+extension which provides counter overflow interrupt and mode
+filtering mechanisms.
 
 Signed-off-by: Yu Chien Peter Lin <peterlin@andestech.com>
-Reviewed-by: Guo Ren <guoren@kernel.org>
-Reviewed-by: Inochi Amaoto <inochiama@outlook.com>
+Acked-by: Conor Dooley <conor.dooley@microchip.com>
+Reviewed-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
 ---
 Changes v2 -> v3:
   - New patch
 Changes v3 -> v4:
-  - No change
+  - Include Conor's Acked-by
 Changes v4 -> v5:
-  - Include Guo's Reviewed-by
-  - Include Inochi's Reviewed-by
-  - Update to C910 documentation with its commit hash
+  - Include Prabhakar's Reviewed-by
 ---
- Documentation/devicetree/bindings/riscv/extensions.yaml | 6 ++++++
- 1 file changed, 6 insertions(+)
+ Documentation/devicetree/bindings/riscv/extensions.yaml | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
 diff --git a/Documentation/devicetree/bindings/riscv/extensions.yaml b/Documentation/devicetree/bindings/riscv/extensions.yaml
-index c91ab0e46648..b5cb8ac7ac80 100644
+index b5cb8ac7ac80..daef6c3b1580 100644
 --- a/Documentation/devicetree/bindings/riscv/extensions.yaml
 +++ b/Documentation/devicetree/bindings/riscv/extensions.yaml
-@@ -258,5 +258,11 @@ properties:
+@@ -258,6 +258,13 @@ properties:
              in commit 2e5236 ("Ztso is now ratified.") of the
              riscv-isa-manual.
  
-+        - const: xtheadpmu
++        - const: xandespmu
 +          description:
-+            The T-Head performance monitor extension for counter overflow, as ratified
-+            in commit 4c4981 ("Initial commit") of Xuantie C910 user manual.
-+            https://github.com/T-head-Semi/openc910/tree/main/doc
++            The Andes Technology performance monitor extension for counter overflow
++            and privilege mode filtering. For more details, see Counter Related
++            Registers in the AX45MP datasheet.
++            https://www.andestech.com/wp-content/uploads/AX45MP-1C-Rev.-5.0.0-Datasheet.pdf
 +
- additionalProperties: true
- ...
+         - const: xtheadpmu
+           description:
+             The T-Head performance monitor extension for counter overflow, as ratified
 -- 
 2.34.1
 
