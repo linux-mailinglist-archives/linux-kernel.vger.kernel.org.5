@@ -2,127 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CDAE581096D
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 06:23:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DD9FA810992
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 06:44:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378527AbjLMFW6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 00:22:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53856 "EHLO
+        id S232165AbjLMFcY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 00:32:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37170 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229906AbjLMFW5 (ORCPT
+        with ESMTP id S229906AbjLMFcW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 00:22:57 -0500
-Received: from mail-io1-xd34.google.com (mail-io1-xd34.google.com [IPv6:2607:f8b0:4864:20::d34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEF4EAF
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 21:23:03 -0800 (PST)
-Received: by mail-io1-xd34.google.com with SMTP id ca18e2360f4ac-7b6fe5d67d4so237080839f.3
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 21:23:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1702444983; x=1703049783; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=SCd8C9LQLauZmTjmS+uugY0Prp+1ozkiZ2K2RQqgUOA=;
-        b=J6SLJv2Z7+majbra1X5oG/5GbSMHtbR+17uXKp6tUMJlhJQCteIkA85a8adz/ENnx+
-         254Lw5T2STA1DLztxUnnW8qpzQlqUkLH7sqgrzM9v3HP9Qyj7LzH0su3gGfhxYASRZC+
-         ij62/X0a9h8Pnyv8q5UDmjMRuDJ/cTxZry1xPCGK0NdXunAoc7rwgABJAZj/w9+O0ZMY
-         AZ2mU8m2oB2jm6CBkPPugvTpj4XVe5A9e7Q5BtP2wfhwbHO7PDcFAaP6Vou1uVpc8ufB
-         sQGo1w9SlA3rO7eW1uwqkG7GuFBCK/SlazgA8T89CcDTBGSDVGIeYpX8oGtwPIKhBfi2
-         b6ZA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702444983; x=1703049783;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=SCd8C9LQLauZmTjmS+uugY0Prp+1ozkiZ2K2RQqgUOA=;
-        b=pd1OPqkC8ZhQoHzJ4/EgV/9hm6bJ0gp0DCpwap0ath5WWCJz4+qsJyaoAHI8Z7uVoM
-         E/EvGZLF0G3CJCNwrBPX7bd8y5K2Lk4ybGLjPvmBfsV8ZpqzT0RuQQMM8mdJ27Ai7Xpz
-         KUOIUoKRrt3CcArihcq1YMJEFladvRTDx6o+rssd5kCFwMbn2f9weW0+FrcVBt53Xsdt
-         /OikHo/1h7ouFLfutWo/PWk12GIIYjXMY/nDjAyLr99IXToXF9GMJDMXmQx7DaBo1CJT
-         +nn5Mkz0ue8DYBrRhldSA4YNKK6r2sB+SSZcIcCWiUlOwckw4TdBEAH5pY+LpcAyV5Mb
-         FgeA==
-X-Gm-Message-State: AOJu0Yx0xGHGUFtzeyBHd5oV8StARQfcntoUHlKI9K0FQ3f4mJwZAwdW
-        HTQSVcntUMcjHvdWx48q/MPgUA==
-X-Google-Smtp-Source: AGHT+IH6vC497QRuriHAwx9cjT1xvkr2slqYEpsEM7UHO1qEE/V0oO6mf2iBvMSCW2LXTx7+g4dgnw==
-X-Received: by 2002:a05:6e02:1be5:b0:35d:59a2:a32c with SMTP id y5-20020a056e021be500b0035d59a2a32cmr7764399ilv.46.1702444983025;
-        Tue, 12 Dec 2023 21:23:03 -0800 (PST)
-Received: from localhost ([122.172.82.6])
-        by smtp.gmail.com with ESMTPSA id s22-20020a170902989600b001ce5b859a59sm9549668plp.305.2023.12.12.21.23.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Dec 2023 21:23:02 -0800 (PST)
-Date:   Wed, 13 Dec 2023 10:52:59 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     "xiaowu.ding" <xiaowu.ding@jaguarmicro.com>
-Cc:     Tushar.Khandelwal@arm.com, jassisinghbrar@gmail.com,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] mailbox: arm_mhuv2: Fix a bug for
- mhuv2_sender_interrupt
-Message-ID: <20231213052259.ug4j7tnmqt3qaxuy@vireshk-i7>
-References: <20231212113722.863-1-xiaowu.ding@jaguarmicro.com>
+        Wed, 13 Dec 2023 00:32:22 -0500
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48386CD;
+        Tue, 12 Dec 2023 21:32:28 -0800 (PST)
+Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BD4ap62006983;
+        Wed, 13 Dec 2023 05:32:17 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+        message-id:date:mime-version:subject:to:cc:references:from
+        :in-reply-to:content-type:content-transfer-encoding; s=
+        qcppdkim1; bh=DJVXKDPsNY4QyQG2ZYDGT8e0H7uObC2Qb9v3P42JEdc=; b=HR
+        52wP/FkRhJwpciH6r/JuvAGiAjWgiUkwPNRuQkJceh5HXUQ8fN6kWibYY7k+7jBj
+        XLUvRoGmk6qup2u6ToqN4EFPG9pN7DqhJXyoK06JP2pj+gnpiQNhEp8lKbyYi7/Q
+        wAGsfxS81KFxsb35PmWfhUi8HNOoglDCj6WbeHaEminzVGtYVlu8oXgHD3B9f/y8
+        gGn++x01cA9OO2K0luHReqLclGvvklOVKMdxc3v4v63SuaoD+7ccA0B3PciEVUp0
+        DHNgoNyvC65JKVvp64jg0Af/Ys3G/HeoJhYEZvuLM8OhULf3lNJHxfamGnpO7IH9
+        c1d4/GqKp3PvIF2t44aA==
+Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3uy3rprc1j-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 13 Dec 2023 05:32:16 +0000 (GMT)
+Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
+        by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3BD5WGhi008301
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 13 Dec 2023 05:32:16 GMT
+Received: from [10.201.3.200] (10.80.80.8) by nalasex01c.na.qualcomm.com
+ (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Tue, 12 Dec
+ 2023 21:32:12 -0800
+Message-ID: <51133a78-43ca-46fb-8f5e-b3bfdaef9a79@quicinc.com>
+Date:   Wed, 13 Dec 2023 11:02:09 +0530
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231212113722.863-1-xiaowu.ding@jaguarmicro.com>
-X-Spam-Status: No, score=2.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/1] hwspinlock: qcom: fix tcsr data for ipq6018
+To:     Chukun Pan <amadeus@jmu.edu.cn>,
+        Bjorn Andersson <andersson@kernel.org>
+CC:     Andy Gross <agross@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Ohad Ben-Cohen <ohad@wizery.com>,
+        Baolin Wang <baolin.wang@linux.alibaba.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        <linux-remoteproc@vger.kernel.org>,
+        <linux-arm-msm@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20231212142509.655094-1-amadeus@jmu.edu.cn>
+Content-Language: en-US
+From:   Vignesh Viswanathan <quic_viswanat@quicinc.com>
+In-Reply-To: <20231212142509.655094-1-amadeus@jmu.edu.cn>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: AYCYbXP-AcD_xck8dwEYI4BkDdIcGUe6
+X-Proofpoint-GUID: AYCYbXP-AcD_xck8dwEYI4BkDdIcGUe6
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-09_01,2023-12-07_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 spamscore=0
+ mlxscore=0 suspectscore=0 impostorscore=0 adultscore=0 malwarescore=0
+ mlxlogscore=952 bulkscore=0 priorityscore=1501 phishscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2311290000 definitions=main-2312130037
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLACK autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Level: **
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12-12-23, 19:37, xiaowu.ding wrote:
-> From: "Xiaowu.ding" <xiaowu.ding@jaguarmicro.com>
+
+
+On 12/12/2023 7:55 PM, Chukun Pan wrote:
+> The tcsr_mutex hwlock register of the ipq6018 SoC is 0x20000[1], which
+> should not use the max_register configuration of older SoCs. This will
+> cause smem to be unable to probe, further causing devices that use
+> smem-part to parse partitions to fail to boot.
 > 
-> Message Handling Unit version is v2.1.
+> [    2.118227] qcom-smem: probe of 4aa00000.memory failed with error -110
+> [   22.273120] platform 79b0000.nand-controller: deferred probe pending
 > 
-> When arm_mhuv2 working with the data protocol transfer mode.
-> We have split one mhu into two channels, and every channel
-> include four channel windows, the two channels share
-> one gic spi interrupt.
+> Remove 'qcom,ipq6018-tcsr-mutex' setting from of_match to fix this.
+
+Hi Chukun,
+
+This patch was already posted [2] and Bjorn applied the same [3].
+
+Hi Bjorn,
+
+This patch is missing in linux-next. Could you please help check ?
+
+Thanks,
+Vignesh
+
+[2] https://lore.kernel.org/all/20230905095535.1263113-3-quic_viswanat@quicinc.com/
+[3] https://lore.kernel.org/all/169522934567.2501390.1112201061322984444.b4-ty@kernel.org/
 > 
-> There is a problem with the sending scenario.
-> 
-> The first channel will take up 0-3 channel windows, and the second
-> channel take up 4-7 channel windows. When the first channel send the
-> data, and the receiver will clear all the four channels status.
-> Although we only enabled the interrupt on the last channel window with
-> register CH_INT_EN,the register CHCOMB_INT_ST0 will be 0xf, not be 0x8.
-> Currently we just clear the last channel windows int status with the
-> data proctol mode.So after that,the CHCOMB_INT_ST0 status will be 0x7,
-> not be the 0x0.
-> 
-> Then the second channel send the data, the receiver read the
-> data, clear all the four channel windows status, trigger the sender
-> interrupt. But currently the CHCOMB_INT_ST0 register will be 0xf7,
-> get_irq_chan_comb function will always return the first channel.
-> 
-> So this patch clear all channel windows int status to avoid this interrupt
-> confusion.
-> 
-> Signed-off-by: Xiaowu.ding <xiaowu.ding@jaguarmicro.com>
+> [1] commit 72fc3d58b87b ("arm64: dts: qcom: ipq6018: Fix tcsr_mutex register size")
+> Fixes: 5d4753f741d8 ("hwspinlock: qcom: add support for MMIO on older SoCs")
+> Signed-off-by: Chukun Pan <amadeus@jmu.edu.cn>
 > ---
->  drivers/mailbox/arm_mhuv2.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
+>  drivers/hwspinlock/qcom_hwspinlock.c | 1 -
+>  1 file changed, 1 deletion(-)
 > 
-> diff --git a/drivers/mailbox/arm_mhuv2.c b/drivers/mailbox/arm_mhuv2.c
-> index c1ef5016f..15021c90c 100644
-> --- a/drivers/mailbox/arm_mhuv2.c
-> +++ b/drivers/mailbox/arm_mhuv2.c
-> @@ -553,7 +553,8 @@ static irqreturn_t mhuv2_sender_interrupt(int irq, void *data)
->  	priv = chan->con_priv;
->  
->  	if (!IS_PROTOCOL_DOORBELL(priv)) {
-> -		writel_relaxed(1, &mhu->send->ch_wn[priv->ch_wn_idx + priv->windows - 1].int_clr);
-> +		for (i = 0; i < priv->windows; i++)
-> +			writel_relaxed(1, &mhu->send->ch_wn[priv->ch_wn_idx + i].int_clr);
->  
->  		if (chan->cl) {
->  			mbox_chan_txdone(chan, 0);
-
-Acked-by: Viresh Kumar <viresh.kumar@linaro.org>
-
--- 
-viresh
+> diff --git a/drivers/hwspinlock/qcom_hwspinlock.c b/drivers/hwspinlock/qcom_hwspinlock.c
+> index a0fd67fd2934..814dfe8697bf 100644
+> --- a/drivers/hwspinlock/qcom_hwspinlock.c
+> +++ b/drivers/hwspinlock/qcom_hwspinlock.c
+> @@ -115,7 +115,6 @@ static const struct of_device_id qcom_hwspinlock_of_match[] = {
+>  	{ .compatible = "qcom,sfpb-mutex", .data = &of_sfpb_mutex },
+>  	{ .compatible = "qcom,tcsr-mutex", .data = &of_tcsr_mutex },
+>  	{ .compatible = "qcom,apq8084-tcsr-mutex", .data = &of_msm8226_tcsr_mutex },
+> -	{ .compatible = "qcom,ipq6018-tcsr-mutex", .data = &of_msm8226_tcsr_mutex },
+>  	{ .compatible = "qcom,msm8226-tcsr-mutex", .data = &of_msm8226_tcsr_mutex },
+>  	{ .compatible = "qcom,msm8974-tcsr-mutex", .data = &of_msm8226_tcsr_mutex },
+>  	{ .compatible = "qcom,msm8994-tcsr-mutex", .data = &of_msm8226_tcsr_mutex },
