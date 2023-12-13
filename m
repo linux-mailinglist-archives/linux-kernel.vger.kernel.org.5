@@ -2,72 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F887811420
+	by mail.lfdr.de (Postfix) with ESMTP id 95CFE811421
 	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 15:05:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1441898AbjLMOFZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 09:05:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51880 "EHLO
+        id S1441911AbjLMOF1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 09:05:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35074 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379461AbjLMOFB (ORCPT
+        with ESMTP id S1379462AbjLMOFB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 13 Dec 2023 09:05:01 -0500
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3928F1AA
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 06:04:54 -0800 (PST)
-Received: by mail-lf1-x133.google.com with SMTP id 2adb3069b0e04-50bf69afa99so8920389e87.3
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 06:04:54 -0800 (PST)
+Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 354191B4
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 06:04:55 -0800 (PST)
+Received: by mail-ej1-x629.google.com with SMTP id a640c23a62f3a-a1f8510883aso577787766b.3
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 06:04:55 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=amarulasolutions.com; s=google; t=1702476291; x=1703081091; darn=vger.kernel.org;
+        d=amarulasolutions.com; s=google; t=1702476293; x=1703081093; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=9dqXlBbcQt0R29oSjxr4jyi0yptqDX27ArBU37Ndav8=;
-        b=kxbvaXSF/MEAbg8xDALt/cWGtZO8PfqajBEdyKv4Gi1A/U8WV12E4U3Tvb+LJdnoKF
-         DxHgjIka9Chmehg1/WDlnX/yJ52UJ5gPBPPqWWJDVzWCQ+sURjphhgbD7RqcFOHZtBi+
-         2hSTEfXe/E+vttFd7vciVkQn+KTPoj+H15R7M=
+        bh=w4evxSLAkrt3VKfUuFZWoKuJqVeQx/fB/WXunMR3Gwk=;
+        b=oL5slk7SZtD05tVuTjpTOqk9eKiIvnrCKyv+xF8HTtkmUv1Z73gJlD/jkEEiRyIdiS
+         19e5qGsyD6iZLvNUQDYQehmMGpKZJim+EJe7nAL5CCTSEyFksWs4ekKOI5WaL1vWD7Dk
+         j4YHNk8bs9MDdtfJP3nrKGN0n5HBBqRd0ooVc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702476291; x=1703081091;
+        d=1e100.net; s=20230601; t=1702476293; x=1703081093;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=9dqXlBbcQt0R29oSjxr4jyi0yptqDX27ArBU37Ndav8=;
-        b=hek2qc1suRThIUbjHW9FilsU+kKYbmvMc1sENJl+/Q2dqsyK3E3fFTfprwk3S6me5S
-         aciPYRYB6I4uJdYNkYqEswVskb+pafdDim8x/eRYEZySrH2T01pKE4cFGdpdm/zDHp1E
-         dFm/k1NSGeZSpdp864RYMPkpN3sq9UO6qtoaHT1xuOfosSWu1rdxC/w417DtLRD/q3xY
-         DptRxoMTRFtevM5WUmS7xg3IjpilLdIIvuUCrUKdQjiJsqqBd4QbU51KIMUrbRke3XgI
-         6Ixnt2UqYTm1/KwuKa3khTg0iXvaWh7BrECuNOIncuRt94//eYui0WdXxDKMp1ZKynWH
-         YXBA==
-X-Gm-Message-State: AOJu0Yw/GeiBX8Pfa686e5lXx4dSpcIYa86FWR9OvAqrLjkokZ7hdWJA
-        OXQ0bXQMUWMM5zuE8WgK/DVHACfGL5U7U4dx3y2R0Q==
-X-Google-Smtp-Source: AGHT+IHfw1WlP9inuYGIENHnhTTUJtDuxBwuDowubx41cZfFvg/ZN3KRTyRxbBmkckspL7A9vZiN8g==
-X-Received: by 2002:a05:6512:5c3:b0:50b:f9b2:ced with SMTP id o3-20020a05651205c300b0050bf9b20cedmr3452370lfo.22.1702476291575;
-        Wed, 13 Dec 2023 06:04:51 -0800 (PST)
+        bh=w4evxSLAkrt3VKfUuFZWoKuJqVeQx/fB/WXunMR3Gwk=;
+        b=GOKFBJyOsZK4xK69qT3p3Akx1WbB2ntS2iB5iLN/EcdOSV1qaZqoCB2FkJ1TJTOfbx
+         Z/e8G/KAFVM9lhFQeglvq9H3gnH2jFgQXUNyuYLr0IsoPXJ1vZk/UEKOtrQej7ljhqzi
+         TTevf/Rxxpk0gjweHN9IIlJsghMwPImBl9dXGSrym+prsb9H3zbqopyBguOUibWKa0z/
+         SD9IGmrDXIa8pVXFCydAsdO5xV8nUrqs3cVLXZ2E6GdO579DKAXtljvReFCzflyjLR0M
+         R8LgbXfu1HsVmQAUXteu8lKDElaAWKxelwRNgCkWfdf1V+Q5YCex9GcrScPyDcHbUDsx
+         GZ8A==
+X-Gm-Message-State: AOJu0YxwJFJpxeIDqLEY1VwaNrg8AwD8i1CrhwbEQ2hJfvt0DucTzhlB
+        9MhuJUzcbY41/IxUC/0sSxpmyz+msBgFg4CbmPKhVg==
+X-Google-Smtp-Source: AGHT+IGhQ5djdxfJ2uYN3I+r42VAAtO9FPIEfEDBhoa0i6x96cmVrrKX0g2BFPcNnSWByv0eTda+KQ==
+X-Received: by 2002:a17:907:6d11:b0:a19:d40a:d1fb with SMTP id sa17-20020a1709076d1100b00a19d40ad1fbmr2497883ejc.199.1702476293116;
+        Wed, 13 Dec 2023 06:04:53 -0800 (PST)
 Received: from dario-ThinkPad-T14s-Gen-2i.homenet.telecomitalia.it (host-80-182-13-188.pool80182.interbusiness.it. [80.182.13.188])
-        by smtp.gmail.com with ESMTPSA id sf22-20020a1709078a9600b00a1ca020cdfasm7797635ejc.161.2023.12.13.06.04.50
+        by smtp.gmail.com with ESMTPSA id sf22-20020a1709078a9600b00a1ca020cdfasm7797635ejc.161.2023.12.13.06.04.52
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Dec 2023 06:04:51 -0800 (PST)
+        Wed, 13 Dec 2023 06:04:52 -0800 (PST)
 From:   Dario Binacchi <dario.binacchi@amarulasolutions.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     michael@amarulasolutions.com,
         Amarula patchwork <linux-amarula@amarulasolutions.com>,
         Dario Binacchi <dario.binacchi@amarulasolutions.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
         Conor Dooley <conor+dt@kernel.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@gmail.com>,
-        Jessica Zhang <quic_jesszhan@quicinc.com>,
+        Fabio Estevam <festevam@gmail.com>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Peng Fan <peng.fan@nxp.com>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
         Rob Herring <robh+dt@kernel.org>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        devicetree@vger.kernel.org, dri-devel@lists.freedesktop.org
-Subject: [PATCH v6 3/4] dt-bindings: display: panel: Add synaptics r63353 panel controller
-Date:   Wed, 13 Dec 2023 15:03:44 +0100
-Message-ID: <20231213140437.2769508-4-dario.binacchi@amarulasolutions.com>
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Shawn Guo <shawnguo@kernel.org>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: [PATCH v6 4/4] arm64: dts: imx8mn-bsh-smm-s2/pro: add display setup
+Date:   Wed, 13 Dec 2023 15:03:45 +0100
+Message-ID: <20231213140437.2769508-5-dario.binacchi@amarulasolutions.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20231213140437.2769508-1-dario.binacchi@amarulasolutions.com>
 References: <20231213140437.2769508-1-dario.binacchi@amarulasolutions.com>
@@ -85,98 +82,184 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Michael Trimarchi <michael@amarulasolutions.com>
 
-Add documentation for "synaptics,r63353" panel.
+Add the display and nodes required for its operation.
 
 Signed-off-by: Michael Trimarchi <michael@amarulasolutions.com>
 Signed-off-by: Dario Binacchi <dario.binacchi@amarulasolutions.com>
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
 ---
 
-(no changes since v3)
+Changes in v6:
+- Drop patches:
+  - [06/10] drm/panel: Add Synaptics R63353 panel driver
+  - [07/10] dt-bindings: display: panel: Add Ilitek ili9805 panel controller
+  - [08/10] drm/panel: Add Ilitek ILI9805 panel driver
+  - [09/10] drm/panel: ilitek-ili9805: add support for Tianma TM041XDHG01 panel
+  Because applied to https://anongit.freedesktop.org/git/drm/drm-misc.git (drm-misc-next)
+  Drop patches:
+  - [01/10] drm/bridge: Fix bridge disable logic
+  - [02/10] drm/bridge: Fix a use case in the bridge disable logic
+  Because they are wrong
 
 Changes in v3:
-- Add 'Reviewed-by' tag of Krzysztof Kozlowski.
 - Replace "synaptics,r63353" compatible with "syna,r63353", as
   required by vendor-prefixes.yaml.
+- Squash patch [09/11] dt-bindings: ili9805: add compatible string for Tianma TM041XDHG01
+  into [07/11] dt-bindings: display: panel: Add Ilitek ili9805 panel controller.
 
 Changes in v2:
-- Add $ref to panel-common.yaml
-- Drop port, reset-gpios, and backlight
-- Set port and backlight ad required
-- Replace additionalProperties with unevaluatedProperties
+- Adjust the mipi_dsi node based on the latest patches merged into
+  the mainline in the dtsi files it includes.
+- Added to the series the following patches:
+  - 0001 drm/bridge: Fix bridge disable logic
+  - 0002 drm/bridge: Fix a use case in the bridge disable logic
+  - 0003 samsung-dsim: enter display mode in the enable() callback
+  - 0004 drm: bridge: samsung-dsim: complete the CLKLANE_STOP setting
 
- .../display/panel/synaptics,r63353.yaml       | 61 +++++++++++++++++++
- 1 file changed, 61 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/display/panel/synaptics,r63353.yaml
+ .../freescale/imx8mn-bsh-smm-s2-common.dtsi   |   1 +
+ .../freescale/imx8mn-bsh-smm-s2-display.dtsi  | 121 ++++++++++++++++++
+ 2 files changed, 122 insertions(+)
+ create mode 100644 arch/arm64/boot/dts/freescale/imx8mn-bsh-smm-s2-display.dtsi
 
-diff --git a/Documentation/devicetree/bindings/display/panel/synaptics,r63353.yaml b/Documentation/devicetree/bindings/display/panel/synaptics,r63353.yaml
+diff --git a/arch/arm64/boot/dts/freescale/imx8mn-bsh-smm-s2-common.dtsi b/arch/arm64/boot/dts/freescale/imx8mn-bsh-smm-s2-common.dtsi
+index 22a754d438f1..bbb07c650da9 100644
+--- a/arch/arm64/boot/dts/freescale/imx8mn-bsh-smm-s2-common.dtsi
++++ b/arch/arm64/boot/dts/freescale/imx8mn-bsh-smm-s2-common.dtsi
+@@ -7,6 +7,7 @@
+ /dts-v1/;
+ 
+ #include "imx8mn.dtsi"
++#include "imx8mn-bsh-smm-s2-display.dtsi"
+ 
+ / {
+ 	chosen {
+diff --git a/arch/arm64/boot/dts/freescale/imx8mn-bsh-smm-s2-display.dtsi b/arch/arm64/boot/dts/freescale/imx8mn-bsh-smm-s2-display.dtsi
 new file mode 100644
-index 000000000000..e5617d125567
+index 000000000000..f0a924cbe548
 --- /dev/null
-+++ b/Documentation/devicetree/bindings/display/panel/synaptics,r63353.yaml
-@@ -0,0 +1,61 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/display/panel/synaptics,r63353.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
++++ b/arch/arm64/boot/dts/freescale/imx8mn-bsh-smm-s2-display.dtsi
+@@ -0,0 +1,121 @@
++// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
++/*
++ * Copyright 2021 BSH
++ */
 +
-+title: Synaptics R63353 based MIPI-DSI panels
++/ {
++	backlight: backlight {
++		compatible = "pwm-backlight";
++		pwms = <&pwm1 0 700000 0>;	/* 700000 ns = 1337Hz */
++		brightness-levels = <0 100>;
++		num-interpolated-steps = <100>;
++		default-brightness-level = <50>;
++		status = "okay";
++	};
 +
-+maintainers:
-+  - Michael Trimarchi <michael@amarulasolutions.com>
++	reg_3v3_dvdd: regulator-3v3-O3 {
++		compatible = "regulator-fixed";
++		pinctrl-names = "default";
++		pinctrl-0 = <&pinctrl_dvdd>;
++		regulator-name = "3v3-dvdd-supply";
++		regulator-min-microvolt = <3300000>;
++		regulator-max-microvolt = <3300000>;
++		gpio = <&gpio1 7 GPIO_ACTIVE_LOW>;
++	};
 +
-+allOf:
-+  - $ref: panel-common.yaml#
++	reg_v3v3_avdd: regulator-3v3-O2 {
++		compatible = "regulator-fixed";
++		pinctrl-names = "default";
++		pinctrl-0 = <&pinctrl_avdd>;
++		regulator-name = "3v3-avdd-supply";
++		regulator-min-microvolt = <3300000>;
++		regulator-max-microvolt = <3300000>;
++		gpio = <&gpio1 5 GPIO_ACTIVE_LOW>;
++	};
++};
 +
-+properties:
-+  compatible:
-+    items:
-+      - enum:
-+          - sharp,ls068b3sx02
-+      - const: syna,r63353
++&pwm1 {
++	status = "okay";
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_bl>;
++};
 +
-+  avdd-supply: true
-+  dvdd-supply: true
-+  reg: true
++&lcdif {
++	status = "okay";
++	assigned-clocks = <&clk IMX8MN_VIDEO_PLL1>;
++	assigned-clock-rates = <594000000>;
++};
 +
-+required:
-+  - compatible
-+  - avdd-supply
-+  - dvdd-supply
-+  - reg
-+  - reset-gpios
-+  - port
-+  - backlight
++&pgc_dispmix {
++	assigned-clocks = <&clk IMX8MN_CLK_DISP_AXI>, <&clk IMX8MN_CLK_DISP_APB>;
++	assigned-clock-parents = <&clk IMX8MN_SYS_PLL2_1000M>, <&clk IMX8MN_SYS_PLL1_800M>;
++	assigned-clock-rates = <500000000>, <200000000>;
++};
 +
-+unevaluatedProperties: false
++&mipi_dsi {
++	#address-cells = <1>;
++	#size-cells = <0>;
++	status = "okay";
++	samsung,esc-clock-frequency = <20000000>;
++	samsung,pll-clock-frequency = <12000000>;
 +
-+examples:
-+  - |
-+    #include <dt-bindings/gpio/gpio.h>
++	panel@0 {
++		compatible = "sharp,ls068b3sx02", "syna,r63353";
++		pinctrl-names = "default";
++		pinctrl-0 = <&pinctrl_panel>;
++		reg = <0>;
 +
-+    dsi {
-+        #address-cells = <1>;
-+        #size-cells = <0>;
++		backlight = <&backlight>;
++		dvdd-supply = <&reg_3v3_dvdd>;
++		avdd-supply = <&reg_v3v3_avdd>;
++		reset-gpios = <&gpio4 29 GPIO_ACTIVE_HIGH>;
 +
-+        panel@0 {
-+            compatible = "sharp,ls068b3sx02", "syna,r63353";
-+            reg = <0>;
-+            avdd-supply = <&avdd_display>;
-+            dvdd-supply = <&dvdd_display>;
-+            reset-gpios = <&r_pio 0 5 GPIO_ACTIVE_LOW>; /* PL05 */
-+            backlight = <&backlight>;
++		port {
++			panel_in: endpoint {
++				remote-endpoint = <&mipi_dsi_out>;
++			};
++		};
 +
-+            port {
-+                panel_in: endpoint {
-+                    remote-endpoint = <&mipi_dsi_out>;
-+                };
-+            };
-+        };
-+    };
++	};
 +
-+...
++	ports {
++		port@1 {
++			reg = <1>;
++			mipi_dsi_out: endpoint {
++				remote-endpoint = <&panel_in>;
++			};
++		};
++	};
++};
++
++&gpu {
++	status = "okay";
++};
++
++&iomuxc {
++
++	/* This is for both PWM and voltage regulators for display */
++	pinctrl_bl: pwm1grp {
++		fsl,pins = <
++			MX8MN_IOMUXC_GPIO1_IO01_PWM1_OUT	0x16
++		>;
++	};
++
++	pinctrl_panel: panelgrp {
++		fsl,pins = <
++			MX8MN_IOMUXC_SAI3_RXC_GPIO4_IO29	0x16	/* panel reset */
++		>;
++	};
++
++	pinctrl_dvdd: dvddgrp {
++		fsl,pins = <
++			MX8MN_IOMUXC_GPIO1_IO07_GPIO1_IO7	0x16	/* VDD 3V3_VO3 */
++		>;
++	};
++
++	pinctrl_avdd: avddgrp {
++		fsl,pins = <
++			MX8MN_IOMUXC_GPIO1_IO05_GPIO1_IO5	0x16	/* VDD 3V3_VO2 */
++		>;
++	};
++};
 -- 
 2.43.0
 
