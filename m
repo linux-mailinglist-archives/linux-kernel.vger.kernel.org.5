@@ -2,73 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B8EA2812394
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 00:51:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B1A381239A
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 00:57:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442767AbjLMXvW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 18:51:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51970 "EHLO
+        id S234043AbjLMX5M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 18:57:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56604 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235343AbjLMXvD (ORCPT
+        with ESMTP id S229725AbjLMX5L (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 18:51:03 -0500
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23B6B1A1;
-        Wed, 13 Dec 2023 15:50:53 -0800 (PST)
-Received: by mail-ej1-x636.google.com with SMTP id a640c23a62f3a-a22deb95d21so365362366b.3;
-        Wed, 13 Dec 2023 15:50:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702511451; x=1703116251; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=7Stx3HSyTFmSlHvWdmGz/VBTLpkzua9Mpif2ad6kPSY=;
-        b=PkVpsw2JPyotYNIDKHBMWgIAuLBDQ5p8QWxs+ppn1XBs9nm+0pwzPiojNqrgwt7yBc
-         /ksjR7bVx6tsSvHkEUN3drsiorfEZkswOn7NYNoYKySOAhSMZWSTMumJAfb3faQQN4Eg
-         qtYhrC1OZB/Ylld8EpGran7x1XJjJ3RNqlPXDQ8qKunLtyolfueAFXj2hludqsc6O6KU
-         xwGjG/1I5UyZBQc+e0Obk3OMlQosVtpg/bzCaLsqt53tajEkO7BmchbELzqbAYJ53cyy
-         2VBZSr5lm8XKTM2HBi9K7FsCCgk9IQSqUWVhJMmEj9tEXtq4kN4cX8N3ZZFnUg9Rl6S6
-         4gNQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702511451; x=1703116251;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=7Stx3HSyTFmSlHvWdmGz/VBTLpkzua9Mpif2ad6kPSY=;
-        b=BjafL2bgecLhwwuZJ0zvMNVdLUdIMLgfHM+ZV76gDBWGRQGerQ12rFA84mTEw8teVz
-         y00iKZYMZbSrcoC1Qx0hFQ6p6RV+yST+FHHBU4Cy9UAS9jlN/1HPiR7sEU9yCHGHjG/H
-         W8Tt71xgaut/X+GDDCuXjClpO7PAfWHDEdVuhs6n3FYHtHhy9CetqaB+zlaspiPqkRe7
-         Y9nIiv/qKts2H2qI3TuFW/PPkvxu4GrGtoHRSp5Vhozx+oixiObA14aA1Jyss8wSDWeh
-         232isY9s58aeqIwViUMNVzt7SiCyEfPCuPTJBRUovO8gsJfeOuhHF+xgPBSjETYTI2wY
-         gaAg==
-X-Gm-Message-State: AOJu0YyI4tDGH7kS0OsSRps8SQrqRoRuVQ/H0/5r5BVBDl1bIz9v4V+B
-        8FLbSDH7HKe80GOvQx98nVj4rvXcFVPZTXT0922lqW2I
-X-Google-Smtp-Source: AGHT+IEHl2XIA7YRMI8oKJWShxuywwQfjqlqneamf2G3eLtUWEGhYoecsbHUXjCqSiA0j4cq1lIlP9NL8bMaRLpDTqE=
-X-Received: by 2002:a17:906:b793:b0:a1c:be13:f0bc with SMTP id
- dt19-20020a170906b79300b00a1cbe13f0bcmr4930110ejb.109.1702511451517; Wed, 13
- Dec 2023 15:50:51 -0800 (PST)
+        Wed, 13 Dec 2023 18:57:11 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81D1F9C
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 15:57:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1702511837; x=1734047837;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=9RisqlQfkD94FUbVA8qz9zvfpbYwCG0HlGt8mGku71s=;
+  b=RO7iVEb+TxZcVFDo3Fw4adjAxsDiD+2LzYLwJ7uSiXCR/gWcO7X36drb
+   NmYZpEpzKV5C3WQgnFgweDqC70aQxi/tkF+o8tXmlHuHdWVR7xt7LP/IS
+   2Ph2lhSc6mfQUABQ66CeHvKZ8qMTZyDC6G9pmesi2C/NL9u2D/hMCozV6
+   h976zJz8LoyAAD4N+R0SZ4GbEk19N9PBNsuliHa2w1fDlT8C3zTO+0vIq
+   zD4heQkbHBrkjXM6R5k3R1w6mZ1pfrm99RnbxRaBzIHGjLbZDvSfjGRSr
+   j3lAhFhRw+WmZI38h5TkJyKilL+6LWXvK0Qdsvj7zwEi7UdlBviaGWdR3
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10923"; a="459365781"
+X-IronPort-AV: E=Sophos;i="6.04,274,1695711600"; 
+   d="scan'208";a="459365781"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Dec 2023 15:57:17 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10923"; a="723848776"
+X-IronPort-AV: E=Sophos;i="6.04,274,1695711600"; 
+   d="scan'208";a="723848776"
+Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
+  by orsmga003.jf.intel.com with ESMTP; 13 Dec 2023 15:57:15 -0800
+Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1rDZ6H-000LIe-2B;
+        Wed, 13 Dec 2023 23:57:13 +0000
+Date:   Thu, 14 Dec 2023 07:56:15 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: arch/arc/include/asm/checksum.h:27:26: sparse: sparse: restricted
+ __wsum degrades to integer
+Message-ID: <202312140758.j0bflCSo-lkp@intel.com>
 MIME-Version: 1.0
-References: <CACkBjsbj4y4EhqpV-ZVt645UtERJRTxfEab21jXD1ahPyzH4_g@mail.gmail.com>
- <CAEf4BzZ0xidVCqB47XnkXcNhkPWF6_nTV7yt+_Lf0kcFEut2Mg@mail.gmail.com>
- <CACkBjsaEQxCaZ0ERRnBXduBqdw3MXB5r7naJx_anqxi0Wa-M_Q@mail.gmail.com>
- <480a5cfefc23446f7c82c5b87eef6306364132b9.camel@gmail.com>
- <CAEf4BzbfF=aNa-jAkka6YrK6Vbisi=v7PFsEDR-RFuHtAub2Xw@mail.gmail.com> <3ba67d3e220c19c4a921e20f06e26bfe70ae8c80.camel@gmail.com>
-In-Reply-To: <3ba67d3e220c19c4a921e20f06e26bfe70ae8c80.camel@gmail.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 13 Dec 2023 15:50:39 -0800
-Message-ID: <CAEf4BzbTCsP6ybmpWZ7mmb3CPGHB9WAD3xmd77YauMPuR1pSdA@mail.gmail.com>
-Subject: Re: [Bug Report] bpf: incorrectly pruning runtime execution path
-To:     Eduard Zingerman <eddyz87@gmail.com>
-Cc:     Hao Sun <sunhao.th@gmail.com>, Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        bpf <bpf@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -76,37 +62,81 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 13, 2023 at 3:47=E2=80=AFPM Eduard Zingerman <eddyz87@gmail.com=
-> wrote:
->
-> On Wed, 2023-12-13 at 15:40 -0800, Andrii Nakryiko wrote:
-> [...]
-> > >     24: (18) r2 =3D 0x4                     ; R2_w=3D4
-> > >     26: (7e) if w8 s>=3D w0 goto pc+5
-> > >     mark_precise: frame0: last_idx 26 first_idx 22 subseq_idx -1
-> > >     mark_precise: frame0: regs=3Dr5,r8 stack=3D before 24: (18) r2 =
-=3D 0x4
-> > >     ...                   ^^^^^^^^^^
-> > >                           ^^^^^^^^^^
-> > > Here w8 =3D=3D 15, w0 in range [0, 2], so the jump is being predicted=
-,
-> > > but for some reason R0 is not among the registers that would be marke=
-d precise.
-> >
-> > It is, as a second step. There are two concatenated precision logs:
-> >
-> > mark_precise: frame0: last_idx 26 first_idx 22 subseq_idx -1
-> > mark_precise: frame0: regs=3Dr0 stack=3D before 24: (18) r2 =3D 0x4
-> > mark_precise: frame0: regs=3Dr0 stack=3D before 23: (bf) r5 =3D r8
-> > mark_precise: frame0: regs=3Dr0 stack=3D before 22: (67) r4 <<=3D 2
-> >
-> >
-> > The issue is elsewhere, see my last email.
->
-> Oh, right, there are two calls to mark_chain_precision in a row, thanks
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   5bd7ef53ffe5ca580e93e74eb8c81ed191ddc4bd
+commit: b38460bc463c54e0c15ff3b37e81f7e2059bb9bb kunit: Fix checksum tests on big endian CPUs
+date:   4 months ago
+config: arc-randconfig-r121-20231111 (https://download.01.org/0day-ci/archive/20231214/202312140758.j0bflCSo-lkp@intel.com/config)
+compiler: arceb-elf-gcc (GCC) 13.2.0
+reproduce: (https://download.01.org/0day-ci/archive/20231214/202312140758.j0bflCSo-lkp@intel.com/reproduce)
 
-We should probably combine those two steps, though, backtrack_state
-allows us that now (see how propagate_precision() is doing that in one
-go). It used to be very hard to mark two registers at the same time,
-but now it's trivial. So not a bad idea to improve this and remove
-confusion, especially in big real-world programs.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202312140758.j0bflCSo-lkp@intel.com/
+
+sparse warnings: (new ones prefixed by >>)
+   lib/checksum_kunit.c: note: in included file:
+>> arch/arc/include/asm/checksum.h:27:26: sparse: sparse: restricted __wsum degrades to integer
+   arch/arc/include/asm/checksum.h:27:36: sparse: sparse: restricted __wsum degrades to integer
+>> arch/arc/include/asm/checksum.h:29:11: sparse: sparse: bad assignment (-=) to restricted __wsum
+   arch/arc/include/asm/checksum.h:30:16: sparse: sparse: restricted __wsum degrades to integer
+>> arch/arc/include/asm/checksum.h:30:18: sparse: sparse: incorrect type in return expression (different base types) @@     expected restricted __sum16 @@     got unsigned int @@
+   arch/arc/include/asm/checksum.h:30:18: sparse:     expected restricted __sum16
+   arch/arc/include/asm/checksum.h:30:18: sparse:     got unsigned int
+>> arch/arc/include/asm/checksum.h:27:26: sparse: sparse: restricted __wsum degrades to integer
+   arch/arc/include/asm/checksum.h:27:36: sparse: sparse: restricted __wsum degrades to integer
+>> arch/arc/include/asm/checksum.h:29:11: sparse: sparse: bad assignment (-=) to restricted __wsum
+   arch/arc/include/asm/checksum.h:30:16: sparse: sparse: restricted __wsum degrades to integer
+>> arch/arc/include/asm/checksum.h:30:18: sparse: sparse: incorrect type in return expression (different base types) @@     expected restricted __sum16 @@     got unsigned int @@
+   arch/arc/include/asm/checksum.h:30:18: sparse:     expected restricted __sum16
+   arch/arc/include/asm/checksum.h:30:18: sparse:     got unsigned int
+>> arch/arc/include/asm/checksum.h:27:26: sparse: sparse: restricted __wsum degrades to integer
+   arch/arc/include/asm/checksum.h:27:36: sparse: sparse: restricted __wsum degrades to integer
+>> arch/arc/include/asm/checksum.h:29:11: sparse: sparse: bad assignment (-=) to restricted __wsum
+   arch/arc/include/asm/checksum.h:30:16: sparse: sparse: restricted __wsum degrades to integer
+>> arch/arc/include/asm/checksum.h:30:18: sparse: sparse: incorrect type in return expression (different base types) @@     expected restricted __sum16 @@     got unsigned int @@
+   arch/arc/include/asm/checksum.h:30:18: sparse:     expected restricted __sum16
+   arch/arc/include/asm/checksum.h:30:18: sparse:     got unsigned int
+>> arch/arc/include/asm/checksum.h:27:26: sparse: sparse: restricted __wsum degrades to integer
+   arch/arc/include/asm/checksum.h:27:36: sparse: sparse: restricted __wsum degrades to integer
+>> arch/arc/include/asm/checksum.h:29:11: sparse: sparse: bad assignment (-=) to restricted __wsum
+   arch/arc/include/asm/checksum.h:30:16: sparse: sparse: restricted __wsum degrades to integer
+>> arch/arc/include/asm/checksum.h:30:18: sparse: sparse: incorrect type in return expression (different base types) @@     expected restricted __sum16 @@     got unsigned int @@
+   arch/arc/include/asm/checksum.h:30:18: sparse:     expected restricted __sum16
+   arch/arc/include/asm/checksum.h:30:18: sparse:     got unsigned int
+>> arch/arc/include/asm/checksum.h:27:26: sparse: sparse: restricted __wsum degrades to integer
+   arch/arc/include/asm/checksum.h:27:36: sparse: sparse: restricted __wsum degrades to integer
+>> arch/arc/include/asm/checksum.h:29:11: sparse: sparse: bad assignment (-=) to restricted __wsum
+   arch/arc/include/asm/checksum.h:30:16: sparse: sparse: restricted __wsum degrades to integer
+>> arch/arc/include/asm/checksum.h:30:18: sparse: sparse: incorrect type in return expression (different base types) @@     expected restricted __sum16 @@     got unsigned int @@
+   arch/arc/include/asm/checksum.h:30:18: sparse:     expected restricted __sum16
+   arch/arc/include/asm/checksum.h:30:18: sparse:     got unsigned int
+
+vim +27 arch/arc/include/asm/checksum.h
+
+ca15c8ecd588dd Vineet Gupta 2013-01-18  18  
+ca15c8ecd588dd Vineet Gupta 2013-01-18  19  /*
+ca15c8ecd588dd Vineet Gupta 2013-01-18  20   *	Fold a partial checksum
+ca15c8ecd588dd Vineet Gupta 2013-01-18  21   *
+ca15c8ecd588dd Vineet Gupta 2013-01-18  22   *  The 2 swords comprising the 32bit sum are added, any carry to 16th bit
+ca15c8ecd588dd Vineet Gupta 2013-01-18  23   *  added back and final sword result inverted.
+ca15c8ecd588dd Vineet Gupta 2013-01-18  24   */
+ca15c8ecd588dd Vineet Gupta 2013-01-18  25  static inline __sum16 csum_fold(__wsum s)
+ca15c8ecd588dd Vineet Gupta 2013-01-18  26  {
+d4067395519b40 Jinchao Wang 2021-06-26 @27  	unsigned int r = s << 16 | s >> 16;	/* ror */
+ca15c8ecd588dd Vineet Gupta 2013-01-18  28  	s = ~s;
+ca15c8ecd588dd Vineet Gupta 2013-01-18 @29  	s -= r;
+ca15c8ecd588dd Vineet Gupta 2013-01-18 @30  	return s >> 16;
+ca15c8ecd588dd Vineet Gupta 2013-01-18  31  }
+ca15c8ecd588dd Vineet Gupta 2013-01-18  32  
+
+:::::: The code at line 27 was first introduced by commit
+:::::: d4067395519b40d4ee9b7c26347233e4ae59f900 arc: Prefer unsigned int to bare use of unsigned
+
+:::::: TO: Jinchao Wang <wjc@cdjrlc.com>
+:::::: CC: Vineet Gupta <vgupta@synopsys.com>
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
