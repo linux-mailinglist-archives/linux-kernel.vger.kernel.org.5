@@ -2,168 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9638D811696
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 16:27:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A72678115F6
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 16:19:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442231AbjLMP1a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 10:27:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39764 "EHLO
+        id S1442456AbjLMPTL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 10:19:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39238 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1442722AbjLMPZk (ORCPT
+        with ESMTP id S1442256AbjLMPTJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 10:25:40 -0500
-Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E02A2170E
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 07:25:19 -0800 (PST)
-Received: by mail-ej1-x632.google.com with SMTP id a640c23a62f3a-a22f59c6ae6so136638266b.1
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 07:25:19 -0800 (PST)
+        Wed, 13 Dec 2023 10:19:09 -0500
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8E7AE4;
+        Wed, 13 Dec 2023 07:19:15 -0800 (PST)
+Received: by mail-lf1-x12c.google.com with SMTP id 2adb3069b0e04-50d176eb382so7264344e87.2;
+        Wed, 13 Dec 2023 07:19:15 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1702481118; x=1703085918; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=IFRmR5aw7jYs0R06huL/PXrkIxEyHWBggBrJG8pw4QE=;
-        b=hrs33ROrSc2sU0QNmvaTu3fQxzgR5VWMx4F7VqhIRdA9e6ReJylEgkcCWd12CTzqyr
-         LRyOP0OqbM8U/MOIa1eP0ih0xarwGsFQGSwLxBa9kGDTS2eHg8rXWm6GW8a0hBOhm2QA
-         Mdy0RzI97dJGZTRLaDgZJrQ8qvTKQpd9ULYdI=
+        d=gmail.com; s=20230601; t=1702480754; x=1703085554; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=K3Uqu4NqQPNF2jh2eBUU6anJjJjGTOazrVfjBFPTbG0=;
+        b=XI9lozf2RX8YnDbGI5W9ngJyvbRh2uhss+4lBa2wrkJ4/PYcKYeai/mQqtHEKo/I2z
+         qGFkjzVStRHaP1gfRUVJyVEhr4DDJWodnvLOhOV58e6cnL+Jca65OvUG0mvhZ9b2uwg3
+         PAJlBmOwjq27VtJONJ7hutj1pBwYVFZ4ze/DTf8Ap/EE/jvc8pr/tNplk/Qyu5/ezBEO
+         OhWoQoF4+BSazDHXxQclmCglaCPmYs5+DxBInXaKcJ5dDLWXMbfglcEdvNee9dMBLVLS
+         aWRN/d7fmrTeQdMH1mTaRQ04vpZr5w+w8h/RlnMmaRO50156tQV7STb4ZJA7WubnCm6Q
+         A0Gw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702481118; x=1703085918;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=IFRmR5aw7jYs0R06huL/PXrkIxEyHWBggBrJG8pw4QE=;
-        b=MZ541cOt7SB9DT3oBuSKoaVIB13LpqTYXdyBCpJCSSl5G6W3T5rQtV3PPgTp2Kg37t
-         TTUjnNEpK56sDzpbqaeZmlvJ0mrAmKAZHdgSEmpZRHFm1XYajRvyvyYhwwzmkOGMSDJP
-         D60HUeCEijgkvORFbmQWUeJmf1GhxZ4M8P41pEPhCQH+aSdK3RpjN1PalGRVX9MImtRW
-         yELYbZDLtkntke3YFlbjwud9C4jCuXijpE0xb1gXNIidurnfQ+2oqWRBgnCm2TD6WGGj
-         Ycujonei7qzv8ue771NagEIVpITm5ZGBJOXgvXF7KEIeOPlK4CGbHhcUA28EQ4RH6j/v
-         Jx+g==
-X-Gm-Message-State: AOJu0YyX/NEIALVipbHzErcGr3dgH1/a6K5ah8T15TfkxkhIDx4izQlu
-        U8YqtRk9pHtLCafGfa7Taz3I9BD4/mmQ05SLKcCYcW7J
-X-Google-Smtp-Source: AGHT+IHc/oP5kbuMqKfKY99ABm4qPljJtHWj1AUBeDWr803YBdY22ZOJS2MmsltQL6rsJY2+kDgPxA==
-X-Received: by 2002:a17:907:72d1:b0:a19:d40a:d214 with SMTP id du17-20020a17090772d100b00a19d40ad214mr2715650ejc.224.1702481117908;
-        Wed, 13 Dec 2023 07:25:17 -0800 (PST)
-Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com. [209.85.208.54])
-        by smtp.gmail.com with ESMTPSA id cx7-20020a170907168700b009fc576e26e6sm7842301ejd.80.2023.12.13.07.25.17
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 13 Dec 2023 07:25:17 -0800 (PST)
-Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-54c77d011acso11185a12.1
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 07:25:17 -0800 (PST)
-X-Received: by 2002:a05:600c:3648:b0:3f7:3e85:36a with SMTP id
- y8-20020a05600c364800b003f73e85036amr401838wmq.7.1702480624929; Wed, 13 Dec
- 2023 07:17:04 -0800 (PST)
+        d=1e100.net; s=20230601; t=1702480754; x=1703085554;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=K3Uqu4NqQPNF2jh2eBUU6anJjJjGTOazrVfjBFPTbG0=;
+        b=vuW7GSggwWPVobI2O+ElvrpwM3SKlBhhloAz1ygOufuNMaxyXGIfF2tTIe6X3EMnSa
+         LO6oEOCUcF26nlFTrRwSNqeoZ6P1C1IOk4Dhqt5mE0Nmgl8GcFlqO1tg9KCqEJ8k1SFe
+         TR6J5lJuAeNTC6MVGhNoznMYfMAYFg75uIcmdmqczYI7jCUW52Zat3jm3WouHcYKIgdi
+         qMgvl7HNoSCmquSoaU3PaD3ZYV46xpajcpm/B/FbZum/E945Cp53vtP0dC8ZC709eZgp
+         fx0PfkjI5MPWdRZbRRcd4qIXhLk6Ui9BIg5xcojIZTVNfGnCxojTHImPt3AMoJ/0mcR7
+         XuLQ==
+X-Gm-Message-State: AOJu0Yw2bi4r45B0ERHSg0tR7PFJXqWP6IuUagtB8ioFCgEi6XUTGGUs
+        iVxZiCCRJhet5Qixrwl4KbM=
+X-Google-Smtp-Source: AGHT+IHBBJM+4Q8XpOLjZTdBo/0XImnsmqRu7N70vT9N0+U7CMD4rDwiruktU0T2IwTO4K1nhwfi+w==
+X-Received: by 2002:a05:6512:2253:b0:50b:f776:1d63 with SMTP id i19-20020a056512225300b0050bf7761d63mr5029095lfu.44.1702480753667;
+        Wed, 13 Dec 2023 07:19:13 -0800 (PST)
+Received: from skbuf ([188.27.185.68])
+        by smtp.gmail.com with ESMTPSA id ul5-20020a170907ca8500b00a1f7b445f5dsm6673223ejc.124.2023.12.13.07.19.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Dec 2023 07:19:13 -0800 (PST)
+Date:   Wed, 13 Dec 2023 17:19:10 +0200
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     =?utf-8?B?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>
+Cc:     Daniel Golle <daniel@makrotopia.org>,
+        Landen Chao <Landen.Chao@mediatek.com>,
+        DENG Qingfang <dqfext@gmail.com>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org,
+        Frank Wunderlich <frank-w@public-files.de>,
+        Bartel Eerdekens <bartel.eerdekens@constell8.be>,
+        mithat.guner@xeront.com, erkin.bozoglu@xeront.com
+Subject: Re: [PATCH net-next 00/15] MT7530 DSA subdriver improvements
+Message-ID: <20231213151910.hr3n4px7a4upc372@skbuf>
+References: <20231118123205.266819-1-arinc.unal@arinc9.com>
+ <45221d69-a780-4e81-b4c3-db1b9894a1db@arinc9.com>
 MIME-Version: 1.0
-References: <20231211182036.606660304@linuxfoundation.org> <ZXi9wyS7vjGyUWU8@duo.ucw.cz>
- <a6af01bf-7785-4531-8514-8e5eb09e207e@roeck-us.net> <ZXliuTqyO_IjlIz7@amd.ucw.cz>
- <2023121342-wanted-overarch-84a7@gregkh>
-In-Reply-To: <2023121342-wanted-overarch-84a7@gregkh>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Wed, 13 Dec 2023 07:16:52 -0800
-X-Gmail-Original-Message-ID: <CAD=FV=WK52EjYh0nn8e0PEvY5ovUOn9rymnY09B7SQNgUXymPw@mail.gmail.com>
-Message-ID: <CAD=FV=WK52EjYh0nn8e0PEvY5ovUOn9rymnY09B7SQNgUXymPw@mail.gmail.com>
-Subject: Re: RTL8152_INACCESSIBLE was Re: [PATCH 6.1 000/194] 6.1.68-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Pavel Machek <pavel@denx.de>, Guenter Roeck <linux@roeck-us.net>,
-        grundler@chromium.org, davem@davemloft.net, stable@vger.kernel.org,
-        patches@lists.linux.dev, linux-kernel@vger.kernel.org,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
-        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org,
-        allen.lkml@gmail.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <45221d69-a780-4e81-b4c3-db1b9894a1db@arinc9.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Hi Arınç,
 
-On Wed, Dec 13, 2023 at 12:50=E2=80=AFAM Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> On Wed, Dec 13, 2023 at 08:52:25AM +0100, Pavel Machek wrote:
-> > Hi!
-> >
-> > > > > This is the start of the stable review cycle for the 6.1.68 relea=
-se.
-> > > > > There are 194 patches in this series, all will be posted as a res=
-ponse
-> > > > > to this one.  If anyone has any issues with these being applied, =
-please
-> > > > > let me know.
-> > > >
-> > > >
-> > > > > Douglas Anderson <dianders@chromium.org>
-> > > > >      r8152: Add RTL8152_INACCESSIBLE to r8153_aldps_en()
-> > > > >
-> > > > > Douglas Anderson <dianders@chromium.org>
-> > > > >      r8152: Add RTL8152_INACCESSIBLE to r8153_pre_firmware_1()
-> > > > >
-> > > > > Douglas Anderson <dianders@chromium.org>
-> > > > >      r8152: Add RTL8152_INACCESSIBLE to r8156b_wait_loading_flash=
-()
-> > > > >
-> > > > > Douglas Anderson <dianders@chromium.org>
-> > > > >      r8152: Add RTL8152_INACCESSIBLE checks to more loops
-> > > > >
-> > > > > Douglas Anderson <dianders@chromium.org>
-> > > > >      r8152: Rename RTL8152_UNPLUG to RTL8152_INACCESSIBLE
-> > > >
-> > > > Central patch that actually fixes something is:
-> > > >
-> > > > commit d9962b0d42029bcb40fe3c38bce06d1870fa4df4
-> > > > Author: Douglas Anderson <dianders@chromium.org>
-> > > > Date:   Fri Oct 20 14:06:59 2023 -0700
-> > > >
-> > > >      r8152: Block future register access if register access fails
-> > > >
-> > > > ...but we don't have that in 6.1. So we should not need the rest,
-> > > > either.
-> > > >
-> > >
-> > > Also, the missing patch is fixed subsequently by another patch, so it=
- can not
-> > > be added on its own.
-> >
-> > For the record I'm trying to advocate "drop all patches listed as they
-> > don't fix the bug", not "add more", as this does not meet stable
-> > criteria.
->
-> But the original commit here does say it fixes a bug, see the text of
-> the commits listed above.  So perhaps someone got this all wrong when
-> they wrote the original commits that got merged into 6.7-rc?  Otherwise
-> this seems like they are sane to keep for now, unless the original
-> author says they should be dropped, or someone who can test this driver
-> says something went wrong.
+On Sat, Dec 02, 2023 at 11:52:13AM +0300, Arınç ÜNAL wrote:
+> Can I receive reviews for patches 6, 12, 13, 14, and 15?
+> 
+> Thanks.
+> Arınç
 
-Right. The patches that "add RTL8152_INACCESSIBLE" to more loops are
-bugfixes, but they're not terribly important ones to backport. While
-they technically make sense even on older kernels and could
-conceivably make the older kernels unload the r8152 driver a little
-faster when a device is unplugged, it's not a big deal. On the first
-version of the recent patches I didn't even add a "Fixes" tag for them
-but I was asked to during the review process.
+Sorry, I don't have time to look at this old thread anymore.
 
-The "add RTL8152_INACCESSIBLE" patches become more important with
-commit d9962b0d4202 ("r8152: Block future register access if register
-access fails"). Once you have that it's possible to end up in the
-"INACCESSIBLE" situation in response to normal (ish) error handling
-and thus you want it to be faster.
-
-Based on our experience in ChromeOS, commit d9962b0d4202 ("r8152:
-Block future register access if register access fails") is a pretty
-important fix and I would say it should be backported to stable.
-Certainly we've backported it to our kernels in ChromeOS. In our case
-we made things easier on ourselves by backporting pretty much all
-patches to the r8152 driver.
-
--Doug
+Please repost the series with the feedback you got so far addressed.
+Also, you can try to split into smaller, more cohesive groups of
+patches, that have higher chances of getting merged.
