@@ -2,74 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AB905811FA1
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 21:02:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B9517811FA8
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 21:05:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378978AbjLMUC3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 15:02:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60724 "EHLO
+        id S1378934AbjLMUFh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 15:05:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46964 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229671AbjLMUC1 (ORCPT
+        with ESMTP id S229671AbjLMUFe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 15:02:27 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3276DDC
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 12:02:34 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7C1AFC433C8;
-        Wed, 13 Dec 2023 20:02:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1702497753;
-        bh=TWKx/EtzYbtKFgsobV53zPra9sAQTzvSeeX3jZwDlRo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Rw52VftygnvuTCgOrGI+gXe3TWpHtVdnfgBKILZHSSoQQfWcj4FiDZBF3q0xg/p1U
-         yMyKDh7CfJhMPcfzgFLat+8qbBLeFz+kC6B1tBll2xoDe6ZR+lL4atc7TiTHTaVBXM
-         KlV6aWd7XISTwMfEZMAy3uUu9bt6AO01rkUbbhpNndDZiRNqiRth1R5905LQyKnKba
-         /Gu969kcPjCpd8VYSh4acTvsQvcFLrQg/odEGgysmo+09v0y9yHqoazxNAXt1jERrU
-         3PEg1LuMx6NGBxtg6PTj1VO7B1PTnSanvAI6Vm8xADmZDlQepBudQj+aTfcAbjr2x0
-         iLnlO4srSoqvg==
-Date:   Wed, 13 Dec 2023 20:02:24 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     Deepak Gupta <debug@rivosinc.com>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Oliver Upton <oliver.upton@linux.dev>,
-        James Morse <james.morse@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Arnd Bergmann <arnd@arndb.de>, Oleg Nesterov <oleg@redhat.com>,
-        Eric Biederman <ebiederm@xmission.com>,
-        Kees Cook <keescook@chromium.org>,
-        Shuah Khan <shuah@kernel.org>,
-        "Rick P. Edgecombe" <rick.p.edgecombe@intel.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Szabolcs Nagy <Szabolcs.Nagy@arm.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Florian Weimer <fweimer@redhat.com>,
-        Christian Brauner <brauner@kernel.org>,
-        Thiago Jung Bauermann <thiago.bauermann@linaro.org>,
-        linux-arm-kernel@lists.infradead.org, linux-doc@vger.kernel.org,
-        kvmarm@lists.linux.dev, linux-fsdevel@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-mm@kvack.org,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-riscv@lists.infradead.org
-Subject: Re: [PATCH v7 20/39] arm64/gcs: Context switch GCS state for EL0
-Message-ID: <b2a717a7-e6d3-4fa9-921e-156c17ad5424@sirena.org.uk>
-References: <20231122-arm64-gcs-v7-0-201c483bd775@kernel.org>
- <20231122-arm64-gcs-v7-20-201c483bd775@kernel.org>
- <CAKC1njQVB71A8fQBLmBnx++agM12XDLhS=7iL7-A4NTXSqUM+A@mail.gmail.com>
+        Wed, 13 Dec 2023 15:05:34 -0500
+Received: from out-185.mta1.migadu.com (out-185.mta1.migadu.com [95.215.58.185])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A496EDC
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 12:05:38 -0800 (PST)
+Date:   Wed, 13 Dec 2023 20:05:29 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1702497936;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=bs3RmWkkBEnHpfKuSLQmU1XdcllYwTl+oGw2E3qh8dc=;
+        b=jJcnDy5bHbUQZ++rOn61pjWjrjxub6x7tQGxN6Q/n2e8x8QqbvQBN0WMjqMDzS9KbV0iYs
+        wCgSpmwEUbVv6YEq3zCdtU1qGuTE6IwHyJzcoTRQw4SP/Qsfm9Sz/cIkb2d4mN4aAQUtts
+        tgUEit1z6/gIrWV69f2FgtcachFAZYI=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Oliver Upton <oliver.upton@linux.dev>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>, ankita@nvidia.com,
+        maz@kernel.org, suzuki.poulose@arm.com, yuzenghui@huawei.com,
+        will@kernel.org, alex.williamson@redhat.com, kevin.tian@intel.com,
+        yi.l.liu@intel.com, ardb@kernel.org, akpm@linux-foundation.org,
+        gshan@redhat.com, linux-mm@kvack.org, lpieralisi@kernel.org,
+        aniketa@nvidia.com, cjia@nvidia.com, kwankhede@nvidia.com,
+        targupta@nvidia.com, vsethi@nvidia.com, acurrid@nvidia.com,
+        apopple@nvidia.com, jhubbard@nvidia.com, danw@nvidia.com,
+        mochs@nvidia.com, kvmarm@lists.linux.dev, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v3 2/2] kvm: arm64: set io memory s2 pte as normalnc for
+ vfio pci devices
+Message-ID: <ZXoOieQN7rBiLL4A@linux.dev>
+References: <20231208164709.23101-1-ankita@nvidia.com>
+ <20231208164709.23101-3-ankita@nvidia.com>
+ <ZXicemDzXm8NShs1@arm.com>
+ <20231212181156.GO3014157@nvidia.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="p5BMo6xEVagOzbFU"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAKC1njQVB71A8fQBLmBnx++agM12XDLhS=7iL7-A4NTXSqUM+A@mail.gmail.com>
-X-Cookie: One size fits all.
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+In-Reply-To: <20231212181156.GO3014157@nvidia.com>
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -78,42 +60,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
 
---p5BMo6xEVagOzbFU
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Sorry, a bit late to the discussion :)
 
-On Wed, Dec 13, 2023 at 11:59:45AM -0800, Deepak Gupta wrote:
-> On Wed, Nov 22, 2023 at 1:45=E2=80=AFAM Mark Brown <broonie@kernel.org> w=
-rote:
+On Tue, Dec 12, 2023 at 02:11:56PM -0400, Jason Gunthorpe wrote:
+> On Tue, Dec 12, 2023 at 05:46:34PM +0000, Catalin Marinas wrote:
+> > should know the implications. There's also an expectation that the
+> > actual driver (KVM guests) or maybe later DPDK can choose the safe
+> > non-cacheable or write-combine (Linux terminology) attributes for the
+> > BAR.
+> 
+> DPDK won't rely on this interface
 
-> > +       if (task->thread.gcs_el0_mode & PR_SHADOW_STACK_ENABLE)
-> > +               gcscre0_el1 |=3D GCSCRE0_EL1_RVCHKEN | GCSCRE0_EL1_PCRS=
-EL;
+Wait, so what's the expected interface for determining the memory
+attributes at stage-1? I'm somewhat concerned that we're conflating two
+things here:
 
-> If the intent is to disable, is the GCS stack freed or kept around?
-> I expect if libc is taking the decision to disable, kernel should free it=
- up.
-> Is it freed in some other flow?
+ 1) KVM needs to know the memory attributes to use at stage-2, which
+    isn't fundamentally different from what's needed for userspace
+    stage-1 mappings.
 
-Kept around and freed on thread exit.  There is a potential race between
-for example disabling in a signal handler and something trying to walk
-the stack so we err on the side of caution.
+ 2) KVM additionally needs a hint that the device / VFIO can handle
+    mismatched aliases w/o the machine exploding. This goes beyond
+    supporting Normal-NC mappings at stage-2 and is really a bug
+    with our current scheme (nGnRnE at stage-1, nGnRE at stage-2).
 
---p5BMo6xEVagOzbFU
-Content-Type: application/pgp-signature; name="signature.asc"
+I was hoping that (1) could be some 'common' plumbing for both userspace
+and KVM mappings. And for (2), any case where a device is intolerant of
+mismatches && KVM cannot force the memory attributes should be rejected.
 
------BEGIN PGP SIGNATURE-----
+AFAICT, the only reason PCI devices can get the blanket treatment of
+Normal-NC at stage-2 is because userspace has a Device-* mapping and can't
+speculatively load from the alias. This feels a bit hacky, and maybe we
+should prioritize an interface for mapping a device into a VM w/o a
+valid userspace mapping.
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmV6Dc8ACgkQJNaLcl1U
-h9D/UQf/drLKsAxcIavasAKyvNxy00BF9vIZyHv3vJ+sFZEMcKnnX/8KO6A54p3z
-Y5Oowl7starF/ef/S94c9GDD6e9ErIIZiUHOIWoegLpSIr9NL3p3q2pzJTSgEigR
-7gxmR840FSDV235o0T16ajXu4aj3hg3eSiDmycP9Wh2TY6lNU+Uab1nhCM6mIgzY
-Spu0s0+naKP+fYEkXZjhn15XHplZNEI2qLOIXhEpNJZHiEt1imkFwLa5GqHbaWUz
-wqtAF1RUqcDm5hATvxuPbnPA0WsnHFGCniy5C7vyRNlcPGx+FBg2pW0O9Y47ff2a
-Vt+12qPfZq/CDUunfX/IvKyQ3YO5+Q==
-=JGbe
------END PGP SIGNATURE-----
+I very much understand that this has been going on for a while, and we
+need to do *something* to get passthrough working well for devices that
+like 'WC'. I just want to make sure we don't paint ourselves into a corner
+that's hard to get out of in the future.
 
---p5BMo6xEVagOzbFU--
+-- 
+Thanks,
+Oliver
