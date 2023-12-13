@@ -2,43 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 14410811AE7
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 18:25:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 42F65811AE9
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 18:25:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379351AbjLMRZ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 12:25:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48432 "EHLO
+        id S1379322AbjLMRZ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 12:25:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48410 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235521AbjLMRZY (ORCPT
+        with ESMTP id S1379385AbjLMRZ2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 12:25:24 -0500
+        Wed, 13 Dec 2023 12:25:28 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07263113
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 09:25:30 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 28DAAC433C7;
-        Wed, 13 Dec 2023 17:25:28 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6F9AF3
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 09:25:33 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 22CFEC433C8;
+        Wed, 13 Dec 2023 17:25:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1702488329;
-        bh=Rs0hFmb82Hqzf21komSWkj3oRer1VDXhJ1YU2zeFSOg=;
+        s=k20201202; t=1702488333;
+        bh=GtbLTnJw5rFoK0rP15arBSE3OgmfBkXPDeM9z0GJ5ys=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YMpGevCv+58vaeJ2syLdMAqiJgyb4eQgqR6ZhV2w61es773mAvKNPl2Ly68gJRQVz
-         y40rlFES3wHtKDhehVtCrbaKOqMWZnirM0z3oPxn+JsM9O5VazFtGQHmboilT/K+hi
-         iJ8GWOHWUAGuOifX8CJs86hP9FdXGJJFhfGGsTJ1tCm0PctigtVeFN0SyrOT32Ywh1
-         CY6lq5T4tUYTH+RhTiQmU+Xee+PSYF2pjEn+FN2WyoLWLyB8OAdgW83MDS7hvYJ3UL
-         DA/Xt+m8puU6rJ4ilMh/3Kh1A47H+a2FajtLRSCSPTRyobkHUyKa4tSgA7+Zkao4M1
-         YCDp3/SfjbeNA==
+        b=J28pqTwYDp0mBb8bP1o+zNlpRsT0ReB4N8S1dSs/sWF2c0hgsUqyEK8guK2sofO96
+         XPPOra6u72Q7Vdg7gMFs9FxWAlHZa+ntotNiHJkARBPtCmzjWo6utPjF/rRhhi+VNT
+         MgNUgJ8AlU7lErNPupvGqDc1VRdincBPuxtpaJOMViD/QSTpIYArkPgStDObY2hcd/
+         jlKBjsEw/Xp0ch+VNHytq5HQEwhIZ8Tc4ysmtQV2JnSsE4AEjmmDN2Rk+JmRji4wu7
+         NUQ1C2Qy5u/tXu1SgWSzfNxURKCdgLnYIWi8+KreaR7hgRTqvV0dCbBSPxkLza/PC+
+         p3u2cl0f3WOrw==
 From:   Will Deacon <will@kernel.org>
-To:     Huang Shijie <shijie@os.amperecomputing.com>,
-        catalin.marinas@arm.com
-Cc:     kernel-team@android.com, Will Deacon <will@kernel.org>,
-        linux-kernel@vger.kernel.org, patches@amperecomputing.com,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH] arm64: irq: set the correct node for shadow call stack
-Date:   Wed, 13 Dec 2023 17:25:19 +0000
-Message-Id: <170246934075.98561.2845796203103432401.b4-ty@kernel.org>
+To:     yangyicong@huawei.com, Jonathan.Cameron@huawei.com,
+        ilkka@os.amperecomputing.com, robin.murphy@arm.com,
+        kaishen@linux.alibaba.com, Shuai Xue <xueshuai@linux.alibaba.com>,
+        helgaas@kernel.org, baolin.wang@linux.alibaba.com
+Cc:     catalin.marinas@arm.com, kernel-team@android.com,
+        Will Deacon <will@kernel.org>, chengyou@linux.alibaba.com,
+        linux-kernel@vger.kernel.org, renyu.zj@linux.alibaba.com,
+        zhuo.song@linux.alibaba.com, mark.rutland@arm.com,
+        rdunlap@infradead.org, linux-arm-kernel@lists.infradead.org,
+        linux-pci@vger.kernel.org
+Subject: Re: [PATCH v12 0/5] drivers/perf: add Synopsys DesignWare PCIe PMU driver support
+Date:   Wed, 13 Dec 2023 17:25:20 +0000
+Message-Id: <170247454282.4025634.10934949931800191482.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20231213012046.12014-1-shijie@os.amperecomputing.com>
-References: <20231213012046.12014-1-shijie@os.amperecomputing.com>
+In-Reply-To: <20231208025652.87192-1-xueshuai@linux.alibaba.com>
+References: <20231208025652.87192-1-xueshuai@linux.alibaba.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -52,22 +57,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 13 Dec 2023 09:20:46 +0800, Huang Shijie wrote:
-> The init_irq_stacks() has been changed to use the correct node:
-> https://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git/commit/?id=75b5e0bf90bf
+On Fri, 8 Dec 2023 10:56:47 +0800, Shuai Xue wrote:
+> Change Log
+> ==========
+> change sinces v11:
+> - Fix uninitialized symbol 'now' (Per Dan and Will)
+> - Pick up Reviewed-and-tested-by tag from Ilkka for Patch 4/5
 > 
-> The init_irq_scs() has the same issue with init_irq_stacks():
-> 	cpu_to_node() is not initialized yet, it does not work.
-> 
-> This patch uses early_cpu_to_node() to set the init_irq_scs()
-> with the correct node.
+> change sinces v10:
+> - Rename to pci_clear_and_set_config_dword() to retain the "config"
+>   information and match the other accessors. (Per Bjorn)
+> - Align pci_clear_and_set_config_dword() and its call site (Per Bjorn)
+> - Polish commit log (Per Bjorn)
+> - Simplify dwc_pcie_pmu_time_based_event_enable() with bool value (Per Ilkka)
+> - Fix dwc_pcie_register_dev() return value (Per Ilkka)
+> - Fix vesc capability discovery by pdev->vendor (Per Ilkka)
+> - pick up Acked-by tag from Bjorn for Patch 3/5
+> - pick up Tested-by tag from Ilkka for all patch set
 > 
 > [...]
 
-Applied to arm64 (for-next/mm), thanks!
+Applied to will (for-next/perf), thanks!
 
-[1/1] arm64: irq: set the correct node for shadow call stack
-      https://git.kernel.org/arm64/c/7b1a09e44dc6
+[1/5] docs: perf: Add description for Synopsys DesignWare PCIe PMU driver
+      https://git.kernel.org/will/c/cae40614cdd6
+[2/5] PCI: Add Alibaba Vendor ID to linux/pci_ids.h
+      https://git.kernel.org/will/c/ad6534c626fe
+[3/5] PCI: Move pci_clear_and_set_dword() helper to PCI header
+      https://git.kernel.org/will/c/ac16087134b8
+[4/5] drivers/perf: add DesignWare PCIe PMU driver
+      https://git.kernel.org/will/c/af9597adc2f1
+[5/5] MAINTAINERS: add maintainers for DesignWare PCIe PMU driver
+      https://git.kernel.org/will/c/f56bb3de66bc
 
 Cheers,
 -- 
