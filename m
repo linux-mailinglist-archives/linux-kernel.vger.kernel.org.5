@@ -2,191 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BD880810A78
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 07:38:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 20135810ACD
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 08:02:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378631AbjLMGi0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 01:38:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58524 "EHLO
+        id S233004AbjLMHCl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 02:02:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41288 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378615AbjLMGiZ (ORCPT
+        with ESMTP id S235287AbjLMGku (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 01:38:25 -0500
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2040.outbound.protection.outlook.com [40.107.236.40])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02260AD
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 22:38:30 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=lHeah2XeS5PttUvIaSyGByu8be7AAkjAJ3zXO6IGcqpSKvRq5TxdtcALbx0UE9WCvte8vHklDiEHzZ+RAOVws1Fu5kVHl9lmc/JMoJi/pShY7kD2d+T27avPkwWD7rRmuSo096dtODwJkVYIPlMCy0tkCI3jnJOTPGuH37tteDCpWiBWjbjttT6teIEPFDcb3ITK5HPoJmtSWxKnR8GAxSgPzP9fd1in6jZNpF19R/DY3PjuUOx5EjepY0yjeDpoDeYHT2Gh8ZIoOxl629Yykg+p3tWn+LVZljMdgmJN0IYF1kv0Q/kjQ0Si60NUiu1h8344DHJakrnedn3d0C2FHA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=4PD3ZW9FqE6RJRUJKVOgp5L1MkR0NJo8tmw02BDMZyU=;
- b=akjyCYlxlmqj7T3BnVitMHy/Il/BrNYV+eWTJXELpZiSk5b+sQguU+uVVSeLWxVB/ISsK/uj+GurAL6eNRfm6ZOhZy7EfzF0ZgSL4A41M8WkBgjIu9FEg0/eS0UU4TJMmTm4kmw/u3NSPOVJK/eqz3g5QF/KOHH1ndwuHi1onOKl1cV9RcHxz28ybO8tJhdsHlQqH5TY+0KHoF0va10DHRPVhoCPEVzwPvloiRJe+MtpzsMUTvBTB8BmofE4X6/NEUqSlnxw8/YerMOLYfllc+tNt2dECN6u40yQiRbjHD2wAiwhwLrPNQjPn45wkGC8S2ycpxILs+I+LSqffPGRGw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=4PD3ZW9FqE6RJRUJKVOgp5L1MkR0NJo8tmw02BDMZyU=;
- b=2ugevKReqyBEvHgPPRI5DjLRd4VuAoqABa/Lrh5BqafLTQLyoJFHlPFbwCG7Gj/PYnYiIaSmHfAJlHS4DUBtuI/7CnXw/RfqBIMn70MO635uqb9M/G/5gaDMqQEBWyCByZ1gxSakG2rm/rblKYM2zKY6ECPKxTC1zFLU+IEsH0I=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from BN8PR12MB3587.namprd12.prod.outlook.com (2603:10b6:408:43::13)
- by CY8PR12MB7634.namprd12.prod.outlook.com (2603:10b6:930:9d::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7068.33; Wed, 13 Dec
- 2023 06:38:28 +0000
-Received: from BN8PR12MB3587.namprd12.prod.outlook.com
- ([fe80::ca80:8f1c:c11:ded3]) by BN8PR12MB3587.namprd12.prod.outlook.com
- ([fe80::ca80:8f1c:c11:ded3%7]) with mapi id 15.20.7091.022; Wed, 13 Dec 2023
- 06:38:28 +0000
-Message-ID: <b236ff60-085b-460a-b1eb-ddcea1c79094@amd.com>
-Date:   Wed, 13 Dec 2023 07:38:19 +0100
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] drm/radeon: Prevent multiple debug error lines on
- suspend
-Content-Language: en-US
-To:     Woody Suwalski <terraluna977@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        amd-gfx@lists.freedesktop.org
-Cc:     "Deucher, Alexander" <alexander.deucher@amd.com>
-References: <90172f4c-7cf7-b4ac-d630-42198bb80d62@gmail.com>
-From:   =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
-In-Reply-To: <90172f4c-7cf7-b4ac-d630-42198bb80d62@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: FR4P281CA0390.DEUP281.PROD.OUTLOOK.COM
- (2603:10a6:d10:f7::15) To BYAPR12MB3589.namprd12.prod.outlook.com
- (2603:10b6:a03:df::29)
+        Wed, 13 Dec 2023 01:40:50 -0500
+Received: from smtp-fw-52004.amazon.com (smtp-fw-52004.amazon.com [52.119.213.154])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BB78AB
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 22:40:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1702449655; x=1733985655;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=94amqqZKB2zJhADw4oYeciSDrXheAqykdeuVtMiJBwE=;
+  b=YewaEIIb3vMLMNA8xGcEHKQgCbXPhZe7rnM/9qasdjdcJS+UJjq3BO2k
+   uueMVMAckvXiVBDmeJyIOigD7t7faqcMbWwELxFcVtENaUUufqjlJhDlR
+   DDkc2gz8+UR4MTm71Gpio8MxUGvyIzBaAdUX5NNR+BlqSf3uOC8PTSCMG
+   g=;
+X-IronPort-AV: E=Sophos;i="6.04,272,1695686400"; 
+   d="scan'208";a="171634859"
+Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-iad-1d-m6i4x-00fceed5.us-east-1.amazon.com) ([10.43.8.2])
+  by smtp-border-fw-52004.iad7.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Dec 2023 06:40:53 +0000
+Received: from smtpout.prod.us-east-1.prod.farcaster.email.amazon.dev (iad7-ws-svc-p70-lb3-vlan3.iad.amazon.com [10.32.235.38])
+        by email-inbound-relay-iad-1d-m6i4x-00fceed5.us-east-1.amazon.com (Postfix) with ESMTPS id E9EAFA0B0C;
+        Wed, 13 Dec 2023 06:40:48 +0000 (UTC)
+Received: from EX19MTAEUA002.ant.amazon.com [10.0.43.254:56758]
+ by smtpin.naws.eu-west-1.prod.farcaster.email.amazon.dev [10.0.22.100:2525] with esmtp (Farcaster)
+ id 9438de3e-ca1c-46b1-a8b0-23d75734eed4; Wed, 13 Dec 2023 06:40:47 +0000 (UTC)
+X-Farcaster-Flow-ID: 9438de3e-ca1c-46b1-a8b0-23d75734eed4
+Received: from EX19D014EUC004.ant.amazon.com (10.252.51.182) by
+ EX19MTAEUA002.ant.amazon.com (10.252.50.126) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Wed, 13 Dec 2023 06:40:47 +0000
+Received: from u5d18b891348c5b.ant.amazon.com (10.146.13.114) by
+ EX19D014EUC004.ant.amazon.com (10.252.51.182) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Wed, 13 Dec 2023 06:40:37 +0000
+From:   James Gowans <jgowans@amazon.com>
+To:     <jgowans@amazon.com>, Eric Biederman <ebiederm@xmission.com>,
+        "Sean Christopherson" <seanjc@google.com>
+CC:     <kexec@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Marc Zyngier <maz@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        Tony Luck <tony.luck@intel.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Samuel Holland <samuel@sholland.org>,
+        "Pavel Machek" <pavel@ucw.cz>, Sebastian Reichel <sre@kernel.org>,
+        Orson Zhai <orsonzhai@gmail.com>,
+        Alexander Graf <graf@amazon.de>,
+        "Jan H . Schoenherr" <jschoenh@amazon.de>
+Subject: [PATCH] kexec: do syscore_shutdown() in kernel_kexec
+Date:   Wed, 13 Dec 2023 08:40:04 +0200
+Message-ID: <20231213064004.2419447-1-jgowans@amazon.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BN8PR12MB3587:EE_|CY8PR12MB7634:EE_
-X-MS-Office365-Filtering-Correlation-Id: 95fe94b7-2722-467d-81b8-08dbfba61c9b
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: XRUeqQ8LMy2RCkMV4hPCp/yc1FSYCy7rh1Xsveom/scUCDLppQ6CdcFSeNP9RNimfkAxt09Y8CF9GmmQ9229f6hI6e6CWhnpdbgQS2j15MqJPoJvzf9YmjXo55Pidw1USHLCHZPMXiAlbLd74UJ4Ej5ixWthB/TNo7gVcAJkXXZOA6Fg3Na2d+pK66cR77HII2J7S7zo0Y6RPYompTOoTwvgAIKMLmfPd5YHsTsxgsuqv9Qjcnhd2R974FITFdIccpaipuBqv5fQMTR8qS4ZaRCHBT3XcXibrbcTIJp00K9MrAQXFWkpz8HFbitTbJD4ocUnTTeoe8FWREwyB+oPed5UHDmkw6HypTIiUTNe0U3XhcHbF1eO73iH752Ai3DKa5pmxnWltNE/+HiU1zTJM5eF2jUhXYglVmlWGmssNWSKik2TlzKLgMLglsSbBIwYS7UoW/rQ0iQj+h4+CIKL/oJdbcaU3pLZ2Yfi7jf6BmKWQ3lP4wGsospfXOwyOdfwOmOwbZblKgwMgQq31jVu9gJngV46lez+h+XXtCHspjtaYXsltvFRwxsyh4LY8z0ZJnauT0f2Uu/zOSi1LK0D0Q4qfp5T9yHlPKCrAg4qfNU7yKCN9U1Wz2KfQz3ZxazncvcHHIq/ic2IWcGtNJqLcQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN8PR12MB3587.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(346002)(39860400002)(136003)(366004)(376002)(230922051799003)(1800799012)(186009)(451199024)(64100799003)(31686004)(66476007)(66556008)(86362001)(36756003)(66946007)(83380400001)(6506007)(66574015)(31696002)(2616005)(6512007)(8676002)(15650500001)(2906002)(38100700002)(110136005)(6666004)(316002)(6486002)(478600001)(26005)(5660300002)(41300700001)(8936002)(4326008)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?Y0RJUjRkdVVyMTJVbmpQM1c4RFZ0TlZ5dEJwNEtWZGFiUDNnb3dMbEpqUFRn?=
- =?utf-8?B?SGRsM0tLN2UvNkcrR2ltdENuR1BGbzhvSUM0NHp3S3hGRDVDTWxPaWVEZzFu?=
- =?utf-8?B?M0JscXo4eEJGZU5waGFJVG52eVNYeE45NEZwYWdBMnY0cGF5aTIyck45TlpP?=
- =?utf-8?B?SytFWEJQMlhPN0l3N3daejJQM0w4MzQ2NEdwWkhzc3dQZHlaYy9vRGt4M0VX?=
- =?utf-8?B?eHQwa1lQTHpRNjgxbStwdzduRDVyangwM29mN3crMFZ4NWdLZ3BGbXhHZ1Nk?=
- =?utf-8?B?UUIwRGdvcVhNcjlvOTljWnU2MloycHBuamFLR0dKZWtIYzA1SU0xdldtVUFT?=
- =?utf-8?B?alpQQ2wvUkF2RWdlckRZRlBkV3VrV3g1eTEvWVloMjJuQlFYYjR1ZnY5Skxz?=
- =?utf-8?B?OHd0dkZqSHpsK0dlbGRPSlRmUUdNcU4wZTlNL21IMWIxWG1JYXNvQWdpeTVl?=
- =?utf-8?B?K1Vsc1hDZGpDOWp1S3NBOVJmbVQvY3d1SDlhUlhvbFB5bnYxdVlTZVZzSE5v?=
- =?utf-8?B?RTFNOEdqNGpZZEt6MUpqSldoZmV1MDlhcnBHSG5QS2pjSjNSNXE2WFJ2R3hT?=
- =?utf-8?B?UUhBdTZLVDNLYm5oTmxXd1g0L2h4dlM2bHlZVDZNS2Uxa2daL0FiOERITzRu?=
- =?utf-8?B?a2FzVEVUdG1ZUzQ5d2NzcDFBVm9aTFAvUGdwSjFFZXE3UW0vQTk5TWNPbmNX?=
- =?utf-8?B?TGpCM3E0UGZCQm9oS1NZa29lQzVEZCs0NEwxaWVuWDVrWm83YWx1NVRxaHJY?=
- =?utf-8?B?am1iU20vMS8xTmR4MW5tUnMxZ0dGNXJudWpmZkREQzVSR3YzNTVWR28waWpG?=
- =?utf-8?B?NnlGUW1CaGUxVDVkdWdybE5ORnV5cHJLSm1id0VnRzRrSHhGR3liQmhOWDN5?=
- =?utf-8?B?T2JJMTl1Zm10SkIybnVJTFBBY0JRWkdFM21VUkptR0JrdXQ5ZHdibFBGN2Ft?=
- =?utf-8?B?QWVWeFhjdExQUFplZ1NGem9RSXBDdkN4OWxpZ3R1VEtrM0ZaOTloc3dHZVVJ?=
- =?utf-8?B?RGZvL0lPT25CdFNvdlJ1ellVaWdUdWxNR3VnQi9OenRQMVRWN0dwa2t6N3Bi?=
- =?utf-8?B?R0psU3c5UzI5UTBoSldCWThtMGxnWGRmdm1HVGJXYU0wU21tTmUrOHRtVEhK?=
- =?utf-8?B?NnFVYjZHNjlYSFRWbTFkNjFPUHRTbmd6czBneUxPRStaWWZqRy9DdFpRd0ZQ?=
- =?utf-8?B?QWlLZEh1TjVKUGF0bFFpN282V1BxbmFpdjVjYXhGbllSbHBySjhyUjhyZkMw?=
- =?utf-8?B?Y3luN0ZpTUVDdXpMTkdrNEpmdHZ6c1ZFaWh3NTQ4Y0tCZHhrVXpQeGtOcHNs?=
- =?utf-8?B?bXVjUGZFajR1bHJ5NmY5OGs3SnhwOEhYL3FiTnU4SktLSjdRWWZacFliVGFM?=
- =?utf-8?B?bklMUjVvaXBhMEFIN0dueWNlS09SUFhONExRWGVpandqTVE3MmR6VG8vOS9I?=
- =?utf-8?B?blE4SDlPU1NZa0FtczZOQzZnbkRhKzlEaXJQMTJvYWtNWFZXbVdVdzAzelVQ?=
- =?utf-8?B?L3pURVJicVVrMzNaM0dRUkpxMDB0WUp5SHI3SVpMNnA4WUs5OEZCYmNQVkk2?=
- =?utf-8?B?bnBtekh2MFk5Slg2NjYvZndpU0RZTTNsUHNKYmhwdzFzRjdNcHJIVWpMekpz?=
- =?utf-8?B?a20rM2w1NEJIeFg3MjlTYy8vbG93ejhzUGZJbWlTellKc21vTWxjdWEvZ2N1?=
- =?utf-8?B?YVFRUlFOUStUQXlHNmJSOVNEbXYzRHM5ZkF6SzkrdUNySzdqa3VwN2tha1BV?=
- =?utf-8?B?K0NTMDl0TGZpaHlsVFFqMUExd1JXa1R5ckhYYW1kTEZ3bGpiMTNjSHlkVHAw?=
- =?utf-8?B?dXZnc0d3ZHNiNThINDkrMU5pTVFYSVg5TXZXdWF5NjEwdmVLRlZWWGROaFVk?=
- =?utf-8?B?OW0zR0JmYzlhMFNXa2hnZi9hekcwV2FzMG1pd2NvcjIrTkVLQ1lnQkNFdFBn?=
- =?utf-8?B?WkN3OU8ra3VaYS96cVNaS3lFYmRqTi9IYVA3VldZNHhRUWJCbThlR09zUkZK?=
- =?utf-8?B?YVpxTnNpNVlTd3lGSkNmT214dnA2b3JkZnhBczE4emFDK2NJMC9WRnd5RVZ5?=
- =?utf-8?B?WWtGVHV1UFoxWTk4T1I4azQxSUI5R3hCS0dxS29ZOTZJY1BMUkJoN1VtWHJn?=
- =?utf-8?Q?hyDM=3D?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 95fe94b7-2722-467d-81b8-08dbfba61c9b
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR12MB3589.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Dec 2023 06:38:28.3936
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: rtWrD/hmMLveFQZogx7uOJmwypZxN3qxrGMby/VHpS/GAMZS7fd/Yv7Iv2ZFlZhX
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY8PR12MB7634
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.146.13.114]
+X-ClientProxiedBy: EX19D031UWC004.ant.amazon.com (10.13.139.246) To
+ EX19D014EUC004.ant.amazon.com (10.252.51.182)
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 13.12.23 um 00:31 schrieb Woody Suwalski:
-> Fix to avoid multiple debug error lines printed on every suspend by 
-> Radeon driver's debugfs.
->
-> radeon_debugfs_init() calls debugfs_create_file() for every ring.
->
-> This results in printing multiple error lines to the screen and dmesg 
-> similar to this:
->
-> [   92.378726] debugfs: File 'radeon_ring_gfx' in directory 
-> '0000:00:01.0' already present!
-> [   92.378732] debugfs: File 'radeon_ring_cp1' in directory 
-> '0000:00:01.0' already present!
-> [   92.378734] debugfs: File 'radeon_ring_cp2' in directory 
-> '0000:00:01.0' already present!
-> [   92.378737] debugfs: File 'radeon_ring_dma1' in directory 
-> '0000:00:01.0' already present!
-> [   92.378739] debugfs: File 'radeon_ring_dma2' in directory 
-> '0000:00:01.0' already present!
-> [   92.380775] debugfs: File 'radeon_ring_uvd' in directory 
-> '0000:00:01.0' already present!
-> [   92.406620] debugfs: File 'radeon_ring_vce1' in directory 
-> '0000:00:01.0' already present!
-> [   92.406624] debugfs: File 'radeon_ring_vce2' in directory 
-> '0000:00:01.0' already present!
->
->
-> Patch v1: The fix was to run lookup() for the file before trying to 
-> (re)create that debug file.
-> Patch v2: Call the radeon_debugfs_init() only once when radeon ring is 
-> initialized (as suggested  by Christian K. - thanks)
->
-> Signed-off-by: Woody Suwalski <terraluna977@gmail.com>
+syscore_shutdown() runs driver and module callbacks to get the system
+into a state where it can be correctly shut down. In commit
+6f389a8f1dd2 ("PM / reboot: call syscore_shutdown() after disable_nonboot_cpus()")
+syscore_shutdown() was removed from kernel_restart_prepare() and hence
+got (incorrectly?) removed from the kexec flow. This was innocuous until
+commit 6735150b6997 ("KVM: Use syscore_ops instead of reboot_notifier to hook restart/shutdown")
+changed the way that KVM registered its shutdown callbacks, switching from
+reboot notifiers to syscore_ops.shutdown. As syscore_shutdown() is
+missing from kexec, KVM's shutdown hook is not run and virtualisation is
+left enabled on the boot CPU which results in triple faults when
+switching to the new kernel on Intel x86 VT-x with VMXE enabled.
 
-Reviewed-by: Christian König <christian.koenig@amd.com>
+Fix this by adding syscore_shutdown() to the kexec sequence. In terms of
+where to add it, it is being added after migrating the kexec task to the
+boot CPU, but before APs are shut down. It is not totally clear if this
+is the best place: in commit 6f389a8f1dd2 ("PM / reboot: call syscore_shutdown() after disable_nonboot_cpus()")
+it is stated that "syscore_ops operations should be carried with one
+CPU on-line and interrupts disabled." APs are only offlined later in
+machine_shutdown(), so this syscore_shutdown() is being run while APs
+are still online. This seems to be the correct place as it matches where
+syscore_shutdown() is run in the reboot and halt flows - they also run
+it before APs are shut down. The assumption is that the commit message
+in commit 6f389a8f1dd2 ("PM / reboot: call syscore_shutdown() after disable_nonboot_cpus()")
+is no longer valid.
 
-Thanks for the help,
-Christian.
+KVM has been discussed here as it is what broke loudly by not having
+syscore_shutdown() in kexec, but this change impacts more than just KVM;
+all drivers/modules which register a syscore_ops.shutdown callback will
+now be invoked in the kexec flow. Looking at some of them like x86 MCE
+it is probably more correct to also shut these down during kexec.
+Maintainers of all drivers which use syscore_ops.shutdown are added on
+CC for visibility. They are:
 
->
-> diff --git a/drivers/gpu/drm/radeon/radeon_ring.c 
-> b/drivers/gpu/drm/radeon/radeon_ring.c
-> index e6534fa9f1fb..38048593bb4a 100644
-> --- a/drivers/gpu/drm/radeon/radeon_ring.c
-> +++ b/drivers/gpu/drm/radeon/radeon_ring.c
-> @@ -413,6 +413,7 @@ int radeon_ring_init(struct radeon_device *rdev, 
-> struct radeon_ring *ring, unsig
->              dev_err(rdev->dev, "(%d) ring map failed\n", r);
->              return r;
->          }
-> +        radeon_debugfs_ring_init(rdev, ring);
->      }
->      ring->ptr_mask = (ring->ring_size / 4) - 1;
->      ring->ring_free_dw = ring->ring_size / 4;
-> @@ -421,7 +422,6 @@ int radeon_ring_init(struct radeon_device *rdev, 
-> struct radeon_ring *ring, unsig
->          ring->next_rptr_gpu_addr = rdev->wb.gpu_addr + index;
->          ring->next_rptr_cpu_addr = &rdev->wb.wb[index/4];
->      }
-> -    radeon_debugfs_ring_init(rdev, ring);
->      radeon_ring_lockup_update(rdev, ring);
->      return 0;
->  }
->
+arch/powerpc/platforms/cell/spu_base.c  .shutdown = spu_shutdown,
+arch/x86/kernel/cpu/mce/core.c	        .shutdown = mce_syscore_shutdown,
+arch/x86/kernel/i8259.c                 .shutdown = i8259A_shutdown,
+drivers/irqchip/irq-i8259.c	        .shutdown = i8259A_shutdown,
+drivers/irqchip/irq-sun6i-r.c	        .shutdown = sun6i_r_intc_shutdown,
+drivers/leds/trigger/ledtrig-cpu.c	.shutdown = ledtrig_cpu_syscore_shutdown,
+drivers/power/reset/sc27xx-poweroff.c	.shutdown = sc27xx_poweroff_shutdown,
+kernel/irq/generic-chip.c	        .shutdown = irq_gc_shutdown,
+virt/kvm/kvm_main.c	                .shutdown = kvm_shutdown,
+
+This has been tested by doing a kexec on x86_64 and aarch64.
+
+Fixes: 6735150b6997 ("KVM: Use syscore_ops instead of reboot_notifier to hook restart/shutdown")
+
+Signed-off-by: James Gowans <jgowans@amazon.com>
+Cc: Eric Biederman <ebiederm@xmission.com>
+Cc: Paolo Bonzini <pbonzini@redhat.com>
+Cc: Sean Christopherson <seanjc@google.com>
+Cc: Marc Zyngier <maz@kernel.org>
+Cc: Arnd Bergmann <arnd@arndb.de>
+Cc: Tony Luck <tony.luck@intel.com>
+Cc: Borislav Petkov <bp@alien8.de>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Chen-Yu Tsai <wens@csie.org>
+Cc: Jernej Skrabec <jernej.skrabec@gmail.com>
+Cc: Samuel Holland <samuel@sholland.org>
+Cc: Pavel Machek <pavel@ucw.cz>
+Cc: Sebastian Reichel <sre@kernel.org>
+Cc: Orson Zhai <orsonzhai@gmail.com>
+Cc: Alexander Graf <graf@amazon.de>
+Cc: Jan H. Schoenherr <jschoenh@amazon.de>
+---
+ kernel/kexec_core.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/kernel/kexec_core.c b/kernel/kexec_core.c
+index be5642a4ec49..b926c4db8a91 100644
+--- a/kernel/kexec_core.c
++++ b/kernel/kexec_core.c
+@@ -1254,6 +1254,7 @@ int kernel_kexec(void)
+ 		kexec_in_progress = true;
+ 		kernel_restart_prepare("kexec reboot");
+ 		migrate_to_reboot_cpu();
++		syscore_shutdown();
+ 
+ 		/*
+ 		 * migrate_to_reboot_cpu() disables CPU hotplug assuming that
+-- 
+2.34.1
 
