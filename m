@@ -2,159 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 33A3581210A
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 22:57:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 00A6581210D
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 22:57:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442713AbjLMV5F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 16:57:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53258 "EHLO
+        id S1442721AbjLMV5g convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 13 Dec 2023 16:57:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37672 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229811AbjLMV5D (ORCPT
+        with ESMTP id S229772AbjLMV5e (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 16:57:03 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D74C9E8;
-        Wed, 13 Dec 2023 13:57:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1702504630; x=1734040630;
-  h=message-id:date:subject:to:cc:references:from:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=EJVcQvRuU7QBcw6GXl0RnkgaLTR2IF8h7MQULTZSqCM=;
-  b=ar3Etg0DIW1GM7T1S9zNA6mPmNGXN+Ou439BI5D6h5I5V1ONJ0W+jQHQ
-   DV9afTRf5L8NvEdHLWTi6TfsntqRcwSsFGtFsSyakNAgC7akcfZquSqt1
-   BUxHLTLps59Brxw2EvitXAEMcuTQ0hkg0Yw5wiSiGHRiznUcMeK+y8Xe4
-   nbwv4W280x/ng+qxTnBvtkRdfh4cnYi2SquRqZwMCZEds52gbS5SBPcfv
-   VvaEqqJKdQ0bvLHkAM6AqvxmJ+fu6NzIu948VL+DxfvCnCodaKCYDy/R/
-   ktEoqReGaTfnOP4cl4kr0V1O/HdghtVs5NudWcj+gILlVlv+AcQUkYGaE
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10923"; a="375186277"
-X-IronPort-AV: E=Sophos;i="6.04,274,1695711600"; 
-   d="scan'208";a="375186277"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Dec 2023 13:57:04 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10923"; a="840046807"
-X-IronPort-AV: E=Sophos;i="6.04,274,1695711600"; 
-   d="scan'208";a="840046807"
-Received: from fmsmsx603.amr.corp.intel.com ([10.18.126.83])
-  by fmsmga008.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 13 Dec 2023 13:57:04 -0800
-Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
- fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Wed, 13 Dec 2023 13:57:04 -0800
-Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
- fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Wed, 13 Dec 2023 13:57:04 -0800
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (104.47.57.168)
- by edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Wed, 13 Dec 2023 13:57:01 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=LuqWQaPnNyBD6hU9T+BnaIU+Q3crmXDpY1AWUpjom17WQ/5qpaN2tYB8OyEKtuLZxckBecqDf+Dlw4CfISjpCdx3VTer30lgVO22S7AhqcMoPXKMOksPNxmq4tU+U83GCFj7cN5JVNOag4TsRDEpK/YLx9b1v3HtDTZ3chQORGIt9DxuOHg6HIn1y+YAYBCcOVGmJHgZV/hr+3haCpZRYrn5XEBLD+bZjPEk4+cVf5iXdsXDC2W402ii+g3JkmMZOJRMzaSZRMTDGmk6ToPH3sVV5Y/TS1yI0DRKYMHONI3p0O5WU2CiWRbHJ0zE9XX4xmKcrY81rM+gr/zyomBVsA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=aKWpKStgJ66VwpU11aTmNHZ3GZuVoufnn96HVSQFE74=;
- b=Lro+oNpZ+N0R3v95M8/K6C3wFFTl9b6rrCartiUo1wcexx5qDUJHYu5FY4iIz+aqv2XERbz6vrPD1PKnyvI0jb/tioX5li9ASqdwiB0ribGbKl1Ogyj//YGaXexpm3doupoq5lW3lf/eFYxgMBur2AC+OoFpRA94XNhnoCLvrcyim0kPxTldnw2FEB6AAg4G79TjN2iWpaJtf1VySYe7COzakIt5a3oB8OkrtN6yQucL3LOaWyaLq/rDLbjRVhnHBM/ZndUGfmWEo4NAGsEW83kfD6G400eCwhP+r2dUHmLciREXJmvTFNLxOjzKdgAvotYZY8e3NRz1tpWbAlNN6w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from SJ2PR11MB7573.namprd11.prod.outlook.com (2603:10b6:a03:4d2::10)
- by PH7PR11MB7663.namprd11.prod.outlook.com (2603:10b6:510:27c::7) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7091.26; Wed, 13 Dec
- 2023 21:56:59 +0000
-Received: from SJ2PR11MB7573.namprd11.prod.outlook.com
- ([fe80::6710:537d:b74:f1e5]) by SJ2PR11MB7573.namprd11.prod.outlook.com
- ([fe80::6710:537d:b74:f1e5%5]) with mapi id 15.20.7068.025; Wed, 13 Dec 2023
- 21:56:59 +0000
-Message-ID: <c8fb2854-6404-4378-967e-7724726e67a8@intel.com>
-Date:   Wed, 13 Dec 2023 13:56:58 -0800
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 22/29] selftests/resctrl: Rewrite Cache Allocation
- Technology (CAT) test
-Content-Language: en-US
-To:     =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
-        <linux-kselftest@vger.kernel.org>, Shuah Khan <shuah@kernel.org>,
-        "Shaopeng Tan" <tan.shaopeng@jp.fujitsu.com>,
-        =?UTF-8?Q?Maciej_Wiecz=C3=B3r-Retman?= 
-        <maciej.wieczor-retman@intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>
-CC:     <linux-kernel@vger.kernel.org>
-References: <20231211121826.14392-1-ilpo.jarvinen@linux.intel.com>
- <20231211121826.14392-23-ilpo.jarvinen@linux.intel.com>
-From:   Reinette Chatre <reinette.chatre@intel.com>
-In-Reply-To: <20231211121826.14392-23-ilpo.jarvinen@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: MW4PR03CA0173.namprd03.prod.outlook.com
- (2603:10b6:303:8d::28) To SJ2PR11MB7573.namprd11.prod.outlook.com
- (2603:10b6:a03:4d2::10)
+        Wed, 13 Dec 2023 16:57:34 -0500
+Received: from mail-pj1-f53.google.com (mail-pj1-f53.google.com [209.85.216.53])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECC71A3;
+        Wed, 13 Dec 2023 13:57:40 -0800 (PST)
+Received: by mail-pj1-f53.google.com with SMTP id 98e67ed59e1d1-286d6c95b8cso7454001a91.0;
+        Wed, 13 Dec 2023 13:57:40 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702504660; x=1703109460;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=cQqLwK3HU1Otv+0tZFWCB1wB5/jyhN9nnVvueoDO6UU=;
+        b=lnAglBq4R68dfHPI6Hn4qOMa7KpiV7cAzaGAkH+GW0SDuFUY3xYHeA48iWzs1h+onq
+         2OK9ynJM12F6qUvaGCAz9+bTyBKsbc8vqbCv0mPlXygles+QRNm6V2EQ8e6U8v8bUBn/
+         k39lozrca/F700QC0DU3rIkqWAZQk+If+52sW80D0rNe6j01108O/utFiaOSImRwR55x
+         uAWY8iIpamvPEf0YLM/FvIoM8jr0A9YWObxkRgW2hwbJUVOwQ2WkhlXKcZKgToRLQGVW
+         JIZsmSFOrixqyUo38VEoNaTMzVYocFlPLlnJiQI4PHME58YzJVZDbAf05twL8mDA/nVf
+         5tWw==
+X-Gm-Message-State: AOJu0YzchGbRKzfyU/6CmLlFUc0T9Cbl4OS+IeDqy4nxAbhNW2gc9I2A
+        2EWz6kMWDbGpnUod+YkIwFCh+esSAkYIuxv3Nyc=
+X-Google-Smtp-Source: AGHT+IECQwrpQpcL3AmWTTOjT4MuAB4OMTgwPTOQl5k11KstHbn9nNj69ygG2ncJuQqnQv+zSNLZVSfCEzuC88sJbSo=
+X-Received: by 2002:a17:90b:50c:b0:280:c98f:2090 with SMTP id
+ r12-20020a17090b050c00b00280c98f2090mr7169611pjz.32.1702504660267; Wed, 13
+ Dec 2023 13:57:40 -0800 (PST)
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SJ2PR11MB7573:EE_|PH7PR11MB7663:EE_
-X-MS-Office365-Filtering-Correlation-Id: b07b7012-c280-45ad-5811-08dbfc266e6f
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: aDnN+ebVso8MpTsC78CfZbyLgfsizQ4k+pB5b2DNb3Izx9nkUkMMK3R5kCR1VCNNZDdr4V8Gm4PEensucaOcI4RHKafrbTu3Mia45Q7H4XBoXLKR4kmbfPli40k2AjZJbAQ9KV6pa+KZCTpRV8Qm6e63S2rzXyVCCCbi4N8S0GMZ1nK/YSzX5q/juimvgZ5gphFFUQppUlKg4T2o47TUDi/ydq8Cmc0xnnJgG8vcC2vmgrE/80/nCq3zy6yRaGspmvNLws0Best243l3i1WFt8Lf9ebr5xC5N4qjffNAfp+XKNJlsfaw9pcgvDjGywRcFNtrkYjTyKbML0qPMSlfUD+LYEW3eKae2/lLAF7y+0bXqwUonPGwW1A+IOMO0I2uPlE/9Q9zGVIaGLjE+L3YmfbF7Ub4O5HaIYiA3XjKTa04l9b2WKNUERD/z9nEn0r0EcQjit+bipX+0TANk6GwlvkdRiKRj7sRU9UdDuOHiIzn1DK4yvjp6g7tTWjjXdt1F4/o8EvVNqSrYIHhdQrqbLEgsUfHTdtzf2IToyQPHHWGJeEmjGPfzxYBquz85XnnIVtDC9w69lNZO8mH3zG2XWpJsWRIykGIRs1iRcrHULx48AswjMklBL4nIoEDpvP0mH1JctwDyCcIxKwc6Tj7vg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ2PR11MB7573.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(366004)(136003)(376002)(346002)(39860400002)(230922051799003)(451199024)(1800799012)(64100799003)(186009)(31686004)(2616005)(66574015)(83380400001)(53546011)(31696002)(86362001)(82960400001)(36756003)(38100700002)(4326008)(5660300002)(6512007)(6506007)(316002)(6636002)(478600001)(66946007)(66556008)(66476007)(110136005)(41300700001)(44832011)(8936002)(8676002)(6486002)(2906002)(26005)(45980500001)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?TVNXVVJvcjFNT2ZtOFdhVDl3ZXh0dENSVmRhdUR1Z3RwK0NPczQ3SVhOeUpZ?=
- =?utf-8?B?ci9md2tUR2FQSnByaTZ5WGw5ZTc2bTA0VFBQOHJMODBuWlYwaVJDRzlnUEJN?=
- =?utf-8?B?UDVHZlhCZFVQN3QrT3ZsYXNsdzA1VmpIK2h0eUk4bmZZcXd6TkpCUENNbW5H?=
- =?utf-8?B?cGFxOWtMUFY3Ny91dVE1dDZ3dVJzS0Z0dVlQWG8rTjQzYTdEWEpSMnVFM056?=
- =?utf-8?B?M3Ayc0M2THNGNXFsZEFVRm9oVUc5Y1oxWm5BS2FlWGRjSkVoL2p5UCtwWkdK?=
- =?utf-8?B?clM5ZzZBWUthRG9zclJMYktLY2xJUVNaeW5VRGtvOXYreE1wODcrQWZiK0tL?=
- =?utf-8?B?R3pZWmxVT0FHeWZTK05xM2tHZXQvcCtSL3ZXNVJHQzIzMUl1UEg3aTF2Vitw?=
- =?utf-8?B?d3ZOd1JPNnVRL2VlbUJRSFlnQmFYYWY2SG03UDBpdDJwNG5kWWJuL3hSTU45?=
- =?utf-8?B?VUlTV2UxTTdlaThFditqU2Y5YTlITFU4cHpMRlJ3bytORy9GQmNzZWRpWWo2?=
- =?utf-8?B?OUdZR2ZGWEgyOXBvOGdmaUthbUZLSHp2Vjhsd0pHeWdlWmQ1N1RYeHlHbHFC?=
- =?utf-8?B?S2tFV215cnd3YnB6aldpcWgwYUhTVzlTR3g2QTlCQzk5MHdXckdQb093dUxr?=
- =?utf-8?B?Z3lrcFFFRlNmZWNRbXZOMUpaelA3N2tBR2ZxQlo5V2NZbDlHSXYwR2NGS2lz?=
- =?utf-8?B?M1o2NTdGczEwL0o4dkZkZ0ZzZmpVTnlJQUYwWXk3WTVKSHduQ3hVN3ZPZEE4?=
- =?utf-8?B?bjI1Wnlackg1OHNQNDN5RHFxNmJ0SE14U25Jakg3WmozTlFkSURtTFBZSVE1?=
- =?utf-8?B?U1RzVDFGTVhURDlMNVJhTEp2ZTlTQkhibGdWRDhzOFFnV29hSHMwc0JIQnFE?=
- =?utf-8?B?SmswcGQ5L3A5QTU5R3NSK2lrcFI4c05QM0w5YWdxT1lzaFdrYldtN29qdXpX?=
- =?utf-8?B?TDlVK0p6R01ZRjNBQUtPcTJreWk1cVpLRWlmRzRlVDlxemdKalh2SjdyQjh0?=
- =?utf-8?B?YlNiSWQ4cERGZCttY25lMGxmQ1N0azRqYmlwWGE3MUJnL1Q5Y1ZmL3J0MnlX?=
- =?utf-8?B?MXpDcDMvRmRkRTJzRjVLM0dJdzcxd0piTnVTN2tLU0UwanhKdG1Lbm5KZHJj?=
- =?utf-8?B?a2o3RFRBekRjRkpzRGluclpSak16OGhRQlhuT3RKMUd4QkpoK0hTMEM5TnFI?=
- =?utf-8?B?VlVFUDBGc3JSbXVYczNlRzJZTUlrelpwbEJJNVlTbDc2MVV0UHV5WC92bzFW?=
- =?utf-8?B?OURaTDFCN1E3S0w5V2lKREVpZVdVcFR1ZFM3UGFSbitIS1ArQ3IzOXRZT2pw?=
- =?utf-8?B?ZXBVWVF3VDA0V0ovSnE2a241Qm5IVFdrbkUxNTRjcTZZaDJ5Uk1ua3NUcGlK?=
- =?utf-8?B?UTVhWmxWdHB3dVVIeFdIME9SQjBtOVVCVHRjNEZ1d2NWTlN3cEVvY010TlRo?=
- =?utf-8?B?TlNocytYNnQxbDF6Qk90WFR4dFByWHNsR0EwZGF5QStxOUVRd2dWNmE4QVFY?=
- =?utf-8?B?bVY4QUdZcmQzWEhuRUZid2tibkhsN252cXFPTENVVW1COUQwaXd0T2YxMytp?=
- =?utf-8?B?RTRHZHFSdkp5UTE0aHpHZGRmSEZORTNnQUtuYnVpS2RkN3Rvb0VaZ0dpcVFR?=
- =?utf-8?B?aG5MdWErMHVUdng4OXpneDkxOWZFMHV3WnJvYnBEQzU4djZ2WFNQNGpKT09I?=
- =?utf-8?B?ZjBEaW9YS2VWR2Z5NTFwOElhZVJNS1NNSjN2OE16ankvajVWNUNvamM4Z21m?=
- =?utf-8?B?djQ2Y0dLbDY2aGFqK0ZxTlphLzA5b09uOUF5MGM4OEZCV2ZvOFM1Vnl2WFlS?=
- =?utf-8?B?R3laVFV4Y2JQZTZPRFFQQmJoMWVCZWZsNkE3MklyRlZoNnZJR1BubnR4cUxq?=
- =?utf-8?B?UWl3Rzc1WG5VcEJaaktEaGdGb21TSnFTb1hIK2RnSFA5VWc3U3pUVTBPUzQ5?=
- =?utf-8?B?MzU3d2greS9xYlNFK3hEVkxGbkdXend3YlBiY0lFWHZOM0tHRzNkNXV6b0kx?=
- =?utf-8?B?alNIMzVyTmp4V1A0UlE4ZUU5c1Bvekl0OWxqVkZqYldxQTBoRzJtLzFWRzhG?=
- =?utf-8?B?UHNvNHNvZnE3b05yT0M5SVZ5cUFZQXdvNW1OMnZ1WlFka0JnUFl6K0R3UlpC?=
- =?utf-8?B?SnJPK05pU3l5QXJ0ak9kWTBMTTNXRWlwS0Z0VnF2cWlhelpReVJLYWwzclpR?=
- =?utf-8?B?dGc9PQ==?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: b07b7012-c280-45ad-5811-08dbfc266e6f
-X-MS-Exchange-CrossTenant-AuthSource: SJ2PR11MB7573.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Dec 2023 21:56:59.6305
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: kMyQMEcZ3n+z+Wdw5tmH0Y3/FtS6q8Mn8d5MzRhTMJ+axFbjbc/QSOOKtuBZjgI/mUkO/6Mr+Jg1XYKmPPiZp7SRvjo3Je82gcIDa9z4y10=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR11MB7663
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+References: <20231213213633.1088026-1-kan.liang@linux.intel.com> <20231213213633.1088026-2-kan.liang@linux.intel.com>
+In-Reply-To: <20231213213633.1088026-2-kan.liang@linux.intel.com>
+From:   Namhyung Kim <namhyung@kernel.org>
+Date:   Wed, 13 Dec 2023 13:57:29 -0800
+Message-ID: <CAM9d7ch+rHDp3E40QvBu+PGs8N+5iOP3i=HmYXKshcohs05MaQ@mail.gmail.com>
+Subject: Re: [PATCH V3 2/2] perf top: Uniform the event name for the hybrid machine
+To:     kan.liang@linux.intel.com
+Cc:     acme@kernel.org, irogers@google.com, mark.rutland@arm.com,
+        maz@kernel.org, marcan@marcan.st, linux-kernel@vger.kernel.org,
+        linux-perf-users@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -162,42 +59,161 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Ilpo,
+On Wed, Dec 13, 2023 at 1:36 PM <kan.liang@linux.intel.com> wrote:
+>
+> From: Kan Liang <kan.liang@linux.intel.com>
+>
+> It's hard to distinguish the default cycles events among hybrid PMUs.
+> For example,
+>
+>  $perf top
+> Available samples
+> 385 cycles:P
+> 903 cycles:P
+>
+> The other tool, e.g., perf record, uniforms the event name and adds the
+> hybrid PMU name before opening the event. So the events can be easily
+> distinguished. Apply the same methodology for the perf top as well.
+>
+> The record__uniquify_name() will be invoked by both record and top.
+> Move it to util/record.c
 
-On 12/11/2023 4:18 AM, Ilpo Järvinen wrote:
-> CAT test spawns two processes into two different control groups with
-> exclusive schemata. Both the processes alloc a buffer from memory
-> matching their allocated LLC block size and flush the entire buffer out
-> of caches. Since the processes are reading through the buffer only once
-> during the measurement and initially all the buffer was flushed, the
-> test isn't testing CAT.
-> 
-> Rewrite the CAT test to allocate a buffer sized to half of LLC. Then
-> perform a sequence of tests with different LLC alloc sizes starting
-> from half of the CBM bits down to 1-bit CBM. Flush the buffer before
-> each test and read the buffer twice. Observe the LLC misses on the
-> second read through the buffer. As the allocated LLC block gets smaller
-> and smaller, the LLC misses will become larger and larger giving a
-> strong signal on CAT working properly.
-> 
-> The new CAT test is using only a single process because it relies on
-> measured effect against another run of itself rather than another
-> process adding noise. The rest of the system is set to use the CBM bits
-> not used by the CAT test to keep the test isolated.
-> 
-> Replace count_bits() with count_contiguous_bits() to get the first bit
-> position in order to be able to calculate masks based on it.
-> 
-> This change has been tested with a number of systems from different
-> generations.
-> 
-> Suggested-by: Reinette Chatre <reinette.chatre@intel.com>
-> Signed-off-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
+Maybe better to rename it to evlist__uniquify_name() and move it
+to util/evlist.c.
+
+Thanks,
+Namhyung
+
+>
+> With the patch
+>  $perf top
+> Available samples
+> 148 cpu_atom/cycles:P/
+> 1K cpu_core/cycles:P/
+>
+> Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
 > ---
-
-Thank you!
-
-Reviewed-by: Reinette Chatre <reinette.chatre@intel.com>
-
-Reinette
-
+>
+> New patch to address the display concern
+> https://lore.kernel.org/lkml/e9383607-1e43-4c1a-9512-29f27784d035@linux.intel.com/
+>
+>  tools/perf/builtin-record.c | 28 +---------------------------
+>  tools/perf/builtin-top.c    |  1 +
+>  tools/perf/util/record.c    | 25 +++++++++++++++++++++++++
+>  tools/perf/util/record.h    |  2 ++
+>  4 files changed, 29 insertions(+), 27 deletions(-)
+>
+> diff --git a/tools/perf/builtin-record.c b/tools/perf/builtin-record.c
+> index dcf288a4fb9a..a096422a4a14 100644
+> --- a/tools/perf/builtin-record.c
+> +++ b/tools/perf/builtin-record.c
+> @@ -2216,32 +2216,6 @@ static void hit_auxtrace_snapshot_trigger(struct record *rec)
+>         }
+>  }
+>
+> -static void record__uniquify_name(struct record *rec)
+> -{
+> -       struct evsel *pos;
+> -       struct evlist *evlist = rec->evlist;
+> -       char *new_name;
+> -       int ret;
+> -
+> -       if (perf_pmus__num_core_pmus() == 1)
+> -               return;
+> -
+> -       evlist__for_each_entry(evlist, pos) {
+> -               if (!evsel__is_hybrid(pos))
+> -                       continue;
+> -
+> -               if (strchr(pos->name, '/'))
+> -                       continue;
+> -
+> -               ret = asprintf(&new_name, "%s/%s/",
+> -                              pos->pmu_name, pos->name);
+> -               if (ret) {
+> -                       free(pos->name);
+> -                       pos->name = new_name;
+> -               }
+> -       }
+> -}
+> -
+>  static int record__terminate_thread(struct record_thread *thread_data)
+>  {
+>         int err;
+> @@ -2475,7 +2449,7 @@ static int __cmd_record(struct record *rec, int argc, const char **argv)
+>         if (data->is_pipe && rec->evlist->core.nr_entries == 1)
+>                 rec->opts.sample_id = true;
+>
+> -       record__uniquify_name(rec);
+> +       record__uniquify_name(rec->evlist);
+>
+>         /* Debug message used by test scripts */
+>         pr_debug3("perf record opening and mmapping events\n");
+> diff --git a/tools/perf/builtin-top.c b/tools/perf/builtin-top.c
+> index cce9350177e2..4e8296654280 100644
+> --- a/tools/perf/builtin-top.c
+> +++ b/tools/perf/builtin-top.c
+> @@ -1299,6 +1299,7 @@ static int __cmd_top(struct perf_top *top)
+>                 }
+>         }
+>
+> +       record__uniquify_name(top->evlist);
+>         ret = perf_top__start_counters(top);
+>         if (ret)
+>                 return ret;
+> diff --git a/tools/perf/util/record.c b/tools/perf/util/record.c
+> index 9eb5c6a08999..5b4be3c72cbc 100644
+> --- a/tools/perf/util/record.c
+> +++ b/tools/perf/util/record.c
+> @@ -289,3 +289,28 @@ int record__parse_freq(const struct option *opt, const char *str, int unset __ma
+>         opts->user_freq = freq;
+>         return 0;
+>  }
+> +
+> +void record__uniquify_name(struct evlist *evlist)
+> +{
+> +       struct evsel *pos;
+> +       char *new_name;
+> +       int ret;
+> +
+> +       if (perf_pmus__num_core_pmus() == 1)
+> +               return;
+> +
+> +       evlist__for_each_entry(evlist, pos) {
+> +               if (!evsel__is_hybrid(pos))
+> +                       continue;
+> +
+> +               if (strchr(pos->name, '/'))
+> +                       continue;
+> +
+> +               ret = asprintf(&new_name, "%s/%s/",
+> +                              pos->pmu_name, pos->name);
+> +               if (ret) {
+> +                       free(pos->name);
+> +                       pos->name = new_name;
+> +               }
+> +       }
+> +}
+> diff --git a/tools/perf/util/record.h b/tools/perf/util/record.h
+> index a6566134e09e..9b520ab784bc 100644
+> --- a/tools/perf/util/record.h
+> +++ b/tools/perf/util/record.h
+> @@ -8,6 +8,7 @@
+>  #include <linux/stddef.h>
+>  #include <linux/perf_event.h>
+>  #include "util/target.h"
+> +#include "util/evlist.h"
+>
+>  struct option;
+>
+> @@ -85,6 +86,7 @@ extern const char * const *record_usage;
+>  extern struct option *record_options;
+>
+>  int record__parse_freq(const struct option *opt, const char *str, int unset);
+> +void record__uniquify_name(struct evlist *evlist);
+>
+>  static inline bool record_opts__no_switch_events(const struct record_opts *opts)
+>  {
+> --
+> 2.35.1
+>
