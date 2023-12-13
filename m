@@ -2,144 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F3261810850
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 03:44:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 00F01810858
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 03:46:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378290AbjLMCoP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 21:44:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56710 "EHLO
+        id S1378281AbjLMCql (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 21:46:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42572 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232295AbjLMCoO (ORCPT
+        with ESMTP id S232295AbjLMCqj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 21:44:14 -0500
-Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D98C3A5;
-        Tue, 12 Dec 2023 18:44:19 -0800 (PST)
-Received: by mail-pf1-x431.google.com with SMTP id d2e1a72fcca58-6ce7c1b07e1so5511200b3a.2;
-        Tue, 12 Dec 2023 18:44:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702435459; x=1703040259; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=6EMpI1CYWqKj7MUlM6DndrADvL2mEOMt5kPq+h2tOYg=;
-        b=mpiyXYjkajrjBzn5Q9eIvv0ERYmr9L+HGX0CGVo44qiVd6R91WPcokzdyOgk+FzbJG
-         oGU67f+XSC587oH6hhpXClxYj0q0c8ynICp2lGz9hnLjGZy0uab41EUNBFrzG51Wj7A2
-         t+grx3pdWPkWbIT/1vraNpF4my1OGxFX28jmNCnnc3k7p0Mio1V3Pw4+zye52Ok7EEru
-         mgOxbg1EWcmAem9JLUpQqX8w00gCYZ2jzqCgblg1jQTB5S1l1xf6Z4hrMl6H5C1b/Wqh
-         RW/WmAfx3rEfvwxnMnb0iYk0P06U80D3cXyjwi6Qnq0NvFEaD0DmYAFreGDmjBJrbyon
-         1Exg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702435459; x=1703040259;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=6EMpI1CYWqKj7MUlM6DndrADvL2mEOMt5kPq+h2tOYg=;
-        b=L+refIUTvpKacWf4xUkohB1gWJX9fO1oUvk2MjEC30Uedig62DzNgef6J8/W5jnwki
-         tprhXnC9vw086gFYSg3qc0cnpp/o4KVu/TtMb8lGmhLaZcwxXd9WhKfTh6B9Tvog7D/y
-         W1nCeRvairquAoO3Ip2JvyHcHo6x/AhPB9H7xWaXWTLWAUHjQTe6makxs624YE5OL0b7
-         8G1HDlkEhJToIK3yXqJL9h3nMD0wx9ZXxIDyWcyEMEwqR38EvoZxAShLqzUxXNgfQcAL
-         ItIkJE/z4fud/e+iV9PjkEJvnq55Nz4Ohqc+IoEdiyV0mVz5r0K021OLC7yaWRTnI64K
-         QO8w==
-X-Gm-Message-State: AOJu0YzjtHGlGoWH+SXsmDfgWVdr3cvgRcTXiF7i4AtYdaIe5mtzJ4Re
-        qu6daNSAaPTQ6e+nhYScbq0=
-X-Google-Smtp-Source: AGHT+IEfyKmeAy5pP2WpkZKm6Z3lR4fAjoqWGHt5r7ZnkXAVHFOAt5V3bWctWrcMB4xYGyZtGYaiMw==
-X-Received: by 2002:a05:6a00:170d:b0:6ce:5431:6e43 with SMTP id h13-20020a056a00170d00b006ce54316e43mr9617190pfc.33.1702435459190;
-        Tue, 12 Dec 2023 18:44:19 -0800 (PST)
-Received: from localhost.localdomain ([106.13.249.127])
-        by smtp.gmail.com with ESMTPSA id x20-20020aa793b4000000b006ce4c7ba448sm8839523pff.25.2023.12.12.18.44.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Dec 2023 18:44:18 -0800 (PST)
-From:   Yusong Gao <a869920004@gmail.com>
-To:     jarkko@kernel.org, davem@davemloft.net, dhowells@redhat.com,
-        dwmw2@infradead.org, juergh@proton.me, zohar@linux.ibm.com,
-        herbert@gondor.apana.org.au, lists@sapience.com,
-        dimitri.ledkov@canonical.com
-Cc:     keyrings@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-crypto@vger.kernel.org
-Subject: [PATCH v5 RESEND] sign-file: Fix incorrect return values check
-Date:   Wed, 13 Dec 2023 02:44:05 +0000
-Message-Id: <20231213024405.624692-1-a869920004@gmail.com>
-X-Mailer: git-send-email 2.34.1
+        Tue, 12 Dec 2023 21:46:39 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD5B0A1;
+        Tue, 12 Dec 2023 18:46:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1702435606; x=1733971606;
+  h=from:to:cc:subject:in-reply-to:references:date:
+   message-id:mime-version;
+  bh=HeA8jqVHlKL8RuAwlVwqlEfSLUf01LuyOK0z4h52XBU=;
+  b=E9K1L8NkXiwvE8fDUPMWUEOiMS9H8D41NxJxxGD7pTJwcIqp9QlaqDsq
+   h0vDJhhzXywSBBP5IwyqZrCPG3szk7RQ/B+ZdJEbd/6DGfYw/+b6Ua5c4
+   JmN2q3cO72YukyM13Kq60uMkctSEzYqBlEm1anIxY6JbmNLjXgVZGDwje
+   sPDW3Q/xhfhTa8wlmaMBErgIkgVicdDupxArRzxvj7KxJ2hk0UpZR4nrT
+   bzXXWyVOzTdNLIdRZLZxJPZQMdPb23GxAiIiWQEtKpwPGPSuCSxWAT5Z3
+   GotW5FtEWlSxoeQwdStJKVDIFnD1ZY3AmcbR1Y7CSEll62/6WkBifmf7e
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10922"; a="8281547"
+X-IronPort-AV: E=Sophos;i="6.04,271,1695711600"; 
+   d="scan'208";a="8281547"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Dec 2023 18:46:45 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10922"; a="808005595"
+X-IronPort-AV: E=Sophos;i="6.04,271,1695711600"; 
+   d="scan'208";a="808005595"
+Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Dec 2023 18:46:35 -0800
+From:   "Huang, Ying" <ying.huang@intel.com>
+To:     Gregory Price <gregory.price@memverge.com>
+Cc:     Gregory Price <gourry.memverge@gmail.com>, <linux-mm@kvack.org>,
+        <linux-doc@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>,
+        <linux-api@vger.kernel.org>, <linux-arch@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <akpm@linux-foundation.org>,
+        <arnd@arndb.de>, <tglx@linutronix.de>, <luto@kernel.org>,
+        <mingo@redhat.com>, <bp@alien8.de>, <dave.hansen@linux.intel.com>,
+        <x86@kernel.org>, <hpa@zytor.com>, <mhocko@kernel.org>,
+        <tj@kernel.org>, <corbet@lwn.net>, <rakie.kim@sk.com>,
+        <hyeongtak.ji@sk.com>, <honggyu.kim@sk.com>,
+        <vtavarespetr@micron.com>, <peterz@infradead.org>,
+        <jgroves@micron.com>, <ravis.opensrc@micron.com>,
+        <sthanneeru@micron.com>, <emirakhur@micron.com>,
+        <Hasan.Maruf@amd.com>, <seungjun.ha@samsung.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        "Hasan Al Maruf" <hasanalmaruf@fb.com>, Hao Wang <haowang3@fb.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Zhongkun He <hezhongkun.hzk@bytedance.com>,
+        Frank van der Linden <fvdl@google.com>,
+        "John Groves" <john@jagalactic.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Subject: Re: [PATCH v2 00/11] mempolicy2, mbind2, and weighted interleave
+In-Reply-To: <ZXiDSrdNfbv8/Ple@memverge.com> (Gregory Price's message of "Tue,
+        12 Dec 2023 10:59:06 -0500")
+References: <20231209065931.3458-1-gregory.price@memverge.com>
+        <87r0jtxp23.fsf@yhuang6-desk2.ccr.corp.intel.com>
+        <ZXc74yJzXDkCm+BA@memverge.com>
+        <87plzbx5hz.fsf@yhuang6-desk2.ccr.corp.intel.com>
+        <ZXiDSrdNfbv8/Ple@memverge.com>
+Date:   Wed, 13 Dec 2023 10:44:35 +0800
+Message-ID: <87zfyestws.fsf@yhuang6-desk2.ccr.corp.intel.com>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_SBL,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=ascii
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There are some wrong return values check in sign-file when call OpenSSL
-API. The ERR() check cond is wrong because of the program only check the
-return value is < 0 which ignored the return val is 0. For example:
-1. CMS_final() return 1 for success or 0 for failure.
-2. i2d_CMS_bio_stream() returns 1 for success or 0 for failure.
-3. i2d_TYPEbio() return 1 for success and 0 for failure.
-4. BIO_free() return 1 for success and 0 for failure.
+Gregory Price <gregory.price@memverge.com> writes:
 
-Link: https://www.openssl.org/docs/manmaster/man3/
-Fixes: e5a2e3c84782 ("scripts/sign-file.c: Add support for signing with a raw signature")
-Signed-off-by: Yusong Gao <a869920004@gmail.com>
-Reviewed-by: Juerg Haefliger <juerg.haefliger@canonical.com>
----
-V5: No change.
-V4: Change to more strict check mode.
-V3: Removed redundant empty line.
-V1, V2: Clarify the description of git message.
----
- scripts/sign-file.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+> On Tue, Dec 12, 2023 at 03:08:24PM +0800, Huang, Ying wrote:
+>> Gregory Price <gregory.price@memverge.com> writes:
+>> 
+>> >> For example, can we use something as below?
+>> >> 
+>> >>   long set_mempolicy2(int mode, const unsigned long *nodemask, unsigned int *il_weights,
+>> >>                           unsigned long maxnode, unsigned long home_node,
+>> >>                           unsigned long flags);
+>> >> 
+>> >>   long mbind2(unsigned long start, unsigned long len,
+>> >>                           int mode, const unsigned long *nodemask, unsigned int *il_weights,
+>> >>                           unsigned long maxnode, unsigned long home_node,
+>> >>                           unsigned long flags);
+>> >> 
+>> >
+>> > Your definition of mbind2 is impossible.
+>> >
+>> > Neither of these interfaces solve the extensibility issue.  If a new
+>> > policy which requires a new format of data arrives, we can look forward
+>> > to set_mempolicy3 and mbind3.
+>> 
+>> IIUC, we will not over-engineering too much.  It's hard to predict the
+>> requirements in the future.
+>> 
+>
+> Sure, but having the mempolicy struct at least gives us more flexibility
+> than the original interface.
+>
+>> >> A struct may be defined to hold mempolicy iteself.
+>> >> 
+>> >> struct mpol {
+>> >>         int mode;
+>> >>         unsigned int home_node;
+>> >>         const unsigned long *nodemask;
+>> >>         unsigned int *il_weights;
+>> >>         unsigned int maxnode;
+>> >> };
+>> >> 
+>> >
+>> > addr could be pulled out for get_mempolicy2, so i will do that
+>> >
+>> > 'addr_node' and 'policy_node' are warts that came from the original
+>> > get_mempolicy.  Removing them increases the complexity of handling
+>> > arguments in the common get_mempolicy code.
+>> >
+>> > I could probably just drop support for retrieving the addr_node from
+>> > get_mempolicy2, since it's already possible with get_mempolicy.  So I
+>> > will do that.
+>> 
+>> If it's necessary, we can add another struct for get_mempolicy2().  But
+>> I don't think that it's necessary to add get_mempolicy2() specific
+>> parameters for set_mempolicy2() or mbind2().
+>
+> After edits, the only parameter that doesn't have parity between
+> interfaces is `addr_node` and `policy_node`.  This was an unfortunate
+> wart on the original get_mempolicy() that multiplexed the output of
+> (*mode) based on whether MPOL_F_NODE was set.
+>
+> Example:
+> if (MPOL_F_ADDR | MPOL_F_NODE), then get_mempolicy() would return
+> details about a VMA mempolicy + the node of that address in (*mode).
+>
+> Right now in get_mempolicy2() I fetch this unconditionally instead of
+> requiring MPOL_F_NODE.  I did not want to multiplexing (*mode) output.
+>
+> I see two options:
+> 1) Get rid of MPOL_F_NODE functionality in get_mempolicy2()
+>    If a user wants that information, they can still use get_mempolicy()
+>
+> 2) Keep MPOL_F_NODE and mpol_args->addr_node/policy_node, but don't allow
+>    any future extensions that create this kind of situation.
 
-diff --git a/scripts/sign-file.c b/scripts/sign-file.c
-index 598ef5465f82..3edb156ae52c 100644
---- a/scripts/sign-file.c
-+++ b/scripts/sign-file.c
-@@ -322,7 +322,7 @@ int main(int argc, char **argv)
- 				     CMS_NOSMIMECAP | use_keyid |
- 				     use_signed_attrs),
- 		    "CMS_add1_signer");
--		ERR(CMS_final(cms, bm, NULL, CMS_NOCERTS | CMS_BINARY) < 0,
-+		ERR(CMS_final(cms, bm, NULL, CMS_NOCERTS | CMS_BINARY) != 1,
- 		    "CMS_final");
- 
- #else
-@@ -341,10 +341,10 @@ int main(int argc, char **argv)
- 			b = BIO_new_file(sig_file_name, "wb");
- 			ERR(!b, "%s", sig_file_name);
- #ifndef USE_PKCS7
--			ERR(i2d_CMS_bio_stream(b, cms, NULL, 0) < 0,
-+			ERR(i2d_CMS_bio_stream(b, cms, NULL, 0) != 1,
- 			    "%s", sig_file_name);
- #else
--			ERR(i2d_PKCS7_bio(b, pkcs7) < 0,
-+			ERR(i2d_PKCS7_bio(b, pkcs7) != 1,
- 			    "%s", sig_file_name);
- #endif
- 			BIO_free(b);
-@@ -374,9 +374,9 @@ int main(int argc, char **argv)
- 
- 	if (!raw_sig) {
- #ifndef USE_PKCS7
--		ERR(i2d_CMS_bio_stream(bd, cms, NULL, 0) < 0, "%s", dest_name);
-+		ERR(i2d_CMS_bio_stream(bd, cms, NULL, 0) != 1, "%s", dest_name);
- #else
--		ERR(i2d_PKCS7_bio(bd, pkcs7) < 0, "%s", dest_name);
-+		ERR(i2d_PKCS7_bio(bd, pkcs7) != 1, "%s", dest_name);
- #endif
- 	} else {
- 		BIO *b;
-@@ -396,7 +396,7 @@ int main(int argc, char **argv)
- 	ERR(BIO_write(bd, &sig_info, sizeof(sig_info)) < 0, "%s", dest_name);
- 	ERR(BIO_write(bd, magic_number, sizeof(magic_number) - 1) < 0, "%s", dest_name);
- 
--	ERR(BIO_free(bd) < 0, "%s", dest_name);
-+	ERR(BIO_free(bd) != 1, "%s", dest_name);
- 
- 	/* Finally, if we're signing in place, replace the original. */
- 	if (replace_orig)
--- 
-2.34.1
+3) Add another parameter to get_mempolicy2(), such as "unsigned long
+*value" to retrieve addr_node or policy_node.  We can extend it to be a
+"struct *" in the future if necessary.
 
+> I'm fine with either.  I originally aimed for get_mempolicy2() to be
+> all of get_mempolicy() features + new data, but that obviously isn't
+> required.
+
+--
+Best Regards,
+Huang, Ying
