@@ -2,146 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A7C21812165
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 23:26:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 342D581216C
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 23:28:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442789AbjLMWZw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 17:25:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37568 "EHLO
+        id S1442788AbjLMW2H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 17:28:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58308 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229772AbjLMWZv (ORCPT
+        with ESMTP id S229772AbjLMW2F (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 17:25:51 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9859BD
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 14:25:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1702506357;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=GtHNIqYNLvneVefWnBC6zOfsKWdZrXaTN0MEXSsNlm4=;
-        b=Rmkb2yODSi2De1AAGZTsceFTfeeBTexRdmVxK6k9A2AmIuIe6ba6KkKdMB5bQBBUSMNBwy
-        hxzc5ewD84q5lO/6dzWIuMSkZivZSWsJAE4rLQ78O28AQyeP8/8AVD2tm12uWW3V4URhkN
-        FJH7jc5KyW6m5rbryI++UG3MR90cvt4=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-474-h9tjRpSyM9yUaBg4mBdBpw-1; Wed, 13 Dec 2023 17:25:55 -0500
-X-MC-Unique: h9tjRpSyM9yUaBg4mBdBpw-1
-Received: by mail-wm1-f71.google.com with SMTP id 5b1f17b1804b1-40c22bc1ebdso50865e9.1
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 14:25:55 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702506354; x=1703111154;
-        h=content-transfer-encoding:mime-version:user-agent:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=GtHNIqYNLvneVefWnBC6zOfsKWdZrXaTN0MEXSsNlm4=;
-        b=aQdsAjU9K2HjHemLeHkjyoJRxCpJk8+QfB13l0suTASL+xO6zX6F/BzCumeo3CzO5j
-         Tmn59cIXcVlc2zYq9QovLQ/pgCx9g2GDQBeHSdYxs6+Mpu6vHTMkk5XGKTVs0VuF4l96
-         HmK8QvdL/GeoudNB7ePNyQvkkumeBO1zQ0i1KcFmB4oFf/pF/Ofa3va0M3SVd1qi0m1w
-         o+b6K+DS6xn7HLlHjoIGH40hLhKdltj1zqhXAg4lmONASuAU1aX3LDMWbuNnPWVzphLH
-         YYPpN5T67Wwp073iXkOS6w3pxZzmIJ1CzqVXP60KgfxlQuOwUkahuWk702ASWt8mx7ze
-         4dfg==
-X-Gm-Message-State: AOJu0YwPEiBEkP1ZnANyNUE6FuHoT2CHdAbvBY/H3ATXWjBv4fLIKug6
-        me8llRkF0HPeH1qZSbOboOXIhKL8IRFOoFPOvP1b9iZAuleSPq9ivjo55/k8ADamHfUJ0tX2R0k
-        mfqZKzGjwtPMgFfhCa3R7zwId
-X-Received: by 2002:a05:600c:518a:b0:40b:5e4a:2354 with SMTP id fa10-20020a05600c518a00b0040b5e4a2354mr4800767wmb.86.1702506354406;
-        Wed, 13 Dec 2023 14:25:54 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IGq5vSBS9iWIl4hhY+47LaF7O2e11U2yVs0UmGQ3dWeLwMn5yVhoe2ukGq+e6/HNoX4k1QrCw==
-X-Received: by 2002:a05:600c:518a:b0:40b:5e4a:2354 with SMTP id fa10-20020a05600c518a00b0040b5e4a2354mr4800760wmb.86.1702506354019;
-        Wed, 13 Dec 2023 14:25:54 -0800 (PST)
-Received: from starship ([77.137.131.62])
-        by smtp.gmail.com with ESMTPSA id m27-20020a05600c3b1b00b0040b38292253sm24509354wms.30.2023.12.13.14.25.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Dec 2023 14:25:53 -0800 (PST)
-Message-ID: <5ca5592b21131f515e296afae006e5bb28b1fb87.camel@redhat.com>
-Subject: Re: [PATCH v4 10/12] KVM: x86: never write to memory from
- kvm_vcpu_check_block()
-From:   Maxim Levitsky <mlevitsk@redhat.com>
-To:     Sean Christopherson <seanjc@google.com>,
-        Jim Mattson <jmattson@google.com>
-Cc:     alexandru.elisei@arm.com, anup@brainfault.org,
-        aou@eecs.berkeley.edu, atishp@atishpatra.org,
-        borntraeger@linux.ibm.com, chenhuacai@kernel.org, david@redhat.com,
-        frankja@linux.ibm.com, imbrenda@linux.ibm.com, james.morse@arm.com,
-        kvm-riscv@lists.infradead.org, kvm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-riscv@lists.infradead.org,
-        linuxppc-dev@lists.ozlabs.org, maz@kernel.org,
-        oliver.upton@linux.dev, palmer@dabbelt.com,
-        paul.walmsley@sifive.com, pbonzini@redhat.com,
-        suzuki.poulose@arm.com
-Date:   Thu, 14 Dec 2023 00:25:50 +0200
-In-Reply-To: <ZXh8Nq_y_szj1WN0@google.com>
-References: <20220921003201.1441511-11-seanjc@google.com>
-         <20231207010302.2240506-1-jmattson@google.com>
-         <ZXHw7tykubfG04Um@google.com>
-         <CALMp9eTT97oDmQT7pxeOMLQbt-371aMtC2Kev+-kWXVRDVrjeg@mail.gmail.com>
-         <ZXh8Nq_y_szj1WN0@google.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
+        Wed, 13 Dec 2023 17:28:05 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75DA4BD;
+        Wed, 13 Dec 2023 14:28:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1702506492; x=1734042492;
+  h=date:from:to:cc:subject:message-id:references:
+   in-reply-to:mime-version;
+  bh=62MDjZa1Cos8zcMZfKNfMWi+0bxB9KSEvOJcOW5kMZg=;
+  b=g3LpNoR9Ae8DeP0obNVniA/Vq0+PakUB0U+JjCC/FpWSAWb0WxhtuNuF
+   Jk+bzfRdJlz1huGLe5fWI3WQro2/aidqnM3UA/1ww+vF2yE33cfiF64ro
+   5gknHNTBVev4rm9X1WTF/Qbvl3VLuyH5l30q+K9M4pZCT/n0zAmYEe6oE
+   IcNCF0aZEXT+D6sX3oXgIsL4whdTxgSXkiEi3OtittpScL+9WN8FValyR
+   CUev9tJX0yVFAGC0+YTkQvyoqAuObFv98nby5ZF8N+ZoxlvPy1GxEVITw
+   PVhPKcBpS6jiQCkFjv6MPRKNHSBurTzACKFtylhDz2SESKhUHam1m7YTH
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10923"; a="374541691"
+X-IronPort-AV: E=Sophos;i="6.04,274,1695711600"; 
+   d="scan'208";a="374541691"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Dec 2023 14:28:11 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10923"; a="774111372"
+X-IronPort-AV: E=Sophos;i="6.04,274,1695711600"; 
+   d="scan'208";a="774111372"
+Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
+  by orsmga002.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 13 Dec 2023 14:28:10 -0800
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Wed, 13 Dec 2023 14:28:10 -0800
+Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
+ fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Wed, 13 Dec 2023 14:28:10 -0800
+Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
+ fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Wed, 13 Dec 2023 14:28:10 -0800
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (104.47.56.168)
+ by edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Wed, 13 Dec 2023 14:28:09 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=d0SigSkwz2Frkk0L7kB0TB1VAG0fLCFys2qJfhtyFpza5DyzAol3kfc39RtiRgIAyfmBIErRMdjKW0dtH9VWl2bIksTDCuTrrUYXzcgOZtpYVHMTI2D/KXlYe3qR+8rRN7hj+xnAF2xNV2jBqctd+o2hAaLp4oa0a8G0mk+ToF1PGxNe/yvsiVVlMck7Zy2XQWzrQuIDHwjSDIVXfcNYgjWBG6mbl9MAjevfUV5h1nhWIAzGKWNYObInkrIfHwAvEN5TqHU4i+QMTCeCYJmT9bhTWKEdDG70avNxiWZ//7m5pZSm3Nx8iBwWK83olK2V/L4ok6xXsKYW6NPVMWPAkQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=EqQyG86O/S/FOXcD7lSa2kJyYmq7OfnM02CtkQ4F/qo=;
+ b=WNM6s6Jpj6UJiIixYYL58q+3yz8/TSsaPc12oDAmuDUsMzMsj3GWOLfwXrh76QYYh51Bf+b5JFPa1SfYStKuH9BEhGfaq2VjDNK7k1Nb6S2gDhI5yyp0blOGD4pgZ/YXJq1JbiGBmrxbg5tNO4ZyfY+idPrXjIK2vtkPAS5YaCNhLakSHd6hUFLcmnR2ZjGfjCnY9ogzg8qaZ+fA3gDwvKvRFlsKaQfOVtxmSWaza56jn0MYSenpTJupPffaeetYtAUC2Pi95YtSqcmleF9OaDFE21wCSZRNKzAcNyLK7HN+c0549qIuYjiVL9QmhkHhiwu8BNe7A9ynFpGF1zggCA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from SA1PR11MB6733.namprd11.prod.outlook.com (2603:10b6:806:25c::17)
+ by CY8PR11MB7687.namprd11.prod.outlook.com (2603:10b6:930:74::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7091.28; Wed, 13 Dec
+ 2023 22:28:07 +0000
+Received: from SA1PR11MB6733.namprd11.prod.outlook.com
+ ([fe80::da91:dbe5:857c:fa9c]) by SA1PR11MB6733.namprd11.prod.outlook.com
+ ([fe80::da91:dbe5:857c:fa9c%4]) with mapi id 15.20.7091.028; Wed, 13 Dec 2023
+ 22:28:07 +0000
+Date:   Wed, 13 Dec 2023 14:28:03 -0800
+From:   Ira Weiny <ira.weiny@intel.com>
+To:     Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Ira Weiny <ira.weiny@intel.com>
+CC:     Smita Koralahalli <Smita.KoralahalliChannabasappa@amd.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Shiju Jose <shiju.jose@huawei.com>,
+        Yazen Ghannam <yazen.ghannam@amd.com>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Alison Schofield <alison.schofield@intel.com>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        Ard Biesheuvel <ardb@kernel.org>, <linux-efi@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-cxl@vger.kernel.org>
+Subject: Re: [PATCH RFC v4 5/6] firmware/efi: Process CXL Component Events
+Message-ID: <657a2ff3bcc0b_25c9c7294ab@iweiny-mobl.notmuch>
+References: <20230601-cxl-cper-v4-0-47bb901f135e@intel.com>
+ <20230601-cxl-cper-v4-5-47bb901f135e@intel.com>
+ <7ec6d2af-c860-9b05-7eaf-c82f50f8e66e@amd.com>
+ <65674a71ef4d0_a1b25294e4@iweiny-mobl.notmuch>
+ <20231213171351.00004579@Huawei.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20231213171351.00004579@Huawei.com>
+X-ClientProxiedBy: SJ0PR13CA0056.namprd13.prod.outlook.com
+ (2603:10b6:a03:2c2::31) To SA1PR11MB6733.namprd11.prod.outlook.com
+ (2603:10b6:806:25c::17)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SA1PR11MB6733:EE_|CY8PR11MB7687:EE_
+X-MS-Office365-Filtering-Correlation-Id: 0c1a3ace-f9cd-4b3b-9a36-08dbfc2ac7b8
+X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 6JkuWLRDHy3kDApQgkBRVwq7V+HAoob78o+d69nE71ISk8uJ546pGThJAQGtIM8JF2wjJD0eq9t6EZ5J4ZyON0pG5wahOwT2WKFaiVTt27/EdxIXbtw42riX5G8ZwwxqGlN7nYY7bBYMGPEpMVYh5r5EtHSOTindSg3wOgqbhNGxmhGWprHqQNqFZ8kY1ybNz9LKBdDw7OxdBAAMRKRx+Wf//X/MLyyecdJm0Kb4JhDjMmYw/FQVtS+Os+J98pgvUCb9tOEVwWLYxGHALjZJTDICFR8y029U3oRIRzcWn0UctAT7oh2EVP3gU6mDfbEbHJCiyrTm2MZiEp/iFLXymjnOTLl/ZNHvGeRzvTtksgY74Nz0dgx9SwSHAQ5WrRmbMMJjQT2f1GlFKLdXRS8GSE6XU7aeP2HFIUVPDtu3wUZ4I6Kq/rBhOvmWYquqzFOgYUotj8rlrFIvgO/q60k0bjJJRVjhYXbbGFUqFdCzNaybug8aFndy9jzaCLvIDyiErn7APVh9HRTx5rGxu23it7ZgBEaI12346GC0nAyB40BkKCNQvZAvzsi6iBQMdX8b
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR11MB6733.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(136003)(346002)(376002)(366004)(39860400002)(230922051799003)(64100799003)(451199024)(1800799012)(186009)(2906002)(86362001)(4326008)(8676002)(8936002)(44832011)(316002)(5660300002)(41300700001)(6486002)(478600001)(6512007)(9686003)(26005)(6666004)(82960400001)(6506007)(83380400001)(110136005)(38100700002)(66946007)(66556008)(66476007)(54906003);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?fwWjiUfk6UVshTWJ9RpNZJmnYgF5kd++vyqkTMDrTgf93xDeP9UAkPLw62uB?=
+ =?us-ascii?Q?UliXldWz5upmmXRNF/wuS46ww35T0yE0sDOlIKkMTC92VtyTEDcCYIQ4/8o7?=
+ =?us-ascii?Q?vR5jGK1bKsbDutkS7iGD5CI8SjjjwMPJuPbL8eWOacXKeT/eb/O8+iR9iYXO?=
+ =?us-ascii?Q?YlQynnX+DiX17vf+FdaQU/XfPYOFqVDJWAFyo5v+7w7HIAJNs06L3VNLSm6x?=
+ =?us-ascii?Q?idWUtsqaid72Cl/z38+2DlzVYbCUnAT6/VR03Xrm0iSYUYpHsTceummbhgLs?=
+ =?us-ascii?Q?s4uG8zwSCkls8a/HQmFHw58gmQCufbqLqByC4FMuTHijtgMxRiM8LybHwmES?=
+ =?us-ascii?Q?POvtpch0XaSQSUwNEW0CTS2ttbPeQOV8nUsiJdWKFbtogke+sgb215okFbVU?=
+ =?us-ascii?Q?1moywFwxXMynaNR74Y9ZKm6YYqapvfkWe35GKHUsnLeD6uF+2asR6tamVIaQ?=
+ =?us-ascii?Q?MVS7LsgGK//Wv4HxuHdLzfuqyRL5W1LtT99WrU5W1TpR8Cwe/V6X6924btKk?=
+ =?us-ascii?Q?M63i87IQOTESYP4mGlTUrkpvnQKy0YIbHZlE8OfjV67OpEoCgsn5/XoUeo9q?=
+ =?us-ascii?Q?VitvTMFkhwEkFZDjrkk5CUONXtvfnJA/MUfuy5LwB5F/VdRSpXVhjNKKTicV?=
+ =?us-ascii?Q?aKPVEVsI/PABZKSCTrpc48zKVTdTFnsIBYoh//pSsLFEwMiaINZjX+vn12q4?=
+ =?us-ascii?Q?pnJxHZGcEM0ikVaEfE0uGhBk0C7PuDiV99fkc/csur56P1fh86sH0bC+eEYy?=
+ =?us-ascii?Q?vwW7a79GjtOU+CxeC8cLmbt+Tj8V8fcKlEvYwvOIwRG26CThFJhnGCNFNkyv?=
+ =?us-ascii?Q?BZZiaPX9xUR76ddUMlCz8Z9RnliKZrtKUAmzt8bTArl7EJz3zckUeCWohyOG?=
+ =?us-ascii?Q?zq6XdRKAN8wZrvKLj1KsmcET1EFhK6/5u8K44MKHdz/perq4xAPtgbsGS8zB?=
+ =?us-ascii?Q?wAv9rlDqpAg2NxEXhV2/6rDrLTlY6eiBCzj5K16PIxAb22ZTIPdDXFgz1Ur4?=
+ =?us-ascii?Q?4kHqpRAa7IIKj9YuPQqmTdbVj3yZQZ/isSPquYAz4/Sc9DzWUjijEoSfuFbe?=
+ =?us-ascii?Q?GXPf6uAvbVN1LGn3ugRJpn7HyX3BhfP15VesZN8tz/oYThrxRoYkS7WjMApc?=
+ =?us-ascii?Q?DVfzQAgmUgYaM75rQM2OoOtYQ1ZNjGdHNnnWl9fsfe2GhdcX0BIW9Zxfgotz?=
+ =?us-ascii?Q?QeaJTt//OZMtdgHCDvKRVX4ghGmt29+2+5nclFT6oBlGP4329taBOcKWW4tN?=
+ =?us-ascii?Q?HwPquvR15QJyYMLNNxjHyPWRIXOBUrmX/8zVpY93GAswp3sSo5ledZG5CujU?=
+ =?us-ascii?Q?QdP+hKUzIyHlReKi+aVIbOWHr5Pqsgz36Mf2fz+Ec4dlM47aikZ0NarhuVTO?=
+ =?us-ascii?Q?wiG13k/ehAftC7GJ17N6XSCLkq3vB1tVQqUSETWBUDMLYQg7hSu+1zpdsOq4?=
+ =?us-ascii?Q?84DzN1kDU48Hh/MVCp55OyKaSQRFWA6rlxGgbE6gCZybPRAQz18RKvuiDS1+?=
+ =?us-ascii?Q?+pRQWma674Qvh+sj6g88OdDuRO32LtCydd3jmuMzMp7oRfysR/9AQQUGU3wb?=
+ =?us-ascii?Q?nrAl5AHJtUVPFPcXFc5fNv9cS0/sOiI4CKhwPhfv?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0c1a3ace-f9cd-4b3b-9a36-08dbfc2ac7b8
+X-MS-Exchange-CrossTenant-AuthSource: SA1PR11MB6733.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Dec 2023 22:28:07.4101
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: oeJij8eccGH5qdukUWmMa3ooGu2WrunQtKz0Wp8XGTUJ1NonKiOKrwqI/Ge3GEknFgvq2FqgBj5MXCF44oJ8lQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY8PR11MB7687
+X-OriginatorOrg: intel.com
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2023-12-12 at 07:28 -0800, Sean Christopherson wrote:
-> On Sun, Dec 10, 2023, Jim Mattson wrote:
-> > On Thu, Dec 7, 2023 at 8:21 AM Sean Christopherson <seanjc@google.com> wrote:
-> > > Doh.  We got the less obvious cases and missed the obvious one.
+Jonathan Cameron wrote:
+> On Wed, 29 Nov 2023 06:28:01 -0800
+> Ira Weiny <ira.weiny@intel.com> wrote:
+> 
+
+[snip]
+
+> > > __packed attribute just for cper_cxl_event_rec still fails to properly 
+> > > align structure elements. Looks like, __packed attribute is needed for 
+> > > all structs (cper_cxl_event_devid and cper_cxl_event_sn) inside 
+> > > cper_cxl_event_rec.
 > > > 
-> > > Ugh, and we also missed a related mess in kvm_guest_apic_has_interrupt().  That
-> > > thing should really be folded into vmx_has_nested_events().
-> > > 
-> > > Good gravy.  And vmx_interrupt_blocked() does the wrong thing because that
-> > > specifically checks if L1 interrupts are blocked.
-> > > 
-> > > Compile tested only, and definitely needs to be chunked into multiple patches,
-> > > but I think something like this mess?
+> > > Seems easier to use global pragma instead.. I could test and obtain the 
+> > > output as expected using pragma..  
 > > 
-> > The proposed patch does not fix the problem. In fact, it messes things
-> > up so much that I don't get any test results back.
+> > I did not know that was acceptable in the kernel but I see you used it in
+> > cper_cxl.h before...
+> > 
+> > Ok I'll do that and spin again.
+> > 
+> > Thanks so much for testing this!  I was out last week and still don't have
+> > a test environment.
 > 
-> Drat.
+> Easy to hack into QEMU :)  Hmm. I have a CCIX patch set from years ago
+> somewhere that does similar. Would be easy to repurposed. Looks like
+> I never published them (just told people to ask if they wanted them :( ).
 > 
-> > Google has an internal K-U-T test that demonstrates the problem. I
-> > will post it soon.
-> 
-> Received, I'll dig in soonish, though "soonish" might unfortunately might mean
-> 2024.
-> 
+> Anyhow, if useful I can dig them out.
 
-Hi,
+If you have a branch with them with a somewhat latest qemu that could work
+too.
 
-So this is what I think:
-
-
-KVM does have kvm_guest_apic_has_interrupt() for this exact purpose,
-to check if nested APICv has a pending interrupt before halting.
-
-
-However the problem is bigger - with APICv we have in essence 2 pending interrupt
-bitmaps - the PIR and the IRR, and to know if the guest has a pending interrupt
-one has in theory to copy PIR to IRR, then see if the max is larger then the current PPR.
-
-Since we don't want to write to guest memory, and the IRR here resides in the guest memory,
-I guess we have to do a 'dry-run' version of 'vmx_complete_nested_posted_interrupt' and call
-it from  kvm_guest_apic_has_interrupt().
-
-What do you think? I can prepare a patch for this.
-
-Can you share a reproducer or write a new one that can be shared?
-
-Best regards,
-	Maxim Levitsky
-
+Ira
