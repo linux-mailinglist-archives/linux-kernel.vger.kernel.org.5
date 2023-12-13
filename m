@@ -2,134 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 89858810AA0
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 07:48:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 971B6810AA2
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 07:49:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378619AbjLMGsE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 01:48:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33034 "EHLO
+        id S1378641AbjLMGsu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 01:48:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60736 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232909AbjLMGsC (ORCPT
+        with ESMTP id S233147AbjLMGss (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 01:48:02 -0500
-Received: from smtp-fw-6002.amazon.com (smtp-fw-6002.amazon.com [52.95.49.90])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45741B3;
-        Tue, 12 Dec 2023 22:48:08 -0800 (PST)
+        Wed, 13 Dec 2023 01:48:48 -0500
+Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AD2ADB
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 22:48:54 -0800 (PST)
+Received: by mail-ed1-x52e.google.com with SMTP id 4fb4d7f45d1cf-54dcfca54e0so8401734a12.1
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 22:48:54 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1702450089; x=1733986089;
-  h=from:to:cc:date:message-id:references:in-reply-to:
-   content-id:content-transfer-encoding:mime-version:subject;
-  bh=T4YzwzIh5x/zMGeD1nVoy0zE9fuJYRN3bXfZYwH+II0=;
-  b=a2/yOBt/4f94vZlEXT37wmXJoMRY5Rli7OGGkPTCDJLIX1WPYZ9NLVqo
-   I0KH4GKIWlCPyHtLoEs26xFpycJg3M3gEy4RrxYL6CiKI3wb5qls9gSjn
-   N2lALrvhd6TXuvOTbPinvbHFgExi2UuMk2fLiMO04ZtEOsCmxLs3QKliu
-   0=;
-X-IronPort-AV: E=Sophos;i="6.04,272,1695686400"; 
-   d="scan'208";a="373461589"
-Subject: Re: [PATCH v2 1/2] KVM: Use syscore_ops instead of reboot_notifier to hook
- restart/shutdown
-Thread-Topic: [PATCH v2 1/2] KVM: Use syscore_ops instead of reboot_notifier to hook
- restart/shutdown
-Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-iad-1e-m6i4x-9694bb9e.us-east-1.amazon.com) ([10.43.8.6])
-  by smtp-border-fw-6002.iad6.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Dec 2023 06:48:06 +0000
-Received: from smtpout.prod.us-east-1.prod.farcaster.email.amazon.dev (iad7-ws-svc-p70-lb3-vlan2.iad.amazon.com [10.32.235.34])
-        by email-inbound-relay-iad-1e-m6i4x-9694bb9e.us-east-1.amazon.com (Postfix) with ESMTPS id 3194380750;
-        Wed, 13 Dec 2023 06:48:01 +0000 (UTC)
-Received: from EX19MTAEUA002.ant.amazon.com [10.0.10.100:65523]
- by smtpin.naws.eu-west-1.prod.farcaster.email.amazon.dev [10.0.44.73:2525] with esmtp (Farcaster)
- id 3df70858-a3e1-4ab0-981d-8ca502e63e40; Wed, 13 Dec 2023 06:48:00 +0000 (UTC)
-X-Farcaster-Flow-ID: 3df70858-a3e1-4ab0-981d-8ca502e63e40
-Received: from EX19D012EUC002.ant.amazon.com (10.252.51.162) by
- EX19MTAEUA002.ant.amazon.com (10.252.50.124) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Wed, 13 Dec 2023 06:48:00 +0000
-Received: from EX19D014EUC004.ant.amazon.com (10.252.51.182) by
- EX19D012EUC002.ant.amazon.com (10.252.51.162) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Wed, 13 Dec 2023 06:48:00 +0000
-Received: from EX19D014EUC004.ant.amazon.com ([fe80::76dd:4020:4ff2:1e41]) by
- EX19D014EUC004.ant.amazon.com ([fe80::76dd:4020:4ff2:1e41%3]) with mapi id
- 15.02.1118.040; Wed, 13 Dec 2023 06:47:59 +0000
-From:   "Gowans, James" <jgowans@amazon.com>
-To:     "Graf (AWS), Alexander" <graf@amazon.de>,
-        "seanjc@google.com" <seanjc@google.com>,
-        "ebiederm@xmission.com" <ebiederm@xmission.com>,
-        =?utf-8?B?U2Now7ZuaGVyciwgSmFuIEgu?= <jschoenh@amazon.de>
-CC:     "yuzenghui@huawei.com" <yuzenghui@huawei.com>,
-        "kexec@lists.infradead.org" <kexec@lists.infradead.org>,
-        "kvm-riscv@lists.infradead.org" <kvm-riscv@lists.infradead.org>,
-        "james.morse@arm.com" <james.morse@arm.com>,
-        "oliver.upton@linux.dev" <oliver.upton@linux.dev>,
-        "suzuki.poulose@arm.com" <suzuki.poulose@arm.com>,
-        "chenhuacai@kernel.org" <chenhuacai@kernel.org>,
-        "atishp@atishpatra.org" <atishp@atishpatra.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "maz@kernel.org" <maz@kernel.org>,
-        "pbonzini@redhat.com" <pbonzini@redhat.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "kvmarm@lists.linux.dev" <kvmarm@lists.linux.dev>,
-        "aleksandar.qemu.devel@gmail.com" <aleksandar.qemu.devel@gmail.com>,
-        "anup@brainfault.org" <anup@brainfault.org>
-Thread-Index: AQHaKm9F6TfLvhzSVEeLxKjiUjwNTrCgjTCAgAFn6T+AAcSbgIAAKp8AgADgykyAAJaPgIABcBIA
-Date:   Wed, 13 Dec 2023 06:47:59 +0000
-Message-ID: <2811860ff7d24fd32dfa0cd8f0f36a33266a58df.camel@amazon.com>
-References: <20230512233127.804012-1-seanjc@google.com>
-         <20230512233127.804012-2-seanjc@google.com>
-         <cfed942fc767fa7b2fabc68a3357a7b95bd6a589.camel@amazon.com>
-         <871qbud5f9.fsf@email.froward.int.ebiederm.org>
-         <a02b40d3d9ae5b3037b9a9d5921cfb0144ab5610.camel@amazon.com>
-         <7e30cfc2359dfef39d038e3734f7e5e3d9e82d68.camel@amazon.com>
-         <87wmtk9u46.fsf@email.froward.int.ebiederm.org>
-         <cf9e15bf3da411ada1c5b2bbdbfdea836029a5e1.camel@amazon.com>
-In-Reply-To: <cf9e15bf3da411ada1c5b2bbdbfdea836029a5e1.camel@amazon.com>
-Accept-Language: en-ZA, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.146.13.114]
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <446610E114709A4D85F3C8DF06BF2AAA@amazon.com>
-Content-Transfer-Encoding: base64
+        d=linaro.org; s=google; t=1702450133; x=1703054933; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=yIVvMMvaswwg27cMJn3NaCDuYiL5DC22omDwoPC973c=;
+        b=fbKZE6UxScAOqH3MIACBvh/MJmawJ3+tu20VGEkqM5vkFxsbQ42aP2dWfC4RGkg5qm
+         xNHHyNk+J+v2pXf/gsaaZS61RPBCCH9M0V77Z2fbuQMdmL3pB30QRjtzSLw8/AdIW0WI
+         dK6hq2bE5fQ9WS/bD8XCP5T2WOf3t/OYnFoV0oBXQt4WrJMevnK1Xm/N6VwktlnHzoam
+         q3xRzUsw6qUx40lRRfxmwfS/QBxda3fBf1Jqgwr2EVK+7WTgWvPgc1Nd65SosBT00Gcn
+         tXKss+XM3comGN5A6VeABwTDOxCq39JB2ZJfm8b9x0fMMFaecJi8QCLdNWNoeZZbZmEf
+         FOGw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702450133; x=1703054933;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=yIVvMMvaswwg27cMJn3NaCDuYiL5DC22omDwoPC973c=;
+        b=PV1Al07JuqgBTUwrUKEvndT0Og++jWjKSO3CYFYI6UJkkvva4pCYnabUUD7/gOueWQ
+         zeFXnJcc4YVWTTC1B9mTATJbjiMq1bzKQefweztl/Tx89amDnCB4oUni/VSb6NXrYrid
+         LoWIjituxImge4tavlWpgD4Z66udvi+ViDuWQoBpG6Hh3OsVDsJH0SULRYdQfPNnPcyB
+         SNWm53G8QhNwhONlywrA2ypCAQW9Ca0RR4ihkTC0Tv8WxEwzI3kBmEd7U2gdeMPWeUOG
+         8VckgknJN7k9R+0PSfQaEksaMTNDzME7RlU6iGS7e9fMu6M7sJpLTaH81pyi/34YHZL+
+         bMZg==
+X-Gm-Message-State: AOJu0YzIAGYfogi7M8iPS+9B26WOf9CRnQBS3OEEIeH4jlq2ZV4/VoK7
+        o9rvMDGW3W1UB1zwVZDb2uV2SQ==
+X-Google-Smtp-Source: AGHT+IEX6e1rw9LWJYz0pZFE5vYaXit1iarygGWu/sRwBgdB7UGiA7Jl875OYAvBwsrjZV8DRchy8A==
+X-Received: by 2002:a17:907:728a:b0:a1b:a52e:3216 with SMTP id dt10-20020a170907728a00b00a1ba52e3216mr3846981ejc.122.1702450132549;
+        Tue, 12 Dec 2023 22:48:52 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.218.27])
+        by smtp.gmail.com with ESMTPSA id tn9-20020a170907c40900b00a1f7ab65d3fsm6155942ejc.131.2023.12.12.22.48.50
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 12 Dec 2023 22:48:52 -0800 (PST)
+Message-ID: <e09e4df8-ec36-4953-9bb0-75a3ce0b535d@linaro.org>
+Date:   Wed, 13 Dec 2023 07:48:49 +0100
 MIME-Version: 1.0
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 1/5] dt-bindings: phy: cadence-torrent: Add optional
+ input reference clock for PLL1
+Content-Language: en-US
+To:     Swapnil Jakhade <sjakhade@cadence.com>, vkoul@kernel.org,
+        kishon@kernel.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        linux-phy@lists.infradead.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org
+Cc:     mparab@cadence.com, rogerq@kernel.org, s-vadapalli@ti.com
+References: <20231212114840.1468903-1-sjakhade@cadence.com>
+ <20231212114840.1468903-2-sjakhade@cadence.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20231212114840.1468903-2-sjakhade@cadence.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gVHVlLCAyMDIzLTEyLTEyIGF0IDEwOjUwICswMjAwLCBKYW1lcyBHb3dhbnMgd3JvdGU6DQo+
-ID4gDQo+ID4gSW4gYW55IGV2ZW50IEkgYmVsaWV2ZSB0aGUgYnVnIHdpdGggcmVzcGVjdCB0byBr
-ZXhlYyB3YXMgaW50cm9kdWNlZCBpbg0KPiA+IGNvbW1pdCA2ZjM4OWE4ZjFkZDIgKCJQTSAvIHJl
-Ym9vdDogY2FsbCBzeXNjb3JlX3NodXRkb3duKCkgYWZ0ZXINCj4gPiBkaXNhYmxlX25vbmJvb3Rf
-Y3B1cygpIikuwqAgVGhhdCBpcyB3aGVyZSBzeXNjb3JlX3NodXRkb3duIHdhcyByZW1vdmVkDQo+
-ID4gZnJvbSBrZXJuZWxfcmVzdGFydF9wcmVwYXJlKCkuDQo+ID4gDQo+ID4gQXQgdGhpcyBwb2lu
-dCBpdCBsb29rcyBsaWtlIHNvbWVvbmUganVzdCBuZWVkcyB0byBhZGQgdGhlIG1pc3NpbmcNCj4g
-PiBzeXNjb3JlX3NodXRkb3duIGNhbGwgaW50byBrZXJuZWxfa2V4ZWMoKSByaWdodCBhZnRlcg0K
-PiA+IG1pZ3JhdGVfdG9fcmVib290X2NwdSgpIGlzIGNhbGxlZC4NCj4gDQo+IFNlZW1zIGdvb2Qg
-YW5kIEknbSBoYXBweSB0byBkbyB0aGF0OyBvbmUgdGhpbmcgd2UgbmVlZCB0byBjaGVjayBmaXJz
-dDoNCj4gYXJlIGFsbCBDUFVzIG9ubGluZSBhdCB0aGF0IHBvaW50PyBUaGUgY29tbWl0IG1lc3Nh
-Z2UgZm9yDQo+IDZmMzg5YThmMWRkMiAoIlBNIC8gcmVib290OiBjYWxsIHN5c2NvcmVfc2h1dGRv
-d24oKSBhZnRlciBkaXNhYmxlX25vbmJvb3RfY3B1cygpIikNCj4gc3BlYWtzIGFib3V0OiAib25l
-IENQVSBvbi1saW5lIGFuZCBpbnRlcnJ1cHRzIGRpc2FibGVkIiB3aGVuDQo+IHN5c2NvcmVfc2h1
-dGRvd24gaXMgY2FsbGVkLiBLVk0ncyBzeXNjb3JlIHNodXRkb3duIGhvb2sgZG9lczoNCj4gDQo+
-IG9uX2VhY2hfY3B1KGhhcmR3YXJlX2Rpc2FibGVfbm9sb2NrLCBOVUxMLCAxKTsNCj4gDQo+IC4u
-LiBzbyB0aGF0IHNtZWxscyB0byBtZSBsaWtlIGl0IHdhbnRzIGFsbCB0aGUgQ1BVcyB0byBiZSBv
-bmxpbmUgYXQNCj4ga3ZtX3NodXRkb3duIHBvaW50Lg0KPiANCj4gSXQncyBub3QgY2xlYXIgdG8g
-bWU6DQo+IA0KPiAxLiBEb2VzIGhhcmR3YXJlX2Rpc2FibGVfbm9sb2NrIGFjdHVhbGx5IG5lZWQg
-dG8gYmUgZG9uZSBvbiAqZXZlcnkqIENQVQ0KPiBvciB3b3VsZCB0aGUgb2ZmbGluZWQgb25lcyBi
-ZSBmaW5lIHRvIGlnbm9yZSBiZWNhdXNlIHRoZXkgd2lsbCBiZSByZXNldA0KPiBhbmQgdGhlIFZN
-WEUgYml0IHdpbGwgYmUgY2xlYXJlZCB0aGF0IHdheT8gV2l0aCBjb29wZXJhdGl2ZSBDUFUgaGFu
-ZG92ZXINCj4gd2UgcHJvYmFibHkgZG8gaW5kZWVkIHdhbnQgdG8gZG8gdGhpcyBvbiBldmVyeSBD
-UFUgYW5kIG5vdCBkZXBlbmQgb24NCj4gcmVzZXR0aW5nLg0KPiANCj4gMi4gQXJlIENQVXMgYWN0
-dWFsbHkgb2ZmbGluZSBhdCB0aGlzIHBvaW50PyBXaGVuIHRoYXQgY29tbWl0IHdhcw0KPiBhdXRo
-b3JlZCB0aGVyZSB1c2VkIHRvIGJlIGEgY2FsbCB0byBoYXJkd2FyZV9kaXNhYmxlX25vbG9jaygp
-IGJ1dCB0aGF0J3MNCj4gbm90IHRoZXJlIGFueW1vcmUuDQoNCkkndmUgc2VudCBvdXQgYSBwYXRj
-aDoNCmh0dHBzOi8vbG9yZS5rZXJuZWwub3JnL2tleGVjLzIwMjMxMjEzMDY0MDA0LjI0MTk0NDct
-MS1qZ293YW5zQGFtYXpvbi5jb20vVC8jdQ0KDQpMZXQncyBjb250aW51ZSB0aGUgZGlzY3Vzc2lv
-biB0aGVyZS4NCg0KSkcNCg==
+On 12/12/2023 12:48, Swapnil Jakhade wrote:
+> Torrent PHY can have two input reference clocks. Update bindings
+
+It already supports two.
+
+> to support dual reference clock multilink configurations.
+> 
+> Signed-off-by: Swapnil Jakhade <sjakhade@cadence.com>
+> ---
+>  .../devicetree/bindings/phy/phy-cadence-torrent.yaml        | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/phy/phy-cadence-torrent.yaml b/Documentation/devicetree/bindings/phy/phy-cadence-torrent.yaml
+> index dfb31314face..98946f549895 100644
+> --- a/Documentation/devicetree/bindings/phy/phy-cadence-torrent.yaml
+> +++ b/Documentation/devicetree/bindings/phy/phy-cadence-torrent.yaml
+> @@ -35,14 +35,14 @@ properties:
+>      minItems: 1
+>      maxItems: 2
+>      description:
+> -      PHY reference clock for 1 item. Must contain an entry in clock-names.
+> -      Optional Parent to enable output reference clock.
+> +      PHY input reference clocks - refclk & pll1_refclk (optional).
+> +      Optional Parent to enable output reference clock (phy_en_refclk).
+
+So third clock? But you allow only two? Confusing.
+
+>  
+>    clock-names:
+>      minItems: 1
+>      items:
+>        - const: refclk
+> -      - const: phy_en_refclk
+> +      - enum: [ pll1_refclk, phy_en_refclk ]
+
+This does not match your commit msg. You already had two clocks there.
+
+Best regards,
+Krzysztof
+
