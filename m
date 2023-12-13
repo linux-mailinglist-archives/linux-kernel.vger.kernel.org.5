@@ -2,295 +2,229 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B6A5811348
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 14:47:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B6CAB81134F
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 14:48:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378973AbjLMNr0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 08:47:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60742 "EHLO
+        id S1378980AbjLMNry (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 08:47:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51654 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233509AbjLMNrY (ORCPT
+        with ESMTP id S233509AbjLMNrw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 08:47:24 -0500
-Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25F2FDC
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 05:47:29 -0800 (PST)
-Received: by mail-lj1-x22f.google.com with SMTP id 38308e7fff4ca-2c9fbb846b7so79988041fa.2
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 05:47:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1702475247; x=1703080047; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=eFL6BGE30o5x5wyurnPSdPy6kQ7TCaOCLLGWZ54FCA0=;
-        b=jEro79tAvB6nCmlWmyQSm4jCKUPZ+3Ifx9WNNMDFGxVRiJJlapwZTRlnIn43r/Ov/x
-         Z4V56c62uBRl32det2AnaEUzdlpkv/v7yxjGLVUFLA2wVC5ONzA5YMnN2FWr/T9AQFLD
-         ZVJLuN3weQ5N2S77+cbkRDC4HhbKLjHQqbv627DdCDVO2TmC9spf3O/n6VvyeMdgzLQt
-         qZZXPWDnt7gav3vbhlDhdzLvB22VpsyFjV/cHaXUmMdjzmLnMPssWgoz0lyxpJ/S9WNA
-         Awh/qCtv3V4OpobcXKUTfsQ28rrLL+2v4vtVfFB1XUP9h0qg3ROQAnlvro/x8sM2RGY1
-         Vjpg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702475247; x=1703080047;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=eFL6BGE30o5x5wyurnPSdPy6kQ7TCaOCLLGWZ54FCA0=;
-        b=O4jqiE41DO8M1O4BX3t2iAtOkcJSpvNwU5zRrgfZpkXSaB9kBcUROKgD08KZZ9xKPc
-         asdtS8gGmLSB1dJp+v2a3q3CEOByi5EuiBvd96HT1Et1KBa9BGH5JA5n5gXU7T1OZLOZ
-         pkVuYaHWyvL+Y+FSuy68cCovPFFQpXirozSpzxZ7S6Ur9IexSaxSVaKfLEhztXLMW/Lx
-         eti9BsVocK/kFWnAO83FxgE7ihLJl4KTO1bNQTH3Qp8Ct0zJrw6sQiQeCtJGdAlz0Z8y
-         wzB6WR0B1HF/TOQCpQgB8ZBKDz2xw4xtOsrEaJaaxAh1XRf/2gCxBCJ578rv04PI1NZF
-         /DfA==
-X-Gm-Message-State: AOJu0Yz9vhzotv9AXCT6XUSm+/6UCMCJbpytdOhMM9CX8zO9xPv0XhPX
-        8F6qo4oLfVlvqIzqSwoYc4MEKe79/B3ErEXJ34ldnQ==
-X-Google-Smtp-Source: AGHT+IGUlZ7J445LIza6kgBg/FWi7wf6UqJSlXGc+2FgVm1SiS1QNpQhU/4idArCzM8Nw5M50iTgxdOMzbuMRqJSNu0=
-X-Received: by 2002:a2e:a986:0:b0:2cb:2f69:26f9 with SMTP id
- x6-20020a2ea986000000b002cb2f6926f9mr3358968ljq.28.1702475247161; Wed, 13 Dec
- 2023 05:47:27 -0800 (PST)
-MIME-Version: 1.0
-References: <20231213-ad7380-mainline-v2-0-cd32150d84a3@baylibre.com>
- <20231213-ad7380-mainline-v2-3-cd32150d84a3@baylibre.com> <5f7a1c60ccebe13ba6cdfa5d8f9632bc9b838137.camel@gmail.com>
-In-Reply-To: <5f7a1c60ccebe13ba6cdfa5d8f9632bc9b838137.camel@gmail.com>
-From:   David Lechner <dlechner@baylibre.com>
-Date:   Wed, 13 Dec 2023 14:47:16 +0100
-Message-ID: <CAMknhBE6mPepiE=EYBj0ScU8SHXMhpO+D_kKBKFj6W+go_Jrxg@mail.gmail.com>
-Subject: Re: [PATCH v2 3/3] iio: adc: ad7380: new driver for AD7380 ADCs
-To:     =?UTF-8?B?TnVubyBTw6E=?= <noname.nuno@gmail.com>
-Cc:     linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Michael Hennerich <michael.hennerich@analog.com>,
-        =?UTF-8?B?TnVubyBTw6E=?= <nuno.sa@analog.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org,
-        Stefan Popa <stefan.popa@analog.com>
-Content-Type: text/plain; charset="UTF-8"
+        Wed, 13 Dec 2023 08:47:52 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADA49DC;
+        Wed, 13 Dec 2023 05:47:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1702475279; x=1734011279;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=XsfVvpnfSqIWA1Yju2mabl7p6bN2If+eKAefi3u9rjI=;
+  b=mdryW8HQhC5srtnBzWVjR15AHNC/vjYr1bV9l675w5BFO8WhBBz8HNNg
+   PwV2UqNjft6agT8UZZHiIBiE/0R838eX3VXE4i5EsrCPTJmDXWXm4akYN
+   nQGKEwxsuRXkVXqrIA/NdjJ4UUJ4zjNhWo/eJxgsM/PBWbWPc2FoqrJwh
+   ZNmpUCSIC3g3csXJLWgDf0EcqgcK8mg0benRldFJHnQ0/hnvZ5GogcBu3
+   ++333w2gGh0KWKr6FKoowNSQdSaLhSIhEMHv8azXA2jDzQH/FvJUEkP2C
+   ByEfW0jE8dmYEZ8pWjosDhGDjJ90zIL9HuNOiuo3cGYQJgwJpyTp3N3WT
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10922"; a="8325457"
+X-IronPort-AV: E=Sophos;i="6.04,272,1695711600"; 
+   d="scan'208";a="8325457"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Dec 2023 05:47:58 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10922"; a="839875536"
+X-IronPort-AV: E=Sophos;i="6.04,272,1695711600"; 
+   d="scan'208";a="839875536"
+Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
+  by fmsmga008.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 13 Dec 2023 05:47:57 -0800
+Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
+ ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Wed, 13 Dec 2023 05:47:57 -0800
+Received: from orsmsx612.amr.corp.intel.com (10.22.229.25) by
+ ORSMSX611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Wed, 13 Dec 2023 05:47:56 -0800
+Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
+ orsmsx612.amr.corp.intel.com (10.22.229.25) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Wed, 13 Dec 2023 05:47:56 -0800
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (104.47.58.101)
+ by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Wed, 13 Dec 2023 05:47:56 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=j4u3BURzqSQ73xOuv+hGlhHwQ1hjtlvzsjbdjsve8GwYDTRXwFTrVFYHY+txjC2tpGMzAL95PjbxMgTxct3IhpSLWjhHt+F7Q/GotV3aMcQvMs7cGn6ZCw01mxVaf+9sfDZUB9vvcBnnm2larPYco8O2CuDrKmBc5TBpnoletAT4HY8uXxFcNMMOohcS2fRUoNfbpXKP75n+crQzZGwtTJt4tMTVUZDE1g2UDgDp4JP8DqWVm1xghoJjzE29Vl2jka5paqtoQJ9nJbBOiySdc3Roksja3XCkPhVEPzGaMZEPcQyvs1OSLFxlu5fJ5DO9hRcyN5NoAxOZkiltY/XtpQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=voYlh5dDnrInXWS+GzqvKirisjkJl8q+cSczN3QQmY0=;
+ b=RejB2Ieew/L8cZaKuzuv9lkWd0KwMTmHyr0E/GlS/7qr2J6Hm1Pyc5ixSa8H0I2sXtetDbtrKwuJoYxuN/t6k7WQpzErd9rkuQTO/xY+O3865oReZqMZf+UboveY3XmtSqxrVT+CvetZavKG8bC0kS8n9ndY2YYpOMlbAN4K2+fWhIU04jup/VVSBLNJqky8OoE7NIpTtFzLyIsLL+g6vpdQ2pXuSJCEAJrLa21lI6ZKGVnOHAe+9lHFtBFjM0B5kEzQGosO7M00JKQNMZrrKjYUbot/Zi4a8JR3DNE6R1GjCn+gBamMyGG3IoFK/tvuTTbYY+9ik6LgDyqZ71I98g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Received: from SN7PR11MB7540.namprd11.prod.outlook.com (2603:10b6:806:340::7)
+ by SN7PR11MB6726.namprd11.prod.outlook.com (2603:10b6:806:266::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7091.26; Wed, 13 Dec
+ 2023 13:47:54 +0000
+Received: from SN7PR11MB7540.namprd11.prod.outlook.com
+ ([fe80::4b41:979d:5c37:aab9]) by SN7PR11MB7540.namprd11.prod.outlook.com
+ ([fe80::4b41:979d:5c37:aab9%3]) with mapi id 15.20.7068.031; Wed, 13 Dec 2023
+ 13:47:54 +0000
+From:   "Liu, Yi L" <yi.l.liu@intel.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+CC:     "Tian, Kevin" <kevin.tian@intel.com>,
+        "joro@8bytes.org" <joro@8bytes.org>,
+        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
+        "robin.murphy@arm.com" <robin.murphy@arm.com>,
+        "baolu.lu@linux.intel.com" <baolu.lu@linux.intel.com>,
+        "cohuck@redhat.com" <cohuck@redhat.com>,
+        "eric.auger@redhat.com" <eric.auger@redhat.com>,
+        "nicolinc@nvidia.com" <nicolinc@nvidia.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "mjrosato@linux.ibm.com" <mjrosato@linux.ibm.com>,
+        "chao.p.peng@linux.intel.com" <chao.p.peng@linux.intel.com>,
+        "yi.y.sun@linux.intel.com" <yi.y.sun@linux.intel.com>,
+        "peterx@redhat.com" <peterx@redhat.com>,
+        "jasowang@redhat.com" <jasowang@redhat.com>,
+        "shameerali.kolothum.thodi@huawei.com" 
+        <shameerali.kolothum.thodi@huawei.com>,
+        "lulu@redhat.com" <lulu@redhat.com>,
+        "suravee.suthikulpanit@amd.com" <suravee.suthikulpanit@amd.com>,
+        "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
+        "Duan, Zhenzhong" <zhenzhong.duan@intel.com>,
+        "joao.m.martins@oracle.com" <joao.m.martins@oracle.com>,
+        "Zeng, Xin" <xin.zeng@intel.com>,
+        "Zhao, Yan Y" <yan.y.zhao@intel.com>
+Subject: RE: [PATCH v6 2/6] iommufd: Add IOMMU_HWPT_INVALIDATE
+Thread-Topic: [PATCH v6 2/6] iommufd: Add IOMMU_HWPT_INVALIDATE
+Thread-Index: AQHaGVcJJtyCzgqkgkqBUoie7tgMvbCdgxuAgAAi2QCAAF55AIAF1zMAgABbn4CAAZh0MIAAD+eAgAGC0ZA=
+Date:   Wed, 13 Dec 2023 13:47:54 +0000
+Message-ID: <SN7PR11MB7540259246D97147A224B486C38DA@SN7PR11MB7540.namprd11.prod.outlook.com>
+References: <20231117130717.19875-1-yi.l.liu@intel.com>
+ <20231117130717.19875-3-yi.l.liu@intel.com>
+ <112383df-3ea3-475f-963f-5c53232a1bf4@intel.com>
+ <BN9PR11MB5276283CAEAB7A24871B4B188C8BA@BN9PR11MB5276.namprd11.prod.outlook.com>
+ <20231207144208.GJ2692119@nvidia.com>
+ <8c05763d-1668-4b99-af35-b43a34e966c2@intel.com>
+ <20231211132135.GF2944114@nvidia.com>
+ <DS0PR11MB7529AA3F28F4418A80D869B0C38EA@DS0PR11MB7529.namprd11.prod.outlook.com>
+ <20231212144025.GG3014157@nvidia.com>
+In-Reply-To: <20231212144025.GG3014157@nvidia.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: SN7PR11MB7540:EE_|SN7PR11MB6726:EE_
+x-ms-office365-filtering-correlation-id: aea7d3ca-2202-4714-b477-08dbfbe21ba0
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: CH2o5VMQUuZPkE7GgBI3C50+TL14yWfEBp69qFaxSQat+KaWjFIUSZg8hHzG7aV2AlWPgf/upmmf6foB2THR5jM021gBCsXcDlUXW6JGxv5KZChvNScpUKi/X5rgVm+tU/3nlBVwDmYPFlMg76/h5B0uerazWxiwf3xw+GzVv9EME12+g5rF71XFT7/POV4eSKOLIceFLEhydkjL0fVRlkon0i5JmTriml/HEcLJW5zBpqEL5+G+F4Dz1jsD9jUUoPhbckwPNWDM6G6i1p1Ex+Dsc/KiY7S0shHM73njg1N3JAqWCbaOZ9Ff1f0CX7XUvyJKYHsK3Pm7yw6ocIzO/8iK3MgpfexcNf97jalwLB2k4qOXuc/yhMA/1zkL+ofB3MoBiv2D0OA+V7Kdtz8qEncb5MHuGp3nfR0joWUOQknHhy1wQ9up1DC47KSzTgzehrLqwPFvvYku2K7ZmKsU7DmFgexPDXkdHkzE8/JkCWH0RceeEcadrBewEss9iqq+YrXatm++j/xQZi/cBsF0Qgg6l+hO1R+aMlpcQ9f9i0nveAcETP4m0MIS5G5FSboSYCykPQ/iJ7zgK+GcB5emxDhBtVEUTF/O5niKBexm6EhhHsClRVpX8hOVoLCBVTro
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN7PR11MB7540.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(136003)(366004)(346002)(376002)(396003)(230922051799003)(186009)(64100799003)(1800799012)(451199024)(55016003)(38070700009)(76116006)(66946007)(66556008)(54906003)(66476007)(64756008)(6916009)(66446008)(82960400001)(33656002)(86362001)(122000001)(38100700002)(26005)(9686003)(6506007)(4326008)(2906002)(316002)(478600001)(71200400001)(5660300002)(7416002)(8936002)(7696005)(41300700001)(8676002)(52536014);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?gx97De/CxEA9i8OZsOjHnERoXhA6CK/RhSk+2OELEFiWGGqVAN9ZCLO2S1zG?=
+ =?us-ascii?Q?eh355VHpjMppPHMwlWEPNyMbNMt8m7e370s6dq5/iJOfMKRftM/fiqSvdHwL?=
+ =?us-ascii?Q?T9Xn1qmOXBDH9j9uyNNnZikS8FJIUdME16qhTz15tEIXpKzq2V9+1pxnf9K5?=
+ =?us-ascii?Q?VkWyp/vKTkNWa6GuL3bBOlaJLTRQx5nX38pdj9JrICvmTFH8Li5+i36BsWdv?=
+ =?us-ascii?Q?hp1YfX0KuQ7FHO6i5szKTCEAIwE5/cUyLegaI2CuPiu31OWT5XyZeYj1oU82?=
+ =?us-ascii?Q?a6TE4JcY3dxTwFC/BEPpaoPu5P9jsXGze1DTLId4ZLi42Z/KVD6illAJU/IZ?=
+ =?us-ascii?Q?dxU3prVEv4E01UivNYm6UEcFdWm6EAQ1ftSdyo02Gez4nas1V2D9aQ2zWs9G?=
+ =?us-ascii?Q?aL5BRNv47C1Oyn80M2A0VqW98ekvxq5iChVYmE4QtY3TRl4YuMiflLFvVOh6?=
+ =?us-ascii?Q?/4yBSNlbr3LnvLPsL+PNpw4bqq0uKZv3uZ5jMAhL/o6i4kPshJ61juHoER1h?=
+ =?us-ascii?Q?0B5YCcD9eTJi798J/brKvBG3lSGCbTo1fJ5zYf2bhM+IRE/6xZiBqHyCD3pL?=
+ =?us-ascii?Q?RoLOXMP9UKC6hG16WmYE9NtniGocShAVal9u8xZ2xK8pL2obWbKrE6z6oEle?=
+ =?us-ascii?Q?icTyTTF8JiXr1tuuHjnEumh+uwLyqAoWIz1i7AeHC53Wl/y6l2YY292cI7eY?=
+ =?us-ascii?Q?rAbhtV/4dzpkpFojHkjPPpOgu+WFl2dyKiTp9/uSS/q1l/f2k4Jd5yi+qz8P?=
+ =?us-ascii?Q?ou/HKe3z6DjmdqdmBU5Hs8UeV2gnU1zTVouc7ejGvvi2523VnRLm4OsAgnTJ?=
+ =?us-ascii?Q?j6chUa3hihSK2TafvkfkldniO+Hyd586xi3mU7vo6MBbRnVciqxiXoJtgS1t?=
+ =?us-ascii?Q?M8S6jiOLu5azTPKvvlS/5diVrndEjfEGFqjgv26XnDokDzR3Usb+QpZXIZ2x?=
+ =?us-ascii?Q?RAYtyj0E5Te3PMcz1c5ObruQrCnKfX4n/uk/TqRWfnKQHYUYzrAVH/tWDBo8?=
+ =?us-ascii?Q?ldMQfX9yRpFA9WIGBIqvSHga65Zzc/2c7i7VstUzGPukSl64STT/8rqijaod?=
+ =?us-ascii?Q?XYqZgSOuBUhkiIot2e46sG+OKM+9eYqNA9O2bcCdBLa/ADYmB6niIaPiRLX9?=
+ =?us-ascii?Q?9GMDWPmn2HLXeavRFzBVowEsrLzUL7OW/2iP9YMDuoUteyo4DHiHOjKnhEyp?=
+ =?us-ascii?Q?xK6cwSKwuzGyFM/VcODPDm9NIa6/ID83OvjwnCkZsCdIbOGleUgNWA8flYSs?=
+ =?us-ascii?Q?NPpYNLvzdjPm523szXEzAM3/UqltaJTaGeiAbmfmwR/h66G/0nWWiZLVkDCW?=
+ =?us-ascii?Q?Z81XjCRUn1+GQBpQqRpsokIknGq3xQylK79C0ulfTneLFnCxgUViNInXHihZ?=
+ =?us-ascii?Q?JmfUwsaXXyXj5zpAhsKcKEUjePE5zcZFYhKVYbFkPEyIxBoamFwQXVVFiPfB?=
+ =?us-ascii?Q?985ILxHOGwkOSoEzNkjKOkd3VIQaCSv1NEVbgR3nfpX4Tri5AAD3o6h8rcKt?=
+ =?us-ascii?Q?VQ2MN9uz0bqruUMuZFI+gD+WgvQjNdB2+NiFZ19O55tgT/nDFtb9FDiVfu+T?=
+ =?us-ascii?Q?tL76kmqt2EgwQuBRgouOVdOS5UarE6QrSE9W1blq?=
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+MIME-Version: 1.0
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SN7PR11MB7540.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: aea7d3ca-2202-4714-b477-08dbfbe21ba0
+X-MS-Exchange-CrossTenant-originalarrivaltime: 13 Dec 2023 13:47:54.7479
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: RqFbnMuSVS5X2VGrwKjxSDNYyRl8iDdkdSQZl4H0GNQKfA6kDsIbhXpWrP5hFLat4d+Uf6FIj25kbjvDYsaszQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN7PR11MB6726
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 13, 2023 at 1:18=E2=80=AFPM Nuno S=C3=A1 <noname.nuno@gmail.com=
-> wrote:
->
-> On Wed, 2023-12-13 at 05:21 -0600, David Lechner wrote:
-> > This adds a new driver for the AD7380 family ADCs.
+> From: Jason Gunthorpe <jgg@nvidia.com>
+> Sent: Tuesday, December 12, 2023 10:40 PM
+>=20
+> On Tue, Dec 12, 2023 at 01:45:16PM +0000, Liu, Yi L wrote:
+> > > From: Jason Gunthorpe <jgg@nvidia.com>
+> > > Sent: Monday, December 11, 2023 9:22 PM
+> > >
+> > > On Mon, Dec 11, 2023 at 03:53:40PM +0800, Yi Liu wrote:
+> > >
+> > > > > >  From that thread Jason mentioned to make the invalidation form=
+at
+> > > > > > part of domain allocation. If that is the direction to go then =
+there
+> > > > > > won't be multiple invalidation formats per hwpt. The user shoul=
+d
+> > > > > > create multiple hwpt's per invalidation format (though mixing
+> > > > > > formats in one virtual platform is very unlikely)?
+> > > > >
+> > > > > I think we could do either, but I have a vauge cleanness preferen=
+ce
+> > > > > that the enums are just different? That would follow a pretty typ=
+ical
+> > > > > pattern for a structure tag to reflect the content of the structu=
+re.
+> > > >
+> > > > Is this still following the direction to make the invalidation form=
+at
+> > > > part of domain allocation?
+> > >
+> > > I think you should make it seperate
 > >
-> > The driver currently implements basic support for the AD7380, AD7381,
-> > AD7383, and AD7384 2-channel differential ADCs. Support for additional
-> > single-ended and 4-channel chips that use the same register map as well
-> > as additional features of the chip will be added in future patches.
-> >
-> > Co-developed-by: Stefan Popa <stefan.popa@analog.com>
-> > Signed-off-by: Stefan Popa <stefan.popa@analog.com>
-> > Signed-off-by: David Lechner <dlechner@baylibre.com>
-> > ---
-> >
-> > v2 changes:
-> > - Fixed CONFIG_AD7380 in Makefile
-> > - rx_buf =3D st->scan_data.raw instead of rx_buf =3D &st->scan_data
-> > - Moved iio_push_to_buffers_with_timestamp() outside of if statement
-> > - Removed extra blank lines
-> > - Renamed regulator disable function
-> > - Dropped checking of adi,sdo-mode property (regardless of the actual
-> >         wiring, we can always use 1-wire mode)
-> > - Added available_scan_masks (we always sample two channels at the same=
- time
-> >   so we need to let userspace know this)
-> > - Added check for missing driver match data
-> >
-> >  MAINTAINERS              |   1 +
-> >  drivers/iio/adc/Kconfig  |  16 ++
-> >  drivers/iio/adc/Makefile |   1 +
-> >  drivers/iio/adc/ad7380.c | 464 +++++++++++++++++++++++++++++++++++++++=
-++++++++
-> >  4 files changed, 482 insertions(+)
-> >
-> > diff --git a/MAINTAINERS b/MAINTAINERS
-> > index e2a998be5879..5a54620a31b8 100644
-> > --- a/MAINTAINERS
-> > +++ b/MAINTAINERS
-> > @@ -438,6 +438,7 @@ S:  Supported
-> >  W:
-> > https://wiki.analog.com/resources/tools-software/linux-drivers/iio-adc/=
-ad738x
-> >  W:     https://ez.analog.com/linux-software-drivers
-> >  F:     Documentation/devicetree/bindings/iio/adc/adi,ad7380.yaml
-> > +F:     drivers/iio/adc/ad7380.c
-> >
-> >  AD7877 TOUCHSCREEN DRIVER
-> >  M:     Michael Hennerich <michael.hennerich@analog.com>
-> > diff --git a/drivers/iio/adc/Kconfig b/drivers/iio/adc/Kconfig
-> > index 35f9867da12c..cbfd626712e3 100644
-> > --- a/drivers/iio/adc/Kconfig
-> > +++ b/drivers/iio/adc/Kconfig
-> > @@ -122,6 +122,22 @@ config AD7298
-> >           To compile this driver as a module, choose M here: the
-> >           module will be called ad7298.
-> >
-> > +config AD7380
-> > +       tristate "Analog Devices AD7380 ADC driver"
-> > +       depends on SPI_MASTER
-> > +       select IIO_BUFFER
-> > +       select IIO_TRIGGER
-> > +       select IIO_TRIGGERED_BUFFER
-> > +       help
-> > +         AD7380 is a family of simultaneous sampling ADCs that share t=
-he same
-> > +         SPI register map and have similar pinouts.
-> > +
-> > +         Say yes here to build support for Analog Devices AD7380 ADC a=
-nd
-> > +         similar chips.
-> > +
-> > +         To compile this driver as a module, choose M here: the module=
- will be
-> > +         called ad7380.
-> > +
-> >  config AD7476
-> >         tristate "Analog Devices AD7476 1-channel ADCs driver and other=
- similar
-> > devices from AD and TI"
-> >         depends on SPI
-> > diff --git a/drivers/iio/adc/Makefile b/drivers/iio/adc/Makefile
-> > index bee11d442af4..9c921c497655 100644
-> > --- a/drivers/iio/adc/Makefile
-> > +++ b/drivers/iio/adc/Makefile
-> > @@ -16,6 +16,7 @@ obj-$(CONFIG_AD7291) +=3D ad7291.o
-> >  obj-$(CONFIG_AD7292) +=3D ad7292.o
-> >  obj-$(CONFIG_AD7298) +=3D ad7298.o
-> >  obj-$(CONFIG_AD7923) +=3D ad7923.o
-> > +obj-$(CONFIG_AD7380) +=3D ad7380.o
-> >  obj-$(CONFIG_AD7476) +=3D ad7476.o
-> >  obj-$(CONFIG_AD7606_IFACE_PARALLEL) +=3D ad7606_par.o
-> >  obj-$(CONFIG_AD7606_IFACE_SPI) +=3D ad7606_spi.o
-> > diff --git a/drivers/iio/adc/ad7380.c b/drivers/iio/adc/ad7380.c
-> > new file mode 100644
-> > index 000000000000..b8025b636b67
-> > --- /dev/null
-> > +++ b/drivers/iio/adc/ad7380.c
-> > @@ -0,0 +1,464 @@
-> > +// SPDX-License-Identifier: GPL-2.0-only
-> > +/*
-> > + * Analog Devices AD738x Simultaneous Sampling SAR ADCs
-> > + *
-> > + * Copyright 2017 Analog Devices Inc.
-> > + * Copyright 2023 BayLibre, SAS
-> > + */
-> > +
-> > +#include <linux/bitfield.h>
-> > +#include <linux/bitops.h>
-> > +#include <linux/cleanup.h>
-> > +#include <linux/device.h>
-> > +#include <linux/err.h>
-> > +#include <linux/kernel.h>
-> > +#include <linux/module.h>
-> > +#include <linux/regmap.h>
-> > +#include <linux/regulator/consumer.h>
-> > +#include <linux/slab.h>
-> > +#include <linux/spi/spi.h>
-> > +#include <linux/sysfs.h>
-> > +
-> > +#include <linux/iio/buffer.h>
-> > +#include <linux/iio/iio.h>
-> > +#include <linux/iio/sysfs.h>
-> > +#include <linux/iio/trigger_consumer.h>
-> > +#include <linux/iio/triggered_buffer.h>
-> > +
->
-> ...
->
-> >
-> > +static int ad7380_probe(struct spi_device *spi)
-> > +{
-> > +       struct iio_dev *indio_dev;
-> > +       struct ad7380_state *st;
-> > +       int ret;
-> > +
-> > +       indio_dev =3D devm_iio_device_alloc(&spi->dev, sizeof(*st));
-> > +       if (!indio_dev)
-> > +               return -ENOMEM;
-> > +
-> > +       st =3D iio_priv(indio_dev);
-> > +       st->spi =3D spi;
-> > +       st->chip_info =3D spi_get_device_match_data(spi);
-> > +       if (!st->chip_info)
-> > +               return dev_err_probe(&spi->dev, -EINVAL, "missing match=
- data\n");
-> > +
-> > +       st->vref =3D devm_regulator_get_optional(&spi->dev, "refio");
-> > +       if (IS_ERR(st->vref)) {
-> > +               /*
-> > +                * If there is no REFIO supply, then it means that we a=
-re using
-> > +                * the internal 2.5V reference.
-> > +                */
-> > +               if (PTR_ERR(st->vref) =3D=3D -ENODEV)
-> > +                       st->vref =3D NULL;
-> > +               else
-> > +                       return dev_err_probe(&spi->dev, PTR_ERR(st->vre=
-f),
-> > +                                            "Failed to get refio regul=
-ator\n");
-> > +       }
-> > +
-> > +       if (st->vref) {
-> > +               ret =3D regulator_enable(st->vref);
-> > +               if (ret)
-> > +                       return ret;
-> > +
-> > +               ret =3D devm_add_action_or_reset(&spi->dev, ad7380_regu=
-lator_disable,
-> > +                                              st->vref);
-> > +               if (ret)
-> > +                       return ret;
-> > +       }
-> > +
-> > +       st->regmap =3D devm_regmap_init(&spi->dev, NULL, st, &ad7380_re=
-gmap_config);
-> > +       if (IS_ERR(st->regmap))
-> > +               return dev_err_probe(&spi->dev, PTR_ERR(st->regmap),
-> > +                                    "failed to allocate register map\n=
-");
->
-> Still not using a regmap_bus... You could at least argue in the last vers=
-ion why
-> you're not doing it rather than ignoring the comment :).
->
-> I'm asking for it because it already happened (in IIO) to me and I was as=
-ked for
-> implementing the bus. You also gain things like regmap core handling endi=
-anism and
-> formatting the work buffer for you (eg: regmap_bulk_read() could be more =
-efficient),
->
-> > +       indio_dev->channels =3D st->chip_info->channels;
-> > +       indio_dev->num_channels =3D st->chip_info->num_channels;
-> > +       indio_dev->dev.parent =3D &spi->dev;
->
-> still not addressed...
->
-> With at least the above (for the regmap_bus I'll leave the ultimate decis=
-ion to
-> Jonathan - not a deal breaker for me):
->
-> Reviewed-by: Nuno Sa <nuno.sa@analog.com>
->
->
-> - Nuno S=C3=A1
->
+> > Sure. I'll add a separate enum for cache invalidation format. Just to
+> > see if it is good to pass down the invalidation format in the hwpt
+> > alloc path? So iommu driver can check if the invalidation format
+> > can be used for the hwpt to be allocated.
+>=20
+> I would skip it in the invalidation. If necessary drivers can push a 0
+> length invalidation to do 'try and fail' discovery of supported types.
 
-Sorry, I did not mean to ignore these. I just did a bad job of
-double-checking that I addressed all comments before sending v2. :-(
+I think you mean keep passing the req_type in cache invalidation path
+instead of the way I proposed. For the 'try and fail' discovery, we should
+allow a zero-length array, is it? If the req_type is supported by the iommu
+driver, then return successful, otherwise fail the ioctl. Is it?
 
-If we need a v3, I will look into regmap_bus but at leas
-superficially, I don't see much difference for this part, i.e not
-really any case where bulk ops make sense and since it uses SPI bus
-underneath, endianness isn't an issue.
+Regards,
+Yi Liu
