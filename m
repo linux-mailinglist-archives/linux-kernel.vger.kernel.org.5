@@ -2,124 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 187A58122A9
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 00:12:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 558A08122A3
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 00:11:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234006AbjLMXMk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 18:12:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47022 "EHLO
+        id S229835AbjLMXLL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 18:11:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45408 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234033AbjLMXKn (ORCPT
+        with ESMTP id S229698AbjLMXLJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 18:10:43 -0500
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BA64E4;
-        Wed, 13 Dec 2023 15:10:48 -0800 (PST)
-Received: by mail-wm1-x32f.google.com with SMTP id 5b1f17b1804b1-40c2bb872e2so70452215e9.3;
-        Wed, 13 Dec 2023 15:10:48 -0800 (PST)
+        Wed, 13 Dec 2023 18:11:09 -0500
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1818DC
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 15:11:14 -0800 (PST)
+Received: by mail-lf1-x131.google.com with SMTP id 2adb3069b0e04-50bf26b677dso7284434e87.2
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 15:11:14 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702509047; x=1703113847; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:subject:cc
-         :to:from:date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=27lXn/0eKgoZmqmgopJ3Fi7Q+GCy31HzcvAZfnCfdRk=;
-        b=Q009b1o/ppPGuKd9J3rm/tlBzNBBjNdEKbl1c3L8I8UUMizeN1CGtUojrpX5mpGgEq
-         TY39N2jjtp56bFNrzQAc2hnLOw34zqJw8ViZVJH3rSBSO817fvQOURcrULsMdrewajNd
-         +RmL4BjGgVrvdJuWKR+Q9gZTN9yd/6Jksf2jfOCqlSsEH3G0cxwfupWPNVboOt781LgK
-         ooNZV7/VesJhBKpJyr/tnLYKLVYM9KLP3MnPsZkfADO7EOnj3uEXpcjGI3wjKcR3Lgr0
-         DxfOLSpmMXV6lWAWyxU9IDk+c2ZtEN/9HxfhoGOfDD1x/m+NFgE8f/E9Vtd7N8QPTbhO
-         r7yQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702509047; x=1703113847;
-        h=in-reply-to:content-disposition:mime-version:references:subject:cc
-         :to:from:date:message-id:x-gm-message-state:from:to:cc:subject:date
+        d=linaro.org; s=google; t=1702509073; x=1703113873; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=27lXn/0eKgoZmqmgopJ3Fi7Q+GCy31HzcvAZfnCfdRk=;
-        b=nAJ/yFEhz0CZ0SNA4TGrIu3M35qzKp1I9Xy08yqEFr3UCyI0X1xllRmbA4FyMTKocE
-         xcwR/b8BViUQgdnDXgk+6DkcEYCx7dPBvUzSQPysbfoEIHjoR9WPAjisxd25g9GKr+uY
-         pRagCCF2eqZSlN4hJYb5Fw5I9OFUGGPZyC8Pon1T5OZ3OxC1ZINLR0yweCpXa1kAAx6+
-         1AYs97sQeU98IQh6/nyOOkY/3R8Ljqm/UHoCJ3Ec5NIy+Wc2z6+pxGcXJOf4vhebgBVO
-         DHqExoOPh7SIiX1Am2tH77LLQ59xnT9acpLzdRoY83Z1HmRFKeSydJQM9rRYQMYj0Dxb
-         siPg==
-X-Gm-Message-State: AOJu0YwpMaESuS4Wc4BDNyAAler16bhHh+AosqpAq/oEtHR57MhXDK5l
-        +3k4AKzHdlqdjQKCBbVve1c=
-X-Google-Smtp-Source: AGHT+IHZVV3mGhIMNdNFGZ8VFWEtdvmavOMakWVXsv72jmuTYkwHpGivTKnraBmLNvZzfMc+vraUxQ==
-X-Received: by 2002:a05:600c:450e:b0:40b:5f03:b3c8 with SMTP id t14-20020a05600c450e00b0040b5f03b3c8mr2176250wmo.234.1702509046514;
-        Wed, 13 Dec 2023 15:10:46 -0800 (PST)
-Received: from Ansuel-xps. (93-34-89-13.ip49.fastwebnet.it. [93.34.89.13])
-        by smtp.gmail.com with ESMTPSA id w10-20020a05600c474a00b0040b2c195523sm24407629wmo.31.2023.12.13.15.10.45
+        bh=L/j1Onoc3138zJnsU8yDEiGjQqVsbV45Cqho1Gb5ccE=;
+        b=CY12NKHirTZd/peeQpXugxANJZ+D4q5OPHO3Cxkol5PMRsmpRFLaNV9NU5GTg2LLwv
+         JaorTwRE4USK+qjeibdMJ1Z3a4oBynyhR+MC7oTy980u95PKFIUVjHpmpMcNsG9CPNpo
+         TVqatkRTIdgO0gjem54LbvODpg+bL+bROVRKNLbdjgUNOmkxjlNY07DOKsnEd8NvmB9N
+         jr1BvH/f8aJdGhF5b9tF80UswG0G4RxB8WQni5rJhCQc4Llng9UMm1xjNHmhBheWC7Fk
+         ia1mwl7t/tlmksqK9ReTd77Hr0Rd/i1ZXd0zmqWIuLNJk0zq4ZHV1x+KXzK8NvvlKHyg
+         Hmzw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702509073; x=1703113873;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=L/j1Onoc3138zJnsU8yDEiGjQqVsbV45Cqho1Gb5ccE=;
+        b=xQa27dAFszSo8O+BWRxY0tQzaZTPzG9TmHT7RTPAfWNONjkFdYl5mD9stz3YxCx4Fr
+         mVOjRX3NUNFOOWS8MrfGYsQS958UxyaZIqv8XAD2MQU9HyWhNujF1wyZWCstr8jfstxj
+         SvZcGrioEj6HoJsjK5PyTKSZsvKb8q3whrkle8WsembRT7ukIBY5nShO3SC0k4VYczcv
+         4YSfNhgK2P5d9q7e6VyQzVpJr4Fl4x/2Wb0sZR4TkYj7olAY5BB3gp+CELMNKLHeOiiM
+         8lfLBVrSFYe+WxjPeH5e8qEVrQ397CMvjywqkVTO8z8Q98WYiW0zgwVJDj+Rdf0y2gaA
+         Fl6w==
+X-Gm-Message-State: AOJu0YzOpKQtpUweSeY9fDtx3nD54Qm3vi5qOAs1u8GA8o2F90hx3Aph
+        mOQvfg99L6Vuf6GtaN+6BGuWWA==
+X-Google-Smtp-Source: AGHT+IEhLGLbpNE5ofHBlyMYQRBnTcLYD16vUtw/hL1PzWKS86x81znzu3niMguSuXMWF+hvlixwCg==
+X-Received: by 2002:ac2:592f:0:b0:50b:c2ed:e28a with SMTP id v15-20020ac2592f000000b0050bc2ede28amr2806480lfi.13.1702509073150;
+        Wed, 13 Dec 2023 15:11:13 -0800 (PST)
+Received: from umbar.unikie.fi ([192.130.178.91])
+        by smtp.gmail.com with ESMTPSA id u17-20020ac248b1000000b0050c031e2873sm1735908lfg.288.2023.12.13.15.11.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Dec 2023 15:10:46 -0800 (PST)
-Message-ID: <657a39f6.050a0220.50ffc.9232@mx.google.com>
-X-Google-Original-Message-ID: <ZXo588MHn3AuZLOm@Ansuel-xps.>
-Date:   Thu, 14 Dec 2023 00:10:43 +0100
-From:   Christian Marangi <ansuelsmth@gmail.com>
-To:     Andrew Lunn <andrew@lunn.ch>
-Cc:     Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Vladimir Oltean <vladimir.oltean@nxp.com>,
-        Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
-        Kees Cook <keescook@chromium.org>,
-        Piergiorgio Beruto <piergiorgio.beruto@gmail.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [net-next PATCH 0/2] net: add define to describe link speed modes
-References: <20231213181554.4741-1-ansuelsmth@gmail.com>
- <a4661402-414a-4b0d-82e8-97031fa46230@lunn.ch>
+        Wed, 13 Dec 2023 15:11:12 -0800 (PST)
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+To:     Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
+        Marijn Suijten <marijn.suijten@somainline.org>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Jessica Zhang <quic_jesszhan@quicinc.com>
+Cc:     quic_abhinavk@quicinc.com, linux-arm-msm@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 0/2] drm/msm/dpu: INTF CRC configuration cleanups and fix
+Date:   Thu, 14 Dec 2023 01:11:11 +0200
+Message-Id: <170250905097.800728.11004644949884575762.b4-ty@linaro.org>
+X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20231213-encoder-fixup-v4-0-6da6cd1bf118@quicinc.com>
+References: <20231213-encoder-fixup-v4-0-6da6cd1bf118@quicinc.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <a4661402-414a-4b0d-82e8-97031fa46230@lunn.ch>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 14, 2023 at 12:05:52AM +0100, Andrew Lunn wrote:
-> On Wed, Dec 13, 2023 at 07:15:52PM +0100, Christian Marangi wrote:
-> > This is a simple series to add define to describe link speed modes.
-> > 
-> > Hope the proposed way is acceptable with the enum and define.
-> > 
-> > This is also needed in the upcoming changes in the netdev trigger for LEDs
-> > where phy_speeds functions is used to declare a more compact array instead
-> > of using a "big enough" approach.
+
+On Wed, 13 Dec 2023 13:30:16 -0800, Jessica Zhang wrote:
+> This series drops the frame_count and enable parameters (as they're always
+> set to the same value). It also sets input_sel=0x1 for INTF.
 > 
-> I'm trying to figure out the 'big picture' here.
-> 
-> The LED trigger will call ksetting_get to get a list of supported link
-> modes. You can then use the table struct phy_setting settings[] in
-> phy-core.c to translate the link mode to a speed. You are likely to
-> get a lot of duplicate speeds, but you can remove them. For each speed
-> you need to create a sysfs file. Why not just create a linked list,
-> rather than an array? Or just walk the table and find out how many
-> different speeds there are and allocate an array of that size. Its
-> currently 15, which is not that big. And then just use the is_visible
-> method to hide the ones which are not relevant.
-> 
-> I don't see any need for new enums or tables here, just a function to
-> look up a link mode in that table and return the speed.
->
 
-The big picture was to have an handy define and statically allocate the
-array with the max amount of link modes possible without having to
-allocate kernel memory at runtime.
+Applied, thanks!
 
-With the current way of allocating only the needed space, I have to
-parse the settings table 2 times (one to get the number and the second
-time to compose the actual array)
+[1/2] drm/msm/dpu: Set input_sel bit for INTF
+      https://gitlab.freedesktop.org/lumag/msm/-/commit/1b932e07c321
+[2/2] drm/msm/dpu: Drop enable and frame_count parameters from dpu_hw_setup_misr()
+      https://gitlab.freedesktop.org/lumag/msm/-/commit/e5c08a41bcf3
 
-Not a problem since these are called only on LED register or when the
-device name is called... Just extra code and the fact that kmalloc can
-fail with ENOMEM. (but that is almost imposible and would be in an OOM
-condition)
-
+Best regards,
 -- 
-	Ansuel
+Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
