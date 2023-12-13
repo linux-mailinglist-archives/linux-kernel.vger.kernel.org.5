@@ -2,131 +2,222 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B5A6881067B
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 01:29:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B9EC81067D
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 01:33:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377800AbjLMA3i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 19:29:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58958 "EHLO
+        id S1377825AbjLMAdL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 19:33:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39658 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232620AbjLMA3h (ORCPT
+        with ESMTP id S232620AbjLMAdK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 19:29:37 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FEAA92
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 16:29:42 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AEAC4C433CB
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 00:29:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1702427381;
-        bh=T/CmYAMX8vCFXjdnC4Q6viaedqv85SFFc1KRj8TomIU=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=U1lTHNBdDCfrLirRcsts086ScjN1mNZC14kBqKyHiQXz4nHbRfm98yMpDs2BYwQXl
-         H2lhZRl4aHyHtzHVucT/E9ac6ebDMkjlj1ujGyvu1++E24zdw4dvxGqifgDA5oyzIc
-         lIE43m+l2r1w3Utr+k0iH65TBtCqL+nq/VFf4taNt+l6X/YWh0oTwqzsn2ntOkuwLV
-         OEFIi//KCt+3q1mUXF8gzw9L1/ja03+4AVSUmpSr78Vse4CcBYNnqFh0pLmC5MlwXm
-         sL5VFIIdhVAmzDKqJALB5E7wt4FRUXV0z8pNFPYT7TnCxOaLDXiLzI9hngjCKu/WC1
-         xMicTkuENRaEQ==
-Received: by mail-oa1-f53.google.com with SMTP id 586e51a60fabf-1eb39505ba4so3806235fac.0
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 16:29:41 -0800 (PST)
-X-Gm-Message-State: AOJu0YzbRbYAi63zF6Oete6wiZMemYcvamb65ajtlPPEij/4SATBW7w2
-        N/Q/SGZANUsRFgWWfooeq0Jr0c9Nq81fSXAMVgwjAg==
-X-Google-Smtp-Source: AGHT+IHhKw+F52efRkHsVLmg7lTUhGeCsoBO3yLahHcCawGpwe2Hdh9DkMSCDNnH5zXB9NvA+lZSX9uYML1rHZWNnfE=
-X-Received: by 2002:a17:90b:3a8e:b0:285:adb0:de3e with SMTP id
- om14-20020a17090b3a8e00b00285adb0de3emr5846234pjb.34.1702427359763; Tue, 12
- Dec 2023 16:29:19 -0800 (PST)
+        Tue, 12 Dec 2023 19:33:10 -0500
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2122.outbound.protection.outlook.com [40.107.244.122])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CAD392;
+        Tue, 12 Dec 2023 16:33:16 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=maS1mDJF5rgFihSk6pFjFRV0x6iqEaWE66KQq7FcCjFsfzCjBzZ71JKY18suKgrXgxJryLOM7jzhs7X88K1CUKj8IMyUSXGDd5uiUa3HGoLfxbTjwsT9dx6j+n56KlPOehzFrztAK3y9ZQLDunLI/WbyH8ITWPaZDB3+IU0zQxJngPHM/xumti3XlzYey0FGh/eeHN9iJZM6tl2mZAovsw/K+rEMIaoCgMrPZnVSk5nzl+yK03Pu6VAWkfcGkH5thGMOTMMq6lx6GccP/dgierILFOv4nEWhEK8e2LQ9meP9cYpzibvgM14o3aWrvv0W+odoWd0DnXImga0DtIDtWA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=LdN9LXS/iNHY43+T1i0wM1BCMGidQ+Q1M6HpqQjXJ6U=;
+ b=PkIJ2ar06VeMyQiD/Ix5UA//lGClSJReiKnGZMM1JZ058dFf6AUdfA/dByyEUaICXHWfeLxfLXhrBm2cqrA4GR288KLyr1U64AkeIzB5fAq7CcXl0B/ZnbZ1OjtqCaeRmKpONo19HZ+Pi3LuaNa/biEBeB9vWNTX31zSSAEyKvLNsrZ/nC5sDEa1vSz43uCDfKM7zhpN8Q0sD5qozfGVhfxT0Qv98wsN6nDQhbbsNir3sL4tpxOf2YcjB6R8ZurQDUPtsujcV2edP7SopjRyJ0BuK4cNJSfPFzN7BFXW99BLC2GjNCi1WFnMZLpHQbQ3kWh6H4sIdLyw1xdHldbBcg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=os.amperecomputing.com; dmarc=pass action=none
+ header.from=os.amperecomputing.com; dkim=pass
+ header.d=os.amperecomputing.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=os.amperecomputing.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=LdN9LXS/iNHY43+T1i0wM1BCMGidQ+Q1M6HpqQjXJ6U=;
+ b=aFng+CfZpuJ52xYSlVtzLqZYiwQPq7yIfFfgwKd9NskGyMJ3ZTx1+4bypa6e0/uvjbjp9U08JDT38RyHc2nMYtAqKOn2G7kDUYa3vVcwpTzlnuV/ci+ADl8TSKRShirixN9CNcXFMQ3TsikiKdjidbErn2kUGlAOrCOUa8i2KH4=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=os.amperecomputing.com;
+Received: from DM5PR0102MB3590.prod.exchangelabs.com (2603:10b6:4:a4::25) by
+ SJ0PR01MB7446.prod.exchangelabs.com (2603:10b6:a03:3d8::14) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.7068.33; Wed, 13 Dec 2023 00:33:12 +0000
+Received: from DM5PR0102MB3590.prod.exchangelabs.com
+ ([fe80::49fa:8dc0:6fd1:72e6]) by DM5PR0102MB3590.prod.exchangelabs.com
+ ([fe80::49fa:8dc0:6fd1:72e6%4]) with mapi id 15.20.7068.033; Wed, 13 Dec 2023
+ 00:33:11 +0000
+Date:   Tue, 12 Dec 2023 16:32:56 -0800 (PST)
+From:   Ilkka Koskinen <ilkka@os.amperecomputing.com>
+To:     Shuai Xue <xueshuai@linux.alibaba.com>
+cc:     ilkka@os.amperecomputing.com, kaishen@linux.alibaba.com,
+        helgaas@kernel.org, yangyicong@huawei.com, will@kernel.org,
+        Jonathan.Cameron@huawei.com, baolin.wang@linux.alibaba.com,
+        robin.murphy@arm.com, chengyou@linux.alibaba.com,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-pci@vger.kernel.org, rdunlap@infradead.org,
+        mark.rutland@arm.com, zhuo.song@linux.alibaba.com,
+        renyu.zj@linux.alibaba.com
+Subject: Re: [PATCH v12 4/5] drivers/perf: add DesignWare PCIe PMU driver
+In-Reply-To: <20231208025652.87192-5-xueshuai@linux.alibaba.com>
+Message-ID: <2bbd5a57-b2ce-6e52-ebf-5935335c148@os.amperecomputing.com>
+References: <20231208025652.87192-1-xueshuai@linux.alibaba.com> <20231208025652.87192-5-xueshuai@linux.alibaba.com>
+Content-Type: text/plain; format=flowed; charset=US-ASCII
+X-ClientProxiedBy: CH0P221CA0014.NAMP221.PROD.OUTLOOK.COM
+ (2603:10b6:610:11c::12) To DM5PR0102MB3590.prod.exchangelabs.com
+ (2603:10b6:4:a4::25)
 MIME-Version: 1.0
-References: <20231207192406.3809579-1-nphamcs@gmail.com> <CAF8kJuPEKWbr_1a-OzqrYKSPmuty==KhC2vbTPAmm9xcJHo4cg@mail.gmail.com>
- <CAKEwX=Oj0Rur8i9Oo7y2Py7svx-g11sEj3GKQfMVL62x=4hvdA@mail.gmail.com>
- <CAF8kJuNpnqTM5x1QmQ7h-FaRWVnHBdNGvGvB3txohSOmZhYA-Q@mail.gmail.com>
- <20231209034229.GA1001962@cmpxchg.org> <CAKEwX=OPQE3eTsfqwQa-bq3NE5YcqnkKfud84+FV4HF-Q_wcTg@mail.gmail.com>
-In-Reply-To: <CAKEwX=OPQE3eTsfqwQa-bq3NE5YcqnkKfud84+FV4HF-Q_wcTg@mail.gmail.com>
-From:   Chris Li <chrisl@kernel.org>
-Date:   Tue, 12 Dec 2023 16:29:08 -0800
-X-Gmail-Original-Message-ID: <CAF8kJuO4-yQY9DkKm+1dvqA+QzPyCtCStoLJ4MEVNwbrBQRTLw@mail.gmail.com>
-Message-ID: <CAF8kJuO4-yQY9DkKm+1dvqA+QzPyCtCStoLJ4MEVNwbrBQRTLw@mail.gmail.com>
-Subject: Re: [PATCH v6] zswap: memcontrol: implement zswap writeback disabling
-To:     Nhat Pham <nphamcs@gmail.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>, akpm@linux-foundation.org,
-        tj@kernel.org, lizefan.x@bytedance.com,
-        cerasuolodomenico@gmail.com, yosryahmed@google.com,
-        sjenning@redhat.com, ddstreet@ieee.org, vitaly.wool@konsulko.com,
-        mhocko@kernel.org, roman.gushchin@linux.dev, shakeelb@google.com,
-        muchun.song@linux.dev, hughd@google.com, corbet@lwn.net,
-        konrad.wilk@oracle.com, senozhatsky@chromium.org, rppt@kernel.org,
-        linux-mm@kvack.org, kernel-team@meta.com,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        david@ixit.cz, Kairui Song <kasong@tencent.com>,
-        Minchan Kim <minchan@google.com>,
-        Zhongkun He <hezhongkun.hzk@bytedance.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DM5PR0102MB3590:EE_|SJ0PR01MB7446:EE_
+X-MS-Office365-Filtering-Correlation-Id: 4902cb90-d794-4640-aecd-08dbfb7315b1
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 84t8rbqCih4hYMUpJiA6PIiFmv7YEWYtI5yv/s2am6zsgO2Dzc8Hnc9vZMQl4maATv8EEI5wnLfRQ1eSDCtRYb/+fJ87fuamaywBK7VmWMYlQQs/M3Z8U7CSDFZTRyki+mvNmxT3ZY1wo2KESHDPVv2VfBDdWonlYFz+iTFm8g7vcgxNfKcphmFYfb43xk7+RGBHHC3Bt8rcWOsHzQoHoEm1TFm98ftD3AzTwNdpgzcZLVNoAWirokZd3j9rohODCZaOunDBDwX9wyl4NZ0uORGC0k73IHb7iFl4PByg6iVoziKieGunYm0Pmm43c5qPR04nHXVr7QpUk2wOegtxw94r4UY1Zjouw5N3XhcveJD2943L2UwBcup9zL+FH4hEp3aWE2ADVk13FVxzY4DGNT6yY2T349tlK6RPnFJWsrPZF7oP1Qj6DaZA2be05+qgmt7+2uOAywdGHbd6yzSLt6s8RabVZ/qGUAShgssF5PmBOKRci39G9MMqu0rdBROXF5YaM0rOQY+OY5Xx8iDlAeIFkhE5m15wWGdT8ywj8fM6d1T6YUkv6//aMBt9V0nOEzIA2B8+N3OIEU9wt9oK2VokYx8bMg2FWKcy4UeTKkQ=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR0102MB3590.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(136003)(396003)(39850400004)(366004)(346002)(230922051799003)(451199024)(1800799012)(64100799003)(186009)(41300700001)(38100700002)(316002)(8936002)(66556008)(6916009)(66946007)(478600001)(7416002)(66476007)(86362001)(26005)(6486002)(6506007)(5660300002)(8676002)(6512007)(2616005)(52116002)(6666004)(2906002)(83380400001)(4326008)(38350700005)(19627235002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?gUg6JZVXBC+YE2BG+lG9+QTQAoUzB3cfct0G1fsVvCwt1sc0+I+Y1datH/pz?=
+ =?us-ascii?Q?4MQnTib5HpqI8rW7VuH1st5Fq1uyzNOuZj7YGQ1Lna1+PeWDinCRhLEDECIZ?=
+ =?us-ascii?Q?mYtGjXHqWO6LK98V9Zi8cNfvyQ3zBwd3GqvfmS7t/kJ0Y69mBCZ9geCodZfG?=
+ =?us-ascii?Q?qyMp+3jNJddDMeUr/xaaXL6I5xhvlwI+uVMIovl4iKdAAu2pHG4hu1kXSbSW?=
+ =?us-ascii?Q?McL4jbMTfRqnzCgBwm8wThlSehk4b57Zqi7Ao6F2oHv8NR5qV3etmozJBZnZ?=
+ =?us-ascii?Q?GUjcht0J2a1IKqTuAMExdHbKq2GpQEVJjf2nAyChFxKbuHiL5ug5DPKdz3cR?=
+ =?us-ascii?Q?oQJ3QcRkBiUTrxRVIR8P6JsZgkSKxVfcI9lp4IkjxK6gfA0KGr9OMbnGbO+0?=
+ =?us-ascii?Q?VvmoeBrcMmZfVDd+lNMFmL9vHR16xaqQR8tIUk/IChcIRUtH2aEgtLKMwa+v?=
+ =?us-ascii?Q?5pMiCVASynbmGgeltWnoi9QBrqGR2uZWkmPVz2ttW7XprEKhLcH33OJ89Zt1?=
+ =?us-ascii?Q?Cc2A1fGu7DJwZ9U93boME0+lcTP1Wg3bQ8/NsvXCprnm+Q5PoRZvyyKm3oDs?=
+ =?us-ascii?Q?u7mxEmPGnIexmQYY2V4GfJOcrIUjeQV9nWFT7Ptm82wFtynGV4mUaW5zsXUX?=
+ =?us-ascii?Q?N+Uh7U2Kr7xMRi2qwdabAwnryqjlizt1FYlHss5QjGMpa03CLd5iUBTIe4LI?=
+ =?us-ascii?Q?zCkTAZxTkqaCULVNwvBdd+0t2JwonZYaiOColPQ2StZNVbn/kVoxOaT9uF1L?=
+ =?us-ascii?Q?yy14cqM6Artfruc2ILQ3/DS6PUvYHYlyFY5la6n8uP/O0qr9qjj8yQn3krq6?=
+ =?us-ascii?Q?SyZKkRlBlq0uHy9ijgKxtJ2RDZntO4Rv8Yxh9s3XJ/E2jH/Im2/5WhVmf7RN?=
+ =?us-ascii?Q?tlbowA1n4RpUnrkIJASdFBmUaHXa+clKpJ362ja6rGV8awIXgKKqRhAac77k?=
+ =?us-ascii?Q?O6iq3kPIQun006Zd/JMbikK10gqV4I8p2wt844uFiuKD3lg39pFgIoHHtTPm?=
+ =?us-ascii?Q?ucGOGOgPltbvue8IZW7N3dsKlIiPF+/2JQK5NlJJrJb4LN0RObOZggyhMu5D?=
+ =?us-ascii?Q?Rp1usUhuIKSMkZ0vOkZDKCx/oUG0IdzPx/OzvKldG58ojzeWsNd63rJiG9LL?=
+ =?us-ascii?Q?kyYuE8dI9H7gLMAuufI1bJv++Q0uI3HZDdfCldp7q3JBGMq3aUSdQE2PKWNl?=
+ =?us-ascii?Q?1WV94e2zSUli38oxIhz94O4R3DD5ZuQwTINHlcQJo6ybZ7HcKSgpxX6AsZtU?=
+ =?us-ascii?Q?TjHxCzSf7rw/fkxJ8jmtjHbkDxQjBIXonmoszHi5vphuikMSB2PJUXrWxgiX?=
+ =?us-ascii?Q?BIIdHj59xJDrwt20A9WkA6O1vpvRnSV23En66hmyXqWUH7Xp1CQ9h7V+Cf1r?=
+ =?us-ascii?Q?lqN6lCUlZAOENjBtom/D0R08XyoUNg4WYKL/53fQMApkLTNPL2KHbUgvQ88Z?=
+ =?us-ascii?Q?q2P99im3UtHdqNYCH+9zwB7rt9yR4oyjxj8XPT1yoFoe8WDRzCWrNIEqnbBU?=
+ =?us-ascii?Q?5gk8gv6SHfb1QG1fAuGe7rpH6ovZLqHB+1n37Vj8kqkn7Bze1u+m3IGa852a?=
+ =?us-ascii?Q?Lgw6lN5zc36srKlP3tZG5EsWV7QYhbvV5XmlJm+EY4MtTK3eOjyAttC5wR2x?=
+ =?us-ascii?Q?E+JLs3HN2woq/64Caa5avgM=3D?=
+X-OriginatorOrg: os.amperecomputing.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4902cb90-d794-4640-aecd-08dbfb7315b1
+X-MS-Exchange-CrossTenant-AuthSource: DM5PR0102MB3590.prod.exchangelabs.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Dec 2023 00:33:11.3437
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3bc2b170-fd94-476d-b0ce-4229bdc904a7
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: G1PQNn5e3BdRCPDp3zmYFc4sR9EuxFtf/DtIHbsWBr5JJvYCCZVLtpIPH8kdD9soifUZZ29elYVLy+emVpXnU814lO67tUs8JhqWDovQBH2RWI8Jpu9hYil6uF/a+KVM
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR01MB7446
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 12, 2023 at 1:36=E2=80=AFPM Nhat Pham <nphamcs@gmail.com> wrote=
-:
 
-> > Even if such a file were to show up, I'm not convinced it should even
-> > include zswap as one of the tiers. Zswap isn't a regular swap backend,
-> > it doesn't show up in /proc/swaps, it can't be a second tier, the way
-> > it interacts with its backend file is very different than how two
-> > swapfiles of different priorities interact with each other, it's
-> > already controllable with memory.zswap.max, etc.
+On Fri, 8 Dec 2023, Shuai Xue wrote:
+> This commit adds the PCIe Performance Monitoring Unit (PMU) driver support
+> for T-Head Yitian SoC chip. Yitian is based on the Synopsys PCI Express
+> Core controller IP which provides statistics feature. The PMU is a PCIe
+> configuration space register block provided by each PCIe Root Port in a
+> Vendor-Specific Extended Capability named RAS D.E.S (Debug, Error
+> injection, and Statistics).
 >
-> This is honestly the thing I was originally most iffy about :) zswap
-> is architecturally and semantically separate from other swap options.
-> It gets really confusing to lump it as part of the swap tiers.
-
-The writeback option is about interacting with other swap backends. So
-technically it is not zswap alone. writeback =3D 0 will disable SSD swap
-as well.
-I am not against merging the write back. I just want to make sure 1)
-better alternatives can be developed 2) zswap.writeback can obsolete
-if a better alternative is available.
-
+> To facilitate collection of statistics the controller provides the
+> following two features for each Root Port:
 >
-> >
-> > I'm open to discussing usecases and proposals for more fine-grained
-> > per-cgroup backend control. We've had discussions about per-cgroup
-> > swapfiles in the past. Cgroup parameters for swapon are another
-> > thought. There are several options and many considerations. The
-> > memory.swap.tiers idea is the newest, has probably had the least
-> > amount of discussion among them, and looks the least convincing to me.
+> - one 64-bit counter for Time Based Analysis (RX/TX data throughput and
+>  time spent in each low-power LTSSM state) and
+> - one 32-bit counter for Event Counting (error and non-error events for
+>  a specified lane)
 >
-> Definitely. zswap.writeback is a really concrete feature, with
-> immediate use-case, whereas swap.tiers seem a bit nebulous to me now,
-> the more we discuss it. I'm not against the inclusion of something
-> along its line though, and I'm definitely not trying to limit the use
-> case of other folks - I'd be happy to contribute my engineering hours
-> towards the discussion of the multi-tier swapping design (both
-> internal implementation and and public interface), as well as actual
-> code, when that design is fully fleshed out :)
-
-Great to hear that. I think the discussion so far shows the
-alternative usage cases of the swap backend/tires is real.
-
+> Note: There is no interrupt for counter overflow.
 >
-> >
-> > Let's work out the requirements first.
-> >
-> > The "conflict" with memory.zswap.writeback is a red herring - it's no
-> > more of a conflict than setting memory.swap.tiers to "zswap" or "all"
-> > and then setting memory.zswap.max or memory.swap.max to 0.
+> This driver adds PMU devices for each PCIe Root Port. And the PMU device is
+> named based the BDF of Root Port. For example,
 >
-> Yup.
+>    30:03.0 PCI bridge: Device 1ded:8000 (rev 01)
+>
+> the PMU device name for this Root Port is dwc_rootport_3018.
+>
+> Example usage of counting PCIe RX TLP data payload (Units of bytes)::
+>
+>    $# perf stat -a -e dwc_rootport_3018/Rx_PCIe_TLP_Data_Payload/
+>
+> average RX bandwidth can be calculated like this:
+>
+>    PCIe TX Bandwidth = Rx_PCIe_TLP_Data_Payload / Measure_Time_Window
+>
+> Signed-off-by: Shuai Xue <xueshuai@linux.alibaba.com>
+> Reviewed-by: Baolin Wang <baolin.wang@linux.alibaba.com>
+> Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+> Reviewed-by: Yicong Yang <yangyicong@hisilicon.com>
+> Reviewed-and-tested-by: Ilkka Koskinen <ilkka@os.amperecomputing.com>
+> ---
+> drivers/perf/Kconfig        |   7 +
+> drivers/perf/Makefile       |   1 +
+> drivers/perf/dwc_pcie_pmu.c | 792 ++++++++++++++++++++++++++++++++++++
+> 3 files changed, 800 insertions(+)
+> create mode 100644 drivers/perf/dwc_pcie_pmu.c
+>
+> diff --git a/drivers/perf/dwc_pcie_pmu.c b/drivers/perf/dwc_pcie_pmu.c
+> new file mode 100644
+> index 000000000000..6ee66c4b44bf
+> --- /dev/null
+> +++ b/drivers/perf/dwc_pcie_pmu.c
+> @@ -0,0 +1,792 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Synopsys DesignWare PCIe PMU driver
+> + *
+> + * Copyright (C) 2021-2023 Alibaba Inc.
+> + */
+> +
 
-Care to elaborate it more? I don't understand the conflict part. I do
-ask Johannes in my previous email for clarification.
-One is the superset of the other. I don't consider that as a conflict.
-If we can have both to choose from, obviously I would pick the one
-that is more general and flexible.
+...
 
-Chris
+> +static int dwc_pcie_pmu_event_init(struct perf_event *event)
+> +{
+> +	struct dwc_pcie_pmu *pcie_pmu = to_dwc_pcie_pmu(event->pmu);
+> +	enum dwc_pcie_event_type type = DWC_PCIE_EVENT_TYPE(event);
+> +	struct perf_event *sibling;
+> +	u32 lane;
+> +
+> +	if (event->attr.type != event->pmu->type)
+> +		return -ENOENT;
+> +
+> +	/* We don't support sampling */
+> +	if (is_sampling_event(event))
+> +		return -EINVAL;
+> +
+> +	/* We cannot support task bound events */
+> +	if (event->cpu < 0 || event->attach_state & PERF_ATTACH_TASK)
+> +		return -EINVAL;
+> +
+> +	if (event->group_leader != event &&
+> +	    !is_software_event(event->group_leader))
+> +		return -EINVAL;
+> +
+> +	for_each_sibling_event(sibling, event->group_leader) {
+> +		if (sibling->pmu != event->pmu && !is_software_event(sibling))
+> +			return -EINVAL;
+> +	}
+> +
+> +	if (type < 0 || type >= DWC_PCIE_EVENT_TYPE_MAX)
+> +		return -EINVAL;
+> +
+> +	if (type == DWC_PCIE_LANE_EVENT) {
+> +		lane = DWC_PCIE_EVENT_LANE(event);
+> +		if (lane < 0 || lane >= pcie_pmu->nr_lanes)
+
+Just a minor thing that doesn't really matter: 'lane' is unsigned and, 
+therefore, cannot be negative.
+
+Otherwise, everything looks good and seems to work fine still.
+
+Cheers, Ilkka
