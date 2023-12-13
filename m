@@ -2,133 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 060DF811C83
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 19:30:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F2630811C8B
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 19:31:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442376AbjLMSaQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 13:30:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34514 "EHLO
+        id S233446AbjLMSat (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 13:30:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42316 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235553AbjLMSaP (ORCPT
+        with ESMTP id S235534AbjLMSak (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 13:30:15 -0500
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [IPv6:2a00:1098:ed:100::25])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EAC92D4A;
-        Wed, 13 Dec 2023 10:30:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1702492214;
-        bh=siA7LXSw/cWZOr3eONb6GU7+2W3xc0vUDDvqYVEXHo4=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=HKaHHKc0GUtMtMwGqB+JhK/Vd2s7zl9h17X37TcWvqJ0glMkrpvUvtD8ZM5zP8oTb
-         Oj4pz9a2wJo3jO39ryXI/U1WQnYL+fCTObQZwpY+LyftemSP7OKFByncn0wiOqL0kC
-         /R1gMJO5f0fFI42K/EPxi5SXCGcG2Xw4aifPcDczViY3hkFFI1nPp0pYsRjl4YWwCG
-         ag3BhjF/myOaupGXZQYNhPbCmDhTDYQuojNMX3AFXDhFkgl+6ltnI1kbYK8l8ZDfzW
-         kfTH6jskaTJOYZBhR6GtJsxacD1N9KrTqBgrdxzKkZTo8fXUZJeiEstd75yGdAhLHg
-         7Svf5ssqsr+0g==
-Received: from [100.95.196.25] (cola.collaboradmins.com [195.201.22.229])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: koike)
-        by madrid.collaboradmins.com (Postfix) with ESMTPSA id 95141378149B;
-        Wed, 13 Dec 2023 18:30:10 +0000 (UTC)
-Message-ID: <dd153cf3-541b-40c8-b33c-ce9e7074cc37@collabora.com>
-Date:   Wed, 13 Dec 2023 15:30:07 -0300
+        Wed, 13 Dec 2023 13:30:40 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 249C1181;
+        Wed, 13 Dec 2023 10:30:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1702492246; x=1734028246;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=6mjYUiiWTKU+zQiM8bgxUs35x1rWNcFswLWdtn0ALYc=;
+  b=eUG6SRQdn5X8kzpmImO21Ma9G1Klzb6ftQkQx03SYHf9nwbjFGko2ULA
+   pSYyiNPtZoMpVECnRGuTBDakExojL3NbwXHEpF3weByxM63Gh4qUgR1+5
+   IXKRspijowgQik2AWYp13joScbOBZ3wtmdnNKNTFLN0102yXeTv4cKXIy
+   7UOqLgtGe2rI867rs5ZwmS32vdWUDUYFoLLUuIdQvq7yjPFIcBf7iZmvv
+   +5egqyGp6fjx+Lal/O6P9adZ3EFaZlSkK8BnopS4i7eO5UGdzeTvSSuhu
+   nH6qF80Yv2NfYKCQQNvBcGZ5oSgk1fZ7e2nxA7x6G4Mco0PdZvOjZU+cg
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10923"; a="1844802"
+X-IronPort-AV: E=Sophos;i="6.04,273,1695711600"; 
+   d="scan'208";a="1844802"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Dec 2023 10:30:45 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10923"; a="750222872"
+X-IronPort-AV: E=Sophos;i="6.04,273,1695711600"; 
+   d="scan'208";a="750222872"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by orsmga006.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Dec 2023 10:30:43 -0800
+Received: from andy by smile.fi.intel.com with local (Exim 4.97)
+        (envelope-from <andriy.shevchenko@intel.com>)
+        id 1rDU0H-00000005bnG-04KO;
+        Wed, 13 Dec 2023 20:30:41 +0200
+Date:   Wed, 13 Dec 2023 20:30:40 +0200
+From:   Andy Shevchenko <andriy.shevchenko@intel.com>
+To:     Nikita Shubin <nikita.shubin@maquefel.me>
+Cc:     Vinod Koul <vkoul@kernel.org>,
+        Alexander Sverdlin <alexander.sverdlin@gmail.com>,
+        linux-kernel@vger.kernel.org, dmaengine@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [PATCH v6 40/40] dma: cirrus: remove platform code
+Message-ID: <ZXn4UIkoJeHnAAGW@smile.fi.intel.com>
+References: <20231212-ep93xx-v6-0-c307b8ac9aa8@maquefel.me>
+ <20231212-ep93xx-v6-40-c307b8ac9aa8@maquefel.me>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v7 00/10] drm: ci: fixes
-To:     Vignesh Raman <vignesh.raman@collabora.com>, airlied@gmail.com,
-        daniel@ffwll.ch
-Cc:     daniels@collabora.com, emma@anholt.net,
-        gustavo.padovan@collabora.com, linux-arm-msm@vger.kernel.org,
-        guilherme.gallo@collabora.com, sergi.blanch.torne@collabora.com,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        virtualization@lists.linux-foundation.org,
-        david.heidelberg@collabora.com, linux-mediatek@lists.infradead.org
-References: <20231207091831.660054-1-vignesh.raman@collabora.com>
-Content-Language: en-US
-From:   Helen Koike <helen.koike@collabora.com>
-In-Reply-To: <20231207091831.660054-1-vignesh.raman@collabora.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231212-ep93xx-v6-40-c307b8ac9aa8@maquefel.me>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Dec 12, 2023 at 11:20:57AM +0300, Nikita Shubin wrote:
+> Remove DMA platform header, from now on we use device tree for dma
 
+DMA
 
-On 07/12/2023 06:18, Vignesh Raman wrote:
-> The patch series contains improvements, enabling new ci jobs which
-> enables testing for Mediatek MT8173, Qualcomm APQ 8016 and VirtIO GPU,
-> fixing issues with the ci jobs and updating the expectation files.
-> 
-> v2:
->    - Use fdtoverlay command to merge overlay dtbo with the base dtb instead of modifying the kernel sources
->    - Reworded the commit message for enabling jobs
->    - Added a new patch in the series to use scripts/config to enable/disable configs
-> 
-> v3:
->    - New patch in the series to add device tree overlay in arch/arm64/boot/dts/qcom
->    - drm-ci scripts to use device tree overlay from arch/arm64/boot/dts/qcom and compile base device tree with overlay support
->    - New patch in the series to enable CONFIG_REGULATOR_DA9211 in defconfig
->    - Remove CONFIG_RTC_DRV_MT6397=y as it is already enabled in defconfig
-> 
-> v4:
->    - Drop 'enable CONFIG_REGULATOR_DA9211 in defconfig' patch as it is sent upstream as a seperate patch
->    - Use apq8016-sbc-usb-host.dtb which allows the USB controllers to work in host mode.
->      This patch depends on https://lore.kernel.org/lkml/20230911161518.650726-1-vignesh.raman@collabora.com/
-> 
-> v5:
->    - Added a new patch in the series to set IGT_FORCE_DRIVER to 'mediatek' for mt8173
->    - Added a new patch in the series to make artifacts available for virtio jobs
->    - Added a new patch in the series to add pipeline url to fails and flakes files
->    - Generate fails and flakes file with the updated xfails script - https://www.spinics.net/lists/kernel/msg4959630.html
->    - Drop 'virtio: Update ci variables' patch as the tests which causes the malloc issue are skipped
-> 
-> v6:
->    - Updated commit message for enable DA9211 regulator fix
->    - Use GPU_VERSION instead of CI_JOB_NAME to check if it is mt8173 while setting IGT_FORCE_DRIVER
->    - Added a new patch in the series to uprev IGT to fix memory corruption
->    - Added a new patch in the series to update drm ci documentation
->    - Generate fails file with drm-misc-next
-> 
-> v7:
->    - Fix checkpatch style problems in commit message
->    - Rework mt8173 IGT_FORCE_DRIVER fix and reword the commit message
-> 
-> Vignesh Raman (10):
->    drm: ci: igt_runner: Remove todo
->    drm: ci: Force db410c to host mode
->    drm: ci: arm64.config: Enable DA9211 regulator
->    drm: ci: Enable new jobs
->    drm: ci: Use scripts/config to enable/disable configs
->    drm: ci: mt8173: Do not set IGT_FORCE_DRIVER to panfrost
->    drm: ci: virtio: Make artifacts available
->    drm: ci: uprev IGT
->    drm/doc: ci: Add IGT version details for flaky tests
->    drm: ci: Update xfails
-> 
->   Documentation/gpu/automated_testing.rst       |  7 +--
->   drivers/gpu/drm/ci/arm64.config               |  1 +
->   drivers/gpu/drm/ci/build.sh                   | 16 +++----
->   drivers/gpu/drm/ci/gitlab-ci.yml              |  2 +-
->   drivers/gpu/drm/ci/igt_runner.sh              | 10 +++-
->   drivers/gpu/drm/ci/test.yml                   | 13 ++----
->   .../drm/ci/xfails/mediatek-mt8173-fails.txt   | 13 ++++--
->   .../gpu/drm/ci/xfails/msm-apq8016-fails.txt   |  5 ++
->   .../drm/ci/xfails/virtio_gpu-none-fails.txt   | 46 +++++++++++++++++++
->   9 files changed, 86 insertions(+), 27 deletions(-)
-> 
+> clients.
 
+...
 
-Applied to drm/drm-misc (drm-misc-next).
+> +static inline bool ep93xx_dma_chan_is_m2p(struct dma_chan *chan)
+> +{
+> +	if (device_is_compatible(chan->device->dev, "cirrus,ep9301-dma-m2p"))
+> +		return true;
+> +
+> +	return !strcmp(dev_name(chan->device->dev), "ep93xx-dma-m2p");
+> +}
 
-Thanks!
-Helen
+Hmm... Isn't the same as new helper in a header in another patch?
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
 
