@@ -2,170 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F4EA811FB5
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 21:09:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 696C4811FBA
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 21:11:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442343AbjLMUJb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 15:09:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49066 "EHLO
+        id S1442507AbjLMUK4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 15:10:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43238 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229811AbjLMUJa (ORCPT
+        with ESMTP id S1442421AbjLMUKu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 15:09:30 -0500
-Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 442F2D0;
-        Wed, 13 Dec 2023 12:09:36 -0800 (PST)
-Received: by mail-wm1-x32a.google.com with SMTP id 5b1f17b1804b1-40c32df9174so65428445e9.3;
-        Wed, 13 Dec 2023 12:09:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702498175; x=1703102975; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=E1E00I7csYet+h6d3hCBs5SooYMP4Ja6qAuEnzWpbHw=;
-        b=VYUv45Ldy9gfsQrnarg2tdD2zgLdFl/NH/GkrwAo8VsPOziIIrYMlPiIN5BqMKmyUR
-         17PFPJId2W313bDp4ttHgymIhV9gyJ6lBY19XhqrF8J+cA6z4FzKSyYZk+TxrTb0gDO7
-         JtpMLCjuId9D8EwVuL64VA7Aapk3AX0e7X2bx6UCiBWPG/7o85UNYTzvZGXAObzaxGff
-         prmHNm/0GDaRGg39RQS0iixfWY3SgOTHSoGRydkyitUiGnZsKOtJ0b3V+RzzaOdTVBmm
-         R215jnxcnmlsLWkcjarUYrYALc2OJPuvmG8Y8jGNsmeCmKv5EJNkClyzDKJp9KvvkehJ
-         0qwA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702498175; x=1703102975;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=E1E00I7csYet+h6d3hCBs5SooYMP4Ja6qAuEnzWpbHw=;
-        b=tYLoIr9DfmaYByYs8sXEEI45q/C2bACQwHzMqfRf0Wr3cT2WIRA5oX7UE4x3q3MrJa
-         YcS9yj1ttr5IWVWKZ9a04orXkh9ta07N5aiCn+GlNYLSMWW4SFEIasLiRDw4tuqQp+RN
-         JU+z/F1LZp8j1e+zg0XMQZDovvsbkQgxqF9ZpZSiVYz7Fkr5XR3bdkDKrRIuaKo18GkX
-         xs8ndP0jPoq51aVuYZ//DYFKvP16cwSxP1LpGllEzYL+er34kl9o9/yUabE6etbW7iMM
-         M8kaO7hWElp5WBKkFwEtWPUcaq4MVCxMzoog5STBWqGCdVHj5E/PMSaWXvK7cAgBXlko
-         Bkxw==
-X-Gm-Message-State: AOJu0Yw6xsIUg3w08Scuem+ZwXvvo1XWSm0cDfkqaZIAgFRDdQ2OlpUY
-        /ZoGqZSUT4mX1iIK1iI9MGPAjtfyzuA=
-X-Google-Smtp-Source: AGHT+IGgnj9gSAhJ/otmBIdrNYjW6wgF/y7XkF5VoE4tuaeCabEiVYTrQgIZsnFDgtnuMk+zMFilUw==
-X-Received: by 2002:a7b:c419:0:b0:40b:2a3e:4c9b with SMTP id k25-20020a7bc419000000b0040b2a3e4c9bmr3183581wmi.29.1702498174346;
-        Wed, 13 Dec 2023 12:09:34 -0800 (PST)
-Received: from archlinux.localnet (82-149-12-148.dynamic.telemach.net. [82.149.12.148])
-        by smtp.gmail.com with ESMTPSA id p8-20020a05600c468800b0040c488e4fb5sm11794611wmo.40.2023.12.13.12.09.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Dec 2023 12:09:34 -0800 (PST)
-From:   Jernej =?utf-8?B?xaBrcmFiZWM=?= <jernej.skrabec@gmail.com>
-To:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org,
-        linux-clk@vger.kernel.org,
-        Paul Kocialkowski <paul.kocialkowski@bootlin.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Samuel Holland <samuel@sholland.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Paul Kocialkowski <paul.kocialkowski@bootlin.com>
-Subject: Re: [PATCH v7 4/7] ARM: dts: sun8i: v3s: Add support for the ISP
-Date:   Wed, 13 Dec 2023 21:09:32 +0100
-Message-ID: <3267480.aeNJFYEL58@archlinux>
-In-Reply-To: <20231122141426.329694-5-paul.kocialkowski@bootlin.com>
-References: <20231122141426.329694-1-paul.kocialkowski@bootlin.com>
- <20231122141426.329694-5-paul.kocialkowski@bootlin.com>
+        Wed, 13 Dec 2023 15:10:50 -0500
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 576CCDD;
+        Wed, 13 Dec 2023 12:10:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=PwOVL8mVKeFXsW0HcBL1U5ZeoAlOHIL4hxG+Ermm0Do=; b=oqrxxd8tZUp4TaF8Qx7f1USJ1+
+        Fk0puhRMdQ1N94CmXAtd/ycvks7V8GFGMVLbTXDeapF7YvARte1MdPW22s1nZDz7RCHKik8n90hdx
+        uYcTPoyaEfrgERS6cPOT22a506hCaeXtC6RCIGWKVKaQEfP6Rk+tAgC105YHDKHUmgB3PpTmG38R0
+        ImWfo63KfDElgqlIqBaX4Lcl7T0EJBt6JS6dFQ/vrK4KVcoIqwSspzpNNQKE0X3qAoN/1ilToPqCH
+        et2Bq1Locx3qPSg6Ak7iyYklE0KYJB+wjbyPo2Mh+VgY3TtZU3U/UFJhH7bNaXawD2H09mmkYIb7A
+        /Cku/XiQ==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:36782)
+        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.96)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1rDVZ6-0000XV-0W;
+        Wed, 13 Dec 2023 20:10:44 +0000
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1rDVZ4-0001oW-BG; Wed, 13 Dec 2023 20:10:42 +0000
+Date:   Wed, 13 Dec 2023 20:10:42 +0000
+From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
+To:     Christian Marangi <ansuelsmth@gmail.com>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>,
+        Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
+        Kees Cook <keescook@chromium.org>,
+        Piergiorgio Beruto <piergiorgio.beruto@gmail.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [net-next PATCH 1/2] net: ethtool: add define for link speed
+ mode number
+Message-ID: <ZXoPwmDsy7geZe6N@shell.armlinux.org.uk>
+References: <20231213181554.4741-1-ansuelsmth@gmail.com>
+ <20231213181554.4741-2-ansuelsmth@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231213181554.4741-2-ansuelsmth@gmail.com>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wednesday, November 22, 2023 3:14:22 PM CET Paul Kocialkowski wrote:
-> The V3s (and related platforms) come with an instance of the A31 ISP.
-> Even though it is very close to the A31 ISP, it is not exactly
-> register-compatible and a dedicated compatible only is used as a
-> result.
-> 
-> Just like most other blocks of the camera pipeline, the ISP uses
-> the common CSI bus, module and ram clock as well as reset.
-> 
-> A port connection to the ISP is added to CSI0 for convenience since
-> CSI0 serves for MIPI CSI-2 interface support, which is likely to
-> receive raw data that will need to be processed by the ISP to produce
-> a final image.
-> 
-> The interconnects property is used to inherit the proper DMA offset.
-> 
-> Signed-off-by: Paul Kocialkowski <paul.kocialkowski@bootlin.com>
-> ---
->  arch/arm/boot/dts/allwinner/sun8i-v3s.dtsi | 35 ++++++++++++++++++++++
->  1 file changed, 35 insertions(+)
-> 
-> diff --git a/arch/arm/boot/dts/allwinner/sun8i-v3s.dtsi b/arch/arm/boot/dts/allwinner/sun8i-v3s.dtsi
-> index d57612023aa4..1a1dcd36cba4 100644
-> --- a/arch/arm/boot/dts/allwinner/sun8i-v3s.dtsi
-> +++ b/arch/arm/boot/dts/allwinner/sun8i-v3s.dtsi
-> @@ -645,6 +645,14 @@ csi0_in_mipi_csi2: endpoint {
->  						remote-endpoint = <&mipi_csi2_out_csi0>;
->  					};
->  				};
-> +
-> +				port@2 {
-> +					reg = <2>;
-> +
-> +					csi0_out_isp: endpoint {
-> +						remote-endpoint = <&isp_in_csi0>;
-> +					};
-> +				};
->  			};
->  		};
->  
-> @@ -703,5 +711,32 @@ csi1: camera@1cb4000 {
->  			resets = <&ccu RST_BUS_CSI>;
->  			status = "disabled";
->  		};
-> +
-> +		isp: isp@1cb8000 {
-> +			compatible = "allwinner,sun8i-v3s-isp";
-> +			reg = <0x01cb8000 0x1000>;
-> +			interrupts = <GIC_SPI 83 IRQ_TYPE_LEVEL_HIGH>;
-> +			clocks = <&ccu CLK_BUS_CSI>,
-> +				 <&ccu CLK_CSI1_SCLK>,
-> +				 <&ccu CLK_DRAM_CSI>;
-> +			clock-names = "bus", "mod", "ram";
-> +			resets = <&ccu RST_BUS_CSI>;
-> +			interconnects = <&mbus 5>;
-> +			interconnect-names = "dma-mem";
+NAK.
 
-Same as in previous patch, interconnects properties are not described in
-bindings, please update.
+You *clearly* didn't look before you leaped.
 
-Best regards,
-Jernej
+On Wed, Dec 13, 2023 at 07:15:53PM +0100, Christian Marangi wrote:
+> +enum ethtool_link_speeds {
+> +	SPEED_10 = 0,
+> +	SPEED_100,
+> +	SPEED_1000,
+...
 
-> +			status = "disabled";
-> +
-> +			ports {
-> +				#address-cells = <1>;
-> +				#size-cells = <0>;
-> +
-> +				port@0 {
-> +					reg = <0>;
-> +
-> +					isp_in_csi0: endpoint {
-> +						remote-endpoint = <&csi0_out_isp>;
-> +					};
-> +				};
-> +			};
-> +		};
->  	};
->  };
-> 
+and from the context immediately below, included in your patch:
+>  #define SPEED_10		10
+           ^^^^^^^^
+>  #define SPEED_100		100
+           ^^^^^^^^^
+>  #define SPEED_1000		1000
+           ^^^^^^^^^^
 
+Your enumerated values will be overridden by the preprocessor
+definitions.
 
+Moreover, SPEED_xxx is an already taken namespace and part of the UAPI,
+and thus can _not_ be changed. Convention is that SPEED_x will be
+defined as the numeric speed.
 
-
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
