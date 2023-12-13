@@ -2,132 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4766981102E
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 12:34:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BD4DC811014
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 12:33:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377695AbjLMLeH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 06:34:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49846 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377750AbjLMLdd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S1377787AbjLMLdd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Wed, 13 Dec 2023 06:33:33 -0500
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73C8510B
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 03:33:22 -0800 (PST)
-Received: by mail-wm1-x32e.google.com with SMTP id 5b1f17b1804b1-40c1e8458b9so11300465e9.0
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 03:33:22 -0800 (PST)
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49916 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1377485AbjLMLdb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Dec 2023 06:33:31 -0500
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90604121
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 03:33:10 -0800 (PST)
+Received: by mail-lf1-x12c.google.com with SMTP id 2adb3069b0e04-50e0daa57b3so887975e87.3
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 03:33:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1702467201; x=1703072001; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=OT3PabJ+SN8OyyxUlhRHLBK2j0fBOpZosf39djft3/Y=;
-        b=IUo7/JGkBETfO8Q9lydWp0aYgF9OQQ17gd2BRelk3R0jbu0S/T0iSw+u/L/iGTEZKV
-         bbOn0pe/QxzsGeLHYBbjklqbhxYk8hM4QBmJZFXG+bXyXcyIVcF279xvQctN7pwBaiLH
-         NndsjHrUsEnWMfq2VRwarQ2LFGgnKkWFKZVGQxz6svm6U9S2XScu2AHnUUEeo/g+b/JE
-         RNk4ub/5x06qa8CV6FHZJoTEgnarsV4dRHYV2MjcqqbNEkZ6CSXE3KXyETrPsY6W3y3N
-         7wQ8EeP75RriRnCUAXMMdr509/lpotQ1ugHOEB5/kdlHBK3Z/ceJdpNU8//cuFHH9X/m
-         7oKw==
+        d=linaro.org; s=google; t=1702467189; x=1703071989; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=htZ0z29JSHaeYwcbtg65xi6QGYr+mWu8yuJLXo0qg0Q=;
+        b=IoLGYe6KP+b9LGA1FczNmeVY4HD+Dx7R3PSP5fAMjc4EjROy12r8QCCGNmCKTyjQ4W
+         Z2z+hpQnjysSWA+aefCWLEOP4rC15S2VwU5K4ZMjwWHu0JJ+JItXHfd+9JnBSyYLwchc
+         rFHfirWWB7Mo2M4DTdQqSR4BBlKmVmNN+I0CFLV9eWDI44pl3Z8872DB2Xk8ACveo0LN
+         eRTN6K8A5HLW6Gnqylzg5DNcpUwQZ0YDF8kCCIoxT1IUREjv7j49hJqQK/3fymF0mvY1
+         0m37VEXKGebJlEDy2vz71bZ3lbPFTQu1kSN7CR1dsB5F37HotBaiFnxwE08lrVdA2+sM
+         bV2Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702467201; x=1703072001;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=OT3PabJ+SN8OyyxUlhRHLBK2j0fBOpZosf39djft3/Y=;
-        b=Sq559mXAHtpu5lzxugZF//088efWgxL8Hfz8L56HGy4morNcKKGCsYw7JSQzozRK/e
-         pAKrRTUgQufNqgo6TEUfJ5NC5Yik+ABjQWUAaD84gwAZHDj5lWHkcj5splkVTDcCPT/K
-         9h+hwrUnWtMmVmNBRJOiMxUM0zfYgqNLkRr0qHlgd42r2iABGTOgU8H/ffMfxC3b4BLe
-         Xcul35WXG1B2V7IBGfvA1kqHjp69AIU1oxAqLXWa1pzjV+Gy6uf9+4v7nEhtEvIl64yA
-         45i2QFRPKagVfK6DR9KxuKSHF7ACMpyKxw37fNbGT53lRhtwte+ZL6SVm5ZqzmpQYIsx
-         4uEg==
-X-Gm-Message-State: AOJu0YwDa5oJOY/wwkT8N3++SEZsnvgj7roXaNO/obPoUy6AFsHrgZ0N
-        DdKERuzAVw48Gm/T8B02PcitYGoIKJnUxOtaIAI=
-X-Google-Smtp-Source: AGHT+IH9GmoMwESHe8vAwJ7aLTEGq8Q2sisRnckD+tr/gJXlhQQcanfZ3+mQWdFY8OH3kjBBZTEQBA==
-X-Received: by 2002:a05:600c:35d6:b0:40c:b81:c640 with SMTP id r22-20020a05600c35d600b0040c0b81c640mr9664241wmq.0.1702467200958;
-        Wed, 13 Dec 2023 03:33:20 -0800 (PST)
-Received: from carbon-x1.. ([2a01:e0a:999:a3a0:c564:f167:d072:5672])
-        by smtp.gmail.com with ESMTPSA id m27-20020a05600c3b1b00b0040b38292253sm22433137wms.30.2023.12.13.03.33.20
+        d=1e100.net; s=20230601; t=1702467189; x=1703071989;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=htZ0z29JSHaeYwcbtg65xi6QGYr+mWu8yuJLXo0qg0Q=;
+        b=Op694CGtjg7qKy1GT+WyaUsZxmnWLAYnhDKRONt8L2gvO928xyOJD3bPoTU906Mf1Z
+         ARkVwig09dxlZu/yNzxlwdBcVl4JP3Yg3EE9hCucG8qHvCAchbbk2eDfpDoio3xrOXgX
+         XklUDvo6ab503CEm86fgNPwcSq1WX5RFgKS6tW+rpd1Q6TDLV4v3ocXjzTKhIqgtHUSb
+         Sdoe6UvtL4REWeduYFLVmL8CrJceRJLOC+3fZSLjogKFgFX/rCkUC8BxuMC2vnAlWIxS
+         9q7VyP8FG/qlwKtXydcjhgiJ6Q9munSuAXDGWMHGr1cs7mdLDMRk9CESwBMfW4CL3N1H
+         DIoA==
+X-Gm-Message-State: AOJu0YyN2KFP3OmYysrAJYs3rTK/TxwYoMjlf32bEUQw5/X63i4DmuUz
+        4kADCPVyfhe3ZmdvjmYikb4aDw==
+X-Google-Smtp-Source: AGHT+IEYU8QnX1qYGV0hcMy23DhWt+J8l2mgG2U1R7ZB+WwMmxmp0UT250v/mB4bMySh4QlUHetkoA==
+X-Received: by 2002:a05:6512:368d:b0:50b:ec26:7c56 with SMTP id d13-20020a056512368d00b0050bec267c56mr2054856lfs.50.1702467188879;
+        Wed, 13 Dec 2023 03:33:08 -0800 (PST)
+Received: from uffe-tuxpro14.. (h-178-174-189-39.A498.priv.bahnhof.se. [178.174.189.39])
+        by smtp.gmail.com with ESMTPSA id fc18-20020a056512139200b0050bda0f8835sm1594955lfb.119.2023.12.13.03.33.08
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Dec 2023 03:33:20 -0800 (PST)
-From:   =?UTF-8?q?Cl=C3=A9ment=20L=C3=A9ger?= <cleger@rivosinc.com>
-To:     linux-doc@vger.kernel.org, linux-riscv@lists.infradead.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-Cc:     =?UTF-8?q?Cl=C3=A9ment=20L=C3=A9ger?= <cleger@rivosinc.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Conor Dooley <conor@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Robbin Ehn <rehn@rivosinc.com>
-Subject: [PATCH 8/9] riscv: hwprobe: export Zacas ISA extension
-Date:   Wed, 13 Dec 2023 12:33:04 +0100
-Message-ID: <20231213113308.133176-9-cleger@rivosinc.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20231213113308.133176-1-cleger@rivosinc.com>
-References: <20231213113308.133176-1-cleger@rivosinc.com>
+        Wed, 13 Dec 2023 03:33:08 -0800 (PST)
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+To:     "Rafael J . Wysocki" <rafael@kernel.org>, linux-pm@vger.kernel.org
+Cc:     Kevin Hilman <khilman@kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 2/2] PM: domains: Move genpd and its governor to the pmdomain subsystem
+Date:   Wed, 13 Dec 2023 12:33:05 +0100
+Message-Id: <20231213113305.29098-1-ulf.hansson@linaro.org>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Export Zacas ISA extension through hwprobe.
+It seems reasonable to collect the core parts for the generic PM domain,
+along with its corresponding provider drivers. Therefore let's move the
+files from drivers/base/power/ to drivers/pmdomain/ and while at it, let's
+also rename the files accordingly.
 
-Signed-off-by: Clément Léger <cleger@rivosinc.com>
+Moreover, let's also update MAINTAINERS to reflect the update.
+
+Cc: Kevin Hilman <khilman@kernel.org>
+Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
 ---
- Documentation/arch/riscv/hwprobe.rst  | 4 ++++
- arch/riscv/include/uapi/asm/hwprobe.h | 1 +
- arch/riscv/kernel/sys_riscv.c         | 1 +
- 3 files changed, 6 insertions(+)
+ MAINTAINERS                                            | 10 +---------
+ drivers/base/power/Makefile                            |  1 -
+ drivers/pmdomain/Makefile                              |  1 +
+ drivers/{base/power/domain.c => pmdomain/core.c}       |  0
+ .../power/domain_governor.c => pmdomain/governor.c}    |  0
+ 5 files changed, 2 insertions(+), 10 deletions(-)
+ rename drivers/{base/power/domain.c => pmdomain/core.c} (100%)
+ rename drivers/{base/power/domain_governor.c => pmdomain/governor.c} (100%)
 
-diff --git a/Documentation/arch/riscv/hwprobe.rst b/Documentation/arch/riscv/hwprobe.rst
-index 9b19ca3433de..510e49878834 100644
---- a/Documentation/arch/riscv/hwprobe.rst
-+++ b/Documentation/arch/riscv/hwprobe.rst
-@@ -168,6 +168,10 @@ The following keys are defined:
-   * :c:macro:`RISCV_HWPROBE_EXT_ZAM`: The Zam extension v0.1 is supported as
-        defined in the RISC-V ISA manual.
+diff --git a/MAINTAINERS b/MAINTAINERS
+index ea790149af79..ab4b0aed34f9 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -8878,21 +8878,13 @@ F:	Documentation/devicetree/bindings/i2c/i2c-demux-pinctrl.yaml
+ F:	drivers/i2c/muxes/i2c-demux-pinctrl.c
  
-+  * :c:macro:`RISCV_HWPROBE_EXT_ZACAS`: The Zacas extension is supported as
-+       defined in the Atomic Compare-and-Swap (CAS) instructions manual starting
-+       from commit 5059e0ca641c ("update to ratified").
-+
- * :c:macro:`RISCV_HWPROBE_KEY_CPUPERF_0`: A bitmask that contains performance
-   information about the selected set of processors.
+ GENERIC PM DOMAINS
+-M:	"Rafael J. Wysocki" <rafael@kernel.org>
+-M:	Kevin Hilman <khilman@kernel.org>
+ M:	Ulf Hansson <ulf.hansson@linaro.org>
+ L:	linux-pm@vger.kernel.org
+ S:	Supported
+ F:	Documentation/devicetree/bindings/power/power?domain*
+-F:	drivers/base/power/domain*.c
+-F:	include/linux/pm_domain.h
+-
+-GENERIC PM DOMAIN PROVIDERS
+-M:	Ulf Hansson <ulf.hansson@linaro.org>
+-L:	linux-pm@vger.kernel.org
+-S:	Supported
+ T:	git git://git.kernel.org/pub/scm/linux/kernel/git/ulfh/linux-pm.git
+ F:	drivers/pmdomain/
++F:	include/linux/pm_domain.h
  
-diff --git a/arch/riscv/include/uapi/asm/hwprobe.h b/arch/riscv/include/uapi/asm/hwprobe.h
-index 2350c45741a6..7ec4331122e7 100644
---- a/arch/riscv/include/uapi/asm/hwprobe.h
-+++ b/arch/riscv/include/uapi/asm/hwprobe.h
-@@ -58,6 +58,7 @@ struct riscv_hwprobe {
- #define		RISCV_HWPROBE_EXT_ZFA		(1ULL << 32)
- #define		RISCV_HWPROBE_EXT_ZTSO		(1ULL << 33)
- #define		RISCV_HWPROBE_EXT_ZAM		(1ULL << 34)
-+#define		RISCV_HWPROBE_EXT_ZACAS		(1ULL << 35)
- #define RISCV_HWPROBE_KEY_CPUPERF_0	5
- #define		RISCV_HWPROBE_MISALIGNED_UNKNOWN	(0 << 0)
- #define		RISCV_HWPROBE_MISALIGNED_EMULATED	(1 << 0)
-diff --git a/arch/riscv/kernel/sys_riscv.c b/arch/riscv/kernel/sys_riscv.c
-index a8473d7f9d1e..abb0eea3ee08 100644
---- a/arch/riscv/kernel/sys_riscv.c
-+++ b/arch/riscv/kernel/sys_riscv.c
-@@ -176,6 +176,7 @@ static void hwprobe_isa_ext0(struct riscv_hwprobe *pair,
- 		EXT_KEY(ZIHINTNTL);
- 		EXT_KEY(ZTSO);
- 		EXT_KEY(ZAM);
-+		EXT_KEY(ZACAS);
+ GENERIC RADIX TREE
+ M:	Kent Overstreet <kent.overstreet@linux.dev>
+diff --git a/drivers/base/power/Makefile b/drivers/base/power/Makefile
+index 8fdd0073eeeb..01f11629d241 100644
+--- a/drivers/base/power/Makefile
++++ b/drivers/base/power/Makefile
+@@ -2,7 +2,6 @@
+ obj-$(CONFIG_PM)	+= sysfs.o generic_ops.o common.o qos.o runtime.o wakeirq.o
+ obj-$(CONFIG_PM_SLEEP)	+= main.o wakeup.o wakeup_stats.o
+ obj-$(CONFIG_PM_TRACE_RTC)	+= trace.o
+-obj-$(CONFIG_PM_GENERIC_DOMAINS)	+=  domain.o domain_governor.o
+ obj-$(CONFIG_HAVE_CLK)	+= clock_ops.o
+ obj-$(CONFIG_PM_QOS_KUNIT_TEST) += qos-test.o
  
- 		if (has_vector()) {
- 			EXT_KEY(ZVBB);
+diff --git a/drivers/pmdomain/Makefile b/drivers/pmdomain/Makefile
+index f0326b27b30b..a68ece2f4c68 100644
+--- a/drivers/pmdomain/Makefile
++++ b/drivers/pmdomain/Makefile
+@@ -16,3 +16,4 @@ obj-y					+= sunxi/
+ obj-y					+= tegra/
+ obj-y					+= ti/
+ obj-y					+= xilinx/
++obj-y					+= core.o governor.o
+diff --git a/drivers/base/power/domain.c b/drivers/pmdomain/core.c
+similarity index 100%
+rename from drivers/base/power/domain.c
+rename to drivers/pmdomain/core.c
+diff --git a/drivers/base/power/domain_governor.c b/drivers/pmdomain/governor.c
+similarity index 100%
+rename from drivers/base/power/domain_governor.c
+rename to drivers/pmdomain/governor.c
 -- 
-2.43.0
+2.34.1
 
