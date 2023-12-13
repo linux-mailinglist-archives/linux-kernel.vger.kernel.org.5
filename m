@@ -2,107 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0842581216E
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 23:28:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E0121812177
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 23:30:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442796AbjLMW2e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 17:28:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39646 "EHLO
+        id S1442812AbjLMWaa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 17:30:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33780 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229772AbjLMW2b (ORCPT
+        with ESMTP id S233928AbjLMWa0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 17:28:31 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85F369C
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 14:28:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1702506518; x=1734042518;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=HpuAdMiAO4lybLIeFgEemGJAj2QUz6odxBEV0pixzpo=;
-  b=M2LonyVjEfb0Wa2C6H6ZuvGYgT7yQr5WgMWO57yQFRkMDR9mRcDz+iVj
-   dClFnZMFe7vsx+gGPyB7sQ3dALIIA4Sx1Ce9cGZ1vBzz1mX7+NGSlgbEX
-   iVl0hMACTJjIYd/fAqbcCf3DMSgwHiE2Wmr5dU7qJsVFVHCtyH/DBbORN
-   wKNgHBNAw2OEDKqFLgw3KAO8IJDdl+Ddh6kZyd7C0yIizD09BgWdampRl
-   Hnxz/pOF6tvNGMxiFluPUxK+uhjhXYuTx4Xu2q4rX3mxcm3vtEzTD6gPn
-   KnIS0B+9JgvljcozuZ/hI/bRocLZ3mm2KjYSTnX0syBofGrgVvhNaCXIu
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10923"; a="461504633"
-X-IronPort-AV: E=Sophos;i="6.04,274,1695711600"; 
-   d="scan'208";a="461504633"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Dec 2023 14:28:38 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10923"; a="892186286"
-X-IronPort-AV: E=Sophos;i="6.04,274,1695711600"; 
-   d="scan'208";a="892186286"
-Received: from gears-pc1.amr.corp.intel.com (HELO khuang2-desk.gar.corp.intel.com) ([10.212.221.130])
-  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Dec 2023 14:28:35 -0800
-From:   Kai Huang <kai.huang@intel.com>
-To:     dave.hansen@intel.com, arnd@kernel.org
-Cc:     linux-kernel@vger.kernel.org, x86@kernel.org,
-        kirill.shutemov@linux.intel.com, bp@alien8.de,
-        peterz@infradead.org, tglx@linutronix.de, tony.luck@intel.com,
-        mingo@redhat.com, hpa@zytor.com, kai.huang@intel.com
-Subject: [PATCH] x86/virt/tdx: Make TDX host depend on X86_MCE
-Date:   Thu, 14 Dec 2023 11:28:25 +1300
-Message-ID: <20231213222825.286809-1-kai.huang@intel.com>
-X-Mailer: git-send-email 2.43.0
+        Wed, 13 Dec 2023 17:30:26 -0500
+Received: from mx1.sberdevices.ru (mx1.sberdevices.ru [37.18.73.165])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72B98F5;
+        Wed, 13 Dec 2023 14:30:30 -0800 (PST)
+Received: from p-infra-ksmg-sc-msk01 (localhost [127.0.0.1])
+        by mx1.sberdevices.ru (Postfix) with ESMTP id 8C868100005;
+        Thu, 14 Dec 2023 01:30:27 +0300 (MSK)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 8C868100005
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
+        s=mail; t=1702506627;
+        bh=akWY6xdhpuNWncEDUyY9dF4wQLO5bpnS4UucSnW6HhU=;
+        h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type:From;
+        b=oOOrF0WA58WdagoYs88nCT+iNXHPoQv0hvy0dh7gzj3D14AJOKhVHs1NSVgBgKNeo
+         Z1HliBdgclFEvYORPCgyPG0QRl+gaaQEdipwlveMrNwKpjQt6OCNzVu9G3JWJridAs
+         NMsbTflC2eR7lbslcRM50QypSsEe0GZCEg6qwoRX/cPm4UTi/3sjxN8nnf5elzsTcj
+         QHTkcl2N4YVmxcpsDMmaHQLhVl1RVEw5E+YhOPDmfunh+3uoKF9QPHaub6nt/KwfQW
+         DjnzOdgZsyIAm6WnsBdy4DvzOB/qhmBzVl3k5CF99hvnabWgnC4VdCkDBK5hbbiaaf
+         q+OLmYG2dQJoQ==
+Received: from smtp.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mx1.sberdevices.ru (Postfix) with ESMTPS;
+        Thu, 14 Dec 2023 01:30:27 +0300 (MSK)
+Received: from localhost.localdomain (100.64.160.123) by
+ p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Thu, 14 Dec 2023 01:30:26 +0300
+From:   George Stark <gnstark@salutedevices.com>
+To:     <andy.shevchenko@gmail.com>, <pavel@ucw.cz>, <lee@kernel.org>,
+        <vadimp@nvidia.com>, <mpe@ellerman.id.au>, <npiggin@gmail.com>,
+        <christophe.leroy@csgroup.eu>, <hdegoede@redhat.com>,
+        <mazziesaccount@gmail.com>, <peterz@infradead.org>,
+        <mingo@redhat.com>, <will@kernel.org>, <longman@redhat.com>,
+        <boqun.feng@gmail.com>, <nikitos.tr@gmail.com>
+CC:     <linux-leds@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linuxppc-dev@lists.ozlabs.org>, <kernel@salutedevices.com>,
+        George Stark <gnstark@salutedevices.com>
+Subject: [PATCH v3 00/11] devm_led_classdev_register() usage problem
+Date:   Thu, 14 Dec 2023 01:30:09 +0300
+Message-ID: <20231213223020.2713164-1-gnstark@salutedevices.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Originating-IP: [100.64.160.123]
+X-ClientProxiedBy: p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) To
+ p-i-exch-sc-m01.sberdevices.ru (172.16.192.107)
+X-KSMG-Rule-ID: 10
+X-KSMG-Message-Action: clean
+X-KSMG-AntiSpam-Lua-Profiles: 182098 [Dec 13 2023]
+X-KSMG-AntiSpam-Version: 6.1.0.3
+X-KSMG-AntiSpam-Envelope-From: gnstark@salutedevices.com
+X-KSMG-AntiSpam-Rate: 0
+X-KSMG-AntiSpam-Status: not_detected
+X-KSMG-AntiSpam-Method: none
+X-KSMG-AntiSpam-Auth: dkim=none
+X-KSMG-AntiSpam-Info: LuaCore: 7 0.3.7 6d6bf5bd8eea7373134f756a2fd73e9456bb7d1a, {Tracking_uf_ne_domains}, {Tracking_urls_end_caps}, {Tracking_from_domain_doesnt_match_to}, lore.kernel.org:7.1.1;100.64.160.123:7.1.2;127.0.0.199:7.1.2;salutedevices.com:7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;smtp.sberdevices.ru:5.0.1,7.1.1, FromAlignment: s, ApMailHostAddress: 100.64.160.123
+X-MS-Exchange-Organization-SCL: -1
+X-KSMG-AntiSpam-Interceptor-Info: scan successful
+X-KSMG-AntiPhishing: Clean, bases: 2023/12/13 21:13:00
+X-KSMG-LinksScanning: Clean, bases: 2023/12/13 21:16:00
+X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2023/12/13 21:35:00 #22672360
+X-KSMG-AntiVirus-Status: Clean, skipped
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A build failure was reported that when INTEL_TDX_HOST is enabled but
-X86_MCE is not, the tdx_dump_mce_info() function fails to link:
+This patch series fixes the problem of devm_led_classdev_register misusing.
 
-  ld: vmlinux.o: in function `tdx_dump_mce_info':
-  ...: undefined reference to `mce_is_memory_error'
-  ...: undefined reference to `mce_usable_address'
+The basic problem is described in [1]. Shortly when devm_led_classdev_register()
+is used then led_classdev_unregister() called after driver's remove() callback.
+led_classdev_unregister() calls driver's brightness_set callback and that callback
+may use resources which were destroyed already in driver's remove().
 
-The reason is in such configuration, despite there's no caller of
-tdx_dump_mce_info() it is still built and there's no implementation for
-the two "mce_*()" functions.
+After discussion with maintainers [2] [3] we decided:
+1) don't touch led subsytem core code and don't remove led_set_brightness() from it
+but fix drivers
+2) don't use devm_led_classdev_unregister
 
-Make INTEL_TDX_HOST depend on X86_MCE to fix.
+So the solution is to use devm wrappers for all resources
+driver's brightness_set() depends on. And introduce dedicated devm wrapper
+for mutex as it's often used resource.
 
-It makes sense to enable MCE support for the TDX host anyway.  Because
-the only way that TDX has to report integrity errors is an MCE, and it
-is not good to silently ignore such MCE.  The TDX spec also suggests
-the host VMM is expected to implement the MCE handler.
+[1] https://lore.kernel.org/lkml/8704539b-ed3b-44e6-aa82-586e2f895e2b@salutedevices.com/T/
+[2] https://lore.kernel.org/lkml/8704539b-ed3b-44e6-aa82-586e2f895e2b@salutedevices.com/T/#mc132b9b350fa51931b4fcfe14705d9f06e91421f
+[3] https://lore.kernel.org/lkml/8704539b-ed3b-44e6-aa82-586e2f895e2b@salutedevices.com/T/#mdbf572a85c33f869a553caf986b6228bb65c8383
 
-Note it also makes sense to make INTEL_TDX_HOST select X86_MCE but this
-generates "recursive dependency detected!" error in the Kconfig.
+Changelog:
+v1->v2:
+	revise patch series completely
 
-Reported-by: Arnd Bergmann <arnd@kernel.org>
-Closes: https://lore.kernel.org/all/20231212214612.GHZXjUpBFa1IwVMTI7@fat_crate.local/T/
-Fixes: 70060463cb2b ("x86/mce: Differentiate real hardware #MCs from TDX erratum ones")
-Link: https://lore.kernel.org/all/20231212214612.GHZXjUpBFa1IwVMTI7@fat_crate.local/T/#m1a109c29324b2bbd0b3b1d45c218012cd3a13be6
-Signed-off-by: Kai Huang <kai.huang@intel.com>
----
- arch/x86/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+v2->v3:
+locking: add define if mutex_destroy() is not an empty function
+	new patch, discussed here [8]
 
-diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-index 01cdb16acff6..92c03cb99b3e 100644
---- a/arch/x86/Kconfig
-+++ b/arch/x86/Kconfig
-@@ -1974,6 +1974,7 @@ config INTEL_TDX_HOST
- 	select ARCH_KEEP_MEMBLOCK
- 	depends on CONTIG_ALLOC
- 	depends on !KEXEC_CORE
-+	depends on X86_MCE
- 	help
- 	  Intel Trust Domain Extensions (TDX) protects guest VMs from malicious
- 	  host and certain physical attacks.  This option enables necessary TDX
+devm-helpers: introduce devm_mutex_init
+	previous version [4]
+	- revise code based on mutex_destroy define
+	- update commit message
+	- update devm_mutex_init()'s description
+
+leds: aw2013: unlock mutex before destroying it
+	previous version [5]
+	- make this patch first in the series
+	- add tags Fixes and RvB by Andy 
+
+leds: aw2013: use devm API to cleanup module's resources
+	previous version [6]
+	- make aw2013_chip_disable_action()'s body oneline
+	- don't shadow devm_mutex_init() return code
+ 
+leds: aw200xx: use devm API to cleanup module's resources
+	previous version [7]
+	- make aw200xx_*_action()'s bodies oneline
+	- don't shadow devm_mutex_init() return code
+
+leds: lm3532: use devm API to cleanup module's resources
+leds: nic78bx: use devm API to cleanup module's resources
+leds: mlxreg: use devm_mutex_init for mutex initializtion
+leds: an30259a: use devm_mutext_init for mutext initialization
+leds: powernv: add LED_RETAIN_AT_SHUTDOWN flag for leds
+	- those pathes were planned but not sent in the series #2 due to mail server
+	problem on my side. I revised them according to the comments.
+
+[4] https://lore.kernel.org/lkml/20231204180603.470421-1-gnstark@salutedevices.com/T/#mf500af0eda2a9ffc95594607dbe4cb64f2e3c9a8
+[5] https://lore.kernel.org/lkml/20231204180603.470421-1-gnstark@salutedevices.com/T/#mc92df4fb4f7d4187fb01cc1144acfa5fb5230dd2
+[6] https://lore.kernel.org/lkml/20231204180603.470421-1-gnstark@salutedevices.com/T/#m300df89710c43cc2ab598baa16c68dd0a0d7d681
+[7] https://lore.kernel.org/lkml/20231204180603.470421-1-gnstark@salutedevices.com/T/#m8e5c65e0c6b137c91fa00bb9320ad581164d1d0b
+[8] https://lore.kernel.org/lkml/377e4437-7051-4d88-ae68-1460bcd692e1@redhat.com/T/#m5f84a4a2f387d49678783e652b9e658e02c27450
+
+George Stark (11):
+  leds: aw2013: unlock mutex before destroying it
+  locking: add define if mutex_destroy() is not an empty function
+  devm-helpers: introduce devm_mutex_init
+  leds: aw2013: use devm API to cleanup module's resources
+  leds: aw200xx: use devm API to cleanup module's resources
+  leds: lp3952: use devm API to cleanup module's resources
+  leds: lm3532: use devm API to cleanup module's resources
+  leds: nic78bx: use devm API to cleanup module's resources
+  leds: mlxreg: use devm_mutex_init for mutex initializtion
+  leds: an30259a: use devm_mutext_init for mutext initialization
+  leds: powernv: use LED_RETAIN_AT_SHUTDOWN flag for leds
+
+ drivers/leds/leds-an30259a.c | 15 +++++----------
+ drivers/leds/leds-aw200xx.c  | 33 ++++++++++++++++++++++-----------
+ drivers/leds/leds-aw2013.c   | 27 +++++++++++++++------------
+ drivers/leds/leds-lm3532.c   | 30 ++++++++++++++++++------------
+ drivers/leds/leds-lp3952.c   | 21 +++++++++++----------
+ drivers/leds/leds-mlxreg.c   | 17 ++++++-----------
+ drivers/leds/leds-nic78bx.c  | 25 +++++++++++++------------
+ drivers/leds/leds-powernv.c  | 23 ++++++++---------------
+ include/linux/devm-helpers.h | 27 +++++++++++++++++++++++++++
+ include/linux/mutex.h        |  3 +++
+ 10 files changed, 128 insertions(+), 93 deletions(-)
+
 -- 
-2.43.0
+2.25.1
 
