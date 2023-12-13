@@ -2,94 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E5997810853
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 03:45:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9957B81085D
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 03:47:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378292AbjLMCpH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 21:45:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33934 "EHLO
+        id S1378324AbjLMCrD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 21:47:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42586 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232295AbjLMCpE (ORCPT
+        with ESMTP id S1378280AbjLMCrC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 21:45:04 -0500
-Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D986EA6
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 18:45:09 -0800 (PST)
-Received: by mail-pf1-x434.google.com with SMTP id d2e1a72fcca58-6cebcf8a48aso5181666b3a.3
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 18:45:09 -0800 (PST)
+        Tue, 12 Dec 2023 21:47:02 -0500
+Received: from mail-io1-xd35.google.com (mail-io1-xd35.google.com [IPv6:2607:f8b0:4864:20::d35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFCA6A6
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 18:46:45 -0800 (PST)
+Received: by mail-io1-xd35.google.com with SMTP id ca18e2360f4ac-7b6fa79b547so382356039f.1
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 18:46:45 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1702435509; x=1703040309; darn=vger.kernel.org;
-        h=mime-version:message-id:date:in-reply-to:subject:cc:to:from
-         :user-agent:references:from:to:cc:subject:date:message-id:reply-to;
-        bh=CJ7qwCmvq20mGgi3dRymJGPN14h9pbhwL4VM2txPZCM=;
-        b=ZcidFv8JCRaEhFx285fX5LJKtnAW/6xdQ+f7UfXQ943HmZyW9UeCMTAYCaHECv8vLb
-         URWXgHbvPOMeXQuHw0S2vjSjHuBlCXvquyzPVXx4sAqi1JBubDTEmBqHBx1KrJeEMFSr
-         062t+bhgVI5fKT3UeJt5TWjN/EyiUIycC4uMBVg7+ZpGfANAqH9sq327mW42WX36tCBA
-         EmOhUf9rvG1Eo7TCMc5XNLm9Olzb5gcmAmGaze1GIY+DTTPP25On2mTimeGQpBImvEr/
-         eUYhQKfZ/0EQF0sRexHfXempTf+gySR6FEDkr6mkUt0DHZ4wXN6L7dp0zbLaL0qsZsT+
-         vaEg==
+        d=bytedance.com; s=google; t=1702435605; x=1703040405; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=4fnC5VVmBiajZoIJ231VRK37yU7Gj3vdny9h8THvr9Q=;
+        b=N63LybSTpNx+NA/20r0Ej06DtHxO7Sv6Rhqvguqo0FiXXSLOGe+NYNf3Y4KFSTeuDV
+         FxWyIEIW5j3/uYHVJqWFMxma4wTBjYrnDmaodwlp/Rn1dSGXGDk/UqmaUrGNLJZdLuqQ
+         OfojRS4zvoua93Udk2VVIzUA1KVIKX4Vvm+D4GFqZkD4+MF+MIujOTUXxnE/K9e0wYSA
+         UMYJYPLh6pSdymhRz539et9Syb0+kpxDbbXitiD6n/W9XkiQqLr8rTWUjp4jlcOl1+N6
+         LQdq5+8FjFERWFFuAKgFzrZS1RPMGpY7W1sEwx5NojsLwyvRwtErhqnhzfT1C+i7FwI7
+         YfVw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702435509; x=1703040309;
-        h=mime-version:message-id:date:in-reply-to:subject:cc:to:from
-         :user-agent:references:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=CJ7qwCmvq20mGgi3dRymJGPN14h9pbhwL4VM2txPZCM=;
-        b=vMk9HwqWaBvVI2JcZvtCCB64qTyvqjBQy6j8LoEHt6gMP1KJdgLadaKktpZf+Vxq1N
-         FIudn4BMPLNdKYtjEFFcddyNwXn8Hd+usc2IMzK4ITdzhEdVnLNCweqN13X+YkUGo59b
-         lLLbiWZzGUKZ8Jtmm6UN43VSrG75ZGlDE0mGvZmfmJdnHYh+DKWrxhs/sKHX+n8HHZpx
-         AOlo2W3CDySglDHZJgNFm+Mq4kNTbiqXkHFTN+caQ8n6tQTx9oLb+xJZ0gKnlO7DT/AF
-         +M45iVry7D2bxVudCFb2XbiknVjeGEjFtjOIrE/l90OUz8/tsrhhihlVQTZkBc14wrSK
-         XJFA==
-X-Gm-Message-State: AOJu0YzcYYD9BBQ1hbO0WYCSrro73AEGZq6n1nXy1R8DDGzxQacyFy43
-        ovsTA53FEqMwhoz2kSVE7pNgow==
-X-Google-Smtp-Source: AGHT+IGi//6HE3KINOZpirefGAX+e3jIHwZFWzUp/AR1xA1scaFysKSWvBw9/QjFkCNOqGCFGdEidA==
-X-Received: by 2002:a05:6a00:c81:b0:6cb:a2f4:8579 with SMTP id a1-20020a056a000c8100b006cba2f48579mr8585102pfv.15.1702435509333;
-        Tue, 12 Dec 2023 18:45:09 -0800 (PST)
-Received: from localhost ([2804:14d:7e39:8470:cddd:ffc9:f19e:a4dc])
-        by smtp.gmail.com with ESMTPSA id y72-20020a62ce4b000000b006cb7bdbc3besm9528817pfg.17.2023.12.12.18.45.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Dec 2023 18:45:08 -0800 (PST)
-References: <20231122-arm64-gcs-v7-0-201c483bd775@kernel.org>
- <20231122-arm64-gcs-v7-37-201c483bd775@kernel.org>
-User-agent: mu4e 1.10.8; emacs 29.1
-From:   Thiago Jung Bauermann <thiago.bauermann@linaro.org>
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Oliver Upton <oliver.upton@linux.dev>,
-        James Morse <james.morse@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Arnd Bergmann <arnd@arndb.de>, Oleg Nesterov <oleg@redhat.com>,
-        Eric Biederman <ebiederm@xmission.com>,
-        Kees Cook <keescook@chromium.org>,
-        Shuah Khan <shuah@kernel.org>,
-        "Rick P. Edgecombe" <rick.p.edgecombe@intel.com>,
-        Deepak Gupta <debug@rivosinc.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Szabolcs Nagy <Szabolcs.Nagy@arm.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Florian Weimer <fweimer@redhat.com>,
-        Christian Brauner <brauner@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-doc@vger.kernel.org,
-        kvmarm@lists.linux.dev, linux-fsdevel@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-mm@kvack.org,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-riscv@lists.infradead.org
-Subject: Re: [PATCH v7 37/39] kselftest/arm64: Add a GCS stress test
-In-reply-to: <20231122-arm64-gcs-v7-37-201c483bd775@kernel.org>
-Date:   Tue, 12 Dec 2023 23:45:06 -0300
-Message-ID: <87zfyex1l9.fsf@linaro.org>
+        d=1e100.net; s=20230601; t=1702435605; x=1703040405;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=4fnC5VVmBiajZoIJ231VRK37yU7Gj3vdny9h8THvr9Q=;
+        b=q5FdS9ThSlbZMPMghmMoGuchacR7T2N5I1hVtYJORGbccrElAI23+uIXrq9PqRFsE3
+         gMKCXQxMih7OJ6r5MY0sdaJvAHrS77xc1oZyN1WRAGotj02aOWDYu5yWsQmruIbvTlcJ
+         EMDqzaqsseM4twToFscN00S6LTg+F7mnFR1z436aFX/TPrXh2iFGDc70L590PdcdIig5
+         u8bMB+GNCzuCo7BMSJcodCTYFNukamoe9iBvq2YCDl4FUIZdz7gBtriZl8ENsSIZoAv4
+         VuR1wjJH/A9YYaNsZOuo39HhElv0+VJL3dBUUyThTPHOWp633OE92Apgn+V3z9dR2sIx
+         3sNg==
+X-Gm-Message-State: AOJu0YxV9UL0aQ1imDr1h29kkr25VKi9ReUdwfHEZNWhsusywt46BW51
+        d0/Nkr8vU2KwtG4m4MhJWpzh5w==
+X-Google-Smtp-Source: AGHT+IFkmMsz6E6BZJjYOFXXAN/pSRbof1IQdGHH4seWwZnzYHGf9Fm1PejUKjkki6Qd7JSoXaIUag==
+X-Received: by 2002:a05:6e02:16c6:b0:35f:69ec:baac with SMTP id 6-20020a056e0216c600b0035f69ecbaacmr1730738ilx.78.1702435605296;
+        Tue, 12 Dec 2023 18:46:45 -0800 (PST)
+Received: from [10.254.248.243] ([139.177.225.230])
+        by smtp.gmail.com with ESMTPSA id 3-20020a170902c10300b001d1cd7e4acesm9327602pli.68.2023.12.12.18.46.41
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 12 Dec 2023 18:46:44 -0800 (PST)
+Message-ID: <8e0800ee-9945-4c16-9b22-a385ddb1f13a@bytedance.com>
+Date:   Wed, 13 Dec 2023 10:46:39 +0800
 MIME-Version: 1.0
-Content-Type: text/plain
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 5/7] mm/zswap: refactor out __zswap_load()
+Content-Language: en-US
+To:     Nhat Pham <nphamcs@gmail.com>
+Cc:     Vitaly Wool <vitaly.wool@konsulko.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Seth Jennings <sjenning@redhat.com>,
+        Dan Streetman <ddstreet@ieee.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Yosry Ahmed <yosryahmed@google.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+References: <20231206-zswap-lock-optimize-v1-0-e25b059f9c3a@bytedance.com>
+ <20231206-zswap-lock-optimize-v1-5-e25b059f9c3a@bytedance.com>
+ <CAKEwX=Pj4ALja09PE0gsb_GL+XGv8GaV7bwSBw9Hb5fEDBRQxg@mail.gmail.com>
+From:   Chengming Zhou <zhouchengming@bytedance.com>
+In-Reply-To: <CAKEwX=Pj4ALja09PE0gsb_GL+XGv8GaV7bwSBw9Hb5fEDBRQxg@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -97,48 +82,199 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 2023/12/13 07:13, Nhat Pham wrote:
+> On Wed, Dec 6, 2023 at 1:46 AM Chengming Zhou
+> <zhouchengming@bytedance.com> wrote:
+>>
+>> The zswap_load() and zswap_writeback_entry() have the same part that
+>> decompress the data from zswap_entry to page, so refactor out the
+>> common part as __zswap_load(entry, page).
+> 
+> I love this refactoring a lot :) No reason why we should duplicate the
+> decompression logic shared between load and writeback.
+> 
+>>
+>> Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
+>> ---
+>>  mm/zswap.c | 108 ++++++++++++++++++++++---------------------------------------
+>>  1 file changed, 39 insertions(+), 69 deletions(-)
+>>
+>> diff --git a/mm/zswap.c b/mm/zswap.c
+>> index 999671dcb469..667b66a3911b 100644
+>> --- a/mm/zswap.c
+>> +++ b/mm/zswap.c
+>> @@ -1380,6 +1380,42 @@ static int zswap_enabled_param_set(const char *val,
+>>         return ret;
+>>  }
+>>
+>> +static void __zswap_load(struct zswap_entry *entry, struct page *page)
+>> +{
+>> +       struct scatterlist input, output;
+>> +       unsigned int dlen = PAGE_SIZE;
+>> +       struct crypto_acomp_ctx *acomp_ctx;
+>> +       struct zpool *zpool;
+>> +       u8 *src;
+>> +       int ret;
+>> +
+>> +       /* decompress */
+> 
+> nit: I guess all this function does is decompression right? Doesn't
+> seem like this comment is necessary anymore... But this is just
+> nitpicking.
+> 
 
-I'm going a bit out-of-order to report a build failure in a test:
+Ah, right. I will remove it.
 
-Mark Brown <broonie@kernel.org> writes:
+Thanks!
 
-> +// Recurse x20 times
-> +.macro recurse id
-
-I get an assembler error here:
-
-gcc -nostdlib gcs-stress-thread.S -o /home/thiago.bauermann/src/linux/tools/testing/selftests/arm64/gcs/gcs-stress-thread
-gcs-stress-thread.S: Assembler messages:
-gcs-stress-thread.S:236: Error: unexpected end of file in macro `recurse' definition
-make[2]: *** [Makefile:24: /home/thiago.bauermann/src/linux/tools/testing/selftests/arm64/gcs/gcs-stress-thread] Error 1
-
-This is with gas from Ubuntu 22.04, which ships binutils 2.38.
-
-> +function recurse\id
-> +	stp	x29, x30, [sp, #-16]!
-> +	mov	x29, sp
-> +
-> +	cmp	x20, 0
-> +	beq	1f
-> +	sub	x20, x20, 1
-> +	bl	recurse\id
-> +
-> +1:
-> +	ldp	x29, x30, [sp], #16
-> +
-> +	// Do a syscall immediately prior to returning to try to provoke
-> +	// scheduling and migration at a point where coherency issues
-> +	// might trigger.
-> +	mov	x8, #__NR_getpid
-> +	svc	#0
-> +
-> +	ret
-> +endfunction
-> +.endmacro
-> +
-> +// Generate and use two copies so we're changing the GCS contents
-> +recurse 1
-> +recurse 2
-
--- 
-Thiago
+>> +       acomp_ctx = raw_cpu_ptr(entry->pool->acomp_ctx);
+>> +       mutex_lock(acomp_ctx->mutex);
+>> +
+>> +       zpool = zswap_find_zpool(entry);
+>> +       src = zpool_map_handle(zpool, entry->handle, ZPOOL_MM_RO);
+>> +       if (!zpool_can_sleep_mapped(zpool)) {
+>> +               memcpy(acomp_ctx->dstmem, src, entry->length);
+>> +               src = acomp_ctx->dstmem;
+>> +               zpool_unmap_handle(zpool, entry->handle);
+>> +       }
+>> +
+>> +       sg_init_one(&input, src, entry->length);
+>> +       sg_init_table(&output, 1);
+>> +       sg_set_page(&output, page, PAGE_SIZE, 0);
+>> +       acomp_request_set_params(acomp_ctx->req, &input, &output, entry->length, dlen);
+>> +       ret = crypto_wait_req(crypto_acomp_decompress(acomp_ctx->req), &acomp_ctx->wait);
+>> +       dlen = acomp_ctx->req->dlen;
+>> +       mutex_unlock(acomp_ctx->mutex);
+>> +
+>> +       if (zpool_can_sleep_mapped(zpool))
+>> +               zpool_unmap_handle(zpool, entry->handle);
+>> +
+>> +       BUG_ON(ret);
+>> +       BUG_ON(dlen != PAGE_SIZE);
+>> +}
+>> +
+>>  /*********************************
+>>  * writeback code
+>>  **********************************/
+>> @@ -1401,23 +1437,12 @@ static int zswap_writeback_entry(struct zswap_entry *entry,
+>>         swp_entry_t swpentry = entry->swpentry;
+>>         struct page *page;
+>>         struct mempolicy *mpol;
+>> -       struct scatterlist input, output;
+>> -       struct crypto_acomp_ctx *acomp_ctx;
+>> -       struct zpool *pool = zswap_find_zpool(entry);
+>>         bool page_was_allocated;
+>> -       u8 *src, *tmp = NULL;
+>> -       unsigned int dlen;
+>>         int ret;
+>>         struct writeback_control wbc = {
+>>                 .sync_mode = WB_SYNC_NONE,
+>>         };
+>>
+>> -       if (!zpool_can_sleep_mapped(pool)) {
+>> -               tmp = kmalloc(PAGE_SIZE, GFP_KERNEL);
+>> -               if (!tmp)
+>> -                       return -ENOMEM;
+>> -       }
+>> -
+> 
+> Sweet. Less allocation == more efficient + less failure case :)
+> 
+>>         /* try to allocate swap cache page */
+>>         mpol = get_task_policy(current);
+>>         page = __read_swap_cache_async(swpentry, GFP_KERNEL, mpol,
+>> @@ -1450,33 +1475,7 @@ static int zswap_writeback_entry(struct zswap_entry *entry,
+>>         }
+>>         spin_unlock(&tree->lock);
+>>
+>> -       /* decompress */
+>> -       acomp_ctx = raw_cpu_ptr(entry->pool->acomp_ctx);
+>> -       dlen = PAGE_SIZE;
+>> -
+>> -       src = zpool_map_handle(pool, entry->handle, ZPOOL_MM_RO);
+>> -       if (!zpool_can_sleep_mapped(pool)) {
+>> -               memcpy(tmp, src, entry->length);
+>> -               src = tmp;
+>> -               zpool_unmap_handle(pool, entry->handle);
+>> -       }
+>> -
+>> -       mutex_lock(acomp_ctx->mutex);
+>> -       sg_init_one(&input, src, entry->length);
+>> -       sg_init_table(&output, 1);
+>> -       sg_set_page(&output, page, PAGE_SIZE, 0);
+>> -       acomp_request_set_params(acomp_ctx->req, &input, &output, entry->length, dlen);
+>> -       ret = crypto_wait_req(crypto_acomp_decompress(acomp_ctx->req), &acomp_ctx->wait);
+>> -       dlen = acomp_ctx->req->dlen;
+>> -       mutex_unlock(acomp_ctx->mutex);
+>> -
+>> -       if (!zpool_can_sleep_mapped(pool))
+>> -               kfree(tmp);
+>> -       else
+>> -               zpool_unmap_handle(pool, entry->handle);
+>> -
+>> -       BUG_ON(ret);
+>> -       BUG_ON(dlen != PAGE_SIZE);
+>> +       __zswap_load(entry, page);
+>>
+>>         /* page is up to date */
+>>         SetPageUptodate(page);
+>> @@ -1496,9 +1495,6 @@ static int zswap_writeback_entry(struct zswap_entry *entry,
+>>         return ret;
+>>
+>>  fail:
+>> -       if (!zpool_can_sleep_mapped(pool))
+>> -               kfree(tmp);
+>> -
+>>         /*
+>>          * If we get here because the page is already in swapcache, a
+>>          * load may be happening concurrently. It is safe and okay to
+>> @@ -1755,11 +1751,7 @@ bool zswap_load(struct folio *folio)
+>>         struct page *page = &folio->page;
+>>         struct zswap_tree *tree = swap_zswap_tree(swp);
+>>         struct zswap_entry *entry;
+>> -       struct scatterlist input, output;
+>> -       struct crypto_acomp_ctx *acomp_ctx;
+>> -       unsigned int dlen = PAGE_SIZE;
+>> -       u8 *src, *dst;
+>> -       struct zpool *zpool;
+>> +       u8 *dst;
+>>         bool ret;
+>>
+>>         VM_WARN_ON_ONCE(!folio_test_locked(folio));
+>> @@ -1781,29 +1773,7 @@ bool zswap_load(struct folio *folio)
+>>                 goto stats;
+>>         }
+>>
+>> -       /* decompress */
+>> -       acomp_ctx = raw_cpu_ptr(entry->pool->acomp_ctx);
+>> -       mutex_lock(acomp_ctx->mutex);
+>> -
+>> -       zpool = zswap_find_zpool(entry);
+>> -       src = zpool_map_handle(zpool, entry->handle, ZPOOL_MM_RO);
+>> -       if (!zpool_can_sleep_mapped(zpool)) {
+>> -               memcpy(acomp_ctx->dstmem, src, entry->length);
+>> -               src = acomp_ctx->dstmem;
+>> -               zpool_unmap_handle(zpool, entry->handle);
+>> -       }
+>> -
+>> -       sg_init_one(&input, src, entry->length);
+>> -       sg_init_table(&output, 1);
+>> -       sg_set_page(&output, page, PAGE_SIZE, 0);
+>> -       acomp_request_set_params(acomp_ctx->req, &input, &output, entry->length, dlen);
+>> -       if (crypto_wait_req(crypto_acomp_decompress(acomp_ctx->req), &acomp_ctx->wait))
+>> -               WARN_ON(1);
+>> -       mutex_unlock(acomp_ctx->mutex);
+>> -
+>> -       if (zpool_can_sleep_mapped(zpool))
+>> -               zpool_unmap_handle(zpool, entry->handle);
+>> -
+>> +       __zswap_load(entry, page);
+>>         ret = true;
+>>  stats:
+>>         count_vm_event(ZSWPIN);
+>>
+>> --
+>> b4 0.10.1
+> 
+> Can't find anything wrong with this patch, so:
+> Reviewed-by: Nhat Pham <nphamcs@gmail.com>
