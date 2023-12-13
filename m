@@ -2,108 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CAD9F81237F
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 00:47:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A942812383
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 00:48:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233990AbjLMXre (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 18:47:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34086 "EHLO
+        id S234025AbjLMXsW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 18:48:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41870 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229706AbjLMXrc (ORCPT
+        with ESMTP id S229725AbjLMXsV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 18:47:32 -0500
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13324C9;
-        Wed, 13 Dec 2023 15:47:39 -0800 (PST)
-Received: by mail-wr1-x434.google.com with SMTP id ffacd0b85a97d-3364514fe31so246937f8f.1;
-        Wed, 13 Dec 2023 15:47:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702511257; x=1703116057; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:autocrypt
-         :references:in-reply-to:date:cc:to:from:subject:message-id:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=DzX45WvCsgZhpc7rT6V8I3XpK+GcadypFiCWho8hSpQ=;
-        b=HAIhzLsZPa72wLsgEb1jSuEm3t8gTuV/ZPQzu63n8tkWcWZ6m6tLzyHhqJanvI/AiD
-         rBFcCKqJRrNDwOv24f6aoql0vRogSIKCWBFDAUm69JOjactyBvaAzp03B1tRqJwOiFl5
-         KBrwpiVKg3tAvNFzNl2nSkfEt9BjIDmzOMlECA3r5aYxhFUd/fHtTdTZgzLjylDNEq6Y
-         b29w4cq8hi3vlXx6s4V62wcyLRXPr6EJ+8ggPGbAA8Xft0R6FH3LrNae8/YP1++Gtcw+
-         X/tjGXgn35eoLff1tyOs/FoOwIiqF5mG7TUylt4xfcMvnPuwa0z3hziiw3zWRjfGaDzB
-         h8mQ==
+        Wed, 13 Dec 2023 18:48:21 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFCE3C9
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 15:48:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1702511307;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=nlH0hEer7+Nk19Vq61ytYQm6EsTqNJlYAMHbJqXd6yE=;
+        b=iNtUpGyZGhhXwlkidiImOYI4rWxdpZ0dW3tb/m5+QAHMu/0LpRuRbQdg1LRngWi0yadzJk
+        lu0qHIH2AqmuLPY9eH+ZdQmIzpdys0Q/UzYVv5eUXW/5teiqze28O+4vGylcIZyohTnuP2
+        pvfCnOu4lvS21ef15WTadb4K+fmMJU0=
+Received: from mail-vk1-f199.google.com (mail-vk1-f199.google.com
+ [209.85.221.199]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-626-Dld9x1wDNfeNZdEMSFM3RQ-1; Wed, 13 Dec 2023 18:48:25 -0500
+X-MC-Unique: Dld9x1wDNfeNZdEMSFM3RQ-1
+Received: by mail-vk1-f199.google.com with SMTP id 71dfb90a1353d-4b287defc7eso2029588e0c.1
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 15:48:25 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702511257; x=1703116057;
-        h=mime-version:user-agent:content-transfer-encoding:autocrypt
+        d=1e100.net; s=20230601; t=1702511304; x=1703116104;
+        h=mime-version:user-agent:content-transfer-encoding:organization
          :references:in-reply-to:date:cc:to:from:subject:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=DzX45WvCsgZhpc7rT6V8I3XpK+GcadypFiCWho8hSpQ=;
-        b=rvLE9AXhvFjOyQWMmI0ZdidofdejZGxBGxwwA9RzinQvmHp5q9y4jykykYP4zFZPnG
-         cvdQXKDo3cZU26YVnVpehC7bVw2foDfsEyafvorC02HTohNnIk+S6YJ+O0qBo24CRoKT
-         Xim+vFH14dK1oJYgKHntAA63aOhEOs4wgJmUVYF7kiKqH6zBriW1vYbyK20ePdViiVSg
-         phUl46wl+SDgKvQ8E9SZuybqU8hJSZD/Msxd+F2BdkDwCTpDek4gbByadvp17MsJbmme
-         +fLfnLWG4JjhmZMDxUYauCiqSWKCOblN04EjZHrhbjcX61WOKmuBGA56zzZ0/qBg+d26
-         AShA==
-X-Gm-Message-State: AOJu0Yxh+JHzU0rXRFjFlHFSjRfp+a6JNUh+b0MBtQpD1GGNPzlDZRDT
-        OKJan3YfywKMjxBhz7JKujA+HfFMSzUe3Q==
-X-Google-Smtp-Source: AGHT+IFTJa3nggUwEvu3DevQK/zBr+UnrycCV6yK6Jko/3dlmj5Gs6jAYLql3oaN3mDpk1cL+Wd8Lw==
-X-Received: by 2002:a5d:4a47:0:b0:336:35f2:9d60 with SMTP id v7-20020a5d4a47000000b0033635f29d60mr1628250wrs.39.1702511257365;
-        Wed, 13 Dec 2023 15:47:37 -0800 (PST)
-Received: from [192.168.1.95] (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
-        by smtp.gmail.com with ESMTPSA id g12-20020a5d46cc000000b003335c061a2asm14496338wrs.33.2023.12.13.15.47.36
+        bh=nlH0hEer7+Nk19Vq61ytYQm6EsTqNJlYAMHbJqXd6yE=;
+        b=OzFPfgeyne3rmB/Kteu3eF7T4pz5IZwf31ZkyuN2KZ7++mykcMDLeeEziTdCLZqtoS
+         zG9A58cAsQc/cJqg2y5+UZS8f2BSJwew1AziLoYSXl8guYXvy+94PHeDglCe3+eXWSYZ
+         K7Mr8cxL2O47as0iLxW80VPcXBmnd47FWvHvgAx4q5v6lirbUH+JuAVKiO5rbtYwuNmG
+         XETQo6+onvhI3WvJg0O/GkUwCoPBQ5yaM/Lz9dPW+p3g4si04B+4ZR5cjYD/OJPm8PdZ
+         Mj97gxSnJ0ZIkGj8vU6NbHPVQEgvXKRS6fQzQRRFsH9q4Nvsu2D43b0M4q8khFHiTq41
+         yZ7g==
+X-Gm-Message-State: AOJu0YzVUoEKkSifps/RBShTt3g1yehmoww/gf+SFdVvrjbDu5RMIuX+
+        RrueZ3Z7ssuSJfIbLEoHBUCw/u0tr8zJj23dFHncEQO1VNhY8mrPJl134YSGxzpR/G5zw4xM11k
+        2jqWRebwvt9UY9Ok4mm7OW4vzC9KrszzZ
+X-Received: by 2002:a1f:f4c9:0:b0:4b2:884d:60ef with SMTP id s192-20020a1ff4c9000000b004b2884d60efmr6453509vkh.9.1702511304471;
+        Wed, 13 Dec 2023 15:48:24 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IHdScfcgntZWOMNXTw3/v7+E4FVhmTkodlicMCAD2tYLEyL4jcsSSdQlpenRfQ9H4cIjARGMQ==
+X-Received: by 2002:a1f:f4c9:0:b0:4b2:884d:60ef with SMTP id s192-20020a1ff4c9000000b004b2884d60efmr6453500vkh.9.1702511304155;
+        Wed, 13 Dec 2023 15:48:24 -0800 (PST)
+Received: from ?IPv6:2600:4040:5c6c:a300::feb? ([2600:4040:5c6c:a300::feb])
+        by smtp.gmail.com with ESMTPSA id ej8-20020ad45a48000000b0067a4396f9cdsm5449659qvb.8.2023.12.13.15.48.23
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Dec 2023 15:47:36 -0800 (PST)
-Message-ID: <3ba67d3e220c19c4a921e20f06e26bfe70ae8c80.camel@gmail.com>
-Subject: Re: [Bug Report] bpf: incorrectly pruning runtime execution path
-From:   Eduard Zingerman <eddyz87@gmail.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Hao Sun <sunhao.th@gmail.com>, Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        bpf <bpf@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Date:   Thu, 14 Dec 2023 01:47:35 +0200
-In-Reply-To: <CAEf4BzbfF=aNa-jAkka6YrK6Vbisi=v7PFsEDR-RFuHtAub2Xw@mail.gmail.com>
-References: <CACkBjsbj4y4EhqpV-ZVt645UtERJRTxfEab21jXD1ahPyzH4_g@mail.gmail.com>
-         <CAEf4BzZ0xidVCqB47XnkXcNhkPWF6_nTV7yt+_Lf0kcFEut2Mg@mail.gmail.com>
-         <CACkBjsaEQxCaZ0ERRnBXduBqdw3MXB5r7naJx_anqxi0Wa-M_Q@mail.gmail.com>
-         <480a5cfefc23446f7c82c5b87eef6306364132b9.camel@gmail.com>
-         <CAEf4BzbfF=aNa-jAkka6YrK6Vbisi=v7PFsEDR-RFuHtAub2Xw@mail.gmail.com>
-Autocrypt: addr=eddyz87@gmail.com; prefer-encrypt=mutual; keydata=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
+        Wed, 13 Dec 2023 15:48:23 -0800 (PST)
+Message-ID: <f10791773520f85857749c080af999821dd41a0d.camel@redhat.com>
+Subject: Re: nouveau 0000:01:00.0: drm_WARN_ON(!found_head)
+From:   Lyude Paul <lyude@redhat.com>
+To:     Borislav Petkov <bp@alien8.de>, Paul Dufresne <dufresnep@zoho.com>,
+        Danilo Krummrich <me@dakr.org>
+Cc:     nouveau <nouveau@lists.freedesktop.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Ben Skeggs <bskeggs@redhat.com>,
+        Daniel Vetter <daniel@ffwll.ch>
+Date:   Wed, 13 Dec 2023 18:48:22 -0500
+In-Reply-To: <114bf9f5790f637a6cdec4957244192d3bd76a04.camel@redhat.com>
+References: <20231111120323.GAZU9tiw8e0RSzCGB9@fat_crate.local>
+         <20231212224037.GAZXjhZUDeoq50xKJ5@fat_crate.local>
+         <18c613ec092.ae61cf7d6029.4389632938517239705@zoho.com>
+         <20231213113936.GBZXmX+MKqX/qOnPn1@fat_crate.local>
+         <20231213124936.GCZXmoYDq8nMRs75XM@fat_crate.local>
+         <114bf9f5790f637a6cdec4957244192d3bd76a04.camel@redhat.com>
+Organization: Red Hat Inc.
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.1 
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
 MIME-Version: 1.0
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2023-12-13 at 15:40 -0800, Andrii Nakryiko wrote:
-[...]
-> >     24: (18) r2 =3D 0x4                     ; R2_w=3D4
-> >     26: (7e) if w8 s>=3D w0 goto pc+5
-> >     mark_precise: frame0: last_idx 26 first_idx 22 subseq_idx -1
-> >     mark_precise: frame0: regs=3Dr5,r8 stack=3D before 24: (18) r2 =3D =
-0x4
-> >     ...                   ^^^^^^^^^^
-> >                           ^^^^^^^^^^
-> > Here w8 =3D=3D 15, w0 in range [0, 2], so the jump is being predicted,
-> > but for some reason R0 is not among the registers that would be marked =
-precise.
->=20
-> It is, as a second step. There are two concatenated precision logs:
->=20
-> mark_precise: frame0: last_idx 26 first_idx 22 subseq_idx -1
-> mark_precise: frame0: regs=3Dr0 stack=3D before 24: (18) r2 =3D 0x4
-> mark_precise: frame0: regs=3Dr0 stack=3D before 23: (bf) r5 =3D r8
-> mark_precise: frame0: regs=3Dr0 stack=3D before 22: (67) r4 <<=3D 2
->=20
->=20
-> The issue is elsewhere, see my last email.
+Hopefully you're still on at this point - if you are, could you try startin=
+g
+the machine up with the following kernel module arguments passed to nouveau=
+?
 
-Oh, right, there are two calls to mark_chain_precision in a row, thanks
+debug=3Ddisp=3Dtrace
+
+Then see if you can find any lines that mention INHERIT? I have a feeling I=
+'m
+just going to have to add a workaround for the time being, but I'd really l=
+ove
+to know how we're managing to get that far on a hardware generation we neve=
+r
+implemented that nvkm ioctl for=E2=80=A6
+
+On Wed, 2023-12-13 at 18:37 -0500, Lyude Paul wrote:
+> agh - thank you for repeatedly poking on this, I've been busy enough with=
+ GSP
+> work I totally missed this. Yes - I'm quite surprised that this is blowin=
+g up,
+> but considering that looks to be a GT218 I guess display state readback m=
+ust
+> just work a bit differently there since that's really early on into the N=
+V50
+> days.
+>=20
+> The reason that was a drm_WARN_ON() was because it indicates that we're n=
+ot
+> reading back OR -> head assignments properly. But, I'm confused how we're=
+ even
+> getting that far on a non-GSP platform. I'm going to dig into this now, b=
+ut if
+> I don't figure out a good fix by the end of the day I'll just send a patc=
+h to
+> silent the warning.
+>=20
+> Thanks again for bugging me about this!
+>=20
+> On Wed, 2023-12-13 at 13:49 +0100, Borislav Petkov wrote:
+> > On Wed, Dec 13, 2023 at 12:39:36PM +0100, Borislav Petkov wrote:
+> > > We're getting close to releasing so I guess we either debug this or s=
+hut
+> > > up the WARN.
+> >=20
+> > Not only that - panic_on_warn turns this into an explosion so you don't
+> > want that in a released kernel.
+> >=20
+>=20
+
+--=20
+Cheers,
+ Lyude Paul (she/her)
+ Software Engineer at Red Hat
+
