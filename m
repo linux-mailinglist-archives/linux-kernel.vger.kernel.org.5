@@ -2,128 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F289281159E
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 16:04:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C201D81159C
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 16:03:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442093AbjLMPEF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 10:04:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58782 "EHLO
+        id S1442087AbjLMPDr convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 13 Dec 2023 10:03:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45202 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1442073AbjLMPED (ORCPT
+        with ESMTP id S1442083AbjLMPDp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 10:04:03 -0500
-Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA433F2
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 07:04:08 -0800 (PST)
-Received: by mail-ej1-x634.google.com with SMTP id a640c23a62f3a-a22f59c6af8so127625966b.0
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 07:04:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702479847; x=1703084647; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=y8FvBMSZ54x5+moiufktQOGQtRVM0b1bbyRye5DtqoI=;
-        b=Ib/UlvKK6Cau0gG+R0rRYNdbJJW+k9A0Iq0B+AiYiaXHLxCo3QYBz+SHy0YmO3fBbI
-         /hLz2s/sKqKE8BkvrKw/VxLGmF1VQVZZuShOSSwv9Livj3gBqLRDL/kEM0vLBJnXCHZd
-         VbDqOOO2FInASowGYT+v3WDtHuM4BEHil8l2c2TaTuRc+2X5HuSc3WZ7PpIUlFvipqXY
-         2mSMpwRjA5ocYcISc2JgtdI355Zlr0rJcvETEL+mAAu9NNnjdA01kRtEtyvpYAtLd1d3
-         fmncNkMCp4SM2NyMFrPsuzV+shL8zvvUtVVeNNLwp22AycTraUYia1Z2JArigWc6VY+J
-         7+ZQ==
+        Wed, 13 Dec 2023 10:03:45 -0500
+Received: from mail-oi1-f180.google.com (mail-oi1-f180.google.com [209.85.167.180])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2782A0;
+        Wed, 13 Dec 2023 07:03:51 -0800 (PST)
+Received: by mail-oi1-f180.google.com with SMTP id 5614622812f47-3b9e0c3c2c8so946705b6e.0;
+        Wed, 13 Dec 2023 07:03:51 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702479847; x=1703084647;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=y8FvBMSZ54x5+moiufktQOGQtRVM0b1bbyRye5DtqoI=;
-        b=XH6WYO6ZHxH2BDaN+5CB1oUsZry+lE/JpiXqOJrt06sAaS55Oa3pj5NoSGUqy4qAtn
-         0e3/+zDQMGutA2sfPPJvvaSApTBk/RdJvr9Cp4rMsnbaEsrrBNUTb8TB7lYHrrIrLWm4
-         Z5FbhHWjaEtx5P9896PPXaEEJufy/4hLmTvOc+FAVf8sBL1A8mGCu5Qa89Jt14OLc5ch
-         ZZePky8c9kC9DiVNh0oXFIfR4yTZuqiPDG3YooKoszU/re1WOg/8LV7CGQFJs/Zfbhbh
-         y9HIOx8NLx0xbGhSuyi8Qpth6uDIv7x4se0Me2ko7n+2RvN3TmWzDNk7gHpKo3WxTH59
-         Utyg==
-X-Gm-Message-State: AOJu0YxfDMFpydOxBcHV8rCwhL60Ln9PDf1a2ndNQf3nUo6lvQ31LiaS
-        977evr1+lSE6lJHCzNTf/WY=
-X-Google-Smtp-Source: AGHT+IGK3pxqmERFMcq8dDTHv4KUlc8vKTSgFsfGllzuGdgrF46csMjYoKh8Z7fuAXQw6hv07E1y8w==
-X-Received: by 2002:a17:907:2d88:b0:a1e:4794:e3b1 with SMTP id gt8-20020a1709072d8800b00a1e4794e3b1mr5107286ejc.148.1702479846901;
-        Wed, 13 Dec 2023 07:04:06 -0800 (PST)
-Received: from localhost.localdomain ([46.248.82.114])
-        by smtp.gmail.com with ESMTPSA id hu18-20020a170907a09200b00a1e081369a9sm7849736ejc.23.2023.12.13.07.04.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Dec 2023 07:04:06 -0800 (PST)
-From:   Uros Bizjak <ubizjak@gmail.com>
-To:     x86@kernel.org, linux-kernel@vger.kernel.org
-Cc:     Uros Bizjak <ubizjak@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@kernel.org>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradaed.org>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
-Subject: [PATCH RESEND -tip] x86/percpu: Use %RIP-relative address in untagged_addr()
-Date:   Wed, 13 Dec 2023 16:03:15 +0100
-Message-ID: <20231213150357.5942-1-ubizjak@gmail.com>
-X-Mailer: git-send-email 2.42.0
+        d=1e100.net; s=20230601; t=1702479831; x=1703084631;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=nyiflUqSFGHntlf4UNzumPP+00Uc42t7yYwDrcWMbsg=;
+        b=k08xJMdUOBjeLjEVsMoQrkx/qU1AKkZM66+1ZR0XmyGhnZO0RiE9xg5Eu99U9QfT00
+         FTC+h/uhZUuUrpW0qR5tI5c75InqT1Fotmb9nOnuf746MSbbv3VFrkarVmrMTiixcoD1
+         GUqPlekpmE0HzYhcpsBJKjDtz+63QXgo3OBUEjoUQkJXaO5jfxs7hNq7JTdtN5dMUbHs
+         pdWAL+OXG0ZipeBK/GTcte8SxZ5vBd05H2Vc8EfFhTYlrr1Gvco2kw1IG+2npaCKRwtv
+         eVnP9CpSvWgvi2+hFJwXBLOWPaPDeSMF2OS49hCz2ve9GZlTa3g+dXovE00uQ2fKMq9k
+         1vtQ==
+X-Gm-Message-State: AOJu0YxzXpwClXi+WglDJZzWWTA4iNz25hRZC9aV6Hz0IczvQ9MDFNj5
+        GHPZWsmMCpFSPXvpqk2LnZwRzi0pnM61sfzb/To=
+X-Google-Smtp-Source: AGHT+IHvT7JkrTY4AvYKjVr/3bgqpnxyRLqiLSNxb4ogSdv4HI+tmxqt/NeN7GpEzWFRU7K18bO5x6NjKq02fw7Q7NQ=
+X-Received: by 2002:a05:6870:961d:b0:1fb:1576:ee66 with SMTP id
+ d29-20020a056870961d00b001fb1576ee66mr14805884oaq.5.1702479831103; Wed, 13
+ Dec 2023 07:03:51 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20231212221301.12581-1-ansuelsmth@gmail.com> <0e4cee10-4aa4-4979-9841-f1dbd207e0b7@linaro.org>
+ <6579bdb2.5d0a0220.1ae22.1f92@mx.google.com> <CAJZ5v0gdLXBziENtZ9qmvntmaq6gNSXvGHq1eq8_o+xz0V_A0Q@mail.gmail.com>
+ <6579c604.050a0220.8fe5c.d191@mx.google.com>
+In-Reply-To: <6579c604.050a0220.8fe5c.d191@mx.google.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Wed, 13 Dec 2023 16:03:40 +0100
+Message-ID: <CAJZ5v0iyagOX-bL4XhfGd5H-ubK=HjaniDvYB_ZJhKSfqaS09g@mail.gmail.com>
+Subject: Re: [PATCH 1/2] thermal: core: add initial support for cold and
+ critical_cold trip point
+To:     Christian Marangi <ansuelsmth@gmail.com>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Lukasz Luba <lukasz.luba@arm.com>, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-%RIP-relative addresses are nowadays correctly handled in alternative
-instructions, so remove misleading comment and improve assembly to
-use %RIP-relative address.
+On Wed, Dec 13, 2023 at 3:56 PM Christian Marangi <ansuelsmth@gmail.com> wrote:
+>
+> On Wed, Dec 13, 2023 at 03:43:54PM +0100, Rafael J. Wysocki wrote:
+> > On Wed, Dec 13, 2023 at 3:20 PM Christian Marangi <ansuelsmth@gmail.com> wrote:
+> > >
+> > > On Wed, Dec 13, 2023 at 03:12:41PM +0100, Daniel Lezcano wrote:
+> > > > On 12/12/2023 23:13, Christian Marangi wrote:
+> > > > > Add initial support for cold and critical_cold trip point. Many if not
+> > > > > all hwmon and thermal device have normally trip point for hot
+> > > > > temperature and for cold temperature.
+> > > > >
+> > > > > Till now only hot temperature were supported. Add support for also cold
+> > > > > temperature to permit complete definition of cold trip point in DT.
+> > > > >
+> > > > > Thermal driver may use these additional trip point to correctly set
+> > > > > interrupt for cold temperature values and react based on that with
+> > > > > various measure like enabling attached heater, forcing higher voltage
+> > > > > and other specialaized peripherals.
+> > > > >
+> > > > > For hwmon drivers this is needed as currently there is a problem with
+> > > > > setting the full operating range of the device for thermal devices
+> > > > > defined with hwmon. To better describe the problem, the following
+> > > > > example is needed:
+> > > > >
+> > > > > In the scenario of a simple hwmon with an active trip point declared
+> > > > > and a cooling device attached, the hwmon subsystem currently set the
+> > > > > min and max trip point based on the single active trip point.
+> > > > > Thermal subsystem parse all the trip points and calculate the lowest and
+> > > > > the highest trip point and calls the .set_trip of hwmon to setup the
+> > > > > trip points.
+> > > > >
+> > > > > The fact that we currently don't have a way to declare the cold/min
+> > > > > temperature values, makes the thermal subsystem to set the low value as
+> > > > > -INT_MAX.
+> > > > > For hwmon drivers that doesn't use clamp_value and actually reject
+> > > > > invalid values for the trip point, this results in the hwmon settings to
+> > > > > be rejected.
+> > > > >
+> > > > > To permit to pass the correct range of trip point, permit to set in DT
+> > > > > also cold and critical_cold trip point.
+> > > > >
+> > > > > Thermal driver may also define .cold and .critical_cold to act on these
+> > > > > trip point tripped and apply the required measure.
+> > > >
+> > > > Agree with the feature but we need to clarify the semantic of the trip
+> > > > points first. What actions do we expect for them in order to have like a
+> > > > mirror reflection of the existing hot trip points.
+> > > >
+> > > > What action do you expect with:
+> > > >
+> > > >  - 'cold' ?
+> > > >
+> > > >  - 'critical_cold' ?
+> > > >
+> > > >
+> > >
+> > > This is more of a sensible topic but I think it's the thermal driver
+> > > that needs to implement these. As said in the commit description,
+> > > examples are setting higher voltage from the attached regulator,
+> > > enabling some hardware heater.
+> >
+> > So how is it different from an active trip point?  There are heating
+> > rather than cooling devices associated with it, but other than this??
+> >
+>
+> From what I read from documentation, active trip point are used to
+> trigger cooling-device. Cold (and crit_cold) are to setup trip point to
+> the device. The device will normally trigger an interrupt
 
-Also, explicitly using %gs: prefix will segfault for non-SMP builds.
-Use macros from percpu.h which will DTRT with segment prefix register
-as far as SMP/non-SMP builds are concerned.
+Well, that's how thermal sensors work in general IIUC.
 
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Ingo Molnar <mingo@kernel.org>
-Cc: Borislav Petkov <bp@alien8.de>
-Cc: Dave Hansen <dave.hansen@linux.intel.com>
-Cc: "H. Peter Anvin" <hpa@zytor.com>
-Acked-by: Peter Zijlstra (Intel) <peterz@infradaed.org>
-Acked-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-Signed-off-by: Uros Bizjak <ubizjak@gmail.com>
----
- arch/x86/include/asm/uaccess_64.h | 11 ++++-------
- 1 file changed, 4 insertions(+), 7 deletions(-)
+> (or even internally with the correct register set autonomously apply some measure
+> to handle the problem)
+>
+> In theory it's possible to have passive trip point for cold condition
+> but still we lack any definition of the lower spectrum of the trip
+> point.
 
-diff --git a/arch/x86/include/asm/uaccess_64.h b/arch/x86/include/asm/uaccess_64.h
-index f2c02e4469cc..01455c0b070c 100644
---- a/arch/x86/include/asm/uaccess_64.h
-+++ b/arch/x86/include/asm/uaccess_64.h
-@@ -11,6 +11,7 @@
- #include <asm/alternative.h>
- #include <asm/cpufeatures.h>
- #include <asm/page.h>
-+#include <asm/percpu.h>
- 
- #ifdef CONFIG_ADDRESS_MASKING
- /*
-@@ -18,14 +19,10 @@
-  */
- static inline unsigned long __untagged_addr(unsigned long addr)
- {
--	/*
--	 * Refer tlbstate_untag_mask directly to avoid RIP-relative relocation
--	 * in alternative instructions. The relocation gets wrong when gets
--	 * copied to the target place.
--	 */
- 	asm (ALTERNATIVE("",
--			 "and %%gs:tlbstate_untag_mask, %[addr]\n\t", X86_FEATURE_LAM)
--	     : [addr] "+r" (addr) : "m" (tlbstate_untag_mask));
-+			 "and " __percpu_arg([mask]) ", %[addr]", X86_FEATURE_LAM)
-+	     : [addr] "+r" (addr)
-+	     : [mask] "m" (__my_cpu_var(tlbstate_untag_mask)));
- 
- 	return addr;
- }
--- 
-2.42.0
+Such that it will increase power of some devices in order to warm the
+system up?  Fair enough.
 
+> > > Maybe with critical cold bigger measure can be applied. Currently for
+> > > critical trip point we shutdown the system (if the critical ops is not
+> > > declared) but with critical_cold condition I think it won't work... I
+> > > expect a system in -40°C would just lock up/glitch so rebooting in that
+> > > condition won't change a thing...
+> > >
+> > > Anyway yes we can define a shutdown by default for that but IMHO it
+> > > wouldn't make much sense.
+> >
+> > So why do you want to add it at all?
+>
+> Again it's really to fill a hole we have from a long time... One example
+> is the qcom tsens driver that have trip point for cold and crit_cold.
+> Those in theory can be set in DT with the trip point but we lack any
+> definition for them. (using passive trip point would be confusing IMHO)
+>
+> Another example is an Aquantia PHY that have register for the cold and
+> critical_cold trip point.
+
+My point is about the crit_cold trips in particular.  If there is no
+common action to trigger when they are crossed, what are they actually
+good for?
+
+> Currently defining a critical trip point for the negative temp results
+> in the system shutdown.
+
+Sure.
