@@ -2,203 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CC85810E60
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 11:25:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F38E2810E6D
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 11:27:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235333AbjLMKZa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 05:25:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43568 "EHLO
+        id S233146AbjLMK1H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 05:27:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52556 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235299AbjLMKZ2 (ORCPT
+        with ESMTP id S231863AbjLMK1F (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 05:25:28 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D43F1AC
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 02:25:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1702463134;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=W/r5C+C8vvlrOFPoBxr3FLWNYuCGMCfVD68sW2OExkw=;
-        b=cGs2ZXRC/tfiFkdKQSJOVOZBy8g13PtGzrH3vHG0cmccWD8zYtuCIl4BS5TylVo4xcCrtQ
-        6Bde+VFCe0CpBfdupvDzAfBkL118dZUOfEX2VmH829BYEy8ahRn2Ja/CF6ABTKwBTTghUW
-        19vmdAA6Xi4rjLHy2eYJyQXB7XGn5uA=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-517-xtXyTSkzPE-y2qrqBKbpBg-1; Wed,
- 13 Dec 2023 05:25:32 -0500
-X-MC-Unique: xtXyTSkzPE-y2qrqBKbpBg-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.rdu2.redhat.com [10.11.54.8])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id CCE8A3C2B601;
-        Wed, 13 Dec 2023 10:25:31 +0000 (UTC)
-Received: from warthog.procyon.org.uk (unknown [10.42.28.2])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id D1CB5C15A0C;
-        Wed, 13 Dec 2023 10:25:30 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-To:     Marc Dionne <marc.dionne@auristor.com>
-cc:     dhowells@redhat.com, linux-afs@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] afs: Fix use-after-free due to get/remove race in volume tree
+        Wed, 13 Dec 2023 05:27:05 -0500
+Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.154.54.12])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 650EDE8
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 02:27:09 -0800 (PST)
+X-QQ-mid: bizesmtp79t1702463167tcr6ufva
+Received: from [10.4.6.71] ( [58.240.82.166])
+        by bizesmtp.qq.com (ESMTP) with 
+        id ; Wed, 13 Dec 2023 18:26:02 +0800 (CST)
+X-QQ-SSF: 00200000000000B0B000000A0000000
+X-QQ-FEAT: hoArX50alxEwBXgz7H828rQPfU4yCvC4EsFNNxEEJw9G+Qj6wXQGud/XnpIeu
+        gzsjzr7vzPbJdkTk7qpCyHhAXmN6jsoOMT6g5nDU/+/oXwJCQXaFLBKP2t52SEDxqnZV7jM
+        LO7odQU8OgeMDCiBukYm3Qj3gDWvNQS00C5P3OYGX7XfzyTwW25djjB2AAAHwafzTGVBT42
+        2GXhZMmLANroa6P8eXuDmRuHBW1qawrpw+WNDoYf7/02e0ySkvPrE9LdsBN0Jf9xxBE00lT
+        Mp8i9YaSLZfixre13lDKyjJh63qGtZgJtYcGazaGhR0aIbH0cZP7SGovFgoSmg+4Y0pLMyL
+        T6suoB3IITd8Y7IA1iXkYe8XM8v+UJYB87XFdVrn1p2Zo93qzlQ6351rbbH5Q==
+X-QQ-GoodBg: 0
+X-BIZMAIL-ID: 2304332684790857452
+Message-ID: <F2DEAEC9AF268DB2+dab1e766-962a-de7a-4b89-0498a43d177d@tinylab.org>
+Date:   Wed, 13 Dec 2023 18:26:02 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <307295.1702463129.1@warthog.procyon.org.uk>
-Content-Transfer-Encoding: quoted-printable
-Date:   Wed, 13 Dec 2023 10:25:29 +0000
-Message-ID: <307296.1702463129@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.8
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.13.0
+Subject: Re: [PATCH V2 0/2] riscv: kexec_file: Support loading Image binary
+ file
+To:     paul.walmsley@sifive.com, palmer@dabbelt.com,
+        aou@eecs.berkeley.edu, lihuafei1@huawei.com,
+        conor.dooley@microchip.com, liaochang1@huawei.com,
+        guoren@kernel.org, ajones@ventanamicro.com, alexghiti@rivosinc.com,
+        evan@rivosinc.com, sunilvl@ventanamicro.com,
+        xianting.tian@linux.alibaba.com, samitolvanen@google.com,
+        masahiroy@kernel.org, apatel@ventanamicro.com, jszhang@kernel.org,
+        duwe@suse.de, eric.devolder@oracle.com,
+        emil.renner.berthing@canonical.com
+Cc:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20231016092006.3347632-1-songshuaishuai@tinylab.org>
+From:   Song Shuai <songshuaishuai@tinylab.org>
+In-Reply-To: <20231016092006.3347632-1-songshuaishuai@tinylab.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:tinylab.org:qybglogicsvrsz:qybglogicsvrsz4a-0
+X-Spam-Status: No, score=-0.3 required=5.0 tests=BAYES_00,FORGED_MUA_MOZILLA,
+        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When an afs_volume struct is put, its refcount is reduced to 0 before the
-cell->volume_lock is taken and the volume removed from the cell->volumes
-tree.  Unfortunately, this means that the lookup code can race and see a
-volume with a zero ref in the tree, resulting in a use-after-free:
 
-        refcount_t: addition on 0; use-after-free.
-        WARNING: CPU: 3 PID: 130782 at lib/refcount.c:25 refcount_warn_sat=
-urate+0x7a/0xda
-        ...
-        RIP: 0010:refcount_warn_saturate+0x7a/0xda
-        ...
-        Call Trace:
-         <TASK>
-         ? __warn+0x8b/0xf5
-         ? report_bug+0xbf/0x11b
-         ? refcount_warn_saturate+0x7a/0xda
-         ? handle_bug+0x3c/0x5b
-         ? exc_invalid_op+0x13/0x59
-         ? asm_exc_invalid_op+0x16/0x20
-         ? refcount_warn_saturate+0x7a/0xda
-         ? refcount_warn_saturate+0x7a/0xda
-         afs_get_volume+0x3d/0x55
-         afs_create_volume+0x126/0x1de
-         afs_validate_fc+0xfe/0x130
-         afs_get_tree+0x20/0x2e5
-         vfs_get_tree+0x1d/0xc9
-         do_new_mount+0x13b/0x22e
-         do_mount+0x5d/0x8a
-         __do_sys_mount+0x100/0x12a
-         do_syscall_64+0x3a/0x94
-         entry_SYSCALL_64_after_hwframe+0x62/0x6a
 
-Fix this by:
+在 2023/10/16 17:20, Song Shuai 写道:
+> Changes since V1:
+> https://lore.kernel.org/linux-riscv/20230914020044.1397356-1-songshuaishuai@tinylab.org/
+> 
+> - Patch1: fix the build error due to the missing functions in machine_kexec_file.c
+> - Patch2: use FIELD_GET() to get the flags's endianness as Emil proposed
+> - Cover: update the kexec-tools link as this one[2] which is based on horms/kexec-tools main branch
+ping ...
+> 
+> This series makes the kexec_file_load() syscall support to load Image binary file.
+> At the same time, corresponding support for kexec-tools had been pushed to my repo[2].
+> 
+> Now, we can leverage that kexec-tools and this series to use the
+> kexec_load() or kexec_file_load() syscall to boot both vmlinux
+> and Image file, as seen in these combo tests:
+> 
+> ```
+> 1. kexec -l vmlinux [other options] // or boot paniced kernel with -p
+> 2. kexec -l Image
+> 3. kexec -s -l vmlinux
+> 4. kexec -s -l Image
+> ```
+> 
+> Though all of the aforementioned tests had been passed in my RV64 Qemu-virt,
+> it should be noted that tests 3 and 4 should be the emphasis for the current series.
+> 
+> ~~[1]: https://github.com/sugarfillet/kexec-tools/commits/rv-Image~~
+> [2]: https://github.com/sugarfillet/kexec-tools/commits/main_rv
+> 
+> Song Shuai (2):
+>    riscv: kexec_file: Split the loading of kernel and others
+>    riscv: kexec_file: Support loading Image binary file
+> 
+>   arch/riscv/include/asm/kexec.h         |   6 +
+>   arch/riscv/kernel/Makefile             |   2 +-
+>   arch/riscv/kernel/elf_kexec.c          | 469 -------------------------
+>   arch/riscv/kernel/kexec_elf.c          | 147 ++++++++
+>   arch/riscv/kernel/kexec_image.c        |  98 ++++++
+>   arch/riscv/kernel/machine_kexec_file.c | 344 ++++++++++++++++++
+>   6 files changed, 596 insertions(+), 470 deletions(-)
+>   delete mode 100644 arch/riscv/kernel/elf_kexec.c
+>   create mode 100644 arch/riscv/kernel/kexec_elf.c
+>   create mode 100644 arch/riscv/kernel/kexec_image.c
+> 
 
- (1) When putting, use a flag to indicate if the volume has been removed
-     from the tree and skip the rb_erase if it has.
-
- (2) When looking up, use a conditional ref increment and if it fails
-     because the refcount is 0, replace the node in the tree and set the
-     removal flag.
-
-Fixes: 20325960f875 ("afs: Reorganise volume and server trees to be rooted=
- on the cell")
-Signed-off-by: David Howells <dhowells@redhat.com>
-cc: Marc Dionne <marc.dionne@auristor.com>
-cc: linux-afs@lists.infradead.org
----
- fs/afs/internal.h |    2 ++
- fs/afs/volume.c   |   26 +++++++++++++++++++++++---
- 2 files changed, 25 insertions(+), 3 deletions(-)
-
-diff --git a/fs/afs/internal.h b/fs/afs/internal.h
-index a812952be1c9..7385d62c8cf5 100644
---- a/fs/afs/internal.h
-+++ b/fs/afs/internal.h
-@@ -586,6 +586,7 @@ struct afs_volume {
- #define AFS_VOLUME_OFFLINE	4	/* - T if volume offline notice given */
- #define AFS_VOLUME_BUSY		5	/* - T if volume busy notice given */
- #define AFS_VOLUME_MAYBE_NO_IBULK 6	/* - T if some servers don't have Inl=
-ineBulkStatus */
-+#define AFS_VOLUME_RM_TREE	7	/* - Set if volume removed from cell->volume=
-s */
- #ifdef CONFIG_AFS_FSCACHE
- 	struct fscache_volume	*cache;		/* Caching cookie */
- #endif
-@@ -1513,6 +1514,7 @@ extern struct afs_vlserver_list *afs_extract_vlserve=
-r_list(struct afs_cell *,
- extern struct afs_volume *afs_create_volume(struct afs_fs_context *);
- extern int afs_activate_volume(struct afs_volume *);
- extern void afs_deactivate_volume(struct afs_volume *);
-+bool afs_try_get_volume(struct afs_volume *volume, enum afs_volume_trace =
-reason);
- extern struct afs_volume *afs_get_volume(struct afs_volume *, enum afs_vo=
-lume_trace);
- extern void afs_put_volume(struct afs_net *, struct afs_volume *, enum af=
-s_volume_trace);
- extern int afs_check_volume_status(struct afs_volume *, struct afs_operat=
-ion *);
-diff --git a/fs/afs/volume.c b/fs/afs/volume.c
-index 29d483c80281..115c081a8e2c 100644
---- a/fs/afs/volume.c
-+++ b/fs/afs/volume.c
-@@ -32,8 +32,13 @@ static struct afs_volume *afs_insert_volume_into_cell(s=
-truct afs_cell *cell,
- 		} else if (p->vid > volume->vid) {
- 			pp =3D &(*pp)->rb_right;
- 		} else {
--			volume =3D afs_get_volume(p, afs_volume_trace_get_cell_insert);
--			goto found;
-+			if (afs_try_get_volume(p, afs_volume_trace_get_cell_insert)) {
-+				volume =3D p;
-+				goto found;
-+			}
-+
-+			set_bit(AFS_VOLUME_RM_TREE, &volume->flags);
-+			rb_replace_node_rcu(&p->cell_node, &volume->cell_node, &cell->volumes)=
-;
- 		}
- 	}
- =
-
-@@ -56,7 +61,8 @@ static void afs_remove_volume_from_cell(struct afs_volum=
-e *volume)
- 				 afs_volume_trace_remove);
- 		write_seqlock(&cell->volume_lock);
- 		hlist_del_rcu(&volume->proc_link);
--		rb_erase(&volume->cell_node, &cell->volumes);
-+		if (!test_and_set_bit(AFS_VOLUME_RM_TREE, &volume->flags))
-+			rb_erase(&volume->cell_node, &cell->volumes);
- 		write_sequnlock(&cell->volume_lock);
- 	}
- }
-@@ -231,6 +237,20 @@ static void afs_destroy_volume(struct afs_net *net, s=
-truct afs_volume *volume)
- 	_leave(" [destroyed]");
- }
- =
-
-+/*
-+ * Try to get a reference on a volume record.
-+ */
-+bool afs_try_get_volume(struct afs_volume *volume, enum afs_volume_trace =
-reason)
-+{
-+	int r;
-+
-+	if (__refcount_inc_not_zero(&volume->ref, &r)) {
-+		trace_afs_volume(volume->vid, r + 1, reason);
-+		return true;
-+	}
-+	return false;
-+}
-+
- /*
-  * Get a reference on a volume record.
-  */
-
+-- 
+Thanks
+Song Shuai
