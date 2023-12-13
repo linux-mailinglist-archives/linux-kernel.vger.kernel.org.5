@@ -2,109 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C185811B94
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 18:54:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 58442811B9A
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 18:54:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233496AbjLMRxs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 12:53:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41428 "EHLO
+        id S233266AbjLMRyd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 12:54:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47708 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233490AbjLMRxp (ORCPT
+        with ESMTP id S233647AbjLMRyT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 12:53:45 -0500
-Received: from mail-oo1-f41.google.com (mail-oo1-f41.google.com [209.85.161.41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78C47100;
-        Wed, 13 Dec 2023 09:53:51 -0800 (PST)
-Received: by mail-oo1-f41.google.com with SMTP id 006d021491bc7-59082c4aadaso3726053eaf.0;
-        Wed, 13 Dec 2023 09:53:51 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702490031; x=1703094831;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ik457hD1S5HlN6UXVZUgeJxpu7wQOeGH5KzQB0C5eQs=;
-        b=l306RH7AOqwg4DubrcuQhIJGH6+EjGfKH1JrFJTvIzHx9Hk9Eel+gKneCFBjgGIYD4
-         OgaS4+C70lB0wtvJ3jaTjYpYi+M66BL9drtGti+LMfYTbc48bvMydP5VvjeJUB1WH1r8
-         QT7UnIjgzdnADOXldgHcOhwlSuMucTTc5pOGVGnWQDAFK90qGsCU4BHI3D6anutyitKE
-         gXc4XVY8jFoP1iPeZb5jh5SIBNjOhIARNRvg+BouU3l9l/0VJVnva8ZspdphShFwi38o
-         UAbnjFlMi64+eAP6/p1ZVry6ID2fzKC8PK/GUo7NRxfa2Vkozy3We0UtoJ32qM2q0N31
-         n14g==
-X-Gm-Message-State: AOJu0YyA7Mb8ElcBU+1Te5B3402xD3ScUh3T6JiMamV+BC7mUWveSz9O
-        +gIAuEHdH3/QrCcenBgonw==
-X-Google-Smtp-Source: AGHT+IFQdhMh1dSsniMj2RNwPjv0B28HP5zPIeWWFOApyiATpZiK/dIcArxyl75Ywe09m3an1QfhbQ==
-X-Received: by 2002:a4a:385a:0:b0:590:8d23:34f0 with SMTP id o26-20020a4a385a000000b005908d2334f0mr5050443oof.10.1702490030707;
-        Wed, 13 Dec 2023 09:53:50 -0800 (PST)
-Received: from herring.priv (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
-        by smtp.gmail.com with ESMTPSA id b30-20020a4a98e1000000b00590ded91500sm2027111ooj.47.2023.12.13.09.53.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Dec 2023 09:53:50 -0800 (PST)
-Received: (nullmailer pid 1588510 invoked by uid 1000);
-        Wed, 13 Dec 2023 17:53:48 -0000
-Date:   Wed, 13 Dec 2023 11:53:48 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Dario Binacchi <dario.binacchi@amarulasolutions.com>
-Cc:     linux-kernel@vger.kernel.org, Maxime Ripard <mripard@kernel.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>, michael@amarulasolutions.com,
-        devicetree@vger.kernel.org, David Airlie <airlied@gmail.com>,
-        dri-devel@lists.freedesktop.org, Daniel Vetter <daniel@ffwll.ch>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Amarula patchwork <linux-amarula@amarulasolutions.com>,
-        Jessica Zhang <quic_jesszhan@quicinc.com>
-Subject: Re: [PATCH v6 3/4] dt-bindings: display: panel: Add synaptics r63353
- panel controller
-Message-ID: <170249002767.1588438.13395249907934528672.robh@kernel.org>
-References: <20231213140437.2769508-1-dario.binacchi@amarulasolutions.com>
- <20231213140437.2769508-4-dario.binacchi@amarulasolutions.com>
+        Wed, 13 Dec 2023 12:54:19 -0500
+Received: from out4-smtp.messagingengine.com (out4-smtp.messagingengine.com [66.111.4.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4406E114
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 09:54:24 -0800 (PST)
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailout.nyi.internal (Postfix) with ESMTP id ADB595C03F5;
+        Wed, 13 Dec 2023 12:54:23 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute5.internal (MEProxy); Wed, 13 Dec 2023 12:54:23 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fastmail.org; h=
+        cc:cc:content-transfer-encoding:content-type:date:date:from:from
+        :in-reply-to:message-id:mime-version:reply-to:subject:subject:to
+        :to; s=fm1; t=1702490063; x=1702576463; bh=lgNsfpk34mFbXVIDjDidF
+        csTSEmQbTaM6DfLye9ZgBA=; b=iNZ+8/woDZaynb9h7X0yDIiwtksLnUSXi/AYx
+        k8L8KHx9G/sHrUzNtTF3XFuOgg+Mtocs+w9bdFmP0Mdp+W1JeTsyUk4mHXo47aLt
+        iCzUhoOgyer6yuQQT4AZxESn7QHttILeoRnnZ5aD6RcEZ20eRmGDJylqEVnn3a8g
+        ykWUYWE71YjdsXBtZj75PJUewdcKTfchEI5aticppYY4/fukC/kdf9Pj/91lVPbi
+        Xhh60T0COIe+lDjJDRPgKyOMheZt3ybicN9Pa4Ybm5AYswbbQGhShv/FY8tQrnBP
+        Wekoostk31CvKtfmF2O18ozw7IHOpBZ26tXeWsMeZDFtNYwAQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-transfer-encoding
+        :content-type:date:date:feedback-id:feedback-id:from:from
+        :in-reply-to:message-id:mime-version:reply-to:subject:subject:to
+        :to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+        fm1; t=1702490063; x=1702576463; bh=lgNsfpk34mFbXVIDjDidFcsTSEmQ
+        bTaM6DfLye9ZgBA=; b=gs9W0bxBa55spq4tDgg5jXLrI6513K0xVjlSseQRwkpe
+        S9Ep+2T/SfrhL0llnJjpT4kA6iDBdbIMuVj1k71LGjABPtO2LY1JqgI0EOUcQnAd
+        Y9oXc2U+rE9tu1qsAM7fffzLtIP0QObBtQceoUaf5KC3uDQsNbPL0QomrLjDUGTZ
+        wT6Wau4S11t+T8fVNBGz+WKVLOBCjuVa8QyV/N3lJy9ypinI3zTFAGLdMtbFBZhX
+        tmnGIWvI2ROBP6QjG1Ka83Rhtxz3l6miQZM2H5iiG3qGHWI4YgeXO72zYl0LS1zP
+        xJNZyyypYUt9sSkqW2Thft2h9svHJzut/q/5EH4fGQ==
+X-ME-Sender: <xms:z-95ZZbxl_XVtEzIGBm-N__-_GNTbUAeXigWC5V7-fkXEqbRCHEWgA>
+    <xme:z-95ZQa9_CZUI0hTAMkXZ4h0jVFFK8CtPuw_17qLdDYswVVvfPD4AI4A2TJyClsNY
+    EvbmF_B7IUlyskqFN4>
+X-ME-Received: <xmr:z-95Zb83WBhaURpsr-9povyy3aU9ZhxPknDWIOdjBlAlBnJtBNCKvrB4LVi5vJxTlM-sYhjwW1tz-j-mrZPtnH1Rl7tR_KOjckr1kSeg-7s>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrudeljedggeeiucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucenucfjughrpefhvfevufffkffoggfgsedtkeertd
+    ertddtnecuhfhrohhmpefirghrhicutfhoohhkrghrugcuoehgrghrhihrohhokhgrrhgu
+    sehfrghsthhmrghilhdrohhrgheqnecuggftrfgrthhtvghrnhepleegffffgfehhfejge
+    ejheeivdfgleefheeuueetkedtffeihfevlefhgeevvdevnecuvehluhhsthgvrhfuihii
+    vgeptdenucfrrghrrghmpehmrghilhhfrhhomhepghgrrhihrhhoohhkrghrugesfhgrsh
+    htmhgrihhlrdhorhhg
+X-ME-Proxy: <xmx:z-95ZXrCnOqARFNO0whAq4KqrhHNN0XP8PJaoBP1NEDRUlI8obYuUA>
+    <xmx:z-95ZUouNAyLWj_YlgN8Z3OQjhaTTVL54-i-9mNF9guu9tiu6Yyrag>
+    <xmx:z-95ZdTN7GzcYyPqSgEPUsXHBORrUdPsyqZGYYYBwtvs6vTVjJmazQ>
+    <xmx:z-95ZfWZqW_8InBb1S_NyBDg2ML2OTCOaNlnncYlS6XDcOpg239hew>
+Feedback-ID: ifd194980:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 13 Dec 2023 12:54:23 -0500 (EST)
+From:   Gary Rookard <garyrookard@fastmail.org>
+To:     gregkh@linuxfoundation.org, philipp.g.hortmann@gmail.com
+Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Gary Rookard <garyrookard@fastmail.org>
+Subject: [PATCH 0/5] [Series 3] rename variable HTGetHighestMCSRate and (4) other
+Date:   Wed, 13 Dec 2023 12:54:54 -0500
+Message-ID: <20231213175459.5425-1-garyrookard@fastmail.org>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231213140437.2769508-4-dario.binacchi@amarulasolutions.com>
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,
-        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
 
-On Wed, 13 Dec 2023 15:03:44 +0100, Dario Binacchi wrote:
-> From: Michael Trimarchi <michael@amarulasolutions.com>
-> 
-> Add documentation for "synaptics,r63353" panel.
-> 
-> Signed-off-by: Michael Trimarchi <michael@amarulasolutions.com>
-> Signed-off-by: Dario Binacchi <dario.binacchi@amarulasolutions.com>
-> Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-> 
-> ---
-> 
-> (no changes since v3)
-> 
-> Changes in v3:
-> - Add 'Reviewed-by' tag of Krzysztof Kozlowski.
-> - Replace "synaptics,r63353" compatible with "syna,r63353", as
->   required by vendor-prefixes.yaml.
-> 
-> Changes in v2:
-> - Add $ref to panel-common.yaml
-> - Drop port, reset-gpios, and backlight
-> - Set port and backlight ad required
-> - Replace additionalProperties with unevaluatedProperties
-> 
->  .../display/panel/synaptics,r63353.yaml       | 61 +++++++++++++++++++
->  1 file changed, 61 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/display/panel/synaptics,r63353.yaml
-> 
+This patch series renames (5) different variables with
+the checkpatch coding style issue Avoid CamelCase.
 
-Applied, thanks!
+Patch 1/5) rename variable HTGetHighestMCSRate
+Patch 2/5) rename variable HTFilterMCSRate
+Patch 3/5) rename variable HTSetConnectBwMode
+Patch 4/5) rename variable HTOnAssocRsp
+Patch 5/5) rename variable HTInitializeHTInfo
+
+Signed-off-by: Gary Rookard <garyrookard@fastmail.org>
+
+Gary Rookard (5):
+  staging: rtl8192e: rename variable HTGetHighestMCSRate
+  staging: rtl8192e: rename variable HTFilterMCSRate
+  staging: rtl8192e: rename variable HTSetConnectBwMode
+  staging: rtl8192e: rename variable HTOnAssocRsp
+  staging: rtl8192e: rename variable HTInitializeHTInfo
+
+ drivers/staging/rtl8192e/rtl819x_HTProc.c | 18 +++++++++---------
+ drivers/staging/rtl8192e/rtllib.h         |  8 ++++----
+ drivers/staging/rtl8192e/rtllib_module.c  |  2 +-
+ drivers/staging/rtl8192e/rtllib_softmac.c |  4 ++--
+ drivers/staging/rtl8192e/rtllib_wx.c      |  2 +-
+ 5 files changed, 17 insertions(+), 17 deletions(-)
+
+-- 
+2.41.0
 
