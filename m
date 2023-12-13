@@ -2,103 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D518811E5D
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 20:13:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 767B4811E68
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 20:14:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379365AbjLMTNB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 14:13:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57444 "EHLO
+        id S1441972AbjLMTNz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 14:13:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38926 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233516AbjLMTNA (ORCPT
+        with ESMTP id S229811AbjLMTNx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 14:13:00 -0500
-Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79763D5
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 11:13:05 -0800 (PST)
-Received: by mail-pl1-x62f.google.com with SMTP id d9443c01a7336-1d351cb8b82so4920165ad.3
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 11:13:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1702494785; x=1703099585; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=8bLQ7DFBgxbMxDjvYWNP8XEjt+7+EJYhkC4hdPmoZ5I=;
-        b=KObCsxtQ1cAmUcxJcFiPl2+Hgp1HqS40KRgYEv02I+luzqC/IOyf37piWXHU9dmndl
-         +UnUC2ryR970fxeaGXxIh7S88J6/3zyFnwATUyBC2cecbuBu7nO6mBpaG+CUw5yB3EYh
-         UeoP1PzU6wnRtD/3fMquYi6ge1pMKRGf1A4LU=
+        Wed, 13 Dec 2023 14:13:53 -0500
+Received: from mail-pg1-f180.google.com (mail-pg1-f180.google.com [209.85.215.180])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9401E95;
+        Wed, 13 Dec 2023 11:14:00 -0800 (PST)
+Received: by mail-pg1-f180.google.com with SMTP id 41be03b00d2f7-5c66e7eafabso6034826a12.0;
+        Wed, 13 Dec 2023 11:14:00 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702494785; x=1703099585;
+        d=1e100.net; s=20230601; t=1702494840; x=1703099640;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=8bLQ7DFBgxbMxDjvYWNP8XEjt+7+EJYhkC4hdPmoZ5I=;
-        b=nsDUtf4YKrOZ+e5Mp6m0/WOJ8L8Z8e4PdisXNIvHgZ2/z0mIOxF2P/2NhVWlG1i+Bk
-         IkwYzqEbEWGoG3a5YHWoDm6WkpvtmocQbLD2F7tAV5f0k3QxgXGMUfrepKsl0vYz1les
-         MnA0nmd0Zuyd9TgRhmbk9Tl8mKEJ5MXKYHG/+P6DC2nszC6tUHfZ6H4r7uUaH+ADiZOt
-         r1PTCQrDruZ94n7eaVJmeOK79QHuETJP1BGcPb3vHbeY/ZFh1tskc48OrOXPm7xmcAZi
-         qX7QcZzEXY81yC19ZqWOJPBUV0+erdrS5yjT/tT2b23jLC3U/IkWmrBUEf8XC/x1dqAo
-         I1XQ==
-X-Gm-Message-State: AOJu0YwC5+edY4iMvGtE5Z+GamNatAMUi6BuB9g/Q657T4zNb7Pai0eo
-        cTDxL30L/vn7zzXGGNjQidgCjXhSIH41nJf1Pns=
-X-Google-Smtp-Source: AGHT+IGL9MMpLeGyfBggOyjFOzc4MaMEeL6K7oxPe7D1N49hFYuaaCuEaNAiBmxymSDR4jyxBsYqmA==
-X-Received: by 2002:a17:902:704c:b0:1d0:6ffd:ae22 with SMTP id h12-20020a170902704c00b001d06ffdae22mr4435835plt.137.1702494784997;
-        Wed, 13 Dec 2023 11:13:04 -0800 (PST)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id b17-20020a170902ed1100b001d3485656afsm822977pld.183.2023.12.13.11.13.04
+        bh=1DP3/rX8XS4GFefeHlxYO7e4nc2P3XZWDmzXbM/YjAg=;
+        b=uz3XoKhXySgdK61SlpmkOoSAu/w+SMGt3YGMfHnV67RWlyw2KCThMdKKMeGdyC5p66
+         VjQGkP+suOCRV/1090xHzq7uOYlcMtgKy/gFCg5whio/ZQo/NEBbS5XWhgkpzzRqyom9
+         RWn86gVpfoI5V6eu7eWJ5NCrZWAcVx4cE/NXqgt36AIjXJhaZnH/HUatF0JzCmRyArf9
+         AKZh35JaCXzySoHnieYRdLqt/sz7tAubJ/20NooM170sH8owrkmrGGZD1UAwvvN7kySy
+         JG8qteXNUUAXuJULfXGn0MIaaeFRrGoac40rEeecibjNdZTP2C+Qoj8JNRNV1VnBucwM
+         BUrw==
+X-Gm-Message-State: AOJu0YxLAIvgFaH/JDCJCSweSvPdZp8R0ZPMdyPdY9El/rYxRMGvY0Hu
+        DOqqXIWYQsEa0C27WLiAkE0=
+X-Google-Smtp-Source: AGHT+IFVBUq4VGlL4SdERkPGjW5pC1rrG+mPJ05oPnGJJ69Hq2QIbDQIupZA5zRIk/6gItf+TYsBnw==
+X-Received: by 2002:a17:902:e5c5:b0:1d1:cd8b:8bc2 with SMTP id u5-20020a170902e5c500b001d1cd8b8bc2mr9637633plf.33.1702494839983;
+        Wed, 13 Dec 2023 11:13:59 -0800 (PST)
+Received: from localhost (fpd11144dd.ap.nuro.jp. [209.17.68.221])
+        by smtp.gmail.com with ESMTPSA id x7-20020a1709029a4700b001cf7bd9ade5sm10887076plv.3.2023.12.13.11.13.59
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Dec 2023 11:13:04 -0800 (PST)
-Date:   Wed, 13 Dec 2023 11:13:03 -0800
-From:   Kees Cook <keescook@chromium.org>
-To:     Jeff Johnson <quic_jjohnson@quicinc.com>
-Cc:     Kalle Valo <kvalo@kernel.org>,
-        "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
-        ath10k@lists.infradead.org, linux-wireless@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 5/6] wifi: ath10k: use flexible array in struct
- wmi_tdls_peer_capabilities
-Message-ID: <202312131112.F4A76DD3C@keescook>
-References: <20231213-wmi_host_mem_chunks_flexarray-v1-0-92922d92fa2c@quicinc.com>
- <20231213-wmi_host_mem_chunks_flexarray-v1-5-92922d92fa2c@quicinc.com>
+        Wed, 13 Dec 2023 11:13:59 -0800 (PST)
+Date:   Thu, 14 Dec 2023 04:13:58 +0900
+From:   Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>
+To:     Maxime Ripard <mripard@redhat.com>
+Cc:     lpieralisi@kernel.org, robh@kernel.org, bhelgaas@google.com,
+        Siddharth Vadapalli <s-vadapalli@ti.com>,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        vigneshr@ti.com, tjoseph@cadence.com, linux-pci@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, r-gunasekaran@ti.com,
+        danishanwar@ti.com, srk@ti.com, nm@ti.com
+Subject: Re: [PATCH v13 0/5] PCI: add 4x lane support for pci-j721e
+ controllers
+Message-ID: <20231213191358.GB988516@rocinante>
+References: <20231128054402.2155183-1-s-vadapalli@ti.com>
+ <isttx4vp7warwowlz46oo7y2zex7xuizfvovfse3yb4ww72e6u@nuev2jbkhnhw>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231213-wmi_host_mem_chunks_flexarray-v1-5-92922d92fa2c@quicinc.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <isttx4vp7warwowlz46oo7y2zex7xuizfvovfse3yb4ww72e6u@nuev2jbkhnhw>
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 13, 2023 at 09:06:43AM -0800, Jeff Johnson wrote:
-> Currently struct wmi_tdls_peer_capabilities defines:
-> 	struct wmi_channel peer_chan_list[1];
-> 
-> Per the guidance in [1] this should be a flexible array, and at one
-> point Gustavo was trying to fix this [2], but had questions about the
-> correct behavior when the associated peer_chan_len is 0.
-> 
-> I have been unable to determine if firmware requires that at least one
-> record be present even if peer_chan_len is 0. But since that is the
-> current behavior, follow the example from [3] and replace the
-> one-element array with a union that contains both a flexible array and
-> a single instance of the array element. This results in a struct that
-> has the same footprint as the original, so no other driver changes are
-> required.
-> 
-> No functional changes, compile tested only.
-> 
-> [1] https://docs.kernel.org/process/deprecated.html#zero-length-and-one-element-arrays
-> [2] https://lore.kernel.org/linux-wireless/626ae2e7-66f8-423b-b17f-e75c1a6d29b3@embeddedor.com/
-> [3] https://lore.kernel.org/linux-wireless/202308301529.AC90A9EF98@keescook/
-> 
-> Signed-off-by: Jeff Johnson <quic_jjohnson@quicinc.com>
+Hi Maxime,
 
-Again, good to keep the struct the same size.
+> > This series adds support to the pci-j721e PCIe controller for up to 4x Lane
+> > configuration supported by TI's J784S4 SoC. Bindings are also added for
+> > the num-lanes property which shall be used by the driver. The compatible
+> > for J784S4 SoC is added.
+> > 
+> > This series is based on linux-next tagged next-20231128.
+> 
+> These patches have been floating around for a long time (v12 was almost
+> identical and was submitted back in April, without any review back then
+> already [1]), and it looks like reviewers are happy with it.
 
-Reviewed-by: Kees Cook <keescook@chromium.org>
+Having a glance, it looks good to me, too.
 
--- 
-Kees Cook
+> Could you merge them to get them in 6.8?
+
+
+Applied, so it should make it to 6.8.  Apologies for the delay.
+
+	Krzysztof
