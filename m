@@ -2,60 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D49F8108D3
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 04:47:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 71B098108D4
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 04:48:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378483AbjLMDrj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 22:47:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35816 "EHLO
+        id S1378429AbjLMDsY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 22:48:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58138 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378428AbjLMDre (ORCPT
+        with ESMTP id S232827AbjLMDsW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 22:47:34 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C553ED0;
-        Tue, 12 Dec 2023 19:47:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1702439259; x=1733975259;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=B0KlMDNHCldjdyfUi/l+xjoBy1Qj+yUpfSFp9f4RKbA=;
-  b=ApaXJc4IavNsYZEuL+BPj2Wr/gL4P+1QssXpa8WSh1rqQO6bwddo85kN
-   4aU0GywCs9tNQPAitQVcg7TxntLuGXGDlUpJ2moN1FqUKlU5jSX57Mc4H
-   gDHT0UBYifjcnPEpyeFo+HPAA/4mkK3nCdxURnpLdt2HuJNmPsrh2n3+w
-   j9D8DcuPryERNOIGz2krUijDeS8Pxj4+f6EO9hTCJ+3K9B/J5EAsZgVxA
-   8gkjAT7Poe+iRRfyqxn8Z+4T58+MiUwe3JgLEPkSMZDvcgHEnNge/Y0pf
-   nZBVN0wwoJNVJkCLVzQBT3m/wQsn+HY6XT+8LWHvnDYfgLCPwtMAdEVPT
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10922"; a="459227285"
-X-IronPort-AV: E=Sophos;i="6.04,272,1695711600"; 
-   d="scan'208";a="459227285"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Dec 2023 19:47:39 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10922"; a="897175469"
-X-IronPort-AV: E=Sophos;i="6.04,272,1695711600"; 
-   d="scan'208";a="897175469"
-Received: from ply01-vm-store.bj.intel.com ([10.238.153.201])
-  by orsmga004.jf.intel.com with ESMTP; 12 Dec 2023 19:47:36 -0800
-From:   Ethan Zhao <haifeng.zhao@linux.intel.com>
-To:     bhelgaas@google.com, baolu.lu@linux.intel.com, dwmw2@infradead.org,
-        will@kernel.org, robin.murphy@arm.com
-Cc:     linux-pci@vger.kernel.org, iommu@lists.linux.dev,
-        linux-kernel@vger.kernel.org, haifeng.zhao@linux.intel.com,
-        Haorong Ye <yehaorong@bytedance.com>
-Subject: [PATCH 2/2] iommu/vt-d: don's issue devTLB flush request when device is disconnected
-Date:   Tue, 12 Dec 2023 22:46:37 -0500
-Message-Id: <20231213034637.2603013-3-haifeng.zhao@linux.intel.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20231213034637.2603013-1-haifeng.zhao@linux.intel.com>
-References: <20231213034637.2603013-1-haifeng.zhao@linux.intel.com>
+        Tue, 12 Dec 2023 22:48:22 -0500
+Received: from mail-oa1-x2f.google.com (mail-oa1-x2f.google.com [IPv6:2001:4860:4864:20::2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E70C9D2
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 19:48:26 -0800 (PST)
+Received: by mail-oa1-x2f.google.com with SMTP id 586e51a60fabf-1f5bd86ceb3so4729338fac.2
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 19:48:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=sifive.com; s=google; t=1702439306; x=1703044106; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=clomx9PL4E/h6EqVWy6k5UtmANF6+S2n+IcanEDP7iw=;
+        b=l1zGqCMVEoBeB9fSsZMLI6hWpscYG1oRN2SwRzx7v2LdPPeVTdQo0sDsCvay8fTnYu
+         KWjl8VI2GC01gktsZRSEkJvCU+X16KxuIO9aJx2FJ0zXr33+uACELJq0gRU6Ku20wOfp
+         3LZlGpL2/LS+V5s6o3eLYcyOaoRih7HLWm+O4ha/11nBS0PuM7Dc85sciSy867l7nm97
+         KPMqe+cRbxETUyFcdF4FvBPnmQG/Vi8yJO8fYrhm4aKjqycBg1bs9Uc6c/CE70yA2SQJ
+         zcpchv0pc8757jFSX7cYzfwswBPWMHt00YdCrBfztuOWXbQCE0GWJ6aCe69QN46rf3SM
+         P2iA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702439306; x=1703044106;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=clomx9PL4E/h6EqVWy6k5UtmANF6+S2n+IcanEDP7iw=;
+        b=cRAaGs3G57aJkDwjCP4QZYdVY3TZ6/azFopdo6wQOuocUe1nbNl1IkjGWHjt8uX1d7
+         56U8z0NEKyZS57QGfWhq7YLH8PCebV98jy+qcelUMX7S4ikp37+o5O+4XpNNZHRCIu+i
+         pXzuiwej+TBRWyymvb9hzdLhfB+wEbyg3+FaDEtYNtxcRZtUWwZelqHpKV2xc+6kYW1z
+         0T6WCGx5zf9uTcnrlIjDUsOMbA5ZZNSepP8AKGUvfc5U6ulcsuW5vdTNeM95iyrd0w4O
+         aYsqjx3HEpY97V+xFfQkoU9sPbYAsDHkcOOI1CnQEdmubVQKkf78rRovPXvI2JY3COTY
+         6pIw==
+X-Gm-Message-State: AOJu0YyimBoJ1SJ7uOV0sa4F3LUuauRBw646VDc/E3xnvHT4iagOFpOD
+        FZCA0uaC9WZN8cGaouIfawqGcRYKqfpiaZh9MxR85A==
+X-Google-Smtp-Source: AGHT+IHaD7oMNiw44MXxn+uDeF6j7vus4UTyBrcemloFE3EsCuYwUQ2y1gCTT2NYO5EC6m2cG+Vf+ppSjaTtGglMAhY=
+X-Received: by 2002:a05:6870:e8c5:b0:203:27d2:8db4 with SMTP id
+ r5-20020a056870e8c500b0020327d28db4mr82714oan.108.1702439306195; Tue, 12 Dec
+ 2023 19:48:26 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+References: <20231212053501.12054-1-yongxuan.wang@sifive.com> <CAK9=C2VOXj5oCAZEPS24K98UmQycupoJCcATGDNr+HFr9aVCPw@mail.gmail.com>
+In-Reply-To: <CAK9=C2VOXj5oCAZEPS24K98UmQycupoJCcATGDNr+HFr9aVCPw@mail.gmail.com>
+From:   Yong-Xuan Wang <yongxuan.wang@sifive.com>
+Date:   Wed, 13 Dec 2023 11:48:15 +0800
+Message-ID: <CAMWQL2gWGYYD1mFHOnd6oQGvAmh6UHb9w++KMOTLbB9p=om-2Q@mail.gmail.com>
+Subject: Re: [PATCH 1/1] RISCV: KVM: should not be interrupted when update the
+ external interrupt pending
+To:     Anup Patel <apatel@ventanamicro.com>
+Cc:     linux-riscv@lists.infradead.org, kvm-riscv@lists.infradead.org,
+        greentime.hu@sifive.com, vincent.chen@sifive.com,
+        Anup Patel <anup@brainfault.org>,
+        Atish Patra <atishp@atishpatra.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -63,178 +76,129 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For those endpoint devices connect to system via hotplug capable ports,
-users could request a warm reset to the device by flapping device's link
-through setting the slot's link control register, as pciehpt_ist() DLLSC
-interrupt sequence response, pciehp will unload the device driver and
-then power it off. thus cause an IOMMU devTLB flush request for device to
-be sent and a long time completion/timeout waiting in interrupt context.
+On Wed, Dec 13, 2023 at 12:03=E2=80=AFAM Anup Patel <apatel@ventanamicro.co=
+m> wrote:
+>
+> On Tue, Dec 12, 2023 at 11:05=E2=80=AFAM Yong-Xuan Wang
+> <yongxuan.wang@sifive.com> wrote:
+> >
+> > The emulated IMSIC update the external interrupt pending depending on t=
+he
+> > value of eidelivery and topei. It might lose an interrupt when it is
+> > interrupted before setting the new value to the pending status.
+>
+> More simpler PATCH subject can be:
+> "RISCV: KVM: update external interrupt atomically for IMSIC swfile"
+>
+> >
+> > For example, when VCPU0 sends an IPI to VCPU1 via IMSIC:
+> >
+> > VCPU0                           VCPU1
+> >
+> >                                 CSRSWAP topei =3D 0
+> >                                 The VCPU1 has claimed all the external
+> >                                 interrupt in its interrupt handler.
+> >
+> >                                 topei of VCPU1's IMSIC =3D 0
+> >
+> > set pending in VCPU1's IMSIC
+> >
+> > topei of VCPU1' IMSIC =3D 1
+> >
+> > set the external interrupt
+> > pending of VCPU1
+> >
+> >                                 clear the external interrupt pending
+> >                                 of VCPU1
+> >
+> > When the VCPU1 switches back to VS mode, it exits the interrupt handler
+> > because the result of CSRSWAP topei is 0. If there are no other externa=
+l
+> > interrupts injected into the VCPU1's IMSIC, VCPU1 will never know this
+> > pending interrupt unless it initiative read the topei.
+> >
+> > If the interruption occurs between updating interrupt pending in IMSIC
+> > and updating external interrupt pending of VCPU, it will not cause a
+> > problem. Suppose that the VCPU1 clears the IPI pending in IMSIC right
+> > after VCPU0 sets the pending, the external interrupt pending of VCPU1
+> > will not be set because the topei is 0. But when the VCPU1 goes back to
+> > VS mode, the pending IPI will be reported by the CSRSWAP topei, it will
+> > not lose this interrupt.
+> >
+> > So we only need to make the external interrupt updating procedure as a
+> > critical section to avoid the problem.
+> >
+>
+> Please add a "Fixes:" line here
+>
+> > Tested-by: Roy Lin <roy.lin@sifive.com>
+> > Tested-by: Wayling Chen <wayling.chen@sifive.com>
+> > Co-developed-by: Vincent Chen <vincent.chen@sifive.com>
+> > Signed-off-by: Vincent Chen <vincent.chen@sifive.com>
+> > Signed-off-by: Yong-Xuan Wang <yongxuan.wang@sifive.com>
+> > ---
+> >  arch/riscv/kvm/aia_imsic.c | 8 ++++++++
+> >  1 file changed, 8 insertions(+)
+> >
+> > diff --git a/arch/riscv/kvm/aia_imsic.c b/arch/riscv/kvm/aia_imsic.c
+> > index 6cf23b8adb71..0278aa0ca16a 100644
+> > --- a/arch/riscv/kvm/aia_imsic.c
+> > +++ b/arch/riscv/kvm/aia_imsic.c
+> > @@ -37,6 +37,8 @@ struct imsic {
+> >         u32 nr_eix;
+> >         u32 nr_hw_eix;
+> >
+> > +       spinlock_t extirq_update_lock;
+> > +
+>
+> Please rename this lock to "swfile_extirq_lock".
+>
+> >         /*
+> >          * At any point in time, the register state is in
+> >          * one of the following places:
+> > @@ -613,12 +615,17 @@ static void imsic_swfile_extirq_update(struct kvm=
+_vcpu *vcpu)
+> >  {
+> >         struct imsic *imsic =3D vcpu->arch.aia_context.imsic_state;
+> >         struct imsic_mrif *mrif =3D imsic->swfile;
+> > +       unsigned long flags;
+> > +
+>
+> Add a short summary in a comment block about why external interrupt
+> updates are required to be in the critical section.
+>
+> > +       spin_lock_irqsave(&imsic->extirq_update_lock, flags);
+> >
+> >         if (imsic_mrif_atomic_read(mrif, &mrif->eidelivery) &&
+> >             imsic_mrif_topei(mrif, imsic->nr_eix, imsic->nr_msis))
+> >                 kvm_riscv_vcpu_set_interrupt(vcpu, IRQ_VS_EXT);
+> >         else
+> >                 kvm_riscv_vcpu_unset_interrupt(vcpu, IRQ_VS_EXT);
+> > +
+> > +       spin_unlock_irqrestore(&imsic->extirq_update_lock, flags);
+> >  }
+> >
+> >  static void imsic_swfile_read(struct kvm_vcpu *vcpu, bool clear,
+> > @@ -1029,6 +1036,7 @@ int kvm_riscv_vcpu_aia_imsic_init(struct kvm_vcpu=
+ *vcpu)
+> >         imsic->nr_eix =3D BITS_TO_U64(imsic->nr_msis);
+> >         imsic->nr_hw_eix =3D BITS_TO_U64(kvm_riscv_aia_max_ids);
+> >         imsic->vsfile_hgei =3D imsic->vsfile_cpu =3D -1;
+> > +       spin_lock_init(&imsic->extirq_update_lock);
+> >
+> >         /* Setup IMSIC SW-file */
+> >         swfile_page =3D alloc_pages(GFP_KERNEL | __GFP_ZERO,
+> > --
+> > 2.17.1
+> >
+> >
+>
+> Regards,
+> Anup
 
-That would cause following continuous hard lockup warning and system hang
-as following
+Hi Anup,
 
-[ 4211.433662] pcieport 0000:17:01.0: pciehp: Slot(108): Link Down
-[ 4211.433664] pcieport 0000:17:01.0: pciehp: Slot(108): Card not present
-[ 4223.822591] NMI watchdog: Watchdog detected hard LOCKUP on cpu 144
-[ 4223.822622] CPU: 144 PID: 1422 Comm: irq/57-pciehp Kdump: loaded Tainted: G S
-         OE    kernel version xxxx
-[ 4223.822623] Hardware name: vendorname xxxx 666-106,
-BIOS 01.01.02.03.01 05/15/2023
-[ 4223.822623] RIP: 0010:qi_submit_sync+0x2c0/0x490
-[ 4223.822624] Code: 48 be 00 00 00 00 00 08 00 00 49 85 74 24 20 0f 95 c1 48 8b
- 57 10 83 c1 04 83 3c 1a 03 0f 84 a2 01 00 00 49 8b 04 24 8b 70 34 <40> f6 c6 1
-0 74 17 49 8b 04 24 8b 80 80 00 00 00 89 c2 d3 fa 41 39
-[ 4223.822624] RSP: 0018:ffffc4f074f0bbb8 EFLAGS: 00000093
-[ 4223.822625] RAX: ffffc4f040059000 RBX: 0000000000000014 RCX: 0000000000000005
-[ 4223.822625] RDX: ffff9f3841315800 RSI: 0000000000000000 RDI: ffff9f38401a8340
-[ 4223.822625] RBP: ffff9f38401a8340 R08: ffffc4f074f0bc00 R09: 0000000000000000
-[ 4223.822626] R10: 0000000000000010 R11: 0000000000000018 R12: ffff9f384005e200
-[ 4223.822626] R13: 0000000000000004 R14: 0000000000000046 R15: 0000000000000004
-[ 4223.822626] FS:  0000000000000000(0000) GS:ffffa237ae400000(0000)
-knlGS:0000000000000000
-[ 4223.822627] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[ 4223.822627] CR2: 00007ffe86515d80 CR3: 000002fd3000a001 CR4: 0000000000770ee0
-[ 4223.822627] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-[ 4223.822628] DR3: 0000000000000000 DR6: 00000000fffe07f0 DR7: 0000000000000400
-[ 4223.822628] PKRU: 55555554
-[ 4223.822628] Call Trace:
-[ 4223.822628]  qi_flush_dev_iotlb+0xb1/0xd0
-[ 4223.822628]  __dmar_remove_one_dev_info+0x224/0x250
-[ 4223.822629]  dmar_remove_one_dev_info+0x3e/0x50
-[ 4223.822629]  intel_iommu_release_device+0x1f/0x30
-[ 4223.822629]  iommu_release_device+0x33/0x60
-[ 4223.822629]  iommu_bus_notifier+0x7f/0x90
-[ 4223.822630]  blocking_notifier_call_chain+0x60/0x90
-[ 4223.822630]  device_del+0x2e5/0x420
-[ 4223.822630]  pci_remove_bus_device+0x70/0x110
-[ 4223.822630]  pciehp_unconfigure_device+0x7c/0x130
-[ 4223.822631]  pciehp_disable_slot+0x6b/0x100
-[ 4223.822631]  pciehp_handle_presence_or_link_change+0xd8/0x320
-[ 4223.822631]  pciehp_ist+0x176/0x180
-[ 4223.822631]  ? irq_finalize_oneshot.part.50+0x110/0x110
-[ 4223.822632]  irq_thread_fn+0x19/0x50
-[ 4223.822632]  irq_thread+0x104/0x190
-[ 4223.822632]  ? irq_forced_thread_fn+0x90/0x90
-[ 4223.822632]  ? irq_thread_check_affinity+0xe0/0xe0
-[ 4223.822633]  kthread+0x114/0x130
-[ 4223.822633]  ? __kthread_cancel_work+0x40/0x40
-[ 4223.822633]  ret_from_fork+0x1f/0x30
-[ 4223.822633] Kernel panic - not syncing: Hard LOCKUP
-[ 4223.822634] CPU: 144 PID: 1422 Comm: irq/57-pciehp Kdump: loaded Tainted: G S
-         OE     kernel version xxxx
-[ 4223.822634] Hardware name: vendorname xxxx 666-106,
-BIOS 01.01.02.03.01 05/15/2023
-[ 4223.822634] Call Trace:
-[ 4223.822634]  <NMI>
-[ 4223.822635]  dump_stack+0x6d/0x88
-[ 4223.822635]  panic+0x101/0x2d0
-[ 4223.822635]  ? ret_from_fork+0x11/0x30
-[ 4223.822635]  nmi_panic.cold.14+0xc/0xc
-[ 4223.822636]  watchdog_overflow_callback.cold.8+0x6d/0x81
-[ 4223.822636]  __perf_event_overflow+0x4f/0xf0
-[ 4223.822636]  handle_pmi_common+0x1ef/0x290
-[ 4223.822636]  ? __set_pte_vaddr+0x28/0x40
-[ 4223.822637]  ? flush_tlb_one_kernel+0xa/0x20
-[ 4223.822637]  ? __native_set_fixmap+0x24/0x30
-[ 4223.822637]  ? ghes_copy_tofrom_phys+0x70/0x100
-[ 4223.822637]  ? __ghes_peek_estatus.isra.16+0x49/0xa0
-[ 4223.822637]  intel_pmu_handle_irq+0xba/0x2b0
-[ 4223.822638]  perf_event_nmi_handler+0x24/0x40
-[ 4223.822638]  nmi_handle+0x4d/0xf0
-[ 4223.822638]  default_do_nmi+0x49/0x100
-[ 4223.822638]  exc_nmi+0x134/0x180
-[ 4223.822639]  end_repeat_nmi+0x16/0x67
-[ 4223.822639] RIP: 0010:qi_submit_sync+0x2c0/0x490
-[ 4223.822639] Code: 48 be 00 00 00 00 00 08 00 00 49 85 74 24 20 0f 95 c1 48 8b
- 57 10 83 c1 04 83 3c 1a 03 0f 84 a2 01 00 00 49 8b 04 24 8b 70 34 <40> f6 c6 10
- 74 17 49 8b 04 24 8b 80 80 00 00 00 89 c2 d3 fa 41 39
-[ 4223.822640] RSP: 0018:ffffc4f074f0bbb8 EFLAGS: 00000093
-[ 4223.822640] RAX: ffffc4f040059000 RBX: 0000000000000014 RCX: 0000000000000005
-[ 4223.822640] RDX: ffff9f3841315800 RSI: 0000000000000000 RDI: ffff9f38401a8340
-[ 4223.822641] RBP: ffff9f38401a8340 R08: ffffc4f074f0bc00 R09: 0000000000000000
-[ 4223.822641] R10: 0000000000000010 R11: 0000000000000018 R12: ffff9f384005e200
-[ 4223.822641] R13: 0000000000000004 R14: 0000000000000046 R15: 0000000000000004
-[ 4223.822641]  ? qi_submit_sync+0x2c0/0x490
-[ 4223.822642]  ? qi_submit_sync+0x2c0/0x490
-[ 4223.822642]  </NMI>
-[ 4223.822642]  qi_flush_dev_iotlb+0xb1/0xd0
-[ 4223.822642]  __dmar_remove_one_dev_info+0x224/0x250
-[ 4223.822643]  dmar_remove_one_dev_info+0x3e/0x50
-[ 4223.822643]  intel_iommu_release_device+0x1f/0x30
-[ 4223.822643]  iommu_release_device+0x33/0x60
-[ 4223.822643]  iommu_bus_notifier+0x7f/0x90
-[ 4223.822644]  blocking_notifier_call_chain+0x60/0x90
-[ 4223.822644]  device_del+0x2e5/0x420
-[ 4223.822644]  pci_remove_bus_device+0x70/0x110
-[ 4223.822644]  pciehp_unconfigure_device+0x7c/0x130
-[ 4223.822644]  pciehp_disable_slot+0x6b/0x100
-[ 4223.822645]  pciehp_handle_presence_or_link_change+0xd8/0x320
-[ 4223.822645]  pciehp_ist+0x176/0x180
-[ 4223.822645]  ? irq_finalize_oneshot.part.50+0x110/0x110
-[ 4223.822645]  irq_thread_fn+0x19/0x50
-[ 4223.822646]  irq_thread+0x104/0x190
-[ 4223.822646]  ? irq_forced_thread_fn+0x90/0x90
-[ 4223.822646]  ? irq_thread_check_affinity+0xe0/0xe0
-[ 4223.822646]  kthread+0x114/0x130
-[ 4223.822647]  ? __kthread_cancel_work+0x40/0x40
-[ 4223.822647]  ret_from_fork+0x1f/0x30
-[ 4223.822647] Kernel Offset: 0x6400000 from 0xffffffff81000000 (relocation
-range: 0xffffffff80000000-0xffffffffbfffffff)
+Thank you! I will update in next version.
 
-Fix it by checking the device's error_state in
-devtlb_invalidation_with_pasid() to avoid sending meaningless devTLB flush
-request to link down device that is set to pci_channel_io_perm_failure and
-then powered off in
-
-pciehp_ist()
-   pciehp_handle_presence_or_link_change()
-     pciehp_disable_slot()
-       remove_board()
-         pciehp_unconfigure_device()
-
-Tested-by: Haorong Ye <yehaorong@bytedance.com>
-Signed-off-by: Ethan Zhao <haifeng.zhao@linux.intel.com>
----
- drivers/iommu/intel/pasid.c | 19 +++++++++++++++++++
- 1 file changed, 19 insertions(+)
-
-diff --git a/drivers/iommu/intel/pasid.c b/drivers/iommu/intel/pasid.c
-index 74e8e4c17e81..8557b6dee22f 100644
---- a/drivers/iommu/intel/pasid.c
-+++ b/drivers/iommu/intel/pasid.c
-@@ -476,6 +476,23 @@ devtlb_invalidation_with_pasid(struct intel_iommu *iommu,
- {
- 	struct device_domain_info *info;
- 	u16 sid, qdep, pfsid;
-+	struct pci_dev *pdev;
-+
-+	pdev = to_pci_dev(dev);
-+	if (!pdev)
-+		return;
-+
-+	/*
-+	 * If endpoint device's link was brough down by user's pci configuration
-+	 * access to it's hotplug capable slot's link control register, as sequence
-+	 * response for DLLSC pciehp_ist() will set the device error_state to
-+	 * pci_channel_io_perm_failure. Checking device's state here to avoid
-+	 * issuing meaningless devTLB flush request to it, that might cause lockup
-+	 * warning or deadlock because too long time waiting in interrupt context.
-+	 */
-+
-+	if (pci_dev_is_disconnected(pdev))
-+		return;
- 
- 	info = dev_iommu_priv_get(dev);
- 	if (!info || !info->ats_enabled)
-@@ -495,6 +512,8 @@ devtlb_invalidation_with_pasid(struct intel_iommu *iommu,
- 		qi_flush_dev_iotlb(iommu, sid, pfsid, qdep, 0, 64 - VTD_PAGE_SHIFT);
- 	else
- 		qi_flush_dev_iotlb_pasid(iommu, sid, pfsid, pasid, qdep, 0, 64 - VTD_PAGE_SHIFT);
-+
-+	return;
- }
- 
- void intel_pasid_tear_down_entry(struct intel_iommu *iommu, struct device *dev,
--- 
-2.31.1
-
+Regards,
+Yong-Xuan
