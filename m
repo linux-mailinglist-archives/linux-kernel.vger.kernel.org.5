@@ -2,151 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 07B8381155E
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 15:57:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 469E3811562
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 15:59:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442004AbjLMO5E convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 13 Dec 2023 09:57:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52158 "EHLO
+        id S1442022AbjLMO72 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 09:59:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58350 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1442027AbjLMO5C (ORCPT
+        with ESMTP id S1441963AbjLMO71 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 09:57:02 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8A04F2
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 06:57:07 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5E630C433C8;
-        Wed, 13 Dec 2023 14:57:06 +0000 (UTC)
-Date:   Wed, 13 Dec 2023 09:57:49 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Alexander Kapshuk <alexander.kapshuk@gmail.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Linux Trace Kernel <linux-trace-kernel@vger.kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Shuah Khan <shuah@kernel.org>, linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH v3] tracing/selftests: Add test to test the trace_marker
-Message-ID: <20231213095749.5ff64569@gandalf.local.home>
-In-Reply-To: <CAJ1xhMXuxGHfD8oRfbna_drpHmNv0RUXFrvuVv6rtt-KeCM9fQ@mail.gmail.com>
-References: <20231212192317.0fb6b101@gandalf.local.home>
-        <CAJ1xhMXuxGHfD8oRfbna_drpHmNv0RUXFrvuVv6rtt-KeCM9fQ@mail.gmail.com>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        Wed, 13 Dec 2023 09:59:27 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB32393;
+        Wed, 13 Dec 2023 06:59:33 -0800 (PST)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1702479572;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=foW+ZiDixud3U2NWD+f47jXaCIGRQEuK1RL8JyJXNEg=;
+        b=1Dk+2WowdGiO+Nc6YoCeRk4MBUkLTmEwK1mTz1+Vnbq0zDiUYn03tPXac7qQ3Z8PrUaVyG
+        uxT+XMkLI7qjPKpo3QtzqODBn4rg1LBdIdXjpQM1Ejr39aCZXJljpnO3YAbGaH7h1qltsZ
+        NpcKEB80J+0EVgBA27u819GQ0quMT3V7rlemWWKFDLjGK/GkW4kKrGeiQueSuqJIkYe4l/
+        H0aFiiYw6q+mgLU9q4YP6TG/Qo53kW2OgnZASTZCkUTih4lyGcT9tjhJQ8AYhwftuT2AsW
+        OeK2dxLagtBG5LTY6Qvbu2k4rG60jJnJITnVWnBMhbMYVCq44qVU8FNma/Nqng==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1702479572;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=foW+ZiDixud3U2NWD+f47jXaCIGRQEuK1RL8JyJXNEg=;
+        b=uST60temtwUPk5nrXczqgBP/EwCCDyRB14JgeVhMZ8CGUimz2/EkOl9pnl/fM76Vjxi/ym
+        wmL30e05LKJRA8Dw==
+To:     xiongxin <xiongxin@kylinos.cn>, jikos@kernel.org,
+        benjamin.tissoires@redhat.com
+Cc:     linux-input@vger.kernel.org, stable@vger.kernel.org,
+        Riwen Lu <luriwen@kylinos.cn>, hoan@os.amperecomputing.com,
+        fancer.lancer@gmail.com, linus.walleij@linaro.org, brgl@bgdev.pl,
+        andy@kernel.org, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] irq: Resolve that mask_irq/unmask_irq may not be called
+ in pairs
+In-Reply-To: <bf4004bf-4868-4953-8d8e-0c0e03be673e@kylinos.cn>
+References: <20231207014003.12919-1-xiongxin@kylinos.cn>
+ <87ttosssxd.ffs@tglx> <e125491c-4cdb-4870-924a-baeb7453bf78@kylinos.cn>
+ <874jgnqwlo.ffs@tglx> <bf4004bf-4868-4953-8d8e-0c0e03be673e@kylinos.cn>
+Date:   Wed, 13 Dec 2023 15:59:31 +0100
+Message-ID: <875y12p2r0.ffs@tglx>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 13 Dec 2023 10:09:50 +0200
-Alexander Kapshuk <alexander.kapshuk@gmail.com> wrote:
+On Wed, Dec 13 2023 at 10:29, xiongxin wrote:
+> =E5=9C=A8 2023/12/12 23:17, Thomas Gleixner =E5=86=99=E9=81=93:
+> Sorry, the previous reply may not have clarified the BUG process. I=20
+> re-debugged and confirmed it yesterday. The current BUG execution=20
+> sequence is described as follows:
 
-> The REs used in the sed commands below may be simplified as shown if desired.
-> 
-> On Wed, Dec 13, 2023 at 2:22 AM Steven Rostedt <rostedt@goodmis.org> wrote:
-> >
-> > From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
-> >
-> > Add a test that writes longs strings, some over the size of the sub buffer
-> > and make sure that the entire content is there.
-> >
-> > Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
-> > ---
-> > Changes since v2: https://lore.kernel.org/linux-trace-kernel/20231212151632.25c9b67d@gandalf.local.home
-> >
-> > - Realized with the upcoming change of the dynamic subbuffer sizes, that
-> >   this test will fail if the subbuffer is bigger than what the trace_seq
-> >   can hold. Now the trace_marker does not always utilize the full subbuffer
-> >   but the size of the trace_seq instead. As that size isn't available to
-> >   user space, we can only just make sure all content is there.
-> >
-> >  .../ftrace/test.d/00basic/trace_marker.tc     | 82 +++++++++++++++++++
-> >  1 file changed, 82 insertions(+)
-> >  create mode 100755 tools/testing/selftests/ftrace/test.d/00basic/trace_marker.tc
-> >
-> > diff --git a/tools/testing/selftests/ftrace/test.d/00basic/trace_marker.tc b/tools/testing/selftests/ftrace/test.d/00basic/trace_marker.tc
-> > new file mode 100755
-> > index 000000000000..b24aff5807df
-> > --- /dev/null
-> > +++ b/tools/testing/selftests/ftrace/test.d/00basic/trace_marker.tc
-> > @@ -0,0 +1,82 @@
-> > +#!/bin/sh
-> > +# SPDX-License-Identifier: GPL-2.0
-> > +# description: Basic tests on writing to trace_marker
-> > +# requires: trace_marker
-> > +# flags: instance
-> > +
-> > +get_buffer_data_size() {
-> > +       sed -ne 's/^.*data.*size:\([0-9][0-9]*\).*/\1/p' events/header_page  
->             sed -n 's!.*data.*size:\([^;]*\).*!\1!p' events/header_page
+It's the sequence how this works and it works correctly.
 
-Not sure the above change can be considered simpler, but it also loses out
-showing what exactly is being done.
+Just because it does not work on your machine it does not mean that this
+is incorrect and a BUG.
 
-With the original, I have:
+You are trying to fix a symptom and thereby violating guarantees of the
+core code.
 
-       sed -ne 's/^.*data.*size:\([0-9][0-9]*\).*/\1/p' events/header_page
+> That is, there is a time between the 1:handle_level_irq() and=20
+> 3:irq_thread_fn() calls for the 2:disable_irq() call to acquire the lock=
+=20
+> and then implement the irq_state_set_disabled() operation. When finally=20
+> call irq_thread_fn()->irq_finalize_oneshot(), it cannot enter the=20
+> unmask_thread_irq() process.
 
-Which is obvious that I'm grabbing a number for the size field.
+Correct, because the interrupt has been DISABLED in the mean time.
 
-       sed -n 's!.*data.*size:\([^;]*\).*!\1!p' events/header_page
+> In this case, the gpio irq_chip irq_mask()/irq_unmask() callback pairs=20
+> are not called in pairs, so I think this is a BUG, but not necessarily=20
+> fixed from the irq core code layer.
 
-Shows that I'm grabbing something after size.
+No. It is _NOT_ a BUG. unmask() is not allowed to be invoked when the
+interrupt is DISABLED. That's the last time I'm going to tell you that.
+Only enable_irq() can undo the effect of disable_irq(), period.
+
+> Next, when the gpio controller driver calls the suspend/resume process,=20
+> it is as follows:
+>
+> suspend process:
+> dwapb_gpio_suspend()
+>      ctx->int_mask   =3D dwapb_read(gpio, GPIO_INTMASK);
+>
+> resume process:
+> dwapb_gpio_resume()
+>      dwapb_write(gpio, GPIO_INTMASK, ctx->int_mask);
+
+Did you actually look at the sequence I gave you?
+
+   Suspend:
+
+	  i2c_hid_core_suspend()
+	     disable_irq();       <- Marks it disabled and eventually
+				     masks it.
+
+	  gpio_irq_suspend()
+	     save_registers();    <- Saves masked interrupt
+
+   Resume:
+
+	  gpio_irq_resume()
+	     restore_registers(); <- Restores masked interrupt
+
+	  i2c_hid_core_resume()
+	     enable_irq();        <- Unmasks interrupt and removes the
+				     disabled marker
 
 
+Have you verified that this order of invocations is what happens on
+your machine?
 
-> > +}
-> > +
-> > +get_buffer_data_offset() {
-> > +       sed -ne 's/^.*data.*offset:\([0-9][0-9]*\).*/\1/p' events/header_page  
->             sed -n 's!.*data.*offset:\([^;]*\).*!\1!p' events/header_page
+Thanks,
 
-Same here.
-
-> > +}
-> > +
-> > +get_event_header_size() {
-> > +       type_len=`sed -ne 's/^.*type_len.*:[^0-9]*\([0-9][0-9]*\).*/\1/p' events/header_event`  
->             type_len=`sed -n '/type_len.*bits/s![^0-9]*!!gp'
-> events/header_event`
-
-Honestly, the above may be "simplier" but I can't make out what exactly
-that line is doing without going back and looking at the text that's in the
-format field.
-
-> 
-> > +       time_len=`sed -ne 's/^.*time_delta.*:[^0-9]*\([0-9][0-9]*\).*/\1/p' events/header_event`  
->             time_len=`sed -n '/time_delta/s![^0-9]*!!gp' events/header_event`
-> 
-> > +       array_len=`sed -ne 's/^.*array.*:[^0-9]*\([0-9][0-9]*\).*/\1/p' events/header_event`  
->             array_len=`sed -n '/array/s![^0-9]*!!gp' events/header_event`
-> 
-> > +       total_bits=$((type_len+time_len+array_len))
-> > +       total_bits=$((total_bits+7))
-> > +       echo $((total_bits/8))
-> > +}
-> > +
-> > +get_print_event_buf_offset() {
-> > +       sed -ne 's/^.*buf.*offset:\([0-9][0-9]*\).*/\1/p' events/ftrace/print/format  
->             sed -n 's!.*buf.*offset:\([^;]*\).*!\1!p' events/ftrace/print/format
-> > +}
-> > +
-
-Yeah, thanks for the suggestions, but I rather have it be more readable
-than "simplified". I write perl code the same way. I do not write it like
-any perl developer would, because I write it like C code. I want my code to
-be easily understandable.
-
-RE can become extremely obfuscated. So, even though my REs are not the
-simplest, they tend to be rather easy to understand what they are doing,
-and why.
-
-Cheers,
-
--- Steve
+        tglx
