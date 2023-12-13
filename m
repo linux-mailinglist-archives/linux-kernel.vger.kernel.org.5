@@ -2,113 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C95B8120CF
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 22:32:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BA0D98120D0
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 22:36:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233830AbjLMVcj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 16:32:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42908 "EHLO
+        id S233815AbjLMVgo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 16:36:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59690 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233991AbjLMVch (ORCPT
+        with ESMTP id S229772AbjLMVgn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 16:32:37 -0500
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CA7CE3;
-        Wed, 13 Dec 2023 13:32:44 -0800 (PST)
-Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BDLBOus003146;
-        Wed, 13 Dec 2023 21:32:38 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-        message-id:date:mime-version:subject:to:cc:references:from
-        :in-reply-to:content-type:content-transfer-encoding; s=
-        qcppdkim1; bh=6vejkezcZEQefgDgr0xuBzSfHtQKgTo89Y5qtpw6Qm8=; b=n4
-        lR9gaCh6627eRFdIyzscS8noTpw3rPNuPJQJkJvnC9GXYfCAHtwML0dX+jT2Qkqc
-        g5DeWeBE01teiOLbSsJkRAWw1dTMn/ziFSNID4ymwJZmBSZYvGgtyP9CnIjE8ieM
-        brsOmYea8Fo3aByoEfsKe5XqcqowjhXovyDn56SIwRsIirs1YUx7v3vXDvt04q2h
-        rEEinBDN9nKW2zbDfDen20HjyGa0xlZzX7lvx9JEV9+maiK2ClrKmAd0v8gH/EGd
-        xER3OrtYRQvfrVmi5s4vSiyNwjwZFbv5rLTupjZ4pcHTykAI/8Uu2RQ/5k3liDPQ
-        IPdH/MS7K6w6fsiiUvRQ==
-Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3uy32najye-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 13 Dec 2023 21:32:38 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3BDLWb8k020048
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 13 Dec 2023 21:32:37 GMT
-Received: from [10.71.109.77] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Wed, 13 Dec
- 2023 13:32:36 -0800
-Message-ID: <534d7029-c772-cf15-0eb7-219471e258a5@quicinc.com>
-Date:   Wed, 13 Dec 2023 13:32:35 -0800
+        Wed, 13 Dec 2023 16:36:43 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 767ABCF;
+        Wed, 13 Dec 2023 13:36:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1702503409; x=1734039409;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=yNDl1AIWfRrLV+Gwxh9D4+zILF9whC0/B0msILdny9c=;
+  b=P/qX9FKSHydigFvmMc9fC/02HTUcmj8NPwylgjv5d6yfCvLjDOWlWSL5
+   QTtr/W2140XGB3t/vspItEgyCDKpS5kpMc40C5D39a15pa8jmV7aDX984
+   skPhaL3bfgxucF+fGLzgxG9nlNhAwcDy2lTbQQ96WYTxHTo9EUdW4gBmp
+   5xRTJkdSmrdodB+jaxfQsk7KQ0gbvM9gWeIh6eWaXYYENOp6KgUDkhBdi
+   p9ib0n9jlFmiMU0Se1Y4ksUo5tBm3GLk3O+tS/uafxrGR05z+AIdGffBo
+   ikk3PMSPJU87Sd9GvH6lSDNB8Lu6XNeQzRfe2qFG0mVu427w/PSQYvDHv
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10923"; a="8426580"
+X-IronPort-AV: E=Sophos;i="6.04,273,1695711600"; 
+   d="scan'208";a="8426580"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Dec 2023 13:36:49 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10923"; a="723811714"
+X-IronPort-AV: E=Sophos;i="6.04,273,1695711600"; 
+   d="scan'208";a="723811714"
+Received: from kanliang-dev.jf.intel.com ([10.165.154.102])
+  by orsmga003.jf.intel.com with ESMTP; 13 Dec 2023 13:36:48 -0800
+From:   kan.liang@linux.intel.com
+To:     acme@kernel.org, irogers@google.com
+Cc:     namhyung@kernel.org, mark.rutland@arm.com, maz@kernel.org,
+        marcan@marcan.st, linux-kernel@vger.kernel.org,
+        linux-perf-users@vger.kernel.org,
+        Kan Liang <kan.liang@linux.intel.com>
+Subject: [PATCH V3 1/2] perf top: Use evsel's cpus to replace user_requested_cpus
+Date:   Wed, 13 Dec 2023 13:36:32 -0800
+Message-Id: <20231213213633.1088026-1-kan.liang@linux.intel.com>
+X-Mailer: git-send-email 2.35.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-Subject: Re: [PATCH v4 2/2] drm/msm/dpu: Drop enable and frame_count
- parameters from dpu_hw_setup_misr()
-Content-Language: en-US
-To:     Jessica Zhang <quic_jesszhan@quicinc.com>,
-        Rob Clark <robdclark@gmail.com>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        "Sean Paul" <sean@poorly.run>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        "David Airlie" <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>
-CC:     <linux-arm-msm@vger.kernel.org>, <dri-devel@lists.freedesktop.org>,
-        <freedreno@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>
-References: <20231213-encoder-fixup-v4-0-6da6cd1bf118@quicinc.com>
- <20231213-encoder-fixup-v4-2-6da6cd1bf118@quicinc.com>
-From:   Abhinav Kumar <quic_abhinavk@quicinc.com>
-In-Reply-To: <20231213-encoder-fixup-v4-2-6da6cd1bf118@quicinc.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: UwBQ69UB3RYNmwg7bhC8NvKDKxNux52U
-X-Proofpoint-GUID: UwBQ69UB3RYNmwg7bhC8NvKDKxNux52U
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-09_01,2023-12-07_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
- suspectscore=0 adultscore=0 spamscore=0 clxscore=1015 mlxlogscore=873
- priorityscore=1501 mlxscore=0 lowpriorityscore=0 bulkscore=0
- malwarescore=0 phishscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.19.0-2311290000 definitions=main-2312130151
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Kan Liang <kan.liang@linux.intel.com>
 
+perf top errors out on a hybrid machine
+ $perf top
 
-On 12/13/2023 1:30 PM, Jessica Zhang wrote:
-> Drop the enable and frame_count parameters from dpu_hw_setup_misr() as they
-> are always set to the same values.
-> 
-> In addition, replace MISR_FRAME_COUNT_MASK with MISR_FRAME_COUNT as
-> frame_count is always set to the same value.
-> 
-> Fixes: 7b37523fb1d1 ("drm/msm/dpu: Move MISR methods to dpu_hw_util")
-> Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-> Signed-off-by: Jessica Zhang <quic_jesszhan@quicinc.com>
-> ---
->   drivers/gpu/drm/msm/disp/dpu1/dpu_crtc.c    |  4 ++--
->   drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c |  4 ++--
->   drivers/gpu/drm/msm/disp/dpu1/dpu_hw_intf.c |  6 +++---
->   drivers/gpu/drm/msm/disp/dpu1/dpu_hw_intf.h |  4 ++--
->   drivers/gpu/drm/msm/disp/dpu1/dpu_hw_lm.c   |  6 +++---
->   drivers/gpu/drm/msm/disp/dpu1/dpu_hw_lm.h   |  3 ++-
->   drivers/gpu/drm/msm/disp/dpu1/dpu_hw_util.c | 19 +++++--------------
->   drivers/gpu/drm/msm/disp/dpu1/dpu_hw_util.h |  9 +++------
->   8 files changed, 22 insertions(+), 33 deletions(-)
-> 
+ Error:
+ The cycles:P event is not supported.
 
-Reviewed-by: Abhinav Kumar <quic_abhinavk@quicinc.com>
+The perf top expects that the "cycles" is collected on all CPUs in the
+system. But for hybrid there is no single "cycles" event which can cover
+all CPUs. Perf has to split it into two cycles events, e.g.,
+cpu_core/cycles/ and cpu_atom/cycles/. Each event has its own CPU mask.
+If a event is opened on the unsupported CPU. The open fails. That's the
+reason of the above error out.
+
+Perf should only open the cycles event on the corresponding CPU. The
+commit ef91871c960e ("perf evlist: Propagate user CPU maps intersecting
+core PMU maps") intersect the requested CPU map with the CPU map of the
+PMU. Use the evsel's cpus to replace user_requested_cpus.
+
+The evlist's threads are also propagated to the evsel's threads in
+__perf_evlist__propagate_maps(). For a system-wide event, perf appends
+a dummy event and assign it to the evsel's threads. For a per-thread
+event, the evlist's thread_map is assigned to the evsel's threads. The
+same as the other tools, e.g., perf record, using the evsel's threads
+when opening an event.
+
+Reported-by: Arnaldo Carvalho de Melo <acme@kernel.org>
+Closes: https://lore.kernel.org/linux-perf-users/ZXNnDrGKXbEELMXV@kernel.org/
+Reviewed-by: Ian Rogers <irogers@google.com>
+Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
+---
+
+No changes since V2
+
+ tools/perf/builtin-top.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/tools/perf/builtin-top.c b/tools/perf/builtin-top.c
+index ea8c7eca5eee..cce9350177e2 100644
+--- a/tools/perf/builtin-top.c
++++ b/tools/perf/builtin-top.c
+@@ -1027,8 +1027,8 @@ static int perf_top__start_counters(struct perf_top *top)
+ 
+ 	evlist__for_each_entry(evlist, counter) {
+ try_again:
+-		if (evsel__open(counter, top->evlist->core.user_requested_cpus,
+-				     top->evlist->core.threads) < 0) {
++		if (evsel__open(counter, counter->core.cpus,
++				counter->core.threads) < 0) {
+ 
+ 			/*
+ 			 * Specially handle overwrite fall back.
+-- 
+2.35.1
+
