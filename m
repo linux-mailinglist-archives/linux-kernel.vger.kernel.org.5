@@ -2,73 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DFB5281199C
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 17:35:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 30B0D8119A0
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 17:36:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229490AbjLMQfD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 11:35:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59090 "EHLO
+        id S231638AbjLMQf4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 11:35:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54618 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233438AbjLMQe5 (ORCPT
+        with ESMTP id S233495AbjLMQfi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 11:34:57 -0500
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E6EB134;
-        Wed, 13 Dec 2023 08:34:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=8Rz0Hd4GHebEk04ieni7Igt9GqSHOkY56E1iGl+TH3g=; b=HhTNMn2zzCcbcLo4rK6OhTBKdI
-        JRzY3ih3wjCvsBt99HBVNYjBY3pbJCCC31gHvb0hpbIPBXLa226D1sFzW0ZbvfqLNFfaQf6bGf+Pt
-        9qD5JSQGk9L5twNvMyWSlr+zyEnoYd8ZeWiVl60I7ePhCMKdCPRDw34sk8j+IEXfH4DNVqx6XmNig
-        6zVHVDD2MXDQFykTMnpVPsuaTdezA2VmbBtJ3u8o9NGbGjk1QMz4F5wicDeAfe/PW1EzD43aF73SV
-        V0px6EytF81VS1Pi2kKbj9xDDw1m9fhsXJ1IDxNvwiL77CALxqb83KCguiYjl6Rb/Vi/+oQQoqYDq
-        p/PvYgvg==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:55264)
-        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.96)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1rDSC8-0000Hm-2E;
-        Wed, 13 Dec 2023 16:34:49 +0000
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1rDSCA-0001eb-I9; Wed, 13 Dec 2023 16:34:50 +0000
-Date:   Wed, 13 Dec 2023 16:34:50 +0000
-From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
-To:     Christian Marangi <ansuelsmth@gmail.com>
-Cc:     Florian Fainelli <florian.fainelli@broadcom.com>,
-        Broadcom internal kernel review list 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        David Epping <david.epping@missinglinkelectronics.com>,
-        Harini Katakam <harini.katakam@amd.com>,
-        Simon Horman <horms@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [net-next PATCH v6 1/3] net: phy: extend PHY package API to
- support multiple global address
-Message-ID: <ZXndKlCTq12jf53y@shell.armlinux.org.uk>
-References: <20231213105730.1731-1-ansuelsmth@gmail.com>
- <ZXnRlERUGhwxKJxi@shell.armlinux.org.uk>
- <6579d2cc.050a0220.e6ea.d8cf@mx.google.com>
- <ZXnX6GuooQQwu8Bs@shell.armlinux.org.uk>
- <6579dab5.050a0220.8552a.d827@mx.google.com>
+        Wed, 13 Dec 2023 11:35:38 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EA8810D
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 08:35:44 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 65B68C433C7;
+        Wed, 13 Dec 2023 16:35:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1702485343;
+        bh=4LXlGDFMgyr68Nnysznfjyj9ckhbpcDnviA5w6YqYzM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ojrb3u9zQbEZq88mjdLSFt5osphF7b828MWOhnBscWwBAZ8xZF6XPU3IRBBkBuO2o
+         hCgyXMw71QMwJUg4ysh0+QPM/jK2h88qhJvtroT74Tv4efhS+T2K5GzqE1z30bkapu
+         5oToqrR5o0k7JcHOhMdVBWFkUgr0FT05F/s/iAFwpO7UcMLlYmjnobt4SeJ8lm/Wi/
+         m5iNa+//m1cUgpflGCMlshdaJEHCF5hIv78aL8yV2HrNLp73uPJYdopBSXuFUy5EXK
+         Ey068CDzxzK7V/C2PpQ8wRX9xZuKseAegY0x+yqwEDxTkcJe3LRuJmrw0Y1vLp0Jb6
+         ZSaVIevfjeZhQ==
+Date:   Wed, 13 Dec 2023 16:35:39 +0000
+From:   Conor Dooley <conor@kernel.org>
+To:     Ji Sheng Teoh <jisheng.teoh@starfivetech.com>
+Cc:     conor+dt@kernel.org, devicetree@vger.kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, leyfoon.tan@starfivetech.com,
+        linux-kernel@vger.kernel.org, linux-watchdog@vger.kernel.org,
+        linux@roeck-us.net, robh+dt@kernel.org, samin.guo@starfivetech.com,
+        wim@linux-watchdog.org, xingyu.wu@starfivetech.com
+Subject: Re: [PATCH v2 1/1] dt-bindings: watchdog: starfive,jh7100-wdt: Add
+ compatible for JH8100
+Message-ID: <20231213-rectified-unmindful-4064c852930f@spud>
+References: <20231212-shout-bazooka-714aeda42ec1@spud>
+ <20231213025759.812453-1-jisheng.teoh@starfivetech.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="4L9gi5aM8FSFnIIA"
 Content-Disposition: inline
-In-Reply-To: <6579dab5.050a0220.8552a.d827@mx.google.com>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+In-Reply-To: <20231213025759.812453-1-jisheng.teoh@starfivetech.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -76,72 +55,78 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 13, 2023 at 05:24:18PM +0100, Christian Marangi wrote:
-> On Wed, Dec 13, 2023 at 04:12:24PM +0000, Russell King (Oracle) wrote:
-> > On Wed, Dec 13, 2023 at 04:50:33PM +0100, Christian Marangi wrote:
-> > > On Wed, Dec 13, 2023 at 03:45:24PM +0000, Russell King (Oracle) wrote:
-> > > > On Wed, Dec 13, 2023 at 11:57:28AM +0100, Christian Marangi wrote:
-> > > > > -static inline int phy_package_read(struct phy_device *phydev, u32 regnum)
-> > > > > +static inline int phy_package_read(struct phy_device *phydev,
-> > > > > +				   unsigned int addr_offset, u32 regnum)
-> > > > >  {
-> > > > >  	struct phy_package_shared *shared = phydev->shared;
-> > > > > +	int addr = shared->base_addr + addr_offset;
-> > > > >  
-> > > > > -	if (!shared)
-> > > > > +	if (addr >= PHY_MAX_ADDR)
-> > > > >  		return -EIO;
-> > > > 
-> > > > If we're going to check the address, I think we should check it
-> > > > properly, which means also checking whether it's become negative.
-> > > > 
-> > > > Alternatively, we could consider making "addr" and "base_addr"
-> > > > unsigned types, since they should never be negative. However,
-> > > > that probably should be done as a separate patch before this one.
-> > > >
-> > > 
-> > > Maybe I'm confused but isn't already like that?
-> > > On phy_package_join base_addr is already checked if it's negative (and
-> > > rejected)
-> > > 
-> > > addr_offset is unsigned so it can't be negative.
-> > 
-> > True, but with base_addr being an int, addr_offset being unsigned int,
-> > and addr being an int, if addr_offset is a very large number,
-> > 2-complement arithmetic will have the effect of treating it as a
-> > negative number.
-> > 
-> > So, base_addr=0, addr_offset=~0 results in addr being -1.
-> > 
-> > If "addr" were unsigned int, and as we've already established,
-> > "base_addr" can't be less than zero because of the checks already done
-> > (thus it can also be unsigned int) then we'll end up with the checks
-> > you're adding automatically doing the right thing, because...
-> > 
-> > base_addr=0, addr_offset=~0 results in addr being ~0 (a large
-> > positive unsigned number).
-> > 
-> 
-> Oh ok... now it makes sense. So I guess I should change "addr" to
-> unsigned.
-> 
-> Considering I'm changing addr in phy_package_shared to base_addr would
-> it be ok to change that also to unsigned (doesn't make sense to have
-> that int) in this patch? Or should I create first a small patch before
-> this to change addr type?
 
-What I said when I mooted the use of unsigned was:
+--4L9gi5aM8FSFnIIA
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-"Alternatively, we could consider making "addr" and "base_addr"
- unsigned types, since they should never be negative. However,
- that probably should be done as a separate patch before this
- one."
+On Wed, Dec 13, 2023 at 10:57:59AM +0800, Ji Sheng Teoh wrote:
+> On Tue, 12 Dec 2023 16:47:59 +0000
+> Conor Dooley <conor@kernel.org> wrote:
+>=20
+> > On Tue, Dec 12, 2023 at 04:46:00PM +0000, Conor Dooley wrote:
+> > > On Tue, Dec 12, 2023 at 11:17:31AM +0800, Ji Sheng Teoh wrote: =20
+> > > > Add "starfive,jh8100-wdt" compatible string for StarFive's JH8100
+> > > > watchdog.
+> > > > Since JH8100 watchdog only has 1 reset signal, update binding
+> > > > document to support one reset for "starfive,jh8100-wdt"
+> > > > compatible.
+> > > >=20
+> > > > Signed-off-by: Ley Foon Tan <leyfoon.tan@starfivetech.com>
+> > > > Signed-off-by: Ji Sheng Teoh <jisheng.teoh@starfivetech.com>
+> > > > ---
+> > > >  .../devicetree/bindings/watchdog/starfive,jh7100-wdt.yaml
+> > > > | 2 ++ 1 file changed, 2 insertions(+)
+> > > >=20
+> > > > diff --git
+> > > > a/Documentation/devicetree/bindings/watchdog/starfive,jh7100-wdt.ya=
+ml
+> > > > b/Documentation/devicetree/bindings/watchdog/starfive,jh7100-wdt.ya=
+ml
+> > > > index 68f3f6fd08a6..02572b16ac08 100644 ---
+> > > > a/Documentation/devicetree/bindings/watchdog/starfive,jh7100-wdt.ya=
+ml
+> > > > +++
+> > > > b/Documentation/devicetree/bindings/watchdog/starfive,jh7100-wdt.ya=
+ml
+> > > > @@ -27,6 +27,7 @@ properties: enum:
+> > > >        - starfive,jh7100-wdt
+> > > >        - starfive,jh7110-wdt
+> > > > +      - starfive,jh8100-wdt
+> > > > =20
+> > > >    reg:
+> > > >      maxItems: 1
+> > > > @@ -45,6 +46,7 @@ properties:
+> > > >        - const: core
+> > > > =20
+> > > >    resets:
+> > > > +    minItems: 1
+> > > >      items:
+> > > >        - description: APB reset
+> > > >        - description: Core reset =20
+> > >=20
+> > > This relaxes the constraints for the existing devices, please add
+> > > per compatible constraints to avoid doing so. =20
+> >=20
+> Thanks Conor. Just to clarify, are you suggesting to add what was done
+> in v1?
+> v1:
+> https://lore.kernel.org/all/20231209142723.2060196-3-jisheng.teoh@starfiv=
+etech.com/
 
-so my thoughts are that it should be a separate small patch - it's a
-single logical change.
+No, but similar. Add numerical constraints that vary per SoC without
+changing the names of the resets on a per-SoC basis.:wq
 
-Thanks.
+--4L9gi5aM8FSFnIIA
+Content-Type: application/pgp-signature; name="signature.asc"
 
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZXndWgAKCRB4tDGHoIJi
+0iCLAQClOkC/ciob6Ansbhsbnv/f61iWTxGEI3jkSQ7cRWPsTgEAmuoWCDNApKzV
+SQLPa7fNyKAA6scBpe1/INPPGNoU8Qs=
+=ygGO
+-----END PGP SIGNATURE-----
+
+--4L9gi5aM8FSFnIIA--
