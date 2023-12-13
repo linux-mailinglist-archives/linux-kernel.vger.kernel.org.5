@@ -2,279 +2,299 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6838D810BFD
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 09:07:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 744EC810BEA
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 09:00:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378751AbjLMIHP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 03:07:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37226 "EHLO
+        id S1378728AbjLMH7v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 02:59:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50390 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378737AbjLMIHN (ORCPT
+        with ESMTP id S232673AbjLMH7s (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 03:07:13 -0500
-Received: from mailout1.samsung.com (mailout1.samsung.com [203.254.224.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92AEAEB
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 00:07:14 -0800 (PST)
-Received: from epcas5p1.samsung.com (unknown [182.195.41.39])
-        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20231213080710epoutp01b5eca15dc1dc1d2f21b61b6f40c1ad6f~gVaXoJlj81956219562epoutp01Z
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 08:07:10 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20231213080710epoutp01b5eca15dc1dc1d2f21b61b6f40c1ad6f~gVaXoJlj81956219562epoutp01Z
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1702454830;
-        bh=AfAJaSfQnEOXWcUP4kLMVd1XUT4Tt8OQIoNwHuvmudU=;
-        h=From:To:Cc:In-Reply-To:Subject:Date:References:From;
-        b=ox1EE1juQcPoZQZBQ1+Z7GJiGdCqmK9ofTswmRVsqySi7h2wp+nvhkb290Oe4l6/U
-         5xNAWkIZZvOWGN/GV14PIYnYBJuiLD5U6Cf3y2366zd//m0l0ZdeZqsBuLT2kRzX4Y
-         nkLGAqyQCB9JslvEVMCd+Y4ufjCMwMkOhz507bkQ=
-Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
-        epcas5p3.samsung.com (KnoxPortal) with ESMTP id
-        20231213080709epcas5p396e461d45554d24f489a515cb96e7135~gVaW83GRi1050110501epcas5p3x;
-        Wed, 13 Dec 2023 08:07:09 +0000 (GMT)
-Received: from epsmges5p2new.samsung.com (unknown [182.195.38.181]) by
-        epsnrtp4.localdomain (Postfix) with ESMTP id 4Sqp3w0c6Vz4x9Q1; Wed, 13 Dec
-        2023 08:07:08 +0000 (GMT)
-Received: from epcas5p3.samsung.com ( [182.195.41.41]) by
-        epsmges5p2new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        99.47.10009.B2669756; Wed, 13 Dec 2023 17:07:07 +0900 (KST)
-Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
-        epcas5p4.samsung.com (KnoxPortal) with ESMTPA id
-        20231213075816epcas5p4c35196cf7fc191a4c1d25d4c8408efeb~gVSmvt0-C1712417124epcas5p4D;
-        Wed, 13 Dec 2023 07:58:16 +0000 (GMT)
-Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
-        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20231213075816epsmtrp2747f61231760972d6642a88be99be978~gVSmubvdO1376113761epsmtrp2O;
-        Wed, 13 Dec 2023 07:58:16 +0000 (GMT)
-X-AuditID: b6c32a4a-261fd70000002719-35-6579662beee4
-Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
-        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        6C.5A.08755.81469756; Wed, 13 Dec 2023 16:58:16 +0900 (KST)
-Received: from FDSFTE308 (unknown [107.122.81.79]) by epsmtip2.samsung.com
-        (KnoxPortal) with ESMTPA id
-        20231213075812epsmtip23b19dc074e0248789afcff897f5a1c44~gVSjD5Vs40794807948epsmtip2-;
-        Wed, 13 Dec 2023 07:58:12 +0000 (GMT)
-From:   "Aakarsh Jain" <aakarsh.jain@samsung.com>
-To:     "'Hans Verkuil'" <hverkuil-cisco@xs4all.nl>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-media@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <devicetree@vger.kernel.org>
-Cc:     <m.szyprowski@samsung.com>, <andrzej.hajda@intel.com>,
-        <mchehab@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
-        <robh+dt@kernel.org>, <conor+dt@kernel.org>,
-        <linux-samsung-soc@vger.kernel.org>, <andi@etezian.org>,
-        <gost.dev@samsung.com>, <alim.akhtar@samsung.com>,
-        <aswani.reddy@samsung.com>, <pankaj.dubey@samsung.com>,
-        <ajaykumar.rs@samsung.com>
-In-Reply-To: <d00fa740-bcf8-47af-b70a-cabbb7237d99@xs4all.nl>
-Subject: RE: [Patch v5 00/11] Add MFC V12 support
-Date:   Wed, 13 Dec 2023 13:28:11 +0530
-Message-ID: <108d01da2d9a$20eda670$62c8f350$@samsung.com>
+        Wed, 13 Dec 2023 02:59:48 -0500
+Received: from mail-qt1-x82f.google.com (mail-qt1-x82f.google.com [IPv6:2607:f8b0:4864:20::82f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47B67DC
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 23:59:53 -0800 (PST)
+Received: by mail-qt1-x82f.google.com with SMTP id d75a77b69052e-425928c24easo244001cf.0
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 23:59:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1702454392; x=1703059192; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=7SCRsk8v2NeRoEP69IlZxtD0S6CzE5b/aKxi3o7os3s=;
+        b=RMG7ahS2y5FimXrBwMrn5su+YdC85LbyRq3UhQuYeSGLNjMd+u8hjYpEjSrxPWVLnl
+         g9Tb5+Rtm7J/Cwcp5R0bh06JD6cXyWYIxfldqWrW/nIhKxRND3UOShTOZb+P6SnRG3z8
+         ml7K0s0pF8LJWijYT9LNBOzzw1HoHSkmI/VDIkv00Qq3eHc8D8uVzVHmmOlxGQoD08Ny
+         5iGdMaelRwlvSX9ZqNcwT1cvN35VN+bR8bN+S1/VSRRP5ia+1KspZVdH8q6To3/kfa90
+         Iu9BG+EhruHcEjK9ZNgbY3xssDUO+b3CV2qi3yvNQFeFSqqCRSxxHTriuULXX2dIi1HA
+         SkZQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702454392; x=1703059192;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=7SCRsk8v2NeRoEP69IlZxtD0S6CzE5b/aKxi3o7os3s=;
+        b=lWZXXOsLi6/apaQBftwjr4WlklZDaSeDarvAyN9xgmsIuOMzno11tn3g4xQg0TMo8Q
+         3w+w7XrGTbFXoUK1xFhc8FgK6QLie7R46g5mkf5uHt31f2N/yx7wDHEUBNwd9sR6QlMk
+         BI7WMXVXnI9D7UfkTXP5QOFRolk+/9bgTnWf80J3HQ4QBNldjnjR8QYUhRBpW1qX72gl
+         ySKixD+GtPbJrinP5g2EeVTi0Tj+1ugTp0edGgenrozpKcLEEEJO3BGA2zJXhJYJ6ilk
+         2DmyvY6BzamK86kmjCWvlA+tEy/GzvVOOagWflEuyYr7hpwzJV/SWauDaOMZ4lP/Nebv
+         2LyA==
+X-Gm-Message-State: AOJu0YzOHZwtJiLxylA2dL7JmA+DAe/QOp0AZaGSCbaCW+psphN5UP4A
+        qR2Z4+3GJRPJk2fw5kqBWct65aLq4EQxv8iaoRU9yw==
+X-Google-Smtp-Source: AGHT+IEpUfZumpmFkAwQhMzxID9arjyLxuQJmf93yVKOo9TY8C7lbVucG1fgltdFUHZLYcEy1F6UJMTjytiuxR7ltBE=
+X-Received: by 2002:a05:622a:190c:b0:423:b6a1:2088 with SMTP id
+ w12-20020a05622a190c00b00423b6a12088mr1307562qtc.5.1702454392208; Tue, 12 Dec
+ 2023 23:59:52 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Mailer: Microsoft Outlook 16.0
-Thread-Index: AQJl1+V1XR3+CIvjnElNbj3OPe0yngGxC9E1Absheu2vdCK6EA==
-Content-Language: en-in
-X-Brightmail-Tracker: H4sIAAAAAAAAA02Tf1DTZRzHfb7f/fjOmvdtrnycFbtv+YN1/Bht+EBglJ7sKGzZnXbWRYs9
-        Do79ahsK/mEcHGQTEUs4WIAgaB2aCMpYBEJjC8ULUxAOj19LOkRjcCAcZHfF+GLx3+v9eT4/
-        7v15nociRSM8CZVqtGGLUaNneGs5zo7g4JDXDmbi8M6iGNQ+9TMHjVY4eah6YZxAI9WzHOS+
-        0shHF1u7CXTG081FA+0/Euh26RAHFTzwkajhfh8X9TSX8VD+5UYuKrl1jUA/eIb46HzD3wQ6
-        2/iYj3JbPfw4kaq/ZoZUVbdMEKqG2q94qsG+Fp7qSs0XqoKrtUA12/Cyqmtulq+mDqTFpGCN
-        Fluk2Jhs0qYadbHMOx8k7UxSRobLQ+RRaDsjNWoMOJbZ9a46ZHeqfskLIz2k0acvhdQaq5UJ
-        2xFjMaXbsDTFZLXFMtis1ZsV5lCrxmBNN+pCjdgWLQ8Pj1AuJX6alvL45AXC3BmWcWpgRxYo
-        22oHAgrSCujK9gI7WEuJ6J8AtI/3kayYAfBWXi+fFfMA+tvuceyAWi7Js+vZeCuAub0zPFaM
-        A9h6JyAEFI8OgyNd+dzAgZh2AVjl+5UICJKeJGDVxRFeoJWAjoW+LF2gYD0th67BO0SAOfRm
-        2JPt4wZYSEfBr+89IVh+Dt4oHeMEmKSDYNNkGcmakMLFP85zAy3F9Nuwc0rGpmyA3sX8ZTuQ
-        zhHAwuFzHDZ/F+xvGyFYXg8fdl7lsyyBs/5WHsvJ8P7ZiZX+eljXcnql9k3Y3lu2vAmSDoZ1
-        zWFs+CVY1HWJYOeugyeejK20F0JXxVPeAssGF7gsvwg7LpwDhYBxrHLmWOXMscqC4/9plYBT
-        CzZis9Wgw1alOcKID/9338kmQwNYfumyBBfwjU6HugFBATeAFMmIhTdch7FIqNVkHsEWU5Il
-        XY+tbqBcWvcpUvJ8smnpqxhtSXJFVLgiMjJSEfV6pJzZIHyUW64V0TqNDadhbMaWp3UEJZBk
-        EQ7GKxwr9Rum7TCTq+8VTGt10qY38Csl264x60YTj048AMcWEz93qJHE4c1LfPb74A7L/u6b
-        sjZFqqGKKPdMGRJux43ZfLK7a+566o4XtNi/o3rii7fs/aw42un0Nx+o3/9LvB8zA3+Wx1UU
-        N3up+orZYqc7/cyk7iGKL8modDz6vXOb1tX0vij60lxaf9umb7cPDyS81dWVfTBmn+qTnTBx
-        fit3z0dBkirbC6P2tjiXeqz2WOPpOcWX+7RFQczG487KuoUTvf3XnwltL6w8+tfHOX0y8ZGh
-        HPGafzYlHvptd4e3Xnl5r/o9reWbxf7hmsoPo21Bm+ev06/elOyJyNAzHGuKRi4jLVbNv1Ak
-        rkpyBAAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrOIsWRmVeSWpSXmKPExsWy7bCSvK5ESmWqwa05MhYH3h9ksXgwbxub
-        xeIfz5ks7i/+zGJxaPNWdos1e88xWcw/co7V4uaBnUwWF2feZbHoe/GQ2WLT42usFpd3zWGz
-        6NmwldVixvl9TBZrj9xlt1i26Q+TxaKtX9gtWvceYXcQ8ri+5BOzx+I9L5k8Nq3qZPO4c20P
-        m8fmJfUefVtWMXp83iTncerrZ/YAjigum5TUnMyy1CJ9uwSujC/9q5kKjutXTLxp18A4R72L
-        kYNDQsBEoq0rp4uRi0NIYDejxP7DR5i7GDmB4jIS/9uOsUPYwhIr/z1nhyh6yijx4f1nsCI2
-        AX2J+6d6WEESIgJ7GCWO7l4DVsUs8JNJYvOV5SwQLQcYJQ62vGMD2ccpYCvxsCEdpFtYwFBi
-        x51LTCA2i4CqxOWmh6wgNq+ApcSkW7+ZIGxBiZMzn7CA2MwC2hK9D1sZIWx5ie1v50CdqiDx
-        8+kyVpDxIgJOEsffa0GUiEsc/dnDPIFReBaSSbOQTJqFZNIsJC0LGFlWMUqmFhTnpucWGxYY
-        5qWW6xUn5haX5qXrJefnbmIEx7WW5g7G7as+6B1iZOJgPMQowcGsJMJ7ckd5qhBvSmJlVWpR
-        fnxRaU5q8SFGaQ4WJXFe8Re9KUIC6YklqdmpqQWpRTBZJg5OqQamxgdv/8x9Ny/5Uk+3zxXL
-        BBOBFfmVEXnsiW4hzY17Pv/Mbvh38wN7Xsunz8Xbm7sfnP79ZckixY39GROOpfQ8zYiSV9oy
-        e25dd98BFSu15/GthWH5HNu25YrOkfn7LOCgYPSSxSLf7q5bYXvFqEHu+v91/K3RpqoTo+cF
-        3/LNWPHjyKvvUxkmv1j62C606k7vv7K8BcrPjb7XbnnPJuI6U/tquk8SwxSz6d8kbx66tUqJ
-        u4Pj32PxB+YfGI/Kry7T+FCSuPRWQNCZabvTuRLS/FKbnzh5p3lp3/hm4HBc/vSH8skOotbO
-        9k+f/+vQnTbd/gjfjs8TzXvTOyuSxY86Oufsck8ukXtUqvOpI8dEiaU4I9FQi7moOBEA87/T
-        Q1oDAAA=
-X-CMS-MailID: 20231213075816epcas5p4c35196cf7fc191a4c1d25d4c8408efeb
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: REQ_APPROVE
-CMS-TYPE: 105P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20231206063105epcas5p3034f89af2be6922ab04771de099a124a
-References: <CGME20231206063105epcas5p3034f89af2be6922ab04771de099a124a@epcas5p3.samsung.com>
-        <20231206063045.97234-1-aakarsh.jain@samsung.com>
-        <d00fa740-bcf8-47af-b70a-cabbb7237d99@xs4all.nl>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+References: <20231208061407.2125867-1-yuzhao@google.com> <CAMgjq7BTaV5OvHNjGRVJP2VDxj+PXhfd6957CjS4BJ9J4OY8HA@mail.gmail.com>
+ <CAOUHufYwZAUaJh6i8Fazc4gVMSqcsz9JbRNpj0cpx2qR+bZBFw@mail.gmail.com>
+ <CAMgjq7AtceR-CXnKFfQHM3qi0y4oGyJ4_sw_uh5EkpXCBzkCXg@mail.gmail.com> <CAMgjq7CJ3hYHysyRfHzYU4hOYqhUOttxMYGtg0FxzM_wvvyhFA@mail.gmail.com>
+In-Reply-To: <CAMgjq7CJ3hYHysyRfHzYU4hOYqhUOttxMYGtg0FxzM_wvvyhFA@mail.gmail.com>
+From:   Yu Zhao <yuzhao@google.com>
+Date:   Wed, 13 Dec 2023 00:59:14 -0700
+Message-ID: <CAOUHufa=ybd-EPos9DryLHYyhphN0P7qyV5NY3Pui0dfVSk9tQ@mail.gmail.com>
+Subject: Re: [PATCH mm-unstable v1 1/4] mm/mglru: fix underprotected page cache
+To:     Kairui Song <ryncsn@gmail.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org,
+        Charan Teja Kalla <quic_charante@quicinc.com>,
+        Kalesh Singh <kaleshsingh@google.com>, stable@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Dec 12, 2023 at 8:03=E2=80=AFPM Kairui Song <ryncsn@gmail.com> wrot=
+e:
+>
+> Kairui Song <ryncsn@gmail.com> =E4=BA=8E2023=E5=B9=B412=E6=9C=8812=E6=97=
+=A5=E5=91=A8=E4=BA=8C 14:52=E5=86=99=E9=81=93=EF=BC=9A
+> >
+> > Yu Zhao <yuzhao@google.com> =E4=BA=8E2023=E5=B9=B412=E6=9C=8812=E6=97=
+=A5=E5=91=A8=E4=BA=8C 06:07=E5=86=99=E9=81=93=EF=BC=9A
+> > >
+> > > On Fri, Dec 8, 2023 at 1:24=E2=80=AFAM Kairui Song <ryncsn@gmail.com>=
+ wrote:
+> > > >
+> > > > Yu Zhao <yuzhao@google.com> =E4=BA=8E2023=E5=B9=B412=E6=9C=888=E6=
+=97=A5=E5=91=A8=E4=BA=94 14:14=E5=86=99=E9=81=93=EF=BC=9A
+> > > > >
+> > > > > Unmapped folios accessed through file descriptors can be
+> > > > > underprotected. Those folios are added to the oldest generation b=
+ased
+> > > > > on:
+> > > > > 1. The fact that they are less costly to reclaim (no need to walk=
+ the
+> > > > >    rmap and flush the TLB) and have less impact on performance (d=
+on't
+> > > > >    cause major PFs and can be non-blocking if needed again).
+> > > > > 2. The observation that they are likely to be single-use. E.g., f=
+or
+> > > > >    client use cases like Android, its apps parse configuration fi=
+les
+> > > > >    and store the data in heap (anon); for server use cases like M=
+ySQL,
+> > > > >    it reads from InnoDB files and holds the cached data for table=
+s in
+> > > > >    buffer pools (anon).
+> > > > >
+> > > > > However, the oldest generation can be very short lived, and if so=
+, it
+> > > > > doesn't provide the PID controller with enough time to respond to=
+ a
+> > > > > surge of refaults. (Note that the PID controller uses weighted
+> > > > > refaults and those from evicted generations only take a half of t=
+he
+> > > > > whole weight.) In other words, for a short lived generation, the
+> > > > > moving average smooths out the spike quickly.
+> > > > >
+> > > > > To fix the problem:
+> > > > > 1. For folios that are already on LRU, if they can be beyond the
+> > > > >    tracking range of tiers, i.e., five accesses through file
+> > > > >    descriptors, move them to the second oldest generation to give=
+ them
+> > > > >    more time to age. (Note that tiers are used by the PID control=
+ler
+> > > > >    to statistically determine whether folios accessed multiple ti=
+mes
+> > > > >    through file descriptors are worth protecting.)
+> > > > > 2. When adding unmapped folios to LRU, adjust the placement of th=
+em so
+> > > > >    that they are not too close to the tail. The effect of this is
+> > > > >    similar to the above.
+> > > > >
+> > > > > On Android, launching 55 apps sequentially:
+> > > > >                            Before     After      Change
+> > > > >   workingset_refault_anon  25641024   25598972   0%
+> > > > >   workingset_refault_file  115016834  106178438  -8%
+> > > >
+> > > > Hi Yu,
+> > > >
+> > > > Thanks you for your amazing works on MGLRU.
+> > > >
+> > > > I believe this is the similar issue I was trying to resolve previou=
+sly:
+> > > > https://lwn.net/Articles/945266/
+> > > > The idea is to use refault distance to decide if the page should be
+> > > > place in oldest generation or some other gen, which per my test,
+> > > > worked very well, and we have been using refault distance for MGLRU=
+ in
+> > > > multiple workloads.
+> > > >
+> > > > There are a few issues left in my previous RFC series, like anon pa=
+ges
+> > > > in MGLRU shouldn't be considered, I wanted to collect feedback or t=
+est
+> > > > cases, but unfortunately it seems didn't get too much attention
+> > > > upstream.
+> > > >
+> > > > I think both this patch and my previous series are for solving the
+> > > > file pages underpertected issue, and I did a quick test using this
+> > > > series, for mongodb test, refault distance seems still a better
+> > > > solution (I'm not saying these two optimization are mutually exclus=
+ive
+> > > > though, just they do have some conflicts in implementation and solv=
+ing
+> > > > similar problem):
+> > > >
+> > > > Previous result:
+> > > > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> > > > Execution Results after 905 seconds
+> > > > ------------------------------------------------------------------
+> > > >                   Executed        Time (=C2=B5s)       Rate
+> > > >   STOCK_LEVEL     2542            27121571486.2   0.09 txn/s
+> > > > ------------------------------------------------------------------
+> > > >   TOTAL           2542            27121571486.2   0.09 txn/s
+> > > >
+> > > > This patch:
+> > > > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> > > > Execution Results after 900 seconds
+> > > > ------------------------------------------------------------------
+> > > >                   Executed        Time (=C2=B5s)       Rate
+> > > >   STOCK_LEVEL     1594            27061522574.4   0.06 txn/s
+> > > > ------------------------------------------------------------------
+> > > >   TOTAL           1594            27061522574.4   0.06 txn/s
+> > > >
+> > > > Unpatched version is always around ~500.
+> > >
+> > > Thanks for the test results!
+> > >
+> > > > I think there are a few points here:
+> > > > - Refault distance make use of page shadow so it can better
+> > > > distinguish evicted pages of different access pattern (re-access
+> > > > distance).
+> > > > - Throttled refault distance can help hold part of workingset when
+> > > > memory is too small to hold the whole workingset.
+> > > >
+> > > > So maybe part of this patch and the bits of previous series can be
+> > > > combined to work better on this issue, how do you think?
+> > >
+> > > I'll try to find some time this week to look at your RFC. It'd be a
+>
+> Hi Yu,
+>
+> I'm working on V4 of the RFC now, which just update some comments, and
+> skip anon page re-activation in refault path for mglru which was not
+> very helpful, only some tiny adjustment.
+> And I found it easier to test with fio, using following test script:
+>
+> #!/bin/bash
+> swapoff -a
+>
+> modprobe brd rd_nr=3D1 rd_size=3D16777216
+> mkfs.ext4 /dev/ram0
+> mount /dev/ram0 /mnt
+>
+> mkdir -p /sys/fs/cgroup/benchmark
+> cd /sys/fs/cgroup/benchmark
+>
+> echo 4G > memory.max
+> echo $$ > cgroup.procs
+> echo 3 > /proc/sys/vm/drop_caches
+>
+> fio -name=3Dmglru --numjobs=3D12 --directory=3D/mnt --size=3D1024m \
+>           --buffered=3D1 --ioengine=3Dio_uring --iodepth=3D128 \
+>           --iodepth_batch_submit=3D32 --iodepth_batch_complete=3D32 \
+>           --rw=3Drandread --random_distribution=3Dzipf:0.5 --norandommap =
+\
+>           --time_based --ramp_time=3D5m --runtime=3D5m --group_reporting
+>
+> zipf:0.5 is used here to simulate a cached read with slight bias
+> towards certain pages.
+> Unpatched 6.7-rc4:
+> Run status group 0 (all jobs):
+>    READ: bw=3D6548MiB/s (6866MB/s), 6548MiB/s-6548MiB/s
+> (6866MB/s-6866MB/s), io=3D1918GiB (2060GB), run=3D300001-300001msec
+>
+> Patched with RFC v4:
+> Run status group 0 (all jobs):
+>    READ: bw=3D7270MiB/s (7623MB/s), 7270MiB/s-7270MiB/s
+> (7623MB/s-7623MB/s), io=3D2130GiB (2287GB), run=3D300001-300001msec
+>
+> Patched with this series:
+> Run status group 0 (all jobs):
+>    READ: bw=3D7098MiB/s (7442MB/s), 7098MiB/s-7098MiB/s
+> (7442MB/s-7442MB/s), io=3D2079GiB (2233GB), run=3D300002-300002msec
+>
+> MGLRU off:
+> Run status group 0 (all jobs):
+>    READ: bw=3D6525MiB/s (6842MB/s), 6525MiB/s-6525MiB/s
+> (6842MB/s-6842MB/s), io=3D1912GiB (2052GB), run=3D300002-300002msec
+>
+> - If I change zipf:0.5 to random:
+> Unpatched 6.7-rc4:
+> Patched with this series:
+> Run status group 0 (all jobs):
+>    READ: bw=3D5975MiB/s (6265MB/s), 5975MiB/s-5975MiB/s
+> (6265MB/s-6265MB/s), io=3D1750GiB (1879GB), run=3D300002-300002msec
+>
+> Patched with RFC v4:
+> Run status group 0 (all jobs):
+>    READ: bw=3D5987MiB/s (6278MB/s), 5987MiB/s-5987MiB/s
+> (6278MB/s-6278MB/s), io=3D1754GiB (1883GB), run=3D300001-300001msec
+>
+> Patched with this series:
+> Run status group 0 (all jobs):
+>    READ: bw=3D5839MiB/s (6123MB/s), 5839MiB/s-5839MiB/s
+> (6123MB/s-6123MB/s), io=3D1711GiB (1837GB), run=3D300001-300001msec
+>
+> MGLRU off:
+> Run status group 0 (all jobs):
+>    READ: bw=3D5689MiB/s (5965MB/s), 5689MiB/s-5689MiB/s
+> (5965MB/s-5965MB/s), io=3D1667GiB (1790GB), run=3D300003-300003msec
+>
+> fio uses ramdisk so LRU accuracy will have smaller impact. The Mongodb
+> test I provided before uses a SATA SSD so it will have a much higher
+> impact. I'll provides a script to setup the test case and run it, it's
+> more complex to setup than fio since involving setting up multiple
+> replicas and auth and hundreds of GB of test fixtures, I'm currently
+> occupied by some other tasks but will try best to send them out as
+> soon as possible.
 
+Thanks! Apparently your RFC did show better IOPS with both access
+patterns, which was a surprise to me because it had higher refaults
+and usually higher refautls result in worse performance.
 
-> -----Original Message-----
-> From: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-> Sent: 06 December 2023 18:29
-> To: Aakarsh Jain <aakarsh.jain@samsung.com>; linux-arm-
-> kernel@lists.infradead.org; linux-media@vger.kernel.org; linux-
-> kernel@vger.kernel.org; devicetree@vger.kernel.org
-> Cc: m.szyprowski@samsung.com; andrzej.hajda@intel.com;
-> mchehab@kernel.org; krzysztof.kozlowski+dt@linaro.org;
-> robh+dt@kernel.org; conor+dt@kernel.org; linux-samsung-
-> soc@vger.kernel.org; andi@etezian.org; gost.dev@samsung.com;
-> alim.akhtar@samsung.com; aswani.reddy@samsung.com;
-> pankaj.dubey@samsung.com; ajaykumar.rs@samsung.com
-> Subject: Re: [Patch v5 00/11] Add MFC V12 support
-> 
-> On 06/12/2023 07:30, Aakarsh Jain wrote:
-> > This patch series adds MFC v12 support. MFC v12 is used in Tesla FSD SoC.
-> >
-> > This adds support for following:
-> >
-> > -Add support for YV12 and I420 format (3-plane) -Add support for Rate
-> > Control, UHD and DMABUF for encoder -Add support for DPB buffers
-> > allocation based on MFC requirement
-> 
-> I'm getting one smatch warning:
-> 
-> drivers/media/platform/samsung/s5p-mfc/s5p_mfc_enc.c:2453
-> s5p_mfc_queue_setup() error: we previously assumed 'ctx->src_fmt' could
-> be null (see line 2441)
-> 
-> And a few kerneldoc warnings:
-> 
-> drivers/media/platform/samsung/s5p-mfc/s5p_mfc_common.h:729:
-> warning: Function parameter or member 'chroma_size_1' not described in
-> 's5p_mfc_ctx'
-> drivers/media/platform/samsung/s5p-mfc/s5p_mfc_common.h:729:
-> warning: Function parameter or member 'is_10bit' not described in
-> 's5p_mfc_ctx'
-> drivers/media/platform/samsung/s5p-mfc/s5p_mfc_common.h:729:
-> warning: Function parameter or member 'is_422' not described in
-> 's5p_mfc_ctx'
-> drivers/media/platform/samsung/s5p-mfc/s5p_mfc_common.h:729:
-> warning: Function parameter or member 'stride' not described in
-> 's5p_mfc_ctx'
-> 
-> Something for v6.
-> 
+So I'm still trying to figure out why it turned out the opposite. My
+current guess is that:
+1. It had a very small but stable inactive LRU list, which was able to
+fit into the L3 cache entirely.
+2. It counted few folios as workingset and therefore incurred less
+overhead from CONFIG_PSI and/or CONFIG_TASK_DELAY_ACCT.
 
-Sure. Will fix in v6.
-
-Thanks for review!
-
-> Regards,
-> 
-> 	Hans
-> 
-> >
-> > Changes since v4:
-> > -Addressed review comments by Krzysztof Kozlowski.
-> > As per discussion included iommus property in dt-schema.
-> > -Addressed review comments by Hans Verkuil.
-> > Fixed checkpatch warnings with --strict flag enabled.
-> > Upstreamed s5p-mfc-v12.fw to linux-firmware.
-> > Added comment in the patch 9 regarding loading mfc firmware v12
-> > sequentially.
-> > -Addressed review comments by Nicolas Dufresne Made use of v4l2-
-> common
-> > library to get number of planes needed for particular format in patch
-> > 4.
-> > v4
-> > link:https://patchwork.kernel.org/project/linux-media/patch/2023102510
-> > 2216.50480-2-aakarsh.jain@samsung.com/
-> >
-> > Changes since v3:
-> > -Removed vp9 codec support for now and just keeping MFC v12 base
-> > patches with necessary hardware controls, decoder, encoder and
-> > structural changes. Also covers luma dbp, chroma dpb and mv sizes for
-> > each codec as per the UM for MFCv12, along with appropriate alignment.
-> > v3 link:
-> > https://patchwork.kernel.org/project/linux-media/cover/20221011122516.
-> > 32135-1-aakarsh.jain@samsung.com/
-> >
-> > Changes since v2:
-> > -Addressed review comments by Rob Herring.
-> > This was regarding the errors found by Rob bot in yaml file. File
-> > 'samsung,s5p-mfc.yaml' is already converted into json schema and is
-> > merged.
-> >
-> > -Addressed review comments by Krzysztof Kozlowski.
-> > This was regarding depricated properties mentioned in s5p-mfc.txt file.
-> > Review comment was addressed and 'samsung,s5p-mfc.yaml' is already
-> > merged now.
-> >
-> > -Addressed review comments by Andi Shyti.
-> > This was regarding addition of 'MFC_V10PLUS_BITS' macro in
-> > 's5p_mfc_common.h file.
-> > v2 link:
-> > https://patchwork.kernel.org/project/linux-media/cover/20220907064715.
-> > 55778-1-smitha.t@samsung.com/
-> >
-> > Changes since v1:
-> > -Addressed review comments by Krzysztof Kozlowski.
-> > Separated bug fixes patches, resent again with fix tag and those are
-> > merged now.
-> > -Added SoC based compatible string.
-> >
-> > -Addressed review comments by Andrzej Hajda Assigned width64 and
-> > height32 variable with ALIGN(ctx->img_..) used in the code in
-> > 's5p_mfc_opr_v6.c' file.
-> > v1 link:
-> > https://patchwork.kernel.org/project/linux-media/patch/20220517125548.
-> > 14746-2-smitha.t@samsung.com/
-> >
-> > Aakarsh Jain (11):
-> >   dt-bindings: media: s5p-mfc: Add mfcv12 variant
-> >   media: s5p-mfc: Rename IS_MFCV10 macro
-> >   media: s5p-mfc: Add initial support for MFCv12
-> >   media: s5p-mfc: Add YV12 and I420 multiplanar format support
-> >   media: s5p-mfc: Add support for rate controls in MFCv12
-> >   media: s5p-mfc: Add support for UHD encoding.
-> >   media: s5p-mfc: Add support for DMABUF for encoder
-> >   media: s5p-mfc: Set context for valid case before calling try_run
-> >   media: s5p-mfc: Load firmware for each run in MFCv12.
-> >   media: s5p-mfc: DPB Count Independent of VIDIOC_REQBUF
-> >   arm64: dts: fsd: Add MFC related DT enteries
-> >
-> >  .../bindings/media/samsung,s5p-mfc.yaml       |  18 ++
-> >  arch/arm64/boot/dts/tesla/fsd.dtsi            |  21 ++
-> >  .../platform/samsung/s5p-mfc/regs-mfc-v12.h   |  52 +++
-> >  .../platform/samsung/s5p-mfc/regs-mfc-v7.h    |   1 +
-> >  .../platform/samsung/s5p-mfc/regs-mfc-v8.h    |   3 +
-> >  .../media/platform/samsung/s5p-mfc/s5p_mfc.c  |  36 ++-
-> > .../platform/samsung/s5p-mfc/s5p_mfc_common.h |  29 +-
-> >  .../platform/samsung/s5p-mfc/s5p_mfc_ctrl.c   |  10 +-
-> >  .../platform/samsung/s5p-mfc/s5p_mfc_dec.c    |  60 +++-
-> >  .../platform/samsung/s5p-mfc/s5p_mfc_enc.c    | 149 ++++++---
-> >  .../platform/samsung/s5p-mfc/s5p_mfc_opr.h    |  14 +-
-> >  .../platform/samsung/s5p-mfc/s5p_mfc_opr_v5.c |  12 +-
-> > .../platform/samsung/s5p-mfc/s5p_mfc_opr_v6.c | 300 ++++++++++++++-
-> ---
-> >  .../platform/samsung/s5p-mfc/s5p_mfc_opr_v6.h |   7 +-
-> >  14 files changed, 563 insertions(+), 149 deletions(-)  create mode
-> > 100644 drivers/media/platform/samsung/s5p-mfc/regs-mfc-v12.h
-> >
-
-
+Did you save workingset_refault_file when you ran the test? If so, can
+you check the difference between this series and your RFC?
