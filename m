@@ -2,273 +2,345 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 174D18114C9
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 15:37:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DE7E38114CB
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 15:38:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1441986AbjLMOhp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 09:37:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55426 "EHLO
+        id S1441995AbjLMOij (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 09:38:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44904 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1441959AbjLMOho (ORCPT
+        with ESMTP id S1441959AbjLMOih (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 09:37:44 -0500
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id AF5B8B9;
-        Wed, 13 Dec 2023 06:37:49 -0800 (PST)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2D4F0C15;
-        Wed, 13 Dec 2023 06:38:35 -0800 (PST)
-Received: from donnerap.manchester.arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 8AD383F738;
-        Wed, 13 Dec 2023 06:37:47 -0800 (PST)
-Date:   Wed, 13 Dec 2023 14:37:43 +0000
-From:   Andre Przywara <andre.przywara@arm.com>
-To:     Anne Macedo <retpolanne@posteo.net>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Samuel Holland <samuel@sholland.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "moderated list:ARM/Allwinner sunXi SoC support" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "open list:ARM/Allwinner sunXi SoC support" 
-        <linux-sunxi@lists.linux.dev>,
-        open list <linux-kernel@vger.kernel.org>,
-        Corentin Labbe <clabbe@baylibre.com>
-Subject: Re: [PATCH] arm64: dts: allwinner: Orange Pi One Plus PHY support
-Message-ID: <20231213143743.272e4d3c@donnerap.manchester.arm.com>
-In-Reply-To: <cm5e7g2ozviyin6p3dh2qtuh4i3f2sbqq4c2arjtdektgk7i6c@l7aawekyj6t2>
-References: <20231212122835.10850-2-retpolanne@posteo.net>
-        <20231212162200.10b3868b@donnerap.manchester.arm.com>
-        <axsvii25yrknfae6gdreti7lcskoscsdbsujwuispiieimsbdy@gwzm4l7mwlew>
-        <20231213013544.2fc7e0d1@minigeek.lan>
-        <ceuoq3xxgb5kkel7e7wqpslcg7h6dde3wgdqhyo7jgop6owovk@5a76ks5fiun4>
-        <20231213122523.219cbfc0@donnerap.manchester.arm.com>
-        <cm5e7g2ozviyin6p3dh2qtuh4i3f2sbqq4c2arjtdektgk7i6c@l7aawekyj6t2>
-Organization: ARM
-X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.32; aarch64-unknown-linux-gnu)
+        Wed, 13 Dec 2023 09:38:37 -0500
+Received: from mail-edgeka24.fraunhofer.de (mail-edgeka24.fraunhofer.de [IPv6:2a03:db80:4420:b000::25:24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 794D7B0;
+        Wed, 13 Dec 2023 06:38:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=aisec.fraunhofer.de; i=@aisec.fraunhofer.de;
+  q=dns/txt; s=emailbd1; t=1702478319; x=1734014319;
+  h=from:to:cc:subject:date:message-id:
+   content-transfer-encoding:mime-version;
+  bh=2TnjwO9i/eP85clOfvQ11qDesl68BQ8bIGxoj1sSSxQ=;
+  b=by6Run2keZ7tOF7+AmqvS8NsiArKjM1M70ra5Z3G9lBjyLBNF2tGmfuJ
+   0vcUfbcukLvXUpXw8AORggggZ0/Sjc5EFgBRCBUTj4c5i2GfymM9bGDAd
+   yB/h8ZytTexELJdSEfowW/1M4yVpV+oAVVAY5uqSNf9Ha0014TUUsUdw8
+   Ri2ibAKIdhyyDiR4nCvbqvVggnhcEgMSf2sLDJUK7fo8wuuM1DUGaRk3z
+   ceKEuU7JKxr8eMqvvdI5uBKAzyABQIOj1Abcg3Zt6SiHIi1HAjylVt8L7
+   UNVflY00m5ZLKOLBQ3ryH4ex/O4+qDhjQ05L4FI3IeDKzXMTWBDgKJhFW
+   A==;
+X-CSE-ConnectionGUID: G2HBlTZUSIia7SF8kpZ3+A==
+X-CSE-MsgGUID: 04nOxZ/WSwWMYnDEVngLzg==
+Authentication-Results: mail-edgeka24.fraunhofer.de; dkim=pass (signature verified) header.i=@fraunhofer.onmicrosoft.com
+X-IPAS-Result: =?us-ascii?q?A2EfBADxwHll/xmnZsBaHQEBAQEJARIBBQUBQIFPgjl7g?=
+ =?us-ascii?q?V6EU5FjnCsqglEDVg8BAQEBAQEBAQEHAQE7CQQBAQMEhH+HMic4EwECAQMBA?=
+ =?us-ascii?q?QEBAwIDAQEBAQEBAQEGAQEGAQEBAQEBBgYCgRmFLzkNg3mBHgEBAQEBAQEBA?=
+ =?us-ascii?q?QEBAR0CDShWJwQLAQ0BATcBNAImAjQrAQ0FgwABgioDMRQGrnZ/M4EBggkBA?=
+ =?us-ascii?q?QawIxiBIYEfAwYJAYEQLoNihDQBhEWBIYcJgUqDM4JKgg6DRoJog2aFNgcyg?=
+ =?us-ascii?q?iGDUZE2fUZaFhsDBwNWKQ8rBwQwIgYJFC0jBlAEFxEhCRMSQIMxCn4/Dw4Rg?=
+ =?us-ascii?q?j4iAj02GUiCWhUMNARGdRAqBBQXgRJuGxIeNxESFw0DCHQdAjI8AwUDBDMKE?=
+ =?us-ascii?q?g0LIQVWA0IGSQsDAhoFAwMEgTMFDR4CECwnAwMSSQIQFAM7AwMGAwoxAzBVR?=
+ =?us-ascii?q?AxQA2kfGhgJPAsEDBsCGx4NJyMCLEIDEQUQAhYDJBYENhEJCygDLwY4AhMMB?=
+ =?us-ascii?q?gYJXiYWCQQnAwgEA1QDI3sRAwQMAyADCQMHBSwdQAMLGA1IESw1Bg4bRAFzB?=
+ =?us-ascii?q?6FBgTYBgVJbBgEBPFEBKwRMgQEJUhyWFwGvBweCM4FfjASVCxozlzGSVphDI?=
+ =?us-ascii?q?ItTgXWUfoVKAgQCBAUCDgiBeoF/Mz5PgmcSQBkPjiCDeIUUimZ1AgE4AgcBC?=
+ =?us-ascii?q?gEBAwmCOYQUhBUBAQ?=
+IronPort-PHdr: A9a23:v7bX3hDYhcoHCIJ7bE6QUyQUPkIY04WdBeZowoRy0uEGe/G55J2nJ
+ 0zWv6gz3xfCCJ/W7/tUhuaRqa3kUHwN7cXk0jgOJZJWXgIDicIYkhZmB8iACEbhK+XtYTB8F
+ 8NHBxd+qmq2NUVeBMHkPRjcuHSv6z4VFBjlcA1zI+X+AInJiMqrkuu1/s62AU1I0RSnZrYgA
+ ByqoFfqq8MUjIB+eIM80QDArXYNWsgE7mRuOV+Vg1PA99+9rrtC1gkVhf877M9HV/fKOoEDC
+ JFIBzQvNW84ofbmsxXOVyKjzXsRWWZF93gACQiQwEDxHZHLvzH0hvMmxSiGeuurYYh3XD6b8
+ YdGZhvTqggpLzNgyDvnjc9Nh/cIxXDprUlxkrbkYJPFCfNzQofDRooUXjdReZdsXi1QO6L7b
+ LIxHuYkO8NB8q/ziGMC7iOTWyCqBb/2zBkZhyKt74Ih6786NwHn0TMsGNwcl23To/vPaJZOc
+ 6fp1PSR6j/ecMNI2Tmk78+PWxYt+cmgUplMffPKxW09TCzIim2/7tXFMzeq7fkSqivcxvNFV
+ emQrXBglgdDgRHwwcgJi9foudoz6UGd3iJ/6cUEOP2kVUkuMpa0VZpKsCeCMJFqB9kvWHxsp
+ HMiw6Yd6vZTHQAPwZUjghPTZPGEetLUpBz5XfuXITB2iWgjdL/szxqx8E310uTnTYH0y1dFq
+ CNZj8PB/m4AzR3d68WLC7N9806t1CzJ1lX75PtNPEY0kqTWMdgmxLsxnYAUqkPNAmn9n0Ces
+ Q==
+X-Talos-CUID: 9a23:W82FvWF8fADauo4mqmJIrm4+HvwXT0b8zX6PGGHoCn5bE/68HAo=
+X-Talos-MUID: 9a23:s5ueqQkHcDACJ7/4vWx8dno6aMFP85bpN3sSrrA3veWpCyp/HyWS2WE=
+X-IronPort-Anti-Spam-Filtered: true
+X-IronPort-AV: E=Sophos;i="6.04,272,1695679200"; 
+   d="scan'208";a="5192934"
+Received: from mail-mtadd25.fraunhofer.de ([192.102.167.25])
+  by mail-edgeka24.fraunhofer.de with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Dec 2023 15:38:34 +0100
+X-CSE-ConnectionGUID: BVIt/n8sTBGq/k989s8kDA==
+X-CSE-MsgGUID: HvGe8cBgTTmi6Ncob3wMTQ==
+IronPort-SDR: 6579c1e7_YtN3y5NmURbeqtvcrSOWoGMBgYWZii8KVdIpJJc7M9Lfiyh
+ uRQCZlQVzf2c7asHAwZul3pRR1wuk4Coja7epvw==
+X-IPAS-Result: =?us-ascii?q?A0D7BABtwHll/3+zYZlaHAEBAQEBAQcBARIBAQQEAQFAC?=
+ =?us-ascii?q?RyBKoFnUgc+NlmBBYRSg00BAYUthkaCITsBnBmCUQNWDwEDAQEBAQEHAQE7C?=
+ =?us-ascii?q?QQBAYUGhy8CJzgTAQIBAQIBAQEBAwIDAQEBAQEBAQEGAQEFAQEBAgEBBgSBC?=
+ =?us-ascii?q?hOFaA2GSBYRBAsBDQEBFCMBNAImAjQHJAENBSKCXgGCKgMxAgEBEAaiCwGBQ?=
+ =?us-ascii?q?AKLIn8zgQGCCQEBBgQEsBsYgSGBHwMGCQGBEC6DYoQ0AYRFgSGHCYFKgzOCS?=
+ =?us-ascii?q?oVUgmiDZoU2BzKCIYNRkTZ9RloWGwMHA1YpDysHBDAiBgkULSMGUAQXESEJE?=
+ =?us-ascii?q?xJAgzEKfj8PDhGCPiICPTYZSIJaFQw0BEZ1ECoEFBeBEm4bEh43ERIXDQMId?=
+ =?us-ascii?q?B0CMjwDBQMEMwoSDQshBVYDQgZJCwMCGgUDAwSBMwUNHgIQLCcDAxJJAhAUA?=
+ =?us-ascii?q?zsDAwYDCjEDMFVEDFADaR8WBBgJPAsEDBsCGx4NJyMCLEIDEQUQAhYDJBYEN?=
+ =?us-ascii?q?hEJCygDLwY4AhMMBgYJXiYWCQQnAwgEA1QDI3sRAwQMAyADCQMHBSwdQAMLG?=
+ =?us-ascii?q?A1IESw1Bg4bRAFzB6FBgTYBgVJbBgEBPFEBKwRMgQEJUhyWFwGvBweCM4Ffj?=
+ =?us-ascii?q?ASVCxozlzGSVphDII1IlH6FSgIEAgQFAg4BAQaBeiWBWTM+T4JnEj0DGQ+OI?=
+ =?us-ascii?q?IN4hRSKZkIzAgE4AgcBCgEBAwmCOYQUhBQBAQ?=
+IronPort-PHdr: A9a23:HmJQFRcSi5pYAQlP5RBl+zBhlGM+/N/LVj580XJao6wbK/fr9sH4J
+ 0Wa/vVk1gKXDs3QvuhJj+PGvqynQ2EE6IaMvCNnEtRAAhEfgNgQnwsuDdTDDkv+LfXwaDc9E
+ tgEX1hgrDmgZFNYHMv1e1rI+Di89zcPHBX4OwdvY+PzH4/ZlcOs0O6uvpbUZlYt5nK9NJ1oK
+ xDkgQzNu5stnIFgJ60tmD7EuWBBdOkT5E86DlWVgxv6+oKM7YZuoQFxnt9kycNaSqT9efYIC
+ JljSRk2OGA84sLm8CLOSweC/FIweWUbmRkbZmqN5hGvcsb68S3Au/Bz6DDBIMzqCpZpdQzh6
+ q1SVj/FpiM8FREX6GyOspZAi6Fmq0fywn43ydvaMbmlNOguQ6rQQfcEfjNPRZtBcH18C4KtV
+ qpIDNM/LOp9qazk+n0AgiOyRjGBWsrpy2NRgFmn3PBh4cs6KVrd+gwBEu0Ct3rGi8zyO4koD
+ dHp7u6U1WiaSPlLxgfj6IaRdVdmiPeABYpcfuHtxXA0GyfX1XqdrbTKeGq12uAyiHWE9qknf
+ PuKi2UYjR82nz6d5e5zjYbsh9w09Qji1jQg64EzDJ6JVW5nfNnxQ9NA8iCAMI1uRdk+Bntlo
+ zs+1ugesIWgL0Diqbwizh/bLvmbeqSkuE+lWvyYPDF4g3xoYvSzikX6/Uuhz7jkX9KvmBZRr
+ yVDm8XRrH1FyRHJ68aGR/c8tkes0DqCzUbSv8lKO0kpk6rcJZM7hLk2k5sYq0PYGSHq3k7xi
+ cer
+IronPort-Data: A9a23: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
+ uNAOJTiLB/txJht5YCr
+IronPort-HdrOrdr: A9a23:WhhLMazL43Yh88lQHNbCKrPwM71zdoMgy1knxilNoNJuEvBw9v
+ rCoB1/73fJYVkqOU3I9errBED/ex3hHO9OjbX5VI3KNzUO01HGEGgN1/qA/9SZIVydytJg
+X-Talos-CUID: 9a23:VrWFWG9oZVYUUWeTACCVv2QqO9xidC3G8F3/Ogi7WDY4U+2WZXbFrQ==
+X-Talos-MUID: =?us-ascii?q?9a23=3AfH+OFgx6HScdtnfSDWZe6IerEQyaqISwJ01dmr8?=
+ =?us-ascii?q?Jh/WBNHJWMDCX1yuSfrZyfw=3D=3D?=
+X-IronPort-Anti-Spam-Filtered: true
+X-IronPort-AV: E=Sophos;i="6.04,272,1695679200"; 
+   d="scan'208";a="193377217"
+Received: from 153-97-179-127.vm.c.fraunhofer.de (HELO smtp.exch.fraunhofer.de) ([153.97.179.127])
+  by mail-mtaDD25.fraunhofer.de with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Dec 2023 15:38:30 +0100
+Received: from XCH-HYBRID-04.ads.fraunhofer.de (10.225.9.46) by
+ XCH-HYBRID-04.ads.fraunhofer.de (10.225.9.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1258.28; Wed, 13 Dec 2023 15:38:30 +0100
+Received: from DEU01-BE0-obe.outbound.protection.outlook.com (104.47.7.168) by
+ XCH-HYBRID-04.ads.fraunhofer.de (10.225.9.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1258.28 via Frontend Transport; Wed, 13 Dec 2023 15:38:30 +0100
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ewX9bWfBGmGvjUtI2KdI6MWH9wFrd1kIjXultS33YTAmPCdGww7pTiv2Frjnxk4/t81wO6TEQU9tV1iFuJWmelp3KgltmoJF4iK5gojaWVLZHadL2nt9U8hE3STFyKlCb1Lzpw3rkDkBpk9pe+zJZFCs/mvO8z8K0XvkkitY3GsPeIOm8ISynOB6hhkAYV5wRrXEn1l8tZYrARvnEJha3aoo+4bjy9+UUG8VZlBV/5LjcUoWtH7GvwVUQ8HQcPV9q5YNErELbT8eiuiJYnzBk0RJBiTDCbAO6x09h/Ofenv5YgxKvfLlNmHOzpnHyEYMfwsexHZi4VGciQWWRdy81g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=D9c+nRerfXq3uit/N5DP+mbQvHEFlSJGFpe1P2XokUc=;
+ b=L8ppZYqIHXBsQ667ciEfKPLZD6NbtuK8wd/KandrnRIz7+oWun+gXKJ/I/ahDL/J11rZfd/XUkYOkK0Y3P6OOpqw+3DeSIB8IOwVpzwpdBJcB0VdAZdW90GYhn2v9wZiqmiA1O4pAletv78tkVMVhM+5iKUSi5lg7zcOfq074vSDJ06TTCwWADTyeM6ogNgiH6UONXFPsQphR3/rrgr2EtgUyNWfCM8swkvp0IaGto9PXp0ifupQ5YLtu7Q404GFY/3eS+5wqk/k9JOHRO27oNKEzF5ZjEF0mTGXlN1n028ekekTeOTuIx8snmci3E4Z3Z51yH7bckN5NjccGOJm+A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=aisec.fraunhofer.de; dmarc=pass action=none
+ header.from=aisec.fraunhofer.de; dkim=pass header.d=aisec.fraunhofer.de;
+ arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=fraunhofer.onmicrosoft.com; s=selector2-fraunhofer-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=D9c+nRerfXq3uit/N5DP+mbQvHEFlSJGFpe1P2XokUc=;
+ b=f9PXhz8UaeTLvS1fs5xO9UaiyQI/kQVydMnMq5NfGPd+PE6Ani4qnN9i53ZGsP3sNhIeWdofzOqogFR4Y4J/4p51ObuwXvhf1o//And0PDgCTdQsdLz3GelPG/1HdlWSuwq+/AqMhcWNv/UnZKA7ogMi6IW0NKy1ConA+YuHtuo=
+Received: from BEZP281MB2791.DEUP281.PROD.OUTLOOK.COM (2603:10a6:b10:50::14)
+ by FR2P281MB0026.DEUP281.PROD.OUTLOOK.COM (2603:10a6:d10:c::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7091.26; Wed, 13 Dec
+ 2023 14:38:29 +0000
+Received: from BEZP281MB2791.DEUP281.PROD.OUTLOOK.COM
+ ([fe80::d273:9b9b:dadf:e573]) by BEZP281MB2791.DEUP281.PROD.OUTLOOK.COM
+ ([fe80::d273:9b9b:dadf:e573%3]) with mapi id 15.20.7091.022; Wed, 13 Dec 2023
+ 14:38:28 +0000
+From:   =?UTF-8?q?Michael=20Wei=C3=9F?= <michael.weiss@aisec.fraunhofer.de>
+To:     Christian Brauner <brauner@kernel.org>,
+        Alexander Mikhalitsyn <alexander@mihalicyn.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Paul Moore <paul@paul-moore.com>
+CC:     Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Quentin Monnet <quentin@isovalent.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Amir Goldstein <amir73il@gmail.com>,
+        "Serge E. Hallyn" <serge@hallyn.com>, <bpf@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>,
+        <linux-security-module@vger.kernel.org>,
+        <gyroidos@aisec.fraunhofer.de>,
+        =?UTF-8?q?Michael=20Wei=C3=9F?= <michael.weiss@aisec.fraunhofer.de>
+Subject: [RFC PATCH v3 0/3] devguard: guard mknod for non-initial user namespace
+Date:   Wed, 13 Dec 2023 15:38:10 +0100
+Message-Id: <20231213143813.6818-1-michael.weiss@aisec.fraunhofer.de>
+X-Mailer: git-send-email 2.39.2
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: FR0P281CA0006.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:15::11) To BEZP281MB2791.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:b10:50::14)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BEZP281MB2791:EE_|FR2P281MB0026:EE_
+X-MS-Office365-Filtering-Correlation-Id: 9f186d2f-0a8c-485c-e8f1-08dbfbe92c00
+X-LD-Processed: f930300c-c97d-4019-be03-add650a171c4,ExtAddr
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: GNjTbbD5ZFnInKKfJIUb9aR02TJiBr5/0UrqRNOK9uHNSdtSJyAUsHkZtgOCVIhoVuOr7w8WkX6CD/eFe0scOc7T3wctGJXhbIWb0ntXFcDAA48NuoWxxHAuviZpN05cK+4P6a23b1hNj+3nsrGgTPpJ+ikkXQAYO+NxV7/F3kCp00okO/fbuihvJRSyGky+gvjvVYn05+vjGY17EFMAb7c9ecmTlVsvx3Z/PZ0PTBrFlFfooOEeMZCM1e3sNUekqlpCGEiTKMm5uYzs14d8I4dY1bxDhEEHXxIyJtCE0/avAlFB2NLVFyOsjc9GMmYln05JJKwqP5/JkNutYxw9G+olLCo/G5ZPqHtgpfOmoqI+pD0NSsPM0q+Dr1RKwmwbXbbxyei6DoVL4JiJwM84d0SymQMboF1SgPgFCyeQJT1kjqPCRE4bUeReS6Zy0OrQ3WCOmmHjPMVUfoNTvGjniA4kHBA2uybc1to6mNEdJNLq+oE/86mXhiR4+m1smPhSleCTPZgm3dnEwY7HJu9hqPhK+7Xhsmir6B2crzAE0TmNwyWhPJWWv+5kcYArZtEhLLw7twQDqrj0AzK0/fakkVo4a8crb6s0zGllbZ3wUYs=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BEZP281MB2791.DEUP281.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230031)(376002)(136003)(396003)(366004)(39860400002)(346002)(230922051799003)(186009)(451199024)(1800799012)(64100799003)(83380400001)(107886003)(38100700002)(8936002)(316002)(54906003)(8676002)(2906002)(7416002)(4326008)(5660300002)(66476007)(478600001)(52116002)(41300700001)(66946007)(6512007)(6666004)(6506007)(110136005)(966005)(6486002)(66556008)(2616005)(1076003)(82960400001)(86362001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?ZjNIekQ3ZS9PNTlUUGx2MTBhTko3UGViUzZ6ajdRejBVOFBKY2FIc1graThI?=
+ =?utf-8?B?aVhiRVRtVXJJbXpVRHI1QmMwSTBBNkJITWhsWHEwM2lFNGgyODNsWnVIQmRC?=
+ =?utf-8?B?d0tNb25ZMDUzcHNBTUpmbW9VZGZ4UkcxVE5meGtURDBiZDRRSW1hemNTQi9z?=
+ =?utf-8?B?RzZidFV3Y3JqdkVXcHlJd1lseVFKOHpYQW9DNnlKb2FEZ2R0eTlDQ05QaEM5?=
+ =?utf-8?B?emo4SGNQR2NGSnV0SzBRMmxXeTIrd2hrdk9Zb0FqbnpwZkk1T0RRdDAzb1N5?=
+ =?utf-8?B?TFViU055L2IrK1V6KzZKeElrWFRLYmVFT2xPVWRqd3ZsMk11bEtxZWdyTmtS?=
+ =?utf-8?B?bnZPSHhDVUthSUg0bFdXcVI1T1ltdlBqN0RKTDk2VzN6QnVhNG8wck5ySGY0?=
+ =?utf-8?B?YzlTbjhWUlZCZDVEY3NNMTM3QVEwSjM4VUs1cnN3Q2RnWmJsaElyL29oT0l6?=
+ =?utf-8?B?eldHRHVKbGF3WVFoVzlqRmR0dmFVVDhXR3hmSm5LdWhmaW5WODRCSmhPR2tp?=
+ =?utf-8?B?Yld0ODZkNEpPRmY4bTM5NUFucVhOMGtHK2NLcERtWnM0WnFkU0k2Z3dKejRP?=
+ =?utf-8?B?dzNXQi9KellWV2c4MmNXRUJuL2tOc1NHTnhzSFVCWnJlb2pmR3d5M2Zadk1x?=
+ =?utf-8?B?R1hldm44YnM2NzN1QjhhNkpwK0J0bWR6MDNiMDFSaVI2TDNJYkp4b0duRDFW?=
+ =?utf-8?B?VWt6QnBmN3pscDUxZGUvNk4vWXVhNWxQbkxIZXpoNGRYcG14YUYrMnpVSEJx?=
+ =?utf-8?B?K2xOazkzSFVrbmZEQ3JCeWV2cGF4R2M0d1RBYy8zdWRaV3ZkYklKS25GeDRy?=
+ =?utf-8?B?MHlwcUYwNVBacXpKUVg2eGNLeU10aVVSejluMUc3Y2UzZDY2SENDRkRkWGJK?=
+ =?utf-8?B?WUc3aW1GZzB1ajFuTi9xcU9wV2JOMHRDRjE0SFM4cmwzbERZNjNoQnlhTm9K?=
+ =?utf-8?B?SFNtVVJ6R1lNVy83S2RuV3U0cnhoemVXb3YzQlJiQmtoQ09TaVFyRFVvNEJH?=
+ =?utf-8?B?Sm5XRDUxZTJjTDB4Y1AvVVJFbC9Zd1ZURGc1K0ZUc0pxeXVDakhwU1NJc2pC?=
+ =?utf-8?B?SFhJOXFJNVZSeCtsQVd2M3hYamVPRmNrU0hIMkZKdHFJQi9YRTN4bWZXWEZY?=
+ =?utf-8?B?V0VsdTJGcGpwUE11NXBjb2Z0SEJUYkJKQU8ySER4MVFST1kxbjhEcjJQaEk1?=
+ =?utf-8?B?UVBmSGdXanVObDNCRHlqb2IxMDlzdFZQZVlUd1RPalJrTDFndW0xV2RiSWg4?=
+ =?utf-8?B?cFpPSjdZVXJCUDVvb3E1NitzK1FLNUc3eEk0ZVQ2R203TEQ4OWg1WTZQK01H?=
+ =?utf-8?B?VDRnQXRvQnZRQ2NFYmkyZFRYb09DS0VpTTZzTHNTeFlSVjBwcERHbmhoY3hB?=
+ =?utf-8?B?UXhEZ21BRFp5ZkpCdVlleUZqYVFtR012U2dMK2RKMEF5TnFrV3N1Q3h4aDlw?=
+ =?utf-8?B?Z2tia1pPdTJvS3RVak8wWk1WSHRlbjAzQ2ljaVBTZElnYWt3d1c0cEJnc213?=
+ =?utf-8?B?S3hXVlAwVWZUWThlRnpKVkE0czVucTh5ckZCQ2pRTW9OWC9VUFI0YjhnZTJr?=
+ =?utf-8?B?SC82KzFBZEgxejlIb2RrWk44Vk5odTk2Rkg3MEVuWnllOVJ5VGxSRURZYmsr?=
+ =?utf-8?B?WDN3WG1QN0NDblI0MVJMNS9jVUJjWVVQWFFCWG01SngxUk5RQWd1SUYwZjlo?=
+ =?utf-8?B?NEU2UkQvWE5ZU1pHRkNNdngzdWVTWFdYLzI3cUpwQ0F3Y2tMWFpFWU0zWG54?=
+ =?utf-8?B?K3cwVW1sd25qZUIvMWpIb2wyaEVwVjU2UUpYWDUvRHRZTFMrQXVSNjhlai9m?=
+ =?utf-8?B?anlEbzl4amJROGNkOXowZXNpbVdLcWVtNktJZG1iZUZTSFA3NU9RZGZtWTJP?=
+ =?utf-8?B?Q3dHS3A1cXpGREJRVUMzWFFUVzF4ZnFiemFvckREMFV3Wm02emcrbHovRWx0?=
+ =?utf-8?B?QklRUXdOZWlrWlpDWVhuUTM3WFlEa3lORDY4YktGNFVlMzdFU2NQc3pjRmlo?=
+ =?utf-8?B?WGZHeWxKTmpWQ2kyS2g4cWZvRlRYNEcwaFlHTHZvY3dtMkdNTGE5OHVXTmZK?=
+ =?utf-8?B?eGVWbHpXTldKSzNSbC9zQTFZSlpSZTVNVUJHeDJjSGFyaklUeW5oMGg1aGxs?=
+ =?utf-8?B?Rlc3cU5EZUswWjlONzBzb1lCVmpmVG5hSWsxbVJkZ2xHUUJ2SkdkU3Jzampy?=
+ =?utf-8?B?U2g5VEVNSXJXbldmQWhQeFMvY2ZPbUVrUHFSUVFuZEZncUxpeWx5VTRReTJT?=
+ =?utf-8?Q?uAs+aJeb5SXphUrYkkyl2EeAU/zOcAQL0ZU+mfvcXE=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9f186d2f-0a8c-485c-e8f1-08dbfbe92c00
+X-MS-Exchange-CrossTenant-AuthSource: BEZP281MB2791.DEUP281.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Dec 2023 14:38:28.9079
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: f930300c-c97d-4019-be03-add650a171c4
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: vjT3qlJTF5/8ZuTPSm8wGlshT457b8/HJPgTlaLBfpESHgGQ23DIjnl3W0tP6lZn3VfGsI4WfvZGGDnlbwYlBVbXl1eGOqFEriJb2/NpTpkKKuWmnUMWjHeEjgyIsIjb
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: FR2P281MB0026
+X-OriginatorOrg: aisec.fraunhofer.de
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 13 Dec 2023 12:55:58 +0000
-Anne Macedo <retpolanne@posteo.net> wrote:
+If a container manager restricts its unprivileged (user namespaced)
+children by a device cgroup, it is not necessary to deny mknod()
+anymore. Thus, user space applications may map devices on different
+locations in the file system by using mknod() inside the container.
 
-Hi Anne,
+A use case for this, we also use in GyroidOS, is to run virsh for
+VMs inside an unprivileged container. virsh creates device nodes,
+e.g., "/var/run/libvirt/qemu/11-fgfg.dev/null" which currently fails
+in a non-initial userns, even if a cgroup device white list with the
+corresponding major, minor of /dev/null exists. Thus, in this case
+the usual bind mounts or pre populated device nodes under /dev are
+not sufficient.
 
-> On Wed, Dec 13, 2023 at 12:25:23PM +0000, Andre Przywara wrote:
-> > On Wed, 13 Dec 2023 11:02:39 +0000
-> > Anne Macedo <retpolanne@posteo.net> wrote:
-> > 
-> > Hi Anne,
-> >   
-> > > On Wed, Dec 13, 2023 at 01:35:44AM +0000, Andre Przywara wrote:  
-> > > > On Tue, 12 Dec 2023 19:27:14 +0000
-> > > > Anne Macedo <retpolanne@posteo.net> wrote:
-> > > > 
-> > > > Hi Anne,
-> > > >     
-> > > > > On Tue, Dec 12, 2023 at 04:22:00PM +0000, Andre Przywara wrote:    
-> > > > > > On Tue, 12 Dec 2023 12:28:30 +0000
-> > > > > > Anne Macedo <retpolanne@posteo.net> wrote:
-> > > > > > 
-> > > > > > Hi Anne,
-> > > > > >       
-> > > > > > > Adds compatible values to mdio subnodes for Ethernet PHY representing
-> > > > > > > Realtek 8211 PHY to Orange Pi One Plus.      
-> > > > > > 
-> > > > > > So can you state why this would be needed? This is the RTL8211 ID,      
-> > > > > 
-> > > > > Apologies, I completely forgot to include some context. 
-> > > > >     
-> > > > > > right? Which should be autodetected via MDIO. Looking back in my inbox
-> > > > > > you proposed this change before, for U-Boot, specifically, but I fail to
-> > > > > > find a solution or explanation what really happens here. Two Renesas .dts
-> > > > > > files have the same compatible, and the commit message talks about the
-> > > > > > reset line there, is this related?
-> > > > > > 
-> > > > > > So can you please give some more background and explanation? That would be
-> > > > > > part of a good commit message anyway ("why", not "what").      
-> > > > > 
-> > > > > Should I resend the commit with a more meaningful explanation? The
-> > > > > context is the following:
-> > > > > 
-> > > > > currently, ethernet doesn't seem to work on both u-boot and Linux on the
-> > > > > Orange Pi One Plus board. 
-> > > > > 
-> > > > > On the kernel, this error shows up:
-> > > > > 
-> > > > > Configuring network interfaces... [    5.992589] dwmac-sun8i 5020000.ethernet eth0: Register MEM_TYPE_PAGE_POOL RxQ-0
-> > > > > [    6.000823] dwmac-sun8i 5020000.ethernet eth0: __stmmac_open: Cannot attach to PHY (error: -19)
-> > > > > 
-> > > > > After applying this fix, the PHY gets attached: 
-> > > > > 
-> > > > > Configuring network interfaces... [    6.060020] dwmac-sun8i 5020000.ethernet eth0: Register MEM_TYPE_PAGE_POOL RxQ-0
-> > > > > [    6.069460] dwmac-sun8i 5020000.ethernet eth0: PHY [stmmac-0:01] driver [RTL8211E Gigabit Ethernet] (irq=POLL)
-> > > > > 
-> > > > > The previous compatible list that had ethernet-phy-ieee802.3-c22 fails
-> > > > > to find a PHY, so this patch includes the correct PHY ID with the
-> > > > > RTL8211 ID. 
-> > > > > 
-> > > > > The behaviour is described on [1].    
-> > > > 
-> > > > So this is all an observation, but no real explanation, isn't it?    
-> > > 
-> > > I've made some analysis on [3] on this bug, but it was based solely on
-> > > u-boot. I was having trouble with the regulator and on u-boot nothing
-> > > would trigger the GPIO PD6 and the vcc-gmac-3v3 regulator, so the NIC
-> > > was completely dead. Next I did an analysis based on [2] because the
-> > > u-boot PHY initialization was flaky.
-> > >   
-> > > > To cite [1]: "If the PHY reports an incorrect ID (or none at all) ...".
-> > > > I am pretty sure this is not the case here, instead we are looking at
-> > > > some missing platform bits, like a missing clock, reset, or most likely
-> > > > regulator. Or one of the existing resources is wrongly assigned or    
-> > > 
-> > > As I mentioned, PHY initialization is flaky on u-boot, so maybe that
-> > > assumption is correct. 
-> > >   
-> > > > configured? If the PHY is not (yet?) powered correctly when the code
-> > > > does the auto-detection via the MDIO bus, then the initialisation would    
-> > > 
-> > > If I recall correctly (I don't know if I kept it in my notes :c), that
-> > > could be the case. regulator-boot-on makes the NIC work (LEDs blink, at
-> > > least) but it doesn't get initialized. 
-> > >   
-> > > > fail. But since it works when overriding the auto-detection, I feel
-> > > > like we are papering over something here.
-> > > > Do you have the schematics for this board? I can only find the one for
-> > > > the Orange Pi Plus 2E, and I don't know how similar those two are. This
-> > > > shows *two* regulators, but both are activated by the same GPIO.    
-> > > 
-> > > I do. It's available on [4]  
-> > 
-> > Oh damn it, I got lost in Orange Pi's naming maze again - and was looking
-> > for the wrong board! So thanks for the link, and this clears things up!  
-> 
-> Yay! 
-> 
-> > 
-> > So yes, the Orange Pi *One* Plus, much like the Orange Pi 3, uses *two*
-> > regulators for Ethernet: one 3.3V from the PMIC's ALDO2 rail to power the
-> > PHY, and a discrete 2.5V regulator, enabled by GPIO PD6, for the voltage  
-> 
-> Oh! I didn't know about the PMIC's ALDO2.
+Due to the discussion with Christian on v2, I agree that the previous
+approach was to complex. Actually, we just want working device
+nodes in user namespace if we have a device cgroup in place which
+handles access decisions.
 
-That's a bit obscure in the schematic, but it's a common thing to do:
-- On page 12 (LAN), in the top right box, you see the EPHY-DVDD33 and
-EPHY-AVDD33 signals connected to GMAC-3V.
-- On the same page, in the middle left part, you see GMAC-3V connected to
-VCC3V3-MAC.
-- On page 8 (POWER), in the lower left corner, you see VCC3V3-MAC
-connected to ALDO2.
-- On the same page, in the right hand part, you see the ALDO2 signal
-connected to the ALDO2 pin on the PMIC.
+Patch 1 provides a helper functions to check if the current task
+is guarded by a bpf-device cgroup program.
+Thanks Alexander Mikhalitsyn for reviewing.
 
-Easy, huh? ;-)
+Patch 2 implements the ns_capable check including sysctl as proposed
+by Christian. I provide a short overview about device node creation
+and access decisions in the commit message there.
 
-> > level on the MDIO lines. On top of this there is a reset line for the PHY,
-> > though this is held up by a pull-up resistor, so it *should* work,
-> > although we should describe this in the DT.  
-> 
-> Noting here to take a look at the reset line so I can add it as well to
-> the DT.
+Patch 3 provides devgard, a small lsm which actually strips out
+SB_I_NODEV.
 
-Yeah, maybe it helps to bring the PHY back into a sane state?
+---
+Changes in v3:
+- Small LSM to just implement security_inode_mknod() hook
+- Leave devcgroup as is
+- Strip SB_I_NO_DEV in security_inode_mknod hook as suggested by
+  Christian
+- Do not change bpf or cgroup access decision at all
+- ns_capable(sb->s_iflags, CAP_MKNOD) in vfs_mknod()
+- Link to v2: https://lore.kernel.org/lkml/1d481e11-6601-4b82-a317-f8506f3ccf9b@aisec.fraunhofer.de/
 
-> > So the DT looks wrong then: The reg_gmac_3v3 is actually a 2.5V regulator,
-> > and phy-supply is aldo2. I think it was done the way it is to somehow make
-> > it work with the current DT binding and code, which just supports one
-> > regulator. And aldo2 is referenced as the source of reg_gmac_3v3, which
-> > smells like another hack to me.  
-> 
-> 	reg_gmac_3v3: gmac-3v3 {
-> 		compatible = "regulator-fixed";
-> 		regulator-name = "vcc-gmac-3v3";
-> 		regulator-min-microvolt = <3300000>;
-> 		regulator-max-microvolt = <3300000>;
-> 		startup-delay-us = <100000>;
-> 		enable-active-high;
-> 		gpio = <&pio 3 6 GPIO_ACTIVE_HIGH>; /* PD6 */
-> 		vin-supply = <&reg_aldo2>;
-> 	};
-> 
-> Interesting, I see the reg_aldo2 on vin-supply for reg_gmac_3v3. I don't
-> understand how it works, is it linking the regulator with the ALDO2 but
-> it also enables the PD6 GPIO?
+Changes in v2:
+- Integrate this as LSM (Christian, Paul)
+- Switched to a device cgroup specific flag instead of a generic
+  bpf program flag (Christian)
+- Do not ignore SB_I_NODEV in fs/namei.c but use LSM hook in
+  sb_alloc_super in fs/super.c
+- Link to v1: https://lore.kernel.org/lkml/20230814-devcg_guard-v1-0-654971ab88b1@aisec.fraunhofer.de
 
-So yes, this is one hack I was talking about: This DT node describes a
-regulator with a GPIO controlled enable pin (PD6), which feeds itself off
-another regulator (vin-supply), namely ALDO2.
-So to enable reg_gmac_3v3, which is referenced by the MAC DT node as the
-"phy-supply", the regulator driver code would need to enable ALDO2 first,
-then make PD6 go high, (to enable this regulator here), then wait 100ms.
-So even though the MAC DT node only references one regulator, this trick
-will allow *two* regulators to be turned on.
+Michael Weiß (3):
+  bpf: cgroup: Introduce helper cgroup_bpf_current_enabled()
+  fs: Make vfs_mknod() to check CAP_MKNOD in user namespace of sb
+  devguard: added device guard for mknod in non-initial userns
 
-The only problem with this is that it's the wrong order: there are
-comments somewhere that say it's required to enable the 2.5V supply
-*earlier* or at the same time as the 3.3V supply. And since this PD6
-controlled regulator is actually the 2.5V regulator (compare the
-schematic!), and ALDO2 is the 3.3V supply, we get it the other way around,
-and the PHY operation becomes unstable (that's what those comments say).
+ fs/namei.c                   | 30 +++++++++++++++++++++++-
+ include/linux/bpf-cgroup.h   |  2 ++
+ kernel/bpf/cgroup.c          | 14 ++++++++++++
+ security/Kconfig             | 11 +++++----
+ security/Makefile            |  1 +
+ security/devguard/Kconfig    | 12 ++++++++++
+ security/devguard/Makefile   |  2 ++
+ security/devguard/devguard.c | 44 ++++++++++++++++++++++++++++++++++++
+ 8 files changed, 110 insertions(+), 6 deletions(-)
+ create mode 100644 security/devguard/Kconfig
+ create mode 100644 security/devguard/Makefile
+ create mode 100644 security/devguard/devguard.c
 
-And we can't apply this same trick the other way around, since the ALDO
-input supply clearly does not feed off this PD6 regulator. 
-And besides, it would be wrong and a hack anyway, as we should be able to
-describe two regulators as the requirement: this is what Corentin's
-of_regulator_bulk_get_all() patch takes care of.
 
-> > > > It would also be interesting to see if any of Corentin's work for the
-> > > > Orange Pi 3 helps here?    
-> > > 
-> > > Adding [5] for reference here, thanks! Will check it out.   
-> > 
-> > This is an older version, there are actually updates. And he also mentions
-> > your board as well, so I think it just can sail in the wake of the OPi 3
-> > Ethernet enablement.
-> > 
-> > Can you try if this change, just applied to your .dts instead, works?
-> > https://github.com/montjoie/linux/commit/cf6e192eca1d59be630e6729d2cef9e897b3da8c  
-> 
-> Will do! I'll be out of my lab today but will try it at night Brazil
-> time. 
-> > 
-> > Cheers,
-> > Andre
-> > 
-> > P.S. Is there any chance where I can reply/comment on your blog? It seems
-> > like I can clear some things up...  
-> 
-> Please send me suggestions off thread, the blog is a static GHPages
-> blog, so I didn't implement replies yet. I will be happy to include them
-> to my notes :) 
-
-OK, will do later today!
-
-Cheers,
-Andre
-
-> 
-> >   
-> > > [3] https://blog.retpolanne.com/hardware/embedded/2023/07/07/embedded-phy.html
-> > > [4] https://linux-sunxi.org/images/7/7c/OrangePi_OnePlus_Schematics_v2.0.pdf
-> > > [5] https://lore.kernel.org/netdev/20220509074857.195302-1-clabbe@baylibre.com/
-> > > 
-> > > Regards, Anne  
-> >   
-> 
-> Regards, Anne
-> 
+base-commit: a39b6ac3781d46ba18193c9dbb2110f31e9bffe9
+-- 
+2.30.2
 
