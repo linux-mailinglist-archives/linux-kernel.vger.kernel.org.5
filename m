@@ -2,194 +2,251 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F2BE810798
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 02:23:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CAA781079D
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 02:26:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378254AbjLMBXI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 20:23:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54604 "EHLO
+        id S235185AbjLMBZ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 20:25:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51704 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378240AbjLMBXE (ORCPT
+        with ESMTP id S1378177AbjLMBZu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 20:23:04 -0500
-Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 19543A7;
-        Tue, 12 Dec 2023 17:23:09 -0800 (PST)
-Received: from loongson.cn (unknown [113.200.148.30])
-        by gateway (Coremail) with SMTP id _____8DxE_B4B3lllIYAAA--.3300S3;
-        Wed, 13 Dec 2023 09:23:04 +0800 (CST)
-Received: from linux.localdomain (unknown [113.200.148.30])
-        by localhost.localdomain (Coremail) with SMTP id AQAAf8CxXeF1B3ll_JYBAA--.11124S4;
-        Wed, 13 Dec 2023 09:23:04 +0800 (CST)
-From:   Tiezhu Yang <yangtiezhu@loongson.cn>
-To:     Shuah Khan <shuah@kernel.org>,
-        Shuah Khan <skhan@linuxfoundation.org>
-Cc:     linux-kselftest@vger.kernel.org, loongarch@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v3 2/2] selftests/vDSO: Fix runtime errors on LoongArch
-Date:   Wed, 13 Dec 2023 09:23:00 +0800
-Message-ID: <20231213012300.5640-3-yangtiezhu@loongson.cn>
-X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20231213012300.5640-1-yangtiezhu@loongson.cn>
-References: <20231213012300.5640-1-yangtiezhu@loongson.cn>
+        Tue, 12 Dec 2023 20:25:50 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A04CA7
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 17:25:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1702430756;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=7+Fi662eTBH61l7dziQI31ojIowi0xTylG+eKXF8CnY=;
+        b=NEPzLyB676JyqYQ/Ueq9RkfXVT0oghLuZ0Aw7Xq2AWQHfO8TJdu9YLCXLFQloDyf0JF8IC
+        o2BnnVkmai89sktHpYekcolerWUXkQIRgpzHAHpOSFR4qBm5Jnvb5DzurXPzgRpvSv+pXA
+        gL0nUsXjw7vRLFkEeeLR0YuG6lwgD/E=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-664-C7-uyY69MkKS7aFFTyZZzQ-1; Tue, 12 Dec 2023 20:25:52 -0500
+X-MC-Unique: C7-uyY69MkKS7aFFTyZZzQ-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.rdu2.redhat.com [10.11.54.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id D1ED9833B41;
+        Wed, 13 Dec 2023 01:25:51 +0000 (UTC)
+Received: from fedora (unknown [10.72.116.39])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 5B04C3C25;
+        Wed, 13 Dec 2023 01:25:42 +0000 (UTC)
+Date:   Wed, 13 Dec 2023 09:25:38 +0800
+From:   Ming Lei <ming.lei@redhat.com>
+To:     John Garry <john.g.garry@oracle.com>
+Cc:     axboe@kernel.dk, kbusch@kernel.org, hch@lst.de, sagi@grimberg.me,
+        jejb@linux.ibm.com, martin.petersen@oracle.com, djwong@kernel.org,
+        viro@zeniv.linux.org.uk, brauner@kernel.org, dchinner@redhat.com,
+        jack@suse.cz, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
+        linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        tytso@mit.edu, jbongio@google.com, linux-scsi@vger.kernel.org,
+        jaswin@linux.ibm.com, bvanassche@acm.org,
+        Himanshu Madhani <himanshu.madhani@oracle.com>
+Subject: Re: [PATCH v2 01/16] block: Add atomic write operations to
+ request_queue limits
+Message-ID: <ZXkIEnQld577uHqu@fedora>
+References: <20231212110844.19698-1-john.g.garry@oracle.com>
+ <20231212110844.19698-2-john.g.garry@oracle.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: AQAAf8CxXeF1B3ll_JYBAA--.11124S4
-X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
-X-Coremail-Antispam: 1Uk129KBj93XoWxuFy5Gw1UAFWkKF1kGF48uFX_yoWrCr18pa
-        n7Kry2kw48tay5Kw1Iyw1Dur4rJrn7Ga18Aw48AFW3AF47Zw48JrWDGFy5X3ZxurW0vr45
-        u3WFgr4F9aykJagCm3ZEXasCq-sJn29KB7ZKAUJUUUUr529EdanIXcx71UUUUU7KY7ZEXa
-        sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
-        0xBIdaVrnRJUUU92b4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
-        IYs7xG6rWj6s0DM7CIcVAFz4kK6r126r13M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
-        e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
-        0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26F4j6r4UJwA2z4x0Y4vEx4A2jsIEc7CjxVAF
-        wI0_Gr1j6F4UJwAaw2AFwI0_Jrv_JF1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqjxCEc2
-        xF0cIa020Ex4CE44I27wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_
-        Jw0_WrylYx0Ex4A2jsIE14v26r4j6F4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x
-        0EwIxGrwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwCFI7km07C267AK
-        xVWUXVWUAwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67
-        AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVW8JVW5JwCI
-        42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMI
-        IF0xvEx4A2jsIE14v26r4j6F4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVF
-        xhVjvjDU0xZFpf9x07jrPEfUUUUU=
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231212110844.19698-2-john.g.garry@oracle.com>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.1
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It could not find __vdso_getcpu and __vdso_gettimeofday when test
-getcpu and gettimeofday on LoongArch.
+On Tue, Dec 12, 2023 at 11:08:29AM +0000, John Garry wrote:
+> From: Himanshu Madhani <himanshu.madhani@oracle.com>
+> 
+> Add the following limits:
+> - atomic_write_boundary_bytes
+> - atomic_write_max_bytes
+> - atomic_write_unit_max_bytes
+> - atomic_write_unit_min_bytes
+> 
+> All atomic writes limits are initialised to 0 to indicate no atomic write
+> support. Stacked devices are just not supported either for now.
+> 
+> Signed-off-by: Himanshu Madhani <himanshu.madhani@oracle.com>
+> #jpg: Heavy rewrite
+> Signed-off-by: John Garry <john.g.garry@oracle.com>
+> ---
+>  Documentation/ABI/stable/sysfs-block | 47 ++++++++++++++++++++++
+>  block/blk-settings.c                 | 60 ++++++++++++++++++++++++++++
+>  block/blk-sysfs.c                    | 33 +++++++++++++++
+>  include/linux/blkdev.h               | 37 +++++++++++++++++
+>  4 files changed, 177 insertions(+)
+> 
+> diff --git a/Documentation/ABI/stable/sysfs-block b/Documentation/ABI/stable/sysfs-block
+> index 1fe9a553c37b..ba81a081522f 100644
+> --- a/Documentation/ABI/stable/sysfs-block
+> +++ b/Documentation/ABI/stable/sysfs-block
+> @@ -21,6 +21,53 @@ Description:
+>  		device is offset from the internal allocation unit's
+>  		natural alignment.
+>  
+> +What:		/sys/block/<disk>/atomic_write_max_bytes
+> +Date:		May 2023
+> +Contact:	Himanshu Madhani <himanshu.madhani@oracle.com>
+> +Description:
+> +		[RO] This parameter specifies the maximum atomic write
+> +		size reported by the device. This parameter is relevant
+> +		for merging of writes, where a merged atomic write
+> +		operation must not exceed this number of bytes.
+> +		The atomic_write_max_bytes may exceed the value in
+> +		atomic_write_unit_max_bytes if atomic_write_max_bytes
+> +		is not a power-of-two or atomic_write_unit_max_bytes is
+> +		limited by some queue limits, such as max_segments.
+> +
+> +
+> +What:		/sys/block/<disk>/atomic_write_unit_min_bytes
+> +Date:		May 2023
+> +Contact:	Himanshu Madhani <himanshu.madhani@oracle.com>
+> +Description:
+> +		[RO] This parameter specifies the smallest block which can
+> +		be written atomically with an atomic write operation. All
+> +		atomic write operations must begin at a
+> +		atomic_write_unit_min boundary and must be multiples of
+> +		atomic_write_unit_min. This value must be a power-of-two.
+> +
+> +
+> +What:		/sys/block/<disk>/atomic_write_unit_max_bytes
+> +Date:		January 2023
+> +Contact:	Himanshu Madhani <himanshu.madhani@oracle.com>
+> +Description:
+> +		[RO] This parameter defines the largest block which can be
+> +		written atomically with an atomic write operation. This
+> +		value must be a multiple of atomic_write_unit_min and must
+> +		be a power-of-two.
+> +
+> +
+> +What:		/sys/block/<disk>/atomic_write_boundary_bytes
+> +Date:		May 2023
+> +Contact:	Himanshu Madhani <himanshu.madhani@oracle.com>
+> +Description:
+> +		[RO] A device may need to internally split I/Os which
+> +		straddle a given logical block address boundary. In that
+> +		case a single atomic write operation will be processed as
+> +		one of more sub-operations which each complete atomically.
+> +		This parameter specifies the size in bytes of the atomic
+> +		boundary if one is reported by the device. This value must
+> +		be a power-of-two.
+> +
+>  
+>  What:		/sys/block/<disk>/diskseq
+>  Date:		February 2021
+> diff --git a/block/blk-settings.c b/block/blk-settings.c
+> index 0046b447268f..d151be394c98 100644
+> --- a/block/blk-settings.c
+> +++ b/block/blk-settings.c
+> @@ -59,6 +59,10 @@ void blk_set_default_limits(struct queue_limits *lim)
+>  	lim->zoned = BLK_ZONED_NONE;
+>  	lim->zone_write_granularity = 0;
+>  	lim->dma_alignment = 511;
+> +	lim->atomic_write_unit_min_sectors = 0;
+> +	lim->atomic_write_unit_max_sectors = 0;
+> +	lim->atomic_write_max_sectors = 0;
+> +	lim->atomic_write_boundary_sectors = 0;
 
-  # make headers && cd tools/testing/selftests/vDSO && make
-  # ./vdso_test_getcpu
-  Could not find __vdso_getcpu
-  # ./vdso_test_gettimeofday
-  Could not find __vdso_gettimeofday
+Can we move the four into single structure and setup them in single
+API? Then cross-validation can be done in this API.
 
-One simple way is to add LoongArch case to define version and name,
-just like commit d942f231afc0 ("selftests/vDSO: Add riscv getcpu &
-gettimeofday test"), but it is not the best way.
+>  }
+>  
+>  /**
+> @@ -183,6 +187,62 @@ void blk_queue_max_discard_sectors(struct request_queue *q,
+>  }
+>  EXPORT_SYMBOL(blk_queue_max_discard_sectors);
+>  
+> +/**
+> + * blk_queue_atomic_write_max_bytes - set max bytes supported by
+> + * the device for atomic write operations.
+> + * @q:  the request queue for the device
+> + * @size: maximum bytes supported
+> + */
+> +void blk_queue_atomic_write_max_bytes(struct request_queue *q,
+> +				      unsigned int bytes)
+> +{
+> +	q->limits.atomic_write_max_sectors = bytes >> SECTOR_SHIFT;
+> +}
+> +EXPORT_SYMBOL(blk_queue_atomic_write_max_bytes);
 
-Since each architecture has already defined names and versions in
-vdso_config.h, it is proper to include vdso_config.h to get version
-and name for all archs.
+What if driver doesn't call it but driver supports atomic write?
 
-Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
----
- .../testing/selftests/vDSO/vdso_test_getcpu.c | 16 +++++-------
- .../selftests/vDSO/vdso_test_gettimeofday.c   | 26 +++++--------------
- 2 files changed, 13 insertions(+), 29 deletions(-)
+I guess the default max sectors should be atomic_write_unit_max_sectors
+if the feature is enabled.
 
-diff --git a/tools/testing/selftests/vDSO/vdso_test_getcpu.c b/tools/testing/selftests/vDSO/vdso_test_getcpu.c
-index 1df5d057d79f..b758f68c6c9c 100644
---- a/tools/testing/selftests/vDSO/vdso_test_getcpu.c
-+++ b/tools/testing/selftests/vDSO/vdso_test_getcpu.c
-@@ -13,13 +13,7 @@
- 
- #include "../kselftest.h"
- #include "parse_vdso.h"
--
--#if defined(__riscv)
--const char *version = "LINUX_4.15";
--#else
--const char *version = "LINUX_2.6";
--#endif
--const char *name = "__vdso_getcpu";
-+#include "vdso_config.h"
- 
- struct getcpu_cache;
- typedef long (*getcpu_t)(unsigned int *, unsigned int *,
-@@ -27,6 +21,8 @@ typedef long (*getcpu_t)(unsigned int *, unsigned int *,
- 
- int main(int argc, char **argv)
- {
-+	const char *version = versions[VDSO_VERSION];
-+	const char **name = (const char **)&names[VDSO_NAMES];
- 	unsigned long sysinfo_ehdr;
- 	unsigned int cpu, node;
- 	getcpu_t get_cpu;
-@@ -40,9 +36,9 @@ int main(int argc, char **argv)
- 
- 	vdso_init_from_sysinfo_ehdr(getauxval(AT_SYSINFO_EHDR));
- 
--	get_cpu = (getcpu_t)vdso_sym(version, name);
-+	get_cpu = (getcpu_t)vdso_sym(version, name[4]);
- 	if (!get_cpu) {
--		printf("Could not find %s\n", name);
-+		printf("Could not find %s\n", name[4]);
- 		return KSFT_SKIP;
- 	}
- 
-@@ -50,7 +46,7 @@ int main(int argc, char **argv)
- 	if (ret == 0) {
- 		printf("Running on CPU %u node %u\n", cpu, node);
- 	} else {
--		printf("%s failed\n", name);
-+		printf("%s failed\n", name[4]);
- 		return KSFT_FAIL;
- 	}
- 
-diff --git a/tools/testing/selftests/vDSO/vdso_test_gettimeofday.c b/tools/testing/selftests/vDSO/vdso_test_gettimeofday.c
-index e411f287a426..ee4f1ca56a71 100644
---- a/tools/testing/selftests/vDSO/vdso_test_gettimeofday.c
-+++ b/tools/testing/selftests/vDSO/vdso_test_gettimeofday.c
-@@ -18,25 +18,13 @@
- 
- #include "../kselftest.h"
- #include "parse_vdso.h"
--
--/*
-- * ARM64's vDSO exports its gettimeofday() implementation with a different
-- * name and version from other architectures, so we need to handle it as
-- * a special case.
-- */
--#if defined(__aarch64__)
--const char *version = "LINUX_2.6.39";
--const char *name = "__kernel_gettimeofday";
--#elif defined(__riscv)
--const char *version = "LINUX_4.15";
--const char *name = "__vdso_gettimeofday";
--#else
--const char *version = "LINUX_2.6";
--const char *name = "__vdso_gettimeofday";
--#endif
-+#include "vdso_config.h"
- 
- int main(int argc, char **argv)
- {
-+	const char *version = versions[VDSO_VERSION];
-+	const char **name = (const char **)&names[VDSO_NAMES];
-+
- 	unsigned long sysinfo_ehdr = getauxval(AT_SYSINFO_EHDR);
- 	if (!sysinfo_ehdr) {
- 		printf("AT_SYSINFO_EHDR is not present!\n");
-@@ -47,10 +35,10 @@ int main(int argc, char **argv)
- 
- 	/* Find gettimeofday. */
- 	typedef long (*gtod_t)(struct timeval *tv, struct timezone *tz);
--	gtod_t gtod = (gtod_t)vdso_sym(version, name);
-+	gtod_t gtod = (gtod_t)vdso_sym(version, name[0]);
- 
- 	if (!gtod) {
--		printf("Could not find %s\n", name);
-+		printf("Could not find %s\n", name[0]);
- 		return KSFT_SKIP;
- 	}
- 
-@@ -61,7 +49,7 @@ int main(int argc, char **argv)
- 		printf("The time is %lld.%06lld\n",
- 		       (long long)tv.tv_sec, (long long)tv.tv_usec);
- 	} else {
--		printf("%s failed\n", name);
-+		printf("%s failed\n", name[0]);
- 		return KSFT_FAIL;
- 	}
- 
--- 
-2.42.0
+> +
+> +/**
+> + * blk_queue_atomic_write_boundary_bytes - Device's logical block address space
+> + * which an atomic write should not cross.
+> + * @q:  the request queue for the device
+> + * @bytes: must be a power-of-two.
+> + */
+> +void blk_queue_atomic_write_boundary_bytes(struct request_queue *q,
+> +					   unsigned int bytes)
+> +{
+> +	q->limits.atomic_write_boundary_sectors = bytes >> SECTOR_SHIFT;
+> +}
+> +EXPORT_SYMBOL(blk_queue_atomic_write_boundary_bytes);
+
+Default atomic_write_boundary_sectors should be
+atomic_write_unit_max_sectors in case of atomic write?
+
+> +
+> +/**
+> + * blk_queue_atomic_write_unit_min_sectors - smallest unit that can be written
+> + * atomically to the device.
+> + * @q:  the request queue for the device
+> + * @sectors: must be a power-of-two.
+> + */
+> +void blk_queue_atomic_write_unit_min_sectors(struct request_queue *q,
+> +					     unsigned int sectors)
+> +{
+> +	struct queue_limits *limits = &q->limits;
+> +
+> +	limits->atomic_write_unit_min_sectors = sectors;
+> +}
+> +EXPORT_SYMBOL(blk_queue_atomic_write_unit_min_sectors);
+
+atomic_write_unit_min_sectors should be >= (physical block size >> 9)
+given the minimized atomic write unit is physical sector for all disk.
+
+> +
+> +/*
+> + * blk_queue_atomic_write_unit_max_sectors - largest unit that can be written
+> + * atomically to the device.
+> + * @q: the request queue for the device
+> + * @sectors: must be a power-of-two.
+> + */
+> +void blk_queue_atomic_write_unit_max_sectors(struct request_queue *q,
+> +					     unsigned int sectors)
+> +{
+> +	struct queue_limits *limits = &q->limits;
+> +
+> +	limits->atomic_write_unit_max_sectors = sectors;
+> +}
+> +EXPORT_SYMBOL(blk_queue_atomic_write_unit_max_sectors);
+
+atomic_write_unit_max_sectors should be >= atomic_write_unit_min_sectors.
+
+
+Thanks, 
+Ming
 
