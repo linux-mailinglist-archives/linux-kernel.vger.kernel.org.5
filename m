@@ -2,224 +2,207 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E16D581188C
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 17:03:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C9068811892
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 17:04:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442422AbjLMQDP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 11:03:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52010 "EHLO
+        id S232968AbjLMQDw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 11:03:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43558 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233628AbjLMQDN (ORCPT
+        with ESMTP id S229480AbjLMQDu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 11:03:13 -0500
-Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12516AC;
-        Wed, 13 Dec 2023 08:03:19 -0800 (PST)
-Received: from pps.filterd (m0333520.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3BDER4TW005757;
-        Wed, 13 Dec 2023 16:02:45 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
- subject : to : cc : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=corp-2023-11-20;
- bh=QMH+2lYAr1VOszWiieOpoWbNOEO7Nytnld9UWOXp3hg=;
- b=J7JKHtQHKCenCsaivqkWeebkosbKYZD8FsmUiz7zrULx/AptViKwnkBrG//jvruOFTia
- imWVDZj+Q37532+4KPOTKk4ziD743bn9GRUrRXV7TxUIvBdCDzlYvbS8UggdZw6QVl6+
- 4PqugibpQueKtz+Wpng4Hd9YCKktzkHaSpvcrHNwQnQmUqEWWYK26OuLJkdisoaIJvYg
- ak+ACtmQCdiak8mAW2tUXea8j/PGPhlqjxEOlIdgRxGNsGLydnww0IhYXko0tHtss4xk
- rCwwAjHvrx55nQksc1X3DJHt5/oHS8IRBDQFWXo2vCGdVghiVu4xZfo5R936H3jN3EZn Rg== 
-Received: from iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta01.appoci.oracle.com [130.35.100.223])
-        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3uvg9d8nvt-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 13 Dec 2023 16:02:44 +0000
-Received: from pps.filterd (iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-        by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 3BDFMY78009876;
-        Wed, 13 Dec 2023 16:02:44 GMT
-Received: from nam12-mw2-obe.outbound.protection.outlook.com (mail-mw2nam12lp2040.outbound.protection.outlook.com [104.47.66.40])
-        by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3uvep8g8gg-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 13 Dec 2023 16:02:44 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=I6MVRmplgVqTyTgPldpznbGEM3wFnInAcAejq9c786WIjz2iLc6oUkaZAfwykEpY2/tKj6bCRcHkhxiXg1WzqgipRA6yrQz6nmN5a/aw8fvTXOBgUenzBGGQjz9zrGHkB8/t80GuvqbLsdc3yJv4+ANbvWT7WOOiITw37k8qyit7QBmLKdpYeqCzPMx6ZtAqj0u75x3bp3m5x1uOdP0E64RBaYhVFiaVvhc5LqFVLqxeDAskOFKMYgZmzK0LX+auNfPAJSvoXv0iLAy/PNNZjYFjGCQGPkmBNwbO8v0vJoWdzYS8P0iVSjZOU0PTmIEGvrNzkrNevJrNo8Z91uydOg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=QMH+2lYAr1VOszWiieOpoWbNOEO7Nytnld9UWOXp3hg=;
- b=a+otl/P0dtIIIqhVL9o6rkMC7wjp77VxiJ7jqm1enDWOA6nZpGz6JAhMYcp673FQm2Q0ou+LpIXrLA2O0Zy0AIJJtKvbvzLEBwPmTG1XvH2bWU5upiezkQBKaQwsXgqsjkqStEUlkO6kDQ1FaVustzqtgINbPFWkQKBCQdWpmxzDBEJoZBCVj3bfeLc6utKyETiuXmmSpsQjYI1c99vtEewB7n8deMl+i2sGUTHf4J8jBNJFDqlKwFDBxsB1RwU/U8DDCA/S/QQAue311t8mYJo7s3/oPsBp6gtGZt9trCYMf1pxhNiqMAMWkuDTXgDXB5Ygc+ZaOdLxBvioZh0a7Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=QMH+2lYAr1VOszWiieOpoWbNOEO7Nytnld9UWOXp3hg=;
- b=qnpuFuiB3E2KX2nFze9ekSf+GS5X4MEJfILMk0kg1c6uTs6iklLpNvslJepzIPdF4XI9wz9ClJInNlIlWkVY0uDMinxE+izfmmr1UEE8WJ1PYCk1K7gtVljoOXPBsmivzemmKwY903F3hVJd2Sv2QNBtFjV7azKuNUwl5rtaVm8=
-Received: from DM6PR10MB4313.namprd10.prod.outlook.com (2603:10b6:5:212::20)
- by DS0PR10MB6895.namprd10.prod.outlook.com (2603:10b6:8:131::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7068.33; Wed, 13 Dec
- 2023 16:02:40 +0000
-Received: from DM6PR10MB4313.namprd10.prod.outlook.com
- ([fe80::102a:f31:30c6:3187]) by DM6PR10MB4313.namprd10.prod.outlook.com
- ([fe80::102a:f31:30c6:3187%4]) with mapi id 15.20.7091.022; Wed, 13 Dec 2023
- 16:02:40 +0000
-Message-ID: <63debea9-4329-4e0c-a028-ad9233f13b64@oracle.com>
-Date:   Wed, 13 Dec 2023 16:02:35 +0000
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 05/16] fs: Add RWF_ATOMIC and IOCB_ATOMIC flags for
- atomic write support
-To:     Al Viro <viro@zeniv.linux.org.uk>
-Cc:     axboe@kernel.dk, kbusch@kernel.org, hch@lst.de, sagi@grimberg.me,
-        jejb@linux.ibm.com, martin.petersen@oracle.com, djwong@kernel.org,
-        brauner@kernel.org, dchinner@redhat.com, jack@suse.cz,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-nvme@lists.infradead.org, linux-xfs@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, tytso@mit.edu, jbongio@google.com,
-        linux-scsi@vger.kernel.org, ming.lei@redhat.com,
-        jaswin@linux.ibm.com, bvanassche@acm.org,
-        Prasad Singamsetty <prasad.singamsetty@oracle.com>
-References: <20231212110844.19698-1-john.g.garry@oracle.com>
- <20231212110844.19698-6-john.g.garry@oracle.com>
- <20231213133110.GL1674809@ZenIV>
-Content-Language: en-US
-From:   John Garry <john.g.garry@oracle.com>
-Organization: Oracle Corporation
-In-Reply-To: <20231213133110.GL1674809@ZenIV>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: LO4P123CA0197.GBRP123.PROD.OUTLOOK.COM
- (2603:10a6:600:1a4::22) To DM6PR10MB4313.namprd10.prod.outlook.com
- (2603:10b6:5:212::20)
+        Wed, 13 Dec 2023 11:03:50 -0500
+Received: from mailout4.samsung.com (mailout4.samsung.com [203.254.224.34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEBC6D5
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 08:03:55 -0800 (PST)
+Received: from epcas5p2.samsung.com (unknown [182.195.41.40])
+        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20231213160351epoutp04bb36f4d649b930ba85bd159c3933c07d~gb6k4wo5A1839818398epoutp04U
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 16:03:51 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20231213160351epoutp04bb36f4d649b930ba85bd159c3933c07d~gb6k4wo5A1839818398epoutp04U
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1702483431;
+        bh=OgZVAXEtV8suSLJ6Dr7hECfwgGoiwUx6mifkxXdsDBo=;
+        h=From:To:Cc:In-Reply-To:Subject:Date:References:From;
+        b=DlTtywFxq0a6DEPaqxQKMgnJ4ud8BTmVzwRooMkUh/UCtWW8zCwnXrmxbdz1ad99D
+         ubI5oW3/azKCdlvuPD7/WRKSysWa9ge2w9Jkzql9Q+Wfk8vMD/368zmPnA0/ucQw3R
+         L8oAj5lZiH8XG8OMbCJQ1tiAhtGkcq3yT6cM8WaE=
+Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
+        epcas5p4.samsung.com (KnoxPortal) with ESMTP id
+        20231213160351epcas5p46cab66037215c0925956ac2936236a9e~gb6kNkOm_1959819598epcas5p4M;
+        Wed, 13 Dec 2023 16:03:51 +0000 (GMT)
+Received: from epsmges5p1new.samsung.com (unknown [182.195.38.175]) by
+        epsnrtp4.localdomain (Postfix) with ESMTP id 4Sr0dx62Xjz4x9Pq; Wed, 13 Dec
+        2023 16:03:49 +0000 (GMT)
+Received: from epcas5p1.samsung.com ( [182.195.41.39]) by
+        epsmges5p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        F6.43.09634.5E5D9756; Thu, 14 Dec 2023 01:03:49 +0900 (KST)
+Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
+        epcas5p2.samsung.com (KnoxPortal) with ESMTPA id
+        20231213160349epcas5p213989378f9f73296271fee59fdfda3f0~gb6icgv_p0669706697epcas5p2O;
+        Wed, 13 Dec 2023 16:03:49 +0000 (GMT)
+Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
+        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20231213160349epsmtrp1e7d0731c1507cb07b34c3fc9f66e405e~gb6ibRFeN3192431924epsmtrp1a;
+        Wed, 13 Dec 2023 16:03:49 +0000 (GMT)
+X-AuditID: b6c32a49-eebff700000025a2-82-6579d5e50324
+Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
+        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        8A.FB.08755.4E5D9756; Thu, 14 Dec 2023 01:03:49 +0900 (KST)
+Received: from INBRO000447 (unknown [107.122.12.5]) by epsmtip1.samsung.com
+        (KnoxPortal) with ESMTPA id
+        20231213160346epsmtip1faf888dd1fb284e8ef117dd3096776ef~gb6f-U6u30109401094epsmtip1R;
+        Wed, 13 Dec 2023 16:03:46 +0000 (GMT)
+From:   "Alim Akhtar" <alim.akhtar@samsung.com>
+To:     "'Aakarsh Jain'" <aakarsh.jain@samsung.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-media@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <devicetree@vger.kernel.org>
+Cc:     <m.szyprowski@samsung.com>, <andrzej.hajda@intel.com>,
+        <mchehab@kernel.org>, <hverkuil-cisco@xs4all.nl>,
+        <krzysztof.kozlowski+dt@linaro.org>, <robh+dt@kernel.org>,
+        <conor+dt@kernel.org>, <linux-samsung-soc@vger.kernel.org>,
+        <andi@etezian.org>, <gost.dev@samsung.com>,
+        <aswani.reddy@samsung.com>, <pankaj.dubey@samsung.com>,
+        <ajaykumar.rs@samsung.com>
+In-Reply-To: <20231213081105.25817-1-aakarsh.jain@samsung.com>
+Subject: RE: [Patch v6 00/10] Add MFC v12 support
+Date:   Wed, 13 Dec 2023 21:33:45 +0530
+Message-ID: <016d01da2ddd$f5606ad0$e0214070$@samsung.com>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM6PR10MB4313:EE_|DS0PR10MB6895:EE_
-X-MS-Office365-Filtering-Correlation-Id: 87c6f73d-14e5-41fb-2790-08dbfbf4ef0b
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: iddWCB+c5tl6asuezilff1mKk3VFsI+jegNII67eHqN/nQCJZiR42lHL6TU0qbhnioI1lOmKKWdDHxmB+MoQLBpXaMKYsmC2MWOY5xFleqe/CeeNqR4hCdfu/7OHgbzG5xrsib+kPGbX7QIsTMMWIQXzbZpBUuzJlLkd4V2xHUpnvesKZvRZBEQLSIWsxnykKOGDb5xXbwzUpx6ldX9eNLjQr/wygyBuOn7Aaj5Q9BW/Ga893S9vaqeCOArCnW+KKxe03f3E8FkPqRUZWcUP5dPh09JOPfLnRmp3IyyoemrYsm6t37S8oyo6AFnQb4Gn0fKw6AeE8cYWtxcusRmH/SEdMR4Twoorko+CyBJ62AqkPy7dxlPfL4lDbhBDBFwxT/SoneKfBDL8tJVUhCYus2JXuC9TGqQ3ELG7vNHUAiVXiYiA8zETnxqaJN0NmPsiMCNj30rJXgv+PXEMGTz+l63gNZ++tkeqn0q9TzWNOZLBDAJykbAFAs9BUgUWVbIrkjh2f2K4DEXNG8aF9zS8anuNUhcUdXMF/uig3KLimY1cP4puEK5QoEEIzCRqfHKXNj2PipRoomoQYH6lROsY685HNiQdrp6XDX2MZC9NUwOZ+m9855BuZw7tspQygg61E7AepPDnMHNxVldMNyxBIg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR10MB4313.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(39860400002)(346002)(396003)(136003)(376002)(230922051799003)(64100799003)(186009)(1800799012)(451199024)(6512007)(6506007)(53546011)(5660300002)(26005)(2616005)(107886003)(36756003)(6486002)(66946007)(66556008)(7416002)(66476007)(6916009)(2906002)(83380400001)(31686004)(41300700001)(86362001)(478600001)(36916002)(8936002)(8676002)(4326008)(31696002)(6666004)(316002)(38100700002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?MWVqWmtnajg0MGVPckduS3dwMWh4N2NBM1Nwc0JzNys5emwyRjBLSWpxVmhY?=
- =?utf-8?B?Z0hpbDlnamYrZU9KbkJpbDc5dW96MkpndENOdUtUb0x0cFg4VXI0YUxPVGNC?=
- =?utf-8?B?WXJtb2JMWDBBMG1DUXNyOUVyQzZ1cWI3VVFJbzNOQmVGb2pLWmMzTFNVako5?=
- =?utf-8?B?NDFLWXZvNkFhQ29kZlprN2ZEYlZERUovYVVVTFRmc0NwKzRQL2haOW15Y2s5?=
- =?utf-8?B?dmdoYUQ4QS80RW9vZjVGaUdubEhpbXkxWS9lRzNDejJEWHlTbm5hMFJNMFYv?=
- =?utf-8?B?UmgzMEdIeXZtcTFmcFZmMDl4RElTeTUweXZNTk01eWNpejN6ajd6a2E3dXZp?=
- =?utf-8?B?OGxKTG8yc2dBWXc1VmxacVlyR2NIcTZoUjBwbzVZcmFabWljdGFqdC9Uc01h?=
- =?utf-8?B?MlF5YmdyRlUxWVFqektCQVFNdkc0NFMzWld6WmM2QWdZa2lCMWZaUFEvMzdQ?=
- =?utf-8?B?OTBQTFMzenZWWUpVQlJnUGdGNytKc3BKNVcrM0dFb0M1TDVuSk8yVUFWQVNC?=
- =?utf-8?B?bkRzWUFtNnZuc1dvMkZoaVVhbWM1UmwzVDFFQm9Vd2FEWWN0cVJ6b1pDU09E?=
- =?utf-8?B?MHVuc2RMcFdXY0xKa25HYklubXMzeFliaVd0YjBBVDJzbENsNWFlSmErSkZm?=
- =?utf-8?B?VWZuQjF6a2M2NTVDMDB5ZExVODF1SHlxSnVnY1ZvenpweFBxdWhyRWFsenV5?=
- =?utf-8?B?eFlLU20yQklqNDdQaEVUb3dyRTUwaExVbExGVDBSdnExdTJlWTNMR1VDS2JY?=
- =?utf-8?B?Zm9uTGUyNXZPck1uTUczVXRSQ1JVTzB5dXVXQ01VWkx6R0hVNFJxdGZVdlhL?=
- =?utf-8?B?dVBrVmFFWjl4YnVKb1BOcHcvVzVGWmNoOHpZeGtqOTNNcFpablZ3VlNOc0E5?=
- =?utf-8?B?Z2ZDT3B0RzlWT1RiZE94TlpMcFQ0eE9CQzFXRnNsS2FHT1ZGaTRCcVpiVjNt?=
- =?utf-8?B?cUdxUUxTNFNseUtuRjI5U3ZYdDJDSlNqRnlSeWdsT2dHNzZvQVM0cnhqa2hs?=
- =?utf-8?B?NFE3djlXeHNKazc4TVJDV0hiQlJxSFUvdThqalB5QUxJNzlycjlkTS9ESkZr?=
- =?utf-8?B?cUlPR3hseHNHUFVDWHNQa2xYclNweFNaNXJndDZhVFFlZmFVb1dUanJiK2ZT?=
- =?utf-8?B?L1ZKZTFmKzFDQ1VyUHdYMEVLYXlNWFRuSTc0elBxa253bkM3cUdzY1o5MnlZ?=
- =?utf-8?B?WnFJZGJFZ0V0V29lWmhDYWFUdU5jYXBjUktMSEo4dVZSRzZNdmhiMldXSkFa?=
- =?utf-8?B?M1pDUnpWWThmbG9peXVRNHhLOXZCMVhnaEExYVhVUVpidm1VNDVNelVpZ1p3?=
- =?utf-8?B?SDVUUlEzenQ1MmlKWk43enhrMTQzUUd4dlQ2WCt1VjgyaEhDWk1mTWlOeHJm?=
- =?utf-8?B?aTM1RXlHR1NTRGdvdzUxRzRFRHpWZXVBZ0g5MHBnN2RWbG42NjQzTC9hRUpx?=
- =?utf-8?B?S3R3SmU0YkJtTC9UYWNDSzVzYjd1RlZwVWJ2bkxWbWtkQlVZZmpkZUdOeUhG?=
- =?utf-8?B?ZDExVnBLb1ZxL3lxc1kvVjI4WmpoclExNUFvbEo3aXlsNWRSM2Z1Rmh2SGVV?=
- =?utf-8?B?dXZrU04ySk1WRmt6WWxkamlpOXFGZ3NkV2NiRGhYSlhKVnJQeEY4cWpSNzJw?=
- =?utf-8?B?bGlSSGJkS003R2lPRVJuSWdoR3M5UWdRN3FDTmhIY2xBT3ZjdzAramVtTG1j?=
- =?utf-8?B?Y3ZvRjNXbWE5RkNRVDRwV0R4Y21jNzBWY2I1c2ZSWlAwbk1kaE9uZmt6N05i?=
- =?utf-8?B?VWFyM3FlbkNkVHBndDdIK2dFb3B4eE1wbXZ1MlNXVmJEZWorTnVNMnlPMC82?=
- =?utf-8?B?U3lxVDdObnJjRzhUSnZNRUJGTG5pNDNKb3UwVVBCbUM2eU9RU2RMbmNCSzhm?=
- =?utf-8?B?MVYzaDFtWW5SOUVvTW9waUNjQ2FUb0hzM0tvVGUzRU5nZDdyc2dZbFVkRGdG?=
- =?utf-8?B?TlllamtEcFhJRWJLdHpkVHNIeHVzdDNNaVBzcGFpWWdrR1FWNndTUUdUUWx5?=
- =?utf-8?B?elJjQXlKVFl2TDVmd1JYbDhnN3Vxb2dZc0o0eHVjNm5ENWk4SHZ1U01NWVNF?=
- =?utf-8?B?YW15Tlg0M1l5MVVldzlidHkrMFg0ckFZUWlkOXNab21KNmRKMVJJOHNoWjR5?=
- =?utf-8?B?MU1WbnY5QXFxK05UK3dIaTU2czhMMnZWSDdHeS96RG5RcERxdVVEY1JpaTZP?=
- =?utf-8?B?UUE9PQ==?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: =?utf-8?B?MUlyQVBkRWVTZ0ZoUTZJd0dOTCtlWmJpTCtVWXc0YUlOWmE2dUh3bUM4ajV1?=
- =?utf-8?B?QTVGZ2tRMjc2N1pCUDhUTDRzYTlmb3V6dmUwSWMzK01IM2JpYUpSZEVFUXpD?=
- =?utf-8?B?b0tPa056NTV5a1pPTDJ5dVhwZnRuNkdlNlh6YzRidS92T2dmbzdoUDZuSG1P?=
- =?utf-8?B?bktZaWgrelVpTlZRS0J6NWcwSEkrTFE2UFo5THNNRkpsZjl1U1FjVmlSaXRp?=
- =?utf-8?B?ODgzT01nU04wV2tFcE14T3Y5S1pMV2dGNzFDQzVJZkpIU0JOZHNLK204aE5o?=
- =?utf-8?B?T0xHeHNNMG10WDJPcHUrTTJERXBJNTA0VHJGcTFDVldzaHRGWHUxc2J0QVNC?=
- =?utf-8?B?TkVwQjYzeEZxRStpZVBvd2dqL0xVUWpQd1JvbkdwQ2VHcGQ4NDhXWDAvNW1I?=
- =?utf-8?B?L3hKQkl1KzdHb3ErM1IxV3dNVHlqTU1xOEVxRDFuK2NLOU1haisrejlLdStF?=
- =?utf-8?B?ZXZCTlJhSG1GZHFqYjZQMXVVQ2dlbTVmaU9FbmJNTlRVdkdzR0RSTkh1Ylky?=
- =?utf-8?B?andGZGtWZm9kS3B6TE0xaVY3V0tUVUl1K1JJb21LNHBVSDAraUYwTys3NEw0?=
- =?utf-8?B?TnVUc0lZSkJUOHRsK1hWa0lSd0VQdWtLNFFwRFU0YjMvRkw0WGl6RmJncXRr?=
- =?utf-8?B?T3l2UEZ5dzEwMUNzazdSVWQxS1BVblVUT3o0SSthUWRWR1pVRmtqa1ZtR0pl?=
- =?utf-8?B?WHZOelg1WkZhU3ZGNFFxZE0rMXJkWlFRU3lNSnlPR2xYUHJ1eEhQMGl4NGRh?=
- =?utf-8?B?bVIwY2x0RlFhS3pmN1o3cm5hMmVMcXVsT0tUSU95ZnlYeWlOVmtVWDZZTGJK?=
- =?utf-8?B?ZSsybzhtSlcyRFNuUC9wM0lxRW5Fam9xZFZvNDl2dzF4L2JEc0Z0QysySjZq?=
- =?utf-8?B?TE9TOVlBV0VzdGtEaE52VEtJaXdFS2ZwQVRpU1ZVRE9tRkp0UGFEWEdIVHkv?=
- =?utf-8?B?MnFsTEJTLzAxOE5tSzlJMlpreldWSG1QVXpIK0RrVkVkTU5JdGxLS1ZGVTk2?=
- =?utf-8?B?R1lQZzdqVEdmcVE3N085SEVSVHJsV3A1Nm8zb1laWWZacTdDa3ZzaGhwK2xM?=
- =?utf-8?B?SEZjSWRVbW9ZMVJPME1RVHRrczdzdE1OMVNaeEVlam5sRUpuTHhBZ2szVWMw?=
- =?utf-8?B?RTBJbllBTG9jM1g1Q2EzbXJENGovWXdFMkNuMnpvaFk1ZEdvSTZZWUh1enFj?=
- =?utf-8?B?WmxVRVpsNXNUM3c5SlBHUUJlaXpMdk1OK2E3S0ZiR2d3aitMbGNQcEF1c3JO?=
- =?utf-8?B?N0ppdHpDUXl4TGZBN0RTRTMwZHZQU3FNaTNoUGdvOUlZVEg1VTFHSjIvdVEv?=
- =?utf-8?B?Y0xyOGZBTUtoVjh3UDlSY25CNEdZbGNwSTVrbkhLekZJY1Z2MHZadnF4NnE3?=
- =?utf-8?B?RFJtZWY5MTJoZC90YTZlZ2RtTDAwSHZrbGo0V2FtK1NxaWRHUTduK0gwR1dE?=
- =?utf-8?B?cWtrcWJTTHhvRVpCRVp6WHN0eWJzSWpjVHp1QXU0RW1CaVNmREFDS2g0TitH?=
- =?utf-8?Q?w00rEfGndksoC0mg1PbVa7yfulC?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 87c6f73d-14e5-41fb-2790-08dbfbf4ef0b
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR10MB4313.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Dec 2023 16:02:40.7464
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Migkg1mZXN7avobHaOhTr4ADnt/llIW4/fuB0srxWOyQcIqgw3zfmSPZdTIj+cBIEGnWkuxEh6PuG4Uzk6z4XA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR10MB6895
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-13_09,2023-12-13_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 suspectscore=0
- phishscore=0 malwarescore=0 spamscore=0 mlxlogscore=999 bulkscore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311290000 definitions=main-2312130113
-X-Proofpoint-GUID: 5cnQBkZG4Gc4Ip7h2IIdFsxpTfNilV2K
-X-Proofpoint-ORIG-GUID: 5cnQBkZG4Gc4Ip7h2IIdFsxpTfNilV2K
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Mailer: Microsoft Outlook 16.0
+Content-Language: en-us
+Thread-Index: AQCd+t1CDgDzjr5iAlOzWnInn9AzZgLfXkq/swjKbJA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA01TfVRTZRzuvbvbvVDT24R4W+RZ9xyPKQK7xeaLE/KIdYbaOZzjP33JvLEr
+        Q9hH2wilhJ3koxiIcPyjcUap84wihELJhUBzYMhHlMIwTaiOLkEJFjMPJlqMq8V/z+95n9/v
+        Oc/vfV9SILkqkpI5BitnNrB5tCgS/7p7zer4gH8fJ+/3J6KAxyFE3pmzOHLN3cDQL64Qjnwn
+        2wjU1DmEoU97hoTosvcbDF1wjOHo4MRvAtR6bVSIhtudIlT5ZZsQffxDF4ZO9IwRyN06j6Fj
+        bbcJVNrZQ2ySqC8dnxWoXR2TmLq18SOR+upoh0h98nix+uCpRqAOta5U9/8VIjLIN3I36jhW
+        y5llnCHLqM0xZKfQ23Zo0jQKpZyJZ5LRelpmYPVcCr1le0b8Kzl5C1lo2btsXv4ClcFaLHRi
+        6kazMd/KyXRGizWF5kzaPFOSKcHC6i35huwEA2fdwMjlLygWhLtydeUPPiNMs9K99ul8Gxh+
+        qgJEkJBKgofvzmAVIJKUUGcAfDDwN8EXswBWHvEAvrgD4OnBFrwCkIstla44nu8EsMnlfNgx
+        AeAJTxseniui4qHHVSYKH0RRHgBHmlx4uBBQUxgs+fkyFlZFUKlw+oNvQRivoBjoqW3HwhY4
+        tQq2VL8VpsVUMqy49AnG4ydhn+P6ooGAioPuo7cEfAgZvBtwC3k+Bk6e6yHCOIraAHv9M0Je
+        M0fCWu/7PN4CB+o/f8ivgDd7TxE8lsLJ6jKCT6mGx+alPK2DfzS0AB6/BL0jzsVFCKg1sKU9
+        kXddBqvuXcf4TjH8sEzCq1fBA9N+nMfPwBq7Xfho+JUzWYfAc3VLYtUtiVW3JErd/15HAN4I
+        nuZMFn02Z1GYGANX8N9lZxn1rWDxma9N94CxX4MJPoCRwAcgKaCjxH2eAk4i1rL7CjmzUWPO
+        z+MsPqBYWHWNQBqdZVz4JwarhklKlicplcqk5BeVDB0jvlVar5VQ2ayVy+U4E2d+1IeREVIb
+        FmnTq9L0tWk95PK4uitF38tz3F/cWbaLzrZPBsW681vNv2uQKu6JNzclopLiwQHj0T3pbpvt
+        n0DBa4MotqHQ7+wumVGVM7MXK4s7VPLU6pxAUf+MYsj22Oh3gJ4fDykK7dOdmekFywuvxTu3
+        l9+TNGfGjr7dpdqtTM9U7lQEQlMoyhnaP7etZPBmzYSkIchWNezXevfcrkrw3X+5Fr6+80/V
+        V6dlhws6hH3SmHeYYOzernSvNXqlw7H17PnSkfH5H4MDzuiEi1Ovnnt+3QXH+ubeKmOQMbsI
+        ZcbqzXEjhh31B4bRe/bi3dpMkPHsfTpi80/NNyaMud3jfY+vK8Jp3KJjmbUCs4X9Fy+58PRv
+        BAAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrKIsWRmVeSWpSXmKPExsWy7bCSnO7Tq5WpBheXM1o83TGT1eLA+4Ms
+        Fot/PGeyuL/4M4vFoc1b2S3W7D3HZDH/yDlWi5sHdjJZXJx5l8Wi78VDZotNj6+xWlzeNYfN
+        omfDVlaLGef3MVmsPXKX3WLZpj9MFou2fmG3aN17hN1ByOP6kk/MHov3vGTy2LSqk83jzrU9
+        bB6bl9R79G1ZxejxeZOcx6mvn9kDOKK4bFJSczLLUov07RK4MtZOnstcsESq4vnKqawNjK1i
+        XYwcHBICJhI9i7W7GDk5hAR2M0q8/p4FYksISEtc3ziBHcIWllj57zk7RM0zRomfC1hBbDYB
+        XYkdi9vYuhi5OEQE9jBKdE+9CJZgFvjFJHF6YiFEQz+jxI8mcxCbU8BO4l3TfkYQW1jAUGLH
+        pF1MIDewCKhKrO+PAQnzClhKdF2fxwRhC0qcnPmEBWKktsTTm0/h7GULXzND3KYg8fPpMqi1
+        4hIvjx4Bu1NEwEri+NX3rBMYhWchGTULyahZSEbNQtK+gJFlFaNkakFxbnpusWGBYV5quV5x
+        Ym5xaV66XnJ+7iZGcExrae5g3L7qg94hRiYOxkOMEhzMSiK8J3eUpwrxpiRWVqUW5ccXleak
+        Fh9ilOZgURLnFX/RmyIkkJ5YkpqdmlqQWgSTZeLglGpgUglyMuO5kTpjKevKZ+GiD/LDu8q5
+        Xy4N/i7H5+sxTW06v2TW1uxes6CNlccap0SbXPM8GbgpW/TR1e73V+I6tQNsL8z3mD7Z6YEJ
+        z0LrZ2smrLsSvkamPjWu41Tj3MofikwrNqbsLuDmkjlyPObowwfVDgGfbt2Q39z07ss2c7uF
+        l46uLH/107jj8w3fXC4vJtcvPQVrPeU1a7abrXt5KffZQ+n/Hx8pqu25Z/DuUaG8WujWPskZ
+        1y5d3qOltLlegeXxRf0pXzr6Avnf9YQt+hAqc0/h0r7NuoKvI8JnuLRsP8z8qPPHkT7F0z+2
+        2CVv5jzyc6rYA63kThffyTdTssV2Oz7V+81mG/B0fbP5ISWW4oxEQy3mouJEAD+Eh8xYAwAA
+X-CMS-MailID: 20231213160349epcas5p213989378f9f73296271fee59fdfda3f0
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+CMS-TYPE: 105P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20231213081112epcas5p171f1b69376bc4b1e8ced03f8b56efe35
+References: <CGME20231213081112epcas5p171f1b69376bc4b1e8ced03f8b56efe35@epcas5p1.samsung.com>
+        <20231213081105.25817-1-aakarsh.jain@samsung.com>
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        PDS_BAD_THREAD_QP_64,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 13/12/2023 13:31, Al Viro wrote:
->> Add file mode flag FMODE_CAN_ATOMIC_WRITE, so files which do not have the
->> flag set will have RWF_ATOMIC rejected and not just ignored.
->>
->> Signed-off-by: Prasad Singamsetty<prasad.singamsetty@oracle.com>
->> Signed-off-by: John Garry<john.g.garry@oracle.com>
->> ---
->>   include/linux/fs.h      | 8 ++++++++
->>   include/uapi/linux/fs.h | 5 ++++-
->>   2 files changed, 12 insertions(+), 1 deletion(-)
->>
->> diff --git a/include/linux/fs.h b/include/linux/fs.h
->> index 70329c81be31..d725c194243c 100644
->> --- a/include/linux/fs.h
->> +++ b/include/linux/fs.h
->> @@ -185,6 +185,9 @@ typedef int (dio_iodone_t)(struct kiocb *iocb, loff_t offset,
->>   /* File supports async nowait buffered writes */
->>   #define FMODE_BUF_WASYNC	((__force fmode_t)0x80000000)
->>   
->> +/* File supports atomic writes */
->> +#define FMODE_CAN_ATOMIC_WRITE	((__force fmode_t)0x100000000)
-> Have you even tried to compile that on e.g. arm?
 
-i386 and now arm32, and no grumblings.
 
-I think that the issue is that we only ever do a bitwise OR or test that 
-bit 33 for a 32b value, and it is a void operation and ignored.
+> -----Original Message-----
+> From: Aakarsh Jain <aakarsh.jain=40samsung.com>
+> Sent: Wednesday, December 13, 2023 1:41 PM
+> To: linux-arm-kernel=40lists.infradead.org; linux-media=40vger.kernel.org=
+;
+> linux-kernel=40vger.kernel.org; devicetree=40vger.kernel.org
+> Cc: m.szyprowski=40samsung.com; andrzej.hajda=40intel.com;
+> mchehab=40kernel.org; hverkuil-cisco=40xs4all.nl;
+> krzysztof.kozlowski+dt=40linaro.org; robh+dt=40kernel.org;
+> conor+dt=40kernel.org; linux-samsung-soc=40vger.kernel.org;
+> andi=40etezian.org; gost.dev=40samsung.com; alim.akhtar=40samsung.com;
+> aswani.reddy=40samsung.com; pankaj.dubey=40samsung.com;
+> ajaykumar.rs=40samsung.com; aakarsh.jain=40samsung.com
+> Subject: =5BPatch v6 00/10=5D Add MFC v12 support
+>=20
+> This patch series adds MFC v12 support. MFC v12 is used in Tesla FSD SoC.
+>=20
+> This adds support for following:
+>=20
+> -Add support for YV12 and I420 format (3-plane) -Add support for Rate
+> Control, UHD and DMABUF for encoder -Add support for DPB buffers
+> allocation based on MFC requirement
+>=20
+> changes since v5:
+> -As per Krzysztof, he will take MFC dt-entries patch via Samsung SoC once=
+ dt-
+> bindings patch gets accepted. Therefore, excluded MFC dt-entries patch
+> from v6.
+> -Addressed review comments by Hans Verkuil.
+> Resolved smatch warning from 'drivers/media/platform/samsung/s5p-
+> mfc/s5p_mfc_enc.c'.
+> Resolved kernel doc warnings from 'drivers/media/platform/samsung/s5p-
+> mfc/s5p_mfc_common.h'.
+> Added explanation in the patch 9 as comment on why mfc v12 firmware
+> loading is needed for each run.
+> v5 link: https://patchwork.kernel.org/project/linux-
+> media/cover/20231206063045.97234-1-aakarsh.jain=40samsung.com/
+>=20
+=5Bsnip=5D
+> Aakarsh Jain (10):
+>   dt-bindings: media: s5p-mfc: Add mfcv12 variant
+>   media: s5p-mfc: Rename IS_MFCV10 macro
+>   media: s5p-mfc: Add initial support for MFCv12
+>   media: s5p-mfc: Add YV12 and I420 multiplanar format support
+>   media: s5p-mfc: Add support for rate controls in MFCv12
+>   media: s5p-mfc: Add support for UHD encoding.
+>   media: s5p-mfc: Add support for DMABUF for encoder
+>   media: s5p-mfc: Set context for valid case before calling try_run
+>   media: s5p-mfc: Load firmware for each run in MFCv12.
+>   media: s5p-mfc: DPB Count Independent of VIDIOC_REQBUF
+>=20
+>  .../bindings/media/samsung,s5p-mfc.yaml       =7C  18 ++
+>  .../platform/samsung/s5p-mfc/regs-mfc-v12.h   =7C  52 +++
+>  .../platform/samsung/s5p-mfc/regs-mfc-v7.h    =7C   1 +
+>  .../platform/samsung/s5p-mfc/regs-mfc-v8.h    =7C   3 +
+>  .../media/platform/samsung/s5p-mfc/s5p_mfc.c  =7C  36 ++-
+> .../platform/samsung/s5p-mfc/s5p_mfc_common.h =7C  33 +-
+>  .../platform/samsung/s5p-mfc/s5p_mfc_ctrl.c   =7C  15 +-
+>  .../platform/samsung/s5p-mfc/s5p_mfc_dec.c    =7C  60 +++-
+>  .../platform/samsung/s5p-mfc/s5p_mfc_enc.c    =7C 149 ++++++---
+>  .../platform/samsung/s5p-mfc/s5p_mfc_opr.h    =7C  14 +-
+>  .../platform/samsung/s5p-mfc/s5p_mfc_opr_v5.c =7C  12 +-
+> .../platform/samsung/s5p-mfc/s5p_mfc_opr_v6.c =7C 299 ++++++++++++++---
+> -
+>  .../platform/samsung/s5p-mfc/s5p_mfc_opr_v6.h =7C   7 +-
+>  13 files changed, 550 insertions(+), 149 deletions(-)  create mode 10064=
+4
+> drivers/media/platform/samsung/s5p-mfc/regs-mfc-v12.h
+>=20
+Tested this series on FSD platform, feel free to add
+Tested-by: Alim Akhtar <alim.akhtar=40samsung.com>
 
-However if I have file.f_mode = FMODE_CAN_ATOMIC_WRITE and compile for 
-arm32, then it complains.
+> --
+> 2.17.1
+
+
