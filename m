@@ -2,182 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A7DB1811C18
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 19:15:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 52FFE811A84
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 18:12:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442159AbjLMSP1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 13:15:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53236 "EHLO
+        id S233641AbjLMRMp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 12:12:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35280 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233585AbjLMSPO (ORCPT
+        with ESMTP id S229458AbjLMRMp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 13:15:14 -0500
-Received: from mx1.sberdevices.ru (mx1.sberdevices.ru [37.18.73.165])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59AAFB2;
-        Wed, 13 Dec 2023 10:15:18 -0800 (PST)
-Received: from p-infra-ksmg-sc-msk01 (localhost [127.0.0.1])
-        by mx1.sberdevices.ru (Postfix) with ESMTP id 86F53100009;
-        Wed, 13 Dec 2023 20:20:20 +0300 (MSK)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 86F53100009
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
-        s=mail; t=1702488020;
-        bh=LFMnN+kiRRzcxIQfO0sCVj3w5ce0aLsvMu8LL0VRk/M=;
-        h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type:From;
-        b=eQ0Sjs6MyQp4yIIb9BQZQYBSSGmijZSoDa4qyUnApyGqsz1fSjpu49mEa/9TC9PL/
-         LxO+lCKvM9RkQODdNZ6I537IMTNArXe1f5ER55qTlmQEVvLV8H0zHqEjn21DwtvJNj
-         FgKR+W8FMAWRlQQ9OA1VZCYWTI99tU0kj90AcJYkGTjC8ZugWiQqCYuDR0ALfTLmNP
-         n32eeyFlOB50vKOraTNKxJ52Cz6yh22fSc5zRaa9k7iCuI6I7WHanhFBC8upKXPkOU
-         k0XG9Fw66n1pvKBU8s8JyGvPFp1PABsKjQozf9/WwT/YiNAwCzQSHX7Vtw46qpUq2w
-         GwGKwg6lo6JFw==
-Received: from smtp.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mx1.sberdevices.ru (Postfix) with ESMTPS;
-        Wed, 13 Dec 2023 20:20:19 +0300 (MSK)
-Received: from [192.168.0.106] (100.64.160.123) by
- p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Wed, 13 Dec 2023 20:20:19 +0300
-Message-ID: <8e6b06a5-eeb3-84c8-c6df-a8b81b596295@salutedevices.com>
-Date:   Wed, 13 Dec 2023 20:11:57 +0300
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.7.1
-Subject: Re: [PATCH net-next v8 0/4] send credit update during setting
- SO_RCVLOWAT
-Content-Language: en-US
-To:     "Michael S. Tsirkin" <mst@redhat.com>
-CC:     Stefano Garzarella <sgarzare@redhat.com>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
+        Wed, 13 Dec 2023 12:12:45 -0500
+Received: from relay4-d.mail.gandi.net (relay4-d.mail.gandi.net [217.70.183.196])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D759C9;
+        Wed, 13 Dec 2023 09:12:51 -0800 (PST)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id EBFDBE0003;
+        Wed, 13 Dec 2023 17:12:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+        t=1702487569;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Y5TlHmWEUPrLvS1FVi0orOnaoJ8WBQaxRvgSpwfpfbE=;
+        b=Lhf3Nu8+GyNG3qgU43seuI/4CVmSA5PeGwqa1jMFEbOrcCXwsFnlKeBN8+OL9LJ100v/i9
+        s6PWl1NWck+TkngarDqAkX7KQhn/C5kgpcviDmN9v4DoF8ZIJAx0FiCzeGqI+oL8tk/t/W
+        iIGq+MuAZqjkfEFXhVl0KzJs6+Dbxr/jrtfGV+P+o55kyhhIZE4Dc4jlNag819/GuOEKzP
+        JXHH/7KmfsbJPpPG5U6/OyLIsQMYrc/EBlay4BQ30kUH8h+3lO5XJzSwn0E1lBUNe93pXC
+        44y0wKlB5e2vIPAYTkKRhaP0INVRgM505IfJdC8OnVuZWi1NO1fSYLGWwHnzBA==
+Date:   Wed, 13 Dec 2023 18:12:41 +0100
+From:   Maxime Chevallier <maxime.chevallier@bootlin.com>
+To:     "Russell King (Oracle)" <linux@armlinux.org.uk>
+Cc:     Andrew Lunn <andrew@lunn.ch>, Daniel Golle <daniel@makrotopia.org>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
         "David S. Miller" <davem@davemloft.net>,
         Eric Dumazet <edumazet@google.com>,
         Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Bobby Eshleman <bobby.eshleman@bytedance.com>,
-        <kvm@vger.kernel.org>, <virtualization@lists.linux-foundation.org>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <kernel@sberdevices.ru>, <oxffffaa@gmail.com>
-References: <20231211211658.2904268-1-avkrasnov@salutedevices.com>
- <20231212105423-mutt-send-email-mst@kernel.org>
- <d27f22f0-0f1e-e1bb-5b13-a524dc6e94d7@salutedevices.com>
- <20231212111131-mutt-send-email-mst@kernel.org>
- <7b362aef-6774-0e08-81e9-0a6f7f616290@salutedevices.com>
- <ucmekzurgt3zcaezzdkk6277ukjmwaoy6kdq6tzivbtqd4d32b@izqbcsixgngk>
- <402ea723-d154-45c9-1efe-b0022d9ea95a@salutedevices.com>
- <20231213100518-mutt-send-email-mst@kernel.org>
- <20231213100957-mutt-send-email-mst@kernel.org>
-From:   Arseniy Krasnov <avkrasnov@salutedevices.com>
-In-Reply-To: <20231213100957-mutt-send-email-mst@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [100.64.160.123]
-X-ClientProxiedBy: p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) To
- p-i-exch-sc-m01.sberdevices.ru (172.16.192.107)
-X-KSMG-Rule-ID: 10
-X-KSMG-Message-Action: clean
-X-KSMG-AntiSpam-Lua-Profiles: 182095 [Dec 13 2023]
-X-KSMG-AntiSpam-Version: 6.1.0.3
-X-KSMG-AntiSpam-Envelope-From: avkrasnov@salutedevices.com
-X-KSMG-AntiSpam-Rate: 0
-X-KSMG-AntiSpam-Status: not_detected
-X-KSMG-AntiSpam-Method: none
-X-KSMG-AntiSpam-Auth: dkim=none
-X-KSMG-AntiSpam-Info: LuaCore: 7 0.3.7 6d6bf5bd8eea7373134f756a2fd73e9456bb7d1a, {Tracking_uf_ne_domains}, {Tracking_from_domain_doesnt_match_to}, 100.64.160.123:7.1.2;lore.kernel.org:7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;smtp.sberdevices.ru:7.1.1,5.0.1;salutedevices.com:7.1.1;127.0.0.199:7.1.2, FromAlignment: s, ApMailHostAddress: 100.64.160.123
-X-MS-Exchange-Organization-SCL: -1
-X-KSMG-AntiSpam-Interceptor-Info: scan successful
-X-KSMG-AntiPhishing: Clean, bases: 2023/12/13 14:39:00
-X-KSMG-LinksScanning: Clean, bases: 2023/12/13 16:50:00
-X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2023/12/13 16:15:00 #22673827
-X-KSMG-AntiVirus-Status: Clean, skipped
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net] net: phy: skip LED triggers on PHYs on SFP modules
+Message-ID: <20231213181241.6a5e8afd@device-28.home>
+In-Reply-To: <ZXnNYJer0JrJxOsl@shell.armlinux.org.uk>
+References: <102a9dce38bdf00215735d04cd4704458273ad9c.1702339354.git.daniel@makrotopia.org>
+        <20231212153512.67a7a35b@device.home>
+        <ec909d14-e571-4a50-926d-fbef4f4f9e0a@lunn.ch>
+        <ZXnNYJer0JrJxOsl@shell.armlinux.org.uk>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-GND-Sasl: maxime.chevallier@bootlin.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Andrew, Russell,
 
+On Wed, 13 Dec 2023 15:27:28 +0000
+"Russell King (Oracle)" <linux@armlinux.org.uk> wrote:
 
-On 13.12.2023 18:13, Michael S. Tsirkin wrote:
-> On Wed, Dec 13, 2023 at 10:05:44AM -0500, Michael S. Tsirkin wrote:
->> On Wed, Dec 13, 2023 at 12:08:27PM +0300, Arseniy Krasnov wrote:
->>>
->>>
->>> On 13.12.2023 11:43, Stefano Garzarella wrote:
->>>> On Tue, Dec 12, 2023 at 08:43:07PM +0300, Arseniy Krasnov wrote:
->>>>>
->>>>>
->>>>> On 12.12.2023 19:12, Michael S. Tsirkin wrote:
->>>>>> On Tue, Dec 12, 2023 at 06:59:03PM +0300, Arseniy Krasnov wrote:
->>>>>>>
->>>>>>>
->>>>>>> On 12.12.2023 18:54, Michael S. Tsirkin wrote:
->>>>>>>> On Tue, Dec 12, 2023 at 12:16:54AM +0300, Arseniy Krasnov wrote:
->>>>>>>>> Hello,
->>>>>>>>>
->>>>>>>>>                                DESCRIPTION
->>>>>>>>>
->>>>>>>>> This patchset fixes old problem with hungup of both rx/tx sides and adds
->>>>>>>>> test for it. This happens due to non-default SO_RCVLOWAT value and
->>>>>>>>> deferred credit update in virtio/vsock. Link to previous old patchset:
->>>>>>>>> https://lore.kernel.org/netdev/39b2e9fd-601b-189d-39a9-914e5574524c@sberdevices.ru/
->>>>>>>>
->>>>>>>>
->>>>>>>> Patchset:
->>>>>>>>
->>>>>>>> Acked-by: Michael S. Tsirkin <mst@redhat.com>
->>>>>>>
->>>>>>> Thanks!
->>>>>>>
->>>>>>>>
->>>>>>>>
->>>>>>>> But I worry whether we actually need 3/8 in net not in net-next.
->>>>>>>
->>>>>>> Because of "Fixes" tag ? I think this problem is not critical and reproducible
->>>>>>> only in special cases, but i'm not familiar with netdev process so good, so I don't
->>>>>>> have strong opinion. I guess @Stefano knows better.
->>>>>>>
->>>>>>> Thanks, Arseniy
->>>>>>
->>>>>> Fixes means "if you have that other commit then you need this commit
->>>>>> too". I think as a minimum you need to rearrange patches to make the
->>>>>> fix go in first. We don't want a regression followed by a fix.
->>>>>
->>>>> I see, ok, @Stefano WDYT? I think rearrange doesn't break anything, because this
->>>>> patch fixes problem that is not related with the new patches from this patchset.
->>>>
->>>> I agree, patch 3 is for sure net material (I'm fine with both rearrangement or send it separately), but IMHO also patch 2 could be.
->>>> I think with the same fixes tag, since before commit b89d882dc9fc ("vsock/virtio: reduce credit update messages") we sent a credit update
->>>> for every bytes we read, so we should not have this problem, right?
->>>
->>> Agree for 2, so I think I can rearrange: two fixes go first, then current 0001, and then tests. And send it as V9 for 'net' only ?
->>>
->>> Thanks, Arseniy
->>
->>
->> hmm why not net-next?
+> On Wed, Dec 13, 2023 at 10:08:25AM +0100, Andrew Lunn wrote:
+> > On Tue, Dec 12, 2023 at 03:35:12PM +0100, Maxime Chevallier wrote:  
+> > > Hi Daniel
+> > > 
+> > > On Tue, 12 Dec 2023 00:05:35 +0000
+> > > Daniel Golle <daniel@makrotopia.org> wrote:
+> > >   
+> > > > Calling led_trigger_register() when attaching a PHY located on an SFP
+> > > > module potentially (and practically) leads into a deadlock.
+> > > > Fix this by not calling led_trigger_register() for PHYs localted on SFP
+> > > > modules as such modules actually never got any LEDs.  
+> > > 
+> > > While I don't have a fix for this issue, I think your justification
+> > > isn't good. This isn't about having LEDs on the module or not, but
+> > > rather the PHY triggering LED events for LEDS that can be located
+> > > somewhere else on the system (like the front pannel of a switch).  
+> > 
+> > SFP LEDs are very unlikely to be on the front panel, since there is no
+> > such pins on the SFP cage.
+> > 
+> > Russell, in your collection of SFPs do you have any with LEDs?  
 > 
-> Oh I missed your previous discussion. I think everything in net-next is
-> safer.  Having said that, I won't nack it net, either.
-
-So, summarizing all above:
-1) This patchset entirely goes to net-next as v9
-2) I reorder patches like 3 - 2 - 1 - 4, e.g. two fixes goes first with Fixes tag
-3) Add Acked-by: Michael S. Tsirkin <mst@redhat.com> to each patch
-
-@Michael, @Stefano ?
-
-Thanks, Arseniy
-
+> No, and we should _not_ mess around with the "LED" configuration on
+> PHYs on SFPs. It's possible that the LED output is wired to the LOS
+> pin on the module, and messing around with the configuration of that
+> would be asking for trouble.
 > 
->>>>
->>>> So, maybe all the series could be "net".
->>>>
->>>> Thanks,
->>>> Stefano
->>>>
+> In any case, I thought we didn't drive the LED configuration on PHYs
+> where the LED configuration isn't described by firmware - and as the
+> PHY on SFP modules would never be described by firmware, hooking
+> such a PHY up to the LED framework sounds like a waste of resources
+> to me.
 > 
+
+So it looks to me that the Daniel's patch does make sense then, even
+without considering the underlying locking issue ?
+
+Sorry for my misunderstanding of the LED driving that started this
+discussion :/
+
+Maxime
