@@ -2,80 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 14059810AAB
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 07:54:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 711D1810AB1
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 07:57:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378650AbjLMGyR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 01:54:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58526 "EHLO
+        id S1378645AbjLMG5G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 01:57:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59048 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233281AbjLMGyQ (ORCPT
+        with ESMTP id S232875AbjLMG5E (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 01:54:16 -0500
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F4119AD
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 22:54:22 -0800 (PST)
-Received: by mail-pj1-x102a.google.com with SMTP id 98e67ed59e1d1-28aedba3641so10667a91.3
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 22:54:22 -0800 (PST)
+        Wed, 13 Dec 2023 01:57:04 -0500
+Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5002299;
+        Tue, 12 Dec 2023 22:57:11 -0800 (PST)
+Received: by mail-pf1-x42b.google.com with SMTP id d2e1a72fcca58-6d099d316a8so2602273b3a.0;
+        Tue, 12 Dec 2023 22:57:11 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702450462; x=1703055262; darn=vger.kernel.org;
-        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=6dX2BToRtt/4dJc5/t/XYX1+5u/z/qEPWr31SMH8000=;
-        b=QDvqVJS4yl1Onj+M9EebtVqhLgJtSz7Zq113oE+kkoykByUldkAgrsdiALWg1TJduH
-         3nV/ZRg8SRbgAcnX4dR2Y0doI3joihkwo5R4fScrsinYJ85gIi4Q+NBv85QyrM9y+CRl
-         HaH3qYTP+ufVkuRgsjDmIwC/Ql62aS7MZTp266PCeQpcpeByGyDmoXZ48K2CVMABma54
-         8Rgg2y8RLvl+MoUXOnJrwhl9YBZI8E4JJY0GzvwJjwrY7iU4CN6PBnRnGq/9+DtPifym
-         aZrkYpPg5irR6Ft7ZYzvuLwD9jhdsHCa/hFHvpSmGvVxpvxBeByrgjSMrnvFbhviDolv
-         mOGw==
+        d=gmail.com; s=20230601; t=1702450631; x=1703055431; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=IhkAtvgGaXDYadwgX0rvctwX2fGbm2rs7JZCU92GB5Q=;
+        b=dIc6mod4azNygbMt3tNVcx6oNoRrq6AUBQEgDQtHMx2Sj6TWLLPASjOKKxXrNLP4YU
+         Mj69vAOSjbDZEKrb9qZXL70YKOfleycYgVtKRfhk7DM7+AK/4ovi0XFZAzMxjqNnPDwP
+         YZtOlhgL4YcN97A9GXM0w6zHk+hzzlUc2SUtt3aCdEwtOWrlsjUgdSMKgu/SMplOXEoI
+         U8nQO0QBHHLv9i29Li2E2SbyXn/OkK4DxxAUfZJtqchAYvOtPXG/o81LgSkBMEZE4dnR
+         PtVYSsyxNQpnGf18wHmX80sTH/OZ8aKyrUALxgz5eYU+b92kA46nuZLRsVcbPoEua5Nb
+         xEbQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702450462; x=1703055262;
-        h=to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=6dX2BToRtt/4dJc5/t/XYX1+5u/z/qEPWr31SMH8000=;
-        b=cp4dTUQT9InqhqAhjmqIQGWr7/RQhlABdD9GOIc4KelbvA8E2y2ksqpgg9Tqys/M1g
-         5EOTesQP2NPVWvSv9dlbk4J5VJMguJyi/a8GWooXfmnGF92D3tI3Sl6E6HgM+mGytBD8
-         EqyK+3TjeL+8U5D5/QGjkgueXH9btgtn+qBWepzR3qd4fbbBQigNySgT6h3gLRCcY4Wx
-         d3XdDwD1Dvp0QoaMsQti9XiQFuKYfs2mncnlNPUayytlX2n6hU+sUExOz5XMNiJNT7Ss
-         eSNLq1QQaNSpJV483YmVFsA6garAYZjc25LTJDnoVsKciQGx/3BaytnG0hecPjfy4luo
-         AcSA==
-X-Gm-Message-State: AOJu0Yw1AnVe6zVSvCGXs9rHsbn8deJxg1v6HvSpFbrKuCbyuUV6rO+u
-        BHGE1ug04RuCAlm7Ow1LwNtykmPOf7zVqseTfXymRxHuZLfoxw==
-X-Google-Smtp-Source: AGHT+IFzyq9dKsAro+xJdqdtR1fBN35pAOUy9z7yDQL6K8yVepx0YHYqCNu/ZVm6tErvtuPA45CWmPL2QZFrh8PZYCE=
-X-Received: by 2002:a17:90a:e558:b0:28a:ea24:dd5a with SMTP id
- ei24-20020a17090ae55800b0028aea24dd5amr17285pjb.28.1702450462205; Tue, 12 Dec
- 2023 22:54:22 -0800 (PST)
+        d=1e100.net; s=20230601; t=1702450631; x=1703055431;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=IhkAtvgGaXDYadwgX0rvctwX2fGbm2rs7JZCU92GB5Q=;
+        b=sBk5d9g3pczkGJ5bZl6fgNwxwI5CoOtXBzE94R6xApZQcCTTHNHCtDfblsD2XDg9ao
+         WUMpZPP6wQvML/r6rlVMAJqx2PDFtHeHNWwDoNHn8QUkaKhehYAszJ1VBV+Woz+BXLP8
+         bIsJUyzWdlhw5/u4fi/LaGUSCiGmCt1oaMrn6ZGSZkQx/JwtqNyTAMxLuRyPLRiBmGKh
+         HA8LmInAbt8RIGSWG+5HGhFNaSyf5X2aKn3Lrby+hX1HuCibHvheIzck8/0HzWBPGvn6
+         tEhqhaO05tJYnHw9pV/OjzRX/Ec0VmkQ401VhsVBcKUK3oudNSxvJyVRq2SBmKsa+qBw
+         amhw==
+X-Gm-Message-State: AOJu0YypY3Uxe07zYavvonKANjl6E0HxLP70NfbzmjnJHEZY2UEICEZM
+        dpZHTdVPsYstp71J8j2rrDE=
+X-Google-Smtp-Source: AGHT+IG/CCMSbbvjPxj9ULXJ+fq3qoiapX08iDfkxtUphQsQB86Ri+Mayo8bMlc3XFm3bs/dboXE2Q==
+X-Received: by 2002:a05:6a00:1d86:b0:6ce:448b:b8 with SMTP id z6-20020a056a001d8600b006ce448b00b8mr7458739pfw.65.1702450630622;
+        Tue, 12 Dec 2023 22:57:10 -0800 (PST)
+Received: from google.com ([2620:15c:9d:2:96c1:256f:67e0:c0db])
+        by smtp.gmail.com with ESMTPSA id t19-20020a056a0021d300b006ce77ffcc75sm8280069pfj.165.2023.12.12.22.57.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 Dec 2023 22:57:10 -0800 (PST)
+Date:   Tue, 12 Dec 2023 22:57:07 -0800
+From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To:     Jeff LaBundy <jeff@labundy.com>
+Cc:     ye.xingchen@zte.com.cn, colin.i.king@gmail.com,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] Input: misc: use sysfs_emit() to instead of scnprintf()
+Message-ID: <ZXlVwzLMd8Drxtq4@google.com>
+References: <202212011548387254492@zte.com.cn>
+ <Y4jbOX4ePJz7vbu1@nixie71>
 MIME-Version: 1.0
-From:   Dwayne RIght <rightd942@gmail.com>
-Date:   Tue, 12 Dec 2023 22:54:11 -0800
-Message-ID: <CAAZfa0i3zEWrf6mJwzJ8JBqx7EKCkbSfnjRKBR8dbmhjt37Hug@mail.gmail.com>
-Subject: new to kernel programming, heres a tip on global structs
-To:     LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Y4jbOX4ePJz7vbu1@nixie71>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,FSL_HELO_FAKE,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-global, both dynamic and static data structures in the linux kernel
-can be used for simple messaging
+On Thu, Dec 01, 2022 at 10:50:01AM -0600, Jeff LaBundy wrote:
+> Hi Ye,
+> 
+> On Thu, Dec 01, 2022 at 03:48:38PM +0800, ye.xingchen@zte.com.cn wrote:
+> > From: ye xingchen <ye.xingchen@zte.com.cn>
+> > 
+> > Replace the open-code with sysfs_emit() to simplify the code.
+> > 
+> > Signed-off-by: ye xingchen <ye.xingchen@zte.com.cn>
+> > ---
+> >  drivers/input/misc/ims-pcu.c | 10 +++++-----
+> >  drivers/input/misc/iqs269a.c | 18 +++++++++---------
 
-you can use global data structures in linked list and binary tree format
+Split the patch in 2 for each driver, adjusted to the latest code and
+applied.
 
-also with a global struct system, which is intended for messaging, can
-be used for modules such as code in the kernel, like a loop reading
-the global struct hitting a global struct member flag defined in an
-enumerator in a function in a module and stopping the loop in the
-kernel or elsewhere, or moving to another function
+Thanks.
 
-or it can be used to send string messages between functions
-
-im new to kernel programming, when i get time i'll do stuff like read
-the docs and try to put sqlite3 in the kernel and try to write gui
-programs for kernel development, like a gui makefile program, but
-hackers do use linux
+-- 
+Dmitry
