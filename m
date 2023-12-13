@@ -2,235 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 92AAC8110B3
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 13:02:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 093698110B4
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 13:02:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378759AbjLMMCP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 07:02:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53798 "EHLO
+        id S1378807AbjLMMCY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 07:02:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53850 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233405AbjLMMCO (ORCPT
+        with ESMTP id S235363AbjLMMCR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 07:02:14 -0500
-Received: from mail-oa1-x29.google.com (mail-oa1-x29.google.com [IPv6:2001:4860:4864:20::29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB61CEA
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 04:02:19 -0800 (PST)
-Received: by mail-oa1-x29.google.com with SMTP id 586e51a60fabf-1f055438492so5178359fac.3
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 04:02:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=amarulasolutions.com; s=google; t=1702468939; x=1703073739; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=6DofUqtgVQ4VhR1YJO8pN0dkbuoMC7o8wj1rNhuaJVI=;
-        b=Kwe8VDbY+Bolfxgenac3EG6XHtH967FmywJQCUKJ7N2Lg0RMp9C4q2Bl2JwWELJYzg
-         vTvOc5OkPSyIxOHioo5YtptoSuJ77rW2cM4oSNhIsxYngsVgbD7qpwtYaXNl7/WlTZr5
-         haR85XVcIj+6qRmEvpfueU4ekr3TU5om2RAdY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702468939; x=1703073739;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=6DofUqtgVQ4VhR1YJO8pN0dkbuoMC7o8wj1rNhuaJVI=;
-        b=qhP2fotaj6sxb1Yr904HxBuSOigIvVEUw45+lWpAzMxwe0urt942gvo5eegUQ+fUNn
-         h2AUHkP9r5TcT66y46Z1btRuPlbRKAS3eA5fM4EhLcWfqfAL9d6r3Bbr74K8nnjmvG5g
-         nxIfBAcU3h9my5uOR388+KjIsensP+0VHQh5MRbcymmz0kNa3uWZNlCBiPK98Bx1B1rh
-         WL4AKpY4Zvt0Q1iwP5a6ui4sAOr2UgV8t6NV2G1ESEvWgWouJWoiRLMaYkcAVDZsqefi
-         elNAwlRnDWh9YduVxzgIwFLWD+zEyIaMNWjazAhzHFckzN6xWweuwlkaaMKWC1cnOYAu
-         82Jg==
-X-Gm-Message-State: AOJu0YyhDeZaeYyqIOqqVhxbSElgSu7BnuxqU4ZNGTj3rF/fXcj4YD/j
-        aUZ+79lbn5/5fwEi/C4YXMZl0VqHJjETbu1qwwyXSA==
-X-Google-Smtp-Source: AGHT+IF/QcxvngLggBQbHP0cFv23ouZz/H+lPJz9vfgLPXcpoz3ZMYkIrxsZ9sevMJwWT/ktB+kQhfZDNJgvjsl0xCo=
-X-Received: by 2002:a05:6871:22c6:b0:1fb:75b:130e with SMTP id
- se6-20020a05687122c600b001fb075b130emr10223530oab.96.1702468939042; Wed, 13
- Dec 2023 04:02:19 -0800 (PST)
+        Wed, 13 Dec 2023 07:02:17 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17F45F7
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 04:02:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1702468943; x=1734004943;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=sU1cY2onLnbpQIDRhHnFwFsomusAlQI0iUZ6jEcMyVk=;
+  b=QVDAqq9LveR4DeOddB+hwdYNRrdeU66DwcWIV437DZMpSA6CuF7llxIb
+   W0mzb2clTHTkoOQ5Sb+yVeG3IRa9P78wWWx9uCul50tcF/Znuqe8dRKIJ
+   UREnuJtUN0lDfANHDJuP4rRdEi84sw6JV3p5qL3XULJomshcDEoSW/N0Y
+   SQWFAFCHDnA5DyPW+PtGYxDhwNUengLImCmmeLjDX84j3db7jcZbtPqOz
+   8ZFkkGYjTFWCNuuPnCq0mDJYXie6q/4km9WtxwQupvAcoDHL+3jnBfOgx
+   uEYgn6fSVWEhRwLmFJZV4R1ZiOFWAu2OE0EnGEhTzNLhEF6G6UVBVHq/w
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10922"; a="2093789"
+X-IronPort-AV: E=Sophos;i="6.04,272,1695711600"; 
+   d="scan'208";a="2093789"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Dec 2023 04:02:22 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10922"; a="891991996"
+X-IronPort-AV: E=Sophos;i="6.04,272,1695711600"; 
+   d="scan'208";a="891991996"
+Received: from gschoede-mobl.ger.corp.intel.com (HELO box.shutemov.name) ([10.252.33.110])
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Dec 2023 04:02:18 -0800
+Received: by box.shutemov.name (Postfix, from userid 1000)
+        id 51E7810A4DA; Wed, 13 Dec 2023 15:02:15 +0300 (+03)
+Date:   Wed, 13 Dec 2023 15:02:15 +0300
+From:   "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+To:     Dave Hansen <dave.hansen@intel.com>
+Cc:     Arnd Bergmann <arnd@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        Yuan Yao <yuan.yao@intel.com>, Kai Huang <kai.huang@intel.com>,
+        Tony Luck <tony.luck@intel.com>, Arnd Bergmann <arnd@arndb.de>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Isaku Yamahata <isaku.yamahata@intel.com>,
+        linux-coco@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] x86: tdx: hide unused tdx_dump_mce_info()
+Message-ID: <20231213120215.64wcryk5k75cymop@box>
+References: <20231212213701.4174806-1-arnd@kernel.org>
+ <39cf0ad5-bbef-4fb9-81a3-9d2891cc7450@intel.com>
 MIME-Version: 1.0
-References: <20231205105341.4100896-1-dario.binacchi@amarulasolutions.com>
- <20231205105341.4100896-3-dario.binacchi@amarulasolutions.com>
- <CAPY8ntAALKiTEG6qyFO=qVqSLUW9x8AMfPMc_TUwC3z8tJ7Kzw@mail.gmail.com>
- <CABGWkvq-fJTDFPB=389XbHW_SLt6BQr-BhjZqZ+01i3v8EaYwA@mail.gmail.com>
- <CAMty3ZBdCW=Rak8gMin8bt9JnFChAu6nw9n6xQyCSZw=63BukA@mail.gmail.com>
- <CAOf5uwm_YmXz0A6nuCbJh+iszwqWyQkRRKATKyWZ33YUgZmEnw@mail.gmail.com> <CABGWkvpryv=bKsro1=6AG9kH9mU63JdWkG4xyyKvr_Rq0iADHg@mail.gmail.com>
-In-Reply-To: <CABGWkvpryv=bKsro1=6AG9kH9mU63JdWkG4xyyKvr_Rq0iADHg@mail.gmail.com>
-From:   Jagan Teki <jagan@amarulasolutions.com>
-Date:   Wed, 13 Dec 2023 17:32:07 +0530
-Message-ID: <CAMty3ZAA-MXJNkYcbEwxDKhzMMdJuB51wk7UywLS5eY2me-FFA@mail.gmail.com>
-Subject: Re: [PATCH v4 02/10] drm/bridge: Fix a use case in the bridge disable logic
-To:     Dario Binacchi <dario.binacchi@amarulasolutions.com>
-Cc:     Dave Stevenson <dave.stevenson@raspberrypi.com>,
-        Michael Nazzareno Trimarchi <michael@amarulasolutions.com>,
-        linux-kernel@vger.kernel.org,
-        Amarula patchwork <linux-amarula@amarulasolutions.com>,
-        Andrzej Hajda <andrzej.hajda@intel.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@gmail.com>,
-        Frieder Schrempf <frieder.schrempf@kontron.de>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Robert Foss <rfoss@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        dri-devel@lists.freedesktop.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <39cf0ad5-bbef-4fb9-81a3-9d2891cc7450@intel.com>
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 13, 2023 at 5:29=E2=80=AFPM Dario Binacchi
-<dario.binacchi@amarulasolutions.com> wrote:
->
-> Hi Jagan and Dave,
->
-> On Wed, Dec 6, 2023 at 2:57=E2=80=AFPM Michael Nazzareno Trimarchi
-> <michael@amarulasolutions.com> wrote:
-> >
-> > Hi Jagan
-> >
-> > On Wed, Dec 6, 2023 at 2:31=E2=80=AFPM Jagan Teki <jagan@amarulasolutio=
-ns.com> wrote:
-> > >
-> > > Hi Dario,
-> > >
-> > > On Wed, Dec 6, 2023 at 6:57=E2=80=AFPM Dario Binacchi
-> > > <dario.binacchi@amarulasolutions.com> wrote:
-> > > >
-> > > > Hi Dave and Jagan,
-> > > >
-> > > > On Tue, Dec 5, 2023 at 4:39=E2=80=AFPM Dave Stevenson
-> > > > <dave.stevenson@raspberrypi.com> wrote:
-> > > > >
-> > > > > Hi Dario
-> > > > >
-> > > > > On Tue, 5 Dec 2023 at 10:54, Dario Binacchi
-> > > > > <dario.binacchi@amarulasolutions.com> wrote:
-> > > > > >
-> > > > > > The patch fixes the code for finding the next bridge with the
-> > > > > > "pre_enable_prev_first" flag set to false. In case this conditi=
-on is
-> > > > > > not verified, i. e. there is no subsequent bridge with the flag=
- set to
-> > > > > > false, the whole bridge list is traversed, invalidating the "ne=
-xt"
-> > > > > > variable.
-> > > > > >
-> > > > > > The use of a new iteration variable (i. e. "iter") ensures that=
- the value
-> > > > > > of the "next" variable is not invalidated.
-> > > > >
-> > > > > We already have https://patchwork.freedesktop.org/patch/529288/ t=
-hat
-> > > > > has been reviewed (but not applied) to resolve this. What does th=
-is
-> > > > > version do differently and why?
-> > > >
-> > > > My patches only affect drm_atomic_bridge_chain_post_disable(), wher=
-eas
-> > > > Jagan's patch affects both
-> > > > drm_atomic_bridge_chain_post_disable() and drm_atomic_bridge_chain_=
-pre_enable().
-> > > > I tested Jagan's patch on my system with success and I reviewed wit=
-h
-> > > > Michael Trimarchi the
-> > > > drm_atomic_bridge_chain_pre_enable() fixing and we think it's okay.
-> > > > We also believe that our changes to post_disable() are better, as w=
-e
-> > > > set the 'next' variable only when required,
-> > > > and the code is more optimized since the list_is_last() is not call=
-ed
-> > > > within the loop.
-> > > > Would it be possible to use Jagan's patch for fixing
-> > > > drm_atomic_bridge_chain_pre_enable() and mine for
-> > > > fixing drm_atomic_bridge_chain_post_disable()?
-> > > >
-> > >
-> > > Can you please share the post-disabled bridge chain list with the
-> > > below example before and after your change?
-> >
-> > We have already git commit the description in how the patch affects
-> > the post_disable. As Dario
-> > reported your patch is ok even in our use case. We don't have a real
-> > use case as the one you describe.
-> >
-> > Can we know how you test it in this use case here? Can you test our
-> > patches of post_disable?
-> >
-> > Thanks
-> > Michael
-> >
-> > >
-> > > Example:
-> > > - Panel
-> > > - Bridge 1
-> > > - Bridge 2 pre_enable_prev_first
-> > > - Bridge 3
-> > > - Bridge 4 pre_enable_prev_first
-> > > - Bridge 5 pre_enable_prev_first
-> > > - Bridge 6
-> > > - Encoder
-> > >
-> > > Thanks,
-> > > Jagan.
->
-> Starting from my use case:
->
-> # cat /sys/kernel/debug/dri/32e00000.lcdif/bridge_chains
-> encoder[36]
-> bridge[0] type: 16, ops: 0x0, OF:
-> /soc@0/bus@32c00000/dsi@32e10000:fsl,imx8mn-mipi-dsim
-> bridge[1] type: 16, ops: 0x8, OF:
-> /soc@0/bus@32c00000/dsi@32e10000/panel@0:sharp,ls068b3sx0
->
-> I developed a pass through MIPI-DSI bridge driver to try to test your cas=
-e:
-> # cat /sys/kernel/debug/dri/32e00000.lcdif/bridge_chains
-> encoder[36]
-> bridge[0] type: 16, ops: 0x0, OF:
-> /soc@0/bus@32c00000/dsi@32e10000:fsl,imx8mn-mipi-dsim
-> bridge[1] type: 16, ops: 0x0, OF: /pt_mipi_dsi1:amarula,pt-mipi-dsi
-> bridge[2] type: 16, ops: 0x0, OF: /pt_mipi_dsi2:amarula,pt-mipi-dsi
-> bridge[3] type: 16, ops: 0x0, OF: /pt_mipi_dsi3:amarula,pt-mipi-dsi
-> bridge[4] type: 16, ops: 0x0, OF: /pt_mipi_dsi4:amarula,pt-mipi-dsi
-> bridge[5] type: 16, ops: 0x0, OF: /pt_mipi_dsi5:amarula,pt-mipi-dsi
-> bridge[6] type: 16, ops: 0x8, OF: /pt_mipi_dsi5/panel@0:sharp,ls068b3sx02
->
-> The pre_enable_prev_first flag is set through the
-> "amarula,pre_enable_prev_first" dts property I put
-> in my dts.
-> Your and my patches give the same results (result: OK) in both your
-> use case and mine.
-> But If I test my new "enlarged" use case:
->
-> - Encoder
-> - bridge[0] (samsung-dsim)
-> - bridge[1] pre_enable_prev_first
-> - bridge[2] pre_enable_prev_first
-> - bridge[3] pre_enable_prev_first
-> - bridge[4] pre_enable_prev_first
-> - bridge[5] pre_enable_prev_first
-> - bridge[6] pre_enable_prev_first (Panel)
->
-> the result is:
-> my patches: KO
-> your patch: OK
->
-> So, I will remove my patches from the series.
->
-> Can the driver I implemented to test the use cases (pass through
-> MIPI-DSI) be considered useful for testing these
-> bridge pipelines?
-> Does it make sense to send its patch?
+On Tue, Dec 12, 2023 at 01:42:09PM -0800, Dave Hansen wrote:
+> On 12/12/23 13:36, Arnd Bergmann wrote:
+> > From: Arnd Bergmann <arnd@arndb.de>
+> > 
+> > When TDX is enabled but MCE is not, the tdx_dump_mce_info() function
+> > fails to link:
+> 
+> Thanks for the report, Arnd.
+> 
+> The only way that TDX has to report integrity errors is an MCE.  I'm not
+> sure it even makes sense to have TDX support but not MCE support.  Maybe
+> we should just make TDX host support depend on MCE.
 
-I don't think so, I have a similar test bench for chain of bridges. I
-will try to re-create the chain and update the result.
+I agree. Silently ignore integrity errors is not good idea.
 
-Jagan.
+TDX module spec also supports it:
+
+"The machine-check exception handler is expected to be implemented in the
+VMM."
+
+-- 
+  Kiryl Shutsemau / Kirill A. Shutemov
