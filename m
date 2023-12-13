@@ -2,133 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E8C78107C9
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 02:43:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E0A1F8107CE
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 02:45:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378224AbjLMBnB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 20:43:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43708 "EHLO
+        id S1378228AbjLMBou (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 20:44:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38148 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378199AbjLMBnA (ORCPT
+        with ESMTP id S1378199AbjLMBot (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 20:43:00 -0500
-Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26DD1B7;
-        Tue, 12 Dec 2023 17:43:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1702431784;
-        bh=kJaU2JTGNOSsbFtXofZUd1U0Nbf9C/FQpjhmSxjoQss=;
-        h=Date:From:To:Cc:Subject:From;
-        b=DxJM33ESLL/bxPYx7rOpgAAWenCpSfGRD1HDyTZfmRNQWNaNWkzqfoIC9oX3pi22U
-         LMkU7ORwXNuKySICRXVCBrFek4KcKabFr2nu8haiEDXgnnt5X55+UqK4HFwmeJJ/8J
-         qaSPP95bQ8f349gvhHYu3VMfFvscQ3bspNfLJ90uGNYHHgY3/RNcOiPR3He0PPQCqI
-         DvgPaZQYrf7rpFVTMdiTry6OQ0Ei3p58ebV1430+QK3gB11apHcXXashANgZonKREx
-         gvyr4aywZqi4sli36D3j7YOIJNp20QvtYM++vMGnUoXp98Xgdl93cilo6DDE38YFxq
-         DCNy/c06yrYMA==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4SqdXl6PpPz4wdC;
-        Wed, 13 Dec 2023 12:43:03 +1100 (AEDT)
-Date:   Wed, 13 Dec 2023 12:43:02 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Joerg Roedel <joro@8bytes.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     Heiko Carstens <hca@linux.ibm.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>, Joerg Roedel <jroedel@suse.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: manual merge of the iommu tree with the mm-nonmm-stable
- tree
-Message-ID: <20231213124302.2a6281af@canb.auug.org.au>
+        Tue, 12 Dec 2023 20:44:49 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D18FB2
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 17:44:55 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 26CBDC433C9;
+        Wed, 13 Dec 2023 01:44:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1702431894;
+        bh=iSyAPZ2ui6DQUOV4s/EIyGAwUYSfCAlu+D5HjvA3FUw=;
+        h=Date:Subject:To:References:From:In-Reply-To:From;
+        b=LpTVvXNrU0ptsKZaGzkNUBTiIINZb0AXojLFmg9BpftOPa2/RlztEM6qz/wQHkQoE
+         b4Xat99AMg9bsbJNijdlT2WX2cdTEzPNSEYt6/q1OE6vAF21JekX3b/ToBJo0gHeUi
+         DOpQr45MfvkUQ7zbJTwGtZuyEkRJWRa0hfnXJkEcX91IDZME9hgmltP3U/8r2IkuPU
+         dkATIH54n8dCa6upBTPjNc+QPM3bf0dO3lTNWL9aASQgL47T6/Bwbdhjs7EAXlR1+5
+         M8L1EBogKS4PmMpi+Vm39ugEBRVM87UsBo+1i2BuJrag7wmWeMXAggLd5w3LH2qiif
+         LoPYhhN0dbiig==
+Message-ID: <360a50da-c71b-4a42-9da9-97c1ac9495fb@kernel.org>
+Date:   Tue, 12 Dec 2023 19:44:52 -0600
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/fBm6b//CFPRkuNN2Ov+FvBG";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] arm64: dts: intel: minor whitespace cleanup around '='
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20231124094620.58017-1-krzysztof.kozlowski@linaro.org>
+Content-Language: en-US
+From:   Dinh Nguyen <dinguyen@kernel.org>
+In-Reply-To: <20231124094620.58017-1-krzysztof.kozlowski@linaro.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/fBm6b//CFPRkuNN2Ov+FvBG
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On 11/24/23 03:46, Krzysztof Kozlowski wrote:
+> The DTS code coding style expects exactly one space before and after '='
+> sign.
+> 
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> ---
+>   arch/arm64/boot/dts/intel/socfpga_agilex5.dtsi | 4 ++--
+>   1 file changed, 2 insertions(+), 2 deletions(-)
+> 
 
-Hi all,
+Applied!
 
-Today's linux-next merge of the iommu tree got a conflict in:
+Thanks,
+Dinh
 
-  arch/Kconfig
-
-between commits:
-
-  0eb5085c3874 ("arch: remove ARCH_TASK_STRUCT_ON_STACK")
-  3888750e21cc ("arch: remove ARCH_TASK_STRUCT_ALLOCATOR")
-
-from the mm-nonmm-stable tree and commit:
-
-  8f23f5dba6b4 ("iommu: Change kconfig around IOMMU_SVA")
-
-from the iommu tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc arch/Kconfig
-index bfcc7c2dc039,3e49f862670e..000000000000
---- a/arch/Kconfig
-+++ b/arch/Kconfig
-@@@ -301,8 -301,22 +301,13 @@@ config ARCH_HAS_DMA_CLEAR_UNCACHE
-  config ARCH_HAS_CPU_FINALIZE_INIT
-  	bool
- =20
-+ # The architecture has a per-task state that includes the mm's PASID
-+ config ARCH_HAS_CPU_PASID
-+ 	bool
-+ 	select IOMMU_MM_DATA
-+=20
- -# Select if arch init_task must go in the __init_task_data section
- -config ARCH_TASK_STRUCT_ON_STACK
- -	bool
- -
- -# Select if arch has its private alloc_task_struct() function
- -config ARCH_TASK_STRUCT_ALLOCATOR
- -	bool
- -
-  config HAVE_ARCH_THREAD_STRUCT_WHITELIST
-  	bool
- -	depends on !ARCH_TASK_STRUCT_ALLOCATOR
-  	help
-  	  An architecture should select this to provide hardened usercopy
-  	  knowledge about what region of the thread_struct should be
-
---Sig_/fBm6b//CFPRkuNN2Ov+FvBG
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmV5DCYACgkQAVBC80lX
-0Gww9Af/UGMcvjfqSRAZwOdSvyH21px/hWPgXvYKq6RIPdV8fG22tLyfQnVUrKUd
-r5LV6Pj+KL+UGu++xIAmBjVxQ4ySXmEWiqBGnh2qjOLa/6xjc74B2H5Eq/QmdDwl
-SDWyyZn1KRW0hAWmJ5MpVHlrSVtsvR9v12DlDlUegPbb1mZ2Qsc2PY8Fa5ahrB/k
-IJdCGYAGcDC9/l7tbTBUBzd5HVhesjlbeN3C9zTWBDzx6vkVFQr3iNDStwUC1AL6
-4T9X92AEknMjPbQayo2Qckqs9oRiPqU9gTtDEcv2kjK8znE1WQZ5CUR/u/+u5Kg9
-RkSIvP9+aPIw1nDoVVxJ4f14y3+Eew==
-=jFGo
------END PGP SIGNATURE-----
-
---Sig_/fBm6b//CFPRkuNN2Ov+FvBG--
