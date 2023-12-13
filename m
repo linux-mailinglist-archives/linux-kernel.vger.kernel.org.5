@@ -2,55 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4977B811375
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 14:51:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 90B3A811376
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 14:51:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379193AbjLMNu4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 08:50:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35056 "EHLO
+        id S1379300AbjLMNu7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 08:50:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34944 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379296AbjLMNu1 (ORCPT
+        with ESMTP id S1379214AbjLMNu2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 08:50:27 -0500
+        Wed, 13 Dec 2023 08:50:28 -0500
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE43F12E
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 05:50:29 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE39318F
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 05:50:31 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1702475428;
+        s=mimecast20190719; t=1702475430;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=qxgWR+mMYbB63/GJ7cX9lmHqi8FmxBI8cumRvvcON7M=;
-        b=ikFfrvJXIud+W7ULyRBoJ+OZEm/tdMeHMFwErncWicORdhfJvc08iJ5yGnGES8i6R338WQ
-        HWp5gMO6Ud7QAz9FyTbVrJ1PX9YWd2wcfw0grtlFB7IVXbDX0DDa2s8376gT7mjhUGHuqx
-        RcmlMjYwaEIn5H7TkqGt++wLGwv5cMQ=
+        bh=z3fXIPXuGexzb3JH5UnibU+knvRn4aWjn9nvZHgRZUg=;
+        b=bO2zIP4NzhJcdI+XmyhlwWevddlqgZHq2BRffFt02PV23xOjE2zsdQxpjd8yQ6p7nNB8kn
+        cXJkZiED7BTMs4qv6/IqJV0h/MA8PCI2KIBPcbHsVO8+JuHJEJx4so+lWQLonNkohxPsUT
+        et0DTnQ4u0ysj9bhb3PiwzZKQQtJbwg=
 Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
  [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-477-uwecFDqTPsqsUgmHTmYwMA-1; Wed, 13 Dec 2023 08:50:24 -0500
-X-MC-Unique: uwecFDqTPsqsUgmHTmYwMA-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com [10.11.54.5])
+ us-mta-441-csY2hgwvOb-vxy8PjmHO1w-1; Wed, 13 Dec 2023 08:50:26 -0500
+X-MC-Unique: csY2hgwvOb-vxy8PjmHO1w-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.rdu2.redhat.com [10.11.54.7])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 56D5E101CC6B;
-        Wed, 13 Dec 2023 13:50:24 +0000 (UTC)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id DFC178828C6;
+        Wed, 13 Dec 2023 13:50:25 +0000 (UTC)
 Received: from warthog.procyon.org.com (unknown [10.42.28.2])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 8D43651E3;
-        Wed, 13 Dec 2023 13:50:23 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 2160E1C060B1;
+        Wed, 13 Dec 2023 13:50:25 +0000 (UTC)
 From:   David Howells <dhowells@redhat.com>
 To:     Marc Dionne <marc.dionne@auristor.com>
 Cc:     David Howells <dhowells@redhat.com>, linux-afs@lists.infradead.org,
         linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 11/40] afs: Rename addr_list::failed to probe_failed
-Date:   Wed, 13 Dec 2023 13:49:33 +0000
-Message-ID: <20231213135003.367397-12-dhowells@redhat.com>
+Subject: [PATCH v2 12/40] afs: Handle the VIO and UAEIO aborts explicitly
+Date:   Wed, 13 Dec 2023 13:49:34 +0000
+Message-ID: <20231213135003.367397-13-dhowells@redhat.com>
 In-Reply-To: <20231213135003.367397-1-dhowells@redhat.com>
 References: <20231213135003.367397-1-dhowells@redhat.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.5
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.7
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
@@ -62,138 +62,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Rename the failed member of struct addr_list to probe_failed as it's
-specifically related to probe failures.
+When processing the result of a call, handle the VIO and UAEIO abort
+specifically rather than leaving it to a default case.  Rather than
+erroring out unconditionally, see if there's another server if the volume
+has more than one server available, otherwise return -EREMOTEIO.
 
 Signed-off-by: David Howells <dhowells@redhat.com>
 cc: Marc Dionne <marc.dionne@auristor.com>
 cc: linux-afs@lists.infradead.org
 ---
- fs/afs/addr_list.c | 2 +-
- fs/afs/fs_probe.c  | 6 +++---
- fs/afs/internal.h  | 2 +-
- fs/afs/proc.c      | 2 +-
- fs/afs/rotate.c    | 2 +-
- fs/afs/vl_probe.c  | 4 ++--
- fs/afs/vl_rotate.c | 2 +-
- 7 files changed, 10 insertions(+), 10 deletions(-)
 
-diff --git a/fs/afs/addr_list.c b/fs/afs/addr_list.c
-index 519821f5aedc..b76abf500713 100644
---- a/fs/afs/addr_list.c
-+++ b/fs/afs/addr_list.c
-@@ -367,7 +367,7 @@ bool afs_iterate_addresses(struct afs_addr_cursor *ac)
- 		return false;
- 
- 	set = ac->alist->responded;
--	failed = ac->alist->failed;
-+	failed = ac->alist->probe_failed;
- 	_enter("%lx-%lx-%lx,%d", set, failed, ac->tried, ac->index);
- 
- 	ac->nr_iterations++;
-diff --git a/fs/afs/fs_probe.c b/fs/afs/fs_probe.c
-index 58d28b82571e..fbb91ad775b9 100644
---- a/fs/afs/fs_probe.c
-+++ b/fs/afs/fs_probe.c
-@@ -88,7 +88,7 @@ static void afs_fs_probe_not_done(struct afs_net *net,
- 	if (server->probe.error == 0)
- 		server->probe.error = -ENOMEM;
- 
--	set_bit(index, &alist->failed);
-+	set_bit(index, &alist->probe_failed);
- 
- 	spin_unlock(&server->probe_lock);
- 	return afs_done_one_fs_probe(net, server);
-@@ -138,7 +138,7 @@ void afs_fileserver_probe_result(struct afs_call *call)
- 	case -ETIME:
- 	default:
- 		clear_bit(index, &alist->responded);
--		set_bit(index, &alist->failed);
-+		set_bit(index, &alist->probe_failed);
- 		if (!server->probe.responded &&
- 		    (server->probe.error == 0 ||
- 		     server->probe.error == -ETIMEDOUT ||
-@@ -149,7 +149,7 @@ void afs_fileserver_probe_result(struct afs_call *call)
- 	}
- 
- responded:
--	clear_bit(index, &alist->failed);
-+	clear_bit(index, &alist->probe_failed);
- 
- 	if (call->service_id == YFS_FS_SERVICE) {
- 		server->probe.is_yfs = true;
-diff --git a/fs/afs/internal.h b/fs/afs/internal.h
-index ec08b4a7e499..95bb37253cad 100644
---- a/fs/afs/internal.h
-+++ b/fs/afs/internal.h
-@@ -90,7 +90,7 @@ struct afs_addr_list {
- 	unsigned char		nr_ipv4;	/* Number of IPv4 addresses */
- 	enum dns_record_source	source:8;
- 	enum dns_lookup_status	status:8;
--	unsigned long		failed;		/* Mask of addrs that failed locally/ICMP */
-+	unsigned long		probe_failed;	/* Mask of addrs that failed locally/ICMP */
- 	unsigned long		responded;	/* Mask of addrs that responded */
- 	struct afs_address	addrs[] __counted_by(max_addrs);
- #define AFS_MAX_ADDRESSES ((unsigned int)(sizeof(unsigned long) * 8))
-diff --git a/fs/afs/proc.c b/fs/afs/proc.c
-index 8a65a06908d2..16d93fa6396f 100644
---- a/fs/afs/proc.c
-+++ b/fs/afs/proc.c
-@@ -396,7 +396,7 @@ static int afs_proc_servers_show(struct seq_file *m, void *v)
- 		   (int)(jiffies - server->probed_at) / HZ,
- 		   atomic_read(&server->probe_outstanding));
- 	seq_printf(m, "  - ALIST v=%u rsp=%lx f=%lx\n",
--		   alist->version, alist->responded, alist->failed);
-+		   alist->version, alist->responded, alist->probe_failed);
- 	for (i = 0; i < alist->nr_addrs; i++)
- 		seq_printf(m, "    [%x] %pISpc%s rtt=%d\n",
- 			   i, rxrpc_kernel_remote_addr(alist->addrs[i].peer),
+Notes:
+    Changes
+    =======
+    ver #2)
+     - Treat UAEIO as VIO too.
+
+ fs/afs/rotate.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
+
 diff --git a/fs/afs/rotate.c b/fs/afs/rotate.c
-index d420f073300b..13ec8ffa911a 100644
+index 13ec8ffa911a..0829933f4d9a 100644
 --- a/fs/afs/rotate.c
 +++ b/fs/afs/rotate.c
-@@ -583,7 +583,7 @@ void afs_dump_edestaddrreq(const struct afs_operation *op)
- 					  a->nr_ipv4, a->nr_addrs, a->max_addrs,
- 					  a->preferred);
- 				pr_notice("FC:  - R=%lx F=%lx\n",
--					  a->responded, a->failed);
-+					  a->responded, a->probe_failed);
- 				if (a == op->ac.alist)
- 					pr_notice("FC:  - current\n");
- 			}
-diff --git a/fs/afs/vl_probe.c b/fs/afs/vl_probe.c
-index 9551aef07cee..44bff3a2a5ac 100644
---- a/fs/afs/vl_probe.c
-+++ b/fs/afs/vl_probe.c
-@@ -90,7 +90,7 @@ void afs_vlserver_probe_result(struct afs_call *call)
- 	case -ETIME:
- 	default:
- 		clear_bit(index, &alist->responded);
--		set_bit(index, &alist->failed);
-+		set_bit(index, &alist->probe_failed);
- 		if (!(server->probe.flags & AFS_VLSERVER_PROBE_RESPONDED) &&
- 		    (server->probe.error == 0 ||
- 		     server->probe.error == -ETIMEDOUT ||
-@@ -102,7 +102,7 @@ void afs_vlserver_probe_result(struct afs_call *call)
+@@ -330,6 +330,13 @@ bool afs_select_fileserver(struct afs_operation *op)
  
- responded:
- 	set_bit(index, &alist->responded);
--	clear_bit(index, &alist->failed);
-+	clear_bit(index, &alist->probe_failed);
+ 			goto restart_from_beginning;
  
- 	if (call->service_id == YFS_VL_SERVICE) {
- 		server->probe.flags |= AFS_VLSERVER_PROBE_IS_YFS;
-diff --git a/fs/afs/vl_rotate.c b/fs/afs/vl_rotate.c
-index 6aaa2e4733ec..01c890b3d18d 100644
---- a/fs/afs/vl_rotate.c
-+++ b/fs/afs/vl_rotate.c
-@@ -322,7 +322,7 @@ static void afs_vl_dump_edestaddrreq(const struct afs_vl_cursor *vc)
- 					  a->nr_ipv4, a->nr_addrs, a->max_addrs,
- 					  a->preferred);
- 				pr_notice("VC:  - R=%lx F=%lx\n",
--					  a->responded, a->failed);
-+					  a->responded, a->probe_failed);
- 				if (a == vc->ac.alist)
- 					pr_notice("VC:  - current\n");
- 			}
++		case UAEIO:
++		case VIO:
++			op->error = -EREMOTEIO;
++			if (op->volume->type != AFSVL_RWVOL)
++				goto next_server;
++			goto failed;
++
+ 		case VDISKFULL:
+ 		case UAENOSPC:
+ 			/* The partition is full.  Only applies to RWVOLs.
 
