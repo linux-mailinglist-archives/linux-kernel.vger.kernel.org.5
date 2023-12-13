@@ -2,87 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C2B3281212C
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 23:06:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6ADE1812130
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 23:07:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442723AbjLMWG0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 17:06:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59394 "EHLO
+        id S1442730AbjLMWGy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 17:06:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42710 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229772AbjLMWGZ (ORCPT
+        with ESMTP id S229772AbjLMWGw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 17:06:25 -0500
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4207AC;
-        Wed, 13 Dec 2023 14:06:29 -0800 (PST)
-Received: by mail-ej1-x62b.google.com with SMTP id a640c23a62f3a-a1ec87a7631so666318766b.0;
-        Wed, 13 Dec 2023 14:06:29 -0800 (PST)
+        Wed, 13 Dec 2023 17:06:52 -0500
+Received: from mail-yw1-x1134.google.com (mail-yw1-x1134.google.com [IPv6:2607:f8b0:4864:20::1134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18638AC
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 14:06:59 -0800 (PST)
+Received: by mail-yw1-x1134.google.com with SMTP id 00721157ae682-5d226f51f71so72965727b3.3
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 14:06:59 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=jms.id.au; s=google; t=1702505188; x=1703109988; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1702505218; x=1703110018; darn=vger.kernel.org;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=X4UuYiM1z+VjAh8ejY7MCYBHB5OZzwXVD0RCWJmFeg4=;
-        b=b2bjIocNh+tOZs0bVFKRZu2BMDXOp+TymNfLaQCT6ZK8qF3mLLhhhwoixtyW6mJ60B
-         eJ+M/H1cH7rFBx/pZ6ov/gI8ZT8j56q1flueSapGLRbLbZcZrgV8+HIzVK7q6ZNhIlBf
-         VRt0CWsEcZzijROSmIH6dllsOYMM8y+9fcEfQ=
+        bh=IiZLeydFv0dQoVsgTLSTJeU50o5YR4HggKIDBADvvDw=;
+        b=lx7cLn9NdZt9/bqftOe4XWKSKIHu7IpyaeHvgAJ3gDzGuViTRgwVdycjSw2HtSVIj+
+         ygOR15I45/tubqZmdKN0C26uPQZ/pb03iDVMN5X9Y1xsQpCZIPVY++zmQXlmnvRYbUE8
+         uI8CztcZcSKSkUMTuBhmsVYQpjKjlDJfIdW5Lmlx24t8f6NAOOPWs58miXMF4YGnE8Gs
+         L3+upSEGq0sYQ0dQ8bTTQN65lS2FdbBhvGbe3d1ACFC+uxkUsYBnfUOLxU8kn5dfkodg
+         bWOuLVrj+gFbi8jdjMukaKmlWYsMUDJkwBmA+gmKv7zOQrkXUV5ujqT2qiIlrof3ZNOD
+         kHjw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702505188; x=1703109988;
+        d=1e100.net; s=20230601; t=1702505218; x=1703110018;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=X4UuYiM1z+VjAh8ejY7MCYBHB5OZzwXVD0RCWJmFeg4=;
-        b=sllH4yyObBNdbBS4BStAJR+WIW7HXJkjjVejSrOjA5qkzclqRIfB2zlTvx/KSfEBZk
-         RWmrfZ88WSZKhqQKjya85bK5UaJwG2LX7TclG4xEHFEYSLto8F5dWHHDxjO8i8h1uZnr
-         eGqPuZsfAWHCZLoT8OaBgJOpMOP05BD41KZzpRIrsM9zWFE2ODSirmoHkjrDFkZW54Kw
-         WqMeP5Yw45Rv6M3MeiGao5F8T6D4yrcPl6eye7ocRnJpPFohizf6WcobBQ4S0FCEm3De
-         bjX/VKWq/HcOpNUG0M4njUsMXGdN+YH0qSSeaP8UjYK4odNWQdzEtRUMsSlJaBeeHEb8
-         wxqw==
-X-Gm-Message-State: AOJu0YwwPuvHptw77lj/89ab8a4xFxUJBoxyKX1i6fEdkScObGId7Dxd
-        Y+Lz91+lvkYOOknBMBOkfbbQGDLp6f/3BFAPXULzPq7I
-X-Google-Smtp-Source: AGHT+IHoi+YYTwEgJd54Iml8QHhKqqM0q3DYu6kyOXo+79ayzZ8IZpuenJXjrO1EDXLsFXizgjuZ1pZq5QndZQTwPmA=
-X-Received: by 2002:a17:907:1a58:b0:a18:fa22:5df2 with SMTP id
- mf24-20020a1709071a5800b00a18fa225df2mr4282845ejc.31.1702505188172; Wed, 13
- Dec 2023 14:06:28 -0800 (PST)
+        bh=IiZLeydFv0dQoVsgTLSTJeU50o5YR4HggKIDBADvvDw=;
+        b=Y0epY17NlRfqcKE9/heKj9lcdySlL85/52bblB5Xaf6bPu2KN4/8W0tzVBatA5NRVk
+         uuFZ71p2SwefeKIhbHHHxaACOo1g27pXjyemi6RCGUXrHl0AuxNw7JvbDwEHiljkThaA
+         AGDdFIhln4XjXwa6gaLz3k5UKnWsTF5ehcPhQqgbJSu+UOqFE0l50kQp0uE6gTefwldL
+         CQF8H6L0adrqGesUmJ+Lmv//fkgKvmM1IqKmjTfVgabU53adD0E7bsEb+spxwAiSnZio
+         qJa/wR3aFKhGBgAmEz1EMelZygHOVO656lrbOfJfEEWLHnpflPgrVEr91a0M/acXRg0l
+         cv7w==
+X-Gm-Message-State: AOJu0Yz3X8OGrDnsOZcP25wSHVkOVL9Zr2lBn3SdJ4De6Uje37qV0WvZ
+        o9PTADXKaAWSVr9xD2PnJUpUo9WrWCnOky6TRnelag==
+X-Google-Smtp-Source: AGHT+IEr68TyT/QvLeseprICEqjDcN/rRoj0lk5BxuC5payzc9s1YVNN9YYwQvjCujY3WsP7jPO/aXoRaDtxmbQXGKo=
+X-Received: by 2002:a81:5ec2:0:b0:5d3:977b:d632 with SMTP id
+ s185-20020a815ec2000000b005d3977bd632mr8471435ywb.6.1702505218315; Wed, 13
+ Dec 2023 14:06:58 -0800 (PST)
 MIME-Version: 1.0
-References: <20231213093044.2fc89781@canb.auug.org.au>
-In-Reply-To: <20231213093044.2fc89781@canb.auug.org.au>
-From:   Joel Stanley <joel@jms.id.au>
-Date:   Thu, 14 Dec 2023 08:36:15 +1030
-Message-ID: <CACPK8XevBYm8q1rHm4CyyqaNb3gAcksJUUh4QcOWMx_Um++8jA@mail.gmail.com>
-Subject: Re: linux-next: build failure after merge of the aspeed tree
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Peter Yin <peteryin.openbmc@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
+References: <20231213-encoder-fixup-v4-0-6da6cd1bf118@quicinc.com> <20231213-encoder-fixup-v4-2-6da6cd1bf118@quicinc.com>
+In-Reply-To: <20231213-encoder-fixup-v4-2-6da6cd1bf118@quicinc.com>
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date:   Thu, 14 Dec 2023 00:06:47 +0200
+Message-ID: <CAA8EJprcH22ouehetL4uNwUuroRUc9q6swGZo1GjuGuCRZDv=A@mail.gmail.com>
+Subject: Re: [PATCH v4 2/2] drm/msm/dpu: Drop enable and frame_count
+ parameters from dpu_hw_setup_misr()
+To:     Jessica Zhang <quic_jesszhan@quicinc.com>
+Cc:     Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
+        Marijn Suijten <marijn.suijten@somainline.org>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>, quic_abhinavk@quicinc.com,
+        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 13 Dec 2023 at 09:00, Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+On Wed, 13 Dec 2023 at 23:30, Jessica Zhang <quic_jesszhan@quicinc.com> wrote:
 >
-> Hi all,
+> Drop the enable and frame_count parameters from dpu_hw_setup_misr() as they
+> are always set to the same values.
 >
-> After merging the aspeed tree, today's linux-next build (arm
-> multi_v7_defconfig) failed like this:
+> In addition, replace MISR_FRAME_COUNT_MASK with MISR_FRAME_COUNT as
+> frame_count is always set to the same value.
 >
-> make[4]: *** No rule to make target 'arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-harma.dtb', needed by 'arch/arm/boot/dts/aspeed/'.  Stop.
->
-> Caused by commit
->
->   70fe22dd623e ("ARM: dts: aspeed: Harma: Add Meta Harma (AST2600) BMC")
->
-> I have used the aspeed tree from next-20231212 for today.
+> Fixes: 7b37523fb1d1 ("drm/msm/dpu: Move MISR methods to dpu_hw_util")
+> Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+> Signed-off-by: Jessica Zhang <quic_jesszhan@quicinc.com>
+> ---
+>  drivers/gpu/drm/msm/disp/dpu1/dpu_crtc.c    |  4 ++--
+>  drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c |  4 ++--
+>  drivers/gpu/drm/msm/disp/dpu1/dpu_hw_intf.c |  6 +++---
+>  drivers/gpu/drm/msm/disp/dpu1/dpu_hw_intf.h |  4 ++--
+>  drivers/gpu/drm/msm/disp/dpu1/dpu_hw_lm.c   |  6 +++---
+>  drivers/gpu/drm/msm/disp/dpu1/dpu_hw_lm.h   |  3 ++-
+>  drivers/gpu/drm/msm/disp/dpu1/dpu_hw_util.c | 19 +++++--------------
+>  drivers/gpu/drm/msm/disp/dpu1/dpu_hw_util.h |  9 +++------
+>  8 files changed, 22 insertions(+), 33 deletions(-)
 
-Should be fixed today, sorry about that.
+Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
 
-Cheers,
-
-Joel
+-- 
+With best wishes
+Dmitry
