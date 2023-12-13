@@ -2,257 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0393481076D
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 02:11:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A791A810774
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 02:13:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378118AbjLMBLO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 20:11:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42188 "EHLO
+        id S1378136AbjLMBNf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 20:13:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33884 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377653AbjLMBLM (ORCPT
+        with ESMTP id S1377653AbjLMBNe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 20:11:12 -0500
-Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 6F842A7;
-        Tue, 12 Dec 2023 17:11:16 -0800 (PST)
-Received: from loongson.cn (unknown [10.180.129.93])
-        by gateway (Coremail) with SMTP id _____8DxE_CsBHlldYIAAA--.3183S3;
-        Wed, 13 Dec 2023 09:11:08 +0800 (CST)
-Received: from localhost.localdomain (unknown [10.180.129.93])
-        by localhost.localdomain (Coremail) with SMTP id AQAAf8DxkuOpBHllxY8BAA--.10748S2;
-        Wed, 13 Dec 2023 09:11:05 +0800 (CST)
-From:   Hongchen Zhang <zhanghongchen@loongson.cn>
-To:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Len Brown <len.brown@intel.com>, Pavel Machek <pavel@ucw.cz>,
-        Bojan Smojver <bojan@rexursive.com>
-Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        loongson-kernel@lists.loongnix.cn,
-        Hongchen Zhang <zhanghongchen@loongson.cn>,
-        stable@vger.kernel.org, Weihao Li <liweihao@loongson.cn>
-Subject: [PATCH v3] PM: hibernate: use acquire/release ordering when compress/decompress image
-Date:   Wed, 13 Dec 2023 09:11:03 +0800
-Message-Id: <20231213011103.1491414-1-zhanghongchen@loongson.cn>
-X-Mailer: git-send-email 2.33.0
+        Tue, 12 Dec 2023 20:13:34 -0500
+Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com [66.111.4.25])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43ED391;
+        Tue, 12 Dec 2023 17:13:39 -0800 (PST)
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+        by mailout.nyi.internal (Postfix) with ESMTP id CE0295C01D7;
+        Tue, 12 Dec 2023 20:13:36 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute1.internal (MEProxy); Tue, 12 Dec 2023 20:13:36 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=themaw.net; h=cc
+        :cc:content-transfer-encoding:content-type:content-type:date
+        :date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+        :references:reply-to:subject:subject:to:to; s=fm3; t=1702430016;
+         x=1702516416; bh=q1SPQYQRBWl7bFrY5/lVAS8dc6PpLJdw7+EOXaZGVW4=; b=
+        Ze0PwEh2S3szHV/ysnl1BX0zv1/CfSBmMStu4vXojWR8sKZ/+ev5W6PpgP4i1la5
+        INWsbQWMZOhPOPz0Ss3v6hx3aLl+r3+O7DNtSkjQ4k8b0BSpKudqERUpkdFcwWrC
+        u5Hb9hQrPiUyBnGaK0Mx2qM5oHX/QOJyk1ltkecAlXM1w18/xSMNTkSNkMkIcha3
+        aBigpGgHNFrD9s/99NM2EPyaZSFJofrufVllgbTDQD3x8agFx+uWv937VPj4yQov
+        LDZ61yro2+0ViZyt44dv6aTAIDLwVaw48rU/G/CIczeS5MKuaFTaaici99+Hb0r9
+        xLoEXdf5gQQQHJmIiOrHvw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-transfer-encoding
+        :content-type:content-type:date:date:feedback-id:feedback-id
+        :from:from:in-reply-to:in-reply-to:message-id:mime-version
+        :references:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1702430016; x=
+        1702516416; bh=q1SPQYQRBWl7bFrY5/lVAS8dc6PpLJdw7+EOXaZGVW4=; b=2
+        Pu5VDvJxB+hNgOzbQS8onyFPjDTA5005w70yUaUEx6sY6LH9thUWrT74U/eM3n7i
+        8sPvzZT5BraMUnai4Oiurvmrz7CyvxK/uFWVESLJ0aNxBcLpSUF3XDmk7aP2wSFe
+        LNZXNSS1TYD3y8iPrKxqQjisH5lHYJCXCy6x+x0N/zMRlDWw8x9C5TcFU4DM+/tH
+        PndYo4EQezv+W1RekQUeHg0M/6/qxChKcZJEOev1fsqcH93x1yG6i8O6KdSKFZMA
+        nLbYJEO7M/CxVv+30+imA2niTK7g/I3Aly/SsLJKWaZb/pE3rxn0XKizH3RhgSob
+        DxC3cAqIgfb7dAt4xiphw==
+X-ME-Sender: <xms:QAV5ZRIw5On9QW0y7o6Ul7WYC95gZvbm6hihF-O9wUrp-PGyDMD6HA>
+    <xme:QAV5ZdK_5s2opw-6uCV1kCIQx46sRcMBypw3gLpcD7HE35nLl3hULiu6sXYOaXpN_
+    ZyllZX2zFDk>
+X-ME-Received: <xmr:QAV5ZZuwjuTmuMj4OMA7_e0i4S95DUpHf4Ysaq_UTSJUn60SCTOW4D8yoO_EnYoCzsxQHjMPS_DXmTxXGep8YXKVwmmF3BBqm0q6r0Hnl8aNQMoXVlNP9wVp>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrudelhedgfeefucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepkfffgggfvfevfhfhufgjtgfgsehtjeertddtfeejnecuhfhrohhmpefkrghn
+    ucfmvghnthcuoehrrghvvghnsehthhgvmhgrfidrnhgvtheqnecuggftrfgrthhtvghrnh
+    epjeegkedvhfekueejgeefieejtdevledvtdelieevveekffejfedtvdehkeefjeeknecu
+    vehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprhgrvhgvnh
+    esthhhvghmrgifrdhnvght
+X-ME-Proxy: <xmx:QAV5ZSbgMwE2_u77Z8MoHnF27nYycdpWY0RRWzUOfmrk6ss9z_Eamg>
+    <xmx:QAV5ZYZYxPE3hna1elh9v4ee5S2enWN29NIEYEMtLslwwM9dTX1xpQ>
+    <xmx:QAV5ZWCxkKiPwJLK-uCMpon65xjSsrGJjmnR0QNkJuVingcClDau5A>
+    <xmx:QAV5ZeP1hoNmo0aMVPbxZam7Mv1J6KDTSoqYOX4TUpMd2PbUytH4sQ>
+Feedback-ID: i31e841b0:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
+ 12 Dec 2023 20:13:32 -0500 (EST)
+Message-ID: <eab9dee1-a542-b079-7c49-7f3cb2974e47@themaw.net>
+Date:   Wed, 13 Dec 2023 09:13:27 +0800
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: AQAAf8DxkuOpBHllxY8BAA--.10748S2
-X-CM-SenderInfo: x2kd0w5krqwupkhqwqxorr0wxvrqhubq/1tbiAQAEB2V3wy0JUgABsk
-X-Coremail-Antispam: 1Uk129KBj93XoW3Gw47uFWkJrW7ZFyrXFWkGrX_yoW7KrW8pF
-        W8Xan0kr4UXrs8Z39rAay8Z345AFnYyFZrGrsxC34fuasIgrsYya40gF9Yvr1YyFy8t34v
-        9a17K34qgryqqFXCm3ZEXasCq-sJn29KB7ZKAUJUUUUx529EdanIXcx71UUUUU7KY7ZEXa
-        sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
-        0xBIdaVrnRJUUUBYb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
-        IYs7xG6rWj6s0DM7CIcVAFz4kK6r1Y6r17M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
-        e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
-        0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_
-        Gr0_Gr1UM2kKe7AKxVWUAVWUtwAS0I0E0xvYzxvE52x082IY62kv0487Mc804VCY07AIYI
-        kI8VC2zVCFFI0UMc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUAVWU
-        twAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI4
-        8JMxkF7I0En4kS14v26r126r1DMxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j
-        6r4UMxCIbckI1I0E14v26r126r1DMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwV
-        AFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv2
-        0xvE14v26r4j6ryUMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4
-        v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Gr0_Cr1lIxAIcVC2z280aVCY1x0267AK
-        xVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU8Dl1DUUUUU==
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+To:     Arnd Bergmann <arnd@kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Jan Kara <jack@suse.cz>,
+        Miklos Szeredi <mszeredi@redhat.com>,
+        "Seth Forshee (DigitalOcean)" <sforshee@kernel.org>,
+        Dave Chinner <dchinner@redhat.com>,
+        Amir Goldstein <amir73il@gmail.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20231212214819.247611-1-arnd@kernel.org>
+Content-Language: en-US
+From:   Ian Kent <raven@themaw.net>
+Subject: Re: [PATCH] statmount: reduce runtime stack usage
+In-Reply-To: <20231212214819.247611-1-arnd@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When we test S4(suspend to disk) on LoongArch 3A6000 platform, the
-test case sometimes fails. The dmesg log shows the following error:
-	Invalid LZO compressed length
-After we dig into the code, we find out that:
-When compress/decompress the image, the synchronization operation
-between the control thread and the compress/decompress/crc thread
-uses relaxed ordering interface, which is unreliable, and the
-following situation may occur:
-CPU 0					CPU 1
-save_image_lzo				lzo_compress_threadfn
-					  atomic_set(&d->stop, 1);
-  atomic_read(&data[thr].stop)
-  data[thr].cmp = data[thr].cmp_len;
-	  				  WRITE data[thr].cmp_len
-Then CPU0 get a old cmp_len and write to disk. When cpu resume from S4,
-wrong cmp_len is loaded.
+On 13/12/23 05:48, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
+>
+> prepare_kstatmount() constructs a copy of 'struct kstatmount' on the stack
+> and copies it into the local variable on the stack of its caller. Because
+> of the size of this structure, this ends up overflowing the limit for
+> a single function's stack frame when prepare_kstatmount() gets inlined
+> and both copies are on the same frame without the compiler being able
+> to collapse them into one:
+>
+> fs/namespace.c:4995:1: error: stack frame size (1536) exceeds limit (1024) in '__se_sys_statmount' [-Werror,-Wframe-larger-than]
+>   4995 | SYSCALL_DEFINE4(statmount, const struct mnt_id_req __user *, req,
+>
+> Mark the inner function as noinline_for_stack so the second copy is
+> freed before calling do_statmount() enters filesystem specific code.
+> The extra copy of the structure is a bit inefficient, but this
+> system call should not be performance critical.
 
-To maintain data consistency between two threads, we should use the
-acquire/release ordering interface. So we change atomic_read/atomic_set
-to atomic_read_acquire/atomic_set_release.
+Are you sure this is not performance sensitive, or is the performance
 
-Fixes: 081a9d043c98 ("PM / Hibernate: Improve performance of LZO/plain hibernation, checksum image")
-Cc: stable@vger.kernel.org
-Co-developed-by: Weihao Li <liweihao@loongson.cn>
-Signed-off-by: Weihao Li <liweihao@loongson.cn>
-Signed-off-by: Hongchen Zhang <zhanghongchen@loongson.cn>
----
- kernel/power/swap.c | 38 +++++++++++++++++++-------------------
- 1 file changed, 19 insertions(+), 19 deletions(-)
+critical comment not related to the system call being called many times?
 
-diff --git a/kernel/power/swap.c b/kernel/power/swap.c
-index a2cb0babb5ec..d44f5937f1e5 100644
---- a/kernel/power/swap.c
-+++ b/kernel/power/swap.c
-@@ -606,11 +606,11 @@ static int crc32_threadfn(void *data)
- 	unsigned i;
- 
- 	while (1) {
--		wait_event(d->go, atomic_read(&d->ready) ||
-+		wait_event(d->go, atomic_read_acquire(&d->ready) ||
- 		                  kthread_should_stop());
- 		if (kthread_should_stop()) {
- 			d->thr = NULL;
--			atomic_set(&d->stop, 1);
-+			atomic_set_release(&d->stop, 1);
- 			wake_up(&d->done);
- 			break;
- 		}
-@@ -619,7 +619,7 @@ static int crc32_threadfn(void *data)
- 		for (i = 0; i < d->run_threads; i++)
- 			*d->crc32 = crc32_le(*d->crc32,
- 			                     d->unc[i], *d->unc_len[i]);
--		atomic_set(&d->stop, 1);
-+		atomic_set_release(&d->stop, 1);
- 		wake_up(&d->done);
- 	}
- 	return 0;
-@@ -649,12 +649,12 @@ static int lzo_compress_threadfn(void *data)
- 	struct cmp_data *d = data;
- 
- 	while (1) {
--		wait_event(d->go, atomic_read(&d->ready) ||
-+		wait_event(d->go, atomic_read_acquire(&d->ready) ||
- 		                  kthread_should_stop());
- 		if (kthread_should_stop()) {
- 			d->thr = NULL;
- 			d->ret = -1;
--			atomic_set(&d->stop, 1);
-+			atomic_set_release(&d->stop, 1);
- 			wake_up(&d->done);
- 			break;
- 		}
-@@ -663,7 +663,7 @@ static int lzo_compress_threadfn(void *data)
- 		d->ret = lzo1x_1_compress(d->unc, d->unc_len,
- 		                          d->cmp + LZO_HEADER, &d->cmp_len,
- 		                          d->wrk);
--		atomic_set(&d->stop, 1);
-+		atomic_set_release(&d->stop, 1);
- 		wake_up(&d->done);
- 	}
- 	return 0;
-@@ -798,7 +798,7 @@ static int save_image_lzo(struct swap_map_handle *handle,
- 
- 			data[thr].unc_len = off;
- 
--			atomic_set(&data[thr].ready, 1);
-+			atomic_set_release(&data[thr].ready, 1);
- 			wake_up(&data[thr].go);
- 		}
- 
-@@ -806,12 +806,12 @@ static int save_image_lzo(struct swap_map_handle *handle,
- 			break;
- 
- 		crc->run_threads = thr;
--		atomic_set(&crc->ready, 1);
-+		atomic_set_release(&crc->ready, 1);
- 		wake_up(&crc->go);
- 
- 		for (run_threads = thr, thr = 0; thr < run_threads; thr++) {
- 			wait_event(data[thr].done,
--			           atomic_read(&data[thr].stop));
-+				atomic_read_acquire(&data[thr].stop));
- 			atomic_set(&data[thr].stop, 0);
- 
- 			ret = data[thr].ret;
-@@ -850,7 +850,7 @@ static int save_image_lzo(struct swap_map_handle *handle,
- 			}
- 		}
- 
--		wait_event(crc->done, atomic_read(&crc->stop));
-+		wait_event(crc->done, atomic_read_acquire(&crc->stop));
- 		atomic_set(&crc->stop, 0);
- 	}
- 
-@@ -1132,12 +1132,12 @@ static int lzo_decompress_threadfn(void *data)
- 	struct dec_data *d = data;
- 
- 	while (1) {
--		wait_event(d->go, atomic_read(&d->ready) ||
-+		wait_event(d->go, atomic_read_acquire(&d->ready) ||
- 		                  kthread_should_stop());
- 		if (kthread_should_stop()) {
- 			d->thr = NULL;
- 			d->ret = -1;
--			atomic_set(&d->stop, 1);
-+			atomic_set_release(&d->stop, 1);
- 			wake_up(&d->done);
- 			break;
- 		}
-@@ -1150,7 +1150,7 @@ static int lzo_decompress_threadfn(void *data)
- 			flush_icache_range((unsigned long)d->unc,
- 					   (unsigned long)d->unc + d->unc_len);
- 
--		atomic_set(&d->stop, 1);
-+		atomic_set_release(&d->stop, 1);
- 		wake_up(&d->done);
- 	}
- 	return 0;
-@@ -1335,7 +1335,7 @@ static int load_image_lzo(struct swap_map_handle *handle,
- 		}
- 
- 		if (crc->run_threads) {
--			wait_event(crc->done, atomic_read(&crc->stop));
-+			wait_event(crc->done, atomic_read_acquire(&crc->stop));
- 			atomic_set(&crc->stop, 0);
- 			crc->run_threads = 0;
- 		}
-@@ -1371,7 +1371,7 @@ static int load_image_lzo(struct swap_map_handle *handle,
- 					pg = 0;
- 			}
- 
--			atomic_set(&data[thr].ready, 1);
-+			atomic_set_release(&data[thr].ready, 1);
- 			wake_up(&data[thr].go);
- 		}
- 
-@@ -1390,7 +1390,7 @@ static int load_image_lzo(struct swap_map_handle *handle,
- 
- 		for (run_threads = thr, thr = 0; thr < run_threads; thr++) {
- 			wait_event(data[thr].done,
--			           atomic_read(&data[thr].stop));
-+				atomic_read_acquire(&data[thr].stop));
- 			atomic_set(&data[thr].stop, 0);
- 
- 			ret = data[thr].ret;
-@@ -1421,7 +1421,7 @@ static int load_image_lzo(struct swap_map_handle *handle,
- 				ret = snapshot_write_next(snapshot);
- 				if (ret <= 0) {
- 					crc->run_threads = thr + 1;
--					atomic_set(&crc->ready, 1);
-+					atomic_set_release(&crc->ready, 1);
- 					wake_up(&crc->go);
- 					goto out_finish;
- 				}
-@@ -1429,13 +1429,13 @@ static int load_image_lzo(struct swap_map_handle *handle,
- 		}
- 
- 		crc->run_threads = thr;
--		atomic_set(&crc->ready, 1);
-+		atomic_set_release(&crc->ready, 1);
- 		wake_up(&crc->go);
- 	}
- 
- out_finish:
- 	if (crc->run_threads) {
--		wait_event(crc->done, atomic_read(&crc->stop));
-+		wait_event(crc->done, atomic_read_acquire(&crc->stop));
- 		atomic_set(&crc->stop, 0);
- 	}
- 	stop = ktime_get();
--- 
-2.33.0
 
+It's going to be a while (if ever) before callers change there ways.
+
+
+Consider what happens when a bunch of mounts are being mounted.
+
+
+First there are a lot of events and making the getting of mount info.
+
+more efficient means more of those events get processed (itself an issue
+
+that's going to need notification sub-system improvement) resulting in
+
+the system call being called even more.
+
+
+There are 3 or 4 common programs that monitor the mounts, systemd is
+
+one of those, it usually has 3 processes concurrently listening for
+
+mount table events and every one of these processes grabs the entire
+
+table. Thing is systemd is actually quite good at handling events and
+
+can process a lot of them if they are being occuring.
+
+
+So this system call will be called a lot.
+
+
+Ian
+
+>
+> Fixes: 49889374ab92 ("statmount: simplify string option retrieval")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
+>   fs/namespace.c | 3 ++-
+>   1 file changed, 2 insertions(+), 1 deletion(-)
+>
+> diff --git a/fs/namespace.c b/fs/namespace.c
+> index d036196f949c..e22fb5c4a9bb 100644
+> --- a/fs/namespace.c
+> +++ b/fs/namespace.c
+> @@ -4950,7 +4950,8 @@ static inline bool retry_statmount(const long ret, size_t *seq_size)
+>   	return true;
+>   }
+>   
+> -static int prepare_kstatmount(struct kstatmount *ks, struct mnt_id_req *kreq,
+> +static int noinline_for_stack
+> +prepare_kstatmount(struct kstatmount *ks, struct mnt_id_req *kreq,
+>   			      struct statmount __user *buf, size_t bufsize,
+>   			      size_t seq_size)
+>   {
