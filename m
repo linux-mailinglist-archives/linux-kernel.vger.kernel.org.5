@@ -2,125 +2,223 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 498EC8112B0
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 14:22:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 096438112B6
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 14:22:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379199AbjLMNWI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 08:22:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33114 "EHLO
+        id S1379210AbjLMNWe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 08:22:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42646 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379189AbjLMNWG (ORCPT
+        with ESMTP id S1379208AbjLMNWc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 08:22:06 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3E8DAB;
-        Wed, 13 Dec 2023 05:22:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1702473729; x=1734009729;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=aynrVvDsgLEQ+oNpXkj3YsTsnJctWZHApJV8F3owo30=;
-  b=hgvNcYezeBjiQ/qv58XjF9NRFTvZ/5kUMix9yF7LU/5YhhEz1P3CR1RU
-   Sso90NlRp441xL05XJAzGeZp8rva+PJb6HeqT7FeDa7VKHBlB287++3o/
-   0KLUmadjg3OzIinqjpKJwP+95WM45tP42Mg1grSjgkUh7eoC7NbmrGxlg
-   2fTN5AiCAjFVmks51PmU4TfpSbqx0DgZcO1xzNBFLkMWUgwTgFBskR3U5
-   cNxH5/Jw4hfxH9ZpRPQzXCXFW6NWaxwB7Os3Qx5u23hHEiPXzRmkIsVcW
-   /Sp39rkyweiXtrh3+VhIpmoke7nXuqOYA3z90x/ROjY8/KhGK6FBaK6hZ
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10922"; a="398804938"
-X-IronPort-AV: E=Sophos;i="6.04,272,1695711600"; 
-   d="scan'208";a="398804938"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Dec 2023 05:22:06 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10922"; a="864625953"
-X-IronPort-AV: E=Sophos;i="6.04,272,1695711600"; 
-   d="scan'208";a="864625953"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by FMSMGA003.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Dec 2023 05:21:59 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1rDPBT-00000005X7P-2zJE;
-        Wed, 13 Dec 2023 15:21:55 +0200
-Date:   Wed, 13 Dec 2023 15:21:55 +0200
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Paul Cercueil <paul@crapouillou.net>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Biju Das <biju.das.jz@bp.renesas.com>,
-        Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>,
-        Jianlong Huang <jianlong.huang@starfivetech.com>,
-        linux-arm-kernel@lists.infradead.org, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org,
-        linux-mips@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-        Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>,
-        Broadcom internal kernel review list 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        Dong Aisheng <aisheng.dong@nxp.com>,
-        Fabio Estevam <festevam@gmail.com>,
-        Shawn Guo <shawnguo@kernel.org>, Jacky Bai <ping.bai@nxp.com>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Sean Wang <sean.wang@kernel.org>,
-        Lakshmi Sowjanya D <lakshmi.sowjanya.d@intel.com>,
-        Emil Renner Berthing <kernel@esmil.dk>,
-        Hal Feng <hal.feng@starfivetech.com>
-Subject: Re: [PATCH v5 03/13] pinctrl: ingenic: Use C99 initializers in
- PINCTRL_PIN_GROUP()
-Message-ID: <ZXmv81bJRMqB1GLY@smile.fi.intel.com>
-References: <20231211190321.307330-1-andriy.shevchenko@linux.intel.com>
- <20231211190321.307330-4-andriy.shevchenko@linux.intel.com>
- <fb29c3bca8d245e3f7496539b7293aa4fc4bccd0.camel@crapouillou.net>
+        Wed, 13 Dec 2023 08:22:32 -0500
+Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70DC2F7
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 05:22:34 -0800 (PST)
+Received: by mail-ed1-x52a.google.com with SMTP id 4fb4d7f45d1cf-54cb4fa667bso9681701a12.3
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 05:22:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1702473753; x=1703078553; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=cj1ZMs1V56ZZNUEaZewI9vOkZv5jPO392Bp8WoFBh7w=;
+        b=QE0f0ib379EAddySX8B2XxGtd5yPt0f7o2RTb1vh5d1D37j4+hXzzPyrQY3/0rltXl
+         FpB+Hcjie0+e1urDiEXsmvHFCoFeCRbi5ke3i180BXB7wJKgWrIaIWR9HAKvu3hpR9T5
+         v77abuKh4sBKzhN0JG3dxYllq8eZv49Fo0cVfEAyEsXNx28QpxBJmrltDjGBtIEoGreY
+         IlmgUuIALhKRVNanBzVjhZWmZU15Ia9hPcrQ6qfnDjc2ujcgMHz44EJ3j2U21v1quruC
+         wpcwOxS7xUnK1lfM920/Dw+pbc+VdUU5idV3tsBAIwBF6IpbD6GF4YzUXMSig+7p67Az
+         yxaQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702473753; x=1703078553;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=cj1ZMs1V56ZZNUEaZewI9vOkZv5jPO392Bp8WoFBh7w=;
+        b=NnTh4nz+WjoQjFxxCbFcGPnKjpc78/exOXswFQcu3muRUVGDp53zoCPtWFvFeVswrT
+         AOghFL/onlaqot7J4kPNcm1bHJ+qcioap0LsV48b33PNHwtOJH12iNfRvUsrivTC00eO
+         jac/bztz7RviFGZ3Rjr8n0tWZbGrs0PctjGlv+z/m/oGAF4dAQcpXs9qPTMtVgreRol/
+         GCsGTv3Cou4rgxXMgske6Kv1FC85mVaD2FCD13Rc/sPIR1SzhiEW+hH3ZGXcjvPQzV7G
+         BEhRCAwq9aCVLUdg9TGEzOtGSYRWqYTBHz0R49Xgpwta9YD778EsNqJrwsqofPxxl+pJ
+         tMLg==
+X-Gm-Message-State: AOJu0YwqjwEWlapudyL3oiP9w/DXjKJTx0P7iPy1pt03E0E6vszs7DR7
+        P9lUWvXbe7c9D8IFAOuT5OgHug==
+X-Google-Smtp-Source: AGHT+IELaCU/APPH5lEyFAZu+OpT0rs0/r3NQO6C377YTW5LsGnDiFcS2/Qewp1/YjG0GmihdG0ytg==
+X-Received: by 2002:a50:955d:0:b0:54f:4f7f:1a5c with SMTP id v29-20020a50955d000000b0054f4f7f1a5cmr828258eda.81.1702473752835;
+        Wed, 13 Dec 2023 05:22:32 -0800 (PST)
+Received: from pop-os.localdomain (81-231-61-187-no276.tbcn.telia.com. [81.231.61.187])
+        by smtp.gmail.com with ESMTPSA id s28-20020a50ab1c000000b0054c6b50df3asm5921343edc.92.2023.12.13.05.22.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Dec 2023 05:22:31 -0800 (PST)
+Date:   Wed, 13 Dec 2023 14:22:29 +0100
+From:   Joakim Bech <joakim.bech@linaro.org>
+To:     Pekka Paalanen <ppaalanen@gmail.com>
+Cc:     Simon Ser <contact@emersion.fr>, Yong Wu <yong.wu@mediatek.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        christian.koenig@amd.com,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        dri-devel@lists.freedesktop.org, John Stultz <jstultz@google.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Jeffrey Kardatzke <jkardatzke@google.com>,
+        Benjamin Gaignard <benjamin.gaignard@collabora.com>,
+        Vijayanand Jitta <quic_vjitta@quicinc.com>,
+        Nicolas Dufresne <nicolas@ndufresne.ca>,
+        jianjiao.zeng@mediatek.com, linux-media@vger.kernel.org,
+        devicetree@vger.kernel.org, Conor Dooley <conor+dt@kernel.org>,
+        ckoenig.leichtzumerken@gmail.com, linaro-mm-sig@lists.linaro.org,
+        linux-mediatek@lists.infradead.org, tjmercier@google.com,
+        linux-arm-kernel@lists.infradead.org,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        kuohong.wang@mediatek.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 0/7] dma-buf: heaps: Add secure heap
+Message-ID: <20231213132229.q3uxdhtdsxuzw3w6@pop-os.localdomain>
+References: <20231212024607.3681-1-yong.wu@mediatek.com>
+ <DPBmATfmfvSP8Cwjz99kj_JvCEiAqRfuMFJZEBF2aIgl8NZqWFR66eyPTX1E8bHyOlimBihEE3E80p9bfOJ-0SNu8pwoIzL9gD2Xae6r97g=@emersion.fr>
+ <20231213110517.6ce36aca@eldfell>
+ <20231213101549.lioqfzjxcvmqxqu3@pop-os.localdomain>
+ <20231213133825.0a329864@eldfell>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <fb29c3bca8d245e3f7496539b7293aa4fc4bccd0.camel@crapouillou.net>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+In-Reply-To: <20231213133825.0a329864@eldfell>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 13, 2023 at 10:55:46AM +0100, Paul Cercueil wrote:
-> Le lundi 11 décembre 2023 à 20:57 +0200, Andy Shevchenko a écrit :
-
-...
-
-> > -#define INGENIC_PIN_GROUP(name, id, func)		\
-> > -	INGENIC_PIN_GROUP_FUNCS(name, id, (void *)(func))
-> > +#define INGENIC_PIN_GROUP(_name_, id,
-> > func)						\
-> > +	{							
-> > 			\
-> > +		.name =
-> > _name_,								\
-> > +		.pins =
-> > id##_pins,							\
-> > +		.num_pins =
-> > ARRAY_SIZE(id##_pins),					\
-> > +		.data = (void
-> > *)func,							\
-> > +	}
+On Wed, Dec 13, 2023 at 01:38:25PM +0200, Pekka Paalanen wrote:
+> On Wed, 13 Dec 2023 11:15:49 +0100
+> Joakim Bech <joakim.bech@linaro.org> wrote:
 > 
-> This INGENIC_PIN_GROUP() macro doesn't need to be modified, does it?
+> > On Wed, Dec 13, 2023 at 11:05:17AM +0200, Pekka Paalanen wrote:
+> > > On Tue, 12 Dec 2023 16:36:35 +0000
+> > > Simon Ser <contact@emersion.fr> wrote:
+> > >   
+> > > > Is there a chance to pick a better name than "secure" here?
+> > > > 
+> > > > "Secure" is super overloaded, it's not clear at all what it means from
+> > > > just the name. Something like "restricted" would be an improvement.
+> > > >   
+> > > 
+> > > My thoughts exactly. Every time I see "secure" used for something that
+> > > either gives you garbage, refuses to work, or crashes your whole machine
+> > > *intentionally* when you try to do normal usual things to it in
+> > > userspace (like use it for GL texturing, or try to use KMS writeback), I
+> > > get an unscratchable itch.
+> > > 
+> > > There is nothing "secure" from security perspective there for end users
+> > > and developers. It's just inaccessible buffers.
+> > > 
+> > > I've been biting my lip until now, thinking it's too late.
+> > >   
+> > The characteristics we're looking for here is a buffer where the content
+> > is inaccessible to the normal OS and user space, i.e., Non-secure EL0 to
+> > EL2. I.e, the content of the buffer is meant to be used and accessible
+> > primarily by the secure side and other devices that has been granted
+> 
+> s/secure side/proprietary side/
+> 
+I'm using the nomenclature as written by Arm (other architectures have
+other names for their secure execution states).
 
-We can go either way. I prefer to go this way as it reduces level of
-indirections in the macros. It makes code easier to read and understand.
-But if you insist, I can drop that change in next version.
+> I presume nothing of the other side can ever be in any way open?
+> 
+I'm sure there are lots of examples of things running on the secure side
+that are open. The OP-TEE project where I'm a maintainer has been fully
+open source since 2014, to give one example that I'm familiar with
+myself.
+
+> Maybe the other side is even less secure than the FOSS side...
+> 
+> > access to it (for example decoders, display controllers if we're talking
+> > about video use cases). However, since the use cases for this exercises
+> > the whole stack, from non-secure user space (EL0) all the way to secure
+> > user space (S-EL0), with various devices needing access to the buffer at
+> > various times, it makes sense to let Linux manage the buffers, although
+> > it still cannot access the content. That's the overall context.
+> 
+> Yes, we know all this (except for the exact meaning of EL0 etc.).
+> 
+Great!
+
+> > As for the name, it's always difficult to find a name suitable precisely
+> > describing what it is. "Secure" is perhaps vague, but it might still a
+> > good choice, if you carefully describe what secure means for this
+> > particular heap (in the source code and the documentation for it). For
+> 
+> Carefully describe, as in, re-define.
+> 
+> > example, the definition of "secure" for a secure heap as here could mean
+> > that buffer content is inaccessible to the host OS and user space
+> > running in normal world (using Arm nomenclature). I wouldn't have any
+> > problems with calling it secure if, as said it's defined what we mean by
+> > saying so. But I'm all ears for other suggestions as well.
+> > 
+> > Safe, protected, shielded, unreachable, isolated, inaccessible,
+> > unaccessible, fortified, ... would any of these make more sense?
+> 
+> "Restricted" sounds like a good compromise to me. The buffers' usage is
+> severely restricted.
+> 
+Yes, restricted isn't a bad choice. We would still need to describe what
+we mean by saying it's restricted, i.e., what is it restricted from,
+since I'd guess that "restricted" by itself also could be a bit open
+ended for a lot of people.
+
+> It is the opposite of "safe", because accessing the contents the wrong
+> way can return garbage or intentionally crash the whole system,
+> depending on the hardware implementation. One example is attempting to
+> put such a buffer on a KMS plane while the connector HDCP state is not
+> high enough, or a writeback connector is connected to the CRTC. It is
+> really fragile. (Do KMS drivers fail an atomic commit that would
+> violate the heap rules? Somehow I doubt that, who'd even know what the
+> rules are.)
+> 
+I believe one of the goals with reviewing the patches is to highlight
+issues like this and try to figure out how to avoid ending up in
+situations like what you described by suggesting alternative solutions
+and ideas.
+
+> It is protected/shielded/fortified from all the kernel and userspace,
+> but a more familiar word to describe that is inaccessible.
+> "Inaccessible buffer" per se OTOH sounds like a useless concept.
+> 
+> It is not secure, because it does not involve security in any way. In
+> fact, given it's so fragile, I'd classify it as mildly opposite of
+> secure, as e.g. clients of a Wayland compositor can potentially DoS the
+> compositor with it by simply sending such a dmabuf. Or DoS the whole
+> system.
+> 
+I hear what you are saying and DoS is a known problem and attack vector,
+but regardless, we have use cases where we don't want to expose
+information in the clear and where we also would like to have some
+guarantees about correctness. That is where various secure elements and
+more generally security is needed.
+
+So, it sounds like we have two things here, the first is the naming and
+the meaning behind it. I'm pretty sure the people following and
+contributing to this thread can agree on a name that makes sense. Would
+you personally be OK with "restricted" as the name? It sounds like that.
+
+The other thing is the feature and functionality itself offered by this
+patch series. My impression from reading your replies is that you think
+this is the wrong approach. If my impression is correct, what would you
+suggest as an alternative approach?
+
+> "Poisonous heap" would be fitting but politically inappropriate I
+> guess. After all, "poison" is data that is not meant to be read by
+> anything normal.
+> 
+> 
+> Thanks,
+> pq
 
 -- 
-With Best Regards,
-Andy Shevchenko
-
-
+// Regards
+Joakim
