@@ -2,57 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 824428110F8
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 13:20:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E7538110ED
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 13:19:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378376AbjLMMUd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 07:20:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59320 "EHLO
+        id S1377565AbjLMMTP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 07:19:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59460 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377618AbjLMMU2 (ORCPT
+        with ESMTP id S233401AbjLMMTO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 07:20:28 -0500
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [IPv6:2a00:1098:ed:100::25])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8FC1E4;
-        Wed, 13 Dec 2023 04:20:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1702470032;
-        bh=BYmcEgaBo5I1IXZr2Bp32/w8YdhWfM9/oRB+PHkjY7g=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JS2mVMjISMIkLCwLDBK+frDTRB6utKwa+Cz7KGcUHrevMT1OIAO1bimOhP3kAa/Z0
-         J4kYwPCiOy6V/xClOuS3wtnjLSEW/Y+liR3MecZhpsoXm5nXRvYOv6buyq+f0tNYDE
-         bSvZeoqf//eX9EQWfhwGXv0FA+gHddeqgBQ0wYSWrVsIGVcphglJkFsr8xkN7/UA9i
-         +sAsblsELT4GxZhUNniDZQ8VKN74hWP46gtpXTy3KVEniKIoav2vHt0n+kAKfnmLKX
-         SR+XPbXDCqpM+k1FEtD+MGvD31J+ZTha+jvSKVfUHO/YsqN3a1R4S5gYjWnOZatFgQ
-         ElRalFyb5YGMw==
-Received: from eugen-station.. (cola.collaboradmins.com [195.201.22.229])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: ehristev)
-        by madrid.collaboradmins.com (Postfix) with ESMTPSA id 396543781488;
-        Wed, 13 Dec 2023 12:20:31 +0000 (UTC)
-From:   Eugen Hristev <eugen.hristev@collabora.com>
-To:     linux-media@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-mediatek@lists.infradead.org
-Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        angelogioacchino.delregno@collabora.com, kernel@collabora.com,
-        eugen.hristev@collabora.com, tiffany.lin@mediatek.com,
-        andrew-ct.chen@mediatek.com, matthias.bgg@gmail.com,
-        Kyrie Wu <kyrie.wu@mediatek.com>,
-        Allen-KH Cheng <allen-kh.cheng@mediatek.com>,
-        Hsin-Yi Wang <hsinyi@chromium.org>
-Subject: [PATCH 4/4] arm64: dts: mediatek: mt8186: Add venc node
-Date:   Wed, 13 Dec 2023 14:20:17 +0200
-Message-Id: <20231213122017.102100-4-eugen.hristev@collabora.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231213122017.102100-1-eugen.hristev@collabora.com>
-References: <20231213122017.102100-1-eugen.hristev@collabora.com>
+        Wed, 13 Dec 2023 07:19:14 -0500
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 95844CD;
+        Wed, 13 Dec 2023 04:19:19 -0800 (PST)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5F73EC15;
+        Wed, 13 Dec 2023 04:20:05 -0800 (PST)
+Received: from [10.57.85.168] (unknown [10.57.85.168])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 9F9123F762;
+        Wed, 13 Dec 2023 04:19:15 -0800 (PST)
+Message-ID: <ccca81be-eb3e-4f52-a973-22f128ca07ba@arm.com>
+Date:   Wed, 13 Dec 2023 12:20:19 +0000
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v5 00/23] Introduce runtime modifiable Energy Model
+Content-Language: en-US
+To:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>
+Cc:     rui.zhang@intel.com, amit.kucheria@verdurent.com,
+        linux-pm@vger.kernel.org, amit.kachhap@gmail.com,
+        daniel.lezcano@linaro.org, viresh.kumar@linaro.org,
+        len.brown@intel.com, pavel@ucw.cz, mhiramat@kernel.org,
+        qyousef@layalina.io, wvw@google.com, linux-kernel@vger.kernel.org
+References: <20231129110853.94344-1-lukasz.luba@arm.com>
+ <d920867d-5572-48c3-bd54-b9e989ab6bd5@arm.com>
+ <ec8dc77f-364c-443b-a63d-35a2e37d2ccc@arm.com>
+ <0640a9bf-b864-45ef-ab39-14b0e85ff9ad@arm.com>
+ <CAJZ5v0g7u3uQOBeKbinut58GO64NBe=y2Zojn0tow3_KWg_4iQ@mail.gmail.com>
+From:   Lukasz Luba <lukasz.luba@arm.com>
+In-Reply-To: <CAJZ5v0g7u3uQOBeKbinut58GO64NBe=y2Zojn0tow3_KWg_4iQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -60,54 +52,71 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kyrie Wu <kyrie.wu@mediatek.com>
 
-Add video encoder node.
 
-Signed-off-by: Kyrie Wu <kyrie.wu@mediatek.com>
-Signed-off-by: Allen-KH Cheng <allen-kh.cheng@mediatek.com>
-Reviewed-by: Hsin-Yi Wang <hsinyi@chromium.org>
-[eugen.hristev@collabora.com: minor cleanup]
-Signed-off-by: Eugen Hristev <eugen.hristev@collabora.com>
----
- arch/arm64/boot/dts/mediatek/mt8186.dtsi | 24 ++++++++++++++++++++++++
- 1 file changed, 24 insertions(+)
+On 12/13/23 11:45, Rafael J. Wysocki wrote:
+> On Wed, Dec 13, 2023 at 12:34 PM Dietmar Eggemann
+> <dietmar.eggemann@arm.com> wrote:
+>>
+>> On 13/12/2023 10:23, Lukasz Luba wrote:
+>>> Hi Dietmar,
+>>>
+>>> Thank you for the review, I will go one-by-one to respond
+>>> your comments in patches as well. First comments are below.
+>>>
+>>> On 12/12/23 18:48, Dietmar Eggemann wrote:
+>>>> On 29/11/2023 12:08, Lukasz Luba wrote:
+>>
+>> [...]
+>>
+>>>>> Changelog:
+>>>>> v5:
+>>>>> - removed 2 tables design
+>>>>> - have only one table (runtime_table) used also in thermal (Wei, Rafael)
+>>>>
+>>>> Until v4 you had 2 EM's, the static and the modifiable (runtime). Now in
+>>>> v5 this changed to only have one, the modifiable. IMHO it would be
+>>>> better to change the existing table to be modifiable rather than staring
+>>>> with two EM's and then removing the static one. I assume you end up with
+>>>> way less code changes and the patch-set will become easier to digest for
+>>>> reviewers.
+>>>
+>>> The patches are structured in this way following Daniel's recommendation
+>>> I got when I was adding similar big changes to EM in 2020 (support all
+>>> devices in kernel). The approach is as follows:
+>>> 0. Do some basic clean-up/refactoring if needed for a new feature, to
+>>>     re-use some code if possible in future
+>>> 1. Introduce new feature next to the existing one
+>>> 2. Add API and all needed infrastructure (structures, fields) for
+>>>     drivers
+>>> 3. Re-wire the existing drivers/frameworks to the new feature via new
+>>>     API; ideally keep 1 patch per driver so the maintainer can easily
+>>>     grasp the changes and ACK it, because it will go via different tree
+>>>     (Rafael's tree); in case of some code clash in the driver's code
+>>>     during merge - it will be a single driver so easier to handle
+>>> 4. when all drivers and frameworks are wired up with the new feature
+>>>     remove the old feature (structures, fields, APIs, etc)
+>>> 5. Update the documentation with new latest state of desing
+>>>
+>>> In this approach the patches are less convoluted. Because if I remove
+>>> the old feature and add new in a single patch (e.g. the main structure)
+>>> that patch will have to modify all drivers to still compile. It
+>>> would be a big messy patch for this re-design.
+>>>
+>>> I can see in some later comment from Rafael that he is OK with current
+>>> patch set structure.
+>>
+>> OK, in case Rafael and Daniel prefer this, then it's fine.
+>>
+>> I just find it weird that we now have
+>>
+>> 70 struct em_perf_domain {
+>> 71         struct em_perf_table __rcu *runtime_table;
+>>                                         ^^^^^^^^^^^^^
+>>
+>> as the only EM table.
+> 
+> I agree that it would be better to call it something like em_table.
+> 
 
-diff --git a/arch/arm64/boot/dts/mediatek/mt8186.dtsi b/arch/arm64/boot/dts/mediatek/mt8186.dtsi
-index 66ead3f23336..8535ff2b44e9 100644
---- a/arch/arm64/boot/dts/mediatek/mt8186.dtsi
-+++ b/arch/arm64/boot/dts/mediatek/mt8186.dtsi
-@@ -1993,6 +1993,30 @@ larb7: smi@17010000 {
- 			power-domains = <&spm MT8186_POWER_DOMAIN_VENC>;
- 		};
- 
-+		venc: venc@17020000 {
-+			compatible = "mediatek,mt8183-vcodec-enc";
-+			#address-cells = <2>;
-+			#size-cells = <2>;
-+			reg = <0 0x17020000 0 0x2000>;
-+			interrupts = <GIC_SPI 243 IRQ_TYPE_LEVEL_HIGH 0>;
-+			iommus = <&iommu_mm IOMMU_PORT_L7_VENC_RCPU>,
-+				 <&iommu_mm IOMMU_PORT_L7_VENC_REC>,
-+				 <&iommu_mm IOMMU_PORT_L7_VENC_BSDMA>,
-+				 <&iommu_mm IOMMU_PORT_L7_VENC_SV_COMV>,
-+				 <&iommu_mm IOMMU_PORT_L7_VENC_RD_COMV>,
-+				 <&iommu_mm IOMMU_PORT_L7_VENC_CUR_LUMA>,
-+				 <&iommu_mm IOMMU_PORT_L7_VENC_CUR_CHROMA>,
-+				 <&iommu_mm IOMMU_PORT_L7_VENC_REF_LUMA>,
-+				 <&iommu_mm IOMMU_PORT_L7_VENC_REF_CHROMA>;
-+			dma-ranges = <0x1 0x0 0x1 0x0 0x1 0x0>;
-+			mediatek,scp = <&scp>;
-+			clocks = <&vencsys CLK_VENC_CKE1_VENC>;
-+			clock-names = "MT_CG_VENC";
-+			assigned-clocks = <&topckgen CLK_TOP_VENC>;
-+			assigned-clock-parents = <&topckgen CLK_TOP_UNIVPLL_D3>;
-+			power-domains = <&spm MT8186_POWER_DOMAIN_VENC>;
-+		};
-+
- 		camsys: clock-controller@1a000000 {
- 			compatible = "mediatek,mt8186-camsys";
- 			reg = <0 0x1a000000 0 0x1000>;
--- 
-2.34.1
-
+OK, I'll change that. Thanks Rafael and Dietmar!
