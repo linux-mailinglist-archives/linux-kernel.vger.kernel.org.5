@@ -2,81 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 365BC811E74
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 20:15:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 863A9811E78
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 20:16:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442042AbjLMTO7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 14:14:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33040 "EHLO
+        id S1442036AbjLMTP4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 14:15:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52860 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233779AbjLMTO6 (ORCPT
+        with ESMTP id S233516AbjLMTP4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 14:14:58 -0500
-Received: from mail-pg1-f197.google.com (mail-pg1-f197.google.com [209.85.215.197])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59095CF
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 11:15:04 -0800 (PST)
-Received: by mail-pg1-f197.google.com with SMTP id 41be03b00d2f7-5be39dea00dso2827989a12.3
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 11:15:04 -0800 (PST)
+        Wed, 13 Dec 2023 14:15:56 -0500
+Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E113A3
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 11:16:02 -0800 (PST)
+Received: by mail-pg1-x52c.google.com with SMTP id 41be03b00d2f7-5c629a9fe79so4028657a12.3
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 11:16:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1702494962; x=1703099762; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=Br5McNKdDym1wVpBK6ZxqsWLJASJUX98L4YfXiPz+I4=;
+        b=M4osAj7n5fVuu0d2QVU/hVsbixcpCa/GrQXR8qiQgTT38HTQGDW8Rxln6DRS29lC1I
+         /aOM6Y2SGohkmZNOTSxmmu64Ge2UhwxX9NBeLUuu+vLoui7JDjcfgZnlIDgGDXkHaHIf
+         zt1L/nQJOfrcoZFRAzxBmvvczRgDRvjBr4bhA=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702494904; x=1703099704;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=P+qA+3s/ioGOJ3uxe2remjMWpiOFwkSY74KtXvjignU=;
-        b=h3tOUJeETMOhNZT3vIvWM+kZPvwIOrDy5sZReY6pn1sp8Mh9/8f9iS3LCaLjNODBPu
-         PkuZs3IATH9xiDLrZk4MhK4pWiDtv/c3DDnraB7ECQpl8ArkizHdxy4diKnoEm2MzwAZ
-         xBOR8sL7rYL86x8kXKO/sxPUGBs+0He8nExjEpO8UrwtSgtKEpOwOuj8I8pYlver7OnE
-         2gyOa+cL6WAW7hhPSa19p49FWzyUrL7/IE0CpvsB182DjztteZw8/QR+kIQ1jahqtepR
-         KCt2lo32L602gShSN/pBj9Snwn9F4dxpc3K1IVKat7U2VclaMfLGHjJ8GLfOj/G2+aSi
-         ukog==
-X-Gm-Message-State: AOJu0Yx+T7+fa2I0/QOsunG9DPUa0Cs4K3lrN4o+1QwYfXq2WUTfLjAh
-        ZR1ZmhTRe3oD/0QnDSqz95qcjXl/TgZ7UXGJ7vYDA97H5SOS
-X-Google-Smtp-Source: AGHT+IHBMQwvlrMxR7i+6p1V4vI9Tfpi3BvMvOp82p8mZb0GiGk6YjOqZFMXqwV63GJQQo5TKhZ8D8Ggu99JrTwyA+M1hWIlSDRr
+        d=1e100.net; s=20230601; t=1702494962; x=1703099762;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Br5McNKdDym1wVpBK6ZxqsWLJASJUX98L4YfXiPz+I4=;
+        b=lUpeNLJbjY7kb+gV18VHQ+ov94DP7O2rM5h61Y2zPS4G1jtwjxfR4zuT8X+J3r5Q9M
+         zzd19OSfTX4HADwzYYxmfm8a19iySUktuBQwUw7KcHFxXtZDnxiXlXjIpjTxO0Kv4+zX
+         diU+qr3Ybuny+dbV2pWw+AlubkZ2k10EpL8N77c8Np6JBJAyPCu536GLt48ZJbNFZkaj
+         TLKPzUGxzXe1PC5P60BaAkLVHR80X/DdGZA3U79ZJS0U45ue5M0QoQBynhc16z6zcwdH
+         1+aQII0NIdPhmXH5hnmNmSKTt1DlC+hKIkzk2mmuvcyiqXozWkgzOU4ZvjcthHddVlxI
+         cq0Q==
+X-Gm-Message-State: AOJu0YwBrH2rxYW4C1aUWPsKPb2cnCJ7z7wrMPqa1qMtJHGjkH77Giv5
+        TN8vdsi402D8ohQ2aRkjk68+mg==
+X-Google-Smtp-Source: AGHT+IFoskKiE/aMuNO9zn8FAfarVwTklXpACZeypIRM0uei3Al3NZmvnOp5zIAhin3jtPPkFxdKzA==
+X-Received: by 2002:a17:902:e804:b0:1cf:7c3d:df68 with SMTP id u4-20020a170902e80400b001cf7c3ddf68mr5893869plg.39.1702494961970;
+        Wed, 13 Dec 2023 11:16:01 -0800 (PST)
+Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id a10-20020a170902b58a00b001d331bd4d4csm4097248pls.95.2023.12.13.11.16.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Dec 2023 11:16:01 -0800 (PST)
+Date:   Wed, 13 Dec 2023 11:16:00 -0800
+From:   Kees Cook <keescook@chromium.org>
+To:     Jeff Johnson <quic_jjohnson@quicinc.com>
+Cc:     Kalle Valo <kvalo@kernel.org>,
+        "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
+        ath10k@lists.infradead.org, linux-wireless@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 6/6] wifi: ath10k: remove duplicate memset() in 10.4 TDLS
+ peer update
+Message-ID: <202312131113.4C01D1DD5A@keescook>
+References: <20231213-wmi_host_mem_chunks_flexarray-v1-0-92922d92fa2c@quicinc.com>
+ <20231213-wmi_host_mem_chunks_flexarray-v1-6-92922d92fa2c@quicinc.com>
 MIME-Version: 1.0
-X-Received: by 2002:a17:903:32c8:b0:1d0:902c:e834 with SMTP id
- i8-20020a17090332c800b001d0902ce834mr487525plr.12.1702494903910; Wed, 13 Dec
- 2023 11:15:03 -0800 (PST)
-Date:   Wed, 13 Dec 2023 11:15:03 -0800
-In-Reply-To: <000000000000169326060971d07a@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000fac6ee060c68fb16@google.com>
-Subject: Re: [syzbot] [btrfs?] kernel BUG in __extent_writepage_io
-From:   syzbot <syzbot+06006fc4a90bff8e8f17@syzkaller.appspotmail.com>
-To:     axboe@kernel.dk, clm@fb.com, dsterba@suse.com, hch@lst.de,
-        josef@toxicpanda.com, linux-btrfs@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        senozhatsky@chromium.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=2.3 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,RCVD_IN_SORBS_WEB,SORTED_RECIPS,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
-X-Spam-Level: **
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231213-wmi_host_mem_chunks_flexarray-v1-6-92922d92fa2c@quicinc.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot has bisected this issue to:
+On Wed, Dec 13, 2023 at 09:06:44AM -0800, Jeff Johnson wrote:
+> In [1] it was identified that in ath10k_wmi_10_4_gen_tdls_peer_update()
+> the memset(skb->data, 0, sizeof(*cmd)) is unnecessary since function
+> ath10k_wmi_alloc_skb() already zeroes skb->data, so remove it.
 
-commit 95848dcb9d676738411a8ff70a9704039f1b3982
-Author: Christoph Hellwig <hch@lst.de>
-Date:   Sat Aug 5 05:55:37 2023 +0000
+Is .gen_tdls_peer_update only ever called after a fresh allocation? It
+wasn't obvious to me as I tried to follow the call paths. Is there harm
+in leaving this?
 
-    zram: take device and not only bvec offset into account
+-Kees
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1325355ce80000
-start commit:   eaadbbaaff74 Merge tag 'fuse-fixes-6.7-rc6' of git://git.k..
-git tree:       upstream
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=10a5355ce80000
-console output: https://syzkaller.appspot.com/x/log.txt?x=1725355ce80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=53ec3da1d259132f
-dashboard link: https://syzkaller.appspot.com/bug?extid=06006fc4a90bff8e8f17
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=12cc9deae80000
+> 
+> No functional changes, compile tested only.
+> 
+> [1] https://lore.kernel.org/linux-wireless/626ae2e7-66f8-423b-b17f-e75c1a6d29b3@embeddedor.com/
+> 
+> Signed-off-by: Jeff Johnson <quic_jjohnson@quicinc.com>
+> ---
+>  drivers/net/wireless/ath/ath10k/wmi.c | 2 --
+>  1 file changed, 2 deletions(-)
+> 
+> diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
+> index 4d5aadbc7159..0cfd9484c45e 100644
+> --- a/drivers/net/wireless/ath/ath10k/wmi.c
+> +++ b/drivers/net/wireless/ath/ath10k/wmi.c
+> @@ -8918,8 +8918,6 @@ ath10k_wmi_10_4_gen_tdls_peer_update(struct ath10k *ar,
+>  	if (!skb)
+>  		return ERR_PTR(-ENOMEM);
+>  
+> -	memset(skb->data, 0, sizeof(*cmd));
+> -
+>  	cmd = (struct wmi_10_4_tdls_peer_update_cmd *)skb->data;
+>  	cmd->vdev_id = __cpu_to_le32(arg->vdev_id);
+>  	ether_addr_copy(cmd->peer_macaddr.addr, arg->addr);
+> 
+> -- 
+> 2.42.0
+> 
 
-Reported-by: syzbot+06006fc4a90bff8e8f17@syzkaller.appspotmail.com
-Fixes: 95848dcb9d67 ("zram: take device and not only bvec offset into account")
-
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+-- 
+Kees Cook
