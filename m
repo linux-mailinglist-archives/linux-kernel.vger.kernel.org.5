@@ -2,149 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6868081083D
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 03:28:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BDDB981083E
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 03:29:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378313AbjLMC2F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 21:28:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40540 "EHLO
+        id S1378342AbjLMC3q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 21:29:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33048 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232721AbjLMC2D (ORCPT
+        with ESMTP id S1378272AbjLMC3p (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 21:28:03 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FDC7A0
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 18:28:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1702434488;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=q7ogPeVXGwrtgOAoSCz/LwV9L8KL6rZODfc0Bz4jg5I=;
-        b=MaTpY4hWQVDu012XjFagR7j3NRuJR7Us8PGRA89qj37v4KSFCZ913lIsb0YpMxgyAO4VMI
-        aVPlcjcFdb6Ho8qZeL1LYgJRzeUuFBrb1MQTywX1yEQpIQzWTVesEmny2pVSrqPl6T07Hj
-        JUbzeiypVFHUkSRWirWnwYOtofD9bhY=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-38-XpbZrWEdMHG6dIbEnA-3Kw-1; Tue, 12 Dec 2023 21:28:06 -0500
-X-MC-Unique: XpbZrWEdMHG6dIbEnA-3Kw-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.rdu2.redhat.com [10.11.54.7])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id C1D9D87B2A1;
-        Wed, 13 Dec 2023 02:28:05 +0000 (UTC)
-Received: from [10.22.16.51] (unknown [10.22.16.51])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 81AB51C060AF;
-        Wed, 13 Dec 2023 02:28:04 +0000 (UTC)
-Message-ID: <ef9fa80e-f586-4c44-b2b1-309830dccaa4@redhat.com>
-Date:   Tue, 12 Dec 2023 21:28:04 -0500
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: Modifying isolcpus, nohz_full, and rcu_nocb kernel parameters at
- runtime
-Content-Language: en-US
-To:     Frederic Weisbecker <frederic@kernel.org>
-Cc:     Gianfranco Dutka <gianfranco.dutka@arista.com>,
-        Tejun Heo <tj@kernel.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        linux-kernel@vger.kernel.org, vincent.guittot@linaro.com,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Valentin Schneider <vschneid@redhat.com>,
-        "Pandruvada, Srinivas" <srinivas.pandruvada@intel.com>,
-        Phil Auld <pauld@redhat.com>,
-        Cestmir Kalina <ckalina@redhat.com>
-References: <76587DD3-2A77-41A3-9807-6AEE4398EBA6@arista.com>
- <CAKfTPtAkhfAhFouCGTy7m4swCeeEsu1VdWEX_ahOVDq1U594Dg@mail.gmail.com>
- <ZXJKAnrRjBUmKx1V@slm.duckdns.org>
- <d46834f4-a490-4a4a-9e95-cca4a6316570@redhat.com>
- <25E6E1E4-DC16-490E-B907-A3236FB9317A@arista.com>
- <ZXhf3A0FNjFZaZGK@lothringen>
- <7e3bf653-d3ea-48b0-b808-d92a3c5f2c5b@redhat.com>
- <ZXjzVKAM7Xt3eeAQ@lothringen>
-From:   Waiman Long <longman@redhat.com>
-In-Reply-To: <ZXjzVKAM7Xt3eeAQ@lothringen>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.7
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        Tue, 12 Dec 2023 21:29:45 -0500
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B834AA0
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 18:29:51 -0800 (PST)
+Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-dbcc50d7dd3so834592276.2
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 18:29:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1702434591; x=1703039391; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:reply-to:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=3A+By/dcpP8NgMf5bfJ77th91WWv84vlb2YGj1lcL0s=;
+        b=H2Hh05FKZIOeQhNpl6lb+jbEZTI/e027oZDeRo+18Mj/y/l6Rep28Mw9ed865hpKj2
+         kHaBva84etf7HcP3yE0tYBhsYdTaCqAOZ164Gjdm/GDIv97UGRHdFtOPatiGmDwPougg
+         oeWthKRd50jWE144NouFscWRSagOgnTwNAUiXjyrFfh/IqyWfLNrfnCxdDia1UcVO/AI
+         l5dWaI9UvV/wJ2YJc+aPD08xtiHrPNwjgkzOcfnW8p3cD8HA5RxDYIKP1pCc8ouNfgtj
+         QcWoYTbrT/KCJkoX0+Bs9Xs5vPiIJ6jc2NalaTSlj9uf0DimrWWOCqcXnJcEjPKXuDcf
+         4oNA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702434591; x=1703039391;
+        h=cc:to:from:subject:message-id:mime-version:date:reply-to
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=3A+By/dcpP8NgMf5bfJ77th91WWv84vlb2YGj1lcL0s=;
+        b=UBDFpH/d+I+Id7aew79rv9YmVASypRcsn+TFA+u83AHGmpFKEUEjhXg1/vgX174jIA
+         MoYcE5g+n3tavxIcyGIQnxwDzhURxGmfcKxHpZiw5KxeUtOSGMfAe4rEtsvQtsVRAp/p
+         9VzfEyfAZFjNlwzcx7HEAGZYpOPkt5q5QS3IXHTVdDnQCo9LPMNgh7Z+TmmwjZIAP+WQ
+         jWG/ZN+OQX6GyMGyEKHCXXsBDUvWr31PSNjgjkzR7M/ROjnm4QJXLWw9XgkYdm4s/jvZ
+         BHgNvXyD7meuDsmRuPWUSKvZdPCvW/cXVkkPbxGD8TVmIqHJiddtCTB3SJph4Jyur8KL
+         63UQ==
+X-Gm-Message-State: AOJu0YxRnsXNZPh6G9jjFEv9wwGZtuUJ/zcAodKQiaTX4hfN6+CEFbDL
+        uexy0NqkJb+zWBjnS5uLOxgXJR/cjUw=
+X-Google-Smtp-Source: AGHT+IEp0l4xg6brahhIyo7pX86MoJ28L/CSl2SoF4hAHLUajM1JyV1FRmfpaIfhcSkctCDrCXAgiN+ef1M=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a05:6902:52f:b0:db5:48c5:302e with SMTP id
+ y15-20020a056902052f00b00db548c5302emr56548ybs.4.1702434590930; Tue, 12 Dec
+ 2023 18:29:50 -0800 (PST)
+Reply-To: Sean Christopherson <seanjc@google.com>
+Date:   Tue, 12 Dec 2023 18:29:48 -0800
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.43.0.472.g3155946c3a-goog
+Message-ID: <20231213022948.547485-1-seanjc@google.com>
+Subject: [ANNOUNCE] PUCK Agenda - 2023.12.13 - No topic
+From:   Sean Christopherson <seanjc@google.com>
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+No topic for tomorrow, but I'll be online.
 
-On 12/12/23 18:57, Frederic Weisbecker wrote:
-> On Tue, Dec 12, 2023 at 03:18:43PM -0500, Waiman Long wrote:
->> On 12/12/23 08:27, Frederic Weisbecker wrote:
->>> On Fri, Dec 08, 2023 at 09:18:53AM -0500, Gianfranco Dutka wrote:
->>>>> The isolcpus, nohz_full and rcu_nocbs are boot-time kernel parameters. I am in the process of improving dynamic CPU isolation at runtime. Right now, we are able to do isolcpus=domain with the isolated cpuset partition functionality. Other aspects of CPU isolation are being looked at with the goal of reducing the gap of what one can do at boot time versus what can be done at run time. It will certain take time to reach that goal.
->>>>>
->>>>> Cheers,
->>>>> Longman
->>>>>
->>>> Thank you Waiman for the response. It would seem that getting similar
->>>> functionality through cgroups/cpusets is the only option at the moment. Is it
->>>> completely out of the question to possibly patch the kernel to modify these
->>>> parameters at runtime? Or would that entail a significant change that might
->>>> not be so trivial to accomplish? For instance, the solution wouldn’t be as
->>>> simple as patching the kernel to make these writeable and then calling the
->>>> same functions which run at boot-time when these parameters are originally
->>>> written?
->>> As for nohz_full (which implies rcu_nocb), it's certainly possible to make it
->>> tunable at runtime via cpusets. If people really want it, I'm willing to help.
->> As said by Phil, your help in in enabling dynamic rcu_nocb will be greatly
->> appreciated.
-> rcu_nocb is already ready for that. The not yet ready part is nohz_full and its
-> several components (tick, remote tick, [hr-]timers affinity, workqueues affinity, kthreads
-> affinity, vmstat, buffer head, etc...). Last debate on plumbers suggested that
-> nohz_full should be dynamically turned on/off only on offline CPUs. That will
-> indeed simplify the problem.
-
-So rcu_nocb is ready for dynamically changing it without too much 
-additional work. That is good to know as I haven't looked into that myself.
-
-The other pieces will still need additional work. I already have a patch 
-in the cgroup tree that updates the unbound workqueue affinity to 
-exclude isolated cpuset CPUs, though there may still be some further 
-fine tuning that can be done.
-
->
->> My current thought is to have a root level
->> cpuset.cpus.isolation_control file to enable additional CPU isolation like
->> rcu_nocb to be applied to CPUs in isolated partitions.
-> Last time I tried that, Peter Zijlstra was more in favour of an isolate all or nothing
-> switch by default for nohz_full that would include rcu_nocb. And then if people
-> are interested in something more finegrained, introduce such a file to control
-> individual features (see
-> https://lore.kernel.org/lkml/YpIwsiaY2IPK96WO@hirez.programming.kicks-ass.net/ )
->
-> But so far I never heard about the need for such a finegrained isolation. Users of
-> nohz_full= seem to want to isolate everything out.
-
-Yes, I recall some of the discussion now. I am fine with a single on/off 
-switch. That will likely simplify the process as we can add additional 
-isolation features over time once the code is ready, may be a 
-cpuset.cpus.isolation_full boolean flag.
-
-Cheers,
-Longman
-
-
->
-> Thanks.
->
-
+Note, two topics are on the horizon, "Unifying the protected VM APIs" (Isaku) and
+"Post-copy support for guest_memfd" (David Matlack), but those are both going to
+be pushed out until January due to people's availability (or lack thereof).
