@@ -2,86 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A1FE1811497
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 15:28:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 64AD081149B
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 15:28:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1441943AbjLMO2J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 09:28:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43674 "EHLO
+        id S1441954AbjLMO2T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 09:28:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45226 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1441915AbjLMO2I (ORCPT
+        with ESMTP id S1441921AbjLMO2R (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 09:28:08 -0500
-Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91BF8D5
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 06:28:14 -0800 (PST)
-Received: by mail-lj1-x236.google.com with SMTP id 38308e7fff4ca-2c9f7fe6623so88245081fa.3
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 06:28:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ventanamicro.com; s=google; t=1702477693; x=1703082493; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=wYCVDEfmEpAAq2joADzIDjMSoQFlP/Ou+pXsJQt/qSE=;
-        b=oq/scHkNx7fOA8XZwUVSe0s77KmLIdLcNCVMczA00Zl1Da29XfUGnRWh1mxmScuZKo
-         MgSyAh1eFMMbQg+wF8OBDc9uvdh1I8Uv/MNhwRlq7b4jexm4/Vt9kvPq3wiyaqo/pfDg
-         nQLzvRixvQCKS4Ax3i3Zsk+w/91XFe4LE7UxbhFTe3yagwsHn4rrlTrY1rw/aqJf/vi4
-         g4D1Hv8EmdSgAkq/eVGWtlmSEh5oazd2T5d588snXb7BQo9OtNYnM8WZXvwqLDdDqPZm
-         EOQmDZhMZPsvUqq6Md1OwhQPCxhjEEBf81CRxdt1E/okAhNIJSBNGEm5AUFUbEoKDo4p
-         FyLQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702477693; x=1703082493;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=wYCVDEfmEpAAq2joADzIDjMSoQFlP/Ou+pXsJQt/qSE=;
-        b=VaJstSRC0qCXVDtB2jK2mkIif6ULGBkzry0sms/3m+phkp0iMJobp8W7Z0FFiqouuX
-         Wrq5OoVvnCyuoCBzFnawFXslyILC8eaxcifPPBPjZ0sre+7+Igml9R5AQlc3m0S5kH6v
-         3ONXd7NiRIxfGQg8OnfEJNhoijkPei1n3iSLQQ/S3eDivkGZNcyo0cixU3tNE2l+nMZQ
-         7h9P0f6iKGOJGWokeEDqXkQ+DOfWfgc0M1d8Y8UEHfo4mqoxrdaaa4Ck10EY1Haf096W
-         gJdr77EfUKwiEsZejnRzkYykuVHmhkyz+AZseoqzbEiFNuSRroJ1EffXLJ/XOKattgXI
-         b7EA==
-X-Gm-Message-State: AOJu0Yy0F4Ly3/EpkqvaxzuauybQcIW7NK+NA0+HbklKX5j08KZR1Dl0
-        vj9q+XW+wjI0WOJmmSmTz8P5sb4bMTn2E9GQOG67cg==
-X-Google-Smtp-Source: AGHT+IHDmlLtTkFMLJW7VNJT8SlVJHCzmvG4k5wsYrRIgEpE6i0fDa0/acLJ4JdcgtstAE4LD4tfwFQKOdBlv8mM9Vw=
-X-Received: by 2002:a2e:bea7:0:b0:2cb:2b04:cf92 with SMTP id
- a39-20020a2ebea7000000b002cb2b04cf92mr2250407ljr.11.1702477692628; Wed, 13
- Dec 2023 06:28:12 -0800 (PST)
+        Wed, 13 Dec 2023 09:28:17 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57B4FCF
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 06:28:23 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 00A93C433A9;
+        Wed, 13 Dec 2023 14:28:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1702477703;
+        bh=1NelY49Rtb1AVpWalye31/ZWTy2DmcMw3Hv962u4tjU=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=BvGu46F/ZyupCCTvU/N6ebinx5qDUWy014Z1CtHsN+PSuSkE4azZr/bKUH8ZVLPUK
+         1bGceVp/bHQZc5fpGMcZ1hP0LjVzRwJBej4aWYGSO9ZAOeaP1HFuxleemntZBr4QZ9
+         VhoVR0tX48YQm50K4Jbzwm2J1dfk/eGkwGIXBf5HamgeWl54fUb7Bg0aNCBophoGe1
+         t9E+L+sWeBGxPGIuTtmiA+I7VDlwTFZqVegvNGUsZNAGO0CxVrWuyBz9x3HWXv6VDI
+         k1bMvD4bELfPG2kU77qNrt1rncvF9KGARGE98MYpytXHUl2deUZasSTFkuX/OvZKf2
+         D+9z0/zt3DHdA==
+Received: by mail-lj1-f174.google.com with SMTP id 38308e7fff4ca-2ca0c36f5beso91091201fa.1;
+        Wed, 13 Dec 2023 06:28:22 -0800 (PST)
+X-Gm-Message-State: AOJu0Yxja19+jsVDIXVTSi2VMZwGRlAWAZF9L9fICYBpzsZ+0fHhJ9bZ
+        Y+1z1DWj/mYEBomvIuf5OxugPVTRByR3jRKiAg==
+X-Google-Smtp-Source: AGHT+IGZUggKzakRIu1cLjf+W2GQkNH9IR87nGDEKuYmEbAd4t3lIaZqsoyFSGRtYGI96Eay29zUVggLBHEcOmhNZDk=
+X-Received: by 2002:a2e:a805:0:b0:2cc:1e83:65ee with SMTP id
+ l5-20020a2ea805000000b002cc1e8365eemr4557579ljq.56.1702477701036; Wed, 13 Dec
+ 2023 06:28:21 -0800 (PST)
 MIME-Version: 1.0
-References: <20231213070301.1684751-1-peterlin@andestech.com> <20231213070301.1684751-3-peterlin@andestech.com>
-In-Reply-To: <20231213070301.1684751-3-peterlin@andestech.com>
-From:   Anup Patel <apatel@ventanamicro.com>
-Date:   Wed, 13 Dec 2023 19:58:00 +0530
-Message-ID: <CAK9=C2WuuYQD8ydrHP16hUXVk6RuKLbfvUe_GpUGw9ppe3Rd8Q@mail.gmail.com>
-Subject: Re: [PATCH v5 02/16] irqchip/riscv-intc: Allow large non-standard
- interrupt number
-To:     Yu Chien Peter Lin <peterlin@andestech.com>
-Cc:     acme@kernel.org, adrian.hunter@intel.com, ajones@ventanamicro.com,
-        alexander.shishkin@linux.intel.com, andre.przywara@arm.com,
-        anup@brainfault.org, aou@eecs.berkeley.edu, atishp@atishpatra.org,
-        conor+dt@kernel.org, conor.dooley@microchip.com, conor@kernel.org,
-        devicetree@vger.kernel.org, dminus@andestech.com,
-        evan@rivosinc.com, geert+renesas@glider.be, guoren@kernel.org,
-        heiko@sntech.de, irogers@google.com, jernej.skrabec@gmail.com,
-        jolsa@kernel.org, jszhang@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-perf-users@vger.kernel.org,
-        linux-renesas-soc@vger.kernel.org, linux-riscv@lists.infradead.org,
-        linux-sunxi@lists.linux.dev, locus84@andestech.com,
-        magnus.damm@gmail.com, mark.rutland@arm.com, mingo@redhat.com,
-        n.shubin@yadro.com, namhyung@kernel.org, palmer@dabbelt.com,
-        paul.walmsley@sifive.com, peterz@infradead.org,
-        prabhakar.mahadev-lad.rj@bp.renesas.com, rdunlap@infradead.org,
-        robh+dt@kernel.org, samuel@sholland.org, sunilvl@ventanamicro.com,
-        tglx@linutronix.de, tim609@andestech.com, uwu@icenowy.me,
-        wens@csie.org, will@kernel.org, ycliang@andestech.com,
-        inochiama@outlook.com
+References: <20231024130048.14749-1-shawn.sung@mediatek.com> <20231024130048.14749-15-shawn.sung@mediatek.com>
+In-Reply-To: <20231024130048.14749-15-shawn.sung@mediatek.com>
+From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
+Date:   Wed, 13 Dec 2023 22:28:09 +0800
+X-Gmail-Original-Message-ID: <CAAOTY_-6bbE394ViQfyXg7zNv+uFygj70eF9dG+QDoSgELOFYg@mail.gmail.com>
+Message-ID: <CAAOTY_-6bbE394ViQfyXg7zNv+uFygj70eF9dG+QDoSgELOFYg@mail.gmail.com>
+Subject: Re: [PATCH v11 14/23] drm/mediatek: Power on/off devices with
+ function pointers
+To:     Hsiao Chien Sung <shawn.sung@mediatek.com>
+Cc:     AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        CK Hu <ck.hu@mediatek.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>, Fei Shao <fshao@chromium.org>,
+        Sean Paul <sean@poorly.run>,
+        Johnson Wang <johnson.wang@mediatek.corp-partner.google.com>,
+        "Nancy . Lin" <nancy.lin@mediatek.com>,
+        Moudy Ho <moudy.ho@mediatek.com>,
+        "Jason-JH . Lin" <jason-jh.lin@mediatek.com>,
+        Nathan Lu <nathan.lu@mediatek.com>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-mediatek@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -89,132 +76,326 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 13, 2023 at 12:34=E2=80=AFPM Yu Chien Peter Lin
-<peterlin@andestech.com> wrote:
->
-> Currently, the implementation of the RISC-V INTC driver uses the
-> interrupt cause as hardware interrupt number and has a limitation of
-> supporting a maximum of 64 interrupts. However, according to the
-> privileged spec, interrupt causes >=3D 16 are defined for platform use.
+Hi, Hsiao-chien:
 
-I disagree with this patch.
-
-Even though RISC-V priv sepc allows interrupt causes >=3D 16, we
-still need CSRs to manage arbitrary local interrupts
-
-Currently, we have following standard CSRs:
-1) [m|s]ie and [m|s]ip which are XLEN wide
-2) With AIA, we have [m|s]ieh and [m|s]iph for RV32
-
-Clearly, we can only have a XLEN number of standard local
-interrupts without AIA and 64 local interrupts with AIA.
-
-Now for implementations with custom CSRs (such as Andes),
-we still can't assume infinite local interrupts because HW will
-have a finite number of custom CSRs.
-
+Hsiao Chien Sung <shawn.sung@mediatek.com> =E6=96=BC 2023=E5=B9=B410=E6=9C=
+=8824=E6=97=A5 =E9=80=B1=E4=BA=8C =E4=B8=8B=E5=8D=889:01=E5=AF=AB=E9=81=93=
+=EF=BC=9A
 >
-> This limitation prevents to fully utilize the available local interrupt
-> sources. Additionally, the interrupt number used on RISC-V are sparse,
-> with only interrupt numbers 1, 5 and 9 (plus Sscofpmf or T-Head's PMU
-> interrupt) being currently used for supervisor mode.
+> Different from OVL, OVL adaptor is a pseudo device so we didn't
+> define it in the device tree, consequently, pm_runtime_resume_and_get()
+> called by .atomic_enable() powers on no device. For this reason, we
+> implement a function to power on the RDMAs in OVL adaptor, and the
+> system will make sure the IOMMUs are powered on as well because of the
+> device link (iommus) in the RDMA nodes in DTS.
 >
-> Switch to using irq_domain_create_tree() to create the radix tree
-> map, so a larger number of hardware interrupts can be handled.
->
-> Signed-off-by: Yu Chien Peter Lin <peterlin@andestech.com>
-> Reviewed-by: Charles Ci-Jyun Wu <dminus@andestech.com>
-> Reviewed-by: Leo Yu-Chi Liang <ycliang@andestech.com>
-> ---
-> Changes v1 -> v2:
->   - Fixed irq mapping failure checking (suggested by Cl=C3=A9ment and Anu=
-p)
-> Changes v2 -> v3:
->   - No change
-> Changes v3 -> v4: (Suggested by Thomas [1])
->   - Use pr_warn_ratelimited instead
->   - Fix coding style and commit message
-> Changes v4 -> v5: (Suggested by Thomas)
->   - Fix commit message
->
-> [1] https://patchwork.kernel.org/project/linux-riscv/patch/20231023004100=
-.2663486-3-peterlin@andestech.com/#25573085
-> ---
->  drivers/irqchip/irq-riscv-intc.c | 12 ++++--------
->  1 file changed, 4 insertions(+), 8 deletions(-)
->
-> diff --git a/drivers/irqchip/irq-riscv-intc.c b/drivers/irqchip/irq-riscv=
--intc.c
-> index e8d01b14ccdd..2fdd40f2a791 100644
-> --- a/drivers/irqchip/irq-riscv-intc.c
-> +++ b/drivers/irqchip/irq-riscv-intc.c
-> @@ -24,10 +24,9 @@ static asmlinkage void riscv_intc_irq(struct pt_regs *=
-regs)
->  {
->         unsigned long cause =3D regs->cause & ~CAUSE_IRQ_FLAG;
->
-> -       if (unlikely(cause >=3D BITS_PER_LONG))
-> -               panic("unexpected interrupt cause");
-> -
-> -       generic_handle_domain_irq(intc_domain, cause);
-> +       if (generic_handle_domain_irq(intc_domain, cause))
-> +               pr_warn_ratelimited("Failed to handle interrupt (cause: %=
-ld)\n",
-> +                                   cause);
->  }
->
->  /*
-> @@ -117,8 +116,7 @@ static int __init riscv_intc_init_common(struct fwnod=
-e_handle *fn)
->  {
->         int rc;
->
-> -       intc_domain =3D irq_domain_create_linear(fn, BITS_PER_LONG,
-> -                                              &riscv_intc_domain_ops, NU=
-LL);
-> +       intc_domain =3D irq_domain_create_tree(fn, &riscv_intc_domain_ops=
-, NULL);
+> This patch separates power and clock management process, it would be
+> easier to maintain and add extensions.
 
-I disagree with this change based on the reasoning above.
-
-Instead of this, we should determine the number of local interrupts
-based on the type of RISC-V intc:
-1) For standard INTC without AIA, we have XLEN (or BITS_PER_LONG)
-    local interrupts
-2) For standart INTC with AIA, we have 64 local interrupts
-3) For custom INTC (such as Andes), the number of local interrupt
-    should be custom (Andes specific) which can be determined based
-    on compatible string.
-
-Also, creating a linear domain with a fixed number of local interrupts
-ensures that drivers can't map a local interrupt beyond the availability
-of CSRs to manage it.
-
->         if (!intc_domain) {
->                 pr_err("unable to add IRQ domain\n");
->                 return -ENXIO;
-> @@ -132,8 +130,6 @@ static int __init riscv_intc_init_common(struct fwnod=
-e_handle *fn)
->
->         riscv_set_intc_hwnode_fn(riscv_intc_hwnode);
->
-> -       pr_info("%d local interrupts mapped\n", BITS_PER_LONG);
-> -
-
-Same as above, we should definitely advertise the type of INTC and
-number of local interrupts mapped.
+There is conflict while apply this patch into latest kernel. Please
+rebase this series onto latest kernel and send next version patches.
 
 Regards,
-Anup
+Chun-Kuang.
 
->         return 0;
+>
+> Reviewed-by: CK Hu <ck.hu@mediatek.com>
+> Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collab=
+ora.com>
+> Signed-off-by: Hsiao Chien Sung <shawn.sung@mediatek.com>
+> ---
+>  drivers/gpu/drm/mediatek/mtk_disp_drv.h       |  4 +
+>  .../gpu/drm/mediatek/mtk_disp_ovl_adaptor.c   | 75 +++++++++++++++----
+>  drivers/gpu/drm/mediatek/mtk_drm_crtc.c       | 10 +--
+>  drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c   |  2 +
+>  drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.h   | 20 +++++
+>  drivers/gpu/drm/mediatek/mtk_mdp_rdma.c       | 16 ++++
+>  6 files changed, 107 insertions(+), 20 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/mediatek/mtk_disp_drv.h b/drivers/gpu/drm/me=
+diatek/mtk_disp_drv.h
+> index bf06ccb65652..8465beeab435 100644
+> --- a/drivers/gpu/drm/mediatek/mtk_disp_drv.h
+> +++ b/drivers/gpu/drm/mediatek/mtk_disp_drv.h
+> @@ -109,6 +109,8 @@ void mtk_ovl_adaptor_connect(struct device *dev, stru=
+ct device *mmsys_dev,
+>                              unsigned int next);
+>  void mtk_ovl_adaptor_disconnect(struct device *dev, struct device *mmsys=
+_dev,
+>                                 unsigned int next);
+> +int mtk_ovl_adaptor_power_on(struct device *dev);
+> +void mtk_ovl_adaptor_power_off(struct device *dev);
+>  int mtk_ovl_adaptor_clk_enable(struct device *dev);
+>  void mtk_ovl_adaptor_clk_disable(struct device *dev);
+>  void mtk_ovl_adaptor_config(struct device *dev, unsigned int w,
+> @@ -150,6 +152,8 @@ void mtk_rdma_disable_vblank(struct device *dev);
+>  const u32 *mtk_rdma_get_formats(struct device *dev);
+>  size_t mtk_rdma_get_num_formats(struct device *dev);
+>
+> +int mtk_mdp_rdma_power_on(struct device *dev);
+> +void mtk_mdp_rdma_power_off(struct device *dev);
+>  int mtk_mdp_rdma_clk_enable(struct device *dev);
+>  void mtk_mdp_rdma_clk_disable(struct device *dev);
+>  void mtk_mdp_rdma_start(struct device *dev, struct cmdq_pkt *cmdq_pkt);
+> diff --git a/drivers/gpu/drm/mediatek/mtk_disp_ovl_adaptor.c b/drivers/gp=
+u/drm/mediatek/mtk_disp_ovl_adaptor.c
+> index 81067f49ea69..048d56ee344d 100644
+> --- a/drivers/gpu/drm/mediatek/mtk_disp_ovl_adaptor.c
+> +++ b/drivers/gpu/drm/mediatek/mtk_disp_ovl_adaptor.c
+> @@ -79,6 +79,8 @@ static const struct mtk_ddp_comp_funcs merge =3D {
+>  };
+>
+>  static const struct mtk_ddp_comp_funcs rdma =3D {
+> +       .power_on =3D mtk_mdp_rdma_power_on,
+> +       .power_off =3D mtk_mdp_rdma_power_off,
+>         .clk_enable =3D mtk_mdp_rdma_clk_enable,
+>         .clk_disable =3D mtk_mdp_rdma_clk_disable,
+>  };
+> @@ -200,21 +202,72 @@ void mtk_ovl_adaptor_stop(struct device *dev)
+>         mtk_ethdr_stop(ovl_adaptor->ovl_adaptor_comp[OVL_ADAPTOR_ETHDR0])=
+;
 >  }
 >
+> -int mtk_ovl_adaptor_clk_enable(struct device *dev)
+> +/**
+> + * power_off - Power off the devices in OVL adaptor
+> + * @dev: Device to be powered off
+> + * @num: Number of the devices to be powered off
+> + *
+> + * Calls the .power_off() ovl_adaptor component callback if it is presen=
+t.
+> + */
+> +static inline void power_off(struct device *dev, int num)
+>  {
+>         struct mtk_disp_ovl_adaptor *ovl_adaptor =3D dev_get_drvdata(dev)=
+;
+> -       struct device *comp;
+> -       int ret;
+>         int i;
+>
+> -       for (i =3D 0; i < OVL_ADAPTOR_MERGE0; i++) {
+> -               comp =3D ovl_adaptor->ovl_adaptor_comp[i];
+> -               ret =3D pm_runtime_get_sync(comp);
+> +       if (num > OVL_ADAPTOR_ID_MAX)
+> +               num =3D OVL_ADAPTOR_ID_MAX;
+> +
+> +       for (i =3D num - 1; i >=3D 0; i--) {
+> +               if (!ovl_adaptor->ovl_adaptor_comp[i] ||
+> +                   !comp_matches[i].funcs->power_off)
+> +                       continue;
+> +
+> +               comp_matches[i].funcs->power_off(ovl_adaptor->ovl_adaptor=
+_comp[i]);
+> +       }
+> +}
+> +
+> +/**
+> + * mtk_ovl_adaptor_power_on - Power on the devices in OVL adaptor
+> + * @dev: Device to be powered on
+> + *
+> + * Different from OVL, OVL adaptor is a pseudo device so
+> + * we didn't define it in the device tree, pm_runtime_resume_and_get()
+> + * called by .atomic_enable() power on no device in OVL adaptor,
+> + * we have to implement a function to do the job instead.
+> + *
+> + * Return: Zero for success or negative number for failure.
+> + */
+> +int mtk_ovl_adaptor_power_on(struct device *dev)
+> +{
+> +       struct mtk_disp_ovl_adaptor *ovl_adaptor =3D dev_get_drvdata(dev)=
+;
+> +       int i, ret;
+> +
+> +       for (i =3D 0; i < OVL_ADAPTOR_ID_MAX; i++) {
+> +               if (!ovl_adaptor->ovl_adaptor_comp[i] ||
+> +                   !comp_matches[i].funcs->power_on)
+> +                       continue;
+> +
+> +               ret =3D comp_matches[i].funcs->power_on(ovl_adaptor->ovl_=
+adaptor_comp[i]);
+>                 if (ret < 0) {
+>                         dev_err(dev, "Failed to enable power domain %d, e=
+rr %d\n", i, ret);
+> -                       goto error;
+> +                       power_off(dev, i);
+> +                       return ret;
+>                 }
+>         }
+> +       return 0;
+> +}
+> +
+> +void mtk_ovl_adaptor_power_off(struct device *dev)
+> +{
+> +       power_off(dev, OVL_ADAPTOR_ID_MAX);
+> +}
+> +
+> +int mtk_ovl_adaptor_clk_enable(struct device *dev)
+> +{
+> +       struct mtk_disp_ovl_adaptor *ovl_adaptor =3D dev_get_drvdata(dev)=
+;
+> +       struct device *comp;
+> +       int ret;
+> +       int i;
+>
+>         for (i =3D 0; i < OVL_ADAPTOR_ID_MAX; i++) {
+>                 comp =3D ovl_adaptor->ovl_adaptor_comp[i];
+> @@ -225,16 +278,10 @@ int mtk_ovl_adaptor_clk_enable(struct device *dev)
+>                         dev_err(dev, "Failed to enable clock %d, err %d\n=
+", i, ret);
+>                         while (--i >=3D 0)
+>                                 comp_matches[i].funcs->clk_disable(comp);
+> -                       i =3D OVL_ADAPTOR_MERGE0;
+> -                       goto error;
+> +                       return ret;
+>                 }
+>         }
+>         return 0;
+> -error:
+> -       while (--i >=3D 0)
+> -               pm_runtime_put(ovl_adaptor->ovl_adaptor_comp[i]);
+> -
+> -       return ret;
+>  }
+>
+>  void mtk_ovl_adaptor_clk_disable(struct device *dev)
+> diff --git a/drivers/gpu/drm/mediatek/mtk_drm_crtc.c b/drivers/gpu/drm/me=
+diatek/mtk_drm_crtc.c
+> index a0b2ba3cbcdb..bc4cc75cca18 100644
+> --- a/drivers/gpu/drm/mediatek/mtk_drm_crtc.c
+> +++ b/drivers/gpu/drm/mediatek/mtk_drm_crtc.c
+> @@ -774,7 +774,7 @@ static void mtk_drm_crtc_atomic_enable(struct drm_crt=
+c *crtc,
+>                 return;
+>         }
+>
+> -       ret =3D pm_runtime_resume_and_get(comp->dev);
+> +       ret =3D mtk_ddp_comp_power_on(comp);
+>         if (ret < 0) {
+>                 DRM_DEV_ERROR(comp->dev, "Failed to enable power domain: =
+%d\n", ret);
+>                 return;
+> @@ -782,7 +782,7 @@ static void mtk_drm_crtc_atomic_enable(struct drm_crt=
+c *crtc,
+>
+>         ret =3D mtk_crtc_ddp_hw_init(mtk_crtc, state);
+>         if (ret) {
+> -               pm_runtime_put(comp->dev);
+> +               mtk_ddp_comp_power_off(comp);
+>                 return;
+>         }
+>
+> @@ -795,7 +795,7 @@ static void mtk_drm_crtc_atomic_disable(struct drm_cr=
+tc *crtc,
+>  {
+>         struct mtk_drm_crtc *mtk_crtc =3D to_mtk_crtc(crtc);
+>         struct mtk_ddp_comp *comp =3D mtk_crtc->ddp_comp[0];
+> -       int i, ret;
+> +       int i;
+>
+>         DRM_DEBUG_DRIVER("%s %d\n", __func__, crtc->base.id);
+>         if (!mtk_crtc->enabled)
+> @@ -825,9 +825,7 @@ static void mtk_drm_crtc_atomic_disable(struct drm_cr=
+tc *crtc,
+>
+>         drm_crtc_vblank_off(crtc);
+>         mtk_crtc_ddp_hw_fini(mtk_crtc);
+> -       ret =3D pm_runtime_put(comp->dev);
+> -       if (ret < 0)
+> -               DRM_DEV_ERROR(comp->dev, "Failed to disable power domain:=
+ %d\n", ret);
+> +       mtk_ddp_comp_power_off(comp);
+>
+>         mtk_crtc->enabled =3D false;
+>  }
+> diff --git a/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c b/drivers/gpu/dr=
+m/mediatek/mtk_drm_ddp_comp.c
+> index 10402e07a4a7..9940909c7435 100644
+> --- a/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c
+> +++ b/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c
+> @@ -396,6 +396,8 @@ static const struct mtk_ddp_comp_funcs ddp_ufoe =3D {
+>  };
+>
+>  static const struct mtk_ddp_comp_funcs ddp_ovl_adaptor =3D {
+> +       .power_on =3D mtk_ovl_adaptor_power_on,
+> +       .power_off =3D mtk_ovl_adaptor_power_off,
+>         .clk_enable =3D mtk_ovl_adaptor_clk_enable,
+>         .clk_disable =3D mtk_ovl_adaptor_clk_disable,
+>         .config =3D mtk_ovl_adaptor_config,
+> diff --git a/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.h b/drivers/gpu/dr=
+m/mediatek/mtk_drm_ddp_comp.h
+> index 1c1d670cfe41..2597dd7ac0d2 100644
+> --- a/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.h
+> +++ b/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.h
+> @@ -7,6 +7,7 @@
+>  #define MTK_DRM_DDP_COMP_H
+>
+>  #include <linux/io.h>
+> +#include <linux/pm_runtime.h>
+>  #include <linux/soc/mediatek/mtk-cmdq.h>
+>  #include <linux/soc/mediatek/mtk-mmsys.h>
+>  #include <linux/soc/mediatek/mtk-mutex.h>
+> @@ -46,6 +47,8 @@ enum mtk_ddp_comp_type {
+>  struct mtk_ddp_comp;
+>  struct cmdq_pkt;
+>  struct mtk_ddp_comp_funcs {
+> +       int (*power_on)(struct device *dev);
+> +       void (*power_off)(struct device *dev);
+>         int (*clk_enable)(struct device *dev);
+>         void (*clk_disable)(struct device *dev);
+>         void (*config)(struct device *dev, unsigned int w,
+> @@ -91,6 +94,23 @@ struct mtk_ddp_comp {
+>         int encoder_index;
+>  };
+>
+> +static inline int mtk_ddp_comp_power_on(struct mtk_ddp_comp *comp)
+> +{
+> +       if (comp->funcs && comp->funcs->power_on)
+> +               return comp->funcs->power_on(comp->dev);
+> +       else
+> +               return pm_runtime_resume_and_get(comp->dev);
+> +       return 0;
+> +}
+> +
+> +static inline void mtk_ddp_comp_power_off(struct mtk_ddp_comp *comp)
+> +{
+> +       if (comp->funcs && comp->funcs->power_off)
+> +               comp->funcs->power_off(comp->dev);
+> +       else
+> +               pm_runtime_put(comp->dev);
+> +}
+> +
+>  static inline int mtk_ddp_comp_clk_enable(struct mtk_ddp_comp *comp)
+>  {
+>         if (comp->funcs && comp->funcs->clk_enable)
+> diff --git a/drivers/gpu/drm/mediatek/mtk_mdp_rdma.c b/drivers/gpu/drm/me=
+diatek/mtk_mdp_rdma.c
+> index 5746f06220c1..769ae7564da2 100644
+> --- a/drivers/gpu/drm/mediatek/mtk_mdp_rdma.c
+> +++ b/drivers/gpu/drm/mediatek/mtk_mdp_rdma.c
+> @@ -243,6 +243,22 @@ size_t mtk_mdp_rdma_get_num_formats(struct device *d=
+ev)
+>         return ARRAY_SIZE(formats);
+>  }
+>
+> +int mtk_mdp_rdma_power_on(struct device *dev)
+> +{
+> +       int ret =3D pm_runtime_resume_and_get(dev);
+> +
+> +       if (ret < 0) {
+> +               dev_err(dev, "Failed to power on: %d\n", ret);
+> +               return ret;
+> +       }
+> +       return 0;
+> +}
+> +
+> +void mtk_mdp_rdma_power_off(struct device *dev)
+> +{
+> +       pm_runtime_put(dev);
+> +}
+> +
+>  int mtk_mdp_rdma_clk_enable(struct device *dev)
+>  {
+>         struct mtk_mdp_rdma *rdma =3D dev_get_drvdata(dev);
 > --
-> 2.34.1
+> 2.18.0
 >
->
-> _______________________________________________
-> linux-riscv mailing list
-> linux-riscv@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-riscv
