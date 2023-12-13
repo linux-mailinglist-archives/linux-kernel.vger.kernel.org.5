@@ -2,182 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C990811132
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 13:38:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BCC27811134
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 13:39:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377637AbjLMMiY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 07:38:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58744 "EHLO
+        id S1378374AbjLMMjK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 07:39:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43834 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233423AbjLMMiX (ORCPT
+        with ESMTP id S233423AbjLMMjI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 07:38:23 -0500
-Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BF2DA4;
-        Wed, 13 Dec 2023 04:38:29 -0800 (PST)
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 3BDCcKvL068102;
-        Wed, 13 Dec 2023 06:38:20 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1702471100;
-        bh=gy1qArKSqhsRjFGn+LP95Xdrzj0gXfcfs2ST9SpwNn4=;
-        h=Date:From:To:CC:Subject:References:In-Reply-To;
-        b=liKKZ5hMZe+vJrml3OdKgNrLlksoOh5bus+6J0oQeGCHBRgUfGrk/C/Q737dQ+QbO
-         k2nxif5jntJCmkTngoJG73nRByGBUaJAfJJ5Fhg9zBn1xZyVcSurYBoVhniDa9z1K7
-         sX7IUp91VPb6HYDptNb4mJFB1wklczLiopE/D1Sg=
-Received: from DFLE110.ent.ti.com (dfle110.ent.ti.com [10.64.6.31])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 3BDCcKPI083754
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 13 Dec 2023 06:38:20 -0600
-Received: from DFLE104.ent.ti.com (10.64.6.25) by DFLE110.ent.ti.com
- (10.64.6.31) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 13
- Dec 2023 06:38:19 -0600
-Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DFLE104.ent.ti.com
- (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Wed, 13 Dec 2023 06:38:19 -0600
-Received: from localhost (uda0133052.dhcp.ti.com [128.247.81.232])
-        by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 3BDCcJNF080616;
-        Wed, 13 Dec 2023 06:38:19 -0600
-Date:   Wed, 13 Dec 2023 06:38:19 -0600
-From:   Nishanth Menon <nm@ti.com>
-To:     Siddharth Vadapalli <s-vadapalli@ti.com>
-CC:     <vigneshr@ti.com>, <kristo@kernel.org>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <danishanwar@ti.com>,
-        <r-gunasekaran@ti.com>, <srk@ti.com>
-Subject: Re: [PATCH v2] arm64: dts: ti: k3-am654-icssg2: Enable PHY
- interrupts for ICSSG2
-Message-ID: <20231213123819.tqh3lm2ceir3qjbk@swimmer>
-References: <20231213080216.1710730-1-s-vadapalli@ti.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20231213080216.1710730-1-s-vadapalli@ti.com>
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        Wed, 13 Dec 2023 07:39:08 -0500
+Received: from smtp-relay-internal-1.canonical.com (smtp-relay-internal-1.canonical.com [185.125.188.123])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 326DDA4
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 04:39:15 -0800 (PST)
+Received: from mail-qt1-f198.google.com (mail-qt1-f198.google.com [209.85.160.198])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 6304C3F287
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 12:39:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1702471153;
+        bh=RVX7Hkci1GalSOV+ggHHM2J9QrW4mGKi5xvBhDtdXC4=;
+        h=From:In-Reply-To:References:Mime-Version:Date:Message-ID:Subject:
+         To:Cc:Content-Type;
+        b=f9szzBr3ADMAHhCsWCszBvUGzG1Hfw/V+cX8IlK8N3Jlj07oGhVS1/OWHUrvr/Rst
+         uBca6wkaw635mfxDExVlne3g2O4KPvLqyFufAdnSWb3mneSVCSnTBvvU5MZRsIy5EM
+         MVUiMFWCiUtdycsEFj18WtPVLnfe3hlMI4zUZebnU2nqjlw7BAYK9C12wSPzIKdi9Z
+         G3imHwl+NYcxa1hCVOUV8TreIC6mM6RGwV8K0XwzvEZkaEFzWRv/yu7Ixho9RiZDmN
+         cBGoeHF03hF7m0lgt6jdpFugAFzvdicfrNMS+uHjR2MQ1ZLlt1hddeMYpQCmgTK4RS
+         /NIUKjD4zUIjg==
+Received: by mail-qt1-f198.google.com with SMTP id d75a77b69052e-425a6272642so78307051cf.3
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 04:39:13 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702471152; x=1703075952;
+        h=cc:to:subject:message-id:date:mime-version:references:in-reply-to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=RVX7Hkci1GalSOV+ggHHM2J9QrW4mGKi5xvBhDtdXC4=;
+        b=scLUc2HoGNN+emgL6v/x72tdhSgOKMoesKLZ85Nb5ke0K8/e24zZNjRWYLMinVYTN5
+         GVN2JPeBB6piVGiK1skr9ans0ug2M2jppaG7w673J7y5zmh32gdnZ8y9wAhSOuLUvXQw
+         sEO4AAASOLAuT+HjwO+6sXzNmIGNhUkXHg8rtft5UEPhFCFLqDbpTWsK6yz683Q+Heen
+         FvFCSt9w2g8MYAAjU20zJwcguJB9wube5oFdO+ef+hK/yOS4dqVRGpDW2r/DkQ5nT85t
+         16baEjWkCb6Q6dMGdAG0bL++DkHduaBJS2yncv90vVbHwJfvfAPuDUZtItSY1yTziIdZ
+         v0Ww==
+X-Gm-Message-State: AOJu0YyZunwnRceDA9MEPsx0ry6J6D4VdZBj+Nh96kigVYvDe13aE2cb
+        VFdId+AJVosyponKYCYRLxtH1HGstYYONAD92U+Kc4rvw8kWlTuR0p3Xxp8ti4420skn/vJQbZi
+        hYd34ztHSkxiQL/fIgX3xnPLsY8I75/vUXjW8jzBwCPoW5tfpvS/cYhPILQ==
+X-Received: by 2002:a05:622a:28f:b0:425:4043:96c5 with SMTP id z15-20020a05622a028f00b00425404396c5mr12063931qtw.82.1702471152389;
+        Wed, 13 Dec 2023 04:39:12 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IHIeVXeXX7w4KcjeNOZNUYxmPvYFuILxSBmeeP5KBI6qOM2DYJi1AyFB9Hnx/wH7nuTyyjZHzceB4Cl8ASZSCc=
+X-Received: by 2002:a05:622a:28f:b0:425:4043:96c5 with SMTP id
+ z15-20020a05622a028f00b00425404396c5mr12063906qtw.82.1702471152113; Wed, 13
+ Dec 2023 04:39:12 -0800 (PST)
+Received: from 348282803490 named unknown by gmailapi.google.com with
+ HTTPREST; Wed, 13 Dec 2023 04:39:11 -0800
+From:   Emil Renner Berthing <emil.renner.berthing@canonical.com>
+In-Reply-To: <CAJM55Z831ucY4QqPTR_0zJVB05UUT4W-3M0CGzvtyPo=AMD=Vw@mail.gmail.com>
+References: <20231201121410.95298-1-jeeheng.sia@starfivetech.com>
+ <20231201121410.95298-7-jeeheng.sia@starfivetech.com> <CAJM55Z831ucY4QqPTR_0zJVB05UUT4W-3M0CGzvtyPo=AMD=Vw@mail.gmail.com>
+Mime-Version: 1.0
+Date:   Wed, 13 Dec 2023 04:39:11 -0800
+Message-ID: <CAJM55Z-BJMi=rbe8op5EQ-efwo-9AbmavVE1BVJ9_xuHQzMhLQ@mail.gmail.com>
+Subject: Re: [PATCH v3 6/6] riscv: dts: starfive: Add initial StarFive JH8100
+ device tree
+To:     Emil Renner Berthing <emil.renner.berthing@canonical.com>,
+        Sia Jee Heng <jeeheng.sia@starfivetech.com>, kernel@esmil.dk,
+        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        krzk@kernel.org, conor+dt@kernel.org, paul.walmsley@sifive.com,
+        palmer@dabbelt.com, aou@eecs.berkeley.edu,
+        daniel.lezcano@linaro.org, tglx@linutronix.de, conor@kernel.org,
+        anup@brainfault.org, gregkh@linuxfoundation.org,
+        jirislaby@kernel.org, michal.simek@amd.com,
+        michael.zhu@starfivetech.com, drew@beagleboard.org
+Cc:     devicetree@vger.kernel.org, linux-riscv@lists.infradead.org,
+        linux-kernel@vger.kernel.org, leyfoon.tan@starfivetech.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 13:32-20231213, Siddharth Vadapalli wrote:
-> Enable interrupt mode of operation of the DP83867 Ethernet PHY which is
-> used by ICSSG2. The DP83867 PHY driver already supports interrupt handling
-> for interrupts generated by the PHY. Thus, add the necessary device-tree
-> support to enable it.
-> 
-> Since the GPIO1_87 line is muxed with EXT_REFCLK1 and SYNC1_OUT, update
-> the pinmux to select GPIO1_87 for routing the interrupt.
-> 
-> As the same interrupt line and therefore the same pinmux configuration is
-> applicable to both Ethernet PHYs used by ICSSG2, allocate the pinmux
-> resource to the first Ethernet PHY alone.
-> 
-> Signed-off-by: Siddharth Vadapalli <s-vadapalli@ti.com>
-> Reviewed-by: MD Danish Anwar <danishanwar@ti.com>
-> ---
-> Hello,
-> 
-> This patch is based on linux-next tagged next-20231213.
-> 
-> v1:
-> https://lore.kernel.org/r/20231120063159.539306-1-s-vadapalli@ti.com/
-> Changes since v1:
-> - Rebased patch on next-20231213.
-> - Collected Reviewed-by tag from
->   MD Danish Anwar <danishanwar@ti.com>
-> - Moved pinctrl from MDIO node to Ethernet PHY node based on feedback from
->   Nishanth Menon <nm@ti.com>
-> - Replaced the hard-coded value 0x2 with IRQ_TYPE_EDGE_FALLING for
->   setting the interrupt trigger type and level flag based on feedback from
->   Nishanth Menon <nm@ti.com>
-> - Included dt-bindings/interrupt-controller/irq.h in the overlay.
-> - Updated commit message with details of the pinmux resource allocation.
-> 
-> Regards,
-> Siddharth.
-> 
->  arch/arm64/boot/dts/ti/k3-am654-icssg2.dtso | 17 +++++++++++++++++
->  1 file changed, 17 insertions(+)
-> 
-> diff --git a/arch/arm64/boot/dts/ti/k3-am654-icssg2.dtso b/arch/arm64/boot/dts/ti/k3-am654-icssg2.dtso
-> index ec8cf20ca3ac..6eabdfa0d602 100644
-> --- a/arch/arm64/boot/dts/ti/k3-am654-icssg2.dtso
-> +++ b/arch/arm64/boot/dts/ti/k3-am654-icssg2.dtso
-> @@ -8,6 +8,7 @@
->  /dts-v1/;
->  /plugin/;
->  
-> +#include <dt-bindings/interrupt-controller/irq.h>
->  #include <dt-bindings/net/ti-dp83867.h>
->  #include "k3-pinctrl.h"
->  
-> @@ -124,6 +125,15 @@ AM65X_IOPAD(0x0088, PIN_INPUT, 2) /* (AG17) PRG2_PRU0_GPO4.PRG2_RGMII1_RX_CTL */
->  	};
->  };
->  
-> +&main_pmx1 {
-> +	/* Select GPIO1_87 for ICSSG2 PHY interrupt */
-> +	icssg2_phy_irq_pins_default: icssg2-phy-irq-default-pins {
-> +		pinctrl-single,pins = <
-> +			AM65X_IOPAD(0x0014, PIN_INPUT, 7) /* (A22) EXT_REFCLK1.GPIO1_87 */
-> +		>;
-> +	};
-> +};
-> +
->  &icssg2_mdio {
->  	status = "okay";
->  	pinctrl-names = "default";
-> @@ -132,13 +142,20 @@ &icssg2_mdio {
->  	#size-cells = <0>;
->  
->  	icssg2_phy0: ethernet-phy@0 {
-> +		pinctrl-names = "default";
-> +		pinctrl-0 = <&icssg2_phy_irq_pins_default>;
-> +
->  		reg = <0>;
-> +		interrupt-parent = <&main_gpio1>;
-> +		interrupts = <87 IRQ_TYPE_EDGE_FALLING>;
->  		ti,rx-internal-delay = <DP83867_RGMIIDCTL_2_00_NS>;
->  		ti,fifo-depth = <DP83867_PHYCR_FIFO_DEPTH_4_B_NIB>;
->  	};
->  
->  	icssg2_phy1: ethernet-phy@3 {
->  		reg = <3>;
-> +		interrupt-parent = <&main_gpio1>;
-> +		interrupts = <87 IRQ_TYPE_EDGE_FALLING>;
+Emil Renner Berthing wrote:
+> Sia Jee Heng wrote:
+> > Add initial device tree for the StarFive JH8100 RISC-V SoC.
+> >
+> > Signed-off-by: Sia Jee Heng <jeeheng.sia@starfivetech.com>
+> > Reviewed-by: Ley Foon Tan <leyfoon.tan@starfivetech.com>
+>
+> Looks good to me, thanks.
+>
+> Acked-by: Emil Renner Berthing <emil.renner.berthing@canonical.com>
 
-https://www.ti.com/lit/ds/symlink/dp83867ir.pdf -> it looks like the
-interrupt pin is level event. but drivers/gpio/gpio-davinci.c::
-gpio_irq_type() -> The SoC cannot handle level, only edge.
+I just learned that this JH8100 is not actually a real SoC yet but just an FPGA
+implementation, and no indication that that's actually a product that will be
+mass produced. Hence a lot of details may change before it becomes a real
+SoC/product people can buy, so let's not add this device tree yet before
+everything is set in silicon.
 
-A bit confused here..  GPIO 87 is shared between two phys. isn't it a
-case of race?
+Please consider my Acked-by abeve revoked.
 
-PHY1 assets low
-phy1 handler starts, but before the driver it clears the condition:
-PHY2 asserts low - but since the signal is already low, there is no
-pulse
-phy1 handler clears phy1 condition, but signal is still low due to phy2?
-now phy2 OR phy1 never gets handled since there is never a pulse event
-ever again.
+Sia Jee Heng: With that said I still think it's super awesome that you're
+beginning upstreaming support for your new SoCs early. I wish more SoC vendors
+would follow your example.
 
-
->  		ti,rx-internal-delay = <DP83867_RGMIIDCTL_2_00_NS>;
->  		ti,fifo-depth = <DP83867_PHYCR_FIFO_DEPTH_4_B_NIB>;
->  	};
-> -- 
-> 2.34.1
-> 
-
--- 
-Regards,
-Nishanth Menon
-Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
+/Emil
