@@ -2,146 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F11A81130A
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 14:36:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B1C581130B
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 14:37:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379273AbjLMNgJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 08:36:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46910 "EHLO
+        id S1379268AbjLMNhS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 08:37:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55354 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379267AbjLMNgG (ORCPT
+        with ESMTP id S1379216AbjLMNhR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 08:36:06 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7CA5DC;
-        Wed, 13 Dec 2023 05:36:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1702474570; x=1734010570;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=NEtuRYz798pOKaCZjGgcl/J6ODZ0hj92ozwgXCg6Ui0=;
-  b=XdTk2gEk9pM5AuOBhy/TaqmUbuUVM1J/QiwqV/b3E3dNK+1DvbvykoHD
-   ie+cnsiYARFD0/Re77n3pl5XqxNsk6PjH5gbjYE0nFFQ0ZHObJF3GFa5G
-   YiBEgDUOxt7n4NZ425PLnZ9NTVgz8arXIiTBQTBbsBSML/J/JIJII9GTN
-   tHRyhGo0I2kaaolzWAwRVmMwKNZpRLBzy2ZrlXK6c2JpIYSpMvoUv19ws
-   98lblFJDIfDudk8JJeeNcZYr+nXAFqSYvILWXvyCY8iJb/d8HRLh4Ac99
-   hzU5ulMYjB9YGtBGx8mhlHNSUTnza16kWgIO8gsncql7REoNyQX/JXXN1
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10922"; a="8354476"
-X-IronPort-AV: E=Sophos;i="6.04,272,1695711600"; 
-   d="scan'208";a="8354476"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Dec 2023 05:36:10 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10922"; a="750108795"
-X-IronPort-AV: E=Sophos;i="6.04,272,1695711600"; 
-   d="scan'208";a="750108795"
-Received: from kuha.fi.intel.com ([10.237.72.185])
-  by orsmga006.jf.intel.com with SMTP; 13 Dec 2023 05:36:06 -0800
-Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Wed, 13 Dec 2023 15:36:05 +0200
-Date:   Wed, 13 Dec 2023 15:36:05 +0200
-From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
-To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        linux-usb@vger.kernel.org
-Subject: Re: [PATCH] usb: typec: Remove usage of the deprecated
- ida_simple_xx() API
-Message-ID: <ZXmzRWDHsBwvUL7v@kuha.fi.intel.com>
-References: <c7b99c4f52649ce6405779fbf9170edc5633fdbb.1702229697.git.christophe.jaillet@wanadoo.fr>
+        Wed, 13 Dec 2023 08:37:17 -0500
+Received: from mail.alien8.de (mail.alien8.de [IPv6:2a01:4f9:3051:3f93::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0981010C;
+        Wed, 13 Dec 2023 05:37:20 -0800 (PST)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 4A62C40E00CB;
+        Wed, 13 Dec 2023 13:37:17 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+        header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id p0U30yDLCYky; Wed, 13 Dec 2023 13:37:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+        t=1702474635; bh=YsH4/BEojnoqKhDSs/A5b/HEN4SIud9JxkU6bHGIETQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=k3ZzSSDZFMpQnaGW9BcncZOs/yVlI6yaQuxN6E4vcYoNlELe7nKhzl5Ik0qVn3oCj
+         j668Gcp+/P66Y/urrTJ/vDsLk9/u6n0FhhoHumDxwbG6N4kzmUxOYTDWxC6/YZ5kwB
+         P2RvyUbZAsO9a2zbTdYt/KEi46RNH17BK36Co1IQx9rA+FmaoEAwEs1YRgnUvX6QOH
+         nwmAuHRJ7f7lFi0bF1U52LiE2eaebb6Euoue6vucw+tjUql0v+bw4niwzaqnyJSzrm
+         oPSXD2Sf5804v4D77oHC+2hj2afMmDhzZcmCBap/0qpDNXkWSeZXPEozTQT7i3DFmy
+         NK1B3CIlO7Mur7agPdg7Cv5V5bYdtCkeOyVunRvDENHpzfqXPztmJASQTJko8b3MWs
+         2pVgAX2EDaCFdMS2yokm6/WC4MaLq34kZHykWEN9B+aNOhe2bBQ68ROFc21zpCATjq
+         Z6izNFCptB7hsGt5LHhLKuYrSpX3KSWtf/S1Ge7HqcvVBElo+FVS4SI2kbg7Ku6yS+
+         +BGSHFFPGfNLsa6Izyhk8ONszw2sMQAzHgctgg1JqPdFFDJJ+zcEm37XpBVmK5W66f
+         MRjOacIFonlsxm3SyICQvheBm5bJfg+y2x7srt0/+ep3HXHJ649sQOVzVCEUe35hmt
+         p2C8L6CILEGJSIBky90kQ8fs=
+Received: from zn.tnic (pd95304da.dip0.t-ipconnect.de [217.83.4.218])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+        (No client certificate requested)
+        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 8F45140E0030;
+        Wed, 13 Dec 2023 13:36:33 +0000 (UTC)
+Date:   Wed, 13 Dec 2023 14:36:28 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Michael Roth <michael.roth@amd.com>, kvm@vger.kernel.org,
+        linux-coco@lists.linux.dev, linux-mm@kvack.org,
+        linux-crypto@vger.kernel.org, x86@kernel.org,
+        linux-kernel@vger.kernel.org, tglx@linutronix.de, mingo@redhat.com,
+        jroedel@suse.de, thomas.lendacky@amd.com, hpa@zytor.com,
+        ardb@kernel.org, seanjc@google.com, vkuznets@redhat.com,
+        jmattson@google.com, luto@kernel.org, dave.hansen@linux.intel.com,
+        slp@redhat.com, pgonda@google.com, peterz@infradead.org,
+        srinivas.pandruvada@linux.intel.com, rientjes@google.com,
+        dovmurik@linux.ibm.com, tobin@ibm.com, vbabka@suse.cz,
+        kirill@shutemov.name, ak@linux.intel.com, tony.luck@intel.com,
+        marcorr@google.com, sathyanarayanan.kuppuswamy@linux.intel.com,
+        alpergun@google.com, jarkko@kernel.org, ashish.kalra@amd.com,
+        nikunj.dadhania@amd.com, pankaj.gupta@amd.com,
+        liam.merwick@oracle.com, zhi.a.wang@intel.com,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        Jarkko Sakkinen <jarkko@profian.com>
+Subject: Re: [PATCH v10 04/50] x86/cpufeatures: Add SEV-SNP CPU feature
+Message-ID: <20231213133628.GEZXmzXFwA1p+crH/5@fat_crate.local>
+References: <20231016132819.1002933-1-michael.roth@amd.com>
+ <20231016132819.1002933-5-michael.roth@amd.com>
+ <0b2eb374-356c-46c6-9c4a-9512fbfece7a@redhat.com>
+ <20231213131324.GDZXmt9LsMmJZyzCJw@fat_crate.local>
+ <40915dc3-4083-4b9f-bc64-7542833566e1@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <c7b99c4f52649ce6405779fbf9170edc5633fdbb.1702229697.git.christophe.jaillet@wanadoo.fr>
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <40915dc3-4083-4b9f-bc64-7542833566e1@redhat.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Dec 10, 2023 at 06:36:15PM +0100, Christophe JAILLET wrote:
-> ida_alloc() and ida_free() should be preferred to the deprecated
-> ida_simple_get() and ida_simple_remove().
-> 
-> This is less verbose.
-> 
-> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+On Wed, Dec 13, 2023 at 02:31:05PM +0100, Paolo Bonzini wrote:
+> Sure, I only queued it because you gave Acked-by for 05/50 and this is an
+> obvious dependency.  I would like to get things in as they are ready
+> (whenever it makes sense), so if you want to include those two in the x86
+> tree for 6.8, that would work for me.
 
-Acked-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+It doesn't make sense to include them into 6.8 because the two alone are
+simply dead code in 6.8.
 
-> ---
->  drivers/usb/typec/class.c | 8 ++++----
->  drivers/usb/typec/pd.c    | 4 ++--
->  2 files changed, 6 insertions(+), 6 deletions(-)
-> 
-> diff --git a/drivers/usb/typec/class.c b/drivers/usb/typec/class.c
-> index 16a670828dde..5fe01bf795b9 100644
-> --- a/drivers/usb/typec/class.c
-> +++ b/drivers/usb/typec/class.c
-> @@ -476,7 +476,7 @@ static int altmode_id_get(struct device *dev)
->  	else
->  		ids = &to_typec_port(dev)->mode_ids;
->  
-> -	return ida_simple_get(ids, 0, 0, GFP_KERNEL);
-> +	return ida_alloc(ids, GFP_KERNEL);
->  }
->  
->  static void altmode_id_remove(struct device *dev, int id)
-> @@ -490,7 +490,7 @@ static void altmode_id_remove(struct device *dev, int id)
->  	else
->  		ids = &to_typec_port(dev)->mode_ids;
->  
-> -	ida_simple_remove(ids, id);
-> +	ida_free(ids, id);
->  }
->  
->  static void typec_altmode_release(struct device *dev)
-> @@ -1798,7 +1798,7 @@ static void typec_release(struct device *dev)
->  {
->  	struct typec_port *port = to_typec_port(dev);
->  
-> -	ida_simple_remove(&typec_index_ida, port->id);
-> +	ida_free(&typec_index_ida, port->id);
->  	ida_destroy(&port->mode_ids);
->  	typec_switch_put(port->sw);
->  	typec_mux_put(port->mux);
-> @@ -2297,7 +2297,7 @@ struct typec_port *typec_register_port(struct device *parent,
->  	if (!port)
->  		return ERR_PTR(-ENOMEM);
->  
-> -	id = ida_simple_get(&typec_index_ida, 0, 0, GFP_KERNEL);
-> +	id = ida_alloc(&typec_index_ida, GFP_KERNEL);
->  	if (id < 0) {
->  		kfree(port);
->  		return ERR_PTR(id);
-> diff --git a/drivers/usb/typec/pd.c b/drivers/usb/typec/pd.c
-> index 85d015cdbe1f..7f3d61f220f2 100644
-> --- a/drivers/usb/typec/pd.c
-> +++ b/drivers/usb/typec/pd.c
-> @@ -571,7 +571,7 @@ static void pd_release(struct device *dev)
->  {
->  	struct usb_power_delivery *pd = to_usb_power_delivery(dev);
->  
-> -	ida_simple_remove(&pd_ida, pd->id);
-> +	ida_free(&pd_ida, pd->id);
->  	kfree(pd);
->  }
->  
-> @@ -616,7 +616,7 @@ usb_power_delivery_register(struct device *parent, struct usb_power_delivery_des
->  	if (!pd)
->  		return ERR_PTR(-ENOMEM);
->  
-> -	ret = ida_simple_get(&pd_ida, 0, 0, GFP_KERNEL);
-> +	ret = ida_alloc(&pd_ida, GFP_KERNEL);
->  	if (ret < 0) {
->  		kfree(pd);
->  		return ERR_PTR(ret);
-> -- 
-> 2.34.1
+The plan is to put the x86 patches first in the next submission, I'll
+pick them up for 6.9 and then give you an immutable branch to apply the
+KVM bits ontop. This way it all goes together.
+
+Thx.
 
 -- 
-heikki
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
