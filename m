@@ -2,186 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6767A812398
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 00:56:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BBB8E8123AB
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 01:04:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230521AbjLMX42 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 18:56:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35094 "EHLO
+        id S234054AbjLNAE1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 19:04:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59334 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229725AbjLMX4Z (ORCPT
+        with ESMTP id S229706AbjLNAEZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 18:56:25 -0500
-Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EAF659C
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 15:56:31 -0800 (PST)
-Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-5e2fc8fe1a8so590947b3.1
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 15:56:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1702511791; x=1703116591; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=UxO4lwP1Y614pYP6ZHT+U53NlXgl8rz0sajx/aIIUBo=;
-        b=n/6iq4hdeY0NUcjf+rU2vxu/hbxPQEwPdMuv5fe1m2M/1AIqqTyOJb8jIZ2isBMKhH
-         Zxn1J7+IgX/rx0FUVBfu92Rq59km+IIVm+tlw1sKYJ8uqF18t8RUxIb+XQ6lNFeBqFEu
-         5T7AC13pb1a9Hkqc6MuuKsunBAWcdhLoC6eEcZ7QMkSr4huW5y4Vvu7lOrA3fBYbFwrD
-         bYElGiuFVWvZSxZ+1y8Pm+cUVZW9zmCQ1Xk9nhkTNlr5+Qh+eWwFfPjK66utuJUy7C3E
-         pscjJ2hH4aawF6azeH6eBKbcM+y3zl/GCnbntJOv6RvpBd88QWii3BCR3Z3yta68S4c/
-         QBNg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702511791; x=1703116591;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=UxO4lwP1Y614pYP6ZHT+U53NlXgl8rz0sajx/aIIUBo=;
-        b=Bg6/Er7h7uHMnNo9nra+ZpnYeA3a7gImpulMpSqxkGXbezu71435iMeEiYvpa/mpNg
-         P6iXSKWOUxWkAiWWAAqQ5QuhvC+0fVqG4RR8z47rM4ZojYAq11uRPISAQAEVPaAsVPiK
-         yC+uI6CB4MnM4Fs/QK5IyiN+oCPG0MGxhq+dcupulFSZmhOJSGo4l0wL68qkzfspLB6c
-         5+K6gXD7XbYH75iie8N8gC2/5tKygHld0TEsQ8BglIoOZZivc8OKzKDU3HL4HiiDhNir
-         Q34Fv7E+YiVBPeJk8cFA6DBt0rijeZY1UFX41ljF4cwdSvxKUKpMoxw8/dJlljtE4QWW
-         Hfxw==
-X-Gm-Message-State: AOJu0YyDxX1VX+SluGE9lMrAlC3OwtHWksYLWABBS4KMiou01VvSlsnp
-        RmO+hyOFFB401GqJJoW3VYmPMnb7cbg=
-X-Google-Smtp-Source: AGHT+IEdEJxURty77JppqMbnEcTtdqehWo1GpHD5Zc7eekAL54I1TN5IQJjkH6fjT6U+/8piBXb3dgq1kJ0=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a05:6902:14d:b0:db5:3aaf:5207 with SMTP id
- p13-20020a056902014d00b00db53aaf5207mr151250ybh.3.1702511791190; Wed, 13 Dec
- 2023 15:56:31 -0800 (PST)
-Date:   Wed, 13 Dec 2023 15:56:29 -0800
-In-Reply-To: <06076290-4efb-5d71-74eb-396d325447e0@loongson.cn>
-Mime-Version: 1.0
-References: <20231130111804.2227570-1-zhaotianrui@loongson.cn>
- <20231130111804.2227570-2-zhaotianrui@loongson.cn> <e40d3884-bf39-8286-627f-e0ce7dacfcbe@loongson.cn>
- <ZXiV1rMrXY0hNgvZ@google.com> <023b6f8f-301b-a6d0-448b-09a602ba1141@loongson.cn>
- <06076290-4efb-5d71-74eb-396d325447e0@loongson.cn>
-Message-ID: <ZXpErTHBn6HeQUOp@google.com>
-Subject: Re: [PATCH v5 1/4] KVM: selftests: Add KVM selftests header files for LoongArch
-From:   Sean Christopherson <seanjc@google.com>
-To:     maobibo <maobibo@loongson.cn>
-Cc:     zhaotianrui <zhaotianrui@loongson.cn>,
-        Shuah Khan <shuah@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        Vishal Annapurve <vannapurve@google.com>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        WANG Xuerui <kernel@xen0n.name>, loongarch@lists.linux.dev,
-        Peter Xu <peterx@redhat.com>,
-        Vipin Sharma <vipinsh@google.com>, huangpei@loongson.cn
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no version=3.4.6
+        Wed, 13 Dec 2023 19:04:25 -0500
+X-Greylist: delayed 338 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 13 Dec 2023 16:04:32 PST
+Received: from out-176.mta1.migadu.com (out-176.mta1.migadu.com [95.215.58.176])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A44BA6
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 16:04:31 -0800 (PST)
+Message-ID: <85bb2e79-5b1a-41c1-972f-9f7f185fac88@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1702511929;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=FcjJcudoVFhZoBnbTd2oy3gYlnzRnT2DdGzqM7xSf0Q=;
+        b=E/udpmFeOtMDg7fVKQVuCXS4tlHdXPSD5Hx+UuArcG6HyHMlzSpbu9pnMZOsJTtOzMSlxV
+        +TVVQRYb9SAeQ6QcGNU3STQsgRYcPFhNSrLp6sNFEqUfZLXXYHNg+awGYa/5kdyUaiO+QN
+        IWm4nGSMwEIvoEFOWb6yRyaAdDAzahQ=
+Date:   Wed, 13 Dec 2023 15:58:39 -0800
+MIME-Version: 1.0
+Subject: Re: [PATCH bpf-next v5 5/9] bpf: selftests: Add verifier tests for
+ CO-RE bitfield writes
+Content-Language: en-US
+To:     Daniel Xu <dxu@dxuuu.xyz>
+Cc:     mykolal@fb.com, song@kernel.org, john.fastabend@gmail.com,
+        kpsingh@kernel.org, sdf@google.com, haoluo@google.com,
+        jolsa@kernel.org, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        devel@linux-ipsec.org, netdev@vger.kernel.org, ast@kernel.org,
+        andrii@kernel.org, shuah@kernel.org, daniel@iogearbox.net,
+        steffen.klassert@secunet.com, antony.antony@secunet.com,
+        alexei.starovoitov@gmail.com, yonghong.song@linux.dev,
+        eddyz87@gmail.com, eyal.birger@gmail.com,
+        Kuniyuki Iwashima <kuniyu@amazon.com>,
+        Kuniyuki Iwashima <kuni1840@gmail.com>
+References: <cover.1702325874.git.dxu@dxuuu.xyz>
+ <72698a1080fa565f541d5654705255984ea2a029.1702325874.git.dxu@dxuuu.xyz>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Martin KaFai Lau <martin.lau@linux.dev>
+In-Reply-To: <72698a1080fa565f541d5654705255984ea2a029.1702325874.git.dxu@dxuuu.xyz>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 13, 2023, maobibo wrote:
->=20
-> On 2023/12/13 =E4=B8=8B=E5=8D=883:15, zhaotianrui wrote:
-> >=20
-> > =E5=9C=A8 2023/12/13 =E4=B8=8A=E5=8D=881:18, Sean Christopherson =E5=86=
-=99=E9=81=93:
-> > > On Tue, Dec 12, 2023, zhaotianrui wrote:
-> > > > Hi, Sean:
-> > > >=20
-> > > > I want to change the definition of=C2=A0 DEFAULT_GUEST_TEST_MEM in =
-the common
-> > > > file "memstress.h", like this:
-> > > >=20
-> > > > =C2=A0 /* Default guest test virtual memory offset */
-> > > > +#ifndef DEFAULT_GUEST_TEST_MEM
-> > > > =C2=A0 #define DEFAULT_GUEST_TEST_MEM=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0 0xc0000000
-> > > > +#endif
-> > > >=20
-> > > > As this address should be re-defined in LoongArch headers.
-> > >=20
-> > > Why?=C2=A0 E.g. is 0xc0000000 unconditionally reserved, not guarantee=
-d to
-> > > be valid,
-> > > something else?
-> > >=20
-> > > > So, do you have any suggesstion?
-> > >=20
-> > > Hmm, I think ideally kvm_util_base.h would define a range of memory t=
-hat
-> > > can be used by tests for arbitrary data.=C2=A0 Multiple tests use 0xc=
-0000000,
-> > > which is not entirely arbitrary, i.e. it doesn't _need_ to be 0xc0000=
-000,
-> > > but 0xc0000000 is convenient because it's 32-bit addressable and does=
-n't
-> > > overlap reserved areas in other architectures.
-> In general text entry address of user application on x86/arm64 Linux
-> is 0x200000, however on LoongArch system text entry address is strange, i=
-ts
-> value 0x120000000.
->=20
-> When DEFAULT_GUEST_TEST_MEM is defined as 0xc0000000, there is limitation
-> for guest memory size, it cannot exceed 0x120000000 - 0xc000000 =3D 1.5G
-> bytes, else there will be conflict. However there is no such issue on
-> x86/arm64, since 0xc0000000 is above text entry address 0x200000.
+On 12/11/23 12:20 PM, Daniel Xu wrote:
+> Add some tests that exercise BPF_CORE_WRITE_BITFIELD() macro. Since some
+> non-trivial bit fiddling is going on, make sure various edge cases (such
+> as adjacent bitfields and bitfields at the edge of structs) are
+> exercised.
 
-Ugh, I spent a good 30 minutes trying to figure out how any of this works o=
-n x86
-before I realized DEFAULT_GUEST_TEST_MEM is used for the guest _virtual_ ad=
-dress
-space.
+Hi DanielXu, I have pushed the libbpf changes (adding BPF_CORE_WRITE_BITFIELD) 
+and verifier test in patch 3-5 which is useful by itself. e.g. Another patchset 
+can start using it also: 
+https://lore.kernel.org/bpf/8fccb066-6d17-4fa8-ba67-287042046ea4@linux.dev/
 
-I was thinking we were talking about guest _physical_ address, hence my com=
-ments
-about it being 32-bit addressable and not overlappin reserved areas.  E.g. =
-on x86,
-anything remotely resembling a real system has regular memory, a.k.a. DRAM,=
- split
-between low memory (below the 32-bit boundary, i.e. below 4GiB) and high me=
-mory
-(from 4GiB to the max legal physical address).  Addresses above "top of low=
-er
-usable DRAM" (TOLUD) are reserved (again, in a "real" system) for things li=
-ke
-PCI, local APIC, I/O APIC, and the _architecturally_ defined RESET vector.
-
-I couldn't figure out how x86 worked, because KVM creates an KVM-internal m=
-emslot
-at address 0xfee00000.  And then I realized the test creates memslots at co=
-mpletely
-different GPAs, and DEFAULT_GUEST_TEST_MEM is used only as super arbitrary
-guest virtual address.
-
-*sigh*
-
-Anyways...
-
-> The LoongArch link scripts actually is strange, it brings out some
-> compatible issues such dpdk/kvm selftest when user applications
-> want fixed virtual address space.
-
-Can you elaborate on compatiblity issues?  I don't see the connection betwe=
-en
-DPDK and KVM selftests.
-
-> So here DEFAULT_GUEST_TEST_MEM is defined as 0x130000000 separately, mayb=
-e
-> 0x140000000 is better since it is 1G super-page aligned for 4K page size.
-
-I would strongly prefer we carve out a virtual address range that *all* tes=
-ts
-can safely use for test-specific code and data.  E.g. if/when we add usersp=
-ace
-support to selftests, I like the idea of having dedicated address spaces fo=
-r
-kernel vs. user[*].
-
-Maybe we can march in that generally direction and define test's virtual ad=
-dress
-range to be in kernel space, i.e. the high half.  I assume/hope that would =
-play
-nice with all architectures' entry points?
-
-[*] https://lore.kernel.org/all/20231102155111.28821-1-guang.zeng@intel.com
+Thanks.
