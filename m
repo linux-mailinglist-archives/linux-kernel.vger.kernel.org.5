@@ -2,141 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B1A381239A
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 00:57:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6767A812398
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 00:56:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234043AbjLMX5M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 18:57:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56604 "EHLO
+        id S230521AbjLMX42 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 18:56:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35094 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229725AbjLMX5L (ORCPT
+        with ESMTP id S229725AbjLMX4Z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 18:57:11 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81D1F9C
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 15:57:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1702511837; x=1734047837;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=9RisqlQfkD94FUbVA8qz9zvfpbYwCG0HlGt8mGku71s=;
-  b=RO7iVEb+TxZcVFDo3Fw4adjAxsDiD+2LzYLwJ7uSiXCR/gWcO7X36drb
-   NmYZpEpzKV5C3WQgnFgweDqC70aQxi/tkF+o8tXmlHuHdWVR7xt7LP/IS
-   2Ph2lhSc6mfQUABQ66CeHvKZ8qMTZyDC6G9pmesi2C/NL9u2D/hMCozV6
-   h976zJz8LoyAAD4N+R0SZ4GbEk19N9PBNsuliHa2w1fDlT8C3zTO+0vIq
-   zD4heQkbHBrkjXM6R5k3R1w6mZ1pfrm99RnbxRaBzIHGjLbZDvSfjGRSr
-   j3lAhFhRw+WmZI38h5TkJyKilL+6LWXvK0Qdsvj7zwEi7UdlBviaGWdR3
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10923"; a="459365781"
-X-IronPort-AV: E=Sophos;i="6.04,274,1695711600"; 
-   d="scan'208";a="459365781"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Dec 2023 15:57:17 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10923"; a="723848776"
-X-IronPort-AV: E=Sophos;i="6.04,274,1695711600"; 
-   d="scan'208";a="723848776"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by orsmga003.jf.intel.com with ESMTP; 13 Dec 2023 15:57:15 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1rDZ6H-000LIe-2B;
-        Wed, 13 Dec 2023 23:57:13 +0000
-Date:   Thu, 14 Dec 2023 07:56:15 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: arch/arc/include/asm/checksum.h:27:26: sparse: sparse: restricted
- __wsum degrades to integer
-Message-ID: <202312140758.j0bflCSo-lkp@intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        Wed, 13 Dec 2023 18:56:25 -0500
+Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EAF659C
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 15:56:31 -0800 (PST)
+Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-5e2fc8fe1a8so590947b3.1
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 15:56:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1702511791; x=1703116591; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=UxO4lwP1Y614pYP6ZHT+U53NlXgl8rz0sajx/aIIUBo=;
+        b=n/6iq4hdeY0NUcjf+rU2vxu/hbxPQEwPdMuv5fe1m2M/1AIqqTyOJb8jIZ2isBMKhH
+         Zxn1J7+IgX/rx0FUVBfu92Rq59km+IIVm+tlw1sKYJ8uqF18t8RUxIb+XQ6lNFeBqFEu
+         5T7AC13pb1a9Hkqc6MuuKsunBAWcdhLoC6eEcZ7QMkSr4huW5y4Vvu7lOrA3fBYbFwrD
+         bYElGiuFVWvZSxZ+1y8Pm+cUVZW9zmCQ1Xk9nhkTNlr5+Qh+eWwFfPjK66utuJUy7C3E
+         pscjJ2hH4aawF6azeH6eBKbcM+y3zl/GCnbntJOv6RvpBd88QWii3BCR3Z3yta68S4c/
+         QBNg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702511791; x=1703116591;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=UxO4lwP1Y614pYP6ZHT+U53NlXgl8rz0sajx/aIIUBo=;
+        b=Bg6/Er7h7uHMnNo9nra+ZpnYeA3a7gImpulMpSqxkGXbezu71435iMeEiYvpa/mpNg
+         P6iXSKWOUxWkAiWWAAqQ5QuhvC+0fVqG4RR8z47rM4ZojYAq11uRPISAQAEVPaAsVPiK
+         yC+uI6CB4MnM4Fs/QK5IyiN+oCPG0MGxhq+dcupulFSZmhOJSGo4l0wL68qkzfspLB6c
+         5+K6gXD7XbYH75iie8N8gC2/5tKygHld0TEsQ8BglIoOZZivc8OKzKDU3HL4HiiDhNir
+         Q34Fv7E+YiVBPeJk8cFA6DBt0rijeZY1UFX41ljF4cwdSvxKUKpMoxw8/dJlljtE4QWW
+         Hfxw==
+X-Gm-Message-State: AOJu0YyDxX1VX+SluGE9lMrAlC3OwtHWksYLWABBS4KMiou01VvSlsnp
+        RmO+hyOFFB401GqJJoW3VYmPMnb7cbg=
+X-Google-Smtp-Source: AGHT+IEdEJxURty77JppqMbnEcTtdqehWo1GpHD5Zc7eekAL54I1TN5IQJjkH6fjT6U+/8piBXb3dgq1kJ0=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a05:6902:14d:b0:db5:3aaf:5207 with SMTP id
+ p13-20020a056902014d00b00db53aaf5207mr151250ybh.3.1702511791190; Wed, 13 Dec
+ 2023 15:56:31 -0800 (PST)
+Date:   Wed, 13 Dec 2023 15:56:29 -0800
+In-Reply-To: <06076290-4efb-5d71-74eb-396d325447e0@loongson.cn>
+Mime-Version: 1.0
+References: <20231130111804.2227570-1-zhaotianrui@loongson.cn>
+ <20231130111804.2227570-2-zhaotianrui@loongson.cn> <e40d3884-bf39-8286-627f-e0ce7dacfcbe@loongson.cn>
+ <ZXiV1rMrXY0hNgvZ@google.com> <023b6f8f-301b-a6d0-448b-09a602ba1141@loongson.cn>
+ <06076290-4efb-5d71-74eb-396d325447e0@loongson.cn>
+Message-ID: <ZXpErTHBn6HeQUOp@google.com>
+Subject: Re: [PATCH v5 1/4] KVM: selftests: Add KVM selftests header files for LoongArch
+From:   Sean Christopherson <seanjc@google.com>
+To:     maobibo <maobibo@loongson.cn>
+Cc:     zhaotianrui <zhaotianrui@loongson.cn>,
+        Shuah Khan <shuah@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        Vishal Annapurve <vannapurve@google.com>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        WANG Xuerui <kernel@xen0n.name>, loongarch@lists.linux.dev,
+        Peter Xu <peterx@redhat.com>,
+        Vipin Sharma <vipinsh@google.com>, huangpei@loongson.cn
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   5bd7ef53ffe5ca580e93e74eb8c81ed191ddc4bd
-commit: b38460bc463c54e0c15ff3b37e81f7e2059bb9bb kunit: Fix checksum tests on big endian CPUs
-date:   4 months ago
-config: arc-randconfig-r121-20231111 (https://download.01.org/0day-ci/archive/20231214/202312140758.j0bflCSo-lkp@intel.com/config)
-compiler: arceb-elf-gcc (GCC) 13.2.0
-reproduce: (https://download.01.org/0day-ci/archive/20231214/202312140758.j0bflCSo-lkp@intel.com/reproduce)
+On Wed, Dec 13, 2023, maobibo wrote:
+>=20
+> On 2023/12/13 =E4=B8=8B=E5=8D=883:15, zhaotianrui wrote:
+> >=20
+> > =E5=9C=A8 2023/12/13 =E4=B8=8A=E5=8D=881:18, Sean Christopherson =E5=86=
+=99=E9=81=93:
+> > > On Tue, Dec 12, 2023, zhaotianrui wrote:
+> > > > Hi, Sean:
+> > > >=20
+> > > > I want to change the definition of=C2=A0 DEFAULT_GUEST_TEST_MEM in =
+the common
+> > > > file "memstress.h", like this:
+> > > >=20
+> > > > =C2=A0 /* Default guest test virtual memory offset */
+> > > > +#ifndef DEFAULT_GUEST_TEST_MEM
+> > > > =C2=A0 #define DEFAULT_GUEST_TEST_MEM=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0 0xc0000000
+> > > > +#endif
+> > > >=20
+> > > > As this address should be re-defined in LoongArch headers.
+> > >=20
+> > > Why?=C2=A0 E.g. is 0xc0000000 unconditionally reserved, not guarantee=
+d to
+> > > be valid,
+> > > something else?
+> > >=20
+> > > > So, do you have any suggesstion?
+> > >=20
+> > > Hmm, I think ideally kvm_util_base.h would define a range of memory t=
+hat
+> > > can be used by tests for arbitrary data.=C2=A0 Multiple tests use 0xc=
+0000000,
+> > > which is not entirely arbitrary, i.e. it doesn't _need_ to be 0xc0000=
+000,
+> > > but 0xc0000000 is convenient because it's 32-bit addressable and does=
+n't
+> > > overlap reserved areas in other architectures.
+> In general text entry address of user application on x86/arm64 Linux
+> is 0x200000, however on LoongArch system text entry address is strange, i=
+ts
+> value 0x120000000.
+>=20
+> When DEFAULT_GUEST_TEST_MEM is defined as 0xc0000000, there is limitation
+> for guest memory size, it cannot exceed 0x120000000 - 0xc000000 =3D 1.5G
+> bytes, else there will be conflict. However there is no such issue on
+> x86/arm64, since 0xc0000000 is above text entry address 0x200000.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202312140758.j0bflCSo-lkp@intel.com/
+Ugh, I spent a good 30 minutes trying to figure out how any of this works o=
+n x86
+before I realized DEFAULT_GUEST_TEST_MEM is used for the guest _virtual_ ad=
+dress
+space.
 
-sparse warnings: (new ones prefixed by >>)
-   lib/checksum_kunit.c: note: in included file:
->> arch/arc/include/asm/checksum.h:27:26: sparse: sparse: restricted __wsum degrades to integer
-   arch/arc/include/asm/checksum.h:27:36: sparse: sparse: restricted __wsum degrades to integer
->> arch/arc/include/asm/checksum.h:29:11: sparse: sparse: bad assignment (-=) to restricted __wsum
-   arch/arc/include/asm/checksum.h:30:16: sparse: sparse: restricted __wsum degrades to integer
->> arch/arc/include/asm/checksum.h:30:18: sparse: sparse: incorrect type in return expression (different base types) @@     expected restricted __sum16 @@     got unsigned int @@
-   arch/arc/include/asm/checksum.h:30:18: sparse:     expected restricted __sum16
-   arch/arc/include/asm/checksum.h:30:18: sparse:     got unsigned int
->> arch/arc/include/asm/checksum.h:27:26: sparse: sparse: restricted __wsum degrades to integer
-   arch/arc/include/asm/checksum.h:27:36: sparse: sparse: restricted __wsum degrades to integer
->> arch/arc/include/asm/checksum.h:29:11: sparse: sparse: bad assignment (-=) to restricted __wsum
-   arch/arc/include/asm/checksum.h:30:16: sparse: sparse: restricted __wsum degrades to integer
->> arch/arc/include/asm/checksum.h:30:18: sparse: sparse: incorrect type in return expression (different base types) @@     expected restricted __sum16 @@     got unsigned int @@
-   arch/arc/include/asm/checksum.h:30:18: sparse:     expected restricted __sum16
-   arch/arc/include/asm/checksum.h:30:18: sparse:     got unsigned int
->> arch/arc/include/asm/checksum.h:27:26: sparse: sparse: restricted __wsum degrades to integer
-   arch/arc/include/asm/checksum.h:27:36: sparse: sparse: restricted __wsum degrades to integer
->> arch/arc/include/asm/checksum.h:29:11: sparse: sparse: bad assignment (-=) to restricted __wsum
-   arch/arc/include/asm/checksum.h:30:16: sparse: sparse: restricted __wsum degrades to integer
->> arch/arc/include/asm/checksum.h:30:18: sparse: sparse: incorrect type in return expression (different base types) @@     expected restricted __sum16 @@     got unsigned int @@
-   arch/arc/include/asm/checksum.h:30:18: sparse:     expected restricted __sum16
-   arch/arc/include/asm/checksum.h:30:18: sparse:     got unsigned int
->> arch/arc/include/asm/checksum.h:27:26: sparse: sparse: restricted __wsum degrades to integer
-   arch/arc/include/asm/checksum.h:27:36: sparse: sparse: restricted __wsum degrades to integer
->> arch/arc/include/asm/checksum.h:29:11: sparse: sparse: bad assignment (-=) to restricted __wsum
-   arch/arc/include/asm/checksum.h:30:16: sparse: sparse: restricted __wsum degrades to integer
->> arch/arc/include/asm/checksum.h:30:18: sparse: sparse: incorrect type in return expression (different base types) @@     expected restricted __sum16 @@     got unsigned int @@
-   arch/arc/include/asm/checksum.h:30:18: sparse:     expected restricted __sum16
-   arch/arc/include/asm/checksum.h:30:18: sparse:     got unsigned int
->> arch/arc/include/asm/checksum.h:27:26: sparse: sparse: restricted __wsum degrades to integer
-   arch/arc/include/asm/checksum.h:27:36: sparse: sparse: restricted __wsum degrades to integer
->> arch/arc/include/asm/checksum.h:29:11: sparse: sparse: bad assignment (-=) to restricted __wsum
-   arch/arc/include/asm/checksum.h:30:16: sparse: sparse: restricted __wsum degrades to integer
->> arch/arc/include/asm/checksum.h:30:18: sparse: sparse: incorrect type in return expression (different base types) @@     expected restricted __sum16 @@     got unsigned int @@
-   arch/arc/include/asm/checksum.h:30:18: sparse:     expected restricted __sum16
-   arch/arc/include/asm/checksum.h:30:18: sparse:     got unsigned int
+I was thinking we were talking about guest _physical_ address, hence my com=
+ments
+about it being 32-bit addressable and not overlappin reserved areas.  E.g. =
+on x86,
+anything remotely resembling a real system has regular memory, a.k.a. DRAM,=
+ split
+between low memory (below the 32-bit boundary, i.e. below 4GiB) and high me=
+mory
+(from 4GiB to the max legal physical address).  Addresses above "top of low=
+er
+usable DRAM" (TOLUD) are reserved (again, in a "real" system) for things li=
+ke
+PCI, local APIC, I/O APIC, and the _architecturally_ defined RESET vector.
 
-vim +27 arch/arc/include/asm/checksum.h
+I couldn't figure out how x86 worked, because KVM creates an KVM-internal m=
+emslot
+at address 0xfee00000.  And then I realized the test creates memslots at co=
+mpletely
+different GPAs, and DEFAULT_GUEST_TEST_MEM is used only as super arbitrary
+guest virtual address.
 
-ca15c8ecd588dd Vineet Gupta 2013-01-18  18  
-ca15c8ecd588dd Vineet Gupta 2013-01-18  19  /*
-ca15c8ecd588dd Vineet Gupta 2013-01-18  20   *	Fold a partial checksum
-ca15c8ecd588dd Vineet Gupta 2013-01-18  21   *
-ca15c8ecd588dd Vineet Gupta 2013-01-18  22   *  The 2 swords comprising the 32bit sum are added, any carry to 16th bit
-ca15c8ecd588dd Vineet Gupta 2013-01-18  23   *  added back and final sword result inverted.
-ca15c8ecd588dd Vineet Gupta 2013-01-18  24   */
-ca15c8ecd588dd Vineet Gupta 2013-01-18  25  static inline __sum16 csum_fold(__wsum s)
-ca15c8ecd588dd Vineet Gupta 2013-01-18  26  {
-d4067395519b40 Jinchao Wang 2021-06-26 @27  	unsigned int r = s << 16 | s >> 16;	/* ror */
-ca15c8ecd588dd Vineet Gupta 2013-01-18  28  	s = ~s;
-ca15c8ecd588dd Vineet Gupta 2013-01-18 @29  	s -= r;
-ca15c8ecd588dd Vineet Gupta 2013-01-18 @30  	return s >> 16;
-ca15c8ecd588dd Vineet Gupta 2013-01-18  31  }
-ca15c8ecd588dd Vineet Gupta 2013-01-18  32  
+*sigh*
 
-:::::: The code at line 27 was first introduced by commit
-:::::: d4067395519b40d4ee9b7c26347233e4ae59f900 arc: Prefer unsigned int to bare use of unsigned
+Anyways...
 
-:::::: TO: Jinchao Wang <wjc@cdjrlc.com>
-:::::: CC: Vineet Gupta <vgupta@synopsys.com>
+> The LoongArch link scripts actually is strange, it brings out some
+> compatible issues such dpdk/kvm selftest when user applications
+> want fixed virtual address space.
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Can you elaborate on compatiblity issues?  I don't see the connection betwe=
+en
+DPDK and KVM selftests.
+
+> So here DEFAULT_GUEST_TEST_MEM is defined as 0x130000000 separately, mayb=
+e
+> 0x140000000 is better since it is 1G super-page aligned for 4K page size.
+
+I would strongly prefer we carve out a virtual address range that *all* tes=
+ts
+can safely use for test-specific code and data.  E.g. if/when we add usersp=
+ace
+support to selftests, I like the idea of having dedicated address spaces fo=
+r
+kernel vs. user[*].
+
+Maybe we can march in that generally direction and define test's virtual ad=
+dress
+range to be in kernel space, i.e. the high half.  I assume/hope that would =
+play
+nice with all architectures' entry points?
+
+[*] https://lore.kernel.org/all/20231102155111.28821-1-guang.zeng@intel.com
