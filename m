@@ -2,230 +2,235 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 216A88110B0
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 13:02:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 92AAC8110B3
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 13:02:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378750AbjLMMCA convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 13 Dec 2023 07:02:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50866 "EHLO
+        id S1378759AbjLMMCP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 07:02:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53798 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233405AbjLMMB6 (ORCPT
+        with ESMTP id S233405AbjLMMCO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 07:01:58 -0500
-Received: from mail-oo1-f52.google.com (mail-oo1-f52.google.com [209.85.161.52])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F42BB0;
-        Wed, 13 Dec 2023 04:02:04 -0800 (PST)
-Received: by mail-oo1-f52.google.com with SMTP id 006d021491bc7-5909156aea9so776116eaf.0;
-        Wed, 13 Dec 2023 04:02:04 -0800 (PST)
+        Wed, 13 Dec 2023 07:02:14 -0500
+Received: from mail-oa1-x29.google.com (mail-oa1-x29.google.com [IPv6:2001:4860:4864:20::29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB61CEA
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 04:02:19 -0800 (PST)
+Received: by mail-oa1-x29.google.com with SMTP id 586e51a60fabf-1f055438492so5178359fac.3
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 04:02:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=amarulasolutions.com; s=google; t=1702468939; x=1703073739; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=6DofUqtgVQ4VhR1YJO8pN0dkbuoMC7o8wj1rNhuaJVI=;
+        b=Kwe8VDbY+Bolfxgenac3EG6XHtH967FmywJQCUKJ7N2Lg0RMp9C4q2Bl2JwWELJYzg
+         vTvOc5OkPSyIxOHioo5YtptoSuJ77rW2cM4oSNhIsxYngsVgbD7qpwtYaXNl7/WlTZr5
+         haR85XVcIj+6qRmEvpfueU4ekr3TU5om2RAdY=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702468924; x=1703073724;
+        d=1e100.net; s=20230601; t=1702468939; x=1703073739;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=NEAmrfWfgZx6bB3/5cn+QWsBw2i2koXTN0PXN9whVn8=;
-        b=nYU5OVKO5EfPB7T8KVDLps6h/cH/bhh7NPPEnQPKGHEeW8peatYEehdpFEd5cFn5n4
-         YLJ2J2UH/t1KEEzc0PSNEFXBqdCO4VMFauG1DUltK/M1REAR1x7kjrX8hH0K0zWbgjEu
-         4UMmwqRRr9tlXmMHNuN3iFP9/+V+tK55Oik0RpUUaF9kgv7feoVJdZjpufEsnJc1GoB3
-         X59IAO0pXnegjdrJ2d9eiUvFpSDuj0gs73anR4sG18adZLDhl8RY1flsAf3Ek8Ug3f25
-         aoo8i8i8uP84LSjb/9fWutZXPPd39fqIo8NI3WI9r5CQHPlhltgZgw9/OKwwK0hmq2q7
-         2eEQ==
-X-Gm-Message-State: AOJu0YwpF9NnFO9kR5AQXCmz/Do6ZgJRP5h+fYpU6HANgXD/duOM3Fa7
-        z9dH8w0wIg8ZmeBxSa8GwFzSYH0bVg0RSxzIEZbPNyZX
-X-Google-Smtp-Source: AGHT+IEd98MMQNnvYVtMuG9REb9GI+09RbG/7vfhRBzULZG5FHP6kxtZY+jLCMYeodTMboSxRQWo7+8YZlAYrp8p9/c=
-X-Received: by 2002:a05:6871:e717:b0:1fa:df87:4eba with SMTP id
- qa23-20020a056871e71700b001fadf874ebamr15536835oac.5.1702468923676; Wed, 13
- Dec 2023 04:02:03 -0800 (PST)
+        bh=6DofUqtgVQ4VhR1YJO8pN0dkbuoMC7o8wj1rNhuaJVI=;
+        b=qhP2fotaj6sxb1Yr904HxBuSOigIvVEUw45+lWpAzMxwe0urt942gvo5eegUQ+fUNn
+         h2AUHkP9r5TcT66y46Z1btRuPlbRKAS3eA5fM4EhLcWfqfAL9d6r3Bbr74K8nnjmvG5g
+         nxIfBAcU3h9my5uOR388+KjIsensP+0VHQh5MRbcymmz0kNa3uWZNlCBiPK98Bx1B1rh
+         WL4AKpY4Zvt0Q1iwP5a6ui4sAOr2UgV8t6NV2G1ESEvWgWouJWoiRLMaYkcAVDZsqefi
+         elNAwlRnDWh9YduVxzgIwFLWD+zEyIaMNWjazAhzHFckzN6xWweuwlkaaMKWC1cnOYAu
+         82Jg==
+X-Gm-Message-State: AOJu0YyhDeZaeYyqIOqqVhxbSElgSu7BnuxqU4ZNGTj3rF/fXcj4YD/j
+        aUZ+79lbn5/5fwEi/C4YXMZl0VqHJjETbu1qwwyXSA==
+X-Google-Smtp-Source: AGHT+IF/QcxvngLggBQbHP0cFv23ouZz/H+lPJz9vfgLPXcpoz3ZMYkIrxsZ9sevMJwWT/ktB+kQhfZDNJgvjsl0xCo=
+X-Received: by 2002:a05:6871:22c6:b0:1fb:75b:130e with SMTP id
+ se6-20020a05687122c600b001fb075b130emr10223530oab.96.1702468939042; Wed, 13
+ Dec 2023 04:02:19 -0800 (PST)
 MIME-Version: 1.0
-References: <20231212221301.12581-1-ansuelsmth@gmail.com>
-In-Reply-To: <20231212221301.12581-1-ansuelsmth@gmail.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Wed, 13 Dec 2023 13:01:51 +0100
-Message-ID: <CAJZ5v0gTUSFeR=8ov_CgMzkPF7hJ4_MXYZNvsONC8wMxyhiu=A@mail.gmail.com>
-Subject: Re: [PATCH 1/2] thermal: core: add initial support for cold and
- critical_cold trip point
-To:     Christian Marangi <ansuelsmth@gmail.com>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Lukasz Luba <lukasz.luba@arm.com>, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+References: <20231205105341.4100896-1-dario.binacchi@amarulasolutions.com>
+ <20231205105341.4100896-3-dario.binacchi@amarulasolutions.com>
+ <CAPY8ntAALKiTEG6qyFO=qVqSLUW9x8AMfPMc_TUwC3z8tJ7Kzw@mail.gmail.com>
+ <CABGWkvq-fJTDFPB=389XbHW_SLt6BQr-BhjZqZ+01i3v8EaYwA@mail.gmail.com>
+ <CAMty3ZBdCW=Rak8gMin8bt9JnFChAu6nw9n6xQyCSZw=63BukA@mail.gmail.com>
+ <CAOf5uwm_YmXz0A6nuCbJh+iszwqWyQkRRKATKyWZ33YUgZmEnw@mail.gmail.com> <CABGWkvpryv=bKsro1=6AG9kH9mU63JdWkG4xyyKvr_Rq0iADHg@mail.gmail.com>
+In-Reply-To: <CABGWkvpryv=bKsro1=6AG9kH9mU63JdWkG4xyyKvr_Rq0iADHg@mail.gmail.com>
+From:   Jagan Teki <jagan@amarulasolutions.com>
+Date:   Wed, 13 Dec 2023 17:32:07 +0530
+Message-ID: <CAMty3ZAA-MXJNkYcbEwxDKhzMMdJuB51wk7UywLS5eY2me-FFA@mail.gmail.com>
+Subject: Re: [PATCH v4 02/10] drm/bridge: Fix a use case in the bridge disable logic
+To:     Dario Binacchi <dario.binacchi@amarulasolutions.com>
+Cc:     Dave Stevenson <dave.stevenson@raspberrypi.com>,
+        Michael Nazzareno Trimarchi <michael@amarulasolutions.com>,
+        linux-kernel@vger.kernel.org,
+        Amarula patchwork <linux-amarula@amarulasolutions.com>,
+        Andrzej Hajda <andrzej.hajda@intel.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@gmail.com>,
+        Frieder Schrempf <frieder.schrempf@kontron.de>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Robert Foss <rfoss@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        dri-devel@lists.freedesktop.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 12, 2023 at 11:17 PM Christian Marangi <ansuelsmth@gmail.com> wrote:
+On Wed, Dec 13, 2023 at 5:29=E2=80=AFPM Dario Binacchi
+<dario.binacchi@amarulasolutions.com> wrote:
 >
-> Add initial support for cold and critical_cold trip point. Many if not
-> all hwmon and thermal device have normally trip point for hot
-> temperature and for cold temperature.
+> Hi Jagan and Dave,
 >
-> Till now only hot temperature were supported. Add support for also cold
-> temperature to permit complete definition of cold trip point in DT.
+> On Wed, Dec 6, 2023 at 2:57=E2=80=AFPM Michael Nazzareno Trimarchi
+> <michael@amarulasolutions.com> wrote:
+> >
+> > Hi Jagan
+> >
+> > On Wed, Dec 6, 2023 at 2:31=E2=80=AFPM Jagan Teki <jagan@amarulasolutio=
+ns.com> wrote:
+> > >
+> > > Hi Dario,
+> > >
+> > > On Wed, Dec 6, 2023 at 6:57=E2=80=AFPM Dario Binacchi
+> > > <dario.binacchi@amarulasolutions.com> wrote:
+> > > >
+> > > > Hi Dave and Jagan,
+> > > >
+> > > > On Tue, Dec 5, 2023 at 4:39=E2=80=AFPM Dave Stevenson
+> > > > <dave.stevenson@raspberrypi.com> wrote:
+> > > > >
+> > > > > Hi Dario
+> > > > >
+> > > > > On Tue, 5 Dec 2023 at 10:54, Dario Binacchi
+> > > > > <dario.binacchi@amarulasolutions.com> wrote:
+> > > > > >
+> > > > > > The patch fixes the code for finding the next bridge with the
+> > > > > > "pre_enable_prev_first" flag set to false. In case this conditi=
+on is
+> > > > > > not verified, i. e. there is no subsequent bridge with the flag=
+ set to
+> > > > > > false, the whole bridge list is traversed, invalidating the "ne=
+xt"
+> > > > > > variable.
+> > > > > >
+> > > > > > The use of a new iteration variable (i. e. "iter") ensures that=
+ the value
+> > > > > > of the "next" variable is not invalidated.
+> > > > >
+> > > > > We already have https://patchwork.freedesktop.org/patch/529288/ t=
+hat
+> > > > > has been reviewed (but not applied) to resolve this. What does th=
+is
+> > > > > version do differently and why?
+> > > >
+> > > > My patches only affect drm_atomic_bridge_chain_post_disable(), wher=
+eas
+> > > > Jagan's patch affects both
+> > > > drm_atomic_bridge_chain_post_disable() and drm_atomic_bridge_chain_=
+pre_enable().
+> > > > I tested Jagan's patch on my system with success and I reviewed wit=
+h
+> > > > Michael Trimarchi the
+> > > > drm_atomic_bridge_chain_pre_enable() fixing and we think it's okay.
+> > > > We also believe that our changes to post_disable() are better, as w=
+e
+> > > > set the 'next' variable only when required,
+> > > > and the code is more optimized since the list_is_last() is not call=
+ed
+> > > > within the loop.
+> > > > Would it be possible to use Jagan's patch for fixing
+> > > > drm_atomic_bridge_chain_pre_enable() and mine for
+> > > > fixing drm_atomic_bridge_chain_post_disable()?
+> > > >
+> > >
+> > > Can you please share the post-disabled bridge chain list with the
+> > > below example before and after your change?
+> >
+> > We have already git commit the description in how the patch affects
+> > the post_disable. As Dario
+> > reported your patch is ok even in our use case. We don't have a real
+> > use case as the one you describe.
+> >
+> > Can we know how you test it in this use case here? Can you test our
+> > patches of post_disable?
+> >
+> > Thanks
+> > Michael
+> >
+> > >
+> > > Example:
+> > > - Panel
+> > > - Bridge 1
+> > > - Bridge 2 pre_enable_prev_first
+> > > - Bridge 3
+> > > - Bridge 4 pre_enable_prev_first
+> > > - Bridge 5 pre_enable_prev_first
+> > > - Bridge 6
+> > > - Encoder
+> > >
+> > > Thanks,
+> > > Jagan.
 >
-> Thermal driver may use these additional trip point to correctly set
-> interrupt for cold temperature values and react based on that with
-> various measure like enabling attached heater, forcing higher voltage
-> and other specialaized peripherals.
+> Starting from my use case:
 >
-> For hwmon drivers this is needed as currently there is a problem with
-> setting the full operating range of the device for thermal devices
-> defined with hwmon. To better describe the problem, the following
-> example is needed:
+> # cat /sys/kernel/debug/dri/32e00000.lcdif/bridge_chains
+> encoder[36]
+> bridge[0] type: 16, ops: 0x0, OF:
+> /soc@0/bus@32c00000/dsi@32e10000:fsl,imx8mn-mipi-dsim
+> bridge[1] type: 16, ops: 0x8, OF:
+> /soc@0/bus@32c00000/dsi@32e10000/panel@0:sharp,ls068b3sx0
 >
-> In the scenario of a simple hwmon with an active trip point declared
-> and a cooling device attached, the hwmon subsystem currently set the
-> min and max trip point based on the single active trip point.
-> Thermal subsystem parse all the trip points and calculate the lowest and
-> the highest trip point and calls the .set_trip of hwmon to setup the
-> trip points.
+> I developed a pass through MIPI-DSI bridge driver to try to test your cas=
+e:
+> # cat /sys/kernel/debug/dri/32e00000.lcdif/bridge_chains
+> encoder[36]
+> bridge[0] type: 16, ops: 0x0, OF:
+> /soc@0/bus@32c00000/dsi@32e10000:fsl,imx8mn-mipi-dsim
+> bridge[1] type: 16, ops: 0x0, OF: /pt_mipi_dsi1:amarula,pt-mipi-dsi
+> bridge[2] type: 16, ops: 0x0, OF: /pt_mipi_dsi2:amarula,pt-mipi-dsi
+> bridge[3] type: 16, ops: 0x0, OF: /pt_mipi_dsi3:amarula,pt-mipi-dsi
+> bridge[4] type: 16, ops: 0x0, OF: /pt_mipi_dsi4:amarula,pt-mipi-dsi
+> bridge[5] type: 16, ops: 0x0, OF: /pt_mipi_dsi5:amarula,pt-mipi-dsi
+> bridge[6] type: 16, ops: 0x8, OF: /pt_mipi_dsi5/panel@0:sharp,ls068b3sx02
 >
-> The fact that we currently don't have a way to declare the cold/min
-> temperature values, makes the thermal subsystem to set the low value as
-> -INT_MAX.
-> For hwmon drivers that doesn't use clamp_value and actually reject
-> invalid values for the trip point, this results in the hwmon settings to
-> be rejected.
+> The pre_enable_prev_first flag is set through the
+> "amarula,pre_enable_prev_first" dts property I put
+> in my dts.
+> Your and my patches give the same results (result: OK) in both your
+> use case and mine.
+> But If I test my new "enlarged" use case:
 >
-> To permit to pass the correct range of trip point, permit to set in DT
-> also cold and critical_cold trip point.
+> - Encoder
+> - bridge[0] (samsung-dsim)
+> - bridge[1] pre_enable_prev_first
+> - bridge[2] pre_enable_prev_first
+> - bridge[3] pre_enable_prev_first
+> - bridge[4] pre_enable_prev_first
+> - bridge[5] pre_enable_prev_first
+> - bridge[6] pre_enable_prev_first (Panel)
 >
-> Thermal driver may also define .cold and .critical_cold to act on these
-> trip point tripped and apply the required measure.
+> the result is:
+> my patches: KO
+> your patch: OK
 >
-> Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
+> So, I will remove my patches from the series.
+>
+> Can the driver I implemented to test the use cases (pass through
+> MIPI-DSI) be considered useful for testing these
+> bridge pipelines?
+> Does it make sense to send its patch?
 
-Generally speaking, it is kind of late in the cycle for adding
-significant new features like this.  We can get to it when 6.8-rc1 is
-out, so please resend then.
+I don't think so, I have a similar test bench for chain of bridges. I
+will try to re-create the chain and update the result.
 
-Also it would be nice to define/document the cold and crtitical_cold
-trip points somewhere and is there a better name for critical_cold?
-
-> ---
->  drivers/thermal/thermal_core.c  | 13 +++++++++++++
->  drivers/thermal/thermal_of.c    |  2 ++
->  drivers/thermal/thermal_sysfs.c |  4 ++++
->  drivers/thermal/thermal_trace.h |  4 ++++
->  include/linux/thermal.h         |  2 ++
->  include/uapi/linux/thermal.h    |  2 ++
->  6 files changed, 27 insertions(+)
->
-> diff --git a/drivers/thermal/thermal_core.c b/drivers/thermal/thermal_core.c
-> index 9c17d35ccbbd..3c5ab560e72f 100644
-> --- a/drivers/thermal/thermal_core.c
-> +++ b/drivers/thermal/thermal_core.c
-> @@ -344,6 +344,17 @@ static void handle_critical_trips(struct thermal_zone_device *tz,
->                 tz->ops->hot(tz);
->  }
->
-> +static void handle_critical_cold_trips(struct thermal_zone_device *tz,
-> +                                      const struct thermal_trip *trip)
-> +{
-> +       trace_thermal_zone_trip(tz, thermal_zone_trip_id(tz, trip), trip->type);
-> +
-> +       if (trip->type == THERMAL_TRIP_CRITICAL_COLD && tz->ops->critical_cold)
-> +               tz->ops->critical_cold(tz);
-> +       else if (trip->type == THERMAL_TRIP_COLD && tz->ops->cold)
-> +               tz->ops->cold(tz);
-> +}
-> +
->  static void handle_thermal_trip(struct thermal_zone_device *tz,
->                                 const struct thermal_trip *trip)
->  {
-> @@ -365,6 +376,8 @@ static void handle_thermal_trip(struct thermal_zone_device *tz,
->
->         if (trip->type == THERMAL_TRIP_CRITICAL || trip->type == THERMAL_TRIP_HOT)
->                 handle_critical_trips(tz, trip);
-> +       else if (trip->type == THERMAL_TRIP_CRITICAL_COLD || trip->type == THERMAL_TRIP_COLD)
-> +               handle_critical_cold_trips(tz, trip);
->         else
->                 handle_non_critical_trips(tz, trip);
->  }
-> diff --git a/drivers/thermal/thermal_of.c b/drivers/thermal/thermal_of.c
-> index 1e0655b63259..95bc600bb4b8 100644
-> --- a/drivers/thermal/thermal_of.c
-> +++ b/drivers/thermal/thermal_of.c
-> @@ -60,6 +60,8 @@ static const char * const trip_types[] = {
->         [THERMAL_TRIP_PASSIVE]  = "passive",
->         [THERMAL_TRIP_HOT]      = "hot",
->         [THERMAL_TRIP_CRITICAL] = "critical",
-> +       [THERMAL_TRIP_COLD]     = "cold",
-> +       [THERMAL_TRIP_CRITICAL_COLD] = "critical_cold",
->  };
->
->  /**
-> diff --git a/drivers/thermal/thermal_sysfs.c b/drivers/thermal/thermal_sysfs.c
-> index eef40d4f3063..e1e69e0991c2 100644
-> --- a/drivers/thermal/thermal_sysfs.c
-> +++ b/drivers/thermal/thermal_sysfs.c
-> @@ -106,6 +106,10 @@ trip_point_type_show(struct device *dev, struct device_attribute *attr,
->                 return sprintf(buf, "critical\n");
->         case THERMAL_TRIP_HOT:
->                 return sprintf(buf, "hot\n");
-> +       case THERMAL_TRIP_COLD:
-> +               return sprintf(buf, "cold\n");
-> +       case THERMAL_TRIP_CRITICAL_COLD:
-> +               return sprintf(buf, "critical_cold\n");
->         case THERMAL_TRIP_PASSIVE:
->                 return sprintf(buf, "passive\n");
->         case THERMAL_TRIP_ACTIVE:
-> diff --git a/drivers/thermal/thermal_trace.h b/drivers/thermal/thermal_trace.h
-> index 459c8ce6cf3b..0a4f96075d7d 100644
-> --- a/drivers/thermal/thermal_trace.h
-> +++ b/drivers/thermal/thermal_trace.h
-> @@ -11,6 +11,8 @@
->
->  TRACE_DEFINE_ENUM(THERMAL_TRIP_CRITICAL);
->  TRACE_DEFINE_ENUM(THERMAL_TRIP_HOT);
-> +TRACE_DEFINE_ENUM(THERMAL_TRIP_COLD);
-> +TRACE_DEFINE_ENUM(THERMAL_TRIP_CRITICAL_COLD);
->  TRACE_DEFINE_ENUM(THERMAL_TRIP_PASSIVE);
->  TRACE_DEFINE_ENUM(THERMAL_TRIP_ACTIVE);
->
-> @@ -18,6 +20,8 @@ TRACE_DEFINE_ENUM(THERMAL_TRIP_ACTIVE);
->         __print_symbolic(type,                                  \
->                          { THERMAL_TRIP_CRITICAL, "CRITICAL"},  \
->                          { THERMAL_TRIP_HOT,      "HOT"},       \
-> +                        { THERMAL_TRIP_COLD,      "COLD"},     \
-> +                        { THERMAL_TRIP_CRITICAL_COLD, "CRITICAL_COLD"}, \
->                          { THERMAL_TRIP_PASSIVE,  "PASSIVE"},   \
->                          { THERMAL_TRIP_ACTIVE,   "ACTIVE"})
->
-> diff --git a/include/linux/thermal.h b/include/linux/thermal.h
-> index cee814d5d1ac..d6345c9ec50d 100644
-> --- a/include/linux/thermal.h
-> +++ b/include/linux/thermal.h
-> @@ -84,6 +84,8 @@ struct thermal_zone_device_ops {
->                           const struct thermal_trip *, enum thermal_trend *);
->         void (*hot)(struct thermal_zone_device *);
->         void (*critical)(struct thermal_zone_device *);
-> +       void (*cold)(struct thermal_zone_device *);
-> +       void (*critical_cold)(struct thermal_zone_device *);
->  };
->
->  struct thermal_cooling_device_ops {
-> diff --git a/include/uapi/linux/thermal.h b/include/uapi/linux/thermal.h
-> index fc78bf3aead7..7fa1ba0dff05 100644
-> --- a/include/uapi/linux/thermal.h
-> +++ b/include/uapi/linux/thermal.h
-> @@ -14,6 +14,8 @@ enum thermal_trip_type {
->         THERMAL_TRIP_PASSIVE,
->         THERMAL_TRIP_HOT,
->         THERMAL_TRIP_CRITICAL,
-> +       THERMAL_TRIP_COLD,
-> +       THERMAL_TRIP_CRITICAL_COLD,
->  };
->
->  /* Adding event notification support elements */
-> --
-> 2.40.1
->
+Jagan.
