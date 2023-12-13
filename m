@@ -2,393 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EA3C48122B7
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 00:15:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CEB98122BC
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 00:18:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442461AbjLMXPs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 18:15:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54590 "EHLO
+        id S233977AbjLMXSi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 18:18:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39484 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229698AbjLMXPp (ORCPT
+        with ESMTP id S229698AbjLMXSg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 18:15:45 -0500
-Received: from wnew1-smtp.messagingengine.com (wnew1-smtp.messagingengine.com [64.147.123.26])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68963B0;
-        Wed, 13 Dec 2023 15:15:50 -0800 (PST)
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailnew.west.internal (Postfix) with ESMTP id B47952B002A4;
-        Wed, 13 Dec 2023 18:15:44 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute3.internal (MEProxy); Wed, 13 Dec 2023 18:15:47 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
-        :cc:content-transfer-encoding:content-type:content-type:date
-        :date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-        :references:reply-to:subject:subject:to:to; s=fm3; t=1702509344;
-         x=1702516544; bh=qAygdCK51qJjDo5q40m5Ngxi6wos64jJBcQTm0MRQ0c=; b=
-        WyCWHYX46fcf4yRpB4QJF8XIu9nCBpIdTe5KOC6PjkAcRPI88VE3cCY59aI84tKk
-        lvWE8h/rmY43pbkmVkJgh9gWG4oyeYcy9RH+1p/e5VXx3drNzvnXi9gOG/zNan18
-        4SSBhHNJVJe9+vDi9EXkTtvHpdAReULbtXTBlfqoXM7D39kqQdvnd6TsW8FSth5Q
-        Z93ZqSUMOg0okGHAljNPDRohb0oCa9Zdvnu9k5C5zTZrc91nj/V8YpgIsg7fK9gH
-        gfAjVqvdylZg6MEXUCYwtskxgllXFRzMxF3UQblMWyPf4iTi6O+ia4bLSBa30kfd
-        uq8KdMsOgj687uzmyPAgLw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-transfer-encoding
-        :content-type:content-type:date:date:feedback-id:feedback-id
-        :from:from:in-reply-to:in-reply-to:message-id:mime-version
-        :references:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
-        :x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1702509344; x=
-        1702516544; bh=qAygdCK51qJjDo5q40m5Ngxi6wos64jJBcQTm0MRQ0c=; b=L
-        lD5lYksSK8HvmEXhs2gUtGFFakszs6oEknc+mGml784n3MHyZpp9zRd+gDzBo54M
-        3eyDzyz2i5glDhFe8FMY9KEFIqGtAFdacOyZCfRhVVxgwF7rmgEAxqNwp8pUa554
-        XJglIGgM6RkHDoD4YdtsQi4Nsmu9AOxd27SUlqAFh9/DSxzSsow+2+gil+7VK0Y+
-        Xk+GekdtJGNSnyJjLF8pI+fd8WqQoi5GcXa1rtZb1iMJetO44lL7sxO02qDPA8rp
-        PEaBl48mFNa+aWj3C+OZgfY1OZi5yskTXr228Yl/9VKoqO2ZbbGN+q5mhK5Ghy1y
-        YxfjJY7rTxILo+nVipI+g==
-X-ME-Sender: <xms:Hzt6ZVGgze6jEjY3C4RKKdg7Bk_XkGSi2jvzS7juqn1P8ir2zABSOg>
-    <xme:Hzt6ZaUkOLxHqpTwyRH9Mayd-plccw8YkFq0nSQBraJC91UUQCVIcLlFxYnZjpCmh
-    DVjfSdh98yB8k66kg>
-X-ME-Received: <xmr:Hzt6ZXIwUGpjYDwL5Gin95yAGe8b44e1YrPpAtObC75gV8vugXdd372mKIriKSbW0WgpjRW0GnIF9JU_BnZm3aXEVme6Zk9VsKEY>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrudelkedgtdekucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    gfrhhlucfvnfffucdlfeehmdenucfjughrpeffhffvvefukfhfgggtugfgjgestheksfdt
-    tddtjeenucfhrhhomhepffgrnhhivghlucgiuhcuoegugihusegugihuuhhurdighiiiqe
-    enucggtffrrghtthgvrhhnpedtgfeuueeukeeikefgieeukeffleetkeekkeeggeffvedt
-    vdejueehueeuleefteenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrih
-    hlfhhrohhmpegugihusegugihuuhhurdighiii
-X-ME-Proxy: <xmx:Hzt6ZbF4phkG2YoxYQ20L_rzugm43vcZnxobc-X0_OiC7mb2OgMEfQ>
-    <xmx:Hzt6ZbUtwHkutoqyO_UgyshJ5ZW7gIfrDCzVrfmxLtWdpi4fV4DU0A>
-    <xmx:Hzt6ZWOwphn1uDbnQEDT6lZjbRQI8LS4gRKwzzYp9z_MtJhcPRxvOQ>
-    <xmx:IDt6ZR8rjYLPoDMtwDftVcVvP7ndnOtIxr9qAmwedJI46phtJ5aiF1eXAEk>
-Feedback-ID: i6a694271:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 13 Dec 2023 18:15:41 -0500 (EST)
-Date:   Wed, 13 Dec 2023 16:15:40 -0700
-From:   Daniel Xu <dxu@dxuuu.xyz>
-To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc:     Eyal Birger <eyal.birger@gmail.com>, daniel@iogearbox.net,
-        davem@davemloft.net, shuah@kernel.org, ast@kernel.org,
-        john.fastabend@gmail.com, kuba@kernel.org, andrii@kernel.org,
-        hawk@kernel.org, steffen.klassert@secunet.com,
-        antony.antony@secunet.com, alexei.starovoitov@gmail.com,
-        yonghong.song@linux.dev, eddyz87@gmail.com, mykolal@fb.com,
-        martin.lau@linux.dev, song@kernel.org, kpsingh@kernel.org,
-        sdf@google.com, haoluo@google.com, jolsa@kernel.org,
-        bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        devel@linux-ipsec.org
-Subject: Re: [PATCH bpf-next v5 9/9] bpf: xfrm: Add selftest for
- bpf_xdp_get_xfrm_state()
-Message-ID: <yshbkwaiong7qq2rsgkpvvyvzefnwud5uywbea6ocfxxenzv6s@dn45gdaygaso>
-References: <cover.1702325874.git.dxu@dxuuu.xyz>
- <8ec1b885d2e13fcd20944cce9edc0340d993d044.1702325874.git.dxu@dxuuu.xyz>
- <CAHsH6GsdqBN638uqUm+8QkP1_45coucSTL7o=D2wFW-gYjPaBw@mail.gmail.com>
- <7yjkfhrwdphtcljq3odv4jc6lucd32wcg277hfsf4ve2jbo7hp@vuqzwbq5nxjw>
- <CAHsH6Gs1vUQnhR_a4qFnAF37Vx=68Do28sfVfFxQ9pVj9jSzjw@mail.gmail.com>
- <qiv464c4y43mo5rih5k6lgzkbpnj6wsrl52hrhgbxeqj45atun@szmqlmnccm52>
- <CAHsH6Gujycb9RBuRk7QHorLe0Q=Np_tb3uboQfp9KmJnegVXvw@mail.gmail.com>
- <fwadmdjjogp4ybfxfpwovnmnn36jigffopijsuqt4ly4vxqghm@ysqhd25mzylp>
- <fecc7tpmbnqxuxqqolm44ggyeomcr3piabsjkv3pgyzlhyonq6@iiaxf34erjzq>
- <CAP01T770poh_63vBC+Heb9ASJ9pDZd1wTDWAgm5KCYHK9GtE1g@mail.gmail.com>
+        Wed, 13 Dec 2023 18:18:36 -0500
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 130D3AD
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 15:18:43 -0800 (PST)
+Received: by mail-ed1-x52f.google.com with SMTP id 4fb4d7f45d1cf-54744e66d27so5473a12.0
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 15:18:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1702509521; x=1703114321; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=CtO9cW/bS+T4J2DvUT4r9uDI2FISmZm46NtsOlUjLfk=;
+        b=gEMmEMI4zDG3ms5JSyMCGI8dKWw4l+cb3b17NjP+xghWg9KpVVYAtCDh8mtYCx7WuB
+         8iSxOIOKKgU0z8a31nXvfw8aCi/VavJFtceBJ+7jFGdy+dZ1bSjm06NeIz4DAgd5d3Sq
+         af2b/IzRfF9Fb3Yt1e+JOx6gcHhbXYFW0WycpX/aQI9SOglXhXZPlScuz6TPdxFpg7Ro
+         +pAFEQng4gDyyWEktI4ysG1AF/obOwDWCs3GJ4rLTShYGEMzNqyFODtWEi+CFVjGPxfj
+         PsScc5RnyTUAIfKA9RVeZDRMVVxzV0MzK2VmbtcjS850SDlptpJFaAN5iVn80GoXhR6h
+         vKTQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702509521; x=1703114321;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=CtO9cW/bS+T4J2DvUT4r9uDI2FISmZm46NtsOlUjLfk=;
+        b=XK7j6dQo4M2rcEfJ66PMyP0sFgxYc4i1kDMIfjVuIJMwW7VD/xhe3Z3in7mPM5unNX
+         bz4bWI+udCkGjNdfnwbnkQo3yrEF9sUSX0YeWRM4gS/aUmSWZGG83M2T1sRoNCKjmBxD
+         Xfu9XX6/tXV7gw+DXDLgFVjMy9gQKiDKPfFCKK2FhDRqopAu2gtHz0P5yfEQLkUW9mhR
+         W34A6GYv+kGoxZqOCzSh3XmGGfKI5blYm+szH15NW0XsVsj1W7KrlSCG7ZOwjD9wvhid
+         t4cSRHLxNdzEV0AuIu2OPl7UgPYikg6veewvuowfmGKA586ZG8eVd9CWhKZPQaTPS+aj
+         P/fQ==
+X-Gm-Message-State: AOJu0Yx7pM3ANUBiMrQ3s6sXomG1KeQuho6BsdfeC+P9F7tKY4gszHMs
+        v1KoEuQrIO9xKTtuP85UBkeV7MnYMnMuWnXvatbMgQ==
+X-Google-Smtp-Source: AGHT+IHJlijaS4jp5pajI4NmOiafXFWdXV2A3PlgtibtORBNW9UNjAL2V2BgHeLDv+VyAiVat1lsNy4sHnzcE+xRGIA=
+X-Received: by 2002:a50:d7ca:0:b0:54a:ee8b:7a8c with SMTP id
+ m10-20020a50d7ca000000b0054aee8b7a8cmr550601edj.0.1702509521358; Wed, 13 Dec
+ 2023 15:18:41 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAP01T770poh_63vBC+Heb9ASJ9pDZd1wTDWAgm5KCYHK9GtE1g@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <cover.1699936040.git.isaku.yamahata@intel.com>
+ <1c12f378af7de16d7895f8badb18c3b1715e9271.1699936040.git.isaku.yamahata@intel.com>
+ <938efd3cfcb25d828deab0cc0ba797177cc69602.camel@redhat.com> <ZXo54VNuIqbMsYv-@google.com>
+In-Reply-To: <ZXo54VNuIqbMsYv-@google.com>
+From:   Jim Mattson <jmattson@google.com>
+Date:   Wed, 13 Dec 2023 15:18:25 -0800
+Message-ID: <CALMp9eQUs44tq-3mbqGxcnXjmAx=-jHOLxmW+DuMfeVXGVSDzg@mail.gmail.com>
+Subject: Re: [PATCH v2 1/3] KVM: x86: Make the hardcoded APIC bus frequency vm variable
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Maxim Levitsky <mlevitsk@redhat.com>, isaku.yamahata@intel.com,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        isaku.yamahata@gmail.com, Paolo Bonzini <pbonzini@redhat.com>,
+        erdemaktas@google.com, Vishal Annapurve <vannapurve@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 13, 2023 at 12:13:51AM +0100, Kumar Kartikeya Dwivedi wrote:
-> On Tue, 12 Dec 2023 at 20:52, Daniel Xu <dxu@dxuuu.xyz> wrote:
-> >
-> > cc Kumar
-> >
-> > On Tue, Dec 12, 2023 at 09:17:02AM -0700, Daniel Xu wrote:
-> > > On Mon, Dec 11, 2023 at 04:25:06PM -0800, Eyal Birger wrote:
-> > > > On Mon, Dec 11, 2023 at 3:49 PM Daniel Xu <dxu@dxuuu.xyz> wrote:
-> > > > >
-> > > > > On Mon, Dec 11, 2023 at 03:13:07PM -0800, Eyal Birger wrote:
-> > > > > > On Mon, Dec 11, 2023 at 2:31 PM Daniel Xu <dxu@dxuuu.xyz> wrote:
-> > > > > > >
-> > > > > > > On Mon, Dec 11, 2023 at 01:39:25PM -0800, Eyal Birger wrote:
-> > > > > > > > Hi Daniel,
-> > > > > > > >
-> > > > > > > > Tiny nits below in case you respin this for other reasons:
-> > > > > > > >
-> > > > > > > > On Mon, Dec 11, 2023 at 12:20 PM Daniel Xu <dxu@dxuuu.xyz> wrote:
-> > > > > > > > >
-> > > > > > > > > This commit extends test_tunnel selftest to test the new XDP xfrm state
-> > > > > > > > > lookup kfunc.
-> > > > > > > > >
-> > > > > > > > > Co-developed-by: Antony Antony <antony.antony@secunet.com>
-> > > > > > > > > Signed-off-by: Antony Antony <antony.antony@secunet.com>
-> > > > > > > > > Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
-> > > > > > > > > ---
-> > > > > > > > >  .../selftests/bpf/prog_tests/test_tunnel.c    | 20 ++++++--
-> > > > > > > > >  .../selftests/bpf/progs/test_tunnel_kern.c    | 51 +++++++++++++++++++
-> > > > > > > > >  2 files changed, 67 insertions(+), 4 deletions(-)
-> > > > > > > > >
-> > > > > > > > > diff --git a/tools/testing/selftests/bpf/prog_tests/test_tunnel.c b/tools/testing/selftests/bpf/prog_tests/test_tunnel.c
-> > > > > > > > > index 2d7f8fa82ebd..fc804095d578 100644
-> > > > > > > > > --- a/tools/testing/selftests/bpf/prog_tests/test_tunnel.c
-> > > > > > > > > +++ b/tools/testing/selftests/bpf/prog_tests/test_tunnel.c
-> > > > > > > > > @@ -278,7 +278,7 @@ static int add_xfrm_tunnel(void)
-> > > > > > > > >         SYS(fail,
-> > > > > > > > >             "ip netns exec at_ns0 "
-> > > > > > > > >                 "ip xfrm state add src %s dst %s proto esp "
-> > > > > > > > > -                       "spi %d reqid 1 mode tunnel "
-> > > > > > > > > +                       "spi %d reqid 1 mode tunnel replay-window 42 "
-> > > > > > > > >                         "auth-trunc 'hmac(sha1)' %s 96 enc 'cbc(aes)' %s",
-> > > > > > > > >             IP4_ADDR_VETH0, IP4_ADDR1_VETH1, XFRM_SPI_IN_TO_OUT, XFRM_AUTH, XFRM_ENC);
-> > > > > > > > >         SYS(fail,
-> > > > > > > > > @@ -292,7 +292,7 @@ static int add_xfrm_tunnel(void)
-> > > > > > > > >         SYS(fail,
-> > > > > > > > >             "ip netns exec at_ns0 "
-> > > > > > > > >                 "ip xfrm state add src %s dst %s proto esp "
-> > > > > > > > > -                       "spi %d reqid 2 mode tunnel "
-> > > > > > > > > +                       "spi %d reqid 2 mode tunnel replay-window 42 "
-> > > > > > > >
-> > > > > > > > nit: why do you need to set the replay-window in both directions?
-> > > > > > >
-> > > > > > > No reason - probably just careless here.
-> > > > > > >
-> > > > > > > >
-> > > > > > > > >                         "auth-trunc 'hmac(sha1)' %s 96 enc 'cbc(aes)' %s",
-> > > > > > > > >             IP4_ADDR1_VETH1, IP4_ADDR_VETH0, XFRM_SPI_OUT_TO_IN, XFRM_AUTH, XFRM_ENC);
-> > > > > > > > >         SYS(fail,
-> > > > > > > > > @@ -313,7 +313,7 @@ static int add_xfrm_tunnel(void)
-> > > > > > > > >          */
-> > > > > > > > >         SYS(fail,
-> > > > > > > > >             "ip xfrm state add src %s dst %s proto esp "
-> > > > > > > > > -                   "spi %d reqid 1 mode tunnel "
-> > > > > > > > > +                   "spi %d reqid 1 mode tunnel replay-window 42 "
-> > > > > > > > >                     "auth-trunc 'hmac(sha1)' %s 96  enc 'cbc(aes)' %s",
-> > > > > > > > >             IP4_ADDR_VETH0, IP4_ADDR1_VETH1, XFRM_SPI_IN_TO_OUT, XFRM_AUTH, XFRM_ENC);
-> > > > > > > > >         SYS(fail,
-> > > > > > > > > @@ -325,7 +325,7 @@ static int add_xfrm_tunnel(void)
-> > > > > > > > >         /* root -> at_ns0 */
-> > > > > > > > >         SYS(fail,
-> > > > > > > > >             "ip xfrm state add src %s dst %s proto esp "
-> > > > > > > > > -                   "spi %d reqid 2 mode tunnel "
-> > > > > > > > > +                   "spi %d reqid 2 mode tunnel replay-window 42 "
-> > > > > > > > >                     "auth-trunc 'hmac(sha1)' %s 96  enc 'cbc(aes)' %s",
-> > > > > > > > >             IP4_ADDR1_VETH1, IP4_ADDR_VETH0, XFRM_SPI_OUT_TO_IN, XFRM_AUTH, XFRM_ENC);
-> > > > > > > > >         SYS(fail,
-> > > > > > > > > @@ -628,8 +628,10 @@ static void test_xfrm_tunnel(void)
-> > > > > > > > >  {
-> > > > > > > > >         DECLARE_LIBBPF_OPTS(bpf_tc_hook, tc_hook,
-> > > > > > > > >                             .attach_point = BPF_TC_INGRESS);
-> > > > > > > > > +       LIBBPF_OPTS(bpf_xdp_attach_opts, opts);
-> > > > > > > > >         struct test_tunnel_kern *skel = NULL;
-> > > > > > > > >         struct nstoken *nstoken;
-> > > > > > > > > +       int xdp_prog_fd;
-> > > > > > > > >         int tc_prog_fd;
-> > > > > > > > >         int ifindex;
-> > > > > > > > >         int err;
-> > > > > > > > > @@ -654,6 +656,14 @@ static void test_xfrm_tunnel(void)
-> > > > > > > > >         if (attach_tc_prog(&tc_hook, tc_prog_fd, -1))
-> > > > > > > > >                 goto done;
-> > > > > > > > >
-> > > > > > > > > +       /* attach xdp prog to tunnel dev */
-> > > > > > > > > +       xdp_prog_fd = bpf_program__fd(skel->progs.xfrm_get_state_xdp);
-> > > > > > > > > +       if (!ASSERT_GE(xdp_prog_fd, 0, "bpf_program__fd"))
-> > > > > > > > > +               goto done;
-> > > > > > > > > +       err = bpf_xdp_attach(ifindex, xdp_prog_fd, XDP_FLAGS_REPLACE, &opts);
-> > > > > > > > > +       if (!ASSERT_OK(err, "bpf_xdp_attach"))
-> > > > > > > > > +               goto done;
-> > > > > > > > > +
-> > > > > > > > >         /* ping from at_ns0 namespace test */
-> > > > > > > > >         nstoken = open_netns("at_ns0");
-> > > > > > > > >         err = test_ping(AF_INET, IP4_ADDR_TUNL_DEV1);
-> > > > > > > > > @@ -667,6 +677,8 @@ static void test_xfrm_tunnel(void)
-> > > > > > > > >                 goto done;
-> > > > > > > > >         if (!ASSERT_EQ(skel->bss->xfrm_remote_ip, 0xac100164, "remote_ip"))
-> > > > > > > > >                 goto done;
-> > > > > > > > > +       if (!ASSERT_EQ(skel->bss->xfrm_replay_window, 42, "replay_window"))
-> > > > > > > > > +               goto done;
-> > > > > > > > >
-> > > > > > > > >  done:
-> > > > > > > > >         delete_xfrm_tunnel();
-> > > > > > > > > diff --git a/tools/testing/selftests/bpf/progs/test_tunnel_kern.c b/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
-> > > > > > > > > index 3a59eb9c34de..c0dd38616562 100644
-> > > > > > > > > --- a/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
-> > > > > > > > > +++ b/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
-> > > > > > > > > @@ -30,6 +30,10 @@ int bpf_skb_set_fou_encap(struct __sk_buff *skb_ctx,
-> > > > > > > > >                           struct bpf_fou_encap *encap, int type) __ksym;
-> > > > > > > > >  int bpf_skb_get_fou_encap(struct __sk_buff *skb_ctx,
-> > > > > > > > >                           struct bpf_fou_encap *encap) __ksym;
-> > > > > > > > > +struct xfrm_state *
-> > > > > > > > > +bpf_xdp_get_xfrm_state(struct xdp_md *ctx, struct bpf_xfrm_state_opts *opts,
-> > > > > > > > > +                      u32 opts__sz) __ksym;
-> > > > > > > > > +void bpf_xdp_xfrm_state_release(struct xfrm_state *x) __ksym;
-> > > > > > > > >
-> > > > > > > > >  struct {
-> > > > > > > > >         __uint(type, BPF_MAP_TYPE_ARRAY);
-> > > > > > > > > @@ -950,4 +954,51 @@ int xfrm_get_state(struct __sk_buff *skb)
-> > > > > > > > >         return TC_ACT_OK;
-> > > > > > > > >  }
-> > > > > > > > >
-> > > > > > > > > +volatile int xfrm_replay_window = 0;
-> > > > > > > > > +
-> > > > > > > > > +SEC("xdp")
-> > > > > > > > > +int xfrm_get_state_xdp(struct xdp_md *xdp)
-> > > > > > > > > +{
-> > > > > > > > > +       struct bpf_xfrm_state_opts opts = {};
-> > > > > > > > > +       struct xfrm_state *x = NULL;
-> > > > > > > > > +       struct ip_esp_hdr *esph;
-> > > > > > > > > +       struct bpf_dynptr ptr;
-> > > > > > > > > +       u8 esph_buf[8] = {};
-> > > > > > > > > +       u8 iph_buf[20] = {};
-> > > > > > > > > +       struct iphdr *iph;
-> > > > > > > > > +       u32 off;
-> > > > > > > > > +
-> > > > > > > > > +       if (bpf_dynptr_from_xdp(xdp, 0, &ptr))
-> > > > > > > > > +               goto out;
-> > > > > > > > > +
-> > > > > > > > > +       off = sizeof(struct ethhdr);
-> > > > > > > > > +       iph = bpf_dynptr_slice(&ptr, off, iph_buf, sizeof(iph_buf));
-> > > > > > > > > +       if (!iph || iph->protocol != IPPROTO_ESP)
-> > > > > > > > > +               goto out;
-> > > > > > > > > +
-> > > > > > > > > +       off += sizeof(struct iphdr);
-> > > > > > > > > +       esph = bpf_dynptr_slice(&ptr, off, esph_buf, sizeof(esph_buf));
-> > > > > > > > > +       if (!esph)
-> > > > > > > > > +               goto out;
-> > > > > > > > > +
-> > > > > > > > > +       opts.netns_id = BPF_F_CURRENT_NETNS;
-> > > > > > > > > +       opts.daddr.a4 = iph->daddr;
-> > > > > > > > > +       opts.spi = esph->spi;
-> > > > > > > > > +       opts.proto = IPPROTO_ESP;
-> > > > > > > > > +       opts.family = AF_INET;
-> > > > > > > > > +
-> > > > > > > > > +       x = bpf_xdp_get_xfrm_state(xdp, &opts, sizeof(opts));
-> > > > > > > > > +       if (!x || opts.error)
-> > > > > > > >
-> > > > > > > > nit: how can opts.error be non zero if x == NULL?
-> > > > > > >
-> > > > > > > Ignoring the new -ENOENT case, it can't. Which is why I'm testing that
-> > > > > > > behavior here.
-> > > > > >
-> > > > > > I'm sorry, I don't understand.
-> > > > > >
-> > > > > > AFAICT, regardless of the -ENOENT change, I don't see
-> > > > > > how (!x) is false and (opt.error) is true, and so
-> > > > > > "if (!x || opts.error)" is always equivalent to "if (!x)".
-> > > > > >
-> > > > > > What am I missing?
-> > > > > > Eyal.
-> > > > >
-> > > > > The selftests are tests so my intention was to check edge cases here.
-> > > > > In normal operation it shouldn't be possible that
-> > > > > bpf_xdp_get_xfrm_state() returns non-NULL and also an error. Maybe
-> > > > > another way of writing this would be:
-> > > > >
-> > > > >         if (!x)
-> > > > >                 goto out;
-> > > > >         assert(opts.error == 0);
-> > > >
-> > > > I think this would convey the "edge case testing" notion better.
-> > > >
-> > > > >
-> > > > > If I'm trying to be too clever (or maybe just wrong) or it's pointless,
-> > > > > I can remove the `opts.error` condition.
-> > > >
-> > > > At least for me the tests also serve as references as to how the
-> > > > API is expected to be used, so I think it'd be clearer without
-> > > > signaling that opts.error could potentially be nonzero on success.
-> > > >
-> > > > An assertion would indeed make that clear.
+On Wed, Dec 13, 2023 at 3:10=E2=80=AFPM Sean Christopherson <seanjc@google.=
+com> wrote:
+>
+> On Thu, Dec 14, 2023, Maxim Levitsky wrote:
+> > On Mon, 2023-11-13 at 20:35 -0800, isaku.yamahata@intel.com wrote:
+> > > From: Isaku Yamahata <isaku.yamahata@intel.com>
 > > >
-> > > Sure, sounds good. I will check on the new bpf assert infra.
+> > > TDX virtualizes the advertised APIC bus frequency to be 25MHz.
 > >
-> > Couldn't quite get bpf_assert() working. The following diff:
-> >
-> > diff --git a/tools/testing/selftests/bpf/progs/test_tunnel_kern.c b/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
-> > index c0dd38616562..f00dba85ac5d 100644
-> > --- a/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
-> > +++ b/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
-> > @@ -8,8 +8,9 @@
-> >   */
-> >  #include "vmlinux.h"
-> >  #include <bpf/bpf_core_read.h>
-> > -#include <bpf/bpf_helpers.h>
-> >  #include <bpf/bpf_endian.h>
-> > +#include <bpf/bpf_helpers.h>
-> > +#include "bpf_experimental.h"
-> >  #include "bpf_kfuncs.h"
-> >  #include "bpf_tracing_net.h"
-> >
-> > @@ -988,8 +989,9 @@ int xfrm_get_state_xdp(struct xdp_md *xdp)
-> >         opts.family = AF_INET;
-> >
-> >         x = bpf_xdp_get_xfrm_state(xdp, &opts, sizeof(opts));
-> > -       if (!x || opts.error)
-> > +       if (!x)
-> >                 goto out;
-> > +       bpf_assert_with(opts.error == 0, XDP_PASS);
-> >
-> >         if (!x->replay_esn)
-> >                 goto out;
-> >
-> > results in:
-> >
-> > 57: (b7) r1 = 2                       ; R1_w=2 refs=5
-> > 58: (85) call bpf_throw#115436
-> > calling kernel function bpf_throw is not allowed
-> >
-> 
-> I think this might be because bpf_throw is not registered for use by
-> BPF_PROG_TYPE_XDP. I would simply register the generic_kfunc_set for
-> this program type as well, since it's already done for TC.
+> > Can you explain a bit better why TDX needs this? I am not familiar
+> > with TDX well enough yet to fully understand.
+>
+> TDX (the module/architecture) hardcodes the core crystal frequency to 25M=
+hz,
+> whereas KVM hardcodes the APIC bus frequency to 1Ghz.  And TDX (again, th=
+e module)
+> *unconditionally* enumerates CPUID 0x15 to TDX guests, i.e. _tells_ the g=
+uest that
+> the frequency is 25MHz regardless of what the VMM/hypervisor actually emu=
+lates.
+> And so the guest skips calibrating the APIC timer, which results in the g=
+uest
+> scheduling timer interrupts waaaaaaay too frequently, i.e. the guest ends=
+ up
+> gettings interrupts at 40x the rate it wants.
+>
+> Upstream KVM's non-TDX behavior is fine, because KVM doesn't advertise su=
+pport
+> for CPUID 0x15, i.e. doesn't announce to host userspace that it's safe to=
+ expose
+> CPUID 0x15 to the guest.  Because TDX makes exposing CPUID 0x15 mandatory=
+, KVM
+> needs to be taught to correctly emulate the guest's APIC bus frequency, a=
+.k.a.
+> the TDX guest core crystal frequency of 25Mhz.
 
-Ah yeah, that was it.
+Aside from placating a broken guest infrastructure that ignores a
+17-year old contract between KVM and its guests, what are the
+advantages to supporting a range of APIC bus frequencies?
 
-> 
-> > It looks like the above error comes from verifier.c:fetch_kfunc_meta,
-> > but I can run the exceptions selftests just fine with the same bzImage.
-> > So I'm thinking it's not a kfunc registration or BTF issue.
-> >
-> > Maybe it's cuz I'm holding onto KFUNC_ACQUIRE'd `x`? Not sure.
-> >
-> 
-> Yes, even once you enable this, this will fail for now. I am sending
-> out a series later this week that enables bpf_throw with acquired
-> references, but until then may I suggest the following:
-> 
-> #define bpf_assert_if(cond) for (int ___i = 0, ___j = (cond); !(___j) \
-> && !___j; bpf_throw(), ___i++)
-> 
-> This will allow you to insert some cleanup code with an assertion.
-> Then in my series, I will convert this temporary bpf_assert_if back to
-> the normal bpf_assert.
-> 
-> It would look like:
-> bpf_assert_if(opts.error == 0) {
->   // Execute if assertion failed
->   bpf_xdp_xfrm_state_release(x);
-> }
-> 
-> Likewise for bpf_assert_with_if, you get the idea.
+> I halfheartedly floated the idea of "fixing" the TDX module/architecture =
+to either
+> use 1Ghz as the base frequency (off list), but it definitely isn't a hill=
+ worth
+> dying on since the KVM changes are relatively simple.
 
-I gave it a try and I'm getting this compile error:
-
-        progs/test_tunnel_kern.c:996:2: error: variable '___j' used in loop condition not modified in loop body [-Werror,-Wfor-loop-analysis]
-                bpf_assert_with_if(opts.error == 0, XDP_PASS) {
-                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        /home/dxu/dev/linux/tools/testing/selftests/bpf/bpf_experimental.h:295:38: note: expanded from macro 'bpf_assert_with_if'
-                for (int ___i = 0, ___j = (cond); !(___j) && !___j; bpf_throw(value), ___i++)
-                                                    ^~~~      ~~~~
-        1 error generated.
-        make: *** [Makefile:618: /home/dxu/dev/linux/tools/testing/selftests/bpf/test_tunnel_kern.bpf.o] Error 1
-
-Seems like the compiler is being clever.
-
-Thanks,
-Daniel
+Not making the KVM changes is even simpler. :)
