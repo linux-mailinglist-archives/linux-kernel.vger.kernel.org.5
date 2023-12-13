@@ -2,71 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 722CD811D1F
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 19:44:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 38383811D22
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 19:44:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378134AbjLMSoE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 13:44:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43702 "EHLO
+        id S233694AbjLMSob (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 13:44:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34282 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233516AbjLMSoC (ORCPT
+        with ESMTP id S229480AbjLMSo3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 13:44:02 -0500
-Received: from mail-yw1-x1133.google.com (mail-yw1-x1133.google.com [IPv6:2607:f8b0:4864:20::1133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 763D0EA;
-        Wed, 13 Dec 2023 10:44:08 -0800 (PST)
-Received: by mail-yw1-x1133.google.com with SMTP id 00721157ae682-5d33574f64eso74030817b3.3;
-        Wed, 13 Dec 2023 10:44:08 -0800 (PST)
+        Wed, 13 Dec 2023 13:44:29 -0500
+Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CEACF2;
+        Wed, 13 Dec 2023 10:44:35 -0800 (PST)
+Received: by mail-yb1-xb2a.google.com with SMTP id 3f1490d57ef6-dae7cc31151so6916327276.3;
+        Wed, 13 Dec 2023 10:44:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702493047; x=1703097847; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1702493074; x=1703097874; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=l2LwifpOgXej1dsHd1KHJezfiI8h2hD12gEj1McMU+k=;
-        b=AkneJdYSedv/ZYOsBalOkTWnlwtta2QsasKigF6ZNO3JvglzTDRN7/BMBrs4+OyMEe
-         2/8Be1gHml/OqR0OYR7ATngNfz13xtB6RWWtbni3rmVxnFRXcr+97XNweotJ3S2d7RZp
-         B7lyn3gCN92EaVIhtDoM5GVcNuYj7QXaeKgcpZLeDbscteRZm+OS9XKOorwG+gZ3jL5C
-         JNjnzsqpsw9u2I2SqDIsGPRqoUM6dkNLT70rG0gTmGhTBKAzYW2JsihuaZen/sGwCLA5
-         3sHG90e/Rt2CtV1qh7Nb1DpXZXAqoXnPYUhNpIInZlbnLVhspWM/jAbNLBfJQvzRplOZ
-         5EwQ==
+        bh=o89+rTPkyZ2u4xqSnh8fhH0cKv+jKXfmZsjDkxKQnFo=;
+        b=LTVsUC0ADO27O2dqOjerWAWK3PuyUFgtZg8TJo1kCcEmJaa1nYDkyRG4GFMP/mLxwt
+         YxNfnRAjmmhGcL3W5vXxgfx4JnlFrNwgCYGOroBLBQawGB9S72jUKOPvf5GawFH8XTVF
+         SD9k+87O7doWFMZN/je9PpeWDF+UWt/MdHGB46De/HaRHHAmRvdviJOsqqx2AXKtqASI
+         EnKpCXOdQ7WaGTZ3jRKbC0EzGfg6QGJkR8FdHaiwxlHFh6gED7Mw6gzq4BUktNf79E7k
+         ovy1j68lr+P+sCbfCM0gWQbMYasWrxqG2gWag86L5DdIXCUQHPzvVpr2hY7tdvOBf0W/
+         IBsw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702493047; x=1703097847;
+        d=1e100.net; s=20230601; t=1702493074; x=1703097874;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=l2LwifpOgXej1dsHd1KHJezfiI8h2hD12gEj1McMU+k=;
-        b=dQ7AbKwbrpB8WNBJhW5Mb5UzB/Ljrk0nSW81iwB5iw/9LjMASccNB68JaM01WMTZx5
-         Gozg1Ab3hC/Czh6bBQ/AtvInJc/aHWlLBEMYHM7NlxjCSVo7881i9N2vcyzIBVgTXh0m
-         O9oYQuDn3CI6T5ewQNEUTIZgDm0eqSbqW8rXa/Y13pGmenda4Mr0YqK5X8Hldl892wH9
-         3qm7A41eENhXxi7dlXtfI8xZv69RuRsLCaKlYnFJgFv67B00M9Lxek9FQgxnYpv3usQ6
-         nYsN1YGJ5rdRdcdQCVoP/wV5Y90QqXl5Q+KgQtrQVPIGBXXONAeO4f4063j1C35QkuD5
-         FM/g==
-X-Gm-Message-State: AOJu0YwVNaC49hIktnwDDwZ1zwolOecJuAf3Fr+4WuUJKnkg3dUfoLIn
-        7HmI5OH9l2bShRJrwqarvIZPldZOxxJG6uxb2EQ=
-X-Google-Smtp-Source: AGHT+IFd3K+SY9c18W79MkJVqB2q5KL7a71Eye1yZ2Yet4HXlhA9PPM7Cwa5kQtzyj27Aii8A7ptyLqtukiMGfgBB+A=
-X-Received: by 2002:a81:8415:0:b0:5e2:f017:24b5 with SMTP id
- u21-20020a818415000000b005e2f01724b5mr989270ywf.21.1702493047731; Wed, 13 Dec
- 2023 10:44:07 -0800 (PST)
+        bh=o89+rTPkyZ2u4xqSnh8fhH0cKv+jKXfmZsjDkxKQnFo=;
+        b=hK7pSSdZCLnRXh1agnXa0KfFEpmg2HpC7pHRpbzYzN/EPWpNmE87nW/0M4vSWxFYJG
+         2H6+Y12hKf7w9iVHqkROiote/hDLfBlc1GxDkdecLGRxXih3rLAxU+kaHPV6bvPhAn/V
+         oJ9khTNUiob1dSmXsP2n6I7ym7aHduwVwcfXhoq+7COUgg3SprjgRWL2H8gRHo5TtuBS
+         jtBDL/lvqotYm+wcdXCGtclutEDlpPdmhgVPuDzYN9T/l++Z9v57RNW8iwiRraC4L/5I
+         oj76iSv637ri7Nlc991Lcwk0zBSDPrGVAJ4wCDcid3pl3BpxSRmsAJnViptiSn3Wn0Jh
+         VibA==
+X-Gm-Message-State: AOJu0YyKDcGd7bQtjvYqiJooj5C1Y3vB6YVyFmfXt+LixteNbBnnF0Tf
+        /w5UcXxTceHYHSPJKSoPIfDFbXF+zv/7Akl3sXc=
+X-Google-Smtp-Source: AGHT+IGDDcv7QCiCuPSgHt8BFeRN1ktb30czOglJRpkstgMMmptWXTVb6nUszHCqmwSYC+o+Mumag18lqKuwy+cyayU=
+X-Received: by 2002:a05:6902:1b04:b0:dbc:bcc7:2580 with SMTP id
+ eh4-20020a0569021b0400b00dbcbcc72580mr2460332ybb.56.1702493074534; Wed, 13
+ Dec 2023 10:44:34 -0800 (PST)
 MIME-Version: 1.0
-References: <20231031201945.1412345-1-mmaurer@google.com>
-In-Reply-To: <20231031201945.1412345-1-mmaurer@google.com>
+References: <20231118013959.37384-1-tmgross@umich.edu>
+In-Reply-To: <20231118013959.37384-1-tmgross@umich.edu>
 From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date:   Wed, 13 Dec 2023 19:43:56 +0100
-Message-ID: <CANiq72mmx01ow3fN_8uaWFOw1wDZ2DfN2ZgEA5O+412gzeYCCg@mail.gmail.com>
-Subject: Re: [PATCH] rust: Ignore preserve-most functions
-To:     Matthew Maurer <mmaurer@google.com>
+Date:   Wed, 13 Dec 2023 19:44:23 +0100
+Message-ID: <CANiq72mv_9J5LAUNdMtYX1S=OPCr0-R_gS_V0c4ZX8Br3H86nw@mail.gmail.com>
+Subject: Re: [PATCH v2] rust: macros: update 'paste!' macro to accept string literals
+To:     Trevor Gross <tmgross@umich.edu>
 Cc:     Miguel Ojeda <ojeda@kernel.org>,
         Alex Gaynor <alex.gaynor@gmail.com>,
         Wedson Almeida Filho <wedsonaf@gmail.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
         Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
         =?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
         Benno Lossin <benno.lossin@proton.me>,
         Andreas Hindborg <a.hindborg@samsung.com>,
-        Alice Ryhl <aliceryhl@google.com>, Tom Rix <trix@redhat.com>,
+        Alice Ryhl <aliceryhl@google.com>,
+        Martin Rodriguez Reboredo <yakoyoku@gmail.com>,
         rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org,
-        llvm@lists.linux.dev
+        FUJITA Tomonori <fujita.tomonori@gmail.com>,
+        Vincenzo Palazzo <vincenzopalazzodev@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -79,20 +79,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 31, 2023 at 9:20=E2=80=AFPM Matthew Maurer <mmaurer@google.com>=
- wrote:
+On Sat, Nov 18, 2023 at 2:43=E2=80=AFAM Trevor Gross <tmgross@umich.edu> wr=
+ote:
 >
-> Neither bindgen nor Rust know about the preserve-most calling
-> convention, and Clang describes it as unstable. Since we aren't using
-> functions with this calling convention from Rust, blocklist them.
+> Enable combining identifiers with literals in the 'paste!' macro. This
+> allows combining user-specified strings with affixes to create
+> namespaced identifiers.
 >
-> These functions are only added to the build when list hardening is
-> enabled, which is likely why others didn't notice this yet.
+> This sample code:
 >
-> Signed-off-by: Matthew Maurer <mmaurer@google.com>
+>     macro_rules! m {
+>         ($name:lit) =3D> {
+>             paste!(struct [<_some_ $name _struct_>] {})
+>         }
+>     }
+>
+>     m!("foo_bar");
+>
+> Would previously cause a compilation error. It will now generate:
+>
+>     struct _some_foo_bar_struct_ {}
+>
+> Signed-off-by: Trevor Gross <tmgross@umich.edu>
+> Reviewed-by: Martin Rodriguez Reboredo <yakoyoku@gmail.com>
+> Reviewed-by: Vincenzo Palazzo <vincenzopalazzodev@gmail.com>
+> Reviewed-by: Alice Ryhl <aliceryhl@google.com>
+> Reviewed-by: Benno Lossin <benno.lossin@proton.me>
+> Reviewed-by: Gary Guo <gary@garyguo.net>
 
-Applied to `rust-next` (used Markdown for consistency with the other
-comments in the file).
+Applied to `rust-next` (with an added `:` before the example since
+that is our usual convention).
 
 Thanks everyone!
 
