@@ -2,102 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E25EC810E44
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 11:22:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BDB19810E4B
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 11:23:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235302AbjLMKWU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 05:22:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32946 "EHLO
+        id S235300AbjLMKXN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 05:23:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48030 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235298AbjLMKWS (ORCPT
+        with ESMTP id S235299AbjLMKXM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 05:22:18 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AA89DB
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 02:22:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1702462942;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=fKZ/Lgffh6YItnjPVn4vBB8RPVFHrOo+shUDIGrxj94=;
-        b=cieKq56xiuDa0BJbwafnxTw49dnaxMprmRZJaQa3Xb26fJbqfMwSCpDBc+Uj0zhFIt66OU
-        F94PtY2wFT6gr0DcjF5yhaclY8iqIixPgDBAbdl6+yAcYqlofcJMitmI4VSrgzYJEsDNqM
-        WxRVwvkE1sc9hjx4RcSZ1AXFoiWiBGc=
-Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
- [209.85.218.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-634-S3Tvqzt2PZGbXJOfcvvOjQ-1; Wed, 13 Dec 2023 05:22:20 -0500
-X-MC-Unique: S3Tvqzt2PZGbXJOfcvvOjQ-1
-Received: by mail-ej1-f72.google.com with SMTP id a640c23a62f3a-a1f9ab28654so149658166b.0
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 02:22:20 -0800 (PST)
+        Wed, 13 Dec 2023 05:23:12 -0500
+Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C72BD5
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 02:23:15 -0800 (PST)
+Received: by mail-wm1-x333.google.com with SMTP id 5b1f17b1804b1-40c41df5577so36004145e9.0
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 02:23:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1702462994; x=1703067794; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt
+         :references:cc:to:content-language:subject:reply-to:from:user-agent
+         :mime-version:date:message-id:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=LB4BasK5GoWh/K84I8G86ib6X3/yOsf6mofMtXVoDTU=;
+        b=VHwvZE7A1Jg/tAu5C1eGdSvvsZJ7Cv+6WfrPSFVPnCd/NTL+wbIlZlMSNtOERPW2l5
+         jZUZaEnw0yFmnrFcoGomDEq1kCUCslD2R8ugRx3XJujXdYEKjO7zXHq1eWlvgwF5Awmz
+         CmBH7/mI9syr0KhFfZ0bl9FquiTzFAYXGMVFJAHXV0rVXUDmvyr8pJ1tDoNOScYSZilp
+         bwczJjOLpBvX0CX7R8mT5kAfsyiML4PA4MmZauh6v07bR0Hf8rf2lKL0v20g7J8ISP/s
+         xXhQjQ3fWga4x8HO04L7QzcC4n4MVVy/pGhBqChPbMAGCiMhjpWg4JYWFKgEPHHP7Yau
+         iEJA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702462939; x=1703067739;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=fKZ/Lgffh6YItnjPVn4vBB8RPVFHrOo+shUDIGrxj94=;
-        b=CHgs/a7ltmcGqPgZCujaRnBgcjmVQGQHjyk53v04pf1fiWZcDjI5FKHlkIPWXHgPSq
-         /ZccpjoXGmW9rEg/kVPln3H3xYPdr6iIu5U3A4/aOFsVJZ+PgNQveFHOKtHM1IeELL1Y
-         q9NYFq6RmMW9a+JEPScjUr0UkRUFakVAbEMWynxRM7jORSygIZU8g/J08D1Yz2t++Ic2
-         VQ7gHXiI1PphQHyyLcsWauHZCN0aqBW8uu5q3jmFdK6gvOh7NNwVlX73htxkQKcR4xrh
-         ZGzIuLdJWK3JATPTM68tLZNDDpzAAUuEjFnStnOnu1QfVMiSk+Rek2iY/I46y2oLoGKk
-         wYqg==
-X-Gm-Message-State: AOJu0Yy4nV/8wqGoQaFtvocoXK1JSWxRhnf9w2Gwi6b9POPv8PGnVAEO
-        UvIvtI9hFzXkl+DomAhmdv93so65HPuIhrzBDi1+ep4t2iWvw0DCrWtnAnk3a/mVMlBC0w2V+Ng
-        BiLeTXSE36L6bETtDPwuU9eI+2CcZVZiF3cQd4LrQ
-X-Received: by 2002:a17:906:225a:b0:a1d:14a6:2f6e with SMTP id 26-20020a170906225a00b00a1d14a62f6emr2930361ejr.56.1702462939395;
-        Wed, 13 Dec 2023 02:22:19 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IG+jZ3nrLP+Wa+070vj84Vz+sqk6KDzCdmeuCiXsoUH30QJib9E+95nujJxOKEw6sQZT25ubnuLQgdExHfby+c=
-X-Received: by 2002:a17:906:225a:b0:a1d:14a6:2f6e with SMTP id
- 26-20020a170906225a00b00a1d14a62f6emr2930335ejr.56.1702462938844; Wed, 13 Dec
- 2023 02:22:18 -0800 (PST)
+        d=1e100.net; s=20230601; t=1702462994; x=1703067794;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt
+         :references:cc:to:content-language:subject:reply-to:from:user-agent
+         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=LB4BasK5GoWh/K84I8G86ib6X3/yOsf6mofMtXVoDTU=;
+        b=oKZpic/STeYuyIAbuQM3lNJLnbYPChyhbsoC1fIocWgCNHVz+3VIQZtXN1hF3h29MV
+         QqA+ZNg6Zkv/fKQZ3CZokPD54/OA/KMxUxpFS5vsqADWyO8M88A7TPCWuBJ/GC5APJgG
+         GNNSHGWOCGr8yMfOq5Bkk+WcSwg5zdDp0HxZa3tIlbTkuPISxJPWdwN58atAMY48hGXJ
+         xOcSNm0pNd+pDH+qxL3wPkPvoFnO6dZlPwcg4l28C8/j43sE7hV2O/34a+AkjG/Cl+X+
+         W26xu3GKJHvBXgztT5e840YVS8vjSl90LTCLyx1ItoV7oIXvo7i3gfFQQWCxpJAxr3ZK
+         WAcw==
+X-Gm-Message-State: AOJu0YzL+GjoEc5y6jzYvWUGwpo+R4RrFNv2flpvtNMhMqCb9v/VZWSY
+        J9LgLaInwyXEdeKwtLvrPROAoA==
+X-Google-Smtp-Source: AGHT+IEvVp4F2aI9Ka4d5ZnfFChJkVgwYC5tlOnduuCZ9TXMNMxQElEDJXhMex4K9PKfu6zHwN1I/g==
+X-Received: by 2002:a05:600c:6022:b0:40c:25c0:4927 with SMTP id az34-20020a05600c602200b0040c25c04927mr2081870wmb.302.1702462993821;
+        Wed, 13 Dec 2023 02:23:13 -0800 (PST)
+Received: from ?IPV6:2a01:e0a:982:cbb0:596e:6d4f:fc0a:ec65? ([2a01:e0a:982:cbb0:596e:6d4f:fc0a:ec65])
+        by smtp.gmail.com with ESMTPSA id p14-20020a05600c358e00b0040c37c4c229sm17167006wmq.14.2023.12.13.02.23.13
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 13 Dec 2023 02:23:13 -0800 (PST)
+Message-ID: <0346d0cf-d5e6-4d74-b563-1ad3ae717701@linaro.org>
+Date:   Wed, 13 Dec 2023 11:23:12 +0100
 MIME-Version: 1.0
-References: <2f33be45-fe11-4b69-8e89-4d2824a0bf01@daynix.com>
- <CAO-hwJJhzHtKrUEw0zrjgub3+eapgJG-zsG0HRB=PaPi6BxG+w@mail.gmail.com> <e256c6df-0a66-4f86-ae96-bff17920c2fb@daynix.com>
-In-Reply-To: <e256c6df-0a66-4f86-ae96-bff17920c2fb@daynix.com>
-From:   Benjamin Tissoires <benjamin.tissoires@redhat.com>
-Date:   Wed, 13 Dec 2023 11:22:06 +0100
-Message-ID: <CAO-hwJKMrWYRNpuprDj9=k87V0yHtLPEJuQ94bpOF3O81=v0kA@mail.gmail.com>
-Subject: Re: Should I add BPF kfuncs for userspace apps? And how?
-To:     Akihiko Odaki <akihiko.odaki@daynix.com>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Yonghong Song <yonghong.song@linux.dev>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
-        Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
-        Yuri Benditovich <yuri.benditovich@daynix.com>,
-        Andrew Melnychenko <andrew@daynix.com>,
-        Benjamin Tissoires <bentiss@kernel.org>,
-        bpf <bpf@vger.kernel.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        kvm@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        virtualization@lists.linux-foundation.org,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+User-Agent: Mozilla Thunderbird
+From:   Neil Armstrong <neil.armstrong@linaro.org>
+Reply-To: neil.armstrong@linaro.org
+Subject: Re: [PATCH 1/3] soc: qcom: pmic_pdcharger_ulog: Search current
+ directory for headers
+Content-Language: en-US, fr
+To:     Andrew Halaney <ahalaney@redhat.com>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20231205-pmicpdcharger-ulog-fixups-v1-0-71c95162cb84@redhat.com>
+ <20231205-pmicpdcharger-ulog-fixups-v1-1-71c95162cb84@redhat.com>
+ <320864f5-fdd2-4345-a0dd-b97bcf17f473@linaro.org>
+ <k77ayy4xwlnghjefvw3yl4aenwyq272pezjaazx65bvdle37et@5fnbae4fxnjz>
+ <zwzpbhcb4ggs3kdf72jvjlpe5cpa26vbjs6qw4nyedhcgwcrza@67in3h243yyx>
+ <139f9af0-ca6a-4a58-ae18-79ef6fac47e3@linaro.org>
+ <cea465e6-ff24-4552-b4f6-a0594ea9ea6c@linaro.org>
+ <qwp3lspu2k4awtn36jebslxqqstmtkoey2a2wnh5pstxbqhko5@i3ktuplsnkir>
+Autocrypt: addr=neil.armstrong@linaro.org; keydata=
+ xsBNBE1ZBs8BCAD78xVLsXPwV/2qQx2FaO/7mhWL0Qodw8UcQJnkrWmgTFRobtTWxuRx8WWP
+ GTjuhvbleoQ5Cxjr+v+1ARGCH46MxFP5DwauzPekwJUD5QKZlaw/bURTLmS2id5wWi3lqVH4
+ BVF2WzvGyyeV1o4RTCYDnZ9VLLylJ9bneEaIs/7cjCEbipGGFlfIML3sfqnIvMAxIMZrvcl9
+ qPV2k+KQ7q+aXavU5W+yLNn7QtXUB530Zlk/d2ETgzQ5FLYYnUDAaRl+8JUTjc0CNOTpCeik
+ 80TZcE6f8M76Xa6yU8VcNko94Ck7iB4vj70q76P/J7kt98hklrr85/3NU3oti3nrIHmHABEB
+ AAHNKk5laWwgQXJtc3Ryb25nIDxuZWlsLmFybXN0cm9uZ0BsaW5hcm8ub3JnPsLAkQQTAQoA
+ OwIbIwULCQgHAwUVCgkICwUWAgMBAAIeAQIXgBYhBInsPQWERiF0UPIoSBaat7Gkz/iuBQJk
+ Q5wSAhkBAAoJEBaat7Gkz/iuyhMIANiD94qDtUTJRfEW6GwXmtKWwl/mvqQtaTtZID2dos04
+ YqBbshiJbejgVJjy+HODcNUIKBB3PSLaln4ltdsV73SBcwUNdzebfKspAQunCM22Mn6FBIxQ
+ GizsMLcP/0FX4en9NaKGfK6ZdKK6kN1GR9YffMJd2P08EO8mHowmSRe/ExAODhAs9W7XXExw
+ UNCY4pVJyRPpEhv373vvff60bHxc1k/FF9WaPscMt7hlkbFLUs85kHtQAmr8pV5Hy9ezsSRa
+ GzJmiVclkPc2BY592IGBXRDQ38urXeM4nfhhvqA50b/nAEXc6FzqgXqDkEIwR66/Gbp0t3+r
+ yQzpKRyQif3OwE0ETVkGzwEIALyKDN/OGURaHBVzwjgYq+ZtifvekdrSNl8TIDH8g1xicBYp
+ QTbPn6bbSZbdvfeQPNCcD4/EhXZuhQXMcoJsQQQnO4vwVULmPGgtGf8PVc7dxKOeta+qUh6+
+ SRh3vIcAUFHDT3f/Zdspz+e2E0hPV2hiSvICLk11qO6cyJE13zeNFoeY3ggrKY+IzbFomIZY
+ 4yG6xI99NIPEVE9lNBXBKIlewIyVlkOaYvJWSV+p5gdJXOvScNN1epm5YHmf9aE2ZjnqZGoM
+ Mtsyw18YoX9BqMFInxqYQQ3j/HpVgTSvmo5ea5qQDDUaCsaTf8UeDcwYOtgI8iL4oHcsGtUX
+ oUk33HEAEQEAAcLAXwQYAQIACQUCTVkGzwIbDAAKCRAWmrexpM/4rrXiB/sGbkQ6itMrAIfn
+ M7IbRuiSZS1unlySUVYu3SD6YBYnNi3G5EpbwfBNuT3H8//rVvtOFK4OD8cRYkxXRQmTvqa3
+ 3eDIHu/zr1HMKErm+2SD6PO9umRef8V82o2oaCLvf4WeIssFjwB0b6a12opuRP7yo3E3gTCS
+ KmbUuLv1CtxKQF+fUV1cVaTPMyT25Od+RC1K+iOR0F54oUJvJeq7fUzbn/KdlhA8XPGzwGRy
+ 4zcsPWvwnXgfe5tk680fEKZVwOZKIEuJC3v+/yZpQzDvGYJvbyix0lHnrCzq43WefRHI5XTT
+ QbM0WUIBIcGmq38+OgUsMYu4NzLu7uZFAcmp6h8g
+Organization: Linaro Developer Services
+In-Reply-To: <qwp3lspu2k4awtn36jebslxqqstmtkoey2a2wnh5pstxbqhko5@i3ktuplsnkir>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -105,349 +113,157 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 12, 2023 at 1:41=E2=80=AFPM Akihiko Odaki <akihiko.odaki@daynix=
-.com> wrote:
->
-> On 2023/12/12 19:39, Benjamin Tissoires wrote:
-> > Hi,
-> >
-> > On Tue, Dec 12, 2023 at 9:11=E2=80=AFAM Akihiko Odaki <akihiko.odaki@da=
-ynix.com> wrote:
-> >>
-> >> Hi,
->
-> Hi,
->
-> Thanks for reply.
->
-> >>
-> >> It is said eBPF is a safe way to extend kernels and that is very
-> >> attarctive, but we need to use kfuncs to add new usage of eBPF and
-> >> kfuncs are said as unstable as EXPORT_SYMBOL_GPL. So now I'd like to a=
-sk
-> >> some questions:
-> >>
-> >> 1) Which should I choose, BPF kfuncs or ioctl, when adding a new featu=
-re
-> >> for userspace apps?
-> >> 2) How should I use BPF kfuncs from userspace apps if I add them?
-> >>
-> >> Here, a "userspace app" means something not like a system-wide daemon
-> >> like systemd (particularly, I have QEMU in mind). I'll describe the
-> >> context more below:
-> >
-> > I'm probably not the best person in the world to answer your
-> > questions, Alexei and others from the BPF core group are, but given
-> > that you pointed at a thread I was involved in, I feel I can give you
-> > a few pointers.
-> >
-> > But first and foremost, I encourage you to schedule an agenda item in
-> > the BPF office hour[4]. Being able to talk with the core people
-> > directly was tremendously helpful to me to understand their point.
->
-> I prefer emails because I'm not very fluent when speaking in English and
-> may have a difficultly to listen to other people, but I may try it in
-> future.
->
-> >
-> >
-> >>
-> >> ---
-> >>
-> >> I'm working on a new feature that aids virtio-net implementations usin=
-g
-> >> tuntap virtual network device. You can see [1] for details, but
-> >> basically it's to extend BPF_PROG_TYPE_SOCKET_FILTER to report four mo=
-re
-> >> bytes.
-> >>
-> >> However, with long discussions we have confirmed extending
-> >> BPF_PROG_TYPE_SOCKET_FILTER is not going to happen, and adding kfuncs =
-is
-> >> the way forward. So I decided how to add kfuncs to the kernel and how =
-to
-> >> use it. There are rich documentations for the kernel side, but I found
-> >> little about the userspace. The best I could find is a systemd change
-> >> proposal that is based on WIP kernel changes[2].
-> >
-> > Yes, as Alexei already replied, BPF is not adding new stable APIs,
-> > only kfuncs. The reason being that once it's marked as stable, you
-> > can't really remove it, even if you think it's badly designed and
-> > useless.
-> >
-> > Kfuncs, OTOH are "unstable" by default meaning that the constraints
-> > around it are more relaxed.
-> >
-> > However, "unstable" doesn't mean "unusable". It just means that the
-> > kernel might or might not have the function when you load your program
-> > in userspace. So you have to take that fact into account from day one,
-> > both from the kernel side and the userspace side. The kernel docs have
-> > a nice paragraph explaining that situation and makes the distinction
-> > between relatively unused kfuncs, and well known established ones.
-> >
-> > Regarding the systemd discussion you are mentioning ([2]), this is
-> > something that I have on my plate for a long time. I think I even
-> > mentioned it to Alexei at Kernel Recipes this year, and he frowned his
-> > eyebrows when I mentioned it. And looking at the systemd code and the
-> > benefits over a plain ioctl, it is clearer that in that case, a plain
-> > ioctl is better, mostly because we already know the API and the
-> > semantic.
-> >
-> > A kfunc would be interesting in cases where you are not sure about the
-> > overall design, and so you can give a shot at various API solutions
-> > without having to keep your bad v1 design forever.
-> >
-> >>
-> >> So now I'm wondering how I should use BPF kfuncs from userspace apps i=
-f
-> >> I add them. In the systemd discussion, it is told that Linus said it's
-> >> fine to use BPF kfuncs in a private infrastructure big companies own, =
-or
-> >> in systemd as those users know well about the system[3]. Indeed, those
-> >> users should be able to make more assumptions on the kernel than
-> >> "normal" userspace applications can.
-> >>
-> >> Returning to my proposal, I'm proposing a new feature to be used by QE=
-MU
-> >> or other VMM applications. QEMU is more like a normal userspace
-> >> application, and usually does not make much assumptions on the kernel =
-it
-> >> runs on. For example, it's generally safe to run a Debian container
-> >> including QEMU installed with apt on Fedora. BPF kfuncs may work even =
-in
-> >> such a situation thanks to CO-RE, but it sounds like *accidentally*
-> >> creating UAPIs.
-> >>
-> >> Considering all above, how can I integrate BPF kfuncs to the applicati=
-on?
-> >
-> > FWIW, I'm not sure you can rely on BPF calls from a container. There
-> > is a high chance the syscall gets disabled by the runtime.
->
-> Right. Container runtimes will not pass CAP_BPF by default, but that
-> restriction can be lifted and I think that's a valid scenario.
->
-> >
-> >>
-> >> If BPF kfuncs are like EXPORT_SYMBOL_GPL, the natural way to handle th=
-em
-> >> is to think of BPF programs as some sort of kernel modules and
-> >> incorporate logic that behaves like modprobe. More concretely, I can p=
-ut
-> >> eBPF binaries to a directory like:
-> >> /usr/local/share/qemu/ebpf/$KERNEL_RELEASE
-> >
-> > I would advise against that (one program per kernel release). Simply
-> > because your kfunc may or may not have been backported to kernel
-> > release v6.X.Y+1 while it was not there when v6.X.Y was out. So
-> > relying on the kernel number is just going to be a headache.
-> >
-> > As I understand it, the way forward is to rely on the kernel, libbpf
-> > and CO-RE: if the function is not available, the program will simply
-> > not load, and you'll know that this version of the code is not
-> > available (or has changed API).
-> >
-> > So what I would do if some kfunc API is becoming deprecated, is
-> > embedding both code paths in the same BPF unit, but marking them as
-> > not loaded by libppf. Then I can load the compilation unit, try v2 of
-> > the API, and if it's not available, try v1, and if not, then mention
-> > that I can not rely on BPF. Of course, this can also be done with
-> > separate compilation units.
->
-> Doesn't it mean that the kernel is free to break old versions of QEMU
-> including BPF programs? That's something I'd like to avoid.
+Hi Andrew,
 
-Couple of points here:
-- when you say "the kernel", it feels like you are talking about an
-external actor tampering with your code. But if you submit a kernel
-patch with a specific use case and get yourself involved in the
-community, why would anybody change your kfunc API without you knowing
-it?
-- the whole warning about "unstable" policy means that the user space
-component should not take for granted the capability. So if the kfunc
-changes/disappears for good reasons (because it was marked as well
-used and deprecated for quite some time), qemu should not *break*, it
-should not provide the functionality, or have a secondary plan.
+On 12/12/2023 23:21, Andrew Halaney wrote:
+> On Tue, Dec 12, 2023 at 08:21:41PM +0100, Neil Armstrong wrote:
+>> On 12/12/2023 17:52, Neil Armstrong wrote:
+>>> On 12/12/2023 17:15, Andrew Halaney wrote:
+>>>> On Tue, Dec 12, 2023 at 09:54:48AM -0600, Andrew Halaney wrote:
+>>>>> On Tue, Dec 12, 2023 at 04:23:20PM +0100, Neil Armstrong wrote:
+>>>>>> Hi Andrew,
+>>>>>>
+>>>>>> On 06/12/2023 00:05, Andrew Halaney wrote:
+>>>>>>> As specified in samples/trace_events/Makefile:
+>>>>>>>
+>>>>>>>        If you include a trace header outside of include/trace/events
+>>>>>>>        then the file that does the #define CREATE_TRACE_POINTS must
+>>>>>>>        have that tracer file in its main search path. This is because
+>>>>>>>        define_trace.h will include it, and must be able to find it from
+>>>>>>>        the include/trace directory.
+>>>>>>>
+>>>>>>> Without this the following compilation error is seen:
+>>>>>>>
+>>>>>>>          CC      drivers/soc/qcom/pmic_pdcharger_ulog.o
+>>>>>>>        In file included from drivers/soc/qcom/pmic_pdcharger_ulog.h:36,
+>>>>>>>                         from drivers/soc/qcom/pmic_pdcharger_ulog.c:15:
+>>>>>>>        ./include/trace/define_trace.h:95:42: fatal error: ./pmic_pdcharger_ulog.h: No such file or directory
+>>>>>>>           95 | #include TRACE_INCLUDE(TRACE_INCLUDE_FILE)
+>>>>>>>              |                                          ^
+>>>>>>>        compilation terminated.
+>>>>>>
+>>>>>> I never experienced such error, and no CI even reported it, can you explain how you got this ?
+>>>>>
+>>>>> To be honest, I am unsure why I'm experiencing this (and until I saw
+>>>>> another thread about it today I thought maybe I had screwed something
+>>>>> up!).
+>>>>>
+>>>>> I just took it as an opportunity to try and read up on the tracing
+>>>>> infrastructure and sent this series. Definitely no expertise with the
+>>>>> in's and out's of tracing :)
+>>>>>
+>>>>> I'm able to reproduce this on next-20231211:
+>>>>>
+>>>>>       ahalaney@fedora ~/git/linux-next (git)-[b4/b4-stmmac-handle-mdio-enodev] % ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- make mrproper
+>>>>>       <snip>
+>>>>>       ahalaney@fedora ~/git/linux-next (git)-[b4/b4-stmmac-handle-mdio-enodev] % ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- make defconfig
+>>>>>       <snip>
+>>>>>       *** Default configuration is based on 'defconfig'
+>>>>>       #
+>>>>>       # configuration written to .config
+>>>>>       #
+>>>>
+>>>> Realized I missed a step, actually enabling tracing and the driver at
+>>>> play here... but the result is the same.
+>>>>
+>>>> Attached is a config where I hit this.
+>>>>
+>>>>>       130 ahalaney@fedora ~/git/linux-next (git)-[b4/b4-stmmac-handle-mdio-enodev] % ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- make drivers/soc/qcom/pmic_pdcharger_ulog.o
+>>>>>         HOSTCC  scripts/dtc/dtc.o
+>>>>>       <snip>
+>>>>>         CC      drivers/soc/qcom/pmic_pdcharger_ulog.o
+>>>>>       In file included from drivers/soc/qcom/pmic_pdcharger_ulog.h:36,
+>>>>>               from drivers/soc/qcom/pmic_pdcharger_ulog.c:15:
+>>>>>       ./include/trace/define_trace.h:95:42: fatal error: ./pmic_pdcharger_ulog.h: No such file or directory
+>>>>>          95 | #include TRACE_INCLUDE(TRACE_INCLUDE_FILE)
+>>>>>       <snip>
+>>>>>       2 ahalaney@fedora ~/git/linux-next (git)-[b4/b4-stmmac-handle-mdio-enodev] %
+>>>>>
+>>>>> I even tried it in a fedora container with the above build commands and
+>>>>> the following podman invocation (plus some package installs) and saw the error:
+>>>>>
+>>>>>       podman run -it -v ~/git/linux-next:/linux-next:z quay.io/fedora/fedora:latest /bin/bash
+>>>>>
+>>>>> So I'm unsure if it's a fedora package version thing (which I'm running on my host)
+>>>>> or something else... Once I saw it was sort of spelled out in the
+>>>>> examples I referenced here I just decided it was something needed
+>>>>> fixing, regardless of why I'm hitting it while others seem ok.
+>>>
+>>> Interesting, I don't get the problem with the same tag, same .config but with gcc-arm-10.3-2021.07-x86_64-aarch64-none-linux-gnu
+>>>
+>>> I'll try with gcc 13.
+>>
+>> Ok tried with ARM's arm-gnu-toolchain-13.2.rel1-x86_64-aarch64-none-linux-gnu (https://developer.arm.com/downloads/-/arm-gnu-toolchain-downloads),
+>> and no error, and I even tried with https://mirrors.edge.kernel.org/pub/tools/crosstool/files/bin/x86_64/13.2.0/ and same no error...
+> 
+> Hmm. I'm unsure what's up. I tried with a debian container and a fresh
+> clone and still saw it :/
+> 
+> If you want, something like (swap docker for podman if that's your
+> thing): podman run -it debian:latest /bin/bash
+> should let you reproduce after cloning etc.
 
-But even if you are encountering such issues, in case of a change in
-the ABI of your kfunc, it should be easy enough to backport the bpf
-changes to your old QEMUs and ask users to upgrade the user space if
-they upgrade their kernel.
+I was able to reproduce it in fedora:latest:
+   CC [M]  drivers/soc/qcom/pmic_pdcharger_ulog.o
+In file included from drivers/soc/qcom/pmic_pdcharger_ulog.h:36,
+                  from drivers/soc/qcom/pmic_pdcharger_ulog.c:15:
+./include/trace/define_trace.h:95:42: fatal error: ./pmic_pdcharger_ulog.h: No such file or directory
+    95 | #include TRACE_INCLUDE(TRACE_INCLUDE_FILE)
+       |                                          ^
+and debian:latest:
+   CC [M]  drivers/soc/qcom/pmic_pdcharger_ulog.o
+In file included from drivers/soc/qcom/pmic_pdcharger_ulog.h:36,
+                  from drivers/soc/qcom/pmic_pdcharger_ulog.c:15:
+./include/trace/define_trace.h:95:42: fatal error: ./pmic_pdcharger_ulog.h: No such file or directory
+    95 | #include TRACE_INCLUDE(TRACE_INCLUDE_FILE)
+       |                                          ^
 
-AFAIU, it is as unstable as you want it to be. It's just that we are
-not in the "we don't break user space" contract, because we are
-talking about adding a kernel functionality from userspace, which
-requires knowing the kernel intrinsics.
+But in my build setup I always build of of tree:
 
->
-> >
-> >>
-> >> Then, QEMU can uname() and get the path to the binary. It will give an
-> >> error if it can't find the binary for the current kernel so that it
-> >> won't create accidental UAPIs.
-> >>
-> >> The obvious downside of this is that it complicates packaging a lot; i=
-t
-> >> requires packaging QEMU eBPF binaries each time a new kernel comes up.
-> >> This complexity is centrally managed by modprobe for kernel modules, b=
-ut
-> >> apparently each application needs to take care of it for BPF programs.
-> >
-> > For my primary use case: HID-BPF, I put kfuncs in kernel v6.3 and
-> > given that I haven't touch this part of the API, the same compilation
-> > unit compiled in the v6.3 era still works on a v6.7-rcx, so no, IMO
-> > it's not complex and doesn't require to follow the kernel releases
-> > (which is the whole point of HID-BPF FWIW).
->
-> I also expect BPF kfuncs will work well for long if I introduce its
-> usage to QEMU in practice. That said, the interface stability is about
-> when something unexpected happens. What if the interface QEMU relies on
-> is deemed sub-optimal? Without following kernel releases, QEMU may
-> accidentally lose the feature relying on eBPF.
+$ ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- make O=$PWD/out/ drivers/soc/qcom/pmic_pdcharger_ulog.o
+...
+   CC      drivers/soc/qcom/pmic_pdcharger_ulog.o
+make[1]: Leaving directory '/linux-next/out'
 
-In the same way, anybody can tamper with your ioctl or syscall without
-QEMU knowing it.
-And what you need to follow is not the kernel *releases*, but the
-changes in the kfuncs you are interested in.
+So why building out of tree works ? (likewise all CI builds out of tree)
 
->
-> >
-> >>
-> >> In conclusion, I see too much complexity to use BPF in a userspace
-> >> application, which we didn't have to care for
-> >> BPF_PROG_TYPE_SOCKET_FILTER. Isn't there a better way? Or shouldn't I
-> >> use BPF in my case in the first place?
-> >
-> > Given that I'm not a network person, I'm not sure about your use case,
-> > but I would make my decision based on:
-> > - do I know exactly what I want to achieve and I'm confident that I'll
-> > write the proper kernel API from day one? (if not then kfuncs is
-> > appealing because  it's less workload in the long run, but userspace
-> > needs to be slightly smarter)
->
-> Personally I'm confident that the initial UAPI design will not do a bad
-> thing at least. However, there is a high chance that the design needs to
-> be extended to accommodate new features.
+Neil
 
-Not trying to offend you or anything, but designs can change for
-multiple reasons. Floppy disks were a good design at the time, and it
-took decades to remove support for it in the kernel. In the same way,
-removing an architecture from the kernel is hard, because even if you
-can not run a new kernel on those architectures, "we do not break
-userspace".
 
-The whole BPF approach is to say that users of BPF are not plain
-random users, and they have to know a little bit of the kernel, and
-they know that once the kfunc is here, it doesn't mean it'll stay here
-forever.
-
->
-> > - are all of my use cases covered by using BPF? (what happens if I run
-> > QEMU in a container?) -> BPF might or might not be a solution
->
-> Yes. Containers can be used to 1) have a different userspace or 2)
-> isolate things for security.
->
-> Regarding 2), QEMU and libvirt has sandbox mechanisms so we can rely on
-> them instead of containers so we can just pass capabilities to the
-> container. At least, we can always have a setuid helper outside
-> container, and pass around file descriptors it generates.
->
-> So 1) is the only problem that matters.
->
-> >
-> > But the nice thing about using BPF kfuncs is that it allows you to
-> > have a testing (not-)UAPI kernel interface. You can then implement the
-> > userspace changes and see how it behaves. And then, once you got the
-> > right design, you can decide to promote it to a proper syscall or
-> > ioctl if you want.
->
-> I expect it's possible to have testing ioctls. Quickly searching online,
-> there are experimental ioctls[1][2]. I also know DRM has a relaxed
-> policy for closed-source userspace[3].
-
-Sure, but handling a change in the API in those cases is tough in the
-kernel. You probably need to bump versions, return different values
-depending on how many parameters you are given, and you are never sure
-the caller is using the right parameters. BPF simplifies this by
-actually checking the types of the caller, and if there is a
-discrepancy, it'll notify userspace that it is doing something bad.
-
->
-> So I'm seeing the distinction of UAPI/kfunc even less definitive; UAPIs
-> can also be broken if the subsystem maintainers agree and there is no
-> real user. I also think it's natural to say a kfunc will be stable as
-> long as there is a user, but it contradicts with the current situation.
-
-Please read more carefully the kernel docs [4] (just quoting here the
-beginning):
-
-"""
-Like any other change to the kernel, maintainers will not change or
-remove a kfunc without having a reasonable justification. Whether or
-not they'll choose to change a kfunc will ultimately depend on a
-variety of factors, such as how widely used the kfunc is, how long the
-kfunc has been in the kernel, whether an alternative kfunc exists,
-what the norm is in terms of stability for the subsystem in question,
-and of course what the technical cost is of continuing to support the
-kfunc.
-"""
-
-> kfunc is expressed as EXPORT_SYMBOL_GPL in the documentation, and Linus
-> expects kfunc is for users like big companies or systemd, which closely
-> follow the kernel, according to the systemd discussion I cited in the
-> last email.
-
-Please re-read the doc[4], it's not a 1-to-1 matching to EXPORT_SYMBOL_GPL.
-And being the one who reported Linus' words in that systemd thread,
-Linus was not concerned about "potential situations that may or may
-not happen", because he expected the people who use kfunc to do the
-right thing. Because they are not average programmers. And QEMU
-developers would definitely fit in that category IMO.
-
-And the whole "you can consider kfunc similar to EXPORT_SYMBOL_GPL" is
-just a warning for user space that the kfunc will never be kept only
-for stability reasons. So when you want to use a kfunc, you need to be
-aware of it and not segfault if it's not there (which can not happen
-TBH unless you don't check that your program was correctly loaded).
-
->
-> According to the discussion above, it may be better off abandoning BPF
-> and implementing all in kernel, with ioctl as I have a (hopefully) sound
-> idea of UAPI design. But I'll also continue considering the BPF option;
-> BPF is still attractive due to its extensibility and safety.
-
-We can not tell you to choose one solution over the other. The choice
-is yours. I personally find BPF more appealing because it allows the
-user space application to define its own kernel API for its own needs
-while relying on just a few defined kfuncs.
-
-But again, sometimes it doesn't work, like the systemd thread you
-linked, it's too big overhead for little gain compared to an ioctl in
-that particular case.
-
-IMO the biggest issue for you is not the stability of the API, but the
-container capabilities. Because allowing CAP_BPF allows for a whole
-lot of nasty things to happen :)
-
-Cheers,
-Benjamin
-
->
-> Regards,
-> Akihiko Odaki
->
-> [1]
-> https://www.kernel.org/doc/html/v6.6/userspace-api/media/v4l/hist-v4l2.ht=
-ml?highlight=3Dexperimental#experimental-api-elements
-> [2]
-> https://www.kernel.org/doc/html/v6.6/userspace-api/media/dvb/dmx-expbuf.h=
-tml?highlight=3Dexperimental
-> [3]
-> https://www.kernel.org/doc/html/v6.6/gpu/drm-uapi.html#open-source-usersp=
-ace-requirements
->
-
-[4] https://www.kernel.org/doc/html/latest/bpf/kfuncs.html?highlight=3Dbpf#=
-kfunc-lifecycle-expectations
+> 
+>>
+>> Neil
+>>
+>>>
+>>> Neil
+>>>
+>>>>>
+>>>>>>
+>>>>>> Thanks,
+>>>>>> Neil
+>>>>>>
+>>>>>>>
+>>>>>>> Fixes: 086fdb48bc65 ("soc: qcom: add ADSP PDCharger ULOG driver")
+>>>>>>> Signed-off-by: Andrew Halaney <ahalaney@redhat.com>
+>>>>>>> ---
+>>>>>>>     drivers/soc/qcom/Makefile | 1 +
+>>>>>>>     1 file changed, 1 insertion(+)
+>>>>>>>
+>>>>>>> diff --git a/drivers/soc/qcom/Makefile b/drivers/soc/qcom/Makefile
+>>>>>>> index 110108e23669..05b3d54e8dc9 100644
+>>>>>>> --- a/drivers/soc/qcom/Makefile
+>>>>>>> +++ b/drivers/soc/qcom/Makefile
+>>>>>>> @@ -10,6 +10,7 @@ obj-$(CONFIG_QCOM_PDR_HELPERS)    += pdr_interface.o
+>>>>>>>     obj-$(CONFIG_QCOM_PMIC_GLINK)    += pmic_glink.o
+>>>>>>>     obj-$(CONFIG_QCOM_PMIC_GLINK)    += pmic_glink_altmode.o
+>>>>>>>     obj-$(CONFIG_QCOM_PMIC_PDCHARGER_ULOG)    += pmic_pdcharger_ulog.o
+>>>>>>> +CFLAGS_pmic_pdcharger_ulog.o    :=  -I$(src)
+>>>>>>>     obj-$(CONFIG_QCOM_QMI_HELPERS)    += qmi_helpers.o
+>>>>>>>     qmi_helpers-y    += qmi_encdec.o qmi_interface.o
+>>>>>>>     obj-$(CONFIG_QCOM_RAMP_CTRL)    += ramp_controller.o
+>>>>>>>
+>>>>>>
+>>>
+>>
+> 
 
