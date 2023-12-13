@@ -2,94 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C5CF881154A
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 15:54:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AB0F881154B
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 15:54:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1441935AbjLMOyO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 09:54:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38602 "EHLO
+        id S233502AbjLMOyY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 09:54:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54734 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233502AbjLMOyK (ORCPT
+        with ESMTP id S1441963AbjLMOyW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 09:54:10 -0500
-Received: from mail-qk1-x72b.google.com (mail-qk1-x72b.google.com [IPv6:2607:f8b0:4864:20::72b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A6C7E3
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 06:54:16 -0800 (PST)
-Received: by mail-qk1-x72b.google.com with SMTP id af79cd13be357-77f380d8f6aso408357285a.2
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 06:54:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=maine.edu; s=google; t=1702479255; x=1703084055; darn=vger.kernel.org;
-        h=mime-version:references:message-id:in-reply-to:subject:cc:to:date
-         :from:from:to:cc:subject:date:message-id:reply-to;
-        bh=sYhZKTO+n/Hy770LjqTnEQ/mbZOGO/ntqNbsrj+NvGk=;
-        b=SzZPap/1VBkTdxomNGlMOzALXK62v3vANuZSl5XzIoYOLak5aJbE3cdTSmiHYjcE+Q
-         JFd8eIHTrXRzO2OY7HHeqP1XL8zjNegG7RWAFah/+bECQlpUVfv9cksKW6yIAz54KWc5
-         yB/zo9usXOvw0CKeHlpaBSaMIJcYtaS+p3XqU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702479255; x=1703084055;
-        h=mime-version:references:message-id:in-reply-to:subject:cc:to:date
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=sYhZKTO+n/Hy770LjqTnEQ/mbZOGO/ntqNbsrj+NvGk=;
-        b=ry0rN3rJyiOoA2V5HGCp9ercx6e8/Mjc/h5aNMzJZEKhCmWndxlR4p2x/JfUiNOgyE
-         gGqTcmExO8KNFby78OBPG2DKJQRaCE+4/u1DLbHcjtMcmXecmwayMS/2K7SAkO8Bn+si
-         uYCYX3E2/8XeZlYJgudxbV2XkczMEuYpEZq7Hdffe5W8mt2ZU+WN6pkhkd9ed461XK3E
-         Hps0N3LH7xR0vXJBs+TodXkDg9A0/yPKLe6S4baCc1aJbYcFe9Qf+OaTagC6Ft1GgJ/k
-         BPugsgdmb8ViYgvJbhZExfAoCjIR3hFOS2Qdsq89khzGxluYTpG50XNtrft+T/FSCr5/
-         /APg==
-X-Gm-Message-State: AOJu0Yzfi7NQFLUpJd64LFeeCheGl+7G2OjHnuDoIO7BXnhPwjFsohJq
-        TbLiThQauLwo+PcxWJuMhSNw6w==
-X-Google-Smtp-Source: AGHT+IH0o9dvc/q99ZcvvS/TE42YBHUKs3xa0xzfNMF3FDuCvAzTxzCANGs7FzeNBNzX67Oh34TgTQ==
-X-Received: by 2002:a05:620a:4496:b0:77f:8c7a:8a94 with SMTP id x22-20020a05620a449600b0077f8c7a8a94mr3011201qkp.72.1702479255429;
-        Wed, 13 Dec 2023 06:54:15 -0800 (PST)
-Received: from macbook-air.local (weaver.eece.maine.edu. [130.111.218.23])
-        by smtp.gmail.com with ESMTPSA id re19-20020a05620a8e1300b0077f13650cb7sm4556860qkn.2.2023.12.13.06.54.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Dec 2023 06:54:15 -0800 (PST)
-From:   Vince Weaver <vincent.weaver@maine.edu>
-X-Google-Original-From: Vince Weaver <vince@maine.edu>
-Date:   Wed, 13 Dec 2023 09:54:09 -0500 (EST)
-To:     xingwei lee <xrivendell7@gmail.com>
-cc:     peterz@infradead.org, mingo@redhat.com, acme@kernel.org,
-        mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
-        jolsa@kernel.org, namhyung@kernel.org, irogers@google.com,
-        adrian.hunter@intel.com, linux-perf-users@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: possible deadlock in down_trylock/perf_event_open
-In-Reply-To: <CABOYnLxoG=YsE1XyOjfF0O+2UrdTyK1JMir3xPapGsRzh-XFAA@mail.gmail.com>
-Message-ID: <227eb61b-8068-001e-47fa-b65104b3b226@maine.edu>
-References: <CABOYnLxoG=YsE1XyOjfF0O+2UrdTyK1JMir3xPapGsRzh-XFAA@mail.gmail.com>
+        Wed, 13 Dec 2023 09:54:22 -0500
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E419DE8
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 06:54:28 -0800 (PST)
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:98])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id E6CA01F37E;
+        Wed, 13 Dec 2023 14:54:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1702479266; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=nldF4mWPj3GWv/YePs8qIe+zERatEiFzkl3MDVOY0nM=;
+        b=ZLoALqRA7L2gn1jUHhWKPZ8FsqgrNIM6zzyojZ1D4YiV8ITCbBKrb5aFWdPaw/7apJ9fRk
+        lT7ODM9G05nPdB3ZC336FWoioHhRCETiWDo32fVdBWj6JCfZ5mEHvF1yije1e+Ud5dJl+q
+        WSBP+H8o1s4ZuNBROliQ9WmfdwHuHhI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1702479266;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=nldF4mWPj3GWv/YePs8qIe+zERatEiFzkl3MDVOY0nM=;
+        b=k4XKNkO1fxpEKthIeJQMcBp+wK+3nQ/0WCeH0Sx3zwlc1RHZ8LHaacGn5FUKsRBXZqcO4F
+        V78dTtJRgrWX0BCQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1702479265; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=nldF4mWPj3GWv/YePs8qIe+zERatEiFzkl3MDVOY0nM=;
+        b=VmVAVDx8H8WVlFG1gcuTPGHKGXehPgHgjqPQhYcC5EyK5kjeafD0ny4F02VRIaggUrGjF1
+        QnEDIRkac87J4DeuoRpTjDsx3DbHkqThYfBhV7+BdwWiqstROJL5vgc49JQxy6M3WN+/25
+        vvGDJ0aZYFCHfe225ukIYEdnpq3yUwI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1702479265;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=nldF4mWPj3GWv/YePs8qIe+zERatEiFzkl3MDVOY0nM=;
+        b=OH+jeGOopi9dzJnHLYPtrzIQXer5nFH5NJ8wiLoUrHFr7zr8aMfcZBYJ9wPvVfBjQio7oz
+        tD5qOAHujtfNw4Aw==
+Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id CA25113240;
+        Wed, 13 Dec 2023 14:54:25 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+        by imap2.dmz-prg2.suse.org with ESMTPSA
+        id 87LxL6HFeWUGSgAAn2gu4w
+        (envelope-from <dwagner@suse.de>); Wed, 13 Dec 2023 14:54:25 +0000
+Date:   Wed, 13 Dec 2023 15:54:25 +0100
+From:   Daniel Wagner <dwagner@suse.de>
+To:     Sagi Grimberg <sagi@grimberg.me>
+Cc:     linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Keith Busch <kbusch@kernel.org>,
+        Christoph Hellwig <hch@lst.de>, Hannes Reinecke <hare@suse.de>
+Subject: Re: [PATCH v5 1/6] nvme: move ns id info to struct nvme_ns_head
+Message-ID: <7ldcd6imhzxhn3wsirhxxyhb75x5iay2p67p2i4qi2euyztc5i@nbjtvyixifqm>
+References: <20231208105337.23409-1-dwagner@suse.de>
+ <20231208105337.23409-2-dwagner@suse.de>
+ <bf20cb2a-0985-467b-842b-6b5fd752f14b@grimberg.me>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <bf20cb2a-0985-467b-842b-6b5fd752f14b@grimberg.me>
+X-Spam-Level: *******
+X-Spam-Score: 7.09
+X-Spam-Level: 
+Authentication-Results: smtp-out2.suse.de;
+        dkim=pass header.d=suse.de header.s=susede2_rsa header.b=VmVAVDx8;
+        dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=OH+jeGOo;
+        dmarc=pass (policy=none) header.from=suse.de;
+        spf=softfail (smtp-out2.suse.de: 2a07:de40:b281:104:10:150:64:98 is neither permitted nor denied by domain of dwagner@suse.de) smtp.mailfrom=dwagner@suse.de
+X-Rspamd-Server: rspamd2
+X-Spamd-Result: default: False [-7.84 / 50.00];
+         ARC_NA(0.00)[];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+         SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:98:from];
+         FROM_HAS_DN(0.00)[];
+         TO_DN_SOME(0.00)[];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         MIME_GOOD(-0.10)[text/plain];
+         R_SPF_SOFTFAIL(0.00)[~all:c];
+         RCPT_COUNT_FIVE(0.00)[6];
+         NEURAL_HAM_SHORT(-0.20)[-1.000];
+         RCVD_COUNT_THREE(0.00)[3];
+         DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+         DKIM_TRACE(0.00)[suse.de:+];
+         DMARC_POLICY_ALLOW(0.00)[suse.de,none];
+         WHITELIST_DMARC(-7.00)[suse.de:D:+];
+         DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:dkim];
+         DMARC_POLICY_ALLOW_WITH_FAILURES(-0.50)[];
+         MX_GOOD(-0.01)[];
+         FUZZY_BLOCKED(0.00)[rspamd.com];
+         FROM_EQ_ENVFROM(0.00)[];
+         MIME_TRACE(0.00)[0:+];
+         MID_RHS_NOT_FQDN(0.50)[];
+         RCVD_TLS_ALL(0.00)[];
+         BAYES_HAM(-0.33)[75.75%]
+X-Spam-Score: -7.84
+X-Rspamd-Queue-Id: E6CA01F37E
+X-Spam-Flag: NO
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 11 Dec 2023, xingwei lee wrote:
-
-> Hello I found a bug in kernel/perf in the lastest upstream linux 6.7.rc5
-> possible deadlock in down_trylock/perf_event_open
+On Wed, Dec 13, 2023 at 03:27:12PM +0200, Sagi Grimberg wrote:
+> > @@ -841,7 +841,7 @@ static void nvme_set_ref_tag(struct nvme_ns *ns, struct nvme_command *cmnd,
+> >   	u64 ref48;
+> >   	/* both rw and write zeroes share the same reftag format */
+> > -	switch (ns->guard_type) {
+> > +	switch (ns->head->guard_type) {
 > 
-> If you fix this issue, please add the following tag to the commit:
-> Reported-by: xingwei Lee <xrivendell7@gmail.com>
-> 
+> I think that the whole PI stuff needs to be taken with a bit more
+> consideration because if not all paths agree on the pi (as we have
+> hbas with fabrics) we can't just override or do a logical or on
+> the capabilities/attributes.
 
-> 
-> syzkaller login: root
-> Linux syzkaller 6.7.0-rc5 #3 SMP PREEMPT_DYNAMIC Mon Dec 11 17:02:24
-> HKT 2023 x86_64
-> root@syzkaller:~# ./572
-> [  113.795108][ T8266] ------------[ cut here ]------------
-> [  113.795707][ T8266] WARNING: CPU: 1 PID: 8266 at
-> kernel/events/core.c:1950 __do_sys_perf_event_open0
-
-
-Just wanted to add that the perf_fuzzer will trigger this warning more or 
-less immediately as well.
-
-Vince
+So should the PI variables stay in nvme_ns at this point? Or should I
+add some checks which avoid an override and warn in this case?
