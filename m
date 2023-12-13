@@ -2,124 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AF2DD810A58
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 07:32:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DC9D810A59
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 07:33:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378605AbjLMGcg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 01:32:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42536 "EHLO
+        id S1378597AbjLMGdd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 01:33:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60076 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378551AbjLMGcf (ORCPT
+        with ESMTP id S1378551AbjLMGdc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 01:32:35 -0500
-Received: from wout2-smtp.messagingengine.com (wout2-smtp.messagingengine.com [64.147.123.25])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 434A3AD;
-        Tue, 12 Dec 2023 22:32:41 -0800 (PST)
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailout.west.internal (Postfix) with ESMTP id 766763200A12;
-        Wed, 13 Dec 2023 01:32:36 -0500 (EST)
-Received: from imap51 ([10.202.2.101])
-  by compute5.internal (MEProxy); Wed, 13 Dec 2023 01:32:37 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-        :cc:content-transfer-encoding:content-type:content-type:date
-        :date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-        :references:reply-to:subject:subject:to:to; s=fm1; t=1702449155;
-         x=1702535555; bh=UyW0IXIQPsKnr5ShFX4RHhbev01w7X9e9SS2M4KdIQE=; b=
-        hH019c6jpUpdOMYxII369agbX2xrFFWUJUaaWR1goA1XTcP8iY8lKDebN2WfEJy8
-        ZQmRrgqWPyeWgoTFFjhrJNf/NakQ/5a51j7z9M2fAlpEXGhQI5vooeE5P4Nuz8lj
-        YQmXJpngABQQjVI31iSN+Gsqsvv08e+erezTUDgwuKxyJf1c2rtMjvvRE3dqgOOi
-        QzEeXDNSicFcYeB2H3j4BOtcFJfOIIYkYzH9sKkvS2nQWMl5mOs6IchGZZ3yMVSY
-        NSpva/pHqQ8mhqAB9IORiwUUTed77wLhuP1mWP7o6bOJunElyaTRId1xWBDX0OJG
-        ApdoH4zhydGsVvLMQpo1Ww==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-transfer-encoding
-        :content-type:content-type:date:date:feedback-id:feedback-id
-        :from:from:in-reply-to:in-reply-to:message-id:mime-version
-        :references:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
-        :x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1702449155; x=
-        1702535555; bh=UyW0IXIQPsKnr5ShFX4RHhbev01w7X9e9SS2M4KdIQE=; b=u
-        93SpR8K00SNfGyjLScld39ONSX3DLD2VIv2Qc34TVz/T7sO6a4wPlB5kpQOr7zzW
-        IBdy/FlL3Dz9BLUuQljWWcUkY0wc7JaYrVjLcHJqT3Mg0bW2TR6V0XPGSjLOPHH3
-        OWVp3sqPdJqvEHdWN+HiKYtPO3O5lRHUnoe2/ylZTJqoaKY01XOTZ1mrzcoqw1Hd
-        nIeCrk4gXXMV6tKMZba762hF7AsA8UdpdreK7JrFXx/DGFEx6HqN0eAVBwm6U7g/
-        6J+fJrUOW/YPwC7wviLGaRtVgSxaKgGeptAOIIP8Mq7LeEZmAaXWK0J2Ubk42Y1l
-        p9avhRszS3Zv9ce2+G1Gw==
-X-ME-Sender: <xms:A1B5ZRmQQOjQiYtXsOyFHSCj_5SOwkQg5DUtS9uMjiT92_zrjjb4jw>
-    <xme:A1B5Zc3s9bGC3-5rIcxToews5sTaZQXV3fJP9SV37SYZkO1tMq6g4jexcK3ULwvlo
-    jabpvmEpzX8aYOZT-E>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrudelhedgleeiucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvfevufgtgfesthhqredtreerjeenucfhrhhomhepfdet
-    rhhnugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrg
-    htthgvrhhnpeegfeejhedvledvffeijeeijeeivddvhfeliedvleevheejleetgedukedt
-    gfejveenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
-    grrhhnugesrghrnhgusgdruggv
-X-ME-Proxy: <xmx:A1B5ZXpZ0sIY5ElZOjJ8DiS8OJFHWHkrBszEqIG1LdL_0ysv8kN1ug>
-    <xmx:A1B5ZRkhT31O43qDSo5BoCvMza94RJ5EKx-CC-MP-xYgvN0jKKbttA>
-    <xmx:A1B5Zf1Rvd-6lcG5Gi5GQz2mJQ83TfdYAO9fHFe0P59UEmUwZ7sZRw>
-    <xmx:A1B5ZZNuk9oY7eWdO0hmMScL5EY4D4s53-n3e4BpauCgs4eAGfMKoQ>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id E8939B6008D; Wed, 13 Dec 2023 01:32:34 -0500 (EST)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.9.0-alpha0-1283-g327e3ec917-fm-20231207.002-g327e3ec9
+        Wed, 13 Dec 2023 01:33:32 -0500
+Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90724DB
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 22:33:38 -0800 (PST)
+Received: by mail-pg1-x530.google.com with SMTP id 41be03b00d2f7-5c664652339so3719613a12.1
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 22:33:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1702449218; x=1703054018; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=z9p8/aS0DcOZN8+84ZMld49VFTAkEWGnyTWKIx1cHbc=;
+        b=evNq0XwzahMVneMz4TCwG2wxhmKEIHETEyfHGBWFyT8XNLj8ql7U1AtLon+ZALAvh+
+         ppqrFtFgS5b4WnO0adchdrLK6S/JOpZuQjvnIuiwvdsudtO+gTNHugLQNPU9MoAg0xL8
+         auwEkRPHcDDeRlmISsClP110t6UwNtYi56SuvI+fP1aSY8wguxNzTUjtOUVyhKGdOgOF
+         WogBzdG5fzl2GHKeyQCvx8k4THNtNwCA9U+NvO1Loz3RUe8rrcGuSYflBN92WKtZ5L85
+         VDt7ZVD3fTK3ZAEeovIxq0AsuVE1O/YgH+RGuUhqidwfSOO1rnF4KPnVrhaguYOKn88t
+         LTgg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702449218; x=1703054018;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=z9p8/aS0DcOZN8+84ZMld49VFTAkEWGnyTWKIx1cHbc=;
+        b=Mb4Z6YD9flVjxgv+6vh3t4O62ta5+XvnykDHgip8jm0nZIPsoSBRg4bgdpB4eRtdG9
+         bDEP2j/mJMw0YHCBNY31X42TKtE/hKg2aC3sjOF0CGa2htNPgrNY3E0eQHRqQyfxRIT6
+         CtkE7zMeQB5WSuTbettncfKMFmm19imKknig31XOck2S8Vcmf6c2uD8TaR6yinmUs9De
+         kBjQny74fxRuYavdmpb+TuSghSjWTy8ITW7j3AHmeVMe9xqzRLiEEDJg8a+QKCvN2D1N
+         lHxCRF9xPKfyvLxaECOG+JHIypZHOYJKcwjekI8eCsdAtuUYnbvnuQcxtTk0KXJ4g0ZJ
+         5BUg==
+X-Gm-Message-State: AOJu0YydHSlDVOFxNlpeJUMaC+SiVKzDZ2LFEzr7mBd4FYrEYdAqPXnA
+        h4ApF2BMdeprJuaE2Dn6RuoCTw==
+X-Google-Smtp-Source: AGHT+IFczjvcizzn2ujL+SLGH7PssuoA4yNSPN+Tsz72PXu63XHsPUs7UAvlcsskYUd2hV4r0ktChA==
+X-Received: by 2002:a17:903:1206:b0:1d0:9a6b:52ab with SMTP id l6-20020a170903120600b001d09a6b52abmr4442562plh.45.1702449217991;
+        Tue, 12 Dec 2023 22:33:37 -0800 (PST)
+Received: from localhost ([122.172.82.6])
+        by smtp.gmail.com with ESMTPSA id i18-20020a170902eb5200b001cfc42ccfcasm9667197pli.152.2023.12.12.22.33.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 Dec 2023 22:33:37 -0800 (PST)
+Date:   Wed, 13 Dec 2023 12:03:35 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Harald Mommer <harald.mommer@opensynergy.com>
+Cc:     virtio-dev@lists.oasis-open.org,
+        Haixu Cui <quic_haixcui@quicinc.com>,
+        Mark Brown <broonie@kernel.org>, linux-spi@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Harald.Mommer@gmail.com,
+        quic_ztu@quicinc.com, Matti Moell <Matti.Moell@opensynergy.com>,
+        Mikhail Golubev <Mikhail.Golubev@opensynergy.com>,
+        Alex =?utf-8?Q?Benn=C3=A9e?= <alex.bennee@linaro.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>
+Subject: Re: [virtio-dev] [RFC PATCH v1 2/3] virtio-spi: Add virtio-spi.h (V4
+ draft specification).
+Message-ID: <20231213063335.xaejh3565gkn5cvh@vireshk-i7>
+References: <20231027161016.26625-1-Harald.Mommer@opensynergy.com>
+ <20231027161016.26625-3-Harald.Mommer@opensynergy.com>
+ <20231212103411.wbjmr5mefmxfnsib@vireshk-i7>
+ <87f06ede-ac54-48cd-8135-ea2c8f5548f3@opensynergy.com>
 MIME-Version: 1.0
-Message-Id: <42f522b5-6406-4bef-8180-3a431ee884a5@app.fastmail.com>
-In-Reply-To: <CAJF2gTQckdn=uDfeLKu7wceOq7LT1KGJUT0vARMr9zUy3xc4xw@mail.gmail.com>
-References: <20231212214536.175327-1-arnd@kernel.org>
- <CAJF2gTQckdn=uDfeLKu7wceOq7LT1KGJUT0vARMr9zUy3xc4xw@mail.gmail.com>
-Date:   Wed, 13 Dec 2023 07:32:14 +0100
-From:   "Arnd Bergmann" <arnd@arndb.de>
-To:     guoren <guoren@kernel.org>, "Arnd Bergmann" <arnd@kernel.org>
-Cc:     "Pavel Machek" <pavel@ucw.cz>, "Lee Jones" <lee@kernel.org>,
-        "Chen-Yu Tsai" <wens@csie.org>,
-        "Jernej Skrabec" <jernej.skrabec@gmail.com>,
-        "Samuel Holland" <samuel@sholland.org>,
-        "Nathan Chancellor" <nathan@kernel.org>,
-        "Palmer Dabbelt" <palmer@rivosinc.com>,
-        "Nick Desaulniers" <ndesaulniers@google.com>,
-        "Bill Wendling" <morbo@google.com>,
-        "Justin Stitt" <justinstitt@google.com>,
-        linux-leds@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org,
-        llvm@lists.linux.dev
-Subject: Re: [PATCH] leds: sun50i-a100: avoid division-by-zero warning
-Content-Type: text/plain;charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87f06ede-ac54-48cd-8135-ea2c8f5548f3@opensynergy.com>
+X-Spam-Status: No, score=1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Level: *
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 13, 2023, at 02:26, Guo Ren wrote:
-> On Wed, Dec 13, 2023 at 5:45=E2=80=AFAM Arnd Bergmann <arnd@kernel.org=
-> wrote:
->>  {
->>         const struct sun50i_a100_ledc_timing *timing =3D &priv->timin=
-g;
->>         unsigned long mod_freq =3D clk_get_rate(priv->mod_clk);
->> -       u32 cycle_ns =3D NSEC_PER_SEC / mod_freq;
->> +       u32 cycle_ns;
->>         u32 control;
->>
->> +       if (!mod_freq)
->> +               return;
->> +
-> Shall we need err_disable_bus_clk?
->
-> + static int sun50i_a100_ledc_set_timing(struct sun50i_a100_ledc *priv)
-> - static void sun50i_a100_ledc_set_timing(struct sun50i_a100_ledc *pri=
-v)
+On 12-12-23, 19:58, Harald Mommer wrote:
+> On 12.12.23 11:34, Viresh Kumar wrote:
+> I'm working on V8. It's coming to an end, will still have to check some
+> details but it's close. Internal review pending. Now there is a V9 and I
+> will also have to look at this. Maybe I will send V8 and subsequently update
+> to V9,
 
-I'm not worried about it too much, as there is already an error check
-on priv->mod_clk being unavailable during initialization. The case that
-the warning is about is just for build-testing on architectures that
-don't even use COMMON_CLK.
+I hope you are talking about V8/V9 of the spec here, as I only see one
+version of the Linux driver on the list. Please keep me in cc if
+possible.
 
-     Arnd
+> > On 27-10-23, 18:10, Harald Mommer wrote:
+> > > +++ b/include/uapi/linux/virtio_spi.h
+> > > @@ -0,0 +1,130 @@
+> > > +/* SPDX-License-Identifier: BSD-3-Clause */
+> > Maybe this should be:
+> > 
+> > SPDX-License-Identifier: GPL-2.0 OR BSD-2-Clause
+> > 
+> > ?
+> Looking into what others do here. virtio_blk.h, virtio_input.h and
+> virtio_iommu.h for example: None is using GPL-2.0 here. virtio_iommu.h is
+> using exactly the same header as we do.
+
+Looked at all headers for SPDX License in include/uapi/ and this is
+what I see (Yes there are many non SPDX licenses there):
+
+    522 /* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
+    106 /* SPDX-License-Identifier: GPL-2.0+ WITH Linux-syscall-note */
+     18 /* SPDX-License-Identifier: ((GPL-2.0 WITH Linux-syscall-note) OR BSD-3-Clause) */
+     16 /* SPDX-License-Identifier: LGPL-2.1+ WITH Linux-syscall-note */
+     16 /* SPDX-License-Identifier: GPL-2.0-only WITH Linux-syscall-note */
+     11 /* SPDX-License-Identifier: GPL-1.0+ WITH Linux-syscall-note */
+      6 /* SPDX-License-Identifier: ((GPL-2.0-only WITH Linux-syscall-note) OR BSD-3-Clause) */
+      5 /* SPDX-License-Identifier: BSD-3-Clause */
+      4 /* SPDX-License-Identifier: LGPL-2.1 WITH Linux-syscall-note */
+      4 /* SPDX-License-Identifier: LGPL-2.0+ WITH Linux-syscall-note */
+      4 /* SPDX-License-Identifier: ((GPL-2.0+ WITH Linux-syscall-note) OR BSD-3-Clause) */
+      3 /* SPDX-License-Identifier: (GPL-2.0 WITH Linux-syscall-note) OR MIT */
+      2 /* SPDX-License-Identifier: MIT */
+      2 /* SPDX-License-Identifier: ((GPL-2.0 WITH Linux-syscall-note) OR Linux-OpenIB) */
+      2 /* SPDX-License-Identifier: ((GPL-2.0 WITH Linux-syscall-note) OR CDDL-1.0) */
+      2 /* SPDX-License-Identifier: ((GPL-2.0 WITH Linux-syscall-note) OR BSD-2-Clause) */
+      2 /* SPDX-License-Identifier: GPL-2.0-or-later WITH Linux-syscall-note */
+      1 /* SPDX-License-Identifier: ((GPL-2.0+ WITH Linux-syscall-note) OR MIT) */
+      1 /* SPDX-License-Identifier: (GPL-2.0 WITH Linux-syscall-note) OR BSD-3-Clause */
+      1 /* SPDX-License-Identifier: (GPL-2.0 WITH Linux-syscall-note) */
+      1 /* SPDX-License-Identifier: GPL-2.0-only WITH Linux-syscall-note*/
+
+Also Documentation/process/license-rules.rst says:
+
+"The license described in the COPYING file applies to the kernel source
+as a whole, though individual source files can have a different license
+which is required to be compatible with the GPL-2.0::
+
+...
+
+Aside from that, individual files can be provided under a dual license,
+e.g. one of the compatible GPL variants and alternatively under a
+permissive license like BSD, MIT etc."
+
+And so I thought we may want this to be a dual license.
+
+> > > +/* All config fields are read-only for the Virtio SPI driver */
+> > > +struct virtio_spi_config {
+> > Can you please add proper doc style comments for the structures ?
+> Checking my current code. This is updated in the V8 version.
+
+V8 of this patch ?
+
+-- 
+viresh
