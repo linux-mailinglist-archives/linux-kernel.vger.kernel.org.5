@@ -2,220 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C716A811D61
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 19:51:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B8EF811D73
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 19:51:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379218AbjLMSvD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 13:51:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42176 "EHLO
+        id S1379190AbjLMSv0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 13:51:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54526 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233758AbjLMSvB (ORCPT
+        with ESMTP id S233264AbjLMSvZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 13:51:01 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7651D107
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 10:51:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1702493465;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=3bz2PFKioWO39O1b/K33auuuNG1O5t2+2CTYPmaCsuU=;
-        b=huLjng6M0lT5cFR5IuQkkKWhaCOxozjCvQtkb/hAZyzGivhEWCDX13d/OZ2Il1v6b3tptc
-        YX+JaTEu+g6zCmPad5Mmti6N6MVm7PgzsLOM/AcHzkIVoEinUefGQMx9RnkybFquAp2Yct
-        jqc2w4qNGwUP/Qu1Ju8ngysCr9Fgq2Y=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-643-uqwVFLpTNPiw7lFSnN5omw-1; Wed, 13 Dec 2023 13:51:01 -0500
-X-MC-Unique: uqwVFLpTNPiw7lFSnN5omw-1
-Received: by mail-wr1-f70.google.com with SMTP id ffacd0b85a97d-33608afb161so5061200f8f.0
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 10:51:01 -0800 (PST)
+        Wed, 13 Dec 2023 13:51:25 -0500
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46A61DC
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 10:51:31 -0800 (PST)
+Received: by mail-ed1-x52b.google.com with SMTP id 4fb4d7f45d1cf-5522bfba795so1062513a12.2
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 10:51:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google; t=1702493489; x=1703098289; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=MFfWf1vauyvhY08vT1vgdH/GPjFu/+lr+ROytlm3Xds=;
+        b=a1sVU6/uZtCz1DlI7/ALrPNwMwLRwexR5KVndO3Zns05GoFk7JqwI7H4X/s1601XRt
+         3BW1k/atw9IplqAIAYhd3UeQpLNV2Tklm2v0Dt+46KnkdDma41j9S1Jsx/N1oIDC+jgi
+         KuxixL+4h2C459+e8iQXiKQh3gU7NTr++ADl0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702493460; x=1703098260;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=3bz2PFKioWO39O1b/K33auuuNG1O5t2+2CTYPmaCsuU=;
-        b=wX5sOoyWb17/7s22tfptseCm+7oTlTfvWsA4yeVeEP7U6BvEWkosKB1YaJFcLB4F4m
-         kVFsj1fgBaSulNMOE74jzGfkthbigS2yNeQt2nun610CDCd5juHUKOcH/BkJr7ToOAy2
-         AzE/iG7PwKyXeHkurmekaiHAK/TZc6ZjA+12cpzZpmkvWM+rGuc21fDqosvH4e+bftYL
-         6K1Rh7FVkA8JsLLsQoMZ/Sk/+457KoUTi6V64NrQZWZqv/7XsmU8WIaJxFXaIJiI84Uw
-         Fk6kodcinrRKhCq7OQyct9ovxIp3fwSapl8BMaDoBCQgQ8ADP4i4e7ES1nxk97/Yw++z
-         PuNg==
-X-Gm-Message-State: AOJu0YxZiQj8KvC8KAf4UWSRAWE428BMvjc9dQCHGfBypC3lkaO9YmMA
-        M/pDBpnfW7dRj+z0UMgFT+C5XS1DliUCXwyn3a1GeGXlvFY5XMD3KWqJbbdpQ+FinqWT12EoYcG
-        S7MYjRUcMuQNr0a2AsV7kuNtjHTLby/IBO2yVAeF+
-X-Received: by 2002:adf:fb03:0:b0:336:81b:7b3e with SMTP id c3-20020adffb03000000b00336081b7b3emr4694816wrr.84.1702493460720;
-        Wed, 13 Dec 2023 10:51:00 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IHrOqThvRO3wtBz0WPYYTaM1hs7Q8Qv3LHMthbrTRo6wldeHDuIrDcx4q8TA6SBkLf72CI9CplVyd0Z267kaPY=
-X-Received: by 2002:adf:fb03:0:b0:336:81b:7b3e with SMTP id
- c3-20020adffb03000000b00336081b7b3emr4694811wrr.84.1702493460440; Wed, 13 Dec
- 2023 10:51:00 -0800 (PST)
+        d=1e100.net; s=20230601; t=1702493489; x=1703098289;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=MFfWf1vauyvhY08vT1vgdH/GPjFu/+lr+ROytlm3Xds=;
+        b=mt0+FOcKlPD1MNj7iMuwNKNlJutKl52numaOA3fgDIxEvi7erQI/nnRERnHe9RE+Tv
+         lSH19ZaiIOo/GC/ugnNjo0BNjDOKJALs8h90j+lqDYfZvhHXZo6O4bH6BYSIUxGiUvds
+         SdshKKtqY0LVctt1b10deQTw38o2AR5LzprQl0fzEWn8f8D4AGHmh8bF7R1jX2v8QTH2
+         E8+ta1BZIwi2IokplfBu0Wqtbk1A59hJDxWkosO44OkPqCVAUOF7FvaoCtgepKCewaVn
+         UMUff03/yB46e4paUUtstQdjcIso+WwANw63q202s4A4bZvLYpNQZT1i/jCTGiHrgKbo
+         riiw==
+X-Gm-Message-State: AOJu0YzZEUMvFQSDlscQmPyZvIfMQHcU+cq1x44uSgLlu2kkV4P5GX7x
+        KSiZtX6MTUSbcs+Y+p0um1Xw47Gs4/CSUGoCENF5Oas0
+X-Google-Smtp-Source: AGHT+IEmrm6hylljXIeqYxReyzTP1UZPHzuKL2NDaMdjL3d/tP/hwSIPdcSEI63M/5xez3nv1dfP/g==
+X-Received: by 2002:a50:858d:0:b0:551:1775:207 with SMTP id a13-20020a50858d000000b0055117750207mr3347894edh.17.1702493489221;
+        Wed, 13 Dec 2023 10:51:29 -0800 (PST)
+Received: from mail-ed1-f42.google.com (mail-ed1-f42.google.com. [209.85.208.42])
+        by smtp.gmail.com with ESMTPSA id dh7-20020a0564021d2700b0054c76d0f755sm5935444edb.42.2023.12.13.10.51.28
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 13 Dec 2023 10:51:28 -0800 (PST)
+Received: by mail-ed1-f42.google.com with SMTP id 4fb4d7f45d1cf-54c67b0da54so9334263a12.0
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 10:51:28 -0800 (PST)
+X-Received: by 2002:a50:a41a:0:b0:551:e52c:3ffd with SMTP id
+ u26-20020a50a41a000000b00551e52c3ffdmr1032316edb.6.1702493487931; Wed, 13 Dec
+ 2023 10:51:27 -0800 (PST)
 MIME-Version: 1.0
-References: <20231213003614.1648343-1-imammedo@redhat.com> <20231213003614.1648343-3-imammedo@redhat.com>
- <CAJZ5v0gowV0WJd8pjwrDyHSJPvwgkCXYu9bDG7HHfcyzkSSY6w@mail.gmail.com>
- <CAMLWh55dr2e_R+TYVj=8cFfV==D-DfOZvAeq9JEehYs3nw6-OQ@mail.gmail.com> <20231213115248-mutt-send-email-mst@kernel.org>
-In-Reply-To: <20231213115248-mutt-send-email-mst@kernel.org>
-From:   Igor Mammedov <imammedo@redhat.com>
-Date:   Wed, 13 Dec 2023 19:50:48 +0100
-Message-ID: <CAMLWh56qLpe8PsndvzKv5WB_-qeOUPt1vEumTC3tW8M-9bGU-w@mail.gmail.com>
-Subject: Re: [RFC 2/2] PCI: acpiphp: slowdown hotplug if hotplugging multiple
- devices at a time
-To:     "Michael S. Tsirkin" <mst@redhat.com>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        linux-kernel@vger.kernel.org,
-        Dongli Zhang <dongli.zhang@oracle.com>,
-        linux-acpi@vger.kernel.org, linux-pci@vger.kernel.org,
-        lenb@kernel.org, bhelgaas@google.com,
-        mika.westerberg@linux.intel.com, boris.ostrovsky@oracle.com,
-        joe.jin@oracle.com, stable@vger.kernel.org,
-        Fiona Ebner <f.ebner@proxmox.com>,
-        Thomas Lamprecht <t.lamprecht@proxmox.com>
+References: <20231213163443.70490-1-brgerst@gmail.com> <20231213163443.70490-2-brgerst@gmail.com>
+In-Reply-To: <20231213163443.70490-2-brgerst@gmail.com>
+From:   Linus Torvalds <torvalds@linuxfoundation.org>
+Date:   Wed, 13 Dec 2023 10:51:11 -0800
+X-Gmail-Original-Message-ID: <CAHk-=whgooqaEBK27sBMHob9+PwqaZghEsGnSVJsHK=y8U05tw@mail.gmail.com>
+Message-ID: <CAHk-=whgooqaEBK27sBMHob9+PwqaZghEsGnSVJsHK=y8U05tw@mail.gmail.com>
+Subject: Re: [PATCH 1/3] x86: Move TSS and LDT to end of the GDT
+To:     Brian Gerst <brgerst@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, x86@kernel.org,
+        Ingo Molnar <mingo@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 13, 2023 at 5:54=E2=80=AFPM Michael S. Tsirkin <mst@redhat.com>=
- wrote:
+On Wed, 13 Dec 2023 at 08:34, Brian Gerst <brgerst@gmail.com> wrote:
 >
-> On Wed, Dec 13, 2023 at 05:49:39PM +0100, Igor Mammedov wrote:
-> > On Wed, Dec 13, 2023 at 2:08=E2=80=AFPM Rafael J. Wysocki <rafael@kerne=
-l.org> wrote:
-> > >
-> > > On Wed, Dec 13, 2023 at 1:36=E2=80=AFAM Igor Mammedov <imammedo@redha=
-t.com> wrote:
-> > > >
-> > > > previous commit ("PCI: acpiphp: enable slot only if it hasn't been =
-enabled already"
-> > > > introduced a workaround to avoid a race between SCSI_SCAN_ASYNC job=
- and
-> > > > bridge reconfiguration in case of single HBA hotplug.
-> > > > However in virt environment it's possible to pause machine hotplug =
-several
-> > > > HBAs and let machine run. That can hit the same race when 2nd hotpl=
-ugged
-> > > > HBA will start re-configuring bridge.
-> > > > Do the same thing as SHPC and throttle down hotplug of 2nd and up
-> > > > devices within single hotplug event.
-> > > >
-> > > > Signed-off-by: Igor Mammedov <imammedo@redhat.com>
-> > > > ---
-> > > >  drivers/pci/hotplug/acpiphp_glue.c | 6 ++++++
-> > > >  1 file changed, 6 insertions(+)
-> > > >
-> > > > diff --git a/drivers/pci/hotplug/acpiphp_glue.c b/drivers/pci/hotpl=
-ug/acpiphp_glue.c
-> > > > index 6b11609927d6..30bca2086b24 100644
-> > > > --- a/drivers/pci/hotplug/acpiphp_glue.c
-> > > > +++ b/drivers/pci/hotplug/acpiphp_glue.c
-> > > > @@ -37,6 +37,7 @@
-> > > >  #include <linux/mutex.h>
-> > > >  #include <linux/slab.h>
-> > > >  #include <linux/acpi.h>
-> > > > +#include <linux/delay.h>
-> > > >
-> > > >  #include "../pci.h"
-> > > >  #include "acpiphp.h"
-> > > > @@ -700,6 +701,7 @@ static void trim_stale_devices(struct pci_dev *=
-dev)
-> > > >  static void acpiphp_check_bridge(struct acpiphp_bridge *bridge)
-> > > >  {
-> > > >         struct acpiphp_slot *slot;
-> > > > +        int nr_hp_slots =3D 0;
-> > > >
-> > > >         /* Bail out if the bridge is going away. */
-> > > >         if (bridge->is_going_away)
-> > > > @@ -723,6 +725,10 @@ static void acpiphp_check_bridge(struct acpiph=
-p_bridge *bridge)
-> > > >
-> > > >                         /* configure all functions */
-> > > >                         if (slot->flags !=3D SLOT_ENABLED) {
-> > > > +                               if (nr_hp_slots)
-> > > > +                                       msleep(1000);
-> > >
-> > > Why is 1000 considered the most suitable number here?  Any chance to
-> > > define a symbol for it?
-> >
-> > Timeout was borrowed from SHPC hotplug workflow where it apparently
-> > makes race harder to reproduce.
-> > (though it's not excuse to add more timeouts elsewhere)
-> >
-> > > And won't this affect the cases when the race in question is not a co=
-ncern?
-> >
-> > In practice it's not likely, since even in virt scenario hypervisor won=
-'t
-> > stop VM to hotplug device (which beats whole purpose of hotplug).
-> >
-> > But in case of a very slow VM (overcommit case) it's possible for
-> > several HBA's to be hotplugged by the time acpiphp gets a chance
-> > to handle the 1st hotplug event. SHPC is more or less 'safe' with its
-> > 1sec delay.
-> >
-> > > Also, adding arbitrary timeouts is not the most robust way of
-> > > addressing race conditions IMV.  Wouldn't it be better to add some
-> > > proper synchronization between the pieces of code that can race with
-> > > each other?
-> >
-> > I don't like it either, it's a stop gap measure to hide regression on
-> > short notice,
-> > which I can fixup without much risk in short time left, before folks
-> > leave on holidays.
-> > It's fine to drop the patch as chances of this happening are small.
-> > [1/2] should cover reported cases.
-> >
-> > Since it's RFC, I basically ask for opinions on a proper way to fix
-> > SCSI_ASYNC_SCAN
-> > running wild while the hotplug is in progress (and maybe SCSI is not
-> > the only user that
-> > schedules async job from device probe).
->
-> Of course not. And things don't have to be scheduled from probe right?
-> Can be triggered by an interrupt or userspace activity.
+> This will make testing for system segments easier.
 
-Maybe, but it would probably depend on driver/device.
+It seems to make more sense organizationally too, with the special
+non-data/code segments clearly separate at the end.
 
-For HBA case, we probably can't depend on iqr or a userspace activity.
-Current expectations are that after hotplug HBA will show up along with
-drives attached to it. I suppose udev can kick off scan on HBA after device
-appears but it is still postponing the same race just elsewhere.
-Not to mention making the whole system more complicated/fragile.
+So I think this is fine conceptually.
 
-Also async scan during hotplug begs a question, it does speed up
-boot process with several HBA. But how much sense it makes to do so
-at hotplug time where resources are plugged on demand
-(synchronous scan might even be better).
+HOWEVER, I think that you might want to expand on this a bit more,
+because there are other special segments selectors that might not be
+thing you want to expose to user space.
 
+We have GDT_ENTRY_PERCPU for example, which is a kernel-only segment.
+It also happens to be 32-bit only, it doesn't matter for the thing
+you're trying to fix, but that valid_user_selector() thing is then
+used on x86-32 too.
 
-> > So adding synchronisation and testing
-> > would take time (not something I'd do this late in the cycle).
-> >
-> > So far I'm thinking about adding rw mutex to bridge with the PCI
-> > hotplug subsystem
-> > being a writer while scsi scan jobs would be readers and wait till hotp=
-lug code
-> > says it's safe to proceed.
-> > I plan to work in this direction and give it some testing, unless
-> > someone has a better idea.
->
-> > >
-> > > > +
-> > > > +                                ++nr_hp_slots;
-> > > >                                 enable_slot(slot, true);
-> > > >                         }
-> > > >                 } else {
-> > > > --
-> > >
->
+So the ESPFIX and per-cpu segments are kernel-only, but then the VDSO
+getcpu one is a user segment.
 
+And the PnP and APM BIOS segments are similarly kernel-only.
+
+But then the VDSO getcpu segment is user-visible, in the middle, and
+again, it's 32-bit only but that whole GDT_SYSTEM_START thing is
+supposed to work there too.
+
+End result: this seems incomplete and not really fully baked.
+
+I wonder if instead of GDT_SYSTEM_START, you'd be better off just
+making a trivial constant bitmap of "these are user visible segments
+in the GDT". No need to re-order things, just have something like
+
+   #define USER_SEGMENTS_MASK \
+        ((1ul << GDT_ENTRY_DEFAULT_USER_CS) |
+         ,,,,
+
+and use that for the test (remember to check for GDT_ENTRIES as the max).
+
+Hmm?
+
+             Linus
