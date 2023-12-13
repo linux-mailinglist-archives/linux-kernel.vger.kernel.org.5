@@ -2,83 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2748281084C
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 03:37:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 303FE81084F
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 03:41:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378286AbjLMChO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 21:37:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40234 "EHLO
+        id S1378284AbjLMClV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 21:41:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59656 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232721AbjLMChN (ORCPT
+        with ESMTP id S232295AbjLMClU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 21:37:13 -0500
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76647A0;
-        Tue, 12 Dec 2023 18:37:19 -0800 (PST)
-Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BCNxLTA013353;
-        Wed, 13 Dec 2023 02:37:12 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-        message-id:date:mime-version:subject:to:cc:references:from
-        :in-reply-to:content-type:content-transfer-encoding; s=
-        qcppdkim1; bh=GH7d3b3O5n+iS8TUgWJ4YhWeM/IfUOQCdp64CsAQ4PU=; b=Iw
-        1rxKZz6PGDH+5HpuFHwYbnPDSUSbotdpkqhjNEWPAoftLQl0U+1MaYous2wXzBcf
-        kbB/3xjtT8bO2WVAWUKKCIc51zchOz/C0EOrERt7wz1fcMilR5ZHeqwP5Yp29pC2
-        HWuYDXwtOQ7/pzKcS35KiOC7onek+Ro6E4TTEH0OcD17Zq9HzGe4hhASPwBYRiZV
-        TJcNhvsPETbiaoXXlZf+kOInLPND0kcuJyhCPcq/jZfKYubdZsY+FZbS8R/f72jU
-        OEG3Q9igha4GXAwKYrsiYYuomRlUns8dpywltsx3gCUqC+YuHdiPcx8yzJfqHwRj
-        S3uA92rb00ciFWR6xLdw==
-Received: from nasanppmta01.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3ux65341fk-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 13 Dec 2023 02:37:12 +0000 (GMT)
-Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
-        by NASANPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3BD2bBJk011457
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 13 Dec 2023 02:37:11 GMT
-Received: from [10.110.0.246] (10.80.80.8) by nasanex01b.na.qualcomm.com
- (10.46.141.250) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Tue, 12 Dec
- 2023 18:37:09 -0800
-Message-ID: <27423c14-bdcb-4053-a7c3-b2c9d6c4e771@quicinc.com>
-Date:   Tue, 12 Dec 2023 18:37:08 -0800
+        Tue, 12 Dec 2023 21:41:20 -0500
+Received: from mail-oi1-x229.google.com (mail-oi1-x229.google.com [IPv6:2607:f8b0:4864:20::229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1823BA1
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 18:41:26 -0800 (PST)
+Received: by mail-oi1-x229.google.com with SMTP id 5614622812f47-3ba00fe4e94so2740805b6e.1
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 18:41:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1702435285; x=1703040085; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Kx2ExU5Npip51Gk3K6Ffy4XYyqkPOYjVdErJoRrO4Uk=;
+        b=G6kaRi1umt6jLDRKRI6Y7LPS3o8IG1f8X94kIrF8VizI5y3rcEZgsdhFCpTJcSbGpL
+         HpubCI5ilu6gP4d5Mvv0NlTLJXIb9dMYckUU6/F2/OhB7o4Kbbh75wBwhD7gODI2ptrX
+         6xiUz1k0B3jx0rzan59+z19yRH5ogp6NK1nbluoM8mbCamMaqqn/Uv2oFZbWswNdsGyg
+         cDhrPj+n3rw+7mAjwNmiHEQne8E8PJ3WHJKMSXfTw2sQgN7DsIn9DqbnRu3KsuvEvmK/
+         p/orb8ZspA6uWVqPMk2DxaO96hprwXtAWutrIqRPIiwAqTmAPoOc4o+kbiKvUuvfvOVL
+         epvw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702435285; x=1703040085;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Kx2ExU5Npip51Gk3K6Ffy4XYyqkPOYjVdErJoRrO4Uk=;
+        b=FgqhuzJSF22jEw6dMpy1Ydw4css+Z7n3Bxfzmx7oICf91DJL6c5wv9Q68EHOK0MObd
+         pOqe2xq+x226nStiu10tuj4JOF4L3mYcmZPibe2FeW6aNrTAhuJLxKNTmrYs/nnACFbf
+         VzZx42HJV3usD+S6M3u5sSxiLAjJlHasF3nuOoxbOp1H/fcWMEinujEwgqrb8vyyzyqY
+         9H2cO0ZTrTJlIU6ePDU59tL3tqBA3s23Ii2lxemC3//ZEDmFxQzlHia0S2ilgcyL9TaN
+         iaVEBXMXJcVc/k3MthEf9hLvVOd26AE8Ejk0nd5bv5le5F0x8LjCOj5Jc64kGVO+WYSp
+         t7rw==
+X-Gm-Message-State: AOJu0YzNi5QdRsSThr8C7CSMrv5U4c+Q7ZHhvEpQxxmOLs3ry6H6z+z+
+        TJTYQ3ZIiPH3bW9a+LlxO9CvGQ==
+X-Google-Smtp-Source: AGHT+IE82iNT0eJz99u/vjA2FkaMkn7zxxDxr+jOWgF4pxSouIuDKu0rh+Fl/00w7zhtmqBshCauGA==
+X-Received: by 2002:a05:6808:201e:b0:3b9:ec87:849 with SMTP id q30-20020a056808201e00b003b9ec870849mr9041478oiw.74.1702435285282;
+        Tue, 12 Dec 2023 18:41:25 -0800 (PST)
+Received: from [10.254.248.243] ([139.177.225.230])
+        by smtp.gmail.com with ESMTPSA id s16-20020a056a00195000b006cb574445efsm8890435pfk.88.2023.12.12.18.41.21
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 12 Dec 2023 18:41:24 -0800 (PST)
+Message-ID: <73c126cd-5a49-4040-96e2-d416da616158@bytedance.com>
+Date:   Wed, 13 Dec 2023 10:41:17 +0800
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [Freedreno] [PATCH 0/2] drm/msm/dpu: INTF CRC configuration
- cleanups and fix
+Subject: Re: [PATCH 3/7] mm/zswap: reuse dstmem when decompress
 Content-Language: en-US
-To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-CC:     <freedreno@lists.freedesktop.org>,
-        David Airlie <airlied@gmail.com>, <quic_abhinavk@quicinc.com>,
-        <dri-devel@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>,
-        Rob Clark <robdclark@gmail.com>,
-        "Daniel Vetter" <daniel@ffwll.ch>, <linux-arm-msm@vger.kernel.org>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        Sean Paul <sean@poorly.run>
-References: <20231130-encoder-fixup-v1-0-585c54cd046e@quicinc.com>
- <CAA8EJpof5LO7pyXaqgtbL=sL2a2Te2tzLF-NrTFT7n58pB3iww@mail.gmail.com>
-From:   Jessica Zhang <quic_jesszhan@quicinc.com>
-In-Reply-To: <CAA8EJpof5LO7pyXaqgtbL=sL2a2Te2tzLF-NrTFT7n58pB3iww@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nasanex01b.na.qualcomm.com (10.46.141.250)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: 0jf2xS-RJCDQoDu-F6Vv1z690TgLCCND
-X-Proofpoint-GUID: 0jf2xS-RJCDQoDu-F6Vv1z690TgLCCND
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-09_02,2023-12-07_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 phishscore=0
- mlxscore=0 mlxlogscore=999 clxscore=1015 adultscore=0 lowpriorityscore=0
- priorityscore=1501 bulkscore=0 suspectscore=0 malwarescore=0 spamscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2311290000
- definitions=main-2312130017
+To:     Nhat Pham <nphamcs@gmail.com>
+Cc:     Vitaly Wool <vitaly.wool@konsulko.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Seth Jennings <sjenning@redhat.com>,
+        Dan Streetman <ddstreet@ieee.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Yosry Ahmed <yosryahmed@google.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+References: <20231206-zswap-lock-optimize-v1-0-e25b059f9c3a@bytedance.com>
+ <20231206-zswap-lock-optimize-v1-3-e25b059f9c3a@bytedance.com>
+ <CAKEwX=NpYKqjAg+8oMqGWi_6Ue0ig5dTrCPxhTRWumKkKdXSeg@mail.gmail.com>
+From:   Chengming Zhou <zhouchengming@bytedance.com>
+In-Reply-To: <CAKEwX=NpYKqjAg+8oMqGWi_6Ue0ig5dTrCPxhTRWumKkKdXSeg@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -86,52 +82,110 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 11/30/2023 11:39 PM, Dmitry Baryshkov wrote:
-> On Fri, 1 Dec 2023 at 03:31, Jessica Zhang <quic_jesszhan@quicinc.com> wrote:
+On 2023/12/13 06:58, Nhat Pham wrote:
+> On Wed, Dec 6, 2023 at 1:46 AM Chengming Zhou
+> <zhouchengming@bytedance.com> wrote:
 >>
->> This series drops the frame_count and enable parameters (as they're always
->> set to the same value). It also sets input_sel=0x1 for INTF.
+>> In the !zpool_can_sleep_mapped() case such as zsmalloc, we need to first
+>> copy the entry->handle memory to a temporary memory, which is allocated
+>> using kmalloc.
 >>
->> Signed-off-by: Jessica Zhang <quic_jesszhan@quicinc.com>
->> ---
->> Jessica Zhang (2):
->>        drm/msm/dpu: Drop enable and frame_count parameters from dpu_hw_setup_misr()
->>        drm/msm/dpu: Set input_sel bit for INTF
+>> Obviously we can reuse the per-compressor dstmem to avoid allocating
+>> every time, since it's percpu-compressor and protected in mutex.
 > 
-> Please change the order of the commits: fix (input_sel) comes first,
-> then comes the improvement.
-> Otherwise if one needs to backport this fix, they either need to pick
-> up the irrelevant patch, or they have to rework the fix.
-
-Acked.
-
-Thanks,
-
-Jessica Zhang
-
+> Ah this sounds like a good idea. We have to grab that mutex anyway -
+> might as well use the memory slot that is protected by that mutex.
 > 
 >>
->>   drivers/gpu/drm/msm/disp/dpu1/dpu_crtc.c    |  4 ++--
->>   drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c |  4 ++--
->>   drivers/gpu/drm/msm/disp/dpu1/dpu_hw_intf.c |  6 +++---
->>   drivers/gpu/drm/msm/disp/dpu1/dpu_hw_intf.h |  4 ++--
->>   drivers/gpu/drm/msm/disp/dpu1/dpu_hw_lm.c   |  6 +++---
->>   drivers/gpu/drm/msm/disp/dpu1/dpu_hw_lm.h   |  3 ++-
->>   drivers/gpu/drm/msm/disp/dpu1/dpu_hw_util.c | 18 +++++++-----------
->>   drivers/gpu/drm/msm/disp/dpu1/dpu_hw_util.h | 11 +++++------
->>   8 files changed, 26 insertions(+), 30 deletions(-)
+>> Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
 >> ---
->> base-commit: 4047f50eb64d980fcd581a19bbe6164dab25ebc7
->> change-id: 20231122-encoder-fixup-61c190b16085
+>>  mm/zswap.c | 29 +++++++++--------------------
+>>  1 file changed, 9 insertions(+), 20 deletions(-)
 >>
->> Best regards,
+>> diff --git a/mm/zswap.c b/mm/zswap.c
+>> index a6b4859a0164..d93a7b58b5af 100644
+>> --- a/mm/zswap.c
+>> +++ b/mm/zswap.c
+>> @@ -1758,9 +1758,9 @@ bool zswap_load(struct folio *folio)
+>>         struct zswap_entry *entry;
+>>         struct scatterlist input, output;
+>>         struct crypto_acomp_ctx *acomp_ctx;
+>> -       u8 *src, *dst, *tmp;
+>> +       unsigned int dlen = PAGE_SIZE;
+>> +       u8 *src, *dst;
+>>         struct zpool *zpool;
+>> -       unsigned int dlen;
+>>         bool ret;
+>>
+>>         VM_WARN_ON_ONCE(!folio_test_locked(folio));
+>> @@ -1782,27 +1782,18 @@ bool zswap_load(struct folio *folio)
+>>                 goto stats;
+>>         }
+>>
+>> -       zpool = zswap_find_zpool(entry);
+>> -       if (!zpool_can_sleep_mapped(zpool)) {
+>> -               tmp = kmalloc(entry->length, GFP_KERNEL);
+>> -               if (!tmp) {
+>> -                       ret = false;
+>> -                       goto freeentry;
+>> -               }
+>> -       }
+>> -
+>>         /* decompress */
+>> -       dlen = PAGE_SIZE;
+>> -       src = zpool_map_handle(zpool, entry->handle, ZPOOL_MM_RO);
+>> +       acomp_ctx = raw_cpu_ptr(entry->pool->acomp_ctx);
+>> +       mutex_lock(acomp_ctx->mutex);
+>>
+>> +       zpool = zswap_find_zpool(entry);
+>> +       src = zpool_map_handle(zpool, entry->handle, ZPOOL_MM_RO);
+>>         if (!zpool_can_sleep_mapped(zpool)) {
+>> -               memcpy(tmp, src, entry->length);
+>> -               src = tmp;
+>> +               memcpy(acomp_ctx->dstmem, src, entry->length);
+>> +               src = acomp_ctx->dstmem;
+> 
+> We're moving handle (un)mapping and the memory copying inside the
+> critical section protected by the mutex. Seems fine to me -
+> zswap_store() already did this IIUC.
+> 
+>>                 zpool_unmap_handle(zpool, entry->handle);
+>>         }
+>>
+>> -       acomp_ctx = raw_cpu_ptr(entry->pool->acomp_ctx);
+>> -       mutex_lock(acomp_ctx->mutex);
+>>         sg_init_one(&input, src, entry->length);
+>>         sg_init_table(&output, 1);
+>>         sg_set_page(&output, page, PAGE_SIZE, 0);
+>> @@ -1813,15 +1804,13 @@ bool zswap_load(struct folio *folio)
+>>
+>>         if (zpool_can_sleep_mapped(zpool))
+>>                 zpool_unmap_handle(zpool, entry->handle);
+>> -       else
+>> -               kfree(tmp);
+>>
+>>         ret = true;
+>>  stats:
+>>         count_vm_event(ZSWPIN);
+>>         if (entry->objcg)
+>>                 count_objcg_event(entry->objcg, ZSWPIN);
+>> -freeentry:
+> 
+> So it reduces the chance of zswap_load() failure due to unable to
+> memory allocation failure? Nice!
+> 
+
+Yes, no need to allocate temporary memory anymore :)
+
+>> +
+>>         spin_lock(&tree->lock);
+>>         if (ret && zswap_exclusive_loads_enabled) {
+>>                 zswap_invalidate_entry(tree, entry);
+>>
 >> --
->> Jessica Zhang <quic_jesszhan@quicinc.com>
->>
+>> b4 0.10.1
 > 
-> 
-> -- 
-> With best wishes
-> Dmitry
+> Reviewed-by: Nhat Pham <nphamcs@gmail.com>
+
+Thanks for review!
+
