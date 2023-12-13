@@ -2,91 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DD3DF810BE1
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 08:52:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B0DBA810BE8
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 08:58:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378721AbjLMHws (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 02:52:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58366 "EHLO
+        id S1378554AbjLMH56 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 02:57:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35166 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378850AbjLMHwq (ORCPT
+        with ESMTP id S232673AbjLMH5z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 02:52:46 -0500
-Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC6FADC
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 23:52:50 -0800 (PST)
-Received: by mail-wm1-x331.google.com with SMTP id 5b1f17b1804b1-40c4846847eso28890425e9.1
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 23:52:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1702453969; x=1703058769; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=M39btmxp5CMOvqAic+iM2gRDFVus/hb+Dtb73l5YcRQ=;
-        b=sp6Pj7hKu+lK93QwTGNytyOkZEVL5VJgYXC/Te9Dly9QURdrnkTE7T8YZ6bsdqAmQJ
-         YNuMF9yHWUEu2W3LBADG6YUzvWsZGt39sDhQuKWWVG4sc1USFv24IPAGOaSz/SLgFQb5
-         PqtSfIq8je9pE68QSc5Coq2hulrEIpM2Iqd70uE4xjLzGnO0022NwWhazV67NqZXgmt7
-         AZsOKcCA5SE+4R2ujHMyc+3DSpK2MKGXNOaov+lJR2UGDf4q1SU1t9PPlRWKLELweOWP
-         O5N+2azhs26gSyE9CpsxsXo7NHxabfaEr4pxhoGvHMJKcE+9fEaS3Ybhq64n7P99YUb0
-         /Kpg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702453969; x=1703058769;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=M39btmxp5CMOvqAic+iM2gRDFVus/hb+Dtb73l5YcRQ=;
-        b=pMxJn74r+loetZArw8nm8ZJhAbeZwDxzski9hNAxq7pbVS8BEMe5gguFA14KkmttCa
-         H5FOw8StOsanCgGYgkZCbRyzzBmoSGd8gjy2ynIryuoPNPkYL+kwdTRwF1SZB+9LclDd
-         Xa0E8xThKjPq1xgJ4usbvAU+jWscPyH+jI9W6GcQaePFvLyMC1q8Dd1Y7kf1oOMVdOOM
-         FRazi/uLetMRMM/zHz5kkCZTpnYzPqOnLLp+L0ijo9LAWYdlSsVn5ll4eZIImoeKDoxt
-         xJf4xC6qWJnuVjQUh3JceqmG9msJ3DD/p2oAL05rEFEQ5A53y+VKMOGHwBZ/Mj76cZ0L
-         aBIg==
-X-Gm-Message-State: AOJu0YwmlpYtMoIVCDL3Wj992D5g6zKXGcInSHNs/NQN7adve07aujOQ
-        M7S1etWRMei57D3yTcWspFOdvlqVqnANcGiW5Nij3Q==
-X-Google-Smtp-Source: AGHT+IF8GsUa/W3RJdThooSHp8WYWcUSc4eP6rXO8ssH3BcKraug5UQYXMvk50EClsQDU3QAMz82hldzzEvDsMEPiCw=
-X-Received: by 2002:a05:600c:11ce:b0:40c:377c:4b62 with SMTP id
- b14-20020a05600c11ce00b0040c377c4b62mr3749772wmi.50.1702453969020; Tue, 12
- Dec 2023 23:52:49 -0800 (PST)
+        Wed, 13 Dec 2023 02:57:55 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C169BD;
+        Tue, 12 Dec 2023 23:58:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1702454283; x=1733990283;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=zhr6XmX/fHUnfrR1VEsNJngQs5Qv2/CPJI50nFNpUH8=;
+  b=oH4AfQ29lAizwfO24kFObOzoJ/StZKwPT0F5Bx4g2zR2Y9/MppiaHuJw
+   B2R3oIOKyGL8agHJb6w3ApO/sSwD+5PJMTmvlJl7t+F0eoVOg0E5tRlXk
+   XwD3v3+5Th6SpQFPSTbGGe5lx9n1HtPWzFpQg2XguigB0O1/bDBEhbQ5y
+   M1rlJhpvIVSe+OcOP6y9GYOFlwgB+odcWryi1ny86Un8Ff5XMRNEC4Ps/
+   42s73QrddytGylxaZEvZFLXcYAYtPNwpvh21gwTA9MW/g8o3h2bTVTYsL
+   NUuZmmt24tMgaqvc9wVBW9hmJdeXjrsemh0e7gg0jLUZwid+Wh7fomCyO
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10922"; a="13621432"
+X-IronPort-AV: E=Sophos;i="6.04,272,1695711600"; 
+   d="scan'208";a="13621432"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Dec 2023 23:58:02 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10922"; a="802794304"
+X-IronPort-AV: E=Sophos;i="6.04,272,1695711600"; 
+   d="scan'208";a="802794304"
+Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
+  by orsmga008.jf.intel.com with ESMTP; 12 Dec 2023 23:57:59 -0800
+Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1rDK7m-000KEZ-06;
+        Wed, 13 Dec 2023 07:57:57 +0000
+Date:   Wed, 13 Dec 2023 15:57:41 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Daniel Lezcano <daniel.lezcano@linaro.org>, rjw@rjwysocki.net,
+        lukasz.luba@arm.com
+Cc:     oe-kbuild-all@lists.linux.dev, rui.zhang@intel.com,
+        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org
+Subject: Re: [PATCH v1 1/2] thermal/debugfs: Add thermal cooling device
+ debugfs information
+Message-ID: <202312131518.2Fjrrxot-lkp@intel.com>
+References: <20231212161047.1631077-1-daniel.lezcano@linaro.org>
 MIME-Version: 1.0
-References: <20231208005250.2910004-1-almasrymina@google.com>
- <20231208005250.2910004-10-almasrymina@google.com> <32211cbf-3a4e-8a86-6214-4304ddb18a98@huawei.com>
- <CAHS8izOQcuLPwvDff96fuNB7r6EU9OWt3ShueQp=u7wat3L5LA@mail.gmail.com>
- <92e30bd9-6df4-b72f-7bcd-f4fe5670eba2@huawei.com> <CAHS8izPEFsqw50qgM+sPot6XVvOExpd+DrwrmPSR3zsWGLysRw@mail.gmail.com>
- <CAHS8izN6Cbjy0FCYhJyNsP396XfgJ_nTFXWuHb5QWNct=PifAg@mail.gmail.com>
-In-Reply-To: <CAHS8izN6Cbjy0FCYhJyNsP396XfgJ_nTFXWuHb5QWNct=PifAg@mail.gmail.com>
-From:   Mina Almasry <almasrymina@google.com>
-Date:   Tue, 12 Dec 2023 23:52:34 -0800
-Message-ID: <CAHS8izODNXtmhBoPk6z=wuj8tvbndcHHHxcZmH64hY57znT-Mg@mail.gmail.com>
-Subject: Re: [net-next v1 09/16] page_pool: device memory support
-To:     Yunsheng Lin <linyunsheng@huawei.com>
-Cc:     Shailend Chand <shailend@google.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        bpf@vger.kernel.org, linux-media@vger.kernel.org,
-        dri-devel@lists.freedesktop.org,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Jeroen de Borst <jeroendb@google.com>,
-        Praveen Kaligineedi <pkaligineedi@google.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        David Ahern <dsahern@kernel.org>,
-        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        Harshitha Ramamurthy <hramamurthy@google.com>,
-        Shakeel Butt <shakeelb@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231212161047.1631077-1-daniel.lezcano@linaro.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -94,232 +67,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Dec 10, 2023 at 8:04=E2=80=AFPM Mina Almasry <almasrymina@google.co=
-m> wrote:
->
-> On Sun, Dec 10, 2023 at 6:26=E2=80=AFPM Mina Almasry <almasrymina@google.=
-com> wrote:
-> >
-> > On Sun, Dec 10, 2023 at 6:04=E2=80=AFPM Yunsheng Lin <linyunsheng@huawe=
-i.com> wrote:
-> > >
-> > > On 2023/12/9 0:05, Mina Almasry wrote:
-> > > > On Fri, Dec 8, 2023 at 1:30=E2=80=AFAM Yunsheng Lin <linyunsheng@hu=
-awei.com> wrote:
-> > > >>
-> > > >>
-> > > >> As mentioned before, it seems we need to have the above checking e=
-very
-> > > >> time we need to do some per-page handling in page_pool core, is th=
-ere
-> > > >> a plan in your mind how to remove those kind of checking in the fu=
-ture?
-> > > >>
-> > > >
-> > > > I see 2 ways to remove the checking, both infeasible:
-> > > >
-> > > > 1. Allocate a wrapper struct that pulls out all the fields the page=
- pool needs:
-> > > >
-> > > > struct netmem {
-> > > >         /* common fields */
-> > > >         refcount_t refcount;
-> > > >         bool is_pfmemalloc;
-> > > >         int nid;
-> > > >         ...
-> > > >         union {
-> > > >                 struct dmabuf_genpool_chunk_owner *owner;
-> > > >                 struct page * page;
-> > > >         };
-> > > > };
-> > > >
-> > > > The page pool can then not care if the underlying memory is iov or
-> > > > page. However this introduces significant memory bloat as this stru=
-ct
-> > > > needs to be allocated for each page or ppiov, which I imagine is no=
-t
-> > > > acceptable for the upside of removing a few static_branch'd if
-> > > > statements with no performance cost.
-> > > >
-> > > > 2. Create a unified struct for page and dmabuf memory, which the mm
-> > > > folks have repeatedly nacked, and I imagine will repeatedly nack in
-> > > > the future.
-> > > >
-> > > > So I imagine the special handling of ppiov in some form is critical
-> > > > and the checking may not be removable.
-> > >
-> > > If the above is true, perhaps devmem is not really supposed to be int=
-ergated
-> > > into page_pool.
-> > >
-> > > Adding a checking for every per-page handling in page_pool core is ju=
-st too
-> > > hacky to be really considerred a longterm solution.
-> > >
-> >
-> > The only other option is to implement another page_pool for ppiov and
-> > have the driver create page_pool or ppiov_pool depending on the state
-> > of the netdev_rx_queue (or some helper in the net stack to do that for
-> > the driver). This introduces some code duplication. The ppiov_pool &
-> > page_pool would look similar in implementation.
-> >
-> > But this was all discussed in detail in RFC v2 and the last response I
-> > heard from Jesper was in favor if this approach, if I understand
-> > correctly:
-> >
-> > https://lore.kernel.org/netdev/7aedc5d5-0daf-63be-21bc-3b724cc1cab9@red=
-hat.com/
-> >
-> > Would love to have the maintainer weigh in here.
-> >
->
-> I should note we may be able to remove some of the checking, but maybe no=
-t all.
->
-> - Checks that disable page fragging for ppiov can be removed once
-> ppiov has frag support (in this series or follow up).
->
-> - If we use page->pp_frag_count (or page->pp_ref_count) for
-> refcounting ppiov, we can remove the if checking in the refcounting.
->
-> - We may be able to store the dma_addr of the ppiov in page->dma_addr,
-> but I'm unsure if that actually works, because the dma_buf dmaddr is
-> dma_addr_t (u32 or u64), but page->dma_addr is unsigned long (4 bytes
-> I think). But if it works for pages I may be able to make it work for
-> ppiov as well.
->
-> - Checks that obtain the page->pp can work with ppiov if we align the
-> offset of page->pp and ppiov->pp.
->
-> - Checks around page->pp_magic can be removed if we also have offset
-> aligned ppiov->pp_magic.
->
-> Sadly I don't see us removing the checking for these other cases:
->
-> - page_is_pfmemalloc(): I'm not allowed to pass a non-struct page into
-> that helper.
->
-> - page_to_nid(): I'm not allowed to pass a non-struct page into that help=
-er.
->
-> - page_pool_free_va(): ppiov have no va.
->
-> - page_pool_sync_for_dev/page_pool_dma_map: ppiov backed by dma-buf
-> fundamentally can't get mapped again.
->
-> Are the removal (or future removal) of these checks enough to resolve thi=
-s?
->
+Hi Daniel,
 
-I took a deeper look here, and with some effort I'm able to remove
-almost all the custom checks for ppiov. The only remaining checks for
-devmem are the checks around these mm calls:
+kernel test robot noticed the following build errors:
 
-page_is_pfmemalloc()
-page_to_nid()
-page_ref_count()
-compound_head()
+[auto build test ERROR on rafael-pm/thermal]
+[also build test ERROR on linus/master v6.7-rc5 next-20231213]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-page_is_pfmemalloc() checks can be removed by using a bit
-page->pp_magic potentially to indicate pfmemalloc().
+url:    https://github.com/intel-lab-lkp/linux/commits/Daniel-Lezcano/thermal-debugfs-Add-thermal-debugfs-information-for-mitigation-episodes/20231213-001321
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git thermal
+patch link:    https://lore.kernel.org/r/20231212161047.1631077-1-daniel.lezcano%40linaro.org
+patch subject: [PATCH v1 1/2] thermal/debugfs: Add thermal cooling device debugfs information
+config: i386-defconfig (https://download.01.org/0day-ci/archive/20231213/202312131518.2Fjrrxot-lkp@intel.com/config)
+compiler: gcc-7 (Ubuntu 7.5.0-6ubuntu2) 7.5.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231213/202312131518.2Fjrrxot-lkp@intel.com/reproduce)
 
-The other 3, I'm not sure I can remove. They rely on the page flags or
-other fields not specific to page_pool pages. The next version should
-come with the most minimal amount of devmem checks for the page_pool.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202312131518.2Fjrrxot-lkp@intel.com/
 
-> > > It is somewhat ironical that devmem is using static_branch to allivia=
-te the
-> > > performance impact for normal memory at the possible cost of performa=
-nce
-> > > degradation for devmem, does it not defeat some purpose of intergatin=
-g devmem
-> > > to page_pool?
-> > >
-> >
-> > I don't see the issue. The static branch sets the non-ppiov path as
-> > default if no memory providers are in use, and flips it when they are,
-> > making the default branch prediction ideal in both cases.
-> >
-> > > >
-> > > >> Even though a static_branch check is added in page_is_page_pool_io=
-v(), it
-> > > >> does not make much sense that a core has tow different 'struct' fo=
-r its
-> > > >> most basic data.
-> > > >>
-> > > >> IMHO, the ppiov for dmabuf is forced fitting into page_pool withou=
-t much
-> > > >> design consideration at this point.
-> > > >>
-> > > > ...
-> > > >>
-> > > >> For now, the above may work for the the rx part as it seems that y=
-ou are
-> > > >> only enabling rx for dmabuf for now.
-> > > >>
-> > > >> What is the plan to enable tx for dmabuf? If it is also intergrate=
-d into
-> > > >> page_pool? There was a attempt to enable page_pool for tx, Eric se=
-emed to
-> > > >> have some comment about this:
-> > > >> https://lkml.kernel.org/netdev/2cf4b672-d7dc-db3d-ce90-15b4e91c400=
-5@huawei.com/T/#mb6ab62dc22f38ec621d516259c56dd66353e24a2
-> > > >>
-> > > >> If tx is not intergrated into page_pool, do we need to create a ne=
-w layer for
-> > > >> the tx dmabuf?
-> > > >>
-> > > >
-> > > > I imagine the TX path will reuse page_pool_iov, page_pool_iov_*()
-> > > > helpers, and page_pool_page_*() helpers, but will not need any core
-> > > > page_pool changes. This is because the TX path will have to piggyba=
-ck
-> > >
-> > > We may need another bit/flags checking to demux between page_pool own=
-ed
-> > > devmem and non-page_pool owned devmem.
-> > >
-> >
-> > The way I'm imagining the support, I don't see the need for such
-> > flags. We'd be re-using generic helpers like
-> > page_pool_iov_get_dma_address() and what not that don't need that
-> > checking.
-> >
-> > > Also calling page_pool_*() on non-page_pool owned devmem is confusing
-> > > enough that we may need a thin layer handling non-page_pool owned dev=
-mem
-> > > in the end.
-> > >
-> >
-> > The page_pool_page* & page_pool_iov* functions can be renamed if
-> > confusing. I would think that's no issue (note that the page_pool_*
-> > functions need not be called for TX path).
-> >
-> > > > on MSG_ZEROCOPY (devmem is not copyable), so no memory allocation f=
-rom
-> > > > the page_pool (or otherwise) is needed or possible. RFCv1 had a TX
-> > > > implementation based on dmabuf pages without page_pool involvement,=
- I
-> > > > imagine I'll do something similar.
-> > > It would be good to have a tx implementation for the next version, so
-> > > that we can have a whole picture of devmem.
-> > >
-> > > >
-> >
-> >
-> >
-> > --
-> > Thanks,
-> > Mina
->
->
->
-> --
-> Thanks,
-> Mina
+All errors (new ones prefixed by >>):
+
+   In file included from drivers/thermal/thermal_core.h:16:0,
+                    from drivers/thermal/thermal_core.c:27:
+   drivers/thermal/thermal_debugfs.h: In function 'thermal_debug_cdev_add':
+>> drivers/thermal/thermal_debugfs.h:10:50: error: parameter name omitted
+    static inline void thermal_debug_cdev_add(struct thermal_cooling_device *) {}
+                                                     ^~~~~~~~~~~~~~~~~~~~~~
+   drivers/thermal/thermal_debugfs.h: In function 'thermal_debug_cdev_remove':
+   drivers/thermal/thermal_debugfs.h:11:53: error: parameter name omitted
+    static inline void thermal_debug_cdev_remove(struct thermal_cooling_device *) {}
+                                                        ^~~~~~~~~~~~~~~~~~~~~~
+   drivers/thermal/thermal_debugfs.h: In function 'thermal_debug_cdev_transition':
+   drivers/thermal/thermal_debugfs.h:12:57: error: parameter name omitted
+    static inline void thermal_debug_cdev_transition(struct thermal_cooling_device *, int) {}
+                                                            ^~~~~~~~~~~~~~~~~~~~~~
+   drivers/thermal/thermal_debugfs.h:12:57: error: parameter name omitted
 
 
+vim +10 drivers/thermal/thermal_debugfs.h
 
---=20
-Thanks,
-Mina
+     2	
+     3	#ifdef CONFIG_THERMAL_DEBUGFS
+     4	void thermal_debug_init(void);
+     5	void thermal_debug_cdev_add(struct thermal_cooling_device *cdev);
+     6	void thermal_debug_cdev_remove(struct thermal_cooling_device *cdev);
+     7	void thermal_debug_cdev_transition(struct thermal_cooling_device *cdev, int state);
+     8	#else
+     9	static inline void thermal_debug_init(void) {}
+  > 10	static inline void thermal_debug_cdev_add(struct thermal_cooling_device *) {}
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
