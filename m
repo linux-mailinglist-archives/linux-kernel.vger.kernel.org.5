@@ -2,139 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 823D3811B9E
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 18:54:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AABB4811BA2
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 18:55:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378271AbjLMRyn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 12:54:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47620 "EHLO
+        id S233622AbjLMRzM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 12:55:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51988 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233536AbjLMRy1 (ORCPT
+        with ESMTP id S235346AbjLMRy6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 12:54:27 -0500
-Received: from out4-smtp.messagingengine.com (out4-smtp.messagingengine.com [66.111.4.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CC40124
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 09:54:33 -0800 (PST)
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
-        by mailout.nyi.internal (Postfix) with ESMTP id A7B255C036A;
-        Wed, 13 Dec 2023 12:54:32 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute2.internal (MEProxy); Wed, 13 Dec 2023 12:54:32 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fastmail.org; h=
-        cc:cc:content-transfer-encoding:content-type:date:date:from:from
-        :in-reply-to:in-reply-to:message-id:mime-version:references
-        :reply-to:subject:subject:to:to; s=fm1; t=1702490072; x=
-        1702576472; bh=NFWBZNBolF9xr8pUspxdkODDx6FqZO+GM1v/aSU4404=; b=V
-        56aqOQj3PJEe+5cSrhEvK9EQd1kDwM2+ptCoWIo/NmaAlEC7thTzC6H/QYVeCCFE
-        U5vWufD0AHO8K0eZMUoyvkALX3UnDQSZIjq7+9CTb+/x0a4601ECrB+ujtHFWDqc
-        S53YPl3cur5VJ3cRMkAEhJ33oAeh1BEQ7g7OXSUAlt88rjRZqjr1GqmjKQfnR6QL
-        rMPL0++0d0Fboh8AvDgRl6v6ORfPP2iPw44Vzu2G5YazfOlqvWv/IUwSIkze2mwa
-        YHc1ula9wNM5x1uCqavjBycTbStAt2C9Ak6NCTXSMkJcVFaOQ6MsZ2kItyPFHwqy
-        WEfuUg5m1tBs19AgjUuOA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-transfer-encoding
-        :content-type:date:date:feedback-id:feedback-id:from:from
-        :in-reply-to:in-reply-to:message-id:mime-version:references
-        :reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
-        :x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1702490072; x=
-        1702576472; bh=NFWBZNBolF9xr8pUspxdkODDx6FqZO+GM1v/aSU4404=; b=R
-        /NWIg2uy7Nj+7ybTluEbChTzEXn7eGT36Rhi+JMJ2q7uB4Xyvkd9leCb00Zpg0y9
-        HRSqRuZCDWoMfJ2Ss7zZOR5AWCd8RP/MPYHcnaaWKLZqaw0tljOJxe0vzgPZdwPB
-        5IGlN0LLd4LWHcIlxHbUUc65TRaC/pinw3AFHsoyTnV6OT0JJRsYI8oxzldNBKzi
-        2MbbST3EZCeSdi4X45iFbEUt79EXxi9t8KLi4sS3knkXTjBaSqqAuPayzaaa+l24
-        rZ70PdaffXNdzD7fnXfuX3h153cWgH2/L+wU2k4lLTCnQMATWJdx4SG33c0q/E4G
-        lo+5PrHIsNTPTOb3ERJBw==
-X-ME-Sender: <xms:2O95ZZk8KO96UEnje-9gVRhxMJsJdi7W6Um5R15N7XG94RQp-hc-tA>
-    <xme:2O95ZU1flc2ZrJIXdm88O43QMrNvRx6nFLto3BAwEsgLFcJ4vpSyWnF4crSlI--kv
-    DljY1esGzR2SPl4U2Q>
-X-ME-Received: <xmr:2O95ZfoZlVQZNk19ORqMv1bsfN22TLiHZpVUB74rskVcv6ORu7Miw9pLfrg5_lYM5s9RKE9FLRf5lmPFk_miahVXFvdc1Hu3HYdxQAyQs4o>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrudeljedggeeiucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucenucfjughrpefhvfevufffkffojghfggfgsedtke
-    ertdertddtnecuhfhrohhmpefirghrhicutfhoohhkrghrugcuoehgrghrhihrohhokhgr
-    rhgusehfrghsthhmrghilhdrohhrgheqnecuggftrfgrthhtvghrnhepkeeuvdffueduke
-    egieeuffejhefgkeetfeehueelfeduuefgveellefhfefgjedvnecuvehluhhsthgvrhfu
-    ihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepghgrrhihrhhoohhkrghrugesfh
-    grshhtmhgrihhlrdhorhhg
-X-ME-Proxy: <xmx:2O95ZZkXLvzJS9269EbPeAF5SR0ijML649qbiX8HtQnEbaTStp6C_A>
-    <xmx:2O95ZX1GI3TdIbevudfCbrBJqk1qoPN7gWuRs9JqzgEV2z8EtfAOUg>
-    <xmx:2O95ZYvtewZ0BTlFlgsaWnYGQBNMZiL09McfxXnxWlCYNIKO7Ukrlw>
-    <xmx:2O95ZYxZQl7W7U3tQtH0HvfgusiDTa2Uq5zkBYLIQaLqx97Jkn2cIQ>
-Feedback-ID: ifd194980:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 13 Dec 2023 12:54:32 -0500 (EST)
-From:   Gary Rookard <garyrookard@fastmail.org>
-To:     gregkh@linuxfoundation.org, philipp.g.hortmann@gmail.com
-Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Gary Rookard <garyrookard@fastmail.org>
-Subject: [PATCH 4/5] staging: rtl8192e: rename variable HTOnAssocRsp
-Date:   Wed, 13 Dec 2023 12:54:58 -0500
-Message-ID: <20231213175459.5425-5-garyrookard@fastmail.org>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20231213175459.5425-1-garyrookard@fastmail.org>
-References: <20231213175459.5425-1-garyrookard@fastmail.org>
+        Wed, 13 Dec 2023 12:54:58 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E47B189;
+        Wed, 13 Dec 2023 09:55:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1702490104; x=1734026104;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=8QixjnXhfq2bW5wYTLk2wSq1en7KmWzd9EcTLD6Wix8=;
+  b=Yw8kHCfclVZB0LllEhIMZvnbnmQhdwOEyZYz2Mhm7sErQniqg3rlLuiq
+   uP+BT7UmgaqbhuFpzTXm2xbAcngK3U3iRYj1hfShguEUpF0bcKzfnMRK8
+   WD+ovXR4Hidp44FGYTRc36k/OODLAkOyVL3xRf46KEfWFb9iCN6oOYRUI
+   eiumTSJIU8sbB4ygmcEj2S414kdwlXPrCcJFjibwPrXXQALeuvuA21uUQ
+   JfLqt1azBgT15fBR3S4a7pb6jdQkpgUtVWkdkfBgEPEOkmW7J8MxdMUgE
+   +/wUS9wHZ0cVal7UK0ZArrArqwO2dHEqGM2TQ8IH543XcSquYHXb3vZ6E
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10923"; a="394756123"
+X-IronPort-AV: E=Sophos;i="6.04,273,1695711600"; 
+   d="scan'208";a="394756123"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Dec 2023 09:55:03 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10923"; a="1105389019"
+X-IronPort-AV: E=Sophos;i="6.04,273,1695711600"; 
+   d="scan'208";a="1105389019"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmsmga005.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Dec 2023 09:55:02 -0800
+Received: from andy by smile.fi.intel.com with local (Exim 4.97)
+        (envelope-from <andriy.shevchenko@intel.com>)
+        id 1rDTRj-00000005bGL-23mt;
+        Wed, 13 Dec 2023 19:54:59 +0200
+Date:   Wed, 13 Dec 2023 19:54:59 +0200
+From:   Andy Shevchenko <andriy.shevchenko@intel.com>
+To:     Nikita Shubin <nikita.shubin@maquefel.me>
+Cc:     Sebastian Reichel <sre@kernel.org>, linux-kernel@vger.kernel.org,
+        linux-pm@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [PATCH v6 06/40] power: reset: Add a driver for the ep93xx reset
+Message-ID: <ZXnv8zwHYHS7co2G@smile.fi.intel.com>
+References: <20231212-ep93xx-v6-0-c307b8ac9aa8@maquefel.me>
+ <20231212-ep93xx-v6-6-c307b8ac9aa8@maquefel.me>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231212-ep93xx-v6-6-c307b8ac9aa8@maquefel.me>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Coding style issue, checkpatch Avoid CamelCase,
-rename it. HTOnAssocRsp -> ht_on_assoc_rsp
+On Tue, Dec 12, 2023 at 11:20:23AM +0300, Nikita Shubin wrote:
+> Implement the reset behaviour of the various EP93xx SoCS
+> in drivers/power/reset.
+> 
+> It used to be located in arch/arm/mach-ep93xx.
 
-Signed-off-by: Gary Rookard <garyrookard@fastmail.org>
----
- drivers/staging/rtl8192e/rtl819x_HTProc.c | 2 +-
- drivers/staging/rtl8192e/rtllib.h         | 2 +-
- drivers/staging/rtl8192e/rtllib_softmac.c | 2 +-
- 3 files changed, 3 insertions(+), 3 deletions(-)
+...
 
-diff --git a/drivers/staging/rtl8192e/rtl819x_HTProc.c b/drivers/staging/rtl8192e/rtl819x_HTProc.c
-index 4c99e2db97d7..8d07e5caa2b8 100644
---- a/drivers/staging/rtl8192e/rtl819x_HTProc.c
-+++ b/drivers/staging/rtl8192e/rtl819x_HTProc.c
-@@ -441,7 +441,7 @@ void ht_set_connect_bw_mode(struct rtllib_device *ieee,
- 			enum ht_channel_width bandwidth,
- 			enum ht_extchnl_offset Offset);
- 
--void HTOnAssocRsp(struct rtllib_device *ieee)
-+void ht_on_assoc_rsp(struct rtllib_device *ieee)
- {
- 	struct rt_hi_throughput *ht_info = ieee->ht_info;
- 	struct ht_capab_ele *pPeerHTCap = NULL;
-diff --git a/drivers/staging/rtl8192e/rtllib.h b/drivers/staging/rtl8192e/rtllib.h
-index ff7fef68e309..f756395b9bed 100644
---- a/drivers/staging/rtl8192e/rtllib.h
-+++ b/drivers/staging/rtl8192e/rtllib.h
-@@ -1760,7 +1760,7 @@ void ht_construct_capability_element(struct rtllib_device *ieee,
- 				  u8 isEncrypt, bool bAssoc);
- void ht_construct_rt2rt_agg_element(struct rtllib_device *ieee,
- 				u8 *posRT2RTAgg, u8 *len);
--void HTOnAssocRsp(struct rtllib_device *ieee);
-+void ht_on_assoc_rsp(struct rtllib_device *ieee);
- void HTInitializeHTInfo(struct rtllib_device *ieee);
- void HTInitializeBssDesc(struct bss_ht *pBssHT);
- void HTResetSelfAndSavePeerSetting(struct rtllib_device *ieee,
-diff --git a/drivers/staging/rtl8192e/rtllib_softmac.c b/drivers/staging/rtl8192e/rtllib_softmac.c
-index a6de4db9a9cc..d60bf5870c39 100644
---- a/drivers/staging/rtl8192e/rtllib_softmac.c
-+++ b/drivers/staging/rtl8192e/rtllib_softmac.c
-@@ -1067,7 +1067,7 @@ static void rtllib_associate_complete_wq(void *data)
- 	}
- 	if (ieee->ht_info->current_ht_support && ieee->ht_info->enable_ht) {
- 		netdev_info(ieee->dev, "Successfully associated, ht enabled\n");
--		HTOnAssocRsp(ieee);
-+		ht_on_assoc_rsp(ieee);
- 	} else {
- 		netdev_info(ieee->dev,
- 			    "Successfully associated, ht not enabled(%d, %d)\n",
+> +#include <linux/bits.h>
+
++ container_of.h
+
+> +#include <linux/delay.h>
+
++ errno.h
+
+> +#include <linux/mfd/syscon.h>
+> +#include <linux/notifier.h>
+
+> +#include <linux/platform_device.h>
+
+Should this be the auxiliary one?
+
+> +#include <linux/reboot.h>
+
++ device.h or slab.h where devm_kzalloc() is defined.
+Depends on above dev_printk.h (it's guaranteed by device.h).
+
+> +static const struct auxiliary_device_id ep93xx_reboot_ids[] = {
+> +	{
+> +		.name = "soc_ep93xx.reset-ep93xx",
+> +	},
+> +	{ /* sentinel */ }
+> +};
+> +MODULE_DEVICE_TABLE(auxiliary, ep93xx_reboot_ids);
+
+module.h
+mod_devicetable.h
+
+...
+
+> +static struct auxiliary_driver ep93xx_reboot_driver = {
+> +	.probe		= ep93xx_reboot_probe,
+> +	.id_table	= ep93xx_reboot_ids,
+> +};
+> +module_auxiliary_driver(ep93xx_reboot_driver);
+
+Not seeing the platform_device.h use...
+
 -- 
-2.41.0
+With Best Regards,
+Andy Shevchenko
+
 
