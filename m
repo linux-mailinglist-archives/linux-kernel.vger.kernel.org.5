@@ -2,153 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E35C2810737
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 02:02:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BDE0E810738
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 02:03:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378111AbjLMBCd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 20:02:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55746 "EHLO
+        id S1378107AbjLMBC5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 20:02:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38884 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378099AbjLMBCX (ORCPT
+        with ESMTP id S235284AbjLMBCs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 20:02:23 -0500
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2130F7
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 17:02:27 -0800 (PST)
-Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-dbcbd789ddcso645253276.0
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 17:02:27 -0800 (PST)
+        Tue, 12 Dec 2023 20:02:48 -0500
+Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EAC181AD
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 17:02:46 -0800 (PST)
+Received: by mail-pl1-x631.google.com with SMTP id d9443c01a7336-1d0897e99e0so38196375ad.3
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 17:02:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1702429347; x=1703034147; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Q5lVM/dVKeVFErFd3K5fREWS3rUw2b6FfvKCy8RqIqw=;
-        b=35b7wDiIAe5ALWKl2T7A/ZPjqEPfv8jasQy6+XoPJzR9nnFNYtFZOmRc2FKIa7Ypl8
-         VhOIkJ1MoQ2jwnuLMfmuzXfhCGM5n3kOMIqjIYx4qjwXrSGcqakVwFdiGei/HgxTuWZX
-         HOHT+0wan4r5P9fgiwkVwGX1SZLgv7ZvcewzhoSt72c1KpB375K3O7nZsOLCk1T2KYAD
-         IIXmxTqnSezpsTBHJiUizo9nf0ESrCMEuvRnSbF9Oj+HxkLc7/udGj/KhP2cE0Xk/eN/
-         BlUgpJDBlMqycWDGTRTEzEADMQw9Y5ouPQeCGJ/WsKE93kPvIkb618Uf4/muR+d4CuSG
-         71AA==
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1702429366; x=1703034166; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=hSXCpaBxHdiNua9KDi/vnKPqQf7jzYWRNQ9I/nlItPk=;
+        b=FASaJ/tEZh5YVfVAOcRVXyFcU9y4LzP6E2am6wMNxuS3y7P46+dmxJGuGjDonnvOHQ
+         FCGrrGSu3Z4Ayve+TxRYIrDoS24k14Idc/IbtEQ5rG8ijfwAWXldrekYBHbM8Ic4MkH6
+         y4Gd3kz10fGbOtLa3JAa6arLt8BZLy/uC/eWv59QQgL7xP6QOSrNd1UvAre332CG3nex
+         eMgUom7bVU1fyKn+fjHOVsPgImg/Fuie24RdXGeElWBo5JySYL8VgebYVVFkiaJN/xS5
+         aACIuYz/iwDB0pa+FsA+deh/2Tq9D+0O4geiuv0YVbbd1vncDCcXp5vLTwVA6/wE6Wqx
+         nHdQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702429347; x=1703034147;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Q5lVM/dVKeVFErFd3K5fREWS3rUw2b6FfvKCy8RqIqw=;
-        b=WLVMfkanna2bf5bDOfuXpTjFv8zCx9FMFkrF9mM9gls+Bv2AnSRuVmQr1UmApwHOJ2
-         ul+NXp8P0xIVqk0ZfLpFY5SlYjphSLT5nZLhoDmMcGDDjEblYZvTnuzRzqF7SG+edMhs
-         UvVQt/LV+OkwaovDJiGJZqxxaRQLCUHViZE6003FMoet9qvFuzXimD5VXOPNiFFK8chu
-         TlNeCmYsw3xQC4u7otc/VmQgP4Uy0cy5h3lsa+EDgnOmAI7ddxI/woZCLg43+eBHXXfN
-         lD85LQRnuCTwETrw70beRSVvgbkwT7U+Zc3k3nEhu5+nAFUGGSlp58Zurqt0pC11WfoM
-         oSbg==
-X-Gm-Message-State: AOJu0Ywk/UPAS3n9UsRxO4DtpyTrRG7lSeufWqgsqQ9uWLCQOLE6mt8v
-        kEiJU7UBeCW0oh6+KC2/1y8WsPjPfQ==
-X-Google-Smtp-Source: AGHT+IGr1w0qw3F7kxqazx8LvpOGQye9waZfDeApENdjX5TDzrAeuVg5Q14ZVN024te9phQXIHT74WOGhg==
-X-Received: from rmoar-specialist.c.googlers.com ([fda3:e722:ac3:cc00:2b:7d90:c0a8:45d3])
- (user=rmoar job=sendgmr) by 2002:a05:6902:f10:b0:dbc:b4dc:fdfc with SMTP id
- et16-20020a0569020f1000b00dbcb4dcfdfcmr15137ybb.8.1702429346872; Tue, 12 Dec
- 2023 17:02:26 -0800 (PST)
-Date:   Wed, 13 Dec 2023 01:02:01 +0000
-In-Reply-To: <20231213010201.1802507-1-rmoar@google.com>
-Mime-Version: 1.0
-References: <20231213010201.1802507-1-rmoar@google.com>
-X-Mailer: git-send-email 2.43.0.472.g3155946c3a-goog
-Message-ID: <20231213010201.1802507-6-rmoar@google.com>
-Subject: [PATCH v4 6/6] Documentation: Add debugfs docs with run after boot
-From:   Rae Moar <rmoar@google.com>
-To:     shuah@kernel.org, davidgow@google.com, dlatypov@google.com,
-        brendan.higgins@linux.dev, sadiyakazi@google.com
-Cc:     keescook@chromium.org, arnd@arndb.de,
-        linux-kselftest@vger.kernel.org, linux-arch@vger.kernel.org,
-        kunit-dev@googlegroups.com, linux-kernel@vger.kernel.org,
-        Rae Moar <rmoar@google.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        USER_IN_DEF_DKIM_WL autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        d=1e100.net; s=20230601; t=1702429366; x=1703034166;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=hSXCpaBxHdiNua9KDi/vnKPqQf7jzYWRNQ9I/nlItPk=;
+        b=NuC4m5i3xZ3ory7JbkRjs2IizgAz2EO7qNkc+RRwhQ0r/vq59eK1N+ycFvJxumpCe+
+         +OoTZOCE2rXDDXJB+x5H2bkP8SUxUUZEWp4IBbTGVWIeFtgI7X0iO0RXgmpuF4wBKvYk
+         6dHG6yYNBA/4t5oh/bi0nqk3QuLK4GlTyQPP/lVeACLMs6E2Ff+lZ7psQ+OD7NO3OnJR
+         zPu6LsEBdO2rCQKkTzc8gZ6OSt4NymhCoIWA4WuPF9Lk5FmWPrZhc1VGxViea311yqq3
+         3854ogdcPUOC2BgzzpEDbypCCzL9qxHAjACU5zhDy81mprLNa88T/iZrgFpHTPaNbcoF
+         IK3Q==
+X-Gm-Message-State: AOJu0YxKNNUxMKySn7PycYgxf1tvlqfqdB9/aCbErdiQysTtCzaoDXXW
+        QeOTtDX4SU2WKF3i8PAGlnoLYw==
+X-Google-Smtp-Source: AGHT+IFum8Ift//4Nra1iOHPfHAzmMHgsPr8kZVXLDYsGQ+bYi9tzjcgY6pGrGjQsCDcWHskZtKrZg==
+X-Received: by 2002:a17:90a:ec07:b0:286:6cc1:279 with SMTP id l7-20020a17090aec0700b002866cc10279mr3175285pjy.68.1702429365928;
+        Tue, 12 Dec 2023 17:02:45 -0800 (PST)
+Received: from debug.ba.rivosinc.com ([64.71.180.162])
+        by smtp.gmail.com with ESMTPSA id 19-20020a17090a1a5300b002802a080d1dsm10638490pjl.16.2023.12.12.17.02.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 Dec 2023 17:02:45 -0800 (PST)
+Date:   Tue, 12 Dec 2023 17:02:43 -0800
+From:   Deepak Gupta <debug@rivosinc.com>
+To:     Palmer Dabbelt <palmer@dabbelt.com>
+Cc:     Paul Walmsley <paul.walmsley@sifive.com>, aou@eecs.berkeley.edu,
+        apatel@ventanamicro.com, ajones@ventanamicro.com,
+        guoren@kernel.org, mchitale@ventanamicro.com, waylingii@gmail.com,
+        greentime.hu@sifive.com, samitolvanen@google.com,
+        Bjorn Topel <bjorn@rivosinc.com>,
+        Conor Dooley <conor.dooley@microchip.com>,
+        jeeheng.sia@starfivetech.com, Heiko Stuebner <heiko@sntech.de>,
+        Evan Green <evan@rivosinc.com>, jszhang@kernel.org,
+        cleger@rivosinc.com, linux-riscv@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1 2/2] riscv: envcfg save and restore on trap entry/exit
+Message-ID: <ZXkCs9ypok5X/Wx2@debug.ba.rivosinc.com>
+References: <20231212235003.2036221-1-debug@rivosinc.com>
+ <mhng-ae72b5fd-358d-48e2-87cf-f571b67afe9e@palmer-ri-x1c9a>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <mhng-ae72b5fd-358d-48e2-87cf-f571b67afe9e@palmer-ri-x1c9a>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Expand the documentation on the KUnit debugfs filesystem on the
-run_manual.rst page.
+On Tue, Dec 12, 2023 at 04:53:48PM -0800, Palmer Dabbelt wrote:
+>On Tue, 12 Dec 2023 15:49:25 PST (-0800), debug@rivosinc.com wrote:
+>>envcfg CSR defines enabling bits for cache management instructions and soon
+>>will control enabling for control flow integrity and pointer masking features.
+>>
+>>Control flow integrity and pointer masking features need to be enabled on per
+>>thread basis. Additionally, I believe cache management instructions need to be
+>>enabled on per thread basis. As an example a seccomped task on riscv may be
+>>restricted to not use cache management instructions
+>
+>Do we have anything in the kernel that actually does that?  Generally 
+>we need some use, I couldn't find any user-mode writable envcfg bits 
+>in any extesions I looked at (admittidly just CFI and pointer 
+>masking), and unless I'm missing something there's no per-thread state 
+>in the kernel.
+>
 
-Add section describing how to access results using debugfs.
+Cache management operations?
+As of now kernel blindly enables that for all the user mode. It will be good if
+that is enabled on per-thread basis. Sure, all threads can have it enabled by
+default. But if strict seccomp is enabled, I would argue that cache management
+operations for that thread to be disabled as is done on other arches. As an
+example x86 disable rdtsc on strict seccomp. 
+RISCV allows this CMO extension and I expect CMO to leverage this (currently it
+doesn't).
 
-Add section describing how to run tests after boot using debugfs.
+I was being opportunistic here so that I can reduce number of patches on CFI
+enabling patchset.
 
-Signed-off-by: Rae Moar <rmoar@google.com>
----
-Changes since v3:
-- Change the introduction of the debugfs section
-- Add detail to not being able to run concurrently or run with init data
-
- Documentation/dev-tools/kunit/run_manual.rst | 51 ++++++++++++++++++--
- 1 file changed, 47 insertions(+), 4 deletions(-)
-
-diff --git a/Documentation/dev-tools/kunit/run_manual.rst b/Documentation/dev-tools/kunit/run_manual.rst
-index e7b46421f247..699d92885075 100644
---- a/Documentation/dev-tools/kunit/run_manual.rst
-+++ b/Documentation/dev-tools/kunit/run_manual.rst
-@@ -49,9 +49,52 @@ loaded.
- 
- The results will appear in TAP format in ``dmesg``.
- 
-+debugfs
-+=======
-+
-+KUnit can be accessed from userspace via the debugfs filesystem (See more
-+information about debugfs at Documentation/filesystems/debugfs.rst).
-+
-+If ``CONFIG_KUNIT_DEBUGFS`` is enabled, the KUnit debugfs filesystem is
-+mounted at /sys/kernel/debug/kunit. You can use this filesystem to perform
-+the following actions.
-+
-+Retrieve Test Results
-+=====================
-+
-+You can use debugfs to retrieve KUnit test results. The test results are
-+accessible from the debugfs filesystem in the following read-only file:
-+
-+.. code-block :: bash
-+
-+	/sys/kernel/debug/kunit/<test_suite>/results
-+
-+The test results are printed in a KTAP document. Note this document is separate
-+to the kernel log and thus, may have different test suite numbering.
-+
-+Run Tests After Kernel Has Booted
-+=================================
-+
-+You can use the debugfs filesystem to trigger built-in tests to run after
-+boot. To run the test suite, you can use the following command to write to
-+the ``/sys/kernel/debug/kunit/<test_suite>/run`` file:
-+
-+.. code-block :: bash
-+
-+	echo "any string" > /sys/kernel/debugfs/kunit/<test_suite>/run
-+
-+As a result, the test suite runs and the results are printed to the kernel
-+log.
-+
-+However, this feature is not available with KUnit suites that use init data,
-+because init data may have been discarded after the kernel boots. KUnit
-+suites that use init data should be defined using the
-+kunit_test_init_section_suites() macro.
-+
-+Also, you cannot use this feature to run tests concurrently. Instead a test
-+will wait to run until other tests have completed or failed.
-+
- .. note ::
- 
--	If ``CONFIG_KUNIT_DEBUGFS`` is enabled, KUnit test results will
--	be accessible from the ``debugfs`` filesystem (if mounted).
--	They will be in ``/sys/kernel/debug/kunit/<test_suite>/results``, in
--	TAP format.
-+	For test authors, to use this feature, tests will need to correctly initialise
-+	and/or clean up any data, so the test runs correctly a second time.
--- 
-2.43.0.472.g3155946c3a-goog
-
+Will it be okay if I revise this patch to include with a usecase to restrict CMO
+(say for case of strict seccomp on risc-v)?
