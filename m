@@ -2,191 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 110988115EE
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 16:16:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9638D811696
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 16:27:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442470AbjLMPQg convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 13 Dec 2023 10:16:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36998 "EHLO
+        id S1442231AbjLMP1a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 10:27:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39764 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1442256AbjLMPQe (ORCPT
+        with ESMTP id S1442722AbjLMPZk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 10:16:34 -0500
-Received: from mail-oo1-f50.google.com (mail-oo1-f50.google.com [209.85.161.50])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 728D8F4;
-        Wed, 13 Dec 2023 07:16:40 -0800 (PST)
-Received: by mail-oo1-f50.google.com with SMTP id 006d021491bc7-58dd5193db4so375863eaf.1;
-        Wed, 13 Dec 2023 07:16:40 -0800 (PST)
+        Wed, 13 Dec 2023 10:25:40 -0500
+Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E02A2170E
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 07:25:19 -0800 (PST)
+Received: by mail-ej1-x632.google.com with SMTP id a640c23a62f3a-a22f59c6ae6so136638266b.1
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 07:25:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1702481118; x=1703085918; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=IFRmR5aw7jYs0R06huL/PXrkIxEyHWBggBrJG8pw4QE=;
+        b=hrs33ROrSc2sU0QNmvaTu3fQxzgR5VWMx4F7VqhIRdA9e6ReJylEgkcCWd12CTzqyr
+         LRyOP0OqbM8U/MOIa1eP0ih0xarwGsFQGSwLxBa9kGDTS2eHg8rXWm6GW8a0hBOhm2QA
+         Mdy0RzI97dJGZTRLaDgZJrQ8qvTKQpd9ULYdI=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702480600; x=1703085400;
+        d=1e100.net; s=20230601; t=1702481118; x=1703085918;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=1iccEYbDvVyN9pgc0//TtmMVBDajem1Jz5v1zpzG1EA=;
-        b=dhrsHBf19NrqrbQBDRXZ2Q8+DGmLl7MYv6yT/6fMF93x0BVrkvXuhyTafO3M9Eo9m6
-         X1EOd36CAa7zg5yiVyxAEnj7pMgdysSLAWays1tt1RBgkIbE0kPsmqHT6KWrBahCsy0t
-         zZwKgFZHTyjmAQZo5mjckKhhR+u/aj3ymZRaj1MQp0oDAT3XUPtdazr/e1R3N+KEPjQF
-         a5CzkFd26Y4VAL9FJlvPhXQtBE71PsJLpgJUYKH0EcQgf6TTxtnMJJrJQGUTePH8R0M3
-         ej4WKnxwJwXr4FEFgkZWKyJ0L8v9dUrwjEijrVTb23y7dEMBW8RF0vaMpMSmGPkRSGQT
-         br9w==
-X-Gm-Message-State: AOJu0YxJOFVR6KHjaYarWPOHwaTcod6qrlwCMj3p4pBI3R34+jbw64ae
-        nDN+veGhT51gNKqF9z2V1s2xag2yUB7sIR8TOEQ=
-X-Google-Smtp-Source: AGHT+IE2ETE46dqDQ6JKz6VLoeKTvI19yXQTVCEhxSJl1SYkxr2CBvdQ1IgSntlBXqYcyjH7H3kk5KMEv7d99MSzDhE=
-X-Received: by 2002:a05:6871:892:b0:203:1727:c6b with SMTP id
- r18-20020a056871089200b0020317270c6bmr3244904oaq.5.1702480599618; Wed, 13 Dec
- 2023 07:16:39 -0800 (PST)
+        bh=IFRmR5aw7jYs0R06huL/PXrkIxEyHWBggBrJG8pw4QE=;
+        b=MZ541cOt7SB9DT3oBuSKoaVIB13LpqTYXdyBCpJCSSl5G6W3T5rQtV3PPgTp2Kg37t
+         TTUjnNEpK56sDzpbqaeZmlvJ0mrAmKAZHdgSEmpZRHFm1XYajRvyvyYhwwzmkOGMSDJP
+         D60HUeCEijgkvORFbmQWUeJmf1GhxZ4M8P41pEPhCQH+aSdK3RpjN1PalGRVX9MImtRW
+         yELYbZDLtkntke3YFlbjwud9C4jCuXijpE0xb1gXNIidurnfQ+2oqWRBgnCm2TD6WGGj
+         Ycujonei7qzv8ue771NagEIVpITm5ZGBJOXgvXF7KEIeOPlK4CGbHhcUA28EQ4RH6j/v
+         Jx+g==
+X-Gm-Message-State: AOJu0YyX/NEIALVipbHzErcGr3dgH1/a6K5ah8T15TfkxkhIDx4izQlu
+        U8YqtRk9pHtLCafGfa7Taz3I9BD4/mmQ05SLKcCYcW7J
+X-Google-Smtp-Source: AGHT+IHc/oP5kbuMqKfKY99ABm4qPljJtHWj1AUBeDWr803YBdY22ZOJS2MmsltQL6rsJY2+kDgPxA==
+X-Received: by 2002:a17:907:72d1:b0:a19:d40a:d214 with SMTP id du17-20020a17090772d100b00a19d40ad214mr2715650ejc.224.1702481117908;
+        Wed, 13 Dec 2023 07:25:17 -0800 (PST)
+Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com. [209.85.208.54])
+        by smtp.gmail.com with ESMTPSA id cx7-20020a170907168700b009fc576e26e6sm7842301ejd.80.2023.12.13.07.25.17
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 13 Dec 2023 07:25:17 -0800 (PST)
+Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-54c77d011acso11185a12.1
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 07:25:17 -0800 (PST)
+X-Received: by 2002:a05:600c:3648:b0:3f7:3e85:36a with SMTP id
+ y8-20020a05600c364800b003f73e85036amr401838wmq.7.1702480624929; Wed, 13 Dec
+ 2023 07:17:04 -0800 (PST)
 MIME-Version: 1.0
-References: <20231212221301.12581-1-ansuelsmth@gmail.com> <0e4cee10-4aa4-4979-9841-f1dbd207e0b7@linaro.org>
- <6579bdb2.5d0a0220.1ae22.1f92@mx.google.com> <1788318a-2f65-451e-8d02-4de1bb93df3c@linaro.org>
-In-Reply-To: <1788318a-2f65-451e-8d02-4de1bb93df3c@linaro.org>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Wed, 13 Dec 2023 16:16:28 +0100
-Message-ID: <CAJZ5v0gC0-tN6wAqxiZZLxspYm8TbjXVVZSW=50UY3nFs1qcdw@mail.gmail.com>
-Subject: Re: [PATCH 1/2] thermal: core: add initial support for cold and
- critical_cold trip point
-To:     Daniel Lezcano <daniel.lezcano@linaro.org>
-Cc:     Christian Marangi <ansuelsmth@gmail.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Lukasz Luba <lukasz.luba@arm.com>, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+References: <20231211182036.606660304@linuxfoundation.org> <ZXi9wyS7vjGyUWU8@duo.ucw.cz>
+ <a6af01bf-7785-4531-8514-8e5eb09e207e@roeck-us.net> <ZXliuTqyO_IjlIz7@amd.ucw.cz>
+ <2023121342-wanted-overarch-84a7@gregkh>
+In-Reply-To: <2023121342-wanted-overarch-84a7@gregkh>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Wed, 13 Dec 2023 07:16:52 -0800
+X-Gmail-Original-Message-ID: <CAD=FV=WK52EjYh0nn8e0PEvY5ovUOn9rymnY09B7SQNgUXymPw@mail.gmail.com>
+Message-ID: <CAD=FV=WK52EjYh0nn8e0PEvY5ovUOn9rymnY09B7SQNgUXymPw@mail.gmail.com>
+Subject: Re: RTL8152_INACCESSIBLE was Re: [PATCH 6.1 000/194] 6.1.68-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Pavel Machek <pavel@denx.de>, Guenter Roeck <linux@roeck-us.net>,
+        grundler@chromium.org, davem@davemloft.net, stable@vger.kernel.org,
+        patches@lists.linux.dev, linux-kernel@vger.kernel.org,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
+        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org,
+        allen.lkml@gmail.com
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 13, 2023 at 4:10 PM Daniel Lezcano
-<daniel.lezcano@linaro.org> wrote:
+Hi,
+
+On Wed, Dec 13, 2023 at 12:50=E2=80=AFAM Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
 >
-> On 13/12/2023 15:20, Christian Marangi wrote:
-> > On Wed, Dec 13, 2023 at 03:12:41PM +0100, Daniel Lezcano wrote:
-> >> On 12/12/2023 23:13, Christian Marangi wrote:
-> >>> Add initial support for cold and critical_cold trip point. Many if not
-> >>> all hwmon and thermal device have normally trip point for hot
-> >>> temperature and for cold temperature.
-> >>>
-> >>> Till now only hot temperature were supported. Add support for also cold
-> >>> temperature to permit complete definition of cold trip point in DT.
-> >>>
-> >>> Thermal driver may use these additional trip point to correctly set
-> >>> interrupt for cold temperature values and react based on that with
-> >>> various measure like enabling attached heater, forcing higher voltage
-> >>> and other specialaized peripherals.
-> >>>
-> >>> For hwmon drivers this is needed as currently there is a problem with
-> >>> setting the full operating range of the device for thermal devices
-> >>> defined with hwmon. To better describe the problem, the following
-> >>> example is needed:
-> >>>
-> >>> In the scenario of a simple hwmon with an active trip point declared
-> >>> and a cooling device attached, the hwmon subsystem currently set the
-> >>> min and max trip point based on the single active trip point.
-> >>> Thermal subsystem parse all the trip points and calculate the lowest and
-> >>> the highest trip point and calls the .set_trip of hwmon to setup the
-> >>> trip points.
-> >>>
-> >>> The fact that we currently don't have a way to declare the cold/min
-> >>> temperature values, makes the thermal subsystem to set the low value as
-> >>> -INT_MAX.
-> >>> For hwmon drivers that doesn't use clamp_value and actually reject
-> >>> invalid values for the trip point, this results in the hwmon settings to
-> >>> be rejected.
-> >>>
-> >>> To permit to pass the correct range of trip point, permit to set in DT
-> >>> also cold and critical_cold trip point.
-> >>>
-> >>> Thermal driver may also define .cold and .critical_cold to act on these
-> >>> trip point tripped and apply the required measure.
-> >>
-> >> Agree with the feature but we need to clarify the semantic of the trip
-> >> points first. What actions do we expect for them in order to have like a
-> >> mirror reflection of the existing hot trip points.
-> >>
-> >> What action do you expect with:
-> >>
-> >>   - 'cold' ?
-> >>
-> >>   - 'critical_cold' ?
-> >>
-> >>
+> On Wed, Dec 13, 2023 at 08:52:25AM +0100, Pavel Machek wrote:
+> > Hi!
 > >
-> > This is more of a sensible topic but I think it's the thermal driver
-> > that needs to implement these. As said in the commit description,
-> > examples are setting higher voltage from the attached regulator,
-> > enabling some hardware heater.
+> > > > > This is the start of the stable review cycle for the 6.1.68 relea=
+se.
+> > > > > There are 194 patches in this series, all will be posted as a res=
+ponse
+> > > > > to this one.  If anyone has any issues with these being applied, =
+please
+> > > > > let me know.
+> > > >
+> > > >
+> > > > > Douglas Anderson <dianders@chromium.org>
+> > > > >      r8152: Add RTL8152_INACCESSIBLE to r8153_aldps_en()
+> > > > >
+> > > > > Douglas Anderson <dianders@chromium.org>
+> > > > >      r8152: Add RTL8152_INACCESSIBLE to r8153_pre_firmware_1()
+> > > > >
+> > > > > Douglas Anderson <dianders@chromium.org>
+> > > > >      r8152: Add RTL8152_INACCESSIBLE to r8156b_wait_loading_flash=
+()
+> > > > >
+> > > > > Douglas Anderson <dianders@chromium.org>
+> > > > >      r8152: Add RTL8152_INACCESSIBLE checks to more loops
+> > > > >
+> > > > > Douglas Anderson <dianders@chromium.org>
+> > > > >      r8152: Rename RTL8152_UNPLUG to RTL8152_INACCESSIBLE
+> > > >
+> > > > Central patch that actually fixes something is:
+> > > >
+> > > > commit d9962b0d42029bcb40fe3c38bce06d1870fa4df4
+> > > > Author: Douglas Anderson <dianders@chromium.org>
+> > > > Date:   Fri Oct 20 14:06:59 2023 -0700
+> > > >
+> > > >      r8152: Block future register access if register access fails
+> > > >
+> > > > ...but we don't have that in 6.1. So we should not need the rest,
+> > > > either.
+> > > >
+> > >
+> > > Also, the missing patch is fixed subsequently by another patch, so it=
+ can not
+> > > be added on its own.
+> >
+> > For the record I'm trying to advocate "drop all patches listed as they
+> > don't fix the bug", not "add more", as this does not meet stable
+> > criteria.
 >
-> That is a warming device. In the thermal framework design it is part of
-> the mitigation device actors like a cooling device. The driver does not
-> have to deal with that.
->
-> > Maybe with critical cold bigger measure can be applied. Currently for
-> > critical trip point we shutdown the system (if the critical ops is not
-> > declared) but with critical_cold condition I think it won't work... I
-> > expect a system in -40°C would just lock up/glitch so rebooting in that
-> > condition won't change a thing...
->
->  From my POV, a critical trip point is for a too hot or too cold trip
-> point. The temperature should be set before the system will be
-> malfunctioning, so a halt (or reboot if set) should work.
->
-> I'm not in favor of adding more callbacks if we can avoid them. Passing
-> the trip point to the critical callback makes more sense to me.
->
-> > Anyway yes we can define a shutdown by default for that but IMHO it
-> > wouldn't make much sense.
->
-> Why? If the device is about to go to out of the functioning range, then
-> it makes sense to shut it down. IIRC, electric signals lose their
-> stability below the lower bound temperature.
->
-> There is the point about the mitigation to stay above a certain
-> temperature. If the devices do not have any kind a 'warming' device,
-> then an alternative would be to have a generic warming device mirroring
-> the cooling device with a duty cycles at different performance states.
-> With this case, we may need another trip point type for a governor which
-> should handle that.
->
-> So we end up with the question: shall we add trip point types or trip
-> point properties?
->
-> 1. Trip point types
->
->   - active / passive : mitigate
->   - hot : notify userspace
->   - critical : halt by default
->   - cold : do something
->   - cold_crit : do something else with a callback
->
-> 2. Trip point types + property
->
->   - active / passive : mitigate
->     - hot : cool down
->     - cold : warm up
->
->   - hot : notify userspace
->   - cold : notify userspace
->
->   - critical:
->    - hot : shutdown (or callback + trip)
->    - cold : shutdown (or callback + trip)
->
-> That implies there are two models:
->
-> 1. We assume cold / hot trip points are symmetric features of the
-> thermal management. So we do mitigation using governors, if that
-> mitigation fails then we end up with critical actions. A consistent
-> behavior between temperature increase or decrease. From my POV, I prefer
-> this approach because it reflects nicely the functioning range temperature.
+> But the original commit here does say it fixes a bug, see the text of
+> the commits listed above.  So perhaps someone got this all wrong when
+> they wrote the original commits that got merged into 6.7-rc?  Otherwise
+> this seems like they are sane to keep for now, unless the original
+> author says they should be dropped, or someone who can test this driver
+> says something went wrong.
 
-I agree here, FWIW.
+Right. The patches that "add RTL8152_INACCESSIBLE" to more loops are
+bugfixes, but they're not terribly important ones to backport. While
+they technically make sense even on older kernels and could
+conceivably make the older kernels unload the r8152 driver a little
+faster when a device is unplugged, it's not a big deal. On the first
+version of the recent patches I didn't even add a "Fixes" tag for them
+but I was asked to during the review process.
 
-> 2. We handle the cold situation differently by doing a on/off action on
-> a specific device. That is an asymmetric approach.
+The "add RTL8152_INACCESSIBLE" patches become more important with
+commit d9962b0d4202 ("r8152: Block future register access if register
+access fails"). Once you have that it's possible to end up in the
+"INACCESSIBLE" situation in response to normal (ish) error handling
+and thus you want it to be faster.
+
+Based on our experience in ChromeOS, commit d9962b0d4202 ("r8152:
+Block future register access if register access fails") is a pretty
+important fix and I would say it should be backported to stable.
+Certainly we've backported it to our kernels in ChromeOS. In our case
+we made things easier on ourselves by backporting pretty much all
+patches to the r8152 driver.
+
+-Doug
