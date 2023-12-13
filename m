@@ -2,100 +2,240 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E72928106B2
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 01:37:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 91C508106C7
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 01:38:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377878AbjLMAhh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 19:37:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47432 "EHLO
+        id S1377872AbjLMAin (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 19:38:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55568 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377843AbjLMAhg (ORCPT
+        with ESMTP id S1377843AbjLMAil (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 19:37:36 -0500
-Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B82F0B9
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 16:37:42 -0800 (PST)
-Received: by mail-lf1-x135.google.com with SMTP id 2adb3069b0e04-50bce78f145so7318353e87.0
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 16:37:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1702427861; x=1703032661; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=qyawuRNxUOJx4krMuVIPeAGsZD64pCzULSxldkl4c04=;
-        b=so9U7L81tX9wygfCAlf5taDnYOo6Q7aQPEvHp0Xe01TxPXm8X8kwVUsfBzSqyFWAzT
-         mHjbZPjsOw6/Jidc0fgAjoorMoXZvEwQV8iNco6yMbKihaURWWK40L/w/Zw5N3cZwfac
-         /jonttLThDQwgtrOdDV/aTGtPKIcsu6TCsY5sT5jvjQemwgjZSLLJQC7+j4INLzsYAPd
-         saUPO4lXk2jQ6xkaLTdwOw9XSbu4Mb1Q1vRE/CxeM+tWfHEUSqqJgyQC345ZkDQMbY8Z
-         l5gwV+o3lui5K+dIlajk2NHF5YElsE5t79PE+7HCQ8t16IYrQLW/QVMeTGGbQVhp8l+a
-         SO5g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702427861; x=1703032661;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=qyawuRNxUOJx4krMuVIPeAGsZD64pCzULSxldkl4c04=;
-        b=hf7T43H6MXQFBxLvq32NB6G1zaO0+kNQ4vEQCJVf+KSAt6AR/JrNJuhdhUq5vc9Ivz
-         vNQcs1e7a/LtcJj8okG29cpqQLDS0fsB8ao15dJX5+pHBQbLTKrfH5EsWDxsyvgUQR0P
-         64ZAZSznbjNRmCp7Qp4SdV4ww/2astjkB6t3nJBHDMEIVGMs1SlEet4g9/k8xkzVbEDY
-         /X4t3owHHLlShcUIQakwEQoixARDWd+0dLhxxPo8IAhtyOBbX+JEO3BayzFX2BBbmzNC
-         lXzdI5KkDoyvug27HZ/Jw6NDWjEaY7AlxL2PemceO2g8zt5KpW5p7su6KyEWKhWpQNR6
-         xZ1A==
-X-Gm-Message-State: AOJu0Yyto45CEB/xl6My0hqmUENPA8kHzdOAGhi84j1ByZ2vvxk08w7h
-        PJyVW+uzvghPVXY8elEENvCMVg==
-X-Google-Smtp-Source: AGHT+IELJg6xtBV3YwWzHW35+oAMMuqoqq9emUlpwuefa9mMo13YdC5VxvXXbHCtbJlZxVgL/oczQQ==
-X-Received: by 2002:a05:6512:12cb:b0:50d:1a52:7760 with SMTP id p11-20020a05651212cb00b0050d1a527760mr1929464lfg.149.1702427861132;
-        Tue, 12 Dec 2023 16:37:41 -0800 (PST)
-Received: from umbar.unikie.fi ([192.130.178.91])
-        by smtp.gmail.com with ESMTPSA id a4-20020a194f44000000b0050bef1c5a50sm1517467lfk.267.2023.12.12.16.37.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Dec 2023 16:37:40 -0800 (PST)
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-To:     dri-devel@lists.freedesktop.org, Rob Clark <robdclark@gmail.com>
-Cc:     freedreno@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
-        Rob Clark <robdclark@chromium.org>,
-        Abhinav Kumar <quic_abhinavk@quicinc.com>,
-        Sean Paul <sean@poorly.run>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Kuogee Hsieh <quic_khsieh@quicinc.com>,
-        Jessica Zhang <quic_jesszhan@quicinc.com>,
-        Vinod Polimera <quic_vpolimer@quicinc.com>,
-        Kalyan Thota <quic_kalyant@quicinc.com>,
-        Dan Carpenter <dan.carpenter@linaro.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] drm/msm/dpu: Ratelimit framedone timeout msgs
-Date:   Wed, 13 Dec 2023 02:37:34 +0200
-Message-Id: <170242755506.12964.11418268791653188536.b4-ty@linaro.org>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20231211182000.218088-1-robdclark@gmail.com>
-References: <20231211182000.218088-1-robdclark@gmail.com>
+        Tue, 12 Dec 2023 19:38:41 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0E9FB0
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 16:38:47 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6F33FC433C8;
+        Wed, 13 Dec 2023 00:38:46 +0000 (UTC)
+Date:   Tue, 12 Dec 2023 19:39:29 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Linux Trace Kernel <linux-trace-kernel@vger.kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Shuah Khan <shuah@kernel.org>, linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH v2] tracing/selftests: Add test to test max subbuf size
+ with trace_marker
+Message-ID: <20231212193929.63ab2d3a@gandalf.local.home>
+In-Reply-To: <20231213093318.f30d29c5f80fff59571e62a7@kernel.org>
+References: <20231212151632.25c9b67d@gandalf.local.home>
+        <20231213093318.f30d29c5f80fff59571e62a7@kernel.org>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, 13 Dec 2023 09:33:18 +0900
+Masami Hiramatsu (Google) <mhiramat@kernel.org> wrote:
 
-On Mon, 11 Dec 2023 10:19:55 -0800, Rob Clark wrote:
-> When we start getting these, we get a *lot*.  So ratelimit it to not
-> flood dmesg.
+> On Tue, 12 Dec 2023 15:16:32 -0500
+> Steven Rostedt <rostedt@goodmis.org> wrote:
+> 
+> > From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
+> > 
+> > Now that the trace_marker can write up to the max size of the sub buffer.
+> > Add a test to see if it actually can happen.
+> > 
+> > The README is updated to state that the trace_marker writes can be broken
+> > up, and the test checks the README for that statement so that it does not
+> > fail on older kernels that does not support this.  
+> 
+> I think it is better that the feature patch include README update or a separate
+> patch because it identifies the feature is implemented or not.
+> 
+
+No need, my v3 removes all this as I found it will not work with the sub
+buffer resize update.
+
+> > 
+> > If the README does not have the specified update, the test will still test
+> > if all the string is written, as that should work with older kernels.
+> > 
+> > Cc: Shuah Khan <shuah@kernel.org>
+> > Cc: linux-kselftest@vger.kernel.org
+> > Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+> > ---
+> > Changes since v1: https://lore.kernel.org/linux-trace-kernel/20231212135441.0337c3e9@gandalf.local.home/
+> > 
+> > - Fix description as it was a cut and paste from the subbuffer size tests
+> >   that are not added yet.
+> > 
+> >  kernel/trace/trace.c                          |   1 +
+> >  .../ftrace/test.d/00basic/trace_marker.tc     | 112 ++++++++++++++++++
+> >  2 files changed, 113 insertions(+)
+> >  create mode 100755 tools/testing/selftests/ftrace/test.d/00basic/trace_marker.tc
+> > 
+> > diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
+> > index 2f8d59834c00..cbfcdd882590 100644
+> > --- a/kernel/trace/trace.c
+> > +++ b/kernel/trace/trace.c
+> > @@ -5595,6 +5595,7 @@ static const char readme_msg[] =
+> >  	"       delta:   Delta difference against a buffer-wide timestamp\n"
+> >  	"    absolute:   Absolute (standalone) timestamp\n"
+> >  	"\n  trace_marker\t\t- Writes into this file writes into the kernel buffer\n"
+> > +	"\n           May be broken into multiple events based on sub-buffer size.\n"
+> >  	"\n  trace_marker_raw\t\t- Writes into this file writes binary data into the kernel buffer\n"
+> >  	"  tracing_cpumask\t- Limit which CPUs to trace\n"
+> >  	"  instances\t\t- Make sub-buffers with: mkdir instances/foo\n"
+> > diff --git a/tools/testing/selftests/ftrace/test.d/00basic/trace_marker.tc b/tools/testing/selftests/ftrace/test.d/00basic/trace_marker.tc
+> > new file mode 100755
+> > index 000000000000..bf7f6f50c88a
+> > --- /dev/null
+> > +++ b/tools/testing/selftests/ftrace/test.d/00basic/trace_marker.tc
+> > @@ -0,0 +1,112 @@
+> > +#!/bin/sh
+> > +# SPDX-License-Identifier: GPL-2.0
+> > +# description: Basic tests on writing to trace_marker
+> > +# requires: trace_marker
+> > +# flags: instance
+> > +
+> > +get_buffer_data_size() {
+> > +	sed -ne 's/^.*data.*size:\([0-9][0-9]*\).*/\1/p' events/header_page
+> > +}
+> > +
+> > +get_buffer_data_offset() {
+> > +	sed -ne 's/^.*data.*offset:\([0-9][0-9]*\).*/\1/p' events/header_page
+> > +}
+> > +
+> > +get_event_header_size() {
+> > +	type_len=`sed -ne 's/^.*type_len.*:[^0-9]*\([0-9][0-9]*\).*/\1/p' events/header_event`
+> > +	time_len=`sed -ne 's/^.*time_delta.*:[^0-9]*\([0-9][0-9]*\).*/\1/p' events/header_event`
+> > +	array_len=`sed -ne 's/^.*array.*:[^0-9]*\([0-9][0-9]*\).*/\1/p' events/header_event`
+> > +	total_bits=$((type_len+time_len+array_len))
+> > +	total_bits=$((total_bits+7))
+> > +	echo $((total_bits/8))
+> > +}
+> > +
+> > +get_print_event_buf_offset() {
+> > +	sed -ne 's/^.*buf.*offset:\([0-9][0-9]*\).*/\1/p' events/ftrace/print/format
+> > +}
+> > +
+> > +event_header_size=`get_event_header_size`
+> > +print_header_size=`get_print_event_buf_offset`
+> > +
+> > +# Find the README
+> > +README=""
+> > +if [ -f README ]; then
+> > +	README="README"
+> > +# instance?
+> > +elif [ -f ../../README ]; then
+> > +	README="../../README"
+> > +fi
+> > +
+> > +testone=0
+> > +if [ ! -z "$README" ]; then
+> > +	if grep -q  "May be broken into multiple events based on sub-buffer size" $README; then
+> > +		testone=1
+> > +	fi
+> > +fi  
+> 
+> Hmm, this should be a common function if we see this pattern somewhere else.
+
+I remove this in the next version. But yeah, there's a bug in the selftests
+that if a test has an instance flag set, then the requirements will not
+check the README, as the instance has no README.
+
+> 
+> > +
+> > +data_offset=`get_buffer_data_offset`
+> > +
+> > +marker_meta=$((event_header_size+print_header_size))
+> > +
+> > +make_str() {
+> > +        cnt=$1
+> > +	# subtract two for \n\0 as marker adds these
+> > +	cnt=$((cnt-2))
+> > +	printf -- 'X%.0s' $(seq $cnt)
+> > +}
+> > +
+> > +write_buffer() {
+> > +	size=$1
+> > +
+> > +	str=`make_str $size`
+> > +
+> > +	# clear the buffer
+> > +	echo > trace
+> > +
+> > +	# write the string into the marker
+> > +	echo -n $str > trace_marker
+> > +
+> > +	echo $str
+> > +}
+> > +
+> > +test_buffer() {
+> > +
+> > +	size=`get_buffer_data_size`
+> > +	oneline_size=$((size-marker_meta))
+> > +	echo size = $size
+> > +	echo meta size = $marker_meta
+> > +
+> > +	if [ $testone -eq 1 ]; then
+> > +		echo oneline size = $oneline_size
+> > +
+> > +		str=`write_buffer $oneline_size`
+> > +
+> > +		# Should be in one single event
+> > +		new_str=`awk ' /tracing_mark_write:/ { sub(/^.*tracing_mark_write: */,"");printf "%s", $0; exit}' trace`
+> > +
+> > +		if [ "$new_str" != "$str" ]; then
+> > +			exit fail;
+> > +		fi
+> > +	fi  
+> 
+> Or, maybe we can split this part into another testcase.
+
+I removed this anyway. But it may come back in the future if we can get
+dynamically sized trace_seq working.
+
+-- Steve
+
+
+> 
+> > +
+> > +	# Now add a little more the meta data overhead will overflow
+> > +
+> > +	str=`write_buffer $size`
+> > +
+> > +	# Make sure the line was broken
+> > +	new_str=`awk ' /tracing_mark_write:/ { sub(/^.*tracing_mark_write: /,"");printf "%s", $0; exit}' trace`
+> > +
+> > +	if [ "$new_str" = "$str" ]; then
+> > +		exit fail;
+> > +	fi
+> > +
+> > +	# Make sure the entire line can be found
+> > +	new_str=`awk ' /tracing_mark_write:/ { sub(/^.*tracing_mark_write: */,"");printf "%s", $0; }' trace`
+> > +
+> > +	if [ "$new_str" != "$str" ]; then
+> > +		exit fail;
+> > +	fi
+> > +}
+> > +
+> > +test_buffer
+> > +
+> > -- 
+> > 2.42.0
+> >   
 > 
 > 
 
-Applied, thanks!
-
-[1/1] drm/msm/dpu: Ratelimit framedone timeout msgs
-      https://gitlab.freedesktop.org/lumag/msm/-/commit/e37cb117b819
-
-Best regards,
--- 
-Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
