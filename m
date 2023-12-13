@@ -2,124 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DF728113F9
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 15:01:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F1ED8113FB
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 15:01:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235397AbjLMOB0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 09:01:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35792 "EHLO
+        id S1379052AbjLMOBd convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 13 Dec 2023 09:01:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57436 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1442057AbjLMOBE (ORCPT
+        with ESMTP id S1379212AbjLMOBK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 09:01:04 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A962B199D
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 06:00:41 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1C1A6C433C7;
-        Wed, 13 Dec 2023 14:00:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1702476041;
-        bh=uBRmDLreG8WgwNQkvzLPBqQqss2T/ZofeYOVFa+eznA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=MaBOz/47yY6VrRxrv3KKFtukVEZ+DALugU+umNCVqzDhVU9TRoPPiFIp6ki7L9H85
-         +SSElnIH3cjgLrJjtr+W8i5TGHkloO1SPoxHDMtPwN7rgnMdsPs8Je95lVTgYqohyR
-         JqrZYSFXbJEp38k/t+mh2g0yhf4bcVTVKhzt8BhWXEmA+Dp95HZqRoBeVDRrQFdJer
-         vaqixHfU41igB/RuHZQCeqqD00PejJoOR9FbU1fUo6TJxgJ11TH6I5zO5bFGZAsJNH
-         DIhMhseUcZXSIwpFgmoLPWal2mkolYNmSACLQw+G+Y6KkL40k6cbvAwEE3B3ToU/m3
-         +VG3sMai75JfA==
-Date:   Wed, 13 Dec 2023 14:00:32 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     Muhammad Usama Anjum <usama.anjum@collabora.com>
-Cc:     John Hubbard <jhubbard@nvidia.com>,
-        David Hildenbrand <david@redhat.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        akpm@linux-foundation.org, viro@zeniv.linux.org.uk,
-        brauner@kernel.org, shuah@kernel.org, aarcange@redhat.com,
-        lokeshgidra@google.com, peterx@redhat.com, ryan.roberts@arm.com,
-        hughd@google.com, mhocko@suse.com, axelrasmussen@google.com,
-        rppt@kernel.org, willy@infradead.org, Liam.Howlett@oracle.com,
-        jannh@google.com, zhangpeng362@huawei.com, bgeffon@google.com,
-        kaleshsingh@google.com, ngeoffray@google.com, jdduke@google.com,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        kernel-team@android.com, Peter Zijlstra <peterz@infradead.org>
-Subject: Re: [PATCH v6 5/5] selftests/mm: add UFFDIO_MOVE ioctl test
-Message-ID: <c0aa00a2-38a5-42da-9951-64131d936f7e@sirena.org.uk>
-References: <50385948-5eb4-47ea-87f8-add4265933d6@redhat.com>
- <6a34b0c9-e084-4928-b239-7af01c8d4479@sirena.org.uk>
- <CAJuCfpEcbcO0d5WPDHMqiEJws9k_5c30pE-J+E_VxO_fpTf_mw@mail.gmail.com>
- <3240f4b5-081b-4075-851a-7d1cd86f4333@redhat.com>
- <3eadd79c-c02a-495f-92c0-0315046ef59f@nvidia.com>
- <3d22f342-280f-4a44-87f4-8cca291cfce7@sirena.org.uk>
- <e3048458-726e-4b98-b2bf-908ea9066959@nvidia.com>
- <0f97db9c-5b86-4f56-8463-2520fe79f709@sirena.org.uk>
- <f1b0b80a-1cc6-48c4-8a53-0222b3e59c7f@nvidia.com>
- <2e4a719b-f2b3-48db-99db-d96040d78b12@collabora.com>
+        Wed, 13 Dec 2023 09:01:10 -0500
+Received: from mail-yb1-f171.google.com (mail-yb1-f171.google.com [209.85.219.171])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5091CDC;
+        Wed, 13 Dec 2023 06:01:05 -0800 (PST)
+Received: by mail-yb1-f171.google.com with SMTP id 3f1490d57ef6-dbcc63b7c68so1274186276.1;
+        Wed, 13 Dec 2023 06:01:05 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702476064; x=1703080864;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=LMmwUrV5CRxo8tqF2JhkTTOms97Pc/NRUWXWg3QDi0I=;
+        b=t9hy22/LqXxW7CDjRuL+tUmkeA3G0fIoBOAJ1xBVZBaecQnU6XMFbsfwl8rmiLDzbv
+         XI4uzmqDaqkxMA0688hzM5fo2D+OWZv/ctMbwm2PalMcMl27IuvkB2yZSDiqHf2DMuXR
+         KOyLKxnC2iXOjZdonlUjcoGr5TADkMp5V5CXxY76WNSsLRyBS5RKi2Ib1P8j8ujL6iXJ
+         FT86fsePifCYQ2BBelvhBuofVKUgEkf4DxjR9vRPNWfrkEHJ2b6RsIOEuChwVtRuQr67
+         TlIGZxDbnwviesSvgLEBupnKGImBNo3Y9J2+/X542MjVsZa8RJAoUqHACvZ2OEZJzrSp
+         3ZOw==
+X-Gm-Message-State: AOJu0Yxv3lVHAUCbvQq/7+5ZTiYNf0/JK5/fOJFWE4OxEl3xwFNqZu02
+        l4Y2vVq17+WYQQW6jJtsbmzPKzyGTaK8/A==
+X-Google-Smtp-Source: AGHT+IHU5dpCs/G2K+qi63p2PFcNo/f8adtTk2eu8lutu1dnCSYMF2ZPuD1wPSePhTctkUvdXXTm7w==
+X-Received: by 2002:a5b:7c6:0:b0:db5:4dc4:13e6 with SMTP id t6-20020a5b07c6000000b00db54dc413e6mr4897781ybq.32.1702476064311;
+        Wed, 13 Dec 2023 06:01:04 -0800 (PST)
+Received: from mail-yw1-f172.google.com (mail-yw1-f172.google.com. [209.85.128.172])
+        by smtp.gmail.com with ESMTPSA id p13-20020a259e8d000000b00da082362238sm3971826ybq.0.2023.12.13.06.01.03
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 13 Dec 2023 06:01:03 -0800 (PST)
+Received: by mail-yw1-f172.google.com with SMTP id 00721157ae682-5df49931b4eso46933187b3.0;
+        Wed, 13 Dec 2023 06:01:03 -0800 (PST)
+X-Received: by 2002:a0d:cb0c:0:b0:5e2:bd18:b253 with SMTP id
+ n12-20020a0dcb0c000000b005e2bd18b253mr888130ywd.24.1702476063304; Wed, 13 Dec
+ 2023 06:01:03 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="/XZEbL4J1kAPYGOF"
-Content-Disposition: inline
-In-Reply-To: <2e4a719b-f2b3-48db-99db-d96040d78b12@collabora.com>
-X-Cookie: One size fits all.
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20231207070700.4156557-1-claudiu.beznea.uj@bp.renesas.com> <20231207070700.4156557-10-claudiu.beznea.uj@bp.renesas.com>
+In-Reply-To: <20231207070700.4156557-10-claudiu.beznea.uj@bp.renesas.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Wed, 13 Dec 2023 15:00:52 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdU+7RsiKhCidRJaCk_wMQbovqbGtn0qF63RzXEq3SQVWw@mail.gmail.com>
+Message-ID: <CAMuHMdU+7RsiKhCidRJaCk_wMQbovqbGtn0qF63RzXEq3SQVWw@mail.gmail.com>
+Subject: Re: [PATCH v2 09/11] arm64: renesas: r9a08g045: Add the Ethernet nodes
+To:     Claudiu <claudiu.beznea@tuxon.dev>
+Cc:     s.shtylyov@omp.ru, davem@davemloft.net, edumazet@google.com,
+        kuba@kernel.org, pabeni@redhat.com, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        magnus.damm@gmail.com, mturquette@baylibre.com, sboyd@kernel.org,
+        linus.walleij@linaro.org, prabhakar.mahadev-lad.rj@bp.renesas.com,
+        biju.das.jz@bp.renesas.com, linux-renesas-soc@vger.kernel.org,
+        netdev@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
+        linux-gpio@vger.kernel.org,
+        Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Dec 7, 2023 at 8:08 AM Claudiu <claudiu.beznea@tuxon.dev> wrote:
+> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+>
+> Add the Ethernet nodes available on RZ/G3S (R9A08G045).
+>
+> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+> ---
+>
+> Changes in v2:
+> - added phy-mode = "rgmii" and #address-cells, #size-cells for both
+>   Ethernet nodes
 
---/XZEbL4J1kAPYGOF
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+i.e. will queue in renesas-devel for v6.8.
 
-On Wed, Dec 13, 2023 at 08:58:06AM +0500, Muhammad Usama Anjum wrote:
-> On 12/13/23 7:14 AM, John Hubbard wrote:
+Gr{oetje,eeting}s,
 
-> > Oh, this sounds like it would work nicely. No more "make headers"
-> > required (hooray!). Instead, the new approach would be "selftests are
-> > allowed to include from tools/include", and then we can just start
-> > copying the files that we need to that location, and gradually fix up
-> > all the selftests.
+                        Geert
 
-> No, this wouldn't work.
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-Note that we have a bunch of selftests (at least arm64, hid, kvm, rseq
-and sgx from a quick grep) which already use and rely on the headers in
-tools/include.
-
-> * The selftests are applications which include default header files. The
-> application don't care from where the header files are picked up at compile
-> time. We should be able to build the application on normal system with
-> latest headers installed without any changes.
-
-I think there is much less interest in building out of the kernel than
-there is in avoiding having to handle random userspace headers...
-
-> * The header files cannot be included directly as they need to be processed
-> first which is done by `make headers`. Here is a diff between kernel fs.h
-> and processed header file to be used by applications:
-
-I guess that's another reason why the sync is done manually.  There are
-also a bunch of files in tools/include that are just completely
-different implementations of things (not just uapi).
-
---/XZEbL4J1kAPYGOF
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmV5uP8ACgkQJNaLcl1U
-h9B4Agf+MNb0FxSD5g83dGXjn3wfAIHYImULMzBSAyVwk+xbUBcF5RwuyI/Up6pe
-jF7sirB8JObQgIDvOntBvbLGxjnrbKVZmrnnrz3IZLy9coVcvydGocN2dgTK/U63
-0n4vbXdOYqavpATUodi9QyrB+1peaITg+DvOBR95uoORBc94VM7bXVxGgD61oZ0N
-ZElj6Uuiegt+pu4yzSnCsNrXvvIUk1y1jl59tH1NV+WAnoHsDkNJReua3pUtYU3c
-MUyU+EkGOUI256iUVCafNaBqkbWvy070pa/QToV9OI+js6AF5//Yj0LR1LtZprjq
-q371z9Rj+1s+jACuAtuq8ELOJrN3QQ==
-=PCP4
------END PGP SIGNATURE-----
-
---/XZEbL4J1kAPYGOF--
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
