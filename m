@@ -2,99 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0682381125B
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 14:02:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 807E981125A
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 14:02:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379105AbjLMNCr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 08:02:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41462 "EHLO
+        id S1379047AbjLMNCk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 08:02:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59384 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379083AbjLMNCn (ORCPT
+        with ESMTP id S1379027AbjLMNCj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 08:02:43 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1B90125
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 05:02:39 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 57CCFC433C8;
-        Wed, 13 Dec 2023 13:02:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1702472559;
-        bh=oucTferbO8z09uzRC+QN/9ilQDasa9VaUoOZvOLBlL4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=qMGDvekulMiLgPyCQAmQWR/eYvFAOux9M1LrBgXpjuHKi5GdnupdLCcjMmHeANAZw
-         NDWN1eQkHCW2Sw+pfLuqq2pfj/JcgsDdVtA22OmSnHNJxYpw+yR1FExTe1nE8Z/wZs
-         akM7+FPs9zpIm5sPjIcHPvfZPn+4KlneeGqG3rOB6Je1SWsz2emIBCRZySFkAzIPeA
-         xA8qRf8Vl62kxL6qdWQBsLnN2r/BrbU0YpgQxCdD/1rH6ftoAJoKvEHvCU6oG3Umxf
-         wyUryDjEKQZG4E1FVlzWMllV3UPLfXuBS3NdhfbgQtbEkbPuCgd+tR20WHysGMMqwt
-         MUW7KhdPyiXlw==
-Date:   Wed, 13 Dec 2023 14:02:31 +0100
-From:   Christian Brauner <brauner@kernel.org>
-To:     John Garry <john.g.garry@oracle.com>
-Cc:     axboe@kernel.dk, kbusch@kernel.org, hch@lst.de, sagi@grimberg.me,
-        jejb@linux.ibm.com, martin.petersen@oracle.com, djwong@kernel.org,
-        viro@zeniv.linux.org.uk, dchinner@redhat.com, jack@suse.cz,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-nvme@lists.infradead.org, linux-xfs@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, tytso@mit.edu, jbongio@google.com,
-        linux-scsi@vger.kernel.org, ming.lei@redhat.com,
-        jaswin@linux.ibm.com, bvanassche@acm.org
-Subject: Re: [PATCH v2 04/16] fs: Increase fmode_t size
-Message-ID: <20231213-gurte-beeren-e71ff21c3c03@brauner>
-References: <20231212110844.19698-1-john.g.garry@oracle.com>
- <20231212110844.19698-5-john.g.garry@oracle.com>
+        Wed, 13 Dec 2023 08:02:39 -0500
+Received: from outbound-smtp61.blacknight.com (outbound-smtp61.blacknight.com [46.22.136.249])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85C5B10C8
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 05:02:35 -0800 (PST)
+Received: from mail.blacknight.com (pemlinmail05.blacknight.ie [81.17.254.26])
+        by outbound-smtp61.blacknight.com (Postfix) with ESMTPS id DA549FAC6E
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 13:02:33 +0000 (GMT)
+Received: (qmail 17601 invoked from network); 13 Dec 2023 13:02:33 -0000
+Received: from unknown (HELO mail.blacknight.com) (mgorman@techsingularity.net@[81.17.254.22])
+  by 81.17.254.26 with ESMTPA; 13 Dec 2023 13:02:33 -0000
+Date:   Wed, 13 Dec 2023 13:02:31 +0000
+From:   Mel Gorman <mgorman@techsingularity.net>
+To:     Barry Song <21cnbao@gmail.com>
+Cc:     akpm@linux-foundation.org, baolin.wang@linux.alibaba.com,
+        linux-mm@kvack.org, david@redhat.com, hannes@cmpxchg.org,
+        huzhanyuan@oppo.com, linux-kernel@vger.kernel.org,
+        shikemeng@huaweicloud.com, v-songbaohua@oppo.com,
+        willy@infradead.org
+Subject: Re: [PATCH] mm: compaction: avoid fast_isolate_freepages blindly
+ choose improper pageblock
+Message-ID: <20231213130231.ksban2ovad4q4rxj@techsingularity.net>
+References: <20231206110054.61617-1-v-songbaohua@oppo.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=iso-8859-15
 Content-Disposition: inline
-In-Reply-To: <20231212110844.19698-5-john.g.garry@oracle.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20231206110054.61617-1-v-songbaohua@oppo.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 12, 2023 at 11:08:32AM +0000, John Garry wrote:
-> Currently all bits are being used in fmode_t.
+On Thu, Dec 07, 2023 at 12:00:54AM +1300, Barry Song wrote:
+> Testing shows fast_isolate_freepages can blindly choose an unsuitable
+> pageblock from time to time particularly while the min mark is used
+> from XXX path:
+>  if (!page) {
+>          cc->fast_search_fail++;
+>          if (scan_start) {
+>                  /*
+>                   * Use the highest PFN found above min. If one was
+>                   * not found, be pessimistic for direct compaction
+>                   * and use the min mark.
+>                   */
+>                  if (highest >= min_pfn) {
+>                          page = pfn_to_page(highest);
+>                          cc->free_pfn = highest;
+>                  } else {
+>                          if (cc->direct_compaction && pfn_valid(min_pfn)) { /* XXX */
+>                                  page = pageblock_pfn_to_page(min_pfn,
+>                                          min(pageblock_end_pfn(min_pfn),
+>                                              zone_end_pfn(cc->zone)),
+>                                          cc->zone);
+>                                  cc->free_pfn = min_pfn;
+>                          }
+>                  }
+>          }
+>  }
 > 
-> To allow for further expansion, increase from unsigned int to unsigned
-> long.
+> The reason is that no code is doing any check on the min_pfn
+>  min_pfn = pageblock_start_pfn(cc->free_pfn - (distance >> 1));
 > 
-> Since the dma-buf driver prints the file->f_mode member, change the print
-> as necessary to deal with the larger size.
+> In contrast, slow path of isolate_freepages() is always skipping unsuitable
+> pageblocks in a decent way.
 > 
-> Signed-off-by: John Garry <john.g.garry@oracle.com>
-> ---
->  drivers/dma-buf/dma-buf.c | 2 +-
->  include/linux/types.h     | 2 +-
->  2 files changed, 2 insertions(+), 2 deletions(-)
+> This issue doesn't happen quite often. When running 25 machines with 16GiB
+> memory for one night, most of them can hit this unexpected code path.
+> However the frequency isn't like many times per second. It might be one
+> time in a couple of hours. Thus, it is very hard to measure the visible
+> performance impact in my machines though the affection of choosing the
+> unsuitable migration_target should be negative in theory.
 > 
-> diff --git a/drivers/dma-buf/dma-buf.c b/drivers/dma-buf/dma-buf.c
-> index 21916bba77d5..a5227ae3d637 100644
-> --- a/drivers/dma-buf/dma-buf.c
-> +++ b/drivers/dma-buf/dma-buf.c
-> @@ -1628,7 +1628,7 @@ static int dma_buf_debug_show(struct seq_file *s, void *unused)
->  
->  
->  		spin_lock(&buf_obj->name_lock);
-> -		seq_printf(s, "%08zu\t%08x\t%08x\t%08ld\t%s\t%08lu\t%s\n",
-> +		seq_printf(s, "%08zu\t%08x\t%08lx\t%08ld\t%s\t%08lu\t%s\n",
->  				buf_obj->size,
->  				buf_obj->file->f_flags, buf_obj->file->f_mode,
->  				file_count(buf_obj->file),
-> diff --git a/include/linux/types.h b/include/linux/types.h
-> index 253168bb3fe1..49c754fde1d6 100644
-> --- a/include/linux/types.h
-> +++ b/include/linux/types.h
-> @@ -153,7 +153,7 @@ typedef u32 dma_addr_t;
->  
->  typedef unsigned int __bitwise gfp_t;
->  typedef unsigned int __bitwise slab_flags_t;
-> -typedef unsigned int __bitwise fmode_t;
-> +typedef unsigned long __bitwise fmode_t;
+> I feel it's still worth fixing this to at least make the code theoretically
+> self-explanatory as it is quite odd an unsuitable migration_target can be
+> still migration_target.
+> 
+> Reported-by: Zhanyuan Hu <huzhanyuan@oppo.com>
+> Signed-off-by: Barry Song <v-songbaohua@oppo.com>
 
-As Jan said, that's likely a bad idea. There's a bunch of places that
-assume fmode_t is 32bit. So not really a change we want to make if we
-can avoid it.
+Acked-by: Mel Gorman <mgorman@techsingularity.net>
+
+-- 
+Mel Gorman
+SUSE Labs
