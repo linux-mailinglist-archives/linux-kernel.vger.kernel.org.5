@@ -2,173 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5141D81192A
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 17:23:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F41A081192D
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 17:23:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233328AbjLMQXf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 11:23:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50114 "EHLO
+        id S233475AbjLMQXp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 11:23:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44518 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229671AbjLMQXd (ORCPT
+        with ESMTP id S233642AbjLMQXm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 11:23:33 -0500
-Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC2E083
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 08:23:39 -0800 (PST)
-Received: by mail-wm1-x329.google.com with SMTP id 5b1f17b1804b1-40c2c5a8150so65405425e9.2
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 08:23:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1702484613; x=1703089413; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=gsdEQAXsgtznujqAEAvqQItQWpAu92BPfR9s82X+6vY=;
-        b=R522+d3Vdq5SRgszO+0NY/X9khJe276EPp3QT1/8ByctFNrKh/p3CCFy73yNVRce4s
-         4RCW+PEO0TUeGAwhDXTO0tmODWmVS4FubQFd1VCuvvJLonZtFIs3yfonk4BFdx3GfTuy
-         Nwml/ounwUGKjPtJP9Pq/Ehz87by623RPjtXI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702484613; x=1703089413;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=gsdEQAXsgtznujqAEAvqQItQWpAu92BPfR9s82X+6vY=;
-        b=cKx8wYIrmWogHREcHSeaE1sOrvDWuzFkpwvqnpjyXdl1LLa3n0THn81TNGcT6u4tLL
-         v5/aFEnDhUFHZGaY7Ocu49ogHAoYDpXizz5lDJj4WOhvyLV3pJcqpH+tIioo9mcZtraK
-         IEhQQpiccTFKcgrVU0BzSkCjjrHmFsfSfCcQpRCEEnTlO4CjC8/8RIznMIoKelsjGC13
-         zR8xoL5Y/J7FFSLdLC/1U9JD/SWBUJf9T/040DgacjNVnT/OrYCUYBsXqobCO/Tspw65
-         IviroS2NWopDWV6fvc9hO8kgmNjYssRp7HbP5BQNsCapN+V8MRNJK7DC6DDwyuiGDo92
-         pfbg==
-X-Gm-Message-State: AOJu0YyKgNiY1g1fvGFHP89zIjyNyXeaBgh1n6ogFOLg1U/Nr0BBsm4L
-        QH5EgXbPFw77ugiy6Xy+7YVGbePB2zi4JYtNNZi50Qax
-X-Google-Smtp-Source: AGHT+IEXztIrijW8cjoCLpw51Bf3U9o6ivfyf7EDIi41Z8pjSc+og3hPBIujuVpvYFPUPqNTq928cA==
-X-Received: by 2002:a05:600c:501e:b0:40b:5e21:ec0d with SMTP id n30-20020a05600c501e00b0040b5e21ec0dmr4377342wmr.63.1702484612874;
-        Wed, 13 Dec 2023 08:23:32 -0800 (PST)
-Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com. [209.85.128.50])
-        by smtp.gmail.com with ESMTPSA id vb2-20020a170907d04200b00a1f72df5617sm7655076ejc.141.2023.12.13.08.23.31
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 13 Dec 2023 08:23:32 -0800 (PST)
-Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-40c32bea30dso74785e9.0
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 08:23:31 -0800 (PST)
-X-Received: by 2002:a05:600c:5113:b0:40b:4221:4085 with SMTP id
- o19-20020a05600c511300b0040b42214085mr424914wms.1.1702484610953; Wed, 13 Dec
- 2023 08:23:30 -0800 (PST)
+        Wed, 13 Dec 2023 11:23:42 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85E67DD
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 08:23:47 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4DE61C433CA;
+        Wed, 13 Dec 2023 16:23:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1702484627;
+        bh=XFSkcVLPkIh+/24c0S1bkj+e0UjVJVCIdZQ/7DuBXHo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=kq2WMYzG0Cksn/leFF/HBWvYW1ptopPBajj6mSVWswXhL8w+5UoXhWV5C2kFrblWY
+         3f8JvxOJXj6P293FCK26KRbYf0CIpGgI7QdcsNTohxKCQKxIC5nVYTaSbEl3uBj/p7
+         WDDltBGUsUGIt2vmrG0KIHTi4/qOM9sxUMA+fYFwr2Xgfr0Wb92ZU5AWGtb4mGH3dS
+         7qnhPVJV+u8lorOfGGYB9eT6OyrIJJFTy9CLtc2ls/6wtPhZoaVF7gU3ZJ/Q5KDPUU
+         KAsX6552wsIzfj/Noo0xB7/ulMgC5zZJK4HhT0Dgt96AROoYf5UQeI04LJhsENtQUb
+         Pa2lnInOvHS7w==
+Date:   Wed, 13 Dec 2023 16:23:43 +0000
+From:   Conor Dooley <conor@kernel.org>
+To:     Mike Looijmans <mike.looijmans@topic.nl>
+Cc:     devicetree@vger.kernel.org, linux-iio@vger.kernel.org,
+        Conor Dooley <conor+dt@kernel.org>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] dt-bindings: iio: adc: ti-ads1298: Add driver
+Message-ID: <20231213-diffuser-disposal-ea21bbce8b64@spud>
+References: <1b153bce-a66a-45ee-a5c6-963ea6fb1c82.949ef384-8293-46b8-903f-40a477c056ae.618139b3-8cb2-4e4c-9283-9e3787c70105@emailsignatures365.codetwo.com>
+ <20231213094722.31547-1-mike.looijmans@topic.nl>
 MIME-Version: 1.0
-References: <20231207081801.4049075-1-treapking@chromium.org>
- <20231207081801.4049075-5-treapking@chromium.org> <CAD=FV=U6M5rpQXmjC+iGf0BGtiyjRAAcMfo4Fr3pDyYVp3m4aQ@mail.gmail.com>
- <fctpvshu5ychxketsf35jfg2qzi6i3nfup5hy7r7hzmmbpd2j4@xmsik3cycjlj>
- <CAD=FV=V=K9L=bJiNvFJ+K_DHUTPxA4WtukXA+E_VW6uihE8kdQ@mail.gmail.com> <cplpgkl5b3nrtdhxauleep6zo2rwic7h7fiwr4wnvrwk6uzxgw@dcgknug2gsaa>
-In-Reply-To: <cplpgkl5b3nrtdhxauleep6zo2rwic7h7fiwr4wnvrwk6uzxgw@dcgknug2gsaa>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Wed, 13 Dec 2023 08:23:11 -0800
-X-Gmail-Original-Message-ID: <CAD=FV=UiF9d5C=da64dj_JnGWuO_vGUg1hgzXSQd0x+pFpe23w@mail.gmail.com>
-Message-ID: <CAD=FV=UiF9d5C=da64dj_JnGWuO_vGUg1hgzXSQd0x+pFpe23w@mail.gmail.com>
-Subject: Re: [PATCH v2 4/4] drm/panel-edp: Add some panels with conservative timings
-To:     Maxime Ripard <mripard@kernel.org>,
-        Pin-yen Lin <treapking@chromium.org>
-Cc:     Neil Armstrong <neil.armstrong@linaro.org>,
-        Jessica Zhang <quic_jesszhan@quicinc.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>, linux-kernel@vger.kernel.org,
-        Guenter Roeck <groeck@chromium.org>,
-        dri-devel@lists.freedesktop.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="wheiXICN3N+7aHqO"
+Content-Disposition: inline
+In-Reply-To: <20231213094722.31547-1-mike.looijmans@topic.nl>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
 
-On Wed, Dec 13, 2023 at 7:34=E2=80=AFAM Maxime Ripard <mripard@kernel.org> =
-wrote:
->
-> > > > Repeating my comments from v1 here too, since I expect this patch t=
-o
-> > > > sit on the lists for a little while:
-> > > >
-> > > >
-> > > > This is OK w/ me, but it will need time on the mailing lists before
-> > > > landing in case anyone else has opinions.
-> > >
-> > > Generally speaking, I'm not really a fan of big patches that dump
-> > > whatever ChromeOS is doing ...
-> > >
-> > > > Specifical thoughts:
-> > > >
-> > > > * I at least feel fairly confident that this is OK since these pane=
-ls
-> > > > essentially booted without _any_ delays back on the old downstream
-> > > > v4.19 kernel. Presumably the panels just had fairly robust timing
-> > > > controllers and so worked OK, but it's better to get the timing mor=
-e
-> > > > correct.
-> > >
-> > > ... especially since you have to rely on the recollection of engineer=
-s
-> > > involved at the time and you have no real way to test and make things
-> > > clearer anymore, and we have to take patches in that are handwavy "tr=
-ust
-> > > us, it's doing the right thing".
-> > >
-> > > I'd really prefer to have these patches sent as they are found out.
-> >
-> > It's probably not clear enough from the commit message, but this isn't
-> > just a dump from downstream 4.19. What happened was:
-> >
-> > 1. Downstream chromeos-4.19 used the "little white lie" approach. They
-> > all claimed a specific panel's compatible string even though there
-> > were a whole pile of panels out there actually being used. Personally,
-> > this was not something I was ever a fan of (and I wasn't personally
-> > involved in this project), but it was the "state of the art" before
-> > the generic panel-edp. Getting out of the "little white lie" situation
-> > was why I spent so much time on the generic edp-panel solution
-> > upstream.
-> >
-> > 2. These devices have now been uprevved to a newer kernel and I
-> > believe that there were issues seen that necessitated a move to the
-> > proper generic panel-edp code.
-> >
-> > 3. We are now getting field reports from our warning collector about a
-> > whole pile of panels that are falling back to the "conservative"
-> > timings, which means that they turn on/off much more slowly than they
-> > should.
-> >
-> > Pin-yen made an attempt to search for panels data sheets that matched
-> > up with the IDs that came in from the field reports but there were
-> > some panels that he just couldn't find.
-> >
-> > So basically we're stuck. Options:
-> >
-> > 1. Leave customers who have these panels stuck with the hardware
-> > behaving worse than it used to. This is not acceptable to me.
-> >
-> > 2. Land Pin-yen's patch as a downstream-only patch in ChromeOS. This
-> > would solve the problem, but it would make me sad. If anyone ever
-> > wants to take these old laptops and run some other Linux distribution
-> > on them (and there are several that target old Chromebooks) then
-> > they'd be again stuck with old timings.
-> >
-> > 3. Land a patch like this one that at least gets us into not such a bad=
- shape.
-> >
-> > While I don't love this patch (and that's why I made it clear that it
-> > needs to spend time on the list), it seems better than the
-> > alternatives. Do you have a proposal for something else? If not, can
-> > you confirm you're OK with #3 given this explanation? ...and perhaps
-> > more details in the commit message?
->
-> I don't have a specific comment, it was more of a comment about the
-> process itself, if you write down what's above in the commit message ...
+--wheiXICN3N+7aHqO
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Pin-yen: can you take a whack at summarizing some of the above in the
-commit message and sending out a v3?
+On Wed, Dec 13, 2023 at 10:47:21AM +0100, Mike Looijmans wrote:
+> Skeleton driver for the TI ADS1298 medical ADC. This device is
+> typically used for ECG and similar measurements. Supports data
+> acquisition at configurable scale and sampling frequency.
+
+I think the commit subject and body here were accidentally copy-pasted
+=66rom the driver patch. Patches for bindings should avoid talking about
+drivers and focus on the harware (unless we are talking about LEDs or
+motors etc)
+
+>=20
+> Signed-off-by: Mike Looijmans <mike.looijmans@topic.nl>
+>=20
+> ---
+>=20
+>  .../bindings/iio/adc/ti,ads1298.yaml          | 80 +++++++++++++++++++
+>  1 file changed, 80 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/iio/adc/ti,ads1298.=
+yaml
+>=20
+> diff --git a/Documentation/devicetree/bindings/iio/adc/ti,ads1298.yaml b/=
+Documentation/devicetree/bindings/iio/adc/ti,ads1298.yaml
+> new file mode 100644
+> index 000000000000..7a160ba721eb
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/iio/adc/ti,ads1298.yaml
+> @@ -0,0 +1,80 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/iio/adc/ti,ads1298.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Texas Instruments' ads1298 medical ADC chips
+> +
+> +maintainers:
+> +  - Mike Looijmans <mike.looijmans@topic.nl>
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - ti,ads1298
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  spi-cpha: true
+> +
+> +  reset-gpios:
+> +    maxItems: 1
+> +
+> +  avdd-supply:
+> +    description:
+> +      Analog power supply, voltage between AVDD and AVSS. When providing=
+ a
+> +      symmetric +/- 2.5V, the regulator should report 5V.
+> +
+> +  vref-supply:
+> +    description:
+> +      Optional reference voltage. If omitted, internal reference is used,
+> +      depending on analog supply this is 2.4 or 4V.
+
+It may be worth mentioning here what the conditions for the internal
+reference being 2.4 or 4 volts actually are.
+
+> +
+> +  clocks:
+> +    description: Optional 2.048 MHz external source clock on CLK pin
+> +    maxItems: 1
+> +
+> +  clock-names:
+> +    const: clk
+
+Since you have only one clock, having clock-names (especially with a
+name like "clk") is pointless IMO.
+
+Generally though, this patch looks good to me.
+
+Cheers,
+Conor.
+
+> +  interrupts:
+> +    description: Interrupt on DRDY pin, triggers on falling edge
+> +    maxItems: 1
+> +
+> +  label: true
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - avdd-supply
+> +  - interrupts
+> +
+> +allOf:
+> +  - $ref: /schemas/spi/spi-peripheral-props.yaml#
+> +
+> +unevaluatedProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/gpio/gpio.h>
+> +    #include <dt-bindings/interrupt-controller/irq.h>
+> +    spi {
+> +        #address-cells =3D <1>;
+> +        #size-cells =3D <0>;
+> +
+> +        adc@1 {
+> +          reg =3D <1>;
+> +          compatible =3D "ti,ads1298";
+> +          label =3D "ads1298-1-ecg";
+> +          avdd-supply =3D <&reg_iso_5v_a>;
+> +          clock-names =3D "clk";
+> +          clocks =3D <&clk_ads1298>;
+> +          interrupt-parent =3D <&gpio0>;
+> +          interrupts =3D <78 IRQ_TYPE_EDGE_FALLING>;
+> +          spi-max-frequency =3D <20000000>;
+> +          spi-cpha;
+> +        };
+> +    };
+> +...
+> --=20
+> 2.34.1
+>=20
+>=20
+> Met vriendelijke groet / kind regards,
+>=20
+> Mike Looijmans
+> System Expert
+>=20
+>=20
+> TOPIC Embedded Products B.V.
+> Materiaalweg 4, 5681 RJ Best
+> The Netherlands
+>=20
+> T: +31 (0) 499 33 69 69
+> E: mike.looijmans@topic.nl
+> W: www.topic.nl
+>=20
+> Please consider the environment before printing this e-mail
+
+--wheiXICN3N+7aHqO
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZXnajgAKCRB4tDGHoIJi
+0uX4AQDdQsLinMnKQNR0gruAlC6KO76Muuel5q+ksbfjERk0UwD+I7lYJD33yIjB
+9BRsIVetMvFlFztwVEH+OctNqIhFHQs=
+=aemH
+-----END PGP SIGNATURE-----
+
+--wheiXICN3N+7aHqO--
