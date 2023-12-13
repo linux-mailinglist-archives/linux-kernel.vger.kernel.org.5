@@ -2,96 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A06D811095
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 12:54:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C9990811098
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 12:56:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378223AbjLMLy2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 06:54:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45242 "EHLO
+        id S233479AbjLML4H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 06:56:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53822 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377447AbjLMLy0 (ORCPT
+        with ESMTP id S1378838AbjLML4A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 06:54:26 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 784A1CF
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 03:54:33 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 99B40C433C7;
-        Wed, 13 Dec 2023 11:54:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1702468473;
-        bh=uUM1BI4e+q51DrwxVXNbQIaNZ/r3T9IL+Icip7kFUXs=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=oxuGmU3oMSpfC/jgGb3+kgyimmIB63Eb0avxXoZN7zdTEA70EZgfTMmCEhhr8pe8U
-         1dsOSAJp4gh6MwxSkufaQG2VBMMBEtktve/mmbe5pKQ2wTB2OOzU1Zxc8XnmQFuvAP
-         +JkFqWnSYkNW3toseMj9wM4G6k65+Msb8qhV9uA6gcIWFaVXYZJq+1RJ7kNyynqUbH
-         dCm2WvjxBpd1rYE3KUSm884H+4nHSzhheQRcwrC04PiZXSKqYKrmNmFjvZmp+cgoBc
-         p3zOUp1lLqWLDIH63xjcVwJzHFDPN/gSoKw9OPPmVdajKDaQUWO6lc8NM4eVybdlV9
-         8KT+sYRvVRYZg==
-Message-ID: <c41a2243-afd5-48f7-87f9-62f4a482b514@kernel.org>
-Date:   Wed, 13 Dec 2023 12:54:24 +0100
+        Wed, 13 Dec 2023 06:56:00 -0500
+Received: from mail-pg1-f199.google.com (mail-pg1-f199.google.com [209.85.215.199])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D6B8B0
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 03:56:05 -0800 (PST)
+Received: by mail-pg1-f199.google.com with SMTP id 41be03b00d2f7-5ca4ee5b97aso48734a12.1
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 03:56:05 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702468564; x=1703073364;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=72HNi6AbpaEgv+rI78YtWOIoCer2iNuEb00Lz0/QMD4=;
+        b=tEFf7CMgsV9jE1/g7oUb9/m4unsq0P8BxZyJWnfKrK7ZX6k2UkmmwxYfBbBe8Aw/Bv
+         X0tPq3iiJoxvJQ/KcZ3Gie8ZepnP6Xag3UMJycjgjBmeqs0m7FuNEGq/MkMFUKhBPq+e
+         CvibBObHfJ0ZemMhgR1592UR39ktOtiulr19x8KzNUXVD9bbGlj9x2Yp0lo0moCxpQ7U
+         buM7ET9dAQsg7iApIrkMT2n4EwHXiB4ivtUaBgmqrG8zr3UFwBcTWYmMYpz3/mKvOBE0
+         4/bcv/PmUUvLGJnjlOONQW65JzEkcYAeD7sk9Uf96q9Ev5cZRC6Y3xhSjPTm7Mpmn66G
+         RgCA==
+X-Gm-Message-State: AOJu0YzZQ4oyPRcoRUwqHyWnPNdLvTlO+9TdP31SYO6YYf2ox2qGURTv
+        dkmb7jdUmQQdC8zyM4R86jp+BVbroo+KkbBTyr6Gs/1TuAPS
+X-Google-Smtp-Source: AGHT+IH1y1KEQVzK63c1RqgFSqkGziKyfAHgpXoe1uWmw2wN4OU0NNQPZhOhAP0NAeEmZ/BKrHAxjwYekcYTc3P8aAT96oZt9mjH
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 2/2] spi: dw: Remove Intel Thunder Bay SOC support
-Content-Language: en-US
-To:     nandhini.srikandan@intel.com, fancer.lancer@gmail.com,
-        broonie@kernel.org, robh+dt@kernel.org, linux-spi@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     devicetree@vger.kernel.org, mgross@linux.intel.com,
-        kris.pan@intel.com, kenchappa.demakkanavar@intel.com,
-        furong.zhou@intel.com, mallikarjunappa.sangannavar@intel.com,
-        mahesh.r.vaidya@intel.com
-References: <20231213060836.29203-1-nandhini.srikandan@intel.com>
- <20231213060836.29203-3-nandhini.srikandan@intel.com>
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-Autocrypt: addr=krzk@kernel.org; keydata=
- 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 fv0=
-In-Reply-To: <20231213060836.29203-3-nandhini.srikandan@intel.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+X-Received: by 2002:a65:62da:0:b0:5ca:4060:b1f4 with SMTP id
+ m26-20020a6562da000000b005ca4060b1f4mr68534pgv.5.1702468564550; Wed, 13 Dec
+ 2023 03:56:04 -0800 (PST)
+Date:   Wed, 13 Dec 2023 03:56:04 -0800
+In-Reply-To: <tencent_2D190DCF9D0DA225C98D87922ADDA1DD8607@qq.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000080e3d060c62da64@google.com>
+Subject: Re: [syzbot] [ext4?] kernel BUG in ext4_write_inline_data
+From:   syzbot <syzbot+f4582777a19ec422b517@syzkaller.appspotmail.com>
+To:     eadavis@qq.com, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -99,27 +55,64 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 13/12/2023 07:08, nandhini.srikandan@intel.com wrote:
-> From: Nandhini Srikandan <nandhini.srikandan@intel.com>
-> 
-> Remove Intel Thunder Bay specific code as the product got cancelled and
-> there are no end customers or users.
+Hello,
 
-Please use scripts/get_maintainers.pl to get a list of necessary people
-and lists to CC (and consider --no-git-fallback argument). It might
-happen, that command when run on an older kernel, gives you outdated
-entries. Therefore please be sure you base your patches on recent Linux
-kernel.
+syzbot has tested the proposed patch but the reproducer is still triggering an issue:
+kernel BUG in ext4_do_writepages
 
-Other patches for removal of ThunderBar had the same issue, so it seems
-like a consistent practice in your team. Can you fix it?
+------------[ cut here ]------------
+kernel BUG at fs/ext4/inode.c:2587!
+invalid opcode: 0000 [#1] PREEMPT SMP KASAN
+CPU: 0 PID: 10 Comm: kworker/u4:0 Not tainted 6.4.0-rc3-syzkaller-dirty #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 11/10/2023
+Workqueue: writeback wb_workfn (flush-7:0)
+RIP: 0010:ext4_do_writepages+0x27a1/0x34a0 fs/ext4/inode.c:2587
+Code: fc ff df 44 89 64 24 18 48 c1 ea 03 80 3c 02 00 0f 84 bc ed ff ff 48 8b 7c 24 08 e8 49 aa a8 ff e9 ad ed ff ff e8 ef 2f 55 ff <0f> 0b e8 e8 2f 55 ff 48 8b 84 24 b0 00 00 00 48 8d 78 40 48 b8 00
+RSP: 0018:ffffc900000f73e8 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: ffff88807592bc50 RCX: 0000000000000000
+RDX: ffff888016a41dc0 RSI: ffffffff82306c61 RDI: 0000000000000007
+RBP: ffffc900000f75f0 R08: 0000000000000007 R09: 0000000000000000
+R10: 0000000000000001 R11: 0000000000000001 R12: 0000000000000001
+R13: ffff88802aede678 R14: ffff88807592beb0 R15: 7fffffffffffffff
+FS:  0000000000000000(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000561e569a2950 CR3: 000000002a00e000 CR4: 0000000000350ef0
+Call Trace:
+ <TASK>
+ ext4_writepages+0x30b/0x780 fs/ext4/inode.c:2792
+ do_writepages+0x1b4/0x690 mm/page-writeback.c:2551
+ __writeback_single_inode+0x158/0xe70 fs/fs-writeback.c:1603
+ writeback_sb_inodes+0x599/0x1010 fs/fs-writeback.c:1894
+ wb_writeback+0x2ca/0xa90 fs/fs-writeback.c:2068
+ wb_do_writeback fs/fs-writeback.c:2211 [inline]
+ wb_workfn+0x29c/0xfd0 fs/fs-writeback.c:2251
+ process_one_work+0x9f9/0x15f0 kernel/workqueue.c:2405
+ worker_thread+0x687/0x1110 kernel/workqueue.c:2552
+ kthread+0x33a/0x430 kernel/kthread.c:379
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:308
+ </TASK>
+Modules linked in:
+---[ end trace 0000000000000000 ]---
+RIP: 0010:ext4_do_writepages+0x27a1/0x34a0 fs/ext4/inode.c:2587
+Code: fc ff df 44 89 64 24 18 48 c1 ea 03 80 3c 02 00 0f 84 bc ed ff ff 48 8b 7c 24 08 e8 49 aa a8 ff e9 ad ed ff ff e8 ef 2f 55 ff <0f> 0b e8 e8 2f 55 ff 48 8b 84 24 b0 00 00 00 48 8d 78 40 48 b8 00
+RSP: 0018:ffffc900000f73e8 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: ffff88807592bc50 RCX: 0000000000000000
+RDX: ffff888016a41dc0 RSI: ffffffff82306c61 RDI: 0000000000000007
+RBP: ffffc900000f75f0 R08: 0000000000000007 R09: 0000000000000000
+R10: 0000000000000001 R11: 0000000000000001 R12: 0000000000000001
+R13: ffff88802aede678 R14: ffff88807592beb0 R15: 7fffffffffffffff
+FS:  0000000000000000(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f629e29e378 CR3: 000000000c772000 CR4: 0000000000350ef0
 
-Please use subject prefixes matching the subsystem. You can get them for
-example with `git log --oneline -- DIRECTORY_OR_FILE` on the directory
-your patch is touching.
 
-Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Tested on:
 
-Best regards,
-Krzysztof
+commit:         44c026a7 Linux 6.4-rc3
+git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+console output: https://syzkaller.appspot.com/x/log.txt?x=12c7b6fae80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=e2045748b9f1055b
+dashboard link: https://syzkaller.appspot.com/bug?extid=f4582777a19ec422b517
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+patch:          https://syzkaller.appspot.com/x/patch.diff?x=133a9fbce80000
 
