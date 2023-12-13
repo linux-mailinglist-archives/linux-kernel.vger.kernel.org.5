@@ -2,84 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DF1C6810E26
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 11:15:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C8602810E36
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 11:18:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235226AbjLMKPv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 05:15:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46922 "EHLO
+        id S235259AbjLMKS1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 05:18:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43910 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231482AbjLMKPt (ORCPT
+        with ESMTP id S231482AbjLMKS0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 05:15:49 -0500
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58E2CAC
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 02:15:55 -0800 (PST)
-Received: by mail-ej1-x635.google.com with SMTP id a640c23a62f3a-a1f8f470903so464119066b.1
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 02:15:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1702462554; x=1703067354; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=m71FV5vGmPVywWzxoFuxmmARDOatcoG5xbVNtimxsKM=;
-        b=PqjWfS0J0LTq1aRD/+QxD77CcgJqq0x1kPEoUfQTOrYeSNEH9TyCrmOI35mB2kihcB
-         LtZYQoj/x4jpLOhf0wmfAMdoa3gljesec2sZ4bpSSZsYv2B8BVW5fjEZbKAktmMRnedk
-         bK4EWVell39DNEmYIIoyg/cmxP3XAmS8h4wRjFkD+lGxm2lE6RxBsJOSIigTVHOYGzSQ
-         h0avvBLvvPWuPwU5NgfAzOVMcuarh4nO9lJ0fRmXzXI90FZEjXEQnT3QcdYDLqoW2ysA
-         aFBge+wfUzXSoIatSBkEivrAEST2TQYsDD/YQ87mZImKw5fQsIvdmmCxBISg3uDLKjg5
-         /VEQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702462554; x=1703067354;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=m71FV5vGmPVywWzxoFuxmmARDOatcoG5xbVNtimxsKM=;
-        b=JwJaDj8t/lSMH7yZgHP/tFVoE5NxTwRLEx4k/La50B1zBT+xaoMrg3CwYZO4we9E/6
-         UoGmZEShQv9+/prJcTTtHbQtDQxcZs97uQYoBhtALBxISK5sfCxHgwd2S0zhfGc5fD+3
-         j7Yh9r6vL9VobdOu4v/BfW3Po9q1bo1aBazBGNgudILWsnrMYsAf4H96gh/5ZPeuagVe
-         c5MfPHYz8vvvFPTDs5R43ddAYW8w5lFOjpeN8pSSkPFiwsJyGYzs95P6ZwycECS+qNId
-         O1rgmtTjH8p4BH+TtGc2+fxWTM/hzo8TyoNSh2vua+J7D3wTVcOCAYqZFAsxde5xKumB
-         xk3w==
-X-Gm-Message-State: AOJu0YzE86jSHJSkxvtS3rMq7IV+xxAzqPzNJTbfRRoLxaKSs6//fXs1
-        XJdzhRnRdTIKGa94XxmLV60f5w==
-X-Google-Smtp-Source: AGHT+IFLhx9mrchCh5E2ylqHbgPhyi2ITVUtOX/P4qGORrsYs/M4rF8Vci+B58KQG68twiIyDl6XRw==
-X-Received: by 2002:a17:907:9905:b0:a1c:f745:e0b3 with SMTP id ka5-20020a170907990500b00a1cf745e0b3mr3808358ejc.97.1702462553820;
-        Wed, 13 Dec 2023 02:15:53 -0800 (PST)
-Received: from pop-os.localdomain (81-231-61-187-no276.tbcn.telia.com. [81.231.61.187])
-        by smtp.gmail.com with ESMTPSA id q18-20020a17090676d200b00a1d9733f2d9sm7400403ejn.209.2023.12.13.02.15.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Dec 2023 02:15:52 -0800 (PST)
-Date:   Wed, 13 Dec 2023 11:15:49 +0100
-From:   Joakim Bech <joakim.bech@linaro.org>
-To:     Pekka Paalanen <ppaalanen@gmail.com>
-Cc:     Simon Ser <contact@emersion.fr>, Yong Wu <yong.wu@mediatek.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        christian.koenig@amd.com,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        dri-devel@lists.freedesktop.org, John Stultz <jstultz@google.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Jeffrey Kardatzke <jkardatzke@google.com>,
-        Benjamin Gaignard <benjamin.gaignard@collabora.com>,
-        Vijayanand Jitta <quic_vjitta@quicinc.com>,
-        Nicolas Dufresne <nicolas@ndufresne.ca>,
-        jianjiao.zeng@mediatek.com, linux-media@vger.kernel.org,
-        devicetree@vger.kernel.org, Conor Dooley <conor+dt@kernel.org>,
-        ckoenig.leichtzumerken@gmail.com, linaro-mm-sig@lists.linaro.org,
-        linux-mediatek@lists.infradead.org, tjmercier@google.com,
-        linux-arm-kernel@lists.infradead.org,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        kuohong.wang@mediatek.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 0/7] dma-buf: heaps: Add secure heap
-Message-ID: <20231213101549.lioqfzjxcvmqxqu3@pop-os.localdomain>
-References: <20231212024607.3681-1-yong.wu@mediatek.com>
- <DPBmATfmfvSP8Cwjz99kj_JvCEiAqRfuMFJZEBF2aIgl8NZqWFR66eyPTX1E8bHyOlimBihEE3E80p9bfOJ-0SNu8pwoIzL9gD2Xae6r97g=@emersion.fr>
- <20231213110517.6ce36aca@eldfell>
+        Wed, 13 Dec 2023 05:18:26 -0500
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 818A583;
+        Wed, 13 Dec 2023 02:18:31 -0800 (PST)
+Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BD8sOEe017896;
+        Wed, 13 Dec 2023 10:18:12 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+        from:to:cc:subject:date:message-id:mime-version:content-type; s=
+        qcppdkim1; bh=Ib1d+QhymcafLXYKFPOeKHZFLKskwCb8h78crXgt5AU=; b=Z2
+        rQ9g2d4OeM2UhWkiUhE/AvcZWgQZgMXaS/tMKQocB4HZX9bhcr2ibx7CiUCfSoOE
+        +B6Hr5Y8cOgEPmoouDEZrm07PJbaFzw1SVOJxKLgC0SOcA5tRNu2ic/bYRwC8RiM
+        c9svgvX4vbvhFgz1nh5LUSqCYfGBYFlj4az8PSNSmFRJkEFuffkPzueweM3JZItD
+        8Y14yiWAwIUIvKAaT0aAE7au4SF/reVVSRuybqAlFhit9aldeDZTEsbY7KTcg1im
+        25q6Yre72WTsV7LSyY2QI9Uxrl3aQpu8jPCgw954b+xUeEEZPmtohhTixo18nTRC
+        dlQUayxvcOummvV6UCNA==
+Received: from nasanppmta03.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3uy9gd073u-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 13 Dec 2023 10:18:12 +0000 (GMT)
+Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
+        by NASANPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3BDAIBZV000467
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 13 Dec 2023 10:18:11 GMT
+Received: from aiquny2-gv.qualcomm.com (10.80.80.8) by
+ nasanex01a.na.qualcomm.com (10.52.223.231) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Wed, 13 Dec 2023 02:18:03 -0800
+From:   Maria Yu <quic_aiquny@quicinc.com>
+To:     <ebiederm@xmission.com>
+CC:     Maria Yu <quic_aiquny@quicinc.com>, <kernel@quicinc.com>,
+        <quic_pkondeti@quicinc.com>, <keescook@chromium.or>,
+        <viro@zeniv.linux.org.uk>, <brauner@kernel.org>, <oleg@redhat.com>,
+        <dhowells@redhat.com>, <jarkko@kernel.org>, <paul@paul-moore.com>,
+        <jmorris@namei.org>, <serge@hallyn.com>, <linux-mm@kvack.org>,
+        <linux-fsdevel@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <keyrings@vger.kernel.org>,
+        <linux-security-module@vger.kernel.org>,
+        <linux-arm-msm@vger.kernel.org>
+Subject: [PATCH] kernel: Introduce a write lock/unlock wrapper for tasklist_lock
+Date:   Wed, 13 Dec 2023 18:17:45 +0800
+Message-ID: <20231213101745.4526-1-quic_aiquny@quicinc.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20231213110517.6ce36aca@eldfell>
+Content-Type: text/plain
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nasanex01a.na.qualcomm.com (10.52.223.231)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: TZTasOTHbuTw77b4b3w9ljTMkTHIoEK8
+X-Proofpoint-GUID: TZTasOTHbuTw77b4b3w9ljTMkTHIoEK8
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-09_02,2023-12-07_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
+ impostorscore=0 bulkscore=0 spamscore=0 priorityscore=1501 mlxscore=0
+ suspectscore=0 clxscore=1011 phishscore=0 adultscore=0 mlxlogscore=332
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2311290000 definitions=main-2312130074
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -90,55 +81,358 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 13, 2023 at 11:05:17AM +0200, Pekka Paalanen wrote:
-> On Tue, 12 Dec 2023 16:36:35 +0000
-> Simon Ser <contact@emersion.fr> wrote:
-> 
-> > Is there a chance to pick a better name than "secure" here?
-> > 
-> > "Secure" is super overloaded, it's not clear at all what it means from
-> > just the name. Something like "restricted" would be an improvement.
-> > 
-> 
-> My thoughts exactly. Every time I see "secure" used for something that
-> either gives you garbage, refuses to work, or crashes your whole machine
-> *intentionally* when you try to do normal usual things to it in
-> userspace (like use it for GL texturing, or try to use KMS writeback), I
-> get an unscratchable itch.
-> 
-> There is nothing "secure" from security perspective there for end users
-> and developers. It's just inaccessible buffers.
-> 
-> I've been biting my lip until now, thinking it's too late.
-> 
-The characteristics we're looking for here is a buffer where the content
-is inaccessible to the normal OS and user space, i.e., Non-secure EL0 to
-EL2. I.e, the content of the buffer is meant to be used and accessible
-primarily by the secure side and other devices that has been granted
-access to it (for example decoders, display controllers if we're talking
-about video use cases). However, since the use cases for this exercises
-the whole stack, from non-secure user space (EL0) all the way to secure
-user space (S-EL0), with various devices needing access to the buffer at
-various times, it makes sense to let Linux manage the buffers, although
-it still cannot access the content. That's the overall context.
+As a rwlock for tasklist_lock, there are multiple scenarios to acquire
+read lock which write lock needed to be waiting for.
+In freeze_process/thaw_processes it can take about 200+ms for holding read
+lock of tasklist_lock by walking and freezing/thawing tasks in commercial
+devices. And write_lock_irq will have preempt disabled and local irq
+disabled to spin until the tasklist_lock can be acquired. This leading to
+a bad responsive performance of current system.
+Take an example:
+1. cpu0 is holding read lock of tasklist_lock to thaw_processes.
+2. cpu1 is waiting write lock of tasklist_lock to exec a new thread with
+   preempt_disabled and local irq disabled.
+3. cpu2 is waiting write lock of tasklist_lock to do_exit with
+   preempt_disabled and local irq disabled.
+4. cpu3 is waiting write lock of tasklist_lock to do_exit with
+   preempt_disabled and local irq disabled.
+So introduce a write lock/unlock wrapper for tasklist_lock specificly.
+The current taskslist_lock writers all have write_lock_irq to hold
+tasklist_lock, and write_unlock_irq to release tasklist_lock, that means
+the writers are not suitable or workable to wait on tasklist_lock in irq
+disabled scenarios. So the write lock/unlock wrapper here only follow the
+current design of directly use local_irq_disable and local_irq_enable,
+and not take already irq disabled writer callers into account.
+Use write_trylock in the loop and enabled irq for cpu to repsond if lock
+cannot be taken.
 
-As for the name, it's always difficult to find a name suitable precisely
-describing what it is. "Secure" is perhaps vague, but it might still a
-good choice, if you carefully describe what secure means for this
-particular heap (in the source code and the documentation for it). For
-example, the definition of "secure" for a secure heap as here could mean
-that buffer content is inaccessible to the host OS and user space
-running in normal world (using Arm nomenclature). I wouldn't have any
-problems with calling it secure if, as said it's defined what we mean by
-saying so. But I'm all ears for other suggestions as well.
+Signed-off-by: Maria Yu <quic_aiquny@quicinc.com>
+---
+ fs/exec.c                  | 10 +++++-----
+ include/linux/sched/task.h | 29 +++++++++++++++++++++++++++++
+ kernel/exit.c              | 16 ++++++++--------
+ kernel/fork.c              |  6 +++---
+ kernel/ptrace.c            | 12 ++++++------
+ kernel/sys.c               |  8 ++++----
+ security/keys/keyctl.c     |  4 ++--
+ 7 files changed, 57 insertions(+), 28 deletions(-)
 
-Safe, protected, shielded, unreachable, isolated, inaccessible,
-unaccessible, fortified, ... would any of these make more sense?
+diff --git a/fs/exec.c b/fs/exec.c
+index 4aa19b24f281..030eef6852eb 100644
+--- a/fs/exec.c
++++ b/fs/exec.c
+@@ -1086,7 +1086,7 @@ static int de_thread(struct task_struct *tsk)
+ 
+ 		for (;;) {
+ 			cgroup_threadgroup_change_begin(tsk);
+-			write_lock_irq(&tasklist_lock);
++			write_lock_tasklist_lock();
+ 			/*
+ 			 * Do this under tasklist_lock to ensure that
+ 			 * exit_notify() can't miss ->group_exec_task
+@@ -1095,7 +1095,7 @@ static int de_thread(struct task_struct *tsk)
+ 			if (likely(leader->exit_state))
+ 				break;
+ 			__set_current_state(TASK_KILLABLE);
+-			write_unlock_irq(&tasklist_lock);
++			write_unlock_tasklist_lock();
+ 			cgroup_threadgroup_change_end(tsk);
+ 			schedule();
+ 			if (__fatal_signal_pending(tsk))
+@@ -1150,7 +1150,7 @@ static int de_thread(struct task_struct *tsk)
+ 		 */
+ 		if (unlikely(leader->ptrace))
+ 			__wake_up_parent(leader, leader->parent);
+-		write_unlock_irq(&tasklist_lock);
++		write_unlock_tasklist_lock();
+ 		cgroup_threadgroup_change_end(tsk);
+ 
+ 		release_task(leader);
+@@ -1198,13 +1198,13 @@ static int unshare_sighand(struct task_struct *me)
+ 
+ 		refcount_set(&newsighand->count, 1);
+ 
+-		write_lock_irq(&tasklist_lock);
++		write_lock_tasklist_lock();
+ 		spin_lock(&oldsighand->siglock);
+ 		memcpy(newsighand->action, oldsighand->action,
+ 		       sizeof(newsighand->action));
+ 		rcu_assign_pointer(me->sighand, newsighand);
+ 		spin_unlock(&oldsighand->siglock);
+-		write_unlock_irq(&tasklist_lock);
++		write_unlock_tasklist_lock();
+ 
+ 		__cleanup_sighand(oldsighand);
+ 	}
+diff --git a/include/linux/sched/task.h b/include/linux/sched/task.h
+index a23af225c898..6f69d9a3c868 100644
+--- a/include/linux/sched/task.h
++++ b/include/linux/sched/task.h
+@@ -50,6 +50,35 @@ struct kernel_clone_args {
+  * a separate lock).
+  */
+ extern rwlock_t tasklist_lock;
++
++/*
++ * Tasklist_lock is a special lock, it takes a good amount of time of
++ * taskslist_lock readers to finish, and the pure write_irq_lock api
++ * will do local_irq_disable at the very first, and put the current cpu
++ * waiting for the lock while is non-responsive for interrupts.
++ *
++ * The current taskslist_lock writers all have write_lock_irq to hold
++ * tasklist_lock, and write_unlock_irq to release tasklist_lock, that
++ * means the writers are not suitable or workable to wait on
++ * tasklist_lock in irq disabled scenarios. So the write lock/unlock
++ * wrapper here only follow the current design of directly use
++ * local_irq_disable and local_irq_enable.
++ */
++static inline void write_lock_tasklist_lock(void)
++{
++	while (1) {
++		local_irq_disable();
++		if (write_trylock(&tasklist_lock))
++			break;
++		local_irq_enable();
++		cpu_relax();
++	}
++}
++static inline void write_unlock_tasklist_lock(void)
++{
++	write_unlock_irq(&tasklist_lock);
++}
++
+ extern spinlock_t mmlist_lock;
+ 
+ extern union thread_union init_thread_union;
+diff --git a/kernel/exit.c b/kernel/exit.c
+index ee9f43bed49a..18b00f477079 100644
+--- a/kernel/exit.c
++++ b/kernel/exit.c
+@@ -251,7 +251,7 @@ void release_task(struct task_struct *p)
+ 
+ 	cgroup_release(p);
+ 
+-	write_lock_irq(&tasklist_lock);
++	write_lock_tasklist_lock();
+ 	ptrace_release_task(p);
+ 	thread_pid = get_pid(p->thread_pid);
+ 	__exit_signal(p);
+@@ -275,7 +275,7 @@ void release_task(struct task_struct *p)
+ 			leader->exit_state = EXIT_DEAD;
+ 	}
+ 
+-	write_unlock_irq(&tasklist_lock);
++	write_unlock_tasklist_lock();
+ 	seccomp_filter_release(p);
+ 	proc_flush_pid(thread_pid);
+ 	put_pid(thread_pid);
+@@ -598,7 +598,7 @@ static struct task_struct *find_child_reaper(struct task_struct *father,
+ 		return reaper;
+ 	}
+ 
+-	write_unlock_irq(&tasklist_lock);
++	write_unlock_tasklist_lock();
+ 
+ 	list_for_each_entry_safe(p, n, dead, ptrace_entry) {
+ 		list_del_init(&p->ptrace_entry);
+@@ -606,7 +606,7 @@ static struct task_struct *find_child_reaper(struct task_struct *father,
+ 	}
+ 
+ 	zap_pid_ns_processes(pid_ns);
+-	write_lock_irq(&tasklist_lock);
++	write_lock_tasklist_lock();
+ 
+ 	return father;
+ }
+@@ -730,7 +730,7 @@ static void exit_notify(struct task_struct *tsk, int group_dead)
+ 	struct task_struct *p, *n;
+ 	LIST_HEAD(dead);
+ 
+-	write_lock_irq(&tasklist_lock);
++	write_lock_tasklist_lock();
+ 	forget_original_parent(tsk, &dead);
+ 
+ 	if (group_dead)
+@@ -758,7 +758,7 @@ static void exit_notify(struct task_struct *tsk, int group_dead)
+ 	/* mt-exec, de_thread() is waiting for group leader */
+ 	if (unlikely(tsk->signal->notify_count < 0))
+ 		wake_up_process(tsk->signal->group_exec_task);
+-	write_unlock_irq(&tasklist_lock);
++	write_unlock_tasklist_lock();
+ 
+ 	list_for_each_entry_safe(p, n, &dead, ptrace_entry) {
+ 		list_del_init(&p->ptrace_entry);
+@@ -1172,7 +1172,7 @@ static int wait_task_zombie(struct wait_opts *wo, struct task_struct *p)
+ 	wo->wo_stat = status;
+ 
+ 	if (state == EXIT_TRACE) {
+-		write_lock_irq(&tasklist_lock);
++		write_lock_tasklist_lock();
+ 		/* We dropped tasklist, ptracer could die and untrace */
+ 		ptrace_unlink(p);
+ 
+@@ -1181,7 +1181,7 @@ static int wait_task_zombie(struct wait_opts *wo, struct task_struct *p)
+ 		if (do_notify_parent(p, p->exit_signal))
+ 			state = EXIT_DEAD;
+ 		p->exit_state = state;
+-		write_unlock_irq(&tasklist_lock);
++		write_unlock_tasklist_lock();
+ 	}
+ 	if (state == EXIT_DEAD)
+ 		release_task(p);
+diff --git a/kernel/fork.c b/kernel/fork.c
+index 10917c3e1f03..06c4b4ab9102 100644
+--- a/kernel/fork.c
++++ b/kernel/fork.c
+@@ -2623,7 +2623,7 @@ __latent_entropy struct task_struct *copy_process(
+ 	 * Make it visible to the rest of the system, but dont wake it up yet.
+ 	 * Need tasklist lock for parent etc handling!
+ 	 */
+-	write_lock_irq(&tasklist_lock);
++	write_lock_tasklist_lock();
+ 
+ 	/* CLONE_PARENT re-uses the old parent */
+ 	if (clone_flags & (CLONE_PARENT|CLONE_THREAD)) {
+@@ -2714,7 +2714,7 @@ __latent_entropy struct task_struct *copy_process(
+ 	hlist_del_init(&delayed.node);
+ 	spin_unlock(&current->sighand->siglock);
+ 	syscall_tracepoint_update(p);
+-	write_unlock_irq(&tasklist_lock);
++	write_unlock_tasklist_lock();
+ 
+ 	if (pidfile)
+ 		fd_install(pidfd, pidfile);
+@@ -2735,7 +2735,7 @@ __latent_entropy struct task_struct *copy_process(
+ bad_fork_cancel_cgroup:
+ 	sched_core_free(p);
+ 	spin_unlock(&current->sighand->siglock);
+-	write_unlock_irq(&tasklist_lock);
++	write_unlock_tasklist_lock();
+ 	cgroup_cancel_fork(p, args);
+ bad_fork_put_pidfd:
+ 	if (clone_flags & CLONE_PIDFD) {
+diff --git a/kernel/ptrace.c b/kernel/ptrace.c
+index d8b5e13a2229..a8d7e2d06f3e 100644
+--- a/kernel/ptrace.c
++++ b/kernel/ptrace.c
+@@ -435,7 +435,7 @@ static int ptrace_attach(struct task_struct *task, long request,
+ 	if (retval)
+ 		goto unlock_creds;
+ 
+-	write_lock_irq(&tasklist_lock);
++	write_lock_tasklist_lock();
+ 	retval = -EPERM;
+ 	if (unlikely(task->exit_state))
+ 		goto unlock_tasklist;
+@@ -479,7 +479,7 @@ static int ptrace_attach(struct task_struct *task, long request,
+ 
+ 	retval = 0;
+ unlock_tasklist:
+-	write_unlock_irq(&tasklist_lock);
++	write_unlock_tasklist_lock();
+ unlock_creds:
+ 	mutex_unlock(&task->signal->cred_guard_mutex);
+ out:
+@@ -508,7 +508,7 @@ static int ptrace_traceme(void)
+ {
+ 	int ret = -EPERM;
+ 
+-	write_lock_irq(&tasklist_lock);
++	write_lock_tasklist_lock();
+ 	/* Are we already being traced? */
+ 	if (!current->ptrace) {
+ 		ret = security_ptrace_traceme(current->parent);
+@@ -522,7 +522,7 @@ static int ptrace_traceme(void)
+ 			ptrace_link(current, current->real_parent);
+ 		}
+ 	}
+-	write_unlock_irq(&tasklist_lock);
++	write_unlock_tasklist_lock();
+ 
+ 	return ret;
+ }
+@@ -588,7 +588,7 @@ static int ptrace_detach(struct task_struct *child, unsigned int data)
+ 	/* Architecture-specific hardware disable .. */
+ 	ptrace_disable(child);
+ 
+-	write_lock_irq(&tasklist_lock);
++	write_lock_tasklist_lock();
+ 	/*
+ 	 * We rely on ptrace_freeze_traced(). It can't be killed and
+ 	 * untraced by another thread, it can't be a zombie.
+@@ -600,7 +600,7 @@ static int ptrace_detach(struct task_struct *child, unsigned int data)
+ 	 */
+ 	child->exit_code = data;
+ 	__ptrace_detach(current, child);
+-	write_unlock_irq(&tasklist_lock);
++	write_unlock_tasklist_lock();
+ 
+ 	proc_ptrace_connector(child, PTRACE_DETACH);
+ 
+diff --git a/kernel/sys.c b/kernel/sys.c
+index e219fcfa112d..0b1647d3ed32 100644
+--- a/kernel/sys.c
++++ b/kernel/sys.c
+@@ -1088,7 +1088,7 @@ SYSCALL_DEFINE2(setpgid, pid_t, pid, pid_t, pgid)
+ 	/* From this point forward we keep holding onto the tasklist lock
+ 	 * so that our parent does not change from under us. -DaveM
+ 	 */
+-	write_lock_irq(&tasklist_lock);
++	write_lock_tasklist_lock();
+ 
+ 	err = -ESRCH;
+ 	p = find_task_by_vpid(pid);
+@@ -1136,7 +1136,7 @@ SYSCALL_DEFINE2(setpgid, pid_t, pid, pid_t, pgid)
+ 	err = 0;
+ out:
+ 	/* All paths lead to here, thus we are safe. -DaveM */
+-	write_unlock_irq(&tasklist_lock);
++	write_unlock_tasklist_lock();
+ 	rcu_read_unlock();
+ 	return err;
+ }
+@@ -1229,7 +1229,7 @@ int ksys_setsid(void)
+ 	pid_t session = pid_vnr(sid);
+ 	int err = -EPERM;
+ 
+-	write_lock_irq(&tasklist_lock);
++	write_lock_tasklist_lock();
+ 	/* Fail if I am already a session leader */
+ 	if (group_leader->signal->leader)
+ 		goto out;
+@@ -1247,7 +1247,7 @@ int ksys_setsid(void)
+ 
+ 	err = session;
+ out:
+-	write_unlock_irq(&tasklist_lock);
++	write_unlock_tasklist_lock();
+ 	if (err > 0) {
+ 		proc_sid_connector(group_leader);
+ 		sched_autogroup_create_attach(group_leader);
+diff --git a/security/keys/keyctl.c b/security/keys/keyctl.c
+index 19be69fa4d05..dd8aed20486a 100644
+--- a/security/keys/keyctl.c
++++ b/security/keys/keyctl.c
+@@ -1652,7 +1652,7 @@ long keyctl_session_to_parent(void)
+ 
+ 	me = current;
+ 	rcu_read_lock();
+-	write_lock_irq(&tasklist_lock);
++	write_lock_tasklist_lock();
+ 
+ 	ret = -EPERM;
+ 	oldwork = NULL;
+@@ -1702,7 +1702,7 @@ long keyctl_session_to_parent(void)
+ 	if (!ret)
+ 		newwork = NULL;
+ unlock:
+-	write_unlock_irq(&tasklist_lock);
++	write_unlock_tasklist_lock();
+ 	rcu_read_unlock();
+ 	if (oldwork)
+ 		put_cred(container_of(oldwork, struct cred, rcu));
 
-> 
-> Thanks,
-> pq
-
+base-commit: 88035e5694a86a7167d490bb95e9df97a9bb162b
 -- 
-// Regards
-Joakim
+2.17.1
+
