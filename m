@@ -2,156 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A9C2781082F
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 03:23:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DED7C810834
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 03:25:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378304AbjLMCXB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 21:23:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34182 "EHLO
+        id S1378317AbjLMCZZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 21:25:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36466 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378400AbjLMCWo (ORCPT
+        with ESMTP id S1378305AbjLMCZX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 21:22:44 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF841BC
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 18:22:21 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4B8C4C43391
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 02:22:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1702434141;
-        bh=wwCgm+IFjqFyxUBy11fFZfn6oiOr0/BXrjgrdZ1mWyg=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=MRtu+hmU4CkJurSA+0yTo4zFOwkQjx6jo6GwjN2I4q4AIdx+cHWzDP+9TtJ3+WFoM
-         aQ40bxwPHQ0BRMj4QezD4VfPgxfi+8H0CeKYrifSS2lVBsZ/0XWF7YRN3T8zWfgFPA
-         uumVIUe7gCjYhfd2aL6IXbUEGs+5rVVnA/kXXYST58i3KT4xkamiN54BLkxfKDP5po
-         lElzd9bUkVPeNhe7kM1bC5lLzBCHjEpHftGfMsHPFHzLHVaSdjrbhNGk9QNXfAD1YE
-         HLvMe/vrEwaVj6K1c8m537yho50ezftINb2ief0tlMNuxFmnIItHdplkk0OzWI/kMF
-         AVcgwvc761ULA==
-Received: by mail-oo1-f50.google.com with SMTP id 006d021491bc7-58d08497aa1so4065528eaf.0
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 18:22:21 -0800 (PST)
-X-Gm-Message-State: AOJu0YzA7Mdr1+oT1DrgShMK3HLRzO2NUy1ZG1W9tUfes+Y+4NbG1FXf
-        HyOIeGvMiLou87831zPQZpAuZGGKEDttGImHtyRNQg==
-X-Google-Smtp-Source: AGHT+IHdIzK2hZu/4raabTovfoFExqE0zHuUM405JETYLRfcMLTywTWtMmLl1Nu1fFOkxwfh2F92Yinr1bo9lZPjNMk=
-X-Received: by 2002:a05:6358:9889:b0:16d:e1d8:22c7 with SMTP id
- q9-20020a056358988900b0016de1d822c7mr7530145rwa.29.1702434140415; Tue, 12 Dec
- 2023 18:22:20 -0800 (PST)
+        Tue, 12 Dec 2023 21:25:23 -0500
+Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FA73A1;
+        Tue, 12 Dec 2023 18:25:25 -0800 (PST)
+Received: from mail.maildlp.com (unknown [172.19.163.48])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4SqfTR3dMMz1Q6Sw;
+        Wed, 13 Dec 2023 10:25:15 +0800 (CST)
+Received: from dggpemm500020.china.huawei.com (unknown [7.185.36.49])
+        by mail.maildlp.com (Postfix) with ESMTPS id BE8401800A7;
+        Wed, 13 Dec 2023 10:25:22 +0800 (CST)
+Received: from localhost.localdomain (10.175.104.67) by
+ dggpemm500020.china.huawei.com (7.185.36.49) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Wed, 13 Dec 2023 10:25:22 +0800
+From:   Zizhi Wo <wozizhi@huawei.com>
+To:     <stfrench@microsoft.com>, <lsahlber@redhat.com>
+CC:     <linux-cifs@vger.kernel.org>, <samba-technical@lists.samba.org>,
+        <linux-kernel@vger.kernel.org>, <wozizhi@huawei.com>,
+        <yangerkun@huawei.com>
+Subject: [PATCH -next] fs: cifs: Fix atime update check
+Date:   Wed, 13 Dec 2023 10:23:53 +0800
+Message-ID: <20231213022353.2983979-1-wozizhi@huawei.com>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-References: <20231119194740.94101-1-ryncsn@gmail.com> <20231119194740.94101-19-ryncsn@gmail.com>
- <CAF8kJuNmzGSCE_VhXboXF4tGbLvJXxXYM6j-vkF4d1CkRB-z5A@mail.gmail.com> <CAMgjq7AwFiDb7cAMkWMWb3vkccie1-tocmZfT7m4WRb_UKPghg@mail.gmail.com>
-In-Reply-To: <CAMgjq7AwFiDb7cAMkWMWb3vkccie1-tocmZfT7m4WRb_UKPghg@mail.gmail.com>
-From:   Chris Li <chrisl@kernel.org>
-Date:   Tue, 12 Dec 2023 18:22:07 -0800
-X-Gmail-Original-Message-ID: <CAF8kJuOsMLb_5D0vVDFm2kVstJHzkOQK_Xp2g_fQL9hAMQuoHw@mail.gmail.com>
-Message-ID: <CAF8kJuOsMLb_5D0vVDFm2kVstJHzkOQK_Xp2g_fQL9hAMQuoHw@mail.gmail.com>
-Subject: Re: [PATCH 18/24] mm/swap: introduce a helper non fault swapin
-To:     Kairui Song <ryncsn@gmail.com>
-Cc:     linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
-        "Huang, Ying" <ying.huang@intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        Hugh Dickins <hughd@google.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Michal Hocko <mhocko@suse.com>, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.104.67]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggpemm500020.china.huawei.com (7.185.36.49)
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 28, 2023 at 3:22=E2=80=AFAM Kairui Song <ryncsn@gmail.com> wrot=
-e:
->
-> > >  /*
-> > >   * Make sure huge_gfp is always more limited than limit_gfp.
-> > >   * Some of the flags set permissions, while others set limitations.
-> > > @@ -1854,9 +1838,12 @@ static int shmem_swapin_folio(struct inode *in=
-ode, pgoff_t index,
-> > >  {
-> > >         struct address_space *mapping =3D inode->i_mapping;
-> > >         struct shmem_inode_info *info =3D SHMEM_I(inode);
-> > > -       struct swap_info_struct *si;
-> > > +       enum swap_cache_result result;
-> > >         struct folio *folio =3D NULL;
-> > > +       struct mempolicy *mpol;
-> > > +       struct page *page;
-> > >         swp_entry_t swap;
-> > > +       pgoff_t ilx;
-> > >         int error;
-> > >
-> > >         VM_BUG_ON(!*foliop || !xa_is_value(*foliop));
-> > > @@ -1866,34 +1853,30 @@ static int shmem_swapin_folio(struct inode *i=
-node, pgoff_t index,
-> > >         if (is_poisoned_swp_entry(swap))
-> > >                 return -EIO;
-> > >
-> > > -       si =3D get_swap_device(swap);
-> > > -       if (!si) {
-> > > +       mpol =3D shmem_get_pgoff_policy(info, index, 0, &ilx);
-> > > +       page =3D swapin_page_non_fault(swap, gfp, mpol, ilx, fault_mm=
-, &result);
->
-> Hi Chris,
->
-> I've been trying to address these issues in V2, most issue in other
-> patches have a straight solution, some could be discuss in seperate
-> series, but I come up with some thoughts here:
->
-> >
-> > Notice this "result" CAN be outdated. e.g. after this call, the swap
-> > cache can be changed by another thread generating the swap page fault
-> > and installing the folio into the swap cache or removing it.
->
-> This is true, and it seems a potential race also exist before this
-> series for direct (no swapcache) swapin path (do_swap_page) if I
-> understand it correctly:
+Commit 9b9c5bea0b96 ("cifs: do not return atime less than mtime") indicates
+that in cifs, if atime is less than mtime, some apps will break.
+Therefore, it introduce a function to compare this two variables in two
+places where atime is updated. If atime is less than mtime, update it to
+mtime.
 
-I just noticed I missed this email while I was cleaning up my email
-archive. Sorry for the late reply. Traveling does not help either.
+However, the patch was handled incorrectly, resulting in atime and mtime
+being exactly equal. A previous commit 69738cfdfa70 ("fs: cifs: Fix atime
+update check vs mtime") fixed one place and forgot to fix another. Fix it.
 
-I am not aware of swap in racing bugs in the existing code. Racing,
-yes. If you discover a code path for racing causing bug, please report
-it.
->
-> In do_swap_page path, multiple process could swapin the page at the
-> same time (a mapped once page can still be shared by sub threads),
-> they could get different folios. The later pte lock and pte_same check
-> is not enough, because while one process is not holding the pte lock,
-> another process could read-in, swap_free the entry, then swap-out the
-> page again, using same entry, an ABA problem. The race is not likely
-> to happen in reality but in theory possible.
+Fixes: 9b9c5bea0b96 ("cifs: do not return atime less than mtime")
+Signed-off-by: Zizhi Wo <wozizhi@huawei.com>
+---
+ fs/smb/client/file.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Have you taken into account that if the page was locked, then it
-wasn't able to change from the swapcache? I think the swap cache find
-and get function will return the page locked. Then swapcache will not
-be able to change the mapping as long as the page is still locked.
+diff --git a/fs/smb/client/file.c b/fs/smb/client/file.c
+index cf17e3dd703e..32a8525415d9 100644
+--- a/fs/smb/client/file.c
++++ b/fs/smb/client/file.c
+@@ -4671,7 +4671,7 @@ static int cifs_readpage_worker(struct file *file, struct page *page,
+ 	/* we do not want atime to be less than mtime, it broke some apps */
+ 	atime = inode_set_atime_to_ts(inode, current_time(inode));
+ 	mtime = inode_get_mtime(inode);
+-	if (timespec64_compare(&atime, &mtime))
++	if (timespec64_compare(&atime, &mtime) < 0)
+ 		inode_set_atime_to_ts(inode, inode_get_mtime(inode));
+ 
+ 	if (PAGE_SIZE > rc)
+-- 
+2.39.2
 
->
-> Same issue for shmem here, there are
-> shmem_confirm_swap/shmem_add_to_page_cache check later to prevent
-> re-installing into shmem mapping for direct swap in, but also not
-> enough. Other process could read-in and re-swapout using same entry so
-> the mapping entry seems unchanged during the time window. Still very
-> unlikely to happen in reality, but not impossible.
-
-Please take a look again with the page lock information. Report back
-if you still think there is a racing bug in the existing code. We can
-take a closer look at the concurrent call stack to trigger the bug.
-
-Chris
-
->
-> When swapcache is used there is no such issue, since swap lock and
-> swap_map are used to sync all readers, and while one reader is still
-> holding the folio, the entry is locked through swapcache, or if a
-> folio is removed from swapcache, folio_test_swapcache will fail, and
-> the reader could retry.
->
-> I'm trying to come up with a better locking for direct swap in, am I
-> missing anything here? Correct me if I get it wrong...
->
