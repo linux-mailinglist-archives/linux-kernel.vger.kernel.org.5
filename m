@@ -2,102 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D440D80FBF5
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 01:08:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6181A80FBFB
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 01:09:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378033AbjLMAIm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 19:08:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56166 "EHLO
+        id S1377738AbjLMAJM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 19:09:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56250 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377728AbjLMAIY (ORCPT
+        with ESMTP id S1377932AbjLMAI5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 19:08:24 -0500
-Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A25F173D;
-        Tue, 12 Dec 2023 16:08:11 -0800 (PST)
-Received: by mail-pf1-x434.google.com with SMTP id d2e1a72fcca58-6ce7c1b07e1so5428750b3a.2;
-        Tue, 12 Dec 2023 16:08:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702426090; x=1703030890; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=qKBBnDg1UUIS/KYipTQnXPk3zM7w4tV9LEKEnMlk//w=;
-        b=CGME4tT3xai5YOoydX/MBQH01+txhWkelSk47y1AVqWmLVqA9Uf4zlhh27uZJMaqde
-         Xy7SeZ5mA5A1yT6AlVLUWB0w5JEUIIBm8lv1W/vdTjMj2w5jDyxlcKfKu0aZCE/X34sU
-         NgdI3xkSiMHuquiaQIKPJ8MbUU/mo8lvIg/gVdsuzviDPHPNBtuULHp2bKc7VuJZoaEQ
-         Ck5kzPzkbKb7P9gA5LJSE85xncMP8BdCtgb6UD64pSNxAIxB5a8qiAQJoJcM/KhdUM2L
-         8PGKtnUCSOrYaM65U5HI2xdTj1MXZa+vCaQ/PBWkRSxgeA9qjTCY078y3dBSe/GS9uPn
-         RnoA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702426090; x=1703030890;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=qKBBnDg1UUIS/KYipTQnXPk3zM7w4tV9LEKEnMlk//w=;
-        b=eYMkg8LljEBXgTP0PWQwGGfXQLSRYfoaWCaQcNu8CXSDWbuH3qXweZ5ssaEffq47uY
-         HCcz/oT1pEjTvqEmY3qzXV4LqWtNno8tQpBDmNmP+KY/w3FbPugnZUXHsqhpo3VNR6ZW
-         TwNQGcY7d5ZFvk8OkKRKYROQqfnl1ii9q7p2m7C+IVPI8eB8zdzJSxP5cH6UBRsD7wfM
-         r4wd+KQXP1eDWbT1S2JL1E6sjGp/IcwsIx97LrspBLQDNeiR0yGwjXGWSFISnBWWRHZC
-         eungk3OS4hXsoDD3xoaC7hy7eg5MKVOyQo9uBcZpA2k+ZuyLZxDLfoWBPcfj9auZ1/gQ
-         wuPg==
-X-Gm-Message-State: AOJu0Ywcm/Irx5MCirCtgTt/oK+H1DFZZp2sQoN0kN2r8Dr4ryUEDjNr
-        3rCt3dQKMwRL+QiACf9jaK8=
-X-Google-Smtp-Source: AGHT+IF7m3+tVSh63CMfRBv8HKgwXy7mdsLpmniS4M9wrmn7Qr/17O/1jRDELASR0oM/P/jHUaqgBg==
-X-Received: by 2002:a05:6a20:748f:b0:18f:97c:9769 with SMTP id p15-20020a056a20748f00b0018f097c9769mr8858642pzd.81.1702426090491;
-        Tue, 12 Dec 2023 16:08:10 -0800 (PST)
-Received: from [10.67.48.245] ([192.19.223.252])
-        by smtp.googlemail.com with ESMTPSA id 12-20020a17090a198c00b00286d905535bsm10550220pji.0.2023.12.12.16.08.06
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 12 Dec 2023 16:08:09 -0800 (PST)
-Message-ID: <5ced5a7e-61f6-4132-bc21-c6034830221e@gmail.com>
-Date:   Tue, 12 Dec 2023 16:08:05 -0800
+        Tue, 12 Dec 2023 19:08:57 -0500
+Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [IPv6:2a03:a000:7:0:5054:ff:fe1c:15ff])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6BB6D69;
+        Tue, 12 Dec 2023 16:08:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=linux.org.uk; s=zeniv-20220401; h=Sender:Content-Transfer-Encoding:
+        MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:
+        Reply-To:Content-Type:Content-ID:Content-Description;
+        bh=FR4Bu1shg/1OWRZtkrUGIBB3IegyXrsoJGzrPQwNckk=; b=ssFYiY+Cz+KBWgVJ8B4d/3gkXn
+        kdaPXjvqWiMyWeNeW415BxuXaOWZr/rvcir6rjSIoi3+3+lILgmATZ+W4bxcDxpbUJecBraaiNNjy
+        hs6OMshEfgHBMffYJg9yaunRID73USie1VzRAZWF6e58h9C+/gJyZTrKVFAW6ty9obhyjJHYaTTBr
+        5lx++i3OL+RVyNGUqQRkgB0MXkurp+x0zQ5+apPumm5oVu1FBjZW6eUBbM3V9ODiWQF7pE9pH4R2K
+        yYFjgvhyQJ9puJPYM1270dYvEnmZQoEaYZHvcjmbcjR5lvDvT2xZxSMzV7WaL80TaY/EFwqpfuIUE
+        Ar8BllQw==;
+Received: from viro by zeniv.linux.org.uk with local (Exim 4.96 #2 (Red Hat Linux))
+        id 1rDCny-00BX1z-04;
+        Wed, 13 Dec 2023 00:08:50 +0000
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     linux-fsdevel@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org
+Subject: [PATCH 1/4] minixfs: use offset_in_page()
+Date:   Wed, 13 Dec 2023 00:08:46 +0000
+Message-Id: <20231213000849.2748576-1-viro@zeniv.linux.org.uk>
+X-Mailer: git-send-email 2.40.1
+In-Reply-To: <20231213000656.GI1674809@ZenIV>
+References: <20231213000656.GI1674809@ZenIV>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] net: mdio: mdio-bcm-unimac: Delay before first poll
-Content-Language: en-US
-To:     Justin Chen <justin.chen@broadcom.com>, netdev@vger.kernel.org
-Cc:     Doug Berger <opendmb@gmail.com>,
-        Florian Fainelli <florian.fainelli@broadcom.com>,
-        Broadcom internal kernel review list 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        open list <linux-kernel@vger.kernel.org>
-References: <20231213000249.2020835-1-justin.chen@broadcom.com>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-In-Reply-To: <20231213000249.2020835-1-justin.chen@broadcom.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Sender: Al Viro <viro@ftp.linux.org.uk>
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/12/23 16:02, Justin Chen wrote:
-> With a clock interval of 400 nsec and a 64 bit transactions (32 bit
-> preamble & 16 bit control & 16 bit data), it is reasonable to assume
-> the mdio transaction will take 25.6 usec. Add a 30 usec delay before
-> the first poll to reduce the chance of a 1000-2000 usec sleep.
-> 
-> Reduce the timeout from 1000ms to 100ms as it is unlikely for the bus
-> to take this long.
-> 
-> Signed-off-by: Justin Chen <justin.chen@broadcom.com>
+It's cheaper and more idiomatic than subtracting page_address()
+of the corresponding page...
 
-Acked-by: Florian Fainelli <florian.fainelli@broadcom.com>
+Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
+---
+ fs/minix/dir.c | 8 +++-----
+ 1 file changed, 3 insertions(+), 5 deletions(-)
 
-Thanks!
+diff --git a/fs/minix/dir.c b/fs/minix/dir.c
+index 62c313fc9a49..34a5d17f0796 100644
+--- a/fs/minix/dir.c
++++ b/fs/minix/dir.c
+@@ -268,7 +268,7 @@ int minix_add_link(struct dentry *dentry, struct inode *inode)
+ 	return -EINVAL;
+ 
+ got_it:
+-	pos = page_offset(page) + p - (char *)page_address(page);
++	pos = page_offset(page) + offset_in_page(p);
+ 	err = minix_prepare_chunk(page, pos, sbi->s_dirsize);
+ 	if (err)
+ 		goto out_unlock;
+@@ -296,8 +296,7 @@ int minix_add_link(struct dentry *dentry, struct inode *inode)
+ int minix_delete_entry(struct minix_dir_entry *de, struct page *page)
+ {
+ 	struct inode *inode = page->mapping->host;
+-	char *kaddr = page_address(page);
+-	loff_t pos = page_offset(page) + (char*)de - kaddr;
++	loff_t pos = page_offset(page) + offset_in_page(de);
+ 	struct minix_sb_info *sbi = minix_sb(inode->i_sb);
+ 	unsigned len = sbi->s_dirsize;
+ 	int err;
+@@ -421,8 +420,7 @@ int minix_set_link(struct minix_dir_entry *de, struct page *page,
+ {
+ 	struct inode *dir = page->mapping->host;
+ 	struct minix_sb_info *sbi = minix_sb(dir->i_sb);
+-	loff_t pos = page_offset(page) +
+-			(char *)de-(char*)page_address(page);
++	loff_t pos = page_offset(page) + offset_in_page(de);
+ 	int err;
+ 
+ 	lock_page(page);
 -- 
-Florian
+2.39.2
 
