@@ -2,210 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 437168120FE
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 22:55:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DF2DD81211D
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 23:00:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442639AbjLMVzb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 16:55:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49076 "EHLO
+        id S1442732AbjLMWAb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 17:00:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39856 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233861AbjLMVzW (ORCPT
+        with ESMTP id S233861AbjLMWA2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 16:55:22 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1D3810C;
-        Wed, 13 Dec 2023 13:55:26 -0800 (PST)
+        Wed, 13 Dec 2023 17:00:28 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15566DB;
+        Wed, 13 Dec 2023 14:00:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1702504527; x=1734040527;
-  h=date:from:to:cc:subject:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=o2lEbwHxUNP/lL0Zv5x84LTlhNESluWyXeo3F7KR8cs=;
-  b=QG1ufpIWnyLB6Up/SG/2/l0SBsGxKtIXVr9pqrSIXikgVjTw7BH93F5V
-   3K3N2STz19gAQGHcapG1HsRgcSz4nwHKgKBG5bOBWJhZAroMqy54coHb1
-   H8sAIUJED7wa84abxrJH1xKF+zAoRhlrGcO+G2Z3WOs1KiNNkqoIhQ/Sp
-   B2J/eLnKdkLYuD80ER/h/2oDnz9oQqBROtanRtMjHw3dQ/+t4R13TbW5o
-   PsWfTEKYve1sPwIIZwR7QNC/ca3auSOAszXHKLt+6puaNGU562MpIc3fs
-   RHybNZTKqE3wUeERDn4xaxcbejNnU6A9ySpXe/+IzMP2TopElH8LjLBfd
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10923"; a="2176917"
+  t=1702504835; x=1734040835;
+  h=message-id:date:subject:to:cc:references:from:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=pWkvIkEdJsnC49Vh2+bf3JgVJO3YbVkSiiicGz2HqxM=;
+  b=eNNzfYytzddHOhIeAvIFap4XKz2c5VNBP5UPDj59QGSPcDjFKgPRlpsI
+   ov8GF9cELjcMTz8BfF0IL3cAIdZlyWLuHWFZH0zyXUNpP84Lj7od7jyoA
+   9nE58vtihAQf3VRB99R1PomeKO7TPJq94yJePerKK/g02QhXVjWg87icB
+   h5V2QJlo7XQYoDPdhWR1B3v11qSdBnVSahrxRhu4XWz7xTzmehEkI1SB8
+   A2xZSSwf3E2DHcs4WJ5ub1qTUD6zXM0w3wBguYX9H7M8x7kyxzJDhuQ/2
+   3P52rQUkOuVElwf0i9nYCH13RHNRAXc4qiopxQAOIP4aPwCHdSlDzz0Xt
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10923"; a="2204532"
 X-IronPort-AV: E=Sophos;i="6.04,274,1695711600"; 
-   d="scan'208";a="2176917"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Dec 2023 13:55:26 -0800
+   d="scan'208";a="2204532"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Dec 2023 14:00:34 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10923"; a="808320353"
+X-IronPort-AV: E=McAfee;i="6600,9927,10923"; a="947331737"
 X-IronPort-AV: E=Sophos;i="6.04,274,1695711600"; 
-   d="scan'208";a="808320353"
-Received: from jacob-builder.jf.intel.com (HELO jacob-builder) ([10.24.100.114])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Dec 2023 13:55:26 -0800
-Date:   Wed, 13 Dec 2023 14:00:21 -0800
-From:   Jacob Pan <jacob.jun.pan@linux.intel.com>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>, X86 Kernel <x86@kernel.org>,
-        iommu@lists.linux.dev, Lu Baolu <baolu.lu@linux.intel.com>,
-        kvm@vger.kernel.org, Dave Hansen <dave.hansen@intel.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        "H. Peter Anvin" <hpa@zytor.com>, Borislav Petkov <bp@alien8.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Raj Ashok <ashok.raj@intel.com>,
-        "Tian, Kevin" <kevin.tian@intel.com>, maz@kernel.org,
-        peterz@infradead.org, seanjc@google.com,
-        Robin Murphy <robin.murphy@arm.com>,
-        jacob.jun.pan@linux.intel.com
-Subject: Re: [PATCH RFC 13/13] iommu/vt-d: Enable posted mode for device
- MSIs
-Message-ID: <20231213140021.4cc84bb2@jacob-builder>
-In-Reply-To: <87zfynt6uo.ffs@tglx>
-References: <20231112041643.2868316-1-jacob.jun.pan@linux.intel.com>
-        <20231112041643.2868316-14-jacob.jun.pan@linux.intel.com>
-        <87zfynt6uo.ffs@tglx>
-Organization: OTC
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+   d="scan'208";a="947331737"
+Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
+  by orsmga005.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 13 Dec 2023 14:00:34 -0800
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Wed, 13 Dec 2023 14:00:33 -0800
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Wed, 13 Dec 2023 14:00:33 -0800
+Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
+ fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Wed, 13 Dec 2023 14:00:33 -0800
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (104.47.57.168)
+ by edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Wed, 13 Dec 2023 14:00:33 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=LIHWW8MbCDH/eL3m4s9upttPCO9zlQ+aLdQvGtS0R/4GnvNyBdphOmnnw9Etu1/JOG3y6e6pg449CQPPhDSXvdg9b7koq+kQWExO7q9ciabwJ0LM/J/dCsDUKZyHRATJEmoVaAveEgd6/geMSyIPC1XcIDA6HB0biJoU2Amkr3uBX/7QE/XMrKYGebxXD1E1VJILtfh3LyCn8/omQW034GkK9ZPaUYdydP9vhN6LqjPDqumPMdzjS5vIaSuaSnrjXwmCpxgoNKgSFl4XmmKWd8yBpc7wUV0CfITxAxaQ0F4xNlYIjKL7nF6it0Gm7rwInP/s+teN1KMtaNQpQ59Ryw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=7pehkeXVf0LbMFXQoN16UsR+/jvPb6U/Ji5XRmEBGNI=;
+ b=ldxfjEVlnDtyLPkaf8Wnjp52TRG5UZH3I9yA3wMrfaPCL7URkD81qqtE5oqLiQzGza3J32/g7n6labwQ82LqocS2Gq7aDG/AUkOfQKiHrL2pJJ0JrrgtyB9t5f5O9So1GqFJCYv4SUfSSxGAnD3y2fvQKfKiRo0KLUzO08XUxwJH1uKTTYKt4iiHAgh22j/fKhlMI+hynln/6xaF8EOzazHxIBexj0mksfQenLQvM4tOhhtOEgVfh1fm59DOnVMay0NjP55hfqn5vbBzsEF759MLCalaaZHx2HSgbk0v0Q6lqX5tWSf/9r+I7aF2rOqGJDZ4Dne+vZ1Sw4lylms/JQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from SJ2PR11MB7573.namprd11.prod.outlook.com (2603:10b6:a03:4d2::10)
+ by SJ1PR11MB6131.namprd11.prod.outlook.com (2603:10b6:a03:45e::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7091.26; Wed, 13 Dec
+ 2023 22:00:30 +0000
+Received: from SJ2PR11MB7573.namprd11.prod.outlook.com
+ ([fe80::6710:537d:b74:f1e5]) by SJ2PR11MB7573.namprd11.prod.outlook.com
+ ([fe80::6710:537d:b74:f1e5%5]) with mapi id 15.20.7068.025; Wed, 13 Dec 2023
+ 22:00:30 +0000
+Message-ID: <19d47295-35af-4046-963f-efb7838c3eaf@intel.com>
+Date:   Wed, 13 Dec 2023 14:00:29 -0800
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 25/29] selftests/resctrl: Introduce generalized test
+ framework
+Content-Language: en-US
+To:     =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+        <linux-kselftest@vger.kernel.org>, Shuah Khan <shuah@kernel.org>,
+        "Shaopeng Tan" <tan.shaopeng@jp.fujitsu.com>,
+        =?UTF-8?Q?Maciej_Wiecz=C3=B3r-Retman?= 
+        <maciej.wieczor-retman@intel.com>,
+        Fenghua Yu <fenghua.yu@intel.com>
+CC:     <linux-kernel@vger.kernel.org>
+References: <20231211121826.14392-1-ilpo.jarvinen@linux.intel.com>
+ <20231211121826.14392-26-ilpo.jarvinen@linux.intel.com>
+From:   Reinette Chatre <reinette.chatre@intel.com>
+In-Reply-To: <20231211121826.14392-26-ilpo.jarvinen@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: MW4PR04CA0259.namprd04.prod.outlook.com
+ (2603:10b6:303:88::24) To SJ2PR11MB7573.namprd11.prod.outlook.com
+ (2603:10b6:a03:4d2::10)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SJ2PR11MB7573:EE_|SJ1PR11MB6131:EE_
+X-MS-Office365-Filtering-Correlation-Id: a0b5d102-13d6-42b1-1294-08dbfc26ebf8
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: HIAiz2Qv50OpfdlOWpnMLJ2Hky1tvtTxH99cXavQohZUkQshXshWyYnfOzhSLqjW77dEGYkNsT1+p5x1APe6qmOf5FDkXlxWO0x9Z5sXAof+vo0kLX0UP2R1AzxVNb/9ttL3+ME2kP2wd/hAZrFCoJ5ADNFwpfiHu/Eo7Any46fFjT1p95hoW0Snl2my53w2ywxeb7YRKuBBnOyhECUV63wHPrDB8c70ak98esndAMYgcGvh+cVmqjCwANJnszkKtMnV6fMFYb0kHxqzTifjX9H28ltikfIoT+zCGGv8v00NnIvo2LsPg4vD4yKGWXUWY9sV85PE4gNc6L3EKRegEHDNNh/Fn67HD8rx/zAxqw8YgGF74znEhnc+j9sMJteU3E8wXvELtHBf+QwfBAX0IyNIdes5haEBH6kFtN+JqhAtKPk0aZccwgugfnv9hvQ8RBmXxX49h0h4wtUPycXOwxvXMkTNfCo2zJbU7Dec6ob7EhKv1BhSccZiFt5eSru85PLld4+ExIhfXGSHIb+e+5qQ7DmLbIjErrFf2/ojxK5LLGghmiOeZcGoQMISM/flANdzf7aP/icIenNMVQOojI7hrqLFSJ7Ix6/1IS4m0KpbMMratjlij8BJCaL9xGBZ2c7B0otosFzaiyjFSwBLqQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ2PR11MB7573.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(136003)(376002)(346002)(366004)(39860400002)(230922051799003)(64100799003)(186009)(1800799012)(451199024)(31686004)(26005)(2616005)(82960400001)(38100700002)(36756003)(31696002)(86362001)(44832011)(4326008)(5660300002)(6512007)(53546011)(110136005)(6486002)(8936002)(66476007)(316002)(66556008)(66946007)(6636002)(41300700001)(2906002)(4744005)(478600001)(8676002)(6506007)(43740500002)(45980500001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?VWVVQ0pkSWtXR3hOMWdLNW9XdWpHVzVVQ1BNcHl2V2NQMit6VEpnbjQyeHhC?=
+ =?utf-8?B?VkVJOWliL2JtMDVhY3gwa1pBVzN2dGN4cytiakxXRHljMWY0ZUFtdnNmSk5U?=
+ =?utf-8?B?QmJjcHEvYk0yNFVMcEs2UVdldDdWak0ramtiZmZqQm8vVlNjZEQyS051YjNi?=
+ =?utf-8?B?WUcvK1BpV3RUdThTNEhRdm1LWjBIZWZ5c1JPdjhLL0lwWEtwMXJEN0J2dWMv?=
+ =?utf-8?B?MEFwQnhUU1lwMGh6UzNUSVh2eVNjaWpVSElFaGxkai9hVHBjY2pEaTV4QWVl?=
+ =?utf-8?B?ZktHQm44eEx3ODZPYnlQYW5KY3FJN0IxSjRMMmtja3dJd3F2SEk0eXpDRGhs?=
+ =?utf-8?B?WmFNUm9KMU1tRDFPZiszQmU3c0VjTDJLRys4VWhlcEVsNDhSaCtkYTlZVGM1?=
+ =?utf-8?B?U3N1K2k0bFZsdkxHM1BoZ3B4MnI0dnNDakhUZktlczlCVTZBN1ZyaWVFc3Y2?=
+ =?utf-8?B?aG5rYTdjZVcrUWZCaDhyazRKbTRLeHBYRmFMQnNmcjZKMitTVUl4MkZ0cEVp?=
+ =?utf-8?B?RGgzVkcyRlkyVVordERkalNTUnRTQ09tOUwzK09aSVIvUjAwREh1VjRTQ2RF?=
+ =?utf-8?B?MGhFK2xWSXV5M01GY29mSUJJSVltU1N1dURYRXN0UURPcS9TY3A0cG1LS2Ux?=
+ =?utf-8?B?NFFteDNUNUx6R0xJY0g5Q09HMmw3bWt0R3QvdURrN285WnZpTmVmNys5MFpO?=
+ =?utf-8?B?UHFLRVFrdzhJcEc0cHFPY2w1Rlgwc2U5cWJpUE44YUZudFk3VHF5UHhtNUVq?=
+ =?utf-8?B?NHlCcWFBdTFjVC9oZjdtdkg4SHdsdVpaQXVjSTUvR0lBNVN0Z2tZOWJkdTFV?=
+ =?utf-8?B?N1NScXFhVWZiYnk4U3pubHBCcjV2aFhFZnNZTllxejd2VjJaMENCTG45b3Iz?=
+ =?utf-8?B?YzBxSzNiYnlML1FOOW1NUnBTUEZTd1pNQ2oreUY3M1cwQ202U25KdFAxWGND?=
+ =?utf-8?B?UTlTOHI5K0JPUXkxSEtvaEU2clpaY2l3V1ZVdVpjeVVkaktGU0pCbWE2T2tl?=
+ =?utf-8?B?YmNibFVGaklwYlI2WkNobmlwTzNGcWY4RW1QTGlpeElyNHZLYVlVeVhLclN6?=
+ =?utf-8?B?WUI2VUYvUThYdWgxYjgwak1EbDIyZjFiSk12WENxVmZXSis4WFgvMm85VU1Y?=
+ =?utf-8?B?U0NMU1ZUdGhiVXNWR2ZjNGNnUzZBRmNHcTVSSmE3TVlxdjZrd3NFWXU4eVhz?=
+ =?utf-8?B?YURKYUZoTy9oSExDK0JmVTcza3E2bG1YbjdLOFUvTFFpRkZoNlhpemJ4T2pB?=
+ =?utf-8?B?SitJc2NnSnJESXNqenZCcHRmS0NaSHlodlJrSWVmUUlEK0NWOG5tUHF2Wi9B?=
+ =?utf-8?B?eUdhbDVsY3NxQkhaYmxDVCszTHJsQ1FMbHdISHhnaFJzMy84OHBoZ0k1azJB?=
+ =?utf-8?B?bUFpcms0cFQ3a0sySktIdWVncDRKS1hDRGdVbHlrZWtORXBNalNqMytTbHZG?=
+ =?utf-8?B?YVdZVkZleElJcGN5TFVUeUI1OTEvK01NU0VCaTF3TWhGcEFZbjB5YVpNMmt2?=
+ =?utf-8?B?TXZramI5cWRQbEQyREhaazRVMk9VdnAzV3RweUlGT1I0bHRJWUxXSlhFTHZi?=
+ =?utf-8?B?K1hiUkdXV3NKcE5XSDlTRzRnVWwwckl4c1BzemFpamZGaHBJNGtpYzFXeUov?=
+ =?utf-8?B?S1UxOHp5bmpreld1ZExuSWFHTmZGcE1YdUlmdW1rWmlnV3lsaUdUb2EyNlJj?=
+ =?utf-8?B?R0tLcVBNMzBiS2kwYmVGZjcwZEZBUklZdDF4L2ZBN0FLZEFEMUtZK1plbTdk?=
+ =?utf-8?B?Ykh5VjJ5VWlOeWhMZ25mQmZNU2lxLzc2Z0lhaGVzQSttSnVSY0xwVXZ5U09s?=
+ =?utf-8?B?c2hIQ3FkaGtseWd3QURKUW9OMnRvNVFrOVRiSUZPYUJYbm00Q1pHbjRzOHRI?=
+ =?utf-8?B?dE53UVduMFY1SmZWRnpSNTV1eXYyd1VVd2lPMGx1Zy9qTU5CemdGUE9ML1R0?=
+ =?utf-8?B?eXA5ZnZsb01Id3NkUXFuVGM3UDltR0NWSEpydFhqK0x5Y2NMbllYVWdCVUhn?=
+ =?utf-8?B?ZmphdU1ucnpxbSs3OWw4ZklRNUwxMm9oK2E2cERWVkpuTXY2ZklYZ3BpZkk0?=
+ =?utf-8?B?SjJKblBwYjBLcUQ1czkyZFIxdWdsd0txTmtsWTU4cHg2cDQ2MGoxSURkOTNa?=
+ =?utf-8?B?NWhjbnpYN25OTDhTRGUzNVVxOENMZUFuemdVcUQ0UEZZVnk5emwyWjc5L2lp?=
+ =?utf-8?B?MGc9PQ==?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: a0b5d102-13d6-42b1-1294-08dbfc26ebf8
+X-MS-Exchange-CrossTenant-AuthSource: SJ2PR11MB7573.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Dec 2023 22:00:30.3618
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: L4zJHoB2dQIDVDG5D4IL54K/QG9422C2cJEyyrvJkf9ANsEkAKsiqSZPcBFMOcpRuiSBIBA5tk6TuFUVTHCeyPyzk/u93Joapw8GvBqC3vQ=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ1PR11MB6131
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Thomas,
+Hi Ilpo,
 
-On Wed, 06 Dec 2023 21:26:55 +0100, Thomas Gleixner <tglx@linutronix.de>
-wrote:
-
-> On Sat, Nov 11 2023 at 20:16, Jacob Pan wrote:
-> >  #ifdef CONFIG_X86_POSTED_MSI
-> >  
-> >  static u64 get_pi_desc_addr(struct irq_data *irqd)
-> > @@ -1133,6 +1144,29 @@ static u64 get_pi_desc_addr(struct irq_data
-> > *irqd) 
-> >  	return __pa(per_cpu_ptr(&posted_interrupt_desc, cpu));
-> >  }
-> > +
-> > +static void intel_ir_reconfigure_irte_posted(struct irq_data *irqd)
-> > +{
-> > +	struct intel_ir_data *ir_data = irqd->chip_data;
-> > +	struct irte *irte = &ir_data->irte_entry;
-> > +	struct irte irte_pi;
-> > +	u64 pid_addr;
-> > +
-> > +	pid_addr = get_pi_desc_addr(irqd);
-> > +
-> > +	memset(&irte_pi, 0, sizeof(irte_pi));
-> > +
-> > +	/* The shared IRTE already be set up as posted during
-> > alloc_irte */  
+On 12/11/2023 4:18 AM, Ilpo Järvinen wrote:
+> Each test currently has a "run test" function in per test file and
+> another resctrl_tests.c. The functions in resctrl_tests.c are almost
+> identical.
 > 
-> -ENOPARSE
-Will delete this. What I meant was that the shared IRTE has already been
-setup as posted mode instead of remappable mode. So when we make a copy,
-there is no need to change the mode.
-
-> > +	dmar_copy_shared_irte(&irte_pi, irte);
-> > +
-> > +	irte_pi.pda_l = (pid_addr >> (32 - PDA_LOW_BIT)) & ~(-1UL <<
-> > PDA_LOW_BIT);
-> > +	irte_pi.pda_h = (pid_addr >> 32) & ~(-1UL << PDA_HIGH_BIT);
-> > +
-> > +	modify_irte(&ir_data->irq_2_iommu, &irte_pi);
-> > +}
-> > +
-> > +#else
-> > +static inline void intel_ir_reconfigure_irte_posted(struct irq_data
-> > *irqd) {} #endif
-> >  
-> >  static void intel_ir_reconfigure_irte(struct irq_data *irqd, bool
-> > force) @@ -1148,8 +1182,9 @@ static void
-> > intel_ir_reconfigure_irte(struct irq_data *irqd, bool force)
-> > irte->vector = cfg->vector; irte->dest_id = IRTE_DEST(cfg->dest_apicid);
-> >  
-> > -	/* Update the hardware only if the interrupt is in remapped
-> > mode. */
-> > -	if (force || ir_data->irq_2_iommu.mode == IRQ_REMAPPING)
-> > +	if (ir_data->irq_2_iommu.posted_msi)
-> > +		intel_ir_reconfigure_irte_posted(irqd);
-> > +	else if (force || ir_data->irq_2_iommu.mode == IRQ_REMAPPING)
-> >  		modify_irte(&ir_data->irq_2_iommu, irte);
-> >  }
-> >  
-> > @@ -1203,7 +1238,7 @@ static int intel_ir_set_vcpu_affinity(struct
-> > irq_data *data, void *info) struct intel_ir_data *ir_data =
-> > data->chip_data; struct vcpu_data *vcpu_pi_info = info;
-> >  
-> > -	/* stop posting interrupts, back to remapping mode */
-> > +	/* stop posting interrupts, back to the default mode */
-> >  	if (!vcpu_pi_info) {
-> >  		modify_irte(&ir_data->irq_2_iommu,
-> > &ir_data->irte_entry); } else {
-> > @@ -1300,10 +1335,14 @@ static void
-> > intel_irq_remapping_prepare_irte(struct intel_ir_data *data, {
-> >  	struct irte *irte = &data->irte_entry;
-> >  
-> > -	prepare_irte(irte, irq_cfg->vector, irq_cfg->dest_apicid);
-> > +	if (data->irq_2_iommu.mode == IRQ_POSTING)
-> > +		prepare_irte_posted(irte);
-> > +	else
-> > +		prepare_irte(irte, irq_cfg->vector,
-> > irq_cfg->dest_apicid); 
-> >  	switch (info->type) {
-> >  	case X86_IRQ_ALLOC_TYPE_IOAPIC:
-> > +		prepare_irte(irte, irq_cfg->vector,
-> > irq_cfg->dest_apicid);  
+> Generalize the one in resctrl_tests.c such that it can be shared
+> between all of the tests. It makes adding new tests easier and removes
+> the per test if () forests.
 > 
-> What? This is just wrong. Above you have:
+> Also add comment to CPU vendor IDs that they must be defined as bits
+> for a bitmask.
 > 
-> > +	if (data->irq_2_iommu.mode == IRQ_POSTING)
-> > +		prepare_irte_posted(irte);
-> > +	else
-> > +		prepare_irte(irte, irq_cfg->vector,
-> > irq_cfg->dest_apicid);  
-> 
-> Can you spot the fail?
-My bad, I forgot to delete this.
+> Signed-off-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
+> ---
 
-It is probably easier just override the IRTE for the posted MSI case.
-@@ -1274,6 +1354,11 @@ static void intel_irq_remapping_prepare_irte(struct intel_ir_data 
-*data,
-                break;
-        case X86_IRQ_ALLOC_TYPE_PCI_MSI:
-        case X86_IRQ_ALLOC_TYPE_PCI_MSIX:
-+               if (posted_msi_supported()) {
-+                       prepare_irte_posted(irte);
-+                       data->irq_2_iommu.posted_msi = 1;
-+               }
-+
+Reviewed-by: Reinette Chatre <reinette.chatre@intel.com>
 
-> 
-> >  		/* Set source-id of interrupt request */
-> >  		set_ioapic_sid(irte, info->devid);
-> >  		apic_printk(APIC_VERBOSE, KERN_DEBUG "IOAPIC[%d]: Set
-> > IRTE entry (P:%d FPD:%d Dst_Mode:%d Redir_hint:%d Trig_Mode:%d
-> > Dlvry_Mode:%X Avail:%X Vector:%02X Dest:%08X SID:%04X SQ:%X SVT:%X)\n",
-> > @@ -1315,10 +1354,18 @@ static void
-> > intel_irq_remapping_prepare_irte(struct intel_ir_data *data, sub_handle
-> > = info->ioapic.pin; break; case X86_IRQ_ALLOC_TYPE_HPET:
-> > +		prepare_irte(irte, irq_cfg->vector,
-> > irq_cfg->dest_apicid); set_hpet_sid(irte, info->devid);
-> >  		break;
-> >  	case X86_IRQ_ALLOC_TYPE_PCI_MSI:
-> >  	case X86_IRQ_ALLOC_TYPE_PCI_MSIX:
-> > +		if (posted_msi_supported()) {
-> > +			prepare_irte_posted(irte);
-> > +			data->irq_2_iommu.posted_msi = 1;
-> > +		} else {
-> > +			prepare_irte(irte, irq_cfg->vector,
-> > irq_cfg->dest_apicid);
-> > +		}  
-> 
-> Here it gets even more hilarious.
-
-
-Thanks,
-
-Jacob
+Reinette
