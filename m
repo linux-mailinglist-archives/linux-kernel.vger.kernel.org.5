@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 75539811F6E
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 20:51:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F1195811F71
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 20:52:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233796AbjLMTvo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 14:51:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54522 "EHLO
+        id S1442397AbjLMTvw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 14:51:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54554 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378934AbjLMTv0 (ORCPT
+        with ESMTP id S1379033AbjLMTv2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 14:51:26 -0500
-Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C544B9;
-        Wed, 13 Dec 2023 11:51:32 -0800 (PST)
-Received: by mail-wm1-x336.google.com with SMTP id 5b1f17b1804b1-40c2a444311so70962105e9.2;
-        Wed, 13 Dec 2023 11:51:32 -0800 (PST)
+        Wed, 13 Dec 2023 14:51:28 -0500
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AE62E0;
+        Wed, 13 Dec 2023 11:51:33 -0800 (PST)
+Received: by mail-wm1-x329.google.com with SMTP id 5b1f17b1804b1-40c3984f0cdso59661675e9.1;
+        Wed, 13 Dec 2023 11:51:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702497091; x=1703101891; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1702497092; x=1703101892; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=NrdwEALPZcYaKjrlHh8nC5j/rhRtGd0pBvTiQkbpRHQ=;
-        b=E1ktWcc+Xiz5G+Vsu4Gj0o2zO9fm6fFeFAnsR04FFy8gg4QX9STKRCA2u5yd7l7+pS
-         0BlsRxZG7GW9Q45gJM4Grxos9RnaP4kbMG9CKgOKgBT8AvUSfoALb5JhCOV0IWywd7PW
-         UUw3fVE6EJdFJmiSn4jmoZpI7xoje4ZzLas5Ri6Q/9xIfbadENs2ZeqnYj/evfXZpXaY
-         uMDwX+m8RF3kxomravf9aiS0JAdWNUJ+c/kLDNDKaIeGkkA7QY8fRSrIlG1B+fEDKjn4
-         QunOZYEZSIbiPUFuWjx2Q6C9gBOks3K4acY4KhKTanYMyrF6ojxyB5qRJN05WBd7G1+1
-         HWJw==
+        bh=eBLnvjeKj80rmtJP//IlHjPdLy+lYfLLyByJrZj8/N8=;
+        b=bxCQ3H14MTiM05nMM/WiVrgsXSWtYx1RAvZZC2hq/x+gIFZf0Vr4RclKkeb+rXrYpU
+         JYXiGXaIDobNSSxBvJl+2rX+PWQ5SBTLSrgxIDFdKl1W0IifoJcSSvPXDJuBDttjvB5I
+         q9ohyknymFvMoceBIfUPlpib3Z1lIljS3ukpZ695iL3gscXhrRyEZuXhWaBAtg84SiXM
+         MluQ3h5psi5zOjVhqFYskmmE/XVA1BscapXac2OikKxmlKLVdXGj+Fkgv9SMK9vLY3n+
+         0i7SvX7CY4boa748dvyrXZqzOyrrIjaTl0S0AQWJMPqQoURsdWZR4GyRKQhAoTgqq8kQ
+         nXTw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702497091; x=1703101891;
+        d=1e100.net; s=20230601; t=1702497092; x=1703101892;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=NrdwEALPZcYaKjrlHh8nC5j/rhRtGd0pBvTiQkbpRHQ=;
-        b=EuJN/I6d4923Ac8jU7zpJB65bDwrDhhXW1snDRFrTG0Tl1a+T+ZxOWVcnYU6VEViiv
-         Fanu/y2glRLfCPH4Ly7i/FfHF3CKspkffquvxHS4dBjrkqadmtCLstd0kQfa39Mp0IMT
-         pJifWXpXs+QkgfJdGGkquufk9y0V4cTpuA94Mz+oYV870MKKSBSXvtAvPCcr9Oww5zWD
-         YtM2f8X5RXN8VJVI68ehgqFLXGibzUhvy/2Q8hzkSrAX/WCxikHD4KjPm59d8Ztx+8BW
-         WfTRwJfY8F7UF9i2U46cdsnplT3cGVWvYLStObRh3bf2HU7z5SFQ+PmXyXNnGdQ3s5zo
-         Iagw==
-X-Gm-Message-State: AOJu0YysUJklMwh/gr6ms3HiNwXQ+oE+FU2XzcufPDA5aUPevWW9a61n
-        ZL527Zwe0ExoR654hx5TwQ==
-X-Google-Smtp-Source: AGHT+IGQU5KA/JqpSqsrp3zI8GWSKHo4cXHdH/serdCAU99kJFKSeVc9Xpk0T5VW4UF/tn/PaiNWlw==
-X-Received: by 2002:a05:600c:468d:b0:40c:3133:6efe with SMTP id p13-20020a05600c468d00b0040c31336efemr2320662wmo.358.1702497090968;
-        Wed, 13 Dec 2023 11:51:30 -0800 (PST)
+        bh=eBLnvjeKj80rmtJP//IlHjPdLy+lYfLLyByJrZj8/N8=;
+        b=uQE7sS6eDAWRDb686PJqdcsKHNiGe8cDJCo6Wpdwi4gU5y7+BAZXDcT5yySs8II/2S
+         HAUa0v0ccYzdwf867wDxBUWwFwTsyi/zPTf6dlnU9g3yehEqBRK/npCHc3wXcJm+ByWP
+         f6AbktpNPDl9JZJEEMQr73JI2bqpT6mGKYjuyYiiIuB5dUbQhheMjJlEyGvdRdf/zpVx
+         o6zR/x+O4cAgStDxt60Ylxr5HJbQr1A0CdzmhH23XjppBCuLcvIc9sXYer+9p1HVnZLp
+         Ol7acq1uYGBcJe7b2iYpAyUgdv6G977KhWUf2CRUh5a5QZo7a0lFWc/kNFQtHD+ngEgc
+         MQaQ==
+X-Gm-Message-State: AOJu0Yx9633+t1wmiUsIlGzjXKeUQ833xc8IMKSh30KDVR4jLq9UvIDF
+        dmBGmOIwvWtXKXQXXHNYmw==
+X-Google-Smtp-Source: AGHT+IF9yTALPZ/WtAhWe1OyfTmJhAh53BvI/LasLM9OYzL66wjl3/q0XJ3XWlvlHYku/I4Y0WR6ZQ==
+X-Received: by 2002:a05:600c:46c6:b0:40c:2ba6:809 with SMTP id q6-20020a05600c46c600b0040c2ba60809mr4457221wmo.157.1702497091606;
+        Wed, 13 Dec 2023 11:51:31 -0800 (PST)
 Received: from U4.lan ([2a02:810b:f40:4300:92dc:8b1c:e01c:b93c])
-        by smtp.gmail.com with ESMTPSA id fm14-20020a05600c0c0e00b00407b93d8085sm24050698wmb.27.2023.12.13.11.51.30
+        by smtp.gmail.com with ESMTPSA id fm14-20020a05600c0c0e00b00407b93d8085sm24050698wmb.27.2023.12.13.11.51.31
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Dec 2023 11:51:30 -0800 (PST)
+        Wed, 13 Dec 2023 11:51:31 -0800 (PST)
 From:   Alex Bee <knaerzche@gmail.com>
 To:     Sandy Huang <hjc@rock-chips.com>,
         =?UTF-8?q?Heiko=20St=C3=BCbner?= <heiko@sntech.de>,
@@ -63,9 +63,9 @@ Cc:     David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
         devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
         Alex Bee <knaerzche@gmail.com>
-Subject: [PATCH 06/11] drm/rockchip: inno_hdmi: Add RK3128 support
-Date:   Wed, 13 Dec 2023 20:51:20 +0100
-Message-ID: <20231213195125.212923-7-knaerzche@gmail.com>
+Subject: [PATCH 07/11] drm/rockchip: inno_hdmi: Add basic mode validation
+Date:   Wed, 13 Dec 2023 20:51:21 +0100
+Message-ID: <20231213195125.212923-8-knaerzche@gmail.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20231213195125.212923-1-knaerzche@gmail.com>
 References: <20231213195125.212923-1-knaerzche@gmail.com>
@@ -73,7 +73,7 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -81,121 +81,89 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This variant requires the phy reference clock to be enabled before the
-DDC block can work and the (initial) DDC bus frequency is calculated
-based on the rate of this clock.
-Besides the only difference is phy configuration which is required to make
-the driver working for this variant as well.
+As per TRM this controller supports pixelclocks starting from 25 MHz. The
+maximum supported pixelclocks are defined by the phy configurations we
+have. Also it can't support modes that require doubled clocks.
+If there is a phy reference clock we can additionally validate against
+VESA DMT's recommendations.
+Those checks are added to the mode_valid hook of the connector and
+encoder's mode_fixup hook.
 
 Signed-off-by: Alex Bee <knaerzche@gmail.com>
 ---
- drivers/gpu/drm/rockchip/inno_hdmi.c | 46 +++++++++++++++++++++++++---
- 1 file changed, 41 insertions(+), 5 deletions(-)
+ drivers/gpu/drm/rockchip/inno_hdmi.c | 38 ++++++++++++++++++++++++++--
+ 1 file changed, 36 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/gpu/drm/rockchip/inno_hdmi.c b/drivers/gpu/drm/rockchip/inno_hdmi.c
-index 593b184bd0ad..f7f0bec725f9 100644
+index f7f0bec725f9..2f839ff31c1c 100644
 --- a/drivers/gpu/drm/rockchip/inno_hdmi.c
 +++ b/drivers/gpu/drm/rockchip/inno_hdmi.c
-@@ -63,6 +63,7 @@ struct inno_hdmi {
- 
- 	int irq;
- 	struct clk *pclk;
-+	struct clk *refclk;
- 	void __iomem *regs;
- 
- 	struct drm_connector	connector;
-@@ -85,6 +86,12 @@ static struct inno_hdmi_phy_config rk3036_hdmi_phy_configs[] = {
- 	{ ~0UL,	     0x00, 0x00 }
+@@ -38,6 +38,8 @@ struct inno_hdmi_variant {
+ 	struct inno_hdmi_phy_config *default_phy_config;
  };
  
-+static struct inno_hdmi_phy_config rk3128_hdmi_phy_configs[] = {
-+	{ 74250000,  0x3f, 0xaa },
-+	{ 165000000, 0x5f, 0xaa },
-+	{ ~0UL,	     0x00, 0x00 }
-+};
++#define INNO_HDMI_MIN_TMDS_CLOCK  25000000U
 +
- static struct inno_hdmi *encoder_to_inno_hdmi(struct drm_encoder *encoder)
+ struct hdmi_data_info {
+ 	int vic;
+ 	bool sink_has_audio;
+@@ -572,6 +574,34 @@ static int inno_hdmi_setup(struct inno_hdmi *hdmi,
+ 	return 0;
+ }
+ 
++static enum drm_mode_status inno_hdmi_mode_valid(struct inno_hdmi *hdmi,
++						 struct drm_display_mode *mode)
++{
++	/* No support for double-clock modes */
++	if (mode->flags & DRM_MODE_FLAG_DBLCLK)
++		return MODE_BAD;
++
++	unsigned int mpixelclk = mode->clock * 1000;
++
++	if (mpixelclk < INNO_HDMI_MIN_TMDS_CLOCK)
++		return MODE_CLOCK_LOW;
++
++	if (inno_hdmi_find_phy_config(hdmi, mpixelclk) < 0)
++		return MODE_CLOCK_HIGH;
++
++	if (hdmi->refclk) {
++		long refclk = clk_round_rate(hdmi->refclk, mpixelclk);
++		unsigned int max_tolerance = mpixelclk / 5000;
++
++		/* Vesa DMT standard mentions +/- 0.5% max tolerance */
++		if (abs(refclk - mpixelclk) > max_tolerance ||
++		    mpixelclk - refclk > max_tolerance)
++			return MODE_NOCLOCK;
++	}
++
++	return MODE_OK;
++}
++
+ static void inno_hdmi_encoder_mode_set(struct drm_encoder *encoder,
+ 				       struct drm_display_mode *mode,
+ 				       struct drm_display_mode *adj_mode)
+@@ -602,7 +632,9 @@ static bool inno_hdmi_encoder_mode_fixup(struct drm_encoder *encoder,
+ 					 const struct drm_display_mode *mode,
+ 					 struct drm_display_mode *adj_mode)
  {
- 	struct rockchip_encoder *rkencoder = to_rockchip_encoder(encoder);
-@@ -930,6 +937,20 @@ static int inno_hdmi_bind(struct device *dev, struct device *master,
- 		return ret;
- 	}
- 
-+	hdmi->refclk = devm_clk_get_optional(hdmi->dev, "ref");
-+	if (IS_ERR(hdmi->refclk)) {
-+		DRM_DEV_ERROR(hdmi->dev, "Unable to get HDMI reference clock\n");
-+		ret = PTR_ERR(hdmi->refclk);
-+		goto err_disable_pclk;
-+	}
+-	return true;
++	struct inno_hdmi *hdmi = encoder_to_inno_hdmi(encoder);
 +
-+	ret = clk_prepare_enable(hdmi->refclk);
-+	if (ret) {
-+		DRM_DEV_ERROR(hdmi->dev,
-+			      "Cannot enable HDMI reference clock: %d\n", ret);
-+		goto err_disable_pclk;
-+	}
-+
- 	irq = platform_get_irq(pdev, 0);
- 	if (irq < 0) {
- 		ret = irq;
-@@ -946,12 +967,16 @@ static int inno_hdmi_bind(struct device *dev, struct device *master,
- 	}
- 
- 	/*
--	 * When IP controller haven't configured to an accurate video
--	 * timing, then the TMDS clock source would be switched to
--	 * PCLK_HDMI, so we need to init the TMDS rate to PCLK rate,
--	 * and reconfigure the DDC clock.
-+	 * When IP controller isn't configured to an accurate
-+	 * video timing and there is no reference clock available,
-+	 * then the TMDS clock source would be switched to PCLK_HDMI,
-+	 * so we need to init the TMDS rate to PCLK rate, and
-+	 * reconfigure the DDC clock.
- 	 */
--	hdmi->tmds_rate = clk_get_rate(hdmi->pclk);
-+	if (hdmi->refclk)
-+		hdmi->tmds_rate = clk_get_rate(hdmi->refclk);
-+	else
-+		hdmi->tmds_rate = clk_get_rate(hdmi->pclk);
- 	inno_hdmi_i2c_init(hdmi);
- 
- 	ret = inno_hdmi_register(drm, hdmi);
-@@ -976,6 +1001,8 @@ static int inno_hdmi_bind(struct device *dev, struct device *master,
- err_put_adapter:
- 	i2c_put_adapter(hdmi->ddc);
- err_disable_clk:
-+	clk_disable_unprepare(hdmi->refclk);
-+err_disable_pclk:
- 	clk_disable_unprepare(hdmi->pclk);
- 	return ret;
- }
-@@ -989,6 +1016,7 @@ static void inno_hdmi_unbind(struct device *dev, struct device *master,
- 	hdmi->encoder.encoder.funcs->destroy(&hdmi->encoder.encoder);
- 
- 	i2c_put_adapter(hdmi->ddc);
-+	clk_disable_unprepare(hdmi->refclk);
- 	clk_disable_unprepare(hdmi->pclk);
++	return inno_hdmi_mode_valid(hdmi, adj_mode) == MODE_OK;
  }
  
-@@ -1012,10 +1040,18 @@ static const struct inno_hdmi_variant rk3036_inno_hdmi_variant = {
- 	.default_phy_config = &rk3036_hdmi_phy_configs[1],
- };
- 
-+static const struct inno_hdmi_variant rk3128_inno_hdmi_variant = {
-+	.phy_configs = rk3128_hdmi_phy_configs,
-+	.default_phy_config = &rk3128_hdmi_phy_configs[1],
-+};
+ static int
+@@ -659,7 +691,9 @@ static enum drm_mode_status
+ inno_hdmi_connector_mode_valid(struct drm_connector *connector,
+ 			       struct drm_display_mode *mode)
+ {
+-	return MODE_OK;
++	struct inno_hdmi *hdmi = connector_to_inno_hdmi(connector);
 +
- static const struct of_device_id inno_hdmi_dt_ids[] = {
- 	{ .compatible = "rockchip,rk3036-inno-hdmi",
- 	  .data = &rk3036_inno_hdmi_variant,
- 	},
-+	{ .compatible = "rockchip,rk3128-inno-hdmi",
-+	  .data = &rk3128_inno_hdmi_variant,
-+	},
- 	{},
- };
- MODULE_DEVICE_TABLE(of, inno_hdmi_dt_ids);
++	return inno_hdmi_mode_valid(hdmi, mode);
+ }
+ 
+ static int
 -- 
 2.43.0
 
