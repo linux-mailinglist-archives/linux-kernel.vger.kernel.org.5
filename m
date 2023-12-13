@@ -2,157 +2,282 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 754BC810BEE
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 09:02:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EB838810BF1
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 09:04:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378733AbjLMICa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 03:02:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56714 "EHLO
+        id S1378715AbjLMIEf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 03:04:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46558 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232673AbjLMIC3 (ORCPT
+        with ESMTP id S232673AbjLMIEd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 03:02:29 -0500
-Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DA2CD0;
-        Wed, 13 Dec 2023 00:02:35 -0800 (PST)
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 3BD82M9m002149;
-        Wed, 13 Dec 2023 02:02:22 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1702454542;
-        bh=MBKsgsuYGX4k9jFCM4rlwljZIghlRoJN70MfqBeb5vE=;
-        h=From:To:CC:Subject:Date;
-        b=YUK5ZNUqD6b2dti6512xGmw2HQ7IJkClY5Wpyzd6r6lQOaooZYgLPkoh7wEfrHFca
-         50RiyyjvAfQWnpbBrpF0leDLnRLpPfzfym7a/Y1Auhyf8Q7ZltCNNFpVjI1oUilbnO
-         Ob7bVL6A1/dulOtTp/8ms1hHKnAKelGWWiB4G90A=
-Received: from DLEE103.ent.ti.com (dlee103.ent.ti.com [157.170.170.33])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 3BD82MmU126291
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 13 Dec 2023 02:02:22 -0600
-Received: from DLEE100.ent.ti.com (157.170.170.30) by DLEE103.ent.ti.com
- (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 13
- Dec 2023 02:02:21 -0600
-Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DLEE100.ent.ti.com
- (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Wed, 13 Dec 2023 02:02:21 -0600
-Received: from uda0492258.dhcp.ti.com (uda0492258.dhcp.ti.com [172.24.227.9])
-        by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 3BD82HU8024879;
-        Wed, 13 Dec 2023 02:02:18 -0600
-From:   Siddharth Vadapalli <s-vadapalli@ti.com>
-To:     <nm@ti.com>, <vigneshr@ti.com>, <kristo@kernel.org>,
-        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
-        <conor+dt@kernel.org>
-CC:     <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <danishanwar@ti.com>,
-        <r-gunasekaran@ti.com>, <srk@ti.com>, <s-vadapalli@ti.com>
-Subject: [PATCH v2] arm64: dts: ti: k3-am654-icssg2: Enable PHY interrupts for ICSSG2
-Date:   Wed, 13 Dec 2023 13:32:16 +0530
-Message-ID: <20231213080216.1710730-1-s-vadapalli@ti.com>
-X-Mailer: git-send-email 2.34.1
+        Wed, 13 Dec 2023 03:04:33 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6F07DC;
+        Wed, 13 Dec 2023 00:04:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1702454678; x=1733990678;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=HnHExTg8+nknaiMkMyLtJsie4oNqgS0pN4C44lFLG/I=;
+  b=SGQeHYlE3diCZLIDm6Iur8zFaLgIWmrbIcscreHK/gGIxOQglUtQ4dAx
+   YSoCJb//KMqDuM+isTVaLIvKJBeRDjmFkttedo11ggpSxQK4AIkooeeWX
+   BM9Q4/VLMGChElVBZFDo/aufoCy8FJcY5yrSBZkyIJLQmRlYQ6cVPYCLu
+   F3+mWnwpq5A2QbOXtRWg3/GLgaaZbs+TOddZ6hkNQqFLyD6vX71EbcBS3
+   U9SZgb/Oe0zx3tz8gxlHIehvLDf8VbltX1KAzVCvp5aZAq8mkMlt7nApj
+   r14L8SQUaaeGJm9CZf0sXNRNpiDtskh5h1zJH6KHSP4Jp20WXo+28y2dQ
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10922"; a="397713145"
+X-IronPort-AV: E=Sophos;i="6.04,272,1695711600"; 
+   d="scan'208";a="397713145"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Dec 2023 00:04:38 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10922"; a="844223558"
+X-IronPort-AV: E=Sophos;i="6.04,272,1695711600"; 
+   d="scan'208";a="844223558"
+Received: from binbinwu-mobl.ccr.corp.intel.com (HELO [10.238.2.128]) ([10.238.2.128])
+  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Dec 2023 00:02:49 -0800
+Message-ID: <0bdec814-abee-491b-b1fe-73cd3d01d579@linux.intel.com>
+Date:   Wed, 13 Dec 2023 16:02:47 +0800
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v17 023/116] KVM: TDX: Refuse to unplug the last cpu on
+ the package
+To:     isaku.yamahata@intel.com
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        isaku.yamahata@gmail.com, Paolo Bonzini <pbonzini@redhat.com>,
+        erdemaktas@google.com, Sean Christopherson <seanjc@google.com>,
+        Sagi Shahar <sagis@google.com>,
+        David Matlack <dmatlack@google.com>,
+        Kai Huang <kai.huang@intel.com>,
+        Zhi Wang <zhi.wang.linux@gmail.com>, chen.bo@intel.com,
+        hang.yuan@intel.com, tina.zhang@intel.com
+References: <cover.1699368322.git.isaku.yamahata@intel.com>
+ <e40ecd771a513fc0fa6fa207e2c1e408ded7734d.1699368322.git.isaku.yamahata@intel.com>
+From:   Binbin Wu <binbin.wu@linux.intel.com>
+In-Reply-To: <e40ecd771a513fc0fa6fa207e2c1e408ded7734d.1699368322.git.isaku.yamahata@intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Enable interrupt mode of operation of the DP83867 Ethernet PHY which is
-used by ICSSG2. The DP83867 PHY driver already supports interrupt handling
-for interrupts generated by the PHY. Thus, add the necessary device-tree
-support to enable it.
 
-Since the GPIO1_87 line is muxed with EXT_REFCLK1 and SYNC1_OUT, update
-the pinmux to select GPIO1_87 for routing the interrupt.
 
-As the same interrupt line and therefore the same pinmux configuration is
-applicable to both Ethernet PHYs used by ICSSG2, allocate the pinmux
-resource to the first Ethernet PHY alone.
+On 11/7/2023 10:55 PM, isaku.yamahata@intel.com wrote:
+> From: Isaku Yamahata <isaku.yamahata@intel.com>
+>
+> In order to reclaim TDX HKID, (i.e. when deleting guest TD), needs to call
+> TDH.PHYMEM.PAGE.WBINVD on all packages.  If we have active TDX HKID, refuse
+> to offline the last online cpu to guarantee at least one CPU online per
+> package. Add arch callback for cpu offline.
+> Because TDX doesn't support suspend, this also refuses suspend if TDs are
+> running.  If no TD is running, suspend is allowed.
+>
+> Suggested-by: Sean Christopherson <seanjc@google.com>
+> Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
 
-Signed-off-by: Siddharth Vadapalli <s-vadapalli@ti.com>
-Reviewed-by: MD Danish Anwar <danishanwar@ti.com>
----
-Hello,
+Reviewed-by: Binbin Wu <binbin.wu@linux.intel.com>
 
-This patch is based on linux-next tagged next-20231213.
-
-v1:
-https://lore.kernel.org/r/20231120063159.539306-1-s-vadapalli@ti.com/
-Changes since v1:
-- Rebased patch on next-20231213.
-- Collected Reviewed-by tag from
-  MD Danish Anwar <danishanwar@ti.com>
-- Moved pinctrl from MDIO node to Ethernet PHY node based on feedback from
-  Nishanth Menon <nm@ti.com>
-- Replaced the hard-coded value 0x2 with IRQ_TYPE_EDGE_FALLING for
-  setting the interrupt trigger type and level flag based on feedback from
-  Nishanth Menon <nm@ti.com>
-- Included dt-bindings/interrupt-controller/irq.h in the overlay.
-- Updated commit message with details of the pinmux resource allocation.
-
-Regards,
-Siddharth.
-
- arch/arm64/boot/dts/ti/k3-am654-icssg2.dtso | 17 +++++++++++++++++
- 1 file changed, 17 insertions(+)
-
-diff --git a/arch/arm64/boot/dts/ti/k3-am654-icssg2.dtso b/arch/arm64/boot/dts/ti/k3-am654-icssg2.dtso
-index ec8cf20ca3ac..6eabdfa0d602 100644
---- a/arch/arm64/boot/dts/ti/k3-am654-icssg2.dtso
-+++ b/arch/arm64/boot/dts/ti/k3-am654-icssg2.dtso
-@@ -8,6 +8,7 @@
- /dts-v1/;
- /plugin/;
- 
-+#include <dt-bindings/interrupt-controller/irq.h>
- #include <dt-bindings/net/ti-dp83867.h>
- #include "k3-pinctrl.h"
- 
-@@ -124,6 +125,15 @@ AM65X_IOPAD(0x0088, PIN_INPUT, 2) /* (AG17) PRG2_PRU0_GPO4.PRG2_RGMII1_RX_CTL */
- 	};
- };
- 
-+&main_pmx1 {
-+	/* Select GPIO1_87 for ICSSG2 PHY interrupt */
-+	icssg2_phy_irq_pins_default: icssg2-phy-irq-default-pins {
-+		pinctrl-single,pins = <
-+			AM65X_IOPAD(0x0014, PIN_INPUT, 7) /* (A22) EXT_REFCLK1.GPIO1_87 */
-+		>;
-+	};
-+};
-+
- &icssg2_mdio {
- 	status = "okay";
- 	pinctrl-names = "default";
-@@ -132,13 +142,20 @@ &icssg2_mdio {
- 	#size-cells = <0>;
- 
- 	icssg2_phy0: ethernet-phy@0 {
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&icssg2_phy_irq_pins_default>;
-+
- 		reg = <0>;
-+		interrupt-parent = <&main_gpio1>;
-+		interrupts = <87 IRQ_TYPE_EDGE_FALLING>;
- 		ti,rx-internal-delay = <DP83867_RGMIIDCTL_2_00_NS>;
- 		ti,fifo-depth = <DP83867_PHYCR_FIFO_DEPTH_4_B_NIB>;
- 	};
- 
- 	icssg2_phy1: ethernet-phy@3 {
- 		reg = <3>;
-+		interrupt-parent = <&main_gpio1>;
-+		interrupts = <87 IRQ_TYPE_EDGE_FALLING>;
- 		ti,rx-internal-delay = <DP83867_RGMIIDCTL_2_00_NS>;
- 		ti,fifo-depth = <DP83867_PHYCR_FIFO_DEPTH_4_B_NIB>;
- 	};
--- 
-2.34.1
+> ---
+>   arch/x86/include/asm/kvm-x86-ops.h |  1 +
+>   arch/x86/include/asm/kvm_host.h    |  1 +
+>   arch/x86/kvm/vmx/main.c            |  1 +
+>   arch/x86/kvm/vmx/tdx.c             | 41 ++++++++++++++++++++++++++++++
+>   arch/x86/kvm/vmx/x86_ops.h         |  2 ++
+>   arch/x86/kvm/x86.c                 |  5 ++++
+>   include/linux/kvm_host.h           |  1 +
+>   virt/kvm/kvm_main.c                | 12 +++++++--
+>   8 files changed, 62 insertions(+), 2 deletions(-)
+>
+> diff --git a/arch/x86/include/asm/kvm-x86-ops.h b/arch/x86/include/asm/kvm-x86-ops.h
+> index d05a829254ea..0fbafb287839 100644
+> --- a/arch/x86/include/asm/kvm-x86-ops.h
+> +++ b/arch/x86/include/asm/kvm-x86-ops.h
+> @@ -18,6 +18,7 @@ KVM_X86_OP(check_processor_compatibility)
+>   KVM_X86_OP(hardware_enable)
+>   KVM_X86_OP(hardware_disable)
+>   KVM_X86_OP(hardware_unsetup)
+> +KVM_X86_OP_OPTIONAL_RET0(offline_cpu)
+>   KVM_X86_OP(has_emulated_msr)
+>   KVM_X86_OP(vcpu_after_set_cpuid)
+>   KVM_X86_OP(is_vm_type_supported)
+> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
+> index 742ac63e1992..56d0ba5793cf 100644
+> --- a/arch/x86/include/asm/kvm_host.h
+> +++ b/arch/x86/include/asm/kvm_host.h
+> @@ -1570,6 +1570,7 @@ struct kvm_x86_ops {
+>   	int (*hardware_enable)(void);
+>   	void (*hardware_disable)(void);
+>   	void (*hardware_unsetup)(void);
+> +	int (*offline_cpu)(void);
+>   	bool (*has_emulated_msr)(struct kvm *kvm, u32 index);
+>   	void (*vcpu_after_set_cpuid)(struct kvm_vcpu *vcpu);
+>   
+> diff --git a/arch/x86/kvm/vmx/main.c b/arch/x86/kvm/vmx/main.c
+> index 7082e9ea8492..c8213d6ea301 100644
+> --- a/arch/x86/kvm/vmx/main.c
+> +++ b/arch/x86/kvm/vmx/main.c
+> @@ -121,6 +121,7 @@ struct kvm_x86_ops vt_x86_ops __initdata = {
+>   	.check_processor_compatibility = vmx_check_processor_compat,
+>   
+>   	.hardware_unsetup = vt_hardware_unsetup,
+> +	.offline_cpu = tdx_offline_cpu,
+>   
+>   	.hardware_enable = vt_hardware_enable,
+>   	.hardware_disable = vmx_hardware_disable,
+> diff --git a/arch/x86/kvm/vmx/tdx.c b/arch/x86/kvm/vmx/tdx.c
+> index 6017e0feac1e..51aa114feb86 100644
+> --- a/arch/x86/kvm/vmx/tdx.c
+> +++ b/arch/x86/kvm/vmx/tdx.c
+> @@ -64,6 +64,7 @@ static struct tdx_info tdx_info __ro_after_init;
+>    */
+>   static DEFINE_MUTEX(tdx_lock);
+>   static struct mutex *tdx_mng_key_config_lock;
+> +static atomic_t nr_configured_hkid;
+>   
+>   static __always_inline hpa_t set_hkid_to_hpa(hpa_t pa, u16 hkid)
+>   {
+> @@ -79,6 +80,7 @@ static inline void tdx_hkid_free(struct kvm_tdx *kvm_tdx)
+>   {
+>   	tdx_guest_keyid_free(kvm_tdx->hkid);
+>   	kvm_tdx->hkid = -1;
+> +	atomic_dec(&nr_configured_hkid);
+>   }
+>   
+>   static inline bool is_hkid_assigned(struct kvm_tdx *kvm_tdx)
+> @@ -562,6 +564,7 @@ static int __tdx_td_init(struct kvm *kvm, struct td_params *td_params,
+>   	if (ret < 0)
+>   		return ret;
+>   	kvm_tdx->hkid = ret;
+> +	atomic_inc(&nr_configured_hkid);
+>   
+>   	va = __get_free_page(GFP_KERNEL_ACCOUNT);
+>   	if (!va)
+> @@ -932,3 +935,41 @@ void tdx_hardware_unsetup(void)
+>   	/* kfree accepts NULL. */
+>   	kfree(tdx_mng_key_config_lock);
+>   }
+> +
+> +int tdx_offline_cpu(void)
+> +{
+> +	int curr_cpu = smp_processor_id();
+> +	cpumask_var_t packages;
+> +	int ret = 0;
+> +	int i;
+> +
+> +	/* No TD is running.  Allow any cpu to be offline. */
+> +	if (!atomic_read(&nr_configured_hkid))
+> +		return 0;
+> +
+> +	/*
+> +	 * In order to reclaim TDX HKID, (i.e. when deleting guest TD), need to
+> +	 * call TDH.PHYMEM.PAGE.WBINVD on all packages to program all memory
+> +	 * controller with pconfig.  If we have active TDX HKID, refuse to
+> +	 * offline the last online cpu.
+> +	 */
+> +	if (!zalloc_cpumask_var(&packages, GFP_KERNEL))
+> +		return -ENOMEM;
+> +	for_each_online_cpu(i) {
+> +		if (i != curr_cpu)
+> +			cpumask_set_cpu(topology_physical_package_id(i), packages);
+> +	}
+> +	/* Check if this cpu is the last online cpu of this package. */
+> +	if (!cpumask_test_cpu(topology_physical_package_id(curr_cpu), packages))
+> +		ret = -EBUSY;
+> +	free_cpumask_var(packages);
+> +	if (ret)
+> +		/*
+> +		 * Because it's hard for human operator to understand the
+> +		 * reason, warn it.
+> +		 */
+> +#define MSG_ALLPKG_ONLINE \
+> +	"TDX requires all packages to have an online CPU. Delete all TDs in order to offline all CPUs of a package.\n"
+> +		pr_warn_ratelimited(MSG_ALLPKG_ONLINE);
+> +	return ret;
+> +}
+> diff --git a/arch/x86/kvm/vmx/x86_ops.h b/arch/x86/kvm/vmx/x86_ops.h
+> index feee8c1e737f..ffba64008682 100644
+> --- a/arch/x86/kvm/vmx/x86_ops.h
+> +++ b/arch/x86/kvm/vmx/x86_ops.h
+> @@ -138,6 +138,7 @@ void vmx_setup_mce(struct kvm_vcpu *vcpu);
+>   int __init tdx_hardware_setup(struct kvm_x86_ops *x86_ops);
+>   void tdx_hardware_unsetup(void);
+>   bool tdx_is_vm_type_supported(unsigned long type);
+> +int tdx_offline_cpu(void);
+>   
+>   int tdx_vm_enable_cap(struct kvm *kvm, struct kvm_enable_cap *cap);
+>   int tdx_vm_init(struct kvm *kvm);
+> @@ -148,6 +149,7 @@ int tdx_vm_ioctl(struct kvm *kvm, void __user *argp);
+>   static inline int tdx_hardware_setup(struct kvm_x86_ops *x86_ops) { return -EOPNOTSUPP; }
+>   static inline void tdx_hardware_unsetup(void) {}
+>   static inline bool tdx_is_vm_type_supported(unsigned long type) { return false; }
+> +static inline int tdx_offline_cpu(void) { return 0; }
+>   
+>   static inline int tdx_vm_enable_cap(struct kvm *kvm, struct kvm_enable_cap *cap)
+>   {
+> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> index 9ef81d235406..191ac1e0d96d 100644
+> --- a/arch/x86/kvm/x86.c
+> +++ b/arch/x86/kvm/x86.c
+> @@ -12421,6 +12421,11 @@ void kvm_arch_hardware_disable(void)
+>   	drop_user_return_notifiers();
+>   }
+>   
+> +int kvm_arch_offline_cpu(unsigned int cpu)
+> +{
+> +	return static_call(kvm_x86_offline_cpu)();
+> +}
+> +
+>   bool kvm_vcpu_is_reset_bsp(struct kvm_vcpu *vcpu)
+>   {
+>   	return vcpu->kvm->arch.bsp_vcpu_id == vcpu->vcpu_id;
+> diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
+> index 687589ce9f63..96ff951bdd29 100644
+> --- a/include/linux/kvm_host.h
+> +++ b/include/linux/kvm_host.h
+> @@ -1502,6 +1502,7 @@ static inline void kvm_create_vcpu_debugfs(struct kvm_vcpu *vcpu) {}
+>   int kvm_arch_hardware_enable(void);
+>   void kvm_arch_hardware_disable(void);
+>   #endif
+> +int kvm_arch_offline_cpu(unsigned int cpu);
+>   int kvm_arch_vcpu_runnable(struct kvm_vcpu *vcpu);
+>   bool kvm_arch_vcpu_in_kernel(struct kvm_vcpu *vcpu);
+>   int kvm_arch_vcpu_should_kick(struct kvm_vcpu *vcpu);
+> diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
+> index ba2f993c9655..29fdb39976e0 100644
+> --- a/virt/kvm/kvm_main.c
+> +++ b/virt/kvm/kvm_main.c
+> @@ -5578,13 +5578,21 @@ static void hardware_disable_nolock(void *junk)
+>   	__this_cpu_write(hardware_enabled, false);
+>   }
+>   
+> +__weak int kvm_arch_offline_cpu(unsigned int cpu)
+> +{
+> +	return 0;
+> +}
+> +
+>   static int kvm_offline_cpu(unsigned int cpu)
+>   {
+> +	int r = 0;
+> +
+>   	mutex_lock(&kvm_lock);
+> -	if (kvm_usage_count)
+> +	r = kvm_arch_offline_cpu(cpu);
+> +	if (!r && kvm_usage_count)
+>   		hardware_disable_nolock(NULL);
+>   	mutex_unlock(&kvm_lock);
+> -	return 0;
+> +	return r;
+>   }
+>   
+>   static void hardware_disable_all_nolock(void)
 
