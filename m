@@ -2,112 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C5E58110CA
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 13:13:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A5288110CC
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 13:14:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233349AbjLMMN3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 07:13:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59042 "EHLO
+        id S233375AbjLMMNz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 07:13:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57028 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232163AbjLMMN2 (ORCPT
+        with ESMTP id S233315AbjLMMNy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 07:13:28 -0500
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65F00CD
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 04:13:34 -0800 (PST)
-Received: by mail-wr1-x434.google.com with SMTP id ffacd0b85a97d-3363aa1b7d2so466858f8f.0
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 04:13:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1702469613; x=1703074413; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=itOaiy93IE/Oi6dMo6HICWXrGEv+UyQ/qj9qyPZPCTI=;
-        b=TzxUdnVcAGZyDE7aYTDCJG6I8+hoohg1CWfT+OuwxYD+lLWez8DqiQWBWq8Fm8Cga8
-         BF+fPu9Ayu9HbMn6ESP3ptoFaGytSlZBXiyqAWBKbwT51IR+EEKuzPrwg/OSYY+oaZ77
-         pJ2poqy/X+86bC74YxVada1+EzRNe9A5P9JunjWmmFos+V6IHTiPoCVGVePRxFJqDLCh
-         pVCKRjxP0viH4yhWz6w7IlYDSeTdbdNLG+bvKcivxoMJqTtBe2asFK/HbWBPRtJ1eAa3
-         PBS1CXF7aO38vQuXBh8ZVbLGO4x8uQqFJJSCGB+ApYmqraeqxSro4hT+IKhrcf3giyju
-         JsvQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702469613; x=1703074413;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=itOaiy93IE/Oi6dMo6HICWXrGEv+UyQ/qj9qyPZPCTI=;
-        b=KzWust29pnfvKbVgQz/sMi5cKGTZPnC9V/3i7ETptcQOXCb0BbAvx5waQnoozSjN49
-         wvRRTjZAfkhDAMuUWSUAHqyCLkJnAftU6dT2dUHBd1n1YAtvoD7il6rVnlJi5EtYBYNv
-         acAeUXRht7dZWjKwEpcpH08+XoBiprG20OmSYd141J/IYDGsK/pB/chpYcpQqoU3fYhu
-         nLEsVLl+S0/BOnR8VhmrawmCEr+xnV8kLdtCI+PiYHZvygpPBPqHIkIulL+9vf229FUV
-         93p8pfv7TBAsfOsvJ0OZV5G1Ck1wdnk3LJu5mzRtprVz8ROTGW67douV7di6b76I6Gu6
-         fYzw==
-X-Gm-Message-State: AOJu0YwZ1zaMnCo6fK6WbaNcwy/607d+ZJvsuxafLdmReMfZ0gmls6FI
-        RTnsnE9KiwZ1tu0eOVES3WJ1vg==
-X-Google-Smtp-Source: AGHT+IHBVhZ856MZTBC5mOJutrT1OZrSe6h1yPpkPxqc4M4ZwxuWH5d46WF0/Hk0NPQHpI9BVcoRzQ==
-X-Received: by 2002:adf:fc0b:0:b0:336:3843:ab7a with SMTP id i11-20020adffc0b000000b003363843ab7amr395500wrr.115.1702469612760;
-        Wed, 13 Dec 2023 04:13:32 -0800 (PST)
-Received: from mai.box.freepro.com ([2a05:6e02:1041:c10:c49e:e1a5:3210:b8c0])
-        by smtp.gmail.com with ESMTPSA id g3-20020adff403000000b003335ddce799sm13224614wro.103.2023.12.13.04.13.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Dec 2023 04:13:32 -0800 (PST)
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-To:     rafael@kernel.org, daniel.lezcano@linaro.org
-Cc:     Zhang Rui <rui.zhang@intel.com>, Lukasz Luba <lukasz.luba@arm.com>,
-        linux-pm@vger.kernel.org (open list:THERMAL),
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH] thermal/core: Check get_temp ops is present when registering a tz
-Date:   Wed, 13 Dec 2023 13:13:22 +0100
-Message-Id: <20231213121322.2486967-1-daniel.lezcano@linaro.org>
-X-Mailer: git-send-email 2.34.1
+        Wed, 13 Dec 2023 07:13:54 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89EB7B0
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 04:14:00 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6D52CC433C8;
+        Wed, 13 Dec 2023 12:13:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1702469640;
+        bh=2ypXgnL4ECCpmdKkPHhPyQw7+zd7cb6G6jntIn0W0sk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=uvBXPCRoFNVcz10CIj8UBIpbjMFwKXefOdwwu1fICqolJgD8TVfji1yCzxM8z7X3d
+         e2plc4DaOL7/ZIN+zN9h4gIwy7aNXl6HdJ08DviZxC/rVmhappflf1g2rETpLsT/Eb
+         qBrXqhuakwbA8sf+s8mVebkMLadD4KG+GYkGICZqdqcwldnS9K3D1ikMPeKplbxEqG
+         XIpZatoZxQbCpN4D63NwqmhWvWoeabTSiE6ASlGnHG+DHAiYCoQO3y3xPg5Qwu0ytS
+         IUIISRPA9t8EjdGuMgWirtz5z7Lbgvg+Qmcq+tRNg9Yqfxjr25XRrOiLQ5g7Q0woL4
+         Mh18eR3L9hVnw==
+Date:   Wed, 13 Dec 2023 12:13:53 +0000
+From:   Will Deacon <will@kernel.org>
+To:     Simon Glass <sjg@chromium.org>
+Cc:     linux-arm-kernel@lists.infradead.org,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Ahmad Fatoum <a.fatoum@pengutronix.de>,
+        U-Boot Mailing List <u-boot@lists.denx.de>,
+        Nicolas Schier <nicolas@fjasle.eu>,
+        Tom Rini <trini@konsulko.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Terrell <terrelln@fb.com>, linux-doc@vger.kernel.org,
+        linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
+        workflows@vger.kernel.org
+Subject: Re: [PATCH v9 2/2] arm64: boot: Support Flat Image Tree
+Message-ID: <20231213121353.GA31326@willie-the-truck>
+References: <20231202035511.487946-1-sjg@chromium.org>
+ <20231202035511.487946-3-sjg@chromium.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231202035511.487946-3-sjg@chromium.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Spam-Status: No, score=-2.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,PDS_OTHER_BAD_TLD,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Initially the check against the get_temp ops in the
-thermal_zone_device_update() was put in there in order to catch
-drivers not providing this method.
+On Fri, Dec 01, 2023 at 08:54:42PM -0700, Simon Glass wrote:
+> Add a script which produces a Flat Image Tree (FIT), a single file
+> containing the built kernel and associated devicetree files.
+> Compression defaults to gzip which gives a good balance of size and
+> performance.
+> 
+> The files compress from about 86MB to 24MB using this approach.
+> 
+> The FIT can be used by bootloaders which support it, such as U-Boot
+> and Linuxboot. It permits automatic selection of the correct
+> devicetree, matching the compatible string of the running board with
+> the closest compatible string in the FIT. There is no need for
+> filenames or other workarounds.
+> 
+> Add a 'make image.fit' build target for arm64, as well. Use
+> FIT_COMPRESSION to select a different algorithm.
+> 
+> The FIT can be examined using 'dumpimage -l'.
+> 
+> This features requires pylibfdt (use 'pip install libfdt'). It also
+> requires compression utilities for the algorithm being used. Supported
+> compression options are the same as the Image.xxx files. For now there
+> is no way to change the compression other than by editing the rule for
+> $(obj)/image.fit
+> 
+> While FIT supports a ramdisk / initrd, no attempt is made to support
+> this here, since it must be built separately from the Linux build.
+> 
+> Signed-off-by: Simon Glass <sjg@chromium.org>
+> ---
+> 
+> Changes in v9:
+> - Move the compression control into Makefile.lib
+> 
+> Changes in v8:
+> - Drop compatible string in FDT node
+> - Correct sorting of MAINTAINERS to before ARM64 PORT
+> - Turn compress part of the make_fit.py comment in to a sentence
+> - Add two blank lines before parse_args() and setup_fit()
+> - Use 'image.fit: dtbs' instead of BUILD_DTBS var
+> - Use '$(<D)/dts' instead of '$(dir $<)dts'
+> - Add 'mkimage' details Documentation/process/changes.rst
+> - Allow changing the compression used
+> - Tweak cover letter since there is only one clean-up patch
+> 
+> Changes in v7:
+> - Add Image as a dependency of image.fit
+> - Drop kbuild tag
+> - Add dependency on dtbs
+> - Drop unnecessary path separator for dtbs
+> - Rebase to -next
+> 
+> Changes in v5:
+> - Drop patch previously applied
+> - Correct compression rule which was broken in v4
+> 
+> Changes in v4:
+> - Use single quotes for UIMAGE_NAME
+> 
+> Changes in v3:
+> - Drop temporary file image.itk
+> - Drop patch 'Use double quotes for image name'
+> - Drop double quotes in use of UIMAGE_NAME
+> - Drop unnecessary CONFIG_EFI_ZBOOT condition for help
+> - Avoid hard-coding "arm64" for the DT architecture
+> 
+> Changes in v2:
+> - Drop patch previously applied
+> - Add .gitignore file
+> - Move fit rule to Makefile.lib using an intermediate file
+> - Drop dependency on CONFIG_EFI_ZBOOT
+> - Pick up .dtb files separately from the kernel
+> - Correct pylint too-many-args warning for write_kernel()
+> - Include the kernel image in the file count
+> - Add a pointer to the FIT spec and mention of its wide industry usage
+> - Mention the kernel version in the FIT description
+> 
+>  Documentation/process/changes.rst |   9 +
+>  MAINTAINERS                       |   7 +
+>  arch/arm64/Makefile               |   7 +-
+>  arch/arm64/boot/.gitignore        |   1 +
+>  arch/arm64/boot/Makefile          |   6 +-
+>  scripts/Makefile.lib              |  16 ++
+>  scripts/make_fit.py               | 291 ++++++++++++++++++++++++++++++
+>  7 files changed, 334 insertions(+), 3 deletions(-)
+>  create mode 100755 scripts/make_fit.py
 
-Instead of checking again and again the function if the ops exists in
-the update function, let's do the check at registration time, so it is
-checked one time and for all.
+I'll need Masahiro's Ack on the scripts/ changes before I can take this
+one.
 
-Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
----
- drivers/thermal/thermal_core.c | 7 +------
- 1 file changed, 1 insertion(+), 6 deletions(-)
-
-diff --git a/drivers/thermal/thermal_core.c b/drivers/thermal/thermal_core.c
-index 625ba07cbe2f..964f26e517f4 100644
---- a/drivers/thermal/thermal_core.c
-+++ b/drivers/thermal/thermal_core.c
-@@ -437,11 +437,6 @@ void __thermal_zone_device_update(struct thermal_zone_device *tz,
- 	if (atomic_read(&in_suspend))
- 		return;
- 
--	if (WARN_ONCE(!tz->ops->get_temp,
--		      "'%s' must not be called without 'get_temp' ops set\n",
--		      __func__))
--		return;
--
- 	if (!thermal_zone_device_is_enabled(tz))
- 		return;
- 
-@@ -1289,7 +1284,7 @@ thermal_zone_device_register_with_trips(const char *type, struct thermal_trip *t
- 		return ERR_PTR(-EINVAL);
- 	}
- 
--	if (!ops) {
-+	if (!ops || !ops->get_temp) {
- 		pr_err("Thermal zone device ops not defined\n");
- 		return ERR_PTR(-EINVAL);
- 	}
--- 
-2.34.1
-
+Will
