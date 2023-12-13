@@ -2,97 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 826ED811DB1
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 19:58:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 781D4811DBD
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 19:59:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233604AbjLMS6m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 13:58:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54764 "EHLO
+        id S233672AbjLMS71 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 13:59:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49870 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235384AbjLMS6k (ORCPT
+        with ESMTP id S233264AbjLMS70 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 13:58:40 -0500
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82E32B0
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 10:58:46 -0800 (PST)
-Received: by mail-lf1-x129.google.com with SMTP id 2adb3069b0e04-50c0478f970so7730525e87.3
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 10:58:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1702493925; x=1703098725; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Z9DowOQy/Sxl1JmlMV31xqpgcOa6MjD1E5V4uWjGVTE=;
-        b=wL2/tvglytQn4XXQaXnjOfyh7LNUVZusOBiktTp6SLSeVwa09JwgKbw/xGIobEJSuI
-         SYF8wmOV7wOiFHCQTwGQxNxNqBdhmPXbUSmD9pKuZYhjOGRiRUrEBwZo8uRpXy4gpQP0
-         SPf1xw+sUOqkdnyrSXS6kyPfjJkGRSv1cKV4KHUPyAplDuY9Ua7fX4v0H0lCOaiTyczx
-         GcWNmNIaJNyj5I02IJd8s8rcZb7CV8dmjCDIc/rpT80ffz9LvJhFV9UmciSl0Zuc0N6Y
-         zUBmD/BxvmQskVBb5f5HLd70erbUc0Cy1kTJqkhaZ4kebLSXH40qLbRr12haEtdlMwIb
-         Sy2Q==
+        Wed, 13 Dec 2023 13:59:26 -0500
+Received: from mail-ot1-f42.google.com (mail-ot1-f42.google.com [209.85.210.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85598D5;
+        Wed, 13 Dec 2023 10:59:32 -0800 (PST)
+Received: by mail-ot1-f42.google.com with SMTP id 46e09a7af769-6d9e756cf32so4798964a34.2;
+        Wed, 13 Dec 2023 10:59:32 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702493925; x=1703098725;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Z9DowOQy/Sxl1JmlMV31xqpgcOa6MjD1E5V4uWjGVTE=;
-        b=NqTVK0MS+MfBz5VXmq/LcrwTL25yn6kdl7oreAj8Hs5QsoEinTU0fspj/Jx2Y4PdeO
-         sjMoMvAlE+QK0EE/N64s63a9Uxswio3pWPYnvbGWhZ9TPvtFJ1sR+xZcmuI33dGXN8gq
-         aMfCLFPWeogjWuU12x7JucPu5z3+LGUN/yI/pd7Ln27Nq4h5RkkcgvEs4VdTvgkL8bKj
-         66HVdtIuU0Pk8zY1k5YX6EafQkuSIFY3/Rij1HBaWPeGfR3/he/fSrSKO080mbKcth3q
-         pgRjU1hs6IrhI/cjw/Da+O/uwjeFomdzRyJTqs/IYERhVmvZAf9ZRNwUMZhWon/0/Kw5
-         OybA==
-X-Gm-Message-State: AOJu0YyLTh6id+3qThnm2x6B71NOk3zemFn311VfsQgFdzAVB8AcOCvu
-        9zZxoT9bNjKp4KpFaVh5PEYhNQ==
-X-Google-Smtp-Source: AGHT+IG9XuroAkQ9UfAcWZUQQ+IDHc4FOLDEE14HErVjpjowcti0RuDxYZzjAuJXvBGAJCWeEMO03Q==
-X-Received: by 2002:a05:6512:39cc:b0:50b:ec63:8cf with SMTP id k12-20020a05651239cc00b0050bec6308cfmr5992226lfu.21.1702493924800;
-        Wed, 13 Dec 2023 10:58:44 -0800 (PST)
-Received: from [172.30.204.126] (UNUSED.212-182-62-129.lubman.net.pl. [212.182.62.129])
-        by smtp.gmail.com with ESMTPSA id u4-20020a05651206c400b005009c4ba3f0sm1680336lff.72.2023.12.13.10.58.42
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 13 Dec 2023 10:58:44 -0800 (PST)
-Message-ID: <fcdf32a5-4efa-481f-9387-df94f08db7b1@linaro.org>
-Date:   Wed, 13 Dec 2023 19:58:42 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 3/5] arm64: dts: qcom: sdm845: fix USB SS wakeup
-Content-Language: en-US
-To:     Johan Hovold <johan+linaro@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>
-Cc:     Andy Gross <agross@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        d=1e100.net; s=20230601; t=1702493972; x=1703098772;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=HeK0cW3CYjJ4+DfiuKUFos/Az6mhlvyWdViJpwMXZc8=;
+        b=T3IaK71925yG97S8veP7f09+NxVq3MtNvm8lA3x52KRmE+PxrlWwmzasBUPM1JU3U0
+         Bs2F5Yd/LlWf+xsDIzVrYQrjD7nusWLEIzPKIcZiVZjnGcqEBx//cHQwZQsCKb/8SEim
+         rSPvm2qGnd1Y+UZ6scAozAHefS5VJ8Uk+k/8yOCzoFJpGpm40OEW0XfsAYq0xPx6R/7P
+         TS5JAyeF54KP8v/WmgXfVl0dbq2d7zqPXnWbcTpK+MIanDjpwwzKz8F0FlerXicw7tRN
+         lwxGXWm/6v+HLdg15tBweIeFUZCjXP86zEkH3a8JGpJYWd2F19UdMIDUc6ETIq4pv4NM
+         u/UA==
+X-Gm-Message-State: AOJu0YxWA9xmIImfuiewPMFrIjZBEHk6fh1GC+CdAkcYIq83h/ZdaKvv
+        thWNcNTBzUhZbR5/mziqfw==
+X-Google-Smtp-Source: AGHT+IG0Cq8wvVnID/6qOI5cs3vksMULR/gsiDuT8TlocRTc5hlZ5/6MWbi6jQSItp2CJI63aNiItQ==
+X-Received: by 2002:a05:6830:1e4a:b0:6d8:74e2:a3e2 with SMTP id e10-20020a0568301e4a00b006d874e2a3e2mr7477380otj.62.1702493971838;
+        Wed, 13 Dec 2023 10:59:31 -0800 (PST)
+Received: from herring.priv (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
+        by smtp.gmail.com with ESMTPSA id g19-20020a9d6a13000000b006d99e0667e4sm2901837otn.28.2023.12.13.10.59.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Dec 2023 10:59:31 -0800 (PST)
+Received: (nullmailer pid 1720212 invoked by uid 1000);
+        Wed, 13 Dec 2023 18:59:30 -0000
+Date:   Wed, 13 Dec 2023 12:59:30 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc:     Kalle Valo <kvalo@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
         Conor Dooley <conor+dt@kernel.org>,
-        Krishna Kurapati PSSNV <quic_kriskura@quicinc.com>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org
-References: <20231213173403.29544-1-johan+linaro@kernel.org>
- <20231213173403.29544-4-johan+linaro@kernel.org>
-From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-In-Reply-To: <20231213173403.29544-4-johan+linaro@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        van Spriel <arend@broadcom.com>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next] dt-bindings: net: wireless: brcm,bcm4329-fmac:
+ allow local-mac-address
+Message-ID: <20231213185930.GA1713843-robh@kernel.org>
+References: <20231209160505.237843-1-krzysztof.kozlowski@linaro.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231209160505.237843-1-krzysztof.kozlowski@linaro.org>
+X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,
+        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 12/13/23 18:34, Johan Hovold wrote:
-> The USB SS PHY interrupts need to be provided by the PDC interrupt
-> controller in order to be able to wake the system up from low-power
-> states.
+On Sat, Dec 09, 2023 at 05:05:05PM +0100, Krzysztof Kozlowski wrote:
+> Some boards come with local-mac-address property.  Allow it, and
+> mac-address as well, to fix dtbs_check warnings like:
 > 
-> Fixes: ca4db2b538a1 ("arm64: dts: qcom: sdm845: Add USB-related nodes")
-> Cc: stable@vger.kernel.org	# 4.20
-> Signed-off-by: Johan Hovold <johan+linaro@kernel.org>
+>   apple/t8103-j456.dtb: network@0,0: Unevaluated properties are not allowed ('local-mac-address' was unexpected)
+> 
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 > ---
-Matches ds
+>  .../devicetree/bindings/net/wireless/brcm,bcm4329-fmac.yaml  | 5 +++++
+>  1 file changed, 5 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/net/wireless/brcm,bcm4329-fmac.yaml b/Documentation/devicetree/bindings/net/wireless/brcm,bcm4329-fmac.yaml
+> index 4aa521f1be8c..4c8a7950c83e 100644
+> --- a/Documentation/devicetree/bindings/net/wireless/brcm,bcm4329-fmac.yaml
+> +++ b/Documentation/devicetree/bindings/net/wireless/brcm,bcm4329-fmac.yaml
+> @@ -67,6 +67,9 @@ properties:
+>      description: Name for the OOB IRQ, this must be set to "host-wake".
+>      const: host-wake
+>  
+> +  local-mac-address: true
+> +  mac-address: true
 
-Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+This doesn't work because the schema for these properties are never 
+applied. There was some work to split them out from 
+ethernet-controller.yaml to a network device schema[1]. Perhaps you can 
+revive that.
 
-Konrad
+Rob
+
+[1] https://lore.kernel.org/all/20230203-dt-bindings-network-class-v2-0-499686795073@jannau.net/#t
