@@ -2,139 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 487DF8112C4
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 14:24:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DE3C38113E2
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 14:58:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378985AbjLMNYf convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 13 Dec 2023 08:24:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59024 "EHLO
+        id S1379009AbjLMN6m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 08:58:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45842 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233472AbjLMNYc (ORCPT
+        with ESMTP id S1379222AbjLMN0N (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 08:24:32 -0500
-Received: from ex01.ufhost.com (ex01.ufhost.com [61.152.239.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCC9CE3;
-        Wed, 13 Dec 2023 05:24:32 -0800 (PST)
-Received: from EXMBX165.cuchost.com (unknown [175.102.18.54])
-        (using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
-        (Client CN "EXMBX165", Issuer "EXMBX165" (not verified))
-        by ex01.ufhost.com (Postfix) with ESMTP id 1D5DA24E246;
-        Wed, 13 Dec 2023 21:24:24 +0800 (CST)
-Received: from EXMBX061.cuchost.com (172.16.6.61) by EXMBX165.cuchost.com
- (172.16.6.75) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Wed, 13 Dec
- 2023 21:24:23 +0800
-Received: from EXMBX061.cuchost.com (172.16.6.61) by EXMBX061.cuchost.com
- (172.16.6.61) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Wed, 13 Dec
- 2023 21:24:23 +0800
-Received: from EXMBX061.cuchost.com ([fe80::413f:35c8:bf4f:599a]) by
- EXMBX061.cuchost.com ([fe80::413f:35c8:bf4f:599a%14]) with mapi id
- 15.00.1497.044; Wed, 13 Dec 2023 21:24:23 +0800
-From:   Leyfoon Tan <leyfoon.tan@starfivetech.com>
-To:     Conor Dooley <conor@kernel.org>,
-        JeeHeng Sia <jeeheng.sia@starfivetech.com>
-CC:     "kernel@esmil.dk" <kernel@esmil.dk>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "krzysztof.kozlowski+dt@linaro.org" 
-        <krzysztof.kozlowski+dt@linaro.org>,
-        "krzk@kernel.org" <krzk@kernel.org>,
-        "conor+dt@kernel.org" <conor+dt@kernel.org>,
-        "paul.walmsley@sifive.com" <paul.walmsley@sifive.com>,
-        "palmer@dabbelt.com" <palmer@dabbelt.com>,
-        "aou@eecs.berkeley.edu" <aou@eecs.berkeley.edu>,
-        "daniel.lezcano@linaro.org" <daniel.lezcano@linaro.org>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "anup@brainfault.org" <anup@brainfault.org>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "jirislaby@kernel.org" <jirislaby@kernel.org>,
-        "michal.simek@amd.com" <michal.simek@amd.com>,
-        Michael Zhu <michael.zhu@starfivetech.com>,
-        "drew@beagleboard.org" <drew@beagleboard.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Conor Dooley <conor.dooley@microchip.com>
-Subject: RE: [PATCH v3 2/6] dt-bindings: riscv: Add StarFive JH8100 SoC
-Thread-Topic: [PATCH v3 2/6] dt-bindings: riscv: Add StarFive JH8100 SoC
-Thread-Index: AQHaJE/+gN06PgKn10+OgNsQzAP7lrCmtRSAgACQEsA=
-Date:   Wed, 13 Dec 2023 13:24:23 +0000
-Message-ID: <84b808cb028c40a29c9f81011931afba@EXMBX061.cuchost.com>
-References: <20231201121410.95298-1-jeeheng.sia@starfivetech.com>
- <20231201121410.95298-3-jeeheng.sia@starfivetech.com>
- <20231213-imminent-favorable-a7d25e6555af@spud>
-In-Reply-To: <20231213-imminent-favorable-a7d25e6555af@spud>
-Accept-Language: en-US, zh-CN
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [172.16.6.8]
-x-yovoleruleagent: yovoleflag
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        Wed, 13 Dec 2023 08:26:13 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB23A91;
+        Wed, 13 Dec 2023 05:26:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1702473977; x=1734009977;
+  h=message-id:date:mime-version:cc:subject:to:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=+kY9QgK8FMlrrYySDrLuoBvhnlDhlG8yb7Ov4BOpYak=;
+  b=VSyAHxf/26Hqkn6itmmPpCqxKT/qSI05IMChQYkrM30byIJOIA1hvXeQ
+   JdDj6/JYCfsuULKi97M1IkjpW5rXFd0X0vcEyYRYbUgpifNfSZ7nhsK//
+   uXRqtcr/AYs19eyabYADXxxTpl18K3A6D+W/JS2IyrUhgD6l4/Vll1S1q
+   xjiOIX05GPa0GdhDtzf6JgPmFyuiFVoQIrPrftQh9FY79ZalticR/PYPm
+   iu5Ob/M5zx9F9Oe1SnbnWD9aIlxeCUhffv9P3eDykV56HkhuKPhKxu5Xf
+   iv0ZisMojr8+4GzAq7tQkg9VdubpNKftLjMPsFj0GSx4Z6oLi/AayJ/JK
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10922"; a="1818080"
+X-IronPort-AV: E=Sophos;i="6.04,272,1695711600"; 
+   d="scan'208";a="1818080"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Dec 2023 05:26:16 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10922"; a="773949973"
+X-IronPort-AV: E=Sophos;i="6.04,272,1695711600"; 
+   d="scan'208";a="773949973"
+Received: from blu2-mobl.ccr.corp.intel.com (HELO [10.254.212.246]) ([10.254.212.246])
+  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Dec 2023 05:26:12 -0800
+Message-ID: <9d30d670-d4ac-4af1-9177-88fde952ed3e@linux.intel.com>
+Date:   Wed, 13 Dec 2023 21:26:09 +0800
 MIME-Version: 1.0
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Cc:     baolu.lu@linux.intel.com, dan.carpenter@linaro.org,
+        kernel-janitors@vger.kernel.org, error27@gmail.com
+Subject: Re: [PATCH] iommu/sva: Fix memory leak in iommu_sva_bind_device()
+To:     Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>,
+        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>, iommu@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+References: <20231213111450.2487861-1-harshit.m.mogalapalli@oracle.com>
+Content-Language: en-US
+From:   Baolu Lu <baolu.lu@linux.intel.com>
+In-Reply-To: <20231213111450.2487861-1-harshit.m.mogalapalli@oracle.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-> -----Original Message-----
-> From: Conor Dooley <conor@kernel.org>
-> Sent: Wednesday, December 13, 2023 8:43 PM
-> To: JeeHeng Sia <jeeheng.sia@starfivetech.com>
-> Cc: kernel@esmil.dk; robh+dt@kernel.org; krzysztof.kozlowski+dt@linaro.org;
-> krzk@kernel.org; conor+dt@kernel.org; paul.walmsley@sifive.com;
-> palmer@dabbelt.com; aou@eecs.berkeley.edu; daniel.lezcano@linaro.org;
-> tglx@linutronix.de; anup@brainfault.org; gregkh@linuxfoundation.org;
-> jirislaby@kernel.org; michal.simek@amd.com; Michael Zhu
-> <michael.zhu@starfivetech.com>; drew@beagleboard.org;
-> devicetree@vger.kernel.org; linux-riscv@lists.infradead.org; linux-
-> kernel@vger.kernel.org; Leyfoon Tan <leyfoon.tan@starfivetech.com>; Conor
-> Dooley <conor.dooley@microchip.com>
-> Subject: Re: [PATCH v3 2/6] dt-bindings: riscv: Add StarFive JH8100 SoC
+On 2023/12/13 19:14, Harshit Mogalapalli wrote:
+> Free the handle when the domain allocation fails before unlocking and
+> returning.
 > 
-> On Fri, Dec 01, 2023 at 08:14:06PM +0800, Sia Jee Heng wrote:
-> > Add device tree bindings for the StarFive JH8100 RISC-V SoC.
-> >
-> > Signed-off-by: Sia Jee Heng <jeeheng.sia@starfivetech.com>
-> > Reviewed-by: Ley Foon Tan <leyfoon.tan@starfivetech.com>
-> > Acked-by: Conor Dooley <conor.dooley@microchip.com>
-> > ---
-> >  Documentation/devicetree/bindings/riscv/starfive.yaml | 4 ++++
-> >  1 file changed, 4 insertions(+)
-> >
-> > diff --git a/Documentation/devicetree/bindings/riscv/starfive.yaml
-> > b/Documentation/devicetree/bindings/riscv/starfive.yaml
-> > index cc4d92f0a1bf..12d7844232b8 100644
-> > --- a/Documentation/devicetree/bindings/riscv/starfive.yaml
-> > +++ b/Documentation/devicetree/bindings/riscv/starfive.yaml
-> > @@ -30,6 +30,10 @@ properties:
-> >                - starfive,visionfive-2-v1.3b
-> >            - const: starfive,jh7110
-> >
-> > +      - items:
-> > +          - enum:
-> > +              - starfive,jh8100-evb
-> 
-> Hmm, reading some of the other threads it appears that the evaluation
-> platform that you guys have is actually just an FPGA? Could you please provide
-> more information as to what this "evb" actually is?
-> 
-> If it is just an FPGA-based evaluation platform I don't think that we want to
-> merge patches for the platform. I'm fine with patches adding peripheral
-> support, but the soc/board dts files and things like pinctrl or clock drivers I am
-> not keen on.
-> Perhaps Emil also has an opinion on this.
-> 
-> Thanks,
-> Conor.
+> Fixes: 092edaddb660 ("iommu: Support mm PASID 1:n with sva domains")
+> Signed-off-by: Harshit Mogalapalli<harshit.m.mogalapalli@oracle.com>
 
-We have been testing on the FPGA/emulator for pre-silicon validation. It will have real silicon SoC next year.
+Reviewed-by: Lu Baolu <baolu.lu@linux.intel.com>
 
-Regards
-Ley Foon
+Best regards,
+baolu
