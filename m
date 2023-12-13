@@ -2,146 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E0F2F811A56
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 18:03:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B64C0811B6C
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 18:42:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233403AbjLMRDQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 12:03:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50620 "EHLO
+        id S235172AbjLMQZk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 11:25:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59824 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229458AbjLMRDP (ORCPT
+        with ESMTP id S230390AbjLMQZg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 12:03:15 -0500
-Received: from mail-yw1-x112c.google.com (mail-yw1-x112c.google.com [IPv6:2607:f8b0:4864:20::112c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70089B3
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 09:03:21 -0800 (PST)
-Received: by mail-yw1-x112c.google.com with SMTP id 00721157ae682-5d2d0661a8dso73086027b3.2
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 09:03:21 -0800 (PST)
+        Wed, 13 Dec 2023 11:25:36 -0500
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80948DD
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 08:25:42 -0800 (PST)
+Received: by mail-ed1-x52d.google.com with SMTP id 4fb4d7f45d1cf-5522ba3f94aso830913a12.1
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 08:25:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702487000; x=1703091800; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=da2+Ei0XbvCEF/RIgh1CyB3A1CY6CaQf2SnXWjO6ruE=;
-        b=D1RPo9zNyp7f2fidI+j/fMwjcZFpymgwHBWzw1DSo538UPGCkMknNByZqFwnNzU2Vj
-         h6waXRtipFiBfpD4JJ7hoVa38DgUygqVSkcWZv70aCz878FILH1vPGTdvtwY7+YjNIH6
-         lnscKaOtrSpVM8CDlgc3CMH8YaJXEQcLWheN3gdzNPItMbrppTeUPvhMNHiKeNp63nLk
-         OMfJCGvqWcExdJbE83NGhuG9gVGZl+clDHQhtLx9kq7jPS/1SCEW+ftbwY0DekLXJOtP
-         AKsJc0Iy1yPrNiYSkiirIoBHoKC2IYuhVKLICsaFNxv5n8ddNcNaIKUyaaiWyird0Dep
-         J6AQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702487000; x=1703091800;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=linaro.org; s=google; t=1702484741; x=1703089541; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=da2+Ei0XbvCEF/RIgh1CyB3A1CY6CaQf2SnXWjO6ruE=;
-        b=UDL9bFdd+jeOUEWkJGnIqsJroTBbKaUA9O0DV27DXjLvqabmNvD6nyfYNW4qnF572g
-         xKXwKnkTLk3xh+exO0rLusBU0weVLv+esGi9fjmobMmkjd8EnRm4ywtqMwITRjQYFwlF
-         r2UDqW2/TdBI6xkG7EKyDQg66WCZb2es/k16MfEoyNlbOJ5ktI4dhBsaH8vKoF3rL63M
-         ZhScmo4TdZjljkpGveKE8dKLA96t1X2yXS4H9ceFABEk8wzhiH9BfllsWeSAYOJKIiON
-         oRKzOg0T5+0vfhdtXonWvnTsfwJ36OarafxG7elFoO6Rwj/CLN1KT1XBRQzpd9VI4d4u
-         YYCg==
-X-Gm-Message-State: AOJu0YywS2hb3o6Aa11Twj8Mt9/v45vZ+ob6idRli3QF7V3BPwv6OWEH
-        LsztBxbuYprmIfoxz3cLxF0=
-X-Google-Smtp-Source: AGHT+IGAWoyabaf/RqLP6c8QcSmQcc7MkCXyPzViAidlwrIkSt3NCBMOBMbRGre8YBKwCt5r8H5IzA==
-X-Received: by 2002:a81:73c6:0:b0:5d7:1940:b395 with SMTP id o189-20020a8173c6000000b005d71940b395mr7074465ywc.97.1702487000412;
-        Wed, 13 Dec 2023 09:03:20 -0800 (PST)
-Received: from localhost ([2601:344:8301:57f0:e69d:88a7:9ea:4f0b])
-        by smtp.gmail.com with ESMTPSA id ff9-20020a05690c320900b005e184771849sm1872201ywb.93.2023.12.13.09.03.18
+        bh=cKxXRg/SZys6FO13tqlijkOM+4H33mlk0pHh32bAe4Y=;
+        b=Lu+na4VVfszJlk5xn0E0Bxp56SFHLEoYRPFODY968yxiNRPAy3ECzUKbCahZH7kwOz
+         xVArhZF+wgkPJnx7DnkIjZ6p0UDKwakNx5iD2RcdKbemdfn3u6FV/IeBdv7WzhuzCUVa
+         AY55c/JI43PIQnMeEKdt25WsoYm7erimrlYL7BS8d13zjYdCdOqRQD6xFdNe+dYbrB2K
+         BeUbNc829/dHFpRHci4l65IvzQI3trFmvuMOzs583WLta2cdX1nin3o09q7BCJRo1TVm
+         BL77qjnrHIh133QijNoGhhUYbIl/1YnQtRvbr5FxZ2bjd//zHEWiTVX1UIsl5L12Y26f
+         Grww==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702484741; x=1703089541;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=cKxXRg/SZys6FO13tqlijkOM+4H33mlk0pHh32bAe4Y=;
+        b=SZ5CsrISXlbCraxQqFDyYL72b2iamI38cMlSCmRnbOmUkAqafwDxmMeR9RxHd6XbWP
+         /cp9mmjmDRtcRxGVTmDDJT8j2bJ/ZTpCKKGVGWNd/ueSd/HxPR4X6pU1p23r/shMu0MW
+         ZIFSZLYEqn3orYfp71OtzAw/H5ViMgwDbH/7zz5J9jI1nHzC8E3SDTGX42JkjFoGO/OD
+         3Ofa4dAFbO8M6fB2WisyRWY5W28fER7g39AMR28Gp89sRAN2Az552hHcxlM9nQYRZ0b8
+         gR6dogCtDbbcWr4IsqFV3nBePcTFgrNI1bYGjkRPi9uHuc8J5v2Ea3tHTvTJJooTXpCg
+         Kmfw==
+X-Gm-Message-State: AOJu0YwsIJYvvcb3uqHCCSzL77bmXTzEtgEVrBBKd6O38KFiVScAGeYa
+        R86QzdDkRRdQy7HvtgD8aTXD4w==
+X-Google-Smtp-Source: AGHT+IFv5LFyq6GSFNmr0clEapUNiqem0EWn7blPPyL1WqT+BoCaSNH81eJ/OylrsOyXgKxtMg++kw==
+X-Received: by 2002:a17:907:766f:b0:a19:d40a:d1ff with SMTP id kk15-20020a170907766f00b00a19d40ad1ffmr2128393ejc.203.1702484741003;
+        Wed, 13 Dec 2023 08:25:41 -0800 (PST)
+Received: from krzk-bin.. ([178.197.218.27])
+        by smtp.gmail.com with ESMTPSA id kv18-20020a17090778d200b00a1dfc541282sm8048914ejc.225.2023.12.13.08.25.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Dec 2023 09:03:18 -0800 (PST)
-Date:   Wed, 13 Dec 2023 09:03:17 -0800
-From:   Yury Norov <yury.norov@gmail.com>
-To:     Ming Lei <ming.lei@redhat.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Subject: Re: [PATCH v3 3/7] lib/group_cpus: relax atomicity requirement in
- grp_spread_init_one()
-Message-ID: <ZXnj1WhpSgdMXSfS@yury-ThinkPad>
-References: <20231212042108.682072-1-yury.norov@gmail.com>
- <20231212042108.682072-4-yury.norov@gmail.com>
- <ZXgszD9tIKY1tC9r@fedora>
- <ZXiPvgzZvXyWfarS@yury-ThinkPad>
- <ZXj3deNs91Ga471c@fedora>
+        Wed, 13 Dec 2023 08:25:40 -0800 (PST)
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Subject: [PATCH 2/4] arm64: dts: qcom: sm8450: drop unneeded assigned-clocks from codec macros
+Date:   Wed, 13 Dec 2023 17:25:33 +0100
+Message-Id: <20231213162536.171475-2-krzysztof.kozlowski@linaro.org>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20231213162536.171475-1-krzysztof.kozlowski@linaro.org>
+References: <20231213162536.171475-1-krzysztof.kozlowski@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZXj3deNs91Ga471c@fedora>
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 13, 2023 at 08:14:45AM +0800, Ming Lei wrote:
-> On Tue, Dec 12, 2023 at 08:52:14AM -0800, Yury Norov wrote:
-> > On Tue, Dec 12, 2023 at 05:50:04PM +0800, Ming Lei wrote:
-> > > On Mon, Dec 11, 2023 at 08:21:03PM -0800, Yury Norov wrote:
-> > > > Because nmsk and irqmsk are stable, extra atomicity is not required.
-> > > > 
-> > > > Signed-off-by: Yury Norov <yury.norov@gmail.com>
-> > > > ---
-> > > >  lib/group_cpus.c | 8 ++++----
-> > > >  1 file changed, 4 insertions(+), 4 deletions(-)
-> > > > 
-> > > > diff --git a/lib/group_cpus.c b/lib/group_cpus.c
-> > > > index 10dead3ab0e0..7ac94664230f 100644
-> > > > --- a/lib/group_cpus.c
-> > > > +++ b/lib/group_cpus.c
-> > > > @@ -24,8 +24,8 @@ static void grp_spread_init_one(struct cpumask *irqmsk, struct cpumask *nmsk,
-> > > >  		if (cpu >= nr_cpu_ids)
-> > > >  			return;
-> > > >  
-> > > > -		cpumask_clear_cpu(cpu, nmsk);
-> > > > -		cpumask_set_cpu(cpu, irqmsk);
-> > > > +		__cpumask_clear_cpu(cpu, nmsk);
-> > > > +		__cpumask_set_cpu(cpu, irqmsk);
-> > > >  		cpus_per_grp--;
-> > > >  
-> > > >  		/* If the cpu has siblings, use them first */
-> > > > @@ -33,8 +33,8 @@ static void grp_spread_init_one(struct cpumask *irqmsk, struct cpumask *nmsk,
-> > > >  		sibl = cpu + 1;
-> > > >  
-> > > >  		for_each_cpu_and_from(sibl, siblmsk, nmsk) {
-> > > > -			cpumask_clear_cpu(sibl, nmsk);
-> > > > -			cpumask_set_cpu(sibl, irqmsk);
-> > > > +			__cpumask_clear_cpu(sibl, nmsk);
-> > > > +			__cpumask_set_cpu(sibl, irqmsk);
-> > > 
-> > > I think this kind of change should be avoided, here the code is
-> > > absolutely in slow path, and we care code cleanness and readability
-> > > much more than the saved cycle from non atomicity.
-> > 
-> > Atomic ops have special meaning and special function. This 'atomic' way
-> > of moving a bit from one bitmap to another looks completely non-trivial
-> > and puzzling to me.
-> > 
-> > A sequence of atomic ops is not atomic itself. Normally it's a sing of
-> > a bug. But in this case, both masks are stable, and we don't need
-> > atomicity at all.
-> 
-> Here we don't care the atomicity.
-> 
-> > 
-> > It's not about performance, it's about readability.
-> 
-> __cpumask_clear_cpu() and __cpumask_set_cpu() are more like private
-> helper, and more hard to follow.
+The MCLK clocks of codec macros have fixed 19.2 MHz frequency and
+assigning clock rates is redundant.
 
-No that's not true. Non-atomic version of the function is not a
-private helper of course.
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+
+---
+
+Not tested on HW.
+---
+ arch/arm64/boot/dts/qcom/sm8450.dtsi | 16 ----------------
+ 1 file changed, 16 deletions(-)
+
+diff --git a/arch/arm64/boot/dts/qcom/sm8450.dtsi b/arch/arm64/boot/dts/qcom/sm8450.dtsi
+index 3b6ea9653d2a..52390220d909 100644
+--- a/arch/arm64/boot/dts/qcom/sm8450.dtsi
++++ b/arch/arm64/boot/dts/qcom/sm8450.dtsi
+@@ -2154,9 +2154,6 @@ wsa2macro: codec@31e0000 {
+ 				 <&q6prmcc LPASS_HW_DCODEC_VOTE LPASS_CLK_ATTRIBUTE_COUPLE_NO>,
+ 				 <&vamacro>;
+ 			clock-names = "mclk", "npl", "macro", "dcodec", "fsgen";
+-			assigned-clocks = <&q6prmcc LPASS_CLK_ID_WSA2_CORE_TX_MCLK LPASS_CLK_ATTRIBUTE_COUPLE_NO>,
+-					  <&q6prmcc LPASS_CLK_ID_WSA2_CORE_TX_2X_MCLK LPASS_CLK_ATTRIBUTE_COUPLE_NO>;
+-			assigned-clock-rates = <19200000>, <19200000>;
  
-> [@linux]$ git grep -n -w -E "cpumask_clear_cpu|cpumask_set_cpu" ./ | wc
->     674    2055   53954
-> [@linux]$ git grep -n -w -E "__cpumask_clear_cpu|__cpumask_set_cpu" ./ | wc
->      21      74    1580
-> 
-> I don't object to comment the current usage, but NAK for this change.
+ 			#clock-cells = <0>;
+ 			clock-output-names = "wsa2-mclk";
+@@ -2203,10 +2200,6 @@ rxmacro: codec@3200000 {
+ 				 <&vamacro>;
+ 			clock-names = "mclk", "npl", "macro", "dcodec", "fsgen";
+ 
+-			assigned-clocks = <&q6prmcc LPASS_CLK_ID_RX_CORE_TX_MCLK LPASS_CLK_ATTRIBUTE_COUPLE_NO>,
+-					  <&q6prmcc LPASS_CLK_ID_RX_CORE_MCLK2_2X_MCLK LPASS_CLK_ATTRIBUTE_COUPLE_NO>;
+-			assigned-clock-rates = <19200000>, <19200000>;
+-
+ 			#clock-cells = <0>;
+ 			clock-output-names = "mclk";
+ 			#sound-dai-cells = <1>;
+@@ -2250,9 +2243,6 @@ txmacro: codec@3220000 {
+ 				 <&q6prmcc LPASS_HW_DCODEC_VOTE LPASS_CLK_ATTRIBUTE_COUPLE_NO>,
+ 				 <&vamacro>;
+ 			clock-names = "mclk", "npl", "macro", "dcodec", "fsgen";
+-			assigned-clocks = <&q6prmcc LPASS_CLK_ID_RX_CORE_TX_MCLK LPASS_CLK_ATTRIBUTE_COUPLE_NO>,
+-					  <&q6prmcc LPASS_CLK_ID_RX_CORE_MCLK2_2X_MCLK LPASS_CLK_ATTRIBUTE_COUPLE_NO>;
+-			assigned-clock-rates = <19200000>, <19200000>;
+ 
+ 			#clock-cells = <0>;
+ 			clock-output-names = "mclk";
+@@ -2269,10 +2259,6 @@ wsamacro: codec@3240000 {
+ 				 <&vamacro>;
+ 			clock-names = "mclk", "npl", "macro", "dcodec", "fsgen";
+ 
+-			assigned-clocks = <&q6prmcc LPASS_CLK_ID_WSA_CORE_TX_MCLK LPASS_CLK_ATTRIBUTE_COUPLE_NO>,
+-					  <&q6prmcc LPASS_CLK_ID_WSA_CORE_TX_2X_MCLK LPASS_CLK_ATTRIBUTE_COUPLE_NO>;
+-			assigned-clock-rates = <19200000>, <19200000>;
+-
+ 			#clock-cells = <0>;
+ 			clock-output-names = "mclk";
+ 			#sound-dai-cells = <1>;
+@@ -2348,8 +2334,6 @@ vamacro: codec@33f0000 {
+ 				 <&q6prmcc LPASS_HW_DCODEC_VOTE LPASS_CLK_ATTRIBUTE_COUPLE_NO>,
+ 				 <&q6prmcc LPASS_CLK_ID_RX_CORE_MCLK2_2X_MCLK LPASS_CLK_ATTRIBUTE_COUPLE_NO>;
+ 			clock-names = "mclk", "macro", "dcodec", "npl";
+-			assigned-clocks = <&q6prmcc LPASS_CLK_ID_TX_CORE_MCLK LPASS_CLK_ATTRIBUTE_COUPLE_NO>;
+-			assigned-clock-rates = <19200000>;
+ 
+ 			#clock-cells = <0>;
+ 			clock-output-names = "fsgen";
+-- 
+2.34.1
 
-No problem, I'll add you NAK.
