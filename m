@@ -2,159 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 34660811F56
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 20:50:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E5824811F5F
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 20:51:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233658AbjLMTue (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 14:50:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46544 "EHLO
+        id S1379007AbjLMTv1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 14:51:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54416 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233781AbjLMTuc (ORCPT
+        with ESMTP id S229811AbjLMTvW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 14:50:32 -0500
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4ED26C9;
-        Wed, 13 Dec 2023 11:50:38 -0800 (PST)
-Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3BDJ7B7j012884;
-        Wed, 13 Dec 2023 19:49:27 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=L1dGX3bAr3L6MVW5M70dQtsQ2pdKDwOrjjPgZmZ9Nss=;
- b=FaBbWCzkxjdeqtrv+Eyh6JPEdTAC1incrbMiODjMZ5LdIgkOMSg0aM8wu118JoB+uF0g
- yVPGPG92U7Y2OZZmQLpfngXLAZ39HYBmh4u4zWOk7h62WpQyYAQ1zMoviixSGClP7BQh
- tkuvQZ6c3VzW+6D3FPnZ0KGdfe14nsTIGurBgbWGI2gmqi3ItvMApMj0pOYFuVzOqEBw
- 6U0HOfxk1PLvGnTTBMCKoeIi1MV2rodl2/wpia1G4XKZ+ddhjOW5GKuwkaQkNcFlnGGq
- w6v9P03ZlrS8zfR6FNRTxwsn7K0dgplQ2nNUHYCVHTCpaa/gK41ekqj5l7nyObynANoE KQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3uyjg30xdy-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 13 Dec 2023 19:49:26 +0000
-Received: from m0353729.ppops.net (m0353729.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3BDJmEa8010165;
-        Wed, 13 Dec 2023 19:49:25 GMT
-Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3uyjg30xdb-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 13 Dec 2023 19:49:25 +0000
-Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
-        by ppma13.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3BDI0FAI004101;
-        Wed, 13 Dec 2023 19:49:24 GMT
-Received: from smtprelay06.wdc07v.mail.ibm.com ([172.16.1.73])
-        by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 3uw4skk2au-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 13 Dec 2023 19:49:24 +0000
-Received: from smtpav06.wdc07v.mail.ibm.com (smtpav06.wdc07v.mail.ibm.com [10.39.53.233])
-        by smtprelay06.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3BDJnNYp27591270
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 13 Dec 2023 19:49:23 GMT
-Received: from smtpav06.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 8138F58055;
-        Wed, 13 Dec 2023 19:49:23 +0000 (GMT)
-Received: from smtpav06.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 0FAA45803F;
-        Wed, 13 Dec 2023 19:49:22 +0000 (GMT)
-Received: from [9.24.12.86] (unknown [9.24.12.86])
-        by smtpav06.wdc07v.mail.ibm.com (Postfix) with ESMTP;
-        Wed, 13 Dec 2023 19:49:21 +0000 (GMT)
-Message-ID: <edcdcea2-febc-4859-9ccf-b8c59b794f01@linux.ibm.com>
-Date:   Wed, 13 Dec 2023 13:49:21 -0600
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 8/8] ARM: dts: aspeed: System1: PS, sensor and more
-Content-Language: en-US
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, joel@jms.id.au, andrew@codeconstruct.com.au,
-        peterhuewe@gmx.de, jarkko@kernel.org, jgg@ziepe.ca,
-        keescook@chromium.org, tony.luck@intel.com, gpiccoli@igalia.com,
-        johannes.holland@infineon.com, linux@roeck-us.net,
-        broonie@kernel.org
-Cc:     patrick.rudolph@9elements.com, vincent@vtremblay.dev,
-        peteryin.openbmc@gmail.com, lakshmiy@us.ibm.com,
-        bhelgaas@google.com, naresh.solanki@9elements.com,
-        alexander.stein@ew.tq-group.com, festevam@denx.de,
+        Wed, 13 Dec 2023 14:51:22 -0500
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C34BE9C;
+        Wed, 13 Dec 2023 11:51:28 -0800 (PST)
+Received: by mail-wr1-x429.google.com with SMTP id ffacd0b85a97d-336460c22feso59942f8f.3;
+        Wed, 13 Dec 2023 11:51:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1702497087; x=1703101887; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=QQ00PVQEEsbBDsAiHtNgQwoZD5SKSh4mT5UUe1TRdHc=;
+        b=i9MenSoq+S27p6EzkdVt6PoHi4c17XnWcXOTriSJz+4SquG6SUgS/WD1bHhf5GVrzc
+         CZmGwvp41tja5QZI7zwkC1iJ/7YwDxvdNHjORKS5Q8ni6kFfllarwjpq/JRuLquQjNPV
+         cbLybRJ0n784+FPefsXgIsJEaNA6Po/M2XApxbIhLYIXH/cEJladXgr3+PBy+9rymHjn
+         ctuXh6M2mZeMjtnMPEn5BN7UOdHZw4jiXb3IKv1H+Nj/5uKVTgaILaLJOg4+QAAwVPMV
+         V1RjDjcU8gXaea/T4xJ9ob1KSV8JjOuro0iUtwVJcxuHAkPFm9WGkcZH29RiTS5p+NJi
+         Cr7A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702497087; x=1703101887;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=QQ00PVQEEsbBDsAiHtNgQwoZD5SKSh4mT5UUe1TRdHc=;
+        b=Csg5Z4omRBOTqGEckbhk+VSoRA+x1Q1xOj0SvpriYqX/Gs9bSbC8BHP8agEweQyiY2
+         auX5OkERs49air3hTkPeTcAxEgcT00q/jsjpjlmBF+n8Xdseu0jwbCFflkf7JCwy3txt
+         x3FqIo6JQ3/Y58QBZWNCFIOSeWC3RnsnhhlVk7y9sk2Cm1myq09n0H6mnoYrF58GhHIQ
+         LJ4OS3RkZdfZTEuBrA9lbijVePkVHciHbCgSw38YkByHKiQeUkdLYRDYo9RJpxEgLSa5
+         K/BmScMroD5bl6BjWSnRDbM/4aElhioeJbriocKN9uqYSRhZu8DBkS1UUobKkMIg443c
+         kRzQ==
+X-Gm-Message-State: AOJu0Yw8nPJBlDjVbtTrLJKlaDgAQ/I+RcyqDVl21O45MHdvx72alTBG
+        qkuEuzj2eKx3q4FX9GnzpQ==
+X-Google-Smtp-Source: AGHT+IFBc7XAiSp1dfcz3uO18CnzTmXQGI1tcrG6ntKLXnS0y/BNGLSoesw7UH4cnM9+Bs3NVJG5Mg==
+X-Received: by 2002:a05:600c:4f05:b0:40b:5e59:ccdb with SMTP id l5-20020a05600c4f0500b0040b5e59ccdbmr4822082wmq.188.1702497086918;
+        Wed, 13 Dec 2023 11:51:26 -0800 (PST)
+Received: from U4.lan ([2a02:810b:f40:4300:92dc:8b1c:e01c:b93c])
+        by smtp.gmail.com with ESMTPSA id fm14-20020a05600c0c0e00b00407b93d8085sm24050698wmb.27.2023.12.13.11.51.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Dec 2023 11:51:26 -0800 (PST)
+From:   Alex Bee <knaerzche@gmail.com>
+To:     Sandy Huang <hjc@rock-chips.com>,
+        =?UTF-8?q?Heiko=20St=C3=BCbner?= <heiko@sntech.de>,
+        Andy Yan <andyshrk@163.com>, Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>
+Cc:     David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
         devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        linux-integrity@vger.kernel.org, linux-hardening@vger.kernel.org,
-        geissonator@yahoo.com
-References: <20231212164004.1683589-1-ninad@linux.ibm.com>
- <20231212164004.1683589-9-ninad@linux.ibm.com>
- <5b98538a-8ffe-42ec-b020-514dcfcebba3@linaro.org>
- <44abff4a-0a8e-499b-8b98-a4a1680cb431@linux.ibm.com>
- <427fa99c-764c-4d6a-b9f1-cd9089710d5e@linaro.org>
-From:   Ninad Palsule <ninad@linux.ibm.com>
-In-Reply-To: <427fa99c-764c-4d6a-b9f1-cd9089710d5e@linaro.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Alex Bee <knaerzche@gmail.com>
+Subject: [PATCH 00/11] Add HDMI support for RK3128
+Date:   Wed, 13 Dec 2023 20:51:14 +0100
+Message-ID: <20231213195125.212923-1-knaerzche@gmail.com>
+X-Mailer: git-send-email 2.43.0
+MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: -lbtKMmRARtMlAJmbObK1QI6-3y3Nw92
-X-Proofpoint-GUID: HhWJUytBbixy7UlL0_Fe2zPrr42jTffk
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-13_13,2023-12-13_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 impostorscore=0
- priorityscore=1501 suspectscore=0 spamscore=0 phishscore=0 bulkscore=0
- lowpriorityscore=0 mlxscore=0 mlxlogscore=999 adultscore=0 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311290000
- definitions=main-2312130141
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Krzysztof,
+This series aims to add support for the display controller (VOP) and the
+HDMI controller block of RK3128 (which is very similar to the one found in
+RK3036).
 
-On 12/13/23 13:37, Krzysztof Kozlowski wrote:
-> On 13/12/2023 20:02, Ninad Palsule wrote:
->> Hello Krzysztof,
->>
->> On 12/12/23 14:26, Krzysztof Kozlowski wrote:
->>> On 12/12/2023 17:40, Ninad Palsule wrote:
->>>> This drop adds following devices in the device tree.
->>>> - EEPROM/VPD
->>>> - Power supplies
->>>> - Humidity, pressure and temperature sensors.
->>>> - Trusted platform module(TPM) chip
->>>>
->>>> Tested:
->>>>       This board is tested using the simics simulator.
->>>>
->>>> Signed-off-by: Ninad Palsule <ninad@linux.ibm.com>
->>>> ---
->>> Don't mix DTS with drivers. DTS and drivers go via different subsystems
->>> and cannot have dependencies, so why DTS is patch #6, then driver #7 and
->>> now again DTS #7?
->> There is a dependency on driver code as patch #8 uses the compatibility
->> string added in driver patch #7.  I have now moved driver patch at the
->> start. Is that ok? OR you are suggesting something else?
-> First, there is no dependency. Second, except confusing order anyway DTS
-> will go via separate trees. Third, again, there is no dependency. If
-> there is, your patchset is broken and this needs to be fixed. Although I
-> don't understand how new hardware can depend on driver... it's really odd.
+The VOP part is very simple -  everything we need for HDMI support is
+already there. I only needed to split the output selection registers from
+RK3036.
+The VOP has an IOMMU attached, but it has a serious silicon bug:
+Registers can only be written, but not be read. As it's not possible to use
+it with the IOMMU driver in it's current state I'm not adding it here and
+we have to live with CMA for now - which works fine also. Andy, maybe you
+can shed a light on whether there is any way to not have to write the
+registers only and hope for the best (a.k.a rockchip,skip-mmu-read). I have
+it working here locally - but nothing for upstream (yet).
 
-Thanks for the quick response.
+The inno-hdmi driver currently gets a lot of attention [0-2] and I'm
+hooking in now also. I did only the bare minimum to get a correctly colored
+picture and a stable signal for RK3128. I leave the cleanups to those other
+series and will come back with sound/CEC support later. It shouldn't
+interfere to much, only the csc-part must not get dropped completely and
+the mode-check-hooks are no longer dead.
 
-This board uses the nuvoton TPM device. The tpm devices uses 
-"nuvoton,npct75x" driver hence we added it in the device tree. If the 
-driver doesn't have this compatibility string then it won't load. So if 
-someone tries to use this board then tpm won't work unless the 
-compatibility string is added in the driver. That is the dependency I am 
-talking about.
+Note: Patches are based and tested on next-20231213.
 
-Please let me know.
+[0] https://lore.kernel.org/all/20231207-kms-hdmi-connector-state-v5-0-6538e19d634d@kernel.org
+[1] https://lore.kernel.org/all/20231204123315.28456-1-keith.zhao@starfivetech.com
+[2] https://lore.kernel.org/all/2601b669-c570-f39d-8cf9-bff56c939912@gmail.com
 
-Regards,
+Alex Bee (11):
+  dt-bindings: display: rockchip,inno-hdmi: Document RK3128 compatible
+  drm/rockchip: vop: Add output selection registers for RK312x
+  drm/rockchip: inno_hdmi: Fix video timing
+  drm/rockchip: inno_hdmi: Correctly setup HDMI quantization range
+  drm/rockchip: inno_hdmi: Add variant support
+  drm/rockchip: inno_hdmi: Add RK3128 support
+  drm/rockchip: inno_hdmi: Add basic mode validation
+  drm/rockchip: inno_hdmi: Drop custom fill_modes hook
+  ARM: dts: rockchip: Add display subsystem for RK3128
+  ARM: dts rockchip: Add HDMI node for RK3128
+  ARM: dts: rockchip: Enable HDMI output for XPI-3128
 
-Ninad
+ .../display/rockchip/rockchip,inno-hdmi.yaml  |  30 ++-
+ .../arm/boot/dts/rockchip/rk3128-xpi-3128.dts |  29 +++
+ arch/arm/boot/dts/rockchip/rk3128.dtsi        |  60 ++++++
+ drivers/gpu/drm/rockchip/inno_hdmi.c          | 203 +++++++++++++++---
+ drivers/gpu/drm/rockchip/rockchip_vop_reg.c   |  13 +-
+ drivers/gpu/drm/rockchip/rockchip_vop_reg.h   |   3 +
+ 6 files changed, 309 insertions(+), 29 deletions(-)
 
->
-> Best regards,
-> Krzysztof
->
+
+base-commit: 48e8992e33abf054bcc0bb2e77b2d43bb899212e
+-- 
+2.43.0
+
