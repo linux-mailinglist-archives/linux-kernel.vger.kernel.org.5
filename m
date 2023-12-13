@@ -2,71 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ED981810E0D
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 11:14:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 67660810E14
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 11:15:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235234AbjLMKEq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 05:04:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48296 "EHLO
+        id S235235AbjLMKGB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 05:06:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37982 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235202AbjLMKEj (ORCPT
+        with ESMTP id S235202AbjLMKF6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 05:04:39 -0500
-Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CF13107
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 02:04:44 -0800 (PST)
-Received: by mail-yb1-xb31.google.com with SMTP id 3f1490d57ef6-dbcc9d4b1aeso728160276.2
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 02:04:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1702461883; x=1703066683; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=UW6j6VNL8VCBZjejnKXWYkB2uzhHDBsJkDlpkHGo9WI=;
-        b=xA86cer1x73WQBw6eUxfMW2X21XpNk//+fjeRGf8tTb9N2KJ+6gfoue/niyyGwsIXZ
-         cZs4MsPyBSxMI5bfNcUYMLk5y9YzrM2TvgtOQVMODgegWL3l9xqArCxBeLtpurWvM/T4
-         zc0DC30OQiFkqBsUjPrvKrd6SvBNQKGnP1kR4AIw19ruooj5lQqtRW69qlBgu+wqGBHr
-         CeB/2DLyB3yyMn0WQlhQe/YB31sYGHkaLodh6o0WI1i4HHuFiMbPNOivpwAcRdJ7AFeB
-         K4MrqVIb0Bbdk9ZELxyn0YvI5I0rDRiylCvrpI2STPGGPeiqrDRs/ejeSvgbzEEtEt1V
-         LrmQ==
+        Wed, 13 Dec 2023 05:05:58 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACD54D5
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 02:06:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1702461963;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=xn1jEdk27xv+fw6ihije0awyyp3dKSt8aX+E0LMVgl4=;
+        b=OGesFVT2fkGvwRBvfbWwHpeaVVtPl66oWdkykV+b9Q2EnoIuPMqTfmMsW2ori4I3lBqUwo
+        Lu/FyyJZlX1SD3AyWFxEyPAHb93FlJ1+V21w8PWMezwCGl2OgDCQJabJSag77BLQABZk0d
+        QqmLwGIR8zrAZ+jdsRJys6JaydDmc/U=
+Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
+ [209.85.218.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-665-2j2z5bo5N8uII6ZahR6zFg-1; Wed, 13 Dec 2023 05:06:00 -0500
+X-MC-Unique: 2j2z5bo5N8uII6ZahR6zFg-1
+Received: by mail-ej1-f72.google.com with SMTP id a640c23a62f3a-a19725a3a84so393284266b.0
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 02:05:59 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702461883; x=1703066683;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1702461959; x=1703066759;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=UW6j6VNL8VCBZjejnKXWYkB2uzhHDBsJkDlpkHGo9WI=;
-        b=l3wWguUsar8oaHPFflQ4zXOh1AEiwKsEns4hzJ7KYb6004b2vx2G5KL6bSptUv15je
-         riuR4FVTIJ+JuxSkWJOlLRTJZfciOxFyelZWmXrCzUblN/D+6e2pX/ft6BnmkVPAHeqK
-         6HEurp8+7F25XP6pWvYh2UBu17Eb8SD5vMy1tgJQDDQ9UARZ3kkNJeOPn/RdKG0JfUYV
-         TLxLJJ+YBzXlQlX6aEicHQ/SttKOR7Eseo+PgA4sX7elELZWqcBW9wnnba8lMjTLIyzF
-         iB9AmZs5X/IJvXXANQlURAkWlKvPvuJeNUA6ho0VBk/lpfve1LeWBc8JtAbRlvhi46WO
-         zTUQ==
-X-Gm-Message-State: AOJu0YyjS5NMWbLYreHY8kJKEkyVfp5OMF/7tBLXelL9T1io7I13IVDt
-        BKA1DtNxNYSNV2FBzeEK9qhwGDUxhz0q1BIh7HiQNA==
-X-Google-Smtp-Source: AGHT+IECcIKBRun8rt0jvzDRIVumblmfcQvQhFUzWoInYyHHex90iGUYHdeBU8ksbyCQqmu0eQ+R4+SBWv8N9FwXnpo=
-X-Received: by 2002:a05:6902:28c:b0:db7:dad0:76d2 with SMTP id
- v12-20020a056902028c00b00db7dad076d2mr4693790ybh.110.1702461883525; Wed, 13
- Dec 2023 02:04:43 -0800 (PST)
+        bh=xn1jEdk27xv+fw6ihije0awyyp3dKSt8aX+E0LMVgl4=;
+        b=EpFKJpG29ZPwKB1gdqrFt0VjIWYY1tAWLRv4qhFLHLSJm7o7lNkB23j6Io6b/Qb9sk
+         XnBSZ+zDao+RRMBAb/hICY9evyy2PkrW8WEv8vgc3pdYIqOBbZUY7bmJcNw6m65Qj9TZ
+         CqJ1YiQvesYDYNSh2aBtfItDq5ZjaO21M2LWqISPFsIGgGPaLn1ch0VhuTjrcRN9d4lj
+         Dg7JZr6RZyU6CN/Cdk7C03b8+1alRaXdNkNvJxjp01jJXhM7PvdxLnRkDNwJ3pdAMwPe
+         /gT98ruhWNp4naQyMaTiwx9l5uwKIv36kZ1oGFYkMsskv+vHj0mi1MK2m/XOMOO6499n
+         7Hsg==
+X-Gm-Message-State: AOJu0YzTSdW7jZ2vjrgxtOMDog17GwRLsamvisuTav4Enw348ARAmg91
+        K2rMgaaCMWGSaQpoKKbXmE/SbZLNJFfEQc67dQXH3r5XWwLDosiGwpcrQLiX469jIUnPNMtnMgZ
+        Di76d82rweh2OLG5jA9Cqb4Ic
+X-Received: by 2002:a17:906:c019:b0:a1b:86e2:a1ab with SMTP id e25-20020a170906c01900b00a1b86e2a1abmr2567522ejz.223.1702461959001;
+        Wed, 13 Dec 2023 02:05:59 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IFZYT5Bvuxw2XfH2SIkWB1x7mzcXJCq+ITRe/p2JW4K3jZB3t+Oz+dOz0ZfsQ43uci8yyjdFw==
+X-Received: by 2002:a17:906:c019:b0:a1b:86e2:a1ab with SMTP id e25-20020a170906c01900b00a1b86e2a1abmr2567517ejz.223.1702461958642;
+        Wed, 13 Dec 2023 02:05:58 -0800 (PST)
+Received: from imammedo.users.ipa.redhat.com (nat-pool-brq-t.redhat.com. [213.175.37.10])
+        by smtp.gmail.com with ESMTPSA id fb4-20020a1709073a0400b00a1c76114fcesm7513801ejc.218.2023.12.13.02.05.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Dec 2023 02:05:58 -0800 (PST)
+Date:   Wed, 13 Dec 2023 11:05:56 +0100
+From:   Igor Mammedov <imammedo@redhat.com>
+To:     Dongli Zhang <dongli.zhang@oracle.com>
+Cc:     linux-acpi@vger.kernel.org, linux-pci@vger.kernel.org,
+        mst@redhat.com, rafael@kernel.org, lenb@kernel.org,
+        bhelgaas@google.com, mika.westerberg@linux.intel.com,
+        boris.ostrovsky@oracle.com, joe.jin@oracle.com,
+        stable@vger.kernel.org, Fiona Ebner <f.ebner@proxmox.com>,
+        Thomas Lamprecht <t.lamprecht@proxmox.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFC 2/2] PCI: acpiphp: slowdown hotplug if hotplugging
+ multiple devices at a time
+Message-ID: <20231213110556.5f1d83bf@imammedo.users.ipa.redhat.com>
+In-Reply-To: <d93c4614-1bbc-3a30-305e-28ff75d7fde2@oracle.com>
+References: <20231213003614.1648343-1-imammedo@redhat.com>
+        <20231213003614.1648343-3-imammedo@redhat.com>
+        <d93c4614-1bbc-3a30-305e-28ff75d7fde2@oracle.com>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-References: <20231117101817.4401-1-quic_tengfan@quicinc.com>
- <20231117101817.4401-16-quic_tengfan@quicinc.com> <e3e27fec-8ab9-4331-a5aa-2958dd630b11@linaro.org>
- <420ce17d-279e-47ee-9935-35bc03b89f98@quicinc.com>
-In-Reply-To: <420ce17d-279e-47ee-9935-35bc03b89f98@quicinc.com>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date:   Wed, 13 Dec 2023 12:04:32 +0200
-Message-ID: <CAA8EJpqoUBbq52EHPK+TYC67RzRJt9pnDwLA1SrFdPmXxyG3dg@mail.gmail.com>
-Subject: Re: [PATCH 15/16] arm64: dts: qcom: sm8550-aim300: add pmic glink port/endpoints
-To:     Tengfei Fan <quic_tengfan@quicinc.com>
-Cc:     agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
-        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, tglx@linutronix.de,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel@quicinc.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -74,157 +88,77 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 28 Nov 2023 at 10:11, Tengfei Fan <quic_tengfan@quicinc.com> wrote:
->
->
->
-> =E5=9C=A8 11/17/2023 6:32 PM, Dmitry Baryshkov =E5=86=99=E9=81=93:
-> > On 17/11/2023 12:18, Tengfei Fan wrote:
-> >> Add nodes to support Type-C USB/DP functionality.
-> >>
-> >> On this platform, a Type-C redriver is added to the SuperSpeed graph.
-> >>
-> >> Signed-off-by: Tengfei Fan <quic_tengfan@quicinc.com>
-> >> ---
-> >>   arch/arm64/boot/dts/qcom/sm8550-aim300.dts | 88 ++++++++++++++++++++=
-+-
-> >>   1 file changed, 87 insertions(+), 1 deletion(-)
-> >>
-> >> diff --git a/arch/arm64/boot/dts/qcom/sm8550-aim300.dts
-> >> b/arch/arm64/boot/dts/qcom/sm8550-aim300.dts
-> >> index 6dc3040b9f76..f3c558dd40f1 100644
-> >> --- a/arch/arm64/boot/dts/qcom/sm8550-aim300.dts
-> >> +++ b/arch/arm64/boot/dts/qcom/sm8550-aim300.dts
-> >> @@ -100,7 +100,15 @@
-> >>                       reg =3D <1>;
-> >>                       pmic_glink_ss_in: endpoint {
-> >> -                        remote-endpoint =3D <&usb_1_dwc3_ss>;
-> >> +                        remote-endpoint =3D <&redriver_ss_out>;
-> >> +                    };
-> >> +                };
-> >> +
-> >> +                port@2 {
-> >> +                    reg =3D <2>;
-> >> +
-> >> +                    pmic_glink_sbu: endpoint {
-> >> +                        remote-endpoint =3D <&fsa4480_sbu_mux>;
-> >>                       };
-> >>                   };
-> >>               };
-> >> @@ -519,6 +527,62 @@
-> >>       };
-> >>   };
-> >> +&i2c_master_hub_0 {
-> >> +    status =3D "okay";
-> >> +};
-> >> +
-> >> +&i2c_hub_2 {
-> >> +    status =3D "okay";
-> >> +
-> >> +    typec-mux@42 {
-> >> +        compatible =3D "fcs,fsa4480";
-> >> +        reg =3D <0x42>;
-> >> +
-> >> +        vcc-supply =3D <&vreg_bob1>;
-> >> +
-> >> +        mode-switch;
-> >> +        orientation-switch;
-> >> +
-> >> +        port {
-> >> +            fsa4480_sbu_mux: endpoint {
-> >> +                remote-endpoint =3D <&pmic_glink_sbu>;
-> >> +            };
-> >> +        };
-> >> +    };
-> >> +
-> >> +    typec-retimer@1c {
-> >> +        compatible =3D "onnn,nb7vpq904m";
-> >> +        reg =3D <0x1c>;
-> >> +
-> >> +        vcc-supply =3D <&vreg_l15b_1p8>;
-> >> +
-> >> +        orientation-switch;
-> >> +        retimer-switch;
-> >> +
-> >> +        ports {
-> >> +            #address-cells =3D <1>;
-> >> +            #size-cells =3D <0>;
-> >> +
-> >> +            port@0 {
-> >> +                reg =3D <0>;
-> >> +
-> >> +                redriver_ss_out: endpoint {
-> >> +                    remote-endpoint =3D <&pmic_glink_ss_in>;
-> >> +                };
-> >> +            };
-> >> +
-> >> +            port@1 {
-> >> +                reg =3D <1>;
-> >> +
-> >> +                redriver_ss_in: endpoint {
-> >> +                    data-lanes =3D <3 2 1 0>;
-> >> +                    remote-endpoint =3D <&usb_dp_qmpphy_out>;
-> >> +                };
-> >> +            };
-> >> +        };
-> >> +    };
-> >> +};
-> >> +
-> >>   &gcc {
-> >>       clocks =3D <&bi_tcxo_div2>, <&sleep_clk>,
-> >>            <&pcie0_phy>,
-> >> @@ -552,6 +616,16 @@
-> >>       status =3D "okay";
-> >>   };
-> >> +&mdss_dp0 {
-> >> +    status =3D "okay";
-> >> +};
-> >> +
-> >> +&mdss_dp0_out {
-> >> +    data-lanes =3D <0 1>;
-> >
-> > Why? Are you really limited to two lanes for DP by the hardware?
-> I got confirmation from a colleague that it is right that limited to two
-> lanes.
+On Wed, 13 Dec 2023 00:13:37 -0800
+Dongli Zhang <dongli.zhang@oracle.com> wrote:
 
-Excuse me, I missed your reply earlier. Is it 2 DP lanes and 2 SS USB
-lanes? Or are there just 2 lanes which are shared between DP and SS
-USB?
+> Hi Igor,
+> 
+> 
+> On 12/12/23 16:36, Igor Mammedov wrote:
+> > previous commit ("PCI: acpiphp: enable slot only if it hasn't been enabled already"
+> > introduced a workaround to avoid a race between SCSI_SCAN_ASYNC job and
+> > bridge reconfiguration in case of single HBA hotplug.
+> > However in virt environment it's possible to pause machine hotplug several
+> > HBAs and let machine run. That can hit the same race when 2nd hotplugged  
+> 
+> Would you mind helping explain what does "pause machine hotplug several HBAs and
+> let machine run" indicate?
 
-> >
-> >> +    remote-endpoint =3D <&usb_dp_qmpphy_dp_in>;
-> >> +};
-> >> +
-> >> +
-> >>   &mdss_dsi0 {
-> >>       vdda-supply =3D <&vreg_l3e_1p2>;
-> >>       status =3D "okay";
-> >> @@ -861,6 +935,18 @@
-> >>       status =3D "okay";
-> >>   };
-> >> +&usb_dp_qmpphy_dp_in {
-> >> +    remote-endpoint =3D <&mdss_dp0_out>;
-> >> +};
-> >> +
-> >> +&usb_dp_qmpphy_out {
-> >> +    remote-endpoint =3D <&redriver_ss_in>;
-> >> +};
-> >> +
-> >> +&usb_dp_qmpphy_usb_ss_in {
-> >> +    remote-endpoint =3D <&usb_1_dwc3_ss>;
-> >> +};
-> >> +
-> >>   &xo_board {
-> >>       clock-frequency =3D <76800000>;
-> >>   };
-> >
->
-> --
-> Thx and BRs,
-> Tengfei Fan
+qemu example would be:
+{qemu) stop
+(qemu) device_add device_add vhost-scsi-pci,wwpn=naa.5001405324af0985,id=vhost01,bus=bridge1,addr=8
+(qemu) device_add vhost-scsi-pci,wwpn=naa.5001405324af0986,id=vhost02,bus=bridge1,addr=0
+(qemu) cont
 
+this way when machine continues to run acpiphp code will see 2 HBAs at once
+and try to process one right after another. So [1/2] patch is not enough
+to cover above case, and hence the same hack SHPC employs by adding delay.
+However 2 separate hotplug events as in your reproducer should be covered
+by the 1st patch.
 
+> Thank you very much!
+> 
+> Dongli Zhang
+> 
+> > HBA will start re-configuring bridge.
+> > Do the same thing as SHPC and throttle down hotplug of 2nd and up
+> > devices within single hotplug event.
+> > 
+> > Signed-off-by: Igor Mammedov <imammedo@redhat.com>
+> > ---
+> >  drivers/pci/hotplug/acpiphp_glue.c | 6 ++++++
+> >  1 file changed, 6 insertions(+)
+> > 
+> > diff --git a/drivers/pci/hotplug/acpiphp_glue.c b/drivers/pci/hotplug/acpiphp_glue.c
+> > index 6b11609927d6..30bca2086b24 100644
+> > --- a/drivers/pci/hotplug/acpiphp_glue.c
+> > +++ b/drivers/pci/hotplug/acpiphp_glue.c
+> > @@ -37,6 +37,7 @@
+> >  #include <linux/mutex.h>
+> >  #include <linux/slab.h>
+> >  #include <linux/acpi.h>
+> > +#include <linux/delay.h>
+> >  
+> >  #include "../pci.h"
+> >  #include "acpiphp.h"
+> > @@ -700,6 +701,7 @@ static void trim_stale_devices(struct pci_dev *dev)
+> >  static void acpiphp_check_bridge(struct acpiphp_bridge *bridge)
+> >  {
+> >  	struct acpiphp_slot *slot;
+> > +        int nr_hp_slots = 0;
+> >  
+> >  	/* Bail out if the bridge is going away. */
+> >  	if (bridge->is_going_away)
+> > @@ -723,6 +725,10 @@ static void acpiphp_check_bridge(struct acpiphp_bridge *bridge)
+> >  
+> >  			/* configure all functions */
+> >  			if (slot->flags != SLOT_ENABLED) {
+> > +				if (nr_hp_slots)
+> > +					msleep(1000);
+> > +
+> > +                                ++nr_hp_slots;
+> >  				enable_slot(slot, true);
+> >  			}
+> >  		} else {  
+> 
 
---=20
-With best wishes
-Dmitry
