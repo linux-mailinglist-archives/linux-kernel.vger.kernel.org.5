@@ -2,86 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D0DE81211F
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 23:00:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 615DE812120
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 23:01:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442738AbjLMWAr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 17:00:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36140 "EHLO
+        id S1442755AbjLMWAu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 17:00:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36182 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230004AbjLMWAp (ORCPT
+        with ESMTP id S1442733AbjLMWAq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 17:00:45 -0500
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E4AB100;
-        Wed, 13 Dec 2023 14:00:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=cJnDldXUMVBXHPmZzYrdgqvYdMUeT9OgJCCFvtyCOEU=; b=ZG2RL06Ny69UkzRtQRCv4x2JZi
-        NjHYO7rghvqANL0SpfwjBfRtZi3a9B5fNH4sa+2Hf7p+aOYd6vZPLEm8H2hoMwGNbz8g4ZIZDPnRH
-        OYsP2dkgBrI5/xqKaK5K41MY71IanHPsK2/yzYD8uUwHlEb6ZnOK6QSch4sEWLwmKfDs=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1rDXHT-002rUq-4l; Wed, 13 Dec 2023 23:00:39 +0100
-Date:   Wed, 13 Dec 2023 23:00:39 +0100
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     "Russell King (Oracle)" <linux@armlinux.org.uk>
-Cc:     Justin Chen <justin.chen@broadcom.com>, netdev@vger.kernel.org,
-        Doug Berger <opendmb@gmail.com>,
-        Florian Fainelli <florian.fainelli@broadcom.com>,
-        Broadcom internal kernel review list 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] net: mdio: mdio-bcm-unimac: Delay before first poll
-Message-ID: <9c51ecda-4930-4c27-91d6-407efd860aa9@lunn.ch>
-References: <20231213000249.2020835-1-justin.chen@broadcom.com>
- <c3cc7a9d-d464-48e7-beb7-b90b1abbcfc7@lunn.ch>
- <ZXnHNTreKY/F2Aqm@shell.armlinux.org.uk>
+        Wed, 13 Dec 2023 17:00:46 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3C0AA3;
+        Wed, 13 Dec 2023 14:00:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1702504852; x=1734040852;
+  h=message-id:date:subject:to:cc:references:from:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=EwLLilaEpu5fM5dW2XRNGPO6dEZm5lmHjl8H9/lQqyI=;
+  b=ZNfbDE19YHc97nNR+WL9LMnHrNj91pudJoGeqG3GSyel1124+IQx3B9y
+   rSjapVc83gebD7YpKs11EDCyKEohUFvVYM3GmsrQjyhdLIe7nHMLTbAI6
+   qezam5zYRnUdOCMQ1DsMHgXS9iJOYvgtsGgDXKN0zg1rhFZoOcC02mA75
+   flhS4e4XjeRb6xxrESp93cntRXOr5OLmezFBlZ4hoh/+G9MCVoYoVWTdi
+   t0QTFY0S4avYGbLWU7dj4xr+OLRWY0BvToxxhysZOVFi4DM1EaD8elgKp
+   0SdoPFAJ2tpatFClfDcuOcqlSOr/VBt4LNm4n50OFhuJiwMKMHJsHmjCg
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10923"; a="375186874"
+X-IronPort-AV: E=Sophos;i="6.04,274,1695711600"; 
+   d="scan'208";a="375186874"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Dec 2023 14:00:52 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10923"; a="864771827"
+X-IronPort-AV: E=Sophos;i="6.04,274,1695711600"; 
+   d="scan'208";a="864771827"
+Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
+  by FMSMGA003.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 13 Dec 2023 14:00:51 -0800
+Received: from orsmsx612.amr.corp.intel.com (10.22.229.25) by
+ ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Wed, 13 Dec 2023 14:00:49 -0800
+Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
+ orsmsx612.amr.corp.intel.com (10.22.229.25) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Wed, 13 Dec 2023 14:00:49 -0800
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (104.47.55.168)
+ by edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Wed, 13 Dec 2023 14:00:49 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=SJ11rUm1H/uYAUHj5UZQ9hK6eQS+xp42CLAv2nLDRnVxe6AFzpiJi72qnv5xGvPp8NGi9jhhvSJ7POEI8YFQrpYpuhtb9UqyuWu+2PeNQEFm9aDfT+nkYhoRksA12QiiOooY97uoUICiGBnKQ62cdxFoS4FJiRFlcRrwdvg6YCKjcaooDIrUNMtLa0jcU1PPOsenU2nECSFTFZzk11tNbD/JiVmjKcjHNt3gl/L7KTUnxdk/Eck2SAB1rfGj3gDlDLpvVLTSzHqB9lkw+VCTnJSQmBAArkzUc6rVUxD7h+ItS0MF6pV+da/BdEQSpOxXhefxJiEh0hh8lBzu1joXgg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=g6F0Nmzcn3HsDy51/stMPrWcy+X4xDMbWkktr8OThFE=;
+ b=blHZXwwT2z6thLz9ioL86gE/JCYgt5cbkRcsfUjoX7mbsVlyJt9wlAfdSzDggQm1Q+zHjwixMvhzaSm8iIMCg3DwM23tHrPLmgEByVL0YNI/UXIuRgKP6AsYHMNo77joxwyVNIhu7GBolb9xa7G8UP0+eeBqpyVn5YDE7TVcOMvHy4V3pBKyRNDNqInlbExsdGu0zPhoc/aGtOHVrcyfbh9KTMVpas6fulFHSRGXZOHJtOlqQY0dvkhcUf0RZeUyX4Mdv5pwMcrSedYR4TC2swipk9IPh/IWr3LhaHp7zwTl54zxrlJ/6/kQSvnggl+7H0JQCPRW6jZ9Ly9w0Cl3Ng==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from SJ2PR11MB7573.namprd11.prod.outlook.com (2603:10b6:a03:4d2::10)
+ by SJ1PR11MB6131.namprd11.prod.outlook.com (2603:10b6:a03:45e::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7091.26; Wed, 13 Dec
+ 2023 22:00:46 +0000
+Received: from SJ2PR11MB7573.namprd11.prod.outlook.com
+ ([fe80::6710:537d:b74:f1e5]) by SJ2PR11MB7573.namprd11.prod.outlook.com
+ ([fe80::6710:537d:b74:f1e5%5]) with mapi id 15.20.7068.025; Wed, 13 Dec 2023
+ 22:00:46 +0000
+Message-ID: <172d13f9-2ce8-43ad-b354-402d137b914b@intel.com>
+Date:   Wed, 13 Dec 2023 14:00:45 -0800
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 27/29] selftests/resctrl: Add helper to convert L2/3 to
+ integer
+Content-Language: en-US
+To:     =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+        <linux-kselftest@vger.kernel.org>, Shuah Khan <shuah@kernel.org>,
+        "Shaopeng Tan" <tan.shaopeng@jp.fujitsu.com>,
+        =?UTF-8?Q?Maciej_Wiecz=C3=B3r-Retman?= 
+        <maciej.wieczor-retman@intel.com>,
+        Fenghua Yu <fenghua.yu@intel.com>
+CC:     <linux-kernel@vger.kernel.org>
+References: <20231211121826.14392-1-ilpo.jarvinen@linux.intel.com>
+ <20231211121826.14392-28-ilpo.jarvinen@linux.intel.com>
+From:   Reinette Chatre <reinette.chatre@intel.com>
+In-Reply-To: <20231211121826.14392-28-ilpo.jarvinen@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: MW4PR04CA0259.namprd04.prod.outlook.com
+ (2603:10b6:303:88::24) To SJ2PR11MB7573.namprd11.prod.outlook.com
+ (2603:10b6:a03:4d2::10)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZXnHNTreKY/F2Aqm@shell.armlinux.org.uk>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SJ2PR11MB7573:EE_|SJ1PR11MB6131:EE_
+X-MS-Office365-Filtering-Correlation-Id: 76db1cc1-8c09-4603-a8d1-08dbfc26f569
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Cmd3bNBVO/LQ5MCVNMdaAvke859hoFzfhBdHSwsDZiKBPnyfmJk5xBGQNnFCcABtYzoMnsbFr7wBXuQYB5bjrZCjDj7YQ/aS0Qn3d3+Me0LKnErB5zC79nbcosimwrYIdDp0vNOks0FyXHB734YfCJHlsYSAsjIuRECE/LB4ZbTSgZPZIZSe9m8rU4jJmoQR6o9gRQF4ALAS132Dn/fjNP2A9Pta1qLTTfhOp+P3SCe4aAMtDWDLf6Di89ao55uykHary76iP5hmMlCdFKMV8RAmL3lZ74daxVCqZ/LDQNTuO8E6PwsOGM9ui9pOi26gQnEpKYPqto3zBQXtvLSf2jsmuhViSwbkNpZpFQ4KU6USeA7vmz0pYtFTR5US5QMVhZ/QE53WM6CmfWvfS3f0ui972lQwBTERB403PDLj+29KPRyv890v+OKI+WuPj0hTdASk57IZrqTFWOK8GjnaHVWDidXjusomFcQDUp/qPEifdQHcEl/FWph8GzaESqxlXlA2PTnlQSmRj7XOcqzH93ZPKsJmMcc0eOWWZMMOPRN3hC6aANQNQa0tf1S9Q+wDFGFiYcAzwx6kD8uxObeSjroz6dPwNfCo69YYHgP4ThBQbOlFPoTMIfXFIz+rFnRqnYwQ6Ydboy/pBnjDzP/i5w==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ2PR11MB7573.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(136003)(376002)(346002)(366004)(39860400002)(230922051799003)(64100799003)(186009)(1800799012)(451199024)(31686004)(26005)(2616005)(82960400001)(38100700002)(36756003)(31696002)(86362001)(44832011)(4326008)(5660300002)(6512007)(53546011)(110136005)(6486002)(8936002)(66476007)(316002)(66556008)(66946007)(6636002)(41300700001)(2906002)(4744005)(478600001)(8676002)(6506007)(43740500002)(45980500001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?aVZDOFhjbThOOE1JOHVOUzEyaisvekVXMHpQaUpYN0JtVkdqSksyMExuRHBG?=
+ =?utf-8?B?c1I0SllIMDArWGU1Z1U1aDFEbGhhWitYd24zNWowekdVa0k2ZkVaeFZuYkhV?=
+ =?utf-8?B?TTRNR3lYZUV2dHV3emdaU0x1U0hHZS8yMHliZkFjemU4UERwU1h0SEFXdzBI?=
+ =?utf-8?B?elNoakIwQUI2Q1hiODFxNFgxNlJpRUJkb2ZhYXplTnN4MDN6WjFPekNLZzJr?=
+ =?utf-8?B?aHowT0FrL2k0cWI5bW5sSExwbkcvaTVGOHJ0M0R2THlRZytFbklOVHBFVFlE?=
+ =?utf-8?B?NmNIZ25DTFNESDR6UlhtYUNocURpN3F4QzBpRVRuMXB4aFhXVllTaFR0UVhO?=
+ =?utf-8?B?RFdDZnV2ekp0L0N3aE9mcmRuckMvQzBKWm0vcHZ2czVvOUdpMXJkUHJibjJN?=
+ =?utf-8?B?Y3dhS29qTGx1ZlpUM0lnQXVlRnllZ05ob0d5TVFjWkRvalBXZFpqc3huQnVy?=
+ =?utf-8?B?WGxJYzM5MWUxaUxoK3REU2Y1TUNvR09iTnRKZVMycExTUmJCd0EzblJiSUFv?=
+ =?utf-8?B?dThFWG0wY202RGV3dTNGVll2OFQ1eDhMaHZORjZVTml5aitxTHNvSHZMbXVI?=
+ =?utf-8?B?WGkzdFpVYitZVVNsSVhNTFF4aUMwVFhsTUEyaUQwSXc4RFlpd2NiSThKMlV5?=
+ =?utf-8?B?WE9PajBtdStCZWlPeHRtMXBuaVpzY0ptYkhyUXZkYVREL1A4aDIvRUo2cHo4?=
+ =?utf-8?B?VERWQ3Z0Z3VPMGwxRSsveVZxWnZoNW13QU1kTlI1RURkQjNyb0dkYzZHMDNl?=
+ =?utf-8?B?d1Ixa1lKTGZDUDJmNk0vbEl1K3pIbTRkV21PVSt2RXRsMmZBZE9WV1Q3dEhz?=
+ =?utf-8?B?UHhIMHBxd1dBWGJuaTR5WnpIQ2pobDJLcDVmSnNWenVTMjlLS1dFMkVQZW4y?=
+ =?utf-8?B?cEN4UW94RUlNc0VFbFJVRWxXT2h2cVlUVlhjL1QvSEJXMk5MRmhBWnRtbFdG?=
+ =?utf-8?B?dXlGWGhlcGNVakptR3VUbHRMa1J4WHRLZXRScEJVZzQ0WUsrVFY1alkwL0V4?=
+ =?utf-8?B?MWt1L21HVU9IVWxFMzE1YVo4TlBDM2trTS83NTc5NU9NbTNZYkc3Snl2eFZT?=
+ =?utf-8?B?dThQeDY0TmxDR3RLRnlSZTlzck1zYUxaRHloRXBQakdWSEdjb2ZVQ1pnZnNr?=
+ =?utf-8?B?cXlMeHMyeERwUm5ISjFGVU84MUQ5aWg0ZEsyTEpnRGtYN24zVXpkWkhnR1Z4?=
+ =?utf-8?B?VzBCWmxoM0ZpL1IycVdnUTVjZ09JQ2lEb3dpOTlMMEx4V1ZZbEJ2UFNPbHUw?=
+ =?utf-8?B?UHJEMFBRYXpXNUY3YnA0Ulh5dHJNUFFzZ1BaZXhkZXBQeEQ1Z2NMMkoySzI5?=
+ =?utf-8?B?RkpjSEtCa2tNazlvS08yc3QyZVU0NWdpVlQ4Y1hHemRNL3VISC9VTjE5bXRi?=
+ =?utf-8?B?cEdwdmtvZ1dWNzFtOVVueEdXdE5BYUtCMXA0Ui9hWHo3UDJwV2JRQzZVZS9y?=
+ =?utf-8?B?N0p3MktoQURtc2kyMnhDcExJTFJkRnkwdlpRdDh4QS94andGWEdPb0lNd2dP?=
+ =?utf-8?B?bnlvaVNzMWs0eWExNDFyZWE1L3ZMRmhkdnYveEhtTElzMVh3QzhxNnd4SGx6?=
+ =?utf-8?B?VEZsWkMzSEhMbGVRTkI2eFpMeW8xRC90K3FIMDNSdVRncHdoZG45NTdMdXdk?=
+ =?utf-8?B?QkZGZzAyNUpsVlJzc1pjSGFUNmxacXdwM1RORi9MSStJZ0Y2dTBGemlGaExO?=
+ =?utf-8?B?NlB2dStiSVlqalpFZGVyVkJqQkZoQzNSUk1yTGlRNG83TmFzNHVRM0JjSEFn?=
+ =?utf-8?B?ZUt0cmZmcU9CWVFqR3hVOHdud2lTb1ExS1JidWRhMTR6alNMTFo0bWZ4OVRF?=
+ =?utf-8?B?dHFSOFNwTXFMV3RyME9aSUZIMDlZdlBMTDlSQWJqeWhCdElXMURXK2Z6Vkcx?=
+ =?utf-8?B?WWhjdTUzbUZxUjlyYzZjeW4wOWxZdHEzeFVOVXZBZ29RNVkrYWNOVllxSzdE?=
+ =?utf-8?B?ZjJDa3RsYzZuMzJCYmo0KzZQMWczK2pnM1JkQWdvb0NvcE1NS0pSZENVbkJw?=
+ =?utf-8?B?RUlDV0RaRTBGYlpBcS9nZ2RncVdlVzBXS1JMUXFNWVBtaGh0aHhXQWJQOGZH?=
+ =?utf-8?B?aFFyS0RWTmpaeldTUUpraEFmSHkrVVVWcVhENE11Zm44VGVROWZwU09wSzc3?=
+ =?utf-8?B?bkNpOEIzakcwbU5hYnpYVHFYb2VNTk9TZFd0eVJBcjlHRHh4STJXejNRWW5E?=
+ =?utf-8?B?RlE9PQ==?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 76db1cc1-8c09-4603-a8d1-08dbfc26f569
+X-MS-Exchange-CrossTenant-AuthSource: SJ2PR11MB7573.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Dec 2023 22:00:46.3169
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: hc1PhlBSXvHGJJXpB4DzRS/WSaCDTOgLOOLLt39dDuvyIrUSMyod8kD2BDKxfQZX1ZoK2vae35PjMHlL5NEyalAI/yacth+Gh4yygThH99c=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ1PR11MB6131
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 13, 2023 at 03:01:09PM +0000, Russell King (Oracle) wrote:
-> On Wed, Dec 13, 2023 at 11:57:52AM +0100, Andrew Lunn wrote:
-> > On Tue, Dec 12, 2023 at 04:02:49PM -0800, Justin Chen wrote:
-> > > With a clock interval of 400 nsec and a 64 bit transactions (32 bit
-> > > preamble & 16 bit control & 16 bit data), it is reasonable to assume
-> > > the mdio transaction will take 25.6 usec. Add a 30 usec delay before
-> > > the first poll to reduce the chance of a 1000-2000 usec sleep.
-> > 
-> > #define  MDIO_C45               0
-> > 
-> > suggests the hardware can do C45? The timing works out different then.
-> > Maybe add a comment by the udelay() that is assumes C22, to give a
-> > clue to somebody who is adding C45 support the delay needs to be
-> > re-evaluated.
+Hi Ilpo,
+
+On 12/11/2023 4:18 AM, Ilpo Järvinen wrote:
+> "L2"/"L3" conversion to integer is embedded into get_cache_size()
+> which prevents reuse.
 > 
-> Note, however, that the driver only supports C22 operations (it only
-> populates the read|write functions, not the c45 variants).
+> Create a helper for the cache string to integer conversion to make
+> it reusable.
+> 
+> Signed-off-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
+> ---
 
-Yes, i checked that. Which is why i used the wording 'a clue to
-somebody who is adding C45'. Not everybody adding such support would
-figure out the relevance of 30us and that it might not be optimal for
-C45. A comment might point them on the right line of thinking. That is
-all i was trying to say.
+Reviewed-by: Reinette Chatre <reinette.chatre@intel.com>
 
-    Andrew
-
-     
+Reinette
