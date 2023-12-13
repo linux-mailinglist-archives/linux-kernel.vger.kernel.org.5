@@ -2,45 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C7E92811FED
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 21:27:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A7E94811FF2
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 21:28:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442469AbjLMU1P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 15:27:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55042 "EHLO
+        id S1442497AbjLMU21 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 15:28:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47582 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229671AbjLMU1N (ORCPT
+        with ESMTP id S229671AbjLMU2Z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 15:27:13 -0500
-Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3C52DC;
-        Wed, 13 Dec 2023 12:27:17 -0800 (PST)
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 3BDKR6Xp129822;
-        Wed, 13 Dec 2023 14:27:06 -0600
+        Wed, 13 Dec 2023 15:28:25 -0500
+Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3E76DC;
+        Wed, 13 Dec 2023 12:28:31 -0800 (PST)
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 3BDKSDOr024588;
+        Wed, 13 Dec 2023 14:28:13 -0600
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1702499226;
-        bh=3LweBZsiB2/n+R258Lwo7eKUhPIvogWGaaXEhf1nq3w=;
+        s=ti-com-17Q1; t=1702499293;
+        bh=DjYeocYlQnbm+b46K66B+is+JQHLrwPynM8kFchXcRU=;
         h=Date:From:To:CC:Subject:References:In-Reply-To;
-        b=ed1CKN9G+6myXpgjDcX4ag5dMjKVuxOUMP6D1tzBg2QlhSbPTDIXZgYvhm8AxHIY1
-         KpvZQQDoWGIDGwjxGvV/mgi8ZbOuJYocuKGsPhwfvAuHq8EdstfLuprfIVLts2/OJF
-         AuZ2OdoQEyAml0i9Kt5PrfEMN38/60nEFg/4Fono=
-Received: from DLEE112.ent.ti.com (dlee112.ent.ti.com [157.170.170.23])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 3BDKR6iK053121
+        b=sZa+fcjWVLGt9YoxZVqWvffPVC4MWLBG5Mapym78KnDCFNT9Sd4SitL6b8YvlvhQS
+         PtBMYVaYTQph962NpRNHMypqBLyiPKxykYKpZvA3xmRSMoroO3YvUD9a3SJurKu7nJ
+         gr1hnjqYf8p0or7uSraYIQbqR/zG4UIojc9chSIE=
+Received: from DFLE108.ent.ti.com (dfle108.ent.ti.com [10.64.6.29])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 3BDKSDTh065566
         (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 13 Dec 2023 14:27:06 -0600
-Received: from DLEE106.ent.ti.com (157.170.170.36) by DLEE112.ent.ti.com
- (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
+        Wed, 13 Dec 2023 14:28:13 -0600
+Received: from DFLE113.ent.ti.com (10.64.6.34) by DFLE108.ent.ti.com
+ (10.64.6.29) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 13
- Dec 2023 14:27:06 -0600
-Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DLEE106.ent.ti.com
- (157.170.170.36) with Microsoft SMTP Server (version=TLS1_2,
+ Dec 2023 14:28:13 -0600
+Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DFLE113.ent.ti.com
+ (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Wed, 13 Dec 2023 14:27:05 -0600
+ Frontend Transport; Wed, 13 Dec 2023 14:28:13 -0600
 Received: from localhost (uda0133052.dhcp.ti.com [128.247.81.232])
-        by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 3BDKR5Ld001406;
-        Wed, 13 Dec 2023 14:27:05 -0600
-Date:   Wed, 13 Dec 2023 14:27:05 -0600
+        by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 3BDKSDKw002316;
+        Wed, 13 Dec 2023 14:28:13 -0600
+Date:   Wed, 13 Dec 2023 14:28:13 -0600
 From:   Nishanth Menon <nm@ti.com>
 To:     Vaishnav Achath <vaishnav.a@ti.com>
 CC:     <vigneshr@ti.com>, <kristo@kernel.org>, <robh+dt@kernel.org>,
@@ -48,14 +48,15 @@ CC:     <vigneshr@ti.com>, <kristo@kernel.org>, <robh+dt@kernel.org>,
         <linux-arm-kernel@lists.infradead.org>,
         <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
         <j-choudhary@ti.com>, <u-kumar1@ti.com>
-Subject: Re: [PATCH 2/3] arm64: dts: ti: Introduce J722S family of SoCs
-Message-ID: <20231213202705.6tspycl5qicb6gwd@germproof>
+Subject: Re: [PATCH 3/3] arm64: dts: ti: Add support for TI J722S Evaluation
+ Module
+Message-ID: <20231213202813.7wgncys4qxgslsro@bulldog>
 References: <20231213124930.3012-1-vaishnav.a@ti.com>
- <20231213124930.3012-3-vaishnav.a@ti.com>
+ <20231213124930.3012-4-vaishnav.a@ti.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <20231213124930.3012-3-vaishnav.a@ti.com>
+In-Reply-To: <20231213124930.3012-4-vaishnav.a@ti.com>
 X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
@@ -68,387 +69,300 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 On 18:19-20231213, Vaishnav Achath wrote:
-> The J722S is a family of  application processors built for Automotive and
-> Linux Application development. Scalable Arm Cortex-A53 performance and
-> embedded features, such as multi high-definition display support,
-> 3D-graphics acceleration, 4K video acceleration, and extensive peripherals
-> make the J722S well-suited for a broad range of automation and industrial
-> application, including automotive digital instrumentation, automotive
-> displays, industrial HMI, and more.
-
-Trim this down please
+> Add basic support for the J722S EVM with UART console and
+> MMC SD as rootfs.
 > 
-> Some highlights of J722S SoC are:
->     * Quad-Cortex-A53s (running up to 1.4GHz) in a single cluster.
->     * One Device manager Cortext-R5F for system power and resource
->       management, two Cortex-R5F for Functional Safety or
->       general-purpose usage and two C7x floating point vector DSPs
->       with Matrix Multiply Accelerator(MMA) for deep learning.
->     * One 3D GPU up to 50 GLFOPS
->     * H.264/H.265, JPEG Video Encode/Decode.
->     * Display support: 3x display support over OLDI/LVDS (1x OLDI-DL, 1x or
->       2x OLDI-SL), DSI, or DPI. Up to 3840x1080@60fps resolution
->     * Integrated Giga-bit Ethernet switch supporting up to a total of two
->       external ports (TSN capable).
->     * Vision Processing Accelerator (VPAC) with image signal processor
->       and Depth and Motion Processing Accelerator (DMPAC).
->     * 7xUARTs, 3xSPI, 5xI2C, 2xUSB2, 2xCAN-FD, 3xMMC and SD, GPMC for
->       NAND/FPGA connection, OSPI memory controller, 5xMcASP for audio,
->       4xCSI-RX for Camera, 1 PCIe Gen3 controller, eCAP/eQEP,
->       ePWM, among other peripherals.
->     * Dedicated Centralized Hardware Security Module with support for
->       secure boot, debug security and crypto acceleration and trusted
->       execution environment.
->     * One 32-bit DDR Subsystem that supports LPDDR4 memory type.
-
-Trim this down to what is different from AM62P?
-
-> 
-> J722S family of SoCs is a superset of the AM62P SoC family and shares
-> similar memory map, thus the nodes are being reused from AM62P includes
-> instead of duplicating the definitions. Unused nodes with dependencies
-> are kept disabled and will be enabled later when the dependencies are
-> enabled.
-> 
-> For those interested, more details about this SoC can be found in the
-> Technical Reference Manual here:
-> 	https://www.ti.com/lit/zip/sprujb3
+> Schematics are available at:
+> 	https://www.ti.com/lit/zip/sprr495
 > 
 > Co-developed-by: Jayesh Choudhary <j-choudhary@ti.com>
 > Signed-off-by: Jayesh Choudhary <j-choudhary@ti.com>
 > Signed-off-by: Vaishnav Achath <vaishnav.a@ti.com>
 > ---
+>  arch/arm64/boot/dts/ti/Makefile         |   3 +
+>  arch/arm64/boot/dts/ti/k3-j722s-evm.dts | 253 ++++++++++++++++++++++++
+>  2 files changed, 256 insertions(+)
+>  create mode 100644 arch/arm64/boot/dts/ti/k3-j722s-evm.dts
 > 
-> checkpatch error is ignored for arch/arm64/boot/dts/ti/k3-pinctrl.h:
-> ERROR: Macros with complex values should be enclosed in parentheses
-> 
-> However, we do not need parentheses enclosing the values for this
-> macro as we do intend it to generate two separate values as has been
-> done for other similar platforms.
-> 
-> Depends on:
-> https://lore.kernel.org/all/20231211132600.25289-1-vaishnav.a@ti.com/
-> https://lore.kernel.org/all/20231213081318.26203-1-vaishnav.a@ti.com/
-> 
->  arch/arm64/boot/dts/ti/k3-j722s.dtsi | 275 +++++++++++++++++++++++++++
->  arch/arm64/boot/dts/ti/k3-pinctrl.h  |   3 +
->  2 files changed, 278 insertions(+)
->  create mode 100644 arch/arm64/boot/dts/ti/k3-j722s.dtsi
-> 
-> diff --git a/arch/arm64/boot/dts/ti/k3-j722s.dtsi b/arch/arm64/boot/dts/ti/k3-j722s.dtsi
+> diff --git a/arch/arm64/boot/dts/ti/Makefile b/arch/arm64/boot/dts/ti/Makefile
+> index 1ac47876bc99..aa7cc33e239b 100644
+> --- a/arch/arm64/boot/dts/ti/Makefile
+> +++ b/arch/arm64/boot/dts/ti/Makefile
+> @@ -76,6 +76,9 @@ dtb-$(CONFIG_ARCH_K3) += k3-j721s2-evm-gesi-exp-board.dtbo
+>  k3-j721s2-evm-dtbs := k3-j721s2-common-proc-board.dtb k3-j721s2-evm-gesi-exp-board.dtbo
+>  dtb-$(CONFIG_ARCH_K3) += k3-j721s2-evm.dtb
+>  
+> +# Boards with J722s SoC
+> +dtb-$(CONFIG_ARCH_K3) += k3-j722s-evm.dtb
+> +
+>  # Boards with J784s4 SoC
+>  dtb-$(CONFIG_ARCH_K3) += k3-am69-sk.dtb
+>  dtb-$(CONFIG_ARCH_K3) += k3-j784s4-evm.dtb
+> diff --git a/arch/arm64/boot/dts/ti/k3-j722s-evm.dts b/arch/arm64/boot/dts/ti/k3-j722s-evm.dts
 > new file mode 100644
-> index 000000000000..dbd762bfd779
+> index 000000000000..1cb29203a8ed
 > --- /dev/null
-> +++ b/arch/arm64/boot/dts/ti/k3-j722s.dtsi
-> @@ -0,0 +1,275 @@
+> +++ b/arch/arm64/boot/dts/ti/k3-j722s-evm.dts
+> @@ -0,0 +1,253 @@
 > +// SPDX-License-Identifier: GPL-2.0
 > +/*
-> + * Device Tree Source for J722S SoC Family
-> + *
+> + * Device Tree file for the J722S-EVM
 > + * Copyright (C) 2023 Texas Instruments Incorporated - https://www.ti.com/
+> + *
+> + * Schematics: https://www.ti.com/lit/zip/sprr495
 > + */
 > +
-> +#include <dt-bindings/gpio/gpio.h>
-> +#include <dt-bindings/interrupt-controller/irq.h>
-> +#include <dt-bindings/interrupt-controller/arm-gic.h>
-> +#include <dt-bindings/soc/ti,sci_pm_domain.h>
+> +/dts-v1/;
 > +
-> +#include "k3-pinctrl.h"
+> +#include "k3-j722s.dtsi"
 > +
 > +/ {
-> +	model = "Texas Instruments K3 J722S SoC";
-> +	compatible = "ti,j722s";
-> +	interrupt-parent = <&gic500>;
-> +	#address-cells = <2>;
-> +	#size-cells = <2>;
+> +	compatible = "ti,j722s-evm", "ti,j722s";
+> +	model = "Texas Instruments J722S EVM";
 > +
-> +	cpus {
-> +		#address-cells = <1>;
-> +		#size-cells = <0>;
-> +
-> +		cpu-map {
-> +			cluster0: cluster0 {
-> +				core0 {
-> +					cpu = <&cpu0>;
-> +				};
-> +
-> +				core1 {
-> +					cpu = <&cpu1>;
-> +				};
-> +
-> +				core2 {
-> +					cpu = <&cpu2>;
-> +				};
-> +
-> +				core3 {
-> +					cpu = <&cpu3>;
-> +				};
-> +			};
-> +		};
-> +
-> +		cpu0: cpu@0 {
-> +			compatible = "arm,cortex-a53";
-> +			reg = <0x000>;
-> +			device_type = "cpu";
-> +			enable-method = "psci";
-> +			i-cache-size = <0x8000>;
-> +			i-cache-line-size = <64>;
-> +			i-cache-sets = <256>;
-> +			d-cache-size = <0x8000>;
-> +			d-cache-line-size = <64>;
-> +			d-cache-sets = <128>;
-> +			next-level-cache = <&l2_0>;
-> +			clocks = <&k3_clks 135 0>;
-> +		};
-> +
-> +		cpu1: cpu@1 {
-> +			compatible = "arm,cortex-a53";
-> +			reg = <0x001>;
-> +			device_type = "cpu";
-> +			enable-method = "psci";
-> +			i-cache-size = <0x8000>;
-> +			i-cache-line-size = <64>;
-> +			i-cache-sets = <256>;
-> +			d-cache-size = <0x8000>;
-> +			d-cache-line-size = <64>;
-> +			d-cache-sets = <128>;
-> +			next-level-cache = <&l2_0>;
-> +			clocks = <&k3_clks 136 0>;
-> +		};
-> +
-> +		cpu2: cpu@2 {
-> +			compatible = "arm,cortex-a53";
-> +			reg = <0x002>;
-> +			device_type = "cpu";
-> +			enable-method = "psci";
-> +			i-cache-size = <0x8000>;
-> +			i-cache-line-size = <64>;
-> +			i-cache-sets = <256>;
-> +			d-cache-size = <0x8000>;
-> +			d-cache-line-size = <64>;
-> +			d-cache-sets = <128>;
-> +			next-level-cache = <&l2_0>;
-> +			clocks = <&k3_clks 137 0>;
-> +		};
-> +
-> +		cpu3: cpu@3 {
-> +			compatible = "arm,cortex-a53";
-> +			reg = <0x003>;
-> +			device_type = "cpu";
-> +			enable-method = "psci";
-> +			i-cache-size = <0x8000>;
-> +			i-cache-line-size = <64>;
-> +			i-cache-sets = <256>;
-> +			d-cache-size = <0x8000>;
-> +			d-cache-line-size = <64>;
-> +			d-cache-sets = <128>;
-> +			next-level-cache = <&l2_0>;
-> +			clocks = <&k3_clks 138 0>;
-> +		};
+> +	aliases {
+> +		serial0 = &wkup_uart0;
+> +		serial2 = &main_uart0;
+> +		mmc0 = &sdhci0;
+> +		mmc1 = &sdhci1;
 > +	};
 > +
-> +	l2_0: l2-cache0 {
-> +		compatible = "cache";
-> +		cache-unified;
-> +		cache-level = <2>;
-> +		cache-size = <0x80000>;
-> +		cache-line-size = <64>;
-> +		cache-sets = <512>;
-> +	};
-
-^^ this is a duplication of am62p5.dtsi? what about the spins with
-different CPUs enabled?
-
-> +
-> +	firmware {
-> +		optee {
-> +			compatible = "linaro,optee-tz";
-> +			method = "smc";
-> +		};
-> +
-> +		psci: psci {
-> +			compatible = "arm,psci-1.0";
-> +			method = "smc";
-> +		};
+> +	chosen {
+> +		stdout-path = &main_uart0;
 > +	};
 > +
-> +	a53_timer0: timer-cl0-cpu0 {
-> +		compatible = "arm,armv8-timer";
-> +		interrupts = <GIC_PPI 13 IRQ_TYPE_LEVEL_LOW>, /* cntpsirq */
-> +			     <GIC_PPI 14 IRQ_TYPE_LEVEL_LOW>, /* cntpnsirq */
-> +			     <GIC_PPI 11 IRQ_TYPE_LEVEL_LOW>, /* cntvirq */
-> +			     <GIC_PPI 10 IRQ_TYPE_LEVEL_LOW>; /* cnthpirq */
+> +	memory@80000000 {
+> +		/* 8G RAM */
+> +		reg = <0x00000000 0x80000000 0x00000000 0x80000000>,
+> +		      <0x00000008 0x80000000 0x00000001 0x80000000>;
+> +		device_type = "memory";
+> +		bootph-pre-ram;
 > +	};
 > +
-> +	pmu: pmu {
-> +		compatible = "arm,cortex-a53-pmu";
-> +		interrupts = <GIC_PPI 7 IRQ_TYPE_LEVEL_HIGH>;
-> +	};
-> +
-> +	cbass_main: bus@f0000 {
-> +		compatible = "simple-bus";
+> +	reserved-memory {
 > +		#address-cells = <2>;
 > +		#size-cells = <2>;
-> +		bootph-all;
-
-Nope.
-
+> +		ranges;
 > +
-> +		ranges = <0x00 0x000f0000 0x00 0x000f0000 0x00 0x00030000>, /* Main MMRs */
-> +			 <0x00 0x00420000 0x00 0x00420000 0x00 0x00001000>, /* ESM0 */
-> +			 <0x00 0x00600000 0x00 0x00600000 0x00 0x00001100>, /* GPIO */
-> +			 <0x00 0x00703000 0x00 0x00703000 0x00 0x00000200>, /* USB0 debug trace */
-> +			 <0x00 0x0070c000 0x00 0x0070c000 0x00 0x00000200>, /* USB1 debug trace */
-> +			 <0x00 0x00a40000 0x00 0x00a40000 0x00 0x00000800>, /* Timesync router */
-> +			 <0x00 0x01000000 0x00 0x01000000 0x00 0x01b28400>, /* First peripheral window */
-> +			 <0x00 0x08000000 0x00 0x08000000 0x00 0x00200000>, /* Main CPSW */
-> +			 <0x00 0x0e000000 0x00 0x0e000000 0x00 0x01d20000>, /* Second peripheral window */
-> +			 <0x00 0x0fd80000 0x00 0x0fd80000 0x00 0x00080000>, /* GPU */
-> +			 <0x00 0x0fd20000 0x00 0x0fd20000 0x00 0x00000100>, /* JPEGENC0_CORE */
-> +			 <0x00 0x0fd20200 0x00 0x0fd20200 0x00 0x00000200>, /* JPEGENC0_CORE_MMU */
-> +			 <0x00 0x20000000 0x00 0x20000000 0x00 0x0a008000>, /* Third peripheral window */
-> +			 <0x00 0x30040000 0x00 0x30040000 0x00 0x00080000>, /* PRUSS-M */
-> +			 <0x00 0x301C0000 0x00 0x301C0000 0x00 0x00001000>, /* DPHY-TX */
-> +			 <0x00 0x30101000 0x00 0x30101000 0x00 0x00080100>, /* CSI window */
-> +			 <0x00 0x30200000 0x00 0x30200000 0x00 0x00010000>, /* DSS */
-> +			 <0x00 0x30210000 0x00 0x30210000 0x00 0x00010000>, /* VPU */
-> +			 <0x00 0x30220000 0x00 0x30220000 0x00 0x00010000>, /* DSS1 */
-> +			 <0x00 0x30270000 0x00 0x30270000 0x00 0x00010000>, /* DSI-base1 */
-> +			 <0x00 0x30500000 0x00 0x30500000 0x00 0x00100000>, /* DSI-base2 */
-> +			 <0x00 0x31000000 0x00 0x31000000 0x00 0x00050000>, /* USB0 DWC3 Core window */
-> +			 <0x00 0x31200000 0x00 0x31200000 0x00 0x00040000>, /* USB1 DWC3 Core window */
-> +			 <0x00 0x40900000 0x00 0x40900000 0x00 0x00030000>, /* SA3UL */
-> +			 <0x00 0x43600000 0x00 0x43600000 0x00 0x00010000>, /* SA3 sproxy data */
-> +			 <0x00 0x44043000 0x00 0x44043000 0x00 0x00000fe0>, /* TI SCI DEBUG */
-> +			 <0x00 0x44860000 0x00 0x44860000 0x00 0x00040000>, /* SA3 sproxy config */
-> +			 <0x00 0x48000000 0x00 0x48000000 0x00 0x06408000>, /* DMSS */
-> +			 <0x00 0x60000000 0x00 0x60000000 0x00 0x08000000>, /* FSS0 DAT1 */
-> +			 <0x00 0x70000000 0x00 0x70000000 0x00 0x00040000>, /* OCSRAM */
-> +			 <0x00 0x78400000 0x00 0x78400000 0x00 0x00008000>, /* MAIN R5FSS0 ATCM */
-> +			 <0x00 0x78500000 0x00 0x78500000 0x00 0x00008000>, /* MAIN R5FSS0 BTCM */
-> +			 <0x00 0x7e000000 0x00 0x7e000000 0x00 0x00200000>, /* C7X_0 L2SRAM */
-> +			 <0x00 0x7e200000 0x00 0x7e200000 0x00 0x00200000>, /* C7X_1 L2SRAM */
-> +			 <0x01 0x00000000 0x01 0x00000000 0x00 0x00310000>, /* A53 PERIPHBASE */
-> +			 <0x05 0x00000000 0x05 0x00000000 0x01 0x00000000>, /* FSS0 DAT3 */
-> +
-> +			 /* MCU Domain Range */
-> +			 <0x00 0x04000000 0x00 0x04000000 0x00 0x01ff1400>,
-> +			 <0x00 0x79000000 0x00 0x79000000 0x00 0x00008000>,
-> +			 <0x00 0x79020000 0x00 0x79020000 0x00 0x00008000>,
-> +			 <0x00 0x79100000 0x00 0x79100000 0x00 0x00040000>,
-> +			 <0x00 0x79140000 0x00 0x79140000 0x00 0x00040000>,
-> +
-> +			 /* Wakeup Domain Range */
-> +			 <0x00 0x00b00000 0x00 0x00b00000 0x00 0x00002400>,
-> +			 <0x00 0x2b000000 0x00 0x2b000000 0x00 0x00300400>,
-> +			 <0x00 0x43000000 0x00 0x43000000 0x00 0x00020000>,
-> +			 <0x00 0x78000000 0x00 0x78000000 0x00 0x00008000>,
-> +			 <0x00 0x78100000 0x00 0x78100000 0x00 0x00008000>;
-> +
-> +		cbass_mcu: bus@4000000 {
-> +			compatible = "simple-bus";
-> +			#address-cells = <2>;
-> +			#size-cells = <2>;
-> +			ranges = <0x00 0x04000000 0x00 0x04000000 0x00 0x01ff1400>, /* Peripheral window */
-> +				 <0x00 0x79000000 0x00 0x79000000 0x00 0x00008000>, /* MCU R5 ATCM */
-> +				 <0x00 0x79020000 0x00 0x79020000 0x00 0x00008000>, /* MCU R5 BTCM */
-> +				 <0x00 0x79100000 0x00 0x79100000 0x00 0x00040000>, /* MCU IRAM0 */
-> +				 <0x00 0x79140000 0x00 0x79140000 0x00 0x00040000>; /* MCU IRAM1 */
-> +			bootph-all;
+> +		secure_tfa_ddr: tfa@9e780000 {
+> +			reg = <0x00 0x9e780000 0x00 0x80000>;
+> +			no-map;
 > +		};
 > +
-> +		cbass_wakeup: bus@b00000 {
-> +			compatible = "simple-bus";
-> +			#address-cells = <2>;
-> +			#size-cells = <2>;
-> +			ranges = <0x00 0x00b00000 0x00 0x00b00000 0x00 0x00002400>, /* VTM */
-> +				 <0x00 0x2b000000 0x00 0x2b000000 0x00 0x00300400>, /* Peripheral Window */
-> +				 <0x00 0x43000000 0x00 0x43000000 0x00 0x00020000>, /* WKUP CTRL MMR */
-> +				 <0x00 0x78000000 0x00 0x78000000 0x00 0x00008000>, /* DM R5 ATCM*/
-> +				 <0x00 0x78100000 0x00 0x78100000 0x00 0x00008000>; /* DM R5 BTCM*/
-> +			bootph-all;
-
-Not in the bus nodes.. only in the leaf nodes please.
-
-
-Also what is wrong with expanding the am62p to include the
-missing bus segments instead of duplicating all of them?
-
+> +		secure_ddr: optee@9e800000 {
+> +			reg = <0x00 0x9e800000 0x00 0x01800000>;
+> +			no-map;
 > +		};
+> +
+> +		wkup_r5fss0_core0_memory_region: r5f-memory@a0100000 {
+> +			compatible = "shared-dma-pool";
+> +			reg = <0x00 0xa0100000 0x00 0xf00000>;
+> +			no-map;
+> +		};
+> +
 > +	};
 > +
-> +	#include "k3-am62p-thermal.dtsi"
+> +	vmain_pd: regulator-0 {
+> +		/* TPS65988 PD CONTROLLER OUTPUT */
+> +		compatible = "regulator-fixed";
+> +		regulator-name = "vmain_pd";
+> +		regulator-min-microvolt = <5000000>;
+> +		regulator-max-microvolt = <5000000>;
+> +		regulator-always-on;
+> +		regulator-boot-on;
+> +		bootph-all;
+> +	};
+> +
+> +	vsys_5v0: regulator-vsys5v0 {
+> +		/* Output of LM5140 */
+> +		compatible = "regulator-fixed";
+> +		regulator-name = "vsys_5v0";
+> +		regulator-min-microvolt = <5000000>;
+> +		regulator-max-microvolt = <5000000>;
+> +		vin-supply = <&vmain_pd>;
+> +		regulator-always-on;
+> +		regulator-boot-on;
+> +	};
+> +
+> +	vdd_mmc1: regulator-mmc1 {
+> +		/* TPS22918DBVR */
+> +		compatible = "regulator-fixed";
+> +		regulator-name = "vdd_mmc1";
+> +		regulator-min-microvolt = <3300000>;
+> +		regulator-max-microvolt = <3300000>;
+> +		regulator-boot-on;
+> +		enable-active-high;
+> +		gpio = <&exp1 15 GPIO_ACTIVE_HIGH>;
+> +		bootph-all;
+> +	};
+> +
+> +	vdd_sd_dv: regulator-TLV71033 {
+> +		compatible = "regulator-gpio";
+> +		regulator-name = "tlv71033";
+> +		pinctrl-names = "default";
+> +		pinctrl-0 = <&vdd_sd_dv_pins_default>;
+> +		regulator-min-microvolt = <1800000>;
+> +		regulator-max-microvolt = <3300000>;
+> +		regulator-boot-on;
+> +		vin-supply = <&vsys_5v0>;
+> +		gpios = <&main_gpio0 70 GPIO_ACTIVE_HIGH>;
+> +		states = <1800000 0x0>,
+> +			 <3300000 0x1>;
+> +	};
+> +
+> +	vsys_io_1v8: regulator-vsys-io-1v8 {
+> +		compatible = "regulator-fixed";
+> +		regulator-name = "vsys_io_1v8";
+> +		regulator-min-microvolt = <1800000>;
+> +		regulator-max-microvolt = <1800000>;
+> +		regulator-always-on;
+> +		regulator-boot-on;
+> +	};
+> +
+> +	vsys_io_1v2: regulator-vsys-io-1v2 {
+> +		compatible = "regulator-fixed";
+> +		regulator-name = "vsys_io_1v2";
+> +		regulator-min-microvolt = <1200000>;
+> +		regulator-max-microvolt = <1200000>;
+> +		regulator-always-on;
+> +		regulator-boot-on;
+> +	};
+> +};
+> +
+> +&main_pmx0 {
+> +	bootph-all;
 
-Is this correct?
+Only in leaf nodes.
 
+> +
+> +	main_i2c0_pins_default: main-i2c0-default-pins {
+> +		pinctrl-single,pins = <
+> +			J722S_IOPAD(0x01e0, PIN_INPUT_PULLUP, 0) /* (D23) I2C0_SCL */
+> +			J722S_IOPAD(0x01e4, PIN_INPUT_PULLUP, 0) /* (B22) I2C0_SDA */
+> +		>;
+> +		bootph-all;
+> +	};
+> +
+> +	main_uart0_pins_default: main-uart0-default-pins {
+> +		pinctrl-single,pins = <
+> +			J722S_IOPAD(0x1c8, PIN_INPUT, 0)	/* (A22) UART0_RXD */
+> +			J722S_IOPAD(0x1cc, PIN_OUTPUT, 0)	/* (B22) UART0_TXD */
+> +		>;
+> +		bootph-all;
+> +	};
+> +
+> +	vdd_sd_dv_pins_default: vdd-sd-dv-default-pins {
+> +		pinctrl-single,pins = <
+> +			J722S_IOPAD(0x0120, PIN_INPUT, 7) /* (F27) MMC2_CMD.GPIO0_70 */
+> +		>;
+> +		bootph-all;
+> +	};
+> +
+> +	main_mmc1_pins_default: main-mmc1-default-pins {
+> +		pinctrl-single,pins = <
+> +			J722S_IOPAD(0x023c, PIN_INPUT, 0) /* (H22) MMC1_CMD */
+> +			J722S_IOPAD(0x0234, PIN_OUTPUT, 0) /* (H24) MMC1_CLK */
+> +			J722S_IOPAD(0x0230, PIN_INPUT, 0) /* (H23) MMC1_DAT0 */
+> +			J722S_IOPAD(0x022c, PIN_INPUT_PULLUP, 0) /* (H20) MMC1_DAT1 */
+> +			J722S_IOPAD(0x0228, PIN_INPUT_PULLUP, 0) /* (J23) MMC1_DAT2 */
+> +			J722S_IOPAD(0x0224, PIN_INPUT_PULLUP, 0) /* (H25) MMC1_DAT3 */
+> +			J722S_IOPAD(0x0240, PIN_INPUT, 0) /* (B24) MMC1_SDCD */
+> +		>;
+> +		bootph-all;
+> +	};
 > +};
 > +
-> +/*
-> + * Include peripherals for each bus segment derived
-> + * from AM62P and overrides specific to J722S.
-> + */
-> +#include "k3-am62p-main.dtsi"
-> +#include "k3-am62p-mcu.dtsi"
-> +#include "k3-am62p-wakeup.dtsi"
+> +&main_gpio1 {
+> +	status = "okay";
+> +};
 > +
-> +/* Main domain overrides */
+> +&main_uart0 {
+> +	pinctrl-names = "default";
+> +	pinctrl-0 = <&main_uart0_pins_default>;
+> +	status = "okay";
+> +	bootph-all;
+> +};
 > +
-> +&cpsw3g {
-> +	status = "disabled";
+> +&mcu_pmx0 {
+> +	bootph-all;
 
-	here and rest: Why disabled?
+Same..
+
+> +
+> +	wkup_uart0_pins_default: wkup-uart0-default-pins {
+> +		pinctrl-single,pins = <
+> +			J722S_MCU_IOPAD(0x02c, PIN_INPUT, 0)	/* (C7) WKUP_UART0_CTSn */
+> +			J722S_MCU_IOPAD(0x030, PIN_OUTPUT, 0)	/* (C6) WKUP_UART0_RTSn */
+> +			J722S_MCU_IOPAD(0x024, PIN_INPUT, 0)	/* (D8) WKUP_UART0_RXD */
+> +			J722S_MCU_IOPAD(0x028, PIN_OUTPUT, 0)	/* (D7) WKUP_UART0_TXD */
+> +		>;
+> +		bootph-all;
+> +	};
+> +
+> +	wkup_i2c0_pins_default: wkup-i2c0-default-pins {
+> +		pinctrl-single,pins = <
+> +			J722S_MCU_IOPAD(0x04c, PIN_INPUT_PULLUP, 0)	/* (C7) WKUP_I2C0_SCL */
+> +			J722S_MCU_IOPAD(0x050, PIN_INPUT_PULLUP, 0)	/* (C6) WKUP_I2C1_SDA */
+> +		>;
+> +		bootph-all;
+> +	};
 > +};
 > +
-> +&inta_main_dmss {
-> +	ti,interrupt-ranges = <5 69 35>;
+> +&wkup_uart0 {
+> +	/* WKUP UART0 is used by DM firmware */
+> +	pinctrl-names = "default";
+> +	pinctrl-0 = <&wkup_uart0_pins_default>;
+> +	status = "reserved";
+> +	bootph-all;
 > +};
 > +
-> +&mailbox0_cluster0 {
-> +	status = "disabled";
+> +&wkup_i2c0 {
+> +	status = "okay";
+> +	pinctrl-names = "default";
+> +	pinctrl-0 = <&wkup_i2c0_pins_default>;
+> +	clock-frequency = <400000>;
+> +	bootph-all;
 > +};
 > +
-> +&mailbox0_cluster1 {
-> +	status = "disabled";
+> +&main_i2c0 {
+> +	status = "okay";
+> +	pinctrl-names = "default";
+> +	pinctrl-0 = <&main_i2c0_pins_default>;
+> +	clock-frequency = <400000>;
+> +	bootph-all;
+> +
+> +	exp1: gpio@23 {
+> +		compatible = "ti,tca6424";
+> +		reg = <0x23>;
+> +		gpio-controller;
+> +		#gpio-cells = <2>;
+> +		gpio-line-names = "TRC_MUX_SEL", "OSPI/ONAND_MUX_SEL",
+> +				  "MCASP1_FET_SEL", "CTRL_PM_I2C_OE#",
+> +				  "CSI_VIO_SEL", "USB2.0_MUX_SEL",
+> +				  "CSI01_MUX_SEL_2", "CSI23_MUX_SEL_2",
+> +				  "LMK1_OE1", "LMK1_OE0",
+> +				  "LMK2_OE0", "LMK2_OE1",
+> +				  "GPIO_RGMII1_RST#", "GPIO_AUD_RSTn",
+> +				  "GPIO_eMMC_RSTn", "GPIO_uSD_PWR_EN",
+> +				  "USER_LED2", "MCAN0_STB",
+> +				  "PCIe0_1L_RC_RSTz", "PCIe0_1L_PRSNT#",
+> +				  "ENET1_EXP_SPARE2", "ENET1_EXP_PWRDN",
+> +				  "PD_I2ENET1_I2CMUX_SELC_IRQ", "ENET1_EXP_RESETZ";
+> +	};
 > +};
 > +
-> +&mailbox0_cluster2 {
-> +	status = "disabled";
+> +&sdhci1 {
+> +	/* SD/MMC */
+> +	status = "okay";
+> +	vmmc-supply = <&vdd_mmc1>;
+> +	vqmmc-supply = <&vdd_sd_dv>;
+> +	pinctrl-names = "default";
+> +	pinctrl-0 = <&main_mmc1_pins_default>;
+> +	ti,driver-strength-ohm = <50>;
+> +	disable-wp;
+> +	no-1-8-v;
+> +	bootph-all;
 > +};
-> +
-> +&mailbox0_cluster3 {
-> +	status = "disabled";
-> +};
-> +
-> +&oc_sram {
-> +	reg = <0x00 0x70000000 0x00 0x40000>;
-> +	ranges = <0x00 0x00 0x70000000 0x40000>;
-> +};
-> +
-> +/* MCU domain overrides */
-> +
-> +&mcu_r5fss0 {
-> +	status = "disabled";
-> +};
-> +
-> +/* wakeup domain overrides */
-> +
-> +&wkup_r5fss0 {
-> +	status = "disabled";
-> +};
-> diff --git a/arch/arm64/boot/dts/ti/k3-pinctrl.h b/arch/arm64/boot/dts/ti/k3-pinctrl.h
-> index 2a4e0e084d69..591be4489f37 100644
-> --- a/arch/arm64/boot/dts/ti/k3-pinctrl.h
-> +++ b/arch/arm64/boot/dts/ti/k3-pinctrl.h
-> @@ -59,6 +59,9 @@
->  #define J721S2_IOPAD(pa, val, muxmode)		(((pa) & 0x1fff)) ((val) | (muxmode))
->  #define J721S2_WKUP_IOPAD(pa, val, muxmode)	(((pa) & 0x1fff)) ((val) | (muxmode))
->  
-> +#define J722S_IOPAD(pa, val, muxmode)		(((pa) & 0x1fff)) ((val) | (muxmode))
-> +#define J722S_MCU_IOPAD(pa, val, muxmode)	(((pa) & 0x1fff)) ((val) | (muxmode))
-> +
->  #define J784S4_IOPAD(pa, val, muxmode)		(((pa) & 0x1fff)) ((val) | (muxmode))
->  #define J784S4_WKUP_IOPAD(pa, val, muxmode)	(((pa) & 0x1fff)) ((val) | (muxmode))
->  
 > -- 
 > 2.17.1
 > 
