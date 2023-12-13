@@ -2,92 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A791A810774
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 02:13:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D7C16810777
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 02:18:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378136AbjLMBNf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 20:13:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33884 "EHLO
+        id S1378147AbjLMBRz convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 12 Dec 2023 20:17:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41188 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377653AbjLMBNe (ORCPT
+        with ESMTP id S1377653AbjLMBRy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 20:13:34 -0500
-Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com [66.111.4.25])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43ED391;
-        Tue, 12 Dec 2023 17:13:39 -0800 (PST)
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-        by mailout.nyi.internal (Postfix) with ESMTP id CE0295C01D7;
-        Tue, 12 Dec 2023 20:13:36 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute1.internal (MEProxy); Tue, 12 Dec 2023 20:13:36 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=themaw.net; h=cc
-        :cc:content-transfer-encoding:content-type:content-type:date
-        :date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-        :references:reply-to:subject:subject:to:to; s=fm3; t=1702430016;
-         x=1702516416; bh=q1SPQYQRBWl7bFrY5/lVAS8dc6PpLJdw7+EOXaZGVW4=; b=
-        Ze0PwEh2S3szHV/ysnl1BX0zv1/CfSBmMStu4vXojWR8sKZ/+ev5W6PpgP4i1la5
-        INWsbQWMZOhPOPz0Ss3v6hx3aLl+r3+O7DNtSkjQ4k8b0BSpKudqERUpkdFcwWrC
-        u5Hb9hQrPiUyBnGaK0Mx2qM5oHX/QOJyk1ltkecAlXM1w18/xSMNTkSNkMkIcha3
-        aBigpGgHNFrD9s/99NM2EPyaZSFJofrufVllgbTDQD3x8agFx+uWv937VPj4yQov
-        LDZ61yro2+0ViZyt44dv6aTAIDLwVaw48rU/G/CIczeS5MKuaFTaaici99+Hb0r9
-        xLoEXdf5gQQQHJmIiOrHvw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-transfer-encoding
-        :content-type:content-type:date:date:feedback-id:feedback-id
-        :from:from:in-reply-to:in-reply-to:message-id:mime-version
-        :references:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
-        :x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1702430016; x=
-        1702516416; bh=q1SPQYQRBWl7bFrY5/lVAS8dc6PpLJdw7+EOXaZGVW4=; b=2
-        Pu5VDvJxB+hNgOzbQS8onyFPjDTA5005w70yUaUEx6sY6LH9thUWrT74U/eM3n7i
-        8sPvzZT5BraMUnai4Oiurvmrz7CyvxK/uFWVESLJ0aNxBcLpSUF3XDmk7aP2wSFe
-        LNZXNSS1TYD3y8iPrKxqQjisH5lHYJCXCy6x+x0N/zMRlDWw8x9C5TcFU4DM+/tH
-        PndYo4EQezv+W1RekQUeHg0M/6/qxChKcZJEOev1fsqcH93x1yG6i8O6KdSKFZMA
-        nLbYJEO7M/CxVv+30+imA2niTK7g/I3Aly/SsLJKWaZb/pE3rxn0XKizH3RhgSob
-        DxC3cAqIgfb7dAt4xiphw==
-X-ME-Sender: <xms:QAV5ZRIw5On9QW0y7o6Ul7WYC95gZvbm6hihF-O9wUrp-PGyDMD6HA>
-    <xme:QAV5ZdK_5s2opw-6uCV1kCIQx46sRcMBypw3gLpcD7HE35nLl3hULiu6sXYOaXpN_
-    ZyllZX2zFDk>
-X-ME-Received: <xmr:QAV5ZZuwjuTmuMj4OMA7_e0i4S95DUpHf4Ysaq_UTSJUn60SCTOW4D8yoO_EnYoCzsxQHjMPS_DXmTxXGep8YXKVwmmF3BBqm0q6r0Hnl8aNQMoXVlNP9wVp>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrudelhedgfeefucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepkfffgggfvfevfhfhufgjtgfgsehtjeertddtfeejnecuhfhrohhmpefkrghn
-    ucfmvghnthcuoehrrghvvghnsehthhgvmhgrfidrnhgvtheqnecuggftrfgrthhtvghrnh
-    epjeegkedvhfekueejgeefieejtdevledvtdelieevveekffejfedtvdehkeefjeeknecu
-    vehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprhgrvhgvnh
-    esthhhvghmrgifrdhnvght
-X-ME-Proxy: <xmx:QAV5ZSbgMwE2_u77Z8MoHnF27nYycdpWY0RRWzUOfmrk6ss9z_Eamg>
-    <xmx:QAV5ZYZYxPE3hna1elh9v4ee5S2enWN29NIEYEMtLslwwM9dTX1xpQ>
-    <xmx:QAV5ZWCxkKiPwJLK-uCMpon65xjSsrGJjmnR0QNkJuVingcClDau5A>
-    <xmx:QAV5ZeP1hoNmo0aMVPbxZam7Mv1J6KDTSoqYOX4TUpMd2PbUytH4sQ>
-Feedback-ID: i31e841b0:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 12 Dec 2023 20:13:32 -0500 (EST)
-Message-ID: <eab9dee1-a542-b079-7c49-7f3cb2974e47@themaw.net>
-Date:   Wed, 13 Dec 2023 09:13:27 +0800
+        Tue, 12 Dec 2023 20:17:54 -0500
+Received: from mail-oo1-f51.google.com (mail-oo1-f51.google.com [209.85.161.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBE4199;
+        Tue, 12 Dec 2023 17:18:00 -0800 (PST)
+Received: by mail-oo1-f51.google.com with SMTP id 006d021491bc7-58dd3528497so3908034eaf.3;
+        Tue, 12 Dec 2023 17:18:00 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702430280; x=1703035080;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=qrBztKR7DBFWjHGGF4oqW3fatxTjNIhtib1nUgBnZG0=;
+        b=k3FjPQ64/J4SrhOq0pOTnes1t1AqjbLgEAtli7UpsPiRbRbVCv9ckIMmEdZgpwLG+8
+         Xh7ULH1975WhC9TWrbtu3pZ+1uOgb6KokSaX6cZrb4kPRKHE7JGPt0AXKtxmZXaIQIab
+         HENmgmORsSF226sKdGCJkWADcg4Rtqe7vaYJHURRU0z3LyIg3CIcS9pvuLZ0ZCF8zeeG
+         TZfW/PvI41JpeNqiya+KhXX8WNsruOfyYkHLolaolyl0/QL6U2W7ZF7HTr1uQwPtmxpd
+         ElFW4PFZRaC5xvn0y0K42b5b31EGoR2OKa1KEZcle8zaYYbrLdRk1k27Pw/pr0lWFFSu
+         /tkw==
+X-Gm-Message-State: AOJu0Yy6JxjYs/1/NLMUKTOdiXFo8oUqQg3ix3EMu8/f5AdB/8XNlsPx
+        phgtbxJwMLNod6BGoQTzc5Vih0d+u+ex/e1dw/g=
+X-Google-Smtp-Source: AGHT+IGLl2RaiPS+JDWzHTX1nc4PK06yrw1EpdlQ9nDdu0JL4PGUSDocs0deDQImGZM0/It/b+1jan8KJcbEsFaEjGA=
+X-Received: by 2002:a05:6358:4194:b0:170:ee27:bfa1 with SMTP id
+ w20-20020a056358419400b00170ee27bfa1mr2326149rwc.5.1702430280044; Tue, 12 Dec
+ 2023 17:18:00 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-To:     Arnd Bergmann <arnd@kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>, Jan Kara <jack@suse.cz>,
-        Miklos Szeredi <mszeredi@redhat.com>,
-        "Seth Forshee (DigitalOcean)" <sforshee@kernel.org>,
-        Dave Chinner <dchinner@redhat.com>,
-        Amir Goldstein <amir73il@gmail.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20231212214819.247611-1-arnd@kernel.org>
-Content-Language: en-US
-From:   Ian Kent <raven@themaw.net>
-Subject: Re: [PATCH] statmount: reduce runtime stack usage
-In-Reply-To: <20231212214819.247611-1-arnd@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+References: <20231207081635.8427-1-yangyicong@huawei.com> <20231207081635.8427-2-yangyicong@huawei.com>
+In-Reply-To: <20231207081635.8427-2-yangyicong@huawei.com>
+From:   Namhyung Kim <namhyung@kernel.org>
+Date:   Tue, 12 Dec 2023 17:17:49 -0800
+Message-ID: <CAM9d7cgW9YaS7+2Y0zPszbkSZpu2XgJjW3GP+yig4C-++vJ4-g@mail.gmail.com>
+Subject: Re: [PATCH 1/2] perf header: Fix one memory leakage in perf_event__fprintf_event_update()
+To:     Yicong Yang <yangyicong@huawei.com>
+Cc:     peterz@infradead.org, mingo@redhat.com, acme@kernel.org,
+        mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
+        jolsa@kernel.org, irogers@google.com, adrian.hunter@intel.com,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        jonathan.cameron@huawei.com, hejunhao3@huawei.com,
+        yangyicong@hisilicon.com, linuxarm@huawei.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
         RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -95,78 +62,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 13/12/23 05:48, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
+Hello,
+
+On Thu, Dec 7, 2023 at 12:20 AM Yicong Yang <yangyicong@huawei.com> wrote:
 >
-> prepare_kstatmount() constructs a copy of 'struct kstatmount' on the stack
-> and copies it into the local variable on the stack of its caller. Because
-> of the size of this structure, this ends up overflowing the limit for
-> a single function's stack frame when prepare_kstatmount() gets inlined
-> and both copies are on the same frame without the compiler being able
-> to collapse them into one:
+> From: Yicong Yang <yangyicong@hisilicon.com>
 >
-> fs/namespace.c:4995:1: error: stack frame size (1536) exceeds limit (1024) in '__se_sys_statmount' [-Werror,-Wframe-larger-than]
->   4995 | SYSCALL_DEFINE4(statmount, const struct mnt_id_req __user *, req,
+> When dump the raw trace by `perf report -D` ASan reports a memory
+> leakage in perf_event__fprintf_event_update(). It shows that we
+> allocated a temporary cpumap for dumping the CPUs but doesn't
+> release it and it's not used elsewhere. Fix this by free the
+> cpumap after the dumping.
 >
-> Mark the inner function as noinline_for_stack so the second copy is
-> freed before calling do_statmount() enters filesystem specific code.
-> The extra copy of the structure is a bit inefficient, but this
-> system call should not be performance critical.
+> Fixes: c853f9394b7b ("perf tools: Add perf_event__fprintf_event_update function")
+> Cc: Jiri Olsa <jolsa@kernel.org>
+> Signed-off-by: Yicong Yang <yangyicong@hisilicon.com>
 
-Are you sure this is not performance sensitive, or is the performance
+Acked-by: Namhyung Kim <namhyung@kernel.org>
 
-critical comment not related to the system call being called many times?
-
-
-It's going to be a while (if ever) before callers change there ways.
+Thanks,
+Namhyung
 
 
-Consider what happens when a bunch of mounts are being mounted.
-
-
-First there are a lot of events and making the getting of mount info.
-
-more efficient means more of those events get processed (itself an issue
-
-that's going to need notification sub-system improvement) resulting in
-
-the system call being called even more.
-
-
-There are 3 or 4 common programs that monitor the mounts, systemd is
-
-one of those, it usually has 3 processes concurrently listening for
-
-mount table events and every one of these processes grabs the entire
-
-table. Thing is systemd is actually quite good at handling events and
-
-can process a lot of them if they are being occuring.
-
-
-So this system call will be called a lot.
-
-
-Ian
-
->
-> Fixes: 49889374ab92 ("statmount: simplify string option retrieval")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 > ---
->   fs/namespace.c | 3 ++-
->   1 file changed, 2 insertions(+), 1 deletion(-)
+>  tools/perf/util/header.c | 5 +++--
+>  1 file changed, 3 insertions(+), 2 deletions(-)
 >
-> diff --git a/fs/namespace.c b/fs/namespace.c
-> index d036196f949c..e22fb5c4a9bb 100644
-> --- a/fs/namespace.c
-> +++ b/fs/namespace.c
-> @@ -4950,7 +4950,8 @@ static inline bool retry_statmount(const long ret, size_t *seq_size)
->   	return true;
->   }
->   
-> -static int prepare_kstatmount(struct kstatmount *ks, struct mnt_id_req *kreq,
-> +static int noinline_for_stack
-> +prepare_kstatmount(struct kstatmount *ks, struct mnt_id_req *kreq,
->   			      struct statmount __user *buf, size_t bufsize,
->   			      size_t seq_size)
->   {
+> diff --git a/tools/perf/util/header.c b/tools/perf/util/header.c
+> index e86b9439ffee..7190f39ccd13 100644
+> --- a/tools/perf/util/header.c
+> +++ b/tools/perf/util/header.c
+> @@ -4369,9 +4369,10 @@ size_t perf_event__fprintf_event_update(union perf_event *event, FILE *fp)
+>                 ret += fprintf(fp, "... ");
+>
+>                 map = cpu_map__new_data(&ev->cpus.cpus);
+> -               if (map)
+> +               if (map) {
+>                         ret += cpu_map__fprintf(map, fp);
+> -               else
+> +                       perf_cpu_map__put(map);
+> +               } else
+>                         ret += fprintf(fp, "failed to get cpus\n");
+>                 break;
+>         default:
+> --
+> 2.24.0
+>
+>
