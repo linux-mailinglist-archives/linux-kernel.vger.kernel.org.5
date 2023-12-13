@@ -2,122 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EC988811FF5
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 21:29:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C228811FFA
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 21:30:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442569AbjLMU3o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 15:29:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44958 "EHLO
+        id S1442573AbjLMUaP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 15:30:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35572 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229671AbjLMU3n (ORCPT
+        with ESMTP id S229671AbjLMUaN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 15:29:43 -0500
-Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80265A3;
-        Wed, 13 Dec 2023 12:29:49 -0800 (PST)
-Received: by mail-wm1-x32b.google.com with SMTP id 5b1f17b1804b1-40c48d7a7a7so32307725e9.3;
-        Wed, 13 Dec 2023 12:29:49 -0800 (PST)
+        Wed, 13 Dec 2023 15:30:13 -0500
+Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8D97128
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 12:30:18 -0800 (PST)
+Received: by mail-wr1-x435.google.com with SMTP id ffacd0b85a97d-3333131e08dso7839290f8f.2
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 12:30:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702499388; x=1703104188; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Zw2AbkoN/4FIKkUWexE+EWqV2AcpdmgqKqjwrsLePhs=;
-        b=UV6F+HMyC1uQmn384lL0Xk2D69cNif6FlMm6AJI3HGQ1xn9GTIbdsnft9BAR4uYAL+
-         P663ol+Efe/pFz7wV8VLgllpcllpj7YjykMIBpPoJKdaBZap5vgRhik+tTL46l7rgRre
-         MBxQIoxsYOLWvTs8CPaClR+h0FsppmxvegbC135DRm5aV0r/Mh7snnkZ24EcQMcVrUxZ
-         N54JQ2DIYBFSJJtGuOqAATxWiCDwVwBRF9rn8eJ5ybcY32QQCnZuPVmz5ivtWEpTWIvQ
-         3WEuyEIiJah/FhTWolicgWkb0z9ilGvBvRmB0VgPhim67uYaJo0umphu7P1HWRCDoFVI
-         3lPw==
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1702499417; x=1703104217; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=i+467Loz3LrvYEdXAV5s12LMqcUY9odwCyEv1IdVOvU=;
+        b=gZ68dQNw/RKx0d/oICoetz555Ra/uNpzcF7W/+PXeUdEN8b28FE0zRdTMG7aZcvOd3
+         khRv3oWfsZ8UFA3eDrp8OWX0SgZQb4PHzky2v/sMMIgKbOJVVs4lY5FXM+RqFemkmXsu
+         fV8tPbNPboESY07Bv6Bb5vQnFSCSDITsEyyLGf/D4TOiDiWLydRuU6PemOJMXrckW41Y
+         6ehCVKWYTa9883sRrWJzRXxEiPtzrv0hPQvjFyuEhVvxwXRrS285HsCrPyTrmEQt1JXg
+         IVaGD8fJ0oQbSL3OpHtATR3by/loi94TtYmySiThArcC4hEQ4UMXNWEgLLPIqW56IoCk
+         MKgg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702499388; x=1703104188;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Zw2AbkoN/4FIKkUWexE+EWqV2AcpdmgqKqjwrsLePhs=;
-        b=hee5yTVBBSUdJFOysReZnHpRdAZuuqQ/YFA6ggHPEkBvRowDSzFt3+PGY/wut2xQ77
-         6m2/kWHMdCdmWnzEIT/p6kewovMS1LFdiZRIMluSsw9TeEeSoLRVtTefGHREsm3loAqh
-         lTNafE8URxofKN24JaOKfKg1LQxS6DlAmwnQy660iQJnxOorejTz6q8+2eubhV4A35j0
-         bTV9WxlRvTTB+LED4xAIghwMzeuWbDqMGhoSHBkNlx9221ckurfyaWYbsks5nDk0H8TS
-         CGR4oXqeYr6w5Dg2zLWbr/5Q9SVfCBk7mEQdEw/Js7DH+7j1a1uan8ZLlGeHDd9Rw+iW
-         u0uA==
-X-Gm-Message-State: AOJu0Yw/XX8TFn7fVb7qeSo6PiTKJOA9bCG/GURfGlS/lF/JUSWPggBM
-        qNLZ9hseR5TSUNcgxu+APd5cI7Kmww==
-X-Google-Smtp-Source: AGHT+IG20yw7g9GqI9IbadFk19Exl/zGderaqPqj/VFPT7HLhLixQNc2+B3uD+potrr7JRkM+oOFEA==
-X-Received: by 2002:a05:600c:3648:b0:40b:4812:22e2 with SMTP id y8-20020a05600c364800b0040b481222e2mr5226786wmq.11.1702499387771;
-        Wed, 13 Dec 2023 12:29:47 -0800 (PST)
-Received: from ?IPV6:2a02:810b:f40:4300:3bf6:bcc0:fe50:883f? ([2a02:810b:f40:4300:3bf6:bcc0:fe50:883f])
-        by smtp.gmail.com with ESMTPSA id n21-20020a05600c4f9500b0040b36ad5413sm21179364wmq.46.2023.12.13.12.29.46
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 13 Dec 2023 12:29:47 -0800 (PST)
-Message-ID: <a5889aba-75b6-4671-918b-26a4b9ec12c5@gmail.com>
-Date:   Wed, 13 Dec 2023 21:29:45 +0100
+        d=1e100.net; s=20230601; t=1702499417; x=1703104217;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=i+467Loz3LrvYEdXAV5s12LMqcUY9odwCyEv1IdVOvU=;
+        b=tBDDylFX+FeyOyVuPMCBA8stSFGC6QR5rjUeqeBidQmU/cugAmLg1mzYfph88+/sed
+         EqUK4Ztnxlk+1HjXp7qaiRnkcIxxN0UexM5nuY6mtUQtIp1ZQdgb/zOz8plJ2hbwLb/A
+         bn6z8pIja4Ym6XTut5hTkDwZK1QIA3z78e6ZyYZW/j+SFrJiE+M92dRX059hFvZnBsA9
+         P1BMf6UN1xSkymtSJuRAY9Q+L5ZKH4wije3NfCqSFh80WoocgTduFL2lDgxFOgerH8K8
+         VeqFC3zPXhtjyWpfxM0jZE9h3ZZVqvy6SRop6LZeuhUfbc+7iNIMu0GifovraqAbDgnI
+         86+w==
+X-Gm-Message-State: AOJu0YxM/QMw6o+gfIfzqt5jTGCV8tpL8ABHpRRxXZOZ98upDH4gqosx
+        k14U92OYkMTUBAhIB2pgG6woSQ==
+X-Google-Smtp-Source: AGHT+IGBLga6z9pG2jLj7Eh24QZCKuh/cAtflhfd+Zgtj1tOF9StAT24MMOv0TqcLPwKldvFFyI7jA==
+X-Received: by 2002:a05:6000:10c1:b0:336:38ef:1e91 with SMTP id b1-20020a05600010c100b0033638ef1e91mr917003wrx.128.1702499416911;
+        Wed, 13 Dec 2023 12:30:16 -0800 (PST)
+Received: from alex-rivos.ba.rivosinc.com (amontpellier-656-1-456-62.w92-145.abo.wanadoo.fr. [92.145.124.62])
+        by smtp.gmail.com with ESMTPSA id x10-20020a5d444a000000b00336371fafe6sm2945256wrr.16.2023.12.13.12.30.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Dec 2023 12:30:16 -0800 (PST)
+From:   Alexandre Ghiti <alexghiti@rivosinc.com>
+To:     Russell King <linux@armlinux.org.uk>,
+        Ryan Roberts <ryan.roberts@arm.com>,
+        Alexander Potapenko <glider@google.com>,
+        Marco Elver <elver@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Anup Patel <anup@brainfault.org>,
+        Atish Patra <atishp@atishpatra.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        kasan-dev@googlegroups.com, linux-riscv@lists.infradead.org,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        kvm-riscv@lists.infradead.org, linux-efi@vger.kernel.org,
+        linux-mm@kvack.org
+Cc:     Alexandre Ghiti <alexghiti@rivosinc.com>
+Subject: [PATCH v2 0/4] riscv: Use READ_ONCE()/WRITE_ONCE() for pte accesses
+Date:   Wed, 13 Dec 2023 21:29:57 +0100
+Message-Id: <20231213203001.179237-1-alexghiti@rivosinc.com>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 00/31] Fix and improve Rockchip RK3128 support
-Content-Language: en-US, de-DE
-To:     Heiko Stuebner <heiko@sntech.de>, Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>, Lee Jones <lee@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>, Vinod Koul <vkoul@kernel.org>,
-        Kishon Vijay Abraham I <kishon@kernel.org>
-Cc:     Elaine Zhang <zhangqing@rock-chips.com>,
-        Johan Jonker <jbx6244@gmail.com>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, alsa-devel@alsa-project.org,
-        linux-clk@vger.kernel.org, linux-phy@lists.infradead.org
-References: <20230829171647.187787-1-knaerzche@gmail.com>
- <2167016.irdbgypaU6@phil>
-From:   Alex Bee <knaerzche@gmail.com>
-In-Reply-To: <2167016.irdbgypaU6@phil>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Heiko
+This series is a follow-up for riscv of a recent series from Ryan [1] which
+converts all direct dereferences of pte_t into a ptet_get() access.
 
-Am 12.12.23 um 21:03 schrieb Heiko Stuebner:
-> Hi Alex,
->
-> Am Dienstag, 29. August 2023, 19:16:16 CET schrieb Alex Bee:
->> this series fixes some issues I found when testing my "new" RK3128 board
->> with the mainline kernel and adds some core functionality like SMP bringup,
->> usb and networking.
-> before I discard this thread, is everything from here migrated to
-> separate serieses or are there patches in this big pile that are still
-> relevant on their own, that haven't been applied?
-> [I lost track of what did go where ;-) ]
+The goal here for riscv is to use READ_ONCE()/WRITE_ONCE() for all page
+table entries accesses to avoid any compiler transformation when the
+hardware can concurrently modify the page tables entries (A/D bits for
+example).
 
-No worries - I kept track :)
+I went a bit further and added pud/p4d/pgd_get() helpers as such concurrent
+modifications can happen too at those levels.
 
-Not everything is re-sent yet (sound nodes, RK3126/RK3128 split-up) but 
-you can discard this and will re-send everything left in separate series 
-(as I said [0])
+[1] https://lore.kernel.org/all/20230612151545.3317766-1-ryan.roberts@arm.com/
 
-[0] 
-https://lore.kernel.org/linux-arm-kernel/170109134007.42627.12929766893521974712.b4-ty@kernel.org/T/#m63efa1c1379353b5cf764d2f9a260cf0329c864c
+Changes in v2:
+- Fix the kernel test report on arm32
+- Remove the pte suffix patch
+- Fix pud_offset/p4d_offset which were missing the use of accessors
+- Rebase on top of 6.7-rc4
 
-Regards,
+Alexandre Ghiti (4):
+  riscv: Use WRITE_ONCE() when setting page table entries
+  mm: Introduce pudp/p4dp/pgdp_get() functions
+  riscv: mm: Only compile pgtable.c if MMU
+  riscv: Use accessors to page table entries instead of direct
+    dereference
 
-Alex
+ arch/arm/include/asm/pgtable.h      |  2 ++
+ arch/riscv/include/asm/kfence.h     |  4 +--
+ arch/riscv/include/asm/pgtable-64.h | 22 +++----------
+ arch/riscv/include/asm/pgtable.h    | 33 +++++--------------
+ arch/riscv/kernel/efi.c             |  2 +-
+ arch/riscv/kvm/mmu.c                | 22 ++++++-------
+ arch/riscv/mm/Makefile              |  3 +-
+ arch/riscv/mm/fault.c               | 16 ++++-----
+ arch/riscv/mm/hugetlbpage.c         | 12 +++----
+ arch/riscv/mm/kasan_init.c          | 45 +++++++++++++------------
+ arch/riscv/mm/pageattr.c            | 44 ++++++++++++-------------
+ arch/riscv/mm/pgtable.c             | 51 ++++++++++++++++++++++++++---
+ include/linux/pgtable.h             | 21 ++++++++++++
+ 13 files changed, 157 insertions(+), 120 deletions(-)
 
->
->
-> Thanks
-> Heiko
->
->
+-- 
+2.39.2
+
