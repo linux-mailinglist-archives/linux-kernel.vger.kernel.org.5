@@ -2,86 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B9851810BF3
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 09:05:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DF3A810BF8
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 09:06:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378743AbjLMIFc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 03:05:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59586 "EHLO
+        id S1378749AbjLMIFy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 03:05:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58392 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378727AbjLMIFb (ORCPT
+        with ESMTP id S1378856AbjLMIFw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 03:05:31 -0500
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92560B2;
-        Wed, 13 Dec 2023 00:05:37 -0800 (PST)
-Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BD7x5t5028802;
-        Wed, 13 Dec 2023 08:05:12 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-        message-id:date:mime-version:subject:to:cc:references:from
-        :in-reply-to:content-type:content-transfer-encoding; s=
-        qcppdkim1; bh=krym0HY/pPafi8NwsXn9ZFmG16blrZh3WAY8SGvQUec=; b=jj
-        NwQL5GbLj4obCxjevLbfa6D1x3Wu2DOzYaV6ynnbUxWbiGRYlaoaZr/2JWPLgamC
-        nZLs14TkfTenK7DKoyDWCJJRFMIV6GJkWez2Zh8LxYrJOBsQ8sZ+CQUYKXbo2qda
-        y3r/2XfQ9V4drpkRr+l7LNMyYhsNC2i2GbjLO2NUfRc8eUoLy/ZKHLYU2IcvQGd0
-        SQssq8Kdcv387oIqEPVeK0QsENMqndZqj7IkBzLEpHZ2HqCvL+ZvUSU7Ak0okEFj
-        brUi1+Q8Vew/IrQLUxn3hyl8/FV4JWXIhBxDPX2i8a6z5wI0nheW9iLGrA9Yi1Fh
-        76GPY6oxpRh1TkbBSuQw==
-Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3uy3rprqnd-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 13 Dec 2023 08:05:12 +0000 (GMT)
-Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
-        by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3BD85Bju017157
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 13 Dec 2023 08:05:11 GMT
-Received: from [10.253.13.71] (10.80.80.8) by nalasex01c.na.qualcomm.com
- (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Wed, 13 Dec
- 2023 00:05:06 -0800
-Message-ID: <0495f1c2-00e6-4fa5-aaae-cf01475ef2ba@quicinc.com>
-Date:   Wed, 13 Dec 2023 16:05:03 +0800
+        Wed, 13 Dec 2023 03:05:52 -0500
+Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA910DB
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 00:05:58 -0800 (PST)
+Received: by mail-wm1-x32c.google.com with SMTP id 5b1f17b1804b1-40c19f5f822so36788925e9.1
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 00:05:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1702454757; x=1703059557; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=5ZmxijuA5hnyrvkskvNPuvTs985zbDNlr+bpWRJ6COY=;
+        b=majoPyboQhFwt0bUdL/PX1+cGFbYXMgcnfX+NWjugatxfDKv+Qw7obyth1slQ5zVoB
+         Kp+9CbnsHfaPOhI/epkHBmAzFcw2PAap0HpaOAfYSlycITher3/rh0Zm/VTiLQELJNm1
+         NDYunzYim78r/Y0hMnKun20AY8flr7O7HJqNABXqpsuvXxCDQ92MX6aJJMbNa0SqkZPC
+         wapV+zlBgYcpwMVaA6mRz45Y50GsrJMHUT803dfO2yKdcz90oN3dFzf1xM2iKb9t46NR
+         bcBRIW2w8fN+4JkEZQ/fuVa7p7DMAp8FLifBvQj2Q7Q2CMMwX/RNOsCmxUyvSCi+1wLg
+         MG5Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702454757; x=1703059557;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=5ZmxijuA5hnyrvkskvNPuvTs985zbDNlr+bpWRJ6COY=;
+        b=UsS+hFFgWHFOzsXIkP8BLkCvvZrjM//EtjzEwkgp0wPU7Qn8CvAQwDL1lTo7rbCy9d
+         1hnDCIHaa8IASjr1Ca48TVxaT7eP+E7J+/FhJ07POOWIkDI262boeXN5U0d4c5HZE2Zi
+         MmIIpls8USMIXvTZj7yfYnk76LXa2BZeTbMPf0U6IqZ7C51+4isB1tOFkY7h7raFJn3q
+         RvlvmYMEcQRR20K1oHV56bIbjBRaQld3PC/rCUhRo0xeFvjhdbx64UcG4dBcb8AY2Wcn
+         TwDEkMY3rzkmAD0xiTjLVihgtXu+pLSuNNQTX8CPlaj2z1Jo0sllb+cOJxg+JA9hSLMr
+         yYCQ==
+X-Gm-Message-State: AOJu0YyRZSs7c542LDIYAj1SuEqb6GfXZAJ2Ro6cgPCY0fnRZVYSnDFx
+        Y/+KOrrnIIGNQm/7DFjq9ReTdA==
+X-Google-Smtp-Source: AGHT+IEAUiAETxskD05jflgbpP4kX4iVuGEh/MOU83d11xtd0QWQ9H1Vi/j6YVWZZyHZ9RzwdExeoQ==
+X-Received: by 2002:a05:600c:290a:b0:40c:2ca4:1642 with SMTP id i10-20020a05600c290a00b0040c2ca41642mr3686512wmd.137.1702454757215;
+        Wed, 13 Dec 2023 00:05:57 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.218.27])
+        by smtp.gmail.com with ESMTPSA id f11-20020a5d664b000000b003333e71ef9asm12572434wrw.115.2023.12.13.00.05.55
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 13 Dec 2023 00:05:56 -0800 (PST)
+Message-ID: <c1bc144d-07d6-422c-8294-42be47f83e59@linaro.org>
+Date:   Wed, 13 Dec 2023 09:05:54 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 2/5] net: mdio: ipq4019: enable the SoC uniphy clocks
- for ipq5332 platform
+Subject: Re: [PATCH 1/3] dt-bindings: usb: mtk-xhci: add a property for Gen1
+ isoc-in transfer issue
 Content-Language: en-US
-To:     Maxime Chevallier <maxime.chevallier@bootlin.com>
-CC:     <agross@kernel.org>, <andersson@kernel.org>,
-        <konrad.dybcio@linaro.org>, <davem@davemloft.net>,
-        <edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
-        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
-        <conor+dt@kernel.org>, <andrew@lunn.ch>, <hkallweit1@gmail.com>,
-        <linux@armlinux.org.uk>, <robert.marko@sartura.hr>,
-        <linux-arm-msm@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <quic_srichara@quicinc.com>
-References: <20231212115151.20016-1-quic_luoj@quicinc.com>
- <20231212115151.20016-3-quic_luoj@quicinc.com>
- <20231212134621.0fe2583f@device.home>
-From:   Jie Luo <quic_luoj@quicinc.com>
-In-Reply-To: <20231212134621.0fe2583f@device.home>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+To:     Chunfeng Yun <chunfeng.yun@mediatek.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Mathias Nyman <mathias.nyman@intel.com>,
+        linux-usb@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Macpaul Lin <macpaul.lin@mediatek.com>,
+        Eddie Hung <eddie.hung@mediatek.com>
+References: <20231213063543.12435-1-chunfeng.yun@mediatek.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20231213063543.12435-1-chunfeng.yun@mediatek.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01c.na.qualcomm.com (10.47.97.35)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: -nDUJhHxRajZkDQu6Fy_X7hz_TInw8sM
-X-Proofpoint-GUID: -nDUJhHxRajZkDQu6Fy_X7hz_TInw8sM
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-09_01,2023-12-07_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 spamscore=0
- mlxscore=0 suspectscore=0 impostorscore=0 adultscore=0 malwarescore=0
- mlxlogscore=999 bulkscore=0 priorityscore=1501 phishscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2311290000 definitions=main-2312130057
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -89,122 +130,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 13/12/2023 07:35, Chunfeng Yun wrote:
+> For Gen1 isoc-in endpoint on controller before about SSUSB IPM v1.6.0, it
+> still send out unexpected ACK after receiving a short packet in burst
+> transfer, this will cause an exception on connected device, specially for
+> a 4k camera.
+> Add a quirk property "mediatek,rxfifo-depth" to work around this hardware
+> issue;
+> The side-effect is that may cause performance drop about 10%, including
+> bulk transfer.
+> 
+> Signed-off-by: Chunfeng Yun <chunfeng.yun@mediatek.com>
+> ---
+>  .../devicetree/bindings/usb/mediatek,mtk-xhci.yaml     | 10 ++++++++++
+>  1 file changed, 10 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/usb/mediatek,mtk-xhci.yaml b/Documentation/devicetree/bindings/usb/mediatek,mtk-xhci.yaml
+> index e9644e333d78..b8ed68574ba4 100644
+> --- a/Documentation/devicetree/bindings/usb/mediatek,mtk-xhci.yaml
+> +++ b/Documentation/devicetree/bindings/usb/mediatek,mtk-xhci.yaml
+> @@ -124,6 +124,16 @@ properties:
+>        defined in the xHCI spec on MTK's controller.
+>      default: 5000
+>  
+> +  mediatek,rxfifo-depth:
+> +    description:
+
+The property description and driver patch suggest you configure the
+depth of FIFO, so this should be not bool, but some uint32. And then,
+use generic "fifo-depth" property to set desired depth.
 
 
-On 12/12/2023 8:46 PM, Maxime Chevallier wrote:
-> Hello,
-> 
-> On Tue, 12 Dec 2023 19:51:47 +0800
-> Luo Jie <quic_luoj@quicinc.com> wrote:
-> 
->> On the platform ipq5332, the related SoC uniphy GCC clocks need
->> to be enabled for making the MDIO slave devices accessible.
->>
->> These UNIPHY clocks are from the SoC platform GCC clock provider,
->> which are enabled for the connected PHY devices working.
->>
->> Signed-off-by: Luo Jie <quic_luoj@quicinc.com>
-> 
-> [...]
-> 
->>   static int ipq4019_mdio_wait_busy(struct mii_bus *bus)
->> @@ -209,14 +230,43 @@ static int ipq4019_mdio_write_c22(struct mii_bus *bus, int mii_id, int regnum,
->>   static int ipq_mdio_reset(struct mii_bus *bus)
->>   {
->>   	struct ipq4019_mdio_data *priv = bus->priv;
->> -	int ret;
->> +	int ret, index;
->> +	unsigned long rate;
-> 
-> Please remember to use reverse christmas-tree ordering, meaning longer
-> declaration lines go first :
-> 
-> 	struct ipq4019_mdio_data *priv = bus->priv;
-> 	unsigned long rate;
-> 	int ret, index;
-
-Thanks, i will update this.
-
-> 
->> +
->> +	/* For the platform ipq5332, there are two SoC uniphies available
->> +	 * for connecting with ethernet PHY, the SoC uniphy gcc clock
->> +	 * should be enabled for resetting the connected device such
->> +	 * as qca8386 switch, qca8081 PHY or other PHYs effectively.
->> +	 *
->> +	 * Configure MDIO/UNIPHY clock source frequency if clock instance
->> +	 * is specified in the device tree.
->> +	 */
->> +	for (index = MDIO_CLK_MDIO_AHB; index < MDIO_CLK_CNT; index++) {
->> +		switch (index) {
->> +		case MDIO_CLK_MDIO_AHB:
->> +			rate = IPQ_MDIO_CLK_RATE;
->> +			break;
->> +		case MDIO_CLK_UNIPHY0_AHB:
->> +		case MDIO_CLK_UNIPHY1_AHB:
->> +			rate = IPQ_UNIPHY_AHB_CLK_RATE;
->> +			break;
->> +		case MDIO_CLK_UNIPHY0_SYS:
->> +		case MDIO_CLK_UNIPHY1_SYS:
->> +			rate = IPQ_UNIPHY_SYS_CLK_RATE;
->> +			break;
->> +		default:
->> +			break;
->> +		}
->>   
->> -	/* Configure MDIO clock source frequency if clock is specified in the device tree */
->> -	ret = clk_set_rate(priv->mdio_clk, IPQ_MDIO_CLK_RATE);
->> -	if (ret)
->> -		return ret;
->> +		ret = clk_set_rate(priv->clk[index], rate);
->> +		if (ret)
->> +			return ret;
->> +
->> +		ret = clk_prepare_enable(priv->clk[index]);
->> +		if (ret)
->> +			return ret;
->> +	}
->>   
->> -	ret = clk_prepare_enable(priv->mdio_clk);
->>   	if (ret == 0)
->>   		mdelay(10);
->>   
->> @@ -240,10 +290,6 @@ static int ipq4019_mdio_probe(struct platform_device *pdev)
->>   	if (IS_ERR(priv->membase))
->>   		return PTR_ERR(priv->membase);
->>   
->> -	priv->mdio_clk = devm_clk_get_optional(&pdev->dev, "gcc_mdio_ahb_clk");
->> -	if (IS_ERR(priv->mdio_clk))
->> -		return PTR_ERR(priv->mdio_clk);
->> -
->>   	/* These platform resources are provided on the chipset IPQ5018 or
->>   	 * IPQ5332.
->>   	 */
->> @@ -271,6 +317,13 @@ static int ipq4019_mdio_probe(struct platform_device *pdev)
->>   		}
->>   	}
->>   
->> +	for (index = 0; index < MDIO_CLK_CNT; index++) {
->> +		priv->clk[index] = devm_clk_get_optional(&pdev->dev,
->> +							 mdio_clk_name[index]);
->> +		if (IS_ERR(priv->clk[index]))
->> +			return PTR_ERR(priv->clk[index]);
->> +	}
-> 
-> You should be able to use devm_clk_bulk_get_optional(), to avoid that
-> loop.
-> 
-> Thanks,
-> 
-> Maxime
-
-Thanks Maxime for the suggestion.
-These clocks need to be configured the different clock rate, MDIO system
-clock works on 100MHZ, but UNIPHY system clock works on 24MHZ.
-
-For the clock rate set, i still need the loop to configure the different
-clock rate on the different clock instance.
-
-So i use the devm_clk_get_optional to acquire the exact clock ID here.
-
+Best regards,
+Krzysztof
 
