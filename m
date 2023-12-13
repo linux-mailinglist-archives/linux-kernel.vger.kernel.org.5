@@ -2,93 +2,237 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C70B48108BE
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 04:25:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 91439810943
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 05:55:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378454AbjLMDZ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 22:25:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38182 "EHLO
+        id S1378514AbjLMEy5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 23:54:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37236 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378403AbjLMDZY (ORCPT
+        with ESMTP id S1378466AbjLMEyy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 22:25:24 -0500
-Received: from mx0a-0064b401.pphosted.com (mx0a-0064b401.pphosted.com [205.220.166.238])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4712CB0;
-        Tue, 12 Dec 2023 19:25:31 -0800 (PST)
-Received: from pps.filterd (m0250809.ppops.net [127.0.0.1])
-        by mx0a-0064b401.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BD2LqBh013286;
-        Tue, 12 Dec 2023 19:25:09 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=windriver.com;
-         h=from:to:cc:subject:date:message-id:in-reply-to:references
-        :mime-version:content-transfer-encoding:content-type; s=
-        PPS06212021; bh=oHEWwWS/d+ov9oePzS5N8MzuKRMw9eiK625IUaQWN7E=; b=
-        JK8gUTZXHPvpSOmd5yh39qi5MxiksPE2stT8b+AeTFA9zI3kZRacQz+d6wt0jFtC
-        eLDYTH9SFVtCHY8jxavgvPE6rRfNIw10TC4d/Cr4VN7e6K7Xj1KZD7ftFopaFb2u
-        cyIc7eHhUFmw+BxuHgzie5L46J+0YIluMDSWq9UpwXD5tEA9aMwf9cefNKaQ7mwu
-        YNcaxPvnPtgHqC/zeGDWoaxVyyLh41jkA0/HTHLwhVrhJRv78+YGyXN/dyOijW54
-        F0n/Y4uWjAIcGJzMbMADD5FxxrsiRQ5t2AUUtuW8mzNzBCD4TPMW6wx9wkORy2AM
-        o6e5ms9XJvIc116ttNRURw==
-Received: from ala-exchng01.corp.ad.wrs.com (ala-exchng01.wrs.com [147.11.82.252])
-        by mx0a-0064b401.pphosted.com (PPS) with ESMTPS id 3uwyxja1f9-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Tue, 12 Dec 2023 19:25:09 -0800 (PST)
-Received: from ala-exchng01.corp.ad.wrs.com (147.11.82.252) by
- ala-exchng01.corp.ad.wrs.com (147.11.82.252) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Tue, 12 Dec 2023 19:25:13 -0800
-Received: from pek-lpd-ccm6.wrs.com (147.11.136.210) by
- ala-exchng01.corp.ad.wrs.com (147.11.82.252) with Microsoft SMTP Server id
- 15.1.2507.35 via Frontend Transport; Tue, 12 Dec 2023 19:25:10 -0800
-From:   Lizhi Xu <lizhi.xu@windriver.com>
-To:     <lkp@intel.com>
-CC:     <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
-        <linux-arm-msm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <lizhi.xu@windriver.com>, <mani@kernel.org>,
-        <netdev@vger.kernel.org>, <oe-kbuild-all@lists.linux.dev>,
-        <pabeni@redhat.com>,
-        <syzbot+006987d1be3586e13555@syzkaller.appspotmail.com>,
-        <syzkaller-bugs@googlegroups.com>
-Subject: Re: [PATCH] radix-tree: fix memory leak in radix_tree_insert
-Date:   Wed, 13 Dec 2023 11:25:04 +0800
-Message-ID: <20231213032504.2133661-1-lizhi.xu@windriver.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <202312120651.92GGXeX4-lkp@intel.com>
-References: <202312120651.92GGXeX4-lkp@intel.com>
+        Tue, 12 Dec 2023 23:54:54 -0500
+Received: from mailout3.samsung.com (mailout3.samsung.com [203.254.224.33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97D6FAD
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 20:54:58 -0800 (PST)
+Received: from epcas5p3.samsung.com (unknown [182.195.41.41])
+        by mailout3.samsung.com (KnoxPortal) with ESMTP id 20231213045456epoutp0383c4b86e95579a8e6ef7b679543c21e3~gSyiHLuzO1688816888epoutp033
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 04:54:56 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20231213045456epoutp0383c4b86e95579a8e6ef7b679543c21e3~gSyiHLuzO1688816888epoutp033
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1702443296;
+        bh=MgcKzc1IORHWtSSPzD4YL1p/LjIGorkzaZhtW/BEzRA=;
+        h=From:To:Cc:Subject:Date:References:From;
+        b=gyP1rZVH3zLLn9LJDMETLZneVwxvOoFTMgQ9zP+ylgGqObbV09PhKIIJBQA64RJf8
+         Bt67DpBJHz0grJnpBVe/Y8xMtPknyDMdMqe/jlDQ2tdFd0gAyZjvgVdGdjDpr5VbKc
+         O4qyiYITdjplVrAYDfpI/8E5NvTZLA6btBsCr8AU=
+Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
+        epcas5p2.samsung.com (KnoxPortal) with ESMTP id
+        20231213045455epcas5p2867e0f6682429d8d7929c20000d18693~gSyhF0gZM2683426834epcas5p2H;
+        Wed, 13 Dec 2023 04:54:55 +0000 (GMT)
+Received: from epsmges5p1new.samsung.com (unknown [182.195.38.179]) by
+        epsnrtp4.localdomain (Postfix) with ESMTP id 4Sqjp437cPz4x9Px; Wed, 13 Dec
+        2023 04:54:52 +0000 (GMT)
+Received: from epcas5p2.samsung.com ( [182.195.41.40]) by
+        epsmges5p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        D7.91.09634.B1939756; Wed, 13 Dec 2023 13:54:51 +0900 (KST)
+Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
+        epcas5p4.samsung.com (KnoxPortal) with ESMTPA id
+        20231213033309epcas5p4a312be32080125bfe62bf5353abadd74~gRrIRE6l51492114921epcas5p44;
+        Wed, 13 Dec 2023 03:33:09 +0000 (GMT)
+Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
+        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20231213033309epsmtrp236608f0b4346b2c27d0dff9145953263~gRrIQMiCF2684726847epsmtrp2M;
+        Wed, 13 Dec 2023 03:33:09 +0000 (GMT)
+X-AuditID: b6c32a49-159fd700000025a2-a7-6579391bc399
+Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
+        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        59.48.08755.5F529756; Wed, 13 Dec 2023 12:33:09 +0900 (KST)
+Received: from AHRE124.. (unknown [109.105.118.124]) by epsmtip1.samsung.com
+        (KnoxPortal) with ESMTPA id
+        20231213033308epsmtip1679095a847f903ea9f7e7d97cb1a9565~gRrG4SE7m2763727637epsmtip1a;
+        Wed, 13 Dec 2023 03:33:08 +0000 (GMT)
+From:   Xiaobing Li <xiaobing.li@samsung.com>
+To:     axboe@kernel.dk, asml.silence@gmail.com
+Cc:     linux-kernel@vger.kernel.org, io-uring@vger.kernel.org,
+        kun.dou@samsung.com, peiwei.li@samsung.com, joshi.k@samsung.com,
+        kundan.kumar@samsung.com, wenwen.chen@samsung.com,
+        ruyi.zhang@samsung.com, cliang01.li@samsung.com,
+        xue01.he@samsung.com, Xiaobing Li <xiaobing.li@samsung.com>
+Subject: [PATCH v4] io_uring: Statistics of the true utilization of sq
+ threads.
+Date:   Wed, 13 Dec 2023 11:25:13 +0800
+Message-Id: <20231213032513.12591-1-xiaobing.li@samsung.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: 9iluF6xhpeAdVt-FoAhNtKxtKrWPHrdW
-X-Proofpoint-GUID: 9iluF6xhpeAdVt-FoAhNtKxtKrWPHrdW
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-16_25,2023-11-16_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
- malwarescore=0 mlxscore=0 spamscore=0 phishscore=0 lowpriorityscore=0
- bulkscore=0 priorityscore=1501 mlxlogscore=789 adultscore=0 clxscore=1011
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2311290000 definitions=main-2312130022
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprNJsWRmVeSWpSXmKPExsWy7bCmhq60ZWWqwf4HshZzVm1jtFh9t5/N
+        4vTfxywW71rPsVgc/f+WzeJX911Gi61fvrJaXN41h83i2V5Oiy+Hv7NbTN2yg8mio+Uyo0XX
+        hVNsDrweO2fdZfe4fLbUo2/LKkaPz5vkAliism0yUhNTUosUUvOS81My89JtlbyD453jTc0M
+        DHUNLS3MlRTyEnNTbZVcfAJ03TJzgK5TUihLzCkFCgUkFhcr6dvZFOWXlqQqZOQXl9gqpRak
+        5BSYFOgVJ+YWl+al6+WlllgZGhgYmQIVJmRnbDn4jqngu1zF+iXNjA2MbyW6GDk5JARMJCa+
+        PMrWxcjFISSwm1Hi/54pzBDOJ0aJmxdWsEM43xglHm+4xAjTMr/vJ1RiL6PE8dNTWCGcl4wS
+        r1f+ZAWpYhPQlri+rgvMFgGyXz+eygJSxCywhEli67fDTCAJYYFAiVfPFgIt5OBgEVCVaJ3B
+        ARLmFbCRmH/vPQvENnmJ/QfPMkPEBSVOznwCFmcGijdvnQ12q4TAT3aJO/ueM0M0uEhs+bUc
+        6lRhiVfHt7BD2FISn9/tZYOwiyWO9HxnhWhuYJSYfvsqVJG1xL8re1hADmIW0JRYv0sfIiwr
+        MfXUOiaIxXwSvb+fMEHEeSV2zIOxVSVWX3oIdbS0xOuG30wgYyQEPCSWXo8FCQsJxEp8OXKJ
+        fQKj/Cwk78xC8s4shMULGJlXMUqmFhTnpqcWmxYY5qWWw2M2OT93EyM4lWp57mC8++CD3iFG
+        Jg7GQ4wSHMxKIrwnd5SnCvGmJFZWpRblxxeV5qQWH2I0BQbxRGYp0eR8YDLPK4k3NLE0MDEz
+        MzOxNDYzVBLnfd06N0VIID2xJDU7NbUgtQimj4mDU6qBqers+31XDvF2zlLg2TUhY9PVzxPP
+        aScrMyortHvVdHpdeOt/52LCh/Ny+09/zWG4U/y8fFqeg2eeEss6hZs/pF+wHIxQkF995Fl5
+        k9+EAif1eRa7RVMsUzxT+kXkTb099N5dPiCas9Lt8+6N2xa2LdM7dEbhleDqlNTDF0tdTswW
+        kK0vbLnXV6Tme+fi+owPkQxGB99IZmg2sHamKtz6NFHMybntisWkFz8nF4u/D5rw4slieZ2F
+        gbzamTGfpI8JeEiei5pZfa5LnO3p/ICyb3fUgifxtbYLFd+d4LXvbvb9HeXt9VXzF3X0hnAu
+        3WPD/+7zY72OjyUZ0oeURdpajhp4vr7HPFXoswqT8eQTSizFGYmGWsxFxYkAdpFmvy4EAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrMLMWRmVeSWpSXmKPExsWy7bCSnO5X1cpUg+cL1C3mrNrGaLH6bj+b
+        xem/j1ks3rWeY7E4+v8tm8Wv7ruMFlu/fGW1uLxrDpvFs72cFl8Of2e3mLplB5NFR8tlRouu
+        C6fYHHg9ds66y+5x+WypR9+WVYwenzfJBbBEcdmkpOZklqUW6dslcGVsOfiOqeC7XMX6Jc2M
+        DYxvJboYOTkkBEwk5vf9ZO9i5OIQEtjNKHHmUg9zFyMHUEJa4s+fcogaYYmV/56zg9hCAs8Z
+        JfoW+YDYbALaEtfXdbGClIsI6Eo03lUAGcMssIFJYv/TeawgNcIC/hJTri5kAalhEVCVaJ3B
+        ARLmFbCRmH/vPQvEeHmJ/QfPMkPEBSVOznwCFmcGijdvnc08gZFvFpLULCSpBYxMqxglUwuK
+        c9Nziw0LDPNSy/WKE3OLS/PS9ZLzczcxgsNZS3MH4/ZVH/QOMTJxMB5ilOBgVhLhPbmjPFWI
+        NyWxsiq1KD++qDQntfgQozQHi5I4r/iL3hQhgfTEktTs1NSC1CKYLBMHp1QD0+QL373O7dVY
+        4vonPNDSc9pkwbuXH99cX8QT+6NtzhytrVPe6Gfor41uuvpx66uq/wlxr/9ve2IbxqozV6uA
+        1fKPyKMynn5eqQvPHTxrropZ5jlaTN2UwiY466eN7VmOnrTOmGeLgxKvtl4tOPrRSOvYDea1
+        Z48Z+i+Yuqfj0TpWfW3GmoTsaxxt8+buK02Yc0JfsIip5IcF6+3pv9h/TLr4UmeB453d/+c/
+        enVhRuerMo5fqvt2bmjZv/fD50v1287WvO/P/e5xo/7iVj4m5nk7mtTaHA5FvmV/IBpVwrd8
+        TtN0GfH+G0cuV5fabdWJlJCwi7tgmHp/Rv+Lu9nXU9bs+NFd6ltdwn5mD0Nc1VYlluKMREMt
+        5qLiRADUuThV1gIAAA==
+X-CMS-MailID: 20231213033309epcas5p4a312be32080125bfe62bf5353abadd74
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: REQ_APPROVE
+CMS-TYPE: 105P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20231213033309epcas5p4a312be32080125bfe62bf5353abadd74
+References: <CGME20231213033309epcas5p4a312be32080125bfe62bf5353abadd74@epcas5p4.samsung.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 12 Dec 2023 07:16:50 +0800, kernel test robot <lkp@intel.com> wrote:
-> kernel test robot noticed the following build warnings:
->    lib/radix-tree.c:558:24: sparse:     got struct xa_node [noderef] __rcu *parent
-> >> lib/radix-tree.c:653:28: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected struct xa_node *pn @@     got struct xa_node [noderef] __rcu *parent @@
->    lib/radix-tree.c:653:28: sparse:     expected struct xa_node *pn
->   651			struct radix_tree_node *pn;
->   652			while (shift < mmshift && node) {
-> > 653				pn = node->parent;
-It can be clarified here that node->parent is the type just alloced as 
-"struct radix_tree node *", so there is no need to use cast type conversion,  
-Please ignore this warning.
+v4:
+1.Since the sq thread has a while(1) structure, during this process,
+  there may be a lot of time that is not processing IO but does not
+exceed the timeout period, therefore, the sqpoll thread will keep
+running and will keep occupying the CPU. Obviously, the CPU is wasted at
+this time;Our goal is to count the part of the time that the sqpoll
+thread actually processes IO, so as to reflect the part of the CPU it
+uses to process IO, which can be used to help improve the actual
+utilization of the CPU in the future.
 
-BR,
-Lizhi
+2."work_time" in the code represents the sum of the jiffies of the sq
+  thread actually processing IO, that is, how many milliseconds it
+actually takes to process IO. "total_time" represents the total time
+that the sq thread has elapsed from the beginning of the loop to the
+current time point, that is, how many milliseconds it has spent in
+total.
+The output "SqBusy" represents the percentage of time utilization that
+the sq thread actually uses to process IO.
+
+Signed-off-by: Xiaobing Li <xiaobing.li@samsung.com>
+
+The test results are as follows:
+Every 0.5s: cat /proc/23112/fdinfo/6 | grep Sq
+SqMask: 0x3
+SqHead: 1168417
+SqTail: 1168418
+CachedSqHead:   1168418
+SqThread:       23112
+SqThreadCpu:    55
+SqBusy: 97%
+---
+ io_uring/fdinfo.c | 4 ++++
+ io_uring/sqpoll.c | 8 ++++++++
+ io_uring/sqpoll.h | 2 ++
+ 3 files changed, 14 insertions(+)
+
+diff --git a/io_uring/fdinfo.c b/io_uring/fdinfo.c
+index 976e9500f651..b0f9d296c5aa 100644
+--- a/io_uring/fdinfo.c
++++ b/io_uring/fdinfo.c
+@@ -64,6 +64,7 @@ __cold void io_uring_show_fdinfo(struct seq_file *m, struct file *f)
+ 	unsigned int sq_shift = 0;
+ 	unsigned int sq_entries, cq_entries;
+ 	int sq_pid = -1, sq_cpu = -1;
++	int sq_busy = 0;
+ 	bool has_lock;
+ 	unsigned int i;
+ 
+@@ -147,10 +148,13 @@ __cold void io_uring_show_fdinfo(struct seq_file *m, struct file *f)
+ 
+ 		sq_pid = sq->task_pid;
+ 		sq_cpu = sq->sq_cpu;
++		if (sq->total_time != 0)
++			sq_busy = (int)(sq->work_time * 100 / sq->total_time);
+ 	}
+ 
+ 	seq_printf(m, "SqThread:\t%d\n", sq_pid);
+ 	seq_printf(m, "SqThreadCpu:\t%d\n", sq_cpu);
++	seq_printf(m, "SqBusy:\t%d%%\n", sq_busy);
+ 	seq_printf(m, "UserFiles:\t%u\n", ctx->nr_user_files);
+ 	for (i = 0; has_lock && i < ctx->nr_user_files; i++) {
+ 		struct file *f = io_file_from_index(&ctx->file_table, i);
+diff --git a/io_uring/sqpoll.c b/io_uring/sqpoll.c
+index 65b5dbe3c850..9b74e344c52a 100644
+--- a/io_uring/sqpoll.c
++++ b/io_uring/sqpoll.c
+@@ -225,6 +225,7 @@ static int io_sq_thread(void *data)
+ 	struct io_ring_ctx *ctx;
+ 	unsigned long timeout = 0;
+ 	char buf[TASK_COMM_LEN];
++	unsigned long sq_start, sq_work_begin, sq_work_end;
+ 	DEFINE_WAIT(wait);
+ 
+ 	snprintf(buf, sizeof(buf), "iou-sqp-%d", sqd->task_pid);
+@@ -241,6 +242,7 @@ static int io_sq_thread(void *data)
+ 	}
+ 
+ 	mutex_lock(&sqd->lock);
++	sq_start = jiffies;
+ 	while (1) {
+ 		bool cap_entries, sqt_spin = false;
+ 
+@@ -251,6 +253,7 @@ static int io_sq_thread(void *data)
+ 		}
+ 
+ 		cap_entries = !list_is_singular(&sqd->ctx_list);
++		sq_work_begin = jiffies;
+ 		list_for_each_entry(ctx, &sqd->ctx_list, sqd_list) {
+ 			int ret = __io_sq_thread(ctx, cap_entries);
+ 
+@@ -260,6 +263,11 @@ static int io_sq_thread(void *data)
+ 		if (io_run_task_work())
+ 			sqt_spin = true;
+ 
++		sq_work_end = jiffies;
++		sqd->total_time = sq_work_end - sq_start;
++		if (sqt_spin == true)
++			sqd->work_time += sq_work_end - sq_work_begin;
++
+ 		if (sqt_spin || !time_after(jiffies, timeout)) {
+ 			if (sqt_spin)
+ 				timeout = jiffies + sqd->sq_thread_idle;
+diff --git a/io_uring/sqpoll.h b/io_uring/sqpoll.h
+index 8df37e8c9149..92b4b07220fa 100644
+--- a/io_uring/sqpoll.h
++++ b/io_uring/sqpoll.h
+@@ -16,6 +16,8 @@ struct io_sq_data {
+ 	pid_t			task_pid;
+ 	pid_t			task_tgid;
+ 
++	unsigned long		work_time;
++	unsigned long		total_time;
+ 	unsigned long		state;
+ 	struct completion	exited;
+ };
+-- 
+2.34.1
 
