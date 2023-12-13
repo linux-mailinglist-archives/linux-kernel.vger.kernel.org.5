@@ -2,436 +2,220 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D06A811F87
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 20:55:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 47CB3811FA5
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 21:02:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235324AbjLMTzW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 14:55:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34358 "EHLO
+        id S1442280AbjLMUCk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 15:02:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49600 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235540AbjLMTzG (ORCPT
+        with ESMTP id S1379013AbjLMTzU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 14:55:06 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8914D7F
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 11:53:59 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A929AC433C7;
-        Wed, 13 Dec 2023 19:53:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1702497239;
-        bh=dcjUy2QND46YM2W9IosA0LzvC8ULdjGPyZnZLP6Ia3I=;
-        h=Date:Subject:To:References:From:In-Reply-To:From;
-        b=VMybQw20CoC5U8K+WyP5dgGTjp4Bl0IOQeA6Srubt/Kpgugo/8IwNYBD3Sigla1gj
-         XaVzHYKbDNnpr5AHt1yeu70EHuOeQMW81wGzjmhy4INjCkG5mLpf6PD0+H89bPQV3B
-         nPGmzsn84GT1eyIY3uNzKYgN0s13je2jVb5xNvXXoxi6Q2pxxFCCGO0fpNgREdOb3Y
-         +3YcuOHHahFofUriI3VTMo1muq+Wvny0oUOapUfcQK1mucO3cwP/5yYciLvxjgbYnI
-         EG+L9nx+wzwDn43j9Me34XpBY21CY4HzDz7v2aqAhb9qd4Hj+NQxY18ydU+owmXfk/
-         5goU8DheuihiA==
-Message-ID: <52340f6e-e253-4eef-b395-2805aeac65a9@kernel.org>
-Date:   Wed, 13 Dec 2023 20:53:52 +0100
+        Wed, 13 Dec 2023 14:55:20 -0500
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2067.outbound.protection.outlook.com [40.107.223.67])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D659D19A7;
+        Wed, 13 Dec 2023 11:54:35 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=h1Z+8RiXtXZWaudsHokVoIBm1Cuj9/GGczVDXsdWa6S0gpGHcOmdj2VnCehFmg/Y4EsopYfKTYoh3Crli26dy8ak/Gq1ofBRd9P1peQxOncyMMHpoGd0+QMKhFUeUlOeguCXuS1aOhr7iq0h+wSPyGO+wyCiQvuyAJXLJqP2jCnYkM6tZv4KMCYInKWaw1j5YmNNmYBgI6ABkuHIKO30oKHQREGuhtCMo4Gl8z45snCU5oJ36RpJxx6hcF2IfD8h/nediPuRaezIaWLWxLQCTkrxH4vwHbA2cZLA+0Ne3RIn5XWToTQTTpBsHpop3CGHCpieg7I7oEBMup7QurazXg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=DKUcmJlezdzVRlWijeebQQqbeIEOYwdh6FBYCTEmMx0=;
+ b=ItjkDG9uFnHS+cPet40VNkv0YBoU8ftQoXxarF3wAC703G/mgacYE75wGiDCKaR5wBUtLVkZG8t8meDr+RNvE8hEYMHr3fLmi025Rf28XZZ0ofghiiVnN8h75J3XA6UC6/X9B07GBONYhqyZCCyXeSsKdMl5NXgo7hIEwOUx2vtDeBLyilbde0tAkVRpYrvNaJDKPSIvYrPvWnTTbE2MnsTq5WO1/pjXXCvef7bUuNrPQMX2G8nD0BOluoo9HMn2RNLqspra4SiViV0rNglJfuDMaIw0qF+b91JIB3L8DAakEvlQNEmS5//s7ofM60Hl2NRh6s4vM0tRe0NQ0KA6lw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.117.161) smtp.rcpttodomain=oracle.com smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=DKUcmJlezdzVRlWijeebQQqbeIEOYwdh6FBYCTEmMx0=;
+ b=Oe2AIAnT9g225jHNCaWyAH7yYdXl23JSsevDFhJ+KZQur5i7JFVIH0/2MXcBDM1RBzcWObPPkCkrs9wh3K3ruVylqB9TZKLv3nx4BhsWaNu5FLdFgM3davpHPtKUGa41VG/f7RyNwhldsinBmWmLhN5f2T5hv2+S/DmN8Sa/VLUoNkVgww3amGerc7d43CscPpner/XB+QamyknBkpNvCe38Kz0LDz8nHr6ggbK7VotazbgRhgqNedIKqohun1ZLeL1iYn+3lfWHiYy9UE1fjtzAbkGqgh6aXBG946WPEUxE/if9n2r8rQaiUuAVxFkG4TLhM4lVTbmMoL+ozu2J+g==
+Received: from CY5PR15CA0154.namprd15.prod.outlook.com (2603:10b6:930:67::21)
+ by CY8PR12MB7754.namprd12.prod.outlook.com (2603:10b6:930:86::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7091.26; Wed, 13 Dec
+ 2023 19:54:33 +0000
+Received: from CY4PEPF0000E9D2.namprd03.prod.outlook.com
+ (2603:10b6:930:67:cafe::26) by CY5PR15CA0154.outlook.office365.com
+ (2603:10b6:930:67::21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7091.26 via Frontend
+ Transport; Wed, 13 Dec 2023 19:54:33 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.161)
+ smtp.mailfrom=nvidia.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.117.161 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.117.161; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.117.161) by
+ CY4PEPF0000E9D2.mail.protection.outlook.com (10.167.241.145) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.7091.26 via Frontend Transport; Wed, 13 Dec 2023 19:54:33 +0000
+Received: from rnnvmail201.nvidia.com (10.129.68.8) by mail.nvidia.com
+ (10.129.200.67) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Wed, 13 Dec
+ 2023 11:54:18 -0800
+Received: from rnnvmail204.nvidia.com (10.129.68.6) by rnnvmail201.nvidia.com
+ (10.129.68.8) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Wed, 13 Dec
+ 2023 11:54:18 -0800
+Received: from Asurada-Nvidia (10.127.8.9) by mail.nvidia.com (10.129.68.6)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41 via Frontend
+ Transport; Wed, 13 Dec 2023 11:54:16 -0800
+Date:   Wed, 13 Dec 2023 11:54:15 -0800
+From:   Nicolin Chen <nicolinc@nvidia.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+CC:     Yi Liu <yi.l.liu@intel.com>,
+        "Giani, Dhaval" <Dhaval.Giani@amd.com>,
+        Vasant Hegde <vasant.hegde@amd.com>,
+        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
+        <joro@8bytes.org>, <alex.williamson@redhat.com>,
+        <kevin.tian@intel.com>, <robin.murphy@arm.com>,
+        <baolu.lu@linux.intel.com>, <cohuck@redhat.com>,
+        <eric.auger@redhat.com>, <kvm@vger.kernel.org>,
+        <mjrosato@linux.ibm.com>, <chao.p.peng@linux.intel.com>,
+        <yi.y.sun@linux.intel.com>, <peterx@redhat.com>,
+        <jasowang@redhat.com>, <shameerali.kolothum.thodi@huawei.com>,
+        <lulu@redhat.com>, <iommu@lists.linux.dev>,
+        <linux-kernel@vger.kernel.org>, <linux-kselftest@vger.kernel.org>,
+        <zhenzhong.duan@intel.com>, <joao.m.martins@oracle.com>,
+        <xin.zeng@intel.com>, <yan.y.zhao@intel.com>
+Subject: Re: [PATCH v6 0/6] iommufd: Add nesting infrastructure (part 2/2)
+Message-ID: <ZXoL56s1EIchNRzD@Asurada-Nvidia>
+References: <20231117130717.19875-1-yi.l.liu@intel.com>
+ <20231209014726.GA2945299@nvidia.com>
+ <ZXd+1UVrcAQePjnD@Asurada-Nvidia>
+ <20231211215738.GB3014157@nvidia.com>
+ <ZXgL+GCGPgH+hlXo@Asurada-Nvidia>
+ <20231212144421.GH3014157@nvidia.com>
+ <ZXiw4XK/1+ZdsFV1@Asurada-Nvidia>
+ <20231212192100.GP3014157@nvidia.com>
+ <ZXi9FaPSkHkCm679@Asurada-Nvidia>
+ <20231213124055.GR3014157@nvidia.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 3/5] crypto: tegra: Add Tegra Security Engine driver
-Content-Language: en-US
-To:     Akhil R <akhilrajeev@nvidia.com>, herbert@gondor.apana.org.au,
-        davem@davemloft.net, linux-crypto@vger.kernel.org,
-        linux-kernel@vger.kernel.org, thierry.reding@gmail.com,
-        jonathanh@nvidia.com, linux-tegra@vger.kernel.org
-References: <20231213122030.11734-1-akhilrajeev@nvidia.com>
- <20231213122030.11734-4-akhilrajeev@nvidia.com>
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-Autocrypt: addr=krzk@kernel.org; keydata=
- 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 fv0=
-In-Reply-To: <20231213122030.11734-4-akhilrajeev@nvidia.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20231213124055.GR3014157@nvidia.com>
+X-NV-OnPremToCloud: ExternallySecured
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CY4PEPF0000E9D2:EE_|CY8PR12MB7754:EE_
+X-MS-Office365-Filtering-Correlation-Id: b6ec181f-7a33-459b-3d50-08dbfc1553f6
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: aCKM+BZ8czRNrqvy2P2p580kSnjmIacgrQk6VpXLlCwqXu+EQH0JDX1QsIDkUT8P/x0gXSL0wjtNQdkYIeB4Ub9GsbG1c8pm1rZZ10wMvuxZpkcvysllfQb5wVKXozWZdw7ISCurzgNa2JXXcKBd3OsbdMgBj1ufhSobdBGaXKYS/aMuNfT/HstBQQiqsan0ehO56lrjgSoEs6of6TDNe/xtepH4zR6XLuOVsP1Sucg08XQQc6IJ2/DkCpnmkRsOeMXnrOP2ITWQEx5f7Gs6YFMF4q5UwXWfJUD9ed/IPOS4/CFaVdb5YZwknIs/h5yMc7n5URq7OaAKSqJjEq950vfj+h6JIiEIEePXFpyyoXLIyxwFNeLHVEwMJ3g+BGe8ywNxFwmYiyun3G0o3CoNgSOE25at+mkIyXqWZWZXiT9G/USQ2HWDHRphZMsTPXEbDx7o1L/RaA+YsyonEy8pg43qKes4dqrNw6EL4lWl/5adiIfoIEP7rnpAOIWf+TaAVInu/oGINJ7YDXLdPngcrtIhV5G15QX8ax3/Z0IwLOLXBpLxnDBZG4rFhecnvwv53ooylI/Gqsw1Q7jXdhfUsf4m9mxyom4DCIyYJgrdSYd4RANWIQGd5tUgmY0iqK1s4lRlLgCdmRIL7TAXO0CNwkQAnW7pC+Um/C9WzgJziJvj8zng5sAgTb60zIJ85xWnU2USnJYYoPG67hdwKRfL48kO/0KGym0VvR5MHH7EfLYSRL2a2HyG4PXEq6zokrlm
+X-Forefront-Antispam-Report: CIP:216.228.117.161;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge2.nvidia.com;CAT:NONE;SFS:(13230031)(4636009)(376002)(396003)(346002)(39860400002)(136003)(230922051799003)(1800799012)(82310400011)(64100799003)(186009)(451199024)(46966006)(36840700001)(40470700004)(40460700003)(26005)(336012)(426003)(9686003)(36860700001)(47076005)(83380400001)(8676002)(5660300002)(4326008)(7416002)(6862004)(8936002)(33716001)(41300700001)(2906002)(478600001)(316002)(6636002)(54906003)(70586007)(70206006)(82740400003)(86362001)(7636003)(356005)(55016003)(40480700001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Dec 2023 19:54:33.4810
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: b6ec181f-7a33-459b-3d50-08dbfc1553f6
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.161];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: CY4PEPF0000E9D2.namprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY8PR12MB7754
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 13/12/2023 13:20, Akhil R wrote:
-> Add support for Tegra Security Engine which can accelerates various
-> crypto algorithms. The Engine has two separate instances within for
-> AES and HASH algorithms respectively.
+On Wed, Dec 13, 2023 at 08:40:55AM -0400, Jason Gunthorpe wrote:
+> On Tue, Dec 12, 2023 at 12:05:41PM -0800, Nicolin Chen wrote:
+> > > > // iommufd_private.h
+> > > > 
+> > > > enum iommufd_object_type {
+> > > > 	...
+> > > > +	IOMMUFD_OBJ_VIOMMU,
+> > > > 	...
+> > > > };
+> > > > 
+> > > > +struct iommufd_viommu {
+> > > > +	struct iommufd_object obj;
+> > > > +	struct iommufd_hwpt_paging *hwpt;
+> > > > +	struct xarray devices;
+> > > > +};
+> > > > 
+> > > > struct iommufd_hwpt_paging hwpt {
+> > > > 	...
+> > > > +	struct list_head viommu_list;
+> > > > 	...
+> > > > };
+> > > 
+> > > I'd probably first try to go backwards and link the hwpt to the
+> > > viommu.
+> > 
+> > I think a VM should have only one hwpt_paging object while one
+> > or more viommu objects, so we could do only viommu->hwpt_paging
+> > and hwpt_paging->viommu_list. How to go backwards?
 > 
-> The driver registers two crypto engines - one for AES and another for
-> HASH algorithms and these operate independently and both uses the host1x
-> bus. Additionally, it provides  hardware-assisted key protection for up
-> to 15 symmetric keys which it can use for the cipher operations.
+> That is probably how things would work but I don't know if it makes
+> sense to enforce it in the kernel logic..
 > 
-> Signed-off-by: Akhil R <akhilrajeev@nvidia.com>
-> ---
+> Point the S2 to a list of viommu objects it is linked to
 
-...
+Hmm, isn't that hwpt_paging->viommu_list already?
 
-> +
-> +int tegra_init_hash(struct tegra_se *se)
-> +{
-> +	struct ahash_engine_alg *alg;
-> +	int i, ret;
-> +
-> +	se->manifest = tegra_hash_kac_manifest;
-> +
-> +	for (i = 0; i < ARRAY_SIZE(tegra_hash_algs); i++) {
-> +		tegra_hash_algs[i].se_dev = se;
-> +		alg = &tegra_hash_algs[i].alg.ahash;
-> +
-> +		ret = crypto_engine_register_ahash(alg);
-> +		if (ret) {
-> +			dev_err(se->dev, "failed to register %s\n",
-> +				alg->base.halg.base.cra_name);
-> +			goto sha_err;
-> +		}
-> +	}
-> +
-> +	dev_info(se->dev, "registered HASH algorithms\n");
+> > > The second version maybe we have the xarray, or maybe we just push the
+> > > xarray to the eventual viommu series.
+> > 
+> > I think that I still don't get the purpose of the xarray here.
+> > It was needed previously because a cache invalidate per hwpt
+> > doesn't know which device. Now IOMMUFD_DEV_INVALIDATE knows.
+> > 
+> > Maybe it's related to that narrative "logically we could have
+> > multiple mappings per iommufd" that you mentioned above. Mind
+> > elaborating a bit?
+> > 
+> > In my mind, viommu is allocated by VMM per piommu, by detecting
+> > the piommu_id via hw_info. In that case, viommu can only have
+> > one unique device list. If IOMMUFD_DEV_INVALIDATE passes in the
+> > dev_id, we don't really need a mapping of vRID-pRID in a multi-
+> > viommu case either? In another word, VMM already has a mapping
+> > from vRID to dev_id, so it could call the DEV_INVALIDATE ioctl
+> > in the first place?
+> 
+> The xarray exists to optimize the invalidation flow.
+> 
+> For SW you can imagine issuing an invalidation against the viommu
+> itself and *all* commands, be they ASID or ATC invalidations can be
+> processed in one shot. The xarray allows converting the vSID to pSID
+> to process ATC invalidations, and the viommu object forces a single
+> VMID to handle the ATC invalidations. If we want to do this, I don't
+> know.
 
-Drop, not needed. Actually drop simple success messages. Drivers do not
-spam dmesg without need.
+I drafted some patches with IOMMUFD_DEV_INVALIDATE yesterday,
+and realized the same problem that you pointed out here: how
+VMM should handle a group of commands interlaced with ASID and
+ATC commands. If VMM dispatches commands into two groups, the
+executions of the commands will be in a different order than
+what the guest kernel issued in. This might be bitter if there
+is an error occurring in the middle of command executions, in
+which case some later invalidations are done successfully but
+the CONS index would have to stop at a command prior.
 
-...
+And even if there are only ATC invalidations in a guest queue,
+there's no guarantee that all commands are for the same dev_id,
+i.e. ATC invalidations themselves would be dispatched into more
+groups and separate IOMMUFD_DEV_INVALIDATE calls.
 
-> +
-> +int tegra_se_host1x_register(struct tegra_se *se)
-> +{
-> +	INIT_LIST_HEAD(&se->client.list);
-> +	se->client.dev = se->dev;
-> +	se->client.ops = &tegra_se_client_ops;
-> +	se->client.class = se->hw->host1x_class;
-> +	se->client.num_syncpts = 1;
-> +
-> +	host1x_client_register(&se->client);
-> +
-> +	return 0;
-> +}
-> +
-> +static int tegra_se_clk_init(struct tegra_se *se)
-> +{
-> +	int i, ret;
-> +
-> +	se->clk = devm_clk_get(se->dev, NULL);
-> +	if (IS_ERR(se->clk)) {
-> +		dev_err(se->dev, "failed to get clock\n");
+With the xarray, perhaps we could provide a viommu_id in data
+structure of the current iommu_hwpt_invalidate, i.e. reshaping
+the existing invalidate uAPI per viommu, so it can be reused by
+ATC invalidations too instead of adding IOMMUFD_DEV_INVALIDATE?
+Then we wouldn't have the out-of-order execution problem above.
 
-Why do you print failures multiple times? Once here, second in probe.
+> For HW, the xarray holds the vSID to pSID mapping that must be
+> programmed into the HW operating the dedicated invalidation queue.
 
-return dev_err_probe
+Ah, right! VCMDQ at least needs that.
 
-> +		return PTR_ERR(se->clk);
-> +	}
-> +
-> +	ret = clk_set_rate(se->clk, ULONG_MAX);
-> +	if (ret) {
-> +		dev_err(se->dev, "failed to set %d clock rate", i);
-
-Same comments
-
-> +		return ret;
-> +	}
-> +
-> +	ret = clk_prepare_enable(se->clk);
-> +	if (ret) {
-> +		dev_err(se->dev, "failed to enable clocks\n");
-
-Same comments
-
-> +		return ret;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +static void tegra_se_clk_deinit(struct tegra_se *se)
-> +{
-> +	clk_disable_unprepare(se->clk);
-
-Why aren't you using devm_clk_get_enabled? This looks like porting some
-old, out-of-tree vendor crappy driver :(
-
-> +}
-> +
-> +static int tegra_se_probe(struct platform_device *pdev)
-> +{
-> +	struct device *dev = &pdev->dev;
-> +	struct tegra_se *se;
-> +	int ret;
-> +
-> +	se = devm_kzalloc(dev, sizeof(*se), GFP_KERNEL);
-> +	if (!se)
-> +		return -ENOMEM;
-> +
-> +	se->dev = dev;
-> +	se->owner = TEGRA_GPSE_ID;
-> +	se->hw = device_get_match_data(&pdev->dev);
-> +
-> +	se->base = devm_platform_ioremap_resource(pdev, 0);
-> +	if (IS_ERR(se->base))
-> +		return PTR_ERR(se->base);
-> +
-> +	dma_set_mask_and_coherent(dev, DMA_BIT_MASK(39));
-> +	platform_set_drvdata(pdev, se);
-> +
-> +	ret = tegra_se_clk_init(se);
-> +	if (ret) {
-> +		dev_err(dev, "failed to init clocks\n");
-
-Syntax is:
-return dev_err_probe
-
-> +		return ret;
-> +	}
-> +
-> +	if (!tegra_dev_iommu_get_stream_id(dev, &se->stream_id)) {
-> +		dev_err(dev, "failed to get IOMMU stream ID\n");
-
-dev_err_probe
-
-> +		goto clk_deinit;
-> +	}
-> +
-> +	se_writel(se, se->stream_id, SE_STREAM_ID);
-> +
-> +	se->engine = crypto_engine_alloc_init(dev, 0);
-> +	if (!se->engine) {
-> +		dev_err(dev, "failed to init crypto engine\n");
-
-Really? Test your code with coccinelle. Drop.
-
-> +		ret = -ENOMEM;
-> +		goto iommu_free;
-> +	}
-> +
-> +	ret = crypto_engine_start(se->engine);
-> +	if (ret) {
-> +		dev_err(dev, "failed to start crypto engine\n");
-
-dev_err_probe
-
-> +		goto engine_exit;
-> +	}
-> +
-> +	ret = tegra_se_host1x_register(se);
-> +	if (ret) {
-> +		dev_err(dev, "failed to init host1x params\n");
-
-dev_err_probe
-
-> +		goto engine_stop;
-> +	}
-> +
-> +	return 0;
-> +
-> +engine_stop:
-> +	crypto_engine_stop(se->engine);
-> +engine_exit:
-> +	crypto_engine_exit(se->engine);
-> +iommu_free:
-> +	iommu_fwspec_free(se->dev);
-> +clk_deinit:
-> +	tegra_se_clk_deinit(se);
-> +
-> +	return ret;
-> +}
-> +
-> +static int tegra_se_remove(struct platform_device *pdev)
-> +{
-> +	struct tegra_se *se = platform_get_drvdata(pdev);
-> +
-> +	crypto_engine_stop(se->engine);
-> +	crypto_engine_exit(se->engine);
-> +	iommu_fwspec_free(se->dev);
-> +	host1x_client_unregister(&se->client);
-> +	tegra_se_clk_deinit(se);
-> +
-> +	return 0;
-> +}
-> +
-> +static const struct tegra_se_regs tegra234_aes1_regs = {
-> +	.config = SE_AES1_CFG,
-> +	.op = SE_AES1_OPERATION,
-> +	.last_blk = SE_AES1_LAST_BLOCK,
-> +	.linear_ctr = SE_AES1_LINEAR_CTR,
-> +	.aad_len = SE_AES1_AAD_LEN,
-> +	.cryp_msg_len = SE_AES1_CRYPTO_MSG_LEN,
-> +	.manifest = SE_AES1_KEYMANIFEST,
-> +	.key_addr = SE_AES1_KEY_ADDR,
-> +	.key_data = SE_AES1_KEY_DATA,
-> +	.key_dst = SE_AES1_KEY_DST,
-> +	.result = SE_AES1_CMAC_RESULT,
-> +};
-> +
-> +static const struct tegra_se_regs tegra234_hash_regs = {
-> +	.config = SE_SHA_CFG,
-> +	.op = SE_SHA_OPERATION,
-> +	.manifest = SE_SHA_KEYMANIFEST,
-> +	.key_addr = SE_SHA_KEY_ADDR,
-> +	.key_data = SE_SHA_KEY_DATA,
-> +	.key_dst = SE_SHA_KEY_DST,
-> +	.result = SE_SHA_HASH_RESULT,
-> +};
-> +
-> +static const struct tegra_se_hw tegra234_aes_hw = {
-> +	.regs = &tegra234_aes1_regs,
-> +	.kac_ver = 1,
-> +	.host1x_class = 0x3b,
-> +	.init_alg = tegra_init_aes,
-> +	.deinit_alg = tegra_deinit_aes,
-> +};
-> +
-> +static const struct tegra_se_hw tegra234_hash_hw = {
-> +	.regs = &tegra234_hash_regs,
-> +	.kac_ver = 1,
-> +	.host1x_class = 0x3d,
-> +	.init_alg = tegra_init_hash,
-> +	.deinit_alg = tegra_deinit_hash,
-> +};
-> +
-> +static const struct of_device_id tegra_se_of_match[] = {
-> +	{
-> +		.compatible = "nvidia,tegra234-se2-aes",
-> +		.data = &tegra234_aes_hw
-> +	}, {
-> +		.compatible = "nvidia,tegra234-se4-hash",
-> +		.data = &tegra234_hash_hw,
-> +	},
-> +	{ },
-> +};
-> +MODULE_DEVICE_TABLE(of, tegra_se_of_match);
-> +
-> +static struct platform_driver tegra_se_driver = {
-> +	.driver = {
-> +		.name	= "tegra-se",
-> +		.of_match_table = tegra_se_of_match,
-> +	},
-> +	.probe		= tegra_se_probe,
-> +	.remove		= tegra_se_remove,
-> +};
-> +
-> +static int tegra_se_host1x_probe(struct host1x_device *dev)
-> +{
-> +	return host1x_device_init(dev);
-> +}
-> +
-> +static int tegra_se_host1x_remove(struct host1x_device *dev)
-> +{
-> +	host1x_device_exit(dev);
-> +
-> +	return 0;
-> +}
-> +
-
-
-...
-
-> +		return -EINVAL;
-> +}
-> +
-> +/* Functions */
-> +int tegra_init_aead(struct tegra_se *se);
-
-I look for it and cannot find it... Drop.
-
-> +int tegra_init_aes(struct tegra_se *se);
-> +int tegra_init_hash(struct tegra_se *se);
-> +void tegra_deinit_aes(struct tegra_se *se);
-> +void tegra_deinit_hash(struct tegra_se *se);
-> +
-> +int tegra_key_submit(struct tegra_se *se, const u8 *key, u32 keylen, u32 alg, u32 *keyid);
-> +unsigned int tegra_key_get_idx(struct tegra_se *se, u32 keyid);
-> +void tegra_key_invalidate(struct tegra_se *se, u32 keyid, u32 alg);
-> +
-> +int tegra_se_host1x_register(struct tegra_se *se);
-> +int tegra_se_host1x_submit(struct tegra_se *se, u32 size);
-
-Everything looks bogus...
-
-> +
-> +static inline void se_writel(struct tegra_se *se, u32 val,
-> +			     unsigned int offset)
-> +{
-> +	writel_relaxed(val, se->base + offset);
-> +}
-> +
-> +static inline u32 se_readl(struct tegra_se *se, unsigned int offset)
-> +{
-> +	return readl_relaxed(se->base + offset);
-> +}
-
-Both wrappers are useless.
-
-> +
-> +/****
-> + *
-
-Use Linux coding style comments.
-
-> + * HOST1x OPCODES
-> + *
-> + ****/
-> +
-
-...
-
-> +
-> +static inline u32 host1x_opcode_nonincr(unsigned int offset, unsigned int count)
-> +{
-> +	return (2 << 28) | (offset << 16) | count;
-> +}
-> +
-> +static inline u32 host1x_uclass_incr_syncpt_cond_f(u32 v)
-> +{
-> +		return (v & 0xff) << 10;
-
-Fix indentation, in other places as well.
-
-
-Best regards,
-Krzysztof
-
+Thanks
+Nicolin
