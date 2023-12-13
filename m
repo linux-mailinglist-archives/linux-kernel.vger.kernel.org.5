@@ -2,80 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 62DB2811AA3
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 18:16:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 364BD811AA7
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 18:17:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379179AbjLMRPu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 12:15:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39494 "EHLO
+        id S235132AbjLMRQ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 12:16:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56286 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379173AbjLMRPs (ORCPT
+        with ESMTP id S231744AbjLMRQ4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 12:15:48 -0500
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5247CC9
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 09:15:55 -0800 (PST)
-Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BDCTsuw005911;
-        Wed, 13 Dec 2023 17:15:29 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-        message-id:date:mime-version:subject:to:cc:references:from
-        :in-reply-to:content-type:content-transfer-encoding; s=
-        qcppdkim1; bh=NIBLCVfFvHfFIyI60aybAIDsfELoJjQkDVRyojcp9j4=; b=Il
-        wFU9voJiT4HWRsmx+xjSCKrSESLRyvpkkdghAmdkhpKZIqfGtC6vr83JJCAbWG+t
-        fC1dydKsBD87mOxuHrn29B5E+ly3PDv1zdVl3BV00BBG8LeqU2KPAKqG2gZqxDlw
-        JAGisY2laPBVkXhgZ5fNoSqf+kKOM1d7jJ+PuKvbMu4uBEvmsAOVDgkH3y7B9vBg
-        HThB3PBCqsTCzbLl5OdLH6i7cEq4rBmiKmS5Dtv7Hq/79K2mQYciL3nFRQmuA5xx
-        BIU9IXTEfvi8ZMZr3JZljAJzYVhBXTgdu25Yq4i1P41BnUpcTfRS0uegb20+WMl8
-        V57eH2AMvVArQzLQTjvQ==
-Received: from nasanppmta05.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3uy32na3eh-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 13 Dec 2023 17:15:29 +0000 (GMT)
-Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
-        by NASANPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3BDHFS8w019171
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 13 Dec 2023 17:15:28 GMT
-Received: from [10.110.0.246] (10.80.80.8) by nasanex01b.na.qualcomm.com
- (10.46.141.250) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Wed, 13 Dec
- 2023 09:15:26 -0800
-Message-ID: <7083b139-b6f7-44ed-b294-5c69fceed604@quicinc.com>
-Date:   Wed, 13 Dec 2023 09:15:25 -0800
+        Wed, 13 Dec 2023 12:16:56 -0500
+Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24548100
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 09:17:02 -0800 (PST)
+Received: by mail-wr1-x435.google.com with SMTP id ffacd0b85a97d-33644eeb305so20982f8f.1
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 09:17:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ventanamicro.com; s=google; t=1702487820; x=1703092620; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=C506FxcdrW3cyYw/Gu8XEv6qnEjyNrzFxfEz8PrYaS0=;
+        b=V2pepHrydbC0zouOnBsWtdNiaYBMrzlYkPFHnJVCD8qFfqvz8Rw0sGhz5h7UFTVqrw
+         zNC29ppyk/blvrSTLx9xLBWXiGW+24K3DXwaSR8T2vIhg4CKGwbB3BbmLdurqzMdKVoC
+         m6fcFyfpNyyIbAPPXrt6kjvrcW1S1JHr7jeP3/o/QFKfNS+uM/5iiMc6Xtu0WWrAvy1x
+         jTegrUi/WEH03MA2tr/1LItpAvCqNzY91x5qK57WAn9a6WtC2H3ynjjK64SMLttRAslr
+         8Nwbbsd7T7dYviUWmHx4pojGWUqlfAbbSL5y5XGAAliPsUwsYib53EOpWfkHZapbTSbB
+         /e1A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702487820; x=1703092620;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=C506FxcdrW3cyYw/Gu8XEv6qnEjyNrzFxfEz8PrYaS0=;
+        b=ctZd5Y57n0oyFCL7/V/1mZWJeVxmBUOfSAXn+Ir+7xieo8DlOyb7+Lhe81QirBLe6W
+         e/80/DjCHc+hr1xmgJJwDfyqL+kl8DImuTstLVPYTSKR+jnBpYtV9TE7omTg+IJxDS+M
+         k7NGAWwK4YIQrWdUXYiDmx/qmqW8yqwV0NCb8R9hGU6N+sxl6a3YPIuB+R5LXBIvRDzn
+         PIHQmNA/mMDlYTfTI22TKIYzMucLIUwbVB+gCABJDceEP34X1mxXyneWkxr2SDEhcdo+
+         eNK22gsO0/Wld7zZjU59uJuIdbEsgaLgRfIgF+FTsW0b8QEP8T2xP+TOTOwpBAtTDz20
+         tFGw==
+X-Gm-Message-State: AOJu0YwJfIRKmSKWFdt5by3BKQlbqwoJM+dttHIh2mNuPevOkPPj69y1
+        KvQofD6a1XsMhymgJ8sVv05sew==
+X-Google-Smtp-Source: AGHT+IEVDrfNO7CiPC4KOQpU3GVq/lmfkGprbr9y6hJhwCs4R3hB+0wxmUeWY8FRM2GIz0IX65tHbA==
+X-Received: by 2002:a5d:4fc5:0:b0:336:3749:83b9 with SMTP id h5-20020a5d4fc5000000b00336374983b9mr797373wrw.108.1702487820605;
+        Wed, 13 Dec 2023 09:17:00 -0800 (PST)
+Received: from localhost (2001-1ae9-1c2-4c00-20f-c6b4-1e57-7965.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:20f:c6b4:1e57:7965])
+        by smtp.gmail.com with ESMTPSA id o8-20020a5d4a88000000b00334b302e97fsm13746137wrq.96.2023.12.13.09.16.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Dec 2023 09:17:00 -0800 (PST)
+Date:   Wed, 13 Dec 2023 18:16:59 +0100
+From:   Andrew Jones <ajones@ventanamicro.com>
+To:     Anup Patel <apatel@ventanamicro.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Atish Patra <atishp@atishpatra.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Anup Patel <anup@brainfault.org>, devicetree@vger.kernel.org,
+        kvm@vger.kernel.org, kvm-riscv@lists.infradead.org,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH 02/15] RISC-V: KVM: Allow Zbc extension for Guest/VM
+Message-ID: <20231213-73671e24dacd8ae821943638@orel>
+References: <20231128145357.413321-1-apatel@ventanamicro.com>
+ <20231128145357.413321-3-apatel@ventanamicro.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] drm/panel: ltk050h3146w: Set burst mode for ltk050h3148w
-Content-Language: en-US
-To:     Farouk Bouabid <farouk.bouabid@theobroma-systems.com>,
-        <quentin.schulz@theobroma-systems.com>,
-        <neil.armstrong@linaro.org>, <sam@ravnborg.org>,
-        <maarten.lankhorst@linux.intel.com>, <mripard@kernel.org>,
-        <tzimmermann@suse.de>, <airlied@gmail.com>, <daniel@ffwll.ch>
-CC:     <heiko@sntech.de>, <victor.liu@nxp.com>,
-        <dri-devel@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>
-References: <20231213145045.41020-1-farouk.bouabid@theobroma-systems.com>
-From:   Jessica Zhang <quic_jesszhan@quicinc.com>
-In-Reply-To: <20231213145045.41020-1-farouk.bouabid@theobroma-systems.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nasanex01b.na.qualcomm.com (10.46.141.250)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: aQ3cJAdifeL0BJZ_OHKPlyq3_l5ROH5-
-X-Proofpoint-GUID: aQ3cJAdifeL0BJZ_OHKPlyq3_l5ROH5-
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-09_01,2023-12-07_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
- suspectscore=0 adultscore=0 spamscore=0 clxscore=1011 mlxlogscore=999
- priorityscore=1501 mlxscore=0 lowpriorityscore=0 bulkscore=0
- malwarescore=0 phishscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.19.0-2311290000 definitions=main-2312130123
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231128145357.413321-3-apatel@ventanamicro.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -83,45 +79,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 12/13/2023 6:50 AM, Farouk Bouabid wrote:
-> The ltk050h3148w variant expects the horizontal component lane byte clock
-> cycle(lbcc) to be calculated using lane_mbps (burst mode) instead of the
-> pixel clock.
-> Using the pixel clock rate by default for this calculation was introduced
-> in commit ac87d23694f4 ("drm/bridge: synopsys: dw-mipi-dsi: Use pixel clock
-> rate to calculate lbcc") and starting from commit 93e82bb4de01
-> ("drm/bridge: synopsys: dw-mipi-dsi: Fix hcomponent lbcc for burst mode")
-> only panels that support burst mode can keep using the lane_mbps. So add
-> MIPI_DSI_MODE_VIDEO_BURST as part of the mode_flags for the dsi host.
+On Tue, Nov 28, 2023 at 08:23:44PM +0530, Anup Patel wrote:
+> We extend the KVM ISA extension ONE_REG interface to allow KVM
+> user space to detect and enable Zbc extension for Guest/VM.
 > 
-> Fixes: 93e82bb4de01 ("drm/bridge: synopsys: dw-mipi-dsi: Fix hcomponent lbcc for burst mode")
-> Signed-off-by: Farouk Bouabid <farouk.bouabid@theobroma-systems.com>
-
-Reviewed-by: Jessica Zhang <quic_jesszhan@quicinc.com>
-
-Thanks,
-
-Jessica Zhang
-
+> Signed-off-by: Anup Patel <apatel@ventanamicro.com>
 > ---
->   drivers/gpu/drm/panel/panel-leadtek-ltk050h3146w.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
+>  arch/riscv/include/uapi/asm/kvm.h | 1 +
+>  arch/riscv/kvm/vcpu_onereg.c      | 2 ++
+>  2 files changed, 3 insertions(+)
 > 
-> diff --git a/drivers/gpu/drm/panel/panel-leadtek-ltk050h3146w.c b/drivers/gpu/drm/panel/panel-leadtek-ltk050h3146w.c
-> index 6e3670508e3a..30919c872ac8 100644
-> --- a/drivers/gpu/drm/panel/panel-leadtek-ltk050h3146w.c
-> +++ b/drivers/gpu/drm/panel/panel-leadtek-ltk050h3146w.c
-> @@ -326,7 +326,7 @@ static const struct drm_display_mode ltk050h3148w_mode = {
->   static const struct ltk050h3146w_desc ltk050h3148w_data = {
->   	.mode = &ltk050h3148w_mode,
->   	.init = ltk050h3148w_init_sequence,
-> -	.mode_flags = MIPI_DSI_MODE_VIDEO_SYNC_PULSE,
-> +	.mode_flags = MIPI_DSI_MODE_VIDEO_SYNC_PULSE | MIPI_DSI_MODE_VIDEO_BURST,
->   };
->   
->   static int ltk050h3146w_init_sequence(struct ltk050h3146w *ctx)
+> diff --git a/arch/riscv/include/uapi/asm/kvm.h b/arch/riscv/include/uapi/asm/kvm.h
+> index 60d3b21dead7..518b368b41e5 100644
+> --- a/arch/riscv/include/uapi/asm/kvm.h
+> +++ b/arch/riscv/include/uapi/asm/kvm.h
+> @@ -139,6 +139,7 @@ enum KVM_RISCV_ISA_EXT_ID {
+>  	KVM_RISCV_ISA_EXT_ZIHPM,
+>  	KVM_RISCV_ISA_EXT_SMSTATEEN,
+>  	KVM_RISCV_ISA_EXT_ZICOND,
+> +	KVM_RISCV_ISA_EXT_ZBC,
+>  	KVM_RISCV_ISA_EXT_MAX,
+>  };
+>  
+> diff --git a/arch/riscv/kvm/vcpu_onereg.c b/arch/riscv/kvm/vcpu_onereg.c
+> index f8c9fa0c03c5..f789517c9fae 100644
+> --- a/arch/riscv/kvm/vcpu_onereg.c
+> +++ b/arch/riscv/kvm/vcpu_onereg.c
+> @@ -42,6 +42,7 @@ static const unsigned long kvm_isa_ext_arr[] = {
+>  	KVM_ISA_EXT_ARR(SVPBMT),
+>  	KVM_ISA_EXT_ARR(ZBA),
+>  	KVM_ISA_EXT_ARR(ZBB),
+> +	KVM_ISA_EXT_ARR(ZBC),
+>  	KVM_ISA_EXT_ARR(ZBS),
+>  	KVM_ISA_EXT_ARR(ZICBOM),
+>  	KVM_ISA_EXT_ARR(ZICBOZ),
+> @@ -92,6 +93,7 @@ static bool kvm_riscv_vcpu_isa_disable_allowed(unsigned long ext)
+>  	case KVM_RISCV_ISA_EXT_SVNAPOT:
+>  	case KVM_RISCV_ISA_EXT_ZBA:
+>  	case KVM_RISCV_ISA_EXT_ZBB:
+> +	case KVM_RISCV_ISA_EXT_ZBC:
+>  	case KVM_RISCV_ISA_EXT_ZBS:
+>  	case KVM_RISCV_ISA_EXT_ZICNTR:
+>  	case KVM_RISCV_ISA_EXT_ZICOND:
 > -- 
 > 2.34.1
-> 
+>
+
+Reviewed-by: Andrew Jones <ajones@ventanamicro.com>
