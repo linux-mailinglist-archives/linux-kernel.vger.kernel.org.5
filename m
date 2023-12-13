@@ -2,86 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E578811313
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 14:38:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C9F1811319
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 14:40:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379285AbjLMNhw convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 13 Dec 2023 08:37:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36980 "EHLO
+        id S1379279AbjLMNkD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 08:40:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59362 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379284AbjLMNhu (ORCPT
+        with ESMTP id S1379263AbjLMNkB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 08:37:50 -0500
-Received: from mail-ot1-f54.google.com (mail-ot1-f54.google.com [209.85.210.54])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2694B95;
-        Wed, 13 Dec 2023 05:37:57 -0800 (PST)
-Received: by mail-ot1-f54.google.com with SMTP id 46e09a7af769-6d9db2f1ddfso1032486a34.0;
-        Wed, 13 Dec 2023 05:37:57 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702474676; x=1703079476;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=4ZUkkC62WrEEa3c6+GRaTxNGlZbmcSMO/iY5g7nd1ts=;
-        b=XxeevKb7UA3TH/JjArIFdSLcI4rXKjlcG3cYQP6QszRqbhFISURYz4XypfoG9xTQRs
-         7v6oHgoH/JCrzYYB4sgMhttehXZDIeKkqpRHC2itb2IHQ4dRgpfowcgmaqjiCU1fHfiP
-         il33NlHt4+YyaVzfKjtL7GoNnOaI25qY1m7jX8eNZLxRr7uEovpb0xe39CuiPfQCpULk
-         tAU+T/195wPNDfa+6IxSbc36QqpsE9kN+aFFzcNivO0oJ5t5+LOVKbl1F6u1iBgeqwTD
-         6MsM/iWTZ/DgDEtK1AZUitb+K/pJQUvZhGxeudpI/LKCR1T98o4DkddcUwxqccIp68pb
-         k3YA==
-X-Gm-Message-State: AOJu0YzOoDt9bBX7aX9XO6toTbYf4QlyeXR3VngEh9H4tJwun6eCKYr2
-        dSePhvSlqFnPDQ5VuLBDJlusafODM1+SXgnVgF4=
-X-Google-Smtp-Source: AGHT+IFmc+A9rorq/rOdGz8gjI08UuZ4ZgrInVsHLw0n8i3P7dAy8xko9rmmdYPzruTZNBiDN83j7nxY/28jo2J/kqM=
-X-Received: by 2002:a05:6871:600d:b0:1ff:6527:3519 with SMTP id
- qx13-20020a056871600d00b001ff65273519mr14455355oab.0.1702474676254; Wed, 13
- Dec 2023 05:37:56 -0800 (PST)
+        Wed, 13 Dec 2023 08:40:01 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C471295;
+        Wed, 13 Dec 2023 05:40:06 -0800 (PST)
+X-IronPort-AV: E=McAfee;i="6600,9927,10922"; a="8323973"
+X-IronPort-AV: E=Sophos;i="6.04,272,1695711600"; 
+   d="scan'208";a="8323973"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Dec 2023 05:40:06 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10922"; a="947187477"
+X-IronPort-AV: E=Sophos;i="6.04,272,1695711600"; 
+   d="scan'208";a="947187477"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by orsmga005.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Dec 2023 05:40:03 -0800
+Received: from andy by smile.fi.intel.com with local (Exim 4.97)
+        (envelope-from <andy@kernel.org>)
+        id 1rDPSy-00000005XLb-3sqy;
+        Wed, 13 Dec 2023 15:40:00 +0200
+Date:   Wed, 13 Dec 2023 15:40:00 +0200
+From:   Andy Shevchenko <andy@kernel.org>
+To:     =?utf-8?B?VFlfQ2hhbmdb5by15a2Q6YC4XQ==?= <tychang@realtek.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <brgl@bgdev.pl>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v3 2/2] Add GPIO support for Realtek DHC(Digital Home
+ Center) RTD SoCs.
+Message-ID: <ZXm0MIub8X2q_lnp@smile.fi.intel.com>
+References: <20231207100723.15015-1-tychang@realtek.com>
+ <20231207100723.15015-3-tychang@realtek.com>
+ <ZXHMbZRXLXGa_tq8@smile.fi.intel.com>
+ <989146448858478b975c66899b8f3fed@realtek.com>
 MIME-Version: 1.0
-References: <20231213121322.2486967-1-daniel.lezcano@linaro.org>
- <CAJZ5v0gjeiCb9wBjdG+yWp5E_g2SPUMNNf-Stm_xkGau0Cbr2g@mail.gmail.com> <c7e4a344-ef15-4316-ac41-6ec9c062eabe@linaro.org>
-In-Reply-To: <c7e4a344-ef15-4316-ac41-6ec9c062eabe@linaro.org>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Wed, 13 Dec 2023 14:37:45 +0100
-Message-ID: <CAJZ5v0jOAEJx1xcRZ5ybz2dKXMG4CbEmShE+zQJy=0gdqqzbPA@mail.gmail.com>
-Subject: Re: [PATCH] thermal/core: Check get_temp ops is present when
- registering a tz
-To:     Daniel Lezcano <daniel.lezcano@linaro.org>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Lukasz Luba <lukasz.luba@arm.com>,
-        "open list:THERMAL" <linux-pm@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <989146448858478b975c66899b8f3fed@realtek.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_SOFTFAIL,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 13, 2023 at 2:31 PM Daniel Lezcano
-<daniel.lezcano@linaro.org> wrote:
->
-> On 13/12/2023 13:46, Rafael J. Wysocki wrote:
-> > On Wed, Dec 13, 2023 at 1:13 PM Daniel Lezcano
-> > <daniel.lezcano@linaro.org> wrote:
-> >>
-> >> Initially the check against the get_temp ops in the
-> >> thermal_zone_device_update() was put in there in order to catch
-> >> drivers not providing this method.
-> >>
-> >> Instead of checking again and again the function if the ops exists in
-> >> the update function, let's do the check at registration time, so it is
-> >> checked one time and for all.
-> >>
-> >> Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
-> >
-> > Looks good.  Do you want me to pick it up?
->
-> Yes please
+On Tue, Dec 12, 2023 at 09:55:59AM +0000, TY_Chang[張子逸] wrote:
+> >On Thu, Dec 07, 2023 at 06:07:23PM +0800, TY Chang wrote:
 
-Applied, thanks!
+...
+
+> >> This driver enables configuration of GPIO direction, GPIO values, GPIO
+> >> debounce settings and handles GPIO interrupts.
+> >
+> >Why gpio-regmap can't be used?
+> 
+> I will try to use gpio-remap in the next version.
+
+If it appears that it makes code uglier / complicated, please add the note
+somewhere to answer the above question.
+
+...
+
+> >> +     if (index > data->info->num_dir)
+> >> +             return -EINVAL;
+> >
+> >When this conditional can be true?
+> >Same Q to the similar checks over the code.
+> 
+> It is only to check if the offset value is missing in the rtd_gpio_info.
+> I'm uncertain about the necessity of these checks. If they are not necessary,
+> I will remove the num_* members in the rtd_gpio_info structure along with
+> these checks.
+
+My understanding that these checks are equivalent to the
+
+	if (offset >= ngpio)
+
+one, which is performed by GPIO library, i.o.w. you will never get an offset
+outside the range of supported GPIO lines.
+
+If my understanding is wrong, these checks need a comment why.
+
+...
+
+> >> +     if (irq == data->irqs[0])
+> >> +             get_reg_offset = &rtd_gpio_gpa_offset;
+> >> +     else if (irq == data->irqs[1])
+> >> +             get_reg_offset = &rtd_gpio_gpda_offset;
+> >
+> >Can't it be done before entering into chained IRQ handler?
+> 
+> I will revise it.
+
+Thinking about this more, perhaps you can register two IRQ chips with
+different functions, so this won't be part of the very critical interrupt
+handler (as we all want to reduce overhead in it as much as possible).
+Anyway, think about this and try different options, choose the one you
+think the best.
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
