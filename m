@@ -2,68 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 263E8811619
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 16:23:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 94CBE8116BE
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 16:29:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442496AbjLMPXj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 10:23:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33160 "EHLO
+        id S1442030AbjLMP3S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 10:29:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39598 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1442472AbjLMPXh (ORCPT
+        with ESMTP id S1442190AbjLMP2s (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 10:23:37 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FB7BEA
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 07:23:44 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2E72DC433C8;
-        Wed, 13 Dec 2023 15:23:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1702481024;
-        bh=EFRc6UVTwIWenNtxGxnM8RzMypWh/l2lfE9FSSBCHws=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=VUOYHFHIjy03kSSFNFMEdc2Djz773PL8oreL5RyNIuYOHDRkJuFvdw8mg1DB1urzk
-         olaPsMkRQJ38qKNEBZk3H5Nn/KZdRhloMDP7ejcvz9GJnYjmNaOejGWC4z6J/+kroN
-         qUo51gHGDFKlPcaS1yljqVA/n0OhA0ammjI6es/zfSEKpDYCy3Yw/vAjatGVIhJHzv
-         m5Gu3JMAjsxxxyP+Vq8xmO5QQl3HfRRGDBsd4XnBMuP+6qBNuyAiBbbjdrH5okn6OQ
-         YIVpVask+OOTPMuXjwskwXHiugCKSVTAwtRu945HyoCGJ16Vgv0RG/5BxwKN/OfADF
-         3gFfNW0BRsdRg==
-Date:   Wed, 13 Dec 2023 15:23:32 +0000
-From:   Conor Dooley <conor@kernel.org>
-To:     Yu Chien Peter Lin <peterlin@andestech.com>
-Cc:     acme@kernel.org, adrian.hunter@intel.com, ajones@ventanamicro.com,
-        alexander.shishkin@linux.intel.com, andre.przywara@arm.com,
-        anup@brainfault.org, aou@eecs.berkeley.edu, atishp@atishpatra.org,
-        conor+dt@kernel.org, conor.dooley@microchip.com,
-        devicetree@vger.kernel.org, dminus@andestech.com,
-        evan@rivosinc.com, geert+renesas@glider.be, guoren@kernel.org,
-        heiko@sntech.de, irogers@google.com, jernej.skrabec@gmail.com,
-        jolsa@kernel.org, jszhang@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-perf-users@vger.kernel.org,
-        linux-renesas-soc@vger.kernel.org, linux-riscv@lists.infradead.org,
-        linux-sunxi@lists.linux.dev, locus84@andestech.com,
-        magnus.damm@gmail.com, mark.rutland@arm.com, mingo@redhat.com,
-        n.shubin@yadro.com, namhyung@kernel.org, palmer@dabbelt.com,
-        paul.walmsley@sifive.com, peterz@infradead.org,
-        prabhakar.mahadev-lad.rj@bp.renesas.com, rdunlap@infradead.org,
-        robh+dt@kernel.org, samuel@sholland.org, sunilvl@ventanamicro.com,
-        tglx@linutronix.de, tim609@andestech.com, uwu@icenowy.me,
-        wens@csie.org, will@kernel.org, ycliang@andestech.com,
-        inochiama@outlook.com
-Subject: Re: [PATCH v5 12/16] riscv: dts: sophgo: Add T-Head PMU extension
- for cv1800b
-Message-ID: <20231213-creatable-skintight-be6749ec63e5@spud>
-References: <20231213070301.1684751-1-peterlin@andestech.com>
- <20231213070301.1684751-13-peterlin@andestech.com>
+        Wed, 13 Dec 2023 10:28:48 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FAE81FC3
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 07:25:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1702481138;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=/P39zA4P9i416f7rYVx3fltLx7nFHwqFVafrmIB+g6A=;
+        b=Cxz7YL5v7z0UnQQ2JX/RthdXPKtU4cirSVn2trfirRzIcqJ3T3jUEgA8WJ7M7R46Yf9NKh
+        WdBrKB14wz/j81Iquffg/YO1yDugYMHd1zavt42ZGDnG5v133NXe+l+FI/k75QzOJ075yv
+        Ywr764MCuwhlpeHjvanEfoqenqu4NgI=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-16-M56nMa6TPRejKwmGXDGC8A-1; Wed, 13 Dec 2023 10:25:36 -0500
+X-MC-Unique: M56nMa6TPRejKwmGXDGC8A-1
+Received: from smtp.corp.redhat.com (int-mx10.intmail.prod.int.rdu2.redhat.com [10.11.54.10])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 6F1BE8828D5;
+        Wed, 13 Dec 2023 15:25:33 +0000 (UTC)
+Received: from warthog.procyon.org.com (unknown [10.42.28.2])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 36718492BE6;
+        Wed, 13 Dec 2023 15:25:30 +0000 (UTC)
+From:   David Howells <dhowells@redhat.com>
+To:     Jeff Layton <jlayton@kernel.org>, Steve French <smfrench@gmail.com>
+Cc:     David Howells <dhowells@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Marc Dionne <marc.dionne@auristor.com>,
+        Paulo Alcantara <pc@manguebit.com>,
+        Shyam Prasad N <sprasad@microsoft.com>,
+        Tom Talpey <tom@talpey.com>,
+        Dominique Martinet <asmadeus@codewreck.org>,
+        Eric Van Hensbergen <ericvh@kernel.org>,
+        Ilya Dryomov <idryomov@gmail.com>,
+        Christian Brauner <christian@brauner.io>,
+        linux-cachefs@redhat.com, linux-afs@lists.infradead.org,
+        linux-cifs@vger.kernel.org, linux-nfs@vger.kernel.org,
+        ceph-devel@vger.kernel.org, v9fs@lists.linux.dev,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v4 23/39] netfs: Prep to use folio->private for write grouping and streaming write
+Date:   Wed, 13 Dec 2023 15:23:33 +0000
+Message-ID: <20231213152350.431591-24-dhowells@redhat.com>
+In-Reply-To: <20231213152350.431591-1-dhowells@redhat.com>
+References: <20231213152350.431591-1-dhowells@redhat.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="Jn6e/Uvtr8zl2RKI"
-Content-Disposition: inline
-In-Reply-To: <20231213070301.1684751-13-peterlin@andestech.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.10
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -71,59 +75,190 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Prepare to use folio->private to hold information write grouping and
+streaming write.  These are implemented in the same commit as they both
+make use of folio->private and will be both checked at the same time in
+several places.
 
---Jn6e/Uvtr8zl2RKI
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+"Write grouping" involves ordering the writeback of groups of writes, such
+as is needed for ceph snaps.  A group is represented by a
+filesystem-supplied object which must contain a netfs_group struct.  This
+contains just a refcount and a pointer to a destructor.
 
-On Wed, Dec 13, 2023 at 03:02:57PM +0800, Yu Chien Peter Lin wrote:
-> xtheadpmu stands for T-Head Performance Monitor Unit extension.
-> Based on the added T-Head PMU ISA string, the SBI PMU driver
-> will make use of the non-standard irq source.
->=20
-> Signed-off-by: Yu Chien Peter Lin <peterlin@andestech.com>
+"Streaming write" is the storage of data in folios that are marked dirty,
+but not uptodate, to avoid unnecessary reads of data.  This is represented
+by a netfs_folio struct.  This contains the offset and length of the
+modified region plus the otherwise displaced write grouping pointer.
 
-Acked-by: Conor Dooley <conor.dooley@microchip.com>
+The way folio->private is multiplexed is:
 
-Cheers,
-Conor.
+ (1) If private is NULL then neither is in operation on a dirty folio.
 
-> ---
-> Changes v4 -> v5:
->   - New patch
-> ---
->  arch/riscv/boot/dts/sophgo/cv1800b.dtsi | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->=20
-> diff --git a/arch/riscv/boot/dts/sophgo/cv1800b.dtsi b/arch/riscv/boot/dt=
-s/sophgo/cv1800b.dtsi
-> index aec6401a467b..8c0143f0a01b 100644
-> --- a/arch/riscv/boot/dts/sophgo/cv1800b.dtsi
-> +++ b/arch/riscv/boot/dts/sophgo/cv1800b.dtsi
-> @@ -29,7 +29,7 @@ cpu0: cpu@0 {
->  			riscv,isa =3D "rv64imafdc";
->  			riscv,isa-base =3D "rv64i";
->  			riscv,isa-extensions =3D "i", "m", "a", "f", "d", "c", "zicntr", "zic=
-sr",
-> -					       "zifencei", "zihpm";
-> +					       "zifencei", "zihpm", "xtheadpmu";
-> =20
->  			cpu0_intc: interrupt-controller {
->  				compatible =3D "riscv,cpu-intc";
-> --=20
-> 2.34.1
->=20
+ (2) If private is set, with bit 0 clear, then this points to a group.
 
---Jn6e/Uvtr8zl2RKI
-Content-Type: application/pgp-signature; name="signature.asc"
+ (3) If private is set, with bit 0 set, then this points to a netfs_folio
+     struct (with bit 0 AND'ed out).
 
------BEGIN PGP SIGNATURE-----
+Signed-off-by: David Howells <dhowells@redhat.com>
+cc: Jeff Layton <jlayton@kernel.org>
+cc: linux-cachefs@redhat.com
+cc: linux-fsdevel@vger.kernel.org
+cc: linux-mm@kvack.org
+---
+ fs/netfs/internal.h   | 28 ++++++++++++++++++++++++++
+ fs/netfs/misc.c       | 46 +++++++++++++++++++++++++++++++++++++++++++
+ include/linux/netfs.h | 41 ++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 115 insertions(+)
 
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZXnMXwAKCRB4tDGHoIJi
-0nfMAQD+JdQJ/3wj3stiTH2LRo8GYWgrPUpFyuVFHlior4g4aQD/bEX0chKiIaFn
-EaPiDpwt8shNTKdrqX6XtyHtp/yDoQg=
-=NpnV
------END PGP SIGNATURE-----
+diff --git a/fs/netfs/internal.h b/fs/netfs/internal.h
+index 8d1bfc9c3e2f..1b83c534593a 100644
+--- a/fs/netfs/internal.h
++++ b/fs/netfs/internal.h
+@@ -149,6 +149,34 @@ static inline bool netfs_is_cache_enabled(struct netfs_inode *ctx)
+ #endif
+ }
+ 
++/*
++ * Get a ref on a netfs group attached to a dirty page (e.g. a ceph snap).
++ */
++static inline struct netfs_group *netfs_get_group(struct netfs_group *netfs_group)
++{
++	if (netfs_group)
++		refcount_inc(&netfs_group->ref);
++	return netfs_group;
++}
++
++/*
++ * Dispose of a netfs group attached to a dirty page (e.g. a ceph snap).
++ */
++static inline void netfs_put_group(struct netfs_group *netfs_group)
++{
++	if (netfs_group && refcount_dec_and_test(&netfs_group->ref))
++		netfs_group->free(netfs_group);
++}
++
++/*
++ * Dispose of a netfs group attached to a dirty page (e.g. a ceph snap).
++ */
++static inline void netfs_put_group_many(struct netfs_group *netfs_group, int nr)
++{
++	if (netfs_group && refcount_sub_and_test(nr, &netfs_group->ref))
++		netfs_group->free(netfs_group);
++}
++
+ /*
+  * fscache-cache.c
+  */
+diff --git a/fs/netfs/misc.c b/fs/netfs/misc.c
+index 96014c3d1683..40421ced4cd3 100644
+--- a/fs/netfs/misc.c
++++ b/fs/netfs/misc.c
+@@ -177,9 +177,55 @@ EXPORT_SYMBOL(netfs_clear_inode_writeback);
+  */
+ void netfs_invalidate_folio(struct folio *folio, size_t offset, size_t length)
+ {
++	struct netfs_folio *finfo = NULL;
++	size_t flen = folio_size(folio);
++
+ 	_enter("{%lx},%zx,%zx", folio_index(folio), offset, length);
+ 
+ 	folio_wait_fscache(folio);
++
++	if (!folio_test_private(folio))
++		return;
++
++	finfo = netfs_folio_info(folio);
++
++	if (offset == 0 && length >= flen)
++		goto erase_completely;
++
++	if (finfo) {
++		/* We have a partially uptodate page from a streaming write. */
++		unsigned int fstart = finfo->dirty_offset;
++		unsigned int fend = fstart + finfo->dirty_len;
++		unsigned int end = offset + length;
++
++		if (offset >= fend)
++			return;
++		if (end <= fstart)
++			return;
++		if (offset <= fstart && end >= fend)
++			goto erase_completely;
++		if (offset <= fstart && end > fstart)
++			goto reduce_len;
++		if (offset > fstart && end >= fend)
++			goto move_start;
++		/* A partial write was split.  The caller has already zeroed
++		 * it, so just absorb the hole.
++		 */
++	}
++	return;
++
++erase_completely:
++	netfs_put_group(netfs_folio_group(folio));
++	folio_detach_private(folio);
++	folio_clear_uptodate(folio);
++	kfree(finfo);
++	return;
++reduce_len:
++	finfo->dirty_len = offset + length - finfo->dirty_offset;
++	return;
++move_start:
++	finfo->dirty_len -= offset - finfo->dirty_offset;
++	finfo->dirty_offset = offset;
+ }
+ EXPORT_SYMBOL(netfs_invalidate_folio);
+ 
+diff --git a/include/linux/netfs.h b/include/linux/netfs.h
+index a14af93efccf..2406e11b41bd 100644
+--- a/include/linux/netfs.h
++++ b/include/linux/netfs.h
+@@ -140,6 +140,47 @@ struct netfs_inode {
+ #define NETFS_ICTX_ODIRECT	0		/* The file has DIO in progress */
+ };
+ 
++/*
++ * A netfs group - for instance a ceph snap.  This is marked on dirty pages and
++ * pages marked with a group must be flushed before they can be written under
++ * the domain of another group.
++ */
++struct netfs_group {
++	refcount_t		ref;
++	void (*free)(struct netfs_group *netfs_group);
++};
++
++/*
++ * Information about a dirty page (attached only if necessary).
++ * folio->private
++ */
++struct netfs_folio {
++	struct netfs_group	*netfs_group;	/* Filesystem's grouping marker (or NULL). */
++	unsigned int		dirty_offset;	/* Write-streaming dirty data offset */
++	unsigned int		dirty_len;	/* Write-streaming dirty data length */
++};
++#define NETFS_FOLIO_INFO	0x1UL	/* OR'd with folio->private. */
++
++static inline struct netfs_folio *netfs_folio_info(struct folio *folio)
++{
++	void *priv = folio_get_private(folio);
++
++	if ((unsigned long)priv & NETFS_FOLIO_INFO)
++		return (struct netfs_folio *)((unsigned long)priv & ~NETFS_FOLIO_INFO);
++	return NULL;
++}
++
++static inline struct netfs_group *netfs_folio_group(struct folio *folio)
++{
++	struct netfs_folio *finfo;
++	void *priv = folio_get_private(folio);
++
++	finfo = netfs_folio_info(folio);
++	if (finfo)
++		return finfo->netfs_group;
++	return priv;
++}
++
+ /*
+  * Resources required to do operations on a cache.
+  */
 
---Jn6e/Uvtr8zl2RKI--
