@@ -2,192 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B321811A08
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 17:50:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D195811A10
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 17:51:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377827AbjLMQtt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 11:49:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56940 "EHLO
+        id S1378798AbjLMQvL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 11:51:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41996 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229458AbjLMQts (ORCPT
+        with ESMTP id S229458AbjLMQvJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 11:49:48 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4A6498
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 08:49:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1702486194;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=sAUBw1JbqJkoLEh9unPbe/skVaLgSM4WAzbnqm5FIlk=;
-        b=eRc0XR/4y54juTn1111ME2sl3K7tSVLvKtz5d43JszKiXv48yXAmHy10ijO7dQ7drREhkn
-        vgXqZHLKKQQ++Qhgkr9W94V807yv3YXUiyth5e40I0AOwmbIi6uAUOdoqN8r8R729zc391
-        wOQmaNt/AZmB5e6hZMLJ7sp2yvONhWs=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-507-tKs3Pz5VMAqGy4O5wSIBnA-1; Wed, 13 Dec 2023 11:49:52 -0500
-X-MC-Unique: tKs3Pz5VMAqGy4O5wSIBnA-1
-Received: by mail-wr1-f71.google.com with SMTP id ffacd0b85a97d-3333c009305so6022357f8f.1
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 08:49:52 -0800 (PST)
+        Wed, 13 Dec 2023 11:51:09 -0500
+Received: from mail-vs1-xe2b.google.com (mail-vs1-xe2b.google.com [IPv6:2607:f8b0:4864:20::e2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E796F3
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 08:51:15 -0800 (PST)
+Received: by mail-vs1-xe2b.google.com with SMTP id ada2fe7eead31-46484f37549so2447759137.1
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 08:51:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1702486274; x=1703091074; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=+aZ9Gls1BogU2MReoFJauXP2UgnNIXaBIdamecIfCjI=;
+        b=LlP3f+lLIPBascCA2+adLBXWKEu/Ue7Y8JXRF0nEayxwk7LWD959xZEtSi8ktJIijE
+         GBxivhUlpImZXMyAyCxvhhcOYGIk2R6YDNEMZMSQOdckB8g+n556UIXbTATnAZkJDthM
+         7Xg6bBhJ96eEWCyuqVGbL0lH68x3FlDctOOfb4kLHwt8kzhe1ha44+AcdDV3CTqU6PKM
+         Fw87yHuOr3TXqCVW8hMR6oEBa/pq1TrhV5Y6phT3yN4WhHjjS8v/5648cxHQzAw/hcCd
+         HIexjtFwEtTDEqtlJbgP98kiwtigjIjQgMiC6EAJYWO2rC2Kqcg72GM7kHggTB10BKzd
+         RSIg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702486191; x=1703090991;
+        d=1e100.net; s=20230601; t=1702486274; x=1703091074;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=sAUBw1JbqJkoLEh9unPbe/skVaLgSM4WAzbnqm5FIlk=;
-        b=S+bKn1jwizjtLJbqIbzjjXdoEdkWC8xZqKYgZmVuCssggLjyBtpSL0Hk2npwY2OO6S
-         nfCs46zd9YgPtqT281JxlWsAeRkp2mH1Z/s8lZEfByLArpKPJSGNCpZbvrVtSxAalhdu
-         R0ctrBZ19iEDsMxNjKlBYNqpgWjjcrkqKee6+j/keKl0xHPq9zbPyAcsgSwV2dky9scJ
-         sF7NWgVCZom49Sld/oBy7U5E9VrKwzabv+73+A77kV4Cv6Rj7Q3ea0fXG+TmgfZ+memp
-         tfnpHzWrsrCVC2FLONjnqi0uIoABxZKwpjbvobfl+7s9wUJm2IBAyB+QoidOoPQ871pJ
-         JWxA==
-X-Gm-Message-State: AOJu0YyamUBrlzA5eXgKWf53rtA8i2s8faqn4jZqkzh5ajePRLO+Jd9t
-        rgOsUvN10gacgPYgPDC8/MPJbRk2lnEefuGcNwtAI9zJTl2z+T7RRvN52WeIN1PRfTpFTsCOsS0
-        5Nonf2gXjXm4p+hPnVj/RV5h6b/3UOvjVgNxOfVia
-X-Received: by 2002:adf:e712:0:b0:336:30b5:3c19 with SMTP id c18-20020adfe712000000b0033630b53c19mr1551570wrm.126.1702486191419;
-        Wed, 13 Dec 2023 08:49:51 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IHbtWOXbTiO49SRgCwSfAmRnGuTCtdSJbwL1Csvygxz4hMPMjM2yAakU6yql6/c0bJAuDlRelMBxmGAX8X5oPw=
-X-Received: by 2002:adf:e712:0:b0:336:30b5:3c19 with SMTP id
- c18-20020adfe712000000b0033630b53c19mr1551559wrm.126.1702486191114; Wed, 13
- Dec 2023 08:49:51 -0800 (PST)
+        bh=+aZ9Gls1BogU2MReoFJauXP2UgnNIXaBIdamecIfCjI=;
+        b=ftnkEDoA10OfkmFJ33zzj0G39ElAwaMHIJFQzLMkuMjL/41OQruvIFnHTc9rHCaM2P
+         wlZawF1MsHtJruCKyzIXOxhPsQ3TYCD5knIqVfjJlhgCCAKvzhJweG9Y+GeLR0bwLuJM
+         0aaOUHqt3gutWQPmJoDhG0O2cHzsq0kT25sPDaz3ylr8oKX65Rb+pKjtvlQqn1hMrwhC
+         PFpdK64csXMVrNuVgCiqMWaDr0Df9BBtH0+8kCoFhm5+yPND9hK9BMz5ZRQVobGhMVBi
+         Eqk6ARSHSDnEGkKDev84l7PhfpLIW5xzN6kIRldiaqM2XnVLQkzjQPyb5Gb9JgeSlV1o
+         kPwQ==
+X-Gm-Message-State: AOJu0Yy7ivBxjTrpAKqzxdf3OLRnoh/5EgYkVsDH9zewTo/kTjeS0dx+
+        635xYLMIicHh5ow8P0ZUfw2c98XiiaB9UNtjzkuLuw==
+X-Google-Smtp-Source: AGHT+IHQpIkVGJCpLoc6EVwkHmU30myi6H5tPqvw7/ES4Tv2xk+lOzhBDTrqSvlq0+rORSxW/TrAAv6EHgdiBENNGNI=
+X-Received: by 2002:a05:6102:188c:b0:464:498f:3b6 with SMTP id
+ ji12-20020a056102188c00b00464498f03b6mr4870448vsb.22.1702486274436; Wed, 13
+ Dec 2023 08:51:14 -0800 (PST)
 MIME-Version: 1.0
-References: <20231213003614.1648343-1-imammedo@redhat.com> <20231213003614.1648343-3-imammedo@redhat.com>
- <CAJZ5v0gowV0WJd8pjwrDyHSJPvwgkCXYu9bDG7HHfcyzkSSY6w@mail.gmail.com>
-In-Reply-To: <CAJZ5v0gowV0WJd8pjwrDyHSJPvwgkCXYu9bDG7HHfcyzkSSY6w@mail.gmail.com>
-From:   Igor Mammedov <imammedo@redhat.com>
-Date:   Wed, 13 Dec 2023 17:49:39 +0100
-Message-ID: <CAMLWh55dr2e_R+TYVj=8cFfV==D-DfOZvAeq9JEehYs3nw6-OQ@mail.gmail.com>
-Subject: Re: [RFC 2/2] PCI: acpiphp: slowdown hotplug if hotplugging multiple
- devices at a time
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Dongli Zhang <dongli.zhang@oracle.com>,
-        linux-acpi@vger.kernel.org, linux-pci@vger.kernel.org,
-        mst@redhat.com, lenb@kernel.org, bhelgaas@google.com,
-        mika.westerberg@linux.intel.com, boris.ostrovsky@oracle.com,
-        joe.jin@oracle.com, stable@vger.kernel.org,
-        Fiona Ebner <f.ebner@proxmox.com>,
-        Thomas Lamprecht <t.lamprecht@proxmox.com>
+References: <cover.1702339432.git.andreyknvl@google.com> <432a89fafce11244287c8af757e73a2eb22a5354.1702339432.git.andreyknvl@google.com>
+ <CANpmjNM9Kq9C4f9AMYE9U3JrqofbsrC7cmrP28ZP4ep1CZTWaA@mail.gmail.com> <CA+fCnZcGWXbpwCxk5eoBEMr2_4+8hhEpTefE2h4QQ-9fRv-2Uw@mail.gmail.com>
+In-Reply-To: <CA+fCnZcGWXbpwCxk5eoBEMr2_4+8hhEpTefE2h4QQ-9fRv-2Uw@mail.gmail.com>
+From:   Marco Elver <elver@google.com>
+Date:   Wed, 13 Dec 2023 17:50:36 +0100
+Message-ID: <CANpmjNPEofU4wkmuqYegjDZgmP84yrf7Bmfc-t4Wp7UyYvDc7A@mail.gmail.com>
+Subject: Re: [PATCH mm 2/4] kasan: handle concurrent kasan_record_aux_stack calls
+To:     Andrey Konovalov <andreyknvl@gmail.com>
+Cc:     andrey.konovalov@linux.dev,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Potapenko <glider@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Vlastimil Babka <vbabka@suse.cz>, kasan-dev@googlegroups.com,
+        Evgenii Stepanov <eugenis@google.com>,
+        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Andrey Konovalov <andreyknvl@google.com>,
+        syzbot+186b55175d8360728234@syzkaller.appspotmail.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 13, 2023 at 2:08=E2=80=AFPM Rafael J. Wysocki <rafael@kernel.or=
-g> wrote:
+On Wed, 13 Dec 2023 at 15:40, Andrey Konovalov <andreyknvl@gmail.com> wrote=
+:
 >
-> On Wed, Dec 13, 2023 at 1:36=E2=80=AFAM Igor Mammedov <imammedo@redhat.co=
-m> wrote:
+> On Tue, Dec 12, 2023 at 8:29=E2=80=AFPM Marco Elver <elver@google.com> wr=
+ote:
 > >
-> > previous commit ("PCI: acpiphp: enable slot only if it hasn't been enab=
-led already"
-> > introduced a workaround to avoid a race between SCSI_SCAN_ASYNC job and
-> > bridge reconfiguration in case of single HBA hotplug.
-> > However in virt environment it's possible to pause machine hotplug seve=
-ral
-> > HBAs and let machine run. That can hit the same race when 2nd hotplugge=
-d
-> > HBA will start re-configuring bridge.
-> > Do the same thing as SHPC and throttle down hotplug of 2nd and up
-> > devices within single hotplug event.
+> > > -       stack_depot_put(alloc_meta->aux_stack[1]);
+> > > +       new_handle =3D kasan_save_stack(0, depot_flags);
+> > > +
+> > > +       spin_lock_irqsave(&aux_lock, flags);
 > >
-> > Signed-off-by: Igor Mammedov <imammedo@redhat.com>
-> > ---
-> >  drivers/pci/hotplug/acpiphp_glue.c | 6 ++++++
-> >  1 file changed, 6 insertions(+)
-> >
-> > diff --git a/drivers/pci/hotplug/acpiphp_glue.c b/drivers/pci/hotplug/a=
-cpiphp_glue.c
-> > index 6b11609927d6..30bca2086b24 100644
-> > --- a/drivers/pci/hotplug/acpiphp_glue.c
-> > +++ b/drivers/pci/hotplug/acpiphp_glue.c
-> > @@ -37,6 +37,7 @@
-> >  #include <linux/mutex.h>
-> >  #include <linux/slab.h>
-> >  #include <linux/acpi.h>
-> > +#include <linux/delay.h>
-> >
-> >  #include "../pci.h"
-> >  #include "acpiphp.h"
-> > @@ -700,6 +701,7 @@ static void trim_stale_devices(struct pci_dev *dev)
-> >  static void acpiphp_check_bridge(struct acpiphp_bridge *bridge)
-> >  {
-> >         struct acpiphp_slot *slot;
-> > +        int nr_hp_slots =3D 0;
-> >
-> >         /* Bail out if the bridge is going away. */
-> >         if (bridge->is_going_away)
-> > @@ -723,6 +725,10 @@ static void acpiphp_check_bridge(struct acpiphp_br=
-idge *bridge)
-> >
-> >                         /* configure all functions */
-> >                         if (slot->flags !=3D SLOT_ENABLED) {
-> > +                               if (nr_hp_slots)
-> > +                                       msleep(1000);
+> > This is a unnecessary global lock. What's the problem here? As far as
+> > I can understand a race is possible where we may end up with
+> > duplicated or lost stack handles.
 >
-> Why is 1000 considered the most suitable number here?  Any chance to
-> define a symbol for it?
-
-Timeout was borrowed from SHPC hotplug workflow where it apparently
-makes race harder to reproduce.
-(though it's not excuse to add more timeouts elsewhere)
-
-> And won't this affect the cases when the race in question is not a concer=
-n?
-
-In practice it's not likely, since even in virt scenario hypervisor won't
-stop VM to hotplug device (which beats whole purpose of hotplug).
-
-But in case of a very slow VM (overcommit case) it's possible for
-several HBA's to be hotplugged by the time acpiphp gets a chance
-to handle the 1st hotplug event. SHPC is more or less 'safe' with its
-1sec delay.
-
-> Also, adding arbitrary timeouts is not the most robust way of
-> addressing race conditions IMV.  Wouldn't it be better to add some
-> proper synchronization between the pieces of code that can race with
-> each other?
-
-I don't like it either, it's a stop gap measure to hide regression on
-short notice,
-which I can fixup without much risk in short time left, before folks
-leave on holidays.
-It's fine to drop the patch as chances of this happening are small.
-[1/2] should cover reported cases.
-
-Since it's RFC, I basically ask for opinions on a proper way to fix
-SCSI_ASYNC_SCAN
-running wild while the hotplug is in progress (and maybe SCSI is not
-the only user that
-schedules async job from device probe). So adding synchronisation and testi=
-ng
-would take time (not something I'd do this late in the cycle).
-
-So far I'm thinking about adding rw mutex to bridge with the PCI
-hotplug subsystem
-being a writer while scsi scan jobs would be readers and wait till hotplug =
-code
-says it's safe to proceed.
-I plan to work in this direction and give it some testing, unless
-someone has a better idea.
-
+> Yes, this is the problem. And this leads to refcount underflows in the
+> stack depot code, as we fail to keep precise track of the stack
+> traces.
 >
-> > +
-> > +                                ++nr_hp_slots;
-> >                                 enable_slot(slot, true);
-> >                         }
-> >                 } else {
-> > --
+> > Since storing this information is best effort anyway, and bugs are
+> > rare, a global lock protecting this is overkill.
+> >
+> > I'd just accept the racyness and use READ_ONCE() / WRITE_ONCE() just
+> > to make sure we don't tear any reads/writes and the depot handles are
+> > valid.
 >
+> This will help with the potential tears but will not help with the
+> refcount issues.
+>
+> > There are other more complex schemes [1], but I think they are
+> > overkill as well.
+> >
+> > [1]: Since a depot stack handle is just an u32, we can have a
+> >
+> >  union {
+> >    depot_stack_handle_t handles[2];
+> >    atomic64_t atomic_handle;
+> >   } aux_stack;
+> > (BUILD_BUG_ON somewhere if sizeof handles and atomic_handle mismatch.)
+> >
+> > Then in the code here create the same union and load atomic_handle.
+> > Swap handle[1] into handle[0] and write the new one in handles[1].
+> > Then do a cmpxchg loop to store the new atomic_handle.
+>
+> This approach should work. If you prefer, I can do this instead of a spin=
+lock.
+>
+> But we do need some kind of atomicity while rotating the aux handles
+> to make sure nothing gets lost.
 
+Yes, I think that'd be preferable. Although note that not all 32-bit
+architectures have 64-bit atomics, so that may be an issue. Another
+alternative is to have a spinlock next to the aux_stack (it needs to
+be initialized properly). It'll use up a little more space, but that's
+for KASAN configs only, so I think it's ok. Certainly better than a
+global lock.
