@@ -2,159 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E4B7B810ABD
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 07:58:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 628B5810AC0
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 07:59:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378688AbjLMG6e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 01:58:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58722 "EHLO
+        id S1378690AbjLMG6v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 01:58:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56432 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232875AbjLMG6d (ORCPT
+        with ESMTP id S232875AbjLMG6u (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 01:58:33 -0500
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D208ED0
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 22:58:38 -0800 (PST)
-Received: by mail-ej1-x62c.google.com with SMTP id a640c23a62f3a-a1ef2f5ed02so711957566b.1
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 22:58:38 -0800 (PST)
+        Wed, 13 Dec 2023 01:58:50 -0500
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85272E3
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 22:58:56 -0800 (PST)
+Received: by mail-pj1-x102f.google.com with SMTP id 98e67ed59e1d1-28aea039fb4so102216a91.1
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 22:58:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1702450717; x=1703055517; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=peFvUDPsie8jarBOIMxn+KDx3Za++kBkcLucy+u6CNw=;
-        b=c8HeXwg6kZNSJrH1sM+DH18hqRsqnxs7TKlbHXi5IuRVazH+c3VwPpdYvrbSL8PXeA
-         791RIBBarPFniZQFtYCfc9psDwgKZG2nCcex3pA5KHhBNIEgpSrOpdhVyjHethRknS6n
-         9G26WUnP0xzY1Ck6ji+lfbQhgDHrHoI1JqdHRhQ73ugNYIxCNDJP6Xd+YV4cx6bmIMQu
-         IMGMjkT5KQo5fp+GJOrfAndM6BQlhql9TOQHebqMsgn2mm/rMcPMbw49hO9WT6NhkKMP
-         hKNSgPGFcAgJp4ux8bOG6Fg9WjD/flPq7+e8hw2Bx7RdHOgh5Psdjvw52ixGTj05VQR7
-         nRoA==
+        d=brainfault-org.20230601.gappssmtp.com; s=20230601; t=1702450736; x=1703055536; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=bf5KPLLb5mppiqs2V6fQXEFnrR5qxzVp6zV/S8php7g=;
+        b=kago5zP5qVzZdiiFSAWsUlll3+uS2kBoj1cV77yAUWeM9HcjI7f1RPoUhv9EieGBdP
+         tcXZ/B3MDr/T6ys6En0Zf/VZgS6Q2hnZNQJaA1wDmzTRq/L0uXtsUiPNrDUnbI/bBDWi
+         O0WzieA+UcFy078/YBNWqDZdOjLFbLIxQcHnkYfrq1CsM3rqAxJnbGokvWjiWlve9O77
+         RkicZlhTkAV52UuA+zIXIhUCUJ6+pJ7FF9NgsM78n3LByp3GAtwKlWv4m+XzdlxUNMIy
+         +97qsTz0I0+Kfmt50eDkW6WnzW8k9u5VDkkj/STv6MH3KPma3tuuV9b+ntJ+7D4+6FWm
+         6bzA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702450717; x=1703055517;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=peFvUDPsie8jarBOIMxn+KDx3Za++kBkcLucy+u6CNw=;
-        b=Vkt/H6yPm/OSAw6kqP+z+qGCDgPD3NGqxorsFNTYLC0pxSeH/fMbartu7Rhad6povi
-         UDYjhcpyiccEiF3rtbhYG+tsuc+GJ+jYbd88q7nlY9A5p8TwckQJTW9qvNuxasa7w1PV
-         cQWzZvF7cYmUBckZtOByF5o+x5wpez5d7ROY6mi/APU01VgeOtyDprRL3D+Drko5V0gA
-         whlLFKSO5A8L17xoWSodfJTGqcwXIeiYhsSOLmnaTEgr6MdVPCgFRFoELO1h7ZNj3OCp
-         f3NHeamYqX/DvVADvfzhEAmBxcbXZ1DcOtt5qSdBUbu23WuxztQej5tpK1lGdlWYN5U9
-         3bsw==
-X-Gm-Message-State: AOJu0Yy3lkPKO5+uVFL6dk8Zx9A8AsX0Axz2aqFyQTXexKyLEsgSZpoQ
-        6KzJa9s+PQ2cMhjokf7sSntuBw==
-X-Google-Smtp-Source: AGHT+IGGdhUKM865ab0JNMDak9sKf/LkSyvz4s7oBjMnicDrzTeKcKtzRcTHsDGUEi9Y2cMLU+irxg==
-X-Received: by 2002:a17:907:72d6:b0:a1b:68e6:9d4c with SMTP id du22-20020a17090772d600b00a1b68e69d4cmr3961008ejc.71.1702450717264;
-        Tue, 12 Dec 2023 22:58:37 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.218.27])
-        by smtp.gmail.com with ESMTPSA id vo16-20020a170907a81000b00a1d32dfacb9sm7246671ejc.38.2023.12.12.22.58.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 12 Dec 2023 22:58:36 -0800 (PST)
-Message-ID: <06dfdf57-3cc7-4e9c-96c4-f2639d581ecf@linaro.org>
-Date:   Wed, 13 Dec 2023 07:58:33 +0100
+        d=1e100.net; s=20230601; t=1702450736; x=1703055536;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=bf5KPLLb5mppiqs2V6fQXEFnrR5qxzVp6zV/S8php7g=;
+        b=gJLMHj5eeJhRCMv1r6wF013DQnayG/pMS0LPXlQs3MlDwlICABACYOPiw0ROMTDQJY
+         dHH8N646MDspIbWNIG5iqw07Bnc8kAtcXM4ifWiI7VwGBVQtOCGofeSfGkDaB5hUxtXJ
+         AYGQkdylhWWxVqu+hGb4UeVBv9LUpLVwDRoyX73G4e2BnM+ZRO9g63OP9JRCQdSQmvH/
+         AfbI9UrLT7TJbKChzfwlW8G/clMNH/OQaVY3FEtjftuttUKJHg9j0w3bWMtWG5bf7Zmv
+         u9wp5emFnjrvnnZt2B6S2cvlOqeZctgCrNMgFwq4v/DBiOeU5BVmxWi5Gtzua6s/WnzB
+         MLVw==
+X-Gm-Message-State: AOJu0YxRcfOc2WxM7gVrHwIjFfULk23wATaxV6+U6B8OkuGIS4uMBt55
+        EH/5WhglXsp50uacXMx/SOHdwHB2CJvRcBUoteBGhQ==
+X-Google-Smtp-Source: AGHT+IHcel4RGxuhUT4S+8ysviVVjUdeLRd5uUE5iIk9tDQ4l9HK3ci0gXUWjTSy85PhMRS2cyHdeWlEIcHWxtLc5Bs=
+X-Received: by 2002:a17:90a:fd0b:b0:286:6cd8:ef09 with SMTP id
+ cv11-20020a17090afd0b00b002866cd8ef09mr9239266pjb.33.1702450735785; Tue, 12
+ Dec 2023 22:58:55 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH net-next v3 7/8] dt-bindings: net: mediatek,net: fix
- and complete mt7988-eth binding
-Content-Language: en-US
-To:     Daniel Golle <daniel@makrotopia.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Chunfeng Yun <chunfeng.yun@mediatek.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Kishon Vijay Abraham I <kishon@kernel.org>,
-        Felix Fietkau <nbd@nbd.name>, John Crispin <john@phrozen.org>,
-        Sean Wang <sean.wang@mediatek.com>,
-        Mark Lee <Mark-MC.Lee@mediatek.com>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Alexander Couzens <lynxis@fe80.eu>,
-        Qingfang Deng <dqfext@gmail.com>,
-        SkyLake Huang <SkyLake.Huang@mediatek.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-phy@lists.infradead.org
-References: <cover.1702352117.git.daniel@makrotopia.org>
- <ac6a7277fc534f610386bc51b2ff87beade03be8.1702352117.git.daniel@makrotopia.org>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <ac6a7277fc534f610386bc51b2ff87beade03be8.1702352117.git.daniel@makrotopia.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20231213061610.11100-1-yongxuan.wang@sifive.com>
+In-Reply-To: <20231213061610.11100-1-yongxuan.wang@sifive.com>
+From:   Anup Patel <anup@brainfault.org>
+Date:   Wed, 13 Dec 2023 12:28:44 +0530
+Message-ID: <CAAhSdy11SyXB0f0TOB4jX6mxCXTS-_RTXm6bFSfyY+4PThY5bg@mail.gmail.com>
+Subject: Re: [PATCH v2 1/1] RISCV: KVM: update external interrupt atomically
+ for IMSIC swfile
+To:     Yong-Xuan Wang <yongxuan.wang@sifive.com>
+Cc:     linux-riscv@lists.infradead.org, kvm-riscv@lists.infradead.org,
+        greentime.hu@sifive.com, vincent.chen@sifive.com,
+        Atish Patra <atishp@atishpatra.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/12/2023 04:51, Daniel Golle wrote:
-> Complete support for MT7988 which comes with 3 MACs, SRAM for DMA
-> descriptors and uses a dedicated PCS for the SerDes units.
-> 
-> Fixes: c94a9aabec36 ("dt-bindings: net: mediatek,net: add mt7988-eth binding")
-> Signed-off-by: Daniel Golle <daniel@makrotopia.org>
+On Wed, Dec 13, 2023 at 11:46=E2=80=AFAM Yong-Xuan Wang
+<yongxuan.wang@sifive.com> wrote:
+>
+> The emulated IMSIC update the external interrupt pending depending on the
+> value of eidelivery and topei. It might lose an interrupt when it is
+> interrupted before setting the new value to the pending status.
+>
+> For example, when VCPU0 sends an IPI to VCPU1 via IMSIC:
+>
+> VCPU0                           VCPU1
+>
+>                                 CSRSWAP topei =3D 0
+>                                 The VCPU1 has claimed all the external
+>                                 interrupt in its interrupt handler.
+>
+>                                 topei of VCPU1's IMSIC =3D 0
+>
+> set pending in VCPU1's IMSIC
+>
+> topei of VCPU1' IMSIC =3D 1
+>
+> set the external interrupt
+> pending of VCPU1
+>
+>                                 clear the external interrupt pending
+>                                 of VCPU1
+>
+> When the VCPU1 switches back to VS mode, it exits the interrupt handler
+> because the result of CSRSWAP topei is 0. If there are no other external
+> interrupts injected into the VCPU1's IMSIC, VCPU1 will never know this
+> pending interrupt unless it initiative read the topei.
+>
+> If the interruption occurs between updating interrupt pending in IMSIC
+> and updating external interrupt pending of VCPU, it will not cause a
+> problem. Suppose that the VCPU1 clears the IPI pending in IMSIC right
+> after VCPU0 sets the pending, the external interrupt pending of VCPU1
+> will not be set because the topei is 0. But when the VCPU1 goes back to
+> VS mode, the pending IPI will be reported by the CSRSWAP topei, it will
+> not lose this interrupt.
+>
+> So we only need to make the external interrupt updating procedure as a
+> critical section to avoid the problem.
+>
+> Fixes: db8b7e97d613 ("RISC-V: KVM: Add in-kernel virtualization of AIA IM=
+SIC")
+> Tested-by: Roy Lin <roy.lin@sifive.com>
+> Tested-by: Wayling Chen <wayling.chen@sifive.com>
+> Co-developed-by: Vincent Chen <vincent.chen@sifive.com>
+> Signed-off-by: Vincent Chen <vincent.chen@sifive.com>
+> Signed-off-by: Yong-Xuan Wang <yongxuan.wang@sifive.com>
+
+Queued as fixes for Linux-6.7
+
+Thanks,
+Anup
+
 > ---
-
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-
-Best regards,
-Krzysztof
-
+> Changelog
+> v2:
+> - rename the variable and add a short comment in the code
+> ---
+>  arch/riscv/kvm/aia_imsic.c | 13 +++++++++++++
+>  1 file changed, 13 insertions(+)
+>
+> diff --git a/arch/riscv/kvm/aia_imsic.c b/arch/riscv/kvm/aia_imsic.c
+> index 6cf23b8adb71..e808723a85f1 100644
+> --- a/arch/riscv/kvm/aia_imsic.c
+> +++ b/arch/riscv/kvm/aia_imsic.c
+> @@ -55,6 +55,7 @@ struct imsic {
+>         /* IMSIC SW-file */
+>         struct imsic_mrif *swfile;
+>         phys_addr_t swfile_pa;
+> +       spinlock_t swfile_extirq_lock;
+>  };
+>
+>  #define imsic_vs_csr_read(__c)                 \
+> @@ -613,12 +614,23 @@ static void imsic_swfile_extirq_update(struct kvm_v=
+cpu *vcpu)
+>  {
+>         struct imsic *imsic =3D vcpu->arch.aia_context.imsic_state;
+>         struct imsic_mrif *mrif =3D imsic->swfile;
+> +       unsigned long flags;
+> +
+> +       /*
+> +        * The critical section is necessary during external interrupt
+> +        * updates to avoid the risk of losing interrupts due to potentia=
+l
+> +        * interruptions between reading topei and updating pending statu=
+s.
+> +        */
+> +
+> +       spin_lock_irqsave(&imsic->swfile_extirq_lock, flags);
+>
+>         if (imsic_mrif_atomic_read(mrif, &mrif->eidelivery) &&
+>             imsic_mrif_topei(mrif, imsic->nr_eix, imsic->nr_msis))
+>                 kvm_riscv_vcpu_set_interrupt(vcpu, IRQ_VS_EXT);
+>         else
+>                 kvm_riscv_vcpu_unset_interrupt(vcpu, IRQ_VS_EXT);
+> +
+> +       spin_unlock_irqrestore(&imsic->swfile_extirq_lock, flags);
+>  }
+>
+>  static void imsic_swfile_read(struct kvm_vcpu *vcpu, bool clear,
+> @@ -1039,6 +1051,7 @@ int kvm_riscv_vcpu_aia_imsic_init(struct kvm_vcpu *=
+vcpu)
+>         }
+>         imsic->swfile =3D page_to_virt(swfile_page);
+>         imsic->swfile_pa =3D page_to_phys(swfile_page);
+> +       spin_lock_init(&imsic->swfile_extirq_lock);
+>
+>         /* Setup IO device */
+>         kvm_iodevice_init(&imsic->iodev, &imsic_iodoev_ops);
+> --
+> 2.17.1
+>
