@@ -2,65 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BF5CC8106A1
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 01:36:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E72928106B2
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 01:37:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377873AbjLMAgW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 19:36:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37420 "EHLO
+        id S1377878AbjLMAhh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 19:37:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47432 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377847AbjLMAgU (ORCPT
+        with ESMTP id S1377843AbjLMAhg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 19:36:20 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4836EB9
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 16:36:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1702427786;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=4J3yyMVT0Ck6UqVMMggnyCj20M3aIOGukmt1/w28WlA=;
-        b=RQHitFp8fXhxUD5EP4EHvhV7gBSpQZ/SN/nJmxzB4ZpvfKBWIA2F2/c/NhrhtCHAG4GLY1
-        fY3Hrz+XtTfBxwuezsT4LxEvWnlpgViJ++VBZbAeQGVyAROQvcIGa4ixo5a3ef8n8SMKy2
-        NQF7nm2XeQOnAuuhTsdy5d1RjpEQSpA=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-496-nIPG_mAZOtSj-ICft5S-pQ-1; Tue,
- 12 Dec 2023 19:36:23 -0500
-X-MC-Unique: nIPG_mAZOtSj-ICft5S-pQ-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id A3BE53833343;
-        Wed, 13 Dec 2023 00:36:22 +0000 (UTC)
-Received: from dell-r430-03.lab.eng.brq2.redhat.com (dell-r430-03.lab.eng.brq2.redhat.com [10.37.153.18])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id D2C821121306;
-        Wed, 13 Dec 2023 00:36:20 +0000 (UTC)
-From:   Igor Mammedov <imammedo@redhat.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Dongli Zhang <dongli.zhang@oracle.com>, linux-acpi@vger.kernel.org,
-        linux-pci@vger.kernel.org, imammedo@redhat.com, mst@redhat.com,
-        rafael@kernel.org, lenb@kernel.org, bhelgaas@google.com,
-        mika.westerberg@linux.intel.com, boris.ostrovsky@oracle.com,
-        joe.jin@oracle.com, stable@vger.kernel.org,
-        Fiona Ebner <f.ebner@proxmox.com>,
-        Thomas Lamprecht <t.lamprecht@proxmox.com>
-Subject: [RFC 2/2] PCI: acpiphp: slowdown hotplug if hotplugging multiple devices at a time
-Date:   Wed, 13 Dec 2023 01:36:14 +0100
-Message-Id: <20231213003614.1648343-3-imammedo@redhat.com>
-In-Reply-To: <20231213003614.1648343-1-imammedo@redhat.com>
-References: <20231213003614.1648343-1-imammedo@redhat.com>
+        Tue, 12 Dec 2023 19:37:36 -0500
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B82F0B9
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 16:37:42 -0800 (PST)
+Received: by mail-lf1-x135.google.com with SMTP id 2adb3069b0e04-50bce78f145so7318353e87.0
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 16:37:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1702427861; x=1703032661; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=qyawuRNxUOJx4krMuVIPeAGsZD64pCzULSxldkl4c04=;
+        b=so9U7L81tX9wygfCAlf5taDnYOo6Q7aQPEvHp0Xe01TxPXm8X8kwVUsfBzSqyFWAzT
+         mHjbZPjsOw6/Jidc0fgAjoorMoXZvEwQV8iNco6yMbKihaURWWK40L/w/Zw5N3cZwfac
+         /jonttLThDQwgtrOdDV/aTGtPKIcsu6TCsY5sT5jvjQemwgjZSLLJQC7+j4INLzsYAPd
+         saUPO4lXk2jQ6xkaLTdwOw9XSbu4Mb1Q1vRE/CxeM+tWfHEUSqqJgyQC345ZkDQMbY8Z
+         l5gwV+o3lui5K+dIlajk2NHF5YElsE5t79PE+7HCQ8t16IYrQLW/QVMeTGGbQVhp8l+a
+         SO5g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702427861; x=1703032661;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=qyawuRNxUOJx4krMuVIPeAGsZD64pCzULSxldkl4c04=;
+        b=hf7T43H6MXQFBxLvq32NB6G1zaO0+kNQ4vEQCJVf+KSAt6AR/JrNJuhdhUq5vc9Ivz
+         vNQcs1e7a/LtcJj8okG29cpqQLDS0fsB8ao15dJX5+pHBQbLTKrfH5EsWDxsyvgUQR0P
+         64ZAZSznbjNRmCp7Qp4SdV4ww/2astjkB6t3nJBHDMEIVGMs1SlEet4g9/k8xkzVbEDY
+         /X4t3owHHLlShcUIQakwEQoixARDWd+0dLhxxPo8IAhtyOBbX+JEO3BayzFX2BBbmzNC
+         lXzdI5KkDoyvug27HZ/Jw6NDWjEaY7AlxL2PemceO2g8zt5KpW5p7su6KyEWKhWpQNR6
+         xZ1A==
+X-Gm-Message-State: AOJu0Yyto45CEB/xl6My0hqmUENPA8kHzdOAGhi84j1ByZ2vvxk08w7h
+        PJyVW+uzvghPVXY8elEENvCMVg==
+X-Google-Smtp-Source: AGHT+IELJg6xtBV3YwWzHW35+oAMMuqoqq9emUlpwuefa9mMo13YdC5VxvXXbHCtbJlZxVgL/oczQQ==
+X-Received: by 2002:a05:6512:12cb:b0:50d:1a52:7760 with SMTP id p11-20020a05651212cb00b0050d1a527760mr1929464lfg.149.1702427861132;
+        Tue, 12 Dec 2023 16:37:41 -0800 (PST)
+Received: from umbar.unikie.fi ([192.130.178.91])
+        by smtp.gmail.com with ESMTPSA id a4-20020a194f44000000b0050bef1c5a50sm1517467lfk.267.2023.12.12.16.37.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 Dec 2023 16:37:40 -0800 (PST)
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+To:     dri-devel@lists.freedesktop.org, Rob Clark <robdclark@gmail.com>
+Cc:     freedreno@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
+        Rob Clark <robdclark@chromium.org>,
+        Abhinav Kumar <quic_abhinavk@quicinc.com>,
+        Sean Paul <sean@poorly.run>,
+        Marijn Suijten <marijn.suijten@somainline.org>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Kuogee Hsieh <quic_khsieh@quicinc.com>,
+        Jessica Zhang <quic_jesszhan@quicinc.com>,
+        Vinod Polimera <quic_vpolimer@quicinc.com>,
+        Kalyan Thota <quic_kalyant@quicinc.com>,
+        Dan Carpenter <dan.carpenter@linaro.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] drm/msm/dpu: Ratelimit framedone timeout msgs
+Date:   Wed, 13 Dec 2023 02:37:34 +0200
+Message-Id: <170242755506.12964.11418268791653188536.b4-ty@linaro.org>
+X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20231211182000.218088-1-robdclark@gmail.com>
+References: <20231211182000.218088-1-robdclark@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.3
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -68,51 +84,18 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-previous commit ("PCI: acpiphp: enable slot only if it hasn't been enabled already"
-introduced a workaround to avoid a race between SCSI_SCAN_ASYNC job and
-bridge reconfiguration in case of single HBA hotplug.
-However in virt environment it's possible to pause machine hotplug several
-HBAs and let machine run. That can hit the same race when 2nd hotplugged
-HBA will start re-configuring bridge.
-Do the same thing as SHPC and throttle down hotplug of 2nd and up
-devices within single hotplug event.
 
-Signed-off-by: Igor Mammedov <imammedo@redhat.com>
----
- drivers/pci/hotplug/acpiphp_glue.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+On Mon, 11 Dec 2023 10:19:55 -0800, Rob Clark wrote:
+> When we start getting these, we get a *lot*.  So ratelimit it to not
+> flood dmesg.
+> 
+> 
 
-diff --git a/drivers/pci/hotplug/acpiphp_glue.c b/drivers/pci/hotplug/acpiphp_glue.c
-index 6b11609927d6..30bca2086b24 100644
---- a/drivers/pci/hotplug/acpiphp_glue.c
-+++ b/drivers/pci/hotplug/acpiphp_glue.c
-@@ -37,6 +37,7 @@
- #include <linux/mutex.h>
- #include <linux/slab.h>
- #include <linux/acpi.h>
-+#include <linux/delay.h>
- 
- #include "../pci.h"
- #include "acpiphp.h"
-@@ -700,6 +701,7 @@ static void trim_stale_devices(struct pci_dev *dev)
- static void acpiphp_check_bridge(struct acpiphp_bridge *bridge)
- {
- 	struct acpiphp_slot *slot;
-+        int nr_hp_slots = 0;
- 
- 	/* Bail out if the bridge is going away. */
- 	if (bridge->is_going_away)
-@@ -723,6 +725,10 @@ static void acpiphp_check_bridge(struct acpiphp_bridge *bridge)
- 
- 			/* configure all functions */
- 			if (slot->flags != SLOT_ENABLED) {
-+				if (nr_hp_slots)
-+					msleep(1000);
-+
-+                                ++nr_hp_slots;
- 				enable_slot(slot, true);
- 			}
- 		} else {
+Applied, thanks!
+
+[1/1] drm/msm/dpu: Ratelimit framedone timeout msgs
+      https://gitlab.freedesktop.org/lumag/msm/-/commit/e37cb117b819
+
+Best regards,
 -- 
-2.39.3
-
+Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
