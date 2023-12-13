@@ -2,120 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FAC5812141
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 23:14:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AFE80812143
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 23:14:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442740AbjLMWOD convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 13 Dec 2023 17:14:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56284 "EHLO
+        id S233991AbjLMWOJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 17:14:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34268 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229929AbjLMWOB (ORCPT
+        with ESMTP id S229929AbjLMWOF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 17:14:01 -0500
-Received: from mail-pj1-f51.google.com (mail-pj1-f51.google.com [209.85.216.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 856A9AC;
-        Wed, 13 Dec 2023 14:14:08 -0800 (PST)
-Received: by mail-pj1-f51.google.com with SMTP id 98e67ed59e1d1-28b0071ae32so547620a91.0;
-        Wed, 13 Dec 2023 14:14:08 -0800 (PST)
+        Wed, 13 Dec 2023 17:14:05 -0500
+Received: from mail-ot1-x32a.google.com (mail-ot1-x32a.google.com [IPv6:2607:f8b0:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 644ABAC;
+        Wed, 13 Dec 2023 14:14:11 -0800 (PST)
+Received: by mail-ot1-x32a.google.com with SMTP id 46e09a7af769-6d9dadc3dc0so5760104a34.1;
+        Wed, 13 Dec 2023 14:14:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1702505650; x=1703110450; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=kUOnuYPNNImTr05uNyh+XqTTfSm5CyCumIyly8xyq6A=;
+        b=SNdirChuLu8QJ8oubJL7Uzg18dHyT+gupDes1MJ2PjkvwkCjfPM8u3KXHKfIjsIOUZ
+         zQmk0JXYv+9Km/zsBIE4V4Rew60l3KNSwu8NGPCsWjnHYFg5rfoJwIfPUuL6XYyztJkv
+         iDkexcRAUxtRBz92h/j6JxAfLOir9NPjx3F223osoQv2cJtobfl6kW1rwR686QkJ1C2T
+         klCMO/Jkg0r3y7u+pKcvGmTrcDXzeVc/ayxK+GjvbBWClDhRW5kT6OWpG0IZLfiOsTlX
+         RNCJYXp2JofSO6QasWWnstbaAN+aH3FV7dHxHTtdBot6TjReiVf8QOTaZUEanMBQ6z0K
+         +Rwg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702505648; x=1703110448;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1702505650; x=1703110450;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=PrPkyaX0AG7+dG5o0kCvLphBtxW3qZUWNIeyMgltZ2k=;
-        b=tWatdAZAyUZqXvJ/JZ9Ieo0c6eQD2x8BxciznFEcQFU+9MYwP2VjuQFhRbTfJwdDVo
-         HH62xrm9BDpIoDa1pcWnXMYMAs38ujNmpViGGLgvpzfP/t+nzrdc2mL9YQNNc+5oJaoh
-         o1qn3HuT5x1BMxCZyqhxEUrygdUaqWhRHrHqSbvLrEp17QY+NW0HFN9v9rTmITbOlOZZ
-         ol/Pa2gozDO9tpbhm9SyfncXcwz0D6/ikoXps1a0ln43667LEJ3tH75bGIJqEcvpTo7J
-         D+pd+EQpawUL3+CbTg9z0Dnc+6LUKT4mZgLkINNpWl4M+Psh1F6k573ei6XBaPt0mrUe
-         5vzA==
-X-Gm-Message-State: AOJu0Yyd+aMpk5VTs/DuP72xfoDO776ndZUYpTFrdfDtiIYSPdVo118i
-        SdSdtJFqlrE7avoZI3hH+oqjOjyvrBZVxRvzPlU=
-X-Google-Smtp-Source: AGHT+IFzysZucKQnuzF1P2AfQ1XThSqn5haRfHgHeRKl6p1tfABu5GEmr/4tmyo87GzdBiPVxvBCbsqjqSQqWGjQ56Q=
-X-Received: by 2002:a17:90a:6d26:b0:28a:cf4f:dad9 with SMTP id
- z35-20020a17090a6d2600b0028acf4fdad9mr1520579pjj.28.1702505647865; Wed, 13
- Dec 2023 14:14:07 -0800 (PST)
+        bh=kUOnuYPNNImTr05uNyh+XqTTfSm5CyCumIyly8xyq6A=;
+        b=E4OmmJ2buWrSCV6R9SXXbHRdUmYislda3hZeXf3MOQ9k3bcUJO2gfhRue9kMyyBwXj
+         2j6O+J/xrLF2tuvJlXrnooKX9iymtUueWdnjlz5SpQBimhLKRYJI7lolA1CJ4rp9duFJ
+         f0AC61C35KbXlHMalGAz2DWF2cAIFyrBcbbqaeFsLwmZbTI0wvyLBGKJguLefh+EzDiw
+         AjY5UBLS/1LZlRg+D5VdM7K8Ic0DitAPBdpCDcBl9Orv+fDRLOJv2xoARKXSw4MNlV6O
+         kX8+FzT9B1zB5sZBMjLTPO0dniEjg5IV0NmLkgHGknZLAKqXZXKbqiszT2OwVec3TMUb
+         jrlw==
+X-Gm-Message-State: AOJu0YzEvUPpmJGhECZZeGaD5jcYV9pi31+X9S5Lyr+WjiGEjJkgpaZI
+        QoONluCRiEVEvxJ94xbl+KCdcJFx/6M=
+X-Google-Smtp-Source: AGHT+IGzeWMpPCS0h2eAUQFLsaql0jYjbgEVxLLgH+tJTNK0dUXnWNocmWmBASPdYKv+VBy8CXQ13w==
+X-Received: by 2002:a9d:7f8c:0:b0:6d9:f4a3:aece with SMTP id t12-20020a9d7f8c000000b006d9f4a3aecemr8913972otp.49.1702505650512;
+        Wed, 13 Dec 2023 14:14:10 -0800 (PST)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id c11-20020a630d0b000000b005c2185be2basm10368437pgl.54.2023.12.13.14.14.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Dec 2023 14:14:09 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Wed, 13 Dec 2023 14:14:08 -0800
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Jerry Hoemann <jerry.hoemann@hpe.com>
+Cc:     wim@linux-watchdog.org, linux-watchdog@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/3] watchdog/hpwdt: Only claim UNKNOWN NMI if from iLO
+Message-ID: <9c7c6ba4-2140-4d1c-b2de-705b9f6b9e2e@roeck-us.net>
+References: <20231213215340.495734-1-jerry.hoemann@hpe.com>
+ <20231213215340.495734-2-jerry.hoemann@hpe.com>
 MIME-Version: 1.0
-References: <20231212070547.612536-1-namhyung@kernel.org> <20231212070547.612536-3-namhyung@kernel.org>
- <CAP-5=fWH=Nt4Dr7-rHqqfPSHPQUP=Bof2iGWEZEpsz5NC+wZiA@mail.gmail.com>
-In-Reply-To: <CAP-5=fWH=Nt4Dr7-rHqqfPSHPQUP=Bof2iGWEZEpsz5NC+wZiA@mail.gmail.com>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Wed, 13 Dec 2023 14:13:57 -0800
-Message-ID: <CAM9d7chc9uyj-gZT0_a6aca6UMqjiXGNiSB8MGUXchg5VGrKrw@mail.gmail.com>
-Subject: Re: [PATCH 2/3] perf unwind-libdw: Handle JIT-generated DSOs properly
-To:     Ian Rogers <irogers@google.com>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-perf-users@vger.kernel.org,
-        Milian Wolff <milian.wolff@kdab.com>,
-        Pablo Galindo <pablogsal@gmail.com>,
-        Fangrui Song <maskray@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231213215340.495734-2-jerry.hoemann@hpe.com>
+X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
         FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
-        autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 12, 2023 at 10:07 AM Ian Rogers <irogers@google.com> wrote:
->
-> On Mon, Dec 11, 2023 at 11:05 PM Namhyung Kim <namhyung@kernel.org> wrote:
-> >
-> > Usually DSOs are mapped from the beginning of the file, so the base
-> > address of the DSO can be calculated by map->start - map->pgoff.
-> >
-> > However, JIT DSOs which are generated by `perf inject -j`, are mapped
-> > only the code segment.  This makes unwind-libdw code confusing and
-> > rejects processing unwinds in the JIT DSOs.  It should use the map
-> > start address as base for them to fix the confusion.
-> >
-> > Fixes: 1fe627da3033 ("perf unwind: Take pgoff into account when reporting elf to libdwfl")
-> > Signed-off-by: Namhyung Kim <namhyung@kernel.org>
-> > ---
-> >  tools/perf/util/unwind-libdw.c | 21 +++++++++++++++++----
-> >  1 file changed, 17 insertions(+), 4 deletions(-)
-> >
-> > diff --git a/tools/perf/util/unwind-libdw.c b/tools/perf/util/unwind-libdw.c
-> > index 8554db3fc0d7..6013335a8dae 100644
-> > --- a/tools/perf/util/unwind-libdw.c
-> > +++ b/tools/perf/util/unwind-libdw.c
-> > @@ -46,6 +46,7 @@ static int __report_module(struct addr_location *al, u64 ip,
-> >  {
-> >         Dwfl_Module *mod;
-> >         struct dso *dso = NULL;
-> > +       Dwarf_Addr base;
-> >         /*
-> >          * Some callers will use al->sym, so we can't just use the
-> >          * cheaper thread__find_map() here.
-> > @@ -58,13 +59,25 @@ static int __report_module(struct addr_location *al, u64 ip,
-> >         if (!dso)
-> >                 return 0;
-> >
-> > +       /*
-> > +        * The generated JIT DSO files only map the code segment without
-> > +        * ELF headers.  Since JIT codes used to be packed in a memory
-> > +        * segment, calculating the base address using pgoff falls into
-> > +        * a different code in another DSO.  So just use the map->start
-> > +        * directly to pick the correct one.
-> > +        */
-> > +       if (!strncmp(dso->long_name, "/tmp/jitted-", 12))
->
-> Perhaps it would be better to test:
-> dso->symtab_type == DSO_BINARY_TYPE__JAVA_JIT
+On Wed, Dec 13, 2023 at 02:53:38PM -0700, Jerry Hoemann wrote:
+> Avoid unnecessary crashes by claiming only NMIs that are due to
+> ERROR signalling or generated by the hpwdt hardware device.
+> 
+> The code does this, but only for iLO5.
+> 
+> The intent was to preserve legacy, Gen9 and earlier, semantics of
+> using hpwdt for error containtment as hardware/firmware would signal
+> fatal IO errors as an NMI with the expectation of hpwdt crashing
+> the system.  Howerver, these IO errors should be received by hpwdt
+> as an NMI_IO_CHECK.  So the test is overly permissive and should
+> not be limited to only ilo5.
+> 
+> We need to enable this protection for future iLOs not matching the
+> current PCI IDs.
+> 
+> Fixes: 62290a5c194b ("watchdog: hpwdt: Claim NMIs generated by iLO5")
+> Signed-off-by: Jerry Hoemann <jerry.hoemann@hpe.com>
 
-Well.. it's a little different.  The JAVA_JIT type files have
-"/tmp/perf-" prefix and it's a plain text file (for symbols).
-While this is an ELF file generated by `perf inject -j`.
+Reviewed-by: Guenter Roeck <linux@roeck-us.net>
 
-Thanks,
-Namhyung
+> ---
+>  drivers/watchdog/hpwdt.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/watchdog/hpwdt.c b/drivers/watchdog/hpwdt.c
+> index f79f932bca14..79ed1626d8ea 100644
+> --- a/drivers/watchdog/hpwdt.c
+> +++ b/drivers/watchdog/hpwdt.c
+> @@ -178,7 +178,7 @@ static int hpwdt_pretimeout(unsigned int ulReason, struct pt_regs *regs)
+>  		"3. OA Forward Progress Log\n"
+>  		"4. iLO Event Log";
+>  
+> -	if (ilo5 && ulReason == NMI_UNKNOWN && !mynmi)
+> +	if (ulReason == NMI_UNKNOWN && !mynmi)
+>  		return NMI_DONE;
+>  
+>  	if (ilo5 && !pretimeout && !mynmi)
+> -- 
+> 2.41.0
+> 
