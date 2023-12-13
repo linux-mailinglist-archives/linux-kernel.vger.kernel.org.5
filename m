@@ -2,141 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 23379811714
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 16:34:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6640681171D
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 16:34:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442184AbjLMPeB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 10:34:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37846 "EHLO
+        id S1442246AbjLMPe0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 10:34:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37278 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1442149AbjLMPdr (ORCPT
+        with ESMTP id S1442342AbjLMPeN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 10:33:47 -0500
-Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5345147A9;
-        Wed, 13 Dec 2023 07:29:11 -0800 (PST)
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 3BDFT7UE125058;
-        Wed, 13 Dec 2023 09:29:07 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1702481347;
-        bh=qG9fVDRrbj/BtpoBAlezZnVtaEVeTj0X3XMa9chEaVs=;
-        h=Date:From:To:CC:Subject:References:In-Reply-To;
-        b=rebx+32wMIauXQXCpQqFnMZB/vtnkpAxFAetuW/5Y4dGpaoS0WQOj3njiuODXRxx8
-         hNnUk20Y/EzONlbpsDatRccW9v37n0aX8iV9PMQjYJHUUwqb04BPbGaON8yc7rD18G
-         956JH2z2jKZZ2yhaIhopKQvZbKnFDN3qmOsUZVWs=
-Received: from DFLE110.ent.ti.com (dfle110.ent.ti.com [10.64.6.31])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 3BDFT7T3092864
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 13 Dec 2023 09:29:07 -0600
-Received: from DFLE100.ent.ti.com (10.64.6.21) by DFLE110.ent.ti.com
- (10.64.6.31) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 13
- Dec 2023 09:29:07 -0600
-Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DFLE100.ent.ti.com
- (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Wed, 13 Dec 2023 09:29:07 -0600
-Received: from localhost ([10.250.64.83])
-        by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 3BDFT5lr040281;
-        Wed, 13 Dec 2023 09:29:06 -0600
-Date:   Wed, 13 Dec 2023 20:59:05 +0530
-From:   Jai Luthra <j-luthra@ti.com>
-To:     "Achath, Vaishnav" <vaishnav.a@ti.com>
-CC:     "vkoul@kernel.org" <vkoul@kernel.org>,
-        "peter.ujfalusi@gmail.com" <peter.ujfalusi@gmail.com>,
-        "dmaengine@vger.kernel.org" <dmaengine@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Brattlof, Bryan" <bb@ti.com>,
-        "Raghavendra, Vignesh" <vigneshr@ti.com>,
-        "Choudhary, Jayesh" <j-choudhary@ti.com>,
-        "Kumar, Udit" <u-kumar1@ti.com>
-Subject: Re: [PATCH v2] dmaengine: ti: k3-udma: Add PSIL threads for AM62P
- and J722S
-Message-ID: <divyx7p7s4hzhhl3g4ffqcsma7n5mxzpy2ttghgknfnaim7tso@smxuizahkiuh>
-References: <20231213081318.26203-1-vaishnav.a@ti.com>
+        Wed, 13 Dec 2023 10:34:13 -0500
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A559510F3
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 07:31:47 -0800 (PST)
+Received: by mail-pj1-x102a.google.com with SMTP id 98e67ed59e1d1-28abd1ecb85so1312872a91.0
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 07:31:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1702481507; x=1703086307; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=oZzlMKqeaQDgaUycRwSe7fFFE/6tq3edh0ES7fNxHN8=;
+        b=Zm3fN/XZ+MxkJ5+AjUrO7vxzYXpY9YLG0OcYXQdSsxCnz6+0O15GgGpyiE1C9r/vHt
+         5AUYcpNT2dfIuF9MHW0Xw8HWg16LXkAvwwssIRxynqWVC7J/0kt8Oc2bW9EswXpajznP
+         pFm1ZYr2wlHgWvTngpMVdTLZkLCEfq/s8iVlyvdSUZBBMUgUzUsV1hloNGhPAtbrP1+f
+         nYaYsXWd11ccJQxag3vwhIQqJ6lKNkUfqyHInUDa0k6HjNAzpetKDRCGjFjcECujnqJ7
+         vrzjnKs2VA9D8kHnkdddNCzVqwPqO4TYz+NTuI/VJepJ51oVIk5TYvmIWmWaOb+JwjIb
+         AHtw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702481507; x=1703086307;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=oZzlMKqeaQDgaUycRwSe7fFFE/6tq3edh0ES7fNxHN8=;
+        b=bDn20xCwEzQDwySuo2084iJz+R4hAYUyxD7C1mbFcu7kL9UN3cksLJ0a8AypfmpR43
+         We9sTi8Bd6Tk+Q0K+HYJnqqm5oJuwuA2Xl2CTtzZtOIi7jKPIqFjyK3NpzouWZQ9PISG
+         Bz5GGgNijqrDm+g783HJgrSdbSHtf0qMiKypMa3bOCqixQOeW8XJCXmsTS0+09FTs5bu
+         2NpzGI0dGLZUPLXRWPzgjGn67Kb5vGT9AAV7v6yUpHgE2lxincVHRnYes48y9yI2Z/Uz
+         L0LhefEm9APMfwOjcUyLS8v1+yekpb2IbKIdDMac/gl1k9rekTfzv40irDgD/P5DjogY
+         wR+g==
+X-Gm-Message-State: AOJu0YyFYF468h7heeF3vFhc3vl0jrmR7wbYTzyUV0zHlu9PBLRfRawr
+        nehnp8im1wpqsG9nbiOU+ScSrFu8CuzDnHWLkIg=
+X-Google-Smtp-Source: AGHT+IG5iZTcVImc/59btC+BAiAzwRNe1KCNitVlOmR6VYh3v0mNwJx54lXiUMbKt/6067AbRjmM4byKkaFp8rZSNN4=
+X-Received: by 2002:a17:90a:cf85:b0:28a:b3bf:3c56 with SMTP id
+ i5-20020a17090acf8500b0028ab3bf3c56mr1926683pju.20.1702481506962; Wed, 13 Dec
+ 2023 07:31:46 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="jjt27m45ffmmgn36"
-Content-Disposition: inline
-In-Reply-To: <20231213081318.26203-1-vaishnav.a@ti.com>
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+References: <20231128075532.110251-1-haibo.li@mediatek.com>
+ <20231128172238.f80ed8dd74ab2a13eba33091@linux-foundation.org>
+ <CA+fCnZcLwXn6crGF1E1cY3TknMaUN=H8-_hp0-cC+s8-wj95PQ@mail.gmail.com> <ecf38b22-ee64-41e5-b9b5-c32fc1cb57bc@moroto.mountain>
+In-Reply-To: <ecf38b22-ee64-41e5-b9b5-c32fc1cb57bc@moroto.mountain>
+From:   Andrey Konovalov <andreyknvl@gmail.com>
+Date:   Wed, 13 Dec 2023 16:31:35 +0100
+Message-ID: <CA+fCnZc73qNqNiCMcKFKRuoBki=Bmhdw-mOY9chV=CjAtm0R+g@mail.gmail.com>
+Subject: Re: [PATCH] fix comparison of unsigned expression < 0
+To:     Dan Carpenter <dan.carpenter@linaro.org>
+Cc:     "Liu, Yujie" <yujie.liu@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        kernel test robot <lkp@intel.com>,
+        Haibo Li <haibo.li@mediatek.com>, linux-kernel@vger.kernel.org,
+        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+        Alexander Potapenko <glider@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        kasan-dev@googlegroups.com, linux-mm@kvack.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, xiaoming.yu@mediatek.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+        lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---jjt27m45ffmmgn36
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On Mon, Dec 4, 2023 at 5:12=E2=80=AFAM Dan Carpenter <dan.carpenter@linaro.=
+org> wrote:
+>
+> > But I actually don't think we need to fix anything here.
+> >
+> > This issue looks quite close to a similar comparison with 0 issue
+> > Linus shared his opinion on here:
+> >
+> > https://lore.kernel.org/all/Pine.LNX.4.58.0411230958260.20993@ppc970.os=
+dl.org/
+> >
+> > I don't know if the common consensus with the regard to issues like
+> > that changed since then. But if not, perhaps we can treat this kernel
+> > test robot report as a false positive.
+>
+> I would say that the consensus has changed somewhere around 2015 or
+> so.  Unsigned comparisons to zero used to be one of the most common
+> types of bugs in new code but now almost all subsystems have turned on
+> the GCC warning for this.
+>
+> However, this is a Smatch warning and I agree with Linus on this.  For
+> example, Smatch doesn't complain about the example code the Linus
+> mentioned.
+>
+>         if (a < 0 || a > X)
+>
+> And in this case, it's a one liner fix for me to add KASAN_SHADOW_OFFSET
+> as an allowed macro and silence the warning.
 
-Hi Vaishnav,
+Hi Dan,
 
-Thanks for the patch.
+If this sounds like a good idea to you, please add an exception.
 
-On Dec 13, 2023 at 13:43:18 +0530, Achath, Vaishnav wrote:
-> From: Vignesh Raghavendra <vigneshr@ti.com>
->=20
-> Add PSIL thread information and enable UDMA support for AM62P
-> and J722S SoC. J722S SoC family is a superset of AM62P, thus
-> common PSIL thread ID map is reused for both devices.
->=20
-> For those interested, more details about the SoC can be found
-> in the Technical Reference Manual here:
-> 	AM62P - https://www.ti.com/lit/pdf/spruj83
-> 	J722S -	https://www.ti.com/lit/zip/sprujb3
->=20
-> Signed-off-by: Vignesh Raghavendra <vigneshr@ti.com>
-> Signed-off-by: Bryan Brattlof <bb@ti.com>
-> Signed-off-by: Vaishnav Achath <vaishnav.a@ti.com>
+From the KASAN side, I think adding an exception for this case makes sense.
 
-Reviewed-by: Jai Luthra <j-luthra@ti.com>
-
-> ---
-> V1: https://lore.kernel.org/all/20231212203655.3155565-2-bb@ti.com/
-> J722S Bootlog with DMA enabled : https://gist.github.com/vaishnavachath/4=
-6b56dab34dfea3a171d3ad266160780
->=20
-> V1->V2:
-> 	* Add J722S support and additional CSI2RX channels
-> 	* Update copyright year to 2023 and update commit message.
->=20
->  drivers/dma/ti/Makefile        |   3 +-
->  drivers/dma/ti/k3-psil-am62p.c | 325 +++++++++++++++++++++++++++++++++
->  drivers/dma/ti/k3-psil-priv.h  |   1 +
->  drivers/dma/ti/k3-psil.c       |   2 +
->  drivers/dma/ti/k3-udma.c       |   2 +
->  5 files changed, 332 insertions(+), 1 deletion(-)
->  create mode 100644 drivers/dma/ti/k3-psil-am62p.c
-
-[...]
-
->=20
-
---=20
-Thanks,
-Jai
-
-GPG Fingerprint: 4DE0 D818 E5D5 75E8 D45A AFC5 43DE 91F9 249A 7145
-
---jjt27m45ffmmgn36
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEETeDYGOXVdejUWq/FQ96R+SSacUUFAmV5zcAACgkQQ96R+SSa
-cUUjIA//Z1liHzE5jSpnUbTIHISEpHvYHFjqdiYUNOkIMmtCbVGX/VY0p9fj8/u4
-Xnkv2bOKI8kmbP7k2H0ntkDjP6bgw5vqQH6KtE7JUXx8zPo0QQpAp+Xd/6fmzrmq
-XQq5ZxoFirE3AJwcakACr6FNbmHoqR0mB4dSPmEtNO+F0zmYPsiUVCKIUtwo4jS0
-OOi/eOOg9yjf6uHuOYpyWP41+0eE34G6Ps2mimeLrcWjWm/q79jc57XT1+qBtAwG
-fz7EVQFvmY8aYlcVgishUVakPiBqNQdh/XbOxYDQwycsWM/nu32L8RKdy6aTVDdN
-QUI4ylYPU0bdr6bsyIKFzGqSTg/zwdBSkMGMwKRb4Zn7dBEMEwXwN+DR5wLRNx28
-Ln7nYeSg+b3An22cbpIYgH0ZiBRGYcxFG8K+5OL7gXxH2ho7nxeS119/hqg/wdgZ
-qdLtwHwy2I9gxQ8oe3OekmFpcEgfwEuN3fQTesXSBwlE6TMVUJ6JrzwEVknOAH41
-g6xqB0tLZAXJyAwsVIpDUZ/wKJCoIvWoja/edS8jQv3uPZ7tX7iUhJzgo8Fl697X
-yMWKnaE9lHxUfHDQRuy21fEdXQPmly5y24bFhciN6G6W6kQkR4aQ1yNm9xiTZkkE
-FWm0BARzjeO2FROUx8ELZgnHrECrTrdQPClDW3I6G/B2gAvN6sQ=
-=d1gH
------END PGP SIGNATURE-----
-
---jjt27m45ffmmgn36--
+Thank you!
