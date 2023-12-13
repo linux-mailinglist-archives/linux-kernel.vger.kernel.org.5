@@ -2,154 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C6DA6810CDF
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 10:02:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D8505810CE6
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 10:03:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230404AbjLMJCP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 04:02:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53768 "EHLO
+        id S231358AbjLMJC5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 04:02:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60370 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229458AbjLMJCO (ORCPT
+        with ESMTP id S229801AbjLMJCy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 04:02:14 -0500
-Received: from esa4.hgst.iphmx.com (esa4.hgst.iphmx.com [216.71.154.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A4D1B7;
-        Wed, 13 Dec 2023 01:02:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1702458140; x=1733994140;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-id:content-transfer-encoding:
-   mime-version;
-  bh=sTCf5g0DEi8qVyvnTMoPxY9ish3QnOtLU0BS1yXtn9g=;
-  b=O/PIgHM08zmOWAWuN25lXfheQFcx4z+zpXzbPyB3VgzyPnVDr2AG4Ygq
-   y/cEnw4T22amld+4JIKFWp9sJlu2tR8Ivn2OItmCUcn43HkfkfzdKVcSb
-   iS9upN437etcIwZ/zjgtuJbntSEIuaP1T9vzx0djSgv7iMXf/gnvpQ6fE
-   rDoqNb0ABzVTZ42fWNJRzPXEJpVjntgacsImhGw2ycD9gP11vfCi66Ne3
-   H5T88UxSBpIGkvRu2mOeCV+UbnVUnwbhS2lxS78Bnn6B2O368hIhqal9y
-   ovaJL0TdedpSGfilTp1Kfpguy2tq7lzxW+g2s1YM68oTyA1HCB5DONsTS
-   Q==;
-X-CSE-ConnectionGUID: jx0cnefORQangYZJsdo27A==
-X-CSE-MsgGUID: QTGKg3FRR3qWWdTs+PBXSg==
-X-IronPort-AV: E=Sophos;i="6.04,272,1695657600"; 
-   d="scan'208";a="4560875"
-Received: from mail-bn8nam04lp2041.outbound.protection.outlook.com (HELO NAM04-BN8-obe.outbound.protection.outlook.com) ([104.47.74.41])
-  by ob1.hgst.iphmx.com with ESMTP; 13 Dec 2023 17:02:14 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=UaIy8CfB3xgYI19qfNLMzIAH/GQfqqYbk7zWvRnM4E7n6UomERvqRzAbk7uzBMzNSx71q2oCl8jpE0/253P1LM3qVtiMhc4/w+Y05CA6VXfHpyjoYZV4Lw2VFhzH0NR+CEonEE52cDGJvfiYKysVoshTDbKg1SgOJT/Vp/Wn5cUKGN6ldjwzSoHjUh/5sUhnYQtxMEWnmUng7Wy6TDz1SR31aYcQ/JLBkLNJRolG5NinGoIC5RVWgByz4hjmt/54MsDJOCZt1INE5lkj2/NDVc5IJk7n6jIDpdQLFy8q9pCZ79E923cNmgjN7iKRlGw8Vxfj6Brcmaa1Y/qLr0M8tA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=sTCf5g0DEi8qVyvnTMoPxY9ish3QnOtLU0BS1yXtn9g=;
- b=ckfOSdJBHEWkUONGrP1fu1naxRt897HyYurNbA35Ch7ktUJaooiqPwo1fV0xSomHDXXhiWQXdH4JaZge7uzRv56OXlAjFJB2gc5OiKT32S70lrVbOkivX1PzKJK7YkWG6EE/rWRflVNlJpg7s5Xvnu3jXUUpwIH98rqsm5Ox73f42u3uDuZV/FdGG3r3MebRps/Pp1fKvx/GlKISumVdj3gnbP5i+8y4KMPGrftjSEU8qr7IgI1HHfwbEBH+lMmzpUffzN6+uiHQKnM1wEgqG6Iyjq55vC8/64XlrGbdRBBNAU8FIJbsTuWk0wnZ8qxxOwrdYPvWsfsM3Ql6Hxivbg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
+        Wed, 13 Dec 2023 04:02:54 -0500
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D461F3
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 01:03:00 -0800 (PST)
+Received: by mail-pl1-x633.google.com with SMTP id d9443c01a7336-1d3536cd414so1704815ad.2
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 01:03:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=sTCf5g0DEi8qVyvnTMoPxY9ish3QnOtLU0BS1yXtn9g=;
- b=w2uNtqmD4ekpF0innnC+nWb6nqM1yEYKnOD2zey9X4sKMdhu1ErY/Jl97yhXHabwZ2sRQGEYGKEoS4vjU2VxaAzsAUdPPmOWvoSc5Qk9Bhqag89pufy1hCCqikIEuWDFcMDgRfoVerUAICHAS8x6lfCv9T8h7UlhKJHr3wuYiDM=
-Received: from PH0PR04MB7416.namprd04.prod.outlook.com (2603:10b6:510:12::17)
- by PH0PR04MB7270.namprd04.prod.outlook.com (2603:10b6:510:19::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7091.26; Wed, 13 Dec
- 2023 09:02:13 +0000
-Received: from PH0PR04MB7416.namprd04.prod.outlook.com
- ([fe80::8ea3:9333:a633:c161]) by PH0PR04MB7416.namprd04.prod.outlook.com
- ([fe80::8ea3:9333:a633:c161%7]) with mapi id 15.20.7091.022; Wed, 13 Dec 2023
- 09:02:13 +0000
-From:   Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
-To:     "hch@infradead.org" <hch@infradead.org>
-CC:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 03/13] btrfs: factor out block-mapping for RAID0
-Thread-Topic: [PATCH 03/13] btrfs: factor out block-mapping for RAID0
-Thread-Index: AQHaLPgZZa3XPam1IUaUxzyqmuwOGLCm6QYAgAADKAA=
-Date:   Wed, 13 Dec 2023 09:02:12 +0000
-Message-ID: <02f24444-552e-45fb-9e13-f73a3cc2cb30@wdc.com>
-References: <20231212-btrfs_map_block-cleanup-v1-0-b2d954d9a55b@wdc.com>
- <20231212-btrfs_map_block-cleanup-v1-3-b2d954d9a55b@wdc.com>
- <ZXlwbjflk9EwEE7A@infradead.org>
-In-Reply-To: <ZXlwbjflk9EwEE7A@infradead.org>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Mozilla Thunderbird
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=wdc.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: PH0PR04MB7416:EE_|PH0PR04MB7270:EE_
-x-ms-office365-filtering-correlation-id: f308e54c-064a-4150-5a12-08dbfbba3258
-x-ld-processed: b61c8803-16f3-4c35-9b17-6f65f441df86,ExtAddr
-wdcipoutbound: EOP-TRUE
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: PuLAPz5JPc61fdIJ/yxP843hv5GxEX5zy2oh6ax7NVopET/b11DpNyXAPFvG/QO9+jaYZ0t91P6Pm/+KfUQeChCR50yD2kkBnUfZAG3nGytuPLUf6PzMwbXnPHue9E/mF4lHflMht+74k0QL9hM/IDFaX+oswVJYZphezohyO4CqWVIWYZvi65uTBPYMeZec0pSsB9py1FFX+9s/CMOr6PdB8IKPyjMXoErfKg36uOjDVjUKjPst6axZJF/wRq5H2HY3R0KRFpMzAJyepd1egJud7QcsXINagyxFEJieCJqlzA3TTw1I8t51oEevmXUOlxNQyl2HY8pTl9Q1bvlEyCG8rhOXjqYyjUPIFb3Dj+5loDSngFatKlSEvs6JejDq78CBtMMg/+vEbQWZ6K7Tz/D9FJNKvwi/LjzBrfb1uGeZld4NMS6mK3Sv2XRC/PpK6Q0rpmD1lJAakJNamAgvtcpORl5qDLId5EUP3XiKX8IIO0ScWKjbDz+A8kTXOi1DdtxbDX9egfoxUXzwF6YZMZ4d8n3+HB5Dx778mN+Dd8OUoDkZIs00TQVIrvwEge2FhCkXtKvo4cM1IRSkkg7nz8ITzyy8T9zAADFXExa2zw+P0TXUsuML14rle2V8cRTWXzkUevV0p+DiGaDxotNSjJqtT1yW+nHaR/O5L8z3Xnv7CkZGhqrmgmXf9/lKNmH1
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR04MB7416.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(366004)(136003)(346002)(376002)(39860400002)(230922051799003)(451199024)(186009)(1800799012)(64100799003)(31686004)(2616005)(83380400001)(38070700009)(86362001)(31696002)(82960400001)(36756003)(38100700002)(4326008)(5660300002)(6512007)(6506007)(53546011)(122000001)(71200400001)(316002)(6916009)(478600001)(76116006)(66946007)(66556008)(66476007)(66446008)(54906003)(91956017)(64756008)(41300700001)(8936002)(8676002)(6486002)(4744005)(2906002)(45980500001)(43740500002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?dVJ5MlgydTBXZDdvSTZ3TTlFaEJKMGNDcU1mSVVWT29LY1owVWx4a25ybDhr?=
- =?utf-8?B?WHpuSEhQajkvUVNlTDlvNlRWRTZVVjRWS0k0SmM3clZkU21ZRGpHc0ExT0lp?=
- =?utf-8?B?WUYyMU0wV1hYOVNLMlBOa0lQemdaUW11aE9CK2JHYk00TzRHMDY4OTEzeW14?=
- =?utf-8?B?bXdFRGpoVWx0dVJ4WFlxUjlxOU5FdE0rdU42K0l1cXhBTXg2NTVLL1BYMEky?=
- =?utf-8?B?djd6cW1YSkxzeFgxM1FTK2FSblVQNmhjMTdoZDZML1NhTk5ENkpSZnlUNXFm?=
- =?utf-8?B?SzMvSWZjejU1dytiRDlSSEZWMnJtampUTG9ic1dGN2dXQmZTRDUxRGRZbmxF?=
- =?utf-8?B?YlhmWnFPdzY5V3U5Qjk5Ny9aV3NhKytCL2svZDFsYzNUWEQ0SzhIcUdtTDFE?=
- =?utf-8?B?bzRpS3UyRjhkY0pXQW5yY2VkaXJvOVZjZlNiTmJOcGZLbjIydWM1YlRzbExG?=
- =?utf-8?B?TURqVUxjYVM2QmlLSlFEd3ZBSFZRSnRKNVpVanZ2Mnp0TXpya1dxdXZBTXBu?=
- =?utf-8?B?aDMxVEhZeHhjS3g1Ny9mK1lXZ1B4Y0VvNENEVExUQSswdkZ3UzBwdDN2WGpP?=
- =?utf-8?B?dWJjakF4ZkozWnFzdUhpRjJmWDk4RmpURTVoamRpQUVZZC9ycUFHaDRmYWp0?=
- =?utf-8?B?QjErRHFZVDFtTlFKdWo4OVJjZG9OdE1wZkNFQ1BVaG1aTDNLZEhkcmlNRXE4?=
- =?utf-8?B?cTd1L2xISUFDTnpTaStudmdQQkM3dnFYZU9QY1NHTGZaeFoxb29PQzdnb2Vl?=
- =?utf-8?B?VUdGM3A2TzJ4dzQxczFxdzRGMSsycHdCeFc1ZUNKcE5mRlJpaEFiWVdiZ21u?=
- =?utf-8?B?QnRWT1JmNlFkNFpaVnZjZjA5QzVIaEhDV2I5WFFNUEp0Mjk3ekU1MklLaGlY?=
- =?utf-8?B?S3VsRWZ4cTZqTE44by9SRUluUU5YcDdyNm1BVUtDMmpRZVNjWFRyYXdVUzR3?=
- =?utf-8?B?bmNwQUcvWlRUaHZDd2xHVVVEQ0pOaTZWaEt4ZDBKZ1JiOFNlT2lOUkN1WUdX?=
- =?utf-8?B?M3lYMnpVU1doQ2w1TDd6RExiUmNhY3B3bGxhUnMxbXROazNtUEhNcWp2QVVr?=
- =?utf-8?B?TDU2V3pScXhxa0U1RzY2bnE4VUR6dFgrb0RoNkZ4UTQ2ZlFFOHBkMWo0U0Zt?=
- =?utf-8?B?dWkzWWVuVnF3ZTdzbUZ0Tmp0Tkt0Wk5XZ0wrbFJNbUpFT3FRdkhGeFJPWTRW?=
- =?utf-8?B?U2hTbmxSTFFiTnpFT3ZHZjhtM25BSk1NSVVlM2VJODV2Y3lHbVFCUzVBaGhx?=
- =?utf-8?B?SDV6VW9QUnZXWnpKU0szRHcvYzFWUlZwWkl2Vm53eS94TXpWMTlDZlh6N3ZD?=
- =?utf-8?B?SGMwcVB1RGZoTXBrU0hMOHNsT1h5QXExY3ZWRk5veEhnakc5aGZFa01hV0p3?=
- =?utf-8?B?UkxWVlY3OXg3all1V0Z2c3drb1lEb1RFSVlUcnNuS1ZiU0NOeUhMNWpOdnFa?=
- =?utf-8?B?UFpDN1pmbmI3OTN2UXJJdTN2Q09xeDFsL00vdmJMcEVkOTJONksrS1VyL2I2?=
- =?utf-8?B?N0ZDMm0xSkIxbGNLRW9veE4zUFNDV2dCTnkySWlacVpibGt4QUZjUkh0Wnc0?=
- =?utf-8?B?WG0zRm1DQ0pMQlJacnBzWldCNGN5eWViRHBPWmV6eTdqQjB6L1VmZ1pQaFNw?=
- =?utf-8?B?MHh5cjB4b0FEVUd2TWcwTHBvRW1KQkhkaWw0L2NXcEdkMCtiZFV5VWFBUG5C?=
- =?utf-8?B?YnpCUmRkeUFvZjhIczVlTlFRR2ZrekQ3cUhwMkJuUmZ3TXhtWVJnQm9MSUJm?=
- =?utf-8?B?c01uT3I3N254R1F6OENCUWhtSitZMWpoeE1YMWZBMVQ1MGk0SmdNYWRTUS9k?=
- =?utf-8?B?TmNtc0pyNksrb0VOYlpFR1UwUUloNDkwWkxXaE5xd1hpYmxYSGhQQldvcHJU?=
- =?utf-8?B?V1VNSjdnamdrNHl0MXlqZmR1cDljZ0Q1MDZUY0YrbThlOTNNeVhEWXU1SG45?=
- =?utf-8?B?U3F2UEVpZWZxSHF5MzBIaERrbXhwZmZZVUpLTWRRL3JraXhhQS95RS9vOWVD?=
- =?utf-8?B?T21pQTVRNVBrL0YrNDFpNXVvV0RpamhTTkNQS1BuUVhqUFVNaW9hemV4R0lP?=
- =?utf-8?B?SzRWUVY1UmxkUndiK3k3NkVjM00rOHlnYnJSRk1EM2N2UGxQaWU1Tm5uemIw?=
- =?utf-8?B?VldVVU9OSnJRZmJZZGJQSTZPcXRrVEhQUUV2aGNXNmpVbDdRSXdUWUFSejlG?=
- =?utf-8?B?cDlPMmI0UnVxYVFLU1hsL01XemFnTnVXR1hwU2gzaUlKbVRLMmY2aUpJRXFr?=
- =?utf-8?B?bG53ekh5cFFKS3ZRdXIzR2UwWkJ3PT0=?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <B558225A9A4CA74A87658998D0A94455@namprd04.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        d=linaro.org; s=google; t=1702458180; x=1703062980; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt
+         :references:to:content-language:subject:reply-to:from:user-agent
+         :mime-version:date:message-id:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=zQ5v76BnrmLWivZZ9vq4Wy8nZbRsobKtjTZUA/itlB4=;
+        b=nJqE7Ae0E6XlIFIbzOUZjvgIcTUdLs2raRXlc+qtRt4gfRVcq6AzcsbRR3FwSnwDd5
+         RR9pKjlFhsgInOyJsdWBbWCGcGl6MHx6G6w+ftQMi1reCeukgD0Q/XMm6zO8S6tkp3IH
+         uQgDcwalF5W8BGhumz/ZOIqjTpUOL4oj0wVLnbux1K7vv5w3pXjdB/u6BcuaSfiAlSvP
+         aZzafSvjgIl18h0z20pEFbPoofXGc9uxsjahZ988JjE6TYeKWb4nUO7oQeLYpmQpqH05
+         NSZDcH5au93eM+kxLRxSECdqVf6zHsxWt5I3WNsO0mmBdSkqWnzvG90QxIjbOgEeEMXg
+         HHyg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702458180; x=1703062980;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt
+         :references:to:content-language:subject:reply-to:from:user-agent
+         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=zQ5v76BnrmLWivZZ9vq4Wy8nZbRsobKtjTZUA/itlB4=;
+        b=wx7FvHSOiUMwvzgztmKdIA4v6FHzDGefiO2cqbkn05tuoj5aCb6MYUdmukHa6tDbOw
+         QRx9kG+hndkTKgVvX8xGblJwJd2ctvgdgjQ2cRLiwbZKe5mO2KOkMT/zRn4F2VgTmI5p
+         NS3ki2hE/dhCRIsVpGJQSfOcqxkKripNdCw1IJeZ+EVtN7JyhF+lobvc+pslD0wIcPTc
+         oG2zxyouB/pVDbSXjfpw/sf5GHqUmCi1aUNN183rssoopM8V3IrCRbNMA/FVX70Mtzta
+         pou95UGuSqCjcLLyfO4zrL0yvx3N6nQzPdgrFYHEX+k1wgRs0YuXQzCzGo2VfO3j2eF4
+         azKw==
+X-Gm-Message-State: AOJu0YyJlHw6GGGQkDGw3UY6E4PgTjrtvrsLBDj+y3GJygEhSpmZ2uMv
+        44X5w6UoHA0fQz+o4BjHC4rJCg==
+X-Google-Smtp-Source: AGHT+IGvzCS6OB++JiwOWbdsEBhTqhA3QwJu/M2SlJeaob+iOdQDtV+McX/e9U1lUrRgrMI4tWneow==
+X-Received: by 2002:a17:902:7d8a:b0:1d2:eb05:9d05 with SMTP id a10-20020a1709027d8a00b001d2eb059d05mr6614482plm.90.1702458179815;
+        Wed, 13 Dec 2023 01:02:59 -0800 (PST)
+Received: from ?IPV6:2a01:e0a:982:cbb0:596e:6d4f:fc0a:ec65? ([2a01:e0a:982:cbb0:596e:6d4f:fc0a:ec65])
+        by smtp.gmail.com with ESMTPSA id h9-20020a170902748900b001d33e6521c1sm2516143pll.102.2023.12.13.01.02.57
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 13 Dec 2023 01:02:59 -0800 (PST)
+Message-ID: <365e012d-7fde-4cf9-b4c6-bebf2dfa53cf@linaro.org>
+Date:   Wed, 13 Dec 2023 10:02:55 +0100
 MIME-Version: 1.0
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: Bi3KYhcNn+PC4R8G1o1efF+bgUFzLhdnEHj4CMHslpPQS4YCp7fsuv0ZuxE2Bj1+aT6Iv6YRwS3y73/TrvNsiXk4EbUsfn0Yk7vI0erHsupVkAcp8z/KZpzNsfhztoGAEC7QsaoncYLOTayWr51vPEnAOYFHNyf71nrhiMLoerkC6R1sAK2DgEYD3C1szfx0MrQJoF5jMdbjBPIkUukLNEcqKUDLYtXdSBcHOC2mhmNs8/Ptb7ow4xJ8ikgew58UQ27fH0ty5eA7nEgxuD/BgkAhyMGq4+5kOYWr4bMUGwtI+tD0Llrsjip1qAv3kZkjsT1Ve2JXYDD/wdKvE5Pn8L0ppn9I1uUH+fTHwVs6Gr1TiKIOZOhMqueLE+bU0tZ65OQROudxXwjMmtIvGhHaMVOYqd9W5/Ve30WmCCuqaTTQfQ8XA+7kgfDryfgrd4Eq3zFE6v//A4qhLXdN5JLEN3iF76gPSqCvGLUeIdKE+63lru0oBjmlDy2M+E9REt7rkOjJOllansYRHGZJgcmUvGKM5u9My1XBk52YaKAQJGby/1ynUV1VysNp90ZfA3EaLU9xddqjL9zDfN2K6bEkzfvA/61gmsg9N54dyxkWBTaILCKhyQCPC+TqaEIWFWOG
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR04MB7416.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: f308e54c-064a-4150-5a12-08dbfbba3258
-X-MS-Exchange-CrossTenant-originalarrivaltime: 13 Dec 2023 09:02:13.0033
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: z5sDL6VtNFEOulMO786mKEjJldUO0/P0hH46tdCFOL09EghcsvWKabjTd7rCOq3RBky63g2hPIrjMYP/hvlFh7z9rGMQY0XgG0TIqSJFS64=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR04MB7270
+User-Agent: Mozilla Thunderbird
+From:   neil.armstrong@linaro.org
+Reply-To: neil.armstrong@linaro.org
+Subject: Re: [PATCH] arm64: dts: qcom: sm8550: add missing two RX Soundwire
+ ports in configuration
+Content-Language: en-US, fr
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20231212185415.228003-1-krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=neil.armstrong@linaro.org; keydata=
+ xsBNBE1ZBs8BCAD78xVLsXPwV/2qQx2FaO/7mhWL0Qodw8UcQJnkrWmgTFRobtTWxuRx8WWP
+ GTjuhvbleoQ5Cxjr+v+1ARGCH46MxFP5DwauzPekwJUD5QKZlaw/bURTLmS2id5wWi3lqVH4
+ BVF2WzvGyyeV1o4RTCYDnZ9VLLylJ9bneEaIs/7cjCEbipGGFlfIML3sfqnIvMAxIMZrvcl9
+ qPV2k+KQ7q+aXavU5W+yLNn7QtXUB530Zlk/d2ETgzQ5FLYYnUDAaRl+8JUTjc0CNOTpCeik
+ 80TZcE6f8M76Xa6yU8VcNko94Ck7iB4vj70q76P/J7kt98hklrr85/3NU3oti3nrIHmHABEB
+ AAHNKk5laWwgQXJtc3Ryb25nIDxuZWlsLmFybXN0cm9uZ0BsaW5hcm8ub3JnPsLAkQQTAQoA
+ OwIbIwULCQgHAwUVCgkICwUWAgMBAAIeAQIXgBYhBInsPQWERiF0UPIoSBaat7Gkz/iuBQJk
+ Q5wSAhkBAAoJEBaat7Gkz/iuyhMIANiD94qDtUTJRfEW6GwXmtKWwl/mvqQtaTtZID2dos04
+ YqBbshiJbejgVJjy+HODcNUIKBB3PSLaln4ltdsV73SBcwUNdzebfKspAQunCM22Mn6FBIxQ
+ GizsMLcP/0FX4en9NaKGfK6ZdKK6kN1GR9YffMJd2P08EO8mHowmSRe/ExAODhAs9W7XXExw
+ UNCY4pVJyRPpEhv373vvff60bHxc1k/FF9WaPscMt7hlkbFLUs85kHtQAmr8pV5Hy9ezsSRa
+ GzJmiVclkPc2BY592IGBXRDQ38urXeM4nfhhvqA50b/nAEXc6FzqgXqDkEIwR66/Gbp0t3+r
+ yQzpKRyQif3OwE0ETVkGzwEIALyKDN/OGURaHBVzwjgYq+ZtifvekdrSNl8TIDH8g1xicBYp
+ QTbPn6bbSZbdvfeQPNCcD4/EhXZuhQXMcoJsQQQnO4vwVULmPGgtGf8PVc7dxKOeta+qUh6+
+ SRh3vIcAUFHDT3f/Zdspz+e2E0hPV2hiSvICLk11qO6cyJE13zeNFoeY3ggrKY+IzbFomIZY
+ 4yG6xI99NIPEVE9lNBXBKIlewIyVlkOaYvJWSV+p5gdJXOvScNN1epm5YHmf9aE2ZjnqZGoM
+ Mtsyw18YoX9BqMFInxqYQQ3j/HpVgTSvmo5ea5qQDDUaCsaTf8UeDcwYOtgI8iL4oHcsGtUX
+ oUk33HEAEQEAAcLAXwQYAQIACQUCTVkGzwIbDAAKCRAWmrexpM/4rrXiB/sGbkQ6itMrAIfn
+ M7IbRuiSZS1unlySUVYu3SD6YBYnNi3G5EpbwfBNuT3H8//rVvtOFK4OD8cRYkxXRQmTvqa3
+ 3eDIHu/zr1HMKErm+2SD6PO9umRef8V82o2oaCLvf4WeIssFjwB0b6a12opuRP7yo3E3gTCS
+ KmbUuLv1CtxKQF+fUV1cVaTPMyT25Od+RC1K+iOR0F54oUJvJeq7fUzbn/KdlhA8XPGzwGRy
+ 4zcsPWvwnXgfe5tk680fEKZVwOZKIEuJC3v+/yZpQzDvGYJvbyix0lHnrCzq43WefRHI5XTT
+ QbM0WUIBIcGmq38+OgUsMYu4NzLu7uZFAcmp6h8g
+Organization: Linaro Developer Services
+In-Reply-To: <20231212185415.228003-1-krzysztof.kozlowski@linaro.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -157,9 +109,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gMTMuMTIuMjMgMDk6NTEsIENocmlzdG9waCBIZWxsd2lnIHdyb3RlOg0KPj4gK3N0YXRpYyB2
-b2lkIG1hcF9ibG9ja3NfZm9yX3JhaWQwKHN0cnVjdCBidHJmc19jaHVua19tYXAgKm1hcCwNCj4g
-DQo+IEknZCBza2lwIHRoZSBfZm9yIGhlcmUgYXMgaXQgaXMgYSBiaXQgcmVkdW5kYW50Lg0KDQpP
-Sy4NCg0KPj4gKwkJCQkgZW51bSBidHJmc19tYXBfb3Agb3AsDQo+IA0KPiBMb29raW5nIGF0IGFs
-bCB0aGUgcGF0Y2hlczogc2hvdWxkbid0IHRoZSBvcCBhbHNvIGdvIGludG8gdGhlDQo+IGJ0cmZz
-X2lvX2dlb21ldHJ5IHN0cnVjdHVyZT8NCg0KV291bGQgbWFrZSBzZW5zZSB5ZXMuDQo=
+On 12/12/2023 19:54, Krzysztof Kozlowski wrote:
+> The Qualcomm SM8550 RX Soundwire port configuration was taken from
+> downstream sources ("rx_frame_params_default"), but without two ports.
+> Correct the DTS, even though no practical impact was observed.
+> 
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> 
+> ---
+> 
+> Not adding fixes table, as I am not able to identify whether this was
+> actually a bug.
+> ---
+>   arch/arm64/boot/dts/qcom/sm8550.dtsi | 22 +++++++++++-----------
+>   1 file changed, 11 insertions(+), 11 deletions(-)
+> 
+> diff --git a/arch/arm64/boot/dts/qcom/sm8550.dtsi b/arch/arm64/boot/dts/qcom/sm8550.dtsi
+> index 17c4f0a7638a..1f06fd33d1ce 100644
+> --- a/arch/arm64/boot/dts/qcom/sm8550.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/sm8550.dtsi
+> @@ -2109,18 +2109,18 @@ swr1: soundwire-controller@6ad0000 {
+>   			clock-names = "iface";
+>   			label = "RX";
+>   
+> -			qcom,din-ports = <0>;
+> -			qcom,dout-ports = <10>;
+> +			qcom,din-ports = <1>;
+> +			qcom,dout-ports = <11>;
+>   
+> -			qcom,ports-sinterval =		/bits/ 16 <0x03 0x3f 0x1f 0x07 0x00 0x18f 0xff 0xff 0xff 0xff>;
+> -			qcom,ports-offset1 =		/bits/ 8 <0x00 0x00 0x0b 0x01 0x00 0x00 0xff 0xff 0xff 0xff>;
+> -			qcom,ports-offset2 =		/bits/ 8 <0x00 0x00 0x0b 0x00 0x00 0x00 0xff 0xff 0xff 0xff>;
+> -			qcom,ports-hstart =		/bits/ 8 <0xff 0x03 0xff 0xff 0xff 0x08 0xff 0xff 0xff 0xff>;
+> -			qcom,ports-hstop =		/bits/ 8 <0xff 0x06 0xff 0xff 0xff 0x08 0xff 0xff 0xff 0xff>;
+> -			qcom,ports-word-length =	/bits/ 8 <0x01 0x07 0x04 0xff 0xff 0x0f 0xff 0xff 0xff 0xff>;
+> -			qcom,ports-block-pack-mode =	/bits/ 8 <0xff 0x00 0x01 0xff 0xff 0x00 0xff 0xff 0xff 0xff>;
+> -			qcom,ports-block-group-count =	/bits/ 8 <0xff 0xff 0xff 0xff 0x00 0x00 0xff 0xff 0xff 0xff>;
+> -			qcom,ports-lane-control =	/bits/ 8 <0x01 0x00 0x00 0x00 0x00 0x00 0xff 0xff 0xff 0xff>;
+> +			qcom,ports-sinterval =		/bits/ 16 <0x03 0x3f 0x1f 0x07 0x00 0x18f 0xff 0xff 0xff 0xff 0xff 0xff>;
+> +			qcom,ports-offset1 =		/bits/ 8 <0x00 0x00 0x0b 0x01 0x00 0x00 0xff 0xff 0xff 0xff 0xff 0xff>;
+> +			qcom,ports-offset2 =		/bits/ 8 <0x00 0x00 0x0b 0x00 0x00 0x00 0xff 0xff 0xff 0xff 0xff 0xff>;
+> +			qcom,ports-hstart =		/bits/ 8 <0xff 0x03 0xff 0xff 0xff 0x08 0xff 0xff 0xff 0xff 0xff 0xff>;
+> +			qcom,ports-hstop =		/bits/ 8 <0xff 0x06 0xff 0xff 0xff 0x08 0xff 0xff 0xff 0xff 0xff 0xff>;
+> +			qcom,ports-word-length =	/bits/ 8 <0x01 0x07 0x04 0xff 0xff 0x0f 0xff 0xff 0xff 0xff 0xff 0xff>;
+> +			qcom,ports-block-pack-mode =	/bits/ 8 <0xff 0x00 0x01 0xff 0xff 0x00 0xff 0xff 0xff 0xff 0xff 0xff>;
+> +			qcom,ports-block-group-count =	/bits/ 8 <0xff 0xff 0xff 0xff 0x00 0x00 0xff 0xff 0xff 0xff 0xff 0xff>;
+> +			qcom,ports-lane-control =	/bits/ 8 <0x01 0x00 0x00 0x00 0x00 0x00 0xff 0xff 0xff 0xff 0xff 0xff>;
+>   
+>   			#address-cells = <2>;
+>   			#size-cells = <0>;
+
+Reviewed-by: Neil Armstrong <neil.armstrong@linaro.org>
