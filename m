@@ -2,103 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 27692811D90
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 19:54:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 54EA2811D95
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 19:55:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379216AbjLMSyT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 13:54:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59436 "EHLO
+        id S233709AbjLMSy5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 13:54:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35426 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233674AbjLMSyP (ORCPT
+        with ESMTP id S230056AbjLMSyz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 13:54:15 -0500
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 619F0B0
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 10:54:20 -0800 (PST)
-Received: by mail-lf1-x12e.google.com with SMTP id 2adb3069b0e04-50bf7bc38c0so8298478e87.2
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 10:54:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google; t=1702493658; x=1703098458; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=NDCS9UOfkoQCbKbgKYdSPqJONg4+Gm4jJWLPZJwATro=;
-        b=D8JQWI3p3d3siPDBfFmFRj8zB1ioaEMzRdTmvD7xwQ0chlEh1gyofZ86nYu4wQGtwX
-         g1KQ5IsrEl8q7LScJSU1M1unCxfltqY8JiInqVxPAgEN//1xowHGXwWiYMx61TpLG487
-         r2BN2sBTituCpy4yEJxUNV8j+Wi1heNr51ZJE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702493658; x=1703098458;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=NDCS9UOfkoQCbKbgKYdSPqJONg4+Gm4jJWLPZJwATro=;
-        b=QpYM/zO/TABkEv/2LI/Dl+SCurONO7EUF5fsF9D1PeYX+xzEBxswU4jRD8QAWwDH8c
-         B1Y37Yb7OND9r+JRVuykw44spUIJ5TOZJZb86D8GpsN4pxxVU1LV51F+NqThfop0pnPd
-         RZNsrAG0Zu9eo0i2uUttXrAWCk2/WcvquLl/LvdxNSh07LL4M/qZ46FenFfBRtKhEGvR
-         yolET+mxxrb4NFcxAxxjmX8d6vwsD30+sY4/pVWdS/CkVD8uC/0ZHyTKEWMs2DrbneoX
-         eDV5Q1kCiXJU2mOUlRh6erPDwKpe0LKvheEZZqeoQcgZma3xkJdMrc3w/ff5VfGIlony
-         MxcQ==
-X-Gm-Message-State: AOJu0YxYSSvUtRs3s3rGYM9sFnlLY0fpe40Hc9RLZfEo6QaezAS268wv
-        s/huDeyAUn0bpxd9T43jIUgN6c9gZC68cv+f0JmfPW30
-X-Google-Smtp-Source: AGHT+IE1LECKo984YZzQxU+7eE1z9SMZqTmErHQtj49/2OphmUL/NwpBkrrtaaXoVTs78jJXuSWeKg==
-X-Received: by 2002:a05:6512:398a:b0:50d:fb24:1224 with SMTP id j10-20020a056512398a00b0050dfb241224mr3709484lfu.129.1702493658247;
-        Wed, 13 Dec 2023 10:54:18 -0800 (PST)
-Received: from mail-ed1-f47.google.com (mail-ed1-f47.google.com. [209.85.208.47])
-        by smtp.gmail.com with ESMTPSA id o20-20020a17090611d400b00a0d02cfa48bsm8213743eja.213.2023.12.13.10.54.17
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 13 Dec 2023 10:54:17 -0800 (PST)
-Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-55193d5e8cdso2615338a12.1
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 10:54:17 -0800 (PST)
-X-Received: by 2002:a05:6402:2227:b0:547:9f26:e581 with SMTP id
- cr7-20020a056402222700b005479f26e581mr4033634edb.37.1702493657276; Wed, 13
- Dec 2023 10:54:17 -0800 (PST)
+        Wed, 13 Dec 2023 13:54:55 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22E02B0
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 10:55:02 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B224DC433C7;
+        Wed, 13 Dec 2023 18:55:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1702493701;
+        bh=gNwdzPsr9UWjlIeXdMO9ihywHKgw6GU/WIg5VvGTAaw=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=BLEwHEC9xexsuNcvGDIs8F1R9mitnFG6BFTwBMIo1YZzyJo76DWKF6wPmO4/EaJ5m
+         HUu9AoGBBPrbm2BPquvJZWg35Q3qJtb5a7l2Ummy744S+2EwCL0yR+ARXGOmEBorxT
+         kzFXM/cNvD20CP1t5fAiIhd8UdZUZAAasA1W+goHjmIzDNH2ao/66M28sMLMRf/D+n
+         07LPLi4iT7jkAmeWvgGL+jeyLay3u2/0KNHbwuc6uZeqtjo8S4WKIe6WrP3aiysClf
+         CK+b93YBH0HwW0uNT7kAcWvnUKGFKlBth+5Ab3QfYV3W9IwTu2fy4FlcaAPFLkUhFE
+         DuVjVYKghL8OA==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 50904CE0C4D; Wed, 13 Dec 2023 10:55:01 -0800 (PST)
+Date:   Wed, 13 Dec 2023 10:55:01 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Joel Fernandes <joel@joelfernandes.org>
+Cc:     "Neeraj Upadhyay (AMD)" <neeraj.iitr10@gmail.com>,
+        rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@meta.com, rostedt@goodmis.org, Neeraj.Upadhyay@amd.com,
+        Frederic Weisbecker <frederic@kernel.org>
+Subject: Re: [PATCH rcu 3/3] srcu: Explain why callbacks invocations can't
+ run concurrently
+Message-ID: <9109c700-a353-4b12-a7c5-2f67e9ab4e86@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <20231212174750.GA11886@neeraj.linux>
+ <20231212174817.11919-3-neeraj.iitr10@gmail.com>
+ <CAEXW_YRHjdM+NA3CqNuwaRNXkRWbtypmt5Ov=YXnrpn3Eo-==Q@mail.gmail.com>
+ <2b2c1573-337d-409b-a8ee-daeff096c7f4@paulmck-laptop>
+ <CAEXW_YQnR51F9xnODZd3iE+S5Jpd2NHRBTk6Jt2WHTSdB9H8kA@mail.gmail.com>
 MIME-Version: 1.0
-References: <20231213163443.70490-1-brgerst@gmail.com> <20231213163443.70490-4-brgerst@gmail.com>
-In-Reply-To: <20231213163443.70490-4-brgerst@gmail.com>
-From:   Linus Torvalds <torvalds@linuxfoundation.org>
-Date:   Wed, 13 Dec 2023 10:54:00 -0800
-X-Gmail-Original-Message-ID: <CAHk-=whXt7QZV+HDA8=PN1pTBSNTL0ZJrcqtc4af=FtJpjPQeQ@mail.gmail.com>
-Message-ID: <CAHk-=whXt7QZV+HDA8=PN1pTBSNTL0ZJrcqtc4af=FtJpjPQeQ@mail.gmail.com>
-Subject: Re: [PATCH 3/3] x86/sigreturn: Reject system segements
-To:     Brian Gerst <brgerst@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, x86@kernel.org,
-        Ingo Molnar <mingo@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Michal Luczaj <mhal@rbox.co>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAEXW_YQnR51F9xnODZd3iE+S5Jpd2NHRBTk6Jt2WHTSdB9H8kA@mail.gmail.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 13 Dec 2023 at 08:34, Brian Gerst <brgerst@gmail.com> wrote:
->
-> @@ -98,7 +98,11 @@ static bool ia32_restore_sigcontext(struct pt_regs *regs,
->
->         /* Get CS/SS and force CPL3 */
->         regs->cs = sc.cs | 0x03;
-> +       if (!valid_user_selector(regs->cs))
-> +               return false;
->         regs->ss = sc.ss | 0x03;
-> +       if (!valid_user_selector(regs->ss))
-> +               return false;
+On Wed, Dec 13, 2023 at 01:35:22PM -0500, Joel Fernandes wrote:
+> On Wed, Dec 13, 2023 at 12:52 PM Paul E. McKenney <paulmck@kernel.org> wrote:
+> >
+> > On Wed, Dec 13, 2023 at 09:27:09AM -0500, Joel Fernandes wrote:
+> > > On Tue, Dec 12, 2023 at 12:48 PM Neeraj Upadhyay (AMD)
+> > > <neeraj.iitr10@gmail.com> wrote:
+> > > >
+> > > > From: Frederic Weisbecker <frederic@kernel.org>
+> > > >
+> > > > If an SRCU barrier is queued while callbacks are running and a new
+> > > > callbacks invocator for the same sdp were to run concurrently, the
+> > > > RCU barrier might execute too early. As this requirement is non-obvious,
+> > > > make sure to keep a record.
+> > > >
+> > > > Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+> > > > Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+> > > > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> > > > Signed-off-by: Neeraj Upadhyay (AMD) <neeraj.iitr10@gmail.com>
+> > > > ---
+> > > >  kernel/rcu/srcutree.c | 6 ++++++
+> > > >  1 file changed, 6 insertions(+)
+> > > >
+> > > > diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
+> > > > index 2bfc8ed1eed2..0351a4e83529 100644
+> > > > --- a/kernel/rcu/srcutree.c
+> > > > +++ b/kernel/rcu/srcutree.c
+> > > > @@ -1715,6 +1715,11 @@ static void srcu_invoke_callbacks(struct work_struct *work)
+> > > >         WARN_ON_ONCE(!rcu_segcblist_segempty(&sdp->srcu_cblist, RCU_NEXT_TAIL));
+> > > >         rcu_segcblist_advance(&sdp->srcu_cblist,
+> > > >                               rcu_seq_current(&ssp->srcu_sup->srcu_gp_seq));
+> > > > +       /*
+> > > > +        * Although this function is theoretically re-entrant, concurrent
+> > > > +        * callbacks invocation is disallowed to avoid executing an SRCU barrier
+> > > > +        * too early.
+> > > > +        */
+> > >
+> > > Side comment:
+> > > I guess even without the barrier reasoning, it is best not to allow
+> > > concurrent CB execution anyway since it diverges from the behavior of
+> > > straight RCU :)
+> >
+> > Good point!
+> >
+> > But please do not forget item 12 on the list in checklist.rst.  ;-)
+> > (Which I just updated to include the other call_rcu*() functions.)
+> 
+> I think this is more so now with recent kernels (with the dynamic nocb
+> switch) than with older kernels right? I haven't kept up with the
+> checklist recently (which is my bad).
 
-Side note: the SS/CS checks could be stricter than the usual selector tests.
+You are quite correct!  But even before this, I was saying that
+lack of same-CPU callback concurrency was an accident of the current
+implementation rather than a guarantee.  For example, there might come
+a time when RCU needs to respond to callback flooding with concurrent
+execution of the flooded CPU's callbacks.  Or not, but we do need to
+keep this option open.
 
-In particular, normal segments can be Null segments. But CS/SS must not be.
+> My understanding comes from the fact that the RCU barrier depends on
+> callbacks on the same CPU executing in order with straight RCU
+> otherwise it breaks. Hence my comment. But as you pointed out, that's
+> outdated knowledge.
 
-Also, since you're now checking the validity, maybe we shouldn't do
-the "force cpl3" any more, and just make it an error to try to load a
-non-cpl3 segment at sigreturn..
+That is still one motivation for ordered execution of callbacks.  For the
+dynamic nocb switch, we could have chosen to make rcu_barrier() place
+a callback on both lists, but we instead chose to exclude rcu_barrier()
+calls during the switch.
 
-That forcing was literally just because we weren't checking it for sanity...
+> I should just shut up and hide in shame now.
 
-           Linus
+No need for that!  After all, one motivation for Requirements.rst was
+to help me keep track of all this stuff.
+
+							Thanx, Paul
+
+> :-/
+> 
+>  - Joel
