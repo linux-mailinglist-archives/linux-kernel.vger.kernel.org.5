@@ -2,57 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 73188811778
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 16:40:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1ED968117BA
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 16:43:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442147AbjLMPkA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 10:40:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54698 "EHLO
+        id S1442532AbjLMPlA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 10:41:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57428 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1442356AbjLMPjs (ORCPT
+        with ESMTP id S1442401AbjLMPkv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 10:39:48 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75E7A19F
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 07:39:53 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B64BDC433C7;
-        Wed, 13 Dec 2023 15:39:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1702481993;
-        bh=6AM6HzmzlNePc9eLi1v9b1TYKvgnhVKKi53VuhnmrQg=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=k1PYCxW566zHq45yqBcmJpHK212X1cSreNhbOYZ7R/p2dAfWpatw3XDxiXEHxMxrk
-         p2Dw1/2VTcgD9t1r6HgmUIdI8JKO3as8oUBdDAvr2jvz+bxL1QzrV4jZDIWaV9mjZW
-         y6TSUygRnEh+5hsOCOLbF2dC1Rhzx3NlDY8XkJ+zRWM56MRmaVCcJUbHrPToRGByZ+
-         VpLBXhx0oO9iOrBYidh0a+uKmyAdWIM4QBU9WuOSIS/fd1UCc2TQRbe9hxBcDDKU9C
-         GCll0BOAZKtPqOa0whMH+6JUykPC3z7y6uSZ4RzOz3ExAwB2Gj+F6o317uEwP64djV
-         NUgnogJ2lYjHw==
-Date:   Wed, 13 Dec 2023 07:39:51 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Marek =?UTF-8?B?QmVow7pu?= <kabel@kernel.org>
-Cc:     Lee Jones <lee@kernel.org>,
-        Christian Marangi <ansuelsmth@gmail.com>,
-        Pavel Machek <pavel@ucw.cz>, Andrew Lunn <andrew@lunn.ch>,
-        "David S. Miller" <davem@davemloft.net>,
-        Li Zetao <lizetao1@huawei.com>, linux-kernel@vger.kernel.org,
-        linux-leds@vger.kernel.org, Daniel Golle <daniel@makrotopia.org>
-Subject: Re: [GIT PULL] Immutable branch between LEDs and NetDev due for the
- v6.8 merge window:wq
-Message-ID: <20231213073951.4293c0c7@kernel.org>
-In-Reply-To: <20231213130555.406aa2ef@dellmb>
-References: <99e7d3304c6bba7f4863a4a80764a869855f2085.1701143925.git.daniel@makrotopia.org>
-        <170142826116.3357002.9561246405642038358.b4-ty@kernel.org>
-        <6577315e.050a0220.50f30.0122@mx.google.com>
-        <20231211084656.26578d89@kernel.org>
-        <657784f6.5d0a0220.617b5.20ee@mx.google.com>
-        <20231211140546.5c39b819@kernel.org>
-        <20231213112705.GI111411@google.com>
-        <20231213130555.406aa2ef@dellmb>
+        Wed, 13 Dec 2023 10:40:51 -0500
+Received: from kylie.crudebyte.com (kylie.crudebyte.com [5.189.157.229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99ED1B2;
+        Wed, 13 Dec 2023 07:40:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=crudebyte.com; s=kylie; h=Content-Type:Content-Transfer-Encoding:
+        MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
+        Content-ID:Content-Description;
+        bh=7//ZdDSj+QqrNUi/Q5v5UfWHhwMOn9RO8A+kW7pJWZQ=; b=mREbFX7lEogiXaaRoZFSpgjtu4
+        U2kQQSMGEIdblZxPKwD9cRXFhIxlM3PuImXIBkKgc3rSQr+G3fGLW5bDqTRmQgrcyrjaXM9DbVHxP
+        88/e6AhC50j/6S0VHchBBxbzoO0OvkCptkHWsT86VZ1poIfwRi2/XqbH4jhQXEKlnTUefh9K0tZ+4
+        zCh2KVyTjAFhw0Y0MHa8bA7ZFGWcbpf/+7jNYTHG0ENXa7IV3keFu2ApRDOAzXCNGr4Q1yFWndahW
+        rBC8hinUHvTkMz+mcSreDQH0rpgbV1GGrpkLiKCMT8NjBYOtXY1iTk69JU4K4pWRSTCGtVW6TdMT1
+        a2UIsAykP8NsCkVNzYnyKoSUWwNv4ft9or7ZIBjDQGFWYYiH/1kLHBQRzkDNmJYWzfWMgxmpTlVUI
+        ePj/QII0KBGj42bsJLngP8YuA/P5i3BTF7q1f8/lKfivAycXf7SoR/LxQqh5ghWGGKNf7jtW/EirZ
+        Uo5gEb5Jrlc07sOFDpGn9jIUNEqOv+diInVfAzlFEAd+C7CPOduxkhfokH6IyEozwa3voZ152z8Ry
+        BlqMDUHL3OdAcOGmk4zT4Mx6CtZdMh3d4aheBcTdcfkh5d1kMTSJ7NEC0JkUyJIQ188GoYJ+aYml5
+        4fTneTZgDYIsW3C8FGbVlAXu47ughRBAS2T0PTGZ8=;
+From:   Christian Schoenebeck <linux_oss@crudebyte.com>
+To:     Jeff Layton <jlayton@kernel.org>,
+        Steve French <smfrench@gmail.com>,
+        David Howells <dhowells@redhat.com>
+Cc:     David Howells <dhowells@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Marc Dionne <marc.dionne@auristor.com>,
+        Paulo Alcantara <pc@manguebit.com>,
+        Shyam Prasad N <sprasad@microsoft.com>,
+        Tom Talpey <tom@talpey.com>,
+        Dominique Martinet <asmadeus@codewreck.org>,
+        Eric Van Hensbergen <ericvh@kernel.org>,
+        Ilya Dryomov <idryomov@gmail.com>,
+        Christian Brauner <christian@brauner.io>,
+        linux-cachefs@redhat.com, linux-afs@lists.infradead.org,
+        linux-cifs@vger.kernel.org, linux-nfs@vger.kernel.org,
+        ceph-devel@vger.kernel.org, v9fs@lists.linux.dev,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Latchesar Ionkov <lucho@ionkov.net>
+Subject: Re: [PATCH v4 39/39] 9p: Use netfslib read/write_iter
+Date:   Wed, 13 Dec 2023 16:39:54 +0100
+Message-ID: <189166113.2PRW8NTP99@silver>
+In-Reply-To: <20231213152350.431591-40-dhowells@redhat.com>
+References: <20231213152350.431591-1-dhowells@redhat.com>
+ <20231213152350.431591-40-dhowells@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -61,13 +68,21 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 13 Dec 2023 13:05:55 +0100 Marek Beh=C3=BAn wrote:
-> > No, please don't do that.  None of the branches I maintain are stable.
+On Wednesday, December 13, 2023 4:23:49 PM CET David Howells wrote:
+> Use netfslib's read and write iteration helpers, allowing netfslib to take
+> over the management of the page cache for 9p files and to manage local disk
+> caching.  In particular, this eliminates write_begin, write_end, writepage
+> and all mentions of struct page and struct folio from 9p.
+> 
+> Note that netfslib now offers the possibility of write-through caching if
+> that is desirable for 9p: just set the NETFS_ICTX_WRITETHROUGH flag in
+> v9inode->netfs.flags in v9fs_set_netfs_context().
+> 
+> Note also this is untested as I can't get ganesha.nfsd to correctly parse
+> the config to turn on 9p support.
 
-Nice, /me adds that to the notes.
+Do you have a chance to test this 9p patch with QEMU instead maybe?
 
-> Please don't pull this. The sysfs documentation for the link_* files
-> does not specify that they are available only if the underlying speeds
-> are supported.
+/Christian
 
-Roger that.
+
