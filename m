@@ -2,513 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BAEED810E5A
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 11:25:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CC85810E60
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 11:25:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235329AbjLMKZR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 05:25:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60246 "EHLO
+        id S235333AbjLMKZa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 05:25:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43568 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235298AbjLMKZP (ORCPT
+        with ESMTP id S235299AbjLMKZ2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 05:25:15 -0500
-Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3416A7;
-        Wed, 13 Dec 2023 02:25:20 -0800 (PST)
-Received: by mail-yb1-xb2b.google.com with SMTP id 3f1490d57ef6-db4422fff15so5565239276.1;
-        Wed, 13 Dec 2023 02:25:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702463120; x=1703067920; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=x4MCw2YC7I/1qOaN5GQmrfRmc1eHOmDUJJZ7I0ZkK4U=;
-        b=VqI5qNGqblV9VjGSBdVElqRtWfTIj8u85Rcb8IBk76FxasHzr8VZzS2geH/SvIdakW
-         C3tO1q8iWH+9A+le1pZ1+EZPQdkG3AXqnonTq34DlSuCKMKyxXv3r3rCqLvIKw++tnQ1
-         pzlKCeXm9EmXwNbdtMox/yotoVqaL5ZCIEBx+7dvRA275RLHpPAdViYIbmNv5qrWoVcz
-         yxVoRejYtc0CPwT9YU5sgRHguIgFywnzy+ugeLihnDRimONWQkQur2CcF3VFZOwDRTGk
-         It2H53ktZ1LDHNPkT/jj6pY3nv3AUIlkc9aw9x0sqcWzVa8C9jR2ZEXclSIch809ezDv
-         OCfw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702463120; x=1703067920;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=x4MCw2YC7I/1qOaN5GQmrfRmc1eHOmDUJJZ7I0ZkK4U=;
-        b=QhyaDtu8EfjNaLGkOyHVFVeh/Jw5kicPGcSqEn5hs2NNf3I1nX2EyYA74KyifuN6ps
-         0TzN4+imW2875yNith20IosfzkILc16Q51kYGEG/B9bn0yPwICfmIBsotmQrSsFqDdJ0
-         iYj970vT1IUPaho2YmtXryIYXgivX6JBJZSqLzPhDcm5DgEMrQM24xx0lJ+4RyYkSQpn
-         kWNrqjpHsQQ67UPgsS6atmCbAFA/RrMKXa4zfJSGieZkFCzE2PI8RV8uo4NFQU7YuOG4
-         D5v9gnxsO8BOpk9v0LurYuF1Hg8eygrlwyjhODgVUSzXpTYwup4Jir/M7WHwqhCm7PGC
-         KIQA==
-X-Gm-Message-State: AOJu0Yx2Tot+/jmR7PSMmGlCxryoQDV/vwdr2/CHNPm5sT0ab1ZLIltR
-        7IIH6ZtwnK1V8fk9nKDCDr4yIt2diG9GXJII6DpZjzn9hQ==
-X-Google-Smtp-Source: AGHT+IGsp8CnBmu9gktPPbpU5B1/sHwo7J5nU7bURRButUIRmRr1gETos923pzp0mzuKlbEtqym7OEJ86QLztt5hwnI=
-X-Received: by 2002:a5b:20b:0:b0:db7:d700:3c0e with SMTP id
- z11-20020a5b020b000000b00db7d7003c0emr4465711ybl.39.1702463119971; Wed, 13
- Dec 2023 02:25:19 -0800 (PST)
+        Wed, 13 Dec 2023 05:25:28 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D43F1AC
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 02:25:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1702463134;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=W/r5C+C8vvlrOFPoBxr3FLWNYuCGMCfVD68sW2OExkw=;
+        b=cGs2ZXRC/tfiFkdKQSJOVOZBy8g13PtGzrH3vHG0cmccWD8zYtuCIl4BS5TylVo4xcCrtQ
+        6Bde+VFCe0CpBfdupvDzAfBkL118dZUOfEX2VmH829BYEy8ahRn2Ja/CF6ABTKwBTTghUW
+        19vmdAA6Xi4rjLHy2eYJyQXB7XGn5uA=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-517-xtXyTSkzPE-y2qrqBKbpBg-1; Wed,
+ 13 Dec 2023 05:25:32 -0500
+X-MC-Unique: xtXyTSkzPE-y2qrqBKbpBg-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.rdu2.redhat.com [10.11.54.8])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id CCE8A3C2B601;
+        Wed, 13 Dec 2023 10:25:31 +0000 (UTC)
+Received: from warthog.procyon.org.uk (unknown [10.42.28.2])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id D1CB5C15A0C;
+        Wed, 13 Dec 2023 10:25:30 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+To:     Marc Dionne <marc.dionne@auristor.com>
+cc:     dhowells@redhat.com, linux-afs@lists.infradead.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] afs: Fix use-after-free due to get/remove race in volume tree
 MIME-Version: 1.0
-References: <CACkBjsbj4y4EhqpV-ZVt645UtERJRTxfEab21jXD1ahPyzH4_g@mail.gmail.com>
- <CAEf4BzZ0xidVCqB47XnkXcNhkPWF6_nTV7yt+_Lf0kcFEut2Mg@mail.gmail.com>
-In-Reply-To: <CAEf4BzZ0xidVCqB47XnkXcNhkPWF6_nTV7yt+_Lf0kcFEut2Mg@mail.gmail.com>
-From:   Hao Sun <sunhao.th@gmail.com>
-Date:   Wed, 13 Dec 2023 11:25:08 +0100
-Message-ID: <CACkBjsaEQxCaZ0ERRnBXduBqdw3MXB5r7naJx_anqxi0Wa-M_Q@mail.gmail.com>
-Subject: Re: [Bug Report] bpf: incorrectly pruning runtime execution path
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        bpf <bpf@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <307295.1702463129.1@warthog.procyon.org.uk>
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Date:   Wed, 13 Dec 2023 10:25:29 +0000
+Message-ID: <307296.1702463129@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.8
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 13, 2023 at 1:51=E2=80=AFAM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
->
-> On Mon, Dec 11, 2023 at 7:31=E2=80=AFAM Hao Sun <sunhao.th@gmail.com> wro=
-te:
-> >
-> > Hi,
-> >
-> > The verifier incorrectly prunes a path expected to be executed at
-> > runtime. In the following program, the execution path is:
-> >     from 6 to 8 (taken) -> from 11 to 15 (taken) -> from 18 to 22
-> > (taken) -> from 26 to 27 (fall-through) -> from 29 to 30
-> > (fall-through)
-> > The verifier prunes the checking path at #26, skipping the actual
-> > execution path.
-> >
-> >    0: (18) r2 =3D 0x1a000000be
-> >    2: (bf) r5 =3D r1
-> >    3: (bf) r8 =3D r2
-> >    4: (bc) w4 =3D w5
-> >    5: (85) call bpf_get_current_cgroup_id#680112
-> >    6: (36) if w8 >=3D 0x69 goto pc+1
-> >    7: (95) exit
-> >    8: (18) r4 =3D 0x52
-> >   10: (84) w4 =3D -w4
-> >   11: (45) if r0 & 0xfffffffe goto pc+3
-> >   12: (1f) r8 -=3D r4
-> >   13: (0f) r0 +=3D r0
-> >   14: (2f) r4 *=3D r4
-> >   15: (18) r3 =3D 0x1f00000034
-> >   17: (c4) w4 s>>=3D 29
-> >   18: (56) if w8 !=3D 0xf goto pc+3
-> >   19: r3 =3D bswap32 r3
-> >   20: (18) r2 =3D 0x1c
-> >   22: (67) r4 <<=3D 2
-> >   23: (bf) r5 =3D r8
-> >   24: (18) r2 =3D 0x4
-> >   26: (7e) if w8 s>=3D w0 goto pc+5
-> >   27: (4f) r8 |=3D r8
-> >   28: (0f) r8 +=3D r8
-> >   29: (d6) if w5 s<=3D 0x1d goto pc+2
-> >   30: (18) r0 =3D 0x4 ; incorrectly pruned here
->
->
->
-> >   32: (95) exit
-> >
-> > -------- Verifier Log --------
-> > func#0 @0
-> > 0: R1=3Dctx() R10=3Dfp0
-> > 0: (18) r2 =3D 0x1a000000be             ; R2_w=3D0x1a000000be
-> > 2: (bf) r5 =3D r1                       ; R1=3Dctx() R5_w=3Dctx()
-> > 3: (bf) r8 =3D r2                       ; R2_w=3D0x1a000000be R8_w=3D0x=
-1a000000be
-> > 4: (bc) w4 =3D w5                       ;
-> > R4_w=3Dscalar(smin=3D0,smax=3Dumax=3D0xffffffff,var_off=3D(0x0; 0xfffff=
-fff))
-> > R5_w=3Dctx()
-> > 5: (85) call bpf_get_current_cgroup_id#80     ; R0_w=3Dscalar()
-> > 6: (36) if w8 >=3D 0x69 goto pc+1
-> > mark_precise: frame0: last_idx 6 first_idx 0 subseq_idx -1
-> > mark_precise: frame0: regs=3Dr8 stack=3D before 5: (85) call
-> > bpf_get_current_cgroup_id#80
-> > mark_precise: frame0: regs=3Dr8 stack=3D before 4: (bc) w4 =3D w5
-> > mark_precise: frame0: regs=3Dr8 stack=3D before 3: (bf) r8 =3D r2
-> > mark_precise: frame0: regs=3Dr2 stack=3D before 2: (bf) r5 =3D r1
-> > mark_precise: frame0: regs=3Dr2 stack=3D before 0: (18) r2 =3D 0x1a0000=
-00be
-> > 6: R8_w=3D0x1a000000be
-> > 8: (18) r4 =3D 0x52                     ; R4_w=3D82
-> > 10: (84) w4 =3D -w4                     ; R4=3Dscalar()
-> > 11: (45) if r0 & 0xfffffffe goto pc+3         ;
-> > R0=3Dscalar(smin=3Dsmin32=3D0,smax=3Dumax=3Dsmax32=3Dumax32=3D1,var_off=
-=3D(0x0; 0x1))
-> > 12: (1f) r8 -=3D r4                     ; R4=3Dscalar() R8_w=3Dscalar()
-> > 13: (0f) r0 +=3D r0                     ;
-> > R0_w=3Dscalar(smin=3Dsmin32=3D0,smax=3Dumax=3Dsmax32=3Dumax32=3D2,var_o=
-ff=3D(0x0;
-> > 0x3))
-> > 14: (2f) r4 *=3D r4                     ; R4_w=3Dscalar()
-> > 15: (18) r3 =3D 0x1f00000034            ; R3_w=3D0x1f00000034
-> > 17: (c4) w4 s>>=3D 29                   ;
-> > R4_w=3Dscalar(smin=3D0,smax=3Dumax=3D0xffffffff,smin32=3D-4,smax32=3D3,=
-var_off=3D(0x0;
-> > 0xffffffff))
-> > 18: (56) if w8 !=3D 0xf goto pc+3       ;
-> > R8_w=3Dscalar(smin=3D0x800000000000000f,smax=3D0x7fffffff0000000f,umin=
-=3Dsmin32=3Dumin32=3D15,umax=3D0xffffffff0000000f,smax32=3Dumax32=3D15,var_=
-off=3D(0xf;
-> > 0xffffffff00000000))
-> > 19: (d7) r3 =3D bswap32 r3              ; R3_w=3Dscalar()
-> > 20: (18) r2 =3D 0x1c                    ; R2=3D28
-> > 22: (67) r4 <<=3D 2                     ;
-> > R4_w=3Dscalar(smin=3D0,smax=3Dumax=3D0x3fffffffc,smax32=3D0x7ffffffc,um=
-ax32=3D0xfffffffc,var_off=3D(0x0;
-> > 0x3fffffffc))
-> > 23: (bf) r5 =3D r8                      ;
-> > R5_w=3Dscalar(id=3D1,smin=3D0x800000000000000f,smax=3D0x7fffffff0000000=
-f,umin=3Dsmin32=3Dumin32=3D15,umax=3D0xffffffff0000000f,smax32=3Dumax32=3D1=
-5,var_off=3D(0xf;
-> > 0xffffffff00000000))
-> > R8=3Dscalar(id=3D1,smin=3D0x800000000000000f,smax=3D0x7fffffff0000000f,=
-umin=3Dsmin32=3Dumin32=3D15,umax=3D0xffffffff0000000f,smax32=3Dumax32=3D15,=
-var_off=3D(0xf;
-> > 0xffffffff00000000))
-> > 24: (18) r2 =3D 0x4                     ; R2_w=3D4
-> > 26: (7e) if w8 s>=3D w0 goto pc+5
->
-> so here w8=3D15 and w0=3D[0,2], always taken, right?
->
-> > mark_precise: frame0: last_idx 26 first_idx 22 subseq_idx -1
-> > mark_precise: frame0: regs=3Dr5,r8 stack=3D before 24: (18) r2 =3D 0x4
-> > mark_precise: frame0: regs=3Dr5,r8 stack=3D before 23: (bf) r5 =3D r8
-> > mark_precise: frame0: regs=3Dr8 stack=3D before 22: (67) r4 <<=3D 2
-> > mark_precise: frame0: parent state regs=3Dr8 stack=3D:
-> > R0_rw=3Dscalar(smin=3Dsmin32=3D0,smax=3Dumax=3Dsmax32=3Dumax32=3D2,var_=
-off=3D(0x0;
-> > 0x3)) R2_w=3D28 R3_w=3Dscalar()
-> > R4_rw=3Dscalar(smin=3D0,smax=3Dumax=3D0xffffffff,smin32=3D-4,smax32=3D3=
-,var_off=3D(0x0;
-> > 0xffffffff)) R8_rw=3DPscalar(smin=3D0x800000000000000f,smax=3D0x7ffffff=
-f0000000f,umin=3Dsmin32=3Dumin32=3D15,umax=3D0xffffffff0000000f,smax32=3Dum=
-ax32=3D15,var_off=3D(0xf;
-> > 0xffffffff00000000)) R10=3Dfp0
-> > mark_precise: frame0: last_idx 20 first_idx 11 subseq_idx 22
-> > mark_precise: frame0: regs=3Dr8 stack=3D before 20: (18) r2 =3D 0x1c
-> > mark_precise: frame0: regs=3Dr8 stack=3D before 19: (d7) r3 =3D bswap32=
- r3
-> > mark_precise: frame0: regs=3Dr8 stack=3D before 18: (56) if w8 !=3D 0xf=
- goto pc+3
-> > mark_precise: frame0: regs=3Dr8 stack=3D before 17: (c4) w4 s>>=3D 29
-> > mark_precise: frame0: regs=3Dr8 stack=3D before 15: (18) r3 =3D 0x1f000=
-00034
-> > mark_precise: frame0: regs=3Dr8 stack=3D before 14: (2f) r4 *=3D r4
-> > mark_precise: frame0: regs=3Dr8 stack=3D before 13: (0f) r0 +=3D r0
-> > mark_precise: frame0: regs=3Dr8 stack=3D before 12: (1f) r8 -=3D r4
-> > mark_precise: frame0: regs=3Dr4,r8 stack=3D before 11: (45) if r0 &
-> > 0xfffffffe goto pc+3
-> > mark_precise: frame0: parent state regs=3Dr4,r8 stack=3D:  R0_rw=3Dscal=
-ar()
-> > R4_rw=3DPscalar() R8_rw=3DP0x1a000000be R10=3Dfp0
-> > mark_precise: frame0: last_idx 10 first_idx 0 subseq_idx 11
-> > mark_precise: frame0: regs=3Dr4,r8 stack=3D before 10: (84) w4 =3D -w4
-> > mark_precise: frame0: regs=3Dr4,r8 stack=3D before 8: (18) r4 =3D 0x52
-> > mark_precise: frame0: regs=3Dr8 stack=3D before 6: (36) if w8 >=3D 0x69=
- goto pc+1
-> > mark_precise: frame0: regs=3Dr8 stack=3D before 5: (85) call
-> > bpf_get_current_cgroup_id#80
-> > mark_precise: frame0: regs=3Dr8 stack=3D before 4: (bc) w4 =3D w5
-> > mark_precise: frame0: regs=3Dr8 stack=3D before 3: (bf) r8 =3D r2
-> > mark_precise: frame0: regs=3Dr2 stack=3D before 2: (bf) r5 =3D r1
-> > mark_precise: frame0: regs=3Dr2 stack=3D before 0: (18) r2 =3D 0x1a0000=
-00be
-> > mark_precise: frame0: last_idx 26 first_idx 22 subseq_idx -1
-> > mark_precise: frame0: regs=3Dr0 stack=3D before 24: (18) r2 =3D 0x4
-> > mark_precise: frame0: regs=3Dr0 stack=3D before 23: (bf) r5 =3D r8
-> > mark_precise: frame0: regs=3Dr0 stack=3D before 22: (67) r4 <<=3D 2
-> > mark_precise: frame0: parent state regs=3Dr0 stack=3D:
-> > R0_rw=3DPscalar(smin=3Dsmin32=3D0,smax=3Dumax=3Dsmax32=3Dumax32=3D2,var=
-_off=3D(0x0;
-> > 0x3)) R2_w=3D28 R3_w=3Dscalar()
-> > R4_rw=3Dscalar(smin=3D0,smax=3Dumax=3D0xffffffff,smin32=3D-4,smax32=3D3=
-,var_off=3D(0x0;
-> > 0xffffffff)) R8_rw=3DPscalar(smin=3D0x800000000000000f,smax=3D0x7ffffff=
-f0000000f,umin=3Dsmin32=3Dumin32=3D15,umax=3D0xffffffff0000000f,smax32=3Dum=
-ax32=3D15,var_off=3D(0xf;
-> > 0xffffffff00000000)) R10=3Dfp0
-> > mark_precise: frame0: last_idx 20 first_idx 11 subseq_idx 22
-> > mark_precise: frame0: regs=3Dr0 stack=3D before 20: (18) r2 =3D 0x1c
-> > mark_precise: frame0: regs=3Dr0 stack=3D before 19: (d7) r3 =3D bswap32=
- r3
-> > mark_precise: frame0: regs=3Dr0 stack=3D before 18: (56) if w8 !=3D 0xf=
- goto pc+3
-> > mark_precise: frame0: regs=3Dr0 stack=3D before 17: (c4) w4 s>>=3D 29
-> > mark_precise: frame0: regs=3Dr0 stack=3D before 15: (18) r3 =3D 0x1f000=
-00034
-> > mark_precise: frame0: regs=3Dr0 stack=3D before 14: (2f) r4 *=3D r4
-> > mark_precise: frame0: regs=3Dr0 stack=3D before 13: (0f) r0 +=3D r0
-> > mark_precise: frame0: regs=3Dr0 stack=3D before 12: (1f) r8 -=3D r4
-> > mark_precise: frame0: regs=3Dr0 stack=3D before 11: (45) if r0 &
-> > 0xfffffffe goto pc+3
-> > mark_precise: frame0: parent state regs=3Dr0 stack=3D:  R0_rw=3DPscalar=
-()
-> > R4_rw=3DPscalar() R8_rw=3DP0x1a000000be R10=3Dfp0
-> > mark_precise: frame0: last_idx 10 first_idx 0 subseq_idx 11
-> > mark_precise: frame0: regs=3Dr0 stack=3D before 10: (84) w4 =3D -w4
-> > mark_precise: frame0: regs=3Dr0 stack=3D before 8: (18) r4 =3D 0x52
-> > mark_precise: frame0: regs=3Dr0 stack=3D before 6: (36) if w8 >=3D 0x69=
- goto pc+1
-> > mark_precise: frame0: regs=3Dr0 stack=3D before 5: (85) call
-> > bpf_get_current_cgroup_id#80
-> > 26: R0=3Dscalar(smin=3Dsmin32=3D0,smax=3Dumax=3Dsmax32=3Dumax32=3D2,var=
-_off=3D(0x0;
-> > 0x3)) R8=3Dscalar(id=3D1,smin=3D0x800000000000000f,smax=3D0x7fffffff000=
-0000f,umin=3Dsmin32=3Dumin32=3D15,umax=3D0xffffffff0000000f,smax32=3Dumax32=
-=3D15,var_off=3D(0xf;
-> > 0xffffffff00000000))
-> > 32: (95) exit
-> >
-> > from 18 to 22: R0_w=3Dscalar(smin=3Dsmin32=3D0,smax=3Dumax=3Dsmax32=3Du=
-max32=3D2,var_off=3D(0x0;
-> > 0x3)) R3_w=3D0x1f00000034
-> > R4_w=3Dscalar(smin=3D0,smax=3Dumax=3D0xffffffff,smin32=3D-4,smax32=3D3,=
-var_off=3D(0x0;
-> > 0xffffffff)) R8_w=3Dscalar() R10=3Dfp0
-> > 22: R0_w=3Dscalar(smin=3Dsmin32=3D0,smax=3Dumax=3Dsmax32=3Dumax32=3D2,v=
-ar_off=3D(0x0;
-> > 0x3)) R3_w=3D0x1f00000034
-> > R4_w=3Dscalar(smin=3D0,smax=3Dumax=3D0xffffffff,smin32=3D-4,smax32=3D3,=
-var_off=3D(0x0;
-> > 0xffffffff)) R8_w=3Dscalar() R10=3Dfp0
-> > 22: (67) r4 <<=3D 2                     ;
-> > R4_w=3Dscalar(smin=3D0,smax=3Dumax=3D0x3fffffffc,smax32=3D0x7ffffffc,um=
-ax32=3D0xfffffffc,var_off=3D(0x0;
-> > 0x3fffffffc))
-> > 23: (bf) r5 =3D r8                      ; R5_w=3Dscalar(id=3D2) R8_w=3D=
-scalar(id=3D2)
-> > 24: (18) r2 =3D 0x4                     ; R2=3D4
-> > 26: (7e) if w8 s>=3D w0 goto pc+5       ;
-> > R0=3Dscalar(smin=3Dsmin32=3D0,smax=3Dumax=3Dsmax32=3Dumax32=3D2,var_off=
-=3D(0x0; 0x3))
-> > R8=3Dscalar(id=3D2,smax32=3D1)
->
-> we didn't prune here, assuming w8 < w0, so w8=3Dw5 is at most 1 (because
-> r0 is [0, 2])
->
-> > 27: (4f) r8 |=3D r8                     ; R8_w=3Dscalar()
->
-> here r5 and r8 are disassociated
->
-> > 28: (0f) r8 +=3D r8                     ; R8_w=3Dscalar()
-> > 29: (d6) if w5 s<=3D 0x1d goto pc+2
->
-> w5 is at most 1 (signed), so this is always true, so we just to exit,
-> 30: is still never visited
->
-> > mark_precise: frame0: last_idx 29 first_idx 26 subseq_idx -1
-> > mark_precise: frame0: regs=3Dr5 stack=3D before 28: (0f) r8 +=3D r8
-> > mark_precise: frame0: regs=3Dr5 stack=3D before 27: (4f) r8 |=3D r8
-> > mark_precise: frame0: regs=3Dr5 stack=3D before 26: (7e) if w8 s>=3D w0=
- goto pc+5
-> > mark_precise: frame0: parent state regs=3Dr5 stack=3D:
-> > R0_rw=3Dscalar(smin=3Dsmin32=3D0,smax=3Dumax=3Dsmax32=3Dumax32=3D2,var_=
-off=3D(0x0;
-> > 0x3)) R2_w=3D4 R3_w=3D0x1f00000034
-> > R4_w=3Dscalar(smin=3D0,smax=3Dumax=3D0x3fffffffc,smax32=3D0x7ffffffc,um=
-ax32=3D0xfffffffc,var_off=3D(0x0;
-> > 0x3fffffffc)) R5_rw=3DPscalar(id=3D2) R8_rw=3Dscalar(id=3D2) R10=3Dfp0
-> > mark_precise: frame0: last_idx 24 first_idx 11 subseq_idx 26
-> > mark_precise: frame0: regs=3Dr5,r8 stack=3D before 24: (18) r2 =3D 0x4
-> > mark_precise: frame0: regs=3Dr5,r8 stack=3D before 23: (bf) r5 =3D r8
-> > mark_precise: frame0: regs=3Dr8 stack=3D before 22: (67) r4 <<=3D 2
-> > mark_precise: frame0: regs=3Dr8 stack=3D before 18: (56) if w8 !=3D 0xf=
- goto pc+3
-> > mark_precise: frame0: regs=3Dr8 stack=3D before 17: (c4) w4 s>>=3D 29
-> > mark_precise: frame0: regs=3Dr8 stack=3D before 15: (18) r3 =3D 0x1f000=
-00034
-> > mark_precise: frame0: regs=3Dr8 stack=3D before 14: (2f) r4 *=3D r4
-> > mark_precise: frame0: regs=3Dr8 stack=3D before 13: (0f) r0 +=3D r0
-> > mark_precise: frame0: regs=3Dr8 stack=3D before 12: (1f) r8 -=3D r4
-> > mark_precise: frame0: regs=3Dr4,r8 stack=3D before 11: (45) if r0 &
-> > 0xfffffffe goto pc+3
-> > mark_precise: frame0: parent state regs=3D stack=3D:  R0_rw=3DPscalar()
-> > R4_rw=3DPscalar() R8_rw=3DP0x1a000000be R10=3Dfp0
-> > 29: R5=3Dscalar(id=3D2,smax32=3D1)
-> > 32: (95) exit
-> >
-> > from 26 to 32: R0=3Dscalar(smin=3Dsmin32=3D0,smax=3Dumax=3Dsmax32=3Duma=
-x32=3D2,var_off=3D(0x0;
-> > 0x3)) R2=3D4 R3=3D0x1f00000034
-> > R4=3Dscalar(smin=3D0,smax=3Dumax=3D0x3fffffffc,smax32=3D0x7ffffffc,umax=
-32=3D0xfffffffc,var_off=3D(0x0;
-> > 0x3fffffffc)) R5=3Dscalar(id=3D2,smax=3D0x7fffffff7fffffff,umax=3D0xfff=
-fffff7fffffff,smin32=3D0,umax32=3D0x7fffffff,var_off=3D(0x0;
-> > 0xffffffff7fffffff))
-> > R8=3Dscalar(id=3D2,smax=3D0x7fffffff7fffffff,umax=3D0xffffffff7fffffff,=
-smin32=3D0,umax32=3D0x7fffffff,var_off=3D(0x0;
-> > 0xffffffff7fffffff)) R10=3Dfp0
-> > 32: R0=3Dscalar(smin=3Dsmin32=3D0,smax=3Dumax=3Dsmax32=3Dumax32=3D2,var=
-_off=3D(0x0;
-> > 0x3)) R2=3D4 R3=3D0x1f00000034
-> > R4=3Dscalar(smin=3D0,smax=3Dumax=3D0x3fffffffc,smax32=3D0x7ffffffc,umax=
-32=3D0xfffffffc,var_off=3D(0x0;
-> > 0x3fffffffc)) R5=3Dscalar(id=3D2,smax=3D0x7fffffff7fffffff,umax=3D0xfff=
-fffff7fffffff,smin32=3D0,umax32=3D0x7fffffff,var_off=3D(0x0;
-> > 0xffffffff7fffffff))
-> > R8=3Dscalar(id=3D2,smax=3D0x7fffffff7fffffff,umax=3D0xffffffff7fffffff,=
-smin32=3D0,umax32=3D0x7fffffff,var_off=3D(0x0;
-> > 0xffffffff7fffffff)) R10=3Dfp0
-> > 32: (95) exit
->
-> here we also skipped 30:, and w8 was in [0,0x7fffffff] range, r0 is
-> [0,2], but it's precision doesn't matter as we didn't do any pruning
->
-> NOTE this one.
->
-> >
-> > from 11 to 15: R0=3Dscalar() R4=3Dscalar() R8=3D0x1a000000be R10=3Dfp0
-> > 15: R0=3Dscalar() R4=3Dscalar() R8=3D0x1a000000be R10=3Dfp0
-> > 15: (18) r3 =3D 0x1f00000034            ; R3_w=3D0x1f00000034
-> > 17: (c4) w4 s>>=3D 29                   ;
-> > R4=3Dscalar(smin=3D0,smax=3Dumax=3D0xffffffff,smin32=3D-4,smax32=3D3,va=
-r_off=3D(0x0;
-> > 0xffffffff))
-> > 18: (56) if w8 !=3D 0xf goto pc+3
->
-> known true, always taken
->
-> > mark_precise: frame0: last_idx 18 first_idx 18 subseq_idx -1
-> > mark_precise: frame0: parent state regs=3Dr8 stack=3D:  R0=3Dscalar()
-> > R3_w=3D0x1f00000034
-> > R4_w=3Dscalar(smin=3D0,smax=3Dumax=3D0xffffffff,smin32=3D-4,smax32=3D3,=
-var_off=3D(0x0;
-> > 0xffffffff)) R8_r=3DP0x1a000000be R10=3Dfp0
-> > mark_precise: frame0: last_idx 17 first_idx 11 subseq_idx 18
-> > mark_precise: frame0: regs=3Dr8 stack=3D before 17: (c4) w4 s>>=3D 29
-> > mark_precise: frame0: regs=3Dr8 stack=3D before 15: (18) r3 =3D 0x1f000=
-00034
-> > mark_precise: frame0: regs=3Dr8 stack=3D before 11: (45) if r0 &
-> > 0xfffffffe goto pc+3
-> > mark_precise: frame0: parent state regs=3D stack=3D:  R0_rw=3DPscalar()
-> > R4_rw=3DPscalar() R8_rw=3DP0x1a000000be R10=3Dfp0
-> > 18: R8=3D0x1a000000be
-> > 22: (67) r4 <<=3D 2                     ;
-> > R4_w=3Dscalar(smin=3D0,smax=3Dumax=3D0x3fffffffc,smax32=3D0x7ffffffc,um=
-ax32=3D0xfffffffc,var_off=3D(0x0;
-> > 0x3fffffffc))
-> > 23: (bf) r5 =3D r8                      ; R5_w=3D0x1a000000be R8=3D0x1a=
-000000be
-> > 24: (18) r2 =3D 0x4
-> > frame 0: propagating r5
-> > mark_precise: frame0: last_idx 26 first_idx 18 subseq_idx -1
-> > mark_precise: frame0: regs=3Dr5 stack=3D before 24: (18) r2 =3D 0x4
-> > mark_precise: frame0: regs=3Dr5 stack=3D before 23: (bf) r5 =3D r8
-> > mark_precise: frame0: regs=3Dr8 stack=3D before 22: (67) r4 <<=3D 2
-> > mark_precise: frame0: regs=3Dr8 stack=3D before 18: (56) if w8 !=3D 0xf=
- goto pc+3
-> > mark_precise: frame0: parent state regs=3D stack=3D:  R0_r=3Dscalar()
-> > R3_w=3D0x1f00000034
-> > R4_rw=3Dscalar(smin=3D0,smax=3Dumax=3D0xffffffff,smin32=3D-4,smax32=3D3=
-,var_off=3D(0x0;
-> > 0xffffffff)) R8_r=3DP0x1a000000be R10=3Dfp0
-> > 26: safe
->
-> and here we basically need to evaluate
->
-> if w8 s>=3D w0 goto pc+5
->
-> w8 is precisely known to be 0x000000be, while w0 is unknown. Now go
-> back to "NOTE this one" mark above. w8 is inside [0, 0xffffffff]
-> range, right? And w0 is unknown, while up in "NOTE this one" w0 didn't
-> matter, so it stayed imprecise. This is a match. It seems correct.
->
+When an afs_volume struct is put, its refcount is reduced to 0 before the
+cell->volume_lock is taken and the volume removed from the cell->volumes
+tree.  Unfortunately, this means that the lookup code can race and see a
+volume with a zero ref in the tree, resulting in a use-after-free:
 
-Thanks for the detailed explanation.
-This is the exact point where I got confused. w8 and w5 share the same id
-at this point, the range of w5 is also updated according to w0. Even though
-r5 and r8 are disassociated later, w0 actually matters.
+        refcount_t: addition on 0; use-after-free.
+        WARNING: CPU: 3 PID: 130782 at lib/refcount.c:25 refcount_warn_sat=
+urate+0x7a/0xda
+        ...
+        RIP: 0010:refcount_warn_saturate+0x7a/0xda
+        ...
+        Call Trace:
+         <TASK>
+         ? __warn+0x8b/0xf5
+         ? report_bug+0xbf/0x11b
+         ? refcount_warn_saturate+0x7a/0xda
+         ? handle_bug+0x3c/0x5b
+         ? exc_invalid_op+0x13/0x59
+         ? asm_exc_invalid_op+0x16/0x20
+         ? refcount_warn_saturate+0x7a/0xda
+         ? refcount_warn_saturate+0x7a/0xda
+         afs_get_volume+0x3d/0x55
+         afs_create_volume+0x126/0x1de
+         afs_validate_fc+0xfe/0x130
+         afs_get_tree+0x20/0x2e5
+         vfs_get_tree+0x1d/0xc9
+         do_new_mount+0x13b/0x22e
+         do_mount+0x5d/0x8a
+         __do_sys_mount+0x100/0x12a
+         do_syscall_64+0x3a/0x94
+         entry_SYSCALL_64_after_hwframe+0x62/0x6a
 
-Assume the verifier does not prune at this point, then w5 would be unknown
-after this point, and #30 will be explored. The branch "from 29 to 30" is t=
-he
-taken path at runtime, see below.
+Fix this by:
 
->
-[...]
->
-> r0 is marked precise at 26:
->
-> mark_precise: frame0: last_idx 26 first_idx 22 subseq_idx -1
-> mark_precise: frame0: regs=3Dr0 stack=3D before 24: (18) r2 =3D 0x4
-> mark_precise: frame0: regs=3Dr0 stack=3D before 23: (bf) r5 =3D r8
-> mark_precise: frame0: regs=3Dr0 stack=3D before 22: (67) r4 <<=3D 2
-> mark_precise: frame0: parent state regs=3Dr0 stack=3D:
-> R0_rw=3DPscalar(smin=3Dsmin32=3D0,sm
-> ax=3Dumax=3Dsmax32=3Dumax32=3D2,var_off=3D(0x0;
-> 0x3)) R2_w=3D28 R3_w=3Dscalar()
-> R4_rw=3Dscalar(smin=3D0,smax=3Dumax=3D0xffffffff,smin32=3D-4,smax32=3D3,v=
-ar_off=3D(0x0;
-> 0xffffffff)) R8_rw=3DPscalar(smin=3D0x800000000000000f,smax=3D0x7fffffff0=
-000000f,umin=3Dsmin32=3Dumin32=3D15,umax=3D0xffffffff0000000f,smax32=3Dumax=
-32=3D15,var_off=3D(0xf;
-> 0xffffffff00000000)) R10=3Dfp0
->
-[...]
-> > However, seems it's not, so the next time when the verifier checks
-> > #26, R0 is incorrectly ignored.
-> > We have mark_precise_scalar_ids(), but it's called before calculating
-> > the mask once.
->
-> I'm not following the remark about mark_precise_scalar_ids(). That
-> works fine, but has nothing to do with r0. mark_precise_scalar_ids()
-> identifies that r8 and r5 are linked together, and you can see from
-> the log that we mark both r5 and r8 as precise.
->
-> > I investigated for quite a while, but mark_chain_pricision() is really
-> > hard to follow.
-> >
-> > Here is a reduced C repro, maybe someone else can shed some light on th=
-is.
-> > C repro: https://pastebin.com/raw/chrshhGQ
->
-> So you claim is that
->
-> 30: (18) r0 =3D 0x4 ; incorrectly pruned here
->
->
-> Can you please show a detailed code patch in which we do reach 30
-> actually? I might have missed it, but so far it look like verifier is
-> doing everything right.
->
+ (1) When putting, use a flag to indicate if the volume has been removed
+     from the tree and skip the rb_erase if it has.
 
-I tried to convert the repro to a valid test case in inline asm, but seems
-JSET (if r0 & 0xfffffffe goto pc+3) is currently not supported in clang-17.
-Will try after clang-18 is released.
+ (2) When looking up, use a conditional ref increment and if it fails
+     because the refcount is 0, replace the node in the tree and set the
+     removal flag.
 
-#30 is expected to be executed, see below where everything after ";" is
-the runtime value:
-   ...
-   6: (36) if w8 >=3D 0x69 goto pc+1    ; w8 =3D 0xbe, always taken
-   ...
-  11: (45) if r0 & 0xfffffffe goto pc+3  ; r0 =3D 0x616, taken
-  ...
-  18: (56) if w8 !=3D 0xf goto pc+3     ; w8 not touched, taken
-  ...
-  23: (bf) r5 =3D r8     ; w5 =3D 0xbe
-  24: (18) r2 =3D 0x4
-  26: (7e) if w8 s>=3D w0 goto pc+5    ; non-taken
-  27: (4f) r8 |=3D r8
-  28: (0f) r8 +=3D r8
-  29: (d6) if w5 s<=3D 0x1d goto pc+2  ; non-taken
-  30: (18) r0 =3D 0x4      ; executed
+Fixes: 20325960f875 ("afs: Reorganise volume and server trees to be rooted=
+ on the cell")
+Signed-off-by: David Howells <dhowells@redhat.com>
+cc: Marc Dionne <marc.dionne@auristor.com>
+cc: linux-afs@lists.infradead.org
+---
+ fs/afs/internal.h |    2 ++
+ fs/afs/volume.c   |   26 +++++++++++++++++++++++---
+ 2 files changed, 25 insertions(+), 3 deletions(-)
 
-Since the verifier prunes at #26, #30 is dead and eliminated. So, #30
-is executed after manually commenting out the dead code rewrite pass.
+diff --git a/fs/afs/internal.h b/fs/afs/internal.h
+index a812952be1c9..7385d62c8cf5 100644
+--- a/fs/afs/internal.h
++++ b/fs/afs/internal.h
+@@ -586,6 +586,7 @@ struct afs_volume {
+ #define AFS_VOLUME_OFFLINE	4	/* - T if volume offline notice given */
+ #define AFS_VOLUME_BUSY		5	/* - T if volume busy notice given */
+ #define AFS_VOLUME_MAYBE_NO_IBULK 6	/* - T if some servers don't have Inl=
+ineBulkStatus */
++#define AFS_VOLUME_RM_TREE	7	/* - Set if volume removed from cell->volume=
+s */
+ #ifdef CONFIG_AFS_FSCACHE
+ 	struct fscache_volume	*cache;		/* Caching cookie */
+ #endif
+@@ -1513,6 +1514,7 @@ extern struct afs_vlserver_list *afs_extract_vlserve=
+r_list(struct afs_cell *,
+ extern struct afs_volume *afs_create_volume(struct afs_fs_context *);
+ extern int afs_activate_volume(struct afs_volume *);
+ extern void afs_deactivate_volume(struct afs_volume *);
++bool afs_try_get_volume(struct afs_volume *volume, enum afs_volume_trace =
+reason);
+ extern struct afs_volume *afs_get_volume(struct afs_volume *, enum afs_vo=
+lume_trace);
+ extern void afs_put_volume(struct afs_net *, struct afs_volume *, enum af=
+s_volume_trace);
+ extern int afs_check_volume_status(struct afs_volume *, struct afs_operat=
+ion *);
+diff --git a/fs/afs/volume.c b/fs/afs/volume.c
+index 29d483c80281..115c081a8e2c 100644
+--- a/fs/afs/volume.c
++++ b/fs/afs/volume.c
+@@ -32,8 +32,13 @@ static struct afs_volume *afs_insert_volume_into_cell(s=
+truct afs_cell *cell,
+ 		} else if (p->vid > volume->vid) {
+ 			pp =3D &(*pp)->rb_right;
+ 		} else {
+-			volume =3D afs_get_volume(p, afs_volume_trace_get_cell_insert);
+-			goto found;
++			if (afs_try_get_volume(p, afs_volume_trace_get_cell_insert)) {
++				volume =3D p;
++				goto found;
++			}
++
++			set_bit(AFS_VOLUME_RM_TREE, &volume->flags);
++			rb_replace_node_rcu(&p->cell_node, &volume->cell_node, &cell->volumes)=
+;
+ 		}
+ 	}
+ =
 
-From my understanding, I think r0 should be marked as precise when
-first backtrack from #29, because r5 range at this point depends on w0
-as r8 and r5 share the same id at #26.
+@@ -56,7 +61,8 @@ static void afs_remove_volume_from_cell(struct afs_volum=
+e *volume)
+ 				 afs_volume_trace_remove);
+ 		write_seqlock(&cell->volume_lock);
+ 		hlist_del_rcu(&volume->proc_link);
+-		rb_erase(&volume->cell_node, &cell->volumes);
++		if (!test_and_set_bit(AFS_VOLUME_RM_TREE, &volume->flags))
++			rb_erase(&volume->cell_node, &cell->volumes);
+ 		write_sequnlock(&cell->volume_lock);
+ 	}
+ }
+@@ -231,6 +237,20 @@ static void afs_destroy_volume(struct afs_net *net, s=
+truct afs_volume *volume)
+ 	_leave(" [destroyed]");
+ }
+ =
+
++/*
++ * Try to get a reference on a volume record.
++ */
++bool afs_try_get_volume(struct afs_volume *volume, enum afs_volume_trace =
+reason)
++{
++	int r;
++
++	if (__refcount_inc_not_zero(&volume->ref, &r)) {
++		trace_afs_volume(volume->vid, r + 1, reason);
++		return true;
++	}
++	return false;
++}
++
+ /*
+  * Get a reference on a volume record.
+  */
+
