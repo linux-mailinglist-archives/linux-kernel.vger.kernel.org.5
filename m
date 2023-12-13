@@ -2,234 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B4B1C81111B
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 13:29:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 231E2811125
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 13:32:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233392AbjLMM2w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 07:28:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40970 "EHLO
+        id S233412AbjLMMbd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 07:31:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42810 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229600AbjLMM2v (ORCPT
+        with ESMTP id S233407AbjLMMba (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 07:28:51 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2932C93
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 04:28:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1702470536;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=pQFnI7fDR+1BAkKjvQWdPrG/WDERRoUrQCJ/FGh+Rlo=;
-        b=NQYF8eE7UuCsgWtgT/e4ZhfVA4dDFAneMwp8YrCV9MOyzRHXXHB7Y0o0SmcMincW4wxKGo
-        UxMHPytIlV5W9kUz1JLUUwA+Q0ACiY6mHGQWr7ibNlKsWcbtE8Z5QDnga7/tZDqsu1z+7i
-        Bckf7xL8k94bmDrtEYtO/x2ia9/MKbE=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-445-5O6-tQb-PP2YT148se2a5g-1; Wed, 13 Dec 2023 07:28:53 -0500
-X-MC-Unique: 5O6-tQb-PP2YT148se2a5g-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 1A11585A58A;
-        Wed, 13 Dec 2023 12:28:52 +0000 (UTC)
-Received: from fedora (unknown [10.72.116.126])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 80AAA1121312;
-        Wed, 13 Dec 2023 12:28:42 +0000 (UTC)
-Date:   Wed, 13 Dec 2023 20:28:38 +0800
-From:   Ming Lei <ming.lei@redhat.com>
-To:     John Garry <john.g.garry@oracle.com>
-Cc:     axboe@kernel.dk, kbusch@kernel.org, hch@lst.de, sagi@grimberg.me,
-        jejb@linux.ibm.com, martin.petersen@oracle.com, djwong@kernel.org,
-        viro@zeniv.linux.org.uk, brauner@kernel.org, dchinner@redhat.com,
-        jack@suse.cz, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
-        linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        tytso@mit.edu, jbongio@google.com, linux-scsi@vger.kernel.org,
-        jaswin@linux.ibm.com, bvanassche@acm.org,
-        Himanshu Madhani <himanshu.madhani@oracle.com>
-Subject: Re: [PATCH v2 01/16] block: Add atomic write operations to
- request_queue limits
-Message-ID: <ZXmjdnIqGHILTfQN@fedora>
-References: <20231212110844.19698-1-john.g.garry@oracle.com>
- <20231212110844.19698-2-john.g.garry@oracle.com>
- <ZXkIEnQld577uHqu@fedora>
- <36ee54b4-b8d5-4b3c-81a0-cc824b6ef68e@oracle.com>
+        Wed, 13 Dec 2023 07:31:30 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A45BA4
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 04:31:37 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1CA3EC433C8;
+        Wed, 13 Dec 2023 12:31:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1702470696;
+        bh=AYrI7SLk86MHABNGX/QodrHC6xXs3xbeF0g+zgtdlks=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=SYLq/MzrCIXIJOMx7Iam0o8x2A2PWGEe8WO2O6+C3rYM1GiaFmXdop7KEplIkfnP6
+         qw7t7K8+lO9qHpp0V+0Tl+0pnSY7jU+1YqbaQ8fnRYJzmtw5zHsZskIjuvO8iGeZp9
+         StgPNxSVW4Yc2Jme6QpLJtuP0uas3PvhKlfI9j+prdNaD4ZQEaRBfIp2fuwQlrikBg
+         o7k94L0B5dxMH74otpF5J1MaYLFBarSDaX2Fz2S7ycnM8gaDsKmKInnl4kviQq691P
+         JsHQF9XKlHN4FPkUonBcHTCHfP5zIxBaj37Y4+t5B3XRmE0zrKynPQ7Tz8I2V1eEHf
+         JvC7lK/V1Xx/Q==
+Date:   Wed, 13 Dec 2023 12:31:30 +0000
+From:   Will Deacon <will@kernel.org>
+To:     Alexander Potapenko <glider@google.com>
+Cc:     catalin.marinas@arm.com, pcc@google.com, andreyknvl@gmail.com,
+        andriy.shevchenko@linux.intel.com, aleksander.lobakin@intel.com,
+        linux@rasmusvillemoes.dk, yury.norov@gmail.com,
+        alexandru.elisei@arm.com, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, eugenis@google.com,
+        syednwaris@gmail.com, william.gray@linaro.org
+Subject: Re: [PATCH v9 0/4] Implement MTE tag compression for swapped pages
+Message-ID: <20231213123130.GC31326@willie-the-truck>
+References: <20231113105234.32058-1-glider@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <36ee54b4-b8d5-4b3c-81a0-cc824b6ef68e@oracle.com>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.3
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20231113105234.32058-1-glider@google.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 13, 2023 at 09:13:48AM +0000, John Garry wrote:
-> > > +
-> > >   What:		/sys/block/<disk>/diskseq
-> > >   Date:		February 2021
-> > > diff --git a/block/blk-settings.c b/block/blk-settings.c
-> > > index 0046b447268f..d151be394c98 100644
-> > > --- a/block/blk-settings.c
-> > > +++ b/block/blk-settings.c
-> > > @@ -59,6 +59,10 @@ void blk_set_default_limits(struct queue_limits *lim)
-> > >   	lim->zoned = BLK_ZONED_NONE;
-> > >   	lim->zone_write_granularity = 0;
-> > >   	lim->dma_alignment = 511;
-> > > +	lim->atomic_write_unit_min_sectors = 0;
-> > > +	lim->atomic_write_unit_max_sectors = 0;
-> > > +	lim->atomic_write_max_sectors = 0;
-> > > +	lim->atomic_write_boundary_sectors = 0;
-> > 
-> > Can we move the four into single structure
+On Mon, Nov 13, 2023 at 11:52:29AM +0100, Alexander Potapenko wrote:
+> Currently, when MTE pages are swapped out, the tags are kept in the
+> memory, occupying PAGE_SIZE/32 bytes per page. This is especially
+> problematic for devices that use zram-backed in-memory swap, because
+> tags stored uncompressed in the heap effectively reduce the available
+> amount of swap memory.
 > 
-> There is no precedent for a similar structure in struct queue_limits. So
-> would only passing a structure to the blk-settings.c API be ok?
+> The RLE-based algorithm suggested by Evgenii Stepanov and implemented in
+> this patch series is able to efficiently compress fixed-size tag buffers,
+> resulting in practical compression ratio of 2x. In many cases it is
+> possible to store the compressed data in 63-bit Xarray values, resulting
+> in no extra memory allocations.
+> 
+> This patch series depends on "lib/bitmap: add bitmap_{read,write}()"
+> (https://lore.kernel.org/linux-arm-kernel/20231030153210.139512-1-glider@google.com/T/)
+> that is mailed separately.
 
-Yes, this structure is part of the new API.
+That's a shame, because it means I can't apply the series as-is:
 
-> 
-> > and setup them in single
-> > API? Then cross-validation can be done in this API.
-> 
-> I suppose so, if you think that it is better.
-> 
-> We rely on the driver to provide sound values. I suppose that we can
-> sanitize them also (in a single API).
 
-Please make the interface correct from beginning, and one good API is
-helpful for both sides, such as isolating problems, easy to locate
-bug, abstracting common logic, ...
+arch/arm64/mm/mtecomp.c: In function ‘mte_bitmap_write’:
+arch/arm64/mm/mtecomp.c:105:2: error: implicit declaration of function ‘bitmap_write’; did you mean ‘bitmap_free’? [-Werror=implicit-function-declaration]
+  105 |  bitmap_write(bitmap, value, *pos, bits);
+      |  ^~~~~~~~~~~~
+      |  bitmap_free
+arch/arm64/mm/mtecomp.c: In function ‘mte_bitmap_read’:
+arch/arm64/mm/mtecomp.c:198:9: error: implicit declaration of function ‘bitmap_read’; did you mean ‘bitmap_remap’? [-Werror=implicit-function-declaration]
+  198 |  return bitmap_read(bitmap, start, bits);
+      |         ^~~~~~~~~~~
+      |         bitmap_remap
+cc1: some warnings being treated as errors
+make[5]: *** [scripts/Makefile.build:243: arch/arm64/mm/mtecomp.o] Error 1
 
-And relying on API users is absolutely not good design.
 
-> 
-> > 
-> > >   }
-> > >   /**
-> > > @@ -183,6 +187,62 @@ void blk_queue_max_discard_sectors(struct request_queue *q,
-> > >   }
-> > >   EXPORT_SYMBOL(blk_queue_max_discard_sectors);
-> > > +/**
-> > > + * blk_queue_atomic_write_max_bytes - set max bytes supported by
-> > > + * the device for atomic write operations.
-> > > + * @q:  the request queue for the device
-> > > + * @size: maximum bytes supported
-> > > + */
-> > > +void blk_queue_atomic_write_max_bytes(struct request_queue *q,
-> > > +				      unsigned int bytes)
-> > > +{
-> > > +	q->limits.atomic_write_max_sectors = bytes >> SECTOR_SHIFT;
-> > > +}
-> > > +EXPORT_SYMBOL(blk_queue_atomic_write_max_bytes);
-> > 
-> > What if driver doesn't call it but driver supports atomic write?
-> 
-> We rely on the driver to do this. Any basic level of testing will show an
-> issue if they don't.
+Do you really have such a hard dependency on those new bitmap ops?
 
-Software quality depends on good requirement analysis, design and
-implementation, instead of test.
-
-Simply you can not cover all possibilities in test.
-
-> 
-> > 
-> > I guess the default max sectors should be atomic_write_unit_max_sectors
-> > if the feature is enabled.
-> 
-> Sure. If we have a single API to set all values, then we don't need to worry
-> about this (assuming the values are filled in properly).
-> 
-> > 
-> > > +
-> > > +/**
-> > > + * blk_queue_atomic_write_boundary_bytes - Device's logical block address space
-> > > + * which an atomic write should not cross.
-> > > + * @q:  the request queue for the device
-> > > + * @bytes: must be a power-of-two.
-> > > + */
-> > > +void blk_queue_atomic_write_boundary_bytes(struct request_queue *q,
-> > > +					   unsigned int bytes)
-> > > +{
-> > > +	q->limits.atomic_write_boundary_sectors = bytes >> SECTOR_SHIFT;
-> > > +}
-> > > +EXPORT_SYMBOL(blk_queue_atomic_write_boundary_bytes);
-> > 
-> > Default atomic_write_boundary_sectors should be
-> > atomic_write_unit_max_sectors in case of atomic write?
-> 
-> Having atomic_write_boundary_sectors default to
-> atomic_write_unit_max_sectors is effectively same as a default of 0.
-> 
-> > 
-> > > +
-> > > +/**
-> > > + * blk_queue_atomic_write_unit_min_sectors - smallest unit that can be written
-> > > + * atomically to the device.
-> > > + * @q:  the request queue for the device
-> > > + * @sectors: must be a power-of-two.
-> > > + */
-> > > +void blk_queue_atomic_write_unit_min_sectors(struct request_queue *q,
-> > > +					     unsigned int sectors)
-> > > +{
-> > > +	struct queue_limits *limits = &q->limits;
-> > > +
-> > > +	limits->atomic_write_unit_min_sectors = sectors;
-> > > +}
-> > > +EXPORT_SYMBOL(blk_queue_atomic_write_unit_min_sectors);
-> > 
-> > atomic_write_unit_min_sectors should be >= (physical block size >> 9)
-> > given the minimized atomic write unit is physical sector for all disk.
-> 
-> For SCSI, we have a granularity VPD value, and when set we pay attention to
-> that. If not, we use the phys block size.
-> 
-> For NVMe, we use the logical block size. For physical block size, that can
-> be greater than the logical block size for npwg set, and I don't think it's
-> suitable use that as minimum atomic write unit.
-
-I highly suspect it is wrong to use logical block size as minimum
-support atomic write unit, given physical block size is supposed to
-be the minimum atomic write unit.
-
-> 
-> Anyway, I am not too keen on sanitizing this value in this way.
-> 
-> > 
-> > > +
-> > > +/*
-> > > + * blk_queue_atomic_write_unit_max_sectors - largest unit that can be written
-> > > + * atomically to the device.
-> > > + * @q: the request queue for the device
-> > > + * @sectors: must be a power-of-two.
-> > > + */
-> > > +void blk_queue_atomic_write_unit_max_sectors(struct request_queue *q,
-> > > +					     unsigned int sectors)
-> > > +{
-> > > +	struct queue_limits *limits = &q->limits;
-> > > +
-> > > +	limits->atomic_write_unit_max_sectors = sectors;
-> > > +}
-> > > +EXPORT_SYMBOL(blk_queue_atomic_write_unit_max_sectors);
-> > 
-> > atomic_write_unit_max_sectors should be >= atomic_write_unit_min_sectors.
-> > 
-> 
-> Again, we rely on the driver to provide sound values. However, as mentioned,
-> we can sanitize.
-
-Relying on driver to provide sound value is absolutely bad design from API
-viewpoint.
-
-Thanks,
-Ming
-
+Will
