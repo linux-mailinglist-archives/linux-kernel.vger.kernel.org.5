@@ -2,178 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B6CAB81134F
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 14:48:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F415D811353
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 14:48:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378980AbjLMNry (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 08:47:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51654 "EHLO
+        id S1379011AbjLMNs3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 08:48:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43812 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233509AbjLMNrw (ORCPT
+        with ESMTP id S1378960AbjLMNs1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 08:47:52 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADA49DC;
-        Wed, 13 Dec 2023 05:47:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1702475279; x=1734011279;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=XsfVvpnfSqIWA1Yju2mabl7p6bN2If+eKAefi3u9rjI=;
-  b=mdryW8HQhC5srtnBzWVjR15AHNC/vjYr1bV9l675w5BFO8WhBBz8HNNg
-   PwV2UqNjft6agT8UZZHiIBiE/0R838eX3VXE4i5EsrCPTJmDXWXm4akYN
-   nQGKEwxsuRXkVXqrIA/NdjJ4UUJ4zjNhWo/eJxgsM/PBWbWPc2FoqrJwh
-   ZNmpUCSIC3g3csXJLWgDf0EcqgcK8mg0benRldFJHnQ0/hnvZ5GogcBu3
-   ++333w2gGh0KWKr6FKoowNSQdSaLhSIhEMHv8azXA2jDzQH/FvJUEkP2C
-   ByEfW0jE8dmYEZ8pWjosDhGDjJ90zIL9HuNOiuo3cGYQJgwJpyTp3N3WT
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10922"; a="8325457"
-X-IronPort-AV: E=Sophos;i="6.04,272,1695711600"; 
-   d="scan'208";a="8325457"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Dec 2023 05:47:58 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10922"; a="839875536"
-X-IronPort-AV: E=Sophos;i="6.04,272,1695711600"; 
-   d="scan'208";a="839875536"
-Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
-  by fmsmga008.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 13 Dec 2023 05:47:57 -0800
-Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
- ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Wed, 13 Dec 2023 05:47:57 -0800
-Received: from orsmsx612.amr.corp.intel.com (10.22.229.25) by
- ORSMSX611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Wed, 13 Dec 2023 05:47:56 -0800
-Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
- orsmsx612.amr.corp.intel.com (10.22.229.25) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Wed, 13 Dec 2023 05:47:56 -0800
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (104.47.58.101)
- by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Wed, 13 Dec 2023 05:47:56 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=j4u3BURzqSQ73xOuv+hGlhHwQ1hjtlvzsjbdjsve8GwYDTRXwFTrVFYHY+txjC2tpGMzAL95PjbxMgTxct3IhpSLWjhHt+F7Q/GotV3aMcQvMs7cGn6ZCw01mxVaf+9sfDZUB9vvcBnnm2larPYco8O2CuDrKmBc5TBpnoletAT4HY8uXxFcNMMOohcS2fRUoNfbpXKP75n+crQzZGwtTJt4tMTVUZDE1g2UDgDp4JP8DqWVm1xghoJjzE29Vl2jka5paqtoQJ9nJbBOiySdc3Roksja3XCkPhVEPzGaMZEPcQyvs1OSLFxlu5fJ5DO9hRcyN5NoAxOZkiltY/XtpQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=voYlh5dDnrInXWS+GzqvKirisjkJl8q+cSczN3QQmY0=;
- b=RejB2Ieew/L8cZaKuzuv9lkWd0KwMTmHyr0E/GlS/7qr2J6Hm1Pyc5ixSa8H0I2sXtetDbtrKwuJoYxuN/t6k7WQpzErd9rkuQTO/xY+O3865oReZqMZf+UboveY3XmtSqxrVT+CvetZavKG8bC0kS8n9ndY2YYpOMlbAN4K2+fWhIU04jup/VVSBLNJqky8OoE7NIpTtFzLyIsLL+g6vpdQ2pXuSJCEAJrLa21lI6ZKGVnOHAe+9lHFtBFjM0B5kEzQGosO7M00JKQNMZrrKjYUbot/Zi4a8JR3DNE6R1GjCn+gBamMyGG3IoFK/tvuTTbYY+9ik6LgDyqZ71I98g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Received: from SN7PR11MB7540.namprd11.prod.outlook.com (2603:10b6:806:340::7)
- by SN7PR11MB6726.namprd11.prod.outlook.com (2603:10b6:806:266::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7091.26; Wed, 13 Dec
- 2023 13:47:54 +0000
-Received: from SN7PR11MB7540.namprd11.prod.outlook.com
- ([fe80::4b41:979d:5c37:aab9]) by SN7PR11MB7540.namprd11.prod.outlook.com
- ([fe80::4b41:979d:5c37:aab9%3]) with mapi id 15.20.7068.031; Wed, 13 Dec 2023
- 13:47:54 +0000
-From:   "Liu, Yi L" <yi.l.liu@intel.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-CC:     "Tian, Kevin" <kevin.tian@intel.com>,
-        "joro@8bytes.org" <joro@8bytes.org>,
-        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
-        "robin.murphy@arm.com" <robin.murphy@arm.com>,
-        "baolu.lu@linux.intel.com" <baolu.lu@linux.intel.com>,
-        "cohuck@redhat.com" <cohuck@redhat.com>,
-        "eric.auger@redhat.com" <eric.auger@redhat.com>,
-        "nicolinc@nvidia.com" <nicolinc@nvidia.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "mjrosato@linux.ibm.com" <mjrosato@linux.ibm.com>,
-        "chao.p.peng@linux.intel.com" <chao.p.peng@linux.intel.com>,
-        "yi.y.sun@linux.intel.com" <yi.y.sun@linux.intel.com>,
-        "peterx@redhat.com" <peterx@redhat.com>,
-        "jasowang@redhat.com" <jasowang@redhat.com>,
-        "shameerali.kolothum.thodi@huawei.com" 
-        <shameerali.kolothum.thodi@huawei.com>,
-        "lulu@redhat.com" <lulu@redhat.com>,
-        "suravee.suthikulpanit@amd.com" <suravee.suthikulpanit@amd.com>,
-        "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
-        "Duan, Zhenzhong" <zhenzhong.duan@intel.com>,
-        "joao.m.martins@oracle.com" <joao.m.martins@oracle.com>,
-        "Zeng, Xin" <xin.zeng@intel.com>,
-        "Zhao, Yan Y" <yan.y.zhao@intel.com>
-Subject: RE: [PATCH v6 2/6] iommufd: Add IOMMU_HWPT_INVALIDATE
-Thread-Topic: [PATCH v6 2/6] iommufd: Add IOMMU_HWPT_INVALIDATE
-Thread-Index: AQHaGVcJJtyCzgqkgkqBUoie7tgMvbCdgxuAgAAi2QCAAF55AIAF1zMAgABbn4CAAZh0MIAAD+eAgAGC0ZA=
-Date:   Wed, 13 Dec 2023 13:47:54 +0000
-Message-ID: <SN7PR11MB7540259246D97147A224B486C38DA@SN7PR11MB7540.namprd11.prod.outlook.com>
-References: <20231117130717.19875-1-yi.l.liu@intel.com>
- <20231117130717.19875-3-yi.l.liu@intel.com>
- <112383df-3ea3-475f-963f-5c53232a1bf4@intel.com>
- <BN9PR11MB5276283CAEAB7A24871B4B188C8BA@BN9PR11MB5276.namprd11.prod.outlook.com>
- <20231207144208.GJ2692119@nvidia.com>
- <8c05763d-1668-4b99-af35-b43a34e966c2@intel.com>
- <20231211132135.GF2944114@nvidia.com>
- <DS0PR11MB7529AA3F28F4418A80D869B0C38EA@DS0PR11MB7529.namprd11.prod.outlook.com>
- <20231212144025.GG3014157@nvidia.com>
-In-Reply-To: <20231212144025.GG3014157@nvidia.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: SN7PR11MB7540:EE_|SN7PR11MB6726:EE_
-x-ms-office365-filtering-correlation-id: aea7d3ca-2202-4714-b477-08dbfbe21ba0
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: CH2o5VMQUuZPkE7GgBI3C50+TL14yWfEBp69qFaxSQat+KaWjFIUSZg8hHzG7aV2AlWPgf/upmmf6foB2THR5jM021gBCsXcDlUXW6JGxv5KZChvNScpUKi/X5rgVm+tU/3nlBVwDmYPFlMg76/h5B0uerazWxiwf3xw+GzVv9EME12+g5rF71XFT7/POV4eSKOLIceFLEhydkjL0fVRlkon0i5JmTriml/HEcLJW5zBpqEL5+G+F4Dz1jsD9jUUoPhbckwPNWDM6G6i1p1Ex+Dsc/KiY7S0shHM73njg1N3JAqWCbaOZ9Ff1f0CX7XUvyJKYHsK3Pm7yw6ocIzO/8iK3MgpfexcNf97jalwLB2k4qOXuc/yhMA/1zkL+ofB3MoBiv2D0OA+V7Kdtz8qEncb5MHuGp3nfR0joWUOQknHhy1wQ9up1DC47KSzTgzehrLqwPFvvYku2K7ZmKsU7DmFgexPDXkdHkzE8/JkCWH0RceeEcadrBewEss9iqq+YrXatm++j/xQZi/cBsF0Qgg6l+hO1R+aMlpcQ9f9i0nveAcETP4m0MIS5G5FSboSYCykPQ/iJ7zgK+GcB5emxDhBtVEUTF/O5niKBexm6EhhHsClRVpX8hOVoLCBVTro
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN7PR11MB7540.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(136003)(366004)(346002)(376002)(396003)(230922051799003)(186009)(64100799003)(1800799012)(451199024)(55016003)(38070700009)(76116006)(66946007)(66556008)(54906003)(66476007)(64756008)(6916009)(66446008)(82960400001)(33656002)(86362001)(122000001)(38100700002)(26005)(9686003)(6506007)(4326008)(2906002)(316002)(478600001)(71200400001)(5660300002)(7416002)(8936002)(7696005)(41300700001)(8676002)(52536014);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?gx97De/CxEA9i8OZsOjHnERoXhA6CK/RhSk+2OELEFiWGGqVAN9ZCLO2S1zG?=
- =?us-ascii?Q?eh355VHpjMppPHMwlWEPNyMbNMt8m7e370s6dq5/iJOfMKRftM/fiqSvdHwL?=
- =?us-ascii?Q?T9Xn1qmOXBDH9j9uyNNnZikS8FJIUdME16qhTz15tEIXpKzq2V9+1pxnf9K5?=
- =?us-ascii?Q?VkWyp/vKTkNWa6GuL3bBOlaJLTRQx5nX38pdj9JrICvmTFH8Li5+i36BsWdv?=
- =?us-ascii?Q?hp1YfX0KuQ7FHO6i5szKTCEAIwE5/cUyLegaI2CuPiu31OWT5XyZeYj1oU82?=
- =?us-ascii?Q?a6TE4JcY3dxTwFC/BEPpaoPu5P9jsXGze1DTLId4ZLi42Z/KVD6illAJU/IZ?=
- =?us-ascii?Q?dxU3prVEv4E01UivNYm6UEcFdWm6EAQ1ftSdyo02Gez4nas1V2D9aQ2zWs9G?=
- =?us-ascii?Q?aL5BRNv47C1Oyn80M2A0VqW98ekvxq5iChVYmE4QtY3TRl4YuMiflLFvVOh6?=
- =?us-ascii?Q?/4yBSNlbr3LnvLPsL+PNpw4bqq0uKZv3uZ5jMAhL/o6i4kPshJ61juHoER1h?=
- =?us-ascii?Q?0B5YCcD9eTJi798J/brKvBG3lSGCbTo1fJ5zYf2bhM+IRE/6xZiBqHyCD3pL?=
- =?us-ascii?Q?RoLOXMP9UKC6hG16WmYE9NtniGocShAVal9u8xZ2xK8pL2obWbKrE6z6oEle?=
- =?us-ascii?Q?icTyTTF8JiXr1tuuHjnEumh+uwLyqAoWIz1i7AeHC53Wl/y6l2YY292cI7eY?=
- =?us-ascii?Q?rAbhtV/4dzpkpFojHkjPPpOgu+WFl2dyKiTp9/uSS/q1l/f2k4Jd5yi+qz8P?=
- =?us-ascii?Q?ou/HKe3z6DjmdqdmBU5Hs8UeV2gnU1zTVouc7ejGvvi2523VnRLm4OsAgnTJ?=
- =?us-ascii?Q?j6chUa3hihSK2TafvkfkldniO+Hyd586xi3mU7vo6MBbRnVciqxiXoJtgS1t?=
- =?us-ascii?Q?M8S6jiOLu5azTPKvvlS/5diVrndEjfEGFqjgv26XnDokDzR3Usb+QpZXIZ2x?=
- =?us-ascii?Q?RAYtyj0E5Te3PMcz1c5ObruQrCnKfX4n/uk/TqRWfnKQHYUYzrAVH/tWDBo8?=
- =?us-ascii?Q?ldMQfX9yRpFA9WIGBIqvSHga65Zzc/2c7i7VstUzGPukSl64STT/8rqijaod?=
- =?us-ascii?Q?XYqZgSOuBUhkiIot2e46sG+OKM+9eYqNA9O2bcCdBLa/ADYmB6niIaPiRLX9?=
- =?us-ascii?Q?9GMDWPmn2HLXeavRFzBVowEsrLzUL7OW/2iP9YMDuoUteyo4DHiHOjKnhEyp?=
- =?us-ascii?Q?xK6cwSKwuzGyFM/VcODPDm9NIa6/ID83OvjwnCkZsCdIbOGleUgNWA8flYSs?=
- =?us-ascii?Q?NPpYNLvzdjPm523szXEzAM3/UqltaJTaGeiAbmfmwR/h66G/0nWWiZLVkDCW?=
- =?us-ascii?Q?Z81XjCRUn1+GQBpQqRpsokIknGq3xQylK79C0ulfTneLFnCxgUViNInXHihZ?=
- =?us-ascii?Q?JmfUwsaXXyXj5zpAhsKcKEUjePE5zcZFYhKVYbFkPEyIxBoamFwQXVVFiPfB?=
- =?us-ascii?Q?985ILxHOGwkOSoEzNkjKOkd3VIQaCSv1NEVbgR3nfpX4Tri5AAD3o6h8rcKt?=
- =?us-ascii?Q?VQ2MN9uz0bqruUMuZFI+gD+WgvQjNdB2+NiFZ19O55tgT/nDFtb9FDiVfu+T?=
- =?us-ascii?Q?tL76kmqt2EgwQuBRgouOVdOS5UarE6QrSE9W1blq?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        Wed, 13 Dec 2023 08:48:27 -0500
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id E88E8EA;
+        Wed, 13 Dec 2023 05:48:32 -0800 (PST)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 92B8FC15;
+        Wed, 13 Dec 2023 05:49:18 -0800 (PST)
+Received: from [192.168.1.3] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2E8DE3F738;
+        Wed, 13 Dec 2023 05:48:27 -0800 (PST)
+Message-ID: <ef228b62-c39f-5155-f012-6ed81508e99a@arm.com>
+Date:   Wed, 13 Dec 2023 13:48:22 +0000
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SN7PR11MB7540.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: aea7d3ca-2202-4714-b477-08dbfbe21ba0
-X-MS-Exchange-CrossTenant-originalarrivaltime: 13 Dec 2023 13:47:54.7479
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: RqFbnMuSVS5X2VGrwKjxSDNYyRl8iDdkdSQZl4H0GNQKfA6kDsIbhXpWrP5hFLat4d+Uf6FIj25kbjvDYsaszQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN7PR11MB6726
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH v1 06/14] libperf cpumap: Add any, empty and min helpers
+Content-Language: en-US
+To:     Ian Rogers <irogers@google.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Mike Leach <mike.leach@linaro.org>,
+        Leo Yan <leo.yan@linaro.org>,
+        John Garry <john.g.garry@oracle.com>,
+        Will Deacon <will@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Darren Hart <dvhart@infradead.org>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        =?UTF-8?Q?Andr=c3=a9_Almeida?= <andrealmeid@igalia.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        K Prateek Nayak <kprateek.nayak@amd.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Kajol Jain <kjain@linux.ibm.com>,
+        Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
+        Andrew Jones <ajones@ventanamicro.com>,
+        Alexandre Ghiti <alexghiti@rivosinc.com>,
+        Atish Patra <atishp@rivosinc.com>,
+        "Steinar H. Gunderson" <sesse@google.com>,
+        Yang Jihong <yangjihong1@huawei.com>,
+        Yang Li <yang.lee@linux.alibaba.com>,
+        Changbin Du <changbin.du@huawei.com>,
+        Sandipan Das <sandipan.das@amd.com>,
+        Ravi Bangoria <ravi.bangoria@amd.com>,
+        Paran Lee <p4ranlee@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Yanteng Si <siyanteng@loongson.cn>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
+        bpf@vger.kernel.org
+References: <20231129060211.1890454-1-irogers@google.com>
+ <20231129060211.1890454-7-irogers@google.com>
+ <94e3745c-8c2b-bdf3-f331-1cbe56574d48@arm.com>
+ <CAP-5=fUWtgNMGWowN2+qnV5FV3viHd=kPqiwXUeEtkQAzabLGw@mail.gmail.com>
+From:   James Clark <james.clark@arm.com>
+In-Reply-To: <CAP-5=fUWtgNMGWowN2+qnV5FV3viHd=kPqiwXUeEtkQAzabLGw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,NICE_REPLY_A,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -182,49 +85,162 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> From: Jason Gunthorpe <jgg@nvidia.com>
-> Sent: Tuesday, December 12, 2023 10:40 PM
->=20
-> On Tue, Dec 12, 2023 at 01:45:16PM +0000, Liu, Yi L wrote:
-> > > From: Jason Gunthorpe <jgg@nvidia.com>
-> > > Sent: Monday, December 11, 2023 9:22 PM
-> > >
-> > > On Mon, Dec 11, 2023 at 03:53:40PM +0800, Yi Liu wrote:
-> > >
-> > > > > >  From that thread Jason mentioned to make the invalidation form=
-at
-> > > > > > part of domain allocation. If that is the direction to go then =
-there
-> > > > > > won't be multiple invalidation formats per hwpt. The user shoul=
-d
-> > > > > > create multiple hwpt's per invalidation format (though mixing
-> > > > > > formats in one virtual platform is very unlikely)?
-> > > > >
-> > > > > I think we could do either, but I have a vauge cleanness preferen=
-ce
-> > > > > that the enums are just different? That would follow a pretty typ=
-ical
-> > > > > pattern for a structure tag to reflect the content of the structu=
-re.
-> > > >
-> > > > Is this still following the direction to make the invalidation form=
-at
-> > > > part of domain allocation?
-> > >
-> > > I think you should make it seperate
-> >
-> > Sure. I'll add a separate enum for cache invalidation format. Just to
-> > see if it is good to pass down the invalidation format in the hwpt
-> > alloc path? So iommu driver can check if the invalidation format
-> > can be used for the hwpt to be allocated.
->=20
-> I would skip it in the invalidation. If necessary drivers can push a 0
-> length invalidation to do 'try and fail' discovery of supported types.
 
-I think you mean keep passing the req_type in cache invalidation path
-instead of the way I proposed. For the 'try and fail' discovery, we should
-allow a zero-length array, is it? If the req_type is supported by the iommu
-driver, then return successful, otherwise fail the ioctl. Is it?
 
-Regards,
-Yi Liu
+On 12/12/2023 20:27, Ian Rogers wrote:
+> On Tue, Dec 12, 2023 at 7:06 AM James Clark <james.clark@arm.com> wrote:
+>>
+>>
+>>
+>> On 29/11/2023 06:02, Ian Rogers wrote:
+>>> Additional helpers to better replace
+>>> perf_cpu_map__has_any_cpu_or_is_empty.
+>>>
+>>> Signed-off-by: Ian Rogers <irogers@google.com>
+>>> ---
+>>>  tools/lib/perf/cpumap.c              | 27 +++++++++++++++++++++++++++
+>>>  tools/lib/perf/include/perf/cpumap.h | 16 ++++++++++++++++
+>>>  tools/lib/perf/libperf.map           |  4 ++++
+>>>  3 files changed, 47 insertions(+)
+>>>
+>>> diff --git a/tools/lib/perf/cpumap.c b/tools/lib/perf/cpumap.c
+>>> index 49fc98e16514..7403819da8fd 100644
+>>> --- a/tools/lib/perf/cpumap.c
+>>> +++ b/tools/lib/perf/cpumap.c
+>>> @@ -316,6 +316,19 @@ bool perf_cpu_map__has_any_cpu_or_is_empty(const struct perf_cpu_map *map)
+>>>       return map ? __perf_cpu_map__cpu(map, 0).cpu == -1 : true;
+>>>  }
+>>>
+>>> +bool perf_cpu_map__is_any_cpu_or_is_empty(const struct perf_cpu_map *map)
+>>> +{
+>>> +     if (!map)
+>>> +             return true;
+>>> +
+>>> +     return __perf_cpu_map__nr(map) == 1 && __perf_cpu_map__cpu(map, 0).cpu == -1;
+>>> +}
+>>
+>> I'm struggling to understand the relevance of the difference between
+>> has_any and is_any I see that there is a slight difference, but could it
+>> not be refactored out so we only need one?
+> 
+> Yep, that's what these changes are working toward. For has any the set
+> {-1, 0, 1} would return true while is any will return false.
+> Previously the has any behavior was called "empty" which I think is
+> actively misleading.
+> 
+>> Do you ever get an 'any' map that has more than 1 entry? It's quite a
+>> subtle difference that is_any returns false if the first one is 'any'
+>> but then there are subsequent entries. Whereas has_any would return
+>> true. I'm not sure if future readers would be able to appreciate that.
+>>
+>> I see has_any is only used twice, both on evlist->all_cpus. Is there
+>> something about that member that means it could have a map that has an
+>> 'any' mixed with CPUs? Wouldn't that have the same result as a normal
+>> 'any' anyway?
+> 
+> The dummy event may be opened on any CPU but then a particular event
+> may be opened on certain CPUs. We merge CPU maps in places like evlist
+> so that we can iterate the appropriate CPUs for events and
+> open/enable/disable/close all events on a certain CPU at the same time
+> (we also set the affinity to that CPU to avoid IPIs). What I'm hoping
+> to do in these changes is reduce the ambiguity, the corner cases are
+> by their nature unusual.
+> 
+> An example of a corner case is, uncore events often get opened just on
+> CPU 0 but on a multi-socket system you may have a CPU 32 that also
+> needs to open the event. Previous code treated the CPU map index and
+> value it contained pretty interchangeably. This is often fine for the
+> core PMU but is clearly wrong in this uncore case, {0, 32} has indexes
+> 0 and 1 but those indexes don't match the CPU numbers. The case of -1
+> has often previously been called dummy but I'm trying to call it the
+> "any CPU" case to match the perf_event_open man page (I'm hoping it
+> also makes it less ambiguous with any CPU being used with a particular
+> event like cycles, calling it dummy makes the event sound like it may
+> have sideband data). The difference between "all CPUs" and "any CPU"
+> is that an evsel for all CPUs would need the event opening
+> individually on each CPU, while any CPU events are a single open call.
+> Any CPU is only valid to perf_event_open if a PID is specified.
+> Depending on the set up there could be overlaps in what they count but
+> hopefully it is clearer what the distinction is. I believe the case of
+> "any CPU" and specific CPU numbers is more common with aux buffers and
+> Adrian has mentioned needing it for intel-pt.
+> 
+> Thanks,
+> Ian
+> 
+
+Thanks for explaining. I suppose I didn't realise that 'any' could be
+merged with per-cpu maps, but it makes sense.
+
+>>> +
+>>> +bool perf_cpu_map__is_empty(const struct perf_cpu_map *map)
+>>> +{
+>>> +     return map == NULL;
+>>> +}
+>>> +
+>>>  int perf_cpu_map__idx(const struct perf_cpu_map *cpus, struct perf_cpu cpu)
+>>>  {
+>>>       int low, high;
+>>> @@ -372,6 +385,20 @@ bool perf_cpu_map__has_any_cpu(const struct perf_cpu_map *map)
+>>>       return map && __perf_cpu_map__cpu(map, 0).cpu == -1;
+>>>  }
+>>>
+>>> +struct perf_cpu perf_cpu_map__min(const struct perf_cpu_map *map)
+>>> +{
+>>> +     struct perf_cpu cpu, result = {
+>>> +             .cpu = -1
+>>> +     };
+>>> +     int idx;
+>>> +
+>>> +     perf_cpu_map__for_each_cpu_skip_any(cpu, idx, map) {
+>>> +             result = cpu;
+>>> +             break;
+>>> +     }
+>>> +     return result;
+>>> +}
+>>> +
+>>>  struct perf_cpu perf_cpu_map__max(const struct perf_cpu_map *map)
+>>>  {
+>>>       struct perf_cpu result = {
+>>> diff --git a/tools/lib/perf/include/perf/cpumap.h b/tools/lib/perf/include/perf/cpumap.h
+>>> index dbe0a7352b64..523e4348fc96 100644
+>>> --- a/tools/lib/perf/include/perf/cpumap.h
+>>> +++ b/tools/lib/perf/include/perf/cpumap.h
+>>> @@ -50,6 +50,22 @@ LIBPERF_API int perf_cpu_map__nr(const struct perf_cpu_map *cpus);
+>>>   * perf_cpu_map__has_any_cpu_or_is_empty - is map either empty or has the "any CPU"/dummy value.
+>>>   */
+>>>  LIBPERF_API bool perf_cpu_map__has_any_cpu_or_is_empty(const struct perf_cpu_map *map);
+>>> +/**
+>>> + * perf_cpu_map__is_any_cpu_or_is_empty - is map either empty or the "any CPU"/dummy value.
+>>> + */
+>>> +LIBPERF_API bool perf_cpu_map__is_any_cpu_or_is_empty(const struct perf_cpu_map *map);
+>>> +/**
+>>> + * perf_cpu_map__is_empty - does the map contain no values and it doesn't
+>>> + *                          contain the special "any CPU"/dummy value.
+>>> + */
+>>> +LIBPERF_API bool perf_cpu_map__is_empty(const struct perf_cpu_map *map);
+>>> +/**
+>>> + * perf_cpu_map__min - the minimum CPU value or -1 if empty or just the "any CPU"/dummy value.
+>>> + */
+>>> +LIBPERF_API struct perf_cpu perf_cpu_map__min(const struct perf_cpu_map *map);
+>>> +/**
+>>> + * perf_cpu_map__max - the maximum CPU value or -1 if empty or just the "any CPU"/dummy value.
+>>> + */
+>>>  LIBPERF_API struct perf_cpu perf_cpu_map__max(const struct perf_cpu_map *map);
+>>>  LIBPERF_API bool perf_cpu_map__has(const struct perf_cpu_map *map, struct perf_cpu cpu);
+>>>  LIBPERF_API bool perf_cpu_map__equal(const struct perf_cpu_map *lhs,
+>>> diff --git a/tools/lib/perf/libperf.map b/tools/lib/perf/libperf.map
+>>> index 10b3f3722642..2aa79b696032 100644
+>>> --- a/tools/lib/perf/libperf.map
+>>> +++ b/tools/lib/perf/libperf.map
+>>> @@ -10,6 +10,10 @@ LIBPERF_0.0.1 {
+>>>               perf_cpu_map__nr;
+>>>               perf_cpu_map__cpu;
+>>>               perf_cpu_map__has_any_cpu_or_is_empty;
+>>> +             perf_cpu_map__is_any_cpu_or_is_empty;
+>>> +             perf_cpu_map__is_empty;
+>>> +             perf_cpu_map__has_any_cpu;
+>>> +             perf_cpu_map__min;
+>>>               perf_cpu_map__max;
+>>>               perf_cpu_map__has;
+>>>               perf_thread_map__new_array;
