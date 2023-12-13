@@ -2,245 +2,230 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F415D811353
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 14:48:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DED281135C
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 14:50:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379011AbjLMNs3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 08:48:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43812 "EHLO
+        id S1379028AbjLMNuG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 08:50:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51242 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378960AbjLMNs1 (ORCPT
+        with ESMTP id S233509AbjLMNuF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 08:48:27 -0500
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id E88E8EA;
-        Wed, 13 Dec 2023 05:48:32 -0800 (PST)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 92B8FC15;
-        Wed, 13 Dec 2023 05:49:18 -0800 (PST)
-Received: from [192.168.1.3] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2E8DE3F738;
-        Wed, 13 Dec 2023 05:48:27 -0800 (PST)
-Message-ID: <ef228b62-c39f-5155-f012-6ed81508e99a@arm.com>
-Date:   Wed, 13 Dec 2023 13:48:22 +0000
+        Wed, 13 Dec 2023 08:50:05 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74A55D5
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 05:50:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1702475410;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=6fbfXkkFVGTCRrg97l9L+HJSV/Mp1xytzAMKvjGB/6w=;
+        b=iWHgec6Xgmo78yunVM6UMJ/WpsXA6iVk12j2d6CTWaFzCInLZowbp3Y6YcGRKBmw/O0oPC
+        xeQBt7Jq4Kp+4+PdT/3+Umi9gfLlauBeGl5OaA+fJtJfxufiGKxrTIVhU84LEATTl4wiNB
+        CZWzVVbwkjq+Wt77exphmsyJEhrM3g4=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-244-FQDaSJ26NzmPtK-4ZLZhlA-1; Wed,
+ 13 Dec 2023 08:50:07 -0500
+X-MC-Unique: FQDaSJ26NzmPtK-4ZLZhlA-1
+Received: from smtp.corp.redhat.com (int-mx10.intmail.prod.int.rdu2.redhat.com [10.11.54.10])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id D57DA1C05AF8;
+        Wed, 13 Dec 2023 13:50:06 +0000 (UTC)
+Received: from warthog.procyon.org.com (unknown [10.42.28.2])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 16478492BE6;
+        Wed, 13 Dec 2023 13:50:05 +0000 (UTC)
+From:   David Howells <dhowells@redhat.com>
+To:     Marc Dionne <marc.dionne@auristor.com>
+Cc:     David Howells <dhowells@redhat.com>, linux-afs@lists.infradead.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2 00/40] afs: Fix probe handling, server rotation and RO volume callback handling
+Date:   Wed, 13 Dec 2023 13:49:22 +0000
+Message-ID: <20231213135003.367397-1-dhowells@redhat.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH v1 06/14] libperf cpumap: Add any, empty and min helpers
-Content-Language: en-US
-To:     Ian Rogers <irogers@google.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        Leo Yan <leo.yan@linaro.org>,
-        John Garry <john.g.garry@oracle.com>,
-        Will Deacon <will@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Darren Hart <dvhart@infradead.org>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        =?UTF-8?Q?Andr=c3=a9_Almeida?= <andrealmeid@igalia.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        K Prateek Nayak <kprateek.nayak@amd.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Kajol Jain <kjain@linux.ibm.com>,
-        Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
-        Andrew Jones <ajones@ventanamicro.com>,
-        Alexandre Ghiti <alexghiti@rivosinc.com>,
-        Atish Patra <atishp@rivosinc.com>,
-        "Steinar H. Gunderson" <sesse@google.com>,
-        Yang Jihong <yangjihong1@huawei.com>,
-        Yang Li <yang.lee@linux.alibaba.com>,
-        Changbin Du <changbin.du@huawei.com>,
-        Sandipan Das <sandipan.das@amd.com>,
-        Ravi Bangoria <ravi.bangoria@amd.com>,
-        Paran Lee <p4ranlee@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Yanteng Si <siyanteng@loongson.cn>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
-        bpf@vger.kernel.org
-References: <20231129060211.1890454-1-irogers@google.com>
- <20231129060211.1890454-7-irogers@google.com>
- <94e3745c-8c2b-bdf3-f331-1cbe56574d48@arm.com>
- <CAP-5=fUWtgNMGWowN2+qnV5FV3viHd=kPqiwXUeEtkQAzabLGw@mail.gmail.com>
-From:   James Clark <james.clark@arm.com>
-In-Reply-To: <CAP-5=fUWtgNMGWowN2+qnV5FV3viHd=kPqiwXUeEtkQAzabLGw@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.10
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Marc,
 
+Here are a set of patches to make some substantial fixes to the afs
+filesystem including:
 
-On 12/12/2023 20:27, Ian Rogers wrote:
-> On Tue, Dec 12, 2023 at 7:06 AM James Clark <james.clark@arm.com> wrote:
->>
->>
->>
->> On 29/11/2023 06:02, Ian Rogers wrote:
->>> Additional helpers to better replace
->>> perf_cpu_map__has_any_cpu_or_is_empty.
->>>
->>> Signed-off-by: Ian Rogers <irogers@google.com>
->>> ---
->>>  tools/lib/perf/cpumap.c              | 27 +++++++++++++++++++++++++++
->>>  tools/lib/perf/include/perf/cpumap.h | 16 ++++++++++++++++
->>>  tools/lib/perf/libperf.map           |  4 ++++
->>>  3 files changed, 47 insertions(+)
->>>
->>> diff --git a/tools/lib/perf/cpumap.c b/tools/lib/perf/cpumap.c
->>> index 49fc98e16514..7403819da8fd 100644
->>> --- a/tools/lib/perf/cpumap.c
->>> +++ b/tools/lib/perf/cpumap.c
->>> @@ -316,6 +316,19 @@ bool perf_cpu_map__has_any_cpu_or_is_empty(const struct perf_cpu_map *map)
->>>       return map ? __perf_cpu_map__cpu(map, 0).cpu == -1 : true;
->>>  }
->>>
->>> +bool perf_cpu_map__is_any_cpu_or_is_empty(const struct perf_cpu_map *map)
->>> +{
->>> +     if (!map)
->>> +             return true;
->>> +
->>> +     return __perf_cpu_map__nr(map) == 1 && __perf_cpu_map__cpu(map, 0).cpu == -1;
->>> +}
->>
->> I'm struggling to understand the relevance of the difference between
->> has_any and is_any I see that there is a slight difference, but could it
->> not be refactored out so we only need one?
-> 
-> Yep, that's what these changes are working toward. For has any the set
-> {-1, 0, 1} would return true while is any will return false.
-> Previously the has any behavior was called "empty" which I think is
-> actively misleading.
-> 
->> Do you ever get an 'any' map that has more than 1 entry? It's quite a
->> subtle difference that is_any returns false if the first one is 'any'
->> but then there are subsequent entries. Whereas has_any would return
->> true. I'm not sure if future readers would be able to appreciate that.
->>
->> I see has_any is only used twice, both on evlist->all_cpus. Is there
->> something about that member that means it could have a map that has an
->> 'any' mixed with CPUs? Wouldn't that have the same result as a normal
->> 'any' anyway?
-> 
-> The dummy event may be opened on any CPU but then a particular event
-> may be opened on certain CPUs. We merge CPU maps in places like evlist
-> so that we can iterate the appropriate CPUs for events and
-> open/enable/disable/close all events on a certain CPU at the same time
-> (we also set the affinity to that CPU to avoid IPIs). What I'm hoping
-> to do in these changes is reduce the ambiguity, the corner cases are
-> by their nature unusual.
-> 
-> An example of a corner case is, uncore events often get opened just on
-> CPU 0 but on a multi-socket system you may have a CPU 32 that also
-> needs to open the event. Previous code treated the CPU map index and
-> value it contained pretty interchangeably. This is often fine for the
-> core PMU but is clearly wrong in this uncore case, {0, 32} has indexes
-> 0 and 1 but those indexes don't match the CPU numbers. The case of -1
-> has often previously been called dummy but I'm trying to call it the
-> "any CPU" case to match the perf_event_open man page (I'm hoping it
-> also makes it less ambiguous with any CPU being used with a particular
-> event like cycles, calling it dummy makes the event sound like it may
-> have sideband data). The difference between "all CPUs" and "any CPU"
-> is that an evsel for all CPUs would need the event opening
-> individually on each CPU, while any CPU events are a single open call.
-> Any CPU is only valid to perf_event_open if a PID is specified.
-> Depending on the set up there could be overlaps in what they count but
-> hopefully it is clearer what the distinction is. I believe the case of
-> "any CPU" and specific CPU numbers is more common with aux buffers and
-> Adrian has mentioned needing it for intel-pt.
-> 
-> Thanks,
-> Ian
-> 
+ (1) Fix fileserver probe handling so that the next round of probes doesn't
+     break ongoing server/address rotation by clearing all the probe result
+     tracking.  This could occasionally cause the rotation algorithm to
+     drop straight through, give a 'successful' result without actually
+     emitting any RPC calls, leaving the reply buffer in an undefined
+     state.
 
-Thanks for explaining. I suppose I didn't realise that 'any' could be
-merged with per-cpu maps, but it makes sense.
+     Instead, detach the probe results into a separate struct
+     and allocate a new one each time we start probing and update the
+     pointer to it.  Probes are also sent in order of address preference to
+     try and improve the chance that the preferred one will complete first.
 
->>> +
->>> +bool perf_cpu_map__is_empty(const struct perf_cpu_map *map)
->>> +{
->>> +     return map == NULL;
->>> +}
->>> +
->>>  int perf_cpu_map__idx(const struct perf_cpu_map *cpus, struct perf_cpu cpu)
->>>  {
->>>       int low, high;
->>> @@ -372,6 +385,20 @@ bool perf_cpu_map__has_any_cpu(const struct perf_cpu_map *map)
->>>       return map && __perf_cpu_map__cpu(map, 0).cpu == -1;
->>>  }
->>>
->>> +struct perf_cpu perf_cpu_map__min(const struct perf_cpu_map *map)
->>> +{
->>> +     struct perf_cpu cpu, result = {
->>> +             .cpu = -1
->>> +     };
->>> +     int idx;
->>> +
->>> +     perf_cpu_map__for_each_cpu_skip_any(cpu, idx, map) {
->>> +             result = cpu;
->>> +             break;
->>> +     }
->>> +     return result;
->>> +}
->>> +
->>>  struct perf_cpu perf_cpu_map__max(const struct perf_cpu_map *map)
->>>  {
->>>       struct perf_cpu result = {
->>> diff --git a/tools/lib/perf/include/perf/cpumap.h b/tools/lib/perf/include/perf/cpumap.h
->>> index dbe0a7352b64..523e4348fc96 100644
->>> --- a/tools/lib/perf/include/perf/cpumap.h
->>> +++ b/tools/lib/perf/include/perf/cpumap.h
->>> @@ -50,6 +50,22 @@ LIBPERF_API int perf_cpu_map__nr(const struct perf_cpu_map *cpus);
->>>   * perf_cpu_map__has_any_cpu_or_is_empty - is map either empty or has the "any CPU"/dummy value.
->>>   */
->>>  LIBPERF_API bool perf_cpu_map__has_any_cpu_or_is_empty(const struct perf_cpu_map *map);
->>> +/**
->>> + * perf_cpu_map__is_any_cpu_or_is_empty - is map either empty or the "any CPU"/dummy value.
->>> + */
->>> +LIBPERF_API bool perf_cpu_map__is_any_cpu_or_is_empty(const struct perf_cpu_map *map);
->>> +/**
->>> + * perf_cpu_map__is_empty - does the map contain no values and it doesn't
->>> + *                          contain the special "any CPU"/dummy value.
->>> + */
->>> +LIBPERF_API bool perf_cpu_map__is_empty(const struct perf_cpu_map *map);
->>> +/**
->>> + * perf_cpu_map__min - the minimum CPU value or -1 if empty or just the "any CPU"/dummy value.
->>> + */
->>> +LIBPERF_API struct perf_cpu perf_cpu_map__min(const struct perf_cpu_map *map);
->>> +/**
->>> + * perf_cpu_map__max - the maximum CPU value or -1 if empty or just the "any CPU"/dummy value.
->>> + */
->>>  LIBPERF_API struct perf_cpu perf_cpu_map__max(const struct perf_cpu_map *map);
->>>  LIBPERF_API bool perf_cpu_map__has(const struct perf_cpu_map *map, struct perf_cpu cpu);
->>>  LIBPERF_API bool perf_cpu_map__equal(const struct perf_cpu_map *lhs,
->>> diff --git a/tools/lib/perf/libperf.map b/tools/lib/perf/libperf.map
->>> index 10b3f3722642..2aa79b696032 100644
->>> --- a/tools/lib/perf/libperf.map
->>> +++ b/tools/lib/perf/libperf.map
->>> @@ -10,6 +10,10 @@ LIBPERF_0.0.1 {
->>>               perf_cpu_map__nr;
->>>               perf_cpu_map__cpu;
->>>               perf_cpu_map__has_any_cpu_or_is_empty;
->>> +             perf_cpu_map__is_any_cpu_or_is_empty;
->>> +             perf_cpu_map__is_empty;
->>> +             perf_cpu_map__has_any_cpu;
->>> +             perf_cpu_map__min;
->>>               perf_cpu_map__max;
->>>               perf_cpu_map__has;
->>>               perf_thread_map__new_array;
+ (2) Fix server rotation so that it uses configurable address preferences
+     across on the probes that have completed so far than ranking them by
+     RTT as the latter doesn't necessarily give the best route.  The
+     preference list can be altered by echoing commands into
+     /proc/net/afs/addr_prefs.
+
+ (3) Fix the handling of Read-Only (and Backup) volume callbacks as there
+     is one per volume, not one per file, so if someone performs a command
+     that, say, offlines the volume but doesn't change it, when it comes
+     back online we don't spam the server with a status fetch for every
+     vnode we're using.  Instead, check the Creation timestamp in the
+     VolSync record when prompted by a callback break.
+
+ (4) Handle volume regression (ie. a RW volume being restored from a
+     backup) by scrubbing all cache data for that volume.  This is detected
+     from the VolSync creation timestamp.
+
+ (5) Adjust abort handling and abort -> error mapping to match better with
+     what other AFS clients do.
+
+ (6) Fix offline and busy volume state handling as they only apply to
+     individual server instances and not entire volumes and the rotation
+     algorithm should go and look at other servers if available.  Also make
+     it sleep briefly before each retry if all the volume instances are
+     unavailable.
+
+In addition there are a number of small fixes in rxrpc and afs included
+here so that those problems don't affect testing.
+
+The patches can be found here:
+
+	https://git.kernel.org/pub/scm/linux/kernel/git/dhowells/linux-fs.git/log/?h=afs-fixes
+
+Thanks,
+David
+
+Changes
+=======
+ver #2)
+ - Drop the first two rxrpc fix patches - one has gone through the net tree
+   and the other needs a bit more work, but neither is necessary for this
+   series.
+ - Add a couple of missing symbol exports.
+ - Treat UAEIO as VIO too.
+ - Switch to using atomic64_t for creation & update times because 64-bit
+   cmpxchg isn't available on some 32-bit arches.
+ - Some patches went upstream separately as fixes (commit
+   5b7ad877e4d81f8904ce83982b1ba5c6e83deccb).
+ - Use atomic64_t for vnode->cb_expires_at() as 64-bit xchg() is not
+   univerally available.
+ - Use rcu_access_pointer() rather than passing an __rcu pointer directly to
+   kfree_rcu().
+
+Link: https://lore.kernel.org/r/20231109154004.3317227-1-dhowells@redhat.com/ # v1
+---
+%(shortlog)s
+%(diffstat)s
+
+David Howells (36):
+  afs: Remove whitespace before most ')' from the trace header
+  afs: Automatically generate trace tag enums
+  afs: Add comments on abort handling
+  afs: Turn the afs_addr_list address array into an array of structs
+  rxrpc, afs: Allow afs to pin rxrpc_peer objects
+  afs: Don't skip server addresses for which we didn't get an RTT
+    reading
+  afs: Rename addr_list::failed to probe_failed
+  afs: Handle the VIO and UAEIO aborts explicitly
+  afs: Use op->nr_iterations=-1 to indicate to begin fileserver
+    iteration
+  afs: Wrap most op->error accesses with inline funcs
+  afs: Don't put afs_call in afs_wait_for_call_to_complete()
+  afs: Simplify error handling
+  afs: Add a tracepoint for struct afs_addr_list
+  afs: Rename some fields
+  afs: Use peer + service_id as call address
+  afs: Fold the afs_addr_cursor struct in
+  rxrpc: Create a procfile to display outstanding client conn bundles
+  afs: Add some more info to /proc/net/afs/servers
+  afs: Remove the unimplemented afs_cmp_addr_list()
+  afs: Provide a way to configure address priorities
+  afs: Mark address lists with configured priorities
+  afs: Dispatch fileserver probes in priority order
+  afs: Dispatch vlserver probes in priority order
+  afs: Keep a record of the current fileserver endpoint state
+  afs: Combine the endpoint state bools into a bitmask
+  afs: Make it possible to find the volumes that are using a server
+  afs: Defer volume record destruction to a workqueue
+  afs: Move the vnode/volume validity checking code into its own file
+  afs: Apply server breaks to mmap'd files in the call processor
+  afs: Fix comment in afs_do_lookup()
+  afs: Don't leave DONTUSE/NEWREPSITE servers out of server list
+  afs: Parse the VolSync record in the reply of a number of RPC ops
+  afs: Overhaul invalidation handling to better support RO volumes
+  afs: Fix fileserver rotation
+  afs: Fix offline and busy message emission
+  afs: trace: Log afs_make_call(), including server address
+
+Oleg Nesterov (4):
+  afs: fix the usage of read_seqbegin_or_lock() in
+    afs_lookup_volume_rcu()
+  afs: fix the usage of read_seqbegin_or_lock() in afs_find_server*()
+  afs: use read_seqbegin() in afs_check_validity() and afs_getattr()
+  rxrpc_find_service_conn_rcu: fix the usage of read_seqbegin_or_lock()
+
+ fs/afs/Makefile              |   2 +
+ fs/afs/addr_list.c           | 224 +++++-----
+ fs/afs/addr_prefs.c          | 531 ++++++++++++++++++++++++
+ fs/afs/afs.h                 |   3 +-
+ fs/afs/callback.c            | 141 ++++---
+ fs/afs/cell.c                |   5 +-
+ fs/afs/cmservice.c           |   5 +-
+ fs/afs/dir.c                 |  59 +--
+ fs/afs/dir_silly.c           |   2 +-
+ fs/afs/file.c                |  20 +-
+ fs/afs/fs_operation.c        |  85 ++--
+ fs/afs/fs_probe.c            | 323 +++++++++------
+ fs/afs/fsclient.c            |  74 +++-
+ fs/afs/inode.c               | 204 +--------
+ fs/afs/internal.h            | 370 +++++++++++------
+ fs/afs/main.c                |   1 +
+ fs/afs/misc.c                |  10 +-
+ fs/afs/proc.c                | 102 ++++-
+ fs/afs/rotate.c              | 520 ++++++++++++++++-------
+ fs/afs/rxrpc.c               | 107 ++---
+ fs/afs/server.c              | 135 +++---
+ fs/afs/server_list.c         | 174 ++++++--
+ fs/afs/super.c               |   7 +-
+ fs/afs/validation.c          | 467 +++++++++++++++++++++
+ fs/afs/vl_alias.c            |  69 +---
+ fs/afs/vl_list.c             |  29 +-
+ fs/afs/vl_probe.c            |  60 ++-
+ fs/afs/vl_rotate.c           | 215 ++++++----
+ fs/afs/vlclient.c            | 143 ++++---
+ fs/afs/volume.c              |  61 ++-
+ fs/afs/write.c               |   6 +-
+ fs/afs/yfsclient.c           |  25 +-
+ include/net/af_rxrpc.h       |  15 +-
+ include/trace/events/afs.h   | 779 ++++++++++++++++++++---------------
+ include/trace/events/rxrpc.h |   3 +
+ net/rxrpc/af_rxrpc.c         |  62 ++-
+ net/rxrpc/ar-internal.h      |   6 +-
+ net/rxrpc/call_object.c      |  17 +-
+ net/rxrpc/conn_client.c      |  10 +
+ net/rxrpc/conn_service.c     |   3 +-
+ net/rxrpc/net_ns.c           |   4 +
+ net/rxrpc/peer_object.c      |  58 ++-
+ net/rxrpc/proc.c             |  76 ++++
+ net/rxrpc/sendmsg.c          |  11 +-
+ 44 files changed, 3532 insertions(+), 1691 deletions(-)
+ create mode 100644 fs/afs/addr_prefs.c
+ create mode 100644 fs/afs/validation.c
+
