@@ -2,68 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D9951811051
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 12:40:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B4ACC81105B
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 12:41:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377736AbjLMLju (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 06:39:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57400 "EHLO
+        id S1378866AbjLMLlN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 06:41:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60390 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232736AbjLMLjs (ORCPT
+        with ESMTP id S1378788AbjLMLlD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 06:39:48 -0500
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE946A5
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 03:39:54 -0800 (PST)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id E4D8F40E0140;
-        Wed, 13 Dec 2023 11:39:52 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-        header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id 1XUgfF27Zh13; Wed, 13 Dec 2023 11:39:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-        t=1702467589; bh=SJ9D000oUxGHcSdtKN/FU2dMnMwR5Do1+n4O+7VfCGo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=f+8lb30ld/y2ZXfOcVrxOYsC2g6TNQhIsRt5wY7hxUj1rVaPVqLaRU833CDt7Y5o1
-         tIW+ABOfPVVVnqLIdKyYicH7/aMvDtKp0zoZHgSLpEISW4LodLIr0UzrypWW2U+J8z
-         b34PfdZFeNZlTZEMF//IGDNf/JKByn8v3dFE61OgayxcFf3R/ERAUIm70eHVKT2R/3
-         0a5MUo50KB11kYe1dEet0QRdVn6eYCJW/yTY3YYDigcio6GABCKBvU5YDOLSG37bI0
-         KNkEjyLFXDP2O54WzE2e4B7rFb8yqwIlfGBcO25UwmhX5Z36sS9KclRQTm/uXLsaxI
-         0H0vSI6xuTgLYNAJgwBvZELycoCW7FWsJCny3WqjYCH3wIjuqwOdzI7n0tDTCpf0Rs
-         nBnSWlvv6Laf8I6xL/NVQPNdr+su3tbKEWHNG3jwWfQkdlRoFqBOVP+EtBZGR8zPYP
-         Ykiw1PA0V+35ZAPg4F/hp2HuBVV9nOcvJ7CREFZueobKYLQG3ga4TM0N1G1tL3Zu0p
-         HmaPLMkb+WLsKxuEK6bwdUrys19Q3ipxr4SLi6tuSyTQhO7+paVMxvyGGgBsAaxr26
-         OgnyPYQuNLGRdw3mQvvdG/dZ4UVnGwQfIScRuPX+KcynbxKjuPoID7gjXTUJkZbxtk
-         L9wmAxte9HeodXPxAf9Zlegs=
-Received: from zn.tnic (pd95304da.dip0.t-ipconnect.de [217.83.4.218])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-        (No client certificate requested)
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 858AD40E00CB;
-        Wed, 13 Dec 2023 11:39:41 +0000 (UTC)
-Date:   Wed, 13 Dec 2023 12:39:36 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     Paul Dufresne <dufresnep@zoho.com>, Lyude Paul <lyude@redhat.com>,
-        Danilo Krummrich <me@dakr.org>
-Cc:     nouveau <nouveau@lists.freedesktop.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Ben Skeggs <bskeggs@redhat.com>,
-        Daniel Vetter <daniel@ffwll.ch>
-Subject: Re: nouveau 0000:01:00.0: drm_WARN_ON(!found_head)
-Message-ID: <20231213113936.GBZXmX+MKqX/qOnPn1@fat_crate.local>
-References: <20231111120323.GAZU9tiw8e0RSzCGB9@fat_crate.local>
- <20231212224037.GAZXjhZUDeoq50xKJ5@fat_crate.local>
- <18c613ec092.ae61cf7d6029.4389632938517239705@zoho.com>
+        Wed, 13 Dec 2023 06:41:03 -0500
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 867DD2102;
+        Wed, 13 Dec 2023 03:41:01 -0800 (PST)
+Received: from [192.168.88.20] (91-158-149-209.elisa-laajakaista.fi [91.158.149.209])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id DE02C4A9;
+        Wed, 13 Dec 2023 12:40:12 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1702467613;
+        bh=U5Sl/8akVgGXSTqWebMp2cKRgygGupARWXiB7pAgeeo=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=d+0hS6fY0MTEvG+gySOD9j9U3sMllHEK1cGUPxx920bwpLyqXb3bWz8idwTOaZqMf
+         ZiYEM5NMkrKur/lzsobmXjsQCwsym8P49t8eMlxIIYNqZdBKJQ10xMVoe+/VvO0WsW
+         4GAzF9fpIMd4DFy8WESJ6BdvAafY34/5cd96m4Js=
+Message-ID: <5c5647d5-b389-4d71-9062-3a9921212079@ideasonboard.com>
+Date:   Wed, 13 Dec 2023 13:40:54 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <18c613ec092.ae61cf7d6029.4389632938517239705@zoho.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] [v2] media: i2c: mt9m114: use fsleep() in place of
+ udelay()
+Content-Language: en-US
+To:     Arnd Bergmann <arnd@kernel.org>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Jacopo Mondi <jacopo.mondi@ideasonboard.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Bill Wendling <morbo@google.com>,
+        Justin Stitt <justinstitt@google.com>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        llvm@lists.linux.dev
+References: <20231213112322.1655236-1-arnd@kernel.org>
+From:   Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+Autocrypt: addr=tomi.valkeinen@ideasonboard.com; keydata=
+ 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
+In-Reply-To: <20231213112322.1655236-1-arnd@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -71,25 +103,78 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 12, 2023 at 10:35:51PM -0500, Paul Dufresne wrote:
-> https://gitlab.freedesktop.org/drm/nouveau/-/issues/282
+On 13/12/2023 13:23, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
+> 
+> With clang-16, building without COMMON_CLK triggers a range check on
+> udelay() because of a constant division-by-zero calculation:
+> 
+> ld.lld: error: undefined symbol: __bad_udelay
+>>>> referenced by mt9m114.c
+>>>>                drivers/media/i2c/mt9m114.o:(mt9m114_power_on) in archive vmlinux.a
+> 
+> In this configuration, the driver already fails to probe, before
+> this function gets called, so it's enough to suppress the assertion.
+> 
+> Do this by using fsleep(), which turns long delays into sleep() calls
+> in place of the link failure.
+> 
+> This is probably a good idea regardless to avoid overly long dynamic
+> udelay() calls on a slow clock.
+> 
+> Cc: Sakari Ailus <sakari.ailus@linux.intel.com>
+> Fixes: 24d756e914fc ("media: i2c: Add driver for onsemi MT9M114 camera sensor")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
+>   drivers/media/i2c/mt9m114.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/media/i2c/mt9m114.c b/drivers/media/i2c/mt9m114.c
+> index 0a22f328981d..68adaecaf481 100644
+> --- a/drivers/media/i2c/mt9m114.c
+> +++ b/drivers/media/i2c/mt9m114.c
+> @@ -2116,7 +2116,7 @@ static int mt9m114_power_on(struct mt9m114 *sensor)
+>   		duration = DIV_ROUND_UP(2 * 50 * 1000000, freq);
+>   
+>   		gpiod_set_value(sensor->reset, 1);
+> -		udelay(duration);
+> +		fsleep(duration);
+>   		gpiod_set_value(sensor->reset, 0);
+>   	} else {
+>   		/*
 
-Let's add more folks who were involved in
+I think this is fine, so:
 
-1b477f42285e ("drm/nouveau/kms: Add INHERIT ioctl to nvkm/nvif for reading IOR state")
+Reviewed-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
 
-Apparently, someone wants to know that the loop over the crtcs in
-nv50_display_read_hw_or_state() didn't find a head.
+But: If we don't have COMMON_CLK (or rather, I think, HAVE_CLK), the 
+freq will be zero at compile time. So won't the compiler give a warning 
+for the DIV_ROUND_UP() call?
 
-Holler if you need me to run a debug patch to figure out why.
+Interestingly, for me, this doesn't give a div-by-zero warning:
 
-We're getting close to releasing so I guess we either debug this or shut
-up the WARN.
+	int x;
+	int y = 0;
+	x = DIV_ROUND_UP(10, y);
 
-Thx.
+but this does:
 
--- 
-Regards/Gruss,
-    Boris.
+	int x;
+	const int y = 0;
+	x = DIV_ROUND_UP(10, y);
 
-https://people.kernel.org/tglx/notes-about-netiquette
+And looks like this gives the warning too:
+
+	int x;
+	const int y = 0;
+	if (y)
+		x = DIV_ROUND_UP(10, y);
+
+So, I think, the code in the driver could fail to compile at some later 
+point, if the compiler warnings are improved (?), or if someone adds a 
+'const' in front of 'long freq = clk_get_rate(sensor->clk);' line.
+
+Maybe worry about that if it actually happens =).
+
+  Tomi
+
