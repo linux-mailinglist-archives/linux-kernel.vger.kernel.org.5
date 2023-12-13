@@ -2,105 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B9517811FA8
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 21:05:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 96066811FAA
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 21:06:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378934AbjLMUFh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 15:05:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46964 "EHLO
+        id S1442269AbjLMUGS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 15:06:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38460 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229671AbjLMUFe (ORCPT
+        with ESMTP id S233702AbjLMUGQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 15:05:34 -0500
-Received: from out-185.mta1.migadu.com (out-185.mta1.migadu.com [95.215.58.185])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A496EDC
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 12:05:38 -0800 (PST)
-Date:   Wed, 13 Dec 2023 20:05:29 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1702497936;
+        Wed, 13 Dec 2023 15:06:16 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69E43F2
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 12:06:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1702497981;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=bs3RmWkkBEnHpfKuSLQmU1XdcllYwTl+oGw2E3qh8dc=;
-        b=jJcnDy5bHbUQZ++rOn61pjWjrjxub6x7tQGxN6Q/n2e8x8QqbvQBN0WMjqMDzS9KbV0iYs
-        wCgSpmwEUbVv6YEq3zCdtU1qGuTE6IwHyJzcoTRQw4SP/Qsfm9Sz/cIkb2d4mN4aAQUtts
-        tgUEit1z6/gIrWV69f2FgtcachFAZYI=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Oliver Upton <oliver.upton@linux.dev>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>, ankita@nvidia.com,
-        maz@kernel.org, suzuki.poulose@arm.com, yuzenghui@huawei.com,
-        will@kernel.org, alex.williamson@redhat.com, kevin.tian@intel.com,
-        yi.l.liu@intel.com, ardb@kernel.org, akpm@linux-foundation.org,
-        gshan@redhat.com, linux-mm@kvack.org, lpieralisi@kernel.org,
-        aniketa@nvidia.com, cjia@nvidia.com, kwankhede@nvidia.com,
-        targupta@nvidia.com, vsethi@nvidia.com, acurrid@nvidia.com,
-        apopple@nvidia.com, jhubbard@nvidia.com, danw@nvidia.com,
-        mochs@nvidia.com, kvmarm@lists.linux.dev, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v3 2/2] kvm: arm64: set io memory s2 pte as normalnc for
- vfio pci devices
-Message-ID: <ZXoOieQN7rBiLL4A@linux.dev>
-References: <20231208164709.23101-1-ankita@nvidia.com>
- <20231208164709.23101-3-ankita@nvidia.com>
- <ZXicemDzXm8NShs1@arm.com>
- <20231212181156.GO3014157@nvidia.com>
+        bh=Wamy6ZLjsCqbPaUGOHqCPQWdjqfo0kYV5q8insG9vzg=;
+        b=b1ZPrJXkxczM1eX1uoJgCGOBaYF4chQ1K6ZRq6Qe8xs620eHxTXrXV5yY8TJmA1QA5iuz7
+        KFlkUFozNy7uzet0PfJd+xH7/AaiBGk4+jWGqefs2vuLYkAURGwe+G4LF0aWAS6EcFCfGR
+        GtacPyLX1bQQszeacGCXP9Pat6wdaZY=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-169-eViGQ28KPNWBegcPkOC9Fw-1; Wed,
+ 13 Dec 2023 15:06:18 -0500
+X-MC-Unique: eViGQ28KPNWBegcPkOC9Fw-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com [10.11.54.5])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id A06481C294A1;
+        Wed, 13 Dec 2023 20:06:17 +0000 (UTC)
+Received: from rhel-developer-toolbox-latest (unknown [10.2.17.21])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id B86B251E3;
+        Wed, 13 Dec 2023 20:06:16 +0000 (UTC)
+Date:   Wed, 13 Dec 2023 12:06:14 -0800
+From:   Chris Leech <cleech@redhat.com>
+To:     lduncan@suse.com
+Cc:     target-devel@vger.kernel.org, linux-scsi@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dbond@suse.com, hare@suse.de,
+        michael.christie@oracle.com
+Subject: Re: [PATCH 1/2] scsi: target: iscsi: handle SCSI immediate commands
+Message-ID: <ZXoOtgVZW_QpkU11@rhel-developer-toolbox-latest>
+References: <cover.1701540918.git.lduncan@suse.com>
+ <dc0006176e90cf3fb90e5b1c1917b54fe07c91cd.1701540918.git.lduncan@suse.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231212181156.GO3014157@nvidia.com>
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <dc0006176e90cf3fb90e5b1c1917b54fe07c91cd.1701540918.git.lduncan@suse.com>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.5
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-Sorry, a bit late to the discussion :)
-
-On Tue, Dec 12, 2023 at 02:11:56PM -0400, Jason Gunthorpe wrote:
-> On Tue, Dec 12, 2023 at 05:46:34PM +0000, Catalin Marinas wrote:
-> > should know the implications. There's also an expectation that the
-> > actual driver (KVM guests) or maybe later DPDK can choose the safe
-> > non-cacheable or write-combine (Linux terminology) attributes for the
-> > BAR.
+On Thu, Dec 07, 2023 at 09:42:34AM -0800, lduncan@suse.com wrote:
+> From: Lee Duncan <lduncan@suse.com>
 > 
-> DPDK won't rely on this interface
+> Some iSCSI initiators send SCSI PDUs with the "immediate" bit
+> set, and this is allowed according to RFC 3720. Commands with
+> the "Immediate" bit set are called "immediate commands". From
+> section 3.2.2.1. "Command Numbering and Acknowledging":
+> 
+>    The target MUST NOT transmit a MaxCmdSN that is less than
+>    ExpCmdSN-1.  For non-immediate commands, the CmdSN field can take any
+>    value from ExpCmdSN to MaxCmdSN inclusive.  The target MUST silently
+>    ignore any non-immediate command outside of this range or non-
+>    immediate duplicates within the range.  The CmdSN carried by
+>    immediate commands may lie outside the ExpCmdSN to MaxCmdSN range.
+>    For example, if the initiator has previously sent a non-immediate
+>    command carrying the CmdSN equal to MaxCmdSN, the target window is
+>    closed.  For group task management commands issued as immediate
+>    commands, CmdSN indicates the scope of the group action (e.g., on
+>    ABORT TASK SET indicates which commands are aborted).
+> 
+> This fixed an issue with fastlinq qedi Converged Network Adapter
+> initiator firmware, trying to use an LIO target for booting. These
+> changes made booting possible, with or without ImmediateData enabled.
+> 
+> Signed-off-by: Lee Duncan <lduncan@suse.com>
+> Reviewed-by: David Bond <dbond@suse.com>
+> ---
+>  drivers/target/iscsi/iscsi_target.c      | 12 +++---------
+>  drivers/target/iscsi/iscsi_target_util.c | 10 ++++++++--
+>  2 files changed, 11 insertions(+), 11 deletions(-)
+> 
+> diff --git a/drivers/target/iscsi/iscsi_target.c b/drivers/target/iscsi/iscsi_target.c
+> index 1d25e64b068a..f246e5015868 100644
+> --- a/drivers/target/iscsi/iscsi_target.c
+> +++ b/drivers/target/iscsi/iscsi_target.c
+> @@ -1060,13 +1060,6 @@ int iscsit_setup_scsi_cmd(struct iscsit_conn *conn, struct iscsit_cmd *cmd,
+>  					     ISCSI_REASON_BOOKMARK_INVALID, buf);
+>  	}
+>  
+> -	if (hdr->opcode & ISCSI_OP_IMMEDIATE) {
+> -		pr_err("Illegally set Immediate Bit in iSCSI Initiator"
+> -				" Scsi Command PDU.\n");
+> -		return iscsit_add_reject_cmd(cmd,
+> -					     ISCSI_REASON_BOOKMARK_INVALID, buf);
+> -	}
+> -
+>  	if (payload_length && !conn->sess->sess_ops->ImmediateData) {
+>  		pr_err("ImmediateData=No but DataSegmentLength=%u,"
+>  			" protocol error.\n", payload_length);
 
-Wait, so what's the expected interface for determining the memory
-attributes at stage-1? I'm somewhat concerned that we're conflating two
-things here:
+This seems right, as the flag is checked again later in the same
+function.
 
- 1) KVM needs to know the memory attributes to use at stage-2, which
-    isn't fundamentally different from what's needed for userspace
-    stage-1 mappings.
+> @@ -1255,14 +1248,15 @@ int iscsit_process_scsi_cmd(struct iscsit_conn *conn, struct iscsit_cmd *cmd,
+>  	/*
+>  	 * Check the CmdSN against ExpCmdSN/MaxCmdSN here if
+>  	 * the Immediate Bit is not set, and no Immediate
+> -	 * Data is attached.
+> +	 * Data is attached. Also skip the check if this is
+> +	 * an immediate command.
 
- 2) KVM additionally needs a hint that the device / VFIO can handle
-    mismatched aliases w/o the machine exploding. This goes beyond
-    supporting Normal-NC mappings at stage-2 and is really a bug
-    with our current scheme (nGnRnE at stage-1, nGnRE at stage-2).
+This comment addition seems redundant, isn't that what the "Immediate
+Bit is not set" already means?
 
-I was hoping that (1) could be some 'common' plumbing for both userspace
-and KVM mappings. And for (2), any case where a device is intolerant of
-mismatches && KVM cannot force the memory attributes should be rejected.
+>  	 *
+>  	 * A PDU/CmdSN carrying Immediate Data can only
+>  	 * be processed after the DataCRC has passed.
+>  	 * If the DataCRC fails, the CmdSN MUST NOT
+>  	 * be acknowledged. (See below)
+>  	 */
+> -	if (!cmd->immediate_data) {
+> +	if (!cmd->immediate_data && !cmd->immediate_cmd) {
+>  		cmdsn_ret = iscsit_sequence_cmd(conn, cmd,
+>  					(unsigned char *)hdr, hdr->cmdsn);
+>  		if (cmdsn_ret == CMDSN_ERROR_CANNOT_RECOVER)
 
-AFAICT, the only reason PCI devices can get the blanket treatment of
-Normal-NC at stage-2 is because userspace has a Device-* mapping and can't
-speculatively load from the alias. This feels a bit hacky, and maybe we
-should prioritize an interface for mapping a device into a VM w/o a
-valid userspace mapping.
+Are you sure this needs to be checking both conditions here?  I'm
+struggling to understand why CmdSN checking would be bypassed for
+immediate data.  Is this a longstanding bug where the condition should
+have been on immediate_cmd (and only immediate_cmd) instead?
 
-I very much understand that this has been going on for a while, and we
-need to do *something* to get passthrough working well for devices that
-like 'WC'. I just want to make sure we don't paint ourselves into a corner
-that's hard to get out of in the future.
+Or is this because of the handling the immediate data with DataCRC case
+mentioned?  I do see iscsit_sequence_cmd also being called in
+iscsit_get_immediate_data.
 
--- 
-Thanks,
-Oliver
+- Chris Leech
+
