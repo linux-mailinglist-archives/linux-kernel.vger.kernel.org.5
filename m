@@ -2,98 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BB2A1811527
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 15:46:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 93041811529
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 15:46:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235390AbjLMOqR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 09:46:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46194 "EHLO
+        id S235494AbjLMOq3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 09:46:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37250 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233684AbjLMOqD (ORCPT
+        with ESMTP id S235469AbjLMOqI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 09:46:03 -0500
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 66586110;
+        Wed, 13 Dec 2023 09:46:08 -0500
+Received: from dispatch1-us1.ppe-hosted.com (dispatch1-us1.ppe-hosted.com [67.231.154.183])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 599631BFE;
+        Wed, 13 Dec 2023 06:45:32 -0800 (PST)
+X-Virus-Scanned: Proofpoint Essentials engine
+Received: from mail3.candelatech.com (mail2.candelatech.com [208.74.158.173])
+        by mx1-us1.ppe-hosted.com (PPE Hosted ESMTP Server) with ESMTP id 25BDF3C0063;
+        Wed, 13 Dec 2023 14:45:27 +0000 (UTC)
+Received: from [192.168.1.115] (unknown [98.97.113.21])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail3.candelatech.com (Postfix) with ESMTPSA id 5A6FA13C2B0;
         Wed, 13 Dec 2023 06:45:23 -0800 (PST)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 10C39FEC;
-        Wed, 13 Dec 2023 06:46:09 -0800 (PST)
-Received: from FVFF77S0Q05N (unknown [10.57.42.80])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id BC3A93F738;
-        Wed, 13 Dec 2023 06:45:13 -0800 (PST)
-Date:   Wed, 13 Dec 2023 14:45:10 +0000
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Wang <wanglikun@lixiang.com>
-Cc:     Sami Tolvanen <samitolvanen@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Aaron Tomlin <atomlin@redhat.com>,
-        Alexander Potapenko <glider@google.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Borislav Petkov <bp@alien8.de>, Borislav Petkov <bp@suse.de>,
-        Brian Gerst <brgerst@gmail.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Changbin Du <changbin.du@intel.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        gcc-patches@gcc.gnu.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Josh Poimboeuf <jpoimboe@kernel.org>,
-        Juergen Gross <jgross@suse.com>,
-        Kalesh Singh <kaleshsingh@google.com>,
-        Kees Cook <keescook@chromium.org>,
-        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Marco Elver <elver@google.com>,
-        Mark Brown <broonie@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Michael Roth <michael.roth@amd.com>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nicolas Schier <nicolas@fjasle.eu>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Richard Sandiford <richard.sandiford@arm.com>,
-        Song Liu <song@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Tom Rix <trix@redhat.com>, Uros Bizjak <ubizjak@gmail.com>,
-        Will Deacon <will@kernel.org>, x86@kernel.org,
-        Yuntao Wang <ytcoode@gmail.com>, Yu Zhao <yuzhao@google.com>,
-        Zhen Lei <thunder.leizhen@huawei.com>,
-        linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, llvm@lists.linux.dev,
-        linux-hardening@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-modules@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        Dan Li <ashimida.1990@gmail.com>
-Subject: Re: [RFC/RFT,V2] CFI: Add support for gcc CFI in aarch64
-Message-ID: <ZXnDdooZv0of64ZK@FVFF77S0Q05N>
-References: <20221219061758.23321-1-ashimida.1990@gmail.com>
- <20230325085416.95191-1-ashimida.1990@gmail.com>
- <20230327093016.GB4253@hirez.programming.kicks-ass.net>
- <CABCJKueH6ohH27xCPz9a_ndRR26Na_mo=MGF3eqjwV2=gJy+wQ@mail.gmail.com>
- <CAE+Z0PFZaa2bwtfY5P7ZDYH4JjMxKpJgqz0m+KJ_ks4dctzAKA@mail.gmail.com>
- <4a84af95-6270-6764-6a40-875ec20fc3e1@lixiang.com>
+DKIM-Filter: OpenDKIM Filter v2.11.0 mail3.candelatech.com 5A6FA13C2B0
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=candelatech.com;
+        s=default; t=1702478724;
+        bh=CyzNsGLkg4WlGdYLD0CORyHCimqERrevF4Jayf7AZrI=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=FtctL3XfK12CbRTl5KHhn9cT9j3FXr5yCvhS9Xeakwq9IcOq7UGhZok9Zp5wfhEBH
+         /iRLEzUwz012MLtiuCU3BMuCtLx75xTl22OG5aq3TxxGAvt3BOSitdlbPoGODFuQwW
+         YVntLFUGLNlf+XLJAtZ7c8uNqHUPgHSp8a9lhY3Y=
+Subject: Re: [PATCH 1/2] wifi: mt76: mt7921: Disable powersaving by default
+To:     Lorenzo Bianconi <lorenzo@kernel.org>,
+        Kalle Valo <kvalo@kernel.org>
+Cc:     Mario Limonciello <mario.limonciello@amd.com>,
+        Felix Fietkau <nbd@nbd.name>,
+        Ryder Lee <ryder.lee@mediatek.com>,
+        Shayne Chen <shayne.chen@mediatek.com>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Deren Wu <deren.wu@mediatek.com>,
+        Ming Yen Hsieh <mingyen.hsieh@mediatek.com>,
+        "open list:MEDIATEK MT76 WIRELESS LAN DRIVER" 
+        <linux-wireless@vger.kernel.org>,
+        "open list:ARM/Mediatek SoC support" <linux-kernel@vger.kernel.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        Sultan Alsawaf <sultan@kerneltoast.com>
+References: <20231212090852.162787-1-mario.limonciello@amd.com>
+ <874jgmnud8.fsf@kernel.org> <ZXmxD1foASMaCDIe@lore-desk>
+From:   Ben Greear <greearb@candelatech.com>
+Organization: Candela Technologies
+Message-ID: <d92c081e-47dd-5c57-a6f1-bd72b2748141@candelatech.com>
+Date:   Wed, 13 Dec 2023 06:45:22 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <4a84af95-6270-6764-6a40-875ec20fc3e1@lixiang.com>
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+In-Reply-To: <ZXmxD1foASMaCDIe@lore-desk>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Language: en-MW
+Content-Transfer-Encoding: 7bit
+X-MDID: 1702478729-Q2nO4rVjVD1u
+X-MDID-O: us5;at1;1702478729;Q2nO4rVjVD1u;<greearb@candelatech.com>;0636e1de1030682809d49efeedd0cda8
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -101,59 +77,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 13, 2023 at 05:01:07PM +0800, Wang wrote:
-> On 2023/12/13 16:48, Dan Li wrote:
-> > + Likun
-> >
-> > On Tue, 28 Mar 2023 at 06:18, Sami Tolvanen wrote:
-> >> On Mon, Mar 27, 2023 at 2:30 AM Peter Zijlstra wrote:
-> >>> On Sat, Mar 25, 2023 at 01:54:16AM -0700, Dan Li wrote:
-> >>>
-> >>>> In the compiler part[4], most of the content is the same as Sami's
-> >>>> implementation[3], except for some minor differences, mainly including:
-> >>>>
-> >>>> 1. The function typeid is calculated differently and it is difficult
-> >>>> to be consistent.
-> >>> This means there is an effective ABI break between the compilers, which
-> >>> is sad :-( Is there really nothing to be done about this?
-> >> I agree, this would be unfortunate, and would also be a compatibility
-> >> issue with rustc where there's ongoing work to support
-> >> clang-compatible CFI type hashes:
-> >>
-> >> https://github.com/rust-lang/rust/pull/105452
-> >>
-> >> Sami
+On 12/13/23 5:26 AM, Lorenzo Bianconi wrote:
+>> Mario Limonciello <mario.limonciello@amd.com> writes:
+>>
+>>> Several users have reported awful latency when powersaving is enabled
+>>> with certain access point combinations.
+>>
+>> What APs are these exactly? In the past 802.11 Power Save Mode was
+>> challenging due to badly behaving APs. But nowadays with so many mobile
+>> devices in the market I would assume that APs work a lot better. It
+>> would be best to investigate the issues in detail and try to fix them in
+>> mt76, assuming the bugs are in mt76 driver or firmware.
+>>
+>>> It's also reported that the powersaving feature doesn't provide an
+>>> ample enough savings to justify being enabled by default with these
+>>> issues.
+>>
+>> Any numbers or how was this concluded?
+>>
+>>> Introduce a module parameter that would control the power saving
+>>> behavior.  Set it to default as disabled. This mirrors what some other
+>>> WLAN drivers like iwlwifi do.
+>>
+>> We have already several ways to control 802.11 power save mode:
+>>
+>> * NL80211_CMD_SET_POWER_SAVE (for example used by 'iw set power_save')
+>>
+>> * CONFIG_CFG80211_DEFAULT_PS (for kernel level default)
+>>
+>> * WIPHY_FLAG_PS_ON_BY_DEFAULT (for the driver to control the default setting)
+>>
+>> Adding module parameters as a fourth method sounds confusing so not
+>> really a fan of this. And the bar is quite high for adding new module
+>> parameters anyway.
 > 
-> Hi Peter and Sami
-> 
-> I am Dan Li's colleague, and I will take over and continue the work of CFI.
-> 
-> Regarding the issue of gcc cfi type id being compatible with clang, we
-> have analyzed and verified:
-> 
-> 1. clang uses Mangling defined in Itanium C++ ABI to encode the function
-> prototype, and uses the encoding result as input to generate cfi type id;
-> 2. Currently, gcc only implements mangling for the C++ compiler, and the
-> function prototype coding generated by these interfaces is compatible
-> with clang, but gcc's c compiler does not support mangling.;
-> 
-> Adding mangling to gcc's c compiler is a huge and difficult task，because
-> we have to refactor the mangling of C++, splitting it into basic
-> mangling and language specific mangling, and adding support for the c
-> language which requires a deep understanding of the compiler and
-> language processing parts.
-> 
-> And for the kernel cfi, I suggest separating type compatibility from CFI
-> basic functions. Type compatibility is independent from CFI basic
-> funcitons and should be dealt with under another topic. Should we focus
-> on the main issus of cfi, and  let it work first on linux kernel, and
-> left the compatible issue to be solved later?
+> agree, I think we do not need a new parameter for this, just use the current
+> APIs.
 
-I'm not sure what you're suggesting here exactly, do you mean to add a type ID
-scheme that's incompatible with clang, leaving everything else the same? If so,
-what sort of scheme are you proposing?
+Is there a convenient way for a user to make any of those options above stick through
+reboots?
 
-It seems unfortunate to have a different scheme, but IIUC we expect all kernel
-objects to be built with the same compiler.
+To me, the ability to set system defaults through reboots is a nice feature of
+module options.
 
-Mark.
+Thanks,
+Ben
+
+-- 
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
