@@ -2,126 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F027A81122A
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 13:55:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CBDBD81122C
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 13:56:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379040AbjLMMzd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 07:55:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34470 "EHLO
+        id S1379250AbjLMM4R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 07:56:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56598 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379054AbjLMMzN (ORCPT
+        with ESMTP id S1379215AbjLMM4K (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 07:55:13 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B94C18E
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 04:55:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1702472103;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=/HKVzQBbabQNbbp244Nm1fQjMKsvbXnOSOSucUClLDQ=;
-        b=G/erz0pg0fwlTgcYJ4OA88kNCgDUWm+4Dx+nIDXmIZXdw9irG/hGea0H+CcK9nx61AAHpa
-        zJlqROCZRp5BaQpknD+h3Jw54XME0tfwUBmRs7Pi3/ZK/qFzzY3RifUwTPIScARTP1kjk2
-        xkjbgW1qtQ2zb7+j+2NU2pKzUw2FWo8=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-41-dv_c7_MnMki3YGOSOkERSQ-1; Wed, 13 Dec 2023 07:55:00 -0500
-X-MC-Unique: dv_c7_MnMki3YGOSOkERSQ-1
-Received: by mail-wm1-f71.google.com with SMTP id 5b1f17b1804b1-40c1d2b1559so48184795e9.3
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 04:55:00 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702472099; x=1703076899;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=/HKVzQBbabQNbbp244Nm1fQjMKsvbXnOSOSucUClLDQ=;
-        b=hsNhGsjL4Kxypv+4yu7gEZWbKYclW+tE6erXZ5Q74DJFiYXZz2khaWIxBZsBJ+x4GP
-         T2C9zzuzBonk9GQSt8ndBafR4N+iYNrccz3ldmPreX5/YwGBIgfNwv2NA1L1Rz26bTkn
-         d9AFcBcw6VU9xkIs7CzR2cUQN34OMCF78idLEUiCwjyUMOyIpS07hZfw/ce0PGogxiKd
-         8mXUYqTY9aqKZfCsF7qQMeJ3mYaWspjHaJwtVDLGtdGQLy75/xRQ9thx+T0nDwTqc1Jl
-         BCewQ/Bjw9KtLdJdVAyiFVtAMr+Tz9MJapoX3QAgy/BPTh0AN6hbnxYbbNpJtHJQC7iF
-         jGPQ==
-X-Gm-Message-State: AOJu0Yy/zo53tnQ5J6FWpJAXCjaYNo+H/3+lmgk6GBib8yzpIqIe//Nv
-        IJsIBK2omwGDi+tIhe1JaGVeDe0qEZLid7OsQFIcjlCAavVdkQ+LfcoDsbw7anzNGSn5iuKks8b
-        bzQeBFuOIyBCBZXI6p5JJnYLG
-X-Received: by 2002:a7b:c4d0:0:b0:40b:5e59:c57d with SMTP id g16-20020a7bc4d0000000b0040b5e59c57dmr4246953wmk.167.1702472099276;
-        Wed, 13 Dec 2023 04:54:59 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IGQdiNlTSwr6VEc30+stkcWNjNy2tdKfNK5uWlFIpXTCn5UuzxjNo55fy45igptj58QEhafeg==
-X-Received: by 2002:a7b:c4d0:0:b0:40b:5e59:c57d with SMTP id g16-20020a7bc4d0000000b0040b5e59c57dmr4246915wmk.167.1702472098919;
-        Wed, 13 Dec 2023 04:54:58 -0800 (PST)
-Received: from ?IPV6:2001:b07:6468:f312:63a7:c72e:ea0e:6045? ([2001:b07:6468:f312:63a7:c72e:ea0e:6045])
-        by smtp.googlemail.com with ESMTPSA id f9-20020a05600c154900b0040c4be1af17sm8858371wmg.21.2023.12.13.04.54.56
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 13 Dec 2023 04:54:58 -0800 (PST)
-Message-ID: <cc97bfdf-ac46-4616-be68-d251304f81af@redhat.com>
-Date:   Wed, 13 Dec 2023 13:54:55 +0100
+        Wed, 13 Dec 2023 07:56:10 -0500
+Received: from mout02.posteo.de (mout02.posteo.de [185.67.36.66])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26DCBEA
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 04:56:11 -0800 (PST)
+Received: from submission (posteo.de [185.67.36.169]) 
+        by mout02.posteo.de (Postfix) with ESMTPS id 4BDB2240108
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 13:56:08 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=posteo.net; s=2017;
+        t=1702472168; bh=Ja35sRH73MLPHXYRUj6azr9TKoxuU7Yk//SKbBsoIxk=;
+        h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:
+         Content-Disposition:From;
+        b=Yb3xoDFxqb8xCIFjMoLLFjCaI6T/lGldLdz07M5ByoX4HkuSJII21L8Dyu6XtsnAI
+         6M/u2fZ8YGwxKNfzjLHMedYroM+pyfGbU0vIrP99a0c8ar3Zzp7TLbc8fH+a9I5FjK
+         R/pjlM3iQd25ECn1Az8BmlFsyF33qe3sa7ipQtUI1Pi8M6cc1XucAzbxq9Ab+3HcJi
+         5B4fiIA6Emuq/seaT/bLwz/UuWVLhZcOHZRiWR+zIdki6K7SuJTjQwJ1WH932dGJRi
+         7BKuKUj1uLuSGg/Knqj2gW7RemwSS6wHzidmq3zt27Kil8e/QHnl3VimGbo1MzTjfI
+         N1U91yikLAF6A==
+Received: from customer (localhost [127.0.0.1])
+        by submission (posteo.de) with ESMTPSA id 4SqwTG3HMsz6tyd;
+        Wed, 13 Dec 2023 13:56:01 +0100 (CET)
+Date:   Wed, 13 Dec 2023 12:55:58 +0000
+From:   Anne Macedo <retpolanne@posteo.net>
+To:     Andre Przywara <andre.przywara@arm.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Samuel Holland <samuel@sholland.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "moderated list:ARM/Allwinner sunXi SoC support" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "open list:ARM/Allwinner sunXi SoC support" 
+        <linux-sunxi@lists.linux.dev>,
+        open list <linux-kernel@vger.kernel.org>,
+        Corentin Labbe <clabbe@baylibre.com>
+Subject: Re: [PATCH] arm64: dts: allwinner: Orange Pi One Plus PHY support
+Message-ID: <cm5e7g2ozviyin6p3dh2qtuh4i3f2sbqq4c2arjtdektgk7i6c@l7aawekyj6t2>
+References: <20231212122835.10850-2-retpolanne@posteo.net>
+ <20231212162200.10b3868b@donnerap.manchester.arm.com>
+ <axsvii25yrknfae6gdreti7lcskoscsdbsujwuispiieimsbdy@gwzm4l7mwlew>
+ <20231213013544.2fc7e0d1@minigeek.lan>
+ <ceuoq3xxgb5kkel7e7wqpslcg7h6dde3wgdqhyo7jgop6owovk@5a76ks5fiun4>
+ <20231213122523.219cbfc0@donnerap.manchester.arm.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v10 20/50] KVM: SEV: Select CONFIG_KVM_SW_PROTECTED_VM
- when CONFIG_KVM_AMD_SEV=y
-Content-Language: en-US
-To:     Michael Roth <michael.roth@amd.com>, kvm@vger.kernel.org
-Cc:     linux-coco@lists.linux.dev, linux-mm@kvack.org,
-        linux-crypto@vger.kernel.org, x86@kernel.org,
-        linux-kernel@vger.kernel.org, tglx@linutronix.de, mingo@redhat.com,
-        jroedel@suse.de, thomas.lendacky@amd.com, hpa@zytor.com,
-        ardb@kernel.org, seanjc@google.com, vkuznets@redhat.com,
-        jmattson@google.com, luto@kernel.org, dave.hansen@linux.intel.com,
-        slp@redhat.com, pgonda@google.com, peterz@infradead.org,
-        srinivas.pandruvada@linux.intel.com, rientjes@google.com,
-        dovmurik@linux.ibm.com, tobin@ibm.com, bp@alien8.de,
-        vbabka@suse.cz, kirill@shutemov.name, ak@linux.intel.com,
-        tony.luck@intel.com, marcorr@google.com,
-        sathyanarayanan.kuppuswamy@linux.intel.com, alpergun@google.com,
-        jarkko@kernel.org, ashish.kalra@amd.com, nikunj.dadhania@amd.com,
-        pankaj.gupta@amd.com, liam.merwick@oracle.com, zhi.a.wang@intel.com
-References: <20231016132819.1002933-1-michael.roth@amd.com>
- <20231016132819.1002933-21-michael.roth@amd.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Autocrypt: addr=pbonzini@redhat.com; keydata=
- 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
-In-Reply-To: <20231016132819.1002933-21-michael.roth@amd.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231213122523.219cbfc0@donnerap.manchester.arm.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
         T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -130,15 +71,166 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/16/23 15:27, Michael Roth wrote:
-> SEV-SNP relies on the restricted/protected memory support to run guests,
-> so make sure to enable that support with the
-> CONFIG_KVM_SW_PROTECTED_VM build option.
+On Wed, Dec 13, 2023 at 12:25:23PM +0000, Andre Przywara wrote:
+> On Wed, 13 Dec 2023 11:02:39 +0000
+> Anne Macedo <retpolanne@posteo.net> wrote:
 > 
-> Signed-off-by: Michael Roth<michael.roth@amd.com>
-> ---
+> Hi Anne,
+> 
+> > On Wed, Dec 13, 2023 at 01:35:44AM +0000, Andre Przywara wrote:
+> > > On Tue, 12 Dec 2023 19:27:14 +0000
+> > > Anne Macedo <retpolanne@posteo.net> wrote:
+> > > 
+> > > Hi Anne,
+> > >   
+> > > > On Tue, Dec 12, 2023 at 04:22:00PM +0000, Andre Przywara wrote:  
+> > > > > On Tue, 12 Dec 2023 12:28:30 +0000
+> > > > > Anne Macedo <retpolanne@posteo.net> wrote:
+> > > > > 
+> > > > > Hi Anne,
+> > > > >     
+> > > > > > Adds compatible values to mdio subnodes for Ethernet PHY representing
+> > > > > > Realtek 8211 PHY to Orange Pi One Plus.    
+> > > > > 
+> > > > > So can you state why this would be needed? This is the RTL8211 ID,    
+> > > > 
+> > > > Apologies, I completely forgot to include some context. 
+> > > >   
+> > > > > right? Which should be autodetected via MDIO. Looking back in my inbox
+> > > > > you proposed this change before, for U-Boot, specifically, but I fail to
+> > > > > find a solution or explanation what really happens here. Two Renesas .dts
+> > > > > files have the same compatible, and the commit message talks about the
+> > > > > reset line there, is this related?
+> > > > > 
+> > > > > So can you please give some more background and explanation? That would be
+> > > > > part of a good commit message anyway ("why", not "what").    
+> > > > 
+> > > > Should I resend the commit with a more meaningful explanation? The
+> > > > context is the following:
+> > > > 
+> > > > currently, ethernet doesn't seem to work on both u-boot and Linux on the
+> > > > Orange Pi One Plus board. 
+> > > > 
+> > > > On the kernel, this error shows up:
+> > > > 
+> > > > Configuring network interfaces... [    5.992589] dwmac-sun8i 5020000.ethernet eth0: Register MEM_TYPE_PAGE_POOL RxQ-0
+> > > > [    6.000823] dwmac-sun8i 5020000.ethernet eth0: __stmmac_open: Cannot attach to PHY (error: -19)
+> > > > 
+> > > > After applying this fix, the PHY gets attached: 
+> > > > 
+> > > > Configuring network interfaces... [    6.060020] dwmac-sun8i 5020000.ethernet eth0: Register MEM_TYPE_PAGE_POOL RxQ-0
+> > > > [    6.069460] dwmac-sun8i 5020000.ethernet eth0: PHY [stmmac-0:01] driver [RTL8211E Gigabit Ethernet] (irq=POLL)
+> > > > 
+> > > > The previous compatible list that had ethernet-phy-ieee802.3-c22 fails
+> > > > to find a PHY, so this patch includes the correct PHY ID with the
+> > > > RTL8211 ID. 
+> > > > 
+> > > > The behaviour is described on [1].  
+> > > 
+> > > So this is all an observation, but no real explanation, isn't it?  
+> > 
+> > I've made some analysis on [3] on this bug, but it was based solely on
+> > u-boot. I was having trouble with the regulator and on u-boot nothing
+> > would trigger the GPIO PD6 and the vcc-gmac-3v3 regulator, so the NIC
+> > was completely dead. Next I did an analysis based on [2] because the
+> > u-boot PHY initialization was flaky.
+> > 
+> > > To cite [1]: "If the PHY reports an incorrect ID (or none at all) ...".
+> > > I am pretty sure this is not the case here, instead we are looking at
+> > > some missing platform bits, like a missing clock, reset, or most likely
+> > > regulator. Or one of the existing resources is wrongly assigned or  
+> > 
+> > As I mentioned, PHY initialization is flaky on u-boot, so maybe that
+> > assumption is correct. 
+> > 
+> > > configured? If the PHY is not (yet?) powered correctly when the code
+> > > does the auto-detection via the MDIO bus, then the initialisation would  
+> > 
+> > If I recall correctly (I don't know if I kept it in my notes :c), that
+> > could be the case. regulator-boot-on makes the NIC work (LEDs blink, at
+> > least) but it doesn't get initialized. 
+> > 
+> > > fail. But since it works when overriding the auto-detection, I feel
+> > > like we are papering over something here.
+> > > Do you have the schematics for this board? I can only find the one for
+> > > the Orange Pi Plus 2E, and I don't know how similar those two are. This
+> > > shows *two* regulators, but both are activated by the same GPIO.  
+> > 
+> > I do. It's available on [4]
+> 
+> Oh damn it, I got lost in Orange Pi's naming maze again - and was looking
+> for the wrong board! So thanks for the link, and this clears things up!
 
-Why select KVM_SW_PROTECTED_VM and not KVM_GENERIC_PRIVATE_MEM?
+Yay! 
 
-Paolo
+> 
+> So yes, the Orange Pi *One* Plus, much like the Orange Pi 3, uses *two*
+> regulators for Ethernet: one 3.3V from the PMIC's ALDO2 rail to power the
+> PHY, and a discrete 2.5V regulator, enabled by GPIO PD6, for the voltage
 
+Oh! I didn't know about the PMIC's ALDO2.
+
+> level on the MDIO lines. On top of this there is a reset line for the PHY,
+> though this is held up by a pull-up resistor, so it *should* work,
+> although we should describe this in the DT.
+
+Noting here to take a look at the reset line so I can add it as well to
+the DT.
+
+> 
+> So the DT looks wrong then: The reg_gmac_3v3 is actually a 2.5V regulator,
+> and phy-supply is aldo2. I think it was done the way it is to somehow make
+> it work with the current DT binding and code, which just supports one
+> regulator. And aldo2 is referenced as the source of reg_gmac_3v3, which
+> smells like another hack to me.
+
+	reg_gmac_3v3: gmac-3v3 {
+		compatible = "regulator-fixed";
+		regulator-name = "vcc-gmac-3v3";
+		regulator-min-microvolt = <3300000>;
+		regulator-max-microvolt = <3300000>;
+		startup-delay-us = <100000>;
+		enable-active-high;
+		gpio = <&pio 3 6 GPIO_ACTIVE_HIGH>; /* PD6 */
+		vin-supply = <&reg_aldo2>;
+	};
+
+Interesting, I see the reg_aldo2 on vin-supply for reg_gmac_3v3. I don't
+understand how it works, is it linking the regulator with the ALDO2 but
+it also enables the PD6 GPIO?
+
+> 
+> > > It would also be interesting to see if any of Corentin's work for the
+> > > Orange Pi 3 helps here?  
+> > 
+> > Adding [5] for reference here, thanks! Will check it out. 
+> 
+> This is an older version, there are actually updates. And he also mentions
+> your board as well, so I think it just can sail in the wake of the OPi 3
+> Ethernet enablement.
+> 
+> Can you try if this change, just applied to your .dts instead, works?
+> https://github.com/montjoie/linux/commit/cf6e192eca1d59be630e6729d2cef9e897b3da8c
+
+Will do! I'll be out of my lab today but will try it at night Brazil
+time. 
+> 
+> Cheers,
+> Andre
+> 
+> P.S. Is there any chance where I can reply/comment on your blog? It seems
+> like I can clear some things up...
+
+Please send me suggestions off thread, the blog is a static GHPages
+blog, so I didn't implement replies yet. I will be happy to include them
+to my notes :) 
+
+> 
+> > [3] https://blog.retpolanne.com/hardware/embedded/2023/07/07/embedded-phy.html
+> > [4] https://linux-sunxi.org/images/7/7c/OrangePi_OnePlus_Schematics_v2.0.pdf
+> > [5] https://lore.kernel.org/netdev/20220509074857.195302-1-clabbe@baylibre.com/
+> > 
+> > Regards, Anne
+> 
+
+Regards, Anne
