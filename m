@@ -2,143 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 26CA7810E16
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 11:15:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FA59810E01
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 11:14:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235275AbjLMKIx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 05:08:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34894 "EHLO
+        id S235267AbjLMKJR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 05:09:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53366 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235247AbjLMKIw (ORCPT
+        with ESMTP id S235247AbjLMKJQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 05:08:52 -0500
-Received: from relay6-d.mail.gandi.net (relay6-d.mail.gandi.net [217.70.183.198])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C581783;
-        Wed, 13 Dec 2023 02:08:57 -0800 (PST)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id EC77EC0007;
-        Wed, 13 Dec 2023 10:08:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1702462136;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=BkEPmwBo76rZMnhAQd2TljBiXO6wxAjKUlmXUkfuePY=;
-        b=o1TvX1J7P4zG7d64wUmm6horPq6/QP0Cau8umau4GIgzX90kjj/oBPz/oTiCVDKMgmkSMB
-        SSNUEJM7Odk6FBTt3Atpq/m6U9/t2dhz3l3jax8NSgEGulOn/LQE9axsGEsQXEdvTCEGSq
-        4x+cpLUEOCJp1t76t8kIZYaEBrTzxf2QUL9yBF6iKWWlcobzecfU6pzGwsgBonAWdL6S7R
-        XOAJMLZpcRdRXoEEQj5vwcvT63cCHmIgVZBls5I5Y3daiSD7uQ0jJSNY+3sHCrDLzatAzn
-        Wy2GsboVFaPc5dyMuuvbp8ywgg32TwvsxbVrNEIFh6vmqsa2fgKPrxoVwOKMlg==
-Date:   Wed, 13 Dec 2023 11:08:53 +0100
-From:   Maxime Chevallier <maxime.chevallier@bootlin.com>
-To:     Jie Luo <quic_luoj@quicinc.com>
-Cc:     <agross@kernel.org>, <andersson@kernel.org>,
-        <konrad.dybcio@linaro.org>, <davem@davemloft.net>,
-        <edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
-        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
-        <conor+dt@kernel.org>, <andrew@lunn.ch>, <hkallweit1@gmail.com>,
-        <linux@armlinux.org.uk>, <robert.marko@sartura.hr>,
-        <linux-arm-msm@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <quic_srichara@quicinc.com>
-Subject: Re: [PATCH v2 3/5] net: mdio: ipq4019: configure CMN PLL clock for
- ipq5332
-Message-ID: <20231213110853.07f2be7d@device.home>
-In-Reply-To: <b7b0ab99-7277-4618-9037-a878d7b899a9@quicinc.com>
-References: <20231212115151.20016-1-quic_luoj@quicinc.com>
-        <20231212115151.20016-4-quic_luoj@quicinc.com>
-        <20231212135417.67ece4d0@device.home>
-        <b7b0ab99-7277-4618-9037-a878d7b899a9@quicinc.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-GND-Sasl: maxime.chevallier@bootlin.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        Wed, 13 Dec 2023 05:09:16 -0500
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 933A2DC
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 02:09:22 -0800 (PST)
+Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-db4004a8aa9so7055896276.1
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 02:09:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1702462162; x=1703066962; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=LMjiZ1Mla0TJIvfZN07yuuMqisYwNLMlxhRR40WgnKE=;
+        b=rUEdBuJWwCar4cLrt6t73JyuSbctkJAChccfZ4x8p8fIffEyv+tcx1ffnERubMQCAL
+         w01J4bT8p7cldJfJH2WUF5CvL7O3AW7TZ1kVZqGuUf0aMzytoLgawo2IVWb6wPY/2fam
+         Ae0m0vM7tEVKSvU28bh1OKe5KIrVNXCitCJQKvseQAI00MuqWPEhgRC26sL+kBTxMO7o
+         V/PxVIxFiqWyFtLHdZP0Qjanl6e/rFuwsQTBoYpNHzCG2+Ne/6DAK+GpW9BQELv+5lND
+         1wjRKQ91IPdY++DDTXiocHiKDyKs7LXTtJv65EgzmDuGt4LUNEl7n9FEma7HJVJJ55Zy
+         uDUg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702462162; x=1703066962;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=LMjiZ1Mla0TJIvfZN07yuuMqisYwNLMlxhRR40WgnKE=;
+        b=Eli4bTlMXsT3I9bsj5wMFDRkz20bGyX6gxQON/kQRreb0o8cOcVnZX8Vvneuc5HuME
+         HJNbFrz0CwjLxj5+3rME4M9+I3fBAEsG086MTr8Fn6uPp+AYa2STtUPGXI0krKA51AoC
+         u1ALnxx4ElZtw1yuvrVQNwGwayUol3k+eKjeUjvDR50vkYZI5xPQEl37Yx57oD99hw2E
+         BLm3Q2mF2Rj/09eiELwQuk52rEA1xOgb2e6T1k6Hg++gGwN1JwBmxOhP4k85RsI0zQ4y
+         SmEI+WyKxCoCBibSMO/1Nbpf38++f3CX5Lj3lbuPc/hLCt1GFSt42c7Fnd9mNYFXqvMR
+         Zn3A==
+X-Gm-Message-State: AOJu0Yw/JMh8mtk+HTxWZpvSqAEdF4ucfR/EcVDpcE6bOZGJxSC0jISZ
+        DWmR8s/1zzGsELKx1/ehAncnxhwUnMtei78=
+X-Google-Smtp-Source: AGHT+IH1VF9gQH/zvDo8sZsOOMLcD8dWkfvwJA1iOSJh8Gow9jwJUdpnt5y5GZa/kNlrATJlzEmAqJR3Np4SOuA=
+X-Received: from aliceryhl2.c.googlers.com ([fda3:e722:ac3:cc00:68:949d:c0a8:572])
+ (user=aliceryhl job=sendgmr) by 2002:a25:c78d:0:b0:dbc:c98f:8075 with SMTP id
+ w135-20020a25c78d000000b00dbcc98f8075mr10120ybe.12.1702462161656; Wed, 13 Dec
+ 2023 02:09:21 -0800 (PST)
+Date:   Wed, 13 Dec 2023 10:09:18 +0000
+In-Reply-To: <pxtBsqlawLf52Escu7kGkCv1iEorWkE4-g8Ke_IshhejEYz5zZGGX5q98hYtU_YGubwk770ufUezNXFB_GJFMnZno5G7OGuF2oPAOoVAGgc=@proton.me>
+Mime-Version: 1.0
+References: <pxtBsqlawLf52Escu7kGkCv1iEorWkE4-g8Ke_IshhejEYz5zZGGX5q98hYtU_YGubwk770ufUezNXFB_GJFMnZno5G7OGuF2oPAOoVAGgc=@proton.me>
+X-Mailer: git-send-email 2.43.0.472.g3155946c3a-goog
+Message-ID: <20231213100918.435104-1-aliceryhl@google.com>
+Subject: Re: [PATCH v2 7/7] rust: file: add abstraction for `poll_table`
+From:   Alice Ryhl <aliceryhl@google.com>
+To:     benno.lossin@proton.me
+Cc:     a.hindborg@samsung.com, alex.gaynor@gmail.com,
+        aliceryhl@google.com, arve@android.com, bjorn3_gh@protonmail.com,
+        boqun.feng@gmail.com, brauner@kernel.org, cmllamas@google.com,
+        dan.j.williams@intel.com, dxu@dxuuu.xyz, gary@garyguo.net,
+        gregkh@linuxfoundation.org, joel@joelfernandes.org,
+        keescook@chromium.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, maco@android.com, ojeda@kernel.org,
+        peterz@infradead.org, rust-for-linux@vger.kernel.org,
+        surenb@google.com, tglx@linutronix.de, tkjos@android.com,
+        viro@zeniv.linux.org.uk, wedsonaf@gmail.com, willy@infradead.org
+Content-Type: text/plain; charset="utf-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        USER_IN_DEF_DKIM_WL autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 13 Dec 2023 16:09:53 +0800
-Jie Luo <quic_luoj@quicinc.com> wrote:
-
-> On 12/12/2023 8:54 PM, Maxime Chevallier wrote:
-> > Hello,
-> > 
-> > I have some more minor comments for yoi :)
-> > 
-> > On Tue, 12 Dec 2023 19:51:48 +0800
-> > Luo Jie <quic_luoj@quicinc.com> wrote:
-> >   
-> >> The reference clock of CMN PLL block is selectable, the internal
-> >> 48MHZ is used by default.
-> >>
-> >> The output clock of CMN PLL block is for providing the clock
-> >> source of ethernet device(such as qca8084), there are 1 * 25MHZ
-> >> and 3 * 50MHZ output clocks available for the ethernet devices.
-> >>
-> >> Signed-off-by: Luo Jie <quic_luoj@quicinc.com>
-> >> ---  
-> > 
-> > [...]
-> >   
-> >> +/* For the CMN PLL block, the reference clock can be configured according to
-> >> + * the device tree property "cmn-reference-clock", the internal 48MHZ is used
-> >> + * by default on the ipq533 platform.
-> >> + *
-> >> + * The output clock of CMN PLL block is provided to the ethernet devices,
-> >> + * threre are 4 CMN PLL output clocks (1*25MHZ + 3*50MHZ) enabled by default.
-> >> + *
-> >> + * Such as the output 50M clock for the qca8084 ethernet PHY.
-> >> + */
-> >> +static int ipq_cmn_clock_config(struct mii_bus *bus)
-> >> +{
-> >> +	int ret;
-> >> +	u32 reg_val, src_sel, ref_clk;
-> >> +	struct ipq4019_mdio_data *priv;  
-> > 
-> > Here you should also use reverse christmas-tree notation  
+Benno Lossin <benno.lossin@proton.me> writes:
+>> and here we can said,
+>> 
+>> "per type invariant, `qproc` cannot publish `cv.wait_list` without
+>> proper RCU protection, so it's safe to use `cv.wait_list` here, and with
+>> the synchronize_rcu() in PollCondVar::drop(), free of the wait_list will
+>> be delayed until all usages are done."
 > 
-> Ok, will correct this, thanks.
-> 
-> > 
-> > [...]
-> >   
-> >> @@ -317,6 +441,17 @@ static int ipq4019_mdio_probe(struct platform_device *pdev)
-> >>   		}
-> >>   	}
-> >>   
-> >> +	/* The CMN block resource is for providing clock source to ethernet,
-> >> +	 * which can be optionally configured on the platform ipq9574 and
-> >> +	 * ipq5332.
-> >> +	 */
-> >> +	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "cmn_blk");
-> >> +	if (res) {
-> >> +		priv->cmn_membase = devm_ioremap_resource(&pdev->dev, res);
-> >> +		if (IS_ERR(priv->cmn_membase))
-> >> +			return PTR_ERR(priv->cmn_membase);
-> >> +	}
-> >> +  
-> > 
-> > And here you can simplify a bit by using
-> > devm_platform_ioremap_resource_byname()
-> > 
-> > Thanks,
-> > 
-> > Maxime
-> >   
-> As Russell mentioned, since this resource is optional,
-> so devm_platform_ioremap_resource_byname can't be used here.
-> 
+> I think I am missing how the call to `__wake_up_pollfree` ensures that
+> nobody uses the `PollCondVar` any longer. How is it removed from the
+> table?
 
-Indeed, my bad I missed that point. Sorry for the noise :/
+The __wake_up_pollfree function clears the queue. Here is its
+documentation:
 
-Thanks,
+/**
+ * wake_up_pollfree - signal that a polled waitqueue is going away
+ * @wq_head: the wait queue head
+ *
+ * In the very rare cases where a ->poll() implementation uses a waitqueue whose
+ * lifetime is tied to a task rather than to the 'struct file' being polled,
+ * this function must be called before the waitqueue is freed so that
+ * non-blocking polls (e.g. epoll) are notified that the queue is going away.
+ *
+ * The caller must also RCU-delay the freeing of the wait_queue_head, e.g. via
+ * an explicit synchronize_rcu() or call_rcu(), or via SLAB_TYPESAFE_BY_RCU.
+ */
 
-Maxime
+The only way for another thread to touch the queue after it has been
+cleared is if they are concurrently removing themselves from the queue
+under RCU. Because of that, we have to wait for an RCU grace period
+after the call to __wake_up_pollfree to ensure that any such concurrent
+users have gone away.
+
+Alice
