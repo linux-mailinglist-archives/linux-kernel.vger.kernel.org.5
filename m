@@ -2,28 +2,28 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 44579810820
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 03:19:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5316481081F
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 03:19:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378345AbjLMCTd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 21:19:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54380 "EHLO
+        id S1378369AbjLMCTb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 21:19:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54452 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378297AbjLMCTW (ORCPT
+        with ESMTP id S1378305AbjLMCTV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 21:19:22 -0500
+        Tue, 12 Dec 2023 21:19:21 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C914EFD
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C917FFE
         for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 18:19:27 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2F7F4C43397;
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5ED36C433D9;
         Wed, 13 Dec 2023 02:19:26 +0000 (UTC)
 Received: from rostedt by gandalf with local (Exim 4.97)
         (envelope-from <rostedt@goodmis.org>)
-        id 1rDEr3-00000002Tnn-3w4M;
-        Tue, 12 Dec 2023 21:20:09 -0500
-Message-ID: <20231213022009.725077654@goodmis.org>
+        id 1rDEr4-00000002ToH-0vr6;
+        Tue, 12 Dec 2023 21:20:10 -0500
+Message-ID: <20231213022010.001371013@goodmis.org>
 User-Agent: quilt/0.67
-Date:   Tue, 12 Dec 2023 21:19:20 -0500
+Date:   Tue, 12 Dec 2023 21:19:21 -0500
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
@@ -33,8 +33,7 @@ Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
         Tzvetomir Stoyanov <tz.stoyanov@gmail.com>,
         Vincent Donnefort <vdonnefort@google.com>,
         Kent Overstreet <kent.overstreet@gmail.com>
-Subject: [PATCH v2 06/15] ring-buffer: Clear pages on error in ring_buffer_subbuf_order_set()
- failure
+Subject: [PATCH v2 07/15] ring-buffer: Do no swap cpu buffers if order is different
 References: <20231213021914.361709558@goodmis.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -49,28 +48,33 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 
-On failure to allocate ring buffer pages, the pointer to the CPU buffer
-pages is freed, but the pages that were allocated previously were not.
-Make sure they are freed too.
+As all the subbuffer order (subbuffer sizes) must be the same throughout
+the ring buffer, check the order of the buffers that are doing a CPU
+buffer swap in ring_buffer_swap_cpu() to make sure they are the same.
 
-Fixes: TBD ("tracing: Set new size of the ring buffer sub page")
+If the are not the same, then fail to do the swap, otherwise the ring
+buffer will think the CPU buffer has a specific subbuffer size when it
+does not.
+
 Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 ---
- kernel/trace/ring_buffer.c | 1 +
- 1 file changed, 1 insertion(+)
+ kernel/trace/ring_buffer.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
 diff --git a/kernel/trace/ring_buffer.c b/kernel/trace/ring_buffer.c
-index 729fd4f07c1e..ea3c217e4e43 100644
+index ea3c217e4e43..2c908b4f3f68 100644
 --- a/kernel/trace/ring_buffer.c
 +++ b/kernel/trace/ring_buffer.c
-@@ -6069,6 +6069,7 @@ int ring_buffer_subbuf_order_set(struct trace_buffer *buffer, int order)
- 	for_each_buffer_cpu(buffer, cpu) {
- 		if (!cpu_buffers[cpu])
- 			continue;
-+		rb_free_cpu_buffer(cpu_buffers[cpu]);
- 		kfree(cpu_buffers[cpu]);
- 	}
- 	kfree(cpu_buffers);
+@@ -5559,6 +5559,9 @@ int ring_buffer_swap_cpu(struct trace_buffer *buffer_a,
+ 	if (cpu_buffer_a->nr_pages != cpu_buffer_b->nr_pages)
+ 		goto out;
+ 
++	if (buffer_a->subbuf_order != buffer_b->subbuf_order)
++		goto out;
++
+ 	ret = -EAGAIN;
+ 
+ 	if (atomic_read(&buffer_a->record_disabled))
 -- 
 2.42.0
 
