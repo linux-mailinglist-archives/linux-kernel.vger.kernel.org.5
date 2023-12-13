@@ -2,85 +2,290 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D60D88111A2
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 13:50:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 87447811177
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 13:49:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378998AbjLMMuM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 07:50:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49234 "EHLO
+        id S1378914AbjLMMtl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 07:49:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34554 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378964AbjLMMtz (ORCPT
+        with ESMTP id S1378897AbjLMMth (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 07:49:55 -0500
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 288A3113
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 04:49:54 -0800 (PST)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id D4CB540E00CB;
-        Wed, 13 Dec 2023 12:49:52 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-        header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id wLZBCQYyXgKT; Wed, 13 Dec 2023 12:49:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-        t=1702471790; bh=d6/WJ4YGI+jyt5pi/YBaJSCHvFgSbXE/GIoeVHXiKYA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=kUSDFGgys4sDCIa7PGsKyvy+gM1VsHPua6qqQO6CZuklDTqj8f+FHflztybGPYhTz
-         Z1Td7xgUNxtJXkjsGD5chNmdPzvfn7uhs6PaO31TX37FEsr2pB2J0sfhAUIcRdP6L8
-         FoOXmhMGSVphdfqaVRH7+/FbvlabU8laHNYSjScwaEb9aenV02MQKNIdIYvNslebgR
-         4J5Q5L4ROJC1nkcXDTrt6O++b6otbmTYsYSafoJUz06+KpDudMDE0NII1gx8LV2AEK
-         zZtnbGycpZH7LlLMBlztdfxvzZTUcGmAr52haEBHmCQ6Od7RkMuHQoVKkaM39ilN/1
-         VIImH8Xol79PJq7Px833ca8RQtNMwq624WKcdn97x+2e2egfJb9Nmee4W8PYK4Aj64
-         m2tJjKLqVub0XL5gFjbRyKxEn4uf++muJWwlRRCI59IB21lM3Fnoq8Kv443u+ePizS
-         OAsqspqgR/6ZEqxoODVGKPh14+9/pZtxkZTgHwj4Y7NFDsN8l/rdqJcDE0GYHxpgYj
-         +EJtmDPQCBJ1ylja+Kj9ddQkyfuJcbvO62gRjLohm49r3C0w8c8YAL0lL1gPbQYQ/K
-         /fWd+009RVWkX2DHYPTRk+usjIUcm/bEuxJMmm41h5u6OJV3Rf3fqsd78xQdcURpLZ
-         CblmCs2YpydqfZxwib/qX/1s=
-Received: from zn.tnic (pd95304da.dip0.t-ipconnect.de [217.83.4.218])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-        (No client certificate requested)
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id B947740E0195;
-        Wed, 13 Dec 2023 12:49:42 +0000 (UTC)
-Date:   Wed, 13 Dec 2023 13:49:36 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     Paul Dufresne <dufresnep@zoho.com>, Lyude Paul <lyude@redhat.com>,
-        Danilo Krummrich <me@dakr.org>
-Cc:     nouveau <nouveau@lists.freedesktop.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Ben Skeggs <bskeggs@redhat.com>,
-        Daniel Vetter <daniel@ffwll.ch>
-Subject: Re: nouveau 0000:01:00.0: drm_WARN_ON(!found_head)
-Message-ID: <20231213124936.GCZXmoYDq8nMRs75XM@fat_crate.local>
-References: <20231111120323.GAZU9tiw8e0RSzCGB9@fat_crate.local>
- <20231212224037.GAZXjhZUDeoq50xKJ5@fat_crate.local>
- <18c613ec092.ae61cf7d6029.4389632938517239705@zoho.com>
- <20231213113936.GBZXmX+MKqX/qOnPn1@fat_crate.local>
+        Wed, 13 Dec 2023 07:49:37 -0500
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC037A4;
+        Wed, 13 Dec 2023 04:49:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Date:Sender:Message-Id:Content-Type:
+        Content-Transfer-Encoding:MIME-Version:Subject:Cc:To:From:References:
+        In-Reply-To:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=DDcdVazneM/u7wMj0E+j+LVt0/sG+/pUc+Ol6c0oUAM=; b=o2knhIkwo9iXzfmsPtqSYX3GtZ
+        82mkAYgR4tZL2XDDxQhWg2TXvFkydzxSO+QtMU6aght4+jecATwSJPaT6MOwZeS2Ar+iELpliTHfp
+        fCdlENl4Al65j5dZUj6eh5X8CVOib3wPeL8+uRxbxXBGCLYKKhg4H1igrdD98NeZssawKNbd44Y2Z
+        SL6LFSQIHbW0euxInaGWgMRpmE7cVcBK4FS/cpANOuJLiiRfLAbQJenZVhnVlS5Ce7og2+qK0NJpx
+        VrHNwjSHqRrWUHXwJj3/H/VjCIzjKpqQvhqJJPgpkfimj1TGxDLx4y3VzkfdM21OZAwUSFU/cnnPj
+        LT9Gj5Fg==;
+Received: from e0022681537dd.dyn.armlinux.org.uk ([fd8f:7570:feb6:1:222:68ff:fe15:37dd]:58164 helo=rmk-PC.armlinux.org.uk)
+        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.96)
+        (envelope-from <rmk@armlinux.org.uk>)
+        id 1rDOgA-0008Db-38;
+        Wed, 13 Dec 2023 12:49:35 +0000
+Received: from rmk by rmk-PC.armlinux.org.uk with local (Exim 4.94.2)
+        (envelope-from <rmk@rmk-PC.armlinux.org.uk>)
+        id 1rDOgD-00Dvk2-3h; Wed, 13 Dec 2023 12:49:37 +0000
+In-Reply-To: <ZXmn46ptis59F0CO@shell.armlinux.org.uk>
+References: <ZXmn46ptis59F0CO@shell.armlinux.org.uk>
+From:   Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
+To:     linux-pm@vger.kernel.org, loongarch@lists.linux.dev,
+        linux-acpi@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-riscv@lists.infradead.org, kvmarm@lists.linux.dev,
+        x86@kernel.org, acpica-devel@lists.linuxfoundation.org,
+        linux-csky@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-ia64@vger.kernel.org, linux-parisc@vger.kernel.org
+Cc:     Salil Mehta <salil.mehta@huawei.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        jianyong.wu@arm.com, justin.he@arm.com,
+        James Morse <james.morse@arm.com>
+Subject: [PATCH RFC v3 05/21] ACPI: Rename ACPI_HOTPLUG_CPU to include
+ 'present'
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20231213113936.GBZXmX+MKqX/qOnPn1@fat_crate.local>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="utf-8"
+Message-Id: <E1rDOgD-00Dvk2-3h@rmk-PC.armlinux.org.uk>
+Sender: Russell King <rmk@armlinux.org.uk>
+Date:   Wed, 13 Dec 2023 12:49:37 +0000
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 13, 2023 at 12:39:36PM +0100, Borislav Petkov wrote:
-> We're getting close to releasing so I guess we either debug this or shut
-> up the WARN.
+From: James Morse <james.morse@arm.com>
 
-Not only that - panic_on_warn turns this into an explosion so you don't
-want that in a released kernel.
+The code behind ACPI_HOTPLUG_CPU allows a not-present CPU to become
+present. This isn't the only use of HOTPLUG_CPU. On arm64 and riscv
+CPUs can be taken offline as a power saving measure.
 
+On arm64 an offline CPU may be disabled by firmware, preventing it from
+being brought back online, but it remains present throughout.
+
+Adding code to prevent user-space trying to online these disabled CPUs
+needs some additional terminology.
+
+Rename the Kconfig symbol CONFIG_ACPI_HOTPLUG_PRESENT_CPU to reflect
+that it makes possible CPUs present.
+
+HOTPLUG_CPU is untouched as this is only about the ACPI mechanism.
+
+Signed-off-by: James Morse <james.morse@arm.com>
+Tested-by: Miguel Luis <miguel.luis@oracle.com>
+Tested-by: Vishnu Pajjuri <vishnu@os.amperecomputing.com>
+Tested-by: Jianyong Wu <jianyong.wu@arm.com>
+Signed-off-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
+---
+Changes since RFC v2:
+ * Add Loongarch update
+Changes since RFC v3:
+ * Dropped ia64 changes
+---
+ arch/loongarch/Kconfig                     |  2 +-
+ arch/loongarch/configs/loongson3_defconfig |  2 +-
+ arch/loongarch/kernel/acpi.c               |  4 ++--
+ arch/x86/Kconfig                           |  2 +-
+ arch/x86/kernel/acpi/boot.c                |  4 ++--
+ drivers/acpi/Kconfig                       |  4 ++--
+ drivers/acpi/acpi_processor.c              | 10 +++++-----
+ include/linux/acpi.h                       |  6 +++---
+ 8 files changed, 17 insertions(+), 17 deletions(-)
+
+diff --git a/arch/loongarch/Kconfig b/arch/loongarch/Kconfig
+index 15d05dd2b7f3..b1e87b90468d 100644
+--- a/arch/loongarch/Kconfig
++++ b/arch/loongarch/Kconfig
+@@ -5,7 +5,7 @@ config LOONGARCH
+ 	select ACPI
+ 	select ACPI_GENERIC_GSI if ACPI
+ 	select ACPI_MCFG if ACPI
+-	select ACPI_HOTPLUG_CPU if ACPI_PROCESSOR && HOTPLUG_CPU
++	select ACPI_HOTPLUG_PRESENT_CPU if ACPI_PROCESSOR && HOTPLUG_CPU
+ 	select ACPI_PPTT if ACPI
+ 	select ACPI_SYSTEM_POWER_STATES_SUPPORT	if ACPI
+ 	select ARCH_BINFMT_ELF_STATE
+diff --git a/arch/loongarch/configs/loongson3_defconfig b/arch/loongarch/configs/loongson3_defconfig
+index 33795e4a5bd6..85d37b143077 100644
+--- a/arch/loongarch/configs/loongson3_defconfig
++++ b/arch/loongarch/configs/loongson3_defconfig
+@@ -59,7 +59,7 @@ CONFIG_ACPI_SPCR_TABLE=y
+ CONFIG_ACPI_TAD=y
+ CONFIG_ACPI_DOCK=y
+ CONFIG_ACPI_IPMI=m
+-CONFIG_ACPI_HOTPLUG_CPU=y
++CONFIG_ACPI_HOTPLUG_PRESENT_CPU=y
+ CONFIG_ACPI_PCI_SLOT=y
+ CONFIG_ACPI_HOTPLUG_MEMORY=y
+ CONFIG_EFI_ZBOOT=y
+diff --git a/arch/loongarch/kernel/acpi.c b/arch/loongarch/kernel/acpi.c
+index 8e00a754e548..dfa56119b56f 100644
+--- a/arch/loongarch/kernel/acpi.c
++++ b/arch/loongarch/kernel/acpi.c
+@@ -288,7 +288,7 @@ void __init arch_reserve_mem_area(acpi_physical_address addr, size_t size)
+ 	memblock_reserve(addr, size);
+ }
+ 
+-#ifdef CONFIG_ACPI_HOTPLUG_CPU
++#ifdef CONFIG_ACPI_HOTPLUG_PRESENT_CPU
+ 
+ #include <acpi/processor.h>
+ 
+@@ -340,4 +340,4 @@ int acpi_unmap_cpu(int cpu)
+ }
+ EXPORT_SYMBOL(acpi_unmap_cpu);
+ 
+-#endif /* CONFIG_ACPI_HOTPLUG_CPU */
++#endif /* CONFIG_ACPI_HOTPLUG_PRESENT_CPU */
+diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+index 8330c4ac26b3..64fc7c475ab0 100644
+--- a/arch/x86/Kconfig
++++ b/arch/x86/Kconfig
+@@ -59,7 +59,7 @@ config X86
+ 	#
+ 	select ACPI_LEGACY_TABLES_LOOKUP	if ACPI
+ 	select ACPI_SYSTEM_POWER_STATES_SUPPORT	if ACPI
+-	select ACPI_HOTPLUG_CPU			if ACPI_PROCESSOR && HOTPLUG_CPU
++	select ACPI_HOTPLUG_PRESENT_CPU		if ACPI_PROCESSOR && HOTPLUG_CPU
+ 	select ARCH_32BIT_OFF_T			if X86_32
+ 	select ARCH_CLOCKSOURCE_INIT
+ 	select ARCH_CORRECT_STACKTRACE_ON_KRETPROBE
+diff --git a/arch/x86/kernel/acpi/boot.c b/arch/x86/kernel/acpi/boot.c
+index 1a0dd80d81ac..33d259ddd188 100644
+--- a/arch/x86/kernel/acpi/boot.c
++++ b/arch/x86/kernel/acpi/boot.c
+@@ -826,7 +826,7 @@ static void __init acpi_set_irq_model_ioapic(void)
+ /*
+  *  ACPI based hotplug support for CPU
+  */
+-#ifdef CONFIG_ACPI_HOTPLUG_CPU
++#ifdef CONFIG_ACPI_HOTPLUG_PRESENT_CPU
+ #include <acpi/processor.h>
+ 
+ static int acpi_map_cpu2node(acpi_handle handle, int cpu, int physid)
+@@ -875,7 +875,7 @@ int acpi_unmap_cpu(int cpu)
+ 	return (0);
+ }
+ EXPORT_SYMBOL(acpi_unmap_cpu);
+-#endif				/* CONFIG_ACPI_HOTPLUG_CPU */
++#endif				/* CONFIG_ACPI_HOTPLUG_PRESENT_CPU */
+ 
+ int acpi_register_ioapic(acpi_handle handle, u64 phys_addr, u32 gsi_base)
+ {
+diff --git a/drivers/acpi/Kconfig b/drivers/acpi/Kconfig
+index a3acfc750fce..9c5a43d0aff4 100644
+--- a/drivers/acpi/Kconfig
++++ b/drivers/acpi/Kconfig
+@@ -306,7 +306,7 @@ config ACPI_IPMI
+ 	  To compile this driver as a module, choose M here:
+ 	  the module will be called as acpi_ipmi.
+ 
+-config ACPI_HOTPLUG_CPU
++config ACPI_HOTPLUG_PRESENT_CPU
+ 	bool
+ 	depends on ACPI_PROCESSOR && HOTPLUG_CPU
+ 	select ACPI_CONTAINER
+@@ -400,7 +400,7 @@ config ACPI_PCI_SLOT
+ 
+ config ACPI_CONTAINER
+ 	bool "Container and Module Devices"
+-	default (ACPI_HOTPLUG_MEMORY || ACPI_HOTPLUG_CPU)
++	default (ACPI_HOTPLUG_MEMORY || ACPI_HOTPLUG_PRESENT_CPU)
+ 	help
+ 	  This driver supports ACPI Container and Module devices (IDs
+ 	  ACPI0004, PNP0A05, and PNP0A06).
+diff --git a/drivers/acpi/acpi_processor.c b/drivers/acpi/acpi_processor.c
+index e7ed4730cbbe..c8e960ff0aca 100644
+--- a/drivers/acpi/acpi_processor.c
++++ b/drivers/acpi/acpi_processor.c
+@@ -183,7 +183,7 @@ static void __init acpi_pcc_cpufreq_init(void) {}
+ #endif /* CONFIG_X86 */
+ 
+ /* Initialization */
+-#ifdef CONFIG_ACPI_HOTPLUG_CPU
++#ifdef CONFIG_ACPI_HOTPLUG_PRESENT_CPU
+ static int acpi_processor_hotadd_init(struct acpi_processor *pr)
+ {
+ 	unsigned long long sta;
+@@ -228,7 +228,7 @@ static inline int acpi_processor_hotadd_init(struct acpi_processor *pr)
+ {
+ 	return -ENODEV;
+ }
+-#endif /* CONFIG_ACPI_HOTPLUG_CPU */
++#endif /* CONFIG_ACPI_HOTPLUG_PRESENT_CPU */
+ 
+ static int acpi_processor_get_info(struct acpi_device *device)
+ {
+@@ -461,7 +461,7 @@ static int acpi_processor_add(struct acpi_device *device,
+ 	return result;
+ }
+ 
+-#ifdef CONFIG_ACPI_HOTPLUG_CPU
++#ifdef CONFIG_ACPI_HOTPLUG_PRESENT_CPU
+ /* Removal */
+ static void acpi_processor_remove(struct acpi_device *device)
+ {
+@@ -505,7 +505,7 @@ static void acpi_processor_remove(struct acpi_device *device)
+ 	free_cpumask_var(pr->throttling.shared_cpu_map);
+ 	kfree(pr);
+ }
+-#endif /* CONFIG_ACPI_HOTPLUG_CPU */
++#endif /* CONFIG_ACPI_HOTPLUG_PRESENT_CPU */
+ 
+ #ifdef CONFIG_ARCH_MIGHT_HAVE_ACPI_PDC
+ bool __init processor_physically_present(acpi_handle handle)
+@@ -630,7 +630,7 @@ static const struct acpi_device_id processor_device_ids[] = {
+ static struct acpi_scan_handler processor_handler = {
+ 	.ids = processor_device_ids,
+ 	.attach = acpi_processor_add,
+-#ifdef CONFIG_ACPI_HOTPLUG_CPU
++#ifdef CONFIG_ACPI_HOTPLUG_PRESENT_CPU
+ 	.detach = acpi_processor_remove,
+ #endif
+ 	.hotplug = {
+diff --git a/include/linux/acpi.h b/include/linux/acpi.h
+index 4db54e928b36..36071bc11acd 100644
+--- a/include/linux/acpi.h
++++ b/include/linux/acpi.h
+@@ -301,12 +301,12 @@ static inline int acpi_processor_evaluate_cst(acpi_handle handle, u32 cpu,
+ }
+ #endif
+ 
+-#ifdef CONFIG_ACPI_HOTPLUG_CPU
++#ifdef CONFIG_ACPI_HOTPLUG_PRESENT_CPU
+ /* Arch dependent functions for cpu hotplug support */
+ int acpi_map_cpu(acpi_handle handle, phys_cpuid_t physid, u32 acpi_id,
+ 		 int *pcpu);
+ int acpi_unmap_cpu(int cpu);
+-#endif /* CONFIG_ACPI_HOTPLUG_CPU */
++#endif /* CONFIG_ACPI_HOTPLUG_PRESENT_CPU */
+ 
+ #ifdef CONFIG_ACPI_HOTPLUG_IOAPIC
+ int acpi_get_ioapic_id(acpi_handle handle, u32 gsi_base, u64 *phys_addr);
+@@ -629,7 +629,7 @@ static inline u32 acpi_osc_ctx_get_cxl_control(struct acpi_osc_context *context)
+ #define ACPI_GSB_ACCESS_ATTRIB_RAW_PROCESS	0x0000000F
+ 
+ /* Enable _OST when all relevant hotplug operations are enabled */
+-#if defined(CONFIG_ACPI_HOTPLUG_CPU) &&			\
++#if defined(CONFIG_ACPI_HOTPLUG_PRESENT_CPU) &&			\
+ 	defined(CONFIG_ACPI_HOTPLUG_MEMORY) &&		\
+ 	defined(CONFIG_ACPI_CONTAINER)
+ #define ACPI_HOTPLUG_OST
 -- 
-Regards/Gruss,
-    Boris.
+2.30.2
 
-https://people.kernel.org/tglx/notes-about-netiquette
