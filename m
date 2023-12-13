@@ -2,85 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BA655811F74
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 20:52:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CD262811F75
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 20:53:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442477AbjLMTwK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 14:52:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37070 "EHLO
+        id S233835AbjLMTww (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 14:52:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34222 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379021AbjLMTvj (ORCPT
+        with ESMTP id S233795AbjLMTwi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 14:51:39 -0500
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07CE1111;
-        Wed, 13 Dec 2023 11:51:37 -0800 (PST)
-Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BD9Lnup013669;
-        Wed, 13 Dec 2023 19:51:28 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-        message-id:date:mime-version:subject:to:cc:references:from
-        :in-reply-to:content-type:content-transfer-encoding; s=
-        qcppdkim1; bh=M4JcSL3sMHXUln2gLHpJ17WoyQYr/B8H7hcqzLgeJp4=; b=kM
-        4I4WwHtIDnNkE2KKgOhZ5XyhepctJxuYl2pS3CHBgaDBZ/MMtItLKABB43gcdhFC
-        z78j2l/FqycplsCUUe1rZF+y0BiPLJxomkj3reC3xsiLf8u56TdXmNjj3RDmf2iu
-        O6GNbF0ApidtbkOxOeUEE5+jyRElVATLHd53s7fI0hwgmY5fFoATWMjsIZ2+l+iP
-        koV95TDZr1ym7QEVldJMopYJcTBahURhudDiTD7RiIXb/7eKBY1SkPpwPt7hFQyH
-        nO//Q+RdgN2o6chwhbz7zgVkeEpqlkPQT4ufm8jAeNrVtsx8cQV+nmEhj1+PoU3l
-        tHtdspm+zfvonYSlKkpA==
-Received: from nasanppmta02.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3uy5tu23tt-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 13 Dec 2023 19:51:28 +0000 (GMT)
-Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
-        by NASANPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3BDJpRWo022953
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 13 Dec 2023 19:51:27 GMT
-Received: from [10.110.0.246] (10.80.80.8) by nasanex01b.na.qualcomm.com
- (10.46.141.250) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Wed, 13 Dec
- 2023 11:51:26 -0800
-Message-ID: <4a1caaae-f0c1-47d2-a74f-8c17fc5da2bd@quicinc.com>
-Date:   Wed, 13 Dec 2023 11:51:25 -0800
+        Wed, 13 Dec 2023 14:52:38 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED76F1987;
+        Wed, 13 Dec 2023 11:52:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1702497127; x=1734033127;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=+2J+lMKmnDWmo0pwzPu6dSwdKZ/4VMnKLp1WLefwysQ=;
+  b=HClcTJQPQ0uifvDdCeyKjDCK2m+fUlqf1VypgeYyZSkCoFniuiVXjfK7
+   jlxxz1mq6Y3IX3dLQf2PN1gS2aHLd5V6OB15U81kmg7u/r5WuIy9J0xRk
+   4fAwpIDsPZ+OyMPUzPFBT9tBCKLwTtZtunbaa7SC0vg+K6hoiTryrNUsv
+   B6pZaHtQnKJKGePq7tlGsxhl9CLgTxGigRzqqkjGAu+FQkspIGqVQyfAH
+   bpoh91VAQK1oOlMCdUQ0KT6L0mfBn2ONiVfW6oPCucO+qDM/TybECZjHm
+   hyUhxDs/RpQmWRn2pg9CQRNrQ1Or6q8+Eo8i1PD8nDrM8F2tVxUE/oQ1i
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10923"; a="8412871"
+X-IronPort-AV: E=Sophos;i="6.04,273,1695711600"; 
+   d="scan'208";a="8412871"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Dec 2023 11:52:05 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10923"; a="917772546"
+X-IronPort-AV: E=Sophos;i="6.04,273,1695711600"; 
+   d="scan'208";a="917772546"
+Received: from kanliang-dev.jf.intel.com ([10.165.154.102])
+  by fmsmga001.fm.intel.com with ESMTP; 13 Dec 2023 11:52:04 -0800
+From:   kan.liang@linux.intel.com
+To:     acme@kernel.org, irogers@google.com, peterz@infradead.org,
+        mingo@redhat.com, namhyung@kernel.org, jolsa@kernel.org,
+        adrian.hunter@intel.com, john.g.garry@oracle.com, will@kernel.org,
+        james.clark@arm.com, mike.leach@linaro.org, leo.yan@linaro.org,
+        yuhaixin.yhx@linux.alibaba.com, renyu.zj@linux.alibaba.com,
+        tmricht@linux.ibm.com, ravi.bangoria@amd.com,
+        atrajeev@linux.vnet.ibm.com, linux-kernel@vger.kernel.org,
+        linux-perf-users@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Cc:     Kan Liang <kan.liang@linux.intel.com>
+Subject: [PATCH V3 0/7] Clean up perf mem
+Date:   Wed, 13 Dec 2023 11:51:47 -0800
+Message-Id: <20231213195154.1085945-1-kan.liang@linux.intel.com>
+X-Mailer: git-send-email 2.35.1
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/2] drm/msm/dpu: Set input_sel bit for INTF
-Content-Language: en-US
-To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Abhinav Kumar <quic_abhinavk@quicinc.com>
-CC:     Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
-        "Marijn Suijten" <marijn.suijten@somainline.org>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        <linux-arm-msm@vger.kernel.org>, <dri-devel@lists.freedesktop.org>,
-        <freedreno@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>
-References: <20231130-encoder-fixup-v1-0-585c54cd046e@quicinc.com>
- <20231130-encoder-fixup-v1-2-585c54cd046e@quicinc.com>
- <CAA8EJpqeu18q4jN82fUvsEdBRmEjG_mYLQQUWD+LDxjiQQQPsg@mail.gmail.com>
- <a076fced-f4b9-804e-eb73-1fbb510c4951@quicinc.com>
- <77c229fd-5414-49ad-bccd-7a5732345695@linaro.org>
-From:   Jessica Zhang <quic_jesszhan@quicinc.com>
-In-Reply-To: <77c229fd-5414-49ad-bccd-7a5732345695@linaro.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nasanex01b.na.qualcomm.com (10.46.141.250)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: 6fPQbmM28-0-uHXhtlllX2_k_eK9msb7
-X-Proofpoint-GUID: 6fPQbmM28-0-uHXhtlllX2_k_eK9msb7
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-09_02,2023-12-07_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 adultscore=0
- impostorscore=0 bulkscore=0 spamscore=0 lowpriorityscore=0 suspectscore=0
- phishscore=0 priorityscore=1501 malwarescore=0 clxscore=1015
- mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2311290000 definitions=main-2312130141
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -88,171 +66,102 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Kan Liang <kan.liang@linux.intel.com>
+
+Changes since V2:
+- Fix the Arm64 building error (Leo)
+- Add two new patches to clean up perf_mem_events__record_args()
+  and perf_pmus__num_mem_pmus() (Leo)
+
+Changes since V1:
+- Fix strcmp of PMU name checking (Ravi)
+- Fix "/," typo (Ian)
+- Rename several functions with perf_pmu__mem_events prefix. (Ian)
+- Fold the header removal patch into the patch where the cleanups made.
+  (Arnaldo)
+- Add reviewed-by and tested-by from Ian and Ravi
+
+As discussed in the below thread, the patch set is to clean up perf mem.
+https://lore.kernel.org/lkml/afefab15-cffc-4345-9cf4-c6a4128d4d9c@linux.intel.com/
+
+Introduce generic functions perf_mem_events__ptr(),
+perf_mem_events__name() ,and is_mem_loads_aux_event() to replace the
+ARCH specific ones.
+Simplify the perf_mem_event__supported().
+
+Only keeps the ARCH-specific perf_mem_events array in the corresponding
+mem-events.c for each ARCH.
+
+There is no functional change.
+
+The patch set touches almost all the ARCHs, Intel, AMD, ARM, Power and
+etc. But I can only test it on two Intel platforms.
+Please give it try, if you have machines with other ARCHs.
+
+Here are the test results:
+Intel hybrid machine:
+
+$perf mem record -e list
+ldlat-loads  : available
+ldlat-stores : available
+
+$perf mem record -e ldlat-loads -v --ldlat 50
+calling: record -e cpu_atom/mem-loads,ldlat=50/P -e cpu_core/mem-loads,ldlat=50/P
+
+$perf mem record -v
+calling: record -e cpu_atom/mem-loads,ldlat=30/P -e cpu_atom/mem-stores/P -e cpu_core/mem-loads,ldlat=30/P -e cpu_core/mem-stores/P
+
+$perf mem record -t store -v
+calling: record -e cpu_atom/mem-stores/P -e cpu_core/mem-stores/P
 
 
-On 12/2/2023 11:54 AM, Dmitry Baryshkov wrote:
-> On 01/12/2023 23:29, Abhinav Kumar wrote:
->>
->>
->> On 11/30/2023 11:36 PM, Dmitry Baryshkov wrote:
->>> On Fri, 1 Dec 2023 at 03:31, Jessica Zhang 
->>> <quic_jesszhan@quicinc.com> wrote:
->>>>
->>>> Set the input_sel bit for encoders as it was missed in the initial
->>>> implementation.
->>>>
->>>> Reported-by: Rob Clark <robdclark@gmail.com>
->>>> Fixes: 91143873a05d ("drm/msm/dpu: Add MISR register support for 
->>>> interface")
->>>> Closes: https://gitlab.freedesktop.org/drm/msm/-/issues/39
->>>> Signed-off-by: Jessica Zhang <quic_jesszhan@quicinc.com>
->>>> ---
->>>>   drivers/gpu/drm/msm/disp/dpu1/dpu_hw_intf.c | 2 +-
->>>>   drivers/gpu/drm/msm/disp/dpu1/dpu_hw_lm.c   | 2 +-
->>>>   drivers/gpu/drm/msm/disp/dpu1/dpu_hw_util.c | 7 ++++++-
->>>>   drivers/gpu/drm/msm/disp/dpu1/dpu_hw_util.h | 4 +++-
->>>>   4 files changed, 11 insertions(+), 4 deletions(-)
->>>>
->>>> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_intf.c 
->>>> b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_intf.c
->>>> index 3442cf65b86f..d0884997ecb7 100644
->>>> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_intf.c
->>>> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_intf.c
->>>> @@ -320,7 +320,7 @@ static u32 dpu_hw_intf_get_line_count(struct 
->>>> dpu_hw_intf *intf)
->>>>
->>>>   static void dpu_hw_intf_setup_misr(struct dpu_hw_intf *intf)
->>>>   {
->>>> -       dpu_hw_setup_misr(&intf->hw, INTF_MISR_CTRL);
->>>> +       dpu_hw_setup_misr(&intf->hw, INTF_MISR_CTRL, true);
->>>>   }
->>>>
->>>>   static int dpu_hw_intf_collect_misr(struct dpu_hw_intf *intf, u32 
->>>> *misr_value)
->>>> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_lm.c 
->>>> b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_lm.c
->>>> index f38473e68f79..77b14107c84a 100644
->>>> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_lm.c
->>>> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_lm.c
->>>> @@ -83,7 +83,7 @@ static void dpu_hw_lm_setup_border_color(struct 
->>>> dpu_hw_mixer *ctx,
->>>>
->>>>   static void dpu_hw_lm_setup_misr(struct dpu_hw_mixer *ctx)
->>>>   {
->>>> -       dpu_hw_setup_misr(&ctx->hw, LM_MISR_CTRL);
->>>> +       dpu_hw_setup_misr(&ctx->hw, LM_MISR_CTRL, false);
->>>>   }
->>>>
->>>>   static int dpu_hw_lm_collect_misr(struct dpu_hw_mixer *ctx, u32 
->>>> *misr_value)
->>>> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_util.c 
->>>> b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_util.c
->>>> index a8a0a4e76b94..f441df47fdde 100644
->>>> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_util.c
->>>> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_util.c
->>>> @@ -481,7 +481,8 @@ void _dpu_hw_setup_qos_lut(struct 
->>>> dpu_hw_blk_reg_map *c, u32 offset,
->>>>                        cfg->danger_safe_en ? 
->>>> QOS_QOS_CTRL_DANGER_SAFE_EN : 0);
->>>>   }
->>>>
->>>> -void dpu_hw_setup_misr(struct dpu_hw_blk_reg_map *c, u32 
->>>> misr_ctrl_offset)
->>>> +void dpu_hw_setup_misr(struct dpu_hw_blk_reg_map *c, u32 
->>>> misr_ctrl_offset,
->>>> +               bool set_input_sel)
->>>>   {
->>>>          u32 config = 0;
->>>>
->>>> @@ -491,6 +492,10 @@ void dpu_hw_setup_misr(struct 
->>>> dpu_hw_blk_reg_map *c, u32 misr_ctrl_offset)
->>>>          wmb();
->>>>
->>>>          config = MISR_FRAME_COUNT | MISR_CTRL_ENABLE | 
->>>> MISR_CTRL_FREE_RUN_MASK;
->>>> +
->>>> +       if (set_input_sel)
->>>> +               config |= MISR_CTRL_INPUT_SEL;
->>>> +
->>>>          DPU_REG_WRITE(c, misr_ctrl_offset, config);
->>>>   }
->>>>
->>>> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_util.h 
->>>> b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_util.h
->>>> index bb496ebe283b..793670d62414 100644
->>>> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_util.h
->>>> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_util.h
->>>> @@ -17,6 +17,7 @@
->>>>   #define MISR_CTRL_ENABLE                BIT(8)
->>>>   #define MISR_CTRL_STATUS                BIT(9)
->>>>   #define MISR_CTRL_STATUS_CLEAR          BIT(10)
->>>> +#define MISR_CTRL_INPUT_SEL             BIT(24)
->>>
->>> The public apq8916 TRM documents this as a 4-bit field. I think this
->>> was followed into the later generations. Can we please document it
->>> correctly and use an uint instead of just bool for set_input_sel?
->>>
->>
->> Can you pls point us to this document you are referring?
-> 
-> I have this link in my bookmarks, which doesn't seem to work no longer:
-> 
-> https://developer.qualcomm.com/download/sd410/snapdragon-410e-technical-reference-manual.pdf?referrer=node/29241
-> 
-> 96boards forum has several links and mentions of this doc.
-> 
->>
->> I was not aware that bit level details are revealed in external 
->> documents :)
->>
->> Even though its a 4-bit field, it only takes a 0 or 1 as others are 
->> undefined.
->>
->> Exposing all the bits will only cause more confusion like it did for 
->> others thinking that input select is actually configurable when its not.
->>
->> I think what we should do is just pass "misr_type" to this API to tell 
->> whether its lm misr or intf misr and set BIT(24) based on that.
-> 
-> This would be another simplification. Can we instead just use values 0 
-> and 1 instead and maybe document that by default everybody should use 0.
+Intel SPR:
+$perf mem record -e list
+ldlat-loads  : available
+ldlat-stores : available
 
-Hi Dmitry,
+$perf mem record -e ldlat-loads -v --ldlat 50
+calling: record -e {cpu/mem-loads-aux/,cpu/mem-loads,ldlat=50/}:P
 
-Acked. Will change the input_sel parameter to a u8 and add a note that 
-it should be 0x0 by default with an exception for encoders.
+$perf mem record -v
+calling: record -e {cpu/mem-loads-aux/,cpu/mem-loads,ldlat=30/}:P -e cpu/mem-stores/P
 
-Thanks,
+$perf mem record -t store -v
+calling: record -e cpu/mem-stores/P
 
-Jessica Zhang
+Kan Liang (7):
+  perf mem: Add mem_events into the supported perf_pmu
+  perf mem: Clean up perf_mem_events__ptr()
+  perf mem: Clean up perf_mem_events__name()
+  perf mem: Clean up perf_mem_event__supported()
+  perf mem: Clean up is_mem_loads_aux_event()
+  perf mem: Clean up perf_mem_events__record_args()
+  perf mem: Clean up perf_pmus__num_mem_pmus()
 
-> 
->>
->>
->>>>   #define MISR_CTRL_FREE_RUN_MASK         BIT(31)
->>>>
->>>>   /*
->>>> @@ -357,7 +358,8 @@ void _dpu_hw_setup_qos_lut(struct 
->>>> dpu_hw_blk_reg_map *c, u32 offset,
->>>>                             bool qos_8lvl,
->>>>                             const struct dpu_hw_qos_cfg *cfg);
->>>>
->>>> -void dpu_hw_setup_misr(struct dpu_hw_blk_reg_map *c, u32 
->>>> misr_ctrl_offset);
->>>> +void dpu_hw_setup_misr(struct dpu_hw_blk_reg_map *c, u32 
->>>> misr_ctrl_offset,
->>>> +                      bool set_input_sel);
->>>>
->>>>   int dpu_hw_collect_misr(struct dpu_hw_blk_reg_map *c,
->>>>                  u32 misr_ctrl_offset,
->>>>
->>>> -- 
->>>> 2.43.0
->>>>
->>>
->>>
-> 
-> -- 
-> With best wishes
-> Dmitry
-> 
+ tools/perf/arch/arm/util/pmu.c            |   3 +
+ tools/perf/arch/arm64/util/mem-events.c   |  39 +---
+ tools/perf/arch/arm64/util/mem-events.h   |   7 +
+ tools/perf/arch/powerpc/util/mem-events.c |  13 +-
+ tools/perf/arch/powerpc/util/mem-events.h |   7 +
+ tools/perf/arch/powerpc/util/pmu.c        |  11 ++
+ tools/perf/arch/s390/util/pmu.c           |   3 +
+ tools/perf/arch/x86/util/mem-events.c     |  99 ++--------
+ tools/perf/arch/x86/util/mem-events.h     |  10 +
+ tools/perf/arch/x86/util/pmu.c            |  19 +-
+ tools/perf/builtin-c2c.c                  |  45 ++---
+ tools/perf/builtin-mem.c                  |  48 ++---
+ tools/perf/util/mem-events.c              | 217 +++++++++++++---------
+ tools/perf/util/mem-events.h              |  19 +-
+ tools/perf/util/pmu.c                     |   4 +-
+ tools/perf/util/pmu.h                     |   7 +
+ tools/perf/util/pmus.c                    |   6 -
+ tools/perf/util/pmus.h                    |   1 -
+ 18 files changed, 278 insertions(+), 280 deletions(-)
+ create mode 100644 tools/perf/arch/arm64/util/mem-events.h
+ create mode 100644 tools/perf/arch/powerpc/util/mem-events.h
+ create mode 100644 tools/perf/arch/powerpc/util/pmu.c
+ create mode 100644 tools/perf/arch/x86/util/mem-events.h
+
+-- 
+2.35.1
+
