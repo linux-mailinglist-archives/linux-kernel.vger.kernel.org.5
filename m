@@ -2,85 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E8C59810E1E
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 11:15:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 42A3E810E0B
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 11:14:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235261AbjLMKHb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 05:07:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60638 "EHLO
+        id S235281AbjLMKHh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 05:07:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51578 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235245AbjLMKHa (ORCPT
+        with ESMTP id S235271AbjLMKHg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 05:07:30 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B775BA4
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 02:07:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1702462055;
+        Wed, 13 Dec 2023 05:07:36 -0500
+Received: from relay3-d.mail.gandi.net (relay3-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::223])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4910A83;
+        Wed, 13 Dec 2023 02:07:41 -0800 (PST)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 797076000F;
+        Wed, 13 Dec 2023 10:07:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+        t=1702462059;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=YdSkfSCIDP93EM+mxv9M+W9x4jK0YGjz6e+tBs7DUUU=;
-        b=MJrFESsmgsStJEVeQGRSzw7jSqJQqakgDZoantISfiynw2zw0mbrN+96N/bb5freDVH7vw
-        /rgAGd4tnm8dL73Lr9XoqCpKSFExQSRtDYDgJ6x6T/HDFX7p/L5h8tRKvCdd1odmkUxiVO
-        t0cc3VsTZmt2bXpBE9MqrULdvlbDfF0=
-Received: from mail-lf1-f72.google.com (mail-lf1-f72.google.com
- [209.85.167.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-139-YRdPC44IOpKpBtEIZCAt8Q-1; Wed, 13 Dec 2023 05:07:33 -0500
-X-MC-Unique: YRdPC44IOpKpBtEIZCAt8Q-1
-Received: by mail-lf1-f72.google.com with SMTP id 2adb3069b0e04-50bf00775ecso6556950e87.0
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 02:07:33 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702462052; x=1703066852;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=YdSkfSCIDP93EM+mxv9M+W9x4jK0YGjz6e+tBs7DUUU=;
-        b=P76wslrW8yyiTYA6ywpVV+7F29Admz1mXZno6tev+M5sx+bQOBRwFdU2Zf0e1Lu3hv
-         apc0KpI7v3oRhKGH0o9m3LtzaLOyOxgwX1EDu4H4k5kaNEf5+DS89of465+5TLAnqjue
-         KA4nZCUrdT4LVGkqRZRpiK1+1mshzG28oJotpmEsvTzm11wqB3UrTPkI5/tDzV8PFGbz
-         iH1oC9uDXwdxdRR3iVyzpQIXPlVhhDAhYMC/BtH3V0XIYfj5Q8iEcujE0t4HfKERsbCH
-         Oo1ezdEL3sG9bNcvFSjDsNpYuNX8jdpm6qGOOuf0RGbOIl68Ll7HNZ0KwuGgWuyrL8M+
-         TlFw==
-X-Gm-Message-State: AOJu0Yz/B4JyFhMkfXrV/l/G3wvVIRJoMzfwq8rx2bCDuCkm3cFCMmPB
-        daIJ0Zlos/DWi3goLjNi2W9EcMLePdwYlyQGqGsNK0ww1+IG0GcQLm7752L/6iQyhqgEZQJxiX9
-        YA9MxzIlHjEnOuRXZ83xVmoNZ
-X-Received: by 2002:a05:6512:104d:b0:50b:f380:5fad with SMTP id c13-20020a056512104d00b0050bf3805fadmr4913037lfb.87.1702462052209;
-        Wed, 13 Dec 2023 02:07:32 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IFkYdiiq48AtFlXavTGhK5TgEnQUjes08MTe0tzKUxfAO2LnnNyQQT8kV1vdp+a/90HJ+pTfA==
-X-Received: by 2002:a05:6512:104d:b0:50b:f380:5fad with SMTP id c13-20020a056512104d00b0050bf3805fadmr4913025lfb.87.1702462051861;
-        Wed, 13 Dec 2023 02:07:31 -0800 (PST)
-Received: from imammedo.users.ipa.redhat.com (nat-pool-brq-t.redhat.com. [213.175.37.10])
-        by smtp.gmail.com with ESMTPSA id 5-20020ac25f45000000b0050bf06c8098sm1590674lfz.116.2023.12.13.02.07.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Dec 2023 02:07:31 -0800 (PST)
-Date:   Wed, 13 Dec 2023 11:07:29 +0100
-From:   Igor Mammedov <imammedo@redhat.com>
-To:     Fiona Ebner <f.ebner@proxmox.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Dongli Zhang <dongli.zhang@oracle.com>,
-        linux-acpi@vger.kernel.org, linux-pci@vger.kernel.org,
-        mst@redhat.com, rafael@kernel.org, lenb@kernel.org,
-        bhelgaas@google.com, mika.westerberg@linux.intel.com,
-        boris.ostrovsky@oracle.com, joe.jin@oracle.com,
-        stable@vger.kernel.org, Thomas Lamprecht <t.lamprecht@proxmox.com>
-Subject: Re: [RFC 1/2] PCI: acpiphp: enable slot only if it hasn't been
- enabled already
-Message-ID: <20231213110729.3845f530@imammedo.users.ipa.redhat.com>
-In-Reply-To: <501c1078-ef45-4469-87f8-32525d6f2608@proxmox.com>
-References: <20231213003614.1648343-1-imammedo@redhat.com>
-        <20231213003614.1648343-2-imammedo@redhat.com>
-        <501c1078-ef45-4469-87f8-32525d6f2608@proxmox.com>
+        bh=NNBNl0TQMsl9kyDYCCoCiEJ6n4wPwD+uoJm0c+3lwuY=;
+        b=MewhdTNm3jOs2pi3D64QUvQZPkNQ0HPcH3aRaqhy2teQxKwbJVqwXwKAfHep/fpnpTKevP
+        9uT3jHCQgEyMVpt8L0D+GqYL9944vOucN+dvsTsYWmMb1tqfDOvegJhwApScWBC9V3KuHw
+        O1ZugHSWtvFWXwqF9Et/DSA/ocT3arVyjAf8y4vz8ktb2EF4KVkYhBdiCSgeGQwq0yfIZy
+        6km1AVa+Wy/1U6yUGF8MHKNaI9b/tY4KBIVVB3ps4PZtdEvIYtEBZL+9VhXk3sBgApWjWJ
+        Vj/drso5e7UJVmQY3Kqq4DsMi0iNud7qKwTU4fiKP1oko/RNmzLxYFDEtRLwBw==
+Date:   Wed, 13 Dec 2023 11:07:37 +0100
+From:   Maxime Chevallier <maxime.chevallier@bootlin.com>
+To:     "Russell King (Oracle)" <linux@armlinux.org.uk>
+Cc:     Luo Jie <quic_luoj@quicinc.com>, agross@kernel.org,
+        andersson@kernel.org, konrad.dybcio@linaro.org,
+        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        andrew@lunn.ch, hkallweit1@gmail.com, robert.marko@sartura.hr,
+        linux-arm-msm@vger.kernel.org, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        quic_srichara@quicinc.com
+Subject: Re: [PATCH v2 1/5] net: mdio: ipq4019: move eth_ldo_rdy before MDIO
+ bus register
+Message-ID: <20231213110737.6e96dba1@device.home>
+In-Reply-To: <ZXiwU7XnIeSY1NG4@shell.armlinux.org.uk>
+References: <20231212115151.20016-1-quic_luoj@quicinc.com>
+        <20231212115151.20016-2-quic_luoj@quicinc.com>
+        <20231212135001.6bf40e4d@device.home>
+        <ZXiwU7XnIeSY1NG4@shell.armlinux.org.uk>
+Organization: Bootlin
 X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+X-GND-Sasl: maxime.chevallier@bootlin.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -88,60 +65,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 13 Dec 2023 10:47:27 +0100
-Fiona Ebner <f.ebner@proxmox.com> wrote:
+Hello Russell,
 
-> Am 13.12.23 um 01:36 schrieb Igor Mammedov:
-> > When SCSI_SCAN_ASYNC is enabled (either via config or via cmd line),
-> > adding device to bus and enabling it will kick in async host scan
-> > 
-> >  scsi_scan_host+0x21/0x1f0
-> >  virtscsi_probe+0x2dd/0x350
-> >  ..
-> >  driver_probe_device+0x19/0x80
-> >  ...
-> >  driver_probe_device+0x19/0x80
-> >  pci_bus_add_device+0x53/0x80
-> >  pci_bus_add_devices+0x2b/0x70
-> >  ...
-> > 
-> > which will schedule a job for async scan. That however breaks
-> > if there are more than one SCSI host behind bridge, since
-> > acpiphp_check_bridge() will walk over all slots and try to
-> > enable each of them regardless of whether they were already
-> > enabled.
-> > As result the bridge might be reconfigured several times
-> > and trigger following sequence:
-> > 
-> >   [cpu 0] acpiphp_check_bridge()
-> >   [cpu 0]   enable_slot(a)
-> >   [cpu 0]     configure bridge
-> >   [cpu 0]     pci_bus_add_devices() -> scsi_scan_host(a1)
-> >   [cpu 0]   enable_slot(b)
-> >   ...
-> >   [cpu 1] do_scsi_scan_host(a1) <- async jib scheduled for slot a
-> >   ...
-> >   [cpu 0]     configure bridge <- temporaly disables bridge
-> > 
-> > and cause do_scsi_scan_host() failure.
-> > The same race affects SHPC (but it manages to avoid hitting the race due to
-> > 1sec delay when enabling slot).
-> > To cover case of single device hotplug (at a time) do not attempt to
-> > enable slot that have already been enabled.
-> > 
-> > Fixes: 40613da52b13 ("PCI: acpiphp: Reassign resources on bridge if necessary")
-> > Reported-by: Dongli Zhang <dongli.zhang@oracle.com>
-> > Reported-by: iona Ebner <f.ebner@proxmox.com>  
-> 
-> Missing an F here ;)
+On Tue, 12 Dec 2023 19:11:15 +0000
+"Russell King (Oracle)" <linux@armlinux.org.uk> wrote:
 
-Sorry for copypaste mistake, I'll fix it up on the next submission.
-
+> On Tue, Dec 12, 2023 at 01:50:01PM +0100, Maxime Chevallier wrote:
+> > Hello,
+> > 
+> > On Tue, 12 Dec 2023 19:51:46 +0800
+> > Luo Jie <quic_luoj@quicinc.com> wrote:  
+> > > @@ -252,11 +244,32 @@ static int ipq4019_mdio_probe(struct platform_device *pdev)
+> > >  	if (IS_ERR(priv->mdio_clk))
+> > >  		return PTR_ERR(priv->mdio_clk);
+> > >  
+> > > -	/* The platform resource is provided on the chipset IPQ5018 */
+> > > -	/* This resource is optional */
+> > > -	res = platform_get_resource(pdev, IORESOURCE_MEM, 1);
+> > > -	if (res)
+> > > -		priv->eth_ldo_rdy = devm_ioremap_resource(&pdev->dev, res);
+> > > +	/* These platform resources are provided on the chipset IPQ5018 or
+> > > +	 * IPQ5332.
+> > > +	 */
+> > > +	/* This resource are optional */
+> > > +	for (index = 0; index < ETH_LDO_RDY_CNT; index++) {
+> > > +		res = platform_get_resource(pdev, IORESOURCE_MEM, index + 1);
+> > > +		if (res) {
+> > > +			priv->eth_ldo_rdy[index] = devm_ioremap(&pdev->dev,
+> > > +								res->start,
+> > > +								resource_size(res));  
+> > 
+> > You can simplify that sequence by using
+> > devm_platform_get_and_ioremap_resource(), which will do both the
+> > platform_get_resource and the devm_ioremap at once for you.  
 > 
-> > Signed-off-by: Igor Mammedov <imammedo@redhat.com>  
+> Sadly it can't if resources are optional. __devm_ioremap_resource()
+> which will be capped by devm_platform_get_and_ioremap_resource() will
+> be passed a NULL 'res', which will lead to:
 > 
-> Thank you! Works for me:
+>         if (!res || resource_type(res) != IORESOURCE_MEM) {
+>                 dev_err(dev, "invalid resource %pR\n", res);
+>                 return IOMEM_ERR_PTR(-EINVAL);
+>         }
 > 
-> Tested-by: Fiona Ebner <f.ebner@proxmox.com>
+> There isn't an "optional" version of
+> devm_platform_get_and_ioremap_resource().
 > 
 
+Ah right, I missed that part indeed. Sorry for the noise then, and
+thanks for double-checking :)
+
+Best regards,
+
+Maxime
