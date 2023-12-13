@@ -2,133 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B5228811A65
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 18:06:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C8E3811A78
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 18:07:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233736AbjLMRGA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 12:06:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35732 "EHLO
+        id S1379114AbjLMRHb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 12:07:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40254 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233706AbjLMRF6 (ORCPT
+        with ESMTP id S1378891AbjLMRHW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 12:05:58 -0500
-Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com [IPv6:2607:f8b0:4864:20::72a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B94EF3;
-        Wed, 13 Dec 2023 09:06:04 -0800 (PST)
-Received: by mail-qk1-x72a.google.com with SMTP id af79cd13be357-77f8308616eso163758385a.2;
-        Wed, 13 Dec 2023 09:06:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702487163; x=1703091963; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=izQi1471NL/cydZbe8/X42uR08bubeTVrkQFcuYiqzs=;
-        b=PuDxgmyOLgfAht7UAhnupo6Q3t9Io7QAMqyzTbw6JkfT0hf/KwgODcgwV+uVRSwYgd
-         W2pRnfIFFjcqBTIWut0PO4V6wERa8ZAgdxChZvlL9huHp/aE1I5QuzJ9EtIv80igJaQA
-         4HfapgSGtUpq69IeOuLtKzPfdxVsIz1DTrgke0SR/Q6JlCl9nHgqHhwqXUY/nkGYgjMI
-         BJ/YNhX2hOhWb3FM1PGNnRDmpA4FTeUznxhRHytYF1kst6samGLpx07P/njI9Zudsu30
-         24kc1c6ILRUoYj/VGGbhPUpLTNtkm6y/p5jb0IlteFDEYQBJC8vllTj/CrH5BQd/BrvQ
-         oL4Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702487163; x=1703091963;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=izQi1471NL/cydZbe8/X42uR08bubeTVrkQFcuYiqzs=;
-        b=cKLD1homxC7bCG86YPBy3GmQcGYn/pbR+WmN7y7CGyT1OY2COEZ0JxPKqA/iVGtjVF
-         LIRxJFOqRtyWnAYdNNe5EugAwjGYYMlGwTXWuQT/4wC+lRYMGdhhbJKNKCF8fHt4yQKk
-         LwXrjJEj6WCODilZ/Eqpu99gUa+zl5h1UUk79P8VLK+GE1eS2ZrSfEEsTZyaHvyIGgPb
-         sX0Hrcl6euyq87fNss7BUzCYZLQFT3UrOjZ/NORDGj1oMh1GrfKeW9y7YrKyRDX3A69m
-         iKjBzQxSUYT1INeu/SPb+/sCKqNGLFvhRCPWccsrHb6smfZsAe8kDaWnC8wjBI/H7Ubd
-         Wdwg==
-X-Gm-Message-State: AOJu0Ywb9g6jotKgd2HtNJ6Vg/OhZOheGgfJTayU10ee4xgCA2D39Bl3
-        weaTPZqdVCcIl9arl9enp6ZwsccDEcLF/DB74aQID2oY
-X-Google-Smtp-Source: AGHT+IHFwxt7NaMGwYfCIRV8QcEGmTbFxg9W/HWVNejdiK0MfCoZndI2DuEVIwyJpoIroqNUH2BvNIAFik3pPJY5tas=
-X-Received: by 2002:a0c:ee24:0:b0:67a:99cb:e2f with SMTP id
- l4-20020a0cee24000000b0067a99cb0e2fmr6705131qvs.42.1702487163185; Wed, 13 Dec
- 2023 09:06:03 -0800 (PST)
+        Wed, 13 Dec 2023 12:07:22 -0500
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBE54D0;
+        Wed, 13 Dec 2023 09:07:26 -0800 (PST)
+Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BDGd2JP030010;
+        Wed, 13 Dec 2023 17:06:41 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+        from:subject:date:message-id:mime-version:content-type
+        :content-transfer-encoding:to:cc; s=qcppdkim1; bh=kN410wwRUNkyfP
+        B7ahiFKEuZhRz6mV89Ym+9lK+dfNQ=; b=U2BFaeSVEh4jQX0pbjz/c1bRKiSRNR
+        cKg83IDMph3fuNpeMFtBzfsFkTiyymvHnb2icXcM3NRTWpzlvzFQwC7sgSgu1Ly+
+        IlXwOkYcbt9z5mxAHUwdnQSNr6lVPOblEUEyv49zq+J7mg77O1q7k0W3oocGmr7F
+        U/e9S+7cE0J8bRv/7fFho/CyVzWJZ2yDH2/BZ9nVNx5me2WGwBv6M0Wy5Jjp2Z7E
+        sKK5RKfJOx8hAWspFtP/q/lVYYi1613ArYmwlwagycg9GKIO7z47ezRKDzDGEPcr
+        u4GCmcHhuskGb0kF0JHpUsGJjCAVixXLSHHA87qQp+ShVUwoA09ca65g==
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3uy5tvhpv3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 13 Dec 2023 17:06:41 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3BDH6eVM031494
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 13 Dec 2023 17:06:40 GMT
+Received: from [169.254.0.1] (10.49.16.6) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Wed, 13 Dec
+ 2023 09:06:40 -0800
+From:   Jeff Johnson <quic_jjohnson@quicinc.com>
+Subject: [PATCH 0/6] wifi: ath10k: use flexible arrays
+Date:   Wed, 13 Dec 2023 09:06:38 -0800
+Message-ID: <20231213-wmi_host_mem_chunks_flexarray-v1-0-92922d92fa2c@quicinc.com>
 MIME-Version: 1.0
-References: <20231211193048.580691-1-avagin@google.com> <CAOQ4uxik0=0F-6CLRsuaOheFjwWF-B-Q5iEQ6qJbRszL52HeQQ@mail.gmail.com>
- <CAEWA0a6Ow+BvrPm5O-4-tGRLQYr3+eahj45voF1gdmN3OfadGg@mail.gmail.com>
-In-Reply-To: <CAEWA0a6Ow+BvrPm5O-4-tGRLQYr3+eahj45voF1gdmN3OfadGg@mail.gmail.com>
-From:   Amir Goldstein <amir73il@gmail.com>
-Date:   Wed, 13 Dec 2023 19:05:52 +0200
-Message-ID: <CAOQ4uxgzeAgkE73uJB=-Guq7fDtfKU1_1pMTOzBm6ApZuW=hLg@mail.gmail.com>
-Subject: Re: [PATCH 1/2] fs/proc: show correct device and inode numbers in /proc/pid/maps
-To:     Andrei Vagin <avagin@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org,
-        Alexander Mikhalitsyn <alexander@mihalicyn.com>,
-        Christian Brauner <brauner@kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        overlayfs <linux-unionfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAJ/keWUC/5XNyw6CMBCF4VchXVvjDDd15XsYQ2qZ2okC2kKFE
+ N5dYOdOl/9ZfGcUnhyTF8doFI4Ce27qOWATCW1VfSPJ5dwCdxgDAsp3xYVtfFtUVBXadvXdF+Z
+ BvXJODTLfY5YQJFkeg5iNpyPD/eqfL3Nb9m3jhvUuwLL+KgeQIFON6aFUKWUGTq+ONdd6q5tKL
+ HbAvzyUO2nwmua6NACgvr1pmj4ibXffHAEAAA==
+To:     Kalle Valo <kvalo@kernel.org>,
+        Jeff Johnson <quic_jjohnson@quicinc.com>
+CC:     Kees Cook <keescook@chromium.org>,
+        "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
+        <ath10k@lists.infradead.org>, <linux-wireless@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+X-Mailer: b4 0.12.3
+X-Originating-IP: [10.49.16.6]
+X-ClientProxiedBy: nalasex01b.na.qualcomm.com (10.47.209.197) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: lRec6QprZZ2S4zgOuvxWwXKHU4hYWDQ3
+X-Proofpoint-GUID: lRec6QprZZ2S4zgOuvxWwXKHU4hYWDQ3
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-09_01,2023-12-07_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 phishscore=0
+ priorityscore=1501 impostorscore=0 mlxscore=0 clxscore=1015
+ mlxlogscore=600 bulkscore=0 spamscore=0 adultscore=0 lowpriorityscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2311290000 definitions=main-2312130122
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 12, 2023 at 9:08=E2=80=AFPM Andrei Vagin <avagin@google.com> wr=
-ote:
->
-> Hi Amir,
->
-> On Mon, Dec 11, 2023 at 9:51=E2=80=AFPM Amir Goldstein <amir73il@gmail.co=
-m> wrote:
-> >
-> > +fsdevel, +overlayfs, +brauner, +miklos
-> >
-> > On Mon, Dec 11, 2023 at 9:30=E2=80=AFPM Andrei Vagin <avagin@google.com=
-> wrote:
-> > >
-> > > Device and inode numbers in /proc/pid/maps have to match numbers retu=
-rned by
-> > > statx for the same files.
-> >
-> > That statement may be true for regular files.
-> > It is not true for block/char as far as I know.
-> >
-> > I think that your fix will break that by displaying the ino/dev
-> > of the block/char reference inode and not their backing rdev inode.
->
-> I think it doesn't break anything here. /proc/pid/maps shows dev of a
-> filesystem where the device file resides.
->
-> 7f336b6c3000-7f336b6c4000 rw-p 00000000 00:05 7
->   /dev/zero
-> $ stat /dev/zero
-> Device: 0,5 Inode: 7           Links: 1     Device type: 1,5
->
-> I checked that it works with and without my patch. It doesn't matter, loo=
-k at
-> the following comments.
->
-> >
-> > >
-> > > /proc/pid/maps shows device and inode numbers of vma->vm_file-s. Here=
- is
-> > > an issue. If a mapped file is on a stackable file system (e.g.,
-> > > overlayfs), vma->vm_file is a backing file whose f_inode is on the
-> > > underlying filesystem. To show correct numbers, we need to get a user
-> > > file and shows its numbers. The same trick is used to show file paths=
- in
-> > > /proc/pid/maps.
-> >
-> > For the *same* trick, see my patch below.
->
-> The patch looks good to me. Thanks! Will you send it?
->
+Clean up the last remaining zero-length and one-element arrays in
+ath10k to comply with:
+https://docs.kernel.org/process/deprecated.html#zero-length-and-one-element-arrays
 
-I can send it, if you want.
-I wouldn't mind if you send it with my Suggested-by though,
-as you are already testing it and posting the selftest.
+With these cleanups done the ath10k-check script no longer reports any
+issues.
 
-Thanks,
-Amir.
+---
+Jeff Johnson (6):
+      wifi: ath10k: use flexible array in struct wmi_host_mem_chunks
+      wifi: ath10k: use flexible arrays for WMI start scan TLVs
+      wifi: ath10k: remove struct wmi_pdev_chanlist_update_event
+      wifi: ath10k: remove unused template structs
+      wifi: ath10k: use flexible array in struct wmi_tdls_peer_capabilities
+      wifi: ath10k: remove duplicate memset() in 10.4 TDLS peer update
+
+ drivers/net/wireless/ath/ath10k/wmi.c | 10 +++----
+ drivers/net/wireless/ath/ath10k/wmi.h | 55 +++++++++--------------------------
+ 2 files changed, 17 insertions(+), 48 deletions(-)
+---
+base-commit: 7133b072dfbfac8763ffb017642c9c894894c50d
+change-id: 20231212-wmi_host_mem_chunks_flexarray-78264e146731
+
