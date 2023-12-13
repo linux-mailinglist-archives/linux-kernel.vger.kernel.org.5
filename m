@@ -2,155 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AD365810F59
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 12:04:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B9C80810F5E
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 12:07:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378473AbjLMLEg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 06:04:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48138 "EHLO
+        id S1378434AbjLMLHX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 06:07:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53170 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378326AbjLMLEe (ORCPT
+        with ESMTP id S1378268AbjLMLHW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 06:04:34 -0500
-Received: from mail-ot1-x329.google.com (mail-ot1-x329.google.com [IPv6:2607:f8b0:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57B83B2
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 03:04:41 -0800 (PST)
-Received: by mail-ot1-x329.google.com with SMTP id 46e09a7af769-6d9d84019c5so5153502a34.3
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 03:04:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1702465480; x=1703070280; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=7OfkgN2PJIbw2ezV94FT4cZwlilOoY4SLjkbyeO7luc=;
-        b=0kvirctxEF3tP+NgcVpfQIhGDmo6bskitzhpp8N1uL3X9AcI7Wbh7pzyPUs4EN5MjR
-         eCmxJQXY7nam1daeWfv+/DtTur0zyAeYhqIacVAQnxR0QqzdIG4GwAUbnrF7KvFDaUaB
-         epe+Ikn40RB9mBkUxFgWaE2wrGBew67Go3IL+/kDS80cAdKrFh+DmBEKnph8xrtLxNi9
-         13VDI8bpioKJvfZoyhygom5dtqFJFrYQ32n9Md/Ga0PdvF8l+GgvcYpVTfMkcn4yNhJ+
-         OwkUCyDCsXZ0ApFQ5br/xzcS3BDp/JGv/O1ZbhQdD5DKXTqiHw76kuDPcHtGsiGQ61kC
-         QZ3w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702465480; x=1703070280;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=7OfkgN2PJIbw2ezV94FT4cZwlilOoY4SLjkbyeO7luc=;
-        b=Yzso4GtzZRmALNhd2DXn8KEx0/5Zw2W0vNgRL64faKqnpXyWu7G2dv5yT8jEZuLD4O
-         J2A/vKcrlurERdlSOn6yKg2nuY/0ZUu5KXli8HxA9Uv9HQbctPmy7PnlNwIlASVCakFh
-         /HzRQT6B2Vdw+A6UVy/8ePq1OqhFJmVrQEp9vgGfUdJBknkdc3EhMLN5NN/sEKb1t69M
-         zk8FFVzAztUTI6d8b76FRdu/ZLgGr+kCrx7BoEg7JQ0kZPGRSlHya/z2T2w/l3qesOqe
-         gyKChaZNT+QckAjoccBgTFavnGLm9VSyGvidc/lSfCWNa1RH6cM5GXffjFAMvJwnNlVa
-         MbuQ==
-X-Gm-Message-State: AOJu0YwcGgwB5PceGV34z9WpojsF7Nrd2Se9wtfDNMKI8pfZSXeFWE3o
-        nAdZt3ZVOvodjuSMAi4HRZ+N+EJkRFw+86/s/tprng==
-X-Google-Smtp-Source: AGHT+IEM6BN7v5f3zSptK13rp4Iti293Tj3jpfPMFy+2qx3uN3e2Hkdo1HScrQhzZSsl9fR6iHqgEWv1vuVRiinjMLE=
-X-Received: by 2002:a9d:6185:0:b0:6d9:e28c:28ef with SMTP id
- g5-20020a9d6185000000b006d9e28c28efmr7004936otk.55.1702465480518; Wed, 13 Dec
- 2023 03:04:40 -0800 (PST)
+        Wed, 13 Dec 2023 06:07:22 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5B829C
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 03:07:28 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F3696C433C8;
+        Wed, 13 Dec 2023 11:07:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1702465648;
+        bh=qeHcGu+cqpueuzzOHNMxP2bi/V2IKukDx5WaAQ3io2I=;
+        h=From:To:Cc:Subject:Date:From;
+        b=J0hJ1xlD7C6izgIls3qD5GO9UOvsVzz0B7Isf3z8GgihZaCiuJszZHdQdjrotpe8k
+         xXY9gs4tIayTZARJPrYzo+BNLXJEvJfGrUOaIWTlFoxUQHcDU+oihmsYsyCKzEapsC
+         2pbxhj6zqrkIxAwELm/W2guhf9cYtIYsAqusBxhx1srR/l1hBS0MfHMroNfWB45Xgv
+         yWe4wU8doZIgqQ3mS4ENffZEYrbsY0XUFqAc5GFTiLAnrWyhnV63bhtRPfB7LEyegn
+         pqgN1JHTEJqO+diU1j1UsoZNYjiyQMQ1Od05hr9ycs+z21wAsLsgn7jvgwi7GNpPIb
+         j/8J1sfxYFLnw==
+From:   Roger Quadros <rogerq@kernel.org>
+To:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, shuah@kernel.org, vladimir.oltean@nxp.com
+Cc:     s-vadapalli@ti.com, r-gunasekaran@ti.com, vigneshr@ti.com,
+        srk@ti.com, horms@kernel.org, p-varis@ti.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        rogerq@kernel.org
+Subject: [PATCH v8 net-next 00/11] net: ethernet: am65-cpsw: Add mqprio, frame pre-emption & coalescing
+Date:   Wed, 13 Dec 2023 13:07:10 +0200
+Message-Id: <20231213110721.69154-1-rogerq@kernel.org>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-References: <MjDmZBGV04fVI1qzhceEjQgcmoBuo3YoVuiQdANKj9F1Ux5JFKud8hQpfeyLXI0O5HG6qicKFaYYzM7JAgR_kVQfMCeVdN6t7PjbPaz0D0U=@proton.me>
- <20231211153440.4162899-1-aliceryhl@google.com> <ZXdJyGFeQEbZU3Eh@boqun-archlinux>
- <ZXe2fpN4zRlkLLJC@boqun-archlinux> <ZXjJLP5NdbxEzKpC@boqun-archlinux>
-In-Reply-To: <ZXjJLP5NdbxEzKpC@boqun-archlinux>
-From:   Alice Ryhl <aliceryhl@google.com>
-Date:   Wed, 13 Dec 2023 12:04:29 +0100
-Message-ID: <CAH5fLgjT48X-zYtidv31mox3C4_Ogoo_2cBOCmX0Ang3tAgGHA@mail.gmail.com>
-Subject: Re: [PATCH v2 6/7] rust: file: add `DeferredFdCloser`
-To:     Boqun Feng <boqun.feng@gmail.com>
-Cc:     benno.lossin@proton.me, a.hindborg@samsung.com,
-        alex.gaynor@gmail.com, arve@android.com, bjorn3_gh@protonmail.com,
-        brauner@kernel.org, cmllamas@google.com, dan.j.williams@intel.com,
-        dxu@dxuuu.xyz, gary@garyguo.net, gregkh@linuxfoundation.org,
-        joel@joelfernandes.org, keescook@chromium.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        maco@android.com, ojeda@kernel.org, peterz@infradead.org,
-        rust-for-linux@vger.kernel.org, surenb@google.com,
-        tglx@linutronix.de, tkjos@android.com, viro@zeniv.linux.org.uk,
-        wedsonaf@gmail.com, willy@infradead.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 12, 2023 at 9:57=E2=80=AFPM Boqun Feng <boqun.feng@gmail.com> w=
-rote:
->
-> On Mon, Dec 11, 2023 at 05:25:18PM -0800, Boqun Feng wrote:
-> > On Mon, Dec 11, 2023 at 09:41:28AM -0800, Boqun Feng wrote:
-> > > On Mon, Dec 11, 2023 at 03:34:40PM +0000, Alice Ryhl wrote:
-> > > > Benno Lossin <benno.lossin@proton.me> writes:
-> > > > > On 12/6/23 12:59, Alice Ryhl wrote:
-> > > > > > +    /// Schedule a task work that closes the file descriptor w=
-hen this task returns to userspace.
-> > > > > > +    ///
-> > > > > > +    /// Fails if this is called from a context where we cannot=
- run work when returning to
-> > > > > > +    /// userspace. (E.g., from a kthread.)
-> > > > > > +    pub fn close_fd(self, fd: u32) -> Result<(), DeferredFdClo=
-seError> {
-> > > > > > +        use bindings::task_work_notify_mode_TWA_RESUME as TWA_=
-RESUME;
-> > > > > > +
-> > > > > > +        // In this method, we schedule the task work before cl=
-osing the file. This is because
-> > > > > > +        // scheduling a task work is fallible, and we need to =
-know whether it will fail before we
-> > > > > > +        // attempt to close the file.
-> > > > > > +
-> > > > > > +        // SAFETY: Getting a pointer to current is always safe=
-.
-> > > > > > +        let current =3D unsafe { bindings::get_current() };
-> > > > > > +
-> > > > > > +        // SAFETY: Accessing the `flags` field of `current` is=
- always safe.
-> > > > > > +        let is_kthread =3D (unsafe { (*current).flags } & bind=
-ings::PF_KTHREAD) !=3D 0;
-> > > > >
-> > > > > Since Boqun brought to my attention that we already have a wrappe=
-r for
-> > > > > `get_current()`, how about you use it here as well?
-> > > >
-> > > > I can use the wrapper, but it seems simpler to not go through a
-> > > > reference when we just need a raw pointer.
-> > > >
-> > > > Perhaps we should have a safe `Task::current_raw` function that jus=
-t
-> > > > returns a raw pointer? It can still be safe.
-> > > >
-> > >
-> > > I think we can have a `as_ptr` function for `Task`?
-> > >
-> > >     impl Task {
-> > >         pub fn as_ptr(&self) -> *mut bindings::task_struct {
-> > >             self.0.get()
-> > >         }
-> > >     }
-> >
-> > Forgot mention, yes a ptr->ref->ptr trip may not be ideal, but I think
-> > eventually we will have a task work wrapper, in that case maybe
-> > Task::as_ptr() is still needed somehow.
-> >
->
-> After some more thoughts, I agree `Task::current_raw` may be better for
-> the current usage, since we can also use it to wrap a
-> `current_is_kthread` method like:
->
->     impl Task {
->         pub fn current_is_kthread() -> bool {
->             let current =3D Self::current_raw();
->
->             unsafe { (*current).flags & bindings::PF_KTHREAD !=3D 0 }
->         }
->     }
+Hi,
 
-I'll introduce a current_raw, then.
+This series adds mqprio qdisc offload in channel mode,
+Frame Pre-emption MAC merge support and RX/TX coalesing
+for AM65 CPSW driver.
 
-Alice
+In v8 following changes were made
+- added a new selftest patch to use aggregate stats if
+   pMAC stats are not supported.
+- added a patch to rename TI_AM65_CPSW_TAS to TI_AM65_CPSW_QOS
+   is added.
+- added a patch to fix mac stats reporting. we only support
+   aggregate stats.
+- build issues if TI_AM65_CPSW_TAS is disabled is resolved.
+- selftest patches are moved to the beginning of the series.
+
+Changelog information in each patch file.
+
+cheers,
+-roger
+
+Grygorii Strashko (2):
+  net: ethernet: ti: am65-cpsw: add mqprio qdisc offload in channel mode
+  net: ethernet: ti: am65-cpsw: add sw tx/rx irq coalescing based on
+    hrtimers
+
+Roger Quadros (7):
+  net: ethernet: am65-cpsw: Build am65-cpsw-qos only if required
+  net: ethernet: am65-cpsw: Rename TI_AM65_CPSW_TAS to TI_AM65_CPSW_QOS
+  net: ethernet: am65-cpsw: cleanup TAPRIO handling
+  net: ethernet: ti: am65-cpsw: Move code to avoid forward declaration
+  net: ethernet: am65-cpsw: Move register definitions to header file
+  net: ethernet: ti: am65-cpsw-qos: Add Frame Preemption MAC Merge
+    support
+  net: ethernet: ti: am65-cpsw: Fix get_eth_mac_stats
+
+Vladimir Oltean (2):
+  selftests: forwarding: ethtool_mm: support devices with higher
+    rx-min-frag-size
+  selftests: forwarding: ethtool_mm: fall back to aggregate if device
+    does not report pMAC stats
+
+ drivers/net/ethernet/ti/Kconfig               |  14 +-
+ drivers/net/ethernet/ti/Makefile              |   3 +-
+ drivers/net/ethernet/ti/am65-cpsw-ethtool.c   | 249 ++++++
+ drivers/net/ethernet/ti/am65-cpsw-nuss.c      |  64 +-
+ drivers/net/ethernet/ti/am65-cpsw-nuss.h      |   9 +
+ drivers/net/ethernet/ti/am65-cpsw-qos.c       | 708 +++++++++++++-----
+ drivers/net/ethernet/ti/am65-cpsw-qos.h       | 186 +++++
+ .../selftests/net/forwarding/ethtool_mm.sh    |  48 +-
+ tools/testing/selftests/net/forwarding/lib.sh |   9 +
+ 9 files changed, 1103 insertions(+), 187 deletions(-)
+
+
+base-commit: 70028b2e51c61d8dda0a31985978f4745da6a11b
+-- 
+2.34.1
+
