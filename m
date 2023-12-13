@@ -2,142 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EEE9E811C60
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 19:27:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C7377811C59
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 19:27:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442319AbjLMS1V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 13:27:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58608 "EHLO
+        id S233791AbjLMS1M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 13:27:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37098 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1442336AbjLMS1P (ORCPT
+        with ESMTP id S232869AbjLMS1L (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 13:27:15 -0500
-Received: from NAM04-DM6-obe.outbound.protection.outlook.com (mail-dm6nam04on2044.outbound.protection.outlook.com [40.107.102.44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BB4CB9;
-        Wed, 13 Dec 2023 10:27:21 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=fqHaIrehZU5VRXwz+PAitJuocjFdakOdpszCciN9R/rPPBJ2Hb36f3lawGOA+eeqKRIDao01Zr6imYmrEQ9yLDnUE7fcVsiqUaEXlhC9TIsQmIVkNl/8Jo9OOm4NS1g/zMNN6CupShJEMm9At9xFKkCH3UHZ5ADLEw/fx6QvRGJ9lUcxQdkNxxGboKCAN0kVeCOiyvBwBE9rm8HdArDRTXPCcvB20zgkuienkDrejpKRWFX4s7yup4OM7KORcaRdB9fBErjE35ncbaCQHoQRFi9g4fX2uy4sjtGZvBQGsuQkE2zg1AN46oLy2us5uP6q1wSWr7So8jKQEg9SjASFXg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=te3kowBT+jbDEk4VX+EtZh/khotxt1fF/P+qjIC+yDc=;
- b=R1mK9tJneQBq/62C8KRRasPIymJKvWO2gxM+Lgk/WVxOca+6MWkGyncJI6Qe9SeMSn++OInw1Ep6NjJDoZzLCCNhEkkR9EbOuxU3uvHD5V9h9//vo0SOYFLAWX869tsHhVjWlcm1sy2/NAy3irQ64pk4RUEnLG3X5c3BMkOvoor0rYk0GWswvGhaMnzzrpI9ZiJxa544gUu1P/rqYzpBoMGRxetvjSu5TmhJNt0IiwbvQgLB21oVUlUteek4KInkh9HGu5dLumudbAuXuixp1TJ8q5Op94KuayO/zTYDODNhdJQf0WK0xcHpnX3ECBkNUAdDwXAx1OojmzQ608g5Vw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=google.com smtp.mailfrom=amd.com; dmarc=pass
- (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=te3kowBT+jbDEk4VX+EtZh/khotxt1fF/P+qjIC+yDc=;
- b=amwEBJQfwTFZS96vwJueBKExEEOrIKdx4fGnrw9T9wZJ323p0mH6Aid8SvLlI2qBwCFasw+noaM3lvDwn1oa930+9c4088oYLbZez7R2WLAgqbYkQEcJ1/DfSGjGgVaMvwwy8wiMUpYZ81+aXcghesan+v5mSaxy3rYvNNbQf3Q=
-Received: from BYAPR01CA0032.prod.exchangelabs.com (2603:10b6:a02:80::45) by
- SA1PR12MB7245.namprd12.prod.outlook.com (2603:10b6:806:2bf::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7091.26; Wed, 13 Dec
- 2023 18:27:18 +0000
-Received: from CO1PEPF000044EF.namprd05.prod.outlook.com
- (2603:10b6:a02:80:cafe::2) by BYAPR01CA0032.outlook.office365.com
- (2603:10b6:a02:80::45) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7091.26 via Frontend
- Transport; Wed, 13 Dec 2023 18:27:18 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- CO1PEPF000044EF.mail.protection.outlook.com (10.167.241.69) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.7091.26 via Frontend Transport; Wed, 13 Dec 2023 18:27:17 +0000
-Received: from AUS-P9-MLIMONCI.amd.com (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.34; Wed, 13 Dec
- 2023 12:27:16 -0600
-From:   Mario Limonciello <mario.limonciello@amd.com>
-To:     Bjorn Helgaas <bhelgaas@google.com>,
-        "Rafael J . Wysocki" <rjw@rjwysocki.net>
-CC:     <linux-pci@vger.kernel.org>, <linux-acpi@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        Mario Limonciello <mario.limonciello@amd.com>,
-        <mpearson-lenovo@squebb.ca>
-Subject: [PATCH 2/2] PCI/portdrv: Place PCIe port hierarchy into D3cold at shutdown
-Date:   Wed, 13 Dec 2023 12:26:56 -0600
-Message-ID: <20231213182656.6165-3-mario.limonciello@amd.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231213182656.6165-1-mario.limonciello@amd.com>
-References: <20231213182656.6165-1-mario.limonciello@amd.com>
+        Wed, 13 Dec 2023 13:27:11 -0500
+Received: from out03.mta.xmission.com (out03.mta.xmission.com [166.70.13.233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 326AEA7;
+        Wed, 13 Dec 2023 10:27:18 -0800 (PST)
+Received: from in01.mta.xmission.com ([166.70.13.51]:50630)
+        by out03.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1rDTwx-000ZKP-6d; Wed, 13 Dec 2023 11:27:15 -0700
+Received: from ip68-227-168-167.om.om.cox.net ([68.227.168.167]:38540 helo=email.froward.int.ebiederm.org.xmission.com)
+        by in01.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1rDTww-007q8r-4s; Wed, 13 Dec 2023 11:27:14 -0700
+From:   "Eric W. Biederman" <ebiederm@xmission.com>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Maria Yu <quic_aiquny@quicinc.com>, kernel@quicinc.com,
+        quic_pkondeti@quicinc.com, keescook@chromium.or,
+        viro@zeniv.linux.org.uk, brauner@kernel.org, oleg@redhat.com,
+        dhowells@redhat.com, jarkko@kernel.org, paul@paul-moore.com,
+        jmorris@namei.org, serge@hallyn.com, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        keyrings@vger.kernel.org, linux-security-module@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org
+References: <20231213101745.4526-1-quic_aiquny@quicinc.com>
+        <ZXnaNSrtaWbS2ivU@casper.infradead.org>
+Date:   Wed, 13 Dec 2023 12:27:05 -0600
+In-Reply-To: <ZXnaNSrtaWbS2ivU@casper.infradead.org> (Matthew Wilcox's message
+        of "Wed, 13 Dec 2023 16:22:13 +0000")
+Message-ID: <87o7eu7ybq.fsf@email.froward.int.ebiederm.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Originating-IP: [10.180.168.240]
-X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
- (10.181.40.145)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CO1PEPF000044EF:EE_|SA1PR12MB7245:EE_
-X-MS-Office365-Filtering-Correlation-Id: 2bd68045-4312-4317-a9c8-08dbfc09234f
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: KVAOi+hJeynuYf6L6vVSeiLTlOct0HrRqxEYadE94xHq8YUSm+v+6BBYTj4xnfGjcPVK3Ldda9Fk9Sg5/Hie/7pI45CPL2wg+eKgPXbx4piwt5R8BiIKTOfhDG3LBQV3GzYwI0BW5sLrxgPADcrhwoS/03BnPCC5F/LDqWlR0EccXqPgF+D9qcHeORIFqMVajbh/S4H//KeY8jbvtI2Ul8nGJw93y8k1TxCAVmsbPUGzARDtt7q47F6Oh7OtKIwFHsNzGSJNKs9MwqdrDSNJH/A6qw8aELPO2KTaST7xXIuxO/mnn1f0Ac/Xxz9gKZIQYRhGV1brtPxwuzeyWwFAPdhrNV6Lw4+Oyoa04oNVG8prN/cYqBu3LkMs0Qzw9MwfW56xnZ2G/4Xjt4AqGBZ4O9pTHsPNXXRb3W0KOtmOrwbrm/GAYhBHVjnQsspYIPUCvQfKl0S63j70PZOx7qU21RSo1PCgjcE68bE8vXoWGzlYl50mab/3fTWtcNcpY5nseiwlesWgjAqgcN4UMy0J2N34529KqvyWPFxMjtzrjM1E/xTdlG9QeZMccSz9acsmQJTpYv9gbQJ/Y9xiUC6sUETA0GZhqE2rV6oRu4I34ds3YjCbKcSQyXcI9+E6wvhFwu6eIOULBVkoQaFYnbg2ROoKcrJ/CioIQ5qjY0D4NpSo4r9Ou79ufeBicEjPc1EE0exxh7KXcg/OGELZBYh6GtNh7bDxPEg98bUDcBL+daGXl6B1MdO984Vq4uvc0YAr+1uRMgWzocfT4BrFSXT2gLVk31ReROZr8OlhVk2rduw=
-X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(136003)(346002)(376002)(39860400002)(396003)(230922051799003)(451199024)(64100799003)(82310400011)(186009)(1800799012)(46966006)(40470700004)(36840700001)(54906003)(70586007)(70206006)(110136005)(1076003)(6666004)(16526019)(2616005)(7696005)(336012)(26005)(36756003)(426003)(86362001)(47076005)(82740400003)(356005)(83380400001)(81166007)(36860700001)(41300700001)(478600001)(44832011)(40480700001)(8936002)(8676002)(2906002)(4326008)(5660300002)(316002)(40460700003)(32563001)(36900700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Dec 2023 18:27:17.8823
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2bd68045-4312-4317-a9c8-08dbfc09234f
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: CO1PEPF000044EF.namprd05.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR12MB7245
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+X-XM-SPF: eid=1rDTww-007q8r-4s;;;mid=<87o7eu7ybq.fsf@email.froward.int.ebiederm.org>;;;hst=in01.mta.xmission.com;;;ip=68.227.168.167;;;frm=ebiederm@xmission.com;;;spf=pass
+X-XM-AID: U2FsdGVkX1/VU39+2YW8c791zJoSkh67aCTXIOvQAFw=
+X-SA-Exim-Connect-IP: 68.227.168.167
+X-SA-Exim-Mail-From: ebiederm@xmission.com
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-DCC: XMission; sa07 1397; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: ;Matthew Wilcox <willy@infradead.org>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 465 ms - load_scoreonly_sql: 0.06 (0.0%),
+        signal_user_changed: 11 (2.4%), b_tie_ro: 10 (2.1%), parse: 0.85
+        (0.2%), extract_message_metadata: 11 (2.3%), get_uri_detail_list: 0.81
+        (0.2%), tests_pri_-2000: 11 (2.4%), tests_pri_-1000: 2.5 (0.5%),
+        tests_pri_-950: 1.16 (0.3%), tests_pri_-900: 1.01 (0.2%),
+        tests_pri_-90: 193 (41.5%), check_bayes: 189 (40.7%), b_tokenize: 6
+        (1.3%), b_tok_get_all: 63 (13.5%), b_comp_prob: 3.3 (0.7%),
+        b_tok_touch_all: 114 (24.5%), b_finish: 0.94 (0.2%), tests_pri_0: 221
+        (47.5%), check_dkim_signature: 0.53 (0.1%), check_dkim_adsp: 2.6
+        (0.6%), poll_dns_idle: 0.46 (0.1%), tests_pri_10: 2.0 (0.4%),
+        tests_pri_500: 7 (1.6%), rewrite_mail: 0.00 (0.0%)
+Subject: Re: [PATCH] kernel: Introduce a write lock/unlock wrapper for
+ tasklist_lock
+X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
+X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When a system is being powered off it's important that PCIe ports
-have been put into D3cold as there is no other software to turn
-off the devices at S5.
+Matthew Wilcox <willy@infradead.org> writes:
 
-If PCIe ports are left in D0 then any GPIOs toggled by the ACPI
-power resources may be left enabled and devices may consume excess
-power.
+> On Wed, Dec 13, 2023 at 06:17:45PM +0800, Maria Yu wrote:
+>> +static inline void write_lock_tasklist_lock(void)
+>> +{
+>> +	while (1) {
+>> +		local_irq_disable();
+>> +		if (write_trylock(&tasklist_lock))
+>> +			break;
+>> +		local_irq_enable();
+>> +		cpu_relax();
+>
+> This is a bad implementation though.  You don't set the _QW_WAITING flag
+> so readers don't know that there's a pending writer.  Also, I've seen
+> cpu_relax() pessimise CPU behaviour; putting it into a low-power mode
+> that takes a while to wake up from.
+>
+> I think the right way to fix this is to pass a boolean flag to
+> queued_write_lock_slowpath() to let it know whether it can re-enable
+> interrupts while checking whether _QW_WAITING is set.
 
-Cc: mpearson-lenovo@squebb.ca
-Signed-off-by: Mario Limonciello <mario.limonciello@amd.com>
----
- drivers/pci/pcie/portdrv.c | 11 ++++++++---
- 1 file changed, 8 insertions(+), 3 deletions(-)
+Yes.  It seems to make sense to distinguish between write_lock_irq and
+write_lock_irqsave and fix this for all of write_lock_irq.
 
-diff --git a/drivers/pci/pcie/portdrv.c b/drivers/pci/pcie/portdrv.c
-index 14a4b89a3b83..08238680c481 100644
---- a/drivers/pci/pcie/portdrv.c
-+++ b/drivers/pci/pcie/portdrv.c
-@@ -734,9 +734,14 @@ static void pcie_portdrv_remove(struct pci_dev *dev)
- static void pcie_portdrv_shutdown(struct pci_dev *dev)
- {
- 	if (pci_bridge_d3_possible(dev)) {
--		pm_runtime_forbid(&dev->dev);
--		pm_runtime_get_noresume(&dev->dev);
--		pm_runtime_dont_use_autosuspend(&dev->dev);
-+		/* whole hierarchy goes into a low power state for S5 */
-+		if (system_state == SYSTEM_POWER_OFF) {
-+			pci_set_power_state(dev, PCI_D3cold);
-+		} else {
-+			pm_runtime_forbid(&dev->dev);
-+			pm_runtime_get_noresume(&dev->dev);
-+			pm_runtime_dont_use_autosuspend(&dev->dev);
-+		}
- 	}
- 
- 	pcie_port_device_remove(dev);
--- 
-2.34.1
+Either that or someone can put in the work to start making the
+tasklist_lock go away.
+
+Eric
 
