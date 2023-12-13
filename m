@@ -2,103 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A5038118F7
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 17:16:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 478258118F8
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 17:16:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233456AbjLMQQZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 11:16:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33664 "EHLO
+        id S233407AbjLMQQd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 11:16:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59006 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235318AbjLMQQN (ORCPT
+        with ESMTP id S233631AbjLMQQV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 11:16:13 -0500
-Received: from mail-ot1-x332.google.com (mail-ot1-x332.google.com [IPv6:2607:f8b0:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D499411F
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 08:16:18 -0800 (PST)
-Received: by mail-ot1-x332.google.com with SMTP id 46e09a7af769-6d9d307a732so5397612a34.1
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 08:16:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1702484178; x=1703088978; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=mcK4XOgKqcNfFHL25gziBNAjwVCjjEmkms+6zHPdluY=;
-        b=nhnaC05kq3PKokzDucBZksgkSK21xDk6JCUHI+OewuiE27ffxmC0hrFbRLKEWDX8SK
-         Z31fyKLN2G5KBQj1WU9nPfg+Tdj59z1F9h0tEr88feWUnsTctUFMqrA8oghOqtiVmLLX
-         KKS/IjCvt4KRyuq9ijlc0e7GpAUHVCbjEBXYSTzNMyCV1gZgvM0lijTkvaTHP8w2gd2c
-         skXU+RQjtvFk2qQ/smMn0aOciPOsOk0RGh4v9Ofb9n8Asm3k65H7GowC81V0UmXUjT4G
-         VjzY4XEDvz6G3q0K/uhuZ0DOmJAEGv9l29iI09CncCP/uGi918AvJxT+NO7vQSpiSG3e
-         t+lw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702484178; x=1703088978;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=mcK4XOgKqcNfFHL25gziBNAjwVCjjEmkms+6zHPdluY=;
-        b=ZbeKNGJ0DHeGKlF2WZ7U++LU97BjsCj4X5Vj7TgME+81p1hnCBZpqyjRX/jsbovFbX
-         G3Yo2P++JqL60tOfVzlCy5Uh1V8N1wjecBtEw4wMUgX73yIATlujP9xWa9chySwcQpng
-         TUCh39Di2MggOOPQmIz7eY4v/XVSPJf/o8zoZ510TL5EgcQajLTuLrsp57Z3EH3Eh2Tw
-         ilNBLqVXBD9ZDFoNhAGbn1KlIanBVq1w74mXsYJJbPKu9YwrpxRhsV1941LpCzNq/h47
-         TSkLYjsJZ31NlllkheUE8+0EDitXMVqTIduxQqbuSqeoCgKSOMMxZmzanbPz7mrDvI0U
-         7ykg==
-X-Gm-Message-State: AOJu0YxshDI0grjrZHz9Ejj4sOy35CapIKjnCHMmF9yI/lIPDhGwwdFd
-        asP7M84eGjPYcw8aD0lh54pHnf7JGmmexHqz5nTfSg==
-X-Google-Smtp-Source: AGHT+IGy4IlvSeIJvPndB1xZjI8LITnvxvWJSeenOMQb7qhzgb42xfFPZ1RIZk6ZXxVdgU1U36qcpj1NTC5f8qvjFRI=
-X-Received: by 2002:a05:6830:1e82:b0:6d9:d4cd:88e with SMTP id
- n2-20020a0568301e8200b006d9d4cd088emr9023832otr.12.1702484178252; Wed, 13 Dec
- 2023 08:16:18 -0800 (PST)
+        Wed, 13 Dec 2023 11:16:21 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21824DC
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 08:16:28 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7BCE7C433C9;
+        Wed, 13 Dec 2023 16:16:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1702484187;
+        bh=nO/Afdb1MQKBEbsD0Fg8t6VLdNzw0l4HZRWVO9Xe1jk=;
+        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+        b=YEnh6kWZVMSxojQd7SFu7l2lTpqmRjiQF4Vge6kQ1wOxYB1ku/1bP3LytqpqAFLbz
+         h743XU7UCLaUZ5W2RdDjD/ipVd7Z48mrFjqRXiuFqwBnQDgCss5JVtHUmDSQ4swxsE
+         2ms+RHTAK1VwmRKb2oCnQLTSck1WALJLXwpQsHjzJPB7Zilv+EwJKwz4D2aGzk1wE9
+         7SVKz2DM9ZcjsqpqN29xr3EVXb9nFlK/tzRwDa6glGzhJI0gfNsu8HCow4Omo0a1f8
+         ajKBfOtMzhqwUr+O3Gqu43gmM3CU74zDpNdUY2OPvl2W9dPkiMSer5JZuBTwMfeS13
+         XmAv5+SHJsP8Q==
+From:   Lee Jones <lee@kernel.org>
+To:     Pavel Machek <pavel@ucw.cz>, Lee Jones <lee@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Samuel Holland <samuel@sholland.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Guo Ren <guoren@kernel.org>,
+        Palmer Dabbelt <palmer@rivosinc.com>,
+        Arnd Bergmann <arnd@kernel.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Bill Wendling <morbo@google.com>,
+        Justin Stitt <justinstitt@google.com>,
+        linux-leds@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org,
+        llvm@lists.linux.dev
+In-Reply-To: <20231212214536.175327-1-arnd@kernel.org>
+References: <20231212214536.175327-1-arnd@kernel.org>
+Subject: Re: (subset) [PATCH] leds: sun50i-a100: avoid division-by-zero
+ warning
+Message-Id: <170248418423.1005780.5339514949375553684.b4-ty@kernel.org>
+Date:   Wed, 13 Dec 2023 16:16:24 +0000
 MIME-Version: 1.0
-References: <20231212054253.50094-1-warthog618@gmail.com> <20231212054253.50094-2-warthog618@gmail.com>
- <ZXm3rayrcvfO1t1Z@smile.fi.intel.com> <ZXm_WsIpgIyOUNHt@rigel>
- <CAMRc=Mfri8K4ZqcHb_eQY6gi+q_-uBZc2wiMrrb-+a7Tric3FA@mail.gmail.com> <ZXnYjoXHGiar-hvJ@rigel>
-In-Reply-To: <ZXnYjoXHGiar-hvJ@rigel>
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-Date:   Wed, 13 Dec 2023 17:16:07 +0100
-Message-ID: <CAMRc=Mc45zQOQycNJ+XH-1V4=FHCXfXusrcHsKUtED1Z_4bYgw@mail.gmail.com>
-Subject: Re: [PATCH 1/4] gpiolib: cdev: relocate debounce_period_us from
- struct gpio_desc
-To:     Kent Gibson <warthog618@gmail.com>
-Cc:     Andy Shevchenko <andy@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-gpio@vger.kernel.org, linus.walleij@linaro.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-Mailer: b4 0.12.3
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 13, 2023 at 5:15=E2=80=AFPM Kent Gibson <warthog618@gmail.com> =
-wrote:
->
-> On Wed, Dec 13, 2023 at 04:40:12PM +0100, Bartosz Golaszewski wrote:
-> > On Wed, Dec 13, 2023 at 3:27=E2=80=AFPM Kent Gibson <warthog618@gmail.c=
-om> wrote:
-> > >
-> >
-> > > >
-> > > > > +out_unlock:
-> > > > > +   spin_unlock(&supinfo.lock);
-> > > >
-> > > > No use of cleanup.h?
-> > > >
-> > >
-> > > Again, that is new to me, so no not yet.
-> > >
-> >
-> > Yep, please use a guard, they're awesome. :)
-> >
->
-> Before I go nuts and switch everything over, is it ok to put a return
-> within the scoped_guard - it will automatically unlock on the way out?
->
+On Tue, 12 Dec 2023 22:45:22 +0100, Arnd Bergmann wrote:
+> When CONFIG_COMMON_CLK is disabled, e.g. on an x86 randconfig compile test,
+> clang reports a field overflow from propagating the result of a division by
+> zero:
+> 
+> drivers/leds/leds-sun50i-a100.c:309:12: error: call to '__compiletime_assert_265' declared with 'error' attribute: FIELD_PREP: value too large for the field
+>         control = FIELD_PREP(LEDC_T01_TIMING_CTRL_REG_T1H, timing->t1h_ns / cycle_ns) |
+> 
+> [...]
 
-Yes! This is precisely why they're so great.
+Applied, thanks!
 
-Bart
+[1/1] leds: sun50i-a100: avoid division-by-zero warning
+      commit: f969d75a0218da32c40dd4940bd430b0530433cf
 
-> Cheers,
-> Kent.
+--
+Lee Jones [李琼斯]
+
