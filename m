@@ -2,49 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AE8DD810A2C
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 07:20:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 17DDA810A3D
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 07:26:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378572AbjLMGT6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 01:19:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48714 "EHLO
+        id S233139AbjLMG0j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 01:26:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60130 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378551AbjLMGT4 (ORCPT
+        with ESMTP id S232922AbjLMG0h (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 01:19:56 -0500
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 492D49A;
-        Tue, 12 Dec 2023 22:20:02 -0800 (PST)
-Received: from mail.maildlp.com (unknown [172.19.88.194])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4SqlhD2bxzzZcFZ;
-        Wed, 13 Dec 2023 14:19:56 +0800 (CST)
-Received: from dggpeml500021.china.huawei.com (unknown [7.185.36.21])
-        by mail.maildlp.com (Postfix) with ESMTPS id 5126114093C;
-        Wed, 13 Dec 2023 14:20:00 +0800 (CST)
-Received: from huawei.com (10.175.127.227) by dggpeml500021.china.huawei.com
- (7.185.36.21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Wed, 13 Dec
- 2023 14:19:59 +0800
-From:   Baokun Li <libaokun1@huawei.com>
-To:     <linux-mm@kvack.org>, <linux-ext4@vger.kernel.org>
-CC:     <tytso@mit.edu>, <adilger.kernel@dilger.ca>, <jack@suse.cz>,
-        <willy@infradead.org>, <akpm@linux-foundation.org>,
-        <david@fromorbit.com>, <hch@infradead.org>,
-        <ritesh.list@gmail.com>, <linux-kernel@vger.kernel.org>,
-        <yi.zhang@huawei.com>, <yangerkun@huawei.com>,
-        <yukuai3@huawei.com>, <libaokun1@huawei.com>, <stable@kernel.org>
-Subject: [RFC PATCH v2] mm/filemap: avoid buffered read/write race to read inconsistent data
-Date:   Wed, 13 Dec 2023 14:23:24 +0800
-Message-ID: <20231213062324.739009-1-libaokun1@huawei.com>
-X-Mailer: git-send-email 2.31.1
+        Wed, 13 Dec 2023 01:26:37 -0500
+Received: from mail-ua1-x92b.google.com (mail-ua1-x92b.google.com [IPv6:2607:f8b0:4864:20::92b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84A12A7
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 22:26:43 -0800 (PST)
+Received: by mail-ua1-x92b.google.com with SMTP id a1e0cc1a2514c-7c5cb5eeab1so2202962241.3
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 22:26:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1702448802; x=1703053602; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ryCEu48eUmxPP9GQqL9AHFaoE514bwONp0zHyCua5pk=;
+        b=zZoQYcFfHnLLWKY/HGeqmE2tiMDdR0mbUB5XKN7Ia4KOeMYnLkk57Bqi1QRnDieF3w
+         qxIjx+BYgToh9PzVCu6p8dCNNWLa0oXsr6AsrnBHqYcNNyDriAz/galpr3AByXzi6Pqd
+         8N+SzXl+0De7BDuIfTi0eL6RzlEEiZycJpFaDZhN4WdXKXv+0rnPznrUsE/UNS3nCV5w
+         W645phMCSOzYn0XFHjm36ksajmcp95fO2wDLoCawNSmWbrxG0COr8gNJ9gTLXxJ0CJVE
+         oAhTJQ/CLyqQgBDBfGyovh1tygoTtSxI4DMhWdhkqjaTlbPeYJSMRIVNfix2D4hGRW3D
+         jL+A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702448802; x=1703053602;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ryCEu48eUmxPP9GQqL9AHFaoE514bwONp0zHyCua5pk=;
+        b=NVHmAlscDkP+kZQBmCix1vHVnxGce0laXF1eH9yAIMRpHIwUZBUBO+6e+A+VowL1Uy
+         8HRTmE27ifayC6wLiounbbMPq00yvZdbczwEAtEWURwJSUOB206vW2dl/EuftL2vvwJU
+         HPUg7zyOPiWgfOIsu2xByxNPcgSCGEP7Mb21Ilgpvs09UvjwfYDww5OB9WCoZA67VRpu
+         +Xz0QS7zhEYEqvSkd9jL+p1lDXDSH2WqVlTBZOQrrlu3bWoKrNB9I8GVPcCzaqQ1fboU
+         LsWm3VZqgPW+08i4ZfodvDqlI4D7ux/7PUW4nw24YcLaZbmxPLzQnoBBHHKi1Y2AtBsI
+         8Jzw==
+X-Gm-Message-State: AOJu0Yy5Fq17bGIzOkdGbi9aviUrbFw5LMYfClImp1DAMFG+surmPj8y
+        hXjhNlO6kN9LyIlZQD3WKutJTCihAOFhKjYYMA+u9w==
+X-Google-Smtp-Source: AGHT+IE3A8Ed8eaDWU5zKh/jzWxbUFJO8WH0pwo+X34lGkKWDhF8k9z1qeRJ5iKHhBajzWLC1POJ7NRiZRinHLbkW0E=
+X-Received: by 2002:a05:6102:510a:b0:462:8ca2:1bb0 with SMTP id
+ bm10-20020a056102510a00b004628ca21bb0mr5336003vsb.20.1702448801091; Tue, 12
+ Dec 2023 22:26:41 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.127.227]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggpeml500021.china.huawei.com (7.185.36.21)
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+References: <20231212120154.063773918@linuxfoundation.org>
+In-Reply-To: <20231212120154.063773918@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Wed, 13 Dec 2023 11:56:30 +0530
+Message-ID: <CA+G9fYsprWr-ZcSE_bAvuXA-sXbQwgjLJUcP0i-6QB5FGbKDVA@mail.gmail.com>
+Subject: Re: [PATCH 4.19 00/53] 4.19.302-rc2 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
+        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        jonathanh@nvidia.com, f.fainelli@gmail.com,
+        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
+        conor@kernel.org, allen.lkml@gmail.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -53,95 +74,154 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following concurrency may cause the data read to be inconsistent with
-the data on disk:
+On Tue, 12 Dec 2023 at 17:35, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 4.19.302 release.
+> There are 53 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Thu, 14 Dec 2023 12:01:29 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
+4.19.302-rc2.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-4.19.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-             cpu1                           cpu2
-------------------------------|------------------------------
-                               // Buffered write 2048 from 0
-                               ext4_buffered_write_iter
-                                generic_perform_write
-                                 copy_page_from_iter_atomic
-                                 ext4_da_write_end
-                                  ext4_da_do_write_end
-                                   block_write_end
-                                    __block_commit_write
-                                     folio_mark_uptodate
-// Buffered read 4096 from 0          smp_wmb()
-ext4_file_read_iter                   set_bit(PG_uptodate, folio_flags)
- generic_file_read_iter            i_size_write // 2048
-  filemap_read                     unlock_page(page)
-   filemap_get_pages
-    filemap_get_read_batch
-    folio_test_uptodate(folio)
-     ret = test_bit(PG_uptodate, folio_flags)
-     if (ret)
-      smp_rmb();
-      // Ensure that the data in page 0-2048 is up-to-date.
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
-                               // New buffered write 2048 from 2048
-                               ext4_buffered_write_iter
-                                generic_perform_write
-                                 copy_page_from_iter_atomic
-                                 ext4_da_write_end
-                                  ext4_da_do_write_end
-                                   block_write_end
-                                    __block_commit_write
-                                     folio_mark_uptodate
-                                      smp_wmb()
-                                      set_bit(PG_uptodate, folio_flags)
-                                   i_size_write // 4096
-                                   unlock_page(page)
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-   isize = i_size_read(inode) // 4096
-   // Read the latest isize 4096, but without smp_rmb(), there may be
-   // Load-Load disorder resulting in the data in the 2048-4096 range
-   // in the page is not up-to-date.
-   copy_page_to_iter
-   // copyout 4096
+## Build
+* kernel: 4.19.302-rc2
+* git: https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc
+* git branch: linux-4.19.y
+* git commit: a7780f896379de16bc4e805ecf216959b5b876a4
+* git describe: v4.19.301-54-ga7780f896379
+* test details:
+https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.19.y/build/v4.19=
+.301-54-ga7780f896379
 
-In the concurrency above, we read the updated i_size, but there is no read
-barrier to ensure that the data in the page is the same as the i_size at
-this point, so we may copy the unsynchronized page out. Hence adding the
-missing read memory barrier to fix this.
+## Test Regressions (compared to v4.19.301)
 
-This is a Load-Load reordering issue, which only occurs on some weak
-mem-ordering architectures (e.g. ARM64, ALPHA), but not on strong
-mem-ordering architectures (e.g. X86). And theoretically the problem
-doesn't only happen on ext4, filesystems that call filemap_read() but
-don't hold inode lock (e.g. btrfs, f2fs, ubifs ...) will have this
-problem, while filesystems with inode lock (e.g. xfs, nfs) won't have
-this problem.
+## Metric Regressions (compared to v4.19.301)
 
-Cc: stable@kernel.org
-Signed-off-by: Baokun Li <libaokun1@huawei.com>
----
-V1->V2:
-	Change the comment to the one suggested by Jan Kara.	
+## Test Fixes (compared to v4.19.301)
 
- mm/filemap.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
+## Metric Fixes (compared to v4.19.301)
 
-diff --git a/mm/filemap.c b/mm/filemap.c
-index 71f00539ac00..10c4583c06ce 100644
---- a/mm/filemap.c
-+++ b/mm/filemap.c
-@@ -2607,6 +2607,15 @@ ssize_t filemap_read(struct kiocb *iocb, struct iov_iter *iter,
- 			goto put_folios;
- 		end_offset = min_t(loff_t, isize, iocb->ki_pos + iter->count);
- 
-+		/*
-+		 * Pairs with a barrier in
-+		 * block_write_end()->mark_buffer_dirty() or other page
-+		 * dirtying routines like iomap_write_end() to ensure
-+		 * changes to page contents are visible before we see
-+		 * increased inode size.
-+		 */
-+		smp_rmb();
-+
- 		/*
- 		 * Once we start copying data, we don't want to be touching any
- 		 * cachelines that might be contended:
--- 
-2.31.1
+## Test result summary
+total: 55035, pass: 46309, fail: 1569, skip: 7122, xfail: 35
 
+## Build Summary
+* arc: 10 total, 10 passed, 0 failed
+* arm: 111 total, 105 passed, 6 failed
+* arm64: 37 total, 32 passed, 5 failed
+* i386: 21 total, 18 passed, 3 failed
+* mips: 20 total, 20 passed, 0 failed
+* parisc: 3 total, 0 passed, 3 failed
+* powerpc: 24 total, 24 passed, 0 failed
+* s390: 6 total, 6 passed, 0 failed
+* sh: 10 total, 10 passed, 0 failed
+* sparc: 6 total, 6 passed, 0 failed
+* x86_64: 31 total, 26 passed, 5 failed
+
+## Test suites summary
+* boot
+* kselftest-android
+* kselftest-arm64
+* kselftest-breakpoints
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-drivers-dma-buf
+* kselftest-efivarfs
+* kselftest-filesystems
+* kselftest-filesystems-binderfs
+* kselftest-filesystems-epoll
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-ftrace
+* kselftest-futex
+* kselftest-gpio
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* kselftest-kexec
+* kselftest-kvm
+* kselftest-lib
+* kselftest-membarrier
+* kselftest-memfd
+* kselftest-memory-hotplug
+* kselftest-mincore
+* kselftest-mount
+* kselftest-mqueue
+* kselftest-net
+* kselftest-net-forwarding
+* kselftest-net-mptcp
+* kselftest-netfilter
+* kselftest-nsfs
+* kselftest-openat2
+* kselftest-pid_namespace
+* kselftest-pidfd
+* kselftest-proc
+* kselftest-pstore
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-seccomp
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-splice
+* kselftest-static_keys
+* kselftest-sync
+* kselftest-sysctl
+* kselftest-tc-testing
+* kselftest-timens
+* kselftest-user
+* kselftest-vm
+* kselftest-zram
+* kunit
+* log-parser-boot
+* log-parser-test
+* ltp-cap_bounds
+* ltp-commands
+* ltp-containers
+* ltp-controllers
+* ltp-crypto
+* ltp-cve
+* ltp-fcntl-locktests
+* ltp-filecaps
+* ltp-fs
+* ltp-fs_bind
+* ltp-fs_perms_simple
+* ltp-fsx
+* ltp-hugetlb
+* ltp-io
+* ltp-ipc
+* ltp-math
+* ltp-mm
+* ltp-nptl
+* ltp-pty
+* ltp-sched
+* ltp-securebits
+* ltp-smoke
+* ltp-syscalls
+* ltp-tracing
+* rcutorture
+
+--
+Linaro LKFT
+https://lkft.linaro.org
