@@ -2,166 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E6B46810937
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 05:44:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 721ED810938
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 05:45:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378499AbjLMEoZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 23:44:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57328 "EHLO
+        id S1378502AbjLMEp2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 23:45:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36058 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378466AbjLMEoX (ORCPT
+        with ESMTP id S1378466AbjLMEp1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 23:44:23 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B748EBE
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 20:44:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1702442668;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=G/cTbycJ6+L1OUYZmWcVqrZarTlp5To90eqHIi055Fw=;
-        b=SQWa+zSmEN5NQSzSAfoJtJvggwHQzzdnE3cMhM7v3K4Sm/tysv1Zkp8G2yBpJ4HxSUW1mc
-        Z8FfvozCtaUkPQ20rcyzLPkWVYGElR5QDvWNDUQ6tZpC5RwNomni+9owf1AVmVrFqVl8Ft
-        8E6nrtsSyQnd3EXHsyfqV5tDjmfR018=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-390-EdM98yRTMVyc2x2QONcNOw-1; Tue, 12 Dec 2023 23:44:25 -0500
-X-MC-Unique: EdM98yRTMVyc2x2QONcNOw-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com [10.11.54.5])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 3040983106D;
-        Wed, 13 Dec 2023 04:44:25 +0000 (UTC)
-Received: from localhost (unknown [10.72.116.83])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 7B40251E3;
-        Wed, 13 Dec 2023 04:44:24 +0000 (UTC)
-Date:   Wed, 13 Dec 2023 12:44:16 +0800
-From:   Baoquan He <bhe@redhat.com>
-To:     fuqiang wang <fuqiang.wang@easystack.cn>
-Cc:     Vivek Goyal <vgoyal@redhat.com>, Dave Young <dyoung@redhat.com>,
-        kexec@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] kexec: avoid out of bounds in crash_exclude_mem_range()
-Message-ID: <ZXk2oBf/T1Ul6o0c@MiWiFi-R3L-srv>
-References: <20231127025641.62210-1-fuqiang.wang@easystack.cn>
- <ZWg9aZYoo0v+tCQ8@MiWiFi-R3L-srv>
- <e588c619-9b97-4627-bce1-b595c757e5c4@easystack.cn>
+        Tue, 12 Dec 2023 23:45:27 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F397D98
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 20:45:32 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 123CCC433C7;
+        Wed, 13 Dec 2023 04:45:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1702442732;
+        bh=wAzQ6gyscE8Ihq0a6Mek/OCHIV4GQLIER2F9aDitQMM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Ww5bIRBNnQPaVkYZpHJbY3dLSrm1sJu0HfgxfCcmCVuVcLZlNg3DlKYcLr4zT5HWd
+         bciMBhudAYariFLueoHcmNOxu1AJ3r27mg5g+83h7vov2MlGllZ3VLKWTPyqIwziPp
+         S03U2B1N04P3proWizqvxMTgA3Rfg63LxOWp/xWTNoPXb36A3OfZiqnABhQL9rv5pQ
+         K0qivv6JNIPVaGkqYzK5tEYKPUPiwloKm4OLKDrdWX13KeL23RPL43fnru0At7eFkG
+         bvHC4cFiru9qamWa2ag8WVd9W6coWQgQ/76g2DuVec6DqkW9d/QRJ7qEMDDfn2sihY
+         fME+JquNsk/ag==
+Date:   Tue, 12 Dec 2023 20:45:30 -0800
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Hongyu Jin <hongyu.jin.cn@gmail.com>
+Cc:     agk@redhat.com, snitzer@kernel.org, mpatocka@redhat.com,
+        axboe@kernel.dk, zhiguo.niu@unisoc.com, ke.wang@unisoc.com,
+        yibin.ding@unisoc.com, hongyu.jin@unisoc.com,
+        linux-kernel@vger.kernel.org, dm-devel@lists.linux.dev,
+        linux-block@vger.kernel.org
+Subject: Re: [PATCH v4 0/5] Fix I/O priority lost in device-mapper
+Message-ID: <20231213044530.GB1127@sol.localdomain>
+References: <ZXeJ9jAKEQ31OXLP@redhat.com>
+ <20231212111150.18155-1-hongyu.jin.cn@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <e588c619-9b97-4627-bce1-b595c757e5c4@easystack.cn>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.5
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20231212111150.18155-1-hongyu.jin.cn@gmail.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/30/23 at 09:20pm, fuqiang wang wrote:
+On Tue, Dec 12, 2023 at 07:11:45PM +0800, Hongyu Jin wrote:
+> From: Hongyu Jin <hongyu.jin@unisoc.com>
 > 
-> On 2023/11/30 15:44, Baoquan He wrote:
-> > On 11/27/23 at 10:56am, fuqiang wang wrote:
-> > > When the split happened, judge whether mem->nr_ranges is equal to
-> > > mem->max_nr_ranges. If it is true, return -ENOMEM.
-> > > 
-> > > The advantage of doing this is that it can avoid array bounds caused by
-> > > some bugs. E.g., Before commit 4831be702b95 ("arm64/kexec: Fix missing
-> > > extra range for crashkres_low."), reserve both high and low memories for
-> > > the crashkernel may cause out of bounds.
-> > > 
-> > > On the other hand, move this code before the split to ensure that the
-> > > array will not be changed when return error.
-> > If out of array boundary is caused, means the laoding failed, whether
-> > the out of boundary happened or not. I don't see how this code change
-> > makes sense. Do I miss anything?
-> > 
-> > Thanks
-> > Baoquan
-> > 
-> Hi baoquan,
+> A high-priority task obtains data from the dm-verity device using the
+> RT IO priority, during the verification, the IO reading FEC and hash
+> by kworker loses the RT priority and is blocked by the low-priority IO.
+> dm-crypt has the same problem in the process of writing data.
 > 
-> In some configurations, out of bounds may not cause crash_exclude_mem_range()
-> returns error, then the load will succeed.
+> This is because io_context and blkcg are missing.
 > 
-> E.g.
-> There is a cmem before execute crash_exclude_mem_range():
+> Move bio_set_ioprio() into submit_bio():
+> 1. Only call bio_set_ioprio() once to set the priority of original bio,
+>    the bio that cloned and splited from original bio will auto inherit
+>    the priority of original bio in clone process.
 > 
->   cmem = {
->     max_nr_ranges = 3
->     nr_ranges = 2
->     ranges = {
->        {start = 1,      end = 1000}
->        {start = 1001,    end = 2000}
->     }
->   }
+> 2. Make the IO priority of the original bio to be passed to dm,
+>    and the dm target inherits the IO priority as needed.
 > 
-> After executing twice crash_exclude_mem_range() with the start/end params
-> 100/200, 300/400 respectively, the cmem will be:
-> 
->   cmem = {
->     max_nr_ranges = 3
->     nr_ranges = 4                    <== nr_ranges > max_nr_ranges
->     ranges = {
->       {start = 1,       end = 99  }
->       {start = 201,     end = 299 }
->       {start = 401,     end = 1000}
->       {start = 1001,    end = 2000}  <== OUT OF BOUNDS
->     }
->   }
-> 
-> When an out of bounds occurs during the second execution, the function will not
-> return error.
-> 
-> Additionally, when the function returns error, means the load failed. It seems
-> meaningless to keep the original data unchanged. But in my opinion, this will
-> make this function more rigorous and more versatile. (However, I am not sure if
-> it is self-defeating and I hope to receive more suggestions).
 
-Sorry for late reply.
+What commit does this patch series apply to?
 
-I checked the code again, there seems to be cases out of bounds occur
-very possiblly. We may need to enlarge the cmem array to avoid the risk.
-
-In below draft code, we need add another slot to exclude the low 1M area
-when preparing elfcorehdr. And to exclude the elf header region from
-crash kernel region, we need create the cmem with 2 slots.
-
-With these change, we can absolutely avoid out of bounds occurence.
-What do you think?
-
-diff --git a/arch/x86/kernel/crash.c b/arch/x86/kernel/crash.c
-index 1715e5f06a59..21facabcf699 100644
---- a/arch/x86/kernel/crash.c
-+++ b/arch/x86/kernel/crash.c
-@@ -147,10 +147,10 @@ static struct crash_mem *fill_up_crash_elf_data(void)
- 		return NULL;
- 
- 	/*
--	 * Exclusion of crash region and/or crashk_low_res may cause
--	 * another range split. So add extra two slots here.
-+	 * Exclusion of low 1M, crash region and/or crashk_low_res may
-+	 * cause another range split. So add extra two slots here.
- 	 */
--	nr_ranges += 2;
-+	nr_ranges += 3;
- 	cmem = vzalloc(struct_size(cmem, ranges, nr_ranges));
- 	if (!cmem)
- 		return NULL;
-@@ -282,7 +282,7 @@ int crash_setup_memmap_entries(struct kimage *image, struct boot_params *params)
- 	struct crash_memmap_data cmd;
- 	struct crash_mem *cmem;
- 
--	cmem = vzalloc(struct_size(cmem, ranges, 1));
-+	cmem = vzalloc(struct_size(cmem, ranges, 2));
- 	if (!cmem)
- 		return -ENOMEM;
- 
-
+- Eric
