@@ -2,57 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 54EA2811D95
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 19:55:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D364811D99
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 19:56:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233709AbjLMSy5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 13:54:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35426 "EHLO
+        id S233703AbjLMS4H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 13:56:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42574 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230056AbjLMSyz (ORCPT
+        with ESMTP id S229972AbjLMS4F (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 13:54:55 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22E02B0
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 10:55:02 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B224DC433C7;
-        Wed, 13 Dec 2023 18:55:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1702493701;
-        bh=gNwdzPsr9UWjlIeXdMO9ihywHKgw6GU/WIg5VvGTAaw=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=BLEwHEC9xexsuNcvGDIs8F1R9mitnFG6BFTwBMIo1YZzyJo76DWKF6wPmO4/EaJ5m
-         HUu9AoGBBPrbm2BPquvJZWg35Q3qJtb5a7l2Ummy744S+2EwCL0yR+ARXGOmEBorxT
-         kzFXM/cNvD20CP1t5fAiIhd8UdZUZAAasA1W+goHjmIzDNH2ao/66M28sMLMRf/D+n
-         07LPLi4iT7jkAmeWvgGL+jeyLay3u2/0KNHbwuc6uZeqtjo8S4WKIe6WrP3aiysClf
-         CK+b93YBH0HwW0uNT7kAcWvnUKGFKlBth+5Ab3QfYV3W9IwTu2fy4FlcaAPFLkUhFE
-         DuVjVYKghL8OA==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 50904CE0C4D; Wed, 13 Dec 2023 10:55:01 -0800 (PST)
-Date:   Wed, 13 Dec 2023 10:55:01 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     "Neeraj Upadhyay (AMD)" <neeraj.iitr10@gmail.com>,
-        rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@meta.com, rostedt@goodmis.org, Neeraj.Upadhyay@amd.com,
-        Frederic Weisbecker <frederic@kernel.org>
-Subject: Re: [PATCH rcu 3/3] srcu: Explain why callbacks invocations can't
- run concurrently
-Message-ID: <9109c700-a353-4b12-a7c5-2f67e9ab4e86@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20231212174750.GA11886@neeraj.linux>
- <20231212174817.11919-3-neeraj.iitr10@gmail.com>
- <CAEXW_YRHjdM+NA3CqNuwaRNXkRWbtypmt5Ov=YXnrpn3Eo-==Q@mail.gmail.com>
- <2b2c1573-337d-409b-a8ee-daeff096c7f4@paulmck-laptop>
- <CAEXW_YQnR51F9xnODZd3iE+S5Jpd2NHRBTk6Jt2WHTSdB9H8kA@mail.gmail.com>
+        Wed, 13 Dec 2023 13:56:05 -0500
+Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8674CB2
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 10:56:08 -0800 (PST)
+Received: by mail-lj1-x230.google.com with SMTP id 38308e7fff4ca-2c9f099cf3aso109204031fa.1
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 10:56:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1702493767; x=1703098567; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=fKSdIvUXJptSaydKKV+34gXP5RUCj8nQ0FIDDQ6EDoA=;
+        b=QXIms8BKwv/TQHifd59cqsou3fJH0RDMQ0yOW5+JQS+qr8/wJsNZXxMRyTkDOezOeP
+         +buOh0S+pA2Z8mfPAP2PKCkLUlwVblXv61K3zYMViq+shZtcSD4YKr+HGWo3EdedX3Yl
+         SquXoPuLrI2PYrbx/Gsy9vrKDKgI3JiczCJ+/ztXVAeLVpn0zVZkHnBBttB5tkDsNQFb
+         WOKTLaLJ9VSz+hT0zf8DrE6ccH0KOB4DXoD8p1Zdn3Mbci853CM7fAWMGsrIHdwcu1GA
+         bHhSkIgTAkDTzX8rvxtumI+hqmbBDcQLfQ4Ws3rR8XlHrZhqb2UICm0/jlu/i4++9QCq
+         vzUQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702493767; x=1703098567;
+        h=content-transfer-encoding:in-reply-to:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=fKSdIvUXJptSaydKKV+34gXP5RUCj8nQ0FIDDQ6EDoA=;
+        b=GY8oluxl0PA9Rk9J5Rwf5OH8i8JBhMlyR2O8gayJdqJj+OwLLWC9HGrq1y1xhN+Hpg
+         l/BCvkNMYZC34ngAituT/qsp3xLYtC5EjdjLR4I3L7MD4ip1fKn3A11hxo14zLbTc9TV
+         kbIamDEy53lQ3fKLwcC3tx0AtbLY17aSZrqfuIOhjPxJaMZFJ9vCLrntD2o4Gw6P7kv7
+         r1QGYQ1qtDG6uYd3Ve1Ha14c/hGlWcBhLnb1dcSJH31BowMpXjdHDqg7OsvyLVckNwNS
+         4E4qsW2BBly8NQiCyvhMhA+wsTSL6i0qvh/0/YyZc14BHXZ13ADX+wYyrgixAJyPUOEN
+         FnnA==
+X-Gm-Message-State: AOJu0YzZDyr7VenMXBkZz8cCJHdgtfikh9FU4PgVo9yvdzjDFoEDKDks
+        nKF47CQLtbrhUihAe2PxDuicWZE27rzXvZ211hyfFm3f
+X-Google-Smtp-Source: AGHT+IHmKyLw4EdkfaBNBActBS9fIfW5ZX2iyhAR1KnLVTypwTtv+sgrm/kBINLhCV1WT5KbKqZkVA==
+X-Received: by 2002:a2e:a681:0:b0:2cc:3f83:e3f1 with SMTP id q1-20020a2ea681000000b002cc3f83e3f1mr171229lje.95.1702493766785;
+        Wed, 13 Dec 2023 10:56:06 -0800 (PST)
+Received: from [172.30.204.126] (UNUSED.212-182-62-129.lubman.net.pl. [212.182.62.129])
+        by smtp.gmail.com with ESMTPSA id y5-20020a05651c020500b002ca35a126e5sm1895017ljn.119.2023.12.13.10.56.05
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 13 Dec 2023 10:56:06 -0800 (PST)
+Message-ID: <8d292ba5-fe48-49dd-84af-0afe3204b877@linaro.org>
+Date:   Wed, 13 Dec 2023 19:56:04 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAEXW_YQnR51F9xnODZd3iE+S5Jpd2NHRBTk6Jt2WHTSdB9H8kA@mail.gmail.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/2] arm64: dts: qcom: sm8550: move Soundwire pinctrl to
+ its nodes
+Content-Language: en-US
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20231213162536.171475-1-krzysztof.kozlowski@linaro.org>
+ <20231213162536.171475-3-krzysztof.kozlowski@linaro.org>
+From:   Konrad Dybcio <konrad.dybcio@linaro.org>
+In-Reply-To: <20231213162536.171475-3-krzysztof.kozlowski@linaro.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -60,80 +81,21 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 13, 2023 at 01:35:22PM -0500, Joel Fernandes wrote:
-> On Wed, Dec 13, 2023 at 12:52 PM Paul E. McKenney <paulmck@kernel.org> wrote:
-> >
-> > On Wed, Dec 13, 2023 at 09:27:09AM -0500, Joel Fernandes wrote:
-> > > On Tue, Dec 12, 2023 at 12:48 PM Neeraj Upadhyay (AMD)
-> > > <neeraj.iitr10@gmail.com> wrote:
-> > > >
-> > > > From: Frederic Weisbecker <frederic@kernel.org>
-> > > >
-> > > > If an SRCU barrier is queued while callbacks are running and a new
-> > > > callbacks invocator for the same sdp were to run concurrently, the
-> > > > RCU barrier might execute too early. As this requirement is non-obvious,
-> > > > make sure to keep a record.
-> > > >
-> > > > Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
-> > > > Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-> > > > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> > > > Signed-off-by: Neeraj Upadhyay (AMD) <neeraj.iitr10@gmail.com>
-> > > > ---
-> > > >  kernel/rcu/srcutree.c | 6 ++++++
-> > > >  1 file changed, 6 insertions(+)
-> > > >
-> > > > diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
-> > > > index 2bfc8ed1eed2..0351a4e83529 100644
-> > > > --- a/kernel/rcu/srcutree.c
-> > > > +++ b/kernel/rcu/srcutree.c
-> > > > @@ -1715,6 +1715,11 @@ static void srcu_invoke_callbacks(struct work_struct *work)
-> > > >         WARN_ON_ONCE(!rcu_segcblist_segempty(&sdp->srcu_cblist, RCU_NEXT_TAIL));
-> > > >         rcu_segcblist_advance(&sdp->srcu_cblist,
-> > > >                               rcu_seq_current(&ssp->srcu_sup->srcu_gp_seq));
-> > > > +       /*
-> > > > +        * Although this function is theoretically re-entrant, concurrent
-> > > > +        * callbacks invocation is disallowed to avoid executing an SRCU barrier
-> > > > +        * too early.
-> > > > +        */
-> > >
-> > > Side comment:
-> > > I guess even without the barrier reasoning, it is best not to allow
-> > > concurrent CB execution anyway since it diverges from the behavior of
-> > > straight RCU :)
-> >
-> > Good point!
-> >
-> > But please do not forget item 12 on the list in checklist.rst.  ;-)
-> > (Which I just updated to include the other call_rcu*() functions.)
+
+
+On 12/13/23 17:25, Krzysztof Kozlowski wrote:
+> Pin configuration for Soundwire bus should be set in Soundwire
+> controller nodes, not in the associated macro codec node.  This
+> placement change should not have big impact in general, because macro
+> codec is a clock provider for Soundwire controller, thus its devices is
+> probed first.  However it will have impact for disabled Soundwire buses,
+> e.g. WSA2, because after this change the pins will be left in default
+> state.
 > 
-> I think this is more so now with recent kernels (with the dynamic nocb
-> switch) than with older kernels right? I haven't kept up with the
-> checklist recently (which is my bad).
-
-You are quite correct!  But even before this, I was saying that
-lack of same-CPU callback concurrency was an accident of the current
-implementation rather than a guarantee.  For example, there might come
-a time when RCU needs to respond to callback flooding with concurrent
-execution of the flooded CPU's callbacks.  Or not, but we do need to
-keep this option open.
-
-> My understanding comes from the fact that the RCU barrier depends on
-> callbacks on the same CPU executing in order with straight RCU
-> otherwise it breaks. Hence my comment. But as you pointed out, that's
-> outdated knowledge.
-
-That is still one motivation for ordered execution of callbacks.  For the
-dynamic nocb switch, we could have chosen to make rcu_barrier() place
-a callback on both lists, but we instead chose to exclude rcu_barrier()
-calls during the switch.
-
-> I should just shut up and hide in shame now.
-
-No need for that!  After all, one motivation for Requirements.rst was
-to help me keep track of all this stuff.
-
-							Thanx, Paul
-
-> :-/
+> We also follow similar approach in newer SoCs, like Qualcomm SM8650.
 > 
->  - Joel
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> ---
+Acked-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+
+Konrad
