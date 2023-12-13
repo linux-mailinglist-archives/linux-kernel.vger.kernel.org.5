@@ -2,81 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 28155811322
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 14:41:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A8E9B811327
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 14:43:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235363AbjLMNlX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 08:41:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44828 "EHLO
+        id S233637AbjLMNm6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 08:42:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47278 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233465AbjLMNlU (ORCPT
+        with ESMTP id S233465AbjLMNm5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 08:41:20 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D310BF5;
-        Wed, 13 Dec 2023 05:41:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1702474884; x=1734010884;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=UHu+07MBRevDOSW1Tf5iIKC4rfKnsAW4POR/WWx6Gr0=;
-  b=PeNtitCGHo6Z2DxOgHaRJwMCX92KgQ8uTtXwWfm0S4XQnWdi+sOyD1Sx
-   JdwaQqEn5PQ+OAYsVTm2xWxEL6YYBH+H9dATGqP2eObOumQ5Ll7m0kWyi
-   VvP6ZdyTQPFwyKumVwaBd+XfSxXiw4AmyYBoWO+xMqGsOkft6mIOXHXig
-   gMxRLNIerquzOzFZbIGbDAewSWc9I7qA+3pMh40oh/jlKj3kxLiDLAUmn
-   j1JqT5OhhqNEyZvfwx75VDmCebcSuM3LH1DmNjlk4zMwoEj4URqQigLSM
-   4DLI3aVoIJiX+In3OZalr1Gh1RKRAl2LPLZlCaaiV3J8egsuL10FotVw6
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10922"; a="461439317"
-X-IronPort-AV: E=Sophos;i="6.04,272,1695711600"; 
-   d="scan'208";a="461439317"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Dec 2023 05:41:24 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10922"; a="892023724"
-X-IronPort-AV: E=Sophos;i="6.04,272,1695711600"; 
-   d="scan'208";a="892023724"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by fmsmga002.fm.intel.com with ESMTP; 13 Dec 2023 05:41:17 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1rDPUB-000Kcx-1a;
-        Wed, 13 Dec 2023 13:41:15 +0000
-Date:   Wed, 13 Dec 2023 21:41:10 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Alexander Graf <graf@amazon.com>, linux-kernel@vger.kernel.org
-Cc:     oe-kbuild-all@lists.linux.dev, linux-trace-kernel@vger.kernel.org,
-        linux-mm@kvack.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, kexec@lists.infradead.org,
-        linux-doc@vger.kernel.org, x86@kernel.org,
-        Eric Biederman <ebiederm@xmission.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Ashish Kalra <ashish.kalra@amd.com>,
-        James Gowans <jgowans@amazon.com>,
-        Stanislav Kinsburskii <skinsburskii@linux.microsoft.com>,
-        arnd@arndb.de, pbonzini@redhat.com, madvenka@linux.microsoft.com,
-        Anthony Yznaga <anthony.yznaga@oracle.com>,
-        Usama Arif <usama.arif@bytedance.com>,
-        David Woodhouse <dwmw@amazon.co.uk>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>
-Subject: Re: [PATCH 06/15] arm64: Add KHO support
-Message-ID: <202312132139.g2NKV67G-lkp@intel.com>
-References: <20231213000452.88295-7-graf@amazon.com>
+        Wed, 13 Dec 2023 08:42:57 -0500
+Received: from mailout2.w1.samsung.com (mailout2.w1.samsung.com [210.118.77.12])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D30829C
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 05:43:01 -0800 (PST)
+Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
+        by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20231213134259euoutp02a3f2acc0e8deb7940cbd2c503435824d~gZ-k1rfpP0809308093euoutp02Q
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 13:42:59 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20231213134259euoutp02a3f2acc0e8deb7940cbd2c503435824d~gZ-k1rfpP0809308093euoutp02Q
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1702474979;
+        bh=rNqOysxNvghIHLfBsJRjXzN0I4umlYU/VpEb2iWIYhE=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=I5JKVwPS7NI+1MhgpjgjSIPTI4a3eGYtWevpdtFkXi3sKMEjg2cLrfB1XgKpl82GR
+         rpDemzdMXXygLjUzEmbtTbbhhzJE7J0yNdfh7MOC54v56OP5xLoqCX8QQm2505VxeP
+         nxMhP7Jg7W6sr02lHvkVP9wyy9qvXTjA3Q+XCSBw=
+Received: from eusmges3new.samsung.com (unknown [203.254.199.245]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
+        20231213134258eucas1p2467ed59f8fcf4b3e7390152b93b74452~gZ-kQ0UjJ1456214562eucas1p2a;
+        Wed, 13 Dec 2023 13:42:58 +0000 (GMT)
+Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
+        eusmges3new.samsung.com (EUCPMTA) with SMTP id 02.EF.09552.2E4B9756; Wed, 13
+        Dec 2023 13:42:58 +0000 (GMT)
+Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
+        20231213134258eucas1p23b66a7989c326176386f4a7c619cde75~gZ-j0ryfy1461914619eucas1p2-;
+        Wed, 13 Dec 2023 13:42:58 +0000 (GMT)
+Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
+        eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20231213134258eusmtrp228e258757d2a5e638dcbccaa8ccbf9b0~gZ-j0AZRU0566805668eusmtrp2K;
+        Wed, 13 Dec 2023 13:42:58 +0000 (GMT)
+X-AuditID: cbfec7f5-83dff70000002550-09-6579b4e2dcda
+Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
+        eusmgms2.samsung.com (EUCPMTA) with SMTP id 8A.9E.09274.1E4B9756; Wed, 13
+        Dec 2023 13:42:58 +0000 (GMT)
+Received: from AMDC4515.eu.corp.samsungelectronics.net (unknown
+        [106.120.51.28]) by eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
+        20231213134257eusmtip1e480721ae417c29b1f686d762fe33c65~gZ-jMU9Zj1395513955eusmtip1X;
+        Wed, 13 Dec 2023 13:42:57 +0000 (GMT)
+From:   Mateusz Majewski <m.majewski2@samsung.com>
+To:     Lukasz Luba <lukasz.luba@arm.com>
+Cc:     Mateusz Majewski <m.majewski2@samsung.com>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Bartlomiej Zolnierkiewicz <bzolnier@gmail.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        linux-pm@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: Various Exynos targets never return to no cooling
+Date:   Wed, 13 Dec 2023 14:42:34 +0100
+Message-ID: <20231213134235.1607510-1-m.majewski2@samsung.com>
+X-Mailer: git-send-email 2.42.0
+In-Reply-To: <5ad40adf-aa79-4281-9cc3-2a1e7c10a356@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231213000452.88295-7-graf@amazon.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Transfer-Encoding: 8bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrJKsWRmVeSWpSXmKPExsWy7djP87qPtlSmGmybJ2/xfct1Jot5n2Ut
+        9r7eym5xedccNovPvUcYLWac38dksbCphd1i4rHJzBZrj9xlt5j7ZSqzxZOHfWwO3B5r5q1h
+        9Ng56y67x+I9L5k8Nq3qZPO4c20Pm0ffllWMHp83yQWwR3HZpKTmZJalFunbJXBl7Fpzj6lg
+        lkzFi94djA2MN8S7GDk5JARMJC5PfsfYxcjFISSwglFi85/FrBDOF0aJGZtPMUM4nxklGlfs
+        Z4RpafnxGMwWEljOKPHwVS5EUSuTxIVbT9lBEmwCBhIP3iwDs0UEVCWuXbjLAlLELDCXWaKz
+        eREbSEJYwE7i2Kk7TF2MHBwsQEW33iqBhHmBwq/3XGSCWCYvsWfRd7ASTgFriS/XBCFKBCVO
+        znzCAmIzA5U0b53NDFH+gkPi+xQpCNtFov1IEzuELSzx6vgWKFtG4v/O+VDj84GefM8CMl5C
+        oELi7kEvCNNa4uMZZhCTWUBTYv0ufYhiR4mji2exQVTwSdx4Kwixn09i0rbpzBBhXomONiGI
+        alWJ43smQZ0lLfGk5TbUSg+Jn4emsU5gVJyF5JNZSD6ZhbB3ASPzKkbx1NLi3PTUYuO81HK9
+        4sTc4tK8dL3k/NxNjMDUdPrf8a87GFe8+qh3iJGJg/EQowQHs5II78kd5alCvCmJlVWpRfnx
+        RaU5qcWHGKU5WJTEeVVT5FOFBNITS1KzU1MLUotgskwcnFINTLFSax5734+acOEN14HebTez
+        P7LckFLxO2l49viq+5724gqTxM5cPZ+kvt3+/w3J3rk5P8Jdf/yuy7XfcmtSgckdH7NZp5bo
+        S73vaGO62So6zf3n8uP3NllpzZ4+a+KfH/MuJpqd+n13s4jG5ON7V1k6z5t0JMvsZ2/B0f8f
+        q1fm7FWQZl16mEW9zMnipbNWIM9C/eXB65Zv6E5y/s638t+VSbGX98hY/b8lqOswf/IbzQdq
+        Z9dpy0yas0f8qivnw/DbU8ocfdQ2CQnYu+j/bo6MD7VSZdQ8Nm2Ojp5hp2lm4Otr6tXOqj7H
+        cg6+Zu58vjWi8mccC9OzC79eN9WU6EsUTAoPu8lxS4vj48t/yZxKLMUZiYZazEXFiQDavMyv
+        vAMAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprDIsWRmVeSWpSXmKPExsVy+t/xu7qPtlSmGjRsYbT4vuU6k8W8z7IW
+        e19vZbe4vGsOm8Xn3iOMFjPO72OyWNjUwm4x8dhkZou1R+6yW8z9MpXZ4snDPjYHbo8189Yw
+        euycdZfdY/Gel0wem1Z1snncubaHzaNvyypGj8+b5ALYo/RsivJLS1IVMvKLS2yVog0tjPQM
+        LS30jEws9QyNzWOtjEyV9O1sUlJzMstSi/TtEvQydq25x1QwS6biRe8OxgbGG+JdjJwcEgIm
+        Ei0/HjN2MXJxCAksZZS4Mv8aG0RCWuLwlynsELawxJ9rXWwQRc1MEqfX7GQFSbAJGEg8eLMM
+        rEhEQFXi2oW7LCBFzAJLmSXeXjkGNklYwE7i2Kk7TF2MHBwsQEW33iqBhHmBwq/3XGSCWCAv
+        sWfRd7ASTgFriS/XBEHCQgI8Eq827GeEKBeUODnzCQuIzQxU3rx1NvMERoFZSFKzkKQWMDKt
+        YhRJLS3OTc8tNtIrTswtLs1L10vOz93ECIymbcd+btnBuPLVR71DjEwcjIcYJTiYlUR4T+4o
+        TxXiTUmsrEotyo8vKs1JLT7EaAp09URmKdHkfGA855XEG5oZmBqamFkamFqaGSuJ83oWdCQK
+        CaQnlqRmp6YWpBbB9DFxcEo1MG1LP9SlPj1liSjv3tITfpW9M0zfqsQvluv5NNFz/pTHam+t
+        T0zI5Y08ELiTd4LNH80Jch2TTq5YZaAqsN9uv4HX/z7Ds/r/GHadOdAk9WaZ7y+pfcVb+2b+
+        YdkvfDkz7e2hxn/7Oz2S5ghb/WV9PYFn5/KAuCAr3gOfgjkX25ornf38PbD5O/uqw2s7ciYf
+        49ihO5nr0S2D5bmcjXnytptMdy0RU5vVc7PQJn+u4Msaxqwz9Zw76hLb3JdbaFpahi4Q+yqx
+        p77vyW+OG7nRNQKvvKU1phcazNR/tsTrwmSv1G2iXka5X/b6au9SZdo+Zd/ig4+bE3e3doh1
+        O6+yXl5Q8nv+Zo+jjXmbDv9puq7EUpyRaKjFXFScCACiFQvJLwMAAA==
+X-CMS-MailID: 20231213134258eucas1p23b66a7989c326176386f4a7c619cde75
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-RootMTR: 20231213134258eucas1p23b66a7989c326176386f4a7c619cde75
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20231213134258eucas1p23b66a7989c326176386f4a7c619cde75
+References: <CGME20231213134258eucas1p23b66a7989c326176386f4a7c619cde75@eucas1p2.samsung.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -84,74 +118,101 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Alexander,
+Hi,
 
-kernel test robot noticed the following build warnings:
+> I understand your requirement for the interrupts only mode, but
+> maybe till the moment there is no fix upstream, you can enable
+> it as well?
 
-[auto build test WARNING on tip/x86/core]
-[also build test WARNING on arm64/for-next/core akpm-mm/mm-everything linus/master v6.7-rc5 next-20231213]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+We (actually Marek and independently another coworker) had an idea how
+to solve this while still avoiding polling all the time, and it turned
+out to be quite simple to implement (PoC-quality). The idea was to run
+several cycles of polling after each interrupt. This could be done like
+this:
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Alexander-Graf/mm-memblock-Add-support-for-scratch-memory/20231213-080941
-base:   tip/x86/core
-patch link:    https://lore.kernel.org/r/20231213000452.88295-7-graf%40amazon.com
-patch subject: [PATCH 06/15] arm64: Add KHO support
-config: microblaze-randconfig-r133-20231213 (https://download.01.org/0day-ci/archive/20231213/202312132139.g2NKV67G-lkp@intel.com/config)
-compiler: microblaze-linux-gcc (GCC) 13.2.0
-reproduce: (https://download.01.org/0day-ci/archive/20231213/202312132139.g2NKV67G-lkp@intel.com/reproduce)
+diff --git a/drivers/thermal/samsung/exynos_tmu.c b/drivers/thermal/samsung/exynos_tmu.c
+index 6482513bfe66..b4bffe405194 100644
+--- a/drivers/thermal/samsung/exynos_tmu.c
++++ b/drivers/thermal/samsung/exynos_tmu.c
+@@ -760,6 +760,12 @@ static irqreturn_t exynos_tmu_threaded_irq(int irq, void *id)
+ {
+ 	struct exynos_tmu_data *data = id;
+ 
++	/* TODO: would need some API */
++	mutex_lock(&data->tzd->lock);
++	data->tzd->additional_poll_reps = 10;
++	data->tzd->additional_poll_jiffies = HZ / 10;
++	mutex_unlock(&data->tzd->lock);
++
+ 	thermal_zone_device_update(data->tzd, THERMAL_EVENT_UNSPECIFIED);
+ 
+ 	mutex_lock(&data->lock);
+diff --git a/drivers/thermal/thermal_core.c b/drivers/thermal/thermal_core.c
+index 625ba07cbe2f..c825d068402f 100644
+--- a/drivers/thermal/thermal_core.c
++++ b/drivers/thermal/thermal_core.c
+@@ -299,12 +299,24 @@ static void thermal_zone_device_set_polling(struct thermal_zone_device *tz,
+ 
+ static void monitor_thermal_zone(struct thermal_zone_device *tz)
+ {
++	unsigned long delay;
++
+ 	if (tz->mode != THERMAL_DEVICE_ENABLED)
+-		thermal_zone_device_set_polling(tz, 0);
++		delay = 0;
+ 	else if (tz->passive)
+-		thermal_zone_device_set_polling(tz, tz->passive_delay_jiffies);
++		delay = tz->passive_delay_jiffies;
+ 	else if (tz->polling_delay_jiffies)
+-		thermal_zone_device_set_polling(tz, tz->polling_delay_jiffies);
++		delay = tz->polling_delay_jiffies;
++	else
++		delay = 0; /* TODO: ??? */
++
++	if (tz->additional_poll_reps > 0) {
++		tz->additional_poll_reps -= 1;
++		if (delay == 0 || tz->additional_poll_jiffies < delay)
++			delay = tz->additional_poll_jiffies;
++	}
++
++	thermal_zone_device_set_polling(tz, delay);
+ }
+ 
+ static void handle_non_critical_trips(struct thermal_zone_device *tz,
+@@ -425,6 +437,8 @@ static void thermal_zone_device_init(struct thermal_zone_device *tz)
+ 	tz->temperature = THERMAL_TEMP_INVALID;
+ 	tz->prev_low_trip = -INT_MAX;
+ 	tz->prev_high_trip = INT_MAX;
++	tz->additional_poll_jiffies = 0;
++	tz->additional_poll_reps = 0;
+ 	list_for_each_entry(pos, &tz->thermal_instances, tz_node)
+ 		pos->initialized = false;
+ }
+diff --git a/include/linux/thermal.h b/include/linux/thermal.h
+index c7190e2dfcb4..576b1f3ef25d 100644
+--- a/include/linux/thermal.h
++++ b/include/linux/thermal.h
+@@ -172,6 +172,8 @@ struct thermal_zone_device {
+ 	int passive;
+ 	int prev_low_trip;
+ 	int prev_high_trip;
++	int additional_poll_reps;
++	unsigned long additional_poll_jiffies;
+ 	atomic_t need_update;
+ 	struct thermal_zone_device_ops *ops;
+ 	struct thermal_zone_params *tzp;
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202312132139.g2NKV67G-lkp@intel.com/
+In my tests this is enough to resolve the issue consistently on both
+TM2E and XU4, both before and after my other patchset.
 
-sparse warnings: (new ones prefixed by >>)
->> drivers/of/fdt.c:1012:13: sparse: sparse: symbol 'early_init_dt_check_kho' was not declared. Should it be static?
+To be honest, this is not the most elegant solution probably and it
+still doesn't really take into account the governor needs. Therefore, if
 
-vim +/early_init_dt_check_kho +1012 drivers/of/fdt.c
+> Regarding this topic, I just wanted to tell you that I had conversation
+> with Rafael & Daniel last Fri. Rafael gave me a hint to his latest work
+> in his repo regarding potentially similar race with temperature value.
 
-  1008	
-  1009	/**
-  1010	 * early_init_dt_check_kho - Decode info required for kexec handover from DT
-  1011	 */
-> 1012	void __init early_init_dt_check_kho(void)
-  1013	{
-  1014	#ifdef CONFIG_KEXEC_KHO
-  1015		unsigned long node = chosen_node_offset;
-  1016		u64 kho_start, scratch_start, scratch_size, mem_start, mem_size;
-  1017		const __be32 *p;
-  1018		int l;
-  1019	
-  1020		if ((long)node < 0)
-  1021			return;
-  1022	
-  1023		p = of_get_flat_dt_prop(node, "linux,kho-dt", &l);
-  1024		if (l != (dt_root_addr_cells + dt_root_size_cells) * sizeof(__be32))
-  1025			return;
-  1026	
-  1027		kho_start = dt_mem_next_cell(dt_root_addr_cells, &p);
-  1028	
-  1029		p = of_get_flat_dt_prop(node, "linux,kho-scratch", &l);
-  1030		if (l != (dt_root_addr_cells + dt_root_size_cells) * sizeof(__be32))
-  1031			return;
-  1032	
-  1033		scratch_start = dt_mem_next_cell(dt_root_addr_cells, &p);
-  1034		scratch_size = dt_mem_next_cell(dt_root_addr_cells, &p);
-  1035	
-  1036		p = of_get_flat_dt_prop(node, "linux,kho-mem", &l);
-  1037		if (l != (dt_root_addr_cells + dt_root_size_cells) * sizeof(__be32))
-  1038			return;
-  1039	
-  1040		mem_start = dt_mem_next_cell(dt_root_addr_cells, &p);
-  1041		mem_size = dt_mem_next_cell(dt_root_addr_cells, &p);
-  1042	
-  1043		kho_populate(kho_start, scratch_start, scratch_size, mem_start, mem_size);
-  1044	#endif
-  1045	}
-  1046	
+brings a better solution, it would be great :)
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Thank you!
+Mateusz
