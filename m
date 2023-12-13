@@ -2,119 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B949811470
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 15:18:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CCDF2811473
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 15:18:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1441867AbjLMOSN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 09:18:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41420 "EHLO
+        id S1441878AbjLMOSW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 09:18:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56664 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379150AbjLMOSL (ORCPT
+        with ESMTP id S1379239AbjLMOSV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 09:18:11 -0500
-Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67420AC
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 06:18:17 -0800 (PST)
-Received: by mail-wr1-x42d.google.com with SMTP id ffacd0b85a97d-3363aa1b7d2so587436f8f.0
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 06:18:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ventanamicro.com; s=google; t=1702477096; x=1703081896; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=pMvhSkMSE/Am1VRqFroHUAOOjs4iyetVHF646YQvvOI=;
-        b=KXYuAUC+oqLsgtArLl7kxsnNfiAs/D34549ViQ0T1w5JcR9DNL28cPsX+eWz3UwAEI
-         8TGxKAGhiHTDqXwxikPbTDIYsfGc4qz0CXNybP4ZvwhunNjpGqwoEBEStVAiDGKJe8aa
-         SqmIsR2JUija7SjRcSPZ7kTQkZSUzWGclN4L4pjxloK+W6jrXw1VyKOZM0EQaBOLyVO5
-         5Iw/UZwCuGW+grdag38FnL7ZMSt5IdyTfkQ7R8QTVGva1uVbepKOUXuyeAMqX+CjadKM
-         oKynrpFp6eKIBrR1gelKAQhQjwWf/0jHrpmw7ioGp0Z3IeAHN5h/5JWXvrPIeCdR9KyJ
-         qWxQ==
+        Wed, 13 Dec 2023 09:18:21 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7AB0EB
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 06:18:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1702477104;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=Fws0gJvMeLr/QEe2P9D0VBdduPdR7zo8ED97N4rFNAU=;
+        b=Cwx1JGJ+etOOL9jfEA19tblFnXXNs2XtJKygOu+GsWe+xrW3dCy10kzlDoI3sUAFEe48u6
+        yPDpNyD5VuSBGQaJ0JSJyBBG+LumGFC0QiilpaIO3VfWjk7LfYCB49B5sHZHBy1KGwIVaI
+        sdgqb6VTNZQjNgviNmcyOo+Bo5BGPlY=
+Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
+ [209.85.218.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-557-1jTjdPKeMamQJ_5wr4MhMQ-1; Wed, 13 Dec 2023 09:18:22 -0500
+X-MC-Unique: 1jTjdPKeMamQJ_5wr4MhMQ-1
+Received: by mail-ej1-f70.google.com with SMTP id a640c23a62f3a-a1cfd84b473so769387166b.1
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 06:18:22 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702477096; x=1703081896;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=pMvhSkMSE/Am1VRqFroHUAOOjs4iyetVHF646YQvvOI=;
-        b=nV/p6CiSsLl72dzP15D8v/prjkDkfvaQnPSyyGdZByLCGRWWvc1ao6ln7z+wpOmBnz
-         ApCPDfXHu2zJMbdiku3HZngmVFxu6XOul+oaH0a/Br/mRgXZ0/2f5nMTIBCcGmUUbsN8
-         yqpirxq1+MAKVaarQhrKKDsacfrDL+zbJlSPXGrEeKPiM4yNKSzUddYjV89nlv/GdHXc
-         W/9z+byCzThG2kDIBG0/aTBqwh5q7DGa9zVwcZtIItxkTWV8ob4wjcjnDp1+D1w0Yv7/
-         hF95pmKNu/WOsChQDweRz4OfZJiJPMvBREO1od2+08Ru2rbq+yV1clFcUrasj165rEKZ
-         6kIg==
-X-Gm-Message-State: AOJu0YznCZMUR4w1Nponnji4l6hagt6QfLbCx3Cnj3G/tvs/tzWXCTBF
-        7fhxp42MBbOjF6EiyXZMB5zRcA==
-X-Google-Smtp-Source: AGHT+IHHAN8IaZVRK1Ps8W71SJhwMq4xLyWFOqoAIKM4rFfgBhljotdkzECz0shi/fy3fHhekB11VQ==
-X-Received: by 2002:a5d:6242:0:b0:333:3c06:b433 with SMTP id m2-20020a5d6242000000b003333c06b433mr2848127wrv.0.1702477095654;
-        Wed, 13 Dec 2023 06:18:15 -0800 (PST)
-Received: from localhost (2001-1ae9-1c2-4c00-20f-c6b4-1e57-7965.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:20f:c6b4:1e57:7965])
-        by smtp.gmail.com with ESMTPSA id v16-20020adfa1d0000000b003362e9b75c3sm4056912wrv.88.2023.12.13.06.18.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Dec 2023 06:18:15 -0800 (PST)
-Date:   Wed, 13 Dec 2023 15:18:14 +0100
-From:   Andrew Jones <ajones@ventanamicro.com>
-To:     Haibo Xu <haibo1.xu@intel.com>
-Cc:     xiaobo55x@gmail.com, Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Shuah Khan <shuah@kernel.org>, Marc Zyngier <maz@kernel.org>,
-        Oliver Upton <oliver.upton@linux.dev>,
-        James Morse <james.morse@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Zenghui Yu <yuzenghui@huawei.com>,
-        Anup Patel <anup@brainfault.org>,
-        Atish Patra <atishp@atishpatra.org>,
-        Guo Ren <guoren@kernel.org>,
-        Mayuresh Chitale <mchitale@ventanamicro.com>,
-        Greentime Hu <greentime.hu@sifive.com>,
-        Daniel Henrique Barboza <dbarboza@ventanamicro.com>,
-        Conor Dooley <conor.dooley@microchip.com>,
-        Jisheng Zhang <jszhang@kernel.org>,
-        Minda Chen <minda.chen@starfivetech.com>,
-        Samuel Holland <samuel@sholland.org>,
-        Sean Christopherson <seanjc@google.com>,
-        Peter Xu <peterx@redhat.com>, Like Xu <likexu@tencent.com>,
-        Vipin Sharma <vipinsh@google.com>,
-        Maciej Wieczor-Retman <maciej.wieczor-retman@intel.com>,
-        Aaron Lewis <aaronlewis@google.com>,
-        Thomas Huth <thuth@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-riscv@lists.infradead.org, kvm@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
-        kvm-riscv@lists.infradead.org
-Subject: Re: [PATCH v4 10/11] KVM: riscv: selftests: Add sstc timer test
-Message-ID: <20231213-4ba5fcc75b41cd19ec96f08e@orel>
-References: <cover.1702371136.git.haibo1.xu@intel.com>
- <3bb7d5ae5a1a016e970faa0759c47214c9391b19.1702371136.git.haibo1.xu@intel.com>
+        d=1e100.net; s=20230601; t=1702477102; x=1703081902;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Fws0gJvMeLr/QEe2P9D0VBdduPdR7zo8ED97N4rFNAU=;
+        b=vJv55qmn0+uMR/uMkAFfRBreJLFWtOBbaDBxGIs5NNMN+8RtKJb+OFukkS6SfgC7Mq
+         T+OwnAolnbdWyyCWx/y9NMvqofSioDeQWjSRRM/xbMmLyjux8ebfq4CwHU8WXTuUAoRM
+         uPzZG2lp7R7umNdGiGR0fJBdEi9lKiAWR2XD6lmSp7DBSPwq9kuY+YX1yrc0HD1rhyTU
+         JQN6iXCyX9EgbtCBC+EGBgYW3a7AV5rIrsdVJFeV86BNDI5Bx6iQ6aaTXPPxENm/NG+S
+         274vLh1L5DpiPQ0xhChtQuGZozU0b5I762foHK0sGd+h7PSXS48UUWwTrQ3ztLvlxtVS
+         BVoA==
+X-Gm-Message-State: AOJu0YxUTvyIOi7CsJ8pQGs40uguPkAO5aa/f2XNMeN9yTxVNYYelS1S
+        bDHmRobEKcQv8WiEVoBr6JC78zCe21EMMY5NaYj+UfeHaUtOavRqqefwsvKj4tQH4oRCEcb0h3s
+        eGviR4eXlzAu1pxswDV+ywsip
+X-Received: by 2002:a17:906:24d:b0:a22:e7d2:5a52 with SMTP id 13-20020a170906024d00b00a22e7d25a52mr2784712ejl.71.1702477101827;
+        Wed, 13 Dec 2023 06:18:21 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IGrQokzT8zXusJ+hPGTT9RJ5H7cGwq+NBw1vIEMeKjoo6GUcHW4Rk0RO9/h3vuME7VBPouVjg==
+X-Received: by 2002:a17:906:24d:b0:a22:e7d2:5a52 with SMTP id 13-20020a170906024d00b00a22e7d25a52mr2784659ejl.71.1702477101439;
+        Wed, 13 Dec 2023 06:18:21 -0800 (PST)
+Received: from ?IPV6:2001:b07:6468:f312:63a7:c72e:ea0e:6045? ([2001:b07:6468:f312:63a7:c72e:ea0e:6045])
+        by smtp.googlemail.com with ESMTPSA id tk3-20020a170907c28300b00a1cd54ec021sm7876334ejc.57.2023.12.13.06.18.18
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 13 Dec 2023 06:18:20 -0800 (PST)
+Message-ID: <b4aab361-4494-4a4b-b180-d7df05fd3d5b@redhat.com>
+Date:   Wed, 13 Dec 2023 15:18:17 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <3bb7d5ae5a1a016e970faa0759c47214c9391b19.1702371136.git.haibo1.xu@intel.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v10 04/50] x86/cpufeatures: Add SEV-SNP CPU feature
+Content-Language: en-US
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     Michael Roth <michael.roth@amd.com>, kvm@vger.kernel.org,
+        linux-coco@lists.linux.dev, linux-mm@kvack.org,
+        linux-crypto@vger.kernel.org, x86@kernel.org,
+        linux-kernel@vger.kernel.org, tglx@linutronix.de, mingo@redhat.com,
+        jroedel@suse.de, thomas.lendacky@amd.com, hpa@zytor.com,
+        ardb@kernel.org, seanjc@google.com, vkuznets@redhat.com,
+        jmattson@google.com, luto@kernel.org, dave.hansen@linux.intel.com,
+        slp@redhat.com, pgonda@google.com, peterz@infradead.org,
+        srinivas.pandruvada@linux.intel.com, rientjes@google.com,
+        dovmurik@linux.ibm.com, tobin@ibm.com, vbabka@suse.cz,
+        kirill@shutemov.name, ak@linux.intel.com, tony.luck@intel.com,
+        marcorr@google.com, sathyanarayanan.kuppuswamy@linux.intel.com,
+        alpergun@google.com, jarkko@kernel.org, ashish.kalra@amd.com,
+        nikunj.dadhania@amd.com, pankaj.gupta@amd.com,
+        liam.merwick@oracle.com, zhi.a.wang@intel.com,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        Jarkko Sakkinen <jarkko@profian.com>
+References: <20231016132819.1002933-1-michael.roth@amd.com>
+ <20231016132819.1002933-5-michael.roth@amd.com>
+ <0b2eb374-356c-46c6-9c4a-9512fbfece7a@redhat.com>
+ <20231213131324.GDZXmt9LsMmJZyzCJw@fat_crate.local>
+ <40915dc3-4083-4b9f-bc64-7542833566e1@redhat.com>
+ <20231213133628.GEZXmzXFwA1p+crH/5@fat_crate.local>
+ <9ac2311c-9ccc-4468-9b26-6cb0872e207f@redhat.com>
+ <20231213134945.GFZXm2eTkd+IfdsjVE@fat_crate.local>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Autocrypt: addr=pbonzini@redhat.com; keydata=
+ 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
+In-Reply-To: <20231213134945.GFZXm2eTkd+IfdsjVE@fat_crate.local>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 12, 2023 at 05:31:19PM +0800, Haibo Xu wrote:
-> Add a KVM selftests to validate the Sstc timer functionality.
-> The test was ported from arm64 arch timer test.
+On 12/13/23 14:49, Borislav Petkov wrote:
+> On Wed, Dec 13, 2023 at 02:40:24PM +0100, Paolo Bonzini wrote:
+>> Why are they dead code?  X86_FEATURE_SEV_SNP is set automatically based on
+>> CPUID, therefore patch 5 is a performance improvement on all processors that
+>> support SEV-SNP.  This is independent of whether KVM can create SEV-SNP
+>> guests or not.
 > 
-> Signed-off-by: Haibo Xu <haibo1.xu@intel.com>
-> ---
->  tools/testing/selftests/kvm/Makefile          |   1 +
->  .../selftests/kvm/aarch64/arch_timer.c        |  12 +-
->  tools/testing/selftests/kvm/arch_timer.c      |  10 +-
->  .../selftests/kvm/include/riscv/arch_timer.h  |  71 ++++++++++++
->  .../selftests/kvm/include/riscv/processor.h   |  10 ++
->  .../selftests/kvm/include/timer_test.h        |   5 +-
->  .../testing/selftests/kvm/riscv/arch_timer.c  | 107 ++++++++++++++++++
->  7 files changed, 206 insertions(+), 10 deletions(-)
->  create mode 100644 tools/testing/selftests/kvm/include/riscv/arch_timer.h
->  create mode 100644 tools/testing/selftests/kvm/riscv/arch_timer.c
->
+> No, it is not. This CPUID bit means:
+> 
+> "RMP table can be enabled to protect memory even from hypervisor."
+> 
+> Without the SNP host patches, it is dead code.
 
-Reviewed-by: Andrew Jones <ajones@ventanamicro.com>
+-	if ((ia32_cap & ARCH_CAP_IBRS_ALL) || cpu_has(c, X86_FEATURE_AUTOIBRS)) {
++	if ((ia32_cap & ARCH_CAP_IBRS_ALL) ||
++	    (cpu_has(c, X86_FEATURE_AUTOIBRS) &&
++	     !cpu_feature_enabled(X86_FEATURE_SEV_SNP))) {
+
+Surely we can agree that cpu_feature_enabled(X86_FEATURE_SEV_SNP) has nothing
+to do with SEV-SNP host patches being present?  And that therefore retpolines
+are preferred even without any SEV-SNP support in KVM?
+
+And can we agree that "Acked-by" means "feel free and take it if you wish,
+I don't care enough to merge it through my tree or provide a topic branch"?
+
+I'm asking because I'm not sure if we agree on these two things, but they
+really seem basic to me?
+
+Paolo
+
+> And regardless, arch/x86/kvm/ patches go through the kvm tree. The rest
+> of arch/x86/ through the tip tree. We've been over this a bunch of times
+> already.
+
+
+> If you don't agree with this split, let's discuss it offlist with all
+> tip and kvm maintainers, reach an agreement who picks up what and to put
+> an end to this nonsense.
+> 
+> Thx.
+> 
+
