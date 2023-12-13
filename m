@@ -2,64 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CF698107DF
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 02:52:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F04268107E8
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 02:58:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378240AbjLMBwn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 20:52:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57348 "EHLO
+        id S1378171AbjLMB6k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 20:58:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56402 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378199AbjLMBwm (ORCPT
+        with ESMTP id S232805AbjLMB6i (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 20:52:42 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25751AD;
-        Tue, 12 Dec 2023 17:52:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1702432368; x=1733968368;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=ooWOO96PMnesatUTdbVVnvwmOIWOsYIyqsD//zdqSlQ=;
-  b=HuWgsYjqUmaaeyJhQY8wmHVRzXXB65E0qoyOT8499g9jkd69V8YMYLsF
-   XpEIIuurGEviEjH5+9m5x7mYzYWnKjrqKdFcrDxGDgdothkOPIhcKS/+v
-   grvyCelLJeNMgRxYIsMJxST3/7Zub47oYbRu4iiQeb5TV4pjAuV8jgC1D
-   ObCY65bQp0SDogyIg7WVNKLfN0ZROEbnsWVnLryv8hVvOfF20kRUWCbez
-   eLn2SPRahCzibulHtt+1G6WxJHyDgp9QjntgWRAYe5NTH4Y2QHwdS75TV
-   8cGksgU8jGQVp0MAV35etxnOc8s/kwbZdqWVQHzl4asOg42rfM758nF63
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10922"; a="461374968"
-X-IronPort-AV: E=Sophos;i="6.04,271,1695711600"; 
-   d="scan'208";a="461374968"
-Received: from orviesa002.jf.intel.com ([10.64.159.142])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Dec 2023 17:52:47 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.04,271,1695711600"; 
-   d="scan'208";a="15247229"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by orviesa002.jf.intel.com with ESMTP; 12 Dec 2023 17:52:45 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1rDEQV-000Jyv-0j;
-        Wed, 13 Dec 2023 01:52:43 +0000
-Date:   Wed, 13 Dec 2023 09:52:26 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Daniel Lezcano <daniel.lezcano@linaro.org>, rjw@rjwysocki.net,
-        lukasz.luba@arm.com
-Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-        rui.zhang@intel.com, linux-kernel@vger.kernel.org,
-        linux-pm@vger.kernel.org
-Subject: Re: [PATCH v1 1/2] thermal/debugfs: Add thermal cooling device
- debugfs information
-Message-ID: <202312130936.rLIRgZBE-lkp@intel.com>
-References: <20231212161047.1631077-1-daniel.lezcano@linaro.org>
+        Tue, 12 Dec 2023 20:58:38 -0500
+Received: from APC01-SG2-obe.outbound.protection.outlook.com (mail-sgaapc01on2123.outbound.protection.outlook.com [40.107.215.123])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A106BBC;
+        Tue, 12 Dec 2023 17:58:43 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Ndh5Gl1WcMLjhvFN7DjuRYi98Ae1/hDtwsHeScBm+VRszK7Alf4EWqotuxzuDMTrfAS+oMsmCyvOf+GwGpug6E/i8TFFaIYpzvyoNYtQDAFG4Yqz5jQPCQGj/LmSwMDgjM67eu0/IUHnZwZcCaGCykO8mMGZJe4PR4oLbAMf0SQhzhuCf7kY4ExPwzn5eFI/5QzZEuHoLQ2Be2eJ/ML5ymN6kvp9uuJilxqNMJaiM+dYAmv8wPzNgDNP0LOKeDRJJyL52EBJdxpyow4TBzkSq/8L7cSXE83t1V84pOWl6zq8K0N625DxvzG7J8bP1kE4g+QZJ3YfoozvZa/6w3NamQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=nnuD6vvpDO0TghFg1wH9FoZiAc95vN0a8uFinFOMLV4=;
+ b=ArR5e5bjt10+o2adRuOfsRbD+HIR5geDRKLzGiwyyJQRN7PuKVuGVkLU1hcG9iuzoA95wAUNd6+77lkeQsxLFqZQw5D3DjJP1ctOJJQsEDlHOT0aVMhZU28cQyXl5/fgUSwwNZLTJgWApGOlAOEjEbkDM+RBInNYlVKJz3SWKLYAoaW2Vho57Uf/YyctV2kbI1mKYo/1yjiXsCiAYuTYRGFswjT7+ddXLuuJlz8VOkB5rJJ9oHzHZT5Svc9apl3nJh2Kl7lFXC4vcGfxyp4PKFDxQFCiXW5E+uq6SfBp/6oIWM0VMMj06otTB6B+hG7CVeAOXBdx+tYzPVL5Sz9DQw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
+ dkim=pass header.d=vivo.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=nnuD6vvpDO0TghFg1wH9FoZiAc95vN0a8uFinFOMLV4=;
+ b=CJ6kv5A4sQ8O3IbwTpb2azqxC1IVEqWJEh8Gv3aW3+trwKPfpYxZIePmI9yWiZA0wCUqMrDWv+6nmhSUML3fGoXO71IMAt8YbZKgBcxpyMuBChiD7h+id4L+wn23Djtq2bYwThW7fN/0m4mrS36N14Y5/KagER+A9cGiHTOj+z7JOVjCsK1driRcC99admKqn92luwdZsikyCykgEtpGoBeOapngR7bngtBRVXu2rvwxD/wzCojJRrhwe342dXUuaJpKkLyiPx4liLdl2MBEhc89zxuED8yiqxIJFfJBtrpKOMiuX1nmQOP9qothAp4kc8I3uYb16VeH0G4fI4iAtQ==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=vivo.com;
+Received: from PUZPR06MB5676.apcprd06.prod.outlook.com (2603:1096:301:f8::10)
+ by JH0PR06MB6655.apcprd06.prod.outlook.com (2603:1096:990:3d::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7091.26; Wed, 13 Dec
+ 2023 01:58:36 +0000
+Received: from PUZPR06MB5676.apcprd06.prod.outlook.com
+ ([fe80::d754:7b3:dc4c:6b48]) by PUZPR06MB5676.apcprd06.prod.outlook.com
+ ([fe80::d754:7b3:dc4c:6b48%7]) with mapi id 15.20.7091.022; Wed, 13 Dec 2023
+ 01:58:36 +0000
+Message-ID: <86984d9b-c955-4b06-9097-2a757b1bacfe@vivo.com>
+Date:   Wed, 13 Dec 2023 09:58:26 +0800
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH V4 1/2] mm: add defines for min/max swappiness
+To:     Dan Schatzberg <schatzberg.dan@gmail.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Yosry Ahmed <yosryahmed@google.com>, Huan Yang <link@vivo.com>
+Cc:     linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        linux-mm@kvack.org, Tejun Heo <tj@kernel.org>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Michal Hocko <mhocko@kernel.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <muchun.song@linux.dev>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        David Hildenbrand <david@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Chris Li <chrisl@kernel.org>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        Yue Zhao <findns94@gmail.com>, Hugh Dickins <hughd@google.com>
+References: <20231213013807.897742-1-schatzberg.dan@gmail.com>
+ <20231213013807.897742-2-schatzberg.dan@gmail.com>
+From:   Huan Yang <11133793@vivo.com>
+In-Reply-To: <20231213013807.897742-2-schatzberg.dan@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: SI1PR02CA0003.apcprd02.prod.outlook.com
+ (2603:1096:4:1f7::20) To PUZPR06MB5676.apcprd06.prod.outlook.com
+ (2603:1096:301:f8::10)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231212161047.1631077-1-daniel.lezcano@linaro.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PUZPR06MB5676:EE_|JH0PR06MB6655:EE_
+X-MS-Office365-Filtering-Correlation-Id: 85b85bfb-1f23-41d0-7bd4-08dbfb7f0472
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: cMVyrlBw+570TONArruBa7DzP3dJyVCV7Z3r5vivnDhIWQJQS/DozFF+SQRr49qiZxNi0dfauv6db+uSxR168fZnNmFxGSJ9TzcpxMZ08MgoqtHI4kiNtxU9ZymOrWxNUY49YlMfO8NJqRLGn8mLUNBNXLzLQLZK+3H4r7+uqBFxMgyNBUlOjQvXi5Ue7LlEy+jkUFZT49uLrQrIJc4Jt05pk0dmIY8+RrRWNWsgotDsVl+TAJTnsl6Rjm+diVqZJGI1no6QL4ppSHPgvFFXnlvs5Go/J3q968QYe5F161d8eUtYXK/A5pY1a9O8m21Z0+QZ6kbS+ik28dsvoh1+Z9k8mcrjm2/H+hf+Sdra4nKBq2PPTTFqE+JXLIRpCtegjxquzS/oWRQqoApl7ezGjTfa35nE424UWBFAboBlKSSubmw+2MMx+mK1Bbw+18W47NCQQSSplmwTC3fYriE3cHxC7hZANYgJtsUHCt6RYtLkygsvBSKxoJ5m+k3LUp+qrTxlRj/dRMqsZ078WNFoONwX3SoRXnX2KhugMmpt27tyuj7dxHkTGgpXFOgrbT0ER3g36brvCvaZYoSJcF+uMFgV1kRlAK0EiRnu7W6cs0+iowij0wWsfthjx8OH3PcuXbSYcT92nRz1lTT+SkoyJtDgS4xSPgwQYPfdkY1lKbXEMEliOB9ewpLRjHEjN4OhqnVbhWrmZ4EAr5nnDoRmeGunNVdWW1gX6KTBOtwnQJF1ZmBYjSmQN24PYJ+KqR7t
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PUZPR06MB5676.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(366004)(136003)(376002)(346002)(39860400002)(230922051799003)(451199024)(64100799003)(186009)(1800799012)(2616005)(26005)(6512007)(6506007)(6666004)(52116002)(83380400001)(7416002)(4326008)(5660300002)(8936002)(8676002)(41300700001)(2906002)(478600001)(110136005)(966005)(6486002)(66556008)(66946007)(54906003)(316002)(6636002)(66476007)(38100700002)(31696002)(36756003)(38350700005)(31686004)(45980500001)(43740500002)(81742002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?b1hDR0svSHNBWnlTRXFxYk41eXgzR2hRSUV4WG01R043Q28ya0lQaFV0eDlT?=
+ =?utf-8?B?UmVOWWk5QW5BU3FEK1o5cVJOWGJGcDJBcWVKcXJZQnJVOGRhekErVkdDc1RV?=
+ =?utf-8?B?OHZGNzVhdHR1TmJsK3EzUSs5OFhLTHBtMllPK2tncVRVN1Z5bEptTDBscUxC?=
+ =?utf-8?B?K1lvQkdEQ3Y0Y2N2OEFCWFhTM0I4NVFGMTJIOHgrR3VRN2RMVmE0dVZiTFVY?=
+ =?utf-8?B?b1p4c3U4Ym45b1dCeW8venFvQTJuaXdLVDVEV0M1a2VxSi8yQVlhZVQ3aVYx?=
+ =?utf-8?B?dG4vR05Ma1BsSFF6NjNZNkZCSExwYmE5T054NWdMSGRGcVJPMXN3Vkpldk9Q?=
+ =?utf-8?B?Y0pCRzFIQlM3Z3htQTZSUlRKTmlhZGprUnF2bXVjTGM5Rk1yOUR2eW95aXlr?=
+ =?utf-8?B?bWlqWXRaa2p2aDE4S0Y4T2hKOXdVMllMR1NDenJBOHhNNG51eEJ6eXFUNGVV?=
+ =?utf-8?B?VVBEazhHY2dEV1h1SmdCT3lUSyt2Uy9RSDFsMm5BSFY4My9ENXRPS1lxS1A1?=
+ =?utf-8?B?NXFiRzZrTDhseGNqc0RyNWpidjg2RndWWHI1ZnRic01nUW1JeDJ4RStnTUtM?=
+ =?utf-8?B?T1hVbG4vMFZLYWxYQ0txWW5JRzF3Z3hhSm05RExTRlVBdWE2L0RHUFB1bkl5?=
+ =?utf-8?B?eEVrZzVvTmRCK1hLVncrc0RnT05oZjM2TGREL2t4UG5Lc3NtMHo4MkNDSlhu?=
+ =?utf-8?B?eFV5Y1RaVmlaRGU2a3E5N1RlWThTblRQRFVveWFpSkx0YzdaRmNmeFd1SDR6?=
+ =?utf-8?B?SWhOTzBDZFNWR25IV3l1SFcwVzZqaTZ0Mk5HekJaalFCdkxoVXVNSVE4R2Fz?=
+ =?utf-8?B?dlpyWDk5SThhcU13Qlh4ZW5JOXdEbnlXWk1hc2FBVjhJQm9lNlQvZXA4U1Q5?=
+ =?utf-8?B?SERwNTRnc21Eb2tKczBaYjBhSXFwNkVFcmJNU29pZFRIUm11QzFROXFkbzA0?=
+ =?utf-8?B?VUZ5M1ZOUGxaV1VtVEtaQ1huOFhMbEdBdzF0Z1pjVDdWWXF3NXFaRlNiOCtr?=
+ =?utf-8?B?ZHlKaFdNYldwbFVCeEtqQlhSRWJtellmalhuRk5sWHlTaW1zbUo4cSt0Vjc4?=
+ =?utf-8?B?c2MwNkpzZHNJZVk5dlRPNms0QWFFMFNHbCtBbWJ5dTBBeUxrYWRndDB1Y01J?=
+ =?utf-8?B?S3JYaGlVeDZqbmVNaGpYSmFGQWliZGdTUmtPN0RraTBXc2gzdDV3VUsvUmE4?=
+ =?utf-8?B?NHBpcHlWWElHd29CVEEvQTFRalpJR09RZ0ZNTjFxaUpvTml0bDA3eEVJWGJy?=
+ =?utf-8?B?ejliUzh1WmhjZy9ZalBLb25NaXAxM2VpbG9yVmRJNC8zd0dPcGlpd0s5ZGxE?=
+ =?utf-8?B?OUovRGRzVHlsU0NqMWpsOW12U2srNkdzZ3FlZ2dKRU9NUjdZbndCTGkzZm5X?=
+ =?utf-8?B?TmEwRTQyOHNmRXJ6enZCandsSm96TzBJOGdSOXl0K1BuZ25GZ2sxV0QwbXVm?=
+ =?utf-8?B?a2tBVFNGUmJGU3h4RkI1bUQ4L3pmNldFOXloZGRTZmxWZmZuZFZScll1RGU0?=
+ =?utf-8?B?YVU0THZmUFBoSHU4UTVWanpnblhzbUs2bjNteHZPUHRoSGQ1U09DeUtDZ2Ju?=
+ =?utf-8?B?N0Q2RGRmN3hGYWEzbm1iM09oUW5EUEJodjRiTGlEd09DdVl5YmlSdEJ6UVdX?=
+ =?utf-8?B?bm9yTHBKMm9yaks0UGcrR09FazNVekNHNWdRcmdSNThqNTRtUkZxQ0RBcFFl?=
+ =?utf-8?B?S3dhSldFdUE3MjlJcGZVT3hhZnhJU2JLWWkxeExaY1YzbmJtbDk3NW9qZHE1?=
+ =?utf-8?B?akFrS2JhcFBPT0RYZTNWaEJzdHNPNFNaSXljVEJWWll6NjVyaG9Jemd0SnZn?=
+ =?utf-8?B?dEhCbGFmZmVoaDNRZFBxK29iend2UFBPd212WTBIb3hESzdNVk9Cd1dWTEtY?=
+ =?utf-8?B?L1pNRGhZOXVTS0QxbTVjNjBBaWJWRkZtdXJhU0Q1aWRkbUVaQXd0V2cvai9X?=
+ =?utf-8?B?VGZ6Vy9tQjFabmN5RTM2enhaQmk3QmxrMGYyalRRa1BZeHlLWTF2TktvNisz?=
+ =?utf-8?B?SFp3NWErQXVzRXBTSUZZYmE2ZWc4RDhJbmlVSGlmYlh5aE1ySmlDQlpvY1d4?=
+ =?utf-8?B?VlJvTktHRG5adVFqNnFiYWxnYjEvQk1LYVZsL3FoL09VMHJMNlJ6bk1RbEEz?=
+ =?utf-8?Q?bbS02joSerUIp6lP9UQ6Jwq9B?=
+X-OriginatorOrg: vivo.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 85b85bfb-1f23-41d0-7bd4-08dbfb7f0472
+X-MS-Exchange-CrossTenant-AuthSource: PUZPR06MB5676.apcprd06.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Dec 2023 01:58:36.1383
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: O5gZHgk7FUxWBvOcMHKIWwplh59J7T4zZy5/jvoP+BP+ajLIPqZuIPQfo5cFmkhCzsTK92xH8TdQxjUt774woQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: JH0PR06MB6655
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -67,99 +137,140 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Daniel,
 
-kernel test robot noticed the following build warnings:
+在 2023/12/13 9:38, Dan Schatzberg 写道:
+> [????????? schatzberg.dan@gmail.com ????????? https://aka.ms/LearnAboutSenderIdentification,????????????]
+>
+> We use the constants 0 and 200 in a few places in the mm code when
+> referring to the min and max swappiness. This patch adds MIN_SWAPPINESS
+> and MAX_SWAPPINESS #defines to improve clarity. There are no functional
+> changes.
+>
+> Signed-off-by: Dan Schatzberg <schatzberg.dan@gmail.com>
+> ---
+>   include/linux/swap.h |  2 ++
+>   mm/memcontrol.c      |  2 +-
+>   mm/vmscan.c          | 10 +++++-----
+>   3 files changed, 8 insertions(+), 6 deletions(-)
+>
+> diff --git a/include/linux/swap.h b/include/linux/swap.h
+> index f6dd6575b905..e2ab76c25b4a 100644
+> --- a/include/linux/swap.h
+> +++ b/include/linux/swap.h
+> @@ -407,6 +407,8 @@ extern unsigned long try_to_free_pages(struct zonelist *zonelist, int order,
+>
+>   #define MEMCG_RECLAIM_MAY_SWAP (1 << 1)
+>   #define MEMCG_RECLAIM_PROACTIVE (1 << 2)
+> +#define MIN_SWAPPINESS 0
+> +#define MAX_SWAPPINESS 200
 
-[auto build test WARNING on rafael-pm/thermal]
-[also build test WARNING on linus/master v6.7-rc5 next-20231212]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+Do MAX_SWAPPINESS apply for all swapppiness? If so, maybe better change 
+swappiness sysctl define:
+```
+sysctl.c:
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Daniel-Lezcano/thermal-debugfs-Add-thermal-debugfs-information-for-mitigation-episodes/20231213-001321
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git thermal
-patch link:    https://lore.kernel.org/r/20231212161047.1631077-1-daniel.lezcano%40linaro.org
-patch subject: [PATCH v1 1/2] thermal/debugfs: Add thermal cooling device debugfs information
-config: arm-defconfig (https://download.01.org/0day-ci/archive/20231213/202312130936.rLIRgZBE-lkp@intel.com/config)
-compiler: clang version 14.0.6 (https://github.com/llvm/llvm-project.git f28c006a5895fc0e329fe15fead81e37457cb1d1)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231213/202312130936.rLIRgZBE-lkp@intel.com/reproduce)
+{
+         .procname    = "swappiness",
+         .data        = &vm_swappiness,
+         .maxlen        = sizeof(vm_swappiness),
+         .mode        = 0644,
+         .proc_handler    = proc_dointvec_minmax,
+         .extra1        = SYSCTL_ZERO,
+         .extra2        = SYSCTL_TWO_HUNDRED,
+     },
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202312130936.rLIRgZBE-lkp@intel.com/
+```
 
-All warnings (new ones prefixed by >>):
+Here hard code swappiness in [0, 200], and now add a new define.
 
-   In file included from drivers/thermal/thermal_core.c:27:
-   In file included from drivers/thermal/thermal_core.h:16:
->> drivers/thermal/thermal_debugfs.h:10:74: warning: omitting the parameter name in a function definition is a C2x extension [-Wc2x-extensions]
-   static inline void thermal_debug_cdev_add(struct thermal_cooling_device *) {}
-                                                                            ^
-   drivers/thermal/thermal_debugfs.h:11:77: warning: omitting the parameter name in a function definition is a C2x extension [-Wc2x-extensions]
-   static inline void thermal_debug_cdev_remove(struct thermal_cooling_device *) {}
-                                                                               ^
-   drivers/thermal/thermal_debugfs.h:12:81: warning: omitting the parameter name in a function definition is a C2x extension [-Wc2x-extensions]
-   static inline void thermal_debug_cdev_transition(struct thermal_cooling_device *, int) {}
-                                                                                   ^
-   drivers/thermal/thermal_debugfs.h:12:86: warning: omitting the parameter name in a function definition is a C2x extension [-Wc2x-extensions]
-   static inline void thermal_debug_cdev_transition(struct thermal_cooling_device *, int) {}
-                                                                                        ^
-   4 warnings generated.
---
-   In file included from drivers/thermal/thermal_helpers.c:22:
-   In file included from drivers/thermal/thermal_core.h:16:
->> drivers/thermal/thermal_debugfs.h:10:74: warning: omitting the parameter name in a function definition is a C2x extension [-Wc2x-extensions]
-   static inline void thermal_debug_cdev_add(struct thermal_cooling_device *) {}
-                                                                            ^
-   drivers/thermal/thermal_debugfs.h:11:77: warning: omitting the parameter name in a function definition is a C2x extension [-Wc2x-extensions]
-   static inline void thermal_debug_cdev_remove(struct thermal_cooling_device *) {}
-                                                                               ^
-   drivers/thermal/thermal_debugfs.h:12:81: warning: omitting the parameter name in a function definition is a C2x extension [-Wc2x-extensions]
-   static inline void thermal_debug_cdev_transition(struct thermal_cooling_device *, int) {}
-                                                                                   ^
-   drivers/thermal/thermal_debugfs.h:12:86: warning: omitting the parameter name in a function definition is a C2x extension [-Wc2x-extensions]
-   static inline void thermal_debug_cdev_transition(struct thermal_cooling_device *, int) {}
-                                                                                        ^
->> drivers/thermal/thermal_helpers.c:154:6: warning: no previous prototype for function 'thermal_set_delay_jiffies' [-Wmissing-prototypes]
-   void thermal_set_delay_jiffies(unsigned long *delay_jiffies, int delay_ms)
-        ^
-   drivers/thermal/thermal_helpers.c:154:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
-   void thermal_set_delay_jiffies(unsigned long *delay_jiffies, int delay_ms)
-   ^
-   static 
-   5 warnings generated.
---
-   In file included from drivers/thermal/tegra/soctherm.c:36:
-   In file included from drivers/thermal/tegra/../thermal_core.h:16:
->> drivers/thermal/tegra/../thermal_debugfs.h:10:74: warning: omitting the parameter name in a function definition is a C2x extension [-Wc2x-extensions]
-   static inline void thermal_debug_cdev_add(struct thermal_cooling_device *) {}
-                                                                            ^
-   drivers/thermal/tegra/../thermal_debugfs.h:11:77: warning: omitting the parameter name in a function definition is a C2x extension [-Wc2x-extensions]
-   static inline void thermal_debug_cdev_remove(struct thermal_cooling_device *) {}
-                                                                               ^
-   drivers/thermal/tegra/../thermal_debugfs.h:12:81: warning: omitting the parameter name in a function definition is a C2x extension [-Wc2x-extensions]
-   static inline void thermal_debug_cdev_transition(struct thermal_cooling_device *, int) {}
-                                                                                   ^
-   drivers/thermal/tegra/../thermal_debugfs.h:12:86: warning: omitting the parameter name in a function definition is a C2x extension [-Wc2x-extensions]
-   static inline void thermal_debug_cdev_transition(struct thermal_cooling_device *, int) {}
-                                                                                        ^
-   4 warnings generated.
+And many other code hard reference 200 into max value of swappiness, like:
+
+```
+memcontrol.c:
+static int mem_cgroup_swappiness_write(struct cgroup_subsys_state *css,
+                        struct cftype *cft, u64 val)
+{
+     struct mem_cgroup *memcg = mem_cgroup_from_css(css);
+
+     if (val > 200)
+         return -EINVAL;
+
+     if (!mem_cgroup_is_root(memcg))
+         memcg->swappiness = val;
+     else
+         vm_swappiness = val;
+
+     return 0;
+}
+vmscan.c:
+
+/*
+  * From 0 .. 200.  Higher means more swappy.
+  */
+int vm_swappiness = 60;
+
+```
 
 
-vim +10 drivers/thermal/thermal_debugfs.h
-
-     2	
-     3	#ifdef CONFIG_THERMAL_DEBUGFS
-     4	void thermal_debug_init(void);
-     5	void thermal_debug_cdev_add(struct thermal_cooling_device *cdev);
-     6	void thermal_debug_cdev_remove(struct thermal_cooling_device *cdev);
-     7	void thermal_debug_cdev_transition(struct thermal_cooling_device *cdev, int state);
-     8	#else
-     9	static inline void thermal_debug_init(void) {}
-  > 10	static inline void thermal_debug_cdev_add(struct thermal_cooling_device *) {}
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+>   extern unsigned long try_to_free_mem_cgroup_pages(struct mem_cgroup *memcg,
+>                                                    unsigned long nr_pages,
+>                                                    gfp_t gfp_mask,
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index 1c1061df9cd1..9748a6b88bb8 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -4337,7 +4337,7 @@ static int mem_cgroup_swappiness_write(struct cgroup_subsys_state *css,
+>   {
+>          struct mem_cgroup *memcg = mem_cgroup_from_css(css);
+>
+> -       if (val > 200)
+> +       if (val > MAX_SWAPPINESS)
+>                  return -EINVAL;
+>
+>          if (!mem_cgroup_is_root(memcg))
+> diff --git a/mm/vmscan.c b/mm/vmscan.c
+> index 506f8220c5fe..2aa671fe938b 100644
+> --- a/mm/vmscan.c
+> +++ b/mm/vmscan.c
+> @@ -2403,7 +2403,7 @@ static void get_scan_count(struct lruvec *lruvec, struct scan_control *sc,
+>          ap = swappiness * (total_cost + 1);
+>          ap /= anon_cost + 1;
+>
+> -       fp = (200 - swappiness) * (total_cost + 1);
+> +       fp = (MAX_SWAPPINESS - swappiness) * (total_cost + 1);
+>          fp /= file_cost + 1;
+>
+>          fraction[0] = ap;
+> @@ -4400,7 +4400,7 @@ static int get_type_to_scan(struct lruvec *lruvec, int swappiness, int *tier_idx
+>   {
+>          int type, tier;
+>          struct ctrl_pos sp, pv;
+> -       int gain[ANON_AND_FILE] = { swappiness, 200 - swappiness };
+> +       int gain[ANON_AND_FILE] = { swappiness, MAX_SWAPPINESS - swappiness };
+>
+>          /*
+>           * Compare the first tier of anon with that of file to determine which
+> @@ -4444,7 +4444,7 @@ static int isolate_folios(struct lruvec *lruvec, struct scan_control *sc, int sw
+>                  type = LRU_GEN_ANON;
+>          else if (swappiness == 1)
+>                  type = LRU_GEN_FILE;
+> -       else if (swappiness == 200)
+> +       else if (swappiness == MAX_SWAPPINESS)
+>                  type = LRU_GEN_ANON;
+>          else
+>                  type = get_type_to_scan(lruvec, swappiness, &tier);
+> @@ -5368,9 +5368,9 @@ static int run_cmd(char cmd, int memcg_id, int nid, unsigned long seq,
+>
+>          lruvec = get_lruvec(memcg, nid);
+>
+> -       if (swappiness < 0)
+> +       if (swappiness < MIN_SWAPPINESS)
+>                  swappiness = get_swappiness(lruvec, sc);
+> -       else if (swappiness > 200)
+> +       else if (swappiness > MAX_SWAPPINESS)
+>                  goto done;
+>
+>          switch (cmd) {
+> --
+> 2.34.1
+>
