@@ -2,45 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CDB8811296
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 14:15:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 222C08112A0
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 14:18:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233506AbjLMNPQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 08:15:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32858 "EHLO
+        id S1379178AbjLMNSJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 08:18:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57684 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231744AbjLMNPO (ORCPT
+        with ESMTP id S1379161AbjLMNSH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 08:15:14 -0500
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 0A8438E;
-        Wed, 13 Dec 2023 05:15:17 -0800 (PST)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C796FC15;
-        Wed, 13 Dec 2023 05:16:02 -0800 (PST)
-Received: from [10.57.85.168] (unknown [10.57.85.168])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 566D13F762;
-        Wed, 13 Dec 2023 05:15:14 -0800 (PST)
-Message-ID: <bc813916-664f-4197-9378-b1663a209a76@arm.com>
-Date:   Wed, 13 Dec 2023 13:16:18 +0000
+        Wed, 13 Dec 2023 08:18:07 -0500
+Received: from mail-qt1-x833.google.com (mail-qt1-x833.google.com [IPv6:2607:f8b0:4864:20::833])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA08EF5;
+        Wed, 13 Dec 2023 05:18:10 -0800 (PST)
+Received: by mail-qt1-x833.google.com with SMTP id d75a77b69052e-425a116f1cdso41853851cf.0;
+        Wed, 13 Dec 2023 05:18:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1702473489; x=1703078289; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=i4l/5gRXaP1+RfdbJslxJg0fd6YM0cZ5wR9VCW+0Q3U=;
+        b=OGxLB+0y/nDDpGTbIyFhLKtXL82c9oHexPHfKFD6DX5GDFXndoJYmWJe2FYKb1oUe9
+         sgzwZHfmPXV21ralZeb8AxF9hT7JAbV2De4wFOKMRbHHHwLqWamXApQPbU/Y+gDRL/1R
+         W0VLNuLHj5y8KNA818AZW9kiAAOLTdIqV8edqBwRhq7jJWd6WUsz+m15m9DvVFruWqlH
+         vSxPRiZefJ7MihueKMB2mztbnRDozoVpgLp7w/epLlkMQc2ITowmmI9zXs/6fWcQ+/yq
+         xGHHCw2jNatPpezX5JEFoIZ+aDZdqjlqR1CcPKQX/j0Hu/mFbZyOOmMZRwt6jOyuoqwt
+         GCuA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702473489; x=1703078289;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=i4l/5gRXaP1+RfdbJslxJg0fd6YM0cZ5wR9VCW+0Q3U=;
+        b=XeaxhF7bFbVEMv9F4v7FCBamBHmH9CU5ow0gXn0AZpoI+oSSuODDX8IGcesFrEGe7m
+         UVGkoW62wfIMS0/zmYrTl6YBHUz5CDZmoicJxk3zKLGFi3o2FrhEy94AzWKA+a+D3suc
+         jC925L4qhFPf+IvfBlxcWYB+mjJOQUfH3pZe1kPspfz9G05j+r9e0t+mxVByhFk/AdxK
+         rtEdEdiWJ00U5mhRrxtDuItCmgxdATIAgjPTVNQiQ4CQ9GUXop7HYRuJKAPWTIh8pL01
+         ibIvi72qCP/r/AGxWeXOQPJwHApt/fmLuegM+PoXfE5/v1yxPVAmnSGY8byow19iC1cD
+         u3kQ==
+X-Gm-Message-State: AOJu0YwwDLVZN2Ko8sqy+dFog3yeQiSX2imqoRK1F3vc2ckz01I8D1ff
+        QqU4g2CfAPEwuUgkI+CZKBXtg39C4HM=
+X-Google-Smtp-Source: AGHT+IHgcLpgW31VJbUwq7ETCySFb7UPpGI5z6ixSKAzF4FLXtqxQsOZnFRjUpq9Pkp2L2oo33Hu0g==
+X-Received: by 2002:a05:622a:1708:b0:425:4043:18ca with SMTP id h8-20020a05622a170800b00425404318camr12136045qtk.125.1702473489392;
+        Wed, 13 Dec 2023 05:18:09 -0800 (PST)
+Received: from localhost.localdomain (pppoe-209-91-167-254.vianet.ca. [209.91.167.254])
+        by smtp.gmail.com with ESMTPSA id f21-20020ac84995000000b00423890096afsm4889400qtq.2.2023.12.13.05.18.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Dec 2023 05:18:08 -0800 (PST)
+From:   Trevor Woerner <twoerner@gmail.com>
+To:     linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Heiko Stuebner <heiko@sntech.de>
+Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org
+Subject: [PATCH] amd64: rockchip: dts: rk3328-rock-pi-e add gpio-line-names
+Date:   Wed, 13 Dec 2023 08:17:38 -0500
+Message-ID: <20231213131739.13900-1-twoerner@gmail.com>
+X-Mailer: git-send-email 2.41.0.327.gaa9166bcc0ba
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 00/23] Introduce runtime modifiable Energy Model
-Content-Language: en-US
-To:     adharmap@quicinc.com
-Cc:     dietmar.eggemann@arm.com, rui.zhang@intel.com,
-        amit.kucheria@verdurent.com, amit.kachhap@gmail.com,
-        daniel.lezcano@linaro.org, viresh.kumar@linaro.org,
-        len.brown@intel.com, pavel@ucw.cz, mhiramat@kernel.org,
-        qyousef@layalina.io, wvw@google.com, rafael@kernel.org,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20231129110853.94344-1-lukasz.luba@arm.com>
-From:   Lukasz Luba <lukasz.luba@arm.com>
-In-Reply-To: <20231129110853.94344-1-lukasz.luba@arm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -48,184 +72,80 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Abhijeet,
+Add names to the pins of the general-purpose expansion header as given
+in the Radxa GPIO page[1] following the conventions in the kernel
+documentation[2] to make it easier for users to correlate the pins with
+functions when using utilities such as 'gpioinfo'.
 
-It's been a while when we discussed an EM feature presented on some
-Android common kernel Gerrit (Nov 2021).
+[1] https://wiki.radxa.com/RockpiE/hardware/gpio
+[2] Documentation/devicetree/bindings/gpio/gpio.txt
 
-On 11/29/23 11:08, Lukasz Luba wrote:
-> Hi all,
-> 
-> This patch set adds a new feature which allows to modify Energy Model (EM)
-> power values at runtime. It will allow to better reflect power model of
-> a recent SoCs and silicon. Different characteristics of the power usage
-> can be leveraged and thus better decisions made during task placement in EAS.
-> 
-> It's part of feature set know as Dynamic Energy Model. It has been presented
-> and discussed recently at OSPM2023 [3]. This patch set implements the 1st
-> improvement for the EM.
-> 
-> The concepts:
-> 1. The CPU power usage can vary due to the workload that it's running or due
-> to the temperature of the SoC. The same workload can use more power when the
-> temperature of the silicon has increased (e.g. due to hot GPU or ISP).
-> In such situation the EM can be adjusted and reflect the fact of increased
-> power usage. That power increase is due to static power
-> (sometimes called simply: leakage). The CPUs in recent SoCs are different.
-> We have heterogeneous SoCs with 3 (or even 4) different microarchitectures.
-> They are also built differently with High Performance (HP) cells or
-> Low Power (LP) cells. They are affected by the temperature increase
-> differently: HP cells have bigger leakage. The SW model can leverage that
-> knowledge.
-> 
-> 2. It is also possible to change the EM to better reflect the currently
-> running workload. Usually the EM is derived from some average power values
-> taken from experiments with benchmark (e.g. Dhrystone). The model derived
-> from such scenario might not represent properly the workloads usually running
-> on the device. Therefore, runtime modification of the EM allows to switch to
-> a different model, when there is a need.
-> 
-> 3. The EM can be adjusted after boot, when all the modules are loaded and
-> more information about the SoC is available e.g. chip binning. This would help
-> to better reflect the silicon characteristics. Thus, this EM modification
-> API allows it now. It wasn't possible in the past and the EM had to be
-> 'set in stone'.
-> 
-> More detailed explanation and background can be found in presentations
-> during LPC2022 [1][2] or in the documentation patches.
-> 
-> Some test results.
-> The EM can be updated to fit better the workload type. In the case below the EM
-> has been updated for the Jankbench test on Pixel6 (running v5.18 w/ mainline backports
-> for the scheduler bits). The Jankbench was run 10 times for those two configurations,
-> to get more reliable data.
-> 
-> 1. Janky frames percentage
-> +--------+-----------------+---------------------+-------+-----------+
-> | metric |    variable     |       kernel        | value | perc_diff |
-> +--------+-----------------+---------------------+-------+-----------+
-> | gmean  | jank_percentage | EM_default          |  2.0  |   0.0%    |
-> | gmean  | jank_percentage | EM_modified_runtime |  1.3  |  -35.33%  |
-> +--------+-----------------+---------------------+-------+-----------+
-> 
-> 2. Avg frame render time duration
-> +--------+---------------------+---------------------+-------+-----------+
-> | metric |      variable       |       kernel        | value | perc_diff |
-> +--------+---------------------+---------------------+-------+-----------+
-> | gmean  | mean_frame_duration | EM_default          | 10.5  |   0.0%    |
-> | gmean  | mean_frame_duration | EM_modified_runtime |  9.6  |  -8.52%   |
-> +--------+---------------------+---------------------+-------+-----------+
-> 
-> 3. Max frame render time duration
-> +--------+--------------------+---------------------+-------+-----------+
-> | metric |      variable      |       kernel        | value | perc_diff |
-> +--------+--------------------+---------------------+-------+-----------+
-> | gmean  | max_frame_duration | EM_default          | 251.6 |   0.0%    |
-> | gmean  | max_frame_duration | EM_modified_runtime | 115.5 |  -54.09%  |
-> +--------+--------------------+---------------------+-------+-----------+
-> 
-> 4. OS overutilized state percentage (when EAS is not working)
-> +--------------+---------------------+------+------------+------------+
-> |    metric    |       wa_path       | time | total_time | percentage |
-> +--------------+---------------------+------+------------+------------+
-> | overutilized | EM_default          | 1.65 |   253.38   |    0.65    |
-> | overutilized | EM_modified_runtime | 1.4  |   277.5    |    0.51    |
-> +--------------+---------------------+------+------------+------------+
-> 
-> 5. All CPUs (Little+Mid+Big) power values in mW
-> +------------+--------+---------------------+-------+-----------+
-> |  channel   | metric |       kernel        | value | perc_diff |
-> +------------+--------+---------------------+-------+-----------+
-> |    CPU     | gmean  | EM_default          | 142.1 |   0.0%    |
-> |    CPU     | gmean  | EM_modified_runtime | 131.8 |  -7.27%   |
-> +------------+--------+---------------------+-------+-----------+
-> 
-> The time cost to update the EM decreased in this v5 vs v4:
-> big: 5us vs 2us -> 2.6x faster
-> mid: 9us vs 3us -> 3x faster
-> little: 16us vs 16us -> no change
-> 
-> We still have to update the inefficiency in the cpufreq framework, thus
-> a bit of overhead will be there.
-> 
-> Changelog:
-> v5:
-> - removed 2 tables design
-> - have only one table (runtime_table) used also in thermal (Wei, Rafael)
-> - refactored update function and removed callback call for each opp
-> - added faster EM table swap, using only the RCU pointer update
-> - added memory allocation API and tracking with kref
-> - avoid overhead for computing 'cost' for each OPP in update, it can be
->    pre-computed in device drivers EM earlier
-> - add support for device drivers providing EM table
-> - added API for computing 'cost' values in EM for EAS
-> - added API for thermal/powercap to use EM (using RCU wrappers)
-> - switched to single allocation and 'state[]' array (Rafael)
-> - changed documentation to align with current design
-> - added helper API for computing cost values
-> - simplified EM free in unregister path (thanks to kref)
-> - split patch updating EM clients and changed them separetly
-> - added seperate patch removing old static EM table
-> - added EM debugfs change patch to dump the runtime_table
-> - addressed comments in v4 for spelling/comments/headers
-> - added review tags
-> v4 changes are here [4]
-> 
-> Regards,
-> Lukasz Luba
-> 
-> [1] https://lpc.events/event/16/contributions/1341/attachments/955/1873/Dynamic_Energy_Model_to_handle_leakage_power.pdf
-> [2] https://lpc.events/event/16/contributions/1194/attachments/1114/2139/LPC2022_Energy_model_accuracy.pdf
-> [3] https://www.youtube.com/watch?v=2C-5uikSbtM&list=PL0fKordpLTjKsBOUcZqnzlHShri4YBL1H
-> [4] https://lore.kernel.org/lkml/20230925081139.1305766-1-lukasz.luba@arm.com/
-> 
-> 
-> Lukasz Luba (23):
->    PM: EM: Add missing newline for the message log
->    PM: EM: Refactor em_cpufreq_update_efficiencies() arguments
->    PM: EM: Find first CPU active while updating OPP efficiency
->    PM: EM: Refactor em_pd_get_efficient_state() to be more flexible
->    PM: EM: Refactor a new function em_compute_costs()
->    PM: EM: Check if the get_cost() callback is present in
->      em_compute_costs()
->    PM: EM: Refactor how the EM table is allocated and populated
->    PM: EM: Introduce runtime modifiable table
->    PM: EM: Use runtime modified EM for CPUs energy estimation in EAS
->    PM: EM: Add API for memory allocations for new tables
->    PM: EM: Add API for updating the runtime modifiable EM
->    PM: EM: Add helpers to read under RCU lock the EM table
->    PM: EM: Add performance field to struct em_perf_state
->    PM: EM: Support late CPUs booting and capacity adjustment
->    PM: EM: Optimize em_cpu_energy() and remove division
->    powercap/dtpm_cpu: Use new Energy Model interface to get table
->    powercap/dtpm_devfreq: Use new Energy Model interface to get table
->    drivers/thermal/cpufreq_cooling: Use new Energy Model interface
->    drivers/thermal/devfreq_cooling: Use new Energy Model interface
->    PM: EM: Change debugfs configuration to use runtime EM table data
->    PM: EM: Remove old table
->    PM: EM: Add em_dev_compute_costs() as API for device drivers
->    Documentation: EM: Update with runtime modification design
-> 
->   Documentation/power/energy-model.rst | 206 +++++++++++-
->   drivers/powercap/dtpm_cpu.c          |  35 +-
->   drivers/powercap/dtpm_devfreq.c      |  31 +-
->   drivers/thermal/cpufreq_cooling.c    |  40 ++-
->   drivers/thermal/devfreq_cooling.c    |  43 ++-
->   include/linux/energy_model.h         | 163 +++++----
->   kernel/power/energy_model.c          | 479 +++++++++++++++++++++++----
->   7 files changed, 813 insertions(+), 184 deletions(-)
-> 
+Signed-off-by: Trevor Woerner <twoerner@gmail.com>
+---
+ .../boot/dts/rockchip/rk3328-rock-pi-e.dts    | 53 +++++++++++++++++++
+ 1 file changed, 53 insertions(+)
 
-You've been interested in this feature back then.
+diff --git a/arch/arm64/boot/dts/rockchip/rk3328-rock-pi-e.dts b/arch/arm64/boot/dts/rockchip/rk3328-rock-pi-e.dts
+index 018a3a5075c7..3169c0854061 100644
+--- a/arch/arm64/boot/dts/rockchip/rk3328-rock-pi-e.dts
++++ b/arch/arm64/boot/dts/rockchip/rk3328-rock-pi-e.dts
+@@ -388,3 +388,56 @@ &usbdrd3 {
+ &usb_host0_ehci {
+ 	status = "okay";
+ };
++
++&gpio0 {
++	gpio-line-names =
++	/* GPIO0_A0 - A7 */
++	"", "", "", "", "", "", "", "",
++	/* GPIO0_B0 - B7 */
++	"", "", "", "", "", "", "", "",
++	/* GPIO0_C0 - C7 */
++	"", "", "", "", "", "", "", "",
++	/* GPIO0_D0 - D7 */
++	"", "", "", "pin-15 [GPIO0_D3]", "", "", "", "";
++};
++
++&gpio1 {
++	gpio-line-names =
++	/* GPIO1_A0 - A7 */
++	"", "", "", "", "", "", "", "",
++	/* GPIO1_B0 - B7 */
++	"", "", "", "", "", "", "", "",
++	/* GPIO1_C0 - C7 */
++	"", "", "", "", "", "", "", "",
++	/* GPIO1_D0 - D7 */
++	"", "", "", "", "pin-07 [GPIO1_D4]", "", "", "";
++};
++
++&gpio2 {
++	gpio-line-names =
++	/* GPIO2_A0 - A7 */
++	"pin-08 [GPIO2_A0]", "pin-10 [GPIO2_A1]", "pin-11 [GPIO2_A2]",
++	"pin-13 [GPIO2-A3]", "pin-27 [GPIO2_A4]", "pin-28 [GPIO2_A5]",
++	"pin-33 [GPIO2_A6]", "",
++	/* GPIO2_B0 - B7 */
++	"", "", "", "", "pin-26 [GPIO2_B4]", "", "", "pin-36 [GPIO2_B7]",
++	/* GPIO2_C0 - C7 */
++	"pin-32 [GPIO2_C0]", "pin-35 [GPIO2_C1]", "pin-12 [GPIO2_C2]",
++	"pin-38 [GPIO2_C3]", "pin-29 [GPIO2_C4]", "pin-31 [GPIO2_C5]",
++	"pin-37 [GPIO2_C6]", "pin-40 [GPIO2_C7]",
++	/* GPIO2_D0 - D7 */
++	"", "", "", "", "", "", "", "";
++};
++
++&gpio3 {
++	gpio-line-names =
++	/* GPIO3_A0 - A7 */
++	"pin-23 [GPIO3_A0]", "pin-19 [GPIO3_A1]", "pin-21 [GPIO3_A2]",
++	"", "pin-03 [GPIO3_A4]", "", "pin-05 [GPIO3_A6]", "",
++	/* GPIO3_B0 - B7 */
++	"pin-24 [GPIO3_B0]", "", "", "", "", "", "", "",
++	/* GPIO3_C0 - C7 */
++	"", "", "", "", "", "", "", "",
++	/* GPIO3_D0 - D7 */
++	"", "", "", "", "", "", "", "";
++};
+-- 
+2.41.0.327.gaa9166bcc0ba
 
-I have a gentle ask, if you are still interested in. It would be nice if
-you (or some other Qcom engineer) could leave a feedback comment
-(similar what you have made for the Gerrit original series). I will be
-really grateful.
-
-In this cover letter, there are some power saving numbers from
-a real phone, with also performance metrics (janky frames). You might
-be interested in those scenarios as well.
-
-Regards,
-Lukasz
