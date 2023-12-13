@@ -2,163 +2,239 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B0E9F812125
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 23:02:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D7019812128
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 23:04:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442733AbjLMWBw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 17:01:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33640 "EHLO
+        id S233861AbjLMWEg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 17:04:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46050 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229772AbjLMWBu (ORCPT
+        with ESMTP id S229772AbjLMWEe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 17:01:50 -0500
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2062.outbound.protection.outlook.com [40.107.93.62])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CD7FAD;
-        Wed, 13 Dec 2023 14:01:57 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=OJZU1ii1KJNOq6jLsPoAgd5VhdnhDglDJAo2lKljk/vZe1kB4VC0voNKgjQgABV5a4RaT5y/Oqzwgye6qQkuQRG4nMHxuOL7RFXRwhfixT986lVqaRBT0ED1SrjNQJYou7VBh0NBYHngRyvyzNZB0X8GRFWAvP91anFM9qZvR4nhKP/HU8k2iQmKAxPG+IikLYkG/k+UjFkAwHUXbaQ1PtPXa3qJN34ArpUDBjwsE475uHvV4AMJWceNqMRZx25wE77U9d/zvWXCTPXqcpgySKuERz/TyYzqL0TyHiwams+TEXEPxgImN1SGBHpBBpwwaHHFuTXNWcGs0svstk4ftQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=m/Ge0+N9rTWmHtwBtuVyIKn8PRq0Riq9nfTF9633LdQ=;
- b=GlBtOH7LHg4FkrItrqGuQXnTaSK5p2qEgjZMFUjPms7e79HU42+jnMXdvzCOXZmQaWS/qnUb9Ip1NuEa4lsgUmZH5UnPkUanAR5eGDHG82pDpJylkXl3BGKGc/RLAOgEpIDDgNuj+L76k/ZkAS7AtaTPvwjgPXG4jFlljZZRWc8w2jFSP1gK/vD7f1bFbNwev4On6MdWtap5u35iaVcxkvad1626FcqOf6AK0aWoHBj7cKFWGh+mOCFQPCnLT4Acg6weF42SNtfG8SoXf1VHFVlwqD3HxMhYcYJpG7F3/0Pw+UlgEAT+EfvMbipUxs0yxmKK+ogRasQISAUMWUWPQw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.117.160) smtp.rcpttodomain=redhat.com smtp.mailfrom=nvidia.com;
- dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=m/Ge0+N9rTWmHtwBtuVyIKn8PRq0Riq9nfTF9633LdQ=;
- b=mv8wyd2nOKP0gSlZpNlLIIVGdopIyPRvvs89+npq3oKO6M2moWtQk5MEU7wByxORMU1vg9q9vI6RmoezJBBa3LX48VZs6yHM1aljaHr53muzqvxuF/BlkJxRih9s1Wta6thEwkxFAnqZgsQ9M69I7CwM3xtIbnGI20SliUzUxQ+VINwWUtRTd3984Ebwnq+MAf3QzLcZeKSnoM/qLAHUx/pmlE7CYZ88phUIDXYB83Pd5mXPX4aQG3+YdjoP/qlvJe98TMHQ3e5Gcs4iC3wSKd43GkNINMLJNYEe6FSh6faRHBHBeHrkQ4oTvKy5vmoZx4s0pr783qtyNCJ9JKELxA==
-Received: from MW4PR04CA0213.namprd04.prod.outlook.com (2603:10b6:303:87::8)
- by DM3PR12MB9351.namprd12.prod.outlook.com (2603:10b6:8:1ac::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7068.33; Wed, 13 Dec
- 2023 22:01:54 +0000
-Received: from CO1PEPF000044F7.namprd21.prod.outlook.com
- (2603:10b6:303:87:cafe::ac) by MW4PR04CA0213.outlook.office365.com
- (2603:10b6:303:87::8) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7091.26 via Frontend
- Transport; Wed, 13 Dec 2023 22:01:53 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.160)
- smtp.mailfrom=nvidia.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.117.160 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.117.160; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.117.160) by
- CO1PEPF000044F7.mail.protection.outlook.com (10.167.241.197) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7113.8 via Frontend Transport; Wed, 13 Dec 2023 22:01:53 +0000
-Received: from rnnvmail201.nvidia.com (10.129.68.8) by mail.nvidia.com
- (10.129.200.66) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Wed, 13 Dec
- 2023 14:01:33 -0800
-Received: from [10.110.48.28] (10.126.230.35) by rnnvmail201.nvidia.com
- (10.129.68.8) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Wed, 13 Dec
- 2023 14:01:32 -0800
-Message-ID: <ea6708ce-af4a-4f0a-ba37-a2cb38f60eca@nvidia.com>
-Date:   Wed, 13 Dec 2023 14:01:32 -0800
+        Wed, 13 Dec 2023 17:04:34 -0500
+Received: from mail-oo1-f51.google.com (mail-oo1-f51.google.com [209.85.161.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A9CDA3
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 14:04:40 -0800 (PST)
+Received: by mail-oo1-f51.google.com with SMTP id 006d021491bc7-58d1b767b2bso4780149eaf.2
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 14:04:40 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702505079; x=1703109879;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=S4OPTogfVv1ZY+r+8gNK2KKTBuXiCXIz5vFe+cYHeuU=;
+        b=PJNFy3YJbyvwerbUXPLauHcDwp+7kWXoONPWmqt+cjY2pL/FCjm7FvfXuUMVfwFMsY
+         OELNgCYtdSFu9OoALQ8awCqsxs60q51qPPo8x7frN/ErtEDZoGrzOqwxlUN3XelRFlXz
+         9l1najAAe2y1MAR+VmGKFvCnwTuJNmCD+fyaalQoJv3vh9sRppV39YTY6Y8DbreaDTBA
+         ecCwNS41uYA1Jl9TXSiEBSNLKkx17610bBZXmZPMQM59p+5zSYUQeFJnl2fq+XXKf696
+         oHT6xRpisRNeF73EtZRO7KIxeV2Vysu4I0+PaBcji8wRa1xAZ0U65+ax73/CS68V+BkM
+         DK/g==
+X-Gm-Message-State: AOJu0YwcQ7vzvwSo1Dv+VAbOPlfklb8+EP5InzazOX6Ufv62BGvzJn/+
+        rObMw/NloucNe3Zm+fb0Og==
+X-Google-Smtp-Source: AGHT+IGdF9F6O9LTxZgS8q3vuCx3hdnxKDs33XeGnWYMMp1Int23TCA0rSiE9RA/oFIRnV/IRIZX/w==
+X-Received: by 2002:a4a:6701:0:b0:58e:1c47:76c6 with SMTP id f1-20020a4a6701000000b0058e1c4776c6mr5289216ooc.18.1702505079242;
+        Wed, 13 Dec 2023 14:04:39 -0800 (PST)
+Received: from herring.priv (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
+        by smtp.gmail.com with ESMTPSA id az2-20020a056830458200b006d87b9d84bfsm2960478otb.12.2023.12.13.14.04.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Dec 2023 14:04:38 -0800 (PST)
+Received: (nullmailer pid 2150081 invoked by uid 1000);
+        Wed, 13 Dec 2023 22:04:37 -0000
+Date:   Wed, 13 Dec 2023 16:04:37 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Mark Hasemeyer <markhas@chromium.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Raul Rangel <rrangel@chromium.org>,
+        David Gow <davidgow@google.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Mark Brown <broonie@kernel.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Takashi Iwai <tiwai@suse.de>,
+        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>
+Subject: Re: [PATCH v1 5/6] platform: Modify platform_get_irq_optional() to
+ use resource
+Message-ID: <20231213220437.GA2115075-robh@kernel.org>
+References: <20231213110009.v1.1.Ifd0903f1c351e84376d71dbdadbd43931197f5ea@changeid>
+ <20231213110009.v1.5.Ife9ebad2bbfbab3a05e90040f344d750aa0aac7e@changeid>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v6 5/5] selftests/mm: add UFFDIO_MOVE ioctl test
-Content-Language: en-US
-To:     David Hildenbrand <david@redhat.com>,
-        Muhammad Usama Anjum <usama.anjum@collabora.com>,
-        Mark Brown <broonie@kernel.org>
-CC:     Suren Baghdasaryan <surenb@google.com>,
-        <akpm@linux-foundation.org>, <viro@zeniv.linux.org.uk>,
-        <brauner@kernel.org>, <shuah@kernel.org>, <aarcange@redhat.com>,
-        <lokeshgidra@google.com>, <peterx@redhat.com>,
-        <ryan.roberts@arm.com>, <hughd@google.com>, <mhocko@suse.com>,
-        <axelrasmussen@google.com>, <rppt@kernel.org>,
-        <willy@infradead.org>, <Liam.Howlett@oracle.com>,
-        <jannh@google.com>, <zhangpeng362@huawei.com>,
-        <bgeffon@google.com>, <kaleshsingh@google.com>,
-        <ngeoffray@google.com>, <jdduke@google.com>, <linux-mm@kvack.org>,
-        <linux-fsdevel@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-kselftest@vger.kernel.org>, <kernel-team@android.com>,
-        Peter Zijlstra <peterz@infradead.org>
-References: <CAJuCfpFbWeycjvjAFryuugXuiv5ggm=cXG+Y1jfaCD9kJ6KWqQ@mail.gmail.com>
- <CAJuCfpHRYi4S9c+KKQqtE6Faw1e0E0ENMMRE17zXsqv_CftTGw@mail.gmail.com>
- <b93b29e9-c176-4111-ae0e-d4922511f223@sirena.org.uk>
- <50385948-5eb4-47ea-87f8-add4265933d6@redhat.com>
- <6a34b0c9-e084-4928-b239-7af01c8d4479@sirena.org.uk>
- <CAJuCfpEcbcO0d5WPDHMqiEJws9k_5c30pE-J+E_VxO_fpTf_mw@mail.gmail.com>
- <3240f4b5-081b-4075-851a-7d1cd86f4333@redhat.com>
- <3eadd79c-c02a-495f-92c0-0315046ef59f@nvidia.com>
- <3d22f342-280f-4a44-87f4-8cca291cfce7@sirena.org.uk>
- <e3048458-726e-4b98-b2bf-908ea9066959@nvidia.com>
- <0f97db9c-5b86-4f56-8463-2520fe79f709@sirena.org.uk>
- <f1b0b80a-1cc6-48c4-8a53-0222b3e59c7f@nvidia.com>
- <2e4a719b-f2b3-48db-99db-d96040d78b12@collabora.com>
- <0d68fe7f-2a96-467d-87b0-52db36704e1d@nvidia.com>
- <926b42f9-3689-480f-8dd5-78fc0ee6088d@nvidia.com>
- <783a4178-1dec-4e30-989a-5174b8176b09@redhat.com>
-From:   John Hubbard <jhubbard@nvidia.com>
-In-Reply-To: <783a4178-1dec-4e30-989a-5174b8176b09@redhat.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.126.230.35]
-X-ClientProxiedBy: rnnvmail203.nvidia.com (10.129.68.9) To
- rnnvmail201.nvidia.com (10.129.68.8)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CO1PEPF000044F7:EE_|DM3PR12MB9351:EE_
-X-MS-Office365-Filtering-Correlation-Id: cd084870-346e-4498-b3bb-08dbfc271df3
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 9kIJFFjYJRvxQAbnRsMHnqjQGP+PZnNrxN3CtKAOUfN7s1z7nbZG+axexb7HL9RgMUgw/ZZ9qBm6gp9/Pu+XBll0UdOSu2ydCymYduhRe6GeZ8zW2Fmn4LVZs5CoiYX3/x8f7vJrJ59eSyo95izRNBCeqzRCok27sFCHLbzWJDRtkwboKmok/uNR11CmJNn8t7PKWrUEsAHcd++mEBF9Qejz1x26jaHXH6kaHeGb0GRwhRynSll4WmCkjOTebjojLwzpNeAAVFMI/LCgd0W471nL3PoL2aOUHITvYlCkroh7vxBJelBqwMb7D1JiwhRB3F9lmQe0lcN9MZ6wTql4/fjmOaSFb8oCMqBr0UBJH0WY0hHHZEPwUAUcXd7ld87nLRizIZIZ5bEGM8pxu0gT5qMFa+UAMYgImLwZJLpphTzy4kMGcTTwIJtPFyueUptDgXrkgVXCiAoxUFq3bPGO4S3hF/5I3JoQXOAoq89jl3wFJtrtS8NlAi1swFpDpXt7t/E64dycvJcJO7KOhoKIsE3sy2ZVFob1ya+Y7Lr2tXn7lQyr4Zso2+Eda0DWvYXxmsVcMK3N1JZ7oZ47VNVJiZzCZ0HbTkA3+NMbQucP9kU/TazjmXYDQBC8s0ViNlqwJI3LXVuz5MNSEPwq1/+4KXFMDTN9+bzryyYMDT0yAF0lPREW6A7u5UQPDccFaaAprq7O2Rp89ieYIlEgJWdxKxBghbnX7qALGOXFkmHX05WLkX4nNyrFyb53q5uuq0LmUDr4j8/lnvlKk7JVRKRMpg==
-X-Forefront-Antispam-Report: CIP:216.228.117.160;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge1.nvidia.com;CAT:NONE;SFS:(13230031)(4636009)(346002)(396003)(376002)(39860400002)(136003)(230922051799003)(64100799003)(82310400011)(451199024)(186009)(1800799012)(40470700004)(36840700001)(46966006)(40480700001)(31686004)(426003)(26005)(16526019)(336012)(2616005)(40460700003)(86362001)(7636003)(31696002)(356005)(36756003)(82740400003)(7406005)(83380400001)(5660300002)(8936002)(7416002)(53546011)(47076005)(4326008)(36860700001)(8676002)(110136005)(966005)(70586007)(316002)(16576012)(54906003)(70206006)(2906002)(41300700001)(4744005)(478600001)(43740500002);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Dec 2023 22:01:53.6991
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: cd084870-346e-4498-b3bb-08dbfc271df3
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.160];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: CO1PEPF000044F7.namprd21.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM3PR12MB9351
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231213110009.v1.5.Ife9ebad2bbfbab3a05e90040f344d750aa0aac7e@changeid>
+X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,
+        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/13/23 01:59, David Hildenbrand wrote:
-...
->> Another variation though, would be to run "make headers", and snapshot
->> some of those files into tools/include.
+On Wed, Dec 13, 2023 at 11:00:23AM -0700, Mark Hasemeyer wrote:
+> Unify handling of ACPI, GPIO, devictree, and platform resource
+> interrupts in platform_get_irq_optional(). Each of these subsystems
+> provide their own apis which provide IRQ information as a struct
+> resource. This simplifies the logic of the function and allows callers
+> to get more information about the irq by looking at the resource flags.
+> For example, whether or not an irq is wake capable.
 > 
-> ^ this is what I had in mind
+> Rename the function to platform_get_irq_resource() to better describe
+> the function's new behavior.
+
+This is misleading as the original function is still there.
+
+The get_optional() functions are designed to not print an error message 
+where as the non-optional variant will. You've broken that pattern here 
+in that there is no platform_get_irq_resource_optional() (at least named 
+that because your implementation is that since there is no error 
+message).
+
+What about versions equivalent to platform_get_irq_byname() 
+and platform_get_irq_byname_optional(), though I guess we need users 
+first.
+
 > 
-> If you're writing a test that needs some new fancy thing, update the relevant header.
+> Signed-off-by: Mark Hasemeyer <markhas@chromium.org>
+> ---
 > 
+>  drivers/base/platform.c         | 78 ++++++++++++++++++---------------
+>  include/linux/platform_device.h |  9 +++-
+>  2 files changed, 50 insertions(+), 37 deletions(-)
+> 
+> diff --git a/drivers/base/platform.c b/drivers/base/platform.c
+> index 76bfcba250039..6b58bde776d4f 100644
+> --- a/drivers/base/platform.c
+> +++ b/drivers/base/platform.c
+> @@ -151,9 +151,10 @@ EXPORT_SYMBOL_GPL(devm_platform_ioremap_resource_byname);
+>  #endif /* CONFIG_HAS_IOMEM */
+>  
+>  /**
+> - * platform_get_irq_optional - get an optional IRQ for a device
+> + * platform_get_irq_resource - get an IRQ for a device and populate resource struct
+>   * @dev: platform device
+>   * @num: IRQ number index
+> + * @r: pointer to resource to populate with irq information. It is not modified on failure.
+>   *
+>   * Gets an IRQ for a platform device. Device drivers should check the return
+>   * value for errors so as to not pass a negative integer value to the
+> @@ -162,59 +163,47 @@ EXPORT_SYMBOL_GPL(devm_platform_ioremap_resource_byname);
+>   *
+>   * For example::
+>   *
+> - *		int irq = platform_get_irq_optional(pdev, 0);
+> + *		int irq = platform_get_irq_resource(pdev, 0, &res);
+>   *		if (irq < 0)
+>   *			return irq;
+>   *
+>   * Return: non-zero IRQ number on success, negative error number on failure.
+>   */
+> -int platform_get_irq_optional(struct platform_device *dev, unsigned int num)
+> +int platform_get_irq_resource(struct platform_device *dev, unsigned int num, struct resource *r)
+>  {
+>  	int ret;
+>  #ifdef CONFIG_SPARC
+>  	/* sparc does not have irqs represented as IORESOURCE_IRQ resources */
+>  	if (!dev || num >= dev->archdata.num_irqs)
+> -		goto out_not_found;
+> +		return -ENXIO;
+>  	ret = dev->archdata.irqs[num];
+> +	if (ret >= 0)
+> +		*r = (struct resource)DEFINE_RES_IRQ(ret);
+>  	goto out;
+>  #else
+> -	struct resource *r;
+> +	struct resource *platform_res;
+>  
+>  	if (IS_ENABLED(CONFIG_OF_IRQ) && dev->dev.of_node) {
+> -		ret = of_irq_get(dev->dev.of_node, num);
+> +		ret = of_irq_to_resource(dev->dev.of_node, num, r);
+>  		if (ret > 0 || ret == -EPROBE_DEFER)
+>  			goto out;
+>  	}
+>  
+> -	r = platform_get_resource(dev, IORESOURCE_IRQ, num);
+> -	if (has_acpi_companion(&dev->dev)) {
+> -		if (r && r->flags & IORESOURCE_DISABLED) {
+> -			ret = acpi_irq_get(ACPI_HANDLE(&dev->dev), num, r);
+> -			if (ret)
+> -				goto out;
+> -		}
+> -	}
+> -
+> -	/*
+> -	 * The resources may pass trigger flags to the irqs that need
+> -	 * to be set up. It so happens that the trigger flags for
+> -	 * IORESOURCE_BITS correspond 1-to-1 to the IRQF_TRIGGER*
+> -	 * settings.
+> -	 */
+> -	if (r && r->flags & IORESOURCE_BITS) {
+> -		struct irq_data *irqd;
+> -
+> -		irqd = irq_get_irq_data(r->start);
+> -		if (!irqd)
+> -			goto out_not_found;
+> -		irqd_set_trigger_type(irqd, r->flags & IORESOURCE_BITS);
+> -	}
+> -
+> -	if (r) {
+> +	platform_res = platform_get_resource(dev, IORESOURCE_IRQ, num);
+> +	if (platform_res && !(platform_res->flags & IORESOURCE_DISABLED)) {
+> +		*r = *platform_res;
+>  		ret = r->start;
+>  		goto out;
+>  	}
+>  
+> +	if (has_acpi_companion(&dev->dev)) {
+> +		ret = acpi_irq_get(ACPI_HANDLE(&dev->dev), num, r);
+> +		if (!ret || ret == -EPROBE_DEFER) {
+> +			ret = ret ?: r->start;
+> +			goto out;
+> +		}
+> +	}
+> +
+>  	/*
+>  	 * For the index 0 interrupt, allow falling back to GpioInt
+>  	 * resources. While a device could have both Interrupt and GpioInt
+> @@ -223,21 +212,38 @@ int platform_get_irq_optional(struct platform_device *dev, unsigned int num)
+>  	 * allows a common code path across either kind of resource.
+>  	 */
+>  	if (num == 0 && has_acpi_companion(&dev->dev)) {
+> -		ret = acpi_dev_gpio_irq_get(ACPI_COMPANION(&dev->dev), num);
+> +		ret = acpi_dev_get_gpio_irq_resource(ACPI_COMPANION(&dev->dev), NULL,
+> +						     num, r);
+>  		/* Our callers expect -ENXIO for missing IRQs. */
+> -		if (ret >= 0 || ret == -EPROBE_DEFER)
+> +		if (!ret || ret == -EPROBE_DEFER) {
+> +			ret = ret ?: r->start;
+>  			goto out;
+> +		}
+>  	}
+> -
+>  #endif
+> -out_not_found:
+>  	ret = -ENXIO;
+>  out:
+>  	if (WARN(!ret, "0 is an invalid IRQ number\n"))
+>  		return -EINVAL;
+> +
+> +	/*
+> +	 * The resources may pass trigger flags to the irqs that need
+> +	 * to be set up. It so happens that the trigger flags for
+> +	 * IORESOURCE_BITS correspond 1-to-1 to the IRQF_TRIGGER*
+> +	 * settings.
+> +	 */
+> +	if (ret > 0 && r->flags & IORESOURCE_BITS) {
+> +		struct irq_data *irqd;
+> +
+> +		irqd = irq_get_irq_data(r->start);
+> +		if (!irqd)
+> +			ret = -ENXIO;
+> +		else
+> +			irqd_set_trigger_type(irqd, r->flags & IORESOURCE_BITS);
 
-OK, and Mark Brown's nearby response [1] supports that, as well.
+We were not doing any of this in the DT or Sparc cases before. It's 
+probably just redundant for DT. It might break Sparc.
 
-Thus fortified, I plan on doing the following steps:
-
-Step 1: Do nothing about the revert patch that I sent earlier, thus
-allowing it to continue in its journey (so far, Andrew has moved it into
-mm-hotfixes-stable branch).
-
-Step 2: Send out a patch for a modest part of selftests/mm, that uses
-this latest approach, and see how it fares in reviews.
-
-[1] https://lore.kernel.org/c0aa00a2-38a5-42da-9951-64131d936f7e@sirena.org.uk
-
-
-thanks,
--- 
-John Hubbard
-NVIDIA
-
+Rob
