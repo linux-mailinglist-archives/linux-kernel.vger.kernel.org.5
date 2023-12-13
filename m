@@ -2,127 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A0BC8108E7
+	by mail.lfdr.de (Postfix) with ESMTP id 452B88108E5
 	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 04:59:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378412AbjLMDz7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 22:55:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53250 "EHLO
+        id S1378468AbjLMD60 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 22:58:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46406 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235216AbjLMDz5 (ORCPT
+        with ESMTP id S235223AbjLMD6Y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 22:55:57 -0500
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 1041E99;
-        Tue, 12 Dec 2023 19:56:02 -0800 (PST)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D25A6C15;
-        Tue, 12 Dec 2023 19:56:47 -0800 (PST)
-Received: from [10.162.41.8] (a077893.blr.arm.com [10.162.41.8])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id EEADB3F5A1;
-        Tue, 12 Dec 2023 19:55:55 -0800 (PST)
-Message-ID: <b319f8ed-5848-4663-bc1b-7afe160bbcd3@arm.com>
-Date:   Wed, 13 Dec 2023 09:25:52 +0530
+        Tue, 12 Dec 2023 22:58:24 -0500
+Received: from mx0b-0016f401.pphosted.com (mx0a-0016f401.pphosted.com [67.231.148.174])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D4CFCD;
+        Tue, 12 Dec 2023 19:58:26 -0800 (PST)
+Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
+        by mx0a-0016f401.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BD3XUD5012428;
+        Tue, 12 Dec 2023 19:58:20 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=
+        from:to:cc:subject:date:message-id:mime-version
+        :content-transfer-encoding:content-type; s=pfpt0220; bh=sSgxyO0l
+        JDy02aWDMAq/b+ta6/FYjADN6Wj57bHu0fw=; b=aaN1nCwD4Huf0+ox/4FYdL7I
+        oM+SvuNlT73mN5TtuGoSVSPWOZPsf+Yfpl+1ozwNs7aaYR06HHtRsnsVfbu3yQdY
+        hrAQHRdnwP/kdIibb0/Bj/sAc74Wd0w1/mK+aZoIMyyZv7qpmGOvhL/xQVv56uOh
+        pkczu+8tTYoX7gfddpmGQ0n02NURSwiaRDpdgbSK1Z+Wzt9YWeLCQk/Y8Rh6Nq5Y
+        YxgI1/jed+bkUXqCkGwa3CfYYNTJr66Cflg2d0wbjKUy9HXWQ+gjhL7UG52ceMqN
+        TlLGZSkKJc6UAC+ZnIdsFJV3bulem0jFm26vmhcDkT+MIuezEVlUIrnkt9w7ew==
+Received: from dc5-exch01.marvell.com ([199.233.59.181])
+        by mx0a-0016f401.pphosted.com (PPS) with ESMTPS id 3uy4tgg1xd-2
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Tue, 12 Dec 2023 19:58:20 -0800 (PST)
+Received: from DC5-EXCH02.marvell.com (10.69.176.39) by DC5-EXCH01.marvell.com
+ (10.69.176.38) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Tue, 12 Dec
+ 2023 19:58:18 -0800
+Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH02.marvell.com
+ (10.69.176.39) with Microsoft SMTP Server id 15.0.1497.48 via Frontend
+ Transport; Tue, 12 Dec 2023 19:58:18 -0800
+Received: from ubuntu-PowerEdge-T110-II.sclab.marvell.com (unknown [10.106.27.86])
+        by maili.marvell.com (Postfix) with ESMTP id 4F70B3F7043;
+        Tue, 12 Dec 2023 19:58:18 -0800 (PST)
+From:   Shinas Rasheed <srasheed@marvell.com>
+To:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     <hgani@marvell.com>, <vimleshk@marvell.com>, <egallen@redhat.com>,
+        <mschmidt@redhat.com>, <pabeni@redhat.com>, <horms@kernel.org>,
+        <kuba@kernel.org>, <davem@davemloft.net>, <wizhao@redhat.com>,
+        <kheib@redhat.com>, <konguyen@redhat.com>,
+        Shinas Rasheed <srasheed@marvell.com>
+Subject: [PATCH net-next v4 0/4] add PF-VF mailbox support
+Date:   Tue, 12 Dec 2023 19:58:05 -0800
+Message-ID: <20231213035816.2656851-1-srasheed@marvell.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH V15 2/8] KVM: arm64: Prevent guest accesses into BRBE
- system registers/instructions
-Content-Language: en-US
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        will@kernel.org, catalin.marinas@arm.com, mark.rutland@arm.com,
-        Mark Brown <broonie@kernel.org>,
-        James Clark <james.clark@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        Suzuki Poulose <suzuki.poulose@arm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        linux-perf-users@vger.kernel.org,
-        Oliver Upton <oliver.upton@linux.dev>,
-        James Morse <james.morse@arm.com>, kvmarm@lists.linux.dev
-References: <20231201053906.1261704-1-anshuman.khandual@arm.com>
- <20231201053906.1261704-3-anshuman.khandual@arm.com>
- <86v89ebcn2.wl-maz@kernel.org>
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-In-Reply-To: <86v89ebcn2.wl-maz@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-ORIG-GUID: tej4tc5MtBNQwMDUHyMx9-lG0Fn0942s
+X-Proofpoint-GUID: tej4tc5MtBNQwMDUHyMx9-lG0Fn0942s
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-09_02,2023-12-07_01,2023-05-22_02
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This patchset aims to add PF-VF mailbox support, its related
+version support, and relevant control net support for immediate
+functionalities such as firmware notifications to VF.
 
+Changes:
+V4:
+  - Included tag [1/4] in subject of first patch of series which was
+    lost in V3
 
-On 12/4/23 13:52, Marc Zyngier wrote:
-> On Fri, 01 Dec 2023 05:39:00 +0000,
-> Anshuman Khandual <anshuman.khandual@arm.com> wrote:
->> Currently BRBE feature is not supported in a guest environment. This hides
->> BRBE feature availability via masking ID_AA64DFR0_EL1.BRBE field. This also
->> blocks guest accesses into BRBE system registers and instructions as if the
->> underlying hardware never implemented FEAT_BRBE feature.
->>
->> Cc: Marc Zyngier <maz@kernel.org>
->> Cc: Oliver Upton <oliver.upton@linux.dev>
->> Cc: James Morse <james.morse@arm.com>
->> Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
->> Cc: Catalin Marinas <catalin.marinas@arm.com>
->> Cc: Will Deacon <will@kernel.org>
->> Cc: kvmarm@lists.linux.dev
->> Cc: linux-arm-kernel@lists.infradead.org
->> Cc: linux-kernel@vger.kernel.org
->> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
->> ---
->>  arch/arm64/kvm/sys_regs.c | 130 ++++++++++++++++++++++++++++++++++++++
->>  1 file changed, 130 insertions(+)
->>
->> diff --git a/arch/arm64/kvm/sys_regs.c b/arch/arm64/kvm/sys_regs.c
->> index 4735e1b37fb3..42701065b3cd 100644
->> --- a/arch/arm64/kvm/sys_regs.c
->> +++ b/arch/arm64/kvm/sys_regs.c
->> @@ -1583,6 +1583,9 @@ static u64 read_sanitised_id_aa64dfr0_el1(struct kvm_vcpu *vcpu,
->>  	/* Hide SPE from guests */
->>  	val &= ~ID_AA64DFR0_EL1_PMSVer_MASK;
->>  
->> +	/* Hide BRBE from guests */
->> +	val &= ~ID_AA64DFR0_EL1_BRBE_MASK;
->> +
->>  	return val;
->>  }
->>  
->> @@ -2042,6 +2045,8 @@ static const struct sys_reg_desc sys_reg_descs[] = {
->>  	{ SYS_DESC(SYS_DC_CISW), access_dcsw },
->>  	{ SYS_DESC(SYS_DC_CIGSW), access_dcgsw },
->>  	{ SYS_DESC(SYS_DC_CIGDSW), access_dcgsw },
->> +	{ SYS_DESC(OP_BRB_IALL), undef_access },
->> +	{ SYS_DESC(OP_BRB_INJ), undef_access },
->>  
->>  	DBG_BCR_BVR_WCR_WVR_EL1(0),
->>  	DBG_BCR_BVR_WCR_WVR_EL1(1),
->> @@ -2072,6 +2077,131 @@ static const struct sys_reg_desc sys_reg_descs[] = {
->>  	{ SYS_DESC(SYS_DBGCLAIMCLR_EL1), trap_raz_wi },
->>  	{ SYS_DESC(SYS_DBGAUTHSTATUS_EL1), trap_dbgauthstatus_el1 },
->>  
->> +	/*
->> +	 * BRBE branch record sysreg address space is interleaved between
->> +	 * corresponding BRBINF<N>_EL1, BRBSRC<N>_EL1, and BRBTGT<N>_EL1.
->> +	 */
->> +	{ SYS_DESC(SYS_BRBINF0_EL1), undef_access },
->> +	{ SYS_DESC(SYS_BRBSRC0_EL1), undef_access },
->> +	{ SYS_DESC(SYS_BRBTGT0_EL1), undef_access },
->> +	{ SYS_DESC(SYS_BRBINF16_EL1), undef_access },
->> +	{ SYS_DESC(SYS_BRBSRC16_EL1), undef_access },
->> +	{ SYS_DESC(SYS_BRBTGT16_EL1), undef_access },
-> Surely we can do better than this wall of text. Please look at what we
-> do for the debug registers, and adopt a similar pattern. This should
-> result in one line per group of 3 registers.
-> 
-> What is the plan for KVM support beyond this?
-We are planning to add support for simultaneous and independent branch record
-tracing via perf branch stack sampling inside the guest and the host. But will
-prevent tracing of the guest execution from the host.
+V3: https://lore.kernel.org/all/20231211063355.2630028-1-srasheed@marvell.com/
+  - Corrected error cleanup logic for PF-VF mbox setup
+  - Removed double inclusion of types.h header file in octep_pfvf_mbox.c
+
+V2: https://lore.kernel.org/all/20231209081450.2613561-1-srasheed@marvell.com/
+  - Removed unused variable in PATCH 1/4
+
+V1: https://lore.kernel.org/all/20231208070352.2606192-1-srasheed@marvell.com/
+
+Shinas Rasheed (4):
+  octeon_ep: add PF-VF mailbox communication
+  octeon_ep: PF-VF mailbox version support
+  octeon_ep: control net framework to support VF offloads
+  octeon_ep: support firmware notifications for VFs
+
+ .../net/ethernet/marvell/octeon_ep/Makefile   |   2 +-
+ .../marvell/octeon_ep/octep_cn9k_pf.c         |  59 ++-
+ .../marvell/octeon_ep/octep_cnxk_pf.c         |  49 +-
+ .../marvell/octeon_ep/octep_ctrl_mbox.h       |   4 +-
+ .../marvell/octeon_ep/octep_ctrl_net.c        |   6 +
+ .../ethernet/marvell/octeon_ep/octep_main.c   |  84 +++-
+ .../ethernet/marvell/octeon_ep/octep_main.h   |  46 +-
+ .../marvell/octeon_ep/octep_pfvf_mbox.c       | 450 ++++++++++++++++++
+ .../marvell/octeon_ep/octep_pfvf_mbox.h       | 167 +++++++
+ .../marvell/octeon_ep/octep_regs_cn9k_pf.h    |   9 +
+ .../marvell/octeon_ep/octep_regs_cnxk_pf.h    |  13 +
+ .../net/ethernet/marvell/octeon_ep/octep_tx.h |  24 +-
+ 12 files changed, 864 insertions(+), 49 deletions(-)
+ create mode 100644 drivers/net/ethernet/marvell/octeon_ep/octep_pfvf_mbox.c
+ create mode 100644 drivers/net/ethernet/marvell/octeon_ep/octep_pfvf_mbox.h
+
+-- 
+2.25.1
+
