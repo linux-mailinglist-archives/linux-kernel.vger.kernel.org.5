@@ -2,71 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A9923810F15
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 11:58:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DFDB810F24
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 12:00:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378280AbjLMK6B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 05:58:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36548 "EHLO
+        id S1377999AbjLMK7w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 05:59:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54296 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378217AbjLMK57 (ORCPT
+        with ESMTP id S235369AbjLMK7u (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 05:57:59 -0500
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2ED9112A;
-        Wed, 13 Dec 2023 02:58:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=mGIQDTPQtHNZfQHDhzO46ShItOaXBrTUkfxx2nG5SQY=; b=u7wVbB2pV5gntyL4PYXEwy2kdJ
-        u/EwwnGsIUcLsYSsvJRCle6GQ8iC3RZSiPxEj9f8pG+3hewpcncW/zHnPcttRW+nebLpb9zUkZ/6S
-        5sydG1e30JK1vCa+ujf9NWPiO2Wdou9AWl7gCyzTEOFIWZzawGXVS7KPBK2OrQPper4I=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1rDMw4-002oEF-E9; Wed, 13 Dec 2023 11:57:52 +0100
-Date:   Wed, 13 Dec 2023 11:57:52 +0100
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Justin Chen <justin.chen@broadcom.com>
-Cc:     netdev@vger.kernel.org, Doug Berger <opendmb@gmail.com>,
-        Florian Fainelli <florian.fainelli@broadcom.com>,
-        Broadcom internal kernel review list 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] net: mdio: mdio-bcm-unimac: Delay before first poll
-Message-ID: <c3cc7a9d-d464-48e7-beb7-b90b1abbcfc7@lunn.ch>
-References: <20231213000249.2020835-1-justin.chen@broadcom.com>
+        Wed, 13 Dec 2023 05:59:50 -0500
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33B939C
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 02:59:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1702465195;
+        bh=f7oFYjuEhLv10FZ/GqNK5bJ0ESqYP8VTVwEBkmP3swA=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=gHHBiUOUOcSbPaz/K/S2U4DuTzSymWsizm1pM1TZa+HqSLoOAs6MvS03PIDweWuAl
+         PXlloz159ssPpNd54D7CTbHR9kbGykVHN7chvbFFKQNRnNmcF72qLmYsKfItJ6Kv7R
+         Y+ZqweU2icahiC+e7vkLVKF2DHKF3K8GSlcV8U6hW4zlch23gKF8WBZ1F7v3KVOqG0
+         Bqm1YSfQcO+Yi4kWNn+Ljp4glJRRxNcto9Yhw7CUOgcVgvB0WMLu8NjOQTpHgVcauY
+         rq6blUpNs9EGg5J+922osEaVDyRwLYOYCo8WvrEsHqm6bp91cNLIl2Y5dPPTse+QWM
+         J/kDCOB3eUHXQ==
+Received: from [100.113.186.2] (cola.collaboradmins.com [195.201.22.229])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: kholk11)
+        by madrid.collaboradmins.com (Postfix) with ESMTPSA id AAD6C3781453;
+        Wed, 13 Dec 2023 10:59:54 +0000 (UTC)
+Message-ID: <ecf4d4f8-8232-44bc-b1a0-c6bd4b579949@collabora.com>
+Date:   Wed, 13 Dec 2023 11:59:53 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231213000249.2020835-1-justin.chen@broadcom.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH V4 1/2] ufs: core: Add CPU latency QoS support for ufs
+ driver
+Content-Language: en-US
+To:     Maramaina Naresh <quic_mnaresh@quicinc.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Peter Wang <peter.wang@mediatek.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        stanley.chu@mediatek.com
+Cc:     Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        Stanley Jhu <chu.stanley@gmail.com>,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mediatek@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, quic_cang@quicinc.com,
+        quic_nguyenb@quicinc.com
+References: <20231213103642.15320-1-quic_mnaresh@quicinc.com>
+ <20231213103642.15320-2-quic_mnaresh@quicinc.com>
+From:   AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+In-Reply-To: <20231213103642.15320-2-quic_mnaresh@quicinc.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 12, 2023 at 04:02:49PM -0800, Justin Chen wrote:
-> With a clock interval of 400 nsec and a 64 bit transactions (32 bit
-> preamble & 16 bit control & 16 bit data), it is reasonable to assume
-> the mdio transaction will take 25.6 usec. Add a 30 usec delay before
-> the first poll to reduce the chance of a 1000-2000 usec sleep.
+Il 13/12/23 11:36, Maramaina Naresh ha scritto:
+> Register ufs driver to CPU latency PM QoS framework to improve
+> ufs device random io performance.
+> 
+> PM QoS initialization will insert new QoS request into the CPU
+> latency QoS list with the maximum latency PM_QOS_DEFAULT_VALUE
+> value.
+> 
+> UFS driver will vote for performance mode on scale up and power
+> save mode for scale down.
+> 
+> If clock scaling feature is not enabled then voting will be based
+> on clock on or off condition.
+> 
+> Provided sysfs interface to enable/disable PM QoS feature.
+> 
+> tiotest benchmark tool io performance results on sm8550 platform:
+> 
+> 1. Without PM QoS support
+> 	Type (Speed in)    | Average of 18 iterations
+> 	Random Write(IPOS) | 41065.13
+> 	Random Read(IPOS)  | 37101.3
+> 
+> 2. With PM QoS support
+> 	Type (Speed in)    | Average of 18 iterations
+> 	Random Write(IPOS) | 46784.9
+> 	Random Read(IPOS)  | 42943.4
+> (Improvement with PM QoS = ~15%).
+> 
+> Co-developed-by: Nitin Rawat <quic_nitirawa@quicinc.com>
+> Signed-off-by: Nitin Rawat <quic_nitirawa@quicinc.com>
+> Signed-off-by: Naveen Kumar Goud Arepalli <quic_narepall@quicinc.com>
+> Signed-off-by: Maramaina Naresh <quic_mnaresh@quicinc.com>
+> ---
+>   drivers/ufs/core/ufshcd.c | 127 ++++++++++++++++++++++++++++++++++++++
+>   include/ufs/ufshcd.h      |   6 ++
+>   2 files changed, 133 insertions(+)
+> 
+> diff --git a/drivers/ufs/core/ufshcd.c b/drivers/ufs/core/ufshcd.c
+> index ae9936fc6ffb..7318fa480706 100644
+> --- a/drivers/ufs/core/ufshcd.c
+> +++ b/drivers/ufs/core/ufshcd.c
+> @@ -1001,6 +1001,20 @@ static bool ufshcd_is_unipro_pa_params_tuning_req(struct ufs_hba *hba)
+>   	return ufshcd_get_local_unipro_ver(hba) < UFS_UNIPRO_VER_1_6;
+>   }
+>   
+> +/**
+> + * ufshcd_pm_qos_update - update PM QoS request
+> + * @hba: per adapter instance
+> + * @on: If True, vote for perf PM QoS mode otherwise power save mode
+> + */
+> +static void ufshcd_pm_qos_update(struct ufs_hba *hba, bool on)
+> +{
+> +	if (!hba->pm_qos_enabled)
+> +		return;
+> +
+> +	cpu_latency_qos_update_request(&hba->pm_qos_req, on ? 0
+> +							: PM_QOS_DEFAULT_VALUE);
 
-#define  MDIO_C45               0
+This fits in one line.
 
-suggests the hardware can do C45? The timing works out different then.
-Maybe add a comment by the udelay() that is assumes C22, to give a
-clue to somebody who is adding C45 support the delay needs to be
-re-evaluated.
+> +}
+> +
+>   /**
+>    * ufshcd_set_clk_freq - set UFS controller clock frequencies
+>    * @hba: per adapter instance
+> @@ -1147,8 +1161,11 @@ static int ufshcd_scale_clks(struct ufs_hba *hba, unsigned long freq,
+>   					    hba->devfreq->previous_freq);
+>   		else
+>   			ufshcd_set_clk_freq(hba, !scale_up);
+> +		goto out;
+>   	}
+>   
+> +	ufshcd_pm_qos_update(hba, scale_up);
+> +
+>   out:
+>   	trace_ufshcd_profile_clk_scaling(dev_name(hba->dev),
+>   			(scale_up ? "up" : "down"),
+> @@ -8615,6 +8632,109 @@ static void ufshcd_set_timestamp_attr(struct ufs_hba *hba)
+>   	ufshcd_release(hba);
+>   }
+>   
+> +/**
+> + * ufshcd_pm_qos_init - initialize PM QoS request
+> + * @hba: per adapter instance
+> + */
+> +static void ufshcd_pm_qos_init(struct ufs_hba *hba)
+> +{
+> +
+> +	if (hba->pm_qos_enabled)
+> +		return;
+> +
+> +	cpu_latency_qos_add_request(&hba->pm_qos_req,
+> +					PM_QOS_DEFAULT_VALUE);
 
-	Andrew
+same here.
+
+> +
+> +	if (cpu_latency_qos_request_active(&hba->pm_qos_req))
+> +		hba->pm_qos_enabled = true;
+> +}
+> +
+
+Apart from that,
+
+Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+
+
