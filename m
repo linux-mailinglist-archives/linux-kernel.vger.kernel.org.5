@@ -2,285 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0729F8115DF
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 16:13:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F40FB8115DB
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 16:13:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442449AbjLMPNf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 10:13:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35378 "EHLO
+        id S1442248AbjLMPNX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 10:13:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43870 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1442280AbjLMPNb (ORCPT
+        with ESMTP id S1442095AbjLMPNW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 10:13:31 -0500
-Received: from mx0b-0016f401.pphosted.com (mx0b-0016f401.pphosted.com [67.231.156.173])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32701E8;
-        Wed, 13 Dec 2023 07:13:37 -0800 (PST)
-Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
-        by mx0b-0016f401.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BDAGk1R026392;
-        Wed, 13 Dec 2023 07:13:26 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=
-        from:to:cc:subject:date:message-id:in-reply-to:references
-        :mime-version:content-transfer-encoding:content-type; s=
-        pfpt0220; bh=sMtZ9Q01OAK6p2ziuaeGd7XYYB49/WfDTIJFtebrjAs=; b=elF
-        wHyZ298smuVUfRHmOt8MZFKoQPjeVNCl9JRA4wxSgdyF3+PDrJZfulZfHalCZM9t
-        Vs2/agV2p7mdbWmNGeA/NWQEi2ZRPwMrGRieAy4WUONcDMIL0wGzIcRMNhkep/CI
-        +uJTGaZaOt5H/94f1zY2BBsRKQaveWPq+hvpgqvj0WEqUspX4GUfxVV6SZeyG5GD
-        p3EUDfm1iT6V2kSKpc783wL/O5rqMU2G42kg/AHi9UErtwjnc2qiYFdQF+qjHoFN
-        YqPhUasX7dFZTd40SpFKtbvpMKtcqDWLV38s1pjh9eiVDuINF/y+PFcdEJSPbRio
-        ZhFqz2K+qKzpeQEtPwA==
-Received: from dc5-exch02.marvell.com ([199.233.59.182])
-        by mx0b-0016f401.pphosted.com (PPS) with ESMTPS id 3uvrmjxb4q-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Wed, 13 Dec 2023 07:13:26 -0800 (PST)
-Received: from DC5-EXCH01.marvell.com (10.69.176.38) by DC5-EXCH02.marvell.com
- (10.69.176.39) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Wed, 13 Dec
- 2023 07:13:24 -0800
-Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH01.marvell.com
- (10.69.176.38) with Microsoft SMTP Server id 15.0.1497.48 via Frontend
- Transport; Wed, 13 Dec 2023 07:13:24 -0800
-Received: from dc3lp-swdev041.marvell.com (dc3lp-swdev041.marvell.com [10.6.60.191])
-        by maili.marvell.com (Postfix) with ESMTP id F04315B6942;
-        Wed, 13 Dec 2023 07:13:22 -0800 (PST)
-From:   Elad Nachman <enachman@marvell.com>
-To:     <gregory.clement@bootlin.com>, <andi.shyti@kernel.org>,
-        <linux-i2c@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     <enachman@marvell.com>, <cyuval@marvell.com>
-Subject: [PATCH v3 1/1] i2c: busses: i2c-mv64xxx: fix arb-loss i2c lock
-Date:   Wed, 13 Dec 2023 17:13:12 +0200
-Message-ID: <20231213151312.1165115-2-enachman@marvell.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20231213151312.1165115-1-enachman@marvell.com>
-References: <20231213151312.1165115-1-enachman@marvell.com>
+        Wed, 13 Dec 2023 10:13:22 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 203B7B0
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 07:13:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1702480407;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=v2OWzLPbe7fefjvMfxhIYzTmKhON3iT9TY5UrL/jTLs=;
+        b=PeC1Cg86T813cTyTKLQh38RDl9q1rmAVFG9Tv9pA1wAG2X78hQh+uBkfbkGig06Ma9fgi7
+        orJN6Z9sBo/pGVT6tuXdqxz12eW2j0iA+C3Z4IXVmxRCwBoDCo+5vp8RFN8rBASiln3k6T
+        5s8uLnw+DV3Y86Dy1KqfVkXbnIa1020=
+Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
+ [209.85.218.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-641-lmafaidlNKSErLhEQQ0lPQ-1; Wed, 13 Dec 2023 10:13:25 -0500
+X-MC-Unique: lmafaidlNKSErLhEQQ0lPQ-1
+Received: by mail-ej1-f72.google.com with SMTP id a640c23a62f3a-a1d38492da7so427255966b.0
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 07:13:25 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702480404; x=1703085204;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=v2OWzLPbe7fefjvMfxhIYzTmKhON3iT9TY5UrL/jTLs=;
+        b=j7pKAnyonKJA2aFfSYO/Sz6ybU7qijbHt2hJ1f+O/lYIBjaK2CLUbDDZpDSbvLK00L
+         ARRnvhDgwrCySy+6s1DTUdQ0KA73CDAduuNsctO2XW1aGZuUUavKaI0c0gJ0AYfllOmL
+         d3Q2q6yHF41Kh8whWlDV6lzChjSYLCUSQGmeGgBfATAF+p7Oj3JqCPXml6ZJ24OISiRw
+         8qFfzIcvbX0yS6d1VOevjMBqx3u5+1IwnaspWL6XqL+s5QUKRdWzPyBvqfLKFcfJ7h1B
+         DxoEQpi4QzozIhVWm8VYrltOY9m03sjVc1xg3+Xc/kSZfpzDiAyKVcHehgNpUVJmT29S
+         sa0w==
+X-Gm-Message-State: AOJu0YxiUEbmcV/RQIOMa2vAdPomri54+LdE4IaEGdVoHPWGU5Ql2F6g
+        qCOH0MY1LYeZEi/8WIMSmpq5KELZ6D8l68EggZ6WrG+vT2lPfM2oDVQ0cLAZ9frrOctyUcbs5QL
+        ayUWEQHJcb25rOjj+15FZV9hq
+X-Received: by 2002:a17:906:209:b0:a1c:966c:2962 with SMTP id 9-20020a170906020900b00a1c966c2962mr2353776ejd.5.1702480404100;
+        Wed, 13 Dec 2023 07:13:24 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IGVEHNhpEpNkKjGAhK/XWOUUTGGv28PciIr/kdbCXWcbETJTEaPRgwgaTCSAZtVYbJ3/DARkA==
+X-Received: by 2002:a17:906:209:b0:a1c:966c:2962 with SMTP id 9-20020a170906020900b00a1c966c2962mr2353768ejd.5.1702480403779;
+        Wed, 13 Dec 2023 07:13:23 -0800 (PST)
+Received: from redhat.com ([2a02:14f:16d:d414:dc39:9ae8:919b:572d])
+        by smtp.gmail.com with ESMTPSA id s16-20020a17090699d000b00a1e27e584c7sm7934486ejn.69.2023.12.13.07.13.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Dec 2023 07:13:23 -0800 (PST)
+Date:   Wed, 13 Dec 2023 10:13:15 -0500
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Arseniy Krasnov <avkrasnov@salutedevices.com>
+Cc:     Stefano Garzarella <sgarzare@redhat.com>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Bobby Eshleman <bobby.eshleman@bytedance.com>,
+        kvm@vger.kernel.org, virtualization@lists.linux-foundation.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel@sberdevices.ru, oxffffaa@gmail.com
+Subject: Re: [PATCH net-next v8 0/4] send credit update during setting
+ SO_RCVLOWAT
+Message-ID: <20231213100957-mutt-send-email-mst@kernel.org>
+References: <20231211211658.2904268-1-avkrasnov@salutedevices.com>
+ <20231212105423-mutt-send-email-mst@kernel.org>
+ <d27f22f0-0f1e-e1bb-5b13-a524dc6e94d7@salutedevices.com>
+ <20231212111131-mutt-send-email-mst@kernel.org>
+ <7b362aef-6774-0e08-81e9-0a6f7f616290@salutedevices.com>
+ <ucmekzurgt3zcaezzdkk6277ukjmwaoy6kdq6tzivbtqd4d32b@izqbcsixgngk>
+ <402ea723-d154-45c9-1efe-b0022d9ea95a@salutedevices.com>
+ <20231213100518-mutt-send-email-mst@kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-GUID: JYEzZpHpn5zvwED_DEEpxvkzl7FFK0K5
-X-Proofpoint-ORIG-GUID: JYEzZpHpn5zvwED_DEEpxvkzl7FFK0K5
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-09_02,2023-12-07_01,2023-05-22_02
-X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20231213100518-mutt-send-email-mst@kernel.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Elad Nachman <enachman@marvell.com>
+On Wed, Dec 13, 2023 at 10:05:44AM -0500, Michael S. Tsirkin wrote:
+> On Wed, Dec 13, 2023 at 12:08:27PM +0300, Arseniy Krasnov wrote:
+> > 
+> > 
+> > On 13.12.2023 11:43, Stefano Garzarella wrote:
+> > > On Tue, Dec 12, 2023 at 08:43:07PM +0300, Arseniy Krasnov wrote:
+> > >>
+> > >>
+> > >> On 12.12.2023 19:12, Michael S. Tsirkin wrote:
+> > >>> On Tue, Dec 12, 2023 at 06:59:03PM +0300, Arseniy Krasnov wrote:
+> > >>>>
+> > >>>>
+> > >>>> On 12.12.2023 18:54, Michael S. Tsirkin wrote:
+> > >>>>> On Tue, Dec 12, 2023 at 12:16:54AM +0300, Arseniy Krasnov wrote:
+> > >>>>>> Hello,
+> > >>>>>>
+> > >>>>>>                                DESCRIPTION
+> > >>>>>>
+> > >>>>>> This patchset fixes old problem with hungup of both rx/tx sides and adds
+> > >>>>>> test for it. This happens due to non-default SO_RCVLOWAT value and
+> > >>>>>> deferred credit update in virtio/vsock. Link to previous old patchset:
+> > >>>>>> https://lore.kernel.org/netdev/39b2e9fd-601b-189d-39a9-914e5574524c@sberdevices.ru/
+> > >>>>>
+> > >>>>>
+> > >>>>> Patchset:
+> > >>>>>
+> > >>>>> Acked-by: Michael S. Tsirkin <mst@redhat.com>
+> > >>>>
+> > >>>> Thanks!
+> > >>>>
+> > >>>>>
+> > >>>>>
+> > >>>>> But I worry whether we actually need 3/8 in net not in net-next.
+> > >>>>
+> > >>>> Because of "Fixes" tag ? I think this problem is not critical and reproducible
+> > >>>> only in special cases, but i'm not familiar with netdev process so good, so I don't
+> > >>>> have strong opinion. I guess @Stefano knows better.
+> > >>>>
+> > >>>> Thanks, Arseniy
+> > >>>
+> > >>> Fixes means "if you have that other commit then you need this commit
+> > >>> too". I think as a minimum you need to rearrange patches to make the
+> > >>> fix go in first. We don't want a regression followed by a fix.
+> > >>
+> > >> I see, ok, @Stefano WDYT? I think rearrange doesn't break anything, because this
+> > >> patch fixes problem that is not related with the new patches from this patchset.
+> > > 
+> > > I agree, patch 3 is for sure net material (I'm fine with both rearrangement or send it separately), but IMHO also patch 2 could be.
+> > > I think with the same fixes tag, since before commit b89d882dc9fc ("vsock/virtio: reduce credit update messages") we sent a credit update
+> > > for every bytes we read, so we should not have this problem, right?
+> > 
+> > Agree for 2, so I think I can rearrange: two fixes go first, then current 0001, and then tests. And send it as V9 for 'net' only ?
+> > 
+> > Thanks, Arseniy
+> 
+> 
+> hmm why not net-next?
 
-Some i2c slaves, mainly SFPs, might cause the bus to lose arbitration
-while slave is in the middle of responding.
-This means that the i2c slave has not finished the transmission, but
-the master has already finished toggling the clock, probably due to
-the slave missing some of the master's clocks.
-This was seen with Ubiquity SFP module.
-This is typically caused by slaves which do not adhere completely
-to the i2c standard.
+Oh I missed your previous discussion. I think everything in net-next is
+safer.  Having said that, I won't nack it net, either.
 
-The solution is to change the I2C mode from mpps to gpios, and toggle
-the i2c_scl gpio to emulate bus clock toggling, so slave will finish
-its transmission, driven by the manual clock toggling, and will release
-the i2c bus.
-
-Signed-off-by: Elad Nachman <enachman@marvell.com>
----
- drivers/i2c/busses/i2c-mv64xxx.c | 118 ++++++++++++++++++++++++++++++-
- 1 file changed, 117 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/i2c/busses/i2c-mv64xxx.c b/drivers/i2c/busses/i2c-mv64xxx.c
-index dc160cbc3155..9d80cb393283 100644
---- a/drivers/i2c/busses/i2c-mv64xxx.c
-+++ b/drivers/i2c/busses/i2c-mv64xxx.c
-@@ -26,6 +26,7 @@
- #include <linux/clk.h>
- #include <linux/err.h>
- #include <linux/delay.h>
-+#include <linux/of_gpio.h>
- 
- #define MV64XXX_I2C_ADDR_ADDR(val)			((val & 0x7f) << 1)
- #define MV64XXX_I2C_BAUD_DIV_N(val)			(val & 0x7)
-@@ -104,6 +105,7 @@ enum {
- 	MV64XXX_I2C_ACTION_RCV_DATA,
- 	MV64XXX_I2C_ACTION_RCV_DATA_STOP,
- 	MV64XXX_I2C_ACTION_SEND_STOP,
-+	MV64XXX_I2C_ACTION_UNLOCK_BUS
- };
- 
- struct mv64xxx_i2c_regs {
-@@ -150,6 +152,12 @@ struct mv64xxx_i2c_data {
- 	bool			clk_n_base_0;
- 	struct i2c_bus_recovery_info	rinfo;
- 	bool			atomic;
-+	/* I2C mpp states & gpios needed for arbitration lost recovery */
-+	int			scl_gpio, sda_gpio;
-+	bool			soft_reset;
-+	struct pinctrl_state *i2c_mpp_state;
-+	struct pinctrl_state *i2c_gpio_state;
-+	struct pinctrl *pc;
- };
- 
- static struct mv64xxx_i2c_regs mv64xxx_i2c_regs_mv64xxx = {
-@@ -318,6 +326,11 @@ mv64xxx_i2c_fsm(struct mv64xxx_i2c_data *drv_data, u32 status)
- 		drv_data->state = MV64XXX_I2C_STATE_IDLE;
- 		break;
- 
-+	case MV64XXX_I2C_STATUS_MAST_LOST_ARB: /* 0x38 */
-+		drv_data->action = MV64XXX_I2C_ACTION_UNLOCK_BUS;
-+		drv_data->state = MV64XXX_I2C_STATE_IDLE;
-+		break;
-+
- 	case MV64XXX_I2C_STATUS_MAST_WR_ADDR_NO_ACK: /* 0x20 */
- 	case MV64XXX_I2C_STATUS_MAST_WR_NO_ACK: /* 30 */
- 	case MV64XXX_I2C_STATUS_MAST_RD_ADDR_NO_ACK: /* 48 */
-@@ -356,6 +369,9 @@ static void mv64xxx_i2c_send_start(struct mv64xxx_i2c_data *drv_data)
- static void
- mv64xxx_i2c_do_action(struct mv64xxx_i2c_data *drv_data)
- {
-+	struct pinctrl *pc;
-+	int i;
-+
- 	switch(drv_data->action) {
- 	case MV64XXX_I2C_ACTION_SEND_RESTART:
- 		/* We should only get here if we have further messages */
-@@ -409,6 +425,54 @@ mv64xxx_i2c_do_action(struct mv64xxx_i2c_data *drv_data)
- 			drv_data->reg_base + drv_data->reg_offsets.control);
- 		break;
- 
-+	case MV64XXX_I2C_ACTION_UNLOCK_BUS:
-+		if (!drv_data->soft_reset)
-+			break;
-+
-+		pc = drv_data->pc;
-+		if (IS_ERR(pc)) {
-+			dev_err(&drv_data->adapter.dev,
-+				"failed to get pinctrl for bus unlock!\n");
-+			break;
-+		}
-+
-+		/* Change i2c MPPs state to act as GPIOs: */
-+		if (pinctrl_select_state(pc, drv_data->i2c_gpio_state) >= 0) {
-+			/*
-+			 * Toggle i2c scl (serial clock) 10 times.
-+			 * 10 clocks are enough to transfer a full
-+			 * byte plus extra as seen from tests with
-+			 * Ubiquity SFP module causing the issue.
-+			 * This allows the slave that occupies
-+			 * the bus to transmit its remaining data,
-+			 * so it can release the i2c bus:
-+			 */
-+			for (i = 0; i < 10; i++) {
-+				gpio_set_value(drv_data->scl_gpio, 1);
-+				usleep_range(100, 1000);
-+				gpio_set_value(drv_data->scl_gpio, 0);
-+			};
-+
-+			/* restore i2c pin state to MPPs: */
-+			pinctrl_select_state(pc, drv_data->i2c_mpp_state);
-+		}
-+
-+		/*
-+		 * Trigger controller soft reset
-+		 * This register is write only, with none of the bits defined.
-+		 * So any value will do.
-+		 * 0x1 just seems more intuitive than 0x0 ...
-+		 */
-+		writel(0x1, drv_data->reg_base + drv_data->reg_offsets.soft_reset);
-+		/* wait for i2c controller to complete reset: */
-+		usleep_range(100, 1000);
-+		/*
-+		 * Need to proceed to the data stop condition generation clause.
-+		 * This is needed after clock toggling to put the i2c slave
-+		 * in the correct state.
-+		 */
-+		fallthrough;
-+
- 	case MV64XXX_I2C_ACTION_RCV_DATA_STOP:
- 		drv_data->msg->buf[drv_data->byte_posn++] =
- 			readl(drv_data->reg_base + drv_data->reg_offsets.data);
-@@ -985,6 +1049,7 @@ mv64xxx_i2c_probe(struct platform_device *pd)
- {
- 	struct mv64xxx_i2c_data		*drv_data;
- 	struct mv64xxx_i2c_pdata	*pdata = dev_get_platdata(&pd->dev);
-+	struct pinctrl *pc;
- 	int	rc;
- 
- 	if ((!pdata && !pd->dev.of_node))
-@@ -1040,6 +1105,47 @@ mv64xxx_i2c_probe(struct platform_device *pd)
- 	if (rc == -EPROBE_DEFER)
- 		return rc;
- 
-+	/*
-+	 * Start with arbitration lost soft reset enabled as to false.
-+	 * Try to locate the necessary items in the device tree to
-+	 * make this feature work.
-+	 * Only after we verify that the device tree contains all of
-+	 * the needed information and that it is sound and usable,
-+	 * then we enable this flag.
-+	 * This information should be defined, but the driver maintains
-+	 * backward compatibility with old dts files, so it will not fail
-+	 * the probe in case these are missing.
-+	 */
-+	drv_data->soft_reset = false;
-+	pc = pinctrl_get(&pd->dev);
-+	if (!IS_ERR(pc)) {
-+		drv_data->pc = pc;
-+		drv_data->i2c_mpp_state =
-+			pinctrl_lookup_state(pc, "default");
-+		drv_data->i2c_gpio_state =
-+			pinctrl_lookup_state(pc, "gpio");
-+		drv_data->scl_gpio =
-+			of_get_named_gpio(pd->dev.of_node, "scl-gpios", 0);
-+		drv_data->sda_gpio =
-+			of_get_named_gpio(pd->dev.of_node, "sda-gpios", 0);
-+
-+		if (!IS_ERR(drv_data->i2c_gpio_state) &&
-+		    !IS_ERR(drv_data->i2c_mpp_state) &&
-+		    gpio_is_valid(drv_data->scl_gpio) &&
-+		    gpio_is_valid(drv_data->sda_gpio)) {
-+			rc = devm_gpio_request_one(&pd->dev, drv_data->scl_gpio,
-+						   GPIOF_DIR_OUT, NULL);
-+			rc |= devm_gpio_request_one(&pd->dev, drv_data->sda_gpio,
-+						    GPIOF_DIR_OUT, NULL);
-+			if (!rc)
-+				drv_data->soft_reset = true;
-+		}
-+	}
-+
-+	if (!drv_data->soft_reset)
-+		dev_info(&pd->dev,
-+			"mv64xxx: missing arbitration-lost recovery definitions in dts file\n");
-+
- 	drv_data->adapter.dev.parent = &pd->dev;
- 	drv_data->adapter.algo = &mv64xxx_i2c_algo;
- 	drv_data->adapter.owner = THIS_MODULE;
-@@ -1079,7 +1185,8 @@ mv64xxx_i2c_probe(struct platform_device *pd)
- 	pm_runtime_disable(&pd->dev);
- 	if (!pm_runtime_status_suspended(&pd->dev))
- 		mv64xxx_i2c_runtime_suspend(&pd->dev);
--
-+	if (!IS_ERR(drv_data->pc))
-+		pinctrl_put(drv_data->pc);
- 	return rc;
- }
- 
-@@ -1088,6 +1195,15 @@ mv64xxx_i2c_remove(struct platform_device *pd)
- {
- 	struct mv64xxx_i2c_data		*drv_data = platform_get_drvdata(pd);
- 
-+	if (!IS_ERR(drv_data->pc))
-+		pinctrl_put(drv_data->pc);
-+	if (drv_data->soft_reset) {
-+		devm_gpiod_put(drv_data->adapter.dev.parent,
-+			       gpio_to_desc(drv_data->scl_gpio));
-+		devm_gpiod_put(drv_data->adapter.dev.parent,
-+			       gpio_to_desc(drv_data->sda_gpio));
-+	}
-+
- 	i2c_del_adapter(&drv_data->adapter);
- 	free_irq(drv_data->irq, drv_data);
- 	pm_runtime_disable(&pd->dev);
--- 
-2.25.1
+> > > 
+> > > So, maybe all the series could be "net".
+> > > 
+> > > Thanks,
+> > > Stefano
+> > > 
 
