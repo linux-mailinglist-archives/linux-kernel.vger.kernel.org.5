@@ -2,198 +2,331 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 821B481210E
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 22:58:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 874F9812111
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 22:59:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442645AbjLMV6s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 16:58:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43518 "EHLO
+        id S1442726AbjLMV72 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 16:59:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51174 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229772AbjLMV6q (ORCPT
+        with ESMTP id S229772AbjLMV70 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 16:58:46 -0500
-Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EFCCE0
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 13:58:52 -0800 (PST)
-Received: by mail-pg1-x52e.google.com with SMTP id 41be03b00d2f7-5c690c3d113so6249443a12.1
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 13:58:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1702504732; x=1703109532; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=GVpOLjrGhdEhg/cul7r0ldAtMuNzrhzuf3xlTocro5U=;
-        b=VLqYj4zXL96kBZ8tYGOCvtuLIQR0/qytdpW9wnsuwui6Zz3f7pm5bcGC+4xn+h+maQ
-         fndlZzxh8uIfs4wLZkbidwJ8d5X3xLIc7osMqfp3RkqRfhdY2cJ/YYAeOIvtsr6M0bc9
-         4bsCpxWpZo4J5GzpfSNpunFy7fzXyeSAPRHZQ452XQ8T9QIOZaxiEyC2ouMQL+dh8sLE
-         5oJEBvdRjTnZnPnf+MYE8Y0624TDyt/L0VZJ9BqYtHaDQTqNEJGNFce7mby9MjPrB756
-         MOBLtWOTmELBbBSQDvGGvHwHMV8V1U9PI9gx3UUO30kzuR/h6sUWboGTV6ctng4lSxff
-         OMdw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702504732; x=1703109532;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=GVpOLjrGhdEhg/cul7r0ldAtMuNzrhzuf3xlTocro5U=;
-        b=p0j9ku62P+VIUWfRWVkCaIJJXCtAolRp8QHHRB21HY9xgErNewmDRyrPbtSYFMzEei
-         B1vigygAY5U7t47KJRKfWXwZxM6BMYKchYlRLuYnPQ0DoPvQfV+RFZ5m3BPACKo2EgU2
-         Xmts2L35V73WdwjCsf0qItxP0Td5hrI6KI9fMc6kjcu8bgP/BF0sLTF+v5U6VpW8GyMY
-         BSNe60XjFncy/K177n4UqPplZaOOB4dyKRS33g77wVpdPtkuX+1fr4Z889BMg6uR69GQ
-         zl4zByIvwqkrlXfZfFKdyCc+5ZNm1MsBjyzGUeRvWs6ZDekmPxM1tP5ZUIZd5AwHIXBJ
-         aHIw==
-X-Gm-Message-State: AOJu0Yz0jbMkMkw/w2ncQ+RtJICeEqRHjLAV7veEXYfaqeOY29JUf8HO
-        NYtoFM0cp65gO2M8gK0Yc46Z1w==
-X-Google-Smtp-Source: AGHT+IHkFCe1DJSdViEkfDewaFZlFcGMbIOKXlUGvJ0SKAGH+lF0wU5Tz+alrhzOGi7OyQn5PfHRiw==
-X-Received: by 2002:a17:902:fe82:b0:1cf:b12a:a9eb with SMTP id x2-20020a170902fe8200b001cfb12aa9ebmr7861394plm.19.1702504731792;
-        Wed, 13 Dec 2023 13:58:51 -0800 (PST)
-Received: from dread.disaster.area (pa49-180-125-5.pa.nsw.optusnet.com.au. [49.180.125.5])
-        by smtp.gmail.com with ESMTPSA id c7-20020a170902d48700b001d0c1281ef5sm10995764plg.89.2023.12.13.13.58.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Dec 2023 13:58:51 -0800 (PST)
-Received: from dave by dread.disaster.area with local (Exim 4.96)
-        (envelope-from <david@fromorbit.com>)
-        id 1rDXFg-007vVp-1G;
-        Thu, 14 Dec 2023 08:58:48 +1100
-Date:   Thu, 14 Dec 2023 08:58:48 +1100
-From:   Dave Chinner <david@fromorbit.com>
-To:     Dave Chinner <dchinner@redhat.com>
-Cc:     Alexander Potapenko <glider@google.com>,
-        syzbot+a6d6b8fffa294705dbd8@syzkaller.appspotmail.com, hch@lst.de,
-        davem@davemloft.net, herbert@gondor.apana.org.au,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, linux-xfs@vger.kernel.org
-Subject: Re: [syzbot] [crypto?] KMSAN: uninit-value in __crc32c_le_base (3)
-Message-ID: <ZXopGGh/YqNIdtMJ@dread.disaster.area>
-References: <000000000000f66a3005fa578223@google.com>
- <20231213104950.1587730-1-glider@google.com>
- <ZXofF2lXuIUvKi/c@rh>
+        Wed, 13 Dec 2023 16:59:26 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3E42E0;
+        Wed, 13 Dec 2023 13:59:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1702504773; x=1734040773;
+  h=message-id:date:subject:to:cc:references:from:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=99csRUN/INXJSUkMiziUJt3IOhapRZKiDQW37ke+isY=;
+  b=bdn4qks8puE5XbZSlsPjlLGTmpWSK50DNnLmzJVj1FMudLRyPF71dYwm
+   anoo1MVL2kOvl2aY8mJjdYQ7DxzToZsE3p+Y8qD0NPh9eAA+3GrNhpfYg
+   PptH2tbQb9sOg6y3t6T5/XCmoH7OJxo0cA1WnAbnB69SaTu3FKtTJY6qi
+   JXXWc2gv0A4bbzoDEY/HtvFKGdQorbjnC18jnTlgQZgAx8l5Y10ioB8jg
+   42YjOT8zz34RwWaha4OFrQdiGahMBzP6og4FLg2iWxKUtKjAJNr40k7I0
+   ricW1zN0IhBiN26GyoZDO2zrgRS3Lzk/vr6ma1Zr3879O/vWiPzXGN5VF
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10923"; a="2204272"
+X-IronPort-AV: E=Sophos;i="6.04,274,1695711600"; 
+   d="scan'208";a="2204272"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Dec 2023 13:59:32 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10923"; a="947331564"
+X-IronPort-AV: E=Sophos;i="6.04,274,1695711600"; 
+   d="scan'208";a="947331564"
+Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
+  by orsmga005.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 13 Dec 2023 13:59:32 -0800
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Wed, 13 Dec 2023 13:59:31 -0800
+Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
+ fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Wed, 13 Dec 2023 13:59:31 -0800
+Received: from NAM02-DM3-obe.outbound.protection.outlook.com (104.47.56.40) by
+ edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Wed, 13 Dec 2023 13:59:31 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=OwdsmMmNxQuf+agTCc47spNFZoP43T7xoTMfCNk060qQBAwd+mZ2W3VniIDM8u5+9DFYiGtxkyV+BIDGM+QZz4AjqOg15GY8J74oHrU+tgmzpl1KJ8pwM1serVwvrVgd0T8nJKQ2BLvqMvC2ao0XdUXQh6dfKbMW7d7bhZ+/sEjj3/taIhfa1RES46rJqeKIEX250PEexZSEj84xDHIdXZEbHY14oBPc7XfXs2/jdRKc18M+RHTx7LOekKUzlen2S7sxqw7F1luRn/OiRHfkAYjru42mPUZ+Lo+t9BCdJjuCgexQChJawSymDYClNxn7pzZwcs1RmU6QqggM5jMTUg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=MdX1hOXNO4A1snTS2YWnG/uXHbvY0UYH6enY01KQcwk=;
+ b=M3izsv9TrxWQlZhr3KXoHY36hTrOQZpax9/ee9rDssbPvhgKs2ykEdMbWHPdTSKcGLJzsl1ct/nDP6Y9KIwnARJz3kkSIOJvxyj0cmIXFraQ62dad450dlaGVreSMNb/F0/R1mNabmbJzIZ6nKsDnWS73IpfPdf3QHkaHAWWQS8viC1h082La1eVSbTaQuXk/7FjkkBmDmRLGz8q204kMxynsE2ueN5vU6wATe9Dl+SWBThJmG14zOCKLpgRq0dlPL/ZSEZapipCkIJzln2TuscHOSdkdFeyAaVmYvX23I4ftxst1fbuJWjnvg06g7cPr2+RVMAey/tY0StLhrPRbA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from SJ2PR11MB7573.namprd11.prod.outlook.com (2603:10b6:a03:4d2::10)
+ by PH0PR11MB5925.namprd11.prod.outlook.com (2603:10b6:510:143::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7091.26; Wed, 13 Dec
+ 2023 21:59:29 +0000
+Received: from SJ2PR11MB7573.namprd11.prod.outlook.com
+ ([fe80::6710:537d:b74:f1e5]) by SJ2PR11MB7573.namprd11.prod.outlook.com
+ ([fe80::6710:537d:b74:f1e5%5]) with mapi id 15.20.7068.025; Wed, 13 Dec 2023
+ 21:59:29 +0000
+Message-ID: <04650d92-fb80-49e2-87b7-4f9dbec922b8@intel.com>
+Date:   Wed, 13 Dec 2023 13:59:19 -0800
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 23/29] selftests/resctrl: Restore the CPU affinity
+ after CAT test
+Content-Language: en-US
+To:     =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+        <linux-kselftest@vger.kernel.org>, Shuah Khan <shuah@kernel.org>,
+        "Shaopeng Tan" <tan.shaopeng@jp.fujitsu.com>,
+        =?UTF-8?Q?Maciej_Wiecz=C3=B3r-Retman?= 
+        <maciej.wieczor-retman@intel.com>,
+        Fenghua Yu <fenghua.yu@intel.com>
+CC:     <linux-kernel@vger.kernel.org>
+References: <20231211121826.14392-1-ilpo.jarvinen@linux.intel.com>
+ <20231211121826.14392-24-ilpo.jarvinen@linux.intel.com>
+From:   Reinette Chatre <reinette.chatre@intel.com>
+In-Reply-To: <20231211121826.14392-24-ilpo.jarvinen@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: MW4PR04CA0259.namprd04.prod.outlook.com
+ (2603:10b6:303:88::24) To SJ2PR11MB7573.namprd11.prod.outlook.com
+ (2603:10b6:a03:4d2::10)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZXofF2lXuIUvKi/c@rh>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SJ2PR11MB7573:EE_|PH0PR11MB5925:EE_
+X-MS-Office365-Filtering-Correlation-Id: 95c513e1-3996-41fd-0a79-08dbfc26c7c7
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: MEzoi8D6sw4JJCCdcAufwzqI13rS5cummeKB8KCEr1EYCcuwPe1k1v0YoLK0tWNQajd16tS1rA/3XYTDUNOuwUGrFYKMKvXmLUrNa78kZ0CDeUMPrmjvVn6Fhi0kpUnb4wjgoLah9BMEVpucAyoI32qSvgumA9V+BP0n9fhv3IaGsp1BsXGsLsIsHDoJIR2a8t+AVZAtd97CqmtJwjCNI6Tj8CkVOcNYWUD+1MJ6G6noq+KmRVOl44JHopToGuMdXUIL2mSVm+sE5CFBpYdCyu175gD+jm04mpEk5ZakMovoQJvi4jvhgk9ng41CmJxVzyzHu1f7gEgp/lLJD0WMlpVi7pgyhBsIjamy8cJOyc1cVOk/JikKdoF35wC4yH+jKfp1OoFIbA9R1XiN8Y/6wpgYJVl1dvxcvGXlDKcTkk/+PKQlZBdNhcTgFsMxJnDO0nA9hSsjvJAg0YdPuPK3RUzWVj+un6fzhKLYyaBF1eiRkvHOUGKxprXnnQTForLKqgtLL7Ci1iPP9++oY/X/VQNCOl/gg9csIz/mKCw/bujiScF/qkC3w/lwJKc1CjzHeH3c+b56839omBl21AIkN6B/rWYHHZ676a5vLJkNnaHGioOC+yZALWF+ShD9WxC5oumiXoDJjlGFF3UicpPbfQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ2PR11MB7573.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(366004)(396003)(39860400002)(376002)(136003)(230922051799003)(1800799012)(64100799003)(186009)(451199024)(66574015)(2616005)(26005)(6506007)(6512007)(6666004)(83380400001)(5660300002)(4326008)(44832011)(8936002)(8676002)(41300700001)(2906002)(6486002)(53546011)(478600001)(316002)(6636002)(66556008)(66946007)(110136005)(66476007)(86362001)(31696002)(82960400001)(38100700002)(36756003)(31686004)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?T0N4M1pTZTVrS0tkRUcwQjFSdjRXYzBYQ2k0ZmNVUUNFRHIzNVdyZkducHh6?=
+ =?utf-8?B?QSs3N2JCZUNPOGhHS2tuUkRsWkthek81ckYvSHcvaTI4MThzYlFpMnR5TTVa?=
+ =?utf-8?B?L2gwb0VwZ2UvMFVzMlpnRlVGUjNrR2RCY1VvaTh2TzNBNUpCV0RZaHpQYlF6?=
+ =?utf-8?B?M0V4c3prd0RYVHdJYkxqOVdpRUR0NTZvZXBqSFZVSnQzMWx5bnE1UXR3NWE3?=
+ =?utf-8?B?RXMveVYvejFZTThwL2VZOVBZaFdpcEIrS3p5eUxXcE9keHNnZ1hhNThVdzlN?=
+ =?utf-8?B?K1ZsSXlMNzFnYk9XN05Ua3N0V1RZc1hqT2toc2QzTG9peTVtdlF1bGNkK1JJ?=
+ =?utf-8?B?a1c5bDdua2h2alFoN2lhdkl6ei8zUndmVWFGdkpJNjh0T29TTndzcC9qYmRH?=
+ =?utf-8?B?eUE5ZkZrV001aHRtckh4RUJaK0JTK0dVb01mcGpvOGxOSlVlbU9RNTFWcXc2?=
+ =?utf-8?B?cVdrQVo1SFVXVzU4TnlNTWw2aWJHanlpVEwzOUlUU1E2dExwRFBuSHZ3SXg2?=
+ =?utf-8?B?Z2w4clU4MlJlMWt1ZkI3T3hlQ1BzaFJnaWtCOTJ1ek8wQ2FsYUp2UWNuQVZW?=
+ =?utf-8?B?akIxbUpXUlNHL0t3Z05LUjlla3VPbzk1cExheXRhZ1V4ODRBTXMzTjRhQkFV?=
+ =?utf-8?B?TmUvUmd0L3NlTDQweTVHR3FnOW1BQWYvYnhic2tRd09QOTRRYXFtZDdEYWRt?=
+ =?utf-8?B?clQwWGtySkRnUVNoQ0xlY2dmd21RbVgvZ1VSZWJFRlk0aDJqTmg1Z3NaYXRP?=
+ =?utf-8?B?b0VNU3FJQ3NmV2s5Z25oR1F3ckkyTmJ0Q3FxNUlkVXRlMVB1YnU0WWcrWnk4?=
+ =?utf-8?B?bUpjWVpWU2ZpL25yaXhwbnFDUHdUV2x2d3ZSRWRRaEJjVDVUY2dwdldiUk9H?=
+ =?utf-8?B?TEEzUERzK2ROcHVWRWlXSWUvNjhCOXZxNk9HUEFka0ZQM2s1bUhmU0I5eGdh?=
+ =?utf-8?B?L2MzV2Z5dEg3YzZ4Q3E0eWdKUFU4RTljd1BrejVRMEphQlFVQ2ZPU1hmWmQz?=
+ =?utf-8?B?RjJLa0NRR0txOGxHc0hmeHVwRXY2SGVTcDBpb01Ucjh0RDJRWGZMT3RwUTcy?=
+ =?utf-8?B?MGp3eng3QVVSeFkrN04zNTVpc25tRlQvdnBMVDIxSXBPdExXUUVJdm1XNnZ6?=
+ =?utf-8?B?WStnRjBJTEZ6QnFlczYwM0ZUTURhL0s4THN2L3FWNEx5TTh3bVRlMHFJMTlO?=
+ =?utf-8?B?SEgwRFYxTi91SE9qSkYxYmt1NXp6TWRjbkM5Uy91RFhSQk1NMGluV3I1cGc5?=
+ =?utf-8?B?bDJ3d2U2Z1R0QldOWmFwUHRjcmh0bWc4SVlMN1ZZRWRIZCtKVFdhdlVnWGh6?=
+ =?utf-8?B?WE5SWXFySENXNUZmeE5jQmNtemVXSVFNbW5zYnl2Z1RoZUFCYUVZbnB4Y1Vv?=
+ =?utf-8?B?eGVMeXhNSWZ2RC9DcElpVURYTllrZjgycTU4OWhqT1o2WktjcGRyWGlQbW95?=
+ =?utf-8?B?MGk3Uy9Dd1U0N2lwQzRSUGVnQWRaSUpIUjhkbXc0YjhScjM1VkNsS3IvenlZ?=
+ =?utf-8?B?T3duTG9rc3pOdUw4eXh0YzBpRC9aKzBhSk9JdEVwZWZGMXZSMm1zKzgrbjdD?=
+ =?utf-8?B?akdVclBrZVVTcmhnR2ZGVE80ai81bWQ1U2g1Z1p6ZzMwVVVmSStqZVpKNzZI?=
+ =?utf-8?B?V2tZMFZMMWI0c2swUXh0T0hiWmRQM0FyczJqL2NrdkU5UkNCOVM2SWlaKzY2?=
+ =?utf-8?B?Qm1PcTRqTEQwZ2hqUVgrUmZNR0dJdjd4bmZDSnpZVE5XdDFQb29wK0cxYW5i?=
+ =?utf-8?B?Y0NlTnJkcW9MNzViSHBRUHZZVVM2R1JHc2o0eTNwU1RmYUx4YlFRdmVGV0V2?=
+ =?utf-8?B?TWgvei8vSTIwalZtWkxOdzhIZFRvUzIxRi9SUmRpeUlIbVkvSTV5VTJRVE1Z?=
+ =?utf-8?B?VGFyOFZQMU1HUXZzbG54TW5ZSE4xbTJOeXN1anVFR0NvbnpESWFCWERlajdB?=
+ =?utf-8?B?WGIyRTBuRU5MZUV5amw1eGRmeGEzR3pucGRLbDREdUlnUXRwKy9ydDFpMlJy?=
+ =?utf-8?B?MURGQm1DTVJVM3U1UkpoVUJ1R2V2NWNialplWGozRWFXeWxoL3BYaXh4TDlu?=
+ =?utf-8?B?OVBlYlJDeXJjSnp6YW4xOVhMMVVrSjJvdlNrMXMxeEo0UVpZR29LRWlRZ2RS?=
+ =?utf-8?B?VEtuZlZ4MGczNUx2MG5KWnpvQU5nY1hXTHY2YlRhSERNTWc3UXpKbkd4V1do?=
+ =?utf-8?B?a3c9PQ==?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 95c513e1-3996-41fd-0a79-08dbfc26c7c7
+X-MS-Exchange-CrossTenant-AuthSource: SJ2PR11MB7573.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Dec 2023 21:59:29.5394
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: WA0EwAJzknR3cKdRD3vq44C+v6Pao5/zPJCHRW6cJo6UKswPHKyZyCuKRRR4TBMtaYlBWwZla2RzgAteMKAKWYl5Bik9Hvi9BDLU4jHZoE8=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR11MB5925
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 14, 2023 at 08:16:07AM +1100, Dave Chinner wrote:
-> [cc linux-xfs@vger.kernel.org because that's where all questions
-> about XFS stuff should be directed, not to random individual
-> developers. ]
+Hi Ilpo,
+
+On 12/11/2023 4:18 AM, Ilpo Järvinen wrote:
+> CAT test does not reset the CPU affinity after the benchmark.
+> This is relatively harmless as is because CAT test is the last
+> benchmark to run, however, more tests may be added later.
 > 
-> On Wed, Dec 13, 2023 at 11:49:50AM +0100, Alexander Potapenko wrote:
-> > Hi Christoph, Dave,
-> > 
-> > The repro provided by Xingwei indeed works.
+> Store the CPU affinity the first time taskset_benchmark() is run and
+> add taskset_restore() which the test can call to reset the CPU mask to
+> its original value.
+> 
+> Signed-off-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
+> ---
+> 
+> v3:
+> - New patch
+> ---
+>  tools/testing/selftests/resctrl/cat_test.c    | 13 +++++---
+>  tools/testing/selftests/resctrl/resctrl.h     |  3 +-
+>  tools/testing/selftests/resctrl/resctrl_val.c |  2 +-
+>  tools/testing/selftests/resctrl/resctrlfs.c   | 33 +++++++++++++++++--
+>  4 files changed, 42 insertions(+), 9 deletions(-)
+> 
+> diff --git a/tools/testing/selftests/resctrl/cat_test.c b/tools/testing/selftests/resctrl/cat_test.c
+> index b79916069788..fa95433297c9 100644
+> --- a/tools/testing/selftests/resctrl/cat_test.c
+> +++ b/tools/testing/selftests/resctrl/cat_test.c
+> @@ -156,6 +156,7 @@ static int cat_test(struct resctrl_val_param *param, size_t span, unsigned long
+>  	char *resctrl_val = param->resctrl_val;
+>  	struct perf_event_read pe_read;
+>  	struct perf_event_attr pea;
+> +	cpu_set_t old_affinity;
+>  	unsigned char *buf;
+>  	char schemata[64];
+>  	int ret, i, pe_fd;
+> @@ -167,7 +168,7 @@ static int cat_test(struct resctrl_val_param *param, size_t span, unsigned long
+>  	bm_pid = getpid();
+>  
+>  	/* Taskset benchmark to specified cpu */
+> -	ret = taskset_benchmark(bm_pid, param->cpu_no);
+> +	ret = taskset_benchmark(bm_pid, param->cpu_no, &old_affinity);
+>  	if (ret)
+>  		return ret;
+>  
+> @@ -175,13 +176,15 @@ static int cat_test(struct resctrl_val_param *param, size_t span, unsigned long
+>  	ret = write_bm_pid_to_resctrl(bm_pid, param->ctrlgrp, param->mongrp,
+>  				      resctrl_val);
+>  	if (ret)
+> -		return ret;
+> +		goto reset_affinity;
+>  
+>  	perf_event_attr_initialize(&pea, PERF_COUNT_HW_CACHE_MISSES);
+>  	perf_event_initialize_read_format(&pe_read);
+>  	pe_fd = perf_open(&pea, bm_pid, param->cpu_no);
+> -	if (pe_fd < 0)
+> -		return pe_fd;
+> +	if (pe_fd < 0) {
+> +		ret = -1;
+> +		goto reset_affinity;
+> +	}
+>  
+>  	buf = alloc_buffer(span, 1);
+>  	if (!buf) {
+> @@ -220,6 +223,8 @@ static int cat_test(struct resctrl_val_param *param, size_t span, unsigned long
+>  	free(buf);
+>  pe_close:
+>  	close(pe_fd);
+> +reset_affinity:
+> +	taskset_restore(bm_pid, &old_affinity);
+>  
+>  	return ret;
+>  }
+> diff --git a/tools/testing/selftests/resctrl/resctrl.h b/tools/testing/selftests/resctrl/resctrl.h
+> index da1f1b508aee..da62f4cd5add 100644
+> --- a/tools/testing/selftests/resctrl/resctrl.h
+> +++ b/tools/testing/selftests/resctrl/resctrl.h
+> @@ -98,7 +98,8 @@ int umount_resctrlfs(void);
+>  int validate_bw_report_request(char *bw_report);
+>  bool validate_resctrl_feature_request(const char *resource, const char *feature);
+>  char *fgrep(FILE *inf, const char *str);
+> -int taskset_benchmark(pid_t bm_pid, int cpu_no);
+> +int taskset_benchmark(pid_t bm_pid, int cpu_no, cpu_set_t *old_affinity);
+> +int taskset_restore(pid_t bm_pid, cpu_set_t *old_affinity);
+>  int write_schemata(char *ctrlgrp, char *schemata, int cpu_no,
+>  		   char *resctrl_val);
+>  int write_bm_pid_to_resctrl(pid_t bm_pid, char *ctrlgrp, char *mongrp,
+> diff --git a/tools/testing/selftests/resctrl/resctrl_val.c b/tools/testing/selftests/resctrl/resctrl_val.c
+> index d515850cc174..4aed974efa0f 100644
+> --- a/tools/testing/selftests/resctrl/resctrl_val.c
+> +++ b/tools/testing/selftests/resctrl/resctrl_val.c
+> @@ -777,7 +777,7 @@ int resctrl_val(const char * const *benchmark_cmd, struct resctrl_val_param *par
+>  	value.sival_ptr = (void *)benchmark_cmd;
+>  
+>  	/* Taskset benchmark to specified cpu */
+> -	ret = taskset_benchmark(bm_pid, param->cpu_no);
+> +	ret = taskset_benchmark(bm_pid, param->cpu_no, NULL);
+>  	if (ret)
+>  		goto out;
+>  
+> diff --git a/tools/testing/selftests/resctrl/resctrlfs.c b/tools/testing/selftests/resctrl/resctrlfs.c
+> index dffe42e11c6c..97760fadcddf 100644
+> --- a/tools/testing/selftests/resctrl/resctrlfs.c
+> +++ b/tools/testing/selftests/resctrl/resctrlfs.c
+> @@ -345,15 +345,25 @@ int get_mask_no_shareable(const char *cache_type, unsigned long *mask)
+>  
+>  /*
+>   * taskset_benchmark - Taskset PID (i.e. benchmark) to a specified cpu
+> - * @bm_pid:	PID that should be binded
+> - * @cpu_no:	CPU number at which the PID would be binded
+> + * @bm_pid:		PID that should be binded
+> + * @cpu_no:		CPU number at which the PID would be binded
+> + * @old_affinity:	When not NULL, set to old CPU affinity
+>   *
+>   * Return: 0 on success, < 0 on error.
+>   */
+> -int taskset_benchmark(pid_t bm_pid, int cpu_no)
+> +int taskset_benchmark(pid_t bm_pid, int cpu_no, cpu_set_t *old_affinity)
+>  {
+>  	cpu_set_t my_set;
+>  
+> +	if (old_affinity) {
+> +		CPU_ZERO(old_affinity);
+> +		if (sched_getaffinity(bm_pid, sizeof(*old_affinity),
+> +				      old_affinity)) {
+> +			ksft_perror("Unable to read previous CPU affinity");
 
-Can you please test the patch below?
+"previous" can be confusing here (it is not trying to determine something
+from the past but instead the current state). It can just be "Unable to read
+CPU affinity"
 
--Dave.
--- 
-Dave Chinner
-david@fromorbit.com
+> +			return -1;
+> +		}
+> +	}
+> +
+>  	CPU_ZERO(&my_set);
+>  	CPU_SET(cpu_no, &my_set);
+>  
+> @@ -366,6 +376,23 @@ int taskset_benchmark(pid_t bm_pid, int cpu_no)
+>  	return 0;
+>  }
+>  
+> +/*
+> + * taskset_restore - Taskset PID to the earlier CPU affinity
+> + * @bm_pid:		PID that should be reset
+> + * @old_affinity:	The old CPU affinity to restore
+> + *
+> + * Return: 0 on success, < 0 on error.
+> + */
+> +int taskset_restore(pid_t bm_pid, cpu_set_t *old_affinity)
+> +{
+> +	if (sched_setaffinity(bm_pid, sizeof(*old_affinity), old_affinity)) {
+> +		ksft_perror("Unable to restore taskset");
 
-xfs: initialise di_crc in xfs_log_dinode
+This message is not clear to me. How about "Unable to restore CPU affinity"?
 
-From: Dave Chinner <dchinner@redhat.com>
+> +		return -1;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+>  /*
+>   * create_grp - Create a group only if one doesn't exist
+>   * @grp_name:	Name of the group
 
-Alexander Potapenko report that KMSAN was issuing these warnings:
+Reviewed-by: Reinette Chatre <reinette.chatre@intel.com>
 
-kmalloc-ed xlog buffer of size 512 : ffff88802fc26200
-kmalloc-ed xlog buffer of size 368 : ffff88802fc24a00
-kmalloc-ed xlog buffer of size 648 : ffff88802b631000
-kmalloc-ed xlog buffer of size 648 : ffff88802b632800
-kmalloc-ed xlog buffer of size 648 : ffff88802b631c00
-xlog_write_iovec: copying 12 bytes from ffff888017ddbbd8 to ffff88802c300400
-xlog_write_iovec: copying 28 bytes from ffff888017ddbbe4 to ffff88802c30040c
-xlog_write_iovec: copying 68 bytes from ffff88802fc26274 to ffff88802c300428
-xlog_write_iovec: copying 188 bytes from ffff88802fc262bc to ffff88802c30046c
-=====================================================
-BUG: KMSAN: uninit-value in xlog_write_iovec fs/xfs/xfs_log.c:2227
-BUG: KMSAN: uninit-value in xlog_write_full fs/xfs/xfs_log.c:2263
-BUG: KMSAN: uninit-value in xlog_write+0x1fac/0x2600 fs/xfs/xfs_log.c:2532
- xlog_write_iovec fs/xfs/xfs_log.c:2227
- xlog_write_full fs/xfs/xfs_log.c:2263
- xlog_write+0x1fac/0x2600 fs/xfs/xfs_log.c:2532
- xlog_cil_write_chain fs/xfs/xfs_log_cil.c:918
- xlog_cil_push_work+0x30f2/0x44e0 fs/xfs/xfs_log_cil.c:1263
- process_one_work kernel/workqueue.c:2630
- process_scheduled_works+0x1188/0x1e30 kernel/workqueue.c:2703
- worker_thread+0xee5/0x14f0 kernel/workqueue.c:2784
- kthread+0x391/0x500 kernel/kthread.c:388
- ret_from_fork+0x66/0x80 arch/x86/kernel/process.c:147
- ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:242
-
-Uninit was created at:
- slab_post_alloc_hook+0x101/0xac0 mm/slab.h:768
- slab_alloc_node mm/slub.c:3482
- __kmem_cache_alloc_node+0x612/0xae0 mm/slub.c:3521
- __do_kmalloc_node mm/slab_common.c:1006
- __kmalloc+0x11a/0x410 mm/slab_common.c:1020
- kmalloc ./include/linux/slab.h:604
- xlog_kvmalloc fs/xfs/xfs_log_priv.h:704
- xlog_cil_alloc_shadow_bufs fs/xfs/xfs_log_cil.c:343
- xlog_cil_commit+0x487/0x4dc0 fs/xfs/xfs_log_cil.c:1574
- __xfs_trans_commit+0x8df/0x1930 fs/xfs/xfs_trans.c:1017
- xfs_trans_commit+0x30/0x40 fs/xfs/xfs_trans.c:1061
- xfs_create+0x15af/0x2150 fs/xfs/xfs_inode.c:1076
- xfs_generic_create+0x4cd/0x1550 fs/xfs/xfs_iops.c:199
- xfs_vn_create+0x4a/0x60 fs/xfs/xfs_iops.c:275
- lookup_open fs/namei.c:3477
- open_last_lookups fs/namei.c:3546
- path_openat+0x29ac/0x6180 fs/namei.c:3776
- do_filp_open+0x24d/0x680 fs/namei.c:3809
- do_sys_openat2+0x1bc/0x330 fs/open.c:1440
- do_sys_open fs/open.c:1455
- __do_sys_openat fs/open.c:1471
- __se_sys_openat fs/open.c:1466
- __x64_sys_openat+0x253/0x330 fs/open.c:1466
- do_syscall_x64 arch/x86/entry/common.c:51
- do_syscall_64+0x4f/0x140 arch/x86/entry/common.c:82
- entry_SYSCALL_64_after_hwframe+0x63/0x6b arch/x86/entry/entry_64.S:120
-
-Bytes 112-115 of 188 are uninitialized
-Memory access of size 188 starts at ffff88802fc262bc
-
-This is caused by the struct xfs_log_dinode not having the di_crc
-field initialised. Log recovery never uses this field (it is only
-present these days for on-disk format compatibility reasons) and so
-it's value is never checked so nothing in XFS has caught this.
-
-Further, none of the uninitialised memory access warning tools have
-caught this (despite catching other uninit memory accesses in the
-struct xfs_log_dinode back in 2017!) until recently. Alexander
-annotated the XFS code to get the dump of the actual bytes that were
-detected as uninitialised, and from that report it took me about 30s
-to realise what the issue was.
-
-The issue was introduced back in 2016 and every inode that is logged
-fails to initialise this field. This is no actual bad behaviour
-caused by this issue - I find it hard to even classify it as a
-bug...
-
-Reported-by: Alexander Potapenko <glider@google.com>
-Fixes: f8d55aa0523a ("xfs: introduce inode log format object")
-Signed-off-by: Dave Chinner <dchinner@redhat.com>
----
- fs/xfs/xfs_inode_item.c | 3 +++
- 1 file changed, 3 insertions(+)
-
-diff --git a/fs/xfs/xfs_inode_item.c b/fs/xfs/xfs_inode_item.c
-index 157ae90d3d52..0287918c03dc 100644
---- a/fs/xfs/xfs_inode_item.c
-+++ b/fs/xfs/xfs_inode_item.c
-@@ -557,6 +557,9 @@ xfs_inode_to_log_dinode(
- 		memset(to->di_pad2, 0, sizeof(to->di_pad2));
- 		uuid_copy(&to->di_uuid, &ip->i_mount->m_sb.sb_meta_uuid);
- 		to->di_v3_pad = 0;
-+
-+		/* dummy value for initialisation */
-+		to->di_crc = 0;
- 	} else {
- 		to->di_version = 2;
- 		to->di_flushiter = ip->i_flushiter;
+Reinette
