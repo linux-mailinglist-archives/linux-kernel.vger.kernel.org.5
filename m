@@ -2,159 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A87C810A88
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 07:42:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C16FA810A98
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 07:44:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233144AbjLMGml (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 01:42:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40640 "EHLO
+        id S233158AbjLMGod (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 01:44:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59210 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232909AbjLMGmj (ORCPT
+        with ESMTP id S232909AbjLMGoc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 01:42:39 -0500
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 200C4AD;
-        Tue, 12 Dec 2023 22:42:43 -0800 (PST)
-Received: from pps.filterd (m0360072.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3BD6RlAF022278;
-        Wed, 13 Dec 2023 06:42:25 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : content-type : in-reply-to :
- mime-version; s=pp1; bh=9GUj/Aho7/1TYDtk21H9qY+L2WM+l5YYCwXwZpStc8c=;
- b=r64kdaJG4nS+IPu+vyvPL88pPYTf4wOVarKYxhyEHuln+0bowUEpweWYEXFboKURLtQz
- zX+0XArNnkgTBQxDDil62guVrYrBBdwSz10iwj92JURSxYJ6w8q2SzlUw/vsjAPVtApf
- JrUt3ew+oX4Xck51K1DeX49Q3MS2s995pz2zoNYFX0HCshblY/6R68LoHVL5g0fDwP0y
- ClDkBpaudbhpaTySXhlMfgKukYdXIlvqSaldP8sK09kIgwfqhPLtguqj+opkJa9DlaIQ
- XSC5NxLrdDcV1R3aYZfJWs+Nh590BsYs0LqNBJST/XTbP1JpGL93H54JNSpqRv4EOp7a ig== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3uy7c58c9s-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 13 Dec 2023 06:42:25 +0000
-Received: from m0360072.ppops.net (m0360072.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3BD6T0Me025162;
-        Wed, 13 Dec 2023 06:42:24 GMT
-Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3uy7c58c9b-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 13 Dec 2023 06:42:24 +0000
-Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
-        by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3BD5Q3YA013864;
-        Wed, 13 Dec 2023 06:42:23 GMT
-Received: from smtprelay06.fra02v.mail.ibm.com ([9.218.2.230])
-        by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3uw5926bu9-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 13 Dec 2023 06:42:23 +0000
-Received: from smtpav05.fra02v.mail.ibm.com (smtpav05.fra02v.mail.ibm.com [10.20.54.104])
-        by smtprelay06.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3BD6gLEi43188908
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 13 Dec 2023 06:42:22 GMT
-Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id E13E120040;
-        Wed, 13 Dec 2023 06:42:21 +0000 (GMT)
-Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 42A8420043;
-        Wed, 13 Dec 2023 06:42:19 +0000 (GMT)
-Received: from li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com (unknown [9.43.51.82])
-        by smtpav05.fra02v.mail.ibm.com (Postfix) with ESMTPS;
-        Wed, 13 Dec 2023 06:42:19 +0000 (GMT)
-Date:   Wed, 13 Dec 2023 12:12:15 +0530
-From:   Ojaswin Mujoo <ojaswin@linux.ibm.com>
-To:     John Garry <john.g.garry@oracle.com>
-Cc:     linux-ext4@vger.kernel.org, "Theodore Ts'o" <tytso@mit.edu>,
-        Ritesh Harjani <ritesh.list@gmail.com>,
-        linux-kernel@vger.kernel.org,
-        "Darrick J . Wong" <djwong@kernel.org>,
-        linux-block@vger.kernel.org, linux-xfs@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, dchinner@redhat.com
-Subject: Re: [RFC 0/7] ext4: Allocator changes for atomic write support with
- DIO
-Message-ID: <ZXlSR8CTXjkeKxwk@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
-References: <cover.1701339358.git.ojaswin@linux.ibm.com>
- <8c06c139-f994-442b-925e-e177ef2c5adb@oracle.com>
- <ZW3WZ6prrdsPc55Z@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
- <de90e79b-83f2-428f-bac6-0754708aa4a8@oracle.com>
- <ZXbqVs0TdoDcJ352@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZXbqVs0TdoDcJ352@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: vAkBMKIFJ8wO00RLRC6t6Gf6QM4RHrja
-X-Proofpoint-GUID: Zf8h5KpoaOoIeOwSSmnViO2i-V5AgsRi
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        Wed, 13 Dec 2023 01:44:32 -0500
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C565CF
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 22:44:38 -0800 (PST)
+Received: by mail-wm1-x329.google.com with SMTP id 5b1f17b1804b1-40c580ba223so8997505e9.3
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 22:44:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1702449876; x=1703054676; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=sqb9HLXRupmLPjMGImMDXLcC75oDDVzgVthoSDs2V7c=;
+        b=EGhhSFu6CuhvZgDCWWrsQmoVWwZtqvW+X+UxhmF++9vybZVvTXBedF3/AUG9rYw4dh
+         mspfosdCapFGTZ8jWDFnS/E7E5tMl+DDVfE1N0UsArLZDIrlgAqv3aG2Q1GHG0NK/Frp
+         EUSQ4HyIlCXe9FyOGJNPCRu0XYbNVMSUwWjze54w6AeT5VCLjyLpuaNyhpjhr27QWtMt
+         2BQDnGREsvbGSVjffwjcoJ5oVLfY3f2ik53M68Yr/QOt44H6zgKwe4GzJa30I1V72HrG
+         4NrRUYlRzeIrQW+v4mIiE/au1tbmeFVqYbT+d1aBgJ5S4KY302EYkqKu52eBKieO19BF
+         UcQA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702449876; x=1703054676;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=sqb9HLXRupmLPjMGImMDXLcC75oDDVzgVthoSDs2V7c=;
+        b=Py2iVPH6+5vMEs9gx9+2tVvAmgfwMtiY2uGYEv0CtJpDc4BSQNbKSR7695lCsWPo7E
+         LnSKz5FdWDztj8BHLB8qga3ayEQr6HvZscAv2gq5v99ECMPQPV+auaRn77K0ClAT3E+y
+         3wb+D7XiJx+FPFSRaHx2w3kPzDjIs0lnfkV0aSwsykxPk1YbC64Ls+QJ6ZPeIIMktKFP
+         u6w9GZJqfTHucNfSULEgixigIwcxPfB9I1/fMtM3pw9tFOP3Wl+BafbWCf6Z147MHTrl
+         OwqTVqih+pPBD2N2FES3Eo6WeustoJbGgnn2HCO/qefLBQZNWG5zyq8LErYEicyr7Y0+
+         6NUA==
+X-Gm-Message-State: AOJu0Yz6MAsHMSp1EDipi3twIqMMYy3jQhhhD0GFCgJF+0Lo7UuaPOQD
+        1ZacjnGWJDGq6lP+FvGia2qgHg==
+X-Google-Smtp-Source: AGHT+IG3ik2GzEaveqhuLhT5xJoGFxr41LSj/+ZmVmVb2BxAv9TceemlPW6u35BKtYQA7zvFirsksQ==
+X-Received: by 2002:a05:600c:444c:b0:40b:3d6e:16b7 with SMTP id v12-20020a05600c444c00b0040b3d6e16b7mr3917555wmn.33.1702449876648;
+        Tue, 12 Dec 2023 22:44:36 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.218.27])
+        by smtp.gmail.com with ESMTPSA id w12-20020adfcd0c000000b003334010a849sm12356765wrm.109.2023.12.12.22.44.34
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 12 Dec 2023 22:44:36 -0800 (PST)
+Message-ID: <ce238248-6bac-41df-94ba-b494c5c09631@linaro.org>
+Date:   Wed, 13 Dec 2023 07:44:33 +0100
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-12_14,2023-12-12_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 adultscore=0
- mlxscore=0 priorityscore=1501 bulkscore=0 spamscore=0 malwarescore=0
- phishscore=0 clxscore=1015 lowpriorityscore=0 impostorscore=0
- mlxlogscore=965 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311290000 definitions=main-2312130047
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v5 2/3] dt-bindings: input: Add TouchNetix axiom
+ touchscreen
+Content-Language: en-US
+To:     Conor Dooley <conor@kernel.org>,
+        Kamel Bouhara <kamel.bouhara@bootlin.com>
+Cc:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Henrik Rydberg <rydberg@bitmath.org>,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, Marco Felsch <m.felsch@pengutronix.de>,
+        Jeff LaBundy <jeff@labundy.com>,
+        catalin.popescu@leica-geosystems.com,
+        mark.satterthwaite@touchnetix.com, bartp@baasheep.co.uk,
+        hannah.rossiter@touchnetix.com,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        bsp-development.geo@leica-geosystems.com
+References: <20231211121430.1689139-1-kamel.bouhara@bootlin.com>
+ <20231211121430.1689139-3-kamel.bouhara@bootlin.com>
+ <20231212-rework-bounce-f4d9d12362a4@spud>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20231212-rework-bounce-f4d9d12362a4@spud>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 11, 2023 at 04:24:14PM +0530, Ojaswin Mujoo wrote:
-> > > > looks ok so far, then write 4KB at offset 0:
-> > > > 
-> > > > # /test-pwritev2 -a -d -p 0 -l 4096  /root/mnt/file
-> > > > file=/root/mnt/file write_size=4096 offset=0 o_flags=0x4002 wr_flags=0x24
-> > 
-> > ...
-> > 
-> > > > Please note that I tested on my own dev branch, which contains changes over
-> > > > [1], but I expect it would not make a difference for this test.
-> > > Hmm this should not ideally happen, can you please share your test
-> > > script with me if possible?
-> > 
-> > It's doing nothing special, just RWF_ATOMIC flag is set for DIO write:
-> > 
-> > https://github.com/johnpgarry/linux/blob/236870d48ecb19c1cf89dc439e188182a0524cd4/samples/vfs/test-pwritev2.c
+On 12/12/2023 17:57, Conor Dooley wrote:
+> On Mon, Dec 11, 2023 at 01:14:28PM +0100, Kamel Bouhara wrote:
+>> Add the TouchNetix axiom I2C touchscreen device tree bindings
+>> documentation.
+>>
+>> Signed-off-by: Kamel Bouhara <kamel.bouhara@bootlin.com>
+>> ---
+>>  .../input/touchscreen/touchnetix,ax54a.yaml   | 64 +++++++++++++++++++
+>>  MAINTAINERS                                   |  6 ++
+>>  2 files changed, 70 insertions(+)
+>>  create mode 100644 Documentation/devicetree/bindings/input/touchscreen/touchnetix,ax54a.yaml
+>>
+>> diff --git a/Documentation/devicetree/bindings/input/touchscreen/touchnetix,ax54a.yaml b/Documentation/devicetree/bindings/input/touchscreen/touchnetix,ax54a.yaml
+>> new file mode 100644
+>> index 000000000000..cbdf48fc538b
+>> --- /dev/null
+>> +++ b/Documentation/devicetree/bindings/input/touchscreen/touchnetix,ax54a.yaml
+>> @@ -0,0 +1,64 @@
+>> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+>> +%YAML 1.2
+>> +---
+>> +$id: http://devicetree.org/schemas/input/touchscreen/touchnetix,ax54a.yaml#
+>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+>> +
+>> +title: TouchNetix Axiom series touchscreen controller
+>> +
+>> +maintainers:
+>> +  - Kamel Bouhara <kamel.bouhara@bootlin.com>
+>> +
+>> +allOf:
+>> +  - $ref: /schemas/input/touchscreen/touchscreen.yaml#
 > 
-> Thanks for the script, will try to replicate this today and get back to
-> you.
+> Weird, you add this ref here but do not actually allow any properties
+> from it since you have "additionalProperties: false" below.
 > 
+> What's the point of its inclusion?
 
-Hi John,
+It still brings the type of some fields or the constraints. However need
+of specifying "poll-interval" already points to missing
+unevaluatedProperties.
 
-So I don't seem to be able to hit the warn on:
 
-$ touch mnt/testfile
-$ ./test-pwritev2 -a -d -p 0 -l 4096 mnt/testfile
+Best regards,
+Krzysztof
 
-	file=mnt/testfile write_size=4096 offset=0 o_flags=0x4002 wr_flags=0x24
-	main wrote 4096 bytes at offset 0
-
-$ filefrag -v mnt/testfile
-
-	Filesystem type is: ef53
-	File size of testfile is 4096 (1 block of 4096 bytes)
-	ext:     logical_offset:        physical_offset: length:   expected: flags:
-		0:        0..       0:      32900..     32900:      1: last,eof
-
-$ ./test-pwritev2 -a -d -p 8192 -l 8192 mnt/testfile
-
-	file=mnt/testfile write_size=8192 offset=8192 o_flags=0x4002 wr_flags=0x24
-	main wrote 8192 bytes at offset 8192
-
-$ filefrag -v mnt/testfile
-
-	Filesystem type is: ef53
-	File size of mnt/testfile is 16384 (4 blocks of 4096 bytes)
-	 ext:     logical_offset:        physical_offset: length:   expected: flags:
-		0:        0..       0:      32900..     32900:      1:
-		1:        2..       3:      33288..     33289:      2: 32902: last,eof
-	mnt/testfile: 2 extents found
-
-Not sure why you are hitting the WARN_ON. The tree I used is:
-
-Latest ted/dev + your atomic patchset v1 + this patchset
-
-Regards,
-ojaswin
