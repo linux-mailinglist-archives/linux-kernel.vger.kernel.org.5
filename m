@@ -2,52 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BF74E810E21
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 11:15:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CB5A810E24
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 11:15:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233309AbjLMKPL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 05:15:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45754 "EHLO
+        id S233330AbjLMKPW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 05:15:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50144 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231482AbjLMKPJ (ORCPT
+        with ESMTP id S231482AbjLMKPV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 05:15:09 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2902511A
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 02:15:16 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 127B4C433C7;
-        Wed, 13 Dec 2023 10:15:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1702462515;
-        bh=BTwkCDF6j4V1ri2o7T7fV1zwgHRy2Zj5Vzv2QOjcckI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=cN9F2qWO/RcSxSEUILn89hMSiuSM53g0vOpeYMfeK+7XqBjlgTd0b+noDlyKYKeFY
-         yNqrJZIuSwZY7Lc+87O7EW1KJn/xRZ3gneO8WTBZMk9xJikuLuL/mcalV2Is0xK411
-         xEVAGYMmnyd2yjFwi+AqUmHjjJIm551lpdLEKvCFeLso564T5qqMoM9b4Gne0NIzZN
-         RaC84zaw2Ib+hsWiR6TVhDWi46A4pSkn/ck8b5Smqw2msWN6EB783HRqG7wy4L03QK
-         v1D3Cx0fFHlp3otR7hlgtZK9kcWxH7u82lpRD+0yINfOPon4wWvtIXdH3yrNhj/fWO
-         rz909SVU0mmYA==
-Date:   Wed, 13 Dec 2023 11:15:10 +0100
-From:   Christian Brauner <brauner@kernel.org>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Arnd Bergmann <arnd@arndb.de>, Jan Kara <jack@suse.cz>,
-        Ian Kent <raven@themaw.net>,
-        Miklos Szeredi <mszeredi@redhat.com>,
-        "Seth Forshee (DigitalOcean)" <sforshee@kernel.org>,
-        Dave Chinner <dchinner@redhat.com>,
-        Amir Goldstein <amir73il@gmail.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] [v2] statmount: reduce runtime stack usage
-Message-ID: <20231213-wirrungen-angetan-6556786f194b@brauner>
-References: <20231213090015.518044-1-arnd@kernel.org>
+        Wed, 13 Dec 2023 05:15:21 -0500
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 45150121;
+        Wed, 13 Dec 2023 02:15:27 -0800 (PST)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E2699C15;
+        Wed, 13 Dec 2023 02:16:12 -0800 (PST)
+Received: from [192.168.1.3] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 246543F738;
+        Wed, 13 Dec 2023 02:15:26 -0800 (PST)
+Message-ID: <90b43e2e-4bbc-d1f2-dba5-8c9174e7398f@arm.com>
+Date:   Wed, 13 Dec 2023 10:15:25 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20231213090015.518044-1-arnd@kernel.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: linux-next: build failure after merge of the arm-perf tree
+Content-Language: en-US
+To:     Will Deacon <will@kernel.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+References: <20231213100931.12d9d85e@canb.auug.org.au>
+ <20231213093057.GA31075@willie-the-truck>
+From:   James Clark <james.clark@arm.com>
+In-Reply-To: <20231213093057.GA31075@willie-the-truck>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -55,24 +48,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 13, 2023 at 10:00:03AM +0100, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> prepare_kstatmount() constructs a copy of 'struct kstatmount' on the stack
-> and copies it into the local variable on the stack of its caller. Because
-> of the size of this structure, this ends up overflowing the limit for
-> a single function's stack frame when prepare_kstatmount() gets inlined
-> and both copies are on the same frame without the compiler being able
-> to collapse them into one:
-> 
-> fs/namespace.c:4995:1: error: stack frame size (1536) exceeds limit (1024) in '__se_sys_statmount' [-Werror,-Wframe-larger-than]
->  4995 | SYSCALL_DEFINE4(statmount, const struct mnt_id_req __user *, req,
-> 
-> Replace the assignment with an in-place memset() plus assignment that
-> should always be more efficient for both stack usage and runtime cost.
-> 
-> Fixes: 49889374ab92 ("statmount: simplify string option retrieval")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
 
-I folded this patch and placed a link here. Thanks!
+
+On 13/12/2023 09:30, Will Deacon wrote:
+> Hi Stephen, [+James]
+> 
+> On Wed, Dec 13, 2023 at 10:09:31AM +1100, Stephen Rothwell wrote:
+>> After merging the arm-perf tree, today's linux-next build (x86_64
+>> allmodconfig) failed like this:
+>>
+>> In file included from drivers/perf/arm_dmc620_pmu.c:26:
+>> include/linux/perf/arm_pmu.h:15:10: fatal error: asm/cputype.h: No such file or directory
+>>    15 | #include <asm/cputype.h>
+>>       |          ^~~~~~~~~~~~~~~
+> 
+> Damn, I tested with allnoconfig, defconfig and allmodconfig before I pushed,
+> but only for ARCH=arm64. Thanks for reporting this.
+> 
+>> I can't easily tell what caused this - possibly commit
+>>
+>>   a5f4ca68f348 ("perf/arm_dmc620: Remove duplicate format attribute #defines")
+>>
+>> I have used the arm-perf and arm64 trees from next-20231212 for today
+>> (since the arm64 tree merged the arm-perf tree).
+> 
+> That looks likely. I'll try reverting it and see if it resolves the problem
+> locally.
+> 
+> Cheers,
+> 
+> Will
+
+
+Oops sorry about that, I didn't expect that change to break the x86
+build so I didn't test it there, but it's because of CONFIG_COMPILE_TEST.
+
+a5f4ca68f348 is the offending commit, and reverting it would fix it (it
+was just a tidyup). But this change below also works. That include was
+to build ARM_PMU_PROBE which is only used in perf_event_v6.c (and v7)
+which both already include asm/cputype.h. Although maybe that would be a
+bit of a hack.
+
+diff --git a/include/linux/perf/arm_pmu.h b/include/linux/perf/arm_pmu.h
+index 337f01674b38..a4876b1c481a 100644
+--- a/include/linux/perf/arm_pmu.h
++++ b/include/linux/perf/arm_pmu.h
+@@ -12,7 +12,6 @@
+ #include <linux/perf_event.h>
+ #include <linux/platform_device.h>
+ #include <linux/sysfs.h>
+-#include <asm/cputype.h>
+
+ #ifdef CONFIG_ARM_PMU
+
