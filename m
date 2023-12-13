@@ -2,71 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AFA2A811879
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 16:59:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8ADD6811883
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 17:00:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442367AbjLMP7Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 10:59:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35756 "EHLO
+        id S1442400AbjLMQAZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 11:00:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44516 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233542AbjLMP7Y (ORCPT
+        with ESMTP id S1442349AbjLMQAX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 10:59:24 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFA56AC
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 07:59:30 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8CB23C433C7;
-        Wed, 13 Dec 2023 15:59:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1702483170;
-        bh=NVRL/fDht99d/3/hGQWgSHztLyoyEkuj97VDxS89bQY=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=adtVZGglHLMeDHL4qn+WLkrh394serfA83EWwlLUdSOiiD+OkGu/MnOsKc35dCQSF
-         YAPJ+H8smQLB09oTs/fyb4+cUCnc7Be3kyNu7CsEtsnayIWnlVFBy5VYlEmZOEj/wa
-         8A9Y8NUgz7rxtsXwSmnjhaj9l3CNXG/GW8sIrfh9h9ikgWTNH3RpyPSa6rWmWUdvd9
-         YaTfQV5UAdbhN/ice7Rcf62QNj5Hdk4Jwb9NArsn1i/hzdKXGmrOAjnaeH7FY7ciSe
-         DP7xcCtKpaNlsgblFKCxZYQSzZYPaIjI+X8o7OhcyJMrqrh+GwC99jiysVmR51mIfI
-         u81zI6NKdFlEQ==
-Message-ID: <66ca4a047eb24a5bd28c36f68202bb6509131a71.camel@kernel.org>
-Subject: Re: [PATCH v4 06/39] netfs: Add a procfile to list in-progress
- requests
-From:   Jeff Layton <jlayton@kernel.org>
-To:     David Howells <dhowells@redhat.com>,
-        Steve French <smfrench@gmail.com>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        Marc Dionne <marc.dionne@auristor.com>,
-        Paulo Alcantara <pc@manguebit.com>,
-        Shyam Prasad N <sprasad@microsoft.com>,
-        Tom Talpey <tom@talpey.com>,
-        Dominique Martinet <asmadeus@codewreck.org>,
-        Eric Van Hensbergen <ericvh@kernel.org>,
-        Ilya Dryomov <idryomov@gmail.com>,
-        Christian Brauner <christian@brauner.io>,
-        linux-cachefs@redhat.com, linux-afs@lists.infradead.org,
-        linux-cifs@vger.kernel.org, linux-nfs@vger.kernel.org,
-        ceph-devel@vger.kernel.org, v9fs@lists.linux.dev,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Wed, 13 Dec 2023 10:59:27 -0500
-In-Reply-To: <20231213152350.431591-7-dhowells@redhat.com>
-References: <20231213152350.431591-1-dhowells@redhat.com>
-         <20231213152350.431591-7-dhowells@redhat.com>
-Autocrypt: addr=jlayton@kernel.org; prefer-encrypt=mutual;
- keydata=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
-        kZWuOsJdJQdmwlWC5L5ln9xgfr/4mOY38B0U=
-Content-Type: text/plain; charset="ISO-8859-15"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.2 (3.50.2-1.fc39) 
+        Wed, 13 Dec 2023 11:00:23 -0500
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0873B9
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 08:00:28 -0800 (PST)
+Received: by mail-wr1-x434.google.com with SMTP id ffacd0b85a97d-336417c565eso510750f8f.3
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 08:00:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1702483227; x=1703088027; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=6wQgJVXTbrMMfThGWjtIRWTD7vVL6atDUhY4Ep1StLs=;
+        b=XJBsjoyztyuO8UoyE9qdylknvKliNODQgRo87KgJkZ/DgKz5qJsdV2cQLiH0406bq7
+         yAQ2bU39xsajKqu7Vj3FicLci9l+gepYKMBsEa+B4dykczWEOMPO5KSFbNOa0NNmNSBD
+         ERVxKJ7px9RS0HjkiMMW906EpHvbf8+0ifNwY6bECGxonz5+b2tp65jCWdhCSfG+OLnL
+         2zFFAu6/6VyiF1iyDSu5UeWwg2d9YsOpB4r4BgsgluwgdWs7vOtD7iGSo+phoOQwBOJr
+         bzSQUmUOfsm8uoDsB2hgIekTPBfcG3CxtzN/sZLGMyZCR2LQ6U7lfB9EwJLivXXhGDL6
+         oYvg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702483227; x=1703088027;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=6wQgJVXTbrMMfThGWjtIRWTD7vVL6atDUhY4Ep1StLs=;
+        b=Y0wSQNjG0ppqdqwttP98lbx5uaUnS2w5CcoJAw5ABmUMIbMGUUXbYOcXaF16CVo7sK
+         7H6ds+Cy+/G874YAz+qnb+n/+ee88pBgy7Xuib5Tg35vV1T5sCY0xkXhugaINmkFr2F2
+         wf3nI3Bn8ZUzNpy7qZWcgjazXCOfRX/4gl1qa2b0w0Usvs4e9JHhELd8aj1ffdf0x/xH
+         5fF3VC5IaO+0ql/qhZ86nAvQRVIxh1e3VtshaLC1bSxN7KBr6lW6O+eS03kADBnQNX0G
+         CqexLVyk4HMJ/GQZujj9hM8C6BEs3wZblONywZHWsMOs9I+THKtXogDjsxRgdvxYhXf9
+         Evbg==
+X-Gm-Message-State: AOJu0YzDks3WMqIqILV0bnfVhRpE8JMBgILDhtxykIa9wq3Zsbcss8AC
+        pyv/+/Q0gHxUtv0Kb4BkZJ+IRA==
+X-Google-Smtp-Source: AGHT+IHbdOR4+AKZ8GxKN19778YZkvtVfp1xfJFhP4NykzxaNPbc/ujq9Iouol0pUbKfYOOqdCI9PA==
+X-Received: by 2002:a05:6000:90c:b0:334:b174:9a14 with SMTP id cw12-20020a056000090c00b00334b1749a14mr2721396wrb.50.1702483227055;
+        Wed, 13 Dec 2023 08:00:27 -0800 (PST)
+Received: from ?IPV6:2a05:6e02:1041:c10:c49e:e1a5:3210:b8c0? ([2a05:6e02:1041:c10:c49e:e1a5:3210:b8c0])
+        by smtp.googlemail.com with ESMTPSA id n10-20020a5d4c4a000000b003333abf3edfsm13647343wrt.47.2023.12.13.08.00.26
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 13 Dec 2023 08:00:26 -0800 (PST)
+Message-ID: <327458e6-de96-460f-8ec6-a1c31fcf6b5e@linaro.org>
+Date:   Wed, 13 Dec 2023 17:00:26 +0100
 MIME-Version: 1.0
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/2] thermal: core: add initial support for cold and
+ critical_cold trip point
+Content-Language: en-US
+To:     Christian Marangi <ansuelsmth@gmail.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     Zhang Rui <rui.zhang@intel.com>, Lukasz Luba <lukasz.luba@arm.com>,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20231212221301.12581-1-ansuelsmth@gmail.com>
+ <0e4cee10-4aa4-4979-9841-f1dbd207e0b7@linaro.org>
+ <6579bdb2.5d0a0220.1ae22.1f92@mx.google.com>
+ <CAJZ5v0gdLXBziENtZ9qmvntmaq6gNSXvGHq1eq8_o+xz0V_A0Q@mail.gmail.com>
+ <6579c604.050a0220.8fe5c.d191@mx.google.com>
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+In-Reply-To: <6579c604.050a0220.8fe5c.d191@mx.google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -74,200 +80,147 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2023-12-13 at 15:23 +0000, David Howells wrote:
-> Add a procfile, /proc/fs/netfs/requests, to list in-progress netfslib I/O
-> requests.
->=20
+On 13/12/2023 15:56, Christian Marangi wrote:
+> On Wed, Dec 13, 2023 at 03:43:54PM +0100, Rafael J. Wysocki wrote:
+>> On Wed, Dec 13, 2023 at 3:20 PM Christian Marangi <ansuelsmth@gmail.com> wrote:
+>>>
+>>> On Wed, Dec 13, 2023 at 03:12:41PM +0100, Daniel Lezcano wrote:
+>>>> On 12/12/2023 23:13, Christian Marangi wrote:
+>>>>> Add initial support for cold and critical_cold trip point. Many if not
+>>>>> all hwmon and thermal device have normally trip point for hot
+>>>>> temperature and for cold temperature.
+>>>>>
+>>>>> Till now only hot temperature were supported. Add support for also cold
+>>>>> temperature to permit complete definition of cold trip point in DT.
+>>>>>
+>>>>> Thermal driver may use these additional trip point to correctly set
+>>>>> interrupt for cold temperature values and react based on that with
+>>>>> various measure like enabling attached heater, forcing higher voltage
+>>>>> and other specialaized peripherals.
+>>>>>
+>>>>> For hwmon drivers this is needed as currently there is a problem with
+>>>>> setting the full operating range of the device for thermal devices
+>>>>> defined with hwmon. To better describe the problem, the following
+>>>>> example is needed:
+>>>>>
+>>>>> In the scenario of a simple hwmon with an active trip point declared
+>>>>> and a cooling device attached, the hwmon subsystem currently set the
+>>>>> min and max trip point based on the single active trip point.
+>>>>> Thermal subsystem parse all the trip points and calculate the lowest and
+>>>>> the highest trip point and calls the .set_trip of hwmon to setup the
+>>>>> trip points.
+>>>>>
+>>>>> The fact that we currently don't have a way to declare the cold/min
+>>>>> temperature values, makes the thermal subsystem to set the low value as
+>>>>> -INT_MAX.
+>>>>> For hwmon drivers that doesn't use clamp_value and actually reject
+>>>>> invalid values for the trip point, this results in the hwmon settings to
+>>>>> be rejected.
+>>>>>
+>>>>> To permit to pass the correct range of trip point, permit to set in DT
+>>>>> also cold and critical_cold trip point.
+>>>>>
+>>>>> Thermal driver may also define .cold and .critical_cold to act on these
+>>>>> trip point tripped and apply the required measure.
+>>>>
+>>>> Agree with the feature but we need to clarify the semantic of the trip
+>>>> points first. What actions do we expect for them in order to have like a
+>>>> mirror reflection of the existing hot trip points.
+>>>>
+>>>> What action do you expect with:
+>>>>
+>>>>   - 'cold' ?
+>>>>
+>>>>   - 'critical_cold' ?
+>>>>
+>>>>
+>>>
+>>> This is more of a sensible topic but I think it's the thermal driver
+>>> that needs to implement these. As said in the commit description,
+>>> examples are setting higher voltage from the attached regulator,
+>>> enabling some hardware heater.
+>>
+>> So how is it different from an active trip point?  There are heating
+>> rather than cooling devices associated with it, but other than this??
+>>
+> 
+>  From what I read from documentation, active trip point are used to
+> trigger cooling-device. Cold (and crit_cold) are to setup trip point to
+> the device. The device will normally trigger an interrupt (or even
+> internally with the correct register set autonomously apply some measure
+> to handle the problem)
 
-This should probably be in debugfs. I could see us wanting to improve
-this interface over time. That's harder with procfs but with debugfs
-we'd have carte blanche to do so.
+Actually what specifies an active cooling device is it requires energy 
+in order to operate. More precisely, the goal of an active cooling 
+device is too move the heat from one place to another place. So the 
+system, instead of relying on the natural convection thermal transfer, 
+will force this transfer. So the "active" means external system + energy.
 
-> Signed-off-by: David Howells <dhowells@redhat.com>
-> cc: Jeff Layton <jlayton@kernel.org>
-> cc: linux-cachefs@redhat.com
-> cc: linux-fsdevel@vger.kernel.org
-> cc: linux-mm@kvack.org
-> ---
->  fs/netfs/internal.h   | 22 ++++++++++++++
->  fs/netfs/main.c       | 69 ++++++++++++++++++++++++++++++++++++++++++-
->  fs/netfs/objects.c    |  4 ++-
->  include/linux/netfs.h |  6 +++-
->  4 files changed, 98 insertions(+), 3 deletions(-)
->=20
-> diff --git a/fs/netfs/internal.h b/fs/netfs/internal.h
-> index a15fe67e1db7..937d9a22f178 100644
-> --- a/fs/netfs/internal.h
-> +++ b/fs/netfs/internal.h
-> @@ -33,6 +33,28 @@ int netfs_begin_read(struct netfs_io_request *rreq, bo=
-ol sync);
->   * main.c
->   */
->  extern unsigned int netfs_debug;
-> +extern struct list_head netfs_io_requests;
-> +extern spinlock_t netfs_proc_lock;
-> +
-> +#ifdef CONFIG_PROC_FS
-> +static inline void netfs_proc_add_rreq(struct netfs_io_request *rreq)
-> +{
-> +	spin_lock(&netfs_proc_lock);
-> +	list_add_tail_rcu(&rreq->proc_link, &netfs_io_requests);
-> +	spin_unlock(&netfs_proc_lock);
-> +}
-> +static inline void netfs_proc_del_rreq(struct netfs_io_request *rreq)
-> +{
-> +	if (!list_empty(&rreq->proc_link)) {
-> +		spin_lock(&netfs_proc_lock);
-> +		list_del_rcu(&rreq->proc_link);
-> +		spin_unlock(&netfs_proc_lock);
-> +	}
-> +}
-> +#else
-> +static inline void netfs_proc_add_rreq(struct netfs_io_request *rreq) {}
-> +static inline void netfs_proc_del_rreq(struct netfs_io_request *rreq) {}
-> +#endif
-> =20
->  /*
->   * objects.c
-> diff --git a/fs/netfs/main.c b/fs/netfs/main.c
-> index c9af6e0896d3..97ce1436615b 100644
-> --- a/fs/netfs/main.c
-> +++ b/fs/netfs/main.c
-> @@ -21,13 +21,80 @@ unsigned netfs_debug;
->  module_param_named(debug, netfs_debug, uint, S_IWUSR | S_IRUGO);
->  MODULE_PARM_DESC(netfs_debug, "Netfs support debugging mask");
-> =20
-> +#ifdef CONFIG_PROC_FS
-> +LIST_HEAD(netfs_io_requests);
-> +DEFINE_SPINLOCK(netfs_proc_lock);
-> +
-> +static const char *netfs_origins[] =3D {
-> +	[NETFS_READAHEAD]	=3D "RA",
-> +	[NETFS_READPAGE]	=3D "RP",
-> +	[NETFS_READ_FOR_WRITE]	=3D "RW",
-> +};
-> +
-> +/*
-> + * Generate a list of I/O requests in /proc/fs/netfs/requests
-> + */
-> +static int netfs_requests_seq_show(struct seq_file *m, void *v)
-> +{
-> +	struct netfs_io_request *rreq;
-> +
-> +	if (v =3D=3D &netfs_io_requests) {
-> +		seq_puts(m,
-> +			 "REQUEST  OR REF FL ERR  OPS COVERAGE\n"
-> +			 "=3D=3D=3D=3D=3D=3D=3D=3D =3D=3D =3D=3D=3D =3D=3D =3D=3D=3D=3D =3D=
-=3D=3D =3D=3D=3D=3D=3D=3D=3D=3D=3D\n"
-> +			 );
-> +		return 0;
-> +	}
-> +
-> +	rreq =3D list_entry(v, struct netfs_io_request, proc_link);
-> +	seq_printf(m,
-> +		   "%08x %s %3d %2lx %4d %3d @%04llx %zx/%zx",
-> +		   rreq->debug_id,
-> +		   netfs_origins[rreq->origin],
-> +		   refcount_read(&rreq->ref),
-> +		   rreq->flags,
-> +		   rreq->error,
-> +		   atomic_read(&rreq->nr_outstanding),
-> +		   rreq->start, rreq->submitted, rreq->len);
-> +	seq_putc(m, '\n');
-> +	return 0;
-> +}
-> +
-> +static void *netfs_requests_seq_start(struct seq_file *m, loff_t *_pos)
-> +	__acquires(rcu)
-> +{
-> +	rcu_read_lock();
-> +	return seq_list_start_head(&netfs_io_requests, *_pos);
-> +}
-> +
-> +static void *netfs_requests_seq_next(struct seq_file *m, void *v, loff_t=
- *_pos)
-> +{
-> +	return seq_list_next(v, &netfs_io_requests, _pos);
-> +}
-> +
-> +static void netfs_requests_seq_stop(struct seq_file *m, void *v)
-> +	__releases(rcu)
-> +{
-> +	rcu_read_unlock();
-> +}
-> +
-> +static const struct seq_operations netfs_requests_seq_ops =3D {
-> +	.start  =3D netfs_requests_seq_start,
-> +	.next   =3D netfs_requests_seq_next,
-> +	.stop   =3D netfs_requests_seq_stop,
-> +	.show   =3D netfs_requests_seq_show,
-> +};
-> +#endif /* CONFIG_PROC_FS */
-> +
->  static int __init netfs_init(void)
->  {
->  	int ret =3D -ENOMEM;
-> =20
->  	if (!proc_mkdir("fs/netfs", NULL))
->  		goto error;
-> -
-> +	if (!proc_create_seq("fs/netfs/requests", S_IFREG | 0444, NULL,
-> +			     &netfs_requests_seq_ops))
-> +		goto error_proc;
->  #ifdef CONFIG_FSCACHE_STATS
->  	if (!proc_create_single("fs/netfs/stats", S_IFREG | 0444, NULL,
->  				netfs_stats_show))
-> diff --git a/fs/netfs/objects.c b/fs/netfs/objects.c
-> index e17cdf53f6a7..85f428fc52e6 100644
-> --- a/fs/netfs/objects.c
-> +++ b/fs/netfs/objects.c
-> @@ -45,6 +45,7 @@ struct netfs_io_request *netfs_alloc_request(struct add=
-ress_space *mapping,
->  		}
->  	}
-> =20
-> +	netfs_proc_add_rreq(rreq);
->  	netfs_stat(&netfs_n_rh_rreq);
->  	return rreq;
->  }
-> @@ -76,12 +77,13 @@ static void netfs_free_request(struct work_struct *wo=
-rk)
->  		container_of(work, struct netfs_io_request, work);
-> =20
->  	trace_netfs_rreq(rreq, netfs_rreq_trace_free);
-> +	netfs_proc_del_rreq(rreq);
->  	netfs_clear_subrequests(rreq, false);
->  	if (rreq->netfs_ops->free_request)
->  		rreq->netfs_ops->free_request(rreq);
->  	if (rreq->cache_resources.ops)
->  		rreq->cache_resources.ops->end_operation(&rreq->cache_resources);
-> -	kfree(rreq);
-> +	kfree_rcu(rreq, rcu);
->  	netfs_stat_d(&netfs_n_rh_rreq);
->  }
-> =20
-> diff --git a/include/linux/netfs.h b/include/linux/netfs.h
-> index 32faf6c89702..7244ddebd974 100644
-> --- a/include/linux/netfs.h
-> +++ b/include/linux/netfs.h
-> @@ -175,10 +175,14 @@ enum netfs_io_origin {
->   * operations to a variety of data stores and then stitch the result tog=
-ether.
->   */
->  struct netfs_io_request {
-> -	struct work_struct	work;
-> +	union {
-> +		struct work_struct work;
-> +		struct rcu_head rcu;
-> +	};
->  	struct inode		*inode;		/* The file being accessed */
->  	struct address_space	*mapping;	/* The mapping being accessed */
->  	struct netfs_cache_resources cache_resources;
-> +	struct list_head	proc_link;	/* Link in netfs_iorequests */
->  	struct list_head	subrequests;	/* Contributory I/O operations */
->  	void			*netfs_priv;	/* Private data for the netfs */
->  	unsigned int		debug_id;
->=20
+> In theory it's possible to have passive trip point for cold condition
+> but still we lack any definition of the lower spectrum of the trip
+> point.
 
---=20
-Jeff Layton <jlayton@kernel.org>
+Yes, absolutely :) And that is why I think we should clarify that to 
+conform to the general semantic of the thermal management. If we define 
+things in the thermal framework but having a different meaning in the 
+thermal management vocabulary. That will be really odd and look amateur 
+work :)
+
+In the lower spectrum, an external warming device where we use energy to 
+provide some heat is active. But if we use some kind of software 
+solution (like what suggested before), we indeed use energy, but the 
+solution is internal to the system, so I do believe we can consider it 
+as passive.
+
+IMO, we should see, especially on mobile, passive trip point for too 
+hot, and active trip point for too cold. That would not surprising as 
+the former has too much energy generated and the latter not enough energy.
+
+(BTW, as a side note, active or passive trip points do not really make 
+sense to me. It is the mitigation devices which are active or passive).
+
+For the systems which do not have a dedicated warming up hardware, we 
+should implement a "warming device" as a passive one (which is a 
+different story from your proposal I agree).
+
+
+>>> Maybe with critical cold bigger measure can be applied. Currently for
+>>> critical trip point we shutdown the system (if the critical ops is not
+>>> declared) but with critical_cold condition I think it won't work... I
+>>> expect a system in -40°C would just lock up/glitch so rebooting in that
+>>> condition won't change a thing...
+>>>
+>>> Anyway yes we can define a shutdown by default for that but IMHO it
+>>> wouldn't make much sense.
+>>
+>> So why do you want to add it at all?
+> 
+> Again it's really to fill a hole we have from a long time... One example
+> is the qcom tsens driver that have trip point for cold and crit_cold.
+> Those in theory can be set in DT with the trip point but we lack any
+> definition for them. (using passive trip point would be confusing IMHO)
+> 
+> Another example is an Aquantia PHY that have register for the cold and
+> critical_cold trip point.
+> 
+> Currently defining a critical trip point for the negative temp results
+> in the system shutdown.
+
+Yes, and the more I think about it, the more I'm inclined to have:
+
+  * trip (active|passive) + hot|cold
+  * trip cold (meaning "really too cold")
+  * trip hot (meaning "really too hot")
+  * trip critical (meaning "I'm about to collapse")
+
+We may have also active devices with multiple level of warm up, so it 
+will need to be managed by a governor like the step wise.
+
+
+-- 
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
+
