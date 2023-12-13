@@ -2,62 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E940811FDB
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 21:23:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E763E811FE0
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 21:24:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233895AbjLMUXD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 15:23:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51612 "EHLO
+        id S233949AbjLMUX7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 15:23:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59422 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229811AbjLMUXC (ORCPT
+        with ESMTP id S229671AbjLMUX6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 15:23:02 -0500
+        Wed, 13 Dec 2023 15:23:58 -0500
 Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4718A9C;
-        Wed, 13 Dec 2023 12:23:09 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 333369C;
+        Wed, 13 Dec 2023 12:24:05 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
         MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
         Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
         Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
         List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=dENc2lwzRLHtPKhKvuKHXjHSGuomugQdTgIHyUkfNP0=; b=fidtktW6ZbPyKmdXpJNpVbMtIU
-        SuBrlY8SgZjuCBH6zYr9ay3u0fefJagEFwhKZ9bOaHzDhAqAYE+o8Vj6wZNvWcYxWgpf3HesRBcQ3
-        HUPAOamNh9wfrrJh1GVpeN2CsNCbuS+eL4yy6MUluZkaidUQ31Vbzb3NeGDPIFC1CYsexhMIjPEEZ
-        1NcGS6J1W9UHN996xASg3HRJpctvkfTAbuH/1G2WdCNsWqqSCy+cETLG3u7sDzo3F9MxPl221Kxyb
-        v6Lx/pKkL8e5f+KtGlrcFsrOoPjA52pbI6mou1AKqHhjxSnQK1pieGa9b94z0EtlWcqTtpThpLMrY
-        QGmcIKlA==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:47676)
+        bh=REov+oFNlg6yYMIR/95rdfAyE9Q9tktH/CA0m6KaQUI=; b=fY4+FmOH5yJykXdclne/eOJ4sx
+        o1yZxkvltFI5nvWbGcly5/o5zItlScMmj/IcU95tEWUFjEBs3rZVCOhU96oM/Eam5xi0zaduDzvw0
+        zOLAqklAejhQ6Sl7dgEWVA9q6UVERPw90kw+UtTMZUmBnhpO2/S8GZ0qE7FkDRUZtDYRuXcqkCIyW
+        bdrhW7eK8YRAnbBVYVS5Zqzsnv5YvgEfy/FevlSZtSZOXHR0TbweFpYxhOfdTT7jb9RPqjp5FJccp
+        TKt1Rgeby6E8CeGl/Si8sCcIFnIfQrWG1uZiMF/8LYxVpEudA8ZSxwFI0h2N8g+2z5ixkLBpyt7Bt
+        j6idMUsw==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:56454)
         by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
         (Exim 4.96)
         (envelope-from <linux@armlinux.org.uk>)
-        id 1rDVkz-0000YT-1A;
-        Wed, 13 Dec 2023 20:23:01 +0000
+        id 1rDVlr-0000Yk-2D;
+        Wed, 13 Dec 2023 20:23:55 +0000
 Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
         (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1rDVkz-0001ow-GJ; Wed, 13 Dec 2023 20:23:01 +0000
-Date:   Wed, 13 Dec 2023 20:23:01 +0000
+        id 1rDVlt-0001p4-Gq; Wed, 13 Dec 2023 20:23:57 +0000
+Date:   Wed, 13 Dec 2023 20:23:57 +0000
 From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
-To:     Daniel Golle <daniel@makrotopia.org>
+To:     Christian Marangi <ansuelsmth@gmail.com>
 Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Maxime Chevallier <maxime.chevallier@bootlin.com>,
         Heiner Kallweit <hkallweit1@gmail.com>,
         "David S. Miller" <davem@davemloft.net>,
         Eric Dumazet <edumazet@google.com>,
         Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net] net: phy: skip LED triggers on PHYs on SFP modules
-Message-ID: <ZXoSpcp5i8C2C/EJ@shell.armlinux.org.uk>
-References: <102a9dce38bdf00215735d04cd4704458273ad9c.1702339354.git.daniel@makrotopia.org>
- <20231212153512.67a7a35b@device.home>
- <ec909d14-e571-4a50-926d-fbef4f4f9e0a@lunn.ch>
- <ZXnNYJer0JrJxOsl@shell.armlinux.org.uk>
- <ZXn_id6-XWYr2Seo@makrotopia.org>
+        Paolo Abeni <pabeni@redhat.com>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>,
+        Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
+        Kees Cook <keescook@chromium.org>,
+        Piergiorgio Beruto <piergiorgio.beruto@gmail.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [net-next PATCH 1/2] net: ethtool: add define for link speed
+ mode number
+Message-ID: <ZXoS3faDCUuZaLuN@shell.armlinux.org.uk>
+References: <20231213181554.4741-1-ansuelsmth@gmail.com>
+ <20231213181554.4741-2-ansuelsmth@gmail.com>
+ <ZXoPwmDsy7geZe6N@shell.armlinux.org.uk>
+ <657a10e1.050a0220.22d18.b3cb@mx.google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZXn_id6-XWYr2Seo@makrotopia.org>
+In-Reply-To: <657a10e1.050a0220.22d18.b3cb@mx.google.com>
 Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
@@ -69,38 +72,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 13, 2023 at 07:01:29PM +0000, Daniel Golle wrote:
-> On Wed, Dec 13, 2023 at 03:27:28PM +0000, Russell King (Oracle) wrote:
-> > No, and we should _not_ mess around with the "LED" configuration on
-> > PHYs on SFPs. It's possible that the LED output is wired to the LOS
-> > pin on the module, and messing around with the configuration of that
-> > would be asking for trouble.
+On Wed, Dec 13, 2023 at 09:15:27PM +0100, Christian Marangi wrote:
+> On Wed, Dec 13, 2023 at 08:10:42PM +0000, Russell King (Oracle) wrote:
+> > NAK.
 > > 
-> > In any case, I thought we didn't drive the LED configuration on PHYs
-> > where the LED configuration isn't described by firmware - and as the
-> > PHY on SFP modules would never be described by firmware, hooking
-> > such a PHY up to the LED framework sounds like a waste of resources
-> > to me.
+> > You *clearly* didn't look before you leaped.
+> > 
+> > On Wed, Dec 13, 2023 at 07:15:53PM +0100, Christian Marangi wrote:
+> > > +enum ethtool_link_speeds {
+> > > +	SPEED_10 = 0,
+> > > +	SPEED_100,
+> > > +	SPEED_1000,
+> > ...
+> > 
+> > and from the context immediately below, included in your patch:
+> > >  #define SPEED_10		10
+> >            ^^^^^^^^
+> > >  #define SPEED_100		100
+> >            ^^^^^^^^^
+> > >  #define SPEED_1000		1000
+> >            ^^^^^^^^^^
+> > 
+> > Your enumerated values will be overridden by the preprocessor
+> > definitions.
+> > 
+> > Moreover, SPEED_xxx is an already taken namespace and part of the UAPI,
+> > and thus can _not_ be changed. Convention is that SPEED_x will be
+> > defined as the numeric speed.
+> >
 > 
-> This was exactly my line of thought when posting the patch, however,
-> Maxime correctly pointed out that the issue with locking and also
-> what the patch prevents is registration of LED *triggers* rather than
-> the PHY-controlled LEDs themselves. And having the triggers available
-> is desirable even beyond the hardware offloaded case (which is probably
-> the aspect we both were dealing with the most recently and hence had in
-> mind). It is common to control another system SoC GPIO driven LED(s)
-> representing the link status and rx/tx traffic, for example.
+> Well yes that is the idea of having the enum to count them and then redefining
+> them to the correct value. (wasn't trying to introduce new define for
+> the speed and trying to assign incremental values)
 > 
-> So better we get to the core of it and fix the locking issue
-> (for example by registering LED trigger asynchronously using
-> delayed_work)...
+> Any idea how to handle this without the enum - redefine thing?
+> 
+> Was trying to find a more automated way than defining the raw number of
+> the current modes. (but maybe this is not that bad? since on adding more
+> modes, other values has to be changed so it would be just another value
+> to document in the comment)
 
-I don't think a delayed work solves anything. Well, it solves the
-registration problem, but when the PHY is removed, you have to
-_synchronously_ cancel the delayed work, which could result in it
-waiting on the called work function to complete. If that called work
-function is waiting for the lock which we're holding on the remove
-path, then we're still in a deadlock-prone situation.
+I think my comment on patch 2 gives some ideas! :D
 
 -- 
 RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
