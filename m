@@ -2,176 +2,223 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2596B811F78
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 20:53:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D48BA811F89
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 20:56:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233881AbjLMTxQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 14:53:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49646 "EHLO
+        id S233437AbjLMT4G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 14:56:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35730 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233828AbjLMTwx (ORCPT
+        with ESMTP id S235370AbjLMTzX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 14:52:53 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 910C51BF0
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 11:52:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1702497140; x=1734033140;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=T5TJvwnwRi0i08EIKJLpAwpErmJA30NCJuJR7D9Z3MU=;
-  b=i5yNLO3qHb20Uh667fZ3xb0cgVBfOMsgA3baXEy85IvEvua1KZcuH2Lu
-   gD+MQIRExeDjGGnl78JxDKz5vYhSAnywn9Mdnd6XduvpxmaRDSEnDJhqO
-   O3AN+wQ51aNElDwLjM1ZfegaF4SUV6Z48FQl62enlkGRqk4fAyCvTMMZ6
-   N0umm/TxW9Cxi6oyxqRNxTp9TtLL7S3x1ZvoSFrPwCY4ER2xGpkqDONCq
-   9eTENiTvxLYQQUa0W/H/jids1zm+1oG9NB1cTUiJAqa1DoxIb124lOncg
-   LgncuSHdAdvY7SMHYewWDYeLImploA1S+2zSNnjUl2S8uOwAZPvpkQSGh
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10923"; a="380005499"
-X-IronPort-AV: E=Sophos;i="6.04,273,1695711600"; 
-   d="scan'208";a="380005499"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Dec 2023 11:52:20 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10923"; a="897450435"
-X-IronPort-AV: E=Sophos;i="6.04,273,1695711600"; 
-   d="scan'208";a="897450435"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by orsmga004.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Dec 2023 11:52:17 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-        (envelope-from <andriy.shevchenko@intel.com>)
-        id 1rDVHC-00000005d7Q-1HZz;
-        Wed, 13 Dec 2023 21:52:14 +0200
-Date:   Wed, 13 Dec 2023 21:52:14 +0200
-From:   Andy Shevchenko <andriy.shevchenko@intel.com>
-To:     Mark Hasemeyer <markhas@chromium.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Raul Rangel <rrangel@chromium.org>,
-        David Gow <davidgow@google.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Mark Brown <broonie@kernel.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Takashi Iwai <tiwai@suse.de>,
-        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>
-Subject: Re: [PATCH v1 5/6] platform: Modify platform_get_irq_optional() to
- use resource
-Message-ID: <ZXoLbt7jNrmC0VbQ@smile.fi.intel.com>
-References: <20231213110009.v1.1.Ifd0903f1c351e84376d71dbdadbd43931197f5ea@changeid>
- <20231213110009.v1.5.Ife9ebad2bbfbab3a05e90040f344d750aa0aac7e@changeid>
+        Wed, 13 Dec 2023 14:55:23 -0500
+Received: from mail-yw1-x1136.google.com (mail-yw1-x1136.google.com [IPv6:2607:f8b0:4864:20::1136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40173272E
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 11:54:04 -0800 (PST)
+Received: by mail-yw1-x1136.google.com with SMTP id 00721157ae682-5d226f51f71so71686587b3.3
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 11:54:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1702497243; x=1703102043; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=DmWTjWPan/uCKeG+lUoh6N3QXdjfrZKppGzES0K5pPo=;
+        b=o/UHibt3StmppY2PYiKbIEHJwrZ3wE349tiUQPVjlwC+cxQTZAw9NVzB8aiOgdDIsn
+         PxdvBUZDUSeT3x7nwrrXGVAPXvzYEGCw05kveukwB6owNV/eLYM9Ds8HNImYPR4h/mkr
+         yH2yT7wnKME0p/1M+vNmcXdeR+vSlo0gii4zy4E6OArhI1NLZ+hPz24ViY81qrm+9b63
+         RJU8PHGtq9r1B2Y+jDAc14Bq6rhY6R/tA3nVbZwxaDuX09aPBwr6gE56LdRVmspZLOV1
+         WURmpccs3FirhmNyqt1Du8rlcAD9fxoAUcuaNqJg/3PuF+nPV2JZGcZ6iTr4Pvao7zFq
+         GKUA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702497243; x=1703102043;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=DmWTjWPan/uCKeG+lUoh6N3QXdjfrZKppGzES0K5pPo=;
+        b=m2PI4qg9IiHUTElZl0RoXxSd2xb95yGhCYB12smMO6JUm7y73kKWGKDkvdsG4HXTdT
+         C4k7PYt8fmbXe0MdKBZbiVBM44Rj+88/lilTrxeIhaiXV6Os0xm0FGrr/pY4TT+MNyY/
+         hlontANaYYNgBsxmAeGYS8MZnROmuMI2G6IC/025l3SKYrKSAXbG6m/Qy93him4d3JzT
+         oiaXczJhxS4TBpIoHRdIn0s2RpImOS7eTMiPDv7VjvQykelYI/6mSsYJfAC7Gymf26YJ
+         ShIJ7zF51re+EYI3abbSpuSpkzmXELNOqHMIXW5IWP6nYglUISZ+G9QetQq7uyPQ8EHV
+         Jzdg==
+X-Gm-Message-State: AOJu0YxwFQ8y5lDnWWmlXnqljfAHsgANIcG2R3nQ2EM35uWklpevI27c
+        IMuVMI8ZwAMQ8N2MJpuAtEjo9MmYuVX291Gf2L5S5sAlxsCtcigi
+X-Google-Smtp-Source: AGHT+IFR6kqN/5EMmozuAk0AOhpRUbPTqiwMhGx1M8iNqf3+crysjNJQB020um4I6Mx6qr6EkPHpzDhaCXUUOXXm3Oo=
+X-Received: by 2002:a5b:b04:0:b0:d9a:5630:5281 with SMTP id
+ z4-20020a5b0b04000000b00d9a56305281mr5463515ybp.62.1702497242903; Wed, 13 Dec
+ 2023 11:54:02 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231213110009.v1.5.Ife9ebad2bbfbab3a05e90040f344d750aa0aac7e@changeid>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+References: <202312091837.cKaPw0Tf-lkp@intel.com> <0487d7cc-b906-4a4a-b284-9c79700b4ede@paulmck-laptop>
+ <20231213125358.GB3001@suse.cz> <4c814394-6eab-4aca-96af-43f99fb94c01@paulmck-laptop>
+ <20231213155440.GA454379@perftesting> <505dba1e-4950-4968-a789-434c52a3e1c7@paulmck-laptop>
+In-Reply-To: <505dba1e-4950-4968-a789-434c52a3e1c7@paulmck-laptop>
+From:   Josef Bacik <josef@toxicpanda.com>
+Date:   Wed, 13 Dec 2023 14:53:52 -0500
+Message-ID: <CAEzrpqfDjwi4oE19i2s+AZJHd8uxfxKVtnTD0O9VXGYzSYhQsw@mail.gmail.com>
+Subject: Re: [paulmck-rcu:frederic.2023.12.08a 29/37] fs/btrfs/transaction.c:496:6:
+ error: call to '__compiletime_assert_329' declared with 'error' attribute:
+ Need native word sized stores/loads for atomicity.
+To:     paulmck@kernel.org
+Cc:     David Sterba <dsterba@suse.cz>, kernel test robot <lkp@intel.com>,
+        llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+        linux-kernel@vger.kernel.org, julia.lawall@inria.fr, clm@fb.com,
+        dsterba@suse.com, baptiste.lepers@gmail.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 13, 2023 at 11:00:23AM -0700, Mark Hasemeyer wrote:
-> Unify handling of ACPI, GPIO, devictree, and platform resource
-> interrupts in platform_get_irq_optional(). Each of these subsystems
-> provide their own apis which provide IRQ information as a struct
-> resource. This simplifies the logic of the function and allows callers
-> to get more information about the irq by looking at the resource flags.
+On Wed, Dec 13, 2023 at 1:05=E2=80=AFPM Paul E. McKenney <paulmck@kernel.or=
+g> wrote:
+>
+> On Wed, Dec 13, 2023 at 10:54:40AM -0500, Josef Bacik wrote:
+> > On Wed, Dec 13, 2023 at 06:56:37AM -0800, Paul E. McKenney wrote:
+> > > On Wed, Dec 13, 2023 at 01:53:58PM +0100, David Sterba wrote:
+> > > > On Sat, Dec 09, 2023 at 07:51:30AM -0800, Paul E. McKenney wrote:
+> > > > > On Sat, Dec 09, 2023 at 06:20:37PM +0800, kernel test robot wrote=
+:
+> > > > > > tree:   https://git.kernel.org/pub/scm/linux/kernel/git/paulmck=
+/linux-rcu.git frederic.2023.12.08a
+> > > > > > head:   37843b5f561a08ae899fb791eeeb5abd992eabe2
+> > > > > > commit: 7dd87072d40809e26503f04b79d63290288dbbac [29/37] btrfs:=
+ Adjust ->last_trans ordering in btrfs_record_root_in_trans()
+> > > > > > config: riscv-rv32_defconfig (https://download.01.org/0day-ci/a=
+rchive/20231209/202312091837.cKaPw0Tf-lkp@intel.com/config)
+> > > > > > compiler: clang version 17.0.0 (https://github.com/llvm/llvm-pr=
+oject.git 4a5ac14ee968ff0ad5d2cc1ffa0299048db4c88a)
+> > > > > > reproduce (this is a W=3D1 build): (https://download.01.org/0da=
+y-ci/archive/20231209/202312091837.cKaPw0Tf-lkp@intel.com/reproduce)
+> > > > > >
+> > > > > > If you fix the issue in a separate patch/commit (i.e. not just =
+a new version of
+> > > > > > the same patch/commit), kindly add following tags
+> > > > > > | Reported-by: kernel test robot <lkp@intel.com>
+> > > > > > | Closes: https://lore.kernel.org/oe-kbuild-all/202312091837.cK=
+aPw0Tf-lkp@intel.com/
+> > > > > >
+> > > > > > All errors (new ones prefixed by >>):
+> > > > > >
+> > > > > >    warning: unknown warning option '-Wpacked-not-aligned'; did =
+you mean '-Wpacked-non-pod'? [-Wunknown-warning-option]
+> > > > > >    warning: unknown warning option '-Wstringop-truncation'; did=
+ you mean '-Wstring-concatenation'? [-Wunknown-warning-option]
+> > > > > >    warning: unknown warning option '-Wmaybe-uninitialized'; did=
+ you mean '-Wuninitialized'? [-Wunknown-warning-option]
+> > > > > > >> fs/btrfs/transaction.c:496:6: error: call to '__compiletime_=
+assert_329' declared with 'error' attribute: Need native word sized stores/=
+loads for atomicity.
+> > > > > >      496 |         if (smp_load_acquire(&root->last_trans) =3D=
+=3D trans->transid && /* ^^^ */
+> > > > > >          |             ^
+> > > > >
+> > > > > Ooooh!!!  :-/
+> > > > >
+> > > > > From what I can see, the current code can tear this load on 32-bi=
+t
+> > > > > systems, which can result in bad comparisons and then in failure =
+to wait
+> > > > > for a partially complete transaction.
+> > > > >
+> > > > > So is btrfs actually supported on 32-bit systems?  If not, would =
+the
+> > > > > following patch be appropriate?
+> > > >
+> > > > There are limitations on 32bit systems, eg. due to shorter inode nu=
+mbers
+> > > > (ino_t is unsigned long) and that radix-tree/xarray does support on=
+ly
+> > > > unsigned long keys, while we have 64bit identifiers for inodes or t=
+ree
+> > > > roots.
+> > > >
+> > > > So far we support that and dropping it completely is I think a big =
+deal,
+> > > > like with any possibly used feature. What I've seen there are NAS b=
+oxes
+> > > > with low power ARM that are 32bit.
+> > > >
+> > > > > If btrfs is to be supported on 32-bit systems, from what I can se=
+e some
+> > > > > major surgery is required, even if a 32-bit counter is wrap-safe =
+for
+> > > > > this particular type of transaction.  (But SSDs?  In-memory btrfs
+> > > > > filesystems?)
+> > > >
+> > > > We won't probably do any major surgery to support 32bit systems.
+> > >
+> > > Got it, and thank you for the background!  My takeaway is that 32-bit
+> > > BTRFS must work in the common case, but might have issues on some
+> > > workloads, for example, running out of inode numbers or load tearing.
+> > >
+> > > > > -----------------------------------------------------------------=
+-------
+> > > > >
+> > > > > diff --git a/fs/btrfs/Kconfig b/fs/btrfs/Kconfig
+> > > > > index 4fb925e8c981..4d56158c34f9 100644
+> > > > > --- a/fs/btrfs/Kconfig
+> > > > > +++ b/fs/btrfs/Kconfig
+> > > > > @@ -19,6 +19,7 @@ config BTRFS_FS
+> > > > >         select RAID6_PQ
+> > > > >         select XOR_BLOCKS
+> > > > >         depends on PAGE_SIZE_LESS_THAN_256KB
+> > > > > +       depends on 64BIT
+> > > >
+> > > > Can we keep the current inefficient smp_* barriers instead of dropp=
+ing
+> > > > the whole 32bit support as an alternative. If the smp_load_acquire =
+are
+> > > > better but not strictly necessary for the correctness (from the bar=
+riers
+> > > > POV) I'd suggest to leave it as-is. We can put comments in case som=
+ebody
+> > > > wants to optimize it in the future again.
+> > >
+> > > We still have the barrier placement issue, given that smp_rmb() enfor=
+ces
+> > > only the ordering of earlier and later loads, correct?  Or am I missi=
+ng
+> > > some other ordering constraint that makes all that work?
+> > >
+> > > But I can make each of the current patch's smp_load_acquire() call in=
+stead
+> > > be be a READ_ONCE() followed by an smp_rmb(), the test_bit_acquire()
+> > > call be test_bit() followed by smp_rmb(), and the smp_store_release()
+> > > call be an smp_wmb() followed by a WRITE_ONCE().  This provides the n=
+eeded
+> > > ordering, bullet-proofs the 64-bit code against compilers, but works =
+on
+> > > 32-bit systems.  For example, on a 32-bit system the 64-bit READ_ONCE=
+()
+> > > and WRITE_ONCE() might still be compiled as a pair of 32-bit memory
+> > > accesses, but they will both be guaranteed to be single memory access=
+es
+> > > on 64-bit systems.
+> > >
+> > > Would that work for you guys?
+> >
+> > Actually I think we just need to re-work all of this to make it less si=
+lly.
+> > Does this look reasonable to you Paul?  I still have to test it, but I =
+think it
+> > addresses your concerns and lets us keep 32bit support ;).  Thanks,
+>
+> Things that avoid the need for memory barriers are often improvements!
+>
+> I don't claim to understand enough of the BTRFS code to fully judge
+> this, but I do ask one stupid question below just in case it inspires
+> a non-stupid idea.  ;-)
+>
 
-IRQ
+Not a stupid question, I see what you're getting at.  We mix short
+term flags and long term flags on ->state.  SHAREABLE in this case is
+set at allocation time and never changes, so I'm not worried about
+that changing ever.  The only thing here that actually changes is the
+RECORDED flag, so just the normal test_bit for that is fine.  Thanks,
 
-> For example, whether or not an irq is wake capable.
-
-IRQ
-
-> Rename the function to platform_get_irq_resource() to better describe
-> the function's new behavior.
-
-...
-
-> - * platform_get_irq_optional - get an optional IRQ for a device
-> + * platform_get_irq_resource - get an IRQ for a device and populate resource struct
->   * @dev: platform device
->   * @num: IRQ number index
-> + * @r: pointer to resource to populate with irq information. It is not modified on failure.
-
-IRQ
-
-It's inconsistent with just a few lines above!
-
-Also same comment about second remark, no need to have it. It's implied.
-
-...
-
-> +		*r = (struct resource)DEFINE_RES_IRQ(ret);
-
-Why is the annotation needed?
-
-...
-
-> -	struct resource *r;
-> +	struct resource *platform_res;
->  
->  	if (IS_ENABLED(CONFIG_OF_IRQ) && dev->dev.of_node) {
-> -		ret = of_irq_get(dev->dev.of_node, num);
-> +		ret = of_irq_to_resource(dev->dev.of_node, num, r);
->  		if (ret > 0 || ret == -EPROBE_DEFER)
->  			goto out;
->  	}
-
-
-> +	if (has_acpi_companion(&dev->dev)) {
-> +		ret = acpi_irq_get(ACPI_HANDLE(&dev->dev), num, r);
-> +		if (!ret || ret == -EPROBE_DEFER) {
-> +			ret = ret ?: r->start;
-> +			goto out;
-> +		}
-> +	}
-
-Consider combine the above to use fwnode_irq_get() in the separate prerequisite
-change.
-
-...
-
-> +	/*
-> +	 * The resources may pass trigger flags to the irqs that need
-> +	 * to be set up. It so happens that the trigger flags for
-> +	 * IORESOURCE_BITS correspond 1-to-1 to the IRQF_TRIGGER*
-> +	 * settings.
-> +	 */
-> +	if (ret > 0 && r->flags & IORESOURCE_BITS) {
-> +		struct irq_data *irqd;
-
-> +		irqd = irq_get_irq_data(r->start);
-> +		if (!irqd)
-> +			ret = -ENXIO;
-
-> +		else
-
-Redundant.
-
-Just return directly from the above.
-
-> +			irqd_set_trigger_type(irqd, r->flags & IORESOURCE_BITS);
-
-NIH resource_type().
-
-> +	}
->  	return ret;
-
-...
-
-What you need to add to all the functions is either
-- check that resource pointer is not NULL, and/or
-- documentation that explain this requirement or mark it optional
-  (but second seems nonsense)
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+Josef
