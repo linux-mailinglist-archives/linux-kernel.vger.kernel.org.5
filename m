@@ -2,124 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 22242811111
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 13:24:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C198811112
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 13:25:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377653AbjLMMYR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 07:24:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48010 "EHLO
+        id S1378806AbjLMMZX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 07:25:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36036 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377400AbjLMMYP (ORCPT
+        with ESMTP id S1377400AbjLMMZW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 07:24:15 -0500
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E642FCF
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 04:24:21 -0800 (PST)
-Received: by mail-wm1-x334.google.com with SMTP id 5b1f17b1804b1-40c32df9174so59986375e9.3
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 04:24:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ventanamicro.com; s=google; t=1702470260; x=1703075060; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=/Do9us9KI9YVf91TMl8txltk4WC8U3fmMGLk20+eGOw=;
-        b=IlCk1Bv8B+MsKoDZk7TyTUFP1ksnlXbm7VYIUSuyZ+bOkGfz9UtosGWiY8UClofvxU
-         5N2fXi1cBlAou57GWZIrSC9aU67ZGljTffUKWKYghqsFYTPzsdzpTzmqy9nPHI4C4Gf+
-         LAsGayOphK3ALb3LS5uAbDRH05Gc0qo76FrDBHKCp3fMWAsJ03d9YqIAQv4Q7Ep7uPFP
-         lpAlx4lzUVOxw+LK6wrJwJiQQkqhyLS5QlznEJo/jtlFxgowrMvfTzoIPGK870omKuHO
-         CNC2Qgqm/WIAabhG1fK2bQR1SRAYjhI+9Ctb7mhZeHq7Z/C6eiDbt3shzIqvzYd6UIg4
-         rPTQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702470260; x=1703075060;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=/Do9us9KI9YVf91TMl8txltk4WC8U3fmMGLk20+eGOw=;
-        b=CqXW035gEEl8cSIbjgzzMOMIx2Du+BRF1gjXeSmgdmEtuqoxv1hsLo8wrbolUPScPl
-         d2xRkHx4g7ERCV+HOZf1aXCF2pdGmbCj+juHEuR4U6a3yHq0HMJDYZo5CATG4pYcF3KC
-         fI2NF0eQ5DCSxq3CyhpFSqewkmPZMICNoj+XOjaSL5IXT8kl+I/V5QeR9/HaA89CdBE5
-         DA24ttoKyGtxYoPDdaX0w1bFcP1/b3cXUOGhqcLerUg+p6zMQz5xUkpUgboQQprw/3Ty
-         Op8UAdb8/CEOdfHGsLNIYa/xpza+zE2FDGvdkTstzf0jgzizGQPfqT/PB1+PSWB3iR0Y
-         Pe1A==
-X-Gm-Message-State: AOJu0YxJJpx5idiiaxpQW/P443sK/5O4a/UFQc4YboZzZUAiRB6ClcPY
-        R/mT94jxck9UZP8R93mECr9o7Q==
-X-Google-Smtp-Source: AGHT+IFH3rJTleJTU4xsQNweH6i96bFDZCHpyMZmqgOvAispGx7uzx5Me7DqfOkSWHH7fB2FceGEow==
-X-Received: by 2002:a05:600c:1715:b0:40b:5e21:c5cd with SMTP id c21-20020a05600c171500b0040b5e21c5cdmr2457031wmn.155.1702470260169;
-        Wed, 13 Dec 2023 04:24:20 -0800 (PST)
-Received: from localhost (2001-1ae9-1c2-4c00-20f-c6b4-1e57-7965.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:20f:c6b4:1e57:7965])
-        by smtp.gmail.com with ESMTPSA id fl9-20020a05600c0b8900b0040b43da0bbasm20393302wmb.30.2023.12.13.04.24.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Dec 2023 04:24:19 -0800 (PST)
-Date:   Wed, 13 Dec 2023 13:24:18 +0100
-From:   Andrew Jones <ajones@ventanamicro.com>
-To:     Deepak Gupta <debug@rivosinc.com>
-Cc:     Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        aou@eecs.berkeley.edu, apatel@ventanamicro.com, guoren@kernel.org,
-        mchitale@ventanamicro.com, waylingii@gmail.com,
-        greentime.hu@sifive.com, samitolvanen@google.com,
-        Bjorn Topel <bjorn@rivosinc.com>,
-        Conor Dooley <conor.dooley@microchip.com>,
-        jeeheng.sia@starfivetech.com, Heiko Stuebner <heiko@sntech.de>,
-        Evan Green <evan@rivosinc.com>, jszhang@kernel.org,
-        cleger@rivosinc.com, linux-riscv@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1 2/2] riscv: envcfg save and restore on trap entry/exit
-Message-ID: <20231213-707b4e8b5a91ceedd557eb12@orel>
-References: <20231212235003.2036221-1-debug@rivosinc.com>
- <mhng-ae72b5fd-358d-48e2-87cf-f571b67afe9e@palmer-ri-x1c9a>
- <ZXkCs9ypok5X/Wx2@debug.ba.rivosinc.com>
+        Wed, 13 Dec 2023 07:25:22 -0500
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 40E8ACD;
+        Wed, 13 Dec 2023 04:25:28 -0800 (PST)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 08FB4C15;
+        Wed, 13 Dec 2023 04:26:14 -0800 (PST)
+Received: from donnerap.manchester.arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5E4BE3F762;
+        Wed, 13 Dec 2023 04:25:26 -0800 (PST)
+Date:   Wed, 13 Dec 2023 12:25:23 +0000
+From:   Andre Przywara <andre.przywara@arm.com>
+To:     Anne Macedo <retpolanne@posteo.net>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Samuel Holland <samuel@sholland.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "moderated list:ARM/Allwinner sunXi SoC support" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "open list:ARM/Allwinner sunXi SoC support" 
+        <linux-sunxi@lists.linux.dev>,
+        open list <linux-kernel@vger.kernel.org>,
+        Corentin Labbe <clabbe@baylibre.com>
+Subject: Re: [PATCH] arm64: dts: allwinner: Orange Pi One Plus PHY support
+Message-ID: <20231213122523.219cbfc0@donnerap.manchester.arm.com>
+In-Reply-To: <ceuoq3xxgb5kkel7e7wqpslcg7h6dde3wgdqhyo7jgop6owovk@5a76ks5fiun4>
+References: <20231212122835.10850-2-retpolanne@posteo.net>
+        <20231212162200.10b3868b@donnerap.manchester.arm.com>
+        <axsvii25yrknfae6gdreti7lcskoscsdbsujwuispiieimsbdy@gwzm4l7mwlew>
+        <20231213013544.2fc7e0d1@minigeek.lan>
+        <ceuoq3xxgb5kkel7e7wqpslcg7h6dde3wgdqhyo7jgop6owovk@5a76ks5fiun4>
+Organization: ARM
+X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.32; aarch64-unknown-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZXkCs9ypok5X/Wx2@debug.ba.rivosinc.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 12, 2023 at 05:02:43PM -0800, Deepak Gupta wrote:
-> On Tue, Dec 12, 2023 at 04:53:48PM -0800, Palmer Dabbelt wrote:
-> > On Tue, 12 Dec 2023 15:49:25 PST (-0800), debug@rivosinc.com wrote:
-> > > envcfg CSR defines enabling bits for cache management instructions and soon
-> > > will control enabling for control flow integrity and pointer masking features.
+On Wed, 13 Dec 2023 11:02:39 +0000
+Anne Macedo <retpolanne@posteo.net> wrote:
+
+Hi Anne,
+
+> On Wed, Dec 13, 2023 at 01:35:44AM +0000, Andre Przywara wrote:
+> > On Tue, 12 Dec 2023 19:27:14 +0000
+> > Anne Macedo <retpolanne@posteo.net> wrote:
+> > 
+> > Hi Anne,
+> >   
+> > > On Tue, Dec 12, 2023 at 04:22:00PM +0000, Andre Przywara wrote:  
+> > > > On Tue, 12 Dec 2023 12:28:30 +0000
+> > > > Anne Macedo <retpolanne@posteo.net> wrote:
+> > > > 
+> > > > Hi Anne,
+> > > >     
+> > > > > Adds compatible values to mdio subnodes for Ethernet PHY representing
+> > > > > Realtek 8211 PHY to Orange Pi One Plus.    
+> > > > 
+> > > > So can you state why this would be needed? This is the RTL8211 ID,    
 > > > 
-> > > Control flow integrity and pointer masking features need to be enabled on per
-> > > thread basis. Additionally, I believe cache management instructions need to be
-> > > enabled on per thread basis. As an example a seccomped task on riscv may be
-> > > restricted to not use cache management instructions
+> > > Apologies, I completely forgot to include some context. 
+> > >   
+> > > > right? Which should be autodetected via MDIO. Looking back in my inbox
+> > > > you proposed this change before, for U-Boot, specifically, but I fail to
+> > > > find a solution or explanation what really happens here. Two Renesas .dts
+> > > > files have the same compatible, and the commit message talks about the
+> > > > reset line there, is this related?
+> > > > 
+> > > > So can you please give some more background and explanation? That would be
+> > > > part of a good commit message anyway ("why", not "what").    
+> > > 
+> > > Should I resend the commit with a more meaningful explanation? The
+> > > context is the following:
+> > > 
+> > > currently, ethernet doesn't seem to work on both u-boot and Linux on the
+> > > Orange Pi One Plus board. 
+> > > 
+> > > On the kernel, this error shows up:
+> > > 
+> > > Configuring network interfaces... [    5.992589] dwmac-sun8i 5020000.ethernet eth0: Register MEM_TYPE_PAGE_POOL RxQ-0
+> > > [    6.000823] dwmac-sun8i 5020000.ethernet eth0: __stmmac_open: Cannot attach to PHY (error: -19)
+> > > 
+> > > After applying this fix, the PHY gets attached: 
+> > > 
+> > > Configuring network interfaces... [    6.060020] dwmac-sun8i 5020000.ethernet eth0: Register MEM_TYPE_PAGE_POOL RxQ-0
+> > > [    6.069460] dwmac-sun8i 5020000.ethernet eth0: PHY [stmmac-0:01] driver [RTL8211E Gigabit Ethernet] (irq=POLL)
+> > > 
+> > > The previous compatible list that had ethernet-phy-ieee802.3-c22 fails
+> > > to find a PHY, so this patch includes the correct PHY ID with the
+> > > RTL8211 ID. 
+> > > 
+> > > The behaviour is described on [1].  
 > > 
-> > Do we have anything in the kernel that actually does that?  Generally we
-> > need some use, I couldn't find any user-mode writable envcfg bits in any
-> > extesions I looked at (admittidly just CFI and pointer masking), and
-> > unless I'm missing something there's no per-thread state in the kernel.
-> > 
+> > So this is all an observation, but no real explanation, isn't it?  
 > 
-> Cache management operations?
-> As of now kernel blindly enables that for all the user mode. It will be good if
-> that is enabled on per-thread basis. Sure, all threads can have it enabled by
-> default. But if strict seccomp is enabled, I would argue that cache management
-> operations for that thread to be disabled as is done on other arches. As an
-> example x86 disable rdtsc on strict seccomp. RISCV allows this CMO extension
-> and I expect CMO to leverage this (currently it
-> doesn't).
+> I've made some analysis on [3] on this bug, but it was based solely on
+> u-boot. I was having trouble with the regulator and on u-boot nothing
+> would trigger the GPIO PD6 and the vcc-gmac-3v3 regulator, so the NIC
+> was completely dead. Next I did an analysis based on [2] because the
+> u-boot PHY initialization was flaky.
 > 
-> I was being opportunistic here so that I can reduce number of patches on CFI
-> enabling patchset.
+> > To cite [1]: "If the PHY reports an incorrect ID (or none at all) ...".
+> > I am pretty sure this is not the case here, instead we are looking at
+> > some missing platform bits, like a missing clock, reset, or most likely
+> > regulator. Or one of the existing resources is wrongly assigned or  
 > 
-> Will it be okay if I revise this patch to include with a usecase to restrict CMO
-> (say for case of strict seccomp on risc-v)?
+> As I mentioned, PHY initialization is flaky on u-boot, so maybe that
+> assumption is correct. 
+> 
+> > configured? If the PHY is not (yet?) powered correctly when the code
+> > does the auto-detection via the MDIO bus, then the initialisation would  
+> 
+> If I recall correctly (I don't know if I kept it in my notes :c), that
+> could be the case. regulator-boot-on makes the NIC work (LEDs blink, at
+> least) but it doesn't get initialized. 
+> 
+> > fail. But since it works when overriding the auto-detection, I feel
+> > like we are papering over something here.
+> > Do you have the schematics for this board? I can only find the one for
+> > the Orange Pi Plus 2E, and I don't know how similar those two are. This
+> > shows *two* regulators, but both are activated by the same GPIO.  
+> 
+> I do. It's available on [4]
 
-I opted to only expose cache block zero since giving userspace the
-ability to invalidate cache blocks seems risky from a side-channel attack
-perspective.
+Oh damn it, I got lost in Orange Pi's naming maze again - and was looking
+for the wrong board! So thanks for the link, and this clears things up!
 
-I'm no security expert, so feedback welcome, but I don't see a risk with
-userspace being granted cbo.zero, even for strict seccomp processes.
+So yes, the Orange Pi *One* Plus, much like the Orange Pi 3, uses *two*
+regulators for Ethernet: one 3.3V from the PMIC's ALDO2 rail to power the
+PHY, and a discrete 2.5V regulator, enabled by GPIO PD6, for the voltage
+level on the MDIO lines. On top of this there is a reset line for the PHY,
+though this is held up by a pull-up resistor, so it *should* work,
+although we should describe this in the DT.
 
-Thanks,
-drew
+So the DT looks wrong then: The reg_gmac_3v3 is actually a 2.5V regulator,
+and phy-supply is aldo2. I think it was done the way it is to somehow make
+it work with the current DT binding and code, which just supports one
+regulator. And aldo2 is referenced as the source of reg_gmac_3v3, which
+smells like another hack to me.
+
+> > It would also be interesting to see if any of Corentin's work for the
+> > Orange Pi 3 helps here?  
+> 
+> Adding [5] for reference here, thanks! Will check it out. 
+
+This is an older version, there are actually updates. And he also mentions
+your board as well, so I think it just can sail in the wake of the OPi 3
+Ethernet enablement.
+
+Can you try if this change, just applied to your .dts instead, works?
+https://github.com/montjoie/linux/commit/cf6e192eca1d59be630e6729d2cef9e897b3da8c
+
+Cheers,
+Andre
+
+P.S. Is there any chance where I can reply/comment on your blog? It seems
+like I can clear some things up...
+
+> [3] https://blog.retpolanne.com/hardware/embedded/2023/07/07/embedded-phy.html
+> [4] https://linux-sunxi.org/images/7/7c/OrangePi_OnePlus_Schematics_v2.0.pdf
+> [5] https://lore.kernel.org/netdev/20220509074857.195302-1-clabbe@baylibre.com/
+> 
+> Regards, Anne
+
