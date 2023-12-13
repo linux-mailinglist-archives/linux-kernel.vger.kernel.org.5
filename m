@@ -2,123 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B035811763
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 16:38:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CF2A681173D
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 16:36:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442157AbjLMPik (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 10:38:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46354 "EHLO
+        id S1442044AbjLMPgK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 10:36:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52248 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1442554AbjLMPft (ORCPT
+        with ESMTP id S1442703AbjLMPgB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 10:35:49 -0500
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 249B4199;
-        Wed, 13 Dec 2023 07:35:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=Azr9dzImETHDY09RTE6DFZmIZc+WPlU1QVo05oO24aU=; b=ZYCEUGa8Gaf06h6bNYBNA/iaOt
-        8OfigBJweasJ5YOkowYW98PfkGLGaEuUGWK5wJKk8AiFbMJDkwGTuVQQCCqxYIySEzJlWZ0/YKZf+
-        W7HkO7r467L97hPcVTMRpN6WmfT48pu5tIWt4QLXyVv92vYVz49cnFlmID4qxO5QNQDzZZeunO6Ag
-        o8AMixNOemhmqCtuSpvhGXehy4eFn6cAH70w+9Gy+1XNRrDvwrSu+KK9IiKffsWm1LglZXB3f3ofi
-        uLQDdl25Vva4UXECoomVKy3ivCBJwfosD07hUINNw4N5w+5HgQLT3JWtdBjt7vYanzwuQdzcxFQXJ
-        YBWyrzFw==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:43454)
-        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.96)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1rDRGi-00009s-1T;
-        Wed, 13 Dec 2023 15:35:28 +0000
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1rDRGk-0001bC-Bt; Wed, 13 Dec 2023 15:35:30 +0000
-Date:   Wed, 13 Dec 2023 15:35:30 +0000
-From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
-To:     Andrew Lunn <andrew@lunn.ch>
-Cc:     Maxime Chevallier <maxime.chevallier@bootlin.com>,
-        Daniel Golle <daniel@makrotopia.org>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net] net: phy: skip LED triggers on PHYs on SFP modules
-Message-ID: <ZXnPQo7Nmh2PRrx+@shell.armlinux.org.uk>
-References: <102a9dce38bdf00215735d04cd4704458273ad9c.1702339354.git.daniel@makrotopia.org>
- <20231212153512.67a7a35b@device.home>
- <ec909d14-e571-4a50-926d-fbef4f4f9e0a@lunn.ch>
- <20231213110622.29f53391@device.home>
- <ac88a858-67fe-4932-a224-550d38454420@lunn.ch>
+        Wed, 13 Dec 2023 10:36:01 -0500
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85B4A10C8
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 07:35:54 -0800 (PST)
+Received: by mail-pl1-x62e.google.com with SMTP id d9443c01a7336-1d336760e72so18497905ad.3
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 07:35:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1702481753; x=1703086553; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=YSYeywzLgqaZI2MS9nHX0Fs7SGO3wtfBMr/dgErcxP4=;
+        b=RqkWWchH8Zcw1tgNhAEq3A6UDwHbb9k7z4+OrJ7cklt22xDMzgZ0DbOpXWnKCzYBAX
+         lXMiiV/P/N5K5hla45QiO2sLd+aLIg0GUFDdceysuCuOW6N52UjSUlJ/TTeCSYjrjpeg
+         AIaTyeLebxAiex4EwLuttvglUEtSq+74wuNdtL0rDM+3QmcQfSJDMnWyjIUQIlxu1jHO
+         +bEhocRydl8Lgm2zruSHts27bb+6oz1knNJmgrIa+UFA2gHGrHSr/r5gCWjEQsPYxr5s
+         3RakdyxaLdJUfN66ANHOTEBncR2NTksJ3IAY0hcyY5o9Stx2I1IXI67XAIhAlsPg3dI3
+         5zKw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702481753; x=1703086553;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=YSYeywzLgqaZI2MS9nHX0Fs7SGO3wtfBMr/dgErcxP4=;
+        b=HRf3pRovZ5S74TxJM5QP05nrhU+8FrkcFmORFS6CPUnmuclrCC0LpSztCSV5lrYj9v
+         bzEZ1zAZSI5tzwXmsA4g+eJOTKiCGVlV+5ddTqKEYOmtlRFNL05hnvBGFl06JtL/WU6a
+         JDyYIiFi8CpbEvfYKGhRU7WDwXaZcnvDBecLzSHxoqsAwziVNJ0YFjjhZa6uQ3anhKXs
+         Njwxm/orOyDwQWFj1LP9eRi2DA9FuDeri+gTZfkwuUDLgpa01eyIjlSFbCNHk/c6Pz/s
+         918D74LG3CQC6KIjoIms56KENNTDHo94bwqqUVciYMObwGzG0h0ICFU2UeHJbaDNC+BA
+         qmEQ==
+X-Gm-Message-State: AOJu0YwvFAIZXiGqI1HiVaGvISS45QBa374SsXdo5MT7FLfwzFrZTjF2
+        oC8kyNoVmiQAsRbl9VC57bwys7zKEb0=
+X-Google-Smtp-Source: AGHT+IGaoKndvosJx2CfdIl7/lnVnNuv9YFf1Em7CCtxWmW6bQmFtHSvQT1TpzKrJsIBGcGMNahkOQ==
+X-Received: by 2002:a17:902:6bc4:b0:1d0:acd7:97fa with SMTP id m4-20020a1709026bc400b001d0acd797famr7982784plt.127.1702481752879;
+        Wed, 13 Dec 2023 07:35:52 -0800 (PST)
+Received: from localhost (dhcp-72-253-202-210.hawaiiantel.net. [72.253.202.210])
+        by smtp.gmail.com with ESMTPSA id k9-20020a170902c40900b001b9e9edbf43sm10711595plk.171.2023.12.13.07.35.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Dec 2023 07:35:52 -0800 (PST)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Wed, 13 Dec 2023 05:35:50 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     Juri Lelli <juri.lelli@redhat.com>
+Cc:     Aaron Tomlin <atomlin@atomlin.com>, linux-kernel@vger.kernel.org,
+        jiangshanlai@gmail.com, peterz@infradead.org
+Subject: Re: [RFC PATCH 0/2] workqueue: Introduce PF_WQ_RESCUE_WORKER
+Message-ID: <ZXnPVtISKQ2JFDNn@slm.duckdns.org>
+References: <20230729135334.566138-1-atomlin@atomlin.com>
+ <um77hym4t6zyypfbhwbaeqxpfdzc657oa7vgowdfah7cuctjak@pexots3mfb24>
+ <ZXdXdBzvbkI4Y4fL@slm.duckdns.org>
+ <ZXguMgcKLCLn16T4@localhost.localdomain>
+ <ZXiVCOKk90Fjpmhw@slm.duckdns.org>
+ <ZXlyfjDsFGbYcMU6@localhost.localdomain>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ac88a858-67fe-4932-a224-550d38454420@lunn.ch>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <ZXlyfjDsFGbYcMU6@localhost.localdomain>
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 13, 2023 at 11:47:50AM +0100, Andrew Lunn wrote:
-> > > SFP LEDs are very unlikely to be on the front panel, since there is no
-> > > such pins on the SFP cage.
-> > > 
-> > > Russell, in your collection of SFPs do you have any with LEDs?
-> > 
-> > I mean, aren't the led triggers generic so that it can trigger any
-> > other LED to blink, and it's up to the user to decide ?
+Hello,
+
+On Wed, Dec 13, 2023 at 09:59:42AM +0100, Juri Lelli wrote:
+> Something like the following then maybe?
 > 
-> Correct. However, generic LEDs won't be registered via this code path,
-> so the deadlock is not an issue. Only LED controllers in a PHY within
-> an SFP, inside an SFP cage are the issue here. I don't have any Copper
-> SFP modules, so i've no idea if they are physically big enough to have
-> LEDs?
+> ---
+>  kernel/workqueue.c | 6 ++++++
+>  1 file changed, 6 insertions(+)
+> 
+> diff --git a/kernel/workqueue.c b/kernel/workqueue.c
+> index 2989b57e154a7..ed73f7f80d57d 100644
+> --- a/kernel/workqueue.c
+> +++ b/kernel/workqueue.c
+> @@ -4405,6 +4405,12 @@ static void apply_wqattrs_commit(struct apply_wqattrs_ctx *ctx)
+>         link_pwq(ctx->dfl_pwq);
+>         swap(ctx->wq->dfl_pwq, ctx->dfl_pwq);
+> 
+> +       /* rescuer needs to respect wq cpumask changes */
+> +       if (ctx->wq->rescuer) {
+> +               kthread_bind_mask(ctx->wq->rescuer->task, ctx->attrs->cpumask);
+> +               wake_up_process(ctx->wq->rescuer->task);
+> +       }
+> +
+>         mutex_unlock(&ctx->wq->mutex);
+>  }
 
-The ones I have, that is indeed the case - the RJ45 socket is the
-absolute minimum size, with just enough metalwork around it to support
-a RJ45 plug.
+I'm not sure kthread_bind_mask() would be safe here. The rescuer might be
+running a work item. wait_task_inactive() might fail and we don't want to
+change cpumask while the rescuer is active anyway.
 
-> I think it is all messy. Say the media converter has its LEDs
-> connected to the front panel. You then get indications of activity on
-> the front panel. I've never seen a fibre SFP with LEDs, and its an
-> open question if Copper SFPs have LEDs.
+Maybe the easiest way to do this is making rescuer_thread() restore the wq's
+cpumask right before going to sleep, and making apply_wqattrs_commit() just
+wake up the rescuer.
 
-A fibre module would only be able to repeat the information given via
-RX_LOS and/or TX_FAULT if it had space to do so.
-
-It's more normal in routers with SFP slots to see LEDs that are either
-part of the SFP socket itself, or provided elsewhere.
-
-> Another scenario could be a PHY
-> which acts as a media switch, it can have an RJ-45 or an SFP cage,
-> first to get link wins. In such a situation, i would put the LEDs on
-> the front panel, since it would look odd for an empty RJ-45 socket
-> LEDs to blink for SFP activity.
-
-... and an example of this kind of setup would be the 88x3310 on
-Macchiatobin - the LEDs are on the RJ45 socket, but they also
-indicate for the status of the SFP connection if that is in use. I
-don't remember off the top of my head what the LED configuration
-register values allow one to select. We don't drive them because I
-gave up on that idea - I don't believe that our LED framework is
-"powerful" enough to be able to sensibly configure them... and I
-personally use my own patches with register values in DT to
-configure them to indicate sensibly.
-
-However, from what I remember, configuring a LED to indicate for
-1000M will mean that it will indicate whether the copper or fibre
-interfaces are operating at 1000M.
+Thanks.
 
 -- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
+tejun
