@@ -2,207 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B2943812381
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 00:47:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CAD9F81237F
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 00:47:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234004AbjLMXrn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 18:47:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34142 "EHLO
+        id S233990AbjLMXre (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 18:47:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34086 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234060AbjLMXrl (ORCPT
+        with ESMTP id S229706AbjLMXrc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 18:47:41 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B0C5196;
-        Wed, 13 Dec 2023 15:47:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1702511268; x=1734047268;
-  h=date:from:to:cc:subject:message-id:references:
-   in-reply-to:mime-version;
-  bh=E/CTAMKcMng59KSwsBznhFtUMPKz96uBwng5b++F5Fs=;
-  b=F/PP3WFCvA+jL1BcqVGiFm7FY21aJT1veQH6lA319K/vOFz631Ik3jA3
-   oJNRkhPqZjxNQWq+3qr7TRCjolKIB93Ymf1lobarvlw8CWpBOGpI/WG9L
-   rMxUODdYPsGGwUeYmAcyUV7+CQpeRmbiwjo6H8NVitHej69HmzaZvNy67
-   mKyPvvv1NwbQeRGm9p0KM4iPVVut4mwtzUnmNGm/3mD3/oX+xqKW6Vvrr
-   tWH9z83JONSvv8RztQ9KijiP4eQTk9f9ILAyyYvNtmSsejQ6PZN4ll4P5
-   Nm7w8N8Fd9Wbm+AUmvfq/ywdIpRJ8I/VooYcqtlVeEsI/Is/UvT2d6BWu
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10923"; a="393914281"
-X-IronPort-AV: E=Sophos;i="6.04,274,1695711600"; 
-   d="scan'208";a="393914281"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Dec 2023 15:47:47 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10923"; a="1105480328"
-X-IronPort-AV: E=Sophos;i="6.04,274,1695711600"; 
-   d="scan'208";a="1105480328"
-Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
-  by fmsmga005.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 13 Dec 2023 15:47:47 -0800
-Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
- fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Wed, 13 Dec 2023 15:47:47 -0800
-Received: from fmsmsx603.amr.corp.intel.com (10.18.126.83) by
- fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Wed, 13 Dec 2023 15:47:46 -0800
-Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
- fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Wed, 13 Dec 2023 15:47:46 -0800
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (104.47.57.169)
- by edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Wed, 13 Dec 2023 15:47:46 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=E86FmMDNr6Fg3ZF8oiNqCxhnsTcciUfshB+lJa7mkMnRBQBCbsX4oBRO7Y1dHGldU084a4Yupnn1iuYHbX+6fSZ3GZcumrb9pcV5XH/4MERu+Pv9NlPp14EHJfLvVgQvMNcZjfdls7bOic5BjJiSQe3OXxdle+mq66d+3qYqRW1pkTpBqjWzKicqGGsCVlFocJj9arPdNKHAFmBJcp7B1OY3j+6tsYup2+eTcHAjMT3xAj3yV03OtW54IawalFuI4ocVUEQvh5Zt4cq0jurpxhHuKS9XSI/3DEoVswAEMI5Gjjlc2tgTJ8/6wZFPzUmNbWaLEhiktZwnktmM7uGSTA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=hnnEEfwkwwsoGslTqTBvn2g789oJCOrkOA5LVRkoECs=;
- b=loWG0DNdv4jhN8Izb1tcORCwakvuarvljHRYxTvVXjt27WaWzDqck2GzjXKu2+aj7FX1Yhm/3rZtOOHOCOXNWBIrh6LzqBN89ZwIsm1voBUXM1eZ38a6NWIEDZhGva6blHgvHe8YSoPjVzmgBaZbgXfEFz9qVAqZRJ0FsUI0nsZ5hZ6Kjr8Q8m904eptjjs4epFW6jX0E2JnAqwLfqToltgRIvTaAvAh4oNLJk0EvEy8zidoj8ZtgYVtQlI9TUH8vN3HK2R9aRfgAU1Ts0PA30FOg80sgzlLb8yhdCYIBtjnRPDv2bE8ewM4b0ASgo6uuglhbF+bPS5Dso6AMmHdYQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from SA1PR11MB6733.namprd11.prod.outlook.com (2603:10b6:806:25c::17)
- by PH7PR11MB7028.namprd11.prod.outlook.com (2603:10b6:510:20b::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7091.26; Wed, 13 Dec
- 2023 23:47:39 +0000
-Received: from SA1PR11MB6733.namprd11.prod.outlook.com
- ([fe80::da91:dbe5:857c:fa9c]) by SA1PR11MB6733.namprd11.prod.outlook.com
- ([fe80::da91:dbe5:857c:fa9c%4]) with mapi id 15.20.7091.028; Wed, 13 Dec 2023
- 23:47:39 +0000
-Date:   Wed, 13 Dec 2023 15:47:35 -0800
-From:   Ira Weiny <ira.weiny@intel.com>
-To:     Dan Williams <dan.j.williams@intel.com>,
-        <gregkh@linuxfoundation.org>
-CC:     Vishal Verma <vishal.l.verma@intel.com>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        <linux-kernel@vger.kernel.org>, <linux-cxl@vger.kernel.org>,
-        <nvdimm@lists.linux.dev>
-Subject: Re: [PATCH] driver core: Add a guard() definition for the
- device_lock()
-Message-ID: <657a42977b357_25d7a0294cb@iweiny-mobl.notmuch>
-References: <170250854466.1522182.17555361077409628655.stgit@dwillia2-xfh.jf.intel.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <170250854466.1522182.17555361077409628655.stgit@dwillia2-xfh.jf.intel.com>
-X-ClientProxiedBy: BY5PR03CA0012.namprd03.prod.outlook.com
- (2603:10b6:a03:1e0::22) To SA1PR11MB6733.namprd11.prod.outlook.com
- (2603:10b6:806:25c::17)
+        Wed, 13 Dec 2023 18:47:32 -0500
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13324C9;
+        Wed, 13 Dec 2023 15:47:39 -0800 (PST)
+Received: by mail-wr1-x434.google.com with SMTP id ffacd0b85a97d-3364514fe31so246937f8f.1;
+        Wed, 13 Dec 2023 15:47:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1702511257; x=1703116057; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:autocrypt
+         :references:in-reply-to:date:cc:to:from:subject:message-id:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=DzX45WvCsgZhpc7rT6V8I3XpK+GcadypFiCWho8hSpQ=;
+        b=HAIhzLsZPa72wLsgEb1jSuEm3t8gTuV/ZPQzu63n8tkWcWZ6m6tLzyHhqJanvI/AiD
+         rBFcCKqJRrNDwOv24f6aoql0vRogSIKCWBFDAUm69JOjactyBvaAzp03B1tRqJwOiFl5
+         KBrwpiVKg3tAvNFzNl2nSkfEt9BjIDmzOMlECA3r5aYxhFUd/fHtTdTZgzLjylDNEq6Y
+         b29w4cq8hi3vlXx6s4V62wcyLRXPr6EJ+8ggPGbAA8Xft0R6FH3LrNae8/YP1++Gtcw+
+         X/tjGXgn35eoLff1tyOs/FoOwIiqF5mG7TUylt4xfcMvnPuwa0z3hziiw3zWRjfGaDzB
+         h8mQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702511257; x=1703116057;
+        h=mime-version:user-agent:content-transfer-encoding:autocrypt
+         :references:in-reply-to:date:cc:to:from:subject:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=DzX45WvCsgZhpc7rT6V8I3XpK+GcadypFiCWho8hSpQ=;
+        b=rvLE9AXhvFjOyQWMmI0ZdidofdejZGxBGxwwA9RzinQvmHp5q9y4jykykYP4zFZPnG
+         cvdQXKDo3cZU26YVnVpehC7bVw2foDfsEyafvorC02HTohNnIk+S6YJ+O0qBo24CRoKT
+         Xim+vFH14dK1oJYgKHntAA63aOhEOs4wgJmUVYF7kiKqH6zBriW1vYbyK20ePdViiVSg
+         phUl46wl+SDgKvQ8E9SZuybqU8hJSZD/Msxd+F2BdkDwCTpDek4gbByadvp17MsJbmme
+         +fLfnLWG4JjhmZMDxUYauCiqSWKCOblN04EjZHrhbjcX61WOKmuBGA56zzZ0/qBg+d26
+         AShA==
+X-Gm-Message-State: AOJu0Yxh+JHzU0rXRFjFlHFSjRfp+a6JNUh+b0MBtQpD1GGNPzlDZRDT
+        OKJan3YfywKMjxBhz7JKujA+HfFMSzUe3Q==
+X-Google-Smtp-Source: AGHT+IFTJa3nggUwEvu3DevQK/zBr+UnrycCV6yK6Jko/3dlmj5Gs6jAYLql3oaN3mDpk1cL+Wd8Lw==
+X-Received: by 2002:a5d:4a47:0:b0:336:35f2:9d60 with SMTP id v7-20020a5d4a47000000b0033635f29d60mr1628250wrs.39.1702511257365;
+        Wed, 13 Dec 2023 15:47:37 -0800 (PST)
+Received: from [192.168.1.95] (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
+        by smtp.gmail.com with ESMTPSA id g12-20020a5d46cc000000b003335c061a2asm14496338wrs.33.2023.12.13.15.47.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Dec 2023 15:47:36 -0800 (PST)
+Message-ID: <3ba67d3e220c19c4a921e20f06e26bfe70ae8c80.camel@gmail.com>
+Subject: Re: [Bug Report] bpf: incorrectly pruning runtime execution path
+From:   Eduard Zingerman <eddyz87@gmail.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Hao Sun <sunhao.th@gmail.com>, Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        bpf <bpf@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Date:   Thu, 14 Dec 2023 01:47:35 +0200
+In-Reply-To: <CAEf4BzbfF=aNa-jAkka6YrK6Vbisi=v7PFsEDR-RFuHtAub2Xw@mail.gmail.com>
+References: <CACkBjsbj4y4EhqpV-ZVt645UtERJRTxfEab21jXD1ahPyzH4_g@mail.gmail.com>
+         <CAEf4BzZ0xidVCqB47XnkXcNhkPWF6_nTV7yt+_Lf0kcFEut2Mg@mail.gmail.com>
+         <CACkBjsaEQxCaZ0ERRnBXduBqdw3MXB5r7naJx_anqxi0Wa-M_Q@mail.gmail.com>
+         <480a5cfefc23446f7c82c5b87eef6306364132b9.camel@gmail.com>
+         <CAEf4BzbfF=aNa-jAkka6YrK6Vbisi=v7PFsEDR-RFuHtAub2Xw@mail.gmail.com>
+Autocrypt: addr=eddyz87@gmail.com; prefer-encrypt=mutual; keydata=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
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.1 
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SA1PR11MB6733:EE_|PH7PR11MB7028:EE_
-X-MS-Office365-Filtering-Correlation-Id: 6b7832c7-c5ff-4b99-fc48-08dbfc35e3d8
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: JkMPpuSAwHDiANkx7XbrrzkTABOIxX3w7AN5gd2kr8P830AmRMYuUbdeVre9eUe2EDzlAgAYdWGeiLtKIt8ZYxchovL7Dug+d4KYGj3JGFu/7FpVEzf0LHMEnRpwHpXkpdeYvMAOA8KwSXQGGcMicZd+qqVInDhHWVTdLKeftkkpu1QV4PH3Jfi0Zbz08TEpA0sCmvnuY3oLYh7GaScqaei5yuAxwBZcLuZq14+8yUDOML5M01X5019YlnFx2jD7K0A7RzhGu61kdFvbCqh9Rl82R84tVE5Fg6JHktS2nUADM0LXprle5mTCMj35UyypCCeyYF7UTZqP8Zms/KLO/Xd2xpA4e7IAeFJ2/TRrwxu+yd6AmrQ87WPo17/SUt0pyuj7bxeGvFdweoDTUQdB6WmF12dD3qON9U86A0ksy1ZFhhKo1dbUMypp+0gA+u7crlojULriola+unFVj5wd31oppHKVgagCXczuuo7gJoNpvKLMvZnk5+ACT3y2pLaYz+R9HCT9i3ZDse7q4l6qknJd72jC2KmGBXrudOlvCVGQyrFBPEhNAv4ZvGP7NKu+BBBY/GXezijCCjaJ/ACKVA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR11MB6733.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(366004)(136003)(396003)(376002)(346002)(230922051799003)(64100799003)(186009)(451199024)(1800799012)(66946007)(66556008)(66476007)(54906003)(82960400001)(86362001)(26005)(83380400001)(478600001)(6512007)(9686003)(6506007)(966005)(2906002)(316002)(38100700002)(6666004)(6486002)(4326008)(5660300002)(44832011)(8676002)(41300700001)(8936002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?L/TKUbGZKG8HjfUk4frFp6lSfhOFd7zisl/oCYOSp7NTUEoa+aUdbf/bBGni?=
- =?us-ascii?Q?iIs1VxX2bKo6ZoKd7VX5+g6tIDlMDktGi3XRZnQ9Vk0MBSXuaCpKuAchohNq?=
- =?us-ascii?Q?xTqLVKtHypjCMpM6CZxseLm9NSEilVIKUiapSTDhKfUn3VdQoi+tEzb6kI97?=
- =?us-ascii?Q?/QcnfrrSIgBOgbJIv/08TdSSnjt0o76G2Xr4+cibVdCKA4fp8RfFh8HfOwa6?=
- =?us-ascii?Q?poqe1w26pSFV+cd+WOp9zARVkcDm4Zz8I041jZH5EyAJUzBH0uR1AzbLhU0o?=
- =?us-ascii?Q?wSen2RJZZtXHf21lbntN0pXLNgTyAe6kTCdUIvVgp8i+uBAxzuQp1E9fWLZw?=
- =?us-ascii?Q?SEWwUAy5ofuXu4JbJ9Ig3SFsVOMWLmlt2g34HBScV2gKFX0uMEgNKW+Namxr?=
- =?us-ascii?Q?uy0QueQEDPmEHV8qIGnBg57eiAtA8hORxvzAXE6OQi+atzYhZjehjd5uBRXs?=
- =?us-ascii?Q?BUgVKOO5AQIUxf92PJ6hSm871+guYfnZjU+zDzZCRdI5sWqx3JjfActtey7P?=
- =?us-ascii?Q?FlBFODDMiYfCFcBqsm6B/aqyIj76/b2uyemp/VHbOZOAyTQNJmDqx47B1LCN?=
- =?us-ascii?Q?p0bfXZTiWPIRizbxEI6Sm+KTPUD2xAG9fDvxd7c9bpbyzkevG6Uo4iJITO+4?=
- =?us-ascii?Q?ZT5xDLubdRFETbgHjEKCm/4WnhtRxMCo1PyWFPwXzjFG7hx4w9q/Rx9/UGGz?=
- =?us-ascii?Q?CHPTV9bmX6sqXniUgLKoHE9Nao64jhxzxDr07b9B+Z0lhB3+bZ4QDeb+B3za?=
- =?us-ascii?Q?1bJvQOJK8RrvvSonLtraMwVo11BEiJJvbbQ9qUlVy+/7bZzaK0UXZNopF+ZN?=
- =?us-ascii?Q?LW38glrTjuSh4vGmBBV0OusRXXH83AM8853dR7zXyxYaXfZZzuj0sRCEh9Sp?=
- =?us-ascii?Q?PDQ57LP20CrzzkbkC40bCs6T3NjSp+0sg1rF5/q1XQG2GVasbYtl5Cy+XhBQ?=
- =?us-ascii?Q?Drx16bvcvOE1Wt8TLZ6ZJla5z1yhIBPCNiEpzXyHywA0o/hna36/DsfpcqLp?=
- =?us-ascii?Q?po0QBIFBHy8+cRFWlWyh8p+aQu2JpLn01DCS4PWLyYvuDdFIzwK7lN0rGt8Y?=
- =?us-ascii?Q?/qrJkMBeWt6ARrTgAjaMtmzS33je4JB6tcIUCL06J6YKsPgKM/+s0970Kzuy?=
- =?us-ascii?Q?Cm8LJXFe6kQmIFo78jTdQjVC8+AvvpvjMlXsuPkDkjklHmp3LY2k808FWBLk?=
- =?us-ascii?Q?XH+PTay4/6PqDo6PPS+JX9QoITR9nn3GGF+pH6lOx1mAt7MVrwLRkPnbdGr1?=
- =?us-ascii?Q?AannST0YxEt3WQtuTvWzm9Mf7taAgA9e3w9tCrEEPRqWq7qFWsmCJs7Q1P5R?=
- =?us-ascii?Q?Jiq9GTeKW/kboQsGnFyncKSdbcA3momfBfT7lLSkua8fTplRCrweBSehl0xp?=
- =?us-ascii?Q?ZNv8N50BN2eqm7jGQFBBNkei3fnTEBQdRNchJqkY80i9h/YupNDdnCqEvswU?=
- =?us-ascii?Q?DsYZi2rKkAPs6wKnWsEA4OjMLociLKo8boh2DgNyCGKPhzU9DWNdYzhV3c6+?=
- =?us-ascii?Q?ZsqpkfIJGAzn2V7OZAnByFSI3WGAPIu40kubbFIXzeGMCMj6M5Bjfa6HUCOe?=
- =?us-ascii?Q?Wn1ca6RTQz88JMkDFdW6kQHwuI8k6uLa+MkiKAhn?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6b7832c7-c5ff-4b99-fc48-08dbfc35e3d8
-X-MS-Exchange-CrossTenant-AuthSource: SA1PR11MB6733.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Dec 2023 23:47:39.1248
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 9BPQ3x7asUZjLan5O9kmch4e3W1fJRDhNLehiSVmMZkKJPD6O99MsohA5ZvMMSszj620q4SxAcGDCM8AKh9Nyw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR11MB7028
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dan Williams wrote:
-> At present there are ~200 usages of device_lock() in the kernel. Some of
-> those usages lead to "goto unlock;" patterns which have proven to be
-> error prone. Define a "device" guard() definition to allow for those to
-> be cleaned up and prevent new ones from appearing.
-> 
-> Link: http://lore.kernel.org/r/657897453dda8_269bd29492@dwillia2-mobl3.amr.corp.intel.com.notmuch
-> Link: http://lore.kernel.org/r/6577b0c2a02df_a04c5294bb@dwillia2-xfh.jf.intel.com.notmuch
-> Cc: Vishal Verma <vishal.l.verma@intel.com>
-> Cc: Ira Weiny <ira.weiny@intel.com>
+On Wed, 2023-12-13 at 15:40 -0800, Andrii Nakryiko wrote:
+[...]
+> >     24: (18) r2 =3D 0x4                     ; R2_w=3D4
+> >     26: (7e) if w8 s>=3D w0 goto pc+5
+> >     mark_precise: frame0: last_idx 26 first_idx 22 subseq_idx -1
+> >     mark_precise: frame0: regs=3Dr5,r8 stack=3D before 24: (18) r2 =3D =
+0x4
+> >     ...                   ^^^^^^^^^^
+> >                           ^^^^^^^^^^
+> > Here w8 =3D=3D 15, w0 in range [0, 2], so the jump is being predicted,
+> > but for some reason R0 is not among the registers that would be marked =
+precise.
+>=20
+> It is, as a second step. There are two concatenated precision logs:
+>=20
+> mark_precise: frame0: last_idx 26 first_idx 22 subseq_idx -1
+> mark_precise: frame0: regs=3Dr0 stack=3D before 24: (18) r2 =3D 0x4
+> mark_precise: frame0: regs=3Dr0 stack=3D before 23: (bf) r5 =3D r8
+> mark_precise: frame0: regs=3Dr0 stack=3D before 22: (67) r4 <<=3D 2
+>=20
+>=20
+> The issue is elsewhere, see my last email.
 
-Reviewed-by: Ira Weiny <ira.weiny@intel.com>
-
-> Cc: Peter Zijlstra <peterz@infradead.org>
-> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Signed-off-by: Dan Williams <dan.j.williams@intel.com>
-> ---
-> Hi Greg,
-> 
-> I wonder if you might include this change in v6.7-rc to ease some patch
-> sets alternately going through my tree and Andrew's tree. Those
-> discussions are linked above. Alternately I can can just take it through
-> my tree with your ack and the other use case can circle back to it in
-> the v6.9 cycle.
-> 
-> I considered also defining a __free() helper similar to __free(mutex),
-> but I think "__free(device)" would be a surprising name for something
-> that drops a lock. Also, I like the syntax of guard(device) over
-> something like guard(device_lock) since a 'struct device *' is the
-> argument, not a lock type, but I'm open to your or Peter's thoughts on
-> the naming.
-> 
->  include/linux/device.h |    2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/include/linux/device.h b/include/linux/device.h
-> index d7a72a8749ea..6c83294395ac 100644
-> --- a/include/linux/device.h
-> +++ b/include/linux/device.h
-> @@ -1007,6 +1007,8 @@ static inline void device_unlock(struct device *dev)
->  	mutex_unlock(&dev->mutex);
->  }
->  
-> +DEFINE_GUARD(device, struct device *, device_lock(_T), device_unlock(_T))
-> +
->  static inline void device_lock_assert(struct device *dev)
->  {
->  	lockdep_assert_held(&dev->mutex);
-> 
-
-
+Oh, right, there are two calls to mark_chain_precision in a row, thanks
