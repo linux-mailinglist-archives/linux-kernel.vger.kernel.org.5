@@ -2,66 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E72F88110DF
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 13:18:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 83F8B8110E4
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 13:18:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233397AbjLMMRx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 07:17:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34204 "EHLO
+        id S1377546AbjLMMSD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 07:18:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35498 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233316AbjLMMRv (ORCPT
+        with ESMTP id S233316AbjLMMSB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 07:17:51 -0500
+        Wed, 13 Dec 2023 07:18:01 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 295B6D5
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 04:17:58 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 45F0BC433C8;
-        Wed, 13 Dec 2023 12:17:57 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5515AF2
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 04:18:08 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B81F1C433C8;
+        Wed, 13 Dec 2023 12:18:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1702469877;
-        bh=iwv6QjlzhU/3lqKybKin6YBmQgef/lB3nAcvuDWpn2g=;
+        s=k20201202; t=1702469888;
+        bh=fOi26p1uWxnqpvwuqGwXpnv62gezURvfN1QJ75LNswM=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ctonY1pD3cVqUnD3wCzZr2rWQ6aR3CISED2vL7hpLsSaR5RCWaijqq45PfJy0lpZn
-         GxeHxtDm3D6FPNvjsLDaCJeTqxuQJVBVjszBs663aieCxmLUNF9Ar1ScENexe41rOL
-         /QTTx4y+ySrpwVhldfwnk/Xj6ub/N3qAI/HdFOybU0obhe04DICyQgRsNt3iX1mEaG
-         PrN6xab2DiQbpGNSQN3xAS/KnOyJAqrPqgPyzzxnSPSGDI1AGT8aq1foHtyls41nm8
-         92C0vFGrOHcUYsriJyPztZCtJIXliOtp29B/iUNG4IIqtYRk8cbd1oGaRRSeHtgeUr
-         bbCJZvMTWV3og==
-Date:   Wed, 13 Dec 2023 13:17:54 +0100
-From:   Maxime Ripard <mripard@kernel.org>
-To:     Dario Binacchi <dario.binacchi@amarulasolutions.com>
-Cc:     Jagan Teki <jagan@amarulasolutions.com>,
-        Dave Stevenson <dave.stevenson@raspberrypi.com>,
-        Michael Nazzareno Trimarchi <michael@amarulasolutions.com>,
-        linux-kernel@vger.kernel.org,
-        Amarula patchwork <linux-amarula@amarulasolutions.com>,
-        Andrzej Hajda <andrzej.hajda@intel.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@gmail.com>,
-        Frieder Schrempf <frieder.schrempf@kontron.de>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Robert Foss <rfoss@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        dri-devel@lists.freedesktop.org
-Subject: Re: [PATCH v4 02/10] drm/bridge: Fix a use case in the bridge
- disable logic
-Message-ID: <wepxz7qfph5cqxa7jnxiwdya3znaljqng7flggn65bmqrkwqyj@hjklrehup452>
-References: <20231205105341.4100896-1-dario.binacchi@amarulasolutions.com>
- <20231205105341.4100896-3-dario.binacchi@amarulasolutions.com>
- <CAPY8ntAALKiTEG6qyFO=qVqSLUW9x8AMfPMc_TUwC3z8tJ7Kzw@mail.gmail.com>
- <CABGWkvq-fJTDFPB=389XbHW_SLt6BQr-BhjZqZ+01i3v8EaYwA@mail.gmail.com>
- <CAMty3ZBdCW=Rak8gMin8bt9JnFChAu6nw9n6xQyCSZw=63BukA@mail.gmail.com>
- <CAOf5uwm_YmXz0A6nuCbJh+iszwqWyQkRRKATKyWZ33YUgZmEnw@mail.gmail.com>
- <CABGWkvpryv=bKsro1=6AG9kH9mU63JdWkG4xyyKvr_Rq0iADHg@mail.gmail.com>
+        b=AnwXJIqH4fCdac/GM8uGsKkXH5rlvQ7LiX5pZhrfsZ8C/JpJFSxcUzvISxvfa8DM0
+         BfWjylNwolszu4Qg2m29OKpVydAqtd5GsS3xLX4hzcut94iNBqN4jYw1Nzy+5HZOcZ
+         Kog93MndP4PC3NGIEi+9KxXdcb4Yy2YNljHEDo1Fh//JacBp7Ly75ihx9XFd5G1r2x
+         3FmqpFdEuGwNA/1f6avfR1Gm1huDFzU879oG7fFwqNZ95bpa9mXXO6F03q+jskimhw
+         Gs9JNfL6is5fN4Ry3TGnxa0NvgxUyI2FuqYZzUhFryz2gdwwnSk/NuTFCmQBGfCqsv
+         4xZFpk69q2WcQ==
+Date:   Wed, 13 Dec 2023 13:18:03 +0100
+From:   Christian Brauner <brauner@kernel.org>
+To:     kernel test robot <oliver.sang@intel.com>
+Cc:     Tycho Andersen <tycho@tycho.pizza>, oe-lkp@lists.linux.dev,
+        lkp@intel.com, linux-kernel@vger.kernel.org,
+        Oleg Nesterov <oleg@redhat.com>,
+        "Eric W . Biederman" <ebiederm@xmission.com>,
+        linux-api@vger.kernel.org, Tycho Andersen <tandersen@netflix.com>
+Subject: Re: [PATCH v2 1/3] pidfd: allow pidfd_open() on non-thread-group
+ leaders
+Message-ID: <20231213-famos-chillen-41adc67ac0ef@brauner>
+References: <20231207170946.130823-1-tycho@tycho.pizza>
+ <202312111516.26dc3fd5-oliver.sang@intel.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="5iaexn55qchqkucz"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <CABGWkvpryv=bKsro1=6AG9kH9mU63JdWkG4xyyKvr_Rq0iADHg@mail.gmail.com>
+In-Reply-To: <202312111516.26dc3fd5-oliver.sang@intel.com>
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -72,165 +54,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Dec 11, 2023 at 03:28:09PM +0800, kernel test robot wrote:
+> 
+> 
+> Hello,
+> 
+> kernel test robot noticed "kernel-selftests.pidfd.pidfd_test.fail" on:
+> 
+> commit: e6d9be676d2c1fa8332c63c4382b8d3227fca991 ("[PATCH v2 1/3] pidfd: allow pidfd_open() on non-thread-group leaders")
+> url: https://github.com/intel-lab-lkp/linux/commits/Tycho-Andersen/selftests-pidfd-add-non-thread-group-leader-tests/20231208-011135
+> patch link: https://lore.kernel.org/all/20231207170946.130823-1-tycho@tycho.pizza/
+> patch subject: [PATCH v2 1/3] pidfd: allow pidfd_open() on non-thread-group leaders
+> 
+> in testcase: kernel-selftests
+> version: kernel-selftests-x86_64-60acb023-1_20230329
+> with following parameters:
+> 
+> 	group: pidfd
+> 
+> 
+> 
+> compiler: gcc-12
+> test machine: 36 threads 1 sockets Intel(R) Core(TM) i9-10980XE CPU @ 3.00GHz (Cascade Lake) with 32G memory
+> 
+> (please refer to attached dmesg/kmsg for entire log/backtrace)
+> 
+> 
+> 
+> If you fix the issue in a separate patch/commit (i.e. not just a new version of
+> the same patch/commit), kindly add following tags
+> | Reported-by: kernel test robot <oliver.sang@intel.com>
+> | Closes: https://lore.kernel.org/oe-lkp/202312111516.26dc3fd5-oliver.sang@intel.com
+> 
+> 
+> besides, we also observed kernel-selftests.pidfd.pidfd_poll_test.fail on this
+> commit, but clean on parent:
+> 
+> bee0e7762ad2c602 e6d9be676d2c1fa8332c63c4382
+> ---------------- ---------------------------
+>        fail:runs  %reproduction    fail:runs
+>            |             |             |
+>            :6          100%           6:6     kernel-selftests.pidfd.pidfd_poll_test.fail
+>            :6          100%           6:6     kernel-selftests.pidfd.pidfd_test.fail
+> 
+> 
+> 
+> TAP version 13
+> 1..7
+> # timeout set to 300
+> # selftests: pidfd: pidfd_test
+> # TAP version 13
+> # 1..8
+> # # Parent: pid: 2191
+> # # Parent: Waiting for Child (2192) to complete.
+> # # Child (pidfd): starting. pid 2192 tid 2192
+> # # Child Thread: starting. pid 2192 tid 2193 ; and sleeping
+> # # Child Thread: doing exec of sleep
+> # Bail out! pidfd_poll check for premature notification on child thread exec test: Unexpected epoll_wait result (c=0, events=0) (errno 0)
 
---5iaexn55qchqkucz
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Wed, Dec 13, 2023 at 12:59:05PM +0100, Dario Binacchi wrote:
-> Hi Jagan and Dave,
->=20
-> On Wed, Dec 6, 2023 at 2:57=E2=80=AFPM Michael Nazzareno Trimarchi
-> <michael@amarulasolutions.com> wrote:
-> >
-> > Hi Jagan
-> >
-> > On Wed, Dec 6, 2023 at 2:31=E2=80=AFPM Jagan Teki <jagan@amarulasolutio=
-ns.com> wrote:
-> > >
-> > > Hi Dario,
-> > >
-> > > On Wed, Dec 6, 2023 at 6:57=E2=80=AFPM Dario Binacchi
-> > > <dario.binacchi@amarulasolutions.com> wrote:
-> > > >
-> > > > Hi Dave and Jagan,
-> > > >
-> > > > On Tue, Dec 5, 2023 at 4:39=E2=80=AFPM Dave Stevenson
-> > > > <dave.stevenson@raspberrypi.com> wrote:
-> > > > >
-> > > > > Hi Dario
-> > > > >
-> > > > > On Tue, 5 Dec 2023 at 10:54, Dario Binacchi
-> > > > > <dario.binacchi@amarulasolutions.com> wrote:
-> > > > > >
-> > > > > > The patch fixes the code for finding the next bridge with the
-> > > > > > "pre_enable_prev_first" flag set to false. In case this conditi=
-on is
-> > > > > > not verified, i. e. there is no subsequent bridge with the flag=
- set to
-> > > > > > false, the whole bridge list is traversed, invalidating the "ne=
-xt"
-> > > > > > variable.
-> > > > > >
-> > > > > > The use of a new iteration variable (i. e. "iter") ensures that=
- the value
-> > > > > > of the "next" variable is not invalidated.
-> > > > >
-> > > > > We already have https://patchwork.freedesktop.org/patch/529288/ t=
-hat
-> > > > > has been reviewed (but not applied) to resolve this. What does th=
-is
-> > > > > version do differently and why?
-> > > >
-> > > > My patches only affect drm_atomic_bridge_chain_post_disable(), wher=
-eas
-> > > > Jagan's patch affects both
-> > > > drm_atomic_bridge_chain_post_disable() and drm_atomic_bridge_chain_=
-pre_enable().
-> > > > I tested Jagan's patch on my system with success and I reviewed with
-> > > > Michael Trimarchi the
-> > > > drm_atomic_bridge_chain_pre_enable() fixing and we think it's okay.
-> > > > We also believe that our changes to post_disable() are better, as we
-> > > > set the 'next' variable only when required,
-> > > > and the code is more optimized since the list_is_last() is not call=
-ed
-> > > > within the loop.
-> > > > Would it be possible to use Jagan's patch for fixing
-> > > > drm_atomic_bridge_chain_pre_enable() and mine for
-> > > > fixing drm_atomic_bridge_chain_post_disable()?
-> > > >
-> > >
-> > > Can you please share the post-disabled bridge chain list with the
-> > > below example before and after your change?
-> >
-> > We have already git commit the description in how the patch affects
-> > the post_disable. As Dario
-> > reported your patch is ok even in our use case. We don't have a real
-> > use case as the one you describe.
-> >
-> > Can we know how you test it in this use case here? Can you test our
-> > patches of post_disable?
-> >
-> > Thanks
-> > Michael
-> >
-> > >
-> > > Example:
-> > > - Panel
-> > > - Bridge 1
-> > > - Bridge 2 pre_enable_prev_first
-> > > - Bridge 3
-> > > - Bridge 4 pre_enable_prev_first
-> > > - Bridge 5 pre_enable_prev_first
-> > > - Bridge 6
-> > > - Encoder
-> > >
-> > > Thanks,
-> > > Jagan.
->=20
-> Starting from my use case:
->=20
-> # cat /sys/kernel/debug/dri/32e00000.lcdif/bridge_chains
-> encoder[36]
-> bridge[0] type: 16, ops: 0x0, OF:
-> /soc@0/bus@32c00000/dsi@32e10000:fsl,imx8mn-mipi-dsim
-> bridge[1] type: 16, ops: 0x8, OF:
-> /soc@0/bus@32c00000/dsi@32e10000/panel@0:sharp,ls068b3sx0
->=20
-> I developed a pass through MIPI-DSI bridge driver to try to test your cas=
-e:
-> # cat /sys/kernel/debug/dri/32e00000.lcdif/bridge_chains
-> encoder[36]
-> bridge[0] type: 16, ops: 0x0, OF:
-> /soc@0/bus@32c00000/dsi@32e10000:fsl,imx8mn-mipi-dsim
-> bridge[1] type: 16, ops: 0x0, OF: /pt_mipi_dsi1:amarula,pt-mipi-dsi
-> bridge[2] type: 16, ops: 0x0, OF: /pt_mipi_dsi2:amarula,pt-mipi-dsi
-> bridge[3] type: 16, ops: 0x0, OF: /pt_mipi_dsi3:amarula,pt-mipi-dsi
-> bridge[4] type: 16, ops: 0x0, OF: /pt_mipi_dsi4:amarula,pt-mipi-dsi
-> bridge[5] type: 16, ops: 0x0, OF: /pt_mipi_dsi5:amarula,pt-mipi-dsi
-> bridge[6] type: 16, ops: 0x8, OF: /pt_mipi_dsi5/panel@0:sharp,ls068b3sx02
->=20
-> The pre_enable_prev_first flag is set through the
-> "amarula,pre_enable_prev_first" dts property I put
-> in my dts.
-> Your and my patches give the same results (result: OK) in both your
-> use case and mine.
-> But If I test my new "enlarged" use case:
->=20
-> - Encoder
-> - bridge[0] (samsung-dsim)
-> - bridge[1] pre_enable_prev_first
-> - bridge[2] pre_enable_prev_first
-> - bridge[3] pre_enable_prev_first
-> - bridge[4] pre_enable_prev_first
-> - bridge[5] pre_enable_prev_first
-> - bridge[6] pre_enable_prev_first (Panel)
->=20
-> the result is:
-> my patches: KO
-> your patch: OK
->=20
-> So, I will remove my patches from the series.
->=20
-> Can the driver I implemented to test the use cases (pass through
-> MIPI-DSI) be considered useful for testing these
-> bridge pipelines?
-> Does it make sense to send its patch?
-
-As it is, not really, but kunit tests would be very welcome
-
-Maxime
-
---5iaexn55qchqkucz
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCZXmg8gAKCRDj7w1vZxhR
-xYE2AP9DlpeRBMf5MCKhgytRMJVkb5u7GKYMYVH7gCg/rEd2nAD8DFqluSPThfWf
-bNOau9D9SzHLHPj3BnTraUtdMZoiYAY=
-=k9+E
------END PGP SIGNATURE-----
-
---5iaexn55qchqkucz--
+So it seems that this broke multi-threaded exit notifications.
