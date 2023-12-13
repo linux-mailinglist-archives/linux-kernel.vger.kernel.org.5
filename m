@@ -2,112 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 90D18812148
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 23:14:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 403EF81214F
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 23:18:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442783AbjLMWOc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 17:14:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37274 "EHLO
+        id S230397AbjLMWSa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 17:18:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49008 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235412AbjLMWO1 (ORCPT
+        with ESMTP id S229772AbjLMWS2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 17:14:27 -0500
-Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9A1CDB;
-        Wed, 13 Dec 2023 14:14:33 -0800 (PST)
-Received: by mail-pf1-x42e.google.com with SMTP id d2e1a72fcca58-6ce7632b032so4167454b3a.1;
-        Wed, 13 Dec 2023 14:14:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702505673; x=1703110473; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=imZLdTnXdyTVKycL6b0+sLjjp1Qyn15Ic3JzkJzKH/4=;
-        b=dy4DkAPN8Xw2tSrQ4X8ZZu02A8yRBLHCR8XAkT0VXIoTN9qJEHn2ZZ9WJ+stMymOMX
-         likfItxcMYlNBLtDYHnyggIcs73hVjtfQdUWBCzVHmpLQwVCF7zMq/F2exJ/KPjK/6Hl
-         jOWcna0WAuaruJYtXBZ7V7FHhqLJ2YHL8rmfnlVxR2O0cINyv0qKmmh5f5zRcaCOVwtT
-         gV6iKmj2xsUaQgxa2mVVBzTwk1B5wa7HA3/3bxZ/dY51j8755TAbbyert89Gs+kRiBKa
-         eyGHDie+cszDFaUguUGw+Sc6fg4H3gEN4bg4qDWFkjc4Lgsd5/x2JuN5lt7jSs/sDS5l
-         RzDg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702505673; x=1703110473;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=imZLdTnXdyTVKycL6b0+sLjjp1Qyn15Ic3JzkJzKH/4=;
-        b=psWv/dLE4g15kOLw03+N/thJco6TFKRnQN5ic7wFNMgaQlES9g/aIxsKAzNsBlww6+
-         VjgccfuorHWHSBk7HG+eqV/jEgLhbdXxQFjAZVQBMQ58M5xGM3FGBPDvaT8rSHXw5bd7
-         aXIcTYzVDjSim4AD+RAcP0c5WmACFXmfy4/2nxdJdDEaIX6HDfWuh/JMK/WQZRHL8E/V
-         ednGkgn4DhHZgxFa8fXymAWHeAzyYF+Vz3Y0w/PmP8lFX8KHHC7cAyzOKQUxiQiMoOQ3
-         jbL6gF+0ybNNG1FoLFCDyieKIr+Ebuz35lAYAVIna47fqPBnDwDeAPbLLtSMTHgjxyxz
-         7AQA==
-X-Gm-Message-State: AOJu0YzJEcyLpH7fvcQw4DFvAT3o4zgHu57y3G4f2lOnJyzTDHkHunHq
-        KhUCDbcTSgffs2DNtJ7q+Ss3pCG7UsU=
-X-Google-Smtp-Source: AGHT+IELgdF+Buk0SHSih/1S4KuTS3R93Dky9LtVX74yf32QG19ZjQZtU3BncnkEcVzZGlJXwcAqCw==
-X-Received: by 2002:a05:6a00:8606:b0:6ce:2731:7a02 with SMTP id hg6-20020a056a00860600b006ce27317a02mr3287323pfb.56.1702505673273;
-        Wed, 13 Dec 2023 14:14:33 -0800 (PST)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id s16-20020a62e710000000b006ce3bf7acc7sm10370022pfh.113.2023.12.13.14.14.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Dec 2023 14:14:32 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Wed, 13 Dec 2023 14:14:32 -0800
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Jerry Hoemann <jerry.hoemann@hpe.com>
-Cc:     wim@linux-watchdog.org, linux-watchdog@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 3/3] watchdog/hpwdt: Remove unused variable
-Message-ID: <1912161e-eb33-47dd-a458-b2c6179fc647@roeck-us.net>
-References: <20231213215340.495734-1-jerry.hoemann@hpe.com>
- <20231213215340.495734-4-jerry.hoemann@hpe.com>
+        Wed, 13 Dec 2023 17:18:28 -0500
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB2209C;
+        Wed, 13 Dec 2023 14:18:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1702505913;
+        bh=N2KcphMx/eEE0e2GMNsci+rOYe8jMaZYKg7g7lpghNk=;
+        h=Date:From:To:Cc:Subject:From;
+        b=NlN8ZMbQUulPjbBkMtVFIsQ+MCvUKG5uDapO27h8uQLv3Mi0b2ZfRzMUV96ijSefq
+         gZM0F85idPpDZe4zj6NSS0IwQFh5A3vKFkE/OOKhhrzPSMqbpFaGaqqHtV1Ti28xls
+         0Pvviyzge6Q35pKNfL0Qms96kmGMOPPBfKAE/u/NM+OirrlgT4goVtL/Xoawy2/+UF
+         ENwq4HYEbQ64iriJWXeJi08m8Kmh+whn5L00msmqfqyJSKeTN/6CaEX+u7+dIjDQPs
+         u6MMVxWS+BTLTrBo2hkKAGfM4fWO0SsV88ETfpeGRsbPXkDj4E5VB2/azU/QxPfyHu
+         ydgjBm8Jgeppw==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Sr8yK1fCMz4xS5;
+        Thu, 14 Dec 2023 09:18:32 +1100 (AEDT)
+Date:   Thu, 14 Dec 2023 09:18:31 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Sidhartha Kumar <sidhartha.kumar@oracle.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        "Liam R. Howlett" <Liam.Howlett@oracle.com>
+Subject: linux-next: build failure after merge of the mm-hotfixes tree
+Message-ID: <20231214091831.70cc51e0@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231213215340.495734-4-jerry.hoemann@hpe.com>
-X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; boundary="Sig_/Jsu8AnM33T+NQPNVNyAWpsW";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 13, 2023 at 02:53:40PM -0700, Jerry Hoemann wrote:
-> Remove the unused variable ilo5.
-> 
-> Signed-off-by: Jerry Hoemann <jerry.hoemann@hpe.com>
+--Sig_/Jsu8AnM33T+NQPNVNyAWpsW
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+Hi all,
 
-> ---
->  drivers/watchdog/hpwdt.c | 4 ----
->  1 file changed, 4 deletions(-)
-> 
-> diff --git a/drivers/watchdog/hpwdt.c b/drivers/watchdog/hpwdt.c
-> index d5c0aa3ef069..138dc8d8ca3d 100644
-> --- a/drivers/watchdog/hpwdt.c
-> +++ b/drivers/watchdog/hpwdt.c
-> @@ -33,7 +33,6 @@
->  #define DEFAULT_MARGIN			30
->  #define PRETIMEOUT_SEC			9
->  
-> -static bool ilo5;
->  static unsigned int soft_margin = DEFAULT_MARGIN;	/* in seconds */
->  static bool nowayout = WATCHDOG_NOWAYOUT;
->  static bool pretimeout = IS_ENABLED(CONFIG_HPWDT_NMI_DECODING);
-> @@ -360,9 +359,6 @@ static int hpwdt_init_one(struct pci_dev *dev,
->  				pretimeout ? "on" : "off");
->  	dev_info(&dev->dev, "kdumptimeout: %d.\n", kdumptimeout);
->  
-> -	if (dev->subsystem_vendor == PCI_VENDOR_ID_HP_3PAR)
-> -		ilo5 = true;
-> -
->  	return 0;
->  
->  error_wd_register:
-> -- 
-> 2.41.0
-> 
+After merging the mm-hotfixes tree, today's linux-next build (powerpc
+ppc64_defconfig) failed like this:
+
+lib/maple_tree.c: In function 'mas_preallocate':
+lib/maple_tree.c:5506:30: error: 'struct ma_state' has no member named 'end'
+ 5506 |         if ((node_size =3D=3D mas->end) && ((!mt_in_rcu(mas->tree))
+      |                              ^~
+
+Caused by commit
+
+  84bda0b24555 ("maple_tree: do not preallocate nodes for slot stores")
+
+I have reverted that commit for today.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/Jsu8AnM33T+NQPNVNyAWpsW
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmV6LbcACgkQAVBC80lX
+0Gw7JAgAjwy0mqo8r9Wsdr6sxma93mdYTcdl2Cf82gXXl+u/+w9bRfB8NMXaW8pg
+BsFde4KnnP5hG/bBirf7KeXLwJAaRM7KvaG37IhynsCFcvUS9iLEsweiIez+z5UN
+RGol5OqzV9GrdPOOHgviy++i6eNSvEHnhQ5ZrszU4RNCXy9js/H8pVehO6kWDx0a
+FanE2e/EBpuWcwNbFzdyYmQFvXhrNXoXXhe3AEF18cZs23K7pZlP/MmbY5whdm/R
+jXfrofT8GGov/mU86UzZENAp3+rdueM6h9p2GZbECwF+XcmkIvTsCtZDQXJU1CDz
+fM+fe7t7VlNUWJ+icYeST0fn5dQQPg==
+=Y/F+
+-----END PGP SIGNATURE-----
+
+--Sig_/Jsu8AnM33T+NQPNVNyAWpsW--
