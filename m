@@ -2,57 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E0696810FE1
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 12:27:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 036E7810FE5
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 12:31:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233260AbjLML1F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 06:27:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59132 "EHLO
+        id S235152AbjLMLax (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 06:30:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47140 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232339AbjLML1E (ORCPT
+        with ESMTP id S232736AbjLMLav (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 06:27:04 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D6D7B0
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 03:27:10 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 16A67C433C8;
-        Wed, 13 Dec 2023 11:27:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1702466830;
-        bh=uIKdDJmnkUDlqqMHVML0moikRxt70qnwcQT97kZOri8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=OC9cKVkVDywW6xaGaXoi8zCcpo6w8f4SSLtROXV2o2QlFza6tYh2C+a6RiQ1UXN0C
-         D1hNOd02ZFswKVi4+H2gEutM1zX3AHH5fe/mOtC22aSBNqskXa3ag8aJCa3JgzlmWB
-         EVdDgAMStBGs3r0Pd4ysYDff3Ql2B/ygoCzTZ0p5l+5cs1OGJRWZoeJiJTlmEJsMDD
-         N3QUV7hS1ukReKrBvsjKnXNMd7agAhqnwXqSY1XPRIVoOJyzyuuUMPDTRn96J+4we1
-         Z3M01LFDJo79kylZzx4v1uhK6fEr2s/KUmAm0OJaY4/pXWJh+YIu+HIfw4XvsAQ/EK
-         /X4TWXBj3uIag==
-Date:   Wed, 13 Dec 2023 11:27:05 +0000
-From:   Lee Jones <lee@kernel.org>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     Christian Marangi <ansuelsmth@gmail.com>,
-        Pavel Machek <pavel@ucw.cz>, Andrew Lunn <andrew@lunn.ch>,
-        Marek =?iso-8859-1?Q?Beh=FAn?= <kabel@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Li Zetao <lizetao1@huawei.com>, linux-kernel@vger.kernel.org,
-        linux-leds@vger.kernel.org, Daniel Golle <daniel@makrotopia.org>
-Subject: [GIT PULL] Immutable branch between LEDs and NetDev due for the v6.8
- merge window:wq
-Message-ID: <20231213112705.GI111411@google.com>
-References: <99e7d3304c6bba7f4863a4a80764a869855f2085.1701143925.git.daniel@makrotopia.org>
- <170142826116.3357002.9561246405642038358.b4-ty@kernel.org>
- <6577315e.050a0220.50f30.0122@mx.google.com>
- <20231211084656.26578d89@kernel.org>
- <657784f6.5d0a0220.617b5.20ee@mx.google.com>
- <20231211140546.5c39b819@kernel.org>
+        Wed, 13 Dec 2023 06:30:51 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFAC1A5;
+        Wed, 13 Dec 2023 03:30:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1702467058; x=1734003058;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=jY+jItOHug8fOIfc4VC5HBRpAmrVmd7Jl4V3nFTVHdQ=;
+  b=WG3yGMf2lE1RcOLivchDzIfslCzKhIku7ST0yPhWzbfTcer2+ZhdTYvw
+   kxTvI7APyWuxXLwmgrrl/QG5cHn3xa/xC6zHyUFCbqtCeK21mbLz7Tioe
+   QCjfm54B7Y2xUcF5QMLBE+QgpPNvC6DGTgg9P3AVysz8drq+Mg12ZEUtB
+   u73Kiqfg0uwvs8qlUwpvnq2D2cyeHURl+csck8MckBrdMdi6Ygqto+BwX
+   +O4TMaSOJVwE0CxaFnd28JS/t+IOfCUPjyDoRMY37bSmBKfZyfdZtui28
+   QxVo7PdJ/yJAhRvQ5y6oXobwibV5Pwebt89ic6bluCZd77otz5dGZNW5+
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10922"; a="375103849"
+X-IronPort-AV: E=Sophos;i="6.04,272,1695711600"; 
+   d="scan'208";a="375103849"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Dec 2023 03:30:40 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10922"; a="844279378"
+X-IronPort-AV: E=Sophos;i="6.04,272,1695711600"; 
+   d="scan'208";a="844279378"
+Received: from newjersey.igk.intel.com ([10.102.20.203])
+  by fmsmga004.fm.intel.com with ESMTP; 13 Dec 2023 03:30:36 -0800
+From:   Alexander Lobakin <aleksander.lobakin@intel.com>
+To:     "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>
+Cc:     Alexander Lobakin <aleksander.lobakin@intel.com>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        Michal Kubiak <michal.kubiak@intel.com>,
+        Larysa Zaremba <larysa.zaremba@intel.com>,
+        Alexander Duyck <alexanderduyck@fb.com>,
+        Yunsheng Lin <linyunsheng@huawei.com>,
+        David Christensen <drc@linux.vnet.ibm.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Paul Menzel <pmenzel@molgen.mpg.de>, netdev@vger.kernel.org,
+        intel-wired-lan@lists.osuosl.org, linux-kernel@vger.kernel.org
+Subject: [PATCH net-next v7 00/12] net: intel: start The Great Code Dedup + Page Pool for iavf
+Date:   Wed, 13 Dec 2023 12:28:23 +0100
+Message-ID: <20231213112835.2262651-1-aleksander.lobakin@intel.com>
+X-Mailer: git-send-email 2.43.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20231211140546.5c39b819@kernel.org>
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -60,69 +71,154 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 11 Dec 2023, Jakub Kicinski wrote:
+Here's a two-shot: introduce Intel Ethernet common library (libie) and
+switch iavf to Page Pool. Details are in the commit messages; here's
+a summary:
 
-> On Mon, 11 Dec 2023 22:53:55 +0100 Christian Marangi wrote:
-> > Soo that it's problematic to also have on net-next? (Sorry for the
-> > stupid question)
-> 
-> Unless I pull from Lee the patch would be duplicated, we'd have two
-> commits with different hashes and the same diff. And if I pull we'd
-> get a lot of netdev-unrelated stuff into net-next:
-> 
-> $ git merge f07894d3b384344c43be1bcf61ef8e2fded0efe5
-> Auto-merging drivers/leds/trigger/ledtrig-netdev.c
-> Merge made by the 'ort' strategy.
->  .../ABI/testing/sysfs-class-led-trigger-netdev     |  39 ++
->  .../ABI/testing/sysfs-class-led-trigger-tty        |  56 ++
->  .../bindings/leds/allwinner,sun50i-a100-ledc.yaml  | 137 +++++
->  Documentation/devicetree/bindings/leds/common.yaml |   2 +-
->  drivers/leds/Kconfig                               |  21 +
->  drivers/leds/Makefile                              |   2 +
->  drivers/leds/leds-max5970.c                        | 109 ++++
->  drivers/leds/leds-sun50i-a100.c                    | 580 +++++++++++++++++++++
->  drivers/leds/leds-syscon.c                         |   3 +-
->  drivers/leds/leds-tca6507.c                        |  30 +-
->  drivers/leds/rgb/leds-qcom-lpg.c                   |  52 +-
->  drivers/leds/trigger/ledtrig-gpio.c                |  26 +-
->  drivers/leds/trigger/ledtrig-netdev.c              |  32 +-
->  drivers/leds/trigger/ledtrig-tty.c                 | 247 +++++++--
->  drivers/tty/tty_io.c                               |  28 +-
->  include/linux/leds.h                               |   3 +
->  include/linux/tty.h                                |   1 +
->  17 files changed, 1247 insertions(+), 121 deletions(-)
->  create mode 100644 Documentation/devicetree/bindings/leds/allwinner,sun50i-a100-ledc.yaml
->  create mode 100644 drivers/leds/leds-max5970.c
->  create mode 100644 drivers/leds/leds-sun50i-a100.c
+Not a secret there's a ton of code duplication between two and more Intel
+ethernet modules. Before introducing new changes, which would need to be
+copied over again, start decoupling the already existing duplicate
+functionality into a new module, which will be shared between several
+Intel Ethernet drivers. The first name that came to my mind was
+"libie" -- "Intel Ethernet common library". Also this sounds like
+"lovelie" (-> one word, no "lib I E" pls) and can be expanded as
+"lib Internet Explorer" :P
+The series is only the beginning. From now on, adding every new feature
+or doing any good driver refactoring will remove much more lines than add
+for quite some time. There's a basic roadmap with some deduplications
+planned already, not speaking of that touching every line now asks:
+"can I share this?". The final destination is very ambitious: have only
+one unified driver for at least i40e, ice, iavf, and idpf with a struct
+ops for each generation. That's never gonna happen, right? But you still
+can at least try.
+PP conversion for iavf lands within the same series as these two are tied
+closely. libie will support Page Pool model only, so that a driver can't
+use much of the lib until it's converted. iavf is only the example, the
+rest will eventually be converted soon on a per-driver basis. That is
+when it gets really interesting. Stay tech.
 
-No, please don't do that.  None of the branches I maintain are stable.
+Alexander Lobakin (12):
+  page_pool: make sure frag API fields don't span between cachelines
+  page_pool: don't use driver-set flags field directly
+  net: intel: introduce Intel Ethernet common library
+  iavf: kill "legacy-rx" for good
+  iavf: drop page splitting and recycling
+  page_pool: constify some read-only function arguments
+  page_pool: add DMA-sync-for-CPU inline helper
+  libie: add Rx buffer management (via Page Pool)
+  iavf: pack iavf_ring more efficiently
+  iavf: switch to Page Pool
+  libie: add common queue stats
+  iavf: switch queue stats to libie
 
-It allows me to do things like this:
+ MAINTAINERS                                   |   3 +-
+ drivers/net/ethernet/intel/Kconfig            |   6 +
+ drivers/net/ethernet/intel/Makefile           |   1 +
+ drivers/net/ethernet/intel/i40e/i40e_common.c | 253 -------
+ drivers/net/ethernet/intel/i40e/i40e_main.c   |   1 +
+ .../net/ethernet/intel/i40e/i40e_prototype.h  |   7 -
+ drivers/net/ethernet/intel/i40e/i40e_txrx.c   |  72 +-
+ drivers/net/ethernet/intel/i40e/i40e_type.h   |  88 ---
+ drivers/net/ethernet/intel/iavf/iavf.h        |   2 +-
+ drivers/net/ethernet/intel/iavf/iavf_common.c | 253 -------
+ .../net/ethernet/intel/iavf/iavf_ethtool.c    | 234 +------
+ drivers/net/ethernet/intel/iavf/iavf_main.c   |  42 +-
+ .../net/ethernet/intel/iavf/iavf_prototype.h  |   7 -
+ drivers/net/ethernet/intel/iavf/iavf_txrx.c   | 624 ++++--------------
+ drivers/net/ethernet/intel/iavf/iavf_txrx.h   | 174 +----
+ drivers/net/ethernet/intel/iavf/iavf_type.h   |  90 ---
+ .../net/ethernet/intel/iavf/iavf_virtchnl.c   |  17 +-
+ .../net/ethernet/intel/ice/ice_lan_tx_rx.h    | 316 ---------
+ drivers/net/ethernet/intel/ice/ice_main.c     |   1 +
+ drivers/net/ethernet/intel/ice/ice_txrx_lib.c |  74 +--
+ drivers/net/ethernet/intel/libie/Kconfig      |   9 +
+ drivers/net/ethernet/intel/libie/Makefile     |   7 +
+ drivers/net/ethernet/intel/libie/rx.c         | 179 +++++
+ drivers/net/ethernet/intel/libie/stats.c      | 121 ++++
+ include/linux/net/intel/libie/rx.h            | 259 ++++++++
+ include/linux/net/intel/libie/stats.h         | 179 +++++
+ include/net/page_pool/helpers.h               |  34 +-
+ include/net/page_pool/types.h                 |  19 +-
+ net/core/page_pool.c                          |  42 +-
+ 29 files changed, 1058 insertions(+), 2056 deletions(-)
+ create mode 100644 drivers/net/ethernet/intel/libie/Kconfig
+ create mode 100644 drivers/net/ethernet/intel/libie/Makefile
+ create mode 100644 drivers/net/ethernet/intel/libie/rx.c
+ create mode 100644 drivers/net/ethernet/intel/libie/stats.c
+ create mode 100644 include/linux/net/intel/libie/rx.h
+ create mode 100644 include/linux/net/intel/libie/stats.h
 
-The following changes since commit b85ea95d086471afb4ad062012a4d73cd328fa86:
+---
+From v6[0]:
+* #04: resolve ethtool_puts() Git conflict (Jakub);
+* #06: pick RB from Ilias;
+* no functional changes.
 
-  Linux 6.7-rc1 (2023-11-12 16:19:07 -0800)
+From v5[1]:
+* drop Page Pool DMA shortcut: will pick up Eric's more global DMA sync
+  optimization[1] and expand it to cover both IOMMU and direct DMA a bit
+  later (Yunsheng);
+* drop per-queue Page Pool Ethtool stats: they are now exported via
+  generic Netlink interface (Jakub);
+* #01: leave a comment why exactly this alignment (Jakub, Yunsheng);
+* #08: make use of page_pool_params::netdev when calculating PP params;
+* #08: rename ``libie_rx_queue`` -> ``libie_buf_queue``.
 
-are available in the Git repository at:
+From v4[3]:
+* make use of Jakub's &page_pool_params split;
+* #01: prevent frag fields from spanning into 2 cachelines after
+  splitting &page_pool_params into fast and slow;
+* #02-03: bring back the DMA sync shortcut, now as a per-page flag
+  (me, Yunsheng);
+* #04: let libie have its own Kconfig to stop further bloating of poor
+  intel/Kconfig;
+* #06: merge page split-reuse-recycle drop into one commit (Alex);
+* #07: decouple constifying of several Page Pool function arguments
+  into a separate commit, constify some more;
+* #09: stop abusing internal PP fields in the driver code (Yunsheng);
+* #09: calculate DMA sync size (::max_len) correctly: within one page,
+  not one buffer (Yunsheng);
+* #10: decouple rearranging &iavf_ring into separate commit, optimize
+  it even more;
+* #11: let the driver get back to the last descriptor to process after
+  an skb allocation fail, don't drop it (Alex);
+* #11: stop touching unrelated stuff like watchdog timeout etc. (Alex);
+* fix "Return:" in the kdoc (now `W=12 C=1` is clean), misc typos.
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/lee/leds.git ib-leds-netdev-v6.8
+From v3[4]:
+* base on the latest net-next, update bloat-o-meter and perf stats;
+* split generic PP optimizations into a separate series;
+* drop "optimize hotpath a bunch" commit: a lot of [controversial]
+  changes in one place, worth own series (Alex);
+* 02: pick Rev-by (Alex);
+* 03: move in-place recycling removal here from the dropped patch;
+* 05: new, add libie Rx buffer API separatelly from IAVF changes;
+* 05-06: use new "hybrid" allocation API from[5] to reduce memory usage
+  when a page can fit more than 1 truesize (also asked by David);
+* 06: merge with "always use order-0 page" commit to reduce diffs and
+  simplify things (Alex);
+* 09: fix page_alloc_fail counter.
 
-for you to fetch changes up to ee8bfb47222a5cc59dee345b7369c5f2068e78cd:
+From v2[6]:
+* 0006: fix page_pool.h include in OcteonTX2 files (Jakub, Patchwork);
+* no functional changes.
 
-  docs: ABI: sysfs-class-led-trigger-netdev: Add new modes and entry (2023-12-13 11:24:55 +0000)
+From v1[7]:
+* 0006: new (me, Jakub);
+* 0008: give the helpers more intuitive names (Jakub, Ilias);
+*  -^-: also expand their kdoc a bit for the same reason;
+*  -^-: fix kdoc copy-paste issue (Patchwork, Jakub);
+* 0011: drop `inline` from C file (Patchwork, Jakub).
 
-----------------------------------------------------------------
-Immutable branch between LEDs and NetDev due for the v6.8 merge window
-
-----------------------------------------------------------------
-Daniel Golle (2):
-      leds: trigger: netdev: Extend speeds up to 10G
-      docs: ABI: sysfs-class-led-trigger-netdev: Add new modes and entry
-
- .../ABI/testing/sysfs-class-led-trigger-netdev     | 39 ++++++++++++++++++++++
- drivers/leds/trigger/ledtrig-netdev.c              | 32 +++++++++++++++++-
- include/linux/leds.h                               |  3 ++
- 3 files changed, 73 insertions(+), 1 deletion(-)
+[0] https://lore.kernel.org/netdev/20231207172010.1441468-1-aleksander.lobakin@intel.com
+[1] https://lore.kernel.org/netdev/20231124154732.1623518-1-aleksander.lobakin@intel.com
+[2] https://lore.kernel.org/netdev/20221115182841.2640176-1-edumazet@google.com
+[3] https://lore.kernel.org/netdev/20230705155551.1317583-1-aleksander.lobakin@intel.com
+[4] https://lore.kernel.org/netdev/20230530150035.1943669-1-aleksander.lobakin@intel.com
+[5] https://lore.kernel.org/netdev/20230629120226.14854-1-linyunsheng@huawei.com
+[6] https://lore.kernel.org/netdev/20230525125746.553874-1-aleksander.lobakin@intel.com
+[7] https://lore.kernel.org/netdev/20230516161841.37138-1-aleksander.lobakin@intel.com
 
 -- 
-Lee Jones [李琼斯]
+2.43.0
+
