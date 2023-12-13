@@ -2,76 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A3060811408
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 15:04:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 08A53811428
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 15:06:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379189AbjLMOEK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 09:04:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48762 "EHLO
+        id S1441803AbjLMOGK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 09:06:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35212 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233558AbjLMOED (ORCPT
+        with ESMTP id S1442035AbjLMOF5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 09:04:03 -0500
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A683E128
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 06:04:05 -0800 (PST)
-Received: by mail-lf1-x131.google.com with SMTP id 2adb3069b0e04-50c222a022dso7559512e87.1
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 06:04:05 -0800 (PST)
+        Wed, 13 Dec 2023 09:05:57 -0500
+Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B9BF187
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 06:06:03 -0800 (PST)
+Received: by mail-lj1-x22c.google.com with SMTP id 38308e7fff4ca-2c9f84533beso80170121fa.1
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 06:06:03 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1702476244; x=1703081044; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:content-language
-         :references:cc:to:from:subject:user-agent:mime-version:date
-         :message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=xRbYe9ijnkLeFnAmPMRsBoKr6vdwNz/E+CbxpHOS9z8=;
-        b=cqSOY00xSeuVcTQjI3EAhR0SbR/L13ft1/uwuTBcaCLFJGrS69/oaSoOQZT9RQW1ka
-         Sk0vQpN+8I8zU3shBVHYAD/Ym1OOrMl5TtC98NqBL3EOrlbumLiS6UVoXXW2FUz8ZrwD
-         EWe4hVr/auKf+GCTE39xEteqV56glJi6Zgz1fAOBXiMCWpWhnWYFyI0pjGZFy4MTeY5U
-         VyzYzNYhZ5jkddW0ife0I/o0pXGl0wCL+Qc0KrkO8esGD3SAIKIsN566OgmzfS0taqJK
-         CK8sQTS30QxlGfcB9xh6yY2XC/dPl/s31UOhBMJorF8cAL8CWct31mJQ69+o7Y1LRYPr
-         iqeg==
+        d=linaro.org; s=google; t=1702476361; x=1703081161; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=RAHh2YYimTjQ7eN1pl3Npn3iYoj+AWtZ/MwFC7+Xs58=;
+        b=OQ5mQlPu0Ij4B4JI6OEJ/ANxsqH240aexZRW4KW6KqUongVsBWf8ozYhBqGeuNBUbX
+         2Jwcq0CbwtWC1H29Oz1ORFlK++h1ifFTw3rkh4cmTYfB6mfFMug/uHyeLxQCjJG9b/Dx
+         2XyFEgmOHOmfYRLc/YCAP+bjb4Y7Dhgugrh8AKFch0kTjnSpCrV0MkL5lPrErHBQQ0IK
+         AFWWxz1TGxKTxa2BsQavSOi8DiOeX8VApnyiUjtKjkUFyleRhFGCrpc4nce3ZEda9r5u
+         1uh2lnesUpao2hYnc0f40CRjnOj0UbmiB9J48CMdH3JbTKRbiTOrCJkdwlD4TCPg1MYr
+         mWSw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702476244; x=1703081044;
-        h=content-transfer-encoding:in-reply-to:autocrypt:content-language
-         :references:cc:to:from:subject:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=xRbYe9ijnkLeFnAmPMRsBoKr6vdwNz/E+CbxpHOS9z8=;
-        b=pLaRtxA4OOSjxk/erguxWWx6zF2HI/02oPZsF8q4tDAObMALsbeB9NPLVkmiGPlStw
-         46h9GSA89Tkwem8utpE17FaHOblCLX5P2ghRnyLyIwhuEXHMWFom3DFVRivKJI3H1XZu
-         hS9C+riiLqwpZv9hQTVLl2MOA6+YHQDCCuDF4XM8HyJgSHuK5msYABaGDzO40VW+0K+T
-         muhGk2hQLDk8W19WJwDHwwEU/3oHhcOW7FcaVzyyDB3gCXG63vqarNkfI4xnLxc/ne1L
-         4QfMdAqjcy3LSy+wMo1+ycH3pPOV8GoT2UzX73NrV/a04sCqR0GwQC8F7Eld7lNlis48
-         JRcw==
-X-Gm-Message-State: AOJu0YzNb9TIwWEE5C4RysDcw9X1xNhfE67EHqCizzgS3ydygCG8m0iK
-        Rx6fuoPzwK/op5VoJakx1VMFvw==
-X-Google-Smtp-Source: AGHT+IHXMStjoFGz66MJFO4YavP1JUOwKIwmrthJWwEQF3M0eEgC1L39Fi8DAqirkU/xgjnBz1rgVw==
-X-Received: by 2002:ac2:4247:0:b0:50c:6e:98c6 with SMTP id m7-20020ac24247000000b0050c006e98c6mr3987375lfl.122.1702476243773;
-        Wed, 13 Dec 2023 06:04:03 -0800 (PST)
+        d=1e100.net; s=20230601; t=1702476361; x=1703081161;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=RAHh2YYimTjQ7eN1pl3Npn3iYoj+AWtZ/MwFC7+Xs58=;
+        b=EiEiHutf1BqoSuDVDaMmzaZoufvzJ9ix7X5h2yW6rWZIJpruQUSHWhbz1LztnHv4EH
+         FMrq3pqCLjhCNWzWISw31lKGQtVskeI7d6eyJ6lAJtxl5c4DT/bx+D02A9IAvwbn9f6w
+         ehctRssTXc1HbHtlkpiLIUOXt4griwFJykzHs/PBC3cXUGHwzlW48kk2eZY/aBiG+h7O
+         9YyYotYzbpmd3G4QeissBn6p9Q+Nb0FXFqrQGG2GepsFPEE9bkT9NAHKkN5FJ4xOkKw9
+         VgOsSDJzgyKpyY8eXshywvVGd875yZ6bmHMg07dwt8r4ne4jR/uj/uh+B0OoYOY4uLfU
+         e8NQ==
+X-Gm-Message-State: AOJu0Yzan64rFOyVmHiYudubv2mvXxdQ58SBfC133F9OqKK8utLSk46C
+        Yo22rUCw24MqaFSkFm11L4h+6g==
+X-Google-Smtp-Source: AGHT+IGE6GWZdPNlIEjJHZNMsDk4qF9PX6AICFCT/vw0imiiACSbxU8tQQhwai+eYXm5QFQqzM7KuQ==
+X-Received: by 2002:a2e:a28e:0:b0:2ca:2412:4df8 with SMTP id k14-20020a2ea28e000000b002ca24124df8mr2889734lja.84.1702476361438;
+        Wed, 13 Dec 2023 06:06:01 -0800 (PST)
 Received: from [192.168.1.20] ([178.197.218.27])
-        by smtp.gmail.com with ESMTPSA id kw20-20020a170907771400b00a1dc4307ed5sm7758194ejc.195.2023.12.13.06.04.02
+        by smtp.gmail.com with ESMTPSA id s20-20020a50d494000000b0054cc2e952f0sm5877972edi.81.2023.12.13.06.05.58
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 13 Dec 2023 06:04:03 -0800 (PST)
-Message-ID: <11257e57-693f-46db-8f97-09e5d4c20238@linaro.org>
-Date:   Wed, 13 Dec 2023 15:04:01 +0100
+        Wed, 13 Dec 2023 06:06:00 -0800 (PST)
+Message-ID: <5013146f-ff8c-4462-a94e-061478268cb2@linaro.org>
+Date:   Wed, 13 Dec 2023 15:05:57 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 7/7] arm64: dts: qcom: aim300: add AIM300 AIoT
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-To:     Tengfei Fan <quic_tengfan@quicinc.com>, agross@kernel.org,
-        andersson@kernel.org, konrad.dybcio@linaro.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Abel Vesa <abel.vesa@linaro.org>,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel@quicinc.com,
-        Qiang Yu <quic_qianyu@quicinc.com>,
-        Ziyue Zhang <quic_ziyuzhan@quicinc.com>
-References: <20231207092801.7506-1-quic_tengfan@quicinc.com>
- <20231207092801.7506-8-quic_tengfan@quicinc.com>
- <02be9f46-2187-45d0-9929-31f6a2c18b35@linaro.org>
+Subject: Re: [Patch v5 11/11] arm64: dts: fsd: Add MFC related DT enteries
 Content-Language: en-US
+To:     Aakarsh Jain <aakarsh.jain@samsung.com>,
+        linux-arm-kernel@lists.infradead.org, linux-media@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+Cc:     m.szyprowski@samsung.com, andrzej.hajda@intel.com,
+        mchehab@kernel.org, hverkuil-cisco@xs4all.nl,
+        krzysztof.kozlowski+dt@linaro.org, robh+dt@kernel.org,
+        conor+dt@kernel.org, linux-samsung-soc@vger.kernel.org,
+        andi@etezian.org, gost.dev@samsung.com, alim.akhtar@samsung.com,
+        aswani.reddy@samsung.com, pankaj.dubey@samsung.com,
+        ajaykumar.rs@samsung.com, linux-fsd@tesla.com,
+        Smitha T Murthy <smithatmurthy@gmail.com>
+References: <20231206063045.97234-1-aakarsh.jain@samsung.com>
+ <CGME20231206063140epcas5p1ba86525117f4d9ec9172ae7cb18b7420@epcas5p1.samsung.com>
+ <20231206063045.97234-12-aakarsh.jain@samsung.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
  cFgcqTTuNHjAvxtUG8pQgGTHAObYs6xeYJtjUH0ZX6ndJ33FJYf5V3yXqqjcZ30FgHzJCFUu
@@ -116,11 +115,11 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <02be9f46-2187-45d0-9929-31f6a2c18b35@linaro.org>
+In-Reply-To: <20231206063045.97234-12-aakarsh.jain@samsung.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -129,33 +128,21 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/12/2023 11:33, Krzysztof Kozlowski wrote:
->> @@ -0,0 +1,579 @@
->> +// SPDX-License-Identifier: BSD-3-Clause
->> +/*
->> + * Copyright (c) 2023, Qualcomm Innovation Center, Inc. All rights reserved.
->> + */
->> +
->> +/dts-v1/;
->> +
->> +#include <dt-bindings/leds/common.h>
->> +#include "qcs8550-aim300.dtsi"
+On 06/12/2023 07:30, Aakarsh Jain wrote:
+> Add MFC DT node and reserve memory node for MFC usage.
 > 
-> Which includes sm8550.dtsi thus I think this is compatible with sm8550.
-> You even use sm8550 compatibles here, which is one more hint for that
-> compatibility.
-> 
-> We followed this convention for RB5, although not for QRU/QDU1000 boards.
-> 
-> Anyway, if you add here new SoC compatible, I would expect to see new
-> SoC DTSI.
-> 
-> I don't have in my notes any previous consensus or decision in these
-> matters, so let's discuss now.
-> +CC few Linaro folks
+> Cc: linux-fsd@tesla.com
+> Signed-off-by: Smitha T Murthy <smithatmurthy@gmail.com>
+> Signed-off-by: Aakarsh Jain <aakarsh.jain@samsung.com>
+> ---
 
-After some talks, the idea is to create qcs8550.dtsi, which will include
-sm8550.dtsi, and add top level compatible for qcs8550 using sm8550 fallback.
+Always run checkpatch on your patches:
+
+[Checkpatch]
+WARNING: Use a single space after Cc:
+#8:
+Cc:  <linux-fsd@tesla.com>
+
 
 Best regards,
 Krzysztof
