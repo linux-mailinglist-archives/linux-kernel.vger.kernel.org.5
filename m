@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D1560810731
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 02:02:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 59DAE810735
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 02:02:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378077AbjLMBCW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 20:02:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39402 "EHLO
+        id S1378101AbjLMBCX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 20:02:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39422 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235185AbjLMBCR (ORCPT
+        with ESMTP id S235190AbjLMBCU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 20:02:17 -0500
-Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCAE3B9
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 17:02:22 -0800 (PST)
-Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-5d064f9e2a1so71858187b3.1
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 17:02:22 -0800 (PST)
+        Tue, 12 Dec 2023 20:02:20 -0500
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45870E9
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 17:02:26 -0800 (PST)
+Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-db547d41413so5038814276.0
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 17:02:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1702429342; x=1703034142; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1702429344; x=1703034144; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=LfjrfaL0BTdFLEXX617pYnIT5bq+UfvN0h2MwzqxRag=;
-        b=012TB4M3JqhrqJe3aHxlkb3DMPWqzzglnP9QkBZ5E6tkX5Ga/5UwMR8tegmkxDJr7j
-         ybxLsL/Ba1HRYyxcAb1S5mN3drKEOt2u/fulzw5Vvp5xDPAraFGDp1VcMd1aM0rg3pnO
-         SmE4Dv/mkn0J0+ZGOehRzhThlFU0VEUsOXzELdZoqJaRicgTxtnmodTpiQFlU8WGW6rz
-         QJogVYIbTXMYcbfEkH+utGIJz/ELDGODJab5AKy8BAzO0OqNB0Cjcl/QydzBKAzhU9a8
-         i4pQxWVzvPnvSDIWJSPlBNvDocqIiBfdfTCBwEh2kGMVJWVTBCrJ0Wl6k+Rscln0WUEt
-         wgSA==
+        bh=tj6TQQ0qLgemf+TVeyTzuqlDzUQzS2HQ7MPicsFC5VQ=;
+        b=ieXAHqrYKFPjMIfeqanXk80g5+6gbnvG76UXf0A4qepdouo77uuPKb/HJfDYMAnLwy
+         QxvJ1N0huKyOESwixFn7DnMLSVJg7uUk7SfcnUEu8ejCRYo6tdJQBkH5TAJnBc3HnOin
+         3PIPJpHLIIqRBuuEH2a+w8F89da+i5cOU3mCJA45NPAMQUdhw4656pqYWoZRqI5pnj/i
+         ZXkvfo+88wntxeC9YApMl26J1Dzbs/LnOFKhTV/T9oRbH0f+B923sEPxTYH+aCkMH5L2
+         d1dzVbxqdRE0yEZ1JXy+uUnu5NOj2mT0ItqdmvyeI90DZ9kS4zTKLUvIKZ2dJO0gCcqV
+         Ea2w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702429342; x=1703034142;
+        d=1e100.net; s=20230601; t=1702429344; x=1703034144;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=LfjrfaL0BTdFLEXX617pYnIT5bq+UfvN0h2MwzqxRag=;
-        b=L4RwN6SCgZ9Tn0d8I7W12LGoxuqCmu8Ej/CiRB+/JJrQokGS7ugqhfDvxkt9RIwB96
-         OSkD7Wc3ijOLvD3FBZjGE1mOZKWv21CCDhXyObJtWXk6JVCCYKsvy9OO0UOcwfmTjeGq
-         qFEIPOLlO+6k6CWLLQs/COILuKOcWZlpxeB3uDojufQVOzrm6RxtrYxCiX7jNkZKkOdz
-         YEDIXRyT6FoeddRCsvmN21LbUCq6uf29Kwctox7Xp9iLdvpZU4SBryGpsHorMGy5Ed3N
-         8D2qxIQrKXZb9xV8LUkqLer06PN5qUf8h+fAjNB4VYi7n42zkqSNAW2aF7KM4V5MgZFQ
-         AKHQ==
-X-Gm-Message-State: AOJu0YzCHPXdVVnQ0BFqHAswwbn7SJ74hevCDmuYPVOYpUaUd6Sa14Cy
-        NNk9mi1ELczEyUN+H9Bzh2nq2CYOBQ==
-X-Google-Smtp-Source: AGHT+IHKS8I7E7al7xx+DrXZ1bHsOziWBRsHSWQY2crhQrHV4i/fuJxM2jEl001gihDtdyVtDetpU7vuMw==
+        bh=tj6TQQ0qLgemf+TVeyTzuqlDzUQzS2HQ7MPicsFC5VQ=;
+        b=ZNA1QVUR2wg+BJERzzMd0nFGPumkK9gnlvqcl+NQ2bF7Ia82ZZvP/JwG90FQxEauxp
+         Ghb97Z5joJzSRYH8/0hz/yLsRlYM/dLF0SnxftOlV+qeUbvsEqmOhm8nWJ4RvWwYDfSr
+         OuDWXg+tUeGgoo9OcO+FZqI5f31VvuWL3H/3EHz9dsvYicjgtwkVl/drpopR7lEPfA3B
+         HJiMeuab0S8tsSM8dkxaTJsX5qxAdWNQ/7hDFq5935IUT0MIWjXzJXT6cI2EMbf6R4SG
+         BWnNhmowiQn2j6PhkTDLYrGCJ1aJR4HjZID7jFkRK3bU0gjqs777E6Nb4Pva5m2a+T6q
+         K2Uw==
+X-Gm-Message-State: AOJu0YxYM9oHP+PJoqZczvVFbza4XudqkgOkEseer+SIpfFrVQtLU26Z
+        KbKlrfRmAFnLYC5tSFCB9CJq5NRyXQ==
+X-Google-Smtp-Source: AGHT+IFi4w+IMSp4hXZWtVnurg7uMMli3zvYN8bTV5LX0Rp8gWE4/dwcwUb+vdyrii3OjnNlloZoibECog==
 X-Received: from rmoar-specialist.c.googlers.com ([fda3:e722:ac3:cc00:2b:7d90:c0a8:45d3])
- (user=rmoar job=sendgmr) by 2002:a05:690c:fd5:b0:5d6:daf7:b53b with SMTP id
- dg21-20020a05690c0fd500b005d6daf7b53bmr60192ywb.9.1702429341847; Tue, 12 Dec
- 2023 17:02:21 -0800 (PST)
-Date:   Wed, 13 Dec 2023 01:01:59 +0000
+ (user=rmoar job=sendgmr) by 2002:a5b:c89:0:b0:dbc:c5f8:ae16 with SMTP id
+ i9-20020a5b0c89000000b00dbcc5f8ae16mr11109ybq.5.1702429344411; Tue, 12 Dec
+ 2023 17:02:24 -0800 (PST)
+Date:   Wed, 13 Dec 2023 01:02:00 +0000
 In-Reply-To: <20231213010201.1802507-1-rmoar@google.com>
 Mime-Version: 1.0
 References: <20231213010201.1802507-1-rmoar@google.com>
 X-Mailer: git-send-email 2.43.0.472.g3155946c3a-goog
-Message-ID: <20231213010201.1802507-4-rmoar@google.com>
-Subject: [PATCH v4 4/6] kunit: add is_init test attribute
+Message-ID: <20231213010201.1802507-5-rmoar@google.com>
+Subject: [PATCH v4 5/6] kunit: add ability to run tests after boot using debugfs
 From:   Rae Moar <rmoar@google.com>
 To:     shuah@kernel.org, davidgow@google.com, dlatypov@google.com,
         brendan.higgins@linux.dev, sadiyakazi@google.com
@@ -72,168 +72,202 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add is_init test attribute of type bool. Add to_string, get, and filter
-methods to lib/kunit/attributes.c.
+Add functionality to run built-in tests after boot by writing to a
+debugfs file.
 
-Mark each of the tests in the init section with the is_init=true attribute.
+Add a new debugfs file labeled "run" for each test suite to use for
+this purpose.
 
-Add is_init to the attributes documentation.
+As an example, write to the file using the following:
+
+echo "any string" > /sys/kernel/debugfs/kunit/<testsuite>/run
+
+This will trigger the test suite to run and will print results to the
+kernel log.
+
+To guard against running tests concurrently with this feature, add a
+mutex lock around running kunit. This supports the current practice of
+not allowing tests to be run concurrently on the same kernel.
+
+This new functionality could be used to design a parameter
+injection feature in the future.
 
 Signed-off-by: Rae Moar <rmoar@google.com>
 ---
-Changes since v3:
-- Move the attribute from kunit_attributes to a suite field.
+Changes since v4:
+- Rebased series causing a few small changes in debugfs.c in this patch
 
- .../dev-tools/kunit/running_tips.rst          |  7 +++
- include/kunit/test.h                          |  1 +
- lib/kunit/attributes.c                        | 60 +++++++++++++++++++
- lib/kunit/executor.c                          |  6 +-
- 4 files changed, 73 insertions(+), 1 deletion(-)
+ lib/kunit/debugfs.c | 68 +++++++++++++++++++++++++++++++++++++++++++++
+ lib/kunit/test.c    | 10 +++++++
+ 2 files changed, 78 insertions(+)
 
-diff --git a/Documentation/dev-tools/kunit/running_tips.rst b/Documentation/dev-tools/kunit/running_tips.rst
-index 766f9cdea0fa..024e9ad1d1e9 100644
---- a/Documentation/dev-tools/kunit/running_tips.rst
-+++ b/Documentation/dev-tools/kunit/running_tips.rst
-@@ -428,3 +428,10 @@ This attribute indicates the name of the module associated with the test.
+diff --git a/lib/kunit/debugfs.c b/lib/kunit/debugfs.c
+index 382706dfb47d..d548750a325a 100644
+--- a/lib/kunit/debugfs.c
++++ b/lib/kunit/debugfs.c
+@@ -8,12 +8,14 @@
+ #include <linux/module.h>
  
- This attribute is automatically saved as a string and is printed for each suite.
- Tests can also be filtered using this attribute.
-+
-+``is_init``
-+
-+This attribute indicates whether the test uses init data or functions.
-+
-+This attribute is automatically saved as a boolean and tests can also be
-+filtered using this attribute.
-diff --git a/include/kunit/test.h b/include/kunit/test.h
-index fe79cd736e94..b163b9984b33 100644
---- a/include/kunit/test.h
-+++ b/include/kunit/test.h
-@@ -253,6 +253,7 @@ struct kunit_suite {
- 	struct dentry *debugfs;
- 	struct string_stream *log;
- 	int suite_init_err;
-+	bool is_init;
- };
+ #include <kunit/test.h>
++#include <kunit/test-bug.h>
  
- /* Stores an array of suites, end points one past the end */
-diff --git a/lib/kunit/attributes.c b/lib/kunit/attributes.c
-index 1b512f7e1838..2cf04cc09372 100644
---- a/lib/kunit/attributes.c
-+++ b/lib/kunit/attributes.c
-@@ -58,6 +58,16 @@ static const char *attr_enum_to_string(void *attr, const char * const str_list[]
- 	return str_list[val];
+ #include "string-stream.h"
+ #include "debugfs.h"
+ 
+ #define KUNIT_DEBUGFS_ROOT             "kunit"
+ #define KUNIT_DEBUGFS_RESULTS          "results"
++#define KUNIT_DEBUGFS_RUN              "run"
+ 
+ /*
+  * Create a debugfs representation of test suites:
+@@ -21,6 +23,8 @@
+  * Path						Semantics
+  * /sys/kernel/debug/kunit/<testsuite>/results	Show results of last run for
+  *						testsuite
++ * /sys/kernel/debug/kunit/<testsuite>/run	Write to this file to trigger
++ *						testsuite to run
+  *
+  */
+ 
+@@ -101,6 +105,51 @@ static int debugfs_results_open(struct inode *inode, struct file *file)
+ 	return single_open(file, debugfs_print_results, suite);
  }
  
-+static const char *attr_bool_to_string(void *attr, bool *to_free)
++/*
++ * Print a usage message to the debugfs "run" file
++ * (/sys/kernel/debug/kunit/<testsuite>/run) if opened.
++ */
++static int debugfs_print_run(struct seq_file *seq, void *v)
 +{
-+	bool val = (bool)attr;
++	struct kunit_suite *suite = (struct kunit_suite *)seq->private;
 +
-+	*to_free = false;
-+	if (val)
-+		return "true";
-+	return "false";
++	seq_puts(seq, "Write to this file to trigger the test suite to run.\n");
++	seq_printf(seq, "usage: echo \"any string\" > /sys/kernel/debugfs/kunit/%s/run\n",
++			suite->name);
++	return 0;
 +}
 +
- static const char *attr_speed_to_string(void *attr, bool *to_free)
++/*
++ * The debugfs "run" file (/sys/kernel/debug/kunit/<testsuite>/run)
++ * contains no information. Write to the file to trigger the test suite
++ * to run.
++ */
++static int debugfs_run_open(struct inode *inode, struct file *file)
++{
++	struct kunit_suite *suite;
++
++	suite = (struct kunit_suite *)inode->i_private;
++
++	return single_open(file, debugfs_print_run, suite);
++}
++
++/*
++ * Trigger a test suite to run by writing to the suite's "run" debugfs
++ * file found at: /sys/kernel/debug/kunit/<testsuite>/run
++ *
++ * Note: what is written to this file will not be saved.
++ */
++static ssize_t debugfs_run(struct file *file,
++		const char __user *buf, size_t count, loff_t *ppos)
++{
++	struct inode *f_inode = file->f_inode;
++	struct kunit_suite *suite = (struct kunit_suite *) f_inode->i_private;
++
++	__kunit_test_suites_init(&suite, 1);
++
++	return count;
++}
++
+ static const struct file_operations debugfs_results_fops = {
+ 	.open = debugfs_results_open,
+ 	.read = seq_read,
+@@ -108,11 +157,23 @@ static const struct file_operations debugfs_results_fops = {
+ 	.release = debugfs_release,
+ };
+ 
++static const struct file_operations debugfs_run_fops = {
++	.open = debugfs_run_open,
++	.read = seq_read,
++	.write = debugfs_run,
++	.llseek = seq_lseek,
++	.release = debugfs_release,
++};
++
+ void kunit_debugfs_create_suite(struct kunit_suite *suite)
  {
- 	return attr_enum_to_string(attr, speed_str_list, to_free);
-@@ -166,6 +176,37 @@ static int attr_string_filter(void *attr, const char *input, int *err)
- 	return false;
+ 	struct kunit_case *test_case;
+ 	struct string_stream *stream;
+ 
++	/* If suite log already allocated, do not create new debugfs files. */
++	if (suite->log)
++		return;
++
+ 	/*
+ 	 * Allocate logs before creating debugfs representation.
+ 	 * The suite->log and test_case->log pointer are expected to be NULL
+@@ -140,6 +201,13 @@ void kunit_debugfs_create_suite(struct kunit_suite *suite)
+ 	debugfs_create_file(KUNIT_DEBUGFS_RESULTS, S_IFREG | 0444,
+ 			    suite->debugfs,
+ 			    suite, &debugfs_results_fops);
++
++	/* Do not create file to re-run test if test runs on init */
++	if (!suite->is_init) {
++		debugfs_create_file(KUNIT_DEBUGFS_RUN, S_IFREG | 0644,
++				    suite->debugfs,
++				    suite, &debugfs_run_fops);
++	}
+ 	return;
+ 
+ err:
+diff --git a/lib/kunit/test.c b/lib/kunit/test.c
+index 6c082911a85f..a52fcb9a4457 100644
+--- a/lib/kunit/test.c
++++ b/lib/kunit/test.c
+@@ -13,6 +13,7 @@
+ #include <linux/kernel.h>
+ #include <linux/module.h>
+ #include <linux/moduleparam.h>
++#include <linux/mutex.h>
+ #include <linux/panic.h>
+ #include <linux/sched/debug.h>
+ #include <linux/sched.h>
+@@ -22,6 +23,8 @@
+ #include "string-stream.h"
+ #include "try-catch-impl.h"
+ 
++static DEFINE_MUTEX(kunit_run_lock);
++
+ /*
+  * Hook to fail the current test and print an error message to the log.
+  */
+@@ -654,6 +657,7 @@ static void kunit_init_suite(struct kunit_suite *suite)
+ 	kunit_debugfs_create_suite(suite);
+ 	suite->status_comment[0] = '\0';
+ 	suite->suite_init_err = 0;
++	string_stream_clear(suite->log);
  }
  
-+static int attr_bool_filter(void *attr, const char *input, int *err)
-+{
-+	int i, input_int = -1;
-+	long val = (long)attr;
-+	const char *input_str = NULL;
-+
-+	for (i = 0; input[i]; i++) {
-+		if (!strchr(op_list, input[i])) {
-+			input_str = input + i;
-+			break;
-+		}
-+	}
-+
-+	if (!input_str) {
-+		*err = -EINVAL;
-+		pr_err("kunit executor: filter value not found: %s\n", input);
-+		return false;
-+	}
-+
-+	if (!strcmp(input_str, "true"))
-+		input_int = (int)true;
-+	else if (!strcmp(input_str, "false"))
-+		input_int = (int)false;
-+	else {
-+		*err = -EINVAL;
-+		pr_err("kunit executor: invalid filter input: %s\n", input);
-+		return false;
-+	}
-+
-+	return int_filter(val, input, input_int, err);
-+}
- 
- /* Get Attribute Methods */
- 
-@@ -194,6 +235,17 @@ static void *attr_module_get(void *test_or_suite, bool is_test)
- 		return (void *) "";
- }
- 
-+static void *attr_is_init_get(void *test_or_suite, bool is_test)
-+{
-+	struct kunit_suite *suite = is_test ? NULL : test_or_suite;
-+	struct kunit_case *test = is_test ? test_or_suite : NULL;
-+
-+	if (test)
-+		return ((void *) NULL);
-+	else
-+		return ((void *) suite->is_init);
-+}
-+
- /* List of all Test Attributes */
- 
- static struct kunit_attr kunit_attr_list[] = {
-@@ -212,6 +264,14 @@ static struct kunit_attr kunit_attr_list[] = {
- 		.filter = attr_string_filter,
- 		.attr_default = (void *)"",
- 		.print = PRINT_SUITE,
-+	},
-+	{
-+		.name = "is_init",
-+		.get_attr = attr_is_init_get,
-+		.to_string = attr_bool_to_string,
-+		.filter = attr_bool_filter,
-+		.attr_default = (void *)false,
-+		.print = PRINT_SUITE,
+ bool kunit_enabled(void)
+@@ -670,6 +674,11 @@ int __kunit_test_suites_init(struct kunit_suite * const * const suites, int num_
+ 		return 0;
  	}
- };
  
-diff --git a/lib/kunit/executor.c b/lib/kunit/executor.c
-index 847329c51e91..717b9599036b 100644
---- a/lib/kunit/executor.c
-+++ b/lib/kunit/executor.c
-@@ -300,6 +300,7 @@ struct kunit_suite_set kunit_merge_suite_sets(struct kunit_suite_set init_suite_
- 	struct kunit_suite_set total_suite_set = {NULL, NULL};
- 	struct kunit_suite **total_suite_start = NULL;
- 	size_t init_num_suites, num_suites, suite_size;
-+	int i = 0;
++	/* Use mutex lock to guard against running tests concurrently. */
++	if (mutex_lock_interruptible(&kunit_run_lock)) {
++		pr_err("kunit: test interrupted\n");
++		return -EINTR;
++	}
+ 	static_branch_inc(&kunit_running);
  
- 	init_num_suites = init_suite_set.end - init_suite_set.start;
- 	num_suites = suite_set.end - suite_set.start;
-@@ -310,8 +311,11 @@ struct kunit_suite_set kunit_merge_suite_sets(struct kunit_suite_set init_suite_
- 	if (!total_suite_start)
- 		return total_suite_set;
+ 	for (i = 0; i < num_suites; i++) {
+@@ -678,6 +687,7 @@ int __kunit_test_suites_init(struct kunit_suite * const * const suites, int num_
+ 	}
  
--	/* Append init suites and then all other kunit suites */
-+	/* Append and mark init suites and then append all other kunit suites */
- 	memcpy(total_suite_start, init_suite_set.start, init_num_suites * suite_size);
-+	for (i = 0; i < init_num_suites; i++)
-+		total_suite_start[i]->is_init = true;
-+
- 	memcpy(total_suite_start + init_num_suites, suite_set.start, num_suites * suite_size);
- 
- 	/* Set kunit suite set start and end */
+ 	static_branch_dec(&kunit_running);
++	mutex_unlock(&kunit_run_lock);
+ 	return 0;
+ }
+ EXPORT_SYMBOL_GPL(__kunit_test_suites_init);
 -- 
 2.43.0.472.g3155946c3a-goog
 
