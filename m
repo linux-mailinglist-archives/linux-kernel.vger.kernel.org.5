@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B3C84811A1B
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 17:52:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 67240811A1C
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 17:52:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235320AbjLMQwQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 11:52:16 -0500
+        id S235313AbjLMQwZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 11:52:25 -0500
 Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35364 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378960AbjLMQwJ (ORCPT
+        with ESMTP id S235378AbjLMQwT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 11:52:09 -0500
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FC0CB9
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 08:52:15 -0800 (PST)
-Received: by mail-ed1-x52b.google.com with SMTP id 4fb4d7f45d1cf-54cea1f30cbso1538180a12.1
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 08:52:15 -0800 (PST)
+        Wed, 13 Dec 2023 11:52:19 -0500
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12FE810E
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 08:52:25 -0800 (PST)
+Received: by mail-ej1-x635.google.com with SMTP id a640c23a62f3a-a1e25a49603so189659366b.1
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 08:52:24 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702486334; x=1703091134; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1702486343; x=1703091143; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=hcU4d4c9EhwDhCpZ+xb05RdkC86nsBALUhVrkSRZ1Dw=;
-        b=TI9tH/ipcl9K7i14cVskk3TqvSimXxuaFFvLRYrJur6UzVjkBXbJ/ocMHfspeLjTX6
-         9Gj7GUZeU22Rr4yPGiSKGFE55rYw090pVwcqUag4202Ik+yzSXpwtgsBRhjmjkfx6sCL
-         LXn4UyKGgl9H0fxvhQyJhdUikLmQ+u/s8AqDjNHx2A6qMPUzEzXi055BawstDcU3Ma6B
-         +RkP0ijaCVmXbiQgqjvhtvc9hRTDUmyYEpbbdw/QnEzWUOf/KYHh3hRKDbpnNlx/HBGy
-         nBojjgRg5f9HNna0GhEXYetMtp63BkTVeDr+9JruaDVn9kCK+hXnPIWxdJgUrTQ5E1lE
-         YG6g==
+        bh=QcuM1B7Nqln2T8HsY+RDMt6vNuKyn/uBt6HB0cu06wE=;
+        b=Bo/Jm7I1UxvaGeTwhVprkKb/JgtwOY2NbyN616u264wzR5MJVJxYxBfzZqbcDF6pHT
+         r/ul0+GykSmrBWC2/C172pn994C45eoMD68eIons2RV1U4s1XVP9hAhhKXSL1WGxTBMi
+         ooDX17sNjvxBZJtDmm+NyC9YurzSDWHmrph5ktupJkaqTjooK1aH7naMtSApgA+WzAiJ
+         r948V+dI6M5hH8QpcJyXGaHvPJo1jV7c3shBwl0nBn8svBKLSdtHwQZjjPl7B3mVeW+H
+         5nhSu6wO9N1roDCE9L9gceKVjz2k2v+xGc/zpb7PDZiGflPMazgO9V5TNnnFJwne43UU
+         k5Yg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702486334; x=1703091134;
+        d=1e100.net; s=20230601; t=1702486343; x=1703091143;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=hcU4d4c9EhwDhCpZ+xb05RdkC86nsBALUhVrkSRZ1Dw=;
-        b=J9GydbKMHIvve7FQWk5KbwMEQMT60mdz/lreKYkyQGaaYeloD/TNCY4+e1j1lzUjPu
-         nf9bK5KHB08QxcrR2Wn8WwwC8pDy6hF3JhzBA7C8Vqil1weFrxcifYJbX+Iv9KK+yfns
-         KLMRciL/hzxbIMEp5KeBak1LQ6apO5cm5lKZxYpOlkQ1Lz9d54lDudGgRGoCV02jFJcH
-         +EmZxSFh+zQ3rfCypRSNo9GtxeHYF8j/RpEyB9MC4EoPZe4zpAiNeCKHumokNOd3KZ5P
-         wmoo/SgaJZFZ4/tI9o7rGQDkAvOIR+s/CgNwfhs/7kit9EToxPEWbSUF4nmh27N5ST02
-         Nyyw==
-X-Gm-Message-State: AOJu0YxsbtNpG2MVMYlvphnExPdHQZlXloP4+eRR1M/mALvSygL55aBG
-        vCyHXevkBbVT0nwHGdZoYMaDLLktAtM=
-X-Google-Smtp-Source: AGHT+IGZz7paThhCvZZNDmg/Imt9mXY25GH+sKlIoSMkzIKOa6mluYu0N+JMxL26diY7xzifU3KH4g==
-X-Received: by 2002:a50:c189:0:b0:54c:6fc0:483a with SMTP id m9-20020a50c189000000b0054c6fc0483amr8757847edf.2.1702486334020;
-        Wed, 13 Dec 2023 08:52:14 -0800 (PST)
+        bh=QcuM1B7Nqln2T8HsY+RDMt6vNuKyn/uBt6HB0cu06wE=;
+        b=a04mhCepd+pBc970HHeLqUz+CSn4PdYrMQlrEnR4FAne1T5M52vOiqzaG9hmAiUxQl
+         2rCU0On9JKuDUHIHSH99aK/VTHuS3O84DdZQSC3c/GYTDtFBu6Bs+XHb2K8FuwsDxOrO
+         xzigfkmFQOfm0rzEkaGilrlgiyR9C7CZGPxQK1kldfgi+UrpG55EZxnJA6MOUtLRVJXz
+         d/qNfPtxAqeap26yeCVyP98La/33bIS7Fd4u3gwiHpPZAbhqEX45sXyZcRhG8aT+jqPf
+         1QnV7kkKXngtS9ssQytGWeKqSNPozODglon2LSqoZTTRjMJgC+docSzDusWHLOqjXomo
+         RzgQ==
+X-Gm-Message-State: AOJu0YxiVNMk6mmH/HEo4zmIRuktG0cj/95MnGP+VP6OAfnFmQB0gQ9K
+        2FLKMIF54bglT4374TmOMBo=
+X-Google-Smtp-Source: AGHT+IHnnv5a7KagUWLWUtnXmhAJTELjZR68Rq07jNtKxvCUpjdfOeyNLnO8XgZA84eeMOocpuA34g==
+X-Received: by 2002:a17:907:a70f:b0:a00:211c:9a9a with SMTP id vw15-20020a170907a70f00b00a00211c9a9amr9176973ejc.5.1702486343268;
+        Wed, 13 Dec 2023 08:52:23 -0800 (PST)
 Received: from matrix-ESPRIMO-P710 (p54a07fa0.dip0.t-ipconnect.de. [84.160.127.160])
-        by smtp.gmail.com with ESMTPSA id v1-20020a50d581000000b00550ce74f7eesm4994896edi.67.2023.12.13.08.52.13
+        by smtp.gmail.com with ESMTPSA id tb19-20020a1709078b9300b00a1cd30d06d1sm8245901ejc.14.2023.12.13.08.52.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Dec 2023 08:52:13 -0800 (PST)
-Date:   Wed, 13 Dec 2023 17:52:12 +0100
+        Wed, 13 Dec 2023 08:52:23 -0800 (PST)
+Date:   Wed, 13 Dec 2023 17:52:21 +0100
 From:   Philipp Hortmann <philipp.g.hortmann@gmail.com>
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: [PATCH 05/10] staging: rtl8192e: Remove constant variable
- forced_short_gi
-Message-ID: <fc5711032c658af6ae6c5a7a98c52871c29f8c33.1702406712.git.philipp.g.hortmann@gmail.com>
+Subject: [PATCH 06/10] staging: rtl8192e: Remove unused variable
+ ht_info->amsdu_support
+Message-ID: <b3ea8ddd16a753d9ee1ee8b99e31e990ce89133b.1702406712.git.philipp.g.hortmann@gmail.com>
 References: <cover.1702406712.git.philipp.g.hortmann@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -71,56 +71,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ht_info->forced_short_gi is set to 0 and unchanged. Therefore all equations
-result accordingly and ht_info->forced_short_gi can be removed.
+Remove unused variable ht_info->amsdu_support.
 
 Signed-off-by: Philipp Hortmann <philipp.g.hortmann@gmail.com>
 ---
  drivers/staging/rtl8192e/rtl819x_HT.h     | 1 -
- drivers/staging/rtl8192e/rtl819x_HTProc.c | 1 -
- drivers/staging/rtl8192e/rtllib_tx.c      | 5 -----
- 3 files changed, 7 deletions(-)
+ drivers/staging/rtl8192e/rtl819x_HTProc.c | 2 --
+ 2 files changed, 3 deletions(-)
 
 diff --git a/drivers/staging/rtl8192e/rtl819x_HT.h b/drivers/staging/rtl8192e/rtl819x_HT.h
-index 43472b2250c2..e6cd906dc0ac 100644
+index e6cd906dc0ac..c4af9968cd67 100644
 --- a/drivers/staging/rtl8192e/rtl819x_HT.h
 +++ b/drivers/staging/rtl8192e/rtl819x_HT.h
-@@ -110,7 +110,6 @@ struct rt_hi_throughput {
- 	u8 current_mpdu_density;
- 	u8 forced_ampdu_factor;
- 	u8 forced_mpdu_density;
--	u8 forced_short_gi;
- 	u8 current_op_mode;
- 	enum ht_extchnl_offset CurSTAExtChnlOffset;
- 	u8 cur_tx_bw40mhz;
+@@ -101,7 +101,6 @@ struct rt_hi_throughput {
+ 	struct ht_capab_ele SelfHTCap;
+ 	u8 PeerHTCapBuf[32];
+ 	u8 PeerHTInfoBuf[32];
+-	u8 amsdu_support;
+ 	u8 ampdu_enable;
+ 	u8 current_ampdu_enable;
+ 	u8 ampdu_factor;
 diff --git a/drivers/staging/rtl8192e/rtl819x_HTProc.c b/drivers/staging/rtl8192e/rtl819x_HTProc.c
-index d424b7729a01..578d9276035f 100644
+index 578d9276035f..044bfe44d213 100644
 --- a/drivers/staging/rtl8192e/rtl819x_HTProc.c
 +++ b/drivers/staging/rtl8192e/rtl819x_HTProc.c
-@@ -527,7 +527,6 @@ void HTInitializeHTInfo(struct rtllib_device *ieee)
+@@ -71,8 +71,6 @@ void ht_update_default_setting(struct rtllib_device *ieee)
+ {
+ 	struct rt_hi_throughput *ht_info = ieee->ht_info;
  
- 	ht_info->cur_short_gi_20mhz = false;
- 	ht_info->cur_short_gi_40mhz = false;
--	ht_info->forced_short_gi = false;
- 
- 	ht_info->current_mpdu_density = ht_info->mpdu_density;
- 	ht_info->CurrentAMPDUFactor = ht_info->ampdu_factor;
-diff --git a/drivers/staging/rtl8192e/rtllib_tx.c b/drivers/staging/rtl8192e/rtllib_tx.c
-index 0fa6f674a844..f7098a2ba8b0 100644
---- a/drivers/staging/rtl8192e/rtllib_tx.c
-+++ b/drivers/staging/rtl8192e/rtllib_tx.c
-@@ -340,11 +340,6 @@ static void rtllib_query_HTCapShortGI(struct rtllib_device *ieee,
- 	if (!ht_info->current_ht_support || !ht_info->enable_ht)
- 		return;
- 
--	if (ht_info->forced_short_gi) {
--		tcb_desc->bUseShortGI = true;
--		return;
--	}
+-	ht_info->amsdu_support = 0;
 -
- 	if (ht_info->cur_bw_40mhz && ht_info->cur_short_gi_40mhz)
- 		tcb_desc->bUseShortGI = true;
- 	else if (!ht_info->cur_bw_40mhz && ht_info->cur_short_gi_20mhz)
+ 	ht_info->ampdu_enable = 1;
+ 	ht_info->ampdu_factor = 2;
+ 	ht_info->mpdu_density = 0;
 -- 
 2.43.0
 
