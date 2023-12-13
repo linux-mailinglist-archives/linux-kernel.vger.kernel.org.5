@@ -2,116 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D2AF78107AE
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 02:34:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EE1C8107B2
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 02:35:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378182AbjLMBd4 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 12 Dec 2023 20:33:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58796 "EHLO
+        id S1378197AbjLMBfO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 20:35:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40628 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378145AbjLMBdy (ORCPT
+        with ESMTP id S1378145AbjLMBfN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 20:33:54 -0500
-Received: from mail-pf1-f173.google.com (mail-pf1-f173.google.com [209.85.210.173])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A02FB7;
-        Tue, 12 Dec 2023 17:34:01 -0800 (PST)
-Received: by mail-pf1-f173.google.com with SMTP id d2e1a72fcca58-6ceb93fb381so4657121b3a.0;
-        Tue, 12 Dec 2023 17:34:01 -0800 (PST)
+        Tue, 12 Dec 2023 20:35:13 -0500
+Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com [IPv6:2607:f8b0:4864:20::72a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0402DB7;
+        Tue, 12 Dec 2023 17:35:20 -0800 (PST)
+Received: by mail-qk1-x72a.google.com with SMTP id af79cd13be357-77f3c4914e5so339471885a.3;
+        Tue, 12 Dec 2023 17:35:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1702431319; x=1703036119; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :feedback-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=lJwnAAHRmDie2pCrUCphBkEu6klu8JgvdhjOopanDfU=;
+        b=kwQHDQFrJDzG5yIdpzvzHkJ+CfsKxHX4ExmhczoFuHYuSZsSweICiCrdR4ViSqEHpB
+         Q2o3z/IAojOCPhuhYzb6PJmP4RtJzCYMiOGOUuGhRFnPClHJaCu/hjFHdEp4msOokpAw
+         D8TVtPF6bZH5uIauiMwj9/++fAkDBo4UgHVNWppPJwRDGbuU7io0O4H+yLx0HJlpi613
+         FZE5YvwBSa0H7Y+BwH4Iloko+oHH3LJHoX+6Jlwy780Xe2RD2vW5Nm6gbJLBTl2t5uyG
+         eSaHn0k9UFc68EZf9kK7a0YFraP2tHhb3vz5Qqr3yaVT+O8syXq+C/mX7FLlM6mK4qpf
+         Pz8g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702431241; x=1703036041;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=nL8WQ6XQifHuAl5/6bibXSmjCD6Q0OYVm2RrMW20160=;
-        b=Dj9xxVLGyJ/Ein3/G6+yxCuYRH9f8Koi2yNVSXQQDby3iEYadeA4hwiQmBs3N59/M4
-         VLiiJ9TKhqKdTLLyZkQPXxCsg+XTDobHkBtuBZ6LNjLJVOMYDCEsI5hwsFgZvtpVBTvt
-         prcTFRRDdHufRGOM8fQqBhMEv7B2AOMu5yE99ysBT6CcJkax2Ylc4pMHH6cZyLup7BkB
-         vSXpSEUvTFljQTOBUuZU8L+53XM9xup4245/ZkW71QeEoyfL4Lr4aKf9/jBEHsYkKEm+
-         cXyHEUfpuwOf9xeYPpwTTbtKeH/w7bJBqoRRUUtCBT8rTy8kixAV/9jBv76ZOSoxhAng
-         7Y/A==
-X-Gm-Message-State: AOJu0YzyZJwP70yxyG8YSAo19PqpbsJt2QnxnPK7jBAnuJEi8TdBfu/i
-        nksalzl/QERBx6Os+AGmVSItm6ZFq+HPFEO+m3I=
-X-Google-Smtp-Source: AGHT+IEhmNLmhGxrtCgZOy7pCkCFeOrqo6QXJpKEFM9cw7GkYQJG+xBQkr1qR4/tejyjGGUgs3t5wUdovowNAca85qM=
-X-Received: by 2002:a05:6a00:2301:b0:6c3:4bf2:7486 with SMTP id
- h1-20020a056a00230100b006c34bf27486mr9484517pfh.7.1702431240694; Tue, 12 Dec
- 2023 17:34:00 -0800 (PST)
+        d=1e100.net; s=20230601; t=1702431319; x=1703036119;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :feedback-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=lJwnAAHRmDie2pCrUCphBkEu6klu8JgvdhjOopanDfU=;
+        b=Co0phw3DhJueEhzJxTyxa+SVgNIl6OMlCtH9Q+2Dq27DrK1ABuvIs8S2Q/7Jr4xvcA
+         J5356iLNkMr3vBYqduwX8rZdrf8BX7JYXWNwTfUSLu48CntUFoRR1Ds0Uil/iHp/foPW
+         CFNZLYFHLLOLUF6n9rsYmy4GvHMetsL0o8PZHnfU+Zx5CMqzZd3a4+yku5dgjRuxtiVo
+         xA91ul0ZkslfcjbwvTyGso+1jxZ66ZkLlvSXD9aaVcN4sE53QR/VFkLz5CPjJ9t7CeEA
+         366iLiaPhXODHlmT83vjgfZg+H2qq6LJOctFJ0obXCF0/FxwPGy+73S8Du3HMVd2mUBD
+         8z0A==
+X-Gm-Message-State: AOJu0YzInz/HAFn4a0jJZT9YB/Nujf9J2arogBGxyVrABxLp4PPOv0ez
+        VshfnRoYjZ5/Rw5ZnrXKJps=
+X-Google-Smtp-Source: AGHT+IH5uQAhf0dYg8G6GsbP6/h3lRg7sgiDpTWBp+yT+OWEF+BupOCK+goSAt7xUeDoSwMOu4Q2RQ==
+X-Received: by 2002:a05:620a:55bb:b0:77e:fba3:4f12 with SMTP id vr27-20020a05620a55bb00b0077efba34f12mr8219438qkn.104.1702431319080;
+        Tue, 12 Dec 2023 17:35:19 -0800 (PST)
+Received: from auth1-smtp.messagingengine.com (auth1-smtp.messagingengine.com. [66.111.4.227])
+        by smtp.gmail.com with ESMTPSA id 26-20020a05620a04da00b0077d7557653bsm4156880qks.64.2023.12.12.17.35.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 Dec 2023 17:35:18 -0800 (PST)
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
+        by mailauth.nyi.internal (Postfix) with ESMTP id D6AFC27C0054;
+        Tue, 12 Dec 2023 20:35:17 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute2.internal (MEProxy); Tue, 12 Dec 2023 20:35:17 -0500
+X-ME-Sender: <xms:VAp5ZasDZAqiwGMMW4FVA9DG0JUM-EUgCZDud7s-V7kx3bWxVLhWIQ>
+    <xme:VAp5ZfdNeztR4IS8ooDpE3-t9kMz4Ka0OBMqe8KzkcJ1svhWgKDFyd1yyY_m9gKHo
+    9XbV55N2f8sHC03_A>
+X-ME-Received: <xmr:VAp5ZVx0oCQe2ydAocHbXI7t3Z9j0rjD2uGgMPiWUCooBVhcHunl0sTVhQM6vQ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrudelhedgfeeiucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvfevuffkfhggtggugfgjsehtkeertddttdejnecuhfhrohhmpeeuohhq
+    uhhnucfhvghnghcuoegsohhquhhnrdhfvghnghesghhmrghilhdrtghomheqnecuggftrf
+    grthhtvghrnhepvefghfeuveekudetgfevudeuudejfeeltdfhgfehgeekkeeigfdukefh
+    gfegleefnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomh
+    epsghoqhhunhdomhgvshhmthhprghuthhhphgvrhhsohhnrghlihhthidqieelvdeghedt
+    ieegqddujeejkeehheehvddqsghoqhhunhdrfhgvnhhgpeepghhmrghilhdrtghomhesfh
+    higihmvgdrnhgrmhgv
+X-ME-Proxy: <xmx:VAp5ZVOfjxJQ39jZxDVGl67RMBKX52XLF2FLmMQHsl6WjUD3hVx-QA>
+    <xmx:VAp5Za8sEwdmHXM0Y7HLKlOmFYDsmeS-SQirFy9AflqRXHyQj13FQQ>
+    <xmx:VAp5ZdXcibFYGGDhIgOTjSaxngToBMwSun7yg_WgPRf5tR8Quss_cw>
+    <xmx:VQp5ZcFKCL_iJ0iIcursLMAHJTW4upGjV-ZW_XfDwE0EV7jwPDWN8w>
+Feedback-ID: iad51458e:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
+ 12 Dec 2023 20:35:16 -0500 (EST)
+Date:   Tue, 12 Dec 2023 17:35:09 -0800
+From:   Boqun Feng <boqun.feng@gmail.com>
+To:     Benno Lossin <benno.lossin@proton.me>
+Cc:     Alice Ryhl <aliceryhl@google.com>, Miguel Ojeda <ojeda@kernel.org>,
+        Alex Gaynor <alex.gaynor@gmail.com>,
+        Wedson Almeida Filho <wedsonaf@gmail.com>,
+        Gary Guo <gary@garyguo.net>,
+        =?iso-8859-1?Q?Bj=F6rn?= Roy Baron <bjorn3_gh@protonmail.com>,
+        Andreas Hindborg <a.hindborg@samsung.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Arve =?iso-8859-1?B?SGr4bm5lduVn?= <arve@android.com>,
+        Todd Kjos <tkjos@android.com>,
+        Martijn Coenen <maco@android.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Carlos Llamas <cmllamas@google.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Kees Cook <keescook@chromium.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org,
+        rust-for-linux@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH v2 7/7] rust: file: add abstraction for `poll_table`
+Message-ID: <ZXkKTSTCuQMt2ge6@boqun-archlinux>
+References: <20231206-alice-file-v2-0-af617c0d9d94@google.com>
+ <20231206-alice-file-v2-7-af617c0d9d94@google.com>
+ <k_vpgbqKAKoTFzJIBCjvgxGhX73kgkcv6w9kru78lBmTjHHvXPy05g8KxAKJ-ODARBxlZUp3a5e4F9TemGqQiskkwFCpTOhzxlvy378tjHM=@proton.me>
+ <CAH5fLgiQ-7gbwP2RLoVDfDqoA+nXPboBW6eTKiv45Yam_Vjv_A@mail.gmail.com>
+ <E-jdYd0FVvs15f_pEC0Fo6k2DByCDEQoh_Ux9P9ldmC-otCvUfQghkJOUkiAi8gDI8J47wAaDe56XYC5NiJhuohyhIklGAWMvv9v1qi6yYM=@proton.me>
 MIME-Version: 1.0
-References: <20231207050433.1426834-1-irogers@google.com> <20231207050433.1426834-3-irogers@google.com>
- <CAM9d7cgRZp3PieHDvsdFXG+pNG0TTKoAaH6ZxC1XAnrvRLE1Pw@mail.gmail.com> <CAP-5=fXuZCkbAU0wakLyu3svpvUjzugAOjZzeGg9jZyJRXpoDA@mail.gmail.com>
-In-Reply-To: <CAP-5=fXuZCkbAU0wakLyu3svpvUjzugAOjZzeGg9jZyJRXpoDA@mail.gmail.com>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Tue, 12 Dec 2023 17:33:49 -0800
-Message-ID: <CAM9d7cjcuz1ifeHUC=kqNsZVHn_jUsM-XWQRoXD1MVzRcoZ-kQ@mail.gmail.com>
-Subject: Re: [PATCH v1 2/6] tools lib api: Add io_dir an allocation free
- readdir alternative
-To:     Ian Rogers <irogers@google.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        "Masami Hiramatsu (Google)" <mhiramat@kernel.org>,
-        Thomas Richter <tmricht@linux.ibm.com>,
-        Quentin Monnet <quentin@isovalent.com>,
-        Fangrui Song <maskray@google.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Yanteng Si <siyanteng@loongson.cn>,
-        K Prateek Nayak <kprateek.nayak@amd.com>,
-        Artem Savkov <asavkov@redhat.com>,
-        James Clark <james.clark@arm.com>,
-        Ravi Bangoria <ravi.bangoria@amd.com>,
-        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <E-jdYd0FVvs15f_pEC0Fo6k2DByCDEQoh_Ux9P9ldmC-otCvUfQghkJOUkiAi8gDI8J47wAaDe56XYC5NiJhuohyhIklGAWMvv9v1qi6yYM=@proton.me>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 11, 2023 at 3:54 PM Ian Rogers <irogers@google.com> wrote:
->
-> On Mon, Dec 11, 2023 at 3:25 PM Namhyung Kim <namhyung@kernel.org> wrote:
-> >
-> > On Wed, Dec 6, 2023 at 9:04 PM Ian Rogers <irogers@google.com> wrote:
-> > >
-> > > glibc's opendir allocates a minimum of 32kb, when called recursively
-> > > for a directory tree the memory consumption can add up - nearly 300kb
-> > > during perf start-up when processing modules. Add a stack allocated
-> > > variant of readdir sized a little more than 1kb.
-> > >
-> > > As getdents64 may be missing from libc, add support using syscall.
-> >
-> > Unfortunately my alpine build has:
-> >
-> > In file included from util/machine.c:2:
-> > /build/libapi/include/api/io_dir.h:17:23: error: conflicting types for
-> > 'getdents'; have 'ssize_t(int,  void *, size_t)' {aka 'long int(int,
-> > void *, long unsigned int)'}
-> >    17 | static inline ssize_t getdents64(int fd, void *dirp, size_t count)
-> >       |                       ^~~~~~~~~~
-> > /usr/include/dirent.h:52:5: note: previous declaration of 'getdents'
-> > with type 'int(int,  struct dirent *, size_t)' {aka 'int(int,  struct
-> > dirent *, long unsigned int)'}
-> >    52 | int getdents(int, struct dirent *, size_t);
-> >       |     ^~~~~~~~
->
-> Presumably there is a #define getdents64 getdents .. Could we stop
-> caring about this version of Alpine linux?
+On Tue, Dec 12, 2023 at 05:01:28PM +0000, Benno Lossin wrote:
+> On 12/12/23 10:59, Alice Ryhl wrote:
+> > On Fri, Dec 8, 2023 at 6:53 PM Benno Lossin <benno.lossin@proton.me> wrote:
+> >> On 12/6/23 12:59, Alice Ryhl wrote:
+> >>> +    fn get_qproc(&self) -> bindings::poll_queue_proc {
+> >>> +        let ptr = self.0.get();
+> >>> +        // SAFETY: The `ptr` is valid because it originates from a reference, and the `_qproc`
+> >>> +        // field is not modified concurrently with this call since we have an immutable reference.
+> >>
+> >> This needs an invariant on `PollTable` (i.e. `self.0` is valid).
+> > 
+> > How would you phrase it?
+> 
+> - `self.0` contains a valid `bindings::poll_table`.
+> - `self.0` is only modified via references to `Self`.
+> 
+> >>> +        unsafe { (*ptr)._qproc }
+> >>> +    }
+> >>> +
+> >>> +    /// Register this [`PollTable`] with the provided [`PollCondVar`], so that it can be notified
+> >>> +    /// using the condition variable.
+> >>> +    pub fn register_wait(&mut self, file: &File, cv: &PollCondVar) {
+> >>> +        if let Some(qproc) = self.get_qproc() {
+> >>> +            // SAFETY: The pointers to `self` and `file` are valid because they are references.
+> >>
+> >> What about cv.wait_list...
+> > 
+> > I can add it to the list of things that are valid due to references.
+> 
 
-Right, there's a #define:
+Actually, there is an implied safety requirement here, it's about how
+qproc is implemented. As we can see, PollCondVar::drop() will wait for a
+RCU grace period, that means the waiter (a file or something) has to use
+RCU to access the cv.wait_list, otherwise, the synchronize_rcu() in
+PollCondVar::drop() won't help.
 
-https://git.musl-libc.org/cgit/musl/tree/include/dirent.h#n68
+To phrase it, it's more like:
 
-But I'm not sure ignoring Alpine linux is a good idea.
-Maybe we can add a #undef right before?
+(in the safety requirement of `PollTable::from_ptr` and the type
+invariant of `PollTable`):
 
-Thanks,
-Namhyung
+", further, if the qproc function in poll_table publishs the pointer of
+the wait_queue_head, it must publish it in a way that reads on the
+published pointer have to be in an RCU read-side critical section."
+
+and here we can said,
+
+"per type invariant, `qproc` cannot publish `cv.wait_list` without
+proper RCU protection, so it's safe to use `cv.wait_list` here, and with
+the synchronize_rcu() in PollCondVar::drop(), free of the wait_list will
+be delayed until all usages are done."
+
+I know, this is quite verbose, but just imagine some one removes the
+rcu_read_lock() and rcu_read_unlock() in ep_remove_wait_queue(), the
+poll table from epoll (using ep_ptable_queue_proc()) is still valid one
+according to the current safety requirement, but now there is a
+use-after-free in the following case:
+
+	CPU 0                        CPU1
+	                             ep_remove_wait_queue():
+				       struct wait_queue_head *whead;
+	                               whead = smp_load_acquire(...);
+	                               if (whead) { // not null
+	PollCondVar::drop():
+	  __wake_pollfree();
+	  synchronize_rcu(); // no current RCU readers, yay.
+	  <free the wait_queue_head>
+	                                 remove_wait_queue(whead, ...); // BOOM, use-after-free
+
+Regards,
+Boqun
