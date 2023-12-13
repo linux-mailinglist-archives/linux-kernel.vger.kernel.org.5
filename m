@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5468C811DEF
+	by mail.lfdr.de (Postfix) with ESMTP id AA3E1811DF0
 	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 20:03:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379289AbjLMTDn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 14:03:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60322 "EHLO
+        id S1442028AbjLMTDq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 14:03:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33630 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229811AbjLMTDl (ORCPT
+        with ESMTP id S1379292AbjLMTDm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 14:03:41 -0500
+        Wed, 13 Dec 2023 14:03:42 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D8BE95
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 11:03:48 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3AFD9C433C7;
-        Wed, 13 Dec 2023 19:03:47 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9126595
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 11:03:49 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BC743C433C8;
+        Wed, 13 Dec 2023 19:03:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1702494227;
-        bh=zkxV/sJ91hBwZ2pcDcldOS6t/0SJ1DBEmN593qqkP8A=;
+        s=k20201202; t=1702494229;
+        bh=gjBQjP/YI+pvMOKNh4ddMdbLJ3KLmfM9HXn1Dp4kPVs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=FsMpltOj8b5LLTVNjVwEqLIsRh8q05n4NT8JLQWlwVypSIKY6eN74NUwjf7yqfpGu
-         K5QgM7ZGlZgpO0+2xyPPwj7bykR38c57sfAW+T9Ao8j5z3hwb5zsGYaX2bp4ERAOIq
-         Z5wLSbvbkf1poMf7iFSWJqG/+SAJvZeyYvzfeH2S3K7/YAgYvasfi6Pe7ExgKIKrZE
-         WDpJQTooHK/zayfuGnOGXGPjkCbLj8B817wwNwwlfOY6fC/vNqRivwT1mVnuksHKVT
-         r3q+ype7ln+bWVGHZ2b1VkLaO6j54rq63bhQPDjWe1sKfbbmdfzHqCHP/3eXz3IIpK
-         Ff4KF5MNj0fOQ==
+        b=gh6j4zF8l93bobVI7GSErZD+7LyrzAOafaTw/R+gygXqiWV4CRdqWwXQ4WHnfcO5A
+         ntCVTNa3MG2BjUATa9SvAKwQAfINk5MJbH1cQsimTz2xBRm2XyU16JA/pkCDCVZBLM
+         tYqx26QhH06nd6+RI/CnV0NU7hK5ynOAW+Z0EaxqXgVK7aTJLDK+cN15J+KLBe+wGl
+         FPY1GTm8dlM/DZ8CdH2eMVZ9cww7cSXDsMBAbUrukA7Khyyau/bnOZiSGqHIhpwnXk
+         UQuZluFbU+/gS0nN3hGdfFYeZSaojRVgc0zs0RTAEI3p5ZqKWxiCp7cU9I6UkJIWWW
+         PXaXBm0veoOYA==
 From:   SeongJae Park <sj@kernel.org>
 To:     Andrew Morton <akpm@linux-foundation.org>
 Cc:     SeongJae Park <sj@kernel.org>, damon@lists.linux.dev,
         linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 1/6] mm/damon: update email of SeongJae
-Date:   Wed, 13 Dec 2023 19:03:33 +0000
-Message-Id: <20231213190338.54146-2-sj@kernel.org>
+Subject: [PATCH 2/6] mm/damon/core-test: test max_nr_accesses overflow caused divide-by-zero
+Date:   Wed, 13 Dec 2023 19:03:34 +0000
+Message-Id: <20231213190338.54146-3-sj@kernel.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20231213190338.54146-1-sj@kernel.org>
 References: <20231213190338.54146-1-sj@kernel.org>
@@ -49,125 +49,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SeongJae is using his kernel.org account for DAMON development.  Update
-the old email addresses on the comments of DAMON source files.
+Commit 35f5d94187a6 ("mm/damon: implement a function for max nr_accesses
+safe calculation") has fixed an overflow bug that could cause
+divide-by-zero.  Add a kunit test for the bug to ensure similar bugs are
+not introduced again.
 
 Signed-off-by: SeongJae Park <sj@kernel.org>
 ---
- include/linux/damon.h     | 2 +-
- mm/damon/core-test.h      | 2 +-
- mm/damon/core.c           | 2 +-
- mm/damon/dbgfs-test.h     | 2 +-
- mm/damon/dbgfs.c          | 2 +-
- mm/damon/modules-common.c | 2 +-
- mm/damon/vaddr-test.h     | 2 +-
- mm/damon/vaddr.c          | 2 +-
- 8 files changed, 8 insertions(+), 8 deletions(-)
+ mm/damon/core-test.h | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
-diff --git a/include/linux/damon.h b/include/linux/damon.h
-index 12510d8c51c6..5881e4ac30be 100644
---- a/include/linux/damon.h
-+++ b/include/linux/damon.h
-@@ -2,7 +2,7 @@
- /*
-  * DAMON api
-  *
-- * Author: SeongJae Park <sjpark@amazon.de>
-+ * Author: SeongJae Park <sj@kernel.org>
-  */
- 
- #ifndef _DAMON_H_
 diff --git a/mm/damon/core-test.h b/mm/damon/core-test.h
-index 6e5e9502d648..876e398557b0 100644
+index 876e398557b0..0cee634f3544 100644
 --- a/mm/damon/core-test.h
 +++ b/mm/damon/core-test.h
-@@ -4,7 +4,7 @@
-  *
-  * Copyright 2019 Amazon.com, Inc. or its affiliates.  All rights reserved.
-  *
-- * Author: SeongJae Park <sjpark@amazon.de>
-+ * Author: SeongJae Park <sj@kernel.org>
-  */
+@@ -302,6 +302,16 @@ static void damon_test_set_regions(struct kunit *test)
+ 	damon_destroy_target(t);
+ }
  
- #ifdef CONFIG_DAMON_KUNIT_TEST
-diff --git a/mm/damon/core.c b/mm/damon/core.c
-index 2c0cc65d041e..36f6f1d21ff0 100644
---- a/mm/damon/core.c
-+++ b/mm/damon/core.c
-@@ -2,7 +2,7 @@
- /*
-  * Data Access Monitor
-  *
-- * Author: SeongJae Park <sjpark@amazon.de>
-+ * Author: SeongJae Park <sj@kernel.org>
-  */
- 
- #define pr_fmt(fmt) "damon: " fmt
-diff --git a/mm/damon/dbgfs-test.h b/mm/damon/dbgfs-test.h
-index 0bb0d532b159..2d85217f5ba4 100644
---- a/mm/damon/dbgfs-test.h
-+++ b/mm/damon/dbgfs-test.h
-@@ -2,7 +2,7 @@
- /*
-  * DAMON Debugfs Interface Unit Tests
-  *
-- * Author: SeongJae Park <sjpark@amazon.de>
-+ * Author: SeongJae Park <sj@kernel.org>
-  */
- 
- #ifdef CONFIG_DAMON_DBGFS_KUNIT_TEST
-diff --git a/mm/damon/dbgfs.c b/mm/damon/dbgfs.c
-index dc0ea1fc30ca..7dac24e69e3b 100644
---- a/mm/damon/dbgfs.c
-+++ b/mm/damon/dbgfs.c
-@@ -2,7 +2,7 @@
- /*
-  * DAMON Debugfs Interface
-  *
-- * Author: SeongJae Park <sjpark@amazon.de>
-+ * Author: SeongJae Park <sj@kernel.org>
-  */
- 
- #define pr_fmt(fmt) "damon-dbgfs: " fmt
-diff --git a/mm/damon/modules-common.c b/mm/damon/modules-common.c
-index b2381a8466ec..7cf96574cde7 100644
---- a/mm/damon/modules-common.c
-+++ b/mm/damon/modules-common.c
-@@ -2,7 +2,7 @@
- /*
-  * Common Primitives for DAMON Modules
-  *
-- * Author: SeongJae Park <sjpark@amazon.de>
-+ * Author: SeongJae Park <sj@kernel.org>
-  */
- 
- #include <linux/damon.h>
-diff --git a/mm/damon/vaddr-test.h b/mm/damon/vaddr-test.h
-index dcf1ca6b31cc..83626483f82b 100644
---- a/mm/damon/vaddr-test.h
-+++ b/mm/damon/vaddr-test.h
-@@ -4,7 +4,7 @@
-  *
-  * Copyright 2019 Amazon.com, Inc. or its affiliates.  All rights reserved.
-  *
-- * Author: SeongJae Park <sjpark@amazon.de>
-+ * Author: SeongJae Park <sj@kernel.org>
-  */
- 
- #ifdef CONFIG_DAMON_VADDR_KUNIT_TEST
-diff --git a/mm/damon/vaddr.c b/mm/damon/vaddr.c
-index a4d1f63c5b23..a67454b825dc 100644
---- a/mm/damon/vaddr.c
-+++ b/mm/damon/vaddr.c
-@@ -2,7 +2,7 @@
- /*
-  * DAMON Primitives for Virtual Address Spaces
-  *
-- * Author: SeongJae Park <sjpark@amazon.de>
-+ * Author: SeongJae Park <sj@kernel.org>
-  */
- 
- #define pr_fmt(fmt) "damon-va: " fmt
++static void damon_test_nr_accesses_to_accesses_bp(struct kunit *test)
++{
++	struct damon_attrs attrs = {
++		.sample_interval = 10,
++		.aggr_interval = ((unsigned long)UINT_MAX + 1) * 10
++	};
++
++	KUNIT_EXPECT_EQ(test, damon_nr_accesses_to_accesses_bp(123, &attrs), 0);
++}
++
+ static void damon_test_update_monitoring_result(struct kunit *test)
+ {
+ 	struct damon_attrs old_attrs = {
+@@ -487,6 +497,7 @@ static struct kunit_case damon_test_cases[] = {
+ 	KUNIT_CASE(damon_test_split_regions_of),
+ 	KUNIT_CASE(damon_test_ops_registration),
+ 	KUNIT_CASE(damon_test_set_regions),
++	KUNIT_CASE(damon_test_nr_accesses_to_accesses_bp),
+ 	KUNIT_CASE(damon_test_update_monitoring_result),
+ 	KUNIT_CASE(damon_test_set_attrs),
+ 	KUNIT_CASE(damon_test_moving_sum),
 -- 
 2.34.1
 
