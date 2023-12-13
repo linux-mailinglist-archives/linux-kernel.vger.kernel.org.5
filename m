@@ -2,64 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D90D9810B28
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 08:13:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DA49810B30
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 08:13:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378654AbjLMHNc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 02:13:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40644 "EHLO
+        id S1378678AbjLMHNg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 02:13:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58460 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233183AbjLMHNa (ORCPT
+        with ESMTP id S235268AbjLMHNd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 02:13:30 -0500
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8819D0
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 23:13:33 -0800 (PST)
-Received: by mail-wm1-x32d.google.com with SMTP id 5b1f17b1804b1-40c2db0ca48so28865e9.1
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 23:13:33 -0800 (PST)
+        Wed, 13 Dec 2023 02:13:33 -0500
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A984109
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 23:13:38 -0800 (PST)
+Received: by mail-ed1-x531.google.com with SMTP id 4fb4d7f45d1cf-54c77d011acso5689a12.1
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 23:13:38 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1702451612; x=1703056412; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1702451616; x=1703056416; darn=vger.kernel.org;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=ofKUl2GizOp1QuJPlnk+EngBOStr6Eba6g1R8JbUe4U=;
-        b=MUC7AwggQzTpjMYTP6ywKpThCx17IMlltG6xXHNdKyVPsjx9nFzkoPHVXS0mqJLggF
-         qXpNjmNiPdgFnUTKxqdtaa/WsbEGVBUgHoD+15E0nnZm1N9o3qPOcUHPiTJraMQbpSOj
-         iRPcPxLc9oGXqQbKEURkka910tYf/Te1zjZe64j9WsO/fuE94v2MNTd1VjKSUunuVKib
-         8/ptNmP6wpdHHy+vYd5wnlDHw2gmJ8i5OJFuITCbta/n3Kqbu16pmvV0eBSI8FCiFnWp
-         RTEiskSwzpAe03fIDrEWi+Zpyw/kHPkzqvPx0t+Uxn71Moxd6eN6zCHCc43Q4pOf+Pds
-         aG7g==
+        bh=CySHbFNihEKJypUz43arLxA13iJ+ywCfajnfMajq70Q=;
+        b=ZsjSB0u1gaon2FcFB8ZlchO6Y5YCCj8JZqQExxZlfZLrvzvIcJKIg6A6kn4i6q4bxN
+         j3ea8Kl3M1lN4rxSMkN4ZmB/4YkBv9QYHOm4PF8uNXrGRkRRJY+aOuES1AuLBbStKLwI
+         EUj0RukDTZBZ5y7DGpUKJvsRtrqg7kf4gv/deZ0JjKIku+U8CgS9rj1u4zq54VJ1AzCh
+         Fg7Y03J7lHSnmOtb5uMf3Vitga3WK7Jb/Z0Lu7uN/hIRCju7Fyr2/uYCoaYpjNMj2U87
+         RXj3BwZVYy9Yj52wUjd1macFfqgbkKYaZ5YAbxAXex3ZSnauPclaHsaP+LSGB+JRKsHZ
+         jzeA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702451612; x=1703056412;
+        d=1e100.net; s=20230601; t=1702451616; x=1703056416;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=ofKUl2GizOp1QuJPlnk+EngBOStr6Eba6g1R8JbUe4U=;
-        b=KaGFxiioNe8pZ5amKon8i7KCD0fNMgeH1UQSsxhT2G2r+ZxgNhS63Jw2DDQoMhjcZ4
-         nS8rNFSaLSbZsAR6Iq/51mEpwhniYTcABtcgo8Kh8MrGPwHzUDtBRT8P6FapttAm7x/R
-         US08BCaJZcVqLJae8b2lrQh4+N2Ksl4c1d7sf5/R1fLtywpo4R5G83Dxc2G/Of+ZGIA5
-         Bey2ATFKqvujl9wZCegHQoYuODPpT6aI1EbyIQJupYSTGkE8jabfXyQVbU9ggDLY0qHa
-         SQJLhhWRQrarxKzsNYYRISqXlj9cRyalV1TN1TABpHJFfyRLMFlpMOU09T3C2c1ORLAt
-         2UcQ==
-X-Gm-Message-State: AOJu0Yzzgkinv/AZx/b/uMWBjmcDd13/vxHfSBmB3UBeIPqt0COXq0aV
-        mxjpa2CbtXUWgW+G41jPtNf23tfONGJuiw/IGLMkfQ==
-X-Google-Smtp-Source: AGHT+IGlpEurYadfB9C6fIZ4fvUDdDh268DxM2DdP44zO9SB+kDoMsJQrcsz1S0fG9To33dFp9NQS5AJwfvvVWIakmQ=
-X-Received: by 2002:a05:600c:3491:b0:40b:33aa:a2b9 with SMTP id
- a17-20020a05600c349100b0040b33aaa2b9mr407430wmq.4.1702451612168; Tue, 12 Dec
- 2023 23:13:32 -0800 (PST)
+        bh=CySHbFNihEKJypUz43arLxA13iJ+ywCfajnfMajq70Q=;
+        b=lJlWNKEu0yA1MA/Fy8oVVaV20nmCyr0yu0wikE/h81c8WB4T5a87SNp1WqwZvN+oHK
+         jixvhh4aqdO2f/NjVDbzKsyJpHuOrSE+73qR/LJFikKgQiNF1OT+utQy+PauBiykao8f
+         7jSt/B3/VOmnmTVpIT9fksFK5tx9vGGyu59hDM+QeNTR+RGOefjJR5TXpnXy+8vRvkiP
+         aHP5EeP0JVfW6H6pfN6Qyasa0C2HglGWdPWlTfFC9nBpYFO6idOxCQguM43TeD5Ormyx
+         q4kJDNG61YsRBTERrP73DxpLeFnVPDwBkYpMHxlE49TkMdLmvEZHo1o57esRmPMsc9eM
+         qLmg==
+X-Gm-Message-State: AOJu0YxWidBn7vkzUgFtlMoapxyAytZugMWG9uzXzZsU1dLSOJaKffAU
+        pAy5ImeHmwqfS9VBtmU+198NAfw3oNSV+jj9uvb1iQ==
+X-Google-Smtp-Source: AGHT+IEM1kOIuphEqfzrZd8Lq3/vYg/WFrUXV4kjMhsDwYBCMUeA7vM00dEA1sSZwBeUnhsh1M+TUTrJDhLbPt/1Pcg=
+X-Received: by 2002:a50:c192:0:b0:54c:f4fd:3427 with SMTP id
+ m18-20020a50c192000000b0054cf4fd3427mr458949edf.7.1702451616197; Tue, 12 Dec
+ 2023 23:13:36 -0800 (PST)
 MIME-Version: 1.0
-References: <20231213010201.1802507-1-rmoar@google.com> <20231213010201.1802507-2-rmoar@google.com>
-In-Reply-To: <20231213010201.1802507-2-rmoar@google.com>
+References: <20231213010201.1802507-1-rmoar@google.com> <20231213010201.1802507-3-rmoar@google.com>
+In-Reply-To: <20231213010201.1802507-3-rmoar@google.com>
 From:   David Gow <davidgow@google.com>
-Date:   Wed, 13 Dec 2023 15:13:19 +0800
-Message-ID: <CABVgOSm564viRs+CsKc8uyEZ71CU-+qH_R8E5hJrQiPTaSBiGg@mail.gmail.com>
-Subject: Re: [PATCH v4 2/6] kunit: add KUNIT_INIT_TABLE to init linker section
+Date:   Wed, 13 Dec 2023 15:13:24 +0800
+Message-ID: <CABVgOS=tUmp1noFpOiQfxnBi29fYWoWtVaz7-VTr1ckN6pVkJA@mail.gmail.com>
+Subject: Re: [PATCH v4 3/6] kunit: add example suite to test init suites
 To:     Rae Moar <rmoar@google.com>
 Cc:     shuah@kernel.org, dlatypov@google.com, brendan.higgins@linux.dev,
         sadiyakazi@google.com, keescook@chromium.org, arnd@arndb.de,
         linux-kselftest@vger.kernel.org, linux-arch@vger.kernel.org,
         kunit-dev@googlegroups.com, linux-kernel@vger.kernel.org
 Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="0000000000009d9d1d060c5ee7c5"
+        boundary="000000000000db25da060c5ee758"
 X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
@@ -71,321 +71,99 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---0000000000009d9d1d060c5ee7c5
+--000000000000db25da060c5ee758
 Content-Type: text/plain; charset="UTF-8"
 
 On Wed, 13 Dec 2023 at 09:02, Rae Moar <rmoar@google.com> wrote:
 >
-> Add KUNIT_INIT_TABLE to the INIT_DATA linker section.
+> Add example_init_test_suite to allow for testing the feature of running
+> test suites marked as init to indicate they use init data and/or
+> functions.
 >
-> Alter the KUnit macros to create init tests:
-> kunit_test_init_section_suites
+> This suite should always pass and uses a simple init function.
 >
-> Update lib/kunit/executor.c to run both the suites in KUNIT_TABLE and
-> KUNIT_INIT_TABLE.
+> This suite can also be used to test the is_init attribute introduced in
+> the next patch.
 >
 > Signed-off-by: Rae Moar <rmoar@google.com>
 > ---
 > Changes since v3:
-> - Add to comments in test.h for kunit_test_init_section_suites macro to
->   note init tests cannot be run after boot and the structs cannot be
->   marked with __initdata
->
+> - I ended up not changing anything as adding __init to the test gave
+>   a build warning. It did still work so I could add it back if wanted.
 
-Thanks -- this is looking good.
+I had another look at this, and I think the most correct solution here
+is to make the test __init, and the array of tests __refdata.
 
-Reviewed-by: David Gow <davidgow@google.com>
+(Ideally this would be something we could wrap in a macro, but I think
+it's fine to just have it written here for now, so it's explicit in
+the example._
 
-Cheers,
+How does that sound?
+
 -- David
 
-
->  include/asm-generic/vmlinux.lds.h |  9 ++++-
->  include/kunit/test.h              | 30 +++++++++------
->  include/linux/module.h            |  2 +
->  kernel/module/main.c              |  3 ++
->  lib/kunit/executor.c              | 64 ++++++++++++++++++++++++++++---
->  lib/kunit/test.c                  | 26 +++++++++----
->  6 files changed, 109 insertions(+), 25 deletions(-)
 >
-> diff --git a/include/asm-generic/vmlinux.lds.h b/include/asm-generic/vmlinux.lds.h
-> index 1107905d37fc..5dd3a61d673d 100644
-> --- a/include/asm-generic/vmlinux.lds.h
-> +++ b/include/asm-generic/vmlinux.lds.h
-> @@ -700,7 +700,8 @@
->         THERMAL_TABLE(governor)                                         \
->         EARLYCON_TABLE()                                                \
->         LSM_TABLE()                                                     \
-> -       EARLY_LSM_TABLE()
-> +       EARLY_LSM_TABLE()                                               \
-> +       KUNIT_INIT_TABLE()
+>  lib/kunit/kunit-example-test.c | 37 ++++++++++++++++++++++++++++++++++
+>  1 file changed, 37 insertions(+)
 >
->  #define INIT_TEXT                                                      \
->         *(.init.text .init.text.*)                                      \
-> @@ -926,6 +927,12 @@
->                 . = ALIGN(8);                                           \
->                 BOUNDED_SECTION_POST_LABEL(.kunit_test_suites, __kunit_suites, _start, _end)
->
-> +/* Alignment must be consistent with (kunit_suite *) in include/kunit/test.h */
-> +#define KUNIT_INIT_TABLE()                                             \
-> +               . = ALIGN(8);                                           \
-> +               BOUNDED_SECTION_POST_LABEL(.kunit_init_test_suites, \
-> +                               __kunit_init_suites, _start, _end)
-> +
->  #ifdef CONFIG_BLK_DEV_INITRD
->  #define INIT_RAM_FS                                                    \
->         . = ALIGN(4);                                                   \
-> diff --git a/include/kunit/test.h b/include/kunit/test.h
-> index 20ed9f9275c9..fe79cd736e94 100644
-> --- a/include/kunit/test.h
-> +++ b/include/kunit/test.h
-> @@ -337,6 +337,9 @@ void __kunit_test_suites_exit(struct kunit_suite **suites, int num_suites);
->  void kunit_exec_run_tests(struct kunit_suite_set *suite_set, bool builtin);
->  void kunit_exec_list_tests(struct kunit_suite_set *suite_set, bool include_attr);
->
-> +struct kunit_suite_set kunit_merge_suite_sets(struct kunit_suite_set init_suite_set,
-> +               struct kunit_suite_set suite_set);
-> +
->  #if IS_BUILTIN(CONFIG_KUNIT)
->  int kunit_run_all_tests(void);
->  #else
-> @@ -371,6 +374,11 @@ static inline int kunit_run_all_tests(void)
->
->  #define kunit_test_suite(suite)        kunit_test_suites(&suite)
->
-> +#define __kunit_init_test_suites(unique_array, ...)                           \
-> +       static struct kunit_suite *unique_array[]                              \
-> +       __aligned(sizeof(struct kunit_suite *))                                \
-> +       __used __section(".kunit_init_test_suites") = { __VA_ARGS__ }
-> +
->  /**
->   * kunit_test_init_section_suites() - used to register one or more &struct
->   *                                   kunit_suite containing init functions or
-> @@ -378,21 +386,21 @@ static inline int kunit_run_all_tests(void)
->   *
->   * @__suites: a statically allocated list of &struct kunit_suite.
->   *
-> - * This functions identically as kunit_test_suites() except that it suppresses
-> - * modpost warnings for referencing functions marked __init or data marked
-> - * __initdata; this is OK because currently KUnit only runs tests upon boot
-> - * during the init phase or upon loading a module during the init phase.
-> + * This functions similar to kunit_test_suites() except that it compiles the
-> + * list of suites during init phase.
-> + *
-> + * This macro also suffixes the array and suite declarations it makes with
-> + * _probe; so that modpost suppresses warnings about referencing init data
-> + * for symbols named in this manner.
->   *
-> - * NOTE TO KUNIT DEVS: If we ever allow KUnit tests to be run after boot, these
-> - * tests must be excluded.
-> + * Note: these init tests are not able to be run after boot so there is no
-> + * "run" debugfs file generated for these tests.
->   *
-> - * The only thing this macro does that's different from kunit_test_suites is
-> - * that it suffixes the array and suite declarations it makes with _probe;
-> - * modpost suppresses warnings about referencing init data for symbols named in
-> - * this manner.
-> + * Also, do not mark the suite or test case structs with __initdata because
-> + * they will be used after the init phase with debugfs.
+> diff --git a/lib/kunit/kunit-example-test.c b/lib/kunit/kunit-example-test.c
+> index 6bb5c2ef6696..18495778de7c 100644
+> --- a/lib/kunit/kunit-example-test.c
+> +++ b/lib/kunit/kunit-example-test.c
+> @@ -287,4 +287,41 @@ static struct kunit_suite example_test_suite = {
 >   */
->  #define kunit_test_init_section_suites(__suites...)                    \
-> -       __kunit_test_suites(CONCATENATE(__UNIQUE_ID(array), _probe),    \
-> +       __kunit_init_test_suites(CONCATENATE(__UNIQUE_ID(array), _probe), \
->                             ##__suites)
+>  kunit_test_suites(&example_test_suite);
 >
->  #define kunit_test_init_section_suite(suite)   \
-> diff --git a/include/linux/module.h b/include/linux/module.h
-> index a98e188cf37b..9cd0009bd050 100644
-> --- a/include/linux/module.h
-> +++ b/include/linux/module.h
-> @@ -540,6 +540,8 @@ struct module {
->         struct static_call_site *static_call_sites;
->  #endif
->  #if IS_ENABLED(CONFIG_KUNIT)
-> +       int num_kunit_init_suites;
-> +       struct kunit_suite **kunit_init_suites;
->         int num_kunit_suites;
->         struct kunit_suite **kunit_suites;
->  #endif
-> diff --git a/kernel/module/main.c b/kernel/module/main.c
-> index 98fedfdb8db5..36681911c05a 100644
-> --- a/kernel/module/main.c
-> +++ b/kernel/module/main.c
-> @@ -2199,6 +2199,9 @@ static int find_module_sections(struct module *mod, struct load_info *info)
->         mod->kunit_suites = section_objs(info, ".kunit_test_suites",
->                                               sizeof(*mod->kunit_suites),
->                                               &mod->num_kunit_suites);
-> +       mod->kunit_init_suites = section_objs(info, ".kunit_init_test_suites",
-> +                                             sizeof(*mod->kunit_init_suites),
-> +                                             &mod->num_kunit_init_suites);
->  #endif
->
->         mod->extable = section_objs(info, "__ex_table",
-> diff --git a/lib/kunit/executor.c b/lib/kunit/executor.c
-> index 1236b3cd2fbb..847329c51e91 100644
-> --- a/lib/kunit/executor.c
-> +++ b/lib/kunit/executor.c
-> @@ -12,6 +12,8 @@
->   */
->  extern struct kunit_suite * const __kunit_suites_start[];
->  extern struct kunit_suite * const __kunit_suites_end[];
-> +extern struct kunit_suite * const __kunit_init_suites_start[];
-> +extern struct kunit_suite * const __kunit_init_suites_end[];
->
->  static char *action_param;
->
-> @@ -292,6 +294,33 @@ void kunit_exec_list_tests(struct kunit_suite_set *suite_set, bool include_attr)
->         }
->  }
->
-> +struct kunit_suite_set kunit_merge_suite_sets(struct kunit_suite_set init_suite_set,
-> +               struct kunit_suite_set suite_set)
+> +static int __init init_add(int x, int y)
 > +{
-> +       struct kunit_suite_set total_suite_set = {NULL, NULL};
-> +       struct kunit_suite **total_suite_start = NULL;
-> +       size_t init_num_suites, num_suites, suite_size;
-> +
-> +       init_num_suites = init_suite_set.end - init_suite_set.start;
-> +       num_suites = suite_set.end - suite_set.start;
-> +       suite_size = sizeof(suite_set.start);
-> +
-> +       /* Allocate memory for array of all kunit suites */
-> +       total_suite_start = kmalloc_array(init_num_suites + num_suites, suite_size, GFP_KERNEL);
-> +       if (!total_suite_start)
-> +               return total_suite_set;
-> +
-> +       /* Append init suites and then all other kunit suites */
-> +       memcpy(total_suite_start, init_suite_set.start, init_num_suites * suite_size);
-> +       memcpy(total_suite_start + init_num_suites, suite_set.start, num_suites * suite_size);
-> +
-> +       /* Set kunit suite set start and end */
-> +       total_suite_set.start = total_suite_start;
-> +       total_suite_set.end = total_suite_start + (init_num_suites + num_suites);
-> +
-> +       return total_suite_set;
+> +       return (x + y);
 > +}
 > +
->  #if IS_BUILTIN(CONFIG_KUNIT)
->
->  static char *kunit_shutdown;
-> @@ -313,21 +342,41 @@ static void kunit_handle_shutdown(void)
->
->  int kunit_run_all_tests(void)
->  {
-> -       struct kunit_suite_set suite_set = {
-> +       struct kunit_suite_set suite_set = {NULL, NULL};
-> +       struct kunit_suite_set filtered_suite_set = {NULL, NULL};
-> +       struct kunit_suite_set init_suite_set = {
-> +               __kunit_init_suites_start, __kunit_init_suites_end,
-> +       };
-> +       struct kunit_suite_set normal_suite_set = {
->                 __kunit_suites_start, __kunit_suites_end,
->         };
-> +       size_t init_num_suites = init_suite_set.end - init_suite_set.start;
->         int err = 0;
+> +/*
+> + * This test should always pass. Can be used to test init suites.
+> + */
+> +static void example_init_test(struct kunit *test)
+
+Add __init here.
+
+> +{
+> +       KUNIT_EXPECT_EQ(test, init_add(1, 1), 2);
+> +}
 > +
-> +       if (init_num_suites > 0) {
-> +               suite_set = kunit_merge_suite_sets(init_suite_set, normal_suite_set);
-> +               if (!suite_set.start)
-> +                       goto out;
-> +       } else
-> +               suite_set = normal_suite_set;
+> +/*
+> + * The kunit_case struct cannot be marked as __initdata as this will be
+> + * used in debugfs to retrieve results after test has run
+> + */
+> +static struct kunit_case example_init_test_cases[] = {
+
+Make this 'static struct kunit_case __refdata example_init_test_cases[] = {'...
+
+
+> +       KUNIT_CASE(example_init_test),
+> +       {}
+> +};
 > +
->         if (!kunit_enabled()) {
->                 pr_info("kunit: disabled\n");
-> -               goto out;
-> +               goto free_out;
->         }
->
->         if (filter_glob_param || filter_param) {
-> -               suite_set = kunit_filter_suites(&suite_set, filter_glob_param,
-> +               filtered_suite_set = kunit_filter_suites(&suite_set, filter_glob_param,
->                                 filter_param, filter_action_param, &err);
+> +/*
+> + * The kunit_suite struct cannot be marked as __initdata as this will be
+> + * used in debugfs to retrieve results after test has run
+> + */
+> +static struct kunit_suite example_init_test_suite = {
+> +       .name = "example_init",
+> +       .test_cases = example_init_test_cases,
+> +};
 > +
-> +               /* Free original suite set before using filtered suite set */
-> +               if (init_num_suites > 0)
-> +                       kfree(suite_set.start);
-> +               suite_set = filtered_suite_set;
+> +/*
+> + * This registers the test suite and marks the suite as using init data
+> + * and/or functions.
+> + */
+> +kunit_test_init_section_suites(&example_init_test_suite);
 > +
->                 if (err) {
->                         pr_err("kunit executor: error filtering suites: %d\n", err);
-> -                       goto out;
-> +                       goto free_out;
->                 }
->         }
->
-> @@ -340,9 +389,12 @@ int kunit_run_all_tests(void)
->         else
->                 pr_err("kunit executor: unknown action '%s'\n", action_param);
->
-> -       if (filter_glob_param || filter_param) { /* a copy was made of each suite */
-> +free_out:
-> +       if (filter_glob_param || filter_param)
->                 kunit_free_suite_set(suite_set);
-> -       }
-> +       else if (init_num_suites > 0)
-> +               /* Don't use kunit_free_suite_set because suites aren't individually allocated */
-> +               kfree(suite_set.start);
->
->  out:
->         kunit_handle_shutdown();
-> diff --git a/lib/kunit/test.c b/lib/kunit/test.c
-> index 0308865194bb..6c082911a85f 100644
-> --- a/lib/kunit/test.c
-> +++ b/lib/kunit/test.c
-> @@ -704,28 +704,40 @@ EXPORT_SYMBOL_GPL(__kunit_test_suites_exit);
->  #ifdef CONFIG_MODULES
->  static void kunit_module_init(struct module *mod)
->  {
-> -       struct kunit_suite_set suite_set = {
-> +       struct kunit_suite_set suite_set, filtered_set;
-> +       struct kunit_suite_set normal_suite_set = {
->                 mod->kunit_suites, mod->kunit_suites + mod->num_kunit_suites,
->         };
-> +       struct kunit_suite_set init_suite_set = {
-> +               mod->kunit_init_suites, mod->kunit_init_suites + mod->num_kunit_init_suites,
-> +       };
->         const char *action = kunit_action();
->         int err = 0;
->
-> -       suite_set = kunit_filter_suites(&suite_set,
-> +       if (mod->num_kunit_init_suites > 0)
-> +               suite_set = kunit_merge_suite_sets(init_suite_set, normal_suite_set);
-> +       else
-> +               suite_set = normal_suite_set;
-> +
-> +       filtered_set = kunit_filter_suites(&suite_set,
->                                         kunit_filter_glob() ?: "*.*",
->                                         kunit_filter(), kunit_filter_action(),
->                                         &err);
->         if (err)
->                 pr_err("kunit module: error filtering suites: %d\n", err);
->
-> -       mod->kunit_suites = (struct kunit_suite **)suite_set.start;
-> -       mod->num_kunit_suites = suite_set.end - suite_set.start;
-> +       mod->kunit_suites = (struct kunit_suite **)filtered_set.start;
-> +       mod->num_kunit_suites = filtered_set.end - filtered_set.start;
-> +
-> +       if (mod->num_kunit_init_suites > 0)
-> +               kfree(suite_set.start);
->
->         if (!action)
-> -               kunit_exec_run_tests(&suite_set, false);
-> +               kunit_exec_run_tests(&filtered_set, false);
->         else if (!strcmp(action, "list"))
-> -               kunit_exec_list_tests(&suite_set, false);
-> +               kunit_exec_list_tests(&filtered_set, false);
->         else if (!strcmp(action, "list_attr"))
-> -               kunit_exec_list_tests(&suite_set, true);
-> +               kunit_exec_list_tests(&filtered_set, true);
->         else
->                 pr_err("kunit: unknown action '%s'\n", action);
->  }
+>  MODULE_LICENSE("GPL v2");
 > --
 > 2.43.0.472.g3155946c3a-goog
 >
 
---0000000000009d9d1d060c5ee7c5
+--000000000000db25da060c5ee758
 Content-Type: application/pkcs7-signature; name="smime.p7s"
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="smime.p7s"
@@ -452,14 +230,14 @@ impZAng7ccvvK09K3ZuhwTIxJMsPXCZYsrXWORTw5sczRAP6XvKbPBJnsJoSTe5dFBPBHOQJOGhU
 qWfEfWnWMJPF3LxSGLpLFQXO3RwQqmxv08avwXfVPouh1xuB3FX7rpDabT8YDhu9JgIZkLEKko7L
 yQt6zWwng7k8YF/jGbiAta6VMYICajCCAmYCAQEwaDBUMQswCQYDVQQGEwJCRTEZMBcGA1UEChMQ
 R2xvYmFsU2lnbiBudi1zYTEqMCgGA1UEAxMhR2xvYmFsU2lnbiBBdGxhcyBSMyBTTUlNRSBDQSAy
-MDIwAhABzgV+4+mJnUzG7XDy6d2uMA0GCWCGSAFlAwQCAQUAoIHUMC8GCSqGSIb3DQEJBDEiBCBG
-xiWS3SEVkshWO3xjKqJnjCEtrkFsyozx85E8qVvMGjAYBgkqhkiG9w0BCQMxCwYJKoZIhvcNAQcB
-MBwGCSqGSIb3DQEJBTEPFw0yMzEyMTMwNzEzMzJaMGkGCSqGSIb3DQEJDzFcMFowCwYJYIZIAWUD
+MDIwAhABzgV+4+mJnUzG7XDy6d2uMA0GCWCGSAFlAwQCAQUAoIHUMC8GCSqGSIb3DQEJBDEiBCAB
+opzJXx00VyA7Vn6SnDcgNQP8PsnMGMOuo71Ec++DOjAYBgkqhkiG9w0BCQMxCwYJKoZIhvcNAQcB
+MBwGCSqGSIb3DQEJBTEPFw0yMzEyMTMwNzEzMzZaMGkGCSqGSIb3DQEJDzFcMFowCwYJYIZIAWUD
 BAEqMAsGCWCGSAFlAwQBFjALBglghkgBZQMEAQIwCgYIKoZIhvcNAwcwCwYJKoZIhvcNAQEKMAsG
-CSqGSIb3DQEBBzALBglghkgBZQMEAgEwDQYJKoZIhvcNAQEBBQAEggEAmJx53xZ8GhXUsXqlD+Z/
-Yq4WY3MSfI5cypG3Ocod2ZMCAL/u6kwceb0YfIO/b3LkO63CFQtfizlIGUGCR1JGgITP0QNrpjHS
-z4+GTESTq86yz00Tp9AhSyMqkuSXjFcJMYybNpwxNeZu7RKhTYKmDmN2nerkcoUG8OTyCbNlDFFI
-mDY9fVz11fRFCkcbvVZKirQC1G/z5Ds8DhxRfchTB2iFqgWMwkIUkkFuVP9tQqr6WUJxBnEbPJ6d
-IcDtbib3tfDM+X5PuG7J+JhoYXy2zwl0ZKaUQdz8ckSN8e84/YthDTgPP4gscsbBTVDYBrB2x0Gc
-CWrJARx3+yxzY8LxLA==
---0000000000009d9d1d060c5ee7c5--
+CSqGSIb3DQEBBzALBglghkgBZQMEAgEwDQYJKoZIhvcNAQEBBQAEggEApLzgiwU5c2fMe8dm0br5
+GeblHCl33Rx6hl4bSkoup31jDW8+qDljh/UswNUI5KbT4MmMC+sL1eKkyqJU6J6c+vv4VCjy5liC
+8vWYOF5RiTo2Tba4A9pbq2v32nI6Z//fDEmBXElId7fqQECa+eJ6QMU0X+GA2/lNcOYLeUpz5kwC
+EAA9gQgPgTpgq83y09ojt/hfQnmO3ENpb7oUe3ForTvcLr7dsgemO5tUTdtppZOUn8pk9G7OPadx
+ryBO2KGm3eKtB7zLJ88GUeqNXbE/aNCiNP7Ox0/qZKGDN8GpIrraK4I2+B5gpVV28NIidmTMJeOu
+svhopC3SOUYObeKwHw==
+--000000000000db25da060c5ee758--
