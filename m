@@ -2,53 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A76B811116
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 13:26:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B4B1C81111B
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 13:29:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233398AbjLMM0i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 07:26:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50158 "EHLO
+        id S233392AbjLMM2w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 07:28:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40970 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229600AbjLMM0g (ORCPT
+        with ESMTP id S229600AbjLMM2v (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 07:26:36 -0500
+        Wed, 13 Dec 2023 07:28:51 -0500
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E93993
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 04:26:43 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2932C93
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 04:28:57 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1702470402;
+        s=mimecast20190719; t=1702470536;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=M9d6ePRTzZiLNbRSrhKettsNPoTADGTq2uEKllllxdk=;
-        b=EkbBsX7jFojUq5bRHipRefb/scnxvE60F1c3U5O+Op4Vl0dsp/9MfSdF+oy8A5jaGj0nnI
-        AQWArJivdWFNupeEG4lmUMPEcLQ8vb6GhipVZp+tC+dRHT+1FLwUlnnZlFMRuk9IFPObhD
-        JP3/BGvuD6hEK33dxR2KKKSaiJ5O3eo=
+         in-reply-to:in-reply-to:references:references;
+        bh=pQFnI7fDR+1BAkKjvQWdPrG/WDERRoUrQCJ/FGh+Rlo=;
+        b=NQYF8eE7UuCsgWtgT/e4ZhfVA4dDFAneMwp8YrCV9MOyzRHXXHB7Y0o0SmcMincW4wxKGo
+        UxMHPytIlV5W9kUz1JLUUwA+Q0ACiY6mHGQWr7ibNlKsWcbtE8Z5QDnga7/tZDqsu1z+7i
+        Bckf7xL8k94bmDrtEYtO/x2ia9/MKbE=
 Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
  [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-563-MO3X27X-Pbiyo8pFu38rng-1; Wed, 13 Dec 2023 07:26:38 -0500
-X-MC-Unique: MO3X27X-Pbiyo8pFu38rng-1
-Received: from smtp.corp.redhat.com (int-mx10.intmail.prod.int.rdu2.redhat.com [10.11.54.10])
+ us-mta-445-5O6-tQb-PP2YT148se2a5g-1; Wed, 13 Dec 2023 07:28:53 -0500
+X-MC-Unique: 5O6-tQb-PP2YT148se2a5g-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id A54121011630;
-        Wed, 13 Dec 2023 12:26:37 +0000 (UTC)
-Received: from virtlab701.virt.lab.eng.bos.redhat.com (virtlab701.virt.lab.eng.bos.redhat.com [10.19.152.228])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 1D0A6492C30;
-        Wed, 13 Dec 2023 12:26:37 +0000 (UTC)
-From:   Paolo Bonzini <pbonzini@redhat.com>
-To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Cc:     Andrew Jones <ajones@ventanamicro.com>,
-        Mark Brown <broonie@kernel.org>
-Subject: [PATCH] KVM: selftests: Fix dynamic generation of configuration names
-Date:   Wed, 13 Dec 2023 07:26:36 -0500
-Message-Id: <20231213122636.2684144-1-pbonzini@redhat.com>
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 1A11585A58A;
+        Wed, 13 Dec 2023 12:28:52 +0000 (UTC)
+Received: from fedora (unknown [10.72.116.126])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 80AAA1121312;
+        Wed, 13 Dec 2023 12:28:42 +0000 (UTC)
+Date:   Wed, 13 Dec 2023 20:28:38 +0800
+From:   Ming Lei <ming.lei@redhat.com>
+To:     John Garry <john.g.garry@oracle.com>
+Cc:     axboe@kernel.dk, kbusch@kernel.org, hch@lst.de, sagi@grimberg.me,
+        jejb@linux.ibm.com, martin.petersen@oracle.com, djwong@kernel.org,
+        viro@zeniv.linux.org.uk, brauner@kernel.org, dchinner@redhat.com,
+        jack@suse.cz, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
+        linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        tytso@mit.edu, jbongio@google.com, linux-scsi@vger.kernel.org,
+        jaswin@linux.ibm.com, bvanassche@acm.org,
+        Himanshu Madhani <himanshu.madhani@oracle.com>
+Subject: Re: [PATCH v2 01/16] block: Add atomic write operations to
+ request_queue limits
+Message-ID: <ZXmjdnIqGHILTfQN@fedora>
+References: <20231212110844.19698-1-john.g.garry@oracle.com>
+ <20231212110844.19698-2-john.g.garry@oracle.com>
+ <ZXkIEnQld577uHqu@fedora>
+ <36ee54b4-b8d5-4b3c-81a0-cc824b6ef68e@oracle.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.10
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <36ee54b4-b8d5-4b3c-81a0-cc824b6ef68e@oracle.com>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.3
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
@@ -59,57 +72,164 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When we dynamically generate a name for a configuration in get-reg-list
-we use strcat() to append to a buffer allocated using malloc() but we
-never initialise that buffer. Since malloc() offers no guarantees
-regarding the contents of the memory it returns this can lead to us
-corrupting, and likely overflowing, the buffer:
+On Wed, Dec 13, 2023 at 09:13:48AM +0000, John Garry wrote:
+> > > +
+> > >   What:		/sys/block/<disk>/diskseq
+> > >   Date:		February 2021
+> > > diff --git a/block/blk-settings.c b/block/blk-settings.c
+> > > index 0046b447268f..d151be394c98 100644
+> > > --- a/block/blk-settings.c
+> > > +++ b/block/blk-settings.c
+> > > @@ -59,6 +59,10 @@ void blk_set_default_limits(struct queue_limits *lim)
+> > >   	lim->zoned = BLK_ZONED_NONE;
+> > >   	lim->zone_write_granularity = 0;
+> > >   	lim->dma_alignment = 511;
+> > > +	lim->atomic_write_unit_min_sectors = 0;
+> > > +	lim->atomic_write_unit_max_sectors = 0;
+> > > +	lim->atomic_write_max_sectors = 0;
+> > > +	lim->atomic_write_boundary_sectors = 0;
+> > 
+> > Can we move the four into single structure
+> 
+> There is no precedent for a similar structure in struct queue_limits. So
+> would only passing a structure to the blk-settings.c API be ok?
 
-  vregs: PASS
-  vregs+pmu: PASS
-  sve: PASS
-  sve+pmu: PASS
-  vregs+pauth_address+pauth_generic: PASS
-  X?vr+gspauth_addre+spauth_generi+pmu: PASS
+Yes, this structure is part of the new API.
 
-The bug is that strcat() should have been strcpy(), and that replacement
-would be enough to fix it, but there are other things in the function
-that leave something to be desired.  In particular, an (incorrectly)
-empty config would cause an out of bounds access to c->name[-1].
-Since the strcpy() call relies on c->name[0..len-1] being initialized,
-enforce that invariant throughout the function.
+> 
+> > and setup them in single
+> > API? Then cross-validation can be done in this API.
+> 
+> I suppose so, if you think that it is better.
+> 
+> We rely on the driver to provide sound values. I suppose that we can
+> sanitize them also (in a single API).
 
-Fixes: 2f9ace5d4557 ("KVM: arm64: selftests: get-reg-list: Introduce vcpu configs")
-Reviewed-by: Andrew Jones <ajones@ventanamicro.com>
-Co-developed-by: Mark Brown <broonie@kernel.org>
-Signed-off-by: Mark Brown <broonie@kernel.org>
-Message-Id: <20231211-kvm-get-reg-list-str-init-v3-1-6554c71c77b1@kernel.org>
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
----
- tools/testing/selftests/kvm/get-reg-list.c | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
+Please make the interface correct from beginning, and one good API is
+helpful for both sides, such as isolating problems, easy to locate
+bug, abstracting common logic, ...
 
-diff --git a/tools/testing/selftests/kvm/get-reg-list.c b/tools/testing/selftests/kvm/get-reg-list.c
-index be7bf5224434..8274ef04301f 100644
---- a/tools/testing/selftests/kvm/get-reg-list.c
-+++ b/tools/testing/selftests/kvm/get-reg-list.c
-@@ -71,11 +71,12 @@ static const char *config_name(struct vcpu_reg_list *c)
- 	for_each_sublist(c, s) {
- 		if (!strcmp(s->name, "base"))
- 			continue;
--		strcat(c->name + len, s->name);
--		len += strlen(s->name) + 1;
--		c->name[len - 1] = '+';
-+		if (len)
-+			c->name[len++] = '+';
-+		strcpy(c->name + len, s->name);
-+		len += strlen(s->name);
- 	}
--	c->name[len - 1] = '\0';
-+	c->name[len] = '\0';
- 
- 	return c->name;
- }
--- 
-2.39.1
+And relying on API users is absolutely not good design.
+
+> 
+> > 
+> > >   }
+> > >   /**
+> > > @@ -183,6 +187,62 @@ void blk_queue_max_discard_sectors(struct request_queue *q,
+> > >   }
+> > >   EXPORT_SYMBOL(blk_queue_max_discard_sectors);
+> > > +/**
+> > > + * blk_queue_atomic_write_max_bytes - set max bytes supported by
+> > > + * the device for atomic write operations.
+> > > + * @q:  the request queue for the device
+> > > + * @size: maximum bytes supported
+> > > + */
+> > > +void blk_queue_atomic_write_max_bytes(struct request_queue *q,
+> > > +				      unsigned int bytes)
+> > > +{
+> > > +	q->limits.atomic_write_max_sectors = bytes >> SECTOR_SHIFT;
+> > > +}
+> > > +EXPORT_SYMBOL(blk_queue_atomic_write_max_bytes);
+> > 
+> > What if driver doesn't call it but driver supports atomic write?
+> 
+> We rely on the driver to do this. Any basic level of testing will show an
+> issue if they don't.
+
+Software quality depends on good requirement analysis, design and
+implementation, instead of test.
+
+Simply you can not cover all possibilities in test.
+
+> 
+> > 
+> > I guess the default max sectors should be atomic_write_unit_max_sectors
+> > if the feature is enabled.
+> 
+> Sure. If we have a single API to set all values, then we don't need to worry
+> about this (assuming the values are filled in properly).
+> 
+> > 
+> > > +
+> > > +/**
+> > > + * blk_queue_atomic_write_boundary_bytes - Device's logical block address space
+> > > + * which an atomic write should not cross.
+> > > + * @q:  the request queue for the device
+> > > + * @bytes: must be a power-of-two.
+> > > + */
+> > > +void blk_queue_atomic_write_boundary_bytes(struct request_queue *q,
+> > > +					   unsigned int bytes)
+> > > +{
+> > > +	q->limits.atomic_write_boundary_sectors = bytes >> SECTOR_SHIFT;
+> > > +}
+> > > +EXPORT_SYMBOL(blk_queue_atomic_write_boundary_bytes);
+> > 
+> > Default atomic_write_boundary_sectors should be
+> > atomic_write_unit_max_sectors in case of atomic write?
+> 
+> Having atomic_write_boundary_sectors default to
+> atomic_write_unit_max_sectors is effectively same as a default of 0.
+> 
+> > 
+> > > +
+> > > +/**
+> > > + * blk_queue_atomic_write_unit_min_sectors - smallest unit that can be written
+> > > + * atomically to the device.
+> > > + * @q:  the request queue for the device
+> > > + * @sectors: must be a power-of-two.
+> > > + */
+> > > +void blk_queue_atomic_write_unit_min_sectors(struct request_queue *q,
+> > > +					     unsigned int sectors)
+> > > +{
+> > > +	struct queue_limits *limits = &q->limits;
+> > > +
+> > > +	limits->atomic_write_unit_min_sectors = sectors;
+> > > +}
+> > > +EXPORT_SYMBOL(blk_queue_atomic_write_unit_min_sectors);
+> > 
+> > atomic_write_unit_min_sectors should be >= (physical block size >> 9)
+> > given the minimized atomic write unit is physical sector for all disk.
+> 
+> For SCSI, we have a granularity VPD value, and when set we pay attention to
+> that. If not, we use the phys block size.
+> 
+> For NVMe, we use the logical block size. For physical block size, that can
+> be greater than the logical block size for npwg set, and I don't think it's
+> suitable use that as minimum atomic write unit.
+
+I highly suspect it is wrong to use logical block size as minimum
+support atomic write unit, given physical block size is supposed to
+be the minimum atomic write unit.
+
+> 
+> Anyway, I am not too keen on sanitizing this value in this way.
+> 
+> > 
+> > > +
+> > > +/*
+> > > + * blk_queue_atomic_write_unit_max_sectors - largest unit that can be written
+> > > + * atomically to the device.
+> > > + * @q: the request queue for the device
+> > > + * @sectors: must be a power-of-two.
+> > > + */
+> > > +void blk_queue_atomic_write_unit_max_sectors(struct request_queue *q,
+> > > +					     unsigned int sectors)
+> > > +{
+> > > +	struct queue_limits *limits = &q->limits;
+> > > +
+> > > +	limits->atomic_write_unit_max_sectors = sectors;
+> > > +}
+> > > +EXPORT_SYMBOL(blk_queue_atomic_write_unit_max_sectors);
+> > 
+> > atomic_write_unit_max_sectors should be >= atomic_write_unit_min_sectors.
+> > 
+> 
+> Again, we rely on the driver to provide sound values. However, as mentioned,
+> we can sanitize.
+
+Relying on driver to provide sound value is absolutely bad design from API
+viewpoint.
+
+Thanks,
+Ming
 
