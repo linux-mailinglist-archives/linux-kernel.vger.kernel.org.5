@@ -2,56 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F37618119C4
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 17:43:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 466308119C8
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 17:43:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229806AbjLMQmx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 11:42:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49636 "EHLO
+        id S230256AbjLMQmz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 11:42:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40702 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229458AbjLMQmv (ORCPT
+        with ESMTP id S229844AbjLMQmw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 11:42:51 -0500
+        Wed, 13 Dec 2023 11:42:52 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C12AF98
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 08:42:57 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1C55BC433C8;
-        Wed, 13 Dec 2023 16:42:52 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C7A5AC
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 08:42:59 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D5C8AC433C9;
+        Wed, 13 Dec 2023 16:42:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1702485777;
-        bh=i70rLgrJWZQl/7kOucCjrKxAdNgKJPgfg9aAZjgbDEY=;
-        h=From:To:Cc:Subject:Date:From;
-        b=VZjzpZkN9AHtW5Qg9tPr0eCc9IaNCr+lxmqqyVO0HpiEQoRlxov9ubT8hR72EPvmL
-         IZc3GLOR2oAhwjw+PkbJcbi2nIaZLk3p/egeRcv1FxFIrahsh4zVHBuiqNV0np7/D7
-         ab2SWhfCglAWrTD3joFq/sjVNmrEUKeNcnMB2QshtD4csK1mZI1StvxBXSsJlWqyTS
-         ky4jt3rPORytlBDD2T+c+FqCznvh4W2D4TNOPUaZeSYnLpDflsh8Pxsq3GCSKKW2AG
-         bpSNJ3Jhq63QMeNoDSyMu+riQr8CHPCGf+O7rS1QlLpLQZOQxOBCxcS5+1EPIoqsU3
-         HPh+qJ9DbDMgA==
+        s=k20201202; t=1702485778;
+        bh=9hIznFcw8DaH/AT2cUPzctof/XKOI1gZcHfpU8gxwaE=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=D6sduuO3AhilOynckvUN791n2U8Y+YaO3mW522cT/m1JUmQEpDCLOCrW5Cbge2pzE
+         wCeH4/KlBpDTS75d7/yK4zhfzS3jtlWJ/4nv2aRg+1voRfHkDtx9HoV55S1iI8CAn6
+         FYj0fOh+aYgp3wSNEDlKQ8IEkwLy1m5upNThpQqwLWHrORUGTzDLdQpG7pbcUvSl/X
+         H3u8eXWfQSTY2LWM6oGkjZjJOnlF/R4zBoI4IO1k5aLy7RaKi8lGt5fPAl9yZMZpAB
+         Ig+ngBEtwwDSiUsmbroyS6nTForV/Biy0aj/61+WxgtHuNBQqRQ/YtU4Cbgi9UIu47
+         cm2orOSHOmxcQ==
 From:   Lee Jones <lee@kernel.org>
 To:     lee@kernel.org, gregkh@linuxfoundation.org
-Cc:     linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Andrzej Pietrasiewicz <andrzejtp2010@gmail.com>,
-        Bryan Wu <cooloney@kernel.org>,
-        Claudiu Beznea <claudiu.beznea@tuxon.dev>,
-        Cristian Birsan <cristian.birsan@microchip.com>,
-        Daniel Scally <dan.scally@ideasonboard.com>,
-        Hema HK <hemahk@ti.com>, James Gruber <jimmyjgruber@gmail.com>,
-        Jaswinder Singh <jaswinder.singh@linaro.org>,
-        Julian Scheel <julian@jusst.de>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        linux-arm-kernel@lists.infradead.org,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Pawel Laszczak <pawell@cadence.com>,
-        Ruslan Bilovol <ruslan.bilovol@gmail.com>,
-        Tomoki Sekiyama <tomoki.sekiyama@gmail.com>,
-        usb-storage@lists.one-eyed-alien.net,
-        Yadwinder Singh <yadi.brar01@gmail.com>
-Subject: [PATCH 00/12] usb: Replace {v}snprintf() variants with safer alternatives
-Date:   Wed, 13 Dec 2023 16:42:29 +0000
-Message-ID: <20231213164246.1021885-1-lee@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org
+Subject: [PATCH 01/12] usb: gadget: configfs: Replace snprintf() with the safer scnprintf() variant
+Date:   Wed, 13 Dec 2023 16:42:30 +0000
+Message-ID: <20231213164246.1021885-2-lee@kernel.org>
 X-Mailer: git-send-email 2.43.0.472.g3155946c3a-goog
+In-Reply-To: <20231213164246.1021885-1-lee@kernel.org>
+References: <20231213164246.1021885-1-lee@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
@@ -64,70 +48,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This series is part of an effort to rid {v}snprintf() where possible.
+There is a general misunderstanding amongst engineers that {v}snprintf()
+returns the length of the data *actually* encoded into the destination
+array.  However, as per the C99 standard {v}snprintf() really returns
+the length of the data that *would have been* written if there were
+enough space for it.  This misunderstanding has led to buffer-overruns
+in the past.  It's generally considered safer to use the {v}scnprintf()
+variants in their place (or even sprintf() in simple cases).  So let's
+do that.
 
-For a far better description of the problem than I could author, see
-Jon's write-up on LWN [1] and/or Alex's on the Kernel Self Protection
-Project [1].
+Link: https://lwn.net/Articles/69419/
+Link: https://github.com/KSPP/linux/issues/105
+Signed-off-by: Lee Jones <lee@kernel.org>
+---
+ drivers/usb/gadget/configfs.c | 11 +++++++----
+ 1 file changed, 7 insertions(+), 4 deletions(-)
 
-[0] https://lwn.net/Articles/69419/
-[1] https://github.com/KSPP/linux/issues/105
-
-Lee Jones (12):
-  usb: gadget: configfs: Replace snprintf() with the safer scnprintf()
-    variant
-  usb: gadget: f_uac1: Replace snprintf() with the safer scnprintf()
-    variant
-  usb: gadget: f_uac2: Replace snprintf() with the safer scnprintf()
-    variant
-  usb: gadget: uvc: Replace snprintf() with the safer scnprintf()
-    variant
-  usb: gadget: udc: atmel: Replace snprintf() with the safer scnprintf()
-    variant
-  usb: cdns2: Replace snprintf() with the safer scnprintf() variant
-  usb: host: max3421-hcd: Replace snprintf() with the safer scnprintf()
-    variant
-  usb: yurex: Replace snprintf() with the safer scnprintf() variant
-  usb: mon_stat: Replace snprintf() with the safer scnprintf() variant
-  usb: mon_text: Replace snprintf() with the safer scnprintf() variant
-  usb: phy: twl6030: Remove snprintf() from sysfs call-backs and replace
-    with sysfs_emit()
-  usb: storage: Remove snprintf() from sysfs call-backs and replace with
-    sysfs_emit()
-
- drivers/usb/gadget/configfs.c              |  11 +-
- drivers/usb/gadget/function/f_uac1.c       |   6 +-
- drivers/usb/gadget/function/f_uac2.c       |   6 +-
- drivers/usb/gadget/function/uvc_configfs.c |   2 +-
- drivers/usb/gadget/udc/atmel_usba_udc.c    |   3 +-
- drivers/usb/gadget/udc/cdns2/cdns2-debug.h | 138 ++++++++++-----------
- drivers/usb/host/max3421-hcd.c             |  18 +--
- drivers/usb/misc/yurex.c                   |  12 +-
- drivers/usb/mon/mon_stat.c                 |   6 +-
- drivers/usb/mon/mon_text.c                 |  28 +----
- drivers/usb/phy/phy-twl6030-usb.c          |   8 +-
- drivers/usb/storage/sierra_ms.c            |  16 +--
- 12 files changed, 120 insertions(+), 134 deletions(-)
-
-Cc: Alan Stern <stern@rowland.harvard.edu>
-Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>
-Cc: Andrzej Pietrasiewicz <andrzejtp2010@gmail.com>
-Cc: Bryan Wu <cooloney@kernel.org>
-Cc: Claudiu Beznea <claudiu.beznea@tuxon.dev>
-Cc: Cristian Birsan <cristian.birsan@microchip.com>
-Cc: Daniel Scally <dan.scally@ideasonboard.com>
-Cc: Hema HK <hemahk@ti.com>
-Cc: James Gruber <jimmyjgruber@gmail.com>
-Cc: Jaswinder Singh <jaswinder.singh@linaro.org>
-Cc: Julian Scheel <julian@jusst.de>
-Cc: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc: linux-arm-kernel@lists.infradead.org
-Cc: Nicolas Ferre <nicolas.ferre@microchip.com>
-Cc: Pawel Laszczak <pawell@cadence.com>
-Cc: Ruslan Bilovol <ruslan.bilovol@gmail.com>
-Cc: Tomoki Sekiyama <tomoki.sekiyama@gmail.com>
-Cc: usb-storage@lists.one-eyed-alien.net
-Cc: Yadwinder Singh <yadi.brar01@gmail.com>
+diff --git a/drivers/usb/gadget/configfs.c b/drivers/usb/gadget/configfs.c
+index b7d2a1313a684..ce3cfa1f36f51 100644
+--- a/drivers/usb/gadget/configfs.c
++++ b/drivers/usb/gadget/configfs.c
+@@ -606,10 +606,11 @@ static struct config_group *function_make(
+ 	char *instance_name;
+ 	int ret;
+ 
+-	ret = snprintf(buf, MAX_NAME_LEN, "%s", name);
+-	if (ret >= MAX_NAME_LEN)
++	if (strlen(name) >= MAX_NAME_LEN)
+ 		return ERR_PTR(-ENAMETOOLONG);
+ 
++	scnprintf(buf, MAX_NAME_LEN, "%s", name);
++
+ 	func_name = buf;
+ 	instance_name = strchr(func_name, '.');
+ 	if (!instance_name) {
+@@ -701,10 +702,12 @@ static struct config_group *config_desc_make(
+ 	int ret;
+ 
+ 	gi = container_of(group, struct gadget_info, configs_group);
+-	ret = snprintf(buf, MAX_NAME_LEN, "%s", name);
+-	if (ret >= MAX_NAME_LEN)
++
++	if (strlen(name) >= MAX_NAME_LEN)
+ 		return ERR_PTR(-ENAMETOOLONG);
+ 
++	scnprintf(buf, MAX_NAME_LEN, "%s", name);
++
+ 	num_str = strchr(buf, '.');
+ 	if (!num_str) {
+ 		pr_err("Unable to locate . in name.bConfigurationValue\n");
 -- 
 2.43.0.472.g3155946c3a-goog
 
