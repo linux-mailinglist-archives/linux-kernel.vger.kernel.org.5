@@ -2,149 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CA33810C30
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 09:15:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DEF72810C33
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 09:16:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232719AbjLMIPt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 03:15:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60032 "EHLO
+        id S231802AbjLMIQi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 03:16:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33916 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231502AbjLMIPs (ORCPT
+        with ESMTP id S231226AbjLMIQg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 03:15:48 -0500
-Received: from fd01.gateway.ufhost.com (fd01.gateway.ufhost.com [61.152.239.71])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4997CDC;
-        Wed, 13 Dec 2023 00:15:49 -0800 (PST)
-Received: from EXMBX166.cuchost.com (unknown [175.102.18.54])
-        (using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
-        (Client CN "EXMBX166", Issuer "EXMBX166" (not verified))
-        by fd01.gateway.ufhost.com (Postfix) with ESMTP id 5B74582A9;
-        Wed, 13 Dec 2023 16:15:41 +0800 (CST)
-Received: from EXMBX171.cuchost.com (172.16.6.91) by EXMBX166.cuchost.com
- (172.16.6.76) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Wed, 13 Dec
- 2023 16:15:41 +0800
-Received: from [192.168.125.85] (183.27.97.57) by EXMBX171.cuchost.com
- (172.16.6.91) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Wed, 13 Dec
- 2023 16:15:40 +0800
-Message-ID: <9523aa6b-55a8-4e6a-a3ba-45d9b1dacc77@starfivetech.com>
-Date:   Wed, 13 Dec 2023 16:15:39 +0800
+        Wed, 13 Dec 2023 03:16:36 -0500
+Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D1239F;
+        Wed, 13 Dec 2023 00:16:43 -0800 (PST)
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 3BD8GXxT059954;
+        Wed, 13 Dec 2023 02:16:33 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1702455393;
+        bh=FStV+DQOwLOG+FKKRELWFahKxJNKTxkxhmIijEdUO3M=;
+        h=Date:CC:Subject:To:References:From:In-Reply-To;
+        b=v+kMrcXy8lzWgCOI60Q8ItTyzhNVJoJZ3z+KuZFNjI9Bvhj/XMo6S1yXenbJT14TF
+         CuZor7IQ8Zh1RZU2H+SnZS7hjMIuW1EWCFPnRC+2Xi2asPD5ux9an9I3SV4uxcOv3R
+         rQ9KnS/2G2KaPLtVzW6XXr0G+3FeHSao5uztB7V4=
+Received: from DFLE101.ent.ti.com (dfle101.ent.ti.com [10.64.6.22])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 3BD8GXej119101
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 13 Dec 2023 02:16:33 -0600
+Received: from DFLE101.ent.ti.com (10.64.6.22) by DFLE101.ent.ti.com
+ (10.64.6.22) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 13
+ Dec 2023 02:16:33 -0600
+Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DFLE101.ent.ti.com
+ (10.64.6.22) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Wed, 13 Dec 2023 02:16:33 -0600
+Received: from [172.24.227.9] (uda0492258.dhcp.ti.com [172.24.227.9])
+        by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 3BD8GTW1040313;
+        Wed, 13 Dec 2023 02:16:30 -0600
+Message-ID: <89ed9033-7fbd-4a48-9a83-0a0b3b208e3d@ti.com>
+Date:   Wed, 13 Dec 2023 13:46:28 +0530
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v12 15/21] PCI: microchip: Add event IRQ domain ops to
- struct plda_event
-Content-Language: en-US
-To:     Lorenzo Pieralisi <lpieralisi@kernel.org>
-CC:     Conor Dooley <conor@kernel.org>,
-        =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Daire McNamara <daire.mcnamara@microchip.com>,
-        "Emil Renner Berthing" <emil.renner.berthing@canonical.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+CC:     <vigneshr@ti.com>, <kristo@kernel.org>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
         <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-riscv@lists.infradead.org>, <linux-pci@vger.kernel.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        "Palmer Dabbelt" <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        "Philipp Zabel" <p.zabel@pengutronix.de>,
-        Mason Huo <mason.huo@starfivetech.com>,
-        Leyfoon Tan <leyfoon.tan@starfivetech.com>,
-        Kevin Xie <kevin.xie@starfivetech.com>
-References: <20231206105839.25805-1-minda.chen@starfivetech.com>
- <20231206105839.25805-16-minda.chen@starfivetech.com>
- <ZXhB1kKpElgKx8vm@lpieralisi>
-From:   Minda Chen <minda.chen@starfivetech.com>
-In-Reply-To: <ZXhB1kKpElgKx8vm@lpieralisi>
+        <linux-arm-kernel@lists.infradead.org>, <danishanwar@ti.com>,
+        <r-gunasekaran@ti.com>, <srk@ti.com>, <s-vadapalli@ti.com>
+Subject: Re: [PATCH] arm64: dts: ti: k3-am654-icssg2: Enable PHY interrupts
+ for ICSSG2
+Content-Language: en-US
+To:     Nishanth Menon <nm@ti.com>
+References: <20231120063159.539306-1-s-vadapalli@ti.com>
+ <20231204132103.ikkxjz3yxz3ynq6s@demystify>
+From:   Siddharth Vadapalli <s-vadapalli@ti.com>
+In-Reply-To: <20231204132103.ikkxjz3yxz3ynq6s@demystify>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [183.27.97.57]
-X-ClientProxiedBy: EXCAS064.cuchost.com (172.16.6.24) To EXMBX171.cuchost.com
- (172.16.6.91)
-X-YovoleRuleAgent: yovoleflag
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello Nishanth,
 
+Thank you for reviewing the patch. I have addressed your feedback in the v2
+patch at:
+https://lore.kernel.org/r/20231213080216.1710730-1-s-vadapalli@ti.com/
 
-On 2023/12/12 19:19, Lorenzo Pieralisi wrote:
-> On Wed, Dec 06, 2023 at 06:58:33PM +0800, Minda Chen wrote:
->> For lack of an MSI controller, The new added PCIe interrupts have to be
->> added to global interrupt event field. PolarFire event domain ops can not
->> be re-used.
-> 
-> I don't understand what this means, please explain and I will
-> add it to the commit log.
-> 
-Sorry.
-Microchip Polarfire PCIe adds 11 PCIe interrupts to PCIe global event domain.(Total 28 PCIe interrupts)
-The microchip event domain and event irqchip will handle these interrupts.
-But PLDA host contain 13 fixed PCIe interrupts. PLDA codes just process these
-13 interrupts. Microchip the event irq codes are quite different and can't be used by PLDA codes.
-So add an event domain field support microchip and other vendor who just using the PLDA interrupts.
->> PLDA event domain ops instances will be implemented in later patch.
-> 
-> Future patches don't exist, each commit log is a logical change
-> that must make sense on its own, I will remove this sentence.
-> 
-> Lorenzo
-
-OK, Thanks.
-
->> Signed-off-by: Minda Chen <minda.chen@starfivetech.com>
->> Acked-by: Conor Dooley <conor.dooley@microchip.com>
+On 04/12/23 18:51, Nishanth Menon wrote:
+> On 12:01-20231120, Siddharth Vadapalli wrote:
+>> Enable interrupt mode of operation of the DP83867 Ethernet PHY which is
+>> used by ICSSG2. The DP83867 PHY driver already supports interrupt handling
+>> for interrupts generated by the PHY. Thus, add the necessary device-tree
+>> support to enable it.
+>>
+>> Since the GPIO1_87 line is muxed with EXT_REFCLK1 and SYNC1_OUT, update
+>> the pinmux to select GPIO1_87 for routing the interrupt.
+>>
+>> Signed-off-by: Siddharth Vadapalli <s-vadapalli@ti.com>
 >> ---
->>  drivers/pci/controller/plda/pcie-microchip-host.c | 6 ++++--
->>  drivers/pci/controller/plda/pcie-plda.h           | 1 +
->>  2 files changed, 5 insertions(+), 2 deletions(-)
->> 
->> diff --git a/drivers/pci/controller/plda/pcie-microchip-host.c b/drivers/pci/controller/plda/pcie-microchip-host.c
->> index f5e7da242aec..e6dcc572b65b 100644
->> --- a/drivers/pci/controller/plda/pcie-microchip-host.c
->> +++ b/drivers/pci/controller/plda/pcie-microchip-host.c
->> @@ -821,13 +821,15 @@ static const struct plda_event_ops mc_event_ops = {
+>>
+>> This patch is based on linux-next tagged next-20231120.
+>>
+>> Regards,
+>> Siddharth.
+>>
+>>  arch/arm64/boot/dts/ti/k3-am654-icssg2.dtso | 17 +++++++++++++++--
+>>  1 file changed, 15 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/arch/arm64/boot/dts/ti/k3-am654-icssg2.dtso b/arch/arm64/boot/dts/ti/k3-am654-icssg2.dtso
+>> index ec8cf20ca3ac..9f723592d0f4 100644
+>> --- a/arch/arm64/boot/dts/ti/k3-am654-icssg2.dtso
+>> +++ b/arch/arm64/boot/dts/ti/k3-am654-icssg2.dtso
+>> @@ -124,21 +124,34 @@ AM65X_IOPAD(0x0088, PIN_INPUT, 2) /* (AG17) PRG2_PRU0_GPO4.PRG2_RGMII1_RX_CTL */
+>>  	};
 >>  };
 >>  
->>  static const struct plda_event mc_event = {
->> +	.domain_ops        = &mc_event_domain_ops,
->>  	.event_ops         = &mc_event_ops,
->>  	.request_event_irq = mc_request_event_irq,
->>  	.intx_event        = EVENT_LOCAL_PM_MSI_INT_INTX,
->>  	.msi_event         = EVENT_LOCAL_PM_MSI_INT_MSI,
->>  };
+>> +&main_pmx1 {
+>> +	/* Select GPIO1_87 for ICSSG2 PHY interrupt */
+>> +	icssg2_phy_irq_pins_default: icssg2-phy-irq-default-pins {
+>> +		pinctrl-single,pins = <
+>> +			AM65X_IOPAD(0x0014, PIN_INPUT, 7) /* (A22) EXT_REFCLK1.GPIO1_87 */
+>> +		>;
+>> +	};
+>> +};
+>> +
+>>  &icssg2_mdio {
+>>  	status = "okay";
+>> -	pinctrl-names = "default";
+>> -	pinctrl-0 = <&icssg2_mdio_pins_default>;
+>> +	pinctrl-names = "default", "icssg2-phy-irq";
+>> +	pinctrl-0 = <&icssg2_mdio_pins_default>, <&icssg2_phy_irq_pins_default>;
+> 
+> why should the pins be part of mdio pinctrl instead of phy?
+> 
+>>  	#address-cells = <1>;
+>>  	#size-cells = <0>;
 >>  
->> -static int plda_pcie_init_irq_domains(struct plda_pcie_rp *port)
->> +static int plda_pcie_init_irq_domains(struct plda_pcie_rp *port,
->> +				      const struct irq_domain_ops *ops)
->>  {
->>  	struct device *dev = port->dev;
->>  	struct device_node *node = dev->of_node;
->> @@ -941,7 +943,7 @@ static int plda_init_interrupts(struct platform_device *pdev,
->>  		return -EINVAL;
->>  	}
+>>  	icssg2_phy0: ethernet-phy@0 {
+>>  		reg = <0>;
+>> +		interrupt-parent = <&main_gpio1>;
+>> +		interrupts = <87 0x2>;
+>>  		ti,rx-internal-delay = <DP83867_RGMIIDCTL_2_00_NS>;
+>>  		ti,fifo-depth = <DP83867_PHYCR_FIFO_DEPTH_4_B_NIB>;
+>>  	};
 >>  
->> -	ret = plda_pcie_init_irq_domains(port);
->> +	ret = plda_pcie_init_irq_domains(port, event->domain_ops);
->>  	if (ret) {
->>  		dev_err(dev, "failed creating IRQ domains\n");
->>  		return ret;
->> diff --git a/drivers/pci/controller/plda/pcie-plda.h b/drivers/pci/controller/plda/pcie-plda.h
->> index df1729095952..820ea16855b5 100644
->> --- a/drivers/pci/controller/plda/pcie-plda.h
->> +++ b/drivers/pci/controller/plda/pcie-plda.h
->> @@ -129,6 +129,7 @@ struct plda_pcie_rp {
->>  };
->>  
->>  struct plda_event {
->> +	const struct irq_domain_ops *domain_ops;
->>  	const struct plda_event_ops *event_ops;
->>  	int (*request_event_irq)(struct plda_pcie_rp *pcie,
->>  				 int event_irq, int event);
+>>  	icssg2_phy1: ethernet-phy@3 {
+>>  		reg = <3>;
+>> +		interrupt-parent = <&main_gpio1>;
+>> +		interrupts = <87 0x2>;
+> 
+> Shouldn't you be using macros for interrupt level like IRQ_TYPE_EDGE_FALLING?
+> 
+>>  		ti,rx-internal-delay = <DP83867_RGMIIDCTL_2_00_NS>;
+>>  		ti,fifo-depth = <DP83867_PHYCR_FIFO_DEPTH_4_B_NIB>;
+>>  	};
 >> -- 
->> 2.17.1
->> 
+>> 2.34.1
+>>
+> 
+
+-- 
+Regards,
+Siddharth.
