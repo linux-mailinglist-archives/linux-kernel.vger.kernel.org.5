@@ -2,121 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EE1C8107B2
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 02:35:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C68788107B6
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 02:36:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378197AbjLMBfO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 20:35:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40628 "EHLO
+        id S1378203AbjLMBgn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 20:36:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57308 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378145AbjLMBfN (ORCPT
+        with ESMTP id S1378145AbjLMBgm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 20:35:13 -0500
-Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com [IPv6:2607:f8b0:4864:20::72a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0402DB7;
-        Tue, 12 Dec 2023 17:35:20 -0800 (PST)
-Received: by mail-qk1-x72a.google.com with SMTP id af79cd13be357-77f3c4914e5so339471885a.3;
-        Tue, 12 Dec 2023 17:35:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702431319; x=1703036119; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :feedback-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=lJwnAAHRmDie2pCrUCphBkEu6klu8JgvdhjOopanDfU=;
-        b=kwQHDQFrJDzG5yIdpzvzHkJ+CfsKxHX4ExmhczoFuHYuSZsSweICiCrdR4ViSqEHpB
-         Q2o3z/IAojOCPhuhYzb6PJmP4RtJzCYMiOGOUuGhRFnPClHJaCu/hjFHdEp4msOokpAw
-         D8TVtPF6bZH5uIauiMwj9/++fAkDBo4UgHVNWppPJwRDGbuU7io0O4H+yLx0HJlpi613
-         FZE5YvwBSa0H7Y+BwH4Iloko+oHH3LJHoX+6Jlwy780Xe2RD2vW5Nm6gbJLBTl2t5uyG
-         eSaHn0k9UFc68EZf9kK7a0YFraP2tHhb3vz5Qqr3yaVT+O8syXq+C/mX7FLlM6mK4qpf
-         Pz8g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702431319; x=1703036119;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :feedback-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=lJwnAAHRmDie2pCrUCphBkEu6klu8JgvdhjOopanDfU=;
-        b=Co0phw3DhJueEhzJxTyxa+SVgNIl6OMlCtH9Q+2Dq27DrK1ABuvIs8S2Q/7Jr4xvcA
-         J5356iLNkMr3vBYqduwX8rZdrf8BX7JYXWNwTfUSLu48CntUFoRR1Ds0Uil/iHp/foPW
-         CFNZLYFHLLOLUF6n9rsYmy4GvHMetsL0o8PZHnfU+Zx5CMqzZd3a4+yku5dgjRuxtiVo
-         xA91ul0ZkslfcjbwvTyGso+1jxZ66ZkLlvSXD9aaVcN4sE53QR/VFkLz5CPjJ9t7CeEA
-         366iLiaPhXODHlmT83vjgfZg+H2qq6LJOctFJ0obXCF0/FxwPGy+73S8Du3HMVd2mUBD
-         8z0A==
-X-Gm-Message-State: AOJu0YzInz/HAFn4a0jJZT9YB/Nujf9J2arogBGxyVrABxLp4PPOv0ez
-        VshfnRoYjZ5/Rw5ZnrXKJps=
-X-Google-Smtp-Source: AGHT+IH5uQAhf0dYg8G6GsbP6/h3lRg7sgiDpTWBp+yT+OWEF+BupOCK+goSAt7xUeDoSwMOu4Q2RQ==
-X-Received: by 2002:a05:620a:55bb:b0:77e:fba3:4f12 with SMTP id vr27-20020a05620a55bb00b0077efba34f12mr8219438qkn.104.1702431319080;
-        Tue, 12 Dec 2023 17:35:19 -0800 (PST)
-Received: from auth1-smtp.messagingengine.com (auth1-smtp.messagingengine.com. [66.111.4.227])
-        by smtp.gmail.com with ESMTPSA id 26-20020a05620a04da00b0077d7557653bsm4156880qks.64.2023.12.12.17.35.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Dec 2023 17:35:18 -0800 (PST)
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
-        by mailauth.nyi.internal (Postfix) with ESMTP id D6AFC27C0054;
-        Tue, 12 Dec 2023 20:35:17 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute2.internal (MEProxy); Tue, 12 Dec 2023 20:35:17 -0500
-X-ME-Sender: <xms:VAp5ZasDZAqiwGMMW4FVA9DG0JUM-EUgCZDud7s-V7kx3bWxVLhWIQ>
-    <xme:VAp5ZfdNeztR4IS8ooDpE3-t9kMz4Ka0OBMqe8KzkcJ1svhWgKDFyd1yyY_m9gKHo
-    9XbV55N2f8sHC03_A>
-X-ME-Received: <xmr:VAp5ZVx0oCQe2ydAocHbXI7t3Z9j0rjD2uGgMPiWUCooBVhcHunl0sTVhQM6vQ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrudelhedgfeeiucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvfevuffkfhggtggugfgjsehtkeertddttdejnecuhfhrohhmpeeuohhq
-    uhhnucfhvghnghcuoegsohhquhhnrdhfvghnghesghhmrghilhdrtghomheqnecuggftrf
-    grthhtvghrnhepvefghfeuveekudetgfevudeuudejfeeltdfhgfehgeekkeeigfdukefh
-    gfegleefnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomh
-    epsghoqhhunhdomhgvshhmthhprghuthhhphgvrhhsohhnrghlihhthidqieelvdeghedt
-    ieegqddujeejkeehheehvddqsghoqhhunhdrfhgvnhhgpeepghhmrghilhdrtghomhesfh
-    higihmvgdrnhgrmhgv
-X-ME-Proxy: <xmx:VAp5ZVOfjxJQ39jZxDVGl67RMBKX52XLF2FLmMQHsl6WjUD3hVx-QA>
-    <xmx:VAp5Za8sEwdmHXM0Y7HLKlOmFYDsmeS-SQirFy9AflqRXHyQj13FQQ>
-    <xmx:VAp5ZdXcibFYGGDhIgOTjSaxngToBMwSun7yg_WgPRf5tR8Quss_cw>
-    <xmx:VQp5ZcFKCL_iJ0iIcursLMAHJTW4upGjV-ZW_XfDwE0EV7jwPDWN8w>
-Feedback-ID: iad51458e:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 12 Dec 2023 20:35:16 -0500 (EST)
-Date:   Tue, 12 Dec 2023 17:35:09 -0800
-From:   Boqun Feng <boqun.feng@gmail.com>
-To:     Benno Lossin <benno.lossin@proton.me>
-Cc:     Alice Ryhl <aliceryhl@google.com>, Miguel Ojeda <ojeda@kernel.org>,
-        Alex Gaynor <alex.gaynor@gmail.com>,
-        Wedson Almeida Filho <wedsonaf@gmail.com>,
-        Gary Guo <gary@garyguo.net>,
-        =?iso-8859-1?Q?Bj=F6rn?= Roy Baron <bjorn3_gh@protonmail.com>,
-        Andreas Hindborg <a.hindborg@samsung.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Arve =?iso-8859-1?B?SGr4bm5lduVn?= <arve@android.com>,
-        Todd Kjos <tkjos@android.com>,
-        Martijn Coenen <maco@android.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Carlos Llamas <cmllamas@google.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Kees Cook <keescook@chromium.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org,
-        rust-for-linux@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH v2 7/7] rust: file: add abstraction for `poll_table`
-Message-ID: <ZXkKTSTCuQMt2ge6@boqun-archlinux>
-References: <20231206-alice-file-v2-0-af617c0d9d94@google.com>
- <20231206-alice-file-v2-7-af617c0d9d94@google.com>
- <k_vpgbqKAKoTFzJIBCjvgxGhX73kgkcv6w9kru78lBmTjHHvXPy05g8KxAKJ-ODARBxlZUp3a5e4F9TemGqQiskkwFCpTOhzxlvy378tjHM=@proton.me>
- <CAH5fLgiQ-7gbwP2RLoVDfDqoA+nXPboBW6eTKiv45Yam_Vjv_A@mail.gmail.com>
- <E-jdYd0FVvs15f_pEC0Fo6k2DByCDEQoh_Ux9P9ldmC-otCvUfQghkJOUkiAi8gDI8J47wAaDe56XYC5NiJhuohyhIklGAWMvv9v1qi6yYM=@proton.me>
+        Tue, 12 Dec 2023 20:36:42 -0500
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id D5DA3B2;
+        Tue, 12 Dec 2023 17:36:47 -0800 (PST)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B6767C15;
+        Tue, 12 Dec 2023 17:37:33 -0800 (PST)
+Received: from minigeek.lan (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D7AB43F762;
+        Tue, 12 Dec 2023 17:36:45 -0800 (PST)
+Date:   Wed, 13 Dec 2023 01:35:44 +0000
+From:   Andre Przywara <andre.przywara@arm.com>
+To:     Anne Macedo <retpolanne@posteo.net>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Samuel Holland <samuel@sholland.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "moderated list:ARM/Allwinner sunXi SoC support" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "open list:ARM/Allwinner sunXi SoC support" 
+        <linux-sunxi@lists.linux.dev>,
+        open list <linux-kernel@vger.kernel.org>,
+        Corentin Labbe <clabbe@baylibre.com>
+Subject: Re: [PATCH] arm64: dts: allwinner: Orange Pi One Plus PHY support
+Message-ID: <20231213013544.2fc7e0d1@minigeek.lan>
+In-Reply-To: <axsvii25yrknfae6gdreti7lcskoscsdbsujwuispiieimsbdy@gwzm4l7mwlew>
+References: <20231212122835.10850-2-retpolanne@posteo.net>
+        <20231212162200.10b3868b@donnerap.manchester.arm.com>
+        <axsvii25yrknfae6gdreti7lcskoscsdbsujwuispiieimsbdy@gwzm4l7mwlew>
+Organization: Arm Ltd.
+X-Mailer: Claws Mail 4.2.0 (GTK 3.24.31; x86_64-slackware-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <E-jdYd0FVvs15f_pEC0Fo6k2DByCDEQoh_Ux9P9ldmC-otCvUfQghkJOUkiAi8gDI8J47wAaDe56XYC5NiJhuohyhIklGAWMvv9v1qi6yYM=@proton.me>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -124,74 +58,106 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 12, 2023 at 05:01:28PM +0000, Benno Lossin wrote:
-> On 12/12/23 10:59, Alice Ryhl wrote:
-> > On Fri, Dec 8, 2023 at 6:53 PM Benno Lossin <benno.lossin@proton.me> wrote:
-> >> On 12/6/23 12:59, Alice Ryhl wrote:
-> >>> +    fn get_qproc(&self) -> bindings::poll_queue_proc {
-> >>> +        let ptr = self.0.get();
-> >>> +        // SAFETY: The `ptr` is valid because it originates from a reference, and the `_qproc`
-> >>> +        // field is not modified concurrently with this call since we have an immutable reference.
-> >>
-> >> This needs an invariant on `PollTable` (i.e. `self.0` is valid).
+On Tue, 12 Dec 2023 19:27:14 +0000
+Anne Macedo <retpolanne@posteo.net> wrote:
+
+Hi Anne,
+
+> On Tue, Dec 12, 2023 at 04:22:00PM +0000, Andre Przywara wrote:
+> > On Tue, 12 Dec 2023 12:28:30 +0000
+> > Anne Macedo <retpolanne@posteo.net> wrote:
 > > 
-> > How would you phrase it?
-> 
-> - `self.0` contains a valid `bindings::poll_table`.
-> - `self.0` is only modified via references to `Self`.
-> 
-> >>> +        unsafe { (*ptr)._qproc }
-> >>> +    }
-> >>> +
-> >>> +    /// Register this [`PollTable`] with the provided [`PollCondVar`], so that it can be notified
-> >>> +    /// using the condition variable.
-> >>> +    pub fn register_wait(&mut self, file: &File, cv: &PollCondVar) {
-> >>> +        if let Some(qproc) = self.get_qproc() {
-> >>> +            // SAFETY: The pointers to `self` and `file` are valid because they are references.
-> >>
-> >> What about cv.wait_list...
+> > Hi Anne,
+> >   
+> > > Adds compatible values to mdio subnodes for Ethernet PHY representing
+> > > Realtek 8211 PHY to Orange Pi One Plus.  
 > > 
-> > I can add it to the list of things that are valid due to references.
+> > So can you state why this would be needed? This is the RTL8211 ID,  
+> 
+> Apologies, I completely forgot to include some context. 
+> 
+> > right? Which should be autodetected via MDIO. Looking back in my inbox
+> > you proposed this change before, for U-Boot, specifically, but I fail to
+> > find a solution or explanation what really happens here. Two Renesas .dts
+> > files have the same compatible, and the commit message talks about the
+> > reset line there, is this related?
+> > 
+> > So can you please give some more background and explanation? That would be
+> > part of a good commit message anyway ("why", not "what").  
+> 
+> Should I resend the commit with a more meaningful explanation? The
+> context is the following:
+> 
+> currently, ethernet doesn't seem to work on both u-boot and Linux on the
+> Orange Pi One Plus board. 
+> 
+> On the kernel, this error shows up:
+> 
+> Configuring network interfaces... [    5.992589] dwmac-sun8i 5020000.ethernet eth0: Register MEM_TYPE_PAGE_POOL RxQ-0
+> [    6.000823] dwmac-sun8i 5020000.ethernet eth0: __stmmac_open: Cannot attach to PHY (error: -19)
+> 
+> After applying this fix, the PHY gets attached: 
+> 
+> Configuring network interfaces... [    6.060020] dwmac-sun8i 5020000.ethernet eth0: Register MEM_TYPE_PAGE_POOL RxQ-0
+> [    6.069460] dwmac-sun8i 5020000.ethernet eth0: PHY [stmmac-0:01] driver [RTL8211E Gigabit Ethernet] (irq=POLL)
+> 
+> The previous compatible list that had ethernet-phy-ieee802.3-c22 fails
+> to find a PHY, so this patch includes the correct PHY ID with the
+> RTL8211 ID. 
+> 
+> The behaviour is described on [1].
+
+So this is all an observation, but no real explanation, isn't it?
+To cite [1]: "If the PHY reports an incorrect ID (or none at all) ...".
+I am pretty sure this is not the case here, instead we are looking at
+some missing platform bits, like a missing clock, reset, or most likely
+regulator. Or one of the existing resources is wrongly assigned or
+configured? If the PHY is not (yet?) powered correctly when the code
+does the auto-detection via the MDIO bus, then the initialisation would
+fail. But since it works when overriding the auto-detection, I feel
+like we are papering over something here.
+Do you have the schematics for this board? I can only find the one for
+the Orange Pi Plus 2E, and I don't know how similar those two are. This
+shows *two* regulators, but both are activated by the same GPIO.
+It would also be interesting to see if any of Corentin's work for the
+Orange Pi 3 helps here?
+
+Cheers,
+Andre
+
+
+> U-boot fails completely if the
+> correct PHY ID is not correct, and in order to fix U-boot we need to fix
+> the upstream dts [2].
+> 
+> [1] https://elixir.bootlin.com/linux/v4.14/source/Documentation/devicetree/bindings/net/phy.txt#L20
+> [2] https://elixir.bootlin.com/u-boot/latest/source/drivers/core/ofnode.c#L1258
+> 
+> > 
+> > Cheers,
+> > Andre
+> >   
+> > > Signed-off-by: Anne Macedo <retpolanne@posteo.net>
+> > > ---
+> > >  arch/arm64/boot/dts/allwinner/sun50i-h6-orangepi-one-plus.dts | 3 ++-
+> > >  1 file changed, 2 insertions(+), 1 deletion(-)
+> > > 
+> > > diff --git a/arch/arm64/boot/dts/allwinner/sun50i-h6-orangepi-one-plus.dts b/arch/arm64/boot/dts/allwinner/sun50i-h6-orangepi-one-plus.dts
+> > > index 29a081e72..7248ab72f 100644
+> > > --- a/arch/arm64/boot/dts/allwinner/sun50i-h6-orangepi-one-plus.dts
+> > > +++ b/arch/arm64/boot/dts/allwinner/sun50i-h6-orangepi-one-plus.dts
+> > > @@ -37,7 +37,8 @@ &emac {
+> > >  
+> > >  &mdio {
+> > >  	ext_rgmii_phy: ethernet-phy@1 {
+> > > -		compatible = "ethernet-phy-ieee802.3-c22";
+> > > +		compatible = "ethernet-phy-id001c.c915",
+> > > +			     "ethernet-phy-ieee802.3-c22";
+> > >  		reg = <1>;
+> > >  	};
+> > >  };  
+> >   
+> 
+> Regards, Anne
 > 
 
-Actually, there is an implied safety requirement here, it's about how
-qproc is implemented. As we can see, PollCondVar::drop() will wait for a
-RCU grace period, that means the waiter (a file or something) has to use
-RCU to access the cv.wait_list, otherwise, the synchronize_rcu() in
-PollCondVar::drop() won't help.
-
-To phrase it, it's more like:
-
-(in the safety requirement of `PollTable::from_ptr` and the type
-invariant of `PollTable`):
-
-", further, if the qproc function in poll_table publishs the pointer of
-the wait_queue_head, it must publish it in a way that reads on the
-published pointer have to be in an RCU read-side critical section."
-
-and here we can said,
-
-"per type invariant, `qproc` cannot publish `cv.wait_list` without
-proper RCU protection, so it's safe to use `cv.wait_list` here, and with
-the synchronize_rcu() in PollCondVar::drop(), free of the wait_list will
-be delayed until all usages are done."
-
-I know, this is quite verbose, but just imagine some one removes the
-rcu_read_lock() and rcu_read_unlock() in ep_remove_wait_queue(), the
-poll table from epoll (using ep_ptable_queue_proc()) is still valid one
-according to the current safety requirement, but now there is a
-use-after-free in the following case:
-
-	CPU 0                        CPU1
-	                             ep_remove_wait_queue():
-				       struct wait_queue_head *whead;
-	                               whead = smp_load_acquire(...);
-	                               if (whead) { // not null
-	PollCondVar::drop():
-	  __wake_pollfree();
-	  synchronize_rcu(); // no current RCU readers, yay.
-	  <free the wait_queue_head>
-	                                 remove_wait_queue(whead, ...); // BOOM, use-after-free
-
-Regards,
-Boqun
