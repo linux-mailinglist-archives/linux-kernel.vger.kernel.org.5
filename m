@@ -2,109 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A1E1C811D0B
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 19:42:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CF974811D0D
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 19:42:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233718AbjLMSmF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 13:42:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39780 "EHLO
+        id S1377921AbjLMSmI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 13:42:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48490 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235511AbjLMSlw (ORCPT
+        with ESMTP id S233703AbjLMSlx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 13:41:52 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51A6D184;
+        Wed, 13 Dec 2023 13:41:53 -0500
+Received: from mail-ot1-f51.google.com (mail-ot1-f51.google.com [209.85.210.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52438198;
+        Wed, 13 Dec 2023 10:41:58 -0800 (PST)
+Received: by mail-ot1-f51.google.com with SMTP id 46e09a7af769-6d9f4eed60eso4392439a34.1;
+        Wed, 13 Dec 2023 10:41:58 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702492917; x=1703097717;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=j6hnC07KzQLENIA7eocm0YNr1M8TmUcaLuIx8ujcxeA=;
+        b=Jn3WlZMeH5H7Z0Z4AUGSAhDPqvE+Mlg3AhsRuMeVrifCdWymV6Z2RUep+yUsV+n3XC
+         O4F6fiOM7vpsBz47bq/UojGqHGiBACp4dBRi7pv9I/ie0iSInSV8WYPt7BKH6M5FO/8L
+         3JbDdXO9i3dSGjTcrlK8bn5b6llW7xmSN3K+M5UkzJOH6g00Jy7JPe/EwI6ga+DAyEpJ
+         XvKsk3kuDOCSkHwxKgfQH/qxNBrF+CCw566pmmicnX+J0eCI7FyJqkxOrMaSg9EvqaGh
+         EC6KGI4//cB/vO0gFJEiPhH9LBoSs4YdSorrOVkoy8pQP5z+p8gkpr7vup9AxN2yj4PQ
+         bMeg==
+X-Gm-Message-State: AOJu0YznYEcc9FO0WnfVb6E2mf+da0DwENWkgw+FwoAIVrdUqF+F2/jI
+        SbnkVBguPcFnt3tPM5upSw==
+X-Google-Smtp-Source: AGHT+IHcGZMy5l4vtqVLoJG/8de6K3BbVb9iRhkWeLsVUPExCV0QeWmen3h+A5LXk1SwuVn2iig+oQ==
+X-Received: by 2002:a9d:69d2:0:b0:6d9:a81b:3735 with SMTP id v18-20020a9d69d2000000b006d9a81b3735mr9929395oto.45.1702492917626;
         Wed, 13 Dec 2023 10:41:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1702492917; x=1734028917;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=YngtccBgY9Zef0aGOZCL52WGR+Vqvpk1pqOsy5KFJjs=;
-  b=EZywXAp476EljwD1Gt4rF6bA60kBWvdJNjqknpNqLsrOe639JJ/5OtmP
-   RWqaBjLpc+4m/Pb/Mkrv5tK93H/K1br0B9WVf+gH4q5qvJln8O9rdwyt0
-   AjdLq7PvsIyhBdnlHph3rIRr1qHzPRLFf/6xWWQaO1NZiaK7rPajdhaf1
-   vARi+ZcBxR9qDYensg1jvB8g76VasvQESU3sntPWSS/LZYOIM3aNbBsgq
-   ALWqW8Q8odCzYypgPh9m+62kWKqwArO2t8T17Fnjlo/8nFLwR3Nl7gKW1
-   VhzOUxUZVjqQidfkOZuO83R5F6p6dCRXxOWyATq9CEnnOgB1r7yb3K0aA
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10923"; a="1824973"
-X-IronPort-AV: E=Sophos;i="6.04,273,1695711600"; 
-   d="scan'208";a="1824973"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Dec 2023 10:41:57 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10923"; a="897427472"
-X-IronPort-AV: E=Sophos;i="6.04,273,1695711600"; 
-   d="scan'208";a="897427472"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by orsmga004.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Dec 2023 10:41:53 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1rDUB3-00000005bxZ-1waF;
-        Wed, 13 Dec 2023 20:41:49 +0200
-Date:   Wed, 13 Dec 2023 20:41:49 +0200
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Nikita Shubin <nikita.shubin@maquefel.me>
-Cc:     Hartley Sweeten <hsweeten@visionengravers.com>,
-        Alexander Sverdlin <alexander.sverdlin@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Damien Le Moal <dlemoal@kernel.org>,
-        Sergey Shtylyov <s.shtylyov@omp.ru>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-input@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [PATCH v6 24/40] input: keypad: ep93xx: add DT support for
- Cirrus EP93xx
-Message-ID: <ZXn67cynJdto4lAb@smile.fi.intel.com>
-References: <20231212-ep93xx-v6-0-c307b8ac9aa8@maquefel.me>
- <20231212-ep93xx-v6-24-c307b8ac9aa8@maquefel.me>
+Received: from herring.priv (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
+        by smtp.gmail.com with ESMTPSA id h24-20020a056830165800b006c4f7ced5d2sm2869178otr.70.2023.12.13.10.41.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Dec 2023 10:41:57 -0800 (PST)
+Received: (nullmailer pid 1701307 invoked by uid 1000);
+        Wed, 13 Dec 2023 18:41:55 -0000
+Date:   Wed, 13 Dec 2023 12:41:55 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Abel Vesa <abel.vesa@linaro.org>,
+        Melody Olvera <quic_molvera@quicinc.com>,
+        Iskren Chernev <me@iskren.info>,
+        Danila Tikhonov <danila@jiaxyga.com>,
+        krishna Lanka <quic_vamslank@quicinc.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Martin Botka <martin.botka@somainline.org>,
+        linux-kernel@vger.kernel.org, Shawn Guo <shawn.guo@linaro.org>,
+        Rajendra Nayak <quic_rjendra@quicinc.com>,
+        linux-gpio@vger.kernel.org, Stephan Gerhold <stephan@gerhold.net>,
+        devicetree@vger.kernel.org, Vinod Koul <vkoul@kernel.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Richard Acayan <mailingradian@gmail.com>,
+        Andy Gross <agross@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Rohit Agarwal <quic_rohiagar@quicinc.com>,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
+        linux-arm-msm@vger.kernel.org
+Subject: Re: [PATCH 10/10] dt-bindings: pinctrl: qcom: drop common properties
+ and allow wakeup-parent
+Message-ID: <170249291501.1701227.12108329987370274288.robh@kernel.org>
+References: <20231208215534.195854-1-krzysztof.kozlowski@linaro.org>
+ <20231208215534.195854-10-krzysztof.kozlowski@linaro.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231212-ep93xx-v6-24-c307b8ac9aa8@maquefel.me>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20231208215534.195854-10-krzysztof.kozlowski@linaro.org>
+X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,
+        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 12, 2023 at 11:20:41AM +0300, Nikita Shubin wrote:
-> - drop flags, they were not used anyway
-> - add OF ID match table
-> - process "autorepeat", "debounce-delay-ms", prescale from device tree
-> - drop platform data usage and it's header
-> - keymap goes from device tree now on
 
-...
+On Fri, 08 Dec 2023 22:55:34 +0100, Krzysztof Kozlowski wrote:
+> Drop common properties already defined in referenced common Qualcomm SoC
+> TLMM bindings and use "unevaluatedProperties: false".  This makes the
+> binding smaller and easier to review.  Additionally this allows now
+> "wakeup-parent" property coming from common TLMM bindings.
+> 
+> In few places move the "required:" block to bottom, to match convention.
+> 
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> ---
+>  .../bindings/pinctrl/qcom,ipq6018-pinctrl.yaml |  8 +-------
+>  .../bindings/pinctrl/qcom,mdm9615-pinctrl.yaml | 18 ++++++------------
+>  .../bindings/pinctrl/qcom,msm8226-pinctrl.yaml |  8 +-------
+>  .../bindings/pinctrl/qcom,msm8953-pinctrl.yaml |  7 +------
+>  .../bindings/pinctrl/qcom,sdx55-pinctrl.yaml   |  8 +-------
+>  .../bindings/pinctrl/qcom,sdx65-tlmm.yaml      |  8 +-------
+>  6 files changed, 11 insertions(+), 46 deletions(-)
+> 
 
->  static void ep93xx_keypad_config(struct ep93xx_keypad *keypad)
->  {
->  	unsigned int val = 0;
->  
-> +	val |= ((keypad->debounce << KEY_INIT_DBNC_SHIFT) & KEY_INIT_DBNC_MASK);
-
-Since you are touching these lines (see below) you can drop unneeded outer
-parentheses.
-
->  
-> +	val |= ((keypad->prescale << KEY_INIT_PRSCL_SHIFT) & KEY_INIT_PRSCL_MASK);
-
-See above.
-
->  	__raw_writel(val, keypad->mmio_base + KEY_INIT);
->  }
-
--- 
-With Best Regards,
-Andy Shevchenko
-
+Reviewed-by: Rob Herring <robh@kernel.org>
 
