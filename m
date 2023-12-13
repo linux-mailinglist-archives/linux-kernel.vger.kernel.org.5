@@ -2,247 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DFA9B811CAD
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 19:36:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E15D5811CCE
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 19:39:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233567AbjLMSfj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 13:35:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41090 "EHLO
+        id S233552AbjLMSjd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 13:39:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55560 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229744AbjLMSfd (ORCPT
+        with ESMTP id S229671AbjLMSjc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 13:35:33 -0500
-Received: from sonic316-26.consmr.mail.ne1.yahoo.com (sonic316-26.consmr.mail.ne1.yahoo.com [66.163.187.152])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11357E4
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 10:35:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1702492538; bh=F3ILWaOaE11kj+zcXUvpO5EwRjGJ4Usw8j8ahHmYLUY=; h=Date:Subject:To:Cc:References:From:In-Reply-To:From:Subject:Reply-To; b=ZWwZgfYXkQXbT09bjrTknAWAv/k3iM5fPucWDr/qy9GA9x072SlO9AgLHSABDrBYEJ3XZApfg1aUxQ4lJfz5mNh/gNhlIKjLSztXjVZ34Ze5Qbv1duijPs96ps3fpcBMfBdF73GN5HgApFSrPGelpCUvYTDCm+eroD41srtF5ggH19q1ydidWWfn9J/kWcQpqYuXxRxkX+bvSnIwzM4ZpOxHRo16z3dO40phkcU5pSvr3TtEpJ0x7vRyMs813ADfkGRZZSvAWn/l+hwTnDSi5Bva9dpF+FL+A6F//G1sIglp5DN3YC3uJIWJ+1gnVHNoAg90Pep5WkPWr6q5+TOv0g==
-X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1702492538; bh=xg0ZjtPFZLPYvyzFgM5qVRSflwUEjxT6NS85SeeSLeL=; h=X-Sonic-MF:Date:Subject:To:From:From:Subject; b=NjtkJiddK7tyPBbrQ90uhs0BcDcUIgo1UygXJubUub1KXWiz78cCFUh8IlW7AM8Axjc2cj9b5Fr2UagulgGnUM5TqGfYFcw/ALioL//6kmT2gnxfpqjpSO0eiZMf1VKrCfqB64OZo7tea5Se37rnODLSUJP+zcmL5L3YtXFqEIgqJAVRQfQrQ9AosK/XXsEGJ2DjifFUHIa8mkDq/X7C8jPZjZYaBB7PV4louDrKk7okZnI570WbsceZS0VypFgQLwM11plxU8rCjfiedifUz8bcQbuQiodOBDWzw2CIaQL6esYRLxoc+RwUgoIXGurxHfmncpLa/Lqe3zue53Rang==
-X-YMail-OSG: 0r7oZOMVM1mSnzVHyXN8KIPqZIWnhysu5pcAtwcdDMquDNlK3GDwerbatD01YMU
- FQz_7VQQkw7Fdfg6XzIGuwcR5rj0Gj4AG5aJj0WSQ8xPmOnX12Xn_yLD3RiR.Sxkd3_UFDptgccb
- IhtbmFr0sygB2UW9BClSqTLZVgmMml_G2pmAIQmwQZeepexLcwiksTE6yJQ2DnwOiKYsG758Xtlc
- kLsPQr8RI5jUu1n32RQQXYB1M3BdUWKk.KwaDz.I_TTGXCMYjvu9C585hCNwX4M5vL778OpCuufB
- KNawAgCSSB7skbil1dO.94mV9cGZPaqLH3PctDBFolW4FRkmfSvgNpvYXQHHb3JYlcyPnr7YGn1i
- c1isqZ8ZqgEvEChlyWrv.O51ZqGL5Ur9Ot9r_oKwrGPuG7I4voZNtAg_zCEPl0rhPFK7WgZR0Yfc
- 44XaiTKM8181UydLuIWhOCtKw3xk71GuIaW._1ts0VrvPymX4VIuAtuUK83rK2FkEKF_w7Szf_VK
- gBVSks.icaMy5uqUk2jWuoqGxkvX_MHZtTJRjujPz6oGHxgQiMpWZLoWDdiDKT0cwpKL2.WrKeDx
- e5at0giascb6dnCC91vK5dYF7aLN9110PclMzy2ybBiu7x19ST8Zu88f_JhqvfR_iRXr_s740Q9k
- LUse0gB7FlF8r3riHUt0s0aXINsl3nKMLAYKzDeHOXApZ2ZkuZwwB.pTJoiSKmMMEH1QPMX3kzeH
- JPjDtbehhSu._9YSWlcPKgTlwbGA3I.4shL5ZoN2IAbh261TRFl6gs0e4rfT4203i5YU8JMsiv1I
- tqcaOiS._Qe9r70EB04Eqa.EC61zFNOgz_OyhjQnBDrVgHGJF5KVgx43g90jYmKTlOuMNJJPLCzm
- Z9jNzK5fOhf6N8xY5DZg3WLPqVP.qmv_H6DIkf0TLTnVFd2F3gpchJkJQ9wfOBAzr_Y4.U35P84b
- w3KVDN5KFnCS_hLxUzekc1Fdg8IWfwCtdcMHBw_wTepcJ1RM0.ddc9QUFFP3Bhn0qQ7anS9XQZfE
- T564JdTbfg8iZPmpv81k9ofQt29tbrIOJ3LqLzcH7HbYQc9Q1ABswM_y_uFozI8DsKRPjkJNIRkw
- KZgCwy13KwAmwJt1xbJTCNsUieIZxdeEmkGrmPhKqjvU7WVfKatpW21AK0PfcF_asdGCYLzXXPAG
- vO9i20qVsE584voPV1NLnCuaeeE4RSGJ9IPQvlnwCcjXAb8jRlnFfhDZ8Hi5WVYqGlCt9EvsFq.j
- tEXY4GOEaumeLGVPVtJ9jIMYUQLyk1vNDZTPN4CyJJR6mxJW7c72o2x71qSWeDWc5nQveELTsjwL
- 6dg9gk1iWCwh1ZGwQs4ugI.Egnj_Hnqd7qbojHOaQlhrCh7eWxQLit49cGN999ayKD9GWnOiySIN
- .jA99IeegktY5zvne4D0W1qLfhdKvZ1ftwYL9_rs_2f9pVr4aEq3KNPSv.IoHT.4BBHk1p9tDM5k
- 09l9vQLSoTY7cF611YPUmS5fvKYVoxSkdiRDw.887_eVO.rUu5RKEZeTcgh5FH8XRxv_pZjSuKav
- 0ZkDh3fPQYu7IHf_ObRRBJ3POuGwIXJeIgSfG_0nl_lixqz.rmqKWNhbGXldkk9xPBI1av9q53ct
- Do5FUD9N2PSYklV3dVM94PKS7n7FgeckvoAgTGBF4vc08fEVqkezv0roAmdCNWgah2oIr0IRgtAb
- AKmW3FECgrP9fnlaTn9bG3HwOFxlqCtYpePCz1i.63RG_cvDgAhP32DTMXBtG4NHeKgXAznw7oOq
- AjsIgaDJpGd22yDf742PsiOQIQQaQdfiYSb.YJKiUMLrmowiZxmyQSbBAPX.u1p15MI9TaSLBXCs
- JBSQ6Ku8JQgM5zEA4wQAwB2A_8VyDtw2X4ewFAPFESi2_sHt.rXIfDG8_lx3oPsVuOrvphq7JmCj
- UQubrD89QTXxyXv79t0HnnS7P7Bl_JeYKzgcT1iSdz43kqJmzNioULUOXjnJZMLB88_ZMxP1A975
- m0Kx649e.dq5al7AzI1whA9AD6z_8FTl2bNiJMLN_tZeOj_toAWlKtHIFFgX9lkFDAgdVrPL1rK1
- eN4FA4pU48r7ohh2_J6g3VbFbH1A451jMcivQ_IZM9En8bdupipXGImX2MbdSrYZT815iwlXILdv
- v6SA64kRIFbzja_WRRh3V7Lgtgrw2FqjQqPURretjaAx0BDE.TDDV_Y5by5JtWYJa35l9a4rgrIs
- YyJfH7jjB2wuMN8KYs4WGjUv.GI0CmtWI_MwzeMjot.VhfCtqikivJRCzSfsJYU5SOw--
-X-Sonic-MF: <casey@schaufler-ca.com>
-X-Sonic-ID: 5bf1e823-cd45-4553-87a4-d657d3be01a9
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic316.consmr.mail.ne1.yahoo.com with HTTP; Wed, 13 Dec 2023 18:35:38 +0000
-Received: by hermes--production-gq1-6949d6d8f9-hnk4w (Yahoo Inc. Hermes SMTP Server) with ESMTPA ID 566ac33d3e608f8110bfa5f0010a199d;
-          Wed, 13 Dec 2023 18:35:32 +0000 (UTC)
-Message-ID: <6df822d8-8413-413e-8ecd-cac1cfae4a3b@schaufler-ca.com>
-Date:   Wed, 13 Dec 2023 10:35:31 -0800
+        Wed, 13 Dec 2023 13:39:32 -0500
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E83DBD;
+        Wed, 13 Dec 2023 10:39:38 -0800 (PST)
+Received: from pps.filterd (m0356517.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3BDIGSU5031388;
+        Wed, 13 Dec 2023 18:36:54 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=0f3eS2dKAg8fw7ia5UFHTP28ocE3TQ9LjwcT23r6pfM=;
+ b=lW/icCEXESFZaYr1QCrwQh6OSm78r80I+o62gx7b+YTjdV61hHFi4y4C/L1YiLg+q3g3
+ HAsGt3kfmccvSbcQCee/VL6wdc47zMA6kM9gQnr/wCIvhYiItK1S3pKZWVwc30/wxmxv
+ KvpxJBLXZfvcSlUH7APBD9O/zUBCBB0rQ4y3koIf1CCvr0xQD3Snnfwp+PNqVJyKCV6E
+ hzNW495m0LetMsKGRWFJCmbtRI++Z7dyIpVVgHRWSIvowbg2dqNNozYrAEBrMF2PokxJ
+ NN0NervjqMD2QwArQUSpvSd09GK9ce/odq72A/vcEWE1k73x7/l6gTh1ZBB570Uvx3kA VA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3uyeahq9g6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 13 Dec 2023 18:36:53 +0000
+Received: from m0356517.ppops.net (m0356517.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3BDIUVVw017657;
+        Wed, 13 Dec 2023 18:36:53 GMT
+Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3uyeahq9fe-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 13 Dec 2023 18:36:53 +0000
+Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
+        by ppma21.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3BDGogMG012588;
+        Wed, 13 Dec 2023 18:36:51 GMT
+Received: from smtprelay02.dal12v.mail.ibm.com ([172.16.1.4])
+        by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3uw3jp2xpf-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 13 Dec 2023 18:36:51 +0000
+Received: from smtpav06.wdc07v.mail.ibm.com (smtpav06.wdc07v.mail.ibm.com [10.39.53.233])
+        by smtprelay02.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3BDIao8F40698204
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 13 Dec 2023 18:36:50 GMT
+Received: from smtpav06.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 3ED6958054;
+        Wed, 13 Dec 2023 18:36:50 +0000 (GMT)
+Received: from smtpav06.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id F147158056;
+        Wed, 13 Dec 2023 18:36:48 +0000 (GMT)
+Received: from [9.24.12.86] (unknown [9.24.12.86])
+        by smtpav06.wdc07v.mail.ibm.com (Postfix) with ESMTP;
+        Wed, 13 Dec 2023 18:36:48 +0000 (GMT)
+Message-ID: <6e1a7f5d-c15f-4938-893b-0aa77ef9fcfc@linux.ibm.com>
+Date:   Wed, 13 Dec 2023 12:36:48 -0600
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH v3 3/3] devguard: added device guard for mknod in
- non-initial userns
+Subject: Re: [PATCH v1 1/8] dt-bindings: arm: aspeed: add IBM system1-bmc
 Content-Language: en-US
-To:     =?UTF-8?Q?Michael_Wei=C3=9F?= <michael.weiss@aisec.fraunhofer.de>,
-        Christian Brauner <brauner@kernel.org>,
-        Alexander Mikhalitsyn <alexander@mihalicyn.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Paul Moore <paul@paul-moore.com>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Quentin Monnet <quentin@isovalent.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Amir Goldstein <amir73il@gmail.com>,
-        "Serge E. Hallyn" <serge@hallyn.com>, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        gyroidos@aisec.fraunhofer.de,
-        Casey Schaufler <casey@schaufler-ca.com>
-References: <20231213143813.6818-1-michael.weiss@aisec.fraunhofer.de>
- <20231213143813.6818-4-michael.weiss@aisec.fraunhofer.de>
-From:   Casey Schaufler <casey@schaufler-ca.com>
-In-Reply-To: <20231213143813.6818-4-michael.weiss@aisec.fraunhofer.de>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Mailer: WebService/1.1.21952 mail.backend.jedi.jws.acl:role.jedi.acl.token.atz.jws.hermes.yahoo
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+To:     Jarkko Sakkinen <jarkko@kernel.org>, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        joel@jms.id.au, andrew@codeconstruct.com.au, peterhuewe@gmx.de,
+        jgg@ziepe.ca, keescook@chromium.org, tony.luck@intel.com,
+        gpiccoli@igalia.com, johannes.holland@infineon.com,
+        linux@roeck-us.net, broonie@kernel.org
+Cc:     patrick.rudolph@9elements.com, vincent@vtremblay.dev,
+        peteryin.openbmc@gmail.com, lakshmiy@us.ibm.com,
+        bhelgaas@google.com, naresh.solanki@9elements.com,
+        alexander.stein@ew.tq-group.com, festevam@denx.de,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        linux-integrity@vger.kernel.org, linux-hardening@vger.kernel.org,
+        geissonator@yahoo.com
+References: <20231212164004.1683589-1-ninad@linux.ibm.com>
+ <20231212164004.1683589-2-ninad@linux.ibm.com>
+ <CXNEVH8BZUJT.1UHVUI66SZMTE@suppilovahvero>
+From:   Ninad Palsule <ninad@linux.ibm.com>
+In-Reply-To: <CXNEVH8BZUJT.1UHVUI66SZMTE@suppilovahvero>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: 5kq0bIMe7CgVmBlyTgG4FKZr25jLiE3U
+X-Proofpoint-GUID: klWOiAxxw_I9AuxkGpEXwLWNyobuFlN9
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-13_12,2023-12-13_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 phishscore=0
+ mlxscore=0 spamscore=0 lowpriorityscore=0 mlxlogscore=999 bulkscore=0
+ suspectscore=0 impostorscore=0 priorityscore=1501 clxscore=1015
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311290000 definitions=main-2312130133
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/13/2023 6:38 AM, Michael Weiß wrote:
-> devguard is a simple LSM to allow CAP_MKNOD in non-initial user
-> namespace in cooperation of an attached cgroup device program. We
-> just need to implement the security_inode_mknod() hook for this.
-> In the hook, we check if the current task is guarded by a device
-> cgroup using the lately introduced cgroup_bpf_current_enabled()
-> helper. If so, we strip out SB_I_NODEV from the super block.
->
-> Access decisions to those device nodes are then guarded by existing
-> device cgroups mechanism.
->
-> Signed-off-by: Michael Weiß <michael.weiss@aisec.fraunhofer.de>
-> ---
->  security/Kconfig             | 11 +++++----
->  security/Makefile            |  1 +
->  security/devguard/Kconfig    | 12 ++++++++++
->  security/devguard/Makefile   |  2 ++
->  security/devguard/devguard.c | 44 ++++++++++++++++++++++++++++++++++++
->  5 files changed, 65 insertions(+), 5 deletions(-)
->  create mode 100644 security/devguard/Kconfig
->  create mode 100644 security/devguard/Makefile
->  create mode 100644 security/devguard/devguard.c
->
-> diff --git a/security/Kconfig b/security/Kconfig
-> index 52c9af08ad35..7ec4017745d4 100644
-> --- a/security/Kconfig
-> +++ b/security/Kconfig
-> @@ -194,6 +194,7 @@ source "security/yama/Kconfig"
->  source "security/safesetid/Kconfig"
->  source "security/lockdown/Kconfig"
->  source "security/landlock/Kconfig"
-> +source "security/devguard/Kconfig"
->  
->  source "security/integrity/Kconfig"
->  
-> @@ -233,11 +234,11 @@ endchoice
->  
->  config LSM
->  	string "Ordered list of enabled LSMs"
-> -	default "landlock,lockdown,yama,loadpin,safesetid,smack,selinux,tomoyo,apparmor,bpf" if DEFAULT_SECURITY_SMACK
-> -	default "landlock,lockdown,yama,loadpin,safesetid,apparmor,selinux,smack,tomoyo,bpf" if DEFAULT_SECURITY_APPARMOR
-> -	default "landlock,lockdown,yama,loadpin,safesetid,tomoyo,bpf" if DEFAULT_SECURITY_TOMOYO
-> -	default "landlock,lockdown,yama,loadpin,safesetid,bpf" if DEFAULT_SECURITY_DAC
-> -	default "landlock,lockdown,yama,loadpin,safesetid,selinux,smack,tomoyo,apparmor,bpf"
-> +	default "landlock,lockdown,yama,loadpin,safesetid,smack,selinux,tomoyo,apparmor,bpf,devguard" if DEFAULT_SECURITY_SMACK
-> +	default "landlock,lockdown,yama,loadpin,safesetid,apparmor,selinux,smack,tomoyo,bpf,devguard" if DEFAULT_SECURITY_APPARMOR
-> +	default "landlock,lockdown,yama,loadpin,safesetid,tomoyo,bpf,devguard" if DEFAULT_SECURITY_TOMOYO
-> +	default "landlock,lockdown,yama,loadpin,safesetid,bpf,devguard" if DEFAULT_SECURITY_DAC
-> +	default "landlock,lockdown,yama,loadpin,safesetid,selinux,smack,tomoyo,apparmor,bpf,devguard"
->  	help
->  	  A comma-separated list of LSMs, in initialization order.
->  	  Any LSMs left off this list, except for those with order
-> diff --git a/security/Makefile b/security/Makefile
-> index 18121f8f85cd..82a0d8cab3c3 100644
-> --- a/security/Makefile
-> +++ b/security/Makefile
-> @@ -24,6 +24,7 @@ obj-$(CONFIG_SECURITY_LOCKDOWN_LSM)	+= lockdown/
->  obj-$(CONFIG_CGROUPS)			+= device_cgroup.o
->  obj-$(CONFIG_BPF_LSM)			+= bpf/
->  obj-$(CONFIG_SECURITY_LANDLOCK)		+= landlock/
-> +obj-$(CONFIG_SECURITY_DEVGUARD)		+= devguard/
->  
->  # Object integrity file lists
->  obj-$(CONFIG_INTEGRITY)			+= integrity/
-> diff --git a/security/devguard/Kconfig b/security/devguard/Kconfig
-> new file mode 100644
-> index 000000000000..592684615a8f
-> --- /dev/null
-> +++ b/security/devguard/Kconfig
-> @@ -0,0 +1,12 @@
-> +config SECURITY_DEVGUARD
-> +	bool "Devguard for device node creation"
-> +	depends on SECURITY
-> +	depends on CGROUP_BPF
-> +	default n
-> +	help
-> +	  This enables devguard, an LSM that allows to guard device node
-> +	  creation in non-initial user namespace. It may allow mknod
-> +	  in cooperation of an attached cgroup device program.
-> +	  This security module stacks with other LSMs.
-> +
-> +	  If you are unsure how to answer this question, answer N.
-> diff --git a/security/devguard/Makefile b/security/devguard/Makefile
-> new file mode 100644
-> index 000000000000..fdaff8dc2fea
-> --- /dev/null
-> +++ b/security/devguard/Makefile
-> @@ -0,0 +1,2 @@
-> +# SPDX-License-Identifier: GPL-2.0-only
-> +obj-$(CONFIG_SECURITY_DEVGUARD) += devguard.o
-> diff --git a/security/devguard/devguard.c b/security/devguard/devguard.c
-> new file mode 100644
-> index 000000000000..3a0c9c27a691
-> --- /dev/null
-> +++ b/security/devguard/devguard.c
-> @@ -0,0 +1,44 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Device guard security module
-> + *
-> + * Simple in-kernel LSM to allow cap_mknod in non-initial
-> + * user namespace if current task is guarded by device cgroup.
-> + *
-> + * Copyright (C) 2023 Fraunhofer AISEC. All rights reserved.
-> + *
-> + * Authors: Michael Weiß <michael.weiss@aisec.fraunhofer.de>
-> + */
-> +
-> +#include <linux/bpf-cgroup.h>
-> +#include <linux/lsm_hooks.h>
-> +
-> +static int devguard_inode_mknod(struct inode *dir, struct dentry *dentry,
-> +				umode_t mode, dev_t dev)
-> +{
-> +	if (dentry->d_sb->s_iflags & ~SB_I_NODEV)
-> +		return 0;
-> +
-> +	// strip SB_I_NODEV on super block if device cgroup is active
+Hello Jarkko,
 
-Please use block style comments. We don't use // comments here.
+On 12/13/23 12:18, Jarkko Sakkinen wrote:
+> On Tue Dec 12, 2023 at 6:39 PM EET, Ninad Palsule wrote:
+>> Document the new compatibles used on IBM system1-bmc
+>>
+>> Tested:
+> this not very useful line :-) (nit)
+>
+>>      This board is tested using the simics simulator.
+> Just leave this (w/o indentation)
 
-	/*
-	 * Strip SB_I_NODEV on super block if device cgroup is active
-	 */
+Based on Conor's suggestion, I have removed both lines.
 
-> +	if (cgroup_bpf_current_enabled(CGROUP_DEVICE))
-> +		dentry->d_sb->s_iflags &= ~SB_I_NODEV;
-> +
-> +	return 0;
-> +}
-> +
-> +static struct security_hook_list devguard_hooks[] __ro_after_init = {
-> +	LSM_HOOK_INIT(inode_mknod, devguard_inode_mknod),
-> +};
-> +
-> +static int __init devguard_init(void)
-> +{
-> +	security_add_hooks(devguard_hooks, ARRAY_SIZE(devguard_hooks),
-> +			   "devguard");
-> +	pr_info("devguard: initialized\n");
-> +	return 0;
-> +}
-> +
-> +DEFINE_LSM(devguard) = {
-> +	.name = "devguard",
-> +	.init = devguard_init,
-> +};
+Thanks for the review.
+
+Thanks & Regards,
+
+Ninad
+
+>
+>> Signed-off-by: Ninad Palsule <ninad@linux.ibm.com>
+>> ---
+>>   Documentation/devicetree/bindings/arm/aspeed/aspeed.yaml | 1 +
+>>   Documentation/devicetree/bindings/trivial-devices.yaml   | 2 ++
+>>   2 files changed, 3 insertions(+)
+>>
+>> diff --git a/Documentation/devicetree/bindings/arm/aspeed/aspeed.yaml b/Documentation/devicetree/bindings/arm/aspeed/aspeed.yaml
+>> index 6f7543463d89..ebebe14c42aa 100644
+>> --- a/Documentation/devicetree/bindings/arm/aspeed/aspeed.yaml
+>> +++ b/Documentation/devicetree/bindings/arm/aspeed/aspeed.yaml
+>> @@ -85,6 +85,7 @@ properties:
+>>                 - facebook,yosemite4-bmc
+>>                 - ibm,everest-bmc
+>>                 - ibm,rainier-bmc
+>> +              - ibm,system1-bmc
+>>                 - ibm,tacoma-bmc
+>>                 - inventec,starscream-bmc
+>>                 - inventec,transformer-bmc
+>> diff --git a/Documentation/devicetree/bindings/trivial-devices.yaml b/Documentation/devicetree/bindings/trivial-devices.yaml
+>> index 441b55723675..b12a60d2eb0f 100644
+>> --- a/Documentation/devicetree/bindings/trivial-devices.yaml
+>> +++ b/Documentation/devicetree/bindings/trivial-devices.yaml
+>> @@ -135,6 +135,8 @@ properties:
+>>             - ibm,cffps1
+>>               # IBM Common Form Factor Power Supply Versions 2
+>>             - ibm,cffps2
+>> +            # Infineon barometric pressure and temperature sensor
+>> +          - infineon,dps310
+>>               # Infineon IR36021 digital POL buck controller
+>>             - infineon,ir36021
+>>               # Infineon IR38060 Voltage Regulator
+> BR, Jarkko
