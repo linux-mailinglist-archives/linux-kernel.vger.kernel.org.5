@@ -2,73 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D6C4810EC0
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 11:46:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 483EC810EC8
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 11:47:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377805AbjLMKqO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 05:46:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47036 "EHLO
+        id S235331AbjLMKq6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 05:46:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48360 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233311AbjLMKqN (ORCPT
+        with ESMTP id S233311AbjLMKqz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 05:46:13 -0500
-Received: from frasgout11.his.huawei.com (frasgout11.his.huawei.com [14.137.139.23])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D828B2;
-        Wed, 13 Dec 2023 02:46:19 -0800 (PST)
-Received: from mail.maildlp.com (unknown [172.18.186.29])
-        by frasgout11.his.huawei.com (SkyGuard) with ESMTP id 4SqsHJ5pQQz9y0PF;
-        Wed, 13 Dec 2023 18:32:12 +0800 (CST)
-Received: from mail02.huawei.com (unknown [7.182.16.27])
-        by mail.maildlp.com (Postfix) with ESMTP id 4511B140411;
-        Wed, 13 Dec 2023 18:46:15 +0800 (CST)
-Received: from [10.204.63.22] (unknown [10.204.63.22])
-        by APP2 (Coremail) with SMTP id GxC2BwCnpV9li3llaWZvAg--.43787S2;
-        Wed, 13 Dec 2023 11:46:14 +0100 (CET)
-Message-ID: <7c226242-2eda-41cd-9be8-c2c010f3fc49@huaweicloud.com>
-Date:   Wed, 13 Dec 2023 11:45:54 +0100
+        Wed, 13 Dec 2023 05:46:55 -0500
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 903C799;
+        Wed, 13 Dec 2023 02:47:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1702464420;
+        bh=S1PKbsocAj5/bpOzgd6MxBRKB+aWSCTCeiTPSJMpSa0=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=2/yVxpy8OsJfCUWCpd5FQ5ZeAPQBrG/zSCYIAQfVJMD+rPPz/8/p59lvS7v/m8XUJ
+         RZN2LNHYpGln10/4CUz0Q1AVFQ+lFGgNWIletVvgj+mzbj9tMnm3PU4fxElhEHwcFF
+         QkX/6skHgv+pG+g0OR3EfgbwmhPCDlBH6WUScUOUU6zTivbNJjyMMpsT6t5+czWtcZ
+         eiQ8xE1l1R7qjpUiDzTdpYAWjopLnXq8L4PDSrAGg9Vdbj8MmZGgKyl1KEohB2IBAv
+         x3NWCbGccW1KuIM5u4088261qpXH93e/MPk/rHwCwYeyONdrifRcTKfP/mhIp4J6cy
+         5oVFlG+QAAeMA==
+Received: from [100.113.186.2] (cola.collaboradmins.com [195.201.22.229])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: kholk11)
+        by madrid.collaboradmins.com (Postfix) with ESMTPSA id 387B73781453;
+        Wed, 13 Dec 2023 10:46:59 +0000 (UTC)
+Message-ID: <bbc6d09b-c472-4334-ba67-1072e94a89e9@collabora.com>
+Date:   Wed, 13 Dec 2023 11:46:58 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 23/23] integrity: Switch from rbtree to LSM-managed
- blob for integrity_iint_cache
+Subject: Re: [v9 3/4] ASoC: mediatek: mt8188-mt6359: add es8326 support
 Content-Language: en-US
-To:     Paul Moore <paul@paul-moore.com>, viro@zeniv.linux.org.uk,
-        brauner@kernel.org, chuck.lever@oracle.com, jlayton@kernel.org,
-        neilb@suse.de, kolga@netapp.com, Dai.Ngo@oracle.com,
-        tom@talpey.com, jmorris@namei.org, serge@hallyn.com,
-        zohar@linux.ibm.com, dmitry.kasatkin@gmail.com,
-        dhowells@redhat.com, jarkko@kernel.org,
-        stephen.smalley.work@gmail.com, eparis@parisplace.org,
-        casey@schaufler-ca.com, mic@digikod.net
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-nfs@vger.kernel.org, linux-security-module@vger.kernel.org,
-        linux-integrity@vger.kernel.org, keyrings@vger.kernel.org,
-        selinux@vger.kernel.org, Roberto Sassu <roberto.sassu@huawei.com>
-References: <20231107134012.682009-24-roberto.sassu@huaweicloud.com>
- <17befa132379d37977fc854a8af25f6d.paul@paul-moore.com>
-From:   Roberto Sassu <roberto.sassu@huaweicloud.com>
-In-Reply-To: <17befa132379d37977fc854a8af25f6d.paul@paul-moore.com>
+To:     Rui Zhou <zhourui@huaqin.corp-partner.google.com>
+Cc:     lgirdwood@gmail.com, broonie@kernel.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        matthias.bgg@gmail.com, perex@perex.cz, tiwai@suse.com,
+        trevor.wu@mediatek.com, allen-kh.cheng@mediatek.com,
+        kuninori.morimoto.gx@renesas.com, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mediatek@lists.infradead.org
+References: <20231212123050.4080083-1-zhourui@huaqin.corp-partner.google.com>
+ <20231212123050.4080083-4-zhourui@huaqin.corp-partner.google.com>
+ <25ec0476-0ee3-4f2a-b0e6-ee33580159ab@collabora.com>
+ <CABRjgztKkpE8KOBfj47Bdt_EXFiXA8+6eh6+=WMyPHW2UOF-oA@mail.gmail.com>
+From:   AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+In-Reply-To: <CABRjgztKkpE8KOBfj47Bdt_EXFiXA8+6eh6+=WMyPHW2UOF-oA@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: GxC2BwCnpV9li3llaWZvAg--.43787S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxAF17Kw1kuFWrWr45ur1kGrg_yoW5tF48pF
-        43Ka4xJw4kXF929rn2vF45ur4fKFWSgFWUWwn8Grn7Aas09r1Ygr45Ary8uFyUGr98tw1F
-        qr1a9ry3Z3WqyrJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUkjb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
-        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7Cj
-        xVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIEc7CjxV
-        AFwI0_Gr0_Gr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
-        x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
-        0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l42xK82IYc2Ij
-        64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x
-        8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a6rW5MIIYrxkI7VAKI48JMIIF0xvE
-        2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42
-        xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIE
-        c7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07UAkuxUUUUU=
-X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAgAKBF1jj5OXOgACsB
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -76,97 +65,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 17.11.23 21:57, Paul Moore wrote:
-> On Nov  7, 2023 Roberto Sassu <roberto.sassu@huaweicloud.com> wrote:
->>
->> Before the security field of kernel objects could be shared among LSMs with
->> the LSM stacking feature, IMA and EVM had to rely on an alternative storage
->> of inode metadata. The association between inode metadata and inode is
->> maintained through an rbtree.
->>
->> Because of this alternative storage mechanism, there was no need to use
->> disjoint inode metadata, so IMA and EVM today still share them.
->>
->> With the reservation mechanism offered by the LSM infrastructure, the
->> rbtree is no longer necessary, as each LSM could reserve a space in the
->> security blob for each inode. However, since IMA and EVM share the
->> inode metadata, they cannot directly reserve the space for them.
->>
->> Instead, request from the 'integrity' LSM a space in the security blob for
->> the pointer of inode metadata (integrity_iint_cache structure). The other
->> reason for keeping the 'integrity' LSM is to preserve the original ordering
->> of IMA and EVM functions as when they were hardcoded.
->>
->> Prefer reserving space for a pointer to allocating the integrity_iint_cache
->> structure directly, as IMA would require it only for a subset of inodes.
->> Always allocating it would cause a waste of memory.
->>
->> Introduce two primitives for getting and setting the pointer of
->> integrity_iint_cache in the security blob, respectively
->> integrity_inode_get_iint() and integrity_inode_set_iint(). This would make
->> the code more understandable, as they directly replace rbtree operations.
->>
->> Locking is not needed, as access to inode metadata is not shared, it is per
->> inode.
->>
->> Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
->> Reviewed-by: Casey Schaufler <casey@schaufler-ca.com>
->> Reviewed-by: Mimi Zohar <zohar@linux.ibm.com>
->> ---
->>   security/integrity/iint.c      | 71 +++++-----------------------------
->>   security/integrity/integrity.h | 20 +++++++++-
->>   2 files changed, 29 insertions(+), 62 deletions(-)
->>
->> diff --git a/security/integrity/iint.c b/security/integrity/iint.c
->> index 882fde2a2607..a5edd3c70784 100644
->> --- a/security/integrity/iint.c
->> +++ b/security/integrity/iint.c
->> @@ -231,6 +175,10 @@ static int __init integrity_lsm_init(void)
->>   	return 0;
->>   }
->>   
->> +struct lsm_blob_sizes integrity_blob_sizes __ro_after_init = {
->> +	.lbs_inode = sizeof(struct integrity_iint_cache *),
->> +};
+Il 13/12/23 02:48, Rui Zhou ha scritto:
+> Hi Angelo,
+> Thank you for your review.
+> I'm so sorry, but the person I added was obtained through the command
+> ./scripts/get_maintainer.pl. Do you mean that the order of my TO/CC people
+> is out of order? For example, it should be TO but CC is used.
+> Or maybe I added less people to my email. In your spare time, could you
+> please help check it out?
+> Thank you very much!
 > 
-> I'll admit that I'm likely missing an important detail, but is there
-> a reason why you couldn't stash the integrity_iint_cache struct
-> directly in the inode's security blob instead of the pointer?  For
-> example:
-> 
->    struct lsm_blob_sizes ... = {
->      .lbs_inode = sizeof(struct integrity_iint_cache),
->    };
-> 
->    struct integrity_iint_cache *integrity_inode_get(inode)
->    {
->      if (unlikely(!inode->isecurity))
->        return NULL;
+> ./scripts/get_maintainer.pl 00*.patch
+> ./scripts/get_maintainer.pl: file '0000-cover-letter.patch' doesn't appear
+> to be a patch.  Add -f to options?
+> Liam Girdwood <lgirdwood@gmail.com> (supporter:SOUND - SOC LAYER / DYNAMIC
+> AUDIO POWER MANAGEM...)
+> Mark Brown <broonie@kernel.org> (supporter:SOUND - SOC LAYER / DYNAMIC
+> AUDIO POWER MANAGEM...,commit_signer:10/11=91%,commit_signer:16/19=84%)
+> Rob Herring <robh+dt@kernel.org> (maintainer:OPEN FIRMWARE AND FLATTENED
+> DEVICE TREE BINDINGS,authored:1/19=5%)
+> Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org> (maintainer:OPEN
+> FIRMWARE AND FLATTENED DEVICE TREE BINDINGS)
+> Conor Dooley <conor+dt@kernel.org> (maintainer:OPEN FIRMWARE AND FLATTENED
+> DEVICE TREE BINDINGS)
+> Matthias Brugger <matthias.bgg@gmail.com> (maintainer:ARM/Mediatek SoC
+> support)
+> AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+> (maintainer:ARM/Mediatek SoC
+> support,commit_signer:4/11=36%,commit_signer:11/19=58%,authored:4/19=21%,removed_lines:41/157=26%)
+> Jaroslav Kysela <perex@perex.cz> (maintainer:SOUND)
+> Takashi Iwai <tiwai@suse.com> (maintainer:SOUND,removed_lines:11/157=7%)
+> Trevor Wu <trevor.wu@mediatek.com>
+> (commit_signer:5/11=45%,authored:3/11=27%,added_lines:27/54=50%,commit_signer:10/19=53%,authored:7/19=37%,added_lines:1401/1640=85%,removed_lines:26/157=17%,in
+> file)
+> xiazhengqiao <xiazhengqiao@huaqin.corp-partner.google.com>
+> (commit_signer:2/11=18%,authored:2/11=18%,added_lines:120/1640=7%)
+> Maso Huang <maso.huang@mediatek.com>
+> (commit_signer:2/11=18%,authored:2/11=18%,added_lines:20/54=37%)
+> Arnd Bergmann <arnd@arndb.de> (authored:1/11=9%)
+> Rui Zhou <zhourui@huaqin.corp-partner.google.com>
+> (authored:1/11=9%,commit_signer:3/19=16%,authored:3/19=16%,removed_lines:64/157=41%)
+> Allen-KH Cheng <allen-kh.cheng@mediatek.com> (removed_lines:1/1=100%)
+> Alexandre Mergnat <amergnat@baylibre.com> (commit_signer:7/19=37%)
+> Dan Carpenter <dan.carpenter@linaro.org> (authored:1/19=5%)
+> Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+> (removed_lines:11/157=7%)
 
-Ok, this caught my attention...
 
-I see that selinux_inode() has it, but smack_inode() doesn't.
+> linux-sound@vger.kernel.org (open list:SOUND - SOC LAYER / DYNAMIC AUDIO
+> POWER MANAGEM...)
 
-Some Smack code assumes that the inode security blob is always non-NULL:
+^^^^ You forgot to add this one :-)
 
-static void init_inode_smack(struct inode *inode, struct smack_known *skp)
-{
-	struct inode_smack *isp = smack_inode(inode);
+Regards,
+Angelo
 
-	isp->smk_inode = skp;
-	isp->smk_flags = 0;
-}
-
-
-Is that intended? Should I add the check?
-
-Thanks
-
-Roberto
-
->      return inode->i_security + integrity_blob_sizes.lbs_inode;
->    }
-> 
-> --
-> paul-moore.com
 
