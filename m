@@ -2,69 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E8B78123DB
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 01:27:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1780381237C
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 00:46:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442665AbjLMXnP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 18:43:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40794 "EHLO
+        id S234065AbjLMXqM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 18:46:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58260 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235369AbjLMXnC (ORCPT
+        with ESMTP id S230521AbjLMXqK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 18:43:02 -0500
-Received: from mail-oo1-xc29.google.com (mail-oo1-xc29.google.com [IPv6:2607:f8b0:4864:20::c29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C91DF26A8
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 15:42:57 -0800 (PST)
-Received: by mail-oo1-xc29.google.com with SMTP id 006d021491bc7-58d06bfadf8so4817779eaf.1
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 15:42:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702510977; x=1703115777; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=irtsiUCUylZGPtSeScUGgZwEzBoaabXmknnY3lf14ec=;
-        b=DN2eZGc2DJ6T5yMWP8MhjBhzAWxYidnQoWr873YzmOwwHP92cK7dcyKPjjtuAK4rYg
-         xN08bxuFyvJJqTyqC3dTID2x0Xxx2ZeO883Gc5RezwhBqy80xxrN4EA4RfZwbqRhqAch
-         ut8sAOBiuhZRznLTv2FZHWF8J1keffL5+bIw1MF0dukCO4O/TaIzlpzUfcnTuzOpcqqF
-         6ifGVl1SBfvnCC7nRGBB+P/zJXeZ7UHuxLgc3nTzpXrsvhsC+joJQze94AQ2+EriUblJ
-         lArAo+hI9eR1kuBlAN/km5xMm3v3trZEtX3G/skkYogoTdaRd+D5MqR8+62c/SHGOGSs
-         WG+A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702510977; x=1703115777;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=irtsiUCUylZGPtSeScUGgZwEzBoaabXmknnY3lf14ec=;
-        b=cqdH3oHj5Pl9cVwPuLtrjjDO100g+EWBV1/pR7ndohYAl/Tepm4OUwSZpk1nid+Xwt
-         cfGCoOB/imJfcEo6jjWHmxSrODTDbjYYInJla4FklXlY2vxI0TFAXSrZ2mQfLEwoE+Hb
-         q8Sr5mjpgs+iJNsdTrTT7dpxyehpjXJFn3Wf8GpyI4OzgDN3HQTchwbKAC9sc1bp7ku5
-         bFnF9VFv1SgRwb4lKE4Ah/8vnVRpjdebPqTZzzid4eniJlRULQ6LONXmtzG3ygSAh7Q3
-         JyYAPEycRpSswtNxnlKODE1wJZRAb3l3nu6q3NmZPfqzDDkwdw6QTPOnttN8mqJW0fKh
-         mZ0Q==
-X-Gm-Message-State: AOJu0YzWTPGE69eiF3aYiceV0Znr2dYASOtGw5slGAlfNU3DhiCbD4HX
-        YK1RL9NDjFpWY+A8WLXlIBnYYVF20DlOvkFrYLc=
-X-Google-Smtp-Source: AGHT+IHyxsSvPMDcrEJ+OhDv3fNcRm1G3ibjxqwdrYC9xsCq7fCgqUthDr/+y8Iq/Bc8aUj0imzWPPXYAnpzZDLH/fk=
-X-Received: by 2002:a05:6358:99a0:b0:16b:fe18:27fc with SMTP id
- j32-20020a05635899a000b0016bfe1827fcmr10609380rwb.31.1702510976965; Wed, 13
- Dec 2023 15:42:56 -0800 (PST)
+        Wed, 13 Dec 2023 18:46:10 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9886C9
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 15:46:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1702511177; x=1734047177;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=Kkibd09OWbQ7qyk8+w4xeNQR2v52ToVvpvlYJrSAjC4=;
+  b=bV5uMFk6Y8P6zx8VJ0LZ8rBxp6r9pdxf9H6aUK1VYWs7YJaniQzGOdpv
+   nUTYocnroZVKR/dhERhtcHZ9mSZU7HQZzRaavHBwrQsIKeiR0NPm909Vm
+   xgIlOQd4YtiULIa2xeqNNP3PUbJQNKXuHQR5HEAcWy5bu2LFCkqTSDz2q
+   qeZwnQdTF3Lp0KAIGJG6YZVabnVVrUHziHzn9vOCSU9oRRBUdmq/fewuB
+   Jk5GsV6qAg3+sjOnsCrQVDLWij9bHdyg6npzrv52C5D/ztByXdLkYwhmj
+   6oTaFPr8hrz0oJQVeKGNSisF1dz9a00NZ5TwC2Jm2BPlccYb5+GTxNQfE
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10923"; a="1877240"
+X-IronPort-AV: E=Sophos;i="6.04,274,1695711600"; 
+   d="scan'208";a="1877240"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Dec 2023 15:46:17 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10923"; a="947354301"
+X-IronPort-AV: E=Sophos;i="6.04,274,1695711600"; 
+   d="scan'208";a="947354301"
+Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
+  by orsmga005.jf.intel.com with ESMTP; 13 Dec 2023 15:46:15 -0800
+Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1rDYvd-000LIF-19;
+        Wed, 13 Dec 2023 23:46:13 +0000
+Date:   Thu, 14 Dec 2023 07:45:59 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Kent Overstreet <kmo@daterainc.com>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: fs/bcachefs/backpointers.c:46:5-8: Unneeded variable: "ret". Return
+ "  0" on line 53
+Message-ID: <202312140748.LI8Jmu2W-lkp@intel.com>
 MIME-Version: 1.0
-References: <20231212232659.18839-1-npache@redhat.com> <CA+fCnZeE1g7F6UDruw-3v5eTO9u_jcROG4Hbndz8Bnr62Opnyg@mail.gmail.com>
- <CAA1CXcBdNd0rSW+oAm24hpEj5SM48XGc2AWagRcSDNv96axQ9w@mail.gmail.com>
-In-Reply-To: <CAA1CXcBdNd0rSW+oAm24hpEj5SM48XGc2AWagRcSDNv96axQ9w@mail.gmail.com>
-From:   Andrey Konovalov <andreyknvl@gmail.com>
-Date:   Thu, 14 Dec 2023 00:42:46 +0100
-Message-ID: <CA+fCnZd4-Hx3vOXdBawiSNPrQ+OZ+fhuAmK3f4TLfDWVmDX9Fw@mail.gmail.com>
-Subject: Re: [PATCH] kunit: kasan_test: disable fortify string checker on kmalloc_oob_memset
-To:     Nico Pache <npache@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        kasan-dev@googlegroups.com, akpm@linux-foundation.org,
-        vincenzo.frascino@arm.com, dvyukov@google.com, glider@google.com,
-        ryabinin.a.a@gmail.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -72,34 +62,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 13, 2023 at 10:42=E2=80=AFPM Nico Pache <npache@redhat.com> wro=
-te:
->
-> > > diff --git a/mm/kasan/kasan_test.c b/mm/kasan/kasan_test.c
-> > > index 8281eb42464b..5aeba810ba70 100644
-> > > --- a/mm/kasan/kasan_test.c
-> > > +++ b/mm/kasan/kasan_test.c
-> > > @@ -493,14 +493,17 @@ static void kmalloc_oob_memset_2(struct kunit *=
-test)
-> > >  {
-> > >         char *ptr;
-> > >         size_t size =3D 128 - KASAN_GRANULE_SIZE;
-> > > +       size_t size2 =3D 2;
-> >
-> > Let's name this variable access_size or memset_size. Here and in the
-> > other changed tests.
->
-> Hi Andrey,
->
-> I agree that is a better variable name, but I chose size2 because
-> other kasan tests follow the same pattern.
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   5bd7ef53ffe5ca580e93e74eb8c81ed191ddc4bd
+commit: b65db750e2bb9252321fd54c284edd73c1595a09 bcachefs: Enumerate fsck errors
+date:   6 weeks ago
+config: x86_64-randconfig-102-20231213 (https://download.01.org/0day-ci/archive/20231214/202312140748.LI8Jmu2W-lkp@intel.com/config)
+compiler: clang version 16.0.4 (https://github.com/llvm/llvm-project.git ae42196bc493ffe877a7e3dff8be32035dea4d07)
+reproduce: (https://download.01.org/0day-ci/archive/20231214/202312140748.LI8Jmu2W-lkp@intel.com/reproduce)
 
-These other tests use size1 and size2 to refer to different sizes of
-krealloc allocations, which seems reasonable.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202312140748.LI8Jmu2W-lkp@intel.com/
 
-> Please let me know if you still want me to update it given that info
-> and I'll send a V2.
+cocci warnings: (new ones prefixed by >>)
+>> fs/bcachefs/backpointers.c:46:5-8: Unneeded variable: "ret". Return "  0" on line 53
+--
+>> fs/bcachefs/inode.c:404:5-8: Unneeded variable: "ret". Return "  0" on line 437
+   fs/bcachefs/inode.c:617:5-8: Unneeded variable: "ret". Return "  0" on line 623
+--
+>> fs/bcachefs/xattr.c:80:5-8: Unneeded variable: "ret". Return "  0" on line 104
 
-Yes, please update the name.
+vim +46 fs/bcachefs/backpointers.c
 
-Thank you!
+    39	
+    40	int bch2_backpointer_invalid(struct bch_fs *c, struct bkey_s_c k,
+    41				     enum bkey_invalid_flags flags,
+    42				     struct printbuf *err)
+    43	{
+    44		struct bkey_s_c_backpointer bp = bkey_s_c_to_backpointer(k);
+    45		struct bpos bucket = bp_pos_to_bucket(c, bp.k->p);
+  > 46		int ret = 0;
+    47	
+    48		bkey_fsck_err_on(!bpos_eq(bp.k->p, bucket_pos_to_bp(c, bucket, bp.v->bucket_offset)),
+    49				 c, err,
+    50				 backpointer_pos_wrong,
+    51				 "backpointer at wrong pos");
+    52	fsck_err:
+  > 53		return ret;
+    54	}
+    55	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
