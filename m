@@ -2,158 +2,293 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B8374810C98
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 09:39:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9512A810CA3
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 09:42:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229637AbjLMIjX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 03:39:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57106 "EHLO
+        id S229551AbjLMImo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 03:42:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44890 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229458AbjLMIjV (ORCPT
+        with ESMTP id S230181AbjLMImk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 03:39:21 -0500
-Received: from wout4-smtp.messagingengine.com (wout4-smtp.messagingengine.com [64.147.123.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9153CA5;
-        Wed, 13 Dec 2023 00:39:27 -0800 (PST)
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailout.west.internal (Postfix) with ESMTP id 409F13200A1B;
-        Wed, 13 Dec 2023 03:39:23 -0500 (EST)
-Received: from imap51 ([10.202.2.101])
-  by compute5.internal (MEProxy); Wed, 13 Dec 2023 03:39:24 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-        :cc:content-type:content-type:date:date:from:from:in-reply-to
-        :in-reply-to:message-id:mime-version:references:reply-to:subject
-        :subject:to:to; s=fm1; t=1702456762; x=1702543162; bh=XQXN2566Zk
-        ZSs+PwY8iTnHgGTH/n6ddKnPfQrv3KIgU=; b=TTjkPNs4OwJceq1YPyZ65dr5uo
-        h0sDVVuBvHxssTFL9sSOYknbaQx6vvrbzsLqtpwrnkzCy3GtAFcut0NAFhtaRD+g
-        IcCyFgmLIjgZBIpetFxBFMImroNdbHm2tqSMKtP/F+f05Dy/s5mASMXGhH872Efx
-        DMcUN5Ka8Gdxw6d1nYWIc72GdTkz+AyGahQDntsLYS3AqbBIf1XNHXWa9PJaZYH6
-        7k1gSeMefceBh3ZKHfX7Q9Pozy7GRZBCjltvFrHvFtIFLEia+Z7uNx/HW9jl3wf9
-        bjT3VZbyo4Y+wl/DDCZLu5v7KQe4tl7mdO2aaMI88+cHGwhLJTuOxp+oCJ+g==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-type:content-type:date:date
-        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-        :message-id:mime-version:references:reply-to:subject:subject:to
-        :to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm1; t=1702456762; x=1702543162; bh=XQXN2566ZkZSs+PwY8iTnHgGTH/n
-        6ddKnPfQrv3KIgU=; b=MDsOKYf62e+GpKMfkEnjnIsmCgsxq/gO7Yc97QXa/xzf
-        J3O2GF/kkcA95qRqU22G7fOV7WCTjtiK2mEbMeWkRhlbM8pjazqTjXjMlWoolq5D
-        h39amMWJM/hdGUIi9AIMuLIgYCFh2ZQUE5Gnh5+Mh0D6vX6Rc7y3c/bh0hHDVDXN
-        yeS4mldUYfISujKscqPJZg2DDq9pW2w/3T5/B8HPFnJC+2FqwET/FhLeDgUn1GgK
-        HALE5HOPD7WmzRupdRFh4RFgoBHulNyb22tzELtaltFg8KVGrTc37gnhU7rVVNHP
-        L0YbGU9UvtJXMyDwsMWSP8kQnIQ4HXX2JPJ/1kfw5w==
-X-ME-Sender: <xms:um15Zaif0YxiXflMl9-5JdrsX03_z0gymQQalcVYh6mCaK9crqhIyw>
-    <xme:um15ZbAGiHFbF4e76DRWarLh1dOqok1mlsydJV-iFFux-_B5Xr9cop7Tn749PRLxB
-    68p-Guk1lIbyhvnbvk>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrudelhedguddvfecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpefofgggkfgjfhffhffvvefutgesthdtredtreertdenucfhrhhomhepfdet
-    rhhnugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrg
-    htthgvrhhnpeffheeugeetiefhgeethfejgfdtuefggeejleehjeeutefhfeeggefhkedt
-    keetffenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
-    grrhhnugesrghrnhgusgdruggv
-X-ME-Proxy: <xmx:um15ZSFRjU5ny-9DioHPWXmlifRzmg-8N_TdnWuXUyCPlCM1g-rs5A>
-    <xmx:um15ZTSdXhafYqYwHSOfl70hIZS4QGPxUqmLgTmeAknlxmh5rNv6Fg>
-    <xmx:um15ZXxrucf_pfgNDjwpUVnAUKBUm0z9q3uOfhxtJrqmB-hVRYxZFA>
-    <xmx:um15ZarlFksQD-1ZlFVSGIapOT0NtFyQ7HECxhc-gcxEoI58IoL5Dw>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id 6149DB6008D; Wed, 13 Dec 2023 03:39:22 -0500 (EST)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.9.0-alpha0-1283-g327e3ec917-fm-20231207.002-g327e3ec9
+        Wed, 13 Dec 2023 03:42:40 -0500
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3034DE8;
+        Wed, 13 Dec 2023 00:42:45 -0800 (PST)
+Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BD7r1ak003468;
+        Wed, 13 Dec 2023 08:42:32 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+        message-id:date:mime-version:subject:to:cc:references:from
+        :in-reply-to:content-type:content-transfer-encoding; s=
+        qcppdkim1; bh=iAjFsOwENPi7BwNpFRzZmgyc+Bw78gJRbpoqxoD3c+8=; b=iB
+        7k1AMsrq9g5IUpWmOdaYFr7oaRThtRqe4xwvgpK3P0raEYOnMFYYOIwxSDg3Kclo
+        zGlmm86Ga0ulaewGvxBSLIf7O6pRunrpS0h4aJBxw8kGAatTkviJIp4IgZ8TnT8Z
+        XkS1ZNUEuaVmsNdA+SlRruFbElUNAZFEaQS9IRDaqxAtIo4tJ2+tZz4ZrK4rFLtc
+        9lL6gPGs65SzYRotQN2ug7pZqwdjzOdfCM0RDe3cXNLZ2gXhCDQ5gkl3t15m7KAT
+        qacubV4svHcADlLnPWeVgOV+c+AoppUOxsafr6zxqkM5GHwD77gjLtbaURovBOcr
+        E7nK1MujQB4X0NITXyaQ==
+Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3uy4kjgp4e-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 13 Dec 2023 08:42:31 +0000 (GMT)
+Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
+        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3BD8gUgD029301
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 13 Dec 2023 08:42:30 GMT
+Received: from [10.253.13.71] (10.80.80.8) by nalasex01c.na.qualcomm.com
+ (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Wed, 13 Dec
+ 2023 00:42:25 -0800
+Message-ID: <d8e723f0-2c51-402b-9464-7e4a928cf748@quicinc.com>
+Date:   Wed, 13 Dec 2023 16:42:22 +0800
 MIME-Version: 1.0
-Message-Id: <97a826ab-cd68-4494-884e-f7bd512a7bef@app.fastmail.com>
-In-Reply-To: <ZXlmnmGepRnMyNfr@kekkonen.localdomain>
-References: <20231212213625.3653558-1-arnd@kernel.org>
- <ZXlmnmGepRnMyNfr@kekkonen.localdomain>
-Date:   Wed, 13 Dec 2023 09:39:01 +0100
-From:   "Arnd Bergmann" <arnd@arndb.de>
-To:     "Sakari Ailus" <sakari.ailus@linux.intel.com>,
-        "Arnd Bergmann" <arnd@kernel.org>
-Cc:     "Mauro Carvalho Chehab" <mchehab@kernel.org>,
-        "Nathan Chancellor" <nathan@kernel.org>,
-        "Jacopo Mondi" <jacopo.mondi@ideasonboard.com>,
-        "Hans Verkuil" <hverkuil-cisco@xs4all.nl>,
-        "laurent.pinchart" <laurent.pinchart@ideasonboard.com>,
-        "Nick Desaulniers" <ndesaulniers@google.com>,
-        "Bill Wendling" <morbo@google.com>,
-        "Justin Stitt" <justinstitt@google.com>,
-        "Hans de Goede" <hdegoede@redhat.com>,
-        "Tomi Valkeinen" <tomi.valkeinen@ideasonboard.com>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        llvm@lists.linux.dev
-Subject: Re: [PATCH] media: i2c: mt9m114: add CONFIG_COMMON_CLK dependency
-Content-Type: text/plain
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 5/5] dt-bindings: net: ipq4019-mdio: Document ipq5332
+ platform
+Content-Language: en-US
+To:     Rob Herring <robh@kernel.org>
+CC:     <agross@kernel.org>, <andersson@kernel.org>,
+        <konrad.dybcio@linaro.org>, <davem@davemloft.net>,
+        <edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <andrew@lunn.ch>, <hkallweit1@gmail.com>, <linux@armlinux.org.uk>,
+        <robert.marko@sartura.hr>, <linux-arm-msm@vger.kernel.org>,
+        <netdev@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <quic_srichara@quicinc.com>
+References: <20231212115151.20016-1-quic_luoj@quicinc.com>
+ <20231212115151.20016-6-quic_luoj@quicinc.com>
+ <20231212200641.GA2331615-robh@kernel.org>
+From:   Jie Luo <quic_luoj@quicinc.com>
+In-Reply-To: <20231212200641.GA2331615-robh@kernel.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: 34yrAcRTHXBHQBaobTMc3Bf9q-h_bjus
+X-Proofpoint-ORIG-GUID: 34yrAcRTHXBHQBaobTMc3Bf9q-h_bjus
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-09_02,2023-12-07_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0
+ priorityscore=1501 phishscore=0 bulkscore=0 lowpriorityscore=0 mlxscore=0
+ malwarescore=0 clxscore=1015 suspectscore=0 mlxlogscore=999 spamscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2311290000 definitions=main-2312130061
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 13, 2023, at 09:09, Sakari Ailus wrote:
-> On Tue, Dec 12, 2023 at 10:18:04PM +0100, Arnd Bergmann wrote:
->> From: Arnd Bergmann <arnd@arndb.de>
->> 
->> With clang-16, building without COMMON_CLK triggers a range check on
->> udelay() because of a constant division-by-zero calculation:
->> 
->> ld.lld: error: undefined symbol: __bad_udelay
->> >>> referenced by mt9m114.c
->> >>>               drivers/media/i2c/mt9m114.o:(mt9m114_power_on) in archive vmlinux.a
->> 
->> Avoid this by adding a Kconfig dependency that avoids the broken build.
->
-> This sounds like an odd way to fix an issue with udelay(). On which arch
-> does it happen? Wouldn't it be better to fix the udelay() problem in the
-> source?
->
-> A quick check reveals there are about 2400 files using udelay.
 
-I observed this on arm, but same sanity check exists on arc, m68k,
-microblaze, nios2 and xtensa, all of which try to discourage
-overly large constant delays busy loops. On Arm that limit is
-any delay of over 2 miliseconds, at which time a driver should
-generally use either msleep() to avoid a busy-loop, or (in extreme
-cases) mdelay().
 
-I first tried to rewrite the mt9m114_power_on() function to
-have an upper bound on the udelay, but that didn't avoid the
-link error because it still got into undefined C. Disabling
-the driver without COMMON_CLK seemed easier since it already
-fails to probe if mt9m114_clk_init() runs into a zero clk.
+On 12/13/2023 4:06 AM, Rob Herring wrote:
+> On Tue, Dec 12, 2023 at 07:51:50PM +0800, Luo Jie wrote:
+>> Update the yaml file for the new DTS properties.
+>>
+>> 1. cmn-reference-clock for the CMN PLL source clock select.
+>> 2. clock-frequency for MDIO clock frequency config.
+>> 3. add uniphy AHB & SYS GCC clocks.
+>> 4. add reset-gpios for MDIO bus level reset.
+>>
+>> Signed-off-by: Luo Jie <quic_luoj@quicinc.com>
+>> ---
+>>   .../bindings/net/qcom,ipq4019-mdio.yaml       | 157 +++++++++++++++++-
+>>   1 file changed, 153 insertions(+), 4 deletions(-)
+>>
+>> diff --git a/Documentation/devicetree/bindings/net/qcom,ipq4019-mdio.yaml b/Documentation/devicetree/bindings/net/qcom,ipq4019-mdio.yaml
+>> index 3407e909e8a7..9546a6ad7841 100644
+>> --- a/Documentation/devicetree/bindings/net/qcom,ipq4019-mdio.yaml
+>> +++ b/Documentation/devicetree/bindings/net/qcom,ipq4019-mdio.yaml
+>> @@ -20,6 +20,8 @@ properties:
+>>             - enum:
+>>                 - qcom,ipq6018-mdio
+>>                 - qcom,ipq8074-mdio
+>> +              - qcom,ipq9574-mdio
+>> +              - qcom,ipq5332-mdio
+>>             - const: qcom,ipq4019-mdio
+> 
+> A driver can function without knowing about all these new registers and
+> clocks? If not, then it can't be compatible with "qcom,ipq4019-mdio".
 
-Maybe we could just fall back to the soft reset when the
-clock rate is unknown?
+Yes, the driver can work without knowing the compatible string.
+the configuration is decided by the DT property defined or not.
 
-diff --git a/drivers/media/i2c/mt9m114.c b/drivers/media/i2c/mt9m114.c
-index 0a22f328981d..88a67568edf8 100644
---- a/drivers/media/i2c/mt9m114.c
-+++ b/drivers/media/i2c/mt9m114.c
-@@ -2092,6 +2092,7 @@ static void mt9m114_ifp_cleanup(struct mt9m114 *sensor)
- 
- static int mt9m114_power_on(struct mt9m114 *sensor)
- {
-+       long freq;
-        int ret;
- 
-        /* Enable power and clocks. */
-@@ -2104,9 +2105,10 @@ static int mt9m114_power_on(struct mt9m114 *sensor)
-        if (ret < 0)
-                goto error_regulator;
- 
-+       freq = clk_get_rate(sensor->clk);
-+
-        /* Perform a hard reset if available, or a soft reset otherwise. */
--       if (sensor->reset) {
--               long freq = clk_get_rate(sensor->clk);
-+       if (sensor->reset && freq) {
-                unsigned int duration;
- 
-                /*
+> 
+>>   
+>>     "#address-cells":
+>> @@ -30,19 +32,71 @@ properties:
+>>   
+>>     reg:
+>>       minItems: 1
+>> -    maxItems: 2
+>> +    maxItems: 5
+>>       description:
+>> -      the first Address and length of the register set for the MDIO controller.
+>> -      the second Address and length of the register for ethernet LDO, this second
+>> -      address range is only required by the platform IPQ50xx.
+>> +      the first Address and length of the register set for the MDIO controller,
+>> +      the optional second, third and fourth address and length of the register
+>> +      for ethernet LDO, these three address range are required by the platform
+>> +      IPQ50xx/IPQ5332/IPQ9574, the last address and length is for the CMN clock
+>> +      to select the reference clock.
+>> +
+>> +  reg-names:
+>> +    minItems: 1
+>> +    maxItems: 5
+>>   
+>>     clocks:
+>> +    minItems: 1
+>>       items:
+>>         - description: MDIO clock source frequency fixed to 100MHZ
+>> +      - description: UNIPHY0 AHB clock source frequency fixed to 100MHZ
+>> +      - description: UNIPHY1 AHB clock source frequency fixed to 100MHZ
+>> +      - description: UNIPHY0 SYS clock source frequency fixed to 24MHZ
+>> +      - description: UNIPHY1 SYS clock source frequency fixed to 24MHZ
+> 
+> These are all clock inputs to this h/w block and not some other clocks
+> you want to manage?
 
-    Arnd
+Yes, for ipq5332, these 5 clocks are need to be managed, for the legacy 
+platform such as ipq8074, only MDIO clock is needed.
+
+No other more clock needs to be managed for the current IPQ platforms.
+
+> 
+>>   
+>>     clock-names:
+>> +    minItems: 1
+>>       items:
+>>         - const: gcc_mdio_ahb_clk
+>> +      - const: gcc_uniphy0_ahb_clk
+>> +      - const: gcc_uniphy1_ahb_clk
+>> +      - const: gcc_uniphy0_sys_clk
+>> +      - const: gcc_uniphy1_sys_clk
+> 
+> "gcc" is presumably the name of the clock controller in QCom chips.
+> Well, the clock source should not be part of the binding. The names
+> should be local for what they are for. So drop 'gcc_'. And '_clk' is
+> also redundant, so drop it too. Unfortunately you are stuck with the
+> name of the 1st entry.
+
+Yes, gcc is the name of QCOM SOC clock controller.
+will remove the "gcc_" and "_clk" for the new added clocks.
+
+we should keep the existed DT gcc_mdio_ahb_clk unmodified, right?
+since it has been used in the current device tree.
+
+> 
+>> +
+>> +  cmn-reference-clock:
+>> +    oneOf:
+>> +      - items:
+>> +          - enum:
+>> +              - 0   # CMN PLL reference internal 48MHZ
+>> +              - 1   # CMN PLL reference external 25MHZ
+>> +              - 2   # CMN PLL reference external 31250KHZ
+>> +              - 3   # CMN PLL reference external 40MHZ
+>> +              - 4   # CMN PLL reference external 48MHZ
+>> +              - 5   # CMN PLL reference external 50MHZ
+>> +              - 6   # CMN PLL reference internal 96MHZ
+>> +
+>> +  clock-frequency:
+>> +    oneOf:
+>> +      - items:
+>> +          - enum:
+>> +              - 12500000
+>> +              - 6250000
+>> +              - 3125000
+>> +              - 1562500
+>> +              - 781250
+>> +              - 390625
+>> +    description:
+>> +      The MDIO bus clock that must be output by the MDIO bus hardware,
+>> +      only the listed frequecies above can be configured, other frequency
+>> +      will cause malfunction. If absent, the default hardware value is used.
+>> +
+>> +  reset-gpios:
+>> +    maxItems: 1
+>> +
+>> +  reset-assert-us:
+>> +    maxItems: 1
+>> +
+>> +  reset-deassert-us:
+>> +    maxItems: 1
+>>   
+>>   required:
+>>     - compatible
+>> @@ -61,6 +115,8 @@ allOf:
+>>                 - qcom,ipq5018-mdio
+>>                 - qcom,ipq6018-mdio
+>>                 - qcom,ipq8074-mdio
+>> +              - qcom,ipq5332-mdio
+>> +              - qcom,ipq9574-mdio
+>>       then:
+>>         required:
+>>           - clocks
+>> @@ -70,6 +126,40 @@ allOf:
+>>           clocks: false
+>>           clock-names: false
+>>   
+>> +  - if:
+>> +      properties:
+>> +        compatible:
+>> +          contains:
+>> +            enum:
+>> +              - qcom,ipq5332-mdio
+>> +    then:
+>> +      properties:
+>> +        clocks:
+>> +          minItems: 5
+>> +          maxItems: 5
+>> +        reg-names:
+>> +          items:
+>> +            - const: mdio
+>> +            - const: eth_ldo1
+>> +            - const: eth_ldo2
+>> +            - const: cmn_blk
+> 
+> Perhaps cmn_blk should come 2nd, so all the variants have the same entry
+> indices. Then you can move this to the top level and just say 'minItems:
+> 4' here.
+
+Thanks Rob for the suggestion, i will update to move cmn_blk to the 2nd
+location.
+
+> 
+> 
+>> +
+>> +  - if:
+>> +      properties:
+>> +        compatible:
+>> +          contains:
+>> +            enum:
+>> +              - qcom,ipq9574-mdio
+>> +    then:
+>> +      properties:
+>> +        reg-names:
+>> +          items:
+>> +            - const: mdio
+>> +            - const: eth_ldo1
+>> +            - const: eth_ldo2
+>> +            - const: eth_ldo3
+>> +            - const: cmn_blk
+> 
+> And 'minItems: 5' here.
+> 
+> The ipq9574 adds the CMN block, but none of the clocks? Weird.
+> 
+> Rob
+
+For ipq9574, only mdio clock is needed, the uniphy ahb and sys clock is
+not needed to configure.
+
+Yes, there is some Ethernet design delta between ipq9574 and ipq5332.
