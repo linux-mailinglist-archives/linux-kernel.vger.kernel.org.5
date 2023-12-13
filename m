@@ -2,64 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F0F3811F50
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 20:49:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AB1A811F47
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 20:48:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233733AbjLMTtK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 14:49:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33686 "EHLO
+        id S1378316AbjLMTse (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 14:48:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54316 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229811AbjLMTtJ (ORCPT
+        with ESMTP id S229811AbjLMTsd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 14:49:09 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B237B7
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 11:49:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1702496955; x=1734032955;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=VMIyWFPBoziBwOR2qRbfpmySuBtcRnnAfsw+Uk9nZvQ=;
-  b=iQMFuZnEuDypRs4z3RI8SiSsb8X8qRYT7J9UyMEtMKJIab0+whSdoq3h
-   /g5i5AK1JQeb+2vYLDOyuQg9gtQ+7cXZ5Pe1A+ei3qqHRM3PdPLgBGfco
-   VyrxHbGJbCcxRMnu9ivmC+AUJ5kcKb5sSlMH1/TWHVuwxKxFZsJz1gdWD
-   1/5lejl/VgO0MfUBd6XYvVmOHCVP4GgeP471mIWCRgQYhexLrXI4MqkxC
-   NL2aswCF/2/GPPxH5liPXJFcPjs+RzeHFYHAekUkcL5nvPZjX7Ui0M8G2
-   gP0ynhmBNuOSww8s7cCJaLIQWPTliqFNdtd0KLOYOzSh6VWNcOOMc996n
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10923"; a="397801797"
-X-IronPort-AV: E=Sophos;i="6.04,273,1695711600"; 
-   d="scan'208";a="397801797"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Dec 2023 11:49:14 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10923"; a="774064432"
-X-IronPort-AV: E=Sophos;i="6.04,273,1695711600"; 
-   d="scan'208";a="774064432"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by orsmga002.jf.intel.com with ESMTP; 13 Dec 2023 11:49:12 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1rDVED-000L4v-29;
-        Wed, 13 Dec 2023 19:49:09 +0000
-Date:   Thu, 14 Dec 2023 03:48:21 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Wed, 13 Dec 2023 14:48:33 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2C039C
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 11:48:39 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7215AC433C7;
+        Wed, 13 Dec 2023 19:48:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1702496919;
+        bh=MZtzdUx4eKT5heieT9T5VOR43tMJJzsqr7+1whfzXas=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=V7uGFuNHvpesCeFV2U++2OplcF8v4oBAlDcXfknxMkfBwIOdoPbiDOhepHt8u3hhn
+         dJiojJM/VfCGpAMnMesfB4H5uCicK1y5jxuLv5FHILPBXat0VWi1iOAoOxU9gZgZUb
+         l8M7QsbawfZos/ahINA3IdeLESlKIPE1+bhtG7e0PXeiC1L6nRYSvOEzGoUYGsfozI
+         ekB6+Al5sf4osUXPOvKnkbVafY9lGZk41toCjgNPFfTlwkNnZHVtW7V8nOHGoDgxSp
+         wCdSCFc4lrTp0SYb/2qv/dL0X/a4SRA2op13Gh+K9k9gMcYs8U87M2mqMuH+YfwILd
+         GnU5OqCI0duSA==
+Date:   Wed, 13 Dec 2023 19:48:28 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     Deepak Gupta <debug@rivosinc.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Arnd Bergmann <arnd@arndb.de>
-Subject: drivers/uio/uio_aec.c:50:49: sparse: sparse: incorrect type in
- argument 1 (different address spaces)
-Message-ID: <202312140356.Kzhqi4p0-lkp@intel.com>
+        Marc Zyngier <maz@kernel.org>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Arnd Bergmann <arnd@arndb.de>, Oleg Nesterov <oleg@redhat.com>,
+        Eric Biederman <ebiederm@xmission.com>,
+        Kees Cook <keescook@chromium.org>,
+        Shuah Khan <shuah@kernel.org>,
+        "Rick P. Edgecombe" <rick.p.edgecombe@intel.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Szabolcs Nagy <Szabolcs.Nagy@arm.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Florian Weimer <fweimer@redhat.com>,
+        Christian Brauner <brauner@kernel.org>,
+        Thiago Jung Bauermann <thiago.bauermann@linaro.org>,
+        linux-arm-kernel@lists.infradead.org, linux-doc@vger.kernel.org,
+        kvmarm@lists.linux.dev, linux-fsdevel@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-mm@kvack.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-riscv@lists.infradead.org
+Subject: Re: [PATCH v7 02/39] prctl: arch-agnostic prctl for shadow stack
+Message-ID: <feb6d1fc-c144-4f2b-833f-b3e00646cf30@sirena.org.uk>
+References: <20231122-arm64-gcs-v7-0-201c483bd775@kernel.org>
+ <20231122-arm64-gcs-v7-2-201c483bd775@kernel.org>
+ <CAKC1njSC5cC_fXnyNAPt=WU6cD-OjLKFxo90oVPmsLJbuWf4nw@mail.gmail.com>
+ <d708b493-267a-4418-be91-9bde6b2cf50c@sirena.org.uk>
+ <CAKC1njSQPO8ja7AkTzQ724hhSsGjchH9dLbbH9LXP0ZiKj-zPQ@mail.gmail.com>
+ <0d0d8802-09e3-4ea5-a0b4-b3a08c8a282e@sirena.org.uk>
+ <CAKC1njRHs0R=VKfn4jBap9__oR0rBHmNy7_tqHR8=xEHdUE4+A@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="PqL9xaSuINxjZ0qj"
 Content-Disposition: inline
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+In-Reply-To: <CAKC1njRHs0R=VKfn4jBap9__oR0rBHmNy7_tqHR8=xEHdUE4+A@mail.gmail.com>
+X-Cookie: One size fits all.
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -67,97 +82,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   88035e5694a86a7167d490bb95e9df97a9bb162b
-commit: 8f28ca6bd8211214faf717677bbffe375c2a6072 iomap: constify ioreadX() iomem argument (as in generic implementation)
-date:   3 years, 4 months ago
-config: i386-randconfig-061-20231101 (https://download.01.org/0day-ci/archive/20231214/202312140356.Kzhqi4p0-lkp@intel.com/config)
-compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231214/202312140356.Kzhqi4p0-lkp@intel.com/reproduce)
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202312140356.Kzhqi4p0-lkp@intel.com/
+--PqL9xaSuINxjZ0qj
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-sparse warnings: (new ones prefixed by >>)
-   drivers/uio/uio_aec.c:44:49: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected void [noderef] __iomem *int_flag @@     got void * @@
-   drivers/uio/uio_aec.c:44:49: sparse:     expected void [noderef] __iomem *int_flag
-   drivers/uio/uio_aec.c:44:49: sparse:     got void *
->> drivers/uio/uio_aec.c:50:49: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const [noderef] __iomem * @@     got void * @@
-   drivers/uio/uio_aec.c:50:49: sparse:     expected void const [noderef] __iomem *
-   drivers/uio/uio_aec.c:50:49: sparse:     got void *
-   drivers/uio/uio_aec.c:59:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const [noderef] __iomem * @@     got void * @@
-   drivers/uio/uio_aec.c:59:9: sparse:     expected void const [noderef] __iomem *
-   drivers/uio/uio_aec.c:59:9: sparse:     got void *
-   drivers/uio/uio_aec.c:59:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const [noderef] __iomem * @@     got void * @@
-   drivers/uio/uio_aec.c:59:9: sparse:     expected void const [noderef] __iomem *
-   drivers/uio/uio_aec.c:59:9: sparse:     got void *
-   drivers/uio/uio_aec.c:59:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const [noderef] __iomem * @@     got void * @@
-   drivers/uio/uio_aec.c:59:9: sparse:     expected void const [noderef] __iomem *
-   drivers/uio/uio_aec.c:59:9: sparse:     got void *
-   drivers/uio/uio_aec.c:59:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const [noderef] __iomem * @@     got void * @@
-   drivers/uio/uio_aec.c:59:9: sparse:     expected void const [noderef] __iomem *
-   drivers/uio/uio_aec.c:59:9: sparse:     got void *
-   drivers/uio/uio_aec.c:59:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const [noderef] __iomem * @@     got void * @@
-   drivers/uio/uio_aec.c:59:9: sparse:     expected void const [noderef] __iomem *
-   drivers/uio/uio_aec.c:59:9: sparse:     got void *
-   drivers/uio/uio_aec.c:59:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const [noderef] __iomem * @@     got void * @@
-   drivers/uio/uio_aec.c:59:9: sparse:     expected void const [noderef] __iomem *
-   drivers/uio/uio_aec.c:59:9: sparse:     got void *
-   drivers/uio/uio_aec.c:88:20: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected void *priv @@     got void [noderef] __iomem * @@
-   drivers/uio/uio_aec.c:88:20: sparse:     expected void *priv
-   drivers/uio/uio_aec.c:88:20: sparse:     got void [noderef] __iomem *
-   drivers/uio/uio_aec.c:104:42: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void [noderef] __iomem * @@     got void * @@
-   drivers/uio/uio_aec.c:104:42: sparse:     expected void [noderef] __iomem *
-   drivers/uio/uio_aec.c:104:42: sparse:     got void *
-   drivers/uio/uio_aec.c:105:43: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void [noderef] __iomem * @@     got void * @@
-   drivers/uio/uio_aec.c:105:43: sparse:     expected void [noderef] __iomem *
-   drivers/uio/uio_aec.c:105:43: sparse:     got void *
-   drivers/uio/uio_aec.c:106:34: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const [noderef] __iomem * @@     got void * @@
-   drivers/uio/uio_aec.c:106:34: sparse:     expected void const [noderef] __iomem *
-   drivers/uio/uio_aec.c:106:34: sparse:     got void *
-   drivers/uio/uio_aec.c:115:31: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void [noderef] __iomem * @@     got void *priv @@
-   drivers/uio/uio_aec.c:115:31: sparse:     expected void [noderef] __iomem *
-   drivers/uio/uio_aec.c:115:31: sparse:     got void *priv
-   drivers/uio/uio_aec.c:130:42: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void [noderef] __iomem * @@     got void * @@
-   drivers/uio/uio_aec.c:130:42: sparse:     expected void [noderef] __iomem *
-   drivers/uio/uio_aec.c:130:42: sparse:     got void *
-   drivers/uio/uio_aec.c:131:43: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void [noderef] __iomem * @@     got void * @@
-   drivers/uio/uio_aec.c:131:43: sparse:     expected void [noderef] __iomem *
-   drivers/uio/uio_aec.c:131:43: sparse:     got void *
-   drivers/uio/uio_aec.c:133:28: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const [noderef] __iomem * @@     got void * @@
-   drivers/uio/uio_aec.c:133:28: sparse:     expected void const [noderef] __iomem *
-   drivers/uio/uio_aec.c:133:28: sparse:     got void *
-   drivers/uio/uio_aec.c:138:21: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void volatile [noderef] __iomem *addr @@     got void *priv @@
-   drivers/uio/uio_aec.c:138:21: sparse:     expected void volatile [noderef] __iomem *addr
-   drivers/uio/uio_aec.c:138:21: sparse:     got void *priv
+On Wed, Dec 13, 2023 at 11:43:49AM -0800, Deepak Gupta wrote:
+> On Wed, Dec 13, 2023 at 5:37=E2=80=AFAM Mark Brown <broonie@kernel.org> w=
+rote:
+> > On Tue, Dec 12, 2023 at 04:50:38PM -0800, Deepak Gupta wrote:
 
-vim +50 drivers/uio/uio_aec.c
+> > > How will it do that (currently _ENABLE is married to _WRITE and _PUSH=
+) ?
 
-1bafeb378e915f Brandon Philips 2009-01-27  41  
-1bafeb378e915f Brandon Philips 2009-01-27  42  static irqreturn_t aectc_irq(int irq, struct uio_info *dev_info)
-1bafeb378e915f Brandon Philips 2009-01-27  43  {
-1bafeb378e915f Brandon Philips 2009-01-27  44  	void __iomem *int_flag = dev_info->priv + INTA_DRVR_ADDR;
-1bafeb378e915f Brandon Philips 2009-01-27  45  	unsigned char status = ioread8(int_flag);
-1bafeb378e915f Brandon Philips 2009-01-27  46  
-1bafeb378e915f Brandon Philips 2009-01-27  47  
-1bafeb378e915f Brandon Philips 2009-01-27  48  	if ((status & INTA_ENABLED_FLAG) && (status & INTA_FLAG)) {
-1bafeb378e915f Brandon Philips 2009-01-27  49  		/* application writes 0x00 to 0x2F to get next interrupt */
-1bafeb378e915f Brandon Philips 2009-01-27 @50  		status = ioread8(dev_info->priv + MAILBOX);
-1bafeb378e915f Brandon Philips 2009-01-27  51  		return IRQ_HANDLED;
-1bafeb378e915f Brandon Philips 2009-01-27  52  	}
-1bafeb378e915f Brandon Philips 2009-01-27  53  
-1bafeb378e915f Brandon Philips 2009-01-27  54  	return IRQ_NONE;
-1bafeb378e915f Brandon Philips 2009-01-27  55  }
-1bafeb378e915f Brandon Philips 2009-01-27  56  
+> > That's feeling moderately firmly into "don't do that" territory to be
+> > honest, the problems of trying to modify the stack of another running
+> > thread while it's active just don't seem worth it - if you're
+> > coordinating enough to do the modifications it's probably possible to
+> > just ask the thread who's stack is being modified to do the modification
+> > itself and having an unprotected thread writing into shadow stack memory
+> > doesn't feel great.
 
-:::::: The code at line 50 was first introduced by commit
-:::::: 1bafeb378e915f39b1bf44ee0871823d6f402ea5 uio: add the uio_aec driver
+> Yeah no leanings on my side. Just wanted to articulate this scenario.
+> Since this is new ground,
+> we can define what's appropriate. Let's keep it this way where a
+> thread can write to shadow
+> stack mappings only when it itself has shadow stack enabled.
 
-:::::: TO: Brandon Philips <brandon@ifup.org>
-:::::: CC: Greg Kroah-Hartman <gregkh@suse.de>
+Sounds good to me - it's much easier to relax permissions later than to
+tighten them up.
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+--PqL9xaSuINxjZ0qj
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmV6CosACgkQJNaLcl1U
+h9ALhgf/X0uXQk/jQmE5Jq0LTM5Dq11ls+1yrW1dnXA7KxS0COIsEEUbdISRGMla
+V+YwOPaYph3UvrmaWSwwvJoYLBnF5otV9j195V9CyQ0+ffNtfzadl8v/tCaf9Kj8
+w3gJY/USQR8ILQtuKGWengTYUOgoygMfNi5bjUokSG8R06ZNY9d51H/aOjGUgnUQ
+8EaJ6bxBsbsqd4FlcP8EcxYfwdpfhEf9EKrHF+ZIlHTZdP4abSGD5mb7B1w4Tqpj
+iVf/C2FzA5H8OSh7cMg/9WfDUCs74i+AUc2sIVVpFNYvfcxyCqQIfdwk5Okiyc8t
+LBjtoBgkATaNC4M22Ino8jfc5Dasew==
+=qiqv
+-----END PGP SIGNATURE-----
+
+--PqL9xaSuINxjZ0qj--
