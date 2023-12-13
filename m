@@ -2,65 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D939811B68
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 18:42:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F2CE811B70
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 18:43:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1441991AbjLMRmP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 12:42:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47308 "EHLO
+        id S232985AbjLMRm4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 12:42:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58004 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233682AbjLMRmO (ORCPT
+        with ESMTP id S233416AbjLMRmw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 12:42:14 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B2F899;
-        Wed, 13 Dec 2023 09:42:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1702489340; x=1734025340;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=jBtGP8WM+RYBuZNY+rEd0+l1PJWe6enNGl91hLRWMnw=;
-  b=gcgBs36E88/YKFlh1UAXDRAVSMX/JLaNisK4hiMw9e4Vxh0Xc9njYKnx
-   x4SOkyBpiQ1h3Vjpo5eoJElSDrCDVKH+7kNfgQx7bqTj5f/iGqXRxKo6F
-   lQ7ktjRaZW0hCQNkmVHo0OctItNq+bc76cT3XpM6tv2K3fTI2JpYWihfB
-   /QMBLJEQeOQxrrzZXwV1Vt+YZLX3LoIsZjia9HMAjjs4I0DN02e4Xmh45
-   Xh5SQIc2wDKYMVvmP94iq6ZmZ8T5RmwT7TVlTRRi9JFz73GMkX4xOkcTk
-   RtWWSJhUY+0FLhT7brXksHFTmT5zi5+5xA631dP5UtC5wMrmiejQrQSgL
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10923"; a="459317604"
-X-IronPort-AV: E=Sophos;i="6.04,273,1695711600"; 
-   d="scan'208";a="459317604"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Dec 2023 09:42:19 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10923"; a="844398862"
-X-IronPort-AV: E=Sophos;i="6.04,273,1695711600"; 
-   d="scan'208";a="844398862"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga004.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Dec 2023 09:42:17 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-        (envelope-from <andriy.shevchenko@intel.com>)
-        id 1rDTFP-00000005b77-08xn;
-        Wed, 13 Dec 2023 19:42:15 +0200
-Date:   Wed, 13 Dec 2023 19:42:14 +0200
-From:   Andy Shevchenko <andriy.shevchenko@intel.com>
-To:     Nikita Shubin <nikita.shubin@maquefel.me>
-Cc:     Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-clk@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [PATCH v6 04/40] clk: ep93xx: add DT support for Cirrus EP93xx
-Message-ID: <ZXns9klLAhuK-Alz@smile.fi.intel.com>
-References: <20231212-ep93xx-v6-0-c307b8ac9aa8@maquefel.me>
- <20231212-ep93xx-v6-4-c307b8ac9aa8@maquefel.me>
+        Wed, 13 Dec 2023 12:42:52 -0500
+Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13518118
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 09:42:53 -0800 (PST)
+Received: by mail-ed1-x535.google.com with SMTP id 4fb4d7f45d1cf-54c77d011acso119a12.1
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 09:42:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1702489371; x=1703094171; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=8c1vfO/xiQwL2KaPxAY2duOQ0VAaarCuPQeeypzuUqU=;
+        b=LFmT1avq7ovak0O+8q+vYPHDKH/H1sfe694dhfNTWQcIoAwhHhu6jJNsoSDEPOYLjK
+         uZ/7LPm3IN49T8zW5++ely471Bf9pqRSNbp/bVgswatol+ORorH3bmFfpesHb1AQISvI
+         s4KfbQDmsyIZiSOqItnPF71jDohae0iexUUnz42A36ZK6GflXDFlbBrAklR1Xb2Gjr/X
+         I9NwQBEqwbqv2ONve/zHHzZuljKtPUAUa4+snAt07oGqaS0ezIKSVvhkZrOffLi3xJsw
+         PA22YXZzt5EPu9cZ2x4heJU82R00ZlTXyeCqiupYdVgtyF2ObXfXQVaGVwfdllRjehit
+         3+Og==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702489371; x=1703094171;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=8c1vfO/xiQwL2KaPxAY2duOQ0VAaarCuPQeeypzuUqU=;
+        b=RnaGxvLkLNS4q8UjzSHgPEuzLydhdHZxzlg+GE1XcKI7CLmp0PACX0jqU/OpY6giV0
+         tHsttcI3yZgbylJUsiurDmxL3Hjwd/NXyC62bdmGW1xbMR//Sw8FmmA+64274CaGjkc+
+         LDHDC0rhxptm8vFzYz23kaKTq4nrrVNQntmDYV6xzq5e+jhxcaRBeW/PXmi0QcDCkezX
+         myq3aJHc8WfQQqFC8Hjf8YsIHLhcb7byiFsw4jW7y384um4A9twe6vmAuR1/Vgjv2eIX
+         hdI6UxiWGt/g60dVAUKPWI+ovyqkB+FFjJ40KF3Z1wUDKs1+dXeNYM4URXdURY3wIAVz
+         mwjA==
+X-Gm-Message-State: AOJu0YzcV/3+4Rp3VpKcGbKGiPy/SKrcdiVckqooa8flOnYpEvUQ1Nrb
+        Z1l6/YvHQZ0gSN9VGtdhqSU5wPh7DANZzbUL/beZfg==
+X-Google-Smtp-Source: AGHT+IEkooHYz6uTYfPKHTIZNMmFByCMi4JYabmYLfQyKyG5iUWbUNYGfzwzd5BekQa2oXCTyUaMnLVEDwkj+U8w5sg=
+X-Received: by 2002:a50:c192:0:b0:54c:f4fd:3427 with SMTP id
+ m18-20020a50c192000000b0054cf4fd3427mr530375edf.7.1702489371342; Wed, 13 Dec
+ 2023 09:42:51 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231212-ep93xx-v6-4-c307b8ac9aa8@maquefel.me>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+References: <20231212193833.415110-1-kan.liang@linux.intel.com>
+ <CAP-5=fWCgjCC-DHHx+HJCuYk6vNn9Lf9EKcnBBZQ+xmnyYnmPg@mail.gmail.com>
+ <996ec30b-2bcf-4739-bec0-728c7f7af2ac@linux.intel.com> <CAP-5=fVnH0eTEvvNbKLF9xYye5Pu8hvDL4ruoxh5xG76+B8WFQ@mail.gmail.com>
+ <CAM9d7chQ4NbbcmumQSMRaGm987nxxh6_QbbJr7+GYgL_WAmaNw@mail.gmail.com> <43e57041-fe13-452a-af6e-db2ed451f93a@linux.intel.com>
+In-Reply-To: <43e57041-fe13-452a-af6e-db2ed451f93a@linux.intel.com>
+From:   Ian Rogers <irogers@google.com>
+Date:   Wed, 13 Dec 2023 09:42:39 -0800
+Message-ID: <CAP-5=fXHadLYuRkY2Z=kymWJkB63dBWfCibQJnwgt0wkSuVVsg@mail.gmail.com>
+Subject: Re: [PATCH V2] perf top: Use evsel's cpus to replace user_requested_cpus
+To:     "Liang, Kan" <kan.liang@linux.intel.com>
+Cc:     Namhyung Kim <namhyung@kernel.org>, acme@kernel.org,
+        mark.rutland@arm.com, maz@kernel.org, marcan@marcan.st,
+        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -68,235 +74,181 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 12, 2023 at 11:20:21AM +0300, Nikita Shubin wrote:
-> Rewrite EP93xx clock driver located in arch/arm/mach-ep93xx/clock.c
-> trying to do everything the device tree way:
-> 
-> - provide clock acces via of
-> - drop clk_hw_register_clkdev
-> - drop init code and use module_auxiliary_driver
+On Wed, Dec 13, 2023 at 7:45=E2=80=AFAM Liang, Kan <kan.liang@linux.intel.c=
+om> wrote:
+>
+>
+>
+> On 2023-12-12 8:06 p.m., Namhyung Kim wrote:
+> > On Tue, Dec 12, 2023 at 2:12=E2=80=AFPM Ian Rogers <irogers@google.com>=
+ wrote:
+> >>
+> >> On Tue, Dec 12, 2023 at 1:25=E2=80=AFPM Liang, Kan <kan.liang@linux.in=
+tel.com> wrote:
+> >>>
+> >>>
+> >>>
+> >>> On 2023-12-12 3:37 p.m., Ian Rogers wrote:
+> >>>> On Tue, Dec 12, 2023 at 11:39=E2=80=AFAM <kan.liang@linux.intel.com>=
+ wrote:
+> >>>>>
+> >>>>> From: Kan Liang <kan.liang@linux.intel.com>
+> >>>>>
+> >>>>> perf top errors out on a hybrid machine
+> >>>>>  $perf top
+> >>>>>
+> >>>>>  Error:
+> >>>>>  The cycles:P event is not supported.
+> >>>>>
+> >>>>> The perf top expects that the "cycles" is collected on all CPUs in =
+the
+> >>>>> system. But for hybrid there is no single "cycles" event which can =
+cover
+> >>>>> all CPUs. Perf has to split it into two cycles events, e.g.,
+> >>>>> cpu_core/cycles/ and cpu_atom/cycles/. Each event has its own CPU m=
+ask.
+> >>>>> If a event is opened on the unsupported CPU. The open fails. That's=
+ the
+> >>>>> reason of the above error out.
+> >>>>>
+> >>>>> Perf should only open the cycles event on the corresponding CPU. Th=
+e
+> >>>>> commit ef91871c960e ("perf evlist: Propagate user CPU maps intersec=
+ting
+> >>>>> core PMU maps") intersect the requested CPU map with the CPU map of=
+ the
+> >>>>> PMU. Use the evsel's cpus to replace user_requested_cpus.
+> >>>>>
+> >>>>> The evlist's threads are also propagated to the evsel's threads in
+> >>>>> __perf_evlist__propagate_maps(). For a system-wide event, perf appe=
+nds
+> >>>>> a dummy event and assign it to the evsel's threads. For a per-threa=
+d
+> >>>>> event, the evlist's thread_map is assigned to the evsel's threads. =
+The
+> >>>>> same as the other tools, e.g., perf record, using the evsel's threa=
+ds
+> >>>>> when opening an event.
+> >>>>>
+> >>>>> Reported-by: Arnaldo Carvalho de Melo <acme@kernel.org>
+> >>>>> Closes: https://lore.kernel.org/linux-perf-users/ZXNnDrGKXbEELMXV@k=
+ernel.org/
+> >>>>> Reviewed-by: Ian Rogers <irogers@google.com>
+> >>>>> Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
+> >>>>> ---
+> >>>>>
+> >>>>> Changes since V1:
+> >>>>> - Update the description
+> >>>>> - Add Reviewed-by from Ian
+> >>>>
+> >>>> Thanks Kan, quick question. Does "perf top" on hybrid ask the user t=
+o
+> >>>> select between the cycles event on cpu_atom and cpu_core?
+> >>>
+> >>> Yes, but the event doesn't include the PMU information.
+> >>> We probably need a follow up patch to append the PMU name.
+> >>>
+> >>> Available samples
+> >>> 385 cycles:P
+> >>>
+> >>> 903 cycles:P
+> >>
+> >> Thanks and agreed, it isn't possible to tell which is which PMU/CPU
+> >> type at the moment. I tried the patch with perf top --stdio, there
+> >> wasn't a choice of event
+>
+> The perf top --stdio uses a dedicated display function, see
+> perf_top__header_snprintf() in util/top.c
+>
+> It only shows one event at a time. "E" is used to switch the event.
+>
+> >> and I can't tell what counter is being
+> >> displayed.
+>
+> For the hybrid case, I think we may display both PMU name and event
+> name. For example,
+>
+> Available samples
+> 656 cycles:P cpu_atom
+>
+> 701 cycles:P cpu_core
 
-...
+I think there would be more uniformity if we could do:
+cpu/cycles/P
+I'm just reminded of the stat output where sometimes you can get things lik=
+e:
+cpu/cycles/
+or sometimes:
+cycles [cpu]
+It seems the slash style approach is the most uniform given it looks
+like what is written on the command line. Perhaps we need some kind of
+helper function to do this as reformatting the modifier is a pain.
 
-> +#define EP93XX_I2SCLKDIV_SDIV		(1 << 16)
-
-BIT() ?
-
-...
-
-> +static u8 ep93xx_mux_get_parent(struct clk_hw *hw)
-> +{
-> +	struct ep93xx_clk *clk = ep93xx_clk_from(hw);
-> +	struct ep93xx_clk_priv *priv = ep93xx_priv_from(clk);
-> +	u32 val;
+> diff --git a/tools/perf/ui/browsers/hists.c b/tools/perf/ui/browsers/hist=
+s.c
+> index f4812b226818..afc7a1d54fe4 100644
+> --- a/tools/perf/ui/browsers/hists.c
+> +++ b/tools/perf/ui/browsers/hists.c
+> @@ -3433,8 +3433,10 @@ static void perf_evsel_menu__write(struct
+> ui_browser *browser,
+>         }
+>
+>         nr_events =3D convert_unit(nr_events, &unit);
+> -       printed =3D scnprintf(bf, sizeof(bf), "%lu%c%s%s", nr_events,
+> -                          unit, unit =3D=3D ' ' ? "" : " ", ev_name);
+> +       printed =3D scnprintf(bf, sizeof(bf), "%lu%c%s%s %s", nr_events,
+> +                          unit, unit =3D=3D ' ' ? "" : " ", ev_name,
+> +                          evsel->pmu ? evsel->pmu_name : "");
 > +
-> +	regmap_read(priv->map, clk->reg, &val);
-> +
-> +	val &= EP93XX_SYSCON_CLKDIV_MASK;
-> +
-> +	switch (val) {
-> +	case EP93XX_SYSCON_CLKDIV_ESEL:
-> +		return 1; /* PLL1 */
-> +	case EP93XX_SYSCON_CLKDIV_MASK:
-> +		return 2; /* PLL2 */
+>         ui_browser__printf(browser, "%s", bf);
+>
+>         nr_events =3D evsel->evlist->stats.nr_events[PERF_RECORD_LOST];
+>
+>
+> >> When I quit I also see:
+> >> ```
+> >> exiting.
+> >> corrupted double-linked list
+> >> Aborted (core dumped)
+> >> ```
+> >> but I wasn't able to repro this on a debuggable binary/system.
+>
+> I haven't see the issue yet.
+>
+> >>
+> >> If my memory serves there was a patch where perf top was showing >1
+> >> event. It would be nice here to do some kind of hybrid merging rather
+> >> than having to view each PMU's top separately.
+>
+> The current perf top doesn't merge when there are >1 event.
+> sudo ./perf top -e "cycles,instructions"
+>
+> Available samples
+> 2K cycles
+>
+> 2K instructions
+>
+> For now, I think we may just append a PMU name to distinguish the hybrid
+> case.
+>
+> We may implement the merging feature which impacts both hybrid and
+> non-hybrid cases later separately.
+>
+> >
+> > Using event groups, but I noticed you removed the --group option.
+> > Maybe perf top can just use `{ ... }` notation for explicit grouping,
+> > but it might be implicit like in the hybrid case.
+> >
+>
+> Yes, if the events are from different PMUs, the perf tool will
+> implicitly de-group the hybrid events. "{ ... }" may not help here.
 
-> +	default:
-> +		break;
-> +	};
-> +
-> +	return 0; /* XTALI */
+I think grouping may have been the situation where I saw >1 event
+displayed but I agree with Kan, we implicitly de-group events on
+different PMUs so it won't help here.
 
-You may return directly from default.
+Thanks,
+Ian
 
-> +}
-
-...
-
-> +static int ep93xx_mux_set_parent_lock(struct clk_hw *hw, u8 index)
-> +{
-> +	struct ep93xx_clk *clk = ep93xx_clk_from(hw);
-> +	struct ep93xx_clk_priv *priv = ep93xx_priv_from(clk);
-> +	unsigned long flags;
-> +	u32 val;
-> +
-> +	if (index >= 3)
-> +		return -EINVAL;
-
-> +	spin_lock_irqsave(&priv->lock, flags);
-
-Why not guard() ?
-
-> +	regmap_read(priv->map, clk->reg, &val);
-> +	val &= ~(EP93XX_SYSCON_CLKDIV_MASK);
-> +	val |= index > 0 ? EP93XX_SYSCON_CLKDIV_ESEL : 0;
-> +	val |= index > 1 ? EP93XX_SYSCON_CLKDIV_PSEL : 0;
-> +
-> +	ep93xx_clk_write(priv, clk->reg, val);
-> +
-> +	spin_unlock_irqrestore(&priv->lock, flags);
-> +
-> +	return 0;
-> +}
-
-...
-
-> +static bool is_best(unsigned long rate, unsigned long now,
-> +		     unsigned long best)
-> +{
-> +	return abs_diff(rate, now) < abs_diff(rate, best);
-
-Have you included necessary header for this?
-
-> +}
-
-...
-
-> +static int ep93xx_mux_determine_rate(struct clk_hw *hw,
-> +				struct clk_rate_request *req)
-> +{
-> +	unsigned long best_rate = 0, actual_rate, mclk_rate;
-> +	unsigned long rate = req->rate;
-
-> +	struct clk_hw *parent_best = NULL;
-
-Strictly speaking you don't need an assignment here as you can compare the loop
-variable value against the maximum. But I don't know how heave the respective
-CLk call is and if it has no side-effects due to operations inside the loop body.
-
-> +	unsigned long parent_rate_best;
-> +	unsigned long parent_rate;
-> +	int div, pdiv;
-> +	unsigned int i;
-> +
-> +	/*
-> +	 * Try the two pll's and the external clock
-
-Either comma + 'b' or missing period.
-
-> +	 * Because the valid predividers are 2, 2.5 and 3, we multiply
-> +	 * all the clocks by 2 to avoid floating point math.
-> +	 *
-> +	 * This is based on the algorithm in the ep93xx raster guide:
-> +	 * http://be-a-maverick.com/en/pubs/appNote/AN269REV1.pdf
-> +	 *
-> +	 */
-> +	for (i = 0; i < clk_hw_get_num_parents(hw); i++) {
-> +		struct clk_hw *parent = clk_hw_get_parent_by_index(hw, i);
-> +
-> +		parent_rate = clk_hw_get_rate(parent);
-> +		mclk_rate = parent_rate * 2;
-> +
-> +		/* Try each predivider value */
-> +		for (pdiv = 4; pdiv <= 6; pdiv++) {
-> +			div = DIV_ROUND_CLOSEST(mclk_rate, rate * pdiv);
-
-> +			if (!in_range(div, 1, 127))
-
-Same header as for abs_diff()?
-
-> +				continue;
-> +
-> +			actual_rate = DIV_ROUND_CLOSEST(mclk_rate, pdiv * div);
-> +			if (is_best(rate, actual_rate, best_rate)) {
-> +				best_rate = actual_rate;
-> +				parent_rate_best = parent_rate;
-> +				parent_best = parent;
-> +			}
-> +		}
-
-(1)
-
-> +	}
-> +
-> +	if (!parent_best)
-> +		return -EINVAL;
-> +
-> +	req->best_parent_rate = parent_rate_best;
-> +	req->best_parent_hw = parent_best;
-> +	req->rate = best_rate;
-> +
-> +	return 0;
-> +}
-
-...
-
-> +	mclk_rate = parent_rate * 2;
-> +
-> +	for (pdiv = 4; pdiv <= 6; pdiv++) {
-> +		div = DIV_ROUND_CLOSEST(mclk_rate, rate * pdiv);
-> +		if (!in_range(div, 1, 127))
-> +			continue;
-> +
-> +		actual_rate = DIV_ROUND_CLOSEST(mclk_rate, pdiv * div);
-> +		if (abs(actual_rate - rate) < rate_err) {
-> +			npdiv = pdiv - 3;
-> +			ndiv = div;
-> +			rate_err = abs(actual_rate - rate);
-> +		}
-> +	}
-
-Looks very similar to (1). Can be deduplicated?
-
-...
-
-> +	/*
-> +	 * Clear old dividers
-> +	 * Bit 7 is reserved bit in all ClkDiv registers
-
-Missing periods.
-
-> +	 */
-
-...
-
-> +static unsigned long calc_pll_rate(u64 rate, u32 config_word)
-> +{
-> +	rate *= ((config_word >> 11) & GENMASK(4, 0)) + 1;	/* X1FBD */
-> +	rate *= ((config_word >> 5) & GENMASK(5, 0)) + 1;	/* X2FBD */
-> +	do_div(rate, (config_word & GENMASK(4, 0)) + 1);	/* X2IPD */
-
-> +	rate >>= ((config_word >> 16) & GENMASK(1, 0));		/* PS */
-
-Outer parentheses are redundant.
-
-> +	return rate;
-> +}
-
-...
-
-> +	/*
-> +	 * EP93xx SSP clock rate was doubled in version E2. For more information
-> +	 * see:
-> +	 *     http://www.cirrus.com/en/pubs/appNote/AN273REV4.pdf
-
-Can you point to the specific section? Like
-
-	 * see section 1.2.3 "Foo bar":
-
-> +	 */
-
-...
-
-> +	/* touchscreen/adc clock */
-
-ADC
-
-...
-
-> +	/*
-> +	 * On reset PDIV and VDIV is set to zero, while PDIV zero
-> +	 * means clock disable, VDIV shouldn't be zero.
-> +	 * So we set both video and is2 dividers to minimum.
-
-i2s?
-
-> +	 * ENA - Enable CLK divider.
-> +	 * PDIV - 00 - Disable clock
-> +	 * VDIV - at least 2
-> +	 */
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+> Thanks,
+> Kan
