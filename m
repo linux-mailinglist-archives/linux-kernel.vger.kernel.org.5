@@ -2,286 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 699F5810828
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 03:20:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 964F3810830
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Dec 2023 03:24:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378380AbjLMCT6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Dec 2023 21:19:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54390 "EHLO
+        id S1378306AbjLMCYa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Dec 2023 21:24:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54238 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378321AbjLMCTY (ORCPT
+        with ESMTP id S1378272AbjLMCY2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Dec 2023 21:19:24 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C8F1E8
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Dec 2023 18:19:29 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A2EA8C433CC;
-        Wed, 13 Dec 2023 02:19:28 +0000 (UTC)
-Received: from rostedt by gandalf with local (Exim 4.97)
-        (envelope-from <rostedt@goodmis.org>)
-        id 1rDEr6-00000002TsJ-22KG;
-        Tue, 12 Dec 2023 21:20:12 -0500
-Message-ID: <20231213022012.267049115@goodmis.org>
-User-Agent: quilt/0.67
-Date:   Tue, 12 Dec 2023 21:19:29 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Tzvetomir Stoyanov <tz.stoyanov@gmail.com>,
-        Vincent Donnefort <vdonnefort@google.com>,
-        Kent Overstreet <kent.overstreet@gmail.com>
-Subject: [PATCH v2 15/15] tracing: Update subbuffer with kilobytes not page order
-References: <20231213021914.361709558@goodmis.org>
+        Tue, 12 Dec 2023 21:24:28 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 315E4A0;
+        Tue, 12 Dec 2023 18:24:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1702434275; x=1733970275;
+  h=message-id:date:mime-version:cc:subject:to:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=MtTjxsnnk6REyd91XRIZZp4F4yr33L++gpip89sPY0A=;
+  b=ffmd5gM4o41ZcLDRbg2QrXmAIsknGO5lGlyMHM5KmNfj+FROUXqh3wjy
+   3CcUP3eAo3ftiLcGEHBkpGdcXKAUMLrStPQ/c4PG/cH89reKAtohxU7lc
+   hGMpI15mb+xn0/VEknSd/YB6s7oMwAFiAU98a762lXN9eg3iZMe4AeNQd
+   9nkqG6nEwCYXEVJjRIj3QBuqcv6G61V8qcVmCAvdRawU3xy6aTA6ilBzt
+   WJ9D8aCfRVQVluwAIWwfhKHmBI2ibfRDZiMAHNfFx8c5EW+FDTSQvQSme
+   vqQ7j2Q+5yReGZ2FrMx4dSY25L+VWw1j3LZk187e5ZxgtdXVb2jy6T/Ds
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10922"; a="461377483"
+X-IronPort-AV: E=Sophos;i="6.04,271,1695711600"; 
+   d="scan'208";a="461377483"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Dec 2023 18:24:17 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10922"; a="723468294"
+X-IronPort-AV: E=Sophos;i="6.04,271,1695711600"; 
+   d="scan'208";a="723468294"
+Received: from allen-box.sh.intel.com (HELO [10.239.159.127]) ([10.239.159.127])
+  by orsmga003.jf.intel.com with ESMTP; 12 Dec 2023 18:24:13 -0800
+Message-ID: <cfc8cc32-8c62-440d-946f-69cd855fedaf@linux.intel.com>
+Date:   Wed, 13 Dec 2023 10:19:32 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Cc:     baolu.lu@linux.intel.com, Joerg Roedel <joro@8bytes.org>,
+        Will Deacon <will@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Kevin Tian <kevin.tian@intel.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Nicolin Chen <nicolinc@nvidia.com>,
+        Yi Liu <yi.l.liu@intel.com>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        Longfang Liu <liulongfang@huawei.com>,
+        Yan Zhao <yan.y.zhao@intel.com>, iommu@lists.linux.dev,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v8 12/12] iommu: Use refcount for fault data access
+Content-Language: en-US
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+References: <20231207064308.313316-1-baolu.lu@linux.intel.com>
+ <20231207064308.313316-13-baolu.lu@linux.intel.com>
+ <20231211152456.GB1489931@ziepe.ca>
+ <0f23e37a-5ace-492c-82e9-cf3d13f4ef6f@linux.intel.com>
+ <20231212151809.GD3013885@ziepe.ca>
+From:   Baolu Lu <baolu.lu@linux.intel.com>
+In-Reply-To: <20231212151809.GD3013885@ziepe.ca>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
+On 12/12/23 11:18 PM, Jason Gunthorpe wrote:
+> On Tue, Dec 12, 2023 at 01:07:17PM +0800, Baolu Lu wrote:
+> 
+>> Yes, agreed. The iopf_fault_param should be passed in together with the
+>> iopf_group. The reference count should be released in the
+>> iopf_free_group(). These two helps could look like below:
+>>
+>> int iommu_page_response(struct iopf_group *group,
+>> 			struct iommu_page_response *msg)
+>> {
+>> 	bool needs_pasid;
+>> 	int ret = -EINVAL;
+>> 	struct iopf_fault *evt;
+>> 	struct iommu_fault_page_request *prm;
+>> 	struct device *dev = group->fault_param->dev;
+>> 	const struct iommu_ops *ops = dev_iommu_ops(dev);
+>> 	bool has_pasid = msg->flags & IOMMU_PAGE_RESP_PASID_VALID;
+>> 	struct iommu_fault_param *fault_param = group->fault_param;
+>>
+>> 	if (!ops->page_response)
+>> 		return -ENODEV;
+> 
+> We should never get here if this is the case, prevent the device from
+> being added in the first place
 
-Using page order for deciding what the size of the ring buffer sub buffers
-are is exposing a bit too much of the implementation. Although the sub
-buffers are only allocated in orders of pages, allow the user to specify
-the minimum size of each sub-buffer via kilobytes like they can with the
-buffer size itself.
+Yeah, could move it to iopf_queue_add_device(). WARN and return failure
+there if the driver is not ready for page request handling.
 
-If the user specifies 3 via:
+> 
+>> 	/* Only send response if there is a fault report pending */
+>> 	mutex_lock(&fault_param->lock);
+>> 	if (list_empty(&fault_param->faults)) {
+>> 		dev_warn_ratelimited(dev, "no pending PRQ, drop response\n");
+>> 		goto done_unlock;
+>> 	}
+>> 	/*
+>> 	 * Check if we have a matching page request pending to respond,
+>> 	 * otherwise return -EINVAL
+>> 	 */
+>> 	list_for_each_entry(evt, &fault_param->faults, list) {
+>> 		prm = &evt->fault.prm;
+>> 		if (prm->grpid != msg->grpid)
+>> 			continue;
+>>
+>> 		/*
+>> 		 * If the PASID is required, the corresponding request is
+>> 		 * matched using the group ID, the PASID valid bit and the PASID
+>> 		 * value. Otherwise only the group ID matches request and
+>> 		 * response.
+>> 		 */
+>> 		needs_pasid = prm->flags & IOMMU_FAULT_PAGE_RESPONSE_NEEDS_PASID;
+>> 		if (needs_pasid && (!has_pasid || msg->pasid != prm->pasid))
+>> 			continue;
+>>
+>> 		if (!needs_pasid && has_pasid) {
+>> 			/* No big deal, just clear it. */
+>> 			msg->flags &= ~IOMMU_PAGE_RESP_PASID_VALID;
+>> 			msg->pasid = 0;
+>> 		}
+>>
+>> 		ret = ops->page_response(dev, evt, msg);
+>> 		list_del(&evt->list);
+>> 		kfree(evt);
+>> 		break;
+>> 	}
+>>
+>> done_unlock:
+>> 	mutex_unlock(&fault_param->lock);
+> 
+> I would have expected the group to free'd here? But regardless this
+> looks like a good direction
 
-  echo 3 > buffer_subbuf_size_kb
+Both work for me. We can decide it according to the needs of code later.
 
-Then the sub-buffer size will round up to 4kb (on a 4kb page size system).
+> 
+> Jason
 
-If they specify:
-
-  echo 6 > buffer_subbuf_size_kb
-
-The sub-buffer size will become 8kb.
-
-and so on.
-
-Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
----
- Documentation/trace/ftrace.rst                | 46 ++++++++-----------
- kernel/trace/trace.c                          | 38 +++++++++------
- ...fer_order.tc => ringbuffer_subbuf_size.tc} | 18 ++++----
- 3 files changed, 54 insertions(+), 48 deletions(-)
- rename tools/testing/selftests/ftrace/test.d/00basic/{ringbuffer_order.tc => ringbuffer_subbuf_size.tc} (85%)
-
-diff --git a/Documentation/trace/ftrace.rst b/Documentation/trace/ftrace.rst
-index 231d26ceedb0..933e7efb9f1b 100644
---- a/Documentation/trace/ftrace.rst
-+++ b/Documentation/trace/ftrace.rst
-@@ -203,32 +203,26 @@ of ftrace. Here is a list of some of the key files:
- 
- 	This displays the total combined size of all the trace buffers.
- 
--  buffer_subbuf_order:
--
--	This sets or displays the sub buffer page size order. The ring buffer
--	is broken up into several same size "sub buffers". An event can not be
--	bigger than the size of the sub buffer. Normally, the sub buffer is
--	the size of the architecture's page (4K on x86). The sub buffer also
--	contains meta data at the start which also limits the size of an event.
--	That means when the sub buffer is a page size, no event can be larger
--	than the page size minus the sub buffer meta data.
--
--	The buffer_subbuf_order allows the user to change the size of the sub
--	buffer. As the sub buffer is a set of pages by the power of 2, thus
--	the sub buffer total size is defined by the order:
--
--	order		size
--	----		----
--	0		PAGE_SIZE
--	1		PAGE_SIZE * 2
--	2		PAGE_SIZE * 4
--	3		PAGE_SIZE * 8
--
--	Changing the order will change the sub buffer size allowing for events
--	to be larger than the page size.
--
--	Note: When changing the order, tracing is stopped and any data in the
--	ring buffer and the snapshot buffer will be discarded.
-+  buffer_subbuf_size_kb:
-+
-+	This sets or displays the sub buffer size. The ring buffer is broken up
-+	into several same size "sub buffers". An event can not be bigger than
-+	the size of the sub buffer. Normally, the sub buffer is the size of the
-+	architecture's page (4K on x86). The sub buffer also contains meta data
-+	at the start which also limits the size of an event.  That means when
-+	the sub buffer is a page size, no event can be larger than the page
-+	size minus the sub buffer meta data.
-+
-+	Note, the buffer_subbuf_size_kb is a way for the user to specify the
-+	minimum size of the subbuffer. The kernel may make it bigger due to the
-+	implementation details, or simply fail the operation if the kernel can
-+	not handle the request.
-+
-+	Changing the sub buffer size allows for events to be larger than the
-+	page size.
-+
-+	Note: When changing the sub-buffer size, tracing is stopped and any
-+	data in the ring buffer and the snapshot buffer will be discarded.
- 
-   free_buffer:
- 
-diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
-index 0cb5e1a50e65..d121f3742792 100644
---- a/kernel/trace/trace.c
-+++ b/kernel/trace/trace.c
-@@ -9377,42 +9377,54 @@ static const struct file_operations buffer_percent_fops = {
- };
- 
- static ssize_t
--buffer_order_read(struct file *filp, char __user *ubuf, size_t cnt, loff_t *ppos)
-+buffer_subbuf_size_read(struct file *filp, char __user *ubuf, size_t cnt, loff_t *ppos)
- {
- 	struct trace_array *tr = filp->private_data;
-+	size_t size;
- 	char buf[64];
-+	int order;
- 	int r;
- 
--	r = sprintf(buf, "%d\n", ring_buffer_subbuf_order_get(tr->array_buffer.buffer));
-+	order = ring_buffer_subbuf_order_get(tr->array_buffer.buffer);
-+	size = (PAGE_SIZE << order) / 1024;
-+
-+	r = sprintf(buf, "%zd\n", size);
- 
- 	return simple_read_from_buffer(ubuf, cnt, ppos, buf, r);
- }
- 
- static ssize_t
--buffer_order_write(struct file *filp, const char __user *ubuf,
--		   size_t cnt, loff_t *ppos)
-+buffer_subbuf_size_write(struct file *filp, const char __user *ubuf,
-+			 size_t cnt, loff_t *ppos)
- {
- 	struct trace_array *tr = filp->private_data;
- 	unsigned long val;
- 	int old_order;
-+	int order;
-+	int pages;
- 	int ret;
- 
- 	ret = kstrtoul_from_user(ubuf, cnt, 10, &val);
- 	if (ret)
- 		return ret;
- 
-+	val *= 1024; /* value passed in is in KB */
-+
-+	pages = DIV_ROUND_UP(val, PAGE_SIZE);
-+	order = fls(pages - 1);
-+
- 	/* limit between 1 and 128 system pages */
--	if (val < 0 || val > 7)
-+	if (order < 0 || order > 7)
- 		return -EINVAL;
- 
- 	/* Do not allow tracing while changing the order of the ring buffer */
- 	tracing_stop_tr(tr);
- 
- 	old_order = ring_buffer_subbuf_order_get(tr->array_buffer.buffer);
--	if (old_order == val)
-+	if (old_order == order)
- 		goto out;
- 
--	ret = ring_buffer_subbuf_order_set(tr->array_buffer.buffer, val);
-+	ret = ring_buffer_subbuf_order_set(tr->array_buffer.buffer, order);
- 	if (ret)
- 		goto out;
- 
-@@ -9421,7 +9433,7 @@ buffer_order_write(struct file *filp, const char __user *ubuf,
- 	if (!tr->allocated_snapshot)
- 		goto out_max;
- 
--	ret = ring_buffer_subbuf_order_set(tr->max_buffer.buffer, val);
-+	ret = ring_buffer_subbuf_order_set(tr->max_buffer.buffer, order);
- 	if (ret) {
- 		/* Put back the old order */
- 		cnt = ring_buffer_subbuf_order_set(tr->array_buffer.buffer, old_order);
-@@ -9453,10 +9465,10 @@ buffer_order_write(struct file *filp, const char __user *ubuf,
- 	return cnt;
- }
- 
--static const struct file_operations buffer_order_fops = {
-+static const struct file_operations buffer_subbuf_size_fops = {
- 	.open		= tracing_open_generic_tr,
--	.read		= buffer_order_read,
--	.write		= buffer_order_write,
-+	.read		= buffer_subbuf_size_read,
-+	.write		= buffer_subbuf_size_write,
- 	.release	= tracing_release_generic_tr,
- 	.llseek		= default_llseek,
- };
-@@ -9927,8 +9939,8 @@ init_tracer_tracefs(struct trace_array *tr, struct dentry *d_tracer)
- 	trace_create_file("buffer_percent", TRACE_MODE_WRITE, d_tracer,
- 			tr, &buffer_percent_fops);
- 
--	trace_create_file("buffer_subbuf_order", TRACE_MODE_WRITE, d_tracer,
--			  tr, &buffer_order_fops);
-+	trace_create_file("buffer_subbuf_size_kb", TRACE_MODE_WRITE, d_tracer,
-+			  tr, &buffer_subbuf_size_fops);
- 
- 	create_trace_options_dir(tr);
- 
-diff --git a/tools/testing/selftests/ftrace/test.d/00basic/ringbuffer_order.tc b/tools/testing/selftests/ftrace/test.d/00basic/ringbuffer_subbuf_size.tc
-similarity index 85%
-rename from tools/testing/selftests/ftrace/test.d/00basic/ringbuffer_order.tc
-rename to tools/testing/selftests/ftrace/test.d/00basic/ringbuffer_subbuf_size.tc
-index 5204c48a82f9..1abf5c39952a 100644
---- a/tools/testing/selftests/ftrace/test.d/00basic/ringbuffer_order.tc
-+++ b/tools/testing/selftests/ftrace/test.d/00basic/ringbuffer_subbuf_size.tc
-@@ -1,7 +1,7 @@
- #!/bin/sh
- # SPDX-License-Identifier: GPL-2.0
--# description: Change the ringbuffer sub-buffer order
--# requires: buffer_subbuf_order
-+# description: Change the ringbuffer sub-buffer size
-+# requires: buffer_subbuf_size_kb
- # flags: instance
- 
- get_buffer_data_size() {
-@@ -52,8 +52,8 @@ write_buffer() {
- }
- 
- test_buffer() {
--	orde=$1
--	page_size=$((4096<<order))
-+	size_kb=$1
-+	page_size=$((size_kb*1024))
- 
- 	size=`get_buffer_data_size`
- 
-@@ -82,14 +82,14 @@ test_buffer() {
- 	fi
- }
- 
--ORIG=`cat buffer_subbuf_order`
-+ORIG=`cat buffer_subbuf_size_kb`
- 
--# Could test bigger orders than 3, but then creating the string
-+# Could test bigger sizes than 32K, but then creating the string
- # to write into the ring buffer takes too long
--for a in 0 1 2 3 ; do
--	echo $a > buffer_subbuf_order
-+for a in 4 8 16 32 ; do
-+	echo $a > buffer_subbuf_size_kb
- 	test_buffer $a
- done
- 
--echo $ORIG > buffer_subbuf_order
-+echo $ORIG > buffer_subbuf_size_kb
- 
--- 
-2.42.0
-
-
+Best regards,
+baolu
