@@ -2,53 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AC401812F15
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 12:46:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D235812F1F
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 12:46:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1444075AbjLNLqS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 06:46:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49614 "EHLO
+        id S1444100AbjLNLqT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 06:46:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49622 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1444031AbjLNLqP (ORCPT
+        with ESMTP id S1444085AbjLNLqQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 06:46:15 -0500
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A914F5
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 03:46:20 -0800 (PST)
-Received: by mail-ed1-x52c.google.com with SMTP id 4fb4d7f45d1cf-551437d5344so5624064a12.1
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 03:46:20 -0800 (PST)
+        Thu, 14 Dec 2023 06:46:16 -0500
+Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A925D118
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 03:46:21 -0800 (PST)
+Received: by mail-ed1-x536.google.com with SMTP id 4fb4d7f45d1cf-54c70c70952so10877750a12.3
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 03:46:21 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=tuxon.dev; s=google; t=1702554379; x=1703159179; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=wI8+H4p3gXo6sNGaNjoTSF+Q/iC1fKKCJVvei1Hpns0=;
-        b=YClowM5gat4G0UPXTVNq3dtczLX1nn48rsdMyvmtBOdor4zbK+NVbxpPkf2MICDpBk
-         xFSdLgP5kLZZu4/8NuqrlH+EeTyM9blLwWOSaZ49Z7GE+nd7JT2ZJYEGDyDfzMmQKJDk
-         1yrbplVt+mDfjoC/vmGW1Ts2aSD2fwAX0IIZpE9UZxMZ7ssjU+jGWEQcjRUUK6cPZXsl
-         01U0s3yz1QkzihzMBCIftyaEGb1zkYh4rYnrLbiHe7QPMhnkY8sj7j40uyXwOWkgvohJ
-         I0Vk16p2Lc/FehsMinZXdGOP9On4Q8eVt9hngBk6zuzJIDrZJQw1Bow9CVGDcDgsSEtH
-         6QGw==
+        d=tuxon.dev; s=google; t=1702554380; x=1703159180; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=sOZAMEvogW3XDicAaSrKeFR75wLTaTJmQUaxz//D884=;
+        b=aBCyfvzffeuy42b2a47jBeJGrg53dY+MTmMzoc7yMX7VflA5yHr0WL7S68E4JNifGL
+         KX6bZomu8uTJJaZZIS6nlHo9+XvgF9AaHiOmieyFEiuxYPQ86d9SqUkFEUB6edAoQo73
+         VESw2BtfPzNGCvPWudZMpFasmOmr3kME8U4VaXnzdjAThNxHcnku8ZAjVWxNM3PqcPIe
+         31fqqntHiX+5FVMekoykFVKbQehCe8JFIrbyAd4NBgCGclXP0C8EMMLy8ezhrpUSVnCG
+         m/Dttb3Pt7yC9nt3olSIJikvLP+8oYIun8TH1ykpxSVkVul3drPvV5tnMheC5dW9W9x0
+         /SNg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702554379; x=1703159179;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=wI8+H4p3gXo6sNGaNjoTSF+Q/iC1fKKCJVvei1Hpns0=;
-        b=MaJkQiaz2crlVHydssJ7obZpoygJpz8Mlck0HROqGQkzV+rkkotjfhLkiXPWHw380e
-         dIa67LZablnqxtgiGcvv/B4ncq3NHHmabbEoNKjNLa8/mxIqoLqD73j0R2KKDxAppZF6
-         Zl4/rN4EkbAYyr6PQAkYAl2fw8e3J6zHP79HTKZaQAt6NsD32a4GLEPRq9uMZ5epyTDW
-         JsWH7cSu1QVC1zB+CQvXSM9EALAVDmWKp35X3+6oqe6ECmnmns3RYKH5H05ukQMVJTm9
-         /Wi8/MuN1BCgXFJmjvsJu+cd3M4VjrTrqPSsfF5eLJH+yPmYl1FOhtA/6EfV/P2Mc62z
-         spew==
-X-Gm-Message-State: AOJu0Yyesyt6i/TL0S/5ImXgrratXEa6T2Z6h8xKq72ruro6oeFCua/o
-        IjWa020IvqbFqBRgwks1PDzEfg==
-X-Google-Smtp-Source: AGHT+IFhzDg1WmSkfhqgcEgeoj0jHK49rcTX+RPhQoW7pVY6ATCQ4AKf7NX10muW/EEaW5wGDEKQNQ==
-X-Received: by 2002:a17:907:86a0:b0:a1c:795b:405a with SMTP id qa32-20020a17090786a000b00a1c795b405amr5787566ejc.109.1702554378627;
-        Thu, 14 Dec 2023 03:46:18 -0800 (PST)
+        d=1e100.net; s=20230601; t=1702554380; x=1703159180;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=sOZAMEvogW3XDicAaSrKeFR75wLTaTJmQUaxz//D884=;
+        b=tbsVK1fsMmUVjS0go/5pO3vGjfdu0tzi8jHGJPFXrS2bhY93edwVeq8WaywNfUqu9y
+         LaxUzKU/7T2f51BVvyMKsdmB8yiOpa9B6U25us+4rnrFXN1P07Bh5ZS8YBoR8GmtK9iE
+         MlhNMEkixFWAHJc5+YxkjR7NBAZe4tXL52r3oTKOO6Yewj8XylsNWphC0QY+0N94L9h2
+         M5Xn6gc3QsJT+OdgMwBTs3gDHhupbMJiceTFLnVnBiKK4XY/G7rlT1OcPanuJ0RlfPVQ
+         iWG7Kxx8nz3jwbRBq5T1m8UJG5JUNBdtIfbQL1EXhvUiXIj7gbKKKThXEgIg/hjIWcwF
+         qMUQ==
+X-Gm-Message-State: AOJu0YxeBenFJzNu82S2Y0nXupwmZc+LEuvaFh0fe+5UQDft3JRlwuzP
+        JcM+J+xt79iN58nV2Mf4d4LcBA==
+X-Google-Smtp-Source: AGHT+IEAFaM5Cm0jFSOiB0BP6s0buW/H66IBrBKllrAZ3Y8UZeWvQVog2DOBsNItlsCh8+yUrOEP2g==
+X-Received: by 2002:a17:906:14e:b0:a19:a19b:4231 with SMTP id 14-20020a170906014e00b00a19a19b4231mr2526628ejh.156.1702554380148;
+        Thu, 14 Dec 2023 03:46:20 -0800 (PST)
 Received: from claudiu-X670E-Pro-RS.. ([82.78.167.103])
-        by smtp.gmail.com with ESMTPSA id ll9-20020a170907190900b00a1da2f7c1d8sm9240877ejc.77.2023.12.14.03.46.17
+        by smtp.gmail.com with ESMTPSA id ll9-20020a170907190900b00a1da2f7c1d8sm9240877ejc.77.2023.12.14.03.46.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Dec 2023 03:46:18 -0800 (PST)
+        Thu, 14 Dec 2023 03:46:19 -0800 (PST)
 From:   Claudiu <claudiu.beznea@tuxon.dev>
 X-Google-Original-From: Claudiu <claudiu.beznea.uj@bp.renesas.com>
 To:     s.shtylyov@omp.ru, davem@davemloft.net, edumazet@google.com,
@@ -58,10 +59,12 @@ To:     s.shtylyov@omp.ru, davem@davemloft.net, edumazet@google.com,
 Cc:     netdev@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
         linux-kernel@vger.kernel.org,
         Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-Subject: [PATCH net-next v2 00/21] net: ravb: Add suspend to RAM and runtime PM support for RZ/G3S
-Date:   Thu, 14 Dec 2023 13:45:39 +0200
-Message-Id: <20231214114600.2451162-1-claudiu.beznea.uj@bp.renesas.com>
+Subject: [PATCH net-next v2 01/21] net: ravb: Let IP-specific receive function to interrogate descriptors
+Date:   Thu, 14 Dec 2023 13:45:40 +0200
+Message-Id: <20231214114600.2451162-2-claudiu.beznea.uj@bp.renesas.com>
 X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20231214114600.2451162-1-claudiu.beznea.uj@bp.renesas.com>
+References: <20231214114600.2451162-1-claudiu.beznea.uj@bp.renesas.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -76,78 +79,57 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
 
-Hi,
+ravb_poll() initial code used to interrogate the first descriptor of the
+RX queue in case gPTP is false to determine if ravb_rx() should be called.
+This is done for non-gPTP IPs. For gPTP IPs the driver PTP-specific
+information was used to determine if receive function should be called. As
+every IP has its own receive function that interrogates the RX descriptors
+list in the same way the ravb_poll() was doing there is no need to double
+check this in ravb_poll(). Removing the code from ravb_poll() leads to a
+cleaner code.
 
-This series adds suspend to RAM and runtime PM support for Ethernet
-IP available on the RZ/G3S (R9A08G045) SoC.
-
-As there are IP versions that switch to module standby when disabling
-the clocks, and because of module standby IP switches to reset and
-the register content is lost, to be able to have runtime PM supported
-for all IP variants, the configuration operations were moved all to
-ravb_open()/ravb_close() letting the ravb_probe() and ravb_remove()
-to deal with resource parsing and allocation/free.
-
-The ethtool and IOCTL APIs that could have been run asyncronously
-were adapted to return if the interface is down. As explained in
-each individual commits description, this should be harmless.
-
-Along with it, the series contains preparatory cleanups.
-
-The series has been tested on the boards with the following device trees:
-- r8a7742-iwg21d-q7.dts
-- r8a774a1-hihope-rzg2m-ex.dts 
-- r9a07g043u11-smarc-rzg2ul.dts
-- r9a07g054l2-smarc-rzv2l.dts
-- r9a07g044l2-smarc-rzg2l.dts
-
-Patches are based on series at [1].
-
-Thank you,
-Claudiu Beznea
+Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+---
 
 Changes in v2:
-- rework the driver (mainly, ravb_open() contains now only resource
-  allocation and parsing leaving the settings to ravb_open(); ravb_remove()
-  has been adapted accordingly) to be able to use runtime PM for all
-  IP variants; due to this number of patches increased
-- adjust previous series to review comments
-- collected tags
-- populated driver's own runtime PM ops with enable/disable of reference
-  clock
+- addressed review comments and keep stale code out of this patch
 
-[1] https://lore.kernel.org/all/20231214113137.2450292-1-claudiu.beznea.uj@bp.renesas.com/
 
-Claudiu Beznea (21):
-  net: ravb: Let IP-specific receive function to interrogate descriptors
-  net: ravb: Rely on PM domain to enable gptp_clk
-  net: ravb: Make reset controller support mandatory
-  net: ravb: Switch to SYSTEM_SLEEP_PM_OPS()/RUNTIME_PM_OPS() and
-    pm_ptr()
-  net: ravb: Use tabs instead of spaces
-  net: ravb: Assert/de-assert reset on suspend/resume
-  net: ravb: Move reference clock enable/disable on runtime PM APIs
-  net: ravb: Move the IRQs get and request in the probe function
-  net: ravb: Split GTI computation and set operations
-  net: ravb: Move delay mode set in the driver's ndo_open API
-  net: ravb: Move DBAT configuration to the driver's ndo_open API
-  net: ravb: Move ptp initialization in the driver's ndo_open API for
-    ccc_gac platorms
-  net: ravb: Set config mode in ndo_open and reset mode in ndo_close
-  net: ravb: Simplify ravb_suspend()
-  net: ravb: Simplify ravb_resume()
-  net: ravb: Keep the reverse order of operations in ravb_close()
-  net: ravb: Keep clock request operations grouped together
-  net: ravb: Return cached statistics if the interface is down
-  net: ravb: Do not set promiscuous mode if the interface is down
-  net: ravb: Do not apply RX CSUM settings to hardware if the interface
-    is down
-  net: ravb: Add runtime PM support
+ drivers/net/ethernet/renesas/ravb_main.c | 13 ++-----------
+ 1 file changed, 2 insertions(+), 11 deletions(-)
 
- drivers/net/ethernet/renesas/ravb.h      |   2 +
- drivers/net/ethernet/renesas/ravb_main.c | 783 ++++++++++++-----------
- 2 files changed, 417 insertions(+), 368 deletions(-)
-
+diff --git a/drivers/net/ethernet/renesas/ravb_main.c b/drivers/net/ethernet/renesas/ravb_main.c
+index 1c253403a297..8e67a18b2924 100644
+--- a/drivers/net/ethernet/renesas/ravb_main.c
++++ b/drivers/net/ethernet/renesas/ravb_main.c
+@@ -1282,25 +1282,16 @@ static int ravb_poll(struct napi_struct *napi, int budget)
+ 	struct net_device *ndev = napi->dev;
+ 	struct ravb_private *priv = netdev_priv(ndev);
+ 	const struct ravb_hw_info *info = priv->info;
+-	bool gptp = info->gptp || info->ccc_gac;
+-	struct ravb_rx_desc *desc;
+ 	unsigned long flags;
+ 	int q = napi - priv->napi;
+ 	int mask = BIT(q);
+ 	int quota = budget;
+-	unsigned int entry;
+ 
+-	if (!gptp) {
+-		entry = priv->cur_rx[q] % priv->num_rx_ring[q];
+-		desc = &priv->gbeth_rx_ring[entry];
+-	}
+ 	/* Processing RX Descriptor Ring */
+ 	/* Clear RX interrupt */
+ 	ravb_write(ndev, ~(mask | RIS0_RESERVED), RIS0);
+-	if (gptp || desc->die_dt != DT_FEMPTY) {
+-		if (ravb_rx(ndev, &quota, q))
+-			goto out;
+-	}
++	if (ravb_rx(ndev, &quota, q))
++		goto out;
+ 
+ 	/* Processing TX Descriptor Ring */
+ 	spin_lock_irqsave(&priv->lock, flags);
 -- 
 2.39.2
 
