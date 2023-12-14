@@ -2,155 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AB3C812407
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 01:44:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 59E2381240A
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 01:45:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442891AbjLNAoF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 19:44:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38460 "EHLO
+        id S1442890AbjLNApf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 19:45:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33346 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234125AbjLNAoE (ORCPT
+        with ESMTP id S229739AbjLNApe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 19:44:04 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73657D0
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 16:44:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1702514649;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=00XBiI2/GjwYgdmGmgmI9vsz6zy2kiJraPjLIsuaPhU=;
-        b=eVGvXY1aLheqhml2TxwToPoCfIHQB99PnoQMsjs69DxRYqV7vreMfjr+MQc7sqzJdxejyT
-        AkOaKj+Di4c9jiqa8IwSpelI686iYbXGqx1YoqVSNGvthNXJeSBhaOx5FvCLkTYIuZxKgU
-        6SIVWf8mQwkyljvOQxi4U6MEtmq5884=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-557-A8uzrfsRNs2QYDp84ekxSQ-1; Wed,
- 13 Dec 2023 19:44:06 -0500
-X-MC-Unique: A8uzrfsRNs2QYDp84ekxSQ-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 2DA2E1C0BA59;
-        Thu, 14 Dec 2023 00:44:06 +0000 (UTC)
-Received: from fedora (unknown [10.72.116.126])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id BEAD02026D66;
-        Thu, 14 Dec 2023 00:44:02 +0000 (UTC)
-Date:   Thu, 14 Dec 2023 08:43:58 +0800
-From:   Ming Lei <ming.lei@redhat.com>
-To:     Yury Norov <yury.norov@gmail.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Subject: Re: [PATCH v3 3/7] lib/group_cpus: relax atomicity requirement in
- grp_spread_init_one()
-Message-ID: <ZXpPzoX1pcQZMyBw@fedora>
-References: <20231212042108.682072-1-yury.norov@gmail.com>
- <20231212042108.682072-4-yury.norov@gmail.com>
- <ZXgszD9tIKY1tC9r@fedora>
- <ZXiPvgzZvXyWfarS@yury-ThinkPad>
- <ZXj3deNs91Ga471c@fedora>
- <ZXnj1WhpSgdMXSfS@yury-ThinkPad>
+        Wed, 13 Dec 2023 19:45:34 -0500
+Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFAA59A;
+        Wed, 13 Dec 2023 16:45:40 -0800 (PST)
+Received: by mail-wr1-x432.google.com with SMTP id ffacd0b85a97d-33644eeb305so293361f8f.1;
+        Wed, 13 Dec 2023 16:45:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1702514739; x=1703119539; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=xkA8aX9W2l8y7Uc6nvmkEm2CKe+7epzMhiOOcqw7Ijs=;
+        b=UmMgpd8VdyrArXjJbggI9HI7EPmxBYu0iUawAFA+4do1RwusWAs9Fqgq25jGUr9Nwh
+         /S2LOS5DmwhVgEuASgm8R2TpHyDhKTGqdBaNXIlGhdldZgA08UjJATCv1z2gS3cFRIUg
+         yvAFUvJG2LktOSbdqSs84KyoWdOwhtGXIqi3bgoxoD8UGIFTvnohVD/Buq8eB6Ci0m/j
+         nCBq62iw6PSrOXOeO27CqDFv4o0CZBIuqa4C4eNemk0dApvAX7pUabPKeHaleHbVGnJ6
+         3BY+HEiXnZNFmuXLBuXbwclkU9jq4DgR8GZEtIHRajbBRirNQe1mZK+xONuwAoMh0KZw
+         SIag==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702514739; x=1703119539;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=xkA8aX9W2l8y7Uc6nvmkEm2CKe+7epzMhiOOcqw7Ijs=;
+        b=EaiUHGZadRKGKJJkgrvWSKmTM6fVoMWdIMzwZqlnFWGF0cXSTB5WyRV4e+DsknYC/m
+         Ze0XAAjjUv7UVFj7D6sXFOqiUwZfzZaGEVtQB1dk37dxa6FCSgV9A5OFbSgzW4PrM2A7
+         McKbkQwqNQpz4868hQvUzDWTiAfZQPRXecqDL+zWeF+2aSjwgIaD2sjtIUEN38BYH8Zy
+         44wugBxnNpINodr9orDzY+jK1JCAVyh4WLHonuLVC+hrcQHFEDuhECUArlK1vB+ZXin4
+         Ooe2EXoP1EyAEpuiTiSfDoQ48tr0k8CZecacHzNnI1HSdJ7YtOfXTheR2/gHlllACiOl
+         G1yA==
+X-Gm-Message-State: AOJu0YwEIOR+9ksoZiC2NzMmhNN0pjZJmoviyr2A1esEkESG8nlolLZY
+        uLuFEIZ2ODiIpO458tUWbbA=
+X-Google-Smtp-Source: AGHT+IG2sog88JXDEZWuQus/TDdCLqQGrttTQCTdi6dN+bCXWawwvU4A1hNkOvdh7d3EdzBhoJ312w==
+X-Received: by 2002:a05:6000:a8c:b0:336:4440:b94f with SMTP id dh12-20020a0560000a8c00b003364440b94fmr389862wrb.124.1702514738927;
+        Wed, 13 Dec 2023 16:45:38 -0800 (PST)
+Received: from localhost.localdomain (93-34-89-13.ip49.fastwebnet.it. [93.34.89.13])
+        by smtp.googlemail.com with ESMTPSA id g15-20020adfe40f000000b003364470f30bsm959013wrm.52.2023.12.13.16.45.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Dec 2023 16:45:38 -0800 (PST)
+From:   Christian Marangi <ansuelsmth@gmail.com>
+To:     Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Christian Marangi <ansuelsmth@gmail.com>
+Subject: [net-next PATCH 0/2] net: phy: at803x: additional cleanup for qca808x
+Date:   Thu, 14 Dec 2023 01:44:30 +0100
+Message-Id: <20231214004432.16702-1-ansuelsmth@gmail.com>
+X-Mailer: git-send-email 2.40.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZXnj1WhpSgdMXSfS@yury-ThinkPad>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.4
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 13, 2023 at 09:03:17AM -0800, Yury Norov wrote:
-> On Wed, Dec 13, 2023 at 08:14:45AM +0800, Ming Lei wrote:
-> > On Tue, Dec 12, 2023 at 08:52:14AM -0800, Yury Norov wrote:
-> > > On Tue, Dec 12, 2023 at 05:50:04PM +0800, Ming Lei wrote:
-> > > > On Mon, Dec 11, 2023 at 08:21:03PM -0800, Yury Norov wrote:
-> > > > > Because nmsk and irqmsk are stable, extra atomicity is not required.
-> > > > > 
-> > > > > Signed-off-by: Yury Norov <yury.norov@gmail.com>
-> > > > > ---
-> > > > >  lib/group_cpus.c | 8 ++++----
-> > > > >  1 file changed, 4 insertions(+), 4 deletions(-)
-> > > > > 
-> > > > > diff --git a/lib/group_cpus.c b/lib/group_cpus.c
-> > > > > index 10dead3ab0e0..7ac94664230f 100644
-> > > > > --- a/lib/group_cpus.c
-> > > > > +++ b/lib/group_cpus.c
-> > > > > @@ -24,8 +24,8 @@ static void grp_spread_init_one(struct cpumask *irqmsk, struct cpumask *nmsk,
-> > > > >  		if (cpu >= nr_cpu_ids)
-> > > > >  			return;
-> > > > >  
-> > > > > -		cpumask_clear_cpu(cpu, nmsk);
-> > > > > -		cpumask_set_cpu(cpu, irqmsk);
-> > > > > +		__cpumask_clear_cpu(cpu, nmsk);
-> > > > > +		__cpumask_set_cpu(cpu, irqmsk);
-> > > > >  		cpus_per_grp--;
-> > > > >  
-> > > > >  		/* If the cpu has siblings, use them first */
-> > > > > @@ -33,8 +33,8 @@ static void grp_spread_init_one(struct cpumask *irqmsk, struct cpumask *nmsk,
-> > > > >  		sibl = cpu + 1;
-> > > > >  
-> > > > >  		for_each_cpu_and_from(sibl, siblmsk, nmsk) {
-> > > > > -			cpumask_clear_cpu(sibl, nmsk);
-> > > > > -			cpumask_set_cpu(sibl, irqmsk);
-> > > > > +			__cpumask_clear_cpu(sibl, nmsk);
-> > > > > +			__cpumask_set_cpu(sibl, irqmsk);
-> > > > 
-> > > > I think this kind of change should be avoided, here the code is
-> > > > absolutely in slow path, and we care code cleanness and readability
-> > > > much more than the saved cycle from non atomicity.
-> > > 
-> > > Atomic ops have special meaning and special function. This 'atomic' way
-> > > of moving a bit from one bitmap to another looks completely non-trivial
-> > > and puzzling to me.
-> > > 
-> > > A sequence of atomic ops is not atomic itself. Normally it's a sing of
-> > > a bug. But in this case, both masks are stable, and we don't need
-> > > atomicity at all.
-> > 
-> > Here we don't care the atomicity.
-> > 
-> > > 
-> > > It's not about performance, it's about readability.
-> > 
-> > __cpumask_clear_cpu() and __cpumask_set_cpu() are more like private
-> > helper, and more hard to follow.
-> 
-> No that's not true. Non-atomic version of the function is not a
-> private helper of course.
->  
-> > [@linux]$ git grep -n -w -E "cpumask_clear_cpu|cpumask_set_cpu" ./ | wc
-> >     674    2055   53954
-> > [@linux]$ git grep -n -w -E "__cpumask_clear_cpu|__cpumask_set_cpu" ./ | wc
-> >      21      74    1580
-> > 
-> > I don't object to comment the current usage, but NAK for this change.
-> 
-> No problem, I'll add you NAK.
+This small series is a preparation for the big code split. While the
+qca808x code is waiting to be reviwed and merged, we can further cleanup
+and generalize shared functions between at803x and qca808x.
 
-You can add the following words meantime:
+With these last 2 patch everything is ready to move the driver to a
+dedicated directory and split the code by creating a library module
+for the few shared functions between the 2 driver.
 
-__cpumask_clear_cpu() and __cpumask_set_cpu() are added in commit 6c8557bdb28d
-("smp, cpumask: Use non-atomic cpumask_{set,clear}_cpu()") for fast code path(
-smp_call_function_many()).
+Eventually at803x can be further cleaned and generalized but everything
+will be already self contained and related only to at803x family of PHYs.
 
-We have ~670 users of cpumask_clear_cpu & cpumask_set_cpu, lots of them
-fall into same category with group_cpus.c(doesn't care atomicity, not in fast
-code path), and needn't change to __cpumask_clear_cpu() and __cpumask_set_cpu().
-Otherwise, this way may encourage to update others into the __cpumask_* version.
+Christian Marangi (2):
+  net: phy: at803x: move specific qca808x config_aneg to dedicated
+    function
+  net: phy: at803x: make read specific status function more generic
 
+ drivers/net/phy/at803x.c | 92 +++++++++++++++++++++++++---------------
+ 1 file changed, 58 insertions(+), 34 deletions(-)
 
-Thanks, 
-Ming
+-- 
+2.40.1
 
