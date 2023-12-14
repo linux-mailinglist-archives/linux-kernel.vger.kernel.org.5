@@ -1,168 +1,124 @@
-Return-Path: <linux-kernel+bounces-246-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-247-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 28A71813E39
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 00:24:44 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 12C1B813E3C
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 00:26:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D20E91F226D4
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 23:24:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0136B1C21BEA
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 23:26:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 333956C6F3;
-	Thu, 14 Dec 2023 23:24:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A8196C6EC;
+	Thu, 14 Dec 2023 23:26:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="eIsT7k7x"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Q7TM0q6b"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ed1-f45.google.com (mail-ed1-f45.google.com [209.85.208.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B1E4A6C6DC;
-	Thu, 14 Dec 2023 23:24:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f45.google.com with SMTP id 4fb4d7f45d1cf-55225ed7ef9so64992a12.3;
-        Thu, 14 Dec 2023 15:24:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702596270; x=1703201070; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=pH7KARAejqAmd4NZA5cpMQIeqpV2b6Ne0T86GLGIoxM=;
-        b=eIsT7k7xGRINeUlbrrc8PwfZOM0QCTrxDlsp+3+GYgkt4Qgj421gTDu6J1/WKBb4fa
-         X0r40dNS0fi7WGx53VWQQYzsL0squo0X69M8oY0BaLHBJ/FttX7UKBeXGgGDgmogbSbZ
-         qW1LXGBsySw/naY7w7WIYP4TUn31A+FbT4I1w+Hllht9ftzlEpJyECFmTPC2VrP7tJwe
-         PH/rnGW4izhkVgu74eyllIb9bx7bYkz6RxbSQysd6OpfZ2dV7kDNMWK1coRCrviyR/ga
-         c5JQzD6SwIpwiilO3Vd9qhuz4s0eW8CSHiGjWEtpBQeO3Ppnm7Ngc14gPwyc/IRcn4Lc
-         bOBQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702596270; x=1703201070;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=pH7KARAejqAmd4NZA5cpMQIeqpV2b6Ne0T86GLGIoxM=;
-        b=IVgEuH2IY7wF4o7yz+hZViGFxrS/mbU0sUrm+NI96sPAgpt34OdBtJdMmeDZIbkQd9
-         bL7LIKlO++l0CTMP5Ja4la+eR38z6QqnmAWSEJTBdYkKhP82cgbbn3ggE3ZNpfJ5uZqg
-         BT38YC8bX+PyT/fRWDWXUhVdoGPfiUDJBgIFmw3KcVNDijOM3dvAFUqWBO4csMSEjooj
-         FB0+K/nVPEbONpu0uzyl/POuZ1Ha+4gfxTChNNvlzO7h5YN+ZYyItNjVRlPew6rEbCxo
-         /ABCipBTZvjsHTSiG88udYzjC0qcMcVTVjeode7b/RsRLQ/y+Zg35M4HuDP3AFbQFIZO
-         I3iA==
-X-Gm-Message-State: AOJu0Yy4NoiGi+IHVn2yXi6rXG26vK2d/uKHUJ/+ATyLBsDp8c4Tv0Nt
-	hp5jdBflVkszggPRL9p9tOWAv1cn47oeBT52idk=
-X-Google-Smtp-Source: AGHT+IHsJSgir9UVHsZ5FV04hryiHKZZOz15ybak56dJK8+jyatlOJqVUTMG0NoOhteyY7LJhIGDN/3SDJu6dhwBdB4=
-X-Received: by 2002:a50:d61b:0:b0:552:17c8:fa4f with SMTP id
- x27-20020a50d61b000000b0055217c8fa4fmr1492622edi.72.1702596269898; Thu, 14
- Dec 2023 15:24:29 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 577542DB60
+	for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 23:26:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1702596392; x=1734132392;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=2kbxU/j1E2mXB1lp9MGqUVziKNe/hEkKZdqvcp6MOUw=;
+  b=Q7TM0q6bF2YDmCGCixSCPY+/Y3O3nenSTdPpgAq7f3Way6kesWR3bzxc
+   Rrsdon/UdTrU/mkMwubshDodfOgAydFcDOovCl8akfC4inQUOgxG3ZWz7
+   iJEjacf5ASjHZVb7dVmpWkT5ZUkLxKv/gxQTCYTQBNa+nj8rrkKxCqXt1
+   DrtsCHIdlB8qsBbzl/iMrWfuxKQmUoC5zxmiuTDxe63Ho9kPI5MRolIQ6
+   FS5ZM0tOjFH2UwMbymueTbLn0n14svtsUKEexURZ8zf5zFMGUpi2LYUZ3
+   WzvsPcE1nr2LbLGPiZVMpG0nL6gMmkM+6McaFomahSGJjrRpBQtRApwm2
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10924"; a="461665339"
+X-IronPort-AV: E=Sophos;i="6.04,277,1695711600"; 
+   d="scan'208";a="461665339"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Dec 2023 15:26:31 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10924"; a="1105909708"
+X-IronPort-AV: E=Sophos;i="6.04,277,1695711600"; 
+   d="scan'208";a="1105909708"
+Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
+  by fmsmga005.fm.intel.com with ESMTP; 14 Dec 2023 15:26:29 -0800
+Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rDv63-000Mjk-34;
+	Thu, 14 Dec 2023 23:26:27 +0000
+Date: Fri, 15 Dec 2023 07:25:31 +0800
+From: kernel test robot <lkp@intel.com>
+To: Kees Cook <keescook@chromium.org>
+Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	"Gustavo A. R. Silva" <gustavoars@kernel.org>
+Subject: drivers/mtd/nand/raw/sunxi_nand.c:201: warning: Excess struct member
+ 'sels' description in 'sunxi_nand_chip'
+Message-ID: <202312150752.IeutuS1p-lkp@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231214062434.3565630-1-menglong8.dong@gmail.com> <20231214062434.3565630-3-menglong8.dong@gmail.com>
-In-Reply-To: <20231214062434.3565630-3-menglong8.dong@gmail.com>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Thu, 14 Dec 2023 15:24:17 -0800
-Message-ID: <CAEf4BzZdLvwbh_-GNoqD=ghgK+GxgXwUBKP6yQQH=vWMP4Csqw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 2/2] selftests/bpf: activate the OP_NE login
- in range_cond()
-To: Menglong Dong <menglong8.dong@gmail.com>
-Cc: andrii@kernel.org, eddyz87@gmail.com, yonghong.song@linux.dev, 
-	ast@kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com, 
-	martin.lau@linux.dev, song@kernel.org, kpsingh@kernel.org, sdf@google.com, 
-	haoluo@google.com, jolsa@kernel.org, bpf@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-On Wed, Dec 13, 2023 at 10:28=E2=80=AFPM Menglong Dong <menglong8.dong@gmai=
-l.com> wrote:
->
-> The edge range checking for the registers is supported by the verifier
-> now, so we can activate the extended login in
-> tools/testing/selftests/bpf/prog_tests/reg_bounds.c/range_cond() to test
-> such logic.
->
-> Besides, I added some cases to the "crafted_cases" array for this logic.
-> These cases are mainly used to test the edge of the src reg and dst reg.
->
-> Signed-off-by: Menglong Dong <menglong8.dong@gmail.com>
-> ---
-> v2:
-> - add some cases to the "crafted_cases"
-> ---
->  .../selftests/bpf/prog_tests/reg_bounds.c     | 25 ++++++++++++++-----
->  1 file changed, 19 insertions(+), 6 deletions(-)
->
-> diff --git a/tools/testing/selftests/bpf/prog_tests/reg_bounds.c b/tools/=
-testing/selftests/bpf/prog_tests/reg_bounds.c
-> index 0c9abd279e18..53b8711cfd2d 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/reg_bounds.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/reg_bounds.c
-> @@ -590,12 +590,7 @@ static void range_cond(enum num_t t, struct range x,=
- struct range y,
->                 *newy =3D range(t, max_t(t, x.a, y.a), min_t(t, x.b, y.b)=
-);
->                 break;
->         case OP_NE:
-> -               /* generic case, can't derive more information */
-> -               *newx =3D range(t, x.a, x.b);
-> -               *newy =3D range(t, y.a, y.b);
-> -               break;
-> -
-> -               /* below extended logic is not supported by verifier just=
- yet */
-> +               /* below logic is supported by the verifier now */
->                 if (x.a =3D=3D x.b && x.a =3D=3D y.a) {
->                         /* X is a constant matching left side of Y */
->                         *newx =3D range(t, x.a, x.b);
-> @@ -2101,6 +2096,24 @@ static struct subtest_case crafted_cases[] =3D {
->         {S32, S64, {(u32)(s32)S32_MIN, (u32)(s32)-255}, {(u32)(s32)-2, 0}=
-},
->         {S32, S64, {0, 1}, {(u32)(s32)S32_MIN, (u32)(s32)S32_MIN}},
->         {S32, U32, {(u32)(s32)S32_MIN, (u32)(s32)S32_MIN}, {(u32)(s32)S32=
-_MIN, (u32)(s32)S32_MIN}},
-> +
-> +       /* edge overlap testings for BPF_NE */
-> +       {U64, U64, {1, 1}, {1, 0x80000000}},
-> +       {U64, S64, {1, 1}, {1, 0x80000000}},
-> +       {U64, U32, {1, 1}, {1, 0x80000000}},
-> +       {U64, S32, {1, 1}, {1, 0x80000000}},
-> +       {U64, U64, {0x80000000, 0x80000000}, {1, 0x80000000}},
-> +       {U64, S64, {0x80000000, 0x80000000}, {1, 0x80000000}},
-> +       {U64, U32, {0x80000000, 0x80000000}, {1, 0x80000000}},
-> +       {U64, S32, {0x80000000, 0x80000000}, {1, 0x80000000}},
-> +       {U64, U64, {1, 0x80000000}, {1, 1}},
-> +       {U64, S64, {1, 0x80000000}, {1, 1}},
-> +       {U64, U32, {1, 0x80000000}, {1, 1}},
-> +       {U64, S32, {1, 0x80000000}, {1, 1}},
-> +       {U64, U64, {1, 0x80000000}, {0x80000000, 0x80000000}},
-> +       {U64, S64, {1, 0x80000000}, {0x80000000, 0x80000000}},
-> +       {U64, U32, {1, 0x80000000}, {0x80000000, 0x80000000}},
-> +       {U64, S32, {1, 0x80000000}, {0x80000000, 0x80000000}},
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   5bd7ef53ffe5ca580e93e74eb8c81ed191ddc4bd
+commit: 28a05da765c0cd21654ef5fed3b53af5cd278d63 mtd: rawnand: sunxi: Annotate struct sunxi_nand_chip with __counted_by
+date:   3 months ago
+config: sh-allyesconfig (https://download.01.org/0day-ci/archive/20231215/202312150752.IeutuS1p-lkp@intel.com/config)
+compiler: sh4-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231215/202312150752.IeutuS1p-lkp@intel.com/reproduce)
 
-JNE and JEQ are sign-agnostic, so there is no need to use both U64 and
-S64 variants for comparison. As for the choice of values. Wouldn't it
-make sense to use really a boundary conditions:
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202312150752.IeutuS1p-lkp@intel.com/
 
-0, 0xffffffffffffffff, and 0x80000000000000 for 64-bit and
-0, 0xffffffff, and 0x80000000 for 32-bit? For this one use U32 as the init =
-type?
+All warnings (new ones prefixed by >>):
 
-BTW, all these cases should be tested with auto-generated tests, so
-please make sure to run
+>> drivers/mtd/nand/raw/sunxi_nand.c:201: warning: Excess struct member 'sels' description in 'sunxi_nand_chip'
 
-sudo SLOW_TESTS=3D1 ./test_progs -t reg_bounds_gen -j
 
-locally. It will take a bit of time, but should help to get confidence
-in that everything is working and nothing regressed.
+vim +201 drivers/mtd/nand/raw/sunxi_nand.c
 
->  };
->
->  /* Go over crafted hard-coded cases. This is fast, so we do it as part o=
-f
-> --
-> 2.39.2
->
+1fef62c1423b69 drivers/mtd/nand/sunxi_nand.c     Boris Brezillon 2014-10-21  179  
+67c88008c3e24a drivers/mtd/nand/raw/sunxi_nand.c Boris Brezillon 2018-12-15  180  /**
+67c88008c3e24a drivers/mtd/nand/raw/sunxi_nand.c Boris Brezillon 2018-12-15  181   * struct sunxi_nand_chip - stores NAND chip device related information
+1fef62c1423b69 drivers/mtd/nand/sunxi_nand.c     Boris Brezillon 2014-10-21  182   *
+1fef62c1423b69 drivers/mtd/nand/sunxi_nand.c     Boris Brezillon 2014-10-21  183   * @node: used to store NAND chips into a list
+1fef62c1423b69 drivers/mtd/nand/sunxi_nand.c     Boris Brezillon 2014-10-21  184   * @nand: base NAND chip structure
+cbd87780bed580 drivers/mtd/nand/raw/sunxi_nand.c Miquel Raynal   2020-09-30  185   * @ecc: ECC controller structure
+1fef62c1423b69 drivers/mtd/nand/sunxi_nand.c     Boris Brezillon 2014-10-21  186   * @clk_rate: clk_rate required for this NAND chip
+67c88008c3e24a drivers/mtd/nand/raw/sunxi_nand.c Boris Brezillon 2018-12-15  187   * @timing_cfg: TIMING_CFG register value for this NAND chip
+67c88008c3e24a drivers/mtd/nand/raw/sunxi_nand.c Boris Brezillon 2018-12-15  188   * @timing_ctl: TIMING_CTL register value for this NAND chip
+1fef62c1423b69 drivers/mtd/nand/sunxi_nand.c     Boris Brezillon 2014-10-21  189   * @nsels: number of CS lines required by the NAND chip
+1fef62c1423b69 drivers/mtd/nand/sunxi_nand.c     Boris Brezillon 2014-10-21  190   * @sels: array of CS lines descriptions
+1fef62c1423b69 drivers/mtd/nand/sunxi_nand.c     Boris Brezillon 2014-10-21  191   */
+1fef62c1423b69 drivers/mtd/nand/sunxi_nand.c     Boris Brezillon 2014-10-21  192  struct sunxi_nand_chip {
+1fef62c1423b69 drivers/mtd/nand/sunxi_nand.c     Boris Brezillon 2014-10-21  193  	struct list_head node;
+1fef62c1423b69 drivers/mtd/nand/sunxi_nand.c     Boris Brezillon 2014-10-21  194  	struct nand_chip nand;
+ac1c7072e38e49 drivers/mtd/nand/raw/sunxi_nand.c Samuel Holland  2023-02-04  195  	struct sunxi_nand_hw_ecc ecc;
+1fef62c1423b69 drivers/mtd/nand/sunxi_nand.c     Boris Brezillon 2014-10-21  196  	unsigned long clk_rate;
+9c618292dba6aa drivers/mtd/nand/sunxi_nand.c     Roy Spliet      2015-06-26  197  	u32 timing_cfg;
+d052e508a4069f drivers/mtd/nand/sunxi_nand.c     Roy Spliet      2015-06-26  198  	u32 timing_ctl;
+1fef62c1423b69 drivers/mtd/nand/sunxi_nand.c     Boris Brezillon 2014-10-21  199  	int nsels;
+28a05da765c0cd drivers/mtd/nand/raw/sunxi_nand.c Kees Cook       2023-09-15  200  	struct sunxi_nand_chip_sel sels[] __counted_by(nsels);
+1fef62c1423b69 drivers/mtd/nand/sunxi_nand.c     Boris Brezillon 2014-10-21 @201  };
+1fef62c1423b69 drivers/mtd/nand/sunxi_nand.c     Boris Brezillon 2014-10-21  202  
+
+:::::: The code at line 201 was first introduced by commit
+:::::: 1fef62c1423b694da517b18dc80d59a7eaf7dd74 mtd: nand: add sunxi NAND flash controller support
+
+:::::: TO: Boris BREZILLON <boris.brezillon@free-electrons.com>
+:::::: CC: Brian Norris <computersforpeace@gmail.com>
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
