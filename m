@@ -2,70 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1636B813861
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 18:22:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 43AAD813864
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 18:23:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1443902AbjLNRWj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 12:22:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57100 "EHLO
+        id S1444008AbjLNRWz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 12:22:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35808 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229446AbjLNRWh (ORCPT
+        with ESMTP id S230344AbjLNRWx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 12:22:37 -0500
-Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B06593;
-        Thu, 14 Dec 2023 09:22:44 -0800 (PST)
-Received: by mail-ej1-x631.google.com with SMTP id a640c23a62f3a-a1db99cd1b2so1081911866b.2;
-        Thu, 14 Dec 2023 09:22:44 -0800 (PST)
+        Thu, 14 Dec 2023 12:22:53 -0500
+Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54883B2;
+        Thu, 14 Dec 2023 09:22:59 -0800 (PST)
+Received: by mail-io1-xd2b.google.com with SMTP id ca18e2360f4ac-7b783ee485eso83421039f.0;
+        Thu, 14 Dec 2023 09:22:59 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702574562; x=1703179362; darn=vger.kernel.org;
-        h=user-agent:in-reply-to:content-disposition:mime-version:references
-         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1702574578; x=1703179378; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=gskL73SYt1estiCHnemg6J9wLZhlZpDGrDz26SfS1rQ=;
-        b=bVz2mOWmIgWd5ohLw8NSZr2rUlVFgTVLLAR16FpoC8aN0mDQAepwpmkahsJofjDPWO
-         tfCwIhyqfch5H6k10wRfk/UCDyIOla2Jen9wiFQZM6NTWS1HiJekexwhTIwWxa/4ODXJ
-         ZVJ6JNggqVNW7CgDgJBZBQ69RhbTMk5IfLBF+sB3kTnMBTW6jFLb8XRDt1cfIo9Lw2ic
-         blWjxHVv/IFrbUxsYSUQ3I1UeyA5e4aMLB5+fYLyqX4sncb2PrVjc9v0M8yfHHNbXPoL
-         vsNvKIjkLG3hJbaUMaZRgHhfzmiDEBcgxMJ1ok4c5lJYileoJDWZPJq4VN2yNBYU7Jo0
-         vlGA==
+        bh=wn1zaC13xrpZ8HR3VlWdFsy2rSn+JRCW3L/spRmkW0E=;
+        b=W1qRQLnbZZqsXo+QL9/6qkIJxvbGuJ82kLl+ztb3tmcTEOHrjYV3M248nRdIe12Euo
+         kSSVRsIJwrEGSrO4nDqIBhduiC8zX7jdxlUMW98U/UAkh2FI7Tab7zQ3+uHEO5jklUT4
+         eZyD8qE2QtBtu0cxNPb1RQTx6zMLyonvLUh7l1ltuyGR8xsuW/3TnG5HUoMqiMGcps8/
+         bcu96oii50p78+A/4kAQ0CoT0kpT3m6s6po1DRFFnzGYO+3NtoiswTum8TRQ09ONzwYK
+         vivGmyiKZknt4m/y/5yZqMoxaqv8npwVa55gbDAR+8KK+bxWlNIIHpICD+t6lLubgwOw
+         BlYA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702574562; x=1703179362;
-        h=user-agent:in-reply-to:content-disposition:mime-version:references
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1702574578; x=1703179378;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=gskL73SYt1estiCHnemg6J9wLZhlZpDGrDz26SfS1rQ=;
-        b=NLYjDMspGZ4x89WCmP+eqK3/6kOjdvjGQqGXFd48m0/Ga9VZ4qiGsTyqWSKCP/DVzv
-         nm+2mufsjZ8p2WvfWbbWZAt2VkY9deW9UZpT565lsAIm4waZASLEvx83lv7WJ5b0bYcR
-         ttAlaFizbnLhXg+oCzxgUEVCy76x2u0KnpPMAFSXWXAVzINCiFlvbKyC7QwrPi/yYfML
-         0HC3MkouJ3v/2ZJpPL74+i5SNOQIakcvD/UMZCPsHf8PBwo6t/BoS5D88RGduXOzhCqp
-         ZXODXnzNJL2GTN9jelG4om3hUXGOFPSHCU4BO0PwQsleXYyVAfCZa6L/9zE0Mr1hkn9y
-         tcEQ==
-X-Gm-Message-State: AOJu0Yz0yJGo7hpC2L4rz3gJAZs7V/n7KS/nTJck5+Q04QI6BQNYWry7
-        wP5kdvhCbftOyc4Q343iCBI=
-X-Google-Smtp-Source: AGHT+IF+KLQnvjnbzXoYI+R/38f0suL8s24t04G0woQjI91W/htsUbhCdf6FFQDWE5tozKz9e60COA==
-X-Received: by 2002:a17:907:ca2a:b0:a19:9b79:8b44 with SMTP id uk42-20020a170907ca2a00b00a199b798b44mr3290310ejc.85.1702574562332;
-        Thu, 14 Dec 2023 09:22:42 -0800 (PST)
-Received: from orome.fritz.box (p200300e41f0fa600f22f74fffe1f3a53.dip0.t-ipconnect.de. [2003:e4:1f0f:a600:f22f:74ff:fe1f:3a53])
-        by smtp.gmail.com with ESMTPSA id ty14-20020a170907c70e00b00a1d70804ac9sm9616950ejc.33.2023.12.14.09.22.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Dec 2023 09:22:41 -0800 (PST)
-Date:   Thu, 14 Dec 2023 18:22:40 +0100
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Chen Ni <nichen@iscas.ac.cn>
-Cc:     mperttunen@nvidia.com, airlied@gmail.com, daniel@ffwll.ch,
-        jonathanh@nvidia.com, dri-devel@lists.freedesktop.org,
-        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] drm/tegra: dsi: Add missing check for
- of_find_device_by_node
-Message-ID: <ZXs54BYDq5Xjw3rL@orome.fritz.box>
-References: <20231024080738.825553-1-nichen@iscas.ac.cn>
+        bh=wn1zaC13xrpZ8HR3VlWdFsy2rSn+JRCW3L/spRmkW0E=;
+        b=B3NSQy4llMj7sScnPfYdauw1kydI1iq2Fp5wgFES+LvsdW0EqZ+8fyL9E7FurAzxNN
+         rbFyncSb1k3mJ/Rx/vDbP2BS1NcmkJdLFQTYOM2B4SVJLG15nSdMrQO9/5hhtSnc6fwd
+         KvXOMOJGbZ3WAHuMXJIz7bSe8KBXato23PqZS22QPyt7AzQDBuH9nc45TX5GQrChUI8v
+         MSr13JI9MvHWTesPlRGd5LLV+MmIpu9gJoVR1AZo2kdWsBaZAeLA5tgGwUHk2wLUmT7e
+         voi8cjGt4eCXAuzGbglgGRDH5WYtP79gZlJXIGarjm/LUWPhUK4ZBKtHwTivn1qWjt9g
+         p3jw==
+X-Gm-Message-State: AOJu0YzNPLGkb1SH0lLXvv5ENXk7bvr1woV6hN+jFHolQA0VqemPYNTP
+        9h/YSVlCEQhdzN9NgkS5rI1bXlMp/ynCtN+DYbM=
+X-Google-Smtp-Source: AGHT+IHe0dQgEg56O3SWkZjdq4Lbk1qqWohc1sV9GUplbadPeS3xUWvg7nOuatLXfVK570X0NwJ97ndHttKFRoH8U9k=
+X-Received: by 2002:a92:c261:0:b0:35f:7d16:c92d with SMTP id
+ h1-20020a92c261000000b0035f7d16c92dmr1572035ild.44.1702574578529; Thu, 14 Dec
+ 2023 09:22:58 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="YoXO4vJu2jzRymw/"
-Content-Disposition: inline
-In-Reply-To: <20231024080738.825553-1-nichen@iscas.ac.cn>
-User-Agent: Mutt/2.2.12 (2023-09-09)
+References: <e2b943eca92abebbf035447b3569f09a7176c770.1702366951.git.viresh.kumar@linaro.org>
+ <1c03eb18-a6ac-45c8-8fea-46097bb4e132@gmail.com>
+In-Reply-To: <1c03eb18-a6ac-45c8-8fea-46097bb4e132@gmail.com>
+From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date:   Thu, 14 Dec 2023 18:22:47 +0100
+Message-ID: <CANiq72=mvca8PXoxwzSao+QFbAHDCecSKCDtV+ffd+YgZNFaww@mail.gmail.com>
+Subject: Re: [PATCH V2] docs: rust: Clarify that 'rustup override' applies to
+ build directory
+To:     Tiago Lam <tiagolam@gmail.com>
+Cc:     Viresh Kumar <viresh.kumar@linaro.org>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Alex Gaynor <alex.gaynor@gmail.com>,
+        Wedson Almeida Filho <wedsonaf@gmail.com>,
+        Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
+        =?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
+        Benno Lossin <benno.lossin@proton.me>,
+        Andreas Hindborg <a.hindborg@samsung.com>,
+        Alice Ryhl <aliceryhl@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        rust-for-linux@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -76,44 +82,79 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Dec 14, 2023 at 2:26=E2=80=AFPM Tiago Lam <tiagolam@gmail.com> wrot=
+e:
+>
+> `scripts/min-tool-version.sh` won't exist within the build dir if the
+> option the user takes is "enter the kernel build directory", right? It
+> only works if they use the `--path` argument in the `rustup override
+> set` option.
 
---YoXO4vJu2jzRymw/
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Yeah, the script is in the source tree, and the path is the build
+tree. Giving a single one-liner with `--path <builddir>` and
+`<srctree>/scripts...` would be simplest in the sense that it would
+allow us to remove even the "enter ..." part too. But then the command
+cannot be copy-pasted and it is likely harder for newcomers that may
+not be using `O=3D`.
 
-On Tue, Oct 24, 2023 at 08:07:38AM +0000, Chen Ni wrote:
-> Add check for the return value of of_find_device_by_node() and return
-> the error if it fails in order to avoid NULL pointer dereference.
->=20
-> Fixes: e94236cde4d5 ("drm/tegra: dsi: Add ganged mode support")
-> Signed-off-by: Chen Ni <nichen@iscas.ac.cn>
-> ---
->  drivers/gpu/drm/tegra/dsi.c | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
+Something like v1 but a bit simpler, e.g. keeping things as they are,
+but with just a sentence after the command like "If you are building
+the kernel with `O=3D`, i.e. specifying an output directory, then you
+should append `--path <builddir>`." could work.
 
-Applied, thanks.
+Or we could just provide a `rustupoverride` Make target to do this for
+us [1], since we have all the information needed and would be
+copy-pasteable by everybody. I can send it as a non-mangled patch and
+then Viresh can redo this one on top using it.
 
-Thierry
+Cheers,
+Miguel
 
---YoXO4vJu2jzRymw/
-Content-Type: application/pgp-signature; name="signature.asc"
+[1]
 
------BEGIN PGP SIGNATURE-----
+diff --git a/Makefile b/Makefile
+index 70fc4c11dfc0..7fe82dd4dc6f 100644
+--- a/Makefile
++++ b/Makefile
+@@ -276,7 +276,8 @@ no-dot-config-targets :=3D $(clean-targets) \
+                         cscope gtags TAGS tags help% %docs check% cocciche=
+ck \
+                         $(version_h) headers headers_% archheaders
+archscripts \
+                         %asm-generic kernelversion %src-pkg dt_binding_che=
+ck \
+-                        outputmakefile rustavailable rustfmt rustfmtcheck
++                        outputmakefile rustavailable rustfmt rustfmtcheck =
+\
++                        rustupoverride
+ no-sync-config-targets :=3D $(no-dot-config-targets) %install
+modules_sign kernelrelease \
+                          image_name
+ single-targets :=3D %.a %.i %.ko %.lds %.ll %.lst %.mod %.o %.rsi %.s
+%.symtypes %/
+@@ -1611,6 +1612,7 @@ help:
+        @echo  '                    (requires kernel .config;
+downloads external repos)'
+        @echo  '  rust-analyzer   - Generate rust-project.json
+rust-analyzer support file'
+        @echo  '                    (requires kernel .config)'
++       @echo  '  rustupoverride  - Set up a rustup override for the
+build directory'
+        @echo  '  dir/file.[os]   - Build specified target only'
+        @echo  '  dir/file.rsi    - Build macro expanded source,
+similar to C preprocessing.'
+        @echo  '                    Run with RUSTFMT=3Dn to skip
+reformatting if needed.'
+@@ -1735,6 +1737,11 @@ rustfmt:
+ rustfmtcheck: rustfmt_flags =3D --check
+ rustfmtcheck: rustfmt
 
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmV7Od0ACgkQ3SOs138+
-s6E9Sw/+K7E1zQycMWDojVUC/8INCGH/PyVX/VF6pPdrQBBeiV1SWW7eJZN8zBKA
-oyjwunugLBII8F2zmdLelaSzmEOY+eFJPEBJG5/y0vCFi9qFaTOyktzbmp3qNehl
-eM3oSKzIdxonwO7AH0HmwaTQNd4tZqg7A3jTWfzLv7iiCFMsniHpMcenz7pRHw5c
-ogfDv6sSXVgvnFE/GSpytejr1sdb5lQKhv/LoqQZd2C1v/itwteZkzYn71CiQX80
-BiwAvgWYlc+3A4WktF+i/Ybcrh9tPtmONMZg/OOriK3fQEE7sFwJ14CEIBxUlBhj
-dwoFjqX9G/yu0WPgpNVTQvpCL5DuX4LR2i9nfDADbzMup5H8PXy7Z+fxX8jgFRko
-XuuX0Vz72x5x8nQhSnLWoDqutW+XHzWfFFi8iLvnjoBZVXfnxjUroizZIvBRBIOy
-BN2/bteLLMDffAMAJt80h5yI/iKidxoGs9SxfCzV7d3sNHl3aNwHSL3DOSDjsoYh
-dp9VWzU9XUWE7mNMM39w3G2k1ARB9Dhm17qpNQPycWqrTmEhPNA5+u9aabYAeP8s
-6YX5RHjUvpgmLZeOaMAULsJjJb75qvBmK6m5/MBVV6XfxUJgerELHZQ66lLXoRL6
-SQ3DnmMzuriqg227ol9sE5qd1ve+DEKTPsSKcI3+uiW3NXn6u7k=
-=NmLP
------END PGP SIGNATURE-----
-
---YoXO4vJu2jzRymw/--
++# `rustup override` setup target
++PHONY +=3D rustupoverride
++rustupoverride:
++       $(Q)rustup override set $(shell
+$(srctree)/scripts/min-tool-version.sh rustc)
++
+ # Misc
+ # ------------------------------------------------------------------------=
+---
