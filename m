@@ -1,151 +1,180 @@
-Return-Path: <linux-kernel+bounces-46-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-47-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8FD83813B26
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 20:58:58 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 95B7B813B36
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 21:03:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4C2702848FF
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 19:58:57 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C87E31C20CB2
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 20:03:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C7F526A022;
-	Thu, 14 Dec 2023 19:58:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3960A6A32E;
+	Thu, 14 Dec 2023 20:03:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="cVs72TxT"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="DcctqYnl"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-qk1-f174.google.com (mail-qk1-f174.google.com [209.85.222.174])
+Received: from mail-wm1-f41.google.com (mail-wm1-f41.google.com [209.85.128.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 642CC6A008;
-	Thu, 14 Dec 2023 19:58:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qk1-f174.google.com with SMTP id af79cd13be357-77f43042268so80927085a.1;
-        Thu, 14 Dec 2023 11:58:46 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 05EAA6A016
+	for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 20:03:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-wm1-f41.google.com with SMTP id 5b1f17b1804b1-40c31f18274so82791035e9.0
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 12:03:28 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702583925; x=1703188725; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:feedback-id:from:to:cc:subject:date
+        d=google.com; s=20230601; t=1702584207; x=1703189007; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=1t6WW6PWMVyvCR814CfeWvXobbx/+dvid0mhpQK6M3k=;
-        b=cVs72TxT0B/I3Evlyi2DnSId2EDSvCWk1rRxZmTW1oTEcJzgwpJgoyOWBuGgS5EoHS
-         M1VjfFaSDu4ordfWLGwjH+ZSJb1BlWVUck13Si7mWj3fQcgV/zuhnU9iehAd76pFQz6f
-         mjq6dVNucIw+Nz9X4yQdR2SGb0DAPhHzGExXu+5xgNH7J6nltbLwgqdog7lL1Gf4ufgk
-         bF0e+1xVkzuVUYPWlZi1nhSQlv7/cKS99sebhNJMBgLzU9ToT2L+QwbcdqzBM/DkQgMu
-         w5ZH2HDua+udLMsOSfMjRzkfSlN1Tujqy5N+hw3ZTFzGvyx2W0l6+MkkwzCZpNNmKmD+
-         CWOw==
+        bh=3t3FbK18GrHFwKE4zIkpGcLL7FiHaNow8xNq3R4/QdI=;
+        b=DcctqYnloBXyzr6/icFJ5nrbeI/fwc45lTK7zT/zDqs/kq2mNANjqfq2WI1CPbOIkl
+         3zpygJURz7qkPfte+tjx80A6gdM+O1FTYI2VvL7SuLYcjzd7H6DpQfdwmDLV9+nXMrPb
+         7dTw0mVB00N20UiuwNWRNzFDHCuBoP+J6TIeAJfZc3sS1MAXMzL9Z0GoRoatm7TLOu8j
+         8ZZNvlX+vs9HJuG2Y82vknoMM3anREwfsFsat4CTGetqMhnBOOAiPMlJfT5NqSfpdkqn
+         3Qd8clBnVZm39r28lU0UGMK8yIuIf8HPnzkmKCt9BujWkP4WutaWkmQdw0Vrw4Oq2nII
+         J76Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702583925; x=1703188725;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:feedback-id:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1702584207; x=1703189007;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=1t6WW6PWMVyvCR814CfeWvXobbx/+dvid0mhpQK6M3k=;
-        b=LiT1ID+mIwSJ0oYvMSzvycYerHCWwW2ze6mXDtvGuL1uaYDLFyiVZ1dUFQUm+ZLjhH
-         3RuIq6urpkw2uMz4CwnA94CvNgxWOk6fV60M67+WbAWPslT4aQkZXrkOR4g3UGYtdQyD
-         c79MZLwXTuQ19ZQ8PFmeN3fPNXpUZlNJq1xGrXRygjM3Z/2y/4IjODKvz2tbNMtubDyc
-         dD3QRBDQVoiIF1OQcabuSW5r0swp4pr7Ah2szPJZ7jCuYrc8hO5GhBqzLhfOdWQp2nXe
-         bwtKFXAqQ5x/fQR5Gb5/Z5ZK5RTZD3k2XW/+gbnTQ34jlwNONmBHyHkBJCwaqzDVz8N1
-         mi5g==
-X-Gm-Message-State: AOJu0YweLuXDtdo+dYGh6pwQ9oFr/Z9wlJWtI5pIBC2VddgKpYqBByfK
-	LwqWyCNvVzMo8UkmyrhTIOo=
-X-Google-Smtp-Source: AGHT+IHK5Hav9qDBYMj0E6PWx/Gbo9fzYppeB1SPymcXaiXRC8NBhEw1U2kuCBOWMdAAAVkett9s2w==
-X-Received: by 2002:a05:620a:2ed:b0:77f:8b0d:3b3f with SMTP id a13-20020a05620a02ed00b0077f8b0d3b3fmr6139187qko.42.1702583925179;
-        Thu, 14 Dec 2023 11:58:45 -0800 (PST)
-Received: from auth1-smtp.messagingengine.com (auth1-smtp.messagingengine.com. [66.111.4.227])
-        by smtp.gmail.com with ESMTPSA id p27-20020a05620a057b00b0077a029b7bf1sm5539453qkp.28.2023.12.14.11.58.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Dec 2023 11:58:44 -0800 (PST)
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
-	by mailauth.nyi.internal (Postfix) with ESMTP id 4BFDE27C0054;
-	Thu, 14 Dec 2023 14:58:44 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute2.internal (MEProxy); Thu, 14 Dec 2023 14:58:44 -0500
-X-ME-Sender: <xms:c157ZVuf0TwiLRO6GK_JgeyiAI3faQvbJ7GrUbdyBuomjjQIX1333w>
-    <xme:c157Zee3RlSP9uQErgB7tm7NzO93sOfLvt4b_OpCfevl93TBd4EID_q3YhvoIUsoZ
-    RDu23FWceEa_eklbA>
-X-ME-Received: <xmr:c157ZYwvqj0FpNGDAdUZmCYEcxJKs8rU7AoohTMmVxKgpHufsLC7Xvh4cpo>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrudelledgudeftdcutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpeffhffvvefukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpeeuohhq
-    uhhnucfhvghnghcuoegsohhquhhnrdhfvghnghesghhmrghilhdrtghomheqnecuggftrf
-    grthhtvghrnhephedugfduffffteeutddvheeuveelvdfhleelieevtdeguefhgeeuveei
-    udffiedvnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomh
-    epsghoqhhunhdomhgvshhmthhprghuthhhphgvrhhsohhnrghlihhthidqieelvdeghedt
-    ieegqddujeejkeehheehvddqsghoqhhunhdrfhgvnhhgpeepghhmrghilhdrtghomhesfh
-    higihmvgdrnhgrmhgv
-X-ME-Proxy: <xmx:c157ZcNyIapo7mftG72Pm8SUQbsOSH1aNs_hS86dYlB2tFTUPUXIig>
-    <xmx:c157ZV_TYJ-xM286AQ37pL_jehRH1Vtd2NRh_j_4k2BOg5tD0E7VVQ>
-    <xmx:c157ZcX1m5hsS6pte8rlmutHiv0hnLyM_33_GosVdclWq682OIdhtw>
-    <xmx:dF57ZZXI2ubr1HBoZKNgihy76LT_JM0gFbQ_5lcrYMfpRsmu_oV0Gg>
-Feedback-ID: iad51458e:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 14 Dec 2023 14:58:43 -0500 (EST)
-Date: Thu, 14 Dec 2023 11:58:38 -0800
-From: Boqun Feng <boqun.feng@gmail.com>
-To: Alice Ryhl <aliceryhl@google.com>
-Cc: Tiago Lam <tiagolam@gmail.com>, Miguel Ojeda <ojeda@kernel.org>,
-	Alex Gaynor <alex.gaynor@gmail.com>,
-	Wedson Almeida Filho <wedsonaf@gmail.com>,
-	Gary Guo <gary@garyguo.net>,
-	=?iso-8859-1?Q?Bj=F6rn?= Roy Baron <bjorn3_gh@protonmail.com>,
-	Benno Lossin <benno.lossin@proton.me>,
-	Andreas Hindborg <a.hindborg@samsung.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
-	Waiman Long <longman@redhat.com>, rust-for-linux@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] rust: sync: add `CondVar::wait_timeout`
-Message-ID: <ZXtebif2S1CyJRik@boqun-archlinux>
-References: <20231206-rb-new-condvar-methods-v1-0-33a4cab7fdaa@google.com>
- <20231206-rb-new-condvar-methods-v1-2-33a4cab7fdaa@google.com>
- <1dd1a3e8-ef9a-4e89-891f-b49d82acc5f8@gmail.com>
- <CAH5fLgijsRK3funsGuG6nbK26C+s6m0nO0i83RYD2cO3z7L22Q@mail.gmail.com>
+        bh=3t3FbK18GrHFwKE4zIkpGcLL7FiHaNow8xNq3R4/QdI=;
+        b=O2My+nD+T0zIo5Z1GUED/2cgND2B9PeQWM0BPN9FNTuS6IJmFctidl8qdIeY9kOWLn
+         XQR6hKg3iqGr7YI6qE6DxD4xyzdo2ARjStHGTbWZC+18iDnFlPNWeyogrt47zGPZZn6h
+         bW+ehYzgoEoJh73ZNa7KSMwrTF//nUC5iVjf+3d5Ao9W9QgTQhqNRkl0sX9cF7rmCmtQ
+         w/fu3ZUSTvMmdqWATV+VGkCdHHtkMlUc6m+Xit1uLcECJY3+goKq/tT7tsZLS3mJTBcu
+         AQ0tkX/ezPvRHqK+Y1Ylar8cXKOGyNIt0O1cvwtSr3Mm6J9AlRU+cn21S36yJyhoe4OI
+         d6XA==
+X-Gm-Message-State: AOJu0YznJLj1RfcgRm9SXI6suDKGD9qUL300mYHunuBEtQ+NPzHHpiGG
+	bAOeYs2TZ5kQsrJgqrwyA+cCQ4bwkfN+Zs8Oxb7OWA==
+X-Google-Smtp-Source: AGHT+IFJxGuMnKvxp55N7GC1tz5/h738b4XoM+FeA8fRtBht8xQJ/kBDFL2qAi3ZYkZt7idruFgudyPvdRKWDedOoVg=
+X-Received: by 2002:a05:600c:2313:b0:40c:3e43:4183 with SMTP id
+ 19-20020a05600c231300b0040c3e434183mr4682976wmo.5.1702584207011; Thu, 14 Dec
+ 2023 12:03:27 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAH5fLgijsRK3funsGuG6nbK26C+s6m0nO0i83RYD2cO3z7L22Q@mail.gmail.com>
+References: <20231208005250.2910004-1-almasrymina@google.com>
+ <20231208005250.2910004-9-almasrymina@google.com> <b07a4eca-0c3d-4620-9f97-b1d2c76642c2@gmail.com>
+ <CAHS8izNVFx6oHoo7y86P8Di9VCVe8A_n_9UZFkg5Wnt=A=YcNQ@mail.gmail.com>
+ <b1aea7bc-9627-499a-9bee-d2cc07856978@gmail.com> <CAHS8izPry13h49v+PqrmWSREZKZjYpPesxUTyPQy7AGyFwzo4g@mail.gmail.com>
+ <661c1bae-d7d3-457e-b545-5f67b9ef4197@gmail.com>
+In-Reply-To: <661c1bae-d7d3-457e-b545-5f67b9ef4197@gmail.com>
+From: Mina Almasry <almasrymina@google.com>
+Date: Thu, 14 Dec 2023 12:03:15 -0800
+Message-ID: <CAHS8izOY9xm=LBEN8sYwEa3aFB4GWDvJVacom3o4mHZPdHzTUg@mail.gmail.com>
+Subject: Re: [net-next v1 08/16] memory-provider: dmabuf devmem memory provider
+To: Pavel Begunkov <asml.silence@gmail.com>
+Cc: Shailend Chand <shailend@google.com>, netdev@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org, 
+	linux-arch@vger.kernel.org, linux-kselftest@vger.kernel.org, 
+	bpf@vger.kernel.org, linux-media@vger.kernel.org, 
+	dri-devel@lists.freedesktop.org, "David S. Miller" <davem@davemloft.net>, 
+	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+	Jonathan Corbet <corbet@lwn.net>, Jeroen de Borst <jeroendb@google.com>, 
+	Praveen Kaligineedi <pkaligineedi@google.com>, Jesper Dangaard Brouer <hawk@kernel.org>, 
+	Ilias Apalodimas <ilias.apalodimas@linaro.org>, Arnd Bergmann <arnd@arndb.de>, 
+	David Ahern <dsahern@kernel.org>, Willem de Bruijn <willemdebruijn.kernel@gmail.com>, 
+	Shuah Khan <shuah@kernel.org>, Sumit Semwal <sumit.semwal@linaro.org>, 
+	=?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>, 
+	Yunsheng Lin <linyunsheng@huawei.com>, Harshitha Ramamurthy <hramamurthy@google.com>, 
+	Shakeel Butt <shakeelb@google.com>, Willem de Bruijn <willemb@google.com>, 
+	Kaiyuan Zhang <kaiyuanz@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, Dec 08, 2023 at 08:37:27AM +0100, Alice Ryhl wrote:
-[...]
-> > > +    /// Releases the lock and waits for a notification in interruptible mode.
-> > > +    ///
-> > > +    /// Atomically releases the given lock (whose ownership is proven by the guard) and puts the
-> > > +    /// thread to sleep. It wakes up when notified by [`CondVar::notify_one`] or
-> > > +    /// [`CondVar::notify_all`], or when a timeout occurs, or when the thread receives a signal.
-> > > +    ///
-> > > +    /// Returns whether there is a signal pending.
-> > > +    #[must_use = "wait_timeout returns if a signal is pending, so the caller must check the return value"]
-> > > +    pub fn wait_timeout<T: ?Sized, B: Backend>(
-> > > +        &self,
-> > > +        guard: &mut Guard<'_, T, B>,
-> > > +        jiffies: u64,
-> > > +    ) -> CondVarTimeoutResult {
+On Mon, Dec 11, 2023 at 12:37=E2=80=AFPM Pavel Begunkov <asml.silence@gmail=
+.com> wrote:
+...
+> >> If you remove the branch, let it fall into ->release and rely
+> >> on refcounting there, then the callback could also fix up
+> >> release_cnt or ask pp to do it, like in the patch I linked above
+> >>
 > >
-> > Should this be called `wait_timeout_interruptable` instead, so that if
-> > we need to add one using the `TASK_INTERRUPTIBLE` state later we don't
-> > need to modfy it again? It also matches the
-> > `schedule_timeout_interruptible` one in the kernel (although that's not
-> > a reason to change it just in itself).
-> 
-> I don't mind changing the names, but in this patch I was just
-> consistent with what was already there.
-> 
+> > Sadly I don't think this is possible due to the reasons I mention in
+> > the commit message of that patch. Prematurely releasing ppiov and not
+> > having them be candidates for recycling shows me a 4-5x degradation in
+> > performance.
+>
+> I don't think I follow. The concept is to only recycle a buffer (i.e.
+> make it available for allocation) when its refs drop to zero, which is
+> IMHO the only way it can work, and IIUC what this patchset is doing.
+>
+> That's also I suggest to do, but through a slightly different path.
+> Let's say at some moment there are 2 refs (e.g. 1 for an skb and
+> 1 for userspace/xarray).
+>
+> Say it first puts the skb:
+>
+> napi_pp_put_page()
+>    -> page_pool_return_page()
+>      -> mp_ops->release_page()
+>         -> need_to_free =3D put_buf()
+>            // not last ref, need_to_free=3D=3Dfalse,
+>            // don't recycle, don't increase release_cnt
+>
+> Then you put the last ref:
+>
+> page_pool_iov_put_many()
+>    -> page_pool_return_page()
+>      -> mp_ops->release_page()
+>         -> need_to_free =3D put_buf()
+>            // last ref, need_to_free=3D=3Dtrue,
+>            // recycle and release_cnt++
+>
+> And that last put can even be recycled right into the
+> pp / ptr_ring, in which case it doesn't need to touch
+> release_cnt. Does it make sense? I don't see where
+> 4-5x degradation would come from
+>
+>
 
-Hmm.. so Rust's wait() is actually interruptible wait and we have
-wait_uninterruptible(), while C API is wait_event() is uninterruptible,
-and we have a wait_event_interruptible(), I think it makes sense we
-follow what C API has. Will send a patch soon.
+Sorry for the late reply, I have been working on this locally.
 
-Regards,
-Boqun
+What you're saying makes sense, and I'm no longer sure why I was
+seeing a perf degradation without '[net-next v1 10/16] page_pool:
+don't release iov on elevanted refcount'. However, even though what
+you're saying is technically correct, AFAIU it's actually semantically
+wrong. When a page is released by the page_pool, we should call
+page_pool_clear_pp_info() and completely disconnect the page from the
+pool. If we call release_page() on a page and then the page pool sees
+it again in page_pool_return_page(), I think that is considered a bug.
+In fact I think what you're proposing is as a result of a bug because
+we don't call a page_pool_clear_pp_info() equivalent on releasing
+ppiov.
 
-[...]
+However, I'm reasonably confident I figured out the right thing to do
+here. The page_pool uses page->pp_frag_count for its refcounting.
+pp_frag_count is a misnomer, it's being renamed to pp_ref_count in
+Liang's series[1]). In this series I used a get_page/put_page
+equivalent for refcounting. Once I transitioned to using
+pp_[frag|ref]_count for refcounting inside the page_pool, the issue
+went away, and I no longer need the patch 'page_pool: don't release
+iov on elevanted refcount'.
+
+There is an additional upside, since pages and ppiovs are both being
+refcounted using pp_[frag|ref]_count, we get some unified handling for
+ppiov and we reduce the checks around ppiov. This should be fixed
+properly in the next series.
+
+I still need to do some work (~1 week) before I upload the next
+version as there is a new requirement from MM that we transition to a
+new type and not re-use page*, but I uploaded my changes github with
+the refcounting issues resolved in case they're useful to you. Sorry
+for the churn:
+
+https://github.com/mina/linux/commits/tcpdevmem-v1.5/
+
+[1] https://patchwork.kernel.org/project/netdevbpf/list/?series=3D809049&st=
+ate=3D*
+
+--=20
+Thanks,
+Mina
 
