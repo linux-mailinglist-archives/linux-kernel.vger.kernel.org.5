@@ -1,25 +1,25 @@
-Return-Path: <linux-kernel+bounces-151-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-152-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 383B6813CD7
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 22:43:49 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2DF79813CDA
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 22:44:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6AAC21C21D3C
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 21:43:48 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A1A821F22835
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 21:44:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8BCE86FCEE;
-	Thu, 14 Dec 2023 21:42:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E47A77B22;
+	Thu, 14 Dec 2023 21:42:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="rYKzl1gL";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="E4nJ9zge"
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="tv9svISY";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="I/fIFq+C"
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4572B6E2DB
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 463FD6E2DD
 	for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 21:42:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
@@ -30,29 +30,29 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=w+Rj9ow8fovhfkl47C5quy90KNsRy8XmYEJxuaPSPxc=;
-	b=rYKzl1gLfyiH9IJP+TFLliwyltsoWallmmQO2rIWW8Z/fGewTSWXqFjmYrmYTF+CeN4zKV
-	wPontEoTCZuXFuB3Ybr6bj8SPuuXyeVscircT/Ol/ro4/4dtG60znLbdixzbjBmpbJlFq3
-	J3TKHO8N6BO1RKK25l+KflE1Xq/GC2yT5PjTw3ZWCPgmMuFfXHba9D9gMifVHVXsifgcar
-	/6IPOTBBy9xorvPK9ZfRGwCxypgXJ6rrybFNb9io6crG3P4hKA5Ph1junGYvzLOycp+ckA
-	d1JYd/lzSbUDSdRQ2G9pcAEg7G9bpuDMUoSFxsEw+Kaq+kojiFKqWrbCnXIIhg==
+	bh=5gccnnm0QINuqJ5Q69vjwoN8uCr8tb4sBQoCznhnpik=;
+	b=tv9svISYbQXkoRePsS+M089g14wfdhxM4HHUsK+JwLPSbUtHs9Oo4otPG1X4ctpuCo92lv
+	+Egv1fOKFhbHDtSyvl3sGOiZjMm75TXwyiMqtkHdo/HTc3MHPt1H0sZvE+AiodYv1Jtq+m
+	HhgCENbsxbC7YKL0n06eqds4KlnUdHLqj8Ai6CIgUdXMbv+nLP6yo+38BipdjZxa8UhgHC
+	FNquv+2VA+vhroxEm255Xmi8Qmx4LeMFa1jKa4+4E1Ad5dtayOeNPHN4NNZWCxZoJTykqV
+	mv3gIgoBgFaB2h3VF/HyNi7Abxgev8Qof7x7DL/z/Q0pr3KPslMpAkch1wJVrA==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
 	s=2020e; t=1702590128;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=w+Rj9ow8fovhfkl47C5quy90KNsRy8XmYEJxuaPSPxc=;
-	b=E4nJ9zgeLAGTpX7uf+GwQSKNUOUmHjHZFCXuM4dmVdN4NYPZT8iNldWycwr5Ytv/BL7qeg
-	JD1ZUoqpcg9ry0DQ==
+	bh=5gccnnm0QINuqJ5Q69vjwoN8uCr8tb4sBQoCznhnpik=;
+	b=I/fIFq+CG8/UDnQj2JPgMa4ksS360/MfB8fZoC9axu75aBKifTSPv3TlZlcgKQJStcIqsE
+	CKlnl5yoUg2E2BCg==
 To: Petr Mladek <pmladek@suse.com>
 Cc: Sergey Senozhatsky <senozhatsky@chromium.org>,
 	Steven Rostedt <rostedt@goodmis.org>,
 	Thomas Gleixner <tglx@linutronix.de>,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH printk v3 11/14] printk: ringbuffer: Consider committed as finalized in panic
-Date: Thu, 14 Dec 2023 22:47:58 +0106
-Message-Id: <20231214214201.499426-12-john.ogness@linutronix.de>
+Subject: [PATCH printk v3 12/14] printk: Disable passing console lock owner completely during panic()
+Date: Thu, 14 Dec 2023 22:47:59 +0106
+Message-Id: <20231214214201.499426-13-john.ogness@linutronix.de>
 In-Reply-To: <20231214214201.499426-1-john.ogness@linutronix.de>
 References: <20231214214201.499426-1-john.ogness@linutronix.de>
 Precedence: bulk
@@ -63,62 +63,110 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-A descriptor in the committed state means the record does not yet
-exist for the reader. However, for the panic CPU, committed
-records should be handled as finalized records since they contain
-message data in a consistent state and may contain additional
-hints as to the cause of the panic.
+From: Petr Mladek <pmladek@suse.com>
 
-Add an exception for records in the commit state to not be
-considered non-existing when reading from the panic CPU.
+The commit d51507098ff91 ("printk: disable optimistic spin
+during panic") added checks to avoid becoming a console waiter
+if a panic is in progress.
 
+However, the transition to panic can occur while there is
+already a waiter. The current owner should not pass the lock to
+the waiter because it might get stopped or blocked anytime.
+
+Also the panic context might pass the console lock owner to an
+already stopped waiter by mistake. It might happen when
+console_flush_on_panic() ignores the current lock owner, for
+example:
+
+CPU0                                CPU1
+----                                ----
+console_lock_spinning_enable()
+                                    console_trylock_spinning()
+                                      [CPU1 now console waiter]
+NMI: panic()
+  panic_other_cpus_shutdown()
+                                    [stopped as console waiter]
+  console_flush_on_panic()
+    console_lock_spinning_enable()
+    [print 1 record]
+    console_lock_spinning_disable_and_check()
+      [handover to stopped CPU1]
+
+This results in panic() not flushing the panic messages.
+
+Fix these problems by disabling all spinning operations
+completely during panic().
+
+Another advantage is that it prevents possible deadlocks caused
+by "console_owner_lock". The panic() context does not need to
+take it any longer. The lockless checks are safe because the
+functions become NOPs when they see the panic in progress. All
+operations manipulating the state are still synchronized by the
+lock even when non-panic CPUs would notice the panic
+synchronously.
+
+The current owner might stay spinning. But non-panic() CPUs
+would get stopped anyway and the panic context will never start
+spinning.
+
+Fixes: dbdda842fe96 ("printk: Add console owner and waiter logic to load balance console writes")
+Signed-off-by: Petr Mladek <pmladek@suse.com>
 Signed-off-by: John Ogness <john.ogness@linutronix.de>
 ---
- kernel/printk/printk_ringbuffer.c | 17 ++++++++++++++---
- 1 file changed, 14 insertions(+), 3 deletions(-)
+ kernel/printk/printk.c | 29 +++++++++++++++++++++++++++++
+ 1 file changed, 29 insertions(+)
 
-diff --git a/kernel/printk/printk_ringbuffer.c b/kernel/printk/printk_ringbuffer.c
-index d6ed33683b8b..e7b808b829a0 100644
---- a/kernel/printk/printk_ringbuffer.c
-+++ b/kernel/printk/printk_ringbuffer.c
-@@ -1857,6 +1857,8 @@ static bool copy_data(struct prb_data_ring *data_ring,
-  * descriptor. However, it also verifies that the record is finalized and has
-  * the sequence number @seq. On success, 0 is returned.
-  *
-+ * For the panic CPU, committed descriptors are also considered finalized.
-+ *
-  * Error return values:
-  * -EINVAL: A finalized record with sequence number @seq does not exist.
-  * -ENOENT: A finalized record with sequence number @seq exists, but its data
-@@ -1875,16 +1877,25 @@ static int desc_read_finalized_seq(struct prb_desc_ring *desc_ring,
+diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
+index f3a7f5a6f6f8..cb99c854a648 100644
+--- a/kernel/printk/printk.c
++++ b/kernel/printk/printk.c
+@@ -1869,10 +1869,23 @@ static bool console_waiter;
+  */
+ static void console_lock_spinning_enable(void)
+ {
++	/*
++	 * Do not use spinning in panic(). The panic CPU wants to keep the lock.
++	 * Non-panic CPUs abandon the flush anyway.
++	 *
++	 * Just keep the lockdep annotation. The panic-CPU should avoid
++	 * taking console_owner_lock because it might cause a deadlock.
++	 * This looks like the easiest way how to prevent false lockdep
++	 * reports without handling races a lockless way.
++	 */
++	if (panic_in_progress())
++		goto lockdep;
++
+ 	raw_spin_lock(&console_owner_lock);
+ 	console_owner = current;
+ 	raw_spin_unlock(&console_owner_lock);
  
- 	/*
- 	 * An unexpected @id (desc_miss) or @seq mismatch means the record
--	 * does not exist. A descriptor in the reserved or committed state
--	 * means the record does not yet exist for the reader.
-+	 * does not exist. A descriptor in the reserved state means the
-+	 * record does not yet exist for the reader.
- 	 */
- 	if (d_state == desc_miss ||
- 	    d_state == desc_reserved ||
--	    d_state == desc_committed ||
- 	    s != seq) {
- 		return -EINVAL;
- 	}
++lockdep:
+ 	/* The waiter may spin on us after setting console_owner */
+ 	spin_acquire(&console_owner_dep_map, 0, 0, _THIS_IP_);
+ }
+@@ -1897,6 +1910,22 @@ static int console_lock_spinning_disable_and_check(int cookie)
+ {
+ 	int waiter;
  
 +	/*
-+	 * A descriptor in the committed state means the record does not yet
-+	 * exist for the reader. However, for the panic CPU, committed
-+	 * records are also handled as finalized records since they contain
-+	 * message data in a consistent state and may contain additional
-+	 * hints as to the cause of the panic.
++	 * Ignore spinning waiters during panic() because they might get stopped
++	 * or blocked at any time,
++	 *
++	 * It is safe because nobody is allowed to start spinning during panic
++	 * in the first place. If there has been a waiter then non panic CPUs
++	 * might stay spinning. They would get stopped anyway. The panic context
++	 * will never start spinning and an interrupted spin on panic CPU will
++	 * never continue.
 +	 */
-+	if (d_state == desc_committed && !this_cpu_in_panic())
-+		return -EINVAL;
++	if (panic_in_progress()) {
++		/* Keep lockdep happy. */
++		spin_release(&console_owner_dep_map, _THIS_IP_);
++		return 0;
++	}
 +
- 	/*
- 	 * A descriptor in the reusable state may no longer have its data
- 	 * available; report it as existing but with lost data. Or the record
+ 	raw_spin_lock(&console_owner_lock);
+ 	waiter = READ_ONCE(console_waiter);
+ 	console_owner = NULL;
 -- 
 2.39.2
 
