@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DA24812D18
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 11:36:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BB6D7812D1B
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 11:36:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1443733AbjLNKfh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 05:35:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52848 "EHLO
+        id S1443681AbjLNKf5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 05:35:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49538 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1443743AbjLNKfX (ORCPT
+        with ESMTP id S1443669AbjLNKfs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 05:35:23 -0500
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E67B137;
-        Thu, 14 Dec 2023 02:35:30 -0800 (PST)
-Received: by mail-wm1-x32f.google.com with SMTP id 5b1f17b1804b1-40c3ca9472dso58872025e9.2;
-        Thu, 14 Dec 2023 02:35:29 -0800 (PST)
+        Thu, 14 Dec 2023 05:35:48 -0500
+Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 278BD138;
+        Thu, 14 Dec 2023 02:35:54 -0800 (PST)
+Received: by mail-wr1-x435.google.com with SMTP id ffacd0b85a97d-33621d443a7so4223002f8f.3;
+        Thu, 14 Dec 2023 02:35:54 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702550128; x=1703154928; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1702550152; x=1703154952; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=JrT4GQFgUc2NFNy8QfHDcUrSUYysbuxBIxCpg4THq6A=;
-        b=T9/rLp3lA9YvFk+eSwLr/+vJsfm7myTmt3cfTjY76HaDeR2Hy43toF2exFW2JQKWGe
-         k7id6fqMefwQRdGLPVHSdgY/3G+h6EAhJiOdlnC54E4lL0KwB3F+vnhI9+ZVV8lyUcQM
-         EYV840p4rvOI4/eUqFs+nraKPav+eBUZtxuT7I2TdjWnyADOsb0xHB1SIJ8cdd3fqEOp
-         TUBWSZFyReLKhY+xeQEYvTzbee39h1CgZ3iY9JIRKWtvkmzh0H7vr6yQ1D+6bbGorEXg
-         0oFS3D9a2TIL6ySaulKCrR00uhDLhLy0NGxAk8lQfk0KgC6C71pa9uSVpUtfne2kLo0M
-         WjKg==
+        bh=/bSH5LSThTrH8jKZ5V0W7uU2b3lxsQ8a/FvDmGfwzlA=;
+        b=DfwPS7L06Jc+pulUiwgpRofSxbwTOshNLSMK1u1CQ6vNuzaDyX4Dv+Zeav1x1y8LC4
+         hEW+dghmdMkpWneT83aOBK8UAxA97xhl6Cneb6pj35q9gNlcWsQdfb21aXnPb9TZ6LMo
+         J/7zKE44LmjY7Kz0eUUaQ08orOjNd5L5UZxB58kVbwkUO45D1S8nuKSzOnDC2rApRVTH
+         3jb+C6V5k7gxtuQ5fytlZdoEXCAoW3qU+lz5qFLTX4T2pYeBhOAhKbJ56aJF4TftvLmO
+         wbZu8uBISlpkTkw8vPA8v6AVGtXM3etLx/GOXOjzP+3jTwUxYpg+qrdk5NI3DSYDuhlu
+         18Xg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702550128; x=1703154928;
+        d=1e100.net; s=20230601; t=1702550152; x=1703154952;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=JrT4GQFgUc2NFNy8QfHDcUrSUYysbuxBIxCpg4THq6A=;
-        b=KWPxMFUKg4Qor6qhFV63Lg+QugqneI4aVGTfpI03m+cOOyI9alAYOVefAjeSZr+Ksb
-         kfwBuVzM0m5eD3lAZ4ZVbfsNWs05F1pIrKrdJRKLd7OTLo8x98XucszVktJObxOcv9QC
-         S6+1KnxOdkb7m/IwFfSP0phMOxh6/fudM/1WchIW9uxKuWKPmA6JILhGSydhRFLsBcey
-         fR4MWVo+wG8NSYKBMaGNGOKwHZrK59TqyycvgrjrZSGL+ZoPp8XjhUaRKCq9owxceRAR
-         btrjGmf9N5TO7dgBZb3PJIhIBU48ih5twhbBdsIZ5+414LxvsfJ5dR15KqiYo6zT459B
-         J3Pg==
-X-Gm-Message-State: AOJu0YxWXGRFWtPSwlbCEEle2vudxrXoMbgX4kalqQQJ8jb04uv4Jp8E
-        nC6kvuRkSBiAZy0hwFOIv7Q=
-X-Google-Smtp-Source: AGHT+IGCjmnMr0NRq+HC8R0lvRI/AD01AcPL7img9WmAVtzQAIwlJBk50oZM1JWLrtlKld0tmTb1iA==
-X-Received: by 2002:a05:600c:2a41:b0:40c:32fa:4f45 with SMTP id x1-20020a05600c2a4100b0040c32fa4f45mr3510981wme.248.1702550128507;
-        Thu, 14 Dec 2023 02:35:28 -0800 (PST)
+        bh=/bSH5LSThTrH8jKZ5V0W7uU2b3lxsQ8a/FvDmGfwzlA=;
+        b=R7lVjrh/D6w9aTN0Yi/Wm2ZVSLy8hQv3maofl63MeD+ySqYAbWg0PB2oWTUkuJo3Cj
+         AkKAMpqtrkH9Z5UIyh/aE0HnRQzGkdyHIPbDPUKB6y+SWqUSVU2d1hNqUZYtD1hrxh4z
+         YlV+Sq6X9gLlJ2KywR+rXyPug+lwBi+qRfL8iktK/E+q64yCTESO8IA+OsAkP83hO140
+         KDOzLR31gQG35pVQenWVCl9WLXv0VyM8dhqVFkSdUIzyMyV28AHOJdSbb7mEZFnpioy0
+         mXDjEUCGuODK//aT1zQo12GB+7/w4p3bFJX7OB3gGhryeDzsQDi5t+ZTsedNypyaJHZn
+         mTqQ==
+X-Gm-Message-State: AOJu0YxXcAjKZbcZ+xvljAt6T26I82AwBUNUW+LBQRU1vc7zjzEHa933
+        SuSZxuGhH0N3bQV3xZ9crBU=
+X-Google-Smtp-Source: AGHT+IEbki3k5FnEaNVZtWRBuhOkVOwOnKsRmJW5T9tQx+eZlX6USeTgoCxh9UtIGcxFBYXudVg1vw==
+X-Received: by 2002:a5d:4bd2:0:b0:333:4940:dd1a with SMTP id l18-20020a5d4bd2000000b003334940dd1amr4977407wrt.23.1702550152438;
+        Thu, 14 Dec 2023 02:35:52 -0800 (PST)
 Received: from localhost.localdomain ([129.0.226.240])
-        by smtp.gmail.com with ESMTPSA id e4-20020a5d65c4000000b003333ed23356sm15849623wrw.4.2023.12.14.02.35.24
+        by smtp.gmail.com with ESMTPSA id e4-20020a5d65c4000000b003333ed23356sm15849623wrw.4.2023.12.14.02.35.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Dec 2023 02:35:27 -0800 (PST)
+        Thu, 14 Dec 2023 02:35:51 -0800 (PST)
 From:   Brandon Cheo Fusi <fusibrandon13@gmail.com>
 To:     Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
@@ -67,9 +67,9 @@ Cc:     devicetree@vger.kernel.org, linux-riscv@lists.infradead.org,
         linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
         linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
         Brandon Cheo Fusi <fusibrandon13@gmail.com>
-Subject: [PATCH 4/5] cpufreq: Add support for RISC-V CPU Frequency scaling drivers
-Date:   Thu, 14 Dec 2023 11:33:41 +0100
-Message-Id: <20231214103342.30775-5-fusibrandon13@gmail.com>
+Subject: [PATCH 5/5] cpufreq: Make sun50i h6 cpufreq Kconfig option generic
+Date:   Thu, 14 Dec 2023 11:33:42 +0100
+Message-Id: <20231214103342.30775-6-fusibrandon13@gmail.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20231214103342.30775-1-fusibrandon13@gmail.com>
 References: <20231214103342.30775-1-fusibrandon13@gmail.com>
@@ -85,55 +85,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add Kconfig file for cpufreq scaling drivers that can handle RISC-V
-CPUs. An entry is included for the Allwinner H6 cpufreq driver that
-works with D1.
+Remove the 'ARM_' prefix from the Allwinner SUN50I cpufreq driver
+Kconfig.arm option as that driver can support the D1, a RISC-V
+chip.
 
 Signed-off-by: Brandon Cheo Fusi <fusibrandon13@gmail.com>
 ---
- drivers/cpufreq/Kconfig       |  4 ++++
- drivers/cpufreq/Kconfig.riscv | 16 ++++++++++++++++
- 2 files changed, 20 insertions(+)
- create mode 100644 drivers/cpufreq/Kconfig.riscv
+ drivers/cpufreq/Kconfig.arm | 4 ++--
+ drivers/cpufreq/Makefile    | 2 +-
+ 2 files changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/cpufreq/Kconfig b/drivers/cpufreq/Kconfig
-index 35efb53d5..4bef39fed 100644
---- a/drivers/cpufreq/Kconfig
-+++ b/drivers/cpufreq/Kconfig
-@@ -239,6 +239,10 @@ if PPC32 || PPC64
- source "drivers/cpufreq/Kconfig.powerpc"
- endif
+diff --git a/drivers/cpufreq/Kconfig.arm b/drivers/cpufreq/Kconfig.arm
+index f91160689..510604781 100644
+--- a/drivers/cpufreq/Kconfig.arm
++++ b/drivers/cpufreq/Kconfig.arm
+@@ -29,14 +29,14 @@ config ACPI_CPPC_CPUFREQ_FIE
  
-+if RISCV
-+source "drivers/cpufreq/Kconfig.riscv"
-+endif
-+
- if MIPS
- config BMIPS_CPUFREQ
- 	tristate "BMIPS CPUfreq Driver"
-diff --git a/drivers/cpufreq/Kconfig.riscv b/drivers/cpufreq/Kconfig.riscv
-new file mode 100644
-index 000000000..025c7c439
---- /dev/null
-+++ b/drivers/cpufreq/Kconfig.riscv
-@@ -0,0 +1,16 @@
-+# SPDX-License-Identifier: GPL-2.0-only
-+#
-+# RISC-V CPU Frequency scaling drivers
-+#
-+
+ 	  If in doubt, say N.
+ 
+-config ARM_ALLWINNER_SUN50I_CPUFREQ_NVMEM
 +config ALLWINNER_SUN50I_CPUFREQ_NVMEM
-+	tristate "Allwinner nvmem based SUN50I CPUFreq driver"
-+	depends on ARCH_SUNXI
-+	depends on NVMEM_SUNXI_SID
-+	select PM_OPP
-+	help
-+	  This adds the nvmem based CPUFreq driver for Allwinner
+ 	tristate "Allwinner nvmem based SUN50I CPUFreq driver"
+ 	depends on ARCH_SUNXI
+ 	depends on NVMEM_SUNXI_SID
+ 	select PM_OPP
+ 	help
+ 	  This adds the nvmem based CPUFreq driver for Allwinner
+-	  h6 SoC.
 +	  H6/D1 SoCs.
-+
-+	  To compile this driver as a module, choose M here: the
-+	  module will be called sun50i-cpufreq-nvmem.
-\ No newline at end of file
+ 
+ 	  To compile this driver as a module, choose M here: the
+ 	  module will be called sun50i-cpufreq-nvmem.
+diff --git a/drivers/cpufreq/Makefile b/drivers/cpufreq/Makefile
+index 8d141c71b..110b676d2 100644
+--- a/drivers/cpufreq/Makefile
++++ b/drivers/cpufreq/Makefile
+@@ -78,7 +78,7 @@ obj-$(CONFIG_ARM_SCMI_CPUFREQ)		+= scmi-cpufreq.o
+ obj-$(CONFIG_ARM_SCPI_CPUFREQ)		+= scpi-cpufreq.o
+ obj-$(CONFIG_ARM_SPEAR_CPUFREQ)		+= spear-cpufreq.o
+ obj-$(CONFIG_ARM_STI_CPUFREQ)		+= sti-cpufreq.o
+-obj-$(CONFIG_ARM_ALLWINNER_SUN50I_CPUFREQ_NVMEM) += sun50i-cpufreq-nvmem.o
++obj-$(CONFIG_ALLWINNER_SUN50I_CPUFREQ_NVMEM) += sun50i-cpufreq-nvmem.o
+ obj-$(CONFIG_ARM_TEGRA20_CPUFREQ)	+= tegra20-cpufreq.o
+ obj-$(CONFIG_ARM_TEGRA124_CPUFREQ)	+= tegra124-cpufreq.o
+ obj-$(CONFIG_ARM_TEGRA186_CPUFREQ)	+= tegra186-cpufreq.o
 -- 
 2.30.2
 
