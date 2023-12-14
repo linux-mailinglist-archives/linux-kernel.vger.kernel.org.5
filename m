@@ -2,126 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E5AD5812710
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 06:44:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 72D9F81272A
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 06:53:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1443204AbjLNFo3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 00:44:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58564 "EHLO
+        id S1443197AbjLNFuk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 00:50:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36850 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1443193AbjLNFo0 (ORCPT
+        with ESMTP id S229838AbjLNFuh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 00:44:26 -0500
-Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 195D410A;
-        Wed, 13 Dec 2023 21:44:29 -0800 (PST)
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 3BE5iJTW036923;
-        Wed, 13 Dec 2023 23:44:19 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1702532659;
-        bh=5kcNwlTyEanZdUHbBRgU6blj9PGlRg0qWtcJ4LxQqsM=;
-        h=Date:CC:Subject:To:References:From:In-Reply-To;
-        b=CG2uohMNvWz4M39s8NjgVAsGrJ/v0EhEoTrsUt5p5c+Ymy1jWdtm0EKnfvKBbpNMP
-         KcuTjf19n4ryK7C2pYJeiM65TYh+vlwiotjfmP2WXyEF9/Wfyt54gIfIH8jtyu0SPz
-         Jwd2PEhPqbEW2uyDyjw6XtyGw0Slw6hDQ35x1GIQ=
-Received: from DFLE115.ent.ti.com (dfle115.ent.ti.com [10.64.6.36])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 3BE5iJXH100306
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 13 Dec 2023 23:44:19 -0600
-Received: from DFLE108.ent.ti.com (10.64.6.29) by DFLE115.ent.ti.com
- (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 13
- Dec 2023 23:44:18 -0600
-Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DFLE108.ent.ti.com
- (10.64.6.29) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Wed, 13 Dec 2023 23:44:19 -0600
-Received: from [172.24.227.9] (uda0492258.dhcp.ti.com [172.24.227.9])
-        by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 3BE5iE9x080888;
-        Wed, 13 Dec 2023 23:44:15 -0600
-Message-ID: <6f1c1a59-cec0-46d1-8ecb-a82d9d444ccf@ti.com>
-Date:   Thu, 14 Dec 2023 11:14:13 +0530
+        Thu, 14 Dec 2023 00:50:37 -0500
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F063CBD;
+        Wed, 13 Dec 2023 21:50:43 -0800 (PST)
+Received: by mail-wm1-x329.google.com with SMTP id 5b1f17b1804b1-40c19f5f822so1072255e9.1;
+        Wed, 13 Dec 2023 21:50:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1702533042; x=1703137842; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Gv2LMH04lN7pN5hZISqbYob6Kor2oYpqw6+JDkjEriQ=;
+        b=HokT50fZc9RVfykcVNPB7MAMiIfFslOIq+/7xkMeoYnRyHEUSAOprgImDyVV0D+tRH
+         s/j2/iHWnicQY0JdgWy9xrfISNNJPfB7AA2D5xnt9paIdCDsiXfbJvYtj5sCpRN3F1yV
+         yuKgOcCiFVJu1kzGBsHX3C4S+p9NYjoKdPHHUc9PmoumoiicIv+vh01EsOlGsE29/Lie
+         4om1HMaPN+3a/gnbjj0oqOmDKI7P0j4Ymyh3hT8spP3+/NgT89LtC7Fc4UMQu2pkWzgl
+         bIBdp+PrvChkDYNY3FFbrMStL6sGOuhIkL1Ut4nhG1yuCMz5hVEHGE71QiHt1X5s9h5U
+         mD9Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702533042; x=1703137842;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Gv2LMH04lN7pN5hZISqbYob6Kor2oYpqw6+JDkjEriQ=;
+        b=DJB78LHTNAa3xsdg5etBLSvAkhcEk7yFkE5NabO7TjkziVWvUQbc/xisZtn7wA7qUa
+         4H20yFwclFE2LvypG94YkmSeO1QqvEPyik+7m4Ww3tUAbGEmis6raxdj5cPbuKE5nz0K
+         /TEzSzkvISYkz47IF6BqWBNO5tnS4Bzm9SqbI18ED/7JmsQwOoKT68GhAo3pTPTZaxYt
+         SUHg2Be5VDnCca26GFPqjNiFMsAhigccBTCLdifWFiOYLdt7ItchfvFpCAa863QWynoa
+         HBQYFnGzHRvm2RT6iWLa6qdCPbBXXAZu+JVdlC0SiD2N/tltYscQxGqk7QigUTbA4Grp
+         aA6A==
+X-Gm-Message-State: AOJu0YwZAnZNlK1zHwuYpBCs+shSTs9alNfBSqwzcB6j4XjD1+YH0NAq
+        oS5DACzHAtpj2XB/9FLcID2ejS6Gzqb8MaUR7Gs=
+X-Google-Smtp-Source: AGHT+IG8HTlkBLhPbgrHweb+oxh/HFdECRuBkFiUukTeyqSmIqt3mDI0jXGTMa2gff001mk6v1A6Y271QBqB28KxA7s=
+X-Received: by 2002:a05:600c:3784:b0:40b:5e4a:235a with SMTP id
+ o4-20020a05600c378400b0040b5e4a235amr4169222wmr.92.1702533042008; Wed, 13 Dec
+ 2023 21:50:42 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-CC:     <vigneshr@ti.com>, <kristo@kernel.org>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <danishanwar@ti.com>,
-        <r-gunasekaran@ti.com>, <srk@ti.com>, <s-vadapalli@ti.com>
-Subject: Re: [PATCH v2] arm64: dts: ti: k3-am654-icssg2: Enable PHY interrupts
- for ICSSG2
-Content-Language: en-US
-To:     Nishanth Menon <nm@ti.com>
-References: <20231213080216.1710730-1-s-vadapalli@ti.com>
- <20231213123819.tqh3lm2ceir3qjbk@swimmer>
-From:   Siddharth Vadapalli <s-vadapalli@ti.com>
-In-Reply-To: <20231213123819.tqh3lm2ceir3qjbk@swimmer>
+References: <1702467945-38866-1-git-send-email-alibuda@linux.alibaba.com>
+ <1702467945-38866-2-git-send-email-alibuda@linux.alibaba.com>
+ <20231213222415.GA13818@breakpoint.cc> <0e94149a-05f1-3f98-3f75-ca74f364a45b@linux.alibaba.com>
+In-Reply-To: <0e94149a-05f1-3f98-3f75-ca74f364a45b@linux.alibaba.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Wed, 13 Dec 2023 21:50:30 -0800
+Message-ID: <CAADnVQJx7j_kB6PVJN7cwGn5ETjcSs2Y0SuBS0+9qJRFpMNv-w@mail.gmail.com>
+Subject: Re: [RFC nf-next 1/2] netfilter: bpf: support prog update
+To:     "D. Wythe" <alibuda@linux.alibaba.com>
+Cc:     Florian Westphal <fw@strlen.de>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        Jozsef Kadlecsik <kadlec@netfilter.org>,
+        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        coreteam@netfilter.org,
+        netfilter-devel <netfilter-devel@vger.kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Nishanth,
+On Wed, Dec 13, 2023 at 9:31=E2=80=AFPM D. Wythe <alibuda@linux.alibaba.com=
+> wrote:
+>
+> I will address those issues you mentioned in the next version.
 
-On 13/12/23 18:08, Nishanth Menon wrote:
-> On 13:32-20231213, Siddharth Vadapalli wrote:
->> Enable interrupt mode of operation of the DP83867 Ethernet PHY which is
->> used by ICSSG2. The DP83867 PHY driver already supports interrupt handling
->> for interrupts generated by the PHY. Thus, add the necessary device-tree
->> support to enable it.
->>
->> Since the GPIO1_87 line is muxed with EXT_REFCLK1 and SYNC1_OUT, update
->> the pinmux to select GPIO1_87 for routing the interrupt.
->>
->> As the same interrupt line and therefore the same pinmux configuration is
->> applicable to both Ethernet PHYs used by ICSSG2, allocate the pinmux
->> resource to the first Ethernet PHY alone.
-
-...
-
-> 
-> https://www.ti.com/lit/ds/symlink/dp83867ir.pdf -> it looks like the
-> interrupt pin is level event. but drivers/gpio/gpio-davinci.c::
-> gpio_irq_type() -> The SoC cannot handle level, only edge.
-> 
-> A bit confused here..  GPIO 87 is shared between two phys. isn't it a
-> case of race?
-> 
-> PHY1 assets low
-> phy1 handler starts, but before the driver it clears the condition:
-> PHY2 asserts low - but since the signal is already low, there is no
-> pulse
-> phy1 handler clears phy1 condition, but signal is still low due to phy2?
-> now phy2 OR phy1 never gets handled since there is never a pulse event
-> ever again.
-
-Yes, you are right! Edge-Triggered interrupts shouldn't be shared. I missed
-noticing this. Thank you for pointing it out. Since the SoC only supports
-Edge-Triggered interrupts, I believe that the correct decision would be to use
-the interrupt for only one of the two PHYs, while leaving the other PHY in
-polled mode of operation which is the default.
-
-Kindly let me know if this is acceptable and I shall update this patch accordingly.
-
-> 
-> 
->>  		ti,rx-internal-delay = <DP83867_RGMIIDCTL_2_00_NS>;
->>  		ti,fifo-depth = <DP83867_PHYCR_FIFO_DEPTH_4_B_NIB>;
->>  	};
->> -- 
->> 2.34.1
->>
-> 
-
--- 
-Regards,
-Siddharth.
+Don't. There is no need for the next version.
+None of these changes are necessary.
