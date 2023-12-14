@@ -2,121 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B6DFA813749
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 18:06:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AE4581374D
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 18:07:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230346AbjLNRGe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 12:06:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48248 "EHLO
+        id S1443630AbjLNRGx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 12:06:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33832 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229446AbjLNRGc (ORCPT
+        with ESMTP id S229446AbjLNRGw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 12:06:32 -0500
-Received: from mail-oa1-x33.google.com (mail-oa1-x33.google.com [IPv6:2001:4860:4864:20::33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1391EB7
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 09:06:38 -0800 (PST)
-Received: by mail-oa1-x33.google.com with SMTP id 586e51a60fabf-202d6823844so3134974fac.2
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 09:06:38 -0800 (PST)
+        Thu, 14 Dec 2023 12:06:52 -0500
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9F1DB7
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 09:06:57 -0800 (PST)
+Received: by mail-ed1-x533.google.com with SMTP id 4fb4d7f45d1cf-54dcfca54e0so10954010a12.1
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 09:06:57 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702573597; x=1703178397; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=lw0RodZSdxJA0iLxv7tkLpUrFdAojr9L6Vs6gKIIOys=;
-        b=M5aZ8AjvC3sCCL5HtasFJDLWGuqZQ5CG7SwX/FarXHgjZTPHFNba8Ei1sY/IpyYh4A
-         SnEwBTsf3bcpzOEnj8V3VSt7mve6XJjJX/VBntex7pZd2HERQjpqUactw4WCTWPPpYbN
-         IIh6c9YjfZXs1aQTz1IQGAv+hgWeFWrl2Ir74mt/5ySuJyTmLcxxuHGwF0lWh50tRdrJ
-         jQo10tA/q/4NUL4fKUL/n1316V4iTMX2qfGabZC5de/EfBQvkS68G3QE7CKkRPd7iOGr
-         NiT9LZ9tn/ywEpPlODkqnnU4ikTHc0MzbRT+nQYteDkuZ8OMOaIOk5IMgGYT/qTiGjTN
-         Nd6A==
+        d=linaro.org; s=google; t=1702573616; x=1703178416; darn=vger.kernel.org;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Vg4pzsKp2Qe/t4K3eYUmtV9LkGCsbM0iu+iGTaqM5Ck=;
+        b=F2sIpfGDpB6dmvn2e3bPyI+qV/p3URKD27bn+g/EhOBcqA6Y9M19bfmll9ZA6QUG2g
+         2V8NKMTEoDhRxmyp+rdOCwlY4vFyzuRPwVmLRCL59lFtWP/HUVDIipARUMrPiuvbvPj7
+         xSj7LP/wFI0YBm6Lmt/PQqt/4LBjkMwc12smF/a0jq5x339wVkzlrFfzqWCoj9U4oqKX
+         ReP2q13gGMi3Elj1AvFxbrVfpuIdhyssyboNJN5fP/d4y3v6i+g2G+Soe1Pr431/N3cy
+         bJIv0ESkP0KapRncK2F0OAvipbeI3ni9Z5TdJ57nt4j7aYVX7QGdpFRNyi9/JAFx0kd9
+         MHiA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702573597; x=1703178397;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=lw0RodZSdxJA0iLxv7tkLpUrFdAojr9L6Vs6gKIIOys=;
-        b=ekNS6N+42UJblQbtNOuMXWnhhHqkfjJ/100CMczIEqBAdqnV+QyiGitKC07sQXTzfF
-         SWNTZJrY3J2op55zw2cEx8MI0Py2b3R2RiC12PA1kVsA0l927INeBkRyk+TvjA72vW/K
-         fBsa/YycTxYGJgxPc4ky5Bzxo2BeLFuFueHVjaQaQWm/YXtGo6+s7nayTos/yUy2ryUn
-         DBZjnWZ+ezjUHl/uz1/RRzY29e56I89vBnK7Ap3GELsTNGHP55p8OsKYfdB5iNuAQ6RU
-         jeiWT7bEbFJO5LxC+gT5vQmmsKJbqdaDqY609Ub3pCK96dAD4dtEABK8A0BhwfTbqW/U
-         djUQ==
-X-Gm-Message-State: AOJu0Yyarl4LrrlecNjVdrkNm89GfaZaOwhfp4RWZk06FpOEWGp1PMf1
-        J+vj4djhCyyw6QMdk0HvxMTGzr79X4YBTzPcU08=
-X-Google-Smtp-Source: AGHT+IExNNoad7Bj8XQBRJ5WCf95CmDbkzKCuwvVnxC9gAiPmYDsKYy6JXEAUEPxTCZKr8tl2TD7sMsnEmTVcPwK7m8=
-X-Received: by 2002:a05:6870:168c:b0:203:2e8b:1a1d with SMTP id
- j12-20020a056870168c00b002032e8b1a1dmr3061586oae.11.1702573597292; Thu, 14
- Dec 2023 09:06:37 -0800 (PST)
+        d=1e100.net; s=20230601; t=1702573616; x=1703178416;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Vg4pzsKp2Qe/t4K3eYUmtV9LkGCsbM0iu+iGTaqM5Ck=;
+        b=cpjb7CEkxstaW5koZmLEpzTLnj6ze/aBOTwGrnW+mcDx0fEFWoGrouawHXPrIoi8te
+         YMY7HxlTnE0QBmRFxjyzheaWqrF3mn4B4meJASh5JGpBNGZD8JRmuFvZGpVHz0O6mrso
+         +jR0rXAC8xZSK5InMLj3Rw8PSewQpbu5hI1hAh/d+iK57vwzlNpNivIIVozr1/+STckz
+         C30AMxxuRYiuORpPERkK6LjGbvmRwMYAN+RsmbOzxjCFyyKmSex8ppHNbFwnJCLgfChT
+         aFwCUbxGlRjby3U33+Uxk0w2nz0gVFeWGb+CtDWwfekl40Vm35SOgu4lrLRqf25Jg33+
+         g67Q==
+X-Gm-Message-State: AOJu0Yz1e+SSC6TB7wX/+kFtZ3bZBkVUIun868zGJiWNTvhThx8npqb4
+        hpu1jfbYlCNc4zqyANb7ee9gKQ==
+X-Google-Smtp-Source: AGHT+IFwnubd/IcCm6zKJxoRCySo1E+aDWxfOl0YfDbKYnbz4Qx8e3oh/+MYHR5/NygWBwZ41rV4+w==
+X-Received: by 2002:a05:6402:2313:b0:552:1be8:422 with SMTP id l19-20020a056402231300b005521be80422mr1727337eda.51.1702573616379;
+        Thu, 14 Dec 2023 09:06:56 -0800 (PST)
+Received: from [127.0.1.1] ([79.115.23.25])
+        by smtp.gmail.com with ESMTPSA id y66-20020a50bb48000000b0054c77ac01f4sm7182863ede.51.2023.12.14.09.06.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 Dec 2023 09:06:56 -0800 (PST)
+From:   Abel Vesa <abel.vesa@linaro.org>
+Date:   Thu, 14 Dec 2023 19:06:52 +0200
+Subject: [PATCH] dt-bindings: usb: qcom,dwc3: Add X1E80100 binding
 MIME-Version: 1.0
-References: <20231214162500.3483936-1-alexious@zju.edu.cn>
-In-Reply-To: <20231214162500.3483936-1-alexious@zju.edu.cn>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Thu, 14 Dec 2023 12:06:26 -0500
-Message-ID: <CADnq5_MYKE+GssKugrLZ-0zj1=JxJayxxp4kviVh6kOPi2abZg@mail.gmail.com>
-Subject: Re: [PATCH] drivers/amd/pm: fix a use-after-free in kv_parse_power_table
-To:     Zhipeng Lu <alexious@zju.edu.cn>
-Cc:     Ran Sun <sunran001@208suo.com>, Jammy Zhou <Jammy.Zhou@amd.com>,
-        "Pan, Xinhui" <Xinhui.Pan@amd.com>, linux-kernel@vger.kernel.org,
-        amd-gfx@lists.freedesktop.org, Le Ma <le.ma@amd.com>,
-        dri-devel@lists.freedesktop.org,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Evan Quan <evan.quan@amd.com>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        Hawking Zhang <Hawking.Zhang@amd.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20231214-x1e80100-usb-v1-1-c22be5c0109e@linaro.org>
+X-B4-Tracking: v=1; b=H4sIACs2e2UC/x3MMQqAMAxA0atIZgtJRQ1eRRy0Rs1SpUUpSO9uc
+ XzD/y9ECSoRhuqFII9GPX0B1RW4Y/a7GF2LwaJtyBKZRMJIiOaOi1kct8y9cNcglOQKsmn6d+O
+ U8wctMyjmXgAAAA==
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Wesley Cheng <quic_wcheng@quicinc.com>
+Cc:     linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Abel Vesa <abel.vesa@linaro.org>
+X-Mailer: b4 0.12.4
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1223; i=abel.vesa@linaro.org;
+ h=from:subject:message-id; bh=M6miljaqwJPNWjTWUdahHGSlgKOEzXafA/Gjh7eL4QQ=;
+ b=owEBbQKS/ZANAwAKARtfRMkAlRVWAcsmYgBlezYujPA2t+ofl5U22PW88pc91HxN9ggKKvB4Q
+ uunpvqYfliJAjMEAAEKAB0WIQRO8+4RTnqPKsqn0bgbX0TJAJUVVgUCZXs2LgAKCRAbX0TJAJUV
+ VowlD/9TfX/CZHexvlo32hwGjhczMG95CPnUTrqn+eZB1lcJ/dNVDvN9D8fxo6ps7+O+30+jiTn
+ sO3gTfxdUh+s70sYVVZEX2nnUTFYeJcwFnI9CKoJqFisK280Su4mt7bMRN/kTWVDIBYdglEIvgZ
+ grgSGTMYMqxFHe+f+EN7VwsJxuR1cN53x51GNroyO8EIYgoO8T64bcdbi6O7DpqRtF3MqP2q0p5
+ ShCNrpgyZt0WiN+2a9K7gEWGrFHBZur1EBNCBBzS0RtLPL98dez1JVE14AsqEfKjQCc+EDZgzDq
+ +5PFfi0GiH18d5JtoO5sHPP8vTgIfJOxymEdAbDWAUPtghnrymW2BZ00pXic+5uCNJnulEbBQxC
+ 6Cc1R6awioK8ET8mLsnnGTM4CoYbM9mDPf7GZCDN+znde+nBCT007rjV+xsEcGktgvtKs5nUPXp
+ VSdsSsPGuw5f+djy7knLSen0V5ZleRWGG4Hp7bX3noy37OFX+to0u7ODhCuSJH+pbVan3BExOi/
+ MclXJysnOJKUuBnq/vaSBzZkQGUAH4naeltzB7CCM7WyX5nl0G0k8EUcXHxGUYMDDl1j0CrOe52
+ 3MSgXPDTNowzkN/sRDa7aCMKmG10fWejuLUYGZGFz44wbq1yIOpS+PBNCRMuI2a3aYOIwkOAh7t
+ 38prAfbScGrMc0Q==
+X-Developer-Key: i=abel.vesa@linaro.org; a=openpgp;
+ fpr=6AFF162D57F4223A8770EF5AF7BF214136F41FAE
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Applied.  Thanks!
+Add X1E80100 to the DT schema.
 
-On Thu, Dec 14, 2023 at 11:57=E2=80=AFAM Zhipeng Lu <alexious@zju.edu.cn> w=
-rote:
->
-> When ps allocated by kzalloc equals to NULL, kv_parse_power_table
-> frees adev->pm.dpm.ps that allocated before. However, after the control
-> flow goes through the following call chains:
->
-> kv_parse_power_table
->   |-> kv_dpm_init
->         |-> kv_dpm_sw_init
->               |-> kv_dpm_fini
->
-> The adev->pm.dpm.ps is used in the for loop of kv_dpm_fini after its
-> first free in kv_parse_power_table and causes a use-after-free bug.
->
-> Fixes: a2e73f56fa62 ("drm/amdgpu: Add support for CIK parts")
-> Signed-off-by: Zhipeng Lu <alexious@zju.edu.cn>
-> ---
->  drivers/gpu/drm/amd/pm/legacy-dpm/kv_dpm.c | 4 +---
->  1 file changed, 1 insertion(+), 3 deletions(-)
->
-> diff --git a/drivers/gpu/drm/amd/pm/legacy-dpm/kv_dpm.c b/drivers/gpu/drm=
-/amd/pm/legacy-dpm/kv_dpm.c
-> index 5d28c951a319..5cb4725c773f 100644
-> --- a/drivers/gpu/drm/amd/pm/legacy-dpm/kv_dpm.c
-> +++ b/drivers/gpu/drm/amd/pm/legacy-dpm/kv_dpm.c
-> @@ -2735,10 +2735,8 @@ static int kv_parse_power_table(struct amdgpu_devi=
-ce *adev)
->                 non_clock_info =3D (struct _ATOM_PPLIB_NONCLOCK_INFO *)
->                         &non_clock_info_array->nonClockInfo[non_clock_arr=
-ay_index];
->                 ps =3D kzalloc(sizeof(struct kv_ps), GFP_KERNEL);
-> -               if (ps =3D=3D NULL) {
-> -                       kfree(adev->pm.dpm.ps);
-> +               if (ps =3D=3D NULL)
->                         return -ENOMEM;
-> -               }
->                 adev->pm.dpm.ps[i].ps_priv =3D ps;
->                 k =3D 0;
->                 idx =3D (u8 *)&power_state->v2.clockInfoIndex[0];
-> --
-> 2.34.1
->
+Signed-off-by: Abel Vesa <abel.vesa@linaro.org>
+---
+ Documentation/devicetree/bindings/usb/qcom,dwc3.yaml | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/Documentation/devicetree/bindings/usb/qcom,dwc3.yaml b/Documentation/devicetree/bindings/usb/qcom,dwc3.yaml
+index 3ec62027f663..473c4bfaf8a2 100644
+--- a/Documentation/devicetree/bindings/usb/qcom,dwc3.yaml
++++ b/Documentation/devicetree/bindings/usb/qcom,dwc3.yaml
+@@ -47,6 +47,7 @@ properties:
+           - qcom,sm8450-dwc3
+           - qcom,sm8550-dwc3
+           - qcom,sm8650-dwc3
++          - qcom,x1e80100-dwc3
+       - const: qcom,dwc3
+ 
+   reg:
+@@ -264,6 +265,7 @@ allOf:
+           contains:
+             enum:
+               - qcom,sc8280xp-dwc3
++              - qcom,x1e80100-dwc3
+     then:
+       properties:
+         clocks:
+@@ -459,6 +461,7 @@ allOf:
+           contains:
+             enum:
+               - qcom,sc8280xp-dwc3
++              - qcom,x1e80100-dwc3
+     then:
+       properties:
+         interrupts:
+
+---
+base-commit: 48e8992e33abf054bcc0bb2e77b2d43bb899212e
+change-id: 20231211-x1e80100-usb-bc85887e8630
+
+Best regards,
+-- 
+Abel Vesa <abel.vesa@linaro.org>
+
