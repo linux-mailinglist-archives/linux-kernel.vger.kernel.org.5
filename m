@@ -1,148 +1,105 @@
-Return-Path: <linux-kernel+bounces-260-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-261-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 21A0D813E68
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 00:52:43 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 75358813E6B
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 00:53:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 972311F22B19
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 23:52:42 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3107B283651
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 23:53:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC9492DB6E;
-	Thu, 14 Dec 2023 23:52:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF0242DB6C;
+	Thu, 14 Dec 2023 23:53:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="ZKcQ49B5"
+	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="EUOiamSg"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pg1-f182.google.com (mail-pg1-f182.google.com [209.85.215.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B3DCA2DB61;
-	Thu, 14 Dec 2023 23:52:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-	s=201702; t=1702597943;
-	bh=rMQwh6ZcWzINIjfHJVIKMLZyamBUqrB0RFZAYZl7Zb8=;
-	h=Date:From:To:Cc:Subject:From;
-	b=ZKcQ49B5I/Jh5muyWnok/xCBnkIK+8G2HMRiJ/im9+jVFpiXFFqrtXu/jKk3N2DTX
-	 4TUt9/t/Lnf1PJbB+FpbZxXMfDr+DOzMJVdmnWbTLR695N/9unuF2c9nmIeSoaXBE8
-	 /Skj2UAjxjnvmq/brgKRxTUuMupW/jirv3w7M4Wa0WOGQ/VaMubkF8HlpfsQnrwkHf
-	 JIxWg8ZMZZOiT8p3Prvs+7HJqPnyyeo8XPNLdfbiQNFBcrz9zGT9xCn9Bq1me0NrhW
-	 ePw6bPUmVnpwcUpIRco6es3qWWws8TBLkjV36ohZuW/p6g3N1LrenzBtO+xD2eLelF
-	 7U4cgLqu0oThg==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.ozlabs.org (Postfix) with ESMTPSA id 4Srq0629Nwz4wb2;
-	Fri, 15 Dec 2023 10:52:21 +1100 (AEDT)
-Date: Fri, 15 Dec 2023 10:52:19 +1100
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-To: David Miller <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>
-Cc: Networking <netdev@vger.kernel.org>, Linux Kernel Mailing List
- <linux-kernel@vger.kernel.org>, Linux Next Mailing List
- <linux-next@vger.kernel.org>, Petr Oros <poros@redhat.com>, Piotr Gardocki
- <piotrx.gardocki@intel.com>, Ranganatha Rao <ranganatha.rao@intel.com>,
- Tony Nguyen <anthony.l.nguyen@intel.com>
-Subject: linux-next: manual merge of the net-next tree with Linus' tree
-Message-ID: <20231215105219.118a1ea5@canb.auug.org.au>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2DA526C6FE
+	for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 23:53:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
+Received: by mail-pg1-f182.google.com with SMTP id 41be03b00d2f7-55b5a37acb6so34540a12.0
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 15:53:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1702597996; x=1703202796; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:date:message-id:subject
+         :references:in-reply-to:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=G2vr8wpG8JZogZBD1SoHqQxA1hO0CmvmdHIdK9DqzWc=;
+        b=EUOiamSgIdBaO7Re8e4NBX5yYd1QWJc6Yg86PlUiDdw0OfZst3nLhxgLaUtSdvL6J6
+         C+7I2TUz0aWSatbAhOVJeVAGc2XuWGGj+vHm7lMPjPA1wlBXDCD23cSxLRjUgRvGQkVw
+         TZYapr2nZz5TDeASPPXAmbFpee8eSH1+arftG5LG5z8hnOypo7uNNRdSyhpkO5+SJDmu
+         3aR0D2jC1eGWmOldoIMYd7fUgRPuLLTPBODRpRPJW8bwAuQa/y7n3Lbg3HlqtbZuEFFh
+         9PI+pdiyzjaTDJTKKnPkYUrrWWHVnhtZoWbUplF44sGsuFfzbOwFi5vlclDZRwY9fAKy
+         MeLQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702597996; x=1703202796;
+        h=content-transfer-encoding:mime-version:date:message-id:subject
+         :references:in-reply-to:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=G2vr8wpG8JZogZBD1SoHqQxA1hO0CmvmdHIdK9DqzWc=;
+        b=YxKlkn7eB9+8mir/30YeO3XG0ofvmSmuRL5BZH2qWMUqucFktcU4i3QFyICtsfA2iv
+         /VGbcPjYeri+gfr8wv6ZmVo8qTNj6+cbzJKG4x1r8OER68gkjC2KSnhxaFnMAwZWsAOi
+         5VFhZsdkdplPFRkst7amIM7+lZxcirbmH3HkSCDmoWLCxdHUhFCsYEOIsFbrzj3oDPCv
+         cy4Nld+5wsRkiSQO2BDfe/OJcE92kJw1sA4GzC1tzzUQv+9ln0MQF7jdROv9EVVJ+XOb
+         Q1ygp6wU7BkqNq3s9wifXCSgK8WnR4tdhUC3FCJUEHSv10uXtZ3WWs43yqS4p+OxD6DF
+         Th2w==
+X-Gm-Message-State: AOJu0YzSWpj4qnH/dQ1EVj3AaFGJ+KjfpWWSeI5+8n2gzBV2jtVpmG+v
+	byhgyQJSlQQaiYP7OEJZDJ/zvALjkd+51aDoqnTVMA==
+X-Google-Smtp-Source: AGHT+IEeexnTETX2c1nFwQZXovhV6Sios0dAmzf8StZwyBO/mpo9MTUtUq1Pmt6IFP3/mNPEccJ5QQ==
+X-Received: by 2002:a05:6a00:2401:b0:6ce:4f4c:d475 with SMTP id z1-20020a056a00240100b006ce4f4cd475mr23105297pfh.3.1702597996082;
+        Thu, 14 Dec 2023 15:53:16 -0800 (PST)
+Received: from [127.0.0.1] ([198.8.77.194])
+        by smtp.gmail.com with ESMTPSA id z19-20020aa78893000000b006cb884c0362sm12178060pfe.87.2023.12.14.15.53.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 Dec 2023 15:53:15 -0800 (PST)
+From: Jens Axboe <axboe@kernel.dk>
+To: Al Viro <viro@zeniv.linux.org.uk>
+Cc: Breno Leitao <leitao@debian.org>, Jakub Kicinski <kuba@kernel.org>, 
+ io-uring@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ netdev@vger.kernel.org
+In-Reply-To: <20231214213408.GT1674809@ZenIV>
+References: <20231214213408.GT1674809@ZenIV>
+Subject: Re: [PATCH] fix breakage in SOCKET_URING_OP_SIOC* implementation
+Message-Id: <170259799501.410702.15075202098496334749.b4-ty@kernel.dk>
+Date: Thu, 14 Dec 2023 16:53:15 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/+IvAp3H7R_mPW8u+BQNbQvZ";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.13-dev-7edf1
 
---Sig_/+IvAp3H7R_mPW8u+BQNbQvZ
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
 
-Hi all,
+On Thu, 14 Dec 2023 21:34:08 +0000, Al Viro wrote:
+> 	In 8e9fad0e70b7 "io_uring: Add io_uring command support for sockets"
+> you've got an include of asm-generic/ioctls.h done in io_uring/uring_cmd.c.
+> That had been done for the sake of this chunk -
+> +               ret = prot->ioctl(sk, SIOCINQ, &arg);
+> +               if (ret)
+> +                       return ret;
+> +               return arg;
+> +       case SOCKET_URING_OP_SIOCOUTQ:
+> +               ret = prot->ioctl(sk, SIOCOUTQ, &arg);
+> 
+> [...]
 
-Today's linux-next merge of the net-next tree got a conflict in:
+Applied, thanks!
 
-  drivers/net/ethernet/intel/iavf/iavf_ethtool.c
+[1/1] fix breakage in SOCKET_URING_OP_SIOC* implementation
+      commit: 1ba0e9d69b2000e95267c888cbfa91d823388d47
 
-between commit:
+Best regards,
+-- 
+Jens Axboe
 
-  3a0b5a2929fd ("iavf: Introduce new state machines for flow director")
 
-from Linus' tree and commit:
 
-  95260816b489 ("iavf: use iavf_schedule_aq_request() helper")
-
-from the net-next tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc drivers/net/ethernet/intel/iavf/iavf_ethtool.c
-index dc499fe7734e,f147743792fb..000000000000
---- a/drivers/net/ethernet/intel/iavf/iavf_ethtool.c
-+++ b/drivers/net/ethernet/intel/iavf/iavf_ethtool.c
-@@@ -1436,16 -1435,11 +1435,16 @@@ static int iavf_add_fdir_ethtool(struc
-  	spin_lock_bh(&adapter->fdir_fltr_lock);
-  	iavf_fdir_list_add_fltr(adapter, fltr);
-  	adapter->fdir_active_fltr++;
- -	fltr->state =3D IAVF_FDIR_FLTR_ADD_REQUEST;
- +	if (adapter->link_up) {
- +		fltr->state =3D IAVF_FDIR_FLTR_ADD_REQUEST;
-- 		adapter->aq_required |=3D IAVF_FLAG_AQ_ADD_FDIR_FILTER;
- +	} else {
- +		fltr->state =3D IAVF_FDIR_FLTR_INACTIVE;
- +	}
-  	spin_unlock_bh(&adapter->fdir_fltr_lock);
- =20
- -	iavf_schedule_aq_request(adapter, IAVF_FLAG_AQ_ADD_FDIR_FILTER);
- +	if (adapter->link_up)
-- 		mod_delayed_work(adapter->wq, &adapter->watchdog_task, 0);
-++		iavf_schedule_aq_request(adapter, IAVF_FLAG_AQ_ADD_FDIR_FILTER);
-+=20
-  ret:
-  	if (err && fltr)
-  		kfree(fltr);
-@@@ -1475,12 -1469,6 +1474,11 @@@ static int iavf_del_fdir_ethtool(struc
-  	if (fltr) {
-  		if (fltr->state =3D=3D IAVF_FDIR_FLTR_ACTIVE) {
-  			fltr->state =3D IAVF_FDIR_FLTR_DEL_REQUEST;
-- 			adapter->aq_required |=3D IAVF_FLAG_AQ_DEL_FDIR_FILTER;
- +		} else if (fltr->state =3D=3D IAVF_FDIR_FLTR_INACTIVE) {
- +			list_del(&fltr->list);
- +			kfree(fltr);
- +			adapter->fdir_active_fltr--;
- +			fltr =3D NULL;
-  		} else {
-  			err =3D -EBUSY;
-  		}
-
---Sig_/+IvAp3H7R_mPW8u+BQNbQvZ
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmV7lTMACgkQAVBC80lX
-0Gy/mAgApKLj8MZ8Tj4vPsNMSJX4ZEnZKrPuG7GFI8vxQRBnWX7UTGKp7/VgExSD
-CaAi0PlBXduMSpPe48YimsvLKDEfDqVJiUMEcmh8FoA1rt5aBxuuxrGT3CcWP4JH
-bmq1IOR77r4WGzszSyYzeJyHj7Fc9JcTlNE7L5p1/P47fxplVktF3vEN8NRj3XqY
-COokn62mquj7YdCXwHBdWmLk+0yMBa13JYCcwxefLHF4inq2ZGxZh+iVOHrKFy0f
-YvdHi/c9hKWqL8PUcIWpEGDYgwk1qT6HSxZIu0s7TAY8JjnRuiFvAL3E3zLXHsGX
-IQRK6xKacRJgH8gZUzjfYuC97ujGow==
-=Przn
------END PGP SIGNATURE-----
-
---Sig_/+IvAp3H7R_mPW8u+BQNbQvZ--
 
