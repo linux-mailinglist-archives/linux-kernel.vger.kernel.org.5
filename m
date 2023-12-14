@@ -2,63 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 466DA8137B3
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 18:11:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 478E18137BA
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 18:11:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1444140AbjLNRLY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 12:11:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57742 "EHLO
+        id S1444055AbjLNRLm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 12:11:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39916 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230369AbjLNRLO (ORCPT
+        with ESMTP id S230387AbjLNRLW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 12:11:14 -0500
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 552FD12D
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 09:11:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:
-        Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
-        Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=Json6Gx+5VDyz1RjY7w3s3YgqEG8PM6lzHzCKs9Ls0E=; b=e/vlEyU1pI3gTBvVXJlTCSqfUD
-        FLOWAEnjxbUgTZZ2P3QJk1Za8f5xI3OVoAm0zbrT+lQESXRRuqclT+zSSn6obJMe4agNr6+fNfohL
-        aPYtEn873AytOu2aCGW3pWWwWWAqmG2I4kjfMhQGsDhP1/FhlLiBqkTa66eboYUJARbKfzXIeD6Jx
-        BGGkf/Um2nyGezHqKiN0f0SfJ+dT/Sj1ebFGgu040qpuQL2Aok3LdcGMqgfRxLgAru13Xqb9WCFxJ
-        kFKMTmoV1Dc6kcafXZ7Pq1V2zbxz/A5d5adMhLuI0BX++c1DorL3bLyZsWB1iqT34Ogn8xwr8ONj+
-        HJgnyx5Q==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:49218)
-        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.96)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1rDpEg-0001jv-0J;
-        Thu, 14 Dec 2023 17:10:58 +0000
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1rDpEc-0002ix-1N; Thu, 14 Dec 2023 17:10:54 +0000
-Date:   Thu, 14 Dec 2023 17:10:54 +0000
-From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     chenguanxi11234@163.com, arnd@arndb.de, cgel.zte@gmail.com,
-        chen.haonan2@zte.com.cn, gregkh@linuxfoundation.org, jgg@ziepe.ca,
-        jiang.xuexin@zte.com.cn, jroedel@suse.de,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        rppt@kernel.org, willy@infradead.org, yang.guang5@zte.com.cn
-Subject: Re: [PATCH linux-next] ARM/dma-mapping: replace kzalloc() and
- vzalloc() with kvzalloc()
-Message-ID: <ZXs3HmwFP9Qb0Jxj@shell.armlinux.org.uk>
-References: <CACRpkdap4LUbMcKv_zi=25A-SZf0DJhXiyR1zn0PfuR+b=3NfA@mail.gmail.com>
- <20231213143954.2541-1-chenguanxi11234@163.com>
- <CACRpkdb-pARMSCe_kugLOFriSrwuQVXJ3L+6TnsnmDNedowDRw@mail.gmail.com>
+        Thu, 14 Dec 2023 12:11:22 -0500
+Received: from out-188.mta0.migadu.com (out-188.mta0.migadu.com [IPv6:2001:41d0:1004:224b::bc])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EA0D1A1
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 09:11:26 -0800 (PST)
+Date:   Thu, 14 Dec 2023 17:11:20 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1702573885;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Z7KQyebLnTixJI+7HeEOxa3aIwOhIUy62//tcXLarcA=;
+        b=eQO/oAZcgvq6R0r3lvE7/mtXOn8K/LZeYyr5WruA3hOZyK6lKh34CkDmm2beyE4oHY3uEs
+        j+sKJRhrezWPn9lH4JrmhgS/8+AmJbgnhEMkW/+pzhR+8mMBAUYCPnvPG+DdJ3VtgYJj4k
+        whPLSPId+LYxelegpcceWypPhGccd1Y=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Oliver Upton <oliver.upton@linux.dev>
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        James Houghton <jthoughton@google.com>,
+        Peter Xu <peterx@redhat.com>,
+        Axel Rasmussen <axelrasmussen@google.com>,
+        Isaku Yamahata <isaku.yamahata@linux.intel.com>,
+        David Matlack <dmatlack@google.com>,
+        Yan Zhao <yan.y.zhao@intel.com>, Marc Zyngier <maz@kernel.org>,
+        Michael Roth <michael.roth@amd.com>,
+        Aaron Lewis <aaronlewis@google.com>
+Subject: Re: [ANNOUNCE / RFC] PUCK Future Topics
+Message-ID: <ZXs3OASFnic62LL6@linux.dev>
+References: <20231214001753.779022-1-seanjc@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CACRpkdb-pARMSCe_kugLOFriSrwuQVXJ3L+6TnsnmDNedowDRw@mail.gmail.com>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+In-Reply-To: <20231214001753.779022-1-seanjc@google.com>
+X-Migadu-Flow: FLOW_OUT
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -66,31 +56,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 14, 2023 at 02:17:51PM +0100, Linus Walleij wrote:
-> On Wed, Dec 13, 2023 at 3:41 PM <chenguanxi11234@163.com> wrote:
+On Wed, Dec 13, 2023 at 04:17:53PM -0800, Sean Christopherson wrote:
+> Hi all!  There are a handful of PUCK topics that I want to get scheduled, and
+> would like your help/input in confirming attendance to ensure we reach critical
+> mass.
 > 
-> > >Looks good to me:
-> > >Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
-> > >Please put this patch into Russell's patch tracker.
-> >
-> > Hello, I would like to ask, do you mean to have
-> > me CC the patch email to Russell?I don't really
-> > understand what patch tracker means.Thank you.
+> If you are on the Cc, please confirm that you are willing and able to attend
+> PUCK on the proposed/tentative date for any topics tagged with your name.  Or
+> if you simply don't want to attend, I suppose that's a valid answer too. :-)
 > 
-> This is Russell's patch tracker:
-> https://www.armlinux.org.uk/developer/patches/
+> If you are not on the Cc but want to ensure that you can be present for a given
+> topic, please speak up asap if you have a conflict.  I will do my best to
+> accomodate everyone's schedules, and the more warning I get the easier that will
+> be.
 > 
-> Create an account, read the help text, you can submit patches
-> using a web interface or through mail.
+> Note, the proposed schedule is largely arbitrary, I am not wedded to any
+> particular order.  The only known conflict at this time is the guest_memfd()
+> post-copy discussion can't land on Jan 10th.
+> 
+> Thanks!
+> 
+> 
+> 2024.01.03 - Post-copy for guest_memfd()
+>     Needs: David M, Paolo, Peter Xu, James, Oliver, Aaron
+> 
+> 2024.01.10 - Unified uAPI for protected VMs
+>     Needs: Paolo, Isaku, Mike R
+> 
+> 2024.01.17 - Memtypes for non-coherent MDA
+>     Needs: Paolo, Yan, Oliver, Marc, more ARM folks?
 
-No need to create an account if submitting by email, that will happen
-automatically on the successful receipt of a patch, except of course
-with password access blocked until a "forgotten password" thing is
-done.
-
-However, well worth reading the bit about adding a KernelVersion: tag
-somewhere in the email!
+Can we move this one? I'm traveling 01.08-01.16 and really don't want
+to miss this due to jetlag or travel delays.
 
 -- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
+Thanks,
+Oliver
