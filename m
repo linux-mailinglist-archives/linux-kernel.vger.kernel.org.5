@@ -2,168 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 864BC812C4D
+	by mail.lfdr.de (Postfix) with ESMTP id 310C8812C4C
 	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 10:57:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1443496AbjLNJ4i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 04:56:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42892 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1443484AbjLNJ4f (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S1443481AbjLNJ4f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Thu, 14 Dec 2023 04:56:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42868 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1443490AbjLNJ4d (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Dec 2023 04:56:33 -0500
 Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17B01106;
-        Thu, 14 Dec 2023 01:56:41 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2315ABD;
+        Thu, 14 Dec 2023 01:56:39 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1702547801; x=1734083801;
+  t=1702547799; x=1734083799;
   h=date:from:to:cc:subject:message-id:references:
    mime-version:in-reply-to;
-  bh=RqiCkuGCEaun1cH6jxYGjDo0sb5DoR/NddNRX5ci++o=;
-  b=YFR7f0ggx7pvKRdxPqfAJWk6muVAmlWTeUeeTcfwXEpqy/LYTgnaE5AG
-   t2qgsAzDrYrvaXFmVI3r9PEIOHZFM2uFK4CxU0WSBAJywcCoAH+d9bTw9
-   E1gxsTDL8zVXy/qJVmUaMk+dewM/Xe7i+0U8n2Hrfd+7VHURfrnWfohUn
-   5BPi/yazk8JyE7oG1m9/IXcPlXUhjSkHJfMhqXoVEJVLzX4+M7wAoey5N
-   7Xi4DOB/x9SKlmUUUkvkazo+1IRE6ZNaSJLPcobbv5BgCfL0INuDFBiUv
-   f049gnR1Ao/rtOVDIkJxmkdqWSc27uNoKTG98sr3+9ZquS488O6c2eAn6
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10923"; a="459419580"
+  bh=xl+adE3EBbL+epRoD376FkUCc+tO7nfywRkSDIRzlSo=;
+  b=bwuYLstOoU2kF1DTpplmcHjZsdHN7TykP1AxZ9ULAAgT9VLizDtzfFCo
+   y+lqda6Tx4gm2He7qWCOmrcHh6oFjQ8N5K+sWxKKACd8ig/gjbPWiEz3D
+   kUCQQRR7ZSVY1hLKWBYTk3ST7l0CG57vFrdfqIKh/jlEM8VtEmnHf2Oj/
+   5G279Leoow8Y2SJ9EZA5f3HRg9SdAOwuzSR2IO1exLh6XqfQ0ztb6dQGg
+   /c/R5Yhm4B0CDOrJlWOFUmkmVWaMaSJewYoCovARP475IcjLWq2Cm0/oS
+   I/WDKCJCYFF522eIzguwPtrIJhA6no6ZSlUs4CGehh+htgb6cT6S3nH6K
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10923"; a="459419570"
 X-IronPort-AV: E=Sophos;i="6.04,275,1695711600"; 
-   d="scan'208";a="459419580"
+   d="scan'208";a="459419570"
 Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Dec 2023 01:56:40 -0800
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Dec 2023 01:56:38 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10923"; a="1021452328"
+X-IronPort-AV: E=McAfee;i="6600,9927,10923"; a="1021452267"
 X-IronPort-AV: E=Sophos;i="6.04,275,1695711600"; 
-   d="scan'208";a="1021452328"
+   d="scan'208";a="1021452267"
 Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
   by fmsmga006.fm.intel.com with ESMTP; 14 Dec 2023 01:56:33 -0800
 Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
         (envelope-from <lkp@intel.com>)
-        id 1rDiSE-000LsP-36;
+        id 1rDiSE-000LsN-2s;
         Thu, 14 Dec 2023 09:56:30 +0000
-Date:   Thu, 14 Dec 2023 17:56:13 +0800
+Date:   Thu, 14 Dec 2023 17:56:14 +0800
 From:   kernel test robot <lkp@intel.com>
-To:     Gregory Price <gourry.memverge@gmail.com>, linux-mm@kvack.org
-Cc:     oe-kbuild-all@lists.linux.dev, linux-doc@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-api@vger.kernel.org, x86@kernel.org,
-        akpm@linux-foundation.org, arnd@arndb.de, tglx@linutronix.de,
-        luto@kernel.org, mingo@redhat.com, bp@alien8.de,
-        dave.hansen@linux.intel.com, hpa@zytor.com, mhocko@kernel.org,
-        tj@kernel.org, ying.huang@intel.com, gregory.price@memverge.com,
-        corbet@lwn.net, rakie.kim@sk.com, hyeongtak.ji@sk.com,
-        honggyu.kim@sk.com, vtavarespetr@micron.com, peterz@infradead.org,
-        jgroves@micron.com, ravis.opensrc@micron.com,
-        sthanneeru@micron.com, emirakhur@micron.com, Hasan.Maruf@amd.com,
-        seungjun.ha@samsung.com
-Subject: Re: [PATCH v3 01/11] mm/mempolicy: implement the sysfs-based
- weighted_interleave interface
-Message-ID: <202312141733.PALHOosm-lkp@intel.com>
-References: <20231213224118.1949-2-gregory.price@memverge.com>
+To:     Sherry Sun <sherry.sun@nxp.com>, hongxing.zhu@nxp.com,
+        l.stach@pengutronix.de, lpieralisi@kernel.org, kw@linux.com,
+        robh@kernel.org, bhelgaas@google.com,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
+        festevam@gmail.com
+Cc:     oe-kbuild-all@lists.linux.dev, linux-imx@nxp.com,
+        linux-pci@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH V2 1/4] PCI: imx6: Add pci host wakeup support on imx
+ platforms.
+Message-ID: <202312141719.j5GCLQry-lkp@intel.com>
+References: <20231213092850.1706042-2-sherry.sun@nxp.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231213224118.1949-2-gregory.price@memverge.com>
-X-Spam-Status: No, score=-0.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+In-Reply-To: <20231213092850.1706042-2-sherry.sun@nxp.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,SUBJECT_DRUG_GAP_L,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Gregory,
+Hi Sherry,
 
-kernel test robot noticed the following build errors:
+kernel test robot noticed the following build warnings:
 
-[auto build test ERROR on akpm-mm/mm-everything]
-[also build test ERROR on geert-m68k/for-next geert-m68k/for-linus deller-parisc/for-next powerpc/next powerpc/fixes s390/features jcmvbkbc-xtensa/xtensa-for-next arnd-asm-generic/master linus/master tip/x86/asm v6.7-rc5 next-20231214]
+[auto build test WARNING on pci/next]
+[also build test WARNING on pci/for-linus shawnguo/for-next robh/for-next linus/master v6.7-rc5 next-20231214]
 [If your patch is applied to the wrong git tree, kindly drop us a note.
 And when submitting patch, we suggest to use '--base' as documented in
 https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Gregory-Price/mm-mempolicy-implement-the-sysfs-based-weighted_interleave-interface/20231214-064236
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm.git mm-everything
-patch link:    https://lore.kernel.org/r/20231213224118.1949-2-gregory.price%40memverge.com
-patch subject: [PATCH v3 01/11] mm/mempolicy: implement the sysfs-based weighted_interleave interface
-config: x86_64-randconfig-161-20231214 (https://download.01.org/0day-ci/archive/20231214/202312141733.PALHOosm-lkp@intel.com/config)
-compiler: gcc-9 (Debian 9.3.0-22) 9.3.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231214/202312141733.PALHOosm-lkp@intel.com/reproduce)
+url:    https://github.com/intel-lab-lkp/linux/commits/Sherry-Sun/PCI-imx6-Add-pci-host-wakeup-support-on-imx-platforms/20231213-173031
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/pci/pci.git next
+patch link:    https://lore.kernel.org/r/20231213092850.1706042-2-sherry.sun%40nxp.com
+patch subject: [PATCH V2 1/4] PCI: imx6: Add pci host wakeup support on imx platforms.
+config: alpha-randconfig-r112-20231214 (https://download.01.org/0day-ci/archive/20231214/202312141719.j5GCLQry-lkp@intel.com/config)
+compiler: alpha-linux-gcc (GCC) 13.2.0
+reproduce: (https://download.01.org/0day-ci/archive/20231214/202312141719.j5GCLQry-lkp@intel.com/reproduce)
 
 If you fix the issue in a separate patch/commit (i.e. not just a new version of
 the same patch/commit), kindly add following tags
 | Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202312141733.PALHOosm-lkp@intel.com/
+| Closes: https://lore.kernel.org/oe-kbuild-all/202312141719.j5GCLQry-lkp@intel.com/
 
-All errors (new ones prefixed by >>):
+sparse warnings: (new ones prefixed by >>)
+>> drivers/pci/controller/dwc/pci-imx6.c:1267:13: sparse: sparse: symbol 'host_wake_irq_handler' was not declared. Should it be static?
+   drivers/pci/controller/dwc/pci-imx6.c: note: in included file (through include/linux/mmzone.h, include/linux/gfp.h, include/linux/umh.h, include/linux/kmod.h, ...):
+   include/linux/page-flags.h:242:46: sparse: sparse: self-comparison always evaluates to false
 
-   In file included from include/linux/kobject.h:20,
-                    from include/linux/energy_model.h:7,
-                    from include/linux/device.h:16,
-                    from include/linux/node.h:18,
-                    from include/linux/cpu.h:17,
-                    from include/linux/static_call.h:135,
-                    from include/linux/tracepoint.h:22,
-                    from include/trace/events/tlb.h:9,
-                    from arch/x86/include/asm/mmu_context.h:10,
-                    from include/linux/mmu_context.h:5,
-                    from include/linux/cpuset.h:18,
-                    from mm/mempolicy.c:83:
-   mm/mempolicy.c: In function 'add_weight_node':
->> mm/mempolicy.c:3145:28: error: 'struct iw_node_attr' has no member named 'attr'
-    3145 |  sysfs_attr_init(&node_attr->attr);
-         |                            ^~
-   include/linux/sysfs.h:55:3: note: in definition of macro 'sysfs_attr_init'
-      55 |  (attr)->key = &__key;    \
-         |   ^~~~
+vim +/host_wake_irq_handler +1267 drivers/pci/controller/dwc/pci-imx6.c
 
-Kconfig warnings: (for reference only)
-   WARNING: unmet direct dependencies detected for DRM_I915_DEBUG_GEM
-   Depends on [n]: HAS_IOMEM [=y] && DRM_I915 [=m] && EXPERT [=y] && DRM_I915_WERROR [=n]
-   Selected by [m]:
-   - DRM_I915_DEBUG [=y] && HAS_IOMEM [=y] && DRM_I915 [=m] && EXPERT [=y] && !COMPILE_TEST [=n]
-
-
-vim +3145 mm/mempolicy.c
-
-  3129	
-  3130	static int add_weight_node(int nid, struct kobject *wi_kobj)
-  3131	{
-  3132		struct iw_node_attr *node_attr;
-  3133		char *name;
-  3134	
-  3135		node_attr = kzalloc(sizeof(*node_attr), GFP_KERNEL);
-  3136		if (!node_attr)
-  3137			return -ENOMEM;
-  3138	
-  3139		name = kasprintf(GFP_KERNEL, "node%d", nid);
-  3140		if (!name) {
-  3141			kfree(node_attr);
-  3142			return -ENOMEM;
-  3143		}
-  3144	
-> 3145		sysfs_attr_init(&node_attr->attr);
-  3146		node_attr->kobj_attr.attr.name = name;
-  3147		node_attr->kobj_attr.attr.mode = 0644;
-  3148		node_attr->kobj_attr.show = node_show;
-  3149		node_attr->kobj_attr.store = node_store;
-  3150		node_attr->nid = nid;
-  3151	
-  3152		if (sysfs_create_file(wi_kobj, &node_attr->kobj_attr.attr)) {
-  3153			kfree(node_attr->kobj_attr.attr.name);
-  3154			kfree(node_attr);
-  3155			pr_err("failed to add attribute to weighted_interleave\n");
-  3156			return -ENOMEM;
-  3157		}
-  3158	
-  3159		node_attrs[nid] = node_attr;
-  3160		return 0;
-  3161	}
-  3162	
+  1266	
+> 1267	irqreturn_t host_wake_irq_handler(int irq, void *priv)
+  1268	{
+  1269		struct imx6_pcie *imx6_pcie = priv;
+  1270		struct device *dev = imx6_pcie->pci->dev;
+  1271	
+  1272		/* Notify PM core we are wakeup source */
+  1273		pm_wakeup_event(dev, 0);
+  1274		pm_system_wakeup();
+  1275	
+  1276		return IRQ_HANDLED;
+  1277	}
+  1278	
 
 -- 
 0-DAY CI Kernel Test Service
