@@ -2,100 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A175881270D
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 06:43:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E5AD5812710
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 06:44:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1443203AbjLNFnL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 00:43:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36524 "EHLO
+        id S1443204AbjLNFo3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 00:44:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58564 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1443207AbjLNFnE (ORCPT
+        with ESMTP id S1443193AbjLNFo0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 00:43:04 -0500
-Received: from mail-oi1-x22e.google.com (mail-oi1-x22e.google.com [IPv6:2607:f8b0:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B97F4111
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 21:43:10 -0800 (PST)
-Received: by mail-oi1-x22e.google.com with SMTP id 5614622812f47-3ba14203a34so2968115b6e.1
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 21:43:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1702532590; x=1703137390; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=2zJEKJBJdRMRCgJFJEeFLk/7+B+l3ptfOOAh8xQH8eM=;
-        b=WrqT+Jqi05FHIN9RA9jJYU6rmRrrb9c2uYCg7CqClmZEKbuxij6nuCEwuCEzZisDA9
-         rjIwi3NguPfra4YUpb+J/ermcBAh6DSe2ciLhrVr9TgF/KVVvcNm1O1EEQor5QScpIsR
-         bXNbRtAqBLLvN+Ukx2LjpYKFdoXiwDJM58Yjyj4JT0OwYIJ5lYw6WJdSgA9W+2m6oDuM
-         t8PPjoXKPl2KDzXeNnI6KXRzA4xpOBjeAWFbTNKR+e1XAtmgfRTTPL6UWe/S8/+8zJQf
-         kvUf7HH11AgZgfTZFSMMUtAxuf6pp2YUpzgaZEvtyHBFZUCvchX4NnRgPxYQzda1LGy6
-         01dQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702532590; x=1703137390;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=2zJEKJBJdRMRCgJFJEeFLk/7+B+l3ptfOOAh8xQH8eM=;
-        b=LEZvql7AljaeS+JqqzutnV1Slj4oeK+3qHw2or5fYftqU5z+LmDRNAbg8l5VBxiZ9P
-         k3PaUwDEEIsR+W6VkNsuLqgZ4WVMLKXGHL79wGP/BmpZ4nA0NuDndQldBHTjqCIkT2bZ
-         U3LuZz3bk/2W7Ax7JUFYWQbV6Q5jUFsgScb9tNlV+0D60EnitqVkqfZBItV5VvTtSPs5
-         8X7HoEDHYQixfdXVFikw/Rq2XXYblcpAXmUFqRK7kBDTPLSPf6As985MPM4i58v+FC7e
-         SOejCY/gjoTl9M65MlBUb+R+2MBXv9onndF8bFtgQSFCUodVdyNJ+a38YxpYLm6lcBcS
-         KLRg==
-X-Gm-Message-State: AOJu0YwMJnymKAuN5GDNOpWshKvPVV2jP3UOgA9sikvK06JmnsabKWcc
-        qvyV9UUQtVqRf2FZ3QuLfI3yzg==
-X-Google-Smtp-Source: AGHT+IGYWNbaFlApZ1lFvqRaU1qt9FMGrCRJVZt4T9E+6r/Apb1PpoPAXMGsw6TNwwldN5dhTrbFiw==
-X-Received: by 2002:a05:6808:11c8:b0:3ba:2af:c7da with SMTP id p8-20020a05680811c800b003ba02afc7damr9445649oiv.110.1702532590040;
-        Wed, 13 Dec 2023 21:43:10 -0800 (PST)
-Received: from localhost ([122.172.82.6])
-        by smtp.gmail.com with ESMTPSA id x20-20020aa793b4000000b006ce4c7ba448sm10887964pff.25.2023.12.13.21.43.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Dec 2023 21:43:09 -0800 (PST)
-Date:   Thu, 14 Dec 2023 11:13:07 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Vincent Guittot <vincent.guittot@linaro.org>
-Cc:     catalin.marinas@arm.com, will@kernel.org, sudeep.holla@arm.com,
-        rafael@kernel.org, agross@kernel.org, andersson@kernel.org,
-        konrad.dybcio@linaro.org, mingo@redhat.com, peterz@infradead.org,
-        juri.lelli@redhat.com, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        bristot@redhat.com, vschneid@redhat.com, lukasz.luba@arm.com,
-        rui.zhang@intel.com, mhiramat@kernel.org,
-        daniel.lezcano@linaro.org, amit.kachhap@gmail.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-pm@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-trace-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/4] cpufreq: Add a cpufreq pressure feedback for the
- scheduler
-Message-ID: <20231214054307.axl33gagxacidjbn@vireshk-i7>
-References: <20231212142730.998913-1-vincent.guittot@linaro.org>
- <20231212142730.998913-2-vincent.guittot@linaro.org>
+        Thu, 14 Dec 2023 00:44:26 -0500
+Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 195D410A;
+        Wed, 13 Dec 2023 21:44:29 -0800 (PST)
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 3BE5iJTW036923;
+        Wed, 13 Dec 2023 23:44:19 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1702532659;
+        bh=5kcNwlTyEanZdUHbBRgU6blj9PGlRg0qWtcJ4LxQqsM=;
+        h=Date:CC:Subject:To:References:From:In-Reply-To;
+        b=CG2uohMNvWz4M39s8NjgVAsGrJ/v0EhEoTrsUt5p5c+Ymy1jWdtm0EKnfvKBbpNMP
+         KcuTjf19n4ryK7C2pYJeiM65TYh+vlwiotjfmP2WXyEF9/Wfyt54gIfIH8jtyu0SPz
+         Jwd2PEhPqbEW2uyDyjw6XtyGw0Slw6hDQ35x1GIQ=
+Received: from DFLE115.ent.ti.com (dfle115.ent.ti.com [10.64.6.36])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 3BE5iJXH100306
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 13 Dec 2023 23:44:19 -0600
+Received: from DFLE108.ent.ti.com (10.64.6.29) by DFLE115.ent.ti.com
+ (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 13
+ Dec 2023 23:44:18 -0600
+Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DFLE108.ent.ti.com
+ (10.64.6.29) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Wed, 13 Dec 2023 23:44:19 -0600
+Received: from [172.24.227.9] (uda0492258.dhcp.ti.com [172.24.227.9])
+        by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 3BE5iE9x080888;
+        Wed, 13 Dec 2023 23:44:15 -0600
+Message-ID: <6f1c1a59-cec0-46d1-8ecb-a82d9d444ccf@ti.com>
+Date:   Thu, 14 Dec 2023 11:14:13 +0530
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231212142730.998913-2-vincent.guittot@linaro.org>
-X-Spam-Status: No, score=1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Level: *
+User-Agent: Mozilla Thunderbird
+CC:     <vigneshr@ti.com>, <kristo@kernel.org>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <danishanwar@ti.com>,
+        <r-gunasekaran@ti.com>, <srk@ti.com>, <s-vadapalli@ti.com>
+Subject: Re: [PATCH v2] arm64: dts: ti: k3-am654-icssg2: Enable PHY interrupts
+ for ICSSG2
+Content-Language: en-US
+To:     Nishanth Menon <nm@ti.com>
+References: <20231213080216.1710730-1-s-vadapalli@ti.com>
+ <20231213123819.tqh3lm2ceir3qjbk@swimmer>
+From:   Siddharth Vadapalli <s-vadapalli@ti.com>
+In-Reply-To: <20231213123819.tqh3lm2ceir3qjbk@swimmer>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12-12-23, 15:27, Vincent Guittot wrote:
-> @@ -2618,6 +2663,9 @@ static int cpufreq_set_policy(struct cpufreq_policy *policy,
->  	policy->max = __resolve_freq(policy, policy->max, CPUFREQ_RELATION_H);
->  	trace_cpu_frequency_limits(policy);
->  
-> +	cpus = policy->related_cpus;
-> +	cpufreq_update_pressure(cpus, policy->max);
-> +
->  	policy->cached_target_freq = UINT_MAX;
+Hello Nishanth,
 
-One more question, why are you doing this from cpufreq_set_policy ? If
-due to cpufreq cooling or from userspace, we end up limiting the
-maximum possible frequency, will this routine always get called ?
+On 13/12/23 18:08, Nishanth Menon wrote:
+> On 13:32-20231213, Siddharth Vadapalli wrote:
+>> Enable interrupt mode of operation of the DP83867 Ethernet PHY which is
+>> used by ICSSG2. The DP83867 PHY driver already supports interrupt handling
+>> for interrupts generated by the PHY. Thus, add the necessary device-tree
+>> support to enable it.
+>>
+>> Since the GPIO1_87 line is muxed with EXT_REFCLK1 and SYNC1_OUT, update
+>> the pinmux to select GPIO1_87 for routing the interrupt.
+>>
+>> As the same interrupt line and therefore the same pinmux configuration is
+>> applicable to both Ethernet PHYs used by ICSSG2, allocate the pinmux
+>> resource to the first Ethernet PHY alone.
+
+...
+
+> 
+> https://www.ti.com/lit/ds/symlink/dp83867ir.pdf -> it looks like the
+> interrupt pin is level event. but drivers/gpio/gpio-davinci.c::
+> gpio_irq_type() -> The SoC cannot handle level, only edge.
+> 
+> A bit confused here..  GPIO 87 is shared between two phys. isn't it a
+> case of race?
+> 
+> PHY1 assets low
+> phy1 handler starts, but before the driver it clears the condition:
+> PHY2 asserts low - but since the signal is already low, there is no
+> pulse
+> phy1 handler clears phy1 condition, but signal is still low due to phy2?
+> now phy2 OR phy1 never gets handled since there is never a pulse event
+> ever again.
+
+Yes, you are right! Edge-Triggered interrupts shouldn't be shared. I missed
+noticing this. Thank you for pointing it out. Since the SoC only supports
+Edge-Triggered interrupts, I believe that the correct decision would be to use
+the interrupt for only one of the two PHYs, while leaving the other PHY in
+polled mode of operation which is the default.
+
+Kindly let me know if this is acceptable and I shall update this patch accordingly.
+
+> 
+> 
+>>  		ti,rx-internal-delay = <DP83867_RGMIIDCTL_2_00_NS>;
+>>  		ti,fifo-depth = <DP83867_PHYCR_FIFO_DEPTH_4_B_NIB>;
+>>  	};
+>> -- 
+>> 2.34.1
+>>
+> 
 
 -- 
-viresh
+Regards,
+Siddharth.
