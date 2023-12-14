@@ -2,86 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 19530813713
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 17:57:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BE4EB81371C
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 17:59:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230281AbjLNQ5c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 11:57:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37706 "EHLO
+        id S1443602AbjLNQ7D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 11:59:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53748 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229532AbjLNQ5a (ORCPT
+        with ESMTP id S1443568AbjLNQ7B (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 11:57:30 -0500
-Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6378FB7
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 08:57:36 -0800 (PST)
-Received: by mail-io1-xd2e.google.com with SMTP id ca18e2360f4ac-7b709f8ba01so72330639f.1
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 08:57:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1702573056; x=1703177856; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=bF6JAIGkdcWEDAxYfIlQw3OSyrt6nxRKSkcWVcaayZU=;
-        b=ez7aJSHpNmVv1H/2VNFP+XRnCwtwjnJuPlbf1RujMYUaS5TwF5i+UNRIG0kGeCIrva
-         E9BiVSdjOhuv0m0V3fqlTFbkLAjIN7e4RY1MPfeOiNCCmYJsZNs8jQ+4TBeae32aKCZD
-         UljhMivp5KgHETOdFfEWvUogrhyAC0vXh/sEkILqKeKalS5IfnE4yVo4ICVAWmn9r4Gq
-         lAhIDibydYmaCd1rPHNETO/INYLBbsOUlTGdAqWHuwVX3ADMbqm6s3p+PTTYLRjlhwNs
-         6BBlw9bVdDYlgFbADzocb/SBtRkDmUuuEV947Q1DC0O+IQcC68X4GmhGATOCDaE4a6Ga
-         ovCw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702573056; x=1703177856;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=bF6JAIGkdcWEDAxYfIlQw3OSyrt6nxRKSkcWVcaayZU=;
-        b=JWqcM9r73aD9CGakSBYxOy0On77C5SlLU2o0RnQNXoWhBQpNvUzj2aZVeclq/rcoQj
-         LDgHstilibWC6xSgeqpBFnsrNLBTFnDQl5yEau2CMr1ztB5jHEN0pX0wKw2y19PRvc34
-         ZYrEj4GRX4eXArx3A0yE9c9IVB9qqeftHqbgYEAkjNSrvGATSa+N8vFojXM5ZHqWaCMY
-         pfhZbfKobKNAsSttSBkvRXK1DkarhZymH/T+uMcgjtBp5odxP4sgxYC94KKBDegvAyk0
-         nG5Ht82725xMyXhTC/+pDigAvuU5CKadrChgfkJlc0rvJEcEiBayltSRoFdXyjyPwbUF
-         4lFw==
-X-Gm-Message-State: AOJu0YzzsVMoE/ebOWDq5UK6jiOlqMg5u7aBiWA1BBqbMk5FesL3cvtn
-        ejyqY2WncAgHezizKK8bZ7YdgQ==
-X-Google-Smtp-Source: AGHT+IFlw+XRTrT7e71YKSTcDQk//pRdpkg0t26kRH8ZiJIsDpZhk7PFQa8ipkgdwGtQW7W2DeCpYw==
-X-Received: by 2002:a05:6e02:1bac:b0:35f:692e:2049 with SMTP id n12-20020a056e021bac00b0035f692e2049mr8161692ili.2.1702573055728;
-        Thu, 14 Dec 2023 08:57:35 -0800 (PST)
-Received: from [192.168.1.116] ([96.43.243.2])
-        by smtp.gmail.com with ESMTPSA id bn14-20020a056e02338e00b00357ca1ed25esm1231116ilb.80.2023.12.14.08.57.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 14 Dec 2023 08:57:35 -0800 (PST)
-Message-ID: <3d025aeb-7766-4148-b2fd-01ec3653b4a7@kernel.dk>
-Date:   Thu, 14 Dec 2023 09:57:32 -0700
+        Thu, 14 Dec 2023 11:59:01 -0500
+Received: from azure-sdnproxy.icoremail.net (azure-sdnproxy.icoremail.net [207.46.229.174])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 2005D8E
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 08:59:06 -0800 (PST)
+Received: from luzhipeng.223.5.5.5 (unknown [115.200.224.93])
+        by mail-app4 (Coremail) with SMTP id cS_KCgBnbDRSNHtlxiSWAA--.37213S2;
+        Fri, 15 Dec 2023 00:58:58 +0800 (CST)
+From:   Zhipeng Lu <alexious@zju.edu.cn>
+To:     alexious@zju.edu.cn
+Cc:     Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>, amd-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] gpu/drm/radeon: fix two memleaks in radeon_vm_init
+Date:   Fri, 15 Dec 2023 00:58:42 +0800
+Message-Id: <20231214165843.3484373-1-alexious@zju.edu.cn>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH RESEND 06/11] net/smc: smc_splice_read: always request
- MSG_DONTWAIT
-To:     Christian Brauner <brauner@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     Tony Lu <tonylu@linux.alibaba.com>,
-        Ahelenia Ziemia'nska <nabijaczleweli@nabijaczleweli.xyz>,
-        Karsten Graul <kgraul@linux.ibm.com>,
-        Wenjia Zhang <wenjia@linux.ibm.com>,
-        Jan Karcher <jaka@linux.ibm.com>,
-        "D. Wythe" <alibuda@linux.alibaba.com>,
-        Wen Gu <guwen@linux.alibaba.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Paolo Abeni <pabeni@redhat.com>, linux-s390@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org,
-        Alexander Viro <viro@zeniv.linux.org.uk>
-References: <cover.1697486714.git.nabijaczleweli@nabijaczleweli.xyz>
- <145da5ab094bcc7d3331385e8813074922c2a13c6.1697486714.git.nabijaczleweli@nabijaczleweli.xyz>
- <ZXkNf9vvtzR7oqoE@TONYMAC-ALIBABA.local> <20231213162854.4acfbd9f@kernel.org>
- <20231214-glimmen-abspielen-12b68e7cb3a7@brauner>
-Content-Language: en-US
-From:   Jens Axboe <axboe@kernel.dk>
-In-Reply-To: <20231214-glimmen-abspielen-12b68e7cb3a7@brauner>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: cS_KCgBnbDRSNHtlxiSWAA--.37213S2
+X-Coremail-Antispam: 1UD129KBjvdXoWrtrWrGF4rtFyDXF45Zr4UCFg_yoWktrX_uF
+        18XasrJa4Dta4kZ3W7Z3Z7Zr92g3y0gw4rtrW8Kr1ft34xX3W8uFy3WFn5Xw45Wa13JFn8
+        Cr4vqa4fCrsrGjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUbc8FF20E14v26r4j6ryUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
+        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
+        A2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j
+        6F4UJwA2z4x0Y4vEx4A2jsIE14v26F4UJVW0owA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
+        CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
+        2Ix0cI8IcVAFwI0_JrI_JrylYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
+        W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lc2xSY4AK67AK6r1l
+        42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJV
+        WUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAK
+        I48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F
+        4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY
+        6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjfU838nUUUUU
+X-CM-SenderInfo: qrsrjiarszq6lmxovvfxof0/
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -89,23 +58,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/14/23 3:50 AM, Christian Brauner wrote:
->> Let's figure that out before we get another repost.
-> 
-> I'm just waiting for Jens to review it as he had comments on this
-> before.
+When radeon_bo_create and radeon_vm_clear_bo fail, the vm->page_tables
+allocated before need to be freed. However, neither radeon_vm_init
+itself nor its caller have done such deallocation.
 
-Well, I do wish the CC list had been setup a bit more deliberately.
-Especially as this is a resend, and I didn't even know about any of this
-before Christian pointed me this way the other day.
+Fixes: 6d2f2944e95e ("drm/radeon: use normal BOs for the page tables v4")
+Signed-off-by: Zhipeng Lu <alexious@zju.edu.cn>
+---
+ drivers/gpu/drm/radeon/radeon_vm.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-Checking lore, I can't even see all the patches. So while it may be
-annoying, I do think it may be a good idea to resend the series so I can
-take a closer look as well. I do think it's interesting and I'd love to
-have it work in a non-blocking fashion, both solving the issue of splice
-holding the pipe lock while doing IO, and also then being able to
-eliminate the pipe_clear_nowait() hack hopefully.
-
+diff --git a/drivers/gpu/drm/radeon/radeon_vm.c b/drivers/gpu/drm/radeon/radeon_vm.c
+index 987cabbf1318..c38b4d5d6a14 100644
+--- a/drivers/gpu/drm/radeon/radeon_vm.c
++++ b/drivers/gpu/drm/radeon/radeon_vm.c
+@@ -1204,13 +1204,17 @@ int radeon_vm_init(struct radeon_device *rdev, struct radeon_vm *vm)
+ 	r = radeon_bo_create(rdev, pd_size, align, true,
+ 			     RADEON_GEM_DOMAIN_VRAM, 0, NULL,
+ 			     NULL, &vm->page_directory);
+-	if (r)
++	if (r) {
++		kfree(vm->page_tables);
++		vm->page_tables = NULL;
+ 		return r;
+-
++	}
+ 	r = radeon_vm_clear_bo(rdev, vm->page_directory);
+ 	if (r) {
+ 		radeon_bo_unref(&vm->page_directory);
+ 		vm->page_directory = NULL;
++		kfree(vm->page_tables);
++		vm->page_tables = NULL;
+ 		return r;
+ 	}
+ 
 -- 
-Jens Axboe
+2.34.1
 
