@@ -1,169 +1,146 @@
-Return-Path: <linux-kernel+bounces-76-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-77-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 29206813B98
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 21:36:01 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D6361813B9E
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 21:38:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5BC391C20FA9
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 20:36:00 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 790B3B21946
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 20:38:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B50F06D1BE;
-	Thu, 14 Dec 2023 20:35:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 55EF765EDE;
+	Thu, 14 Dec 2023 20:38:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="iduOy+Fy"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A3C136D1AD;
-	Thu, 14 Dec 2023 20:35:50 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0B920C433C8;
-	Thu, 14 Dec 2023 20:35:48 +0000 (UTC)
-Date: Thu, 14 Dec 2023 15:36:36 -0500
-From: Steven Rostedt <rostedt@goodmis.org>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>, LKML
- <linux-kernel@vger.kernel.org>, Linux Trace Kernel
- <linux-trace-kernel@vger.kernel.org>, Masami Hiramatsu
- <mhiramat@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Mathieu
- Desnoyers <mathieu.desnoyers@efficios.com>
-Subject: Re: [PATCH] ring-buffer: Remove 32bit timestamp logic
-Message-ID: <20231214153636.655e18ce@gandalf.local.home>
-In-Reply-To: <CAHk-=wjjGEc0f4LLDxCTYvgD98kWqKy=89u=42JLRz5Qs3KKyA@mail.gmail.com>
-References: <20231213211126.24f8c1dd@gandalf.local.home>
-	<20231213214632.15047c40@gandalf.local.home>
-	<CAHk-=whESMW2v0cd0Ye+AnV0Hp9j+Mm4BO2xJo93eQcC1xghUA@mail.gmail.com>
-	<20231214115614.2cf5a40e@gandalf.local.home>
-	<CAHk-=wjjGEc0f4LLDxCTYvgD98kWqKy=89u=42JLRz5Qs3KKyA@mail.gmail.com>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E695A2112
+	for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 20:38:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-1d307cf18fdso31313485ad.3
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 12:38:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1702586290; x=1703191090; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=CEbYOeExhWxrQcvIrSnW0dzfFwJIoL+EWRTjsEQRQR4=;
+        b=iduOy+FypuQQ7pXz+XyjB+/lRThjfh9ttCsMv8zreqNCWM5WTv2La6OOI45l7Y13sg
+         RoW6l87zpZB0Y/jmLzcpXM6pPlPYEo1bG6yen4KwUri8ELKBdeHBwhCXk2zffU9trDE2
+         YNhbh1i/KL1vomXJzonBC2PQweZVQMNCqkNiA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702586290; x=1703191090;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=CEbYOeExhWxrQcvIrSnW0dzfFwJIoL+EWRTjsEQRQR4=;
+        b=thyTXEuI9nUGXyffmrj+e70HfHXX3tG+zACETkFEvyZ/xhkz29z/pg0AAnbZH1JstF
+         X8995G9IFWCCdqusQ+RArU92G+72euy/8toIxLxRWyhAhMfBaPlDlXLvBVVNgkgfEgu1
+         xiXRzcZ0X0nIlpVRGndAxZXKarF/0chqmPW0HQS8iU8xr+nSS38mQPt1ifMqqRj79SVx
+         NDlq+rjs8ImigIeMxXev+QD/hjOQm1R59Zqw7hO22Vvm9D1WvdVjycA2fRIPcoGYvdft
+         yEsCPPwC/Iu+1p0/t+YeOrroJUtpqBM42D/N9deI1XgdIfCqeOZJfwye9FrH0ugL88Z9
+         L3Eg==
+X-Gm-Message-State: AOJu0Yx6lvACBIjLeEC8z6UqYUJfXzmjT6+gVhivMS7QHaVJFZdYrRmL
+	jsSHE3Pdqn1dzXsKh+Okd/f4Lw==
+X-Google-Smtp-Source: AGHT+IGcoNWWmuS7W3F8Oa3UUyu1se2mbBEQgXS9YTTmt+8tUfR2PUem9ww3SQz2i2gofIRWMOARSg==
+X-Received: by 2002:a17:902:ec89:b0:1d0:c26d:e509 with SMTP id x9-20020a170902ec8900b001d0c26de509mr6417151plg.108.1702586290186;
+        Thu, 14 Dec 2023 12:38:10 -0800 (PST)
+Received: from tictac2.mtv.corp.google.com ([2620:15c:9d:2:9d0c:9bd0:17f6:8236])
+        by smtp.gmail.com with ESMTPSA id y18-20020a170902b49200b001cfc2e0a82fsm12799081plr.26.2023.12.14.12.38.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 Dec 2023 12:38:09 -0800 (PST)
+From: Douglas Anderson <dianders@chromium.org>
+To: dri-devel@lists.freedesktop.org
+Cc: Guenter Roeck <groeck@chromium.org>,
+	Douglas Anderson <dianders@chromium.org>,
+	Andrzej Hajda <andrzej.hajda@intel.com>,
+	Daniel Vetter <daniel@ffwll.ch>,
+	David Airlie <airlied@gmail.com>,
+	Jernej Skrabec <jernej.skrabec@gmail.com>,
+	Jonas Karlman <jonas@kwiboo.se>,
+	Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+	Maxime Ripard <mripard@kernel.org>,
+	Neil Armstrong <neil.armstrong@linaro.org>,
+	Philip Chen <philipchen@chromium.org>,
+	Robert Foss <rfoss@kernel.org>,
+	Sam Ravnborg <sam@ravnborg.org>,
+	Stephen Boyd <swboyd@chromium.org>,
+	Thomas Zimmermann <tzimmermann@suse.de>,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v3 1/2] drm/bridge: parade-ps8640: Never store more than msg->size bytes in AUX xfer
+Date: Thu, 14 Dec 2023 12:37:51 -0800
+Message-ID: <20231214123752.v3.1.I9d1afcaad76a3e2c0ca046dc4adbc2b632c22eda@changeid>
+X-Mailer: git-send-email 2.43.0.472.g3155946c3a-goog
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-On Thu, 14 Dec 2023 11:44:55 -0800
-Linus Torvalds <torvalds@linux-foundation.org> wrote:
+While testing, I happened to notice a random crash that looked like:
 
-> On Thu, 14 Dec 2023 at 08:55, Steven Rostedt <rostedt@goodmis.org> wrote:
-> >
-> > And yes, this does get called in NMI context.  
-> 
-> Not on an i486-class machine they won't. You don't have a local apic
-> on those, and they won't have any NMI sources under our control (ie
-> NMI does exist, but we're talking purely legacy NMI for "motherboard
-> problems" like RAM parity errors etc)
+  Kernel panic - not syncing: stack-protector:
+  Kernel stack is corrupted in: drm_dp_dpcd_probe+0x120/0x120
 
-Ah, so we should not worry about being in NMI context without a 64bit cmpxchg?
+Analysis of drm_dp_dpcd_probe() shows that we pass in a 1-byte buffer
+(allocated on the stack) to the aux->transfer() function. Presumably
+if the aux->transfer() writes more than one byte to this buffer then
+we're in a bad shape.
 
-> 
-> > I had a patch that added:
-> >
-> > +       /* ring buffer does cmpxchg, make sure it is safe in NMI context */
-> > +       if (!IS_ENABLED(CONFIG_ARCH_HAVE_NMI_SAFE_CMPXCHG) &&
-> > +           (unlikely(in_nmi()))) {
-> > +               return NULL;
-> > +       }  
-> 
-> CONFIG_ARCH_HAVE_NMI_SAFE_CMPXCHG doesn't work on x86 in this context,
-> because the issue is that yes, there's a safe 'cmpxchg', but that's
-> not what you want.
+Dropping into kgdb, I noticed that "aux->transfer" pointed at
+ps8640_aux_transfer().
 
-Sorry, that's from another patch that I combined into this one that I added
-in case there's architectures that have NMIs but need to avoid cmpxchg, as
-this code does normal long word cmpxchg too. And that change *should* go to
-you and stable. It's either just luck that things didn't crash on those
-systems today. Or it happens so infrequently, nobody reported it.
+Reading through ps8640_aux_transfer(), I can see that there are cases
+where it could write more bytes to msg->buffer than were specified by
+msg->size. This could happen if the hardware reported back something
+bogus to us. Let's fix this so we never write more than msg->size
+bytes. We'll still read all the bytes from the hardware just in case
+the hardware requires it since the aux transfer data comes through an
+auto-incrementing register.
 
-> 
-> You want the save cmpxchg64, which is an entirely different beast.
+NOTE: I have no actual way to reproduce this issue but it seems likely
+this is what was happening in the crash I looked at.
 
-Understood, but this code has both. It's just that the "special" code I'm
-removing does the 64-bit cmpxchg.
+Fixes: 13afcdd7277e ("drm/bridge: parade-ps8640: Add support for AUX channel")
+Signed-off-by: Douglas Anderson <dianders@chromium.org>
+---
 
-> 
-> And honestly, I don't think that NMI_SAFE_CMPXCHG covers the
-> double-word case anywhere else either, except purely by luck.
+Changes in v3:
+- Never return more than msg->size as the number of bytes we read.
 
-I still need to cover the normal cmpxchg. I'll keep that a separate patch.
+Changes in v2:
+- Still read all the bytes; just don't write them all to the buffer.
 
-> 
-> In mm/slab.c, we also use a double-wide cmpxchg, and there the rule
-> has literally been that it's conditional on
-> 
->  (a) system_has_cmpxchg64() existing as a macro
-> 
->  (b) using that macro to then gate - at runtime - whether it actually
-> works or not
-> 
-> I think - but didn't check - that we essentially only enable the
-> two-word case on x86 as a result, and fall back to the slow case on
-> all other architectures - and on the i486 case.
-> 
-> That said, other architectures *do* have a working double-word
-> cmpxchg, but I wouldn't guarantee it. For example, 32-bit arm does
-> have one using ldrexd/strexd, but that only exists on arm v6+.
-> 
-> And guess what? You'll silently get a "disable interrupts, do it as a
-> non-atomic load-store" on arm too for that case. And again, pre-v6 arm
-> is about as relevant as i486 is, but my point is, that double-word
-> cmpxchg you rely on simply DOES NOT EXIST on 32-bit platforms except
-> under special circumstances.
-> 
-> So this isn't a "x86 is the odd man out". This is literally generic.
-> 
-> > Now back to my original question. Are you OK with me sending this to you
-> > now, or should I send you just the subtle fixes to the 32-bit rb_time_*
-> > code and keep this patch for the merge window?  
-> 
-> I'm absolutely not taking some untested random "let's do 64-bit
-> cmpxchg that we know is broken on 32-bit using broken conditionals"
-> shit.
-> 
-> What *would* work is that slab approach, which is essentially
-> 
->   #ifndef system_has_cmpxchg64
->       #define system_has_cmpxchg64() false
->   #endif
-> 
->         ...
->         if (!system_has_cmpxchg64())
->                 return error or slow case
-> 
->         do_64bit_cmpxchg_case();
-> 
-> (although the slub case is much more indirect, and uses a
-> __CMPXCHG_DOUBLE flag that only gets set when that define exists etc).
-> 
-> But that would literally cut off support for all non-x86 32-bit architectures.
-> 
-> So no. You need to forget about the whole "do a 64-bit cmpxchg on
-> 32-bit architectures" as being some kind of solution in the short
-> term.
+ drivers/gpu/drm/bridge/parade-ps8640.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-But do all archs have an implementation of cmpxchg64, even if it requires
-disabling interrupts? If not, then I definitely cannot remove this code.
-
-If they all have an implementation, where some is just very slow, then that
-is also perfectly fine. The only time cmpxchg64 gets called is on the slow
-path, which is if an event is interrupted by an interrupt, and that
-interrupt writes an event to the same buffer.
-
-This doesn't happen often, and if it requires disabling interrupts, then
-it shouldn't be much notice.
-
-I just want to avoid the case that it will simply break, which is the NMI
-case. In which case, would:
-
-	if (!system_has_cmpxchg64() && in_nmi())
-		return NULL;
-
-Be OK?
-
--- Steve
+diff --git a/drivers/gpu/drm/bridge/parade-ps8640.c b/drivers/gpu/drm/bridge/parade-ps8640.c
+index 8161b1a1a4b1..d264b80d909d 100644
+--- a/drivers/gpu/drm/bridge/parade-ps8640.c
++++ b/drivers/gpu/drm/bridge/parade-ps8640.c
+@@ -330,11 +330,12 @@ static ssize_t ps8640_aux_transfer_msg(struct drm_dp_aux *aux,
+ 				return ret;
+ 			}
+ 
+-			buf[i] = data;
++			if (i < msg->size)
++				buf[i] = data;
+ 		}
+ 	}
+ 
+-	return len;
++	return min(len, msg->size);
+ }
+ 
+ static ssize_t ps8640_aux_transfer(struct drm_dp_aux *aux,
+-- 
+2.43.0.472.g3155946c3a-goog
 
 
