@@ -2,44 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 10BFC812B07
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 10:04:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E53F812B06
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 10:04:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235726AbjLNJEG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 04:04:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53800 "EHLO
+        id S235695AbjLNJEC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 04:04:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44256 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235685AbjLNJDx (ORCPT
+        with ESMTP id S235640AbjLNJDw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 04:03:53 -0500
+        Thu, 14 Dec 2023 04:03:52 -0500
 Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B29AF185;
-        Thu, 14 Dec 2023 01:03:58 -0800 (PST)
-Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BE77g1H030445;
-        Thu, 14 Dec 2023 09:03:40 GMT
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93CC8128;
+        Thu, 14 Dec 2023 01:03:57 -0800 (PST)
+Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BE7r0nH024631;
+        Thu, 14 Dec 2023 09:03:44 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
         from:to:cc:subject:date:message-id:in-reply-to:references
         :mime-version:content-transfer-encoding:content-type; s=
-        qcppdkim1; bh=N5zeSl5fFxAsie+FvS0iL8GNMx5arjbyGO+NvhcBOUw=; b=HX
-        GdbtcpDlX+U3rqt4YYIW3ebLxR9j3p/K1DkX9BbW962bpoTxOmRQyjzbSgg25DNa
-        J85I+cq+cs/qNoUqQNj1AOjS+XyobC6KjiQWCMo6VPUOpoza1F8ESoPNX7CWRQ9v
-        bEJiOzxRwuw2PXoIS003oWlaweY6LisRj0NYlDjcgzp9cbnVtpQo1Y8521rmQdda
-        0aKL4066d4r1a88tkDBXpbC0lElXoEVv1DUslTfsEWhISiKRYlviUg1TZkmXeoPR
-        vtZgAdknkjfxGn7+yRzw3hEFildtzULyWyJfymsUzbKETViHWhL+AUBoUc3sA/IT
-        MvgqW5SJXDVZRzaFwDPQ==
+        qcppdkim1; bh=j8LX1gNGh/L2Ah0w1SWGnU/T78GWoj4IZeRevHwP//Q=; b=V/
+        jx01ArYPm/BheCpPCw3NAJmI29QJKbk/GETHO+MLaXT3PTjY/dAej7Sn3vbE4YQB
+        dPlc+Cyln/fx2X8GdbP2hYddTwQLfnafxS52kWWY81UNgQWiWgGHEgKhUb3bsQCl
+        DT1yvpOoOYGVJSR7Vz1fVKq2jksABhTOSIWcXJLz1XJILH8XWepEUvSmXOWE3Abm
+        usFobsD+8rkMX4YUmHKKWqlOFm/XR1o3Fyy9gbJsErnVCock9lbqT0O8sisUVK9o
+        fl/7q6iAy8bip13lrllyog+PxO4Bs0jfnhofOXZoW9AJ1QzocEOUONV6Yzol4tCd
+        QqJvx1fgQs9J0ZRSfsgg==
 Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3uynre102t-1
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3uyq66gv9d-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 14 Dec 2023 09:03:40 +0000 (GMT)
+        Thu, 14 Dec 2023 09:03:44 +0000 (GMT)
 Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
-        by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3BE93dHV013269
+        by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3BE93iVu013308
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 14 Dec 2023 09:03:39 GMT
+        Thu, 14 Dec 2023 09:03:44 GMT
 Received: from akronite-sh-dev02.qualcomm.com (10.80.80.8) by
  nalasex01c.na.qualcomm.com (10.47.97.35) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Thu, 14 Dec 2023 01:03:34 -0800
+ 15.2.1118.40; Thu, 14 Dec 2023 01:03:39 -0800
 From:   Luo Jie <quic_luoj@quicinc.com>
 To:     <agross@kernel.org>, <andersson@kernel.org>,
         <konrad.dybcio@linaro.org>, <davem@davemloft.net>,
@@ -50,9 +50,9 @@ To:     <agross@kernel.org>, <andersson@kernel.org>,
 CC:     <linux-arm-msm@vger.kernel.org>, <netdev@vger.kernel.org>,
         <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
         <quic_srichara@quicinc.com>
-Subject: [PATCH v3 3/5] net: mdio: ipq4019: configure CMN PLL clock for ipq5332
-Date:   Thu, 14 Dec 2023 17:03:02 +0800
-Message-ID: <20231214090304.16884-4-quic_luoj@quicinc.com>
+Subject: [PATCH v3 4/5] net: mdio: ipq4019: support MDIO clock frequency divider
+Date:   Thu, 14 Dec 2023 17:03:03 +0800
+Message-ID: <20231214090304.16884-5-quic_luoj@quicinc.com>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231214090304.16884-1-quic_luoj@quicinc.com>
 References: <20231214090304.16884-1-quic_luoj@quicinc.com>
@@ -64,16 +64,16 @@ X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
  nalasex01c.na.qualcomm.com (10.47.97.35)
 X-QCInternal: smtphost
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: Lq7cqdWlLZr2VlzMzX6bfdXxaslk30Pt
-X-Proofpoint-GUID: Lq7cqdWlLZr2VlzMzX6bfdXxaslk30Pt
+X-Proofpoint-GUID: iGX63dsK2YnaN6aYFSlvkZLH69MK3yT7
+X-Proofpoint-ORIG-GUID: iGX63dsK2YnaN6aYFSlvkZLH69MK3yT7
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
  definitions=2023-12-09_01,2023-12-07_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 mlxlogscore=999
- suspectscore=0 impostorscore=0 phishscore=0 bulkscore=0 spamscore=0
- malwarescore=0 priorityscore=1501 lowpriorityscore=0 clxscore=1015
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2311290000 definitions=main-2312140059
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
+ impostorscore=0 bulkscore=0 spamscore=0 mlxscore=0 lowpriorityscore=0
+ priorityscore=1501 adultscore=0 phishscore=0 malwarescore=0
+ mlxlogscore=999 clxscore=1015 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.19.0-2311290000 definitions=main-2312140058
 X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
         SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
@@ -84,200 +84,123 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The reference clock of CMN PLL block is selectable, the internal
-48MHZ is used by default.
+The MDIO clock frequency can be divided according to the
+MDIO control register value.
 
-The output clock of CMN PLL block is for providing the clock
-source of ethernet device(such as qca8084), there are 1 * 25MHZ
-and 3 * 50MHZ output clocks available for the ethernet devices.
+The MDIO system clock is fixed to 100MHZ, the working
+frequency is 100MHZ/(divider + 1), the divider value
+is from the bit[7:0] of control register 0x40.
 
 Signed-off-by: Luo Jie <quic_luoj@quicinc.com>
 ---
- drivers/net/mdio/mdio-ipq4019.c | 137 +++++++++++++++++++++++++++++++-
- 1 file changed, 136 insertions(+), 1 deletion(-)
+ drivers/net/mdio/mdio-ipq4019.c | 45 +++++++++++++++++++++++++++++++++
+ 1 file changed, 45 insertions(+)
 
 diff --git a/drivers/net/mdio/mdio-ipq4019.c b/drivers/net/mdio/mdio-ipq4019.c
-index e24b0e688b10..3568ce7f48c6 100644
+index 3568ce7f48c6..330963026475 100644
 --- a/drivers/net/mdio/mdio-ipq4019.c
 +++ b/drivers/net/mdio/mdio-ipq4019.c
-@@ -44,6 +44,25 @@
- /* Maximum SOC PCS(uniphy) number on IPQ platform */
- #define ETH_LDO_RDY_CNT				3
+@@ -29,6 +29,9 @@
+ /* 0 = Clause 22, 1 = Clause 45 */
+ #define MDIO_MODE_C45				BIT(8)
  
-+#define CMN_PLL_REFERENCE_SOURCE_SEL		0x28
-+#define CMN_PLL_REFCLK_SOURCE_DIV		GENMASK(9, 8)
++/* MDC frequency is SYS_CLK/(MDIO_CLK_DIV + 1), SYS_CLK is 100MHz */
++#define MDIO_CLK_DIV_MASK			GENMASK(7, 0)
 +
-+#define CMN_PLL_REFERENCE_CLOCK			0x784
-+#define CMN_PLL_REFCLK_EXTERNAL			BIT(9)
-+#define CMN_PLL_REFCLK_DIV			GENMASK(8, 4)
-+#define CMN_PLL_REFCLK_INDEX			GENMASK(3, 0)
-+
-+#define CMN_PLL_POWER_ON_AND_RESET		0x780
-+#define CMN_ANA_EN_SW_RSTN			BIT(6)
-+
-+#define CMN_REFCLK_INTERNAL_48MHZ		0
-+#define CMN_REFCLK_EXTERNAL_25MHZ		1
-+#define CMN_REFCLK_EXTERNAL_31250KHZ		2
-+#define CMN_REFCLK_EXTERNAL_40MHZ		3
-+#define CMN_REFCLK_EXTERNAL_48MHZ		4
-+#define CMN_REFCLK_EXTERNAL_50MHZ		5
-+#define CMN_REFCLK_INTERNAL_96MHZ		6
-+
- enum mdio_clk_id {
- 	MDIO_CLK_MDIO_AHB,
- 	MDIO_CLK_UNIPHY0_AHB,
-@@ -55,6 +74,7 @@ enum mdio_clk_id {
+ #define IPQ4019_MDIO_TIMEOUT	10000
+ #define IPQ4019_MDIO_SLEEP		10
  
- struct ipq4019_mdio_data {
- 	void __iomem *membase;
-+	void __iomem *cmn_membase;
+@@ -77,6 +80,7 @@ struct ipq4019_mdio_data {
+ 	void __iomem *cmn_membase;
  	void __iomem *eth_ldo_rdy[ETH_LDO_RDY_CNT];
  	struct clk *clk[MDIO_CLK_CNT];
++	int clk_div;
  };
-@@ -227,12 +247,116 @@ static int ipq4019_mdio_write_c22(struct mii_bus *bus, int mii_id, int regnum,
- 	return 0;
+ 
+ static const char *const mdio_clk_name[] = {
+@@ -110,6 +114,7 @@ static int ipq4019_mdio_read_c45(struct mii_bus *bus, int mii_id, int mmd,
+ 	data = readl(priv->membase + MDIO_MODE_REG);
+ 
+ 	data |= MDIO_MODE_C45;
++	data |= FIELD_PREP(MDIO_CLK_DIV_MASK, priv->clk_div);
+ 
+ 	writel(data, priv->membase + MDIO_MODE_REG);
+ 
+@@ -151,6 +156,7 @@ static int ipq4019_mdio_read_c22(struct mii_bus *bus, int mii_id, int regnum)
+ 	data = readl(priv->membase + MDIO_MODE_REG);
+ 
+ 	data &= ~MDIO_MODE_C45;
++	data |= FIELD_PREP(MDIO_CLK_DIV_MASK, priv->clk_div);
+ 
+ 	writel(data, priv->membase + MDIO_MODE_REG);
+ 
+@@ -183,6 +189,7 @@ static int ipq4019_mdio_write_c45(struct mii_bus *bus, int mii_id, int mmd,
+ 	data = readl(priv->membase + MDIO_MODE_REG);
+ 
+ 	data |= MDIO_MODE_C45;
++	data |= FIELD_PREP(MDIO_CLK_DIV_MASK, priv->clk_div);
+ 
+ 	writel(data, priv->membase + MDIO_MODE_REG);
+ 
+@@ -226,6 +233,7 @@ static int ipq4019_mdio_write_c22(struct mii_bus *bus, int mii_id, int regnum,
+ 	data = readl(priv->membase + MDIO_MODE_REG);
+ 
+ 	data &= ~MDIO_MODE_C45;
++	data |= FIELD_PREP(MDIO_CLK_DIV_MASK, priv->clk_div);
+ 
+ 	writel(data, priv->membase + MDIO_MODE_REG);
+ 
+@@ -397,6 +405,39 @@ static int ipq_mdio_reset(struct mii_bus *bus)
+ 	return ret;
  }
  
-+/* For the CMN PLL block, the reference clock can be configured according to
-+ * the device tree property "cmn-reference-clock", the internal 48MHZ is used
-+ * by default on the ipq533 platform.
-+ *
-+ * The output clock of CMN PLL block is provided to the ethernet devices,
-+ * threre are 4 CMN PLL output clocks (1*25MHZ + 3*50MHZ) enabled by default.
-+ *
-+ * Such as the output 50M clock for the qca8084 ethernet PHY.
-+ */
-+static int ipq_cmn_clock_config(struct mii_bus *bus)
++static int ipq_mdio_clk_set(struct platform_device *pdev, int *clk_div)
 +{
-+	struct ipq4019_mdio_data *priv;
-+	u32 reg_val, src_sel, ref_clk;
-+	int ret;
++	int freq;
 +
-+	priv = bus->priv;
-+	if (priv->cmn_membase) {
-+		reg_val = readl(priv->cmn_membase + CMN_PLL_REFERENCE_CLOCK);
++	/* Keep the MDIO clock divider as the hardware default value 0xff if
++	 * the MDIO property "clock-frequency" is not specified.
++	 */
++	if (of_property_read_u32(pdev->dev.of_node, "clock-frequency", &freq)) {
++		*clk_div = 0xff;
++		return 0;
++	}
 +
-+		/* Select reference clock source */
-+		ret = of_property_read_u32(bus->parent->of_node,
-+					   "cmn-reference-clock",
-+					   &ref_clk);
-+		if (!ret) {
-+			switch (ref_clk) {
-+			case CMN_REFCLK_INTERNAL_48MHZ:
-+				reg_val &= ~(CMN_PLL_REFCLK_EXTERNAL |
-+					     CMN_PLL_REFCLK_INDEX);
-+				reg_val |= FIELD_PREP(CMN_PLL_REFCLK_INDEX, 7);
-+				break;
-+			case CMN_REFCLK_EXTERNAL_25MHZ:
-+				reg_val &= ~(CMN_PLL_REFCLK_EXTERNAL |
-+					     CMN_PLL_REFCLK_INDEX);
-+				reg_val |= (CMN_PLL_REFCLK_EXTERNAL |
-+					    FIELD_PREP(CMN_PLL_REFCLK_INDEX, 3));
-+				break;
-+			case CMN_REFCLK_EXTERNAL_31250KHZ:
-+				reg_val &= ~(CMN_PLL_REFCLK_EXTERNAL |
-+					     CMN_PLL_REFCLK_INDEX);
-+				reg_val |= (CMN_PLL_REFCLK_EXTERNAL |
-+					    FIELD_PREP(CMN_PLL_REFCLK_INDEX, 4));
-+				break;
-+			case CMN_REFCLK_EXTERNAL_40MHZ:
-+				reg_val &= ~(CMN_PLL_REFCLK_EXTERNAL |
-+					     CMN_PLL_REFCLK_INDEX);
-+				reg_val |= (CMN_PLL_REFCLK_EXTERNAL |
-+					    FIELD_PREP(CMN_PLL_REFCLK_INDEX, 6));
-+				break;
-+			case CMN_REFCLK_EXTERNAL_48MHZ:
-+				reg_val &= ~(CMN_PLL_REFCLK_EXTERNAL |
-+					     CMN_PLL_REFCLK_INDEX);
-+				reg_val |= (CMN_PLL_REFCLK_EXTERNAL |
-+					    FIELD_PREP(CMN_PLL_REFCLK_INDEX, 7));
-+				break;
-+			case CMN_REFCLK_EXTERNAL_50MHZ:
-+				reg_val &= ~(CMN_PLL_REFCLK_EXTERNAL |
-+					     CMN_PLL_REFCLK_INDEX);
-+				reg_val |= (CMN_PLL_REFCLK_EXTERNAL |
-+					    FIELD_PREP(CMN_PLL_REFCLK_INDEX, 8));
-+				break;
-+			case CMN_REFCLK_INTERNAL_96MHZ:
-+				src_sel = readl(priv->cmn_membase +
-+						CMN_PLL_REFERENCE_SOURCE_SEL);
-+				src_sel &= ~CMN_PLL_REFCLK_SOURCE_DIV;
-+				src_sel |= FIELD_PREP(CMN_PLL_REFCLK_SOURCE_DIV, 0);
-+				writel(src_sel, priv->cmn_membase +
-+				       CMN_PLL_REFERENCE_SOURCE_SEL);
-+
-+				reg_val &= ~CMN_PLL_REFCLK_DIV;
-+				reg_val |= FIELD_PREP(CMN_PLL_REFCLK_DIV, 2);
-+				break;
-+			default:
-+				return -EINVAL;
-+			}
-+		} else if (ret == -EINVAL) {
-+			/* If the cmn-reference-clock is not specified,
-+			 * the internal 48MHZ is selected by default.
-+			 */
-+			reg_val |= FIELD_PREP(CMN_PLL_REFCLK_INDEX, 7);
-+		} else {
-+			return ret;
-+		}
-+
-+		writel(reg_val, priv->cmn_membase + CMN_PLL_REFERENCE_CLOCK);
-+
-+		/* assert CMN PLL */
-+		reg_val = readl(priv->cmn_membase + CMN_PLL_POWER_ON_AND_RESET);
-+		reg_val &= ~CMN_ANA_EN_SW_RSTN;
-+		writel(reg_val, priv->cmn_membase);
-+		fsleep(IPQ_PHY_SET_DELAY_US);
-+
-+		/* deassert CMN PLL */
-+		reg_val |= CMN_ANA_EN_SW_RSTN;
-+		writel(reg_val, priv->cmn_membase + CMN_PLL_POWER_ON_AND_RESET);
-+		fsleep(IPQ_PHY_SET_DELAY_US);
++	/* MDC frequency is SYS_CLK/(MDIO_CLK_DIV + 1), SYS_CLK is fixed
++	 * to 100MHz, the MDIO_CLK_DIV can be only configured the valid
++	 * values, other values cause malfunction.
++	 */
++	switch (freq) {
++	case 12500000:
++	case 6250000:
++	case 3125000:
++	case 1562500:
++	case 781250:
++	case 390625:
++		*clk_div = DIV_ROUND_UP(IPQ_MDIO_CLK_RATE, freq) - 1;
++		break;
++	default:
++		dev_err(&pdev->dev, "Invalid clock frequency %dHZ\n", freq);
++		return -EINVAL;
 +	}
 +
 +	return 0;
 +}
 +
- static int ipq_mdio_reset(struct mii_bus *bus)
+ static int ipq4019_mdio_probe(struct platform_device *pdev)
  {
- 	struct ipq4019_mdio_data *priv = bus->priv;
- 	unsigned long rate;
- 	int ret, index;
+ 	struct ipq4019_mdio_data *priv;
+@@ -459,6 +500,10 @@ static int ipq4019_mdio_probe(struct platform_device *pdev)
+ 			return PTR_ERR(priv->clk[index]);
+ 	}
  
-+	ret = ipq_cmn_clock_config(bus);
++	ret = ipq_mdio_clk_set(pdev, &priv->clk_div);
 +	if (ret)
 +		return ret;
 +
- 	/* For the platform ipq5332, there are two SoC uniphies available
- 	 * for connecting with ethernet PHY, the SoC uniphy gcc clock
- 	 * should be enabled for resetting the connected device such
-@@ -296,7 +420,7 @@ static int ipq4019_mdio_probe(struct platform_device *pdev)
- 	/* This resource are optional */
- 	for (index = 0; index < ETH_LDO_RDY_CNT; index++) {
- 		res = platform_get_resource(pdev, IORESOURCE_MEM, index + 1);
--		if (res) {
-+		if (res && strcmp(res->name, "cmn_blk")) {
- 			priv->eth_ldo_rdy[index] = devm_ioremap(&pdev->dev,
- 								res->start,
- 								resource_size(res));
-@@ -317,6 +441,17 @@ static int ipq4019_mdio_probe(struct platform_device *pdev)
- 		}
- 	}
- 
-+	/* The CMN block resource is for providing clock source to ethernet,
-+	 * which can be optionally configured on the platform ipq9574 and
-+	 * ipq5332.
-+	 */
-+	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "cmn_blk");
-+	if (res) {
-+		priv->cmn_membase = devm_ioremap_resource(&pdev->dev, res);
-+		if (IS_ERR(priv->cmn_membase))
-+			return PTR_ERR(priv->cmn_membase);
-+	}
-+
- 	for (index = 0; index < MDIO_CLK_CNT; index++) {
- 		priv->clk[index] = devm_clk_get_optional(&pdev->dev,
- 							 mdio_clk_name[index]);
+ 	bus->name = "ipq4019_mdio";
+ 	bus->read = ipq4019_mdio_read_c22;
+ 	bus->write = ipq4019_mdio_write_c22;
 -- 
 2.42.0
 
