@@ -2,124 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 691F0812BD8
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 10:40:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BF9FF812BD9
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 10:40:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1443463AbjLNJkU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 04:40:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50016 "EHLO
+        id S1443465AbjLNJke (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 04:40:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58500 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229664AbjLNJkS (ORCPT
+        with ESMTP id S229664AbjLNJkd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 04:40:18 -0500
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85E53B7;
-        Thu, 14 Dec 2023 01:40:24 -0800 (PST)
-Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BE5BZ8V000884;
-        Thu, 14 Dec 2023 09:40:09 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-        message-id:date:mime-version:subject:to:cc:references:from
-        :in-reply-to:content-type:content-transfer-encoding; s=
-        qcppdkim1; bh=ylZKeaeVio8dJQPPzUpdLFA/Xy9jSrZkzVN2dfqdK5Y=; b=ie
-        4VzWtIoTJoKnZ2KCiiOUtdJ+HqaBrVgvcFVkqPUEHX7pLjRVxtHJ5Q2/GR7iCvDb
-        hF9EDnCYy446BswYuIqpSrwcG2cqoqNB+6IS8ovUI0XJuMe9HxQWlygIpWJ9ZAt2
-        Q0csHlUTnMm4J3VZkk1ArttF5Y4lSahwneHT0cf8F5LJSzJzAzfe4kH1jG9+8iCO
-        ArS00x0vj9RqwidIV8/C4SeviPUzY72ZkxJ8/8iJTgGnE3ez1DDbxWcjObKmPckr
-        xRINraZXDrfWE3Ht/aHDdmRRjv6/JeFj0o4qBGmtk9JNieMrW3ICCanlC1zu7ArQ
-        P8Ip6AuWZsjyVx/fky0g==
-Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3uyq2try5r-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 14 Dec 2023 09:40:09 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3BE9e8Tf026735
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 14 Dec 2023 09:40:08 GMT
-Received: from [10.217.219.216] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Thu, 14 Dec
- 2023 01:40:05 -0800
-Message-ID: <feb4ed1b-ed74-aebe-0ab8-dec123fe0a31@quicinc.com>
-Date:   Thu, 14 Dec 2023 15:10:01 +0530
+        Thu, 14 Dec 2023 04:40:33 -0500
+Received: from mail-ua1-x92d.google.com (mail-ua1-x92d.google.com [IPv6:2607:f8b0:4864:20::92d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6ED23B7
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 01:40:38 -0800 (PST)
+Received: by mail-ua1-x92d.google.com with SMTP id a1e0cc1a2514c-7c5cb5eeab1so2625977241.3
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 01:40:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1702546837; x=1703151637; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=NdaVZVYnYeQOiEs5xQZ/aME71d5T9TRS2cRXJbz9OzI=;
+        b=Z04AwDsXS2DLvcErL/s5f0v5AKqhNeA20bUlFX+DuUlIZ4WVLnfKWa+q/8Kz8NG2cn
+         pHGlQkLmw+1iE8sEBEfUZJjxM/0jZ4Y7LPHGP7qFMJzC44ixqEXkEEbNBPupr5nVeK8U
+         ltU1ykW5HKKuJcob+PNJn0Ax889LGILAeSb7BnBrU5hEtFE+CjTjeWxMzKr6Iehj/t/Y
+         sK/p5TJaDa9WwbyXWvVD4wz78qYXo3LFOnCxVadJ8PY4KiToHBkpsipOwJ15tgArL454
+         LFphXP12ZlGoAvu3bZYWroCYJg+GjqrypWfxBKAww1bKzwWi9Lg8g6nUcKrMBlM5/22S
+         wBZA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702546837; x=1703151637;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=NdaVZVYnYeQOiEs5xQZ/aME71d5T9TRS2cRXJbz9OzI=;
+        b=EM1PCEQOZWcwTaFrzHDc7qgT2e75TZFy6scfDaT2easYlWpS3ppn9YPqmGCbDgcQmw
+         fdtyQC/hUdtR7BcGp/9F55RFOkyq080V49I8IgmzP6L47gZB8oOxE4CHZVn4+6YEA9Km
+         GHI4i0/Am0dei4ngFpYPpQuF3hAmGO5gqEquIP2nJx29RITrBc/tYOYQzkSoxfYpG0uO
+         lgMkc7W8vivAdOwtlJgHbdRR5NtXpSJBPrwjWMWNMps0Z298mTT486REo0oNwf5NVfTc
+         +bb6Jp/AVeMv1ZTWIJvCxaiy6X5fy517rEn21e5ChVC89v+tbWoWIEqBP9mi2ArUId1t
+         LIWQ==
+X-Gm-Message-State: AOJu0Yxb7kaSaEGiz6ccWPqN16KBUwSL9fSWmWisGdOljlJSgnDrRX5W
+        Eq4Lv704BRRlLDCuRPwXjr8OuMJprtxRQNCt5AmFoQ==
+X-Google-Smtp-Source: AGHT+IGZq5rJhUCqBnslm+4oKVQDWly4syWw/KzYFHCO/NyKaF+WrXN5yqJAb7UuR4cmKFlK1da29q0Fk9+wrzXGSak=
+X-Received: by 2002:a05:6102:4746:b0:464:8ba6:2a66 with SMTP id
+ ej6-20020a056102474600b004648ba62a66mr5927212vsb.31.1702546837567; Thu, 14
+ Dec 2023 01:40:37 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.13.1
-Subject: Re: [PATCH 6/9] PCI: epf-mhi: Enable MHI async read/write support
-Content-Language: en-US
-To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        <lpieralisi@kernel.org>, <kw@linux.com>
-CC:     <kishon@kernel.org>, <bhelgaas@google.com>, <mhi@lists.linux.dev>,
-        <linux-arm-msm@vger.kernel.org>, <linux-pci@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20231127124529.78203-1-manivannan.sadhasivam@linaro.org>
- <20231127124529.78203-7-manivannan.sadhasivam@linaro.org>
-From:   Krishna Chaitanya Chundru <quic_krichai@quicinc.com>
-In-Reply-To: <20231127124529.78203-7-manivannan.sadhasivam@linaro.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: D4LrvjH_ipBuxno5YuE7y02tarNOxuc5
-X-Proofpoint-ORIG-GUID: D4LrvjH_ipBuxno5YuE7y02tarNOxuc5
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-09_02,2023-12-07_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 mlxscore=0
- phishscore=0 clxscore=1011 mlxlogscore=818 priorityscore=1501
- lowpriorityscore=0 malwarescore=0 suspectscore=0 bulkscore=0 adultscore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2311290000 definitions=main-2312140062
-X-Spam-Status: No, score=-4.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+References: <ZXm3rayrcvfO1t1Z@smile.fi.intel.com> <ZXm_WsIpgIyOUNHt@rigel>
+ <CAMRc=Mfri8K4ZqcHb_eQY6gi+q_-uBZc2wiMrrb-+a7Tric3FA@mail.gmail.com>
+ <ZXnU3tMYCc2Rw8Qv@rigel> <ZXnX8jPHxRLW8lhi@smile.fi.intel.com>
+ <CAMRc=Mfj_4YvQVP=UWkULBwJniDDjapttU+qSgqfN5ZWNgikKw@mail.gmail.com>
+ <ZXnb-ks_noYLWZZ2@smile.fi.intel.com> <CAMRc=MfaHKKKNkXW0L1FPjCH4VvG22Vn9q8z9tupZCtCEKZU2g@mail.gmail.com>
+ <ZXoO8B0N3S49GnvX@smile.fi.intel.com> <ZXpJueTnmtUIecCd@rigel> <ZXplMThBSD53UV0s@rigel>
+In-Reply-To: <ZXplMThBSD53UV0s@rigel>
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+Date:   Thu, 14 Dec 2023 10:40:26 +0100
+Message-ID: <CAMRc=MeZg0xg7ASA3x4PxCYymCmCEp0zZbUgGTCCzrjPaPZCag@mail.gmail.com>
+Subject: Re: [PATCH 1/4] gpiolib: cdev: relocate debounce_period_us from
+ struct gpio_desc
+To:     Kent Gibson <warthog618@gmail.com>
+Cc:     Andy Shevchenko <andy@kernel.org>, linux-kernel@vger.kernel.org,
+        linux-gpio@vger.kernel.org, linus.walleij@linaro.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 11/27/2023 6:15 PM, Manivannan Sadhasivam wrote:
-> Now that both eDMA and iATU are prepared to support async transfer, let's
-> enable MHI async read/write by supplying the relevant callbacks.
+On Thu, Dec 14, 2023 at 3:15=E2=80=AFAM Kent Gibson <warthog618@gmail.com> =
+wrote:
 >
-> In the absence of eDMA, iATU will be used for both sync and async
-> operations.
+> On Thu, Dec 14, 2023 at 08:18:01AM +0800, Kent Gibson wrote:
+> > On Wed, Dec 13, 2023 at 10:07:12PM +0200, Andy Shevchenko wrote:
+> > > On Wed, Dec 13, 2023 at 08:03:44PM +0100, Bartosz Golaszewski wrote:
+> > >
+> > > ...
+> > >
+> > > > > - it adds complications for no benefit
+> >
+> > It provides a placeholder for collective documentation and clarifies
+> > scope for the reader.
 >
-> Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> ---
->   drivers/pci/endpoint/functions/pci-epf-mhi.c | 7 ++++---
->   1 file changed, 4 insertions(+), 3 deletions(-)
+> Turns out kernel-doc can't deal with a struct variable declaration - it
+> needs the struct to be named.
 >
-> diff --git a/drivers/pci/endpoint/functions/pci-epf-mhi.c b/drivers/pci/endpoint/functions/pci-epf-mhi.c
-> index 3d09a37e5f7c..d3d6a1054036 100644
-> --- a/drivers/pci/endpoint/functions/pci-epf-mhi.c
-> +++ b/drivers/pci/endpoint/functions/pci-epf-mhi.c
-> @@ -766,12 +766,13 @@ static int pci_epf_mhi_link_up(struct pci_epf *epf)
->   	mhi_cntrl->raise_irq = pci_epf_mhi_raise_irq;
->   	mhi_cntrl->alloc_map = pci_epf_mhi_alloc_map;
->   	mhi_cntrl->unmap_free = pci_epf_mhi_unmap_free;
-> +	mhi_cntrl->read_sync = mhi_cntrl->read_async = pci_epf_mhi_iatu_read;
-> +	mhi_cntrl->write_sync = mhi_cntrl->write_async = pci_epf_mhi_iatu_write;
->   	if (info->flags & MHI_EPF_USE_DMA) {
->   		mhi_cntrl->read_sync = pci_epf_mhi_edma_read;
->   		mhi_cntrl->write_sync = pci_epf_mhi_edma_write;
-> -	} else {
-> -		mhi_cntrl->read_sync = pci_epf_mhi_iatu_read;
-> -		mhi_cntrl->write_sync = pci_epf_mhi_iatu_write;
-> +		mhi_cntrl->read_async = pci_epf_mhi_edma_read_async;
-> +		mhi_cntrl->write_async = pci_epf_mhi_edma_write_async;
+> So this doesn't parse:
+>
+> static struct {
+>         struct rb_root tree;
+>         spinlock_t lock;
+> } supinfo;
+>
+> but this does:
+>
+> static struct supinfo {
+>         struct rb_root tree;
+>         spinlock_t lock;
+> } supinfo;
+>
+> at which point I prefer the separate struct and var declarations as per
+> the patch.
+>
+> Opinions?
+>
 
-I think the read_async & write async should be updated inside the if 
-condition where MHI_EPF_USE_DMA flag is set.
+Yeah, don't make it a kernel doc. It's a private structure, no need to
+expose documentation for it in docs. Just use a regular comment - say
+what it is and why it's here.
 
-- Krishna Chaitanya.
+Bart
 
->   	}
->   
->   	/* Register the MHI EP controller */
+> Cheers,
+> Kent.
+>
