@@ -2,67 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2520C81392F
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 18:57:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9106E813935
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 18:57:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230017AbjLNR5T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 12:57:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46184 "EHLO
+        id S231334AbjLNR5h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 12:57:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33570 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229532AbjLNR5R (ORCPT
+        with ESMTP id S230406AbjLNR5f (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 12:57:17 -0500
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCBC1A6;
-        Thu, 14 Dec 2023 09:57:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=L5kH8hIOwqwSSDYrxYuLkFSUt4lz/pRwIQ1vDoFypus=; b=bOgj+hxbflOy6cpdwb0AvqLThn
-        fosBo2pgUtid/Btg47D1Tr3fCNbhKvXDaFyqcQYQOH+89NazR4QJ+nEdeEWaM9Zg8F7j05T5cdfgY
-        VM0/6oQ5Ia3iYudlE0F/bur8gqKg6jOipwcfxclKO24mpPwoNEGS+tH8oMOIY0M/Mu+mNs52+wi+F
-        lm2Ni4mV9JyW5Xe5z2A66vskhG5XC6BjK4hHnl/tR3bWJCTUoI5s6XIt40Rmf7oAfWwyL5XMzUAT4
-        /eBXYVzBh9GeGUvZJBlu9nSJESu+sZ6JrCvtRt5k+bC7E6cUZkcVRSXfwHypdgwrPjdz2GiqQfqO/
-        Cgy7guXg==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:38096)
-        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.96)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1rDpxV-0001oM-19;
-        Thu, 14 Dec 2023 17:57:17 +0000
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1rDpxX-0002km-Ed; Thu, 14 Dec 2023 17:57:19 +0000
-Date:   Thu, 14 Dec 2023 17:57:19 +0000
-From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
-To:     Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Cc:     linux-pm@vger.kernel.org, loongarch@lists.linux.dev,
-        linux-acpi@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-riscv@lists.infradead.org, kvmarm@lists.linux.dev,
-        x86@kernel.org, acpica-devel@lists.linuxfoundation.org,
-        linux-csky@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-ia64@vger.kernel.org, linux-parisc@vger.kernel.org,
-        Salil Mehta <salil.mehta@huawei.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        jianyong.wu@arm.com, justin.he@arm.com,
-        James Morse <james.morse@arm.com>
-Subject: Re: [PATCH RFC v3 02/21] ACPI: processor: Add support for processors
- described as container packages
-Message-ID: <ZXtB/+2kDtaz1Zf4@shell.armlinux.org.uk>
-References: <ZXmn46ptis59F0CO@shell.armlinux.org.uk>
- <E1rDOfx-00Dvje-MS@rmk-PC.armlinux.org.uk>
- <20231214173626.00005062@Huawei.com>
+        Thu, 14 Dec 2023 12:57:35 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E40E124
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 09:57:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1702576662; x=1734112662;
+  h=message-id:subject:from:to:cc:date:in-reply-to:
+   references:content-transfer-encoding:mime-version;
+  bh=fNGLTdSt0U0vp5H92ugUMf6iM40RklxGBua+2WTEdjY=;
+  b=HRX19mAavjxzXNIH96YKntOEZWhKC3dIoQho2vPqdy7ZDAOf4cdTEIJK
+   C6HqeyVsM+HKH4ANwCt8XA9W0dIEmzO5pAMEYuRv3Oy025Um10w/AhjCK
+   FGrCDxf+QAQdeujDLADAD/GTafT/YUOs7cfvJ7cKF+L5KviMT63e+3J6o
+   G4pkB3tZT3U8is3B16pgfgWruMqOmqCjC+lbB9clINgEZJJ+2EzX8GGRJ
+   R/YQt0CqtUwqpaEt32CCrdLIML9IIwe9piyNMga6m+p50gQTA/k7nMoz0
+   J9L7IduC5nhU+StuKg8GkyHjUKCR1/KFIBTax6hyt2z7xhe1AqYQelMsf
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10924"; a="8516312"
+X-IronPort-AV: E=Sophos;i="6.04,276,1695711600"; 
+   d="scan'208";a="8516312"
+Received: from fmviesa001.fm.intel.com ([10.60.135.141])
+  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Dec 2023 09:57:41 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.04,276,1695711600"; 
+   d="scan'208";a="17723053"
+Received: from priyammi-mobl.amr.corp.intel.com (HELO [10.209.30.248]) ([10.209.30.248])
+  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Dec 2023 09:57:40 -0800
+Message-ID: <962b75502b6456a8b698a4ca89d6deedec118ef6.camel@linux.intel.com>
+Subject: Re: [PATCH] mm: remove redundant lru_add_drain() prior to unmapping
+ pages
+From:   Tim Chen <tim.c.chen@linux.intel.com>
+To:     Jianfeng Wang <jianfeng.w.wang@oracle.com>,
+        akpm@linux-foundation.org
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Date:   Thu, 14 Dec 2023 09:57:39 -0800
+In-Reply-To: <d9284139-e32e-493c-86ea-77130b503a77@oracle.com>
+References: <20231213072805.74201-1-jianfeng.w.wang@oracle.com>
+         <3c7d9b8878220571cb7e0760c3a463951252b762.camel@linux.intel.com>
+         <d9284139-e32e-493c-86ea-77130b503a77@oracle.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.44.4 (3.44.4-2.fc36) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231214173626.00005062@Huawei.com>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -71,62 +64,121 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 14, 2023 at 05:36:26PM +0000, Jonathan Cameron wrote:
-> On Wed, 13 Dec 2023 12:49:21 +0000
-> Russell King (Oracle) <rmk+kernel@armlinux.org.uk> wrote:
-> 
-> > From: James Morse <james.morse@arm.com>
-> > 
-> > ACPI has two ways of describing processors in the DSDT. From ACPI v6.5,
-> > 5.2.12:
-> > 
-> > "Starting with ACPI Specification 6.3, the use of the Processor() object
-> > was deprecated. Only legacy systems should continue with this usage. On
-> > the Itanium architecture only, a _UID is provided for the Processor()
-> > that is a string object. This usage of _UID is also deprecated since it
-> > can preclude an OSPM from being able to match a processor to a
-> > non-enumerable device, such as those defined in the MADT. From ACPI
-> > Specification 6.3 onward, all processor objects for all architectures
-> > except Itanium must now use Device() objects with an _HID of ACPI0007,
-> > and use only integer _UID values."
-> > 
-> > Also see https://uefi.org/specs/ACPI/6.5/08_Processor_Configuration_and_Control.html#declaring-processors
-> > 
-> > Duplicate descriptions are not allowed, the ACPI processor driver already
-> > parses the UID from both devices and containers. acpi_processor_get_info()
-> > returns an error if the UID exists twice in the DSDT.
-> > 
-> > The missing probe for CPUs described as packages creates a problem for
-> > moving the cpu_register() calls into the acpi_processor driver, as CPUs
-> > described like this don't get registered, leading to errors from other
-> > subsystems when they try to add new sysfs entries to the CPU node.
-> > (e.g. topology_sysfs_init()'s use of topology_add_dev() via cpuhp)
-> > 
-> > To fix this, parse the processor container and call acpi_processor_add()
-> > for each processor that is discovered like this. The processor container
-> > handler is added with acpi_scan_add_handler(), so no detach call will
-> > arrive.
-> > 
-> > Qemu TCG describes CPUs using processor devices in a processor container.
-> > For more information, see build_cpus_aml() in Qemu hw/acpi/cpu.c and
-> > https://uefi.org/specs/ACPI/6.5/08_Processor_Configuration_and_Control.html#processor-container-device
-> > 
-> > Signed-off-by: James Morse <james.morse@arm.com>
-> > Tested-by: Miguel Luis <miguel.luis@oracle.com>
-> > Tested-by: Vishnu Pajjuri <vishnu@os.amperecomputing.com>
-> > Tested-by: Jianyong Wu <jianyong.wu@arm.com>
-> > ---
-> > Outstanding comments:
-> >  https://lore.kernel.org/r/20230914145353.000072e2@Huawei.com
-> Looks like you resolved those (were all patch description things).
-> 
-> So I'm happy.
-> Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+On Wed, 2023-12-13 at 17:03 -0800, Jianfeng Wang wrote:
+> On 12/13/23 2:57 PM, Tim Chen wrote:
+> > On Tue, 2023-12-12 at 23:28 -0800, Jianfeng Wang wrote:
+> > > When unmapping VMA pages, pages will be gathered in batch and release=
+d by
+> > > tlb_finish_mmu() if CONFIG_MMU_GATHER_NO_GATHER is not set. The funct=
+ion
+> > > tlb_finish_mmu() is responsible for calling free_pages_and_swap_cache=
+(),
+> > > which calls lru_add_drain() to drain cached pages in folio_batch befo=
+re
+> > > releasing gathered pages. Thus, it is redundant to call lru_add_drain=
+()
+> > > before gathering pages, if CONFIG_MMU_GATHER_NO_GATHER is not set.
+> > >=20
+> > > Remove lru_add_drain() prior to gathering and unmapping pages in
+> > > exit_mmap() and unmap_region() if CONFIG_MMU_GATHER_NO_GATHER is not =
+set.
+> > >=20
+> > > Note that the page unmapping process in oom_killer (e.g., in
+> > > __oom_reap_task_mm()) also uses tlb_finish_mmu() and does not have
+> > > redundant lru_add_drain(). So, this commit makes the code more consis=
+tent.
+> > >=20
+> > > Signed-off-by: Jianfeng Wang <jianfeng.w.wang@oracle.com>
+> > > ---
+> > >  mm/mmap.c | 4 ++++
+> > >  1 file changed, 4 insertions(+)
+> > >=20
+> > > diff --git a/mm/mmap.c b/mm/mmap.c
+> > > index 1971bfffcc03..0451285dee4f 100644
+> > > --- a/mm/mmap.c
+> > > +++ b/mm/mmap.c
+> > > @@ -2330,7 +2330,9 @@ static void unmap_region(struct mm_struct *mm, =
+struct ma_state *mas,
+> > >  	struct mmu_gather tlb;
+> > >  	unsigned long mt_start =3D mas->index;
+> > > =20
+> > > +#ifdef CONFIG_MMU_GATHER_NO_GATHER
+> >=20
+> > In your comment you say skip lru_add_drain() when CONFIG_MMU_GATHER_NO_=
+GATHER
+> > is *not* set.  So shouldn't this be
+> >=20
+> > #ifndef CONFIG_MMU_GATHER_NO_GATHER ?
+> >=20
+> Hi Tim,
+>=20
+> The mmu_gather feature is used to gather pages produced by unmap_vmas() a=
+nd
+> release them in batch in tlb_finish_mmu(). The feature is *on* if
+> CONFIG_MMU_GATHER_NO_GATHER is *not* set. Note that: tlb_finish_mmu() wil=
+l call
+> free_pages_and_swap_cache()/lru_add_drain() only when the feature is on.
 
-Great, I wasn't sure if I had resolved them to your satisfaction, so I
-kept the reference to your original review. I've now removed it and
-added your r-b. Thanks.
+Thanks for the explanation.
 
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
+Looking at the code, lru_add_drain() is executed for #ifndef CONFIG_MMU_GAT=
+HER_NO_GATHER
+in tlb_finish_mmu(). So the logic of your patch is fine.
+=C2=A0
+The #ifndef CONFIG_MMU_GATHER_NO_GATHER means
+mmu_gather feature is on.  The double negative throws me off on in my first=
+ read
+of your commit log.
+
+Suggest that you add a comment in code to make it easier for
+future code maintenence:
+
+/* defer lru_add_drain() to tlb_finish_mmu() for ifndef CONFIG_MMU_GATHER_N=
+O_GATHER */
+
+Is your change of skipping the extra lru_add_drain() motivated by some perf=
+ormance reason
+in a workload? Wonder whether it is worth adding an extra ifdef in the code=
+.
+
+Tim
+
+>=20
+> Yes, this commit aims to skip lru_add_drain() when CONFIG_MMU_GATHER_NO_G=
+ATHER
+> is *not* set (i.e. when the mmu_gather feature is on) because it is redun=
+dant.=20
+>=20
+> If CONFIG_MMU_GATHER_NO_GATHER is set, pages will be released in unmap_vm=
+as().
+> tlb_finish_mmu() will not call lru_add_drain(). So, it is still necessary=
+ to
+> keep the lru_add_drain() call to clear cached pages before unmap_vmas(), =
+as
+> folio_batchs hold a reference count for pages in them.
+>=20
+> The same applies to the other case.
+>=20
+> Thanks,
+> - Jianfeng
+>=20
+> > >  	lru_add_drain();
+> > > +#endif
+> > >  	tlb_gather_mmu(&tlb, mm);
+> > >  	update_hiwater_rss(mm);
+> > >  	unmap_vmas(&tlb, mas, vma, start, end, tree_end, mm_wr_locked);
+> > > @@ -3300,7 +3302,9 @@ void exit_mmap(struct mm_struct *mm)
+> > >  		return;
+> > >  	}
+> > > =20
+> > > +#ifdef CONFIG_MMU_GATHER_NO_GATHER
+> >=20
+> > same question as above.
+> >=20
+> > >  	lru_add_drain();
+> > > +#endif
+> > >  	flush_cache_mm(mm);
+> > >  	tlb_gather_mmu_fullmm(&tlb, mm);
+> > >  	/* update_hiwater_rss(mm) here? but nobody should be looking */
+> >=20
+
