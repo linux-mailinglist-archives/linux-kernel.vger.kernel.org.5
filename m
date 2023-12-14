@@ -1,180 +1,104 @@
-Return-Path: <linux-kernel+bounces-239-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-242-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E7CEB813E2A
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 00:19:40 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6019D813E2F
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 00:23:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A1D3A2834F1
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 23:19:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 920DF1C20AFD
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 23:23:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1DE076C6E3;
-	Thu, 14 Dec 2023 23:19:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D9FA2DB60;
+	Thu, 14 Dec 2023 23:23:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YyMepOFe"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZigrrUym"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com [209.85.208.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C89166C6C6;
-	Thu, 14 Dec 2023 23:19:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-54f4f7e88feso78748a12.3;
-        Thu, 14 Dec 2023 15:19:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702595968; x=1703200768; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Le+yUYWAeO85szFc6hh7ahjEHZ3iGHzhPjaN5WD/XWo=;
-        b=YyMepOFeqUeRQ8THH+QMMB8q0weWRji9bdHWo6nfFIQ6aDTqFXKH6/EKAsRtlDHk1G
-         0fdFb45vXBRxgzDvt3GXvGxt58/dydbSU3ru7SgDiQixYJ+s6mAHhFGnEQTJ8A6YZjNR
-         lAhQTBvBDOBoJ2GvLr6RHfnobjDrqBnlriLlF+aAwqZnw82VXRnQx4t00XwDPqwWq2qv
-         vVARAb+US9DCkGxOShe9wEKi+HWvYFEtauJrIi+hM31T1h6h+1yPw3bTwgPtOlGgQsSp
-         CVLPZYwMoL9xCiaGrQZzzU/CXLPmNUvmh6F+Zf9XgZptaZEd5iza8wU6hk+PRMEXvC7t
-         Tv6g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702595968; x=1703200768;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Le+yUYWAeO85szFc6hh7ahjEHZ3iGHzhPjaN5WD/XWo=;
-        b=ZoOK/jLCg/d7NEXSvtlBc7fr6D5OPpq8iE4/sfcE2w474GmWG0B5fiRw9/LLEuVXqt
-         O3a14/mnDtYA59hZxF9rCvvJqaLB8bAIGbntDjeak8eTzXt070HGowaQhs/wik5VQNjd
-         FXVFaqYWLLYx208DwpxMN99G71UvUKEIECHs9e4f9PIunMj8kLi/D7s6D5P8PFQlXLTb
-         mWyQYWIEZNBhvfDH5p6Dtu01kvC7IvcIpHtnvS/0f+cA1K7IoCmH6vAUWRiCcd8+eOFf
-         9rsxziA7aqYRqsBZwV5xdOTkrs3UyE2XY/vDrdgquxxLEqdGcVB4EUYlafc6xWheNt0Z
-         I7yw==
-X-Gm-Message-State: AOJu0YwthFgLyfBl7durvVsyQSXDFyvn+6Vlq2Ju4y7Ce8rU/sxJRZGG
-	zZtLPUVGoL20WyvXtnja/0TmxrzvW0ox/gNsVNk=
-X-Google-Smtp-Source: AGHT+IGZI8HKP27/QxlYEUGlhRTTtRIByszekRE0ONv360E2rUAdxrnaIpB7d7fcHQxP3LX6TiWqwfHu3uaPikt4zRI=
-X-Received: by 2002:a50:cd94:0:b0:551:f56c:c01d with SMTP id
- p20-20020a50cd94000000b00551f56cc01dmr1701838edi.54.1702595967760; Thu, 14
- Dec 2023 15:19:27 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8AEBF6C6C6
+	for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 23:23:00 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 20794C433CA
+	for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 23:23:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1702596180;
+	bh=1/u39glqJuuCFGGeFe99yJG58ZnMFafYYR4VOOatUWQ=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=ZigrrUymbeTlt6AU1HRAXv7jMBpQWvb1gcpRzKPyaqWPjtK/ZukvpuBH0tx//B5V2
+	 xGGdRQq/UJU8pCYSjQoBtOUnm8yqaYPlQXHninxh7G38lN+ORxGkmOh6VW3p49RE3/
+	 cl9wP/hiz8FsCssjpPtCCdBH7MJn3dTY9y6b52jMNrTjoegH+YCJK4rjX+uVmCB0xK
+	 Rvaz8t6iqG+VJA3+L+mriVnrX6buOTQvFQzX6IDvHQYR4oqdliZaR0avGpxBLl00YM
+	 ua6J+41beCJ7f57ICKjAZgzd6hVo1NS/8bLApsuDaH1Fcz/RMtrS9q2L5Z4ntkx45M
+	 K3AXSTSUzFe9w==
+Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-1d0c4d84bf6so251625ad.1
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 15:23:00 -0800 (PST)
+X-Gm-Message-State: AOJu0Yz5ECtun8T8gNMNvOpXL+QvaPn1BbKzO69LdePDQt30bifd6T03
+	VzpARQvCvqvejib9gZ3jhe/NNiQcy0aUe3OhwMH5Zw==
+X-Google-Smtp-Source: AGHT+IFZlx16ggQq+ydLOHu7s4g2zI/Zc35QmBgqhM1l+1UkieDfhMFciuUnV5cvJW0sVNZt4OTPYu0mFukgLsviFzU=
+X-Received: by 2002:a05:6808:1310:b0:3b8:b063:9b56 with SMTP id
+ y16-20020a056808131000b003b8b0639b56mr11308602oiv.72.1702596158708; Thu, 14
+ Dec 2023 15:22:38 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231214062434.3565630-1-menglong8.dong@gmail.com> <20231214062434.3565630-2-menglong8.dong@gmail.com>
-In-Reply-To: <20231214062434.3565630-2-menglong8.dong@gmail.com>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Thu, 14 Dec 2023 15:19:15 -0800
-Message-ID: <CAEf4BzZsXhM0wGdP3udGF9y7qGfwUTB7jrGR9vp=nC60-vCozQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 1/2] bpf: make the verifier tracks the "not
- equal" for regs
-To: Menglong Dong <menglong8.dong@gmail.com>
-Cc: andrii@kernel.org, eddyz87@gmail.com, yonghong.song@linux.dev, 
-	ast@kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com, 
-	martin.lau@linux.dev, song@kernel.org, kpsingh@kernel.org, sdf@google.com, 
-	haoluo@google.com, jolsa@kernel.org, bpf@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
+References: <20231207192406.3809579-1-nphamcs@gmail.com> <CAF8kJuPEKWbr_1a-OzqrYKSPmuty==KhC2vbTPAmm9xcJHo4cg@mail.gmail.com>
+ <CAKEwX=Oj0Rur8i9Oo7y2Py7svx-g11sEj3GKQfMVL62x=4hvdA@mail.gmail.com>
+ <CAF8kJuNpnqTM5x1QmQ7h-FaRWVnHBdNGvGvB3txohSOmZhYA-Q@mail.gmail.com>
+ <20231209034229.GA1001962@cmpxchg.org> <ZXeTb_ACou7TEVsa@google.com>
+ <20231214171137.GA261942@cmpxchg.org> <CAOUHufbvafDiURT9qBjKPpRSNwc60S-bDg2yMH_m4bNSWQcV4g@mail.gmail.com>
+ <CA+PVUaR9EtUMke-K8mM0gmJXdOm9equ1JHqBjZ0T5V0tiHVc8Q@mail.gmail.com>
+In-Reply-To: <CA+PVUaR9EtUMke-K8mM0gmJXdOm9equ1JHqBjZ0T5V0tiHVc8Q@mail.gmail.com>
+From: Chris Li <chrisl@kernel.org>
+Date: Thu, 14 Dec 2023 15:22:27 -0800
+X-Gmail-Original-Message-ID: <CAF8kJuMLDOaP6-Xyz-+hzLbDuYW7gfG9jA06j6t5v7XX2rPOdw@mail.gmail.com>
+Message-ID: <CAF8kJuMLDOaP6-Xyz-+hzLbDuYW7gfG9jA06j6t5v7XX2rPOdw@mail.gmail.com>
+Subject: Re: [PATCH v6] zswap: memcontrol: implement zswap writeback disabling
+To: Fabian Deutsch <fdeutsch@redhat.com>
+Cc: Yu Zhao <yuzhao@google.com>, Johannes Weiner <hannes@cmpxchg.org>, 
+	Minchan Kim <minchan@kernel.org>, Nhat Pham <nphamcs@gmail.com>, akpm@linux-foundation.org, 
+	tj@kernel.org, lizefan.x@bytedance.com, cerasuolodomenico@gmail.com, 
+	yosryahmed@google.com, sjenning@redhat.com, ddstreet@ieee.org, 
+	vitaly.wool@konsulko.com, mhocko@kernel.org, roman.gushchin@linux.dev, 
+	shakeelb@google.com, muchun.song@linux.dev, hughd@google.com, corbet@lwn.net, 
+	konrad.wilk@oracle.com, senozhatsky@chromium.org, rppt@kernel.org, 
+	linux-mm@kvack.org, kernel-team@meta.com, linux-kernel@vger.kernel.org, 
+	linux-doc@vger.kernel.org, david@ixit.cz, Kairui Song <kasong@tencent.com>, 
+	Zhongkun He <hezhongkun.hzk@bytedance.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Dec 13, 2023 at 10:28=E2=80=AFPM Menglong Dong <menglong8.dong@gmai=
-l.com> wrote:
->
-> We can derive some new information for BPF_JNE in regs_refine_cond_op().
-> Take following code for example:
->
->   /* The type of "a" is u16 */
->   if (a > 0 && a < 100) {
->     /* the range of the register for a is [0, 99], not [1, 99],
->      * and will cause the following error:
->      *
->      *   invalid zero-sized read
->      *
->      * as a can be 0.
->      */
->     bpf_skb_store_bytes(skb, xx, xx, a, 0);
->   }
->
-> In the code above, "a > 0" will be compiled to "jmp xxx if a =3D=3D 0". I=
-n the
-> TRUE branch, the dst_reg will be marked as known to 0. However, in the
-> fallthrough(FALSE) branch, the dst_reg will not be handled, which makes
-> the [min, max] for a is [0, 99], not [1, 99].
->
-> For BPF_JNE, we can reduce the range of the dst reg if the src reg is a
-> const and is exactly the edge of the dst reg.
->
-> Signed-off-by: Menglong Dong <menglong8.dong@gmail.com>
-> ---
-> v2:
-> - fix a typo in the subject
-> - add some comments, as Eduard advised
-> ---
->  kernel/bpf/verifier.c | 38 +++++++++++++++++++++++++++++++++++++-
->  1 file changed, 37 insertions(+), 1 deletion(-)
->
+Hi Fabian,
 
-The logic looks good
+On Thu, Dec 14, 2023 at 10:00=E2=80=AFAM Fabian Deutsch <fdeutsch@redhat.co=
+m> wrote:
 
-Acked-by: Andrii Nakryiko <andrii@kernel.org>
-
-> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> index 727a59e4a647..9b1932e51823 100644
-> --- a/kernel/bpf/verifier.c
-> +++ b/kernel/bpf/verifier.c
-> @@ -14332,7 +14332,43 @@ static void regs_refine_cond_op(struct bpf_reg_s=
-tate *reg1, struct bpf_reg_state
->                 }
->                 break;
->         case BPF_JNE:
-> -               /* we don't derive any new information for inequality yet=
- */
-> +               if (!is_reg_const(reg2, is_jmp32))
-> +                       swap(reg1, reg2);
-> +               if (!is_reg_const(reg2, is_jmp32))
-> +                       break;
-> +
-> +               /* try to recompute the bound of reg1 if reg2 is a const =
-and
-> +                * is exactly the edge of reg1.
-> +                */
-> +               val =3D reg_const_value(reg2, is_jmp32);
-> +               if (is_jmp32) {
-> +                       /* u32_min_value is not equal to 0xffffffff at th=
-is point,
-> +                        * because otherwise u32_max_value is 0xffffffff =
-as well,
-> +                        * in such a case both reg1 and reg2 would be con=
-stants,
-> +                        * jump would be predicted and reg_set_min_max() =
-won't
-> +                        * be called.
-> +                        *
-> +                        * Same reasoning works for all {u,s}{min,max}{32=
-,64} cases
-> +                        * below.
-> +                        */
-> +                       if (reg1->u32_min_value =3D=3D (u32)val)
-> +                               reg1->u32_min_value++;
-> +                       if (reg1->u32_max_value =3D=3D (u32)val)
-> +                               reg1->u32_max_value--;
-> +                       if (reg1->s32_min_value =3D=3D (s32)val)
-> +                               reg1->s32_min_value++;
-> +                       if (reg1->s32_max_value =3D=3D (s32)val)
-> +                               reg1->s32_max_value--;
-> +               } else {
-> +                       if (reg1->umin_value =3D=3D (u64)val)
-> +                               reg1->umin_value++;
-> +                       if (reg1->umax_value =3D=3D (u64)val)
-> +                               reg1->umax_value--;
-> +                       if (reg1->smin_value =3D=3D (s64)val)
-> +                               reg1->smin_value++;
-> +                       if (reg1->smax_value =3D=3D (s64)val)
-> +                               reg1->smax_value--;
-> +               }
->                 break;
->         case BPF_JSET:
->                 if (!is_reg_const(reg2, is_jmp32))
-> --
-> 2.39.2
+> Yep - for container use-cases.
 >
+> Now a few thoughts in this direction:
+> - With swap per cgroup you loose the big "statistical" benefit of having =
+swap on a node level. well, it depends on the size of the cgroup (i.e. syst=
+em.slice is quite large).
+
+Just to clarify, the "node" you mean the "node" in kubernetes sense,
+which is the whole machine. In the Linux kernel MM context, the node
+often refers to the NUMA memory node, that is not what you mean here,
+right?
+
+> - With todays node level swap, and setting memory.swap.max=3D0 for all cg=
+roups allows you toachieve a similar behavior (only opt-in cgroups will get=
+ swap).
+> - the above approach however will still have a shared swap backend for al=
+l cgroups.
+
+Yes, the "memory.swap.tires" idea is trying to allow cgroups to select
+a subset of the swap backend in a specific order. It is still in the
+early stage of discussion. If you have any suggestion or feedback in
+that direction, I am looking forward to hearing that.
+
+Chris
 
