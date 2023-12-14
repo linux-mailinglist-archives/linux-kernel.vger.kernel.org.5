@@ -2,72 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DFB068129EC
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 09:03:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A63D8129F1
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 09:06:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1443396AbjLNIDk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 03:03:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45524 "EHLO
+        id S1443382AbjLNIF7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 03:05:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52888 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234342AbjLNIDi (ORCPT
+        with ESMTP id S234397AbjLNIF6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 03:03:38 -0500
-Received: from mail-qv1-xf2a.google.com (mail-qv1-xf2a.google.com [IPv6:2607:f8b0:4864:20::f2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF31EE0;
-        Thu, 14 Dec 2023 00:03:43 -0800 (PST)
-Received: by mail-qv1-xf2a.google.com with SMTP id 6a1803df08f44-67f01b911c5so6406526d6.0;
-        Thu, 14 Dec 2023 00:03:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702541023; x=1703145823; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=bKrbI1xAKWbEcqudHvTK+osAC0pIMnz5+OHOQinRQHA=;
-        b=jHJ+y3PUlVrZapEItmupJJvgHSa4NOirQJ4450Ofh4u9fuQk9OP/njU6PrhpwlcogJ
-         1PyoS4Rif9o0pn/y8dIYR6qV3MJI6uXXImm4+BZo/FaCdg8jF7DQJ3Dkn2oqVOEIYFmL
-         1e2MURTPowV8tARl6Zisc7PDpXHzbph/QnavRHPqeCW03jUjqosgIapyR3lcYCLR2IQ/
-         jsS7S27Q5A/2MjUpi774uFFEXp4TtAEP23AgIqv2UTebURcDyY61l0+rBr1dygHRRcqQ
-         5WE1P+08Z6SPBVlh5logEU7fLwpM68ZdfAbUwoux7wYcsoiXVBmQqAQkiDLnw7LtLHeY
-         //Cg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702541023; x=1703145823;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=bKrbI1xAKWbEcqudHvTK+osAC0pIMnz5+OHOQinRQHA=;
-        b=pmUaWdBM0eyke5eZjvV6bl11+30r8gAjZq+X7PuoW3Cajp5EpcfO0v7q0eXf5NdjTb
-         5iRrZpfB8YyJ0GfLFSK155R3SxXHbNpNsEIlkp461ePkLeGdqb3zAhDuPhT3eNpwLnzB
-         0uHNLJb+jldOYP/dRj7NXx8iCLglGcmwCW3ldE0vP8rrWbJBrbYAVfGt/cL4tJluebTh
-         ubUF1aw9qTCQZAI8+YC8up2wzfifx1RM9AAvgVJJ0Q0rKH4v12Ekm00WAT1hHpO4iaK+
-         atgwbFxllyGtEZXPn42THFEXnnKMnNXgCpxnW0jP5NXcUvXYBf/hvns/7LMmkemn4EgL
-         76ZA==
-X-Gm-Message-State: AOJu0YxHAY43sBqQn7BzDAO8/9/zGNkjsQhKfV88GlkYw2YoikPl38S/
-        atk/p0D0xvgsIDBp3K4WWteHK9o9IIEA1y5DGHU=
-X-Google-Smtp-Source: AGHT+IHiiov80boeHkt0nMYOcwByWiEI5TZkBNJUCKkQV0ajqk43JpAoV2ZEpq8gQdCzhQJBjHP9u4z4rU8/5xWVx8A=
-X-Received: by 2002:a05:6214:246d:b0:67f:e1d:af38 with SMTP id
- im13-20020a056214246d00b0067f0e1daf38mr183836qvb.50.1702541022813; Thu, 14
- Dec 2023 00:03:42 -0800 (PST)
+        Thu, 14 Dec 2023 03:05:58 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D01AC9
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 00:06:01 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C1301C433C7;
+        Thu, 14 Dec 2023 08:06:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1702541161;
+        bh=sYEhTF8PFiCP41kQDsfl473xLEZ+XXLgBpyKrt1TpZ0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=LY2zHWvRamfUM7o1LtV8JnaxofEdItKMw+27NQM3lch6E+1MGPOJA2pCQIWppcvMG
+         641jfW0dbA4X9MXirOWme2ggJCA0rQ8mmNvRy0jcsT8DzQOPDSqbSQmt3B33vsLAtA
+         dkC7IR5y7QsI/N95hOp6G+IN+NT0puCHHp7TKCZX07X6qCjfIKq4NAKG75MJjS51RL
+         iJgrkK5kDLyFe33Hu2/pDXFAYwhf47d15DvnU2B2+f8FYqzMluDW5k4XZPqK4U8RK4
+         8ZEM+z10IqeH9ge1ozkfw6/noYBww1USJSTWzRMaZdVCLzwZnhZsAbqMeU6kS+NE0y
+         3qE2qdKH84cDA==
+Date:   Thu, 14 Dec 2023 09:05:58 +0100
+From:   Maxime Ripard <mripard@kernel.org>
+To:     Alex Bee <knaerzche@gmail.com>
+Cc:     Sandy Huang <hjc@rock-chips.com>,
+        Heiko =?utf-8?Q?St=C3=BCbner?= <heiko@sntech.de>,
+        Andy Yan <andyshrk@163.com>, Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 07/11] drm/rockchip: inno_hdmi: Add basic mode validation
+Message-ID: <wz4e43ateg3gb7745mz22wwyruwavevvpfbqsdxeynejcjxhzn@qbqldsnkktei>
+References: <20231213195125.212923-1-knaerzche@gmail.com>
+ <20231213195125.212923-8-knaerzche@gmail.com>
 MIME-Version: 1.0
-References: <20231214064439.1023011-1-avagin@google.com> <20231214064439.1023011-2-avagin@google.com>
-In-Reply-To: <20231214064439.1023011-2-avagin@google.com>
-From:   Amir Goldstein <amir73il@gmail.com>
-Date:   Thu, 14 Dec 2023 10:03:31 +0200
-Message-ID: <CAOQ4uxh4kbnFuYMK4fd=VTsu=up_FB7XFT5Jf0-a8QTAhLcC7Q@mail.gmail.com>
-Subject: Re: [PATCH 2/2] selftests/overlayfs: verify device and inode numbers
- in /proc/pid/maps
-To:     Andrei Vagin <avagin@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org,
-        Alexander Mikhalitsyn <alexander@mihalicyn.com>,
-        Christian Brauner <brauner@kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        linux-fsdevel@vger.kernel.org,
-        overlayfs <linux-unionfs@vger.kernel.org>,
-        Miklos Szeredi <miklos@szeredi.hu>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="b7pooqjn5gbbri2j"
+Content-Disposition: inline
+In-Reply-To: <20231213195125.212923-8-knaerzche@gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -76,313 +60,118 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 14, 2023 at 8:44=E2=80=AFAM Andrei Vagin <avagin@google.com> wr=
-ote:
->
-> When mapping a file on overlayfs, the file stored in ->vm_file is a
-> backing file whose f_inode is on the underlying filesystem. We need to
-> verify that /proc/pid/maps contains numbers of the overlayfs file, but
-> not its backing file.
->
-> Cc: Amir Goldstein <amir73il@gmail.com>
-> Cc: Alexander Mikhalitsyn <alexander@mihalicyn.com>
-> Signed-off-by: Andrei Vagin <avagin@google.com>
 
-Reviewed-by: Amir Goldstein <amir73il@gmail.com>
+--b7pooqjn5gbbri2j
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
+Hi,
+
+On Wed, Dec 13, 2023 at 08:51:21PM +0100, Alex Bee wrote:
+> As per TRM this controller supports pixelclocks starting from 25 MHz. The
+> maximum supported pixelclocks are defined by the phy configurations we
+> have. Also it can't support modes that require doubled clocks.
+> If there is a phy reference clock we can additionally validate against
+> VESA DMT's recommendations.
+> Those checks are added to the mode_valid hook of the connector and
+> encoder's mode_fixup hook.
+>=20
+> Signed-off-by: Alex Bee <knaerzche@gmail.com>
 > ---
->  tools/testing/selftests/Makefile              |   1 +
->  .../filesystems/overlayfs/.gitignore          |   2 +
->  .../selftests/filesystems/overlayfs/Makefile  |   7 +
->  .../filesystems/overlayfs/dev_in_maps.c       | 182 ++++++++++++++++++
->  .../selftests/filesystems/overlayfs/log.h     |  26 +++
->  5 files changed, 218 insertions(+)
->  create mode 100644 tools/testing/selftests/filesystems/overlayfs/.gitign=
-ore
->  create mode 100644 tools/testing/selftests/filesystems/overlayfs/Makefil=
-e
->  create mode 100644 tools/testing/selftests/filesystems/overlayfs/dev_in_=
-maps.c
->  create mode 100644 tools/testing/selftests/filesystems/overlayfs/log.h
->
-> diff --git a/tools/testing/selftests/Makefile b/tools/testing/selftests/M=
-akefile
-> index 3b2061d1c1a5..0939a40abb28 100644
-> --- a/tools/testing/selftests/Makefile
-> +++ b/tools/testing/selftests/Makefile
-> @@ -26,6 +26,7 @@ TARGETS +=3D filesystems
->  TARGETS +=3D filesystems/binderfs
->  TARGETS +=3D filesystems/epoll
->  TARGETS +=3D filesystems/fat
-> +TARGETS +=3D filesystems/overlayfs
->  TARGETS +=3D firmware
->  TARGETS +=3D fpu
->  TARGETS +=3D ftrace
-> diff --git a/tools/testing/selftests/filesystems/overlayfs/.gitignore b/t=
-ools/testing/selftests/filesystems/overlayfs/.gitignore
-> new file mode 100644
-> index 000000000000..52ae618fdd98
-> --- /dev/null
-> +++ b/tools/testing/selftests/filesystems/overlayfs/.gitignore
-> @@ -0,0 +1,2 @@
-> +# SPDX-License-Identifier: GPL-2.0-only
-> +dev_in_maps
-> diff --git a/tools/testing/selftests/filesystems/overlayfs/Makefile b/too=
-ls/testing/selftests/filesystems/overlayfs/Makefile
-> new file mode 100644
-> index 000000000000..56b2b48a765b
-> --- /dev/null
-> +++ b/tools/testing/selftests/filesystems/overlayfs/Makefile
-> @@ -0,0 +1,7 @@
-> +# SPDX-License-Identifier: GPL-2.0
+>  drivers/gpu/drm/rockchip/inno_hdmi.c | 38 ++++++++++++++++++++++++++--
+>  1 file changed, 36 insertions(+), 2 deletions(-)
+>=20
+> diff --git a/drivers/gpu/drm/rockchip/inno_hdmi.c b/drivers/gpu/drm/rockc=
+hip/inno_hdmi.c
+> index f7f0bec725f9..2f839ff31c1c 100644
+> --- a/drivers/gpu/drm/rockchip/inno_hdmi.c
+> +++ b/drivers/gpu/drm/rockchip/inno_hdmi.c
+> @@ -38,6 +38,8 @@ struct inno_hdmi_variant {
+>  	struct inno_hdmi_phy_config *default_phy_config;
+>  };
+> =20
+> +#define INNO_HDMI_MIN_TMDS_CLOCK  25000000U
 > +
-> +TEST_GEN_PROGS :=3D dev_in_maps
-> +
-> +CFLAGS :=3D -Wall -Werror
-> +
-> +include ../../lib.mk
-> diff --git a/tools/testing/selftests/filesystems/overlayfs/dev_in_maps.c =
-b/tools/testing/selftests/filesystems/overlayfs/dev_in_maps.c
-> new file mode 100644
-> index 000000000000..e19ab0e85709
-> --- /dev/null
-> +++ b/tools/testing/selftests/filesystems/overlayfs/dev_in_maps.c
-> @@ -0,0 +1,182 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +#define _GNU_SOURCE
-> +
-> +#include <inttypes.h>
-> +#include <unistd.h>
-> +#include <stdio.h>
-> +
-> +#include <linux/unistd.h>
-> +#include <linux/types.h>
-> +#include <linux/mount.h>
-> +#include <sys/syscall.h>
-> +#include <sys/stat.h>
-> +#include <sys/mount.h>
-> +#include <sys/mman.h>
-> +#include <sched.h>
-> +#include <fcntl.h>
-> +
-> +#include "../../kselftest.h"
-> +#include "log.h"
-> +
-> +static int sys_fsopen(const char *fsname, unsigned int flags)
+>  struct hdmi_data_info {
+>  	int vic;
+>  	bool sink_has_audio;
+> @@ -572,6 +574,34 @@ static int inno_hdmi_setup(struct inno_hdmi *hdmi,
+>  	return 0;
+>  }
+> =20
+> +static enum drm_mode_status inno_hdmi_mode_valid(struct inno_hdmi *hdmi,
+> +						 struct drm_display_mode *mode)
 > +{
-> +       return syscall(__NR_fsopen, fsname, flags);
+
+So, mode_valid is only called to filter out the modes retrieved by
+get_modes, but it won't be called when userspace programs a mode. That's
+atomic_check's job.
+
+So you probably want to create a shared function between atomic_check
+and mode_valid, and call it from both places (or call mode_valid from
+atomic_check).
+
+> +	/* No support for double-clock modes */
+> +	if (mode->flags & DRM_MODE_FLAG_DBLCLK)
+> +		return MODE_BAD;
+> +
+> +	unsigned int mpixelclk =3D mode->clock * 1000;
+
+Variables should be declared at the top of the function.
+
+> +	if (mpixelclk < INNO_HDMI_MIN_TMDS_CLOCK)
+> +		return MODE_CLOCK_LOW;
+
+You probably want to check the max TMDS clock too?
+
+> +	if (inno_hdmi_find_phy_config(hdmi, mpixelclk) < 0)
+> +		return MODE_CLOCK_HIGH;
+> +
+> +	if (hdmi->refclk) {
+> +		long refclk =3D clk_round_rate(hdmi->refclk, mpixelclk);
+> +		unsigned int max_tolerance =3D mpixelclk / 5000;
+> +
+> +		/* Vesa DMT standard mentions +/- 0.5% max tolerance */
+> +		if (abs(refclk - mpixelclk) > max_tolerance ||
+> +		    mpixelclk - refclk > max_tolerance;
+> +			return MODE_NOCLOCK;
+
+You should use abs_diff here. abs() will get confused by the unsigned vs
+signed comparison.
+
+> +	}
+> +
+> +	return MODE_OK;
 > +}
 > +
-> +static int sys_fsconfig(int fd, unsigned int cmd, const char *key, const=
- char *value, int aux)
-> +{
-> +       return syscall(__NR_fsconfig, fd, cmd, key, value, aux);
-> +}
+>  static void inno_hdmi_encoder_mode_set(struct drm_encoder *encoder,
+>  				       struct drm_display_mode *mode,
+>  				       struct drm_display_mode *adj_mode)
+> @@ -602,7 +632,9 @@ static bool inno_hdmi_encoder_mode_fixup(struct drm_e=
+ncoder *encoder,
+>  					 const struct drm_display_mode *mode,
+>  					 struct drm_display_mode *adj_mode)
+>  {
+> -	return true;
+> +	struct inno_hdmi *hdmi =3D encoder_to_inno_hdmi(encoder);
 > +
-> +static int sys_fsmount(int fd, unsigned int flags, unsigned int attr_fla=
-gs)
-> +{
-> +       return syscall(__NR_fsmount, fd, flags, attr_flags);
-> +}
-> +
-> +static int sys_move_mount(int from_dfd, const char *from_pathname,
-> +                         int to_dfd, const char *to_pathname,
-> +                         unsigned int flags)
-> +{
-> +       return syscall(__NR_move_mount, from_dfd, from_pathname, to_dfd, =
-to_pathname, flags);
-> +}
-> +
-> +static long get_file_dev_and_inode(void *addr, struct statx *stx)
-> +{
-> +       char buf[4096];
-> +       FILE *mapf;
-> +
-> +       mapf =3D fopen("/proc/self/maps", "r");
-> +       if (mapf =3D=3D NULL)
-> +               return pr_perror("fopen(/proc/self/maps)");
-> +
-> +       while (fgets(buf, sizeof(buf), mapf)) {
-> +               unsigned long start, end;
-> +               uint32_t maj, min;
-> +               __u64 ino;
-> +
-> +               if (sscanf(buf, "%lx-%lx %*s %*s %x:%x %llu",
-> +                               &start, &end, &maj, &min, &ino) !=3D 5)
-> +                       return pr_perror("unable to parse: %s", buf);
-> +               if (start =3D=3D (unsigned long)addr) {
-> +                       stx->stx_dev_major =3D maj;
-> +                       stx->stx_dev_minor =3D min;
-> +                       stx->stx_ino =3D ino;
-> +                       return 0;
-> +               }
-> +       }
-> +
-> +       return pr_err("unable to find the mapping");
-> +}
-> +
-> +static int ovl_mount(void)
-> +{
-> +       int tmpfs, fsfd, ovl;
-> +
-> +       fsfd =3D sys_fsopen("tmpfs", 0);
-> +       if (fsfd =3D=3D -1)
-> +               return pr_perror("fsopen(tmpfs)");
-> +
-> +       if (sys_fsconfig(fsfd, FSCONFIG_CMD_CREATE, NULL, NULL, 0) =3D=3D=
- -1)
-> +               return pr_perror("FSCONFIG_CMD_CREATE");
-> +
-> +       tmpfs =3D sys_fsmount(fsfd, 0, 0);
-> +       if (tmpfs =3D=3D -1)
-> +               return pr_perror("fsmount");
-> +
-> +       close(fsfd);
-> +
-> +       /* overlayfs can't be constructed on top of a detached mount. */
-> +       if (sys_move_mount(tmpfs, "", AT_FDCWD, "/tmp", MOVE_MOUNT_F_EMPT=
-Y_PATH))
-> +               return pr_perror("move_mount");
-> +       close(tmpfs);
-> +
-> +       if (mkdir("/tmp/w", 0755) =3D=3D -1 ||
-> +           mkdir("/tmp/u", 0755) =3D=3D -1 ||
-> +           mkdir("/tmp/l", 0755) =3D=3D -1)
-> +               return pr_perror("mkdir");
-> +
-> +       fsfd =3D sys_fsopen("overlay", 0);
-> +       if (fsfd =3D=3D -1)
-> +               return pr_perror("fsopen(overlay)");
-> +       if (sys_fsconfig(fsfd, FSCONFIG_SET_STRING, "source", "test", 0) =
-=3D=3D -1 ||
-> +           sys_fsconfig(fsfd, FSCONFIG_SET_STRING, "lowerdir", "/tmp/l",=
- 0) =3D=3D -1 ||
-> +           sys_fsconfig(fsfd, FSCONFIG_SET_STRING, "upperdir", "/tmp/u",=
- 0) =3D=3D -1 ||
-> +           sys_fsconfig(fsfd, FSCONFIG_SET_STRING, "workdir", "/tmp/w", =
-0) =3D=3D -1)
-> +               return pr_perror("fsconfig");
-> +       if (sys_fsconfig(fsfd, FSCONFIG_CMD_CREATE, NULL, NULL, 0) =3D=3D=
- -1)
-> +               return pr_perror("fsconfig");
-> +       ovl =3D sys_fsmount(fsfd, 0, 0);
-> +       if (ovl =3D=3D -1)
-> +               return pr_perror("fsmount");
-> +
-> +       return ovl;
-> +}
-> +
-> +/*
-> + * Check that the file device and inode shown in /proc/pid/maps match va=
-lues
-> + * returned by stat(2).
-> + */
-> +static int test(void)
-> +{
-> +       struct statx stx, mstx;
-> +       int ovl, fd;
-> +       void *addr;
-> +
-> +       ovl =3D ovl_mount();
-> +       if (ovl =3D=3D -1)
-> +               return -1;
-> +
-> +       fd =3D openat(ovl, "test", O_RDWR | O_CREAT, 0644);
-> +       if (fd =3D=3D -1)
-> +               return pr_perror("openat");
-> +
-> +       addr =3D mmap(NULL, 4096, PROT_READ | PROT_WRITE, MAP_FILE | MAP_=
-SHARED, fd, 0);
-> +       if (addr =3D=3D MAP_FAILED)
-> +               return pr_perror("mmap");
-> +
-> +       if (get_file_dev_and_inode(addr, &mstx))
-> +               return -1;
-> +       if (statx(fd, "", AT_EMPTY_PATH | AT_STATX_SYNC_AS_STAT, STATX_IN=
-O, &stx))
-> +               return pr_perror("statx");
-> +
-> +       if (stx.stx_dev_major !=3D mstx.stx_dev_major ||
-> +           stx.stx_dev_minor !=3D mstx.stx_dev_minor ||
-> +           stx.stx_ino !=3D mstx.stx_ino)
-> +               return pr_fail("unmatched dev:ino %x:%x:%llx (expected %x=
-:%x:%llx)\n",
-> +                       mstx.stx_dev_major, mstx.stx_dev_minor, mstx.stx_=
-ino,
-> +                       stx.stx_dev_major, stx.stx_dev_minor, stx.stx_ino=
-);
-> +
-> +       ksft_test_result_pass("devices are matched\n");
-> +       return 0;
-> +}
-> +
-> +int main(int argc, char **argv)
-> +{
-> +       int fsfd;
-> +
-> +       fsfd =3D sys_fsopen("overlay", 0);
-> +       if (fsfd =3D=3D -1) {
-> +               ksft_test_result_skip("unable to create overlay mount\n")=
-;
-> +               return 1;
-> +       }
-> +       close(fsfd);
-> +
-> +       /* Create a new mount namespace to not care about cleaning test m=
-ounts. */
-> +       if (unshare(CLONE_NEWNS) =3D=3D -1) {
-> +               ksft_test_result_skip("unable to create a new mount names=
-pace\n");
-> +               return 1;
-> +       }
-> +
-> +       if (mount(NULL, "/", NULL, MS_SLAVE | MS_REC, NULL) =3D=3D -1) {
-> +               pr_perror("mount");
-> +               return 1;
-> +       }
-> +
-> +       ksft_set_plan(1);
-> +
-> +       if (test())
-> +               return 1;
-> +
-> +       ksft_exit_pass();
-> +       return 0;
-> +}
-> diff --git a/tools/testing/selftests/filesystems/overlayfs/log.h b/tools/=
-testing/selftests/filesystems/overlayfs/log.h
-> new file mode 100644
-> index 000000000000..db64df2a8483
-> --- /dev/null
-> +++ b/tools/testing/selftests/filesystems/overlayfs/log.h
-> @@ -0,0 +1,26 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +
-> +#ifndef __SELFTEST_TIMENS_LOG_H__
-> +#define __SELFTEST_TIMENS_LOG_H__
-> +
-> +#define pr_msg(fmt, lvl, ...)                                          \
-> +       ksft_print_msg("[%s] (%s:%d)\t" fmt "\n",                       \
-> +                       lvl, __FILE__, __LINE__, ##__VA_ARGS__)
-> +
-> +#define pr_p(func, fmt, ...)   func(fmt ": %m", ##__VA_ARGS__)
-> +
-> +#define pr_err(fmt, ...)                                               \
-> +       ({                                                              \
-> +               ksft_test_result_error(fmt "\n", ##__VA_ARGS__);         =
-       \
-> +               -1;                                                     \
-> +       })
-> +
-> +#define pr_fail(fmt, ...)                                      \
-> +       ({                                                      \
-> +               ksft_test_result_fail(fmt, ##__VA_ARGS__);      \
-> +               -1;                                             \
-> +       })
-> +
-> +#define pr_perror(fmt, ...)    pr_p(pr_err, fmt, ##__VA_ARGS__)
-> +
-> +#endif
-> --
-> 2.43.0.472.g3155946c3a-goog
->
+> +	return inno_hdmi_mode_valid(hdmi, adj_mode) =3D=3D MODE_OK;
+>  }
+
+Why do you call mode_valid in mode_fixup?
+
+Maxime
+
+--b7pooqjn5gbbri2j
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCZXq3ZgAKCRDj7w1vZxhR
+xaVDAP9cv6mFeTDpg7RgRea+Sf7bjeLk6ZsJ3l3oNXqnHls6gAD/cxaEFtITXR/A
+ujMQfG/WE5YLTNoxJiT+lbA9A4vu3QA=
+=ufKw
+-----END PGP SIGNATURE-----
+
+--b7pooqjn5gbbri2j--
