@@ -1,122 +1,198 @@
-Return-Path: <linux-kernel+bounces-248-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-249-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0BC74813E3D
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 00:26:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 1C3BD813E43
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 00:31:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BCC86283681
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 23:26:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C93792835EB
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 23:31:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 34CDE2DB62;
-	Thu, 14 Dec 2023 23:26:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A1F566C6F5;
+	Thu, 14 Dec 2023 23:31:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Cd/VSgkQ"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jt8dsH/4"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F10D86C6DC
-	for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 23:26:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1702596393; x=1734132393;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=RtL+WCMeA+S+UlFakKQs3VQHa0ZWdhAT2s4Vj2pdFOY=;
-  b=Cd/VSgkQVaGfiPX3LhEdRUd5/htiDyR0PaSk2m0GJQQl/7T0qjePB5Jg
-   VAkvsnpaMgmT1sELM6MayhByZFJECIRlnptL5b6ulDUrmlsWONLMpF9j4
-   bYfA4r9W97zn3sBsS6n2SrAwZMcirJdOOs9u9oyAPfI8nEENb00PXv2Ci
-   gj/p6M/5KFO2RhVMt6kTl3RJ9p4WPg+6p8ZNTnqRgQGny42KrSZxuFNH8
-   0qFCTBa2HyLNmKYDaleXe+obtStOde7/thi4obNuc/9KL9nPcY+XchJLn
-   l4yWJgO7CmvTB/rR50Sl+aQkSf3NfwoD/3gmXVR61nB+izWW1QT7Dst4k
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10924"; a="461665345"
-X-IronPort-AV: E=Sophos;i="6.04,277,1695711600"; 
-   d="scan'208";a="461665345"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Dec 2023 15:26:31 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10924"; a="1105909711"
-X-IronPort-AV: E=Sophos;i="6.04,277,1695711600"; 
-   d="scan'208";a="1105909711"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by fmsmga005.fm.intel.com with ESMTP; 14 Dec 2023 15:26:30 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rDv64-000Mjt-05;
-	Thu, 14 Dec 2023 23:26:28 +0000
-Date: Fri, 15 Dec 2023 07:25:31 +0800
-From: kernel test robot <lkp@intel.com>
-To: Kees Cook <keescook@chromium.org>
-Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-	Justin Stitt <justinstitt@google.com>,
-	"Gustavo A. R. Silva" <gustavoars@kernel.org>
-Subject: drivers/mailbox/zynqmp-ipi-mailbox.c:112: warning: Excess struct
- member 'ipi_mboxes' description in 'zynqmp_ipi_pdata'
-Message-ID: <202312150705.glrQ4ypv-lkp@intel.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E517D6C6DC;
+	Thu, 14 Dec 2023 23:31:00 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 80C4FC433C7;
+	Thu, 14 Dec 2023 23:31:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1702596660;
+	bh=aEvT2L/cgELzDegF/stGRU2T+dVr4CYp+Iu+TJaHLIo=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:From;
+	b=jt8dsH/4wzry6w62MHBAix9gx3UadwMhgl+t0h0DcALqWABUpHt0PkXHgfOawyq3j
+	 AMSuQ6YpaydeZb2LvIQDBDyR/QQmbtvhVd4vIVJTgfuNlmaaU2tmn9d8vQTK5Wv2oT
+	 KreaSFH84jL9HsJgejH3wqW7LTrvp7mhIYoa6xeaCKH0srsLaTbFDhQgmz9afNrn/u
+	 eetHLmC9adXFnAgO57ZW9HmViGLYo7CyGWLgwpfuzOeCRpbO9CGicULHwnEeG+afNW
+	 VWVT0CMw0PHfQoD0dz7q79/QUDlMtxhJqCdONyszDNz8Z+eOvkAHI0/Yui6RQwk6ON
+	 v5lCtABbwQr1w==
+Date: Thu, 14 Dec 2023 17:30:59 -0600
+From: Bjorn Helgaas <helgaas@kernel.org>
+To: Mario Limonciello <mario.limonciello@amd.com>
+Cc: Bjorn Helgaas <bhelgaas@google.com>,
+	"Rafael J . Wysocki" <rjw@rjwysocki.net>, linux-pci@vger.kernel.org,
+	linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Len Brown <lenb@kernel.org>, Robert Moore <robert.moore@intel.com>
+Subject: Re: [PATCH] x86/pci: Stop requiring MMCONFIG to be declared in E820,
+ ACPI or EFI for newer systems
+Message-ID: <20231214233059.GA1106860@bhelgaas>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <8d91910d-2676-477a-be62-5365afd199bb@amd.com>
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   c7402612e2e61b76177f22e6e7f705adcbecc6fe
-commit: c5225cd073c65a6d7e8e311ec0114792a671982a mailbox: zynqmp: Annotate struct zynqmp_ipi_pdata with __counted_by
-date:   10 weeks ago
-config: arm64-defconfig (https://download.01.org/0day-ci/archive/20231215/202312150705.glrQ4ypv-lkp@intel.com/config)
-compiler: aarch64-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231215/202312150705.glrQ4ypv-lkp@intel.com/reproduce)
+On Thu, Dec 14, 2023 at 03:45:43PM -0600, Mario Limonciello wrote:
+> On 12/14/2023 14:43, Bjorn Helgaas wrote:
+> > On Tue, Dec 05, 2023 at 12:28:44PM -0600, Mario Limonciello wrote:
+> > > On 12/5/2023 11:31, Bjorn Helgaas wrote:
+> > > > On Tue, Dec 05, 2023 at 11:00:31AM -0600, Mario Limonciello wrote:
+> > > > > On 12/5/2023 10:17, Bjorn Helgaas wrote:
+> > > > > > On Tue, Dec 05, 2023 at 09:48:45AM -0600, Mario Limonciello wrote:
+> > > > > > > commit 7752d5cfe3d1 ("x86: validate against acpi motherboard
+> > > > > > > resources") introduced checks for ensuring that MCFG table
+> > > > > > > also has memory region reservations to ensure no conflicts
+> > > > > > > were introduced from a buggy BIOS.
+> > > > > > > 
+> > > > > > > This has proceeded over time to add other types of
+> > > > > > > reservation checks for ACPI PNP resources and EFI MMIO
+> > > > > > > memory type.  The PCI firmware spec however says that these
+> > > > > > > checks are only required when the operating system doesn't
+> > > > > > > comprehend the firmware region:
+> > > > > > > 
+> > > > > > > ``` If the operating system does not natively comprehend
+> > > > > > > reserving the MMCFG region, the MMCFG region must be
+> > > > > > > reserved by firmware. The address range reported in the MCFG
+> > > > > > > table or by _CBA method (see Section 4.1.3) must be reserved
+> > > > > > > by declaring a motherboard resource. For most systems, the
+> > > > > > > motherboard resource would appear at the root of the ACPI
+> > > > > > > namespace (under \_SB) in a node with a _HID of EISAID
+> > > > > > > (PNP0C02), and the resources in this case should not be
+> > > > > > > claimed in the root PCI bus’s _CRS. The resources can
+> > > > > > > optionally be returned in Int15 E820h or EFIGetMemoryMap as
+> > > > > > > reserved memory but must always be reported through ACPI as
+> > > > > > > a motherboard resource.  ```
+> > > > > > 
+> > > > > > My understanding is that native comprehension would mean Linux
+> > > > > > knows how to discover and/or configure the MMCFG base address
+> > > > > > and size in the hardware and that Linux would then reserve
+> > > > > > that region so it's not used for anything else.
+> > > > > > 
+> > > > > > Linux doesn't have that, at least for x86.  It relies on the
+> > > > > > MCFG table to discover the MMCFG region, and it relies on
+> > > > > > PNP0C02 _CRS to reserve it.
+> > > > > 
+> > > > > MCFG to discover it matches the PCI firmware spec, but as I
+> > > > > point out above the decision to reserve this region doesn't
+> > > > > require PNP0C01/PNP0C02 _CRS.
+> > > > 
+> > > > Can you explain this reasoning a little more?  I claim Linux does
+> > > > not natively comprehend reserving the MMCFG region, but it sounds
+> > > > like you don't agree?  I think "native" comprehension would mean
+> > > > Linux would not need the MCFG table.
+> > > 
+> > > After our thread and the spec again I think you're right Linux
+> > > doesn't natively comprehend (reserve this region;) particularly
+> > > because of the stance you have on "static table" vs _CRS.
+> > 
+> > ["My stance" refers to this:
+> > 
+> >    Static tables like MCFG, HPET, ECDT, etc., are *not* mechanisms for
+> >    reserving address space.  The static tables are for things the OS
+> >    needs to know early in boot, before it can parse the ACPI namespace.
+> >    If a new table is defined, an old OS needs to operate correctly even
+> >    though it ignores the table.  _CRS allows that because it is generic
+> >    and understood by the old OS; a static table does not.
+> > 
+> > from https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/PCI/acpi-info.rst?id=v6.6#n32]
+> > 
+> > I don't think this is just my stance.  The ACPI spec could be clearer
+> > in terms of requiring PNP0C02 devices, not static tables, to reserve
+> > address space, but I think that requirement is a logical consequence
+> > of the ACPI design.
+> > 
+> > It's a goal of ACPI that an OS we release today should run on a
+> > platform released tomorrow.  If the new platform uses a static table
+> > to reserve address space used by some new hardware, today's OS doesn't
+> > know about it and could place another device on top of it.
+> > 
+> > Using _CRS of an ACPI device to reserve the new hardware address space
+> > is different because it works even with today's OS.  Today's OS can't
+> > *operate* tomorrow's hardware, but at least it won't create address
+> > conflicts with it.
+> > 
+> > > I just don't want to throw the vendor under the bus as it could have
+> > > been caught "sooner" and fixed by BIOS adding _CRS.
+> > 
+> > The MCFG requirement for PNP0C02 _CRS has been in the PCI Firmware
+> > spec since r3.0 in 2005.  I'm surprised that vendors still get this
+> > wrong.
+> 
+> Probably worth mentioning with the clairvoyance of the root cause of
+> the issue that prompted this conversation I've now discovered
+> another system with the exact same problem.  It's a different OEM,
+> different generation of hardware and a different IBV that they use
+> for their firmware.
+> 
+> I've also looked through the BIOS for a variety of reference designs
+> and I don't see a _CRS entry in any of them.
+> 
+> I'm fairly certain we're just getting lucky in Linux on a lot of
+> devices that the region is often overlapping with a region for EFI
+> runtime services.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202312150705.glrQ4ypv-lkp@intel.com/
+Ugh.  Yes, I'm sure it's not an isolated problem.
 
-All warnings (new ones prefixed by >>):
+> > Vendors definitely have an interest in making shipping OSes boot
+> > unchanged on new hardware.
+> 
+> At least the OEMs that I talk to use FWTS.  FWTS catches this issue,
+> but it's marked as LOW.  Everyone fixates on the HIGH or CRITICAL.
+> 
+> Given the severity of what I've seen it can do to a system I'm
+> proposing FWTS to move it to HIGH:
+> 
+> https://lists.ubuntu.com/archives/fwts-devel/2023-December/013772.html
 
-   drivers/mailbox/zynqmp-ipi-mailbox.c:92: warning: Excess struct member 'irq' description in 'zynqmp_ipi_mbox'
->> drivers/mailbox/zynqmp-ipi-mailbox.c:112: warning: Excess struct member 'ipi_mboxes' description in 'zynqmp_ipi_pdata'
+Thanks.  I don't know anything about FWTS, but I'm a little skeptical
+that it actually catches this issue.  It *looks* like FWTS builds its
+idea of the memory map from a dmesg log or /sys/firmware/memmap, which
+I think both come from the E820 map, which is x86-specific, of course.
 
+I don't see anything that builds a memory map based on _CRS methods,
+which I think is what we really want since the spec says:
 
-vim +112 drivers/mailbox/zynqmp-ipi-mailbox.c
+  The resources can optionally be returned in Int15 E820h or
+  EFIGetMemoryMap as reserved memory but must always be reported
+  through ACPI as a motherboard resource.
 
-4981b82ba2ff87 Wendy Liang 2019-02-21   93  
-4981b82ba2ff87 Wendy Liang 2019-02-21   94  /**
-4981b82ba2ff87 Wendy Liang 2019-02-21   95   * struct zynqmp_ipi_pdata - Description of z ZynqMP IPI agent platform data.
-4981b82ba2ff87 Wendy Liang 2019-02-21   96   *
-4981b82ba2ff87 Wendy Liang 2019-02-21   97   * @dev:                  device pointer corresponding to the Xilinx ZynqMP
-4981b82ba2ff87 Wendy Liang 2019-02-21   98   *                        IPI agent
-4981b82ba2ff87 Wendy Liang 2019-02-21   99   * @irq:                  IPI agent interrupt ID
-4981b82ba2ff87 Wendy Liang 2019-02-21  100   * @method:               IPI SMC or HVC is going to be used
-4981b82ba2ff87 Wendy Liang 2019-02-21  101   * @local_id:             local IPI agent ID
-4981b82ba2ff87 Wendy Liang 2019-02-21  102   * @num_mboxes:           number of mailboxes of this IPI agent
-4981b82ba2ff87 Wendy Liang 2019-02-21  103   * @ipi_mboxes:           IPI mailboxes of this IPI agent
-4981b82ba2ff87 Wendy Liang 2019-02-21  104   */
-4981b82ba2ff87 Wendy Liang 2019-02-21  105  struct zynqmp_ipi_pdata {
-4981b82ba2ff87 Wendy Liang 2019-02-21  106  	struct device *dev;
-4981b82ba2ff87 Wendy Liang 2019-02-21  107  	int irq;
-4981b82ba2ff87 Wendy Liang 2019-02-21  108  	unsigned int method;
-4981b82ba2ff87 Wendy Liang 2019-02-21  109  	u32 local_id;
-4981b82ba2ff87 Wendy Liang 2019-02-21  110  	int num_mboxes;
-c5225cd073c65a Kees Cook   2023-09-22  111  	struct zynqmp_ipi_mbox ipi_mboxes[] __counted_by(num_mboxes);
-4981b82ba2ff87 Wendy Liang 2019-02-21 @112  };
-4981b82ba2ff87 Wendy Liang 2019-02-21  113  
+(PCI Firmware spec r3.3, sec 4.1.2)
 
-:::::: The code at line 112 was first introduced by commit
-:::::: 4981b82ba2ff87df6a711fcd7a233c615df5fc79 mailbox: ZynqMP IPI mailbox controller
+> What is the actual *harm* in just using this MCFG table to make a
+> reservation when there isn't a PNP0C02 _CRS region declared?
+> 
+> At worst (a buggy BIOS) you would end up with hole in the memory map
+> that isn't usable for devices.  At best you end up with more working
+> devices without changing the firmware.
 
-:::::: TO: Wendy Liang <wendy.liang@xilinx.com>
-:::::: CC: Jassi Brar <jaswinder.singh@linaro.org>
+We definitely need to work around this in Linux, and your patch might
+well be the right thing.
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+I'm a *little* hesitant because all the code in mmconfig-shared.c that
+attempts to validate MCFG entries suggests that relying on them
+uncritically was a problem in some cases, so I want to try to convince
+myself that we really won't break something.
+
+Bjorn
 
