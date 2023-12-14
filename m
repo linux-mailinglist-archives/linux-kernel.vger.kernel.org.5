@@ -1,255 +1,106 @@
-Return-Path: <linux-kernel+bounces-11-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-12-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3903D813AB5
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 20:25:32 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 63A0A813AB6
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 20:26:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B9A181F21709
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 19:25:31 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A8D49B21839
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 19:26:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 597166979F;
-	Thu, 14 Dec 2023 19:25:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC67769794;
+	Thu, 14 Dec 2023 19:26:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bitbyteword.org header.i=@bitbyteword.org header.b="VdVhvKO9"
+	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="qYY7+BPW"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-oa1-f48.google.com (mail-oa1-f48.google.com [209.85.160.48])
+Received: from mail-pl1-f174.google.com (mail-pl1-f174.google.com [209.85.214.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 014756978F
-	for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 19:25:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bitbyteword.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bitbyteword.org
-Received: by mail-oa1-f48.google.com with SMTP id 586e51a60fabf-1eb39505ba4so5086401fac.0
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 11:25:11 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A7D046978A
+	for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 19:26:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
+Received: by mail-pl1-f174.google.com with SMTP id d9443c01a7336-1d367e7092eso9325865ad.0
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 11:26:44 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bitbyteword.org; s=google; t=1702581911; x=1703186711; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=JwXVK8YsyVLmc2yBDAeX97qZitBh++UFD7dC4Hziebg=;
-        b=VdVhvKO9sctnKqXHSz4/ySoIAzpe89B8c9/M5uFEyb8+5Zy08RtvxGWrGbywfYd4QJ
-         UaNLm/ROlt6A7hVWfNobsPDT6uGp/wrnonCwBN+pedVbnAyzFcwcZ17cUM/4fSKBGPOt
-         xE8HC9uDjNG2+Wm3e9BbmeFXmmD17i3ByvShds1GlAl4QIhmRKb6NsNBVmRCdrAva5We
-         a09Xlz47RGKxvDkaIHC8rOEY/jmixYYKY0VWFhcUA5afKR5HK7uY4rgsrfD2cZNgY+G8
-         mL1ejFUh8S3mZyTleMHM7U0Wo4l0HcPVOAzX0DR99pLtYNH8t/cRP1ELKKn0sKR1sJBB
-         E8nA==
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1702582004; x=1703186804; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=WGe+uUYlDw+uG476SCRJ8n5xCAk3qfvXoM3VQJW7/IQ=;
+        b=qYY7+BPW3giEoiFFZ2cP/+HW+VGTFB549jonZLeyDlOeO7gHbgv32VrpOXRFUErtWi
+         y3UuH4hif6Xjx9VnwQXGrDCytMvka4qbJKVj4VVPqdqjTicUfjtIkxJ+HQIMouqiUe7s
+         hW/o0k12cyD0pf51qJfLElb/jWFMX9edVU8Pdcf2uBUcKTkf44AyXFgAmxzFP14qRwCF
+         4vp/yJVXpdKk/4Mgk2hNpoizXGbfnKykEeOBkt5Qi2AWPgHGPPamKdzYTIy91S1Vrbpl
+         B1t8T9TMb8jJCgPigccbpaD/GerA4+dkbO5UZn1FZAvCSUv3Nh7lVanyheMeHDyCGubq
+         v+kA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702581911; x=1703186711;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=JwXVK8YsyVLmc2yBDAeX97qZitBh++UFD7dC4Hziebg=;
-        b=gYZy2P4no8Pl4WZyGVPw8gprYHPXCEQdQ1mAv2e2NbYHaFri9UeERVZ4QIneVjVLcL
-         dv1FTdUoGRv6dSSF+BRzD7kQ107TzS/XVPAI9zUJ8SSS18I8hQFbE7q4HMM5vjhjbWEv
-         x5tCQSriZyBEOOJWKO3HdB602a+gZKiiLWu5hIZ+halqXgVaxR3rq14JzHwiBPFDd6nK
-         Xekpc0EsE4y5XvyLecnvszDIcab85iOI013kO23EgBx6VdoqTed57P+8UY2QvOFSeWNA
-         ivKkuBI02J6D2AwV8xXLcmUpSrXf6nhHleKXxra7giOm5H8pWwe8X+jF8YI10fhJdXJy
-         /hpg==
-X-Gm-Message-State: AOJu0YxB7JCKhu8CdP2OiaNVP5Lsu6FDqFJdf1ritIevjh4lfsOdW6n4
-	BvWxCxJFU1m9ko9MzakAtnXN6G+PmY4Lgz6Zto64Gg==
-X-Google-Smtp-Source: AGHT+IH3G1TwNH1i/u30wxM0ViP2JcHCzdgBU1KULniy/qBA6V05JFTRAJqrED3PWzIUkv3l1XZDc4QGM8133tI0sTw=
-X-Received: by 2002:a05:6870:7013:b0:203:40a0:b786 with SMTP id
- u19-20020a056870701300b0020340a0b786mr2122394oae.63.1702581910907; Thu, 14
- Dec 2023 11:25:10 -0800 (PST)
+        d=1e100.net; s=20230601; t=1702582004; x=1703186804;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=WGe+uUYlDw+uG476SCRJ8n5xCAk3qfvXoM3VQJW7/IQ=;
+        b=hg8QIjGok+w/0jiO8PDGYZBm+M/y49BakYULSwi6SwOAof+FeSQUBf4B92Qu33OxaY
+         Lmu1ekPO4K+fK0jrLFQpVmU9DotGnbeNXiIF7zNuWeFBTaULtz92+QSnF5S2EFY1XCXy
+         eCuQYHSLpE5gnHoG3AnNBESKgPmglvcScK3+ZM79lW7yplqcMKVL2rrhdXcQO8f7hnzs
+         eqEXrgadJBbbv8ZXrfO5SXGwjv7hQ6bwKrAjYWsoWLt9SpNKqX+0a6kYX6LZ9jQGqxXI
+         1suWCIWl3XQPRuGoYEWzQUkE/30Nx9K5z70G+H5lRsiyWBLgYcem2O2plNGCBU/UscVo
+         uWKQ==
+X-Gm-Message-State: AOJu0Yx4bZa4/W0Pl/F6Vnn+WQ1T8DC/w36IYaYW1sA+p1tnzbj7ZaY1
+	u2Cr0bYkrm5ABmtqpiV4GAdxbA==
+X-Google-Smtp-Source: AGHT+IEGBbmy7QSIym83oljmFI1tPJjJEUP52og7dAI+4/8CMcuOzUA25xCsZbu3ULE4qkw5fTN+hw==
+X-Received: by 2002:a17:903:496:b0:1d3:752a:f4ab with SMTP id jj22-20020a170903049600b001d3752af4abmr877729plb.79.1702582004021;
+        Thu, 14 Dec 2023 11:26:44 -0800 (PST)
+Received: from ghost ([12.44.203.122])
+        by smtp.gmail.com with ESMTPSA id ja6-20020a170902efc600b001d1c96a0c66sm2564197plb.130.2023.12.14.11.26.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 Dec 2023 11:26:43 -0800 (PST)
+Date: Thu, 14 Dec 2023 11:26:40 -0800
+From: Charlie Jenkins <charlie@rivosinc.com>
+To: Dan Carpenter <dan.carpenter@linaro.org>
+Cc: oe-kbuild@lists.linux.dev, lkp@intel.com, oe-kbuild-all@lists.linux.dev,
+	linux-kernel@vger.kernel.org, Palmer Dabbelt <palmer@rivosinc.com>
+Subject: Re: arch/riscv/kernel/module.c:639 process_accumulated_relocations()
+ error: uninitialized symbol 'curr_type'.
+Message-ID: <ZXtW8IjL1Kf/2B1B@ghost>
+References: <d0897fb3-1af8-430b-aa8b-9aa829bad1d7@suswa.mountain>
+ <ZXoFhu2TPXgrsInY@ghost>
+ <a46f0c36-8fd2-4a85-880c-eb462d4a837b@suswa.mountain>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231214024727.3503870-1-vineeth@bitbyteword.org> <ZXsvl7mabUuNkWcY@google.com>
-In-Reply-To: <ZXsvl7mabUuNkWcY@google.com>
-From: Vineeth Remanan Pillai <vineeth@bitbyteword.org>
-Date: Thu, 14 Dec 2023 14:25:00 -0500
-Message-ID: <CAO7JXPihjjko6qe8tr6e6UE=L7uSR6AACq1Zwg+7n95s5A-yoQ@mail.gmail.com>
-Subject: Re: [RFC PATCH 0/8] Dynamic vcpu priority management in kvm
-To: Sean Christopherson <seanjc@google.com>
-Cc: Ben Segall <bsegall@google.com>, Borislav Petkov <bp@alien8.de>, 
-	Daniel Bristot de Oliveira <bristot@redhat.com>, Dave Hansen <dave.hansen@linux.intel.com>, 
-	Dietmar Eggemann <dietmar.eggemann@arm.com>, "H . Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>, 
-	Juri Lelli <juri.lelli@redhat.com>, Mel Gorman <mgorman@suse.de>, 
-	Paolo Bonzini <pbonzini@redhat.com>, Andy Lutomirski <luto@kernel.org>, 
-	Peter Zijlstra <peterz@infradead.org>, Steven Rostedt <rostedt@goodmis.org>, 
-	Thomas Gleixner <tglx@linutronix.de>, Valentin Schneider <vschneid@redhat.com>, 
-	Vincent Guittot <vincent.guittot@linaro.org>, Vitaly Kuznetsov <vkuznets@redhat.com>, 
-	Wanpeng Li <wanpengli@tencent.com>, Suleiman Souhlal <suleiman@google.com>, 
-	Masami Hiramatsu <mhiramat@google.com>, kvm@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	x86@kernel.org, Tejun Heo <tj@kernel.org>, Josh Don <joshdon@google.com>, 
-	Barret Rhoden <brho@google.com>, David Vernet <dvernet@meta.com>, 
-	Joel Fernandes <joel@joelfernandes.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <a46f0c36-8fd2-4a85-880c-eb462d4a837b@suswa.mountain>
 
-On Thu, Dec 14, 2023 at 11:38=E2=80=AFAM Sean Christopherson <seanjc@google=
-.com> wrote:
->
-> +sched_ext folks
->
-> On Wed, Dec 13, 2023, Vineeth Pillai (Google) wrote:
-> > Double scheduling is a concern with virtualization hosts where the host
-> > schedules vcpus without knowing whats run by the vcpu and guest schedul=
-es
-> > tasks without knowing where the vcpu is physically running. This causes
-> > issues related to latencies, power consumption, resource utilization
-> > etc. An ideal solution would be to have a cooperative scheduling
-> > framework where the guest and host shares scheduling related informatio=
-n
-> > and makes an educated scheduling decision to optimally handle the
-> > workloads. As a first step, we are taking a stab at reducing latencies
-> > for latency sensitive workloads in the guest.
-> >
-> > This series of patches aims to implement a framework for dynamically
-> > managing the priority of vcpu threads based on the needs of the workloa=
-d
-> > running on the vcpu. Latency sensitive workloads (nmi, irq, softirq,
-> > critcal sections, RT tasks etc) will get a boost from the host so as to
-> > minimize the latency.
-> >
-> > The host can proactively boost the vcpu threads when it has enough
-> > information about what is going to run on the vcpu - fo eg: injecting
-> > interrupts. For rest of the case, guest can request boost if the vcpu i=
-s
-> > not already boosted. The guest can subsequently request unboost after
-> > the latency sensitive workloads completes. Guest can also request a
-> > boost if needed.
-> >
-> > A shared memory region is used to communicate the scheduling informatio=
-n.
-> > Guest shares its needs for priority boosting and host shares the boosti=
-ng
-> > status of the vcpu. Guest sets a flag when it needs a boost and continu=
-es
-> > running. Host reads this on next VMEXIT and boosts the vcpu thread. For
-> > unboosting, it is done synchronously so that host workloads can fairly
-> > compete with guests when guest is not running any latency sensitive
-> > workload.
->
-> Big thumbs down on my end.  Nothing in this RFC explains why this should =
-be done
-> in KVM.  In general, I am very opposed to putting policy of any kind into=
- KVM,
-> and this puts a _lot_ of unmaintainable policy into KVM by deciding when =
-to
-> start/stop boosting a vCPU.
->
-I am sorry for not clearly explaining the goal. The intent was not to
-have scheduling policies implemented in kvm, but to have a mechanism
-for guest and host schedulers to communicate so that guest workloads
-get a fair treatment from host scheduler while competing with host
-workloads. Now when I think about it, the implementation seems to
-suggest that we are putting policies in kvm. Ideally, the goal is:
-- guest scheduler communicates the priority requirements of the workload
-- kvm applies the priority to the vcpu task.
-- Now that vcpu is appropriately prioritized, host scheduler can make
-the right choice of picking the next best task.
+On Thu, Dec 14, 2023 at 11:00:46AM +0300, Dan Carpenter wrote:
+> On Wed, Dec 13, 2023 at 11:27:02AM -0800, Charlie Jenkins wrote:
+> > > 8fd6c5142395a1 Charlie Jenkins 2023-11-01  638  			}
+> > > 8fd6c5142395a1 Charlie Jenkins 2023-11-01 @639  			reloc_handlers[curr_type].accumulate_handler(
+> > >                                                                                        ^^^^^^^^^
+> > > Can the list be empty?  Uninitialized in that case.
+> > 
+> > That's a tricky one, the list cannot be empty. Each bucket in the
+> > bucket_iter is guarunteed to have at least one rel_entry. I can probably
+> > resolve this by extracting this for loop into a do-while loop.
+> 
+> You can just ignore false positives.  It's not really a fix to change it
+> to a do-while loop.  I reviewed the do while code before reading this
+> email and I still wondered about empty lists, but just to hear that it's
+> not going to be empty is enough.  Just the email was sufficient.
+> 
+> regards,
+> dan carpenter
+> 
 
-We have an exception of proactive boosting for interrupts/nmis. I
-don't expect these proactive boosting cases to grow. And I think this
-also to be controlled by the guest where the guest can say what
-scenarios would it like to be proactive boosted.
+The freeing was actually broken so that needed to be fixed and I figured
+that it was worthwhile to include the do-while in the same patch to get
+rid of the warning.
 
-That would make kvm just a medium to communicate the scheduler
-requirements from guest to host and not house any policies.  What do
-you think?
+- Charlie
 
-> Concretely, boosting vCPUs for most events is far too coarse grained.  E.=
-g. boosting
-> a vCPU that is running a low priority workload just because the vCPU trig=
-gered
-> an NMI due to PMU counter overflow doesn't make sense.  Ditto for if a gu=
-est's
-> hrtimer expires on a vCPU running a low priority workload.
->
-> And as evidenced by patch 8/8, boosting vCPUs based on when an event is _=
-pending_
-> is not maintainable.  As hardware virtualizes more and more functionality=
-, KVM's
-> visibility into the guest effectively decreases, e.g. Intel and AMD both =
-support
-> with IPI virtualization.
->
-> Boosting the target of a PV spinlock kick is similarly flawed.  In that c=
-ase, KVM
-> only gets involved _after_ there is a problem, i.e. after a lock is conte=
-nded so
-> heavily that a vCPU stops spinning and instead decided to HLT.  It's not =
-hard to
-> imagine scenarios where a guest would want to communicate to the host tha=
-t it's
-> acquiring a spinlock for a latency sensitive path and so shouldn't be sch=
-eduled
-> out.  And of course that's predicated on the assumption that all vCPUs ar=
-e subject
-> to CPU overcommit.
->
-> Initiating a boost from the host is also flawed in the sense that it reli=
-es on
-> the guest to be on the same page as to when it should stop boosting.  E.g=
-. if
-> KVM boosts a vCPU because an IRQ is pending, but the guest doesn't want t=
-o boost
-> IRQs on that vCPU and thus doesn't stop boosting at the end of the IRQ ha=
-ndler,
-> then the vCPU could end up being boosted long after its done with the IRQ=
-.
->
-> Throw nested virtualization into the mix and then all of this becomes nig=
-h
-> impossible to sort out in KVM.  E.g. if an L1 vCPU is a running an L2 vCP=
-U, i.e.
-> a nested guest, and L2 is spamming interrupts for whatever reason, KVM wi=
-ll end
-> repeatedly boosting the L1 vCPU regardless of the priority of the L2 work=
-load.
->
-> For things that aren't clearly in KVM's domain, I don't think we should i=
-mplement
-> KVM-specific functionality until every other option has been tried (and f=
-ailed).
-> I don't see any reason why KVM needs to get involved in scheduling, beyon=
-d maybe
-> providing *input* regarding event injection, emphasis on *input* because =
-KVM
-> providing information to userspace or some other entity is wildly differe=
-nt than
-> KVM making scheduling decisions based on that information.
->
-Agreed with all the points above and it doesn't make sense to have
-policies in kvm. But if kvm can act as a medium to communicate
-scheduling requirements between guest and host and not make any
-decisions, would that be more reasonable?
-
-> Pushing the scheduling policies to host userspace would allow for far mor=
-e control
-> and flexibility.  E.g. a heavily paravirtualized environment where host u=
-serspace
-> knows *exactly* what workloads are being run could have wildly different =
-policies
-> than an environment where the guest is a fairly vanilla Linux VM that has=
- received
-> a small amount of enlightment.
->
-> Lastly, if the concern/argument is that userspace doesn't have the right =
-knobs
-> to (quickly) boost vCPU tasks, then the proposed sched_ext functionality =
-seems
-> tailor made for the problems you are trying to solve.
->
-> https://lkml.kernel.org/r/20231111024835.2164816-1-tj%40kernel.org
->
-You are right, sched_ext is a good choice to have policies
-implemented. In our case, we would need a communication mechanism as
-well and hence we thought kvm would work best to be a medium between
-the guest and the host. The policies could be in the guest and the
-guest shall communicate its priority requirements(based on policy) to
-the host via kvm and then the host scheduler takes action based on
-that.
-
-Please let me know.
-
-Thanks,
-Vineeth
 
