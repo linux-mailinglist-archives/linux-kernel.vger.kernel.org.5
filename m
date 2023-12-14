@@ -1,99 +1,96 @@
-Return-Path: <linux-kernel+bounces-17-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-18-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 91C2E813ACA
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 20:32:02 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 91324813ACE
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 20:32:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4DACF283307
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 19:32:01 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F1A5AB21124
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 19:32:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C1B96697A4;
-	Thu, 14 Dec 2023 19:31:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 95FA16A020;
+	Thu, 14 Dec 2023 19:32:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="WVWSEAR1"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="c+RTrvfc"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-lf1-f45.google.com (mail-lf1-f45.google.com [209.85.167.45])
+Received: from mail-wr1-f41.google.com (mail-wr1-f41.google.com [209.85.221.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7AC1B697AB
-	for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 19:31:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lf1-f45.google.com with SMTP id 2adb3069b0e04-50bf26b677dso8337540e87.2
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 11:31:51 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C4C86A336;
+	Thu, 14 Dec 2023 19:32:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f41.google.com with SMTP id ffacd0b85a97d-3364c9ba749so272169f8f.1;
+        Thu, 14 Dec 2023 11:32:12 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1702582309; x=1703187109; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=qtamLk15uiLxGzhwsunKJdl02l1MlYN9ssm1S1ptW9s=;
-        b=WVWSEAR1+XUM+0+vVEQXc/R5frlNfDGmBwZfh8G26nsMRWmdW/J4z9vYGO5F418dTQ
-         Tw8IZ1jalvyk5JEp5VZI2rGz2A//64F/hWS8rMhS7gD7/Q/R5T7tK440ptSD8kLZtgXk
-         vJwGFSyUDUvlenB7sdlC4Ye1UoC1UV+GziUmuK+9mU3JeQ0HICuP0nhvgNb5w14H079X
-         abK5jSscETZdfQJfF95T2z949lSNfIdVNyp79+k+6lK/ewU/PvNKYKy+RrgRuqQUI8/x
-         k2namhGRuPg4R/DBBazwjZWupGbhPA/cU04mqohnQV9zRznotYibQN4g8XdN2W/xaAR7
-         p96Q==
+        d=gmail.com; s=20230601; t=1702582331; x=1703187131; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=yZwA4coKcId6uh+NhWHu2prHRdEVSOKW+sQpZ6upqMM=;
+        b=c+RTrvfcTr5gmGWsv9b5DPhDRgRW2P4H/BeMen6V0qT49niZhSMM/m5Z2zMafnCoLi
+         7hnL73FdpOJsk8k+xNuSGlinBCrp0OHDojabP9Q6nUnMyBDSGtbhrpn4Zyen0/REAHY/
+         l+4720cdpd8/UAOSA6jm/Lk4i8qjcBbgo3VyL9IOnFPZzuHzFB7cXRZ4lzAu6hlFnjK7
+         ys5xs5MGT9LMpLDCI9/2FcwMDjJA4oJjX1Yfwn5DjF9NjvzzOITm5pgebQPgaO2x7eqS
+         G+fnYq5ST4ZuY5VrvVSdCSqhvXKscI0DsaXzca94pM/rksVI2ZxllZcgeP86MK61HIvA
+         iN5Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702582309; x=1703187109;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=qtamLk15uiLxGzhwsunKJdl02l1MlYN9ssm1S1ptW9s=;
-        b=vbgiwrfFc6Ya7Vnx3Qy8JNwKj8xjB0DdfTryahnrSZDtL1mSxz7nU3ulWA2fjTv6gg
-         PLA3lsN9y0zgBIZTxBgzXCiu7IfLXhdoMnC+IHQxN9JdC+dQnOdNI8qDtUUT6s59j0WS
-         /pY7QTeS+sFtXoCMmY4qpRx2ECbB1kZuEIGBYn4wmSfgGmqr2JgWlo+WnaYdAGRxFE54
-         Z+O+yYb/1TWyJ3gLuP3yl70PHCqAVxoMCmJLvh+4xiKnPdIZei38YWJaAJUXiW7j4eNr
-         Xm/+/xVPv6G0KHQzmcIo9Ljzr6ukSmhBqunUooxg38juuf5fnqZoN7/FqRY2mhhWt+EC
-         8o8Q==
-X-Gm-Message-State: AOJu0YyuAh6CbymiBPsIQPegYYMc2j3JU+c5Qhkv0ddnJkNl9DWdgCy0
-	c9iaMIwXmOCMQg7dNOvpXdsMkA==
-X-Google-Smtp-Source: AGHT+IH5JM+njOSUVpJVz1U7SmBjrCyLvoh710QoZPAixUx/0/KVQdGX2+wsArj3SMVrpzuVNns6Iw==
-X-Received: by 2002:a19:e003:0:b0:507:a04c:76e8 with SMTP id x3-20020a19e003000000b00507a04c76e8mr3167966lfg.46.1702582309365;
-        Thu, 14 Dec 2023 11:31:49 -0800 (PST)
-Received: from [172.30.205.72] (UNUSED.212-182-62-129.lubman.net.pl. [212.182.62.129])
-        by smtp.gmail.com with ESMTPSA id m21-20020ac24255000000b0050bf4df12d6sm1935590lfl.168.2023.12.14.11.31.47
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 14 Dec 2023 11:31:49 -0800 (PST)
-Message-ID: <b578a34a-0e7f-4175-8051-3d2340861700@linaro.org>
-Date: Thu, 14 Dec 2023 20:31:46 +0100
+        d=1e100.net; s=20230601; t=1702582331; x=1703187131;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=yZwA4coKcId6uh+NhWHu2prHRdEVSOKW+sQpZ6upqMM=;
+        b=wAcK25WSran0P2dmdxe6q/zjUFxwtiHY4KZAP1a69OnPQcmsqQbgA/ABUZil5HYy6i
+         XJ+MtMZba+hU9z2LyUciQzIrUErWz+r0bcfTkueL07ycNtOo/BnBDpDYheEi+i3Jx7ci
+         uPVxb9CBDbv/WpHNRr0pWWtOUxAMLN2y8IgVL3DAjT43qhbaxBh5I/0u+dfx7Lajn4nK
+         bYQif7FUEJ1GewoQNceScCRHbL1d0jRg3l/FXPV9kWx8T0Bj1x3Pbbp5jr9XHx0nfYpD
+         fjyZAewXkbHltVtN+c5D7Two+mc8kaZ4/l/sDLfQOnlURGENFXNPZrQWxSOP//qRxO6O
+         Bbhw==
+X-Gm-Message-State: AOJu0Yx/tqOcki470jYNWWKFuZKalkl3ueVGwXISfs3zHoxYhixXcZA6
+	TxSEznYz4Kr4LegcHgZATcQ=
+X-Google-Smtp-Source: AGHT+IHtsRk3mvow3KSNtH11+JtzAaTRNz5GbH4j5brmp/1GnWTdRGOSdNUSt5RAhcs8f2RmNTqI2g==
+X-Received: by 2002:a5d:69ce:0:b0:336:3ee3:d07 with SMTP id s14-20020a5d69ce000000b003363ee30d07mr762877wrw.119.1702582330895;
+        Thu, 14 Dec 2023 11:32:10 -0800 (PST)
+Received: from archlinux.localnet (82-149-12-148.dynamic.telemach.net. [82.149.12.148])
+        by smtp.gmail.com with ESMTPSA id n6-20020a5d6606000000b00332ff137c29sm16934629wru.79.2023.12.14.11.32.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 Dec 2023 11:32:10 -0800 (PST)
+From: Jernej =?utf-8?B?xaBrcmFiZWM=?= <jernej.skrabec@gmail.com>
+To: Lee Jones <lee@kernel.org>, Samuel Holland <samuel@sholland.org>,
+ Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+ linux-leds@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
+ Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: Pavel Machek <pavel@ucw.cz>, Chen-Yu Tsai <wens@csie.org>
+Subject:
+ Re: [PATCH v1 1/1] leds: sun50i-a100: Convert to be agnostic to property
+ provider
+Date: Thu, 14 Dec 2023 20:32:09 +0100
+Message-ID: <12339724.O9o76ZdvQC@archlinux>
+In-Reply-To: <20231214192131.1309912-1-andriy.shevchenko@linux.intel.com>
+References: <20231214192131.1309912-1-andriy.shevchenko@linux.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] arm64: dts: qcom: x1e80100-crd: Fix supplies for some
- LDOs in PM8550
-To: Abel Vesa <abel.vesa@linaro.org>, Andy Gross <agross@kernel.org>,
- Bjorn Andersson <andersson@kernel.org>, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Sibi Sankar <quic_sibis@quicinc.com>,
- Rajendra Nayak <quic_rjendra@quicinc.com>
-Cc: linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20231214-x1e80100-dts-fix-pm8550-regulators-supplies-v1-1-6b5830dc337e@linaro.org>
-Content-Language: en-US
-From: Konrad Dybcio <konrad.dybcio@linaro.org>
-In-Reply-To: <20231214-x1e80100-dts-fix-pm8550-regulators-supplies-v1-1-6b5830dc337e@linaro.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 
-
-
-On 12/14/23 20:24, Abel Vesa wrote:
-> The LDOs 1, 4 and 10 from PM8550 share the same supply, the SMPS 4
-> from PM8550ve. This needs to be done through shared supply approach
-> otherwise the bindings check fails.
-Not only that, but Linux also doesn't parse it :D
+On Thursday, December 14, 2023 8:21:31 PM CET Andy Shevchenko wrote:
+> Convert the driver to be agnostic to the property provider.
+> LEDS subsytem is not dependent on OF, so no need to make drivers
+> be a such.
 > 
-> Fixes: bd50b1f5b6f3 ("arm64: dts: qcom: x1e80100: Add Compute Reference Device")
-> Signed-off-by: Abel Vesa <abel.vesa@linaro.org>
-> ---
-Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-Konrad
+Reviewed-by: Jernej Skrabec <jernej.skrabec@gmail.com>
+
+Best regards,
+Jernej
+
+
 
