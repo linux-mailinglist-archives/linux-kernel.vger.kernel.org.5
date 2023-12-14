@@ -1,169 +1,192 @@
-Return-Path: <linux-kernel+bounces-56-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-63-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 131A2813B5A
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 21:14:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 455B0813B74
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 21:23:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A9BDB1F2213F
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 20:14:41 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B30361F22555
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 20:23:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 11FD56A03E;
-	Thu, 14 Dec 2023 20:14:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C274A6AB83;
+	Thu, 14 Dec 2023 20:22:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="Zt2jpx02"
+	dkim=pass (2048-bit key) header.d=nabijaczleweli.xyz header.i=@nabijaczleweli.xyz header.b="ljLir48Q"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-lf1-f52.google.com (mail-lf1-f52.google.com [209.85.167.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from tarta.nabijaczleweli.xyz (tarta.nabijaczleweli.xyz [139.28.40.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 051926A021
-	for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 20:14:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
-Received: by mail-lf1-f52.google.com with SMTP id 2adb3069b0e04-50e0d1f9fe6so3561649e87.1
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 12:14:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1702584867; x=1703189667; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=BzpbUH5EkrEm9i3H+vtEmgiPJGsbQVnri/dVuua/oQA=;
-        b=Zt2jpx025or3R+upmsZBAVw4TOoB+Ar5UIfFUYL3+8E6/abQk4KE/tEjPxEvxTlKPQ
-         6xPjUI5NVejZoryHs4aq0ZtkAARA2pdMRUymSHR8o2aRrDBgCJaSejdLgRr71ROsJ93d
-         u167LzKpsgZ9bixi8zJVFHomwewvdKU5AFyt0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702584867; x=1703189667;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=BzpbUH5EkrEm9i3H+vtEmgiPJGsbQVnri/dVuua/oQA=;
-        b=RTrptaH1FPnsEXYuIMypWHlrwotyZM1uvgulYqj0M5iaQ7I2GHMvG0tR8LfjOn0+dk
-         ABTmkVHO9mgqHeummsY6FWxMwVcmlhEGpfmuUQRAZjEf/Ryn3qbzTxg77D28ZiHfJdqE
-         L9ZBQGRcfJ7L0/Zw/8thGkfaDQtQVL2kRMdGb2gFLhF3UB5Dr2GjaJ2h1V3c+nDBC3PW
-         zkOoUNzeM9yVCe2eAXZf7qakYe1FVO/GNDgzGlHJgeOFLgzlYxCTjrQp9kP3jo/CVbFA
-         3imx4+ImZL2zX4SqqCWV41z6ICnbokeJ3nZ8WENehooQxksVjeRM4F14iN1nJOc6qC3J
-         YvFQ==
-X-Gm-Message-State: AOJu0Yzs7uk4GjV9FeD0w3dpceD0MZJG5wKVpDDgWKWYOTdDAlie/gp2
-	0qSLXkTktEQ+bX4myX8k2Vjxp+i/cfzbrewmbgcxNUyN
-X-Google-Smtp-Source: AGHT+IHdhi//jHezcxm/41V0bYppScztynekOKEZkz+aKftqOxFnY04UIzR0cm2xTyO0Lx9MKjJ/kQ==
-X-Received: by 2002:a05:6512:1595:b0:50e:4b6:3127 with SMTP id bp21-20020a056512159500b0050e04b63127mr3895337lfb.127.1702584867748;
-        Thu, 14 Dec 2023 12:14:27 -0800 (PST)
-Received: from mail-lj1-f175.google.com (mail-lj1-f175.google.com. [209.85.208.175])
-        by smtp.gmail.com with ESMTPSA id fc21-20020a056512139500b0050d15c350c8sm1869005lfb.54.2023.12.14.12.14.26
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 14 Dec 2023 12:14:26 -0800 (PST)
-Received: by mail-lj1-f175.google.com with SMTP id 38308e7fff4ca-2c9f559b82cso98460941fa.0
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 12:14:26 -0800 (PST)
-X-Received: by 2002:a2e:b80d:0:b0:2cc:3f14:405d with SMTP id
- u13-20020a2eb80d000000b002cc3f14405dmr1108832ljo.102.1702584866181; Thu, 14
- Dec 2023 12:14:26 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F91C6A327;
+	Thu, 14 Dec 2023 20:22:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nabijaczleweli.xyz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nabijaczleweli.xyz
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=nabijaczleweli.xyz;
+	s=202305; t=1702584852;
+	bh=meBGsnMOzECjyH83S0TIoYo1VQ8lyxr11KCwZtgZu4E=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=ljLir48QxIlhO3e+igkAxAZMr/kSNsUrkSu17U1BVlbL1wmy8SCMVmKZBM56NQAX+
+	 lJBh4vokm9xllnPFrVxsFBEL652fE1Vet4Nv0ZFSigl73pM7Jbt+BqwtEEZeW+HjUi
+	 LHEISWX7JW0611MTRtIyYdF+wUZmbQvajTj1XJKPbG/y+GSvggHgg3k7yh/H8gRAar
+	 11AXY8a4AxZH8XG1VBWyP8u7xjH7QXgLlGiT29ib+GgYpS2HIvHLgHjRThbYgB/Wo4
+	 iHtrQgxIzTcQAeVySqSFw7fxzn1AoMOwOVIUWftVrmi2OE9ma10qU5St5WlrZgfq7h
+	 aanPxQWECP62g==
+Received: from tarta.nabijaczleweli.xyz (unknown [192.168.1.250])
+	by tarta.nabijaczleweli.xyz (Postfix) with ESMTPSA id 7B3A313912;
+	Thu, 14 Dec 2023 21:14:12 +0100 (CET)
+Date: Thu, 14 Dec 2023 21:14:12 +0100
+From: 
+	Ahelenia =?utf-8?Q?Ziemia=C5=84ska?= <nabijaczleweli@nabijaczleweli.xyz>
+To: Jens Axboe <axboe@kernel.dk>
+Cc: Christian Brauner <brauner@kernel.org>, 
+	Alexander Viro <viro@zeniv.linux.org.uk>, linux-fsdevel@vger.kernel.org, 
+	"D. Wythe" <alibuda@linux.alibaba.com>, "David S. Miller" <davem@davemloft.net>, 
+	"Liam R. Howlett" <Liam.Howlett@oracle.com>, Alexander Mikhalitsyn <alexander@mihalicyn.com>, 
+	Andrew Morton <akpm@linux-foundation.org>, Boris Pismenny <borisp@nvidia.com>, 
+	Cong Wang <cong.wang@bytedance.com>, David Ahern <dsahern@kernel.org>, 
+	David Howells <dhowells@redhat.com>, Eric Dumazet <edumazet@google.com>, 
+	Gavrilov Ilia <Ilia.Gavrilov@infotecs.ru>, Hyeonggon Yoo <42.hyeyoo@gmail.com>, 
+	Jakub Kicinski <kuba@kernel.org>, Jan Karcher <jaka@linux.ibm.com>, 
+	John Fastabend <john.fastabend@gmail.com>, Karsten Graul <kgraul@linux.ibm.com>, Kirill Tkhai <tkhai@ya.ru>, 
+	Kuniyuki Iwashima <kuniyu@amazon.com>, Li kunyu <kunyu@nfschina.com>, linux-kernel@vger.kernel.org, 
+	linux-s390@vger.kernel.org, netdev@vger.kernel.org, linux-trace-kernel@vger.kernel.org, 
+	Masami Hiramatsu <mhiramat@kernel.org>, Miklos Szeredi <miklos@szeredi.hu>, 
+	Paolo Abeni <pabeni@redhat.com>, Pengcheng Yang <yangpc@wangsu.com>, 
+	Shigeru Yoshida <syoshida@redhat.com>, Steven Rostedt <rostedt@goodmis.org>, 
+	Suren Baghdasaryan <surenb@google.com>, Tony Lu <tonylu@linux.alibaba.com>, 
+	Wen Gu <guwen@linux.alibaba.com>, Wenjia Zhang <wenjia@linux.ibm.com>, 
+	Xu Panda <xu.panda@zte.com.cn>, Zhang Zhengming <zhang.zhengming@h3c.com>
+Subject: Re: [PATCH RERESEND 00/11] splice(file<>pipe) I/O on file as-if
+ O_NONBLOCK
+Message-ID: <6rimhkkijpaiick465lvwafgd6ttzhyqq2st6gjobxdyvqhz3p@tarta.nabijaczleweli.xyz>
+References: <2cover.1697486714.git.nabijaczleweli@nabijaczleweli.xyz>
+ <500557ed-3967-455e-8a79-d64711045b70@kernel.dk>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231212231706.2680890-1-jeffxu@chromium.org> <20231212231706.2680890-12-jeffxu@chromium.org>
- <CAHk-=wgn02cpoFEDQGgS+5BUqA2z-=Ks9+PNd-pEJy8h+NOs5g@mail.gmail.com>
- <CALmYWFu39nzHvBmRsA326GcmV9u=eM-2aCGOvLK31rrb2R9NEw@mail.gmail.com>
- <CAHk-=wh_VViVZxjiQ5jtB0q=p=JtJMj2R24UAmj-fL-RNLWxNw@mail.gmail.com> <CAEAAPHZpYXHNPdca+xfj77bwYaL6PY-c_oQ54r+=wtJa6_hmCA@mail.gmail.com>
-In-Reply-To: <CAEAAPHZpYXHNPdca+xfj77bwYaL6PY-c_oQ54r+=wtJa6_hmCA@mail.gmail.com>
-From: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Thu, 14 Dec 2023 12:14:09 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wiVhHmnXviy1xqStLRozC4ziSugTk=1JOc8ORWd2_0h7g@mail.gmail.com>
-Message-ID: <CAHk-=wiVhHmnXviy1xqStLRozC4ziSugTk=1JOc8ORWd2_0h7g@mail.gmail.com>
-Subject: Re: [RFC PATCH v3 11/11] mseal:add documentation
-To: =?UTF-8?Q?Stephen_R=C3=B6ttger?= <sroettger@google.com>
-Cc: Jeff Xu <jeffxu@google.com>, jeffxu@chromium.org, akpm@linux-foundation.org, 
-	keescook@chromium.org, jannh@google.com, willy@infradead.org, 
-	gregkh@linuxfoundation.org, jorgelo@chromium.org, groeck@chromium.org, 
-	linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org, 
-	linux-mm@kvack.org, pedro.falcato@gmail.com, dave.hansen@intel.com, 
-	linux-hardening@vger.kernel.org, deraadt@openbsd.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="yfpi4lavvicqmx4h"
+Content-Disposition: inline
+In-Reply-To: <500557ed-3967-455e-8a79-d64711045b70@kernel.dk>
+User-Agent: NeoMutt/20231103-116-3b855e-dirty
+
+
+--yfpi4lavvicqmx4h
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, 14 Dec 2023 at 10:07, Stephen R=C3=B6ttger <sroettger@google.com> w=
-rote:
->
-> AIUI, the madvise(DONTNEED) should effectively only change the content of
-> anonymous pages, i.e. it's similar to a memset(0) in that case. That's wh=
-y we
-> added this special case: if you want to madvise(DONTNEED) an anonymous pa=
-ge,
-> you should have write permissions to the page.
+On Thu, Dec 14, 2023 at 12:06:57PM -0700, Jens Axboe wrote:
+> On 12/14/23 11:44 AM, Ahelenia Ziemia=C5=84ska wrote:
+> > This does that, effectively making splice(file -> pipe)
+> > request (and require) O_NONBLOCK on reads fron the file:
+> > this doesn't affect splicing from regular files and blockdevs,
+> > since they're always non-blocking
+> > (and requesting the stronger "no kernel sleep" IOCB_NOWAIT is non-sensi=
+cal),
+> Not sure how you got the idea that regular files or block devices is
+> always non-blocking, this is certainly not true without IOCB_NOWAIT.
+> Without IOCB_NOWAIT, you can certainly be waiting for previous IO to
+> complete.
+Maybe "always non-blocking" is an abuse of the term, but the terminology
+is lost on me. By this I mean that O_NONBLOCK files/blockdevs have the
+same semantics as non-O_NONBLOCK files/blockdevs =E2=80=92 they may block f=
+or a
+bit while the I/O queue drains, but are guaranteed to complete within
+a relatively narrow bounded time; any contending writer/opener
+will be blocked for a short bit but will always wake up.
 
-Hmm. I actually would be happier if we just made that change in
-general. Maybe even without sealing, but I agree that it *definitely*
-makes sense in general as a sealing thing.
+This is in contrast to pipes/sockets/ttys/&c., which wait for a peer to
+send some data, and block until there is some; any contending writer/opener
+will be blocked potentially ad infinitum.
 
-IOW, just saying
+Or, the way I see it, splice(socket -> pipe) can trivially be used to
+lock the pipe forever, whereas I don't think splice(regfile -> pipe) can,
+regardless of IOCB_NOWAIT, so the specific semantic IOCB_NOWAIT provides
+is immaterial here, so not specifying IOCB_NOWAIT in filemap_splice_read()
+provides semantics consistent to "file is read as-if it had O_NONBLOCK set".
 
- "madvise(DONTNEED) needs write permissions to an anonymous mapping when se=
-aled"
+> > but always returns -EINVAL for ttys.
+> > Sockets behave as expected from O_NONBLOCK reads:
+> > splice if there's data available else -EAGAIN.
+> >=20
+> > This should all pretty much behave as-expected.
+> Should it? Seems like there's a very high risk of breaking existing use
+> cases here.
+If something wants to splice from a socket to a pipe and doesn't
+degrade to read/write if it gets EAGAIN then it will either retry and
+hotloop in the splice or error out, yeah.
 
-makes 100% sense to me. Having a separate _flag_ to give sensible
-semantics is just odd.
+I don't think this is surmountable.
 
-IOW, what I really want is exactly that "sensible semantics, not random fla=
-gs".
+> Have you at all looked into the approach of enabling splice to/from
+> _without_ holding the pipe lock? That, to me, would seem like a much
+> saner approach, with the caveat that I have not looked into that at all
+> so there may indeed be reasons why this is not feasible.
+IIUC Linus prepared a patch on security@ in
+  <CAHk-=3DwhPmrWvXBqcK6ey_mnd-0fz_HNUHEfz3NX97mqoCCcwtA@mail.gmail.com>
+(you're in To:) and an evolution of this is in
+  https://lore.kernel.org/lkml/CAHk-=3DwgmLd78uSLU9A9NspXyTM9s6C23OVDiN2YjA=
+-d8_S0zRg@mail.gmail.com/t/#u
+(you're in Cc:) that does this.
 
-Particularly for new system calls with fairly specialized use, I think
-it's very important that the semantics are sensible on a conceptual
-level, and that we do not add system calls that are based on "random
-implementation issue of the day".
+He summarises it below as=20
+> So while fixing your NULL pointer check should be trivial, I think
+> that first patch is actually fundamentally broken wrt pipe resizing,
+> and I see no really sane way to fix it. We could add a new lock just
+> for that, but I don't think it's worth it.
+and
+> But it is possible that we need to just bite the bullet and say
+> "copy_splice_read() needs to use a non-blocking kiocb for the IO".
+so that's what I did.
 
-Yes, yes, then as we have to maintain things long-term, and we hit
-some compatibility issue, at *THAT* point we'll end up facing nasty
-"we had an implementation that had these semantics in practice, so now
-we're stuck with it", but when introducing a new system call, let's
-try really hard to start off from those kinds of random things.
+If Linus, who drew up and maintained this code for ~30 years,
+didn't arrive at a satisfactory approach, I, after ~30 minutes,
+won't either.
 
-Wouldn't it be lovely if we can just come up with a sane set of "this
-is what it means to seal a vma", and enumerate those, and make those
-sane conceptual rules be the initial definition. By all means have a
-"flags" argument for future cases when we figure out there was
-something wrong or the notion needed to be extended, but if we already
-*start* with random extensions, I feel there's something wrong with
-the whole concept.
+It would be very sane to both not change the semantic and fix the lock
+by just not locking but at the top of that thread Christian said
+> Splice would have to be
+> refactored to not rely on pipe_lock(). That's likely major work with a
+> good portion of regressions if the past is any indication.
+and clearly this is true, so lacking the ability and capability
+to do that and any reasonable other ideas
+(You could either limit splices to a proportion of the pipe size,
+ but then just doing five splices gets you where we are rn
+ (or, as Linus construed it, into "write() returns -EBUSY" territory,
+  which is just as bad but at least the writers aren't unkillable),
+ and it reduces the I/O per splice significantly.
 
-So I would really wish for the first version of
+ You could limit each pipe to one outstanding splice and always leave
+ Some space for normal I/O. This falls into "another lock just for this"
+ territory I think, and it also sucks for the 99% of normal users.)
+I did this because Linus vaguely sanxioned it.
 
-     mseal(start, len, flags);
+It's probably feasible, but alas it isn't feasible for me.
 
-to have "flags=3D0" be the one and only case we actually handle
-initially, and only add a single PROT_SEAL flag to mmap() that says
-"create this mapping already pre-sealed".
+--yfpi4lavvicqmx4h
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Strive very hard to make sealing be a single VM_SEALED flag in the
-vma->vm_flags that we already have, just admit that none of this
-matters on 32-bit architectures, so that VM_SEALED can just use one of
-the high flags that we have several free of (and that pkeys already
-depends on), and make this a standard feature with no #ifdef's.
+-----BEGIN PGP SIGNATURE-----
 
-Can chrome live with that? And what would the required semantics be?
-I'll start the list:
+iQIzBAABCgAdFiEEfWlHToQCjFzAxEFjvP0LAY0mWPEFAmV7Yg0ACgkQvP0LAY0m
+WPGl2xAAmYgbJ/w5E0nZQfpnb6zGUB4AQqRWeWIssHgDm3oH2jKgIhk0PDPt+ttb
+wYRRdROTVWH/k7RlPa7+L4hClNRakuyDxATbna1XuIpk8qfNTrgXg138J2pB+jqY
+IzX3N0Z7NC1HlbA34ELgm8lPphOyNmkVp333i9LaLcDyZ/4//Oi17Kr/mfke8iSp
+1/Mh7R/tzdllH6DjgizgBTjTBGqQ9Blc2MiLdQJ2Fvpjz+jr9x7L1BMIrvZHtCGm
+7/n4Fm/9zxuWxWyUd2WuT6HtqdxUfJ8dNbAssexD44H0iCwA0bKIurBAZIzluLvi
+weB+WynfgNcR4HiTXFt7DwnTUPxF74HSaX9kwWMRGe6cHlIcbsJ2dePfuX+afi4H
+IrdpPaBoOA8gnpY2Dh4dDwIDw0cqwtVEuxYclsYoTgnomfI7YYac6Yo0bIaLxjw8
+/lB1eyTzdC1pltQKdlXzVSP8av9L891QNNZDYmyQ3kx3GqkPpfkbj8J94ZU4HgaA
+PMldWaocWklGCCgHsXS6yG52oD0R3+Ky2kTx291/BQFMgVfuO2Wu9PAeTPNothZK
+kY2YdnZrEwJ2tlLTFKjf+d29o1dhC/qpHjKO41PqOwZ3IOdGDuIqV4Mx7jvObDJ/
+0H4uofNhOQLYlD88TlBUxQG4tFsQmFTtqg/1aTmH4lBtYeVfNlk=
+=rGg4
+-----END PGP SIGNATURE-----
 
- - you can't unmap or remap in any way (including over-mapping)
-
- - you can't change protections (but with architecture support like
-pkey, you can obviously change the protections indirectly with PKRU
-etc)
-
- - you can't do VM operations that change data without the area being
-writable (so the DONTNEED case - maybe there are others)
-
- - anything else?
-
-Wouldn't it be lovely to have just a single notion of sealing that is
-well-documented and makes sense, and doesn't require people to worry
-about odd special cases?
-
-And yes, we'd have the 'flags' argument for future special cases, and
-hope really hard that it's never needed.
-
-           Linus
+--yfpi4lavvicqmx4h--
 
