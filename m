@@ -2,58 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F3B581326B
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 15:04:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 88C84813273
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 15:05:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1573379AbjLNOEa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 09:04:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35998 "EHLO
+        id S1573407AbjLNOE5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 09:04:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50286 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230124AbjLNOE1 (ORCPT
+        with ESMTP id S230048AbjLNOEz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 09:04:27 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F2A69C
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 06:04:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1702562674; x=1734098674;
-  h=date:from:to:cc:subject:message-id;
-  bh=wU5mVmNt97BcPIwHNeYlY7skouWxEOCxX2OxQPCOde4=;
-  b=hRozG23FBhX+rgLmmudCA9j9kAsxqjQibAglLSaEfX+sjRaDfWsQqypN
-   ThtOMHeGlKQiz0fupsmEBoagfPIVB9+gR54ViWUJ3O5/ixEKZK8WO/4/1
-   nzrVJIJzhdR0ktJ/FspvZUamtbzxf0VQuXsgTwlhUuzou0S9yAv7SM+kK
-   Co2JHns57pBY6NBys1lPqV9Hj/urGYetF0ugDA6nc8Qae8B3/25akiRcE
-   NapzLHfazFYmMXK9YM7ioy8qcw/yYPh6xrn08Gmjt8QFeh5UJEmcUI7Ko
-   Db2U7yCnis8WiIknbIT47Z4rV60UUhTezrZA1YARCpWYFJ77nNoEREV9g
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10924"; a="426253508"
-X-IronPort-AV: E=Sophos;i="6.04,275,1695711600"; 
-   d="scan'208";a="426253508"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Dec 2023 06:04:33 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10924"; a="1105723565"
-X-IronPort-AV: E=Sophos;i="6.04,275,1695711600"; 
-   d="scan'208";a="1105723565"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by fmsmga005.fm.intel.com with ESMTP; 14 Dec 2023 06:04:32 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1rDmKE-000M9Y-1q;
-        Thu, 14 Dec 2023 14:04:30 +0000
-Date:   Thu, 14 Dec 2023 22:04:19 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:x86/cleanups] BUILD SUCCESS
- 7d28365a06af74cee015a448d32ab6e98cd05cfb
-Message-ID: <202312142215.479uvsoU-lkp@intel.com>
-User-Agent: s-nail v14.9.24
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        Thu, 14 Dec 2023 09:04:55 -0500
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 078889C;
+        Thu, 14 Dec 2023 06:05:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de; s=s31663417;
+        t=1702562668; x=1703167468; i=linosanfilippo@gmx.de;
+        bh=dAalFO3VhKWZpswc6qLS4x3nxxwLUEFecgralPeJfrM=;
+        h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
+         In-Reply-To;
+        b=LtUR21Xi3ZppYxgG9lAv3k1I71ROCcABzxj2puBQD8p31R2i16YWbznbJiz8WACl
+         xyRBk1f5dWADpByLCMNDYMMPNO2yPsg8BXEK3MU2LNadIK0QzsS6shyLAR5/5XLEt
+         30fiH4i4dg+XQKavrcD+nhmAkO1UiyZ8N1jtKReVGELQeeAf1o7cRI/5V0ui4hRsU
+         aIHRa+e8PpiquiGdpuHoduTQL+xmn6DpIS5ueGlU0pvXdbLaJ4/mDyYBKUY0cl76/
+         3ZOg0b8nmnN7nP69TqJivJiXgBEeF3bkTPy93ioVpDS/1TXvhxG4fqpP11q/gk0ka
+         PKH7o6dfxULJD8x/lg==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [192.168.2.42] ([84.180.26.138]) by mail.gmx.net (mrgmx105
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1Mel3t-1rnwUQ4BhF-00am5W; Thu, 14
+ Dec 2023 15:04:28 +0100
+Message-ID: <ed087928-43ac-42bc-8e4d-d1632db451b9@gmx.de>
+Date:   Thu, 14 Dec 2023 15:04:26 +0100
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/2] dt-bindings: serial: rs485: add rs485-mux-gpios
+ binding
+Content-Language: en-US
+To:     Christoph Niedermaier <cniedermaier@dh-electronics.com>,
+        Crescent CY Hsieh <crescentcy.hsieh@moxa.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Lukas Wunner <lukas@wunner.de>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-serial@vger.kernel.org" <linux-serial@vger.kernel.org>,
+        =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+        "brenda.streiff@ni.com" <brenda.streiff@ni.com>,
+        Tomas Paukrt <tomaspaukrt@email.cz>
+References: <20231120151056.148450-1-linux@rasmusvillemoes.dk>
+ <20231120151056.148450-2-linux@rasmusvillemoes.dk>
+ <20231122145344.GA18949@wunner.de>
+ <3b8548b1-b8a9-0c9e-4040-5cfda06a85c6@gmx.de>
+ <ec66d25162de4cbc92720df1e7008fe8@dh-electronics.com>
+ <5c140498-69e3-4187-8703-db0c41e7ca89@gmx.de>
+ <fe28eb93-daa1-41af-a005-f21aa87e1984@gmx.de>
+ <ZXcJr4VS_uGr_6TV@smile.fi.intel.com>
+ <ZXrX4mQXPLum0jL3@moxa-ThinkCentre-M90t>
+ <b35730df8288469fbaf67b5ceae4eece@dh-electronics.com>
+From:   Lino Sanfilippo <LinoSanfilippo@gmx.de>
+In-Reply-To: <b35730df8288469fbaf67b5ceae4eece@dh-electronics.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:XajtO+TgFw3w4zcM4aW2nykJ72BrrtZqlxyDwiW0z1F4eFBF0ms
+ 3WOaMLOaiaKV5w6o3fsxiAcgOuAKoEA/gXx1YWP+l3BdbRV6b5XrgGcAASPYYnyry1zU6zr
+ mq1Btvko2CJJVv3yEyjOG/zn0bjxKT5YAaG4D+GTxQn2GdE5faF6n9pIabnSsKzSSyU+Y9U
+ zvONFtH43A42I//brEZbQ==
+UI-OutboundReport: notjunk:1;M01:P0:8PC0DGuaGXc=;UDjHXQiHIwzAHNyRQxmBwsl+uhv
+ 6kOPjT1rl3JIOjFSWKuNaI2g/F7p6couwsZzqyckVF+vdco1fYSHNmg1pPNa5GE0EX/lYNGx+
+ r+KXEE3wkH1FmcRlRD3lOXLIFclWuUWHkgv+cLWFKMEGNdC7+VRsU+LgB/gJsHCED1m/jUjM8
+ Ofwg4fdmqvFJM8kcijI9EtLPCSGcb6QBZNKADPnUbFJ+njaKcD8cTQt5C+a62Wr+PR2qtN2Rq
+ rH7LPb4Ar2SmpuVSIT0DJa4FOqk0C3VlGTTMleBogkY9TgwtUE2CnF16nWJEXV5XExMCoI1Zq
+ kcf8skhBJfdvw6wesonZUWqs36+A/nV1XrYTOqDfCGPx83+2bjYr7Mj77iuPCSKX5ZC3PVef9
+ ISw04F6uf2sm4SjXK8Jgx1OJzdQ1y76rbO6Ra2R5hqDCXgEyrOaIlU4JEDL5uaOTlgoM0VWhj
+ rUOpX6Uf6J8jLUQiz+85zxKA/1s4iVe4yvuwhIkcaug8PtaEcpyXD1BdicNmiwW3rQwGFWsMR
+ /DTSIW5iAAzLd5C2vQUfD0pqpodlSi2AZ3g3YUeUuzMquilDZaGJ+0vJia0xWsUc2yhqeahp0
+ i6nx6nkHE8STd4oow6MMHPF0cW11j55Jre8inGrmc9balOd/JAMBLL/lcPK3PlUzUONETJYOz
+ NWavm5HNMH/X7RHLM1Sax6uF1R/2uwsNDWdQ1W0tT+LJpZ14BcZdI2XJnGQ2ZvyltHa/2JVeG
+ VKlrVYgirwQlKGLVR8DKl5Cv9nxvE2jnaxOk/5yW9WzXP1f5nteMDlofLFQWF4o/BRLR8eUOs
+ E3zqkxy2yT00IRA/PqnswulBvWC+r+PjXyqEc4ghDE3gcFxga1f2WzMfB8B3LnPEzEFGO10BV
+ SznzdzlE14g90UscnrWD+Hf+p5/2WTEaTW7FK+yla8UJ5+zOPMRJj2h5TGl47cqpdJedLopyy
+ hgziSQ==
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -61,221 +97,157 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/cleanups
-branch HEAD: 7d28365a06af74cee015a448d32ab6e98cd05cfb  x86/head_64: Use TESTB instead of TESTL in secondary_startup_64_no_verify()
 
-elapsed time: 1484m
+Hi,
 
-configs tested: 202
-configs skipped: 2
+On 14.12.23 14:41, Christoph Niedermaier wrote:
+> From: Crescent CY Hsieh <crescentcy.hsieh@moxa.com>
+> Sent: Thursday, December 14, 2023 11:25 AM
+>> On Mon, Dec 11, 2023 at 03:07:59PM +0200, Andy Shevchenko wrote:
+>>> On Sat, Dec 09, 2023 at 12:47:47PM +0100, Lino Sanfilippo wrote:
+>>>> On 06.12.23 16:42, Lino Sanfilippo wrote:
+>>>
+>>>>>>>> Crescent CY Hsieh (+cc) is in parallel trying to add an RS-422 mo=
+de bit
+>>>>>>>> to struct serial_rs485:
+>>>>>>>>
+>>>>>>>> https://lore.kernel.org/all/20231121095122.15948-1-crescentcy.hsi=
+eh@moxa.com/
+>>>>>>>>
+>>>>>>>
+>>>>>>> That new flag was suggested by me instead of using SER_RS422_ENABL=
+ED, which
+>>>>>>> would mostly be redundant to SER_RS485_ENABLED.
+>>>>
+>>>> A cleaner solution would probably be to not handle RS422 with the RS4=
+85 settings at
+>>>> all, but to introduce another set of ioctls to set and read it.
+>>>>
+>>>> An own RS422 structure like
+>>>>
+>>>> struct serial_rs422 {
+>>>>     __u32   flags;
+>>>> #define SER_RS422_ENABLED           (1 << 0)
+>>>> #define SER_RS422_TERMINATE_BUS             (1 << 1)
+>>>> };
+>>>>
+>>>>
+>>>> could be used as the parameter for these new ioctls.
+>>>>
+>>>> Any comments on this?
+>>>
+>>> I have (maybe not so constructive) a comment. Please, at all means try=
+ to not
+>>> extend the existing serial data structures, we have too many ones with=
+ too many
+>>> fields already. For user space, though, one may use unions and flags, =
+but for
+>>> internal ones it might be better ways, I think.
+>>
+>> How about revising the name of 'TIOCSRS485' and 'serial_rs485' to a
+>> general one, and put RS422 and RS485 configuration flags into that
+>> structure?
+>>
+>> So that in userspace it could set RS422 or RS485 configurations using a
+>> single ioctl command and one structure.
+>>
+>> In this way, it won't be confused in userspace and won't add new data
+>> structure internally as well.
+>>
+>
+> I will summarize the current situation from my point of view, maybe it h=
+elps:
+>
+> RS-232:
+>   - Full Duplex Point-to-Point connection
+>   - No transceiver control with RTS
+>   - No termination
+>   - No extra struct in use
+>
+> RS-422:
+>   - Full Duplex Point-to-Point connection
+>   - No transceiver control with RTS needed
+>   - Termination possible
+>   - Extra struct serial_rs485 needed if termination is used
+>  =3D> RS-422 can be used in RS-232 operation, but if a termination shoul=
+d be
+>     switchable the RS485 flag has to be enabled. But then also transceiv=
+er
+>     control will be enabled. Not a very satisfying situation.
+>
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+Thats why I vote for a  RS422 mode.
 
-tested configs:
-alpha                             allnoconfig   gcc  
-alpha                            allyesconfig   gcc  
-alpha                               defconfig   gcc  
-arc                              allmodconfig   gcc  
-arc                               allnoconfig   gcc  
-arc                              allyesconfig   gcc  
-arc                          axs103_defconfig   gcc  
-arc                                 defconfig   gcc  
-arc                     haps_hs_smp_defconfig   gcc  
-arc                   randconfig-001-20231214   gcc  
-arc                   randconfig-002-20231214   gcc  
-arc                        vdk_hs38_defconfig   gcc  
-arm                              allmodconfig   gcc  
-arm                               allnoconfig   gcc  
-arm                              allyesconfig   gcc  
-arm                                 defconfig   clang
-arm                          gemini_defconfig   gcc  
-arm                           imxrt_defconfig   gcc  
-arm                      integrator_defconfig   gcc  
-arm                   randconfig-001-20231214   gcc  
-arm                   randconfig-002-20231214   gcc  
-arm                   randconfig-003-20231214   gcc  
-arm                   randconfig-004-20231214   gcc  
-arm                           stm32_defconfig   gcc  
-arm64                            allmodconfig   clang
-arm64                             allnoconfig   gcc  
-arm64                               defconfig   gcc  
-arm64                 randconfig-001-20231214   gcc  
-arm64                 randconfig-002-20231214   gcc  
-arm64                 randconfig-003-20231214   gcc  
-arm64                 randconfig-004-20231214   gcc  
-csky                             allmodconfig   gcc  
-csky                              allnoconfig   gcc  
-csky                             allyesconfig   gcc  
-csky                                defconfig   gcc  
-csky                  randconfig-001-20231214   gcc  
-csky                  randconfig-002-20231214   gcc  
-hexagon                          allmodconfig   clang
-hexagon                           allnoconfig   clang
-hexagon                          allyesconfig   clang
-hexagon                             defconfig   clang
-i386                             allmodconfig   clang
-i386                              allnoconfig   clang
-i386                             allyesconfig   clang
-i386         buildonly-randconfig-001-20231213   clang
-i386         buildonly-randconfig-002-20231213   clang
-i386         buildonly-randconfig-003-20231213   clang
-i386         buildonly-randconfig-004-20231213   clang
-i386         buildonly-randconfig-005-20231213   clang
-i386         buildonly-randconfig-006-20231213   clang
-i386                                defconfig   gcc  
-i386                  randconfig-001-20231213   clang
-i386                  randconfig-002-20231213   clang
-i386                  randconfig-003-20231213   clang
-i386                  randconfig-004-20231213   clang
-i386                  randconfig-005-20231213   clang
-i386                  randconfig-006-20231213   clang
-i386                  randconfig-011-20231213   gcc  
-i386                  randconfig-011-20231214   clang
-i386                  randconfig-012-20231213   gcc  
-i386                  randconfig-012-20231214   clang
-i386                  randconfig-013-20231213   gcc  
-i386                  randconfig-013-20231214   clang
-i386                  randconfig-014-20231213   gcc  
-i386                  randconfig-014-20231214   clang
-i386                  randconfig-015-20231213   gcc  
-i386                  randconfig-015-20231214   clang
-i386                  randconfig-016-20231213   gcc  
-i386                  randconfig-016-20231214   clang
-loongarch                        allmodconfig   gcc  
-loongarch                         allnoconfig   gcc  
-loongarch                        allyesconfig   gcc  
-loongarch                           defconfig   gcc  
-loongarch             randconfig-001-20231214   gcc  
-loongarch             randconfig-002-20231214   gcc  
-m68k                             allmodconfig   gcc  
-m68k                              allnoconfig   gcc  
-m68k                             allyesconfig   gcc  
-m68k                                defconfig   gcc  
-m68k                            mac_defconfig   gcc  
-m68k                        stmark2_defconfig   gcc  
-microblaze                       allmodconfig   gcc  
-microblaze                        allnoconfig   gcc  
-microblaze                       allyesconfig   gcc  
-microblaze                          defconfig   gcc  
-mips                             allmodconfig   gcc  
-mips                              allnoconfig   clang
-mips                             allyesconfig   gcc  
-mips                         cobalt_defconfig   gcc  
-mips                    maltaup_xpa_defconfig   gcc  
-nios2                            allmodconfig   gcc  
-nios2                             allnoconfig   gcc  
-nios2                            allyesconfig   gcc  
-nios2                               defconfig   gcc  
-nios2                 randconfig-001-20231214   gcc  
-nios2                 randconfig-002-20231214   gcc  
-openrisc                         alldefconfig   gcc  
-openrisc                         allmodconfig   gcc  
-openrisc                          allnoconfig   gcc  
-openrisc                         allyesconfig   gcc  
-openrisc                            defconfig   gcc  
-parisc                           allmodconfig   gcc  
-parisc                            allnoconfig   gcc  
-parisc                           allyesconfig   gcc  
-parisc                              defconfig   gcc  
-parisc                randconfig-001-20231214   gcc  
-parisc                randconfig-002-20231214   gcc  
-parisc64                            defconfig   gcc  
-powerpc                          allmodconfig   clang
-powerpc                           allnoconfig   gcc  
-powerpc                          allyesconfig   clang
-powerpc                     asp8347_defconfig   gcc  
-powerpc                     ep8248e_defconfig   gcc  
-powerpc                       holly_defconfig   gcc  
-powerpc                      makalu_defconfig   gcc  
-powerpc                 mpc834x_itx_defconfig   gcc  
-powerpc                      pasemi_defconfig   gcc  
-powerpc                      pcm030_defconfig   gcc  
-powerpc                       ppc64_defconfig   gcc  
-powerpc               randconfig-001-20231214   gcc  
-powerpc               randconfig-002-20231214   gcc  
-powerpc               randconfig-003-20231214   gcc  
-powerpc                  storcenter_defconfig   gcc  
-powerpc                        warp_defconfig   gcc  
-powerpc64             randconfig-001-20231214   gcc  
-powerpc64             randconfig-002-20231214   gcc  
-powerpc64             randconfig-003-20231214   gcc  
-riscv                            allmodconfig   gcc  
-riscv                             allnoconfig   clang
-riscv                            allyesconfig   gcc  
-riscv                               defconfig   gcc  
-riscv             nommu_k210_sdcard_defconfig   gcc  
-riscv                 randconfig-001-20231214   gcc  
-riscv                 randconfig-002-20231214   gcc  
-riscv                          rv32_defconfig   clang
-s390                             allmodconfig   gcc  
-s390                              allnoconfig   gcc  
-s390                             allyesconfig   gcc  
-s390                                defconfig   gcc  
-sh                               allmodconfig   gcc  
-sh                                allnoconfig   gcc  
-sh                               allyesconfig   gcc  
-sh                                  defconfig   gcc  
-sh                          lboxre2_defconfig   gcc  
-sh                            migor_defconfig   gcc  
-sh                    randconfig-001-20231214   gcc  
-sh                    randconfig-002-20231214   gcc  
-sh                          rsk7203_defconfig   gcc  
-sh                      rts7751r2d1_defconfig   gcc  
-sh                           se7780_defconfig   gcc  
-sh                             sh03_defconfig   gcc  
-sh                     sh7710voipgw_defconfig   gcc  
-sh                        sh7757lcr_defconfig   gcc  
-sh                             shx3_defconfig   gcc  
-sh                              ul2_defconfig   gcc  
-sh                          urquell_defconfig   gcc  
-sparc                            allmodconfig   gcc  
-sparc                            allyesconfig   gcc  
-sparc                       sparc32_defconfig   gcc  
-sparc64                          alldefconfig   gcc  
-sparc64                          allmodconfig   gcc  
-sparc64                          allyesconfig   gcc  
-sparc64                             defconfig   gcc  
-sparc64               randconfig-001-20231214   gcc  
-sparc64               randconfig-002-20231214   gcc  
-um                               allmodconfig   clang
-um                                allnoconfig   clang
-um                               allyesconfig   clang
-um                                  defconfig   gcc  
-um                             i386_defconfig   gcc  
-um                    randconfig-001-20231214   gcc  
-um                    randconfig-002-20231214   gcc  
-um                           x86_64_defconfig   gcc  
-x86_64                            allnoconfig   gcc  
-x86_64                           allyesconfig   clang
-x86_64       buildonly-randconfig-001-20231214   gcc  
-x86_64       buildonly-randconfig-002-20231214   gcc  
-x86_64       buildonly-randconfig-003-20231214   gcc  
-x86_64       buildonly-randconfig-004-20231214   gcc  
-x86_64       buildonly-randconfig-005-20231214   gcc  
-x86_64       buildonly-randconfig-006-20231214   gcc  
-x86_64                              defconfig   gcc  
-x86_64                                  kexec   gcc  
-x86_64                randconfig-011-20231214   gcc  
-x86_64                randconfig-012-20231214   gcc  
-x86_64                randconfig-013-20231214   gcc  
-x86_64                randconfig-014-20231214   gcc  
-x86_64                randconfig-015-20231214   gcc  
-x86_64                randconfig-016-20231214   gcc  
-x86_64                randconfig-071-20231214   gcc  
-x86_64                randconfig-072-20231214   gcc  
-x86_64                randconfig-073-20231214   gcc  
-x86_64                randconfig-074-20231214   gcc  
-x86_64                randconfig-075-20231214   gcc  
-x86_64                randconfig-076-20231214   gcc  
-x86_64                          rhel-8.3-rust   clang
-x86_64                               rhel-8.3   gcc  
-xtensa                            allnoconfig   gcc  
-xtensa                           allyesconfig   gcc  
-xtensa                randconfig-001-20231214   gcc  
-xtensa                randconfig-002-20231214   gcc  
-xtensa                         virt_defconfig   gcc  
+> RS-485 (2-wire) very common:
+>   - Half Duplex RS-485 bus
+>   - Transceiver control with RTS is needed
+>   - Termination possible
+>   - Extra struct serial_rs485 is needed
+>  =3D> RS-485 has to be enabled and configured:
+>     - Set SER_RS485_ENABLED
+>     - Set SER_RS485_RTS_ON_SEND or SER_RS485_RTS_AFTER_SEND
+>     - Set/clear SER_RS485_RX_DURING_TX depending on whether
+>       the receiver path should be on or off during sending.
+>       If it's set it allows to monitor the sending on the bus
+>       and detect whether another bus device is transmitting
+>       at the same time.
+>     - Set/clear SER_RS485_TERMINATE_BUS for bus termination.
+>
+> RS-485 (4-wire) little used:
+>   - Full Duplex RS-485 bus
+>   - Transceiver control with RTS is needed
+>   - Termination possible
+>   - Extra struct serial_rs485 is needed
+>  =3D> RS-485 has to be enabled and configured:
+>     - Set SER_RS485_ENABLED
+>     - Set SER_RS485_RTS_ON_SEND or SER_RS485_RTS_AFTER_SEND
+>     - Set SER_RS485_RX_DURING_TX, as the receiver should always
+>       be enabled independently of TX, because TX and RX are
+>       separated from each other by their own wires.
+>     - Set/clear SER_RS485_TERMINATE_BUS for bus termination.
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+How can the driver distinguish between RS485 full duplex and half duplex t=
+hen?
+In full duplex RTS control is not needed AFAIU.
+
+>
+> I think the GPIOs reflect the flag states and are meaningful:
+> - SER_RS485_TERMINATE_BUS: Switch bus termination on/off by GPIO
+> - SER_RS485_RX_DURING_TX:  Used to enable/disable RX during TX
+>                            in hardware by GPIO (for 2-wire)
+> - SER_RS485_ENABLED:       Muxing between RS-232 and RS-485 by GPIO
+>
+> Switching RS-485 on during boot could also be handled by a devicetree
+> overlay. Evaluate the GPIO and load a DTO accordingly before booting.
+>
+> Please correct me if I have misrepresented something...
+>
+> If I looked at it in this new way, I would discard my idea with the
+> FULL_DUPLEX and HALF_DUPLEX. For a better use of RS-422 it would be
+> good to disable transceiver control via RTS. It can be done by clearing
+> the existing flags SER_RS485_RTS_ON_SEND and SER_RS485_RTS_AFTER_SEND
+> at the same time, but I think it is confusing. Better would be a flag
+> for RS-422:
+>
+> RS-422:                     Set SER_RS422_MODE for disabling
+>                             transceiver control via RTS.
+> RS-485 (2-wire and 4-wire): Clear SER_RS422_MODE for enabling
+>                             transceiver control via RTS.
+>
+> Finally, at present it is also not possible to distinguish between RS485
+> 2-wire and 4-wire operation. I think it isn't necessary, as different
+> hardware has to be used anyway. The hardware then determines the
+> configuration, see above.
+
+But the driver should somehow be informed that there exists a full
+duplex hardware setup, so that it does not need to control the RTS line.
+Maybe by means of a device tree property?
+
+Regards,
+Lino
+
+
+>
+>
+> Regards
+> Christoph
