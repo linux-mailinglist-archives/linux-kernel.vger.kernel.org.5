@@ -1,467 +1,201 @@
-Return-Path: <linux-kernel+bounces-14-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-15-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DD082813ABD
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 20:29:43 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id D470B813AC5
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 20:30:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6CB872831AE
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 19:29:42 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 12A481C20E3B
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 19:30:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 766056979B;
-	Thu, 14 Dec 2023 19:29:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="hXwdW1sR"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E6A44697A8;
+	Thu, 14 Dec 2023 19:30:29 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f199.google.com (mail-pf1-f199.google.com [209.85.210.199])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 281046978D
-	for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 19:29:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1702582173;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=xUk3eG+68EZSTIrjQkfVQpGuO5D5nt4u7CUzC6kn+ms=;
-	b=hXwdW1sRukUhWt2UPXMLLzIkF488lI9MD6Rrrsa58xSR4DAGgqWXiMEITtI4/zfupelRsd
-	sR55y18gEzumghxAXqoGH4UXzmtBtFqDXXXQEDA9t3l4IWEcaK7lr77TKhv1XSqESUmTSV
-	METIEXopToowC1nlQwJiX6/pw9BzwC8=
-Received: from mail-vk1-f199.google.com (mail-vk1-f199.google.com
- [209.85.221.199]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-180-E3cNpx7FMqiaifI06jrOsw-1; Thu, 14 Dec 2023 14:29:31 -0500
-X-MC-Unique: E3cNpx7FMqiaifI06jrOsw-1
-Received: by mail-vk1-f199.google.com with SMTP id 71dfb90a1353d-4b02c393e25so2279319e0c.3
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 11:29:31 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 77E4869791
+	for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 19:30:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-pf1-f199.google.com with SMTP id d2e1a72fcca58-6d0908565f8so7009460b3a.1
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 11:30:27 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702582170; x=1703186970;
-        h=content-transfer-encoding:in-reply-to:references:cc:to:from
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=xUk3eG+68EZSTIrjQkfVQpGuO5D5nt4u7CUzC6kn+ms=;
-        b=xIX8YAiDoR1mA+igVJ0PKSuNq/A41YRsblDOD7cwXjWsh6qzTjhQKZOFrswO+jXALL
-         tcvE39XVh4Iz8Sy42Y6imRVmTDb8LWyUPv8zTodoYIn3M34OWPvXc7arMJ5Le6gPfIFb
-         6nEnH8kOttcUspLCOfUUj5k/58fRvfHrnGfC/o3c6CzUh7AkaZlUVAmylG2q6RAmHmm9
-         NHfvbu5bpmSVvsdVmiJX3dpjvFtrctFZFEXUgfg75UAEhCJ4sbQIJAdQo+kPNElEhcft
-         oEWtkpYrvQ1EidN0ZuFtNCWuOoE4Y4FTDambxDdGeMPR4DYN8clUeQ5r2gYGleHRA1+j
-         OEnw==
-X-Gm-Message-State: AOJu0YzmpCa9JWY6O0JoQYdOTa7AOvL53lH4TYAsxdo6YO1ZbvbkVp5p
-	vhsWIf4Y14tchpQhF1kv8KKThmftN8xvR3hsY7tk06nKOmjtGcW2Z726poeBGg/QDB8HbsVMNeZ
-	lixMmT/pUizzQqwWBPUs7MxxW
-X-Received: by 2002:ac5:c38f:0:b0:4b2:956e:f651 with SMTP id s15-20020ac5c38f000000b004b2956ef651mr6137830vkk.0.1702582170621;
-        Thu, 14 Dec 2023 11:29:30 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IE51zbBMPgEBfDxOsVJeFCrbH7TB4ZBojjQo3bgaphGVUfxRbU+URMAd9Lv4bepko/KkIfhQg==
-X-Received: by 2002:ac5:c38f:0:b0:4b2:956e:f651 with SMTP id s15-20020ac5c38f000000b004b2956ef651mr6137817vkk.0.1702582170275;
-        Thu, 14 Dec 2023 11:29:30 -0800 (PST)
-Received: from ?IPV6:2a01:e0a:59e:9d80:527b:9dff:feef:3874? ([2a01:e0a:59e:9d80:527b:9dff:feef:3874])
-        by smtp.gmail.com with ESMTPSA id dv4-20020a05620a1b8400b0077da476d403sm5498175qkb.58.2023.12.14.11.29.27
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 14 Dec 2023 11:29:29 -0800 (PST)
-Message-ID: <e14dcae7-db8c-4a82-a829-b783e754163b@redhat.com>
-Date: Thu, 14 Dec 2023 20:29:25 +0100
+        d=1e100.net; s=20230601; t=1702582227; x=1703187027;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=oFxef2h5lrExuJ8D5wN9A1CJDkySZu+2Kkfu5Vl6v+Q=;
+        b=hzH4MgU28UvLO7Ka9iBpcvN3X4t+ZIO2MeEZ8x8EIGu6X85Jli/OvPNhxBhIX4CLto
+         LUWpmGd6gwJ2pBPpQVD3bCXEzsaX6uqK7tiW3iDrzofBdrmkmCAaBrA4V224Fk/wIJc3
+         1JYtTpWSVviSkDdD18+zftazW9gGP1tzUT5kf+l/9op9xFU0lKvOHm94UtRv1Vll1dDr
+         T7TYBVOQdFuARQKngbLli+TdYUSgkz7ZUkOtXI/aRP/iG3BRvkwUW3mShwV1Ybnu9LSh
+         Ix7HBsDVu752S+WKtr7LX6CmkC8rWgAhd6eJxj1gT8xqxnzbMJcH2Q4WXs6jTb6SWjmJ
+         sarA==
+X-Gm-Message-State: AOJu0YwpMgFcTMWWgzl8NIbYCrH99nqzzn4lMgCHAFhcas0Pm4x7dpmw
+	FGzPL2Y5YgOwITxNQtx4rv2gK6EemWFZZ+4k38OC8uT7wJgD
+X-Google-Smtp-Source: AGHT+IEZmS2KDd1o4gzGWFiiliXEyQLQO5gWVjZyRM0uF2KOupYUaFLfAkmCQCVNKz36roMZ09oblsWXT1+m0IrYth2UBOtBzHTz
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 4/5] KVM: selftests: aarch64: Introduce
- pmu_event_filter_test
-Content-Language: en-US
-From: Eric Auger <eauger@redhat.com>
-To: Shaoqin Huang <shahuang@redhat.com>, Marc Zyngier <maz@kernel.org>,
- Oliver Upton <oliver.upton@linux.dev>, kvmarm@lists.linux.dev
-Cc: Paolo Bonzini <pbonzini@redhat.com>, Shuah Khan <shuah@kernel.org>,
- James Morse <james.morse@arm.com>, Suzuki K Poulose
- <suzuki.poulose@arm.com>, Zenghui Yu <yuzenghui@huawei.com>,
- linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
- linux-kselftest@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-References: <20231129072712.2667337-1-shahuang@redhat.com>
- <20231129072712.2667337-5-shahuang@redhat.com>
- <72c68db7-3de0-4517-9410-fd19d4564fea@redhat.com>
-In-Reply-To: <72c68db7-3de0-4517-9410-fd19d4564fea@redhat.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+X-Received: by 2002:aa7:93b4:0:b0:6d2:671e:84cc with SMTP id
+ x20-20020aa793b4000000b006d2671e84ccmr587103pff.0.1702582226950; Thu, 14 Dec
+ 2023 11:30:26 -0800 (PST)
+Date: Thu, 14 Dec 2023 11:30:26 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000d69fc4060c7d50a2@google.com>
+Subject: [syzbot] [mm?] [hfs?] KASAN: slab-out-of-bounds Write in shmem_file_read_iter
+From: syzbot <syzbot+3e719fc23ab95580e4c2@syzkaller.appspotmail.com>
+To: akpm@linux-foundation.org, hughd@google.com, linux-fsdevel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-mm@kvack.org, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-Hi Shaoqin,
+Hello,
 
-On 12/14/23 14:45, Eric Auger wrote:
-> Hi Shaoqin,
-> 
-> On 11/29/23 08:27, Shaoqin Huang wrote:
->> Introduce pmu_event_filter_test for arm64 platforms. The test configures
->> PMUv3 for a vCPU, and sets different pmu event filters for the vCPU, and
->> check if the guest can use those events which user allow and can't use
->> those events which use deny.
->>
->> This test refactor the create_vpmu_vm() and make it a wrapper for
->> __create_vpmu_vm(), which allows some extra init code before
->> KVM_ARM_VCPU_PMU_V3_INIT.
->>
->> And this test use the KVM_ARM_VCPU_PMU_V3_FILTER attribute to set the
->> pmu event filter in KVM. And choose to filter two common event
->> branches_retired and instructions_retired, and let guest use the two
->> events in pmu. And check if the result is expected.
->>
->> Signed-off-by: Shaoqin Huang <shahuang@redhat.com>
->> ---
->>  tools/testing/selftests/kvm/Makefile          |   1 +
->>  .../kvm/aarch64/pmu_event_filter_test.c       | 231 ++++++++++++++++++
->>  .../selftests/kvm/include/aarch64/vpmu.h      |   4 +
->>  .../testing/selftests/kvm/lib/aarch64/vpmu.c  |  14 +-
->>  4 files changed, 248 insertions(+), 2 deletions(-)
->>  create mode 100644 tools/testing/selftests/kvm/aarch64/pmu_event_filter_test.c
->>
->> diff --git a/tools/testing/selftests/kvm/Makefile b/tools/testing/selftests/kvm/Makefile
->> index b60852c222ac..5f126e1a1dbf 100644
->> --- a/tools/testing/selftests/kvm/Makefile
->> +++ b/tools/testing/selftests/kvm/Makefile
->> @@ -155,6 +155,7 @@ TEST_GEN_PROGS_aarch64 += aarch64/arch_timer
->>  TEST_GEN_PROGS_aarch64 += aarch64/debug-exceptions
->>  TEST_GEN_PROGS_aarch64 += aarch64/hypercalls
->>  TEST_GEN_PROGS_aarch64 += aarch64/page_fault_test
->> +TEST_GEN_PROGS_aarch64 += aarch64/pmu_event_filter_test
->>  TEST_GEN_PROGS_aarch64 += aarch64/psci_test
->>  TEST_GEN_PROGS_aarch64 += aarch64/set_id_regs
->>  TEST_GEN_PROGS_aarch64 += aarch64/smccc_filter
->> diff --git a/tools/testing/selftests/kvm/aarch64/pmu_event_filter_test.c b/tools/testing/selftests/kvm/aarch64/pmu_event_filter_test.c
->> new file mode 100644
->> index 000000000000..0e652fbdb37a
->> --- /dev/null
->> +++ b/tools/testing/selftests/kvm/aarch64/pmu_event_filter_test.c
->> @@ -0,0 +1,231 @@
->> +// SPDX-License-Identifier: GPL-2.0
->> +/*
->> + * pmu_event_filter_test - Test user limit pmu event for guest.
->> + *
->> + * Copyright (c) 2023 Red Hat, Inc.
->> + *
->> + * This test checks if the guest only see the limited pmu event that userspace
->> + * sets, if the guest can use those events which user allow, and if the guest
->> + * can't use those events which user deny.
->> + * This test runs only when KVM_CAP_ARM_PMU_V3, KVM_ARM_VCPU_PMU_V3_FILTER
->> + * is supported on the host.
->> + */
->> +#include <kvm_util.h>
->> +#include <processor.h>
->> +#include <vgic.h>
->> +#include <vpmu.h>
->> +#include <test_util.h>
->> +#include <perf/arm_pmuv3.h>
->> +
->> +struct {
->> +	uint64_t branches_retired;
->> +	uint64_t instructions_retired;
->> +} pmc_results;
->> +
->> +static struct vpmu_vm *vpmu_vm;
->> +static uint64_t pmceid0;
->> +
->> +#define FILTER_NR 10
->> +
->> +struct test_desc {
->> +	const char *name;
->> +	void (*check_result)(void);
->> +	struct kvm_pmu_event_filter filter[FILTER_NR];
->> +};
->> +> +#define __DEFINE_FILTER(base, num, act)		\
->> +	((struct kvm_pmu_event_filter) {	\
->> +		.base_event	= base,		\
->> +		.nevents	= num,		\
->> +		.action		= act,		\
->> +	})
->> +
->> +#define DEFINE_FILTER(base, act) __DEFINE_FILTER(base, 1, act)
->> +
->> +#define EMPTY_FILTER	{ 0 }
->> +
->> +#define SW_INCR		0x0
->> +#define INST_RETIRED	0x8
->> +#define BR_RETIRED	0x21
->> +
->> +#define NUM_BRANCHES	10
->> +
->> +static void run_and_measure_loop(void)
->> +{
->> +	asm volatile(
->> +		"	mov	x10, %[loop]\n"
->> +		"1:	sub	x10, x10, #1\n"
->> +		"	cmp	x10, #0x0\n"
->> +		"	b.gt	1b\n"
->> +		:
->> +		: [loop] "r" (NUM_BRANCHES)
->> +		: "x10", "cc");
->> +}
->> +
->> +static void guest_code(void)
->> +{
->> +	uint64_t pmcr = read_sysreg(pmcr_el0);
->> +
->> +	pmu_disable_reset();
->> +
->> +	write_pmevtypern(0, BR_RETIRED);
->> +	write_pmevtypern(1, INST_RETIRED);
->> +	enable_counter(0);
->> +	enable_counter(1);
->> +	write_sysreg(pmcr | ARMV8_PMU_PMCR_E, pmcr_el0);
->> +
->> +	run_and_measure_loop();
->> +
->> +	write_sysreg(pmcr, pmcr_el0);
->> +
->> +	pmc_results.branches_retired = read_sysreg(pmevcntr0_el0);
->> +	pmc_results.instructions_retired = read_sysreg(pmevcntr1_el0);
->> +
->> +	GUEST_DONE();
->> +}
->> +
->> +static void guest_get_pmceid0(void)
->> +{
->> +	uint64_t pmceid0 = read_sysreg(pmceid0_el0);
->> +
->> +	GUEST_PRINTF("%lx\n", pmceid0);
->> +
->> +	GUEST_DONE();
->> +}
->> +
->> +static void pmu_event_filter_init(struct vpmu_vm *vm, void *arg)
->> +{
->> +	struct kvm_device_attr attr = {
->> +		.group	= KVM_ARM_VCPU_PMU_V3_CTRL,
->> +		.attr	= KVM_ARM_VCPU_PMU_V3_FILTER,
->> +	};
->> +	struct kvm_pmu_event_filter *filter = (struct kvm_pmu_event_filter *)arg;
->> +
->> +	while (filter && filter->nevents != 0) {
->> +		attr.addr = (uint64_t)filter;
->> +		vcpu_ioctl(vm->vcpu, KVM_SET_DEVICE_ATTR, &attr);
->> +		filter++;
->> +	}
->> +}
->> +
->> +static void create_vpmu_vm_with_filter(void *guest_code,
->> +				       struct kvm_pmu_event_filter *filter)
->> +{
->> +	vpmu_vm = __create_vpmu_vm(guest_code, pmu_event_filter_init, filter);
->> +}
->> +
->> +static void run_vcpu(struct kvm_vcpu *vcpu)
->> +{
->> +	struct ucall uc;
->> +
->> +	while (1) {
->> +		vcpu_run(vcpu);
->> +		switch (get_ucall(vcpu, &uc)) {
->> +		case UCALL_DONE:
->> +			return;
->> +		case UCALL_PRINTF:
->> +			pmceid0 = strtoll(uc.buffer, NULL, 16);
->> +			break;
->> +		default:
->> +			TEST_FAIL("Unknown ucall %lu", uc.cmd);
->> +		}
->> +	}
->> +}
->> +
->> +static void check_pmc_counting(void)
->> +{
->> +	uint64_t br = pmc_results.branches_retired;
->> +	uint64_t ir = pmc_results.instructions_retired;
->> +
->> +	TEST_ASSERT(br && br == NUM_BRANCHES, "Branch instructions retired = "
->> +		    "%lu (expected %u)", br, NUM_BRANCHES);
-> have you tested on several machines? My experience with some events
-> (MEM_ACCESS for instance) is that you have variance (sometimes
-> significant) on some event count. I am a little bit scared that having
-> this br == NUM_BRANCHES check without taking into account some margin
-> will cause failures on some HW.
+syzbot found the following issue on:
 
-I confirm the usual suspect, Amberwing, does not like this check ;-)
+HEAD commit:    d46efae31672 Merge branch 'for-next/core' into for-kernelci
+git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git for-kernelci
+console output: https://syzkaller.appspot.com/x/log.txt?x=16803d66e80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=f62dd67b72f86455
+dashboard link: https://syzkaller.appspot.com/bug?extid=3e719fc23ab95580e4c2
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+userspace arch: arm64
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1743a366e80000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=17d5101ee80000
 
-augere@qualcomm-amberwing-rep-06:~/UPSTREAM/linux/tools/testing/selftests/kvm/aarch64#
-./pmu_event_filter_test
-==== Test Assertion Failure ====
-  aarch64/pmu_event_filter_test.c:141: br && br == NUM_BRANCHES
-  pid=7750 tid=7750 errno=4 - Interrupted system call
-     1	0x0000000000401d6b: check_pmc_counting at pmu_event_filter_test.c:141
-     2	0x0000000000401967: run_test at pmu_event_filter_test.c:173
-     3	 (inlined by) for_each_test at pmu_event_filter_test.c:198
-     4	 (inlined by) main at pmu_event_filter_test.c:264
-     5	0x0000ffffaaa6c79b: ?? ??:0
-     6	0x0000ffffaaa6c86b: ?? ??:0
-     7	0x0000000000401aaf: _start at ??:?
-  Branch instructions retired = 15 (expected 10)
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/f1c7fab7b512/disk-d46efae3.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/44ed3d86d2c1/vmlinux-d46efae3.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/2e0b5f52455a/Image-d46efae3.gz.xz
+mounted in repro: https://storage.googleapis.com/syzbot-assets/3e3c3babb0db/mount_2.gz
 
-Eric
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+3e719fc23ab95580e4c2@syzkaller.appspotmail.com
 
-> 
-> in v1 I suggested to read to PMCEID* in a guest code to check if the
-> event is supported. This method would also have the benefice to allow
-> testing more complex filter range combinations.
->> +	TEST_ASSERT(ir, "Instructions retired = %lu (expected > 0)", ir);
->> +}
->> +
->> +static void check_pmc_not_counting(void)
->> +{
->> +	uint64_t br = pmc_results.branches_retired;
->> +	uint64_t ir = pmc_results.instructions_retired;
->> +
->> +	TEST_ASSERT(!br, "Branch instructions retired = %lu (expected 0)", br);
->> +	TEST_ASSERT(!ir, "Instructions retired = %lu (expected 0)", ir);
->> +}
->> +
->> +static void run_vcpu_and_sync_pmc_results(void)
->> +{
->> +	memset(&pmc_results, 0, sizeof(pmc_results));
->> +	sync_global_to_guest(vpmu_vm->vm, pmc_results);
->> +
->> +	run_vcpu(vpmu_vm->vcpu);
->> +
->> +	sync_global_from_guest(vpmu_vm->vm, pmc_results);
->> +}
->> +
->> +static void run_test(struct test_desc *t)
->> +{
->> +	pr_debug("Test: %s\n", t->name);
->> +
->> +	create_vpmu_vm_with_filter(guest_code, t->filter);
->> +
->> +	run_vcpu_and_sync_pmc_results();
->> +
->> +	t->check_result();
->> +
->> +	destroy_vpmu_vm(vpmu_vm);
->> +}
->> +
->> +static struct test_desc tests[] = {
->> +	{"without_filter", check_pmc_counting, { EMPTY_FILTER }},
->> +	{"member_allow_filter", check_pmc_counting,
->> +	 {DEFINE_FILTER(SW_INCR, 0), DEFINE_FILTER(INST_RETIRED, 0),
-> Note the doc says that Event 0 (SW_INCR) is never filtered, as it
-> doesn't count a hardware event
-> 
-> 
-> I would use the defines exposed in the uapi
->> +#define KVM_PMU_EVENT_ALLOW	0
->> +#define KVM_PMU_EVENT_DENY	1
->> +	  DEFINE_FILTER(BR_RETIRED, 0), EMPTY_FILTER}},
->> +	{"member_deny_filter", check_pmc_not_counting,
->> +	 {DEFINE_FILTER(SW_INCR, 1), DEFINE_FILTER(INST_RETIRED, 1),
-> what is the purpose of SW_INCR. YOu do not seem to test it anyway?
->> +	  DEFINE_FILTER(BR_RETIRED, 1), EMPTY_FILTER}},
->> +	{"not_member_deny_filter", check_pmc_counting,
->> +	 {DEFINE_FILTER(SW_INCR, 1), EMPTY_FILTER}},
->> +	{"not_member_allow_filter", check_pmc_not_counting,
->> +	 {DEFINE_FILTER(SW_INCR, 0), EMPTY_FILTER}},
->> +	{ 0 }
->> +};
->> +
->> +static void for_each_test(void)
->> +{
->> +	struct test_desc *t;
->> +
->> +	for (t = &tests[0]; t->name; t++)
->> +		run_test(t);
->> +}
->> +
->> +static bool kvm_supports_pmu_event_filter(void)
->> +{
->> +	int r;
->> +
->> +	vpmu_vm = create_vpmu_vm(guest_code);
->> +
->> +	r = __kvm_has_device_attr(vpmu_vm->vcpu->fd, KVM_ARM_VCPU_PMU_V3_CTRL,
->> +				  KVM_ARM_VCPU_PMU_V3_FILTER);
-> you can use __vcpu_has_device_attr directly
->> +
->> +	destroy_vpmu_vm(vpmu_vm);
->> +	return !r;
->> +}
->> +
->> +static bool host_pmu_supports_events(void)
->> +{
->> +	vpmu_vm = create_vpmu_vm(guest_get_pmceid0);
->> +
->> +	run_vcpu(vpmu_vm->vcpu);
->> +
->> +	destroy_vpmu_vm(vpmu_vm);
->> +
->> +	return pmceid0 & (BR_RETIRED | INST_RETIRED);
-> this will return true if either event is supported. I suspect this is
-> not what you want.
->> +}
->> +
->> +int main(void)
->> +{
->> +	TEST_REQUIRE(kvm_has_cap(KVM_CAP_ARM_PMU_V3));
->> +	TEST_REQUIRE(kvm_supports_pmu_event_filter());
->> +	TEST_REQUIRE(host_pmu_supports_events());
->> +
->> +	for_each_test();
->> +}
->> diff --git a/tools/testing/selftests/kvm/include/aarch64/vpmu.h b/tools/testing/selftests/kvm/include/aarch64/vpmu.h
->> index 644dae3814b5..f103d0824f8a 100644
->> --- a/tools/testing/selftests/kvm/include/aarch64/vpmu.h
->> +++ b/tools/testing/selftests/kvm/include/aarch64/vpmu.h
->> @@ -18,6 +18,10 @@ struct vpmu_vm {
->>  	int gic_fd;
->>  };
->>  
->> +struct vpmu_vm *__create_vpmu_vm(void *guest_code,
->> +				 void (*init_pmu)(struct vpmu_vm *vm, void *arg),
->> +				 void *arg);
->> +
->>  struct vpmu_vm *create_vpmu_vm(void *guest_code);
->>  
->>  void destroy_vpmu_vm(struct vpmu_vm *vpmu_vm);
->> diff --git a/tools/testing/selftests/kvm/lib/aarch64/vpmu.c b/tools/testing/selftests/kvm/lib/aarch64/vpmu.c
->> index b3de8fdc555e..76ea03d607f1 100644
->> --- a/tools/testing/selftests/kvm/lib/aarch64/vpmu.c
->> +++ b/tools/testing/selftests/kvm/lib/aarch64/vpmu.c
->> @@ -7,8 +7,9 @@
->>  #include <vpmu.h>
->>  #include <perf/arm_pmuv3.h>
->>  
->> -/* Create a VM that has one vCPU with PMUv3 configured. */
->> -struct vpmu_vm *create_vpmu_vm(void *guest_code)
->> +struct vpmu_vm *__create_vpmu_vm(void *guest_code,
->> +				 void (*init_pmu)(struct vpmu_vm *vm, void *arg),
->> +				 void *arg)
->>  {
->>  	struct kvm_vcpu_init init;
->>  	uint8_t pmuver;
->> @@ -50,12 +51,21 @@ struct vpmu_vm *create_vpmu_vm(void *guest_code)
->>  		    "Unexpected PMUVER (0x%x) on the vCPU with PMUv3", pmuver);
->>  
->>  	/* Initialize vPMU */
->> +	if (init_pmu)
->> +		init_pmu(vpmu_vm, arg);
->> +
->>  	vcpu_ioctl(vpmu_vm->vcpu, KVM_SET_DEVICE_ATTR, &irq_attr);
->>  	vcpu_ioctl(vpmu_vm->vcpu, KVM_SET_DEVICE_ATTR, &init_attr);
->>  
->>  	return vpmu_vm;
->>  }
->>  
->> +/* Create a VM that has one vCPU with PMUv3 configured. */
->> +struct vpmu_vm *create_vpmu_vm(void *guest_code)
->> +{
->> +	return __create_vpmu_vm(guest_code, NULL, NULL);
->> +}
->> +
->>  void destroy_vpmu_vm(struct vpmu_vm *vpmu_vm)
->>  {
->>  	close(vpmu_vm->gic_fd);
-> 
-> Thanks
-> 
-> Eric
+==================================================================
+BUG: KASAN: slab-out-of-bounds in memcpy_to_iter lib/iov_iter.c:65 [inline]
+BUG: KASAN: slab-out-of-bounds in iterate_bvec include/linux/iov_iter.h:122 [inline]
+BUG: KASAN: slab-out-of-bounds in iterate_and_advance2 include/linux/iov_iter.h:249 [inline]
+BUG: KASAN: slab-out-of-bounds in iterate_and_advance include/linux/iov_iter.h:271 [inline]
+BUG: KASAN: slab-out-of-bounds in _copy_to_iter+0x7dc/0x1500 lib/iov_iter.c:186
+Write of size 2048 at addr ffff0000ce31a400 by task kworker/u4:5/220
 
+CPU: 1 PID: 220 Comm: kworker/u4:5 Not tainted 6.7.0-rc4-syzkaller-gd46efae31672 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 11/10/2023
+Workqueue: loop0 loop_rootcg_workfn
+Call trace:
+ dump_backtrace+0x1b8/0x1e4 arch/arm64/kernel/stacktrace.c:233
+ show_stack+0x2c/0x44 arch/arm64/kernel/stacktrace.c:240
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0xd0/0x124 lib/dump_stack.c:106
+ print_address_description mm/kasan/report.c:364 [inline]
+ print_report+0x174/0x514 mm/kasan/report.c:475
+ kasan_report+0xd8/0x138 mm/kasan/report.c:588
+ kasan_check_range+0x254/0x294 mm/kasan/generic.c:187
+ __asan_memcpy+0x54/0x84 mm/kasan/shadow.c:106
+ memcpy_to_iter lib/iov_iter.c:65 [inline]
+ iterate_bvec include/linux/iov_iter.h:122 [inline]
+ iterate_and_advance2 include/linux/iov_iter.h:249 [inline]
+ iterate_and_advance include/linux/iov_iter.h:271 [inline]
+ _copy_to_iter+0x7dc/0x1500 lib/iov_iter.c:186
+ copy_page_to_iter+0x200/0x2f8 lib/iov_iter.c:381
+ shmem_file_read_iter+0x4a0/0x9dc mm/shmem.c:2824
+ do_iter_read+0x668/0xa80 fs/read_write.c:795
+ vfs_iter_read+0x88/0xac fs/read_write.c:837
+ lo_read_simple drivers/block/loop.c:290 [inline]
+ do_req_filebacked drivers/block/loop.c:500 [inline]
+ loop_handle_cmd drivers/block/loop.c:1915 [inline]
+ loop_process_work+0xe9c/0x2498 drivers/block/loop.c:1950
+ loop_rootcg_workfn+0x28/0x38 drivers/block/loop.c:1981
+ process_one_work+0x694/0x1204 kernel/workqueue.c:2630
+ process_scheduled_works kernel/workqueue.c:2703 [inline]
+ worker_thread+0x938/0xef4 kernel/workqueue.c:2784
+ kthread+0x288/0x310 kernel/kthread.c:388
+ ret_from_fork+0x10/0x20 arch/arm64/kernel/entry.S:857
+
+Allocated by task 6095:
+ kasan_save_stack mm/kasan/common.c:45 [inline]
+ kasan_set_track+0x4c/0x7c mm/kasan/common.c:52
+ kasan_save_alloc_info+0x24/0x30 mm/kasan/generic.c:511
+ ____kasan_kmalloc mm/kasan/common.c:374 [inline]
+ __kasan_kmalloc+0xac/0xc4 mm/kasan/common.c:383
+ kasan_kmalloc include/linux/kasan.h:198 [inline]
+ __do_kmalloc_node mm/slab_common.c:1007 [inline]
+ __kmalloc+0xcc/0x1b8 mm/slab_common.c:1020
+ kmalloc include/linux/slab.h:604 [inline]
+ hfsplus_read_wrapper+0x46c/0xfcc fs/hfsplus/wrapper.c:181
+ hfsplus_fill_super+0x2f0/0x166c fs/hfsplus/super.c:413
+ mount_bdev+0x1e8/0x2b4 fs/super.c:1650
+ hfsplus_mount+0x44/0x58 fs/hfsplus/super.c:641
+ legacy_get_tree+0xd4/0x16c fs/fs_context.c:662
+ vfs_get_tree+0x90/0x288 fs/super.c:1771
+ do_new_mount+0x25c/0x8c8 fs/namespace.c:3337
+ path_mount+0x590/0xe04 fs/namespace.c:3664
+ do_mount fs/namespace.c:3677 [inline]
+ __do_sys_mount fs/namespace.c:3886 [inline]
+ __se_sys_mount fs/namespace.c:3863 [inline]
+ __arm64_sys_mount+0x45c/0x594 fs/namespace.c:3863
+ __invoke_syscall arch/arm64/kernel/syscall.c:37 [inline]
+ invoke_syscall+0x98/0x2b8 arch/arm64/kernel/syscall.c:51
+ el0_svc_common+0x130/0x23c arch/arm64/kernel/syscall.c:136
+ do_el0_svc+0x48/0x58 arch/arm64/kernel/syscall.c:155
+ el0_svc+0x54/0x158 arch/arm64/kernel/entry-common.c:678
+ el0t_64_sync_handler+0x84/0xfc arch/arm64/kernel/entry-common.c:696
+ el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:595
+
+The buggy address belongs to the object at ffff0000ce31a400
+ which belongs to the cache kmalloc-512 of size 512
+The buggy address is located 0 bytes inside of
+ allocated 512-byte region [ffff0000ce31a400, ffff0000ce31a600)
+
+The buggy address belongs to the physical page:
+page:00000000950b7bf3 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x10e318
+head:00000000950b7bf3 order:2 entire_mapcount:0 nr_pages_mapped:0 pincount:0
+anon flags: 0x5ffc00000000840(slab|head|node=0|zone=2|lastcpupid=0x7ff)
+page_type: 0xffffffff()
+raw: 05ffc00000000840 ffff0000c0001c80 0000000000000000 dead000000000001
+raw: 0000000000000000 0000000000100010 00000001ffffffff 0000000000000000
+page dumped because: kasan: bad access detected
+
+Memory state around the buggy address:
+ ffff0000ce31a500: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+ ffff0000ce31a580: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+>ffff0000ce31a600: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+                   ^
+ ffff0000ce31a680: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+ ffff0000ce31a700: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+==================================================================
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
