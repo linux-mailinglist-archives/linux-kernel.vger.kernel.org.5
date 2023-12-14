@@ -1,129 +1,122 @@
-Return-Path: <linux-kernel+bounces-167-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-164-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2C82D813CFA
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 22:56:31 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CBB30813CF3
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 22:51:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CB3B61F22778
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 21:56:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 87F062834DC
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 21:51:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E79852C687;
-	Thu, 14 Dec 2023 21:56:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 236BB2C68F;
+	Thu, 14 Dec 2023 21:51:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=o2.pl header.i=@o2.pl header.b="B2XXG21K"
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="O7Rt2W2/"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mx-out.tlen.pl (mx-out.tlen.pl [193.222.135.148])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f42.google.com (mail-pj1-f42.google.com [209.85.216.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C74E3671E2
-	for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 21:56:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=o2.pl
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=o2.pl
-Received: (wp-smtpd smtp.tlen.pl 41361 invoked from network); 14 Dec 2023 22:49:36 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=o2.pl; s=1024a;
-          t=1702590577; bh=UHCvhIuAC7zxKeFiIitmWOGhQVlFLV77CN9XcCxa8zQ=;
-          h=Subject:From:To:Cc;
-          b=B2XXG21K0O64eRx6QbMEqPqyh/BWkYO9Dl06CgzL4NXVI+yNjK4Y8JMN6qd2T0/Q/
-           uBROlWiVjsqVYLTtX7E6iRoiwPljLPsfVUZH+RQVy4+rP64N+3OxkyCl1axurEjL1P
-           +wuOLMrf3si9RRAdhbcdTISooFj999zdM8WpZft4=
-Received: from aaep161.neoplus.adsl.tpnet.pl (HELO [192.168.1.22]) (mat.jonczyk@o2.pl@[83.4.119.161])
-          (envelope-sender <mat.jonczyk@o2.pl>)
-          by smtp.tlen.pl (WP-SMTPD) with ECDHE-RSA-AES256-GCM-SHA384 encrypted SMTP
-          for <miriam.rachel.korenblit@intel.com>; 14 Dec 2023 22:49:36 +0100
-Message-ID: <d8aef271-418c-4644-a3fd-72ee5f1959b7@o2.pl>
-Date: Thu, 14 Dec 2023 22:49:34 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 85D36671EF
+	for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 21:50:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-pj1-f42.google.com with SMTP id 98e67ed59e1d1-28b29d1fe6fso123201a91.3
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 13:50:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1702590606; x=1703195406; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=q3uvOl5I1K5LVZjTbvdk6O6AI3UzMwrE4ysaxYUe9kI=;
+        b=O7Rt2W2/umRxANgZyktz+eyA5O6bnAtP2wUk4AJZpw6CiELu3Tz7E0LFpU+JzbyI29
+         YCUwFaF/hC9TOlrRXj8sxTpriwMOi+S8ORMLX3U6ERBiyTSAPLW1HqabHIAoUcO53ugO
+         WgE/tpPMp7D5cKHD9BKc7h6o/ZMSWI2r8YtWA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702590606; x=1703195406;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=q3uvOl5I1K5LVZjTbvdk6O6AI3UzMwrE4ysaxYUe9kI=;
+        b=c//ucOlO+pKlrZHdmnJT6fVhXZsKUD8VfHVUQU4ZEa+eCGupcqNd6M1kfuthBYY+ZM
+         +YFzewa3yKYue7SCDWxnxMWKr4EJiZS79uiFu6rr/QMNMSvaaAIW3Zs9bDjcuz+Co1CR
+         HyWaKCl6tJmgg22XU7lY025ahzZ367QXre/7Af5e9O9wWLERzPHG5iLiwCy/HJ433EgK
+         SkmckkswM29MXBFE3+BQGRr8rEJ810Z+8B7cW2icPIajipexuXHKzBUa5h0BCvBdapK0
+         /DwtIHbSFgGXF8eNmXL3bJLqDriPYCaLNhLgAI4MgF5EUu8qv7Y7uoIfjZsqd7+98jgi
+         dYXg==
+X-Gm-Message-State: AOJu0Yz0Rxf3kvD0NRJeeW2bh5XKywdSXRCOYE125sfqPLqMC+p5dhNu
+	pquRSvKan2VQH8cKo6KmrWKNRw==
+X-Google-Smtp-Source: AGHT+IH8XIX3Um1NiC6K2GNJEyKljGfB96y9SWgXPf2JeECrD6rGe9/j6ZSa0NVjliiYfaX/MzK2Aw==
+X-Received: by 2002:a17:90a:aa8b:b0:288:76d7:4227 with SMTP id l11-20020a17090aaa8b00b0028876d74227mr4749010pjq.52.1702590606645;
+        Thu, 14 Dec 2023 13:50:06 -0800 (PST)
+Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id j8-20020a17090a734800b0028ae9cb6ce0sm3740633pjs.6.2023.12.14.13.50.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 Dec 2023 13:50:06 -0800 (PST)
+Date: Thu, 14 Dec 2023 13:50:05 -0800
+From: Kees Cook <keescook@chromium.org>
+To: kernel test robot <lkp@intel.com>
+Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Linux Memory Management List <linux-mm@kvack.org>,
+	"Gustavo A. R. Silva" <gustavoars@kernel.org>,
+	Peter Oberparleiter <oberpar@linux.ibm.com>,
+	linux-doc@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: Re: kernel/gcov/fs.c:103: warning: Excess struct member 'buffer'
+ description in 'gcov_iterator'
+Message-ID: <202312141344.9E41E46584@keescook>
+References: <202312150432.oBngC94A-lkp@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [Regression] debugfs warnings when resuming from suspend on
- 6.7-rc5
-Content-Language: en-GB
-From: =?UTF-8?Q?Mateusz_Jo=C5=84czyk?= <mat.jonczyk@o2.pl>
-To: Miri Korenblit <miriam.rachel.korenblit@intel.com>,
- Johannes Berg <johannes.berg@intel.com>
-Cc: Gregory Greenman <gregory.greenman@intel.com>,
- linux-wireless@vger.kernel.org,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <da91e776-b192-4e2b-9157-e83a5a2659b1@o2.pl>
-Autocrypt: addr=mat.jonczyk@o2.pl; keydata=
- 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
- TANkZ3QqXNX2
-In-Reply-To: <da91e776-b192-4e2b-9157-e83a5a2659b1@o2.pl>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-WP-MailID: 4a4124de22348ecd44fbc1e1be48b830
-X-WP-AV: skaner antywirusowy Poczty o2
-X-WP-SPAM: NO 0000000 [QZM0]                               
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <202312150432.oBngC94A-lkp@intel.com>
 
-W dniu 14.12.2023 o 22:45, Mateusz Jończyk pisze:
-> Hello,
->
-> Since upgrading to 6.7-rc kernels, I have been getting the following error
-> message in dmesg
-> while resuming from suspend:
->
-> [   83.302944] debugfs: Directory 'iwlmvm' with parent 'netdev:wlp2s0' already
-> present!
-> [   83.302963] iwlwifi 0000:02:00.0: Failed to create debugfs directory under
-> netdev:wlp2s0
->
-OK, now I see
+On Fri, Dec 15, 2023 at 04:53:19AM +0800, kernel test robot wrote:
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+> head:   5bd7ef53ffe5ca580e93e74eb8c81ed191ddc4bd
+> commit: fbd126f5a658b92c7f6af986a6d89cf5e5693268 gcov: annotate struct gcov_iterator with __counted_by
+> date:   8 weeks ago
+> config: i386-buildonly-randconfig-001-20231214 (https://download.01.org/0day-ci/archive/20231215/202312150432.oBngC94A-lkp@intel.com/config)
+> compiler: gcc-11 (Debian 11.3.0-12) 11.3.0
+> reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231215/202312150432.oBngC94A-lkp@intel.com/reproduce)
+> 
+> If you fix the issue in a separate patch/commit (i.e. not just a new version of
+> the same patch/commit), kindly add following tags
+> | Reported-by: kernel test robot <lkp@intel.com>
+> | Closes: https://lore.kernel.org/oe-kbuild-all/202312150432.oBngC94A-lkp@intel.com/
+> 
+> All warnings (new ones prefixed by >>):
+> 
+> >> kernel/gcov/fs.c:103: warning: Excess struct member 'buffer' description in 'gcov_iterator'
+> 
+> 
+> vim +103 kernel/gcov/fs.c
+> 
+> 7a1d55b987dfcb Johannes Berg 2021-05-06   90  
+> 7a1d55b987dfcb Johannes Berg 2021-05-06   91  /**
+> 7a1d55b987dfcb Johannes Berg 2021-05-06   92   * struct gcov_iterator - specifies current file position in logical records
+> 7a1d55b987dfcb Johannes Berg 2021-05-06   93   * @info: associated profiling data
+> 7a1d55b987dfcb Johannes Berg 2021-05-06   94   * @buffer: buffer containing file data
+> 7a1d55b987dfcb Johannes Berg 2021-05-06   95   * @size: size of buffer
+> 7a1d55b987dfcb Johannes Berg 2021-05-06   96   * @pos: current position in file
+> 7a1d55b987dfcb Johannes Berg 2021-05-06   97   */
+> 7a1d55b987dfcb Johannes Berg 2021-05-06   98  struct gcov_iterator {
+> 7a1d55b987dfcb Johannes Berg 2021-05-06   99  	struct gcov_info *info;
+> 7a1d55b987dfcb Johannes Berg 2021-05-06  100  	size_t size;
+> 7a1d55b987dfcb Johannes Berg 2021-05-06  101  	loff_t pos;
+> fbd126f5a658b9 Kees Cook     2023-09-22  102  	char buffer[] __counted_by(size);
+> 7a1d55b987dfcb Johannes Berg 2021-05-06 @103  };
+> 7a1d55b987dfcb Johannes Berg 2021-05-06  104  
 
-https://patchwork.kernel.org/project/linux-wireless/patch/20231211085121.88a950f43e16.Id71181780994649219685887c0fcad33d387cc78@changeid/
+It looks like whatever produces that error is not parsing attributes
+correctly. I suspect this is the "htmldocs" target and "__counted_by" is
+missing from Documentation/conf.py. I'll investigate...
 
-("wifi: mac80211: don't re-add debugfs during reconfig")
-
-Will see if this fixes the issue.
-
-Greetings,
-
-Mateusz
-
+-- 
+Kees Cook
 
