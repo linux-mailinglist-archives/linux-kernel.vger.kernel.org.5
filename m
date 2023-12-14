@@ -2,61 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D3E0812502
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 03:09:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BF7DA812507
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 03:09:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442985AbjLNCI4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 21:08:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50342 "EHLO
+        id S1443001AbjLNCJR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 21:09:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35066 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230132AbjLNCIy (ORCPT
+        with ESMTP id S230132AbjLNCJQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 21:08:54 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BE83E3
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 18:09:01 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 76BABC433C7;
-        Thu, 14 Dec 2023 02:08:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1702519740;
-        bh=C336GmVmo2GuBKjQufKQsX0q57zfSJKXFpYuXd7eZMA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=NztbGM1oUDVKU4ZKutJGC92D6if3Rfddd0M8fYmYCwuU5+mBRgDyleJQGd0mFXbVI
-         op2cmwSADX6NRXDOrXVv2atj2fAXzGQY6n1uwOu6cj8Xi/5Fjb5WK1ndB0npAWQakp
-         7kfOTW2Ho32lbHKM6E8S4XD6wKutIue0kLvlYNetIg/v7ViinmBLAh4h3HbwXpBqTh
-         OXdVsujOONGdPaMxTweAfRSmFibexkZ6pgutaeRreIqPLZ/l9L4UerOBsVYLfGVHY9
-         NowdR4KU49Sk/rwFWKfPB74oaUQYqxEp+Df8g/W+5K1MiI5b73F5P3w6bYPVhJtIBH
-         FTSYnuP5DVdnA==
-Date:   Thu, 14 Dec 2023 10:08:55 +0800
-From:   Shawn Guo <shawnguo@kernel.org>
-To:     Frank Li <Frank.li@nxp.com>
-Cc:     imx@lists.linux.dev, Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Joakim Zhang <qiangqing.zhang@nxp.com>,
-        Marcel Ziswiler <marcel.ziswiler@toradex.com>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/1] arm64: dts: imx8qm: Fix edma3 power-domains and
- interrupt numbery
-Message-ID: <20231214020855.GS270430@dragon>
-References: <20231206201256.1113800-1-Frank.Li@nxp.com>
- <20231214020053.GQ270430@dragon>
- <ZXpi8/asoBMBAtmz@lizhi-Precision-Tower-5810>
+        Wed, 13 Dec 2023 21:09:16 -0500
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92757E4
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 18:09:22 -0800 (PST)
+Received: from pps.filterd (m0356517.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3BE0836V006535;
+        Thu, 14 Dec 2023 02:09:13 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=R4vwANP5SDrlxQ7BXlWuGvORdzI3wC1R0p4DJ+QmJQA=;
+ b=kf5czZhOvkYi/WM8uE5WxEp3lQ3Nx6h1/aC5EkeRQGvvMcEN+Hhh/upYudQ4CEcPMWS8
+ MBynObEqrb7wrQKJ6+8Z71gCNIihOiNj4kI5NFB/+OiyeHMdm4mJv/de9mRVqbwIr8kG
+ GZ1F7KO31+k9N0RMoQSCTS/3KGi1fV3X0a8RNufEturDLnPGuVIkenJm/uGLynTM58AF
+ 5Ej2b/BGVu2QZJO+Fosqvho0rhzSQGZXkjx7kGwrHv3+Ykk/hBM/mzCEHrc5TdD6SNNo
+ YN5hPOXNcDSmT/pvITFxRMpO8EgUiRAjtr9K5o4s+4CoQVL6+LCaWJG8ostaDxTaNpgT 8Q== 
+Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3uypvrt2rv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 14 Dec 2023 02:09:13 +0000
+Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
+        by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3BDNV1xr013864;
+        Thu, 14 Dec 2023 02:09:12 GMT
+Received: from smtprelay06.wdc07v.mail.ibm.com ([172.16.1.73])
+        by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3uw592cva9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 14 Dec 2023 02:09:12 +0000
+Received: from smtpav04.wdc07v.mail.ibm.com (smtpav04.wdc07v.mail.ibm.com [10.39.53.231])
+        by smtprelay06.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3BE29B1A22086388
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 14 Dec 2023 02:09:11 GMT
+Received: from smtpav04.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 4D78F58045;
+        Thu, 14 Dec 2023 02:09:11 +0000 (GMT)
+Received: from smtpav04.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 1EA2858052;
+        Thu, 14 Dec 2023 02:09:10 +0000 (GMT)
+Received: from [9.67.150.168] (unknown [9.67.150.168])
+        by smtpav04.wdc07v.mail.ibm.com (Postfix) with ESMTP;
+        Thu, 14 Dec 2023 02:09:09 +0000 (GMT)
+Message-ID: <dbf0d09e-6b59-4dfe-8010-b530e2f305b0@linux.ibm.com>
+Date:   Wed, 13 Dec 2023 20:09:09 -0600
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZXpi8/asoBMBAtmz@lizhi-Precision-Tower-5810>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1] fsi: Fix panic on scom file read
+Content-Language: en-US
+To:     Lakshmi Yadlapati <lakshmiy@us.ibm.com>, joel@jms.id.au,
+        eajames@linux.ibm.com, alistair@popple.id.au
+Cc:     linux-fsi@lists.ozlabs.org, linux-kernel@vger.kernel.org
+References: <20231214000744.1281464-1-lakshmiy@us.ibm.com>
+From:   Ninad Palsule <ninad@linux.ibm.com>
+In-Reply-To: <20231214000744.1281464-1-lakshmiy@us.ibm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: PHasY1MzJ3HasUMH0goJ0qwcdelafeYY
+X-Proofpoint-ORIG-GUID: PHasY1MzJ3HasUMH0goJ0qwcdelafeYY
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-13_16,2023-12-13_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0
+ priorityscore=1501 mlxscore=0 clxscore=1011 malwarescore=0 bulkscore=0
+ mlxlogscore=999 spamscore=0 lowpriorityscore=0 impostorscore=0
+ phishscore=0 suspectscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2311290000 definitions=main-2312140012
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -64,60 +86,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 13, 2023 at 09:05:39PM -0500, Frank Li wrote:
-> On Thu, Dec 14, 2023 at 10:00:53AM +0800, Shawn Guo wrote:
-> > On Wed, Dec 06, 2023 at 03:12:55PM -0500, Frank Li wrote:
-> > > Fixed a kernel dump when access edma3 registers.
-> > > 
-> > > [    1.517547] SError Interrupt on CPU1, code 0x00000000bf000002 -- SError
-> > > [    1.517556] CPU: 1 PID: 59 Comm: kworker/u8:2 Not tainted 6.7.0-rc3-next-20231129-dirty #3
-> > > [    1.517564] Hardware name: Freescale i.MX8QM MEK (DT)
-> > > [    1.517570] Workqueue: events_unbound deferred_probe_work_func
-> > > [    1.517593] pstate: 80000005 (Nzcv daif -PAN -UAO -TCO -DIT -SSBS BTYPE=--)
-> > > [    1.517601] pc : vsnprintf+0x60/0x770
-> > > [    1.517612] lr : snprintf+0x58/0x80
-> > > [    1.517619] sp : ffff800082f0b9e0
-> > > [    1.517622] x29: ffff800082f0b9e0 x28: ffff8000819a8af8 x27: ffff000801f90080
-> > > [    1.517632] x26: ffff000801f90510 x25: 0000000000000001 x24: 0000000000000020
-> > > [    1.517640] x23: 00000000ffffffd8 x22: ffff000800114800 x21: ffff800082f0baf0
-> > > [    1.517650] x20: ffff000801f90698 x19: ffff000801f906b8 x18: ffffffffffffffff
-> > > [    1.517659] x17: 6e6f632d616d642e x16: 3030303066396135 x15: ffff800102f0b687
-> > > [    1.517668] x14: 0000000000000000 x13: 30206e6168632065 x12: 74697277203a7265
-> > > [    1.517677] x11: 6c6c6f72746e6f63 x10: 2d616d642e303030 x9 : 72656c6c6f72746e
-> > > [    1.517686] x8 : ffff000800396740 x7 : 205d333337383035 x6 : ffff800082f0baf0
-> > > [    1.517694] x5 : 00000000ffffffd8 x4 : ffff000800396740 x3 : ffff800082f0ba70
-> > > [    1.517703] x2 : ffff8000819a8af8 x1 : ffff800082f0baf0 x0 : 0000000000000025
-> > > [    1.517713] Kernel panic - not syncing: Asynchronous SError Interrupt
-> > > [    1.517718] CPU: 1 PID: 59 Comm: kworker/u8:2 Not tainted 6.7.0-rc3-next-20231129-dirty #3
-> > > [    1.517724] Hardware name: Freescale i.MX8QM MEK (DT)
-> > > [    1.517727] Workqueue: events_unbound deferred_probe_work_func
-> > > [    1.517736] Call trace:
-> > > [    1.517739]  dump_backtrace+0x90/0xe8
-> > > [    1.517752]  show_stack+0x18/0x24
-> > > [    1.517761]  dump_stack_lvl+0x48/0x60
-> > > [    1.517771]  dump_stack+0x18/0x24
-> > > [    1.517780]  panic+0x36c/0x3ac
-> > > [    1.517789]  nmi_panic+0x48/0x94
-> > > [    1.517796]  arm64_serror_panic+0x6c/0x78
-> > > [    1.517801]  do_serror+0x3c/0x78
-> > > [    1.517806]  el1h_64_error_handler+0x30/0x48
-> > > [    1.517813]  el1h_64_error+0x64/0x68
-> > > [    1.517819]  vsnprintf+0x60/0x770
-> > > [    1.517827]  snprintf+0x58/0x80
-> > > [    1.517834]  fsl_edma_probe+0x2ac/0x830
-> > > 
-> > > It is eDMA1 at QM, which have the same register with eDMA3 at qxp.
-> > > 
-> > > Fixes: e4d7a330fb7a ("arm64: dts: imx8: add edma[0..3]")
-> > > Signed-off-by: Frank Li <Frank.Li@nxp.com>
-> > 
-> > Hi Frank,
-> > 
-> > Did you see the fix [1] from Xiaolei?  It has landed on Linus' tree.
-> 
-> Sorry, not yet!. He have not fixed irq numbers. 
-> Let me do addition fix.
+Hi Lakshmi,
 
-Please copy Xiaolei on your fix, thanks!
+On 12/13/23 18:07, Lakshmi Yadlapati wrote:
+> Reading the scom file without the custom open method (i2cr_scom_open)
+> causes a kernel panic. This change replaces simple_open with i2cr_scom_open
+> to properly initialize the private_data field in the file structure,
+> preventing the panic during scom file operations.
+>
+> Signed-off-by: Lakshmi Yadlapati <lakshmiy@us.ibm.com>
+> ---
+>   drivers/fsi/i2cr-scom.c | 11 ++++++++++-
+>   1 file changed, 10 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/fsi/i2cr-scom.c b/drivers/fsi/i2cr-scom.c
+> index cb7e02213032..8d65c562b488 100644
+> --- a/drivers/fsi/i2cr-scom.c
+> +++ b/drivers/fsi/i2cr-scom.c
+> @@ -73,9 +73,18 @@ static ssize_t i2cr_scom_write(struct file *filep, const char __user *buf, size_
+>   	return len;
+>   }
+>   
+> +static int i2cr_scom_open(struct inode *inode, struct file *file)
+> +{
+> +	struct i2cr_scom *scom = container_of(inode->i_cdev, struct i2cr_scom, cdev);
+> +
+> +	file->private_data = scom;
+> +
+> +	return 0;
+> +}
+> +
+>   static const struct file_operations i2cr_scom_fops = {
+>   	.owner		= THIS_MODULE,
+> -	.open		= simple_open,
+> +	.open		= i2cr_scom_open,
+>   	.llseek		= i2cr_scom_llseek,
+>   	.read		= i2cr_scom_read,
+>   	.write		= i2cr_scom_write,
 
-Shawn
+
+Looks good.
+
+Reviewed-by: Ninad Palsule <ninad@linux.ibm.com>
+
