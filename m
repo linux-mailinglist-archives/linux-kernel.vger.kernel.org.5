@@ -2,106 +2,228 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 546BB812E00
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 12:01:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E0344812E05
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 12:03:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1443814AbjLNLBk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 06:01:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41900 "EHLO
+        id S1443811AbjLNLC5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 06:02:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35404 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1443897AbjLNLBe (ORCPT
+        with ESMTP id S1443772AbjLNLCz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 06:01:34 -0500
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 396971A3;
-        Thu, 14 Dec 2023 03:01:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=Popi+890fZ1lHbXbLEHSlXolpjJo3sDNBxoaukvvxzM=; b=sgeHfjBHWSa4Ai8ohwsLkr9bLX
-        exGWirdgfG0oHmhTbF3/gok3kfORbPiMrVHzOqnkjt7M4Ix3XQTMImnSyqz4idtzHLbs+Ydb+yLyd
-        Y4ECRzgfFoX7137PTSav157ABqjC3u3JaqNHd3GCIaPUaRN/LOYEOujiIYlpnUJlve4c=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1rDjT4-002ul8-GY; Thu, 14 Dec 2023 12:01:26 +0100
-Date:   Thu, 14 Dec 2023 12:01:26 +0100
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Luo Jie <quic_luoj@quicinc.com>
-Cc:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        hkallweit1@gmail.com, linux@armlinux.org.uk, corbet@lwn.net,
-        p.zabel@pengutronix.de, f.fainelli@gmail.com,
-        netdev@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org
-Subject: Re: [PATCH v7 03/14] net: phy: at803x: add QCA8084 ethernet phy
- support
-Message-ID: <c05e4756-0b33-4c97-ba88-1e14f459bbe3@lunn.ch>
-References: <20231214094813.24690-1-quic_luoj@quicinc.com>
- <20231214094813.24690-4-quic_luoj@quicinc.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231214094813.24690-4-quic_luoj@quicinc.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        Thu, 14 Dec 2023 06:02:55 -0500
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C291A11A
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 03:03:01 -0800 (PST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 29243220A1;
+        Thu, 14 Dec 2023 11:02:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1702551780; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=yLX0zWLQjJXwutevBe3jiLxXnEsG/QKzwGJR5yjOdc8=;
+        b=DkFwTiB/OJ4a8hIZOPMOVfLztYJhwaTUNbhIgxWl+ULc3qZyFTIM1BryBqHYJB9tkky7hZ
+        o2umm5cfLTRG3pHfzgPHIz+nBLGLQ05zJ79cTxzx8ma4MIHyHwA+FG9fy/CyCfOnVYiPMt
+        9G7Zfl/R1796Fl45WULwEPiKOXhpylg=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1702551780;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=yLX0zWLQjJXwutevBe3jiLxXnEsG/QKzwGJR5yjOdc8=;
+        b=vZZ/CcA4RvHFogtMsN23SEA9CX2EYTr+u78SmcxVo29Ldt2wSIZqsya5f8PckHW5r02QTj
+        sBTCBYnD5YW2F+AQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1702551779; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=yLX0zWLQjJXwutevBe3jiLxXnEsG/QKzwGJR5yjOdc8=;
+        b=Xl+0ARMSYReu2w0/JAdwZwClAf6cUPmwe3izDedpGDjRTOhTnmElf1gXPqA01+DmE+P7ze
+        INAUz6uGm2W5suJV5caR2c0firEMzVVwzLUXEAnAE4wgvYXKt24r7AHeJ2sB+3tQ1htEbC
+        XyXvdRQQmuOjooEtTnrGOksyyLgBRjI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1702551779;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=yLX0zWLQjJXwutevBe3jiLxXnEsG/QKzwGJR5yjOdc8=;
+        b=LKlFm42W6vPSg88nuSGyJls9BGAzyqqjhdt2fWpS/GqjGaQdDGzXi9KSbUAfvARhlEFx6b
+        BwaBIjCeoG/ZldBw==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id BEF70137E8;
+        Thu, 14 Dec 2023 11:02:58 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+        by imap1.dmz-prg2.suse.org with ESMTPSA
+        id 0xiCLOLgemWZZgAAD6G6ig
+        (envelope-from <tiwai@suse.de>); Thu, 14 Dec 2023 11:02:58 +0000
+Date:   Thu, 14 Dec 2023 12:02:58 +0100
+Message-ID: <87fs05qc65.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     patches@opensource.cirrus.com
+Cc:     Aleksandrs Vinarskis <alex.vinarskis@gmail.com>, perex@perex.cz,
+        tiwai@suse.com, sbinding@opensource.cirrus.com,
+        james.schulman@cirrus.com, david.rhodes@cirrus.com,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        Jasper Smet <josbeir@gmail.com>
+Subject: Re: [PATCH 1/1] ALSA: hda: cs35l41: Dell Fiorano add missing _DSD properties
+In-Reply-To: <20231212195243.10666-1-alex.vinarskis@gmail.com>
+References: <20231212195243.10666-1-alex.vinarskis@gmail.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-Spam-Level: 
+X-Spam-Score: -10.31
+X-Rspamd-Queue-Id: 29243220A1
+X-Spam-Level: 
+Authentication-Results: smtp-out1.suse.de;
+        dkim=pass header.d=suse.de header.s=susede2_rsa header.b=Xl+0ARMS;
+        dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=LKlFm42W;
+        dmarc=pass (policy=none) header.from=suse.de;
+        spf=softfail (smtp-out1.suse.de: 2a07:de40:b281:104:10:150:64:97 is neither permitted nor denied by domain of tiwai@suse.de) smtp.mailfrom=tiwai@suse.de
+X-Spamd-Result: default: False [-10.31 / 50.00];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         TO_DN_SOME(0.00)[];
+         R_SPF_SOFTFAIL(0.00)[~all:c];
+         RCVD_COUNT_THREE(0.00)[3];
+         DKIM_TRACE(0.00)[suse.de:+];
+         DMARC_POLICY_ALLOW(0.00)[suse.de,none];
+         RCPT_COUNT_SEVEN(0.00)[10];
+         MX_GOOD(-0.01)[];
+         DMARC_POLICY_ALLOW_WITH_FAILURES(-0.50)[];
+         FROM_EQ_ENVFROM(0.00)[];
+         MIME_TRACE(0.00)[0:+];
+         BAYES_HAM(-3.00)[100.00%];
+         ARC_NA(0.00)[];
+         R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+         FROM_HAS_DN(0.00)[];
+         DWL_DNSWL_MED(-2.00)[suse.de:dkim];
+         FREEMAIL_ENVRCPT(0.00)[gmail.com];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         TAGGED_RCPT(0.00)[];
+         MIME_GOOD(-0.10)[text/plain];
+         DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+         WHITELIST_DMARC(-7.00)[suse.de:D:+];
+         MID_CONTAINS_FROM(1.00)[];
+         DBL_BLOCKED_OPENRESOLVER(0.00)[cirrus.com:email,suse.de:dkim];
+         FUZZY_BLOCKED(0.00)[rspamd.com];
+         FREEMAIL_CC(0.00)[gmail.com,perex.cz,suse.com,opensource.cirrus.com,cirrus.com,alsa-project.org,vger.kernel.org];
+         RCVD_TLS_ALL(0.00)[];
+         SUSPICIOUS_RECIPS(1.50)[];
+         RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 14, 2023 at 05:48:02PM +0800, Luo Jie wrote:
-> Add qca8084 PHY support, which is four-port PHY with maximum
-> link capability 2.5G, the features of each port is almost same
-> as QCA8081 and slave seed config is not needed.
+On Tue, 12 Dec 2023 20:52:43 +0100,
+Aleksandrs Vinarskis wrote:
 > 
-> Three kind of interface modes supported by qca8084.
-> PHY_INTERFACE_MODE_10G_QXGMII, PHY_INTERFACE_MODE_2500BASEX and
-> PHY_INTERFACE_MODE_SGMII.
+> Dell XPS 9530 (2023) has two SPI connected CS35L41 amplifiers, however
+> is missing _DSD properties, cs-gpios and has a firmware bug which caps SPI
+> controller's speed to unusable 3051Hz. This patch adds _DSD properties and
+> sets second cs-gpio. In case SPI speed bug is detected, it will not
+> initialize the device to avoid hangs on wake up.
 > 
-> The PCS(serdes) and clock are also needed to be configured to
-> bringup qca8084 PHY, which will be added in the pcs driver.
+> Resolution of SPI speed bug requires either a patch to `intel-lpss.c` or an
+> UEFI update with corrected values from Dell. Tested with locally applied
+> patch to `intel-lpss` on multiple XPS 9530 devices.
 > 
-> The additional CDT configurations used for qca8084.
-> 
-> Signed-off-by: Luo Jie <quic_luoj@quicinc.com>
+> Co-developed-by: Jasper Smet <josbeir@gmail.com>
+> Signed-off-by: Jasper Smet <josbeir@gmail.com>
+> Signed-off-by: Aleksandrs Vinarskis <alex.vinarskis@gmail.com>
+
+Can Cirrus team review this?
+
+
+thanks,
+
+Takashi
+
 > ---
->  drivers/net/phy/at803x.c | 49 ++++++++++++++++++++++++++++++++++++++++
->  1 file changed, 49 insertions(+)
+>  sound/pci/hda/cs35l41_hda_property.c | 47 ++++++++++++++++++++++++++++
+>  1 file changed, 47 insertions(+)
 > 
-> diff --git a/drivers/net/phy/at803x.c b/drivers/net/phy/at803x.c
-> index 37fb033e1c29..8dfdf2ff56a5 100644
-> --- a/drivers/net/phy/at803x.c
-> +++ b/drivers/net/phy/at803x.c
-> @@ -176,6 +176,7 @@
->  #define AT8030_PHY_ID_MASK			0xffffffef
+> diff --git a/sound/pci/hda/cs35l41_hda_property.c b/sound/pci/hda/cs35l41_hda_property.c
+> index c83328971728..69446a794397 100644
+> --- a/sound/pci/hda/cs35l41_hda_property.c
+> +++ b/sound/pci/hda/cs35l41_hda_property.c
+> @@ -7,9 +7,55 @@
+>  // Author: Stefan Binding <sbinding@opensource.cirrus.com>
 >  
->  #define QCA8081_PHY_ID				0x004dd101
-> +#define QCA8084_PHY_ID				0x004dd180
+>  #include <linux/gpio/consumer.h>
+> +#include <linux/spi/spi.h>
+>  #include <linux/string.h>
+>  #include "cs35l41_hda_property.h"
 >  
->  #define QCA8327_A_PHY_ID			0x004dd033
->  #define QCA8327_B_PHY_ID			0x004dd034
-> @@ -1760,6 +1761,9 @@ static bool qca808x_is_prefer_master(struct phy_device *phydev)
->  
->  static bool qca808x_has_fast_retrain_or_slave_seed(struct phy_device *phydev)
->  {
-> +	if (phydev_id_compare(phydev, QCA8084_PHY_ID))
-> +		return false;
+> +/*
+> + * Device 10280BEB (Dell XPS 9530) doesn't have _DSD at all. Moreover, pin that is typically
+> + * used for `speaker_id` is missing. SPI's cs-gpios definitions are also missing.
+> + */
+> +static int dell_fiorano_no_acpi(struct cs35l41_hda *cs35l41, struct device *physdev, int id,
+> +				const char *hid)
+> +{
+> +	struct cs35l41_hw_cfg *hw_cfg = &cs35l41->hw_cfg;
+> +	struct spi_device *spi = to_spi_device(cs35l41->dev);
 > +
->  	return linkmode_test_bit(ETHTOOL_LINK_MODE_2500baseT_Full_BIT, phydev->supported);
->  }
-
-
-It looks like these patches need rebasing on net-next/main. It appears
-you are missing Christians patches.
-
-
-    Andrew
-
----
-pw-bot: cr
+> +	/*
+> +	 * 10280BEB has a firmware bug, which wrongly enables clock divider for intel-lpss
+> +	 * Resultant SPI clock is 100Mhz/32767=3051Hz, which leads to ~3 minute hang on boot/wake up
+> +	 * Avoid initializing device if lpss was not patched/fixed UEFI was not installed
+> +	 */
+> +	if (spi->max_speed_hz < CS35L41_SPI_MAX_FREQ) {
+> +		dev_err(cs35l41->dev, "SPI's max_speed_hz is capped at %u Hz, will not continue to avoid hanging\n",
+> +			spi->max_speed_hz);
+> +		return -EINVAL;
+> +	}
+> +
+> +	dev_info(cs35l41->dev, "Adding DSD properties for %s\n", cs35l41->acpi_subsystem_id);
+> +
+> +	/* check SPI address to assign the index */
+> +	cs35l41->index = id;
+> +	cs35l41->channel_index = 0;
+> +	/* 10280BEB is missing pin which is typically assigned to `spk-id-gpios` */
+> +	cs35l41->speaker_id = cs35l41_get_speaker_id(physdev, cs35l41->index, 2, -1);
+> +	cs35l41->reset_gpio = gpiod_get_index(physdev, NULL, 1, GPIOD_OUT_LOW);
+> +
+> +	hw_cfg->spk_pos = cs35l41->index  ? 1 : 0;	// 0th L, 1st R
+> +	hw_cfg->bst_type = CS35L41_EXT_BOOST;
+> +	hw_cfg->gpio1.func = CS35l41_VSPK_SWITCH;
+> +	hw_cfg->gpio1.valid = true;
+> +	hw_cfg->gpio2.func = CS35L41_INTERRUPT;
+> +	hw_cfg->gpio2.valid = true;
+> +	hw_cfg->valid = true;
+> +
+> +	/* Add second cs-gpio here */
+> +	if (cs35l41->index)
+> +		spi->cs_gpiod = gpiod_get_index(physdev, NULL, 0, GPIOD_OUT_HIGH);
+> +
+> +	return 0;
+> +}
+> +
+>  /*
+>   * Device CLSA010(0/1) doesn't have _DSD so a gpiod_get by the label reset won't work.
+>   * And devices created by serial-multi-instantiate don't have their device struct
+> @@ -92,6 +138,7 @@ static const struct cs35l41_prop_model cs35l41_prop_model_table[] = {
+>  	{ "CLSA0100", NULL, lenovo_legion_no_acpi },
+>  	{ "CLSA0101", NULL, lenovo_legion_no_acpi },
+>  	{ "CSC3551", "103C89C6", hp_vision_acpi_fix },
+> +	{ "CSC3551", "10280BEB", dell_fiorano_no_acpi },
+>  	{}
+>  };
+>  
+> -- 
+> 2.40.1
+> 
