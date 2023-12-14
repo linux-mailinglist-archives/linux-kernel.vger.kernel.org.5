@@ -1,72 +1,99 @@
-Return-Path: <linux-kernel+bounces-13-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-19-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 832A6813AB9
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 20:27:11 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C0734813AD2
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 20:34:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2AA391F21FA2
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 19:27:11 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 739B92822C3
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 19:34:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B6DA8697A0;
-	Thu, 14 Dec 2023 19:27:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D2375697AB;
+	Thu, 14 Dec 2023 19:33:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MggRYk5S"
+	dkim=pass (2048-bit key) header.d=sang-engineering.com header.i=@sang-engineering.com header.b="YKCT6jAL"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mail.zeus03.de (www.zeus03.de [194.117.254.33])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D4A716978D;
-	Thu, 14 Dec 2023 19:27:00 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C571BC433C8;
-	Thu, 14 Dec 2023 19:26:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1702582020;
-	bh=vkWYixzyfgyZi8a/VjYllS8R/TJLFtiB0inVFXCnrI0=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=MggRYk5SC9uccJDxd3wsRLBrv6cFbxMA1rm7EBBhdT9hLrbAgLPQD5lxRaBnViMDi
-	 r23yD2KZjTILw3W8zobHffZQSBtdSGormnzOTrrl7tfxJ9cOY7k9CsfVwBdnFOlRbP
-	 VRU85t0aCOom4WpN407KBpS4JpNZrk6WoCVJwQAs9N1ywK8his7nfddhyF/kfA+l4l
-	 3D/7jQbO4Aa7Axhai0qoEeKM5K3M9pjvqSwOE5GQ6yyWkhvMe2EsqTFxo8zgOybge5
-	 oxt9/ct3gb87usVf8N+0JD/bIcDMgBFh8kONeDKJUyvsLmMEE+dPnkD0HQJIwzn8VG
-	 d4aTDjlJIrM4g==
-Date: Thu, 14 Dec 2023 11:26:58 -0800
-From: Jakub Kicinski <kuba@kernel.org>
-To: Claudiu <claudiu.beznea@tuxon.dev>
-Cc: s.shtylyov@omp.ru, davem@davemloft.net, edumazet@google.com,
- pabeni@redhat.com, richardcochran@gmail.com, p.zabel@pengutronix.de,
- yoshihiro.shimoda.uh@renesas.com, wsa+renesas@sang-engineering.com,
- geert+renesas@glider.be, netdev@vger.kernel.org,
- linux-renesas-soc@vger.kernel.org, linux-kernel@vger.kernel.org, Claudiu
- Beznea <claudiu.beznea.uj@bp.renesas.com>
-Subject: Re: [PATCH net-next v2 00/21] net: ravb: Add suspend to RAM and
- runtime PM support for RZ/G3S
-Message-ID: <20231214112658.583cfc60@kernel.org>
-In-Reply-To: <20231214114600.2451162-1-claudiu.beznea.uj@bp.renesas.com>
-References: <20231214114600.2451162-1-claudiu.beznea.uj@bp.renesas.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D564569798
+	for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 19:33:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sang-engineering.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sang-engineering.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	sang-engineering.com; h=date:from:to:cc:subject:message-id
+	:references:mime-version:content-type:in-reply-to; s=k1; bh=vJr/
+	AQFE1XFRSIFd6GXXrHnQGhGkGt3dKuW9tKsM4n0=; b=YKCT6jALhYwerAmIP8og
+	WvlNjpLQ/du0sxJvWarBIVAgSnDV2WcLnWlcmXD8VnqLyy8xjECjUWSy+N8spC0J
+	s7U5mhqzl+IYHPIlL1OpGH2BDymKomzFllX3U/vYp4wReJ9LN48b7yK4Z2hEUlkT
+	Mo+aABJ1ha9ufY5Cp37BDH50UpuNGFunPkA6Tc2uTL36NyS9aer1uxV4ODjxu8FP
+	UJaqcON8fbubzXzS36zVzDvVk8N154kXrVMSo2EeXqakRQiEU3VINb7PXzvZdj1r
+	PzISFrJhx8N+N0dTG7RInkn3zf/Zs9il/c9XQWF5n71isuu7lKS7wBmjtZYoCwu/
+	WQ==
+Received: (qmail 1023542 invoked from network); 14 Dec 2023 20:27:06 +0100
+Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 14 Dec 2023 20:27:06 +0100
+X-UD-Smtp-Session: l3s3148p1@iI7dRH0MMtUujnuR
+Date: Thu, 14 Dec 2023 20:27:05 +0100
+From: Wolfram Sang <wsa+renesas@sang-engineering.com>
+To: Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>
+Cc: linux-renesas-soc@vger.kernel.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+	Marek Vasut <marek.vasut+renesas@gmail.com>,
+	Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
+Subject: Re: [PATCH v5 RESEND 0/2] PCI: rcar: support regulators for PCIe
+Message-ID: <ZXtXCYx2YR1of/qr@shikoro>
+Mail-Followup-To: Wolfram Sang <wsa+renesas@sang-engineering.com>,
+	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+	linux-renesas-soc@vger.kernel.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+	Marek Vasut <marek.vasut+renesas@gmail.com>,
+	Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
+References: <20231105092908.3792-1-wsa+renesas@sang-engineering.com>
+ <ZXske3k8CkMcGjr5@shikoro>
+ <20231214191900.GB2079458@rocinante>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="C8Ty/fbhp+nEXecq"
+Content-Disposition: inline
+In-Reply-To: <20231214191900.GB2079458@rocinante>
 
-On Thu, 14 Dec 2023 13:45:39 +0200 Claudiu wrote:
-> Subject: [PATCH net-next v2 00/21] 
 
-We got 260 patches in the review queue. Please pace your patches:
-https://www.kernel.org/doc/html/next/process/maintainer-netdev.html#tl-dr
+--C8Ty/fbhp+nEXecq
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-> Patches are based on series at [1].
->
-> [1] https://lore.kernel.org/all/20231214113137.2450292-1-claudiu.beznea.uj@bp.renesas.com/
 
-Meaning there's a dependency we're supposed to track?
-You have to wait for fixes to land, we marge the trees every week.
--- 
-pw-bot: cr
+> Applied, so it should make it to 6.8.  Apologies for the delay.
+
+Awesome, thank you!
+
+
+--C8Ty/fbhp+nEXecq
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmV7VwUACgkQFA3kzBSg
+Kbav2Q//axmhe1kLHs/Li35jBoHdo2LNR2a2RGkR0AzFNJ95MgzJLCAHlmXq+lOU
+Odi268gmDwriEa9ISl3a47TxgrndBrxGiMUXgKityzQh+0EAE15erWozUrdCxyel
+whdEb0WSlaq0B4lETpbP6jKB4GGi5OZC9VfdFGq9Rl0MIJqYOLn40ZTzO+5+oI4z
+ZaZDeTY1+8QRHquRJ97bm8+oAcuMbkf1O6yc6LahUiPTx2lTbxTbdotLFnp8z5go
+rjJJ3ctZ9jse4Eqc1iXJORufrRanTtA9RWOyD1pq1difuSaSYTZG6dsPDJOsusma
+i0OQ1UjPZSC+dx9MXLfJ5vmgJ89cNfrCp/lt2n2GmJ+LmS0G2wNx1QGJVcYCq2Mu
+HNKOqvXLKJS8WnmfRJZeV+hH4ih3fILCzRBLF/+TQIto6bgOv2e63CfKRfvwv5Gn
+nOxBPZIAkNdkBQ3birtagIy+6U4sunH6jQxzMlijcTfqks6WWzY7D294Bi3k0FxH
+u/vZBvcNcCFg6mxay/tXP0Odpm08AJdMOL2iTRDyMFcYPRWVwS7fr4Tq40TAbWMF
+VeBoOjl5l1U47mH6yqR4/lNqZS4LxhA8Oo/jct6e+vHgKpaTl7hEVj0nNANWJdRu
+Fi9Ydikto8WBAXc/ubLUXWjDwbtO1qTiLA7xpkmAl4A5/g9JP/s=
+=DwEQ
+-----END PGP SIGNATURE-----
+
+--C8Ty/fbhp+nEXecq--
 
