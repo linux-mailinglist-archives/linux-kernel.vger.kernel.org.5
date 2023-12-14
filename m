@@ -2,160 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4741E813707
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 17:55:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 65152813710
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 17:57:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230226AbjLNQz1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 11:55:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55334 "EHLO
+        id S1443573AbjLNQ4x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 11:56:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33660 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229532AbjLNQzX (ORCPT
+        with ESMTP id S229532AbjLNQ4v (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 11:55:23 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D901118
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 08:55:30 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DA510C433C8;
-        Thu, 14 Dec 2023 16:55:28 +0000 (UTC)
-Date:   Thu, 14 Dec 2023 11:56:14 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux Trace Kernel <linux-trace-kernel@vger.kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Subject: Re: [PATCH] ring-buffer: Remove 32bit timestamp logic
-Message-ID: <20231214115614.2cf5a40e@gandalf.local.home>
-In-Reply-To: <CAHk-=whESMW2v0cd0Ye+AnV0Hp9j+Mm4BO2xJo93eQcC1xghUA@mail.gmail.com>
-References: <20231213211126.24f8c1dd@gandalf.local.home>
-        <20231213214632.15047c40@gandalf.local.home>
-        <CAHk-=whESMW2v0cd0Ye+AnV0Hp9j+Mm4BO2xJo93eQcC1xghUA@mail.gmail.com>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        Thu, 14 Dec 2023 11:56:51 -0500
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D68DB7;
+        Thu, 14 Dec 2023 08:56:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=sDm7wWb97EArguPYrHSDzVIrzzbQV+nRlZDKlaNEHZI=; b=PKvovX7u8VrlZ4nhLc3ZsFB3AU
+        U67c6p3pQ3HdwedZzCC91TR/O2ZSmuytQUwJbmy8BMNAlZZRUXJ4LjkmBxRnrRb1kaCXESRMlFoZD
+        V586InL0fEZCrXpdaS2ir5j3SiDTyUbCB2Je46NcBekp/ZDV0Uc6MRw6q5Ep7zHUv5lptRyjzW4W1
+        stbjq7uCUZxRDsiy6zatBivSJLTror3JLx6kHDXEp/AcvBvlf7EJeJ9c9W8uAjuWM/nof4GJ16Zw8
+        dnLBwboJrdllnZiNabi7fIMceBmVFUqSPnmy6nK+ysyDT9fjbn1WFNLHPJ7P0rGrIk45243UiyGu4
+        BDZb5lqQ==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:58514)
+        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.96)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1rDp0x-0001ij-0M;
+        Thu, 14 Dec 2023 16:56:47 +0000
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1rDp0y-0002hi-1S; Thu, 14 Dec 2023 16:56:48 +0000
+Date:   Thu, 14 Dec 2023 16:56:47 +0000
+From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
+To:     Christian Marangi <ansuelsmth@gmail.com>
+Cc:     Florian Fainelli <florian.fainelli@broadcom.com>,
+        Broadcom internal kernel review list 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        David Epping <david.epping@missinglinkelectronics.com>,
+        Harini Katakam <harini.katakam@amd.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [net-next PATCH v7 1/4] net: phy: make addr type u8 in
+ phy_package_shared struct
+Message-ID: <ZXszz/U/jOAL5MLe@shell.armlinux.org.uk>
+References: <20231214121026.4340-1-ansuelsmth@gmail.com>
+ <20231214121026.4340-2-ansuelsmth@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231214121026.4340-2-ansuelsmth@gmail.com>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 13 Dec 2023 22:53:19 -0800
-Linus Torvalds <torvalds@linux-foundation.org> wrote:
-
-> On Wed, 13 Dec 2023 at 18:45, Steven Rostedt <rostedt@goodmis.org> wrote:
-> >
-> > tl;dr;  The ring-buffer timestamp requires a 64-bit cmpxchg to keep the
-> > timestamps in sync (only in the slow paths). I was told that 64-bit cmpxchg
-> > can be extremely slow on 32-bit architectures. So I created a rb_time_t
-> > that on 64-bit was a normal local64_t type, and on 32-bit it's represented
-> > by 3 32-bit words and a counter for synchronization. But this now requires
-> > three 32-bit cmpxchgs for where one simple 64-bit cmpxchg would do.  
+On Thu, Dec 14, 2023 at 01:10:23PM +0100, Christian Marangi wrote:
+> Switch addr type in phy_package_shared struct to u8.
 > 
-> It's not that a 64-bit cmpxchg is even slow. It doesn't EXIST AT ALL
-> on older 32-bit x86 machines.
+> The value is already checked to be non negative and to be less than
+> PHY_MAX_ADDR, hence u8 is better suited than using int.
 > 
-> Which is why we have
-> 
->     arch/x86/lib/cmpxchg8b_emu.S
-> 
-> which emulates it on machines that don't have the CX8 capability
-> ("CX8" being the x86 capability flag name for the cmpxchg8b
-> instruction, aka 64-bit cmpxchg).
-> 
-> Which only works because those older 32-bit cpu's also don't do SMP,
-> so there are no SMP cache coherency issues, only interrupt atomicity
-> issues.
-> 
-> IOW, the way to do an atomic 64-bit cmpxchg on the affected hardware
-> is to simply disable interrupts.
-> 
-> In other words - it's not just slow.  It's *really* slow. As in 10x
-> slower, not "slightly slower".
+> Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
 
-Ah, I'm starting to remember this for the rationale in doing it.
+Reviewed-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
 
-I should have read up on the LWN article I even wrote about it!
+Thanks!
 
-  https://lwn.net/Articles/831892/
-
-  "I mentioned that I used the local64 variants of operations like
-   local_read/cmpxchg/etc. operations. Desnoyers went on to argue that the
-   local64 operations on 32-bit machines were horrible in performance, and
-   worse, some require that interrupts be disabled, meaning that they could
-   not be used in NMI context."
-
-And yes, this does get called in NMI context.
-
-> 
-> > We started discussing how much time this is actually saving to be worth the
-> > complexity, and actually found some hardware to test. One Atom processor.  
-> 
-> That atom processor won't actually show the issue. It's much too
-> recent. So your "test" is actually worthless.
-> 
-> And you probably did this all with a kernel config that had
-> CONFIG_X86_CMPXCHG64 set anyway, which wouldn't even boot on a i486
-> machine.
-> 
-> So in fact your test was probably doubly broken, in that not only
-> didn't you test the slow case, you tested something that wouldn't even
-> have worked in the environment where the slow case happened.
-> 
-> Now, the real question is if anybody cares about CPUs that don't have
-> cmpxchg8b support.
-> 
-> IBecause in practice, it's really just old 486-class machines (and a
-> couple of clone manufacturers who _claimed_ to be Pentium class, but
-> weren't - there was also some odd thing with Windows breaking if you
-> had CPUID claiming to support CX8
-> 
-> We dropped support for the original 80386 some time ago. I'd actually
-> be willing to drop support for ll pre-cmpxchg8b machines, and get rid
-> of the emulation.
-> 
-> I also suspect that from a perf angle, none of this matters. The
-> emulation being slow probably is a non-issue, simply because even if
-> you run on an old i486 machine, you probably won't be doing perf or
-> tracing on it.
-
-Thanks for the background.
-
-I had a patch that added:
-
-+       /* ring buffer does cmpxchg, make sure it is safe in NMI context */
-+       if (!IS_ENABLED(CONFIG_ARCH_HAVE_NMI_SAFE_CMPXCHG) &&
-+           (unlikely(in_nmi()))) {
-+               return NULL;
-+       }
-
-But for ripping out this code, I should probably change that to:
-
-       if ((!IS_ENABLED(CONFIG_ARCH_HAVE_NMI_SAFE_CMPXCHG) ||
-	    (IS_ENABLED(X86_32) && !IS_ENABLED(X86_CMPXCHG64))) &&
-           unlikely(in_nmi())) {
-               return NULL;
-       }
-
-Not sure if there's other architectures that are affected by this (hence
-why I Cc'd linux-arch).
-
-I don't think anyone actually cares about the performance overhead of 486
-doing 64-bit cmpxchg by disabling interrupts. Especially since this only
-happens in the slow path (if an event interrupts the processing of another
-event). If someone complains, we can always add back this code.
-
-Now back to my original question. Are you OK with me sending this to you
-now, or should I send you just the subtle fixes to the 32-bit rb_time_*
-code and keep this patch for the merge window?
-
-My preference is to get it in now and label it as stable, but I'm fine
-either way.
-
--- Steve
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
