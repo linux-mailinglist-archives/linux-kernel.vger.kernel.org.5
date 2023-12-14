@@ -2,368 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A9ACB812DC8
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 11:54:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D127812DD2
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 11:55:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1443809AbjLNKxs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 05:53:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51844 "EHLO
+        id S1443801AbjLNKzH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 05:55:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36886 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1443775AbjLNKxS (ORCPT
+        with ESMTP id S1443864AbjLNKyv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 05:53:18 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC5BF118
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 02:53:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1702551191;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=MnhJLfTgIa3SLXx4xPA9543TtdSKVB5MmnU2aw58KwM=;
-        b=O4NTfBY/aNbDhS5U0AzZYyhTzQhNSzQejM/SIBfc0utcvRQFk6BbvYqsNFPWw3RBQyktlF
-        kC5Szle2HbR77ffMyF1EgRaSYf3Gp/Q2RtH5b3psblfLf/IoEpzaLP/4ToFHFxH4MeHzJ6
-        XtaerW6iJ8D/2s2kmWxpPrdnBdz/UoM=
-Received: from mail-lf1-f72.google.com (mail-lf1-f72.google.com
- [209.85.167.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-351-yFxpNAI4PVOmNByIEKsYcw-1; Thu, 14 Dec 2023 05:53:09 -0500
-X-MC-Unique: yFxpNAI4PVOmNByIEKsYcw-1
-Received: by mail-lf1-f72.google.com with SMTP id 2adb3069b0e04-50bf00775ecso7862630e87.0
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 02:53:09 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702551188; x=1703155988;
-        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=MnhJLfTgIa3SLXx4xPA9543TtdSKVB5MmnU2aw58KwM=;
-        b=Bxwsujb2HFY9jY/QL09gf1Rf+wBFydtIeOJj1O8NrOsIcNRLpnbOjKJZn6rX2f2B0g
-         4eAV8Ao9HVR8kkfmNJVKak85Ns2GQo1X7cuIzW2i7WFA6nHQ5FOfWOu/Tum2VJfK7sPn
-         rEy6wJZ1abb4hNtE/71/nQC9WoGlweHudztyA5+sBbpB9tmoADMWDqOKMnvnwRTFJ82W
-         eILNkSwd9JlXtOpO8D0QyCUb2a1FMoSfgcMLkazJKwqfj55aHYXxdPAxiUh17VllyOke
-         l2/XFGetU9DIRBgHv2cRoMTO5qxyR1uNgPaMWlRDYErY7ZvYntyzdoWLGeKhqat7hpQB
-         mjiQ==
-X-Gm-Message-State: AOJu0Yx3YeU1ECrOdL71UQ1Yaavn2kEMmZKNdiNKmNOr6RtDUezG2+On
-        YiJQSlW1kSRJuZXJznhB3d7PcLoVB/uLmWWUJjUj2qR7urbnegNSXAyOome3SncSN3knLn0JVyJ
-        wsg0rl/CZyLqpa7He2xcj6Ai+
-X-Received: by 2002:ac2:5bc6:0:b0:50b:f7c1:e560 with SMTP id u6-20020ac25bc6000000b0050bf7c1e560mr4949393lfn.64.1702551188437;
-        Thu, 14 Dec 2023 02:53:08 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IEk+Q1l8hgiJ7UNrZAfbbpiLBywjIYVZ2ilgn7mgJ9X6HXByaqkQ5JHzQ6fHFgg15QB4WdHxw==
-X-Received: by 2002:ac2:5bc6:0:b0:50b:f7c1:e560 with SMTP id u6-20020ac25bc6000000b0050bf7c1e560mr4949372lfn.64.1702551188062;
-        Thu, 14 Dec 2023 02:53:08 -0800 (PST)
-Received: from fedora (g2.ign.cz. [91.219.240.8])
-        by smtp.gmail.com with ESMTPSA id g13-20020a056000118d00b003333d46a9e8sm15714036wrx.56.2023.12.14.02.53.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Dec 2023 02:53:07 -0800 (PST)
-From:   Vitaly Kuznetsov <vkuznets@redhat.com>
-To:     "Vineeth Pillai (Google)" <vineeth@bitbyteword.org>
-Cc:     Suleiman Souhlal <suleiman@google.com>,
-        Masami Hiramatsu <mhiramat@google.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, x86@kernel.org,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Ben Segall <bsegall@google.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        "H . Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Mel Gorman <mgorman@suse.de>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Sean Christopherson <seanjc@google.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Valentin Schneider <vschneid@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Wanpeng Li <wanpengli@tencent.com>
-Subject: Re: [RFC PATCH 1/8] kvm: x86: MSR for setting up scheduler info
- shared memory
-In-Reply-To: <20231214024727.3503870-2-vineeth@bitbyteword.org>
-References: <20231214024727.3503870-1-vineeth@bitbyteword.org>
- <20231214024727.3503870-2-vineeth@bitbyteword.org>
-Date:   Thu, 14 Dec 2023 11:53:06 +0100
-Message-ID: <877clhkqct.fsf@redhat.com>
+        Thu, 14 Dec 2023 05:54:51 -0500
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3137F2699;
+        Thu, 14 Dec 2023 02:54:17 -0800 (PST)
+Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BE8UWDK031960;
+        Thu, 14 Dec 2023 10:54:10 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+        message-id:date:mime-version:subject:to:cc:references:from
+        :in-reply-to:content-type:content-transfer-encoding; s=
+        qcppdkim1; bh=76devEkZTjPGRkg/VIiGTbMZH9PHCembcDxQMeXk7cA=; b=XO
+        dyIfYQ6XaJPjX6HT4a5Kpco4c/Lmrym4UphomVzTQJ2z1w9i+W2mzbQvSpQ4EGXp
+        njXsP/WdLkxtJ0jsX+4H/rypE8AxjouQkOQ7Ujsm0p2WlWLtsaQqyaTxeoku+DJe
+        T0838rjQK9OKvy2K/3RP5dFuswSce+aP++he86oudKCWM+kHP6OlsEw9s5dh70cK
+        yVUbKA+R0SePE3gHBItUsMrmdaThTCNy3YNeotCge+Upik1nqXkFhmiapi8FnUZx
+        OGiyG8c5Om//ZPYZoXkHwVUuqkR9HYmKEqFRibXBjt8om8YcwKCF+0UsoJ9l5Kqq
+        S34MZuXonGgU+UykDtWA==
+Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3uynre170c-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 14 Dec 2023 10:54:10 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3BEAs9Bf019421
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 14 Dec 2023 10:54:09 GMT
+Received: from [10.216.56.190] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Thu, 14 Dec
+ 2023 02:54:04 -0800
+Message-ID: <1fbb9812-ca50-42eb-95af-1f7c8a2714e3@quicinc.com>
+Date:   Thu, 14 Dec 2023 16:24:01 +0530
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 1/2] dt-bindings: usb: dwc3: Clean up hs_phy_irq in
+ bindings
+To:     Johan Hovold <johan@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+CC:     Rob Herring <robh+dt@kernel.org>,
+        Wesley Cheng <quic_wcheng@quicinc.com>,
+        <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-msm@vger.kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        "Conor Dooley" <conor+dt@kernel.org>, <devicetree@vger.kernel.org>,
+        Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
+        <quic_ppratap@quicinc.com>, <quic_jackp@quicinc.com>,
+        Bjorn Andersson <andersson@kernel.org>
+References: <20231211121124.4194-1-quic_kriskura@quicinc.com>
+ <20231211121124.4194-2-quic_kriskura@quicinc.com>
+ <24fb0b25-0139-4370-864c-839ae931f847@linaro.org>
+ <c5d85c84-3783-4262-a379-1f28e13ae4ce@quicinc.com>
+ <ZXrRS7O0Cv1sAJdk@hovoldconsulting.com>
+Content-Language: en-US
+From:   Krishna Kurapati PSSNV <quic_kriskura@quicinc.com>
+In-Reply-To: <ZXrRS7O0Cv1sAJdk@hovoldconsulting.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: Ub2PCxLZRoI81DIgk7JXzjGDuppBi3Rp
+X-Proofpoint-GUID: Ub2PCxLZRoI81DIgk7JXzjGDuppBi3Rp
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-09_01,2023-12-07_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 mlxlogscore=933
+ suspectscore=0 impostorscore=0 phishscore=0 bulkscore=0 spamscore=0
+ malwarescore=0 priorityscore=1501 lowpriorityscore=0 clxscore=1015
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2311290000 definitions=main-2312140073
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-"Vineeth Pillai (Google)" <vineeth@bitbyteword.org> writes:
 
-> Implement a kvm MSR that guest uses to provide the GPA of shared memory
-> for communicating the scheduling information between host and guest.
->
-> wrmsr(0) disables the feature. wrmsr(valid_gpa) enables the feature and
-> uses the gpa for further communication.
->
-> Also add a new cpuid feature flag for the host to advertise the feature
-> to the guest.
->
-> Co-developed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-> Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-> Signed-off-by: Vineeth Pillai (Google) <vineeth@bitbyteword.org>
-> ---
->  arch/x86/include/asm/kvm_host.h      | 25 ++++++++++++
->  arch/x86/include/uapi/asm/kvm_para.h | 24 +++++++++++
->  arch/x86/kvm/Kconfig                 | 12 ++++++
->  arch/x86/kvm/cpuid.c                 |  2 +
->  arch/x86/kvm/x86.c                   | 61 ++++++++++++++++++++++++++++
->  include/linux/kvm_host.h             |  5 +++
->  6 files changed, 129 insertions(+)
->
-> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-> index f72b30d2238a..f89ba1f07d88 100644
-> --- a/arch/x86/include/asm/kvm_host.h
-> +++ b/arch/x86/include/asm/kvm_host.h
-> @@ -987,6 +987,18 @@ struct kvm_vcpu_arch {
->  	/* Protected Guests */
->  	bool guest_state_protected;
->  
-> +#ifdef CONFIG_PARAVIRT_SCHED_KVM
-> +	/*
-> +	 * MSR to setup a shared memory for scheduling
-> +	 * information sharing between host and guest.
-> +	 */
-> +	struct {
-> +		enum kvm_vcpu_boost_state boost_status;
-> +		u64 msr_val;
-> +		struct gfn_to_hva_cache data;
-> +	} pv_sched;
-> +#endif
-> +
->  	/*
->  	 * Set when PDPTS were loaded directly by the userspace without
->  	 * reading the guest memory
-> @@ -2217,4 +2229,17 @@ int memslot_rmap_alloc(struct kvm_memory_slot *slot, unsigned long npages);
->   */
->  #define KVM_EXIT_HYPERCALL_MBZ		GENMASK_ULL(31, 1)
->  
-> +#ifdef CONFIG_PARAVIRT_SCHED_KVM
-> +static inline bool kvm_arch_vcpu_pv_sched_enabled(struct kvm_vcpu_arch *arch)
-> +{
-> +	return arch->pv_sched.msr_val;
-> +}
-> +
-> +static inline void kvm_arch_vcpu_set_boost_status(struct kvm_vcpu_arch *arch,
-> +		enum kvm_vcpu_boost_state boost_status)
-> +{
-> +	arch->pv_sched.boost_status = boost_status;
-> +}
-> +#endif
-> +
->  #endif /* _ASM_X86_KVM_HOST_H */
-> diff --git a/arch/x86/include/uapi/asm/kvm_para.h b/arch/x86/include/uapi/asm/kvm_para.h
-> index 6e64b27b2c1e..6b1dea07a563 100644
-> --- a/arch/x86/include/uapi/asm/kvm_para.h
-> +++ b/arch/x86/include/uapi/asm/kvm_para.h
-> @@ -36,6 +36,7 @@
->  #define KVM_FEATURE_MSI_EXT_DEST_ID	15
->  #define KVM_FEATURE_HC_MAP_GPA_RANGE	16
->  #define KVM_FEATURE_MIGRATION_CONTROL	17
-> +#define KVM_FEATURE_PV_SCHED		18
->  
->  #define KVM_HINTS_REALTIME      0
->  
-> @@ -58,6 +59,7 @@
->  #define MSR_KVM_ASYNC_PF_INT	0x4b564d06
->  #define MSR_KVM_ASYNC_PF_ACK	0x4b564d07
->  #define MSR_KVM_MIGRATION_CONTROL	0x4b564d08
-> +#define MSR_KVM_PV_SCHED	0x4b564da0
->  
->  struct kvm_steal_time {
->  	__u64 steal;
-> @@ -150,4 +152,26 @@ struct kvm_vcpu_pv_apf_data {
->  #define KVM_PV_EOI_ENABLED KVM_PV_EOI_MASK
->  #define KVM_PV_EOI_DISABLED 0x0
->  
-> +/*
-> + * VCPU boost state shared between the host and guest.
-> + */
-> +enum kvm_vcpu_boost_state {
-> +	/* Priority boosting feature disabled in host */
-> +	VCPU_BOOST_DISABLED = 0,
-> +	/*
-> +	 * vcpu is not explicitly boosted by the host.
-> +	 * (Default priority when the guest started)
-> +	 */
-> +	VCPU_BOOST_NORMAL,
-> +	/* vcpu is boosted by the host */
-> +	VCPU_BOOST_BOOSTED
-> +};
-> +
-> +/*
-> + * Structure passed in via MSR_KVM_PV_SCHED
-> + */
-> +struct pv_sched_data {
-> +	__u64 boost_status;
-> +};
-> +
->  #endif /* _UAPI_ASM_X86_KVM_PARA_H */
-> diff --git a/arch/x86/kvm/Kconfig b/arch/x86/kvm/Kconfig
-> index 89ca7f4c1464..dbcba73fb508 100644
-> --- a/arch/x86/kvm/Kconfig
-> +++ b/arch/x86/kvm/Kconfig
-> @@ -141,4 +141,16 @@ config KVM_XEN
->  config KVM_EXTERNAL_WRITE_TRACKING
->  	bool
->  
-> +config PARAVIRT_SCHED_KVM
-> +	bool "Enable paravirt scheduling capability for kvm"
-> +	depends on KVM
-> +	help
-> +	  Paravirtualized scheduling facilitates the exchange of scheduling
-> +	  related information between the host and guest through shared memory,
-> +	  enhancing the efficiency of vCPU thread scheduling by the hypervisor.
-> +	  An illustrative use case involves dynamically boosting the priority of
-> +	  a vCPU thread when the guest is executing a latency-sensitive workload
-> +	  on that specific vCPU.
-> +	  This config enables paravirt scheduling in the kvm hypervisor.
-> +
->  endif # VIRTUALIZATION
-> diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
-> index 7bdc66abfc92..960ef6e869f2 100644
-> --- a/arch/x86/kvm/cpuid.c
-> +++ b/arch/x86/kvm/cpuid.c
-> @@ -1113,6 +1113,8 @@ static inline int __do_cpuid_func(struct kvm_cpuid_array *array, u32 function)
->  			     (1 << KVM_FEATURE_POLL_CONTROL) |
->  			     (1 << KVM_FEATURE_PV_SCHED_YIELD) |
->  			     (1 << KVM_FEATURE_ASYNC_PF_INT);
-> +		if (IS_ENABLED(CONFIG_PARAVIRT_SCHED_KVM))
-> +			entry->eax |= (1 << KVM_FEATURE_PV_SCHED);
->  
->  		if (sched_info_on())
->  			entry->eax |= (1 << KVM_FEATURE_STEAL_TIME);
-> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> index 7bcf1a76a6ab..0f475b50ac83 100644
-> --- a/arch/x86/kvm/x86.c
-> +++ b/arch/x86/kvm/x86.c
-> @@ -3879,6 +3879,33 @@ int kvm_set_msr_common(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
->  			return 1;
->  		break;
->  
-> +#ifdef CONFIG_PARAVIRT_SCHED_KVM
-> +	case MSR_KVM_PV_SCHED:
-> +		if (!guest_pv_has(vcpu, KVM_FEATURE_PV_SCHED))
-> +			return 1;
-> +
-> +		if (!(data & KVM_MSR_ENABLED))
-> +			break;
-> +
-> +		if (!(data & ~KVM_MSR_ENABLED)) {
-> +			/*
-> +			 * Disable the feature
-> +			 */
-> +			vcpu->arch.pv_sched.msr_val = 0;
-> +			kvm_set_vcpu_boosted(vcpu, false);
-> +		} if (!kvm_gfn_to_hva_cache_init(vcpu->kvm,
-> +				&vcpu->arch.pv_sched.data, data & ~KVM_MSR_ENABLED,
-> +				sizeof(struct pv_sched_data))) {
-> +			vcpu->arch.pv_sched.msr_val = data;
-> +			kvm_set_vcpu_boosted(vcpu, false);
-> +		} else {
-> +			pr_warn("MSR_KVM_PV_SCHED: kvm:%p, vcpu:%p, "
-> +				"msr value: %llx, kvm_gfn_to_hva_cache_init failed!\n",
-> +				vcpu->kvm, vcpu, data & ~KVM_MSR_ENABLED);
 
-As this is triggerable by the guest please drop this print (which is not
-even ratelimited!). I think it would be better to just 'return 1;' in case
-of kvm_gfn_to_hva_cache_init() failure but maybe you also need to
-account for 'msr_info->host_initiated' to not fail setting this MSR from
-the host upon migration.
+On 12/14/2023 3:26 PM, Johan Hovold wrote:
+> On Wed, Dec 13, 2023 at 09:48:57PM +0530, Krishna Kurapati PSSNV wrote:
+>> On 12/13/2023 12:45 PM, Krzysztof Kozlowski wrote:
+>>> On 11/12/2023 13:11, Krishna Kurapati wrote:
+>>>> The high speed related interrupts present on QC targets are as follows:
+> 
+>>>> Classiffy SoC's into four groups based on whether qusb2_phy interrupt
+> 
+> typo: Classify
+> 
+>>>> or {dp/dm}_hs_phy_irq is used for wakeup in high speed and whether the
+>>>> SoCs have hs_phy_irq present in them or not.
+>>>>
+>>>> The ss_phy_irq is optional interrupt because there are mutliple SoC's
+>>>> which either support only High Speed or there are multiple controllers
+>>>> within same Soc and the secondary controller is High Speed only capable.
+>>>>
+>>>> This breaks ABI on targets running older kernels, but since the interrupt
+>>>> definitions are given wrong on many targets and to establish proper rules
+>>>> for usage of DWC3 interrupts on Qualcomm platforms, DT binding update is
+>>>> necessary.
+>>>
+>>> This still does not explain why missing property has to be added as
+>>> first one, causing huge reordering of everything here and in DTS.
+>>>
+>>> If pwr_event is required and we already break the ABI, reduce the impact
+>>> of the change by putting it after all required interrupts. Otherwise
+>>> please explain here and in commit msg why different approach is taken.
+>>>
+>>
+>> Hi Krzysztof. I don't know much about the effect of the ordering on ABI.
+>> I will try to learn up on it. Would the series be good if we just move
+>> the pwr_event to the end and keep everything in v3 as it is, and push v4
+>> for now ?
+> 
+> Since all SoCs have the pwr_event (HS) interrupt, but not all
+> controllers have the SS PHY interrupt, this would prevent expressing
+> that the SS PHY is optional by keeping it last in the binding schema and
+> making sure that minItem = maxItems - 1.
+> 
+> And as we discussed, the aim here is to group the three classes of SoCs
+> (qusb2, qusb2+, femto) and fix the order of these interrupts once and
+> for all so that random reorderings, renames and omissions do not make it
+> into the bindings next time someone grabs a downstream DT and sends it
+> upstream.
+> 
 
-> +		}
-> +		break;
-> +#endif
-> +
->  	case MSR_KVM_POLL_CONTROL:
->  		if (!guest_pv_has(vcpu, KVM_FEATURE_POLL_CONTROL))
->  			return 1;
-> @@ -4239,6 +4266,11 @@ int kvm_get_msr_common(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
->  
->  		msr_info->data = vcpu->arch.pv_eoi.msr_val;
->  		break;
-> +#ifdef CONFIG_PARAVIRT_SCHED_KVM
-> +	case MSR_KVM_PV_SCHED:
-> +		msr_info->data = vcpu->arch.pv_sched.msr_val;
-> +		break;
-> +#endif
->  	case MSR_KVM_POLL_CONTROL:
->  		if (!guest_pv_has(vcpu, KVM_FEATURE_POLL_CONTROL))
->  			return 1;
-> @@ -9820,6 +9852,29 @@ static int complete_hypercall_exit(struct kvm_vcpu *vcpu)
->  	return kvm_skip_emulated_instruction(vcpu);
->  }
->  
-> +#ifdef CONFIG_PARAVIRT_SCHED_KVM
-> +static void record_vcpu_boost_status(struct kvm_vcpu *vcpu)
-> +{
-> +	u64 val = vcpu->arch.pv_sched.boost_status;
-> +
-> +	if (!kvm_arch_vcpu_pv_sched_enabled(&vcpu->arch))
-> +		return;
-> +
-> +	pagefault_disable();
-> +	kvm_write_guest_offset_cached(vcpu->kvm, &vcpu->arch.pv_sched.data,
-> +		&val, offsetof(struct pv_sched_data, boost_status), sizeof(u64));
-> +	pagefault_enable();
-> +}
-> +
-> +void kvm_set_vcpu_boosted(struct kvm_vcpu *vcpu, bool boosted)
-> +{
-> +	kvm_arch_vcpu_set_boost_status(&vcpu->arch,
-> +			boosted ? VCPU_BOOST_BOOSTED : VCPU_BOOST_NORMAL);
-> +
-> +	kvm_make_request(KVM_REQ_VCPU_BOOST_UPDATE, vcpu);
-> +}
-> +#endif
-> +
->  int kvm_emulate_hypercall(struct kvm_vcpu *vcpu)
->  {
->  	unsigned long nr, a0, a1, a2, a3, ret;
-> @@ -10593,6 +10648,12 @@ static int vcpu_enter_guest(struct kvm_vcpu *vcpu)
->  		}
->  		if (kvm_check_request(KVM_REQ_STEAL_UPDATE, vcpu))
->  			record_steal_time(vcpu);
-> +
-> +#ifdef CONFIG_PARAVIRT_SCHED_KVM
-> +		if (kvm_check_request(KVM_REQ_VCPU_BOOST_UPDATE, vcpu))
-> +			record_vcpu_boost_status(vcpu);
-> +#endif
-> +
->  #ifdef CONFIG_KVM_SMM
->  		if (kvm_check_request(KVM_REQ_SMI, vcpu))
->  			process_smi(vcpu);
-> diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
-> index 9d3ac7720da9..a74aeea55347 100644
-> --- a/include/linux/kvm_host.h
-> +++ b/include/linux/kvm_host.h
-> @@ -167,6 +167,7 @@ static inline bool is_error_page(struct page *page)
->  #define KVM_REQ_VM_DEAD			(1 | KVM_REQUEST_WAIT | KVM_REQUEST_NO_WAKEUP)
->  #define KVM_REQ_UNBLOCK			2
->  #define KVM_REQ_DIRTY_RING_SOFT_FULL	3
-> +#define KVM_REQ_VCPU_BOOST_UPDATE	6
->  #define KVM_REQUEST_ARCH_BASE		8
->  
->  /*
-> @@ -2287,4 +2288,8 @@ static inline void kvm_account_pgtable_pages(void *virt, int nr)
->  /* Max number of entries allowed for each kvm dirty ring */
->  #define  KVM_DIRTY_RING_MAX_ENTRIES  65536
->  
-> +#ifdef CONFIG_PARAVIRT_SCHED_KVM
-> +void kvm_set_vcpu_boosted(struct kvm_vcpu *vcpu, bool boosted);
-> +#endif
-> +
->  #endif
+Hi Krzysztof,
 
--- 
-Vitaly
+  One more reason is that all targets do have a pwr_event interrupts for 
+sure and ss_phy is optional as Johan mentioned. So with this reasoning, 
+can we put pwr_event first followed by others and push ss_phy to the end 
+of list ?
 
+Regards,
+Krishna,
