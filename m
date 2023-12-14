@@ -2,221 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2029F812BD1
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 10:39:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 691F0812BD8
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 10:40:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1443460AbjLNJj3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 04:39:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43374 "EHLO
+        id S1443463AbjLNJkU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 04:40:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50016 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229664AbjLNJj1 (ORCPT
+        with ESMTP id S229664AbjLNJkS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 04:39:27 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C18D0B7
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 01:39:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1702546773; x=1734082773;
-  h=date:from:to:cc:subject:message-id;
-  bh=DC5SVfG1sC3LkF/RuMaDOAwZMvLP1eW6nxOclUl0msY=;
-  b=JODssRkfsiTUTiv6KL3RmKSSTk1Tvd1mcUW24R8RdnaMxulQ/TABL8l9
-   f5QLRGl/bKPrKF40mbyLFiA5rk64UUfZnjOYsV8mSkzs22kqnKtwl0lFs
-   gZbAkHFuEhULEQtNhpXBOvFv+oUTDocQquD8V1i2PpKsDDfS7AAU2Sxxh
-   YOyPvWYH1qempGUTooc2X6j3b69+bTo0+PdtR0eIPlvcGrYFLG6mCOQiq
-   K1bFWCV9vPiXOgqtpCLv4ynV22cbdmr9iWoRd5VePp1fvgewF2ZZ9K/LU
-   Cc2P6FLfEu6lpGVWdbNxqlLXrQ33yUM0WxCuP+BdpupypGRvXfkOcfEpv
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10923"; a="394842214"
-X-IronPort-AV: E=Sophos;i="6.04,275,1695711600"; 
-   d="scan'208";a="394842214"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Dec 2023 01:39:33 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10923"; a="1021448527"
-X-IronPort-AV: E=Sophos;i="6.04,275,1695711600"; 
-   d="scan'208";a="1021448527"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by fmsmga006.fm.intel.com with ESMTP; 14 Dec 2023 01:39:32 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1rDiBm-000LrH-0f;
-        Thu, 14 Dec 2023 09:39:30 +0000
-Date:   Thu, 14 Dec 2023 17:39:09 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:x86/sev] BUILD SUCCESS
- 30579c8baa5b4bd986420a984dad2940f1ff65d3
-Message-ID: <202312141706.Hxb58TNl-lkp@intel.com>
-User-Agent: s-nail v14.9.24
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        Thu, 14 Dec 2023 04:40:18 -0500
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85E53B7;
+        Thu, 14 Dec 2023 01:40:24 -0800 (PST)
+Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BE5BZ8V000884;
+        Thu, 14 Dec 2023 09:40:09 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+        message-id:date:mime-version:subject:to:cc:references:from
+        :in-reply-to:content-type:content-transfer-encoding; s=
+        qcppdkim1; bh=ylZKeaeVio8dJQPPzUpdLFA/Xy9jSrZkzVN2dfqdK5Y=; b=ie
+        4VzWtIoTJoKnZ2KCiiOUtdJ+HqaBrVgvcFVkqPUEHX7pLjRVxtHJ5Q2/GR7iCvDb
+        hF9EDnCYy446BswYuIqpSrwcG2cqoqNB+6IS8ovUI0XJuMe9HxQWlygIpWJ9ZAt2
+        Q0csHlUTnMm4J3VZkk1ArttF5Y4lSahwneHT0cf8F5LJSzJzAzfe4kH1jG9+8iCO
+        ArS00x0vj9RqwidIV8/C4SeviPUzY72ZkxJ8/8iJTgGnE3ez1DDbxWcjObKmPckr
+        xRINraZXDrfWE3Ht/aHDdmRRjv6/JeFj0o4qBGmtk9JNieMrW3ICCanlC1zu7ArQ
+        P8Ip6AuWZsjyVx/fky0g==
+Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3uyq2try5r-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 14 Dec 2023 09:40:09 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3BE9e8Tf026735
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 14 Dec 2023 09:40:08 GMT
+Received: from [10.217.219.216] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Thu, 14 Dec
+ 2023 01:40:05 -0800
+Message-ID: <feb4ed1b-ed74-aebe-0ab8-dec123fe0a31@quicinc.com>
+Date:   Thu, 14 Dec 2023 15:10:01 +0530
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.13.1
+Subject: Re: [PATCH 6/9] PCI: epf-mhi: Enable MHI async read/write support
+Content-Language: en-US
+To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        <lpieralisi@kernel.org>, <kw@linux.com>
+CC:     <kishon@kernel.org>, <bhelgaas@google.com>, <mhi@lists.linux.dev>,
+        <linux-arm-msm@vger.kernel.org>, <linux-pci@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20231127124529.78203-1-manivannan.sadhasivam@linaro.org>
+ <20231127124529.78203-7-manivannan.sadhasivam@linaro.org>
+From:   Krishna Chaitanya Chundru <quic_krichai@quicinc.com>
+In-Reply-To: <20231127124529.78203-7-manivannan.sadhasivam@linaro.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: D4LrvjH_ipBuxno5YuE7y02tarNOxuc5
+X-Proofpoint-ORIG-GUID: D4LrvjH_ipBuxno5YuE7y02tarNOxuc5
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-09_02,2023-12-07_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 mlxscore=0
+ phishscore=0 clxscore=1011 mlxlogscore=818 priorityscore=1501
+ lowpriorityscore=0 malwarescore=0 suspectscore=0 bulkscore=0 adultscore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2311290000 definitions=main-2312140062
+X-Spam-Status: No, score=-4.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/sev
-branch HEAD: 30579c8baa5b4bd986420a984dad2940f1ff65d3  x86/sev: Do the C-bit verification only on the BSP
 
-elapsed time: 778m
+On 11/27/2023 6:15 PM, Manivannan Sadhasivam wrote:
+> Now that both eDMA and iATU are prepared to support async transfer, let's
+> enable MHI async read/write by supplying the relevant callbacks.
+>
+> In the absence of eDMA, iATU will be used for both sync and async
+> operations.
+>
+> Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> ---
+>   drivers/pci/endpoint/functions/pci-epf-mhi.c | 7 ++++---
+>   1 file changed, 4 insertions(+), 3 deletions(-)
+>
+> diff --git a/drivers/pci/endpoint/functions/pci-epf-mhi.c b/drivers/pci/endpoint/functions/pci-epf-mhi.c
+> index 3d09a37e5f7c..d3d6a1054036 100644
+> --- a/drivers/pci/endpoint/functions/pci-epf-mhi.c
+> +++ b/drivers/pci/endpoint/functions/pci-epf-mhi.c
+> @@ -766,12 +766,13 @@ static int pci_epf_mhi_link_up(struct pci_epf *epf)
+>   	mhi_cntrl->raise_irq = pci_epf_mhi_raise_irq;
+>   	mhi_cntrl->alloc_map = pci_epf_mhi_alloc_map;
+>   	mhi_cntrl->unmap_free = pci_epf_mhi_unmap_free;
+> +	mhi_cntrl->read_sync = mhi_cntrl->read_async = pci_epf_mhi_iatu_read;
+> +	mhi_cntrl->write_sync = mhi_cntrl->write_async = pci_epf_mhi_iatu_write;
+>   	if (info->flags & MHI_EPF_USE_DMA) {
+>   		mhi_cntrl->read_sync = pci_epf_mhi_edma_read;
+>   		mhi_cntrl->write_sync = pci_epf_mhi_edma_write;
+> -	} else {
+> -		mhi_cntrl->read_sync = pci_epf_mhi_iatu_read;
+> -		mhi_cntrl->write_sync = pci_epf_mhi_iatu_write;
+> +		mhi_cntrl->read_async = pci_epf_mhi_edma_read_async;
+> +		mhi_cntrl->write_async = pci_epf_mhi_edma_write_async;
 
-configs tested: 144
-configs skipped: 135
+I think the read_async & write async should be updated inside the if 
+condition where MHI_EPF_USE_DMA flag is set.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+- Krishna Chaitanya.
 
-tested configs:
-alpha                             allnoconfig   gcc  
-alpha                               defconfig   gcc  
-arc                               allnoconfig   gcc  
-arc                          axs103_defconfig   gcc  
-arc                                 defconfig   gcc  
-arc                   randconfig-001-20231214   gcc  
-arc                   randconfig-002-20231214   gcc  
-arm                               allnoconfig   gcc  
-arm                          gemini_defconfig   gcc  
-arm                           imxrt_defconfig   gcc  
-arm                      integrator_defconfig   gcc  
-arm                   randconfig-001-20231214   gcc  
-arm                   randconfig-002-20231214   gcc  
-arm                   randconfig-003-20231214   gcc  
-arm                   randconfig-004-20231214   gcc  
-arm64                            allmodconfig   clang
-arm64                             allnoconfig   gcc  
-arm64                               defconfig   gcc  
-arm64                 randconfig-001-20231214   gcc  
-arm64                 randconfig-002-20231214   gcc  
-arm64                 randconfig-003-20231214   gcc  
-arm64                 randconfig-004-20231214   gcc  
-csky                              allnoconfig   gcc  
-csky                                defconfig   gcc  
-csky                  randconfig-001-20231214   gcc  
-csky                  randconfig-002-20231214   gcc  
-hexagon                          allmodconfig   clang
-hexagon                          allyesconfig   clang
-i386                             allmodconfig   clang
-i386                              allnoconfig   clang
-i386                             allyesconfig   clang
-i386         buildonly-randconfig-001-20231214   gcc  
-i386         buildonly-randconfig-002-20231214   gcc  
-i386         buildonly-randconfig-003-20231214   gcc  
-i386         buildonly-randconfig-004-20231214   gcc  
-i386         buildonly-randconfig-005-20231214   gcc  
-i386         buildonly-randconfig-006-20231214   gcc  
-i386                                defconfig   gcc  
-i386                  randconfig-001-20231214   gcc  
-i386                  randconfig-002-20231214   gcc  
-i386                  randconfig-003-20231214   gcc  
-i386                  randconfig-004-20231214   gcc  
-i386                  randconfig-005-20231214   gcc  
-i386                  randconfig-006-20231214   gcc  
-i386                  randconfig-011-20231214   clang
-i386                  randconfig-012-20231214   clang
-i386                  randconfig-013-20231214   clang
-i386                  randconfig-014-20231214   clang
-i386                  randconfig-015-20231214   clang
-i386                  randconfig-016-20231214   clang
-loongarch                        allmodconfig   gcc  
-loongarch                         allnoconfig   gcc  
-loongarch                        allyesconfig   gcc  
-loongarch                           defconfig   gcc  
-loongarch             randconfig-001-20231214   gcc  
-loongarch             randconfig-002-20231214   gcc  
-m68k                             allmodconfig   gcc  
-m68k                              allnoconfig   gcc  
-m68k                             allyesconfig   gcc  
-m68k                                defconfig   gcc  
-microblaze                       allmodconfig   gcc  
-microblaze                        allnoconfig   gcc  
-microblaze                       allyesconfig   gcc  
-microblaze                          defconfig   gcc  
-mips                             allmodconfig   gcc  
-mips                             allyesconfig   gcc  
-mips                         cobalt_defconfig   gcc  
-nios2                            allmodconfig   gcc  
-nios2                             allnoconfig   gcc  
-nios2                            allyesconfig   gcc  
-nios2                               defconfig   gcc  
-nios2                 randconfig-001-20231214   gcc  
-nios2                 randconfig-002-20231214   gcc  
-openrisc                         allmodconfig   gcc  
-openrisc                          allnoconfig   gcc  
-openrisc                            defconfig   gcc  
-parisc                            allnoconfig   gcc  
-parisc                              defconfig   gcc  
-parisc                randconfig-001-20231214   gcc  
-parisc                randconfig-002-20231214   gcc  
-parisc64                            defconfig   gcc  
-powerpc                          allmodconfig   clang
-powerpc                           allnoconfig   gcc  
-powerpc                          allyesconfig   clang
-powerpc                     ep8248e_defconfig   gcc  
-powerpc                      makalu_defconfig   gcc  
-powerpc                       ppc64_defconfig   gcc  
-powerpc               randconfig-001-20231214   gcc  
-powerpc               randconfig-002-20231214   gcc  
-powerpc               randconfig-003-20231214   gcc  
-powerpc64             randconfig-001-20231214   gcc  
-powerpc64             randconfig-002-20231214   gcc  
-powerpc64             randconfig-003-20231214   gcc  
-riscv                               defconfig   gcc  
-riscv             nommu_k210_sdcard_defconfig   gcc  
-riscv                 randconfig-001-20231214   gcc  
-riscv                 randconfig-002-20231214   gcc  
-riscv                          rv32_defconfig   clang
-s390                              allnoconfig   gcc  
-s390                                defconfig   gcc  
-sh                                allnoconfig   gcc  
-sh                                  defconfig   gcc  
-sh                    randconfig-001-20231214   gcc  
-sh                    randconfig-002-20231214   gcc  
-sh                          rsk7203_defconfig   gcc  
-sh                          urquell_defconfig   gcc  
-sparc                            allyesconfig   gcc  
-sparc64                             defconfig   gcc  
-sparc64               randconfig-001-20231214   gcc  
-sparc64               randconfig-002-20231214   gcc  
-um                                  defconfig   gcc  
-um                             i386_defconfig   gcc  
-um                    randconfig-001-20231214   gcc  
-um                    randconfig-002-20231214   gcc  
-um                           x86_64_defconfig   gcc  
-x86_64                            allnoconfig   gcc  
-x86_64                           allyesconfig   clang
-x86_64       buildonly-randconfig-001-20231214   gcc  
-x86_64       buildonly-randconfig-002-20231214   gcc  
-x86_64       buildonly-randconfig-003-20231214   gcc  
-x86_64       buildonly-randconfig-004-20231214   gcc  
-x86_64       buildonly-randconfig-005-20231214   gcc  
-x86_64       buildonly-randconfig-006-20231214   gcc  
-x86_64                              defconfig   gcc  
-x86_64                                  kexec   gcc  
-x86_64                randconfig-011-20231214   gcc  
-x86_64                randconfig-012-20231214   gcc  
-x86_64                randconfig-013-20231214   gcc  
-x86_64                randconfig-014-20231214   gcc  
-x86_64                randconfig-015-20231214   gcc  
-x86_64                randconfig-016-20231214   gcc  
-x86_64                randconfig-071-20231214   gcc  
-x86_64                randconfig-072-20231214   gcc  
-x86_64                randconfig-073-20231214   gcc  
-x86_64                randconfig-074-20231214   gcc  
-x86_64                randconfig-075-20231214   gcc  
-x86_64                randconfig-076-20231214   gcc  
-x86_64                          rhel-8.3-rust   clang
-x86_64                               rhel-8.3   gcc  
-xtensa                            allnoconfig   gcc  
-xtensa                           allyesconfig   gcc  
-xtensa                randconfig-001-20231214   gcc  
-xtensa                randconfig-002-20231214   gcc  
-xtensa                         virt_defconfig   gcc  
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+>   	}
+>   
+>   	/* Register the MHI EP controller */
