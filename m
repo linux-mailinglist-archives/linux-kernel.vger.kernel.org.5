@@ -2,70 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BD4688139DC
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 19:23:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F4888139E0
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 19:23:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230523AbjLNSWx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 13:22:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47306 "EHLO
+        id S230406AbjLNSXI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 13:23:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52056 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229519AbjLNSWv (ORCPT
+        with ESMTP id S229519AbjLNSXF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 13:22:51 -0500
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 64C69120;
-        Thu, 14 Dec 2023 10:22:57 -0800 (PST)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 77EACC15;
-        Thu, 14 Dec 2023 10:23:42 -0800 (PST)
-Received: from [10.57.86.13] (unknown [10.57.86.13])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C1D713F738;
-        Thu, 14 Dec 2023 10:22:51 -0800 (PST)
-Message-ID: <2d87c1dc-cc95-4d92-968c-9d6e6e6439ff@arm.com>
-Date:   Thu, 14 Dec 2023 18:22:49 +0000
+        Thu, 14 Dec 2023 13:23:05 -0500
+Received: from wnew3-smtp.messagingengine.com (wnew3-smtp.messagingengine.com [64.147.123.17])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9923310A;
+        Thu, 14 Dec 2023 10:23:11 -0800 (PST)
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailnew.west.internal (Postfix) with ESMTP id 022982B000CF;
+        Thu, 14 Dec 2023 13:23:06 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute5.internal (MEProxy); Thu, 14 Dec 2023 13:23:09 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
+        :cc:content-transfer-encoding:content-type:content-type:date
+        :date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+        :references:reply-to:subject:subject:to:to; s=fm3; t=1702578186;
+         x=1702585386; bh=jO8QFkyxT8UnwR2dcix1epeyX1NgYymqMvBUkD8jyH4=; b=
+        LqG+BjVVn4Z890upuU+L9WS2St9a3ZnojxXfbpRBnK7O9s2AS1bMbGNSKHeOT/1w
+        SoCPQ+MBULtS7Es1+sV64ePILKocDVHsHh+rHbHd/2SpuFK9O3OLyRJMFKDWvgXM
+        v7lAPyYZ1l96d6ljhskKAmvwnt8kLfo6etclrSfWLi+dtnBbVeCFjTS6+pvNNDWD
+        ym391Yw+8+XG5bNc4vvQT5Rz/8mZ/iF3vlRrv/U14SshKjU/3UFHOQo6+3zLPXzA
+        rDdlBXQTNg5Nx/z5fB+XqvNGGW/ZDsTZwvhH3/wHRfq2KpRcNichLdVp9e+EDQYL
+        9cKCRRhJxfYQDGmZWpJHLA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-transfer-encoding
+        :content-type:content-type:date:date:feedback-id:feedback-id
+        :from:from:in-reply-to:in-reply-to:message-id:mime-version
+        :references:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1702578186; x=
+        1702585386; bh=jO8QFkyxT8UnwR2dcix1epeyX1NgYymqMvBUkD8jyH4=; b=B
+        pbf0Ttm/qZDdaZfK8by5DZs02Zn4xHoqby1dDmnF+SD1Fe9pC5JjQ0/gez6wgo/i
+        fqqFihaMwY4HGlE6PyatQ9TPk4JzYHPtKJu4bjTMbL4XGMUM8yNHn7SQUmZAfRyY
+        4DH/spKE2Ddh+5J29by+fhiVIitOzsBS4Q9dZUbVF2dm+WgYFaANjQnYBTxBXj6d
+        EHvzAHb93C05ysNj/vymwaEfXmvXBrSqhR/MYkTeaIKMET1r8+sgUXvCXFdo0q7G
+        YppJqaaz/gk1RDvoCk3h2ex7u0ZLOrMQmE0PxpQ5Pkte5LWXvKphKobRFAg5rd16
+        58ww+AcHucbFNQsitTeKg==
+X-ME-Sender: <xms:CUh7ZXluxcKsKKaJRLO-eL7CHVajHOVe3-SJpW8YU0XUXVeDN6D5Tg>
+    <xme:CUh7Za3b0lzqga_v_Yu8H14V_ibdaIlFaRW22FvWXyqLlii6B8bUI5Gzo6kQGK2jn
+    xZKAeGbgUnRc4WOtg>
+X-ME-Received: <xmr:CUh7ZdpOAXiFqFBxOX81ivQmHkQUrh1nOQMDtgstUneRE0DMHvncLF1wnmuhydvzZwxqi-IE3JhDHPieZ13S-qId1vsyz5IY0ZLskhk>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrudelledguddutdcutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enfghrlhcuvffnffculdefhedmnecujfgurhepfffhvfevuffkfhggtggugfgjsehtkefs
+    tddttdejnecuhfhrohhmpeffrghnihgvlhcuighuuceougiguhesugiguhhuuhdrgiihii
+    eqnecuggftrfgrthhtvghrnheptdfgueeuueekieekgfeiueekffelteekkeekgeegffev
+    tddvjeeuheeuueelfeetnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrg
+    hilhhfrhhomhepugiguhesugiguhhuuhdrgiihii
+X-ME-Proxy: <xmx:CUh7ZfnaQUe6SAmGWExXbx3L-NoWo8Nfytc1BIUvogDtWqKWDF_ysQ>
+    <xmx:CUh7ZV22lYlqlf0yp219Uej1Z7r8hZF1i6jAdQ5emVc8mxroJbrSAg>
+    <xmx:CUh7ZevPOFt-EhzSk7f_HzRs3b20z5o2kfUB5AiEDinq80uz1hhS1Q>
+    <xmx:Ckh7ZWdRL25ZhskGJdEUsV97KpeqO1iTp-p8snaYoNjOKjX2qUXgmGh4Ebs>
+Feedback-ID: i6a694271:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
+ 14 Dec 2023 13:23:03 -0500 (EST)
+Date:   Thu, 14 Dec 2023 11:23:02 -0700
+From:   Daniel Xu <dxu@dxuuu.xyz>
+To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Cc:     Eyal Birger <eyal.birger@gmail.com>, daniel@iogearbox.net,
+        davem@davemloft.net, shuah@kernel.org, ast@kernel.org,
+        john.fastabend@gmail.com, kuba@kernel.org, andrii@kernel.org,
+        hawk@kernel.org, steffen.klassert@secunet.com,
+        antony.antony@secunet.com, alexei.starovoitov@gmail.com,
+        yonghong.song@linux.dev, eddyz87@gmail.com, mykolal@fb.com,
+        martin.lau@linux.dev, song@kernel.org, kpsingh@kernel.org,
+        sdf@google.com, haoluo@google.com, jolsa@kernel.org,
+        bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        devel@linux-ipsec.org
+Subject: Re: [PATCH bpf-next v5 9/9] bpf: xfrm: Add selftest for
+ bpf_xdp_get_xfrm_state()
+Message-ID: <idbmj3y65mi7isezhlq4lip54bbngoouv5hbai2xd7bqtv7dxy@qjcmln2ovmz2>
+References: <CAHsH6Gs1vUQnhR_a4qFnAF37Vx=68Do28sfVfFxQ9pVj9jSzjw@mail.gmail.com>
+ <qiv464c4y43mo5rih5k6lgzkbpnj6wsrl52hrhgbxeqj45atun@szmqlmnccm52>
+ <CAHsH6Gujycb9RBuRk7QHorLe0Q=Np_tb3uboQfp9KmJnegVXvw@mail.gmail.com>
+ <fwadmdjjogp4ybfxfpwovnmnn36jigffopijsuqt4ly4vxqghm@ysqhd25mzylp>
+ <fecc7tpmbnqxuxqqolm44ggyeomcr3piabsjkv3pgyzlhyonq6@iiaxf34erjzq>
+ <CAP01T770poh_63vBC+Heb9ASJ9pDZd1wTDWAgm5KCYHK9GtE1g@mail.gmail.com>
+ <yshbkwaiong7qq2rsgkpvvyvzefnwud5uywbea6ocfxxenzv6s@dn45gdaygaso>
+ <CAHsH6Gu_c29Nc+cH-s3EeztwScL=A42wi_SuJD=WeYV0mtVxbA@mail.gmail.com>
+ <CAP01T76ZtehyRidmnV5A0p3LCyjw6Q4sjRH6ZhczgGn1ap-x_g@mail.gmail.com>
+ <CAP01T74dKxYKM1GfTUJZ+G4+CKbRU=JLGoNcG6b8PMYcqUyEzQ@mail.gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 6/7] iommu/dma: Centralise iommu_setup_dma_ops()
-Content-Language: en-GB
-To:     Jean-Philippe Brucker <jean-philippe@linaro.org>
-Cc:     Joerg Roedel <joro@8bytes.org>, Christoph Hellwig <hch@lst.de>,
-        Vineet Gupta <vgupta@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        WANG Xuerui <kernel@xen0n.name>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        Hanjun Guo <guohanjun@huawei.com>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
-        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Niklas Schnelle <schnelle@linux.ibm.com>,
-        Matthew Rosato <mjrosato@linux.ibm.com>,
-        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-acpi@vger.kernel.org,
-        iommu@lists.linux.dev, devicetree@vger.kernel.org
-References: <cover.1702486837.git.robin.murphy@arm.com>
- <5d89190b35720bf5b66621f46b6d3c85323d8eab.1702486837.git.robin.murphy@arm.com>
- <20231214165126.GA3726750@myrica>
-From:   Robin Murphy <robin.murphy@arm.com>
-In-Reply-To: <20231214165126.GA3726750@myrica>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAP01T74dKxYKM1GfTUJZ+G4+CKbRU=JLGoNcG6b8PMYcqUyEzQ@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -73,113 +105,101 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023-12-14 4:51 pm, Jean-Philippe Brucker wrote:
-> On Wed, Dec 13, 2023 at 05:17:59PM +0000, Robin Murphy wrote:
->> diff --git a/drivers/iommu/dma-iommu.c b/drivers/iommu/dma-iommu.c
->> index 27a167f4cd3e..d808c8dcf5cb 100644
->> --- a/drivers/iommu/dma-iommu.c
->> +++ b/drivers/iommu/dma-iommu.c
->> @@ -1724,25 +1724,20 @@ static const struct dma_map_ops iommu_dma_ops = {
->>   	.opt_mapping_size	= iommu_dma_opt_mapping_size,
->>   };
->>   
->> -/*
->> - * The IOMMU core code allocates the default DMA domain, which the underlying
->> - * IOMMU driver needs to support via the dma-iommu layer.
->> - */
->> -void iommu_setup_dma_ops(struct device *dev, u64 dma_base, u64 dma_limit)
->> +void iommu_setup_dma_ops(struct device *dev)
->>   {
->>   	struct iommu_domain *domain = iommu_get_domain_for_dev(dev);
->>   
->> -	if (!domain)
->> -		goto out_err;
->> +	if (dev_is_pci(dev))
->> +		dev->iommu->pci_32bit_workaround = !iommu_dma_forcedac;
->>   
->> -	/*
->> -	 * The IOMMU core code allocates the default DMA domain, which the
->> -	 * underlying IOMMU driver needs to support via the dma-iommu layer.
->> -	 */
->>   	if (iommu_is_dma_domain(domain)) {
+On Thu, Dec 14, 2023 at 05:16:08PM +0100, Kumar Kartikeya Dwivedi wrote:
+> On Thu, 14 Dec 2023 at 17:08, Kumar Kartikeya Dwivedi <memxor@gmail.com> wrote:
+> >
+> > On Thu, 14 Dec 2023 at 00:49, Eyal Birger <eyal.birger@gmail.com> wrote:
+> > >
+> > > On Wed, Dec 13, 2023 at 3:15 PM Daniel Xu <dxu@dxuuu.xyz> wrote:
+> > > > > > [...]
+> > > > > >
+> > > > > > diff --git a/tools/testing/selftests/bpf/progs/test_tunnel_kern.c b/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
+> > > > > > index c0dd38616562..f00dba85ac5d 100644
+> > > > > > --- a/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
+> > > > > > +++ b/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
+> > > > > > @@ -8,8 +8,9 @@
+> > > > > >   */
+> > > > > >  #include "vmlinux.h"
+> > > > > >  #include <bpf/bpf_core_read.h>
+> > > > > > -#include <bpf/bpf_helpers.h>
+> > > > > >  #include <bpf/bpf_endian.h>
+> > > > > > +#include <bpf/bpf_helpers.h>
+> > > > > > +#include "bpf_experimental.h"
+> > > > > >  #include "bpf_kfuncs.h"
+> > > > > >  #include "bpf_tracing_net.h"
+> > > > > >
+> > > > > > @@ -988,8 +989,9 @@ int xfrm_get_state_xdp(struct xdp_md *xdp)
+> > > > > >         opts.family = AF_INET;
+> > > > > >
+> > > > > >         x = bpf_xdp_get_xfrm_state(xdp, &opts, sizeof(opts));
+> > > > > > -       if (!x || opts.error)
+> > > > > > +       if (!x)
+> > > > > >                 goto out;
+> > > > > > +       bpf_assert_with(opts.error == 0, XDP_PASS);
+> > > > > >
+> > > > > >         if (!x->replay_esn)
+> > > > > >                 goto out;
+> > > > > >
+> > > > > > results in:
+> > > > > >
+> > > > > > 57: (b7) r1 = 2                       ; R1_w=2 refs=5
+> > > > > > 58: (85) call bpf_throw#115436
+> > > > > > calling kernel function bpf_throw is not allowed
+> > > > > >
+> > > > >
+> > > > > I think this might be because bpf_throw is not registered for use by
+> > > > > BPF_PROG_TYPE_XDP. I would simply register the generic_kfunc_set for
+> > > > > this program type as well, since it's already done for TC.
+> > > >
+> > > > Ah yeah, that was it.
+> > > >
+> > > > >
+> > > > > > It looks like the above error comes from verifier.c:fetch_kfunc_meta,
+> > > > > > but I can run the exceptions selftests just fine with the same bzImage.
+> > > > > > So I'm thinking it's not a kfunc registration or BTF issue.
+> > > > > >
+> > > > > > Maybe it's cuz I'm holding onto KFUNC_ACQUIRE'd `x`? Not sure.
+> > > > > >
+> > > > >
+> > > > > Yes, even once you enable this, this will fail for now. I am sending
+> > > > > out a series later this week that enables bpf_throw with acquired
+> > > > > references, but until then may I suggest the following:
+> > > > >
+> > > > > #define bpf_assert_if(cond) for (int ___i = 0, ___j = (cond); !(___j) \
+> > > > > && !___j; bpf_throw(), ___i++)
+> > > > >
+> > > > > This will allow you to insert some cleanup code with an assertion.
+> > > > > Then in my series, I will convert this temporary bpf_assert_if back to
+> > > > > the normal bpf_assert.
+> > > > >
+> > > > > It would look like:
+> > > > > bpf_assert_if(opts.error == 0) {
+> > > > >   // Execute if assertion failed
+> > > > >   bpf_xdp_xfrm_state_release(x);
+> > > > > }
+> > > > >
+> > > > > Likewise for bpf_assert_with_if, you get the idea.
+> > > >
+> > > > I gave it a try and I'm getting this compile error:
+> > > >
+> > > >         progs/test_tunnel_kern.c:996:2: error: variable '___j' used in loop condition not modified in loop body [-Werror,-Wfor-loop-analysis]
+> > > >                 bpf_assert_with_if(opts.error == 0, XDP_PASS) {
+> > > >                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> > > >         /home/dxu/dev/linux/tools/testing/selftests/bpf/bpf_experimental.h:295:38: note: expanded from macro 'bpf_assert_with_if'
+> > > >                 for (int ___i = 0, ___j = (cond); !(___j) && !___j; bpf_throw(value), ___i++)
+> > > >                                                     ^~~~      ~~~~
+> > > >         1 error generated.
+> > > >         make: *** [Makefile:618: /home/dxu/dev/linux/tools/testing/selftests/bpf/test_tunnel_kern.bpf.o] Error 1
+> > > >
+> > > > Seems like the compiler is being clever.
+> > >
+> > > It looks like ___j is used twice - maybe it was meant to be ___i? i.e.:
+> > >
+> > >    for (int ___i = 0, ___j = (cond); !(___j) && !___i; bpf_throw(value), ___i++)
+> > >
+> >
+> > Ah, yes, that's a typo. Eyal is right, it should be ___i.
 > 
-> ...
-> 
->> diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
->> index 824989874dee..43f630d0530e 100644
->> --- a/drivers/iommu/iommu.c
->> +++ b/drivers/iommu/iommu.c
->> @@ -560,10 +560,10 @@ static int __iommu_probe_device(struct device *dev, struct list_head *group_list
->>   		if (list_empty(&group->entry))
->>   			list_add_tail(&group->entry, group_list);
->>   	}
->> -	mutex_unlock(&group->mutex);
->>   
->> -	if (dev_is_pci(dev))
->> -		iommu_dma_set_pci_32bit_workaround(dev);
->> +	iommu_setup_dma_ops(dev);
-> 
-> With Intel VT-d (QEMU emulation) I get a crash in iommu_setup_dma_ops()
-> because at this point group->domain and group->default_domain are still
-> NULL, group_list is non-NULL.
+> Additionally, I would modify the macro to do ___j = !!(cond).
 
-Ugh, clearly I'd manage to confuse myself, since what I wrote in the
-changelog isn't even right...
-
-Taking yet another look, there's not actually one single place we can do
-this right now which will work in a manageable way for all cases. With 2
-or 3 more levels of mess unpicked it's going to clean up much further
-(it's also becoming clear that iommu-dma wants better separation of its
-own per-device and per-domain bits), but for the immediate task in this
-series of finally getting out of arch code, I guess that continuing to
-echo the current probe_finalize flows is going to be safest. Something
-like the diff below (but I'll have a further think about it with a fresh
-head tomorrow).
-
-Thanks,
-Robin.
-
------>8-----
-diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
-index 8972b7f22a9a..ba4cd5251205 100644
---- a/drivers/iommu/iommu.c
-+++ b/drivers/iommu/iommu.c
-@@ -562,7 +562,8 @@ static int __iommu_probe_device(struct device *dev, struct list_head *group_list
-  			list_add_tail(&group->entry, group_list);
-  	}
-  
--	iommu_setup_dma_ops(dev);
-+	if (group->default_domain)
-+		iommu_setup_dma_ops(dev);
-  
-  	mutex_unlock(&group->mutex);
-  
-@@ -1992,6 +1993,8 @@ int bus_iommu_probe(const struct bus_type *bus)
-  			mutex_unlock(&group->mutex);
-  			return ret;
-  		}
-+		for_each_group_device(group, gdev)
-+			iommu_setup_dma_ops(gdev->dev);
-  		mutex_unlock(&group->mutex);
-  
-  		/*
-@@ -3217,18 +3220,9 @@ static ssize_t iommu_group_store_type(struct iommu_group *group,
-  	if (ret)
-  		goto out_unlock;
-  
--	/*
--	 * Release the mutex here because ops->probe_finalize() call-back of
--	 * some vendor IOMMU drivers calls arm_iommu_attach_device() which
--	 * in-turn might call back into IOMMU core code, where it tries to take
--	 * group->mutex, resulting in a deadlock.
--	 */
--	mutex_unlock(&group->mutex);
--
-  	/* Make sure dma_ops is appropriatley set */
-  	for_each_group_device(group, gdev)
--		iommu_group_do_probe_finalize(gdev->dev);
--	return count;
-+		iommu_setup_dma_ops(gdev->dev);
-  
-  out_unlock:
-  	mutex_unlock(&group->mutex);
+Makes sense. Will send out v6 with these fixes today.
