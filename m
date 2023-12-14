@@ -1,114 +1,83 @@
-Return-Path: <linux-kernel+bounces-100-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-102-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C9B9F813C2E
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 21:58:47 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id F1575813C3B
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 22:01:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7E5A31F2263A
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 20:58:47 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AC3C228153B
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 21:01:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 98AF138DE3;
-	Thu, 14 Dec 2023 20:58:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B679854277;
+	Thu, 14 Dec 2023 21:01:11 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mx01.omp.ru (mx01.omp.ru [90.154.21.10])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 688146A001;
-	Thu, 14 Dec 2023 20:58:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=omp.ru
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=omp.ru
-Received: from [192.168.1.104] (178.176.74.138) by msexch01.omp.ru
- (10.188.4.12) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.1258.12; Thu, 14 Dec
- 2023 23:58:06 +0300
-Subject: Re: [PATCH net-next v2 06/21] net: ravb: Assert/de-assert reset on
- suspend/resume
-To: Claudiu <claudiu.beznea@tuxon.dev>, <davem@davemloft.net>,
-	<edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
-	<richardcochran@gmail.com>, <p.zabel@pengutronix.de>,
-	<yoshihiro.shimoda.uh@renesas.com>, <wsa+renesas@sang-engineering.com>,
-	<geert+renesas@glider.be>
-CC: <netdev@vger.kernel.org>, <linux-renesas-soc@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, Claudiu Beznea
-	<claudiu.beznea.uj@bp.renesas.com>
-References: <20231214114600.2451162-1-claudiu.beznea.uj@bp.renesas.com>
- <20231214114600.2451162-7-claudiu.beznea.uj@bp.renesas.com>
-From: Sergey Shtylyov <s.shtylyov@omp.ru>
-Organization: Open Mobile Platform
-Message-ID: <223486bc-a03c-8d86-780c-38c3e14e055e@omp.ru>
-Date: Thu, 14 Dec 2023 23:58:05 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E4C0282E9;
+	Thu, 14 Dec 2023 21:01:10 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CCFC8C433C8;
+	Thu, 14 Dec 2023 21:01:09 +0000 (UTC)
+Date: Thu, 14 Dec 2023 16:01:56 -0500
+From: Steven Rostedt <rostedt@goodmis.org>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>, LKML
+ <linux-kernel@vger.kernel.org>, Linux Trace Kernel
+ <linux-trace-kernel@vger.kernel.org>, Masami Hiramatsu
+ <mhiramat@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Mathieu
+ Desnoyers <mathieu.desnoyers@efficios.com>
+Subject: Re: [PATCH] ring-buffer: Remove 32bit timestamp logic
+Message-ID: <20231214160156.73e5ec51@gandalf.local.home>
+In-Reply-To: <CAHk-=wieVSfyjTpe8L5kmwC4mk9dRge9dvyJiMZEkyz4-tOvow@mail.gmail.com>
+References: <20231213211126.24f8c1dd@gandalf.local.home>
+	<20231213214632.15047c40@gandalf.local.home>
+	<CAHk-=whESMW2v0cd0Ye+AnV0Hp9j+Mm4BO2xJo93eQcC1xghUA@mail.gmail.com>
+	<20231214115614.2cf5a40e@gandalf.local.home>
+	<CAHk-=wjjGEc0f4LLDxCTYvgD98kWqKy=89u=42JLRz5Qs3KKyA@mail.gmail.com>
+	<20231214153636.655e18ce@gandalf.local.home>
+	<CAHk-=wieVSfyjTpe8L5kmwC4mk9dRge9dvyJiMZEkyz4-tOvow@mail.gmail.com>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20231214114600.2451162-7-claudiu.beznea.uj@bp.renesas.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: msexch01.omp.ru (10.188.4.12) To msexch01.omp.ru
- (10.188.4.12)
-X-KSE-ServerInfo: msexch01.omp.ru, 9
-X-KSE-AntiSpam-Interceptor-Info: scan successful
-X-KSE-AntiSpam-Version: 6.1.0, Database issued on: 12/14/2023 20:40:34
-X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
-X-KSE-AntiSpam-Method: none
-X-KSE-AntiSpam-Rate: 59
-X-KSE-AntiSpam-Info: Lua profiles 182128 [Dec 14 2023]
-X-KSE-AntiSpam-Info: Version: 6.1.0.3
-X-KSE-AntiSpam-Info: Envelope from: s.shtylyov@omp.ru
-X-KSE-AntiSpam-Info: LuaCore: 7 0.3.7 6d6bf5bd8eea7373134f756a2fd73e9456bb7d1a
-X-KSE-AntiSpam-Info: {rep_avail}
-X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
-X-KSE-AntiSpam-Info: {relay has no DNS name}
-X-KSE-AntiSpam-Info: {SMTP from is not routable}
-X-KSE-AntiSpam-Info: {Found in DNSBL: 178.176.74.138 in (user)
- b.barracudacentral.org}
-X-KSE-AntiSpam-Info: {Found in DNSBL: 178.176.74.138 in (user)
- dbl.spamhaus.org}
-X-KSE-AntiSpam-Info:
-	127.0.0.199:7.1.2;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;omp.ru:7.1.1
-X-KSE-AntiSpam-Info: ApMailHostAddress: 178.176.74.138
-X-KSE-AntiSpam-Info: {DNS response errors}
-X-KSE-AntiSpam-Info: Rate: 59
-X-KSE-AntiSpam-Info: Status: not_detected
-X-KSE-AntiSpam-Info: Method: none
-X-KSE-AntiSpam-Info: Auth:dmarc=temperror header.from=omp.ru;spf=temperror
- smtp.mailfrom=omp.ru;dkim=none
-X-KSE-Antiphishing-Info: Clean
-X-KSE-Antiphishing-ScanningType: Heuristic
-X-KSE-Antiphishing-Method: None
-X-KSE-Antiphishing-Bases: 12/14/2023 20:46:00
-X-KSE-Antivirus-Interceptor-Info: scan successful
-X-KSE-Antivirus-Info: Clean, bases: 12/14/2023 7:08:00 PM
-X-KSE-Attachment-Filter-Triggered-Rules: Clean
-X-KSE-Attachment-Filter-Triggered-Filters: Clean
-X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
 
-On 12/14/23 2:45 PM, Claudiu wrote:
+On Thu, 14 Dec 2023 12:50:29 -0800
+Linus Torvalds <torvalds@linux-foundation.org> wrote:
 
-> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+> > But do all archs have an implementation of cmpxchg64, even if it requires
+> > disabling interrupts? If not, then I definitely cannot remove this code.  
 > 
-> RZ/G3S can go to deep sleep states where power to most of the SoC parts is
-> off. When resuming from such a state, the Ethernet controller needs to be
-> reinitialized. De-asserting the reset signal for it should also be done.
-> Thus, add reset assert/de-assert on suspend/resume functions.
+> We have a generic header file, so anybody who uses that would get the
+> fallback version, ie
 > 
-> On the resume function, the de-assert was not reverted in case of failures
-> to give the user a chance to restore the interface (e.g., bringing down/up
-> the interface) in case suspend/resume failed.
+> arch_cmpxchg64 -> generic_cmpxchg64_local -> __generic_cmpxchg64_local
 > 
-> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+> which does that irq disabling thing.
+> 
+> But no, not everybody is guaranteed to use that fallback. From a quick
+> look, ARC, hexagon and CSky don't do this, for example.
+> 
+> And then I got bored and stopped looking.
+> 
+> My guess is that *most* 32-bit architectures do not have a 64-bit
+> cmpxchg - not even the irq-safe one.
 
-Reviewed-by: Sergey Shtylyov <s.shtylyov@omp.ru>
+OK, that means I have to completely abandon this change, even for the next
+merge window.
 
-[...]
+I may add a check if cmpxchg64 exists before falling back to the 32bit
+cmpxchg version. But even that will have to wait till the next merge 
+window, with a fixes tag (but not Cc'd stable) in case anyone would like to
+backport it.
 
-MBR, Sergey
+Thanks for the advice!
+
+-- Steve
 
