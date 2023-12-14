@@ -1,162 +1,221 @@
-Return-Path: <linux-kernel+bounces-175-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-177-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id BA507813D14
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 23:12:00 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AA068813D18
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 23:15:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4D7271F22680
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 22:12:00 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CDC3E1C21DA0
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 22:15:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 060F06720F;
-	Thu, 14 Dec 2023 22:11:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b="c9Smu2Ty"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 95DAC6720E;
+	Thu, 14 Dec 2023 22:14:54 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-qk1-f172.google.com (mail-qk1-f172.google.com [209.85.222.172])
+Received: from server.atrad.com.au (server.atrad.com.au [150.101.241.2])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D6F43671F0
-	for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 22:11:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cmpxchg.org
-Received: by mail-qk1-f172.google.com with SMTP id af79cd13be357-77f35b70944so3618285a.0
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 14:11:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1702591910; x=1703196710; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=kjwv3SJYpxnhyyliVohhGYpPw4WBD1Rbfb+MQW+rnxI=;
-        b=c9Smu2TyHybC9NOCYsUKjdGLXnEbUoyxwh7cvwC2fzsAlLYfbsJ8C6qRUQF4BIiX/P
-         Evmq/fB3uvTCTIn/fIGDDnlNi/0JmqBxz7G+IRQo7492DOlzJ1CBUQfFtH8k7cxsjJRK
-         q/gBjrBAt6i12yZoioi4Xr7glzfZcExr0SnI1RM63SB/w588PNc3smcpbTPScVcqObsz
-         2XttILSKIxbR/VAuOBdAwv3p2VUz56VAs9O5lgn2QG+4QOqQwscURgYsVP/qtU6ruqip
-         f6q/0hjsp7rjvN1fCwBLG98zmH8AgS5+SKyw2GkzpPqLXyL2SGiRkTHbOtggiyCJftBM
-         /Xrg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702591910; x=1703196710;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=kjwv3SJYpxnhyyliVohhGYpPw4WBD1Rbfb+MQW+rnxI=;
-        b=mGQ8fKBqySBYqKHqD/jwEzmxxxvwz0HqJsLIhxWAMpaMbvIBWoGM/VjUCusLYDmtEv
-         CUOJx8gW/PMNru7EyNm+jo+OAbWdsO9FJP3siip1Jb9pXiaWC7dSv8MKoD6kN0x0/iyw
-         29ZNjUb5kTvKVIDtulBdmkIYgRNNOj3xMeFeL8in5qLo1cGbvQTF6BN02KjYe8HKD3pD
-         BWwUaTr7ElFtVLjv+VjJN6o+zE7hqbvo4lEX9YFI5d/hJ3IE1Nh2fHyGkEHR1bzak3vr
-         Zdw8uI0s5ZQUHQ2qRKhRRGUl4v/s14hwdR4hLHXzONESISWoKG3nw7GQ2qHUaVNEdQKJ
-         rfGw==
-X-Gm-Message-State: AOJu0YyTSTXtn1KD+BqlFPlbJkmfHxCHZTgj29Cs4Ztqcab07iqWftXt
-	wEZlpBp7m3sooXuW2ON+wfMyjQ==
-X-Google-Smtp-Source: AGHT+IH8MEU6gyt/5zMK0G9MuFTf5ejKeS/GhVs9rnBbhhJ/HrYy6VGWyrA6SqrFUQ2kzJV6LwpxRA==
-X-Received: by 2002:a05:620a:1a91:b0:77f:36a7:1437 with SMTP id bl17-20020a05620a1a9100b0077f36a71437mr15760905qkb.114.1702591910653;
-        Thu, 14 Dec 2023 14:11:50 -0800 (PST)
-Received: from localhost ([2620:10d:c091:400::5:a0a6])
-        by smtp.gmail.com with ESMTPSA id dv8-20020a05620a1b8800b0077dbdc40458sm5660153qkb.1.2023.12.14.14.11.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Dec 2023 14:11:50 -0800 (PST)
-Date: Thu, 14 Dec 2023 17:11:40 -0500
-From: Johannes Weiner <hannes@cmpxchg.org>
-To: Christopher Li <chrisl@kernel.org>
-Cc: Minchan Kim <minchan@kernel.org>, Nhat Pham <nphamcs@gmail.com>,
-	akpm@linux-foundation.org, tj@kernel.org, lizefan.x@bytedance.com,
-	cerasuolodomenico@gmail.com, yosryahmed@google.com,
-	sjenning@redhat.com, ddstreet@ieee.org, vitaly.wool@konsulko.com,
-	mhocko@kernel.org, roman.gushchin@linux.dev, shakeelb@google.com,
-	muchun.song@linux.dev, hughd@google.com, corbet@lwn.net,
-	konrad.wilk@oracle.com, senozhatsky@chromium.org, rppt@kernel.org,
-	linux-mm@kvack.org, kernel-team@meta.com,
-	linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-	david@ixit.cz, Kairui Song <kasong@tencent.com>,
-	Zhongkun He <hezhongkun.hzk@bytedance.com>
-Subject: Re: [PATCH v6] zswap: memcontrol: implement zswap writeback disabling
-Message-ID: <20231214221140.GA269753@cmpxchg.org>
-References: <20231207192406.3809579-1-nphamcs@gmail.com>
- <CAF8kJuPEKWbr_1a-OzqrYKSPmuty==KhC2vbTPAmm9xcJHo4cg@mail.gmail.com>
- <CAKEwX=Oj0Rur8i9Oo7y2Py7svx-g11sEj3GKQfMVL62x=4hvdA@mail.gmail.com>
- <CAF8kJuNpnqTM5x1QmQ7h-FaRWVnHBdNGvGvB3txohSOmZhYA-Q@mail.gmail.com>
- <20231209034229.GA1001962@cmpxchg.org>
- <ZXeTb_ACou7TEVsa@google.com>
- <20231214171137.GA261942@cmpxchg.org>
- <CANeU7QnR+4Lgt8D9Z+Zo3Ydktx_7n45K0b=kVj+qSOzT=5GGQA@mail.gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9138C2C690;
+	Thu, 14 Dec 2023 22:14:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=just42.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=just42.net
+Received: from marvin.atrad.com.au (marvin.atrad.com.au [192.168.0.2])
+	by server.atrad.com.au (8.17.2/8.17.2) with ESMTPS id 3BEMDRxF011590
+	(version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NO);
+	Fri, 15 Dec 2023 08:43:28 +1030
+Date: Fri, 15 Dec 2023 08:43:27 +1030
+From: Jonathan Woithe <jwoithe@just42.net>
+To: Igor Mammedov <imammedo@redhat.com>
+Cc: bhelgaas@google.com, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [Regression] Commit 40613da52b13 ("PCI: acpiphp: Reassign
+ resources on bridge if necessary")
+Message-ID: <ZXt+BxvmG6ru63qJ@marvin.atrad.com.au>
+References: <ZXpaNCLiDM+Kv38H@marvin.atrad.com.au>
+ <20231214143205.4ba0e11a@imammedo.users.ipa.redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CANeU7QnR+4Lgt8D9Z+Zo3Ydktx_7n45K0b=kVj+qSOzT=5GGQA@mail.gmail.com>
+In-Reply-To: <20231214143205.4ba0e11a@imammedo.users.ipa.redhat.com>
+X-MIMEDefang-action: accept
+X-Scanned-By: MIMEDefang 2.86 on 192.168.0.1
 
-On Thu, Dec 14, 2023 at 09:34:06AM -0800, Christopher Li wrote:
-> On Thu, Dec 14, 2023 at 9:11 AM Johannes Weiner <hannes@cmpxchg.org> wrote:
+On Thu, Dec 14, 2023 at 02:32:05PM +0100, Igor Mammedov wrote:
+> On Thu, 14 Dec 2023 11:58:20 +1030 Jonathan Woithe wrote:
+> > 
+> > Following an update from 5.15.72 to 5.15.139 on one of my machines, the
 > 
-> > > Hi Johannes,
-> > >
-> > > I haven't been following the thread closely, but I noticed the discussion
-> > > about potential use cases for zram with memcg.
-> > >
-> > > One interesting idea I have is to implement a swap controller per cgroup.
-> > > This would allow us to tailor the zram swap behavior to the specific needs of
-> > > different groups.
-> > >
-> > > For example, Group A, which is sensitive to swap latency, could use zram swap
-> > > with a fast compression setting, even if it sacrifices some compression ratio.
-> > > This would prioritize quick access to swapped data, even if it takes up more space.
-> > >
-> > > On the other hand, Group B, which can tolerate higher swap latency, could benefit
-> > > from a slower compression setting that achieves a higher compression ratio.
-> > > This would maximize memory efficiency at the cost of slightly slower data access.
-> > >
-> > > This approach could provide a more nuanced and flexible way to manage swap usage
-> > > within different cgroups.
-> >
-> > That makes sense to me.
-> >
-> > It sounds to me like per-cgroup swapfiles would be the easiest
-> > solution to this. Then you can create zram devices with different
-> > configurations and assign them to individual cgroups.
+> looks like you are running downstream kernel, can you file bug report
+> with distro that you use (with a link posed here as well).
+
+I am running Slackware64 15.0.  The kernels supplied by that distribution
+are unmodified kernel.org kernels.
+
+> For now offending patches are being reverted, so downstream bug will help
+> with tracking it and reverting it there. 
+
+The patches will be reverted in Slackware as a matter of course when a
+kernel.org "-stable" kernel with the fix is adopted.  Slackware does not
+apply any patches to kernel.org kernels.  Nevertheless, I will raise a post
+in the forum, hopefully later today.
+
+> > console froze part way through the boot process.  The machine still managed
+> > to boot: it could be reached via the network and a keyboard-initiated
+> > shutdown would do the right thing.  The problem was that the screen remained
+> > static the whole time: the X login did not appear.  Only a reboot would
+> > restore the display's functionality.
+> > 
+> > Comparing boot logs between these two kernels showed that 5.15.139 reported
+> > the following messages not seen with 5.15.72:
+> > 
+> >     thunderbolt 0000:04:00.0: interrupt for TX ring 0 is already enabled
+> >     WARNING: CPU: 0 PID: 713 at drivers/thunderbolt/nhi.c:139 ring_interrupt_active+0x218/0x270 [thunderbolt]
+> > 
+> >     thunderbolt 0000:04:00.0: interrupt for RX ring 0 is already enabled
+> >     WARNING: CPU: 0 PID: 713 at drivers/thunderbolt/nhi.c:139 ring_interrupt_active+0x218/0x270 [thunderbolt]
+> > 
+> >     radeon 0000:4b:00.0: Fatal error during GPU init
+> >     radeon: probe of 0000:4b:00.0 failed with error -12
+> > 
+> > The fatal error during GPU initialisation would be the reason behind the
+> > frozen screen.  I don't know if the thunderbolt warnings are significant.
+> > 
+> > A git bisect resulted in the following report:
+> > 
+> >     d9ce077f8b1f731407e6b612b03bba464fd18d9b is the first bad commit
+> >     commit d9ce077f8b1f731407e6b612b03bba464fd18d9b
+> >     Author: Igor Mammedov <imammedo@redhat.com>
+> >     Date:   Mon Apr 24 21:15:57 2023 +0200
+> > 
+> >         PCI: acpiphp: Reassign resources on bridge if necessary
+> >     
+> >         [ Upstream commit 40613da52b13fb21c5566f10b287e0ca8c12c4e9 ]
+> > 
+> > It's taken me a while to work through the bisect process due to limited
+> > access to the machine concerned.  I see that in the last few days there have
+> > been other reports associated with this commit.  The symptoms on my machine
+> > are different to the other reporters.  In particular, I note that I'm
+> > running the Linux kernel on bare metal.
+> > 
+> > For what it's worth, I also experienced the same problem when I tested 6.6.4
+> > last week (the most recent kernel at the time of testing).
+> > 
+> > The output of lspci is given at the end of this post[1].  The CPU is an
+> > "Intel(R) Core(TM) i7-5930K CPU @ 3.50GHz" which is not overclocked.  Please
+> > let me know if you'd like more information about the affected machine.  I
+> > can also perform additional tests if required, although for various reasons
+> > these can only be done on Thursdays at present.
+> > 
+> > The kernel configuration file can easily be supplied if that would be
+> > useful.
 > 
-> Ideally you need zram then following swap file after the zram. That
-> would be a list of the swap files rather than just one swapfile per
-> cgroup.
->
-> > This would also apply to Kairu's usecase: assign zrams and hdd backups
-> > as needed on a per-cgroup basis.
+> full dmesg log and used config might help down the road (preferably with current
+> upstream kernel), as I will be looking into fixing related issues.
 > 
-> Same there, Kairui's request involves ZRAM and at least one extra swap
-> file. In other words, you really need a per cgroup swap file list.
+> Perhaps a better way for taking this issue and collecting logs, will be
+> opening a separate bug at https://bugzilla.kernel.org (pls CC me as well)
 
-Why is that a problem?
+Sure, will do.  I'll be able to get the dmesg log from my earlier tests and
+config easily enough.  Testing with another kernel will have to wait until
+next Thursday as that is when I'll next have physical access to the machine.
 
-swapon(zram, cgroup=foo)
-swapon(hdd, cgroup=foo)
+Which upstream kernel would you like me to test with: the latest "-stable",
+or the most recent release?
 
-> > In addition, it would naturally solve scalability and isolation
-> > problems when multiple containers would otherwise be hammering on the
-> > same swap backends and locks.
-> >
-> > It would also only require one, relatively simple new interface, such
-> > as a cgroup parameter to swapon().
-> >
-> > That's highly preferable over a complex configuration file like
-> > memory.swap.tiers that needs to solve all sorts of visibility and
-> > namespace issues and duplicate the full configuration interface of
-> > every backend in some new, custom syntax.
-> 
-> If you don't like the syntax of memory.swap.tiers, I am open to
-> suggestions of your preferred syntax as well. The essicents of the
-> swap.tiers is a per cgroup list of the swap back ends. The names imply
-> that. I am not married to any given syntax of how to specify the list.
-> Its goal matches the above requirement pretty well.
+Regards
+  jonathan
 
-Except Minchan said that he would also like different zram parameters
-depending on the cgroup.
-
-There is no way we'll add a memory.swap.tiers with a new configuration
-language for backend parameters.
+> > [1] lspci output
+> > 
+> > 00:00.0 Host bridge: Intel Corporation Xeon E7 v3/Xeon E5 v3/Core i7 DMI2 (rev 02)
+> > 00:01.0 PCI bridge: Intel Corporation Xeon E7 v3/Xeon E5 v3/Core i7 PCI Express Root Port 1 (rev 02)
+> > 00:01.1 PCI bridge: Intel Corporation Xeon E7 v3/Xeon E5 v3/Core i7 PCI Express Root Port 1 (rev 02)
+> > 00:03.0 PCI bridge: Intel Corporation Xeon E7 v3/Xeon E5 v3/Core i7 PCI Express Root Port 3 (rev 02)
+> > 00:05.0 System peripheral: Intel Corporation Xeon E7 v3/Xeon E5 v3/Core i7 Address Map, VTd_Misc, System Management (rev 02)
+> > 00:05.1 System peripheral: Intel Corporation Xeon E7 v3/Xeon E5 v3/Core i7 Hot Plug (rev 02)
+> > 00:05.2 System peripheral: Intel Corporation Xeon E7 v3/Xeon E5 v3/Core i7 RAS, Control Status and Global Errors (rev 02)
+> > 00:11.0 Unassigned class [ff00]: Intel Corporation C610/X99 series chipset SPSR (rev 05)
+> > 00:14.0 USB controller: Intel Corporation C610/X99 series chipset USB xHCI Host Controller (rev 05)
+> > 00:16.0 Communication controller: Intel Corporation C610/X99 series chipset MEI Controller #1 (rev 05)
+> > 00:19.0 Ethernet controller: Intel Corporation Ethernet Connection (2) I218-V (rev 05)
+> > 00:1a.0 USB controller: Intel Corporation C610/X99 series chipset USB Enhanced Host Controller #2 (rev 05)
+> > 00:1b.0 Audio device: Intel Corporation C610/X99 series chipset HD Audio Controller (rev 05)
+> > 00:1c.0 PCI bridge: Intel Corporation C610/X99 series chipset PCI Express Root Port #1 (rev d5)
+> > 00:1c.3 PCI bridge: Intel Corporation C610/X99 series chipset PCI Express Root Port #4 (rev d5)
+> > 00:1d.0 USB controller: Intel Corporation C610/X99 series chipset USB Enhanced Host Controller #1 (rev 05)
+> > 00:1f.0 ISA bridge: Intel Corporation C610/X99 series chipset LPC Controller (rev 05)
+> > 00:1f.2 SATA controller: Intel Corporation C610/X99 series chipset 6-Port SATA Controller [AHCI mode] (rev 05)
+> > 00:1f.3 SMBus: Intel Corporation C610/X99 series chipset SMBus Controller (rev 05)
+> > 02:00.0 PCI bridge: Intel Corporation DSL6540 Thunderbolt 3 Bridge [Alpine Ridge 4C 2015]
+> > 03:00.0 PCI bridge: Intel Corporation DSL6540 Thunderbolt 3 Bridge [Alpine Ridge 4C 2015]
+> > 03:01.0 PCI bridge: Intel Corporation DSL6540 Thunderbolt 3 Bridge [Alpine Ridge 4C 2015]
+> > 03:02.0 PCI bridge: Intel Corporation DSL6540 Thunderbolt 3 Bridge [Alpine Ridge 4C 2015]
+> > 03:04.0 PCI bridge: Intel Corporation DSL6540 Thunderbolt 3 Bridge [Alpine Ridge 4C 2015]
+> > 04:00.0 System peripheral: Intel Corporation DSL6540 Thunderbolt 3 NHI [Alpine Ridge 4C 2015]
+> > 49:00.0 USB controller: Intel Corporation DSL6540 USB 3.1 Controller [Alpine Ridge]
+> > 4b:00.0 VGA compatible controller: Advanced Micro Devices, Inc. [AMD/ATI] Cedar [Radeon HD 5000/6000/7350/8350 Series]
+> > 4b:00.1 Audio device: Advanced Micro Devices, Inc. [AMD/ATI] Cedar HDMI Audio [Radeon HD 5400/6300/7300 Series]
+> > 4d:00.0 Ethernet controller: Realtek Semiconductor Co., Ltd. RTL8111/8168/8411 PCI Express Gigabit Ethernet Controller (rev 06)
+> > ff:0b.0 System peripheral: Intel Corporation Xeon E7 v3/Xeon E5 v3/Core i7 R3 QPI Link 0 & 1 Monitoring (rev 02)
+> > ff:0b.1 Performance counters: Intel Corporation Xeon E7 v3/Xeon E5 v3/Core i7 R3 QPI Link 0 & 1 Monitoring (rev 02)
+> > ff:0b.2 Performance counters: Intel Corporation Xeon E7 v3/Xeon E5 v3/Core i7 R3 QPI Link 0 & 1 Monitoring (rev 02)
+> > ff:0c.0 System peripheral: Intel Corporation Xeon E7 v3/Xeon E5 v3/Core i7 Unicast Registers (rev 02)
+> > ff:0c.1 System peripheral: Intel Corporation Xeon E7 v3/Xeon E5 v3/Core i7 Unicast Registers (rev 02)
+> > ff:0c.2 System peripheral: Intel Corporation Xeon E7 v3/Xeon E5 v3/Core i7 Unicast Registers (rev 02)
+> > ff:0c.3 System peripheral: Intel Corporation Xeon E7 v3/Xeon E5 v3/Core i7 Unicast Registers (rev 02)
+> > ff:0c.4 System peripheral: Intel Corporation Xeon E7 v3/Xeon E5 v3/Core i7 Unicast Registers (rev 02)
+> > ff:0c.5 System peripheral: Intel Corporation Xeon E7 v3/Xeon E5 v3/Core i7 Unicast Registers (rev 02)
+> > ff:0f.0 System peripheral: Intel Corporation Xeon E7 v3/Xeon E5 v3/Core i7 Buffered Ring Agent (rev 02)
+> > ff:0f.1 System peripheral: Intel Corporation Xeon E7 v3/Xeon E5 v3/Core i7 Buffered Ring Agent (rev 02)
+> > ff:0f.4 System peripheral: Intel Corporation Xeon E7 v3/Xeon E5 v3/Core i7 System Address Decoder & Broadcast Registers (rev 02)
+> > ff:0f.5 System peripheral: Intel Corporation Xeon E7 v3/Xeon E5 v3/Core i7 System Address Decoder & Broadcast Registers (rev 02)
+> > ff:0f.6 System peripheral: Intel Corporation Xeon E7 v3/Xeon E5 v3/Core i7 System Address Decoder & Broadcast Registers (rev 02)
+> > ff:10.0 System peripheral: Intel Corporation Xeon E7 v3/Xeon E5 v3/Core i7 PCIe Ring Interface (rev 02)
+> > ff:10.1 Performance counters: Intel Corporation Xeon E7 v3/Xeon E5 v3/Core i7 PCIe Ring Interface (rev 02)
+> > ff:10.5 System peripheral: Intel Corporation Xeon E7 v3/Xeon E5 v3/Core i7 Scratchpad & Semaphore Registers (rev 02)
+> > ff:10.6 Performance counters: Intel Corporation Xeon E7 v3/Xeon E5 v3/Core i7 Scratchpad & Semaphore Registers (rev 02)
+> > ff:10.7 System peripheral: Intel Corporation Xeon E7 v3/Xeon E5 v3/Core i7 Scratchpad & Semaphore Registers (rev 02)
+> > ff:12.0 System peripheral: Intel Corporation Xeon E7 v3/Xeon E5 v3/Core i7 Home Agent 0 (rev 02)
+> > ff:12.1 Performance counters: Intel Corporation Xeon E7 v3/Xeon E5 v3/Core i7 Home Agent 0 (rev 02)
+> > ff:13.0 System peripheral: Intel Corporation Xeon E7 v3/Xeon E5 v3/Core i7 Integrated Memory Controller 0 Target Address, Thermal & RAS Registers (rev 02)
+> > ff:13.1 System peripheral: Intel Corporation Xeon E7 v3/Xeon E5 v3/Core i7 Integrated Memory Controller 0 Target Address, Thermal & RAS Registers (rev 02)
+> > ff:13.2 System peripheral: Intel Corporation Xeon E7 v3/Xeon E5 v3/Core i7 Integrated Memory Controller 0 Channel Target Address Decoder (rev 02)
+> > ff:13.3 System peripheral: Intel Corporation Xeon E7 v3/Xeon E5 v3/Core i7 Integrated Memory Controller 0 Channel Target Address Decoder (rev 02)
+> > ff:13.4 System peripheral: Intel Corporation Xeon E7 v3/Xeon E5 v3/Core i7 Integrated Memory Controller 0 Channel Target Address Decoder (rev 02)
+> > ff:13.5 System peripheral: Intel Corporation Xeon E7 v3/Xeon E5 v3/Core i7 Integrated Memory Controller 0 Channel Target Address Decoder (rev 02)
+> > ff:13.6 System peripheral: Intel Corporation Xeon E7 v3/Xeon E5 v3/Core i7 DDRIO Channel 0/1 Broadcast (rev 02)
+> > ff:13.7 System peripheral: Intel Corporation Xeon E7 v3/Xeon E5 v3/Core i7 DDRIO Global Broadcast (rev 02)
+> > ff:14.0 System peripheral: Intel Corporation Xeon E7 v3/Xeon E5 v3/Core i7 Integrated Memory Controller 0 Channel 0 Thermal Control (rev 02)
+> > ff:14.1 System peripheral: Intel Corporation Xeon E7 v3/Xeon E5 v3/Core i7 Integrated Memory Controller 0 Channel 1 Thermal Control (rev 02)
+> > ff:14.2 System peripheral: Intel Corporation Xeon E7 v3/Xeon E5 v3/Core i7 Integrated Memory Controller 0 Channel 0 ERROR Registers (rev 02)
+> > ff:14.3 System peripheral: Intel Corporation Xeon E7 v3/Xeon E5 v3/Core i7 Integrated Memory Controller 0 Channel 1 ERROR Registers (rev 02)
+> > ff:14.4 System peripheral: Intel Corporation Xeon E7 v3/Xeon E5 v3/Core i7 DDRIO (VMSE) 0 & 1 (rev 02)
+> > ff:14.5 System peripheral: Intel Corporation Xeon E7 v3/Xeon E5 v3/Core i7 DDRIO (VMSE) 0 & 1 (rev 02)
+> > ff:14.6 System peripheral: Intel Corporation Xeon E7 v3/Xeon E5 v3/Core i7 DDRIO (VMSE) 0 & 1 (rev 02)
+> > ff:14.7 System peripheral: Intel Corporation Xeon E7 v3/Xeon E5 v3/Core i7 DDRIO (VMSE) 0 & 1 (rev 02)
+> > ff:15.0 System peripheral: Intel Corporation Xeon E7 v3/Xeon E5 v3/Core i7 Integrated Memory Controller 0 Channel 2 Thermal Control (rev 02)
+> > ff:15.1 System peripheral: Intel Corporation Xeon E7 v3/Xeon E5 v3/Core i7 Integrated Memory Controller 0 Channel 3 Thermal Control (rev 02)
+> > ff:15.2 System peripheral: Intel Corporation Xeon E7 v3/Xeon E5 v3/Core i7 Integrated Memory Controller 0 Channel 2 ERROR Registers (rev 02)
+> > ff:15.3 System peripheral: Intel Corporation Xeon E7 v3/Xeon E5 v3/Core i7 Integrated Memory Controller 0 Channel 3 ERROR Registers (rev 02)
+> > ff:16.0 System peripheral: Intel Corporation Xeon E7 v3/Xeon E5 v3/Core i7 Integrated Memory Controller 1 Target Address, Thermal & RAS Registers (rev 02)
+> > ff:16.6 System peripheral: Intel Corporation Xeon E7 v3/Xeon E5 v3/Core i7 DDRIO Channel 2/3 Broadcast (rev 02)
+> > ff:16.7 System peripheral: Intel Corporation Xeon E7 v3/Xeon E5 v3/Core i7 DDRIO Global Broadcast (rev 02)
+> > ff:17.0 System peripheral: Intel Corporation Xeon E7 v3/Xeon E5 v3/Core i7 Integrated Memory Controller 1 Channel 0 Thermal Control (rev 02)
+> > ff:17.4 System peripheral: Intel Corporation Xeon E7 v3/Xeon E5 v3/Core i7 DDRIO (VMSE) 2 & 3 (rev 02)
+> > ff:17.5 System peripheral: Intel Corporation Xeon E7 v3/Xeon E5 v3/Core i7 DDRIO (VMSE) 2 & 3 (rev 02)
+> > ff:17.6 System peripheral: Intel Corporation Xeon E7 v3/Xeon E5 v3/Core i7 DDRIO (VMSE) 2 & 3 (rev 02)
+> > ff:17.7 System peripheral: Intel Corporation Xeon E7 v3/Xeon E5 v3/Core i7 DDRIO (VMSE) 2 & 3 (rev 02)
+> > ff:1e.0 System peripheral: Intel Corporation Xeon E7 v3/Xeon E5 v3/Core i7 Power Control Unit (rev 02)
+> > ff:1e.1 System peripheral: Intel Corporation Xeon E7 v3/Xeon E5 v3/Core i7 Power Control Unit (rev 02)
+> > ff:1e.2 System peripheral: Intel Corporation Xeon E7 v3/Xeon E5 v3/Core i7 Power Control Unit (rev 02)
+> > ff:1e.3 System peripheral: Intel Corporation Xeon E7 v3/Xeon E5 v3/Core i7 Power Control Unit (rev 02)
+> > ff:1e.4 System peripheral: Intel Corporation Xeon E7 v3/Xeon E5 v3/Core i7 Power Control Unit (rev 02)
+> > ff:1f.0 System peripheral: Intel Corporation Xeon E7 v3/Xeon E5 v3/Core i7 VCU (rev 02)
+> > ff:1f.2 System peripheral: Intel Corporation Xeon E7 v3/Xeon E5 v3/Core i7 VCU (rev 02)
 
