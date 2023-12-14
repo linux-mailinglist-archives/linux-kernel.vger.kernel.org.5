@@ -2,195 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E2C8812F8F
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 12:58:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C79EF812F93
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 13:00:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1572894AbjLNL63 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 06:58:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57088 "EHLO
+        id S1444211AbjLNMAP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 07:00:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52400 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1444245AbjLNL6X (ORCPT
+        with ESMTP id S1444170AbjLNMAO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 06:58:23 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F863126;
-        Thu, 14 Dec 2023 03:58:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1702555109; x=1734091109;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=cV5kj31cFE9+FQFlEfWw+Csb+q1VhY9EQYtyWEoQyM8=;
-  b=DvqSNF9ZV+DA3WB8sFcwY2O2wlZsdMYYnrUrMEMTIxyvZhG59Jgx14y8
-   kVcdsYdCmOpy3W49qLH9WAJBAhSiS9QyKgM/L8wZQEow3Bhp9DPTGvQcz
-   6x1V0H6V9nFSiZBORhhmUNERxqNzaNM2AxVlGHyAgAiX/3eTWe5aI2nmc
-   v6abeO0JAIRd6LLVDQnigvrcU/tvOvkhH15/69qbLAOcE6Fq2qqXnRkW7
-   2QkLmKn5PCkWUxd2YLdyDOW7k1iWAnsfHdz9dpbNdSMadTcmKY5YXsfB3
-   hf80uFjasUPA6MQS/LDCCoGNAAflOuyUhoNvEDOkWP5lTTf4HPhXYVj6o
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10923"; a="461573436"
-X-IronPort-AV: E=Sophos;i="6.04,275,1695711600"; 
-   d="scan'208";a="461573436"
-Received: from fmviesa001.fm.intel.com ([10.60.135.141])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Dec 2023 03:58:28 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.04,275,1695711600"; 
-   d="scan'208";a="17715249"
-Received: from fdefranc-mobl3.ger.corp.intel.com (HELO fdefranc-mobl3.localnet) ([10.213.7.207])
-  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Dec 2023 03:58:27 -0800
-From:   "Fabio M. De Francesco" <fabio.maria.de.francesco@linux.intel.com>
-To:     linux-fsdevel@vger.kernel.org, Al Viro <viro@zeniv.linux.org.uk>
-Cc:     linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/4] minixfs: change the signature of dir_get_page()
-Date:   Thu, 14 Dec 2023 12:58:24 +0100
-Message-ID: <4222956.ElGaqSPkdT@fdefranc-mobl3>
-Organization: intel
-In-Reply-To: <20231213000849.2748576-2-viro@zeniv.linux.org.uk>
-References: <20231213000656.GI1674809@ZenIV>
- <20231213000849.2748576-1-viro@zeniv.linux.org.uk>
- <20231213000849.2748576-2-viro@zeniv.linux.org.uk>
+        Thu, 14 Dec 2023 07:00:14 -0500
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16B62B7;
+        Thu, 14 Dec 2023 04:00:21 -0800 (PST)
+Received: by mail-ed1-x534.google.com with SMTP id 4fb4d7f45d1cf-5522ba3f94aso1877336a12.1;
+        Thu, 14 Dec 2023 04:00:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1702555219; x=1703160019; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=uAVjKqO7t1SHEAhnbN0gUIgoq1UKlAq8GC08s1NGUV8=;
+        b=VMHOBKTGX2nJ/vb/pYuzizI7gNB8bCnxFUsbE+v/oFgtYDZBzFLVfs5rLuTLaZoc2h
+         rqTFeUrxFXZgzxZ1A5R3nTXCq+UJmtXZOW/4jbUDaTcwL2wZrRW6izkm81JmgvYS53aT
+         onlSgdVZfWMWNfrxX9BhnxLSz3m8nu/TKczDC0pIYIHynEtckssQhZSxE5zcUAi/O55W
+         xaqE5yCFQW2kth6rILEkbCetazM5v6xG4jzWYa/Gy1XRuUVgUn5n1+MAIF6TNMKQ7oFw
+         88jEkoRRSmG50MXAH+ng0rElcHm0dGRPPybLDd8EbD5yhxOmjkKUFgO6Ew3y8ljl7Kmu
+         nlRw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702555219; x=1703160019;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=uAVjKqO7t1SHEAhnbN0gUIgoq1UKlAq8GC08s1NGUV8=;
+        b=Vx0jNyu7MVDllNyo8ioCn9gZXHyAkDj9CSUuJVo9COOy/l6x1N8519THgRdaelxY7W
+         ZNYlpgZL35plBqfbdm0g17MBC7SzopQKM8w0UGiAwAmQq/lUxRXm/Y2TMS7Y+2eA91r3
+         5LotGMrCuXxfYZx2fWKsQ5h3Q5bXgqEge9j3hmwTd+NCJUkk1ZP25iwXO9EqhdzVH2Bx
+         ArfY6y67oCbmYJzwa/hlzL4P5rBbljOYBF6M3pTMcE3P+WVYgcMac3aI04scaRYatWHy
+         h9l8MPzdx8HmoQUV2TOc+ANmtxnIkLm2nfVrimC8ltPcuoSebyv79S0MI8lg4vjQn8vF
+         hR4Q==
+X-Gm-Message-State: AOJu0YzMP4Wp05uf9u+erUHhRN3m/rxyMhl8iwKGTJVjOP7PW0XoDXnB
+        Xk5eI8W3+Bfwq3nZuQGlmpjZA5dTBMCvBg==
+X-Google-Smtp-Source: AGHT+IFkAF8xyyVRvjbkhV0Imar1p4RnoaCvAzq2XlE+nsr9Wcq6xdWObgKdx8piQfIZ52SF7bMauQ==
+X-Received: by 2002:a17:906:74d6:b0:a23:fb2:e6c4 with SMTP id z22-20020a17090674d600b00a230fb2e6c4mr186158ejl.233.1702555219291;
+        Thu, 14 Dec 2023 04:00:19 -0800 (PST)
+Received: from skbuf ([188.27.185.68])
+        by smtp.gmail.com with ESMTPSA id ss27-20020a170907c01b00b00a1d9afe42f0sm9248350ejc.35.2023.12.14.04.00.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 Dec 2023 04:00:19 -0800 (PST)
+Date:   Thu, 14 Dec 2023 14:00:16 +0200
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     Serge Semin <fancer.lancer@gmail.com>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        Jose Abreu <Jose.Abreu@synopsys.com>,
+        Maxime Chevallier <maxime.chevallier@bootlin.com>,
+        Tomer Maimon <tmaimon77@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, openbmc@lists.ozlabs.org,
+        netdev@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next 10/16] net: pcs: xpcs: Add generic DW XPCS
+ MDIO-device support
+Message-ID: <20231214120016.wgeip3mdro5ihnxe@skbuf>
+References: <20231205103559.9605-1-fancer.lancer@gmail.com>
+ <20231205103559.9605-11-fancer.lancer@gmail.com>
+ <20231205111351.xjjuwpbf7kwg3vuh@skbuf>
+ <uivunnjv5vi3w3fkc5w2f4lem5bingrgajgjfsu2ih7fuhz6hd@3naeubr5spak>
+ <20231205122316.ihhpklv222f5giz3@skbuf>
+ <nflj4ajgx3byqhwna2eslldwulbbafmcwba4dwgxo65o5c7pmj@zbgqt2zje4ix>
+ <20231208163343.5s74bmirfna3o7yw@skbuf>
+ <xhj7jchcv63y2bmnedxqffnmh3fvdxirccdugnnljruemuiurz@ceafs7mivbqp>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <xhj7jchcv63y2bmnedxqffnmh3fvdxirccdugnnljruemuiurz@ceafs7mivbqp>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wednesday, 13 December 2023 01:08:47 CET Al Viro wrote:
-> Change the signature of dir_get_page() in order to prepare this function
-> to the conversion to the use of kmap_local_page(). Change also those call
-> sites which are required to adjust to the new signature.
+On Thu, Dec 14, 2023 at 02:54:00PM +0300, Serge Semin wrote:
+> > > > The pcs-rzn1-miic.c driver puts a device_link to the MAC to at least
+> > > > tear down the whole thing when the PCS is unbound, which is saner than
+> > > > crashing the kernel. I don't see the equivalent protection mechanism here?
+> > > 
+> > > You are right. I don't have any equivalent protection here. Thanks for
+> > > suggesting a solution.
+> > 
+> > I think that a device link between the "ethernet" device and the "mdio"
+> > device (controller, parent of the PHY or PCS), if the Ethernet is not a
+> > parent of the MDIO controller, could also solve that. But it would also
+> > require ACK from PHY maintainers, who may have grander plans to address
+> > this snag.
 > 
-> Essentially a copy of the corresponding fs/sysv commit by
-> Fabio M. De Francesco <fmdefrancesco@gmail.com>
-> 
-> Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
-> ---
->  fs/minix/dir.c | 46 ++++++++++++++++++++--------------------------
->  1 file changed, 20 insertions(+), 26 deletions(-)
+> Ok. I'll add it in v2. Let's see what the maintainers think about
+> that.
 
-Reviewed-by: Fabio M. De Francesco <fabio.maria.de.francesco@linux.intel.com>
+Are you not following the parallel discussion on the topic of PCS
+devices having bound drivers?
+https://lore.kernel.org/netdev/ZXnV%2FPk1PYxAm%2FjS@shell.armlinux.org.uk/
 
-> diff --git a/fs/minix/dir.c b/fs/minix/dir.c
-> index 34a5d17f0796..4e5483adea40 100644
-> --- a/fs/minix/dir.c
-> +++ b/fs/minix/dir.c
-> @@ -70,13 +70,15 @@ static int minix_handle_dirsync(struct inode *dir)
->  	return err;
->  }
-> 
-> -static struct page * dir_get_page(struct inode *dir, unsigned long n)
-> +static void *dir_get_page(struct inode *dir, unsigned long n, struct page
-> **p) {
->  	struct address_space *mapping = dir->i_mapping;
->  	struct page *page = read_mapping_page(mapping, n, NULL);
-> -	if (!IS_ERR(page))
-> -		kmap(page);
-> -	return page;
-> +	if (IS_ERR(page))
-> +		return ERR_CAST(page);
-> +	kmap(page);
-> +	*p = page;
-> +	return page_address(page);
->  }
-> 
->  static inline void *minix_next_entry(void *de, struct minix_sb_info *sbi)
-> @@ -104,11 +106,11 @@ static int minix_readdir(struct file *file, struct
-> dir_context *ctx)
-> 
->  	for ( ; n < npages; n++, offset = 0) {
->  		char *p, *kaddr, *limit;
-> -		struct page *page = dir_get_page(inode, n);
-> +		struct page *page;
-> 
-> -		if (IS_ERR(page))
-> +		kaddr = dir_get_page(inode, n, &page);
-> +		if (IS_ERR(kaddr))
->  			continue;
-> -		kaddr = (char *)page_address(page);
->  		p = kaddr+offset;
->  		limit = kaddr + minix_last_byte(inode, n) - chunk_size;
->  		for ( ; p <= limit; p = minix_next_entry(p, sbi)) {
-> @@ -173,11 +175,10 @@ minix_dirent *minix_find_entry(struct dentry *dentry,
-> struct page **res_page) for (n = 0; n < npages; n++) {
->  		char *kaddr, *limit;
-> 
-> -		page = dir_get_page(dir, n);
-> -		if (IS_ERR(page))
-> +		kaddr = dir_get_page(dir, n, &page);
-> +		if (IS_ERR(kaddr))
->  			continue;
-> 
-> -		kaddr = (char*)page_address(page);
->  		limit = kaddr + minix_last_byte(dir, n) - sbi->s_dirsize;
->  		for (p = kaddr; p <= limit; p = minix_next_entry(p, sbi)) {
->  			if (sbi->s_version == MINIX_V3) {
-> @@ -229,12 +230,10 @@ int minix_add_link(struct dentry *dentry, struct inode
-> *inode) for (n = 0; n <= npages; n++) {
->  		char *limit, *dir_end;
-> 
-> -		page = dir_get_page(dir, n);
-> -		err = PTR_ERR(page);
-> -		if (IS_ERR(page))
-> -			goto out;
-> +		kaddr = dir_get_page(dir, n, &page);
-> +		if (IS_ERR(kaddr))
-> +			return PTR_ERR(kaddr);
->  		lock_page(page);
-> -		kaddr = (char*)page_address(page);
->  		dir_end = kaddr + minix_last_byte(dir, n);
->  		limit = kaddr + PAGE_SIZE - sbi->s_dirsize;
->  		for (p = kaddr; p <= limit; p = minix_next_entry(p, sbi)) {
-> @@ -286,7 +285,6 @@ int minix_add_link(struct dentry *dentry, struct inode
-> *inode) err = minix_handle_dirsync(dir);
->  out_put:
->  	dir_put_page(page);
-> -out:
->  	return err;
->  out_unlock:
->  	unlock_page(page);
-> @@ -375,11 +373,10 @@ int minix_empty_dir(struct inode * inode)
->  	for (i = 0; i < npages; i++) {
->  		char *p, *kaddr, *limit;
-> 
-> -		page = dir_get_page(inode, i);
-> -		if (IS_ERR(page))
-> +		kaddr = dir_get_page(inode, i, &page);
-> +		if (IS_ERR(kaddr))
->  			continue;
-> 
-> -		kaddr = (char *)page_address(page);
->  		limit = kaddr + minix_last_byte(inode, i) - sbi->s_dirsize;
->  		for (p = kaddr; p <= limit; p = minix_next_entry(p, sbi)) {
->  			if (sbi->s_version == MINIX_V3) {
-> @@ -441,15 +438,12 @@ int minix_set_link(struct minix_dir_entry *de, struct
-> page *page,
-> 
->  struct minix_dir_entry * minix_dotdot (struct inode *dir, struct page **p)
->  {
-> -	struct page *page = dir_get_page(dir, 0);
->  	struct minix_sb_info *sbi = minix_sb(dir->i_sb);
-> -	struct minix_dir_entry *de = NULL;
-> +	struct minix_dir_entry *de = dir_get_page(dir, 0, p);
-> 
-> -	if (!IS_ERR(page)) {
-> -		de = minix_next_entry(page_address(page), sbi);
-> -		*p = page;
-> -	}
-> -	return de;
-> +	if (!IS_ERR(de))
-> +		return minix_next_entry(de, sbi);
-> +	return NULL;
->  }
-> 
->  ino_t minix_inode_by_name(struct dentry *dentry)
-
-
-
-
+Sadly I don't have much spare time to join that discussion, but it looks
+like you could.
