@@ -2,261 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EDD02813418
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 16:09:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DE421813421
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 16:10:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1573679AbjLNPJa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 10:09:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39724 "EHLO
+        id S1573716AbjLNPKW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 10:10:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60306 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1573664AbjLNPJ1 (ORCPT
+        with ESMTP id S1573667AbjLNPKM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 10:09:27 -0500
-Received: from mail-qv1-xf29.google.com (mail-qv1-xf29.google.com [IPv6:2607:f8b0:4864:20::f29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D1B8115;
-        Thu, 14 Dec 2023 07:09:33 -0800 (PST)
-Received: by mail-qv1-xf29.google.com with SMTP id 6a1803df08f44-67f040e6722so5865496d6.3;
-        Thu, 14 Dec 2023 07:09:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702566572; x=1703171372; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=QioPHNhyswGCrfZOs48a2Y+ij3RU3CFU1FCJtG9OFF0=;
-        b=UHtXEUb77xPRGKNGRFc2Dw7wex6ag8RwY2q1sfnvQD94GYIGAaoB2BPUOebQR+eQ9I
-         S48/HT8//Qj/oG8ZEBkm+Jv5Lxbd1ByUcqlrvPsPcDJOXha4LULK7Fi6nxH3th49CDxv
-         n8IccrI5ebbAdM2EN8CoE9mOwR40ibbBza4Orda5ge957haf1w39li9RZgC50WoTzb1q
-         xVDfsFmbY/SHP7shRlt1oM2VxEbnPqPwy1fHkW15eE+vsWjiN5OjV8yXjJhwx7Qr19LA
-         5xZHvlXFRYD/fJFHVmK9nI6J5HtIVorPnbctaK0iyZvg0Nzj4qvdfVQnM1a0HtXXTqUO
-         pkWg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702566572; x=1703171372;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=QioPHNhyswGCrfZOs48a2Y+ij3RU3CFU1FCJtG9OFF0=;
-        b=jGxyitEZE4e9SSvPrv5JaFv591pK/wTISnkjNv8c429tBkLT4ceNU/GHCMuRtYpbgb
-         nK4QWk71UqBUFKI5zT8ZehOD3DbVV18Vzs50JJ0NMd0Ibb5+0J4Q9XuHaj8R3Fd9tO27
-         3VNljnM3ht64oHQB4bEDESwYsSh3EhIjo/FjWZcoKZlREA9+qSiJBYNv6stvtLtpvSU2
-         RaJkwJ7HF9ax6Bosv+UcQUK8hM0e620r5KaShqTT940Q4dUn/NrFu/sisFjzFuSYlumj
-         9MGOMmuQDJu4dfNl09uK12n32vbyzdByEntv9ZvvObD80QZO1p/GoUMegtNuRlgCNCWY
-         uspQ==
-X-Gm-Message-State: AOJu0YzJrdcsK4xg6qUB57YI2hpvTxdqQzHJ6Vo71pFar5zyBgl0mzyX
-        C8bA0DIZEa95S0saovK0/NUyd2lZ9e/T+dj0HNA=
-X-Google-Smtp-Source: AGHT+IG0QombIrAY9BThfvUvOVm6Fm4BoFGUhD3QIf70IFvWOunNpgS397dlAhZ9H08NmK0i/bU4nKaeu57i5D2GEt4=
-X-Received: by 2002:a05:6214:4109:b0:67a:afde:823 with SMTP id
- kc9-20020a056214410900b0067aafde0823mr8218510qvb.41.1702566572468; Thu, 14
- Dec 2023 07:09:32 -0800 (PST)
+        Thu, 14 Dec 2023 10:10:12 -0500
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27726120;
+        Thu, 14 Dec 2023 07:10:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=s31663417; t=1702566601; x=1703171401; i=wahrenst@gmx.net;
+        bh=aUZN9Ijekl/DgdJ1Nx0Xjkr/d4rjzMLWEFZI+tiOk58=;
+        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
+        b=allC7b3smS9jqnp3tsB6109ja6LuV3e7M+2GS+mcg9C5JQq6LHxynDQPNKwpHh4V
+         tzt5Ag3sSjMN3v1765B8lt2uKNUb67m68cGUOLgiaJSx1DTQN+A+uyhOIUFuLU4Qs
+         6HXwtVxHTIUafIuqoLvjT/JMPzmWV27MApxUBth3HHWhxX6Qvld6uhLzc+il7P7Gb
+         MZgy1dpEFD2f78LQkvXjx1hLv4wMdeFxemzE2lBsEYIRvZJ4GypmU4A0MyuAnQl6s
+         u+24Ioxbm9kGwAlbpRlHNDbZVMcPeJCNmfMr5rQo5mWi17LrWA8Am/DfVJ++/iELU
+         EgSpyJHu8z8UGzQPxg==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from stefanw-SCHENKER ([37.4.248.43]) by mail.gmx.net (mrgmx104
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1M5wPb-1r6LMg0iQV-007S3v; Thu, 14
+ Dec 2023 16:10:01 +0100
+From:   Stefan Wahren <wahrenst@gmx.net>
+To:     "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Stefan Wahren <wahrenst@gmx.net>
+Subject: [PATCH 00/12 net-next] qca_spi: collection of improvements
+Date:   Thu, 14 Dec 2023 16:09:32 +0100
+Message-Id: <20231214150944.55808-1-wahrenst@gmx.net>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-References: <20231208172308.2876481-1-roberto.sassu@huaweicloud.com>
- <CAOQ4uxivpZ+u0A5kE962XST37-ey2Tv9EtddnZQhk3ohRkcQTw@mail.gmail.com>
- <20231208-tauziehen-zerfetzt-026e7ee800a0@brauner> <c95b24f27021052209ec6911d2b7e7b20e410f43.camel@huaweicloud.com>
- <20231211-fortziehen-basen-b8c0639044b8@brauner> <019f134a-6ab4-48ca-991c-5a5c94e042ea@huaweicloud.com>
- <CAOQ4uxgpNt7qKEF_NEJPsKU7-XhM7N_3eP68FrOpMpcRcHt4rQ@mail.gmail.com>
- <59bf3530-2a6e-4caa-ac42-4d0dab9a71d1@huaweicloud.com> <a9297cc1bf23e34aba3c7597681e9e71a03b37f9.camel@linux.ibm.com>
- <d6b43b5780770637a724d129c22d5212860f494a.camel@huaweicloud.com>
-In-Reply-To: <d6b43b5780770637a724d129c22d5212860f494a.camel@huaweicloud.com>
-From:   Amir Goldstein <amir73il@gmail.com>
-Date:   Thu, 14 Dec 2023 17:09:20 +0200
-Message-ID: <CAOQ4uxhwHgj-bE7N5SNcRZfnVHn9yCdY_=LFuOxEBkVBbrZKiw@mail.gmail.com>
-Subject: Re: [RFC][PATCH] overlayfs: Redirect xattr ops on security.evm to security.evm_overlayfs
-To:     Roberto Sassu <roberto.sassu@huaweicloud.com>
-Cc:     Mimi Zohar <zohar@linux.ibm.com>,
-        Christian Brauner <brauner@kernel.org>,
-        Seth Forshee <sforshee@kernel.org>, miklos@szeredi.hu,
-        linux-unionfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        paul@paul-moore.com, stefanb@linux.ibm.com, jlayton@kernel.org,
-        linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org,
-        Roberto Sassu <roberto.sassu@huawei.com>,
-        Eric Snowberg <eric.snowberg@oracle.com>
-Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:vpvI5oqNtjLr/ORfeHZV8Fno96ycQesm/UeTNY8EvTrg6FdbSRb
+ vPscjvrUVVu+tJ+uwhJpYedUrMahS5s5gZ9UAecWBDU/glenTWAMx+9Db/4q38QovgvwJl3
+ ITu3a4zGIV09a4UhODa6L1SmYovQXxRl6PojnMfo7Adk86BmWqVkZwkNEvhrjXleYeEGo+9
+ QQo21BmyrIg8aCQWRzvEg==
+UI-OutboundReport: notjunk:1;M01:P0:VQAWmS7UqfM=;WS1sChCUdFo0AQtAI5AB8Euurq3
+ /qNbOq5dSCG44zJegCdJiSMEpHFZv/ippX65uf13qCYkNhC1xph5mCS53c+8Q7khHJoS6kM/8
+ 9U8tMghYMj4yIovfM2eVR2wfpc/KqctnHJLBN2DMMAuIYbzeh2oY9Azd+16OqOJRYg8J2z4pT
+ gSem+3/lbH7tHjSfGoJ3WX7NIaqfIaw9kjFUORvhSaZLAE0zdviI7464/w1Ey/zPAzHbuwhKx
+ 9Ty2pk0Ggn5RArRokgAty9IusMm3/c8WCyvdElkdxrormkTbR1zfQJ5wpGiaCpUAVAiGM+GEb
+ OrdebS1iCw5nymX5C0TH+zV/uo+pndRq54J5jBai62BcgRjxAX4PFp9OiDAbc9UaKalYAuYb7
+ 8w9gJP7TbsbAfXM8RNfotCQGIQWUvPRKFe8vvurW3dztmoPHFqNg0b+qV18gB3Rbopad8bqBi
+ XJbm8INjssqwSUMtEgm24ctjj3X14uuBs68e37pFD9N/VOvqTNSFbTy0YwSpKV/oH1jdXnL1A
+ I82G5UYTGEhyeSOUWGTqbVG5o4Ie9me2MxImOQvC88+yq1RNvYHXbBo6n7IBx92lOHV0SjlAv
+ vf3y6Xa59+Aslbvw+yyLhBqL6DA1h7ynTZL4LA6hI5v2H0aRREJmKhtEKrCOcw/2khI/QoMVK
+ DV3yWOhjRjcdGXFuZva9FqFr3+ZLrC/1L0q+Gj/nL7iy9VoQI3j4hki6VK8h1q24X9+KRGGgo
+ QnyF+ueTWbkpgXDA5HrWwG+kvA0uI0wPrMlMSHJZYnKhq3kZj0fLFy4hPGg7FLp6Eth8S2IS2
+ lg4NBfV01MWdiDB3xbDIVDnQAEXcbrkoZDASiOejramVPvqFHbYbYnb7UjX0N1Yrj4nklOppW
+ 884OEImM6wRx3kKdxktnCXKGucqObAng7j4CrOny9cYdvGKr8U+w4oMVifYUlgNp9wlDxp6lN
+ uDrRzA==
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 14, 2023 at 3:43=E2=80=AFPM Roberto Sassu
-<roberto.sassu@huaweicloud.com> wrote:
->
-> On Tue, 2023-12-12 at 10:27 -0500, Mimi Zohar wrote:
-> > On Tue, 2023-12-12 at 14:13 +0100, Roberto Sassu wrote:
-> > > On 12.12.23 11:44, Amir Goldstein wrote:
-> > > > On Tue, Dec 12, 2023 at 12:25=E2=80=AFPM Roberto Sassu
-> > > > <roberto.sassu@huaweicloud.com> wrote:
-> > > > >
-> > > > > On 11.12.23 19:01, Christian Brauner wrote:
-> > > > > > > The second problem is that one security.evm is not enough. We=
- need two,
-> > > > > > > to store the two different HMACs. And we need both at the sam=
-e time,
-> > > > > > > since when overlayfs is mounted the lower/upper directories c=
-an be
-> > > > > > > still accessible.
-> > > > > >
-> > > > > > "Changes to the underlying filesystems while part of a mounted =
-overlay
-> > > > > > filesystem are not allowed. If the underlying filesystem is cha=
-nged, the
-> > > > > > behavior of the overlay is undefined, though it will not result=
- in a
-> > > > > > crash or deadlock."
-> > > > > >
-> > > > > > https://docs.kernel.org/filesystems/overlayfs.html#changes-to-u=
-nderlying-filesystems
-> > > > > >
-> > > > > > So I don't know why this would be a problem.
-> > > > >
-> > > > > + Eric Snowberg
-> > > > >
-> > > > > Ok, that would reduce the surface of attack. However, when lookin=
-g at:
-> > > > >
-> > > > >        ovl: Always reevaluate the file signature for IMA
-> > > > >
-> > > > >        Commit db1d1e8b9867 ("IMA: use vfs_getattr_nosec to get th=
-e
-> > > > > i_version")
-> > > > >        partially closed an IMA integrity issue when directly modi=
-fying a file
-> > > > >        on the lower filesystem.  If the overlay file is first ope=
-ned by a
-> > > > > user
-> > > > >        and later the lower backing file is modified by root, but =
-the extended
-> > > > >        attribute is NOT updated, the signature validation succeed=
-s with
-> > > > > the old
-> > > > >        original signature.
-> > > > >
-> > > > > Ok, so if the behavior of overlayfs is undefined if the lower bac=
-king
-> > > > > file is modified by root, do we need to reevaluate? Or instead wo=
-uld be
-> > > > > better to forbid the write from IMA (legitimate, I think, since t=
-he
-> > > > > behavior is documented)? I just saw that we have d_real_inode(), =
-we can
-> > > > > use it to determine if the write should be denied.
-> > > > >
-> > > >
-> > > > There may be several possible legitimate actions in this case, but =
-the
-> > > > overall concept IMO should be the same as I said about EVM -
-> > > > overlayfs does not need an IMA signature of its own, because it
-> > > > can use the IMA signature of the underlying file.
-> > > >
-> > > > Whether overlayfs reads a file from lower fs or upper fs, it does n=
-ot
-> > > > matter, the only thing that matters is that the underlying file con=
-tent
-> > > > is attested when needed.
-> > > >
-> > > > The only incident that requires special attention is copy-up.
-> > > > This is what the security hooks security_inode_copy_up() and
-> > > > security_inode_copy_up_xattr() are for.
-> > > >
-> > > > When a file starts in state "lower" and has security.ima,evm xattrs
-> > > > then before a user changes the file, it is copied up to upper fs
-> > > > and suppose that security.ima,evm xattrs are copied as is?
-> >
-> > For IMA copying up security.ima is fine.  Other than EVM portable
-> > signatures, security.evm contains filesystem specific metadata.
-> > Copying security.evm up only works if the metadata is the same on both
-> > filesystems.  Currently the i_generation and i_sb->s_uuid are
-> > different.
-> >
-> > > > When later the overlayfs file content is read from the upper copy
-> > > > the security.ima signature should be enough to attest that file con=
-tent
-> > > > was not tampered with between going from "lower" to "upper".
-> > > >
-> > > > security.evm may need to be fixed on copy up, but that should be
-> > > > easy to do with the security_inode_copy_up_xattr() hook. No?
-> >
-> > Writing security.evm requires the existing security.evm to be valid.
-> > After each security xattr in the protected list is modified,
-> > security.evm HMAC needs to be updated.  Perhaps calculating and writing
-> > security.evm could be triggered by security_inode_copy_up_xattr().
-> > Just copying a non-portable EVM signature wouldn't work, or for that
-> > matter copying an EVM HMAC with different filesystem metadata.
->
-> There is another problem, when delayed copy is used. The content comes
-> from one source, metadata from another.
->
-> I initially created test-file-lower on the lower directory
-> (overlayfs/data), before mounting overlayfs. After mount on
-> overlayfs/mnt:
->
-> # getfattr -m - -e hex -d overlayfs/mnt/test-file-lower
-> # file: overlayfs/mnt/test-file-lower
-> security.evm=3D0x02c86ec91a4c0cf024537fd24347b780b90973402e
-> security.ima=3D0x0404f2ca1bb6c7e907d06dafe4687e579fce76b37e4e93b7605022da=
-52e6ccc26fd2
-> security.selinux=3D0x73797374656d5f753a6f626a6563745f723a756e6c6162656c65=
-645f743a733000
->
-> # chcon -t unconfined_t overlayfs/mnt/test-file-lower
->
-> After this, IMA creates an empty file in the upper directory
-> (overlayfs/root/data), and writes security.ima at file close.
-> Unfortunately, this is what is presented from overlayfs, which is not
-> in sync with the content.
->
-> # getfattr -m - -e hex -d overlayfs/mnt/test-file-lower
-> # file: overlayfs/mnt/test-file-lower
-> security.evm=3D0x021d71e7df78c36745e3b651ce29cb9f47dc301248
-> security.ima=3D0x04048855508aade16ec573d21e6a485dfd0a7624085c1a14b5ecdd64=
-85de0c6839a4
-> security.selinux=3D0x73797374656d5f753a6f626a6563745f723a756e636f6e66696e=
-65645f743a733000
->
-> # sha256sum overlayfs/mnt/test-file-lower
-> f2ca1bb6c7e907d06dafe4687e579fce76b37e4e93b7605022da52e6ccc26fd2  overlay=
-fs/mnt/test-file-lower
->
-> # sha256sum overlayfs/root/data/test-file-lower
-> 8855508aade16ec573d21e6a485dfd0a7624085c1a14b5ecdd6485de0c6839a4  overlay=
-fs/root/data/test-file-lower (upperdir)
->
-> We would need to use the lower security.ima until the copy is made, but
-> at the same time we need to keep the upper valid (with all xattrs) so
-> that IMA can update the next time overlayfs requests that.
->
+This series contains a wild collection of improvements for the
+qca_spi driver. This is a follow-up series to the recent bugfixes.
 
-Yap.
+Stefan Wahren (12):
+  qca_spi: Improve SPI thread creation
+  qca_spi: Improve SPI IRQ handling
+  qca_spi: Avoid skb_copy_expand in TX path
+  qca_7k_common: Drop unnecessary function description
+  qca_7k_common: Drop unused len from qcafrm_handle
+  qca_spi: Add QCASPI prefix to ring defines
+  qca_spi: Introduce QCASPI_RX_MAX_FRAMES
+  qca_spi: Improve calculation of RX buffer size
+  qca_spi: Log expected signature in error case
+  qca_spi: Adjust log of SPI_REG_RDBUF_BYTE_AVA
+  qca_7k: Replace BSD boilerplate with SPDX
+  qca_7k: Replace old mail address
 
-As Seth wrote, overlayfs is a combination of upper and lower.
-The information that IMA needs should be accessible from either lower
-or upper, but sometimes we will need to make the right choice.
+ drivers/net/ethernet/qualcomm/qca_7k.c        | 17 +---
+ drivers/net/ethernet/qualcomm/qca_7k.h        | 16 +---
+ drivers/net/ethernet/qualcomm/qca_7k_common.c | 17 +---
+ drivers/net/ethernet/qualcomm/qca_7k_common.h | 29 +------
+ drivers/net/ethernet/qualcomm/qca_debug.c     | 21 +----
+ drivers/net/ethernet/qualcomm/qca_debug.h     | 15 +---
+ drivers/net/ethernet/qualcomm/qca_spi.c       | 86 +++++++++----------
+ drivers/net/ethernet/qualcomm/qca_spi.h       | 22 ++---
+ drivers/net/ethernet/qualcomm/qca_uart.c      | 17 +---
+ 9 files changed, 57 insertions(+), 183 deletions(-)
 
-The case of security.ima is similar to that of st_blocks -
-it is a data-related metadata, so it needs to be taken from the lowerdata i=
-node
-(not even the lower inode). See example of getting STATX_BLOCKS
-in ovl_getattr().
+=2D-
+2.34.1
 
-I would accept a patch that special cases security.ima in ovl_xattr_get()
-and gets it from ovl_i_path_lowerdata(), which would need to be
-factored out of ovl_path_lowerdata().
-
-I would also accept filtering out security.{ima,evm} from
-
-But I would only accept it if I know that IMA is not trying to write the
-security.ima xattr when closing an overlayfs file, only when closing the
-real underlying upper file.
-
-I would also expect IMA to filter out security.{ima,evm} xattrs in
-security_inode_copy_up_xattr() (i.e. return 1).
-and most importantly, a documentation of the model of IMA/EVM
-and overlayfs.
-
-Thanks,
-Amir.
