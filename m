@@ -2,120 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A56B3813A10
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 19:36:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 31DF1813A13
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 19:37:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230391AbjLNSgo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 13:36:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59320 "EHLO
+        id S235737AbjLNShT convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 14 Dec 2023 13:37:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59990 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229532AbjLNSgm (ORCPT
+        with ESMTP id S229519AbjLNShS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 13:36:42 -0500
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1578115
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 10:36:48 -0800 (PST)
-Received: by mail-lf1-x133.google.com with SMTP id 2adb3069b0e04-50bf2d9b3fdso11469856e87.3
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 10:36:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1702579007; x=1703183807; darn=vger.kernel.org;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=E2agBAQIISiGm5BjQKQDZLX7+yyTNUH3OxJ2AW1m180=;
-        b=YdVCRKG899iNweKUAeh3gBh7CoD2htMTRTawc6xAaDRYh1ZI6H4s9zvHdThihTpcSb
-         CwgUF1/DAVgd8lgNazxq1fa6C8iNQI95X6cyZkSm5cKxuZALTNraqQtgma2nXPPqr1U6
-         GYr1vYB9Xz03IvaQjlZdV8x/IYFVH/wtmLD3NRTFTBfRqkzsLputmcjbGkzf8POaCESx
-         3nLk6x+g53/rFbtBY781C+tpNPCilkzyO3reXLfyL5aCyJS16xniQ78ITApjDuxWhAIS
-         WYgGQxQQuVe4/uYgiUGB267wQ3uGKDeLBpdxA0AKbAxeqtBcyAWzGd0KU39ix+qok6ko
-         CDKg==
+        Thu, 14 Dec 2023 13:37:18 -0500
+Received: from mail-ot1-f48.google.com (mail-ot1-f48.google.com [209.85.210.48])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E272410E;
+        Thu, 14 Dec 2023 10:37:22 -0800 (PST)
+Received: by mail-ot1-f48.google.com with SMTP id 46e09a7af769-6d9db92bd71so1362896a34.1;
+        Thu, 14 Dec 2023 10:37:22 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702579007; x=1703183807;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=E2agBAQIISiGm5BjQKQDZLX7+yyTNUH3OxJ2AW1m180=;
-        b=Jcf4HHkLd9h/Dd/vQUrxZldhO1VjSrhmS7NF0ca3CeLJNLSZeVPMjaip85c0yWUNNZ
-         uGYyMyPqsj1WIL7FrGuJ989kwdBP+1fQDB01NQfNb5ExMBdEk7MUf5sR1XMOjTjQoCLU
-         JlMYJW/Bhlpxle1HWeqBWPRIBgxME2pnZbjSun9t1OoETT6NP1N0AYqCTQkl4UfvcXH8
-         g8YM29dK4rrag2Cm2rnUQhwKdhjvz4NiE6UC0VjF+qICjNpdLcitDT53qIkfa8oekdWI
-         S5Tl++2oCb4Oyb9XLTjUW8LgkmTuONDTmQdkBg2CvavXQjXpL2uZutLhTrDDYRbG833D
-         ow9w==
-X-Gm-Message-State: AOJu0Yy3JshF62q+kDOHiwsKbySSeN21KjlYLwQQ296e3m8baePKYeT3
-        ZAsR2ublyGfN99hzO8c4HD7s8A==
-X-Google-Smtp-Source: AGHT+IGQMIUz/OELOVckBLP40+nDk50xRpbqd8QsbgXNin9cwtwb49ZEcf8JzeGg38O4QPZGSyTpiw==
-X-Received: by 2002:a05:6512:4db:b0:50b:ed58:584c with SMTP id w27-20020a05651204db00b0050bed58584cmr4541681lfq.124.1702579007106;
-        Thu, 14 Dec 2023 10:36:47 -0800 (PST)
-Received: from [127.0.1.1] (UNUSED.212-182-62-129.lubman.net.pl. [212.182.62.129])
-        by smtp.gmail.com with ESMTPSA id k11-20020ac24f0b000000b0050ab2d4d7cbsm1943828lfr.19.2023.12.14.10.36.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Dec 2023 10:36:46 -0800 (PST)
-From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-Date:   Thu, 14 Dec 2023 19:36:41 +0100
-Subject: [PATCH] interconnect: qcom: sm6115: Fix up includes
+        d=1e100.net; s=20230601; t=1702579042; x=1703183842;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=VqDz+iAKQeDij2eq7OD06mj+eeeCJzCcbsR1GzAidN0=;
+        b=XPa67Fu8rCw9+gYXEnw46OvwrzQGu2ZUqMJvgc6Wb/9g8bImHk47f48+MC57wXWGZN
+         5za+OI1931IkcQZjRvhSe0YVXx8bCjIq24aI5uUyuh4hmWHDhPkV8WjdqGrerPI0TEbK
+         Kusub0AQ26qOLEHzeb/ERkZBnB7RjVrZMZqFCTP5LXjvn+yMpJoTiGr+np/Q2HOP3aWZ
+         G48w+kW+acRpW45nHmQC2Lrg5fayElUNHHNK0v/RBfPRoq/RNX9QKr//U6tITHmOaOZf
+         LN1OkqcBUjOOL7eXeNAt/LumEVWso5Vu1wByD43cZYhKP6bw43XD0qgNUN3up1dm/mZ1
+         Smjg==
+X-Gm-Message-State: AOJu0Yw/qDxVDglLonMlcfzGNwjZ1UgzLI464Ws5JAXdfcM8K/8QiG89
+        L+xwhDTHSZ/i5cwX6QylYpRKel4a+n4cQg5BXr0=
+X-Google-Smtp-Source: AGHT+IH8dSvedIux9d+NZsh4BTm5s5Qcmw1364ii+UUrmzx3iZ4v2EO7x7vwseaBvGWSY8WP8bGNCshWcK/LSOMs+p0=
+X-Received: by 2002:a05:6871:2284:b0:1fb:648:5207 with SMTP id
+ sd4-20020a056871228400b001fb06485207mr19135855oab.2.1702579042101; Thu, 14
+ Dec 2023 10:37:22 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20231214-topic-6115iccfix-v1-1-9ad999683a7d@linaro.org>
-X-B4-Tracking: v=1; b=H4sIADhLe2UC/x2MQQqAMAzAviI9W7BzCvMr4kFr1V5UNhFh+HeLx
- wSSDEmiSoKuyBDl1qTHbkBlAbyN+yqoszG4ytXkyON1nMrYEjXKvOiD7eIbCqEKkxBYdkYx/S/
- 74X0/kqmUOmIAAAA=
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Georgi Djakov <djakov@kernel.org>
-Cc:     linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>
-X-Mailer: b4 0.13-dev-0438c
-X-Spam-Status: No, score=1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Level: *
+References: <ZXmn46ptis59F0CO@shell.armlinux.org.uk> <E1rDOfs-00DvjY-HQ@rmk-PC.armlinux.org.uk>
+ <20231214173241.0000260f@Huawei.com> <CAJZ5v0jymOtZ0y65K9wE8FJk+ZKwP+FoGm4AKHXcYVfQJL9MVw@mail.gmail.com>
+ <ZXtFBYJEX2RrFrwj@shell.armlinux.org.uk> <CAJZ5v0h2Keyb-gFWFuPsKtwqjXvM2snyGpo6MMfFzaXKbfEpgw@mail.gmail.com>
+In-Reply-To: <CAJZ5v0h2Keyb-gFWFuPsKtwqjXvM2snyGpo6MMfFzaXKbfEpgw@mail.gmail.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Thu, 14 Dec 2023 19:37:10 +0100
+Message-ID: <CAJZ5v0h3WWtvrbxRpaGfq6c756k+L1SzZ1Gv3A14JxXHNcUMKA@mail.gmail.com>
+Subject: Re: [PATCH RFC v3 01/21] ACPI: Only enumerate enabled (or functional) devices
+To:     "Russell King (Oracle)" <linux@armlinux.org.uk>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        linux-pm@vger.kernel.org, loongarch@lists.linux.dev,
+        linux-acpi@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-riscv@lists.infradead.org, kvmarm@lists.linux.dev,
+        x86@kernel.org, acpica-devel@lists.linuxfoundation.org,
+        linux-csky@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-ia64@vger.kernel.org, linux-parisc@vger.kernel.org,
+        Salil Mehta <salil.mehta@huawei.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        jianyong.wu@arm.com, justin.he@arm.com,
+        James Morse <james.morse@arm.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove some unnecessary includes and get rid of the abusive of_platform
-in favor of the correct headers.
+On Thu, Dec 14, 2023 at 7:16 PM Rafael J. Wysocki <rafael@kernel.org> wrote:
+>
+> On Thu, Dec 14, 2023 at 7:10 PM Russell King (Oracle)
+> <linux@armlinux.org.uk> wrote:
+> >
+> > On Thu, Dec 14, 2023 at 06:47:00PM +0100, Rafael J. Wysocki wrote:
+> > > On Thu, Dec 14, 2023 at 6:32 PM Jonathan Cameron
+> > > <Jonathan.Cameron@huawei.com> wrote:
+> > > >
+> > > > On Wed, 13 Dec 2023 12:49:16 +0000
+> > > > Russell King (Oracle) <rmk+kernel@armlinux.org.uk> wrote:
+> > > >
+> > > > > From: James Morse <james.morse@arm.com>
+> > > > >
+> > > > > Today the ACPI enumeration code 'visits' all devices that are present.
+> > > > >
+> > > > > This is a problem for arm64, where CPUs are always present, but not
+> > > > > always enabled. When a device-check occurs because the firmware-policy
+> > > > > has changed and a CPU is now enabled, the following error occurs:
+> > > > > | acpi ACPI0007:48: Enumeration failure
+> > > > >
+> > > > > This is ultimately because acpi_dev_ready_for_enumeration() returns
+> > > > > true for a device that is not enabled. The ACPI Processor driver
+> > > > > will not register such CPUs as they are not 'decoding their resources'.
+> > > > >
+> > > > > Change acpi_dev_ready_for_enumeration() to also check the enabled bit.
+> > > > > ACPI allows a device to be functional instead of maintaining the
+> > > > > present and enabled bit. Make this behaviour an explicit check with
+> > > > > a reference to the spec, and then check the present and enabled bits.
+> > > > > This is needed to avoid enumerating present && functional devices that
+> > > > > are not enabled.
+> > > > >
+> > > > > Signed-off-by: James Morse <james.morse@arm.com>
+> > > > > Tested-by: Miguel Luis <miguel.luis@oracle.com>
+> > > > > Tested-by: Vishnu Pajjuri <vishnu@os.amperecomputing.com>
+> > > > > Tested-by: Jianyong Wu <jianyong.wu@arm.com>
+> > > > > Signed-off-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
+> > > > > ---
+> > > > > If this change causes problems on deployed hardware, I suggest an
+> > > > > arch opt-in: ACPI_IGNORE_STA_ENABLED, that causes
+> > > > > acpi_dev_ready_for_enumeration() to only check the present bit.
+> > > >
+> > > > My gut feeling (having made ACPI 'fixes' in the past that ran into
+> > > > horribly broken firmware and had to be reverted) is reduce the blast
+> > > > radius preemptively from the start. I'd love to live in a world were
+> > > > that wasn't necessary but I don't trust all the generators of ACPI tables.
+> > > > I'll leave it to Rafael and other ACPI experts suggest how narrow we should
+> > > > make it though - arch opt in might be narrow enough.
+> > >
+> > > A chicken bit wouldn't help much IMO, especially in the cases when
+> > > working setups get broken.
+> > >
+> > > I would very much prefer to limit the scope of it, say to processors
+> > > only, in the first place.
+> >
+> > Thanks for the feedback and the idea.
+> >
+> > I guess we need something like:
+> >
+> >         if (device->status.present)
+> >                 return device->device_type != ACPI_BUS_TYPE_PROCESSOR ||
+> >                        device->status.enabled;
+> >         else
+> >                 return device->status.functional;
+> >
+> > so we only check device->status.enabled for processor-type devices?
+>
+> Yes, something like this.
 
-Reported-by: Rob Herring <robh+dt@kernel.org>
-Reported-by: Georgi Djakov <djakov@kernel.org>
-Fixes: 2eab57b131bd ("interconnect: qcom: Add SM6115 interconnect provider driver")
-Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
----
- drivers/interconnect/qcom/sm6115.c | 6 +-----
- 1 file changed, 1 insertion(+), 5 deletions(-)
+However, that is not sufficient, because there are
+ACPI_BUS_TYPE_DEVICE devices representing processors.
 
-diff --git a/drivers/interconnect/qcom/sm6115.c b/drivers/interconnect/qcom/sm6115.c
-index c49a83c87739..88b67634aa2f 100644
---- a/drivers/interconnect/qcom/sm6115.c
-+++ b/drivers/interconnect/qcom/sm6115.c
-@@ -6,16 +6,12 @@
-  */
- 
- #include <dt-bindings/interconnect/qcom,sm6115.h>
--#include <linux/clk.h>
- #include <linux/device.h>
- #include <linux/interconnect-provider.h>
--#include <linux/io.h>
-+#include <linux/mod_devicetable.h>
- #include <linux/module.h>
--#include <linux/of_device.h>
--#include <linux/of_platform.h>
- #include <linux/platform_device.h>
- #include <linux/regmap.h>
--#include <linux/slab.h>
- 
- #include "icc-rpm.h"
- 
-
----
-base-commit: 11651f8cb2e88372d4ed523d909514dc9a613ea3
-change-id: 20231214-topic-6115iccfix-6f4519909be1
-
-Best regards,
--- 
-Konrad Dybcio <konrad.dybcio@linaro.org>
-
+I'm not sure about a clean way to do it ATM.
