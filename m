@@ -2,102 +2,286 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BB538124A8
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 02:42:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3912D8124AA
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 02:44:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234161AbjLNBmO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 20:42:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39094 "EHLO
+        id S234166AbjLNBo3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 20:44:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53846 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229525AbjLNBmM (ORCPT
+        with ESMTP id S229525AbjLNBo2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 20:42:12 -0500
-Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34F85D5
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 17:42:19 -0800 (PST)
-Received: by mail-ej1-x632.google.com with SMTP id a640c23a62f3a-a22f2a28c16so256913266b.0
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 17:42:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1702518137; x=1703122937; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=05lmLmoBqLq27Cy6T0/P3Yy3HS1yBKgzOro5cdtp2xg=;
-        b=BSX9bY3MNfBF1QmDA1zTI0RXufBMUZJ31/xwh9PGWv7ubLIdSBmZflsFtKR8X79Q+/
-         53eTAxAni5AwMA//zVC4wq3b6tqfRPkizSCVHKgDGYKd6PeUtw/9lS366cn1mBZgp3Dl
-         TETvudezp+jNrd3WYMdgQUwiLPo/dsc4ixrbY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702518137; x=1703122937;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=05lmLmoBqLq27Cy6T0/P3Yy3HS1yBKgzOro5cdtp2xg=;
-        b=na7YzrSwpvbcx4nyxTJPFMmZwf8ohPrSOm2PEl5qEJN6h2ftze7AAvpj9CVORweUOs
-         wEHyU4u2O9Vmq1JJ/uuTdmLWRswtvpFnfxAkuD0tQEWXtIB4i8hPdUEtXO0xwSkpfElR
-         pyw97zGLRwDv/mNlZSA1Ip0gLFBKWJykPaOrwwnRj/kBz3bYi2aCU/aQjd4eF9P8i9TT
-         PHSpPaIeLFV1/ewRbsUBZqVIcLOCgiYTpeNdwd+6Ud8sCxgComxTX2Oh3Zz6cq+eQguQ
-         fXzkevrAyD7x+h3Yok2lW7QY2hp2Oo7iBskms4SYBKH3ZlvRvJh5rJ8ie63gL6dQgU+J
-         M2uw==
-X-Gm-Message-State: AOJu0Yw4N9mPCE+EpmziEFUpl7uOOsebROKTrx5vo2kTyu2yDcATXKq5
-        SUgiME0O8OygOHBYpRcJ2UfNfEpS3Um4UhfVbFzmyKBi
-X-Google-Smtp-Source: AGHT+IGK1vDn8yXqPZVv1GdQ0cKs3WKPVDsfU/fNRb2oJhUI4Ok031e+K1pExjxmnW31ICap2WnuEQ==
-X-Received: by 2002:a17:907:94d6:b0:a1c:5257:bfaa with SMTP id dn22-20020a17090794d600b00a1c5257bfaamr4219684ejc.50.1702518137508;
-        Wed, 13 Dec 2023 17:42:17 -0800 (PST)
-Received: from mail-ed1-f53.google.com (mail-ed1-f53.google.com. [209.85.208.53])
-        by smtp.gmail.com with ESMTPSA id sk13-20020a170906630d00b00a1e814b7155sm8624327ejc.62.2023.12.13.17.42.16
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 13 Dec 2023 17:42:16 -0800 (PST)
-Received: by mail-ed1-f53.google.com with SMTP id 4fb4d7f45d1cf-54c70c70952so10333816a12.3
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 17:42:16 -0800 (PST)
-X-Received: by 2002:a50:8e12:0:b0:54c:5419:c16c with SMTP id
- 18-20020a508e12000000b0054c5419c16cmr3661945edw.70.1702518135947; Wed, 13 Dec
- 2023 17:42:15 -0800 (PST)
+        Wed, 13 Dec 2023 20:44:28 -0500
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 3E8F2D5;
+        Wed, 13 Dec 2023 17:44:32 -0800 (PST)
+Received: from loongson.cn (unknown [111.207.111.194])
+        by gateway (Coremail) with SMTP id _____8DxBOv+XXplTOIAAA--.1118S3;
+        Thu, 14 Dec 2023 09:44:30 +0800 (CST)
+Received: from [10.180.13.176] (unknown [111.207.111.194])
+        by localhost.localdomain (Coremail) with SMTP id AQAAf8CxnuH7XXpl1msDAA--.20304S3;
+        Thu, 14 Dec 2023 09:44:27 +0800 (CST)
+Subject: Re: [PATCH v3] PM: hibernate: use acquire/release ordering when
+ compress/decompress image
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     Len Brown <len.brown@intel.com>, Pavel Machek <pavel@ucw.cz>,
+        Bojan Smojver <bojan@rexursive.com>, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, loongson-kernel@lists.loongnix.cn,
+        stable@vger.kernel.org, Weihao Li <liweihao@loongson.cn>
+References: <20231213011103.1491414-1-zhanghongchen@loongson.cn>
+ <CAJZ5v0iTfpo9EH3bCAwJ+E8W67uJyy_9wFBOucJVWmmGV_-XpA@mail.gmail.com>
+From:   Hongchen Zhang <zhanghongchen@loongson.cn>
+Message-ID: <d85e4c86-6dd0-4d5d-730b-91217d38ecaa@loongson.cn>
+Date:   Thu, 14 Dec 2023 09:44:27 +0800
+User-Agent: Mozilla/5.0 (X11; Linux loongarch64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-References: <20231014-get-maintainers-utf8-v1-1-3af8c7aeb239@bang-olufsen.dk>
- <5719647.DvuYhMxLoT@radijator> <fdb7c6312ea52086566e279918b5b873c687fecd.camel@perches.com>
- <dzn6uco4c45oaa3ia4u37uo5mlt33obecv7gghj2l756fr4hdh@mt3cprft3tmq> <b3th52nczdpeokggs2ogdnxq36m3jfhrw72ogjhlvnn53ocxy2@s6uhcbdgaowg>
-In-Reply-To: <b3th52nczdpeokggs2ogdnxq36m3jfhrw72ogjhlvnn53ocxy2@s6uhcbdgaowg>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Wed, 13 Dec 2023 17:41:59 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wjZnfj2=yxokkCcpVdchY-NKwDO_Sh99Rtz7cWqb9OP3w@mail.gmail.com>
-Message-ID: <CAHk-=wjZnfj2=yxokkCcpVdchY-NKwDO_Sh99Rtz7cWqb9OP3w@mail.gmail.com>
-Subject: Re: [PATCH] get_maintainer: correctly parse UTF-8 encoded names in files
-To:     =?UTF-8?Q?Alvin_=C5=A0ipraga?= <ALSI@bang-olufsen.dk>
-Cc:     Joe Perches <joe@perches.com>,
-        =?UTF-8?Q?Duje_Mihanovi=C4=87?= <duje.mihanovic@skole.hr>,
-        =?UTF-8?Q?Alvin_=C5=A0ipraga?= <alvin@pqrs.dk>,
-        Konstantin Ryabitsev <konstantin@linuxfoundation.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+In-Reply-To: <CAJZ5v0iTfpo9EH3bCAwJ+E8W67uJyy_9wFBOucJVWmmGV_-XpA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: AQAAf8CxnuH7XXpl1msDAA--.20304S3
+X-CM-SenderInfo: x2kd0w5krqwupkhqwqxorr0wxvrqhubq/1tbiAQAEB2V3wy0KXABNsl
+X-Coremail-Antispam: 1Uk129KBj93XoW3Ar15Ar47KrWrtFyUCF4ftFc_yoWxuFW3pF
+        Z5Xan0kF4UJF45AwsFva10vw15Aw1FyFZrGrs3Ja4fu3sIgrs5ta40gF9Yvr1YyFyxKa40
+        9a1Ut3sIgryqvFXCm3ZEXasCq-sJn29KB7ZKAUJUUUU7529EdanIXcx71UUUUU7KY7ZEXa
+        sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
+        0xBIdaVrnRJUUUBjb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
+        IYs7xG6rWj6s0DM7CIcVAFz4kK6r1Y6r17M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
+        e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_JFI_Gr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
+        0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_
+        Gr0_Gr1UM2kKe7AKxVWUXVWUAwAS0I0E0xvYzxvE52x082IY62kv0487Mc804VCY07AIYI
+        kI8VC2zVCFFI0UMc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUAVWU
+        twAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcVAKI48JMx
+        k0xIA0c2IEe2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_
+        Gr1l4IxYO2xFxVAFwI0_Jrv_JF1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67
+        AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8I
+        cVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI
+        8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v2
+        6r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x07j5xhLUUUUU=
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,NICE_REPLY_A,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 13 Dec 2023 at 17:06, Alvin =C5=A0ipraga <ALSI@bang-olufsen.dk> wro=
-te:
->
-> Sorry to be a nuisance, but could you please have another look below and
-> reconsider this patch? Otherwise NAK is fine, but I wanted to follow up
-> on this as it solves an actual, albeit minor, issue for people with
-> unusual names when sending and receiving patches.
+Hi Rafael,
+   Thanks for your review.
+On 2023/12/13 pm 9:52, Rafael J. Wysocki wrote:
+> On Wed, Dec 13, 2023 at 2:11 AM Hongchen Zhang
+> <zhanghongchen@loongson.cn> wrote:
+>>
+>> When we test S4(suspend to disk) on LoongArch 3A6000 platform, the
+>> test case sometimes fails. The dmesg log shows the following error:
+>>          Invalid LZO compressed length
+>> After we dig into the code, we find out that:
+>> When compress/decompress the image, the synchronization operation
+>> between the control thread and the compress/decompress/crc thread
+>> uses relaxed ordering interface, which is unreliable, and the
+>> following situation may occur:
+>> CPU 0                                   CPU 1
+>> save_image_lzo                          lzo_compress_threadfn
+>>                                            atomic_set(&d->stop, 1);
+>>    atomic_read(&data[thr].stop)
+>>    data[thr].cmp = data[thr].cmp_len;
+>>                                            WRITE data[thr].cmp_len
+>> Then CPU0 get a old cmp_len and write to disk. When cpu resume from S4,
+>> wrong cmp_len is loaded.
+>>
+>> To maintain data consistency between two threads, we should use the
+>> acquire/release ordering interface. So we change atomic_read/atomic_set
+>> to atomic_read_acquire/atomic_set_release.
+>>
+>> Fixes: 081a9d043c98 ("PM / Hibernate: Improve performance of LZO/plain hibernation, checksum image")
+>> Cc: stable@vger.kernel.org
+>> Co-developed-by: Weihao Li <liweihao@loongson.cn>
+> 
+> I gather that the tag above is the only difference between this
+> version of the patch and the previous one.
+> 
+Yes.
+> It is always better to list the changes made between consecutive
+> versions of a patch.
+Sorry for not updating the changelog, I will remember this next time.
+> 
+>> Signed-off-by: Weihao Li <liweihao@loongson.cn>
+>> Signed-off-by: Hongchen Zhang <zhanghongchen@loongson.cn>
+>> ---
+>>   kernel/power/swap.c | 38 +++++++++++++++++++-------------------
+>>   1 file changed, 19 insertions(+), 19 deletions(-)
+>>
+>> diff --git a/kernel/power/swap.c b/kernel/power/swap.c
+>> index a2cb0babb5ec..d44f5937f1e5 100644
+>> --- a/kernel/power/swap.c
+>> +++ b/kernel/power/swap.c
+>> @@ -606,11 +606,11 @@ static int crc32_threadfn(void *data)
+>>          unsigned i;
+>>
+>>          while (1) {
+>> -               wait_event(d->go, atomic_read(&d->ready) ||
+>> +               wait_event(d->go, atomic_read_acquire(&d->ready) ||
+>>                                    kthread_should_stop());
+>>                  if (kthread_should_stop()) {
+>>                          d->thr = NULL;
+>> -                       atomic_set(&d->stop, 1);
+>> +                       atomic_set_release(&d->stop, 1);
+>>                          wake_up(&d->done);
+>>                          break;
+>>                  }
+>> @@ -619,7 +619,7 @@ static int crc32_threadfn(void *data)
+>>                  for (i = 0; i < d->run_threads; i++)
+>>                          *d->crc32 = crc32_le(*d->crc32,
+>>                                               d->unc[i], *d->unc_len[i]);
+>> -               atomic_set(&d->stop, 1);
+>> +               atomic_set_release(&d->stop, 1);
+>>                  wake_up(&d->done);
+>>          }
+>>          return 0;
+>> @@ -649,12 +649,12 @@ static int lzo_compress_threadfn(void *data)
+>>          struct cmp_data *d = data;
+>>
+>>          while (1) {
+>> -               wait_event(d->go, atomic_read(&d->ready) ||
+>> +               wait_event(d->go, atomic_read_acquire(&d->ready) ||
+>>                                    kthread_should_stop());
+>>                  if (kthread_should_stop()) {
+>>                          d->thr = NULL;
+>>                          d->ret = -1;
+>> -                       atomic_set(&d->stop, 1);
+>> +                       atomic_set_release(&d->stop, 1);
+>>                          wake_up(&d->done);
+>>                          break;
+>>                  }
+>> @@ -663,7 +663,7 @@ static int lzo_compress_threadfn(void *data)
+>>                  d->ret = lzo1x_1_compress(d->unc, d->unc_len,
+>>                                            d->cmp + LZO_HEADER, &d->cmp_len,
+>>                                            d->wrk);
+>> -               atomic_set(&d->stop, 1);
+>> +               atomic_set_release(&d->stop, 1);
+>>                  wake_up(&d->done);
+>>          }
+>>          return 0;
+>> @@ -798,7 +798,7 @@ static int save_image_lzo(struct swap_map_handle *handle,
+>>
+>>                          data[thr].unc_len = off;
+>>
+>> -                       atomic_set(&data[thr].ready, 1);
+>> +                       atomic_set_release(&data[thr].ready, 1);
+>>                          wake_up(&data[thr].go);
+>>                  }
+>>
+>> @@ -806,12 +806,12 @@ static int save_image_lzo(struct swap_map_handle *handle,
+>>                          break;
+>>
+>>                  crc->run_threads = thr;
+>> -               atomic_set(&crc->ready, 1);
+>> +               atomic_set_release(&crc->ready, 1);
+>>                  wake_up(&crc->go);
+>>
+>>                  for (run_threads = thr, thr = 0; thr < run_threads; thr++) {
+>>                          wait_event(data[thr].done,
+>> -                                  atomic_read(&data[thr].stop));
+>> +                               atomic_read_acquire(&data[thr].stop));
+>>                          atomic_set(&data[thr].stop, 0);
+>>
+>>                          ret = data[thr].ret;
+>> @@ -850,7 +850,7 @@ static int save_image_lzo(struct swap_map_handle *handle,
+>>                          }
+>>                  }
+>>
+>> -               wait_event(crc->done, atomic_read(&crc->stop));
+>> +               wait_event(crc->done, atomic_read_acquire(&crc->stop));
+>>                  atomic_set(&crc->stop, 0);
+>>          }
+>>
+>> @@ -1132,12 +1132,12 @@ static int lzo_decompress_threadfn(void *data)
+>>          struct dec_data *d = data;
+>>
+>>          while (1) {
+>> -               wait_event(d->go, atomic_read(&d->ready) ||
+>> +               wait_event(d->go, atomic_read_acquire(&d->ready) ||
+>>                                    kthread_should_stop());
+>>                  if (kthread_should_stop()) {
+>>                          d->thr = NULL;
+>>                          d->ret = -1;
+>> -                       atomic_set(&d->stop, 1);
+>> +                       atomic_set_release(&d->stop, 1);
+>>                          wake_up(&d->done);
+>>                          break;
+>>                  }
+>> @@ -1150,7 +1150,7 @@ static int lzo_decompress_threadfn(void *data)
+>>                          flush_icache_range((unsigned long)d->unc,
+>>                                             (unsigned long)d->unc + d->unc_len);
+>>
+>> -               atomic_set(&d->stop, 1);
+>> +               atomic_set_release(&d->stop, 1);
+>>                  wake_up(&d->done);
+>>          }
+>>          return 0;
+>> @@ -1335,7 +1335,7 @@ static int load_image_lzo(struct swap_map_handle *handle,
+>>                  }
+>>
+>>                  if (crc->run_threads) {
+>> -                       wait_event(crc->done, atomic_read(&crc->stop));
+>> +                       wait_event(crc->done, atomic_read_acquire(&crc->stop));
+>>                          atomic_set(&crc->stop, 0);
+>>                          crc->run_threads = 0;
+>>                  }
+>> @@ -1371,7 +1371,7 @@ static int load_image_lzo(struct swap_map_handle *handle,
+>>                                          pg = 0;
+>>                          }
+>>
+>> -                       atomic_set(&data[thr].ready, 1);
+>> +                       atomic_set_release(&data[thr].ready, 1);
+>>                          wake_up(&data[thr].go);
+>>                  }
+>>
+>> @@ -1390,7 +1390,7 @@ static int load_image_lzo(struct swap_map_handle *handle,
+>>
+>>                  for (run_threads = thr, thr = 0; thr < run_threads; thr++) {
+>>                          wait_event(data[thr].done,
+>> -                                  atomic_read(&data[thr].stop));
+>> +                               atomic_read_acquire(&data[thr].stop));
+>>                          atomic_set(&data[thr].stop, 0);
+>>
+>>                          ret = data[thr].ret;
+>> @@ -1421,7 +1421,7 @@ static int load_image_lzo(struct swap_map_handle *handle,
+>>                                  ret = snapshot_write_next(snapshot);
+>>                                  if (ret <= 0) {
+>>                                          crc->run_threads = thr + 1;
+>> -                                       atomic_set(&crc->ready, 1);
+>> +                                       atomic_set_release(&crc->ready, 1);
+>>                                          wake_up(&crc->go);
+>>                                          goto out_finish;
+>>                                  }
+>> @@ -1429,13 +1429,13 @@ static int load_image_lzo(struct swap_map_handle *handle,
+>>                  }
+>>
+>>                  crc->run_threads = thr;
+>> -               atomic_set(&crc->ready, 1);
+>> +               atomic_set_release(&crc->ready, 1);
+>>                  wake_up(&crc->go);
+>>          }
+>>
+>>   out_finish:
+>>          if (crc->run_threads) {
+>> -               wait_event(crc->done, atomic_read(&crc->stop));
+>> +               wait_event(crc->done, atomic_read_acquire(&crc->stop));
+>>                  atomic_set(&crc->stop, 0);
+>>          }
+>>          stop = ktime_get();
+>> --
+> 
+> Applied as 6.8 material with some edits in the subject and changelog.
+> 
+> Thanks!
+> 
 
-The patch seems bogus, because it shouldn't have any "Latin" encoding
-issues at all.
 
-Opening as utf8 makes sense, but the "Latin" part of the regular
-expressions seem bogus.
+-- 
+Best Regards
+Hongchen Zhang
 
-IOW, isn't '\p{L}' the right pattern for a "letter"? Isn't that what
-we actually care about here?
-
-Replacing one locale bug with just another locale bug seems pointless.
-
-           Linus
