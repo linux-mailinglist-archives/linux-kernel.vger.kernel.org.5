@@ -2,56 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C09D08126AC
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 05:47:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EEBC88126B3
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 05:57:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1443111AbjLNEpV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 23:45:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55896 "EHLO
+        id S234258AbjLNE44 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 23:56:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33266 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230034AbjLNEpT (ORCPT
+        with ESMTP id S229884AbjLNE4y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 23:45:19 -0500
-Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C773DB9;
-        Wed, 13 Dec 2023 20:45:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
-        s=201909; t=1702529123;
-        bh=t7B9if0LOImFnd/AnccoK9V4d+WmshLVNwjLPY+Ohl0=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=PHvb5rAyITybLJhslCdr+FPB6weuYhVdwGVqwI6pjC0ArKwZkSJyMqDVTRdcLTEp8
-         CMM1zL432KtNyUzA4mhWgDTmzmIB20cDIEs1vpR4XVIlFKEuLTFGJUgQi2gSEUC13j
-         mfFynirXmkKm9bE2EICqv9unlGx62DyfXiv5i2BtZBd3f6O85asjT6i+pBGfgfPjyp
-         tkCdZSOpErcp/BMZpdsjN71xdXgGO4HsDEkHk/a+gxWH2FD87Y65cYU3IpDwO2jYA7
-         PzUo9wW0hAbsQZZzGnqcxC0mqh1VvcVv56nNl78AXywD3K6/8BH+V8bphra6maMQo3
-         RX1/dzF6mo1TA==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4SrKXf0VB5z4wcH;
-        Thu, 14 Dec 2023 15:45:21 +1100 (AEDT)
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Samuel Holland <samuel.holland@sifive.com>
-Cc:     linux-kernel@vger.kernel.org, amd-gfx@lists.freedesktop.org,
-        linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        loongarch@lists.linux.dev, linuxppc-dev@lists.ozlabs.org,
-        x86@kernel.org, linux-riscv@lists.infradead.org,
-        Christoph Hellwig <hch@infradead.org>,
-        Timothy Pearson <tpearson@raptorengineering.com>
-Subject: Re: [RFC PATCH 10/12] drm/amd/display: Use ARCH_HAS_KERNEL_FPU_SUPPORT
-In-Reply-To: <7ed20fcf-8a9d-40d5-b913-b5d2da443cd6@sifive.com>
-References: <20231208055501.2916202-1-samuel.holland@sifive.com>
- <20231208055501.2916202-11-samuel.holland@sifive.com>
- <87h6kpdj20.fsf@mail.lhotse>
- <7ed20fcf-8a9d-40d5-b913-b5d2da443cd6@sifive.com>
-Date:   Thu, 14 Dec 2023 15:45:21 +1100
-Message-ID: <87bkatxuhq.fsf@mail.lhotse>
+        Wed, 13 Dec 2023 23:56:54 -0500
+Received: from mail-il1-x132.google.com (mail-il1-x132.google.com [IPv6:2607:f8b0:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0977F5
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 20:57:00 -0800 (PST)
+Received: by mail-il1-x132.google.com with SMTP id e9e14a558f8ab-35f56f06142so20914095ab.1
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 20:57:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1702529820; x=1703134620; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=UmyYjKOw9pwdZPYGxJ9gRt+5SLkPidLRqb9vGm21xYc=;
+        b=Saz6U9DY44dJwVooHdYOebOiVpxYS02C0haevBWk6q5lNhLnnVbtEQsxFnJjFGKZrt
+         R+Mf/t17xVaW8i21LGDNVaweA+YQbPzRLs9rTyMlfsf3nEoH1glpdtx78PNgPlPbXqDK
+         ZFdiHbUugeBYUt9VMy6IRi2Mbri+bowLumifoUomTaDimAsTMZOt0TqWWuaL1xiaHvVh
+         95xcOpEBxPyBO12l1MyrnbV+OHRMlZRWPDFQDLnl9XbQCMM4Hn7EbdGdmLgy1IFktm44
+         yG4jaRPHWzO6ZQA8b3CSgJt2iaXljUpNDzuh+Ak9Y7n3meUJoVW2qKxm7cZiRl4VqyDB
+         uYEQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702529820; x=1703134620;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=UmyYjKOw9pwdZPYGxJ9gRt+5SLkPidLRqb9vGm21xYc=;
+        b=LTRfz5mXPMd//GryIe1nVQRvr5gD8XK9RD6JxvcYs87LFMzDsqONmOx/QgMYWXMv2v
+         5V65HSYrewpka6X5/RIwR+iyoGr06LS5WZJ7hF6WM3TBlheExZmzc7/uzsM7JyETVMlw
+         /28cuRHivoPp+zPJowiMuqOqI1UyV66gqhc966cA/dCjJ2TJcwE1R+SU2cpWsaz5C5Zm
+         Yr4lhZ3WrtQNE8C6LqL4lkGf7d4qmklN7LOYhBidUsYko8sZNaRjv7QApbjbjrgEMlN8
+         gyo67y6sJVNARzzbXs4ztF1OLhMrWPknBTqWELXdjlwOg1sCF3IQE7cxIXF2UDRUjKLV
+         Ntvw==
+X-Gm-Message-State: AOJu0YzpD34tg/nWtkp9SpEeXbbBwgykTH/eS8cXVavgb7RPGNte9JhP
+        n2jGL0ctd7o4hWhphXts7eas
+X-Google-Smtp-Source: AGHT+IHJlJAU7IvWFTEdkyv9GQpwB/Wnxb9blzstVRulRB1uQvE1DpDi/qtyrhyMHg9KO+AnxBlDvw==
+X-Received: by 2002:a05:6e02:156f:b0:35d:a285:14b4 with SMTP id k15-20020a056e02156f00b0035da28514b4mr14961159ilu.50.1702529819982;
+        Wed, 13 Dec 2023 20:56:59 -0800 (PST)
+Received: from thinkpad ([117.213.102.12])
+        by smtp.gmail.com with ESMTPSA id u1-20020a17090341c100b001d33c85ce1bsm3992546ple.2.2023.12.13.20.56.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Dec 2023 20:56:59 -0800 (PST)
+Date:   Thu, 14 Dec 2023 10:26:50 +0530
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     Andrew Halaney <ahalaney@redhat.com>
+Cc:     martin.petersen@oracle.com, jejb@linux.ibm.com,
+        andersson@kernel.org, konrad.dybcio@linaro.org,
+        linux-arm-msm@vger.kernel.org, linux-scsi@vger.kernel.org,
+        linux-kernel@vger.kernel.org, quic_cang@quicinc.com,
+        quic_nitirawa@quicinc.com
+Subject: Re: [PATCH v2 16/17] scsi: ufs: qcom: Use ufshcd_rmwl() where
+ applicable
+Message-ID: <20231214045650.GA2938@thinkpad>
+References: <20231208065902.11006-1-manivannan.sadhasivam@linaro.org>
+ <20231208065902.11006-17-manivannan.sadhasivam@linaro.org>
+ <wkykvnfc6qmrfy3j4h765gifm2scsrjmxs24nx2lkwakgt6jvv@k5lcdsubrb4o>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <wkykvnfc6qmrfy3j4h765gifm2scsrjmxs24nx2lkwakgt6jvv@k5lcdsubrb4o>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -59,171 +79,90 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Samuel Holland <samuel.holland@sifive.com> writes:
-> On 2023-12-11 6:23 AM, Michael Ellerman wrote:
->> Hi Samuel,
->> 
->> Thanks for trying to clean all this up.
->> 
->> One problem below.
->> 
->> Samuel Holland <samuel.holland@sifive.com> writes:
->>> Now that all previously-supported architectures select
->>> ARCH_HAS_KERNEL_FPU_SUPPORT, this code can depend on that symbol instead
->>> of the existing list of architectures. It can also take advantage of the
->>> common kernel-mode FPU API and method of adjusting CFLAGS.
->>>
->>> Signed-off-by: Samuel Holland <samuel.holland@sifive.com>
->> ...
->>> diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/dc_fpu.c b/drivers/gpu/drm/amd/display/amdgpu_dm/dc_fpu.c
->>> index 4ae4720535a5..b64f917174ca 100644
->>> --- a/drivers/gpu/drm/amd/display/amdgpu_dm/dc_fpu.c
->>> +++ b/drivers/gpu/drm/amd/display/amdgpu_dm/dc_fpu.c
->>> @@ -87,20 +78,9 @@ void dc_fpu_begin(const char *function_name, const int line)
->>>  	WARN_ON_ONCE(!in_task());
->>>  	preempt_disable();
->>>  	depth = __this_cpu_inc_return(fpu_recursion_depth);
->>> -
->>>  	if (depth == 1) {
->>> -#if defined(CONFIG_X86) || defined(CONFIG_LOONGARCH)
->>> +		BUG_ON(!kernel_fpu_available());
->>>  		kernel_fpu_begin();
->>> -#elif defined(CONFIG_PPC64)
->>> -		if (cpu_has_feature(CPU_FTR_VSX_COMP))
->>> -			enable_kernel_vsx();
->>> -		else if (cpu_has_feature(CPU_FTR_ALTIVEC_COMP))
->>> -			enable_kernel_altivec();
->>  
->> Note altivec.
->> 
->>> -		else if (!cpu_has_feature(CPU_FTR_FPU_UNAVAILABLE))
->>> -			enable_kernel_fp();
->>> -#elif defined(CONFIG_ARM64)
->>> -		kernel_neon_begin();
->>> -#endif
->>>  	}
->>>  
->>>  	TRACE_DCN_FPU(true, function_name, line, depth);
->>> diff --git a/drivers/gpu/drm/amd/display/dc/dml/Makefile b/drivers/gpu/drm/amd/display/dc/dml/Makefile
->>> index ea7d60f9a9b4..5aad0f572ba3 100644
->>> --- a/drivers/gpu/drm/amd/display/dc/dml/Makefile
->>> +++ b/drivers/gpu/drm/amd/display/dc/dml/Makefile
->>> @@ -25,40 +25,8 @@
->>>  # It provides the general basic services required by other DAL
->>>  # subcomponents.
->>>  
->>> -ifdef CONFIG_X86
->>> -dml_ccflags-$(CONFIG_CC_IS_GCC) := -mhard-float
->>> -dml_ccflags := $(dml_ccflags-y) -msse
->>> -endif
->>> -
->>> -ifdef CONFIG_PPC64
->>> -dml_ccflags := -mhard-float -maltivec
->>> -endif
->> 
->> And altivec is enabled in the flags there.
->> 
->> That doesn't match your implementation for powerpc in patch 7, which
->> only deals with float.
->> 
->> I suspect the AMD driver actually doesn't need altivec enabled, but I
->> don't know that for sure. It compiles without it, but I don't have a GPU
->> to actually test. I've added Timothy on Cc who added the support for
->> powerpc to the driver originally, hopefully he has a test system.
->
-> I tested this series on a POWER9 system with an AMD Radeon RX 6400 GPU (which
-> requires this FPU code to initialize), and got functioning graphics output.
+On Fri, Dec 08, 2023 at 12:02:03PM -0600, Andrew Halaney wrote:
+> On Fri, Dec 08, 2023 at 12:29:01PM +0530, Manivannan Sadhasivam wrote:
+> > Instead of using both ufshcd_readl() and ufshcd_writel() to read/modify/
+> > write a register, let's make use of the existing helper.
+> > 
+> > Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> > ---
+> >  drivers/ufs/host/ufs-qcom.c | 12 ++++--------
+> >  drivers/ufs/host/ufs-qcom.h |  3 +++
+> >  2 files changed, 7 insertions(+), 8 deletions(-)
+> > 
+> > diff --git a/drivers/ufs/host/ufs-qcom.c b/drivers/ufs/host/ufs-qcom.c
+> > index 26aa8904c823..549a08645391 100644
+> > --- a/drivers/ufs/host/ufs-qcom.c
+> > +++ b/drivers/ufs/host/ufs-qcom.c
+> > @@ -387,9 +387,8 @@ static int ufs_qcom_power_up_sequence(struct ufs_hba *hba)
+> >   */
+> >  static void ufs_qcom_enable_hw_clk_gating(struct ufs_hba *hba)
+> >  {
+> > -	ufshcd_writel(hba,
+> > -		ufshcd_readl(hba, REG_UFS_CFG2) | REG_UFS_CFG2_CGC_EN_ALL,
+> > -		REG_UFS_CFG2);
+> > +	ufshcd_rmwl(hba, REG_UFS_CFG2_CGC_EN_ALL, REG_UFS_CFG2_CGC_EN_ALL,
+> > +		    REG_UFS_CFG2);
+> >  
+> >  	/* Ensure that HW clock gating is enabled before next operations */
+> >  	mb();
+> > @@ -1689,11 +1688,8 @@ static int ufs_qcom_config_esi(struct ufs_hba *hba)
+> >  		platform_msi_domain_free_irqs(hba->dev);
+> >  	} else {
+> >  		if (host->hw_ver.major == 6 && host->hw_ver.minor == 0 &&
+> > -		    host->hw_ver.step == 0) {
+> > -			ufshcd_writel(hba,
+> > -				      ufshcd_readl(hba, REG_UFS_CFG3) | 0x1F000,
+> > -				      REG_UFS_CFG3);
+> > -		}
+> > +		    host->hw_ver.step == 0)
+> > +			ufshcd_rmwl(hba, ESI_VEC_MASK, 0x1f00, REG_UFS_CFG3);
+> 
+> Is this right? I feel like you accidentally just shifted what was written
+> prior >> 4 bits.
+> 
+> Before: 0x1f000
+> After:  0x01f00
+> 
 
-Awesome.
+Doh! you are right, I accidentally missed one 0. Since the series is already
+merged, I will send a follow up patch.
 
->> Anyway if that's true that it doesn't need altivec we should probably do
->> a lead-up patch that drops altivec from the AMD driver explicitly, eg.
->> as below.
->
-> That makes sense to me. Do you want to provide your Signed-off-by so I can send
-> this patch with your authorship?
+> >  		ufshcd_mcq_enable_esi(hba);
+> >  	}
+> >  
+> > diff --git a/drivers/ufs/host/ufs-qcom.h b/drivers/ufs/host/ufs-qcom.h
+> > index 385480499e71..2ce63a1c7f2f 100644
+> > --- a/drivers/ufs/host/ufs-qcom.h
+> > +++ b/drivers/ufs/host/ufs-qcom.h
+> > @@ -102,6 +102,9 @@ enum {
+> >  #define TMRLUT_HW_CGC_EN	BIT(6)
+> >  #define OCSC_HW_CGC_EN		BIT(7)
+> >  
+> > +/* bit definitions for REG_UFS_CFG3 register */
+> > +#define ESI_VEC_MASK		GENMASK(22, 12)
+> > +
+> 
+> I'll leave it to someone with the docs to review this field. It at least
+> contains the bits set above, fwiw. It would be neat to see that
+> converted to using the field + a FIELD_PREP to set the bits IMO, but I
+> honestly don't have a lot of experience using those APIs so feel free to
+> reject that.
+> 
 
-Yeah that'd be great. Patch below. Feel free to adjust the commit
-message as you see fit.
+Fair point. The reason for hardcoding the value in this patch was I didn't get
+information on how the value works. But now I got that info, so will address
+this in the follow up patch I mentioned above.
 
-cheers
+- Mani
 
+> >  /* bit definitions for REG_UFS_PARAM0 */
+> >  #define MAX_HS_GEAR_MASK	GENMASK(6, 4)
+> >  #define UFS_QCOM_MAX_GEAR(x)	FIELD_GET(MAX_HS_GEAR_MASK, (x))
+> > -- 
+> > 2.25.1
+> > 
+> 
 
-From c8a2862d2ebe76a023eceb3267fd85262925c0ba Mon Sep 17 00:00:00 2001
-From: Michael Ellerman <mpe@ellerman.id.au>
-Date: Thu, 14 Dec 2023 15:39:05 +1100
-Subject: [PATCH] drm/amd/display: Only use hard-float, not altivec on powerpc
-
-The compiler flags enable altivec, but that is not required, hard-float
-is sufficient for the code to build and function.
-
-Drop altivec from the compiler flags and adjust the enable/disable code
-to only enable FPU use.
-
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
----
- drivers/gpu/drm/amd/display/amdgpu_dm/dc_fpu.c | 12 ++----------
- drivers/gpu/drm/amd/display/dc/dml/Makefile    |  2 +-
- drivers/gpu/drm/amd/display/dc/dml2/Makefile   |  2 +-
- 3 files changed, 4 insertions(+), 12 deletions(-)
-
-diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/dc_fpu.c b/drivers/gpu/drm/amd/display/amdgpu_dm/dc_fpu.c
-index 4ae4720535a5..0de16796466b 100644
---- a/drivers/gpu/drm/amd/display/amdgpu_dm/dc_fpu.c
-+++ b/drivers/gpu/drm/amd/display/amdgpu_dm/dc_fpu.c
-@@ -92,11 +92,7 @@ void dc_fpu_begin(const char *function_name, const int line)
- #if defined(CONFIG_X86) || defined(CONFIG_LOONGARCH)
- 		kernel_fpu_begin();
- #elif defined(CONFIG_PPC64)
--		if (cpu_has_feature(CPU_FTR_VSX_COMP))
--			enable_kernel_vsx();
--		else if (cpu_has_feature(CPU_FTR_ALTIVEC_COMP))
--			enable_kernel_altivec();
--		else if (!cpu_has_feature(CPU_FTR_FPU_UNAVAILABLE))
-+		if (!cpu_has_feature(CPU_FTR_FPU_UNAVAILABLE))
- 			enable_kernel_fp();
- #elif defined(CONFIG_ARM64)
- 		kernel_neon_begin();
-@@ -125,11 +121,7 @@ void dc_fpu_end(const char *function_name, const int line)
- #if defined(CONFIG_X86) || defined(CONFIG_LOONGARCH)
- 		kernel_fpu_end();
- #elif defined(CONFIG_PPC64)
--		if (cpu_has_feature(CPU_FTR_VSX_COMP))
--			disable_kernel_vsx();
--		else if (cpu_has_feature(CPU_FTR_ALTIVEC_COMP))
--			disable_kernel_altivec();
--		else if (!cpu_has_feature(CPU_FTR_FPU_UNAVAILABLE))
-+		if (!cpu_has_feature(CPU_FTR_FPU_UNAVAILABLE))
- 			disable_kernel_fp();
- #elif defined(CONFIG_ARM64)
- 		kernel_neon_end();
-diff --git a/drivers/gpu/drm/amd/display/dc/dml/Makefile b/drivers/gpu/drm/amd/display/dc/dml/Makefile
-index 6042a5a6a44f..554c39024a40 100644
---- a/drivers/gpu/drm/amd/display/dc/dml/Makefile
-+++ b/drivers/gpu/drm/amd/display/dc/dml/Makefile
-@@ -31,7 +31,7 @@ dml_ccflags := $(dml_ccflags-y) -msse
- endif
- 
- ifdef CONFIG_PPC64
--dml_ccflags := -mhard-float -maltivec
-+dml_ccflags := -mhard-float
- endif
- 
- ifdef CONFIG_ARM64
-diff --git a/drivers/gpu/drm/amd/display/dc/dml2/Makefile b/drivers/gpu/drm/amd/display/dc/dml2/Makefile
-index acff3449b8d7..7b51364084b5 100644
---- a/drivers/gpu/drm/amd/display/dc/dml2/Makefile
-+++ b/drivers/gpu/drm/amd/display/dc/dml2/Makefile
-@@ -30,7 +30,7 @@ dml2_ccflags := $(dml2_ccflags-y) -msse
- endif
- 
- ifdef CONFIG_PPC64
--dml2_ccflags := -mhard-float -maltivec
-+dml2_ccflags := -mhard-float
- endif
- 
- ifdef CONFIG_ARM64
 -- 
-2.43.0
-
-
+மணிவண்ணன் சதாசிவம்
