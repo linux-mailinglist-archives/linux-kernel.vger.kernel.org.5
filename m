@@ -2,277 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A539812AEA
+	by mail.lfdr.de (Postfix) with ESMTP id 3EA90812AE8
 	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 10:00:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1443441AbjLNJAo convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 14 Dec 2023 04:00:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59206 "EHLO
+        id S235620AbjLNJAn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 04:00:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59212 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229441AbjLNJAj (ORCPT
+        with ESMTP id S229766AbjLNJAj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 14 Dec 2023 04:00:39 -0500
-Received: from mail-ot1-f48.google.com (mail-ot1-f48.google.com [209.85.210.48])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63C2110A;
-        Thu, 14 Dec 2023 01:00:44 -0800 (PST)
-Received: by mail-ot1-f48.google.com with SMTP id 46e09a7af769-6d9db92bd71so1256231a34.1;
-        Thu, 14 Dec 2023 01:00:44 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702544443; x=1703149243;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=8O4nwF4I2AcPkJT1QIWI/cJrF4RlMzbwWSkhPeiGBko=;
-        b=LGWqyRVyHZb9pVLfkZrBr7AsOC12sZshnYVJzOYSlrAkOIdIn5Ukc301HueLdQ4X5q
-         Ks7NzmoQk1K/ko6PW6LDQdusghU3CfYWnShHUgsacEdvMDZiNj7JYY0MYgS8UXqsROeh
-         5f/xcKrHR8/3EyOxNw5aSxT3oeej+7pMzRbSbSNpbCPdoUlSKhjFq/1KUNYTqde8NDI9
-         6Gw1sbwzQoO3KEqVdZjHDT+Zox0DwTrRBAAG+Ah/gp9VLUIyv6YFhaoDzCuQXvEo176J
-         aYr2vyBGCfbvx0WRQC1Fmtq97/vrgN/4jtDBmumfeOeGvwwthpIJ1r54s7YUvI1VhMwu
-         beHQ==
-X-Gm-Message-State: AOJu0YxSqdQGQatT9H/2ooBWPBF7aTc4OLbg+i4zo6qpWx9ageFZkIwW
-        aeMufkyJLrLbUxE0MPAdwA4Ns3VlRW9zDw00Ez8=
-X-Google-Smtp-Source: AGHT+IFZpYa60lAareQ3ZEHnFSchBYPlLSAoD2qxfcpPXZR+Pl2p1AyfjRB4ecQ+l9wRAvWJSQttijM7lHh1wtroqYc=
-X-Received: by 2002:a05:6870:b028:b0:1fb:e5f:c530 with SMTP id
- y40-20020a056870b02800b001fb0e5fc530mr17409236oae.4.1702544443386; Thu, 14
- Dec 2023 01:00:43 -0800 (PST)
+Received: from FRA01-PR2-obe.outbound.protection.outlook.com (mail-pr2fra01on2044.outbound.protection.outlook.com [40.107.12.44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0008112
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 01:00:44 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=etKgXqIrs828EemeJ7MKDpHZa2tXtBfwC4C6/Z44PFT5vcIS5g91oggrOhgQEWo7e9VSg36XpUMWNgnqOfRTtL9pqnjAkboLDdfoBDAhBJSo/zB59h0120RFL2T/9ikDyXCZ1jyYD340kfQpxWLcAVrbQfW18Ku1DvfGcsSk5H9I7VEaSk2/3VusLUIPZyIOtyJJeELCIc4sAd78azRRuiWkCTl0L/t5udfIHGF+9hdnLrszdb0kLC2+3xnZIme6a3stljD+3cH7PbeNtPo4Z4pjtsDANIhfasI2DTOUMAnv47YqU9OrA9wwCqCpMdyOozVTvbVtkStE/4C3DfocVg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=bvwfZpKPULduv5ChTs6A0rFOcJeHTuqax18gvWYt014=;
+ b=iyh4t1JaNZ2QR18o/bgORlbuZQPgZLc5SlHh1TkuU8JkiD/x/QPbk0zpL23SlsD6rda94G5MTdoMu0AZAAu9iH0YKAldPEYwtkyggdX60yHnpFZ59d+BeRu/u+xEb5srSLQKFoAdcVEG/IsDAuxY0ZM1HmvhUGWaSQ9dL50obFDao1oQBiMnDWGvOuMeeDMdRatkq4EKxWz+aC0ogt5I+lXdr4BjgM8588MdzXtuFFkEgkA8XfjC8A0bMApCKvRvp/aLWaK7Xbaa3uPUEo3+8QGKQCunG7Katdl8fptqKDiOFWMJU+qmIvYpK/f13uw+SAMSCjALEz7dh2hA/piQ6g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=csgroup.eu; dmarc=pass action=none header.from=csgroup.eu;
+ dkim=pass header.d=csgroup.eu; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=csgroup.eu;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=bvwfZpKPULduv5ChTs6A0rFOcJeHTuqax18gvWYt014=;
+ b=RTNUIvLXxr9Tr7pHkl3e9IbZ9y5VvgcLjy0WwRDtOKfW66tVWgENWWIMTGMnoSVy129tuuSibyp3izfEjMCn3E5CmI+Ca8am7YnDY0By+Hvy+T9aPAUei4iN474huKI5MHl9SRFKY555GFX4hrY3L+ilAAldTgS9df1Ul/QHX4yawHbEjhSO8wtl01s8gOHj+xYmSQgCEVkJ9jC7q1cgNGA+a0u4EBkOs0pzsSUcuLvn9alKw3LppS3c2xY4bYgXM3vvDY9OVN+gOMP6fxJfJ1YoxsIvG0GTt4MYRfy7l+ZBEkZZNiqQrTWuxwks3b3NzIMeKmcZUAmw7CS9h5CdQw==
+Received: from MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM (2603:10a6:501:31::15)
+ by MRZP264MB2040.FRAP264.PROD.OUTLOOK.COM (2603:10a6:501:a::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7091.28; Thu, 14 Dec
+ 2023 09:00:41 +0000
+Received: from MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM
+ ([fe80::f788:32b4:1c5e:f264]) by MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM
+ ([fe80::f788:32b4:1c5e:f264%7]) with mapi id 15.20.7091.028; Thu, 14 Dec 2023
+ 09:00:41 +0000
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+To:     Nicholas Miehlbradt <nicholas@linux.ibm.com>,
+        "glider@google.com" <glider@google.com>,
+        "elver@google.com" <elver@google.com>,
+        "dvyukov@google.com" <dvyukov@google.com>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "mpe@ellerman.id.au" <mpe@ellerman.id.au>,
+        "npiggin@gmail.com" <npiggin@gmail.com>
+CC:     "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "kasan-dev@googlegroups.com" <kasan-dev@googlegroups.com>,
+        "iii@linux.ibm.com" <iii@linux.ibm.com>,
+        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 09/13] powerpc: Disable KMSAN checks on functions which
+ walk the stack
+Thread-Topic: [PATCH 09/13] powerpc: Disable KMSAN checks on functions which
+ walk the stack
+Thread-Index: AQHaLlJJWEBA6253AEOXkBRrg23pE7Coe1+A
+Date:   Thu, 14 Dec 2023 09:00:40 +0000
+Message-ID: <e70b4365-cb0c-4565-b7b1-ac25be85c5a6@csgroup.eu>
+References: <20231214055539.9420-1-nicholas@linux.ibm.com>
+ <20231214055539.9420-10-nicholas@linux.ibm.com>
+In-Reply-To: <20231214055539.9420-10-nicholas@linux.ibm.com>
+Accept-Language: fr-FR, en-US
+Content-Language: fr-FR
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Mozilla Thunderbird
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=csgroup.eu;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: MRZP264MB2988:EE_|MRZP264MB2040:EE_
+x-ms-office365-filtering-correlation-id: c1251bf7-fc1c-451e-543f-08dbfc8325ef
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 3f7/Yi7RPHzUMpDtpGdZzX5uoy2pC+xhn3ewHOSSrotK12c9s+piuMH7lrPgkKsyG3z0LAmGzu8kqEayNqTl77flkxbmt92gb7ZTgIhh2W+z2ImgfUfUgI/RCxm0U7E+IjRBp1BcDUP6BHHNPFhdu1Mof3YaEraAGeXet2qfMjBAIdygAMaRC8ld3zL/QKTZbgvcmZJ3YcxKXm4BxN6Z97D14T1jEUc0HeRpN+PBiODbuf+FyRb8vGP11r2xxlVbOMeqnrASejmUfSKJ2wDJLoJhL3RJSQLWdarbQJOxA3m/ppOpZ+PWstS8Y+wtiFMZWRnxgQUSi2ZzrbxoiGQ8n1y84MPtH2YmZjSIy8E5f/I9JJf2jppBxStfI6a4KRICaR+DDkQsZfZr7g5HfAwxGxPOh4oXzEj9QK6XVybSV3i0EEIF6WI6rPyEVJr8glYQx7kzkLURBnNl+SECFFUUIlUHsT0g1q8+0qZ43apEOEdfRevehmGQp8UN/QIH5/d1ym2bXHCLRYG8wnxFmiaCaHdMP3XGeRXsm/HeE0a6akLoSBECwVMvBM9yZTrT1yZD8fj8LF4c8jsu2EkPdffPSFipTKEBBWHwHfVvydgVDXBBz6FUxvAH39E8N+4wfieqK7yVwEl/cA7waD9q1GyWaKHsaIk/BbHN2RmLf3m0Lf4=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230031)(366004)(396003)(346002)(136003)(376002)(39850400004)(230922051799003)(451199024)(64100799003)(1800799012)(186009)(7416002)(2906002)(31696002)(6486002)(478600001)(41300700001)(38070700009)(31686004)(122000001)(86362001)(5660300002)(44832011)(4326008)(91956017)(110136005)(76116006)(64756008)(66446008)(66476007)(66556008)(66946007)(316002)(54906003)(83380400001)(26005)(2616005)(71200400001)(8936002)(6506007)(6512007)(8676002)(36756003)(38100700002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?YllFcXUwZ1J6cGU3ZmRFczBTb3p3bzEyNXZuWFNsS2pmU3pQWnhER2piQmtj?=
+ =?utf-8?B?aVVBbzFuRmR3T2ZYWmx1NzFRTDgvRjBtMkl5bkkxRFJNQmw4TU9hYVVFN2di?=
+ =?utf-8?B?WUlwaDYwcGFLZVB6cit2SjBpOURBNm1Oa3pPSnN3UUtjWCtuUTNCQjR2TkNk?=
+ =?utf-8?B?cTBNd3B0aENCRmJBSjN1dHBjNUtuTjlYNUlVR2Q4ckRTS2IrYWZtWm1JcWp4?=
+ =?utf-8?B?dm8yMUppWFlJWVNSeUoxeXd1SStiNmlwd0JoNWw1akt2S2IvQjVLNWVONU90?=
+ =?utf-8?B?UmdsMStIN2lKTDNPNVljQ3JpTURnWGkxVW44bGFydnQ2UitSbzFWY1Z4Ry9L?=
+ =?utf-8?B?OW51Q1N5QVdmNmZhYWZlSkxuSENEYmhaTHVQT0FybVF0SXQyaWhmTGVvQUd1?=
+ =?utf-8?B?a3hpT2k5czdHYmY2bDRsOG5tT0M4eHV3Q0ptM0pmZjd4RjY5c1YyM0VTU284?=
+ =?utf-8?B?RFZ0SjRZekgxemVFVnZpcVI3K01yQWRaRXFWVWRRZENxK21mUHkrQk5iaGg5?=
+ =?utf-8?B?b3lpYzFWV21RblRobzNFRVlvWmlzNUJvb2NjOVdtYlBEL05GYzhodjA0d3Bn?=
+ =?utf-8?B?bXZGdW0yMkVsWmxJSWVPZE94Qm5aYS9PbjJHMXlvOG54bjd1R1BuUTVKZGhV?=
+ =?utf-8?B?amMwNTFocE4rVWpxREI1dUVMTEFrODhVZ0ZrZ0dyVk9HMjNDaUUwRnFjRlhl?=
+ =?utf-8?B?bjdKZ09UN2tON1pFMWltdzRGTTJWRlVCT1VlZUVnY29lREpzQ2dGV0NySUpk?=
+ =?utf-8?B?Y2FUenB6NEJYOC8wTDdEWEVJdXR6M0Zxb2dUSnZGMGNsOE81ZHNrNS9wZ3dv?=
+ =?utf-8?B?MTF6UnBNQWZEbTNtQjlqUVJYWGcwbk9uckRVaHUxUG84Y3dOZ1QvTXFHb2NJ?=
+ =?utf-8?B?RWdvMUFLT21QOVNQTEhEUFZlc0lqSy9TWFNmV3VsM3FTY0h4R3lUSFBoMkpa?=
+ =?utf-8?B?SlA5Rjg4cU9tUUptZURzUWRCdEFpOFRyZk80NW80aVFWb2dQT1dybGYvVEdP?=
+ =?utf-8?B?by8xN1liMjR3YWJDVkNDbTZuU1BHVFYvQ0o3UmQyRzEvMDZRc1E5aEYzOHBi?=
+ =?utf-8?B?ams3bXN2andkckU3Qm1JWU9UMWJ2U0s2RXU1em9ULzYvNEpwbFZXR0JSWmIy?=
+ =?utf-8?B?K1dGRHkrVkdsaXY4SUt0dUZLWlFMRjlCaFFuajlhbEozVE9qSnExR00xU01t?=
+ =?utf-8?B?SHF1bXZNTjB5TTB4OGZwZXhIOER3QWh1L21XbWNCZjcwK1FrVFNIaEt0L3gr?=
+ =?utf-8?B?SGVBd1huOXRKQlMrMmZjNFV3MXQ2Rk5zSEtZNnN5dDVFM1hjUHJpdnJUcWxF?=
+ =?utf-8?B?cXhJbG1XOE44RmlkazVaRXJxT0hsdmdHYS9wTUZ5VG9NVGRva3gyU0h3Rjk3?=
+ =?utf-8?B?eEZRQ2tkRFdDSHFsK0VtZG9KemFKVFlUWjdhRDh2NGM4TXlQdmkvQmExazdX?=
+ =?utf-8?B?aEdoK3lBdkh6Y2VhZGhRNCtadzMzampaNXFRRktzTTBwK1Q0bGVINU56S0Nv?=
+ =?utf-8?B?cXgwTXhMc2tJa0JhMEYvVCt1SThnRmx5dXFlelp3Tm91d2FEWTNCNTJ0ODFj?=
+ =?utf-8?B?SlhLeHNmNnpvZkMwRHFsU0ZEd3MyZnJwWnhaaXRPUmxLZUVDK1ZFaE03UlFB?=
+ =?utf-8?B?MGsyMjN4NjE1eXRrNlhEeUVET0JuSmdCT3RQZzZTN01vYmQyL29Zc1cyODNp?=
+ =?utf-8?B?dkZkcmhHblk1QWlBWU1LaDEvTUZzN0VGeGJld0FHdmZHWTdvc3p2SHpNblNN?=
+ =?utf-8?B?Vzk5L2FaQVFRRi9ranhKblZmL1NRa3BjK05LWXJpVjNvM3dRRkFCY0czTFcw?=
+ =?utf-8?B?cTNSb2NXS05tSXBJa3owN3drbGN0UElqYmJSaCtqMFByaU9uUTFUN3Zqd2NJ?=
+ =?utf-8?B?OHNIejNjYzVTNXZ0NUVxQ1NxUmNjZEUwTG9DQjR4TFp4aVBoaER2WXlkODFE?=
+ =?utf-8?B?SEJkdXEyY0ZHVWdNZDdkUk9QNzhUSk5RV2JOUzExSE1mc3hOcEV4a1BBN1JP?=
+ =?utf-8?B?VGcrQzN4bkpaRWE3YnRobVhmMC8wK2xIanc1c21oVU42VWNtZkJGZkxId01W?=
+ =?utf-8?B?cjIrR3k5TFRuZ0dmU3VxWS9sbktwZHp5WXoyV0xsN3BiMVMxRVVWVnFQMXh6?=
+ =?utf-8?B?M2dIM0dUUmN5dVNVaUVxQXNJRVAxNGVyM3ZiVUh0OEZFZzAweHN2RnFtSFZo?=
+ =?utf-8?B?K0E9PQ==?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <A61D03C90DADE7469E4CB76013F56659@FRAP264.PROD.OUTLOOK.COM>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-References: <20231213182656.6165-1-mario.limonciello@amd.com>
- <20231213182656.6165-3-mario.limonciello@amd.com> <CAJZ5v0gDjwEpx-WNSY0=qchoSGxizsD3XM7Bgq=i0xufBm=Cag@mail.gmail.com>
- <766d621c-695d-4ae7-87cf-690cb8d066df@amd.com> <CAJZ5v0i95EeS40pzkBH=jgB1wbMP6SNO_s=pNZ8FPOtcMywgAA@mail.gmail.com>
- <CAAd53p6XynUJimepnXDzcVa4Dps4-F0BNEXxGZh_O38LvSdkkg@mail.gmail.com>
-In-Reply-To: <CAAd53p6XynUJimepnXDzcVa4Dps4-F0BNEXxGZh_O38LvSdkkg@mail.gmail.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Thu, 14 Dec 2023 10:00:30 +0100
-Message-ID: <CAJZ5v0ijf9-faD-bDaGi9U0JR4iQ68DECyPM8c-AeECOfhQ=Bg@mail.gmail.com>
-Subject: Re: [PATCH 2/2] PCI/portdrv: Place PCIe port hierarchy into D3cold at shutdown
-To:     Kai-Heng Feng <kai.heng.feng@canonical.com>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Mario Limonciello <mario.limonciello@amd.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        linux-pci@vger.kernel.org, linux-acpi@vger.kernel.org,
-        linux-kernel@vger.kernel.org, mpearson-lenovo@squebb.ca
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
+X-OriginatorOrg: csgroup.eu
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-Network-Message-Id: c1251bf7-fc1c-451e-543f-08dbfc8325ef
+X-MS-Exchange-CrossTenant-originalarrivaltime: 14 Dec 2023 09:00:40.9865
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 9914def7-b676-4fda-8815-5d49fb3b45c8
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: XyMlTIS1uMIGhd9PlKLKgo5/wiwepjfQfa94qryJyap/JfzhCdWGcDJ38noyGT13CkI13bn4fU5p6PohJB1dOLHKqjTkEeNk51R8cQYb8LI=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MRZP264MB2040
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 14, 2023 at 4:46 AM Kai-Heng Feng
-<kai.heng.feng@canonical.com> wrote:
->
-> Hi Mario and Rafael,
->
-> On Thu, Dec 14, 2023 at 2:46 AM Rafael J. Wysocki <rafael@kernel.org> wrote:
-> >
-> > On Wed, Dec 13, 2023 at 7:42 PM Mario Limonciello
-> > <mario.limonciello@amd.com> wrote:
-> > >
-> > > On 12/13/2023 12:38, Rafael J. Wysocki wrote:
-> > > > On Wed, Dec 13, 2023 at 7:27 PM Mario Limonciello
-> > > > <mario.limonciello@amd.com> wrote:
-> > > >>
-> > > >> When a system is being powered off it's important that PCIe ports
-> > > >> have been put into D3cold as there is no other software to turn
-> > > >> off the devices at S5.
-> > > >>
-> > > >> If PCIe ports are left in D0 then any GPIOs toggled by the ACPI
-> > > >> power resources may be left enabled and devices may consume excess
-> > > >> power.
-> > > >
-> > > > Isn't that a platform firmware issue?
-> > > >
-> > > > It is the responsibility of the platform firmware to properly put the
-> > > > platform into S5, including power removal from devices that are not
-> > > > armed for power-on.
-> > >
-> > > The specific issues that triggered this series were tied to the PCIe
-> > > ports for dGPUs.  There is a GPIO that is toggled by _ON or _OFF.
-> > >
-> > > Windows calls _OFF as part of S5..
-> >
-> > I see.
-> >
-> > > >
-> > > >> Cc: mpearson-lenovo@squebb.ca
-> > > >> Signed-off-by: Mario Limonciello <mario.limonciello@amd.com>
-> > > >> ---
-> > > >>   drivers/pci/pcie/portdrv.c | 11 ++++++++---
-> > > >>   1 file changed, 8 insertions(+), 3 deletions(-)
-> > > >>
-> > > >> diff --git a/drivers/pci/pcie/portdrv.c b/drivers/pci/pcie/portdrv.c
-> > > >> index 14a4b89a3b83..08238680c481 100644
-> > > >> --- a/drivers/pci/pcie/portdrv.c
-> > > >> +++ b/drivers/pci/pcie/portdrv.c
-> > > >> @@ -734,9 +734,14 @@ static void pcie_portdrv_remove(struct pci_dev *dev)
-> > > >>   static void pcie_portdrv_shutdown(struct pci_dev *dev)
-> > > >>   {
-> > > >>          if (pci_bridge_d3_possible(dev)) {
-> > > >> -               pm_runtime_forbid(&dev->dev);
-> > > >> -               pm_runtime_get_noresume(&dev->dev);
-> > > >> -               pm_runtime_dont_use_autosuspend(&dev->dev);
-> > > >> +               /* whole hierarchy goes into a low power state for S5 */
-> > > >> +               if (system_state == SYSTEM_POWER_OFF) {
-> > > >> +                       pci_set_power_state(dev, PCI_D3cold);
-> > > >> +               } else {
-> > > >> +                       pm_runtime_forbid(&dev->dev);
-> > > >> +                       pm_runtime_get_noresume(&dev->dev);
-> > > >> +                       pm_runtime_dont_use_autosuspend(&dev->dev);
-> > > >> +               }
-> > > >>          }
-> > > >
-> > > > Wouldn't it be better to remove power from the port after running the
-> > > > code below?
-> > > >
-> > >
-> > > Yes; I think you're right.  I'll do some more testing with this.
-> > >
-> > > >>          pcie_port_device_remove(dev);
-> > > >> --
-> >
-> > IIRC, to do this all properly, you'd need to rework the shutdown path
-> > to look like the hibernation power-off one.  Or even use the latter
-> > for shutdown?
-> >
-> > There was no reason to do that till now, so it has not been done, but
-> > it looks like you have one.
-> >
->
-> I am working on exactly same thing but with a different approach.
-> Because this is needed for more than just PCI devices.
-> I haven't written a proper commit message yet, but the implementation
-> is quite simple:
-
-As I said, doing this properly requires something like the hibernation
-power-off transition to be carried out for S5.
-
-I think that the existing hibernation power-off code can be used as-is
-for this purpose even.
-
-> diff --git a/drivers/acpi/device_pm.c b/drivers/acpi/device_pm.c
-> index f007116a8427..b90c6cf6faf4 100644
-> --- a/drivers/acpi/device_pm.c
-> +++ b/drivers/acpi/device_pm.c
-> @@ -967,15 +967,17 @@ EXPORT_SYMBOL_GPL(acpi_pm_set_device_wakeup);
->   * @adev: ACPI device node corresponding to @dev.
->   * @system_state: System state to choose the device state for.
->   */
-> -static int acpi_dev_pm_low_power(struct device *dev, struct acpi_device *adev,
-> -                 u32 system_state)
-> +static int acpi_dev_pm_low_power(struct acpi_device *adev, void* data)
->  {
->      int ret, state;
-> +    u32 *system_state = data;
->
->      if (!acpi_device_power_manageable(adev))
->          return 0;
->
-> -    ret = acpi_dev_pm_get_state(dev, adev, system_state, NULL, &state);
-> +    acpi_dev_for_each_child(adev, acpi_dev_pm_low_power, data);
-> +
-> +    ret = acpi_dev_pm_get_state(&adev->dev, adev, *system_state, NULL, &state);
->      return ret ? ret : acpi_device_set_power(adev, state);
->  }
->
-> @@ -1016,7 +1018,7 @@ int acpi_dev_suspend(struct device *dev, bool wakeup)
->          wakeup = false;
->      }
->
-> -    error = acpi_dev_pm_low_power(dev, adev, target_state);
-> +    error = acpi_dev_pm_low_power(adev, &target_state);
->      if (error && wakeup)
->          acpi_device_wakeup_disable(adev);
->
-> @@ -1386,6 +1388,7 @@ static struct dev_pm_domain acpi_general_pm_domain = {
->  static void acpi_dev_pm_detach(struct device *dev, bool power_off)
->  {
->      struct acpi_device *adev = ACPI_COMPANION(dev);
-> +    u32 state = ACPI_STATE_S0;
->
->      if (adev && dev->pm_domain == &acpi_general_pm_domain) {
->          dev_pm_domain_set(dev, NULL);
-> @@ -1400,7 +1403,7 @@ static void acpi_dev_pm_detach(struct device
-> *dev, bool power_off)
->              dev_pm_qos_hide_latency_limit(dev);
->              dev_pm_qos_hide_flags(dev);
->              acpi_device_wakeup_disable(adev);
-> -            acpi_dev_pm_low_power(dev, adev, ACPI_STATE_S0);
-> +            acpi_dev_pm_low_power(adev, &state);
->          }
->      }
->  }
-> @@ -1514,4 +1517,16 @@ bool acpi_dev_state_d0(struct device *dev)
->  }
->  EXPORT_SYMBOL_GPL(acpi_dev_state_d0);
->
-> +void acpi_dev_shutdown(struct device *dev)
-> +{
-> +    struct acpi_device *adev = ACPI_COMPANION(dev);
-> +    u32 state = ACPI_STATE_S5;
-> +
-> +    if (!adev)
-> +        return;
-> +
-> +    acpi_device_wakeup_disable(adev);
-> +    acpi_dev_pm_low_power(adev, &state);
-> +}
-> +EXPORT_SYMBOL_GPL(acpi_dev_shutdown);
->  #endif /* CONFIG_PM */
-> diff --git a/drivers/base/core.c b/drivers/base/core.c
-> index 6ceaf50f5a67..7e7c99eade63 100644
-> --- a/drivers/base/core.c
-> +++ b/drivers/base/core.c
-> @@ -45,6 +45,15 @@ static void __fw_devlink_link_to_consumers(struct
-> device *dev);
->  static bool fw_devlink_drv_reg_done;
->  static bool fw_devlink_best_effort;
->
-> +#ifdef CONFIG_ACPI
-> +static inline void fw_dev_shutdown(struct device *dev)
-> +{
-> +    acpi_dev_shutdown(dev);
-> +}
-> +#else
-> +static inline void fw_dev_shutdown(struct device *dev) {  }
-> +#endif
-> +
->  /**
->   * __fwnode_link_add - Create a link between two fwnode_handles.
->   * @con: Consumer end of the link.
-> @@ -4780,6 +4789,8 @@ void device_shutdown(void)
->              dev->driver->shutdown(dev);
->          }
->
-> +        fw_dev_shutdown(dev);
-> +
->          device_unlock(dev);
->          if (parent)
->              device_unlock(parent);
-> diff --git a/include/linux/acpi.h b/include/linux/acpi.h
-> index 641dc4843987..374f9eb75c22 100644
-> --- a/include/linux/acpi.h
-> +++ b/include/linux/acpi.h
-> @@ -1130,6 +1130,7 @@ int acpi_subsys_runtime_resume(struct device *dev);
->  int acpi_dev_pm_attach(struct device *dev, bool power_on);
->  bool acpi_storage_d3(struct device *dev);
->  bool acpi_dev_state_d0(struct device *dev);
-> +void acpi_dev_shutdown(struct device *dev);
->  #else
->  static inline int acpi_subsys_runtime_suspend(struct device *dev) { return 0; }
->  static inline int acpi_subsys_runtime_resume(struct device *dev) { return 0; }
-> @@ -1145,6 +1146,7 @@ static inline bool acpi_dev_state_d0(struct device *dev)
->  {
->      return true;
->  }
-> +static inline void acpi_dev_shutdown(struct device *dev) { }
->  #endif
->
->  #if defined(CONFIG_ACPI) && defined(CONFIG_PM_SLEEP)
->
+DQoNCkxlIDE0LzEyLzIwMjMgw6AgMDY6NTUsIE5pY2hvbGFzIE1pZWhsYnJhZHQgYSDDqWNyaXTC
+oDoNCj4gRnVuY3Rpb25zIHdoaWNoIHdhbGsgdGhlIHN0YWNrIHJlYWQgcGFydHMgb2YgdGhlIHN0
+YWNrIHdoaWNoIGNhbm5vdCBiZQ0KPiBpbnN0cnVtZW50ZWQgYnkgS01TQU4gZS5nLiB0aGUgYmFj
+a2NoYWluLiBEaXNhYmxlIEtNU0FOIHNhbml0aXphdGlvbiBvZg0KPiB0aGVzZSBmdW5jdGlvbnMg
+dG8gcHJldmVudCBmYWxzZSBwb3NpdGl2ZXMuDQoNCkRvIG90aGVyIGFyY2hpdGVjdHVyZXMgaGF2
+ZSB0byBkbyBpdCBhcyB3ZWxsID8NCg0KSSBkb24ndCBzZWUgaXQgZm9yIHNob3dfc3RhY2soKSwg
+aXMgdGhhdCBhIHNwZWNpZmljIG5lZWQgZm9yIHBvd2VycGMgPw0KDQo+IA0KPiBTaWduZWQtb2Zm
+LWJ5OiBOaWNob2xhcyBNaWVobGJyYWR0IDxuaWNob2xhc0BsaW51eC5pYm0uY29tPg0KPiAtLS0N
+Cj4gICBhcmNoL3Bvd2VycGMva2VybmVsL3Byb2Nlc3MuYyAgICB8ICA2ICsrKy0tLQ0KPiAgIGFy
+Y2gvcG93ZXJwYy9rZXJuZWwvc3RhY2t0cmFjZS5jIHwgMTAgKysrKysrLS0tLQ0KPiAgIGFyY2gv
+cG93ZXJwYy9wZXJmL2NhbGxjaGFpbi5jICAgIHwgIDIgKy0NCj4gICAzIGZpbGVzIGNoYW5nZWQs
+IDEwIGluc2VydGlvbnMoKyksIDggZGVsZXRpb25zKC0pDQo+IA0KPiBkaWZmIC0tZ2l0IGEvYXJj
+aC9wb3dlcnBjL2tlcm5lbC9wcm9jZXNzLmMgYi9hcmNoL3Bvd2VycGMva2VybmVsL3Byb2Nlc3Mu
+Yw0KPiBpbmRleCAzOTI0MDQ2ODhjZWMuLjNkYzg4MTQzYzNiMiAxMDA2NDQNCj4gLS0tIGEvYXJj
+aC9wb3dlcnBjL2tlcm5lbC9wcm9jZXNzLmMNCj4gKysrIGIvYXJjaC9wb3dlcnBjL2tlcm5lbC9w
+cm9jZXNzLmMNCj4gQEAgLTIyNzYsOSArMjI3Niw5IEBAIHN0YXRpYyBib29sIGVtcHR5X3VzZXJf
+cmVncyhzdHJ1Y3QgcHRfcmVncyAqcmVncywgc3RydWN0IHRhc2tfc3RydWN0ICp0c2spDQo+ICAg
+DQo+ICAgc3RhdGljIGludCBrc3RhY2tfZGVwdGhfdG9fcHJpbnQgPSBDT05GSUdfUFJJTlRfU1RB
+Q0tfREVQVEg7DQo+ICAgDQo+IC12b2lkIF9fbm9fc2FuaXRpemVfYWRkcmVzcyBzaG93X3N0YWNr
+KHN0cnVjdCB0YXNrX3N0cnVjdCAqdHNrLA0KPiAtCQkJCSAgICAgIHVuc2lnbmVkIGxvbmcgKnN0
+YWNrLA0KPiAtCQkJCSAgICAgIGNvbnN0IGNoYXIgKmxvZ2x2bCkNCj4gK3ZvaWQgX19ub19zYW5p
+dGl6ZV9hZGRyZXNzIF9fbm9fa21zYW5fY2hlY2tzIHNob3dfc3RhY2soc3RydWN0IHRhc2tfc3Ry
+dWN0ICp0c2ssDQo+ICsJCQkJCQkJdW5zaWduZWQgbG9uZyAqc3RhY2ssDQo+ICsJCQkJCQkJY29u
+c3QgY2hhciAqbG9nbHZsKQ0KPiAgIHsNCj4gICAJdW5zaWduZWQgbG9uZyBzcCwgaXAsIGxyLCBu
+ZXdzcDsNCj4gICAJaW50IGNvdW50ID0gMDsNCj4gZGlmZiAtLWdpdCBhL2FyY2gvcG93ZXJwYy9r
+ZXJuZWwvc3RhY2t0cmFjZS5jIGIvYXJjaC9wb3dlcnBjL2tlcm5lbC9zdGFja3RyYWNlLmMNCj4g
+aW5kZXggZTZhOTU4YTVkYTI3Li4zNjliOGIyYTFiY2QgMTAwNjQ0DQo+IC0tLSBhL2FyY2gvcG93
+ZXJwYy9rZXJuZWwvc3RhY2t0cmFjZS5jDQo+ICsrKyBiL2FyY2gvcG93ZXJwYy9rZXJuZWwvc3Rh
+Y2t0cmFjZS5jDQo+IEBAIC0yNCw4ICsyNCw5IEBADQo+ICAgDQo+ICAgI2luY2x1ZGUgPGFzbS9w
+YWNhLmg+DQo+ICAgDQo+IC12b2lkIF9fbm9fc2FuaXRpemVfYWRkcmVzcyBhcmNoX3N0YWNrX3dh
+bGsoc3RhY2tfdHJhY2VfY29uc3VtZV9mbiBjb25zdW1lX2VudHJ5LCB2b2lkICpjb29raWUsDQo+
+IC0JCQkJCSAgIHN0cnVjdCB0YXNrX3N0cnVjdCAqdGFzaywgc3RydWN0IHB0X3JlZ3MgKnJlZ3Mp
+DQo+ICt2b2lkIF9fbm9fc2FuaXRpemVfYWRkcmVzcyBfX25vX2ttc2FuX2NoZWNrcw0KPiArCWFy
+Y2hfc3RhY2tfd2FsayhzdGFja190cmFjZV9jb25zdW1lX2ZuIGNvbnN1bWVfZW50cnksIHZvaWQg
+KmNvb2tpZSwNCj4gKwkJCXN0cnVjdCB0YXNrX3N0cnVjdCAqdGFzaywgc3RydWN0IHB0X3JlZ3Mg
+KnJlZ3MpDQo+ICAgew0KPiAgIAl1bnNpZ25lZCBsb25nIHNwOw0KPiAgIA0KPiBAQCAtNjIsOCAr
+NjMsOSBAQCB2b2lkIF9fbm9fc2FuaXRpemVfYWRkcmVzcyBhcmNoX3N0YWNrX3dhbGsoc3RhY2tf
+dHJhY2VfY29uc3VtZV9mbiBjb25zdW1lX2VudHJ5LA0KPiAgICAqDQo+ICAgICogSWYgdGhlIHRh
+c2sgaXMgbm90ICdjdXJyZW50JywgdGhlIGNhbGxlciAqbXVzdCogZW5zdXJlIHRoZSB0YXNrIGlz
+IGluYWN0aXZlLg0KPiAgICAqLw0KPiAtaW50IF9fbm9fc2FuaXRpemVfYWRkcmVzcyBhcmNoX3N0
+YWNrX3dhbGtfcmVsaWFibGUoc3RhY2tfdHJhY2VfY29uc3VtZV9mbiBjb25zdW1lX2VudHJ5LA0K
+PiAtCQkJCQkJICAgdm9pZCAqY29va2llLCBzdHJ1Y3QgdGFza19zdHJ1Y3QgKnRhc2spDQo+ICtp
+bnQgX19ub19zYW5pdGl6ZV9hZGRyZXNzIF9fbm9fa21zYW5fY2hlY2tzDQo+ICsJYXJjaF9zdGFj
+a193YWxrX3JlbGlhYmxlKHN0YWNrX3RyYWNlX2NvbnN1bWVfZm4gY29uc3VtZV9lbnRyeSwgdm9p
+ZCAqY29va2llLA0KPiArCQkJCSBzdHJ1Y3QgdGFza19zdHJ1Y3QgKnRhc2spDQo+ICAgew0KPiAg
+IAl1bnNpZ25lZCBsb25nIHNwOw0KPiAgIAl1bnNpZ25lZCBsb25nIG5ld3NwOw0KPiBkaWZmIC0t
+Z2l0IGEvYXJjaC9wb3dlcnBjL3BlcmYvY2FsbGNoYWluLmMgYi9hcmNoL3Bvd2VycGMvcGVyZi9j
+YWxsY2hhaW4uYw0KPiBpbmRleCA2YjQ0MzRkZDBmZjMuLmM3NjEwYjM4ZTliOCAxMDA2NDQNCj4g
+LS0tIGEvYXJjaC9wb3dlcnBjL3BlcmYvY2FsbGNoYWluLmMNCj4gKysrIGIvYXJjaC9wb3dlcnBj
+L3BlcmYvY2FsbGNoYWluLmMNCj4gQEAgLTQwLDcgKzQwLDcgQEAgc3RhdGljIGludCB2YWxpZF9u
+ZXh0X3NwKHVuc2lnbmVkIGxvbmcgc3AsIHVuc2lnbmVkIGxvbmcgcHJldl9zcCkNCj4gICAJcmV0
+dXJuIDA7DQo+ICAgfQ0KPiAgIA0KPiAtdm9pZCBfX25vX3Nhbml0aXplX2FkZHJlc3MNCj4gK3Zv
+aWQgX19ub19zYW5pdGl6ZV9hZGRyZXNzIF9fbm9fa21zYW5fY2hlY2tzDQo+ICAgcGVyZl9jYWxs
+Y2hhaW5fa2VybmVsKHN0cnVjdCBwZXJmX2NhbGxjaGFpbl9lbnRyeV9jdHggKmVudHJ5LCBzdHJ1
+Y3QgcHRfcmVncyAqcmVncykNCj4gICB7DQo+ICAgCXVuc2lnbmVkIGxvbmcgc3AsIG5leHRfc3A7
+DQo=
