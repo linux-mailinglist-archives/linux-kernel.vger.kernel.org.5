@@ -2,445 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 990FC812E0F
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 12:05:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2275B812E07
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 12:04:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1443915AbjLNLEt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 06:04:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37656 "EHLO
+        id S1443837AbjLNLEK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 06:04:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43594 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1443893AbjLNLEm (ORCPT
+        with ESMTP id S1443785AbjLNLEI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 06:04:42 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75B2C11A;
-        Thu, 14 Dec 2023 03:04:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1702551883; x=1734087883;
-  h=from:to:cc:subject:date:message-id;
-  bh=PPJ0qo+v4gU51NZ6QR1Rk2xhM3fO+C3owLqS4ypDdH8=;
-  b=P7DrjrDlccdgzyGxKAYA6wtrd7xo1xXYGpsL2ZgeWrA23jwC5KFa2Zi4
-   +AXaZSXzbtC4QQW7h9ZSP0DkjmweU9vhDacREMtB54Re9Kgv0uFXYCOHS
-   S9Rez4M5HH8fYiNYjsjjF7qgRk2yfbrqy3FbPe+2C7HsKPb1jaJAnlWvl
-   yuZFMki2/s3wxxIQlIs3RnHp022jec6b8OTO2tfB2R9SwEq+nnI4T8v1Z
-   tOPCCcVOq5AirnrK9a5ajO0LOSO2qlWu2Byew1weV0HI88pto3FA9v6Ip
-   TxGZqoKHvX2QiA0SIL3jIDSIooTTHJi76wrODzggkVrHcMs4Vh8cCZRgz
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10923"; a="8500543"
-X-IronPort-AV: E=Sophos;i="6.04,275,1695711600"; 
-   d="scan'208";a="8500543"
-Received: from orviesa001.jf.intel.com ([10.64.159.141])
-  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Dec 2023 03:04:42 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.04,275,1695711600"; 
-   d="scan'208";a="22358938"
-Received: from yzhao56-desk.sh.intel.com ([10.239.159.62])
-  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Dec 2023 03:04:37 -0800
-From:   Yan Zhao <yan.y.zhao@intel.com>
-To:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org
-Cc:     pbonzini@redhat.com, seanjc@google.com, olvaffe@gmail.com,
-        kevin.tian@intel.com, zhiyuan.lv@intel.com,
-        zhenyu.z.wang@intel.com, yongwei.ma@intel.com, vkuznets@redhat.com,
-        wanpengli@tencent.com, jmattson@google.com, joro@8bytes.org,
-        gurchetansingh@chromium.org, kraxel@redhat.com,
-        Yan Zhao <yan.y.zhao@intel.com>
-Subject: [RFC PATCH] KVM: Introduce KVM VIRTIO device
-Date:   Thu, 14 Dec 2023 18:35:20 +0800
-Message-Id: <20231214103520.7198-1-yan.y.zhao@intel.com>
-X-Mailer: git-send-email 2.17.1
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        Thu, 14 Dec 2023 06:04:08 -0500
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2a07:de40:b251:101:10:150:64:2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC03E11A;
+        Thu, 14 Dec 2023 03:04:14 -0800 (PST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 3E1E71F7C5;
+        Thu, 14 Dec 2023 11:04:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1702551851; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Skljw5BSFfgpdqQOUDwAU/GCeFOgAjR5XeHFC81qJ/A=;
+        b=vQkTMrY51vyqlOg2jW5/nLQEPzZYE1f5yCnE4mFBzuluT+Njn+CXslgqe6U70uf9/1tT3P
+        EzkUXzYNjB/at29bS8wHUI++bWErXHEwijxXpk/xZP6DJByPieFXU9oTkZniEuAkDx/fzA
+        8nZ0f7FozdBeDA5GIhbh+nRyftoUpFc=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1702551851;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Skljw5BSFfgpdqQOUDwAU/GCeFOgAjR5XeHFC81qJ/A=;
+        b=3bzta1/DtvaaOVt6hYd6neZPDuvXk7u9Vqc6CdtOsl03namm2nc4Pk9CipUVASKQOrKvGa
+        TxZ2knK6DoJRBpAQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1702551851; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Skljw5BSFfgpdqQOUDwAU/GCeFOgAjR5XeHFC81qJ/A=;
+        b=vQkTMrY51vyqlOg2jW5/nLQEPzZYE1f5yCnE4mFBzuluT+Njn+CXslgqe6U70uf9/1tT3P
+        EzkUXzYNjB/at29bS8wHUI++bWErXHEwijxXpk/xZP6DJByPieFXU9oTkZniEuAkDx/fzA
+        8nZ0f7FozdBeDA5GIhbh+nRyftoUpFc=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1702551851;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Skljw5BSFfgpdqQOUDwAU/GCeFOgAjR5XeHFC81qJ/A=;
+        b=3bzta1/DtvaaOVt6hYd6neZPDuvXk7u9Vqc6CdtOsl03namm2nc4Pk9CipUVASKQOrKvGa
+        TxZ2knK6DoJRBpAQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id DEF27137E8;
+        Thu, 14 Dec 2023 11:04:10 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+        by imap1.dmz-prg2.suse.org with ESMTPSA
+        id LA0HNSrhemXnZgAAD6G6ig
+        (envelope-from <tiwai@suse.de>); Thu, 14 Dec 2023 11:04:10 +0000
+Date:   Thu, 14 Dec 2023 12:04:10 +0100
+Message-ID: <87edfpqc45.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Gergo Koteles <soyer@irl.hu>
+Cc:     Shenghao Ding <shenghao-ding@ti.com>, Kevin Lu <kevin-lu@ti.com>,
+        Baojun Xu <baojun.xu@ti.com>, Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org,
+        alsa-devel@alsa-project.org, stable@vger.kernel.org
+Subject: Re: [PATCH v2] ALSA: hda/tas2781: call cleanup functions only once
+In-Reply-To: <1a0885c424bb21172702d254655882b59ef6477a.1702510018.git.soyer@irl.hu>
+References: <1a0885c424bb21172702d254655882b59ef6477a.1702510018.git.soyer@irl.hu>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-Spam-Score: 0.87
+X-Spam-Level: 
+X-Spam-Score: 0.84
+X-Spam-Level: 
+Authentication-Results: smtp-out2.suse.de;
+        none
+X-Spamd-Result: default: False [0.84 / 50.00];
+         ARC_NA(0.00)[];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         FROM_HAS_DN(0.00)[];
+         TO_DN_SOME(0.00)[];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         MIME_GOOD(-0.10)[text/plain];
+         RCVD_COUNT_THREE(0.00)[3];
+         DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+         RCPT_COUNT_SEVEN(0.00)[9];
+         MID_CONTAINS_FROM(1.00)[];
+         FUZZY_BLOCKED(0.00)[rspamd.com];
+         FROM_EQ_ENVFROM(0.00)[];
+         MIME_TRACE(0.00)[0:+];
+         RCVD_TLS_ALL(0.00)[];
+         BAYES_HAM(-0.06)[60.79%]
+X-Spam-Flag: NO
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Introduce a new KVM device that represents a virtio device in order to
-allow user to indicate device hardware's noncoherent DMA status.
+On Thu, 14 Dec 2023 00:28:16 +0100,
+Gergo Koteles wrote:
+> 
+> If the module can load the RCA but not the firmware binary, it will call
+> the cleanup functions. Then unloading the module causes general
+> protection fault due to double free.
+> 
+> Do not call the cleanup functions in tasdev_fw_ready.
+> 
+> general protection fault, probably for non-canonical address
+> 0x6f2b8a2bff4c8fec: 0000 [#1] PREEMPT SMP NOPTI
+> Call Trace:
+>  <TASK>
+>  ? die_addr+0x36/0x90
+>  ? exc_general_protection+0x1c5/0x430
+>  ? asm_exc_general_protection+0x26/0x30
+>  ? tasdevice_config_info_remove+0x6d/0xd0 [snd_soc_tas2781_fmwlib]
+>  tas2781_hda_unbind+0xaa/0x100 [snd_hda_scodec_tas2781_i2c]
+>  component_unbind+0x2e/0x50
+>  component_unbind_all+0x92/0xa0
+>  component_del+0xa8/0x140
+>  tas2781_hda_remove.isra.0+0x32/0x60 [snd_hda_scodec_tas2781_i2c]
+>  i2c_device_remove+0x26/0xb0
+> 
+> Fixes: 5be27f1e3ec9 ("ALSA: hda/tas2781: Add tas2781 HDA driver")
+> CC: stable@vger.kernel.org
+> Signed-off-by: Gergo Koteles <soyer@irl.hu>
 
-Motivation
-===
-A virtio GPU device may want to configure GPU hardware to work in
-noncoherent mode, i.e. some of its DMAs do not snoop CPU caches.
-This is generally for performance consideration.
-In certain platform, GFX performance can improve 20+% with DMAs going to
-noncoherent path.
+Thanks, applied.
 
-This noncoherent DMA mode works in below sequence:
-1. Host backend driver programs hardware not to snoop memory of target
-   DMA buffer.
-2. Host backend driver indicates guest frontend driver to program guest PAT
-   to WC for target DMA buffer.
-3. Guest frontend driver writes to the DMA buffer without clflush stuffs.
-4. Hardware does noncoherent DMA to the target buffer.
 
-In this noncoherent DMA mode, both guest and hardware regard a DMA buffer
-as not cached. So, if KVM forces the effective memory type of this DMA
-buffer to be WB, hardware DMA may read incorrect data and cause misc
-failures.
-
-Therefore, we introduce a new KVM virtio device to let KVM be aware that
-the virtio device hardware is working in noncoherent mode.
-Then, KVM will honor guest PAT type in Intel's platform.
-
-For a virtio device model (e.g. QEMU), if it knows device hardware is to be
-configured to work in
-
-a. noncoherent mode,
-   - on device realization,
-     it can create a KVM virtio device and set device attr to increase KVM
-     noncoherent DMA count;
-   - on device unrealization,
-     destroy the KVM virtio device to decrease KVM noncoherent DMA count.
-
-b. coherent mode,
-   just do nothing.
-
-Security
-===
-The biggest concern for KVM to honor guest's memory type in Intel platform
-is page aliasing issue.
-- For host MMIO, it's not a concern as KVM VMX programs EPT memory type to
-  UC (which will overwrite all guest PAT type except WC) no matter guest
-  memory type is honored or not.
-
-- For host non-MMIO pages,
-  * virtio guest frontend and host backend driver should be synced to use
-    the same memory type to map a buffer. Otherwise, there will be
-    potential problem for incorrect memory data. But this will only impact
-    the buggy guest alone.
-  * for live migration,
-    as QEMU will read all guest memory during live migration, page aliasing
-    could happen.
-    Current thinking is to disable live migration if a virtio device has
-    indicated its noncoherent state.
-    As a follow-up, we can discuss other solutions. e.g.
-    (a) switching back to coherent path before starting live migration.
-    (b) read/write of guest memory with clflush during live migration.
-
-Implementation Consideration
-===
-There is a previous series [1] from google to serve the same purpose to
-let KVM be aware of virtio GPU's noncoherent DMA status. That series
-requires a new memslot flag, and special memslots in user space.
-
-We don't choose to use memslot flag to request honoring guest memory type.
-Instead we hope to make the honoring request to be explicit (not tied to a
-memslot flag). This is because once guest memory type is honored, not only
-memory used by guest virtio device, but all guest memory is facing page
-aliasing issue potentially. KVM needs a generic solution to take care of
-page aliasing issue rather than counting on memory type of a special
-memslot being aligned in host and guest.
-(we can discuss what a generic solution to handle page aliasing issue will
-look like in later follow-up series).
-
-On the other hand, we choose to introduce a KVM virtio device rather than
-just provide an ioctl to wrap kvm_arch_[un]register_noncoherent_dma()
-directly, which is based on considerations that
-1. Explicitly limit the "register noncoherent DMA" ability to virtio
-   devices.
-2. Provide a better encapsulation.
-   Repeated setting noncoherent attribute to a KVM virtio device will only
-   increase KVM noncoherent DMA count for once.
-   KVM noncohrent DMA count will be decreased automatically when KVM virtio
-   device is closed.
-3. The KVM virtio device can be extended to let KVM know more info about
-   the device to introduce non-coherent DMA.
-
-Example QEMU usage
-===
-- on virtio device realize:
-   struct kvm_create_device cd = {
-       .type = KVM_DEV_TYPE_VIRTIO,
-   };
-   kvm_vm_ioctl(kvm_state, KVM_CREATE_DEVICE, &cd);
-
-   struct kvm_device_attr attr = {
-       .group = KVM_DEV_VIRTIO_NONCOHERENT,
-       .attr = KVM_DEV_VIRTIO_NONCOHERENT_SET,
-   };
-
-   ioctl(cd.fd, KVM_SET_DEVICE_ATTR, &attr);
-
-   g->kvm_device_fd = cd.fd;
-
-- on virtio device unrealize
-  close(g->kvm_device_fd);
-
-Reviewed-by: Zhenyu Wang <zhenyuw@linux.intel.com>
-Link: https://patchwork.kernel.org/project/dri-devel/cover/20200213213036.207625-1-olvaffe@gmail.com/ [1]
-Signed-off-by: Yan Zhao <yan.y.zhao@intel.com>
----
- arch/x86/kvm/Kconfig     |   1 +
- include/uapi/linux/kvm.h |   5 ++
- virt/kvm/Kconfig         |   3 +
- virt/kvm/Makefile.kvm    |   1 +
- virt/kvm/kvm_main.c      |   8 +++
- virt/kvm/virtio.c        | 121 +++++++++++++++++++++++++++++++++++++++
- virt/kvm/virtio.h        |  18 ++++++
- 7 files changed, 157 insertions(+)
- create mode 100644 virt/kvm/virtio.c
- create mode 100644 virt/kvm/virtio.h
-
-diff --git a/arch/x86/kvm/Kconfig b/arch/x86/kvm/Kconfig
-index b07247b0b958..9f7223d298a2 100644
---- a/arch/x86/kvm/Kconfig
-+++ b/arch/x86/kvm/Kconfig
-@@ -44,6 +44,7 @@ config KVM
- 	select KVM_XFER_TO_GUEST_WORK
- 	select KVM_GENERIC_DIRTYLOG_READ_PROTECT
- 	select KVM_VFIO
-+	select KVM_VIRTIO
- 	select INTERVAL_TREE
- 	select HAVE_KVM_PM_NOTIFIER if PM
- 	select KVM_GENERIC_HARDWARE_ENABLING
-diff --git a/include/uapi/linux/kvm.h b/include/uapi/linux/kvm.h
-index b1f92a0edc35..7f57fa902a0a 100644
---- a/include/uapi/linux/kvm.h
-+++ b/include/uapi/linux/kvm.h
-@@ -1394,6 +1394,9 @@ struct kvm_device_attr {
- #define   KVM_DEV_VFIO_GROUP_DEL	KVM_DEV_VFIO_FILE_DEL
- #define   KVM_DEV_VFIO_GROUP_SET_SPAPR_TCE		3
- 
-+#define KVM_DEV_VIRTIO_NONCOHERENT	1
-+#define KVM_DEV_VIRTIO_NONCOHERENT_SET	1
-+
- enum kvm_device_type {
- 	KVM_DEV_TYPE_FSL_MPIC_20	= 1,
- #define KVM_DEV_TYPE_FSL_MPIC_20	KVM_DEV_TYPE_FSL_MPIC_20
-@@ -1417,6 +1420,8 @@ enum kvm_device_type {
- #define KVM_DEV_TYPE_ARM_PV_TIME	KVM_DEV_TYPE_ARM_PV_TIME
- 	KVM_DEV_TYPE_RISCV_AIA,
- #define KVM_DEV_TYPE_RISCV_AIA		KVM_DEV_TYPE_RISCV_AIA
-+	KVM_DEV_TYPE_VIRTIO,
-+#define KVM_DEV_TYPE_VIRTIO		KVM_DEV_TYPE_VIRTIO
- 	KVM_DEV_TYPE_MAX,
- };
- 
-diff --git a/virt/kvm/Kconfig b/virt/kvm/Kconfig
-index 6793211a0b64..5dcba034593c 100644
---- a/virt/kvm/Kconfig
-+++ b/virt/kvm/Kconfig
-@@ -56,6 +56,9 @@ config HAVE_KVM_CPU_RELAX_INTERCEPT
- config KVM_VFIO
-        bool
- 
-+config KVM_VIRTIO
-+       bool
-+
- config HAVE_KVM_INVALID_WAKEUPS
-        bool
- 
-diff --git a/virt/kvm/Makefile.kvm b/virt/kvm/Makefile.kvm
-index 724c89af78af..614c4c4fe50e 100644
---- a/virt/kvm/Makefile.kvm
-+++ b/virt/kvm/Makefile.kvm
-@@ -7,6 +7,7 @@ KVM ?= ../../../virt/kvm
- 
- kvm-y := $(KVM)/kvm_main.o $(KVM)/eventfd.o $(KVM)/binary_stats.o
- kvm-$(CONFIG_KVM_VFIO) += $(KVM)/vfio.o
-+kvm-$(CONFIG_KVM_VIRTIO) += $(KVM)/virtio.o
- kvm-$(CONFIG_KVM_MMIO) += $(KVM)/coalesced_mmio.o
- kvm-$(CONFIG_KVM_ASYNC_PF) += $(KVM)/async_pf.o
- kvm-$(CONFIG_HAVE_KVM_IRQ_ROUTING) += $(KVM)/irqchip.o
-diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
-index acd67fb40183..dca2040368da 100644
---- a/virt/kvm/kvm_main.c
-+++ b/virt/kvm/kvm_main.c
-@@ -61,6 +61,7 @@
- #include "async_pf.h"
- #include "kvm_mm.h"
- #include "vfio.h"
-+#include "virtio.h"
- 
- #include <trace/events/ipi.h>
- 
-@@ -6453,6 +6454,10 @@ int kvm_init(unsigned vcpu_size, unsigned vcpu_align, struct module *module)
- 	if (WARN_ON_ONCE(r))
- 		goto err_vfio;
- 
-+	r = kvm_virtio_ops_init();
-+	if (WARN_ON_ONCE(r))
-+		goto err_virtio;
-+
- 	kvm_gmem_init(module);
- 
- 	/*
-@@ -6468,6 +6473,8 @@ int kvm_init(unsigned vcpu_size, unsigned vcpu_align, struct module *module)
- 	return 0;
- 
- err_register:
-+	kvm_virtio_ops_exit();
-+err_virtio:
- 	kvm_vfio_ops_exit();
- err_vfio:
- 	kvm_async_pf_deinit();
-@@ -6503,6 +6510,7 @@ void kvm_exit(void)
- 		free_cpumask_var(per_cpu(cpu_kick_mask, cpu));
- 	kmem_cache_destroy(kvm_vcpu_cache);
- 	kvm_vfio_ops_exit();
-+	kvm_virtio_ops_exit();
- 	kvm_async_pf_deinit();
- #ifdef CONFIG_KVM_GENERIC_HARDWARE_ENABLING
- 	unregister_syscore_ops(&kvm_syscore_ops);
-diff --git a/virt/kvm/virtio.c b/virt/kvm/virtio.c
-new file mode 100644
-index 000000000000..dbb25d9784c5
---- /dev/null
-+++ b/virt/kvm/virtio.c
-@@ -0,0 +1,121 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * KVM-VIRTIO device
-+ *
-+ */
-+#include <linux/kvm_host.h>
-+#include <linux/errno.h>
-+#include <linux/mutex.h>
-+#include <linux/slab.h>
-+#include "virtio.h"
-+
-+struct kvm_virtio {
-+	struct mutex lock;
-+	bool noncoherent;
-+};
-+
-+static int kvm_virtio_set_noncoherent(struct kvm_device *dev, long attr,
-+				      void __user *arg)
-+{
-+	struct kvm_virtio *kv = dev->private;
-+
-+	/*
-+	 * Currently, only set to noncoherent is allowed, and therefore a virtio
-+	 * device is not allowed to switch back to coherent once it's set to
-+	 * noncoherent.
-+	 * User arg is also not checked as the attr name has indicated that the
-+	 * purpose is to set to noncoherent.
-+	 */
-+	if (attr != KVM_DEV_VIRTIO_NONCOHERENT_SET)
-+		return -ENXIO;
-+
-+	mutex_lock(&kv->lock);
-+	if (kv->noncoherent)
-+		goto out;
-+
-+	kv->noncoherent = true;
-+	kvm_arch_register_noncoherent_dma(dev->kvm);
-+out:
-+	mutex_unlock(&kv->lock);
-+	return 0;
-+}
-+
-+static int kvm_virtio_set_attr(struct kvm_device *dev,
-+			       struct kvm_device_attr *attr)
-+{
-+	switch (attr->group) {
-+	case KVM_DEV_VIRTIO_NONCOHERENT:
-+		return kvm_virtio_set_noncoherent(dev, attr->attr,
-+						  u64_to_user_ptr(attr->addr));
-+	}
-+
-+	return -ENXIO;
-+}
-+
-+static int kvm_virtio_has_attr(struct kvm_device *dev,
-+			     struct kvm_device_attr *attr)
-+{
-+	switch (attr->group) {
-+	case KVM_DEV_VIRTIO_NONCOHERENT:
-+		switch (attr->attr) {
-+		case KVM_DEV_VIRTIO_NONCOHERENT_SET:
-+			return 0;
-+		}
-+
-+		break;
-+	}
-+
-+	return -ENXIO;
-+}
-+
-+static void kvm_virtio_release(struct kvm_device *dev)
-+{
-+	struct kvm_virtio *kv = dev->private;
-+
-+	if (kv->noncoherent)
-+		kvm_arch_unregister_noncoherent_dma(dev->kvm);
-+	kfree(kv);
-+	kfree(dev); /* alloc by kvm_ioctl_create_device, free by .release */
-+}
-+
-+static int kvm_virtio_create(struct kvm_device *dev, u32 type);
-+
-+static struct kvm_device_ops kvm_virtio_ops = {
-+	.name = "kvm-virtio",
-+	.create = kvm_virtio_create,
-+	.release = kvm_virtio_release,
-+	.set_attr = kvm_virtio_set_attr,
-+	.has_attr = kvm_virtio_has_attr,
-+};
-+
-+static int kvm_virtio_create(struct kvm_device *dev, u32 type)
-+{
-+	struct kvm_virtio *kv;
-+
-+	if (type != KVM_DEV_TYPE_VIRTIO)
-+		return -ENODEV;
-+
-+	/*
-+	 * This kvm_virtio device is created per virtio device.
-+	 * Its default noncoherent state is false.
-+	 */
-+	kv = kzalloc(sizeof(*kv), GFP_KERNEL_ACCOUNT);
-+	if (!kv)
-+		return -ENOMEM;
-+
-+	mutex_init(&kv->lock);
-+
-+	dev->private = kv;
-+
-+	return 0;
-+}
-+
-+int kvm_virtio_ops_init(void)
-+{
-+	return kvm_register_device_ops(&kvm_virtio_ops, KVM_DEV_TYPE_VIRTIO);
-+}
-+
-+void kvm_virtio_ops_exit(void)
-+{
-+	kvm_unregister_device_ops(KVM_DEV_TYPE_VIRTIO);
-+}
-diff --git a/virt/kvm/virtio.h b/virt/kvm/virtio.h
-new file mode 100644
-index 000000000000..0353398ee1f2
---- /dev/null
-+++ b/virt/kvm/virtio.h
-@@ -0,0 +1,18 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+#ifndef __KVM_VIRTIO_H
-+#define __KVM_VIRTIO_H
-+
-+#ifdef CONFIG_KVM_VIRTIO
-+int kvm_virtio_ops_init(void);
-+void kvm_virtio_ops_exit(void);
-+#else
-+static inline int kvm_virtio_ops_init(void)
-+{
-+	return 0;
-+}
-+static inline void kvm_virtio_ops_exit(void)
-+{
-+}
-+#endif
-+
-+#endif
-
-base-commit: 8ed26ab8d59111c2f7b86d200d1eb97d2a458fd1
--- 
-2.17.1
-
+Takashi
