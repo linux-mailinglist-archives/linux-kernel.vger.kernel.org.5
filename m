@@ -2,57 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3617C81356E
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 16:56:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 37C9D813572
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 16:57:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230388AbjLNP4l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 10:56:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36930 "EHLO
+        id S1573926AbjLNP4y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 10:56:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43014 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230233AbjLNP4j (ORCPT
+        with ESMTP id S230419AbjLNP4v (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 10:56:39 -0500
-Received: from out30-101.freemail.mail.aliyun.com (out30-101.freemail.mail.aliyun.com [115.124.30.101])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2201E8;
-        Thu, 14 Dec 2023 07:56:44 -0800 (PST)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R791e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046056;MF=alibuda@linux.alibaba.com;NM=1;PH=DS;RN=14;SR=0;TI=SMTPD_---0VyUiwjL_1702569400;
-Received: from 30.39.135.226(mailfrom:alibuda@linux.alibaba.com fp:SMTPD_---0VyUiwjL_1702569400)
-          by smtp.aliyun-inc.com;
-          Thu, 14 Dec 2023 23:56:42 +0800
-Message-ID: <3c1f3b68-f1fc-495c-5430-ba7bc7339619@linux.alibaba.com>
-Date:   Thu, 14 Dec 2023 23:56:40 +0800
+        Thu, 14 Dec 2023 10:56:51 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1DCB11B
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 07:56:57 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9F0A9C433C9;
+        Thu, 14 Dec 2023 15:56:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1702569417;
+        bh=Irc7j9mhIhkTjruf9MUgxUtXcKks1NoDo+o05Js0JRk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=uUlL/8ZQUpL92Yu4EDmQpLzUoufYW86sQ3eOU73LLU8e28ku06Q4eF+k9hlUGo/KI
+         GqrdLjWcVF10n3U1YeYk5OWaGYhLZbmu7dyjYcVByBqqORc1mGbqDwcUI4jFNQ/aCC
+         /+gcVYj9QYgUtUlXwcw2UoGsZ/EYNnHjHMJ/JB+ULpbO+C+leNpMRupyotFSP/RtnG
+         Ie3PP2656wTWQ8QMdd67GW0Hsr/o1tuMLIyFeeRQ+fN0sTBVOH0FDFwKd0URD/orrX
+         upTcn8XOKpxSU52fqQvJeUEJvWVt/r7ONfRf/hKfUDVew4KZj+7EBIxTbFUtUDTF8n
+         ayblJLEV8ja9g==
+Date:   Thu, 14 Dec 2023 15:56:52 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     Jianhua Lu <lujianhua000@gmail.com>
+Cc:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        Banajit Goswami <bgoswami@quicinc.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
+        linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 1/4] ASoC: qcom: common: Add qcom_snd_tdm_hw_params
+ function
+Message-ID: <bee0ab28-6bd3-4904-8afc-44fe7ddacb79@sirena.org.uk>
+References: <20231213123556.20469-1-lujianhua000@gmail.com>
+ <7b13b8b6-9048-48a3-b1a1-e62de88e8171@sirena.org.uk>
+ <ZXsklsO7nOqBFgzt@Gentoo>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.15.1
-Subject: Re: [RFC nf-next 1/2] netfilter: bpf: support prog update
-Content-Language: en-US
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Florian Westphal <fw@strlen.de>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        Jozsef Kadlecsik <kadlec@netfilter.org>,
-        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        coreteam@netfilter.org,
-        netfilter-devel <netfilter-devel@vger.kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>
-References: <1702467945-38866-1-git-send-email-alibuda@linux.alibaba.com>
- <1702467945-38866-2-git-send-email-alibuda@linux.alibaba.com>
- <20231213222415.GA13818@breakpoint.cc>
- <0e94149a-05f1-3f98-3f75-ca74f364a45b@linux.alibaba.com>
- <CAADnVQJx7j_kB6PVJN7cwGn5ETjcSs2Y0SuBS0+9qJRFpMNv-w@mail.gmail.com>
- <e6d9b59f-9c98-53a1-4947-720095e0c37e@linux.alibaba.com>
- <CAADnVQK5JP3D+BrugP61whZX1r1zHp7M_VLSkDmCKF9y96=79A@mail.gmail.com>
-From:   "D. Wythe" <alibuda@linux.alibaba.com>
-In-Reply-To: <CAADnVQK5JP3D+BrugP61whZX1r1zHp7M_VLSkDmCKF9y96=79A@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-11.9 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="3QwHa6JjLmRb9NBb"
+Content-Disposition: inline
+In-Reply-To: <ZXsklsO7nOqBFgzt@Gentoo>
+X-Cookie: Preserve the old, but know the new.
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -61,18 +59,38 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+--3QwHa6JjLmRb9NBb
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-On 12/14/23 9:37 PM, Alexei Starovoitov wrote:
-> yes. it's and it's working as expected. Do you see an issue?
+On Thu, Dec 14, 2023 at 11:51:50PM +0800, Jianhua Lu wrote:
+> On Thu, Dec 14, 2023 at 11:11:06AM +0000, Mark Brown wrote:
 
-Hi Alexei,
+> > The expectation is that TDM is set up by the machine driver, not from
+> > hw_params - if the TDM setup can be changed from within hw_params then
+> > it's hard to see how it's going to interact well with other TDM users on
+> > the bus.  More usually hw_params() would be influenced by the setup done
+> > in set_tdm_slot().
 
-I see the issue here is that bpf_nf_link has not yet implemented 
-prog_update,
-which just simply returned -EOPNOTSUPP right now.
+> Currently, qcom TDM setup need to read hw_params, if we want to move it
+> to machine driver, we must hardcode some params, but it will reduce reduce
+> readability.
 
-Do you mean that it is already implemented in the latest tree or
-the not-supported was expected?
+What makes you say that TDM setup needs to read hw_params?
 
-Thanks,
-D. Wythe
+--3QwHa6JjLmRb9NBb
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEyBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmV7JcMACgkQJNaLcl1U
+h9CY+gf3YsZTfcu/vz6WuiAEAFNcmWZVpApi5hN7KrHcB7qQWGfbWcivQWhFfiFc
+2HsD9BS9nkFG8HWmHz2DKgZltPNOIIVLnaHLBS6IaFqXCqDkWdDDpVmYTBCcIsSV
+Ls8IlGaVn9ddGf//+9sCcG1yIVnEj2NXqCHSM6EcDwNRy+kvGz9UG8pKYd2clgMv
+eVraA+qIr2R0jePWFgGuYGwrmy2O6/u0LHkjCnbUABHA2g8hGRvbv/Rv6IW1zKbb
+D013IGVbR1TkUWGlVU5b6AOS6DLlHMwIYwqaa5Gw1EQ/Q0S2J5N5105UGICxqVBA
+p1yWhSlzFo3Tjs7PQxsTZV3DHmFx
+=WcEt
+-----END PGP SIGNATURE-----
+
+--3QwHa6JjLmRb9NBb--
