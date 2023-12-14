@@ -1,122 +1,151 @@
-Return-Path: <linux-kernel+bounces-128-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-130-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id CCB69813C94
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 22:27:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 39809813C98
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 22:27:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8A53128169C
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 21:27:25 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E94FC281753
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 21:27:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B76993BB48;
-	Thu, 14 Dec 2023 21:27:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 498A96E2A8;
+	Thu, 14 Dec 2023 21:27:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Z1XEwg8x"
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="jJpWaGbK"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f49.google.com (mail-ej1-f49.google.com [209.85.218.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB97054275
-	for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 21:27:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1702589236; x=1734125236;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=Nb4cbx6ndAFy/GNaPW1An0xpvjDiKZXf0j/RAd6x8og=;
-  b=Z1XEwg8xz+RQuDiTjPPpSeyGZ0w/4CqguQtkeHZj6oPuk1C2IJ9d532D
-   cXpXokp+uXF62fztysiShUc7fBZgJRINEP+SGpGsALqmXNF4h8nLTTNzl
-   kafbKS/6U00GBhKLTUC7YNEcGiixmRz1CGWcV5fq4YSJJmbx6fL3hcWv+
-   fI0mdDcTKp5PV81S2LhpJhQ/3i322EOkfXcFo6B3fAB1+twsr4Pgfk52S
-   w2Cz8dnUhoR4sTK32FqlRs49wSNxNMVsE0/w3Sbn3zCBBjQQhmvxMiP2P
-   cxhpDXbmduSRmP1597QpwnUglDegh2/IeT7/v55WZJwWDYymbYezmGrfp
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10924"; a="2344413"
-X-IronPort-AV: E=Sophos;i="6.04,276,1695711600"; 
-   d="scan'208";a="2344413"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Dec 2023 13:27:16 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10924"; a="724212346"
-X-IronPort-AV: E=Sophos;i="6.04,276,1695711600"; 
-   d="scan'208";a="724212346"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by orsmga003.jf.intel.com with ESMTP; 14 Dec 2023 13:27:14 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rDtEe-000Mcq-1L;
-	Thu, 14 Dec 2023 21:27:12 +0000
-Date: Fri, 15 Dec 2023 05:26:48 +0800
-From: kernel test robot <lkp@intel.com>
-To: Dan Carpenter <error27@gmail.com>
-Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-	Masahiro Yamada <masahiroy@kernel.org>
-Subject: WARNING: modpost: drivers/net/ethernet/qlogic/qed/qed: section
- mismatch in reference: qed_mfw_ext_maps (section: .data) -> qed_mfw_ext_1g
- (section: .init.rodata)
-Message-ID: <202312150527.87ozSKcC-lkp@intel.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A813754279
+	for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 21:27:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ej1-f49.google.com with SMTP id a640c23a62f3a-a22fb5f71d9so217892366b.0
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 13:27:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1702589244; x=1703194044; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=tQLR3TCzDnjOcoUY0UAy1UbsLgGNkBs2xj+zMAJuyhY=;
+        b=jJpWaGbKVozhyjYxq8KJu+7nXgHGSv9x1vlGOU8VUR/Xamg161RcGaTqYoxy+RztDI
+         GV8wH0jO4rpSAM7RImVLNtR0HPNYkMnJHARwSP+tQwHIwUEQDYWAgtmkZqXsgK2N2OsX
+         UbSg6v6BmhVghMN5Ygh+t40hTFEG9m9VtpYUw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702589244; x=1703194044;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=tQLR3TCzDnjOcoUY0UAy1UbsLgGNkBs2xj+zMAJuyhY=;
+        b=pjHbOjZxhwHCWNaA4CllbH9NwJvqm9v3Lic/XN75Xbt9rGSaDvY6NyUe2B5tIKtrf8
+         XI8eybhl6NJ0wjCFfTbqBEyt0OOY3Tm3QpzyDQozUGW3RoOvOl2TbYiL+ob5htdLf9lJ
+         ZEOomdYtILpSZCHyCjqNLSLQILNm2WhwH+/vkbg87hHq6z9aL7H0kpiyX/W93nAoHbHr
+         G/YCjtyjnAt7bk21X5nczaTOiz3atd4Vns7PYLdaEwCNbFwedLd/AFIXUhb90HpSI6ET
+         PD/sGy1aXqjkkjyzSX5pS3Du35SOX2x7EUs45arizSXCXXMax8uyCwNnTentVZ7Q5/z8
+         06kQ==
+X-Gm-Message-State: AOJu0Yyxfk73CnlbiFi+GhLrOhjmQcJ1B/WMk9lOViZ2kjtZ6ohN7Kyq
+	c1jMAnHmfQ7fdzJApPueLttD/CJqGL0FH3O1F5BklQ==
+X-Google-Smtp-Source: AGHT+IE7OYOAzIzBqNAvCTayftZvK3DtzN2NEMkheGR79bvEI3MFe4Unl3+AfpaA2BHcjVdb51pzpP/lBxzBQ/Ebrqw=
+X-Received: by 2002:a17:906:782:b0:a1d:2f59:81a4 with SMTP id
+ l2-20020a170906078200b00a1d2f5981a4mr10882943ejc.62.1702589243759; Thu, 14
+ Dec 2023 13:27:23 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+References: <20231214153620.23998-1-zajec5@gmail.com>
+In-Reply-To: <20231214153620.23998-1-zajec5@gmail.com>
+From: Simon Glass <sjg@chromium.org>
+Date: Thu, 14 Dec 2023 14:27:12 -0700
+Message-ID: <CAPnjgZ31AAauR876W1RmU4JPzKUD8XAMCZrJDumE+Dr4miqABQ@mail.gmail.com>
+Subject: Re: [PATCH RFC] dt-bindings: nvmem: u-boot, env: add any-name MAC
+ cells compatible
+To: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
+Cc: Rob Herring <robh+dt@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, devicetree@vger.kernel.org, 
+	linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org, 
+	linux-kernel@vger.kernel.org, u-boot@lists.denx.de, 
+	=?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   5bd7ef53ffe5ca580e93e74eb8c81ed191ddc4bd
-commit: 3a3f1e573a105328a2cca45a7cfbebabbf5e3192 modpost: fix off by one in is_executable_section()
-date:   6 months ago
-config: openrisc-randconfig-r015-20230110 (https://download.01.org/0day-ci/archive/20231215/202312150527.87ozSKcC-lkp@intel.com/config)
-compiler: or1k-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231215/202312150527.87ozSKcC-lkp@intel.com/reproduce)
+Hi Rafa=C5=82,
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202312150527.87ozSKcC-lkp@intel.com/
+On Thu, 14 Dec 2023 at 08:36, Rafa=C5=82 Mi=C5=82ecki <zajec5@gmail.com> wr=
+ote:
+>
+> From: Rafa=C5=82 Mi=C5=82ecki <rafal@milecki.pl>
+>
+> So far we had a property for "ethaddr" NVMEM cell containing base
+> Ethernet MAC address. The problem is vendors often pick non-standard
+> names for storing MAC(s) (other than "ethaddr"). A few names were
+> noticed over years:
+> 1. "wanaddr" (Edimax, ELECOM, EnGenius, I-O DATA, Sitecom)
+> 2. "et1macaddr" (ASUS)
+> 3. "eth1addr" (Buffalo)
+> 4. "athaddr" (EnGenius)
+> 5. "baseMAC" (Netgear)
+> 6. "mac" (Netgear)
+> 7. "mac_addr" (Moxa)
+> and more ("HW_LAN_MAC", "HW_WAN_MAC", "INIC_MAC_ADDR", "LAN_MAC_ADDR",
+> "RADIOADDR0", "RADIOADDR1", "WAN_MAC_ADDR", "lan1_mac_addr", "wanmac",
+> "wmac1", "wmac2").
+>
+> It doesn't make sense to add property for every possible MAC cell name.
+> Instead allow specifying cells with "mac" compatible.
+>
+> Signed-off-by: Rafa=C5=82 Mi=C5=82ecki <rafal@milecki.pl>
+> ---
+> List of devices and their U-Boot MAC variables:
+> alphanetworks,asl56026) wanmac
+> asus,rt-ac65p) et1macaddr
+> asus,rt-ac85p) et1macaddr
+> belkin,f9k1109v1) HW_WAN_MAC + HW_LAN_MAC
+> buffalo,ls220de) eth1addr
+> buffalo,ls421de) eth1addr
+> checkpoint,l-50) lan1_mac_addr
+> dovado,tiny-ac) INIC_MAC_ADDR
+> dovado,tiny-ac) LAN_MAC_ADDR + WAN_MAC_ADDR
+> edimax,ra21s) wanaddr
+> edimax,rg21s) wanaddr
+> elecom,wrc-2533ghbk-i) wanaddr
+> elecom,wrc-2533ghbk2-t) wanaddr
+> engenius,ecb1200) athaddr
+> engenius,ecb1750) athaddr
+> engenius,epg5000) wanaddr
+> engenius,epg600) wanaddr
+> engenius,esr1200) wanaddr
+> engenius,esr1750) wanaddr
+> engenius,esr600) wanaddr
+> engenius,esr600h) wanaddr
+> engenius,esr900) wanaddr
+> enterasys,ws-ap3705i) RADIOADDR0 + RADIOADDR1
+> iodata,wn-ac1167dgr) wanaddr
+> iodata,wn-ac1167gr) wanaddr
+> iodata,wn-ac1600dgr) wanaddr
+> iodata,wn-ac1600dgr2) wanaddr
+> iodata,wn-ac733gr3) wanaddr
+> iodata,wn-ag300dgr) wanaddr
+> iodata,wnpr2600g) wanaddr
+> moxa,awk-1137c) mac_addr
+> netgear,wax220) mac
+> netgear,wndap620) baseMAC
+> netgear,wndap660) baseMAC
+> ocedo,panda) wmac1 + wmac2
+> sitecom,wlr-7100) wanaddr
+> sitecom,wlr-8100) wanaddr
+>
+>  .../devicetree/bindings/nvmem/u-boot,env.yaml | 33 +++++++++++++++++++
+>  1 file changed, 33 insertions(+)
+>
 
-All warnings (new ones prefixed by >>, old ones prefixed by <<):
+Are these upstream U-Boots, or just vendor forks?
 
->> WARNING: modpost: drivers/net/ethernet/qlogic/qed/qed: section mismatch in reference: qed_mfw_ext_maps (section: .data) -> qed_mfw_ext_1g (section: .init.rodata)
->> WARNING: modpost: drivers/net/ethernet/qlogic/qed/qed: section mismatch in reference: qed_mfw_ext_maps (section: .data) -> qed_mfw_ext_10g (section: .init.rodata)
->> WARNING: modpost: drivers/net/ethernet/qlogic/qed/qed: section mismatch in reference: qed_mfw_ext_maps (section: .data) -> qed_mfw_ext_25g (section: .init.rodata)
->> WARNING: modpost: drivers/net/ethernet/qlogic/qed/qed: section mismatch in reference: qed_mfw_ext_maps (section: .data) -> qed_mfw_ext_40g (section: .init.rodata)
->> WARNING: modpost: drivers/net/ethernet/qlogic/qed/qed: section mismatch in reference: qed_mfw_ext_maps (section: .data) -> qed_mfw_ext_50g_base_r (section: .init.rodata)
->> WARNING: modpost: drivers/net/ethernet/qlogic/qed/qed: section mismatch in reference: qed_mfw_ext_maps (section: .data) -> qed_mfw_ext_50g_base_r2 (section: .init.rodata)
->> WARNING: modpost: drivers/net/ethernet/qlogic/qed/qed: section mismatch in reference: qed_mfw_ext_maps (section: .data) -> qed_mfw_ext_100g_base_r2 (section: .init.rodata)
->> WARNING: modpost: drivers/net/ethernet/qlogic/qed/qed: section mismatch in reference: qed_mfw_ext_maps (section: .data) -> qed_mfw_ext_100g_base_r4 (section: .init.rodata)
->> WARNING: modpost: drivers/net/ethernet/qlogic/qed/qed: section mismatch in reference: qed_mfw_legacy_maps (section: .data) -> qed_mfw_legacy_1g (section: .init.rodata)
->> WARNING: modpost: drivers/net/ethernet/qlogic/qed/qed: section mismatch in reference: qed_mfw_legacy_maps (section: .data) -> qed_mfw_legacy_10g (section: .init.rodata)
->> WARNING: modpost: drivers/net/ethernet/qlogic/qed/qed: section mismatch in reference: qed_mfw_legacy_maps (section: .data) -> qed_mfw_legacy_20g (section: .init.rodata)
->> WARNING: modpost: drivers/net/ethernet/qlogic/qed/qed: section mismatch in reference: qed_mfw_legacy_maps (section: .data) -> qed_mfw_legacy_25g (section: .init.rodata)
->> WARNING: modpost: drivers/net/ethernet/qlogic/qed/qed: section mismatch in reference: qed_mfw_legacy_maps (section: .data) -> qed_mfw_legacy_40g (section: .init.rodata)
->> WARNING: modpost: drivers/net/ethernet/qlogic/qed/qed: section mismatch in reference: qed_mfw_legacy_maps (section: .data) -> qed_mfw_legacy_50g (section: .init.rodata)
-WARNING: modpost: drivers/net/ethernet/qlogic/qed/qed: section mismatch in reference: qed_mfw_legacy_maps (section: .data) -> qed_mfw_legacy_bb_100g (section: .init.rodata)
->> WARNING: modpost: drivers/net/ethernet/qlogic/qede/qede: section mismatch in reference: qede_forced_speed_maps (section: .data) -> qede_forced_speed_1000 (section: .init.rodata)
->> WARNING: modpost: drivers/net/ethernet/qlogic/qede/qede: section mismatch in reference: qede_forced_speed_maps (section: .data) -> qede_forced_speed_10000 (section: .init.rodata)
->> WARNING: modpost: drivers/net/ethernet/qlogic/qede/qede: section mismatch in reference: qede_forced_speed_maps (section: .data) -> qede_forced_speed_20000 (section: .init.rodata)
->> WARNING: modpost: drivers/net/ethernet/qlogic/qede/qede: section mismatch in reference: qede_forced_speed_maps (section: .data) -> qede_forced_speed_25000 (section: .init.rodata)
->> WARNING: modpost: drivers/net/ethernet/qlogic/qede/qede: section mismatch in reference: qede_forced_speed_maps (section: .data) -> qede_forced_speed_40000 (section: .init.rodata)
->> WARNING: modpost: drivers/net/ethernet/qlogic/qede/qede: section mismatch in reference: qede_forced_speed_maps (section: .data) -> qede_forced_speed_50000 (section: .init.rodata)
-WARNING: modpost: drivers/net/ethernet/qlogic/qede/qede: section mismatch in reference: qede_forced_speed_maps (section: .data) -> qede_forced_speed_100000 (section: .init.rodata)
-WARNING: modpost: "__mulsi3" [kernel/locking/test-ww_mutex.ko] undefined!
-WARNING: modpost: "__mulsi3" [kernel/trace/preemptirq_delay_test.ko] undefined!
-WARNING: modpost: "__mulsi3" [fs/ext2/ext2.ko] undefined!
-WARNING: modpost: "__mulsi3" [fs/ntfs/ntfs.ko] undefined!
-WARNING: modpost: "__mulsi3" [fs/ntfs3/ntfs3.ko] undefined!
-WARNING: modpost: "__mulsi3" [fs/fuse/fuse.ko] undefined!
-WARNING: modpost: "__mulsi3" [fs/fuse/cuse.ko] undefined!
-WARNING: modpost: "__mulsi3" [fs/fuse/virtiofs.ko] undefined!
-WARNING: modpost: "__mulsi3" [fs/jfs/jfs.ko] undefined!
-WARNING: modpost: "__mulsi3" [fs/nilfs2/nilfs2.ko] undefined!
-WARNING: modpost: suppressed 594 unresolved symbol warnings because there were too many)
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Regards,
+Simon
 
