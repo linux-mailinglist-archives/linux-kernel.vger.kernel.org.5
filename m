@@ -2,126 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B57A581313A
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 14:20:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A3C381314E
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 14:22:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229735AbjLNNUO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 08:20:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57608 "EHLO
+        id S1573210AbjLNNWg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 08:22:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38822 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229510AbjLNNUM (ORCPT
+        with ESMTP id S229714AbjLNNWe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 08:20:12 -0500
+        Thu, 14 Dec 2023 08:22:34 -0500
 Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DD5011B
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 05:20:18 -0800 (PST)
-Received: by mail-ej1-x62f.google.com with SMTP id a640c23a62f3a-a1f0616a15bso928219266b.2
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 05:20:18 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28F35F5
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 05:22:41 -0800 (PST)
+Received: by mail-ej1-x62f.google.com with SMTP id a640c23a62f3a-a1f8a1e9637so120871166b.1
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 05:22:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1702560017; x=1703164817; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
+        d=linaro.org; s=google; t=1702560159; x=1703164959; darn=vger.kernel.org;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=8tA5sZj0ipLxvUNY5VR3UmmSuqVdib1jEh2KqyST6WY=;
-        b=Zr/ZP8+2vRX9JkQVr/GJ6ygwMaCp9emPfB+GQlsw6MLbjB5ZqP9WREOagtLmtb5e5T
-         9Tj0E8/B2Es7+wIDjGdqhhp4DZmJ0YkeeqI0cJ1L8QvLFn+b3oFDUsY5+IFHkc+kMVJG
-         vsq71DNHayPiTgpCAnkcmbTUw5iziTKi46phXSASpJLBsWHQ95mlME5x4OpThnMAAmXQ
-         c5dwH/1BLEEV1LCRsfc2lntyQoj6D5lt1TgNtF3fO5Mh1LTECTC+JT5pIKqDcVMIK12T
-         asxbwweCw17SYTaNxzPTCweghUPjkPWrYWwLVw0fYDEJosog1eWGJ91vaCdZXEkhJ2aR
-         RuXw==
+        bh=6kFNgqKRDC3NjWVK8VqrRNN6lgWk3KBU/xIa7c195zw=;
+        b=CIIs3j1EMUaTu3+59Lvc1JJ3ndtpgEorTuc3iZ8c7vxXI31zRQKflNCumRi2AlmUyo
+         m17z9kWJqAyObBzYFgjuKn0Dulb+Bk1683F6p3uaR7/sQ4bUmmguwjunmxPRrz8UaL9N
+         6hBr/xnK3kFQL7AoBfw7dU+yX71wwaIta5b7w6w1COBbfz7nXpw+fKy/b1Rq7H4MBbOh
+         VCMIg8G8bKZv0UGGGAm4LnWT/tUWFfRGfFBn+z2GbnxvK8dpVz/DAG6qQ0OrEnI91r42
+         OTeC1bQeE+A672gQfbuVlVqCZBeFB0XA6lEFJt+DWvanMQRAymdMM3Dp8xxI2pvxtCap
+         2KkQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702560017; x=1703164817;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
+        d=1e100.net; s=20230601; t=1702560159; x=1703164959;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=8tA5sZj0ipLxvUNY5VR3UmmSuqVdib1jEh2KqyST6WY=;
-        b=FJAhDKFRfFBBLfONpISBLQgTQ52rjQAmIviZ2VbHTqXalr6zj6esjMNUYfKflBI+sn
-         dx4zrAmFtU3ryvrVjsKBmE2WUXvx52hifmN2o1xgqvcRwNOFxsS1FDu9n4J4LqsgC0YY
-         bhejRFK2KQsOAwkTctnewzOqOQ3w2G+fvnS/j2GRUsb4DjeIievTinyEcU1rx/sIBWhy
-         fY3j8yRkrMPngf/MqY+d4Fg0A99EXp1tDYYVOwbIp4RHtwlKiAQj827328ipTjv4r1JE
-         34MRyMAzkNI4HF41iAzMd5bRimC1Deax6qDxPKNrB8b42qz3ywEaftYBAoSGg/nxAGzT
-         9WMg==
-X-Gm-Message-State: AOJu0Yz7JDhtAkZTxB/kHl2ivQf0Y0JgrUq4ZHtY03hzPP0GWtOuR73T
-        3onh80lpCmMd0HNxVxz3rATggQ==
-X-Google-Smtp-Source: AGHT+IEVTFxPf+CXtd0mZ4n7W5NRnBNNrFhthqskQyZvCXbHSTUJgk/JSAwGHTZPr6OeRAXEAZEFYA==
-X-Received: by 2002:a17:906:c382:b0:9e2:c2a6:5c86 with SMTP id t2-20020a170906c38200b009e2c2a65c86mr4857002ejz.35.1702560016933;
-        Thu, 14 Dec 2023 05:20:16 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.218.27])
-        by smtp.gmail.com with ESMTPSA id r25-20020a170906351900b00a1cc1be1146sm9332509eja.217.2023.12.14.05.20.15
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 14 Dec 2023 05:20:16 -0800 (PST)
-Message-ID: <0f67b29c-e7ff-4ce9-96ce-aa552d6d926c@linaro.org>
-Date:   Thu, 14 Dec 2023 14:20:15 +0100
+        bh=6kFNgqKRDC3NjWVK8VqrRNN6lgWk3KBU/xIa7c195zw=;
+        b=uBRj3h+cTuFSnKpQSGmn++lh8KzDW4lujjisHsYKPATxLgmpwUwx2a49XvRFwvWPqu
+         jfQdRbVojM5yGC09S+3exAwdFfdchFnCPCOHq6QuXKC2vkIafb/razIpvPIGck/cyF9r
+         s/YI8/2EJYdj6H/STg1IlNABAtFbnqNqNi4WUVBLGrfUROH4obEgv6kfm1IK6VehHUge
+         9V3S07XWNmETc3j57Uf4iShAHggTeeEhMB0JUNsL0+l1fFgiBy4lConCj+MJvXXtopwi
+         3389s+aDyXWvol/zjkFhenIWYTu1wzWEfjyZrMyUWFSDEBThHUk9PLylS5j+suFtHbxe
+         8DrA==
+X-Gm-Message-State: AOJu0YyGiXl3L/T0zhn8lVmSAxuUE6OuYEaIDTBKGjiyGWMfYh3zFMYO
+        4wN+ise/d9qbdyrgIf/WN1f13sdqkWaquhshEYI=
+X-Google-Smtp-Source: AGHT+IE+g9e4kcr5bsiUNaytYbmJ3YVNdtcal3YY4PO91GdiuKEU4m0lMHkZrYuFRLn0lXzE+X5jgQ==
+X-Received: by 2002:a17:907:8d8:b0:a1c:7c86:8b79 with SMTP id zu24-20020a17090708d800b00a1c7c868b79mr8265198ejb.26.1702560159620;
+        Thu, 14 Dec 2023 05:22:39 -0800 (PST)
+Received: from rayden (h-217-31-164-171.A175.priv.bahnhof.se. [217.31.164.171])
+        by smtp.gmail.com with ESMTPSA id vo10-20020a170907a80a00b00a1d17c92ef3sm9357935ejc.51.2023.12.14.05.22.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 Dec 2023 05:22:39 -0800 (PST)
+Date:   Thu, 14 Dec 2023 14:22:37 +0100
+From:   Jens Wiklander <jens.wiklander@linaro.org>
+To:     arm@kernel.org, soc@kernel.org
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        op-tee@lists.trustedfirmware.org
+Subject: [GIT PULL] OP-TEE cleanup for v6.8
+Message-ID: <20231214132237.GA3092763@rayden>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 13/13] arm64: defconfig: make at24 eeprom builtin
-Content-Language: en-US
-To:     Tudor Ambarus <tudor.ambarus@linaro.org>, peter.griffin@linaro.org,
-        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        mturquette@baylibre.com, sboyd@kernel.org, conor+dt@kernel.org,
-        andi.shyti@kernel.org, alim.akhtar@samsung.com,
-        gregkh@linuxfoundation.org, jirislaby@kernel.org,
-        catalin.marinas@arm.com, will@kernel.org, s.nawrocki@samsung.com,
-        tomasz.figa@gmail.com, cw00.choi@samsung.com, arnd@arndb.de,
-        semen.protsenko@linaro.org
-Cc:     andre.draszik@linaro.org, saravanak@google.com,
-        willmcvicker@google.com, linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-clk@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-i2c@vger.kernel.org, linux-serial@vger.kernel.org
-References: <20231214105243.3707730-1-tudor.ambarus@linaro.org>
- <20231214105243.3707730-14-tudor.ambarus@linaro.org>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231214105243.3707730-14-tudor.ambarus@linaro.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -129,16 +68,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 14/12/2023 11:52, Tudor Ambarus wrote:
-> gs101-oriole populates an at24 eeprom on the battery connector.
-> Make EEPROM_AT24 builtin.
+Hello arm-soc maintainers,
 
-The first sentence does not explain me the second part. The first
-sentence justifies having this enabled in general, but not necessarily
-as built-in.
+Please pull these two small patches for the OP-TEE driver that remove a
+redundant custom workqueue and add a description of an argument of a
+optee_handle_rpc().
 
+Note that this pull request is made on top of optee-supplicant-fix-for-v6.7
+7269cba53d90 ("tee: optee: Fix supplicant based device enumeration")
+which was merged into v6.7-rc5, but in turn was based on top of v6.6. I
+did it like this because the Tested-bys where provided in this context.
 
+Thanks,
+Jens
 
-Best regards,
-Krzysztof
+The following changes since commit 7269cba53d906cf257c139d3b3a53ad272176bca:
 
+  tee: optee: Fix supplicant based device enumeration (2023-11-03 09:27:20 +0100)
+
+are available in the Git repository at:
+
+  https://git.linaro.org/people/jens.wiklander/linux-tee.git tags/optee-cleanup-for-v6.8
+
+for you to fetch changes up to b19773a1c6c02f5efc35e9f506aeddd2c7d2ac29:
+
+  optee: add missing description of RPC argument reference (2023-12-11 15:02:12 +0100)
+
+----------------------------------------------------------------
+OP-TEE cleanup
+
+- Remove a redundant custom workqueue in the OP-TEE driver.
+- Fix a missing description of an argument to optee_handle_rpc().
+
+----------------------------------------------------------------
+Etienne Carriere (1):
+      optee: add missing description of RPC argument reference
+
+Sumit Garg (1):
+      tee: optee: Remove redundant custom workqueue
+
+ drivers/tee/optee/core.c          | 13 ++-----------
+ drivers/tee/optee/optee_private.h |  2 --
+ drivers/tee/optee/smc_abi.c       |  1 +
+ 3 files changed, 3 insertions(+), 13 deletions(-)
