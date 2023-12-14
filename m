@@ -2,155 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 98EE58139F2
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 19:28:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 20D038139F6
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 19:28:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235729AbjLNS2D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 13:28:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38832 "EHLO
+        id S230324AbjLNS2f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 13:28:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35668 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229579AbjLNS2B (ORCPT
+        with ESMTP id S229586AbjLNS2d (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 13:28:01 -0500
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 9240A112
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 10:28:07 -0800 (PST)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C133EC15;
-        Thu, 14 Dec 2023 10:28:52 -0800 (PST)
-Received: from [10.1.197.60] (eglon.cambridge.arm.com [10.1.197.60])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5E9B43F738;
-        Thu, 14 Dec 2023 10:28:02 -0800 (PST)
-Message-ID: <a5ef6b40-a9b3-5338-a12a-6a4540cda861@arm.com>
-Date:   Thu, 14 Dec 2023 18:28:01 +0000
+        Thu, 14 Dec 2023 13:28:33 -0500
+Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C85E911D
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 10:28:38 -0800 (PST)
+Received: by mail-ej1-x62b.google.com with SMTP id a640c23a62f3a-a1ceae92ab6so1121549066b.0
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 10:28:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1702578517; x=1703183317; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=lH4CLT11soXgvi/oQe5hBTiRESQ8UWLQkTtFerePfus=;
+        b=tX6h8nLb1kYr8Fz4Aask5U8JKI7e50dBBD+xcXQhmoqLhmp8LfoWHORUw/kn+gw97E
+         gAv0lMfGOyKT2bSf/Ms0umF0YWrGKyXpsNwSnHefmlw/dceZhXJVOESB8OHnmuBB0MSz
+         cBKtmp3DZQ7VFkF1BsQSGeNAznQsY7Zle2g/BTA0B7XCV3jBYWUiTjrFrX32IQMe0a6I
+         VChW/DqiaxlBoVeMxlIO7fEcCHPpNWnkcvCoeb/lxEeRhj5aKbBvoZUCFcLCmuJO4TdL
+         bHW4auLthuMvzhVnLjWkMBesRGSKoV+vGiAXH18GRplVkxivED/+WR81qjuPln+3lfD2
+         cBOw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702578517; x=1703183317;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=lH4CLT11soXgvi/oQe5hBTiRESQ8UWLQkTtFerePfus=;
+        b=gNKn+d+URNVOl01hvOQE0ySq3pDNta1M0/72hO4jq9PNQvmqB0HdWpet9OWU3cldZ+
+         e2H1zWv+ZXybYTIFiv5Tpv2l+xD2eNmJDjaH+3uOK+a2ESjZYQd6LpHQnV7LryZDHAei
+         IWj9WIEGyiDhDe7IhWAJT0jqSib84eOZHYzSMo1P1anlDZGjT1Y42nqSjMjKYtHwaxaE
+         0YLYNFc79SgWk+w5MmMt4ooXgUqE4fkeR7J0HkzVQXvzXkKak34IOQmWOZV4UVdFl+xv
+         5TAUsEHjVzy2w2Im6CD77lE4YovLaZt/Fl2UQ8Fosw5sqWy3u4L5TlEONEIHdUe2YkwL
+         AjHA==
+X-Gm-Message-State: AOJu0YyfwgOLN1Fx8G+3LqUtPTYFU81P5hVH6ogsTMlqbnXtb1ch0jdK
+        qvC6ky5KoF7CFDv4t1c+fN71cu18AIax5afmE6OUhw==
+X-Google-Smtp-Source: AGHT+IHRwu9vWZ1HNkcpck/GZz1PmTPXDUEpaeLXHi9jKbPJ12eb2WfPX3ltH5XMfAwVgTTcxoc64P3ITxj2/N55KrE=
+X-Received: by 2002:a17:907:962a:b0:a1d:53d8:427e with SMTP id
+ gb42-20020a170907962a00b00a1d53d8427emr6349710ejc.119.1702578517047; Thu, 14
+ Dec 2023 10:28:37 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux aarch64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v7 02/24] x86/resctrl: kfree() rmid_ptrs from
- rdtgroup_exit()
-Content-Language: en-GB
-To:     Reinette Chatre <reinette.chatre@intel.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Fenghua Yu <fenghua.yu@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        H Peter Anvin <hpa@zytor.com>,
-        Babu Moger <Babu.Moger@amd.com>,
-        shameerali.kolothum.thodi@huawei.com,
-        D Scott Phillips OS <scott@os.amperecomputing.com>,
-        carl@os.amperecomputing.com, lcherian@marvell.com,
-        bobo.shaobowang@huawei.com, tan.shaopeng@fujitsu.com,
-        baolin.wang@linux.alibaba.com, Jamie Iles <quic_jiles@quicinc.com>,
-        Xin Hao <xhao@linux.alibaba.com>, peternewman@google.com,
-        dfustini@baylibre.com, amitsinght@marvell.com
-References: <20231025180345.28061-1-james.morse@arm.com>
- <20231025180345.28061-3-james.morse@arm.com>
- <208c3ade-a8c3-41cc-b136-4ab9b7e938e5@intel.com>
- <bd3afbfd-3372-cac9-600e-ace19ddd3199@arm.com>
- <cddbbbae-599b-42c0-abe1-4ca74d5ce36c@intel.com>
-From:   James Morse <james.morse@arm.com>
-In-Reply-To: <cddbbbae-599b-42c0-abe1-4ca74d5ce36c@intel.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-6.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20231213013807.897742-1-schatzberg.dan@gmail.com>
+ <20231213013807.897742-3-schatzberg.dan@gmail.com> <ZXq_H4St_NSEFkcD@tiehlicka>
+ <ZXtH5T+/qs+dUqrz@dschatzberg-fedora-PF3DHTBV>
+In-Reply-To: <ZXtH5T+/qs+dUqrz@dschatzberg-fedora-PF3DHTBV>
+From:   Yosry Ahmed <yosryahmed@google.com>
+Date:   Thu, 14 Dec 2023 10:28:01 -0800
+Message-ID: <CAJD7tkYAzW-8isZFjAaebrw8s4-h1LCRtZV-HckHa5_A-2oY7A@mail.gmail.com>
+Subject: Re: [PATCH V4 2/2] mm: add swapiness= arg to memory.reclaim
+To:     Dan Schatzberg <schatzberg.dan@gmail.com>
+Cc:     Michal Hocko <mhocko@suse.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Huan Yang <link@vivo.com>, linux-kernel@vger.kernel.org,
+        cgroups@vger.kernel.org, linux-mm@kvack.org,
+        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <muchun.song@linux.dev>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        David Hildenbrand <david@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        Yue Zhao <findns94@gmail.com>, Hugh Dickins <hughd@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Reinette,
+On Thu, Dec 14, 2023 at 10:22=E2=80=AFAM Dan Schatzberg
+<schatzberg.dan@gmail.com> wrote:
+>
+> On Thu, Dec 14, 2023 at 09:38:55AM +0100, Michal Hocko wrote:
+> > On Tue 12-12-23 17:38:03, Dan Schatzberg wrote:
+> > > Allow proactive reclaimers to submit an additional swappiness=3D<val>
+> > > argument to memory.reclaim. This overrides the global or per-memcg
+> > > swappiness setting for that reclaim attempt.
+> >
+> > You are providing the usecase in the cover letter and Andrew usually
+> > appends that to the first patch in the series. I think it would be
+> > better to have the usecase described here.
+> >
+> > [...]
+> > > @@ -1304,6 +1297,18 @@ PAGE_SIZE multiple when read back.
+> > >     This means that the networking layer will not adapt based on
+> > >     reclaim induced by memory.reclaim.
+> > >
+> > > +The following nested keys are defined.
+> > > +
+> > > +     =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D            =3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> > > +     swappiness            Swappiness value to reclaim with
+> > > +     =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D            =3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> > > +
+> > > +   Specifying a swappiness value instructs the kernel to perform
+> > > +   the reclaim with that swappiness value. Note that this has the
+> > > +   same semantics as the vm.swappiness sysctl - it sets the
+> >
+> > same semantics as vm.swappiness applied to memcg reclaim with all the
+> > existing limitations and potential future extensions.
+>
+> Thanks, will make this change.
+>
+> >
+> > > +   relative IO cost of reclaiming anon vs file memory but does
+> > > +   not allow for reclaiming specific amounts of anon or file memory.
+> > > +
+> > >    memory.peak
+> > >     A read-only single value file which exists on non-root
+> > >     cgroups.
+> >
+> > The biggest problem with the implementation I can see, and others have
+> > pointed out the same, is how fragile this is. You really have to check
+> > the code and _every_ place which defines scan_control to learn that
+> > mem_cgroup_shrink_node, reclaim_clean_pages_from_list,
+> > reclaim_folio_list, lru_gen_seq_write, try_to_free_pages, balance_pgdat=
+,
+> > shrink_all_memory and __node_reclaim. I have only checked couple of
+> > them, like direct reclaim and kswapd and none of them really sets up
+> > swappiness to the default memcg nor global value. So you effectively en=
+d
+> > up with swappiness =3D=3D 0.
+> >
+> > While the review can point those out it is quite easy to break and you
+> > will only learn about that very indirectly. I think it would be easier
+> > to review and maintain if you go with a pointer that would fallback to
+> > mem_cgroup_swappiness() if NULL which will be the case for every
+> > existing reclaimer except memory.reclaim with swappiness value.
+>
+> I agree. My initial implementation used a pointer for this
+> reason. I'll switch this back. Just to be clear - I still need to
+> initialize scan_control.swappiness in all these other places right? It
+> appears to mostly be stack-initialized which means it has
+> indeterminate value, not necessarily zero.
 
-On 13/12/2023 23:27, Reinette Chatre wrote:
-> Hi James,
-> 
-> On 12/13/2023 10:03 AM, James Morse wrote:
->> On 09/11/2023 17:39, Reinette Chatre wrote:
->>> On 10/25/2023 11:03 AM, James Morse wrote:
-> 
-> ...
-> 
->>>> diff --git a/arch/x86/kernel/cpu/resctrl/core.c b/arch/x86/kernel/cpu/resctrl/core.c
->>>> index 19e0681f0435..0056c9962a44 100644
->>>> --- a/arch/x86/kernel/cpu/resctrl/core.c
->>>> +++ b/arch/x86/kernel/cpu/resctrl/core.c
->>>> @@ -992,7 +992,13 @@ late_initcall(resctrl_late_init);
->>>>  
->>>>  static void __exit resctrl_exit(void)
->>>>  {
->>>> +	struct rdt_resource *r = &rdt_resources_all[RDT_RESOURCE_L3].r_resctrl;
->>>> +
->>>>  	cpuhp_remove_state(rdt_online);
->>>> +
->>>> +	if (r->mon_capable)
->>>> +		rdt_put_mon_l3_config(r);
->>>> +
->>>>  	rdtgroup_exit();
->>>>  }
->>>
->>> I expect cleanup to do the inverse of init. I do not know what was the
->>> motivation for the rdtgroup_exit() to follow cpuhp_remove_state()
->>
->> This will invoke the hotplug callbacks, making it look to resctrl like all CPUs are
->> offline. This means it is then impossible for rdtgroup_exit() to race with the hotplug
->> notifiers. (if you could run this code...)
-
-> hmmm ... if there is a risk of such a race would the init code not also be
-> vulnerable to that with the notifiers up before rdtgroup_init()?
-
-Nope, because this array is allocated behind rdt_get_mon_l3_config(), which ultimately
-comes from get_rdt_resources() in resctrl_late_init() - which calls cpuhp_setup_state()
-after all this init work has been done.
-
-(cpu hp always gives me a headache1)
-
-
-> The races you mention
-> are not obvious to me. I see the filesystem and hotplug code protected against races via
-> the mutex and static keys. Could you please elaborate on the flows of concern?
-
-Functions like __check_limbo() (calling __rmid_entry()) are called under the
-rdtgroup_mutex, but they don't consider that rmid_ptrs[] may be NULL.
-
-But this could only happen if the limbo work ran after cpuhp_remove_state() - this can't
-happen because the hotplug callbacks cancel the limbo work, and won't reschedule it if the
-domain is going offline.
-
-
-The only other path is via free_rmid(), I've not thought too much about this as
-resctrl_exit() can't actually be invoked - this code is discarded by the linker.
-
-It could be run on MPAM, but only in response to an 'error interrupt' (which is optional)
-- and all the MPAM error interrupts indicate a software bug.
-
-I've only invoked this path once, and rdtgroup_exit()s unregister_filesystem() didn't
-remove all the files. I anticipate digging into this teardown code more once the bulk of
-the MPAM driver is upstream.
-
-
-> I am not advocating for cpuhp_remove_state() to be called later. I understand that
-> it simplifies the flows to consider.
-> 
->>> but I
->>> was expecting this new cleanup to be done after rdtgroup_exit() to be inverse
->>> of init. This cleanup is inserted in middle of two existing cleanup - could
->>> you please elaborate how this location was chosen?
->>
->> rdtgroup_exit() does nothing with the resctrl structures, it removes sysfs and debugfs
->> entries, and unregisters the filesystem.
->>
->> Hypothetically, you can't observe any effect of the rmid_ptrs array being freed as
->> all the CPUs are offline and the overflow/limbo threads should have been cancelled.
->> Once cpuhp_remove_state() has been called, this really doesn't matter.
-
-> Sounds like nothing prevents this code from following the custom of cleanup to be
-> inverse of init (yet keep cpuhp_remove_state() first).
-
-I'll put the the rdt_put_mon_l3_config() call after rdtgroup_exit()...
-
-
-Thanks,
-
-James
+My understanding is that in a partially initialized struct,
+uninitialized members default to 0, but I am not a C expert :)
