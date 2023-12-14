@@ -2,211 +2,390 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A052F812EAF
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 12:36:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AEBB6812EB8
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 12:37:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1443956AbjLNLgH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 06:36:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48002 "EHLO
+        id S1444018AbjLNLg5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 06:36:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52232 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1444020AbjLNLgC (ORCPT
+        with ESMTP id S1443988AbjLNLgp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 06:36:02 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43917BD
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 03:36:08 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 43869C433C8;
-        Thu, 14 Dec 2023 11:36:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1702553767;
-        bh=RJJ2ExTpt6thgw3MxxPjwU1KJcbb3KLf0ZIPQsayZ8Y=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=EItITJFfxWft3+sdAYdW7BGG0amsTFC/dOrC9Vx22goMq1dYY4EILhhapeS7YIvnn
-         xkZFLFaZBMUqr4t44jDEBr/neZ0lRR9sw8g2YMt9NhM7Rzdym0fR97EqnVRy+B3EZS
-         Lk2u/QLGfdBhryDYSKhzHH/6rGYUrDlK1pO49JVWTE+kYJ5z/2KL91QCye2lLowIsu
-         4u5tNlJjVlvfTId5kISoypUEi1UMlcBvfRT2GMn80jIEAnFlOC8Q2cKh+D1rIaqiYt
-         /1DdDBUXa0/8qiUdyvXQeIY6N8qoAJqTCMeAjFeOi4RhgHlZqM2+7pY9R/qc1BOPEe
-         drCzTe8nQJ8Ug==
-Date:   Thu, 14 Dec 2023 12:36:05 +0100
-From:   Maxime Ripard <mripard@kernel.org>
-To:     Heiko =?utf-8?Q?St=C3=BCbner?= <heiko@sntech.de>
-Cc:     Alex Bee <knaerzche@gmail.com>, Sandy Huang <hjc@rock-chips.com>,
-        Andy Yan <andyshrk@163.com>, Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 04/11] drm/rockchip: inno_hdmi: Correctly setup HDMI
- quantization range
-Message-ID: <qr7if2k76wdqgevdcwqxj2dkcbga72owjqlk3qaazujhejjloo@cnvmuq27qqns>
-References: <20231213195125.212923-1-knaerzche@gmail.com>
- <w7cj24se5gjomfynp5yindnh3s2pea4p3f46u6y7lcci7hri32@62i6hg26pheb>
- <5f4fc919-681f-44ec-bd44-5788e5b718ca@gmail.com>
- <3053311.k3LOHGUjKi@diego>
+        Thu, 14 Dec 2023 06:36:45 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D60E131;
+        Thu, 14 Dec 2023 03:36:50 -0800 (PST)
+Date:   Thu, 14 Dec 2023 11:36:47 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1702553808;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=L9JJ5IHsGtzu7Ov9swAOawGU2uKy2b6/e/AvUWDZtwc=;
+        b=SWDWTqBMYrxdQKh7OJ4Ijs02sgLwgp8rwEkcyROKWpOxjYxaw9McWkFrvRDZtO6wZOp6dO
+        X9Kyd7wFcBls0+16l+gxf40IrAcJPidwr3fms14P2KNYsWSGwQhqeF6WVgPCzmtVq6q4yS
+        mkqVnKob2n8rf6J/x9Cx2CmlR+0FmAtcf1doiiR167RMpQTlgWQ3rDbTZUkstk+BC6stR+
+        oSdMFMXvViBQNsM1/NzIqW7Fk1pskwYRMIgOTOhE0saTdopnFY5sXHRwgm/Gqe5ZH3bnBp
+        fCv4AH/F6zCOZJDbv3OSAYExyxaRVn7lICWPMW2oY1UC/qpgbDtJkujsrtQ8JA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1702553808;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=L9JJ5IHsGtzu7Ov9swAOawGU2uKy2b6/e/AvUWDZtwc=;
+        b=cO1my/X6MSKYJ5WxdksaKOt/0b0zeCgrjtUMc3pwJIQHEYNnjGv3e4P9CvA/gRHiC2XJAx
+        Jiit0rgii6fLZYDQ==
+From:   "tip-bot2 for Juergen Gross" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/paravirt] x86/paravirt: Remove no longer needed paravirt
+ patching code
+Cc:     Juergen Gross <jgross@suse.com>,
+        "Borislav Petkov (AMD)" <bp@alien8.de>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20231210062138.2417-6-jgross@suse.com>
+References: <20231210062138.2417-6-jgross@suse.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="6eyagsib3egjojx7"
-Content-Disposition: inline
-In-Reply-To: <3053311.k3LOHGUjKi@diego>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Message-ID: <170255380742.398.5480687189928914311.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The following commit has been merged into the x86/paravirt branch of tip:
 
---6eyagsib3egjojx7
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Commit-ID:     f7af6977621a41661696d94c0c0a20c761404476
+Gitweb:        https://git.kernel.org/tip/f7af6977621a41661696d94c0c0a20c761404476
+Author:        Juergen Gross <jgross@suse.com>
+AuthorDate:    Sun, 10 Dec 2023 07:21:38 +01:00
+Committer:     Borislav Petkov (AMD) <bp@alien8.de>
+CommitterDate: Sun, 10 Dec 2023 23:34:37 +01:00
 
-On Thu, Dec 14, 2023 at 12:17:34PM +0100, Heiko St=FCbner wrote:
-> Am Donnerstag, 14. Dezember 2023, 12:12:08 CET schrieb Alex Bee:
-> > Hi Maxime
-> >=20
-> > Am 14.12.23 um 08:56 schrieb Maxime Ripard:
-> > > Hi Alex,
-> > >
-> > > Thanks for working on this!
-> > >
-> > > On Wed, Dec 13, 2023 at 08:51:18PM +0100, Alex Bee wrote:
-> > >> The display controller will always give full range RGB regardless of=
- the
-> > >> mode set, but HDMI requires certain modes to be transmitted in limit=
-ed
-> > >> range RGB. This is especially required for HDMI sinks which do not s=
-upport
-> > >> non-standard quantization ranges.
-> > >>
-> > >> This enables color space conversion for those modes and sets the
-> > >> quantization range accordingly in the AVI infoframe.
-> > >>
-> > >> Fixes: 412d4ae6b7a5 ("drm/rockchip: hdmi: add Innosilicon HDMI suppo=
-rt")
-> > >> Signed-off-by: Alex Bee <knaerzche@gmail.com>
-> > >> ---
-> > >>   drivers/gpu/drm/rockchip/inno_hdmi.c | 40 ++++++++++++++++++++++--=
-----
-> > >>   1 file changed, 32 insertions(+), 8 deletions(-)
-> > >>
-> > >> diff --git a/drivers/gpu/drm/rockchip/inno_hdmi.c b/drivers/gpu/drm/=
-rockchip/inno_hdmi.c
-> > >> index 345253e033c5..32626a75723c 100644
-> > >> --- a/drivers/gpu/drm/rockchip/inno_hdmi.c
-> > >> +++ b/drivers/gpu/drm/rockchip/inno_hdmi.c
-> > >> @@ -33,6 +33,7 @@ struct hdmi_data_info {
-> > >>   	unsigned int enc_in_format;
-> > >>   	unsigned int enc_out_format;
-> > >>   	unsigned int colorimetry;
-> > >> +	bool rgb_limited_range;
-> > >>   };
-> > >>  =20
-> > >>   struct inno_hdmi_i2c {
-> > >> @@ -308,6 +309,18 @@ static int inno_hdmi_config_video_avi(struct in=
-no_hdmi *hdmi,
-> > >>   	else
-> > >>   		frame.avi.colorspace =3D HDMI_COLORSPACE_RGB;
-> > >>  =20
-> > >> +	if (hdmi->hdmi_data.enc_out_format =3D=3D HDMI_COLORSPACE_RGB) {
-> > >> +		drm_hdmi_avi_infoframe_quant_range(&frame.avi,
-> > >> +						   &hdmi->connector, mode,
-> > >> +						   hdmi->hdmi_data.rgb_limited_range ?
-> > >> +						   HDMI_QUANTIZATION_RANGE_LIMITED :
-> > >> +						   HDMI_QUANTIZATION_RANGE_FULL);
-> > >> +	} else {
-> > >> +		frame.avi.quantization_range =3D HDMI_QUANTIZATION_RANGE_DEFAULT;
-> > >> +		frame.avi.ycc_quantization_range =3D
-> > >> +			HDMI_YCC_QUANTIZATION_RANGE_LIMITED;
-> > >> +	}
-> > >> +
-> > >>   	return inno_hdmi_upload_frame(hdmi, rc, &frame, INFOFRAME_AVI, 0,=
- 0, 0);
-> > >>   }
-> > >>  =20
-> > >> @@ -334,14 +347,22 @@ static int inno_hdmi_config_video_csc(struct i=
-nno_hdmi *hdmi)
-> > >>   	if (data->enc_in_format =3D=3D data->enc_out_format) {
-> > >>   		if ((data->enc_in_format =3D=3D HDMI_COLORSPACE_RGB) ||
-> > >>   		    (data->enc_in_format >=3D HDMI_COLORSPACE_YUV444)) {
-> > >> -			value =3D v_SOF_DISABLE | v_COLOR_DEPTH_NOT_INDICATED(1);
-> > >> -			hdmi_writeb(hdmi, HDMI_VIDEO_CONTRL3, value);
-> > >> -
-> > >> -			hdmi_modb(hdmi, HDMI_VIDEO_CONTRL,
-> > >> -				  m_VIDEO_AUTO_CSC | m_VIDEO_C0_C2_SWAP,
-> > >> -				  v_VIDEO_AUTO_CSC(AUTO_CSC_DISABLE) |
-> > >> -				  v_VIDEO_C0_C2_SWAP(C0_C2_CHANGE_DISABLE));
-> > >> -			return 0;
-> > >> +			if (data->enc_in_format =3D=3D HDMI_COLORSPACE_RGB &&
-> > >> +			    data->enc_out_format =3D=3D HDMI_COLORSPACE_RGB &&
-> > >> +			    hdmi->hdmi_data.rgb_limited_range) {
-> > >> +				csc_mode =3D CSC_RGB_0_255_TO_RGB_16_235_8BIT;
-> > >> +				auto_csc =3D AUTO_CSC_DISABLE;
-> > >> +				c0_c2_change =3D C0_C2_CHANGE_DISABLE;
-> > >> +				csc_enable =3D v_CSC_ENABLE;
-> > >> +			} else {
-> > >> +				value =3D v_SOF_DISABLE | v_COLOR_DEPTH_NOT_INDICATED(1);
-> > >> +				hdmi_writeb(hdmi, HDMI_VIDEO_CONTRL3, value);
-> > >> +				hdmi_modb(hdmi, HDMI_VIDEO_CONTRL,
-> > >> +					  m_VIDEO_AUTO_CSC | m_VIDEO_C0_C2_SWAP,
-> > >> +					  v_VIDEO_AUTO_CSC(AUTO_CSC_DISABLE) |
-> > >> +					  v_VIDEO_C0_C2_SWAP(C0_C2_CHANGE_DISABLE));
-> > >> +				return 0;
-> > >> +			}
-> > >>   		}
-> > >>   	}
-> > >>  =20
-> > >> @@ -458,6 +479,9 @@ static int inno_hdmi_setup(struct inno_hdmi *hdm=
-i,
-> > >>   	else
-> > >>   		hdmi->hdmi_data.colorimetry =3D HDMI_COLORIMETRY_ITU_709;
-> > >>  =20
-> > >> +	hdmi->hdmi_data.rgb_limited_range =3D
-> > >> +		drm_default_rgb_quant_range(mode) =3D=3D HDMI_QUANTIZATION_RANGE_=
-LIMITED;
-> > >> +
-> > > This patch conflicts heavily with my inno_hdmi patches here (patches =
-22 to 38):
-> > > https://lore.kernel.org/dri-devel/20231207-kms-hdmi-connector-state-v=
-5-0-6538e19d634d@kernel.org/
-> > I'm aware of that and I mentioned it in the cover letter. Your series i=
-s=20
-> > not merged yet and it didn't get much feedback so far. What is the=20
-> > status there? Especially because you are removing things from inno-hdmi=
-=20
-> > driver (which aren't really required to remove there) which will I have=
-=20
-> > to reintroduce.
->=20
-> Sadly I haven't found the time to look closer at Maxime's series so far,
-> but I got the impression that it separates into multiple cleanup steps
-> for a number of controllers.
+x86/paravirt: Remove no longer needed paravirt patching code
 
-Yeah, one of the previous version comment was to support more
-controllers than vc4, which is fair. So I ended up reworking and
-converting multiple controllers, but most of the clean up changes can be
-applied outside of that series just fine.
+Now that paravirt is using the alternatives patching infrastructure,
+remove the paravirt patching code.
 
-I just didn't find someone to test / review them yet :)
+Signed-off-by: Juergen Gross <jgross@suse.com>
+Signed-off-by: Borislav Petkov (AMD) <bp@alien8.de>
+Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Link: https://lore.kernel.org/r/20231210062138.2417-6-jgross@suse.com
+---
+ arch/x86/include/asm/paravirt.h       | 13 +-----
+ arch/x86/include/asm/paravirt_types.h | 38 +---------------
+ arch/x86/include/asm/text-patching.h  | 12 +-----
+ arch/x86/kernel/alternative.c         | 67 +--------------------------
+ arch/x86/kernel/paravirt.c            | 30 +------------
+ arch/x86/kernel/vmlinux.lds.S         | 13 +-----
+ arch/x86/tools/relocs.c               |  2 +-
+ 7 files changed, 3 insertions(+), 172 deletions(-)
 
-Maxime
-
---6eyagsib3egjojx7
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCZXropAAKCRDj7w1vZxhR
-xSykAQDqYIpgTslaMLOwOAy0RyHVwEN9XruMjhgsz5yDExWnQgD/c1EitiQyt/Oe
-R2AEZo6kERC+m3DXu3PnMvcgVzbvCw8=
-=rUtn
------END PGP SIGNATURE-----
-
---6eyagsib3egjojx7--
+diff --git a/arch/x86/include/asm/paravirt.h b/arch/x86/include/asm/paravirt.h
+index 973c2ac..8bcf758 100644
+--- a/arch/x86/include/asm/paravirt.h
++++ b/arch/x86/include/asm/paravirt.h
+@@ -725,23 +725,10 @@ void native_pv_lock_init(void) __init;
+ 
+ #else  /* __ASSEMBLY__ */
+ 
+-#define _PVSITE(ptype, ops)			\
+-771:;						\
+-	ops;					\
+-772:;						\
+-	.pushsection .parainstructions,"a";	\
+-	 .long 771b-.;				\
+-	 .byte ptype;				\
+-	 .byte 772b-771b;			\
+-	.popsection
+-
+-
+ #ifdef CONFIG_X86_64
+ #ifdef CONFIG_PARAVIRT_XXL
+ #ifdef CONFIG_DEBUG_ENTRY
+ 
+-#define PARA_PATCH(off)		((off) / 8)
+-#define PARA_SITE(ptype, ops)	_PVSITE(ptype, ops)
+ #define PARA_INDIRECT(addr)	*addr(%rip)
+ 
+ .macro PARA_IRQ_save_fl
+diff --git a/arch/x86/include/asm/paravirt_types.h b/arch/x86/include/asm/paravirt_types.h
+index 9cad536..d8e85d2 100644
+--- a/arch/x86/include/asm/paravirt_types.h
++++ b/arch/x86/include/asm/paravirt_types.h
+@@ -2,15 +2,6 @@
+ #ifndef _ASM_X86_PARAVIRT_TYPES_H
+ #define _ASM_X86_PARAVIRT_TYPES_H
+ 
+-#ifndef __ASSEMBLY__
+-/* These all sit in the .parainstructions section to tell us what to patch. */
+-struct paravirt_patch_site {
+-	s32 instr_offset;	/* original instructions */
+-	u8 type;		/* type of this instruction */
+-	u8 len;			/* length of original instruction */
+-} __packed;
+-#endif
+-
+ #ifdef CONFIG_PARAVIRT
+ 
+ #ifndef __ASSEMBLY__
+@@ -250,32 +241,6 @@ struct paravirt_patch_template {
+ extern struct pv_info pv_info;
+ extern struct paravirt_patch_template pv_ops;
+ 
+-#define PARAVIRT_PATCH(x)					\
+-	(offsetof(struct paravirt_patch_template, x) / sizeof(void *))
+-
+-#define paravirt_type(op)				\
+-	[paravirt_typenum] "i" (PARAVIRT_PATCH(op)),	\
+-	[paravirt_opptr] "m" (pv_ops.op)
+-/*
+- * Generate some code, and mark it as patchable by the
+- * apply_paravirt() alternate instruction patcher.
+- */
+-#define _paravirt_alt(insn_string, type)		\
+-	"771:\n\t" insn_string "\n" "772:\n"		\
+-	".pushsection .parainstructions,\"a\"\n"	\
+-	"  .long 771b-.\n"				\
+-	"  .byte " type "\n"				\
+-	"  .byte 772b-771b\n"				\
+-	".popsection\n"
+-
+-/* Generate patchable code, with the default asm parameters. */
+-#define paravirt_alt(insn_string)					\
+-	_paravirt_alt(insn_string, "%c[paravirt_typenum]")
+-
+-/* Simple instruction patching code. */
+-#define NATIVE_LABEL(a,x,b) "\n\t.globl " a #x "_" #b "\n" a #x "_" #b ":\n\t"
+-
+-unsigned int paravirt_patch(u8 type, void *insn_buff, unsigned long addr, unsigned int len);
+ #define paravirt_ptr(op)	[paravirt_opptr] "m" (pv_ops.op)
+ 
+ int paravirt_disable_iospace(void);
+@@ -555,9 +520,6 @@ unsigned long pv_native_read_cr2(void);
+ 
+ #define paravirt_nop	((void *)nop_func)
+ 
+-extern struct paravirt_patch_site __parainstructions[],
+-	__parainstructions_end[];
+-
+ #endif	/* __ASSEMBLY__ */
+ 
+ #define ALT_NOT_XEN	ALT_NOT(X86_FEATURE_XENPV)
+diff --git a/arch/x86/include/asm/text-patching.h b/arch/x86/include/asm/text-patching.h
+index 29832c3..0b70653 100644
+--- a/arch/x86/include/asm/text-patching.h
++++ b/arch/x86/include/asm/text-patching.h
+@@ -6,18 +6,6 @@
+ #include <linux/stddef.h>
+ #include <asm/ptrace.h>
+ 
+-struct paravirt_patch_site;
+-#ifdef CONFIG_PARAVIRT
+-void apply_paravirt(struct paravirt_patch_site *start,
+-		    struct paravirt_patch_site *end);
+-#else
+-static inline void apply_paravirt(struct paravirt_patch_site *start,
+-				  struct paravirt_patch_site *end)
+-{}
+-#define __parainstructions	NULL
+-#define __parainstructions_end	NULL
+-#endif
+-
+ /*
+  * Currently, the max observed size in the kernel code is
+  * JUMP_LABEL_NOP_SIZE/RELATIVEJUMP_SIZE, which are 5.
+diff --git a/arch/x86/kernel/alternative.c b/arch/x86/kernel/alternative.c
+index 48938bc..f26983a 100644
+--- a/arch/x86/kernel/alternative.c
++++ b/arch/x86/kernel/alternative.c
+@@ -1472,48 +1472,6 @@ int alternatives_text_reserved(void *start, void *end)
+ }
+ #endif /* CONFIG_SMP */
+ 
+-#ifdef CONFIG_PARAVIRT
+-
+-/* Use this to add nops to a buffer, then text_poke the whole buffer. */
+-static void __init_or_module add_nops(void *insns, unsigned int len)
+-{
+-	while (len > 0) {
+-		unsigned int noplen = len;
+-		if (noplen > ASM_NOP_MAX)
+-			noplen = ASM_NOP_MAX;
+-		memcpy(insns, x86_nops[noplen], noplen);
+-		insns += noplen;
+-		len -= noplen;
+-	}
+-}
+-
+-void __init_or_module apply_paravirt(struct paravirt_patch_site *start,
+-				     struct paravirt_patch_site *end)
+-{
+-	struct paravirt_patch_site *p;
+-	char insn_buff[MAX_PATCH_LEN];
+-	u8 *instr;
+-
+-	for (p = start; p < end; p++) {
+-		unsigned int used;
+-
+-		instr = (u8 *)&p->instr_offset + p->instr_offset;
+-		BUG_ON(p->len > MAX_PATCH_LEN);
+-		/* prep the buffer with the original instructions */
+-		memcpy(insn_buff, instr, p->len);
+-		used = paravirt_patch(p->type, insn_buff, (unsigned long)instr, p->len);
+-
+-		BUG_ON(used > p->len);
+-
+-		/* Pad the rest with nops */
+-		add_nops(insn_buff + used, p->len - used);
+-		text_poke_early(instr, insn_buff, p->len);
+-	}
+-}
+-extern struct paravirt_patch_site __start_parainstructions[],
+-	__stop_parainstructions[];
+-#endif	/* CONFIG_PARAVIRT */
+-
+ /*
+  * Self-test for the INT3 based CALL emulation code.
+  *
+@@ -1649,28 +1607,11 @@ void __init alternative_instructions(void)
+ 	 */
+ 
+ 	/*
+-	 * Paravirt patching and alternative patching can be combined to
+-	 * replace a function call with a short direct code sequence (e.g.
+-	 * by setting a constant return value instead of doing that in an
+-	 * external function).
+-	 * In order to make this work the following sequence is required:
+-	 * 1. set (artificial) features depending on used paravirt
+-	 *    functions which can later influence alternative patching
+-	 * 2. apply paravirt patching (generally replacing an indirect
+-	 *    function call with a direct one)
+-	 * 3. apply alternative patching (e.g. replacing a direct function
+-	 *    call with a custom code sequence)
+-	 * Doing paravirt patching after alternative patching would clobber
+-	 * the optimization of the custom code with a function call again.
++	 * Make sure to set (artificial) features depending on used paravirt
++	 * functions which can later influence alternative patching.
+ 	 */
+ 	paravirt_set_cap();
+ 
+-	/*
+-	 * First patch paravirt functions, such that we overwrite the indirect
+-	 * call with the direct call.
+-	 */
+-	apply_paravirt(__parainstructions, __parainstructions_end);
+-
+ 	__apply_fineibt(__retpoline_sites, __retpoline_sites_end,
+ 			__cfi_sites, __cfi_sites_end, true);
+ 
+@@ -1681,10 +1622,6 @@ void __init alternative_instructions(void)
+ 	apply_retpolines(__retpoline_sites, __retpoline_sites_end);
+ 	apply_returns(__return_sites, __return_sites_end);
+ 
+-	/*
+-	 * Then patch alternatives, such that those paravirt calls that are in
+-	 * alternatives can be overwritten by their immediate fragments.
+-	 */
+ 	apply_alternatives(__alt_instructions, __alt_instructions_end);
+ 
+ 	/*
+diff --git a/arch/x86/kernel/paravirt.c b/arch/x86/kernel/paravirt.c
+index acc5b10..5358d43 100644
+--- a/arch/x86/kernel/paravirt.c
++++ b/arch/x86/kernel/paravirt.c
+@@ -43,14 +43,6 @@ void __init default_banner(void)
+ 	       pv_info.name);
+ }
+ 
+-static unsigned paravirt_patch_call(void *insn_buff, const void *target,
+-				    unsigned long addr, unsigned len)
+-{
+-	__text_gen_insn(insn_buff, CALL_INSN_OPCODE,
+-			(void *)addr, target, CALL_INSN_SIZE);
+-	return CALL_INSN_SIZE;
+-}
+-
+ #ifdef CONFIG_PARAVIRT_XXL
+ DEFINE_ASM_FUNC(_paravirt_ident_64, "mov %rdi, %rax", .text);
+ DEFINE_ASM_FUNC(pv_native_save_fl, "pushf; pop %rax", .noinstr.text);
+@@ -73,28 +65,6 @@ static void native_tlb_remove_table(struct mmu_gather *tlb, void *table)
+ 	tlb_remove_page(tlb, table);
+ }
+ 
+-unsigned int paravirt_patch(u8 type, void *insn_buff, unsigned long addr,
+-			    unsigned int len)
+-{
+-	/*
+-	 * Neat trick to map patch type back to the call within the
+-	 * corresponding structure.
+-	 */
+-	void *opfunc = *((void **)&pv_ops + type);
+-	unsigned ret;
+-
+-	if (opfunc == NULL)
+-		/* If there's no function, patch it with BUG_func() */
+-		ret = paravirt_patch_call(insn_buff, BUG_func, addr, len);
+-	else if (opfunc == nop_func)
+-		ret = 0;
+-	else
+-		/* Otherwise call the function. */
+-		ret = paravirt_patch_call(insn_buff, opfunc, addr, len);
+-
+-	return ret;
+-}
+-
+ struct static_key paravirt_steal_enabled;
+ struct static_key paravirt_steal_rq_enabled;
+ 
+diff --git a/arch/x86/kernel/vmlinux.lds.S b/arch/x86/kernel/vmlinux.lds.S
+index 54a5596..a349dbf 100644
+--- a/arch/x86/kernel/vmlinux.lds.S
++++ b/arch/x86/kernel/vmlinux.lds.S
+@@ -267,19 +267,6 @@ SECTIONS
+ 	}
+ #endif
+ 
+-	/*
+-	 * start address and size of operations which during runtime
+-	 * can be patched with virtualization friendly instructions or
+-	 * baremetal native ones. Think page table operations.
+-	 * Details in paravirt_types.h
+-	 */
+-	. = ALIGN(8);
+-	.parainstructions : AT(ADDR(.parainstructions) - LOAD_OFFSET) {
+-		__parainstructions = .;
+-		*(.parainstructions)
+-		__parainstructions_end = .;
+-	}
+-
+ #ifdef CONFIG_RETPOLINE
+ 	/*
+ 	 * List of instructions that call/jmp/jcc to retpoline thunks
+diff --git a/arch/x86/tools/relocs.c b/arch/x86/tools/relocs.c
+index d30949e..a3bae2b 100644
+--- a/arch/x86/tools/relocs.c
++++ b/arch/x86/tools/relocs.c
+@@ -66,7 +66,7 @@ static const char * const sym_regex_kernel[S_NSYMTYPES] = {
+ 	[S_REL] =
+ 	"^(__init_(begin|end)|"
+ 	"__x86_cpu_dev_(start|end)|"
+-	"(__parainstructions|__alt_instructions)(_end)?|"
++	"__alt_instructions(_end)?|"
+ 	"(__iommu_table|__apicdrivers|__smp_locks)(_end)?|"
+ 	"__(start|end)_pci_.*|"
+ #if CONFIG_FW_LOADER
