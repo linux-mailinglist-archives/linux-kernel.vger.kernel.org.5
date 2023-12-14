@@ -2,135 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DFD481338A
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 15:49:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 08285813390
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 15:50:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1573536AbjLNOtk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 09:49:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43862 "EHLO
+        id S1573558AbjLNOuC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 09:50:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59534 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1573312AbjLNOtj (ORCPT
+        with ESMTP id S1573312AbjLNOt7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 09:49:39 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20D6EBD;
-        Thu, 14 Dec 2023 06:49:45 -0800 (PST)
-X-IronPort-AV: E=McAfee;i="6600,9927,10924"; a="2213382"
-X-IronPort-AV: E=Sophos;i="6.04,275,1695711600"; 
-   d="scan'208";a="2213382"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Dec 2023 06:49:42 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10924"; a="767629176"
-X-IronPort-AV: E=Sophos;i="6.04,275,1695711600"; 
-   d="scan'208";a="767629176"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by orsmga007.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Dec 2023 06:49:31 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-        (envelope-from <andy@kernel.org>)
-        id 1rDn1j-00000005s2k-2Jqg;
-        Thu, 14 Dec 2023 16:49:27 +0200
-Date:   Thu, 14 Dec 2023 16:49:27 +0200
-From:   Andy Shevchenko <andy@kernel.org>
-To:     Michael Walle <michael@walle.cc>
-Cc:     =?utf-8?B?VFlfQ2hhbmdb5by15a2Q6YC4XQ==?= <tychang@realtek.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <brgl@bgdev.pl>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>, linux-gpio@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 2/2] Add GPIO support for Realtek DHC(Digital Home
- Center) RTD SoCs.
-Message-ID: <ZXsV96xhuvVSyc1f@smile.fi.intel.com>
-References: <20231207100723.15015-1-tychang@realtek.com>
- <20231207100723.15015-3-tychang@realtek.com>
- <ZXHMbZRXLXGa_tq8@smile.fi.intel.com>
- <989146448858478b975c66899b8f3fed@realtek.com>
- <ZXm0MIub8X2q_lnp@smile.fi.intel.com>
- <23574204547646779d02f0109c20b3ff@realtek.com>
- <ZXsKAyIlY3y3tgUi@smile.fi.intel.com>
- <0f0b3b65a838aea6797ae78c47d6af49@walle.cc>
+        Thu, 14 Dec 2023 09:49:59 -0500
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB31010F;
+        Thu, 14 Dec 2023 06:50:05 -0800 (PST)
+Received: from pps.filterd (m0353724.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3BEEkk4Y005093;
+        Thu, 14 Dec 2023 14:49:59 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : content-transfer-encoding : mime-version; s=pp1;
+ bh=kHHl0f8RwfUu7HzgV3Mii9bAXDUHulH0KGOvLW3qpr8=;
+ b=OEtuXcUmEVlV2I8stlty9/r/55lnt14br2es7A1erCv0VW5nx5NobRqlIzPmHa/Md7Gy
+ VqRHfVEHMicYHER3uFy91N/nF8kRiqigqI0H6bp+cix2JxBpFdiBPsBA2zJseXjhWK3I
+ SzwCj2zwkkmhgKLzGrCfBsiPXPmRcQy33WNfZBfGM/yNXw3RTGFp2co6Bz9knlRqbdn7
+ Ea9ya1b//DTZ4yXBO8yUI/hRyeLGQ/hxYcDIXmQLaMpWxJDbsaKTfSdOjfDxIM4gY0de
+ A0OydKEW4rngE18MQ9xC7TUjja1jlBiUjX+YjGQjv4jYq0ZLJ0XrbKDWeQkO+SwR0Sx2 SQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3v03e01145-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 14 Dec 2023 14:49:58 +0000
+Received: from m0353724.ppops.net (m0353724.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3BEEl88g009151;
+        Thu, 14 Dec 2023 14:49:58 GMT
+Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3v03e0113h-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 14 Dec 2023 14:49:58 +0000
+Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
+        by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3BEEOUx3014136;
+        Thu, 14 Dec 2023 14:49:57 GMT
+Received: from smtprelay02.dal12v.mail.ibm.com ([172.16.1.4])
+        by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3uw592gmjm-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 14 Dec 2023 14:49:57 +0000
+Received: from smtpav02.dal12v.mail.ibm.com (smtpav02.dal12v.mail.ibm.com [10.241.53.101])
+        by smtprelay02.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3BEEnvm024314506
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 14 Dec 2023 14:49:57 GMT
+Received: from smtpav02.dal12v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 11F565805E;
+        Thu, 14 Dec 2023 14:49:57 +0000 (GMT)
+Received: from smtpav02.dal12v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id BB0FA5805A;
+        Thu, 14 Dec 2023 14:49:56 +0000 (GMT)
+Received: from gfwa153.aus.stglabs.ibm.com (unknown [9.3.84.127])
+        by smtpav02.dal12v.mail.ibm.com (Postfix) with ESMTP;
+        Thu, 14 Dec 2023 14:49:56 +0000 (GMT)
+From:   Ninad Palsule <ninad@linux.ibm.com>
+To:     peterhuewe@gmx.de, jarkko@kernel.org, jgg@ziepe.ca
+Cc:     Ninad Palsule <ninad@linux.ibm.com>,
+        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
+        joel@jms.id.au
+Subject: [PATCH v1 0/1] Add more compatibility strings to tpm-tis-i2c
+Date:   Thu, 14 Dec 2023 08:49:52 -0600
+Message-Id: <20231214144954.3833998-1-ninad@linux.ibm.com>
+X-Mailer: git-send-email 2.39.2
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: MlqJ9OKR5yEFp8lNCfRY4eC5ZMX0K3jU
+X-Proofpoint-ORIG-GUID: tPir1ZFJtM1OLt-xegOvT3RfYyi5qy0V
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <0f0b3b65a838aea6797ae78c47d6af49@walle.cc>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_SOFTFAIL,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-14_09,2023-12-14_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0
+ priorityscore=1501 impostorscore=0 spamscore=0 malwarescore=0
+ suspectscore=0 adultscore=0 phishscore=0 clxscore=1015 mlxscore=0
+ lowpriorityscore=0 mlxlogscore=777 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2311290000 definitions=main-2312140103
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 14, 2023 at 03:35:18PM +0100, Michael Walle wrote:
+The new IBM system1 bmc machine uses Nuvoton TPM chip. I had this commit
+as part of the device tree for new machine but reviewer suggested send
+the driver commit as separate patch.
 
-> > > >> >> This driver enables configuration of GPIO direction, GPIO values,
-> > > >> >> GPIO debounce settings and handles GPIO interrupts.
-> > > >> >
-> > > >> >Why gpio-regmap can't be used?
-> > > >>
-> > > >> I will try to use gpio-remap in the next version.
-> > > >
-> > > >If it appears that it makes code uglier / complicated, please add the note
-> > > >somewhere to answer the above question.
-> > > 
-> > > I've traced the gpio-regmap.c file. It appears that for the driver
-> > > to register
-> > > gpio_irq_chip, it must create the irq_domain and add it into
-> > > gpio_regmap_config.
-> > > Additionally, the driver needs to register the irq handler by itself.
-> > > However, this process can be managed by the gpiolib if the driver
-> > > fills in the struct
-> > > gpio_irq_chip inside struct gpio_chip before invoking
-> > > gpiochip_add_data.
-> > 
-> > Hmm... I thought this is solvable issue.
-> > Michael, is there a limitation in GPIO regmap that this driver can't be
-> > converted?
-> 
-> gpio-regmap is designed that regmap-irq (drivers/base/regmap/irq.c) can be
-> used. So, if regmap-irq fit this driver, then it can be used together with
-> gpio-regmap.
-> 
-> From a quick glance at the patch, it looks like the gpio portion might fit
-> gpio-regmap.
-> 
-> > > Moreover, apart from managing the registers for gpio direction and
-> > > value, there
-> > > are several other registers that require access(interrupt enable,
-> > > debounce...).
-> > > The GPIO IRQ status registers are located at different base
-> > > addresses and are
-> > > not contiguous. It may need to create an additional regmap and
-> > > assign the access
-> > > table to this regmap.
-> > 
-> > AFAIK this is not a problem as you can provide your own xlate function
-> > that
-> > will take care about register mapping.
-> 
-> Just for the gpio part. IIRC regmap has it own translation (regmap fields).
-> 
-> > > With the above consideration, I tend to keep using the existing
-> > > method.
-> > 
-> > I would like to hear from Michael if it's indeed a big obstacle.
-> 
-> So, regarding the irq portion, again, it must fit the regmap-irq. For the
-> additional requirement to set the debounce, you can add a .set_config to
-> gpio_regmap_config and supply your own set_config callback. See also [1].
+The patchset for IBM system1 bmc machine device tree is as follows:
+https://lore.kernel.org/linux-kernel/20231212164004.1683589-1-ninad@linux.ibm.com/
 
-Thank you, Michael, for the prompt answer. It's insightful to me, I will try to
-remember these aspects for the future reviews.
+Joel Stanley (1):
+  tpm: tis-i2c: Add more compatible strings
 
-> [1]
-> https://lore.kernel.org/linux-gpio/d4a6a640c373b6d939e147691efa596c@walle.cc/
+ drivers/char/tpm/tpm_tis_i2c.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
 -- 
-With Best Regards,
-Andy Shevchenko
-
+2.39.2
 
