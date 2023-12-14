@@ -1,135 +1,152 @@
-Return-Path: <linux-kernel+bounces-104-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-103-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 94901813C46
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 22:04:25 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3D902813C43
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 22:04:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 522F1281B3D
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 21:04:24 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8CA5DB21B3D
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 21:04:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C355C6A34D;
-	Thu, 14 Dec 2023 21:04:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 890B5282E5;
+	Thu, 14 Dec 2023 21:04:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b="vHqwe+0C"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mx01.omp.ru (mx01.omp.ru [90.154.21.10])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [62.89.141.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 80578282E8;
-	Thu, 14 Dec 2023 21:04:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=omp.ru
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=omp.ru
-Received: from [192.168.1.104] (178.176.74.138) by msexch01.omp.ru
- (10.188.4.12) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.1258.12; Fri, 15 Dec
- 2023 00:03:59 +0300
-Subject: Re: [PATCH net-next v2 11/21] net: ravb: Move DBAT configuration to
- the driver's ndo_open API
-To: Claudiu <claudiu.beznea@tuxon.dev>, <davem@davemloft.net>,
-	<edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
-	<richardcochran@gmail.com>, <p.zabel@pengutronix.de>,
-	<yoshihiro.shimoda.uh@renesas.com>, <wsa+renesas@sang-engineering.com>,
-	<geert+renesas@glider.be>
-CC: <netdev@vger.kernel.org>, <linux-renesas-soc@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, Claudiu Beznea
-	<claudiu.beznea.uj@bp.renesas.com>
-References: <20231214114600.2451162-1-claudiu.beznea.uj@bp.renesas.com>
- <20231214114600.2451162-12-claudiu.beznea.uj@bp.renesas.com>
-From: Sergey Shtylyov <s.shtylyov@omp.ru>
-Organization: Open Mobile Platform
-Message-ID: <a93c0673-2876-5bb2-29aa-0d0208b97b10@omp.ru>
-Date: Fri, 15 Dec 2023 00:03:59 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D10897494;
+	Thu, 14 Dec 2023 21:04:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ftp.linux.org.uk
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=linux.org.uk; s=zeniv-20220401; h=Sender:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=7FrhxwWPxjd1nrVnDhmOIzmALWzUB7ji13bBSfV+Dm4=; b=vHqwe+0C8DVTzGY92KpnnNrZ61
+	9AjwcGxoG3Z+B6DxOIX8VQEGOmuosBI6oPZmY2zpXNULYfiyLkl8djZ+AEFgYzpt49vAy0GAniFJ4
+	5v9WbrwDHC97+uhc5/D/1PUPO2LYNKGAKJLMZgDVPQ754lKyl15E4c1FP5wSBXJZudT/yt5i6qp3n
+	jv3eydn+WQiJ1sz6nQKrPf0OjctP6s90DUcXuzC6eD9aKqYJNiVlsX/6snjTx5Umg7anTdjOFQBYR
+	GBSvFcFbH9466jNlUaKxsFV6HabQYMdWsSOiXmhYhq/qmoMnr8kVAmrjAPgPtA8VackjJOvkA/lzl
+	vf07MJPA==;
+Received: from viro by zeniv.linux.org.uk with local (Exim 4.96 #2 (Red Hat Linux))
+	id 1rDssC-00CS2n-1P;
+	Thu, 14 Dec 2023 21:04:00 +0000
+Date: Thu, 14 Dec 2023 21:04:00 +0000
+From: Al Viro <viro@zeniv.linux.org.uk>
+To: Greg KH <greg@kroah.com>
+Cc: Nick Desaulniers <ndesaulniers@google.com>, tanzirh@google.com,
+	Kees Cook <keescook@chromium.org>,
+	Andy Shevchenko <andy@kernel.org>, linux-hardening@vger.kernel.org,
+	linux-kernel@vger.kernel.org, Nick DeSaulniers <nnn@google.com>,
+	Andrew Morton <akpm@linux-foundation.org>, llvm@lists.linux.dev
+Subject: Re: [PATCH] lib/string: shrink lib/string.i via IWYU
+Message-ID: <20231214210400.GR1674809@ZenIV>
+References: <20231205-libstringheader-v1-1-7f9c573053a7@gmail.com>
+ <20231205213807.GE1674809@ZenIV>
+ <CAKwvOd=2VASkaLvjU+7kkbvhu2CimYn5KUGJBDRePyUhtrNK2Q@mail.gmail.com>
+ <2023120608-ivy-snowdrop-890d@gregkh>
+ <CAKwvOdmFJ=ZGN8ZScS5oQpXnAL0wwtTDCeNNGpBKZXzQ4kRAVA@mail.gmail.com>
+ <2023120657-henna-spongy-9ef6@gregkh>
+ <20231206005542.GJ1674809@ZenIV>
+ <20231206030047.GL1674809@ZenIV>
+ <2023120650-faucet-palpable-f1a3@gregkh>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20231214114600.2451162-12-claudiu.beznea.uj@bp.renesas.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: msexch01.omp.ru (10.188.4.12) To msexch01.omp.ru
- (10.188.4.12)
-X-KSE-ServerInfo: msexch01.omp.ru, 9
-X-KSE-AntiSpam-Interceptor-Info: scan successful
-X-KSE-AntiSpam-Version: 6.1.0, Database issued on: 12/14/2023 20:46:37
-X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
-X-KSE-AntiSpam-Method: none
-X-KSE-AntiSpam-Rate: 59
-X-KSE-AntiSpam-Info: Lua profiles 182128 [Dec 14 2023]
-X-KSE-AntiSpam-Info: Version: 6.1.0.3
-X-KSE-AntiSpam-Info: Envelope from: s.shtylyov@omp.ru
-X-KSE-AntiSpam-Info: LuaCore: 7 0.3.7 6d6bf5bd8eea7373134f756a2fd73e9456bb7d1a
-X-KSE-AntiSpam-Info: {rep_avail}
-X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
-X-KSE-AntiSpam-Info: {relay has no DNS name}
-X-KSE-AntiSpam-Info: {SMTP from is not routable}
-X-KSE-AntiSpam-Info: {Found in DNSBL: 178.176.74.138 in (user)
- b.barracudacentral.org}
-X-KSE-AntiSpam-Info: {Found in DNSBL: 178.176.74.138 in (user)
- dbl.spamhaus.org}
-X-KSE-AntiSpam-Info:
-	d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;omp.ru:7.1.1;127.0.0.199:7.1.2
-X-KSE-AntiSpam-Info: ApMailHostAddress: 178.176.74.138
-X-KSE-AntiSpam-Info: {DNS response errors}
-X-KSE-AntiSpam-Info: Rate: 59
-X-KSE-AntiSpam-Info: Status: not_detected
-X-KSE-AntiSpam-Info: Method: none
-X-KSE-AntiSpam-Info: Auth:dmarc=temperror header.from=omp.ru;spf=temperror
- smtp.mailfrom=omp.ru;dkim=none
-X-KSE-Antiphishing-Info: Clean
-X-KSE-Antiphishing-ScanningType: Heuristic
-X-KSE-Antiphishing-Method: None
-X-KSE-Antiphishing-Bases: 12/14/2023 20:51:00
-X-KSE-Antivirus-Interceptor-Info: scan successful
-X-KSE-Antivirus-Info: Clean, bases: 12/14/2023 7:08:00 PM
-X-KSE-Attachment-Filter-Triggered-Rules: Clean
-X-KSE-Attachment-Filter-Triggered-Filters: Clean
-X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2023120650-faucet-palpable-f1a3@gregkh>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 
-On 12/14/23 2:45 PM, Claudiu wrote:
-
-> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+On Wed, Dec 06, 2023 at 12:09:17PM +0900, Greg KH wrote:
+> > slap #include "unaligned.h" into their traps.c and unaligned.c
+> > (callers and definitions resp.) and strip those from asm/unaligned.h?
+> > At that point we can remove arch/{arc,parisc}/asm/unaligned.h - everything
+> > will pick include/asm-generic/unaligned.h.
+> > 
+> > Then the next cycle we ask Linus to run the following:
+> > for i in `git grep -l -w asm/unaligned.h`; do
+> > 	sed -i -e "s/asm\/unaligned.h/linux\/unaligned.h/" $i
+> > done
+> > git mv include/asm-generic/unaligned.h include/linux/unaligned.h
+> > sed -i -e "/unaligned.h/d" include/asm-generic/Kbuild
+> > right before releasing -rc1 and asm/unaligned.h is gone...
 > 
-> DBAT setup was done in the driver's probe API. As some IP variants switch
-> to reset mode (and thus registers' content is lost) when setting clocks
-> (due to module standby functionality) to be able to implement runtime PM
-> move the DBAT configuration in the driver's ndo_open API.
-> 
-> This commit prepares the code for the addition of runtime PM.
-> 
-> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+> Please do, it's really annoying and would be great to fix up.
 
-Reviewed-by: Sergey Shtylyov <s.shtylyov@omp.ru>
+	FWIW, turns out that we have several places in drivers/* that pull
+asm-generic/unaligned.h.  IMO that's completely wrong - not just in this
+case (it's a matter of trivially adjusting the script), but I think that
+as a matter of policy we should *NOT* have includes of asm-generic/*.h
+anywhere in drivers/ fs/ io_uring/ kernel/ mm/ net/ sound/
 
-[...]
-> diff --git a/drivers/net/ethernet/renesas/ravb_main.c b/drivers/net/ethernet/renesas/ravb_main.c
-> index 04eaa1967651..6b8ca08be35e 100644
-> --- a/drivers/net/ethernet/renesas/ravb_main.c
-> +++ b/drivers/net/ethernet/renesas/ravb_main.c
-> @@ -1822,6 +1822,7 @@ static int ravb_open(struct net_device *ndev)
->  		napi_enable(&priv->napi[RAVB_NC]);
->  
->  	ravb_set_delay_mode(ndev);
-> +	ravb_write(ndev, priv->desc_bat_dma, DBAT);
->  
->  	/* Device init */
->  	error = ravb_dmac_init(ndev);
-> @@ -2841,7 +2842,6 @@ static int ravb_probe(struct platform_device *pdev)
->  	}
->  	for (q = RAVB_BE; q < DBAT_ENTRY_NUM; q++)
->  		priv->desc_bat[q].die_dt = DT_EOS;
-> -	ravb_write(ndev, priv->desc_bat_dma, DBAT);
->  
->  	/* Initialise HW timestamp list */
->  	INIT_LIST_HEAD(&priv->ts_skb_list);
-> 
+	Current situation (outside of arch, include, scripts and tools,
+with asm-generic/unaligned.h cases already taken out):
 
-  How about also removing the DBAT write from ravb_resume()?
+drivers/android/binderfs.c:32:#include <uapi/asm-generic/errno-base.h>
+drivers/clk/microchip/clk-mpfs-ccc.c:7:#include "asm-generic/errno-base.h"
+drivers/firmware/arm_scmi/shmem.c:13:#include <asm-generic/bug.h>
+drivers/irqchip/irq-ti-sci-inta.c:24:#include <asm-generic/msi.h>
+drivers/mtd/nand/raw/ingenic/ingenic_ecc.h:9:#include <uapi/asm-generic/errno-base.h>
+drivers/platform/x86/hp/hp-bioscfg/passwdobj-attributes.c:10:#include <asm-generic/posix_types.h>
+io_uring/uring_cmd.c:10:#include <uapi/asm-generic/ioctls.h>
+lib/trace_readwrite.c:10:#include <asm-generic/io.h>
+mm/damon/vaddr.c:10:#include <asm-generic/mman-common.h>
+net/sunrpc/xprtrdma/verbs.c:58:#include <asm-generic/barrier.h>
+rust/uapi/uapi_helper.h:9:#include <uapi/asm-generic/ioctl.h>
 
-MBR, Sergey
+That's it.  asm-generic/errno-base.h cases - just use linux/errno.h and
+be done with it.  Anyone who goes "I've got ENOENT and ENOMEM in my driver,
+but those two are covered by errno-base.h and I can be clever and use
+just that" is wrong.
+
+asm-generic/mman-common.h - and linux/mman.h would not serve why, exactly?
+uapi/linux/linux/mman.h, if one really feels like it...
+
+asm-generic/ioctls.h in io_uring - definitely wrong; SIOCINQ is what
+it's brought for, but that's in sockios.h.  It expands to FIONREAD, which
+*is* in ioctls.h, but...
+
+arch/alpha/include/uapi/asm/ioctls.h:11:#define FIONREAD        _IOR('f', 127, int)
+arch/mips/include/uapi/asm/ioctls.h:64:#define FIONREAD 0x467f
+arch/parisc/include/uapi/asm/ioctls.h:35:#define FIONREAD       0x541B
+arch/powerpc/include/uapi/asm/ioctls.h:11:#define FIONREAD      _IOR('f', 127, int)
+arch/sh/include/uapi/asm/ioctls.h:11:#define FIONREAD   _IOR('f', 127, int)
+arch/sparc/include/uapi/asm/ioctls.h:101:#define FIONREAD       _IOR('f', 127, int)
+arch/xtensa/include/uapi/asm/ioctls.h:23:#define FIONREAD       _IOR('f', 127, int)
+include/uapi/asm-generic/ioctls.h:46:#define FIONREAD   0x541B
+
+See the problem?  On mips the value is not 0x541B - it's 0x467F; on
+alpha, powerpc and sparc it's 0x4004667F, on sh and xtensa - 0x8004667F
+(different expansions of _IOR).
+
+The only thing that has any business including asm-generic/ioctls.h is
+arch/*/include/uapi/asm/ioctls.h - if it feels like doing so.  Anywhere
+else it ought to be asm/ioctls.h.
+
+asm-generic/msi.h - looks bogus; there's an include of linux/msi.h several lines
+above, and that pulls asm/msi.h.  Which makes it either a no-op or a build bug
+(the latter - if that driver can be built on x86 with CONFIG_GENERIC_MSI_IRQ
+defined;
+typedef struct irq_alloc_info msi_alloc_info_t;
+in asm/msi.h vs.
+typedef struct msi_alloc_info {
+        struct msi_desc                 *desc;
+        irq_hw_number_t                 hwirq;
+        unsigned long                   flags;
+        union {
+                unsigned long           ul;
+                void                    *ptr;
+        } scratchpad[NUM_MSI_ALLOC_SCRATCHPAD_REGS];
+} msi_alloc_info_t;
+in asm-generic/msi.h).
+
+Hell knows about the rest, but they all look very dubious...
 
