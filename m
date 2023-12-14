@@ -2,158 +2,537 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AB300812A80
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 09:37:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C345812A83
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 09:37:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234383AbjLNIg6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 03:36:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42620 "EHLO
+        id S234479AbjLNIhr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 03:37:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40980 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229441AbjLNIg4 (ORCPT
+        with ESMTP id S229441AbjLNIhp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 03:36:56 -0500
-Received: from FRA01-MR2-obe.outbound.protection.outlook.com (mail-mr2fra01on2042.outbound.protection.outlook.com [40.107.9.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F5F2107
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 00:37:00 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Qc6Q3tGD6kLEorqOBALGc3APMhsiouaEcyZjlYvByKLpGJ/xWyavUL/eEfLRKG3BvDB9EJgTxagmFE30mrGb2J+rgZRUAu7nmgx5zX62lrU5fkulXMKYHHFbmJjfTxHi0sb75EarIp9PGrJ67v2zBrT91JWxHBUkgaBANw1xkW+SW9zuqjlb+FkDwNm2Ctr+2lBJVhuPe+LYlAgnghhZlEQYzkCOg2MYJ4dkbkqR0M8AGocToR1TKrINt4B/Zcq4mNKUJ8PykFtxNhHTW/tRwh+LiWqByYs5CwXXOWrvNSXy5isAND2haJWwUMIjUxwmntqDBLMLu4+uAOSWx/MbbA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=NS3d8j/q2pm5rCgu8r63d9ByEtjQ/QwPpQkJ7ZWOuho=;
- b=TmgiMKLaYjuppI7mIpslvlJ/GtATYcfmKWhtsNTCHPSSyM9pldTudB4+KqKgnNqYGyciWHeHgpEfRiv+JmGbDCU8KF5Ljh6bykb4nM0vpDutVqEINgCRrB4wrvdnG/DGflG0wR4mK+QVPn4RjAUppATJCOKsHtstFF9tMMGxVTFY+uHnJIu/W289kPLc5saAzfiifpW9xvdjRyIxbhu8ZjD+IgvEGZX1FXsXJjJsU3iMBv5NZmHFXWgwGPeVCxNI6UMlwhoLeaZ5Hh5SHV98nv2276PH/NCdxM0zPKxuyIdgpsZiOEYjAHfKWQQzFtfVpawJmeQOQm4KR1AOK3CbIQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=csgroup.eu; dmarc=pass action=none header.from=csgroup.eu;
- dkim=pass header.d=csgroup.eu; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=csgroup.eu;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=NS3d8j/q2pm5rCgu8r63d9ByEtjQ/QwPpQkJ7ZWOuho=;
- b=Y7SW8rSzrYWbER4yddisqnfBz0UCG9W/GPUSrAjPhXTF94rBjTVUfWsHoGws/g6S1C83QItraDxLAQcqpPrajoMMC0G/1MyV097wHvxclFj3Vj1B90Em4vTBPsRlS4CyFeWJ9YElOsGk6Wpq2deeekORWnYoeMoTQGTkKpT9Ap7zAF1MmVhAYKwMO06wpTNgmLstDgVfY2RYjiuBkr0d4EupqzCoa5yMOogj7668zQqyFu+dIn/JVfDFQTfvZ6GD+bq3YpfAwyTjv0D/ZCcuWo2TenT2K1yjcatmynAmax4pl9pR0E8JybKQrEyfGTfwt+twEycuKQf0cjqDRVXSUQ==
-Received: from MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM (2603:10a6:501:31::15)
- by MR1P264MB2370.FRAP264.PROD.OUTLOOK.COM (2603:10a6:501:33::23) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7091.26; Thu, 14 Dec
- 2023 08:36:57 +0000
-Received: from MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM
- ([fe80::f788:32b4:1c5e:f264]) by MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM
- ([fe80::f788:32b4:1c5e:f264%7]) with mapi id 15.20.7091.028; Thu, 14 Dec 2023
- 08:36:57 +0000
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-To:     Nicholas Miehlbradt <nicholas@linux.ibm.com>,
-        "glider@google.com" <glider@google.com>,
-        "elver@google.com" <elver@google.com>,
-        "dvyukov@google.com" <dvyukov@google.com>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "mpe@ellerman.id.au" <mpe@ellerman.id.au>,
-        "npiggin@gmail.com" <npiggin@gmail.com>
-CC:     "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "kasan-dev@googlegroups.com" <kasan-dev@googlegroups.com>,
-        "iii@linux.ibm.com" <iii@linux.ibm.com>,
-        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 02/13] hvc: Fix use of uninitialized array in
- udbg_hvc_putc
-Thread-Topic: [PATCH 02/13] hvc: Fix use of uninitialized array in
- udbg_hvc_putc
-Thread-Index: AQHaLlJJ+Qmq98QSSk65tBcfvtQ1DrCodL8A
-Date:   Thu, 14 Dec 2023 08:36:57 +0000
-Message-ID: <aab89390-264f-49bd-8e6e-b69de7f8c526@csgroup.eu>
-References: <20231214055539.9420-1-nicholas@linux.ibm.com>
- <20231214055539.9420-3-nicholas@linux.ibm.com>
-In-Reply-To: <20231214055539.9420-3-nicholas@linux.ibm.com>
-Accept-Language: fr-FR, en-US
-Content-Language: fr-FR
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Mozilla Thunderbird
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=csgroup.eu;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: MRZP264MB2988:EE_|MR1P264MB2370:EE_
-x-ms-office365-filtering-correlation-id: 789fd0ea-574c-4686-f86d-08dbfc7fd5a4
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 4XAnzuvBVDh+P85ZBeUGN7YAx3PO4U7gkdKhAofs0TPQGuMXQEfgeJnSPkyn8bo9+nolZP3UNJHBDA0X4ylgXXpLZKkIx16KyBxPcwRfkW4fS3pVLgKuI4twXXHWtWi3LW8J9yksOKBDCP23JNNp/Le58948tI+OkRu2IdyYYk2pjXmzAMZz3nThlrhoayIkRN51Swbz0Pih6b/1GMt1PkZYcAnP/V7IeQcUfYZakshb8NxSR6PzpRTQEfkPAm9wYaukSozYQvaKLfWjlD16b32+MP11kh9iVsmsJta6JJ+d4QiHFywrqvpfghNDSE4DAVyPS3sgcgXdtBSNK6V1B2v3N0sSirVgpNHhGU89XUT0R3FAgaKR50I+6f4YD1l0gZ7GPiClCwVhi35gat1mFji2cKuxgub/aDlyZwcNqgH/2bKh/zM5pk8Z9KweiVDQ8vOiDttH6bji4yju2990BRaz8aTnQYaFrv/pQoTe2hX4K3ZD6i/UXKuVbiTySz6VPkxDYhlw9q9rFBIUPNtbleMfvxpytlkgmrR7KJLDsKYYKJpKcCTLUNdMHwdiF0wOgWnXrq/ruoHpbBgUJk56grah+iNlwDV2swEeqR7eR/f/BB9QObgCTUsRXjTW9LjkWfY+SWqq5kPri8oIV7mWYEGdTU8q0ueUIqwBzNE+F4tNrJlyfUa0w9gZlnRZpV/7
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230031)(396003)(366004)(346002)(39850400004)(136003)(376002)(230922051799003)(186009)(64100799003)(1800799012)(451199024)(31686004)(66574015)(26005)(2616005)(6506007)(122000001)(86362001)(38100700002)(31696002)(38070700009)(36756003)(83380400001)(6512007)(76116006)(5660300002)(7416002)(44832011)(71200400001)(91956017)(8676002)(6486002)(66556008)(110136005)(64756008)(66476007)(316002)(66446008)(54906003)(66946007)(41300700001)(2906002)(4744005)(4326008)(8936002)(478600001)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?bVpnalpXZWJhR2RmZER5Syt2T3p3V05wVGxtTk55NGkrU0M3WUxqcTJVZHNy?=
- =?utf-8?B?eWhvbFRwTVJ5bHNjRDYxOEQxZS9ZNmxPUE83Y0dnRzl0WkFvWE9FTlNEMTBv?=
- =?utf-8?B?WGNaSXNHaHd1QnpuWkN5ZEtRQ3N5M3RtTzArdVJVTzNQYVN0MUJvbjdDODNj?=
- =?utf-8?B?dXZ3ZDlSOVhCa2tPeUpBWFg5WCs2VVh4QVRzS3NpLzNURkJ3V1I2ODNYcFBt?=
- =?utf-8?B?aG1tNHRhRDJUWjNiZWtEWHFncVlMTjdhOVRibCs1NVBHOVQ4N1VnZXdHQnlD?=
- =?utf-8?B?TVdqK1U2WXdhSDJIMmhLSURSYnR0N2Eybk9rN3p5MlFNdm81NzdqYkZ1Q0xY?=
- =?utf-8?B?T0wxdlpmUzgyeThIYVpTamRWR0xPKy9VZFVmdjV2MEg0VDVIbFZZaG04L2RO?=
- =?utf-8?B?T1NJMnVuRnJEK1lFeitBckFiWmhuWmJwUFo2bHVzM0czZUM1NUhYSWEzM1Bn?=
- =?utf-8?B?TnFrbEc4ZTU4L21wU21kZ0FuY0s1dEpJcHhqcEFNOUdjNjljNHpOeGJEMXFR?=
- =?utf-8?B?T3RJUkpseFJzWktwK2U3NU41TWkveTdtbEljMVB5RklLVFBoQW0rVUJqaFhw?=
- =?utf-8?B?OGpxM3FpYXd2R3RwTjY3ZloxYmNFOEJYenVJaGlQYml6ZmZyTVNwelFhRUc3?=
- =?utf-8?B?K2FkUlFNOGZXT3ViZUdPbFYrZ2FxMjREZjdlOTk2VFpCNWRhWTMydG5YM3d6?=
- =?utf-8?B?V0d6OVJFRmdoSXYvdnRYL2M5WFZSa0hkNG9GVFRMNGVMS0haSWtuMXhLSURp?=
- =?utf-8?B?SzhvMnJYSXNCZ0dFYUpBSXNOR0lNUzIwR0ZYdXZqQ2NRMlNqZmU5VWNtaWpu?=
- =?utf-8?B?LzJnRnBMa1N5YW5ZWjVmQTIvT1dneEtEa0dKVjlnay9TQUZxTXZsTENrOS9t?=
- =?utf-8?B?TENaRnl1R1RtQVEwN25lR1JjMldBK0pYNVhEWDczNk1Qc3ZMNDVIb090UmJX?=
- =?utf-8?B?am5MN1BteGR5OHNrV1E1cG9GcjN4TXFVU3NvT3VabjZQa1UrOWFHOWs5aVBv?=
- =?utf-8?B?RTEzalNOYzZ4YWZjSE9Sb0hDdmlzbU94bmNvcS9ESzJlSkFLUEVIMkVuK0lM?=
- =?utf-8?B?R0svOEQrN1ZoOHZtVDZqUVYrOEdhMnlvMzBMRTV4Y05tU3h3OFJXT0ZyWjU5?=
- =?utf-8?B?aFlmd0h1T0xnY2luNDZvdEQxMzViZUlyWXZzWFFvQmljRm5WVjlMdEFpeTIr?=
- =?utf-8?B?RjhKVnZNeldVVW5uT0Y2eWFmV29LaG1ucU13NmRDWi9HdEVhY2pDdU1leWYz?=
- =?utf-8?B?ejRXYjJwQWhlNE11ZUlmSG9hVkk5eExCY1JQQWh1ZklNdmo4RDhsbkMzbXdT?=
- =?utf-8?B?NjBIRUJ6amtwd0dDTHpWYnZWMldaeWRYWkZ5T2RKdXcxbTk1Mm80VEtmQjBL?=
- =?utf-8?B?ZzBqcGx1RDNSN0VqVml3eVlFYUsraHBLUmJBUFozWGhnQ2x1LzEvc2IwK0dE?=
- =?utf-8?B?VTM1MU1pc3VNbEcvWVBYb2pLY1R1ZC9QWjVrRXM3czJYQ1pkai9jQnU2c0R4?=
- =?utf-8?B?R1FtWGwrMHRIckV3VFRnUkxFY1RqbFJGaW9OWjBYZHdmS0ZqTVB3QnFuVTlG?=
- =?utf-8?B?OFQ4eENlVkJIYVBMQ3dvYThuaTdLdmN0SGF1dXNpVllhaFpFUUR1ZGkwQ0ps?=
- =?utf-8?B?bEpIOEdXbm8xRTF6U00zSFRwMFVJVFRkMDR4NW9DV3lsUmlNUUxOTWVpU251?=
- =?utf-8?B?QlVwSWhDaEFYbEJtOUFxNjZEM2NWRGZlazdaUnBkb201Z0tkY04vdzlDNVRZ?=
- =?utf-8?B?b1dHa3IrRGpnVW1jeUJndTNxSWs3U3dSTmZsTjgrWjVhTnFUbmxrbWFyWjFC?=
- =?utf-8?B?N2pMNGxiaGZGSmZlR090L3g3MUpWTWRtRm9lektYbDFPSm1qempVS0RBVGZK?=
- =?utf-8?B?K1RDWTR3cWZzZHU2emUxNUdZUmZpOExvWkhpTEJ0bUZWNXU1a20renh4MXlI?=
- =?utf-8?B?OFovbXlTaXI1TVBWc3dRTElSaU9kT1B2TERQUC9BdVZvdS9LQ0t4WjFreWxv?=
- =?utf-8?B?NlVscmVyZ1IyYVVOOC9weEZGVFdnTDFHY2Y0NzZleVRNc3MvanlBYTE1ZDEw?=
- =?utf-8?B?L2VOd05lcUZRZTFIWFV5Yk9SQWJnNFhaV29HZEE3WHF0cGdkd3VDRkNURWl0?=
- =?utf-8?B?b1poR01IU1ZHbzBxWFY3R1JmVGZQRlBVSWVkZEcxR1JIT1Bnald1akdFOFNH?=
- =?utf-8?B?cnc9PQ==?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <729BB947E358D8408A7216C0B2179CE2@FRAP264.PROD.OUTLOOK.COM>
-Content-Transfer-Encoding: base64
+        Thu, 14 Dec 2023 03:37:45 -0500
+Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3708BCF;
+        Thu, 14 Dec 2023 00:37:50 -0800 (PST)
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 3BE8bfwq044737;
+        Thu, 14 Dec 2023 02:37:41 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1702543061;
+        bh=OJEfOnrpk2mQrWoOVcjnKwzA4s/qApq5Q16vd7MGXX4=;
+        h=Date:Subject:To:CC:References:From:In-Reply-To;
+        b=Jte1KoMLTRLmfpPifGyzeDF9+v0Hye/Pef3cQo0wT/9rJyGY5s5xUv/BApSQGnXk2
+         p3YL50kfijfapR3SjVX64IFkNa1NmUQQUcl6mJoWoZGAi1KJENSgjB6xQHCopmqOf6
+         Eo1MfqjWA4YoRWniHS+eKB9IkXxd6SWqPWFfHfCc=
+Received: from DFLE104.ent.ti.com (dfle104.ent.ti.com [10.64.6.25])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 3BE8bfL4113297
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 14 Dec 2023 02:37:41 -0600
+Received: from DFLE101.ent.ti.com (10.64.6.22) by DFLE104.ent.ti.com
+ (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 14
+ Dec 2023 02:37:40 -0600
+Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DFLE101.ent.ti.com
+ (10.64.6.22) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Thu, 14 Dec 2023 02:37:40 -0600
+Received: from [10.24.69.141] ([10.24.69.141])
+        by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 3BE8bb3Z040182;
+        Thu, 14 Dec 2023 02:37:37 -0600
+Message-ID: <08eccba2-41df-91e7-c1e5-e03190402c23@ti.com>
+Date:   Thu, 14 Dec 2023 14:07:36 +0530
 MIME-Version: 1.0
-X-OriginatorOrg: csgroup.eu
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-Network-Message-Id: 789fd0ea-574c-4686-f86d-08dbfc7fd5a4
-X-MS-Exchange-CrossTenant-originalarrivaltime: 14 Dec 2023 08:36:57.8188
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 9914def7-b676-4fda-8815-5d49fb3b45c8
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 7+KqI5d7rnwmjPdLJAJwdm+fFfBb2XnPZyHM6mrmpdZv73hturKPjsFe6xwjx77942J3vXxCpZhCBlwVD1vs5e2H6AqXiAkhAbetJtBLyMo=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MR1P264MB2370
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Subject: Re: [PATCH 2/3] arm64: dts: ti: Introduce J722S family of SoCs
+Content-Language: en-US
+To:     Nishanth Menon <nm@ti.com>
+CC:     <vigneshr@ti.com>, <kristo@kernel.org>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <j-choudhary@ti.com>, <u-kumar1@ti.com>
+References: <20231213124930.3012-1-vaishnav.a@ti.com>
+ <20231213124930.3012-3-vaishnav.a@ti.com>
+ <20231213202705.6tspycl5qicb6gwd@germproof>
+From:   Vaishnav Achath <vaishnav.a@ti.com>
+In-Reply-To: <20231213202705.6tspycl5qicb6gwd@germproof>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-4.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DQoNCkxlIDE0LzEyLzIwMjMgw6AgMDY6NTUsIE5pY2hvbGFzIE1pZWhsYnJhZHQgYSDDqWNyaXTC
-oDoNCj4gQWxsIGVsZW1lbnRzIG9mIGJvdW5jZV9idWZmZXIgYXJlIGV2ZW50dWFsbHkgcmVhZCBh
-bmQgcGFzc2VkIHRvIHRoZQ0KPiBoeXBlcnZpc29yIHNvIGl0IHNob3VsZCBwcm9iYWJseSBiZSBm
-dWxseSBpbml0aWFsaXplZC4NCg0Kc2hvdWxkIG9yIHNoYWxsID8NCg0KPiANCj4gU2lnbmVkLW9m
-Zi1ieTogTmljaG9sYXMgTWllaGxicmFkdCA8bmljaG9sYXNAbGludXguaWJtLmNvbT4NCg0KU2hv
-dWxkIGJlIGEgRml4ZWQ6IHRhZyA/DQoNCj4gLS0tDQo+ICAgZHJpdmVycy90dHkvaHZjL2h2Y192
-aW8uYyB8IDIgKy0NCj4gICAxIGZpbGUgY2hhbmdlZCwgMSBpbnNlcnRpb24oKyksIDEgZGVsZXRp
-b24oLSkNCj4gDQo+IGRpZmYgLS1naXQgYS9kcml2ZXJzL3R0eS9odmMvaHZjX3Zpby5jIGIvZHJp
-dmVycy90dHkvaHZjL2h2Y192aW8uYw0KPiBpbmRleCA3MzZiMjMwZjVlYzAuLjFlODhiZmNkZGUy
-MCAxMDA2NDQNCj4gLS0tIGEvZHJpdmVycy90dHkvaHZjL2h2Y192aW8uYw0KPiArKysgYi9kcml2
-ZXJzL3R0eS9odmMvaHZjX3Zpby5jDQo+IEBAIC0yMjcsNyArMjI3LDcgQEAgc3RhdGljIGNvbnN0
-IHN0cnVjdCBodl9vcHMgaHZ0ZXJtX2h2c2lfb3BzID0gew0KPiAgIHN0YXRpYyB2b2lkIHVkYmdf
-aHZjX3B1dGMoY2hhciBjKQ0KPiAgIHsNCj4gICAJaW50IGNvdW50ID0gLTE7DQo+IC0JdW5zaWdu
-ZWQgY2hhciBib3VuY2VfYnVmZmVyWzE2XTsNCj4gKwl1bnNpZ25lZCBjaGFyIGJvdW5jZV9idWZm
-ZXJbMTZdID0geyAwIH07DQoNCldoeSAxNiB3aGlsZSB3ZSBoYXZlIGEgY291bnQgb2YgMSBpbiB0
-aGUgY2FsbCB0byBodnRlcm1fcmF3X3B1dF9jaGFycygpID8NCg0KPiAgIA0KPiAgIAlpZiAoIWh2
-dGVybV9wcml2c1swXSkNCj4gICAJCXJldHVybjsNCg==
+Hi Nishanth,
+
+On 14/12/23 01:57, Nishanth Menon wrote:
+> On 18:19-20231213, Vaishnav Achath wrote:
+>> The J722S is a family of  application processors built for Automotive and
+>> Linux Application development. Scalable Arm Cortex-A53 performance and
+>> embedded features, such as multi high-definition display support,
+>> 3D-graphics acceleration, 4K video acceleration, and extensive peripherals
+>> make the J722S well-suited for a broad range of automation and industrial
+>> application, including automotive digital instrumentation, automotive
+>> displays, industrial HMI, and more.
+> 
+> Trim this down please
+>>
+>> Some highlights of J722S SoC are:
+>>     * Quad-Cortex-A53s (running up to 1.4GHz) in a single cluster.
+>>     * One Device manager Cortext-R5F for system power and resource
+>>       management, two Cortex-R5F for Functional Safety or
+>>       general-purpose usage and two C7x floating point vector DSPs
+>>       with Matrix Multiply Accelerator(MMA) for deep learning.
+>>     * One 3D GPU up to 50 GLFOPS
+>>     * H.264/H.265, JPEG Video Encode/Decode.
+>>     * Display support: 3x display support over OLDI/LVDS (1x OLDI-DL, 1x or
+>>       2x OLDI-SL), DSI, or DPI. Up to 3840x1080@60fps resolution
+>>     * Integrated Giga-bit Ethernet switch supporting up to a total of two
+>>       external ports (TSN capable).
+>>     * Vision Processing Accelerator (VPAC) with image signal processor
+>>       and Depth and Motion Processing Accelerator (DMPAC).
+>>     * 7xUARTs, 3xSPI, 5xI2C, 2xUSB2, 2xCAN-FD, 3xMMC and SD, GPMC for
+>>       NAND/FPGA connection, OSPI memory controller, 5xMcASP for audio,
+>>       4xCSI-RX for Camera, 1 PCIe Gen3 controller, eCAP/eQEP,
+>>       ePWM, among other peripherals.
+>>     * Dedicated Centralized Hardware Security Module with support for
+>>       secure boot, debug security and crypto acceleration and trusted
+>>       execution environment.
+>>     * One 32-bit DDR Subsystem that supports LPDDR4 memory type.
+> 
+> Trim this down to what is different from AM62P?
+> 
+
+Thanks for the review, I will trim this down in next revision, but the above is
+just a summary of the main features of this SoC, pointing to AM62P feature set
+here seems confusing to me. why does a new user/developer using J722S need to be
+aware of the existence of AM62P to just understand a high level summary about
+this device?
+
+>>
+>> J722S family of SoCs is a superset of the AM62P SoC family and shares
+>> similar memory map, thus the nodes are being reused from AM62P includes
+>> instead of duplicating the definitions. Unused nodes with dependencies
+>> are kept disabled and will be enabled later when the dependencies are
+>> enabled.
+>>
+>> For those interested, more details about this SoC can be found in the
+>> Technical Reference Manual here:
+>> 	https://www.ti.com/lit/zip/sprujb3
+>>
+>> Co-developed-by: Jayesh Choudhary <j-choudhary@ti.com>
+>> Signed-off-by: Jayesh Choudhary <j-choudhary@ti.com>
+>> Signed-off-by: Vaishnav Achath <vaishnav.a@ti.com>
+>> ---
+>>
+>> checkpatch error is ignored for arch/arm64/boot/dts/ti/k3-pinctrl.h:
+>> ERROR: Macros with complex values should be enclosed in parentheses
+>>
+>> However, we do not need parentheses enclosing the values for this
+>> macro as we do intend it to generate two separate values as has been
+>> done for other similar platforms.
+>>
+>> Depends on:
+>> https://lore.kernel.org/all/20231211132600.25289-1-vaishnav.a@ti.com/
+>> https://lore.kernel.org/all/20231213081318.26203-1-vaishnav.a@ti.com/
+>>
+>>  arch/arm64/boot/dts/ti/k3-j722s.dtsi | 275 +++++++++++++++++++++++++++
+>>  arch/arm64/boot/dts/ti/k3-pinctrl.h  |   3 +
+>>  2 files changed, 278 insertions(+)
+>>  create mode 100644 arch/arm64/boot/dts/ti/k3-j722s.dtsi
+>>
+>> diff --git a/arch/arm64/boot/dts/ti/k3-j722s.dtsi b/arch/arm64/boot/dts/ti/k3-j722s.dtsi
+>> new file mode 100644
+>> index 000000000000..dbd762bfd779
+>> --- /dev/null
+>> +++ b/arch/arm64/boot/dts/ti/k3-j722s.dtsi
+>> @@ -0,0 +1,275 @@
+>> +// SPDX-License-Identifier: GPL-2.0
+>> +/*
+>> + * Device Tree Source for J722S SoC Family
+>> + *
+>> + * Copyright (C) 2023 Texas Instruments Incorporated - https://www.ti.com/
+>> + */
+>> +
+>> +#include <dt-bindings/gpio/gpio.h>
+>> +#include <dt-bindings/interrupt-controller/irq.h>
+>> +#include <dt-bindings/interrupt-controller/arm-gic.h>
+>> +#include <dt-bindings/soc/ti,sci_pm_domain.h>
+>> +
+>> +#include "k3-pinctrl.h"
+>> +
+>> +/ {
+>> +	model = "Texas Instruments K3 J722S SoC";
+>> +	compatible = "ti,j722s";
+>> +	interrupt-parent = <&gic500>;
+>> +	#address-cells = <2>;
+>> +	#size-cells = <2>;
+>> +
+>> +	cpus {
+>> +		#address-cells = <1>;
+>> +		#size-cells = <0>;
+>> +
+>> +		cpu-map {
+>> +			cluster0: cluster0 {
+>> +				core0 {
+>> +					cpu = <&cpu0>;
+>> +				};
+>> +
+>> +				core1 {
+>> +					cpu = <&cpu1>;
+>> +				};
+>> +
+>> +				core2 {
+>> +					cpu = <&cpu2>;
+>> +				};
+>> +
+>> +				core3 {
+>> +					cpu = <&cpu3>;
+>> +				};
+>> +			};
+>> +		};
+>> +
+>> +		cpu0: cpu@0 {
+>> +			compatible = "arm,cortex-a53";
+>> +			reg = <0x000>;
+>> +			device_type = "cpu";
+>> +			enable-method = "psci";
+>> +			i-cache-size = <0x8000>;
+>> +			i-cache-line-size = <64>;
+>> +			i-cache-sets = <256>;
+>> +			d-cache-size = <0x8000>;
+>> +			d-cache-line-size = <64>;
+>> +			d-cache-sets = <128>;
+>> +			next-level-cache = <&l2_0>;
+>> +			clocks = <&k3_clks 135 0>;
+>> +		};
+>> +
+>> +		cpu1: cpu@1 {
+>> +			compatible = "arm,cortex-a53";
+>> +			reg = <0x001>;
+>> +			device_type = "cpu";
+>> +			enable-method = "psci";
+>> +			i-cache-size = <0x8000>;
+>> +			i-cache-line-size = <64>;
+>> +			i-cache-sets = <256>;
+>> +			d-cache-size = <0x8000>;
+>> +			d-cache-line-size = <64>;
+>> +			d-cache-sets = <128>;
+>> +			next-level-cache = <&l2_0>;
+>> +			clocks = <&k3_clks 136 0>;
+>> +		};
+>> +
+>> +		cpu2: cpu@2 {
+>> +			compatible = "arm,cortex-a53";
+>> +			reg = <0x002>;
+>> +			device_type = "cpu";
+>> +			enable-method = "psci";
+>> +			i-cache-size = <0x8000>;
+>> +			i-cache-line-size = <64>;
+>> +			i-cache-sets = <256>;
+>> +			d-cache-size = <0x8000>;
+>> +			d-cache-line-size = <64>;
+>> +			d-cache-sets = <128>;
+>> +			next-level-cache = <&l2_0>;
+>> +			clocks = <&k3_clks 137 0>;
+>> +		};
+>> +
+>> +		cpu3: cpu@3 {
+>> +			compatible = "arm,cortex-a53";
+>> +			reg = <0x003>;
+>> +			device_type = "cpu";
+>> +			enable-method = "psci";
+>> +			i-cache-size = <0x8000>;
+>> +			i-cache-line-size = <64>;
+>> +			i-cache-sets = <256>;
+>> +			d-cache-size = <0x8000>;
+>> +			d-cache-line-size = <64>;
+>> +			d-cache-sets = <128>;
+>> +			next-level-cache = <&l2_0>;
+>> +			clocks = <&k3_clks 138 0>;
+>> +		};
+>> +	};
+>> +
+>> +	l2_0: l2-cache0 {
+>> +		compatible = "cache";
+>> +		cache-unified;
+>> +		cache-level = <2>;
+>> +		cache-size = <0x80000>;
+>> +		cache-line-size = <64>;
+>> +		cache-sets = <512>;
+>> +	};
+> 
+> ^^ this is a duplication of am62p5.dtsi? what about the spins with
+> different CPUs enabled?
+> 
+
+Yes it is a duplicate, as of now we are not aware of plan for spins with cores
+disabled, so just followed the pattern followed for other Jacinto devices
+(J721e, J7200, J721s2, J784s4).
+
+>> +
+>> +	firmware {
+>> +		optee {
+>> +			compatible = "linaro,optee-tz";
+>> +			method = "smc";
+>> +		};
+>> +
+>> +		psci: psci {
+>> +			compatible = "arm,psci-1.0";
+>> +			method = "smc";
+>> +		};
+>> +	};
+>> +
+>> +	a53_timer0: timer-cl0-cpu0 {
+>> +		compatible = "arm,armv8-timer";
+>> +		interrupts = <GIC_PPI 13 IRQ_TYPE_LEVEL_LOW>, /* cntpsirq */
+>> +			     <GIC_PPI 14 IRQ_TYPE_LEVEL_LOW>, /* cntpnsirq */
+>> +			     <GIC_PPI 11 IRQ_TYPE_LEVEL_LOW>, /* cntvirq */
+>> +			     <GIC_PPI 10 IRQ_TYPE_LEVEL_LOW>; /* cnthpirq */
+>> +	};
+>> +
+>> +	pmu: pmu {
+>> +		compatible = "arm,cortex-a53-pmu";
+>> +		interrupts = <GIC_PPI 7 IRQ_TYPE_LEVEL_HIGH>;
+>> +	};
+>> +
+>> +	cbass_main: bus@f0000 {
+>> +		compatible = "simple-bus";
+>> +		#address-cells = <2>;
+>> +		#size-cells = <2>;
+>> +		bootph-all;
+> 
+> Nope.
+> 
+
+Sorry I missed this, will fix here and in all other places (including comments
+in patch 3/3).
+
+>> +
+>> +		ranges = <0x00 0x000f0000 0x00 0x000f0000 0x00 0x00030000>, /* Main MMRs */
+>> +			 <0x00 0x00420000 0x00 0x00420000 0x00 0x00001000>, /* ESM0 */
+>> +			 <0x00 0x00600000 0x00 0x00600000 0x00 0x00001100>, /* GPIO */
+>> +			 <0x00 0x00703000 0x00 0x00703000 0x00 0x00000200>, /* USB0 debug trace */
+>> +			 <0x00 0x0070c000 0x00 0x0070c000 0x00 0x00000200>, /* USB1 debug trace */
+>> +			 <0x00 0x00a40000 0x00 0x00a40000 0x00 0x00000800>, /* Timesync router */
+>> +			 <0x00 0x01000000 0x00 0x01000000 0x00 0x01b28400>, /* First peripheral window */
+>> +			 <0x00 0x08000000 0x00 0x08000000 0x00 0x00200000>, /* Main CPSW */
+>> +			 <0x00 0x0e000000 0x00 0x0e000000 0x00 0x01d20000>, /* Second peripheral window */
+>> +			 <0x00 0x0fd80000 0x00 0x0fd80000 0x00 0x00080000>, /* GPU */
+>> +			 <0x00 0x0fd20000 0x00 0x0fd20000 0x00 0x00000100>, /* JPEGENC0_CORE */
+>> +			 <0x00 0x0fd20200 0x00 0x0fd20200 0x00 0x00000200>, /* JPEGENC0_CORE_MMU */
+>> +			 <0x00 0x20000000 0x00 0x20000000 0x00 0x0a008000>, /* Third peripheral window */
+>> +			 <0x00 0x30040000 0x00 0x30040000 0x00 0x00080000>, /* PRUSS-M */
+>> +			 <0x00 0x301C0000 0x00 0x301C0000 0x00 0x00001000>, /* DPHY-TX */
+>> +			 <0x00 0x30101000 0x00 0x30101000 0x00 0x00080100>, /* CSI window */
+>> +			 <0x00 0x30200000 0x00 0x30200000 0x00 0x00010000>, /* DSS */
+>> +			 <0x00 0x30210000 0x00 0x30210000 0x00 0x00010000>, /* VPU */
+>> +			 <0x00 0x30220000 0x00 0x30220000 0x00 0x00010000>, /* DSS1 */
+>> +			 <0x00 0x30270000 0x00 0x30270000 0x00 0x00010000>, /* DSI-base1 */
+>> +			 <0x00 0x30500000 0x00 0x30500000 0x00 0x00100000>, /* DSI-base2 */
+>> +			 <0x00 0x31000000 0x00 0x31000000 0x00 0x00050000>, /* USB0 DWC3 Core window */
+>> +			 <0x00 0x31200000 0x00 0x31200000 0x00 0x00040000>, /* USB1 DWC3 Core window */
+>> +			 <0x00 0x40900000 0x00 0x40900000 0x00 0x00030000>, /* SA3UL */
+>> +			 <0x00 0x43600000 0x00 0x43600000 0x00 0x00010000>, /* SA3 sproxy data */
+>> +			 <0x00 0x44043000 0x00 0x44043000 0x00 0x00000fe0>, /* TI SCI DEBUG */
+>> +			 <0x00 0x44860000 0x00 0x44860000 0x00 0x00040000>, /* SA3 sproxy config */
+>> +			 <0x00 0x48000000 0x00 0x48000000 0x00 0x06408000>, /* DMSS */
+>> +			 <0x00 0x60000000 0x00 0x60000000 0x00 0x08000000>, /* FSS0 DAT1 */
+>> +			 <0x00 0x70000000 0x00 0x70000000 0x00 0x00040000>, /* OCSRAM */
+>> +			 <0x00 0x78400000 0x00 0x78400000 0x00 0x00008000>, /* MAIN R5FSS0 ATCM */
+>> +			 <0x00 0x78500000 0x00 0x78500000 0x00 0x00008000>, /* MAIN R5FSS0 BTCM */
+>> +			 <0x00 0x7e000000 0x00 0x7e000000 0x00 0x00200000>, /* C7X_0 L2SRAM */
+>> +			 <0x00 0x7e200000 0x00 0x7e200000 0x00 0x00200000>, /* C7X_1 L2SRAM */
+>> +			 <0x01 0x00000000 0x01 0x00000000 0x00 0x00310000>, /* A53 PERIPHBASE */
+>> +			 <0x05 0x00000000 0x05 0x00000000 0x01 0x00000000>, /* FSS0 DAT3 */
+>> +
+>> +			 /* MCU Domain Range */
+>> +			 <0x00 0x04000000 0x00 0x04000000 0x00 0x01ff1400>,
+>> +			 <0x00 0x79000000 0x00 0x79000000 0x00 0x00008000>,
+>> +			 <0x00 0x79020000 0x00 0x79020000 0x00 0x00008000>,
+>> +			 <0x00 0x79100000 0x00 0x79100000 0x00 0x00040000>,
+>> +			 <0x00 0x79140000 0x00 0x79140000 0x00 0x00040000>,
+>> +
+>> +			 /* Wakeup Domain Range */
+>> +			 <0x00 0x00b00000 0x00 0x00b00000 0x00 0x00002400>,
+>> +			 <0x00 0x2b000000 0x00 0x2b000000 0x00 0x00300400>,
+>> +			 <0x00 0x43000000 0x00 0x43000000 0x00 0x00020000>,
+>> +			 <0x00 0x78000000 0x00 0x78000000 0x00 0x00008000>,
+>> +			 <0x00 0x78100000 0x00 0x78100000 0x00 0x00008000>;
+>> +
+>> +		cbass_mcu: bus@4000000 {
+>> +			compatible = "simple-bus";
+>> +			#address-cells = <2>;
+>> +			#size-cells = <2>;
+>> +			ranges = <0x00 0x04000000 0x00 0x04000000 0x00 0x01ff1400>, /* Peripheral window */
+>> +				 <0x00 0x79000000 0x00 0x79000000 0x00 0x00008000>, /* MCU R5 ATCM */
+>> +				 <0x00 0x79020000 0x00 0x79020000 0x00 0x00008000>, /* MCU R5 BTCM */
+>> +				 <0x00 0x79100000 0x00 0x79100000 0x00 0x00040000>, /* MCU IRAM0 */
+>> +				 <0x00 0x79140000 0x00 0x79140000 0x00 0x00040000>; /* MCU IRAM1 */
+>> +			bootph-all;
+>> +		};
+>> +
+>> +		cbass_wakeup: bus@b00000 {
+>> +			compatible = "simple-bus";
+>> +			#address-cells = <2>;
+>> +			#size-cells = <2>;
+>> +			ranges = <0x00 0x00b00000 0x00 0x00b00000 0x00 0x00002400>, /* VTM */
+>> +				 <0x00 0x2b000000 0x00 0x2b000000 0x00 0x00300400>, /* Peripheral Window */
+>> +				 <0x00 0x43000000 0x00 0x43000000 0x00 0x00020000>, /* WKUP CTRL MMR */
+>> +				 <0x00 0x78000000 0x00 0x78000000 0x00 0x00008000>, /* DM R5 ATCM*/
+>> +				 <0x00 0x78100000 0x00 0x78100000 0x00 0x00008000>; /* DM R5 BTCM*/
+>> +			bootph-all;
+> 
+> Not in the bus nodes.. only in the leaf nodes please.
+> 
+> 
+> Also what is wrong with expanding the am62p to include the
+> missing bus segments instead of duplicating all of them?
+> 
+
+We can do that, but the same would be true for AM625, AM62A and AM62P families
+and also for (J721E, J7200), since all these SoCs introduced new dtsi instead of
+resuing existing ones, I thought there would be some valid reason to have
+separate dtsi and just followed the same pattern, please let know if we need to
+reuse from AM62P here also.
+
+>> +		};
+>> +	};
+>> +
+>> +	#include "k3-am62p-thermal.dtsi"
+> 
+> Is this correct?
+> 
+
+I think it would be preferred to have a duplicate for J722S here as users may
+want to customize the trip points as per system and doing that without affecting
+AM62P would be preferred, but the initial information here would be same for J722S.
+
+>> +};
+>> +
+>> +/*
+>> + * Include peripherals for each bus segment derived
+>> + * from AM62P and overrides specific to J722S.
+>> + */
+>> +#include "k3-am62p-main.dtsi"
+>> +#include "k3-am62p-mcu.dtsi"
+>> +#include "k3-am62p-wakeup.dtsi"
+>> +
+>> +/* Main domain overrides */
+>> +
+>> +&cpsw3g {
+>> +	status = "disabled";
+> 
+> 	here and rest: Why disabled?
+
+These nodes seems to have dependencies that are not merged already and would
+throw errors during boot, AM62P SoC dtsi seems to have these enabled by default
+without these dependencies met and have errors like below during boot (seen on
+AM62P with 6.7.0-rc4-next-20231211).
+
+[   17.869092] platform 8000000.ethernet: deferred probe pending:
+am65-cpsw-nuss: Failed to request tx dma channel
+
+>> +};
+>> +
+>> +&inta_main_dmss {
+>> +	ti,interrupt-ranges = <5 69 35>;
+>> +};
+>> +
+>> +&mailbox0_cluster0 {
+>> +	status = "disabled";
+>> +};
+>> +
+>> +&mailbox0_cluster1 {
+>> +	status = "disabled";
+>> +};
+>> +
+>> +&mailbox0_cluster2 {
+>> +	status = "disabled";
+>> +};
+>> +
+>> +&mailbox0_cluster3 {
+>> +	status = "disabled";
+>> +};
+>> +
+
+[    7.198470] omap-mailbox 29020000.mailbox: no available mbox devices found
+[    7.210411] omap-mailbox 29030000.mailbox: no available mbox devices found
+
+>> +&oc_sram {
+>> +	reg = <0x00 0x70000000 0x00 0x40000>;
+>> +	ranges = <0x00 0x00 0x70000000 0x40000>;
+>> +};
+>> +
+>> +/* MCU domain overrides */
+>> +
+>> +&mcu_r5fss0 {
+>> +	status = "disabled";
+>> +};
+
+[    7.492406] platform 79000000.r5f: configured R5F for remoteproc mode
+[    7.499887] platform 79000000.r5f: device does not have reserved memory
+regions, ret = -22
+[    7.508271] k3_r5_rproc bus@f0000:bus@4000000:r5fss@79000000: reserved memory
+init failed, ret = -22
+[    7.517549] remoteproc remoteproc0: releasing 79000000.r5f
+[    7.523338] k3_r5_rproc bus@f0000:bus@4000000:r5fss@79000000:
+k3_r5_cluster_rproc_init failed, ret = -22
+[    7.532993] k3_r5_rproc: probe of bus@f0000:bus@4000000:r5fss@79000000 failed
+with error -22
+
+>> +
+>> +/* wakeup domain overrides */
+>> +
+>> +&wkup_r5fss0 {
+>> +	status = "disabled";
+>> +};
+
+[    7.576576] platform 78000000.r5f: configured R5F for IPC-only mode
+[    7.605535] platform 78000000.r5f: device does not have reserved memory
+regions, ret = -22
+[    7.613942] k3_r5_rproc bus@f0000:bus@b00000:r5fss@78000000: reserved memory
+init failed, ret = -22
+[    7.635990] remoteproc remoteproc0: releasing 78000000.r5f
+[    7.648639] k3_r5_rproc bus@f0000:bus@b00000:r5fss@78000000:
+k3_r5_cluster_rproc_init failed, ret = -22
+[    7.664043] k3_r5_rproc: probe of bus@f0000:bus@b00000:r5fss@78000000 failed
+with error -22
+
+>> diff --git a/arch/arm64/boot/dts/ti/k3-pinctrl.h b/arch/arm64/boot/dts/ti/k3-pinctrl.h
+>> index 2a4e0e084d69..591be4489f37 100644
+>> --- a/arch/arm64/boot/dts/ti/k3-pinctrl.h
+>> +++ b/arch/arm64/boot/dts/ti/k3-pinctrl.h
+>> @@ -59,6 +59,9 @@
+>>  #define J721S2_IOPAD(pa, val, muxmode)		(((pa) & 0x1fff)) ((val) | (muxmode))
+>>  #define J721S2_WKUP_IOPAD(pa, val, muxmode)	(((pa) & 0x1fff)) ((val) | (muxmode))
+>>  
+>> +#define J722S_IOPAD(pa, val, muxmode)		(((pa) & 0x1fff)) ((val) | (muxmode))
+>> +#define J722S_MCU_IOPAD(pa, val, muxmode)	(((pa) & 0x1fff)) ((val) | (muxmode))
+>> +
+>>  #define J784S4_IOPAD(pa, val, muxmode)		(((pa) & 0x1fff)) ((val) | (muxmode))
+>>  #define J784S4_WKUP_IOPAD(pa, val, muxmode)	(((pa) & 0x1fff)) ((val) | (muxmode))
+>>  
+>> -- 
+>> 2.17.1
+>>
+
+0 - AM62P Boot logs (next-20231211) -
+https://gist.github.com/vaishnavachath/7143da253bc708a1e60a13fe081d3914
+
+To avoid these errors I am keeping these disabled, can we add support for these
+also as part of the initial support addition series? then there is no need for
+disabling these.
+
+Thanks and Regards,
+Vaishnav
+
+> 
