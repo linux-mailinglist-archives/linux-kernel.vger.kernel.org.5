@@ -2,79 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 15B92812C0B
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 10:49:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3633F812C31
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 10:51:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1443540AbjLNJsx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 04:48:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39808 "EHLO
+        id S1443524AbjLNJvF convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 14 Dec 2023 04:51:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55558 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1443523AbjLNJso (ORCPT
+        with ESMTP id S1443600AbjLNJut (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 04:48:44 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FF8610C
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 01:48:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1702547330;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Aac/fS+HABTTdTt9Tjp0/ej5UaiGQ4YUyORo11HpcO0=;
-        b=F4xp4/2I9DPL5e0cnrcWGagZNB3xkuv8HqlAFnoECAO2Wk/Ma2nklUVXuigh6C0+uv17kq
-        vMbEFzszGtF5Ai721kT+AeQPEP+Om63JS+X8OuhadQB165Voghs/lptiGAYd8UAn1v4rjo
-        IaWytgFVNSiIvw3vqFm7TKZeE3DYfKI=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-37-QsLy1bi7PsGcS6wBMVElAg-1; Thu, 14 Dec 2023 04:48:49 -0500
-X-MC-Unique: QsLy1bi7PsGcS6wBMVElAg-1
-Received: by mail-ed1-f69.google.com with SMTP id 4fb4d7f45d1cf-54c5f4a05f8so4844935a12.0
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 01:48:49 -0800 (PST)
+        Thu, 14 Dec 2023 04:50:49 -0500
+Received: from mail-oo1-f51.google.com (mail-oo1-f51.google.com [209.85.161.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADDA81FDE;
+        Thu, 14 Dec 2023 01:50:09 -0800 (PST)
+Received: by mail-oo1-f51.google.com with SMTP id 006d021491bc7-5908b15f43eso716882eaf.1;
+        Thu, 14 Dec 2023 01:50:09 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702547328; x=1703152128;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Aac/fS+HABTTdTt9Tjp0/ej5UaiGQ4YUyORo11HpcO0=;
-        b=KhoVcXnvyG0vIshGoGNNufm6vGUImyjryfH7wlynGkUJaXmeDz4WS4JzBhsjrgKtRD
-         E9nh+PCcKNe9DN4ndJm84V3Ai+31uLqwGKLc16GzuOU+wgehZ/A02GJ9LgpEynQ03eno
-         xAu1qf8HBBC43xf2BGiJ45ryzCuAFptTUykWyJq1cR9v1EPOicMYfbxDaEVR45xSwIat
-         yUziH34nsjsjABT+KyljLmSQ6kU3WzUQ85yAdJoqUzphVdECvdAkBs+N1cGSDGXQbRxJ
-         bO2sLCrisht2rmv5fAEEXXTdXAkdFU99BZfwR5qkLThbEsgb/KC2ADOMRngcaW6Vw6FB
-         eadQ==
-X-Gm-Message-State: AOJu0YxqODyZmz89qL94o7Yz9/LC93vqpORriQLfVFhmaMZTd5m/vO9G
-        v4GOFQvOEDGrJyGmisvvcUA/DjHWmx7NbqapdjZ5T3cjZxlfon48QVA4nhb8atCJZc9EVzygBVN
-        /gFSnaiISb0E9Aq7WLSE9eI+zCtkZCotH
-X-Received: by 2002:a50:d692:0:b0:551:e5ea:cd32 with SMTP id r18-20020a50d692000000b00551e5eacd32mr1623887edi.23.1702547327867;
-        Thu, 14 Dec 2023 01:48:47 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IHfAPTl0ZBTHUgp9clExLMwVaQJM4BXpD6DoX/3U7sXNMttZ5MP+uupqGj8TWjV6I+QQzg05Q==
-X-Received: by 2002:a50:d692:0:b0:551:e5ea:cd32 with SMTP id r18-20020a50d692000000b00551e5eacd32mr1623879edi.23.1702547327612;
-        Thu, 14 Dec 2023 01:48:47 -0800 (PST)
-Received: from ?IPV6:2001:1c00:c32:7800:5bfa:a036:83f0:f9ec? (2001-1c00-0c32-7800-5bfa-a036-83f0-f9ec.cable.dynamic.v6.ziggo.nl. [2001:1c00:c32:7800:5bfa:a036:83f0:f9ec])
-        by smtp.gmail.com with ESMTPSA id k13-20020a50cb8d000000b0054cc7a4dc4csm6427998edi.13.2023.12.14.01.48.46
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 14 Dec 2023 01:48:46 -0800 (PST)
-Message-ID: <a65ca848-20cc-4794-9731-c84eaa295fbc@redhat.com>
-Date:   Thu, 14 Dec 2023 10:48:46 +0100
+        d=1e100.net; s=20230601; t=1702547409; x=1703152209;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=H7IcPRb+X4qnuTs0aHDHBpi/NcRx3U1FPPLkX97/vT0=;
+        b=YbeMpdvl+8fpL4KZeR71OUAvsadM6ll1fnobE4c5xVpaPyVx9BsD5CmWjYjWkJcB6V
+         O08FJRtm7JDLwwxSSc5dO2yF/jlyK7fn+b/CziPgiRRwMOAOuiCTWjUN5/vLt8aIchf2
+         6y0E3f3jbjdnkN303TYIk0np5z4pU5X8YwJjo59rnSH6jH048OHI0aGiXmrBdOwG8FFR
+         Tlsza9GJeow+046NbPZqRejENW9OMr+TdtuHQYDvnqahSGCSzxZJ/le2rqvFVXyRjpxh
+         rO4Jyk2iYEt/jnL8p9eZ5JG7P6FfL3VmLxSwp9zdUfGdvaZV/mzDW3Fp/zXsxHR7Ieoc
+         NrFw==
+X-Gm-Message-State: AOJu0YxtYeyXb/ibQEhdwSikq128CVRX7G6FUOTWO4DWR+Wfi2EC5hZc
+        /6cOquHRy8lGdp/8tCRqeiAITxhbAZ0NTVET61c=
+X-Google-Smtp-Source: AGHT+IGjjfZZyhF8aBrc8arga5Q1x2NL23YNg0eLq9/u1h3fJzX/pm+FRQC/QVJZ6OdzoCYLjk4lm5pADQbrZgiKE0o=
+X-Received: by 2002:a05:6871:2284:b0:1fb:648:5207 with SMTP id
+ sd4-20020a056871228400b001fb06485207mr17719939oab.2.1702547408842; Thu, 14
+ Dec 2023 01:50:08 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] fbdev/simplefb: change loglevel when the power domains
- cannot be parsed
-Content-Language: en-US, nl
-To:     Brian Masney <bmasney@redhat.com>, deller@gmx.de
-Cc:     treding@nvidia.com, linux-fbdev@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-References: <20231212195754.232303-1-bmasney@redhat.com>
-From:   Hans de Goede <hdegoede@redhat.com>
-In-Reply-To: <20231212195754.232303-1-bmasney@redhat.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+References: <20231213175818.2826876-1-daniel.lezcano@linaro.org>
+In-Reply-To: <20231213175818.2826876-1-daniel.lezcano@linaro.org>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Thu, 14 Dec 2023 10:49:56 +0100
+Message-ID: <CAJZ5v0gh0KSogBqtkq6GmK4pZ7iDc2FELr3=P55ifBish_NeSw@mail.gmail.com>
+Subject: Re: [PATCH v1 1/2] PM: QoS: Rename freq to range constraint
+To:     Daniel Lezcano <daniel.lezcano@linaro.org>
+Cc:     rafael@kernel.org, caleb.connolly@linaro.org, lina.iyer@linaro.org,
+        lukasz.luba@arm.com, quic_manafm@quicinc.com,
+        quic_priyjain@quicinc.com, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -82,39 +60,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On 12/12/23 20:57, Brian Masney wrote:
-> When the power domains cannot be parsed, the message is incorrectly
-> logged as an info message. Let's change this to an error since an error
-> is returned.
-> 
-> Fixes: 92a511a568e4 ("fbdev/simplefb: Add support for generic power-domains")
-> Signed-off-by: Brian Masney <bmasney@redhat.com>
-
-Thank you for your patch. I have pushed this to drm-misc-next now.
-
-Regards,
-
-Hans
-
-
-
+On Wed, Dec 13, 2023 at 6:58 PM Daniel Lezcano
+<daniel.lezcano@linaro.org> wrote:
+>
+> The frequency pm_qos relies on a couple of values, the min and max
+> frequencies. However more pm_qos will be added with the same logic of
+> a couple of min and max. Instead of writing new set of constraints as
+> well as type, etc... let's rename freq_* to a more generic name
+> range_*
+>
+> That way, new qos range based can be added easily.
+>
+> No functional changes intended.
+>
+> Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
 > ---
->  drivers/video/fbdev/simplefb.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/video/fbdev/simplefb.c b/drivers/video/fbdev/simplefb.c
-> index 6f58ee276ad1..028a56525047 100644
-> --- a/drivers/video/fbdev/simplefb.c
-> +++ b/drivers/video/fbdev/simplefb.c
-> @@ -470,7 +470,7 @@ static int simplefb_attach_genpds(struct simplefb_par *par,
->  		if (err == -ENOENT)
->  			return 0;
->  
-> -		dev_info(dev, "failed to parse power-domains: %d\n", err);
-> +		dev_err(dev, "failed to parse power-domains: %d\n", err);
->  		return err;
->  	}
->  
 
+[cut]
+
+> --- a/include/linux/pm_qos.h
+> +++ b/include/linux/pm_qos.h
+> @@ -77,25 +77,26 @@ struct pm_qos_flags {
+>  #define FREQ_QOS_MIN_DEFAULT_VALUE     0
+>  #define FREQ_QOS_MAX_DEFAULT_VALUE     S32_MAX
+>
+> -enum freq_qos_req_type {
+> -       FREQ_QOS_MIN = 1,
+> +enum range_qos_req_type {
+> +       RANGE_QOS_MIN = 1,
+> +       RANGE_QOS_MAX,
+> +       FREQ_QOS_MIN,
+>         FREQ_QOS_MAX,
+>  };
+
+I'd rather do:
+
++enum range_qos_req_type {
++       RANGE_QOS_MIN = 1
++       RANGE_QOS_MAX,
+};
+
++#define FREQ_QOS_MIN     RANGE_QOS_MIN
++#define FREQ_QOS_MAX     RANGE_QOS_MAX
+
+and they would map exactly.
