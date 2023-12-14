@@ -1,129 +1,111 @@
-Return-Path: <linux-kernel+bounces-162-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-165-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E0468813CEF
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 22:50:27 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 712FD813CF6
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 22:52:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0FF441C21D21
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 21:50:27 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2DAF92836AF
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 21:52:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C08F67213;
-	Thu, 14 Dec 2023 21:50:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0241F67204;
+	Thu, 14 Dec 2023 21:52:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="oAZ/Pakb"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="UJW8IdkD"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f54.google.com (mail-wr1-f54.google.com [209.85.221.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 19085671FA;
-	Thu, 14 Dec 2023 21:50:18 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E681BC433C8;
-	Thu, 14 Dec 2023 21:50:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-	s=korg; t=1702590618;
-	bh=On3GH+H5OWqs4RSfoU5sLErw51EY3L9vRvQWeh0ze6s=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=oAZ/PakbstrORQJCz0NFk8psHpQ6Ymb8y74hf8k/nwZIG8BMfmZTodR39KIKAPTVN
-	 3wi6r6WhGHGktYGMqS5SS8rhV7NMH7A7CdAmX4lF8JkV9/uU2cNA/UKMxHnyJfioal
-	 hADKG1FiqDptFxi07RPSL3NlqBePTLk9NCk42NL0=
-Date: Thu, 14 Dec 2023 13:50:16 -0800
-From: Andrew Morton <akpm@linux-foundation.org>
-To: Arnd Bergmann <arnd@kernel.org>
-Cc: Arnd Bergmann <arnd@arndb.de>, "kernelci . org bot" <bot@kernelci.org>,
- Thomas Bogendoerfer <tsbogend@alpha.franken.de>, Zi Yan <ziy@nvidia.com>,
- Jiaxun Yang <jiaxun.yang@flygoat.com>, linux-mips@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mips: fix r3k_cache_init build regression
-Message-Id: <20231214135016.85cfc8580a26677ab13c9e2c@linux-foundation.org>
-In-Reply-To: <20231214205506.310402-1-arnd@kernel.org>
-References: <20231214205506.310402-1-arnd@kernel.org>
-X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D8F66720E
+	for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 21:51:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-wr1-f54.google.com with SMTP id ffacd0b85a97d-3364a1451c6so634771f8f.3
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 13:51:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1702590717; x=1703195517; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=rOabXrlOXjqrX57IkkKunmqQB/BmDJw6p6tK+zWvuCw=;
+        b=UJW8IdkD7HRT58E/yhMWFNFypy56KxSOvJJ0aKJm4q2bdG2wU9oQo+Wa0TlgLaoIiu
+         fHYN+QuCpQWufQSNAMIOKE0oXENCxs2EDgtQ0DDHhUskr0Bhg2Jz56frO1oFdehQKzQR
+         46hShijm0eJwqhi/3KHRe+nHMRMjOIRvJWfC3nuIcUZ8cwFoBqKqv+UCNSglrlD9lXBF
+         mJWw4yi7wkuO2rjUwb+P9f6Oh6QosaCGyswhyatwNLGDY5HbMAQMdGr1T/Qky6t1wfNZ
+         F2Up/dujXnqbTXAx85PfLg4vix9u5fM1HxO16/gc7Ml6CR6jHE0XZ7gvEAUZmDTAjgrg
+         QLWg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702590717; x=1703195517;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=rOabXrlOXjqrX57IkkKunmqQB/BmDJw6p6tK+zWvuCw=;
+        b=VMhk+r4SMhHvI9VXnxNZSsJSGV8AewjHaaa8wCAS0tbVJjzO5/+3ehjS5S+lSetDN7
+         6cJj4n4OSfq46NhNe0WBpVU4gFU8gdlC72tak+7i7ka9jqlngU0/AbbrKckh5VW4ylE1
+         X5dQhEPAYGbxgmqNU4O3240aVNn9ltEarPvJBWU/i4rJ0GKhoaFCij4JqcS05sUgDmP6
+         +LdoN6NLhEGMC2VpOkoPg1qppDqjGFfdsp6bC6Ko78rFMGwIRiaGq07IINdsAez007ML
+         lIAQHQjGl+8cx+vqtrgJgi48a3vYVETN7QIW9RXLlgLcXABBw2ctkmrd6xq3iAtrdp/P
+         fjSA==
+X-Gm-Message-State: AOJu0YwFsNnBYFL8MhtUXp7zdaSQLy5D+uWelbAqIB0Ci7DwqCIrlpds
+	3e4PJ4RYakXhuZ6/RalGZOiW6JQyQZUrFpLVQYGBBw==
+X-Google-Smtp-Source: AGHT+IGvv9efW+y/4IqkFfsVa8A8WBMmusTIeXCwcuPoUh7g9pdWpzigy7UbMTXDI58NPnBVHdZIE65yxJAA/jiM73k=
+X-Received: by 2002:a5d:44c8:0:b0:336:42d1:2c27 with SMTP id
+ z8-20020a5d44c8000000b0033642d12c27mr1564779wrr.53.1702590717001; Thu, 14 Dec
+ 2023 13:51:57 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+References: <20231214-libstringheader-v2-0-0f195dcff204@google.com>
+ <20231214-libstringheader-v2-1-0f195dcff204@google.com> <202312141335.45C785B0@keescook>
+In-Reply-To: <202312141335.45C785B0@keescook>
+From: Nick Desaulniers <ndesaulniers@google.com>
+Date: Thu, 14 Dec 2023 13:51:42 -0800
+Message-ID: <CAKwvOd=XqPmkqkK9MsCDEhMWdXDQgeatL-+UDfnkNRDSycyyKg@mail.gmail.com>
+Subject: Re: [PATCH v2 1/2] sh: Added kernel.h to word-at-a-time
+To: Kees Cook <keescook@chromium.org>
+Cc: tanzirh@google.com, Andy Shevchenko <andy@kernel.org>, linux-hardening@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, Nick DeSaulniers <nnn@google.com>, 
+	Andrew Morton <akpm@linux-foundation.org>, llvm@lists.linux.dev, 
+	Al Viro <viro@zeniv.linux.org.uk>, Justin Stitt <justinstitt@google.com>, 
+	Konstantin Ryabitsev <konstantin@linuxfoundation.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, 14 Dec 2023 20:54:47 +0000 Arnd Bergmann <arnd@kernel.org> wrote:
+On Thu, Dec 14, 2023 at 1:37=E2=80=AFPM Kees Cook <keescook@chromium.org> w=
+rote:
+>
+> Also, please double-check your email configs: your full name is missing
+> from your emails (it's just "tanzirh@google.com"):
+> https://lore.kernel.org/lkml/20231214-libstringheader-v2-1-0f195dcff204@g=
+oogle.com/
 
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> My earlier patch removed __weak function declarations that used to
-> be turned into wild branches by the linker, instead causing
-> a link failure when the called functions are unavailable:
-> 
-> mips-linux-ld: arch/mips/mm/cache.o: in function `cpu_cache_init':
-> cache.c:(.text+0x670): undefined reference to `r3k_cache_init'
-> 
-> The __weak method seems suboptimal, so rather than putting that
-> back, make the function calls conditional on the Kconfig symbol
-> that controls the compilation.
+This is the issue related to use of our internal mailer with b4.
+Konstantin fixed this in b4 a while ago, but I suspect the version of
+b4 we're getting from apt still does not contain the fix.
 
-Cool, thanks.
+Or perhaps we need to switch to pyenv and pypi to install a newer
+version of b4.  Tanzir (sits right next to me) and reports his version
+of b4 is:
 
-> Reported-by: kernelci.org bot <bot@kernelci.org>
+0.12.3
 
-Please don't forget the Closes: - they're sometimes handy.
+On pypi, looks like there's a 0.12.4
+https://pypi.org/project/b4/#history
+Looking at those release dates, I'm pretty sure Konstantine fixed this
+particular issue in the 0.12.4 release.
 
-> Fixes: 66445677f01e ("mips: move cache declarations into header")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
-> My broken patch is currently in linux-mm, so the fix should
-> be applied on top.
+(I made this mistake too recently, with my latest commit you picked up)
 
-The mm-nonmm-stable branch of mm.git.  So I'll queue this separately
-and we'll have a minor bisection hole.  <git rant elided>
-
-> --- a/arch/mips/mm/cache.c
-> +++ b/arch/mips/mm/cache.c
-> @@ -205,14 +205,14 @@ static inline void setup_protection_map(void)
->  
->  void cpu_cache_init(void)
->  {
-> -	if (cpu_has_3k_cache) {
-> +	if (IS_ENABLED(CONFIG_CPU_R3000) && cpu_has_3k_cache) {
->  		r3k_cache_init();
->  	}
-> -	if (cpu_has_4k_cache) {
-> +	if (IS_ENABLED(CONFIG_CPU_R4K_CACHE_TLB) && cpu_has_4k_cache) {
->  		r4k_cache_init();
->  	}
->  
-> -	if (cpu_has_octeon_cache) {
-> +	if (IS_ENABLED(CONFIG_CPU_CAVIUM_OCTEON) && cpu_has_octeon_cache) {
->  		octeon_cache_init();
->  	}
-
-I just can't help myself.
-
---- a/arch/mips/mm/cache.c~mips-fix-r3k_cache_init-build-regression-fix
-+++ a/arch/mips/mm/cache.c
-@@ -205,16 +205,13 @@ static inline void setup_protection_map(
- 
- void cpu_cache_init(void)
- {
--	if (IS_ENABLED(CONFIG_CPU_R3000) && cpu_has_3k_cache) {
-+	if (IS_ENABLED(CONFIG_CPU_R3000) && cpu_has_3k_cache)
- 		r3k_cache_init();
--	}
--	if (IS_ENABLED(CONFIG_CPU_R4K_CACHE_TLB) && cpu_has_4k_cache) {
-+	if (IS_ENABLED(CONFIG_CPU_R4K_CACHE_TLB) && cpu_has_4k_cache)
- 		r4k_cache_init();
--	}
- 
--	if (IS_ENABLED(CONFIG_CPU_CAVIUM_OCTEON) && cpu_has_octeon_cache) {
-+	if (IS_ENABLED(CONFIG_CPU_CAVIUM_OCTEON) && cpu_has_octeon_cache)
- 		octeon_cache_init();
--	}
- 
- 	setup_protection_map();
- }
-
-The rest of the file doesn't do the over-bracing, so there.
+Debian stable says it has 0.12.0 https://packages.debian.org/stable/b4
+Debian unstable says it has 0.12.4 https://packages.debian.org/unstable/b4
+IDK where 0.12.3 is coming from. Perhaps our internal mirrors are
+lagging behind.
+--=20
+Thanks,
+~Nick Desaulniers
 
