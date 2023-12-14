@@ -2,26 +2,26 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C9D3D81300F
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 13:28:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CB84813018
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 13:29:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1573031AbjLNM2o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 07:28:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46304 "EHLO
+        id S1573050AbjLNM2t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 07:28:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46312 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1573006AbjLNM2m (ORCPT
+        with ESMTP id S1573001AbjLNM2n (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 07:28:42 -0500
+        Thu, 14 Dec 2023 07:28:43 -0500
 Received: from EUR04-HE1-obe.outbound.protection.outlook.com (mail-he1eur04on2072.outbound.protection.outlook.com [40.107.7.72])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AACDD113;
-        Thu, 14 Dec 2023 04:28:48 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBCEC11D;
+        Thu, 14 Dec 2023 04:28:49 -0800 (PST)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=TEkMftRs+X2m7ez6F6ufuPZb0GRWB2vZMaOsDT1H2xMg6vRXoySlStMxZGH88ctKe7oojx2tO1pZM0sGk88a9Ti4uaHowQeQFoObkgEJEJDRSFjKxy9cvcUx0CQKJhnubZzr5beyMX8Qs7Pq4thEpPRteFP7ijglKSUc/nLDFM1j1lDdV9T9Bpf+61XZiMMyst6LiTuIefprQjfxanpAFBRi5d7apRMqvNA8gjxtXFRsrlH2dhyHGPt6jLmLLIOPQAxxDBj4svhFpWU67Avzs3xtmioq9m+hk+NNsZsX84FQctEEcUEskLzmJd5A8xubrhgOa+7wH8VbgmupbYecTA==
+ b=Pdpi7Uy3ppXkhN42q7GqvtNYgpadC2kYSFN5xq+5ZZLOWA6MLaYobhHYhEwIjAbRkbQKPD1wSOVzpgmGX2zawj4UkBZ3ejF6W62+h35AFz65KTV7O2+pY7LaN/DYAbaOMZ/Fc2os8vPaeXrYevYa6TMxAAdwzuHTTyFJJbKkdDKcNbYERahxjC8F+o6g1su5hlWoDphFLkMRotREQwVx+W2ixg7sBE49stLCriszvcJK5ZqlTG8JTYTzzNCZ1j8SJzviCC1ZYRUgUYg/BZmEdMY2MmV5El6sj5Y2whsvieHK8KdoiE8syHvz+h6OewlPCa0S0cAUY3l/oDtD9Xf2Uw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=EglM22ZBzFss4vQ3hji0+r9MZtz6bMacjCC4iRAehtM=;
- b=OACSS1AXwih5ukIYx5jZZXtkY96MfsvwAHsnfHjMJqGdQBbSDELuKdywf/PMtZtXr5Rz8u8Fah9IAgs/gOmfwxPASrxGfv32QuTesR3iyJu9V37Irk11Nd8ENFgMC0FoGusxdrUSqY3bHDaoJ9ezTnfhe/16CsxcapZM760O/cRiQacqWCRnWvvtaXcdkGL8uODx4QWpUBADC0L/dBvnNOosydBwCgZsSJBTq73Vfz4bbJmBZziV3EIBsIhRFCCY7wzihCg0edzldmaicoN2E+ivcK1f8YQUY8IMBazgKdiQrzRdWgrLxX/ISJQ450pzWPMeD2alsM8C2OaxLlCUzQ==
+ bh=es6AFBWC5C9c+MetW7eHK7A12GsBI6/TnXy+EUpugIs=;
+ b=TgBAOZtbQjJHmgxd7LkH2Z3kP7NSnQTNx23EzbCkb3pQ6swJkBqLMmKORl0vAS0kvIBPd+OJq0m9/8x7RZ1GyltbTZcXk/RIB9maSt0OeZam729WjZiy6oQ/HbDSMh0tuyUXa28RULcyqKhxk+Kxt/JCy9QzH6/WI80v3b9Ib0b9SPRawMehujxg14VCPHK6g4TjE7OJKKFjzCNqbxqh6uoOshCtM0jVPAOfaydbDP1yRMg8aSvZyBVO4yO+LZqNoJfeDiSEX0hp3DEMp/z1CI76L6SwuU5B0dOOOYE3xvAI6Q15UorPw0KgYbG9RTgbWuWy8Dm3/8AF/oLgBwZbsw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=theobroma-systems.com; dmarc=pass action=none
  header.from=theobroma-systems.com; dkim=pass header.d=theobroma-systems.com;
@@ -29,8 +29,8 @@ ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=theobroma-systems.com;
  s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=EglM22ZBzFss4vQ3hji0+r9MZtz6bMacjCC4iRAehtM=;
- b=W2xVQgbp7QQ6lfBsfwhSqZzsfobHoCPexZdTi2mR9f3c5PJQGZbWD/VuSHmWp6353BfdDAV2okDRMvLkd7jO+dYbjZoz4s3IbCWr50bD6R3KySDpjm+JRb0VC2L6Og/WUiDUTHfvRfIHabzoH8fwCgVgwDDhvXitNfDl5B8JTccu8iTvO8nr6WEWUFIY1wVUC09mp5nv66FmZ+VzhSGm7W/xTbcRMZd+jeKcPtWZkKIwTELMEuvZUm5SMzBM6Dfk1gGIn3BqYsf5ZuLDHRQ/evCOsS+DbQLQmUKNNIoyrSJbs63Zmd+j7OvM1UOmgOoa42ZUJ2t2/kNQelevblRcUg==
+ bh=es6AFBWC5C9c+MetW7eHK7A12GsBI6/TnXy+EUpugIs=;
+ b=R8F8Q+h5GfOf5MsQiigZOac/RF4hclThYF1Z25svztyhLjY4mOH5iwBn50ITujFC0C6FXzT3mxXTKUIQvjYVrLD6K3x9glLxlf9ABtGp/lX60ywuQiZlElbxn5z1oT5aLH25XfKQLoxmAG9WQmmwV2JPORSt5xUQpZ7JCdrJGlNshxY3Lnr+KEsJdYFm/SS442JuNq1KKLBci0ZTiDU4x3DKXDLlSLuUSmJCz151oD7GRz41RlK00dsZOfKhF0fi7E2ioZdBLKC+IY91b3B73zeV4BJyt2aZLdimSOEXiyqb7ShvmRWCRaRG//TNVC4F4IFDsB/fHZDBQi1RnLenVA==
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=theobroma-systems.com;
 Received: from GVXPR04MB9780.eurprd04.prod.outlook.com (2603:10a6:150:114::21)
@@ -41,7 +41,7 @@ Received: from GVXPR04MB9780.eurprd04.prod.outlook.com (2603:10a6:150:114::21)
 Received: from GVXPR04MB9780.eurprd04.prod.outlook.com
  ([fe80::69e:3527:b31d:9449]) by GVXPR04MB9780.eurprd04.prod.outlook.com
  ([fe80::69e:3527:b31d:9449%3]) with mapi id 15.20.7091.028; Thu, 14 Dec 2023
- 12:28:43 +0000
+ 12:28:44 +0000
 From:   Vahe Grigoryan <vahe.grigoryan@theobroma-systems.com>
 To:     quentin.schulz@theobroma-systems.com, robh+dt@kernel.org,
         krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
@@ -49,9 +49,9 @@ To:     quentin.schulz@theobroma-systems.com, robh+dt@kernel.org,
 Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
         Vahe Grigoryan <vahe.grigoryan@theobroma-systems.com>
-Subject: [PATCH 2/3] arm64: dts: rockchip: expose BIOS Disable feedback pin on rk3399-puma
-Date:   Thu, 14 Dec 2023 13:28:00 +0100
-Message-Id: <20231214122801.3144180-2-vahe.grigoryan@theobroma-systems.com>
+Subject: [PATCH 3/3] arm64: dts: rockchip: make Haikou buttons compatible with "gpio-keys"
+Date:   Thu, 14 Dec 2023 13:28:01 +0100
+Message-Id: <20231214122801.3144180-3-vahe.grigoryan@theobroma-systems.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20231214122801.3144180-1-vahe.grigoryan@theobroma-systems.com>
 References: <20231214122801.3144180-1-vahe.grigoryan@theobroma-systems.com>
@@ -63,51 +63,51 @@ X-ClientProxiedBy: VE1PR03CA0021.eurprd03.prod.outlook.com
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
 X-MS-TrafficTypeDiagnostic: GVXPR04MB9780:EE_|PAXPR04MB8846:EE_
-X-MS-Office365-Filtering-Correlation-Id: ce0b1166-e433-4b61-1c7f-08dbfca03567
+X-MS-Office365-Filtering-Correlation-Id: f66ad913-7a98-4f10-5395-08dbfca035bf
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: X976TEfxYMW8hGUoTVbtUP/7ZWNQAi0iFTLkexJwA/0gnfFng2uW4eVIWAgdBkklpy8IQrDqUjempsA2Ahv7HI3XT4aasDDAIwZoJlEw6XxvtPVkjex0FgR5/MliH9wEhBN/aMKi93iTyCE8UDHl0QX21IgLWnkzd7KiJawhaqLiA2oSq0muY2Rn3MuvHgK00syY1R8VmH9RxrXBcwHROBGZkiUFYPvRiaOlNZzK+Kq6c7jBDizSSY/fgU3oSr1ISlcSbqsDprbDpO3SVo/9Xi9wEoJjFlMZiWqFLXcYiS8RRORv4KLcscmmy9JuUk8YTVde42yp0L1/5sftC0yZMsfQxIMyjQcL6n/E00NmoWtja9g1iopr+e17SFprok/1MmGxKs+wsjk0mfFeijwNVD6iYjR0t2zr4oC1RZac2xDu99CN9CPM7mQ+Ct3iUQBszsVRxgLHEELrK9okrTb/Vh2uH5Lk3tL+lz2/ZHUVWYsn68UTNxmKQzS35k9KZnFkTsJEi3mWrQ/MUsmGWNm4zEOa8EIgBdUQHphlWDk8fzRf8G7Poa7Zv29CrHIr6CiG7hVs9aRzK3xP0dMnygj8aHsCrPsLPmECnvbGySxJpdjFaBBItJc9F/x6xCFnrmvn
+X-Microsoft-Antispam-Message-Info: FkKn74HVjuPPPPg+nNPFjQ/SL8PxByfzZNNelv7iPRP0lArcjop90UGgl1Kbw/i5WXdd5t/8bFxvQkGyNWqYUIvKbJemTwiiVumXWtWnVtOKn3r1qNVvdOe/ZslhG0r+ts6JihmeM5MQXSr0kEakcrsjIkX91N6Tk9xDkcz/2F/22mlcnCxwrZg5EOeDqqX2UkbmXHG9JTETbkxjvl6SuDpLMzW5Ax8CfgPAVUhcqAZsGUHpYWTG96H/HYv0UePDNL7xmbh2LHZOUIiDISJSodJB758xJJwGSnJYuHFWHyZ2s0Ru+v684tWJo0cwbPZ3ZM2sCL/IE/LQkW8fAj7nOP1TQUhgSUspjBjzvjLmzr4aqdJOV4C2jl9jDZFA5y/dEg0Ehm0K/65h0aZNRAtvW8KxLX9TiOWR51xlC1rWyDqTjP7ZbhhBiP/bPUk1ek1G5Di6T12pR0Mbm4DK0sRJpxE0pZox7XBuw7yCEp7Ed2/pCTrAuxzhu/11hvtj/7P32HRKs/2PqEX2fni2fmuGunni1k8qHXoYiKGJeDmVR8dXSDD3m/2/vOow36Ei5KtnQRIiY+xCgYBFD2QahFksNaFNswZAQDpFY+CscusTKa4G+uqe3O48/3W11sqOc7Iq
 X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:GVXPR04MB9780.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(39850400004)(136003)(376002)(396003)(346002)(230922051799003)(1800799012)(186009)(64100799003)(451199024)(52116002)(6506007)(6666004)(6512007)(6486002)(478600001)(83380400001)(107886003)(26005)(2616005)(1076003)(2906002)(5660300002)(41300700001)(316002)(66556008)(66946007)(66476007)(4326008)(8936002)(8676002)(44832011)(38350700005)(86362001)(36756003)(38100700002);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?ColuNPKadqux9uHoDBdwA38M0X7LV701hlkmWZimaavF1iK28IYcOiocKcRz?=
- =?us-ascii?Q?ouFPDcJKsGksQOj1Do6/PiNJzvQMI21b+bz9fggDYexlMNzKFICRWiAAe8MV?=
- =?us-ascii?Q?ecMWBL+1gbxE+12w6eZdfzt6Nc2HbnqCmNvmFpnIBalDp3R6qoXpsBmmKx46?=
- =?us-ascii?Q?3qqK/0pS69t3J3TnhQG3VPFkzeYW/RBVmzHB63AzaXUfd/LwJPwKJmjwT4nh?=
- =?us-ascii?Q?EBBQfrHVp/O+PewjDo5OZTHiEKkBCTH8woOfo3I43Jl0CTFgt4EsFvtgDbgD?=
- =?us-ascii?Q?+22a5Peo0L7z7K0GV1H6A1Cb+NWZq31BZj9N3TL5IIK6y2PMnmO5gmzDSQFD?=
- =?us-ascii?Q?QNPDlcVzC+YsVBNdmrHpKFlYeWHYN2QZ8P1O3a/ftc+gUr8JBSe0A52SFImj?=
- =?us-ascii?Q?6O8WYtGL15TMIPHIxfxbFI/g7kBPIRP4SNFdZ5ik60Itv5gDuyH6pnAkFjBA?=
- =?us-ascii?Q?VFJfEBmeTIWRlKkNFJnfdZeAw0324HRGhvVSB9Evhr+CTwsiOykyDP4uQQeV?=
- =?us-ascii?Q?NyuOucg/gQZPQjfCpOQrw8nCmWm/SVdla8sCSGlJr+oxmO9lnEmX6AX1mvgK?=
- =?us-ascii?Q?bRQV3eDHlaO1noTsjMVBD5EVK+h7PcRNt+WIn1I003/pGk05/1FStxK5Q8bV?=
- =?us-ascii?Q?LlmIRP1zMQqR6/e4gPPuyCn0+7XJ0Ca+UWcwLi/PkO0cSf8fW7dF1YY/6mTF?=
- =?us-ascii?Q?vqXgRLxLYzqOmeFatp6ykcUwuhb/Ua4+EBgF2AdqDJUtlO6GkGKxroA9XbzD?=
- =?us-ascii?Q?Md/76ysPDBWXWIQlBKZRU6ErGqmsMksCkJACmxed7F1pmxbO/OFWPrlvKlqT?=
- =?us-ascii?Q?w2FZIz6TDfI4O4T525auvsCLLnBSgPrsh/u+AHtmi3upQF8vTwK7tVahGY/k?=
- =?us-ascii?Q?GkVIRZ6dJUPRLyb88D/oYcitzfOniAdVpdCNQWBTqMCHICDTPEKYxNEh8GzJ?=
- =?us-ascii?Q?CT2v9pNeilqikPpChq/3FFsw6/jCsyPLNtrSzDF3bFQnKdOmoQhCxg3Yp8ju?=
- =?us-ascii?Q?2KAICryPhkO599BgjCz+8b0rdk7S2YhVLqqb2h4bk9dhmURI65pZOTDfMRK4?=
- =?us-ascii?Q?Hmv/c+5t92BTxKnlrcFWaIy/DHl5adiAU1ikMt90+dDhsGULuXkKH++PcdzL?=
- =?us-ascii?Q?zVD2qr9OW2KdMQFVyiQ5cZIpN2RanYCkqX+WIMDbTHq/UzH/pho3BNR+Apsi?=
- =?us-ascii?Q?2yfwCEUxa42iDIeaKyTGM6ZylKU05Xt1Uxu0RSEaA32tPm5gptHBb0Lgi0sS?=
- =?us-ascii?Q?1v3ca1S6WQWR7027CDp9N7Pwb9J1lSh2zpvpZYhEGdy85iuPjhSVqvGni9+v?=
- =?us-ascii?Q?5Rwa983KebwftOgSZB62jZY1hGaui9V8SjmAKINnKKoqrfN9RYlZ1keVbJ01?=
- =?us-ascii?Q?ClAF+KXH931PAU0+NCxh0OfxugPzf8DewbE6IcL5zDs1QXWp2f8TzkLP+kG9?=
- =?us-ascii?Q?wtWgDLBOAWvhFpfTg/HTUOxEXTekiTZymVP9EniixCwE5/nrqkKAqtsX0Qbt?=
- =?us-ascii?Q?tKdtbPj8tCgRfhm9vLJdlireZVAF2P1il4DX/OiE4hmVXlU7CuydEswg4Uj4?=
- =?us-ascii?Q?jYqwSyllYB89a+l8JUttkpvxCwkTR2MCIbCsgN3BSsS3LU7Hh6qRxyJV11zU?=
- =?us-ascii?Q?lC+bLFkm2+bF/gob6KiON18=3D?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?lc3qBCqXfs6jgvsS6wZngG56dBP2inxqQS7s4viKVd3AbAxdlFs+8c85LU8L?=
+ =?us-ascii?Q?p3UOGVCmtFeYHOIqbTc3yKyV63qbyZY2dYZoq2/xfj7HOA+9VAaWja/UFP9i?=
+ =?us-ascii?Q?bIeeTIGhoZ6LB7S6WVP2J6G5hjF57WK7PIwQOA3yx/45JBhJScsfIYfwBjBt?=
+ =?us-ascii?Q?OGyLpYVLH1TNdSDpvhjOZsK7cT5uq7LWX+4A44XuerjjqlsXB+RyT0JAUKh2?=
+ =?us-ascii?Q?hUDCM0Wl1U+iMPVWkR4jMsZuyqLcuBZxZ5OIWpajEGA8tFayq4HqnPq5+20o?=
+ =?us-ascii?Q?UsPI/JzV8lvV5CkktvtT62NKeq3ziEE88yDRpq1RHL8F7IE732Fbo9hkV/vC?=
+ =?us-ascii?Q?pp/fLjvCX4Dwu8QVNU+pEWaA0u5SuqcbIxMAoZEsynTUp9r7H1uvKPPMTFDp?=
+ =?us-ascii?Q?iqioWvgwVtCJ10oxX1PEHzdg3McWmVbjVd0oXmmo9eqJvEE/NZr9+f3bDBkh?=
+ =?us-ascii?Q?ER4LcbPAPkwAyM9RVHBmZYnmBUFamXp0d5G+YoHlOA5DFUjuhdJkYYdnwtVD?=
+ =?us-ascii?Q?zeJrl1ohrRyS7EZ0XojH5KTeZ+qsuSUySl+Go1VX5q2LVyCR+uu6P/3QhfGL?=
+ =?us-ascii?Q?VE/NEceUu/u8IR16l+kolASXm+v34qwYsePs/GaXAJnDgX1IBBCV0GuOMXEC?=
+ =?us-ascii?Q?gBXeVrn+JMQvEmz3mxL5KTMWL2iYGbwlHj7gdmXnbiiSkogEMzDknx2eSugs?=
+ =?us-ascii?Q?s0/WgG0ICtqn0GhVEWAYXUCOEJMyljpWjqyNNOYMNtlxoaG2i7lFAeJkmgE8?=
+ =?us-ascii?Q?SO4rhQxTUMaM8ThV9T9TsxZdSI2xByFKuNxzsj/jXAu13cXEPm9AQRUi6lGa?=
+ =?us-ascii?Q?11LkeYkO/KVHfby+ankQ/Rf44t0wHCO4CvRnRm3ga3YfjrAvuunvHB8WUKVd?=
+ =?us-ascii?Q?SDcR2AyOY10tXJ2Bn260hGKJDijWK3PW/Kywk+tEzNw71qM/sx9AxkLUGwrK?=
+ =?us-ascii?Q?AAgR+8lffqkoaZ1CctjsMDI+GzKAD5JD+Lg2ldI9gdX9y2Opgt171tRE0cYn?=
+ =?us-ascii?Q?ntqiZ0XP1jpi2aI5JDXfHGpwJKxXnXydaELDEPDI3s2NUnQ+MYObaWbOQkcA?=
+ =?us-ascii?Q?WKZmw2U4XYTywdkBSVD1X9/AqMuOcbIg/BQvzQ8zNuCJ4yK2XTyQoWIkm0Ke?=
+ =?us-ascii?Q?2w/QWBIHFK5P3NtxUpagd90+DB4iNq7apN3maMmK2yi44+OJcF76m/ynKGEd?=
+ =?us-ascii?Q?SB0Y++152Pm/tndihSSAhEOqHbGn88UVJzvJWU3aaXhkMGQVUgpzMU/Sav23?=
+ =?us-ascii?Q?3wJ0Nk33pM3cGzJNgtNJ+0zCdrIzxCMRB3ALC+YcLnixErOzBU9KC8fDfY2K?=
+ =?us-ascii?Q?uRMq0LgJ810VM+6NKJ620DL4UY4qjWl/aH/L0Xr4ztmY52A7y/pl4DlkwdrC?=
+ =?us-ascii?Q?tYbCs3ql00zbHCM8jKYUnmAbHC+3VQCcm/Mi92X7hVl7cqE9eQsJCh/JTFcP?=
+ =?us-ascii?Q?qzerhVnMVx5p3XymbtjWHU9SVqzr1A/by6PUZgGeXhfAEljSbgMqzr0Fn2Db?=
+ =?us-ascii?Q?tbuZzi/5P85b7qyMjTjs0pTfLZnBeq9Fyn2jLiH08LFTU2CpJ1kxIyXr7NC5?=
+ =?us-ascii?Q?ViNSx6QGzBEDMbNLJateUDpWHqMzHIvJOzl2/S6WLOT1c6gFFpLIuvHzYKEa?=
+ =?us-ascii?Q?F9A1RiV6EFnL1a9eb5+mMws=3D?=
 X-OriginatorOrg: theobroma-systems.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ce0b1166-e433-4b61-1c7f-08dbfca03567
+X-MS-Exchange-CrossTenant-Network-Message-Id: f66ad913-7a98-4f10-5395-08dbfca035bf
 X-MS-Exchange-CrossTenant-AuthSource: GVXPR04MB9780.eurprd04.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Dec 2023 12:28:42.5117
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Dec 2023 12:28:43.0895
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 5e0e1b52-21b5-4e7b-83bb-514ec460677e
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: DLAd+XqUxjljU7DHOI0Qzxx+bm4rurDBJdRl4uhib2tjuSwGfj1tbGO42j7FERJziOCiOZ6329jJxC5owfelKzopG2JBtaqcIyYiCH14UVTDXk3/2nmRv0IaaN5R7XbD
+X-MS-Exchange-CrossTenant-UserPrincipalName: CXTBF3U9eSkPoqXsJOFQnssEDt52Z7oUURcTgg72dKfxFtkCqG4hOnb8ykmShF5f0zWuc4peGLr6OjAFC0P/b2i6aWTNsJyeJnIshfeSnXL9BbGbVycFozkauEG1UvWr
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: PAXPR04MB8846
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
@@ -119,48 +119,83 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Puma SoM allows to select in hardware directly which storage
-medium to try for loading the bootloader, either SPI-NOR followed
-by eMMC followed by SD card, or SD card only.
+Haikou is an evaluation and development platform for System on
+Modules (SOMs).
 
-This signal is exposed on the Q7 connector and allows carrierboards
-to control it however they want.
-
-This feedback pin allows to know in which state the SoM currently
-is and provided the current state isn't modified until next reboot,
-know from which storage medium the bootloader could be loaded from
-next time.
+Haikou devkit exposes multiple buttons so let's register them as
+such so that the input subsystem can generate events when pressed or
+switched.
 
 Signed-off-by: Vahe Grigoryan <vahe.grigoryan@theobroma-systems.com>
 ---
- arch/arm64/boot/dts/rockchip/rk3399-puma.dtsi | 14 ++++++++++++++
- 1 file changed, 14 insertions(+)
+ .../boot/dts/rockchip/rk3399-puma-haikou.dts  | 40 ++++++++++++++++---
+ 1 file changed, 35 insertions(+), 5 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/rockchip/rk3399-puma.dtsi b/arch/arm64/boot/dts/rockchip/rk3399-puma.dtsi
-index 20e3f41efe97..ea9d6ab73df5 100644
---- a/arch/arm64/boot/dts/rockchip/rk3399-puma.dtsi
-+++ b/arch/arm64/boot/dts/rockchip/rk3399-puma.dtsi
-@@ -119,6 +119,20 @@ &emmc_phy {
- 	drive-impedance-ohm = <33>;
+diff --git a/arch/arm64/boot/dts/rockchip/rk3399-puma-haikou.dts b/arch/arm64/boot/dts/rockchip/rk3399-puma-haikou.dts
+index 4f2d4bb12032..18a98c4648ea 100644
+--- a/arch/arm64/boot/dts/rockchip/rk3399-puma-haikou.dts
++++ b/arch/arm64/boot/dts/rockchip/rk3399-puma-haikou.dts
+@@ -5,6 +5,7 @@
+ 
+ /dts-v1/;
+ #include "rk3399-puma.dtsi"
++#include <dt-bindings/input/input.h>
+ 
+ / {
+ 	model = "Theobroma Systems RK3399-Q7 SoM";
+@@ -18,6 +19,38 @@ chosen {
+ 		stdout-path = "serial0:115200n8";
+ 	};
+ 
++	gpio-keys {
++		compatible = "gpio-keys";
++		pinctrl-0 = <&haikou_keys_pin>;
++		pinctrl-names = "default";
++
++		button-batlow-n {
++			gpios = <&gpio0 RK_PB2 GPIO_ACTIVE_LOW>;
++			label = "BATLOW#";
++			linux,code = <KEY_BATTERY>;
++		};
++
++		button-slp-btn-n {
++			gpios = <&gpio0 RK_PB3 GPIO_ACTIVE_LOW>;
++			label = "SLP_BTN#";
++			linux,code = <KEY_SLEEP>;
++		};
++
++		button-wake-n {
++			gpios = <&gpio0 RK_PB1 GPIO_ACTIVE_LOW>;
++			label = "WAKE#";
++			linux,code = <KEY_WAKEUP>;
++			wakeup-source;
++		};
++
++		switch-lid-btn-n {
++			gpios = <&gpio0 RK_PA4 GPIO_ACTIVE_LOW>;
++			label = "LID_BTN#";
++			linux,code = <SW_LID>;
++			linux,input-type = <EV_SW>;
++		};
++	};
++
+ 	leds {
+ 		pinctrl-0 = <&module_led_pin>, <&sd_card_led_pin>;
+ 
+@@ -165,11 +198,8 @@ &pcie0 {
  };
  
-+&gpio0 {
-+	/*
-+	 * The BIOS_DISABLE hog is a feedback pin for the actual status of the
-+	 * signal. This usually represents the state of a switch on the baseboard.
-+	 * The pin has a 10k pull-up resistor connected, so no pull-up setting is needed.
-+	 */
-+	bios-disable-hog {
-+		gpios = <RK_PB0 GPIO_ACTIVE_HIGH>;
-+		gpio-hog;
-+		input;
-+		line-name = "bios_disable";
-+	};
-+};
-+
- &gmac {
- 	assigned-clocks = <&cru SCLK_RMII_SRC>;
- 	assigned-clock-parents = <&clkin_gmac>;
+ &pinctrl {
+-	pinctrl-names = "default";
+-	pinctrl-0 = <&haikou_pin_hog>;
+-
+-	hog {
+-		haikou_pin_hog: haikou-pin-hog {
++	buttons {
++		haikou_keys_pin: haikou-keys-pin {
+ 			rockchip,pins =
+ 			  /* LID_BTN */
+ 			  <0 RK_PA4 RK_FUNC_GPIO &pcfg_pull_up>,
 -- 
 2.34.1
 
