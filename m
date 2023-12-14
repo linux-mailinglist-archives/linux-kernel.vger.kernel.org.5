@@ -2,96 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B6298131B8
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 14:37:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 781238131C0
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 14:38:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1573364AbjLNNhS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 08:37:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33604 "EHLO
+        id S1573369AbjLNNh4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 08:37:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46392 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1573340AbjLNNhQ (ORCPT
+        with ESMTP id S1573357AbjLNNhy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 08:37:16 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A891123
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 05:37:23 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 174CEC433C8;
-        Thu, 14 Dec 2023 13:37:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1702561043;
-        bh=O5TgA8MD5vafe0qN8lLvWfpYDU/q2IvTpt6dbdNgacg=;
-        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=g9XWIkX5pkRl7TBT4gmlxHjimfT4hsCXHzEdPeejrdKwSGeP/dHhm039YlV2lK2/r
-         YIQiL3tSVd7K7WTw7jecTQPoLMXBqwCrv+sSmFAj/lbwhilSNNHYEIFf1DL2brw1xU
-         iS6KYL3LaeGCeZHNL+5PvMatoTf6K9ue2nJtX9KTAcm86Tugh709uBEWzMwCorBNYX
-         5/cYGvLQ+VB5FN0vLHeQPz2bJZFDK3klGrwn3hz06QGSn2y7rRHm3ZSiBko0lcba8p
-         qW6fLOw8J4mm4VeF2ZOONEaF/JaqeMDAlXeyJfvDFMl5e9JGq8XDMJXDnLRrr12VrL
-         5MazXj1ESj/nw==
-From:   Mark Brown <broonie@kernel.org>
-To:     robh+dt@kernel.org, Daniel Baluta <daniel.baluta@oss.nxp.com>
-Cc:     kuninori.morimoto.gx@renesas.com, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, lgirdwood@gmail.com,
-        daniel.baluta@gmail.com, alsa-devel@alsa-project.org,
-        iuliana.prodan@nxp.com, shengjiu.wang@nxp.com
-In-Reply-To: <20231128081119.106360-1-daniel.baluta@oss.nxp.com>
-References: <20231128081119.106360-1-daniel.baluta@oss.nxp.com>
-Subject: Re: [PATCH v4 0/2] ASoC: audio-graph-card2: Introduce
- playback-only/capture-only DAI link flags
-Message-Id: <170256104081.58703.13815510713299468490.b4-ty@kernel.org>
-Date:   Thu, 14 Dec 2023 13:37:20 +0000
+        Thu, 14 Dec 2023 08:37:54 -0500
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB48B111;
+        Thu, 14 Dec 2023 05:37:59 -0800 (PST)
+Received: by mail-wr1-x42a.google.com with SMTP id ffacd0b85a97d-3364a5ccbb1so394137f8f.1;
+        Thu, 14 Dec 2023 05:37:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1702561078; x=1703165878; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=iNWLUH9LK89TjpgsuyNt+Vo/yCFW7ydehD3FUtjWpIE=;
+        b=TQAQ5R5byzbgtG87t4sKZ3cri5njjwPnP2Unl25p1D6Zsx2IExilf1vM9UIcZM67YK
+         Ua4v/vrc53QNx1DvKuZwyulmDm/7+eYtAXCBZhvlKbukeG6rtBxB0YO+oi9ZUwEO7ZWk
+         yP31SjZIQeohsrQIM5UaiIa61cN5cAdhDXtv54IJ7VPX/+T8vJbFNeSXe7PfWhHdZaYS
+         ZChZ8Y+4UBpe4FD9c9cvIgdQFMdHNkU2ENx+u8y4GKP8jbXsb5Exk9OeaDQE0lMy+syS
+         hCk7JF1Nn2merkSgf8TErvakamyNK2K6BxVzGlTnQF6n0whOt4S2VV3qNegilth3S+eA
+         oJLw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702561078; x=1703165878;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=iNWLUH9LK89TjpgsuyNt+Vo/yCFW7ydehD3FUtjWpIE=;
+        b=iM6Zfph1hdxvC7W+RznZz209XVLQNvO2YDYuGXt7C+vgHZ7EUroueXnaGm4Pb/82D5
+         AX0kb4J7dVH/uohrRObk21z2fID98llTihpFpXziEFhivCTHELHkJAvh3plBym3CDTcW
+         1GCkwa6bSVBmJkbWS3q/9KTDDhuxFAGcOA/zgXYqcH6slsEcYoUa8gKw3mLGpwuuACYC
+         lwYhz0WYv4e+dmXRoc+0h7u/Fa1gE51ni+T2eWJhmZJD9dSPtMOdwOJTzu+Vk6+AMnVi
+         I6yAGPsMy3R5vYhnAAkhwE0fiThJf47meH9R64zilrIP6Mx8X9ngNAUZ+ERc6uO7seeQ
+         NbPg==
+X-Gm-Message-State: AOJu0Yw6iyqIe+I+DQrkhmc5rfXhsznQC+aWYbV9ecJHTnuHKOpi36G1
+        T5Zm8x2rXQf0vsS6Aa+KHIJFqs3gBTZNFFzXbbA=
+X-Google-Smtp-Source: AGHT+IEmT0ADDFMybjWYEPYJY+YvMwwkfq+XWFrFSF3mYc+Q8NtVmej3eqMgHssryjklGKikaFiVw/ij7KjfMs8gvN0=
+X-Received: by 2002:a5d:6e0c:0:b0:336:957:2aec with SMTP id
+ h12-20020a5d6e0c000000b0033609572aecmr5042155wrz.100.1702561077886; Thu, 14
+ Dec 2023 05:37:57 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.13-dev-5c066
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <1702467945-38866-1-git-send-email-alibuda@linux.alibaba.com>
+ <1702467945-38866-2-git-send-email-alibuda@linux.alibaba.com>
+ <20231213222415.GA13818@breakpoint.cc> <0e94149a-05f1-3f98-3f75-ca74f364a45b@linux.alibaba.com>
+ <CAADnVQJx7j_kB6PVJN7cwGn5ETjcSs2Y0SuBS0+9qJRFpMNv-w@mail.gmail.com> <e6d9b59f-9c98-53a1-4947-720095e0c37e@linux.alibaba.com>
+In-Reply-To: <e6d9b59f-9c98-53a1-4947-720095e0c37e@linux.alibaba.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Thu, 14 Dec 2023 05:37:46 -0800
+Message-ID: <CAADnVQK5JP3D+BrugP61whZX1r1zHp7M_VLSkDmCKF9y96=79A@mail.gmail.com>
+Subject: Re: [RFC nf-next 1/2] netfilter: bpf: support prog update
+To:     "D. Wythe" <alibuda@linux.alibaba.com>
+Cc:     Florian Westphal <fw@strlen.de>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        Jozsef Kadlecsik <kadlec@netfilter.org>,
+        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        coreteam@netfilter.org,
+        netfilter-devel <netfilter-devel@vger.kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 28 Nov 2023 10:11:17 +0200, Daniel Baluta wrote:
-> This patchseries allows users to specify a link only direction with
-> audio-graph-card2.
-> 
-> Changes since v1 - https://lore.kernel.org/lkml/20230801082433.548206-1-daniel.baluta@oss.nxp.com/T/
->      - used audio-graph-card2 instead of simple-card as we are deprecting simple-card.
-> 
-> Changes since v2:
->      - Fix device tree binding error reported by Rob
-> 
-> [...]
+On Thu, Dec 14, 2023 at 12:57=E2=80=AFAM D. Wythe <alibuda@linux.alibaba.co=
+m> wrote:
+>
+>
+>
+> On 12/14/23 1:50 PM, Alexei Starovoitov wrote:
+> > On Wed, Dec 13, 2023 at 9:31=E2=80=AFPM D. Wythe <alibuda@linux.alibaba=
+.com> wrote:
+> >> I will address those issues you mentioned in the next version.
+> > Don't. There is no need for the next version.
+> > None of these changes are necessary.
+>
+> Can I know the reason ?  Updating prog for active link is kind of
+> important feature
+> for real application..
 
-Applied to
-
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
-
-Thanks!
-
-[1/2] ASoC: audio-graph-card2: Introduce playback-only/capture-only DAI link flags
-      commit: d29351e8c20d61a852bbdfcab7bb7166bd916558
-[2/2] ASoC: dt-bindings: audio-graph-port: Document new DAI link flags playback-only/capture-only
-      commit: af29e51bee8223d8b26e574489d2433b88cdeb2f
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
+yes. it's and it's working as expected. Do you see an issue?
