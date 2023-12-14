@@ -2,168 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 36B44813653
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 17:33:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B7CCE813656
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 17:34:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229880AbjLNQdY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 11:33:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45032 "EHLO
+        id S229958AbjLNQeK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 11:34:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50148 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229446AbjLNQdX (ORCPT
+        with ESMTP id S229446AbjLNQeJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 11:33:23 -0500
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4D36A6;
-        Thu, 14 Dec 2023 08:33:29 -0800 (PST)
-Received: from pps.filterd (m0353726.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3BEGNpfb010000;
-        Thu, 14 Dec 2023 16:32:47 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=k0KaS28pCt49kw9+p3L44QcYWFnIp+iPqyK7JQMB9g8=;
- b=WbnAA5NiNCBVwTq/DRIYImrYFEPSxxVbIoEeLXgDg52nN3jp3kXnLiVm2CfnCh/xC0XS
- uqs4M2/57DXguWWOAHtgWlmqGaA9hSlPoxgHvOtYEessd/axv6/g2QbqQ4pLd50W3BLR
- nJRDs41b8XU6a4fOOlrte6HQ7ygk2NAyhXkvD7fCuw2ZNTdawzqataNh/UdXhQ0tzCpT
- uxllSKmVqsvpmtaig+gq/UrTa0/WQ9f8+oW9p10hz0N2UFOM+YfAt3EjDH/37KDGLcTh
- YtsqXqHX/YDEXd+Nxb7KXcxXDlPjXBSguoe82WDU97HldaVhWfjENixBjMyjS+IbOQ+n hQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3v03b34rc8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 14 Dec 2023 16:32:47 +0000
-Received: from m0353726.ppops.net (m0353726.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3BEGO45B012186;
-        Thu, 14 Dec 2023 16:32:46 GMT
-Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3v03b34qmg-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 14 Dec 2023 16:32:45 +0000
-Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
-        by ppma23.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3BECe18w014799;
-        Thu, 14 Dec 2023 16:31:00 GMT
-Received: from smtprelay03.wdc07v.mail.ibm.com ([172.16.1.70])
-        by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3uw42khd6b-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 14 Dec 2023 16:31:00 +0000
-Received: from smtpav05.dal12v.mail.ibm.com (smtpav05.dal12v.mail.ibm.com [10.241.53.104])
-        by smtprelay03.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3BEGUxZf10551814
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 14 Dec 2023 16:30:59 GMT
-Received: from smtpav05.dal12v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 9026358065;
-        Thu, 14 Dec 2023 16:30:59 +0000 (GMT)
-Received: from smtpav05.dal12v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id BC26458052;
-        Thu, 14 Dec 2023 16:30:55 +0000 (GMT)
-Received: from [9.67.23.198] (unknown [9.67.23.198])
-        by smtpav05.dal12v.mail.ibm.com (Postfix) with ESMTP;
-        Thu, 14 Dec 2023 16:30:55 +0000 (GMT)
-Message-ID: <e1ec02cf-072b-4678-8986-336c1cb8ca92@linux.ibm.com>
-Date:   Thu, 14 Dec 2023 10:30:55 -0600
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 5/8] ARM: dts: aspeed: System1: Voltage regulators
-Content-Language: en-US
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, joel@jms.id.au, andrew@codeconstruct.com.au,
-        peterhuewe@gmx.de, jarkko@kernel.org, jgg@ziepe.ca,
-        keescook@chromium.org, tony.luck@intel.com, gpiccoli@igalia.com,
-        johannes.holland@infineon.com, linux@roeck-us.net,
-        broonie@kernel.org
-Cc:     patrick.rudolph@9elements.com, vincent@vtremblay.dev,
-        peteryin.openbmc@gmail.com, lakshmiy@us.ibm.com,
-        bhelgaas@google.com, naresh.solanki@9elements.com,
-        alexander.stein@ew.tq-group.com, festevam@denx.de,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        linux-integrity@vger.kernel.org, linux-hardening@vger.kernel.org,
-        geissonator@yahoo.com
-References: <20231212164004.1683589-1-ninad@linux.ibm.com>
- <20231212164004.1683589-6-ninad@linux.ibm.com>
- <6a3d4551-66a2-411a-9d5f-cffb57ee0ce2@linaro.org>
-From:   Ninad Palsule <ninad@linux.ibm.com>
-In-Reply-To: <6a3d4551-66a2-411a-9d5f-cffb57ee0ce2@linaro.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: kuNvJNdtavC_dao6iJnMFctwdS96DrLO
-X-Proofpoint-GUID: Tzj1hExUyDRdIPxL0IVPxnja4Z1KmH3A
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-14_11,2023-12-14_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 mlxscore=0
- suspectscore=0 phishscore=0 priorityscore=1501 malwarescore=0
- impostorscore=0 mlxlogscore=999 clxscore=1015 bulkscore=0 adultscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311290000 definitions=main-2312140117
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        Thu, 14 Dec 2023 11:34:09 -0500
+Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72DAF10F
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 08:34:15 -0800 (PST)
+Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-5cf4696e202so96499817b3.2
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 08:34:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1702571654; x=1703176454; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=dgQLvbaqZFtHigUp/EtkoVbLXyham3BzC/5JXoUn+l4=;
+        b=gK+FOFhAVl3PwgI3iS9BejvlarVDZflJr7QhpAqXpl72Ivi79wfMikHl+C4cyb2VPm
+         Ax9PkOYgXCAdEGtWZhn612Q/igA/Pe3DOkCaoNxl18+h3MUxW1Ca63ybW6fkwGWy7HZL
+         IALEV1cnD2NZ7gr/vwQ9AUJqfhkflZH2X1nrbo8NHYJiTKwfASA2/fgNtbVaN9dXO2rh
+         wfwSHVyeDTT3LX8V16Kkift9w7vZyuGuW8pEvyqKNxbvaovg/InGNVfKS/1GZRA4LxOk
+         HfK9qH2aU81RDeYaqq04IEkiwAM9uvizqK9GuIe4i1oBzZqeXY0ZlPWk1erMKSAdoSrl
+         afQQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702571654; x=1703176454;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=dgQLvbaqZFtHigUp/EtkoVbLXyham3BzC/5JXoUn+l4=;
+        b=S4R09VjaxroR05bhSas+yFzlnNjoTzQgcUjlxmKp+Y21AD0OliT6jqSYE0/GQmtvHt
+         y0AfY1zch1yLeyoQ5Yt1IEN/7nbSl7aZtzsvroYGVi+BsDO8CO7OORCGVjFdqaBS20HW
+         c9lJYhGDtYPoViwlf6upVueBOQNgy96jOKSsIQyzzp5nWz6sg4zeZDQR12o7bVw5hQok
+         fJIsQhB+W3SD3cH1Cr/H4wvvVlj/OpN63S0yDn9MoYM9IshlxPGGo7mACkUfbDsoPbZf
+         bAIH+R7Oiuyao8qQqqAGhYRfpfnKN8OM6vuvAqFj4i34lTLGnKlWlHxqpXA/Cl+scFy5
+         ZHHw==
+X-Gm-Message-State: AOJu0YymBZrg9cITz/y0JRC6/w3T+rPVb0M1s7IY4bRcbKf6xd28NDnM
+        kyYVVcwyIx0tpMSOi+2ZA+1BTwlkIh8=
+X-Google-Smtp-Source: AGHT+IGyuwsOx8hONotcvinU2TL/jZLWZjMBvbCKpQOSyVHlnfNq//5voUQE6Lf7ldDRVqln11okKSYy69w=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a05:690c:c9c:b0:5e2:1d4d:bb78 with SMTP id
+ cm28-20020a05690c0c9c00b005e21d4dbb78mr63397ywb.2.1702571654638; Thu, 14 Dec
+ 2023 08:34:14 -0800 (PST)
+Date:   Thu, 14 Dec 2023 16:34:12 +0000
+In-Reply-To: <864jglbgsh.wl-maz@kernel.org>
+Mime-Version: 1.0
+References: <20231214001753.779022-1-seanjc@google.com> <864jglbgsh.wl-maz@kernel.org>
+Message-ID: <ZXsuhF5Rns1H53zK@google.com>
+Subject: Re: [ANNOUNCE / RFC] PUCK Future Topics
+From:   Sean Christopherson <seanjc@google.com>
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        James Houghton <jthoughton@google.com>,
+        Peter Xu <peterx@redhat.com>,
+        Axel Rasmussen <axelrasmussen@google.com>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        Isaku Yamahata <isaku.yamahata@linux.intel.com>,
+        David Matlack <dmatlack@google.com>,
+        Yan Zhao <yan.y.zhao@intel.com>,
+        Michael Roth <michael.roth@amd.com>,
+        Aaron Lewis <aaronlewis@google.com>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Janosch Frank <frankja@linux.ibm.com>,
+        Claudio Imbrenda <imbrenda@linux.ibm.com>,
+        Anup Patel <anup@brainfault.org>,
+        Atish Patra <atishp@atishpatra.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Huacai Chen <chenhuacai@kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Krzysztof,
+On Thu, Dec 14, 2023, Marc Zyngier wrote:
+> On Thu, 14 Dec 2023 00:17:53 +0000,
+> Sean Christopherson <seanjc@google.com> wrote:
+> > 
+> > Hi all!  There are a handful of PUCK topics that I want to get scheduled, and
+> > would like your help/input in confirming attendance to ensure we reach critical
+> > mass.
+> > 
+> > If you are on the Cc, please confirm that you are willing and able to attend
+> > PUCK on the proposed/tentative date for any topics tagged with your name.  Or
+> > if you simply don't want to attend, I suppose that's a valid answer too. :-)
+> > 
+> > If you are not on the Cc but want to ensure that you can be present for a given
+> > topic, please speak up asap if you have a conflict.  I will do my best to
+> > accomodate everyone's schedules, and the more warning I get the easier that will
+> > be.
+> > 
+> > Note, the proposed schedule is largely arbitrary, I am not wedded to any
+> > particular order.  The only known conflict at this time is the guest_memfd()
+> > post-copy discussion can't land on Jan 10th.
+> > 
+> > Thanks!
+> > 
+> > 
+> > 2024.01.03 - Post-copy for guest_memfd()
+> >     Needs: David M, Paolo, Peter Xu, James, Oliver, Aaron
+> > 
+> > 2024.01.10 - Unified uAPI for protected VMs
+> >     Needs: Paolo, Isaku, Mike R
+> > 
+> > 2024.01.17 - Memtypes for non-coherent MDA
+> 
+> DMA?
 
-On 12/12/23 14:22, Krzysztof Kozlowski wrote:
-> On 12/12/2023 17:40, Ninad Palsule wrote:
->> This commit adds different voltage regulators.
->>
->> Tested:
->>      This board is tested using the simics simulator.
->>
->> Signed-off-by: Ninad Palsule <ninad@linux.ibm.com>
->> ---
->>   .../dts/aspeed/aspeed-bmc-ibm-system1.dts     | 266 ++++++++++++++++++
-> Squash it.
-Done.
->
->>   1 file changed, 266 insertions(+)
->>
->> diff --git a/arch/arm/boot/dts/aspeed/aspeed-bmc-ibm-system1.dts b/arch/arm/boot/dts/aspeed/aspeed-bmc-ibm-system1.dts
->> index 0557bff9f36a..b8e7e52d4600 100644
->> --- a/arch/arm/boot/dts/aspeed/aspeed-bmc-ibm-system1.dts
->> +++ b/arch/arm/boot/dts/aspeed/aspeed-bmc-ibm-system1.dts
->> @@ -114,10 +114,127 @@ vga_memory: region@bf000000 {
->>   		};
->>   	};
->>   
->> +	iio-hwmon {
->> +		compatible = "iio-hwmon";
->> +		io-channels = <&p12v_vd 0>, <&p5v_aux_vd 0>,
->> +			<&p5v_bmc_aux_vd 0>, <&p3v3_aux_vd 0>,
->> +			<&p3v3_bmc_aux_vd 0>, <&p1v8_bmc_aux_vd 0>,
->> +			<&adc1 4>, <&adc0 2>, <&adc1 0>,
->> +			<&p2V5_aux_vd 0>, <&adc1 7>;
->> +	};
->> +
->> +	p12v_vd: voltage_divider1 {
-> Same comments as in other patches.
-Fixed.
->
->> +		compatible = "voltage-divider";
->> +		io-channels = <&adc1 3>;
->> +		#io-channel-cells = <1>;
->> +
->> +		/* Scale the system voltage by 1127/127 to fit the ADC range.
-> Use Linux coding style comments. /* and blank line
+Doh, yes, DMA.
 
-Fixed.
+> >     Needs: Paolo, Yan, Oliver, Marc, more ARM folks?
+> 
+> Do we need anyone from the other architectures? I wouldn't be
+> surprised if RISC-V was at least as picky as ARM on that front
+> (assuming this really is about DMA and not something else).
 
-Thanks for the review.
-
-Regards,
-
-Ninad
-
->
->
-> ....
->
-> Best regards,
-> Krzysztof
->
+Ah, yeah, probably.  I had just heard rumblings about ARM, and so ARM was on my
+mind.  I added people from all the other flavors of KVM.
