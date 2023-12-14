@@ -2,201 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BE45C812578
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 03:48:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BCBF481257E
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 03:49:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1443058AbjLNCsE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 21:48:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58528 "EHLO
+        id S1443005AbjLNCtU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 21:49:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58534 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235413AbjLNCrm (ORCPT
+        with ESMTP id S235192AbjLNCtE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 21:47:42 -0500
-Received: from mail-qt1-x832.google.com (mail-qt1-x832.google.com [IPv6:2607:f8b0:4864:20::832])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2E9C199
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 18:47:45 -0800 (PST)
-Received: by mail-qt1-x832.google.com with SMTP id d75a77b69052e-4258e0a0dc1so45301331cf.2
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 18:47:45 -0800 (PST)
+        Wed, 13 Dec 2023 21:49:04 -0500
+Received: from mail-io1-xd31.google.com (mail-io1-xd31.google.com [IPv6:2607:f8b0:4864:20::d31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B77ED18D;
+        Wed, 13 Dec 2023 18:48:50 -0800 (PST)
+Received: by mail-io1-xd31.google.com with SMTP id ca18e2360f4ac-7b45ab9e084so319168939f.2;
+        Wed, 13 Dec 2023 18:48:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bitbyteword.org; s=google; t=1702522064; x=1703126864; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=MJ8V9wpZFRMaxTJ2Yr+JKkom97NUFELsE8HKkLVd89U=;
-        b=tTwcoFrpm1z648NnqZPTYvJRG8qRAP6HhEhissBvfO3WICzlER+W4Tt/oI7kmMIP9f
-         cuwJw6erApazvVuJOsmICilQm5tVsJlbPvoBAQY+jE8fhvJ9EEt+aZap7P6j2KrttjT8
-         ajUUve1LCghnI3HfHmKzTePg0y6NqTof15pSkJUrVGJfAwkHMmKPcC0ans+73KGvpcm6
-         +vIekWNczLtj8PFttljYj4NeVH0bB9j61SwGzwiZr3MnRn4KSJKHnf/9zLNnMWCea1H6
-         W5PDTA315RGU9qFRrhFMJ2R7vZiE4BPt4hvi2DwRLOND3Pwhozz5zAjH0glcKaUO+CQn
-         3JpQ==
+        d=gmail.com; s=20230601; t=1702522130; x=1703126930; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=sN1Y7WcSaLQMLijDMl3xv5IoXDMoGtBRoqudyg9OXAI=;
+        b=N0u43h5gYkRtQAMyjdzgZm2YXSZn8zUkGmkEnqg4PXqXB//kV2VHje4AYkgbPIWymb
+         3i9S6RbCvWnrDQYWS5RAalvrWMAtH9XTg3+EDrCACMpXEsD3N4mahrcsY3ii+Uvba6C0
+         FWCrmuQ/MQEGTSvDSotqDrlnczpbv7+jV2KzlM8McTKHV/iOUBZwX2sDrGiU0tiLBzKS
+         aRYbUGB8EoDKOt2F5CZwGpfLx84WsZZm0uHi0uWHBMIFRS6kaEoIZ+l8IZz6ARx33Y08
+         uKhGdfLJQ9t/4B7V6tuNQhl4cc7Dy4pw8NnkGZDBteUR+jn6unixKrI47CqXpD5p7K6v
+         GHcQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702522064; x=1703126864;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=MJ8V9wpZFRMaxTJ2Yr+JKkom97NUFELsE8HKkLVd89U=;
-        b=rqM6SElFgDlutMjfoXuhZfgFLoZwa/4NgQ7ennqGTOawDo0fv+kclxPurXtJ9C/+mz
-         BctkTHoWtt744vA0tXKcyRbdfhoSKNtIHJsaoODadIT+2XMXyuw8kzEje6Co+Yc1/iVV
-         b3Cram6eg1XjffbLplwHZVGPz7J/gpU8VLFGhkLIPz59kGKpZgQq+dXKqEuiuHIE//hf
-         ftqA0G0evydcLQQ20d/p+fAzsOhtA204eZnzxf4/mgMYI8YNFBN2e2jtETCU/FV6rWdP
-         x8SD492+UUJHh7bGE7E9N9rHzH4k7Jlzsq5Doa4yEpu2bDEogvMdQd4kL6LNpdjWTz51
-         RANA==
-X-Gm-Message-State: AOJu0YzY1Dl/8BMyCko7XMX/xuCsk/Mwve1k0Ntx5TFEIsIccvKySe3W
-        VMmABZNnhvP/Fe0z7KBp1iupbQ==
-X-Google-Smtp-Source: AGHT+IHCsSa54wlj5dnr98DogOBhKgfMGGbDmmsgR6hVaIJ/We5ltJAIKpR8uR1tHmUAsiuMmCDtIg==
-X-Received: by 2002:a05:622a:251:b0:418:1088:7d69 with SMTP id c17-20020a05622a025100b0041810887d69mr12636997qtx.18.1702522064725;
-        Wed, 13 Dec 2023 18:47:44 -0800 (PST)
-Received: from vinp3lin.lan (c-73-143-21-186.hsd1.vt.comcast.net. [73.143.21.186])
-        by smtp.gmail.com with ESMTPSA id fh3-20020a05622a588300b00425b356b919sm4240208qtb.55.2023.12.13.18.47.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Dec 2023 18:47:44 -0800 (PST)
-From:   "Vineeth Pillai (Google)" <vineeth@bitbyteword.org>
-To:     Ben Segall <bsegall@google.com>, Borislav Petkov <bp@alien8.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        "H . Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Mel Gorman <mgorman@suse.de>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Sean Christopherson <seanjc@google.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Valentin Schneider <vschneid@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>
-Cc:     "Vineeth Pillai (Google)" <vineeth@bitbyteword.org>,
-        Suleiman Souhlal <suleiman@google.com>,
-        Masami Hiramatsu <mhiramat@google.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, x86@kernel.org,
-        Joel Fernandes <joel@joelfernandes.org>
-Subject: [RFC PATCH 8/8] irq: boost/unboost in irq/nmi entry/exit and softirq
-Date:   Wed, 13 Dec 2023 21:47:25 -0500
-Message-ID: <20231214024727.3503870-9-vineeth@bitbyteword.org>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20231214024727.3503870-1-vineeth@bitbyteword.org>
-References: <20231214024727.3503870-1-vineeth@bitbyteword.org>
+        d=1e100.net; s=20230601; t=1702522130; x=1703126930;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=sN1Y7WcSaLQMLijDMl3xv5IoXDMoGtBRoqudyg9OXAI=;
+        b=sxTjaHWqYkcb4owNAhYBxkyGEC11RsfEtzm4ni4wSIFpaHHFISYxrB63OSkn74GzKD
+         92lA4xojLfBBG6n7AZ8TUqD17Brk1f7oFR92KbsBM1SElTsPkG1KWtYTTlS4DXY/qAGN
+         EGqXznH2k85YW7UXlLybqNRngc9JEPwiNbnxmCAGP4C3gMaKao23VB96t3cbFx2s3EQu
+         WEmDbH0m5Eh319bKkIfYT2kzRooj9oZjdmuZ3HXYA6kpDHYdqMvLmQpilJ1hpWC1pa4w
+         RshjATiisI2uZ3Qrk36aZsAecCf4iZZqE5hOx9SbVWPyba6ShmtrQ1ZLxf7h9Z6IV5CL
+         aPKw==
+X-Gm-Message-State: AOJu0Yw8FKNUxrTIjn4SLUPyZIgV4e3Ysa9sK6Krrf4nMF4Cplb+LsUU
+        gWaVVYfVAo19wfZB0+8g7X0=
+X-Google-Smtp-Source: AGHT+IEXRG3V6shfxHFbYX2s3HftithXAitcUvLKtpPf95bYI57mWEOBIF148K4iNNfK2UfX1O2Zuw==
+X-Received: by 2002:a05:6e02:1be1:b0:35d:65e0:a433 with SMTP id y1-20020a056e021be100b0035d65e0a433mr13284653ilv.2.1702522130052;
+        Wed, 13 Dec 2023 18:48:50 -0800 (PST)
+Received: from [192.168.255.10] ([203.205.141.87])
+        by smtp.gmail.com with ESMTPSA id i18-20020a17090332d200b001d076ebf328sm11285033plr.8.2023.12.13.18.48.47
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 13 Dec 2023 18:48:49 -0800 (PST)
+Message-ID: <9d8c8900-699e-4879-8aca-d9371e77f097@gmail.com>
+Date:   Thu, 14 Dec 2023 10:48:46 +0800
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] perf header: Set proper symbol name for vdso when
+ build-id event found
+To:     Adrian Hunter <adrian.hunter@intel.com>
+Cc:     Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>
+References: <20231201111506.37155-1-likexu@tencent.com>
+ <f50149fb-967c-4987-8d08-d6bb2a69bcf3@intel.com>
+Content-Language: en-US
+From:   Like Xu <like.xu.linux@gmail.com>
+In-Reply-To: <f50149fb-967c-4987-8d08-d6bb2a69bcf3@intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The host proactively boosts the VCPU threads during irq/nmi injection.
-However, the host is unaware of posted interrupts, and therefore, the
-guest should request a boost if it has not already been boosted.
+On 14/12/2023 3:26 am, Adrian Hunter wrote:
+> On 1/12/23 13:15, Like Xu wrote:
+>> From: Like Xu <likexu@tencent.com>
+>>
+>> If using perf-record to sample a cpu-cycles:P event on a hypervisor process
+>> when '--kcore' is not enabled, user may find some surprise in perf-report:
+>>
+>> # perf report -i perf.data -v:
+>> # Overhead Command   Shared Object            	Symbol
+>>      99.71%  vcpu0    arch/x86/kvm/kvm-intel.ko  0xffffffffa10d1e30 B [k] 0x0000000000034ed0
+>>
+>> build id event received for vmlinux: d12116149f511f7dbd0b21c45d38d3d2ec09b87f [20]
+>> build id event received for kvm-intel.ko: a8fc0213abbafd97b10ce58ce84bec8519f9abce [20]
+>> build id event received for [vdso]: 4d56e381df8d2c051f6bc1ef69c0118c59d5c49f [20]
+>>
+>> # perf report:
+>> # Overhead  Command  Shared Object     Symbol
+>> # ........  .......  ................  .......................................
+>> #
+>>      99.71%  vcpu0    [kvm_intel]       [k] 0x0000000000034ed0
+>>       0.10%  vcpu0    [kernel.vmlinux]  [k] __lock_acquire.isra.29
+>>
+>> Users may be curious as to how 0x34ed0 was generated and wondered if this
+>> RIP came from the guest application but perf-script-D does not point to any
+>> samples of this address.
+>>
+>> Based on perf/tool implementation, this is actually an offset pointing to
+>> the vdso object (in this case it is the assembly __vmx_vcpu_run defined
+>> in arch/x86/kvm/vmx/vmenter.S). The pattern is not reproduced on perf-tool
+>> of some distributions, and git-bisect quickly identified the possible root
+>> cause, which leds to this straightforward fix and after this change:
+>>
+>> # perf report -i perf.data -v:
+>> # Overhead Command   Shared Object            	Symbol
+>>      99.71%  vcpu0    arch/x86/kvm/kvm-intel.ko  0x34ed0            B [k] __vmx_vcpu_run
+>>
+>> # perf report:
+>> # Overhead  Command  Shared Object     Symbol
+>> # ........  .......  ................  .......................................
+>> #
+>>      99.71%  vcpu0    [kvm_intel]       [k] __vmx_vcpu_run
+>>
+>> The fix also gets commit 1deec1bd96cc ("perf header: Set proper module name
+>> when build-id event found") lit again.
+>>
+>> Cc: Jiri Olsa <jolsa@kernel.org>
+>> Cc: Namhyung Kim <namhyung@kernel.org>
+>> Cc: Ian Rogers <irogers@google.com>
+>> Cc: Arnaldo Carvalho de Melo <acme@kernel.org>
+>> Fixes: b2fe96a350de ("perf tools: Fix module symbol processing")
+>> Signed-off-by: Like Xu <likexu@tencent.com>
+>> ---
+>>   tools/perf/util/header.c | 4 ++--
+>>   1 file changed, 2 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/tools/perf/util/header.c b/tools/perf/util/header.c
+>> index e86b9439ffee..a33d589511ff 100644
+>> --- a/tools/perf/util/header.c
+>> +++ b/tools/perf/util/header.c
+>> @@ -2305,8 +2305,8 @@ static int __event_process_build_id(struct perf_record_header_build_id *bev,
+>>   
+>>   			if (!kmod_path__parse_name(&m, filename) && m.kmod)
+>>   				dso__set_module_info(dso, &m, machine);
+>> -
+>> -			dso->kernel = dso_space;
+>> +			else
+>> +				dso->kernel = dso_space;
+> 
+> This is undoing some of b2fe96a350de ("perf tools: Fix module
+> symbol processing") without explanation.
 
-Similarly, guest should request an unboost on irq/nmi/softirq exit if
-the vcpu doesn't need the boost any more.
+Thanks for your comments.
+W/ this fix, "perf test -v object" looks OK.
 
-Co-developed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-Signed-off-by: Vineeth Pillai (Google) <vineeth@bitbyteword.org>
----
- kernel/entry/common.c | 30 ++++++++++++++++++++++++++++++
- kernel/softirq.c      | 11 +++++++++++
- 2 files changed, 41 insertions(+)
+> 
+> Symbols in the .noinstr.text section don't seem to be
+> being resolved, so that could be the issue.  perf synthesizes
+> an MMAP record from /proc/modules, which works for .text
+> but perhaps not for .noinstr.text
 
-diff --git a/kernel/entry/common.c b/kernel/entry/common.c
-index fae56faac0b0..c69912b71725 100644
---- a/kernel/entry/common.c
-+++ b/kernel/entry/common.c
-@@ -327,6 +327,13 @@ noinstr irqentry_state_t irqentry_enter(struct pt_regs *regs)
- 		.exit_rcu = false,
- 	};
- 
-+#ifdef CONFIG_PARAVIRT_SCHED
-+	instrumentation_begin();
-+	if (pv_sched_enabled())
-+		pv_sched_boost_vcpu_lazy();
-+	instrumentation_end();
-+#endif
-+
- 	if (user_mode(regs)) {
- 		irqentry_enter_from_user_mode(regs);
- 		return ret;
-@@ -452,6 +459,18 @@ noinstr void irqentry_exit(struct pt_regs *regs, irqentry_state_t state)
- 		if (state.exit_rcu)
- 			ct_irq_exit();
- 	}
-+
-+#ifdef CONFIG_PARAVIRT_SCHED
-+	instrumentation_begin();
-+	/*
-+	 * On irq exit, request a deboost from hypervisor if no softirq pending
-+	 * and current task is not RT and !need_resched.
-+	 */
-+	if (pv_sched_enabled() && !local_softirq_pending() &&
-+			!need_resched() && !task_is_realtime(current))
-+		pv_sched_unboost_vcpu();
-+	instrumentation_end();
-+#endif
- }
- 
- irqentry_state_t noinstr irqentry_nmi_enter(struct pt_regs *regs)
-@@ -469,6 +488,11 @@ irqentry_state_t noinstr irqentry_nmi_enter(struct pt_regs *regs)
- 	kmsan_unpoison_entry_regs(regs);
- 	trace_hardirqs_off_finish();
- 	ftrace_nmi_enter();
-+
-+#ifdef CONFIG_PARAVIRT_SCHED
-+	if (pv_sched_enabled())
-+		pv_sched_boost_vcpu_lazy();
-+#endif
- 	instrumentation_end();
- 
- 	return irq_state;
-@@ -482,6 +506,12 @@ void noinstr irqentry_nmi_exit(struct pt_regs *regs, irqentry_state_t irq_state)
- 		trace_hardirqs_on_prepare();
- 		lockdep_hardirqs_on_prepare();
- 	}
-+
-+#ifdef CONFIG_PARAVIRT_SCHED
-+	if (pv_sched_enabled() && !in_hardirq() && !local_softirq_pending() &&
-+			!need_resched() && !task_is_realtime(current))
-+		pv_sched_unboost_vcpu();
-+#endif
- 	instrumentation_end();
- 
- 	ct_nmi_exit();
-diff --git a/kernel/softirq.c b/kernel/softirq.c
-index 807b34ccd797..90a127615e16 100644
---- a/kernel/softirq.c
-+++ b/kernel/softirq.c
-@@ -530,6 +530,11 @@ asmlinkage __visible void __softirq_entry __do_softirq(void)
- 	in_hardirq = lockdep_softirq_start();
- 	account_softirq_enter(current);
- 
-+#ifdef CONFIG_PARAVIRT_SCHED
-+	if (pv_sched_enabled())
-+		pv_sched_boost_vcpu_lazy();
-+#endif
-+
- restart:
- 	/* Reset the pending bitmask before enabling irqs */
- 	set_softirq_pending(0);
-@@ -577,6 +582,12 @@ asmlinkage __visible void __softirq_entry __do_softirq(void)
- 		wakeup_softirqd();
- 	}
- 
-+#ifdef CONFIG_PARAVIRT_SCHED
-+	if (pv_sched_enabled() && !need_resched() &&
-+			!task_is_realtime(current))
-+		pv_sched_unboost_vcpu();
-+#endif
-+
- 	account_softirq_exit(current);
- 	lockdep_softirq_end(in_hardirq);
- 	softirq_handle_end();
--- 
-2.43.0
+Not sure if it covers the potentially broken features you mentioned above,
+would you be willing to provide a more detailed test command ?
 
+> 
+>>   			free(m.name);
+>>   		}
+>>   
+> 
