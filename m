@@ -2,79 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 96C69812903
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 08:22:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 41D85812905
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 08:23:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1443288AbjLNHWN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 02:22:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56612 "EHLO
+        id S1443292AbjLNHXA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 02:23:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46348 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235474AbjLNHWM (ORCPT
+        with ESMTP id S235496AbjLNHW6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 02:22:12 -0500
-Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67A32100
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 23:22:17 -0800 (PST)
-Received: by mail-wr1-x42f.google.com with SMTP id ffacd0b85a97d-336420a244dso950232f8f.0
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 23:22:17 -0800 (PST)
+        Thu, 14 Dec 2023 02:22:58 -0500
+Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46887124
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 23:23:03 -0800 (PST)
+Received: by mail-wr1-x42d.google.com with SMTP id ffacd0b85a97d-3364a1451c6so53856f8f.3
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 23:23:02 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1702538535; x=1703143335; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=0FA4+Bra6qzbxvc8QcOzkY8gHsE1y79st3EyRLb9wWw=;
-        b=OThP0VgsXBx6W4yAV3n5J5vjQUv7icMVpm5OL6qxsMNpGfALOQw2LxknOBeXIt6qQb
-         lccEbRKl8PVaO+XYQC8h2bNRwSAkWKMK9M3OB/sRwYfpR90pxK5mN49oBqbmLTmoeAuL
-         F+dB66krODo56bL30+H4/wm8SlffcC/QNuEgdm1WHl2A5DgiVa9Cik3U3hnUg6YAuuD2
-         ATQfJ45XxT0SOY8Dil2NYIF/H8GPvjIxNlJ5vkakQPYBrdN8n5Un0aa8lyxfT8+ZlxMt
-         ci6QFrh4TQyUpZH3LieHuq9jxQ9YI4PD5fQaXGwbF0frral8NmACrkOGgIIuB04J7yNF
-         vM5w==
+        d=linaro.org; s=google; t=1702538581; x=1703143381; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=QgvQhhxVq/mUdmmBeJBOxvDW1o7cO+i18dm4xGgW5TI=;
+        b=Nx8A5Cj4Nqp48p99bnhDFgonIKAvZnsJ9C7HNEzNk2mdBC5q7NzhK+yNR1EhURDkpC
+         /aaZBC4h2dYKwA2ArS5F65SjSVfUaafmLMKk4Z2eTi3nEx1VfoHgrmyRwn2m4FglCHdH
+         M7lOkmZkeuDPO4BT019wfBXiODiGHX0V3AtLBDneaFjOqr4n48tca9KOM5sSUZK3MMlJ
+         E1kuLB4OoPBiGkq00DiMQsTv5r15PdPxFxH+lnIVJK63kn0ixLXlkHks3Wqq6L89DVrz
+         CSujYxH9xXlBW2so/4YVUUvuD+4X9mCGegTHCecwTt9NwvNV5Ce5lWvz6XZYHLL6jvOQ
+         XNdg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702538535; x=1703143335;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=0FA4+Bra6qzbxvc8QcOzkY8gHsE1y79st3EyRLb9wWw=;
-        b=ENgmMAkeah4Co1jiIlZYZc4vSp9v8UFu4XLDQp+lfr68TSsUDgd7RfVtSMnaJ2sDJa
-         LU/XkiH4xw1MBcc1goCWFB2b4kc1BBwPO5m1zpxEzu1MFFYGZnseJN9LLehB68TZ63at
-         3tAycAWsnj28wJdObkcplHYjMFD+vTphNxhE5Er7cdlzh2pWiLevlwUFRMgAFhiNWw5o
-         YbQU5gjbkGbgZjlP4G1UclraH1KAhUUsIAcXU/ZwOF3WiV0odMOfRojIwXoYGZAMNB+o
-         DH1hBBKBURB+JgBFdI0ZGsEewWXtDyHlf9APcRiyzn1ZZZa2ZNebLrV3BtbSEV/MMH9T
-         L8ZQ==
-X-Gm-Message-State: AOJu0YxvxEfTGsYI0LaTcZG/peVpSp1hUIMM+zwpImDYUQ+97Cg6sNE+
-        cfOI7MwmrwsMzb343FZMBB+1QQ==
-X-Google-Smtp-Source: AGHT+IG6QhyNnTy8fV6b21aerqd948PaptnFrTa1pgYPurEq96B4AkS2xiJgGdngFRS/WDx5Kj3X5g==
-X-Received: by 2002:adf:eacf:0:b0:336:2ebc:1827 with SMTP id o15-20020adfeacf000000b003362ebc1827mr2055774wrn.42.1702538535518;
-        Wed, 13 Dec 2023 23:22:15 -0800 (PST)
+        d=1e100.net; s=20230601; t=1702538581; x=1703143381;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=QgvQhhxVq/mUdmmBeJBOxvDW1o7cO+i18dm4xGgW5TI=;
+        b=woNbc120Jjv+OQMZzQANnvEWX1CCvVL0EaO9aCzh/rtXGQs/rq7EKq2SkgS40MNI+n
+         ztubyjukbeQJGw3/vqkwHn5WOO71BnQjOJJ9W2zEYdMDtrcumuD+0c3PKtyPd67mBGKu
+         0va8mcQnrWFo0gyanuH9m0vLdUMriCZZWFiJ5aOlpGbALKdR9pX2khBTRT392C8Hg0Il
+         jJ6ica31C+q3MW5hH/RqFkHDuTh6LZZ3NDD/9NmQCqE46rUe4pFoKXwVN0E3z8Vw8sLV
+         CoR3qF5Prf5g89EsKh/a8ts0oElTC5/wgItpbeVF6Al4M1H82gzVKpbmd1uYAEd+2v90
+         LQpA==
+X-Gm-Message-State: AOJu0Yz10eCnC0HlrW5mXScRChJJ1nHOhomMJ7tXPeFpDVaUtWLe1gqy
+        WQBcFHqLLvOcIs9RGkHs3yRgEA==
+X-Google-Smtp-Source: AGHT+IGSp4qFL5vXSo3hXTm7XdpZrqVe73+sMA7C+igGEQ4ys0GpJsk6QOTo670+HQ82YYGdr5v0fg==
+X-Received: by 2002:adf:e485:0:b0:336:38cd:9aff with SMTP id i5-20020adfe485000000b0033638cd9affmr1207889wrm.104.1702538581276;
+        Wed, 13 Dec 2023 23:23:01 -0800 (PST)
 Received: from [192.168.1.20] ([178.197.218.27])
-        by smtp.gmail.com with ESMTPSA id m1-20020adfa3c1000000b003364ad1c20esm74776wrb.0.2023.12.13.23.22.13
+        by smtp.gmail.com with ESMTPSA id m1-20020adfa3c1000000b003364ad1c20esm74776wrb.0.2023.12.13.23.22.59
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 13 Dec 2023 23:22:15 -0800 (PST)
-Message-ID: <38d171ee-b94b-4d1c-8702-60735a005596@linaro.org>
-Date:   Thu, 14 Dec 2023 08:22:12 +0100
+        Wed, 13 Dec 2023 23:23:00 -0800 (PST)
+Message-ID: <5bc96a31-8869-483c-9427-1f4a90263874@linaro.org>
+Date:   Thu, 14 Dec 2023 08:22:59 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 1/5] dt-bindings: phy: cadence-torrent: Add optional
- input reference clock for PLL1
-To:     Swapnil Kashinath Jakhade <sjakhade@cadence.com>,
-        "vkoul@kernel.org" <vkoul@kernel.org>,
-        "kishon@kernel.org" <kishon@kernel.org>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "krzysztof.kozlowski+dt@linaro.org" 
-        <krzysztof.kozlowski+dt@linaro.org>,
-        "conor+dt@kernel.org" <conor+dt@kernel.org>,
-        "linux-phy@lists.infradead.org" <linux-phy@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
-Cc:     Milind Parab <mparab@cadence.com>,
-        "rogerq@kernel.org" <rogerq@kernel.org>,
-        "s-vadapalli@ti.com" <s-vadapalli@ti.com>
-References: <20231212114840.1468903-1-sjakhade@cadence.com>
- <20231212114840.1468903-2-sjakhade@cadence.com>
- <e09e4df8-ec36-4953-9bb0-75a3ce0b535d@linaro.org>
- <DM6PR07MB61548DC520B4BA66D6FC625AC58CA@DM6PR07MB6154.namprd07.prod.outlook.com>
+Subject: Re: [PATCH V2 2/2] arm64: dts: qcom: sc7280: add QCrypto nodes
 Content-Language: en-US
+To:     Om Prakash Singh <quic_omprsing@quicinc.com>
+Cc:     neil.armstrong@linaro.org, konrad.dybcio@linaro.org,
+        agross@kernel.org, andersson@kernel.org, conor+dt@kernel.org,
+        davem@davemloft.net, devicetree@vger.kernel.org,
+        herbert@gondor.apana.org.au, krzysztof.kozlowski+dt@linaro.org,
+        linux-arm-msm@vger.kernel.org, linux-crypto@vger.kernel.org,
+        linux-kernel@vger.kernel.org, marijn.suijten@somainline.org,
+        robh+dt@kernel.org, vkoul@kernel.org
+References: <20231212133247.1366698-1-quic_omprsing@quicinc.com>
+ <20231212133247.1366698-3-quic_omprsing@quicinc.com>
+ <c848f874-3748-4d59-8e78-9ae044fb760a@linaro.org>
+ <6b79c66d-7591-443b-92e5-beeff6c93ae4@quicinc.com>
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -120,12 +113,12 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <DM6PR07MB61548DC520B4BA66D6FC625AC58CA@DM6PR07MB6154.namprd07.prod.outlook.com>
+In-Reply-To: <6b79c66d-7591-443b-92e5-beeff6c93ae4@quicinc.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -133,80 +126,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 14/12/2023 08:02, Swapnil Kashinath Jakhade wrote:
-> Hi Krzysztof,
+On 14/12/2023 06:41, Om Prakash Singh wrote:
 > 
->> -----Original Message-----
->> From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
->> Sent: Wednesday, December 13, 2023 12:19 PM
->> To: Swapnil Kashinath Jakhade <sjakhade@cadence.com>; vkoul@kernel.org;
->> kishon@kernel.org; robh+dt@kernel.org; krzysztof.kozlowski+dt@linaro.org;
->> conor+dt@kernel.org; linux-phy@lists.infradead.org; linux-
->> kernel@vger.kernel.org; devicetree@vger.kernel.org
->> Cc: Milind Parab <mparab@cadence.com>; rogerq@kernel.org; s-
->> vadapalli@ti.com
->> Subject: Re: [PATCH v2 1/5] dt-bindings: phy: cadence-torrent: Add optional
->> input reference clock for PLL1
->>
->> EXTERNAL MAIL
->>
->>
->> On 12/12/2023 12:48, Swapnil Jakhade wrote:
->>> Torrent PHY can have two input reference clocks. Update bindings
->>
->> It already supports two.
->>
 > 
-> Thanks for your comments.
-> refclk and pll1_refclk are the two input reference clocks for the PLLs.
-> phy_en_refclk is used to enable output reference clock in some cases.
-
-Why input clock is used to enable output reference clock?
-
-> 
->>> to support dual reference clock multilink configurations.
+> On 12/12/2023 8:32 PM, Krzysztof Kozlowski wrote:
+>> On 12/12/2023 14:32, Om Prakash Singh wrote:
+>>> Add the QCE and Crypto BAM DMA nodes.
 >>>
->>> Signed-off-by: Swapnil Jakhade <sjakhade@cadence.com>
+>>> Signed-off-by: Om Prakash Singh <quic_omprsing@quicinc.com>
 >>> ---
->>>  .../devicetree/bindings/phy/phy-cadence-torrent.yaml        | 6 +++---
->>>  1 file changed, 3 insertions(+), 3 deletions(-)
 >>>
->>> diff --git a/Documentation/devicetree/bindings/phy/phy-cadence-
->> torrent.yaml b/Documentation/devicetree/bindings/phy/phy-cadence-
->> torrent.yaml
->>> index dfb31314face..98946f549895 100644
->>> --- a/Documentation/devicetree/bindings/phy/phy-cadence-torrent.yaml
->>> +++ b/Documentation/devicetree/bindings/phy/phy-cadence-torrent.yaml
->>> @@ -35,14 +35,14 @@ properties:
->>>      minItems: 1
->>>      maxItems: 2
->>>      description:
->>> -      PHY reference clock for 1 item. Must contain an entry in clock-names.
->>> -      Optional Parent to enable output reference clock.
->>> +      PHY input reference clocks - refclk & pll1_refclk (optional).
->>> +      Optional Parent to enable output reference clock (phy_en_refclk).
+>>> Changes in V2:
+>>>    - Update DT node sequence as per register ascending order
 >>
->> So third clock? But you allow only two? Confusing.
+>> Hm, I don't see it...
 >>
-> 
-> Yes, if both refclk and pll1_refclk are present, phy_en_refclk can't be used.
-> 
+>>>    - Fix DT node properties as per convention
 >>>
->>>    clock-names:
->>>      minItems: 1
->>>      items:
->>>        - const: refclk
->>> -      - const: phy_en_refclk
->>> +      - enum: [ pll1_refclk, phy_en_refclk ]
+>>>   arch/arm64/boot/dts/qcom/sc7280.dtsi | 22 ++++++++++++++++++++++
+>>>   1 file changed, 22 insertions(+)
+>>>
+>>> diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi b/arch/arm64/boot/dts/qcom/sc7280.dtsi
+>>> index 66f1eb83cca7..7b705df21f4e 100644
+>>> --- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
+>>> +++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
+>>> @@ -2272,6 +2272,28 @@ ipa: ipa@1e40000 {
+>>>   			status = "disabled";
+>>>   		};
+>>>   
+>>> +		cryptobam: dma-controller@1dc4000 {
 >>
->> This does not match your commit msg. You already had two clocks there.
+>> It still looks like not correctly ordered by unit address against other
+>> nodes in the file.
 >>
-> Yes, but refclk was the single input reference clock used for PLLs earlier.
-> As stated in commit message, a new input reference clock (pll1_refclk) is added here.
-
-existing phy_en_refclk is also input reference clock, isn't it?
-
 > 
+> Hi Krzysztof,
+> Probably I am missing something basic here. I am trying to put entries 
+> addresses that are sorted wrt their current adjacent.
+> 
+> And it looks fine to me.
+> 
+> 1c0e000 (current exist)
+> 1dc4000 (newly added)
+> 1dfa000	(newly added)
+> 1e40000	(current exist)
+
+Then why the diff shows:
+@@ -2272,6 +2272,28 @@ ipa: ipa@1e40000 {
+above your changes?
 
 Best regards,
 Krzysztof
