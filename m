@@ -2,158 +2,438 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B495813921
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 18:54:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 35B9E813920
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 18:53:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231341AbjLNRyZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 12:54:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53582 "EHLO
+        id S230471AbjLNRxo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 12:53:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40914 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229532AbjLNRyX (ORCPT
+        with ESMTP id S229532AbjLNRxm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 12:54:23 -0500
-Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CDB7CF;
-        Thu, 14 Dec 2023 09:54:28 -0800 (PST)
-X-UUID: cfd594fa9aa911eeba30773df0976c77-20231215
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:Content-Type:In-Reply-To:From:References:CC:To:Subject:MIME-Version:Date:Message-ID; bh=QtivBajJ2uEBe/N9gJN8n3kJKYyoOgnif0RBAayWfuQ=;
-        b=ql44oSG2Bhr9l3tkGQz4JLjMujdHaHk2gtPBefJsL/VTiueEMMjVViLtSgyRnVhqwW1hmY/VtdvArqL73TIfpghrnEHb8EOHmW0hDFM2jKF/5CfP5LCBKk1JDaS+wf721FWyHMHbCM0OZZFVoGwrDqkVgwKOXwGRdCKpyzCDbVw=;
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.35,REQID:1c84478b-279d-43a1-a913-32752cb4efb4,IP:0,U
-        RL:0,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
-        release,TS:0
-X-CID-META: VersionHash:5d391d7,CLOUDID:284fcc73-1bd3-4f48-b671-ada88705968c,B
-        ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
-        RL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,
-        DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0
-X-CID-BAS: 0,_,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR
-X-UUID: cfd594fa9aa911eeba30773df0976c77-20231215
-Received: from mtkmbs11n1.mediatek.inc [(172.21.101.185)] by mailgw02.mediatek.com
-        (envelope-from <macpaul.lin@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-        with ESMTP id 1779464143; Fri, 15 Dec 2023 01:54:22 +0800
-Received: from mtkmbs11n1.mediatek.inc (172.21.101.185) by
- mtkmbs11n2.mediatek.inc (172.21.101.187) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.26; Fri, 15 Dec 2023 01:54:21 +0800
-Received: from [172.21.84.99] (172.21.84.99) by mtkmbs11n1.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.2.1118.26 via Frontend
- Transport; Fri, 15 Dec 2023 01:54:20 +0800
-Message-ID: <1ce43346-3f60-b614-cdcc-7d9db8dec758@mediatek.com>
-Date:   Fri, 15 Dec 2023 01:54:19 +0800
+        Thu, 14 Dec 2023 12:53:42 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CE6999
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 09:53:48 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2886CC433C8;
+        Thu, 14 Dec 2023 17:53:47 +0000 (UTC)
+Date:   Thu, 14 Dec 2023 12:54:33 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     LKML <linux-kernel@vger.kernel.org>,
+        Linux Trace Kernel <linux-trace-kernel@vger.kernel.org>
+Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Linux Arch <linux-arch@vger.kernel.org>
+Subject: [PATCH v3] ring-buffer: Remove 32bit timestamp logic
+Message-ID: <20231214125433.03091e5e@gandalf.local.home>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.9.1
-Subject: Re: [PATCH] arm64: mediatek: remove broken pmic interrupt property
-Content-Language: en-US
-To:     AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Arnd Bergmann <arnd@kernel.org>, <soc@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Ben Lok <ben.lok@mediatek.com>
-CC:     Arnd Bergmann <arnd@arndb.de>, Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>, <bear.wang@mediatek.com>,
-        <pablo.sun@mediatek.com>, <wenst@chromium.org>
-References: <20231212214737.230115-1-arnd@kernel.org>
- <bc5dafe4-5487-4794-97f1-f4e4d967a665@collabora.com>
-From:   Macpaul Lin <macpaul.lin@mediatek.com>
-In-Reply-To: <bc5dafe4-5487-4794-97f1-f4e4d967a665@collabora.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-3.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,RDNS_NONE,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/13/23 19:09, AngeloGioacchino Del Regno wrote:
+From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 
-> Il 12/12/23 22:47, Arnd Bergmann ha scritto:
->> From: Arnd Bergmann <arnd@arndb.de>
->>
->> The pmic is connected to the GIC, which uses four-cell interrupt 
->> properties,
->> but its interrupt is specified as two-cell that would only make sense 
->> for
->> the GPIO irqchip:
->>
->> arch/arm64/boot/dts/mediatek/mt8195.dtsi:464.4-27: Warning 
->> (interrupts_property): /soc/i2c@11d01000/pmic@34:#interrupt-cells: 
->> size is (8), expected multiple of 16
->>
->> Remove the interrupt for now to shut up the warning. When someone 
->> figures out
->> what the correct interrupt and parent are, we can add it back.
->>
->
-> Please, can anyone from MediaTek comment on that?
+Each event has a 27 bit timestamp delta that is used to hold the delta
+from the last event. If the time between events is greater than 2^27, then
+a timestamp is added that holds a 59 bit absolute timestamp.
 
-Sorry for late response, I've just stuck in other tasks and didn't 
-notice this
+Until a389d86f7fd09 ("ring-buffer: Have nested events still record running
+time stamp"), if an interrupt interrupted an event in progress, all the
+events delta would be zero to not deal with the races that need to be
+handled. The commit a389d86f7fd09 changed that to handle the races giving
+all events, even those that preempt other events, still have an accurate
+timestamp.
 
-patch is for genio-1200-evk. I've tested 6.7-rc1 but I thought it might 
-be an issue
+To handle those races requires performing 64-bit cmpxchg on the
+timestamps. But doing 64-bit cmpxchg on 32-bit architectures is considered
+very slow. To try to deal with this the timestamp logic was broken into
+two and then three 32-bit cmpxchgs, with the thought that two (or three)
+32-bit cmpxchgs are still faster than a single 64-bit cmpxchg on 32-bit
+architectures.
 
-in origin mt8195.dtsi and not be related to board dts.
+Part of the problem with this is that I didn't have any 32-bit
+architectures to test on. After hitting several subtle bugs in this code,
+an effort was made to try and see if three 32-bit cmpxchgs are indeed
+faster than a single 64-bit. After a few people brushed off the dust of
+their old 32-bit machines, tests were done, and even though 32-bit cmpxchg
+was faster than a single 64-bit, it was in the order of 50% at best, not
+300%.
 
-> I see a mt6360_pins on PIO:
->             pinmux = <PINMUX_GPIO17__FUNC_GPIO17>,
->                  <PINMUX_GPIO128__FUNC_GPIO128>;
->
-> ...and that's GPIO128, which may effectively be the IRQ pin for MT6360.
->
-> Still, I'm not sure whether the interrupt is on GIC or PIO, please 
-> clarify,
-> otherwise we will have to get this commit upstream.
->
-I think it could be solved by adding
+This means that this complex code is not only complex but also not even
+faster than just using 64-bit cmpxchg.
 
-'interrupt-parent = <&pio>;' to mt6360 node.
+Nuke it!
 
-But currently I have no much time to verify it.
+This is basically a revert of 10464b4aa605e ("ring-buffer: Add rb_time_t
+64 bit operations for speeding up 32 bit").
 
-I'll try to find some time to find out the solution tomorrow.
+Cc: stable@vger.kernel.org
+Fixes: 10464b4aa605e ("ring-buffer: Add rb_time_t 64 bit operations for speeding up 32 bit")
+Acked-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+---
+Changes since v2: https://lore.kernel.org/linux-trace-kernel/20231213232957.498cd339@gandalf.local.home
 
-> Thanks,
-> Angelo
->
->> Fixes: f2b543a191b6 ("arm64: dts: mediatek: add device-tree for Genio 
->> 1200 EVK board")
->> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
->> ---
->>   arch/arm64/boot/dts/mediatek/mt8395-genio-1200-evk.dts | 2 --
->>   1 file changed, 2 deletions(-)
->>
->> diff --git a/arch/arm64/boot/dts/mediatek/mt8395-genio-1200-evk.dts 
->> b/arch/arm64/boot/dts/mediatek/mt8395-genio-1200-evk.dts
->> index 70b465f7c6a7..a409ef998746 100644
->> --- a/arch/arm64/boot/dts/mediatek/mt8395-genio-1200-evk.dts
->> +++ b/arch/arm64/boot/dts/mediatek/mt8395-genio-1200-evk.dts
->> @@ -238,8 +238,6 @@ &i2c6 {
->>       mt6360: pmic@34 {
->>           compatible = "mediatek,mt6360";
->>           reg = <0x34>;
->> -        interrupts = <128 IRQ_TYPE_EDGE_FALLING>;
->> -        interrupt-names = "IRQB";
->>           interrupt-controller;
->>           #interrupt-cells = <1>;
->>           pinctrl-0 = <&mt6360_pins>;
->
+-- Added check for architectures that can not handle cmpxchg in NMI or
+   x86 architectures that do not support true 64bit cmpxchg, and for
+   them, to bail out of tracing if in NMI context.
 
-Thanks for pointing out the issue! Let's see if it could be solved by 
-adding 'interrupt-parents'.
+ kernel/trace/ring_buffer.c | 232 ++++---------------------------------
+ 1 file changed, 22 insertions(+), 210 deletions(-)
 
-Macpaul Lin
+diff --git a/kernel/trace/ring_buffer.c b/kernel/trace/ring_buffer.c
+index 1d9caee7f542..9fdbd08af72f 100644
+--- a/kernel/trace/ring_buffer.c
++++ b/kernel/trace/ring_buffer.c
+@@ -27,6 +27,7 @@
+ #include <linux/cpu.h>
+ #include <linux/oom.h>
+ 
++#include <asm/local64.h>
+ #include <asm/local.h>
+ 
+ /*
+@@ -463,27 +464,9 @@ enum {
+ 	RB_CTX_MAX
+ };
+ 
+-#if BITS_PER_LONG == 32
+-#define RB_TIME_32
+-#endif
+-
+-/* To test on 64 bit machines */
+-//#define RB_TIME_32
+-
+-#ifdef RB_TIME_32
+-
+-struct rb_time_struct {
+-	local_t		cnt;
+-	local_t		top;
+-	local_t		bottom;
+-	local_t		msb;
+-};
+-#else
+-#include <asm/local64.h>
+ struct rb_time_struct {
+ 	local64_t	time;
+ };
+-#endif
+ typedef struct rb_time_struct rb_time_t;
+ 
+ #define MAX_NEST	5
+@@ -573,179 +556,9 @@ struct ring_buffer_iter {
+ 	int				missed_events;
+ };
+ 
+-#ifdef RB_TIME_32
+-
+-/*
+- * On 32 bit machines, local64_t is very expensive. As the ring
+- * buffer doesn't need all the features of a true 64 bit atomic,
+- * on 32 bit, it uses these functions (64 still uses local64_t).
+- *
+- * For the ring buffer, 64 bit required operations for the time is
+- * the following:
+- *
+- *  - Reads may fail if it interrupted a modification of the time stamp.
+- *      It will succeed if it did not interrupt another write even if
+- *      the read itself is interrupted by a write.
+- *      It returns whether it was successful or not.
+- *
+- *  - Writes always succeed and will overwrite other writes and writes
+- *      that were done by events interrupting the current write.
+- *
+- *  - A write followed by a read of the same time stamp will always succeed,
+- *      but may not contain the same value.
+- *
+- *  - A cmpxchg will fail if it interrupted another write or cmpxchg.
+- *      Other than that, it acts like a normal cmpxchg.
+- *
+- * The 60 bit time stamp is broken up by 30 bits in a top and bottom half
+- *  (bottom being the least significant 30 bits of the 60 bit time stamp).
+- *
+- * The two most significant bits of each half holds a 2 bit counter (0-3).
+- * Each update will increment this counter by one.
+- * When reading the top and bottom, if the two counter bits match then the
+- *  top and bottom together make a valid 60 bit number.
+- */
+-#define RB_TIME_SHIFT	30
+-#define RB_TIME_VAL_MASK ((1 << RB_TIME_SHIFT) - 1)
+-#define RB_TIME_MSB_SHIFT	 60
+-
+-static inline int rb_time_cnt(unsigned long val)
+-{
+-	return (val >> RB_TIME_SHIFT) & 3;
+-}
+-
+-static inline u64 rb_time_val(unsigned long top, unsigned long bottom)
+-{
+-	u64 val;
+-
+-	val = top & RB_TIME_VAL_MASK;
+-	val <<= RB_TIME_SHIFT;
+-	val |= bottom & RB_TIME_VAL_MASK;
+-
+-	return val;
+-}
+-
+-static inline bool __rb_time_read(rb_time_t *t, u64 *ret, unsigned long *cnt)
+-{
+-	unsigned long top, bottom, msb;
+-	unsigned long c;
+-
+-	/*
+-	 * If the read is interrupted by a write, then the cnt will
+-	 * be different. Loop until both top and bottom have been read
+-	 * without interruption.
+-	 */
+-	do {
+-		c = local_read(&t->cnt);
+-		top = local_read(&t->top);
+-		bottom = local_read(&t->bottom);
+-		msb = local_read(&t->msb);
+-	} while (c != local_read(&t->cnt));
+-
+-	*cnt = rb_time_cnt(top);
+-
+-	/* If top and msb counts don't match, this interrupted a write */
+-	if (*cnt != rb_time_cnt(msb))
+-		return false;
+-
+-	/* The shift to msb will lose its cnt bits */
+-	*ret = rb_time_val(top, bottom) | ((u64)msb << RB_TIME_MSB_SHIFT);
+-	return true;
+-}
+-
+-static bool rb_time_read(rb_time_t *t, u64 *ret)
+-{
+-	unsigned long cnt;
+-
+-	return __rb_time_read(t, ret, &cnt);
+-}
+-
+-static inline unsigned long rb_time_val_cnt(unsigned long val, unsigned long cnt)
+-{
+-	return (val & RB_TIME_VAL_MASK) | ((cnt & 3) << RB_TIME_SHIFT);
+-}
+-
+-static inline void rb_time_split(u64 val, unsigned long *top, unsigned long *bottom,
+-				 unsigned long *msb)
+-{
+-	*top = (unsigned long)((val >> RB_TIME_SHIFT) & RB_TIME_VAL_MASK);
+-	*bottom = (unsigned long)(val & RB_TIME_VAL_MASK);
+-	*msb = (unsigned long)(val >> RB_TIME_MSB_SHIFT);
+-}
+-
+-static inline void rb_time_val_set(local_t *t, unsigned long val, unsigned long cnt)
+-{
+-	val = rb_time_val_cnt(val, cnt);
+-	local_set(t, val);
+-}
+-
+-static void rb_time_set(rb_time_t *t, u64 val)
+-{
+-	unsigned long cnt, top, bottom, msb;
+-
+-	rb_time_split(val, &top, &bottom, &msb);
+-
+-	/* Writes always succeed with a valid number even if it gets interrupted. */
+-	do {
+-		cnt = local_inc_return(&t->cnt);
+-		rb_time_val_set(&t->top, top, cnt);
+-		rb_time_val_set(&t->bottom, bottom, cnt);
+-		rb_time_val_set(&t->msb, val >> RB_TIME_MSB_SHIFT, cnt);
+-	} while (cnt != local_read(&t->cnt));
+-}
+-
+-static inline bool
+-rb_time_read_cmpxchg(local_t *l, unsigned long expect, unsigned long set)
+-{
+-	return local_try_cmpxchg(l, &expect, set);
+-}
+-
+-static bool rb_time_cmpxchg(rb_time_t *t, u64 expect, u64 set)
+-{
+-	unsigned long cnt, top, bottom, msb;
+-	unsigned long cnt2, top2, bottom2, msb2;
+-	u64 val;
+-
+-	/* The cmpxchg always fails if it interrupted an update */
+-	 if (!__rb_time_read(t, &val, &cnt2))
+-		 return false;
+-
+-	 if (val != expect)
+-		 return false;
+-
+-	 cnt = local_read(&t->cnt);
+-	 if ((cnt & 3) != cnt2)
+-		 return false;
+-
+-	 cnt2 = cnt + 1;
+-
+-	 rb_time_split(val, &top, &bottom, &msb);
+-	 top = rb_time_val_cnt(top, cnt);
+-	 bottom = rb_time_val_cnt(bottom, cnt);
+-
+-	 rb_time_split(set, &top2, &bottom2, &msb2);
+-	 top2 = rb_time_val_cnt(top2, cnt2);
+-	 bottom2 = rb_time_val_cnt(bottom2, cnt2);
+-
+-	if (!rb_time_read_cmpxchg(&t->cnt, cnt, cnt2))
+-		return false;
+-	if (!rb_time_read_cmpxchg(&t->msb, msb, msb2))
+-		return false;
+-	if (!rb_time_read_cmpxchg(&t->top, top, top2))
+-		return false;
+-	if (!rb_time_read_cmpxchg(&t->bottom, bottom, bottom2))
+-		return false;
+-	return true;
+-}
+-
+-#else /* 64 bits */
+-
+-/* local64_t always succeeds */
+-
+-static inline bool rb_time_read(rb_time_t *t, u64 *ret)
++static inline void rb_time_read(rb_time_t *t, u64 *ret)
+ {
+ 	*ret = local64_read(&t->time);
+-	return true;
+ }
+ static void rb_time_set(rb_time_t *t, u64 val)
+ {
+@@ -756,7 +569,6 @@ static bool rb_time_cmpxchg(rb_time_t *t, u64 expect, u64 set)
+ {
+ 	return local64_try_cmpxchg(&t->time, &expect, set);
+ }
+-#endif
+ 
+ /*
+  * Enable this to make sure that the event passed to
+@@ -863,10 +675,7 @@ u64 ring_buffer_event_time_stamp(struct trace_buffer *buffer,
+ 	WARN_ONCE(1, "nest (%d) greater than max", nest);
+ 
+  fail:
+-	/* Can only fail on 32 bit */
+-	if (!rb_time_read(&cpu_buffer->write_stamp, &ts))
+-		/* Screw it, just read the current time */
+-		ts = rb_time_stamp(cpu_buffer->buffer);
++	rb_time_read(&cpu_buffer->write_stamp, &ts);
+ 
+ 	return ts;
+ }
+@@ -2863,7 +2672,7 @@ rb_check_timestamp(struct ring_buffer_per_cpu *cpu_buffer,
+ 		  (unsigned long long)info->ts,
+ 		  (unsigned long long)info->before,
+ 		  (unsigned long long)info->after,
+-		  (unsigned long long)(rb_time_read(&cpu_buffer->write_stamp, &write_stamp) ? write_stamp : 0),
++		  (unsigned long long)({rb_time_read(&cpu_buffer->write_stamp, &write_stamp); write_stamp;}),
+ 		  sched_clock_stable() ? "" :
+ 		  "If you just came from a suspend/resume,\n"
+ 		  "please switch to the trace global clock:\n"
+@@ -3021,8 +2830,7 @@ rb_try_to_discard(struct ring_buffer_per_cpu *cpu_buffer,
+ 
+ 	delta = rb_time_delta(event);
+ 
+-	if (!rb_time_read(&cpu_buffer->write_stamp, &write_stamp))
+-		return false;
++	rb_time_read(&cpu_buffer->write_stamp, &write_stamp);
+ 
+ 	/* Make sure the write stamp is read before testing the location */
+ 	barrier();
+@@ -3560,16 +3368,14 @@ __rb_reserve_next(struct ring_buffer_per_cpu *cpu_buffer,
+ 	struct ring_buffer_event *event;
+ 	struct buffer_page *tail_page;
+ 	unsigned long tail, write, w;
+-	bool a_ok;
+-	bool b_ok;
+ 
+ 	/* Don't let the compiler play games with cpu_buffer->tail_page */
+ 	tail_page = info->tail_page = READ_ONCE(cpu_buffer->tail_page);
+ 
+  /*A*/	w = local_read(&tail_page->write) & RB_WRITE_MASK;
+ 	barrier();
+-	b_ok = rb_time_read(&cpu_buffer->before_stamp, &info->before);
+-	a_ok = rb_time_read(&cpu_buffer->write_stamp, &info->after);
++	rb_time_read(&cpu_buffer->before_stamp, &info->before);
++	rb_time_read(&cpu_buffer->write_stamp, &info->after);
+ 	barrier();
+ 	info->ts = rb_time_stamp(cpu_buffer->buffer);
+ 
+@@ -3584,7 +3390,7 @@ __rb_reserve_next(struct ring_buffer_per_cpu *cpu_buffer,
+ 		if (!w) {
+ 			/* Use the sub-buffer timestamp */
+ 			info->delta = 0;
+-		} else if (unlikely(!a_ok || !b_ok || info->before != info->after)) {
++		} else if (unlikely(info->before != info->after)) {
+ 			info->add_timestamp |= RB_ADD_STAMP_FORCE | RB_ADD_STAMP_EXTEND;
+ 			info->length += RB_LEN_TIME_EXTEND;
+ 		} else {
+@@ -3613,13 +3419,11 @@ __rb_reserve_next(struct ring_buffer_per_cpu *cpu_buffer,
+ 
+ 	if (likely(tail == w)) {
+ 		u64 save_before;
+-		bool s_ok;
+ 
+ 		/* Nothing interrupted us between A and C */
+  /*D*/		rb_time_set(&cpu_buffer->write_stamp, info->ts);
+ 		barrier();
+- /*E*/		s_ok = rb_time_read(&cpu_buffer->before_stamp, &save_before);
+-		RB_WARN_ON(cpu_buffer, !s_ok);
++ /*E*/		rb_time_read(&cpu_buffer->before_stamp, &save_before);
+ 		if (likely(!(info->add_timestamp &
+ 			     (RB_ADD_STAMP_FORCE | RB_ADD_STAMP_ABSOLUTE))))
+ 			/* This did not interrupt any time update */
+@@ -3632,8 +3436,7 @@ __rb_reserve_next(struct ring_buffer_per_cpu *cpu_buffer,
+ 		if (unlikely(info->ts != save_before)) {
+ 			/* SLOW PATH - Interrupted between C and E */
+ 
+-			a_ok = rb_time_read(&cpu_buffer->write_stamp, &info->after);
+-			RB_WARN_ON(cpu_buffer, !a_ok);
++			rb_time_read(&cpu_buffer->write_stamp, &info->after);
+ 
+ 			/* Write stamp must only go forward */
+ 			if (save_before > info->after) {
+@@ -3648,9 +3451,7 @@ __rb_reserve_next(struct ring_buffer_per_cpu *cpu_buffer,
+ 	} else {
+ 		u64 ts;
+ 		/* SLOW PATH - Interrupted between A and C */
+-		a_ok = rb_time_read(&cpu_buffer->write_stamp, &info->after);
+-		/* Was interrupted before here, write_stamp must be valid */
+-		RB_WARN_ON(cpu_buffer, !a_ok);
++		rb_time_read(&cpu_buffer->write_stamp, &info->after);
+ 		ts = rb_time_stamp(cpu_buffer->buffer);
+ 		barrier();
+  /*E*/		if (write == (local_read(&tail_page->write) & RB_WRITE_MASK) &&
+@@ -3712,6 +3513,17 @@ rb_reserve_next_event(struct trace_buffer *buffer,
+ 	int nr_loops = 0;
+ 	int add_ts_default;
+ 
++	/*
++	 * For architectures that can not do cmpxchg() in NMI, or require
++	 * disabling interrupts to do 64-bit cmpxchg(), do not allow them
++	 * to record in NMI context.
++	 */
++	if ((!IS_ENABLED(CONFIG_ARCH_HAVE_NMI_SAFE_CMPXCHG) ||
++	     (IS_ENABLED(CONFIG_X86_32) && !IS_ENABLED(CONFIG_X86_CMPXCHG64))) &&
++	    unlikely(in_nmi())) {
++		return NULL;
++	}
++
+ 	rb_start_commit(cpu_buffer);
+ 	/* The commit page can not change after this */
+ 
+-- 
+2.42.0
 
