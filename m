@@ -2,131 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 37EB0812E14
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 12:05:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 59898812E0B
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 12:04:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1443871AbjLNLF3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 06:05:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45176 "EHLO
+        id S1443859AbjLNLEc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 06:04:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56978 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1443962AbjLNLFU (ORCPT
+        with ESMTP id S1443808AbjLNLEa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 06:05:20 -0500
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2a07:de40:b251:101:10:150:64:2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 790C819E;
-        Thu, 14 Dec 2023 03:05:25 -0800 (PST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id D8C701F7C5;
-        Thu, 14 Dec 2023 11:05:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1702551923; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Jh37XTpPgpC2e/hQvtSi2xLMjUa4CLQ/Qc/4iU+ctz8=;
-        b=QhD1r8KaNEnVlUiKbnubxJCrqYOdYnKAv8yx6nfxbPiYeVXYYlr80UGEDucDxWeJFXzkv8
-        Pkxjkh1GdLDme0PojFw+wITS4K1WchK83pPixo8QMJ9o4GA9Qmo1PRCCupLEVDFqbmJnGg
-        jG06Cfp3tYENU3AbZlyImW6wga2oD5I=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1702551923;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Jh37XTpPgpC2e/hQvtSi2xLMjUa4CLQ/Qc/4iU+ctz8=;
-        b=1BL54thYGVy/fgg4y0NQVekCcFPlpbPdyE9DB7zb3UCRlfSxSPruU2LNHqSz0SH2jZtRVH
-        /wJ0XhtpEJ6peXAg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1702551922; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Jh37XTpPgpC2e/hQvtSi2xLMjUa4CLQ/Qc/4iU+ctz8=;
-        b=Juks4PQGiBnzKLV4rBuaIEt83E+4s01zPghD6/57nHXY7Oua5zbFkmd/9sAn9M/MxC4I49
-        QoZdlm1TDbX5Z1Hh7j1jXAq6xdqxTSoMR5kSlklVXygG1TZ+Uf0TmJE3Qd/JdzRzbTGlvo
-        UlflqhTW0enE4d7+iQ0zm0vs1Q+mmSs=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1702551922;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Jh37XTpPgpC2e/hQvtSi2xLMjUa4CLQ/Qc/4iU+ctz8=;
-        b=meOGCL4wEyUo5NiQk+oYjFsoFTlUC4kJOvFwXFflJLRe6nllAqXyaDBaMc2wfzutE9nikp
-        zT9OWayuyFk2ODDg==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 8F8D1137E8;
-        Thu, 14 Dec 2023 11:05:22 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-        by imap1.dmz-prg2.suse.org with ESMTPSA
-        id f8eRIXLhemUwZwAAD6G6ig
-        (envelope-from <tiwai@suse.de>); Thu, 14 Dec 2023 11:05:22 +0000
-Date:   Thu, 14 Dec 2023 12:05:22 +0100
-Message-ID: <87cyv9qc25.wl-tiwai@suse.de>
-From:   Takashi Iwai <tiwai@suse.de>
-To:     Gergo Koteles <soyer@irl.hu>
-Cc:     Shenghao Ding <shenghao-ding@ti.com>, Kevin Lu <kevin-lu@ti.com>,
-        Baojun Xu <baojun.xu@ti.com>, Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org,
-        alsa-devel@alsa-project.org, stable@vger.kernel.org
-Subject: Re: [PATCH] ALSA: hda/tas2781: reset the amp before component_add
-In-Reply-To: <4d23bf58558e23ee8097de01f70f1eb8d9de2d15.1702511246.git.soyer@irl.hu>
-References: <4d23bf58558e23ee8097de01f70f1eb8d9de2d15.1702511246.git.soyer@irl.hu>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-X-Spam-Score: -1.76
-X-Spam-Level: 
-X-Spam-Score: -1.87
-X-Spam-Level: 
-Authentication-Results: smtp-out2.suse.de;
-        none
-X-Spamd-Result: default: False [-1.87 / 50.00];
-         ARC_NA(0.00)[];
-         RCVD_VIA_SMTP_AUTH(0.00)[];
-         FROM_HAS_DN(0.00)[];
-         TO_DN_SOME(0.00)[];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         MIME_GOOD(-0.10)[text/plain];
-         RCVD_COUNT_THREE(0.00)[3];
-         DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-         RCPT_COUNT_SEVEN(0.00)[9];
-         MID_CONTAINS_FROM(1.00)[];
-         DBL_BLOCKED_OPENRESOLVER(0.00)[irl.hu:email];
-         FUZZY_BLOCKED(0.00)[rspamd.com];
-         FROM_EQ_ENVFROM(0.00)[];
-         MIME_TRACE(0.00)[0:+];
-         RCVD_TLS_ALL(0.00)[];
-         BAYES_HAM(-2.77)[98.99%]
-X-Spam-Flag: NO
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        Thu, 14 Dec 2023 06:04:30 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A871A11D;
+        Thu, 14 Dec 2023 03:04:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1702551877; x=1734087877;
+  h=message-id:date:mime-version:to:cc:references:from:
+   subject:in-reply-to:content-transfer-encoding;
+  bh=5QYydh+nV7rO0ti2n05onJEK+DBqaZEzvPhqHsdKqkQ=;
+  b=JJ5mxr+jnlSxsqAb9p84T896HqGkJqWhUvWPg4ZsRPQ7cWc8iZrJXn8C
+   abUMpTODzs5ogEdCQUGaJRVxccaRpB+CPiX+8rQ7Ly50ouhQZxWGAhMIT
+   3QumVcm1ITnv/h9u5QDp5vpEVw3Tl/YsMJikkyd5JQbjQLgeFxiacaz98
+   C0tbHa4fZv2mXzUNbZWjZk6dBOPHCZxg4MkrrA/HX4tmqN/R61MiV85jn
+   dV7LI5N/NIdxuzzhCObiYPdGKbto6WXs9J0vILBd+6D+Up2/12VeZ6OdZ
+   v18YMQU4KOg87aFprqhBicCYM8+Kl9OZg0BvV79u0AiRsXIHMf+7lSWw1
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10923"; a="2185979"
+X-IronPort-AV: E=Sophos;i="6.04,275,1695711600"; 
+   d="scan'208";a="2185979"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Dec 2023 03:04:34 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10923"; a="767572456"
+X-IronPort-AV: E=Sophos;i="6.04,275,1695711600"; 
+   d="scan'208";a="767572456"
+Received: from mattu-haswell.fi.intel.com (HELO [10.237.72.199]) ([10.237.72.199])
+  by orsmga007.jf.intel.com with ESMTP; 14 Dec 2023 03:04:30 -0800
+Message-ID: <7fdd62c6-f492-1f7e-9eca-9f965cdd73ef@linux.intel.com>
+Date:   Thu, 14 Dec 2023 13:05:52 +0200
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Firefox/102.0 Thunderbird/102.13.0
+Content-Language: en-US
+To:     Sam Edwards <cfsworks@gmail.com>,
+        Mathias Nyman <mathias.nyman@intel.com>,
+        Thinh Nguyen <Thinh.Nguyen@synopsys.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Heiko Stuebner <heiko@sntech.de>, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20231208210458.912776-1-CFSworks@gmail.com>
+From:   Mathias Nyman <mathias.nyman@linux.intel.com>
+Subject: Re: [PATCH 0/2] Allow disabling USB3 ports in xHCI/DWC3
+In-Reply-To: <20231208210458.912776-1-CFSworks@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 14 Dec 2023 00:49:20 +0100,
-Gergo Koteles wrote:
+On 8.12.2023 23.04, Sam Edwards wrote:
+> Hi USB devs,
 > 
-> Calling component_add starts loading the firmware, the callback function
-> writes the program to the amplifiers. If the module resets the
-> amplifiers after component_add, it happens that one of the amplifiers
-> does not work because the reset and program writing are interleaving.
+> This patchset is a semi-RFC: I haven't discussed this change yet, and it may
+> turn out to be a bad idea. But if there is a consensus that this change is
+> appropriate, these patches are the ones I'd submit for inclusion.
 > 
-> Call tas2781_reset before component_add to ensure reliable
-> initialization.
+> These patches were developed while working with a SoC (Rockchip RK3588) that
+> contains DWC3-OTG controllers and accompanying USB2 + USB3/DP PHYs. My target
+> (Turing RK1) uses its first bus in USB2.0-OTG mode only: the associated USB3
+> PHY is reserved for DP. Worse, a driver for the USBDP block (though it exists)
+> has not been merged to mainline. Without lighting up the PHY side of the PIPE,
+> the DWC3 behaves erratically, even for USB2 operation.
 > 
-> Fixes: 5be27f1e3ec9 ("ALSA: hda/tas2781: Add tas2781 HDA driver")
-> CC: stable@vger.kernel.org
-> Signed-off-by: Gergo Koteles <soyer@irl.hu>
+> This could be addressed by patching in the (out-of-tree) USBDP driver and
+> enabling only its USB backend. However, I found it cleaner (also from a
+> user-friendliness standpoint) just to disable the unusable USB3 port. These
+> patches achieve that by (1) making it possible to tell the xHCI driver to
+> ignore any USB3 port(s), and (2) (perhaps more controversially) making the DWC3
+> driver disable USB3 host ports when `maximum-speed` isn't set high enough.
 
-Thanks, applied now.
+I don't think this will work as a generic xhci driver feature.
 
+Even if we ignore all USB3 ports in software they will for most xHC hosts be powered
+and enabled in hardware by default after controller reset.
 
-Takashi
+This means they perform link training, generate all kinds of events with interrupts
+(connect, over-current etc) that driver now can't handle.
+
+Sound like the setup you are using has a very specific issue, and it would need
+a narrow targeted quirk to solve it.
+
+> 
+> There are other ways to disable the USB3 ports on RK3588, such as via some
+> syscon registers. I figured I would start with the most general solution
+> (benefitting other SoCs) first, getting more specific only if necessary. :)
+
+To me a specific solution to a specific problem like this sounds better.
+
+Thanks
+Mathias
