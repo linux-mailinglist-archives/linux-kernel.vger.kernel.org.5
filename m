@@ -2,61 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BD5D8123E1
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 01:29:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AACD8123E4
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 01:29:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442861AbjLNA3R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 19:29:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58084 "EHLO
+        id S1442869AbjLNA3j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 19:29:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56156 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1442803AbjLNA3Q (ORCPT
+        with ESMTP id S234125AbjLNA3i (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 19:29:16 -0500
+        Wed, 13 Dec 2023 19:29:38 -0500
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38EC4E0
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 16:29:22 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEA71B0
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 16:29:44 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1702513761;
+        s=mimecast20190719; t=1702513784;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=1LeZ/fU4LwYjjPD6kCZ/Dz47GuZJrnHiPdFj1ii6HAY=;
-        b=T4oa1WUohap+KA7NecFP+U6gePt9h+cdeC7/jDZoWz48SX2KPdspTvYVtDAoV/0MszHp2/
-        ZBrJdKXhdD7GoZh1T+d91NzGxaaa6RCvt+waRdJ+1llc22W3WEXNmyyYu40BhibBCywQYK
-        tD1W+2f72+DJjoYakb6c8U9ybBJVdsI=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+        bh=oN4Rq76T2MU78KSmZ3OnQmRSJOzHsfBPUD6PRxAotV0=;
+        b=GgF/206owCVa3yjb137/oOxXNM3NmA792b+6j7UxnDnI0nJoCpEQ9e+o6vHXqYDg6qjr2K
+        OBn/8EJ5GV8ZMxITbo41EJvCH8o44rh3lxRSWXvG8RRJOBCl1pAmR2HQE3hPGc29z0a4Pk
+        USpt5Em49+JTBuAHg7i2KzrV9i6NGQY=
+Received: from mail-qv1-f72.google.com (mail-qv1-f72.google.com
+ [209.85.219.72]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-445-aJ77xxIyMSOoP7xhMe2hVg-1; Wed, 13 Dec 2023 19:29:18 -0500
-X-MC-Unique: aJ77xxIyMSOoP7xhMe2hVg-1
-Received: from smtp.corp.redhat.com (int-mx10.intmail.prod.int.rdu2.redhat.com [10.11.54.10])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 8796288CC40;
-        Thu, 14 Dec 2023 00:29:17 +0000 (UTC)
-Received: from fedora (unknown [10.72.116.126])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 6A385492BE6;
-        Thu, 14 Dec 2023 00:29:12 +0000 (UTC)
-Date:   Thu, 14 Dec 2023 08:29:08 +0800
-From:   Ming Lei <ming.lei@redhat.com>
-To:     Joe Mario <jmario@redhat.com>
-Cc:     Jens Axboe <axboe@kernel.dk>, linux-block@vger.kernel.org,
-        Tejun Heo <tj@kernel.org>, linux-kernel@vger.kernel.org,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Andrew Theurer <atheurer@redhat.com>,
-        Sebastian Jug <sejug@redhat.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Bart Van Assche <bvanassche@acm.org>, ming.lei@redhat.com
-Subject: Re: [PATCH V3] blk-mq: don't schedule block kworker on isolated CPUs
-Message-ID: <ZXpMVDZi/adXLyn3@fedora>
-References: <20231025025737.358756-1-ming.lei@redhat.com>
- <b5f2ccfb-0ec0-42f5-a676-187850ca8b4f@redhat.com>
+ us-mta-529-D4pnEUADO_mlHZXYijot6A-1; Wed, 13 Dec 2023 19:29:42 -0500
+X-MC-Unique: D4pnEUADO_mlHZXYijot6A-1
+Received: by mail-qv1-f72.google.com with SMTP id 6a1803df08f44-67a8a7f2c76so96655766d6.1
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 16:29:42 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702513782; x=1703118582;
+        h=mime-version:user-agent:content-transfer-encoding:organization
+         :references:in-reply-to:date:cc:to:from:subject:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=oN4Rq76T2MU78KSmZ3OnQmRSJOzHsfBPUD6PRxAotV0=;
+        b=vebvwxoABmHcjreeRfFpTbAMBZxCAfBFayGl+PqC01W5YPJdI/T/d8FnpJ50dIwy+A
+         2W2yjgTi6KyLB8n7BO0xXwCSAc5D6RGIU8N4crG6xpP0PdzQFXzvUzQgpfGyhvDjssDW
+         GhYkm/syZXY2RF8hobfwXFgmHLytDe/kCGr4K6WPnnkwmg69Jdrk/lxQ6eoC+YpvuSLv
+         sWEvQZgkBBTlHLBbSiHJdLnJ0G2fjraG/FNOsEw0jgnbH3UW05dk/LqBGgLEtg1w6eoM
+         aexdkW1RH/t9fAdCP+bvG0rhFFwBtd9ly4OZqFY6ke882p9ETekSs1+EKe3PGgMhWlQW
+         FO/g==
+X-Gm-Message-State: AOJu0Yx2C8p4Geg6AG7XkEc0m9xWE1UFqYG8GBtqMenkEitCqx8CMP6c
+        N4bxag9j/OrV9D3PUM96UhQyvXP4GTl5raq2BjPuZV/PAXFHxow2lJRNykDLty532AHxaf5EYat
+        FZ5aHZfm2hjV3viMz1ToBjnYX
+X-Received: by 2002:a0c:c302:0:b0:67e:f0c6:f63c with SMTP id f2-20020a0cc302000000b0067ef0c6f63cmr3127418qvi.73.1702513782076;
+        Wed, 13 Dec 2023 16:29:42 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IFT8NAo/e6k3ZstcJUfz2WKPCzwDFukF/FeEkwM1oBWivWpyuN2Q5+EAT9+mBMJfs08TgmRBQ==
+X-Received: by 2002:a0c:c302:0:b0:67e:f0c6:f63c with SMTP id f2-20020a0cc302000000b0067ef0c6f63cmr3127411qvi.73.1702513781828;
+        Wed, 13 Dec 2023 16:29:41 -0800 (PST)
+Received: from ?IPv6:2600:4040:5c6c:a300::feb? ([2600:4040:5c6c:a300::feb])
+        by smtp.gmail.com with ESMTPSA id qh10-20020a05620a668a00b0076cbcf8ad3bsm4853219qkn.55.2023.12.13.16.29.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Dec 2023 16:29:41 -0800 (PST)
+Message-ID: <f1a33f9001bc642fd71280559ec0f612936db2a8.camel@redhat.com>
+Subject: Re: nouveau 0000:01:00.0: drm_WARN_ON(!found_head)
+From:   Lyude Paul <lyude@redhat.com>
+To:     Borislav Petkov <bp@alien8.de>, Paul Dufresne <dufresnep@zoho.com>,
+        Danilo Krummrich <me@dakr.org>
+Cc:     nouveau <nouveau@lists.freedesktop.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Ben Skeggs <bskeggs@redhat.com>,
+        Daniel Vetter <daniel@ffwll.ch>
+Date:   Wed, 13 Dec 2023 19:29:40 -0500
+In-Reply-To: <f10791773520f85857749c080af999821dd41a0d.camel@redhat.com>
+References: <20231111120323.GAZU9tiw8e0RSzCGB9@fat_crate.local>
+         <20231212224037.GAZXjhZUDeoq50xKJ5@fat_crate.local>
+         <18c613ec092.ae61cf7d6029.4389632938517239705@zoho.com>
+         <20231213113936.GBZXmX+MKqX/qOnPn1@fat_crate.local>
+         <20231213124936.GCZXmoYDq8nMRs75XM@fat_crate.local>
+         <114bf9f5790f637a6cdec4957244192d3bd76a04.camel@redhat.com>
+         <f10791773520f85857749c080af999821dd41a0d.camel@redhat.com>
+Organization: Red Hat Inc.
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <b5f2ccfb-0ec0-42f5-a676-187850ca8b4f@redhat.com>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.10
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
@@ -68,165 +91,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 13, 2023 at 04:43:26PM -0500, Joe Mario wrote:
-> Tested-by: Joe Mario <jmario@redhat.com>
-> 
-> Running fio on an nvme, I verified that block kworker threads no longer ran on isolated cpus.
-> I used:
->   # timeout -s INT 60 bpftrace -e 'kprobe:nvme_queue_rq{ @["CPU=",cpu] = count(); }'
-> 
-> The kernel with this V3 patch showed no hits on isolated cpus.
-> An unpatched kernel showed 40587 hits on isolated cpus.
+Nevermind - I don't think I'll need the logs, I stared at the code for long
+enough and I think I realized what's happening.
 
-Hi Joe,
+I will have a patch for you to test in just a moment, just waiting for it t=
+o
+compile so I can verify nothing else breaks
 
-Thanks for the test!
+On Wed, 2023-12-13 at 18:48 -0500, Lyude Paul wrote:
+> Hopefully you're still on at this point - if you are, could you try start=
+ing
+> the machine up with the following kernel module arguments passed to nouve=
+au?
+>=20
+> debug=3Ddisp=3Dtrace
+>=20
+> Then see if you can find any lines that mention INHERIT? I have a feeling=
+ I'm
+> just going to have to add a workaround for the time being, but I'd really=
+ love
+> to know how we're managing to get that far on a hardware generation we ne=
+ver
+> implemented that nvkm ioctl for=E2=80=A6
+>=20
+> On Wed, 2023-12-13 at 18:37 -0500, Lyude Paul wrote:
+> > agh - thank you for repeatedly poking on this, I've been busy enough wi=
+th GSP
+> > work I totally missed this. Yes - I'm quite surprised that this is blow=
+ing up,
+> > but considering that looks to be a GT218 I guess display state readback=
+ must
+> > just work a bit differently there since that's really early on into the=
+ NV50
+> > days.
+> >=20
+> > The reason that was a drm_WARN_ON() was because it indicates that we're=
+ not
+> > reading back OR -> head assignments properly. But, I'm confused how we'=
+re even
+> > getting that far on a non-GSP platform. I'm going to dig into this now,=
+ but if
+> > I don't figure out a good fix by the end of the day I'll just send a pa=
+tch to
+> > silent the warning.
+> >=20
+> > Thanks again for bugging me about this!
+> >=20
+> > On Wed, 2023-12-13 at 13:49 +0100, Borislav Petkov wrote:
+> > > On Wed, Dec 13, 2023 at 12:39:36PM +0100, Borislav Petkov wrote:
+> > > > We're getting close to releasing so I guess we either debug this or=
+ shut
+> > > > up the WARN.
+> > >=20
+> > > Not only that - panic_on_warn turns this into an explosion so you don=
+'t
+> > > want that in a released kernel.
+> > >=20
+> >=20
+>=20
 
-Jens, any chance to merge this patch? It does address use case in CPU
-isolation, meantime don't affect normal non-isolation cases.
-
-Thanks,
-Ming
-
-
-> 
-> Joe
-> 
-> On 10/24/23 10:57 PM, Ming Lei wrote:
-> > Kernel parameter of `isolcpus=` or 'nohz_full=' are used for isolating CPUs
-> > for specific task, and user often won't want block IO to disturb these CPUs,
-> > also long IO latency may be caused if blk-mq kworker is scheduled on these
-> > isolated CPUs.
-> > 
-> > Kernel workqueue only respects this limit for WQ_UNBOUND, for bound wq,
-> > the responsibility should be on wq user.
-> > 
-> > So don't not run block kworker on isolated CPUs by ruling out isolated CPUs
-> > from hctx->cpumask. Meantime in cpuhp handler, use queue map to check if
-> > all CPUs in this hw queue are offline, this way can avoid any cost in fast
-> > IO code path.
-> > 
-> > Cc: Juri Lelli <juri.lelli@redhat.com>
-> > Cc: Andrew Theurer <atheurer@redhat.com>
-> > Cc: Joe Mario <jmario@redhat.com>
-> > Cc: Sebastian Jug <sejug@redhat.com>
-> > Cc: Frederic Weisbecker <frederic@kernel.org>
-> > Cc: Bart Van Assche <bvanassche@acm.org>
-> > Signed-off-by: Ming Lei <ming.lei@redhat.com>
-> > ---
-> > 
-> > V3:
-> > 	- avoid to check invalid cpu as reported by Bart
-> > 	- take current cpu(to be offline, not done yet) into account
-> > 	- simplify blk_mq_hctx_has_online_cpu()
-> > 
-> > V2:
-> > 	- remove module parameter, meantime use queue map to check if
-> > 	all cpus in one hctx are offline
-> > 
-> >  block/blk-mq.c | 51 ++++++++++++++++++++++++++++++++++++++++----------
-> >  1 file changed, 41 insertions(+), 10 deletions(-)
-> > 
-> > diff --git a/block/blk-mq.c b/block/blk-mq.c
-> > index e2d11183f62e..4556978ce71b 100644
-> > --- a/block/blk-mq.c
-> > +++ b/block/blk-mq.c
-> > @@ -29,6 +29,7 @@
-> >  #include <linux/prefetch.h>
-> >  #include <linux/blk-crypto.h>
-> >  #include <linux/part_stat.h>
-> > +#include <linux/sched/isolation.h>
-> >  
-> >  #include <trace/events/block.h>
-> >  
-> > @@ -2158,7 +2159,11 @@ static int blk_mq_hctx_next_cpu(struct blk_mq_hw_ctx *hctx)
-> >  	bool tried = false;
-> >  	int next_cpu = hctx->next_cpu;
-> >  
-> > -	if (hctx->queue->nr_hw_queues == 1)
-> > +	/*
-> > +	 * In case of single queue or no allowed CPU for scheduling
-> > +	 * worker, don't bound our worker with any CPU
-> > +	 */
-> > +	if (hctx->queue->nr_hw_queues == 1 || next_cpu >= nr_cpu_ids)
-> >  		return WORK_CPU_UNBOUND;
-> >  
-> >  	if (--hctx->next_cpu_batch <= 0) {
-> > @@ -3459,14 +3464,30 @@ static bool blk_mq_hctx_has_requests(struct blk_mq_hw_ctx *hctx)
-> >  	return data.has_rq;
-> >  }
-> >  
-> > -static inline bool blk_mq_last_cpu_in_hctx(unsigned int cpu,
-> > -		struct blk_mq_hw_ctx *hctx)
-> > +static bool blk_mq_hctx_has_online_cpu(struct blk_mq_hw_ctx *hctx,
-> > +		unsigned int this_cpu)
-> >  {
-> > -	if (cpumask_first_and(hctx->cpumask, cpu_online_mask) != cpu)
-> > -		return false;
-> > -	if (cpumask_next_and(cpu, hctx->cpumask, cpu_online_mask) < nr_cpu_ids)
-> > -		return false;
-> > -	return true;
-> > +	enum hctx_type type = hctx->type;
-> > +	int cpu;
-> > +
-> > +	/*
-> > +	 * hctx->cpumask has rule out isolated CPUs, but userspace still
-> > +	 * might submit IOs on these isolated CPUs, so use queue map to
-> > +	 * check if all CPUs mapped to this hctx are offline
-> > +	 */
-> > +	for_each_online_cpu(cpu) {
-> > +		struct blk_mq_hw_ctx *h = blk_mq_map_queue_type(hctx->queue,
-> > +				type, cpu);
-> > +
-> > +		if (h != hctx)
-> > +			continue;
-> > +
-> > +		/* this current CPU isn't put offline yet */
-> > +		if (this_cpu != cpu)
-> > +			return true;
-> > +	}
-> > +
-> > +	return false;
-> >  }
-> >  
-> >  static int blk_mq_hctx_notify_offline(unsigned int cpu, struct hlist_node *node)
-> > @@ -3474,8 +3495,7 @@ static int blk_mq_hctx_notify_offline(unsigned int cpu, struct hlist_node *node)
-> >  	struct blk_mq_hw_ctx *hctx = hlist_entry_safe(node,
-> >  			struct blk_mq_hw_ctx, cpuhp_online);
-> >  
-> > -	if (!cpumask_test_cpu(cpu, hctx->cpumask) ||
-> > -	    !blk_mq_last_cpu_in_hctx(cpu, hctx))
-> > +	if (blk_mq_hctx_has_online_cpu(hctx, cpu))
-> >  		return 0;
-> >  
-> >  	/*
-> > @@ -3883,6 +3903,8 @@ static void blk_mq_map_swqueue(struct request_queue *q)
-> >  	}
-> >  
-> >  	queue_for_each_hw_ctx(q, hctx, i) {
-> > +		int cpu;
-> > +
-> >  		/*
-> >  		 * If no software queues are mapped to this hardware queue,
-> >  		 * disable it and free the request entries.
-> > @@ -3909,6 +3931,15 @@ static void blk_mq_map_swqueue(struct request_queue *q)
-> >  		 */
-> >  		sbitmap_resize(&hctx->ctx_map, hctx->nr_ctx);
-> >  
-> > +		/*
-> > +		 * rule out isolated CPUs from hctx->cpumask for avoiding to
-> > +		 * run wq worker on isolated CPU
-> > +		 */
-> > +		for_each_cpu(cpu, hctx->cpumask) {
-> > +			if (cpu_is_isolated(cpu))
-> > +				cpumask_clear_cpu(cpu, hctx->cpumask);
-> > +		}
-> > +
-> >  		/*
-> >  		 * Initialize batch roundrobin counts
-> >  		 */
-> 
-
--- 
-Ming
+--=20
+Cheers,
+ Lyude Paul (she/her)
+ Software Engineer at Red Hat
 
