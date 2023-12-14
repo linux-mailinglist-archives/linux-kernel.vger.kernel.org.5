@@ -1,68 +1,71 @@
-Return-Path: <linux-kernel+bounces-84-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-85-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 17552813BF5
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 21:47:32 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 07CD6813BF9
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 21:49:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C1CCA1F21D69
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 20:47:31 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A4A571F2266A
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 20:49:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C48D282E5;
-	Thu, 14 Dec 2023 20:47:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B38C282E6;
+	Thu, 14 Dec 2023 20:49:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="I/HuxuFm"
+	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="F80+XtaM"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 54B282112;
-	Thu, 14 Dec 2023 20:47:23 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7FDBCC433C8;
-	Thu, 14 Dec 2023 20:47:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1702586842;
-	bh=XBTCrm9Z6noOhx8k4QP8cDAa4mMuvdKLjnFpE1hRFMc=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=I/HuxuFm0l1bqR4C04ys22yXD5H7eQAcwfXtdYpZxEm47IbFOjsZrSAlu7k5G8Pvk
-	 CbuF5gxXNF4wfaScHrnIk6cFJpP2izcU63ByS33kQ4XstzOtxgT9mRAcVEEFVK7nFA
-	 O6F0CssyE+ZOeoXOVPI3tmjPI5cl9fa1vZoWWxZE2+FwrUVE/NBSVPiUmpjs/ZaqAV
-	 /sYL05yKGvyX0VXTR+d1intwu+3jWShrK/iLOJ2caDLS6X2FvYiFLAIKl6K/Lb0Lk7
-	 sNH/sm8YIV9mGSVay50BOt+FGTTC2Ah8mv3XrENT/V2x+NNXHvDWa53n/gomvNDxAb
-	 X7QoIsXEYHLxg==
-Date: Thu, 14 Dec 2023 21:47:20 +0100
-From: Andi Shyti <andi.shyti@kernel.org>
-To: Wolfram Sang <wsa+renesas@sang-engineering.com>
-Cc: linux-renesas-soc@vger.kernel.org,
-	Geert Uytterhoeven <geert+renesas@glider.be>,
-	Magnus Damm <magnus.damm@gmail.com>, linux-i2c@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/2] i2c: rcar: introduce Gen4 devices
-Message-ID: <20231214204720.xfdz3lwdjgzvo7bk@zenone.zhora.eu>
-References: <20231214074358.8711-1-wsa+renesas@sang-engineering.com>
- <20231214074358.8711-2-wsa+renesas@sang-engineering.com>
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F2CE273FB;
+	Thu, 14 Dec 2023 20:49:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
+Received: from [192.168.4.26] (unknown [47.186.13.91])
+	by linux.microsoft.com (Postfix) with ESMTPSA id AC61F20B3CC1;
+	Thu, 14 Dec 2023 12:49:30 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com AC61F20B3CC1
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+	s=default; t=1702586971;
+	bh=c1MPo0/TJVaQlWGGrusYNmJlcOO+AcMgdHja/aWIr80=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=F80+XtaM631WSIJLPePnIezdTv5GQqUx8OMXB1BIuZ+jrRSIis5aOfo0YIUVT/gj0
+	 XurkMlNPG0cvr4CJXX1aRBNj9sjsbNLLWgBTPQZBifv5TM1Z7z7UilfcQlxwZV+dkG
+	 moo8ABBKUoRIq/r7T2d7JMy6BEu/dLYtuNkBgIIc=
+Message-ID: <72364198-b031-4ecc-b337-d07db1b9d0c8@linux.microsoft.com>
+Date: Thu, 14 Dec 2023 14:49:29 -0600
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231214074358.8711-2-wsa+renesas@sang-engineering.com>
+User-Agent: Mozilla Thunderbird
+Subject: ARM64 Livepatch based on SFrame
+To: Mark Rutland <mark.rutland@arm.com>
+Cc: jpoimboe@redhat.com, peterz@infradead.org, chenzhongjin@huawei.com,
+ broonie@kernel.org, nobuta.keiya@fujitsu.com, sjitindarsingh@gmail.com,
+ catalin.marinas@arm.com, will@kernel.org, jamorris@linux.microsoft.com,
+ linux-arm-kernel@lists.infradead.org, live-patching@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <0337266cf19f4c98388e3f6d09f590d9de258dc7>
+ <20230202074036.507249-1-madvenka@linux.microsoft.com>
+ <ZByJmnc/XDcqQwoZ@FVFF77S0Q05N.cambridge.arm.com>
+Content-Language: en-US
+From: "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
+In-Reply-To: <ZByJmnc/XDcqQwoZ@FVFF77S0Q05N.cambridge.arm.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Hi Wolfram,
+Hi Mark,
 
-On Thu, Dec 14, 2023 at 08:43:57AM +0100, Wolfram Sang wrote:
-> So far, we treated Gen4 as Gen3. But we are soon adding FM+ as a Gen4
-> specific feature, so prepare the code for the new devtype.
-> 
-> Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
+I attended your presentation in the LPC. You mentioned that you could use some help with some pre-requisites for the Livepatch feature.
+I would like to lend a hand.
 
-Reviewed-by: Andi Shyti <andi.shyti@kernel.org>
+What would you like me to implement?
 
-Thanks,
-Andi
+I would also like to implement Unwind Hints for the feature. If you want a specific format for the hints, let me know.
+
+Looking forward to help out with the feature.
+
+Madhavan
 
