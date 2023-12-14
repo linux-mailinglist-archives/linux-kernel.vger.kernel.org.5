@@ -2,121 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BF9FF812BD9
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 10:40:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D8EE812C37
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 10:54:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1443465AbjLNJke (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 04:40:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58500 "EHLO
+        id S1443471AbjLNJkl convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 14 Dec 2023 04:40:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58556 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229664AbjLNJkd (ORCPT
+        with ESMTP id S235574AbjLNJkf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 04:40:33 -0500
-Received: from mail-ua1-x92d.google.com (mail-ua1-x92d.google.com [IPv6:2607:f8b0:4864:20::92d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6ED23B7
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 01:40:38 -0800 (PST)
-Received: by mail-ua1-x92d.google.com with SMTP id a1e0cc1a2514c-7c5cb5eeab1so2625977241.3
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 01:40:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1702546837; x=1703151637; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=NdaVZVYnYeQOiEs5xQZ/aME71d5T9TRS2cRXJbz9OzI=;
-        b=Z04AwDsXS2DLvcErL/s5f0v5AKqhNeA20bUlFX+DuUlIZ4WVLnfKWa+q/8Kz8NG2cn
-         pHGlQkLmw+1iE8sEBEfUZJjxM/0jZ4Y7LPHGP7qFMJzC44ixqEXkEEbNBPupr5nVeK8U
-         ltU1ykW5HKKuJcob+PNJn0Ax889LGILAeSb7BnBrU5hEtFE+CjTjeWxMzKr6Iehj/t/Y
-         sK/p5TJaDa9WwbyXWvVD4wz78qYXo3LFOnCxVadJ8PY4KiToHBkpsipOwJ15tgArL454
-         LFphXP12ZlGoAvu3bZYWroCYJg+GjqrypWfxBKAww1bKzwWi9Lg8g6nUcKrMBlM5/22S
-         wBZA==
+        Thu, 14 Dec 2023 04:40:35 -0500
+Received: from mail-ot1-f46.google.com (mail-ot1-f46.google.com [209.85.210.46])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63ED2127;
+        Thu, 14 Dec 2023 01:40:41 -0800 (PST)
+Received: by mail-ot1-f46.google.com with SMTP id 46e09a7af769-6d9db2f1ddfso1264409a34.0;
+        Thu, 14 Dec 2023 01:40:41 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702546837; x=1703151637;
+        d=1e100.net; s=20230601; t=1702546840; x=1703151640;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=NdaVZVYnYeQOiEs5xQZ/aME71d5T9TRS2cRXJbz9OzI=;
-        b=EM1PCEQOZWcwTaFrzHDc7qgT2e75TZFy6scfDaT2easYlWpS3ppn9YPqmGCbDgcQmw
-         fdtyQC/hUdtR7BcGp/9F55RFOkyq080V49I8IgmzP6L47gZB8oOxE4CHZVn4+6YEA9Km
-         GHI4i0/Am0dei4ngFpYPpQuF3hAmGO5gqEquIP2nJx29RITrBc/tYOYQzkSoxfYpG0uO
-         lgMkc7W8vivAdOwtlJgHbdRR5NtXpSJBPrwjWMWNMps0Z298mTT486REo0oNwf5NVfTc
-         +bb6Jp/AVeMv1ZTWIJvCxaiy6X5fy517rEn21e5ChVC89v+tbWoWIEqBP9mi2ArUId1t
-         LIWQ==
-X-Gm-Message-State: AOJu0Yxb7kaSaEGiz6ccWPqN16KBUwSL9fSWmWisGdOljlJSgnDrRX5W
-        Eq4Lv704BRRlLDCuRPwXjr8OuMJprtxRQNCt5AmFoQ==
-X-Google-Smtp-Source: AGHT+IGZq5rJhUCqBnslm+4oKVQDWly4syWw/KzYFHCO/NyKaF+WrXN5yqJAb7UuR4cmKFlK1da29q0Fk9+wrzXGSak=
-X-Received: by 2002:a05:6102:4746:b0:464:8ba6:2a66 with SMTP id
- ej6-20020a056102474600b004648ba62a66mr5927212vsb.31.1702546837567; Thu, 14
- Dec 2023 01:40:37 -0800 (PST)
+        bh=a1OZx1A3Thw17UWY5/qaKbogEfyh83NOJGFEXrtiXrE=;
+        b=WIFVJjQRw7nVqUy4zaojWvKTi/iCqJ5zS69Q5sxAlC1nhPOfTJEkSpTWawsKJZNBBf
+         gX9hN/oHRCzu0HUW1HfzK5aN/3mC3ndVTYyBnJJoO4+xfaEIyobkTAlB08L7yQCt7Lks
+         wF/Tc+uSK/GPuqpsJe8XYPI6UHgVmSQlsWeaxN869lta71kXbsB/FTqx7CSLqFuFlRQi
+         a3naNAo2wUMT2lzMuOhpJKaI+bN9dAZvd8SvB4K2NgZuc+HKOx0hK7bMopbhJsw3ckSe
+         PNL5yLq3VS2qj/NNV9Jg9tXFCATiNdBHY/XU80ginIuOaprDjgwzyTSmdAyFjwWACBGM
+         u/jg==
+X-Gm-Message-State: AOJu0YyLpR04YY3OR1pyCZ2AVK6BnHa5Uqq+Jkua7F6L46YVeUtE+9xr
+        nhHzzfErC8JNKsf1ZopvHeKspmz9r9NF6gLdjJ0=
+X-Google-Smtp-Source: AGHT+IGHUduXQcHD2O5Tng3Q5UnNHqP8yiF83sJrBsdRPOlYb/JA4vb81uPB/5nIxcAvk34aTsUzHaD4Afvhx3kow3s=
+X-Received: by 2002:a05:6871:2284:b0:1fb:648:5207 with SMTP id
+ sd4-20020a056871228400b001fb06485207mr17709011oab.2.1702546840564; Thu, 14
+ Dec 2023 01:40:40 -0800 (PST)
 MIME-Version: 1.0
-References: <ZXm3rayrcvfO1t1Z@smile.fi.intel.com> <ZXm_WsIpgIyOUNHt@rigel>
- <CAMRc=Mfri8K4ZqcHb_eQY6gi+q_-uBZc2wiMrrb-+a7Tric3FA@mail.gmail.com>
- <ZXnU3tMYCc2Rw8Qv@rigel> <ZXnX8jPHxRLW8lhi@smile.fi.intel.com>
- <CAMRc=Mfj_4YvQVP=UWkULBwJniDDjapttU+qSgqfN5ZWNgikKw@mail.gmail.com>
- <ZXnb-ks_noYLWZZ2@smile.fi.intel.com> <CAMRc=MfaHKKKNkXW0L1FPjCH4VvG22Vn9q8z9tupZCtCEKZU2g@mail.gmail.com>
- <ZXoO8B0N3S49GnvX@smile.fi.intel.com> <ZXpJueTnmtUIecCd@rigel> <ZXplMThBSD53UV0s@rigel>
-In-Reply-To: <ZXplMThBSD53UV0s@rigel>
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-Date:   Thu, 14 Dec 2023 10:40:26 +0100
-Message-ID: <CAMRc=MeZg0xg7ASA3x4PxCYymCmCEp0zZbUgGTCCzrjPaPZCag@mail.gmail.com>
-Subject: Re: [PATCH 1/4] gpiolib: cdev: relocate debounce_period_us from
- struct gpio_desc
-To:     Kent Gibson <warthog618@gmail.com>
-Cc:     Andy Shevchenko <andy@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-gpio@vger.kernel.org, linus.walleij@linaro.org
+References: <20231212142730.998913-1-vincent.guittot@linaro.org>
+ <20231212142730.998913-2-vincent.guittot@linaro.org> <20231214054307.axl33gagxacidjbn@vireshk-i7>
+ <CAKfTPtDam5eQO1DHxALsCaU53Rtawbfrvswy+z2unnV_eXeVLA@mail.gmail.com> <54f3b98c-1f7d-4205-9e3c-a4a19ad3d941@arm.com>
+In-Reply-To: <54f3b98c-1f7d-4205-9e3c-a4a19ad3d941@arm.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Thu, 14 Dec 2023 10:40:28 +0100
+Message-ID: <CAJZ5v0gD-utGhM3vN7JmPia1CVcSQa6RPnk2xMBXXc6asRTn=g@mail.gmail.com>
+Subject: Re: [PATCH 1/4] cpufreq: Add a cpufreq pressure feedback for the scheduler
+To:     Lukasz Luba <lukasz.luba@arm.com>
+Cc:     Vincent Guittot <vincent.guittot@linaro.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        catalin.marinas@arm.com, will@kernel.org, sudeep.holla@arm.com,
+        rafael@kernel.org, agross@kernel.org, andersson@kernel.org,
+        konrad.dybcio@linaro.org, mingo@redhat.com, peterz@infradead.org,
+        juri.lelli@redhat.com, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        bristot@redhat.com, vschneid@redhat.com, rui.zhang@intel.com,
+        mhiramat@kernel.org, daniel.lezcano@linaro.org,
+        amit.kachhap@gmail.com, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-trace-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 14, 2023 at 3:15=E2=80=AFAM Kent Gibson <warthog618@gmail.com> =
-wrote:
+On Thu, Dec 14, 2023 at 10:07 AM Lukasz Luba <lukasz.luba@arm.com> wrote:
 >
-> On Thu, Dec 14, 2023 at 08:18:01AM +0800, Kent Gibson wrote:
-> > On Wed, Dec 13, 2023 at 10:07:12PM +0200, Andy Shevchenko wrote:
-> > > On Wed, Dec 13, 2023 at 08:03:44PM +0100, Bartosz Golaszewski wrote:
-> > >
-> > > ...
-> > >
-> > > > > - it adds complications for no benefit
+> On 12/14/23 07:57, Vincent Guittot wrote:
+> > On Thu, 14 Dec 2023 at 06:43, Viresh Kumar <viresh.kumar@linaro.org> wrote:
+> >>
+> >> On 12-12-23, 15:27, Vincent Guittot wrote:
+> >>> @@ -2618,6 +2663,9 @@ static int cpufreq_set_policy(struct cpufreq_policy *policy,
+> >>>        policy->max = __resolve_freq(policy, policy->max, CPUFREQ_RELATION_H);
+> >>>        trace_cpu_frequency_limits(policy);
+> >>>
+> >>> +     cpus = policy->related_cpus;
+> >>> +     cpufreq_update_pressure(cpus, policy->max);
+> >>> +
+> >>>        policy->cached_target_freq = UINT_MAX;
+> >>
+> >> One more question, why are you doing this from cpufreq_set_policy ? If
+> >> due to cpufreq cooling or from userspace, we end up limiting the
+> >> maximum possible frequency, will this routine always get called ?
 > >
-> > It provides a placeholder for collective documentation and clarifies
-> > scope for the reader.
+> > Yes, any update of a FREQ_QOS_MAX ends up calling cpufreq_set_policy()
+> > to update the policy->max
+> >
 >
-> Turns out kernel-doc can't deal with a struct variable declaration - it
-> needs the struct to be named.
+> Agree, cpufreq sysfs scaling_max_freq is also important to handle
+> in this new design. Currently we don't reflect that as reduced CPU
+> capacity in the scheduler. There was discussion when I proposed to feed
+> that CPU frequency reduction into thermal_pressure [1].
 >
-> So this doesn't parse:
+> The same applies for the DTPM which is missing currently the proper
+> impact to the CPU reduced capacity in the scheduler.
 >
-> static struct {
->         struct rb_root tree;
->         spinlock_t lock;
-> } supinfo;
+> IMHO any limit set into FREQ_QOS_MAX should be visible in this
+> new design of capacity reduction signaling.
 >
-> but this does:
->
-> static struct supinfo {
->         struct rb_root tree;
->         spinlock_t lock;
-> } supinfo;
->
-> at which point I prefer the separate struct and var declarations as per
-> the patch.
->
-> Opinions?
->
+> [1] https://lore.kernel.org/lkml/20220930094821.31665-2-lukasz.luba@arm.com/
 
-Yeah, don't make it a kernel doc. It's a private structure, no need to
-expose documentation for it in docs. Just use a regular comment - say
-what it is and why it's here.
-
-Bart
-
-> Cheers,
-> Kent.
->
+Actually, freq_qos_read_value(&policy->constraints, FREQ_QOS_MAX) will
+return the requisite limit.
