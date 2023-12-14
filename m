@@ -1,352 +1,132 @@
-Return-Path: <linux-kernel+bounces-198-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-203-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2003C813D5E
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 23:38:45 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1422C813D69
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 23:42:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8A5C4B21B2F
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 22:38:42 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 465091C21E53
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 22:42:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 504DE66ADA;
-	Thu, 14 Dec 2023 22:38:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5BEA13FE5B;
+	Thu, 14 Dec 2023 22:42:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="neoCMENw"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="k5owp0Ma"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com [209.85.218.45])
+Received: from mail-vs1-f48.google.com (mail-vs1-f48.google.com [209.85.217.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 800C066ABC
-	for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 22:37:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-a1f5cb80a91so11136266b.3
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 14:37:58 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B8D08944C
+	for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 22:42:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-vs1-f48.google.com with SMTP id ada2fe7eead31-4662a125b64so19586137.3
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 14:42:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1702593476; x=1703198276; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=82WlJRLjSGo/vPW0f6ZIe9xHewTxZnBuvNjtigfiQoc=;
-        b=neoCMENwiva6jIDIQeZSXd59Q4Lp2bDBTXtljwfQBhaEi6qabFtnPDYRBUU3ipRYgR
-         R7rlse6qn3U7/Gs2hCYwO5CEGdFYCE93dZIDZlRHYD5MdJwAjCeLVwB9Woqwod2WyRjy
-         lwH2swLKpGSXOjItXtiTk3xettqXKJHDPNnhtbrwbUVqiorLzm3aEFktqGbCad3uFJyr
-         jHqVBU8gQ9psViJeRezLNRoxpSkSiGCbJQp3srr8W1CvFmuOAeLZv+ixZF+AyYx1X+7L
-         5597vsyDW/E2srINm77dITBjKWvKsl6sp5yXATXVy/nawLs+1gzAHm52CrXThOT7gkCk
-         dAFw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702593476; x=1703198276;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=google.com; s=20230601; t=1702593723; x=1703198523; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=82WlJRLjSGo/vPW0f6ZIe9xHewTxZnBuvNjtigfiQoc=;
-        b=SBWezb3iPLOKSnEhPDyfCXZ7BM1sZZELTngeS+OFAM7svYWLLfbqk7l2x9q7wawWFZ
-         GpQrzoIh9zrwqxyO3Su+3sMYpGyfvwfYBJlRyUr2KBqHjI7/LvqL2j7+ftH6MBOMXGU0
-         MyqUjCsUcJuDAS2OsjXCMYb9JlnWpw8WQIZlQWI4GOZ4F+wcUHyVdgYTSq2tEybxZABU
-         mc6zWH285z4OQ5Cs/uduEnSdLg2Zs8YSt9gOZkpONv7ZMIWVFRViwy6mQ1u0sE1w2Hzs
-         QbaEEemJTkXQZy48fUCbOeq4uCPx/CyNTDtjxw97mQcQGD4nRQtgoaNb22tWRCUEM3De
-         r3VA==
-X-Gm-Message-State: AOJu0YyG54FvI8sxzt1SD6sm6AoMQmCLgpx0X+y34C0uZT7WubYZda9u
-	mMYFaqq1ugr94oAR5XmROjhVUw==
-X-Google-Smtp-Source: AGHT+IFB9c8G3F6p8Djjw3isqnzw95yObhF11H6TdI+vXof5Qw9NTBybN7yB3FhOASkkyVChjmVMZQ==
-X-Received: by 2002:a17:906:180f:b0:a1d:2e32:d28c with SMTP id v15-20020a170906180f00b00a1d2e32d28cmr2914094eje.146.1702593476544;
-        Thu, 14 Dec 2023 14:37:56 -0800 (PST)
-Received: from linaro.org ([79.115.23.25])
-        by smtp.gmail.com with ESMTPSA id vc11-20020a170907d08b00b00a1ce58e9fc7sm9927639ejc.64.2023.12.14.14.37.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Dec 2023 14:37:56 -0800 (PST)
-Date: Fri, 15 Dec 2023 00:37:54 +0200
-From: Abel Vesa <abel.vesa@linaro.org>
-To: Andy Gross <agross@kernel.org>, Bjorn Andersson <andersson@kernel.org>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>
-Cc: linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org, Sibi Sankar <quic_sibis@quicinc.com>,
-	Rajendra Nayak <quic_rjendra@quicinc.com>
-Subject: Re: [PATCH v2 2/2] arm64: dts: qcom: x1e80100: Add some issing nodes
- for CRD
-Message-ID: <ZXuDwrtvhejz6of7@linaro.org>
-References: <20231215-x1e80100-dts-missing-nodes-v2-0-5a6efc04d00c@linaro.org>
- <20231215-x1e80100-dts-missing-nodes-v2-2-5a6efc04d00c@linaro.org>
+        bh=MTV9Y9MaaXX2DDdqBdZh/37gFFt+TicObNRgfbQpB+c=;
+        b=k5owp0MaQnKWOpd0IsMjN1mb1b6ZdlVn8VubLJl9I3K98Qrj+vUacQmdEOGVBag+Gb
+         9Y5/xg9sAJXDQlelIdE03Ir1ZbgGaUXGBpt2ZKjG2p94i6VqVqnQ6gIrGd1+5w3GmGHs
+         TXmQk8FL9d2S/SK+eSP6lmsVtnHQd6qGloAVj6fmrNV+YJ4MzDMkVj4q6iOQHrFibrh8
+         JeWjCFrTDyxfUH78/O7SgJfmPGhLRJSCwButsMS1JPS26eZdLPfbiRKrvofvzwuoaqDn
+         d08YwQcSqdcae7yIL7iPwHjuBFlclVIdzUOdGUfd0MV6SDz38jV7mNP59vc3ayN+5EyQ
+         tr3A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702593723; x=1703198523;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=MTV9Y9MaaXX2DDdqBdZh/37gFFt+TicObNRgfbQpB+c=;
+        b=P6fJLwcUAi/P9gyqpD+C4f7kQ5NocGVwciPf1XMmQZohBJBj5u7QcZ/v3m31kv2tZx
+         vveVP5/K3KwUj4ayk/77uVoBLfLCs8KfLUGiQNRuGoxGo89bUN1OzqzKoHHRTzfV9Ik/
+         FKEkjem33c1jP5cKQpOt2ShM0m2O+M/OONlfqNBYsOnSyr9V54xYzaOCGT1Kdg0ttat5
+         TLZJc/tx0iF+VsaSBvC6CWBAF6LZ87SOEv05mHopIggwuBe0a7qPlT7qCunXUVXE/Spd
+         XpsRO8lLTSE7vO3g5x8/yNXWlpTH8PAr+w2xhA9ge0O1H7AEzCdSbtpFfWpm8mjeb3+T
+         92sQ==
+X-Gm-Message-State: AOJu0YwPLRy1gmKomFPPX9kln62spIX+Sl8QU2XR+qLUfsJc+7tprjJd
+	z/mRdLyDWdluzkgKLz2yqGjQFrcjlhugZ9WKNLxDyA==
+X-Google-Smtp-Source: AGHT+IH3wqfhEK/RJ4zlhn3zTpIBajIQIVFGmO9Ie6pz+DcSBFS4OVm6rEiwv5xaui/Tt7eJBX/bNzIQiwXmZd6FSK8=
+X-Received: by 2002:a05:6102:4414:b0:464:5d7c:a82a with SMTP id
+ df20-20020a056102441400b004645d7ca82amr9292044vsb.13.1702593723171; Thu, 14
+ Dec 2023 14:42:03 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231215-x1e80100-dts-missing-nodes-v2-2-5a6efc04d00c@linaro.org>
+References: <20231213-zswap-dstmem-v1-0-896763369d04@bytedance.com>
+ <20231213-zswap-dstmem-v1-5-896763369d04@bytedance.com> <CAJD7tkb5cKopA-Lfvtsn7sqgqjRf2kyaMwZhhp6SkveNEwArGw@mail.gmail.com>
+ <20231214142320.f5cf319e619dbb2127c423e9@linux-foundation.org>
+In-Reply-To: <20231214142320.f5cf319e619dbb2127c423e9@linux-foundation.org>
+From: Yosry Ahmed <yosryahmed@google.com>
+Date: Thu, 14 Dec 2023 14:41:26 -0800
+Message-ID: <CAJD7tkaJVB+BoYmcO3MtGD7Ku88Sjk-VAK640h9B-aQzyGPdZQ@mail.gmail.com>
+Subject: Re: [PATCH 5/5] mm/zswap: cleanup zswap_reclaim_entry()
+To: Andrew Morton <akpm@linux-foundation.org>
+Cc: Chengming Zhou <zhouchengming@bytedance.com>, Nhat Pham <nphamcs@gmail.com>, 
+	Chris Li <chriscli@google.com>, Johannes Weiner <hannes@cmpxchg.org>, 
+	Seth Jennings <sjenning@redhat.com>, Dan Streetman <ddstreet@ieee.org>, 
+	Vitaly Wool <vitaly.wool@konsulko.com>, linux-kernel@vger.kernel.org, linux-mm@kvack.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 23-12-15 00:35:38, Abel Vesa wrote:
-> Enable touchscreen, touchpad, keyboard, display, pcie and usb
-> and all related nodes.
+On Thu, Dec 14, 2023 at 2:23=E2=80=AFPM Andrew Morton <akpm@linux-foundatio=
+n.org> wrote:
+>
+> On Wed, 13 Dec 2023 17:02:25 -0800 Yosry Ahmed <yosryahmed@google.com> wr=
+ote:
+>
+> > On Tue, Dec 12, 2023 at 8:18=E2=80=AFPM Chengming Zhou
+> > <zhouchengming@bytedance.com> wrote:
+> > >
+> > > Also after the common decompress part goes to __zswap_load(), we can
+> > > cleanup the zswap_reclaim_entry() a little.
+> >
+> > I think you mean zswap_writeback_entry(), same for the commit title.
+>
+> I updated my copy of the changelog, thanks.
+>
+> > > -       /*
+> > > -        * If we get here because the page is already in swapcache, a
+> > > -        * load may be happening concurrently. It is safe and okay to
+> > > -        * not free the entry. It is also okay to return !0.
+> > > -        */
+> >
+> > This comment should be moved above the failure check of
+> > __read_swap_cache_async() above, not completely removed.
+>
+> This?
 
-Urgh, type in subject. I'll rephrase it anyway in the next version.
+Yes, thanks a lot. Although I think a new version is needed anyway to
+address other comments.
 
-Please ignore this version.
-
-> 
-> Co-developed-by: Sibi Sankar <quic_sibis@quicinc.com>
-> Signed-off-by: Sibi Sankar <quic_sibis@quicinc.com>
-> Co-developed-by: Rajendra Nayak <quic_rjendra@quicinc.com>
-> Signed-off-by: Rajendra Nayak <quic_rjendra@quicinc.com>
-> Signed-off-by: Abel Vesa <abel.vesa@linaro.org>
-> ---
->  arch/arm64/boot/dts/qcom/x1e80100-crd.dts | 221 ++++++++++++++++++++++++++++++
->  1 file changed, 221 insertions(+)
-> 
-> diff --git a/arch/arm64/boot/dts/qcom/x1e80100-crd.dts b/arch/arm64/boot/dts/qcom/x1e80100-crd.dts
-> index 7532d8eca2de..d44898453315 100644
-> --- a/arch/arm64/boot/dts/qcom/x1e80100-crd.dts
-> +++ b/arch/arm64/boot/dts/qcom/x1e80100-crd.dts
-> @@ -401,10 +401,144 @@ vreg_l3j_0p8: ldo3 {
->  	};
->  };
->  
-> +&i2c0 {
-> +	clock-frequency = <400000>;
-> +
-> +	status = "okay";
-> +
-> +	touchpad@15 {
-> +		compatible = "hid-over-i2c";
-> +		reg = <0x15>;
-> +
-> +		hid-descr-addr = <0x1>;
-> +		interrupts-extended = <&tlmm 3 IRQ_TYPE_LEVEL_LOW>;
-> +
-> +		pinctrl-names = "default";
-> +		pinctrl-0 = <&tpad_default>;
-> +
-> +		wakeup-source;
-> +	};
-> +
-> +	keyboard@3a {
-> +		compatible = "hid-over-i2c";
-> +		reg = <0x3a>;
-> +
-> +		hid-descr-addr = <0x1>;
-> +		interrupts-extended = <&tlmm 67 IRQ_TYPE_LEVEL_LOW>;
-> +
-> +		pinctrl-names = "default";
-> +		pinctrl-0 = <&kybd_default>;
-> +		wakeup-source;
-> +	};
-> +};
-> +
-> +&i2c8 {
-> +	clock-frequency = <400000>;
-> +
-> +	status = "okay";
-> +
-> +	touchscreen@10 {
-> +		compatible = "hid-over-i2c";
-> +		reg = <0x10>;
-> +
-> +		hid-descr-addr = <0x1>;
-> +		interrupts-extended = <&tlmm 51 IRQ_TYPE_LEVEL_LOW>;
-> +
-> +		pinctrl-names = "default";
-> +		pinctrl-0 = <&ts0_default>;
-> +	};
-> +};
-> +
-> +&mdss {
-> +	status = "okay";
-> +};
-> +
-> +&mdss_dp3 {
-> +	compatible = "qcom,x1e80100-dp";
-> +	/delete-property/ #sound-dai-cells;
-> +
-> +	data-lanes = <0 1 2 3>;
-> +
-> +	status = "okay";
-> +
-> +	aux-bus {
-> +		panel {
-> +			compatible = "edp-panel";
-> +			power-supply = <&vreg_edp_3p3>;
-> +
-> +			port {
-> +				edp_panel_in: endpoint {
-> +					remote-endpoint = <&mdss_dp3_out>;
-> +				};
-> +			};
-> +		};
-> +	};
-> +
-> +	ports {
-> +		port@1 {
-> +			reg = <1>;
-> +			mdss_dp3_out: endpoint {
-> +				remote-endpoint = <&edp_panel_in>;
-> +			};
-> +		};
-> +	};
-> +};
-> +
-> +&mdss_dp3_phy {
-> +	vdda-phy-supply = <&vreg_l3j_0p8>;
-> +	vdda-pll-supply = <&vreg_l2j_1p2>;
-> +
-> +	status = "okay";
-> +};
-> +
-> +&pcie4 {
-> +	status = "okay";
-> +};
-> +
-> +&pcie4_phy {
-> +	vdda-phy-supply = <&vreg_l3j_0p8>;
-> +	vdda-pll-supply = <&vreg_l3e_1p2>;
-> +
-> +	status = "okay";
-> +};
-> +
-> +&pcie6a {
-> +	status = "okay";
-> +};
-> +
-> +&pcie6a_phy {
-> +	vdda-phy-supply = <&vreg_l3j_0p8>;
-> +	vdda-pll-supply = <&vreg_l2j_1p2>;
-> +
-> +	status = "okay";
-> +};
-> +
-> +&qupv3_0 {
-> +	status = "okay";
-> +};
-> +
-> +&qupv3_1 {
-> +	status = "okay";
-> +};
-> +
->  &qupv3_2 {
->  	status = "okay";
->  };
->  
-> +&remoteproc_adsp {
-> +	firmware-name = "qcom/x1e80100/adsp.mbn",
-> +			"qcom/x1e80100/adsp_dtb.mbn";
-> +
-> +	status = "okay";
-> +};
-> +
-> +&remoteproc_cdsp {
-> +	firmware-name = "qcom/x1e80100/cdsp.mbn",
-> +			"qcom/x1e80100/cdsp_dtb.mbn";
-> +
-> +	status = "okay";
-> +};
-> +
->  &tlmm {
->  	gpio-reserved-ranges = <34 2>, /* Unused */
->  			       <44 4>, /* SPI (TPM) */
-> @@ -416,9 +550,96 @@ edp_reg_en: edp-reg-en-state {
->  		drive-strength = <16>;
->  		bias-disable;
->  	};
-> +
-> +	kybd_default: kybd-default-state {
-> +		pins = "gpio67";
-> +		function = "gpio";
-> +		bias-disable;
-> +	};
-> +
-> +	tpad_default: tpad-default-state {
-> +		pins = "gpio3";
-> +		function = "gpio";
-> +		bias-disable;
-> +	};
-> +
-> +	ts0_default: ts0-default-state {
-> +		int-n-pins {
-> +			pins = "gpio51";
-> +			function = "gpio";
-> +			bias-disable;
-> +		};
-> +
-> +		reset-n-pins {
-> +			pins = "gpio48";
-> +			function = "gpio";
-> +			output-high;
-> +			drive-strength = <16>;
-> +		};
-> +	};
->  };
->  
->  &uart21 {
->  	compatible = "qcom,geni-debug-uart";
->  	status = "okay";
->  };
-> +
-> +&usb_1_ss0_hsphy {
-> +	vdd-supply = <&vreg_l2e_0p8>;
-> +	vdda12-supply = <&vreg_l3e_1p2>;
-> +
-> +	status = "okay";
-> +};
-> +
-> +&usb_1_ss0_qmpphy {
-> +	status = "okay";
-> +};
-> +
-> +&usb_1_ss0 {
-> +	status = "okay";
-> +};
-> +
-> +&usb_1_ss0_dwc3 {
-> +	dr_mode = "host";
-> +	usb-role-switch;
-> +};
-> +
-> +&usb_1_ss1_hsphy {
-> +	vdd-supply = <&vreg_l2e_0p8>;
-> +	vdda12-supply = <&vreg_l3e_1p2>;
-> +
-> +	status = "okay";
-> +};
-> +
-> +&usb_1_ss1_qmpphy {
-> +	status = "okay";
-> +};
-> +
-> +&usb_1_ss1 {
-> +	status = "okay";
-> +};
-> +
-> +&usb_1_ss1_dwc3 {
-> +	dr_mode = "host";
-> +	usb-role-switch;
-> +};
-> +
-> +&usb_1_ss2_hsphy {
-> +	vdd-supply = <&vreg_l2e_0p8>;
-> +	vdda12-supply = <&vreg_l3e_1p2>;
-> +
-> +	status = "okay";
-> +};
-> +
-> +&usb_1_ss2_qmpphy {
-> +	status = "okay";
-> +};
-> +
-> +&usb_1_ss2 {
-> +	status = "okay";
-> +};
-> +
-> +&usb_1_ss2_dwc3 {
-> +	dr_mode = "host";
-> +	usb-role-switch;
-> +};
-> 
-> -- 
-> 2.34.1
-> 
+>
+> --- a/mm/zswap.c~mm-zswap-cleanup-zswap_reclaim_entry-fix
+> +++ a/mm/zswap.c
+> @@ -1457,8 +1457,14 @@ static int zswap_writeback_entry(struct
+>         mpol =3D get_task_policy(current);
+>         page =3D __read_swap_cache_async(swpentry, GFP_KERNEL, mpol,
+>                                 NO_INTERLEAVE_INDEX, &page_was_allocated,=
+ true);
+> -       if (!page)
+> +       if (!page) {
+> +               /*
+> +                * If we get here because the page is already in swapcach=
+e, a
+> +                * load may be happening concurrently. It is safe and oka=
+y to
+> +                * not free the entry. It is also okay to return !0.
+> +                */
+>                 return -ENOMEM;
+> +       }
+>
+>         /* Found an existing page, we raced with load/swapin */
+>         if (!page_was_allocated) {
+>
 
