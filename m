@@ -1,81 +1,106 @@
-Return-Path: <linux-kernel+bounces-107-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-108-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 85036813C51
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 22:06:01 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id A8054813C54
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 22:06:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 79D301C21B82
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 21:06:00 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 517F01F2251A
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 21:06:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED1306DD12;
-	Thu, 14 Dec 2023 21:05:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8FEC16D1C4;
+	Thu, 14 Dec 2023 21:06:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="aT6M1V64"
+	dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b="iYRrOIhB"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-yb1-f176.google.com (mail-yb1-f176.google.com [209.85.219.176])
+Received: from mail-io1-f51.google.com (mail-io1-f51.google.com [209.85.166.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ABA906DD19
-	for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 21:05:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-yb1-f176.google.com with SMTP id 3f1490d57ef6-dae7cc31151so8076458276.3
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 13:05:28 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 41ACB6ABBF
+	for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 21:05:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bgdev.pl
+Received: by mail-io1-f51.google.com with SMTP id ca18e2360f4ac-7b71b10391aso321975639f.3
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 13:05:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1702587927; x=1703192727; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=LCymCj092ujEURhtWwiTvgQB9KRuQ5X6H7jpPjRwiFI=;
-        b=aT6M1V640/KmulZbvF8adtttkzImYOWLfz7+GvkLrgU+eZHbV4B91992QnL5dCV2jW
-         5rhQ2Tf47fvN7iq/TYHdFBr3UegSr+Bms4sGTNy/VrZwKgKWCiMI1unmoFkL6TJ0jcXx
-         Y1PCeiNpiavwz1XzcuawZkcbDReikqHGxWYqs=
+        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1702587942; x=1703192742; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=FYSEL7MIgSG8trWNPr7NB5+x5xH37jHR4RltoDZ173Y=;
+        b=iYRrOIhBA68YyyJHlWUUlgxTPLLZgUBmrsdxz9j7DinbKPiHy5B+b5l67KhumnxeuH
+         S4adang1PkSlav5B4HsMJaCA3QcbAqXcFpEL/ohz4ZFrOdLrAhgBV/0znlYt5Ihoj7pj
+         1JChNZsY8QtalPfEp0iiSG/StmEmwNA+4FXuWMYKGBxcvtSLCoOBNucV32DV/onfSJ5b
+         WHVyE6492+PyMZcqa9kyAgpf3CBYMjtXxvwbw+FbSwV5ZxwcVI+iRMNZu1ZfBeIqYF9+
+         ISR1yK3WDMdFhMnApB5ODyPGHoc79HyhPX4PhbFePTKbXMsEFXAjfTgAXe5lGeX7k/Zh
+         j29A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702587927; x=1703192727;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=LCymCj092ujEURhtWwiTvgQB9KRuQ5X6H7jpPjRwiFI=;
-        b=EBrM0ulNCc+fqk/xpw6sntwL6uzJIosV3CycZ9VK6i6VLxYLSR9tVGQxrOnm5/X4Zn
-         SLjTjBONiViE4rjixSWZlF9+ko7LYRmR54NFzsFINciuDJklruZ1eyNryZnfEPPfSFI+
-         SDQZbb0ptbeNZL1dswJPs1/OL1mqswclj8xo1kh4x8lghM6lgM0snU0rC8RQGAljusL0
-         7/OSn8bQ5bq8JR4hdYLeslTPZG8v5wZcfiVgICR8h6GbfXY9n/waYQrVoJi3bTOH3nG2
-         AFMGYUAYKRbrDIeZjCeHdHz7D+Od8V7M4SBx1CinvyU+5wR0pia3TJFKFOe9KmJNWAGu
-         +imw==
-X-Gm-Message-State: AOJu0YzciHIGlPVFeUD08xv6ImkuvAvkJyJ8oP1I/itDVrgFc/xbwF/O
-	kI3JnlRAqm8G97WlaQBUv4LmDBGpJ8ikWNXR7OhhPA==
-X-Google-Smtp-Source: AGHT+IHb60puIqHHGo6rM5uZOwFH3Ag9T5NHkQNm57AGOmvZOdEPbBCU1i6nzcI9Q2fM9TRBsAaazWax18XAklDix9M=
-X-Received: by 2002:a25:8c09:0:b0:db7:dacf:6fd3 with SMTP id
- k9-20020a258c09000000b00db7dacf6fd3mr7018530ybl.91.1702587927520; Thu, 14 Dec
- 2023 13:05:27 -0800 (PST)
+        d=1e100.net; s=20230601; t=1702587942; x=1703192742;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=FYSEL7MIgSG8trWNPr7NB5+x5xH37jHR4RltoDZ173Y=;
+        b=iDc+XjWrGVMd4zEnGAtYyucjfbfn475wtcezsRYTYu0X3yjNcy4yemO+FHwy0b9vxI
+         4OnZNIg68kNEfNDtvRETYBagFAzAynS9Nh3J7WFOc9JWjieU84BVGUrFN5mkRElEv5lA
+         y1G/lIDR8sXHnv5zad0AygOvoZL1QZ7ocl5nmh1aCjkCfDjY1rKsTaSPr1UFJia3n0vy
+         QAoq8umZ8e6zJJHKxAI0YDtFApUcidF8vwMLY989L1HRkgCvIotNV1tqFBFBc5Do8e7U
+         J6krAAcdW7YAOx2rJo9h3yuQsYYdKGmsPvX/iCpey9hwUN4dKFNh91yK+I+tzKI7GZaO
+         Hk1g==
+X-Gm-Message-State: AOJu0YzkAcQagm8WMMOI7h5ixKaHqDlLDekDahTZU4tR7ZOlZw/YJCa+
+	LmU+vok2XTrj4V7oJpHo6vSuyxZCcVDYh90+xJ2f5g==
+X-Google-Smtp-Source: AGHT+IGxr066RC4yxlfM9efuBAZLfPmRjNI8ZkOw8V4w3KW2qA8hkeyLMtUVXb3U6UCex4CgLOS6TSWV9tl6OAhk7Uc=
+X-Received: by 2002:a05:6e02:19ca:b0:35e:7693:7a21 with SMTP id
+ r10-20020a056e0219ca00b0035e76937a21mr10610379ill.83.1702587942177; Thu, 14
+ Dec 2023 13:05:42 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231213110009.v1.1.Ifd0903f1c351e84376d71dbdadbd43931197f5ea@changeid>
- <20231213110009.v1.3.I29b26a7f3b80fac0a618707446a10b6cc974fdaf@changeid> <20231213221959.GC2115075-robh@kernel.org>
-In-Reply-To: <20231213221959.GC2115075-robh@kernel.org>
-From: Mark Hasemeyer <markhas@chromium.org>
-Date: Thu, 14 Dec 2023 14:05:16 -0700
-Message-ID: <CANg-bXB0EAd-703oOzXsFSS72Z3bfT8La_5K=W41L+B1uMz2-Q@mail.gmail.com>
-Subject: Re: [PATCH v1 3/6] of: irq: add wake capable bit to of_irq_resource()
-To: Rob Herring <robh@kernel.org>
-Cc: LKML <linux-kernel@vger.kernel.org>, Raul Rangel <rrangel@chromium.org>, 
-	Frank Rowand <frowand.list@gmail.com>, devicetree@vger.kernel.org
+References: <ZXsxc8953uAfizLv@smile.fi.intel.com>
+In-Reply-To: <ZXsxc8953uAfizLv@smile.fi.intel.com>
+From: Bartosz Golaszewski <brgl@bgdev.pl>
+Date: Thu, 14 Dec 2023 22:05:29 +0100
+Message-ID: <CAMRc=Mc7fc2sM41oDNhCavvfZHCzwv2Y_ToquFwD+BhkVHwbhw@mail.gmail.com>
+Subject: Re: [PATCH v2 2/5] gpiolib: cdev: relocate debounce_period_us from
+ struct gpio_desc
+To: Andy Shevchenko <andy@kernel.org>
+Cc: Kent Gibson <warthog618@gmail.com>, linux-kernel@vger.kernel.org, 
+	linux-gpio@vger.kernel.org, linus.walleij@linaro.org
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-> If a device has multiple interrupts, but none named "wakeup" you are
-> saying all the interrupts are wakeup capable. That's not right though.
-> Only the device knows which interrupts are wakeup capable. You need:
+On Thu, Dec 14, 2023 at 5:47=E2=80=AFPM Andy Shevchenko <andy@kernel.org> w=
+rote:
 >
-> return wakeindex >= 0 && wakeindex == index;
+>
+> On Thu, Dec 14, 2023 at 11:08:05PM +0800, Kent Gibson wrote:
+> > On Thu, Dec 14, 2023 at 03:56:37PM +0100, Bartosz Golaszewski wrote:
+>
+> ...
+>
+> > While I think of it, what tree should I be basing on?
+> > These patches are based on v6.7-rc5, and I'm not aware of any other
+> > changes they may contend with, but best to be on the right tree to be
+> > sure.
+>
+> General rule is to base on the target subsystem tree. In this case
+> it's Bart's gpio/for-next AFAIU.
+>
 
-I was assuming logic described in the DT bindings:
-https://www.kernel.org/doc/Documentation/devicetree/bindings/power/wakeup-source.txt
-"Also, if device is marked as a wakeup source, then all the primary
-interrupt(s) can be used as wakeup interrupt(s)."
+Normally the patches should apply on top of
+
+    git://git.kernel.org/pub/scm/linux/kernel/git/brgl/linux.git gpio/for-n=
+ext
+
+Any conflicts between maintainer trees are handled upstream.
+
+Bart
+
+> --
+> With Best Regards,
+> Andy Shevchenko
 
