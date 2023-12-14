@@ -2,175 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 706BD8124D1
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 02:54:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B18218124D5
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 02:56:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442937AbjLNByX convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 13 Dec 2023 20:54:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43082 "EHLO
+        id S1442952AbjLNBzz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 20:55:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52102 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229739AbjLNByW (ORCPT
+        with ESMTP id S229739AbjLNBzy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 20:54:22 -0500
-Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4673EE3;
-        Wed, 13 Dec 2023 17:54:25 -0800 (PST)
-X-UUID: 9adb435ddafe451b89aac4d78a16ce0f-20231214
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.33,REQID:93de4f45-1a62-41a9-b5b1-da36f8375241,IP:15,
-        URL:0,TC:0,Content:0,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTI
-        ON:release,TS:0
-X-CID-INFO: VERSION:1.1.33,REQID:93de4f45-1a62-41a9-b5b1-da36f8375241,IP:15,UR
-        L:0,TC:0,Content:0,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTION
-        :release,TS:0
-X-CID-META: VersionHash:364b77b,CLOUDID:e05e2c61-c89d-4129-91cb-8ebfae4653fc,B
-        ulkID:231212231719IH1VMLZ5,BulkQuantity:15,Recheck:0,SF:38|24|17|19|44|64|
-        66|102,TC:nil,Content:0,EDM:-3,IP:-2,URL:0,File:nil,Bulk:40,QS:nil,BEC:nil
-        ,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0,NGT
-X-CID-BAS: 0,NGT,0,_
-X-CID-FACTOR: TF_CID_SPAM_FSI,TF_CID_SPAM_OBB,TF_CID_SPAM_SNR,TF_CID_SPAM_FAS,
-        TF_CID_SPAM_FSD
-X-UUID: 9adb435ddafe451b89aac4d78a16ce0f-20231214
-Received: from node4.com.cn [(39.156.73.12)] by mailgw
-        (envelope-from <xiongxin@kylinos.cn>)
-        (Generic MTA)
-        with ESMTP id 473595861; Thu, 14 Dec 2023 09:54:10 +0800
-Received: from node4.com.cn (localhost [127.0.0.1])
-        by node4.com.cn (NSMail) with SMTP id 4062B16001CC8;
-        Thu, 14 Dec 2023 09:54:10 +0800 (CST)
-X-ns-mid: postfix-657A6042-155688377
-Received: from [172.20.116.203] (unknown [172.20.116.203])
-        by node4.com.cn (NSMail) with ESMTPA id 8192316001CC8;
-        Thu, 14 Dec 2023 01:54:07 +0000 (UTC)
-Message-ID: <1844c927-2dd4-49b4-a6c4-c4c176b1f75d@kylinos.cn>
-Date:   Thu, 14 Dec 2023 09:54:06 +0800
+        Wed, 13 Dec 2023 20:55:54 -0500
+Received: from mail-yw1-x112b.google.com (mail-yw1-x112b.google.com [IPv6:2607:f8b0:4864:20::112b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4867EB0
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 17:56:00 -0800 (PST)
+Received: by mail-yw1-x112b.google.com with SMTP id 00721157ae682-5e2cfece112so12394177b3.2
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 17:56:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1702518959; x=1703123759; darn=vger.kernel.org;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=cXS16Jh4pIOzCXaU9yjoq8w+1VlIvNkLy1RXeo+6UJw=;
+        b=zGVrky6vRrR9A6UnECwMf7Ze3LigZa6+FUTngO87HwmKlw7UfVMWJdZN71S2MTTC+W
+         YFNHVB9D+mwb34cHqMhuRIvGJpBAwK3i2eEFbjQspC9I8auyLFHnQ8doY8zgT4VMIAOx
+         Cx/S4Vcev8p1bLM1xjZ4oQRb/153yb6dejXl4KRWu7hRhVeJAws9jb1mAOEEeKjL0nUm
+         n0PWP32aZURMFSR74xgLcjRLHmJxN9GHZPTklluCCSJzd3WCojJ5q8RjhRtCQn0MCfcQ
+         C5LIpcDFGS/Z7Fg2Qvb72j661NJZXugnxWu2jdQXGFx8IygNBF34XkcIYwuY09QL2QEP
+         Ip+w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702518959; x=1703123759;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=cXS16Jh4pIOzCXaU9yjoq8w+1VlIvNkLy1RXeo+6UJw=;
+        b=FM2sRFAVaEX7CH4yepbcy+kFj/itIHKZL0b8tjqSSUPoKp5z+SRFo7L1upZztiiz/C
+         VV2nYMNYcu6g21K2mY4j7nQYKtqk4O7fIVtVeMl/t/s1TvohMULQXI4DmjtHEnaV24w7
+         jvNkDas8aj/2x+qwzDWFlnLezUbMROGBdXuVdyu5frlNtzRSuFnxj9pVYP5IR+Bu7eO0
+         Z7aD9BTrdr/TIwUBrF+PU0j3joTcfHKTqhyIfiXw+bRE6Xf2nk1I5h/hwLWPFZOL1eZ/
+         Ev/Mt+naJA/r99e/JTE7znYq3Fs7vsz/rUGpwhaNPbfeMFQJ5Zk6Ak0mGWzUB7ZvsWEa
+         9y0g==
+X-Gm-Message-State: AOJu0YzBKRKqK01T47SxVDdXg0UeeiCR6Zj41cLQ29vyF31fNYx83xeu
+        Ett0cjrQg6S01J71J+fRNY0qhw==
+X-Google-Smtp-Source: AGHT+IHYs5cilcDVUOrJUHpiP7G73AZjkSakO4l1hqIQvJu47TRWrJ3EvXIYBi50ZKS1fa90AufsyA==
+X-Received: by 2002:a0d:c783:0:b0:5d7:1941:3557 with SMTP id j125-20020a0dc783000000b005d719413557mr7373865ywd.62.1702518959472;
+        Wed, 13 Dec 2023 17:55:59 -0800 (PST)
+Received: from charlie.ba.rivosinc.com ([64.71.180.162])
+        by smtp.gmail.com with ESMTPSA id q68-20020a818047000000b005d580a1fd70sm5094434ywf.75.2023.12.13.17.55.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Dec 2023 17:55:58 -0800 (PST)
+From:   Charlie Jenkins <charlie@rivosinc.com>
+Date:   Wed, 13 Dec 2023 17:55:46 -0800
+Subject: [PATCH] riscv: Fix module loading free order
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] irq: Resolve that mask_irq/unmask_irq may not be called
- in pairs
-Content-Language: en-US
-To:     Thomas Gleixner <tglx@linutronix.de>, jikos@kernel.org,
-        benjamin.tissoires@redhat.com
-Cc:     linux-input@vger.kernel.org, stable@vger.kernel.org,
-        Riwen Lu <luriwen@kylinos.cn>, hoan@os.amperecomputing.com,
-        fancer.lancer@gmail.com, linus.walleij@linaro.org, brgl@bgdev.pl,
-        andy@kernel.org, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20231207014003.12919-1-xiongxin@kylinos.cn> <87ttosssxd.ffs@tglx>
- <e125491c-4cdb-4870-924a-baeb7453bf78@kylinos.cn> <874jgnqwlo.ffs@tglx>
- <bf4004bf-4868-4953-8d8e-0c0e03be673e@kylinos.cn> <875y12p2r0.ffs@tglx>
-From:   xiongxin <xiongxin@kylinos.cn>
-In-Reply-To: <875y12p2r0.ffs@tglx>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        UNPARSEABLE_RELAY autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20231213-module_loading_fix-v1-1-da9b7c92ade5@rivosinc.com>
+X-B4-Tracking: v=1; b=H4sIAKFgemUC/x2MQQqAIBAAvyJ7TkiNqL4SIaJbLZiGUgTh35OOM
+ zDzQsZEmGFiLyS8KVMMFUTDwO4mbMjJVQbZSiWkUPyI7vKofTSOwqZXergytncdmkHIEWp4Jqz
+ 6n85LKR/ikY0OZAAAAA==
+To:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>
+Cc:     Palmer Dabbelt <palmer@rivosinc.com>,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Charlie Jenkins <charlie@rivosinc.com>,
+        kernel test robot <lkp@intel.com>,
+        Dan Carpenter <dan.carpenter@linaro.org>,
+        Julia Lawall <julia.lawall@inria.fr>
+X-Mailer: b4 0.12.3
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1702518957; l=4248;
+ i=charlie@rivosinc.com; s=20231120; h=from:subject:message-id;
+ bh=AGHOVl6+fAnfdvSS+mkS/6T3AqWPxNDKq2uwr8rys0g=;
+ b=ru835i0uXHd7SNhF7jm+mG44Au3M+8+dIJkg5+UV1qqMV2fKp1Fv0KYVSpvrRe1n6akOhSLGG
+ hP2gK1dE40bCgGPjBpU49KZ7wq+UarP0JiCE9KHHR++u0aRdIpdW2ge
+X-Developer-Key: i=charlie@rivosinc.com; a=ed25519;
+ pk=t4RSWpMV1q5lf/NWIeR9z58bcje60/dbtxxmoSfBEcs=
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-在 2023/12/13 22:59, Thomas Gleixner 写道:
-> On Wed, Dec 13 2023 at 10:29, xiongxin wrote:
->> 在 2023/12/12 23:17, Thomas Gleixner 写道:
->> Sorry, the previous reply may not have clarified the BUG process. I
->> re-debugged and confirmed it yesterday. The current BUG execution
->> sequence is described as follows:
-> 
-> It's the sequence how this works and it works correctly.
-> 
-> Just because it does not work on your machine it does not mean that this
-> is incorrect and a BUG.
-> 
-> You are trying to fix a symptom and thereby violating guarantees of the
-> core code.
-> 
->> That is, there is a time between the 1:handle_level_irq() and
->> 3:irq_thread_fn() calls for the 2:disable_irq() call to acquire the lock
->> and then implement the irq_state_set_disabled() operation. When finally
->> call irq_thread_fn()->irq_finalize_oneshot(), it cannot enter the
->> unmask_thread_irq() process.
-> 
-> Correct, because the interrupt has been DISABLED in the mean time.
-> 
->> In this case, the gpio irq_chip irq_mask()/irq_unmask() callback pairs
->> are not called in pairs, so I think this is a BUG, but not necessarily
->> fixed from the irq core code layer.
-> 
-> No. It is _NOT_ a BUG. unmask() is not allowed to be invoked when the
-> interrupt is DISABLED. That's the last time I'm going to tell you that.
-> Only enable_irq() can undo the effect of disable_irq(), period.
-> 
->> Next, when the gpio controller driver calls the suspend/resume process,
->> it is as follows:
->>
->> suspend process:
->> dwapb_gpio_suspend()
->>       ctx->int_mask   = dwapb_read(gpio, GPIO_INTMASK);
->>
->> resume process:
->> dwapb_gpio_resume()
->>       dwapb_write(gpio, GPIO_INTMASK, ctx->int_mask);
-> 
-> Did you actually look at the sequence I gave you?
-> 
->     Suspend:
-> 
-> 	  i2c_hid_core_suspend()
-> 	     disable_irq();       <- Marks it disabled and eventually
-> 				     masks it.
-> 
-> 	  gpio_irq_suspend()
-> 	     save_registers();    <- Saves masked interrupt
-> 
->     Resume:
-> 
-> 	  gpio_irq_resume()
-> 	     restore_registers(); <- Restores masked interrupt
-> 
-> 	  i2c_hid_core_resume()
-> 	     enable_irq();        <- Unmasks interrupt and removes the
-> 				     disabled marker
-> 
-> 
-> Have you verified that this order of invocations is what happens on
-> your machine?
-> 
-> Thanks,
-> 
->          tglx
+Various changes to riscv module loading mainly in regards to freeing.
+Also change iteration of relocation entries to a do-while loop since it
+is guaranteed that there will be at least one entry in the linked list,
+and the loop sets the curr_type value.
 
-As described earlier, in the current situation, the irq_mask() callback 
-of gpio irq_chip is called in mask_irq(), followed by the disable_irq() 
-in i2c_hid_core_suspend(), unmask_irq() will not be executed.
+Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
+Fixes: d8792a5734b0 ("riscv: Safely remove entries from relocation list")
+Reported-by: kernel test robot <lkp@intel.com>
+Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
+Closes: https://lore.kernel.org/r/202312132019.iYGTwW0L-lkp@intel.com/
+Closes: https://lore.kernel.org/r/202312130859.wnkuzVWY-lkp@intel.com/
+Reported-by: Julia Lawall <julia.lawall@inria.fr>
+Closes: https://lore.kernel.org/r/202312120044.wTI1Uyaa-lkp@intel.com/
+---
+ arch/riscv/kernel/module.c | 45 ++++++++++++++++++++++++++++++++-------------
+ 1 file changed, 32 insertions(+), 13 deletions(-)
 
-Then call enable_irq() in i2c_hid_core_resume(). Since gpio irq_chip 
-does not implement the irq_startup() callback, it ends up calling 
-irq_enable().
+diff --git a/arch/riscv/kernel/module.c b/arch/riscv/kernel/module.c
+index aac019ed63b1..fc7ce101d9a5 100644
+--- a/arch/riscv/kernel/module.c
++++ b/arch/riscv/kernel/module.c
+@@ -633,15 +633,31 @@ process_accumulated_relocations(struct module *me,
+ 					  bucket_iter->bucket, node) {
+ 			buffer = 0;
+ 			location = rel_head_iter->location;
+-			list_for_each_entry_safe(rel_entry_iter,
+-						 rel_entry_iter_tmp,
+-						 rel_head_iter->rel_entry,
+-						 head) {
++			rel_entry_iter =
++				list_first_entry(rel_head_iter->rel_entry,
++						 typeof(*rel_entry_iter), head);
++			rel_entry_iter_tmp =
++				list_next_entry(rel_entry_iter, head);
++
++			/*
++			 * Iterate through all relocation entries that share
++			 * this location. This uses a do-while loop instead of
++			 * list_for_each_entry_safe since it is known that there
++			 * is at least one entry and curr_type needs to be the
++			 * value of the last entry when the loop exits.
++			 */
++			do {
+ 				curr_type = rel_entry_iter->type;
+ 				reloc_handlers[curr_type].reloc_handler(
+ 					me, &buffer, rel_entry_iter->value);
+ 				kfree(rel_entry_iter);
+-			}
++
++				rel_entry_iter = rel_entry_iter_tmp;
++				rel_entry_iter_tmp = list_next_entry(rel_entry_iter_tmp, head);
++			} while (!list_entry_is_head(rel_entry_iter,
++						     rel_head_iter->rel_entry,
++						     head));
++
+ 			reloc_handlers[curr_type].accumulate_handler(
+ 				me, location, buffer);
+ 			kfree(rel_head_iter);
+@@ -723,8 +739,8 @@ static int add_relocation_to_accumulate(struct module *me, int type,
+ 
+ 			if (!bucket) {
+ 				kfree(entry);
+-				kfree(rel_head);
+ 				kfree(rel_head->rel_entry);
++				kfree(rel_head);
+ 				return -ENOMEM;
+ 			}
+ 
+@@ -741,12 +757,15 @@ static int add_relocation_to_accumulate(struct module *me, int type,
+ 	return 0;
+ }
+ 
+-static unsigned int
+-initialize_relocation_hashtable(unsigned int num_relocations,
+-				struct hlist_head **relocation_hashtable)
++static u32 initialize_relocation_hashtable(unsigned int num_relocations,
++					   struct hlist_head **relocation_hashtable)
+ {
+ 	/* Can safely assume that bits is not greater than sizeof(long) */
+ 	unsigned long hashtable_size = roundup_pow_of_two(num_relocations);
++	/*
++	 * When hashtable_size == 1, hashtable_bits == 0.
++	 * This is valid because the hashing algorithm returns 0 in this case.
++	 */
+ 	unsigned int hashtable_bits = ilog2(hashtable_size);
+ 
+ 	/*
+@@ -760,10 +779,10 @@ initialize_relocation_hashtable(unsigned int num_relocations,
+ 	hashtable_size <<= should_double_size;
+ 
+ 	*relocation_hashtable = kmalloc_array(hashtable_size,
+-					      sizeof(*relocation_hashtable),
++					      sizeof(**relocation_hashtable),
+ 					      GFP_KERNEL);
+ 	if (!*relocation_hashtable)
+-		return -ENOMEM;
++		return 0;
+ 
+ 	__hash_init(*relocation_hashtable, hashtable_size);
+ 
+@@ -789,8 +808,8 @@ int apply_relocate_add(Elf_Shdr *sechdrs, const char *strtab,
+ 	hashtable_bits = initialize_relocation_hashtable(num_relocations,
+ 							 &relocation_hashtable);
+ 
+-	if (hashtable_bits < 0)
+-		return hashtable_bits;
++	if (!relocation_hashtable)
++		return -ENOMEM;
+ 
+ 	INIT_LIST_HEAD(&used_buckets_list);
+ 
 
-The irq_enable() function is then implemented as follows:
-
-irq_state_clr_disabled(desc);
-if (desc->irq_data.chip->irq_enable) {
-	desc->irq_data.chip->irq_enable(&desc->irq_data);
-	irq_state_clr_masked(desc);
-} else {
-	unmask_irq(desc);
-}
-
-Because gpio irq_chip implements irq_enable(), unmask_irq() is not 
-executed, and gpio irq_chip's irq_unmask() callback is not called. 
-Instead, irq_state_clr_masked() was called to clear the masked flag.
-
-The irq masked behavior is actually controlled by the 
-irq_mask()/irq_unmask() callback function pairs in gpio irq_chip. When 
-the whole situation occurs, there is one more irq_mask() operation, or 
-one less irq_unmask() operation. This ends the i2c hid resume and the 
-gpio corresponding i2c hid interrupt is also masked.
-
-Please help confirm whether the current situation is a BUG, or suggest 
-other solutions to fix it.
+---
+base-commit: a39b6ac3781d46ba18193c9dbb2110f31e9bffe9
+change-id: 20231213-module_loading_fix-3ac6d4ea8129
+-- 
+- Charlie
 
