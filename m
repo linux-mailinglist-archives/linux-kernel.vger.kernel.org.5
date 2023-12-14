@@ -1,162 +1,80 @@
-Return-Path: <linux-kernel+bounces-24-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-25-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 65C5C813AED
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 20:45:28 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 64FA0813AF0
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 20:45:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1B79B1F2213A
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 19:45:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 971EE1C20FD2
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 19:45:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 690F6697B3;
-	Thu, 14 Dec 2023 19:45:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 438F06A024;
+	Thu, 14 Dec 2023 19:45:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="T5cRHmky"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cfUXXzrP"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ed1-f52.google.com (mail-ed1-f52.google.com [209.85.208.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E23568E83
-	for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 19:45:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
-Received: by mail-ed1-f52.google.com with SMTP id 4fb4d7f45d1cf-551e6b99490so3206249a12.0
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 11:45:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1702583114; x=1703187914; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=MpUjOoTdCqNzayaiwbixMLyZUnTZjhFDCaA6n5v3lDM=;
-        b=T5cRHmkyC1XeP1ByTEbxUxOR7s6Iy7cYdIniNLwsjt7ikJ3h5wWxdHeXZTFssUASur
-         FWgTX9GPLeeaLHOpsnNjVBqqOQsZLLAqAyOHn3RjBFr/+mMTC+Wl7ltvmIE0swwofVRe
-         0gdUzC7arOg7g/Z8a2y3OuKMlk0wNmlIYCX9E=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702583114; x=1703187914;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=MpUjOoTdCqNzayaiwbixMLyZUnTZjhFDCaA6n5v3lDM=;
-        b=E/kiVd1waxCjt2ZIzbi/b3+eSqhYmCauM1rDuxLzEKpy3AMttA/zrTCIZAGwFRTHMG
-         Sp2K8y0aqbk6PmhEisO7if8A32QoiP4m4o/Cm05ImJRtHq2XNrLy73IWLTwM+LPUmUPy
-         pZQ3/h7jQ6lwYAeJ76xcA8l31j+7uLGjfZH0UP9yMdnUFAmfW4B6muDXSVcRhBMHXFwf
-         J/rY1dwUF1pb3hloNCv0QJpwspvYxOfLPHxjtYl0a5tJ4PWmCjBgdXCnudSWRlPCaS4r
-         YOrvi05e/hZzI3dh7VxZzDInEuaEJbkd3ZezCQ4vDCnxnljzjPbpFz6EG3y4FqHVRFLn
-         kW6w==
-X-Gm-Message-State: AOJu0YxziTlTL0OIZx/DhfIZhRQhEHedLb8d0zgtyIMOfW856o0Gy2jP
-	UOQynQ8BKC6DXC8oGJH3pzOzsT/0N0DKp178ola3lw==
-X-Google-Smtp-Source: AGHT+IHUPl4DcGJiZ1YJY8R+8eKD7dHVJwDbVSK2dllBg0lYNv4FwCFhGWJUXJwZ30QKEqC/I+LVnA==
-X-Received: by 2002:a50:ccdb:0:b0:551:d8ea:e67d with SMTP id b27-20020a50ccdb000000b00551d8eae67dmr964179edj.133.1702583114146;
-        Thu, 14 Dec 2023 11:45:14 -0800 (PST)
-Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com. [209.85.218.46])
-        by smtp.gmail.com with ESMTPSA id fe1-20020a056402390100b005527c02c1d6sm776402edb.50.2023.12.14.11.45.12
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 14 Dec 2023 11:45:13 -0800 (PST)
-Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-a1ef2f5ed01so1077026366b.0
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 11:45:12 -0800 (PST)
-X-Received: by 2002:a17:907:3ac2:b0:a19:d40a:d21f with SMTP id
- fi2-20020a1709073ac200b00a19d40ad21fmr2222801ejc.235.1702583112429; Thu, 14
- Dec 2023 11:45:12 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5262B697AF;
+	Thu, 14 Dec 2023 19:45:29 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0D9F9C433C8;
+	Thu, 14 Dec 2023 19:45:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1702583129;
+	bh=lYNWxD8VhKRxBVZogY1MoqzSA2del0XNZc5v4TOfhCU=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=cfUXXzrP8XyHmFUWDcYjKEcMHEUHBERJX61bkW9aGMuHv1oLnEMc1Fj9hQkcqvfaY
+	 PmQBuWLg6aXd/jw3FAtkDub7NjGiH9v0BvMSJpFeE6kXrfxAHZHmT6aWAEf8WhSG+E
+	 16M3WNr9OwXidM/4QubN2ewgpAqQW7dmkKH3FkP2ALkSjozXyMKwuO9oVsCAoKPQ6N
+	 hABCJRvZJ4aepBbtaej76Vd7Y0ubhVlx15KW3ner8Dvp6a5umTojVy7OKh3SuPkjDX
+	 XpgBHTTD5oBsVGs9cj55ncmJ8ek3ogH4efuskHTPEl8b1WGcFDb6BW7R+ofIx3I2xA
+	 5c1QRFNeoVW7w==
+Date: Thu, 14 Dec 2023 19:45:24 +0000
+From: Simon Horman <horms@kernel.org>
+To: Suman Ghosh <sumang@marvell.com>
+Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+	pabeni@redhat.com, sgoutham@marvell.com, sbhatta@marvell.com,
+	jerinj@marvell.com, gakula@marvell.com, hkelam@marvell.com,
+	lcherian@marvell.com, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org, wojciech.drewek@intel.com
+Subject: Re: [net-next PATCH v2] octeontx2-af: Fix multicast/mirror group
+ lock/unlock issue
+Message-ID: <20231214194524.GT5817@kernel.org>
+References: <20231213095349.69895-1-sumang@marvell.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231213211126.24f8c1dd@gandalf.local.home> <20231213214632.15047c40@gandalf.local.home>
- <CAHk-=whESMW2v0cd0Ye+AnV0Hp9j+Mm4BO2xJo93eQcC1xghUA@mail.gmail.com> <20231214115614.2cf5a40e@gandalf.local.home>
-In-Reply-To: <20231214115614.2cf5a40e@gandalf.local.home>
-From: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Thu, 14 Dec 2023 11:44:55 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wjjGEc0f4LLDxCTYvgD98kWqKy=89u=42JLRz5Qs3KKyA@mail.gmail.com>
-Message-ID: <CAHk-=wjjGEc0f4LLDxCTYvgD98kWqKy=89u=42JLRz5Qs3KKyA@mail.gmail.com>
-Subject: Re: [PATCH] ring-buffer: Remove 32bit timestamp logic
-To: Steven Rostedt <rostedt@goodmis.org>
-Cc: "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
-	Linux Trace Kernel <linux-trace-kernel@vger.kernel.org>, Masami Hiramatsu <mhiramat@kernel.org>, 
-	Mark Rutland <mark.rutland@arm.com>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231213095349.69895-1-sumang@marvell.com>
 
-On Thu, 14 Dec 2023 at 08:55, Steven Rostedt <rostedt@goodmis.org> wrote:
->
-> And yes, this does get called in NMI context.
+On Wed, Dec 13, 2023 at 03:23:49PM +0530, Suman Ghosh wrote:
+> As per the existing implementation, there exists a race between finding
+> a multicast/mirror group entry and deleting that entry. The group lock
+> was taken and released independently by rvu_nix_mcast_find_grp_elem()
+> function. Which is incorrect and group lock should be taken during the
+> entire operation of group updation/deletion. This patch fixes the same.
+> 
+> Fixes: 51b2804c19cd ("octeontx2-af: Add new mbox to support multicast/mirror offload")
+> Signed-off-by: Suman Ghosh <sumang@marvell.com>
+> ---
+> Note: This is a follow up of
+> 
+> https://urldefense.proofpoint.com/v2/url?u=https-3A__git.kernel.org_netdev_net-2Dnext_c_51b2804c19cd&d=DwIDaQ&c=nKjWec2b6R0mOyPaz7xtfQ&r=7si3Xn9Ly-Se1a655kvEPIYU0nQ9HPeN280sEUv5ROU&m=NjKPoTkYVlL5Dh4aSr3-dVo-AukiIperlvB0S4_Mqzkyl_VcYAAKrWhkGZE5Cx-p&s=AkBf0454Xm-0adqV0Os7ZE8peaCXtYyuNbCS5kit6Jk&e=
+> 
+> v2 changes:
+> - Addresed review comments from Simon about a missed unlock and re-org the code
+>   with some goto labels.
 
-Not on an i486-class machine they won't. You don't have a local apic
-on those, and they won't have any NMI sources under our control (ie
-NMI does exist, but we're talking purely legacy NMI for "motherboard
-problems" like RAM parity errors etc)
+Thanks Suman,
 
-> I had a patch that added:
->
-> +       /* ring buffer does cmpxchg, make sure it is safe in NMI context */
-> +       if (!IS_ENABLED(CONFIG_ARCH_HAVE_NMI_SAFE_CMPXCHG) &&
-> +           (unlikely(in_nmi()))) {
-> +               return NULL;
-> +       }
+this one looks good to me.
 
-CONFIG_ARCH_HAVE_NMI_SAFE_CMPXCHG doesn't work on x86 in this context,
-because the issue is that yes, there's a safe 'cmpxchg', but that's
-not what you want.
-
-You want the save cmpxchg64, which is an entirely different beast.
-
-And honestly, I don't think that NMI_SAFE_CMPXCHG covers the
-double-word case anywhere else either, except purely by luck.
-
-In mm/slab.c, we also use a double-wide cmpxchg, and there the rule
-has literally been that it's conditional on
-
- (a) system_has_cmpxchg64() existing as a macro
-
- (b) using that macro to then gate - at runtime - whether it actually
-works or not
-
-I think - but didn't check - that we essentially only enable the
-two-word case on x86 as a result, and fall back to the slow case on
-all other architectures - and on the i486 case.
-
-That said, other architectures *do* have a working double-word
-cmpxchg, but I wouldn't guarantee it. For example, 32-bit arm does
-have one using ldrexd/strexd, but that only exists on arm v6+.
-
-And guess what? You'll silently get a "disable interrupts, do it as a
-non-atomic load-store" on arm too for that case. And again, pre-v6 arm
-is about as relevant as i486 is, but my point is, that double-word
-cmpxchg you rely on simply DOES NOT EXIST on 32-bit platforms except
-under special circumstances.
-
-So this isn't a "x86 is the odd man out". This is literally generic.
-
-> Now back to my original question. Are you OK with me sending this to you
-> now, or should I send you just the subtle fixes to the 32-bit rb_time_*
-> code and keep this patch for the merge window?
-
-I'm absolutely not taking some untested random "let's do 64-bit
-cmpxchg that we know is broken on 32-bit using broken conditionals"
-shit.
-
-What *would* work is that slab approach, which is essentially
-
-  #ifndef system_has_cmpxchg64
-      #define system_has_cmpxchg64() false
-  #endif
-
-        ...
-        if (!system_has_cmpxchg64())
-                return error or slow case
-
-        do_64bit_cmpxchg_case();
-
-(although the slub case is much more indirect, and uses a
-__CMPXCHG_DOUBLE flag that only gets set when that define exists etc).
-
-But that would literally cut off support for all non-x86 32-bit architectures.
-
-So no. You need to forget about the whole "do a 64-bit cmpxchg on
-32-bit architectures" as being some kind of solution in the short
-term.
-
-               Linus
+Reviewed-by: Simon Horman <horms@kernel.org>
 
