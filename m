@@ -2,133 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BB6D7812D1B
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 11:36:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6238F812CFA
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 11:34:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1443681AbjLNKf5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 05:35:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49538 "EHLO
+        id S1443646AbjLNKeA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 05:34:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54030 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1443669AbjLNKfs (ORCPT
+        with ESMTP id S1443599AbjLNKd7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 05:35:48 -0500
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 278BD138;
-        Thu, 14 Dec 2023 02:35:54 -0800 (PST)
-Received: by mail-wr1-x435.google.com with SMTP id ffacd0b85a97d-33621d443a7so4223002f8f.3;
-        Thu, 14 Dec 2023 02:35:54 -0800 (PST)
+        Thu, 14 Dec 2023 05:33:59 -0500
+Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 985D5BD
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 02:34:04 -0800 (PST)
+Received: by mail-lj1-x22f.google.com with SMTP id 38308e7fff4ca-2c9f84533beso91049231fa.1
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 02:34:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702550152; x=1703154952; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1702550043; x=1703154843; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=/bSH5LSThTrH8jKZ5V0W7uU2b3lxsQ8a/FvDmGfwzlA=;
-        b=DfwPS7L06Jc+pulUiwgpRofSxbwTOshNLSMK1u1CQ6vNuzaDyX4Dv+Zeav1x1y8LC4
-         hEW+dghmdMkpWneT83aOBK8UAxA97xhl6Cneb6pj35q9gNlcWsQdfb21aXnPb9TZ6LMo
-         J/7zKE44LmjY7Kz0eUUaQ08orOjNd5L5UZxB58kVbwkUO45D1S8nuKSzOnDC2rApRVTH
-         3jb+C6V5k7gxtuQ5fytlZdoEXCAoW3qU+lz5qFLTX4T2pYeBhOAhKbJ56aJF4TftvLmO
-         wbZu8uBISlpkTkw8vPA8v6AVGtXM3etLx/GOXOjzP+3jTwUxYpg+qrdk5NI3DSYDuhlu
-         18Xg==
+        bh=jieZx/AXpom3bErHLcK60JjhYab1bb2+SJHB9cQU37w=;
+        b=vOzLXNTZeaAVx/u1DxhVJIKhoywGnideSjpCb8AJ9Tk8d47wVT9s1+P0gGYRCrcDvZ
+         iY9UGOVNmO9fo50EFud+ZVO+CHwb4DJDUDdqKqkdjTtPWq2BXfpLA+eiEWNy+eQ5j7oY
+         OEKiIkjYXHVWs3BLgqcfm03RZh1d722cr4wFBa5vyWs8CHmzmgpjatodsMtWKV7qqgqM
+         cB+Y7PD7F2CdLPyYl36zfCpYPV3qVGPCx6dHEb68hzUCMDrXqLoOtVpkS0dMDh7GE7qU
+         rST47BIJYxqKCB8XWsGDl4PW/udY6BEDA4zd1FScuTtsjJ3Trndw7xAgxYJ/B8DAkhhP
+         d96w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702550152; x=1703154952;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1702550043; x=1703154843;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=/bSH5LSThTrH8jKZ5V0W7uU2b3lxsQ8a/FvDmGfwzlA=;
-        b=R7lVjrh/D6w9aTN0Yi/Wm2ZVSLy8hQv3maofl63MeD+ySqYAbWg0PB2oWTUkuJo3Cj
-         AkKAMpqtrkH9Z5UIyh/aE0HnRQzGkdyHIPbDPUKB6y+SWqUSVU2d1hNqUZYtD1hrxh4z
-         YlV+Sq6X9gLlJ2KywR+rXyPug+lwBi+qRfL8iktK/E+q64yCTESO8IA+OsAkP83hO140
-         KDOzLR31gQG35pVQenWVCl9WLXv0VyM8dhqVFkSdUIzyMyV28AHOJdSbb7mEZFnpioy0
-         mXDjEUCGuODK//aT1zQo12GB+7/w4p3bFJX7OB3gGhryeDzsQDi5t+ZTsedNypyaJHZn
-         mTqQ==
-X-Gm-Message-State: AOJu0YxXcAjKZbcZ+xvljAt6T26I82AwBUNUW+LBQRU1vc7zjzEHa933
-        SuSZxuGhH0N3bQV3xZ9crBU=
-X-Google-Smtp-Source: AGHT+IEbki3k5FnEaNVZtWRBuhOkVOwOnKsRmJW5T9tQx+eZlX6USeTgoCxh9UtIGcxFBYXudVg1vw==
-X-Received: by 2002:a5d:4bd2:0:b0:333:4940:dd1a with SMTP id l18-20020a5d4bd2000000b003334940dd1amr4977407wrt.23.1702550152438;
-        Thu, 14 Dec 2023 02:35:52 -0800 (PST)
-Received: from localhost.localdomain ([129.0.226.240])
-        by smtp.gmail.com with ESMTPSA id e4-20020a5d65c4000000b003333ed23356sm15849623wrw.4.2023.12.14.02.35.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Dec 2023 02:35:51 -0800 (PST)
-From:   Brandon Cheo Fusi <fusibrandon13@gmail.com>
-To:     Rob Herring <robh+dt@kernel.org>,
+        bh=jieZx/AXpom3bErHLcK60JjhYab1bb2+SJHB9cQU37w=;
+        b=iTa/JJV0HRwaVZciFBMXBnMoaMXoKDVKe3h+tmsvAJRK75/bsfjfktjQxbuRnotqRX
+         qUyRB0ymADeWuzDcDogP2qLkIdlG4YCFbkYUYlUqWdeiIsANbbzZ8qRNonZdCVwUT5KT
+         YmRmZzuumqpU/b61AVlsc0V6GTO4fBuyeHcSRaJnHLtqyGj3l766MwFkVAGZ4Koj8N4q
+         Un1jU2W5oH8U5zuXzFWltR7TjBwKtB+gqCuKASNpS+pmhhiDn5fAAgi5miV9QRdKYGEs
+         AK0mTzlkQSDjiFKVtNESKSxkn5MwvDBcPzMjymzlfBAh1NCsIm6q0T5lphIRvATGoV+x
+         Mi6g==
+X-Gm-Message-State: AOJu0YymvArLO0VN7l5HPNrksJabmrhmgMIyrY7zo8ttYRafC9Q2ghv7
+        PeZkn0o5whmeVflu+jD6ols5+ZkKPv5WYRLKM0RfYQ==
+X-Google-Smtp-Source: AGHT+IGiCCuSzmWXtjRYspFENqemA9tUv5tkpUhhLZW/fT4cD2bNWTAw8cgvaZtoOoaF+rucv/6DBQ/IapB+6khDuBI=
+X-Received: by 2002:a2e:9d93:0:b0:2cc:42ac:1d52 with SMTP id
+ c19-20020a2e9d93000000b002cc42ac1d52mr440015ljj.45.1702550042860; Thu, 14 Dec
+ 2023 02:34:02 -0800 (PST)
+MIME-Version: 1.0
+References: <20231213-ad7380-mainline-v2-0-cd32150d84a3@baylibre.com>
+ <20231213-ad7380-mainline-v2-3-cd32150d84a3@baylibre.com> <20231214101415.0000060c@Huawei.com>
+In-Reply-To: <20231214101415.0000060c@Huawei.com>
+From:   David Lechner <dlechner@baylibre.com>
+Date:   Thu, 14 Dec 2023 11:33:51 +0100
+Message-ID: <CAMknhBF9GtbOP_M2q8DrrMOePFOaQzGxqcS2P8OHjtGN-Z27Vg@mail.gmail.com>
+Subject: Re: [PATCH v2 3/3] iio: adc: ad7380: new driver for AD7380 ADCs
+To:     Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Cc:     linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
+        Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
         Conor Dooley <conor+dt@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Samuel Holland <samuel@sholland.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Yangtao Li <tiny.windzz@gmail.com>
-Cc:     devicetree@vger.kernel.org, linux-riscv@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
-        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        Brandon Cheo Fusi <fusibrandon13@gmail.com>
-Subject: [PATCH 5/5] cpufreq: Make sun50i h6 cpufreq Kconfig option generic
-Date:   Thu, 14 Dec 2023 11:33:42 +0100
-Message-Id: <20231214103342.30775-6-fusibrandon13@gmail.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20231214103342.30775-1-fusibrandon13@gmail.com>
-References: <20231214103342.30775-1-fusibrandon13@gmail.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Jonathan Cameron <jic23@kernel.org>,
+        Michael Hennerich <michael.hennerich@analog.com>,
+        =?UTF-8?B?TnVubyBTw6E=?= <nuno.sa@analog.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org,
+        Stefan Popa <stefan.popa@analog.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove the 'ARM_' prefix from the Allwinner SUN50I cpufreq driver
-Kconfig.arm option as that driver can support the D1, a RISC-V
-chip.
+On Thu, Dec 14, 2023 at 11:14=E2=80=AFAM Jonathan Cameron
+<Jonathan.Cameron@huawei.com> wrote:
+>
+> On Wed, 13 Dec 2023 05:21:20 -0600
+> David Lechner <dlechner@baylibre.com> wrote:
+>
+> > This adds a new driver for the AD7380 family ADCs.
+> >
+> > The driver currently implements basic support for the AD7380, AD7381,
+> > AD7383, and AD7384 2-channel differential ADCs. Support for additional
+> > single-ended and 4-channel chips that use the same register map as well
+> > as additional features of the chip will be added in future patches.
+> >
+> > Co-developed-by: Stefan Popa <stefan.popa@analog.com>
+> > Signed-off-by: Stefan Popa <stefan.popa@analog.com>
+> > Signed-off-by: David Lechner <dlechner@baylibre.com>
+>
+> Just one additional comment.  I 'might' sort both this an Nuno's comment
+> if Mark is fine with the SPI and no on else has review comments.
+> Feel free to send a v3 though if you like ;)
+>
+>
+> > +/* fully differential */
+> > +DEFINE_AD7380_DIFFERENTIAL_2_CHANNEL(ad7380_channels, 16);
+> > +DEFINE_AD7380_DIFFERENTIAL_2_CHANNEL(ad7381_channels, 14);
+> > +/* pseudo differential */
+> > +DEFINE_AD7380_DIFFERENTIAL_2_CHANNEL(ad7383_channels, 16);
+> > +DEFINE_AD7380_DIFFERENTIAL_2_CHANNEL(ad7384_channels, 14);
+> > +
+> > +/* Since this is simultaneous sampling, we don't allow individual chan=
+nels. */
+> > +static const unsigned long ad7380_2_channel_scan_masks[] =3D {
+> > +     GENMASK(2, 0), /* both ADC channels and soft timestamp */
+> > +     GENMASK(1, 0), /* both ADC channels, no timestamp */
+>
+> https://elixir.bootlin.com/linux/v6.7-rc5/source/include/linux/iio/iio.h#=
+L567
+> See the comment (added recently!)
 
-Signed-off-by: Brandon Cheo Fusi <fusibrandon13@gmail.com>
----
- drivers/cpufreq/Kconfig.arm | 4 ++--
- drivers/cpufreq/Makefile    | 2 +-
- 2 files changed, 3 insertions(+), 3 deletions(-)
+I did see this comment but this is already sorted in order of
+preference, so I'm not sure why you are calling it out. Just FYI, I
+guess?
 
-diff --git a/drivers/cpufreq/Kconfig.arm b/drivers/cpufreq/Kconfig.arm
-index f91160689..510604781 100644
---- a/drivers/cpufreq/Kconfig.arm
-+++ b/drivers/cpufreq/Kconfig.arm
-@@ -29,14 +29,14 @@ config ACPI_CPPC_CPUFREQ_FIE
- 
- 	  If in doubt, say N.
- 
--config ARM_ALLWINNER_SUN50I_CPUFREQ_NVMEM
-+config ALLWINNER_SUN50I_CPUFREQ_NVMEM
- 	tristate "Allwinner nvmem based SUN50I CPUFreq driver"
- 	depends on ARCH_SUNXI
- 	depends on NVMEM_SUNXI_SID
- 	select PM_OPP
- 	help
- 	  This adds the nvmem based CPUFreq driver for Allwinner
--	  h6 SoC.
-+	  H6/D1 SoCs.
- 
- 	  To compile this driver as a module, choose M here: the
- 	  module will be called sun50i-cpufreq-nvmem.
-diff --git a/drivers/cpufreq/Makefile b/drivers/cpufreq/Makefile
-index 8d141c71b..110b676d2 100644
---- a/drivers/cpufreq/Makefile
-+++ b/drivers/cpufreq/Makefile
-@@ -78,7 +78,7 @@ obj-$(CONFIG_ARM_SCMI_CPUFREQ)		+= scmi-cpufreq.o
- obj-$(CONFIG_ARM_SCPI_CPUFREQ)		+= scpi-cpufreq.o
- obj-$(CONFIG_ARM_SPEAR_CPUFREQ)		+= spear-cpufreq.o
- obj-$(CONFIG_ARM_STI_CPUFREQ)		+= sti-cpufreq.o
--obj-$(CONFIG_ARM_ALLWINNER_SUN50I_CPUFREQ_NVMEM) += sun50i-cpufreq-nvmem.o
-+obj-$(CONFIG_ALLWINNER_SUN50I_CPUFREQ_NVMEM) += sun50i-cpufreq-nvmem.o
- obj-$(CONFIG_ARM_TEGRA20_CPUFREQ)	+= tegra20-cpufreq.o
- obj-$(CONFIG_ARM_TEGRA124_CPUFREQ)	+= tegra124-cpufreq.o
- obj-$(CONFIG_ARM_TEGRA186_CPUFREQ)	+= tegra186-cpufreq.o
--- 
-2.30.2
+>
+> Also, if I remember how this works correctly there is no need to include
+> the timestamp in the mask.  We do special handling for it to avoid having=
+ to double
+> the number of provided masks.  The details being that it uses
+> iio_scan_el_ts_store rather than iio_scan_el_Store.
 
+Indeed. I've been working ahead on adding more features and noticed
+this. So we will need to find a way to say that we the timestamp
+should not be allowed under certain conditions. But that will be a
+discussion for a later series.
+
+>
+> So as you have it I think you'll always end up with the first entry
+> and that will include a bonus bit that isn't a problem as it will match
+> anyway.
+>
+> So just have the second entry and 0.
+>
+> Jonathan
+>
+> > +     0
+> > +};
