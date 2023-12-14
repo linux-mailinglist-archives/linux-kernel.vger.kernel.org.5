@@ -2,73 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 837A6812967
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 08:33:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A21DF812969
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 08:33:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1443341AbjLNHdb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 02:33:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40084 "EHLO
+        id S1443357AbjLNHdn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 02:33:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48184 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235552AbjLNHdR (ORCPT
+        with ESMTP id S235608AbjLNHdV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 02:33:17 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBF3F12B;
-        Wed, 13 Dec 2023 23:32:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1702539171; x=1734075171;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=yRBCGMjJPeNLdde6gmkCVoQ50q7qAYUMozdOeoIWt4c=;
-  b=E7EgaJkR3Zuaw1U8Cy1Em7AUYaEgWRj6QOKc/eY3j23HaSlpaOzEoWTn
-   lIQnW98G7nuQb6lNmmB11vmrRDGS6wgcnYeQ9nyCN3lVQT8MUteBmz8gu
-   q52Ia/VW4MrjbzeRz+4hk2a7uBPq+Af1edXHpvU3mMrq9Yv5ik2EukpnN
-   4cf3N3vwkm0SA4Kw76eOCIGYFxf45c40Cumoav5IIZY71yy1UNpT60EyO
-   eO2HhOsEYQeFA6AmIZsPrQnWEnJJbk+gP31gpi70/Afe4uY8GwleGybjj
-   4dxow4bUerOWhoiIA9h9d7Gdsz9uQ1ZmRcYgWBO32muZ+ouRRszME/nid
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10923"; a="393953226"
-X-IronPort-AV: E=Sophos;i="6.04,274,1695711600"; 
-   d="scan'208";a="393953226"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Dec 2023 23:32:47 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10923"; a="723970969"
-X-IronPort-AV: E=Sophos;i="6.04,274,1695711600"; 
-   d="scan'208";a="723970969"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by orsmga003.jf.intel.com with ESMTP; 13 Dec 2023 23:32:44 -0800
-Received: by black.fi.intel.com (Postfix, from userid 1001)
-        id 133853AE; Thu, 14 Dec 2023 09:32:42 +0200 (EET)
-Date:   Thu, 14 Dec 2023 09:32:42 +0200
-From:   Mika Westerberg <mika.westerberg@linux.intel.com>
-To:     Sanath S <sanaths2@amd.com>
-Cc:     Sanath S <Sanath.S@amd.com>, mario.limonciello@amd.com,
-        andreas.noever@gmail.com, michael.jamet@intel.com,
-        YehezkelShB@gmail.com, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [Patch v2 2/2] thunderbolt: Teardown tunnels and reset
- downstream ports created by boot firmware
-Message-ID: <20231214073242.GT1074920@black.fi.intel.com>
-References: <20231212191635.2022520-1-Sanath.S@amd.com>
- <20231212191635.2022520-3-Sanath.S@amd.com>
- <20231213054914.GI1074920@black.fi.intel.com>
- <20231213061805.GK1074920@black.fi.intel.com>
- <20231213062306.GL1074920@black.fi.intel.com>
- <adcc6446-8c30-a258-e19b-76fca2c50d21@amd.com>
- <20231213115256.GM1074920@black.fi.intel.com>
- <f673ffc8-f6f8-4898-d809-effb2c24e53e@amd.com>
- <20231214070746.GS1074920@black.fi.intel.com>
- <32163f49-8387-0754-534f-1764e731f26d@amd.com>
+        Thu, 14 Dec 2023 02:33:21 -0500
+Received: from mail-qt1-x830.google.com (mail-qt1-x830.google.com [IPv6:2607:f8b0:4864:20::830])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 035CC18A
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 23:33:13 -0800 (PST)
+Received: by mail-qt1-x830.google.com with SMTP id d75a77b69052e-42594f0ca09so39290371cf.0
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 23:33:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1702539193; x=1703143993; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=pD0FCZ0EPDMJ3nRws8kwPInwEm37ac/pfVSgH1LgqOo=;
+        b=HfZql0JFFRIuMDVLQYZYiEk9ZD+uJDiooV8ThOXjd6AkH1CY8ucjYWEZfF1+Thg9Fp
+         zt/NnYFJ9AuD8+LCYlYw8h99Tyi6DH7mxiqKgns5gtGkYXHFn5S8MPgd6XnhMc0s8+Rt
+         qpNuQYt8p1jeb0lED3Q171p6pU7cV6Kn6QSm6xUpfmVAlc8/a1p/w2X+UT+itrtLtRr3
+         RGF1AiNBourVQlC0WHG+ebZuVu0yVxePzn+z2p3dAFvKaBFGdcycFW3pdnsjfdb4qxfd
+         Yej6RFNbsUFG2xw/s4KIdXt1ZOchjeBX8QTPRxA6DzEK53+eb55rUuJxQn1p9C/CX83Q
+         wE/A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702539193; x=1703143993;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=pD0FCZ0EPDMJ3nRws8kwPInwEm37ac/pfVSgH1LgqOo=;
+        b=RZDlJKDrV6/i2id/4+GlN3b/3oP5FXR2UTGf4QMGDf3TCOQZ6PKd9+/tB4tekE/dXu
+         /AESIATIQPWdn4cDq7hNG+/zlz0sSKCGB8jJHil6jSj6Z9kN5STq5dcZzMPhZyboHgUZ
+         ZKbdeORr+76Ckg+9dptOjgQNqjUTpjFEa2ITofwaAIKUzKUe3AwwWEylvjyo2x/KjUkr
+         cu4Iwoof4y+4iP32qUa4P4PldBrKXT3WBRiH4WtnzT2W9gGsuV4hV+qZqHvcbU80Hsct
+         +MBbgyDHlEd2MLHomn59f/7Ajsz1p/vANNVCDRfFEu9+7bLBhqnkzp4Oc1xeDpHlb1b2
+         yIHw==
+X-Gm-Message-State: AOJu0YzdYMfhw4avLGCGSnsZqP/OFKU972813s2LlDbSBqZGC2tGXP0G
+        vYAfXwfVp96FULwpKMGkEj5w
+X-Google-Smtp-Source: AGHT+IGgp/3lSkFQD6Hrz7dtYYIJdq0NZpJ96MNKXxBvC74rabqBEsD01nmLhWNc+9oyvzOqj8iQbg==
+X-Received: by 2002:ac8:7d50:0:b0:425:4043:8d2a with SMTP id h16-20020ac87d50000000b0042540438d2amr9146338qtb.69.1702539193114;
+        Wed, 13 Dec 2023 23:33:13 -0800 (PST)
+Received: from thinkpad ([117.213.102.12])
+        by smtp.gmail.com with ESMTPSA id eh9-20020a05622a578900b00425d18d50e8sm2842852qtb.30.2023.12.13.23.33.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Dec 2023 23:33:12 -0800 (PST)
+Date:   Thu, 14 Dec 2023 13:03:03 +0530
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     Nitin Rawat <quic_nitirawa@quicinc.com>
+Cc:     martin.petersen@oracle.com, jejb@linux.ibm.com,
+        andersson@kernel.org, konrad.dybcio@linaro.org,
+        linux-arm-msm@vger.kernel.org, linux-scsi@vger.kernel.org,
+        linux-kernel@vger.kernel.org, quic_cang@quicinc.com,
+        ahalaney@redhat.com
+Subject: Re: [PATCH v2 05/17] scsi: ufs: qcom: Remove the warning message
+ when core_reset is not available
+Message-ID: <20231214073303.GH2938@thinkpad>
+References: <20231208065902.11006-1-manivannan.sadhasivam@linaro.org>
+ <20231208065902.11006-6-manivannan.sadhasivam@linaro.org>
+ <7472fe73-e7a0-5c8c-6e85-655db028a5c3@quicinc.com>
+ <20231208102832.GA3008@thinkpad>
+ <190651ad-6aeb-69eb-89c5-ed18221b5a7a@quicinc.com>
+ <54e882ba-4758-1283-1a52-1f12201e1836@quicinc.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <32163f49-8387-0754-534f-1764e731f26d@amd.com>
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+In-Reply-To: <54e882ba-4758-1283-1a52-1f12201e1836@quicinc.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -76,133 +82,110 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 14, 2023 at 12:50:21PM +0530, Sanath S wrote:
+On Thu, Dec 14, 2023 at 12:43:02PM +0530, Nitin Rawat wrote:
 > 
-> On 12/14/2023 12:37 PM, Mika Westerberg wrote:
-> > On Thu, Dec 14, 2023 at 12:08:34PM +0530, Sanath S wrote:
-> > > On 12/13/2023 5:22 PM, Mika Westerberg wrote:
-> > > > On Wed, Dec 13, 2023 at 04:04:57PM +0530, Sanath S wrote:
-> > > > > On 12/13/2023 11:53 AM, Mika Westerberg wrote:
-> > > > > > On Wed, Dec 13, 2023 at 08:18:06AM +0200, Mika Westerberg wrote:
-> > > > > > > On Wed, Dec 13, 2023 at 07:49:14AM +0200, Mika Westerberg wrote:
-> > > > > > > > On Wed, Dec 13, 2023 at 12:46:35AM +0530, Sanath S wrote:
-> > > > > > > > > Boot firmware might have created tunnels of its own. Since we cannot
-> > > > > > > > > be sure they are usable for us. Tear them down and reset the ports
-> > > > > > > > > to handle it as a new hotplug for USB3 routers.
-> > > > > > > > > 
-> > > > > > > > > Suggested-by: Mario Limonciello <mario.limonciello@amd.com>
-> > > > > > > > > Signed-off-by: Sanath S <Sanath.S@amd.com>
-> > > > > > > > > ---
-> > > > > > > > >     drivers/thunderbolt/tb.c | 11 +++++++++++
-> > > > > > > > >     1 file changed, 11 insertions(+)
-> > > > > > > > > 
-> > > > > > > > > diff --git a/drivers/thunderbolt/tb.c b/drivers/thunderbolt/tb.c
-> > > > > > > > > index fd49f86e0353..febd0b6972e3 100644
-> > > > > > > > > --- a/drivers/thunderbolt/tb.c
-> > > > > > > > > +++ b/drivers/thunderbolt/tb.c
-> > > > > > > > > @@ -2598,6 +2598,17 @@ static int tb_start(struct tb *tb)
-> > > > > > > > >     	tb_switch_tmu_enable(tb->root_switch);
-> > > > > > > > >     	/* Full scan to discover devices added before the driver was loaded. */
-> > > > > > > > >     	tb_scan_switch(tb->root_switch);
-> > > > > > > > > +	/*
-> > > > > > > > > +	 * Boot firmware might have created tunnels of its own. Since we cannot
-> > > > > > > > > +	 * be sure they are usable for us, Tear them down and reset the ports
-> > > > > > > > > +	 * to handle it as new hotplug for USB4 routers.
-> > > > > > > > > +	 */
-> > > > > > > > > +	if (tb_switch_is_usb4(tb->root_switch)) {
-> > > > > > > > > +		tb_switch_discover_tunnels(tb->root_switch,
-> > > > > > > > > +					   &tcm->tunnel_list, false);
-> > > > > > > > Why this is needed?
-> > > > > > > > 
-> > > > > > > > It should be enough, to do simply something like this:
-> > > > > > > > 
-> > > > > > > > 	if (tb_switch_is_usb4(tb->root_switch))
-> > > > > > > > 		tb_switch_reset(tb->root_switch);
-> > > > > If we don't tear down of tunnels before performing the DPR, the PCIe
-> > > > > enumeration is failing.
-> > > > > 
-> > > > > PCIe link is not coming up after DPR. Below log is missing without
-> > > > > performing path
-> > > > > deactivation before performing DPR and hence PCIe enumeration is not
-> > > > > initiated.
-> > > > > 
-> > > > > [  746.630865] pcieport 0000:00:03.1: pciehp: Slot(0-1): Card present
-> > > > > [  746.630885] pcieport 0000:00:03.1: pciehp: Slot(0-1): Link Up
-> > > > > 
-> > > > > I think when we do a DPR, it internally does some handling with PCI Path
-> > > > > Enable bit(PE).
-> > > > > So, deactivation of PCIe path is necessary for DPR to work.
-> > > > Rigth, it should be enough to reset the protocol adapter config and path
-> > > > config spaces. I guess using discovery at this point is fine too but I
-> > > > would at least check how complex doing the minimal "reset" turns out.
+> 
+> On 12/8/2023 6:59 PM, Nitin Rawat wrote:
+> > 
+> > 
+> > On 12/8/2023 3:58 PM, Manivannan Sadhasivam wrote:
+> > > On Fri, Dec 08, 2023 at 02:55:21PM +0530, Nitin Rawat wrote:
 > > > > 
-> > > > I mean in tb_switch_reset() for USB4 v1 routers it can go over all the
-> > > > adapters and perform "cleanup" or so.
-> > > I gave it a thought yesterday and we can do something like this:
+> > > > 
+> > > > On 12/8/2023 12:28 PM, Manivannan Sadhasivam wrote:
+> > > > > core_reset is optional, so there is no need to warn the user
+> > > > > if it is not
+> > > > > available.
+> > > > > 
+> > > > > Reviewed-by: Andrew Halaney <ahalaney@redhat.com>
+> > > > > Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> > > > > ---
+> > > > >    drivers/ufs/host/ufs-qcom.c | 4 +---
+> > > > >    1 file changed, 1 insertion(+), 3 deletions(-)
+> > > > > 
+> > > > > diff --git a/drivers/ufs/host/ufs-qcom.c b/drivers/ufs/host/ufs-qcom.c
+> > > > > index dc93b1c5ca74..d474de0739e4 100644
+> > > > > --- a/drivers/ufs/host/ufs-qcom.c
+> > > > > +++ b/drivers/ufs/host/ufs-qcom.c
+> > > > > @@ -296,10 +296,8 @@ static int ufs_qcom_host_reset(struct
+> > > > > ufs_hba *hba)
+> > > > >        struct ufs_qcom_host *host = ufshcd_get_variant(hba);
+> > > > >        bool reenable_intr;
+> > > > > -    if (!host->core_reset) {
+> > > > > -        dev_warn(hba->dev, "%s: reset control not set\n", __func__);
+> > > > > +    if (!host->core_reset)
+> > > > >            return 0;
+> > > > > -    }
+> > > > >        reenable_intr = hba->is_irq_enabled;
+> > > > >        disable_irq(hba->irq);
+> > > > 
+> > > > 
+> > > > Hi Mani,
+> > > > 
+> > > > I think core reset is not frequent. It happen during only probe ,error
+> > > > handler.
+> > > > 
+> > > > core reset is needed in kernel to cleanup UFS phy and controller
+> > > > configuration before UFS HLOS operation starts as per HPG.
+> > > > 
 > > > 
-> > > We are already doing tb_discovery(tb) in tb_start. This would
-> > > discover the path configuration done by Boot firmware.
+> > > This sounds like core reset is not an optional property but a
+> > > required one. I
+> > > just checked the upstream DT files for all SoCs, and looks like
+> > > pretty much all
+> > > of them support core reset.
 > > > 
-> > > Now, we can place the tb_switch_reset() right below that api with
-> > > conditions suggested by you.
+> > > Only MSM8996 doesn't have the reset property, but the reset is
+> > > available in GCC.
+> > > So we should be able to use it in dtsi.
 > > > 
-> > > And tb_switch_reset() would internally DPR for all down steam ports.
+> > > I also skimmed through the HPG and looks like core reset is not
+> > > optional. Please
+> > > confirm.
 > > > 
-> > > It can look something like below:
-> > > 
-> > >      /* Find out tunnels created by the boot firmware */
-> > >          tb_discover_tunnels(tb);
-> > >      /*
-> > >       * Reset USB4 v1 host router to get rid of possible tunnels the
-> > >       * boot firmware created. This makes sure all the tunnels are
-> > >       * created by us and thus have known configuration.
-> > >       *
-> > >       * For USB4 v2 and beyond we do this in nhi_reset() using the
-> > >       * host router reset interface.
-> > >       */
-> > >      if (host_reset && usb4_switch_version(tb->root_switch) == 1)
-> > >          tb_switch_reset(tb->root_switch);
-> > > 
-> > > With this, we are making sure while we get a unplug event after doing a DPR,
-> > > We are clearing all the paths established by Boot firmware. This wouldn't be
-> > > possible
-> > > if we had not discovered the paths before we perform DPR.
-> > > 
-> > > It would create inconsistency for a new hot plug if we have not cleared the
-> > > path configurations
-> > > of previous hot unplug events.
-> > Right. I would still check if doing protocol adapter "reset" + path
-> > config space clear in tb_switch_reset() is enough and how complex that
-> > ends up to be. I think that's all what is needed.
+> > > - Mani
 > > 
-> > If it turns out too complex, yes I guess something like this:
 > > 
-> > 	/* Find out tunnels created by the boot firmware */
-> > 	tb_discover_tunnels(tb);
-> > 	/* Add DP resources from the DP tunnels created by the boot firmware */
-> > 	tb_discover_dp_resources(tb);
+> > Hi Mani,
 > > 
-> > 	if (host_reset && usb4_switch_version(tb->root_switch) == 1) {
-> > 		struct tb_tunnel *n, *tunnel;
+> > Yes Core_reset is part of HPG sequence and is needed.
 > > 
-> > 		list_for_each_entry_safe(tunnel, n, &tcm->tunnel_list, list)
-> > 			tb_deactivate_and_free_tunnel(tunnel);
-> > 
-> > 		tb_switch_reset(tb->root_switch);
-> > 	}
-> > 
-> > With proper comments would work, no?
-> Yes, this works. Tested it too and works fine.
+> > Regards,
+> > Nitin
+> 
+> 
+> Hi Mani,
+> 
+> I see this patch series is merged . So planning to keep the warn message
+> based on above discussion.
+> 
 
-Cool.
+No, you should not add that warning back. As per our discussion, we concluded
+that core_reset is not optional, so devm_reset_control_get_exclusive() should be
+used to acquire the reset.
 
-> Probably we can move tb_deactivate_and_free_tunnel() inside
-> tb_switch_reset() to make it
-> look better.
+If the reset property is not present in DT, then ufs_qcom_init() will fail. This
+also means that we should fix the binding and DT of SoCs missing the reset
+property.
 
-Unfortunately that's not possible because tb_switch_reset() lives in
-switch.s (and should live there) and tb_deactivate_and_free_tunnel() is
-part of tb.c (as should be). This is actually why I would like to try
-the "reset" protocol adapters + their path config spaces in
-tb_switch_reset() as then that would work with any router and does not
-need to have any knowledge about tunnels or tb.c internals.
+- Mani
+
+> Regards,
+> Nitin
+> > 
+> > 
+> > > 
+> > > > Having existing warn print can be used to to debug or atleast know
+> > > > core_reset is missed in device tree to give indication complete
+> > > > reset hasn't
+> > > > been done and we could still be operating in bootloader configuration.
+> > > > 
+> > > > 
+> > > > Regards,
+> > > > Nitin
+> > > > 
+> > > 
+> > 
+
+-- 
+மணிவண்ணன் சதாசிவம்
