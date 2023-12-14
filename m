@@ -2,422 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 33F93812BB8
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 10:30:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A7F6A812BBB
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 10:31:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1443313AbjLNJaJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 04:30:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51048 "EHLO
+        id S1443379AbjLNJbZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 04:31:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35670 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229633AbjLNJaG (ORCPT
+        with ESMTP id S229633AbjLNJbX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 04:30:06 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDD1F98
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 01:30:09 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5DBDEC433C8;
-        Thu, 14 Dec 2023 09:30:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1702546209;
-        bh=ipo+ZdgujIuYUNihC0cAJv7i7yV0o4BGfDbEHQMMYM4=;
-        h=From:To:Cc:Subject:Date:From;
-        b=M84UR9JobmlophVsPTfrhPKg3/gcYQfTFyxp07mocaf/j28m6UthKUTrv2cf9H6A0
-         rScnPB++JgVb8gnF4G27phjNa5Il2LSsCUl1adEtj94aPWTyevlk4eRVFTDVG1L+VM
-         IHK52kH7/AV8+HMV6+Wr1xMaQFnCF4xqJAWmIbv6wK32gBJYax/XY1hwVrtnwCFviz
-         Y6hKF21oMOXjxYKO/Ld+2vNEfNe5cIOQrDLupcNgvLAku6TXst3IqgdC3DU3FYhp9r
-         bkF7AZH0AVO441pfyrIvEAqQS/Ye0AvwpXD8g1c0qEQ38LBsnQGTpbWSG9Kd8iR+y2
-         //HXbAt2UhrqA==
-From:   Miguel Ojeda <ojeda@kernel.org>
-To:     Miguel Ojeda <ojeda@kernel.org>,
-        Wedson Almeida Filho <wedsonaf@gmail.com>,
-        Alex Gaynor <alex.gaynor@gmail.com>
-Cc:     Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
-        =?UTF-8?q?Bj=C3=B6rn=20Roy=20Baron?= <bjorn3_gh@protonmail.com>,
-        Benno Lossin <benno.lossin@proton.me>,
-        Andreas Hindborg <a.hindborg@samsung.com>,
-        Alice Ryhl <aliceryhl@google.com>,
-        rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org,
-        patches@lists.linux.dev
-Subject: [PATCH] rust: upgrade to Rust 1.74.1
-Date:   Thu, 14 Dec 2023 10:29:58 +0100
-Message-ID: <20231214092958.377061-1-ojeda@kernel.org>
+        Thu, 14 Dec 2023 04:31:23 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 623BE98
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 01:31:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1702546289;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=tTE0cMZgmLT4mbBDje7gzm+ln7P9WsJQeR7EiRHzoUg=;
+        b=bdgEI6di7G9lPBavmDo4uBPBhGkfhDKh8mKGlvenUgoCKUVk3uS7iZNvhuNJh3TNSRhatI
+        zx8dX8YUa9aLB0jyE2oBXL/p/ajZx5s3PIbvSZRrzfKqm7yOv4bNH0IElEiSuaTXqhRuev
+        WNkdHK8LR/1Yxxq8/SZTgKFS1ePSDCo=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-370-Qvc7B4AjOu-G8iD0fwHZMQ-1; Thu, 14 Dec 2023 04:31:27 -0500
+X-MC-Unique: Qvc7B4AjOu-G8iD0fwHZMQ-1
+Received: by mail-wm1-f70.google.com with SMTP id 5b1f17b1804b1-40c299d1e36so54279315e9.1
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 01:31:27 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702546286; x=1703151086;
+        h=content-transfer-encoding:mime-version:user-agent:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=tTE0cMZgmLT4mbBDje7gzm+ln7P9WsJQeR7EiRHzoUg=;
+        b=luOwyzWVJcrq/LdDnUkmRf/eRbRYAlCIlarQ/qHCCQnr1gFiEz1x8Vh+MfIpgK77af
+         rv0RIMQxUga79wfT4wDS2TppAASDIG2YC0mOUWMfiCppKGltqTvRKxxqxJtADfHYTna9
+         R/iFoxSa/Sl4ry5G6YnoaRfhvzY2ZpxL2qYxPvUGIaTeKBDHrWns6AsBGcD+CA/YL7AZ
+         AogkkABU5h32UAMqJf08Se3s53axfYC1AXQQalWNfFMD7CF7OgzvpcejGwGo2lUbv0M3
+         M8pYf/dXZ+P24PknnbArEWJZsKT/HpI1H2t7sBEUpyktxpzgH8QvlWhylUmc2Q6Wtk5s
+         tF4Q==
+X-Gm-Message-State: AOJu0YxIGk0yLEi/UYZb1thqIeU+m9TNoGpHrkTBEYtuBERYlI1QmT6Q
+        CjtlmwRwQzBusHUMWfAuhZ8EnZJLNZNtndT2tv7u+UZRKr2KT9hpqGjrlSq3BQmFQftf+yTSX/j
+        iVPHJ9v6QI/BZaNV2w3+yzxEa
+X-Received: by 2002:a05:600c:188f:b0:40c:32e6:d567 with SMTP id x15-20020a05600c188f00b0040c32e6d567mr3338885wmp.119.1702546286718;
+        Thu, 14 Dec 2023 01:31:26 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IFRxP7fEK8hsKy8ujv5AAy1+oBp2F4A/KQqv4ZVDGZIIzspF+szw+DRvb7Fz+JaTSBb7ZWKhg==
+X-Received: by 2002:a05:600c:188f:b0:40c:32e6:d567 with SMTP id x15-20020a05600c188f00b0040c32e6d567mr3338872wmp.119.1702546286273;
+        Thu, 14 Dec 2023 01:31:26 -0800 (PST)
+Received: from starship ([77.137.131.62])
+        by smtp.gmail.com with ESMTPSA id fl9-20020a05600c0b8900b0040b43da0bbasm24076640wmb.30.2023.12.14.01.31.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 Dec 2023 01:31:25 -0800 (PST)
+Message-ID: <aa7aa5ea5b112a0ec70c6276beb281e19c052f0e.camel@redhat.com>
+Subject: Re: [PATCH v2 1/3] KVM: x86: Make the hardcoded APIC bus frequency
+ vm variable
+From:   Maxim Levitsky <mlevitsk@redhat.com>
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     isaku.yamahata@intel.com, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, isaku.yamahata@gmail.com,
+        Paolo Bonzini <pbonzini@redhat.com>, erdemaktas@google.com,
+        Vishal Annapurve <vannapurve@google.com>,
+        Jim Mattson <jmattson@google.com>
+Date:   Thu, 14 Dec 2023 11:31:24 +0200
+In-Reply-To: <ZXo54VNuIqbMsYv-@google.com>
+References: <cover.1699936040.git.isaku.yamahata@intel.com>
+         <1c12f378af7de16d7895f8badb18c3b1715e9271.1699936040.git.isaku.yamahata@intel.com>
+         <938efd3cfcb25d828deab0cc0ba797177cc69602.camel@redhat.com>
+         <ZXo54VNuIqbMsYv-@google.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is the next upgrade to the Rust toolchain, from 1.73.0 to 1.74.1
-(i.e. the latest) [1].
+On Wed, 2023-12-13 at 15:10 -0800, Sean Christopherson wrote:
+> On Thu, Dec 14, 2023, Maxim Levitsky wrote:
+> > On Mon, 2023-11-13 at 20:35 -0800, isaku.yamahata@intel.com wrote:
+> > > From: Isaku Yamahata <isaku.yamahata@intel.com>
+> > > 
+> > > TDX virtualizes the advertised APIC bus frequency to be 25MHz. 
+> > 
+> > Can you explain a bit better why TDX needs this? I am not familiar
+> > with TDX well enough yet to fully understand.
+> 
+> TDX (the module/architecture) hardcodes the core crystal frequency to 25Mhz,
+> whereas KVM hardcodes the APIC bus frequency to 1Ghz.  And TDX (again, the module)
+> *unconditionally* enumerates CPUID 0x15 to TDX guests, i.e. _tells_ the guest that
+> the frequency is 25MHz regardless of what the VMM/hypervisor actually emulates.
+> And so the guest skips calibrating the APIC timer, which results in the guest
+> scheduling timer interrupts waaaaaaay too frequently, i.e. the guest ends up
+> gettings interrupts at 40x the rate it wants.
 
-See the upgrade policy [2] and the comments on the first upgrade in
-commit 3ed03f4da06e ("rust: upgrade to Rust 1.68.2").
+That is what I wanted to hear without opening the PRM ;) - so there is a CPUID leaf,
+but KVM just doesn't advertise it. Now it makes sense.
 
-# Unstable features
+Please add something like that to the commit message:
 
-No unstable features (that we use) were stabilized.
+"TDX guests have the APIC bus frequency hardcoded to 25 Mhz in the CPUID leaf 0x15.
+KVM doesn't expose this leaf, but TDX mandates it to be exposed,
+and doesn't allow to override it's value either.
 
-Therefore, the only unstable features allowed to be used outside the
-`kernel` crate are still `new_uninit,offset_of`, though other code to
-be upstreamed may increase the list (e.g. `offset_of` was added recently).
+To ensure that the guest doesn't have a conflicting view of the APIC bus frequency, 
+allow the userspace to tell KVM to use the same frequency that TDX mandates,
+instead of the default 1Ghz"
 
-Please see [3] for details.
+> 
+> Upstream KVM's non-TDX behavior is fine, because KVM doesn't advertise support
+> for CPUID 0x15, i.e. doesn't announce to host userspace that it's safe to expose
+> CPUID 0x15 to the guest.  Because TDX makes exposing CPUID 0x15 mandatory, KVM
+> needs to be taught to correctly emulate the guest's APIC bus frequency, a.k.a.
+> the TDX guest core crystal frequency of 25Mhz.
 
-# Other improvements
+I assume that TDX doesn't allow to change the CPUID 0x15 leaf.
 
-Rust 1.74.0 allows to use `#[repr(Rust)]` explicitly [4], which can be
-useful to be explicit about particular cases that would normally use
-e.g. the C representation, such as silencing lints like the upcoming
-additions we requested [5] to the `no_mangle_with_rust_abi` Clippy lint
-(which in turn triggered the `#[repr(Rust)]` addition).
+> 
+> I halfheartedly floated the idea of "fixing" the TDX module/architecture to either
+> use 1Ghz as the base frequency (off list), but it definitely isn't a hill worth
+> dying on since the KVM changes are relatively simple.
+> 
+> https://lore.kernel.org/all/ZSnIKQ4bUavAtBz6@google.com
+> 
 
-Rust 1.74.0 includes a fix for one of the false negative cases we reported
-in Clippy's `disallowed_macros` lint [6] that we would like to use in
-the future.
-
-Rust 1.74.1 fixes an ICE that the Apple AGX GPU driver was hitting [7].
-
-# Required changes
-
-For this upgrade, no changes were required (i.e. on our side).
-
-# `alloc` upgrade and reviewing
-
-The vast majority of changes are due to our `alloc` fork being upgraded
-at once.
-
-There are two kinds of changes to be aware of: the ones coming from
-upstream, which we should follow as closely as possible, and the updates
-needed in our added fallible APIs to keep them matching the newer
-infallible APIs coming from upstream.
-
-Instead of taking a look at the diff of this patch, an alternative
-approach is reviewing a diff of the changes between upstream `alloc` and
-the kernel's. This allows to easily inspect the kernel additions only,
-especially to check if the fallible methods we already have still match
-the infallible ones in the new version coming from upstream.
-
-Another approach is reviewing the changes introduced in the additions in
-the kernel fork between the two versions. This is useful to spot
-potentially unintended changes to our additions.
-
-To apply these approaches, one may follow steps similar to the following
-to generate a pair of patches that show the differences between upstream
-Rust and the kernel (for the subset of `alloc` we use) before and after
-applying this patch:
-
-    # Get the difference with respect to the old version.
-    git -C rust checkout $(linux/scripts/min-tool-version.sh rustc)
-    git -C linux ls-tree -r --name-only HEAD -- rust/alloc |
-        cut -d/ -f3- |
-        grep -Fv README.md |
-        xargs -IPATH cp rust/library/alloc/src/PATH linux/rust/alloc/PATH
-    git -C linux diff --patch-with-stat --summary -R > old.patch
-    git -C linux restore rust/alloc
-
-    # Apply this patch.
-    git -C linux am rust-upgrade.patch
-
-    # Get the difference with respect to the new version.
-    git -C rust checkout $(linux/scripts/min-tool-version.sh rustc)
-    git -C linux ls-tree -r --name-only HEAD -- rust/alloc |
-        cut -d/ -f3- |
-        grep -Fv README.md |
-        xargs -IPATH cp rust/library/alloc/src/PATH linux/rust/alloc/PATH
-    git -C linux diff --patch-with-stat --summary -R > new.patch
-    git -C linux restore rust/alloc
-
-Now one may check the `new.patch` to take a look at the additions (first
-approach) or at the difference between those two patches (second
-approach). For the latter, a side-by-side tool is recommended.
-
-Link: https://github.com/rust-lang/rust/blob/stable/RELEASES.md#version-1741-2023-12-07 [1]
-Link: https://rust-for-linux.com/rust-version-policy [2]
-Link: https://github.com/Rust-for-Linux/linux/issues/2 [3]
-Link: https://github.com/rust-lang/rust/pull/114201 [4]
-Link: https://github.com/rust-lang/rust-clippy/issues/11219 [5]
-Link: https://github.com/rust-lang/rust-clippy/issues/11431 [6]
-Link: https://github.com/rust-lang/rust/issues/117976#issuecomment-1822225691 [7]
-Signed-off-by: Miguel Ojeda <ojeda@kernel.org>
----
- Documentation/process/changes.rst |  2 +-
- rust/alloc/alloc.rs               | 32 ++++++++----
- rust/alloc/lib.rs                 |  6 +--
- rust/alloc/slice.rs               |  2 +-
- rust/alloc/vec/mod.rs             | 87 ++++++++++++++++++++++++++++++-
- scripts/min-tool-version.sh       |  2 +-
- 6 files changed, 114 insertions(+), 17 deletions(-)
-
-diff --git a/Documentation/process/changes.rst b/Documentation/process/changes.rst
-index bb96ca0f774b..169f67773518 100644
---- a/Documentation/process/changes.rst
-+++ b/Documentation/process/changes.rst
-@@ -31,7 +31,7 @@ you probably needn't concern yourself with pcmciautils.
- ====================== ===============  ========================================
- GNU C                  5.1              gcc --version
- Clang/LLVM (optional)  11.0.0           clang --version
--Rust (optional)        1.73.0           rustc --version
-+Rust (optional)        1.74.1           rustc --version
- bindgen (optional)     0.65.1           bindgen --version
- GNU make               3.82             make --version
- bash                   4.2              bash --version
-diff --git a/rust/alloc/alloc.rs b/rust/alloc/alloc.rs
-index 8cb4a31cf6e5..150e13750ff7 100644
---- a/rust/alloc/alloc.rs
-+++ b/rust/alloc/alloc.rs
-@@ -345,18 +345,31 @@ unsafe fn exchange_malloc(size: usize, align: usize) -> *mut u8 {
-     fn __rust_alloc_error_handler(size: usize, align: usize) -> !;
- }
- 
--/// Abort on memory allocation error or failure.
-+/// Signal a memory allocation error.
- ///
--/// Callers of memory allocation APIs wishing to abort computation
-+/// Callers of memory allocation APIs wishing to cease execution
- /// in response to an allocation error are encouraged to call this function,
--/// rather than directly invoking `panic!` or similar.
-+/// rather than directly invoking [`panic!`] or similar.
- ///
--/// The default behavior of this function is to print a message to standard error
--/// and abort the process.
--/// It can be replaced with [`set_alloc_error_hook`] and [`take_alloc_error_hook`].
-+/// This function is guaranteed to diverge (not return normally with a value), but depending on
-+/// global configuration, it may either panic (resulting in unwinding or aborting as per
-+/// configuration for all panics), or abort the process (with no unwinding).
-+///
-+/// The default behavior is:
-+///
-+///  * If the binary links against `std` (typically the case), then
-+///   print a message to standard error and abort the process.
-+///   This behavior can be replaced with [`set_alloc_error_hook`] and [`take_alloc_error_hook`].
-+///   Future versions of Rust may panic by default instead.
-+///
-+/// * If the binary does not link against `std` (all of its crates are marked
-+///   [`#![no_std]`][no_std]), then call [`panic!`] with a message.
-+///   [The panic handler] applies as to any panic.
- ///
- /// [`set_alloc_error_hook`]: ../../std/alloc/fn.set_alloc_error_hook.html
- /// [`take_alloc_error_hook`]: ../../std/alloc/fn.take_alloc_error_hook.html
-+/// [The panic handler]: https://doc.rust-lang.org/reference/runtime.html#the-panic_handler-attribute
-+/// [no_std]: https://doc.rust-lang.org/reference/names/preludes.html#the-no_std-attribute
- #[stable(feature = "global_alloc", since = "1.28.0")]
- #[rustc_const_unstable(feature = "const_alloc_error", issue = "92523")]
- #[cfg(all(not(no_global_oom_handling), not(test)))]
-@@ -397,9 +410,10 @@ pub unsafe fn __rdl_oom(size: usize, _align: usize) -> ! {
-         if unsafe { __rust_alloc_error_handler_should_panic != 0 } {
-             panic!("memory allocation of {size} bytes failed")
-         } else {
--            core::panicking::panic_nounwind_fmt(format_args!(
--                "memory allocation of {size} bytes failed"
--            ))
-+            core::panicking::panic_nounwind_fmt(
-+                format_args!("memory allocation of {size} bytes failed"),
-+                /* force_no_backtrace */ false,
-+            )
-         }
-     }
- }
-diff --git a/rust/alloc/lib.rs b/rust/alloc/lib.rs
-index 73b9ffd845d9..9c7ea73da108 100644
---- a/rust/alloc/lib.rs
-+++ b/rust/alloc/lib.rs
-@@ -90,8 +90,8 @@
- #![warn(missing_docs)]
- #![allow(explicit_outlives_requirements)]
- #![warn(multiple_supertrait_upcastable)]
--#![cfg_attr(not(bootstrap), allow(internal_features))]
--#![cfg_attr(not(bootstrap), allow(rustdoc::redundant_explicit_links))]
-+#![allow(internal_features)]
-+#![allow(rustdoc::redundant_explicit_links)]
- //
- // Library features:
- // tidy-alphabetical-start
-@@ -122,6 +122,7 @@
- #![feature(const_waker)]
- #![feature(core_intrinsics)]
- #![feature(core_panic)]
-+#![feature(deprecated_suggestion)]
- #![feature(dispatch_from_dyn)]
- #![feature(error_generic_member_access)]
- #![feature(error_in_core)]
-@@ -145,7 +146,6 @@
- #![feature(ptr_metadata)]
- #![feature(ptr_sub_ptr)]
- #![feature(receiver_trait)]
--#![feature(saturating_int_impl)]
- #![feature(set_ptr_value)]
- #![feature(sized_type_properties)]
- #![feature(slice_from_ptr_range)]
-diff --git a/rust/alloc/slice.rs b/rust/alloc/slice.rs
-index 6ac463bd3edc..1181836da5f4 100644
---- a/rust/alloc/slice.rs
-+++ b/rust/alloc/slice.rs
-@@ -594,7 +594,7 @@ pub fn join<Separator>(&self, sep: Separator) -> <Self as Join<Separator>>::Outp
-     /// ```
-     #[rustc_allow_incoherent_impl]
-     #[stable(feature = "rust1", since = "1.0.0")]
--    #[deprecated(since = "1.3.0", note = "renamed to join")]
-+    #[deprecated(since = "1.3.0", note = "renamed to join", suggestion = "join")]
-     pub fn connect<Separator>(&self, sep: Separator) -> <Self as Join<Separator>>::Output
-     where
-         Self: Join<Separator>,
-diff --git a/rust/alloc/vec/mod.rs b/rust/alloc/vec/mod.rs
-index 209a88cfe598..41ca71805ef0 100644
---- a/rust/alloc/vec/mod.rs
-+++ b/rust/alloc/vec/mod.rs
-@@ -1228,8 +1228,8 @@ pub fn into_boxed_slice(mut self) -> Box<[T], A> {
-     /// Shortens the vector, keeping the first `len` elements and dropping
-     /// the rest.
-     ///
--    /// If `len` is greater than the vector's current length, this has no
--    /// effect.
-+    /// If `len` is greater or equal to the vector's current length, this has
-+    /// no effect.
-     ///
-     /// The [`drain`] method can emulate `truncate`, but causes the excess
-     /// elements to be returned instead of dropped.
-@@ -1336,6 +1336,15 @@ pub fn as_mut_slice(&mut self) -> &mut [T] {
-     /// is never written to (except inside an `UnsafeCell`) using this pointer or any pointer
-     /// derived from it. If you need to mutate the contents of the slice, use [`as_mut_ptr`].
-     ///
-+    /// This method guarantees that for the purpose of the aliasing model, this method
-+    /// does not materialize a reference to the underlying slice, and thus the returned pointer
-+    /// will remain valid when mixed with other calls to [`as_ptr`] and [`as_mut_ptr`].
-+    /// Note that calling other methods that materialize mutable references to the slice,
-+    /// or mutable references to specific elements you are planning on accessing through this pointer,
-+    /// as well as writing to those elements, may still invalidate this pointer.
-+    /// See the second example below for how this guarantee can be used.
-+    ///
-+    ///
-     /// # Examples
-     ///
-     /// ```
-@@ -1349,8 +1358,25 @@ pub fn as_mut_slice(&mut self) -> &mut [T] {
-     /// }
-     /// ```
-     ///
-+    /// Due to the aliasing guarantee, the following code is legal:
-+    ///
-+    /// ```rust
-+    /// unsafe {
-+    ///     let mut v = vec![0, 1, 2];
-+    ///     let ptr1 = v.as_ptr();
-+    ///     let _ = ptr1.read();
-+    ///     let ptr2 = v.as_mut_ptr().offset(2);
-+    ///     ptr2.write(2);
-+    ///     // Notably, the write to `ptr2` did *not* invalidate `ptr1`
-+    ///     // because it mutated a different element:
-+    ///     let _ = ptr1.read();
-+    /// }
-+    /// ```
-+    ///
-     /// [`as_mut_ptr`]: Vec::as_mut_ptr
-+    /// [`as_ptr`]: Vec::as_ptr
-     #[stable(feature = "vec_as_ptr", since = "1.37.0")]
-+    #[cfg_attr(not(bootstrap), rustc_never_returns_null_ptr)]
-     #[inline]
-     pub fn as_ptr(&self) -> *const T {
-         // We shadow the slice method of the same name to avoid going through
-@@ -1366,6 +1392,15 @@ pub fn as_ptr(&self) -> *const T {
-     /// Modifying the vector may cause its buffer to be reallocated,
-     /// which would also make any pointers to it invalid.
-     ///
-+    /// This method guarantees that for the purpose of the aliasing model, this method
-+    /// does not materialize a reference to the underlying slice, and thus the returned pointer
-+    /// will remain valid when mixed with other calls to [`as_ptr`] and [`as_mut_ptr`].
-+    /// Note that calling other methods that materialize references to the slice,
-+    /// or references to specific elements you are planning on accessing through this pointer,
-+    /// may still invalidate this pointer.
-+    /// See the second example below for how this guarantee can be used.
-+    ///
-+    ///
-     /// # Examples
-     ///
-     /// ```
-@@ -1383,7 +1418,25 @@ pub fn as_ptr(&self) -> *const T {
-     /// }
-     /// assert_eq!(&*x, &[0, 1, 2, 3]);
-     /// ```
-+    ///
-+    /// Due to the aliasing guarantee, the following code is legal:
-+    ///
-+    /// ```rust
-+    /// unsafe {
-+    ///     let mut v = vec![0];
-+    ///     let ptr1 = v.as_mut_ptr();
-+    ///     ptr1.write(1);
-+    ///     let ptr2 = v.as_mut_ptr();
-+    ///     ptr2.write(2);
-+    ///     // Notably, the write to `ptr2` did *not* invalidate `ptr1`:
-+    ///     ptr1.write(3);
-+    /// }
-+    /// ```
-+    ///
-+    /// [`as_mut_ptr`]: Vec::as_mut_ptr
-+    /// [`as_ptr`]: Vec::as_ptr
-     #[stable(feature = "vec_as_ptr", since = "1.37.0")]
-+    #[cfg_attr(not(bootstrap), rustc_never_returns_null_ptr)]
-     #[inline]
-     pub fn as_mut_ptr(&mut self) -> *mut T {
-         // We shadow the slice method of the same name to avoid going through
-@@ -3403,6 +3456,36 @@ fn from(s: &mut [T]) -> Vec<T> {
-     }
- }
- 
-+#[cfg(not(no_global_oom_handling))]
-+#[stable(feature = "vec_from_array_ref", since = "1.74.0")]
-+impl<T: Clone, const N: usize> From<&[T; N]> for Vec<T> {
-+    /// Allocate a `Vec<T>` and fill it by cloning `s`'s items.
-+    ///
-+    /// # Examples
-+    ///
-+    /// ```
-+    /// assert_eq!(Vec::from(&[1, 2, 3]), vec![1, 2, 3]);
-+    /// ```
-+    fn from(s: &[T; N]) -> Vec<T> {
-+        Self::from(s.as_slice())
-+    }
-+}
-+
-+#[cfg(not(no_global_oom_handling))]
-+#[stable(feature = "vec_from_array_ref", since = "1.74.0")]
-+impl<T: Clone, const N: usize> From<&mut [T; N]> for Vec<T> {
-+    /// Allocate a `Vec<T>` and fill it by cloning `s`'s items.
-+    ///
-+    /// # Examples
-+    ///
-+    /// ```
-+    /// assert_eq!(Vec::from(&mut [1, 2, 3]), vec![1, 2, 3]);
-+    /// ```
-+    fn from(s: &mut [T; N]) -> Vec<T> {
-+        Self::from(s.as_mut_slice())
-+    }
-+}
-+
- #[cfg(not(no_global_oom_handling))]
- #[stable(feature = "vec_from_array", since = "1.44.0")]
- impl<T, const N: usize> From<[T; N]> for Vec<T> {
-diff --git a/scripts/min-tool-version.sh b/scripts/min-tool-version.sh
-index fd5ffdb81bab..c62066825f53 100755
---- a/scripts/min-tool-version.sh
-+++ b/scripts/min-tool-version.sh
-@@ -31,7 +31,7 @@ llvm)
- 	fi
- 	;;
- rustc)
--	echo 1.73.0
-+	echo 1.74.1
- 	;;
- bindgen)
- 	echo 0.65.1
-
-base-commit: a39b6ac3781d46ba18193c9dbb2110f31e9bffe9
--- 
-2.43.0
+Best regards,
+	Maxim Levitsky
 
