@@ -2,181 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9384C8128D9
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 08:13:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BAB08128E3
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 08:15:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230255AbjLNHNQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 02:13:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47390 "EHLO
+        id S234366AbjLNHPD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 02:15:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33568 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229461AbjLNHNN (ORCPT
+        with ESMTP id S229492AbjLNHPB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 02:13:13 -0500
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B00E6107;
-        Wed, 13 Dec 2023 23:13:19 -0800 (PST)
-Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BE2wi5i004126;
-        Thu, 14 Dec 2023 07:13:11 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-        message-id:date:mime-version:subject:from:to:cc:references
-        :in-reply-to:content-type:content-transfer-encoding; s=
-        qcppdkim1; bh=VmqZYjMx0vgFysXJdO/GGgQWXfWPrqIdMa2UVbw3zwY=; b=RT
-        r6hH6pnKUNFE5A9SOfH6UW3XurQOgJeUpE+5nvfcZdqLlzXjtUcRktkYHqtqPKa2
-        R6z9NV7lFeNneJW+GEbIF0XN+GtP8HPlsBIe5rG0YNQtqYjIk8BkW9PNY4pd0+mB
-        k6URBSiIDudlBVNl1zRWN3+9WAExNcrPdoNkgLE8Z1c5NavW2kJkgC7YxNO1rB8J
-        ODZeXKzn/exYaVvHDp+M2JygLAuNZB7F1kZpPMOR5UJW7nzYV2xZii8NUhRutQ+y
-        7y+TIbFjf1B/G6KDMIQzIZ8Uu9iDp6H3+aa0T4y4zd6gbmc6XD7TpCg7Xnr9QP7U
-        ZdmqCDIANd8HmIZ13i9w==
-Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3uyq9t0ntn-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 14 Dec 2023 07:13:10 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3BE7D9tH001194
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 14 Dec 2023 07:13:09 GMT
-Received: from [10.50.15.223] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Wed, 13 Dec
- 2023 23:13:06 -0800
-Message-ID: <54e882ba-4758-1283-1a52-1f12201e1836@quicinc.com>
-Date:   Thu, 14 Dec 2023 12:43:02 +0530
+        Thu, 14 Dec 2023 02:15:01 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8974B9
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 23:15:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1702538107;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=vRaJaBGglr58sTQWQMVIiejNzndVXiVSrMNWKcapZYU=;
+        b=b1ISzpPVDfN8HBVeRnXludRbdLuybfmt7npNef2mz17XLC+sIpDOLu0peqmXyd1fHMtx7t
+        lMWQLT/bPJLKn2Ssfl/jTVqOHkVaaPGXinzOfKSkHd+idd9QzLuDtGnRgBjVIpt5reqZ3S
+        0nQUqXpN/PtOcZUwL9zqxtE3POsQtqo=
+Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
+ [209.85.218.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-378-DGbOokMKM9SMY25CZroZTw-1; Thu, 14 Dec 2023 02:15:05 -0500
+X-MC-Unique: DGbOokMKM9SMY25CZroZTw-1
+Received: by mail-ej1-f70.google.com with SMTP id a640c23a62f3a-a1bd7a5931eso423617166b.3
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 23:15:05 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702538104; x=1703142904;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=vRaJaBGglr58sTQWQMVIiejNzndVXiVSrMNWKcapZYU=;
+        b=jZedDLs9WumqwEW9Yok1YrQxIvbzq8/rkW+I9I0zf0BpfEl7kzRSAWShXlVoSuOxNE
+         cnJHa9eqx6KGSaCUPw5TwCoZbdJnA3y3LXtj89nx8rtdFiPtN7RRZ8oZ1ekacbOcTV+7
+         iXSteZmRhh+3CIHurU3pTsELZgDUsk2HxJB1uAU5xJ19KTfn6rEtNBGLpYE1m54CgJoE
+         SXZjQHfEO5bKCyMJ2S9J6da7m0hPkFvs3lunvPU+pzTEvZU/9SF6dnQ8TWZITh3BpirX
+         EHG/kB9F9PDpfoASxWCKjPQM6BDy9F9eJlyXsR4/E/tpakNapdsKla2Fc3FrWxgpDC26
+         FpAQ==
+X-Gm-Message-State: AOJu0Yy8jU49bXdYbct7ZSImQo8nS/b6k16TipU1qK2qAnsPi0igPhqZ
+        2jvko7c4ciMYlLUEbvajLQ2ui6MRscBEeT4/4zQjAP9Xc/C7W+t576wy98Vf1h6X+2NrHCcyrEm
+        pm5m6/87nFY4pKuqev1YIoibU
+X-Received: by 2002:a17:907:9150:b0:a1d:5864:9471 with SMTP id l16-20020a170907915000b00a1d58649471mr3654529ejs.131.1702538104440;
+        Wed, 13 Dec 2023 23:15:04 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IEWMkmj5x4pGRiF3eBg98WEH/O85pbvq4edeImvdFfJoL9RengQ8lWWzDOAG01wA77QaoZCrA==
+X-Received: by 2002:a17:907:9150:b0:a1d:5864:9471 with SMTP id l16-20020a170907915000b00a1d58649471mr3654523ejs.131.1702538104099;
+        Wed, 13 Dec 2023 23:15:04 -0800 (PST)
+Received: from redhat.com ([2.52.132.243])
+        by smtp.gmail.com with ESMTPSA id li14-20020a170907198e00b00a1f738318a5sm8388046ejc.155.2023.12.13.23.15.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Dec 2023 23:15:03 -0800 (PST)
+Date:   Thu, 14 Dec 2023 02:14:59 -0500
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Tobias Huschle <huschle@linux.ibm.com>
+Cc:     Jason Wang <jasowang@redhat.com>,
+        Abel Wu <wuyun.abel@bytedance.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Linux Kernel <linux-kernel@vger.kernel.org>,
+        kvm@vger.kernel.org, virtualization@lists.linux.dev,
+        netdev@vger.kernel.org
+Subject: Re: Re: Re: EEVDF/vhost regression (bisected to 86bfbb7ce4f6
+ sched/fair: Add lag based placement)
+Message-ID: <20231214021328-mutt-send-email-mst@kernel.org>
+References: <53044.123120806415900549@us-mta-342.us.mimecast.lan>
+ <20231209053443-mutt-send-email-mst@kernel.org>
+ <CACGkMEuSGT-e-i-8U7hum-N_xEnsEKL+_07Mipf6gMLFFhj2Aw@mail.gmail.com>
+ <20231211115329-mutt-send-email-mst@kernel.org>
+ <CACGkMEudZnF7hUajgt0wtNPCxH8j6A3L1DgJj2ayJWhv9Bh1WA@mail.gmail.com>
+ <20231212111433-mutt-send-email-mst@kernel.org>
+ <42870.123121305373200110@us-mta-641.us.mimecast.lan>
+ <20231213061719-mutt-send-email-mst@kernel.org>
+ <25485.123121307454100283@us-mta-18.us.mimecast.lan>
+ <20231213094854-mutt-send-email-mst@kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.3.2
-Subject: Re: [PATCH v2 05/17] scsi: ufs: qcom: Remove the warning message when
- core_reset is not available
-From:   Nitin Rawat <quic_nitirawa@quicinc.com>
-To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-CC:     <martin.petersen@oracle.com>, <jejb@linux.ibm.com>,
-        <andersson@kernel.org>, <konrad.dybcio@linaro.org>,
-        <linux-arm-msm@vger.kernel.org>, <linux-scsi@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <quic_cang@quicinc.com>,
-        <ahalaney@redhat.com>
-References: <20231208065902.11006-1-manivannan.sadhasivam@linaro.org>
- <20231208065902.11006-6-manivannan.sadhasivam@linaro.org>
- <7472fe73-e7a0-5c8c-6e85-655db028a5c3@quicinc.com>
- <20231208102832.GA3008@thinkpad>
- <190651ad-6aeb-69eb-89c5-ed18221b5a7a@quicinc.com>
-Content-Language: en-US
-In-Reply-To: <190651ad-6aeb-69eb-89c5-ed18221b5a7a@quicinc.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: W2zM5WfzVBaFH0jkMVrp6SDQahMuyZ3Q
-X-Proofpoint-GUID: W2zM5WfzVBaFH0jkMVrp6SDQahMuyZ3Q
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-09_02,2023-12-07_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 mlxscore=0
- mlxlogscore=999 suspectscore=0 adultscore=0 spamscore=0 lowpriorityscore=0
- malwarescore=0 impostorscore=0 priorityscore=1501 phishscore=0 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2311290000
- definitions=main-2312140045
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20231213094854-mutt-send-email-mst@kernel.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Dec 13, 2023 at 09:55:23AM -0500, Michael S. Tsirkin wrote:
+> On Wed, Dec 13, 2023 at 01:45:35PM +0100, Tobias Huschle wrote:
+> > On Wed, Dec 13, 2023 at 07:00:53AM -0500, Michael S. Tsirkin wrote:
+> > > On Wed, Dec 13, 2023 at 11:37:23AM +0100, Tobias Huschle wrote:
+> > > > On Tue, Dec 12, 2023 at 11:15:01AM -0500, Michael S. Tsirkin wrote:
+> > > > > On Tue, Dec 12, 2023 at 11:00:12AM +0800, Jason Wang wrote:
+> > > > > > On Tue, Dec 12, 2023 at 12:54 AM Michael S. Tsirkin <mst@redhat.com> wrote:
+> > 
+> > [...]
+> > > 
+> > > Apparently schedule is already called?
+> > > 
+> > 
+> > What about this: 
+> > 
+> > static int vhost_task_fn(void *data)
+> > {
+> > 	<...>
+> > 	did_work = vtsk->fn(vtsk->data);  --> this calls vhost_worker if I'm not mistaken
+> > 	if (!did_work)
+> > 		schedule();
+> > 	<...>
+> > }
+> > 
+> > static bool vhost_worker(void *data)
+> > {
+> > 	struct vhost_worker *worker = data;
+> > 	struct vhost_work *work, *work_next;
+> > 	struct llist_node *node;
+> > 
+> > 	node = llist_del_all(&worker->work_list);
+> > 	if (node) {
+> > 		<...>
+> > 		llist_for_each_entry_safe(work, work_next, node, node) {
+> > 			<...>
+> > 		}
+> > 	}
+> > 
+> > 	return !!node;
+> > }
+> > 
+> > The llist_for_each_entry_safe does not actually change the node value, doesn't it?
+> > 
+> > If it does not change it, !!node would return 1.
+> > Thereby skipping the schedule.
+> > 
+> > This was changed recently with:
+> > f9010dbdce91 fork, vhost: Use CLONE_THREAD to fix freezer/ps regression
+> > 
+> > It returned a hardcoded 0 before. The commit message explicitly mentions this
+> > change to make vhost_worker return 1 if it did something.
+> > 
+> > Seems indeed like a nasty little side effect caused by EEVDF not scheduling
+> > the woken up kworker right away.
+> 
+> 
+> So we are actually making an effort to be nice.
+> Documentation/kernel-hacking/hacking.rst says:
+> 
+> If you're doing longer computations: first think userspace. If you
+> **really** want to do it in kernel you should regularly check if you need
+> to give up the CPU (remember there is cooperative multitasking per CPU).
+> Idiom::
+> 
+>     cond_resched(); /* Will sleep */
+> 
+> 
+> and this is what vhost.c does.
+> 
+> At this point I'm not sure why it's appropriate to call schedule() as opposed to
+> cond_resched(). Ideas?
+> 
+
+Peter, would appreciate feedback on this. When is cond_resched()
+insufficient to give up the CPU? Should Documentation/kernel-hacking/hacking.rst
+be updated to require schedule() instead?
 
 
-On 12/8/2023 6:59 PM, Nitin Rawat wrote:
-> 
-> 
-> On 12/8/2023 3:58 PM, Manivannan Sadhasivam wrote:
->> On Fri, Dec 08, 2023 at 02:55:21PM +0530, Nitin Rawat wrote:
->>>
->>>
->>> On 12/8/2023 12:28 PM, Manivannan Sadhasivam wrote:
->>>> core_reset is optional, so there is no need to warn the user if it 
->>>> is not
->>>> available.
->>>>
->>>> Reviewed-by: Andrew Halaney <ahalaney@redhat.com>
->>>> Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
->>>> ---
->>>>    drivers/ufs/host/ufs-qcom.c | 4 +---
->>>>    1 file changed, 1 insertion(+), 3 deletions(-)
->>>>
->>>> diff --git a/drivers/ufs/host/ufs-qcom.c b/drivers/ufs/host/ufs-qcom.c
->>>> index dc93b1c5ca74..d474de0739e4 100644
->>>> --- a/drivers/ufs/host/ufs-qcom.c
->>>> +++ b/drivers/ufs/host/ufs-qcom.c
->>>> @@ -296,10 +296,8 @@ static int ufs_qcom_host_reset(struct ufs_hba 
->>>> *hba)
->>>>        struct ufs_qcom_host *host = ufshcd_get_variant(hba);
->>>>        bool reenable_intr;
->>>> -    if (!host->core_reset) {
->>>> -        dev_warn(hba->dev, "%s: reset control not set\n", __func__);
->>>> +    if (!host->core_reset)
->>>>            return 0;
->>>> -    }
->>>>        reenable_intr = hba->is_irq_enabled;
->>>>        disable_irq(hba->irq);
->>>
->>>
->>> Hi Mani,
->>>
->>> I think core reset is not frequent. It happen during only probe ,error
->>> handler.
->>>
->>> core reset is needed in kernel to cleanup UFS phy and controller
->>> configuration before UFS HLOS operation starts as per HPG.
->>>
->>
->> This sounds like core reset is not an optional property but a required 
->> one. I
->> just checked the upstream DT files for all SoCs, and looks like pretty 
->> much all
->> of them support core reset.
->>
->> Only MSM8996 doesn't have the reset property, but the reset is 
->> available in GCC.
->> So we should be able to use it in dtsi.
->>
->> I also skimmed through the HPG and looks like core reset is not 
->> optional. Please
->> confirm.
->>
->> - Mani
-> 
-> 
-> Hi Mani,
-> 
-> Yes Core_reset is part of HPG sequence and is needed.
-> 
-> Regards,
-> Nitin
+> -- 
+> MST
 
-
-Hi Mani,
-
-I see this patch series is merged . So planning to keep the warn message
-based on above discussion.
-
-Regards,
-Nitin
-> 
-> 
->>
->>> Having existing warn print can be used to to debug or atleast know
->>> core_reset is missed in device tree to give indication complete reset 
->>> hasn't
->>> been done and we could still be operating in bootloader configuration.
->>>
->>>
->>> Regards,
->>> Nitin
->>>
->>
-> 
