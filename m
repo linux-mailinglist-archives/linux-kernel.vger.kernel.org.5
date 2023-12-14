@@ -2,197 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B119F813580
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 16:59:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 237F581359E
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 17:04:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1573940AbjLNP7R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 10:59:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37706 "EHLO
+        id S1443643AbjLNQEI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 11:04:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49054 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230419AbjLNP7P (ORCPT
+        with ESMTP id S230252AbjLNQEH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 10:59:15 -0500
-Received: from mailout1.w1.samsung.com (mailout1.w1.samsung.com [210.118.77.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EFE9121
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 07:59:21 -0800 (PST)
-Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
-        by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20231214155915euoutp01844239b48477c54eb7af5c115e6262be~gvf2LsbAy2062620626euoutp01o
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 15:59:15 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20231214155915euoutp01844239b48477c54eb7af5c115e6262be~gvf2LsbAy2062620626euoutp01o
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1702569555;
-        bh=t1Ri1k88YEtJXFLu4apS8OAYzivDLP6IYWLM6Hz470Q=;
-        h=Date:Subject:To:Cc:From:In-Reply-To:References:From;
-        b=ZJHvADc3B4C/FT1ThSS0qmAJenVNV4kLogS5UG1mUI6/B0tro/4SCXVGamorndpcJ
-         n7u6Eo7Ic5yaIfUNQmnYKxHqhJuQaK43dRw/1+L5KlspmzR+tkAAW2Oc5Ef7DMQwKq
-         kmQeHMu0P9XAxswrcpfSJr3ZWwzdZqugGatqmyQ8=
-Received: from eusmges1new.samsung.com (unknown [203.254.199.242]) by
-        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
-        20231214155915eucas1p26a90c53486421a4576d223badfb3f49b~gvf132k6v0218202182eucas1p2Q;
-        Thu, 14 Dec 2023 15:59:15 +0000 (GMT)
-Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
-        eusmges1new.samsung.com (EUCPMTA) with SMTP id CF.D9.09539.3562B756; Thu, 14
-        Dec 2023 15:59:15 +0000 (GMT)
-Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
-        eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
-        20231214155915eucas1p2c518336996033a817222877b35ea4fd3~gvf1dNbqE0218202182eucas1p2N;
-        Thu, 14 Dec 2023 15:59:15 +0000 (GMT)
-Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
-        eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20231214155915eusmtrp16e110281bd355ea0351c1cb636cbff39~gvf1cSySh2480424804eusmtrp1z;
-        Thu, 14 Dec 2023 15:59:15 +0000 (GMT)
-X-AuditID: cbfec7f2-52bff70000002543-e7-657b2653c492
-Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
-        eusmgms1.samsung.com (EUCPMTA) with SMTP id 2C.7D.09146.2562B756; Thu, 14
-        Dec 2023 15:59:14 +0000 (GMT)
-Received: from [106.210.134.192] (unknown [106.210.134.192]) by
-        eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
-        20231214155913eusmtip1e7453cbacef6362492c4fd6cab56598d~gvf0a9H2D1522115221eusmtip1b;
-        Thu, 14 Dec 2023 15:59:13 +0000 (GMT)
-Message-ID: <699636b7-d737-4df4-92e9-43b0f52d4b99@samsung.com>
-Date:   Thu, 14 Dec 2023 16:59:13 +0100
+        Thu, 14 Dec 2023 11:04:07 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE5D7123;
+        Thu, 14 Dec 2023 08:04:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1702569853; x=1734105853;
+  h=message-id:from:to:cc:date:subject:mime-version:
+   content-transfer-encoding;
+  bh=l5WezQ4o+i/K7M7JIibngu66sNFZqkUEm5v4/5O/tF0=;
+  b=Zfoz0l3Z2rE7Ae0HXE4kSd6ZQrkj9ivS9eYnwTbtoSGCNkKVPZJ2dANb
+   ScshdGgJF/vywbGUptuNAGarbQ0GqwCY8yZ0/OYU1A9vCIra3QUSeF5Ca
+   a+TvTCVOyrTjFyr+i/Ce0k99Eqh9ZcyqDTEG4MGs2GiRw+tZgTGu92MsX
+   xyv3RrLxDarugCv0Kk17JoddmJ1hBmVqd/S1yCMnPGTPVTwKaaq736XlB
+   BNyDuaDmviMGze8vKHSC96+sI193PGT58F+O8sJzaWkWPYJjGhjgi5+3M
+   2MYKc9vn4lEkQ5boHu40scV6dmNixCmBvGQXB65xmDeZp+b1g9ELdmUfi
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10924"; a="375294417"
+X-IronPort-AV: E=Sophos;i="6.04,276,1695711600"; 
+   d="scan'208";a="375294417"
+Received: from orviesa001.jf.intel.com ([10.64.159.141])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Dec 2023 08:04:11 -0800
+Message-Id: <cdf76a$lddk7@smtpauth.intel.com>
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.04,276,1695711600"; 
+   d="scan'208";a="22460039"
+Received: from ijarvine-desk1.ger.corp.intel.com (HELO localhost) ([10.246.49.39])
+  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Dec 2023 08:03:43 -0800
+From:   =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        PDx86 <platform-driver-x86@vger.kernel.org>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Andy Shevchenko <andy@kernel.org>
+Date:   Thu, 14 Dec 2023 17:59:36 +0200
+Subject: [GIT PULL] platform-drivers-x86 for v6.7-4
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] drm/exynos: fix accidental on-stack copy of
- exynos_drm_plane
-Content-Language: en-US
-To:     Arnd Bergmann <arnd@kernel.org>, Inki Dae <inki.dae@samsung.com>,
-        Seung-Woo Kim <sw0312.kim@samsung.com>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Thierry Reding <treding@nvidia.com>,
-        Steven Price <steven.price@arm.com>,
-        Rob Herring <robh@kernel.org>, Robert Foss <rfoss@kernel.org>,
-        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
-        Liviu Dudau <liviu.dudau@arm.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        dri-devel@lists.freedesktop.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org
-From:   Marek Szyprowski <m.szyprowski@samsung.com>
-In-Reply-To: <20231214123237.1727428-1-arnd@kernel.org>
-Content-Transfer-Encoding: 7bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA01SbUxTVxj23Ht7b9useC0oR7bQrAk4toDCzDyZhK3bXG6CPwwwWWama8Zd
-        JQLV1uIHPygQoBbBUrVCgY4wBGwIiwVKh8I2hlRxU0BgtLCURDcjjs9WFBlube/c+Pc87/s8
-        53nfN4ePi0vJCH5mznFWlSPPkpJCwj6wcic2NTqP3XFDuxXd/LUBQ9MWO4nWjAMUsnfYeOhv
-        eyWORp/Mk8joMRBoabwMoJ7HnRT6pfBPCtnuj/PQve5aElXd7cXQD5dLCWS0uPy26w4Ktax0
-        AlTQ7/dWnX9EosnVkPfDmFZLK2BWnxsB07NcTzDfmX+jmBpdNY+xWc+QzNT4dZLxlDkxpr0x
-        nykvmiOZRtMYyVR0WAHjtUXuE30mTMxgszJzWdX2pC+Eh436xKMjW04Wl6ziWmAK1QMBH9I7
-        4R+ufkIPhHwx3QJgn6kB54gPwBv2YowjXgCbF86RLy2uwS7ANZoBNFz4+V/VIoDeK+d4AZWI
-        ToLOmQEqgAk6CvbXLJNcfRO8Vf2ACODNtAR63FVBTSidCit6JrEAxulw6H7wdfDRMNqEwea7
-        TWSA4PR9HP7uHgm6SToe6mf1wVcF9C54pXuI4twS2DVbG9wC0ssC+LRmmMcN/hHUtU1gHA6F
-        M84OisOvwdvnzxKcoRTA+lUPxhEDgNqHbsCpdsOpO8/9cXx/RAz8tns7V5bBHs8cFihDOgRO
-        zG7ihgiBRvslnCuLoK5EzKmjodnZ9l/sj0MjuAFIzesOY153APO6dcz/59YDwgrCWY06W8Gq
-        43PYE3FqebZak6OI+1KZbQP+v3r7hXPJAepmFuP6AMYHfQDycWmY6JbjBCsWZchPnWZVykMq
-        TRar7gOv8glpuCgqQ8KKaYX8OHuEZY+yqpddjC+I0GKmbzaMDl4tmrgaURw3vycqEVs7kjsp
-        K+Slp5j3WxQbFzekKt9yVDbefJsau7bPkVxW3jX3/ZbNn8/VJeyadkQ+Xlj0+vIS3vXKk30V
-        mda8offeqbz3SHPyolU8dqj2YeiOUbuEyV9LCaF0Sssn6Wkw90B0oevMtfafUvTlNqdgfmOs
-        r/bi8BsL26b2wsjotHTdRP62FsnkQcOpC6LpT2Nf0RTxm2TxewuWEgYPaJvs3S+2lmCy3a//
-        JZo+ljTuSt5jfIK+aul0w16bY7Dt7GXf6PBy2scVB2PaC5JKLn0o6/0g1pzwtLpB3St51llV
-        rFESMRHWMMXpYyvPWoeF+3dq66SE+rA8/k1cpZb/A1AB3pkaBAAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprBKsWRmVeSWpSXmKPExsVy+t/xu7pBatWpBvM+GVucuL6IyeLBvG1s
-        Fn8nHWO32LZlE6vF/20TmS2ufH3PZjHp/gQWi0/Xuhkt9r7eym5xtukNu8Wmx9dYLS7vmsNm
-        MeP8PiaLA0vbWSwmzbsJ1LZnB7vFip9bGS0ajwD1zpj8ks3i9m8+BxGPNfPWMHr8/jWJ0WPv
-        twUsHjtn3WX3mN0xk9Vj06pONo871/awedzvPs7ksXlJvUdv8zs2jyXTrrJ59G1ZxejxeZNc
-        AG+Unk1RfmlJqkJGfnGJrVK0oYWRnqGlhZ6RiaWeobF5rJWRqZK+nU1Kak5mWWqRvl2CXsak
-        LpuCS2IVrW2/mRsYpwl3MXJySAiYSNw8tZ2xi5GLQ0hgKaPE+zPvmCESMhInpzWwQtjCEn+u
-        dbFBFL1nlJh58RATSIJXwE7i+Ktj7CA2i4CqxJHZ39gg4oISJ2c+YQGxRQXkJe7fmgFWIywQ
-        LNG39zZYL7OAuMStJ/OZQIaKCMxgkvi/qANsA7PAY2aJ/ue/wLqFBLqA1j02BbHZBAwlut52
-        gW3gFDCXWLnrAjvEJDOJrq1djBC2vMT2t3OYJzAKzUJyyCwkC2chaZmFpGUBI8sqRpHU0uLc
-        9NxiQ73ixNzi0rx0veT83E2MwCSy7djPzTsY5736qHeIkYmD8RCjBAezkgjvyR3lqUK8KYmV
-        ValF+fFFpTmpxYcYTYGhMZFZSjQ5H5jG8kriDc0MTA1NzCwNTC3NjJXEeT0LOhKFBNITS1Kz
-        U1MLUotg+pg4OKUamGok4l4dVTSc8Fk2U3/vy1PtXlJ2qy39G+ZPFUx/wHzmStrs3rp1GmEW
-        r5JWq+3e9W49q3e50t8rezsP+/0rN+uu2T5j/ZIn7dvyup5l2RibCiwpOGrfu2fHpiw9NR/B
-        zovPS9o/fOTq/7IywdqOa9+PQ+3d8VFZiRWHz3Ht2vzGcbpZQsDR1WK3p89If/58eYLSGTXj
-        0+rdgvIMjo6/nZlsJati0pmS660lr9hPvyw2o7bdiPlqePmNpZXbPSo0lxY21s7Q2Xrn5bot
-        XXXGh3ZGCC5yZH528NuPC6nbRAprLXL2HTYtMJLhePtj2ZLjG398dF7+UlHv6sdOx0Pb32hs
-        0T3Yv/J/2nUf458vTiuxFGckGmoxFxUnAgAQVosAqwMAAA==
-X-CMS-MailID: 20231214155915eucas1p2c518336996033a817222877b35ea4fd3
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-RootMTR: 20231214123248eucas1p1577bc2064401fce57a752234e1338f5a
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20231214123248eucas1p1577bc2064401fce57a752234e1338f5a
-References: <CGME20231214123248eucas1p1577bc2064401fce57a752234e1338f5a@eucas1p1.samsung.com>
-        <20231214123237.1727428-1-arnd@kernel.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,MSGID_FROM_MTA_HEADER,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 14.12.2023 13:32, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
->
-> gcc rightfully complains about excessive stack usage in the fimd_win_set_pixfmt()
-> function:
->
-> drivers/gpu/drm/exynos/exynos_drm_fimd.c: In function 'fimd_win_set_pixfmt':
-> drivers/gpu/drm/exynos/exynos_drm_fimd.c:750:1: error: the frame size of 1032 bytes is larger than 1024 byte
-> drivers/gpu/drm/exynos/exynos5433_drm_decon.c: In function 'decon_win_set_pixfmt':
-> drivers/gpu/drm/exynos/exynos5433_drm_decon.c:381:1: error: the frame size of 1032 bytes is larger than 1024 bytes
->
-> There is really no reason to copy the large exynos_drm_plane
-> structure to the stack before using one of its members, so just
-> use a pointer instead.
->
-> Fixes: 6f8ee5c21722 ("drm/exynos: fimd: Make plane alpha configurable")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Hi Linus,
+
+Here is a fixes PR for platform-drivers-x86 for v6.7.
+
+Changes:
+- tablet-mode-switch events fix
+- kernel-doc warning fixes
+
+Regards, i.
 
 
-Reviewed-by: Marek Szyprowski <m.szyprowski@samsung.com>
+The following changes since commit 3494a594315b56516988afb6854d75dee5b501db:
 
+  platform/mellanox: Check devm_hwmon_device_register_with_groups() return value (2023-12-04 15:01:46 +0200)
 
-> ---
->   drivers/gpu/drm/exynos/exynos5433_drm_decon.c | 4 ++--
->   drivers/gpu/drm/exynos/exynos_drm_fimd.c      | 4 ++--
->   2 files changed, 4 insertions(+), 4 deletions(-)
->
-> diff --git a/drivers/gpu/drm/exynos/exynos5433_drm_decon.c b/drivers/gpu/drm/exynos/exynos5433_drm_decon.c
-> index 4d986077738b..bce027552474 100644
-> --- a/drivers/gpu/drm/exynos/exynos5433_drm_decon.c
-> +++ b/drivers/gpu/drm/exynos/exynos5433_drm_decon.c
-> @@ -319,9 +319,9 @@ static void decon_win_set_bldmod(struct decon_context *ctx, unsigned int win,
->   static void decon_win_set_pixfmt(struct decon_context *ctx, unsigned int win,
->   				 struct drm_framebuffer *fb)
->   {
-> -	struct exynos_drm_plane plane = ctx->planes[win];
-> +	struct exynos_drm_plane *plane = &ctx->planes[win];
->   	struct exynos_drm_plane_state *state =
-> -		to_exynos_plane_state(plane.base.state);
-> +		to_exynos_plane_state(plane->base.state);
->   	unsigned int alpha = state->base.alpha;
->   	unsigned int pixel_alpha;
->   	unsigned long val;
-> diff --git a/drivers/gpu/drm/exynos/exynos_drm_fimd.c b/drivers/gpu/drm/exynos/exynos_drm_fimd.c
-> index 8dde7b1e9b35..5bdc246f5fad 100644
-> --- a/drivers/gpu/drm/exynos/exynos_drm_fimd.c
-> +++ b/drivers/gpu/drm/exynos/exynos_drm_fimd.c
-> @@ -661,9 +661,9 @@ static void fimd_win_set_bldmod(struct fimd_context *ctx, unsigned int win,
->   static void fimd_win_set_pixfmt(struct fimd_context *ctx, unsigned int win,
->   				struct drm_framebuffer *fb, int width)
->   {
-> -	struct exynos_drm_plane plane = ctx->planes[win];
-> +	struct exynos_drm_plane *plane = &ctx->planes[win];
->   	struct exynos_drm_plane_state *state =
-> -		to_exynos_plane_state(plane.base.state);
-> +		to_exynos_plane_state(plane->base.state);
->   	uint32_t pixel_format = fb->format->format;
->   	unsigned int alpha = state->base.alpha;
->   	u32 val = WINCONx_ENWIN;
+are available in the Git repository at:
 
-Best regards
--- 
-Marek Szyprowski, PhD
-Samsung R&D Institute Poland
+  https://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git tags/platform-drivers-x86-v6.7-4
 
+for you to fetch changes up to 7bcd032370f88fd4022b6926d101403e96a86309:
+
+  platform/x86: intel_ips: fix kernel-doc formatting (2023-12-08 13:21:49 +0200)
+
+----------------------------------------------------------------
+platform-drivers-x86 for v6.7-4
+
+Changes:
+- tablet-mode-switch events fix
+- kernel-doc warning fixes
+
+The following is an automated shortlog grouped by driver:
+
+intel_ips:
+ -  fix kernel-doc formatting
+
+intel-vbtn:
+ -  Fix missing tablet-mode-switch events
+
+thinkpad_acpi:
+ -  fix kernel-doc warnings
+
+----------------------------------------------------------------
+Hans de Goede (1):
+      platform/x86: intel-vbtn: Fix missing tablet-mode-switch events
+
+Randy Dunlap (2):
+      platform/x86: thinkpad_acpi: fix kernel-doc warnings
+      platform/x86: intel_ips: fix kernel-doc formatting
+
+ drivers/platform/x86/intel/vbtn.c    | 19 +++++++++++++++----
+ drivers/platform/x86/intel_ips.c     | 30 +++++++++++++++++++++++-------
+ drivers/platform/x86/thinkpad_acpi.c |  6 +++---
+ 3 files changed, 41 insertions(+), 14 deletions(-)
