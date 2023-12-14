@@ -2,342 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B05A7813358
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 15:40:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EB26F813362
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 15:41:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1573529AbjLNOkE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 09:40:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57662 "EHLO
+        id S1573528AbjLNOlf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 09:41:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41754 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1573497AbjLNOkC (ORCPT
+        with ESMTP id S230298AbjLNOld (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 09:40:02 -0500
-Received: from mail-yb1-xb34.google.com (mail-yb1-xb34.google.com [IPv6:2607:f8b0:4864:20::b34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9947410E
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 06:40:08 -0800 (PST)
-Received: by mail-yb1-xb34.google.com with SMTP id 3f1490d57ef6-db4422fff15so6909310276.1
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 06:40:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=raspberrypi.com; s=google; t=1702564808; x=1703169608; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=CVbbR720mxFQWZWSF5/+frzTWN+zosuo0CwTK2ojkMc=;
-        b=e89WRZiqS/mxnnSFPbD1PbJq+rKp5JIFJEtgfw2p3Mgne+dA8Pxk8up9WpX/ESAczr
-         kjOnObY0FYsI/ws7inCt+/wBO+07+hzG4gY+XgbYup/ctlY9Fz2JfnkiygvNkE4VuSss
-         dTCQQ/zYpZ3vpj1ijBYyRuVbEjBXeusZkMBaB/NJHKRGGqDCqo8XCPX1thkRS/owESzx
-         hqMcVN0BqBKIr9WfezWyYrr9zFN/7maPA+mtYQZtFfO+9mQPTouwPjUazoQw8JmgCcmj
-         AQX31tu7XGhgf2JKQcKGsOqS823yOPwULq/Yb/Ba5PX4/YsykgTIFJhcFatr2Ubm4Zr2
-         LpBg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702564808; x=1703169608;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=CVbbR720mxFQWZWSF5/+frzTWN+zosuo0CwTK2ojkMc=;
-        b=G/GmtHKj3CiyFSeG2dL8ntEKG1F/EgUANQOfdcDItPvFYwgKYpuKZBxFTFuoWuuUzC
-         14thRW2VxhZ9Qao8JxFmpyKg0iEpZ4kpKK/k29bUlj6LDbLIH+rqW9Yq7ttXAVoPYPCh
-         xbRoyFUxUjpDuMGZZL0aruFqGvXm3TtJvbABkIKD/zQXbb6UtgnxiN+3RJh9Grc95Csv
-         J6YzMgDI+GFv0+3KPpMgSHH3+1K3/MX7vDnhPyzN0P5bHOFbi11ZN1GyUB5pRs3f/nAu
-         dL/lUeS8Hxa3wb39/w2HpuBzACcT4qWpnnENol05oWVwsahIsqJKR/WwkRTKPpjbfUI+
-         yEfA==
-X-Gm-Message-State: AOJu0YwI+CN/TuIc8RYy6jZH9e8X3LkZKKLEhmm2q4osSyOYXvYklIl3
-        9evYEuGuI0jdi1Qyb5UecQXHLKShPH3V+DGn/Z0kqQ==
-X-Google-Smtp-Source: AGHT+IE2fGQgctDfqw+SdyQcQrVtSDwfkDhdhufA57h07Dfv7cH935CDl5idwK5f/LKOwnfwTJf5aUvfXaezh/MpzdQ=
-X-Received: by 2002:a05:6902:cc2:b0:da3:b466:1f73 with SMTP id
- cq2-20020a0569020cc200b00da3b4661f73mr7064045ybb.24.1702564807819; Thu, 14
- Dec 2023 06:40:07 -0800 (PST)
+        Thu, 14 Dec 2023 09:41:33 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A937F125
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 06:41:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1702564900; x=1734100900;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=fO4V+ejCyUnzWk/Rt58KkdhI5/UtBknV5DJ/XG96U9Y=;
+  b=cKvCbDEW8Bk3Gih4ul7m72taq/M/nKTQMRXIvPVqtI3YgK2nire99ukf
+   mPp1VNBBZZ5WP6jZyrn2ucah9Wwpj+XIAYv7JVmVk8R3qr3uf+a8x/9+J
+   D7t6LByMX3YS+xFqiQVcrWJ6FcIswJfVkhM7VuN5+w+pz1GwDgr6sn9/H
+   fvsI0tYnECCUo9yT3eH3S4YXSh0l3U9MUr5htmYtLo6W2ONX1VChaLtIc
+   +FUTAbE3PWQe9DtRF5vCOAD7G3xual8rsFsn6hptwPsQG1QjA94IQtW8F
+   7u0R0k9SEXmUbni+waIrUYyard9fRBIi4oqj0oelbqX/0wovRLqMWH5iN
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10924"; a="16675699"
+X-IronPort-AV: E=Sophos;i="6.04,275,1695711600"; 
+   d="scan'208";a="16675699"
+Received: from orviesa001.jf.intel.com ([10.64.159.141])
+  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Dec 2023 06:41:36 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.04,275,1695711600"; 
+   d="scan'208";a="22432856"
+Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
+  by orviesa001.jf.intel.com with ESMTP; 14 Dec 2023 06:41:35 -0800
+Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1rDmu3-000MBQ-2l;
+        Thu, 14 Dec 2023 14:41:31 +0000
+Date:   Thu, 14 Dec 2023 22:40:40 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Ingo Molnar <mingo@kernel.org>
+Subject: arch/x86/kernel/apic/apic.c:2135: warning: Function parameter or
+ member 'spurious_interrupt' not described in 'DEFINE_IDTENTRY_IRQ'
+Message-ID: <202312142220.6hKrNeSe-lkp@intel.com>
 MIME-Version: 1.0
-References: <20231207-kms-hdmi-connector-state-v5-0-6538e19d634d@kernel.org> <20231207-kms-hdmi-connector-state-v5-6-6538e19d634d@kernel.org>
-In-Reply-To: <20231207-kms-hdmi-connector-state-v5-6-6538e19d634d@kernel.org>
-From:   Dave Stevenson <dave.stevenson@raspberrypi.com>
-Date:   Thu, 14 Dec 2023 14:39:51 +0000
-Message-ID: <CAPY8ntCzdxJ5zyk4eeWV8D+WBdfri61ttoNxVtJUZSAKHoMpGQ@mail.gmail.com>
-Subject: Re: [PATCH v5 06/44] drm/connector: Introduce an HDMI connector
- initialization function
-To:     Maxime Ripard <mripard@kernel.org>
-Cc:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>, Emma Anholt <emma@anholt.net>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Sandy Huang <hjc@rock-chips.com>,
-        =?UTF-8?Q?Heiko_St=C3=BCbner?= <heiko@sntech.de>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Samuel Holland <samuel@sholland.org>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, Hans Verkuil <hverkuil@xs4all.nl>,
-        linux-rockchip@lists.infradead.org, linux-sunxi@lists.linux.dev,
-        linux-arm-kernel@lists.infradead.org, linux-media@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Maxime
+Hi Thomas,
 
-As requested, I'm just going through patches 6-16.
-I will say that I've been less thorough in checking the kunit test
-code in this series than the core code changes, and I'm trusting that
-all the unit tests pass.
+FYI, the error/warning still remains.
 
-I get a build failure on the complete series for arm64 with the
-standard defconfig
-depmod: ERROR: Cycle detected: drm_display_helper -> drm_kms_helper ->
-drm_display_helper
-depmod: ERROR: Cycle detected: drm
-depmod: ERROR: Found 2 modules in dependency cycles!
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   5bd7ef53ffe5ca580e93e74eb8c81ed191ddc4bd
+commit: fa5e5c409213265da8a188b4a5e4e641b1382eb4 x86/entry: Use idtentry for interrupts
+date:   3 years, 6 months ago
+config: x86_64-allnoconfig (https://download.01.org/0day-ci/archive/20231214/202312142220.6hKrNeSe-lkp@intel.com/config)
+compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231214/202312142220.6hKrNeSe-lkp@intel.com/reproduce)
 
-I haven't followed it through as to the reason, but obviously that
-will need to be addressed.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202312142220.6hKrNeSe-lkp@intel.com/
 
-  Dave
+All warnings (new ones prefixed by >>):
 
-On Thu, 7 Dec 2023 at 15:49, Maxime Ripard <mripard@kernel.org> wrote:
->
-> A lot of the various HDMI drivers duplicate some logic that depends on
-> the HDMI spec itself and not really a particular hardware
-> implementation.
->
-> Output BPC or format selection, infoframe generation are good examples
-> of such areas.
->
-> This creates a lot of boilerplate, with a lot of variations, which makes
-> it hard for userspace to rely on, and makes it difficult to get it right
-> for drivers.
->
-> In the next patches, we'll add a lot of infrastructure around the
-> drm_connector and drm_connector_state structures, which will allow to
-> abstract away the duplicated logic. This infrastructure comes with a few
-> requirements though, and thus we need a new initialization function.
->
-> Hopefully, this will make drivers simpler to handle, and their behaviour
-> more consistent.
->
-> Signed-off-by: Maxime Ripard <mripard@kernel.org>
+>> arch/x86/kernel/apic/apic.c:2135: warning: Function parameter or member 'spurious_interrupt' not described in 'DEFINE_IDTENTRY_IRQ'
+>> arch/x86/kernel/apic/apic.c:2135: warning: expecting prototype for spurious_interrupt(). Prototype was for DEFINE_IDTENTRY_IRQ() instead
 
-Reviewed-by: Dave Stevenson <dave.stevenson@raspberrypi.com>
 
-> ---
->  drivers/gpu/drm/drm_connector.c            |  39 +++++++++
->  drivers/gpu/drm/tests/drm_connector_test.c | 123 +++++++++++++++++++++++++++++
->  include/drm/drm_connector.h                |   5 ++
->  3 files changed, 167 insertions(+)
->
-> diff --git a/drivers/gpu/drm/drm_connector.c b/drivers/gpu/drm/drm_connector.c
-> index b0516505f7ae..d9961cce8245 100644
-> --- a/drivers/gpu/drm/drm_connector.c
-> +++ b/drivers/gpu/drm/drm_connector.c
-> @@ -452,6 +452,45 @@ int drmm_connector_init(struct drm_device *dev,
->  }
->  EXPORT_SYMBOL(drmm_connector_init);
->
-> +/**
-> + * drmm_connector_hdmi_init - Init a preallocated HDMI connector
-> + * @dev: DRM device
-> + * @connector: A pointer to the HDMI connector to init
-> + * @funcs: callbacks for this connector
-> + * @connector_type: user visible type of the connector
-> + * @ddc: optional pointer to the associated ddc adapter
-> + *
-> + * Initialises a preallocated HDMI connector. Connectors can be
-> + * subclassed as part of driver connector objects.
-> + *
-> + * Cleanup is automatically handled with a call to
-> + * drm_connector_cleanup() in a DRM-managed action.
-> + *
-> + * The connector structure should be allocated with drmm_kzalloc().
-> + *
-> + * Returns:
-> + * Zero on success, error code on failure.
-> + */
-> +int drmm_connector_hdmi_init(struct drm_device *dev,
-> +                            struct drm_connector *connector,
-> +                            const struct drm_connector_funcs *funcs,
-> +                            int connector_type,
-> +                            struct i2c_adapter *ddc)
-> +{
-> +       int ret;
-> +
-> +       if (!(connector_type == DRM_MODE_CONNECTOR_HDMIA ||
-> +             connector_type == DRM_MODE_CONNECTOR_HDMIB))
-> +               return -EINVAL;
-> +
-> +       ret = drmm_connector_init(dev, connector, funcs, connector_type, ddc);
-> +       if (ret)
-> +               return ret;
-> +
-> +       return 0;
-> +}
-> +EXPORT_SYMBOL(drmm_connector_hdmi_init);
-> +
->  /**
->   * drm_connector_attach_edid_property - attach edid property.
->   * @connector: the connector
-> diff --git a/drivers/gpu/drm/tests/drm_connector_test.c b/drivers/gpu/drm/tests/drm_connector_test.c
-> index a268847be8d1..8f070cacab3b 100644
-> --- a/drivers/gpu/drm/tests/drm_connector_test.c
-> +++ b/drivers/gpu/drm/tests/drm_connector_test.c
-> @@ -172,6 +172,128 @@ static struct kunit_suite drmm_connector_init_test_suite = {
->         .test_cases = drmm_connector_init_tests,
->  };
->
-> +/*
-> + * Test that the registration of a bog standard connector works as
-> + * expected and doesn't report any error.
-> + */
-> +static void drm_test_connector_hdmi_init_valid(struct kunit *test)
-> +{
-> +       struct drm_connector_init_priv *priv = test->priv;
-> +       int ret;
-> +
-> +       ret = drmm_connector_hdmi_init(&priv->drm, &priv->connector,
-> +                                      &dummy_funcs,
-> +                                      DRM_MODE_CONNECTOR_HDMIA,
-> +                                      &priv->ddc);
-> +       KUNIT_EXPECT_EQ(test, ret, 0);
-> +}
-> +
-> +/*
-> + * Test that the registration of a connector without a DDC adapter
-> + * doesn't report any error.
-> + */
-> +static void drm_test_connector_hdmi_init_null_ddc(struct kunit *test)
-> +{
-> +       struct drm_connector_init_priv *priv = test->priv;
-> +       int ret;
-> +
-> +       ret = drmm_connector_hdmi_init(&priv->drm, &priv->connector,
-> +                                      &dummy_funcs,
-> +                                      DRM_MODE_CONNECTOR_HDMIA,
-> +                                      NULL);
-> +       KUNIT_EXPECT_EQ(test, ret, 0);
-> +}
-> +
-> +/*
-> + * Test that the registration of an HDMI connector with an HDMI
-> + * connector type succeeds.
-> + */
-> +static void drm_test_connector_hdmi_init_type_valid(struct kunit *test)
-> +{
-> +       struct drm_connector_init_priv *priv = test->priv;
-> +       unsigned int connector_type = *(unsigned int *)test->param_value;
-> +       int ret;
-> +
-> +       ret = drmm_connector_hdmi_init(&priv->drm, &priv->connector,
-> +                                      &dummy_funcs,
-> +                                      connector_type,
-> +                                      &priv->ddc);
-> +       KUNIT_EXPECT_EQ(test, ret, 0);
-> +}
-> +
-> +static const unsigned int drm_connector_hdmi_init_type_valid_tests[] = {
-> +       DRM_MODE_CONNECTOR_HDMIA,
-> +       DRM_MODE_CONNECTOR_HDMIB,
-> +};
-> +
-> +static void drm_connector_hdmi_init_type_desc(const unsigned int *type, char *desc)
-> +{
-> +       sprintf(desc, "%s", drm_get_connector_type_name(*type));
-> +}
-> +
-> +KUNIT_ARRAY_PARAM(drm_connector_hdmi_init_type_valid,
-> +                 drm_connector_hdmi_init_type_valid_tests,
-> +                 drm_connector_hdmi_init_type_desc);
-> +
-> +/*
-> + * Test that the registration of an HDMI connector with an !HDMI
-> + * connector type fails.
-> + */
-> +static void drm_test_connector_hdmi_init_type_invalid(struct kunit *test)
-> +{
-> +       struct drm_connector_init_priv *priv = test->priv;
-> +       unsigned int connector_type = *(unsigned int *)test->param_value;
-> +       int ret;
-> +
-> +       ret = drmm_connector_hdmi_init(&priv->drm, &priv->connector,
-> +                                      &dummy_funcs,
-> +                                      connector_type,
-> +                                      &priv->ddc);
-> +       KUNIT_EXPECT_LT(test, ret, 0);
-> +}
-> +
-> +static const unsigned int drm_connector_hdmi_init_type_invalid_tests[] = {
-> +       DRM_MODE_CONNECTOR_Unknown,
-> +       DRM_MODE_CONNECTOR_VGA,
-> +       DRM_MODE_CONNECTOR_DVII,
-> +       DRM_MODE_CONNECTOR_DVID,
-> +       DRM_MODE_CONNECTOR_DVIA,
-> +       DRM_MODE_CONNECTOR_Composite,
-> +       DRM_MODE_CONNECTOR_SVIDEO,
-> +       DRM_MODE_CONNECTOR_LVDS,
-> +       DRM_MODE_CONNECTOR_Component,
-> +       DRM_MODE_CONNECTOR_9PinDIN,
-> +       DRM_MODE_CONNECTOR_DisplayPort,
-> +       DRM_MODE_CONNECTOR_TV,
-> +       DRM_MODE_CONNECTOR_eDP,
-> +       DRM_MODE_CONNECTOR_VIRTUAL,
-> +       DRM_MODE_CONNECTOR_DSI,
-> +       DRM_MODE_CONNECTOR_DPI,
-> +       DRM_MODE_CONNECTOR_WRITEBACK,
-> +       DRM_MODE_CONNECTOR_SPI,
-> +       DRM_MODE_CONNECTOR_USB,
-> +};
-> +
-> +KUNIT_ARRAY_PARAM(drm_connector_hdmi_init_type_invalid,
-> +                 drm_connector_hdmi_init_type_invalid_tests,
-> +                 drm_connector_hdmi_init_type_desc);
-> +
-> +static struct kunit_case drmm_connector_hdmi_init_tests[] = {
-> +       KUNIT_CASE(drm_test_connector_hdmi_init_valid),
-> +       KUNIT_CASE(drm_test_connector_hdmi_init_null_ddc),
-> +       KUNIT_CASE_PARAM(drm_test_connector_hdmi_init_type_valid,
-> +                        drm_connector_hdmi_init_type_valid_gen_params),
-> +       KUNIT_CASE_PARAM(drm_test_connector_hdmi_init_type_invalid,
-> +                        drm_connector_hdmi_init_type_invalid_gen_params),
-> +       { }
-> +};
-> +
-> +static struct kunit_suite drmm_connector_hdmi_init_test_suite = {
-> +       .name = "drmm_connector_hdmi_init",
-> +       .init = drm_test_connector_init,
-> +       .test_cases = drmm_connector_hdmi_init_tests,
-> +};
-> +
->  struct drm_get_tv_mode_from_name_test {
->         const char *name;
->         enum drm_connector_tv_mode expected_mode;
-> @@ -236,6 +358,7 @@ static struct kunit_suite drm_get_tv_mode_from_name_test_suite = {
->  };
->
->  kunit_test_suites(
-> +       &drmm_connector_hdmi_init_test_suite,
->         &drmm_connector_init_test_suite,
->         &drm_get_tv_mode_from_name_test_suite
->  );
-> diff --git a/include/drm/drm_connector.h b/include/drm/drm_connector.h
-> index fe88d7fc6b8f..4491c4c2fb6e 100644
-> --- a/include/drm/drm_connector.h
-> +++ b/include/drm/drm_connector.h
-> @@ -1904,6 +1904,11 @@ int drmm_connector_init(struct drm_device *dev,
->                         const struct drm_connector_funcs *funcs,
->                         int connector_type,
->                         struct i2c_adapter *ddc);
-> +int drmm_connector_hdmi_init(struct drm_device *dev,
-> +                            struct drm_connector *connector,
-> +                            const struct drm_connector_funcs *funcs,
-> +                            int connector_type,
-> +                            struct i2c_adapter *ddc);
->  void drm_connector_attach_edid_property(struct drm_connector *connector);
->  int drm_connector_register(struct drm_connector *connector);
->  void drm_connector_unregister(struct drm_connector *connector);
->
-> --
-> 2.43.0
->
+vim +2135 arch/x86/kernel/apic/apic.c
+
+c0104d38a740b2 arch/x86/kernel/apic/apic.c Yinghai Lu      2010-12-07  2118  
+^1da177e4c3f41 arch/x86_64/kernel/apic.c   Linus Torvalds  2005-04-16  2119  /*
+0e078e2f5060e0 arch/x86/kernel/apic_64.c   Thomas Gleixner 2008-01-30  2120   * Local APIC interrupts
+^1da177e4c3f41 arch/x86_64/kernel/apic.c   Linus Torvalds  2005-04-16  2121   */
+^1da177e4c3f41 arch/x86_64/kernel/apic.c   Linus Torvalds  2005-04-16  2122  
+633260fa143bbe arch/x86/kernel/apic/apic.c Thomas Gleixner 2020-05-21  2123  /**
+fa5e5c40921326 arch/x86/kernel/apic/apic.c Thomas Gleixner 2020-05-21  2124   * spurious_interrupt - Catch all for interrupts raised on unused vectors
+633260fa143bbe arch/x86/kernel/apic/apic.c Thomas Gleixner 2020-05-21  2125   * @regs:	Pointer to pt_regs on stack
+fa5e5c40921326 arch/x86/kernel/apic/apic.c Thomas Gleixner 2020-05-21  2126   * @vector:	The vector number
+633260fa143bbe arch/x86/kernel/apic/apic.c Thomas Gleixner 2020-05-21  2127   *
+633260fa143bbe arch/x86/kernel/apic/apic.c Thomas Gleixner 2020-05-21  2128   * This is invoked from ASM entry code to catch all interrupts which
+633260fa143bbe arch/x86/kernel/apic/apic.c Thomas Gleixner 2020-05-21  2129   * trigger on an entry which is routed to the common_spurious idtentry
+633260fa143bbe arch/x86/kernel/apic/apic.c Thomas Gleixner 2020-05-21  2130   * point.
+633260fa143bbe arch/x86/kernel/apic/apic.c Thomas Gleixner 2020-05-21  2131   *
+633260fa143bbe arch/x86/kernel/apic/apic.c Thomas Gleixner 2020-05-21  2132   * Also called from smp_spurious_apic_interrupt().
+0e078e2f5060e0 arch/x86/kernel/apic_64.c   Thomas Gleixner 2008-01-30  2133   */
+fa5e5c40921326 arch/x86/kernel/apic/apic.c Thomas Gleixner 2020-05-21  2134  DEFINE_IDTENTRY_IRQ(spurious_interrupt)
+^1da177e4c3f41 arch/x86_64/kernel/apic.c   Linus Torvalds  2005-04-16 @2135  {
+dc1528dd864a0b arch/x86/kernel/apic_64.c   Yinghai Lu      2008-08-24  2136  	u32 v;
+dc1528dd864a0b arch/x86/kernel/apic_64.c   Yinghai Lu      2008-08-24  2137  
+61069de7a3252b arch/x86/kernel/apic/apic.c Thomas Gleixner 2017-08-28  2138  	trace_spurious_apic_entry(vector);
+61069de7a3252b arch/x86/kernel/apic/apic.c Thomas Gleixner 2017-08-28  2139  
+f8a8fe61fec800 arch/x86/kernel/apic/apic.c Thomas Gleixner 2019-06-28  2140  	inc_irq_stat(irq_spurious_count);
+f8a8fe61fec800 arch/x86/kernel/apic/apic.c Thomas Gleixner 2019-06-28  2141  
+f8a8fe61fec800 arch/x86/kernel/apic/apic.c Thomas Gleixner 2019-06-28  2142  	/*
+f8a8fe61fec800 arch/x86/kernel/apic/apic.c Thomas Gleixner 2019-06-28  2143  	 * If this is a spurious interrupt then do not acknowledge
+f8a8fe61fec800 arch/x86/kernel/apic/apic.c Thomas Gleixner 2019-06-28  2144  	 */
+f8a8fe61fec800 arch/x86/kernel/apic/apic.c Thomas Gleixner 2019-06-28  2145  	if (vector == SPURIOUS_APIC_VECTOR) {
+f8a8fe61fec800 arch/x86/kernel/apic/apic.c Thomas Gleixner 2019-06-28  2146  		/* See SDM vol 3 */
+f8a8fe61fec800 arch/x86/kernel/apic/apic.c Thomas Gleixner 2019-06-28  2147  		pr_info("Spurious APIC interrupt (vector 0xFF) on CPU#%d, should never happen.\n",
+f8a8fe61fec800 arch/x86/kernel/apic/apic.c Thomas Gleixner 2019-06-28  2148  			smp_processor_id());
+f8a8fe61fec800 arch/x86/kernel/apic/apic.c Thomas Gleixner 2019-06-28  2149  		goto out;
+f8a8fe61fec800 arch/x86/kernel/apic/apic.c Thomas Gleixner 2019-06-28  2150  	}
+f8a8fe61fec800 arch/x86/kernel/apic/apic.c Thomas Gleixner 2019-06-28  2151  
+0e078e2f5060e0 arch/x86/kernel/apic_64.c   Thomas Gleixner 2008-01-30  2152  	/*
+f8a8fe61fec800 arch/x86/kernel/apic/apic.c Thomas Gleixner 2019-06-28  2153  	 * If it is a vectored one, verify it's set in the ISR. If set,
+f8a8fe61fec800 arch/x86/kernel/apic/apic.c Thomas Gleixner 2019-06-28  2154  	 * acknowledge it.
+0e078e2f5060e0 arch/x86/kernel/apic_64.c   Thomas Gleixner 2008-01-30  2155  	 */
+2414e021ac8d58 arch/x86/kernel/apic/apic.c Jan Beulich     2014-11-03  2156  	v = apic_read(APIC_ISR + ((vector & ~0x1f) >> 1));
+f8a8fe61fec800 arch/x86/kernel/apic/apic.c Thomas Gleixner 2019-06-28  2157  	if (v & (1 << (vector & 0x1f))) {
+fa5e5c40921326 arch/x86/kernel/apic/apic.c Thomas Gleixner 2020-05-21  2158  		pr_info("Spurious interrupt (vector 0x%02x) on CPU#%d. Acked\n",
+f8a8fe61fec800 arch/x86/kernel/apic/apic.c Thomas Gleixner 2019-06-28  2159  			vector, smp_processor_id());
+0e078e2f5060e0 arch/x86/kernel/apic_64.c   Thomas Gleixner 2008-01-30  2160  		ack_APIC_irq();
+f8a8fe61fec800 arch/x86/kernel/apic/apic.c Thomas Gleixner 2019-06-28  2161  	} else {
+fa5e5c40921326 arch/x86/kernel/apic/apic.c Thomas Gleixner 2020-05-21  2162  		pr_info("Spurious interrupt (vector 0x%02x) on CPU#%d. Not pending!\n",
+f8a8fe61fec800 arch/x86/kernel/apic/apic.c Thomas Gleixner 2019-06-28  2163  			vector, smp_processor_id());
+f8a8fe61fec800 arch/x86/kernel/apic/apic.c Thomas Gleixner 2019-06-28  2164  	}
+f8a8fe61fec800 arch/x86/kernel/apic/apic.c Thomas Gleixner 2019-06-28  2165  out:
+2414e021ac8d58 arch/x86/kernel/apic/apic.c Jan Beulich     2014-11-03  2166  	trace_spurious_apic_exit(vector);
+0e078e2f5060e0 arch/x86/kernel/apic_64.c   Thomas Gleixner 2008-01-30  2167  }
+c4d58cbd158dc9 arch/x86/kernel/apic_64.c   Thomas Gleixner 2007-10-12  2168  
+
+:::::: The code at line 2135 was first introduced by commit
+:::::: 1da177e4c3f41524e886b7f1b8a0c1fc7321cac2 Linux-2.6.12-rc2
+
+:::::: TO: Linus Torvalds <torvalds@ppc970.osdl.org>
+:::::: CC: Linus Torvalds <torvalds@ppc970.osdl.org>
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
