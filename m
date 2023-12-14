@@ -2,359 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C7AB181389A
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 18:34:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A9CD813897
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 18:34:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231316AbjLNReT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 12:34:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58332 "EHLO
+        id S1444034AbjLNReP convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 14 Dec 2023 12:34:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58324 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229519AbjLNReQ (ORCPT
+        with ESMTP id S229519AbjLNReO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 12:34:16 -0500
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21A83FB;
-        Thu, 14 Dec 2023 09:34:22 -0800 (PST)
-Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BEDPfll004151;
-        Thu, 14 Dec 2023 17:34:08 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-        message-id:date:mime-version:subject:to:cc:references:from
-        :in-reply-to:content-type:content-transfer-encoding; s=
-        qcppdkim1; bh=VFbAmisByn8IfjR+LDffJlNuR76c9CFmr/6HrPlGMBM=; b=IV
-        LvUS//hys68Y0Mfn/cj3W60wI8OHRbGMmM3PjjmFGMzZl3WggQS3X5SMEqPB3y8F
-        uyeuYs5YmOJ9JDbmcSEvszRHERenzXEtDyKBW0jYciCGaBGzVRx5GXiPhoVqh2r8
-        G33u5SOHOOR39xFcqOdAn+GPZ78/EzxCc+mBFJ6mMKfBdXsiUpN+1Q4RxfENCyPB
-        C1FlJb4uSI/6jJ1Tz5acZtYati2n5Ko+8ZB5dkUlmRX5PmtkNpI+jsrZuZ/9SzEI
-        iICKuv9hXXz3UT+MeykLBrx9okufujzd45ztEeQpIuYg0eNlqVU2SPgXy97PY0L4
-        Zs6SkotqYEq9ifvV3O+A==
-Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3uytn69mjw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 14 Dec 2023 17:34:07 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3BEHY7dK015389
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 14 Dec 2023 17:34:07 GMT
-Received: from [10.110.80.224] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Thu, 14 Dec
- 2023 09:34:06 -0800
-Message-ID: <dab2beed-78de-6638-8389-d3e03c8cfc44@quicinc.com>
-Date:   Thu, 14 Dec 2023 09:34:05 -0800
+        Thu, 14 Dec 2023 12:34:14 -0500
+Received: from mail-lj1-f172.google.com (mail-lj1-f172.google.com [209.85.208.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44ABECF;
+        Thu, 14 Dec 2023 09:34:20 -0800 (PST)
+Received: by mail-lj1-f172.google.com with SMTP id 38308e7fff4ca-2cc3dd2d897so21397881fa.0;
+        Thu, 14 Dec 2023 09:34:20 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702575258; x=1703180058;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=/I1W7e0WksPQr4B0ossVVfyuwCWdZSDTARqTZ332iVA=;
+        b=CUjRuZsdP0GVflCOjfnGC+WYb4btVNGptBOItvUMAU4UePmZOcczcXjtdzHm2L3H/d
+         Q+k3Y1V/AAs1C+pxIl41XW7NB35N28Lbc7m0S9dPpqbTc4F59Cmunp5/KXpdzAX8sMmz
+         BMO3tfgE+iekoWMQz31HtnCry/89hS7mdaSO9Zo/VmeM2uMPA8NuZ9eT+QGoBSkpfuXV
+         s7hc0TMRKn8ed1GsEog2SBmDUIVhWKV09qqUiC+LLbtLTxjoTMUtAg8+9O+t9EDAgaMp
+         3a1RAUsSpstsowZVepZ+SuTpLtKqM1XZQ+Q7MI2y5R6rJeV5Ht+Bs+zIcwXlwdJ1ck2n
+         YvZQ==
+X-Gm-Message-State: AOJu0YzeZYakRRAtUKLBMqcc2xaB9MphqiD2whTZDlBFLiFkoFnyz0pl
+        CEB6Sb3NZOuyojBHDXLkBQjQJ2Uy3D1CLJVlng==
+X-Google-Smtp-Source: AGHT+IGp30y/H8P//ZOKK0ZSEtOYUDKVBBp+xHmSJODVndRI0if5ppAbKb6uab8A8wMFFgIMHH/LKKVpMRst2iIg9nk=
+X-Received: by 2002:a05:6512:148:b0:50b:f858:f132 with SMTP id
+ m8-20020a056512014800b0050bf858f132mr4870323lfo.132.1702575258112; Thu, 14
+ Dec 2023 09:34:18 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v5] drm/msm/dpu: improve DSC allocation
-Content-Language: en-US
-To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-CC:     <dri-devel@lists.freedesktop.org>, <robdclark@gmail.com>,
-        <sean@poorly.run>, <swboyd@chromium.org>, <dianders@chromium.org>,
-        <vkoul@kernel.org>, <daniel@ffwll.ch>, <airlied@gmail.com>,
-        <agross@kernel.org>, <andersson@kernel.org>,
-        <quic_abhinavk@quicinc.com>, <quic_jesszhan@quicinc.com>,
-        <quic_sbillaka@quicinc.com>, <marijn.suijten@somainline.org>,
-        <freedreno@lists.freedesktop.org>, <linux-arm-msm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-References: <1702493883-30148-1-git-send-email-quic_khsieh@quicinc.com>
- <CAA8EJppypE-0tUfVD-24YMOQ+3cP+_D1BZYju0K7qzaUE_RnKA@mail.gmail.com>
-From:   Kuogee Hsieh <quic_khsieh@quicinc.com>
-In-Reply-To: <CAA8EJppypE-0tUfVD-24YMOQ+3cP+_D1BZYju0K7qzaUE_RnKA@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: JjUnvfSeRHaJk9V08fzsqu5vFoNQXsxN
-X-Proofpoint-ORIG-GUID: JjUnvfSeRHaJk9V08fzsqu5vFoNQXsxN
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-09_01,2023-12-07_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 malwarescore=0
- phishscore=0 mlxlogscore=785 mlxscore=0 priorityscore=1501
- lowpriorityscore=0 suspectscore=0 bulkscore=0 impostorscore=0 adultscore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2311290000 definitions=main-2312140125
-X-Spam-Status: No, score=-4.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20231207192406.3809579-1-nphamcs@gmail.com> <CAF8kJuPEKWbr_1a-OzqrYKSPmuty==KhC2vbTPAmm9xcJHo4cg@mail.gmail.com>
+ <CAKEwX=Oj0Rur8i9Oo7y2Py7svx-g11sEj3GKQfMVL62x=4hvdA@mail.gmail.com>
+ <CAF8kJuNpnqTM5x1QmQ7h-FaRWVnHBdNGvGvB3txohSOmZhYA-Q@mail.gmail.com>
+ <20231209034229.GA1001962@cmpxchg.org> <ZXeTb_ACou7TEVsa@google.com> <20231214171137.GA261942@cmpxchg.org>
+In-Reply-To: <20231214171137.GA261942@cmpxchg.org>
+From:   Christopher Li <chrisl@kernel.org>
+Date:   Thu, 14 Dec 2023 09:34:06 -0800
+Message-ID: <CANeU7QnR+4Lgt8D9Z+Zo3Ydktx_7n45K0b=kVj+qSOzT=5GGQA@mail.gmail.com>
+Subject: Re: [PATCH v6] zswap: memcontrol: implement zswap writeback disabling
+To:     Johannes Weiner <hannes@cmpxchg.org>
+Cc:     Minchan Kim <minchan@kernel.org>, Nhat Pham <nphamcs@gmail.com>,
+        akpm@linux-foundation.org, tj@kernel.org, lizefan.x@bytedance.com,
+        cerasuolodomenico@gmail.com, yosryahmed@google.com,
+        sjenning@redhat.com, ddstreet@ieee.org, vitaly.wool@konsulko.com,
+        mhocko@kernel.org, roman.gushchin@linux.dev, shakeelb@google.com,
+        muchun.song@linux.dev, hughd@google.com, corbet@lwn.net,
+        konrad.wilk@oracle.com, senozhatsky@chromium.org, rppt@kernel.org,
+        linux-mm@kvack.org, kernel-team@meta.com,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        david@ixit.cz, Kairui Song <kasong@tencent.com>,
+        Zhongkun He <hezhongkun.hzk@bytedance.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Dec 14, 2023 at 9:11 AM Johannes Weiner <hannes@cmpxchg.org> wrote:
 
-On 12/13/2023 3:00 PM, Dmitry Baryshkov wrote:
-> On Wed, 13 Dec 2023 at 20:58, Kuogee Hsieh <quic_khsieh@quicinc.com> wrote:
->> At DSC V1.1 DCE (Display Compression Engine) contains a DSC encoder.
->> However, at DSC V1.2 DCE consists of two DSC encoders, one has an odd
->> index and another one has an even index. Each encoder can work
->> independently. But only two DSC encoders from same DCE can be paired
->> to work together to support DSC merge mode at DSC V1.2. For DSC V1.1
->> two consecutive DSC encoders (start with even index) have to be paired
->> to support DSC merge mode.  In addition, the DSC with even index have
->> to be mapped to even PINGPONG index and DSC with odd index have to be
->> mapped to odd PINGPONG index at its data path in regardless of DSC
->> V1.1 or V1.2. This patch improves DSC allocation mechanism with
->> consideration of those factors.
->>
->> Changes in V5:
->> -- delete dsc_id[]
->> -- update to global_state->dsc_to_enc_id[] directly
->> -- replace ndx with idx
->> -- fix indentation at function declaration
->> -- only one for loop at _dpu_rm_reserve_dsc_single()
->>
->> Changes in V4:
->> -- rework commit message
->> -- use reserved_by_other()
->> -- add _dpu_rm_pingpong_next_index()
->> -- revise _dpu_rm_pingpong_dsc_check()
->>
->> Changes in V3:
->> -- add dpu_rm_pingpong_dsc_check()
->> -- for pair allocation use i += 2 at for loop
->>
->> Changes in V2:
->>      -- split _dpu_rm_reserve_dsc() into _dpu_rm_reserve_dsc_single() and
->>         _dpu_rm_reserve_dsc_pair()
->>
->> Fixes: f2803ee91a41 ("drm/msm/disp/dpu1: Add DSC support in RM")
->> Signed-off-by: Kuogee Hsieh <quic_khsieh@quicinc.com>
->> ---
->>   drivers/gpu/drm/msm/disp/dpu1/dpu_rm.c | 162 +++++++++++++++++++++++++++++----
->>   1 file changed, 146 insertions(+), 16 deletions(-)
->>
->> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_rm.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_rm.c
->> index f9215643..7c7a88f 100644
->> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_rm.c
->> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_rm.c
->> @@ -461,29 +461,159 @@ static int _dpu_rm_reserve_ctls(
->>          return 0;
->>   }
->>
->> -static int _dpu_rm_reserve_dsc(struct dpu_rm *rm,
->> -                              struct dpu_global_state *global_state,
->> -                              struct drm_encoder *enc,
->> -                              const struct msm_display_topology *top)
->> +static int _dpu_rm_pingpong_next_index(int start,
->> +                                      uint32_t enc_id,
->> +                                      uint32_t *pp_to_enc_id,
->> +                                      int pp_max)
->>   {
->> -       int num_dsc = top->num_dsc;
->>          int i;
->>
->> -       /* check if DSC required are allocated or not */
->> -       for (i = 0; i < num_dsc; i++) {
->> -               if (!rm->dsc_blks[i]) {
->> -                       DPU_ERROR("DSC %d does not exist\n", i);
->> -                       return -EIO;
->> -               }
->> +       for (i = start; i < pp_max; i++) {
->> +               if (pp_to_enc_id[i] == enc_id)
->> +                       return i;
->> +       }
->> +
->> +       return -ENAVAIL;
->> +}
->> +
->> +static int _dpu_rm_pingpong_dsc_check(int dsc_idx, int pp_idx)
->> +{
->> +
-> CHECK: Blank lines aren't necessary after an open brace '{'
-> #85: FILE: drivers/gpu/drm/msm/disp/dpu1/dpu_rm.c:481:
+> > Hi Johannes,
+> >
+> > I haven't been following the thread closely, but I noticed the discussion
+> > about potential use cases for zram with memcg.
+> >
+> > One interesting idea I have is to implement a swap controller per cgroup.
+> > This would allow us to tailor the zram swap behavior to the specific needs of
+> > different groups.
+> >
+> > For example, Group A, which is sensitive to swap latency, could use zram swap
+> > with a fast compression setting, even if it sacrifices some compression ratio.
+> > This would prioritize quick access to swapped data, even if it takes up more space.
+> >
+> > On the other hand, Group B, which can tolerate higher swap latency, could benefit
+> > from a slower compression setting that achieves a higher compression ratio.
+> > This would maximize memory efficiency at the cost of slightly slower data access.
+> >
+> > This approach could provide a more nuanced and flexible way to manage swap usage
+> > within different cgroups.
 >
->> +       /*
->> +        * DSC with even index must be used with the PINGPONG with even index
->> +        * DSC with odd index must be used with the PINGPONG with odd index
->> +        */
->> +       if ((dsc_idx & 0x01) != (pp_idx & 0x01))
->> +               return -ENAVAIL;
->> +
->> +       return 0;
->> +}
->> +
->> +static int _dpu_rm_reserve_dsc_single(struct dpu_rm *rm,
->> +                                     struct dpu_global_state *global_state,
->> +                                     uint32_t enc_id,
->> +                                     const struct msm_display_topology *top)
->> +{
->> +       int num_dsc = 0;
->> +       uint32_t *pp_to_enc_id = global_state->pingpong_to_enc_id;
->> +       uint32_t *dsc_enc_id = global_state->dsc_to_enc_id;
->> +       int pp_max = PINGPONG_MAX - PINGPONG_0;
->> +       int pp_idx;
->> +       int dsc_idx;
->> +       int ret;
->> +
->> +       for (dsc_idx = 0; dsc_idx < ARRAY_SIZE(rm->dsc_blks) &&
->> +                         num_dsc < 1; dsc_idx++) {
-> The condition is wrong here. Also it is misaligned.
+> That makes sense to me.
+>
+> It sounds to me like per-cgroup swapfiles would be the easiest
+> solution to this. Then you can create zram devices with different
+> configurations and assign them to individual cgroups.
 
-i will remove checking  num_dsc < 1 here and add break at end of body of 
-for loop since it only allocate one dsc
-
+Ideally you need zram then following swap file after the zram. That
+would be a list of the swap files rather than just one swapfile per
+cgroup.
 
 >
->> +               if (!rm->dsc_blks[dsc_idx])
->> +                       continue;
->> +
->> +               if (reserved_by_other(dsc_enc_id, dsc_idx, enc_id))
->> +                       continue;
->> +
->> +               pp_idx = _dpu_rm_pingpong_next_index(0, enc_id,
-> And this is wrong too. You should start relatively to your previous PP index.
+> This would also apply to Kairu's usecase: assign zrams and hdd backups
+> as needed on a per-cgroup basis.
 
-It does not have previous pp_index since it only allocate on dsc.
+Same there, Kairui's request involves ZRAM and at least one extra swap
+file. In other words, you really need a per cgroup swap file list.
 
 >
->> +                                                    pp_to_enc_id, pp_max);
->> +               if (pp_idx < 0)
->> +                       return -ENAVAIL;
->> +
->> +               ret = _dpu_rm_pingpong_dsc_check(dsc_idx, pp_idx);
->> +               if (ret)
->> +                       return -ENAVAIL;
->> +
->> +               dsc_enc_id[dsc_idx] = enc_id;
->> +               num_dsc++;
->> +       }
->> +
->> +       if (!num_dsc) {
->> +               DPU_ERROR("DSC allocation failed num_dsc=%d\n", num_dsc);
->> +               return -ENAVAIL;
->> +       }
->>
->> -               if (global_state->dsc_to_enc_id[i]) {
->> -                       DPU_ERROR("DSC %d is already allocated\n", i);
->> -                       return -EIO;
->> +       return 0;
->> +}
->> +
->> +static int _dpu_rm_reserve_dsc_pair(struct dpu_rm *rm,
->> +                                   struct dpu_global_state *global_state,
->> +                                   uint32_t enc_id,
->> +                                   const struct msm_display_topology *top)
->> +{
->> +       int num_dsc = 0;
->> +       uint32_t *pp_to_enc_id = global_state->pingpong_to_enc_id;
->> +       uint32_t *dsc_enc_id = global_state->dsc_to_enc_id;
-> No need for these anymore. Please inline them. Or simply pass
-> global_state to _dpu_rm_pingpong_next_index().
-> Other functions in dpu_rm.c don't define local variables for these
-> arrays. I don't see why this patch should deviate from that.
+> In addition, it would naturally solve scalability and isolation
+> problems when multiple containers would otherwise be hammering on the
+> same swap backends and locks.
 >
->> +       int pp_max = PINGPONG_MAX - PINGPONG_0;
->> +       int start_pp_idx = 0;
->> +       int dsc_idx, pp_idx;
->> +       int ret;
->> +
->> +       /* only start from even dsc index */
->> +       for (dsc_idx = 0; dsc_idx < ARRAY_SIZE(rm->dsc_blks) &&
->> +                         num_dsc < top->num_dsc; dsc_idx += 2) {
-> Misaligned
+> It would also only require one, relatively simple new interface, such
+> as a cgroup parameter to swapon().
 >
->> +               if (!rm->dsc_blks[dsc_idx] ||
->> +                   !rm->dsc_blks[dsc_idx + 1])
->> +                       continue;
->> +
->> +               /* consective dsc index to be paired */
->> +               if (reserved_by_other(dsc_enc_id, dsc_idx, enc_id) ||
->> +                   reserved_by_other(dsc_enc_id, dsc_idx + 1, enc_id))
->> +                       continue;
->> +
->> +               pp_idx = _dpu_rm_pingpong_next_index(start_pp_idx, enc_id,
->> +                                                    pp_to_enc_id, pp_max);
->> +               if (pp_idx < 0)
->> +                       return -ENAVAIL;
->> +
->> +               ret = _dpu_rm_pingpong_dsc_check(dsc_idx, pp_idx);
->> +               if (ret) {
->> +                       pp_idx = 0;
->> +                       continue;
->>                  }
->> +
->> +               pp_idx = _dpu_rm_pingpong_next_index(pp_idx + 1, enc_id,
->> +                                                    pp_to_enc_id, pp_max);
->> +               if (pp_idx < 0)
->> +                       return -ENAVAIL;
-> Fresh pp_idx has to be checked against dsc_idx + 1.
->
-> Let me also have a suggestion for you. The pp_max is a constant. You
-> don't have to pass it to _dpu_rm_pingpong_next_index() at all! Also if
-> you change the function to accept enum dpu_pingpong, you can start
-> with PINGPONG_NONE and move +1 into the function, making the callers
-> simpler, removing the need or start_pp_idx (which I asked to do in v4)
-> etc.
->
->> +
->> +               dsc_enc_id[dsc_idx] = enc_id;
->> +               dsc_enc_id[dsc_idx + 1] = enc_id;
->> +               num_dsc += 2;
->> +
->> +               start_pp_idx = pp_idx + 1;      /* start for next pair */
->>          }
->>
->> -       for (i = 0; i < num_dsc; i++)
->> -               global_state->dsc_to_enc_id[i] = enc->base.id;
->> +       if (num_dsc < top->num_dsc) {
->> +               DPU_ERROR("DSC allocation failed num_dsc=%d required=%d\n",
->> +                                               num_dsc, top->num_dsc);
-> Misaligned
->
->> +               return -ENAVAIL;
->> +       }
->> +
->> +       return 0;
->> +}
->> +
->> +static int _dpu_rm_reserve_dsc(struct dpu_rm *rm,
->> +                              struct dpu_global_state *global_state,
->> +                              struct drm_encoder *enc,
->> +                              const struct msm_display_topology *top)
->> +{
->> +       uint32_t enc_id = enc->base.id;
->> +
->> +       if (!top->num_dsc || !top->num_intf)
->> +               return 0;
->> +
->> +       /*
->> +        * Facts:
->> +        * 1) DSCs ouput to an interface
-> WARNING: 'ouput' may be misspelled - perhaps 'output'?
->
-> Also, what does it bring to us?
->
->> +        * 2) no pingpong split (two layer mixers shared one pingpong)
->> +        * 3) DSC pair start from even index, such as index(0,1), (2,3), etc
-> starts
->
->> +        * 4) even PINGPONG connects to even DSC
->> +        * 5) odd PINGPONG connects to odd DSC
->> +        * 6) pair: encoder +--> pp_idx_0 --> dsc_idx_0
->> +        *                  +--> pp_idx_1 --> dsc_idx_1
->> +        */
->> +
->> +       /* num_dsc should be either 1, 2 or 4 */
->> +       if (top->num_dsc > top->num_intf)       /* merge mode */
->> +               return _dpu_rm_reserve_dsc_pair(rm, global_state, enc_id, top);
->> +       else
->> +               return _dpu_rm_reserve_dsc_single(rm, global_state, enc_id, top);
->>
->>          return 0;
->>   }
->> --
->> 2.7.4
->>
-> Kuogee, we value your patches. But could you please fix your editor
-> settings to properly align C statements? E.g. Vim has the "set
-> cino=(0" setting, which does most of the work. I suspect that your
-> code editor should also have a similar setting. Also could you please
-> establish a practice of using checkpatch.pl at least until we stop
-> hitting obvious issues there?
->
+> That's highly preferable over a complex configuration file like
+> memory.swap.tiers that needs to solve all sorts of visibility and
+> namespace issues and duplicate the full configuration interface of
+> every backend in some new, custom syntax.
+
+If you don't like the syntax of memory.swap.tiers, I am open to
+suggestions of your preferred syntax as well. The essicents of the
+swap.tiers is a per cgroup list of the swap back ends. The names imply
+that. I am not married to any given syntax of how to specify the list.
+Its goal matches the above requirement pretty well.
+
+Chris
