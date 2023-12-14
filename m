@@ -2,49 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FF03812CF8
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 11:32:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F0267812D03
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 11:34:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1443652AbjLNKcR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 05:32:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48828 "EHLO
+        id S1443658AbjLNKeI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 05:34:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45894 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1443656AbjLNKcG (ORCPT
+        with ESMTP id S1443655AbjLNKeG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 05:32:06 -0500
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81E1D125
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 02:32:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
-        s=201909; t=1702549927;
-        bh=wq25GBJsbyghd55GhhhgbPyxN8BeAnr9gNBYTVIUpPs=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OzCRiAsfvE/MJiS5OPusWIC2gJQhPD09SHuFxXokr64wyYQrZialQTGpNYmkqBA2j
-         66UMyYAW7tdn20EOajWVbv8Fl+dnYz8URxGFLoCAuVxH3949xRhkes/6gF0TVeLcwT
-         4KoMFWw3cqGdMT9K/wxlyduoSwqROYlggR7dRay7RybY+Mw5NsUu0KdbTia+yXyZYw
-         +oscrfxUhR2gODqFFbD5C3ceZ6DsQtKdU7/4Ku6jHfIsQMAOI62qP2ey7rRYwntI+r
-         pT2vDS08k4EFuW4ZXvua/HhmtdOd+jXZIgVh5Of8aQiJTyFIlxSBO7PR3DB52HAlxQ
-         eLX2dzWM+Q9wA==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4SrTDl4rgGz4xRn;
-        Thu, 14 Dec 2023 21:32:07 +1100 (AEDT)
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     <linuxppc-dev@lists.ozlabs.org>
-Cc:     <christophe.leroy@csgroup.eu>, <robh+dt@kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH v2 5/5] powerpc: Stop using of_root
-Date:   Thu, 14 Dec 2023 21:31:52 +1100
-Message-ID: <20231214103152.12269-5-mpe@ellerman.id.au>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20231214103152.12269-1-mpe@ellerman.id.au>
-References: <20231214103152.12269-1-mpe@ellerman.id.au>
+        Thu, 14 Dec 2023 05:34:06 -0500
+Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 980D2E3;
+        Thu, 14 Dec 2023 02:34:12 -0800 (PST)
+Received: by mail-wr1-x431.google.com with SMTP id ffacd0b85a97d-336353782efso2008381f8f.0;
+        Thu, 14 Dec 2023 02:34:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1702550051; x=1703154851; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=d9Bav5GT9+DiIlOayf2xo0fOPFAMpMbevtPaUgb/OCo=;
+        b=nQaKIJ/P/Ugz4s7qKSZc/YfLwNHCSF9O5XHwLccAEDkVb9f+j9oaNGRpTQ0u68ftgc
+         BZFQAs134IMIxTLn247Vk2zKNv+KVz+diTr0yByYzZ2XNZljeZ4aDEHAjhSoyiYJl7K+
+         dQ3wyjdi52wnt9R2XwhmUyOz7iT1B62ALqeAi3+bGfRyFtbc1xoum+QGsmpMj1+cF9mr
+         aN5bPUT9E0cRfBmtzE+WJZzS1qMy1pUlHfrlJMTnLRubEjxhiNHNmxjWFvrNqxehNVLT
+         R4yMXV8puqeXhNAnY8m/KATU0bdJwpKWD0TNuerNxie6T2LMzgWXDLLWhrpekmPWasce
+         EKOw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702550051; x=1703154851;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=d9Bav5GT9+DiIlOayf2xo0fOPFAMpMbevtPaUgb/OCo=;
+        b=VfB2Y8sYNyqFvqjVronyaMbwlPa08nQg9+0HnqgrgYnreMTCJfq38HbywptWOvnWKw
+         mTNcBc2uNx5+umZHOjX3bgfEISW4uf6AGY4geuHZLdu8TLwv+9Y2txY7uhym8/l0G07d
+         8S2Hzn3wQPUWXXr7n62R6+eQd068zmeC5G89yJEJbTGebbTWO95sBJ5a9fV2VWbNie0O
+         +8wFLWwla1HRtn63q7GgoUPDzwWo9bjO7khpaiQzyWSLyZizCN/+bGJPyfZfEYjHnEjp
+         yHYADLKobJd/kNnuztqKfGLe6jyFBH6Ga+6UF6DmJu3KtHKneBmpiIJGAsdyxZo7oD4I
+         BeAw==
+X-Gm-Message-State: AOJu0Yxlt+X1dehB7q6cNHTLaG8yBzp89Sn1aLzIVmFmOvRS1HthX3k6
+        kR2cpAXm8+YibGhBqBWRdaM=
+X-Google-Smtp-Source: AGHT+IHU8zAZ+E9+PZta62TwukgImvaSq5gWkMu2b2zX9JqnUFdExGM5t+FRMov8SdJb0wP4JxqGjg==
+X-Received: by 2002:adf:ec8e:0:b0:333:2fd2:51d1 with SMTP id z14-20020adfec8e000000b003332fd251d1mr5060094wrn.74.1702550050755;
+        Thu, 14 Dec 2023 02:34:10 -0800 (PST)
+Received: from localhost.localdomain ([129.0.226.240])
+        by smtp.gmail.com with ESMTPSA id e4-20020a5d65c4000000b003333ed23356sm15849623wrw.4.2023.12.14.02.34.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 Dec 2023 02:34:09 -0800 (PST)
+From:   Brandon Cheo Fusi <fusibrandon13@gmail.com>
+To:     Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Samuel Holland <samuel@sholland.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Yangtao Li <tiny.windzz@gmail.com>
+Cc:     devicetree@vger.kernel.org, linux-riscv@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
+        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        Brandon Cheo Fusi <fusibrandon13@gmail.com>
+Subject: [PATCH 0/5] cpufreq support for the D1
+Date:   Thu, 14 Dec 2023 11:33:37 +0100
+Message-Id: <20231214103342.30775-1-fusibrandon13@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -52,222 +82,29 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe Leroy <christophe.leroy@csgroup.eu>
+This patch series adds support for cpufreq on the D1 SoC, and a new
+Kconfig.riscv file to cater to cpufreq drivers that support RISC-V
+SoCs.
 
-Replace all usages of of_root by of_find_node_by_path("/")
+The changes have been tested on a Lichee RV module.
 
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
-Reviewed-by: Rob Herring <robh@kernel.org>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
----
- arch/powerpc/kernel/secure_boot.c        |  8 ++++++--
- arch/powerpc/kexec/ranges.c              |  8 +++++---
- arch/powerpc/mm/drmem.c                  | 10 +++++-----
- arch/powerpc/mm/numa.c                   |  6 ++++--
- arch/powerpc/platforms/52xx/efika.c      |  4 +++-
- arch/powerpc/platforms/pasemi/pci.c      |  4 +++-
- arch/powerpc/platforms/pseries/lparcfg.c |  6 +++++-
- arch/powerpc/platforms/pseries/setup.c   | 12 +++++++++---
- 8 files changed, 40 insertions(+), 18 deletions(-)
+Brandon Cheo Fusi (5):
+  riscv: dts: allwinner: Update opp table to allow CPU frequency scaling
+  cpufreq: sun50i: Add D1 support
+  cpufreq: dt-platdev: Blocklist allwinner,sun20i-d1 SoC
+  cpufreq: Add support for RISC-V CPU Frequency scaling drivers
+  cpufreq: Make sun50i h6 cpufreq Kconfig option generic
 
-v2: Unchanged.
+ arch/riscv/boot/dts/allwinner/sun20i-d1s.dtsi | 18 +++++++++++++++---
+ drivers/cpufreq/Kconfig                       |  4 ++++
+ drivers/cpufreq/Kconfig.arm                   |  4 ++--
+ drivers/cpufreq/Kconfig.riscv                 | 16 ++++++++++++++++
+ drivers/cpufreq/Makefile                      |  2 +-
+ drivers/cpufreq/cpufreq-dt-platdev.c          |  1 +
+ drivers/cpufreq/sun50i-cpufreq-nvmem.c        |  1 +
+ 7 files changed, 40 insertions(+), 6 deletions(-)
+ create mode 100644 drivers/cpufreq/Kconfig.riscv
 
-diff --git a/arch/powerpc/kernel/secure_boot.c b/arch/powerpc/kernel/secure_boot.c
-index f9af305d9579..9e0efb657f39 100644
---- a/arch/powerpc/kernel/secure_boot.c
-+++ b/arch/powerpc/kernel/secure_boot.c
-@@ -32,8 +32,10 @@ bool is_ppc_secureboot_enabled(void)
- 	if (enabled)
- 		goto out;
- 
--	if (!of_property_read_u32(of_root, "ibm,secure-boot", &secureboot))
-+	node = of_find_node_by_path("/");
-+	if (!of_property_read_u32(node, "ibm,secure-boot", &secureboot))
- 		enabled = (secureboot > 1);
-+	of_node_put(node);
- 
- out:
- 	pr_info("Secure boot mode %s\n", enabled ? "enabled" : "disabled");
-@@ -54,8 +56,10 @@ bool is_ppc_trustedboot_enabled(void)
- 	if (enabled)
- 		goto out;
- 
--	if (!of_property_read_u32(of_root, "ibm,trusted-boot", &trustedboot))
-+	node = of_find_node_by_path("/");
-+	if (!of_property_read_u32(node, "ibm,trusted-boot", &trustedboot))
- 		enabled = (trustedboot > 0);
-+	of_node_put(node);
- 
- out:
- 	pr_info("Trusted boot mode %s\n", enabled ? "enabled" : "disabled");
-diff --git a/arch/powerpc/kexec/ranges.c b/arch/powerpc/kexec/ranges.c
-index fb3e12f15214..33b780049aaf 100644
---- a/arch/powerpc/kexec/ranges.c
-+++ b/arch/powerpc/kexec/ranges.c
-@@ -385,14 +385,16 @@ int add_opal_mem_range(struct crash_mem **mem_ranges)
- int add_reserved_mem_ranges(struct crash_mem **mem_ranges)
- {
- 	int n_mem_addr_cells, n_mem_size_cells, i, len, cells, ret = 0;
-+	struct device_node *root = of_find_node_by_path("/");
- 	const __be32 *prop;
- 
--	prop = of_get_property(of_root, "reserved-ranges", &len);
-+	prop = of_get_property(root, "reserved-ranges", &len);
-+	n_mem_addr_cells = of_n_addr_cells(root);
-+	n_mem_size_cells = of_n_size_cells(root);
-+	of_node_put(root);
- 	if (!prop)
- 		return 0;
- 
--	n_mem_addr_cells = of_n_addr_cells(of_root);
--	n_mem_size_cells = of_n_size_cells(of_root);
- 	cells = n_mem_addr_cells + n_mem_size_cells;
- 
- 	/* Each reserved range is an (address,size) pair */
-diff --git a/arch/powerpc/mm/drmem.c b/arch/powerpc/mm/drmem.c
-index fde7790277f7..c110ab8fa8a3 100644
---- a/arch/powerpc/mm/drmem.c
-+++ b/arch/powerpc/mm/drmem.c
-@@ -393,17 +393,17 @@ static const __be32 *of_get_usable_memory(struct device_node *dn)
- int walk_drmem_lmbs(struct device_node *dn, void *data,
- 		    int (*func)(struct drmem_lmb *, const __be32 **, void *))
- {
-+	struct device_node *root = of_find_node_by_path("/");
- 	const __be32 *prop, *usm;
- 	int ret = -ENODEV;
- 
--	if (!of_root)
-+	if (!root)
- 		return ret;
- 
- 	/* Get the address & size cells */
--	of_node_get(of_root);
--	n_root_addr_cells = of_n_addr_cells(of_root);
--	n_root_size_cells = of_n_size_cells(of_root);
--	of_node_put(of_root);
-+	n_root_addr_cells = of_n_addr_cells(root);
-+	n_root_size_cells = of_n_size_cells(root);
-+	of_node_put(root);
- 
- 	if (init_drmem_lmb_size(dn))
- 		return ret;
-diff --git a/arch/powerpc/mm/numa.c b/arch/powerpc/mm/numa.c
-index f6c4ace3b221..a490724e84ad 100644
---- a/arch/powerpc/mm/numa.c
-+++ b/arch/powerpc/mm/numa.c
-@@ -1111,7 +1111,7 @@ static void __init setup_node_data(int nid, u64 start_pfn, u64 end_pfn)
- 
- static void __init find_possible_nodes(void)
- {
--	struct device_node *rtas;
-+	struct device_node *rtas, *root;
- 	const __be32 *domains = NULL;
- 	int prop_length, max_nodes;
- 	u32 i;
-@@ -1132,10 +1132,12 @@ static void __init find_possible_nodes(void)
- 	 * If the LPAR is migratable, new nodes might be activated after a LPM,
- 	 * so we should consider the max number in that case.
- 	 */
--	if (!of_get_property(of_root, "ibm,migratable-partition", NULL))
-+	root = of_find_node_by_path("/");
-+	if (!of_get_property(root, "ibm,migratable-partition", NULL))
- 		domains = of_get_property(rtas,
- 					  "ibm,current-associativity-domains",
- 					  &prop_length);
-+	of_node_put(root);
- 	if (!domains) {
- 		domains = of_get_property(rtas, "ibm,max-associativity-domains",
- 					&prop_length);
-diff --git a/arch/powerpc/platforms/52xx/efika.c b/arch/powerpc/platforms/52xx/efika.c
-index aa82e6b437f3..37a67120f257 100644
---- a/arch/powerpc/platforms/52xx/efika.c
-+++ b/arch/powerpc/platforms/52xx/efika.c
-@@ -195,8 +195,10 @@ static void __init efika_setup_arch(void)
- 
- static int __init efika_probe(void)
- {
--	const char *model = of_get_property(of_root, "model", NULL);
-+	struct device_node *root = of_find_node_by_path("/");
-+	const char *model = of_get_property(root, "model", NULL);
- 
-+	of_node_put(root);
- 	if (model == NULL)
- 		return 0;
- 	if (strcmp(model, "EFIKA5K2"))
-diff --git a/arch/powerpc/platforms/pasemi/pci.c b/arch/powerpc/platforms/pasemi/pci.c
-index f27d31414737..60f990a336c4 100644
---- a/arch/powerpc/platforms/pasemi/pci.c
-+++ b/arch/powerpc/platforms/pasemi/pci.c
-@@ -270,16 +270,18 @@ static int __init pas_add_bridge(struct device_node *dev)
- 
- void __init pas_pci_init(void)
- {
-+	struct device_node *root = of_find_node_by_path("/");
- 	struct device_node *np;
- 	int res;
- 
- 	pci_set_flags(PCI_SCAN_ALL_PCIE_DEVS);
- 
--	np = of_find_compatible_node(of_root, NULL, "pasemi,rootbus");
-+	np = of_find_compatible_node(root, NULL, "pasemi,rootbus");
- 	if (np) {
- 		res = pas_add_bridge(np);
- 		of_node_put(np);
- 	}
-+	of_node_put(root);
- }
- 
- void __iomem *__init pasemi_pci_getcfgaddr(struct pci_dev *dev, int offset)
-diff --git a/arch/powerpc/platforms/pseries/lparcfg.c b/arch/powerpc/platforms/pseries/lparcfg.c
-index 1c151d77e74b..f73c4d1c26af 100644
---- a/arch/powerpc/platforms/pseries/lparcfg.c
-+++ b/arch/powerpc/platforms/pseries/lparcfg.c
-@@ -346,9 +346,13 @@ static int read_rtas_lpar_name(struct seq_file *m)
-  */
- static int read_dt_lpar_name(struct seq_file *m)
- {
-+	struct device_node *root = of_find_node_by_path("/");
- 	const char *name;
-+	int ret;
- 
--	if (of_property_read_string(of_root, "ibm,partition-name", &name))
-+	ret = of_property_read_string(root, "ibm,partition-name", &name);
-+	of_node_put(root);
-+	if (ret)
- 		return -ENOENT;
- 
- 	seq_printf(m, "partition_name=%s\n", name);
-diff --git a/arch/powerpc/platforms/pseries/setup.c b/arch/powerpc/platforms/pseries/setup.c
-index ecea85c74c43..284a6fa04b0c 100644
---- a/arch/powerpc/platforms/pseries/setup.c
-+++ b/arch/powerpc/platforms/pseries/setup.c
-@@ -1029,9 +1029,11 @@ static void __init pseries_add_hw_description(void)
- 		return;
- 	}
- 
--	if (of_property_read_bool(of_root, "ibm,powervm-partition") ||
--	    of_property_read_bool(of_root, "ibm,fw-net-version"))
-+	dn = of_find_node_by_path("/");
-+	if (of_property_read_bool(dn, "ibm,powervm-partition") ||
-+	    of_property_read_bool(dn, "ibm,fw-net-version"))
- 		seq_buf_printf(&ppc_hw_desc, "hv:phyp ");
-+	of_node_put(dn);
- }
- 
- /*
-@@ -1091,7 +1093,11 @@ static void pseries_power_off(void)
- 
- static int __init pSeries_probe(void)
- {
--	if (!of_node_is_type(of_root, "chrp"))
-+	struct device_node *root = of_find_node_by_path("/");
-+	bool ret = of_node_is_type(root, "chrp");
-+
-+	of_node_put(root);
-+	if (!ret)
- 		return 0;
- 
- 	/* Cell blades firmware claims to be chrp while it's not. Until this
 -- 
-2.43.0
+2.30.2
 
