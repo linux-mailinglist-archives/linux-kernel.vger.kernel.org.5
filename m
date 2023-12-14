@@ -2,101 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B71C813686
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 17:41:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 45D0B81368B
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 17:43:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230172AbjLNQlm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 11:41:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43838 "EHLO
+        id S229714AbjLNQmw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 11:42:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49984 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229543AbjLNQlj (ORCPT
+        with ESMTP id S229957AbjLNQmu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 11:41:39 -0500
-Received: from mail-pg1-x549.google.com (mail-pg1-x549.google.com [IPv6:2607:f8b0:4864:20::549])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1601114
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 08:41:45 -0800 (PST)
-Received: by mail-pg1-x549.google.com with SMTP id 41be03b00d2f7-5cd5a1ad43aso312537a12.3
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 08:41:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1702572105; x=1703176905; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=yuDIlHPXc3h0xC5YU4/ai6dB8VlmCAB/+AvZ2ucJ1/U=;
-        b=ludcU88/lGdmhVEW+b4J9KNQCqOjUyJndxHEHxyFA2tyw7xi4lao+CAXJmt7bQ5Uhd
-         lOGxVGx2ooC/5GZcFYE1Zs3FrouwdoKxnxRe/uTE36XXzmQYvF8QRGMhtQbIRp5Xazb0
-         N2JzsbsAoXCydVGACzQ+plMn11/u6Jpbm5xgKqZ2n6FiRzcuJydQ6drjFmaLCxXVDt9b
-         pPsBiPmXZvfFw9bg2VyS1O2RBMtKgZnMrXq3TIl4bldw3TMG1lxLaXFtYWkae+wgb99G
-         CwItHcYy7RNJ+BdGNBtrmO9C19xpJOUEzpELBiIoON/yqwZTcftbsl9I9oKsIXKtsCVF
-         ysaQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702572105; x=1703176905;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=yuDIlHPXc3h0xC5YU4/ai6dB8VlmCAB/+AvZ2ucJ1/U=;
-        b=B0expfFl9tgjjL7mwi6iinu36NMtYI4BXN20u7rjdpdj6vzrb81R1qxQoMSQvovu4A
-         OSAmpjxVZaUdh7ryOVyIiXFQlmc0B/lT9rHvyiAbkbu+jRdxGYkgx2DDrWWPRW+Q5ShU
-         EeB0tfX1qGMmXdH7FLPOdyft1EMLw3jZC565U2RXrs8ohA2oM8IUHXoZbB5n7/VHZcYX
-         AssQu8l9aoYtvZvd3UldoT58KzcHLK/VNhdkXcXkpbm7s/nqBz+gsJDzYSyBHeGqGIQn
-         DTa8qoqtjw7UnY+ZcdnHMVwlXfE2oOFcuPkOzAKXUNizjZuIatYrj4XnUgVDoX4WEsc0
-         2S3A==
-X-Gm-Message-State: AOJu0YzFtMdxXRo3GUC9+JL5UQRtqnlnD8v3UHyLzc+mBEjq/d4Aaeko
-        6w8WG7zShFvH0fbCrsyZ3XsRv6hTsos=
-X-Google-Smtp-Source: AGHT+IEprhiATuTdUWMrDqAwIvYwY4NpyGfKixHgWQGjoC7m8JjaRWItR9a08wY6L5ZSGKdGQrSv392O7Xo=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a65:418a:0:b0:5ca:4357:347f with SMTP id
- a10-20020a65418a000000b005ca4357347fmr567734pgq.7.1702572105188; Thu, 14 Dec
- 2023 08:41:45 -0800 (PST)
-Date:   Thu, 14 Dec 2023 08:41:43 -0800
-In-Reply-To: <aa7aa5ea5b112a0ec70c6276beb281e19c052f0e.camel@redhat.com>
-Mime-Version: 1.0
-References: <cover.1699936040.git.isaku.yamahata@intel.com>
- <1c12f378af7de16d7895f8badb18c3b1715e9271.1699936040.git.isaku.yamahata@intel.com>
- <938efd3cfcb25d828deab0cc0ba797177cc69602.camel@redhat.com>
- <ZXo54VNuIqbMsYv-@google.com> <aa7aa5ea5b112a0ec70c6276beb281e19c052f0e.camel@redhat.com>
-Message-ID: <ZXswR04H9Tl7xlyj@google.com>
-Subject: Re: [PATCH v2 1/3] KVM: x86: Make the hardcoded APIC bus frequency vm variable
-From:   Sean Christopherson <seanjc@google.com>
-To:     Maxim Levitsky <mlevitsk@redhat.com>
-Cc:     isaku.yamahata@intel.com, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, isaku.yamahata@gmail.com,
-        Paolo Bonzini <pbonzini@redhat.com>, erdemaktas@google.com,
-        Vishal Annapurve <vannapurve@google.com>,
-        Jim Mattson <jmattson@google.com>
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no version=3.4.6
+        Thu, 14 Dec 2023 11:42:50 -0500
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [IPv6:2a00:1098:ed:100::25])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A55F114;
+        Thu, 14 Dec 2023 08:42:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1702572174;
+        bh=04lraI2c4Uv8FYflDBQHgnQ/5ptT6GN6bQzxy23YiUU=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=sz0m5ZgYDE5dfllYDKZomUG52RmngQJQu77ZBXrDUYIcZoX9EFgXRibxckiUF0Jd+
+         5KgHwKtwN3Hsz/0K74YqlYUZWsI5XU1l7F+CvSVGnej+Trnajb/7irngCFx7r1t7KK
+         NsraIMCCwPmUw5WZ0rMheceXvFOPktPSosJ7wBtqEBpOG2/LuF5Yd0yaoyN9sIU8CK
+         /z885ZZ288pzv1SGfrOglWYZVyUIDvtmirN0sp45HBArOJsV8R7iqlfAAI7+77k8Te
+         gvNq0cJXuP9wrZUDu4xDOeUyUr22iUUvszu/EoAnx46q3L3qaWO3hHITnPDyQ3xQmr
+         2cUdUzLu1reEQ==
+Received: from [100.115.223.179] (cola.collaboradmins.com [195.201.22.229])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: cristicc)
+        by madrid.collaboradmins.com (Postfix) with ESMTPSA id 89F7D37809D0;
+        Thu, 14 Dec 2023 16:42:53 +0000 (UTC)
+Message-ID: <913257d4-75dc-4887-97d6-0f206c401057@collabora.com>
+Date:   Thu, 14 Dec 2023 18:42:52 +0200
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 11/11] ASoC: SOF: topology: Add new DAI type entry for
+ SOF_DAI_AMD_BT
+Content-Language: en-US
+To:     Venkata Prasad Potturu <venkataprasad.potturu@amd.com>,
+        Mark Brown <broonie@kernel.org>
+Cc:     Liam Girdwood <lgirdwood@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
+        Bard Liao <yung-chuan.liao@linux.intel.com>,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        Daniel Baluta <daniel.baluta@nxp.com>,
+        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+        Alper Nebi Yasak <alpernebiyasak@gmail.com>,
+        Syed Saba Kareem <Syed.SabaKareem@amd.com>,
+        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+        Marian Postevca <posteuca@mutex.one>,
+        Vijendar Mukunda <Vijendar.Mukunda@amd.com>,
+        V sujith kumar Reddy <Vsujithkumar.Reddy@amd.com>,
+        Mastan Katragadda <Mastan.Katragadda@amd.com>,
+        Ajit Kumar Pandey <AjitKumar.Pandey@amd.com>,
+        linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org,
+        sound-open-firmware@alsa-project.org, kernel@collabora.com
+References: <20231209205351.880797-1-cristian.ciocaltea@collabora.com>
+ <20231209205351.880797-12-cristian.ciocaltea@collabora.com>
+ <fad8a055-eabb-4087-94d5-9e1de00933e4@amd.com>
+ <aa830670-e544-43a2-9ba9-a64f1964a9f5@collabora.com>
+ <318470ce-1631-4c46-b425-755c877dda65@amd.com>
+ <421128f7-6a17-4be9-a72b-272ea4017fbd@collabora.com>
+ <ZXXEsyBUCrBULNgk@finisterre.sirena.org.uk>
+ <5095ce7b-13bd-4805-b81e-f7565ab41b67@collabora.com>
+ <dea5fb18-5fdc-4be4-9981-a6876cf531eb@amd.com>
+ <ca828ee1-93f7-432e-b95d-e67c35cdcdb5@collabora.com>
+ <0de8f81b-e7d4-43f6-b011-eb6ee09cc7fe@amd.com>
+From:   Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
+In-Reply-To: <0de8f81b-e7d4-43f6-b011-eb6ee09cc7fe@amd.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 14, 2023, Maxim Levitsky wrote:
-> On Wed, 2023-12-13 at 15:10 -0800, Sean Christopherson wrote:
-> > Upstream KVM's non-TDX behavior is fine, because KVM doesn't advertise support
-> > for CPUID 0x15, i.e. doesn't announce to host userspace that it's safe to expose
-> > CPUID 0x15 to the guest.  Because TDX makes exposing CPUID 0x15 mandatory, KVM
-> > needs to be taught to correctly emulate the guest's APIC bus frequency, a.k.a.
-> > the TDX guest core crystal frequency of 25Mhz.
+On 12/14/23 15:15, Venkata Prasad Potturu wrote:
 > 
-> I assume that TDX doesn't allow to change the CPUID 0x15 leaf.
+> On 12/14/23 17:53, Cristian Ciocaltea wrote:
+>> On 12/11/23 07:58, Venkata Prasad Potturu wrote:
+>>> On 12/10/23 21:20, Cristian Ciocaltea wrote:
+>>>> On 12/10/23 16:01, Mark Brown wrote:
+>>>>> On Sun, Dec 10, 2023 at 12:12:53PM +0200, Cristian Ciocaltea wrote:
+>>>>>> On 12/10/23 11:51, Venkata Prasad Potturu wrote:
+>>>>>>> This should send to SOF git repo for rewiew, once SOF reviewers
+>>>>>>> approved
+>>>>>>> this, again need to send to broonie git.
+>>>>>>> All the changes in sound/soc/sof/ path should go to SOF git.
+>>>>>> Unfortunately I'm not familiar with the SOF dev workflow. So it's not
+>>>>>> enough to have this patch cc-ed to
+>>>>>> sound-open-firmware@alsa-project.org?
+>>>>> The SOF people basically do their own thing in github at
+>>>>>
+>>>>>      https://github.com/thesofproject/linux
+>>>>>
+>>>>> with a github workflow and submit their patches upstream in batches a
+>>>>> few times a release, however my understanding is that their
+>>>>> workflow can
+>>>>> cope with things going in directly upstream as well.
+>>>> Thanks for clarifying, Mark!  That would greatly simplify and speedup
+>>>> the whole process, at least for trivial patches like this one.
+>>> Hi Cristian,
+>>>
+>>> We have created a Pull request in SOF git hub for I2S BT support.
+>>> please hold v2 version SOF patches till below PR get's merged.
+>>> PR:- https://github.com/thesofproject/linux/pull/4742
+>> Hi Venkata,
+>>
+>> If this is going to be handled via the github workflow, this patch
+>> should be removed from the series.  Since there is no dependency on it,
+>> I cannot see a reason to put v2 on hold.
+>>
+>> Do I miss something?
+> Non-sof driver related patches can directly send to broonie git ad v2
+> series.
+> SOF driver patches should send to SOF github to avoid merge conflicts
+> as  per guidelines of SOF community.
 
-Correct.  I meant to call that out below, but left my sentence half-finished.  It
-was supposed to say:
+Honestly, I don't really see a high risk of conflicts, the patches are
+not that complex and can be simply cherry-picked when needed.  Moreover,
+as we already had people reviewing this, splitting this up will only add
+confusion and unnecessary burden.
 
-  I halfheartedly floated the idea of "fixing" the TDX module/architecture to either
-  use 1Ghz as the base frequency or to allow configuring the base frequency
-  advertised to the guest.
-
-> > I halfheartedly floated the idea of "fixing" the TDX module/architecture to either
-> > use 1Ghz as the base frequency (off list), but it definitely isn't a hill worth
-> > dying on since the KVM changes are relatively simple.
-> > 
-> > https://lore.kernel.org/all/ZSnIKQ4bUavAtBz6@google.com
-> > 
-> 
-> Best regards,
-> 	Maxim Levitsky
-> 
+Are there any specific changes you are concerned about and cannot be
+really handled here?
