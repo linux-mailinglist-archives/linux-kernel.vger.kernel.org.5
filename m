@@ -2,78 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D378813038
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 13:33:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0774F81303F
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 13:35:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1573065AbjLNMdO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 07:33:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45074 "EHLO
+        id S1573057AbjLNMff (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 07:35:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50908 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1573060AbjLNMdM (ORCPT
+        with ESMTP id S1573035AbjLNMfd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 07:33:12 -0500
-Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41997116
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 04:33:18 -0800 (PST)
-Received: by mail-lj1-x235.google.com with SMTP id 38308e7fff4ca-2cc3647bf06so22636551fa.2
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 04:33:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ragnatech.se; s=google; t=1702557196; x=1703161996; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=qOKRvReK44WjC67PpboxcBAbWNfB0BRmMGzQVugpv1I=;
-        b=rPQOtEhj7NoKrhnE41K6eNPo8ZJBU3/TvDfFUEnrxKTiSkQAlJc6LV3WJ6bdCndALU
-         uGsNJ3/eq4/FKFLtMpsXuqgSTkw2SlDlowCmryhXChavD1qiznHXwl9jWU2Z1AipECNe
-         /0aLh3iEnh9sQxgFOW4wM6C8K2dLKUz2dtQen4HjEp66bgrF8SCZNzaqzJbdrgWTAblx
-         gLm1i108wVPQ/PQe9BiEMAH3FeegsjU4WhgSp6OSR6TUGXVEV95PGVbbou/5Bl5VuKPt
-         swDVKTUVwhb6tUJ7Du814/QtX2pevkqp35gXRiYG3V+tote8utvZ8uwvp6ZrEnn718C1
-         lxoQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702557196; x=1703161996;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=qOKRvReK44WjC67PpboxcBAbWNfB0BRmMGzQVugpv1I=;
-        b=D2P7Yyv3mEpxbuI+DQZ+oWNzeXj7PrZYdjNh42rqIRYIcDWZL6fmkl2JTWgzEKK2C3
-         ZAp6u9nwx5rlOOe5PjytXmxylQs1iSS1LxJg/SO+dpY0Rv42F2DqO9ZIeJZS51JaMVP3
-         Tk9jfEs4/XdvRPEZ5f1S6I7K1uu6s6vUJXWe/yKLiqlh81+jjkL8EEQKx86zNuPDS2CY
-         JH30qm1xfMm+2xIf5jV9F8o1SFEdsmSllR7sDQzgKahHIoIG8ujUVaM02WVFyAOaEdNY
-         i0g2SvDusYGtQvZXmSfhkfJShj47vw+wSOGxXb74HEfv9Vlqb7sN2Qf9eMDylL59agE2
-         DmKg==
-X-Gm-Message-State: AOJu0YzE9/Pp2Vz4xytnhSP4NS4Ln1kixKhMveo1JbMbORdMr0R3nvpY
-        Du2bpY7Y0Ucsgv8kKDzm2DlBYUddMSUfIDXKQVk=
-X-Google-Smtp-Source: AGHT+IH5NkhwO7Bck9gXySSKfyEWsZo7KqBsKJph/ZdaImpEC0ABrLLMoAFOIsAgX7Nrk1vij46ftA==
-X-Received: by 2002:a2e:908d:0:b0:2c9:f864:9c7 with SMTP id l13-20020a2e908d000000b002c9f86409c7mr2982649ljg.55.1702557196324;
-        Thu, 14 Dec 2023 04:33:16 -0800 (PST)
-Received: from localhost (h-46-59-36-206.A463.priv.bahnhof.se. [46.59.36.206])
-        by smtp.gmail.com with ESMTPSA id v18-20020a2e87d2000000b002ca013cb05csm2119750ljj.79.2023.12.14.04.33.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Dec 2023 04:33:15 -0800 (PST)
-Date:   Thu, 14 Dec 2023 13:33:15 +0100
-From:   Niklas =?utf-8?Q?S=C3=B6derlund?= 
-        <niklas.soderlund+renesas@ragnatech.se>
-To:     Claudiu <claudiu.beznea@tuxon.dev>
-Cc:     s.shtylyov@omp.ru, davem@davemloft.net, edumazet@google.com,
-        kuba@kernel.org, pabeni@redhat.com,
-        claudiu.beznea.uj@bp.renesas.com, yoshihiro.shimoda.uh@renesas.com,
-        wsa+renesas@sang-engineering.com, biju.das.jz@bp.renesas.com,
-        prabhakar.mahadev-lad.rj@bp.renesas.com,
-        mitsuhiro.kimura.kc@renesas.com, geert+renesas@glider.be,
-        netdev@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net 2/2] net: ravb: Check that GTI loading request is done
-Message-ID: <20231214123315.GL1863068@ragnatech.se>
-References: <20231214113137.2450292-1-claudiu.beznea.uj@bp.renesas.com>
- <20231214113137.2450292-3-claudiu.beznea.uj@bp.renesas.com>
+        Thu, 14 Dec 2023 07:35:33 -0500
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB0AD113;
+        Thu, 14 Dec 2023 04:35:39 -0800 (PST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 6685322186;
+        Thu, 14 Dec 2023 12:35:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1702557337; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ZYirUAC6N29fDSAllwGdxO1Cp96hi+jPjLKPL8qjsww=;
+        b=jLeMy55drn0apwJhysUssEJko4fUz99Wqon+9cBC/NbwIHNgdSsw/47Asose1zLkmdhSFO
+        e/ONvSchmdane62kHzdk9majyh0FXnpWzhdAmsQqxwwWDyvrL1xZafr9R3h7meDulJxvNE
+        PwLaPU8M/HwtwDUAg+UqZgvADorvvng=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1702557337;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ZYirUAC6N29fDSAllwGdxO1Cp96hi+jPjLKPL8qjsww=;
+        b=h7p8PaMbQYFVCTn+tBJi9d2azbewHW5gpEKL7n6g5NaxtLrQRhxsEvG64ks6sPBGaCVa54
+        dcXjrqxDUo9SjnDQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1702557337; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ZYirUAC6N29fDSAllwGdxO1Cp96hi+jPjLKPL8qjsww=;
+        b=jLeMy55drn0apwJhysUssEJko4fUz99Wqon+9cBC/NbwIHNgdSsw/47Asose1zLkmdhSFO
+        e/ONvSchmdane62kHzdk9majyh0FXnpWzhdAmsQqxwwWDyvrL1xZafr9R3h7meDulJxvNE
+        PwLaPU8M/HwtwDUAg+UqZgvADorvvng=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1702557337;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ZYirUAC6N29fDSAllwGdxO1Cp96hi+jPjLKPL8qjsww=;
+        b=h7p8PaMbQYFVCTn+tBJi9d2azbewHW5gpEKL7n6g5NaxtLrQRhxsEvG64ks6sPBGaCVa54
+        dcXjrqxDUo9SjnDQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id F06CD1379A;
+        Thu, 14 Dec 2023 12:35:36 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+        by imap1.dmz-prg2.suse.org with ESMTPSA
+        id bqEcN5j2emU8AgAAD6G6ig
+        (envelope-from <vbabka@suse.cz>); Thu, 14 Dec 2023 12:35:36 +0000
+Message-ID: <f38ee1c0-a68e-b97b-ef92-038c949ee706@suse.cz>
+Date:   Thu, 14 Dec 2023 13:35:35 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20231214113137.2450292-3-claudiu.beznea.uj@bp.renesas.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH v2] Documentation, mm/unaccepted: document accept_memory
+ kernel parameter
+Content-Language: en-US
+To:     Jonathan Corbet <corbet@lwn.net>
+Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Tim Chen <tim.c.chen@linux.intel.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Linux-MM <linux-mm@kvack.org>
+References: <20231214-accept_memory_param-v2-1-f38cd20a0247@suse.cz>
+From:   Vlastimil Babka <vbabka@suse.cz>
+In-Reply-To: <20231214-accept_memory_param-v2-1-f38cd20a0247@suse.cz>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spamd-Bar: ++++
+Authentication-Results: smtp-out1.suse.de;
+        dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=jLeMy55d;
+        dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=h7p8PaMb;
+        dmarc=none;
+        spf=softfail (smtp-out1.suse.de: 2a07:de40:b281:104:10:150:64:97 is neither permitted nor denied by domain of vbabka@suse.cz) smtp.mailfrom=vbabka@suse.cz
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [4.29 / 50.00];
+         ARC_NA(0.00)[];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+         BAYES_HAM(-0.00)[35.44%];
+         FROM_HAS_DN(0.00)[];
+         TO_DN_SOME(0.00)[];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         NEURAL_HAM_LONG(-1.00)[-1.000];
+         MIME_GOOD(-0.10)[text/plain];
+         DMARC_NA(1.20)[suse.cz];
+         R_SPF_SOFTFAIL(4.60)[~all:c];
+         RCPT_COUNT_FIVE(0.00)[6];
+         RCVD_COUNT_THREE(0.00)[3];
+         DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+         DKIM_TRACE(0.00)[suse.cz:+];
+         MX_GOOD(-0.01)[];
+         DBL_BLOCKED_OPENRESOLVER(0.00)[intel.com:email];
+         FUZZY_BLOCKED(0.00)[rspamd.com];
+         FROM_EQ_ENVFROM(0.00)[];
+         MIME_TRACE(0.00)[0:+];
+         NEURAL_HAM_SHORT(-0.20)[-0.996];
+         RCVD_TLS_ALL(0.00)[];
+         MID_RHS_MATCH_FROM(0.00)[]
+X-Spam-Score: 4.29
+X-Rspamd-Queue-Id: 6685322186
+X-Spam-Status: No, score=-6.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -81,81 +128,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Claudiu,
++CC linux-mm
 
-Thanks for your work.
-
-On 2023-12-14 13:31:37 +0200, Claudiu wrote:
-> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+On 12/14/23 13:22, Vlastimil Babka wrote:
+> The accept_memory kernel parameter was added in commit dcdfdd40fa82
+> ("mm: Add support for unaccepted memory") but not listed in the
+> kernel-parameters doc. Add it there.
 > 
-> Hardware manual specifies the following for GCCR.LTI bit:
-> 0: Setting completed
-> 1: When written: Issue a configuration request.
-> When read: Completion of settings is pending
-
-This is hard to parse at first glance, the last row have odd indentation 
-and the mixing of read and write info is odd. I know this reflects how 
-it's written in the datasheet, but at least there the indentation is 
-correct. Also missing here is the fact that only 1 can be written to the 
-bit.
-
-> 
-> Thus, check the completion status when setting 1 to GCCR.LTI.
-
-Can you describe in the commit why this fix is needed. I agree it is, 
-but would be nice to record why. As this have a fixes tags have you hit 
-an issue? Or are you correcting the driver based on the datasheet?
-
-Maybe a more informative commit message could be to describe the change 
-and why it's needed instead of the register layout?
-
-  The driver do not wait for the confirmation of the configuring request 
-  of the gPTP timer increment before moving on. Add a check to make sure 
-  the request completes successfully.
-
-> 
-> Fixes: 7e09a052dc4e ("ravb: Exclude gPTP feature support for RZ/G2L")
-> Fixes: 568b3ce7a8ef ("ravb: factor out register bit twiddling code")
-> Fixes: 0184165b2f42 ("ravb: add sleep PM suspend/resume support")
-> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+> Acked-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+> Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
 > ---
->  drivers/net/ethernet/renesas/ravb_main.c | 8 ++++++++
->  1 file changed, 8 insertions(+)
+> changes since v1:
+> - use shorter sentences (Tim Chen)
+> ---
+>  Documentation/admin-guide/kernel-parameters.txt | 11 +++++++++++
+>  1 file changed, 11 insertions(+)
 > 
-> diff --git a/drivers/net/ethernet/renesas/ravb_main.c b/drivers/net/ethernet/renesas/ravb_main.c
-> index ce95eb5af354..1c253403a297 100644
-> --- a/drivers/net/ethernet/renesas/ravb_main.c
-> +++ b/drivers/net/ethernet/renesas/ravb_main.c
-> @@ -2819,6 +2819,10 @@ static int ravb_probe(struct platform_device *pdev)
->  
->  		/* Request GTI loading */
->  		ravb_modify(ndev, GCCR, GCCR_LTI, GCCR_LTI);
-> +		/* Check completion status. */
-> +		error = ravb_wait(ndev, GCCR, GCCR_LTI, 0);
-> +		if (error)
-> +			goto out_disable_refclk;
-
-nit: Maybe create a helper for this so future fixes only need to be 
-addressed in one location?
-
->  	}
->  
->  	if (info->internal_delay) {
-> @@ -3041,6 +3045,10 @@ static int __maybe_unused ravb_resume(struct device *dev)
->  
->  		/* Request GTI loading */
->  		ravb_modify(ndev, GCCR, GCCR_LTI, GCCR_LTI);
-> +		/* Check completion status. */
-> +		ret = ravb_wait(ndev, GCCR, GCCR_LTI, 0);
-> +		if (ret)
-> +			return ret;
->  	}
->  
->  	if (info->internal_delay)
-> -- 
-> 2.39.2
+> diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+> index 65731b060e3f..91bd74b2e203 100644
+> --- a/Documentation/admin-guide/kernel-parameters.txt
+> +++ b/Documentation/admin-guide/kernel-parameters.txt
+> @@ -1,3 +1,14 @@
+> +	accept_memory=  [MM]
+> +			Format: { eager | lazy }
+> +			default: lazy
+> +			By default, unaccepted memory is accepted lazily to
+> +			avoid prolonged boot times. The lazy option will add
+> +			some runtime overhead until all memory is eventually
+> +			accepted. In most cases the overhead is negligible.
+> +			For some workloads or for debugging purposes
+> +			accept_memory=eager can be used to accept all memory
+> +			at once during boot.
+> +
+>  	acpi=		[HW,ACPI,X86,ARM64,RISCV64]
+>  			Advanced Configuration and Power Interface
+>  			Format: { force | on | off | strict | noirq | rsdt |
 > 
-
--- 
-Kind Regards,
-Niklas Söderlund
+> ---
+> base-commit: a39b6ac3781d46ba18193c9dbb2110f31e9bffe9
+> change-id: 20231214-accept_memory_param-af395e3a2d45
+> 
+> Best regards,
