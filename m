@@ -1,362 +1,171 @@
-Return-Path: <linux-kernel+bounces-208-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-210-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4CDB6813D7C
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 23:49:02 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 05649813D81
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 23:49:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E9D2E281735
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 22:49:00 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B0BAF1F22680
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 22:49:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1678E6E2A4;
-	Thu, 14 Dec 2023 22:48:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB6276E59A;
+	Thu, 14 Dec 2023 22:49:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="WDEaU5DN"
+	dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b="V1GB+wpO";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="sT5D85BD"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-lf1-f53.google.com (mail-lf1-f53.google.com [209.85.167.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from wout1-smtp.messagingengine.com (wout1-smtp.messagingengine.com [64.147.123.24])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D584697B7
-	for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 22:48:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lf1-f53.google.com with SMTP id 2adb3069b0e04-50bfd8d5c77so10470e87.1
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 14:48:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1702594107; x=1703198907; darn=vger.kernel.org;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=yZZxZdtOI4FdgO9A4qaLtAUNeS5rm+jyNaoNzPNaDEA=;
-        b=WDEaU5DNk6aBitXCuc09bsgv2107Pz9JuxvrD02kZC1xWGUWbmmJedPompzrVau9+s
-         FaC2xn2Qm2BISaYUN5/W+YR0KxcbBDo4lecvCg/AD3DVV1jUo4lf8X5VtQXQol8Iluxt
-         FscFXqflwiHE6WV52BmpdO7zmWoJzfqhYs8Dy1vL+Ygek0L0NpCnJ4aa4kSBiJjE+8Zi
-         ZJcge1d8rrdaz5hp0TKPIuTqnwzzMlmlu7LB0qdSFFNRk1lnHqqye2OkMaVeDDHgMFx9
-         TPX73QAnXsBx84rv4GD6w+r2ZJSCPPIycvFsy1hzG2Sw4aa+K+S8pIu071QVpS1PaWpK
-         g8mw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702594107; x=1703198907;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=yZZxZdtOI4FdgO9A4qaLtAUNeS5rm+jyNaoNzPNaDEA=;
-        b=BZ4OApQl4f2PP/18AOAWUpKBZ3U5AT13LZvYgnKkMIo2xZnZaXALEancXjiJ9Sj5gc
-         iej6h12upAvYaKtUzmfOImco7SZdBhpvXcz8qf2OcfQS2hJN+0SSX8+QhJmK4e2doBnA
-         ofx7OmtmQI2i1Hk8kJQ4VxOfvPDktx+l1tE1Ea9AUJXxHk13nJrJKXoAB74ev1HZaoPR
-         QJjtJ4uzYqrs35jc4JVLXEsFCd/uHMWgvwRz1xm1/2Bh5NVeWq2qfSZdLCZGyN3Kr83G
-         x/ZmYU9Jp7UzeUYY7lnHJPFEqRbpABPrZcqcYHia1+TeiiZwAdQiNEcBVLhTkr0moJ7D
-         /Pow==
-X-Gm-Message-State: AOJu0YwNbYKOZziM4otzjJC4mN68fZKicOb2HLKmmHotlkL/zjqjeCfV
-	iWqsSBf/JSWCdNIz7O7czpjBdf3oiWXr81C2XkI=
-X-Google-Smtp-Source: AGHT+IH1JT+oH81WhvjxPgVA4QXVnuxlCXReh277fuu8sGn2FL8qjypxC6f1wPQG2QLHI83aiIPJGw==
-X-Received: by 2002:a19:6404:0:b0:50c:a91:6186 with SMTP id y4-20020a196404000000b0050c0a916186mr2205389lfb.35.1702594107310;
-        Thu, 14 Dec 2023 14:48:27 -0800 (PST)
-Received: from [127.0.1.1] ([79.115.23.25])
-        by smtp.gmail.com with ESMTPSA id vq6-20020a170907a4c600b00a19b7362dcfsm10068118ejc.139.2023.12.14.14.48.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Dec 2023 14:48:26 -0800 (PST)
-From: Abel Vesa <abel.vesa@linaro.org>
-Date: Fri, 15 Dec 2023 00:48:13 +0200
-Subject: [PATCH v3 2/2] arm64: dts: qcom: x1e80100-crd: Enable more support
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A19D6D1DD;
+	Thu, 14 Dec 2023 22:49:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dxuuu.xyz
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+	by mailout.west.internal (Postfix) with ESMTP id 761BC3200B5A;
+	Thu, 14 Dec 2023 17:49:17 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute3.internal (MEProxy); Thu, 14 Dec 2023 17:49:18 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
+	:cc:content-transfer-encoding:content-type:date:date:from:from
+	:in-reply-to:message-id:mime-version:reply-to:subject:subject:to
+	:to; s=fm3; t=1702594156; x=1702680556; bh=ZFh7mAohRzEfC8EAB2/qm
+	p1+GaJriUVMYQQUQ3IIsw8=; b=V1GB+wpOoDak5vL+2MbB2FmZc2tbIaaW7zhcy
+	3D2sgArYuLnDisYAvIKjdqO8M5yit/3qQVC5y7itqyibMcEChryljNurDW7mczhq
+	9dKX3MyQOwh3jggs6Q2mw2ugVyHw3a0tGuN31vvH0oRFkVmZpkBoFbemiRpXUosF
+	XNVwt2OQaHHHN3NNR+VwWGnCbrBWvXv22Yyz6nH8rxa1UOCT0nrt107wOQCPOQHl
+	oovqK/b97wdrHa884Dsvs/G6nSNClRonWz3HCAdRhTOa7ZvB63m87KkLN9XTzUDy
+	NPDyml4KsWv4x1nH9O1QfmDxYBsC/bKVXEMEiZkaFzHozEYuQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:date:date:feedback-id:feedback-id:from:from
+	:in-reply-to:message-id:mime-version:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm1; t=1702594156; x=1702680556; bh=ZFh7mAohRzEfC8EAB2/qmp1+GaJr
+	iUVMYQQUQ3IIsw8=; b=sT5D85BD/BhB2O7l+q58viyr2LKs/tpShV89mY3IDL+H
+	ky3ebZThMzW9NXAbxT4fCHAynMZkPGceemU6fgOd0s5A7rcTM2FSlrhrUZmYnbN3
+	JfgO7d/PRdw98mARIb/6Nc+GK1I2ObS8ihfSVaCIU1GEJvXWkZSAoJnvZrYigclW
+	QoJJCaBTGhDHueU0Qq1nwAnVgv95+tfKm5bMvy50yXP9cpx6u26DO6PUa+KEoJ1V
+	eVkAf0kD2RwzWimOibwovMXRlsb1ltiJA6r8iJgMO6GKkm2Pt9Y4oeTNdXsjDxEA
+	6/BD/Zu8JICuxGVVRrVXWD76vK2i5YQUREo0p7/C0w==
+X-ME-Sender: <xms:bIZ7ZVq4220B-391OcaC7cml5qO-TcAFnrftrGbmvgavPloHgy6_ew>
+    <xme:bIZ7ZXp2HHV96fk0cJSWrL9tIKIIxw3svPDJleJvNigIJXx_JWrAr0y64Wf_iEODx
+    hIdLti2r_xAC_pMww>
+X-ME-Received: <xmr:bIZ7ZSNmaGuoT9WCu3RB2lXr5G3hCjPr1CwjC117u-6IIr5-Uf9nzaXIwYiUs3CmogxLD_4FGjB7VznDCO3XioWAMLWN0sEHo4znnFCHxMgdcw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrvddttddgtddvucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucgfrhhlucfvnfffucdlvdefmdenucfjughrpefhvf
+    evufffkffoggfgsedtkeertdertddtnecuhfhrohhmpeffrghnihgvlhcuighuuceougig
+    uhesugiguhhuuhdrgiihiieqnecuggftrfgrthhtvghrnhepieekhedugeetvedutdfhie
+    elhfejgfeuueeuffevveehgefgueefjeefuedukeefnecuffhomhgrihhnpehivghtfhdr
+    ohhrghdpghhithhhuhgsrdgtohhmnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrg
+    hmpehmrghilhhfrhhomhepugiguhesugiguhhuuhdrgiihii
+X-ME-Proxy: <xmx:bIZ7ZQ5bXk4GWLzXp0FsE-3g75SystpD6tXrSWTi623H7KHgcCUFkA>
+    <xmx:bIZ7ZU4dJ3XftXR2w8NCeSfWzdYtOdYiy4PCPpNjaxBVmlrzgl-GXQ>
+    <xmx:bIZ7ZYgqyi7c-pwa1D8Kg2AHPW6Gf9wPmCkT3SM8z8wFESWQU3rMIw>
+    <xmx:bIZ7ZVFbGEIv2sDHf6OfDKprhn5KFRb9zkeMkI5m8c2AvJX_AQeLLA>
+Feedback-ID: i6a694271:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
+ 14 Dec 2023 17:49:15 -0500 (EST)
+From: Daniel Xu <dxu@dxuuu.xyz>
+To: netdev@vger.kernel.org,
+	bpf@vger.kernel.org,
+	linux-kselftest@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	steffen.klassert@secunet.com,
+	antony.antony@secunet.com,
+	alexei.starovoitov@gmail.com,
+	yonghong.song@linux.dev,
+	eddyz87@gmail.com,
+	eyal.birger@gmail.com
+Cc: devel@linux-ipsec.org
+Subject: [PATCH bpf-next v6 0/5] Add bpf_xdp_get_xfrm_state() kfunc
+Date: Thu, 14 Dec 2023 15:49:01 -0700
+Message-ID: <cover.1702593901.git.dxu@dxuuu.xyz>
+X-Mailer: git-send-email 2.42.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20231215-x1e80100-dts-missing-nodes-v3-2-c4e8d186adf2@linaro.org>
-References: <20231215-x1e80100-dts-missing-nodes-v3-0-c4e8d186adf2@linaro.org>
-In-Reply-To: <20231215-x1e80100-dts-missing-nodes-v3-0-c4e8d186adf2@linaro.org>
-To: Andy Gross <agross@kernel.org>, Bjorn Andersson <andersson@kernel.org>, 
- Konrad Dybcio <konrad.dybcio@linaro.org>, Rob Herring <robh+dt@kernel.org>, 
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
- Conor Dooley <conor+dt@kernel.org>
-Cc: linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org, 
- linux-kernel@vger.kernel.org, Abel Vesa <abel.vesa@linaro.org>, 
- Sibi Sankar <quic_sibis@quicinc.com>, 
- Rajendra Nayak <quic_rjendra@quicinc.com>
-X-Mailer: b4 0.12.4
-X-Developer-Signature: v=1; a=openpgp-sha256; l=4645; i=abel.vesa@linaro.org;
- h=from:subject:message-id; bh=ZkrfN1FTbzStJDMu0UDO2sPSgsYC4jgS7AcwxL8eCCs=;
- b=owEBbQKS/ZANAwAKARtfRMkAlRVWAcsmYgBle4Y29mnLUhYNij8eqg08tdp4NLws76zNCuaWA
- CMpFGmuDWSJAjMEAAEKAB0WIQRO8+4RTnqPKsqn0bgbX0TJAJUVVgUCZXuGNgAKCRAbX0TJAJUV
- Vtz4EACsF/qgxwO/ftCLBhIBeFQTwxelzJzBcp6DPncWE8sy/KcBeCRX0YkmPXy2pgXVpjdvWa8
- DtdffM7yIZm0BjwvDz50vx5LMCsVTd4pQ4ogebW2OM6TCxruMwJTbjqTMXCdup60e6tJuNJBHWI
- 14WJC0aek0Wv2vnYO1vjtO7bvX4fNkxQ5h3lvyUPA+wNiz+OrNYWCulRPOuYJ6qwnowFgredkcW
- DhBvu+DKuADvSWSDMZ22sXu5jh1M5tkST0OvADHOyGpGbBOU1orXMSolfS81O+BzCt+kvsKWu2M
- Mgo82oJGeTr1n4PzG3jF9ziOti0yKAcjXMY9JSVDuY7RWXKVlbn9nAMfDzKzaIiajmj7m7YLSDO
- ODtIYPN2UVxwne7z9/zOsPdA6ZO1Uoqf/ckaHIFbJSHcpCRRX+NSpM44m/ipyqMglIGFLZ5Xcgy
- yz/pMvDUiDy73lHIBFoAW7YRZ9f92gwFqZvVSNZf4CN2lWyE2kSqQ4l8ulZ3RA6WxD4ibrQX6W9
- SwnUSHbnWEupjiBRL0t1gHoxjPlJIkvHriMT8ROjmTLGbUBQmprMtu/vQUzyZxE7OwSslraAxo9
- FS7EDTlp8TJYm7X8HxX2k5SC/Hx1POud1E///ev6Cvifqv/TlbhHSG4HDPHSjxFpE2Rw/zbkJVi
- wcuGo6TCtR9t4BQ==
-X-Developer-Key: i=abel.vesa@linaro.org; a=openpgp;
- fpr=6AFF162D57F4223A8770EF5AF7BF214136F41FAE
+Content-Transfer-Encoding: 8bit
 
-Enable touchscreen, touchpad, keyboard, display, pcie and usb
-support.
+This patchset adds two kfunc helpers, bpf_xdp_get_xfrm_state() and
+bpf_xdp_xfrm_state_release() that wrap xfrm_state_lookup() and
+xfrm_state_put(). The intent is to support software RSS (via XDP) for
+the ongoing/upcoming ipsec pcpu work [0]. Recent experiments performed
+on (hopefully) reproducible AWS testbeds indicate that single tunnel
+pcpu ipsec can reach line rate on 100G ENA nics.
 
-Co-developed-by: Sibi Sankar <quic_sibis@quicinc.com>
-Signed-off-by: Sibi Sankar <quic_sibis@quicinc.com>
-Co-developed-by: Rajendra Nayak <quic_rjendra@quicinc.com>
-Signed-off-by: Rajendra Nayak <quic_rjendra@quicinc.com>
-Signed-off-by: Abel Vesa <abel.vesa@linaro.org>
----
- arch/arm64/boot/dts/qcom/x1e80100-crd.dts | 221 ++++++++++++++++++++++++++++++
- 1 file changed, 221 insertions(+)
+Note this patchset only tests/shows generic xfrm_state access. The
+"secret sauce" (if you can really even call it that) involves accessing
+a soon-to-be-upstreamed pcpu_num field in xfrm_state. Early example is
+available here [1].
 
-diff --git a/arch/arm64/boot/dts/qcom/x1e80100-crd.dts b/arch/arm64/boot/dts/qcom/x1e80100-crd.dts
-index 7532d8eca2de..d44898453315 100644
---- a/arch/arm64/boot/dts/qcom/x1e80100-crd.dts
-+++ b/arch/arm64/boot/dts/qcom/x1e80100-crd.dts
-@@ -401,10 +401,144 @@ vreg_l3j_0p8: ldo3 {
- 	};
- };
- 
-+&i2c0 {
-+	clock-frequency = <400000>;
-+
-+	status = "okay";
-+
-+	touchpad@15 {
-+		compatible = "hid-over-i2c";
-+		reg = <0x15>;
-+
-+		hid-descr-addr = <0x1>;
-+		interrupts-extended = <&tlmm 3 IRQ_TYPE_LEVEL_LOW>;
-+
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&tpad_default>;
-+
-+		wakeup-source;
-+	};
-+
-+	keyboard@3a {
-+		compatible = "hid-over-i2c";
-+		reg = <0x3a>;
-+
-+		hid-descr-addr = <0x1>;
-+		interrupts-extended = <&tlmm 67 IRQ_TYPE_LEVEL_LOW>;
-+
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&kybd_default>;
-+		wakeup-source;
-+	};
-+};
-+
-+&i2c8 {
-+	clock-frequency = <400000>;
-+
-+	status = "okay";
-+
-+	touchscreen@10 {
-+		compatible = "hid-over-i2c";
-+		reg = <0x10>;
-+
-+		hid-descr-addr = <0x1>;
-+		interrupts-extended = <&tlmm 51 IRQ_TYPE_LEVEL_LOW>;
-+
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&ts0_default>;
-+	};
-+};
-+
-+&mdss {
-+	status = "okay";
-+};
-+
-+&mdss_dp3 {
-+	compatible = "qcom,x1e80100-dp";
-+	/delete-property/ #sound-dai-cells;
-+
-+	data-lanes = <0 1 2 3>;
-+
-+	status = "okay";
-+
-+	aux-bus {
-+		panel {
-+			compatible = "edp-panel";
-+			power-supply = <&vreg_edp_3p3>;
-+
-+			port {
-+				edp_panel_in: endpoint {
-+					remote-endpoint = <&mdss_dp3_out>;
-+				};
-+			};
-+		};
-+	};
-+
-+	ports {
-+		port@1 {
-+			reg = <1>;
-+			mdss_dp3_out: endpoint {
-+				remote-endpoint = <&edp_panel_in>;
-+			};
-+		};
-+	};
-+};
-+
-+&mdss_dp3_phy {
-+	vdda-phy-supply = <&vreg_l3j_0p8>;
-+	vdda-pll-supply = <&vreg_l2j_1p2>;
-+
-+	status = "okay";
-+};
-+
-+&pcie4 {
-+	status = "okay";
-+};
-+
-+&pcie4_phy {
-+	vdda-phy-supply = <&vreg_l3j_0p8>;
-+	vdda-pll-supply = <&vreg_l3e_1p2>;
-+
-+	status = "okay";
-+};
-+
-+&pcie6a {
-+	status = "okay";
-+};
-+
-+&pcie6a_phy {
-+	vdda-phy-supply = <&vreg_l3j_0p8>;
-+	vdda-pll-supply = <&vreg_l2j_1p2>;
-+
-+	status = "okay";
-+};
-+
-+&qupv3_0 {
-+	status = "okay";
-+};
-+
-+&qupv3_1 {
-+	status = "okay";
-+};
-+
- &qupv3_2 {
- 	status = "okay";
- };
- 
-+&remoteproc_adsp {
-+	firmware-name = "qcom/x1e80100/adsp.mbn",
-+			"qcom/x1e80100/adsp_dtb.mbn";
-+
-+	status = "okay";
-+};
-+
-+&remoteproc_cdsp {
-+	firmware-name = "qcom/x1e80100/cdsp.mbn",
-+			"qcom/x1e80100/cdsp_dtb.mbn";
-+
-+	status = "okay";
-+};
-+
- &tlmm {
- 	gpio-reserved-ranges = <34 2>, /* Unused */
- 			       <44 4>, /* SPI (TPM) */
-@@ -416,9 +550,96 @@ edp_reg_en: edp-reg-en-state {
- 		drive-strength = <16>;
- 		bias-disable;
- 	};
-+
-+	kybd_default: kybd-default-state {
-+		pins = "gpio67";
-+		function = "gpio";
-+		bias-disable;
-+	};
-+
-+	tpad_default: tpad-default-state {
-+		pins = "gpio3";
-+		function = "gpio";
-+		bias-disable;
-+	};
-+
-+	ts0_default: ts0-default-state {
-+		int-n-pins {
-+			pins = "gpio51";
-+			function = "gpio";
-+			bias-disable;
-+		};
-+
-+		reset-n-pins {
-+			pins = "gpio48";
-+			function = "gpio";
-+			output-high;
-+			drive-strength = <16>;
-+		};
-+	};
- };
- 
- &uart21 {
- 	compatible = "qcom,geni-debug-uart";
- 	status = "okay";
- };
-+
-+&usb_1_ss0_hsphy {
-+	vdd-supply = <&vreg_l2e_0p8>;
-+	vdda12-supply = <&vreg_l3e_1p2>;
-+
-+	status = "okay";
-+};
-+
-+&usb_1_ss0_qmpphy {
-+	status = "okay";
-+};
-+
-+&usb_1_ss0 {
-+	status = "okay";
-+};
-+
-+&usb_1_ss0_dwc3 {
-+	dr_mode = "host";
-+	usb-role-switch;
-+};
-+
-+&usb_1_ss1_hsphy {
-+	vdd-supply = <&vreg_l2e_0p8>;
-+	vdda12-supply = <&vreg_l3e_1p2>;
-+
-+	status = "okay";
-+};
-+
-+&usb_1_ss1_qmpphy {
-+	status = "okay";
-+};
-+
-+&usb_1_ss1 {
-+	status = "okay";
-+};
-+
-+&usb_1_ss1_dwc3 {
-+	dr_mode = "host";
-+	usb-role-switch;
-+};
-+
-+&usb_1_ss2_hsphy {
-+	vdd-supply = <&vreg_l2e_0p8>;
-+	vdda12-supply = <&vreg_l3e_1p2>;
-+
-+	status = "okay";
-+};
-+
-+&usb_1_ss2_qmpphy {
-+	status = "okay";
-+};
-+
-+&usb_1_ss2 {
-+	status = "okay";
-+};
-+
-+&usb_1_ss2_dwc3 {
-+	dr_mode = "host";
-+	usb-role-switch;
-+};
+[0]: https://datatracker.ietf.org/doc/draft-ietf-ipsecme-multi-sa-performance/03/
+[1]: https://github.com/danobi/xdp-tools/blob/e89a1c617aba3b50d990f779357d6ce2863ecb27/xdp-bench/xdp_redirect_cpumap.bpf.c#L385-L406
+
+Changes from v5:
+* Improve kfunc doc comments
+* Remove extraneous replay-window setting on selftest reverse path
+* Squash two kfunc commits into one
+* Rebase to bpf-next to pick up bitfield write patches
+* Remove testing of opts.error in selftest prog
+
+Changes from v4:
+* Fixup commit message for selftest
+* Set opts->error -ENOENT for !x
+* Revert single file xfrm + bpf
+
+Changes from v3:
+* Place all xfrm bpf integrations in xfrm_bpf.c
+* Avoid using nval as a temporary
+* Rebase to bpf-next
+* Remove extraneous __failure_unpriv annotation for verifier tests
+
+Changes from v2:
+* Fix/simplify BPF_CORE_WRITE_BITFIELD() algorithm
+* Added verifier tests for bitfield writes
+* Fix state leakage across test_tunnel subtests
+
+Changes from v1:
+* Move xfrm tunnel tests to test_progs
+* Fix writing to opts->error when opts is invalid
+* Use __bpf_kfunc_start_defs()
+* Remove unused vxlanhdr definition
+* Add and use BPF_CORE_WRITE_BITFIELD() macro
+* Make series bisect clean
+
+Changes from RFCv2:
+* Rebased to ipsec-next
+* Fix netns leak
+
+Changes from RFCv1:
+* Add Antony's commit tags
+* Add KF_ACQUIRE and KF_RELEASE semantics
+
+Daniel Xu (5):
+  bpf: xfrm: Add bpf_xdp_get_xfrm_state() kfunc
+  bpf: selftests: test_tunnel: Setup fresh topology for each subtest
+  bpf: selftests: test_tunnel: Use vmlinux.h declarations
+  bpf: selftests: Move xfrm tunnel test to test_progs
+  bpf: xfrm: Add selftest for bpf_xdp_get_xfrm_state()
+
+ include/net/xfrm.h                            |   9 +
+ net/xfrm/Makefile                             |   1 +
+ net/xfrm/xfrm_policy.c                        |   2 +
+ net/xfrm/xfrm_state_bpf.c                     | 134 +++++++++++++++
+ .../selftests/bpf/prog_tests/test_tunnel.c    | 162 +++++++++++++++++-
+ .../selftests/bpf/progs/bpf_tracing_net.h     |   1 +
+ .../selftests/bpf/progs/test_tunnel_kern.c    | 138 ++++++++-------
+ tools/testing/selftests/bpf/test_tunnel.sh    |  92 ----------
+ 8 files changed, 384 insertions(+), 155 deletions(-)
+ create mode 100644 net/xfrm/xfrm_state_bpf.c
 
 -- 
-2.34.1
+2.42.1
 
 
