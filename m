@@ -2,391 +2,248 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 125A281312D
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 14:18:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 698C281312F
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 14:19:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229717AbjLNNSX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 08:18:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60618 "EHLO
+        id S229720AbjLNNTV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 08:19:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43868 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229517AbjLNNSW (ORCPT
+        with ESMTP id S229510AbjLNNTU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 08:18:22 -0500
-X-Greylist: delayed 100 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 14 Dec 2023 05:18:27 PST
-Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CE7510E;
-        Thu, 14 Dec 2023 05:18:27 -0800 (PST)
-Received: from mail.maildlp.com (unknown [172.19.88.214])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4SrXvK03FYz29g2T;
-        Thu, 14 Dec 2023 21:17:17 +0800 (CST)
-Received: from dggpeml500022.china.huawei.com (unknown [7.185.36.66])
-        by mail.maildlp.com (Postfix) with ESMTPS id 77FC31A0190;
-        Thu, 14 Dec 2023 21:18:25 +0800 (CST)
-Received: from [10.67.120.135] (10.67.120.135) by
- dggpeml500022.china.huawei.com (7.185.36.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Thu, 14 Dec 2023 21:18:25 +0800
-Subject: Re: [PATCH net-next v4 1/4] octeon_ep: add PF-VF mailbox
- communication
-To:     Shinas Rasheed <srasheed@marvell.com>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <hgani@marvell.com>, <vimleshk@marvell.com>, <egallen@redhat.com>,
-        <mschmidt@redhat.com>, <pabeni@redhat.com>, <horms@kernel.org>,
-        <kuba@kernel.org>, <davem@davemloft.net>, <wizhao@redhat.com>,
-        <kheib@redhat.com>, <konguyen@redhat.com>,
-        Veerasenareddy Burru <vburru@marvell.com>,
-        Sathesh Edara <sedara@marvell.com>,
-        Eric Dumazet <edumazet@google.com>
-References: <20231213035816.2656851-1-srasheed@marvell.com>
- <20231213035816.2656851-2-srasheed@marvell.com>
-From:   "shenjian (K)" <shenjian15@huawei.com>
-Message-ID: <cf45647c-f161-809f-e1c5-5fd82524ede4@huawei.com>
-Date:   Thu, 14 Dec 2023 21:18:24 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.5.2
+        Thu, 14 Dec 2023 08:19:20 -0500
+Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D548C116
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 05:19:25 -0800 (PST)
+Received: by mail-ej1-x630.google.com with SMTP id a640c23a62f3a-a1f37fd4b53so1004037866b.1
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 05:19:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1702559964; x=1703164764; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Hs3nbf7IHgswwMuxAfVtH00znSWNLiiUoU/HIKm76XY=;
+        b=UzoQm5/jCaf4naVdH8qpZ6PSpAFccp+JfPw1ern22sFkCVqisU8DPeZDeqsR8EEfc6
+         3Mdu4k8CC0XlR+54ifUqYW76hjgDjOGVGGdUi0o6IQQyyZMNO0VeMX80/Ayz4GWZ0qTD
+         eCL33j/y0ThkwsGAwbTEpQVVqVVgpHIBGKLkKXobi6wypKLlxVUy07shE/2oJSBQDE99
+         s5hh6MKU4BsT2OEuM5fxuv2zEBnk+WIANGtPOnj3GR2n5fT7UXi+0wNNIjm+v3hra02l
+         wnTqwKM+pZRtN5Nhkp+J97CNZneR7b3hto3dSvF6B1z9eq1Wy6VyIUClxvAO8rQ9SwLQ
+         k5xQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702559964; x=1703164764;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Hs3nbf7IHgswwMuxAfVtH00znSWNLiiUoU/HIKm76XY=;
+        b=UR8oOQithxrXcvBjzMT+SDRB5MTVF9HRtOe4rsi3AMwG7DCTPu/FUeaG5WuquLJHYj
+         JGq8f1i6fHhFccw1oyuyFlbgWWncFbQJOcK/wrEMTXYnG0RPlvUdSdcO5396v3wTKnnG
+         BwaMl3FqmgN870TG74yjJGzGqBcYGiC/E0Zy/iPg29JHkocdXaQAEr6VCiOWcbQoN5RV
+         LiXIPqxjdRQJtU/NvG7qvcKalzmuiqE1OwMDch0t69wQPMnBM8ym7LuwpUizhPc9PLVw
+         AQsuxvAWl6oWJ/pCNJFjXnRi6j2/SJHb2x2QJDdcdrYIZalxeQd8b6r6en65Yjbj5wkq
+         ghLg==
+X-Gm-Message-State: AOJu0Yz2CtzfLWDWYEGjnH7FwzFd+fIDaIfqDPyvv2UGpasz6jirQpcU
+        4A+QiAAPnKilUOKCiKV3u4bxmg==
+X-Google-Smtp-Source: AGHT+IH40oOO/VEtiD6FtA4nZx2Bo4oVjzCdEsBKS0QGgaOD15dYXbplxEWDbdeFuSCk0e9n7hNXdA==
+X-Received: by 2002:a17:906:3f5c:b0:a1d:4f5c:57f5 with SMTP id f28-20020a1709063f5c00b00a1d4f5c57f5mr4915283ejj.78.1702559964212;
+        Thu, 14 Dec 2023 05:19:24 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.218.27])
+        by smtp.gmail.com with ESMTPSA id r25-20020a170906351900b00a1cc1be1146sm9332509eja.217.2023.12.14.05.19.22
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 14 Dec 2023 05:19:23 -0800 (PST)
+Message-ID: <93969025-606c-4e4c-9cbc-3c8351f95adb@linaro.org>
+Date:   Thu, 14 Dec 2023 14:19:21 +0100
 MIME-Version: 1.0
-In-Reply-To: <20231213035816.2656851-2-srasheed@marvell.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.67.120.135]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- dggpeml500022.china.huawei.com (7.185.36.66)
-X-Spam-Status: No, score=-6.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 12/13] arm64: defconfig: sync with savedefconfig
+Content-Language: en-US
+To:     Arnd Bergmann <arnd@arndb.de>,
+        Tudor Ambarus <tudor.ambarus@linaro.org>,
+        Peter Griffin <peter.griffin@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        krzysztof.kozlowski+dt@linaro.org,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Conor Dooley <conor+dt@kernel.org>, andi.shyti@kernel.org,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        Tomasz Figa <tomasz.figa@gmail.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Sam Protsenko <semen.protsenko@linaro.org>
+Cc:     =?UTF-8?Q?Andr=C3=A9_Draszik?= <andre.draszik@linaro.org>,
+        saravanak@google.com, William McVicker <willmcvicker@google.com>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-clk@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-i2c@vger.kernel.org, linux-serial@vger.kernel.org
+References: <20231214105243.3707730-1-tudor.ambarus@linaro.org>
+ <20231214105243.3707730-13-tudor.ambarus@linaro.org>
+ <1153987b-a818-454a-a292-57f2b3898771@app.fastmail.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <1153987b-a818-454a-a292-57f2b3898771@app.fastmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A few nit comments
+On 14/12/2023 13:08, Arnd Bergmann wrote:
+> On Thu, Dec 14, 2023, at 11:52, Tudor Ambarus wrote:
+>> Sync the defconfig with savedefconfig as config options
+>> change/move over time.
+>>
+>> Generated with the following commands:
+>> make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- defconfig
+>> make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- savedefconfig
+>> cp defconfig arch/arm64/configs/defconfig
 
+These are obvious. You cannot do it differently.
 
-在 2023/12/13 11:58, Shinas Rasheed 写道:
-> Implement mailbox communication between PF and VFs.
-> PF-VF mailbox is used for all control commands from VF to PF and
-> asynchronous notification messages from PF to VF.
->
-> Signed-off-by: Shinas Rasheed <srasheed@marvell.com>
-> ---
-> V4:
->    - Include [1/4] in the subject for this patch, which was lost in V3
->
-> V3: https://lore.kernel.org/all/20231211063355.2630028-2-srasheed@marvell.com/
->    - Corrected error cleanup logic for PF-VF mbox setup
->    - Removed double inclusion of types.h header file in octep_pfvf_mbox.c
->
-> V2: https://lore.kernel.org/all/20231209081450.2613561-2-srasheed@marvell.com/
->    - Remove unused variable
->
-> V1: https://lore.kernel.org/all/20231208070352.2606192-2-srasheed@marvell.com/
->
->   .../net/ethernet/marvell/octeon_ep/Makefile   |   2 +-
->   .../marvell/octeon_ep/octep_cn9k_pf.c         |  59 ++-
->   .../marvell/octeon_ep/octep_cnxk_pf.c         |  46 ++-
->   .../marvell/octeon_ep/octep_ctrl_mbox.h       |   4 +-
->   .../ethernet/marvell/octeon_ep/octep_main.c   |  83 ++++-
->   .../ethernet/marvell/octeon_ep/octep_main.h   |  45 ++-
->   .../marvell/octeon_ep/octep_pfvf_mbox.c       | 335 ++++++++++++++++++
->   .../marvell/octeon_ep/octep_pfvf_mbox.h       | 143 ++++++++
->   .../marvell/octeon_ep/octep_regs_cn9k_pf.h    |   9 +
->   .../marvell/octeon_ep/octep_regs_cnxk_pf.h    |  13 +
->   .../net/ethernet/marvell/octeon_ep/octep_tx.h |  24 +-
->   11 files changed, 714 insertions(+), 49 deletions(-)
->   create mode 100644 drivers/net/ethernet/marvell/octeon_ep/octep_pfvf_mbox.c
->   create mode 100644 drivers/net/ethernet/marvell/octeon_ep/octep_pfvf_mbox.h
->
-> diff --git a/drivers/net/ethernet/marvell/octeon_ep/Makefile b/drivers/net/ethernet/marvell/octeon_ep/Makefile
-> index 02a4a21bc298..62162ed63f34 100644
-> --- a/drivers/net/ethernet/marvell/octeon_ep/Makefile
-> +++ b/drivers/net/ethernet/marvell/octeon_ep/Makefile
-> @@ -7,4 +7,4 @@ obj-$(CONFIG_OCTEON_EP) += octeon_ep.o
->   
->   octeon_ep-y := octep_main.o octep_cn9k_pf.o octep_tx.o octep_rx.o \
->   	       octep_ethtool.o octep_ctrl_mbox.o octep_ctrl_net.o \
-> -	       octep_cnxk_pf.o
-> +	       octep_pfvf_mbox.o octep_cnxk_pf.o
-> diff --git a/drivers/net/ethernet/marvell/octeon_ep/octep_cn9k_pf.c b/drivers/net/ethernet/marvell/octeon_ep/octep_cn9k_pf.c
-> index 9209f1ec1b52..b5805969404f 100644
-> --- a/drivers/net/ethernet/marvell/octeon_ep/octep_cn9k_pf.c
-> +++ b/drivers/net/ethernet/marvell/octeon_ep/octep_cn9k_pf.c
-> @@ -362,16 +362,55 @@ static void octep_setup_mbox_regs_cn93_pf(struct octep_device *oct, int q_no)
->   {
->   	struct octep_mbox *mbox = oct->mbox[q_no];
->   
-> -	mbox->q_no = q_no;
-> -
-> -	/* PF mbox interrupt reg */
-> -	mbox->mbox_int_reg = oct->mmio[0].hw_addr + CN93_SDP_EPF_MBOX_RINT(0);
-> -
->   	/* PF to VF DATA reg. PF writes into this reg */
-> -	mbox->mbox_write_reg = oct->mmio[0].hw_addr + CN93_SDP_R_MBOX_PF_VF_DATA(q_no);
-> +	mbox->pf_vf_data_reg = oct->mmio[0].hw_addr + CN93_SDP_MBOX_PF_VF_DATA(q_no);
->   
->   	/* VF to PF DATA reg. PF reads from this reg */
-> -	mbox->mbox_read_reg = oct->mmio[0].hw_addr + CN93_SDP_R_MBOX_VF_PF_DATA(q_no);
-> +	mbox->vf_pf_data_reg = oct->mmio[0].hw_addr + CN93_SDP_MBOX_VF_PF_DATA(q_no);
-> +}
-> +
-> +/* Poll for mailbox messages from VF */
-> +static void octep_poll_pfvf_mailbox(struct octep_device *oct)
-> +{
-> +	u32 vf, active_vfs, active_rings_per_vf, vf_mbox_queue;
-> +	u64 reg0, reg1;
-> +
-> +	reg0 = octep_read_csr64(oct, CN93_SDP_EPF_MBOX_RINT(0));
-> +	reg1 = octep_read_csr64(oct, CN93_SDP_EPF_MBOX_RINT(1));
-> +	if (reg0 || reg1) {
-> +		active_vfs = CFG_GET_ACTIVE_VFS(oct->conf);
-> +		active_rings_per_vf = CFG_GET_ACTIVE_RPVF(oct->conf);
-> +		for (vf = 0; vf < active_vfs; vf++) {
-> +			vf_mbox_queue = vf * active_rings_per_vf;
-> +
-> +			if (vf_mbox_queue < 64) {
-> +				if (!(reg0 & (0x1UL << vf_mbox_queue)))
-> +					continue;
-> +			} else {
-> +				if (!(reg1 & (0x1UL << (vf_mbox_queue - 64))))
-> +					continue;
-> +			}
-> +
-> +			if (!oct->mbox[vf_mbox_queue]) {
-> +				dev_err(&oct->pdev->dev, "bad mbox vf %d\n", vf);
-> +				continue;
-> +			}
-> +			schedule_work(&oct->mbox[vf_mbox_queue]->wk.work);
-> +		}
-> +		if (reg0)
-> +			octep_write_csr64(oct, CN93_SDP_EPF_MBOX_RINT(0), reg0);
-> +		if (reg1)
-> +			octep_write_csr64(oct, CN93_SDP_EPF_MBOX_RINT(1), reg1);
-> +	}
-> +}
-> +
-> +/* PF-VF mailbox interrupt handler */
-> +static irqreturn_t octep_pfvf_mbox_intr_handler_cn93_pf(void *dev)
-> +{
-> +	struct octep_device *oct = (struct octep_device *)dev;
-> +
-> +	octep_poll_pfvf_mailbox(oct);
-> +	return IRQ_HANDLED;
->   }
->   
->   /* Poll OEI events like heartbeat */
-> @@ -403,6 +442,7 @@ static irqreturn_t octep_oei_intr_handler_cn93_pf(void *dev)
->    */
->   static void octep_poll_non_ioq_interrupts_cn93_pf(struct octep_device *oct)
->   {
-> +	octep_poll_pfvf_mailbox(oct);
->   	octep_poll_oei_cn93_pf(oct);
->   }
->   
-> @@ -646,6 +686,8 @@ static void octep_enable_interrupts_cn93_pf(struct octep_device *oct)
->   
->   	octep_write_csr64(oct, CN93_SDP_EPF_MISC_RINT_ENA_W1S, intr_mask);
->   	octep_write_csr64(oct, CN93_SDP_EPF_DMA_RINT_ENA_W1S, intr_mask);
-> +	octep_write_csr64(oct, CN93_SDP_EPF_MBOX_RINT_ENA_W1S(0), -1ULL);
-> +	octep_write_csr64(oct, CN93_SDP_EPF_MBOX_RINT_ENA_W1S(1), -1ULL);
->   
->   	octep_write_csr64(oct, CN93_SDP_EPF_DMA_VF_RINT_ENA_W1S(0), -1ULL);
->   	octep_write_csr64(oct, CN93_SDP_EPF_PP_VF_RINT_ENA_W1S(0), -1ULL);
-> @@ -672,6 +714,8 @@ static void octep_disable_interrupts_cn93_pf(struct octep_device *oct)
->   
->   	octep_write_csr64(oct, CN93_SDP_EPF_MISC_RINT_ENA_W1C, intr_mask);
->   	octep_write_csr64(oct, CN93_SDP_EPF_DMA_RINT_ENA_W1C, intr_mask);
-> +	octep_write_csr64(oct, CN93_SDP_EPF_MBOX_RINT_ENA_W1C(0), -1ULL);
-> +	octep_write_csr64(oct, CN93_SDP_EPF_MBOX_RINT_ENA_W1C(1), -1ULL);
->   
->   	octep_write_csr64(oct, CN93_SDP_EPF_DMA_VF_RINT_ENA_W1C(0), -1ULL);
->   	octep_write_csr64(oct, CN93_SDP_EPF_PP_VF_RINT_ENA_W1C(0), -1ULL);
-> @@ -807,6 +851,7 @@ void octep_device_setup_cn93_pf(struct octep_device *oct)
->   	oct->hw_ops.setup_oq_regs = octep_setup_oq_regs_cn93_pf;
->   	oct->hw_ops.setup_mbox_regs = octep_setup_mbox_regs_cn93_pf;
->   
-> +	oct->hw_ops.mbox_intr_handler = octep_pfvf_mbox_intr_handler_cn93_pf;
->   	oct->hw_ops.oei_intr_handler = octep_oei_intr_handler_cn93_pf;
->   	oct->hw_ops.ire_intr_handler = octep_ire_intr_handler_cn93_pf;
->   	oct->hw_ops.ore_intr_handler = octep_ore_intr_handler_cn93_pf;
-> diff --git a/drivers/net/ethernet/marvell/octeon_ep/octep_cnxk_pf.c b/drivers/net/ethernet/marvell/octeon_ep/octep_cnxk_pf.c
-> index 098a0c5c4d1c..5de0b5ecbc5f 100644
-> --- a/drivers/net/ethernet/marvell/octeon_ep/octep_cnxk_pf.c
-> +++ b/drivers/net/ethernet/marvell/octeon_ep/octep_cnxk_pf.c
-> @@ -392,16 +392,44 @@ static void octep_setup_mbox_regs_cnxk_pf(struct octep_device *oct, int q_no)
->   {
->   	struct octep_mbox *mbox = oct->mbox[q_no];
->   
-> -	mbox->q_no = q_no;
-> -
-> -	/* PF mbox interrupt reg */
-> -	mbox->mbox_int_reg = oct->mmio[0].hw_addr + CNXK_SDP_EPF_MBOX_RINT(0);
-> -
->   	/* PF to VF DATA reg. PF writes into this reg */
-> -	mbox->mbox_write_reg = oct->mmio[0].hw_addr + CNXK_SDP_R_MBOX_PF_VF_DATA(q_no);
-> +	mbox->pf_vf_data_reg = oct->mmio[0].hw_addr + CNXK_SDP_MBOX_PF_VF_DATA(q_no);
->   
->   	/* VF to PF DATA reg. PF reads from this reg */
-> -	mbox->mbox_read_reg = oct->mmio[0].hw_addr + CNXK_SDP_R_MBOX_VF_PF_DATA(q_no);
-> +	mbox->vf_pf_data_reg = oct->mmio[0].hw_addr + CNXK_SDP_MBOX_VF_PF_DATA(q_no);
-> +}
-> +
-> +static void octep_poll_pfvf_mailbox_cnxk_pf(struct octep_device *oct)
-> +{
-> +	u32 vf, active_vfs, active_rings_per_vf, vf_mbox_queue;
-> +	u64 reg0;
-> +
-> +	reg0 = octep_read_csr64(oct, CNXK_SDP_EPF_MBOX_RINT(0));
-> +	if (reg0) {
-> +		active_vfs = CFG_GET_ACTIVE_VFS(oct->conf);
-> +		active_rings_per_vf = CFG_GET_ACTIVE_RPVF(oct->conf);
-> +		for (vf = 0; vf < active_vfs; vf++) {
-> +			vf_mbox_queue = vf * active_rings_per_vf;
-> +			if (!(reg0 & (0x1UL << vf_mbox_queue)))
-> +				continue;
-> +
-> +			if (!oct->mbox[vf_mbox_queue]) {
-> +				dev_err(&oct->pdev->dev, "bad mbox vf %d\n", vf);
-> +				continue;
-> +			}
-> +			schedule_work(&oct->mbox[vf_mbox_queue]->wk.work);
-> +		}
-> +		if (reg0)
-the checking of reg0 here seems unnecessary.
+>>
+>> Signed-off-by: Tudor Ambarus <tudor.ambarus@linaro.org>
+>> ---
+>>  arch/arm64/configs/defconfig | 144 +++++++++++++----------------------
+>>  1 file changed, 55 insertions(+), 89 deletions(-)
+> 
+> I usually ask for defconfig changes to be merged when someone just
+> adds a single line per patch, but a 144 line change is clearly too
+> big, please split this up.
 
-> +			octep_write_csr64(oct, CNXK_SDP_EPF_MBOX_RINT(0), reg0);
-> +	}
-> +}
-> +
-> +static irqreturn_t octep_pfvf_mbox_intr_handler_cnxk_pf(void *dev)
-> +{
-> +	struct octep_device *oct = (struct octep_device *)dev;
-> +
-> +	octep_poll_pfvf_mailbox_cnxk_pf(oct);
-> +	return IRQ_HANDLED;
->   }
+Anyway this should not go via my tree, because of possible conflicts.
+This commit, so the savedefconfig, must be prepared on linux-next, which
+should be mentioned in changelog for example. It also is not related to
+this patchset.
 
-...
+> 
+>> diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
+>> index b60aa1f89343..09fb467303ba 100644
+>> --- a/arch/arm64/configs/defconfig
+>> +++ b/arch/arm64/configs/defconfig
+>> @@ -30,6 +30,8 @@ CONFIG_SCHED_AUTOGROUP=y
+>>  CONFIG_BLK_DEV_INITRD=y
+>>  CONFIG_KALLSYMS_ALL=y
+>>  CONFIG_PROFILING=y
+>> +CONFIG_KEXEC_FILE=y
+>> +CONFIG_CRASH_DUMP=y
+>>  CONFIG_ARCH_ACTIONS=y
+>>  CONFIG_ARCH_SUNXI=y
+>>  CONFIG_ARCH_ALPINE=y
+>> @@ -77,9 +79,6 @@ CONFIG_ARM64_VA_BITS_48=y
+>>  CONFIG_SCHED_MC=y
+>>  CONFIG_SCHED_SMT=y
+>>  CONFIG_NUMA=y
+>> -CONFIG_KEXEC=y
+>> -CONFIG_KEXEC_FILE=y
+>> -CONFIG_CRASH_DUMP=y
+>>  CONFIG_XEN=y
+>>  CONFIG_COMPAT=y
+>>  CONFIG_RANDOMIZE_BASE=y
+> 
+> These two hunks seem to go together, but it needs an explanation
+> why you are removing CONFIG_KEXEC.
+> 
+>> @@ -119,7 +118,6 @@ CONFIG_KVM=y
+>>  CONFIG_JUMP_LABEL=y
+>>  CONFIG_MODULES=y
+>>  CONFIG_MODULE_UNLOAD=y
+>> -CONFIG_IOSCHED_BFQ=y
+>>  # CONFIG_CORE_DUMP_DEFAULT_ELF_HEADERS is not set
+>>  # CONFIG_COMPAT_BRK is not set
+>>  CONFIG_MEMORY_HOTPLUG=y
+> 
+> No, I definitely want CONFIG_IOSCHED_BFQ=y, it is essential
+> for performance on certain classes of machines. It would
+> be better to drop the 'imply IOSCHED_BFQ' in two Kconfig
+> files.
+> 
+>> @@ -129,8 +127,6 @@ CONFIG_MEMORY_FAILURE=y
+>>  CONFIG_TRANSPARENT_HUGEPAGE=y
+>>  CONFIG_NET=y
+>>  CONFIG_PACKET=y
+>> -CONFIG_UNIX=y
+>> -CONFIG_INET=y
+>>  CONFIG_IP_MULTICAST=y
+>>  CONFIG_IP_PNP=y
+>>  CONFIG_IP_PNP_DHCP=y
+> 
+> These also seem kind of essential for almost any machine,
+> I assume you are doing something wrong here.
 
-> +#include <linux/types.h>
-> +#include <linux/errno.h>
-> +#include <linux/string.h>
-> +#include <linux/mutex.h>
-> +#include <linux/jiffies.h>
-> +#include <linux/sched.h>
-> +#include <linux/sched/signal.h>
-> +#include <linux/io.h>
-> +#include <linux/pci.h>
-> +#include <linux/etherdevice.h>
-> +
-> +#include "octep_config.h"
-> +#include "octep_main.h"
-> +#include "octep_pfvf_mbox.h"
-> +#include "octep_ctrl_net.h"
-> +
-> +static void octep_pfvf_validate_version(struct octep_device *oct,  u32 vf_id,
-redundant space before "u32 vf_id"
+Yep. I think the folks forget the rule not to remove user-selectable
+options :/
 
-> +					union octep_pfvf_mbox_word cmd,
-> +					union octep_pfvf_mbox_word *rsp)
-> +{
-> +	u32 vf_version = (u32)cmd.s_version.version;
-> +
-> +	if (vf_version <= OCTEP_PFVF_MBOX_VERSION_V1)
-> +		rsp->s_version.type = OCTEP_PFVF_MBOX_TYPE_RSP_ACK;
-> +	else
-> +		rsp->s_version.type = OCTEP_PFVF_MBOX_TYPE_RSP_NACK;
-> +}
-
-...
-> +static void octep_pfvf_dev_remove(struct octep_device *oct,  u32 vf_id,
-> +				  union octep_pfvf_mbox_word cmd,
-> +				  union octep_pfvf_mbox_word *rsp)
-> +{
-> +	int err;
-> +
-> +	err = octep_ctrl_net_dev_remove(oct, vf_id);
-> +	if (err) {
-> +		rsp->s.type = OCTEP_PFVF_MBOX_TYPE_RSP_NACK;
-> +		dev_err(&oct->pdev->dev, "Failed to acknowledge fw of vf %d removal\n",
-> +			vf_id);
-> +		return;
-> +	}
-> +	rsp->s.type = OCTEP_PFVF_MBOX_TYPE_RSP_ACK;
-> +}
-> +
-> +int octep_setup_pfvf_mbox(struct octep_device *oct)
-> +{
-> +	int i = 0, num_vfs = 0, rings_per_vf = 0;
-looks unnecessary initialiazation here.
-
-> +	int ring = 0;
-> +
-> +	num_vfs = oct->conf->sriov_cfg.active_vfs;
-> +	rings_per_vf = oct->conf->sriov_cfg.max_rings_per_vf;
-> +
-> +	for (i = 0; i < num_vfs; i++) {
-> +		ring  = rings_per_vf * i;
-redundant space after 'ring'? also exist at other places.
-> +		oct->mbox[ring] = vzalloc(sizeof(*oct->mbox[ring]));
-> +
-> +		if (!oct->mbox[ring])
-> +			goto free_mbox;
-> +
-> +		memset(oct->mbox[ring], 0, sizeof(struct octep_mbox));
-> +		mutex_init(&oct->mbox[ring]->lock);
-> +		INIT_WORK(&oct->mbox[ring]->wk.work, octep_pfvf_mbox_work);
-> +		oct->mbox[ring]->wk.ctxptr = oct->mbox[ring];
-> +		oct->mbox[ring]->oct = oct;
-> +		oct->mbox[ring]->vf_id = i;
-> +		oct->hw_ops.setup_mbox_regs(oct, ring);
-> +	}
-> +	return 0;
-> +
-> +free_mbox:
-> +	while (i) {
-> +		i--;
-> +		ring  = rings_per_vf * i;
-> +		cancel_work_sync(&oct->mbox[ring]->wk.work);
-> +		mutex_destroy(&oct->mbox[ring]->lock);
-> +		vfree(oct->mbox[ring]);
-> +		oct->mbox[ring] = NULL;
-> +	}
-> +	return -ENOMEM;
-> +}
-> +
-> +void octep_delete_pfvf_mbox(struct octep_device *oct)
-> +{
-> +	int rings_per_vf = oct->conf->sriov_cfg.max_rings_per_vf;
-> +	int num_vfs = oct->conf->sriov_cfg.active_vfs;
-> +	int i = 0, ring = 0, vf_srn = 0;
-> +
-> +	for (i = 0; i < num_vfs; i++) {
-> +		ring  = vf_srn + rings_per_vf * i;
-> +		if (!oct->mbox[ring])
-> +			continue;
-> +
-> +		if (work_pending(&oct->mbox[ring]->wk.work))
-> +			cancel_work_sync(&oct->mbox[ring]->wk.work);
-> +
-> +		mutex_destroy(&oct->mbox[ring]->lock);
-> +		vfree(oct->mbox[ring]);
-> +		oct->mbox[ring] = NULL;
-> +	}
-> +}
-> +
-> +static void octep_pfvf_pf_get_data(struct octep_device *oct,
-> +				   struct octep_mbox *mbox, int vf_id,
-> +				   union octep_pfvf_mbox_word cmd,
-> +				   union octep_pfvf_mbox_word *rsp)
-> +{
-> +	int length = 0;
-> +	int i = 0;
-> +	int err;
-> +	struct octep_iface_link_info link_info;
-> +	struct octep_iface_rx_stats rx_stats;
-> +	struct octep_iface_tx_stats tx_stats;
-Variables should be placed with Revert-Chris Tree  sequency
+> 
 
 
 ...
+
+> 
+>>  CONFIG_SLIM_QCOM_NGD_CTRL=m
+>> -CONFIG_INTERCONNECT=y
+>>  CONFIG_INTERCONNECT_IMX=y
+>>  CONFIG_INTERCONNECT_IMX8MM=m
+>>  CONFIG_INTERCONNECT_IMX8MN=m
+> 
+> I think the problem here are some Tegra device drivers that
+> incorrectly 'select INTERCONNECT' rather than using the
+> 'depends on' that every other interconnect driver has.
+> Please fix those instead.
+
+In current setup interconnect is user-selectable, so it must not be removed.
+
+Best regards,
+Krzysztof
+
