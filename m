@@ -2,72 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E5E48130ED
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 14:07:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 694ED8130F6
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 14:10:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1573206AbjLNNGz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 08:06:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53332 "EHLO
+        id S1573211AbjLNNKQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 08:10:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57476 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1573177AbjLNNGw (ORCPT
+        with ESMTP id S1573195AbjLNNKP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 08:06:52 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7352118
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 05:06:58 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 829CFC433C9;
-        Thu, 14 Dec 2023 13:06:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1702559218;
-        bh=4DmhfcKP5a7QiKawraF+mw/pvVqMPyK0S58+roaapOU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=oiul8EewigOeqOx6Mi9PQ6UZF0YQOATTHlzqVv7wkqi4OqclyCpebjS1KjirRDmEJ
-         SvN6nIAF5QFu3Rcpr05GHKOL9eWgDgCzQnhmYlLvXsoBM5YepIaVkkk87flH4foOMk
-         HaEEHOk0t2MkerO7erR4Tg+mK9QVlxsBk7Li9xJ41U0gwmHV/F1W6wdcrgGytQYVC6
-         l+8sai6EDx5PdMp0sZGLrrvruoCIlp5nUBPWXV5vXuL6jbYuhR4pxOxmDPiJk4Tuig
-         EUYn8D2ZMCCIcBnTMtuI4S6P9Gk70pgl1fWKnsQog7jGOaMaIc+kHPMXoL5wrB9y7/
-         vLwEC5YUsRGug==
-Date:   Thu, 14 Dec 2023 14:06:54 +0100
-From:   Wolfram Sang <wsa@kernel.org>
-To:     Tudor Ambarus <tudor.ambarus@linaro.org>
-Cc:     peter.griffin@linaro.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, mturquette@baylibre.com,
-        sboyd@kernel.org, conor+dt@kernel.org, andi.shyti@kernel.org,
-        alim.akhtar@samsung.com, gregkh@linuxfoundation.org,
-        jirislaby@kernel.org, catalin.marinas@arm.com, will@kernel.org,
-        s.nawrocki@samsung.com, tomasz.figa@gmail.com,
-        cw00.choi@samsung.com, arnd@arndb.de, semen.protsenko@linaro.org,
-        andre.draszik@linaro.org, saravanak@google.com,
-        willmcvicker@google.com, linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-clk@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-i2c@vger.kernel.org, linux-serial@vger.kernel.org
-Subject: Re: [PATCH 03/13] dt-bindings: i2c: exynos5: add google,gs101-hsi2c
- compatible
-Message-ID: <ZXr97owdnLq3viNc@shikoro>
-Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
-        Tudor Ambarus <tudor.ambarus@linaro.org>, peter.griffin@linaro.org,
-        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        mturquette@baylibre.com, sboyd@kernel.org, conor+dt@kernel.org,
-        andi.shyti@kernel.org, alim.akhtar@samsung.com,
-        gregkh@linuxfoundation.org, jirislaby@kernel.org,
-        catalin.marinas@arm.com, will@kernel.org, s.nawrocki@samsung.com,
-        tomasz.figa@gmail.com, cw00.choi@samsung.com, arnd@arndb.de,
-        semen.protsenko@linaro.org, andre.draszik@linaro.org,
-        saravanak@google.com, willmcvicker@google.com,
-        linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-clk@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-i2c@vger.kernel.org, linux-serial@vger.kernel.org
-References: <20231214105243.3707730-1-tudor.ambarus@linaro.org>
- <20231214105243.3707730-4-tudor.ambarus@linaro.org>
+        Thu, 14 Dec 2023 08:10:15 -0500
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F48C98
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 05:10:21 -0800 (PST)
+Received: by mail-ej1-x62d.google.com with SMTP id a640c23a62f3a-a22eba5a290so376768366b.3
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 05:10:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1702559420; x=1703164220; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=AUIDfecuT3CPgdXD9xs9nBICujuqZFrFJljrYUStf5M=;
+        b=TtNVA4PiDYtLuFLRTcI7YwiGX9MV6OC+xM7vWbEVgc2QYsR43j++JwA8OAmVN1+JP8
+         I5qeDPtLSqclF60lK7nx4ycMVpGwgMPIcdvq6t2mSeGLkXp4MjM8SYvTSrFL9sfdI6+3
+         6kkCV2WEVaRyI0/XJl16x03WTnqzwsbqU+n1bNJXTb5s1XS85SWtUM1Wy1jw/MenNeUQ
+         VRFkb6OpRlLxq+6STt99wcZKHwiI+TllA/gQ4Z/ndem+owOn56QHHFmbhsZNZAzBk4zi
+         HOImXyC4wD8bMU7XJ6kNugiss0K9g/4bc40UHCkL47LMa4FJqk3HdDYgv4laPTHtp3Re
+         bIlQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702559420; x=1703164220;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=AUIDfecuT3CPgdXD9xs9nBICujuqZFrFJljrYUStf5M=;
+        b=hjJEt/zb/FfyXDYaJAHTFEz3k4uynFE3VKR1CvzaoEgtfgEVxIx7JVwXhYaHHvktrV
+         qvZv/Gjxem+e4YOQNC/y/lp2LHNLAxgb90m8PGimk9H7EJ6yZy4hKniL98lLURjK7beE
+         ZnrdBGasKtlCEYdjnnLsiQZIMW2Lup+1UjMbm5CRK0xNf69ZufqeqHgtuSsSAU9x/BaA
+         J6iq+8yCekZYEoK4fQDFAIUJa4hi4qYwTfq4lgYsWudHmmtf7lGkJq9YvS46gaA2P3sO
+         lil1//qOucOJ9M1iPQQMulifn9tT85TbH1jw0YD4s8DRp0Y/Hepy2fz+jOR/WC6BnTsi
+         05RA==
+X-Gm-Message-State: AOJu0Yx8/UVpOLhmYm2GdXauIHdcpbcrDzu382bdFTKQ34UD8nKCqTjN
+        /AKNmiMUhLXlcPfE27cZKtUMPw==
+X-Google-Smtp-Source: AGHT+IHcI+CB3dbqOBHc6gZyiSRJLCh66jgUkizSK5tB7H8mSiwkIVstbwBUz8Ca/NrqwqFnQQ219w==
+X-Received: by 2002:a17:907:2d11:b0:a1f:60d2:f0af with SMTP id gs17-20020a1709072d1100b00a1f60d2f0afmr6420294ejc.70.1702559419956;
+        Thu, 14 Dec 2023 05:10:19 -0800 (PST)
+Received: from krzk-bin.. ([178.197.218.27])
+        by smtp.gmail.com with ESMTPSA id vq2-20020a170907a4c200b00a22faee6649sm2547776ejc.117.2023.12.14.05.10.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 Dec 2023 05:10:19 -0800 (PST)
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Abel Vesa <abel.vesa@linaro.org>
+Subject: [PATCH 0/4] arm64: dts: qcom: x1e80100: audio support components
+Date:   Thu, 14 Dec 2023 14:10:12 +0100
+Message-Id: <20231214131016.30502-1-krzysztof.kozlowski@linaro.org>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="HQnYG9fD4BDlpmSL"
-Content-Disposition: inline
-In-Reply-To: <20231214105243.3707730-4-tudor.ambarus@linaro.org>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -76,39 +76,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
 
---HQnYG9fD4BDlpmSL
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Still not complete, but most of audio support.
 
-On Thu, Dec 14, 2023 at 10:52:33AM +0000, Tudor Ambarus wrote:
-> Add google,gs101-hsi2c dedicated compatible for representing
-> I2C of Google GS101 SoC.
->=20
-> Signed-off-by: Tudor Ambarus <tudor.ambarus@linaro.org>
+Dependency
+=========
+Depends on:
+https://lore.kernel.org/linux-arm-msm/20231212125632.54021-1-krzysztof.kozlowski@linaro.org/
 
-Acked-by: Wolfram Sang <wsa@kernel.org>
+Bindings were already applied.
 
+Cc: Abel Vesa <abel.vesa@linaro.org>
 
---HQnYG9fD4BDlpmSL
-Content-Type: application/pgp-signature; name="signature.asc"
+Best regards,
+Krzysztof
 
------BEGIN PGP SIGNATURE-----
+Krzysztof Kozlowski (4):
+  arm64: dts: qcom: x1e80100: add ADSP audio codec macros
+  arm64: dts: qcom: x1e80100: add Soundwire controllers
+  arm64: dts: qcom: x1e80100-crd: add WCD9385 Audio Codec
+  arm64: dts: qcom: x1e80100-crd: add WSA8845 speakers
 
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmV6/ekACgkQFA3kzBSg
-Kbac1hAAtEeMMhA9NKxHiemKCgdvzxVb71vVFzKZTa0rM9HstusgWrnxcXTU4XWd
-tQMUwAVVs6G5Lxho0WuFLuJXRVmc/XOFSyDLeo75vHop/khJpREg5/4x5S953V7j
-SDY4ThYVJuYdXFhZKFsiH04nV3O4zrxm3leDvT0q9C9P09Xh7DYeMu2PnHPV/Gu1
-JFGknNxP4nAb86hKMMsZIkhWZ9Wk+XZAluArjyu17rKeSQHcbE6QJoR95AEydEUy
-PolkM4ZOh/SHRffnMO+FG1+IX2lIEMM9dOX2eLpjZzMRI4iW0I39iQaoPz7WSqQs
-fWa8LdXndWGIZvQmYN4lRjQFhzDKDEOheg/SglzLuGa+48tkqrrcRKGRM+Kx/cGo
-yHbtA6qimdxi/o8+YmUWl+X57X8JIbgmSHsucm/+lNCG6JFtfMyOskeS1hsIgWws
-PV3BPNAY32hJLbEnTf2royzKnJbWMt75RZJTsu/8j54DPydhhLO9IqdHDqngnHpp
-d5WPhOebKuYdqH5YHqVG6C7hOYTR903tWy0annEcAKm64bboWZ9EWYs5Z0IP2/af
-i/i9y1Nou+YYvlSmkp0asWHhpHySkIR3rkThW9eIHVBEWkSS2si6WJSfWQBvDGro
-hEYeczzfDuUcb3v6vuIinWdDcVoHWyrlRbJS5GLIT8LoVAc8ohs=
-=msdb
------END PGP SIGNATURE-----
+ arch/arm64/boot/dts/qcom/x1e80100-crd.dts | 132 +++++++++
+ arch/arm64/boot/dts/qcom/x1e80100.dtsi    | 311 ++++++++++++++++++++++
+ 2 files changed, 443 insertions(+)
 
---HQnYG9fD4BDlpmSL--
+-- 
+2.34.1
+
