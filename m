@@ -1,58 +1,59 @@
-Return-Path: <linux-kernel+bounces-141-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-142-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1791E813CC5
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 22:40:36 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6DA92813CCB
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 22:40:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4A1D91C21B53
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 21:40:35 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 160581F22600
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 21:40:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6373A6D1DD;
-	Thu, 14 Dec 2023 21:40:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C66FA6E2A8;
+	Thu, 14 Dec 2023 21:40:40 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-oa1-f44.google.com (mail-oa1-f44.google.com [209.85.160.44])
+Received: from mail-oi1-f181.google.com (mail-oi1-f181.google.com [209.85.167.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E2A620FD;
-	Thu, 14 Dec 2023 21:40:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7348C6A35A;
+	Thu, 14 Dec 2023 21:40:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oa1-f44.google.com with SMTP id 586e51a60fabf-1f0f94943d9so8847fac.2;
-        Thu, 14 Dec 2023 13:40:23 -0800 (PST)
+Received: by mail-oi1-f181.google.com with SMTP id 5614622812f47-3ba2dd905f9so12069b6e.2;
+        Thu, 14 Dec 2023 13:40:38 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702590023; x=1703194823;
+        d=1e100.net; s=20230601; t=1702590037; x=1703194837;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=BmDO734McYh1MUhV4LxcVBjPolXw2vYcOw8gG6Bk1YM=;
-        b=N54pBU+3t++LCd1054cju8qAeswMW2hBvPzV9q4hnhwfPCc91dgCoLkeF8+F1Bkujj
-         8uuDchx0hPTRhfEon2YanGdgxY7h5yBAkoqLTmrx2UPPT0i+3bHHo+kWLETuctEtEiu1
-         rvsnGmAeDObqL+HKZHfmZvZoXWxbcV7IA0Mt87IAvh+Z6Zu71VbryfBkzGzX2vjwuIjM
-         fchVkWP4XGdeSxixp9EOqZxGFKzIbXvGENBeHLt2u0KriLOKfxUAqYdW6DR434sRq4h0
-         1xAhDtjpNnW3YDousc2Se0X/RBza/4fnjoR9ZXMnLgdhTUSPbyoJIlDzvNWpDf3Q4q3b
-         ZhJw==
-X-Gm-Message-State: AOJu0Yyikn5RHte1/HdhSwQT36EQ5jG6SnLuJHV5/Ch+gK2RfzE9efw/
-	cPUBkXpV2E5QY0T+DAA5iQ==
-X-Google-Smtp-Source: AGHT+IGprqQBv3Uslq5N0Z+o7ckwVx58gfdr+6ETztZ8QLCk00/0fKEGNHFd3LqUSB9mft69WOBrPg==
-X-Received: by 2002:a05:6870:b48c:b0:203:226b:6b24 with SMTP id y12-20020a056870b48c00b00203226b6b24mr2512795oap.35.1702590022956;
-        Thu, 14 Dec 2023 13:40:22 -0800 (PST)
+        bh=NoMi10EsI7AdPIMIPL2rYDGdxQ1imor6ld54Oa0P67k=;
+        b=D42MgCTAATdu8wi6xXcUAP3UVS/Qd5ga7lyxOGdfQ4XihJicO2FcwpnpFYrIH1LEbj
+         6bAiOCEAZI1IuXx/kJxgsUNh8Ll2xt8j8oBr6LPIQCBtS0H3DxiAekksKNP7Zr+4A+l8
+         m/HOL+Ic2c866cfp1Z/Z1H50jG7W4BMP9kIfkIvBE367nWO5MQpMbgMLiiPO9EPKqQnM
+         tAMRObC/QsRVFXDfCuCP3DN+ZgDNmvC+BEqwzYRoBa1NefOL5yB+SrYQiebioUuRV2GD
+         meRkgSSvQww037i4Ks/GwW1E5/V0jfvgBsbGImNvCEtlf+J5u7sRx8uHSzHekpdocZXJ
+         o+gQ==
+X-Gm-Message-State: AOJu0YzMcEmEFO3E/l2SHQyiQVFyHh/zdwJoi7G8/JJ21/WXjtHqRXni
+	NF9hiP926ic4xrg4EsRoNb/vytq2Ug==
+X-Google-Smtp-Source: AGHT+IH4QWBn3NVXVsD6ijDhmXJyQhKGHWdCRuCd2LDg16ILt9pC7L5vxJaRgZSGfkQeqKFEAUbVxg==
+X-Received: by 2002:a05:6870:d0c6:b0:203:4dfc:7eea with SMTP id k6-20020a056870d0c600b002034dfc7eeamr1569496oaa.83.1702590037524;
+        Thu, 14 Dec 2023 13:40:37 -0800 (PST)
 Received: from herring.priv (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
-        by smtp.gmail.com with ESMTPSA id pb11-20020a0568701e8b00b001fad96b0264sm4700606oab.10.2023.12.14.13.40.21
+        by smtp.gmail.com with ESMTPSA id iv7-20020a056870b9c700b001fb3240116bsm4737303oab.7.2023.12.14.13.40.36
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Dec 2023 13:40:22 -0800 (PST)
-Received: (nullmailer pid 983475 invoked by uid 1000);
-	Thu, 14 Dec 2023 21:40:21 -0000
-Date: Thu, 14 Dec 2023 15:40:21 -0600
+        Thu, 14 Dec 2023 13:40:36 -0800 (PST)
+Received: (nullmailer pid 983852 invoked by uid 1000);
+	Thu, 14 Dec 2023 21:40:35 -0000
+Date: Thu, 14 Dec 2023 15:40:35 -0600
 From: Rob Herring <robh@kernel.org>
 To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc: Herbert Xu <herbert@gondor.apana.org.au>, Konrad Dybcio <konrad.dybcio@linaro.org>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, "David S. Miller" <davem@davemloft.net>, Thara Gopinath <thara.gopinath@gmail.com>, Conor Dooley <conor+dt@kernel.org>, linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org, Anusha Rao <quic_anusha@quicinc.com>, Bhupesh Sharma <bhupesh.sharma@linaro.org>, linux-crypto@vger.kernel.org, Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org, Bjorn Andersson <andersson@kernel.org>
-Subject: Re: [PATCH 1/2] dt-bindings: crypto: qcom-qce: constrain clocks for
- IPQ9574 QCE
-Message-ID: <170259002032.983406.16305616572656643410.robh@kernel.org>
+Cc: linux-arm-msm@vger.kernel.org, Thara Gopinath <thara.gopinath@gmail.com>, devicetree@vger.kernel.org, linux-crypto@vger.kernel.org, Conor Dooley <conor+dt@kernel.org>, Bhupesh Sharma <bhupesh.sharma@linaro.org>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>, Herbert Xu <herbert@gondor.apana.org.au>, Anusha Rao <quic_anusha@quicinc.com>, Konrad Dybcio <konrad.dybcio@linaro.org>, Bjorn Andersson <andersson@kernel.org>, "David S. Miller" <davem@davemloft.net>
+Subject: Re: [PATCH 2/2] dt-bindings: crypto: qcom-qce: constrain clocks for
+ SM8150-compatible QCE
+Message-ID: <170259003524.983799.16606120308067871581.robh@kernel.org>
 References: <20231212100044.26466-1-krzysztof.kozlowski@linaro.org>
+ <20231212100044.26466-2-krzysztof.kozlowski@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -61,22 +62,18 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231212100044.26466-1-krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20231212100044.26466-2-krzysztof.kozlowski@linaro.org>
 
 
-On Tue, 12 Dec 2023 11:00:43 +0100, Krzysztof Kozlowski wrote:
-> Binding marks several devices as compatible with IPQ4019 QCE.  They have
-> different number of clocks, thus the fallback does not define the
-> clock constraints per variant and each specific compatible should have
-> its clocks in if:then: section.
+On Tue, 12 Dec 2023 11:00:44 +0100, Krzysztof Kozlowski wrote:
+> All devices compatible with SM8150 QCE (so SM8250 and newer) do not have
+> clock inputs (clocks are handled by secure firmware), so explicitly
+> disallow the clocks in the bindings.
 > 
-> Add missing clocks description for IPQ9574 QCE.
-> 
-> Fixes: 1f5ce01d5d71 ("dt-bindings: crypto: qcom-qce: add SoC compatible string for ipq9574")
 > Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 > ---
->  Documentation/devicetree/bindings/crypto/qcom-qce.yaml | 1 +
->  1 file changed, 1 insertion(+)
+>  .../devicetree/bindings/crypto/qcom-qce.yaml          | 11 +++++++++++
+>  1 file changed, 11 insertions(+)
 > 
 
 Acked-by: Rob Herring <robh@kernel.org>
