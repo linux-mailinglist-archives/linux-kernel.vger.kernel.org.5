@@ -2,28 +2,28 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B8B981378F
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 18:10:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A134081379E
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 18:11:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230351AbjLNRKa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 12:10:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60110 "EHLO
+        id S1443739AbjLNRKw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 12:10:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36786 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229446AbjLNRKZ (ORCPT
+        with ESMTP id S1444027AbjLNRKs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 12:10:25 -0500
-Received: from frasgout13.his.huawei.com (frasgout13.his.huawei.com [14.137.139.46])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CE3FB7;
-        Thu, 14 Dec 2023 09:10:32 -0800 (PST)
-Received: from mail.maildlp.com (unknown [172.18.186.29])
-        by frasgout13.his.huawei.com (SkyGuard) with ESMTP id 4SrdmC64dnz9y7Z8;
-        Fri, 15 Dec 2023 00:56:27 +0800 (CST)
+        Thu, 14 Dec 2023 12:10:48 -0500
+Received: from frasgout12.his.huawei.com (frasgout12.his.huawei.com [14.137.139.154])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E006128;
+        Thu, 14 Dec 2023 09:10:53 -0800 (PST)
+Received: from mail.maildlp.com (unknown [172.18.186.51])
+        by frasgout12.his.huawei.com (SkyGuard) with ESMTP id 4Srdhq23qHz9v7c2;
+        Fri, 15 Dec 2023 00:53:31 +0800 (CST)
 Received: from mail02.huawei.com (unknown [7.182.16.47])
-        by mail.maildlp.com (Postfix) with ESMTP id EEFEE1408F9;
-        Fri, 15 Dec 2023 01:10:17 +0800 (CST)
+        by mail.maildlp.com (Postfix) with ESMTP id 13A1F14065B;
+        Fri, 15 Dec 2023 01:10:44 +0800 (CST)
 Received: from huaweicloud.com (unknown [10.204.63.22])
-        by APP1 (Coremail) with SMTP id LxC2BwBXlHSpNntl4xuLAg--.58219S7;
-        Thu, 14 Dec 2023 18:10:17 +0100 (CET)
+        by APP1 (Coremail) with SMTP id LxC2BwBXlHSpNntl4xuLAg--.58219S9;
+        Thu, 14 Dec 2023 18:10:43 +0100 (CET)
 From:   Roberto Sassu <roberto.sassu@huaweicloud.com>
 To:     viro@zeniv.linux.org.uk, brauner@kernel.org,
         chuck.lever@oracle.com, jlayton@kernel.org, neilb@suse.de,
@@ -39,18 +39,18 @@ Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
         selinux@vger.kernel.org, linux-kselftest@vger.kernel.org,
         Roberto Sassu <roberto.sassu@huawei.com>,
         Stefan Berger <stefanb@linux.ibm.com>
-Subject: [PATCH v8 05/24] ima: Align ima_post_read_file() definition with LSM infrastructure
-Date:   Thu, 14 Dec 2023 18:08:15 +0100
-Message-Id: <20231214170834.3324559-6-roberto.sassu@huaweicloud.com>
+Subject: [PATCH v8 07/24] evm: Align evm_inode_setxattr() definition with LSM infrastructure
+Date:   Thu, 14 Dec 2023 18:08:17 +0100
+Message-Id: <20231214170834.3324559-8-roberto.sassu@huaweicloud.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20231214170834.3324559-1-roberto.sassu@huaweicloud.com>
 References: <20231214170834.3324559-1-roberto.sassu@huaweicloud.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: LxC2BwBXlHSpNntl4xuLAg--.58219S7
-X-Coremail-Antispam: 1UD129KBjvJXoW7Cw43tF1xtw1kJr48CrWfKrg_yoW8trWxp3
-        Z8Ka4UGr9Ygry8CF97JFZxA34rWr9FgF4UWFZ3W3sIqF17Xrn0vrZxCF1q9r1rKrWkAr1Y
-        93yqgrZIk3WUtrJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+X-CM-TRANSID: LxC2BwBXlHSpNntl4xuLAg--.58219S9
+X-Coremail-Antispam: 1UD129KBjvJXoWxGryfXF4ktFy8trWrJFWxXrb_yoW5AFykpF
+        Z8Ka48Gw1FqFyUWrykCF47uay0g3yrWryjk3yDK3WvyF9xJrn2qFyxKF4jkry5Cr48Krn0
+        qanFvrs0yw15X3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
         9KBjDU0xBIdaVrnRJUUUBvb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
         6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUAV
         Cq3wA2048vs2IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0
@@ -62,9 +62,9 @@ X-Coremail-Antispam: 1UD129KBjvJXoW7Cw43tF1xtw1kJr48CrWfKrg_yoW8trWxp3
         vY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I
         3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_GFv_WrylIxkGc2Ij64vIr41lIx
         AIcVC0I7IYx2IY67AKxVWUCVW8JwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr1j6F4UJwCI
-        42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z2
+        42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Gr0_Cr1lIxAIcVC2z2
         80aVCY1x0267AKxVW8Jr0_Cr1UYxBIdaVFxhVjvjDU0xZFpf9x07UZo7tUUUUU=
-X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAgALBF1jj5OoLwAAso
+X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAQALBF1jj5entgAEs9
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
@@ -76,54 +76,75 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Roberto Sassu <roberto.sassu@huawei.com>
 
-Change ima_post_read_file() definition, by making "void *buf" a
-"char *buf", so that it can be registered as implementation of the
-post_read_file hook.
+Change evm_inode_setxattr() definition, so that it can be registered as
+implementation of the inode_setxattr hook.
 
 Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
 Reviewed-by: Stefan Berger <stefanb@linux.ibm.com>
 Reviewed-by: Mimi Zohar <zohar@linux.ibm.com>
 Reviewed-by: Casey Schaufler <casey@schaufler-ca.com>
 ---
- include/linux/ima.h               | 4 ++--
- security/integrity/ima/ima_main.c | 2 +-
- 2 files changed, 3 insertions(+), 3 deletions(-)
+ include/linux/evm.h               | 4 ++--
+ security/integrity/evm/evm_main.c | 3 ++-
+ security/security.c               | 2 +-
+ 3 files changed, 5 insertions(+), 4 deletions(-)
 
-diff --git a/include/linux/ima.h b/include/linux/ima.h
-index 678a03fddd7e..31ef6c3c3207 100644
---- a/include/linux/ima.h
-+++ b/include/linux/ima.h
-@@ -30,7 +30,7 @@ extern int ima_post_load_data(char *buf, loff_t size,
- 			      enum kernel_load_data_id id, char *description);
- extern int ima_read_file(struct file *file, enum kernel_read_file_id id,
- 			 bool contents);
--extern int ima_post_read_file(struct file *file, void *buf, loff_t size,
-+extern int ima_post_read_file(struct file *file, char *buf, loff_t size,
- 			      enum kernel_read_file_id id);
- extern void ima_post_path_mknod(struct mnt_idmap *idmap,
- 				struct dentry *dentry);
-@@ -108,7 +108,7 @@ static inline int ima_read_file(struct file *file, enum kernel_read_file_id id,
+diff --git a/include/linux/evm.h b/include/linux/evm.h
+index cf976d8dbd7a..7c6a74dbc093 100644
+--- a/include/linux/evm.h
++++ b/include/linux/evm.h
+@@ -27,7 +27,7 @@ extern void evm_inode_post_setattr(struct mnt_idmap *idmap,
+ 				   struct dentry *dentry, int ia_valid);
+ extern int evm_inode_setxattr(struct mnt_idmap *idmap,
+ 			      struct dentry *dentry, const char *name,
+-			      const void *value, size_t size);
++			      const void *value, size_t size, int flags);
+ extern void evm_inode_post_setxattr(struct dentry *dentry,
+ 				    const char *xattr_name,
+ 				    const void *xattr_value,
+@@ -106,7 +106,7 @@ static inline void evm_inode_post_setattr(struct mnt_idmap *idmap,
+ 
+ static inline int evm_inode_setxattr(struct mnt_idmap *idmap,
+ 				     struct dentry *dentry, const char *name,
+-				     const void *value, size_t size)
++				     const void *value, size_t size, int flags)
+ {
  	return 0;
  }
- 
--static inline int ima_post_read_file(struct file *file, void *buf, loff_t size,
-+static inline int ima_post_read_file(struct file *file, char *buf, loff_t size,
- 				     enum kernel_read_file_id id)
- {
- 	return 0;
-diff --git a/security/integrity/ima/ima_main.c b/security/integrity/ima/ima_main.c
-index b3f5e8401056..02021ee467d3 100644
---- a/security/integrity/ima/ima_main.c
-+++ b/security/integrity/ima/ima_main.c
-@@ -803,7 +803,7 @@ const int read_idmap[READING_MAX_ID] = {
-  * On success return 0.  On integrity appraisal error, assuming the file
-  * is in policy and IMA-appraisal is in enforcing mode, return -EACCES.
+diff --git a/security/integrity/evm/evm_main.c b/security/integrity/evm/evm_main.c
+index d452d469c503..7fc083d53fdf 100644
+--- a/security/integrity/evm/evm_main.c
++++ b/security/integrity/evm/evm_main.c
+@@ -558,6 +558,7 @@ static int evm_protect_xattr(struct mnt_idmap *idmap,
+  * @xattr_name: pointer to the affected extended attribute name
+  * @xattr_value: pointer to the new extended attribute value
+  * @xattr_value_len: pointer to the new extended attribute value length
++ * @flags: flags to pass into filesystem operations
+  *
+  * Before allowing the 'security.evm' protected xattr to be updated,
+  * verify the existing value is valid.  As only the kernel should have
+@@ -567,7 +568,7 @@ static int evm_protect_xattr(struct mnt_idmap *idmap,
   */
--int ima_post_read_file(struct file *file, void *buf, loff_t size,
-+int ima_post_read_file(struct file *file, char *buf, loff_t size,
- 		       enum kernel_read_file_id read_id)
+ int evm_inode_setxattr(struct mnt_idmap *idmap, struct dentry *dentry,
+ 		       const char *xattr_name, const void *xattr_value,
+-		       size_t xattr_value_len)
++		       size_t xattr_value_len, int flags)
  {
- 	enum ima_hooks func;
+ 	const struct evm_ima_xattr_data *xattr_data = xattr_value;
+ 
+diff --git a/security/security.c b/security/security.c
+index 358ec01a5492..ae3625198c9f 100644
+--- a/security/security.c
++++ b/security/security.c
+@@ -2272,7 +2272,7 @@ int security_inode_setxattr(struct mnt_idmap *idmap,
+ 	ret = ima_inode_setxattr(idmap, dentry, name, value, size, flags);
+ 	if (ret)
+ 		return ret;
+-	return evm_inode_setxattr(idmap, dentry, name, value, size);
++	return evm_inode_setxattr(idmap, dentry, name, value, size, flags);
+ }
+ 
+ /**
 -- 
 2.34.1
 
