@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E2499813171
+	by mail.lfdr.de (Postfix) with ESMTP id 8D600813170
 	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 14:26:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1573326AbjLNN00 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 08:26:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57680 "EHLO
+        id S1573316AbjLNN0W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 08:26:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46268 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229930AbjLNN0O (ORCPT
+        with ESMTP id S229834AbjLNN0P (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 08:26:14 -0500
+        Thu, 14 Dec 2023 08:26:15 -0500
 Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B46F136;
-        Thu, 14 Dec 2023 05:26:18 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B131412E;
+        Thu, 14 Dec 2023 05:26:21 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
         MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender
         :Reply-To:Content-Type:Content-ID:Content-Description;
-        bh=Rss8E0TEJ5ZWP+w65Q90ToBr5MzQatBIEX9ecM3F1aY=; b=SFp/hA0fghmYHxPZK8RDs0mSUs
-        2dvs2+f6lfbzUR4ZepQ8+lOvHkqOAptEtwte/LyANyBKUX+HZd6mcog/IExGHXKJfcdRoQzhSEDVK
-        9gl9L8NnOfFLsnDEvkTsvZZbvnfcHT60084SRlecI7C6UAQf90dwmCWmioA0g1syVyRezuHE2J+eF
-        21bWWbXPoewfgvDtZgt262UOaoMZWqrFo31EMV17CZ/D0kysdzJ+M4j1lDjO8XJ42vlch6Vq549hE
-        9UltZjPeJfE+jhxELs1O90Wb3pPSZRv3o+5Fg2ZUJ9i5WA/JSVcNZOnJTj+4nH5Fs+BxSmPDf0wae
-        I2w0fc9g==;
+        bh=kAPP6X55X6rvLdfMOtbLbsXeMDzuMOl2croRJo78UX4=; b=fYKo14QxQKLG96JxNh2gKkqwXa
+        wsvp3uUwGV/Pnm6RVQ/FkMXvsez7eoeecA/pnOwd1vlL/3q7t/raPaZZEcb8RfyZEmpowiZMPLews
+        ppeYWW2XD2womPwLiqiyZobEmdUTrc9J1baAEJ+PnEaO9wafX1ux6yu8ZSaE3ttElyNcNu5l7JyZ6
+        aE1PvkMIS0bXSJEWwBte6poJSIKKE0+N5v2kwDU42DTmDcVmeNJCjolZuPnbW6cySjI5L2MIe9N7t
+        820nBKAWHp+TfTTmFYqUoodssCijbcLm2oCZalIcEf11h3nd3Ltie7vsrHAttdJKjAc5duP5q0ioq
+        LbAP1U3Q==;
 Received: from [88.128.88.27] (helo=localhost)
         by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1rDljF-000N9J-2g;
-        Thu, 14 Dec 2023 13:26:18 +0000
+        id 1rDljI-000NBD-36;
+        Thu, 14 Dec 2023 13:26:21 +0000
 From:   Christoph Hellwig <hch@lst.de>
 To:     linux-mm@kvack.org
 Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
         linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
         Jan Kara <jack@suse.com>, David Howells <dhowells@redhat.com>
-Subject: [PATCH 07/11] writeback: Factor writeback_iter_init() out of write_cache_pages()
-Date:   Thu, 14 Dec 2023 14:25:40 +0100
-Message-Id: <20231214132544.376574-8-hch@lst.de>
+Subject: [PATCH 08/11] writeback: Factor writeback_get_folio() out of write_cache_pages()
+Date:   Thu, 14 Dec 2023 14:25:41 +0100
+Message-Id: <20231214132544.376574-9-hch@lst.de>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20231214132544.376574-1-hch@lst.de>
 References: <20231214132544.376574-1-hch@lst.de>
@@ -55,84 +55,76 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
 
-Make it return the first folio in the batch so that we can use it
-in a typical for() pattern.
+Move the loop for should-we-write-this-folio to its own function.
 
 Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- mm/page-writeback.c | 47 +++++++++++++++++++++++++--------------------
- 1 file changed, 26 insertions(+), 21 deletions(-)
+ mm/page-writeback.c | 35 +++++++++++++++++++++++------------
+ 1 file changed, 23 insertions(+), 12 deletions(-)
 
 diff --git a/mm/page-writeback.c b/mm/page-writeback.c
-index 2243a0d1b2d3c7..8c220c6a7f824d 100644
+index 8c220c6a7f824d..b0accca1f4bfa7 100644
 --- a/mm/page-writeback.c
 +++ b/mm/page-writeback.c
-@@ -2429,6 +2429,28 @@ static bool should_writeback_folio(struct address_space *mapping,
+@@ -2429,6 +2429,27 @@ static bool should_writeback_folio(struct address_space *mapping,
  	return true;
  }
  
-+static struct folio *writeback_iter_init(struct address_space *mapping,
++static struct folio *writeback_get_folio(struct address_space *mapping,
 +		struct writeback_control *wbc)
 +{
-+	if (wbc->range_cyclic) {
-+		wbc->index = mapping->writeback_index; /* prev offset */
-+		wbc->end = -1;
-+	} else {
-+		wbc->index = wbc->range_start >> PAGE_SHIFT;
-+		wbc->end = wbc->range_end >> PAGE_SHIFT;
-+		if (wbc->range_start == 0 && wbc->range_end == LLONG_MAX)
-+			wbc->range_whole = 1;
++	struct folio *folio;
++
++	for (;;) {
++		folio = writeback_get_next(mapping, wbc);
++		if (!folio)
++			return NULL;
++		wbc->done_index = folio->index;
++
++		folio_lock(folio);
++		if (likely(should_writeback_folio(mapping, wbc, folio)))
++			break;
++		folio_unlock(folio);
 +	}
-+	if (wbc->sync_mode == WB_SYNC_ALL || wbc->tagged_writepages)
-+		tag_pages_for_writeback(mapping, wbc->index, wbc->end);
 +
-+	wbc->done_index = wbc->index;
-+	folio_batch_init(&wbc->fbatch);
-+	wbc->err = 0;
-+
-+	return writeback_get_next(mapping, wbc);
++	trace_wbc_writepage(wbc, inode_to_bdi(mapping->host));
++	return folio;
 +}
 +
- /**
-  * write_cache_pages - walk the list of dirty pages of the given address space and write all of them.
-  * @mapping: address space structure to write
-@@ -2464,31 +2486,14 @@ int write_cache_pages(struct address_space *mapping,
- 		      struct writeback_control *wbc, writepage_t writepage,
- 		      void *data)
+ static struct folio *writeback_iter_init(struct address_space *mapping,
+ 		struct writeback_control *wbc)
  {
-+	struct folio *folio;
- 	int error;
+@@ -2448,7 +2469,7 @@ static struct folio *writeback_iter_init(struct address_space *mapping,
+ 	folio_batch_init(&wbc->fbatch);
+ 	wbc->err = 0;
  
--	if (wbc->range_cyclic) {
--		wbc->index = mapping->writeback_index; /* prev offset */
--		wbc->end = -1;
--	} else {
--		wbc->index = wbc->range_start >> PAGE_SHIFT;
--		wbc->end = wbc->range_end >> PAGE_SHIFT;
--		if (wbc->range_start == 0 && wbc->range_end == LLONG_MAX)
--			wbc->range_whole = 1;
--	}
--	if (wbc->sync_mode == WB_SYNC_ALL || wbc->tagged_writepages)
--		tag_pages_for_writeback(mapping, wbc->index, wbc->end);
--
--	wbc->done_index = wbc->index;
--	folio_batch_init(&wbc->fbatch);
--	wbc->err = 0;
--
--	for (;;) {
--		struct folio *folio = writeback_get_next(mapping, wbc);
-+	for (folio = writeback_iter_init(mapping, wbc);
-+	     folio;
-+	     folio = writeback_get_next(mapping, wbc)) {
+-	return writeback_get_next(mapping, wbc);
++	return writeback_get_folio(mapping, wbc);
+ }
+ 
+ /**
+@@ -2491,19 +2512,9 @@ int write_cache_pages(struct address_space *mapping,
+ 
+ 	for (folio = writeback_iter_init(mapping, wbc);
+ 	     folio;
+-	     folio = writeback_get_next(mapping, wbc)) {
++	     folio = writeback_get_folio(mapping, wbc)) {
  		unsigned long nr;
  
--		if (!folio)
--			break;
+-		wbc->done_index = folio->index;
 -
- 		wbc->done_index = folio->index;
- 
- 		folio_lock(folio);
+-		folio_lock(folio);
+-		if (!should_writeback_folio(mapping, wbc, folio)) {
+-			folio_unlock(folio);
+-			continue;
+-		}
+-
+-		trace_wbc_writepage(wbc, inode_to_bdi(mapping->host));
+-
+ 		error = writepage(folio, wbc, data);
+ 		nr = folio_nr_pages(folio);
+ 		if (unlikely(error)) {
 -- 
 2.39.2
 
