@@ -2,84 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AECF81301C
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 13:29:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7ECCF813064
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 13:42:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1573043AbjLNM3O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 07:29:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39288 "EHLO
+        id S1573056AbjLNMmP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 07:42:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37844 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1573010AbjLNM3N (ORCPT
+        with ESMTP id S1573121AbjLNMmN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 07:29:13 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B40D3113
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 04:29:19 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0759DC433CA;
-        Thu, 14 Dec 2023 12:29:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1702556959;
-        bh=ZrgiopH5ZvwjxmVIyJYm/63eTL6WoWUQTuAoEP2dkAE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=eYWUTK+m5vvrarorTLsDgr31MVemoxcyrk/O6p2BcN1rFb0rTqR31KicpgKkIqdVN
-         6yOaBRUGHBCJyhAqJa9Fw+yAWIWp8N89Na0UixNs5DaaSCE7/iXIMj5iwzZ9gixzX4
-         2wB3wRWDxtZ5xcYbRbsXb/C9IEQJCGLUS/hx/gdrH75gxrTFtbdOUjjwmcAna61zbf
-         EDBEJBomOWfY+AzdxlE21tc8YRoK0xtnyhnW098AoX3IucKZMgO3EQmo1/cw9/C5Fb
-         H98pkYtWZwu8H3tE7E7JhbFS63y9CaqNIpGLVrfW3nReIUp1DoJ1AYjkTaovEFZXfS
-         voe7xkxDO+XVQ==
-Date:   Thu, 14 Dec 2023 13:29:16 +0100
-From:   Maxime Ripard <mripard@kernel.org>
-To:     Donald Robson <donald.robson@imgtec.com>
-Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        frank.binns@imgtec.com, matt.coster@imgtec.com, airlied@gmail.com
-Subject: Re: [PATCH] MAINTAINERS: Remove Donald Robson from powervr driver
- maintainers
-Message-ID: <b76jxgqgfuipd7fhwlyrecay4j6fi6ptcoiypf52tpg2iwz7tn@6it54w5c75rk>
-References: <20231214103353.122257-1-donald.robson@imgtec.com>
+        Thu, 14 Dec 2023 07:42:13 -0500
+X-Greylist: delayed 987 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 14 Dec 2023 04:42:19 PST
+Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04AF6129;
+        Thu, 14 Dec 2023 04:42:19 -0800 (PST)
+Received: from mail.maildlp.com (unknown [172.19.88.214])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4SrWkd4XgVz1kvF0;
+        Thu, 14 Dec 2023 20:24:41 +0800 (CST)
+Received: from canpemm500010.china.huawei.com (unknown [7.192.105.118])
+        by mail.maildlp.com (Postfix) with ESMTPS id DCEEE1A0190;
+        Thu, 14 Dec 2023 20:25:49 +0800 (CST)
+Received: from huawei.com (10.175.127.227) by canpemm500010.china.huawei.com
+ (7.192.105.118) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Thu, 14 Dec
+ 2023 20:25:49 +0800
+From:   Ye Bin <yebin10@huawei.com>
+To:     <jejb@linux.ibm.com>, <martin.petersen@oracle.com>,
+        <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     Ye Bin <yebin10@huawei.com>
+Subject: [PATCH] scsi: core: add CMD_LAST flag for error handle scsi command
+Date:   Thu, 14 Dec 2023 20:29:19 +0800
+Message-ID: <20231214122919.985087-1-yebin10@huawei.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="7hc5enx5fvafxeg5"
-Content-Disposition: inline
-In-Reply-To: <20231214103353.122257-1-donald.robson@imgtec.com>
-X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,TVD_SUBJ_WIPE_DEBT,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.127.227]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ canpemm500010.china.huawei.com (7.192.105.118)
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+SCSI error handle will send scsi command bypass block layer. After commit
+8930a6c20791 scsi support request batching. Some LLD only writing the hardware
+doorbell when necessary, after the last request was prepared.
+For scsi error handle, each command waits synchronously. So each scsi command
+is both the beginning and the end. So add CMD_LAST flag for error handle scsi
+command.
 
---7hc5enx5fvafxeg5
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Fixes: 8930a6c20791 ("scsi: core: add support for request batching")
+Signed-off-by: Ye Bin <yebin10@huawei.com>
+---
+ drivers/scsi/scsi_error.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-Hi,
+diff --git a/drivers/scsi/scsi_error.c b/drivers/scsi/scsi_error.c
+index 1bac12ef238e..9e79047a1250 100644
+--- a/drivers/scsi/scsi_error.c
++++ b/drivers/scsi/scsi_error.c
+@@ -1147,6 +1147,7 @@ static enum scsi_disposition scsi_send_eh_cmnd(struct scsi_cmnd *scmd,
+ 	const unsigned long stall_for = msecs_to_jiffies(100);
+ 	int rtn;
+ 
++	scmd->flags |= SCMD_LAST;
+ retry:
+ 	scsi_eh_prep_cmnd(scmd, &ses, cmnd, cmnd_size, sense_bytes);
+ 	shost->eh_action = &done;
+-- 
+2.31.1
 
-On Thu, Dec 14, 2023 at 10:33:53AM +0000, Donald Robson wrote:
-> I will be leaving Imagination Technologies on 2023-12-15 and will no
-> longer be working on this driver.
->=20
-> Signed-off-by: Donald Robson <donald.robson@imgtec.com>
-
-Applied, thanks
-
-Good luck on your next adventure :)
-
-Maxime
-
---7hc5enx5fvafxeg5
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCZXr1HAAKCRDj7w1vZxhR
-xcPUAP9/IAB0sooZA/RTZEE9Id/2UyjW7dkuNR6Z5UFyUmmL1gEA1hj19mBq3nuC
-oxSWmnS8rVyhkS5tXtWZiZrHKBy/vgs=
-=ELuv
------END PGP SIGNATURE-----
-
---7hc5enx5fvafxeg5--
