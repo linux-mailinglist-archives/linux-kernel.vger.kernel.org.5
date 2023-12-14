@@ -2,70 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 740CF8126F8
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 06:35:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 454248126FA
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 06:35:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234264AbjLNF3K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 00:29:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50430 "EHLO
+        id S1443173AbjLNFbX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 00:31:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34950 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229629AbjLNF3I (ORCPT
+        with ESMTP id S229629AbjLNFbV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 00:29:08 -0500
-Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CA09BD;
-        Wed, 13 Dec 2023 21:29:15 -0800 (PST)
-Received: by mail-pl1-x630.google.com with SMTP id d9443c01a7336-1d336760e72so25286385ad.3;
-        Wed, 13 Dec 2023 21:29:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702531754; x=1703136554; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=d25UVzWoyIF+y1CCj67lRRjCwCFhalI/I5d7ruwEREs=;
-        b=ddWrQ/s0VfcKRtXaAjwXLUGew3Gz/qfinC/phlMhwL6Eyv005kDSStqtppqOT1iD3T
-         tN1qjsXNRpL6qhp8yLt5YS8snvwKejniasmEYotZrU+/AkbLGRPuXXfsX34oZddmQThw
-         zAfa93ZnYJDEn/n1+rlwZ9+R4Bokgz16Dbu3YHxenLSqjSAq2LRzljlQr1pB515QI3WS
-         Zz0bO0Lswt2HGkk2SS6Y/2b+cj/SELnw3e8JToR1EQq1vcnxZ/uDJUs4NF149IpfFsrl
-         DwLEjaAMb8Wnj82P+L7/mdtJUtp4OHqDldbPm3poOLdsO2teerrC6kcB3yTRmvyvcwob
-         oOuQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702531754; x=1703136554;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=d25UVzWoyIF+y1CCj67lRRjCwCFhalI/I5d7ruwEREs=;
-        b=FcfLKHkCEUXMTB3t+rYJTVAHqKFJTvwvEQKHwvaFnj6V23nQGM+dAy9YOc/lTlUpkz
-         AiYZJzDk+8227nTbdOwYACDWHpDUiZR1F5jXuQZNZjvqH4iPT0Od2EJt6Ie8ldYKHoe8
-         Nx9tnSpqqD0od8nmegJKsKKcf+OMK0KQKC7FLt/50akyHaCbgY6kOcYnXncpMW2qTHS1
-         /3N7TUy+ybIISM1U8qjtKoVAR7sK9odid87TthSRWG1OsCAoEKdU+HBYiYZlByT3MMjV
-         Jw2Q8OUYW0LIk8/eIZ7C5kIV2kc+lC93NXUEecMGEdk1c2E7YVj3r/9YBlodKhlqGETF
-         TgVA==
-X-Gm-Message-State: AOJu0YzhkDfuuUu/FzCZFgJ+hcg9H2zu/MRvjvz00JUy5N9zgOUGQUs+
-        ECEjU0qF50uPMeQaMWlu4RU=
-X-Google-Smtp-Source: AGHT+IHi4W3EDjJd+bvaSDHh9IJhMG7RlDTvScw2niy1sEe/djEPsLlAqYIozqjuNk0f4QGUDXziqw==
-X-Received: by 2002:a17:902:b706:b0:1d0:737d:2ae5 with SMTP id d6-20020a170902b70600b001d0737d2ae5mr8215953pls.87.1702531754118;
-        Wed, 13 Dec 2023 21:29:14 -0800 (PST)
-Received: from google.com ([2620:15c:9d:2:fcc:5ab4:9103:3ae2])
-        by smtp.gmail.com with ESMTPSA id ik2-20020a170902ab0200b001c74df14e6fsm11761113plb.284.2023.12.13.21.29.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Dec 2023 21:29:13 -0800 (PST)
-Date:   Wed, 13 Dec 2023 21:29:11 -0800
-From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Rob Herring <robh@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: duplicate patch in the input tree
-Message-ID: <ZXqSp_Fejj0XGuwX@google.com>
-References: <20231214074546.453a926b@canb.auug.org.au>
+        Thu, 14 Dec 2023 00:31:21 -0500
+Received: from out30-100.freemail.mail.aliyun.com (out30-100.freemail.mail.aliyun.com [115.124.30.100])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12009BD;
+        Wed, 13 Dec 2023 21:31:26 -0800 (PST)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R701e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046060;MF=alibuda@linux.alibaba.com;NM=1;PH=DS;RN=13;SR=0;TI=SMTPD_---0VyTFUF0_1702531882;
+Received: from 30.221.148.227(mailfrom:alibuda@linux.alibaba.com fp:SMTPD_---0VyTFUF0_1702531882)
+          by smtp.aliyun-inc.com;
+          Thu, 14 Dec 2023 13:31:24 +0800
+Message-ID: <0e94149a-05f1-3f98-3f75-ca74f364a45b@linux.alibaba.com>
+Date:   Thu, 14 Dec 2023 13:31:22 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231214074546.453a926b@canb.auug.org.au>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,FSL_HELO_FAKE,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.15.1
+Subject: Re: [RFC nf-next 1/2] netfilter: bpf: support prog update
+Content-Language: en-US
+To:     Florian Westphal <fw@strlen.de>
+Cc:     pablo@netfilter.org, kadlec@netfilter.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        coreteam@netfilter.org, netfilter-devel@vger.kernel.org,
+        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, ast@kernel.org
+References: <1702467945-38866-1-git-send-email-alibuda@linux.alibaba.com>
+ <1702467945-38866-2-git-send-email-alibuda@linux.alibaba.com>
+ <20231213222415.GA13818@breakpoint.cc>
+From:   "D. Wythe" <alibuda@linux.alibaba.com>
+In-Reply-To: <20231213222415.GA13818@breakpoint.cc>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-10.6 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -73,23 +49,156 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Stephen,
 
-On Thu, Dec 14, 2023 at 07:45:46AM +1100, Stephen Rothwell wrote:
-> Hi all,
-> 
-> The following commit is also in Linus Torvalds' tree as a different commit
-> (but the same patch):
-> 
->   877ee02cd962 ("dt-bindings: input: qcom,pm8921-keypad: convert to YAML format")
-> 
-> This is commit
-> 
->   53ed3233e6b5 ("dt-bindings: input: qcom,pm8921-keypad: convert to YAML format")
-> 
-> in Linus' tree.
 
-Thank you for letting me know, I dropped the commit from my tree.
+On 12/14/23 6:24 AM, Florian Westphal wrote:
+> D. Wythe <alibuda@linux.alibaba.com> wrote:
+>> From: "D. Wythe" <alibuda@linux.alibaba.com>
+>>
+>> To support the prog update, we need to ensure that the prog seen
+>> within the hook is always valid. Considering that hooks are always
+>> protected by rcu_read_lock(), which provide us the ability to use a
+>> new RCU-protected context to access the prog.
+>>
+>> Signed-off-by: D. Wythe <alibuda@linux.alibaba.com>
+>> ---
+>>   net/netfilter/nf_bpf_link.c | 124 +++++++++++++++++++++++++++++++++++++++-----
+>>   1 file changed, 111 insertions(+), 13 deletions(-)
+>>
+>> diff --git a/net/netfilter/nf_bpf_link.c b/net/netfilter/nf_bpf_link.c
+>> index e502ec0..918c470 100644
+>> --- a/net/netfilter/nf_bpf_link.c
+>> +++ b/net/netfilter/nf_bpf_link.c
+>> @@ -8,17 +8,11 @@
+>>   #include <net/netfilter/nf_bpf_link.h>
+>>   #include <uapi/linux/netfilter_ipv4.h>
+>>   
+>> -static unsigned int nf_hook_run_bpf(void *bpf_prog, struct sk_buff *skb,
+>> -				    const struct nf_hook_state *s)
+>> +struct bpf_nf_hook_ctx
+>>   {
+>> -	const struct bpf_prog *prog = bpf_prog;
+>> -	struct bpf_nf_ctx ctx = {
+>> -		.state = s,
+>> -		.skb = skb,
+>> -	};
+>> -
+>> -	return bpf_prog_run(prog, &ctx);
+>> -}
+>> +	struct bpf_prog *prog;
+>> +	struct rcu_head rcu;
+>> +};
+> I don't understand the need for this structure.  AFAICS bpf_prog_put()
+> will always release the program via call_rcu()?
+>
+> If it doesn't, we are probably already in trouble as-is without this
+> patch, I don't think anything that prevents us from ending up calling already
+> released bpf prog, or releasing it while another cpu is still running it
+> if bpf_prog_put releases the actual underlying prog instantly.
+>
+> A BPF expert could confirm bpf-prog-put-is-call-rcu.
 
--- 
-Dmitry
+Hi Florian,
+
+I must admit that I did not realize that bpf_prog is released
+under RCU ...
+
+>>   struct bpf_nf_link {
+>>   	struct bpf_link link;
+>> @@ -26,8 +20,59 @@ struct bpf_nf_link {
+>>   	struct net *net;
+>>   	u32 dead;
+>>   	const struct nf_defrag_hook *defrag_hook;
+>> +	/* protect link update in parallel */
+>> +	struct mutex update_lock;
+>> +	struct bpf_nf_hook_ctx __rcu *hook_ctx;
+> What kind of replacements-per-second rate are you aiming for?
+> I think
+>
+> static DEFINE_MUTEX(bpf_nf_mutex);
+>
+> is enough.
+
+I'm okay with that.
+
+>
+> Then bpf_nf_link gains
+>
+> 	struct bpf_prog __rcu *prog
+>
+> and possibly a trailing struct rcu_head, see below.
+
+Yes, that's what we need.
+
+>> +static void bpf_nf_hook_ctx_free_rcu(struct bpf_nf_hook_ctx *hook_ctx)
+>> +{
+>> +	call_rcu(&hook_ctx->rcu, __bpf_nf_hook_ctx_free_rcu);
+>> +}
+> Don't understand the need for call_rcu either, see below.
+>
+>> +static unsigned int nf_hook_run_bpf(void *bpf_link, struct sk_buff *skb,
+>> +				    const struct nf_hook_state *s)
+>> +{
+>> +	const struct bpf_nf_link *link = bpf_link;
+>> +	struct bpf_nf_hook_ctx *hook_ctx;
+>> +	struct bpf_nf_ctx ctx = {
+>> +		.state = s,
+>> +		.skb = skb,
+>> +	};
+>> +
+>> +	hook_ctx = rcu_dereference(link->hook_ctx);
+> This could then just rcu_deref link->prog.
+>
+>> +	return bpf_prog_run(hook_ctx->prog, &ctx);
+>> +}
+>> +
+>>   #if IS_ENABLED(CONFIG_NF_DEFRAG_IPV4) || IS_ENABLED(CONFIG_NF_DEFRAG_IPV6)
+>>   static const struct nf_defrag_hook *
+>>   get_proto_defrag_hook(struct bpf_nf_link *link,
+>> @@ -120,6 +165,10 @@ static void bpf_nf_link_release(struct bpf_link *link)
+>>   	if (!cmpxchg(&nf_link->dead, 0, 1)) {
+>>   		nf_unregister_net_hook(nf_link->net, &nf_link->hook_ops);
+>>   		bpf_nf_disable_defrag(nf_link);
+>> +		/* Wait for outstanding hook to complete before the
+>> +		 * link gets released.
+>> +		 */
+>> +		synchronize_rcu();
+>>   	}
+> Could you convert bpf_nf_link_dealloc to release via kfree_rcu instead?
+>
+Got it.
+>> @@ -162,7 +212,42 @@ static int bpf_nf_link_fill_link_info(const struct bpf_link *link,
+>>   static int bpf_nf_link_update(struct bpf_link *link, struct bpf_prog *new_prog,
+>>   			      struct bpf_prog *old_prog)
+>>   {
+>> -	return -EOPNOTSUPP;
+>> +	struct bpf_nf_link *nf_link = container_of(link, struct bpf_nf_link, link);
+>> +	struct bpf_nf_hook_ctx *hook_ctx;
+>> +	int err = 0;
+>> +
+>> +	mutex_lock(&nf_link->update_lock);
+>> +
+> I think you need to check link->dead here too.
+
+Got that.
+>
+>> +	/* bpf_nf_link_release() ensures that after its execution, there will be
+>> +	 * no ongoing or upcoming execution of nf_hook_run_bpf() within any context.
+>> +	 * Therefore, within nf_hook_run_bpf(), the link remains valid at all times."
+>> +	 */
+>> +	link->hook_ops.priv = link;
+> ATM we only need to make sure the bpf prog itself stays alive until after
+> all concurrent rcu critical sections have completed.
+>
+> After this change, struct bpf_link gets passed instead, so we need to
+> keep that alive too.
+>
+> Which works with synchronize_rcu, sure, but that seems a bit overkill here.
+
+Got it! Thank you very much for your suggestion.
+I will address those issues you mentioned in the next version.
+
+
+Best wishes,
+D. Wythe
+
