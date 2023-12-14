@@ -2,210 +2,283 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DCF281396A
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 19:07:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EA7381396F
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 19:08:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1444172AbjLNSHL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 13:07:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55648 "EHLO
+        id S1572951AbjLNSIe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 13:08:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53980 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235718AbjLNSHJ (ORCPT
+        with ESMTP id S230332AbjLNSI3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 13:07:09 -0500
-Received: from mail-qk1-x72d.google.com (mail-qk1-x72d.google.com [IPv6:2607:f8b0:4864:20::72d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD34A116
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 10:07:15 -0800 (PST)
-Received: by mail-qk1-x72d.google.com with SMTP id af79cd13be357-77f56750defso372667785a.1
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 10:07:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1702577235; x=1703182035; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=N/QrYonf9mkbx9hVJAqXDFRzrOiX+RqI/evZr6qQpW4=;
-        b=4MrgMBIyHSso6zJ2Q/N5LkugrCu23vEAWnzDQjFZwP3XUAkj0ylYHEqS9taCfZpaYg
-         ddE0yfJRplqXHJCGQO0dBM0+P56D8E47/z9WdVXvZbpcOxmrgAMp4SJOq4hB4ppdDafa
-         acYqo/XSTjp2tVp5l8w7n/IBOiEtMAXyX8V5L/T/LqAPeEHY3HWh7rAkQIP5nyjddA9x
-         CQXuF1F7T/nmbPlc6YvrKPQJSnjZkCY+JhczCHNtdtK/icPINH6YfH5yqlXii1fOF/Yg
-         2EXSVp0KgnEHkUTZs6QC9OEyOgQjklh/b1pwRN+B91oGEZ/otJs1bjZ4G/desZ83E2bi
-         UQzQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702577235; x=1703182035;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=N/QrYonf9mkbx9hVJAqXDFRzrOiX+RqI/evZr6qQpW4=;
-        b=SoUGH4GY+eTr9NxsvWT7mVcLsn4cW6TaEGtKxt5TeAXvGrQYOa8PghI4YBVIedaRAC
-         ppFQoSBTTnjkucbGyoD+55AJbDRj8SNZFybJydINgJaFYRUgQGnRZAre29L04jYT+xva
-         XZz5vl0oP+kOQ1lfmbzbCAyjn/G7pO08kudoCCZAnq0rZebHaGmvmQrI0bGnXL1PbX2D
-         tUbe4A1TT2wfCwK5LUhBNJOQPEqJhDzfIfa/BketXDoexwjF657nY7NwgHhihRqNWxV1
-         V/lYu1VrGelMxUdyHN3M5sLtm3gtTfPp45UQKaZ+2VKJcA7OpNJ2zo9sYsxYkqUWswPY
-         yuAw==
-X-Gm-Message-State: AOJu0Yzu4VwXMkXR5J/m7LA0DjRfsspZppD8PZgzgHGq33aF90EbQ5ZX
-        L2ysxfznMCryo6jPgSP2lJ/zelAWk/4Hy6SGNTkXkg==
-X-Google-Smtp-Source: AGHT+IFwNSzZ0G7xHpcJXHZ4FRw8EVTJygkGWuFoYiSzxK7sPEYUVi0cGsOSRNLzHPbCptg0JCTAkZol4v5CgRSez9Q=
-X-Received: by 2002:ad4:5e8a:0:b0:67f:13af:385b with SMTP id
- jl10-20020ad45e8a000000b0067f13af385bmr381360qvb.66.1702577234734; Thu, 14
- Dec 2023 10:07:14 -0800 (PST)
+        Thu, 14 Dec 2023 13:08:29 -0500
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37CF5CF
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 10:08:33 -0800 (PST)
+Received: from pps.filterd (m0353724.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3BEHHcYf007550;
+        Thu, 14 Dec 2023 18:08:01 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : content-transfer-encoding : mime-version; s=pp1;
+ bh=EaNoWI8SI1SXaSWVAi6FVwRogSbOhH6qXVjk4Ig6Rd8=;
+ b=G2tJypmNnHsNPiKYFUyDxCYIStDbxveDFU9G6RJ4LzSWxPxWyHpxTAkzzW4U6MBnI/2F
+ UN3Pt+0UBjsnAk8WwI0OKMHkze/aGLg118nsCkqU8IiTGQTHWaIMFgtw37Ia/x5vqdjT
+ kD1XKg+BaYR8yTPckGR0QQQLMSckgXWMLSgwN0VrEyjKVGykWnlbfwX1Wo4SzUdcGtGJ
+ dq3Ew785JH7OkP5WTf/nVeCaDpZgTZ17hyRVNdcTpmC8NTlz06Z9GgjDvqg+Bbfy7v93
+ /Q/+Gpymz//SloKdrxfSDwUH1KMrxp5xHJnZdawHVQE3oV4FjwRnsNKT6sAeWQOl5WHx pA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3v04rxbxvu-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 14 Dec 2023 18:08:00 +0000
+Received: from m0353724.ppops.net (m0353724.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3BEHrMH3020720;
+        Thu, 14 Dec 2023 18:08:00 GMT
+Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3v04rxbxvh-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 14 Dec 2023 18:08:00 +0000
+Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
+        by ppma12.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3BEH01XH008442;
+        Thu, 14 Dec 2023 18:07:59 GMT
+Received: from smtprelay07.fra02v.mail.ibm.com ([9.218.2.229])
+        by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 3uw2jttr9e-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 14 Dec 2023 18:07:59 +0000
+Received: from smtpav06.fra02v.mail.ibm.com (smtpav06.fra02v.mail.ibm.com [10.20.54.105])
+        by smtprelay07.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3BEI7vnA4063766
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 14 Dec 2023 18:07:57 GMT
+Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 541EF20049;
+        Thu, 14 Dec 2023 18:07:57 +0000 (GMT)
+Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 3DE4620040;
+        Thu, 14 Dec 2023 18:07:54 +0000 (GMT)
+Received: from sapthagiri.in.ibm.com (unknown [9.43.25.55])
+        by smtpav06.fra02v.mail.ibm.com (Postfix) with ESMTP;
+        Thu, 14 Dec 2023 18:07:54 +0000 (GMT)
+From:   Srikar Dronamraju <srikar@linux.vnet.ibm.com>
+To:     Michael Ellerman <mpe@ellerman.id.au>
+Cc:     linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Josh Poimboeuf <jpoimboe@kernel.org>,
+        linux-kernel@vger.kernel.org, Mark Rutland <mark.rutland@arm.com>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Rohan McLure <rmclure@linux.ibm.com>,
+        Valentin Schneider <vschneid@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Aneesh <aneesh.kumar@kernel.org>
+Subject: [PATCH v5 0/5] powerpc/smp: Topology and shared processor optimizations
+Date:   Thu, 14 Dec 2023 23:37:10 +0530
+Message-ID: <20231214180720.310852-1-srikar@linux.vnet.ibm.com>
+X-Mailer: git-send-email 2.43.0
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: j6c8xqUKI9MnKzeTDbHrBiVnoqIQtbpi
+X-Proofpoint-ORIG-GUID: XmxWE_-nvbY_MDVLUjW84i3xUEd3fLkk
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-References: <20231212231706.2680890-1-jeffxu@chromium.org> <20231212231706.2680890-12-jeffxu@chromium.org>
- <CAHk-=wgn02cpoFEDQGgS+5BUqA2z-=Ks9+PNd-pEJy8h+NOs5g@mail.gmail.com>
- <CALmYWFu39nzHvBmRsA326GcmV9u=eM-2aCGOvLK31rrb2R9NEw@mail.gmail.com> <CAHk-=wh_VViVZxjiQ5jtB0q=p=JtJMj2R24UAmj-fL-RNLWxNw@mail.gmail.com>
-In-Reply-To: <CAHk-=wh_VViVZxjiQ5jtB0q=p=JtJMj2R24UAmj-fL-RNLWxNw@mail.gmail.com>
-From:   =?UTF-8?Q?Stephen_R=C3=B6ttger?= <sroettger@google.com>
-Date:   Thu, 14 Dec 2023 19:06:55 +0100
-Message-ID: <CAEAAPHZpYXHNPdca+xfj77bwYaL6PY-c_oQ54r+=wtJa6_hmCA@mail.gmail.com>
-Subject: Re: [RFC PATCH v3 11/11] mseal:add documentation
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Jeff Xu <jeffxu@google.com>, jeffxu@chromium.org,
-        akpm@linux-foundation.org, keescook@chromium.org, jannh@google.com,
-        willy@infradead.org, gregkh@linuxfoundation.org,
-        jorgelo@chromium.org, groeck@chromium.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-mm@kvack.org, pedro.falcato@gmail.com, dave.hansen@intel.com,
-        linux-hardening@vger.kernel.org, deraadt@openbsd.org
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="0000000000004e9bd1060c7c2702"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-14_12,2023-12-14_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 spamscore=0
+ clxscore=1011 impostorscore=0 mlxlogscore=999 mlxscore=0 malwarescore=0
+ adultscore=0 bulkscore=0 phishscore=0 lowpriorityscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311290000 definitions=main-2312140128
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---0000000000004e9bd1060c7c2702
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+PowerVM systems configured in shared processors mode have some unique
+challenges. Some device-tree properties will be missing on a shared
+processor. Hence some sched domains may not make sense for shared processor
+systems.
 
-On Thu, Dec 14, 2023 at 2:31=E2=80=AFAM Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
->
-> On Wed, 13 Dec 2023 at 16:36, Jeff Xu <jeffxu@google.com> wrote:
-> >
-> >
-> > > IOW, when would you *ever* say "seal this area, but MADV_DONTNEED is =
-ok"?
-> > >
-> > The MADV_DONTNEED is OK for file-backed mapping.
->
-> Right. It makes no semantic difference. So there's no point to it.
->
-> My point was that you added this magic flag for "not ok for RO anon mappi=
-ng".
->
-> It's such a *completely* random flag, that I go "that's just crazy
-> random - make sealing _always_ disallow that case".
->
-> So what I object to in this series is basically random small details
-> that should just eb part of the basic act of sealing.
->
-> I think sealing should just mean "you can't do any operations that
-> have semantic meaning for the mapping, because it is SEALED".
->
-> So I think sealing should automatically mean "can't do MADV_DONTNEED
-> on anon memory", because that's basically equivalent to a munmap/remap
-> operation.
+Most shared processor systems are over-provisioned. Underlying PowerVM
+Hypervisor would schedule at a Big Core granularity. The most recent power
+processors support two almost independent cores. In a lightly loaded
+condition, it helps the overall system performance if we pack to lesser
+number of Big Cores.
 
-In Chrome, we have a use case to allow MADV_DONTNEED on sealed memory.
-We have a pkey-tagged heap and code region for JIT code. The regions are
-writable by page permissions, but we use the pkey to control write access.
-These regions are mmapped at process startup and we want to seal them to en=
-sure
-that the pkey and page permissions can't change.
-Since these regions are used for dynamic allocations, we still need a way t=
-o
-release unneeded resources, i.e. madvise(DONTNEED) unused pages on free().
+Since each thread-group is independent, running threads on both the
+thread-groups of a SMT8 core, should have a minimal adverse impact in
+non over provisioned scenarios. These changes in this patchset will not
+affect in the over provisioned scenario.  If there are more threads than
+SMT domains, then asym_packing will not kick-in
 
-AIUI, the madvise(DONTNEED) should effectively only change the content of
-anonymous pages, i.e. it's similar to a memset(0) in that case. That's why =
-we
-added this special case: if you want to madvise(DONTNEED) an anonymous page=
-,
-you should have write permissions to the page.
+System Configuration
+type=Shared mode=Uncapped smt=8 lcpu=96 mem=1066409344 kB cpus=96 ent=64.00
+So *64 Entitled cores/ 96 Virtual processor* Scenario
 
-In our allocator, on free we can then release resources via:
-* allow pkey writes
-* madvise(DONTNEED)
-* disallow pkey writes
+lscpu
+Architecture:                       ppc64le
+Byte Order:                         Little Endian
+CPU(s):                             768
+On-line CPU(s) list:                0-767
+Model name:                         POWER10 (architected), altivec supported
+Model:                              2.0 (pvr 0080 0200)
+Thread(s) per core:                 8
+Core(s) per socket:                 16
+Socket(s):                          6
+Hypervisor vendor:                  pHyp
+Virtualization type:                para
+L1d cache:                          6 MiB (192 instances)
+L1i cache:                          9 MiB (192 instances)
+NUMA node(s):                       6
+NUMA node0 CPU(s):                  0-7,32-39,80-87,128-135,176-183,224-231,272-279,320-327,368-375,416-423,464-471,512-519,560-567,608-615,656-663,704-711,752-759
+NUMA node1 CPU(s):                  8-15,40-47,88-95,136-143,184-191,232-239,280-287,328-335,376-383,424-431,472-479,520-527,568-575,616-623,664-671,712-719,760-767
+NUMA node4 CPU(s):                  64-71,112-119,160-167,208-215,256-263,304-311,352-359,400-407,448-455,496-503,544-551,592-599,640-647,688-695,736-743
+NUMA node5 CPU(s):                  16-23,48-55,96-103,144-151,192-199,240-247,288-295,336-343,384-391,432-439,480-487,528-535,576-583,624-631,672-679,720-727
+NUMA node6 CPU(s):                  72-79,120-127,168-175,216-223,264-271,312-319,360-367,408-415,456-463,504-511,552-559,600-607,648-655,696-703,744-751
+NUMA node7 CPU(s):                  24-31,56-63,104-111,152-159,200-207,248-255,296-303,344-351,392-399,440-447,488-495,536-543,584-591,632-639,680-687,728-735
 
---0000000000004e9bd1060c7c2702
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
+ebizzy -t 32 -S 200 (5 iterations) Records per second. (Higher is better)
+Kernel     N  Min      Max      Median   Avg        Stddev     %Change
+6.6.0-rc3  5  3840178  4059268  3978042  3973936.6  84264.456
++patch     5  3768393  3927901  3874994  3854046    71532.926  -3.01692
 
-MIIPoQYJKoZIhvcNAQcCoIIPkjCCD44CAQExDzANBglghkgBZQMEAgEFADALBgkqhkiG9w0BBwGg
-ggz7MIIEtjCCA56gAwIBAgIQeAMYYHb81ngUVR0WyMTzqzANBgkqhkiG9w0BAQsFADBMMSAwHgYD
-VQQLExdHbG9iYWxTaWduIFJvb3QgQ0EgLSBSMzETMBEGA1UEChMKR2xvYmFsU2lnbjETMBEGA1UE
-AxMKR2xvYmFsU2lnbjAeFw0yMDA3MjgwMDAwMDBaFw0yOTAzMTgwMDAwMDBaMFQxCzAJBgNVBAYT
-AkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMSowKAYDVQQDEyFHbG9iYWxTaWduIEF0bGFz
-IFIzIFNNSU1FIENBIDIwMjAwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQCvLe9xPU9W
-dpiHLAvX7kFnaFZPuJLey7LYaMO8P/xSngB9IN73mVc7YiLov12Fekdtn5kL8PjmDBEvTYmWsuQS
-6VBo3vdlqqXZ0M9eMkjcKqijrmDRleudEoPDzTumwQ18VB/3I+vbN039HIaRQ5x+NHGiPHVfk6Rx
-c6KAbYceyeqqfuJEcq23vhTdium/Bf5hHqYUhuJwnBQ+dAUcFndUKMJrth6lHeoifkbw2bv81zxJ
-I9cvIy516+oUekqiSFGfzAqByv41OrgLV4fLGCDH3yRh1tj7EtV3l2TngqtrDLUs5R+sWIItPa/4
-AJXB1Q3nGNl2tNjVpcSn0uJ7aFPbAgMBAAGjggGKMIIBhjAOBgNVHQ8BAf8EBAMCAYYwHQYDVR0l
-BBYwFAYIKwYBBQUHAwIGCCsGAQUFBwMEMBIGA1UdEwEB/wQIMAYBAf8CAQAwHQYDVR0OBBYEFHzM
-CmjXouseLHIb0c1dlW+N+/JjMB8GA1UdIwQYMBaAFI/wS3+oLkUkrk1Q+mOai97i3Ru8MHsGCCsG
-AQUFBwEBBG8wbTAuBggrBgEFBQcwAYYiaHR0cDovL29jc3AyLmdsb2JhbHNpZ24uY29tL3Jvb3Ry
-MzA7BggrBgEFBQcwAoYvaHR0cDovL3NlY3VyZS5nbG9iYWxzaWduLmNvbS9jYWNlcnQvcm9vdC1y
-My5jcnQwNgYDVR0fBC8wLTAroCmgJ4YlaHR0cDovL2NybC5nbG9iYWxzaWduLmNvbS9yb290LXIz
-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
-miiwZhqbFo3H+sN+36dVsCIwTAYDVR0gBEUwQzBBBgkrBgEEAaAyASgwNDAyBggrBgEFBQcCARYm
-aHR0cHM6Ly93d3cuZ2xvYmFsc2lnbi5jb20vcmVwb3NpdG9yeS8wDAYDVR0TAQH/BAIwADCBmgYI
-KwYBBQUHAQEEgY0wgYowPgYIKwYBBQUHMAGGMmh0dHA6Ly9vY3NwLmdsb2JhbHNpZ24uY29tL2Nh
-L2dzYXRsYXNyM3NtaW1lY2EyMDIwMEgGCCsGAQUFBzAChjxodHRwOi8vc2VjdXJlLmdsb2JhbHNp
-Z24uY29tL2NhY2VydC9nc2F0bGFzcjNzbWltZWNhMjAyMC5jcnQwHwYDVR0jBBgwFoAUfMwKaNei
-6x4schvRzV2Vb4378mMwRgYDVR0fBD8wPTA7oDmgN4Y1aHR0cDovL2NybC5nbG9iYWxzaWduLmNv
-bS9jYS9nc2F0bGFzcjNzbWltZWNhMjAyMC5jcmwwDQYJKoZIhvcNAQELBQADggEBABDOrwE7xhhZ
-KPffKFRtuggfC0sfh0EHmrCzCXlyiQFmTpjm73me7rw+ibiPUnohQxkeqC9KvwDd/gF7OAY3un01
-f8y5iEmwoymOLIzkTKIMHDp6qOul60jFrAWe8EQMuBMEc9TQbOiXB4jFgLuDZX7AspyVvnmLA5sw
-msq0yrGgxTsEeZniQpdOP/qZNS2TJmvNH8a8HuQfHH/pd20lRWfTEuhSRN8cTkKihK7iO8wjCmrp
-EXefUessFdMqMUSfGI6rUaZTfU0SRfdrVHW4IE8onI30/UVurbGlFiugNF3LbDMXdqzs2/eTsLiD
-8Dv1+pt7SJqI4zNhzZFOpvBPVIkxggJqMIICZgIBATBoMFQxCzAJBgNVBAYTAkJFMRkwFwYDVQQK
-ExBHbG9iYWxTaWduIG52LXNhMSowKAYDVQQDEyFHbG9iYWxTaWduIEF0bGFzIFIzIFNNSU1FIENB
-IDIwMjACEAFp/vXw/R/y8Lw9a5440YEwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIE
-IM8/A9cP2NNPis2KNHiRb446CfrNa20wSpXiVFfLImAvMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0B
-BwEwHAYJKoZIhvcNAQkFMQ8XDTIzMTIxNDE4MDcxNVowaQYJKoZIhvcNAQkPMVwwWjALBglghkgB
-ZQMEASowCwYJYIZIAWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQow
-CwYJKoZIhvcNAQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQBdKqebtGmCYqfk8i92
-Tbih5wr2OCj7bSuhQ30OLyYtZkEZJuiAuU1sueW5itmExb93/oy7vM5xG8RxQHmH6Rs1fO/S4b4N
-ACsB3vvwONkaOWsb5SvgwS5aMM1SQRH3p2YfIsfmo/vENC4N6q0euP7+l9ld8Q8cOHml/qvACu3c
-mv4VQtj6Hzo652oV3maIJ6gtt43Gi5K3L9POz1+4ZyDSGajnHnur5tKAH1XDKQBjAro6YCE6BcXd
-LyTjJpMJ5lgQ6obKw83+qNV5vmli6bVRU1SwKZ7sO2vDR3ovIESUzjBR36QEt5XVDaOEdi6Os3ln
-97V+qbMt63pzVda/e2eS
---0000000000004e9bd1060c7c2702--
+>From lparstat (when the workload stabilized)
+Kernel     %user  %sys  %wait  %idle  physc  %entc  lbusy  app    vcsw       phint
+6.6.0-rc3  4.16   0.00  0.00   95.84  26.06  40.72  4.16   69.88  276906989  578
++patch     4.16   0.00  0.00   95.83  17.70  27.66  4.17   78.26  70436663   119
+
+ebizzy -t 128 -S 200 (5 iterations) Records per second. (Higher is better)
+Kernel     N Min      Max      Median   Avg        Stddev     %Change
+6.6.0-rc3  5 5520692  5981856  5717709  5727053.2  176093.2
++patch     5 5305888  6259610  5854590  5843311    375917.03  2.02998
+
+>From lparstat (when the workload stabilized)
+Kernel     %user  %sys  %wait  %idle  physc  %entc  lbusy  app    vcsw       phint
+6.6.0-rc3  16.66  0.00  0.00   83.33  45.49  71.08  16.67  50.50  288778533  581
++patch     16.65  0.00  0.00   83.35  30.15  47.11  16.65  65.76  85196150   133
+
+ebizzy -t 512 -S 200 (5 iterations) Records per second. (Higher is better)
+Kernel     N  Min       Max       Median    Avg       Stddev     %Change
+6.6.0-rc3  5  19563921  20049955  19701510  19728733  198295.18
++patch     5  19455992  20176445  19718427  19832017  304094.05  0.523521
+
+>From lparstat (when the workload stabilized)
+%Kernel     user  %sys  %wait  %idle  physc  %entc   lbusy  app   vcsw       phint
+66.6.0-rc3  6.44  0.01  0.00   33.55  94.14  147.09  66.45  1.33  313345175  621
+6+patch     6.44  0.01  0.00   33.55  94.15  147.11  66.45  1.33  109193889  309
+
+System Configuration
+type=Shared mode=Uncapped smt=8 lcpu=40 mem=1067539392 kB cpus=96 ent=40.00
+So *40 Entitled cores/ 40 Virtual processor* Scenario
+
+lscpu
+Architecture:                       ppc64le
+Byte Order:                         Little Endian
+CPU(s):                             320
+On-line CPU(s) list:                0-319
+Model name:                         POWER10 (architected), altivec supported
+Model:                              2.0 (pvr 0080 0200)
+Thread(s) per core:                 8
+Core(s) per socket:                 10
+Socket(s):                          4
+Hypervisor vendor:                  pHyp
+Virtualization type:                para
+L1d cache:                          2.5 MiB (80 instances)
+L1i cache:                          3.8 MiB (80 instances)
+NUMA node(s):                       4
+NUMA node0 CPU(s):                  0-7,32-39,64-71,96-103,128-135,160-167,192-199,224-231,256-263,288-295
+NUMA node1 CPU(s):                  8-15,40-47,72-79,104-111,136-143,168-175,200-207,232-239,264-271,296-303
+NUMA node4 CPU(s):                  16-23,48-55,80-87,112-119,144-151,176-183,208-215,240-247,272-279,304-311
+NUMA node5 CPU(s):                  24-31,56-63,88-95,120-127,152-159,184-191,216-223,248-255,280-287,312-319
+
+ebizzy -t 32 -S 200 (5 iterations) Records per second. (Higher is better)
+Kernel     N   Min      Max      Median   Avg        Stddev     %Change
+6.6.0-rc3  5   3535518  3864532  3745967  3704233.2  130216.76
++patch     5   3608385  3708026  3649379  3651596.6  37862.163  -1.42099
+
+%Kernel    user   %sys  %wait  %idle  physc  %entc  lbusy  app    vcsw     phint
+6.6.0-rc3  10.00  0.01  0.00   89.99  22.98  57.45  10.01  41.01  1135139  262
++patch     10.00  0.00  0.00   90.00  16.95  42.37  10.00  47.05  925561   19
+
+ebizzy -t 64 -S 200 (5 iterations) Records per second. (Higher is better)
+Kernel     N   Min      Max      Median   Avg        Stddev     %Change
+6.6.0-rc3  5   4434984  4957281  4548786  4591298.2  211770.2
++patch     5   4461115  4835167  4544716  4607795.8  151474.85  0.359323
+
+%Kernel    user   %sys  %wait  %idle  physc  %entc  lbusy  app    vcsw     phint
+6.6.0-rc3  20.01  0.00  0.00   79.99  38.22  95.55  20.01  25.77  1287553  265
++patch     19.99  0.00  0.00   80.01  25.55  63.88  19.99  38.44  1077341  20
+
+ebizzy -t 256 -S 200 (5 iterations) Records per second. (Higher is better)
+Kernel     N   Min      Max      Median   Avg        Stddev     %Change
+6.6.0-rc3  5   8850648  8982659  8951911  8936869.2  52278.031
++patch     5   8751038  9060510  8981409  8942268.4  117070.6   0.0604149
+
+%Kernel    user   %sys  %wait  %idle  physc  %entc   lbusy  app    vcsw     phint
+6.6.0-rc3  80.02  0.01  0.01   19.96  40.00  100.00  80.03  24.00  1597665  276
++patch     80.02  0.01  0.01   19.96  40.00  100.00  80.03  23.99  1383921  63
+
+Observation:
+We are able to see Improvement in ebizzy throughput even with lesser
+core utilization (almost half the core utilization) in low utilization
+scenarios while still retaining throughput in mid and higher utilization
+scenarios.
+Note: The numbers are with Uncapped + no-noise case. In the Capped and/or
+noise case, due to contention on the Cores, the numbers are expected to
+further improve.
+
+Note: The numbers included (sched/fair: Enable group_asym_packing in find_idlest_group)
+https://lore.kernel.org/all/20231018155036.2314342-1-srikar@linux.vnet.ibm.com/
+
+Changelog
+v4
+1. Updated commit msg of patch 1 based on comments from Aneesh
+
+v3 (https://lore.kernel.org/all/20231026101843.56784-1-srikar@linux.vnet.ibm.com) ->v4:
+1. SPLAR specific Asym packing only for MC and DIE domains.
+2. Changes due to rebase (DIE became PKG)
+
+v2 (https://lore.kernel.org/all/20231018163751.2423181-1-srikar@linux.vnet.ibm.com) ->v3:
+1. Handle comments from Peter Zijlstra / Michael Ellerman
+2. Use __ro_after_init attribute instead of read_mostly
+3. Use cpu_has_feature static_key instead of a new one.
+4. Build topology dynamically patch added to this patchset.
+
+v1 (https://lore.kernel.org/all/20230830105244.62477-1-srikar@linux.vnet.ibm.com) -> v2:
+1. Last two patches were added in this version
+2. This version uses static keys
+
+Cc: Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc: Josh Poimboeuf <jpoimboe@kernel.org>
+Cc: linux-kernel@vger.kernel.org
+Cc: linuxppc-dev@lists.ozlabs.org
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: Michael Ellerman <mpe@ellerman.id.au>
+Cc: Nicholas Piggin <npiggin@gmail.com>
+Cc: "Paul E. McKenney" <paulmck@kernel.org>
+Cc: Peter Zijlstra (Intel) <peterz@infradead.org>
+Cc: Rohan McLure <rmclure@linux.ibm.com>
+Cc: Valentin Schneider <vschneid@redhat.com>
+Cc: Vincent Guittot <vincent.guittot@linaro.org>
+CC: Aneesh <aneesh.kumar@kernel.org>
+
+Srikar Dronamraju (5):
+  powerpc/smp: Enable Asym packing for cores on shared processor
+  powerpc/smp: Disable MC domain for shared processor
+  powerpc/smp: Add __ro_after_init attribute
+  powerpc/smp: Avoid asym packing within thread_group of a core
+  powerpc/smp: Dynamically build Powerpc topology
+
+ arch/powerpc/kernel/smp.c | 124 +++++++++++++++++++++-----------------
+ 1 file changed, 70 insertions(+), 54 deletions(-)
+
+
+base-commit: 3c0fd4382b584d4bdc9564526841df32e9b6d817
+-- 
+2.35.3
+
