@@ -1,105 +1,146 @@
-Return-Path: <linux-kernel+bounces-61-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-62-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2870F813B6D
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 21:21:44 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D99D9813B70
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 21:22:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D25001F221EB
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 20:21:43 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 47CC5B2180C
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 20:22:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 13E016A32C;
-	Thu, 14 Dec 2023 20:21:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="F8y+kedQ"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4DC596A33A;
+	Thu, 14 Dec 2023 20:22:31 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-yw1-f182.google.com (mail-yw1-f182.google.com [209.85.128.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx01.omp.ru (mx01.omp.ru [90.154.21.10])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 991C468B99
-	for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 20:21:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f182.google.com with SMTP id 00721157ae682-5e36848f6c6so12555227b3.1
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 12:21:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702585294; x=1703190094; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=0wx1hqqMyfv3pgRgZ5ojp2Fytlta9hGiEwGZy5N6JD4=;
-        b=F8y+kedQIPfWURjaDthTeivUxFN8aEh4B94LaJ3hBlMVz2YVp2/c1x3tE7AH76nMJb
-         TlN+BaOxR1F1r/W/uQnWd5/9l5cXpBHo6nvUxGKwuwsxn9sADiGhG8fQFM3xWoDnfCJV
-         cKgmVNHfz7UG3aucvTNW4D7re//ctnFktZ7n2GrsraxcuIOz8wL44vg1uC5lrXmeYSWq
-         HObeTST3hSLd9xbQ2l6O027mTEaf/KtA8LH2TzwwuUZsVchM+Nmq1LsBMDxrQVwS+9K6
-         V9Svw5MXUBkL3Kf2tv8BmyhL9zYEC/WeQ+q5M5oJ7Hg6mCcaRpjfmFJlwZUYFy/jfDrR
-         j39Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702585294; x=1703190094;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=0wx1hqqMyfv3pgRgZ5ojp2Fytlta9hGiEwGZy5N6JD4=;
-        b=fszNc5Mr6tUsPzgpAcsoTDzF7UELHw5Jqn2nrDU2iASOyQg2iriOle6rPXCUsMY4Zk
-         S2XVResj85TgxIJ1nJF1iqYg3CmcZj1VDBIWY0QgAddVflm229OD0SOVhPOJ5uzoTIqv
-         Q9yE4ZpjgTJRPta/QYWY0XicjKOXUKE4MOZv4o/Ws51cY/J7OBwn0WUV9/5N1FpMfOH5
-         Y77KY2orK6JlQ6VugsIu5PucPiJO9/cP/aheaWSPMk9WTPLxsIG3fGFbIN66y5T6QhKb
-         4i94BiHmwcwVbCFPqe7NciTVZCI+S9ydpZr9EUI13TzNozcH49WUlO17GOa3Lyg+6tQu
-         xfDA==
-X-Gm-Message-State: AOJu0Yw5juBkkZ8NQuvclN++4djgQ6HegBZRRcmFtMcmUh9wGp/c3Si4
-	9y3+K2XleDRFRdm+ukZOKrc=
-X-Google-Smtp-Source: AGHT+IH6MVDnIfZpDTYJc+kzuqNRej0Kpgze/9LKxdZYLtUlmHEhTb2/k7vIFa/q+pFVHL+MlHqWpA==
-X-Received: by 2002:a0d:e68c:0:b0:5e3:4879:602a with SMTP id p134-20020a0de68c000000b005e34879602amr2164949ywe.88.1702585294417;
-        Thu, 14 Dec 2023 12:21:34 -0800 (PST)
-Received: from localhost ([2601:344:8301:57f0:e177:373d:4717:ff6c])
-        by smtp.gmail.com with ESMTPSA id cg4-20020a05690c0a0400b005d39efe78f4sm2763406ywb.50.2023.12.14.12.21.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Dec 2023 12:21:34 -0800 (PST)
-Date: Thu, 14 Dec 2023 12:21:33 -0800
-From: Yury Norov <yury.norov@gmail.com>
-To: Alexander Potapenko <glider@google.com>
-Cc: catalin.marinas@arm.com, will@kernel.org, pcc@google.com,
-	andreyknvl@gmail.com, andriy.shevchenko@linux.intel.com,
-	aleksander.lobakin@intel.com, linux@rasmusvillemoes.dk,
-	alexandru.elisei@arm.com, linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, eugenis@google.com,
-	syednwaris@gmail.com, william.gray@linaro.org
-Subject: Re: [PATCH v10-mte 7/7] arm64: mte: implement
- CONFIG_ARM64_MTE_SWAP_STATS
-Message-ID: <ZXtjzQmnOz+GGPGW@yury-ThinkPad>
-References: <20231214110639.2294687-1-glider@google.com>
- <20231214110639.2294687-8-glider@google.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 306446AB81;
+	Thu, 14 Dec 2023 20:22:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=omp.ru
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=omp.ru
+Received: from [192.168.1.104] (178.176.74.138) by msexch01.omp.ru
+ (10.188.4.12) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.1258.12; Thu, 14 Dec
+ 2023 23:22:15 +0300
+Subject: Re: [PATCH net 2/2] net: ravb: Check that GTI loading request is done
+To: Claudiu <claudiu.beznea@tuxon.dev>, <davem@davemloft.net>,
+	<edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
+	<claudiu.beznea.uj@bp.renesas.com>, <yoshihiro.shimoda.uh@renesas.com>,
+	<wsa+renesas@sang-engineering.com>, <niklas.soderlund+renesas@ragnatech.se>,
+	<biju.das.jz@bp.renesas.com>, <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+	<mitsuhiro.kimura.kc@renesas.com>, <geert+renesas@glider.be>
+CC: <netdev@vger.kernel.org>, <linux-renesas-soc@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>
+References: <20231214113137.2450292-1-claudiu.beznea.uj@bp.renesas.com>
+ <20231214113137.2450292-3-claudiu.beznea.uj@bp.renesas.com>
+From: Sergey Shtylyov <s.shtylyov@omp.ru>
+Organization: Open Mobile Platform
+Message-ID: <884a4c36-25e4-1049-8410-cc5df9bcc4d1@omp.ru>
+Date: Thu, 14 Dec 2023 23:22:15 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231214110639.2294687-8-glider@google.com>
+In-Reply-To: <20231214113137.2450292-3-claudiu.beznea.uj@bp.renesas.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: msexch01.omp.ru (10.188.4.12) To msexch01.omp.ru
+ (10.188.4.12)
+X-KSE-ServerInfo: msexch01.omp.ru, 9
+X-KSE-AntiSpam-Interceptor-Info: scan successful
+X-KSE-AntiSpam-Version: 6.1.0, Database issued on: 12/14/2023 20:07:00
+X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
+X-KSE-AntiSpam-Method: none
+X-KSE-AntiSpam-Rate: 59
+X-KSE-AntiSpam-Info: Lua profiles 182128 [Dec 14 2023]
+X-KSE-AntiSpam-Info: Version: 6.1.0.3
+X-KSE-AntiSpam-Info: Envelope from: s.shtylyov@omp.ru
+X-KSE-AntiSpam-Info: LuaCore: 7 0.3.7 6d6bf5bd8eea7373134f756a2fd73e9456bb7d1a
+X-KSE-AntiSpam-Info: {rep_avail}
+X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
+X-KSE-AntiSpam-Info: {relay has no DNS name}
+X-KSE-AntiSpam-Info: {SMTP from is not routable}
+X-KSE-AntiSpam-Info: {Found in DNSBL: 178.176.74.138 in (user)
+ b.barracudacentral.org}
+X-KSE-AntiSpam-Info: {Found in DNSBL: 178.176.74.138 in (user)
+ dbl.spamhaus.org}
+X-KSE-AntiSpam-Info:
+	127.0.0.199:7.1.2;omp.ru:7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1
+X-KSE-AntiSpam-Info: ApMailHostAddress: 178.176.74.138
+X-KSE-AntiSpam-Info: {DNS response errors}
+X-KSE-AntiSpam-Info: Rate: 59
+X-KSE-AntiSpam-Info: Status: not_detected
+X-KSE-AntiSpam-Info: Method: none
+X-KSE-AntiSpam-Info: Auth:dmarc=temperror header.from=omp.ru;spf=temperror
+ smtp.mailfrom=omp.ru;dkim=none
+X-KSE-Antiphishing-Info: Clean
+X-KSE-Antiphishing-ScanningType: Heuristic
+X-KSE-Antiphishing-Method: None
+X-KSE-Antiphishing-Bases: 12/14/2023 20:12:00
+X-KSE-Antivirus-Interceptor-Info: scan successful
+X-KSE-Antivirus-Info: Clean, bases: 12/14/2023 7:08:00 PM
+X-KSE-Attachment-Filter-Triggered-Rules: Clean
+X-KSE-Attachment-Filter-Triggered-Filters: Clean
+X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
 
-On Thu, Dec 14, 2023 at 12:06:39PM +0100, Alexander Potapenko wrote:
-> Provide a config to collect the usage statistics for ARM MTE tag
-> compression. This patch introduces allocation/deallocation counters
-> for buffers that were stored uncompressed (and thus occupy 128 bytes of
-> heap plus the Xarray overhead to store a pointer) and those that were
-> compressed into 8-byte pointers (effectively using 0 bytes of heap in
-> addition to the Xarray overhead).
-> 
-> The counters are exposed to the userspace via
-> /sys/kernel/debug/mteswap/stats:
-> 
->   # cat /sys/kernel/debug/mteswap/stats
->   8 bytes:      102496 allocations,     67302 deallocations
->   128 bytes:    212234 allocations,     178278 deallocations
->   uncompressed tag storage size:        8851200
->   compressed tag storage size:  4346368
-> 
-> Suggested-by: Yury Norov <yury.norov@gmail.com>
-> Signed-off-by: Alexander Potapenko <glider@google.com>
-> Acked-by: Catalin Marinas <catalin.marinas@arm.com>
+On 12/14/23 2:31 PM, Claudiu wrote:
 
-Reviewed-by: Yury Norov <yury.norov@gmail.com>
+> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+> 
+> Hardware manual specifies the following for GCCR.LTI bit:
+> 0: Setting completed
+> 1: When written: Issue a configuration request.
+> When read: Completion of settings is pending
+> 
+> Thus, check the completion status when setting 1 to GCCR.LTI.
+
+   But do we really need to? Seems quite dubious... currently we
+just let it the loading complete asynchronously...
+
+> Fixes: 7e09a052dc4e ("ravb: Exclude gPTP feature support for RZ/G2L")
+> Fixes: 568b3ce7a8ef ("ravb: factor out register bit twiddling code")
+> Fixes: 0184165b2f42 ("ravb: add sleep PM suspend/resume support")
+> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+> ---
+>  drivers/net/ethernet/renesas/ravb_main.c | 8 ++++++++
+>  1 file changed, 8 insertions(+)
+> 
+> diff --git a/drivers/net/ethernet/renesas/ravb_main.c b/drivers/net/ethernet/renesas/ravb_main.c
+> index ce95eb5af354..1c253403a297 100644
+> --- a/drivers/net/ethernet/renesas/ravb_main.c
+> +++ b/drivers/net/ethernet/renesas/ravb_main.c
+> @@ -2819,6 +2819,10 @@ static int ravb_probe(struct platform_device *pdev)
+>  
+>  		/* Request GTI loading */
+>  		ravb_modify(ndev, GCCR, GCCR_LTI, GCCR_LTI);
+> +		/* Check completion status. */
+> +		error = ravb_wait(ndev, GCCR, GCCR_LTI, 0);
+> +		if (error)
+> +			goto out_disable_refclk;
+>  	}
+>  
+>  	if (info->internal_delay) {
+> @@ -3041,6 +3045,10 @@ static int __maybe_unused ravb_resume(struct device *dev)
+>  
+>  		/* Request GTI loading */
+>  		ravb_modify(ndev, GCCR, GCCR_LTI, GCCR_LTI);
+> +		/* Check completion status. */
+> +		ret = ravb_wait(ndev, GCCR, GCCR_LTI, 0);
+> +		if (ret)
+> +			return ret;
+>  	}
+>  
+>  	if (info->internal_delay)
+> 
+
+   BTW, seems worth factoring out into a separate function...
+
+MBR, Sergey
 
