@@ -2,400 +2,224 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B0626812970
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 08:34:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E8B681296C
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 08:34:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1443354AbjLNHeS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 02:34:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40078 "EHLO
+        id S1443362AbjLNHeA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 02:34:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40192 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235512AbjLNHeK (ORCPT
+        with ESMTP id S235574AbjLNHdw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 02:34:10 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FF40111
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 23:34:16 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C5D6AC433CC;
-        Thu, 14 Dec 2023 07:34:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1702539255;
-        bh=0sJX63hk23OFUCPWAXphdE2kSZZfa5lWGWce7cbs/GA=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=uTwxK+Ca4TqHHzHH5wnc6B4C7Bo1qFHxy6q8FxW6v2gFQxgRaPvPwY3hzFXVOsmsi
-         l4ILMD3Qh9W755sLOoJbSo1UgolZwZr8ztzlHkp13buZvOXKPWF6TApZgyuartauwP
-         swqGjyOhc5Yg8W7Ie/MbvuZsuKnnZSZ4un8INECzVB57R60CWseHYqf5epFO9sKjrs
-         yHPqY52VoC5eM25lADy9PXGuO5FPCKYPCfJWzOVR+/j7+C+d3rm02zlLYf4MdGh6bZ
-         H+VIJybzHPWEjbjobpkvTvEv/OnU2AD5Ih5p2RmQCfqy4NornyruZ3mUB+a33skdb7
-         T/QuwdlHlGowA==
-Received: by mail-ot1-f48.google.com with SMTP id 46e09a7af769-6da2db096bcso149280a34.0;
-        Wed, 13 Dec 2023 23:34:15 -0800 (PST)
-X-Gm-Message-State: AOJu0Yxjp1jQLEF23JvR47vB4nXwLe1owvT4dymU+3tAvFIGgB6Wqp/x
-        NC5ruIyFtkYBXwe/iu4KPaic8psZQ+ZyxWVBpMM=
-X-Google-Smtp-Source: AGHT+IEMKnC6FlP9GRM63r+EHiC1p5vnRxH1XqjV7YGVctzAInZpA1YMwKlOfYOhwnCGD4xlWnFt7aMoiCFn0edAslc=
-X-Received: by 2002:a05:6808:1491:b0:3b9:fabb:f66b with SMTP id
- e17-20020a056808149100b003b9fabbf66bmr3911157oiw.2.1702539255076; Wed, 13 Dec
- 2023 23:34:15 -0800 (PST)
+        Thu, 14 Dec 2023 02:33:52 -0500
+Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B35C311F
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 23:33:56 -0800 (PST)
+Received: by mail-ed1-x52c.google.com with SMTP id 4fb4d7f45d1cf-551c03adfc6so3027943a12.0
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 23:33:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1702539235; x=1703144035; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=wcv7sGgcNTnRT1bBWy6u9QOHZXNv+hQLmOYd4/d0PoQ=;
+        b=fz3lXTFaTFLONBQg6yXFDZkqqUX6TesePAk7qOeP26LER0oIgqJeO+rMtH1XKdflji
+         hXSMRT2C5Z771LmvtHjefGPg9R74SJolK2/pLdHTOMcXjBh2N0rsXrCe0xCPN6Iiru4s
+         Zxg7+afdf1tDvD5ahcRDoQ5Db1TSPfzrRLUlBxvP+tWZwKJ8bX+Sn7ha/2dLY1PPweg6
+         KLfqLR+EMduHIkqChJ7k1zATPGJn+dmFsD/eBqylWIQPEhpBMgUFtvbOcnNAzBFmhysP
+         I1mZjCrmJA5JxTd3tL1tCVlmrS0ZF+S9kKsKGSGZ3/f+SO4QMqJzOdVJFnVQAEbDHfcd
+         Cyqg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702539235; x=1703144035;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=wcv7sGgcNTnRT1bBWy6u9QOHZXNv+hQLmOYd4/d0PoQ=;
+        b=RfZ/cdZIXdMhlo+iQ+jkczJTanpDuxRXOFItw+ZJy126++veYJ0zm4c1b5o7PdFFj4
+         pLhwGVqBCeroWNP5NJfq5R78R8QrijKlIR7kwusBvK3XodJjPP7fFmiRnCBgKhYzTPDh
+         o/tnLetFUVV8pCWrsWllZ/fRC9vx/CL2OeohRdUvaqzn5iMKfiu6yPUUddV2bqEvfK1p
+         1Jr+KBakTRkEQB/kcDSc7IGA9rZfl3XTgAgwuFKZ1apHFdxLHso+cX0Pr81iP9Plih2O
+         o3EdCaWIsnrYBmzKk+9fAvSFyWoWLEEwdsJ2h6jJN+c/O6PHJW/JfK5tzpY+7PL/l3oL
+         mu7g==
+X-Gm-Message-State: AOJu0YzMPVF9hfFWFdaAU1exo7Nw1T4WCFHZ83NYXW7tSmpUQFuXW6/t
+        aSggecgvpRu5HS1I1JbaNiOUwg==
+X-Google-Smtp-Source: AGHT+IHGEVebgVIc7poq1NDQSzshE/fnhw0BckYI+SIiFGDxAtHqp+Z8O+dGXQIENOcUlIoKkOebrA==
+X-Received: by 2002:a50:cd81:0:b0:552:5c38:5d59 with SMTP id p1-20020a50cd81000000b005525c385d59mr430628edi.48.1702539235155;
+        Wed, 13 Dec 2023 23:33:55 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.218.27])
+        by smtp.gmail.com with ESMTPSA id bd18-20020a056402207200b00542db304680sm6440491edb.63.2023.12.13.23.33.53
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 13 Dec 2023 23:33:54 -0800 (PST)
+Message-ID: <a1563e29-2f20-4b1e-acbf-2b6d77dc7831@linaro.org>
+Date:   Thu, 14 Dec 2023 08:33:53 +0100
 MIME-Version: 1.0
-References: <20231202035511.487946-1-sjg@chromium.org> <20231202035511.487946-3-sjg@chromium.org>
- <20231203153401.GV8402@pendragon.ideasonboard.com> <20231207142723.GA3187877@google.com>
- <20231207143814.GD15521@pendragon.ideasonboard.com> <CAGXv+5Go_0pEVAOLQmRCc_a9-YUtZEmBfXtMuBupX_nb9iqwbw@mail.gmail.com>
- <20231209152946.GC13421@pendragon.ideasonboard.com> <CAMuHMdVMZs6mnwWBgFwktO=8o=QzROv60cfZe085MhD6HxQjpQ@mail.gmail.com>
- <CAGXv+5Est3FL-XcEL-vB-6zVNas0mqb2cNYa==Yb7W2SQU9xVQ@mail.gmail.com> <CAK7LNATyD-PeNbaLTjJmU9=koqqE+V6QvFe09c2VrXopWvjpcw@mail.gmail.com>
-In-Reply-To: <CAK7LNATyD-PeNbaLTjJmU9=koqqE+V6QvFe09c2VrXopWvjpcw@mail.gmail.com>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Thu, 14 Dec 2023 16:33:38 +0900
-X-Gmail-Original-Message-ID: <CAK7LNAR7Fm-1yaZmyH78vG5yNbbW2Avjj5F63u+aST6JQoMd5A@mail.gmail.com>
-Message-ID: <CAK7LNAR7Fm-1yaZmyH78vG5yNbbW2Avjj5F63u+aST6JQoMd5A@mail.gmail.com>
-Subject: Re: [PATCH v9 2/2] arm64: boot: Support Flat Image Tree
-To:     Chen-Yu Tsai <wenst@chromium.org>
-Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Simon Glass <sjg@chromium.org>,
-        linux-arm-kernel@lists.infradead.org,
-        Ahmad Fatoum <a.fatoum@pengutronix.de>,
-        U-Boot Mailing List <u-boot@lists.denx.de>,
-        Nicolas Schier <nicolas@fjasle.eu>,
-        Tom Rini <trini@konsulko.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Terrell <terrelln@fb.com>, Will Deacon <will@kernel.org>,
-        linux-doc@vger.kernel.org, linux-kbuild@vger.kernel.org,
-        linux-kernel@vger.kernel.org, workflows@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-0.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,PDS_OTHER_BAD_TLD,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/2] ARM: dts: qcom: msm8926-motorola-peregrine: Add
+ initial device tree
+Content-Language: en-US
+To:     =?UTF-8?Q?Andr=C3=A9_Apitzsch?= <git@apitzsch.eu>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>
+Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, phone-devel@vger.kernel.org,
+        ~postmarketos/upstreaming@lists.sr.ht
+References: <20231213-peregrine-v1-0-5229e21bca3f@apitzsch.eu>
+ <20231213-peregrine-v1-2-5229e21bca3f@apitzsch.eu>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
+ cFgcqTTuNHjAvxtUG8pQgGTHAObYs6xeYJtjUH0ZX6ndJ33FJYf5V3yXqqjcZ30FgHzJCFUu
+ JMp7PSyMPzpUXfU12yfcRYVEMQrmplNZssmYhiTeVicuOOypWugZKVLGNm0IweVCaZ/DJDIH
+ gNbpvVwjcKYrx85m9cBVEBUGaQP6AT7qlVCkrf50v8bofSIyVa2xmubbAwwFA1oxoOusjPIE
+ J3iadrwpFvsZjF5uHAKS+7wHLoW9hVzOnLbX6ajk5Hf8Pb1m+VH/E8bPBNNYKkfTtypTDUCj
+ NYcd27tjnXfG+SDs/EXNUAIRefCyvaRG7oRYF3Ec+2RgQDRnmmjCjoQNbFrJvJkFHlPeHaeS
+ BosGY+XWKydnmsfY7SSnjAzLUGAFhLd/XDVpb1Een2XucPpKvt9ORF+48gy12FA5GduRLhQU
+ vK4tU7ojoem/G23PcowM1CwPurC8sAVsQb9KmwTGh7rVz3ks3w/zfGBy3+WmLg++C2Wct6nM
+ Pd8/6CBVjEWqD06/RjI2AnjIq5fSEH/BIfXXfC68nMp9BZoy3So4ZsbOlBmtAPvMYX6U8VwD
+ TNeBxJu5Ex0Izf1NV9CzC3nNaFUYOY8KfN01X5SExAoVTr09ewARAQABzTRLcnp5c3p0b2Yg
+ S296bG93c2tpIDxrcnp5c3p0b2Yua296bG93c2tpQGxpbmFyby5vcmc+wsGUBBMBCgA+FiEE
+ m9B+DgxR+NWWd7dUG5NDfTtBYpsFAmI+BxMCGwMFCRRfreEFCwkIBwIGFQoJCAsCBBYCAwEC
+ HgECF4AACgkQG5NDfTtBYptgbhAAjAGunRoOTduBeC7V6GGOQMYIT5n3OuDSzG1oZyM4kyvO
+ XeodvvYv49/ng473E8ZFhXfrre+c1olbr1A8pnz9vKVQs9JGVa6wwr/6ddH7/yvcaCQnHRPK
+ mnXyP2BViBlyDWQ71UC3N12YCoHE2cVmfrn4JeyK/gHCvcW3hUW4i5rMd5M5WZAeiJj3rvYh
+ v8WMKDJOtZFXxwaYGbvFJNDdvdTHc2x2fGaWwmXMJn2xs1ZyFAeHQvrp49mS6PBQZzcx0XL5
+ cU9ZjhzOZDn6Apv45/C/lUJvPc3lo/pr5cmlOvPq1AsP6/xRXsEFX/SdvdxJ8w9KtGaxdJuf
+ rpzLQ8Ht+H0lY2On1duYhmro8WglOypHy+TusYrDEry2qDNlc/bApQKtd9uqyDZ+rx8bGxyY
+ qBP6bvsQx5YACI4p8R0J43tSqWwJTP/R5oPRQW2O1Ye1DEcdeyzZfifrQz58aoZrVQq+innR
+ aDwu8qDB5UgmMQ7cjDSeAQABdghq7pqrA4P8lkA7qTG+aw8Z21OoAyZdUNm8NWJoQy8m4nUP
+ gmeeQPRc0vjp5JkYPgTqwf08cluqO6vQuYL2YmwVBIbO7cE7LNGkPDA3RYMu+zPY9UUi/ln5
+ dcKuEStFZ5eqVyqVoZ9eu3RTCGIXAHe1NcfcMT9HT0DPp3+ieTxFx6RjY3kYTGLOwU0EVUNc
+ NAEQAM2StBhJERQvgPcbCzjokShn0cRA4q2SvCOvOXD+0KapXMRFE+/PZeDyfv4dEKuCqeh0
+ hihSHlaxTzg3TcqUu54w2xYskG8Fq5tg3gm4kh1Gvh1LijIXX99ABA8eHxOGmLPRIBkXHqJY
+ oHtCvPc6sYKNM9xbp6I4yF56xVLmHGJ61KaWKf5KKWYgA9kfHufbja7qR0c6H79LIsiYqf92
+ H1HNq1WlQpu/fh4/XAAaV1axHFt/dY/2kU05tLMj8GjeQDz1fHas7augL4argt4e+jum3Nwt
+ yupodQBxncKAUbzwKcDrPqUFmfRbJ7ARw8491xQHZDsP82JRj4cOJX32sBg8nO2N5OsFJOcd
+ 5IE9v6qfllkZDAh1Rb1h6DFYq9dcdPAHl4zOj9EHq99/CpyccOh7SrtWDNFFknCmLpowhct9
+ 5ZnlavBrDbOV0W47gO33WkXMFI4il4y1+Bv89979rVYn8aBohEgET41SpyQz7fMkcaZU+ok/
+ +HYjC/qfDxT7tjKXqBQEscVODaFicsUkjheOD4BfWEcVUqa+XdUEciwG/SgNyxBZepj41oVq
+ FPSVE+Ni2tNrW/e16b8mgXNngHSnbsr6pAIXZH3qFW+4TKPMGZ2rZ6zITrMip+12jgw4mGjy
+ 5y06JZvA02rZT2k9aa7i9dUUFggaanI09jNGbRA/ABEBAAHCwXwEGAEKACYCGwwWIQSb0H4O
+ DFH41ZZ3t1Qbk0N9O0FimwUCYDzvagUJFF+UtgAKCRAbk0N9O0Fim9JzD/0auoGtUu4mgnna
+ oEEpQEOjgT7l9TVuO3Qa/SeH+E0m55y5Fjpp6ZToc481za3xAcxK/BtIX5Wn1mQ6+szfrJQ6
+ 59y2io437BeuWIRjQniSxHz1kgtFECiV30yHRgOoQlzUea7FgsnuWdstgfWi6LxstswEzxLZ
+ Sj1EqpXYZE4uLjh6dW292sO+j4LEqPYr53hyV4I2LPmptPE9Rb9yCTAbSUlzgjiyyjuXhcwM
+ qf3lzsm02y7Ooq+ERVKiJzlvLd9tSe4jRx6Z6LMXhB21fa5DGs/tHAcUF35hSJrvMJzPT/+u
+ /oVmYDFZkbLlqs2XpWaVCo2jv8+iHxZZ9FL7F6AHFzqEFdqGnJQqmEApiRqH6b4jRBOgJ+cY
+ qc+rJggwMQcJL9F+oDm3wX47nr6jIsEB5ZftdybIzpMZ5V9v45lUwmdnMrSzZVgC4jRGXzsU
+ EViBQt2CopXtHtYfPAO5nAkIvKSNp3jmGxZw4aTc5xoAZBLo0OV+Ezo71pg3AYvq0a3/oGRG
+ KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
+ fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20231213-peregrine-v1-2-5229e21bca3f@apitzsch.eu>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 14, 2023 at 3:12=E2=80=AFPM Masahiro Yamada <masahiroy@kernel.o=
-rg> wrote:
->
-> On Thu, Dec 14, 2023 at 1:03=E2=80=AFPM Chen-Yu Tsai <wenst@chromium.org>=
- wrote:
-> >
-> > On Sun, Dec 10, 2023 at 1:31=E2=80=AFAM Geert Uytterhoeven <geert@linux=
--m68k.org> wrote:
-> > >
-> > > Hi Laurent,
-> > >
-> > > On Sat, Dec 9, 2023 at 4:29=E2=80=AFPM Laurent Pinchart
-> > > <laurent.pinchart@ideasonboard.com> wrote:
-> > > > On Sat, Dec 09, 2023 at 10:13:59PM +0900, Chen-Yu Tsai wrote:
-> > > > > On Thu, Dec 7, 2023 at 11:38=E2=80=AFPM Laurent Pinchart
-> > > > > <laurent.pinchart@ideasonboard.com> wrote:
-> > > > > > On Thu, Dec 07, 2023 at 10:27:23PM +0800, Chen-Yu Tsai wrote:
-> > > > > > > On Sun, Dec 03, 2023 at 05:34:01PM +0200, Laurent Pinchart wr=
-ote:
-> > > > > > > > On Fri, Dec 01, 2023 at 08:54:42PM -0700, Simon Glass wrote=
-:
-> > > > > > > > > Add a script which produces a Flat Image Tree (FIT), a si=
-ngle file
-> > > > > > > > > containing the built kernel and associated devicetree fil=
-es.
-> > > > > > > > > Compression defaults to gzip which gives a good balance o=
-f size and
-> > > > > > > > > performance.
-> > > > > > > > >
-> > > > > > > > > The files compress from about 86MB to 24MB using this app=
-roach.
-> > > > > > > > >
-> > > > > > > > > The FIT can be used by bootloaders which support it, such=
- as U-Boot
-> > > > > > > > > and Linuxboot. It permits automatic selection of the corr=
-ect
-> > > > > > > > > devicetree, matching the compatible string of the running=
- board with
-> > > > > > > > > the closest compatible string in the FIT. There is no nee=
-d for
-> > > > > > > > > filenames or other workarounds.
-> > > > > > > > >
-> > > > > > > > > Add a 'make image.fit' build target for arm64, as well. U=
-se
-> > > > > > > > > FIT_COMPRESSION to select a different algorithm.
-> > > > > > > > >
-> > > > > > > > > The FIT can be examined using 'dumpimage -l'.
-> > > > > > > > >
-> > > > > > > > > This features requires pylibfdt (use 'pip install libfdt'=
-). It also
-> > > > > > > > > requires compression utilities for the algorithm being us=
-ed. Supported
-> > > > > > > > > compression options are the same as the Image.xxx files. =
-For now there
-> > > > > > > > > is no way to change the compression other than by editing=
- the rule for
-> > > > > > > > > $(obj)/image.fit
-> > > > > > > > >
-> > > > > > > > > While FIT supports a ramdisk / initrd, no attempt is made=
- to support
-> > > > > > > > > this here, since it must be built separately from the Lin=
-ux build.
-> > > > > > > >
-> > > > > > > > FIT images are very useful, so I think this is a very welco=
-me addition
-> > > > > > > > to the kernel build system. It can get tricky though: given=
- the
-> > > > > > > > versatile nature of FIT images, there can't be any
-> > > > > > > > one-size-fits-them-all solution to build them, and striking=
- the right
-> > > > > > > > balance between what makes sense for the kernel and the fea=
-tures that
-> > > > > > > > users may request will probably lead to bikeshedding. As we=
- all love
-> > > > > > > > bikeshedding, I thought I would start selfishly, with a per=
-sonal use
-> > > > > > > > case :-) This isn't a yak-shaving request though, I don't s=
-ee any reason
-> > > > > > > > to delay merging this series.
-> > > > > > > >
-> > > > > > > > Have you envisioned building FIT images with a subset of DT=
-Bs, or adding
-> > > > > > > > DTBOs ? Both would be fairly trivial extensions to this scr=
-ipt by
-> > > > > > > > extending the supported command line arguments. It would pe=
-rhaps be more
-> > > > > > > > difficult to integrate in the kernel build system though. T=
-his leads me
-> > > > > > > > to a second question: would you consider merging extensions=
- to this
-> > > > > > > > script if they are not used by the kernel build system, but=
- meant for
-> > > > > > > > users who manually invoke the script ? More generally, is t=
-he script
-> > > > > > >
-> > > > > > > We'd also be interested in some customization, though in a di=
-fferent way.
-> > > > > > > We imagine having a rule file that says X compatible string s=
-hould map
-> > > > > > > to A base DTB, plus B and C DTBO for the configuration sectio=
-n. The base
-> > > > > > > DTB would carry all common elements of some device, while the=
- DTBOs
-> > > > > > > carry all the possible second source components, like differe=
-nt display
-> > > > > > > panels or MIPI cameras for instance. This could drastically r=
-educe the
-> > > > > > > size of FIT images in ChromeOS by deduplicating all the commo=
-n stuff.
-> > > > > >
-> > > > > > Do you envision the "mapping" compatible string mapping to a co=
-nfig
-> > > > > > section in the FIT image, that would bundle the base DTB and th=
-e DTBOs ?
-> > > > >
-> > > > > That's exactly the idea. The mapping compatible string could be u=
-ntied
-> > > > > from the base board's compatible string if needed (which we proba=
-bly do).
-> > > > >
-> > > > > So something like:
-> > > > >
-> > > > > config {
-> > > > >     config-1 {
-> > > > >         compatible =3D "google,krane-sku0";
-> > > > >         fdt =3D "krane-baseboard", "krane-sku0-overlay";
-> > > > >     };
-> > > > > };
-> > > > >
-> > > > > With "krane-sku0-overlay" being an overlay that holds the differe=
-nces
-> > > > > between the SKUs, in this case the display panel and MIPI camera =
-(not
-> > > > > upstreamed) that applies to SKU0 in particular.
-> > > >
-> > > > The kernel DT makefiles already contain information on what overlay=
-s to
-> > > > apply to what base boards, in order to test the overlays and produc=
-e
-> > > > "full" DTBs. Maybe that information could be leveraged to create th=
-e
-> > > > configurations in the FIT image ?
-> > >
-> > > Although the "full" DTBs created may only be a subset of all possible
-> > > combinations (I believe Rob just started with creating one "full" DTB
-> > > for each overlay, cfr. the additions I made in commit a09c3e105a20858=
-0
-> > > ("arm64: dts: renesas: Apply overlays to base dtbs")), that could
-> > > definitely be a start.
-> > >
-> > > Now, since the kernel build system already creates "full" DTBs, does
-> > > that mean that all of the base DTBs, overlays, and "full" DTBs will
-> > > end up in the FIT image?
-> >
-> > I suppose we could add an option to the packing tool to be able to _not=
-_
-> > add the "full" DTBs if they can also be assembled with a base DTB and
-> > overlays. Think of it as a firmware compatibility option: if the firmwa=
-re
-> > supports overlays, then you almost always want the deconstructed parts,
-> > not the fully assembled ones. Vice versa.
-> >
-> > If we don't we could end up with two configurations that have the same
-> > compatible string?
->
->
-> Right.
->
-> We would end up with such situations because applying
-> an overlay does not change the compatible string.
->
->
->
-> With this code in arch/arm64/boot/dts/ti/Makefile:
->
-> k3-am642-tqma64xxl-mbax4xxl-sdcard-dtbs :=3D \
->       k3-am642-tqma64xxl-mbax4xxl.dtb k3-am64-tqma64xxl-mbax4xxl-sdcard.d=
-tbo
-> k3-am642-tqma64xxl-mbax4xxl-wlan-dtbs :=3D \
->       k3-am642-tqma64xxl-mbax4xxl.dtb k3-am64-tqma64xxl-mbax4xxl-wlan.dtb=
-o
->
->
->
->
-> $ fdtdump  arch/arm64/boot/dts/ti/k3-am642-tqma64xxl-mbax4xxl-sdcard.dtb
-> 2>/dev/null| head -n15 | tail -n2
->     model =3D "TQ-Systems TQMa64xxL SoM on MBax4xxL carrier board";
->     compatible =3D "tq,am642-tqma6442l-mbax4xxl", "tq,am642-tqma6442l",
-> "ti,am642";
->
->
-> $ fdtdump  arch/arm64/boot/dts/ti/k3-am642-tqma64xxl-mbax4xxl-wlan.dtb
-> 2>/dev/null| head -n15 | tail -n2
->     model =3D "TQ-Systems TQMa64xxL SoM on MBax4xxL carrier board";
->     compatible =3D "tq,am642-tqma6442l-mbax4xxl", "tq,am642-tqma6442l",
-> "ti,am642";
->
->
->
->
->
-> These two go into image.fit, but one of them is completely dead
-> since there is no way to distinguish them.
->
->
-> $ fdtdump  arch/arm64/boot/image.fit
->
->         ...
->
->         conf-10 {
->             compatible =3D "tq,am642-tqma6442l-mbax4xxl",
-> "tq,am642-tqma6442l", "ti,am642";
->             description =3D "TQ-Systems TQMa64xxL SoM on MBax4xxL carrier=
- board";
->             fdt =3D "fdt-10";
->             kernel =3D "kernel";
->         };
->
->         ...
->
->         conf-25 {
->             compatible =3D "tq,am642-tqma6442l-mbax4xxl",
-> "tq,am642-tqma6442l", "ti,am642";
->             description =3D "TQ-Systems TQMa64xxL SoM on MBax4xxL carrier=
- board";
->             fdt =3D "fdt-25";
->             kernel =3D "kernel";
->         };
->
->
->
->
->
-> I agree with Chen-Yu.
->
-> FIT should not include full DTBs.
->
-> Bootloaders should assemble the final DTB
-> from base and overlays on-the-fly.
->
->
-> The FIT spec allows the "fdt" property to list
-> multiple image nodes.
->
->
-> o config-1
->  |- description =3D "configuration description"
->  |- kernel =3D "kernel sub-node unit name"
->  |- fdt =3D "fdt sub-node unit-name" [, "fdt overlay sub-node unit-name",=
- ...]
->  |- loadables =3D "loadables sub-node unit-name"
->  |- script =3D "
->  |- compatible =3D "vendor
+On 13/12/2023 21:33, André Apitzsch wrote:
+> This dts adds support for Motorola Moto G 4G released in 2013.
+> 
+> Add a device tree with initial support for:
+> 
+> - GPIO keys
+> - Hall sensor
+> - SDHCI
+> - Vibrator
+> 
+> Signed-off-by: André Apitzsch <git@apitzsch.eu>
+> ---
+>  arch/arm/boot/dts/qcom/Makefile                    |   1 +
+>  .../dts/qcom/qcom-msm8926-motorola-peregrine.dts   | 297 +++++++++++++++++++++
+>  2 files changed, 298 insertions(+)
+> 
+> diff --git a/arch/arm/boot/dts/qcom/Makefile b/arch/arm/boot/dts/qcom/Makefile
+> index 0cb272f4fa45..9cc1e14e6cd0 100644
+> --- a/arch/arm/boot/dts/qcom/Makefile
+> +++ b/arch/arm/boot/dts/qcom/Makefile
+> @@ -35,6 +35,7 @@ dtb-$(CONFIG_ARCH_QCOM) += \
+>  	qcom-msm8926-htc-memul.dtb \
+>  	qcom-msm8926-microsoft-superman-lte.dtb \
+>  	qcom-msm8926-microsoft-tesla.dtb \
+> +	qcom-msm8926-motorola-peregrine.dtb \
+>  	qcom-msm8960-cdp.dtb \
+>  	qcom-msm8960-samsung-expressatt.dtb \
+>  	qcom-msm8974-lge-nexus5-hammerhead.dtb \
+> diff --git a/arch/arm/boot/dts/qcom/qcom-msm8926-motorola-peregrine.dts b/arch/arm/boot/dts/qcom/qcom-msm8926-motorola-peregrine.dts
+> new file mode 100644
+> index 000000000000..3c5256120502
+> --- /dev/null
+> +++ b/arch/arm/boot/dts/qcom/qcom-msm8926-motorola-peregrine.dts
+> @@ -0,0 +1,297 @@
+> +// SPDX-License-Identifier: BSD-3-Clause
+> +
+> +/dts-v1/;
+> +
+> +#include "qcom-msm8226.dtsi"
+> +#include "pm8226.dtsi"
+> +
+> +/delete-node/ &smem_region;
+> +
+> +/ {
+> +	model = "Motorola Moto G 4G";
+> +	compatible = "motorola,peregrine", "qcom,msm8926", "qcom,msm8226";
+> +	chassis-type = "handset";
+> +
+> +	aliases {
+> +		mmc0 = &sdhc_1; /* SDC1 eMMC slot */
+> +		mmc1 = &sdhc_2; /* SDC2 SD card slot */
+> +	};
+> +
+> +	chosen {
+> +		#address-cells = <1>;
+> +		#size-cells = <1>;
+> +		ranges;
+> +
+> +		framebuffer0: framebuffer@3200000 {
+> +			compatible = "simple-framebuffer";
+> +			reg = <0x03200000 0x800000>;
+> +			width = <720>;
+> +			height = <1280>;
+> +			stride = <(720 * 3)>;
+> +			format = "r8g8b8";
+> +		};
+> +	};
+> +
+> +	gpio-hall-sensor {
+> +		compatible = "gpio-keys";
+> +
+> +		label = "GPIO Hall Effect Sensor";
+> +
+> +		event-hall-sensor {
+> +			label = "Hall Effect Sensor";
+> +			gpios = <&tlmm 51 GPIO_ACTIVE_LOW>;
+> +			linux,input-type = <EV_SW>;
+> +			linux,code = <SW_LID>;
+> +			linux,can-disable;
+> +		};
+> +	};
+> +
+> +	gpio-keys {
+
+No need to have two nodes for gpio-keys. Combine them.
+
+> +		compatible = "gpio-keys";
+> +
+> +		key-volume-up {
+> +			label = "Volume Up";
 
 
 
+Best regards,
+Krzysztof
 
-
-This is a question for U-Boot (and barebox).
-
-
-
-
-   images {
-          base {
-                ...
-          };
-
-          addon1 {
-                ...
-          };
-
-          addon2 {
-                ...
-          };
-    };
-
-    configurations {
-          ...
-          fdt =3D "base", "addon1", "addon2";
-    };
-
-
-
-
-Is U-Boot's "bootm" command able to dynamically construct
-the full DTB from "base" + "addon1" + "addon2"
-and pass to the kernel?
-
-
-
-When I used overlay from U-Boot command line last time,
-I typed complicated commands, following this manual:
-https://docs.u-boot.org/en/latest/usage/fdt_overlays.html
-
-
-
-
-One more question to confirm if I can use this
-for my practical use-cases.
-
-Is U-Boot able to handle FIT (includes kernel + DTs)
-and a separate initrd?
-
-  # bootm  <fit-address>:<conf-name>  <ramdisk-address>
-
-
-Presumably, it would be difficult to inject initramdisk
-into image.fit later, so I am hoping bootm would work like that,
-but I did not delve into U-Boot code.
-
-
-
-If it works, is it possible to verify the integrity of initrd?
-The kernel and DTs inside FIT will be verified, but not sure
-if it is possible for ramdisk.
-
-
-
-
-
---=20
-Best Regards
-Masahiro Yamada
