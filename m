@@ -2,120 +2,236 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 36339812E2F
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 12:08:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 07A2D812E30
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 12:09:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1444041AbjLNLI2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 06:08:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34234 "EHLO
+        id S1443919AbjLNLIy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 06:08:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35386 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1443857AbjLNLIO (ORCPT
+        with ESMTP id S1444044AbjLNLIf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 06:08:14 -0500
-Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D50D199A;
-        Thu, 14 Dec 2023 03:07:38 -0800 (PST)
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 3BEB7IXs009855;
-        Thu, 14 Dec 2023 05:07:18 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1702552038;
-        bh=MJdvSpo9tJ1Y6EEoQsVqXgql8Td3qFVMgQdjE+5SvuQ=;
-        h=Date:Subject:To:CC:References:From:In-Reply-To;
-        b=xVnYcrV34L3QSOOFmVsRQlUZq80XvIjLyx8nKJLA8vIpeIC+Y6+BdXuqI8Q7aLiIy
-         olnyVpt7lf/flqmapKsdadr/kjpqfFi2pWXg+2ron9KA12VkcUctLsvCK73y72iPWO
-         8DEQnd0iovyH54MHw0k+yHyhx+MOrSgLHm1mHot0=
-Received: from DLEE100.ent.ti.com (dlee100.ent.ti.com [157.170.170.30])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 3BEB7IlO116847
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 14 Dec 2023 05:07:18 -0600
-Received: from DLEE113.ent.ti.com (157.170.170.24) by DLEE100.ent.ti.com
- (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 14
- Dec 2023 05:07:17 -0600
-Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DLEE113.ent.ti.com
- (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Thu, 14 Dec 2023 05:07:17 -0600
-Received: from [10.24.69.37] (a0498981-hp-z2-tower-g5-workstation.dhcp.ti.com [10.24.69.37])
-        by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 3BEB7E0w093512;
-        Thu, 14 Dec 2023 05:07:15 -0600
-Message-ID: <6230e848-15b8-48ba-8af4-5f90d7e1408c@ti.com>
-Date:   Thu, 14 Dec 2023 16:37:13 +0530
+        Thu, 14 Dec 2023 06:08:35 -0500
+Received: from cloudserver094114.home.pl (cloudserver094114.home.pl [79.96.170.134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B1D61FC1;
+        Thu, 14 Dec 2023 03:07:57 -0800 (PST)
+Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
+ by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 5.4.0)
+ id 7fda85dd752f5e20; Thu, 14 Dec 2023 12:07:56 +0100
+Received: from kreacher.localnet (unknown [195.136.19.94])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by cloudserver094114.home.pl (Postfix) with ESMTPSA id 888A3668A77;
+        Thu, 14 Dec 2023 12:07:55 +0100 (CET)
+From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To:     Linux ACPI <linux-acpi@vger.kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>
+Subject: [PATCH v1] ACPI: utils: Introduce helper for _DEP list lookup
+Date:   Thu, 14 Dec 2023 12:07:55 +0100
+Message-ID: <12358058.O9o76ZdvQC@kreacher>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 0/3] arm64: dts: ti: Add Itap Delay Value For High Speed
- DDR
-Content-Language: en-US
-To:     "Kumar, Udit" <u-kumar1@ti.com>, <linux-kernel@vger.kernel.org>,
-        <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>
-CC:     <conor+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
-        <robh+dt@kernel.org>, <kristo@kernel.org>, <vigneshr@ti.com>,
-        <nm@ti.com>
-References: <20231201082045.790478-1-b-kapoor@ti.com>
- <30baf959-e486-4804-947b-516e53cce6fa@ti.com>
-From:   Bhavya Kapoor <b-kapoor@ti.com>
-In-Reply-To: <30baf959-e486-4804-947b-516e53cce6fa@ti.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="UTF-8"
+X-CLIENT-IP: 195.136.19.94
+X-CLIENT-HOSTNAME: 195.136.19.94
+X-VADE-SPAMSTATE: clean
+X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvkedrudelledgvdefucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecujffqoffgrffnpdggtffipffknecuuegrihhlohhuthemucduhedtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvfevufffkfgggfgtsehtufertddttdejnecuhfhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqnecuggftrfgrthhtvghrnhepgeffhfdujeelhfdtgeffkeetudfhtefhhfeiteethfekvefgvdfgfeeikeeigfehnecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucfkphepudelhedrudefiedrudelrdelgeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpeduleehrddufeeirdduledrleegpdhhvghlohepkhhrvggrtghhvghrrdhlohgtrghlnhgvthdpmhgrihhlfhhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqpdhnsggprhgtphhtthhopeehpdhrtghpthhtoheplhhinhhugidqrggtphhisehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtohephhguvghgohgvuggvsehrvgguhhgrthdrtghomhdprhgtphhtthhopegrnhgurhhihidrshhhvghvtghhvghnkhho
+ sehlihhnuhigrdhinhhtvghlrdgtohhmpdhrtghpthhtohepmhhikhgrrdifvghsthgvrhgsvghrgheslhhinhhugidrihhnthgvlhdrtghomh
+X-DCC--Metrics: v370.home.net.pl 1024; Body=5 Fuz1=5 Fuz2=5
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-On 06/12/23 12:01 am, Kumar, Udit wrote:
-> Hi Bhavya
->
-> On 12/1/2023 1:50 PM, Bhavya Kapoor wrote:
->> This Series adds Itap Delay Value for DDR52 speed mode for eMMC in
->> J7200 and for DDR50 speed mode for MMCSD in J721s2 and J784s4 SoC.
->>
->> Rebased to next-20231201
->>
->> Bhavya Kapoor (3):
->>    arm64: dts: ti: k3-j7200-main: Add Itap Delay Value For DDR52 speed
->>      mode
->>    arm64: dts: ti: k3-j721s2-main: Add Itap Delay Value For DDR50 speed
->>      mode
->>    arm64: dts: ti: k3-j784s4-main: Add Itap Delay Value For DDR50 speed
->>      mode
->
-> Could you confirm, after adding itap values, above modes are working 
-> fine apart from
->
-> mode detection.
->
-> Thanks
->
-> Udit
+The ACPI LPSS driver and the Surface platform driver code use almost the
+same code pattern for checking if one ACPI device is present in the list
+returned by _DEP for another ACPI device.
 
-Hi Udit, Below are the links to the test logs
+To reduce the resulting code duplication, introduce a helper for that
+called acpi_device_dep() and invoke it from both places.
 
-j7200 ddr52 - 
-https://gist.github.com/a0498981/f9b7b7d3592eaca591dec3e72de45585
+No intentional functional impact.
 
-j721s2 ddr50 - 
-https://gist.github.com/a0498981/9861e1df3fe0fc7c050db4f7a8cc34b8
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+---
 
-j784s4 ddr50 - 
-https://gist.github.com/a0498981/7c598dd708424252e2629fe0c7458a6d
+This depends on the following series sent last week:
 
-Thanks
+https://lore.kernel.org/linux-acpi/6008018.lOV4Wx5bFT@kreacher/
 
-~B-Kapoor
+---
+ drivers/acpi/acpi_lpss.c                       |   29 +--------------------
+ drivers/acpi/utils.c                           |   33 +++++++++++++++++++++++++
+ drivers/platform/surface/surface_acpi_notify.c |   28 ---------------------
+ include/acpi/acpi_bus.h                        |    1 
+ 4 files changed, 37 insertions(+), 54 deletions(-)
 
->
->
->> arch/arm64/boot/dts/ti/k3-j7200-main.dtsi  | 1 +
->>   arch/arm64/boot/dts/ti/k3-j721s2-main.dtsi | 1 +
->>   arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi | 1 +
->>   3 files changed, 3 insertions(+)
->>
+Index: linux-pm/drivers/acpi/acpi_lpss.c
+===================================================================
+--- linux-pm.orig/drivers/acpi/acpi_lpss.c
++++ linux-pm/drivers/acpi/acpi_lpss.c
+@@ -563,31 +563,6 @@ static struct device *acpi_lpss_find_dev
+ 	return bus_find_device(&pci_bus_type, NULL, &data, match_hid_uid);
+ }
+ 
+-static bool acpi_lpss_dep(struct acpi_device *adev, acpi_handle handle)
+-{
+-	struct acpi_handle_list dep_devices;
+-	bool ret = false;
+-	int i;
+-
+-	if (!acpi_has_method(adev->handle, "_DEP"))
+-		return false;
+-
+-	if (!acpi_evaluate_reference(adev->handle, "_DEP", NULL, &dep_devices)) {
+-		dev_dbg(&adev->dev, "Failed to evaluate _DEP.\n");
+-		return false;
+-	}
+-
+-	for (i = 0; i < dep_devices.count; i++) {
+-		if (dep_devices.handles[i] == handle) {
+-			ret = true;
+-			break;
+-		}
+-	}
+-
+-	acpi_handle_list_free(&dep_devices);
+-	return ret;
+-}
+-
+ static void acpi_lpss_link_consumer(struct device *dev1,
+ 				    const struct lpss_device_links *link)
+ {
+@@ -598,7 +573,7 @@ static void acpi_lpss_link_consumer(stru
+ 		return;
+ 
+ 	if ((link->dep_missing_ids && dmi_check_system(link->dep_missing_ids))
+-	    || acpi_lpss_dep(ACPI_COMPANION(dev2), ACPI_HANDLE(dev1)))
++	    || acpi_device_dep(ACPI_HANDLE(dev2), ACPI_HANDLE(dev1)))
+ 		device_link_add(dev2, dev1, link->flags);
+ 
+ 	put_device(dev2);
+@@ -614,7 +589,7 @@ static void acpi_lpss_link_supplier(stru
+ 		return;
+ 
+ 	if ((link->dep_missing_ids && dmi_check_system(link->dep_missing_ids))
+-	    || acpi_lpss_dep(ACPI_COMPANION(dev1), ACPI_HANDLE(dev2)))
++	    || acpi_device_dep(ACPI_HANDLE(dev1), ACPI_HANDLE(dev2)))
+ 		device_link_add(dev1, dev2, link->flags);
+ 
+ 	put_device(dev2);
+Index: linux-pm/drivers/acpi/utils.c
+===================================================================
+--- linux-pm.orig/drivers/acpi/utils.c
++++ linux-pm/drivers/acpi/utils.c
+@@ -450,6 +450,39 @@ void acpi_handle_list_free(struct acpi_h
+ }
+ EXPORT_SYMBOL_GPL(acpi_handle_list_free);
+ 
++/**
++ * acpi_device_dep - Check ACPI device dependency
++ * @target: ACPI handle of the target ACPI device.
++ * @match: ACPI handle to look up in the target's _DEP list.
++ *
++ * Return true if @match is present in the list returned by _DEP for
++ * @target or false otherwise.
++ */
++bool acpi_device_dep(acpi_handle target, acpi_handle match)
++{
++	struct acpi_handle_list dep_devices;
++	bool ret = false;
++	int i;
++
++	if (!acpi_has_method(target, "_DEP"))
++		return false;
++
++	if (!acpi_evaluate_reference(target, "_DEP", NULL, &dep_devices)) {
++		acpi_handle_debug(target, "Failed to evaluate _DEP.\n");
++		return false;
++	}
++
++	for (i = 0; i < dep_devices.count; i++) {
++		if (dep_devices.handles[i] == match) {
++			ret = true;
++			break;
++		}
++	}
++
++	acpi_handle_list_free(&dep_devices);
++	return ret;
++}
++
+ acpi_status
+ acpi_get_physical_device_location(acpi_handle handle, struct acpi_pld_info **pld)
+ {
+Index: linux-pm/drivers/platform/surface/surface_acpi_notify.c
+===================================================================
+--- linux-pm.orig/drivers/platform/surface/surface_acpi_notify.c
++++ linux-pm/drivers/platform/surface/surface_acpi_notify.c
+@@ -736,32 +736,6 @@ do {										\
+ #define san_consumer_warn(dev, handle, fmt, ...) \
+ 	san_consumer_printk(warn, dev, handle, fmt, ##__VA_ARGS__)
+ 
+-static bool is_san_consumer(struct platform_device *pdev, acpi_handle handle)
+-{
+-	struct acpi_handle_list dep_devices;
+-	acpi_handle supplier = ACPI_HANDLE(&pdev->dev);
+-	bool ret = false;
+-	int i;
+-
+-	if (!acpi_has_method(handle, "_DEP"))
+-		return false;
+-
+-	if (!acpi_evaluate_reference(handle, "_DEP", NULL, &dep_devices)) {
+-		san_consumer_dbg(&pdev->dev, handle, "failed to evaluate _DEP\n");
+-		return false;
+-	}
+-
+-	for (i = 0; i < dep_devices.count; i++) {
+-		if (dep_devices.handles[i] == supplier) {
+-			ret = true;
+-			break;
+-		}
+-	}
+-
+-	acpi_handle_list_free(&dep_devices);
+-	return ret;
+-}
+-
+ static acpi_status san_consumer_setup(acpi_handle handle, u32 lvl,
+ 				      void *context, void **rv)
+ {
+@@ -770,7 +744,7 @@ static acpi_status san_consumer_setup(ac
+ 	struct acpi_device *adev;
+ 	struct device_link *link;
+ 
+-	if (!is_san_consumer(pdev, handle))
++	if (!acpi_device_dep(handle, ACPI_HANDLE(&pdev->dev)))
+ 		return AE_OK;
+ 
+ 	/* Ignore ACPI devices that are not present. */
+Index: linux-pm/include/acpi/acpi_bus.h
+===================================================================
+--- linux-pm.orig/include/acpi/acpi_bus.h
++++ linux-pm/include/acpi/acpi_bus.h
+@@ -33,6 +33,7 @@ bool acpi_handle_list_equal(struct acpi_
+ void acpi_handle_list_replace(struct acpi_handle_list *dst,
+ 			      struct acpi_handle_list *src);
+ void acpi_handle_list_free(struct acpi_handle_list *list);
++bool acpi_device_dep(acpi_handle target, acpi_handle match);
+ acpi_status
+ acpi_evaluate_ost(acpi_handle handle, u32 source_event, u32 status_code,
+ 		  struct acpi_buffer *status_buf);
+
+
+
