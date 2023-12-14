@@ -2,127 +2,208 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DED08125CE
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 04:14:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 164998125CA
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 04:13:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1443079AbjLNDNx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 22:13:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33704 "EHLO
+        id S1443007AbjLNDND (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 22:13:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35762 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234158AbjLNDNu (ORCPT
+        with ESMTP id S229647AbjLNDNB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 22:13:50 -0500
-Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC28ED0;
-        Wed, 13 Dec 2023 19:13:56 -0800 (PST)
-Received: by mail-pf1-x42d.google.com with SMTP id d2e1a72fcca58-6d0985c70ffso2687494b3a.2;
-        Wed, 13 Dec 2023 19:13:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702523636; x=1703128436; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=wDtuMqJuLynsqBn4B64C9rOZU/1pf1QFeAH14FfwW+A=;
-        b=l8Bf1plZ7tySeMqcJy8KwLiApDtiWJ7d5TLl1k0///lnLIUEZBTE3es7sDOfBJJIda
-         kTlBI95i5Pg5nrDfhqezJZyiVwaKD27klThpFJ+p+tNuets66lO0eXaHm8VecPRnrvto
-         oif7AbN8z/ANCQI4NjsgQK+8bD2koVQmkLQGu7Vy+/WAMvXc+Pe9qoe0d/7vkEElSMKX
-         9KZuOc7AajpTVyEW90sDflAxmlK8ll1Jjdo10fzIkXtjo/IBZeA8d8wy53oj9B5e2aqi
-         IhSYjPyJiDrGlHNPkY+mILFTQKA9qPsf17D1pxn99Yxo+2Di8yEQeXS1ekbRwJjMq79P
-         NMag==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702523636; x=1703128436;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=wDtuMqJuLynsqBn4B64C9rOZU/1pf1QFeAH14FfwW+A=;
-        b=NzWYmgebBN979ceHVQIFiotXNLW7ffLU2552xXih5TCrJo2kEKgOCHrrP+2sxFReda
-         JzoPHaTN8Lh0BrRBfbVO5nEG2H9CIW3t6dbhYOXV+qf1awGj/qCIYHNQUfjOCSuRd7HZ
-         lM90y5jZpiV6Wxmp7Ey/ke7gZ8Q3zr9mu+CmKN/ImEtx1ykhTAa/Jzl4hCRTws+k28rA
-         O8uG/ZUe9kAziy7lbmtMF2f3tSrNargK9pbOuzD2yA98tyEoLW6CI//DCIwLTxpnEX+B
-         Z++8vMSbvRTP08whjFUfYlYybtEX4ChgsPS1gB1STpHvdidfwDpblRbYuO6k/OjmOidI
-         CCrQ==
-X-Gm-Message-State: AOJu0YyB0px5XJGc5H5+4m2FOphNBD7uaWL5tMmQian3dQGWT4pTyIL6
-        WI6G/GH7w1gpjUEaT8V8fFU6mShCNSg=
-X-Google-Smtp-Source: AGHT+IEpKFGDuxTfO3Hjzi7f/Cm2KZm4EWJFx6WprxdgMa/6PjSDexd9DPpJUJfx1uXgsHlIfYXOaw==
-X-Received: by 2002:a17:902:e789:b0:1d0:a96d:3278 with SMTP id cp9-20020a170902e78900b001d0a96d3278mr5238863plb.90.1702523636228;
-        Wed, 13 Dec 2023 19:13:56 -0800 (PST)
-Received: from [192.168.54.90] (static.220.238.itcsa.net. [190.15.220.238])
-        by smtp.gmail.com with ESMTPSA id u14-20020a170902e80e00b001d0c37a9ccfsm11199832plg.303.2023.12.13.19.13.53
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 13 Dec 2023 19:13:55 -0800 (PST)
-Message-ID: <47af6a31-b0b4-42ff-9135-ba8f27ae5dd0@gmail.com>
-Date:   Thu, 14 Dec 2023 00:11:19 -0300
-MIME-Version: 1.0
+        Wed, 13 Dec 2023 22:13:01 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABD50B0;
+        Wed, 13 Dec 2023 19:13:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1702523587; x=1734059587;
+  h=message-id:date:subject:to:cc:references:from:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=FmRORALTgLIRBvp5uX+T/w2+i1ZxjjDLrd0gZVQ1DKw=;
+  b=O7bjHpUez4HbA1Fg1vtmCGjRZzWZRr0Xj5PDxDt+7TiVpcroGcOj/9/7
+   zwDNSTvfd7YLxjd9lztvqNBeaArVnwBBMVJNW/zy0ByD0fJ3cpNPg7Qpl
+   BGWAKpInnLpzAOZdtQshy7Bptac5YI7clWRyj7doq1fWFqcsXz4ONp5i3
+   r/hz3NGUDue3BLHn2jKeBbtT9522r2GAFG4dbOw7sM7J1zwalVkutNz2i
+   ZrRLTC6EwuMIysHHkdPgde8uxM7948NL3VyS68DWVedcb0vETX5cqETOS
+   L2Be6X3IUePIu39b7tOGBR1LP1YLY2Z+jsA96o+8JHzYS+EVf3DhUHe/+
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10923"; a="426194004"
+X-IronPort-AV: E=Sophos;i="6.04,274,1695711600"; 
+   d="scan'208";a="426194004"
+Received: from orviesa001.jf.intel.com ([10.64.159.141])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Dec 2023 19:13:07 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.04,274,1695711600"; 
+   d="scan'208";a="22220369"
+Received: from orsmsx601.amr.corp.intel.com ([10.22.229.14])
+  by orviesa001.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 13 Dec 2023 19:13:07 -0800
+Received: from orsmsx612.amr.corp.intel.com (10.22.229.25) by
+ ORSMSX601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Wed, 13 Dec 2023 19:13:06 -0800
+Received: from orsmsx602.amr.corp.intel.com (10.22.229.15) by
+ ORSMSX612.amr.corp.intel.com (10.22.229.25) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Wed, 13 Dec 2023 19:13:06 -0800
+Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
+ orsmsx602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Wed, 13 Dec 2023 19:13:06 -0800
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (104.47.58.169)
+ by edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Wed, 13 Dec 2023 19:13:06 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ntLRXkykMePkZ8RLaWBh4dAAWdpOu7NVytFsqA6YOnb8VGElSFCFWXEe5bGOZFuzOxZ8LelvEATKHfG4bmABCYE1Y0fkfDZvMH665j01936jMYLZMHHW2sjcfX2Jm/1I4R7qtg0F1y/NAdJkUaKUE5+pACp1gj/rdNP0m3HYtTDs6m7vvWiytv4alLx7OO7AUwyzX3Mfh+LwNc8vJYULxpbnsKifeox8kTRNoHgr9rujTpulKQpBXozJUhsI0rRR1rotc+P5G2NFvwfnaWskLyiHcJEkGJenon/YSJC6bmclY2PhzEALfrHfdf43gRmgvPJDRLj/to/8jiEXJ4wsNQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=FmRORALTgLIRBvp5uX+T/w2+i1ZxjjDLrd0gZVQ1DKw=;
+ b=F1lqoN4mxK9JYvJnTimHRaIlxiLD790olZL3fR8YWaUOl7xSfyEjbNtXTI2IKee++l1C5/7xJlECeNsKR1XASF2um9WmYwtIoZeTec9BtRk+6O238NsAPsOnb++JWFHS42MviHGzq+Uov1H1lJ7qcP0cYQI3RIxsiUtlyJwVE2fhhRd82DPxN7KqtqKR71zuu0zt8NLI7Qvoj6b1eyK0MIMqvnlI/S/iHY2gSn9Jo+21h6s2l/pWl8PuMoJ6mMgqgSHt5ME6khddxqM6U8hxtqcGgBtx9UCXNNy4sHmiBbf8JMK2EfsAI7jNTbrarO6GQqPh6BshD1YotAgcbckO9Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from PH0PR11MB4965.namprd11.prod.outlook.com (2603:10b6:510:34::7)
+ by SN7PR11MB7668.namprd11.prod.outlook.com (2603:10b6:806:341::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7091.28; Thu, 14 Dec
+ 2023 03:13:04 +0000
+Received: from PH0PR11MB4965.namprd11.prod.outlook.com
+ ([fe80::ea04:122f:f20c:94e8]) by PH0PR11MB4965.namprd11.prod.outlook.com
+ ([fe80::ea04:122f:f20c:94e8%2]) with mapi id 15.20.7068.033; Thu, 14 Dec 2023
+ 03:13:04 +0000
+Message-ID: <121cb43b-029d-4d34-8f6c-15f41c2dd0aa@intel.com>
+Date:   Thu, 14 Dec 2023 11:12:54 +0800
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 2/3] rust: macros: allow generic parameter default
- values in `#[pin_data]`
+Subject: Re: [PATCH v7 02/26] x86/fpu/xstate: Refine CET user xstate bit
+ enabling
+To:     "Chang S. Bae" <chang.seok.bae@intel.com>,
+        Maxim Levitsky <mlevitsk@redhat.com>
+CC:     <linux-kernel@vger.kernel.org>, <kvm@vger.kernel.org>,
+        <dave.hansen@intel.com>, <pbonzini@redhat.com>,
+        <seanjc@google.com>, <peterz@infradead.org>, <chao.gao@intel.com>,
+        <rick.p.edgecombe@intel.com>, <john.allen@amd.com>
+References: <20231124055330.138870-1-weijiang.yang@intel.com>
+ <20231124055330.138870-3-weijiang.yang@intel.com>
+ <c22d17ab04bf5f27409518e3e79477d579b55071.camel@redhat.com>
+ <cdf53e44-62d0-452d-9c06-5c2d2ce3ce66@intel.com>
+ <20d45cb6adaa4a8203822535e069cdbbf3b8ba2d.camel@redhat.com>
+ <a3a14562-db72-4c19-9f40-7778f14fc516@intel.com>
+ <039eaa7c35020774b74dc5e2d03bb0ecfa7c6d60.camel@redhat.com>
+ <eb30c3e0-8e13-402c-b23d-48b21e0a1498@intel.com>
+ <e7d7709a5962e8518ccb062e3818811cdbe110f8.camel@redhat.com>
+ <917a9dc4-bcae-4a1d-b5b5-d086431e8650@intel.com>
+ <62ff5c86-a63a-46f2-88f8-6c1589433a89@intel.com>
 Content-Language: en-US
-To:     Benno Lossin <benno.lossin@proton.me>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Alex Gaynor <alex.gaynor@gmail.com>,
-        Wedson Almeida Filho <wedsonaf@gmail.com>,
-        Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
-        =?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
-        Andreas Hindborg <a.hindborg@samsung.com>,
-        Alice Ryhl <aliceryhl@google.com>
-Cc:     rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20231213220447.3613500-1-benno.lossin@proton.me>
- <20231213220447.3613500-2-benno.lossin@proton.me>
-From:   Martin Rodriguez Reboredo <yakoyoku@gmail.com>
-In-Reply-To: <20231213220447.3613500-2-benno.lossin@proton.me>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+From:   "Yang, Weijiang" <weijiang.yang@intel.com>
+In-Reply-To: <62ff5c86-a63a-46f2-88f8-6c1589433a89@intel.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: SI2P153CA0005.APCP153.PROD.OUTLOOK.COM
+ (2603:1096:4:140::11) To PH0PR11MB4965.namprd11.prod.outlook.com
+ (2603:10b6:510:34::7)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH0PR11MB4965:EE_|SN7PR11MB7668:EE_
+X-MS-Office365-Filtering-Correlation-Id: aad72991-8137-46c2-74cb-08dbfc52962a
+X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: bb4G36mgh8quCt4KPZJIWTm5sPfeMBxFC5DlbrvdNBoF2TTVOxwkvSUJF3SbWjLYQT/ds2n7fhXMSIgoWLA5ynkMvYSb32Zdsfmp10KGvAusFfp1OgfKwwT3ditcxUHUGpUDYf1b8mbpZp9VT6xFRtHEbY5Qg2XtpxMFMTu7QDWAPAgzMGW3VDw0aCVp+UVN1Q3/EObzlwZkQPemutsQigfZXV2+VuqXSQv4AE9R4puJ8Z7jfcNQwBYqOvNYntZ2M/W0iyz++9h9XNcPDuXW0bUUnyw31BIMSXiT0j14SM/8AkB25vxlA7OWKZAe3HoQzD4dSilSgQwq6/BlbAOcwW+h4yVpF/5X491N8XG/DbySrwaVJgWlZ3oBcI91Qua4l/NoXQeltpLYNlxr0EjjCPAuXX7DJYZBpVbFLe689UAkI6TkLrwmnJx0MLdwtgkK4DIoPRuF+eUGDObdbT6g4oG+212poaqvnJJjBkB2/40YyXalpIa3BpIkRg4f65GXwbNGaTfWWRxt+/+ltzjaqaMPk2OA7+p7UhBWJDNrQ69ylqPbBIqppbWbpmbZ+uOSaLsSPc5xN68e2j27tD4b8JRmVUgfXsfeePkOjbUR6I63v/c8/Mg+kJvDUxfQW+Hh9jpNerjr5IKMMV/EyeC0HA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR11MB4965.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(39860400002)(376002)(346002)(136003)(366004)(230922051799003)(1800799012)(64100799003)(451199024)(186009)(31686004)(31696002)(86362001)(82960400001)(36756003)(6666004)(41300700001)(478600001)(6506007)(53546011)(66946007)(66476007)(66556008)(26005)(6512007)(38100700002)(83380400001)(2616005)(2906002)(316002)(110136005)(6486002)(966005)(5660300002)(4326008)(8676002)(8936002)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?SVNnSjNON0w3bXV2UEMxajg0ZDZ6VWNhd0lLRXFpUW5CSnRCU3IyVTRKYXdN?=
+ =?utf-8?B?VkNkTEZpeHpYTVdoWVZJT0ZodHVYR28zZFlzdG1xTHJFblVlUDM3WUp0YWhF?=
+ =?utf-8?B?b2Z0dFNOOEFhazQ5TlNTZWhBWTgrZU11bFp6ZFlEeGsvZVRzYURSTFkrZ2U5?=
+ =?utf-8?B?bUF6Nk90Q2FKaU1TY29ubVJJUVhxMFlpelkzTExXb0k3Z01zRHBuYWsvb1F2?=
+ =?utf-8?B?RlhrTmp1QW5malJqSXo2RXl2amRHM1JQWWYwVE5TS3g5Zzc2VGVSTy95NUVQ?=
+ =?utf-8?B?OElJQisrQWdzYy81c0QzTGczajlMcmF2eSs1eis0M1JCZ1Z6SytxT2FXcW5w?=
+ =?utf-8?B?YkdhdGF6Q3JMMnJJN1lKQUp5L1hCWFlUVmoxcU1tV28rbjZxUEozTVBQWm96?=
+ =?utf-8?B?NTVZdG9NeE9QY09ONmtvVXhPaUR0dXJUczgxbm1DSVd6RTNOUWxtdGRCOFkw?=
+ =?utf-8?B?YXJxUXIzdng0MFNsQW9VbEt4eGl3MGpDSVRMQ3diNko5ZlJwZE9YTnhJN0Nh?=
+ =?utf-8?B?ckhEWDNaaDJyTWxaNmNrVGF1T2EzNzUwZHgyL3dTWlorMmxxTDFQdjZackN5?=
+ =?utf-8?B?Q0NzSHc4NnZzWWI0U2JIczcrR05jU3lZTlNIWCtFM3BuaFozZDVIRitINXBN?=
+ =?utf-8?B?SXovQWtCNDJGdUhnNU8zcWttbVpzZjB6RCtzTG1zbnUwcXY1S3ZuRDltWlBi?=
+ =?utf-8?B?OEY0WmtQeEo1bGdqSUltM2wxODlKeVo0MmVCQXN1bXpuOVFTOGhVSWN0NzRo?=
+ =?utf-8?B?ZlJ1UGpzUFVpRzA1RVpLZkhVbm9PWVJiRmR2SWJHTytEQkhqOFA3MGlva2NQ?=
+ =?utf-8?B?L1lHR0RiU0p6TXZnMWdWQkQrSHhNNVFYeitkVnQ1c0VHTzI0VEF6V2JWTWFz?=
+ =?utf-8?B?amZPRWFkS0RIUDFnQ09lZkthUlhHZjBiOU50QndtSVFDeU1Yd1ZFRDdBNUpa?=
+ =?utf-8?B?akJDdDNTeG4yYXdab0hROHIxUEd4c1NMamFqOWFBSEVjYzBIYmNKRnRyTStW?=
+ =?utf-8?B?VXhGVkkzbXFUejYzTno0WDFxcUVwcUFqUFkyOURSazk2WUduZXNWZDJCY3pt?=
+ =?utf-8?B?M1hCYVB3VVNxeG1jcDl0eVdXc3V5SzlKT2kvd2YwdTdNS2hEcmxqQ2x1S3pD?=
+ =?utf-8?B?RjRvM3lzdFdESDQrWjRKbFlxUnlJOHpaVC9VM0tGQis5cVdjdDdBbXJnM3lP?=
+ =?utf-8?B?MGJsbjdabHhPSTFrTWttNGh2Nk1xUHZRU2tDR3pCN3pOTmx6VytacVZOb2FM?=
+ =?utf-8?B?STl5TGhqMHh2WDkzOXY3ejBmZVBsZzBnRnZCV01XSG03RS90SGoxOCtjVytk?=
+ =?utf-8?B?cnZaL2dqd2lXMVNSWXlOYTE3VzhoYnJOQ3ZXcXdpODhiNVNFVm9aS054ait1?=
+ =?utf-8?B?cEVjUU4xM3dhSmNuV215WU10b04weTNYbEhXV3JJQ21lSEQ2R2NrWmRMSnA1?=
+ =?utf-8?B?bUlva3lORlNPZE9lU1dKNmlEd0hUc21iVXJIWnBrQTFYbTlGVk5pZHRUb3FZ?=
+ =?utf-8?B?V09lekJJQjBQcHBodFZwV045VmZyODkraWxCNUV3Q0tTckxLaFRvYnRBZ3JS?=
+ =?utf-8?B?VFJLcDNLeUx2RzVMeEMreXFURnAxa2dyeVBiWmUyVm1vM1FoV09CL1pZR1BR?=
+ =?utf-8?B?d3JHQ0lUQWJGZWxkU0FlUFFzYWdKallOaktsUy80VTJIVTVndHQvYmRwV1RK?=
+ =?utf-8?B?Z2ZxVnc0dnRaNlhvbUVPWjQ3QlZ4aXdZaXFIb09Wajh4ckY3dmp4QU10Wis0?=
+ =?utf-8?B?M1FjME52YjltQVNpNDc5L3AyeFFEY2ozRGNNQXp6dm5ic05UVkZSMFNYK2ZO?=
+ =?utf-8?B?ZS9Ub2wrcm5aU2dmNDBJaHNheURTWHhQc3RKUzdGMUQvRGVjRnBROHlrc2M2?=
+ =?utf-8?B?ZDkyZUVESDlHemxjOURDWEsrMHhocjg4aW1FS1g4QldFTEgrZFRwa2JkNnVr?=
+ =?utf-8?B?czlrSTFXZmlsTko3ekFQNjljWFhRdVBJVDB0eSs0UStlSFJOUjRURG5ORTEy?=
+ =?utf-8?B?bHNaVVQ0aEpoVThaaWRxQ24vVUZHOW5mZndXenlxeDVyYXhUUmg1RU9Va09m?=
+ =?utf-8?B?VG9kbCt2UGx5emo4dEs0d3lXNCtrY0krR08zZ0kwZzlndlBrOFVnUHlVZEZL?=
+ =?utf-8?B?V0NuSjZZSjRaWkp4bXpTVFY1Tms3ams0ckZjTWhNaGtGOVBkVGgzeHIvOGE4?=
+ =?utf-8?B?V2c9PQ==?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: aad72991-8137-46c2-74cb-08dbfc52962a
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR11MB4965.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Dec 2023 03:13:04.3043
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 3wo41TgC9MgV7YUcAPS/jKh9SjlzL2+gp1EUtxF2oIRVLB5Jb/pgma+f4iDXqghtVQX0mMOtsdvV832TfqT9CA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN7PR11MB7668
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/13/23 19:08, Benno Lossin wrote:
-> Add support for generic parameters defaults in `#[pin_data]` by using
-> the newly introduced `decl_generics` instead of the `impl_generics`.
-> 
-> Before this would not compile:
-> 
->      #[pin_data]
->      struct Foo<const N: usize = 0> {
->          // ...
->      }
-> 
-> because it would be expanded to this:
-> 
->      struct Foo<const N: usize = 0> {
->          // ...
->      }
-> 
->      const _: () = {
->          struct __ThePinData<const N: usize = 0> {
->              __phantom: ::core::marker::PhantomData<fn(Foo<N>) -> Foo<N>>,
->          }
->          impl<const N: usize = 0> ::core::clone::Clone for __ThePinData<N> {
->              fn clone(&self) -> Self {
->                  *self
->              }
->          }
-> 
->          // [...] rest of expansion omitted
->      };
-> 
-> The problem is with the `impl<const N: usize = 0>`, since that is
-> invalid Rust syntax. It should not mention the default value at all,
-> since default values only make sense on type definitions.
-> 
-> The new `impl_generics` do not contain the default values, thus
-> generating correct Rust code.
-> 
-> This is used by the next commit that puts `#[pin_data]` on
-> `kernel::workqueue::Work`.
-> 
-> Signed-off-by: Benno Lossin <benno.lossin@proton.me>
-> ---
-> [...]
-Reviewed-by: Martin Rodriguez Reboredo <yakoyoku@gmail.com>
+On 12/14/2023 1:01 AM, Chang S. Bae wrote:
+> On 12/13/2023 1:30 AM, Yang, Weijiang wrote:
+>>
+>> Let me involve Chang, the author of the code in question.
+>>
+>> Hi, Chang,
+>> In commit 70c3f1671b0c ("x86/fpu/xstate: Prepare XSAVE feature table for gaps in state component numbers"),
+>> you modified the loop as below:
+>>          for (i = 0; i < ARRAY_SIZE(xsave_cpuid_features); i++) {
+>> -               if (!boot_cpu_has(xsave_cpuid_features[i]))
+>> +               unsigned short cid = xsave_cpuid_features[i];
+>> +
+>> +               /* Careful: X86_FEATURE_FPU is 0! */
+>> +               if ((i != XFEATURE_FP && !cid) || !boot_cpu_has(cid))
+>>                          fpu_kernel_cfg.max_features &= ~BIT_ULL(i);
+>>          }
+>>
+>> IMHO the change resulted functional change of the loop, i.e., before that only it only clears the bits without CPUIDs,
+>> but after the change, the side-effect of the loop will clear the bits of blank entries ( where xsave_cpuid_features[i] == 0 )
+>> since the loop hits (i != XFEATURE_FP && !cid), is it intended or something else?
+>
+> The code was considered as much *simpler* than the other [1]. Yes, it clears those not listed in the table but they were either non-existed or disabled at that moment.
+
+Thanks Chang, so I assume the "side-effect" is intended.
+
+>
+> Thanks,
+> Chang
+>
+> [1] https://lore.kernel.org/lkml/87y2eha576.fsf@nanos.tec.linutronix.de/
+>
+
