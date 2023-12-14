@@ -2,218 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 978B68134E0
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 16:35:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EC7168134DA
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 16:34:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1573825AbjLNPf3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 10:35:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35572 "EHLO
+        id S1573820AbjLNPeo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 10:34:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51556 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1573777AbjLNPf2 (ORCPT
+        with ESMTP id S1573777AbjLNPen (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 10:35:28 -0500
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EE7B9A;
-        Thu, 14 Dec 2023 07:35:34 -0800 (PST)
-Received: from pps.filterd (m0356517.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3BEFW6Vo010365;
-        Thu, 14 Dec 2023 15:34:47 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- subject : to : cc : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=pp1;
- bh=L/ve6YvU//yFlBn2lmIsmFmAv1mrLVrfzMtE874dy74=;
- b=XwjCrVD/tcub69LPnxozh1nRa9yPxGoYov3sHuGAEhfghwQFtPj4bWIvTyOROEYHhFcE
- 8ci2pL+xYQROzSQUZU1/kf5ABaoO7MQg9ZEWWEG638W1g8efGxBnBAaD42A8Y0AB5spF
- mj+GfwwyooDYH5tEUhlxrNdUifh2ta8w4buLtTnsPVI2b2Gr9bGWVgumU+bGGHqIdw7K
- Lv8E8blf7WxgJ/L3pZiRuS35uKJ6J7s0MJeOeazTyhvpXgf8VeSqJYAq1CgwAkPqkAeH
- Kq6HdcOrjDPRoGkaesqULTO4tVTiVzNtYAckiUpQR5KJ8DzCvwv1m1YIVS3bxFt6iBC2 6g== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3v04ea824t-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 14 Dec 2023 15:34:46 +0000
-Received: from m0356517.ppops.net (m0356517.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3BEFYawe017843;
-        Thu, 14 Dec 2023 15:34:46 GMT
-Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3v04ea824c-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 14 Dec 2023 15:34:45 +0000
-Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
-        by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3BEETnXW013878;
-        Thu, 14 Dec 2023 15:34:44 GMT
-Received: from smtprelay07.wdc07v.mail.ibm.com ([172.16.1.74])
-        by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3uw592gw0g-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 14 Dec 2023 15:34:44 +0000
-Received: from smtpav05.dal12v.mail.ibm.com (smtpav05.dal12v.mail.ibm.com [10.241.53.104])
-        by smtprelay07.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3BEFYhJT47120750
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 14 Dec 2023 15:34:43 GMT
-Received: from smtpav05.dal12v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 8DED058065;
-        Thu, 14 Dec 2023 15:34:43 +0000 (GMT)
-Received: from smtpav05.dal12v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 8379D58056;
-        Thu, 14 Dec 2023 15:34:40 +0000 (GMT)
-Received: from [9.67.23.198] (unknown [9.67.23.198])
-        by smtpav05.dal12v.mail.ibm.com (Postfix) with ESMTP;
-        Thu, 14 Dec 2023 15:34:40 +0000 (GMT)
-Message-ID: <d8b5df1c-c732-4cf3-ae28-cc2017d3b0b6@linux.ibm.com>
-Date:   Thu, 14 Dec 2023 09:34:39 -0600
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 2/8] dt-bindings: tpm: Add schema for TIS I2C devices
-Content-Language: en-US
-To:     Conor Dooley <conor@kernel.org>
-Cc:     robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, joel@jms.id.au, andrew@codeconstruct.com.au,
-        peterhuewe@gmx.de, jarkko@kernel.org, jgg@ziepe.ca,
-        keescook@chromium.org, tony.luck@intel.com, gpiccoli@igalia.com,
-        johannes.holland@infineon.com, linux@roeck-us.net,
-        broonie@kernel.org, patrick.rudolph@9elements.com,
-        vincent@vtremblay.dev, peteryin.openbmc@gmail.com,
-        lakshmiy@us.ibm.com, bhelgaas@google.com,
-        naresh.solanki@9elements.com, alexander.stein@ew.tq-group.com,
-        festevam@denx.de, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        linux-integrity@vger.kernel.org, linux-hardening@vger.kernel.org,
-        geissonator@yahoo.com
-References: <20231212164004.1683589-1-ninad@linux.ibm.com>
- <20231212164004.1683589-3-ninad@linux.ibm.com>
- <20231212-amusement-elevation-28e42bcccc35@spud>
-From:   Ninad Palsule <ninad@linux.ibm.com>
-In-Reply-To: <20231212-amusement-elevation-28e42bcccc35@spud>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: hogr06fT5Mw5qJW3QkIJJvD-IOfJs-Zl
-X-Proofpoint-ORIG-GUID: UmYUUzzx44Lo6i8qLBzL1okG6XCyDP4W
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        Thu, 14 Dec 2023 10:34:43 -0500
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D29C198;
+        Thu, 14 Dec 2023 07:34:49 -0800 (PST)
+Received: by mail-pj1-x102e.google.com with SMTP id 98e67ed59e1d1-28694702c18so8020096a91.3;
+        Thu, 14 Dec 2023 07:34:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1702568089; x=1703172889; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=4wBI1ds+dJ8NsQvuIecgk+p/aVllpdk4KE/JP6rxRYk=;
+        b=RJuFBuJFqLNGm2xOQxH3VyipMfTVZ/V4XRlVPkgreFpxYUR0kWLghNNgsXS5CRNGkY
+         Cy5mbI66mR4MzwJOsbpFjQp0Yrq10/jqE0Dy+Z5DRp4scuDWSq4HDUQzm/zK3Pp+pLNi
+         AGcxPQXrJpSRNxVJc5iclIPabRX0U7XpVx9hxphSQ8wAtqrTX7CH7a67cB2LYvbMoSWV
+         ITpCKXzFsSYKAPDmp89EKBX+29jOOMYZCs9ZM0WmQtF/Vt3B7coNDhDhR1xop2or5s6o
+         ji8uDgy3vj2Cdf7yguqIgomE0coJ5roQgxbaccmj9+vHcqII6fUmf3GCUe/Pgz5ZAiK4
+         O7cQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702568089; x=1703172889;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=4wBI1ds+dJ8NsQvuIecgk+p/aVllpdk4KE/JP6rxRYk=;
+        b=ubKDSiP3P66QQ+KoiX+FQSYkOfsTWLBMHbfDtUBLTAveuzMKdoztBMG3Z53GmBFa+z
+         veU0JXuHiP2H8JLQDg5ytRIZO2ZVsTwN9jWvxSSTEiJh9h9ZgbFu0v6HvS9UxzgLjUGt
+         Dv1bHuOYTmw0/tBnvALBoT++oPOOvAoT2F0x4gNfNMUutDXKuWK/9q3MXoq3pQJC3HIL
+         4/hNn4mTxg0lX/0gFgkArpz1mcb+YWO7Xc6EcebzE9mbnF6I4s59pj2LEAqn7Fo1r/6r
+         tykDBKJwWT0Yl2yu1a+MLIfCJBkrWnauzIognA9957/lTE7UsmFfngR/y8GmKZJzK7gi
+         4JKA==
+X-Gm-Message-State: AOJu0Yw13vPFxzaFD1TWtITGX83u5ZrC0OL8kkQ7O9Qtqvl1z2SeI9yR
+        8RAzt/09W1PEiE/4G6Gs5tc=
+X-Google-Smtp-Source: AGHT+IFqvn3ME5ZZYZZ/qZrbge3ZEiH8p/nStQtrHIV8ES+afCzbUNHSNNLEzu3EpLjp6NuCZfLzng==
+X-Received: by 2002:a17:90b:ec8:b0:28b:c4e:9378 with SMTP id gz8-20020a17090b0ec800b0028b0c4e9378mr664954pjb.46.1702568089269;
+        Thu, 14 Dec 2023 07:34:49 -0800 (PST)
+Received: from rigel (60-241-235-125.tpgi.com.au. [60.241.235.125])
+        by smtp.gmail.com with ESMTPSA id nb11-20020a17090b35cb00b0028017a2a8fasm13426949pjb.3.2023.12.14.07.34.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 Dec 2023 07:34:49 -0800 (PST)
+Date:   Thu, 14 Dec 2023 23:34:44 +0800
+From:   Kent Gibson <warthog618@gmail.com>
+To:     Andy Shevchenko <andy@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
+        brgl@bgdev.pl, linus.walleij@linaro.org
+Subject: Re: [PATCH v2 4/5] gpiolib: cdev: reduce locking in
+ gpio_desc_to_lineinfo()
+Message-ID: <ZXsglIJtK50XYCIV@rigel>
+References: <20231214095814.132400-1-warthog618@gmail.com>
+ <20231214095814.132400-5-warthog618@gmail.com>
+ <ZXsa39xneH6Rh7Gd@smile.fi.intel.com>
+ <ZXsc5T1G5Y28lVqw@rigel>
+ <ZXse4UDKGlVqzsyD@smile.fi.intel.com>
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-14_10,2023-12-14_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 mlxscore=0
- spamscore=0 bulkscore=0 suspectscore=0 mlxlogscore=999 lowpriorityscore=0
- priorityscore=1501 impostorscore=0 clxscore=1015 adultscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311290000 definitions=main-2312140109
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZXse4UDKGlVqzsyD@smile.fi.intel.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Conor,
-
-On 12/12/23 11:14, Conor Dooley wrote:
-> Hey,
+On Thu, Dec 14, 2023 at 05:27:29PM +0200, Andy Shevchenko wrote:
+> On Thu, Dec 14, 2023 at 11:19:01PM +0800, Kent Gibson wrote:
+> > On Thu, Dec 14, 2023 at 05:10:23PM +0200, Andy Shevchenko wrote:
+> > > On Thu, Dec 14, 2023 at 05:58:13PM +0800, Kent Gibson wrote:
+> > > > Reduce the time holding the gpio_lock by snapshotting the desc flags,
+> > > > rather than testing them individually while holding the lock.
+> > > >
+> > > > Accept that the calculation of the used field is inherently racy, and
+> > > > only check the availability of the line from pinctrl if other checks
+> > > > pass, so avoiding the check for lines that are otherwise in use.
 >
-> On Tue, Dec 12, 2023 at 10:39:58AM -0600, Ninad Palsule wrote:
->> From: Johannes Holland <johannes.holland@infineon.com>
->>
->> Add a dt schema to support device tree bindings
-> "Add bindings for..."
-Fixed.
+> ...
 >
->> for the generic I2C
->> physical layer. Refer to the TCG PC Client Platform TPM Profile (PTP)
->> Specification for TPM 2.0 v1.04 Revision 14.
->>
->> This includes descriptions for the Nuvoton and Infineon devices.
->>
->> OpenBMC-Staging-Count: 3
-> I have no idea what this is, but it needs to be removed from the patch.
-Removed.
+> > > > -	spin_lock_irqsave(&gpio_lock, flags);
+> > >
+> > > Shouldn't this be covered by patch 1 (I mean conversion to scoped_guard()
+> > > instead of spinlock)?
+> > >
+> >
+> > Read the cover letter.
+> > Doing that made the change larger, as flags gets removed then restored.
+> > I had also thought the flag tests would get indented then unindented, but
+> > if we use guard() the indentation should remain unchanged.
 >
->> Signed-off-by: Johannes Holland <johannes.holland@infineon.com>
->> Signed-off-by: Joel Stanley <joel@jms.id.au>
->> Signed-off-by: Ninad Palsule <ninad@linux.ibm.com>
->> ---
->>   .../bindings/security/tpm/tpm-tis-i2c.yaml    | 50 +++++++++++++++++++
->>   1 file changed, 50 insertions(+)
->>   create mode 100644 Documentation/devicetree/bindings/security/tpm/tpm-tis-i2c.yaml
->>
->> diff --git a/Documentation/devicetree/bindings/security/tpm/tpm-tis-i2c.yaml b/Documentation/devicetree/bindings/security/tpm/tpm-tis-i2c.yaml
->> new file mode 100644
->> index 000000000000..de1e34065748
->> --- /dev/null
->> +++ b/Documentation/devicetree/bindings/security/tpm/tpm-tis-i2c.yaml
->> @@ -0,0 +1,50 @@
->> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
->> +%YAML 1.2
->> +---
->> +$id: http://devicetree.org/schemas/security/tpm/tpm-tis-i2c.yaml#
->> +$schema: http://devicetree.org/meta-schemas/core.yaml#
->> +
->> +title: I2C PTP based TPM Devices
->> +
->> +maintainers:
->> +  - Johannes Holland <johannes.holland@infineon.com>
->> +
->> +description:
->> +  Device Tree Bindings for I2C based Trusted Platform Module (TPM).
-> s/Device Tree Bindings for //. Doesn't dt_binding_check now complain if
-> you have this in a title or description?
-Fixed.
+> I'm fine with that as I pointed out (have you received that mail? I had
+> problems with my mail server) the dflags is better semantically, so restoration
+> with _different_ name is fine.
 >
->> +properties:
->> +  $nodename:
->> +    pattern: "^tpm(@[0-9a-f]+)?$"
->> +
->> +  compatible:
->> +    oneOf:
->> +      - description: Infineon's Trusted Platform Module (TPM) (SLB9673).
->> +        items:
->> +          - const: infineon,slb9673
->> +          - const: tcg,tpm-tis-i2c
->> +      - description: Nuvoton's Trusted Platform Module (TPM) (NPCT75x).
->> +        items:
->> +          - const: nuvoton,npct75x
->> +          - const: tcg,tpm-tis-i2c
->> +      - const: tcg,tpm-tis-i2c
-> IMO this should be removed and this fallback should only be used in
-> combination with device specific compatibles, like you have here for the
-> infineon and nuvoton devices.
 
-As Guenter mentioned I need to keep it as tacoma board is just using 
-this string.
+I have noted that some of your replies have been delayed, and I can't be sure
+of what I might not've received. I can't say I've seen one that mentions the
+dflags name being preferable.
 
-Thanks for the review.
+I prefer the plain flags name, if there is only one flag variable in the
+function.
 
-Regards,
-
-Ninad
-
+> > Can do it in 1 if you are happy with the flags declaration being
+> > removed in patch 1 and restored in 4.
 >
-> Cheers,
-> Conor.
+> Definitely.
 >
->> +  reg:
->> +    maxItems: 1
->> +
->> +required:
->> +  - compatible
->> +  - reg
->> +
->> +additionalProperties: false
->> +
->> +examples:
->> +  - |
->> +    i2c {
->> +      #address-cells = <1>;
->> +      #size-cells = <0>;
->> +
->> +      tpm@2e {
->> +        compatible = "nuvoton,npct75x", "tcg,tpm-tis-i2c";
->> +        reg = <0x2e>;
->> +      };
->> +    };
->> +...
->> -- 
->> 2.39.2
->>
+
+Ok will re-arrange in v3.
+
+Cheers,
+Kent.
