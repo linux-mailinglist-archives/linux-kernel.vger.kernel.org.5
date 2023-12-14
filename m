@@ -2,174 +2,228 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D262881269E
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 05:38:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C09D08126AC
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 05:47:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1443125AbjLNEi3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 23:38:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57672 "EHLO
+        id S1443111AbjLNEpV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 23:45:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55896 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230034AbjLNEi1 (ORCPT
+        with ESMTP id S230034AbjLNEpT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 23:38:27 -0500
-Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF8B985;
-        Wed, 13 Dec 2023 20:38:33 -0800 (PST)
-Received: from pps.filterd (m0246632.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3BE0TuAq030299;
-        Thu, 14 Dec 2023 04:38:16 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
- from : message-id : references : date : in-reply-to : content-type :
- mime-version; s=corp-2023-11-20;
- bh=EpNCctt2Y/JE0HgXEiFqq2OBU+CMRul3MLOrYoLTOkc=;
- b=fCHuL0SxzmHI/7WBTZgLg1bC8w26/bmB3IWJDNiOB8gE2Z68qu9rnEFmYdrv42D43AkK
- nMHrt7mld31JEU35b6vtR7cr7+DLXk9Gn2+hVSaI2L2I/P9aca9GDJG7T1ut4Tcky0vr
- d0db1VmQOd3L9KU1+pxiY3ywzb49xD3EkTkZ42c4nimCizm1P6ZDnVpgFnCNVqDaNOuI
- K4DbXHSSoYDGGz2qq74eVXbhNlwQcJf5cFQIEXwDiGBi1t8cIWvgQgxFF3cUotFyOqgX
- Uy5/pU6owqPC2z63dUx2FQUBNXGl1x+LKHAqkkHlwnwrcxxip6S9EhxW9Bi0wej7xmJK 2g== 
-Received: from phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta01.appoci.oracle.com [138.1.114.2])
-        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3uvfuu9uag-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 14 Dec 2023 04:38:16 +0000
-Received: from pps.filterd (phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-        by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 3BE3eARO008295;
-        Thu, 14 Dec 2023 04:38:15 GMT
-Received: from nam12-bn8-obe.outbound.protection.outlook.com (mail-bn8nam12lp2168.outbound.protection.outlook.com [104.47.55.168])
-        by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3uvep9f09j-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 14 Dec 2023 04:38:15 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ZZQqyYZf2G5YvEhKH1B+xJtYlkA2lw6eF1GBp9bzyx4Yu68l1WwQ40VExM7gxOzC56kYHTzg3B+yDLIA0eX7Qqueb5DwQTA2nFReuiI1g8o0u++fodVPnYn73zCGYlskR4w32w7DtvycY5x/1jEt0WQvpmw15vQdOdFn9LhRriO1BRQXzqDEKFta6K03NA7IIa9ThXvR8uzUWXvYVueh/UKgqDriWkLZmXb83vQlgTquFmRp5Y5pjc/nME691KEPuVq0sEmtHWmFnD4LD8gBRG2oPNSohHEKqwF2UTt+vB6je7PNibImQK8GE81bEgplqAdBZFKQWrMA2FKm7jEjiQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=EpNCctt2Y/JE0HgXEiFqq2OBU+CMRul3MLOrYoLTOkc=;
- b=DFAM9eET+YW3E+19pTyEQlVAT3AwaMwRRf9T5gmSHIv3T3TOdmZfqP1fVrOC0Yl53SQXb8LSYwjnPHxQhubt/vcoWWCxXP/JQSbzjfB6zIdFR5YLPAChIkW61qJ4Er3FycGYi/rgFRbuPi3P7l6gkN2H6vNgs5E6kEZzuAZRS8at8uHjBVvvw6DInUiTSOZjxerZ+KQJ6nG7cH9PKaHYEwl03bu3VikDo+eefei9SraQdnLdNA9KtVMIzvbKikH9Rd63IwJENvmws8jb5EKXdSIfq0aVH4IycbOXiwqu++n4YCjHyIMScn5OLtfcp7Lgl8hDbvCyElscE6/bKHX3Xg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=EpNCctt2Y/JE0HgXEiFqq2OBU+CMRul3MLOrYoLTOkc=;
- b=blEfoLwpt8K5Re3ZVF204DiNsqbQyBLhMRgvteD4JRdvx8xtw9fBqgdPAWmZt0b3LyPfOz0IpTuKT2mJxlS92y03B5+BAjo/We4hFE3HkaJE6ashR05n7Brj4pkNwnkpfkoOG59zvVCFClQGu670Rbu2foUUKV4M0NjpmyUlr+8=
-Received: from PH0PR10MB4759.namprd10.prod.outlook.com (2603:10b6:510:3d::12)
- by SJ2PR10MB7825.namprd10.prod.outlook.com (2603:10b6:a03:56e::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7091.26; Thu, 14 Dec
- 2023 04:38:13 +0000
-Received: from PH0PR10MB4759.namprd10.prod.outlook.com
- ([fe80::2b0c:62b3:f9a9:5972]) by PH0PR10MB4759.namprd10.prod.outlook.com
- ([fe80::2b0c:62b3:f9a9:5972%4]) with mapi id 15.20.7091.028; Thu, 14 Dec 2023
- 04:38:12 +0000
-To:     Ming Lei <ming.lei@redhat.com>
-Cc:     John Garry <john.g.garry@oracle.com>, axboe@kernel.dk,
-        kbusch@kernel.org, hch@lst.de, sagi@grimberg.me,
-        jejb@linux.ibm.com, martin.petersen@oracle.com, djwong@kernel.org,
-        viro@zeniv.linux.org.uk, brauner@kernel.org, dchinner@redhat.com,
-        jack@suse.cz, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
-        linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        tytso@mit.edu, jbongio@google.com, linux-scsi@vger.kernel.org,
-        jaswin@linux.ibm.com, bvanassche@acm.org,
-        Himanshu Madhani <himanshu.madhani@oracle.com>
-Subject: Re: [PATCH v2 01/16] block: Add atomic write operations to
- request_queue limits
-From:   "Martin K. Petersen" <martin.petersen@oracle.com>
-Organization: Oracle Corporation
-Message-ID: <yq1cyv9flkw.fsf@ca-mkp.ca.oracle.com>
-References: <20231212110844.19698-1-john.g.garry@oracle.com>
-        <20231212110844.19698-2-john.g.garry@oracle.com>
-        <ZXkIEnQld577uHqu@fedora>
-        <36ee54b4-b8d5-4b3c-81a0-cc824b6ef68e@oracle.com>
-        <ZXmjdnIqGHILTfQN@fedora>
-Date:   Wed, 13 Dec 2023 23:38:10 -0500
-In-Reply-To: <ZXmjdnIqGHILTfQN@fedora> (Ming Lei's message of "Wed, 13 Dec
-        2023 20:28:38 +0800")
-Content-Type: text/plain
-X-ClientProxiedBy: BYAPR08CA0027.namprd08.prod.outlook.com
- (2603:10b6:a03:100::40) To PH0PR10MB4759.namprd10.prod.outlook.com
- (2603:10b6:510:3d::12)
+        Wed, 13 Dec 2023 23:45:19 -0500
+Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C773DB9;
+        Wed, 13 Dec 2023 20:45:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
+        s=201909; t=1702529123;
+        bh=t7B9if0LOImFnd/AnccoK9V4d+WmshLVNwjLPY+Ohl0=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=PHvb5rAyITybLJhslCdr+FPB6weuYhVdwGVqwI6pjC0ArKwZkSJyMqDVTRdcLTEp8
+         CMM1zL432KtNyUzA4mhWgDTmzmIB20cDIEs1vpR4XVIlFKEuLTFGJUgQi2gSEUC13j
+         mfFynirXmkKm9bE2EICqv9unlGx62DyfXiv5i2BtZBd3f6O85asjT6i+pBGfgfPjyp
+         tkCdZSOpErcp/BMZpdsjN71xdXgGO4HsDEkHk/a+gxWH2FD87Y65cYU3IpDwO2jYA7
+         PzUo9wW0hAbsQZZzGnqcxC0mqh1VvcVv56nNl78AXywD3K6/8BH+V8bphra6maMQo3
+         RX1/dzF6mo1TA==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4SrKXf0VB5z4wcH;
+        Thu, 14 Dec 2023 15:45:21 +1100 (AEDT)
+From:   Michael Ellerman <mpe@ellerman.id.au>
+To:     Samuel Holland <samuel.holland@sifive.com>
+Cc:     linux-kernel@vger.kernel.org, amd-gfx@lists.freedesktop.org,
+        linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        loongarch@lists.linux.dev, linuxppc-dev@lists.ozlabs.org,
+        x86@kernel.org, linux-riscv@lists.infradead.org,
+        Christoph Hellwig <hch@infradead.org>,
+        Timothy Pearson <tpearson@raptorengineering.com>
+Subject: Re: [RFC PATCH 10/12] drm/amd/display: Use ARCH_HAS_KERNEL_FPU_SUPPORT
+In-Reply-To: <7ed20fcf-8a9d-40d5-b913-b5d2da443cd6@sifive.com>
+References: <20231208055501.2916202-1-samuel.holland@sifive.com>
+ <20231208055501.2916202-11-samuel.holland@sifive.com>
+ <87h6kpdj20.fsf@mail.lhotse>
+ <7ed20fcf-8a9d-40d5-b913-b5d2da443cd6@sifive.com>
+Date:   Thu, 14 Dec 2023 15:45:21 +1100
+Message-ID: <87bkatxuhq.fsf@mail.lhotse>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH0PR10MB4759:EE_|SJ2PR10MB7825:EE_
-X-MS-Office365-Filtering-Correlation-Id: ece7cc0b-e4f1-4588-41de-08dbfc5e7b04
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: eUDoVCNKybvNjBy+R1zu/CNiL59SQ7n/QxQ8dFhsp6HowrTR12FRBfStml2XrawaOd6M3DcYx+cLqWUdsuS7N0p6bZPYfHjfYSQ9zu3EOygMEF+XVOx0BGwXVZpp9CjjgF58x87csSjzILnfnQ0cee/TWCxzawDH+t3st5bAYppGDVtIM7UOL5Qw+aVUcC9fJs7Ap7LPZ8zFMSY1FT7ioJeu9NDLck5nM9BvD5KqnRdsNdKIAiwoQFhBa1sL666QX+xrT0bbqvlGEiw1bCCiNWV8EF7ssj9mnAqu5UiQuujMSDCl+r0E77wpU0SBJ+qVD8/e9pGFFliadZIa5Tp9hkKvJwjaTVXBv9EfwDTUxqPcPaboGuWT9+7mO+sd4p9IGd+gzaZwDU8/e3TA41uaXXucRIlglqXXdhxW0fofEo5buv07jA12uAM/kgizTAhV3iksoJJICoTRLLH3MrkViE347tPXaDhCD/Pg2lyMtsGpV8IEYtYJLN77YEmXs+NmyYcORYum5Chs6yijXUabszuYAsDNXTL4WWDFWIfwRp8ePW03YlRKCQxLDcAUtD+s
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB4759.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(396003)(39860400002)(346002)(366004)(376002)(230922051799003)(1800799012)(64100799003)(186009)(451199024)(26005)(36916002)(107886003)(6506007)(6512007)(83380400001)(4326008)(5660300002)(7416002)(8936002)(8676002)(41300700001)(2906002)(4744005)(6486002)(478600001)(316002)(6916009)(66556008)(66946007)(66476007)(54906003)(86362001)(38100700002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?qg8/1ugh5OF27BHO/PFQrfzxjP9qyuOqtc6ljupJxv8BAE7qtRSHyw6usqVt?=
- =?us-ascii?Q?DsXo0WNN1gksLM+3yNjHT2pkF6HlGXJ1ZBmmwfLAZkhCxKJIEw2xu5t0+K27?=
- =?us-ascii?Q?DijRKtXpLeSYzz060rU0cS25OzJX0lXbk3e3QaMlTa6/gbuwBm1BxU7Huhbj?=
- =?us-ascii?Q?yylWHRe8oI+NFHZrUfWAgg4iHtE5D9KyX0MtK/7jCB/QuWLnXHwzOTByfa/N?=
- =?us-ascii?Q?izsDAdxHxBzcZNiEpQZZ8eAVg5qZ5jlyO2hDesrZ2OmIxw48ZjhoXk7glXAp?=
- =?us-ascii?Q?Dt9YxdMjCZxWJEvBnMct7WszMW9gcpuel70tMvEzTjkJ8sRMpm7lFM+jNCwX?=
- =?us-ascii?Q?8JE/xt8XoWyw2WByyHRd/KgwVBlUsktn+w2MUGa1zA2ovc4NCKA771vhWSAz?=
- =?us-ascii?Q?PX1WLxXKQtAw5Cn1jfEiJKPz0v+TACgwMPSe1F8L4oHPLClVUJ6oDeXaNbq9?=
- =?us-ascii?Q?7eEwtwdC3Q4o/kjqOgOsujlHTiB19FKxFa/gifafZI4rx4zBXL9F8tYSFSCm?=
- =?us-ascii?Q?SEykwrGrh5oUkkBL2ze2oblpB0OhYg8nyJfGZRbvCCwKxIIYCBUQy/XVj6pH?=
- =?us-ascii?Q?bupIZDEJlSw7PJQWHsmnjMGqx1BmUUO8bfVL30MKRiqU0fhgJVOITDumgus1?=
- =?us-ascii?Q?a4VPJOTjH0ZFe1/VUeNom4U7hYMeIzhWf7lG9/RaWEZ3dRQhQSSkBLOHihyf?=
- =?us-ascii?Q?zQbDHP05JeQyYzq82Rd4Q5fR3+SxBq2m/XyOpJN8sVLYC4tGIoMgUXWgPZ+P?=
- =?us-ascii?Q?rDCIJLRouRGqSVmh693gl38RSAQQ7qJjLWTv3alH8/hfyuPW2MPukxgw5ZX7?=
- =?us-ascii?Q?6Sm46D8m0K8241G8FNsQQovG2pq5HPOSD3RnGEnTIkdDvuU0xiZiDArHhhaF?=
- =?us-ascii?Q?0fUhWLhDphKXscNVDYI7O/58+1WtL9xeJPM79GqaVmdoGUiAKNfI/pDYq7wM?=
- =?us-ascii?Q?rB8XzAmHIkoA4g/yvWsU6D/rAIhuGuOyvBlNfVwbs9zqbRkvXDfLADk0nuR9?=
- =?us-ascii?Q?+jHX/13JA8KOX0u6w141QG+7hUzNtRGGlXDrDGRME1NfWhAuf6dioo4KJE6s?=
- =?us-ascii?Q?QAjIAS9fA4TBjh+Y+i0mVHgRPnGjqrGgxkY6jDZbe5EvUrCgPFipv3PF3f4C?=
- =?us-ascii?Q?7JloCOYhQI+7A4gd4GhQmF0+rgO4bwRcpkjxvxHBqgrLuINuCwH41pb4+udI?=
- =?us-ascii?Q?cTHOCYck3sQy5BGM5JYGYK2Wkx0QxZgMOPCZy+0Mbu1fwyzjHVzRF1MRXMkI?=
- =?us-ascii?Q?3KbKPtlOfGUAbrq2E6WLW/tzxiqiY9U+S5BhrjDNSRnx4CPLuB/u6Ywtr5Wd?=
- =?us-ascii?Q?TsnFn+c/XF14EalSqXuLw+5Xa/2IdAp6hUzyMmDcD+XO1rWeY2MMYxkE0jgH?=
- =?us-ascii?Q?Lnj2lYnuJ3MkBQS6LJsF1HOD7u4TDKLZ/gMDVGwo47hiyV6B+j909F27x6T+?=
- =?us-ascii?Q?k9quiwCell4VrCguMYrs6wDvIek6CYJkvYwYxl9W0Wedki6Y5hl/EeVu3rQ1?=
- =?us-ascii?Q?QcTuQ1wA/psINIxoz9pyGOJRhwt6hDsYQ431kF8Lux6nfaj8ivZLq8WKVWUC?=
- =?us-ascii?Q?HhPlkrlTvo7mTznPn35UrOJ9rFGK5un3j5j5pLuGRjnKDX5jwM627HFqhJGd?=
- =?us-ascii?Q?gA=3D=3D?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: Lipk0/T9X3XWklxFk7rgsUSPc96aB5QXRdVHoms8KcoqCZxEhjfvlwrJmvEhFFWfVeyKHJGTgOb0Rcj3u98uuA7gDx5F9R3y8F3Lm75nXsVeR37vnZkrPNNlxe6WUvNBrwMCi9vCfgnjMSyoDjfxjtR+YNTSkTYEgw7l7gjN8P+Akj87gCKB3em6WsicNGT+0MpVsYRDvKJXfPlGF6cbULjI43yedVgaqx+nMS/BryN37rS5rrmfW7r0XjkuoKI/ety3KzMa2+ZAbFkVzY732Od5eQo160QqrggwvCCUXWAl6EPVN0vVoSERfzKa9HRiVTFMTtmhPCCwf6GKQyZy7Nfm3rouejxHAXZQydeDaXzguLRsDsNJGpw7sTSUkdnuoSmEHBtPccuQW04VwnD5RvnNUN1ukaKgIY5BuitTn9t9pK5nlnAMdIBnzr6UyjNO7r7mhEtvmLUJ/0MXi7+P4uKJi5B9GBGofwZo5c6XpwQE0Jl7ZaO+/USM/PeGs62FkILW5ROEman/EMk0ddNSLs4KYwbprH7VhEyDe9f4/JiICkguv8CwtgPPhlley4P1QtgncqpUyzriSSwqcai1Nvvsp98MRga4S0LZ4Ja1ZoA=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ece7cc0b-e4f1-4588-41de-08dbfc5e7b04
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB4759.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Dec 2023 04:38:12.5156
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 7fN1F5JhlgDeppon5ZDfIlyWhr3Skwl44hpUzuMNM6YZX+PQOUk6uJD+TZhm1XxTj6pDBVddpSCl6MANoYmVvhG/VHwYwMguEe6IjzVCQB8=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ2PR10MB7825
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-14_01,2023-12-13_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 malwarescore=0
- mlxlogscore=990 adultscore=0 phishscore=0 suspectscore=0 mlxscore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311290000 definitions=main-2312140024
-X-Proofpoint-GUID: dFdtRkgW3V_OGuf3Aj-w_NCAmqzp7Ccv
-X-Proofpoint-ORIG-GUID: dFdtRkgW3V_OGuf3Aj-w_NCAmqzp7Ccv
+Content-Type: text/plain
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Samuel Holland <samuel.holland@sifive.com> writes:
+> On 2023-12-11 6:23 AM, Michael Ellerman wrote:
+>> Hi Samuel,
+>> 
+>> Thanks for trying to clean all this up.
+>> 
+>> One problem below.
+>> 
+>> Samuel Holland <samuel.holland@sifive.com> writes:
+>>> Now that all previously-supported architectures select
+>>> ARCH_HAS_KERNEL_FPU_SUPPORT, this code can depend on that symbol instead
+>>> of the existing list of architectures. It can also take advantage of the
+>>> common kernel-mode FPU API and method of adjusting CFLAGS.
+>>>
+>>> Signed-off-by: Samuel Holland <samuel.holland@sifive.com>
+>> ...
+>>> diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/dc_fpu.c b/drivers/gpu/drm/amd/display/amdgpu_dm/dc_fpu.c
+>>> index 4ae4720535a5..b64f917174ca 100644
+>>> --- a/drivers/gpu/drm/amd/display/amdgpu_dm/dc_fpu.c
+>>> +++ b/drivers/gpu/drm/amd/display/amdgpu_dm/dc_fpu.c
+>>> @@ -87,20 +78,9 @@ void dc_fpu_begin(const char *function_name, const int line)
+>>>  	WARN_ON_ONCE(!in_task());
+>>>  	preempt_disable();
+>>>  	depth = __this_cpu_inc_return(fpu_recursion_depth);
+>>> -
+>>>  	if (depth == 1) {
+>>> -#if defined(CONFIG_X86) || defined(CONFIG_LOONGARCH)
+>>> +		BUG_ON(!kernel_fpu_available());
+>>>  		kernel_fpu_begin();
+>>> -#elif defined(CONFIG_PPC64)
+>>> -		if (cpu_has_feature(CPU_FTR_VSX_COMP))
+>>> -			enable_kernel_vsx();
+>>> -		else if (cpu_has_feature(CPU_FTR_ALTIVEC_COMP))
+>>> -			enable_kernel_altivec();
+>>  
+>> Note altivec.
+>> 
+>>> -		else if (!cpu_has_feature(CPU_FTR_FPU_UNAVAILABLE))
+>>> -			enable_kernel_fp();
+>>> -#elif defined(CONFIG_ARM64)
+>>> -		kernel_neon_begin();
+>>> -#endif
+>>>  	}
+>>>  
+>>>  	TRACE_DCN_FPU(true, function_name, line, depth);
+>>> diff --git a/drivers/gpu/drm/amd/display/dc/dml/Makefile b/drivers/gpu/drm/amd/display/dc/dml/Makefile
+>>> index ea7d60f9a9b4..5aad0f572ba3 100644
+>>> --- a/drivers/gpu/drm/amd/display/dc/dml/Makefile
+>>> +++ b/drivers/gpu/drm/amd/display/dc/dml/Makefile
+>>> @@ -25,40 +25,8 @@
+>>>  # It provides the general basic services required by other DAL
+>>>  # subcomponents.
+>>>  
+>>> -ifdef CONFIG_X86
+>>> -dml_ccflags-$(CONFIG_CC_IS_GCC) := -mhard-float
+>>> -dml_ccflags := $(dml_ccflags-y) -msse
+>>> -endif
+>>> -
+>>> -ifdef CONFIG_PPC64
+>>> -dml_ccflags := -mhard-float -maltivec
+>>> -endif
+>> 
+>> And altivec is enabled in the flags there.
+>> 
+>> That doesn't match your implementation for powerpc in patch 7, which
+>> only deals with float.
+>> 
+>> I suspect the AMD driver actually doesn't need altivec enabled, but I
+>> don't know that for sure. It compiles without it, but I don't have a GPU
+>> to actually test. I've added Timothy on Cc who added the support for
+>> powerpc to the driver originally, hopefully he has a test system.
+>
+> I tested this series on a POWER9 system with an AMD Radeon RX 6400 GPU (which
+> requires this FPU code to initialize), and got functioning graphics output.
 
-Ming,
+Awesome.
 
-> Relying on driver to provide sound value is absolutely bad design from
-> API viewpoint.
+>> Anyway if that's true that it doesn't need altivec we should probably do
+>> a lead-up patch that drops altivec from the AMD driver explicitly, eg.
+>> as below.
+>
+> That makes sense to me. Do you want to provide your Signed-off-by so I can send
+> this patch with your authorship?
 
-All the other queue_limits are validated by the LLDs. It's challenging
-to lift that validation to the block layer since the values reported are
-heavily protocol-dependent and thus information is lost if we do it
-somewhere else.
+Yeah that'd be great. Patch below. Feel free to adjust the commit
+message as you see fit.
 
+cheers
+
+
+From c8a2862d2ebe76a023eceb3267fd85262925c0ba Mon Sep 17 00:00:00 2001
+From: Michael Ellerman <mpe@ellerman.id.au>
+Date: Thu, 14 Dec 2023 15:39:05 +1100
+Subject: [PATCH] drm/amd/display: Only use hard-float, not altivec on powerpc
+
+The compiler flags enable altivec, but that is not required, hard-float
+is sufficient for the code to build and function.
+
+Drop altivec from the compiler flags and adjust the enable/disable code
+to only enable FPU use.
+
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+---
+ drivers/gpu/drm/amd/display/amdgpu_dm/dc_fpu.c | 12 ++----------
+ drivers/gpu/drm/amd/display/dc/dml/Makefile    |  2 +-
+ drivers/gpu/drm/amd/display/dc/dml2/Makefile   |  2 +-
+ 3 files changed, 4 insertions(+), 12 deletions(-)
+
+diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/dc_fpu.c b/drivers/gpu/drm/amd/display/amdgpu_dm/dc_fpu.c
+index 4ae4720535a5..0de16796466b 100644
+--- a/drivers/gpu/drm/amd/display/amdgpu_dm/dc_fpu.c
++++ b/drivers/gpu/drm/amd/display/amdgpu_dm/dc_fpu.c
+@@ -92,11 +92,7 @@ void dc_fpu_begin(const char *function_name, const int line)
+ #if defined(CONFIG_X86) || defined(CONFIG_LOONGARCH)
+ 		kernel_fpu_begin();
+ #elif defined(CONFIG_PPC64)
+-		if (cpu_has_feature(CPU_FTR_VSX_COMP))
+-			enable_kernel_vsx();
+-		else if (cpu_has_feature(CPU_FTR_ALTIVEC_COMP))
+-			enable_kernel_altivec();
+-		else if (!cpu_has_feature(CPU_FTR_FPU_UNAVAILABLE))
++		if (!cpu_has_feature(CPU_FTR_FPU_UNAVAILABLE))
+ 			enable_kernel_fp();
+ #elif defined(CONFIG_ARM64)
+ 		kernel_neon_begin();
+@@ -125,11 +121,7 @@ void dc_fpu_end(const char *function_name, const int line)
+ #if defined(CONFIG_X86) || defined(CONFIG_LOONGARCH)
+ 		kernel_fpu_end();
+ #elif defined(CONFIG_PPC64)
+-		if (cpu_has_feature(CPU_FTR_VSX_COMP))
+-			disable_kernel_vsx();
+-		else if (cpu_has_feature(CPU_FTR_ALTIVEC_COMP))
+-			disable_kernel_altivec();
+-		else if (!cpu_has_feature(CPU_FTR_FPU_UNAVAILABLE))
++		if (!cpu_has_feature(CPU_FTR_FPU_UNAVAILABLE))
+ 			disable_kernel_fp();
+ #elif defined(CONFIG_ARM64)
+ 		kernel_neon_end();
+diff --git a/drivers/gpu/drm/amd/display/dc/dml/Makefile b/drivers/gpu/drm/amd/display/dc/dml/Makefile
+index 6042a5a6a44f..554c39024a40 100644
+--- a/drivers/gpu/drm/amd/display/dc/dml/Makefile
++++ b/drivers/gpu/drm/amd/display/dc/dml/Makefile
+@@ -31,7 +31,7 @@ dml_ccflags := $(dml_ccflags-y) -msse
+ endif
+ 
+ ifdef CONFIG_PPC64
+-dml_ccflags := -mhard-float -maltivec
++dml_ccflags := -mhard-float
+ endif
+ 
+ ifdef CONFIG_ARM64
+diff --git a/drivers/gpu/drm/amd/display/dc/dml2/Makefile b/drivers/gpu/drm/amd/display/dc/dml2/Makefile
+index acff3449b8d7..7b51364084b5 100644
+--- a/drivers/gpu/drm/amd/display/dc/dml2/Makefile
++++ b/drivers/gpu/drm/amd/display/dc/dml2/Makefile
+@@ -30,7 +30,7 @@ dml2_ccflags := $(dml2_ccflags-y) -msse
+ endif
+ 
+ ifdef CONFIG_PPC64
+-dml2_ccflags := -mhard-float -maltivec
++dml2_ccflags := -mhard-float
+ endif
+ 
+ ifdef CONFIG_ARM64
 -- 
-Martin K. Petersen	Oracle Linux Engineering
+2.43.0
+
+
