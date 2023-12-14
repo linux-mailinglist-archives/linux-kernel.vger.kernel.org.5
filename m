@@ -2,859 +2,940 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C9C998126F9
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 06:35:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A0468126FC
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 06:35:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1443162AbjLNFda (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 00:33:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51688 "EHLO
+        id S1443179AbjLNFe7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 00:34:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36500 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229838AbjLNFd1 (ORCPT
+        with ESMTP id S229838AbjLNFe6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 00:33:27 -0500
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB9F8BD;
-        Wed, 13 Dec 2023 21:33:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1702532009;
-        bh=ueTc87wi/WZqUixGMvvyEJm99xkO19d01bALgaeDbhM=;
-        h=Date:From:To:Cc:Subject:From;
-        b=e6aY0IjCAUW4tFNEwcWoFFcLuGjrFKQ6AtdvNdoRagHTjqKAJlaFkiiiTCubFndUH
-         1eL4LQhd96R8P5O5Wa0T6O52+5sTZ8JpWnImUppVJBPfUIKKdgln/LTPUVTuj4tz62
-         aW1iRbgHaF05nup9zbIAejUZ2eBXQ5WgfSFZ87ptz3rDPxbzR9a8ugSMxZdZEG+DGq
-         OnhkQVjS3ssIRDx+pd7KJeSBbeLX7hdFIyQueQUHbTKdOLLVuYkyFCqWejCocGeB+4
-         Wpmj3p2pTXmsV9u0xteAZimXOBJrYDZnEUkxNboLZKhZj3jNDo+Je3bhaYAG94JHzl
-         SkYTxhIm6kcAQ==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4SrLc90jFsz4wcJ;
-        Thu, 14 Dec 2023 16:33:29 +1100 (AEDT)
-Date:   Thu, 14 Dec 2023 16:33:27 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Linux Next Mailing List <linux-next@vger.kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: linux-next: Tree for Dec 14
-Message-ID: <20231214163327.50094c39@canb.auug.org.au>
+        Thu, 14 Dec 2023 00:34:58 -0500
+Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A144DBD
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 21:35:02 -0800 (PST)
+Received: by mail-pg1-x532.google.com with SMTP id 41be03b00d2f7-5bdb0be3591so6581412a12.2
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 21:35:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=brainfault-org.20230601.gappssmtp.com; s=20230601; t=1702532102; x=1703136902; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=nh20kotH6U9RvpT2z7NAawg/dMhTYSwJgB2POD6vzRk=;
+        b=ImycSiFzRF3N5nQRQXIMYNdgvSXw8xT847fsikTdNnqGAPU9LXIYl4COL8lZK8K6GL
+         6ie+cgxRklyv/ZaXHlKmxA47wt97k2Mzee2wWrfMRE7rFxP6l8InTMtsgz3zIbxgQsj8
+         3s54IhFr7KkeXTFkcYw6ubY61GGyi+YuKahSwBAmf7bXiacaTua2NC1VO7ojeRILNIb5
+         eIYvF6VJbN9znz1zjdCWROdj1GVRLiy4JkgxB9MXjv3YQCvydcDK73yZOgRLB3g/V/8S
+         Ixhc3x91c700DkWWiNClZIjX8Mm+Ko9mBFJ5+H4/6CgNbF+mFUDMtj+fMnlCNwH+GgN5
+         nKoQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702532102; x=1703136902;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=nh20kotH6U9RvpT2z7NAawg/dMhTYSwJgB2POD6vzRk=;
+        b=U3GrcDoU8AVBvsivpgGt/ZilXTKA9CHgk50kLJyEhg2fSVu8MGyAAoE0tLrYYaWiyy
+         zWBJkEdYwnyjcHYWdBkGZ4cImjrasZ850Qb5vjZrdQxiZFkq0hKsYeETr02zWNIteU1o
+         u2vGR/zqV0w9hn2WBD5AY9PMxRcZCq8Ute5QB4Dr06EO8mt+zlfuQV8ZCpe3qGTXs4mH
+         JihkDOgFqlNAzifG9kkhxseyH8sIO77gBXvmEZU2cJ52sqhIWQGc76uukxiaoV+KFxjG
+         RdNiIO+aUiLQnuB+MvYMsfKd6cSMZ3/Nf+TOBdiSXbIl/R57j/vZbNqoKDpBZSw/Mafq
+         PQZg==
+X-Gm-Message-State: AOJu0YwMzxIy58wzm7JhuZ4G1DJcF1TRpKR4H1+Ly39G7LPW+MOU0OKz
+        0hj8y5jh8BLr2eLtbh9V+sGN7HeOw3FcHUMnfZrbNA==
+X-Google-Smtp-Source: AGHT+IEBY1L7yDp3Cd6IrCmKJN9YcgBbxGegTCQenBOjpVYqMS/Ic28DMqWA6cM6abhLSwSmL0XeMkuZuSEkAVy9Kvs=
+X-Received: by 2002:a05:6a21:609:b0:190:16bb:4f6b with SMTP id
+ ll9-20020a056a21060900b0019016bb4f6bmr9829149pzb.39.1702532101745; Wed, 13
+ Dec 2023 21:35:01 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/ePP4w2Q_wS9c7Ng/+jSCWPw";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,LOCALPART_IN_SUBJECT,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
-        autolearn_force=no version=3.4.6
+References: <20231213203001.179237-1-alexghiti@rivosinc.com> <20231213203001.179237-5-alexghiti@rivosinc.com>
+In-Reply-To: <20231213203001.179237-5-alexghiti@rivosinc.com>
+From:   Anup Patel <anup@brainfault.org>
+Date:   Thu, 14 Dec 2023 11:04:50 +0530
+Message-ID: <CAAhSdy0iPD4+2efHqV1Bt6hstFiHGRrB8aTgQw6L3niDE2A00g@mail.gmail.com>
+Subject: Re: [PATCH v2 4/4] riscv: Use accessors to page table entries instead
+ of direct dereference
+To:     Alexandre Ghiti <alexghiti@rivosinc.com>
+Cc:     Russell King <linux@armlinux.org.uk>,
+        Ryan Roberts <ryan.roberts@arm.com>,
+        Alexander Potapenko <glider@google.com>,
+        Marco Elver <elver@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Atish Patra <atishp@atishpatra.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        kasan-dev@googlegroups.com, linux-riscv@lists.infradead.org,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        kvm-riscv@lists.infradead.org, linux-efi@vger.kernel.org,
+        linux-mm@kvack.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/ePP4w2Q_wS9c7Ng/+jSCWPw
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+On Thu, Dec 14, 2023 at 2:04=E2=80=AFAM Alexandre Ghiti <alexghiti@rivosinc=
+.com> wrote:
+>
+> As very well explained in commit 20a004e7b017 ("arm64: mm: Use
+> READ_ONCE/WRITE_ONCE when accessing page tables"), an architecture whose
+> page table walker can modify the PTE in parallel must use
+> READ_ONCE()/WRITE_ONCE() macro to avoid any compiler transformation.
+>
+> So apply that to riscv which is such architecture.
+>
+> Signed-off-by: Alexandre Ghiti <alexghiti@rivosinc.com>
 
-Hi all,
+For KVM RISC-V:
+Acked-by: Anup Patel <anup@brainfault.org>
 
-Changes since 20231213:
+Thanks,
+Anup
 
-The arm-perf tree lost its build failure.
-
-The aspeed tree lost its build failure.
-
-The net-next tree gained a conflict against the net tree.
-
-Non-merge commits (relative to Linus' tree): 6906
- 7119 files changed, 321067 insertions(+), 196585 deletions(-)
-
-----------------------------------------------------------------------------
-
-I have created today's linux-next tree at
-git://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
-(patches at http://www.kernel.org/pub/linux/kernel/next/ ).  If you
-are tracking the linux-next tree using git, you should not use "git pull"
-to do so as that will try to merge the new linux-next release with the
-old one.  You should use "git fetch" and checkout or reset to the new
-master.
-
-You can see which trees have been included by looking in the Next/Trees
-file in the source.  There is also the merge.log file in the Next
-directory.  Between each merge, the tree was built with a ppc64_defconfig
-for powerpc, an allmodconfig for x86_64, a multi_v7_defconfig for arm
-and a native build of tools/perf. After the final fixups (if any), I do
-an x86_64 modules_install followed by builds for x86_64 allnoconfig,
-powerpc allnoconfig (32 and 64 bit), ppc44x_defconfig, allyesconfig
-and pseries_le_defconfig and i386, arm64, s390, sparc and sparc64
-defconfig and htmldocs. And finally, a simple boot test of the powerpc
-pseries_le_defconfig kernel in qemu (with and without kvm enabled).
-
-Below is a summary of the state of the merge.
-
-I am currently merging 371 trees (counting Linus' and 105 trees of bug
-fix patches pending for the current merge release).
-
-Stats about the size of the tree over time can be seen at
-http://neuling.org/linux-next-size.html .
-
-Status of my local build tests will be at
-http://kisskb.ellerman.id.au/linux-next .  If maintainers want to give
-advice about cross compilers/configs that work, we are always open to add
-more builds.
-
-Thanks to Randy Dunlap for doing many randconfig builds.  And to Paul
-Gortmaker for triage and bug fixes.
-
---=20
-Cheers,
-Stephen Rothwell
-
-$ git checkout master
-$ git reset --hard stable
-Merging origin/master (5bd7ef53ffe5 Merge tag 'pull-fixes' of git://git.ker=
-nel.org/pub/scm/linux/kernel/git/viro/vfs)
-Merging fixes/fixes (2dde18cd1d8f Linux 6.5)
-Merging mm-hotfixes/mm-hotfixes-unstable (4380b26f913e kunit: kasan_test: d=
-isable fortify string checker on kmalloc_oob_memset)
-Applying: Revert "maple_tree: do not preallocate nodes for slot stores"
-Merging kbuild-current/fixes (98b1cc82c4af Linux 6.7-rc2)
-Merging arc-current/for-curr (0bb80ecc33a8 Linux 6.6-rc1)
-Merging arm-current/fixes (f54e8634d136 ARM: 9330/1: davinci: also select P=
-INCTRL)
-Merging arm64-fixes/for-next/fixes (3c0696076aad arm64: mm: Always make sw-=
-dirty PTEs hw-dirty in pte_modify)
-Merging arm-soc-fixes/arm/fixes (fd1e5745f87a Merge tag 'v6.7-rockchip-dtsf=
-ixes1' of git://git.kernel.org/pub/scm/linux/kernel/git/mmind/linux-rockchi=
-p into arm/fixes)
-Merging davinci-current/davinci/for-current (06c2afb862f9 Linux 6.5-rc1)
-Merging drivers-memory-fixes/fixes (b85ea95d0864 Linux 6.7-rc1)
-Merging tee-fixes/fixes (ceaa837f96ad Linux 6.2-rc8)
-Merging m68k-current/for-linus (03191fb3db3d m68k: lib: Include <linux/libg=
-cc.h> for __muldi3())
-Merging powerpc-fixes/fixes (4b3338aaa74d powerpc/ftrace: Fix stack teardow=
-n in ftrace_no_trace)
-Merging s390-fixes/fixes (b1a6a1a77f06 s390/scm: fix virtual vs physical ad=
-dress confusion)
-Merging sparc/master (2d2b17d08bfc sparc: Unbreak the build)
-Merging fscrypt-current/for-current (4bcf6f827a79 fscrypt: check for NULL k=
-eyring in fscrypt_put_master_key_activeref())
-Merging fsverity-current/for-current (a075bacde257 fsverity: don't drop pag=
-ecache at end of FS_IOC_ENABLE_VERITY)
-Merging net/main (9702817384aa Revert "tcp: disable tcp_autocorking for soc=
-ket when TCP_NODELAY flag is set")
-Merging bpf/master (e307b5a845c5 octeontx2-af: Fix pause frame configuratio=
-n)
-Merging ipsec/master (76df934c6d5f MAINTAINERS: Add netdev subsystem profil=
-e link)
-Merging netfilter/main (1ae4cd3cbdd0 Merge branch 'bnxt_en-misc-fixes')
-Merging ipvs/main (54d4434da824 Merge branch 'hv_netvsc-fix-race-of-netvsc-=
-vf-register-and-slave-bit')
-Merging wireless/for-next (cd607f2cbbbe wifi: mt76: fix crash with WED rx s=
-upport enabled)
-Merging wpan/master (2d1c882d4434 Merge tag 'mlx5-fixes-2023-10-12' of git:=
-//git.kernel.org/pub/scm/linux/kernel/git/saeed/linux)
-Merging rdma-fixes/for-rc (a39b6ac3781d Linux 6.7-rc5)
-Merging sound-current/for-linus (33071422714a ALSA: hda/tas2781: handle mis=
-sing EFI calibration data)
-Merging sound-asoc-fixes/for-linus (dc96528b176f ASoC: cs42l43: Don't enabl=
-e bias sense during type detect)
-Merging regmap-fixes/for-linus (fea88064445a regmap: fix bogus error on reg=
-cache_sync success)
-Merging regulator-fixes/for-linus (b85ea95d0864 Linux 6.7-rc1)
-Merging spi-fixes/for-linus (e9b220aeacf1 spi: spi-imx: correctly configure=
- burst length when using dma)
-Merging pci-current/for-linus (7ff2b7a1821b PCI/ASPM: Add pci_disable_link_=
-state_locked() lockdep assert)
-Merging driver-core.current/driver-core-linus (2cc14f52aeb7 Linux 6.7-rc3)
-Merging tty.current/tty-linus (a39b6ac3781d Linux 6.7-rc5)
-Merging usb.current/usb-linus (da48708e8733 Merge tag 'thunderbolt-for-v6.7=
--rc6' of git://git.kernel.org/pub/scm/linux/kernel/git/westeri/thunderbolt =
-into usb-linus)
-Merging usb-serial-fixes/usb-linus (2cc14f52aeb7 Linux 6.7-rc3)
-Merging phy/fixes (2a9c713825b3 phy: sunplus: return negative error code in=
- sp_usb_phy_probe)
-Merging staging.current/staging-linus (98b1cc82c4af Linux 6.7-rc2)
-Merging iio-fixes/fixes-togreg (408d4b33c244 iio: adc: MCP3564: fix hardwar=
-e identification logic)
-Merging counter-current/counter-current (a39b6ac3781d Linux 6.7-rc5)
-Merging char-misc.current/char-misc-linus (76101fa0c0a9 Merge tag 'iio-fixe=
-s-for-6.7a' of https://git.kernel.org/pub/scm/linux/kernel/git/jic23/iio in=
-to char-misc-linus)
-Merging soundwire-fixes/fixes (393cae5f32d6 soundwire: intel_ace2x: fix AC =
-timing setting for ACE2.x)
-Merging thunderbolt-fixes/fixes (f0b94c1c5c79 thunderbolt: Fix minimum allo=
-cated USB 3.x and PCIe bandwidth)
-Merging input-current/for-linus (c3d1610345b7 Input: xpad - add Razer Wolve=
-rine V2 support)
-Merging crypto-current/master (9aedd10fe384 crypto: ahash - Set using_shash=
- for cloned ahash wrapper over shash)
-Merging vfio-fixes/for-linus (4ea95c04fa6b vfio: Drop vfio_file_iommu_group=
-() stub to fudge around a KVM wart)
-Merging kselftest-fixes/fixes (b85ea95d0864 Linux 6.7-rc1)
-Merging modules-fixes/modules-linus (f412eef03938 Documentation: livepatch:=
- module-elf-format: Remove local klp_modinfo definition)
-Merging dmaengine-fixes/fixes (4ee632c82d2d dmaengine: fsl-edma: fix DMA ch=
-annel leak in eDMAv4)
-Merging backlight-fixes/for-backlight-fixes (88603b6dc419 Linux 6.2-rc2)
-Merging mtd-fixes/mtd/fixes (7c1b1906229d mtd: spinand: gigadevice: Fix the=
- get ecc status issue)
-Merging mfd-fixes/for-mfd-fixes (88603b6dc419 Linux 6.2-rc2)
-Merging v4l-dvb-fixes/fixes (32138be394e5 Merge tag 'media-renesas-fixes-20=
-231113' of git://git.kernel.org/pub/scm/linux/kernel/git/pinchartl/linux.gi=
-t)
-Merging reset-fixes/reset/fixes (4a6756f56bcf reset: Fix crash when freeing=
- non-existent optional resets)
-Merging mips-fixes/mips-fixes (a39b6ac3781d Linux 6.7-rc5)
-Merging at91-fixes/at91-fixes (b85ea95d0864 Linux 6.7-rc1)
-Merging omap-fixes/fixes (c72b9c33ef96 ARM: OMAP2+: Fix null pointer derefe=
-rence and memory leak in omap_soc_device_init)
-Merging kvm-fixes/master (4cdf351d3630 KVM: SVM: Update EFER software model=
- on CR0 trap for SEV-ES)
-Merging kvms390-fixes/master (27072b8e18a7 KVM: s390/mm: Properly reset no-=
-dat)
-Merging hwmon-fixes/hwmon (a39b6ac3781d Linux 6.7-rc5)
-Merging nvdimm-fixes/libnvdimm-fixes (33908660e814 ACPI: NFIT: Fix incorrec=
-t calculation of idt size)
-Merging cxl-fixes/fixes (8f61d48c83f6 tools/testing/cxl: Slow down the mock=
- firmware transfer)
-Merging btrfs-fixes/next-fixes (cdec1b57f10a Merge branch 'misc-6.7' into n=
-ext-fixes)
-Merging vfs-fixes/fixes (485053bb81c8 fix ufs_get_locked_folio() breakage)
-Merging dma-mapping-fixes/for-linus (d5090484b021 swiotlb: do not try to al=
-locate a TLB bigger than MAX_ORDER pages)
-Merging drivers-x86-fixes/fixes (7bcd032370f8 platform/x86: intel_ips: fix =
-kernel-doc formatting)
-Merging samsung-krzk-fixes/fixes (b85ea95d0864 Linux 6.7-rc1)
-Merging pinctrl-samsung-fixes/fixes (b85ea95d0864 Linux 6.7-rc1)
-Merging devicetree-fixes/dt/linus (136c6531ba12 dt-bindings: display: adi,a=
-dv75xx: Document #sound-dai-cells)
-Merging dt-krzk-fixes/fixes (b85ea95d0864 Linux 6.7-rc1)
-Merging scsi-fixes/fixes (235f2b548d7f scsi: be2iscsi: Fix a memleak in bei=
-scsi_init_wrb_handle())
-Merging drm-fixes/drm-fixes (a39b6ac3781d Linux 6.7-rc5)
-Merging drm-intel-fixes/for-linux-next-fixes (e6861d8264cd drm/i915/edp: do=
-n't write to DP_LINK_BW_SET when using rate select)
-Merging mmc-fixes/fixes (1036f69e2513 mmc: core: Cancel delayed work before=
- releasing host)
-Merging rtc-fixes/rtc-fixes (08279468a294 rtc: sunplus: fix format string f=
-or printing resource)
-Merging gnss-fixes/gnss-linus (98b1cc82c4af Linux 6.7-rc2)
-Merging hyperv-fixes/hyperv-fixes (564eac2860bd hv_utils: Allow implicit IC=
-TIMESYNCFLAG_SYNC)
-Merging soc-fsl-fixes/fix (06c2afb862f9 Linux 6.5-rc1)
-Merging risc-v-fixes/fixes (eb46a0076501 riscv: Check if the code to patch =
-lies in the exit section)
-Merging riscv-dt-fixes/riscv-dt-fixes (79997eda0d31 riscv: dts: microchip: =
-move timebase-frequency to mpfs.dtsi)
-Merging riscv-soc-fixes/riscv-soc-fixes (b85ea95d0864 Linux 6.7-rc1)
-Merging fpga-fixes/fixes (b85ea95d0864 Linux 6.7-rc1)
-Merging spdx/spdx-linus (a39b6ac3781d Linux 6.7-rc5)
-Merging gpio-brgl-fixes/gpio/for-current (95dd1e34ff5b gpiolib: sysfs: Fix =
-error handling on failed export)
-Merging gpio-intel-fixes/fixes (b85ea95d0864 Linux 6.7-rc1)
-Merging pinctrl-intel-fixes/fixes (b85ea95d0864 Linux 6.7-rc1)
-Merging erofs-fixes/fixes (62b241efff99 MAINTAINERS: erofs: add EROFS webpa=
-ge)
-Merging kunit-fixes/kunit-fixes (1bddcf77ce66 kunit: test: Avoid cast warni=
-ng when adding kfree() as an action)
-Merging ubifs-fixes/fixes (2241ab53cbb5 Linux 6.2-rc5)
-Merging memblock-fixes/fixes (55122e0130e5 memblock tests: fix warning =E2=
-=80=98struct seq_file=E2=80=99 declared inside parameter list)
-Merging nfsd-fixes/nfsd-fixes (bf51c52a1f3c NFSD: Fix checksum mismatches i=
-n the duplicate reply cache)
-Merging irqchip-fixes/irq/irqchip-fixes (b673fe1a6229 MAINTAINERS: Remove m=
-yself from the general IRQ subsystem maintenance)
-Merging renesas-fixes/fixes (9eab43facdad soc: renesas: ARCH_R9A07G043 depe=
-nds on !RISCV_ISA_ZICBOM)
-Merging broadcom-fixes/fixes (9abf2313adc1 Linux 6.1-rc1)
-Merging perf-current/perf-tools (b16937474874 perf list: Fix JSON segfault =
-by setting the used skip_duplicate_pmus callback)
-Merging efi-fixes/urgent (50d7cdf7a9b1 efi/x86: Avoid physical KASLR on old=
-er Dell systems)
-Merging zstd-fixes/zstd-linus (77618db34645 zstd: Fix array-index-out-of-bo=
-unds UBSAN warning)
-Merging battery-fixes/fixes (f37669119423 power: supply: cw2015: correct ti=
-me_to_empty units in sysfs)
-Merging uml-fixes/fixes (73a23d771033 um: harddog: fix modular build)
-Merging asahi-soc-fixes/asahi-soc/fixes (568035b01cfb Linux 6.0-rc1)
-Merging iommufd-fixes/for-rc (6f9c4d8c468c iommufd: Do not UAF during iommu=
-fd_put_object())
-Merging rust-fixes/rust-fixes (cfd96726e611 rust: docs: fix logo replacemen=
-t)
-Merging v9fs-fixes/fixes/next (2dde18cd1d8f Linux 6.5)
-Merging w1-fixes/fixes (b85ea95d0864 Linux 6.7-rc1)
-Merging pmdomain-fixes/fixes (0cb19e50a911 pmdomain: arm: Avoid polling for=
- scmi_perf_domain)
-Merging overlayfs-fixes/ovl-fixes (37f32f526438 ovl: fix memory leak in ovl=
-_parse_param())
-Merging drm-misc-fixes/for-linux-next-fixes (6c9dbee84cd0 drm/panel: ltk050=
-h3146w: Set burst mode for ltk050h3148w)
-Merging mm-stable/mm-stable (d9d9bd979cce maple_tree: change return type of=
- mas_split_final_node as void.)
-Merging mm-nonmm-stable/mm-nonmm-stable (fc0fbad122a7 merge mm-hotfixes-sta=
-ble into mm-nonmm-stable to pick up depended-upon changes)
-Merging mm/mm-everything (042a6de0ab2c Merge branch 'mm-nonmm-unstable' int=
-o mm-everything)
-Merging kbuild/for-next (44028378399f gen_compile_commands.py: fix path res=
-olve with symlinks in it)
-Merging clang-format/clang-format (5a205c6a9f79 clang-format: Update with v=
-6.7-rc4's `for_each` macro list)
-Merging perf/perf-tools-next (1bc479d665bc perf hisi-ptt: Fix one memory le=
-akage in hisi_ptt_process_auxtrace_event())
-Merging compiler-attributes/compiler-attributes (5d0c230f1de8 Linux 6.5-rc4)
-Merging dma-mapping/for-next (53c87e846e33 swiotlb: fix out-of-bounds TLB a=
-llocations with CONFIG_SWIOTLB_DYNAMIC)
-Merging asm-generic/master (d6e81532b10d Hexagon: Make pfn accessors static=
-s inlines)
-CONFLICT (content): Merge conflict in arch/mips/include/asm/traps.h
-Merging arc/for-next (0bb80ecc33a8 Linux 6.6-rc1)
-Merging arm/for-next (f1ff4ced177d Merge branches 'misc' and 'fixes' into f=
-or-next)
-Merging arm64/for-next/core (34b0bd1a02c7 Merge branch 'for-next/fixes' int=
-o for-next/core)
-Merging arm-perf/for-next/perf (f56bb3de66bc MAINTAINERS: add maintainers f=
-or DesignWare PCIe PMU driver)
-Merging arm-soc/for-next (52cff57c4356 Merge branch 'arm/fixes' into for-ne=
-xt)
-Merging amlogic/for-next (4b87b5f60812 Merge branch 'v6.8/arm64-dt' into fo=
-r-next)
-Merging asahi-soc/asahi-soc/for-next (ffc253263a13 Linux 6.6)
-Merging aspeed/for-next (e17770a3388e ARM: dts: aspeed: Harma: Add Meta Har=
-ma (AST2600) BMC)
-Merging at91/at91-next (58f72e7817f1 Merge branch 'at91-dt' into at91-next)
-Merging broadcom/next (62a3c97f8167 Merge branch 'devicetree/next' into nex=
-t)
-Merging davinci/davinci/for-next (06c2afb862f9 Linux 6.5-rc1)
-Merging drivers-memory/for-next (4a23d0f9814c memory: tegra: Protect SID ov=
-erride call under CONFIG_IOMMU_API)
-Merging imx-mxs/for-next (8c3c7094bf5b Merge branch 'imx/dt64' into for-nex=
-t)
-Merging mediatek/for-next (9802b60bd6d8 Merge branch 'v6.6-next/soc' into f=
-or-next)
-Merging mvebu/for-next (ca8454133d38 Merge branch 'mvebu/dt64' into mvebu/f=
-or-next)
-Merging omap/for-next (0ea5e8402a47 Merge branches 'omap-for-v6.8/dt', 'oma=
-p-for-v6.8/defconfig' and 'omap-for-v6.8/maintainers' into for-next)
-Merging qcom/for-next (fc538f5c65c2 Merge branches 'arm32-for-6.8', 'arm64-=
-defconfig-for-6.8', 'arm64-for-6.8', 'clk-for-6.8', 'drivers-fixes-for-6.7'=
- and 'drivers-for-6.8' into for-next)
-Applying: fix up for "of: Stop circularly including of_device.h and of_plat=
-form.h"
-Merging renesas/next (a4ce2434e9bb Merge branches 'renesas-drivers-for-v6.8=
-' and 'renesas-dts-for-v6.8' into renesas-next)
-Merging reset/reset/next (c3c46acd5be9 dt-bindings: reset: hisilicon,hi3660=
--reset: Drop providers and consumers from example)
-Merging rockchip/for-next (f3038f517d8e Merge branch 'v6.8-armsoc/dts64' in=
-to for-next)
-Merging samsung-krzk/for-next (20c61794a302 Merge branch 'next/drivers' int=
-o for-next)
-Merging scmi/for-linux-next (7c2d214ab5b9 Merge tag 'scmi-updates-6.8' of g=
-it://git.kernel.org/pub/scm/linux/kernel/git/sudeep.holla/linux into for-li=
-nux-next)
-Merging stm32/stm32-next (9a7308232a11 ARM: dts: stm32: add SPI support on =
-STM32F746)
-Merging sunxi/sunxi/for-next (715a9e70bdd4 Merge branch 'sunxi/clk-for-6.8'=
- into sunxi/for-next)
-Merging tee/next (84ec4fd88831 Merge branch 'tee_iov_iter_for_v6.8' into ne=
-xt)
-Merging tegra/for-next (650220c2b474 Merge branch for-6.7/arm64/dt into for=
--next)
-Merging ti/ti-next (1f66e787a614 Merge branches 'ti-k3-dts-next' and 'ti-k3=
--config-next' into ti-next)
-Merging xilinx/for-next (21d01d5afbc8 Merge remote-tracking branch 'zynqmp/=
-soc' into for-next)
-Merging clk/clk-next (78140324e480 Merge branch 'clk-renesas' into clk-next)
-Merging clk-imx/for-next (144f1b70ea9e dt-bindings: clock: support i.MX93 A=
-NATOP clock module)
-Merging clk-renesas/renesas-clk (515f05da372a clk: renesas: r9a08g045: Add =
-clock and reset support for ETH0 and ETH1)
-Merging csky/linux-next (2c40c1c6adab Merge tag 'usb-6.7-rc1' of git://git.=
-kernel.org/pub/scm/linux/kernel/git/gregkh/usb)
-Merging loongarch/loongarch-next (e2f7b3d8b4b3 LoongArch: BPF: Fix uncondit=
-ional bswap instructions)
-Merging m68k/for-next (03191fb3db3d m68k: lib: Include <linux/libgcc.h> for=
- __muldi3())
-Merging m68knommu/for-next (a39b6ac3781d Linux 6.7-rc5)
-Merging microblaze/next (ffb0399437ef microblaze: defconfig: Enable the Mar=
-vell phy driver)
-Merging mips/mips-next (01940cd4a6b9 MIPS: SGI-IP27: hubio: fix nasid kerne=
-l-doc warning)
-Merging openrisc/for-next (c289330331eb openrisc: Remove kernel-doc marker =
-from ioremap comment)
-Merging parisc-hd/for-next (33cc938e65a9 Linux 6.7-rc4)
-Merging powerpc/next (27951e1d8274 powerpc/pseries/memhp: Log more error co=
-nditions in add path)
-Merging soc-fsl/next (fb9c384625dd bus: fsl-mc: fsl-mc-allocator: Drop a wr=
-ite-only variable)
-Merging risc-v/for-next (f352a28cc2fb Merge patch series "riscv: report mor=
-e ISA extensions through hwprobe")
-Merging riscv-dt/riscv-dt-for-next (56b10953da7e riscv: dts: starfive: Enab=
-le SDIO wifi on JH7100 boards)
-CONFLICT (content): Merge conflict in arch/riscv/boot/dts/sophgo/cv1800b.dt=
-si
-Applying: fixup for "riscv: dts: sophgo: Separate compatible specific for C=
-V1800B soc"
-Merging riscv-soc/riscv-soc-for-next (b9a58c68ea4e Merge branch 'riscv-cach=
-e-for-next' into riscv-soc-for-next)
-Merging s390/for-next (9e81a2e6f94c Merge branch 'features' into for-next)
-Merging sh/for-next (b85ea95d0864 Linux 6.7-rc1)
-Merging uml/next (974b808d85ab um: virt-pci: fix missing declaration warnin=
-g)
-Merging xtensa/xtensa-for-next (791beae7335c xtensa: Use PCI_HEADER_TYPE_MF=
-D instead of literal)
-Merging bcachefs/for-next (eabfeffdd839 bcachefs: bch2_trans_srcu_lock() sh=
-ould be static)
-Merging pidfd/for-next (a901a3568fd2 Merge tag 'iomap-6.5-merge-1' of git:/=
-/git.kernel.org/pub/scm/fs/xfs/xfs-linux)
-Merging fscrypt/for-next (0fc24a6549f9 fscrypt: update comment for do_remov=
-e_key())
-Merging afs/afs-next (f1302568cc65 afs: trace: Log afs_make_call(), includi=
-ng server address)
-Merging btrfs/for-next (dd555d646448 Merge branch 'for-next-next-v6.7-20231=
-213' into for-next-20231213)
-Merging ceph/master (d30d7c57a64d ceph: select FS_ENCRYPTION_ALGS if FS_ENC=
-RYPTION)
-Merging cifs/for-next (3a42709fa909 smb: client: fix OOB in smb2_query_repa=
-rse_point())
-Merging configfs/for-next (4425c1d9b44d configfs: improve item creation per=
-formance)
-Merging ecryptfs/next (a3d78fe3e1ae fs: ecryptfs: comment typo fix)
-Merging erofs/dev (6b07eb162932 erofs: enable sub-page compressed block sup=
-port)
-Merging exfat/dev (6dfb1f0dfdb0 exfat: do not zero the extended part)
-Merging ext3/for_next (46ee834035ac Pull quota cleanup from Chao Yu.)
-Merging ext4/dev (6c02757c9360 jbd2: fix soft lockup in journal_finish_inod=
-e_data_buffers())
-Merging f2fs/dev (d346fa09abff f2fs: sysfs: support discard_io_aware)
-Merging fsverity/for-next (919dc320956e fsverity: skip PKCS#7 parser when k=
-eyring is empty)
-Merging fuse/for-next (3f29f1c336c0 fuse: disable FOPEN_PARALLEL_DIRECT_WRI=
-TES with FUSE_DIRECT_IO_ALLOW_MMAP)
-Merging gfs2/for-next (9fd6b6bdb5a4 gfs2: rgrp: fix kernel-doc warnings)
-Merging jfs/jfs-next (cca974daeb6c jfs: fix shift-out-of-bounds in dbJoin)
-Merging ksmbd/ksmbd-for-next (8b8cd4beea4f Merge tag '6.7-rc5-ksmbd-server-=
-fixes' of git://git.samba.org/ksmbd)
-Merging nfs/linux-next (f003a717ae90 nfs: Convert nfs_symlink() to use a fo=
-lio)
-Merging nfs-anna/linux-next (379e4adfddd6 NFSv4.1: fixup use EXCHGID4_FLAG_=
-USE_PNFS_DS for DS server)
-Merging nfsd/nfsd-next (59392e03bfaa svcrdma: Move the svc_rdma_cc_init() c=
-all)
-Merging ntfs3/master (652483bfbc45 fs/ntfs3: Fix c/mtime typo)
-Merging orangefs/for-next (31720a2b109b orangefs: Fix kmemleak in orangefs_=
-{kernel,client}_debug_init())
-Merging overlayfs/overlayfs-next (93496a8afc35 overlayfs.rst: fix ReST form=
-atting)
-Merging ubifs/next (75690493591f ubifs: ubifs_link: Fix wrong name len calc=
-ulating when UBIFS is encrypted)
-Merging v9fs/9p-next (ff49bf186757 net: 9p: avoid freeing uninit memory in =
-p9pdu_vreadf)
-Merging v9fs-ericvh/ericvh/for-next (2dde18cd1d8f Linux 6.5)
-Merging xfs/for-next (18793e050504 xfs: move xfs_ondisk.h to libxfs/)
-Merging zonefs/for-next (8812387d0569 zonefs: set FMODE_CAN_ODIRECT instead=
- of a dummy direct_IO method)
-Merging iomap/iomap-for-next (3ac974796e5d iomap: fix short copy in iomap_w=
-rite_iter())
-Merging djw-vfs/vfs-for-next (ce85a1e04645 xfs: stabilize fs summary counte=
-rs for online fsck)
-Merging file-locks/locks-next (e0152e7481c6 Merge tag 'riscv-for-linus-6.6-=
-mw1' of git://git.kernel.org/pub/scm/linux/kernel/git/riscv/linux)
-Merging iversion/iversion-next (e0152e7481c6 Merge tag 'riscv-for-linus-6.6=
--mw1' of git://git.kernel.org/pub/scm/linux/kernel/git/riscv/linux)
-Merging vfs-brauner/vfs.all (205e4a2dcc37 Merge branch 'vfs.iov_iter' into =
-vfs.all)
-CONFLICT (content): Merge conflict in fs/btrfs/extent_io.c
-CONFLICT (content): Merge conflict in fs/btrfs/subpage.c
-CONFLICT (content): Merge conflict in fs/btrfs/super.c
-CONFLICT (content): Merge conflict in fs/buffer.c
-CONFLICT (content): Merge conflict in include/linux/blk_types.h
-Applying: linux-next: manual merge of the vfs-brauner tree with the btrfs t=
-ree
-Merging vfs/for-next (3f95c5b76257 Merge branch 'work.minix' into for-next)
-Merging printk/for-next (6c3a34e38436 Merge branch 'for-6.8' into for-next)
-Merging pci/next (67e04d921cb6 Merge branch 'pci/switchtec')
-Merging pstore/for-next/pstore (24a0b5e196cf pstore: inode: Use cleanup.h f=
-or struct pstore_private)
-Merging hid/for-next (96930896ab11 Merge branch 'for-6.8/nintendo' into for=
--next)
-Merging i2c/i2c/for-next (382561d16854 i2c: ocores: Move system PM hooks to=
- the NOIRQ phase)
-Merging i3c/i3c/next (b4da37db3e2c i3c: master: Fix build error)
-Merging dmi/dmi-for-next (13a0ac816d22 firmware: dmi: Fortify entry point l=
-ength checks)
-Merging hwmon-staging/hwmon-next (dfaacc77d787 dt-bindings: hwmon: gpio-fan=
-: Convert txt bindings to yaml)
-Merging jc_docs/docs-next (50709576d81b Documentation: Destage TEE subsyste=
-m documentation)
-Merging v4l-dvb/master (a00b3f296eac media: mediatek: vcodec: Set the suppo=
-rted vp9 profile for each platform)
-Merging v4l-dvb-next/master (efa28efd9cba media: rkisp1: resizer: Stop manu=
-al allocation of v4l2_subdev_state)
-Merging pm/linux-next (a5166a012448 Merge branches 'acpi-misc', 'acpi-soc' =
-and 'acpi-numa' into linux-next)
-Merging cpufreq-arm/cpufreq/arm/linux-next (c4a5118a3ae1 cpufreq: scmi: pro=
-cess the result of devm_of_clk_add_hw_provider())
-Merging cpupower/cpupower (997bbf2accf6 tools cpupower bench: Override CFLA=
-GS assignments)
-Merging devfreq/devfreq-next (4920ee6dcfaf PM / devfreq: Convert to use sys=
-fs_emit_at() API)
-Merging pmdomain/next (05ce71929efc PM: domains: Drop the unused pm_genpd_o=
-pp_to_performance_state())
-Merging opp/opp/linux-next (19cc8b1819a4 OPP: Check for invalid OPP in dev_=
-pm_opp_find_level_ceil())
-Merging thermal/thermal/linux-next (9618efe343ea thermal/qcom/tsens: Drop o=
-ps_v0_1)
-Merging dlm/next (0c08699744d2 dlm: implement EXPORT_OP_ASYNC_LOCK)
-Merging rdma/for-next (07f830ae4913 RDMA/bnxt_re: Adds MSN table capability=
- for Gen P7 adapters)
-Merging net-next/main (604ca8ee7bdc Merge branch 'virtio-net-dynamic-coales=
-cing-moderation')
-CONFLICT (content): Merge conflict in drivers/net/ethernet/broadcom/bnxt/bn=
-xt.c
-CONFLICT (content): Merge conflict in drivers/net/ethernet/broadcom/bnxt/bn=
-xt_ptp.c
-CONFLICT (content): Merge conflict in drivers/net/ethernet/mellanox/mlx5/co=
-re/fw_reset.c
-Merging bpf-next/for-next (733763285acf Merge branch 'bpf-token-support-in-=
-libbpf-s-bpf-object')
-Merging ipsec-next/master (aadbd27f9674 net: phy: correctly check soft_rese=
-t ret ONLY if defined for PHY)
-Merging mlx5-next/mlx5-next (d727d27db536 RDMA/mlx5: Expose register c0 for=
- RDMA device)
-Merging netfilter-next/main (ac40916a3f72 rtnetlink: introduce nlmsg_new_la=
-rge and use it in rtnl_getlink)
-Merging ipvs-next/main (ac40916a3f72 rtnetlink: introduce nlmsg_new_large a=
-nd use it in rtnl_getlink)
-Merging bluetooth/master (19921189d442 Bluetooth: Add more enc key size che=
-ck)
-Merging wireless-next/for-next (afd549903ea9 wifi: iwlegacy: Add null point=
-er check to il_leds_init())
-CONFLICT (content): Merge conflict in Documentation/driver-api/index.rst
-Merging wpan-next/master (18b849f12dcc ieee802154: ca8210: Remove stray gpi=
-od_unexport() call)
-Merging wpan-staging/staging (83fcf26b00d7 ieee802154: Give the user the as=
-sociation list)
-Merging mtd/mtd/next (b85ea95d0864 Linux 6.7-rc1)
-Merging nand/nand/next (3c8260ce7663 mtd: rawnand: brcmnand: exec_op implem=
-entation)
-Merging spi-nor/spi-nor/next (c692ba6de1c5 mtd: spi-nor: micron-st: Add sup=
-port for mt25qu01g)
-Merging crypto/master (99bd99d3e3a7 crypto: algif_skcipher - Fix stream cip=
-her chaining)
-Merging drm/drm-next (a0a28956b46e Merge tag 'amd-drm-next-6.8-2023-12-08' =
-of https://gitlab.freedesktop.org/agd5f/linux into drm-next)
-Merging drm-ci/topic/drm-ci (ad6bfe1b66a5 drm: ci: docs: fix build warning =
-- add missing escape)
-Merging drm-exynos/for-linux-next (7347fb4e7db1 dt-bindings: display: samsu=
-ng,exynos-mixer: Fix 'regs' typo)
-Merging drm-misc/for-linux-next (b1a2aa9bcbb8 drm: ci: Update xfails)
-Merging amdgpu/drm-next (65d2765d6291 drm/amdgpu: warn when there are still=
- mappings when a BO is destroyed v2)
-Merging drm-intel/for-linux-next (8cd53c6b200e drm/i915: Simplify intel_ddi=
-_compute_min_voltage_level())
-Merging drm-tegra/for-next (2429b3c529da drm/tegra: Avoid potential 32-bit =
-integer overflow)
-Merging drm-msm/msm-next (236fa3873de8 drm/ci: remove rebase-merge director=
-y)
-Applying: fix up for "drm/exec: Pass in initial # of objects"
-Merging drm-msm-lumag/msm-next-lumag (8ecdc6966aef drm/ci: uprev mesa versi=
-on: fix kdl commit fetch)
-Merging etnaviv/etnaviv/next (925b10728f20 drm/etnaviv: disable MLCG and pu=
-lse eater on GPU reset)
-Merging fbdev/for-next (13366c25125e fbdev: amba-clcd: Delete the old CLCD =
-driver)
-CONFLICT (modify/delete): drivers/video/fbdev/amba-clcd.c deleted in fbdev/=
-for-next and modified in HEAD.  Version HEAD of drivers/video/fbdev/amba-cl=
-cd.c left in tree.
-CONFLICT (modify/delete): drivers/video/fbdev/vermilion/vermilion.c deleted=
- in fbdev/for-next and modified in HEAD.  Version HEAD of drivers/video/fbd=
-ev/vermilion/vermilion.c left in tree.
-$ git rm -f drivers/video/fbdev/amba-clcd.c drivers/video/fbdev/vermilion/v=
-ermilion.c
-Merging regmap/for-next (a2d43f711790 Merge remote-tracking branch 'regmap/=
-for-6.8' into regmap-next)
-Merging sound/for-next (1ccffc2f760a ASoC: SOF: Intel: pci-mtl: add HDA_ARL=
- PCI support)
-Merging ieee1394/for-next (c12d7aa7ffa4 firewire: Annotate struct fw_node w=
-ith __counted_by)
-Merging sound-asoc/for-next (52acb65a3e78 Merge remote-tracking branch 'aso=
-c/for-6.8' into asoc-next)
-Merging modules/modules-next (4652b8e4f3ff Merge tag '6.7-rc-ksmbd-server-f=
-ixes' of git://git.samba.org/ksmbd)
-Merging input/next (302393f6def1 Input: vivaldi - convert to use sysfs_emit=
-_at() API)
-Merging block/for-next (fa40384aced4 Merge branch 'for-6.8/block' into for-=
-next)
-Merging device-mapper/for-next (7f1e151e3ed4 MAINTAINERS: remove stale info=
- for DEVICE-MAPPER)
-Merging libata/for-next (804901fdd637 ata: pata_pxa: convert not to use dma=
-_request_slave_channel())
-Merging pcmcia/pcmcia-next (4f733de8b78a pcmcia: tcic: remove unneeded "&" =
-in call to setup_timer())
-Merging mmc/next (72cd89517fa0 mmc: Merge branch fixes into next)
-Merging mfd/for-mfd-next (03d790f04fb2 mfd: intel-lpss: Fix the fractional =
-clock divider flags)
-Merging backlight/for-backlight-next (7d84a63a39b7 backlight: hx8357: Conve=
-rt to agnostic GPIO API)
-Merging battery/for-next (b55d073e6501 power: supply: bq256xx: fix some pro=
-blem in bq256xx_hw_init)
-Merging regulator/for-next (a142ae76e1e1 regulator: Convert to platform rem=
-ove callback)
-Merging security/next (ec4e9d630a64 calipso: fix memory leak in netlbl_cali=
-pso_add_pass())
-CONFLICT (content): Merge conflict in Documentation/userspace-api/index.rst
-CONFLICT (content): Merge conflict in arch/alpha/kernel/syscalls/syscall.tbl
-CONFLICT (content): Merge conflict in arch/arm/tools/syscall.tbl
-CONFLICT (content): Merge conflict in arch/arm64/include/asm/unistd32.h
-CONFLICT (content): Merge conflict in arch/m68k/kernel/syscalls/syscall.tbl
-CONFLICT (content): Merge conflict in arch/microblaze/kernel/syscalls/sysca=
-ll.tbl
-CONFLICT (content): Merge conflict in arch/mips/kernel/syscalls/syscall_n32=
-.tbl
-CONFLICT (content): Merge conflict in arch/mips/kernel/syscalls/syscall_n64=
-.tbl
-CONFLICT (content): Merge conflict in arch/mips/kernel/syscalls/syscall_o32=
-.tbl
-CONFLICT (content): Merge conflict in arch/parisc/kernel/syscalls/syscall.t=
-bl
-CONFLICT (content): Merge conflict in arch/powerpc/kernel/syscalls/syscall.=
-tbl
-CONFLICT (content): Merge conflict in arch/s390/kernel/syscalls/syscall.tbl
-CONFLICT (content): Merge conflict in arch/sh/kernel/syscalls/syscall.tbl
-CONFLICT (content): Merge conflict in arch/sparc/kernel/syscalls/syscall.tbl
-CONFLICT (content): Merge conflict in arch/x86/entry/syscalls/syscall_32.tbl
-CONFLICT (content): Merge conflict in arch/x86/entry/syscalls/syscall_64.tbl
-CONFLICT (content): Merge conflict in arch/xtensa/kernel/syscalls/syscall.t=
-bl
-CONFLICT (content): Merge conflict in include/linux/security.h
-CONFLICT (content): Merge conflict in include/uapi/asm-generic/unistd.h
-CONFLICT (content): Merge conflict in security/selinux/hooks.c
-CONFLICT (content): Merge conflict in security/smack/smack_lsm.c
-CONFLICT (content): Merge conflict in tools/perf/arch/mips/entry/syscalls/s=
-yscall_n64.tbl
-CONFLICT (content): Merge conflict in tools/perf/arch/powerpc/entry/syscall=
-s/syscall.tbl
-CONFLICT (content): Merge conflict in tools/perf/arch/s390/entry/syscalls/s=
-yscall.tbl
-CONFLICT (content): Merge conflict in tools/perf/arch/x86/entry/syscalls/sy=
-scall_64.tbl
-Applying: fix up for "LSM: wireup Linux Security Module syscalls"
-Merging apparmor/apparmor-next (a7e405a2de69 apparmor: add missing params t=
-o aa_may_ptrace kernel-doc comments)
-Merging integrity/next-integrity (b4af096b5df5 KEYS: encrypted: Add check f=
-or strsep)
-Merging safesetid/safesetid-next (64b634830c91 LSM: SafeSetID: add setgroup=
-s() testing to selftest)
-Merging selinux/next (3c1e09d533db selinux: remove the wrong comment about =
-multithreaded process handling)
-Merging smack/next (3ad49d37cf57 smackfs: Prevent underflow in smk_set_cips=
-o())
-Merging tomoyo/master (0bb80ecc33a8 Linux 6.6-rc1)
-Merging tpmdd/next (c2d5304e6c64 Merge tag 'platform-drivers-x86-v6.7-2' of=
- git://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86)
-Merging watchdog/master (b85ea95d0864 Linux 6.7-rc1)
-Merging iommu/next (ef17ca0186ad Merge branches 'apple/dart', 'virtio', 'x8=
-6/amd' and 'core' into next)
-CONFLICT (content): Merge conflict in arch/Kconfig
-Merging audit/next (24fade412acf Automated merge of 'dev' into 'next')
-Merging dt-krzk/for-next (b85ea95d0864 Linux 6.7-rc1)
-Merging mailbox/for-next (fbce94a444fb mailbox: qcom-apcs-ipc: re-organize =
-compatibles with fallbacks)
-Merging spi/for-next (3eae3373d868 Merge remote-tracking branch 'spi/for-6.=
-8' into spi-next)
-Merging tip/master (09a8b70c495f Merge branch into tip/master: 'x86/sgx')
-Merging clockevents/timers/drivers/next (d25e52a7eb36 clocksource/drivers/c=
-adence-ttc: Fix some kernel-doc warnings)
-Merging edac/edac-for-next (a69badad736c EDAC, pnd2: Sort headers alphabeti=
-cally)
-Merging irqchip/irq/irqchip-next (19b5a44bee16 irqchip: Add support for Aml=
-ogic-C3 SoCs)
-Merging ftrace/for-next (e1742fa172d5 Merge probes/for-next)
-Merging rcu/rcu/next (bf05d5105026 Merge branches 'doc.2023.11.23a', 'tortu=
-re.2023.11.23a', 'fixes.2023.12.12b', 'rcu-tasks.2023.12.12b' and 'srcu.202=
-3.12.12b' into rcu-merge.2023.12.12a)
-Merging kvm/next (8ed26ab8d591 KVM: clean up directives to compile out irqf=
-ds)
-CONFLICT (content): Merge conflict in include/linux/pagemap.h
-Applying: fs: Convert error_remove_page to error_remove_folio
-Applying: fix up for "KVM: Add KVM_CREATE_GUEST_MEMFD ioctl() for guest-spe=
-cific backing memory"
-Merging kvm-arm/next (307c5436c3f4 Merge branch kvm-arm64/lpa2 into kvmarm-=
-master/next)
-Merging kvms390/next (26fb87ffa9d9 s390/uvdevice: Report additional-data le=
-ngth for attestation)
-Merging kvm-ppc/topic/ppc-kvm (98b1cc82c4af Linux 6.7-rc2)
-Merging kvm-riscv/riscv_kvm_next (d9c00f44e5de KVM: riscv: selftests: Add S=
-BI DBCN extension to get-reg-list test)
-Merging kvm-x86/next (f2a3fb7234e5 Merge branches 'fixes', 'generic', 'hype=
-rv', 'lam', 'misc', 'mmu', 'pmu', 'selftests', 'svm' and 'xen')
-Merging xen-tip/linux-next (7f3da4b698bc xen/events: fix error code in xen_=
-bind_pirq_msi_to_irq())
-Merging percpu/for-next (33cc938e65a9 Linux 6.7-rc4)
-Merging workqueues/for-next (4a6c5607d450 workqueue: Make sure that wq_unbo=
-und_cpumask is never empty)
-Merging drivers-x86/for-next (3799b5d2323d platform/x86: asus-laptop: remov=
-e redundant braces in if statements)
-CONFLICT (content): Merge conflict in drivers/platform/x86/wmi.c
-Merging chrome-platform/for-next (d131f1f3b459 platform/chrome: sensorhub: =
-Implement quickselect for median calculation)
-Merging chrome-platform-firmware/for-firmware-next (ecea08916418 firmware: =
-coreboot: framebuffer: Avoid invalid zero physical address)
-Merging hsi/for-next (fa72d143471d HSI: omap_ssi: Remove usage of the depre=
-cated ida_simple_xx() API)
-Merging leds/for-next (1b929c02afd3 Linux 6.2-rc1)
-Merging leds-lj/for-leds-next (40cfa414e7f9 leds: sun50i-a100: Avoid divisi=
-on-by-zero warning)
-Merging ipmi/for-next (c5d03a0d8461 ipmi: Use regspacings passed as a modul=
-e parameter)
-Merging driver-core/driver-core-next (7c41da586e9f driver core: Emit reason=
- for pending deferred probe)
-Merging usb/usb-next (51920207674e usb: fotg210-udc: fix function kernel-do=
-c comments)
-Merging thunderbolt/next (655b8af57d31 thunderbolt: Remove duplicated re-as=
-signment of pointer 'out')
-Merging usb-serial/usb-next (2cc14f52aeb7 Linux 6.7-rc3)
-Merging tty/tty-next (e045e18dbf3e Merge 6.7-rc5 into tty-next)
-Merging char-misc/char-misc-next (e909abe885e2 Merge tag 'coresight-next-v6=
-.8' of git://git.kernel.org/pub/scm/linux/kernel/git/coresight/linux into c=
-har-misc-next)
-CONFLICT (content): Merge conflict in drivers/android/binder_alloc.c
-Merging accel/habanalabs-next (dfbf6719ccb4 accel/habanalabs/gaudi2: avoid =
-overriding existing undefined opcode data)
-Merging coresight/next (60e5f23dc5d6 coresight: ultrasoc-smb: Use guards to=
- cleanup)
-Merging fastrpc/for-next (b85ea95d0864 Linux 6.7-rc1)
-Merging fpga/for-next (5496fb8eedd6 drivers/fpga: use standard array-copy f=
-unction)
-Merging icc/icc-next (4bd79ce1a365 Merge branch 'icc-fixes' into icc-next)
-Merging iio/togreg (9f4e9ffee974 iio: light: pa1203001: Drop ACPI_PTR() pro=
-tection.)
-Merging phy-next/next (7f6f9e0def00 phy: qcom-qmp-usb: Add Qualcomm SDX75 U=
-SB3 PHY support)
-Merging soundwire/next (55d50ace6b88 soundwire: generic_bandwidth_allocatio=
-n use bus->params.max_dr_freq)
-Merging extcon/extcon-next (7803680964c0 extcon: qcom-spmi-misc: don't use =
-kernel-doc marker for comment)
-Merging gnss/gnss-next (98b1cc82c4af Linux 6.7-rc2)
-Merging vfio/next (946cff255dfa Merge branches 'v6.8/vfio/debugfs', 'v6.8/v=
-fio/pds' and 'v6.8/vfio/type1-account' into v6.8/vfio/next)
-Merging w1/for-next (efc19c44aa44 w1: amd_axi_w1: Explicitly include correc=
-t DT includes)
-Merging spmi/spmi-next (0a080ab6bc28 spmi: mediatek: add device id check)
-Merging staging/staging-next (345586fed2e0 staging: rtl8192e: renamed varia=
-ble IOTPeer)
-Merging counter-next/counter-next (a39b6ac3781d Linux 6.7-rc5)
-Merging mux/for-next (44c026a73be8 Linux 6.4-rc3)
-Merging dmaengine/next (70f008fb3ea9 dmaengine: dmatest: prevent using swio=
-tlb buffer with nobounce parameter)
-Merging cgroup/for-next (b7aaea747923 Merge branch 'for-6.8' into for-next)
-Merging scsi/for-next (45d0d7374dce Merge branch 'misc' into for-next)
-Merging scsi-mkp/for-next (e78e59acfb69 Merge patch series "scsi: Convert t=
-o platform remove callback returning" void)
-Merging vhost/linux-next (b8e079244992 virtio_blk: fix snprintf truncation =
-compiler warning)
-Merging rpmsg/for-next (7641890179f9 Merge branches 'rproc-next' and 'rpmsg=
--next' into for-next)
-Merging gpio/for-next (0bb80ecc33a8 Linux 6.6-rc1)
-Merging gpio-brgl/gpio/for-next (d22f93c6a0df gpio: sim: implement the dbg_=
-show() callback)
-Merging gpio-intel/for-next (92fc925f8386 gpio: tangier: simplify locking u=
-sing cleanup helpers)
-Merging pinctrl/for-next (977f293b0b84 Merge branch 'devel' into for-next)
-Merging pinctrl-intel/for-next (6191e49de389 pinctrl: baytrail: Simplify co=
-de with cleanup helpers)
-CONFLICT (content): Merge conflict in drivers/pinctrl/intel/pinctrl-baytrai=
-l.c
-Merging pinctrl-renesas/renesas-pinctrl (0c22012758ea pinctrl: renesas: rzg=
-2l: Add input enable to the Ethernet pins)
-Merging pinctrl-samsung/for-next (6cf96df77338 pinctrl: samsung: add exynos=
-autov920 pinctrl)
-Merging pwm/for-next (2cc2cb184833 pwm: Stop referencing pwm->chip)
-Merging userns/for-next (05bd6e0242b4 Merge of unpriv-ipc-sysctls-for-v6.2,=
- and fix-atomic_lock_inc_below-for-v6.2 for testing in linux-next)
-Merging ktest/for-next (7dc8e24f0e09 ktest: Restore stty setting at first i=
-n dodie)
-Merging kselftest/next (130a83879954 selftests: sched: Remove initializatio=
-n to 0 for a static variable)
-Merging kunit/test (b85ea95d0864 Linux 6.7-rc1)
-Merging kunit-next/kunit (b285ba6f8cc1 kunit: test: Use an action wrapper i=
-nstead of a cast)
-Merging livepatching/for-next (602bf1830798 Merge branch 'for-6.7' into for=
--next)
-Merging rtc/rtc-next (3d762e21d563 rtc: cmos: Use ACPI alarm for non-Intel =
-x86 systems too)
-Merging nvdimm/libnvdimm-for-next (9ea459e477dc libnvdimm: remove kernel-do=
-c warnings:)
-Merging at24/at24/for-next (c692086d74a0 dt-bindings: at24: add ROHM BR24G0=
-4)
-Merging ntb/ntb-next (9341b37ec17a ntb_perf: Fix printk format)
-Merging seccomp/for-next/seccomp (31c65705a8cf perf/benchmark: fix seccomp_=
-unotify benchmark for 32-bit)
-Merging fsi/next (4c968e3b4763 fsi: sbefifo: Handle pending write command)
-Merging slimbus/for-next (b85ea95d0864 Linux 6.7-rc1)
-Merging nvmem/for-next (82c6ba6a7d96 nvmem: brcm_nvram: store a copy of NVR=
-AM content)
-Merging xarray/main (2a15de80dd0f idr: fix param name in idr_alloc_cyclic()=
- doc)
-Merging hyperv/hyperv-next (ce9ecca0238b Linux 6.6-rc2)
-Merging auxdisplay/auxdisplay (c52391fafcef auxdisplay: img-ascii-lcd: Use =
-device_get_match_data())
-Merging kgdb/kgdb/for-next (23816724fdbd kdb: Corrects comment for kdballoc=
-env)
-Merging hmm/hmm (0bb80ecc33a8 Linux 6.6-rc1)
-Merging cfi/cfi/next (06c2afb862f9 Linux 6.5-rc1)
-Merging mhi/mhi-next (d63ddfb78b23 bus: mhi: ep: Add support for interrupt =
-moderation timer)
-Merging memblock/for-next (2159bd4e9057 memblock: Return NUMA_NO_NODE inste=
-ad of -1 to improve code readability)
-Merging cxl/next (5d09c63f11f0 cxl/hdm: Remove broken error path)
-Merging zstd/zstd-next (3f832dfb8a8e zstd: fix g_debuglevel export warning)
-Merging efi/next (94f7f6182c72 efivarfs: automatically update super block f=
-lag)
-Merging unicode/for-next (807f06d1074d ecryptfs: Reject casefold directory =
-inodes)
-Merging slab/slab/for-next (f7eb801fcdb1 Merge branch 'slab/for-6.8/slub-ho=
-ok-cleanups' into slab/for-next)
-CONFLICT (content): Merge conflict in mm/kasan/quarantine.c
-Merging random/master (512dee0c00ad Merge tag 'x86-urgent-2023-01-04' of gi=
-t://git.kernel.org/pub/scm/linux/kernel/git/tip/tip)
-Merging landlock/next (a50156fe3dcb landlock: Document IOCTL support)
-Merging rust/rust-next (d9857c16cfc6 rust: Suppress searching builtin sysro=
-ot)
-Merging sysctl/sysctl-next (a6fd07f80ab7 coda: Remove the now superfluous s=
-entinel elements from ctl_table array)
-Merging execve/for-next/execve (0a8a952a75f2 ELF, MAINTAINERS: specifically=
- mention ELF)
-Merging bitmap/bitmap-for-next (27c82f14e6d2 lib/find: optimize find_*_bit_=
-wrap)
-Merging hte/for-next (b85ea95d0864 Linux 6.7-rc1)
-Merging kspp/for-next/kspp (a75b3809dce2 qnx4: Use get_directory_fname() in=
- qnx4_match())
-Merging kspp-gustavo/for-next/kspp (617ab3c357d2 init: Kconfig: Disable -Ws=
-tringop-overflow for GCC-11)
-Merging nolibc/nolibc (d543d9ddf593 selftests/nolibc: disable coredump via =
-setrlimit)
-Merging tsm/tsm-next (f4738f56d1dc virt: tdx-guest: Add Quote generation su=
-pport using TSM_REPORTS)
-Merging iommufd/for-next (b2b67c997bf7 iommufd: Organize the mock domain al=
-loc functions closer to Joerg's tree)
-Merging devicetree/for-next (b492af27d0c8 Merge branch 'dt/header-fixes-for=
--next' into for-next)
-Applying: ntfs3: align struct ATTR_LIST_ENTRY
-
---Sig_/ePP4w2Q_wS9c7Ng/+jSCWPw
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmV6k6cACgkQAVBC80lX
-0GyF9Qf/fJRLFU/uwhVx3t+j6m1Y1S7/qI0RdKtNhG+fFapGGRDFSb+0pPGoWe3D
-b1rtU744W9tAKpYqMqDkzT5Ksz/9oSb3yBsc0X2qEazHxKvSPrdG5nRulT1h5Our
-Ch+niT9vx9y0QjWl60ZtwWFU+MihYN1R/Pw/maH9A9OZQy7PQjQhQ4rmPgRDcSmn
-RYR+Xg5+omYlBxSkxFw8OR4y9YE9bRX3/34pXqNLSqf/8hdmnXhsrZ/c9p2Dz0t9
-ILs6mwcNWqxNuS/9le5a6XkTfAv2BZqVZyvYTMmHCSAJEV99ctzwQhFNzrRG94MZ
-PH7ZpNp8BJ0N5JDEBmBW02BTUqSIjA==
-=8c0w
------END PGP SIGNATURE-----
-
---Sig_/ePP4w2Q_wS9c7Ng/+jSCWPw--
+> ---
+>  arch/riscv/include/asm/kfence.h     |  4 +--
+>  arch/riscv/include/asm/pgtable-64.h | 16 ++-------
+>  arch/riscv/include/asm/pgtable.h    | 29 ++++------------
+>  arch/riscv/kernel/efi.c             |  2 +-
+>  arch/riscv/kvm/mmu.c                | 22 ++++++-------
+>  arch/riscv/mm/fault.c               | 16 ++++-----
+>  arch/riscv/mm/hugetlbpage.c         | 12 +++----
+>  arch/riscv/mm/kasan_init.c          | 45 +++++++++++++------------
+>  arch/riscv/mm/pageattr.c            | 44 ++++++++++++-------------
+>  arch/riscv/mm/pgtable.c             | 51 ++++++++++++++++++++++++++---
+>  10 files changed, 128 insertions(+), 113 deletions(-)
+>
+> diff --git a/arch/riscv/include/asm/kfence.h b/arch/riscv/include/asm/kfe=
+nce.h
+> index 0bbffd528096..7388edd88986 100644
+> --- a/arch/riscv/include/asm/kfence.h
+> +++ b/arch/riscv/include/asm/kfence.h
+> @@ -18,9 +18,9 @@ static inline bool kfence_protect_page(unsigned long ad=
+dr, bool protect)
+>         pte_t *pte =3D virt_to_kpte(addr);
+>
+>         if (protect)
+> -               set_pte(pte, __pte(pte_val(*pte) & ~_PAGE_PRESENT));
+> +               set_pte(pte, __pte(pte_val(ptep_get(pte)) & ~_PAGE_PRESEN=
+T));
+>         else
+> -               set_pte(pte, __pte(pte_val(*pte) | _PAGE_PRESENT));
+> +               set_pte(pte, __pte(pte_val(ptep_get(pte)) | _PAGE_PRESENT=
+));
+>
+>         flush_tlb_kernel_range(addr, addr + PAGE_SIZE);
+>
+> diff --git a/arch/riscv/include/asm/pgtable-64.h b/arch/riscv/include/asm=
+/pgtable-64.h
+> index 5d8431a390dd..b42017d76924 100644
+> --- a/arch/riscv/include/asm/pgtable-64.h
+> +++ b/arch/riscv/include/asm/pgtable-64.h
+> @@ -340,13 +340,7 @@ static inline struct page *p4d_page(p4d_t p4d)
+>  #define pud_index(addr) (((addr) >> PUD_SHIFT) & (PTRS_PER_PUD - 1))
+>
+>  #define pud_offset pud_offset
+> -static inline pud_t *pud_offset(p4d_t *p4d, unsigned long address)
+> -{
+> -       if (pgtable_l4_enabled)
+> -               return p4d_pgtable(*p4d) + pud_index(address);
+> -
+> -       return (pud_t *)p4d;
+> -}
+> +pud_t *pud_offset(p4d_t *p4d, unsigned long address);
+>
+>  static inline void set_pgd(pgd_t *pgdp, pgd_t pgd)
+>  {
+> @@ -404,12 +398,6 @@ static inline struct page *pgd_page(pgd_t pgd)
+>  #define p4d_index(addr) (((addr) >> P4D_SHIFT) & (PTRS_PER_P4D - 1))
+>
+>  #define p4d_offset p4d_offset
+> -static inline p4d_t *p4d_offset(pgd_t *pgd, unsigned long address)
+> -{
+> -       if (pgtable_l5_enabled)
+> -               return pgd_pgtable(*pgd) + p4d_index(address);
+> -
+> -       return (p4d_t *)pgd;
+> -}
+> +p4d_t *p4d_offset(pgd_t *pgd, unsigned long address);
+>
+>  #endif /* _ASM_RISCV_PGTABLE_64_H */
+> diff --git a/arch/riscv/include/asm/pgtable.h b/arch/riscv/include/asm/pg=
+table.h
+> index c9f4b250b4ee..3773f454f0fa 100644
+> --- a/arch/riscv/include/asm/pgtable.h
+> +++ b/arch/riscv/include/asm/pgtable.h
+> @@ -544,19 +544,12 @@ static inline void pte_clear(struct mm_struct *mm,
+>         __set_pte_at(ptep, __pte(0));
+>  }
+>
+> -#define __HAVE_ARCH_PTEP_SET_ACCESS_FLAGS
+> -static inline int ptep_set_access_flags(struct vm_area_struct *vma,
+> -                                       unsigned long address, pte_t *pte=
+p,
+> -                                       pte_t entry, int dirty)
+> -{
+> -       if (!pte_same(*ptep, entry))
+> -               __set_pte_at(ptep, entry);
+> -       /*
+> -        * update_mmu_cache will unconditionally execute, handling both
+> -        * the case that the PTE changed and the spurious fault case.
+> -        */
+> -       return true;
+> -}
+> +#define __HAVE_ARCH_PTEP_SET_ACCESS_FLAGS      /* defined in mm/pgtable.=
+c */
+> +extern int ptep_set_access_flags(struct vm_area_struct *vma, unsigned lo=
+ng address,
+> +                                pte_t *ptep, pte_t entry, int dirty);
+> +#define __HAVE_ARCH_PTEP_TEST_AND_CLEAR_YOUNG  /* defined in mm/pgtable.=
+c */
+> +extern int ptep_test_and_clear_young(struct vm_area_struct *vma, unsigne=
+d long address,
+> +                                    pte_t *ptep);
+>
+>  #define __HAVE_ARCH_PTEP_GET_AND_CLEAR
+>  static inline pte_t ptep_get_and_clear(struct mm_struct *mm,
+> @@ -569,16 +562,6 @@ static inline pte_t ptep_get_and_clear(struct mm_str=
+uct *mm,
+>         return pte;
+>  }
+>
+> -#define __HAVE_ARCH_PTEP_TEST_AND_CLEAR_YOUNG
+> -static inline int ptep_test_and_clear_young(struct vm_area_struct *vma,
+> -                                           unsigned long address,
+> -                                           pte_t *ptep)
+> -{
+> -       if (!pte_young(*ptep))
+> -               return 0;
+> -       return test_and_clear_bit(_PAGE_ACCESSED_OFFSET, &pte_val(*ptep))=
+;
+> -}
+> -
+>  #define __HAVE_ARCH_PTEP_SET_WRPROTECT
+>  static inline void ptep_set_wrprotect(struct mm_struct *mm,
+>                                       unsigned long address, pte_t *ptep)
+> diff --git a/arch/riscv/kernel/efi.c b/arch/riscv/kernel/efi.c
+> index aa6209a74c83..b64bf1624a05 100644
+> --- a/arch/riscv/kernel/efi.c
+> +++ b/arch/riscv/kernel/efi.c
+> @@ -60,7 +60,7 @@ int __init efi_create_mapping(struct mm_struct *mm, efi=
+_memory_desc_t *md)
+>  static int __init set_permissions(pte_t *ptep, unsigned long addr, void =
+*data)
+>  {
+>         efi_memory_desc_t *md =3D data;
+> -       pte_t pte =3D READ_ONCE(*ptep);
+> +       pte_t pte =3D ptep_get(ptep);
+>         unsigned long val;
+>
+>         if (md->attribute & EFI_MEMORY_RO) {
+> diff --git a/arch/riscv/kvm/mmu.c b/arch/riscv/kvm/mmu.c
+> index 068c74593871..a9e2fd7245e1 100644
+> --- a/arch/riscv/kvm/mmu.c
+> +++ b/arch/riscv/kvm/mmu.c
+> @@ -103,7 +103,7 @@ static bool gstage_get_leaf_entry(struct kvm *kvm, gp=
+a_t addr,
+>         *ptep_level =3D current_level;
+>         ptep =3D (pte_t *)kvm->arch.pgd;
+>         ptep =3D &ptep[gstage_pte_index(addr, current_level)];
+> -       while (ptep && pte_val(*ptep)) {
+> +       while (ptep && pte_val(ptep_get(ptep))) {
+>                 if (gstage_pte_leaf(ptep)) {
+>                         *ptep_level =3D current_level;
+>                         *ptepp =3D ptep;
+> @@ -113,7 +113,7 @@ static bool gstage_get_leaf_entry(struct kvm *kvm, gp=
+a_t addr,
+>                 if (current_level) {
+>                         current_level--;
+>                         *ptep_level =3D current_level;
+> -                       ptep =3D (pte_t *)gstage_pte_page_vaddr(*ptep);
+> +                       ptep =3D (pte_t *)gstage_pte_page_vaddr(ptep_get(=
+ptep));
+>                         ptep =3D &ptep[gstage_pte_index(addr, current_lev=
+el)];
+>                 } else {
+>                         ptep =3D NULL;
+> @@ -149,25 +149,25 @@ static int gstage_set_pte(struct kvm *kvm, u32 leve=
+l,
+>                 if (gstage_pte_leaf(ptep))
+>                         return -EEXIST;
+>
+> -               if (!pte_val(*ptep)) {
+> +               if (!pte_val(ptep_get(ptep))) {
+>                         if (!pcache)
+>                                 return -ENOMEM;
+>                         next_ptep =3D kvm_mmu_memory_cache_alloc(pcache);
+>                         if (!next_ptep)
+>                                 return -ENOMEM;
+> -                       *ptep =3D pfn_pte(PFN_DOWN(__pa(next_ptep)),
+> -                                       __pgprot(_PAGE_TABLE));
+> +                       set_pte(ptep, pfn_pte(PFN_DOWN(__pa(next_ptep)),
+> +                                             __pgprot(_PAGE_TABLE)));
+>                 } else {
+>                         if (gstage_pte_leaf(ptep))
+>                                 return -EEXIST;
+> -                       next_ptep =3D (pte_t *)gstage_pte_page_vaddr(*pte=
+p);
+> +                       next_ptep =3D (pte_t *)gstage_pte_page_vaddr(ptep=
+_get(ptep));
+>                 }
+>
+>                 current_level--;
+>                 ptep =3D &next_ptep[gstage_pte_index(addr, current_level)=
+];
+>         }
+>
+> -       *ptep =3D *new_pte;
+> +       set_pte(ptep, *new_pte);
+>         if (gstage_pte_leaf(ptep))
+>                 gstage_remote_tlb_flush(kvm, current_level, addr);
+>
+> @@ -239,11 +239,11 @@ static void gstage_op_pte(struct kvm *kvm, gpa_t ad=
+dr,
+>
+>         BUG_ON(addr & (page_size - 1));
+>
+> -       if (!pte_val(*ptep))
+> +       if (!pte_val(ptep_get(ptep)))
+>                 return;
+>
+>         if (ptep_level && !gstage_pte_leaf(ptep)) {
+> -               next_ptep =3D (pte_t *)gstage_pte_page_vaddr(*ptep);
+> +               next_ptep =3D (pte_t *)gstage_pte_page_vaddr(ptep_get(pte=
+p));
+>                 next_ptep_level =3D ptep_level - 1;
+>                 ret =3D gstage_level_to_page_size(next_ptep_level,
+>                                                 &next_page_size);
+> @@ -261,7 +261,7 @@ static void gstage_op_pte(struct kvm *kvm, gpa_t addr=
+,
+>                 if (op =3D=3D GSTAGE_OP_CLEAR)
+>                         set_pte(ptep, __pte(0));
+>                 else if (op =3D=3D GSTAGE_OP_WP)
+> -                       set_pte(ptep, __pte(pte_val(*ptep) & ~_PAGE_WRITE=
+));
+> +                       set_pte(ptep, __pte(pte_val(ptep_get(ptep)) & ~_P=
+AGE_WRITE));
+>                 gstage_remote_tlb_flush(kvm, ptep_level, addr);
+>         }
+>  }
+> @@ -603,7 +603,7 @@ bool kvm_test_age_gfn(struct kvm *kvm, struct kvm_gfn=
+_range *range)
+>                                    &ptep, &ptep_level))
+>                 return false;
+>
+> -       return pte_young(*ptep);
+> +       return pte_young(ptep_get(ptep));
+>  }
+>
+>  int kvm_riscv_gstage_map(struct kvm_vcpu *vcpu,
+> diff --git a/arch/riscv/mm/fault.c b/arch/riscv/mm/fault.c
+> index 90d4ba36d1d0..76f1df709a21 100644
+> --- a/arch/riscv/mm/fault.c
+> +++ b/arch/riscv/mm/fault.c
+> @@ -136,24 +136,24 @@ static inline void vmalloc_fault(struct pt_regs *re=
+gs, int code, unsigned long a
+>         pgd =3D (pgd_t *)pfn_to_virt(pfn) + index;
+>         pgd_k =3D init_mm.pgd + index;
+>
+> -       if (!pgd_present(*pgd_k)) {
+> +       if (!pgd_present(pgdp_get(pgd_k))) {
+>                 no_context(regs, addr);
+>                 return;
+>         }
+> -       set_pgd(pgd, *pgd_k);
+> +       set_pgd(pgd, pgdp_get(pgd_k));
+>
+>         p4d_k =3D p4d_offset(pgd_k, addr);
+> -       if (!p4d_present(*p4d_k)) {
+> +       if (!p4d_present(p4dp_get(p4d_k))) {
+>                 no_context(regs, addr);
+>                 return;
+>         }
+>
+>         pud_k =3D pud_offset(p4d_k, addr);
+> -       if (!pud_present(*pud_k)) {
+> +       if (!pud_present(pudp_get(pud_k))) {
+>                 no_context(regs, addr);
+>                 return;
+>         }
+> -       if (pud_leaf(*pud_k))
+> +       if (pud_leaf(pudp_get(pud_k)))
+>                 goto flush_tlb;
+>
+>         /*
+> @@ -161,11 +161,11 @@ static inline void vmalloc_fault(struct pt_regs *re=
+gs, int code, unsigned long a
+>          * to copy individual PTEs
+>          */
+>         pmd_k =3D pmd_offset(pud_k, addr);
+> -       if (!pmd_present(*pmd_k)) {
+> +       if (!pmd_present(pmdp_get(pmd_k))) {
+>                 no_context(regs, addr);
+>                 return;
+>         }
+> -       if (pmd_leaf(*pmd_k))
+> +       if (pmd_leaf(pmdp_get(pmd_k)))
+>                 goto flush_tlb;
+>
+>         /*
+> @@ -175,7 +175,7 @@ static inline void vmalloc_fault(struct pt_regs *regs=
+, int code, unsigned long a
+>          * silently loop forever.
+>          */
+>         pte_k =3D pte_offset_kernel(pmd_k, addr);
+> -       if (!pte_present(*pte_k)) {
+> +       if (!pte_present(ptep_get(pte_k))) {
+>                 no_context(regs, addr);
+>                 return;
+>         }
+> diff --git a/arch/riscv/mm/hugetlbpage.c b/arch/riscv/mm/hugetlbpage.c
+> index b52f0210481f..431596c0e20e 100644
+> --- a/arch/riscv/mm/hugetlbpage.c
+> +++ b/arch/riscv/mm/hugetlbpage.c
+> @@ -54,7 +54,7 @@ pte_t *huge_pte_alloc(struct mm_struct *mm,
+>         }
+>
+>         if (sz =3D=3D PMD_SIZE) {
+> -               if (want_pmd_share(vma, addr) && pud_none(*pud))
+> +               if (want_pmd_share(vma, addr) && pud_none(pudp_get(pud)))
+>                         pte =3D huge_pmd_share(mm, vma, addr, pud);
+>                 else
+>                         pte =3D (pte_t *)pmd_alloc(mm, pud, addr);
+> @@ -93,11 +93,11 @@ pte_t *huge_pte_offset(struct mm_struct *mm,
+>         pmd_t *pmd;
+>
+>         pgd =3D pgd_offset(mm, addr);
+> -       if (!pgd_present(*pgd))
+> +       if (!pgd_present(pgdp_get(pgd)))
+>                 return NULL;
+>
+>         p4d =3D p4d_offset(pgd, addr);
+> -       if (!p4d_present(*p4d))
+> +       if (!p4d_present(p4dp_get(p4d)))
+>                 return NULL;
+>
+>         pud =3D pud_offset(p4d, addr);
+> @@ -105,7 +105,7 @@ pte_t *huge_pte_offset(struct mm_struct *mm,
+>                 /* must be pud huge, non-present or none */
+>                 return (pte_t *)pud;
+>
+> -       if (!pud_present(*pud))
+> +       if (!pud_present(pudp_get(pud)))
+>                 return NULL;
+>
+>         pmd =3D pmd_offset(pud, addr);
+> @@ -113,7 +113,7 @@ pte_t *huge_pte_offset(struct mm_struct *mm,
+>                 /* must be pmd huge, non-present or none */
+>                 return (pte_t *)pmd;
+>
+> -       if (!pmd_present(*pmd))
+> +       if (!pmd_present(pmdp_get(pmd)))
+>                 return NULL;
+>
+>         for_each_napot_order(order) {
+> @@ -293,7 +293,7 @@ void huge_pte_clear(struct mm_struct *mm,
+>                     pte_t *ptep,
+>                     unsigned long sz)
+>  {
+> -       pte_t pte =3D READ_ONCE(*ptep);
+> +       pte_t pte =3D ptep_get(ptep);
+>         int i, pte_num;
+>
+>         if (!pte_napot(pte)) {
+> diff --git a/arch/riscv/mm/kasan_init.c b/arch/riscv/mm/kasan_init.c
+> index 5e39dcf23fdb..e96251853037 100644
+> --- a/arch/riscv/mm/kasan_init.c
+> +++ b/arch/riscv/mm/kasan_init.c
+> @@ -31,7 +31,7 @@ static void __init kasan_populate_pte(pmd_t *pmd, unsig=
+ned long vaddr, unsigned
+>         phys_addr_t phys_addr;
+>         pte_t *ptep, *p;
+>
+> -       if (pmd_none(*pmd)) {
+> +       if (pmd_none(pmdp_get(pmd))) {
+>                 p =3D memblock_alloc(PTRS_PER_PTE * sizeof(pte_t), PAGE_S=
+IZE);
+>                 set_pmd(pmd, pfn_pmd(PFN_DOWN(__pa(p)), PAGE_TABLE));
+>         }
+> @@ -39,7 +39,7 @@ static void __init kasan_populate_pte(pmd_t *pmd, unsig=
+ned long vaddr, unsigned
+>         ptep =3D pte_offset_kernel(pmd, vaddr);
+>
+>         do {
+> -               if (pte_none(*ptep)) {
+> +               if (pte_none(ptep_get(ptep))) {
+>                         phys_addr =3D memblock_phys_alloc(PAGE_SIZE, PAGE=
+_SIZE);
+>                         set_pte(ptep, pfn_pte(PFN_DOWN(phys_addr), PAGE_K=
+ERNEL));
+>                         memset(__va(phys_addr), KASAN_SHADOW_INIT, PAGE_S=
+IZE);
+> @@ -53,7 +53,7 @@ static void __init kasan_populate_pmd(pud_t *pud, unsig=
+ned long vaddr, unsigned
+>         pmd_t *pmdp, *p;
+>         unsigned long next;
+>
+> -       if (pud_none(*pud)) {
+> +       if (pud_none(pudp_get(pud))) {
+>                 p =3D memblock_alloc(PTRS_PER_PMD * sizeof(pmd_t), PAGE_S=
+IZE);
+>                 set_pud(pud, pfn_pud(PFN_DOWN(__pa(p)), PAGE_TABLE));
+>         }
+> @@ -63,7 +63,8 @@ static void __init kasan_populate_pmd(pud_t *pud, unsig=
+ned long vaddr, unsigned
+>         do {
+>                 next =3D pmd_addr_end(vaddr, end);
+>
+> -               if (pmd_none(*pmdp) && IS_ALIGNED(vaddr, PMD_SIZE) && (ne=
+xt - vaddr) >=3D PMD_SIZE) {
+> +               if (pmd_none(pmdp_get(pmdp)) && IS_ALIGNED(vaddr, PMD_SIZ=
+E) &&
+> +                   (next - vaddr) >=3D PMD_SIZE) {
+>                         phys_addr =3D memblock_phys_alloc(PMD_SIZE, PMD_S=
+IZE);
+>                         if (phys_addr) {
+>                                 set_pmd(pmdp, pfn_pmd(PFN_DOWN(phys_addr)=
+, PAGE_KERNEL));
+> @@ -83,7 +84,7 @@ static void __init kasan_populate_pud(p4d_t *p4d,
+>         pud_t *pudp, *p;
+>         unsigned long next;
+>
+> -       if (p4d_none(*p4d)) {
+> +       if (p4d_none(p4dp_get(p4d))) {
+>                 p =3D memblock_alloc(PTRS_PER_PUD * sizeof(pud_t), PAGE_S=
+IZE);
+>                 set_p4d(p4d, pfn_p4d(PFN_DOWN(__pa(p)), PAGE_TABLE));
+>         }
+> @@ -93,7 +94,8 @@ static void __init kasan_populate_pud(p4d_t *p4d,
+>         do {
+>                 next =3D pud_addr_end(vaddr, end);
+>
+> -               if (pud_none(*pudp) && IS_ALIGNED(vaddr, PUD_SIZE) && (ne=
+xt - vaddr) >=3D PUD_SIZE) {
+> +               if (pud_none(pudp_get(pudp)) && IS_ALIGNED(vaddr, PUD_SIZ=
+E) &&
+> +                   (next - vaddr) >=3D PUD_SIZE) {
+>                         phys_addr =3D memblock_phys_alloc(PUD_SIZE, PUD_S=
+IZE);
+>                         if (phys_addr) {
+>                                 set_pud(pudp, pfn_pud(PFN_DOWN(phys_addr)=
+, PAGE_KERNEL));
+> @@ -113,7 +115,7 @@ static void __init kasan_populate_p4d(pgd_t *pgd,
+>         p4d_t *p4dp, *p;
+>         unsigned long next;
+>
+> -       if (pgd_none(*pgd)) {
+> +       if (pgd_none(pgdp_get(pgd))) {
+>                 p =3D memblock_alloc(PTRS_PER_P4D * sizeof(p4d_t), PAGE_S=
+IZE);
+>                 set_pgd(pgd, pfn_pgd(PFN_DOWN(__pa(p)), PAGE_TABLE));
+>         }
+> @@ -123,7 +125,8 @@ static void __init kasan_populate_p4d(pgd_t *pgd,
+>         do {
+>                 next =3D p4d_addr_end(vaddr, end);
+>
+> -               if (p4d_none(*p4dp) && IS_ALIGNED(vaddr, P4D_SIZE) && (ne=
+xt - vaddr) >=3D P4D_SIZE) {
+> +               if (p4d_none(p4dp_get(p4dp)) && IS_ALIGNED(vaddr, P4D_SIZ=
+E) &&
+> +                   (next - vaddr) >=3D P4D_SIZE) {
+>                         phys_addr =3D memblock_phys_alloc(P4D_SIZE, P4D_S=
+IZE);
+>                         if (phys_addr) {
+>                                 set_p4d(p4dp, pfn_p4d(PFN_DOWN(phys_addr)=
+, PAGE_KERNEL));
+> @@ -145,7 +148,7 @@ static void __init kasan_populate_pgd(pgd_t *pgdp,
+>         do {
+>                 next =3D pgd_addr_end(vaddr, end);
+>
+> -               if (pgd_none(*pgdp) && IS_ALIGNED(vaddr, PGDIR_SIZE) &&
+> +               if (pgd_none(pgdp_get(pgdp)) && IS_ALIGNED(vaddr, PGDIR_S=
+IZE) &&
+>                     (next - vaddr) >=3D PGDIR_SIZE) {
+>                         phys_addr =3D memblock_phys_alloc(PGDIR_SIZE, PGD=
+IR_SIZE);
+>                         if (phys_addr) {
+> @@ -168,7 +171,7 @@ static void __init kasan_early_clear_pud(p4d_t *p4dp,
+>         if (!pgtable_l4_enabled) {
+>                 pudp =3D (pud_t *)p4dp;
+>         } else {
+> -               base_pud =3D pt_ops.get_pud_virt(pfn_to_phys(_p4d_pfn(*p4=
+dp)));
+> +               base_pud =3D pt_ops.get_pud_virt(pfn_to_phys(_p4d_pfn(p4d=
+p_get(p4dp))));
+>                 pudp =3D base_pud + pud_index(vaddr);
+>         }
+>
+> @@ -193,7 +196,7 @@ static void __init kasan_early_clear_p4d(pgd_t *pgdp,
+>         if (!pgtable_l5_enabled) {
+>                 p4dp =3D (p4d_t *)pgdp;
+>         } else {
+> -               base_p4d =3D pt_ops.get_p4d_virt(pfn_to_phys(_pgd_pfn(*pg=
+dp)));
+> +               base_p4d =3D pt_ops.get_p4d_virt(pfn_to_phys(_pgd_pfn(pgd=
+p_get(pgdp))));
+>                 p4dp =3D base_p4d + p4d_index(vaddr);
+>         }
+>
+> @@ -239,14 +242,14 @@ static void __init kasan_early_populate_pud(p4d_t *=
+p4dp,
+>         if (!pgtable_l4_enabled) {
+>                 pudp =3D (pud_t *)p4dp;
+>         } else {
+> -               base_pud =3D pt_ops.get_pud_virt(pfn_to_phys(_p4d_pfn(*p4=
+dp)));
+> +               base_pud =3D pt_ops.get_pud_virt(pfn_to_phys(_p4d_pfn(p4d=
+p_get(p4dp))));
+>                 pudp =3D base_pud + pud_index(vaddr);
+>         }
+>
+>         do {
+>                 next =3D pud_addr_end(vaddr, end);
+>
+> -               if (pud_none(*pudp) && IS_ALIGNED(vaddr, PUD_SIZE) &&
+> +               if (pud_none(pudp_get(pudp)) && IS_ALIGNED(vaddr, PUD_SIZ=
+E) &&
+>                     (next - vaddr) >=3D PUD_SIZE) {
+>                         phys_addr =3D __pa((uintptr_t)kasan_early_shadow_=
+pmd);
+>                         set_pud(pudp, pfn_pud(PFN_DOWN(phys_addr), PAGE_T=
+ABLE));
+> @@ -277,14 +280,14 @@ static void __init kasan_early_populate_p4d(pgd_t *=
+pgdp,
+>         if (!pgtable_l5_enabled) {
+>                 p4dp =3D (p4d_t *)pgdp;
+>         } else {
+> -               base_p4d =3D pt_ops.get_p4d_virt(pfn_to_phys(_pgd_pfn(*pg=
+dp)));
+> +               base_p4d =3D pt_ops.get_p4d_virt(pfn_to_phys(_pgd_pfn(pgd=
+p_get(pgdp))));
+>                 p4dp =3D base_p4d + p4d_index(vaddr);
+>         }
+>
+>         do {
+>                 next =3D p4d_addr_end(vaddr, end);
+>
+> -               if (p4d_none(*p4dp) && IS_ALIGNED(vaddr, P4D_SIZE) &&
+> +               if (p4d_none(p4dp_get(p4dp)) && IS_ALIGNED(vaddr, P4D_SIZ=
+E) &&
+>                     (next - vaddr) >=3D P4D_SIZE) {
+>                         phys_addr =3D __pa((uintptr_t)kasan_early_shadow_=
+pud);
+>                         set_p4d(p4dp, pfn_p4d(PFN_DOWN(phys_addr), PAGE_T=
+ABLE));
+> @@ -305,7 +308,7 @@ static void __init kasan_early_populate_pgd(pgd_t *pg=
+dp,
+>         do {
+>                 next =3D pgd_addr_end(vaddr, end);
+>
+> -               if (pgd_none(*pgdp) && IS_ALIGNED(vaddr, PGDIR_SIZE) &&
+> +               if (pgd_none(pgdp_get(pgdp)) && IS_ALIGNED(vaddr, PGDIR_S=
+IZE) &&
+>                     (next - vaddr) >=3D PGDIR_SIZE) {
+>                         phys_addr =3D __pa((uintptr_t)kasan_early_shadow_=
+p4d);
+>                         set_pgd(pgdp, pfn_pgd(PFN_DOWN(phys_addr), PAGE_T=
+ABLE));
+> @@ -381,7 +384,7 @@ static void __init kasan_shallow_populate_pud(p4d_t *=
+p4d,
+>         do {
+>                 next =3D pud_addr_end(vaddr, end);
+>
+> -               if (pud_none(*pud_k)) {
+> +               if (pud_none(pudp_get(pud_k))) {
+>                         p =3D memblock_alloc(PAGE_SIZE, PAGE_SIZE);
+>                         set_pud(pud_k, pfn_pud(PFN_DOWN(__pa(p)), PAGE_TA=
+BLE));
+>                         continue;
+> @@ -401,7 +404,7 @@ static void __init kasan_shallow_populate_p4d(pgd_t *=
+pgd,
+>         do {
+>                 next =3D p4d_addr_end(vaddr, end);
+>
+> -               if (p4d_none(*p4d_k)) {
+> +               if (p4d_none(p4dp_get(p4d_k))) {
+>                         p =3D memblock_alloc(PAGE_SIZE, PAGE_SIZE);
+>                         set_p4d(p4d_k, pfn_p4d(PFN_DOWN(__pa(p)), PAGE_TA=
+BLE));
+>                         continue;
+> @@ -420,7 +423,7 @@ static void __init kasan_shallow_populate_pgd(unsigne=
+d long vaddr, unsigned long
+>         do {
+>                 next =3D pgd_addr_end(vaddr, end);
+>
+> -               if (pgd_none(*pgd_k)) {
+> +               if (pgd_none(pgdp_get(pgd_k))) {
+>                         p =3D memblock_alloc(PAGE_SIZE, PAGE_SIZE);
+>                         set_pgd(pgd_k, pfn_pgd(PFN_DOWN(__pa(p)), PAGE_TA=
+BLE));
+>                         continue;
+> @@ -451,7 +454,7 @@ static void __init create_tmp_mapping(void)
+>
+>         /* Copy the last p4d since it is shared with the kernel mapping. =
+*/
+>         if (pgtable_l5_enabled) {
+> -               ptr =3D (p4d_t *)pgd_page_vaddr(*pgd_offset_k(KASAN_SHADO=
+W_END));
+> +               ptr =3D (p4d_t *)pgd_page_vaddr(pgdp_get(pgd_offset_k(KAS=
+AN_SHADOW_END)));
+>                 memcpy(tmp_p4d, ptr, sizeof(p4d_t) * PTRS_PER_P4D);
+>                 set_pgd(&tmp_pg_dir[pgd_index(KASAN_SHADOW_END)],
+>                         pfn_pgd(PFN_DOWN(__pa(tmp_p4d)), PAGE_TABLE));
+> @@ -462,7 +465,7 @@ static void __init create_tmp_mapping(void)
+>
+>         /* Copy the last pud since it is shared with the kernel mapping. =
+*/
+>         if (pgtable_l4_enabled) {
+> -               ptr =3D (pud_t *)p4d_page_vaddr(*(base_p4d + p4d_index(KA=
+SAN_SHADOW_END)));
+> +               ptr =3D (pud_t *)p4d_page_vaddr(p4dp_get(base_p4d + p4d_i=
+ndex(KASAN_SHADOW_END)));
+>                 memcpy(tmp_pud, ptr, sizeof(pud_t) * PTRS_PER_PUD);
+>                 set_p4d(&base_p4d[p4d_index(KASAN_SHADOW_END)],
+>                         pfn_p4d(PFN_DOWN(__pa(tmp_pud)), PAGE_TABLE));
+> diff --git a/arch/riscv/mm/pageattr.c b/arch/riscv/mm/pageattr.c
+> index fc5fc4f785c4..0b5e38e018c8 100644
+> --- a/arch/riscv/mm/pageattr.c
+> +++ b/arch/riscv/mm/pageattr.c
+> @@ -29,7 +29,7 @@ static unsigned long set_pageattr_masks(unsigned long v=
+al, struct mm_walk *walk)
+>  static int pageattr_p4d_entry(p4d_t *p4d, unsigned long addr,
+>                               unsigned long next, struct mm_walk *walk)
+>  {
+> -       p4d_t val =3D READ_ONCE(*p4d);
+> +       p4d_t val =3D p4dp_get(p4d);
+>
+>         if (p4d_leaf(val)) {
+>                 val =3D __p4d(set_pageattr_masks(p4d_val(val), walk));
+> @@ -42,7 +42,7 @@ static int pageattr_p4d_entry(p4d_t *p4d, unsigned long=
+ addr,
+>  static int pageattr_pud_entry(pud_t *pud, unsigned long addr,
+>                               unsigned long next, struct mm_walk *walk)
+>  {
+> -       pud_t val =3D READ_ONCE(*pud);
+> +       pud_t val =3D pudp_get(pud);
+>
+>         if (pud_leaf(val)) {
+>                 val =3D __pud(set_pageattr_masks(pud_val(val), walk));
+> @@ -55,7 +55,7 @@ static int pageattr_pud_entry(pud_t *pud, unsigned long=
+ addr,
+>  static int pageattr_pmd_entry(pmd_t *pmd, unsigned long addr,
+>                               unsigned long next, struct mm_walk *walk)
+>  {
+> -       pmd_t val =3D READ_ONCE(*pmd);
+> +       pmd_t val =3D pmdp_get(pmd);
+>
+>         if (pmd_leaf(val)) {
+>                 val =3D __pmd(set_pageattr_masks(pmd_val(val), walk));
+> @@ -68,7 +68,7 @@ static int pageattr_pmd_entry(pmd_t *pmd, unsigned long=
+ addr,
+>  static int pageattr_pte_entry(pte_t *pte, unsigned long addr,
+>                               unsigned long next, struct mm_walk *walk)
+>  {
+> -       pte_t val =3D READ_ONCE(*pte);
+> +       pte_t val =3D ptep_get(pte);
+>
+>         val =3D __pte(set_pageattr_masks(pte_val(val), walk));
+>         set_pte(pte, val);
+> @@ -108,10 +108,10 @@ static int __split_linear_mapping_pmd(pud_t *pudp,
+>                     vaddr <=3D (vaddr & PMD_MASK) && end >=3D next)
+>                         continue;
+>
+> -               if (pmd_leaf(*pmdp)) {
+> +               if (pmd_leaf(pmdp_get(pmdp))) {
+>                         struct page *pte_page;
+> -                       unsigned long pfn =3D _pmd_pfn(*pmdp);
+> -                       pgprot_t prot =3D __pgprot(pmd_val(*pmdp) & ~_PAG=
+E_PFN_MASK);
+> +                       unsigned long pfn =3D _pmd_pfn(pmdp_get(pmdp));
+> +                       pgprot_t prot =3D __pgprot(pmd_val(pmdp_get(pmdp)=
+) & ~_PAGE_PFN_MASK);
+>                         pte_t *ptep_new;
+>                         int i;
+>
+> @@ -148,10 +148,10 @@ static int __split_linear_mapping_pud(p4d_t *p4dp,
+>                     vaddr <=3D (vaddr & PUD_MASK) && end >=3D next)
+>                         continue;
+>
+> -               if (pud_leaf(*pudp)) {
+> +               if (pud_leaf(pudp_get(pudp))) {
+>                         struct page *pmd_page;
+> -                       unsigned long pfn =3D _pud_pfn(*pudp);
+> -                       pgprot_t prot =3D __pgprot(pud_val(*pudp) & ~_PAG=
+E_PFN_MASK);
+> +                       unsigned long pfn =3D _pud_pfn(pudp_get(pudp));
+> +                       pgprot_t prot =3D __pgprot(pud_val(pudp_get(pudp)=
+) & ~_PAGE_PFN_MASK);
+>                         pmd_t *pmdp_new;
+>                         int i;
+>
+> @@ -197,10 +197,10 @@ static int __split_linear_mapping_p4d(pgd_t *pgdp,
+>                     vaddr <=3D (vaddr & P4D_MASK) && end >=3D next)
+>                         continue;
+>
+> -               if (p4d_leaf(*p4dp)) {
+> +               if (p4d_leaf(p4dp_get(p4dp))) {
+>                         struct page *pud_page;
+> -                       unsigned long pfn =3D _p4d_pfn(*p4dp);
+> -                       pgprot_t prot =3D __pgprot(p4d_val(*p4dp) & ~_PAG=
+E_PFN_MASK);
+> +                       unsigned long pfn =3D _p4d_pfn(p4dp_get(p4dp));
+> +                       pgprot_t prot =3D __pgprot(p4d_val(p4dp_get(p4dp)=
+) & ~_PAGE_PFN_MASK);
+>                         pud_t *pudp_new;
+>                         int i;
+>
+> @@ -406,29 +406,29 @@ bool kernel_page_present(struct page *page)
+>         pte_t *pte;
+>
+>         pgd =3D pgd_offset_k(addr);
+> -       if (!pgd_present(*pgd))
+> +       if (!pgd_present(pgdp_get(pgd)))
+>                 return false;
+> -       if (pgd_leaf(*pgd))
+> +       if (pgd_leaf(pgdp_get(pgd)))
+>                 return true;
+>
+>         p4d =3D p4d_offset(pgd, addr);
+> -       if (!p4d_present(*p4d))
+> +       if (!p4d_present(p4dp_get(p4d)))
+>                 return false;
+> -       if (p4d_leaf(*p4d))
+> +       if (p4d_leaf(p4dp_get(p4d)))
+>                 return true;
+>
+>         pud =3D pud_offset(p4d, addr);
+> -       if (!pud_present(*pud))
+> +       if (!pud_present(pudp_get(pud)))
+>                 return false;
+> -       if (pud_leaf(*pud))
+> +       if (pud_leaf(pudp_get(pud)))
+>                 return true;
+>
+>         pmd =3D pmd_offset(pud, addr);
+> -       if (!pmd_present(*pmd))
+> +       if (!pmd_present(pmdp_get(pmd)))
+>                 return false;
+> -       if (pmd_leaf(*pmd))
+> +       if (pmd_leaf(pmdp_get(pmd)))
+>                 return true;
+>
+>         pte =3D pte_offset_kernel(pmd, addr);
+> -       return pte_present(*pte);
+> +       return pte_present(ptep_get(pte));
+>  }
+> diff --git a/arch/riscv/mm/pgtable.c b/arch/riscv/mm/pgtable.c
+> index fef4e7328e49..ef887efcb679 100644
+> --- a/arch/riscv/mm/pgtable.c
+> +++ b/arch/riscv/mm/pgtable.c
+> @@ -5,6 +5,47 @@
+>  #include <linux/kernel.h>
+>  #include <linux/pgtable.h>
+>
+> +int ptep_set_access_flags(struct vm_area_struct *vma,
+> +                         unsigned long address, pte_t *ptep,
+> +                         pte_t entry, int dirty)
+> +{
+> +       if (!pte_same(ptep_get(ptep), entry))
+> +               __set_pte_at(ptep, entry);
+> +       /*
+> +        * update_mmu_cache will unconditionally execute, handling both
+> +        * the case that the PTE changed and the spurious fault case.
+> +        */
+> +       return true;
+> +}
+> +
+> +int ptep_test_and_clear_young(struct vm_area_struct *vma,
+> +                             unsigned long address,
+> +                             pte_t *ptep)
+> +{
+> +       if (!pte_young(ptep_get(ptep)))
+> +               return 0;
+> +       return test_and_clear_bit(_PAGE_ACCESSED_OFFSET, &pte_val(*ptep))=
+;
+> +}
+> +EXPORT_SYMBOL_GPL(ptep_test_and_clear_young);
+> +
+> +#ifdef CONFIG_64BIT
+> +pud_t *pud_offset(p4d_t *p4d, unsigned long address)
+> +{
+> +       if (pgtable_l4_enabled)
+> +               return p4d_pgtable(p4dp_get(p4d)) + pud_index(address);
+> +
+> +       return (pud_t *)p4d;
+> +}
+> +
+> +p4d_t *p4d_offset(pgd_t *pgd, unsigned long address)
+> +{
+> +       if (pgtable_l5_enabled)
+> +               return pgd_pgtable(pgdp_get(pgd)) + p4d_index(address);
+> +
+> +       return (p4d_t *)pgd;
+> +}
+> +#endif
+> +
+>  #ifdef CONFIG_HAVE_ARCH_HUGE_VMAP
+>  int p4d_set_huge(p4d_t *p4d, phys_addr_t addr, pgprot_t prot)
+>  {
+> @@ -25,7 +66,7 @@ int pud_set_huge(pud_t *pud, phys_addr_t phys, pgprot_t=
+ prot)
+>
+>  int pud_clear_huge(pud_t *pud)
+>  {
+> -       if (!pud_leaf(READ_ONCE(*pud)))
+> +       if (!pud_leaf(pudp_get(pud)))
+>                 return 0;
+>         pud_clear(pud);
+>         return 1;
+> @@ -33,7 +74,7 @@ int pud_clear_huge(pud_t *pud)
+>
+>  int pud_free_pmd_page(pud_t *pud, unsigned long addr)
+>  {
+> -       pmd_t *pmd =3D pud_pgtable(*pud);
+> +       pmd_t *pmd =3D pud_pgtable(pudp_get(pud));
+>         int i;
+>
+>         pud_clear(pud);
+> @@ -63,7 +104,7 @@ int pmd_set_huge(pmd_t *pmd, phys_addr_t phys, pgprot_=
+t prot)
+>
+>  int pmd_clear_huge(pmd_t *pmd)
+>  {
+> -       if (!pmd_leaf(READ_ONCE(*pmd)))
+> +       if (!pmd_leaf(pmdp_get(pmd)))
+>                 return 0;
+>         pmd_clear(pmd);
+>         return 1;
+> @@ -71,7 +112,7 @@ int pmd_clear_huge(pmd_t *pmd)
+>
+>  int pmd_free_pte_page(pmd_t *pmd, unsigned long addr)
+>  {
+> -       pte_t *pte =3D (pte_t *)pmd_page_vaddr(*pmd);
+> +       pte_t *pte =3D (pte_t *)pmd_page_vaddr(pmdp_get(pmd));
+>
+>         pmd_clear(pmd);
+>
+> @@ -88,7 +129,7 @@ pmd_t pmdp_collapse_flush(struct vm_area_struct *vma,
+>         pmd_t pmd =3D pmdp_huge_get_and_clear(vma->vm_mm, address, pmdp);
+>
+>         VM_BUG_ON(address & ~HPAGE_PMD_MASK);
+> -       VM_BUG_ON(pmd_trans_huge(*pmdp));
+> +       VM_BUG_ON(pmd_trans_huge(pmdp_get(pmdp)));
+>         /*
+>          * When leaf PTE entries (regular pages) are collapsed into a lea=
+f
+>          * PMD entry (huge page), a valid non-leaf PTE is converted into =
+a
+> --
+> 2.39.2
+>
