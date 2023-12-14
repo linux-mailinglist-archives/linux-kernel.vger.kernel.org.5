@@ -2,127 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A497812A8B
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 09:40:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 51BC1812A90
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 09:41:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235554AbjLNIj5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 03:39:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48914 "EHLO
+        id S230308AbjLNIk6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 03:40:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34916 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234418AbjLNIj4 (ORCPT
+        with ESMTP id S229441AbjLNIkz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 03:39:56 -0500
-Received: from zju.edu.cn (mail.zju.edu.cn [61.164.42.155])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id E2616E3
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 00:40:00 -0800 (PST)
-Received: from localhost.localdomain (unknown [10.190.71.46])
-        by mail-app3 (Coremail) with SMTP id cC_KCgCHj_JMv3plIqvdAA--.15533S4;
-        Thu, 14 Dec 2023 16:39:57 +0800 (CST)
-From:   Dinghao Liu <dinghao.liu@zju.edu.cn>
-To:     dinghao.liu@zju.edu.cn
-Cc:     Dan Williams <dan.j.williams@intel.com>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Ira Weiny <ira.weiny@intel.com>, nvdimm@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] [v2] nvdimm-btt: simplify code with the scope based resource management
-Date:   Thu, 14 Dec 2023 16:39:19 +0800
-Message-Id: <20231214083919.22218-1-dinghao.liu@zju.edu.cn>
-X-Mailer: git-send-email 2.17.1
-X-CM-TRANSID: cC_KCgCHj_JMv3plIqvdAA--.15533S4
-X-Coremail-Antispam: 1UD129KBjvJXoW7uF45Gr1xZw4DArWfGw13CFg_yoW8Wr1xpF
-        s5A34kArWDJF1xuFyDAw4xZry3Ga1fAa4UKryj9393ZrWaqw1jqrZYyFyS9rykuFWxZryj
-        g3yUtwnIkFW5Ar7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUkI1xkIjI8I6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AE
-        w4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2
-        IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVWxJr0_GcWl84ACjcxK6I8E
-        87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c
-        8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_
-        Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwI
-        xGrwACjI8F5VA0II8E6IAqYI8I648v4I1l42xK82IYc2Ij64vIr41l42xK82IY6x8ErcxF
-        aVAv8VW8uw4UJr1UMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr
-        4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y0x0EwIxG
-        rwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8Jw
-        CI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2
-        z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7VUbXdbUUUUUU==
-X-CM-SenderInfo: qrrzjiaqtzq6lmxovvfxof0/1tbiAgIIBmV4LpY5mAAKsA
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        Thu, 14 Dec 2023 03:40:55 -0500
+Received: from mail-il1-f170.google.com (mail-il1-f170.google.com [209.85.166.170])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A76DE3;
+        Thu, 14 Dec 2023 00:41:02 -0800 (PST)
+Received: by mail-il1-f170.google.com with SMTP id e9e14a558f8ab-35f833adaa6so346865ab.3;
+        Thu, 14 Dec 2023 00:41:02 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702543261; x=1703148061;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=aQbR2JO/KFK5RF93JUmmx4V523VsDvrN1w2XiDVyh7c=;
+        b=sC6+OGtMVPBf3BeuD1kktIfv9O3ogQa/33PK13qGxHjte53nFKFKF65vX7UdqExZHQ
+         O/wlnENRDg4sofnJ1+B1ZTcFeIbwsnTcKmCbLzuQzcHerpc/J/Ws3uKg0MhPllgUBza7
+         or9abWiXWgmSa3e7nEvAJgX94Agc5OsFRC2u2An0sEc1zf5RGI2sl3axiBM0UVEmVMTr
+         iNIy6qJJaudPInvNtLyzGCH81tAkr4lueKPTFGidS0HfU9JDS9Lvg2uD+YXK6Bd1KvfY
+         v7D1o7v2RBHmUc26OhUGZQToa0e1Uwiwqy5Ebp+FXa7gEtW+WMysOcWgFMUrjeERomTq
+         AN0Q==
+X-Gm-Message-State: AOJu0YziyXunf8HNNebY+uV4VVNMDIrDq+3v9mnv1eqVs/9iirU2CrQe
+        kKBDpNo9FMLd0PibiBPu1/M=
+X-Google-Smtp-Source: AGHT+IHTijws84bT+t+wUZlzE5DTLKpXqSjvyPgKeN8xOqYkuQ5p52nrDNR5ore1Nt4kSFPYClVCrA==
+X-Received: by 2002:a05:6e02:1c4d:b0:35f:7629:87d3 with SMTP id d13-20020a056e021c4d00b0035f762987d3mr2870814ilg.43.1702543261164;
+        Thu, 14 Dec 2023 00:41:01 -0800 (PST)
+Received: from snowbird ([136.25.84.107])
+        by smtp.gmail.com with ESMTPSA id o2-20020a1709026b0200b001cfad034756sm11747930plk.138.2023.12.14.00.40.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 Dec 2023 00:41:00 -0800 (PST)
+Date:   Thu, 14 Dec 2023 00:40:58 -0800
+From:   Dennis Zhou <dennis@kernel.org>
+To:     Alexandre Ghiti <alexghiti@rivosinc.com>
+Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+        Alexander Potapenko <glider@google.com>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Arnd Bergmann <arnd@arndb.de>, Tejun Heo <tj@kernel.org>,
+        Christoph Lameter <cl@linux.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kasan-dev@googlegroups.com, linux-arch@vger.kernel.org,
+        linux-mm@kvack.org
+Subject: Re: [PATCH v2 0/2] riscv: Enable percpu page first chunk allocator
+Message-ID: <ZXq/msjihOEZAo3w@snowbird>
+References: <20231212213457.132605-1-alexghiti@rivosinc.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231212213457.132605-1-alexghiti@rivosinc.com>
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use the scope based resource management (defined in
-linux/cleanup.h) to automate resource lifetime
-control on struct btt_sb *super in discover_arenas().
+Hello,
 
-Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
----
+On Tue, Dec 12, 2023 at 10:34:55PM +0100, Alexandre Ghiti wrote:
+> While working with pcpu variables, I noticed that riscv did not support
+> first chunk allocation in the vmalloc area which may be needed as a fallback
+> in case of a sparse NUMA configuration.
+> 
+> patch 1 starts by introducing a new function flush_cache_vmap_early() which
+> is needed since a new vmalloc mapping is established and directly accessed:
+> on riscv, this would likely fail in case of a reordered access or if the
+> uarch caches invalid entries in TLB.
+> Note that most architectures do not include asm-generic/cacheflush.h so to
+> avoid build failures, this patch implements the new function on each of
+> those architectures. For all architectures except riscv, this new function
+> is implemented as a no-op to keep the existing behaviour but it likely
+> needs another implementation.
+> 
+> patch 2 simply enables the page percpu first chunk allocator in riscv.
+> 
+> Changes in v2:
+> - Rebase on top of 6.7
+> - Define flush_cache_vmap_early() for all architectures that do
+>   not include <asm-generic/cacheflush.h> to avoid build failures
+> 
+> Alexandre Ghiti (2):
+>   mm: Introduce flush_cache_vmap_early()
+>   riscv: Enable pcpu page first chunk allocator
+> 
+>  arch/arc/include/asm/cacheflush.h      | 1 +
+>  arch/arm/include/asm/cacheflush.h      | 2 ++
+>  arch/csky/abiv1/inc/abi/cacheflush.h   | 1 +
+>  arch/csky/abiv2/inc/abi/cacheflush.h   | 1 +
+>  arch/m68k/include/asm/cacheflush_mm.h  | 1 +
+>  arch/mips/include/asm/cacheflush.h     | 2 ++
+>  arch/nios2/include/asm/cacheflush.h    | 1 +
+>  arch/parisc/include/asm/cacheflush.h   | 1 +
+>  arch/riscv/Kconfig                     | 2 ++
+>  arch/riscv/include/asm/cacheflush.h    | 3 ++-
+>  arch/riscv/include/asm/tlbflush.h      | 1 +
+>  arch/riscv/mm/kasan_init.c             | 8 ++++++++
+>  arch/riscv/mm/tlbflush.c               | 5 +++++
+>  arch/sh/include/asm/cacheflush.h       | 1 +
+>  arch/sparc/include/asm/cacheflush_32.h | 1 +
+>  arch/sparc/include/asm/cacheflush_64.h | 1 +
+>  arch/xtensa/include/asm/cacheflush.h   | 6 ++++--
+>  include/asm-generic/cacheflush.h       | 6 ++++++
+>  mm/percpu.c                            | 8 +-------
+>  19 files changed, 42 insertions(+), 10 deletions(-)
+> 
+> -- 
+> 2.39.2
+> 
 
-Changelog:
+Thanks for the quick v2. Applied to percpu#for-6.8.
 
-v2: Set the __free attribute before kzalloc.
----
- drivers/nvdimm/btt.c | 13 ++++---------
- 1 file changed, 4 insertions(+), 9 deletions(-)
-
-diff --git a/drivers/nvdimm/btt.c b/drivers/nvdimm/btt.c
-index d5593b0dc700..32a9e2f543c5 100644
---- a/drivers/nvdimm/btt.c
-+++ b/drivers/nvdimm/btt.c
-@@ -16,6 +16,7 @@
- #include <linux/fs.h>
- #include <linux/nd.h>
- #include <linux/backing-dev.h>
-+#include <linux/cleanup.h>
- #include "btt.h"
- #include "nd.h"
- 
-@@ -847,23 +848,20 @@ static int discover_arenas(struct btt *btt)
- {
- 	int ret = 0;
- 	struct arena_info *arena;
--	struct btt_sb *super;
- 	size_t remaining = btt->rawsize;
- 	u64 cur_nlba = 0;
- 	size_t cur_off = 0;
- 	int num_arenas = 0;
- 
--	super = kzalloc(sizeof(*super), GFP_KERNEL);
-+	struct btt_sb *super __free(kfree) = kzalloc(sizeof(*super), GFP_KERNEL);
- 	if (!super)
- 		return -ENOMEM;
- 
- 	while (remaining) {
- 		/* Alloc memory for arena */
- 		arena = alloc_arena(btt, 0, 0, 0);
--		if (!arena) {
--			ret = -ENOMEM;
--			goto out_super;
--		}
-+		if (!arena)
-+			return -ENOMEM;
- 
- 		arena->infooff = cur_off;
- 		ret = btt_info_read(arena, super);
-@@ -919,14 +917,11 @@ static int discover_arenas(struct btt *btt)
- 	btt->nlba = cur_nlba;
- 	btt->init_state = INIT_READY;
- 
--	kfree(super);
- 	return ret;
- 
-  out:
- 	kfree(arena);
- 	free_arenas(btt);
-- out_super:
--	kfree(super);
- 	return ret;
- }
- 
--- 
-2.17.1
-
+Thanks,
+Dennis
