@@ -1,120 +1,180 @@
-Return-Path: <linux-kernel+bounces-237-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-239-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1ABE7813E22
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 00:15:40 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E7CEB813E2A
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 00:19:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3D2FC1C21E88
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 23:15:39 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A1D3A2834F1
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 23:19:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C60A76C6D0;
-	Thu, 14 Dec 2023 23:15:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1DE076C6E3;
+	Thu, 14 Dec 2023 23:19:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BUQ7LYxB"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YyMepOFe"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-oa1-f52.google.com (mail-oa1-f52.google.com [209.85.160.52])
+Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com [209.85.208.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B7B756C6C0;
-	Thu, 14 Dec 2023 23:15:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C89166C6C6;
+	Thu, 14 Dec 2023 23:19:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oa1-f52.google.com with SMTP id 586e51a60fabf-20308664c13so58289fac.3;
-        Thu, 14 Dec 2023 15:15:31 -0800 (PST)
+Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-54f4f7e88feso78748a12.3;
+        Thu, 14 Dec 2023 15:19:29 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702595731; x=1703200531; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1702595968; x=1703200768; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=j3/uJiT9TQ0Tlop4JkaKoN9q1vVnNppY7dZy/9puybk=;
-        b=BUQ7LYxBjuGQXNA5D43CytBbZD1jcBcrlcGU2diSK3jvHf0Hgj6qRU59kzGbtmZ7W1
-         Bl7ykf2ykjAEw9H4N0Y5kVkX96dSUAMborNxCe4e7Kls9KRdTvmfI8okaTY42are8dMC
-         XURwNW3DfWGupd8Jlf5oItF+CPKcxdupnuQiRAdUI02QwC1guESbvC2CAkCry4TkMEgA
-         qMIs9bQFjY/gQYB/CWA73YmiNOEiCTHPYOsLlnHHJEGvb3h18j1Vm1KJGg0gyorO4pUN
-         h7N+RyxHnHsgG7RrctNFDtANU8OL90SYfYJg8Bn7a11KTq1vL93Bahl7Wc6CXcxQ7jXt
-         4M3g==
+        bh=Le+yUYWAeO85szFc6hh7ahjEHZ3iGHzhPjaN5WD/XWo=;
+        b=YyMepOFeqUeRQ8THH+QMMB8q0weWRji9bdHWo6nfFIQ6aDTqFXKH6/EKAsRtlDHk1G
+         0fdFb45vXBRxgzDvt3GXvGxt58/dydbSU3ru7SgDiQixYJ+s6mAHhFGnEQTJ8A6YZjNR
+         lAhQTBvBDOBoJ2GvLr6RHfnobjDrqBnlriLlF+aAwqZnw82VXRnQx4t00XwDPqwWq2qv
+         vVARAb+US9DCkGxOShe9wEKi+HWvYFEtauJrIi+hM31T1h6h+1yPw3bTwgPtOlGgQsSp
+         CVLPZYwMoL9xCiaGrQZzzU/CXLPmNUvmh6F+Zf9XgZptaZEd5iza8wU6hk+PRMEXvC7t
+         Tv6g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702595731; x=1703200531;
+        d=1e100.net; s=20230601; t=1702595968; x=1703200768;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=j3/uJiT9TQ0Tlop4JkaKoN9q1vVnNppY7dZy/9puybk=;
-        b=Da2ZJM6fuvgpYxR8pgyDiU479m1HLfNdYb9MHU3/Hhe7EIVmBt3kpATiOrT+0jZh2l
-         l3bER1E1tpD0jOR22hC2BNJpv4N5JCLXg9ngUON2/2J8dQg1L3xSu54Q+B0v7OqwmltN
-         Fn6nLLsqjmn5yfImDTmfpQHsKErK6GLf88YCy+lc2DpjWlLvhrC+7CubuMHjFHtRILtF
-         9vH7GD8+necZd5cFrlSlL0EpnlQkR1vXwjpahyQqdvV0QeY42orFUA1HqMmiALUYskzC
-         yNFZGXPANefFJpNyaMhKQh2dy9lJCnK4LBM4H4rrCFiItmnlSCtpGUyCy7fMLtkP46Dp
-         YH3g==
-X-Gm-Message-State: AOJu0Yw5Xj4QxEltjn5FrRgR+jhAZAQd8twlnzGxF6beHNmS9xmNhVhX
-	T5q1Jv074SXFs/76B6tqyBedJ3e0ptcMhLzgFlk=
-X-Google-Smtp-Source: AGHT+IGf5A5/9xmsit3EyjeIc1AEeS+Cc2hfGJnpn+1Fzx+YwOhgmyACnbbn8yWoh3AaTsyN162EwwmVQNrFVaqzgKU=
-X-Received: by 2002:a05:6870:b289:b0:203:200e:bf00 with SMTP id
- c9-20020a056870b28900b00203200ebf00mr4061756oao.87.1702595730658; Thu, 14 Dec
- 2023 15:15:30 -0800 (PST)
+        bh=Le+yUYWAeO85szFc6hh7ahjEHZ3iGHzhPjaN5WD/XWo=;
+        b=ZoOK/jLCg/d7NEXSvtlBc7fr6D5OPpq8iE4/sfcE2w474GmWG0B5fiRw9/LLEuVXqt
+         O3a14/mnDtYA59hZxF9rCvvJqaLB8bAIGbntDjeak8eTzXt070HGowaQhs/wik5VQNjd
+         FXVFaqYWLLYx208DwpxMN99G71UvUKEIECHs9e4f9PIunMj8kLi/D7s6D5P8PFQlXLTb
+         mWyQYWIEZNBhvfDH5p6Dtu01kvC7IvcIpHtnvS/0f+cA1K7IoCmH6vAUWRiCcd8+eOFf
+         9rsxziA7aqYRqsBZwV5xdOTkrs3UyE2XY/vDrdgquxxLEqdGcVB4EUYlafc6xWheNt0Z
+         I7yw==
+X-Gm-Message-State: AOJu0YwthFgLyfBl7durvVsyQSXDFyvn+6Vlq2Ju4y7Ce8rU/sxJRZGG
+	zZtLPUVGoL20WyvXtnja/0TmxrzvW0ox/gNsVNk=
+X-Google-Smtp-Source: AGHT+IGZI8HKP27/QxlYEUGlhRTTtRIByszekRE0ONv360E2rUAdxrnaIpB7d7fcHQxP3LX6TiWqwfHu3uaPikt4zRI=
+X-Received: by 2002:a50:cd94:0:b0:551:f56c:c01d with SMTP id
+ p20-20020a50cd94000000b00551f56cc01dmr1701838edi.54.1702595967760; Thu, 14
+ Dec 2023 15:19:27 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231214134702.166464-1-vishnuocv@gmail.com> <702d46c3-f4a1-142e-c8a3-1e462934f9ea@linux.intel.com>
-In-Reply-To: <702d46c3-f4a1-142e-c8a3-1e462934f9ea@linux.intel.com>
-From: Vishnu Sankar <vishnuocv@gmail.com>
-Date: Fri, 15 Dec 2023 08:14:53 +0900
-Message-ID: <CABxCQKu9kD4HkHT0ffNc_CTsD9y0_p7QQ0b--aLFP4B_JVD+=A@mail.gmail.com>
-Subject: Re: [PATCH v2] platform/x86: thinkpad_acpi: fix for incorrect fan
- reporting on some ThinkPad systems
-To: =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-Cc: Hans de Goede <hdegoede@redhat.com>, Mark Pearson <mpearson-lenovo@squebb.ca>, 
-	platform-driver-x86@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>, 
-	markgross@kernel.org, vsankar@lenovo.com
+References: <20231214062434.3565630-1-menglong8.dong@gmail.com> <20231214062434.3565630-2-menglong8.dong@gmail.com>
+In-Reply-To: <20231214062434.3565630-2-menglong8.dong@gmail.com>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Thu, 14 Dec 2023 15:19:15 -0800
+Message-ID: <CAEf4BzZsXhM0wGdP3udGF9y7qGfwUTB7jrGR9vp=nC60-vCozQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 1/2] bpf: make the verifier tracks the "not
+ equal" for regs
+To: Menglong Dong <menglong8.dong@gmail.com>
+Cc: andrii@kernel.org, eddyz87@gmail.com, yonghong.song@linux.dev, 
+	ast@kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com, 
+	martin.lau@linux.dev, song@kernel.org, kpsingh@kernel.org, sdf@google.com, 
+	haoluo@google.com, jolsa@kernel.org, bpf@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-Hi Ilpo,
+On Wed, Dec 13, 2023 at 10:28=E2=80=AFPM Menglong Dong <menglong8.dong@gmai=
+l.com> wrote:
+>
+> We can derive some new information for BPF_JNE in regs_refine_cond_op().
+> Take following code for example:
+>
+>   /* The type of "a" is u16 */
+>   if (a > 0 && a < 100) {
+>     /* the range of the register for a is [0, 99], not [1, 99],
+>      * and will cause the following error:
+>      *
+>      *   invalid zero-sized read
+>      *
+>      * as a can be 0.
+>      */
+>     bpf_skb_store_bytes(skb, xx, xx, a, 0);
+>   }
+>
+> In the code above, "a > 0" will be compiled to "jmp xxx if a =3D=3D 0". I=
+n the
+> TRUE branch, the dst_reg will be marked as known to 0. However, in the
+> fallthrough(FALSE) branch, the dst_reg will not be handled, which makes
+> the [min, max] for a is [0, 99], not [1, 99].
+>
+> For BPF_JNE, we can reduce the range of the dst reg if the src reg is a
+> const and is exactly the edge of the dst reg.
+>
+> Signed-off-by: Menglong Dong <menglong8.dong@gmail.com>
+> ---
+> v2:
+> - fix a typo in the subject
+> - add some comments, as Eduard advised
+> ---
+>  kernel/bpf/verifier.c | 38 +++++++++++++++++++++++++++++++++++++-
+>  1 file changed, 37 insertions(+), 1 deletion(-)
+>
 
-Thank you for the review.
+The logic looks good
 
-Vishnu
+Acked-by: Andrii Nakryiko <andrii@kernel.org>
 
-On Thu, Dec 14, 2023 at 11:53=E2=80=AFPM Ilpo J=C3=A4rvinen
-<ilpo.jarvinen@linux.intel.com> wrote:
->
-> On Thu, 14 Dec 2023, Vishnu Sankar wrote:
->
-> > Some ThinkPad systems ECFW use non-standard addresses for fan control
-> > and reporting. This patch adds support for such ECFW so that it can rep=
-ort
-> > the correct fan values.
-> > Tested on Thinkpads L13 Yoga Gen 2 and X13 Yoga Gen 2.
-> >
-> > Suggested-by: Mark Pearson <mpearson-lenovo@squebb.ca>
-> > Signed-off-by: Vishnu Sankar <vishnuocv@gmail.com>
-> > ---
-> > -Improvements to comments as requested.
-> > -Removed the usage of unlikely/likely while reading fan speed.
-> > -Improved and clearer print statements to match the current style.
-> > -Changed seq_puts to seq_printf of an unrelated section of the patch.
-> > -Improved the readability of the code.
-> > -Added more clearer comments.
->
-> Nice work, thanks.
->
-> Reviewed-by: Ilpo J=C3=A4rvinen <ilpo.jarvinen@linux.intel.com>
->
->
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index 727a59e4a647..9b1932e51823 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -14332,7 +14332,43 @@ static void regs_refine_cond_op(struct bpf_reg_s=
+tate *reg1, struct bpf_reg_state
+>                 }
+>                 break;
+>         case BPF_JNE:
+> -               /* we don't derive any new information for inequality yet=
+ */
+> +               if (!is_reg_const(reg2, is_jmp32))
+> +                       swap(reg1, reg2);
+> +               if (!is_reg_const(reg2, is_jmp32))
+> +                       break;
+> +
+> +               /* try to recompute the bound of reg1 if reg2 is a const =
+and
+> +                * is exactly the edge of reg1.
+> +                */
+> +               val =3D reg_const_value(reg2, is_jmp32);
+> +               if (is_jmp32) {
+> +                       /* u32_min_value is not equal to 0xffffffff at th=
+is point,
+> +                        * because otherwise u32_max_value is 0xffffffff =
+as well,
+> +                        * in such a case both reg1 and reg2 would be con=
+stants,
+> +                        * jump would be predicted and reg_set_min_max() =
+won't
+> +                        * be called.
+> +                        *
+> +                        * Same reasoning works for all {u,s}{min,max}{32=
+,64} cases
+> +                        * below.
+> +                        */
+> +                       if (reg1->u32_min_value =3D=3D (u32)val)
+> +                               reg1->u32_min_value++;
+> +                       if (reg1->u32_max_value =3D=3D (u32)val)
+> +                               reg1->u32_max_value--;
+> +                       if (reg1->s32_min_value =3D=3D (s32)val)
+> +                               reg1->s32_min_value++;
+> +                       if (reg1->s32_max_value =3D=3D (s32)val)
+> +                               reg1->s32_max_value--;
+> +               } else {
+> +                       if (reg1->umin_value =3D=3D (u64)val)
+> +                               reg1->umin_value++;
+> +                       if (reg1->umax_value =3D=3D (u64)val)
+> +                               reg1->umax_value--;
+> +                       if (reg1->smin_value =3D=3D (s64)val)
+> +                               reg1->smin_value++;
+> +                       if (reg1->smax_value =3D=3D (s64)val)
+> +                               reg1->smax_value--;
+> +               }
+>                 break;
+>         case BPF_JSET:
+>                 if (!is_reg_const(reg2, is_jmp32))
 > --
->  i.
-
-
-
---=20
-
-Regards,
-
-      Vishnu Sankar
-     +817015150407 (Japan)
+> 2.39.2
+>
 
