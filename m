@@ -2,184 +2,235 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 96BD8813520
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 16:46:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A61B181351F
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 16:46:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1573891AbjLNPqs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 10:46:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34380 "EHLO
+        id S1573878AbjLNPqg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 10:46:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58936 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1573858AbjLNPqp (ORCPT
+        with ESMTP id S1573858AbjLNPqf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 10:46:45 -0500
-Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A5BC111;
-        Thu, 14 Dec 2023 07:46:52 -0800 (PST)
-Received: from pps.filterd (m0246631.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3BE9wrKa021767;
-        Thu, 14 Dec 2023 15:46:22 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
- subject : to : cc : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=corp-2023-11-20;
- bh=8Di9CB3obj3IIevJw2N07cQfKEMQ5U5vj/6Vv8PEDzI=;
- b=YHC1t2y5AcS4H5r05S6kOZdiXtFKRXvt8AcJI26c7ITbo3yaCaxB4zQSBWY6Oph56Rhg
- WkqpQJ+awU/VJZTv8ee0BZ8kSZrOwvPIXrRoWb/tdsaMeJQjYFDzrZgfXgxPggU7P54u
- syTX6dDQtIb+Er+pRgv5kvKcyXfP79lPfJXDQGosxQG/IkU02VnLBE13A1YE9Pxt2SKy
- fDGYmPukTTNCDriHGMqyQ6DX5VhrgkSZ7vdmkUnblqZnUPtjdD05Lf0vgUW3E1jRGjwf
- WVCFULBTTW1Uytq9+OgSSJkZcIaFQWwCFHld7U3gp8ftdNoR1VX9vbgb41+eBXowdjHw Ew== 
-Received: from iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta03.appoci.oracle.com [130.35.103.27])
-        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3uwfrrsh75-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 14 Dec 2023 15:46:22 +0000
-Received: from pps.filterd (iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-        by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 3BEEfSFg012936;
-        Thu, 14 Dec 2023 15:46:21 GMT
-Received: from nam12-dm6-obe.outbound.protection.outlook.com (mail-dm6nam12lp2169.outbound.protection.outlook.com [104.47.59.169])
-        by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3uvepgkea3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 14 Dec 2023 15:46:21 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=MK7/oG+FYmpTGym8LeZsDDEHu7hex5EBGL50Xy99i9QKvKeMoKLX3p56k4UzBezDLv2jg2DPIea9cFiDoadJvNhExjluhd4DOkiLMRBPFCPs4A2NIRPf2qWe6DHgsQyxhVEyz2ks4VZBEGEMw54R9fDHTkkoN9IP7vrFtaoQv1UYy0791n/DBmCfv0aIu5NvpzbgbKgJXJvM6l7syBU7bU4UQfAygWD/ynZb23a9iBOBHVl6iEcXb0T3TvdXDPOf/dpI/hcG2ph58aKON4IGJtG7h2UgYT8sLY6h0upgPjWP/UVKzV9jELYBpxXpleuJe5dYKPYeOcsswJYa4jY2Eg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=8Di9CB3obj3IIevJw2N07cQfKEMQ5U5vj/6Vv8PEDzI=;
- b=M2QA3svzMQ763Ht5KraTO495AyzJHlxxToU+/3w/zjb6UjLjWVEdiDtSBdRKCdSQ5tdrvcqvxMQd0OtX0jZZIYUUowWNa6cKzd18d8Ni2ZWwT3a+dcnrMgdYqgtozzMYb6cinC/Lq+vWEdK8uEea3SLNNeCAq76BrUG//D/qktDcA1bSmf7ZDD76mY8Oq+B10uwHWWOsSrUZzEl2XOryfn+miror2dzUax207lZqNnMETnxHDE+OLfJW/jfwRl/sQwNnA0xuWbF5dtsDl+fgqHRKZFBv3i0X+op1PDL3dhhGV4HaZFr71OwnxXNPuw/xSLKrUN0bxiQS4XUjVjFMAw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
+        Thu, 14 Dec 2023 10:46:35 -0500
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 678FEB2
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 07:46:41 -0800 (PST)
+Received: by mail-lf1-x133.google.com with SMTP id 2adb3069b0e04-50bf69afa99so10680905e87.3
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 07:46:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=8Di9CB3obj3IIevJw2N07cQfKEMQ5U5vj/6Vv8PEDzI=;
- b=gAohjU96eZRB5YazLmj3MpCLpKi2dEkzCAVeDM8ULMeJuT/TO6GJgK0S05t6S3hys514PkQAWs9vaj1RMHdsFRhTUH8zDleOm6OP7+QgTRU3gcMpwkQfez3KrTOwIqvQaF6j5EMJGtkY+gHgp0eB8IS8vZx/Gq/f4d/XhOXHzZY=
-Received: from DM6PR10MB4313.namprd10.prod.outlook.com (2603:10b6:5:212::20)
- by SN7PR10MB6545.namprd10.prod.outlook.com (2603:10b6:806:2a8::6) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7091.28; Thu, 14 Dec
- 2023 15:46:18 +0000
-Received: from DM6PR10MB4313.namprd10.prod.outlook.com
- ([fe80::102a:f31:30c6:3187]) by DM6PR10MB4313.namprd10.prod.outlook.com
- ([fe80::102a:f31:30c6:3187%4]) with mapi id 15.20.7091.028; Thu, 14 Dec 2023
- 15:46:18 +0000
-Message-ID: <5ce84888-6071-4fef-a6d5-5cf0b2a8c7ed@oracle.com>
-Date:   Thu, 14 Dec 2023 15:46:13 +0000
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 00/16] block atomic writes
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     axboe@kernel.dk, kbusch@kernel.org, sagi@grimberg.me,
-        jejb@linux.ibm.com, martin.petersen@oracle.com, djwong@kernel.org,
-        viro@zeniv.linux.org.uk, brauner@kernel.org, dchinner@redhat.com,
-        jack@suse.cz, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
-        linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        tytso@mit.edu, jbongio@google.com, linux-scsi@vger.kernel.org,
-        ming.lei@redhat.com, jaswin@linux.ibm.com, bvanassche@acm.org
-References: <20231212110844.19698-1-john.g.garry@oracle.com>
- <20231212163246.GA24594@lst.de>
- <b8b0a9d7-88d2-45a9-877a-ecc5e0f1e645@oracle.com>
- <20231213154409.GA7724@lst.de>
- <c729b03c-b1d1-4458-9983-113f8cd752cd@oracle.com>
- <20231214143708.GA5331@lst.de>
-Content-Language: en-US
-From:   John Garry <john.g.garry@oracle.com>
-Organization: Oracle Corporation
-In-Reply-To: <20231214143708.GA5331@lst.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: CWLP265CA0413.GBRP265.PROD.OUTLOOK.COM
- (2603:10a6:400:1b6::19) To DM6PR10MB4313.namprd10.prod.outlook.com
- (2603:10b6:5:212::20)
+        d=semihalf.com; s=google; t=1702568799; x=1703173599; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=LOrqYu0o6VMrWH8Qmwulg5xbd5ccp47a1+5AcMLysFE=;
+        b=D3OY+EV8Wwb6/q/7DE17EZptI0ai76CDxXKyGLLWg6urPlc0V+KkQoD0lRUcVlMVxH
+         FnqxeXAVpRu3lleOHDZ9u0XcZFckBZIlPmnMLfNctcX4t3SGGkLU1aMxRZk02sEjReNm
+         qL4+tMyvo0tpdtjJ4gi1Ha86x5wxvxubHDMkz4CJ7CpyDo9O7yqmlp16nJ36EJFp2N0W
+         wt9/1ZWiQcUoWZJgJoe+DMGK2knFEFxC49sH+c4/5+cgPKcrq8SMoL75aEKwYPJzBkax
+         2n0tLkVGpKAhf/QEWx8iSrSk0RndNGhOaR6EZQZQRF7IOl1ulh4GsnkMRYmZ4hxqbR6k
+         noBw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702568799; x=1703173599;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=LOrqYu0o6VMrWH8Qmwulg5xbd5ccp47a1+5AcMLysFE=;
+        b=mX2VEWDsbyf0S3bD3uIsEifHXZhGnfWDplza8qFOw6Vt0qeDNOBv6+ZW8gEFlQOa3b
+         kDIvJm7mp8aYDjJr1ZlMcpzU/FmnmpHfPCGFSeIFAyj36/ZF7I2EqR0X1BbZ9KnyZJJr
+         tY8xJBX7IL/D7hvQlS+9avRw6m+gl5EJGSFsP1YND5iB6noEUmzVRMHD+KpW8XCI+aGS
+         bul1N+DPI2sY2J5O1fHHVOWTROUSLneiNher4Sjf5krK13C9E+lsyh9ZSSz22FIxNNOz
+         MX/Ezyvu4n0EPU+D5kQkA9wyDEkOV2B8vxwMeq4pnxrNyv/H9IYJWRBYLd6qp/0/wHf2
+         1daw==
+X-Gm-Message-State: AOJu0YzoqS9tu9+6hskqQUHxzuFkc2rfdlAsPAaQndEx2RyZmlmRx8iA
+        mEsRdqFOfWzhLwlNeQpmwh2NfO2g+SzBTEO/1u4V
+X-Google-Smtp-Source: AGHT+IHo2EF92kSZM7sS2idZPzy5HtmmWi3ByE+Iw2wvgFeF+pNzh54jD5sn86xHF0aT33Zi+5rpmDQdqWuv6ATymjw=
+X-Received: by 2002:a05:6512:124c:b0:50d:1888:1e4b with SMTP id
+ fb12-20020a056512124c00b0050d18881e4bmr6941275lfb.49.1702568799409; Thu, 14
+ Dec 2023 07:46:39 -0800 (PST)
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM6PR10MB4313:EE_|SN7PR10MB6545:EE_
-X-MS-Office365-Filtering-Correlation-Id: 2a60c46f-316f-4352-07b1-08dbfcbbd03d
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Vw4whhq/YHdIYLez+EeDDaKv73UfKn96Xsj9cUY4qvNvX/MfOBe28R/bJAmi2m02bSZK2YHnmhuOPGY8eKuSApRJKLyCx8/d+DspnPtXSCjxA9wGF7BJVzJWqK+TPxC+7rA8og+Fub9raYHGsGpPL6XP5InASgmW0ZJzF6euu57O9zqvoTL1ITHhL4Wgy8KdsgAECPW6py7xAEcBdnKaTcR4o5Z19WT/z9IGlJJuoAXC1b/1aoClZKwwQXKj5Sxh2L6c5vggc7hvZT7M/TlfZazLalsS29W2pFqy8k9+pbg/bRYHSrJKXRgF2aQWBj1ttJlcs4l8Cg+Fe5ySHJlOjOMNJi4zmVZONjsWvPlVc2OVFN7EqWcZUxto/FwFOyxl9LLauGv63fLRomkoKMrBq81431XZHUcDaMXlnqOG8E0LlRZ0Gj/gs94UcSptK3008p1t5CdrMN6rdYJihmraZ7EAw4cldnmszssXT+A0LReAnBktj+5XHpS+5tkvnbDT/LSbLZYPI96jO6qgeNRb5BJgkAKTZCb7C84zEPDCPebANACigl1At05in8GXx/33DkNoNz2cwo37oM+7cJFQzDi2PsDmJdpEKzwenV8JCeD4EAjVIETaQ6sGTO9VKhtvTOwEZQXp3ALBY1+2cwQbKQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR10MB4313.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(136003)(39860400002)(396003)(346002)(366004)(230922051799003)(1800799012)(451199024)(64100799003)(186009)(31696002)(86362001)(36756003)(31686004)(41300700001)(6666004)(478600001)(6506007)(53546011)(36916002)(66946007)(66476007)(6916009)(66556008)(26005)(6512007)(38100700002)(83380400001)(7416002)(2616005)(4744005)(2906002)(316002)(6486002)(5660300002)(8936002)(4326008)(8676002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?NVJJb2V6Q3hKTnhlU0J2ckFadVNra2IwZ0xFNm53UjJWdlJsbmpkZmppcWRK?=
- =?utf-8?B?S2tGSkVHUzRmNWM4dEFTWXJMcmk0ajFNYmZubW11ZVd3Wmx3U0VWLzJpcWND?=
- =?utf-8?B?QU94Sy94TTdSUU9CaSs2aDMreG9pbnl3WkRXMVFQQWlNaHVjYmRXQ1dnajJN?=
- =?utf-8?B?TE9ueFllazdCZS9NQ1RCbjJaMGpUNC9vbUozMWlsazZ4L3lpRUp6OGd2L1Ev?=
- =?utf-8?B?ak5MMjFwZkpoZ3hzWTVRczNqaW4ydXlnbWxsaHBqNnVGaUFwcVNiN210R0dk?=
- =?utf-8?B?YzRMZTdYaWM1VVlZUTdYWHlGZmNGRSs3N3BWRjJHUmd6azA4YVo2M1IwVUg2?=
- =?utf-8?B?YmdzNmVpS01QNHN5bDYzUnVTa1A1NjQrVHlzQTdGTk1TeVZYRFVVYWhqYXVW?=
- =?utf-8?B?YmtKdFhVY1BBek9nRUU4SlA0U0ZGS2lIUCtlL2V0Sk83Y0Nac3ZWQS9wRURC?=
- =?utf-8?B?cmtjNHpqS0NNNFpuaDFraTlHOEEvTGxlRVBNMkx2Z1cyayt3K292dHYzS0pI?=
- =?utf-8?B?QVQvMytRK1h0WVlNOTRTQjhKQTZWZWVOR1M4K3V1R2liVGZ6S0tsQXZaNm8x?=
- =?utf-8?B?OFlONHRhK2hoajFKdW9LelJMTmlPdi82TVNOVU1EMXJud0NtOXM1R0FRdUxx?=
- =?utf-8?B?MU5USm5RaUU2SWI1cHQxWHY1Y3UyVFFGc1RBbG5GakltRDEwUzFaS0FnVnVB?=
- =?utf-8?B?NlpsRGIwVkRXWllmQ2hMSlUvclMzc3d4cGJuOUgySUx6aW85Mm5xUXJpazYr?=
- =?utf-8?B?R0Z4R2ovR1VHa3YwVy9uTU1BQk43bWp2K2xjZ0lNT3R0NEcxK05yNTN6K2N3?=
- =?utf-8?B?SjdzWXdxbitncEg1OFNwQ3pZWGVzNkdvVzVsV0s2T2Qyelg1QjZ0OUdGL0Y2?=
- =?utf-8?B?N1JOa2tGWlh4cnkvb29qR0x6S0JVazZoWU5WVDN1WjA0aDByNEJZYWROZHR4?=
- =?utf-8?B?UWdYTjNjMjJGN3hCbG1MUlVockxRa0g1am1PTjE0aTRxSXhxQ3BtMXlDd09r?=
- =?utf-8?B?VkJkM00zVkJIMVdzWkRHQjA1VUdZQzBRbUV6NVI1TWJ2M2NVWGkrck9jUElq?=
- =?utf-8?B?bjZDc1N1ZzRyWURTL0tXRU5LNnVJMTZLdUt1NWxVMG9udmpkY2ZLSTBrbzFC?=
- =?utf-8?B?UzYyc0xsSnRjd3R0NmJYTmxsYUF5UE11d3pRTU1WSnlNb216WHpQamNUcUJC?=
- =?utf-8?B?ckcrQ25DWjVIcGovcGlncHlaVTZnK3YwazQ1TFgrMFRJOWU1Z2Y2OWtYRmVm?=
- =?utf-8?B?MGIzRXpxck1XeFlTNUdXSVBOVHZMOWJwd3E4VG5xR2Z4UDg4Tnd2bFd6MGpT?=
- =?utf-8?B?VHA3YUpMR2tpelljblJiU296ZGlOSXpEZFc1d0hLRG9vNkh6dE1UbWNxdHhu?=
- =?utf-8?B?dzd5QWN5Zm5iOUFDOUlPTVBvQm9JK2pGTlRaU1BWM216cmdRK0RBVWFhaVlM?=
- =?utf-8?B?U2hmQkhJOHN1NmVBVUN4QnpYTTJrS1NrNVcyTEx4eGQwR3RKaW96d2VvbVJM?=
- =?utf-8?B?WDdzY1lMMUtkeVlsS3h0a0JlNHYxQzRucVJaS0ZycEN0THVVdE1mdHVVNEVY?=
- =?utf-8?B?ZGJiT0RSYjZmSysxRVY3clIxbmZ6dFJKQmpsNEluLzdtSFozbkUzUlhJU0h3?=
- =?utf-8?B?aitMSlVtVDFWRWtGaXdsTXdDbGFVVVVUeDBQenhzZE9DR3B4a2dSTTFjTU0r?=
- =?utf-8?B?OHl4OWhNb3JweTQzOWpDalVNaDFHYk56UGhZRnFSaVRFNmszK2crdFBpditq?=
- =?utf-8?B?MldNZGYxUk9BNzJJQWtMMFJ3bmY4ZC9INUVmbWtZcUx4WkNnRy9zbG03QkRI?=
- =?utf-8?B?d1FjdG1jdzNtcStzYnJJYi9rZ1JpaGRQOTU1SklqcW1wZzNBWldXbDdMTnhH?=
- =?utf-8?B?TWp2dDRqUHJEZ3M5M25ubDZMZFU3c0M0VXRUSjYwSkdBNGQ4Kzh1bXNoYytn?=
- =?utf-8?B?TVVYRHQvVWw0RWljdUNxbXU1ZnlTbktpUWVVQzR3cmNocW1NQitlMW5oTDlH?=
- =?utf-8?B?K1ozZURWR08rU25jVmlLMkgrNG1ydjlYZmtBNlA3eHQrREc2Y0ZhWVc5SDBn?=
- =?utf-8?B?bmtoVFZhYUFlTzM0RU1Xd25oUWg2SkhFejY5R0FCOGRjZjd4M29KbUZTcUhG?=
- =?utf-8?Q?0d7dHK3GsG7CxBDPTKt+tnCK0?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: qUPdrjbeh/OuZNLkkmcCcAqzx8xmqCu1pQ7zh7Eb2wA6P5NI/288Nwxm5jZH4yaNVqgMlgeEdJnj4B8pJ3lpufmXd1yvF/CCWZyFLrZTuFCASC9UJ9+5P6J8aSMqOXi9UdReMSH1Bi6Q9GO8jjhRohXGZ6Ke+cNegEPL8R4bicRBa9aXPZpLz0K0fENDs+ryP+4pbW/p+n+BNzMUh00gUxvxa4Z7EpWTZ2lilAiVSmcnBQLEuQyl2g9hihSfQydc6pZPvZSdEM9lqoHbkLfynijXD1Ii1oSrKUpo/5pWvtunSkMGLCMtT0r56YnQYpPWmQm+YdWRiEMFUmEYJx3jTtQAsGpF/u3cbYIXK+h6yOGpPdq8QVoIFsIRga4TxdFfMqin4kbL6XEixMi8BTh6TzAbONfd9U/iFpg+O9LewqN7dXnqH2liGf/ZshUQsHxlcXbAPIp+QxFJzqfxAev4U9OLUjxiV4sm2Hw8k5Y/34LnXkOEw5huZFx9l9EFlxiRjISUv5iZ6f1BbWcT44bJKqaG44CuwMb5RzgSiV2Q0FegB9cy+6c2/OOjoR+jCckwIrjUE4LqImsc3t/jeZsDShW90Tu/N+ovL0QSe8s5dCc=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2a60c46f-316f-4352-07b1-08dbfcbbd03d
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR10MB4313.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Dec 2023 15:46:18.8170
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: xeexG8l61dP3jWrksi0Xx71Ri1d1k3p0HKT6n4aG7YAx+EIeIbofLGJ7RLvwXbGw//6O61zsK7O8D7REezM/OA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN7PR10MB6545
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-14_11,2023-12-14_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 mlxscore=0 suspectscore=0
- phishscore=0 adultscore=0 mlxlogscore=999 bulkscore=0 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311290000
- definitions=main-2312140111
-X-Proofpoint-GUID: ueI6-cHM-8fPcjlby4IstjDopYl7XlgW
-X-Proofpoint-ORIG-GUID: ueI6-cHM-8fPcjlby4IstjDopYl7XlgW
+References: <20231130234048.157509-1-lb@semihalf.com> <20231130234048.157509-10-lb@semihalf.com>
+ <CAJfuBxwkLZcFBaXLEFeiGywiUtEJThwd5SxnNCfvtLry3XWRbg@mail.gmail.com>
+In-Reply-To: <CAJfuBxwkLZcFBaXLEFeiGywiUtEJThwd5SxnNCfvtLry3XWRbg@mail.gmail.com>
+From:   =?UTF-8?Q?=C5=81ukasz_Bartosik?= <lb@semihalf.com>
+Date:   Thu, 14 Dec 2023 16:46:28 +0100
+Message-ID: <CAK8ByeLuh9q24+Rm6CttHfF1ATpbbvyk5OUVxF9WRP-av9wr3Q@mail.gmail.com>
+Subject: Re: [PATCH v2 09/15] dyndbg: add trace destination field to _ddebug
+To:     jim.cromie@gmail.com
+Cc:     Jason Baron <jbaron@akamai.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Kees Cook <keescook@chromium.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Guenter Roeck <groeck@google.com>,
+        Yaniv Tzoreff <yanivt@google.com>,
+        Benson Leung <bleung@google.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Vincent Whitchurch <vincent.whitchurch@axis.com>,
+        Pekka Paalanen <ppaalanen@gmail.com>,
+        Sean Paul <seanpaul@chromium.org>,
+        Daniel Vetter <daniel@ffwll.ch>, linux-kernel@vger.kernel.org,
+        upstream@semihalf.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 14/12/2023 14:37, Christoph Hellwig wrote:
-> On Wed, Dec 13, 2023 at 04:27:35PM +0000, John Garry wrote:
->>>> Are there any patches yet for the change to always use SGLs for transfers
->>>> larger than a single PRP?
->>> No.
-> Here is the WIP version.  With that you'd need to make atomic writes
-> conditional on !ctrl->need_virt_boundary.
+czw., 14 gru 2023 o 08:10 <jim.cromie@gmail.com> napisa=C5=82(a):
+>
+> On Thu, Nov 30, 2023 at 4:41=E2=80=AFPM =C5=81ukasz Bartosik <lb@semihalf=
+.com> wrote:
+> >
+> > Add trace destination field (trace_dst) to the _ddebug structure.
+> > The trace destination field is used to determine output of debug
+> > logs when +T is set. Setting trace_dst value to TRACE_DST_BITS(63)
+> > enables output to prdbg and devdbg trace events. Setting trace_dst
+> > value to a value in range of [0..62] enables output to trace instance.
+> >
+>
+> FWIW, I think setting trace_dest =3D 0  maps naturally to global / event =
+buf.
+> The reason class_id DFLT is 63 is that DRM_UT_CORE is 0,
+> and DFLT allowed it to remain unchanged.
+>
 
-Cheers, I gave it a quick spin and on the surface looks ok.
+I considered trace_dst value 0 to point to trace events but then I
+realized that trace instance table (tr.inst) will be 1-based instead
+of 0-based and
+based on that I reserved trace destination maximum value (63 when
+trace_dst width is 6 bits) for trace events. This simplified the
+implementation.
 
-# more /sys/block/nvme0n1/queue/atomic_write_unit_max_bytes
-262144
-# more /sys/block/nvme0n1/queue/virt_boundary_mask
-0
-
+>
+> > Signed-off-by: =C5=81ukasz Bartosik <lb@semihalf.com>
+> > ---
+> >  include/linux/dynamic_debug.h | 14 ++++++++++++--
+> >  lib/dynamic_debug.c           | 28 +++++++++++++++++++---------
+> >  2 files changed, 31 insertions(+), 11 deletions(-)
+> >
+> > diff --git a/include/linux/dynamic_debug.h b/include/linux/dynamic_debu=
+g.h
+> > index 684766289bfc..56f152e75604 100644
+> > --- a/include/linux/dynamic_debug.h
+> > +++ b/include/linux/dynamic_debug.h
+> > @@ -60,9 +60,19 @@ struct _ddebug {
+> >  #else
+> >  #define _DPRINTK_FLAGS_DEFAULT 0
+> >  #endif
+> > -       struct {
+> > +       struct dd_ctrl {
+> >                 unsigned int flags:8;
+> > -               unsigned unused:24;
+> > +       /*
+> > +        * The trace destination field is used to determine output of d=
+ebug
+> > +        * logs when +T is set. Setting trace_dst value to TRACE_DST_MA=
+X(63)
+> > +        * enables output to prdbg and devdbg trace events. Setting tra=
+ce_dst
+> > +        * value to a value in range of [0..62] enables output to trace
+> > +        * instance.
+> > +        */
+> > +#define TRACE_DST_BITS 6
+> > +               unsigned int trace_dst:TRACE_DST_BITS;
+> > +#define TRACE_DST_MAX  ((1 << TRACE_DST_BITS) - 1)
+> > +               unsigned unused:18;
+> >         } ctrl;
+> >  } __attribute__((aligned(8)));
+> >
+> > diff --git a/lib/dynamic_debug.c b/lib/dynamic_debug.c
+> > index f47cb76e0e3d..0dc9ec76b867 100644
+> > --- a/lib/dynamic_debug.c
+> > +++ b/lib/dynamic_debug.c
+> > @@ -80,14 +80,24 @@ module_param(verbose, int, 0644);
+> >  MODULE_PARM_DESC(verbose, " dynamic_debug/control processing "
+> >                  "( 0 =3D off (default), 1 =3D module add/rm, 2 =3D >co=
+ntrol summary, 3 =3D parsing, 4 =3D per-site changes)");
+> >
+> > +static inline struct dd_ctrl *get_ctrl(struct _ddebug *desc)
+> > +{
+> > +       return &desc->ctrl;
+> > +}
+> > +
+> > +static inline void set_ctrl(struct _ddebug *desc, struct dd_ctrl *ctrl=
+)
+> > +{
+> > +       desc->ctrl =3D *ctrl;
+> > +}
+> > +
+> >  static inline unsigned int get_flags(const struct _ddebug *desc)
+> >  {
+> >         return desc->ctrl.flags;
+> >  }
+> >
+> > -static inline void set_flags(struct _ddebug *desc, unsigned int val)
+> > +static inline unsigned int get_trace_dst(const struct _ddebug *desc)
+> >  {
+> > -       desc->ctrl.flags =3D val;
+> > +       return desc->ctrl.trace_dst;
+> >  }
+> >
+> >  /* Return the path relative to source root */
+> > @@ -190,8 +200,8 @@ static int ddebug_change(const struct ddebug_query =
+*query,
+> >  {
+> >         int i;
+> >         struct ddebug_table *dt;
+> > -       unsigned int newflags;
+> >         unsigned int nfound =3D 0;
+> > +       struct dd_ctrl nctrl =3D {0};
+> >         struct flagsbuf fbuf, nbuf;
+> >         struct ddebug_class_map *map =3D NULL;
+> >         int __outvar valid_class;
+> > @@ -257,14 +267,14 @@ static int ddebug_change(const struct ddebug_quer=
+y *query,
+> >
+> >                         nfound++;
+> >
+> > -                       newflags =3D (get_flags(dp) & modifiers->mask) =
+| modifiers->flags;
+> > -                       if (newflags =3D=3D get_flags(dp))
+> > +                       nctrl.flags =3D (get_flags(dp) & modifiers->mas=
+k) | modifiers->flags;
+> > +                       if (!memcmp(&nctrl, get_ctrl(dp), sizeof(struct=
+ dd_ctrl)))
+> >                                 continue;
+> >  #ifdef CONFIG_JUMP_LABEL
+> >                         if (get_flags(dp) & _DPRINTK_FLAGS_ENABLED) {
+> > -                               if (!(newflags & _DPRINTK_FLAGS_ENABLED=
+))
+> > +                               if (!(nctrl.flags & _DPRINTK_FLAGS_ENAB=
+LED))
+> >                                         static_branch_disable(&dp->key.=
+dd_key_true);
+> > -                       } else if (newflags & _DPRINTK_FLAGS_ENABLED) {
+> > +                       } else if (nctrl.flags & _DPRINTK_FLAGS_ENABLED=
+) {
+> >                                 static_branch_enable(&dp->key.dd_key_tr=
+ue);
+> >                         }
+> >  #endif
+> > @@ -272,8 +282,8 @@ static int ddebug_change(const struct ddebug_query =
+*query,
+> >                                   trim_prefix(dp->filename), dp->lineno=
+,
+> >                                   dt->mod_name, dp->function,
+> >                                   ddebug_describe_flags(get_flags(dp), =
+&fbuf),
+> > -                                 ddebug_describe_flags(newflags, &nbuf=
+));
+> > -                       set_flags(dp, newflags);
+> > +                                 ddebug_describe_flags(nctrl.flags, &n=
+buf));
+> > +                       set_ctrl(dp, &nctrl);
+> >                 }
+> >         }
+> >         mutex_unlock(&ddebug_lock);
+> > --
+> > 2.43.0.rc2.451.g8631bc7472-goog
+> >
