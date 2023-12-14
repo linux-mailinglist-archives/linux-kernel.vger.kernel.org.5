@@ -2,186 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 639BA812AE1
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 09:58:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ED06F812AE4
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 10:00:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229881AbjLNI6b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 03:58:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48516 "EHLO
+        id S229970AbjLNJAS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 04:00:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37298 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229441AbjLNI6a (ORCPT
+        with ESMTP id S229441AbjLNJAQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 03:58:30 -0500
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2a07:de40:b251:101:10:150:64:1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 919EE10A;
-        Thu, 14 Dec 2023 00:58:36 -0800 (PST)
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 16CE022234;
-        Thu, 14 Dec 2023 08:58:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1702544315; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=JfziK/3KhWhdwfw4HSp/YFBI7ijI4WOjyAomTM6eCx8=;
-        b=QYVAvT75hcGPLYrp67ppwlEFwyNMB1UNfscFdBfhXxA2qXKBQHEUad253KbodqHwm6dMl2
-        ial1jiubl6HccfyKwLBFt+idD9bQLvWFCVm2GUKz903142zKT7uP4GsYUOMLGs10r4SRbr
-        I0e+ZdQ+zOyYKvtt29QZls8xLmlRjuI=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1702544315;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=JfziK/3KhWhdwfw4HSp/YFBI7ijI4WOjyAomTM6eCx8=;
-        b=kIqCv0CWmYGR/y+lcQkWcdAQihiHBWj2FjAwIx7R3wSmLpD7ArUXQEG5yQuPuTDh5U190U
-        Gce+4qLUpN4QjWAg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1702544315; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=JfziK/3KhWhdwfw4HSp/YFBI7ijI4WOjyAomTM6eCx8=;
-        b=QYVAvT75hcGPLYrp67ppwlEFwyNMB1UNfscFdBfhXxA2qXKBQHEUad253KbodqHwm6dMl2
-        ial1jiubl6HccfyKwLBFt+idD9bQLvWFCVm2GUKz903142zKT7uP4GsYUOMLGs10r4SRbr
-        I0e+ZdQ+zOyYKvtt29QZls8xLmlRjuI=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1702544315;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=JfziK/3KhWhdwfw4HSp/YFBI7ijI4WOjyAomTM6eCx8=;
-        b=kIqCv0CWmYGR/y+lcQkWcdAQihiHBWj2FjAwIx7R3wSmLpD7ArUXQEG5yQuPuTDh5U190U
-        Gce+4qLUpN4QjWAg==
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 0959A134B0;
-        Thu, 14 Dec 2023 08:58:35 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-        by imap2.dmz-prg2.suse.org with ESMTPSA
-        id 0FIFArvDemVKNQAAn2gu4w
-        (envelope-from <jack@suse.cz>); Thu, 14 Dec 2023 08:58:35 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id A9E70A07E0; Thu, 14 Dec 2023 09:58:34 +0100 (CET)
-Date:   Thu, 14 Dec 2023 09:58:34 +0100
-From:   Jan Kara <jack@suse.cz>
-To:     Ye Bin <yebin10@huawei.com>
-Cc:     tytso@mit.edu, adilger.kernel@dilger.ca,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
-        jack@suse.cz
-Subject: Re: [PATCH] ext4: fix inconsistent between segment fstrim and full
- fstrim
-Message-ID: <20231214085834.svce3mvfnctikwyq@quack3>
-References: <20231214064635.4128391-1-yebin10@huawei.com>
+        Thu, 14 Dec 2023 04:00:16 -0500
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E50510A;
+        Thu, 14 Dec 2023 01:00:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de; s=s31663417;
+        t=1702544401; x=1703149201; i=linosanfilippo@gmx.de;
+        bh=i3Hz+ytUFA4jUXYAsPUZy/EuCtWs2rkgtqsGERhQNr8=;
+        h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
+         In-Reply-To;
+        b=B00+lRyETfYe+87IC1S0gO42UrRzj4IDXlh5QSrQaqOPX+XYx5aaj7GX6YkYb9uF
+         AAykgwveahf/4uyrhpjTWPw8yZ4B4FUNAi7h9iiLE1bLTP/fFDrNMWdMm4L5wWHHu
+         IH6w26ZKnTf80aTjcEm4n8X9sdoZm1gzArguieF9jFJAeYhY+l8dCPsZ/BT5OOMZh
+         3513Xpp0mCZEsW1bJWHDP+S9c+m1qn7DyxADCN8hBoYL4P7CkK6S/13rCyznijwzk
+         aOs7m6cMSfRx7WQdMnjsKWAcwGC4A9rmNRcQ1UkfRHXOpcgLFXs4NO/wX4VkntzAr
+         /KbF3bwitUGfbnaBmw==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [192.168.2.42] ([84.180.3.177]) by mail.gmx.net (mrgmx105
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1N7QxB-1rH80a053l-017mQx; Thu, 14
+ Dec 2023 10:00:01 +0100
+Message-ID: <e8cf9ed3-e2d3-4764-b1c3-87e38e99b4a5@gmx.de>
+Date:   Thu, 14 Dec 2023 10:00:00 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231214064635.4128391-1-yebin10@huawei.com>
-X-Spam-Level: 
-X-Spam-Score: -0.63
-X-Spamd-Result: default: False [-2.78 / 50.00];
-         ARC_NA(0.00)[];
-         RCVD_VIA_SMTP_AUTH(0.00)[];
-         FROM_HAS_DN(0.00)[];
-         TO_DN_SOME(0.00)[];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         MIME_GOOD(-0.10)[text/plain];
-         RCPT_COUNT_FIVE(0.00)[6];
-         RCVD_COUNT_THREE(0.00)[3];
-         DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-         NEURAL_HAM_SHORT(-0.18)[-0.894];
-         DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email];
-         FUZZY_BLOCKED(0.00)[rspamd.com];
-         FROM_EQ_ENVFROM(0.00)[];
-         MIME_TRACE(0.00)[0:+];
-         MID_RHS_NOT_FQDN(0.50)[];
-         RCVD_TLS_ALL(0.00)[];
-         BAYES_HAM(-3.00)[100.00%]
-X-Spam-Level: 
-X-Spam-Score: -2.78
-X-Spam-Flag: NO
-Authentication-Results: smtp-out1.suse.de;
-        none
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH V5 3/3] tty: serial: uartps: Add rs485 support to uartps
+ driver
+Content-Language: en-US
+To:     Manikanta Guntupalli <manikanta.guntupalli@amd.com>, git@amd.com,
+        michal.simek@amd.com, gregkh@linuxfoundation.org,
+        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, linux-serial@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        jirislaby@kernel.org, linux-arm-kernel@lists.infradead.org
+Cc:     radhey.shyam.pandey@amd.com, srinivas.goud@amd.com,
+        shubhrajyoti.datta@amd.com, manion05gk@gmail.com
+References: <20231213130023.606486-1-manikanta.guntupalli@amd.com>
+ <20231213130023.606486-4-manikanta.guntupalli@amd.com>
+From:   Lino Sanfilippo <LinoSanfilippo@gmx.de>
+In-Reply-To: <20231213130023.606486-4-manikanta.guntupalli@amd.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:pK8MFRjHp2YaZUknT+LRCDyINjh9i/0Jrq0/enwVR0460Vv8uBG
+ jEhoBvjHDZiW26EnG9lgKBjPWoxplSfjGuR22APQXvVrno70BetBrA7LSnxExszo1a/O5gV
+ loInpLjPZxRyVQeVsIoD4xa8mR/aqLRKC+QCl58O4a0vJjWQzZEDtjsldDjbI0O+RoaXHfw
+ karSL1jB/+wDGZDkoKmaQ==
+UI-OutboundReport: notjunk:1;M01:P0:EI9S+Cq+1aU=;Siw+EKHPttacc+oKnTGnheJocRM
+ CF0+vm3a9XnjSROmSR4PRlaHwFYax+mLYqDdXpk0rCt/S7wCBe4kgryA5z7HH1Qk8/jC5qn/k
+ argluzBsuic8Xdvl4Zs1namxqEOcbwGCx9UE04NQQBPe6jJXFgAThrLJFU7p8zm/3TiTIHjOb
+ 4ooaGAw5Aa96JE/VpnzFZGDCnwTdryMI26wIOHUoNpLavPSwAUAU/9kdP2fK61Z+nt5nfqyqE
+ tJWmHOx+x3nfni11q22hBl2ioHVrRr08KEZgs6gyDBIUlCygZ1oo8mGdhXIhecbgSYtnrsK+C
+ GowdrnlFFBClau64OgmrHBUrkpH6HlgVldEUo7+wP6ssF9UrmumnMpsXYvSvwZG+L4EgsgYHx
+ z/Zrzkd5G8L7IeDJq+8Baic2h+lltxO9vrWzch7XTD6+bpGV/wLLkkrYdcKwKEhKKytu2h+yK
+ fUOEYAN//xiWOW89UZb4+NSP9yYDLabHJNmfLMIus8ze0OGfFxy0sTfZpN7f18ULlPQrVmOdb
+ oPRBnExJNdMLIObU/l4Ct7CdLBZNcTfHRt3JBv1QAGKoC5IR7DqW2bqEdGoj4xMzRgERlmaez
+ LCPoF4+oOTrKmzmzLHCK+mOOCZD6eYq39gsNHwxiPcFX5hT0tCSMVvlbQ6axOerYvqD4+s26M
+ jZ9CEX1NV56FLCPNlACfCkNXttel570pUfgPxjZ1TmLyszRp3s3eHytzj/U+E/CXz3xrVW1Eh
+ faz1DwqpXE7dXbRKU6VGhjCzSUSc4EvBaG7IodmXhQDlMsJC2Js+EojhOGwCYbl/y/xIB3fzu
+ u9d8KsBNlmKugz35thMUdJF4j5QA4SyjINH5RloMTKP69ncSd5nd0Y4NUCtL67qDtmmQm/2FL
+ eKE0ub6FS6jeDcZmujL+72KEXKTWbiwr7mb0gMNQlRlsk5tWh2zhksBr53yK7xY1/CrW4H2hl
+ cNsGTQ==
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 14-12-23 14:46:35, Ye Bin wrote:
-> There will not issue discard cmd when do segment fstrim for ext4 fs, however,
-> if full fstrim for the same fs will issue discard cmd.
-> Above issue may happens as follows:
-> Precondition:
-> 1. Fstrim range [0, 15] and [16, 31];
-> 2. Discard granularity is 16;
->             Range1          Range2
->       1111000000000000 0000111010101011
-> There's no free space length large or equal than 16 in 'Range1' or 'Range2'.
-> As ext4_try_to_trim_range() only search free space among range which user
-> specified. However, there's maximum free space length 16 in 'Range1'+ 'Range2'.
-> To solve above issue, we need to find the longest free space to discard.
-> 
-> Signed-off-by: Ye Bin <yebin10@huawei.com>
 
-OK, I agree that there is this behavioral difference. However is that a
-practical problem? I mean I would not expect the range to be particularly
-small, rather something like 1GB and then these boundary conditions don't
-really matter. This is also sensible so that we can properly track whether
-the whole block group was trimmed or not. Finally I'd also argue that
-trimming outside of specified range might be unexpected for the user. So a
-*fix* for this in my opinion lays in userspace which needs to select
-sensible ranges to use for trimming.
+Hi,
 
-								Honza
+On 13.12.23 14:00, Manikanta Guntupalli wrote:
 
-> ---
->  fs/ext4/mballoc.c | 11 ++++++++---
->  1 file changed, 8 insertions(+), 3 deletions(-)
-> 
-> diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-> index d72b5e3c92ec..d195461123d8 100644
-> --- a/fs/ext4/mballoc.c
-> +++ b/fs/ext4/mballoc.c
-> @@ -6753,13 +6753,15 @@ static int ext4_try_to_trim_range(struct super_block *sb,
->  __acquires(ext4_group_lock_ptr(sb, e4b->bd_group))
->  __releases(ext4_group_lock_ptr(sb, e4b->bd_group))
->  {
-> -	ext4_grpblk_t next, count, free_count;
-> +	ext4_grpblk_t next, count, free_count, last, origin_start;
->  	bool set_trimmed = false;
->  	void *bitmap;
->  
-> +	last = ext4_last_grp_cluster(sb, e4b->bd_group);
->  	bitmap = e4b->bd_bitmap;
-> -	if (start == 0 && max >= ext4_last_grp_cluster(sb, e4b->bd_group))
-> +	if (start == 0 && max >= last)
->  		set_trimmed = true;
-> +	origin_start = start;
->  	start = max(e4b->bd_info->bb_first_free, start);
->  	count = 0;
->  	free_count = 0;
-> @@ -6768,7 +6770,10 @@ __releases(ext4_group_lock_ptr(sb, e4b->bd_group))
->  		start = mb_find_next_zero_bit(bitmap, max + 1, start);
->  		if (start > max)
->  			break;
-> -		next = mb_find_next_bit(bitmap, max + 1, start);
+>
+> +/**
+> + * cdns_rs485_rx_callback - Timer rx callback handler for rs485.
+> + * @t: Handle to the timer list structure
+> + */
+> +static void cdns_rs485_rx_callback(struct timer_list *t)
+> +{
+> +	struct cdns_uart *cdns_uart =3D from_timer(cdns_uart, t, timer);
 > +
-> +		next = mb_find_next_bit(bitmap, last + 1, start);
-> +		if (origin_start == 0 && next >= last)
-> +			set_trimmed = true;
->  
->  		if ((next - start) >= minblocks) {
->  			int ret = ext4_trim_extent(sb, start, next - start, e4b);
-> -- 
-> 2.31.1
-> 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+> +	/*
+> +	 * Default Rx should be setup, because Rx signaling path
+> +	 * need to enable to receive data.
+> +	 */
+> +	cdns_rs485_rx_setup(cdns_uart);
+> +}
+> +
+> +/**
+> + * cdns_rs485_tx_callback - Timer tx callback handler for rs485.
+> + * @t: Handle to the timer list structure
+> + */
+> +static void cdns_rs485_tx_callback(struct timer_list *t)
+> +{
+> +	struct cdns_uart *cdns_uart =3D from_timer(cdns_uart, t, timer);
+> +
+> +	cdns_uart_handle_tx(cdns_uart->port);
+
+This is called without holding the port lock now. Are you sure the lock is=
+ not
+needed? AFAIK the port lock is needed at least for accessing the circular
+buffer.
+
+> +
+> +	/* Enable the TX Empty interrupt */
+> +	writel(CDNS_UART_IXR_TXEMPTY, cdns_uart->port->membase + CDNS_UART_IER=
+);
+> +
+> +	if (uart_circ_empty(&cdns_uart->port->state->xmit) ||
+> +	    uart_tx_stopped(cdns_uart->port)) {
+> +		timer_setup(&cdns_uart->timer, cdns_rs485_rx_callback, 0);
+> +		mod_timer(&cdns_uart->timer, jiffies +
+> +			  msecs_to_jiffies(cdns_uart->port->rs485.delay_rts_after_send));
+> +	}
+> +}
+
+Regards,
+Lino
