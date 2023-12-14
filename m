@@ -2,108 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D23B6813948
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 19:00:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 32410813940
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 19:00:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1444088AbjLNR77 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 12:59:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56830 "EHLO
+        id S235629AbjLNR74 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 12:59:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56786 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235649AbjLNR7z (ORCPT
+        with ESMTP id S230523AbjLNR7y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 12:59:55 -0500
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DE0912D
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 10:00:01 -0800 (PST)
-Received: by mail-lf1-x12a.google.com with SMTP id 2adb3069b0e04-50bf898c43cso8237140e87.1
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 10:00:01 -0800 (PST)
+        Thu, 14 Dec 2023 12:59:54 -0500
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60739CF
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 09:59:59 -0800 (PST)
+Received: by mail-pl1-x630.google.com with SMTP id d9443c01a7336-1d0b40bb704so5935ad.0
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 09:59:59 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1702576799; x=1703181599; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=RNzrB1u5cdRIIUK1CjwOMqB3675QEed56fbMDtEebUE=;
-        b=XGKsI3FT7JIi0JWcFzEFUbQPJvzz75eMCPzpKa4UvycGG277rzUtsMeK3PzZjkWbiE
-         j1WiH5j5/s2RpnqoHg0jOQREJpZOH4iEL/kD3S4OM3P6CnwJbGqzLTZDJhv0TK5ra19E
-         ccIkwNspOxm16VzP8blEk+7ISvIacIeUiTrxE0sy01+kgXxFXntIa1QSgkMeVemHEMgi
-         ms3vnywwHktq/9EJnC99pZ1zfpFfJbXQ15qPy7CLVEPC9vHyJm1omMn35nzquNKQRySL
-         NJDxhWGOsucxXZyYOxXuwrYloKgr5XDmwtZn42weLqpp3WFYCGgoMg4Qe3YwSSy9uPdS
-         vdMA==
+        d=google.com; s=20230601; t=1702576799; x=1703181599; darn=vger.kernel.org;
+        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=PZ9x6kLcBYiEdBJWGUfxINmlIVM3g2sEltrcooCIdH0=;
+        b=db3UtXdY8aBQieI3huxs2sGIoL44TLlJEKvRJ9MvuvbUxHU3JVbetHrCOko0PxaYDd
+         SQzKmE6QChugPbwUT8s/lxkPf0UkAvt13KrFtZEXZX4rMQQ650K0dr3DZdsC3NRgB36i
+         pBHhOCpCZ3YMqMvG6wGirj87knntUgZv78I8GG5CeRAJcy1ANUplXaVb8+Y5jpz0dz+l
+         xnzL/RKfGWhpmAsEroo7eEdvUqC+IZ2x6mUqhBBS8m17QwES3aBg/C28cZhbTAzVNMwY
+         udJ6WpTCp61nq+q2eb+sqa8Fv5xeOHLW8EmjI0dSzAwryZO613j/HxQP66J/x51yjoM5
+         64oQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20230601; t=1702576799; x=1703181599;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=RNzrB1u5cdRIIUK1CjwOMqB3675QEed56fbMDtEebUE=;
-        b=J9sqV0hKNZ2qKplcRX6yvMlVLpzaKIqEEkdJM6yZ4tdXh2jNqkkmnymzgMbUW9T5f4
-         /FhepFoB7/ZcVC9nbjezCev9sf2V8cW1vdX9yGf1iEAP9xZXxgmPKgo21x4PdSfiPSNy
-         2djLgpohnwOzjEv+GvTpr8EahGK4fNZ9UDnsHaHRUHm7Y7qfkIGi7Y2i534MkoR6C4L6
-         l7mtm9GFuA2Utnj0GwNsfxjaA6Y+jaodnNgrrW3QZfB3F/Qx1vLjp01Na/BGAs+JFtj5
-         7jh+Wcpjr2S988MC3pz4yR9H/vnaVEl0Rvl4sM9e+t+8zSotoKQgojxm5JWj79JDQ6ip
-         vbbA==
-X-Gm-Message-State: AOJu0Yw8MCKO6kfOT93evLiCjm7sRrFnS+5kElNWq2emKGRd+x723akE
-        xI0G3wWJj2E84PV5pXEqNX/wEQ==
-X-Google-Smtp-Source: AGHT+IHR/BseF81sooOcwETh42XcEmC8wRC2CR5cbiuzH8kZrhbG0bSYS5JqYImuWrYkNYE76VTFMg==
-X-Received: by 2002:a05:6512:3d9e:b0:50b:f269:64df with SMTP id k30-20020a0565123d9e00b0050bf26964dfmr4185701lfv.105.1702576799237;
-        Thu, 14 Dec 2023 09:59:59 -0800 (PST)
-Received: from [172.30.205.72] (UNUSED.212-182-62-129.lubman.net.pl. [212.182.62.129])
-        by smtp.gmail.com with ESMTPSA id k13-20020ac257cd000000b0050bff2648b9sm1919173lfo.203.2023.12.14.09.59.57
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=PZ9x6kLcBYiEdBJWGUfxINmlIVM3g2sEltrcooCIdH0=;
+        b=kmjUw/m1KyxA3ELYs7P8uxTEry5Dzr4pG2cnDUp1cO/kXJhtAAVU9HTlZvsae7hbmy
+         LmZj5ECYpKhsHdvFfK3+wedXEEum5lJg/tJFH1bDoOuexCoKjOns2WNLy/JZ1QjYryi2
+         FS4kzvfLgwooTsDEx1vUNoIxeMfyA7pSvYtRGh/EU1cx9FjpsAgDNeK/zcBGys82RF+t
+         4hdzXtIMToPrSa8cq5GJmRY5Z2OeSIFKZuaPmSi7a3Pe3/VADuVny3PRGCW1biIYH7mu
+         GhtRDsgpEgbml+BSzvXEajJpInPrCeM0zOZZTzaUGv4DrAX+FcJGVRa4dwK7Xvw8nRSB
+         oeKQ==
+X-Gm-Message-State: AOJu0Yyu1ar9MqoC3yE/ePDv7ZHUzj57YcZPkveoZWjSVzEMmRTUgAo5
+        gk5okll/2sZ6nm5j9vnJynHUrQ==
+X-Google-Smtp-Source: AGHT+IH5RplbwvbCKQv+ptuR7ZWj127uLmsE7SQkvEwRe0Gbuexa/KME9clMyovQW6MkVTsfPUZxog==
+X-Received: by 2002:a17:902:d2d2:b0:1d3:7d54:be3d with SMTP id n18-20020a170902d2d200b001d37d54be3dmr49997plc.6.1702576798577;
         Thu, 14 Dec 2023 09:59:58 -0800 (PST)
-Message-ID: <bba0160e-e495-45a3-8958-fba380e5a98c@linaro.org>
-Date:   Thu, 14 Dec 2023 18:59:56 +0100
+Received: from [2620:0:1008:15:740b:4c24:bdb6:a42a] ([2620:0:1008:15:740b:4c24:bdb6:a42a])
+        by smtp.gmail.com with ESMTPSA id y18-20020a170902b49200b001cfc2e0a82fsm12675679plr.26.2023.12.14.09.59.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 Dec 2023 09:59:58 -0800 (PST)
+Date:   Thu, 14 Dec 2023 09:59:57 -0800 (PST)
+From:   David Rientjes <rientjes@google.com>
+To:     Pasha Tatashin <pasha.tatashin@soleen.com>
+cc:     akpm@linux-foundation.org, alim.akhtar@samsung.com,
+        alyssa@rosenzweig.io, asahi@lists.linux.dev,
+        baolu.lu@linux.intel.com, bhelgaas@google.com,
+        cgroups@vger.kernel.org, corbet@lwn.net, david@redhat.com,
+        dwmw2@infradead.org, hannes@cmpxchg.org, heiko@sntech.de,
+        iommu@lists.linux.dev, jernej.skrabec@gmail.com,
+        jonathanh@nvidia.com, joro@8bytes.org,
+        krzysztof.kozlowski@linaro.org, linux-doc@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, linux-rockchip@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-sunxi@lists.linux.dev,
+        linux-tegra@vger.kernel.org, lizefan.x@bytedance.com,
+        marcan@marcan.st, mhiramat@kernel.org, m.szyprowski@samsung.com,
+        paulmck@kernel.org, rdunlap@infradead.org, robin.murphy@arm.com,
+        samuel@sholland.org, suravee.suthikulpanit@amd.com,
+        sven@svenpeter.dev, thierry.reding@gmail.com, tj@kernel.org,
+        tomas.mudrunka@gmail.com, vdumpa@nvidia.com, wens@csie.org,
+        will@kernel.org, yu-cheng.yu@intel.com
+Subject: Re: [PATCH v2 09/10] iommu: observability of the IOMMU allocations
+In-Reply-To: <20231130201504.2322355-10-pasha.tatashin@soleen.com>
+Message-ID: <88519685-abfb-e2f8-38b4-d94340b40d1d@google.com>
+References: <20231130201504.2322355-1-pasha.tatashin@soleen.com> <20231130201504.2322355-10-pasha.tatashin@soleen.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/5] arm64: dts: qcom: sc8180x: fix USB DP/DM HS PHY
- interrupts
-Content-Language: en-US
-To:     Johan Hovold <johan+linaro@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>
-Cc:     Andy Gross <agross@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Krishna Kurapati PSSNV <quic_kriskura@quicinc.com>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Vinod Koul <vkoul@kernel.org>
-References: <20231213173403.29544-1-johan+linaro@kernel.org>
- <20231213173403.29544-2-johan+linaro@kernel.org>
-From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-In-Reply-To: <20231213173403.29544-2-johan+linaro@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Level: *
+Content-Type: text/plain; charset=US-ASCII
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, 30 Nov 2023, Pasha Tatashin wrote:
 
-
-On 12/13/23 18:33, Johan Hovold wrote:
-> The USB DP/DM HS PHY interrupts need to be provided by the PDC interrupt
-> controller in order to be able to wake the system up from low-power
-> states and to be able to detect disconnect events, which requires
-> triggering on falling edges.
+> Add NR_IOMMU_PAGES into node_stat_item that counts number of pages
+> that are allocated by the IOMMU subsystem.
 > 
-> A recent commit updated the trigger type but failed to change the
-> interrupt provider as required. This leads to the current Linux driver
-> failing to probe instead of printing an error during suspend and USB
-> wakeup not working as intended.
+> The allocations can be view per-node via:
+> /sys/devices/system/node/nodeN/vmstat.
 > 
-> Fixes: 0dc0f6da3d43 ("arm64: dts: qcom: sc8180x: fix USB wakeup interrupt types")
-> Fixes: b080f53a8f44 ("arm64: dts: qcom: sc8180x: Add remoteprocs, wifi and usb nodes")
-> Cc: stable@vger.kernel.org      # 6.5
-> Cc: Vinod Koul <vkoul@kernel.org>
-> Reported-by: Konrad Dybcio <konrad.dybcio@linaro.org>
-> Signed-off-by: Johan Hovold <johan+linaro@kernel.org>
-> ---
-Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
-Tested-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+> For example:
+> 
+> $ grep iommu /sys/devices/system/node/node*/vmstat
+> /sys/devices/system/node/node0/vmstat:nr_iommu_pages 106025
+> /sys/devices/system/node/node1/vmstat:nr_iommu_pages 3464
+> 
+> The value is in page-count, therefore, in the above example
+> the iommu allocations amount to ~428M.
+> 
+> Signed-off-by: Pasha Tatashin <pasha.tatashin@soleen.com>
 
-Konrad
+Acked-by: David Rientjes <rientjes@google.com>
