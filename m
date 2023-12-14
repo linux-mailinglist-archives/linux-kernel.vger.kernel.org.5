@@ -1,212 +1,155 @@
-Return-Path: <linux-kernel+bounces-22-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-21-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A5901813ADC
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 20:37:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 653D7813AD7
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 20:37:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DBAE0B21A4A
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 19:37:55 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id ACA98B2197E
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 19:37:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB51A697B0;
-	Thu, 14 Dec 2023 19:37:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E556D6979D;
+	Thu, 14 Dec 2023 19:37:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="DUCMYBMZ"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="m4jQWA1S"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com [209.85.221.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BFC006A022;
-	Thu, 14 Dec 2023 19:37:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0356517.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3BEHl9MB002355;
-	Thu, 14 Dec 2023 19:36:59 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- mime-version : content-transfer-encoding; s=pp1;
- bh=648FpWoGQTh0F4qS2G595ah/1s7QGvexGIs/fpCIhd0=;
- b=DUCMYBMZon4C6qX4YWkQ7nu2rxB0b4iTUuHyiEBSmAkKP44+sr0U+0Ma9BJeDZ7SWdNT
- htC1K40iquvmNmr1tcjrQRtqaA3cDmS7OrfeKWIwAdP9BdPZZDvv7NbYuovS3kdGKlBG
- xvs9u2yw+G0khTBtxpYDr9FVS/3cPZ0/tq+ykJDOcsqFEGKSuzj9AfEgm9ijSNDOapZv
- 8OT0gEE+u6MQNtAbKHcUimfMJnrEXqyXBreIELiLugTtlnTN3L9lh4QSo+JniCw/2xT3
- bFjcLV5ET0dqVvUka2+HtlT2jYZbKDQ1NhiltKuXOrn8eXmHoQ+SIajCF84dALo3Bs9D YQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3v06dmtw3s-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 14 Dec 2023 19:36:58 +0000
-Received: from m0356517.ppops.net (m0356517.ppops.net [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3BEJXCeB027654;
-	Thu, 14 Dec 2023 19:36:58 GMT
-Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3v06dmtw3d-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 14 Dec 2023 19:36:58 +0000
-Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3BEIueoM013869;
-	Thu, 14 Dec 2023 19:36:57 GMT
-Received: from smtprelay01.wdc07v.mail.ibm.com ([172.16.1.68])
-	by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3uw592jhv7-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 14 Dec 2023 19:36:57 +0000
-Received: from smtpav04.dal12v.mail.ibm.com (smtpav04.dal12v.mail.ibm.com [10.241.53.103])
-	by smtprelay01.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3BEJaudc57737562
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Thu, 14 Dec 2023 19:36:56 GMT
-Received: from smtpav04.dal12v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 3D8BC5805A;
-	Thu, 14 Dec 2023 19:36:56 +0000 (GMT)
-Received: from smtpav04.dal12v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 5AC9058056;
-	Thu, 14 Dec 2023 19:36:55 +0000 (GMT)
-Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.watson.ibm.com (unknown [9.31.99.90])
-	by smtpav04.dal12v.mail.ibm.com (Postfix) with ESMTP;
-	Thu, 14 Dec 2023 19:36:55 +0000 (GMT)
-Message-ID: <a9e016feca137d05dc1f4ead72b24992ac2017be.camel@linux.ibm.com>
-Subject: Re: [RFC][PATCH] overlayfs: Redirect xattr ops on security.evm to
- security.evm_overlayfs
-From: Mimi Zohar <zohar@linux.ibm.com>
-To: Amir Goldstein <amir73il@gmail.com>
-Cc: Roberto Sassu <roberto.sassu@huaweicloud.com>,
-        Christian Brauner
- <brauner@kernel.org>,
-        Seth Forshee <sforshee@kernel.org>, miklos@szeredi.hu,
-        linux-unionfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        paul@paul-moore.com, stefanb@linux.ibm.com, jlayton@kernel.org,
-        linux-integrity@vger.kernel.org, linux-security-module@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org,
-        Roberto Sassu <roberto.sassu@huawei.com>,
-        Eric Snowberg
- <eric.snowberg@oracle.com>
-Date: Thu, 14 Dec 2023 14:36:54 -0500
-In-Reply-To: <CAOQ4uxgra3KNthC_Od8r3fYDPO4AiVUF3u=aUfpUpQzOeeCFvg@mail.gmail.com>
-References: <20231208172308.2876481-1-roberto.sassu@huaweicloud.com>
-	 <CAOQ4uxivpZ+u0A5kE962XST37-ey2Tv9EtddnZQhk3ohRkcQTw@mail.gmail.com>
-	 <20231208-tauziehen-zerfetzt-026e7ee800a0@brauner>
-	 <c95b24f27021052209ec6911d2b7e7b20e410f43.camel@huaweicloud.com>
-	 <20231211-fortziehen-basen-b8c0639044b8@brauner>
-	 <019f134a-6ab4-48ca-991c-5a5c94e042ea@huaweicloud.com>
-	 <CAOQ4uxgpNt7qKEF_NEJPsKU7-XhM7N_3eP68FrOpMpcRcHt4rQ@mail.gmail.com>
-	 <59bf3530-2a6e-4caa-ac42-4d0dab9a71d1@huaweicloud.com>
-	 <a9297cc1bf23e34aba3c7597681e9e71a03b37f9.camel@linux.ibm.com>
-	 <d6b43b5780770637a724d129c22d5212860f494a.camel@huaweicloud.com>
-	 <CAOQ4uxhwHgj-bE7N5SNcRZfnVHn9yCdY_=LFuOxEBkVBbrZKiw@mail.gmail.com>
-	 <579803fe4750b2ac1cbf31f4d38929c9ec901a41.camel@linux.ibm.com>
-	 <CAOQ4uxgra3KNthC_Od8r3fYDPO4AiVUF3u=aUfpUpQzOeeCFvg@mail.gmail.com>
-Content-Type: text/plain; charset="ISO-8859-15"
-X-Mailer: Evolution 3.28.5 (3.28.5-22.el8) 
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5BDCA69790
+	for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 19:37:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f42.google.com with SMTP id ffacd0b85a97d-3364a5ccbb1so754672f8f.1
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 11:37:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1702582620; x=1703187420; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=uFubgADP9XhdCLx967vVc5Kz7bKh+8vvZX0YN/15/s4=;
+        b=m4jQWA1SUmCxMaXJDOkofVlyO/iKv6WtVK7+CP6FRF74B9e0eDEgK+onoZ8/Z192eB
+         tT7zD284qzqHgvfSLe1BI2oBAVaaS65xr09uZyC70lnUVmV3Mo44MV4X6rdfzAdDkcwy
+         FAMuFzuR4hZiYqHdmdGwLzp5hPoQETPPE7njroVc49Vse2KQmoG8dVz/oeIExsG46/0I
+         phIaTuMmBrB1O+LE/yYIfODdfyy0dy3SrDQqTjMC2Sn/8QpPat9I/9GUMHr3YW86+H8K
+         px7Njf2tGp+kmuOxuS47DynLQzsKhzd/4aM2IvGvRHVF0ayaS/XEPh3tnw+rgX9Ktr38
+         j5tw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702582620; x=1703187420;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=uFubgADP9XhdCLx967vVc5Kz7bKh+8vvZX0YN/15/s4=;
+        b=A+2KL9DEBUQi4ay6wTvEEnfvXzJ+9RqCnqZ7WW3Sxgh+iKAjZlY8O6vRWSlUw7DcyJ
+         nRA7h5hbP1SI4jjgmUGuejfDBWN49qgsAkg5Z65GZoL7XAka/zd7VjYR9Btsr2n610Ec
+         Ws4vgIAOJ5ng/iOfIkeu5yVt7Uct/Tt3GUS3G7HaplL/KYFZLKpHhsioF0n4gFchpPdm
+         /1QebTs9A5uEcaK3b8A/7vLAWTstENXY1rIH19C2hApI9B1tCQXWi+rJrPLn/A7JqcbU
+         OWjAtQqfKW2omnaVkSbqntCBuJN4osLaWJOEO+xn+uIwfxebEPTzEiEGdmTGZTJYtYYY
+         bLFg==
+X-Gm-Message-State: AOJu0Yx2fnbf733ybb0UVWtkafNwfAaCyJGWiEnSDrutEJI7Uw3f4FKV
+	Smx6G85dJAF5+VON8YUQPQ==
+X-Google-Smtp-Source: AGHT+IHcXLj5OmgS9QESNFSohmdOoItGwQ/x/a/xAWVvqRZ/S+U9+6YbzNiEtyuMCorI4IJWVesZXg==
+X-Received: by 2002:adf:ef84:0:b0:336:4b83:3e6b with SMTP id d4-20020adfef84000000b003364b833e6bmr655940wro.117.1702582620265;
+        Thu, 14 Dec 2023 11:37:00 -0800 (PST)
+Received: from alex-pc-ubuntu.lan (31-10-153-16.cgn.dynamic.upc.ch. [31.10.153.16])
+        by smtp.gmail.com with ESMTPSA id k2-20020a5d6282000000b003363432c0ffsm7090118wru.113.2023.12.14.11.36.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 Dec 2023 11:36:59 -0800 (PST)
+From: Aleksandrs Vinarskis <alex.vinarskis@gmail.com>
+To: tiwai@suse.de
+Cc: alex.vinarskis@gmail.com,
+	alsa-devel@alsa-project.org,
+	david.rhodes@cirrus.com,
+	james.schulman@cirrus.com,
+	josbeir@gmail.com,
+	linux-kernel@vger.kernel.org,
+	patches@opensource.cirrus.com,
+	perex@perex.cz,
+	sbinding@opensource.cirrus.com,
+	stuarth@opensource.cirrus.com,
+	tiwai@suse.com
+Subject: Re: [PATCH 1/1] ALSA: hda: cs35l41: Dell Fiorano add missing _DSD properties
+Date: Thu, 14 Dec 2023 20:36:58 +0100
+Message-Id: <20231214193658.18969-1-alex.vinarskis@gmail.com>
+X-Mailer: git-send-email 2.40.1
+In-Reply-To: <87ttokpyws.wl-tiwai@suse.de>
+References: <87ttokpyws.wl-tiwai@suse.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: ggj4mU_b608FLM25Ikwv48nU1lvWZpYX
-X-Proofpoint-GUID: KABTHRkSl2zOTBNnk2Saec0xKkfCfZ8k
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-14_13,2023-12-14_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
- lowpriorityscore=0 mlxscore=0 clxscore=1015 priorityscore=1501 spamscore=0
- adultscore=0 phishscore=0 suspectscore=0 malwarescore=0 mlxlogscore=999
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311290000 definitions=main-2312140140
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 
-On Thu, 2023-12-14 at 20:06 +0200, Amir Goldstein wrote:
-> > > > There is another problem, when delayed copy is used. The content comes
-> > > > from one source, metadata from another.
-> > > >
-> > > > I initially created test-file-lower on the lower directory
-> > > > (overlayfs/data), before mounting overlayfs. After mount on
-> > > > overlayfs/mnt:
-> > > >
-> > > > # getfattr -m - -e hex -d overlayfs/mnt/test-file-lower
-> > > > # file: overlayfs/mnt/test-file-lower
-> > > > security.evm=0x02c86ec91a4c0cf024537fd24347b780b90973402e
-> > > > security.ima=0x0404f2ca1bb6c7e907d06dafe4687e579fce76b37e4e93b7605022da52e6ccc26fd2
-> > > > security.selinux=0x73797374656d5f753a6f626a6563745f723a756e6c6162656c65645f743a733000
-> > > >
-> > > > # chcon -t unconfined_t overlayfs/mnt/test-file-lower
-> > > >
-> > > > After this, IMA creates an empty file in the upper directory
-> > > > (overlayfs/root/data), and writes security.ima at file close.
-> > > > Unfortunately, this is what is presented from overlayfs, which is not
-> > > > in sync with the content.
-> > > >
-> > > > # getfattr -m - -e hex -d overlayfs/mnt/test-file-lower
-> > > > # file: overlayfs/mnt/test-file-lower
-> > > > security.evm=0x021d71e7df78c36745e3b651ce29cb9f47dc301248
-> > > > security.ima=0x04048855508aade16ec573d21e6a485dfd0a7624085c1a14b5ecdd6485de0c6839a4
-> > > > security.selinux=0x73797374656d5f753a6f626a6563745f723a756e636f6e66696e65645f743a733000
-> > > >
-> > > > # sha256sum overlayfs/mnt/test-file-lower
-> > > > f2ca1bb6c7e907d06dafe4687e579fce76b37e4e93b7605022da52e6ccc26fd2  overlayfs/mnt/test-file-lower
-> > > >
-> > > > # sha256sum overlayfs/root/data/test-file-lower
-> > > > 8855508aade16ec573d21e6a485dfd0a7624085c1a14b5ecdd6485de0c6839a4  overlayfs/root/data/test-file-lower (upperdir)
-> > > >
-> > > > We would need to use the lower security.ima until the copy is made, but
-> > > > at the same time we need to keep the upper valid (with all xattrs) so
-> > > > that IMA can update the next time overlayfs requests that.
-> > > >
-> > >
-> > > Yap.
-> > >
-> > > As Seth wrote, overlayfs is a combination of upper and lower.
-> > > The information that IMA needs should be accessible from either lower
-> > > or upper, but sometimes we will need to make the right choice.
-> > >
-> > > The case of security.ima is similar to that of st_blocks -
-> > > it is a data-related metadata, so it needs to be taken from the lowerdata inode
-> > > (not even the lower inode). See example of getting STATX_BLOCKS
-> > > in ovl_getattr().
-> > >
-> > > I would accept a patch that special cases security.ima in ovl_xattr_get()
-> > > and gets it from ovl_i_path_lowerdata(), which would need to be
-> > > factored out of ovl_path_lowerdata().
-> > >
-> > > I would also accept filtering out security.{ima,evm} from
-> > >
-> > > But I would only accept it if I know that IMA is not trying to write the
-> > > security.ima xattr when closing an overlayfs file, only when closing the
-> > > real underlying upper file.
-> >
-> > I don't see how that would be possible.  As far as I'm aware, the
-> > correlation is between the overlay and the underlying lower/uppper
-> > file, not the other way around.  How could a close on the underlying
-> > file trigger IMA on an overlay file?
-> >
-> 
-> Well, you are right. it cannot.
-> 
-> What I meant is that close of overlayfs file should NOT open and read
-> the overlayfs file and recalculate security.ima to store in overlayfs inode
-> because close of overlayfs file will follow a close of the upper file that
-> should recalculate and store security.ima in the upper inode.
-> 
-> It is possible that a close of an overlayfs file will update the security
-> state of the overlayfs inode by copying the security state from the
-> upper inode.
+> Can I be awkward and ask that we hold off on this patch chain until
+> then?  Then we can add this laptop using the new approach.
 
-Thank you for the explanation.
+> If/when the chain is accepted, we will add support for a few Dell
+> laptops as well, including this one.
 
-Basically IMA should differentiate between file close on the underlying
-upper/lower file and the overlay file.  Since IMA doesn't define
-inode_copy_up_xattr, security.ima will be copied up.  Re-calculating
-security.ima on the overlay is unnecessary.
+Sounds reasonable. I'll be looking forward to your new framework.
+Once up, I can adjust my patch, and if everything still works as expected,
+push updated version for review.
 
-> But then again, I could be misunderstanding the IMA workflows
-> and it could be more complicated than I try to present it.
-> This is the reason that I requested the documentation of how
-> IMA+overlayfs is *expected* to work.
+> Instead of erroring out, I wonder if we can noodle our way to the
+> appropriate clk and clk_set_rate it up to 4MHz for this particular
+> laptop only?  Stefan's taking a look at that.
+Thanks for the initiative. Potentially that would work, however, it would
+require to go up the clock tree to the divider. Since its clearly a
+firmware bug causing lpss miss-configuration, I intially thought it would
+be best to have it resolved there. If you need more information, I would be
+happy to share results of our debugging with you via private email.
 
-Ok
+> Also, any SPI rate >~100k is probably just about usable, so we don't
+> want to error on <4MHz.  Quite often the spi clock is set at some value
+> just below 4MHz.  It's unclear if this is going to get fixed in the BIOS
+> at this point, so we don't know what exact rate we'd eventually receive.
+I'm afraid I have to disagree here, 100k is _way_ too slow. Not sure
+intentionally or not, but wake up from suspend is held back by Cirrus
+driver. At 100k, I got these results, on boot:
 
-Mimi
+```
+[    5.561244] cs35l41-hda spi1-CSC3551:00-cs35l41-hda.0: Adding DSD properties for 10280BEB
+..
+[   11.251145] cs35l41-hda spi1-CSC3551:00-cs35l41-hda.1: CS35L41 Bound - SSID: 10280BEB, BST: 1, VSPK: 1, CH: R, FW EN: 1, SPKID: -19
+```
 
+And on wake-up from suspend:
+```
+[  307.162720] cs35l41-hda spi1-CSC3551:00-cs35l41-hda.0: DSP1: Firmware version: 3
+...
+[  312.515588] cs35l41-hda spi1-CSC3551:00-cs35l41-hda.1: 100000 Hz actual, DMA
+```
+
+This means ~5.5 additional seconds of black screen on wake up, in my opnion
+this is completely unacceptable. With 4Mhz, it takes sub 1second. Moreover,
+the first time (after preconfigured by ALSA delay) sound is played, it
+seems it needs to communicate with amplifier, and it takes additional few
+seconds to start playing at 100Khz. With 4Mhz, its practically instant.
+
+I agree that it is unlikely for Dell to ever fix its firmware. Thus either
+in case of intel-lpss patch, or via clk_set_rate direclty from Cirrus
+driver, lpss divider would be set 1:1, SPI controller would receive 100Mhz
+clock directly, and set it to whatever is requested internally (currently
+4Mhz). This way, lowest 'usable' rate should be irrelevant.
+
+> Quite often the spi clock is set at some value just below 4MHz
+Perhaps to address this, we could error out on say half requested rate? In
+reality, it will be either requested rate/just sub requested, or something
+totally off, like the default 3051Hz in this case.
+
+> This will break once you pick up AMD's multi-cs patches, we should use
+> spi_set_csgpiod instead.
+Thanks, will correct.
+
+> I suppose the error-out was due to safety reasons, but the clock
+> adjustment works, it should be fine.  Let's see.
+Precisely, since it is indeed unknown when exaclty/if ever firmware will
+be fixed, and/or when our patch to intel-lpss will be accepted.
+
+Regards,
+Alex
 
