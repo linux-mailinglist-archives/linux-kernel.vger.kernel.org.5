@@ -2,178 +2,289 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E6C3813215
+	by mail.lfdr.de (Postfix) with ESMTP id E3512813216
 	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 14:49:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1573230AbjLNNtL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 08:49:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48750 "EHLO
+        id S1573259AbjLNNtN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 08:49:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48768 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1573102AbjLNNtJ (ORCPT
+        with ESMTP id S1573229AbjLNNtL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 08:49:09 -0500
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79F1911B;
-        Thu, 14 Dec 2023 05:49:11 -0800 (PST)
-Received: by mail-pj1-x1033.google.com with SMTP id 98e67ed59e1d1-28aeacb2dfdso1094707a91.0;
-        Thu, 14 Dec 2023 05:49:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702561751; x=1703166551; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=UTgQg5ey7t1gN8vRT5vRqf8veCr45WdokAmFaMYA3+E=;
-        b=HpsGmDfrQAXXmLmF9+MyM7P4KI+VmntHmtvpA30TrA9z0xVFctdQBL4guem5MSi3Sr
-         DXKuDBrozlZ4sqrbgh0qnjA607aWRymYy6cf9/g17D03IKoFDfX8O+AEejnXHToMtTI1
-         DZTUm/uJFy78YrFx+U1FJ+mICE7iDEICCtM/4NKnmlc93TRfbdEx5XrsgKgV20Nwjuw5
-         OznfTF7lFNZIgQjmPm2UhzS5Q+Xw5MKqGmka7X9N9l6OOXUndBJxasnINDvzZACbEjyO
-         NTneZz6ByIE0uQLTJXs5l9wiFN8KVTKNs1LgDUfWxAR0xduYtXye0W0/NzXeOJhUiXMt
-         cOMA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702561751; x=1703166551;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=UTgQg5ey7t1gN8vRT5vRqf8veCr45WdokAmFaMYA3+E=;
-        b=YhtBMC4MgFf45VwK46w5pA35H0GebnqJxGtnt9vfPOzPzZAd3RqJHp4iefqMt6PUJo
-         fiY9qMG/IOZUNkCSTUS+dtSNYAfD0nxNlW1l4U9ytZsrSy4x0OfSUTcOPmHD47i7JApb
-         KzHc+2LWm9OFE4HlBPe05Xf2WoBUfO7HaeT+HfbZIjibA7bYB+N2qFeS+NmIi1mi5xOh
-         jFRHOgcTYscB4vlqYNPg1jCQQYRyQVnXfxqMjsuisyMiwA9mRRMi76dsnQkZIYs+aa18
-         rkSOJ7IfUVZcAV5QmBnhKhtgrngar2ClrxkcFH8n9JQGPHPyMyLcLUenfPX967DJ4S/Z
-         Ur1Q==
-X-Gm-Message-State: AOJu0YzXE34HyXZBpRm8I0+Q9075xo71InZdyKkErjQFe10YXXpP3BlE
-        3cCwFaTXhXatJj6A0SII+FE=
-X-Google-Smtp-Source: AGHT+IEv3GGnQfkJxzqP9Db4Qf3Fpn/fdX4KnRYiGqn+0eH/2LWeqGdMECO7teg0UArVZGBkQXHQ3Q==
-X-Received: by 2002:a17:90a:a10f:b0:28b:201f:c2be with SMTP id s15-20020a17090aa10f00b0028b201fc2bemr63542pjp.62.1702561750754;
-        Thu, 14 Dec 2023 05:49:10 -0800 (PST)
-Received: from [192.168.54.90] (static.220.238.itcsa.net. [190.15.220.238])
-        by smtp.gmail.com with ESMTPSA id q2-20020a17090a430200b0028a4c85a55csm10995876pjg.27.2023.12.14.05.49.07
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 14 Dec 2023 05:49:10 -0800 (PST)
-Message-ID: <29100969-106a-47c1-bfe3-6e2ca38c8c54@gmail.com>
-Date:   Thu, 14 Dec 2023 10:49:05 -0300
+        Thu, 14 Dec 2023 08:49:11 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A98B78E
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 05:49:17 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DA13DC433C7;
+        Thu, 14 Dec 2023 13:49:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1702561757;
+        bh=+YaP//k66yYn7P7wEQDb5TW+zpn9I0lJ4Asbfy7dees=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=HuXKCk6+Sjijr2Oaj9DQy7ryY55jHeUtaosd+PrOvL2Gkbp55JwXqanRLNcfzzIyU
+         6097ZavOI0gNXTXj1+iF0pqakOnJ0n+y3jsT5BilJQzl1y0Q2oINBHGs0gQ6OgYZR4
+         3p6YeAHBLeuu+A8BqXKnlZzvXONBwj5H8WvvrArVKxi9b06uWC383CHPeTLP6L62xV
+         JFCUhuW0Q0xh7FoPN92Eh0GqoOA+PmXJ9mlkmf2idbnIV2oQWzBZ5w+PybKy4pAmlp
+         CsurFIBYSBRooKI5wGbiEM0ajGTU5wLMmpfwTnmQ7PvjO26Hi2v06NEnDcLi/p9xTC
+         uKakxdxaQvRGw==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 23C82403EF; Thu, 14 Dec 2023 10:49:14 -0300 (-03)
+Date:   Thu, 14 Dec 2023 10:49:14 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Adrian Hunter <adrian.hunter@intel.com>
+Cc:     Ian Rogers <irogers@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Mike Leach <mike.leach@linaro.org>,
+        James Clark <james.clark@arm.com>,
+        Leo Yan <leo.yan@linaro.org>,
+        John Garry <john.g.garry@oracle.com>,
+        Will Deacon <will@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Darren Hart <dvhart@infradead.org>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        =?iso-8859-1?Q?Andr=E9?= Almeida <andrealmeid@igalia.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        K Prateek Nayak <kprateek.nayak@amd.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Kajol Jain <kjain@linux.ibm.com>,
+        Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
+        Andrew Jones <ajones@ventanamicro.com>,
+        Alexandre Ghiti <alexghiti@rivosinc.com>,
+        Atish Patra <atishp@rivosinc.com>,
+        "Steinar H. Gunderson" <sesse@google.com>,
+        Yang Jihong <yangjihong1@huawei.com>,
+        Yang Li <yang.lee@linux.alibaba.com>,
+        Changbin Du <changbin.du@huawei.com>,
+        Sandipan Das <sandipan.das@amd.com>,
+        Ravi Bangoria <ravi.bangoria@amd.com>,
+        Paran Lee <p4ranlee@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Yanteng Si <siyanteng@loongson.cn>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
+        bpf@vger.kernel.org
+Subject: Re: [PATCH v1 00/14] Clean up libperf cpumap's empty function
+Message-ID: <ZXsH2rragIC7YmCS@kernel.org>
+References: <20231129060211.1890454-1-irogers@google.com>
+ <ZXifiVytVbebYE3U@kernel.org>
+ <84755553-3a79-4693-9396-084e9ae41235@intel.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] rust: upgrade to Rust 1.74.1
-To:     Miguel Ojeda <ojeda@kernel.org>,
-        Wedson Almeida Filho <wedsonaf@gmail.com>,
-        Alex Gaynor <alex.gaynor@gmail.com>
-Cc:     Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
-        =?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
-        Benno Lossin <benno.lossin@proton.me>,
-        Andreas Hindborg <a.hindborg@samsung.com>,
-        Alice Ryhl <aliceryhl@google.com>,
-        rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org,
-        patches@lists.linux.dev
-References: <20231214092958.377061-1-ojeda@kernel.org>
-Content-Language: en-US
-From:   Martin Rodriguez Reboredo <yakoyoku@gmail.com>
-In-Reply-To: <20231214092958.377061-1-ojeda@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <84755553-3a79-4693-9396-084e9ae41235@intel.com>
+X-Url:  http://acmel.wordpress.com
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/14/23 06:29, Miguel Ojeda wrote:
-> This is the next upgrade to the Rust toolchain, from 1.73.0 to 1.74.1
-> (i.e. the latest) [1].
+Em Wed, Dec 13, 2023 at 02:48:15PM +0200, Adrian Hunter escreveu:
+> On 12/12/23 19:59, Arnaldo Carvalho de Melo wrote:
+> > Em Tue, Nov 28, 2023 at 10:01:57PM -0800, Ian Rogers escreveu:
+> >> Rename and clean up the use of libperf CPU map functions particularly
+> >> focussing on perf_cpu_map__empty that may return true for maps
+> >> containing CPUs but also with an "any CPU"/dummy value.
+> >>
+> >> perf_cpu_map__nr is also troubling in that iterating an empty CPU map
+> >> will yield the "any CPU"/dummy value. Reduce the appearance of some
+> >> calls to this by using the perf_cpu_map__for_each_cpu macro.
+> >>
+> >> Ian Rogers (14):
+> >>   libperf cpumap: Rename perf_cpu_map__dummy_new
+> >>   libperf cpumap: Rename and prefer sysfs for perf_cpu_map__default_new
+> >>   libperf cpumap: Rename perf_cpu_map__empty
+> >>   libperf cpumap: Replace usage of perf_cpu_map__new(NULL)
+> >>   libperf cpumap: Add for_each_cpu that skips the "any CPU" case
+> > 
+> > Applied 1-6, with James Reviewed-by tags, would be good to have Adrian
+> > check the PT and BTS parts, testing the end result if he things its all
+> > ok.
+
+Ian,
+
+	1-6 is in perf-tools-next now, can you please consider Adrian's
+suggestion to reduce patch size and rebase the remaining patches?
+
+- Arnaldo
+ 
+> Changing the same lines of code twice in the same patch set is not
+> really kernel style.
 > 
-> See the upgrade policy [2] and the comments on the first upgrade in
-> commit 3ed03f4da06e ("rust: upgrade to Rust 1.68.2").
+> Some of the churn could be reduced by applying and rebasing on the
+> patch below.
 > 
-> # Unstable features
+> Ideally the patches should be reordered so that the lines only
+> change once i.e.
 > 
-> No unstable features (that we use) were stabilized.
+> 	perf_cpu_map__empty -> <replacement>
 > 
-> Therefore, the only unstable features allowed to be used outside the
-> `kernel` crate are still `new_uninit,offset_of`, though other code to
-> be upstreamed may increase the list (e.g. `offset_of` was added recently).
+> instead of
 > 
-> Please see [3] for details.
+> 	perf_cpu_map__empty -> <rename> -> <replacement>
 > 
-> # Other improvements
+> If that is too much trouble, please accept my ack instead:
 > 
-> Rust 1.74.0 allows to use `#[repr(Rust)]` explicitly [4], which can be
-> useful to be explicit about particular cases that would normally use
-> e.g. the C representation, such as silencing lints like the upcoming
-> additions we requested [5] to the `no_mangle_with_rust_abi` Clippy lint
-> (which in turn triggered the `#[repr(Rust)]` addition).
+> Acked-by: Adrian Hunter <adrian.hunter@intel.com>
+
+
+ 
 > 
-> Rust 1.74.0 includes a fix for one of the false negative cases we reported
-> in Clippy's `disallowed_macros` lint [6] that we would like to use in
-> the future.
+> From: Adrian Hunter <adrian.hunter@intel.com>
 > 
-> Rust 1.74.1 fixes an ICE that the Apple AGX GPU driver was hitting [7].
+> Factor out perf_cpu_map__empty() use to reduce the occurrences and make
+> the code more readable.
 > 
-> # Required changes
-> 
-> For this upgrade, no changes were required (i.e. on our side).
-> 
-> # `alloc` upgrade and reviewing
-> 
-> The vast majority of changes are due to our `alloc` fork being upgraded
-> at once.
-> 
-> There are two kinds of changes to be aware of: the ones coming from
-> upstream, which we should follow as closely as possible, and the updates
-> needed in our added fallible APIs to keep them matching the newer
-> infallible APIs coming from upstream.
-> 
-> Instead of taking a look at the diff of this patch, an alternative
-> approach is reviewing a diff of the changes between upstream `alloc` and
-> the kernel's. This allows to easily inspect the kernel additions only,
-> especially to check if the fallible methods we already have still match
-> the infallible ones in the new version coming from upstream.
-> 
-> Another approach is reviewing the changes introduced in the additions in
-> the kernel fork between the two versions. This is useful to spot
-> potentially unintended changes to our additions.
-> 
-> To apply these approaches, one may follow steps similar to the following
-> to generate a pair of patches that show the differences between upstream
-> Rust and the kernel (for the subset of `alloc` we use) before and after
-> applying this patch:
-> 
->      # Get the difference with respect to the old version.
->      git -C rust checkout $(linux/scripts/min-tool-version.sh rustc)
->      git -C linux ls-tree -r --name-only HEAD -- rust/alloc |
->          cut -d/ -f3- |
->          grep -Fv README.md |
->          xargs -IPATH cp rust/library/alloc/src/PATH linux/rust/alloc/PATH
->      git -C linux diff --patch-with-stat --summary -R > old.patch
->      git -C linux restore rust/alloc
-> 
->      # Apply this patch.
->      git -C linux am rust-upgrade.patch
-> 
->      # Get the difference with respect to the new version.
->      git -C rust checkout $(linux/scripts/min-tool-version.sh rustc)
->      git -C linux ls-tree -r --name-only HEAD -- rust/alloc |
->          cut -d/ -f3- |
->          grep -Fv README.md |
->          xargs -IPATH cp rust/library/alloc/src/PATH linux/rust/alloc/PATH
->      git -C linux diff --patch-with-stat --summary -R > new.patch
->      git -C linux restore rust/alloc
-> 
-> Now one may check the `new.patch` to take a look at the additions (first
-> approach) or at the difference between those two patches (second
-> approach). For the latter, a side-by-side tool is recommended.
-> 
-> Link: https://github.com/rust-lang/rust/blob/stable/RELEASES.md#version-1741-2023-12-07 [1]
-> Link: https://rust-for-linux.com/rust-version-policy [2]
-> Link: https://github.com/Rust-for-Linux/linux/issues/2 [3]
-> Link: https://github.com/rust-lang/rust/pull/114201 [4]
-> Link: https://github.com/rust-lang/rust-clippy/issues/11219 [5]
-> Link: https://github.com/rust-lang/rust-clippy/issues/11431 [6]
-> Link: https://github.com/rust-lang/rust/issues/117976#issuecomment-1822225691 [7]
-> Signed-off-by: Miguel Ojeda <ojeda@kernel.org>
+> Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
 > ---
-> [...]
-Reviewed-by: Martin Rodriguez Reboredo <yakoyoku@gmail.com>
+>  tools/perf/arch/x86/util/intel-bts.c | 11 ++++++++---
+>  tools/perf/arch/x86/util/intel-pt.c  | 21 ++++++++++++---------
+>  2 files changed, 20 insertions(+), 12 deletions(-)
+> 
+> diff --git a/tools/perf/arch/x86/util/intel-bts.c b/tools/perf/arch/x86/util/intel-bts.c
+> index d2c8cac11470..cebe994eb9db 100644
+> --- a/tools/perf/arch/x86/util/intel-bts.c
+> +++ b/tools/perf/arch/x86/util/intel-bts.c
+> @@ -59,6 +59,11 @@ intel_bts_info_priv_size(struct auxtrace_record *itr __maybe_unused,
+>  	return INTEL_BTS_AUXTRACE_PRIV_SIZE;
+>  }
+>  
+> +static bool intel_bts_per_cpu(struct evlist *evlist)
+> +{
+> +	return !perf_cpu_map__empty(evlist->core.user_requested_cpus);
+> +}
+> +
+>  static int intel_bts_info_fill(struct auxtrace_record *itr,
+>  			       struct perf_session *session,
+>  			       struct perf_record_auxtrace_info *auxtrace_info,
+> @@ -109,8 +114,8 @@ static int intel_bts_recording_options(struct auxtrace_record *itr,
+>  	struct intel_bts_recording *btsr =
+>  			container_of(itr, struct intel_bts_recording, itr);
+>  	struct perf_pmu *intel_bts_pmu = btsr->intel_bts_pmu;
+> +	bool per_cpu_mmaps = intel_bts_per_cpu(evlist);
+>  	struct evsel *evsel, *intel_bts_evsel = NULL;
+> -	const struct perf_cpu_map *cpus = evlist->core.user_requested_cpus;
+>  	bool privileged = perf_event_paranoid_check(-1);
+>  
+>  	if (opts->auxtrace_sample_mode) {
+> @@ -143,7 +148,7 @@ static int intel_bts_recording_options(struct auxtrace_record *itr,
+>  	if (!opts->full_auxtrace)
+>  		return 0;
+>  
+> -	if (opts->full_auxtrace && !perf_cpu_map__empty(cpus)) {
+> +	if (opts->full_auxtrace && per_cpu_mmaps) {
+>  		pr_err(INTEL_BTS_PMU_NAME " does not support per-cpu recording\n");
+>  		return -EINVAL;
+>  	}
+> @@ -224,7 +229,7 @@ static int intel_bts_recording_options(struct auxtrace_record *itr,
+>  		 * In the case of per-cpu mmaps, we need the CPU on the
+>  		 * AUX event.
+>  		 */
+> -		if (!perf_cpu_map__empty(cpus))
+> +		if (per_cpu_mmaps)
+>  			evsel__set_sample_bit(intel_bts_evsel, CPU);
+>  	}
+>  
+> diff --git a/tools/perf/arch/x86/util/intel-pt.c b/tools/perf/arch/x86/util/intel-pt.c
+> index fa0c718b9e72..0ff9147c75da 100644
+> --- a/tools/perf/arch/x86/util/intel-pt.c
+> +++ b/tools/perf/arch/x86/util/intel-pt.c
+> @@ -312,6 +312,11 @@ static void intel_pt_tsc_ctc_ratio(u32 *n, u32 *d)
+>  	*d = eax;
+>  }
+>  
+> +static bool intel_pt_per_cpu(struct evlist *evlist)
+> +{
+> +	return !perf_cpu_map__empty(evlist->core.user_requested_cpus);
+> +}
+> +
+>  static int intel_pt_info_fill(struct auxtrace_record *itr,
+>  			      struct perf_session *session,
+>  			      struct perf_record_auxtrace_info *auxtrace_info,
+> @@ -322,7 +327,8 @@ static int intel_pt_info_fill(struct auxtrace_record *itr,
+>  	struct perf_pmu *intel_pt_pmu = ptr->intel_pt_pmu;
+>  	struct perf_event_mmap_page *pc;
+>  	struct perf_tsc_conversion tc = { .time_mult = 0, };
+> -	bool cap_user_time_zero = false, per_cpu_mmaps;
+> +	bool per_cpu_mmaps = intel_pt_per_cpu(session->evlist);
+> +	bool cap_user_time_zero = false;
+>  	u64 tsc_bit, mtc_bit, mtc_freq_bits, cyc_bit, noretcomp_bit;
+>  	u32 tsc_ctc_ratio_n, tsc_ctc_ratio_d;
+>  	unsigned long max_non_turbo_ratio;
+> @@ -369,8 +375,6 @@ static int intel_pt_info_fill(struct auxtrace_record *itr,
+>  			ui__warning("Intel Processor Trace: TSC not available\n");
+>  	}
+>  
+> -	per_cpu_mmaps = !perf_cpu_map__empty(session->evlist->core.user_requested_cpus);
+> -
+>  	auxtrace_info->type = PERF_AUXTRACE_INTEL_PT;
+>  	auxtrace_info->priv[INTEL_PT_PMU_TYPE] = intel_pt_pmu->type;
+>  	auxtrace_info->priv[INTEL_PT_TIME_SHIFT] = tc.time_shift;
+> @@ -604,8 +608,8 @@ static int intel_pt_recording_options(struct auxtrace_record *itr,
+>  	struct perf_pmu *intel_pt_pmu = ptr->intel_pt_pmu;
+>  	bool have_timing_info, need_immediate = false;
+>  	struct evsel *evsel, *intel_pt_evsel = NULL;
+> -	const struct perf_cpu_map *cpus = evlist->core.user_requested_cpus;
+>  	bool privileged = perf_event_paranoid_check(-1);
+> +	bool per_cpu_mmaps = intel_pt_per_cpu(evlist);
+>  	u64 tsc_bit;
+>  	int err;
+>  
+> @@ -774,8 +778,7 @@ static int intel_pt_recording_options(struct auxtrace_record *itr,
+>  	 * Per-cpu recording needs sched_switch events to distinguish different
+>  	 * threads.
+>  	 */
+> -	if (have_timing_info && !perf_cpu_map__empty(cpus) &&
+> -	    !record_opts__no_switch_events(opts)) {
+> +	if (have_timing_info && per_cpu_mmaps && !record_opts__no_switch_events(opts)) {
+>  		if (perf_can_record_switch_events()) {
+>  			bool cpu_wide = !target__none(&opts->target) &&
+>  					!target__has_task(&opts->target);
+> @@ -832,7 +835,7 @@ static int intel_pt_recording_options(struct auxtrace_record *itr,
+>  		 * In the case of per-cpu mmaps, we need the CPU on the
+>  		 * AUX event.
+>  		 */
+> -		if (!perf_cpu_map__empty(cpus))
+> +		if (per_cpu_mmaps)
+>  			evsel__set_sample_bit(intel_pt_evsel, CPU);
+>  	}
+>  
+> @@ -858,7 +861,7 @@ static int intel_pt_recording_options(struct auxtrace_record *itr,
+>  			tracking_evsel->immediate = true;
+>  
+>  		/* In per-cpu case, always need the time of mmap events etc */
+> -		if (!perf_cpu_map__empty(cpus)) {
+> +		if (per_cpu_mmaps) {
+>  			evsel__set_sample_bit(tracking_evsel, TIME);
+>  			/* And the CPU for switch events */
+>  			evsel__set_sample_bit(tracking_evsel, CPU);
+> @@ -870,7 +873,7 @@ static int intel_pt_recording_options(struct auxtrace_record *itr,
+>  	 * Warn the user when we do not have enough information to decode i.e.
+>  	 * per-cpu with no sched_switch (except workload-only).
+>  	 */
+> -	if (!ptr->have_sched_switch && !perf_cpu_map__empty(cpus) &&
+> +	if (!ptr->have_sched_switch && per_cpu_mmaps &&
+>  	    !target__none(&opts->target) &&
+>  	    !intel_pt_evsel->core.attr.exclude_user)
+>  		ui__warning("Intel Processor Trace decoding will not be possible except for kernel tracing!\n");
+> -- 
+> 2.34.1
+> 
+> 
+> 
+
+-- 
+
+- Arnaldo
