@@ -2,115 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F3A8812C44
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 10:56:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 79761812C50
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 10:57:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1443479AbjLNJ42 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 04:56:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43568 "EHLO
+        id S1443483AbjLNJ5h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 04:57:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47462 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1443481AbjLNJ40 (ORCPT
+        with ESMTP id S1443458AbjLNJ5f (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 04:56:26 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94A3A106
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 01:56:32 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E7342C433C7;
-        Thu, 14 Dec 2023 09:56:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1702547792;
-        bh=wGKhND1VfRS+D1xAwDoI8Hg7Nwb7ZoAYE7B0z+inPCM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=GADCLlq3M+2WeHKjyGpBSbsGGuM6Aq3ZPmvdby8mBpQHiXZWnWRCCJI0UI7UedGtc
-         3WuWgWBoGU8ioevc1HxgM2lZmQJuS9Qy2a1ZqX322zNaD8sIy5R1yqrJ0DS1TZ4dpD
-         osLRPlatKi68ocGgfxrP9j9Ixoi8G+GYBlOzEzvh+1qJNVQ/+zCJRurIhZB2m87y1I
-         LVwyjP1rAUsMMU7GX8Q1uY6B3gi1KhRXs06VeRXhYnTIAZ6Ae2pMMgKroZtOF2ewqh
-         qUB62T45DB2cBOs4QRnFBYdiqgMm1jCBEakytBzQInGC2l0b42Phvrz/Cc2A9XnqUB
-         F6WKFeiXrSaRA==
-Received: from johan by xi.lan with local (Exim 4.96.2)
-        (envelope-from <johan@kernel.org>)
-        id 1rDiSB-0007l7-1q;
-        Thu, 14 Dec 2023 10:56:28 +0100
-Date:   Thu, 14 Dec 2023 10:56:27 +0100
-From:   Johan Hovold <johan@kernel.org>
-To:     Krishna Kurapati PSSNV <quic_kriskura@quicinc.com>
-Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Wesley Cheng <quic_wcheng@quicinc.com>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Conor Dooley <conor+dt@kernel.org>, devicetree@vger.kernel.org,
-        Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
-        quic_ppratap@quicinc.com, quic_jackp@quicinc.com,
-        Bjorn Andersson <andersson@kernel.org>
-Subject: Re: [PATCH v3 1/2] dt-bindings: usb: dwc3: Clean up hs_phy_irq in
- bindings
-Message-ID: <ZXrRS7O0Cv1sAJdk@hovoldconsulting.com>
-References: <20231211121124.4194-1-quic_kriskura@quicinc.com>
- <20231211121124.4194-2-quic_kriskura@quicinc.com>
- <24fb0b25-0139-4370-864c-839ae931f847@linaro.org>
- <c5d85c84-3783-4262-a379-1f28e13ae4ce@quicinc.com>
+        Thu, 14 Dec 2023 04:57:35 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFD92F5
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 01:57:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1702547861;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=VbNgQOlqA6uJ+zRh1fYoyaXPvn6oHay0OVtTkel+hcE=;
+        b=afl6yFNrcPSPQhR5d7Q5SiztbiWRVtiA3HdPD+6TRZo84J3kdvI8MqrJNxuRhnfGSvBTzv
+        XRmNmeC4RPkavbeY8W/Kmt6TY2ITHY2t++u92/SH3iiOBsfQ5yDFmk3KjaN8ekHHDT3tqB
+        bCdW7YBzJ8vVycxc7M1YcyLMHKCi4Sc=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-499-DbT9u2H8O7ywFS9t4f7Bjw-1; Thu, 14 Dec 2023 04:57:38 -0500
+X-MC-Unique: DbT9u2H8O7ywFS9t4f7Bjw-1
+Received: by mail-wr1-f71.google.com with SMTP id ffacd0b85a97d-33608b14b3cso5643117f8f.0
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 01:57:38 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702547857; x=1703152657;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=VbNgQOlqA6uJ+zRh1fYoyaXPvn6oHay0OVtTkel+hcE=;
+        b=gsh0BbMEytQbp71xpldxHA8Rg6e5WcYduti5LFxhslkAYjIk3Nq8+gWOUVrv2/Z9Hs
+         vZinopiHnkfiiDYky5bEpOufO3/DsL84dmZK+VIbPMRMyX7bSMEGXWg2qOeENHoVZcgx
+         6wWvDvIOvlyWRlj3t7KRr5ITrdwbUEl6ti8WnEbTSZaZQ4G6tqhFjYha6p2/9Mdkim+z
+         2hOojrs+icfMFX4I6GM28lkNsXIvX9MOq0RQKv8DXvF4BB0COqRBIN9YcERXcHHtA4Wg
+         RGg5BaxWAjQ710I5orS9uvleTWU95CUOG/Y65xOLFM8FlVjsY7gkS2SMZcH7BvS5KWKx
+         b7sA==
+X-Gm-Message-State: AOJu0YwVtewp52YRaa0cQMBga+iXOtuQ+ACffbir+Srle0bveVRb2Y4p
+        +ZMo6f+GBhWDxGcSbDskj1NOdO1mL7hgwMxOG0AI3L820RSxwnIFTbLKtm3gP2NsDFLCXpro5KI
+        FPhI+lD9diWEDB3k2kiwkV1Kb
+X-Received: by 2002:a05:600c:b43:b0:40b:5e1e:cf2 with SMTP id k3-20020a05600c0b4300b0040b5e1e0cf2mr4879013wmr.45.1702547857609;
+        Thu, 14 Dec 2023 01:57:37 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IFIMcrRPUr2M5N3AZHrTn2j7CFarP7ZToRtVz3Wt+VPt0vGWHfE5JUVAn5fPT1rWcRb4rxeWQ==
+X-Received: by 2002:a05:600c:b43:b0:40b:5e1e:cf2 with SMTP id k3-20020a05600c0b4300b0040b5e1e0cf2mr4878999wmr.45.1702547857326;
+        Thu, 14 Dec 2023 01:57:37 -0800 (PST)
+Received: from sgarzare-redhat ([5.11.101.217])
+        by smtp.gmail.com with ESMTPSA id s13-20020a05600c384d00b004030e8ff964sm26261376wmr.34.2023.12.14.01.57.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 Dec 2023 01:57:36 -0800 (PST)
+Date:   Thu, 14 Dec 2023 10:57:30 +0100
+From:   Stefano Garzarella <sgarzare@redhat.com>
+To:     Arseniy Krasnov <avkrasnov@salutedevices.com>
+Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Bobby Eshleman <bobby.eshleman@bytedance.com>,
+        kvm@vger.kernel.org, virtualization@lists.linux-foundation.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel@sberdevices.ru, oxffffaa@gmail.com
+Subject: Re: [PATCH net-next v9 2/4] virtio/vsock: send credit update during
+ setting SO_RCVLOWAT
+Message-ID: <rambimqosesmdqnko3ttcntpzrq7cm376pln6qsohtz7phm3un@ln3ate7qmcp7>
+References: <20231214091947.395892-1-avkrasnov@salutedevices.com>
+ <20231214091947.395892-3-avkrasnov@salutedevices.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Disposition: inline
-In-Reply-To: <c5d85c84-3783-4262-a379-1f28e13ae4ce@quicinc.com>
+In-Reply-To: <20231214091947.395892-3-avkrasnov@salutedevices.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 13, 2023 at 09:48:57PM +0530, Krishna Kurapati PSSNV wrote:
-> On 12/13/2023 12:45 PM, Krzysztof Kozlowski wrote:
-> > On 11/12/2023 13:11, Krishna Kurapati wrote:
-> >> The high speed related interrupts present on QC targets are as follows:
+On Thu, Dec 14, 2023 at 12:19:45PM +0300, Arseniy Krasnov wrote:
+>Send credit update message when SO_RCVLOWAT is updated and it is bigger
+>than number of bytes in rx queue. It is needed, because 'poll()' will
+>wait until number of bytes in rx queue will be not smaller than
+>SO_RCVLOWAT, so kick sender to send more data. Otherwise mutual hungup
+>for tx/rx is possible: sender waits for free space and receiver is
+>waiting data in 'poll()'.
+>
+>Fixes: b89d882dc9fc ("vsock/virtio: reduce credit update messages")
+>Signed-off-by: Arseniy Krasnov <avkrasnov@salutedevices.com>
+>Reviewed-by: Stefano Garzarella <sgarzare@redhat.com>
+>Acked-by: Michael S. Tsirkin <mst@redhat.com>
+>---
+> Changelog:
+> v1 -> v2:
+>  * Update commit message by removing 'This patch adds XXX' manner.
+>  * Do not initialize 'send_update' variable - set it directly during
+>    first usage.
+> v3 -> v4:
+>  * Fit comment in 'virtio_transport_notify_set_rcvlowat()' to 80 chars.
+> v4 -> v5:
+>  * Do not change callbacks order in transport structures.
+> v5 -> v6:
+>  * Reorder callbacks in transport structures.
+>  * Do to send credit update when 'fwd_cnt' == 'last_fwd_cnt'.
+> v8 -> v9:
+>  * Add 'Fixes' tag.
+>
+> drivers/vhost/vsock.c                   |  1 +
+> include/linux/virtio_vsock.h            |  1 +
+> net/vmw_vsock/virtio_transport.c        |  1 +
+> net/vmw_vsock/virtio_transport_common.c | 30 +++++++++++++++++++++++++
+> net/vmw_vsock/vsock_loopback.c          |  1 +
+> 5 files changed, 34 insertions(+)
 
-> >> Classiffy SoC's into four groups based on whether qusb2_phy interrupt
+As I already mentioned in the cover letter, this patch doesn't compile
+unless we apply patch 3 before this one, so:
 
-typo: Classify
+Nacked-by: Stefano Garzarella <sgarzare@redhat.com>
 
-> >> or {dp/dm}_hs_phy_irq is used for wakeup in high speed and whether the
-> >> SoCs have hs_phy_irq present in them or not.
-> >>
-> >> The ss_phy_irq is optional interrupt because there are mutliple SoC's
-> >> which either support only High Speed or there are multiple controllers
-> >> within same Soc and the secondary controller is High Speed only capable.
-> >>
-> >> This breaks ABI on targets running older kernels, but since the interrupt
-> >> definitions are given wrong on many targets and to establish proper rules
-> >> for usage of DWC3 interrupts on Qualcomm platforms, DT binding update is
-> >> necessary.
-> > 
-> > This still does not explain why missing property has to be added as
-> > first one, causing huge reordering of everything here and in DTS.
-> > 
-> > If pwr_event is required and we already break the ABI, reduce the impact
-> > of the change by putting it after all required interrupts. Otherwise
-> > please explain here and in commit msg why different approach is taken.
-> > 
-> 
-> Hi Krzysztof. I don't know much about the effect of the ordering on ABI. 
-> I will try to learn up on it. Would the series be good if we just move 
-> the pwr_event to the end and keep everything in v3 as it is, and push v4 
-> for now ?
-
-Since all SoCs have the pwr_event (HS) interrupt, but not all
-controllers have the SS PHY interrupt, this would prevent expressing
-that the SS PHY is optional by keeping it last in the binding schema and
-making sure that minItem = maxItems - 1.
-
-And as we discussed, the aim here is to group the three classes of SoCs
-(qusb2, qusb2+, femto) and fix the order of these interrupts once and
-for all so that random reorderings, renames and omissions do not make it
-into the bindings next time someone grabs a downstream DT and sends it
-upstream.
-
-Johan
