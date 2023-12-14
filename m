@@ -2,100 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E8481813937
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 18:58:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2520C81392F
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 18:57:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235639AbjLNR6F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 12:58:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34270 "EHLO
+        id S230017AbjLNR5T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 12:57:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46184 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231817AbjLNR6D (ORCPT
+        with ESMTP id S229532AbjLNR5R (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 12:58:03 -0500
-Received: from mail2-relais-roc.national.inria.fr (mail2-relais-roc.national.inria.fr [192.134.164.83])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2B78A6
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 09:58:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=inria.fr; s=dc;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=yY5KuZVKWaXiPKW8THuGvJguIS1QJ2wAyKcO5bW1t1M=;
-  b=AAiE2rEgrdU+tE6fwbJ917yjzfdxpcjx7sS4KIAtcpbj+E8enhGctNbk
-   rKXaR9633eQVAFduks/72vLJfgB6bIMfAGaU31jmWXlF4Qusyj/bkzAIx
-   YC7Bd/LxvzGjIoalBP8APur2oXQ1d77Xfme7J9O7vUGD0YpvE2XHO5Mo3
-   w=;
-Authentication-Results: mail2-relais-roc.national.inria.fr; dkim=none (message not signed) header.i=none; spf=SoftFail smtp.mailfrom=keisuke.nishimura@inria.fr; dmarc=fail (p=none dis=none) d=inria.fr
-X-IronPort-AV: E=Sophos;i="6.04,276,1695679200"; 
-   d="scan'208";a="142377319"
-Received: from dt-aponte.paris.inria.fr (HELO keisuke-XPS-13-7390.tailde312.ts.net) ([128.93.67.66])
-  by mail2-relais-roc.national.inria.fr with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Dec 2023 18:58:06 +0100
-From:   Keisuke Nishimura <keisuke.nishimura@inria.fr>
-To:     Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     Abel Wu <wuyun.abel@bytedance.com>, Josh Don <joshdon@google.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Xunlei Pang <xlpang@linux.alibaba.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Valentin Schneider <vschneid@redhat.com>,
-        Julia Lawall <julia.lawall@inria.fr>,
-        linux-kernel@vger.kernel.org,
-        Keisuke Nishimura <keisuke.nishimura@inria.fr>
-Subject: [PATCH 2/2] sched/fair: take into account scheduling domain in select_idle_core()
-Date:   Thu, 14 Dec 2023 18:55:51 +0100
-Message-Id: <20231214175551.629945-2-keisuke.nishimura@inria.fr>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231214175551.629945-1-keisuke.nishimura@inria.fr>
-References: <20231214175551.629945-1-keisuke.nishimura@inria.fr>
+        Thu, 14 Dec 2023 12:57:17 -0500
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCBC1A6;
+        Thu, 14 Dec 2023 09:57:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=L5kH8hIOwqwSSDYrxYuLkFSUt4lz/pRwIQ1vDoFypus=; b=bOgj+hxbflOy6cpdwb0AvqLThn
+        fosBo2pgUtid/Btg47D1Tr3fCNbhKvXDaFyqcQYQOH+89NazR4QJ+nEdeEWaM9Zg8F7j05T5cdfgY
+        VM0/6oQ5Ia3iYudlE0F/bur8gqKg6jOipwcfxclKO24mpPwoNEGS+tH8oMOIY0M/Mu+mNs52+wi+F
+        lm2Ni4mV9JyW5Xe5z2A66vskhG5XC6BjK4hHnl/tR3bWJCTUoI5s6XIt40Rmf7oAfWwyL5XMzUAT4
+        /eBXYVzBh9GeGUvZJBlu9nSJESu+sZ6JrCvtRt5k+bC7E6cUZkcVRSXfwHypdgwrPjdz2GiqQfqO/
+        Cgy7guXg==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:38096)
+        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.96)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1rDpxV-0001oM-19;
+        Thu, 14 Dec 2023 17:57:17 +0000
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1rDpxX-0002km-Ed; Thu, 14 Dec 2023 17:57:19 +0000
+Date:   Thu, 14 Dec 2023 17:57:19 +0000
+From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
+To:     Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Cc:     linux-pm@vger.kernel.org, loongarch@lists.linux.dev,
+        linux-acpi@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-riscv@lists.infradead.org, kvmarm@lists.linux.dev,
+        x86@kernel.org, acpica-devel@lists.linuxfoundation.org,
+        linux-csky@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-ia64@vger.kernel.org, linux-parisc@vger.kernel.org,
+        Salil Mehta <salil.mehta@huawei.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        jianyong.wu@arm.com, justin.he@arm.com,
+        James Morse <james.morse@arm.com>
+Subject: Re: [PATCH RFC v3 02/21] ACPI: processor: Add support for processors
+ described as container packages
+Message-ID: <ZXtB/+2kDtaz1Zf4@shell.armlinux.org.uk>
+References: <ZXmn46ptis59F0CO@shell.armlinux.org.uk>
+ <E1rDOfx-00Dvje-MS@rmk-PC.armlinux.org.uk>
+ <20231214173626.00005062@Huawei.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231214173626.00005062@Huawei.com>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When picking out a CPU on a task wakeup, select_idle_smt() has to take
-into account the scheduling domain where the function looks for the CPU.
-This is because cpusets and isolcpus can remove CPUs from the domain
-to isolate them from other SMT siblings.
+On Thu, Dec 14, 2023 at 05:36:26PM +0000, Jonathan Cameron wrote:
+> On Wed, 13 Dec 2023 12:49:21 +0000
+> Russell King (Oracle) <rmk+kernel@armlinux.org.uk> wrote:
+> 
+> > From: James Morse <james.morse@arm.com>
+> > 
+> > ACPI has two ways of describing processors in the DSDT. From ACPI v6.5,
+> > 5.2.12:
+> > 
+> > "Starting with ACPI Specification 6.3, the use of the Processor() object
+> > was deprecated. Only legacy systems should continue with this usage. On
+> > the Itanium architecture only, a _UID is provided for the Processor()
+> > that is a string object. This usage of _UID is also deprecated since it
+> > can preclude an OSPM from being able to match a processor to a
+> > non-enumerable device, such as those defined in the MADT. From ACPI
+> > Specification 6.3 onward, all processor objects for all architectures
+> > except Itanium must now use Device() objects with an _HID of ACPI0007,
+> > and use only integer _UID values."
+> > 
+> > Also see https://uefi.org/specs/ACPI/6.5/08_Processor_Configuration_and_Control.html#declaring-processors
+> > 
+> > Duplicate descriptions are not allowed, the ACPI processor driver already
+> > parses the UID from both devices and containers. acpi_processor_get_info()
+> > returns an error if the UID exists twice in the DSDT.
+> > 
+> > The missing probe for CPUs described as packages creates a problem for
+> > moving the cpu_register() calls into the acpi_processor driver, as CPUs
+> > described like this don't get registered, leading to errors from other
+> > subsystems when they try to add new sysfs entries to the CPU node.
+> > (e.g. topology_sysfs_init()'s use of topology_add_dev() via cpuhp)
+> > 
+> > To fix this, parse the processor container and call acpi_processor_add()
+> > for each processor that is discovered like this. The processor container
+> > handler is added with acpi_scan_add_handler(), so no detach call will
+> > arrive.
+> > 
+> > Qemu TCG describes CPUs using processor devices in a processor container.
+> > For more information, see build_cpus_aml() in Qemu hw/acpi/cpu.c and
+> > https://uefi.org/specs/ACPI/6.5/08_Processor_Configuration_and_Control.html#processor-container-device
+> > 
+> > Signed-off-by: James Morse <james.morse@arm.com>
+> > Tested-by: Miguel Luis <miguel.luis@oracle.com>
+> > Tested-by: Vishnu Pajjuri <vishnu@os.amperecomputing.com>
+> > Tested-by: Jianyong Wu <jianyong.wu@arm.com>
+> > ---
+> > Outstanding comments:
+> >  https://lore.kernel.org/r/20230914145353.000072e2@Huawei.com
+> Looks like you resolved those (were all patch description things).
+> 
+> So I'm happy.
+> Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 
-This change replaces the set of CPUs allowed to run the task from
-p->cpus_ptr by the intersection of p->cpus_ptr and sched_domain_span(sd)
-which is stored in the cpus argument provided by select_idle_cpu.
+Great, I wasn't sure if I had resolved them to your satisfaction, so I
+kept the reference to your original review. I've now removed it and
+added your r-b. Thanks.
 
-Fixes: 9fe1f127b913 ("sched/fair: Merge select_idle_core/cpu()")
-Signed-off-by: Keisuke Nishimura <keisuke.nishimura@inria.fr>
-Signed-off-by: Julia Lawall <julia.lawall@inria.fr>
----
- kernel/sched/fair.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 71306b48cf68..3b7d32632674 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -7262,7 +7262,7 @@ static int select_idle_core(struct task_struct *p, int core, struct cpumask *cpu
- 		if (!available_idle_cpu(cpu)) {
- 			idle = false;
- 			if (*idle_cpu == -1) {
--				if (sched_idle_cpu(cpu) && cpumask_test_cpu(cpu, p->cpus_ptr)) {
-+				if (sched_idle_cpu(cpu) && cpumask_test_cpu(cpu, cpus)) {
- 					*idle_cpu = cpu;
- 					break;
- 				}
-@@ -7270,7 +7270,7 @@ static int select_idle_core(struct task_struct *p, int core, struct cpumask *cpu
- 			}
- 			break;
- 		}
--		if (*idle_cpu == -1 && cpumask_test_cpu(cpu, p->cpus_ptr))
-+		if (*idle_cpu == -1 && cpumask_test_cpu(cpu, cpus))
- 			*idle_cpu = cpu;
- 	}
- 
 -- 
-2.34.1
-
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
