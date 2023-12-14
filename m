@@ -2,352 +2,302 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 50E548127C5
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 07:12:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D6DE8127CB
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 07:14:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1443134AbjLNGMl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 01:12:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36462 "EHLO
+        id S1443191AbjLNGN7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 01:13:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46754 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229629AbjLNGMj (ORCPT
+        with ESMTP id S230117AbjLNGN5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 01:12:39 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BF5793
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 22:12:45 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AFEBFC433C9;
-        Thu, 14 Dec 2023 06:12:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1702534364;
-        bh=9NH6UvRuHPOIXsOUHoQ27tZM1UxiQVD/81UJjq3YJcE=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=Cp7dDSj7oz67U+z+fuND7kfCs1jRX/kt4P3jkG+6s/ZVOK5zfvFHeDrvpHe/aHUy2
-         4yByhA1m5sF9OEBaMqn+hSfzJXsK7u8C82W46YLkqQVi/NZKmWkrQ/aCvTn53OOf2R
-         O9UnzooawWCoJ9sLjTcBUTB9yvZghA5lDCD3kqKckj2lGrBkUxqdIRfEleUlgerUjs
-         o4fjqmAzrXLlHtNvRw57Tr0m4aVlwFFbWcOirbxOlyrhJJb+t0XBR8jA4FE9ro1Ln0
-         QbImQD7eFSd9AUnIimI221AqfA81YzBQofUUEVUob+YOnGsE3OcnMdeKl9P51FSFwt
-         ncQ/VBNWXtpTg==
-Received: by mail-oo1-f42.google.com with SMTP id 006d021491bc7-5916c6b2e0fso487982eaf.3;
-        Wed, 13 Dec 2023 22:12:44 -0800 (PST)
-X-Gm-Message-State: AOJu0Yy//SuOU9R4vuQPS2QHjIRAFFrU4GwIRtDsCl/LP2VLsL4+e4UT
-        uKwNrjl4d04kUeRYq3WMt1bKtOA2ZeQZk3OjqMw=
-X-Google-Smtp-Source: AGHT+IGrH+7gE85pMbdS3yJ5VwFOon33FHA9Ev6L1OetzcgFJ6FSnUh+EQV7d37elY/QW/TmYWuhp6QnA5I+ZJAOYVA=
-X-Received: by 2002:a05:687c:2246:b0:203:27d1:e164 with SMTP id
- yu6-20020a05687c224600b0020327d1e164mr2324708oab.12.1702534364022; Wed, 13
- Dec 2023 22:12:44 -0800 (PST)
+        Thu, 14 Dec 2023 01:13:57 -0500
+Received: from mail-oi1-x235.google.com (mail-oi1-x235.google.com [IPv6:2607:f8b0:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7CEB107
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 22:14:02 -0800 (PST)
+Received: by mail-oi1-x235.google.com with SMTP id 5614622812f47-3ba2dd905f9so566313b6e.2
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 22:14:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=brainfault-org.20230601.gappssmtp.com; s=20230601; t=1702534442; x=1703139242; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=l3sMkRAMQECWLiukPZgPf+GGB55ddSK20MJ/gjXWD1s=;
+        b=OyVCbntoESf3PuDmZz/t5WlC3rcPv1BiSso5hvDiLnGK7Dbjzx8dQPW3Wo73nxo+vS
+         C5q28PKjbo8c4K1GE6Hjy7INqx6QAl1Ij4isbGgSsXYYJzSBf15H64MevWcYseE777ui
+         HlZUlv/JsRTXIW7bCQXcJ7HWjKoMFajXiMyN+O609x6yqm6lRYJuOlBZ7ynKObBAAlJX
+         mtazflA1hk/0P5Xuji/tZAbuRU7JR46A9d+HhmEaKrRkRMN4L8aZKCe2tCQcpMR5MO5M
+         nv4aEDLXL7rsAyuxf3TG8EF0lhDSE9sPH+oVvZcj47YBzD+wa4XMq9ssrflavBuMDDWm
+         aKvA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702534442; x=1703139242;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=l3sMkRAMQECWLiukPZgPf+GGB55ddSK20MJ/gjXWD1s=;
+        b=nnKvGjMAaXbcGTZh+rJ3DtZc4tnqI1LHqbiCtVeoMN7bhdZeJL+9KrgBQ76VvNI0tF
+         KVMQS43fqynOKxSvGLMOuDDJbgL28fTOWhRPDsbPkOJdDEqzw4S6pP57NYdIsa0FdSKM
+         kwm/eFrLeXBOzoawLzXH6GfM3S1HD63snrvwsOaySRSDeq+70Fw4dIKdBbxY50AS6aca
+         exsI8141hSLq6kt9/bnxv0YgZLxyGT2N55ZrBjBbllNZ03fktELoIxxfbi7GJkDDXMvS
+         AIYRRSXgEIvn0K4YEGRwI9sDv4Bh8RUrnHUqMmTGcTDb7AzNJvhJT7jsjTN3UqmWG6hA
+         9wGQ==
+X-Gm-Message-State: AOJu0Yw5B3XwhLT8ZS1NW/yisR2cAjyU4zamqZhutKWWSVVo5rcNA2z0
+        E21gD6nC7eDg30xZyqfi0Z30DY85Afzn4kt3y5p2zg==
+X-Google-Smtp-Source: AGHT+IHQd+GqK3y5tlwO2tTpsax7aS81PVJh1PsMGIYAkqaLtpj/3C4S2vBn648Rccq1W4+OEQ+fJWJGTJEaydQwxew=
+X-Received: by 2002:a05:6808:2e85:b0:3ba:8d5:4009 with SMTP id
+ gt5-20020a0568082e8500b003ba08d54009mr11288098oib.110.1702534442120; Wed, 13
+ Dec 2023 22:14:02 -0800 (PST)
 MIME-Version: 1.0
-References: <20231202035511.487946-1-sjg@chromium.org> <20231202035511.487946-3-sjg@chromium.org>
- <20231203153401.GV8402@pendragon.ideasonboard.com> <20231207142723.GA3187877@google.com>
- <20231207143814.GD15521@pendragon.ideasonboard.com> <CAGXv+5Go_0pEVAOLQmRCc_a9-YUtZEmBfXtMuBupX_nb9iqwbw@mail.gmail.com>
- <20231209152946.GC13421@pendragon.ideasonboard.com> <CAMuHMdVMZs6mnwWBgFwktO=8o=QzROv60cfZe085MhD6HxQjpQ@mail.gmail.com>
- <CAGXv+5Est3FL-XcEL-vB-6zVNas0mqb2cNYa==Yb7W2SQU9xVQ@mail.gmail.com>
-In-Reply-To: <CAGXv+5Est3FL-XcEL-vB-6zVNas0mqb2cNYa==Yb7W2SQU9xVQ@mail.gmail.com>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Thu, 14 Dec 2023 15:12:07 +0900
-X-Gmail-Original-Message-ID: <CAK7LNATyD-PeNbaLTjJmU9=koqqE+V6QvFe09c2VrXopWvjpcw@mail.gmail.com>
-Message-ID: <CAK7LNATyD-PeNbaLTjJmU9=koqqE+V6QvFe09c2VrXopWvjpcw@mail.gmail.com>
-Subject: Re: [PATCH v9 2/2] arm64: boot: Support Flat Image Tree
-To:     Chen-Yu Tsai <wenst@chromium.org>
-Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Simon Glass <sjg@chromium.org>,
-        linux-arm-kernel@lists.infradead.org,
-        Ahmad Fatoum <a.fatoum@pengutronix.de>,
-        U-Boot Mailing List <u-boot@lists.denx.de>,
-        Nicolas Schier <nicolas@fjasle.eu>,
-        Tom Rini <trini@konsulko.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Terrell <terrelln@fb.com>, Will Deacon <will@kernel.org>,
-        linux-doc@vger.kernel.org, linux-kbuild@vger.kernel.org,
-        linux-kernel@vger.kernel.org, workflows@vger.kernel.org
+References: <20230916003118.2540661-1-seanjc@google.com> <20230916003118.2540661-23-seanjc@google.com>
+In-Reply-To: <20230916003118.2540661-23-seanjc@google.com>
+From:   Anup Patel <anup@brainfault.org>
+Date:   Thu, 14 Dec 2023 11:43:50 +0530
+Message-ID: <CAAhSdy2N8PmP2+-8sFVpgduED0HU9D3dqg7sk3+R9f2wRgZ7KA@mail.gmail.com>
+Subject: Re: [PATCH 22/26] entry/kvm: KVM: Move KVM details related to
+ signal/-EINTR into KVM proper
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Marc Zyngier <maz@kernel.org>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Janosch Frank <frankja@linux.ibm.com>,
+        Claudio Imbrenda <imbrenda@linux.ibm.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Tony Krowiak <akrowiak@linux.ibm.com>,
+        Halil Pasic <pasic@linux.ibm.com>,
+        Jason Herne <jjherne@linux.ibm.com>,
+        Harald Freudenberger <freude@linux.ibm.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
+        linux-mips@vger.kernel.org, kvm@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, kvm-riscv@lists.infradead.org,
+        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        Anish Ghulati <aghulati@google.com>,
+        Venkatesh Srinivas <venkateshs@chromium.org>,
+        Andrew Thornton <andrewth@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-0.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,PDS_OTHER_BAD_TLD,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 14, 2023 at 1:03=E2=80=AFPM Chen-Yu Tsai <wenst@chromium.org> w=
-rote:
+On Sat, Sep 16, 2023 at 6:02=E2=80=AFAM Sean Christopherson <seanjc@google.=
+com> wrote:
 >
-> On Sun, Dec 10, 2023 at 1:31=E2=80=AFAM Geert Uytterhoeven <geert@linux-m=
-68k.org> wrote:
-> >
-> > Hi Laurent,
-> >
-> > On Sat, Dec 9, 2023 at 4:29=E2=80=AFPM Laurent Pinchart
-> > <laurent.pinchart@ideasonboard.com> wrote:
-> > > On Sat, Dec 09, 2023 at 10:13:59PM +0900, Chen-Yu Tsai wrote:
-> > > > On Thu, Dec 7, 2023 at 11:38=E2=80=AFPM Laurent Pinchart
-> > > > <laurent.pinchart@ideasonboard.com> wrote:
-> > > > > On Thu, Dec 07, 2023 at 10:27:23PM +0800, Chen-Yu Tsai wrote:
-> > > > > > On Sun, Dec 03, 2023 at 05:34:01PM +0200, Laurent Pinchart wrot=
-e:
-> > > > > > > On Fri, Dec 01, 2023 at 08:54:42PM -0700, Simon Glass wrote:
-> > > > > > > > Add a script which produces a Flat Image Tree (FIT), a sing=
-le file
-> > > > > > > > containing the built kernel and associated devicetree files=
-.
-> > > > > > > > Compression defaults to gzip which gives a good balance of =
-size and
-> > > > > > > > performance.
-> > > > > > > >
-> > > > > > > > The files compress from about 86MB to 24MB using this appro=
-ach.
-> > > > > > > >
-> > > > > > > > The FIT can be used by bootloaders which support it, such a=
-s U-Boot
-> > > > > > > > and Linuxboot. It permits automatic selection of the correc=
+> Move KVM's morphing of pending signals into exits to userspace into KVM
+> proper, and drop the @vcpu param from xfer_to_guest_mode_handle_work().
+> How KVM responds to -EINTR is a detail that really belongs in KVM itself,
+> and removing the non-KVM call to kvm_handle_signal_exit() will allow
+> hiding said API and the definition of "struct kvm_vcpu" from the kernel.
+>
+> Alternatively, entry/kvm.c could be treated as part of KVM, i.e. be given
+> access to KVM internals, but that's not obviously better than having KVM
+> react to -EINTR (though it's not obviously worse either).
+>
+> Signed-off-by: Sean Christopherson <seanjc@google.com>
+
+For KVM RISC-V:
+Anup Patel <anup@brainfault.org>
+
+Regards,
+Anup
+
+> ---
+>  arch/arm64/kvm/arm.c      |  3 +--
+>  arch/riscv/kvm/vcpu.c     |  2 +-
+>  arch/x86/kvm/vmx/vmx.c    |  1 -
+>  arch/x86/kvm/x86.c        |  3 +--
+>  include/linux/entry-kvm.h |  3 +--
+>  include/linux/kvm_host.h  | 13 ++++++++++++-
+>  kernel/entry/kvm.c        | 11 ++++-------
+>  7 files changed, 20 insertions(+), 16 deletions(-)
+>
+> diff --git a/arch/arm64/kvm/arm.c b/arch/arm64/kvm/arm.c
+> index 6480628197b4..641df091e46b 100644
+> --- a/arch/arm64/kvm/arm.c
+> +++ b/arch/arm64/kvm/arm.c
+> @@ -6,7 +6,6 @@
+>
+>  #include <linux/bug.h>
+>  #include <linux/cpu_pm.h>
+> -#include <linux/entry-kvm.h>
+>  #include <linux/errno.h>
+>  #include <linux/err.h>
+>  #include <linux/kvm_host.h>
+> @@ -929,7 +928,7 @@ int kvm_arch_vcpu_ioctl_run(struct kvm_vcpu *vcpu)
+>                 /*
+>                  * Check conditions before entering the guest
+>                  */
+> -               ret =3D xfer_to_guest_mode_handle_work(vcpu);
+> +               ret =3D kvm_xfer_to_guest_mode_handle_work(vcpu);
+>                 if (!ret)
+>                         ret =3D 1;
+>
+> diff --git a/arch/riscv/kvm/vcpu.c b/arch/riscv/kvm/vcpu.c
+> index 82229db1ce73..c313f4e90e70 100644
+> --- a/arch/riscv/kvm/vcpu.c
+> +++ b/arch/riscv/kvm/vcpu.c
+> @@ -667,7 +667,7 @@ int kvm_arch_vcpu_ioctl_run(struct kvm_vcpu *vcpu)
+>         run->exit_reason =3D KVM_EXIT_UNKNOWN;
+>         while (ret > 0) {
+>                 /* Check conditions before entering the guest */
+> -               ret =3D xfer_to_guest_mode_handle_work(vcpu);
+> +               ret =3D kvm_xfer_to_guest_mode_handle_work(vcpu);
+>                 if (ret)
+>                         continue;
+>                 ret =3D 1;
+> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+> index faf0071566ef..43b87ad5fde8 100644
+> --- a/arch/x86/kvm/vmx/vmx.c
+> +++ b/arch/x86/kvm/vmx/vmx.c
+> @@ -28,7 +28,6 @@
+>  #include <linux/slab.h>
+>  #include <linux/tboot.h>
+>  #include <linux/trace_events.h>
+> -#include <linux/entry-kvm.h>
+>
+>  #include <asm/apic.h>
+>  #include <asm/asm.h>
+> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> index 6c9c81e82e65..aab095f89d9e 100644
+> --- a/arch/x86/kvm/x86.c
+> +++ b/arch/x86/kvm/x86.c
+> @@ -59,7 +59,6 @@
+>  #include <linux/sched/stat.h>
+>  #include <linux/sched/isolation.h>
+>  #include <linux/mem_encrypt.h>
+> -#include <linux/entry-kvm.h>
+>  #include <linux/suspend.h>
+>  #include <linux/smp.h>
+>
+> @@ -10987,7 +10986,7 @@ static int vcpu_run(struct kvm_vcpu *vcpu)
+>
+>                 if (__xfer_to_guest_mode_work_pending()) {
+>                         kvm_vcpu_srcu_read_unlock(vcpu);
+> -                       r =3D xfer_to_guest_mode_handle_work(vcpu);
+> +                       r =3D kvm_xfer_to_guest_mode_handle_work(vcpu);
+>                         kvm_vcpu_srcu_read_lock(vcpu);
+>                         if (r)
+>                                 return r;
+> diff --git a/include/linux/entry-kvm.h b/include/linux/entry-kvm.h
+> index e7d90d06e566..e235a91d28fc 100644
+> --- a/include/linux/entry-kvm.h
+> +++ b/include/linux/entry-kvm.h
+> @@ -42,11 +42,10 @@ static inline int arch_xfer_to_guest_mode_handle_work=
+(unsigned long ti_work)
+>  /**
+>   * xfer_to_guest_mode_handle_work - Check and handle pending work which =
+needs
+>   *                                 to be handled before going to guest m=
+ode
+> - * @vcpu:      Pointer to current's VCPU data
+>   *
+>   * Returns: 0 or an error code
+>   */
+> -int xfer_to_guest_mode_handle_work(struct kvm_vcpu *vcpu);
+> +int xfer_to_guest_mode_handle_work(void);
+>
+>  /**
+>   * xfer_to_guest_mode_prepare - Perform last minute preparation work tha=
 t
-> > > > > > > > devicetree, matching the compatible string of the running b=
-oard with
-> > > > > > > > the closest compatible string in the FIT. There is no need =
-for
-> > > > > > > > filenames or other workarounds.
-> > > > > > > >
-> > > > > > > > Add a 'make image.fit' build target for arm64, as well. Use
-> > > > > > > > FIT_COMPRESSION to select a different algorithm.
-> > > > > > > >
-> > > > > > > > The FIT can be examined using 'dumpimage -l'.
-> > > > > > > >
-> > > > > > > > This features requires pylibfdt (use 'pip install libfdt').=
- It also
-> > > > > > > > requires compression utilities for the algorithm being used=
-. Supported
-> > > > > > > > compression options are the same as the Image.xxx files. Fo=
-r now there
-> > > > > > > > is no way to change the compression other than by editing t=
-he rule for
-> > > > > > > > $(obj)/image.fit
-> > > > > > > >
-> > > > > > > > While FIT supports a ramdisk / initrd, no attempt is made t=
-o support
-> > > > > > > > this here, since it must be built separately from the Linux=
- build.
-> > > > > > >
-> > > > > > > FIT images are very useful, so I think this is a very welcome=
- addition
-> > > > > > > to the kernel build system. It can get tricky though: given t=
-he
-> > > > > > > versatile nature of FIT images, there can't be any
-> > > > > > > one-size-fits-them-all solution to build them, and striking t=
-he right
-> > > > > > > balance between what makes sense for the kernel and the featu=
-res that
-> > > > > > > users may request will probably lead to bikeshedding. As we a=
-ll love
-> > > > > > > bikeshedding, I thought I would start selfishly, with a perso=
-nal use
-> > > > > > > case :-) This isn't a yak-shaving request though, I don't see=
- any reason
-> > > > > > > to delay merging this series.
-> > > > > > >
-> > > > > > > Have you envisioned building FIT images with a subset of DTBs=
-, or adding
-> > > > > > > DTBOs ? Both would be fairly trivial extensions to this scrip=
-t by
-> > > > > > > extending the supported command line arguments. It would perh=
-aps be more
-> > > > > > > difficult to integrate in the kernel build system though. Thi=
-s leads me
-> > > > > > > to a second question: would you consider merging extensions t=
-o this
-> > > > > > > script if they are not used by the kernel build system, but m=
-eant for
-> > > > > > > users who manually invoke the script ? More generally, is the=
- script
-> > > > > >
-> > > > > > We'd also be interested in some customization, though in a diff=
-erent way.
-> > > > > > We imagine having a rule file that says X compatible string sho=
-uld map
-> > > > > > to A base DTB, plus B and C DTBO for the configuration section.=
- The base
-> > > > > > DTB would carry all common elements of some device, while the D=
-TBOs
-> > > > > > carry all the possible second source components, like different=
- display
-> > > > > > panels or MIPI cameras for instance. This could drastically red=
-uce the
-> > > > > > size of FIT images in ChromeOS by deduplicating all the common =
-stuff.
-> > > > >
-> > > > > Do you envision the "mapping" compatible string mapping to a conf=
-ig
-> > > > > section in the FIT image, that would bundle the base DTB and the =
-DTBOs ?
-> > > >
-> > > > That's exactly the idea. The mapping compatible string could be unt=
-ied
-> > > > from the base board's compatible string if needed (which we probabl=
-y do).
-> > > >
-> > > > So something like:
-> > > >
-> > > > config {
-> > > >     config-1 {
-> > > >         compatible =3D "google,krane-sku0";
-> > > >         fdt =3D "krane-baseboard", "krane-sku0-overlay";
-> > > >     };
-> > > > };
-> > > >
-> > > > With "krane-sku0-overlay" being an overlay that holds the differenc=
-es
-> > > > between the SKUs, in this case the display panel and MIPI camera (n=
-ot
-> > > > upstreamed) that applies to SKU0 in particular.
-> > >
-> > > The kernel DT makefiles already contain information on what overlays =
-to
-> > > apply to what base boards, in order to test the overlays and produce
-> > > "full" DTBs. Maybe that information could be leveraged to create the
-> > > configurations in the FIT image ?
-> >
-> > Although the "full" DTBs created may only be a subset of all possible
-> > combinations (I believe Rob just started with creating one "full" DTB
-> > for each overlay, cfr. the additions I made in commit a09c3e105a208580
-> > ("arm64: dts: renesas: Apply overlays to base dtbs")), that could
-> > definitely be a start.
-> >
-> > Now, since the kernel build system already creates "full" DTBs, does
-> > that mean that all of the base DTBs, overlays, and "full" DTBs will
-> > end up in the FIT image?
+> diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
+> index fb6c6109fdca..d520d6801070 100644
+> --- a/include/linux/kvm_host.h
+> +++ b/include/linux/kvm_host.h
+> @@ -2,7 +2,7 @@
+>  #ifndef __KVM_HOST_H
+>  #define __KVM_HOST_H
 >
-> I suppose we could add an option to the packing tool to be able to _not_
-> add the "full" DTBs if they can also be assembled with a base DTB and
-> overlays. Think of it as a firmware compatibility option: if the firmware
-> supports overlays, then you almost always want the deconstructed parts,
-> not the fully assembled ones. Vice versa.
+> -
+> +#include <linux/entry-kvm.h>
+>  #include <linux/types.h>
+>  #include <linux/hardirq.h>
+>  #include <linux/list.h>
+> @@ -2293,6 +2293,17 @@ static inline void kvm_handle_signal_exit(struct k=
+vm_vcpu *vcpu)
+>         vcpu->run->exit_reason =3D KVM_EXIT_INTR;
+>         vcpu->stat.signal_exits++;
+>  }
+> +
+> +static inline int kvm_xfer_to_guest_mode_handle_work(struct kvm_vcpu *vc=
+pu)
+> +{
+> +       int r =3D xfer_to_guest_mode_handle_work();
+> +
+> +       if (r) {
+> +               WARN_ON_ONCE(r !=3D -EINTR);
+> +               kvm_handle_signal_exit(vcpu);
+> +       }
+> +       return r;
+> +}
+>  #endif /* CONFIG_KVM_XFER_TO_GUEST_WORK */
 >
-> If we don't we could end up with two configurations that have the same
-> compatible string?
-
-
-Right.
-
-We would end up with such situations because applying
-an overlay does not change the compatible string.
-
-
-
-With this code in arch/arm64/boot/dts/ti/Makefile:
-
-k3-am642-tqma64xxl-mbax4xxl-sdcard-dtbs :=3D \
-      k3-am642-tqma64xxl-mbax4xxl.dtb k3-am64-tqma64xxl-mbax4xxl-sdcard.dtb=
-o
-k3-am642-tqma64xxl-mbax4xxl-wlan-dtbs :=3D \
-      k3-am642-tqma64xxl-mbax4xxl.dtb k3-am64-tqma64xxl-mbax4xxl-wlan.dtbo
-
-
-
-
-$ fdtdump  arch/arm64/boot/dts/ti/k3-am642-tqma64xxl-mbax4xxl-sdcard.dtb
-2>/dev/null| head -n15 | tail -n2
-    model =3D "TQ-Systems TQMa64xxL SoM on MBax4xxL carrier board";
-    compatible =3D "tq,am642-tqma6442l-mbax4xxl", "tq,am642-tqma6442l",
-"ti,am642";
-
-
-$ fdtdump  arch/arm64/boot/dts/ti/k3-am642-tqma64xxl-mbax4xxl-wlan.dtb
-2>/dev/null| head -n15 | tail -n2
-    model =3D "TQ-Systems TQMa64xxL SoM on MBax4xxL carrier board";
-    compatible =3D "tq,am642-tqma6442l-mbax4xxl", "tq,am642-tqma6442l",
-"ti,am642";
-
-
-
-
-
-These two go into image.fit, but one of them is completely dead
-since there is no way to distinguish them.
-
-
-$ fdtdump  arch/arm64/boot/image.fit
-
-        ...
-
-        conf-10 {
-            compatible =3D "tq,am642-tqma6442l-mbax4xxl",
-"tq,am642-tqma6442l", "ti,am642";
-            description =3D "TQ-Systems TQMa64xxL SoM on MBax4xxL carrier b=
-oard";
-            fdt =3D "fdt-10";
-            kernel =3D "kernel";
-        };
-
-        ...
-
-        conf-25 {
-            compatible =3D "tq,am642-tqma6442l-mbax4xxl",
-"tq,am642-tqma6442l", "ti,am642";
-            description =3D "TQ-Systems TQMa64xxL SoM on MBax4xxL carrier b=
-oard";
-            fdt =3D "fdt-25";
-            kernel =3D "kernel";
-        };
-
-
-
-
-
-I agree with Chen-Yu.
-
-FIT should not include full DTBs.
-
-Bootloaders should assemble the final DTB
-from base and overlays on-the-fly.
-
-
-The FIT spec allows the "fdt" property to list
-multiple image nodes.
-
-
-o config-1
- |- description =3D "configuration description"
- |- kernel =3D "kernel sub-node unit name"
- |- fdt =3D "fdt sub-node unit-name" [, "fdt overlay sub-node unit-name", .=
-..]
- |- loadables =3D "loadables sub-node unit-name"
- |- script =3D "
- |- compatible =3D "vendor
-
-
-
-
-
-
-
-
-
-
-
+>  /*
+> diff --git a/kernel/entry/kvm.c b/kernel/entry/kvm.c
+> index c2fc39824157..872617468b4a 100644
+> --- a/kernel/entry/kvm.c
+> +++ b/kernel/entry/kvm.c
+> @@ -1,17 +1,14 @@
+>  // SPDX-License-Identifier: GPL-2.0
 >
-> ChenYu
+>  #include <linux/entry-kvm.h>
+> -#include <linux/kvm_host.h>
 >
+> -static int xfer_to_guest_mode_work(struct kvm_vcpu *vcpu, unsigned long =
+ti_work)
+> +static int xfer_to_guest_mode_work(unsigned long ti_work)
+>  {
+>         do {
+>                 int ret;
 >
-> > Gr{oetje,eeting}s,
-> >
-> >                         Geert
-> >
-> > --
-> > Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-=
-m68k.org
-> >
-> > In personal conversations with technical people, I call myself a hacker=
-. But
-> > when I'm talking to journalists I just say "programmer" or something li=
-ke that.
-> >                                 -- Linus Torvalds
-
-
-
---
-Best Regards
-Masahiro Yamada
+> -               if (ti_work & (_TIF_SIGPENDING | _TIF_NOTIFY_SIGNAL)) {
+> -                       kvm_handle_signal_exit(vcpu);
+> +               if (ti_work & (_TIF_SIGPENDING | _TIF_NOTIFY_SIGNAL))
+>                         return -EINTR;
+> -               }
+>
+>                 if (ti_work & _TIF_NEED_RESCHED)
+>                         schedule();
+> @@ -28,7 +25,7 @@ static int xfer_to_guest_mode_work(struct kvm_vcpu *vcp=
+u, unsigned long ti_work)
+>         return 0;
+>  }
+>
+> -int xfer_to_guest_mode_handle_work(struct kvm_vcpu *vcpu)
+> +int xfer_to_guest_mode_handle_work(void)
+>  {
+>         unsigned long ti_work;
+>
+> @@ -44,6 +41,6 @@ int xfer_to_guest_mode_handle_work(struct kvm_vcpu *vcp=
+u)
+>         if (!(ti_work & XFER_TO_GUEST_MODE_WORK))
+>                 return 0;
+>
+> -       return xfer_to_guest_mode_work(vcpu, ti_work);
+> +       return xfer_to_guest_mode_work(ti_work);
+>  }
+>  EXPORT_SYMBOL_GPL(xfer_to_guest_mode_handle_work);
+> --
+> 2.42.0.459.ge4e396fd5e-goog
+>
