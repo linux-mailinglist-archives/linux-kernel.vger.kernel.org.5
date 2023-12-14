@@ -2,83 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EEB39812701
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 06:41:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A1D30812706
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 06:42:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1443186AbjLNFl0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 00:41:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50794 "EHLO
+        id S1443189AbjLNFmG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 00:42:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34302 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229838AbjLNFlY (ORCPT
+        with ESMTP id S229838AbjLNFmB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 00:41:24 -0500
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE52FAC;
-        Wed, 13 Dec 2023 21:41:29 -0800 (PST)
-Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BE2hRcI016504;
-        Thu, 14 Dec 2023 05:41:17 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-        message-id:date:mime-version:subject:to:cc:references:from
-        :in-reply-to:content-type:content-transfer-encoding; s=
-        qcppdkim1; bh=WnR2V1HDkmW5PBc0e7CWYokozIJgAwQp5DJQVrfapxQ=; b=OV
-        gZWnyyHXm5GmwGpA/L4d5qgQiCm/lPMr5AtUjd8rfQcZkzO+zkHzAs5MSGqsdZyV
-        P4sq4bFhui+rXkRD03Af8JYTq1Jwr5vrVumWfvyO9DrcNt8jmCkREAWU7PINs6N4
-        B1ish8aA4j3CvUFxS2m+MIWJBjlgrQ8Ltt3dEPc3X03fjRSt7bz3M2Q29Isl0FST
-        Sn28bDDG+Waj6Ajdrt7X7WoPGvdsgCIyHHaQX6K2YM3y2qw+0OPzRr4JRzfmgVfn
-        jmojX77HH1IBTsHSRguzrBZjRkEbjN6ndfPSMl4NFeRuleUEcgInwAkB4zArOP08
-        WcMV2bszjY5Op4BX1dzw==
-Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3uyq2trh02-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 14 Dec 2023 05:41:17 +0000 (GMT)
-Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
-        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3BE5fGlL005831
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 14 Dec 2023 05:41:16 GMT
-Received: from [10.216.56.9] (10.80.80.8) by nalasex01b.na.qualcomm.com
- (10.47.209.197) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Wed, 13 Dec
- 2023 21:41:11 -0800
-Message-ID: <6b79c66d-7591-443b-92e5-beeff6c93ae4@quicinc.com>
-Date:   Thu, 14 Dec 2023 11:11:07 +0530
+        Thu, 14 Dec 2023 00:42:01 -0500
+Received: from box.trvn.ru (box.trvn.ru [194.87.146.52])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE310AC;
+        Wed, 13 Dec 2023 21:42:06 -0800 (PST)
+Received: from authenticated-user (box.trvn.ru [194.87.146.52])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (No client certificate requested)
+        by box.trvn.ru (Postfix) with ESMTPSA id 51B15408EF;
+        Thu, 14 Dec 2023 10:42:02 +0500 (+05)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=trvn.ru; s=mail;
+        t=1702532522; bh=cR6tyKPKN7gk3TnmXe4ERX1lFG8NrlKVwL/KAde86sM=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=oxrcgcg5FIrv/i0f5jrMIsUIaotfs1kKA+N3YsSNhycbKOL/vYxbPldu/fLCz6k2A
+         dSIoswfhUFPKJ6tfpBEm44rtWZNjlai1hfv0rZ+1S1uW5nylDcSrFlEG+m7q6qjqYW
+         qWjsrN9xv/7HyoI3GkZ9hJRSfUBOnoHD1/uX0NU7qNQN9/QEPo3CcGBLJU0U34vxVZ
+         PD9eEBrl2Jv8SgkQkLyygMPQR/OuVRT0fbSmAsLHGhujMp76e5pn22VSBr5f/4z80a
+         61xWQHXr316ZJbGUsimwOTRv8uBncW0oBm8WNPXQTCGaziLLlmxWJei0UxNf1JsjTU
+         6I9V8pyTcSARA==
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH V2 2/2] arm64: dts: qcom: sc7280: add QCrypto nodes
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-CC:     <neil.armstrong@linaro.org>, <konrad.dybcio@linaro.org>,
-        <agross@kernel.org>, <andersson@kernel.org>, <conor+dt@kernel.org>,
-        <davem@davemloft.net>, <devicetree@vger.kernel.org>,
-        <herbert@gondor.apana.org.au>, <krzysztof.kozlowski+dt@linaro.org>,
-        <linux-arm-msm@vger.kernel.org>, <linux-crypto@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <marijn.suijten@somainline.org>,
-        <robh+dt@kernel.org>, <vkoul@kernel.org>
-References: <20231212133247.1366698-1-quic_omprsing@quicinc.com>
- <20231212133247.1366698-3-quic_omprsing@quicinc.com>
- <c848f874-3748-4d59-8e78-9ae044fb760a@linaro.org>
-Content-Language: en-US
-From:   Om Prakash Singh <quic_omprsing@quicinc.com>
-In-Reply-To: <c848f874-3748-4d59-8e78-9ae044fb760a@linaro.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01b.na.qualcomm.com (10.47.209.197)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: Wi5nIYlPga3ktMlviCFTYu4wTZDV_8Xu
-X-Proofpoint-ORIG-GUID: Wi5nIYlPga3ktMlviCFTYu4wTZDV_8Xu
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-09_02,2023-12-07_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 mlxscore=0
- phishscore=0 clxscore=1015 mlxlogscore=921 priorityscore=1501
- lowpriorityscore=0 malwarescore=0 suspectscore=0 bulkscore=0 adultscore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2311290000 definitions=main-2312140033
+Date:   Thu, 14 Dec 2023 10:42:01 +0500
+From:   Nikita Travkin <nikita@trvn.ru>
+To:     George Stark <gnstark@salutedevices.com>
+Cc:     andy.shevchenko@gmail.com, pavel@ucw.cz, lee@kernel.org,
+        vadimp@nvidia.com, mpe@ellerman.id.au, npiggin@gmail.com,
+        christophe.leroy@csgroup.eu, hdegoede@redhat.com,
+        mazziesaccount@gmail.com, peterz@infradead.org, mingo@redhat.com,
+        will@kernel.org, longman@redhat.com, boqun.feng@gmail.com,
+        nikitos.tr@gmail.com, linux-leds@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        kernel@salutedevices.com
+Subject: Re: [PATCH v3 04/11] leds: aw2013: use devm API to cleanup module's
+ resources
+In-Reply-To: <20231213223020.2713164-5-gnstark@salutedevices.com>
+References: <20231213223020.2713164-1-gnstark@salutedevices.com>
+ <20231213223020.2713164-5-gnstark@salutedevices.com>
+Message-ID: <c709e0f33da06db40127f3a0adcbebbd@trvn.ru>
+X-Sender: nikita@trvn.ru
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -86,53 +60,100 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+George Stark писал(а) 14.12.2023 03:30:
+> In this driver LEDs are registered using devm_led_classdev_register()
+> so they are automatically unregistered after module's remove() is done.
+> led_classdev_unregister() calls module's led_set_brightness() to turn off
+> the LEDs and that callback uses resources which were destroyed already
+> in module's remove() so use devm API instead of remove().
+> 
+> Signed-off-by: George Stark <gnstark@salutedevices.com>
 
+Thanks for noticing and fixing this!
+Perhaps this patch needs a Fixes tag too, like 1/11?
 
-On 12/12/2023 8:32 PM, Krzysztof Kozlowski wrote:
-> On 12/12/2023 14:32, Om Prakash Singh wrote:
->> Add the QCE and Crypto BAM DMA nodes.
->>
->> Signed-off-by: Om Prakash Singh <quic_omprsing@quicinc.com>
->> ---
->>
->> Changes in V2:
->>    - Update DT node sequence as per register ascending order
-> 
-> Hm, I don't see it...
-> 
->>    - Fix DT node properties as per convention
->>
->>   arch/arm64/boot/dts/qcom/sc7280.dtsi | 22 ++++++++++++++++++++++
->>   1 file changed, 22 insertions(+)
->>
->> diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi b/arch/arm64/boot/dts/qcom/sc7280.dtsi
->> index 66f1eb83cca7..7b705df21f4e 100644
->> --- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
->> +++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
->> @@ -2272,6 +2272,28 @@ ipa: ipa@1e40000 {
->>   			status = "disabled";
->>   		};
->>   
->> +		cryptobam: dma-controller@1dc4000 {
-> 
-> It still looks like not correctly ordered by unit address against other
-> nodes in the file.
-> 
+Tested-by: Nikita Travkin <nikita@trvn.ru>
 
-Hi Krzysztof,
-Probably I am missing something basic here. I am trying to put entries 
-addresses that are sorted wrt their current adjacent.
+Btw, seems like (5..11)/11 never arrived to the lists...
 
-And it looks fine to me.
+Nikita
 
-1c0e000 (current exist)
-1dc4000 (newly added)
-1dfa000	(newly added)
-1e40000	(current exist)
-
+> ---
+>  drivers/leds/leds-aw2013.c | 26 ++++++++++++++------------
+>  1 file changed, 14 insertions(+), 12 deletions(-)
 > 
-> 
-> 
-> Best regards,
-> Krzysztof
-> 
+> diff --git a/drivers/leds/leds-aw2013.c b/drivers/leds/leds-aw2013.c
+> index c2bc0782c0cd..863aeb02f278 100644
+> --- a/drivers/leds/leds-aw2013.c
+> +++ b/drivers/leds/leds-aw2013.c
+> @@ -1,6 +1,7 @@
+>  // SPDX-License-Identifier: GPL-2.0+
+>  // Driver for Awinic AW2013 3-channel LED driver
+>  
+> +#include <linux/devm-helpers.h>
+>  #include <linux/i2c.h>
+>  #include <linux/leds.h>
+>  #include <linux/module.h>
+> @@ -318,6 +319,11 @@ static int aw2013_probe_dt(struct aw2013 *chip)
+>  	return 0;
+>  }
+>  
+> +static void aw2013_chip_disable_action(void *data)
+> +{
+> +	aw2013_chip_disable(data);
+> +}
+> +
+>  static const struct regmap_config aw2013_regmap_config = {
+>  	.reg_bits = 8,
+>  	.val_bits = 8,
+> @@ -334,7 +340,10 @@ static int aw2013_probe(struct i2c_client *client)
+>  	if (!chip)
+>  		return -ENOMEM;
+>  
+> -	mutex_init(&chip->mutex);
+> +	ret = devm_mutex_init(&client->dev, &chip->mutex);
+> +	if (ret)
+> +		return ret;
+> +
+>  	mutex_lock(&chip->mutex);
+>  
+>  	chip->client = client;
+> @@ -378,6 +387,10 @@ static int aw2013_probe(struct i2c_client *client)
+>  		goto error_reg;
+>  	}
+>  
+> +	ret = devm_add_action(&client->dev, aw2013_chip_disable_action, chip);
+> +	if (ret)
+> +		goto error_reg;
+> +
+>  	ret = aw2013_probe_dt(chip);
+>  	if (ret < 0)
+>  		goto error_reg;
+> @@ -398,19 +411,9 @@ static int aw2013_probe(struct i2c_client *client)
+>  
+>  error:
+>  	mutex_unlock(&chip->mutex);
+> -	mutex_destroy(&chip->mutex);
+>  	return ret;
+>  }
+>  
+> -static void aw2013_remove(struct i2c_client *client)
+> -{
+> -	struct aw2013 *chip = i2c_get_clientdata(client);
+> -
+> -	aw2013_chip_disable(chip);
+> -
+> -	mutex_destroy(&chip->mutex);
+> -}
+> -
+>  static const struct of_device_id aw2013_match_table[] = {
+>  	{ .compatible = "awinic,aw2013", },
+>  	{ /* sentinel */ },
+> @@ -424,7 +427,6 @@ static struct i2c_driver aw2013_driver = {
+>  		.of_match_table = of_match_ptr(aw2013_match_table),
+>  	},
+>  	.probe = aw2013_probe,
+> -	.remove = aw2013_remove,
+>  };
+>  
+>  module_i2c_driver(aw2013_driver);
