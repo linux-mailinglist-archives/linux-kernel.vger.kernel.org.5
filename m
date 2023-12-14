@@ -1,41 +1,55 @@
-Return-Path: <linux-kernel+bounces-88-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-101-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4C96F813BFD
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 21:50:50 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 30146813C2F
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 21:59:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C8D811F21640
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 20:50:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8CC5728250F
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 20:59:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 58DD16A001;
-	Thu, 14 Dec 2023 20:50:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D24C6ABBE;
+	Thu, 14 Dec 2023 20:58:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qSU6UZBo"
+	dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b="no427WYR"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 72F8E273FB
-	for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 20:50:32 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 3F6C6C43391;
-	Thu, 14 Dec 2023 20:50:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1702587032;
-	bh=giIJJNHa79sB0uALPwRRpHKv5T4mQDGH2IspWi9ybL8=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=qSU6UZBovSYH49iaCntw78CR6ewX4MpTkVSb8c+wfYeWngmlPKCZJdAZbQybjdzfp
-	 WQA05Seg5gAYPG6QTHBBDOdgO6uy7uvECN+ID+urjHLRS6D/3IsRz12WH6h0mfBtNC
-	 KmFCV44o2JuVhmqR27ZWlP9ETa1QVsA52WBrc1N44yLrgs7AE0m2hfPTPktIlOhbsm
-	 DzwtyZxduquidrYNVXC/ktNpZ3Rr+oDz1mIIZLeNthutagNrqqwiASyHPOBOtl9dbn
-	 X4fMsjWHU1vRRw2uvTuSfmI+Z75YoImWLPWOESON1uk7wVmyQZbNMBuCxc8Zmzg04N
-	 2EOpPQpdxayTQ==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 1FC10DD4EFA;
-	Thu, 14 Dec 2023 20:50:32 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+Received: from smtp.smtpout.orange.fr (smtp-24.smtpout.orange.fr [80.12.242.24])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C6734282E7
+	for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 20:58:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=wanadoo.fr
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wanadoo.fr
+Received: from pop-os.home ([92.140.202.140])
+	by smtp.orange.fr with ESMTPA
+	id Dsfdr7wPcMO0QDsfdrnicB; Thu, 14 Dec 2023 21:51:02 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
+	s=t20230301; t=1702587062;
+	bh=hcT2b/b6xTR+1AfrfpvlyfQ5cS5UMi2KsmeUgQqFiK4=;
+	h=From:To:Cc:Subject:Date;
+	b=no427WYRMy2s0aygADy5g9EOe3diE20SSlJA9Ki1nMexv59xQQBKtdfRVknJt7lxW
+	 7ZI8PULUI+71968sLXcPHJDOb18fFhXcHf/qgaZpys3dLwPMUlyeFWWFLV4yzLq379
+	 +pSk1Y0KK9S83D9DRHw6Hra0+3t72JoawwJkB0hhnKeMQCj+L0XyWspl6f2jeJG3PO
+	 Dk9v6YaO5GlQcJEtqlZFQpzj5Pb5ZQOg5H+pjpaGAiK8aKxFZJLWJXfTAbzKKxBFuj
+	 acLiDQPiE14pzTJAsV5mCl4MdHK9CwR3G3fnZhN425yAT838E/VIntia6SiaaqNnHm
+	 VdAelwxBBQHXA==
+X-ME-Helo: pop-os.home
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Thu, 14 Dec 2023 21:51:02 +0100
+X-ME-IP: 92.140.202.140
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To: Namjae Jeon <linkinjeon@kernel.org>,
+	Steve French <sfrench@samba.org>,
+	Sergey Senozhatsky <senozhatsky@chromium.org>,
+	Tom Talpey <tom@talpey.com>
+Cc: linux-kernel@vger.kernel.org,
+	kernel-janitors@vger.kernel.org,
+	Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+	linux-cifs@vger.kernel.org
+Subject: [PATCH] ksmbd: Remove usage of the deprecated ida_simple_xx() API
+Date: Thu, 14 Dec 2023 21:50:55 +0100
+Message-Id: <f9d067e773f1cb3e9d4af19f18e80d7d35a71153.1702587034.git.christophe.jaillet@wanadoo.fr>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -43,43 +57,75 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [f2fs-dev] [PATCH v2 4/6] f2fs: don't set FI_PREALLOCATED_ALL for
- partial write
-From: patchwork-bot+f2fs@kernel.org
-Message-Id: 
- <170258703212.30587.8025897708876464523.git-patchwork-notify@kernel.org>
-Date: Thu, 14 Dec 2023 20:50:32 +0000
-References: <20231212010120.252763-1-chao@kernel.org>
-In-Reply-To: <20231212010120.252763-1-chao@kernel.org>
-To: Chao Yu <chao@kernel.org>
-Cc: jaegeuk@kernel.org, ebiggers@google.com, linux-kernel@vger.kernel.org,
- linux-f2fs-devel@lists.sourceforge.net
 
-Hello:
+ida_alloc() and ida_free() should be preferred to the deprecated
+ida_simple_get() and ida_simple_remove().
 
-This patch was applied to jaegeuk/f2fs.git (dev)
-by Jaegeuk Kim <jaegeuk@kernel.org>:
+This is less verbose.
 
-On Tue, 12 Dec 2023 09:01:20 +0800 you wrote:
-> In f2fs_preallocate_blocks(), if it is partial write in 4KB, it's not
-> necessary to call f2fs_map_blocks() and set FI_PREALLOCATED_ALL flag.
-> 
-> Cc: Eric Biggers <ebiggers@google.com>
-> Signed-off-by: Chao Yu <chao@kernel.org>
-> ---
-> v2:
-> - clean up codes
->  fs/f2fs/file.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
+Note that the upper limit of ida_simple_get() is exclusive, but the one of
+ida_alloc_range() is inclusive. So change a 0xFFFFFFFF into a 0xFFFFFFFE in
+order to keep the same behavior.
 
-Here is the summary with links:
-  - [f2fs-dev,v2,4/6] f2fs: don't set FI_PREALLOCATED_ALL for partial write
-    https://git.kernel.org/jaegeuk/f2fs/c/394e7f4dbb32
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+---
+ fs/smb/server/mgmt/ksmbd_ida.c | 21 ++++++---------------
+ 1 file changed, 6 insertions(+), 15 deletions(-)
 
-You are awesome, thank you!
+diff --git a/fs/smb/server/mgmt/ksmbd_ida.c b/fs/smb/server/mgmt/ksmbd_ida.c
+index 54194d959a5e..a18e27e9e0cd 100644
+--- a/fs/smb/server/mgmt/ksmbd_ida.c
++++ b/fs/smb/server/mgmt/ksmbd_ida.c
+@@ -5,42 +5,33 @@
+ 
+ #include "ksmbd_ida.h"
+ 
+-static inline int __acquire_id(struct ida *ida, int from, int to)
+-{
+-	return ida_simple_get(ida, from, to, GFP_KERNEL);
+-}
+-
+ int ksmbd_acquire_smb2_tid(struct ida *ida)
+ {
+-	int id;
+-
+-	id = __acquire_id(ida, 1, 0xFFFFFFFF);
+-
+-	return id;
++	return ida_alloc_range(ida, 1, 0xFFFFFFFE, GFP_KERNEL);
+ }
+ 
+ int ksmbd_acquire_smb2_uid(struct ida *ida)
+ {
+ 	int id;
+ 
+-	id = __acquire_id(ida, 1, 0);
++	id = ida_alloc_min(ida, 1, GFP_KERNEL);
+ 	if (id == 0xFFFE)
+-		id = __acquire_id(ida, 1, 0);
++		id = ida_alloc_min(ida, 1, GFP_KERNEL);
+ 
+ 	return id;
+ }
+ 
+ int ksmbd_acquire_async_msg_id(struct ida *ida)
+ {
+-	return __acquire_id(ida, 1, 0);
++	return ida_alloc_min(ida, 1, GFP_KERNEL);
+ }
+ 
+ int ksmbd_acquire_id(struct ida *ida)
+ {
+-	return __acquire_id(ida, 0, 0);
++	return ida_alloc(ida, GFP_KERNEL);
+ }
+ 
+ void ksmbd_release_id(struct ida *ida, int id)
+ {
+-	ida_simple_remove(ida, id);
++	ida_free(ida, id);
+ }
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+2.34.1
 
 
