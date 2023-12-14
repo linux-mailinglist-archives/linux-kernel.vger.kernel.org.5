@@ -2,68 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DCF8F812B7D
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 10:19:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 29354812B9F
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 10:28:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234527AbjLNJTZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 04:19:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46466 "EHLO
+        id S235537AbjLNJ2U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 04:28:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33346 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229691AbjLNJTY (ORCPT
+        with ESMTP id S234413AbjLNJ2T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 04:19:24 -0500
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E15BFA6
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 01:19:29 -0800 (PST)
-Received: by mail-wr1-x429.google.com with SMTP id ffacd0b85a97d-33646dbedc9so413914f8f.3
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 01:19:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1702545568; x=1703150368; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=h6KCWUfDFNx0O1wfeTExInhDSJOXnrOXPLAO9F5T2Tc=;
-        b=FME2U1jZAN/RcqbaWDbJ6qxJRRDSghjiaGn7MaUj8UhNs5WXK13qDUXKIUFWQ93A2u
-         I+knYpHfh68YG3uwzcDzAnsi0vn+FH7cIERR/+aEqqPX04tfydY871mbxXThYdxYr6zl
-         9QWsXbsHjXxDMP1rXOfRuRRsSf+UXSJGgCZfN+vZbNC3NLcZxpawyY6J9ebeyKF9Z7xH
-         q0IEQpKc8alwU2no1OQ5Dx0QA7770wSg/6Y5W/h+jfN622QcirJT5M0/6oGnV/6Y5bl1
-         kK4waTbJEvd0TTszKq3/AS8w7XvRXRhWOY4cKM54XQ3i1un1pqxR9ceNChG6N6m3HZCd
-         bTDA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702545568; x=1703150368;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=h6KCWUfDFNx0O1wfeTExInhDSJOXnrOXPLAO9F5T2Tc=;
-        b=dt9EXs04AwAXfxuo4WE6Plc1rGBlhgNjSTkt3GpYmnaj9KD2XzVe4ltY9VActeS7iw
-         WRWnUKTpm9RIWHi0CZo214YNGspSUjOX35994i726nA++p88Vp9mhku1gqOrtNBlbgR7
-         FqALCcQgFyNEEgmA7swI1Wsz9TL6t2c/eJtU0dBWoF0A/xqkfEib6jIq+z4tjee28l/4
-         bckqFPtkZA1toSkljFga428o0YRqUPO6dEfiZWGudCyi6vVraNxEEuULIQ4NgO9kjo7n
-         rX40vFzO/sawwnfnlBMXnHlXAasvLM5T8+rdxDMM74sxxBC8dh3fLDfWhQKjCf4fuDsF
-         2sXQ==
-X-Gm-Message-State: AOJu0YxmZ8C61LQGyRN8RlUe39FVYQojrk4jP47Uu0RRTufaJDDna7Vu
-        hLaBJzsq2VZhCPZMyu/nhOje0e+4ixM0GeWefv8=
-X-Google-Smtp-Source: AGHT+IE+/WP/FC7LiEa4MnpNFglnHlJbYeul0msNqi5hQUjLnP0ubLugQKBNDKkqr12g0ooL+bvRKA==
-X-Received: by 2002:a05:6000:4c6:b0:333:1c97:48c4 with SMTP id h6-20020a05600004c600b003331c9748c4mr4481255wri.7.1702545568234;
-        Thu, 14 Dec 2023 01:19:28 -0800 (PST)
-Received: from alex-rivos.ba.rivosinc.com (amontpellier-656-1-456-62.w92-145.abo.wanadoo.fr. [92.145.124.62])
-        by smtp.gmail.com with ESMTPSA id m11-20020adfe94b000000b00333504001acsm15470130wrn.15.2023.12.14.01.19.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Dec 2023 01:19:27 -0800 (PST)
-From:   Alexandre Ghiti <alexghiti@rivosinc.com>
-To:     Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Zong Li <zong.li@sifive.com>, linux-riscv@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Cc:     Alexandre Ghiti <alexghiti@rivosinc.com>
-Subject: [PATCH -fixes v2] riscv: Check if the code to patch lies in the exit section
-Date:   Thu, 14 Dec 2023 10:19:26 +0100
-Message-Id: <20231214091926.203439-1-alexghiti@rivosinc.com>
-X-Mailer: git-send-email 2.39.2
+        Thu, 14 Dec 2023 04:28:19 -0500
+Received: from mx1.sberdevices.ru (mx1.sberdevices.ru [37.18.73.165])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CAA3114;
+        Thu, 14 Dec 2023 01:28:24 -0800 (PST)
+Received: from p-infra-ksmg-sc-msk01 (localhost [127.0.0.1])
+        by mx1.sberdevices.ru (Postfix) with ESMTP id A4E5610006A;
+        Thu, 14 Dec 2023 12:28:22 +0300 (MSK)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru A4E5610006A
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
+        s=mail; t=1702546102;
+        bh=9LfT07pIk0/ilfQ5AIY8whpQsnw26U6S9QEMl0MdPM0=;
+        h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type:From;
+        b=Ty2dLg49aJAyeKr2yL3xdygjDKYDQfVUQIxidrE1y9su8X7Rrzfy56EBXPkwCo42u
+         RUBkkXIdHHzndrKaLVhNmgmzAx3Q51CaNrb6ot9hVD3RTFyE1ZwBzuZNDYxCr1ny0/
+         o7dd/FxwgRe9SbSHmRfjaFLSbf07qyuTbhaeLvQd+eqiFTypgfF+PaI+xK6r1kl2zK
+         f3+eBHlXJ/F7KEH/lKu/fmBWbfig/azlNWUYscovNrfn9a8nQuj68QrAXhzklMrZcP
+         VdCHm7igbtZmQ0Hbf9tcUVNAizZYhthyKklXxYIJFP5SwS2hstnnmN8E0ZUYMMa5vQ
+         /EjneEwlVGrwA==
+Received: from smtp.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mx1.sberdevices.ru (Postfix) with ESMTPS;
+        Thu, 14 Dec 2023 12:28:21 +0300 (MSK)
+Received: from localhost.localdomain (100.64.160.123) by
+ p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Thu, 14 Dec 2023 12:28:21 +0300
+From:   Arseniy Krasnov <avkrasnov@salutedevices.com>
+To:     Stefan Hajnoczi <stefanha@redhat.com>,
+        Stefano Garzarella <sgarzare@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Bobby Eshleman <bobby.eshleman@bytedance.com>
+CC:     <kvm@vger.kernel.org>, <virtualization@lists.linux-foundation.org>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <kernel@sberdevices.ru>, <oxffffaa@gmail.com>,
+        <avkrasnov@salutedevices.com>
+Subject: [PATCH net-next v9 0/4] send credit update during setting SO_RCVLOWAT
+Date:   Thu, 14 Dec 2023 12:19:43 +0300
+Message-ID: <20231214091947.395892-1-avkrasnov@salutedevices.com>
+X-Mailer: git-send-email 2.35.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+Content-Type: text/plain
+X-Originating-IP: [100.64.160.123]
+X-ClientProxiedBy: p-i-exch-sc-m02.sberdevices.ru (172.16.192.103) To
+ p-i-exch-sc-m01.sberdevices.ru (172.16.192.107)
+X-KSMG-Rule-ID: 10
+X-KSMG-Message-Action: clean
+X-KSMG-AntiSpam-Lua-Profiles: 182105 [Dec 14 2023]
+X-KSMG-AntiSpam-Version: 6.1.0.3
+X-KSMG-AntiSpam-Envelope-From: avkrasnov@salutedevices.com
+X-KSMG-AntiSpam-Rate: 0
+X-KSMG-AntiSpam-Status: not_detected
+X-KSMG-AntiSpam-Method: none
+X-KSMG-AntiSpam-Auth: dkim=none
+X-KSMG-AntiSpam-Info: LuaCore: 7 0.3.7 6d6bf5bd8eea7373134f756a2fd73e9456bb7d1a, {Tracking_uf_ne_domains}, {Tracking_from_domain_doesnt_match_to}, git.kernel.org:7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;smtp.sberdevices.ru:5.0.1,7.1.1;100.64.160.123:7.1.2;salutedevices.com:7.1.1;lore.kernel.org:7.1.1;127.0.0.199:7.1.2, FromAlignment: s, ApMailHostAddress: 100.64.160.123
+X-MS-Exchange-Organization-SCL: -1
+X-KSMG-AntiSpam-Interceptor-Info: scan successful
+X-KSMG-AntiPhishing: Clean, bases: 2023/12/14 08:01:00
+X-KSMG-LinksScanning: Clean, bases: 2023/12/14 08:01:00
+X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2023/12/14 08:33:00 #22688916
+X-KSMG-AntiVirus-Status: Clean, skipped
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_NONE,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -71,104 +87,122 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Otherwise we fall through to vmalloc_to_page() which panics since the
-address does not lie in the vmalloc region.
+Hello,
 
-Fixes: 043cb41a85de ("riscv: introduce interfaces to patch kernel code")
-Signed-off-by: Alexandre Ghiti <alexghiti@rivosinc.com>
----
+                               DESCRIPTION
 
-Changes in v2:
-- Fix XIP rv32 build failure
+This patchset fixes old problem with hungup of both rx/tx sides and adds
+test for it. This happens due to non-default SO_RCVLOWAT value and
+deferred credit update in virtio/vsock. Link to previous old patchset:
+https://lore.kernel.org/netdev/39b2e9fd-601b-189d-39a9-914e5574524c@sberdevices.ru/
 
- arch/riscv/include/asm/sections.h   |  1 +
- arch/riscv/kernel/patch.c           | 11 ++++++++++-
- arch/riscv/kernel/vmlinux-xip.lds.S |  2 ++
- arch/riscv/kernel/vmlinux.lds.S     |  2 ++
- 4 files changed, 15 insertions(+), 1 deletion(-)
+Here is what happens step by step:
 
-diff --git a/arch/riscv/include/asm/sections.h b/arch/riscv/include/asm/sections.h
-index 32336e8a17cb..a393d5035c54 100644
---- a/arch/riscv/include/asm/sections.h
-+++ b/arch/riscv/include/asm/sections.h
-@@ -13,6 +13,7 @@ extern char _start_kernel[];
- extern char __init_data_begin[], __init_data_end[];
- extern char __init_text_begin[], __init_text_end[];
- extern char __alt_start[], __alt_end[];
-+extern char __exittext_begin[], __exittext_end[];
- 
- static inline bool is_va_kernel_text(uintptr_t va)
- {
-diff --git a/arch/riscv/kernel/patch.c b/arch/riscv/kernel/patch.c
-index 13ee7bf589a1..37e87fdcf6a0 100644
---- a/arch/riscv/kernel/patch.c
-+++ b/arch/riscv/kernel/patch.c
-@@ -14,6 +14,7 @@
- #include <asm/fixmap.h>
- #include <asm/ftrace.h>
- #include <asm/patch.h>
-+#include <asm/sections.h>
- 
- struct patch_insn {
- 	void *addr;
-@@ -25,6 +26,14 @@ struct patch_insn {
- int riscv_patch_in_stop_machine = false;
- 
- #ifdef CONFIG_MMU
-+
-+static inline bool is_kernel_exittext(uintptr_t addr)
-+{
-+	return system_state < SYSTEM_RUNNING &&
-+		addr >= (uintptr_t)__exittext_begin &&
-+		addr < (uintptr_t)__exittext_end;
-+}
-+
- /*
-  * The fix_to_virt(, idx) needs a const value (not a dynamic variable of
-  * reg-a0) or BUILD_BUG_ON failed with "idx >= __end_of_fixed_addresses".
-@@ -35,7 +44,7 @@ static __always_inline void *patch_map(void *addr, const unsigned int fixmap)
- 	uintptr_t uintaddr = (uintptr_t) addr;
- 	struct page *page;
- 
--	if (core_kernel_text(uintaddr))
-+	if (core_kernel_text(uintaddr) || is_kernel_exittext(uintaddr))
- 		page = phys_to_page(__pa_symbol(addr));
- 	else if (IS_ENABLED(CONFIG_STRICT_MODULE_RWX))
- 		page = vmalloc_to_page(addr);
-diff --git a/arch/riscv/kernel/vmlinux-xip.lds.S b/arch/riscv/kernel/vmlinux-xip.lds.S
-index 50767647fbc6..8c3daa1b0531 100644
---- a/arch/riscv/kernel/vmlinux-xip.lds.S
-+++ b/arch/riscv/kernel/vmlinux-xip.lds.S
-@@ -29,10 +29,12 @@ SECTIONS
- 	HEAD_TEXT_SECTION
- 	INIT_TEXT_SECTION(PAGE_SIZE)
- 	/* we have to discard exit text and such at runtime, not link time */
-+	__exittext_begin = .;
- 	.exit.text :
- 	{
- 		EXIT_TEXT
- 	}
-+	__exittext_end = .;
- 
- 	.text : {
- 		_text = .;
-diff --git a/arch/riscv/kernel/vmlinux.lds.S b/arch/riscv/kernel/vmlinux.lds.S
-index 492dd4b8f3d6..002ca58dd998 100644
---- a/arch/riscv/kernel/vmlinux.lds.S
-+++ b/arch/riscv/kernel/vmlinux.lds.S
-@@ -69,10 +69,12 @@ SECTIONS
- 		__soc_builtin_dtb_table_end = .;
- 	}
- 	/* we have to discard exit text and such at runtime, not link time */
-+	__exittext_begin = .;
- 	.exit.text :
- 	{
- 		EXIT_TEXT
- 	}
-+	__exittext_end = .;
- 
- 	__init_text_end = .;
- 	. = ALIGN(SECTION_ALIGN);
+                                  TEST
+
+                            INITIAL CONDITIONS
+
+1) Vsock buffer size is 128KB.
+2) Maximum packet size is also 64KB as defined in header (yes it is
+   hardcoded, just to remind about that value).
+3) SO_RCVLOWAT is default, e.g. 1 byte.
+
+
+                                 STEPS
+
+            SENDER                              RECEIVER
+1) sends 128KB + 1 byte in a
+   single buffer. 128KB will
+   be sent, but for 1 byte
+   sender will wait for free
+   space at peer. Sender goes
+   to sleep.
+
+
+2)                                     reads 64KB, credit update not sent
+3)                                     sets SO_RCVLOWAT to 64KB + 1
+4)                                     poll() -> wait forever, there is
+                                       only 64KB available to read.
+
+So in step 4) receiver also goes to sleep, waiting for enough data or
+connection shutdown message from the sender. Idea to fix it is that rx
+kicks tx side to continue transmission (and may be close connection)
+when rx changes number of bytes to be woken up (e.g. SO_RCVLOWAT) and
+this value is bigger than number of available bytes to read.
+
+I've added small test for this, but not sure as it uses hardcoded value
+for maximum packet length, this value is defined in kernel header and
+used to control deferred credit update. And as this is not available to
+userspace, I can't control test parameters correctly (if one day this
+define will be changed - test may become useless). 
+
+Head for this patchset is:
+https://git.kernel.org/pub/scm/linux/kernel/git/netdev/net-next.git/commit/?id=9bab51bd662be4c3ebb18a28879981d69f3ef15a
+
+Link to v1:
+https://lore.kernel.org/netdev/20231108072004.1045669-1-avkrasnov@salutedevices.com/
+Link to v2:
+https://lore.kernel.org/netdev/20231119204922.2251912-1-avkrasnov@salutedevices.com/
+Link to v3:
+https://lore.kernel.org/netdev/20231122180510.2297075-1-avkrasnov@salutedevices.com/
+Link to v4:
+https://lore.kernel.org/netdev/20231129212519.2938875-1-avkrasnov@salutedevices.com/
+Link to v5:
+https://lore.kernel.org/netdev/20231130130840.253733-1-avkrasnov@salutedevices.com/
+Link to v6:
+https://lore.kernel.org/netdev/20231205064806.2851305-1-avkrasnov@salutedevices.com/
+Link to v7:
+https://lore.kernel.org/netdev/20231206211849.2707151-1-avkrasnov@salutedevices.com/
+Link to v8:
+https://lore.kernel.org/netdev/20231211211658.2904268-1-avkrasnov@salutedevices.com/
+
+Changelog:
+v1 -> v2:
+ * Patchset rebased and tested on new HEAD of net-next (see hash above).
+ * New patch is added as 0001 - it removes return from SO_RCVLOWAT set
+   callback in 'af_vsock.c' when transport callback is set - with that
+   we can set 'sk_rcvlowat' only once in 'af_vsock.c' and in future do
+   not copy-paste it to every transport. It was discussed in v1.
+ * See per-patch changelog after ---.
+v2 -> v3:
+ * See changelog after --- in 0003 only (0001 and 0002 still same).
+v3 -> v4:
+ * Patchset rebased and tested on new HEAD of net-next (see hash above).
+ * See per-patch changelog after ---.
+v4 -> v5:
+ * Change patchset tag 'RFC' -> 'net-next'.
+ * See per-patch changelog after ---.
+v5 -> v6:
+ * New patch 0003 which sends credit update during reading bytes from
+   socket.
+ * See per-patch changelog after ---.
+v6 -> v7:
+ * Patchset rebased and tested on new HEAD of net-next (see hash above).
+ * See per-patch changelog after ---.
+v7 -> v8:
+ * See per-patch changelog after ---.
+v8 -> v9:
+ * Patchset rebased and tested on new HEAD of net-next (see hash above).
+ * Add 'Fixes' tag for the current 0002.
+ * Reorder patches by moving two fixes first.
+
+Arseniy Krasnov (4):
+  virtio/vsock: fix logic which reduces credit update messages
+  virtio/vsock: send credit update during setting SO_RCVLOWAT
+  vsock: update SO_RCVLOWAT setting callback
+  vsock/test: two tests to check credit update logic
+
+ drivers/vhost/vsock.c                   |   1 +
+ include/linux/virtio_vsock.h            |   1 +
+ include/net/af_vsock.h                  |   2 +-
+ net/vmw_vsock/af_vsock.c                |   9 +-
+ net/vmw_vsock/hyperv_transport.c        |   4 +-
+ net/vmw_vsock/virtio_transport.c        |   1 +
+ net/vmw_vsock/virtio_transport_common.c |  43 +++++-
+ net/vmw_vsock/vsock_loopback.c          |   1 +
+ tools/testing/vsock/vsock_test.c        | 175 ++++++++++++++++++++++++
+ 9 files changed, 229 insertions(+), 8 deletions(-)
+
 -- 
-2.39.2
+2.25.1
 
