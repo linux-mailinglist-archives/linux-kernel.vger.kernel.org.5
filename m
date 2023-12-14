@@ -2,30 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 42E76812419
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 01:48:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BD7E81241C
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 01:48:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442910AbjLNAr6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 19:47:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47902 "EHLO
+        id S1442915AbjLNAsA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 19:48:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47910 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234083AbjLNArz (ORCPT
+        with ESMTP id S234109AbjLNArz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 13 Dec 2023 19:47:55 -0500
-Received: from out-188.mta1.migadu.com (out-188.mta1.migadu.com [95.215.58.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CC4FA3
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 16:48:01 -0800 (PST)
+Received: from out-176.mta1.migadu.com (out-176.mta1.migadu.com [95.215.58.176])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1510E9A
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 16:48:02 -0800 (PST)
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1702514879;
+        t=1702514880;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=nejB0rN/5EGuA3SQQpabp67CuxIikS5y1NrnTFuMISI=;
-        b=NsLzL58tlPR9ugxKAnRyMd8DrRr+SxvUinNtJYzd6v9CkqeQBI6h1vLxoqNrpoCC29ye9N
-        snkjrMQ3Lu297rvZMIzUP/4NoNDeq3Szl+q2xjymcO6Gf9ebqHjZLk5pBsolFcBwIiCaFX
-        W97yEg6DpDpdzNXtnmn6OJ6I/lrlXyI=
+        bh=8YssiUYIuDBfUgViHa8UWZbb+o2fPyHhfOU9iGYPOo4=;
+        b=ukeh5H64ggk42fU3s6NTf9eHd2GIMqqgZ/CqDcfXQdJSfR4jhY5GxkoRPyps3uU323JLgZ
+        TniRsk/5uPbcuJZvJRywDrgPNugzxiX76SI4CJMOmkh/ZLwplUIxY/5qcBKDt2czbq/Gkx
+        jFr5MxIf7T+y9Q0QrUq8z27yYq8OoyQ=
 From:   andrey.konovalov@linux.dev
 To:     Andrew Morton <akpm@linux-foundation.org>
 Cc:     Andrey Konovalov <andreyknvl@gmail.com>,
@@ -36,10 +36,11 @@ Cc:     Andrey Konovalov <andreyknvl@gmail.com>,
         Evgenii Stepanov <eugenis@google.com>,
         Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
         linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Andrey Konovalov <andreyknvl@google.com>
-Subject: [PATCH -v2 mm 1/4] lib/stackdepot: add printk_deferred_enter/exit guards
-Date:   Thu, 14 Dec 2023 01:47:51 +0100
-Message-Id: <b050d29e17195466aa491b37c26916421dfed5a3.1702514411.git.andreyknvl@google.com>
+        Andrey Konovalov <andreyknvl@google.com>,
+        syzbot+186b55175d8360728234@syzkaller.appspotmail.com
+Subject: [PATCH -v2 mm 2/4] kasan: handle concurrent kasan_record_aux_stack calls
+Date:   Thu, 14 Dec 2023 01:47:52 +0100
+Message-Id: <88fc85e2a8cca03f2bfcae76100d1a3d54eac840.1702514411.git.andreyknvl@google.com>
 In-Reply-To: <cover.1702514411.git.andreyknvl@google.com>
 References: <cover.1702514411.git.andreyknvl@google.com>
 MIME-Version: 1.0
@@ -56,95 +57,115 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Andrey Konovalov <andreyknvl@google.com>
 
-Stack depot functions can be called from various contexts that do
-allocations, including with console locks taken. At the same time, stack
-depot functions might print WARNING's or refcount-related failures.
+kasan_record_aux_stack can be called concurrently on the same object.
+This might lead to a race condition when rotating the saved aux stack
+trace handles, which in turns leads to incorrect accounting of stack
+depot handles and refcount underflows in the stack depot code.
 
-This can cause a deadlock on console locks.
-
-Add printk_deferred_enter/exit guards to stack depot to avoid this.
+Fix by introducing a spinlock to protect the aux stack trace handles
+in kasan_record_aux_stack.
 
 Reported-by: Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-Closes: https://lore.kernel.org/all/000000000000f56750060b9ad216@google.com/
-Fixes: 108be8def46e ("lib/stackdepot: allow users to evict stack traces")
-Fixes: cd11016e5f52 ("mm, kasan: stackdepot implementation. Enable stackdepot for SLAB")
-Reviewed-by: Marco Elver <elver@google.com>
+Reported-by: syzbot+186b55175d8360728234@syzkaller.appspotmail.com
+Closes: https://lore.kernel.org/all/000000000000784b1c060b0074a2@google.com/
+Fixes: 773688a6cb24 ("kasan: use stack_depot_put for Generic mode")
 Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
----
- lib/stackdepot.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
 
-diff --git a/lib/stackdepot.c b/lib/stackdepot.c
-index 870cce2f4cbd..a0be5d05c7f0 100644
---- a/lib/stackdepot.c
-+++ b/lib/stackdepot.c
-@@ -506,12 +506,14 @@ depot_stack_handle_t stack_depot_save_flags(unsigned long *entries,
- 	bucket = &stack_table[hash & stack_hash_mask];
+---
+
+Changes v1->v2:
+- Use per-object spinlock instead of a global one.
+---
+ mm/kasan/generic.c | 32 +++++++++++++++++++++++++++++---
+ mm/kasan/kasan.h   |  2 ++
+ 2 files changed, 31 insertions(+), 3 deletions(-)
+
+diff --git a/mm/kasan/generic.c b/mm/kasan/generic.c
+index 54e20b2bc3e1..b9d41d6c70fd 100644
+--- a/mm/kasan/generic.c
++++ b/mm/kasan/generic.c
+@@ -25,6 +25,7 @@
+ #include <linux/sched.h>
+ #include <linux/sched/task_stack.h>
+ #include <linux/slab.h>
++#include <linux/spinlock.h>
+ #include <linux/stackdepot.h>
+ #include <linux/stacktrace.h>
+ #include <linux/string.h>
+@@ -471,8 +472,18 @@ void kasan_init_object_meta(struct kmem_cache *cache, const void *object)
+ 	struct kasan_free_meta *free_meta;
  
- 	read_lock_irqsave(&pool_rwlock, flags);
-+	printk_deferred_enter();
+ 	alloc_meta = kasan_get_alloc_meta(cache, object);
+-	if (alloc_meta)
++	if (alloc_meta) {
+ 		__memset(alloc_meta, 0, sizeof(*alloc_meta));
++
++		/*
++		 * Temporarily disable KASAN bug reporting to allow instrumented
++		 * spin_lock_init to access aux_lock, which resides inside of a
++		 * redzone.
++		 */
++		kasan_disable_current();
++		spin_lock_init(&alloc_meta->aux_lock);
++		kasan_enable_current();
++	}
+ 	free_meta = kasan_get_free_meta(cache, object);
+ 	if (free_meta)
+ 		__memset(free_meta, 0, sizeof(*free_meta));
+@@ -502,6 +513,8 @@ static void __kasan_record_aux_stack(void *addr, depot_flags_t depot_flags)
+ 	struct kmem_cache *cache;
+ 	struct kasan_alloc_meta *alloc_meta;
+ 	void *object;
++	depot_stack_handle_t new_handle, old_handle;
++	unsigned long flags;
  
- 	/* Fast path: look the stack trace up without full locking. */
- 	found = find_stack(bucket, entries, nr_entries, hash);
- 	if (found) {
- 		if (depot_flags & STACK_DEPOT_FLAG_GET)
- 			refcount_inc(&found->count);
-+		printk_deferred_exit();
- 		read_unlock_irqrestore(&pool_rwlock, flags);
- 		goto exit;
- 	}
-@@ -520,6 +522,7 @@ depot_stack_handle_t stack_depot_save_flags(unsigned long *entries,
- 	if (new_pool_required)
- 		need_alloc = true;
- 
-+	printk_deferred_exit();
- 	read_unlock_irqrestore(&pool_rwlock, flags);
- 
- 	/*
-@@ -541,6 +544,7 @@ depot_stack_handle_t stack_depot_save_flags(unsigned long *entries,
- 	}
- 
- 	write_lock_irqsave(&pool_rwlock, flags);
-+	printk_deferred_enter();
- 
- 	found = find_stack(bucket, entries, nr_entries, hash);
- 	if (!found) {
-@@ -562,6 +566,7 @@ depot_stack_handle_t stack_depot_save_flags(unsigned long *entries,
- 			depot_keep_new_pool(&prealloc);
- 	}
- 
-+	printk_deferred_exit();
- 	write_unlock_irqrestore(&pool_rwlock, flags);
- exit:
- 	if (prealloc) {
-@@ -600,9 +605,11 @@ unsigned int stack_depot_fetch(depot_stack_handle_t handle,
- 		return 0;
- 
- 	read_lock_irqsave(&pool_rwlock, flags);
-+	printk_deferred_enter();
- 
- 	stack = depot_fetch_stack(handle);
- 
-+	printk_deferred_exit();
- 	read_unlock_irqrestore(&pool_rwlock, flags);
- 
- 	*entries = stack->entries;
-@@ -619,6 +626,7 @@ void stack_depot_put(depot_stack_handle_t handle)
+ 	if (is_kfence_address(addr) || !slab)
+ 		return;
+@@ -512,9 +525,22 @@ static void __kasan_record_aux_stack(void *addr, depot_flags_t depot_flags)
+ 	if (!alloc_meta)
  		return;
  
- 	write_lock_irqsave(&pool_rwlock, flags);
-+	printk_deferred_enter();
- 
- 	stack = depot_fetch_stack(handle);
- 	if (WARN_ON(!stack))
-@@ -633,6 +641,7 @@ void stack_depot_put(depot_stack_handle_t handle)
- 	}
- 
- out:
-+	printk_deferred_exit();
- 	write_unlock_irqrestore(&pool_rwlock, flags);
+-	stack_depot_put(alloc_meta->aux_stack[1]);
++	new_handle = kasan_save_stack(0, depot_flags);
++
++	/*
++	 * Temporarily disable KASAN bug reporting to allow instrumented
++	 * spinlock functions to access aux_lock, which resides inside of a
++	 * redzone.
++	 */
++	kasan_disable_current();
++	spin_lock_irqsave(&alloc_meta->aux_lock, flags);
++	old_handle = alloc_meta->aux_stack[1];
+ 	alloc_meta->aux_stack[1] = alloc_meta->aux_stack[0];
+-	alloc_meta->aux_stack[0] = kasan_save_stack(0, depot_flags);
++	alloc_meta->aux_stack[0] = new_handle;
++	spin_unlock_irqrestore(&alloc_meta->aux_lock, flags);
++	kasan_enable_current();
++
++	stack_depot_put(old_handle);
  }
- EXPORT_SYMBOL_GPL(stack_depot_put);
+ 
+ void kasan_record_aux_stack(void *addr)
+diff --git a/mm/kasan/kasan.h b/mm/kasan/kasan.h
+index 5e298e3ac909..8b4125fecdc7 100644
+--- a/mm/kasan/kasan.h
++++ b/mm/kasan/kasan.h
+@@ -6,6 +6,7 @@
+ #include <linux/kasan.h>
+ #include <linux/kasan-tags.h>
+ #include <linux/kfence.h>
++#include <linux/spinlock.h>
+ #include <linux/stackdepot.h>
+ 
+ #if defined(CONFIG_KASAN_SW_TAGS) || defined(CONFIG_KASAN_HW_TAGS)
+@@ -249,6 +250,7 @@ struct kasan_global {
+ struct kasan_alloc_meta {
+ 	struct kasan_track alloc_track;
+ 	/* Free track is stored in kasan_free_meta. */
++	spinlock_t aux_lock;
+ 	depot_stack_handle_t aux_stack[2];
+ };
+ 
 -- 
 2.25.1
 
