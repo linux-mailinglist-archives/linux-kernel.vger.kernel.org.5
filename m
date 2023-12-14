@@ -2,65 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BD9898128DF
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 08:14:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9384C8128D9
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 08:13:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234371AbjLNHN4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 02:13:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49506 "EHLO
+        id S230255AbjLNHNQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 02:13:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47390 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231129AbjLNHNz (ORCPT
+        with ESMTP id S229461AbjLNHNN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 02:13:55 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19278B9;
-        Wed, 13 Dec 2023 23:14:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1702538042; x=1734074042;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=GN22NQP6pMAziWGVyIMCN9j8aXdvqe/Q9qp2AF7ybkA=;
-  b=Zepmh8NQbAeg1EgeCNEpR6Psrk83518QOEs1Kx8F728Z5afn0WW7zWko
-   MpsgoABPMVSufUP1a3SfdhWW2VvV9Qwwb0CPpKOdpljLr7vscmZNdVu+5
-   N5gkJS9wfI7k0xUDb5D8n27U1DskkqsAccACZ0N0LNSLpHpQK4Hk1TfL/
-   EZyUBrs1KQYYfuDy9K7YmDutnjlimVpzSYraKYGtKu6e1+xF4eLQsmWJo
-   7yiWhpCggAjAVz/NitPNNEQIDMnWT9YJilCOA4Ajdc/asBPBH73q4tx3E
-   Rey2kBv0Lw8amKu200gUBdyP+UbBKR9vspdduG3xl6RCsa+XR8DkuSJeS
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10923"; a="393950394"
-X-IronPort-AV: E=Sophos;i="6.04,274,1695711600"; 
-   d="scan'208";a="393950394"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Dec 2023 23:14:01 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10923"; a="750421412"
-X-IronPort-AV: E=Sophos;i="6.04,274,1695711600"; 
-   d="scan'208";a="750421412"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by orsmga006.jf.intel.com with ESMTP; 13 Dec 2023 23:13:58 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1rDfuu-000Lj2-0F;
-        Thu, 14 Dec 2023 07:13:56 +0000
-Date:   Thu, 14 Dec 2023 15:12:57 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Akhil R <akhilrajeev@nvidia.com>, herbert@gondor.apana.org.au,
-        davem@davemloft.net, linux-crypto@vger.kernel.org,
-        linux-kernel@vger.kernel.org, thierry.reding@gmail.com,
-        jonathanh@nvidia.com, linux-tegra@vger.kernel.org
-Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-        Akhil R <akhilrajeev@nvidia.com>
-Subject: Re: [PATCH 3/5] crypto: tegra: Add Tegra Security Engine driver
-Message-ID: <202312141448.599zJgqd-lkp@intel.com>
-References: <20231213122030.11734-4-akhilrajeev@nvidia.com>
+        Thu, 14 Dec 2023 02:13:13 -0500
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B00E6107;
+        Wed, 13 Dec 2023 23:13:19 -0800 (PST)
+Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BE2wi5i004126;
+        Thu, 14 Dec 2023 07:13:11 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+        message-id:date:mime-version:subject:from:to:cc:references
+        :in-reply-to:content-type:content-transfer-encoding; s=
+        qcppdkim1; bh=VmqZYjMx0vgFysXJdO/GGgQWXfWPrqIdMa2UVbw3zwY=; b=RT
+        r6hH6pnKUNFE5A9SOfH6UW3XurQOgJeUpE+5nvfcZdqLlzXjtUcRktkYHqtqPKa2
+        R6z9NV7lFeNneJW+GEbIF0XN+GtP8HPlsBIe5rG0YNQtqYjIk8BkW9PNY4pd0+mB
+        k6URBSiIDudlBVNl1zRWN3+9WAExNcrPdoNkgLE8Z1c5NavW2kJkgC7YxNO1rB8J
+        ODZeXKzn/exYaVvHDp+M2JygLAuNZB7F1kZpPMOR5UJW7nzYV2xZii8NUhRutQ+y
+        7y+TIbFjf1B/G6KDMIQzIZ8Uu9iDp6H3+aa0T4y4zd6gbmc6XD7TpCg7Xnr9QP7U
+        ZdmqCDIANd8HmIZ13i9w==
+Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3uyq9t0ntn-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 14 Dec 2023 07:13:10 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3BE7D9tH001194
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 14 Dec 2023 07:13:09 GMT
+Received: from [10.50.15.223] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Wed, 13 Dec
+ 2023 23:13:06 -0800
+Message-ID: <54e882ba-4758-1283-1a52-1f12201e1836@quicinc.com>
+Date:   Thu, 14 Dec 2023 12:43:02 +0530
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231213122030.11734-4-akhilrajeev@nvidia.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.3.2
+Subject: Re: [PATCH v2 05/17] scsi: ufs: qcom: Remove the warning message when
+ core_reset is not available
+From:   Nitin Rawat <quic_nitirawa@quicinc.com>
+To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+CC:     <martin.petersen@oracle.com>, <jejb@linux.ibm.com>,
+        <andersson@kernel.org>, <konrad.dybcio@linaro.org>,
+        <linux-arm-msm@vger.kernel.org>, <linux-scsi@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <quic_cang@quicinc.com>,
+        <ahalaney@redhat.com>
+References: <20231208065902.11006-1-manivannan.sadhasivam@linaro.org>
+ <20231208065902.11006-6-manivannan.sadhasivam@linaro.org>
+ <7472fe73-e7a0-5c8c-6e85-655db028a5c3@quicinc.com>
+ <20231208102832.GA3008@thinkpad>
+ <190651ad-6aeb-69eb-89c5-ed18221b5a7a@quicinc.com>
+Content-Language: en-US
+In-Reply-To: <190651ad-6aeb-69eb-89c5-ed18221b5a7a@quicinc.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: W2zM5WfzVBaFH0jkMVrp6SDQahMuyZ3Q
+X-Proofpoint-GUID: W2zM5WfzVBaFH0jkMVrp6SDQahMuyZ3Q
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-09_02,2023-12-07_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 mlxscore=0
+ mlxlogscore=999 suspectscore=0 adultscore=0 spamscore=0 lowpriorityscore=0
+ malwarescore=0 impostorscore=0 priorityscore=1501 phishscore=0 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2311290000
+ definitions=main-2312140045
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -68,76 +88,95 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Akhil,
-
-kernel test robot noticed the following build warnings:
-
-[auto build test WARNING on herbert-cryptodev-2.6/master]
-[also build test WARNING on drm/drm-next arm64/for-next/core robh/for-next linus/master v6.7-rc5 next-20231213]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Akhil-R/dt-bindings-crypto-Add-Tegra-SE-DT-binding-doc/20231213-202407
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/herbert/cryptodev-2.6.git master
-patch link:    https://lore.kernel.org/r/20231213122030.11734-4-akhilrajeev%40nvidia.com
-patch subject: [PATCH 3/5] crypto: tegra: Add Tegra Security Engine driver
-config: powerpc-allmodconfig (https://download.01.org/0day-ci/archive/20231214/202312141448.599zJgqd-lkp@intel.com/config)
-compiler: clang version 17.0.0 (https://github.com/llvm/llvm-project.git 4a5ac14ee968ff0ad5d2cc1ffa0299048db4c88a)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231214/202312141448.599zJgqd-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202312141448.599zJgqd-lkp@intel.com/
-
-All warnings (new ones prefixed by >>):
-
->> drivers/crypto/tegra/tegra-se-main.c:283:51: warning: variable 'i' is uninitialized when used here [-Wuninitialized]
-     283 |                 dev_err(se->dev, "failed to set %d clock rate", i);
-         |                                                                 ^
-   include/linux/dev_printk.h:144:65: note: expanded from macro 'dev_err'
-     144 |         dev_printk_index_wrap(_dev_err, KERN_ERR, dev, dev_fmt(fmt), ##__VA_ARGS__)
-         |                                                                        ^~~~~~~~~~~
-   include/linux/dev_printk.h:110:23: note: expanded from macro 'dev_printk_index_wrap'
-     110 |                 _p_func(dev, fmt, ##__VA_ARGS__);                       \
-         |                                     ^~~~~~~~~~~
-   drivers/crypto/tegra/tegra-se-main.c:273:7: note: initialize the variable 'i' to silence this warning
-     273 |         int i, ret;
-         |              ^
-         |               = 0
-   1 warning generated.
 
 
-vim +/i +283 drivers/crypto/tegra/tegra-se-main.c
+On 12/8/2023 6:59 PM, Nitin Rawat wrote:
+> 
+> 
+> On 12/8/2023 3:58 PM, Manivannan Sadhasivam wrote:
+>> On Fri, Dec 08, 2023 at 02:55:21PM +0530, Nitin Rawat wrote:
+>>>
+>>>
+>>> On 12/8/2023 12:28 PM, Manivannan Sadhasivam wrote:
+>>>> core_reset is optional, so there is no need to warn the user if it 
+>>>> is not
+>>>> available.
+>>>>
+>>>> Reviewed-by: Andrew Halaney <ahalaney@redhat.com>
+>>>> Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+>>>> ---
+>>>>    drivers/ufs/host/ufs-qcom.c | 4 +---
+>>>>    1 file changed, 1 insertion(+), 3 deletions(-)
+>>>>
+>>>> diff --git a/drivers/ufs/host/ufs-qcom.c b/drivers/ufs/host/ufs-qcom.c
+>>>> index dc93b1c5ca74..d474de0739e4 100644
+>>>> --- a/drivers/ufs/host/ufs-qcom.c
+>>>> +++ b/drivers/ufs/host/ufs-qcom.c
+>>>> @@ -296,10 +296,8 @@ static int ufs_qcom_host_reset(struct ufs_hba 
+>>>> *hba)
+>>>>        struct ufs_qcom_host *host = ufshcd_get_variant(hba);
+>>>>        bool reenable_intr;
+>>>> -    if (!host->core_reset) {
+>>>> -        dev_warn(hba->dev, "%s: reset control not set\n", __func__);
+>>>> +    if (!host->core_reset)
+>>>>            return 0;
+>>>> -    }
+>>>>        reenable_intr = hba->is_irq_enabled;
+>>>>        disable_irq(hba->irq);
+>>>
+>>>
+>>> Hi Mani,
+>>>
+>>> I think core reset is not frequent. It happen during only probe ,error
+>>> handler.
+>>>
+>>> core reset is needed in kernel to cleanup UFS phy and controller
+>>> configuration before UFS HLOS operation starts as per HPG.
+>>>
+>>
+>> This sounds like core reset is not an optional property but a required 
+>> one. I
+>> just checked the upstream DT files for all SoCs, and looks like pretty 
+>> much all
+>> of them support core reset.
+>>
+>> Only MSM8996 doesn't have the reset property, but the reset is 
+>> available in GCC.
+>> So we should be able to use it in dtsi.
+>>
+>> I also skimmed through the HPG and looks like core reset is not 
+>> optional. Please
+>> confirm.
+>>
+>> - Mani
+> 
+> 
+> Hi Mani,
+> 
+> Yes Core_reset is part of HPG sequence and is needed.
+> 
+> Regards,
+> Nitin
 
-   270	
-   271	static int tegra_se_clk_init(struct tegra_se *se)
-   272	{
-   273		int i, ret;
-   274	
-   275		se->clk = devm_clk_get(se->dev, NULL);
-   276		if (IS_ERR(se->clk)) {
-   277			dev_err(se->dev, "failed to get clock\n");
-   278			return PTR_ERR(se->clk);
-   279		}
-   280	
-   281		ret = clk_set_rate(se->clk, ULONG_MAX);
-   282		if (ret) {
- > 283			dev_err(se->dev, "failed to set %d clock rate", i);
-   284			return ret;
-   285		}
-   286	
-   287		ret = clk_prepare_enable(se->clk);
-   288		if (ret) {
-   289			dev_err(se->dev, "failed to enable clocks\n");
-   290			return ret;
-   291		}
-   292	
-   293		return 0;
-   294	}
-   295	
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Hi Mani,
+
+I see this patch series is merged . So planning to keep the warn message
+based on above discussion.
+
+Regards,
+Nitin
+> 
+> 
+>>
+>>> Having existing warn print can be used to to debug or atleast know
+>>> core_reset is missed in device tree to give indication complete reset 
+>>> hasn't
+>>> been done and we could still be operating in bootloader configuration.
+>>>
+>>>
+>>> Regards,
+>>> Nitin
+>>>
+>>
+> 
