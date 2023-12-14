@@ -1,203 +1,110 @@
-Return-Path: <linux-kernel+bounces-221-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-240-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id DB2F3813DFA
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 00:06:37 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 572A2813E2B
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 00:20:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 927B8283700
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 23:06:36 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0CB731F214EB
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 23:20:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA0756E58B;
-	Thu, 14 Dec 2023 23:06:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8FAFF6C6DA;
+	Thu, 14 Dec 2023 23:20:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b="Ylob5p1y";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="Z8QNha96"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="amm0jq7w"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from wout1-smtp.messagingengine.com (wout1-smtp.messagingengine.com [64.147.123.24])
+Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7749266AA4;
-	Thu, 14 Dec 2023 23:06:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dxuuu.xyz
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
-	by mailout.west.internal (Postfix) with ESMTP id 3FEE73200B6C;
-	Thu, 14 Dec 2023 17:56:50 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute6.internal (MEProxy); Thu, 14 Dec 2023 17:56:51 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
-	:cc:content-transfer-encoding:content-type:date:date:from:from
-	:in-reply-to:in-reply-to:message-id:mime-version:references
-	:reply-to:subject:subject:to:to; s=fm3; t=1702594609; x=
-	1702681009; bh=L/0CxpH+ItkIN3jpcTP0mXpLYvcBH1FSKHM4RQL+UFM=; b=Y
-	lob5p1y1K4j5mjBFalFycAkqaKaqz1FROzRP7NWkpEROFzy1e6SUuDGfMro/YXW7
-	FhjzgdFCa70PDXuds5aDqFaw53gjddDbSraAF+MhTKm+OBFDkEqWZYP1r6c891Eu
-	FJWJVU5C7/K2myRzOSiegHkravmvJMcDxiaXJ6CkUOmpjIBvUWg+7vPkUaNfMEKM
-	FuKCwOHLdM13dBAyjrwKm8RnC2fZ1umgcmm8JCbTaVGb3pocHmib/cVoNatQ+/Vz
-	vXFOKXun5v8LjJFAJfq/UncZ12je4stK9I/h1Nmdxj7tnM88vWM/U1eLll66IDan
-	9utJ5oH21kB+ke8oFAjbQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:date:date:feedback-id:feedback-id:from:from
-	:in-reply-to:in-reply-to:message-id:mime-version:references
-	:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1702594609; x=
-	1702681009; bh=L/0CxpH+ItkIN3jpcTP0mXpLYvcBH1FSKHM4RQL+UFM=; b=Z
-	8QNha96yOnxWRQSSo1nDSWCFHxIJmkn9MYYFdco3NpHSKLe7MimAxTTHpGymneOn
-	6MLJI4IF8TJ8zEAsdWP2cfpFR/ZM0Ylfphy0HLodutXTIGujX395+upYWsL81wjN
-	x4X1XBmlD06f2OGrC8XYdP/an6b2s7OxfZT2O0Tb4tc+slGTmn1JDgj3YXKCMSes
-	MmZy09onNnLpBo7i0Ymd/NPcL3o/jfSlfa/sSXXYhk5lntMpOwlYrHqd/HDTcvj2
-	dfV8Vt2frgzhmGOpTJc64fq1jV/Yfp5O90iOOTlcLZKNa3ErJgfCC8YgNbjUJNea
-	G6x1YfFa1llnZqwqWOQ9g==
-X-ME-Sender: <xms:MYh7ZQqLDB2aFxr89_HkEd6e3cq0Wq3s2oYc23imxhwnSxJyufausA>
-    <xme:MYh7ZWpLcMT2FG8HKhZtzDOZOnwTfYJ-Ehk5ypqMJDsLju30yDxuOsGtgvo3ZMp6N
-    XFyB7PHxhwllgh3NA>
-X-ME-Received: <xmr:MYh7ZVOwqfCC0ikk9qKO-0kxnNZA5yPPKhDlUlAElT3Ee86lUD1XZcLAvClPnryRyHO4dnSsmnLJkgIsBqJajer8jqxaEJFORjaY3chb12XbUg>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrvddttddgtdefucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucgfrhhlucfvnfffucdljedtmdenucfjughrpefhvf
-    evufffkffojghfggfgsedtkeertdertddtnecuhfhrohhmpeffrghnihgvlhcuighuuceo
-    ugiguhesugiguhhuuhdrgiihiieqnecuggftrfgrthhtvghrnhepgfefgfegjefhudeike
-    dvueetffelieefuedvhfehjeeljeejkefgffeghfdttdetnecuvehluhhsthgvrhfuihii
-    vgepudenucfrrghrrghmpehmrghilhhfrhhomhepugiguhesugiguhhuuhdrgiihii
-X-ME-Proxy: <xmx:MYh7ZX4RErih6CpEIXgwZdIR6kbw54fNJlOzLCY5goNPZdi2WZ2IeQ>
-    <xmx:MYh7Zf5q1Dtpd4DySwptq0vLjSXnv8SgsYGel5GxGz75mF5mrsOnyw>
-    <xmx:MYh7ZXheoLhmCso0xSoVNLdNqLXG-udhneYFW3JI2FM7EUIQuD9X1w>
-    <xmx:MYh7Zequa_MbO1bt_NrTOInc1lRx5EOcjMrxGTC9VeeL3mk--b8QXA>
-Feedback-ID: i6a694271:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 14 Dec 2023 17:56:48 -0500 (EST)
-From: Daniel Xu <dxu@dxuuu.xyz>
-To: ast@kernel.org,
-	daniel@iogearbox.net,
-	andrii@kernel.org,
-	shuah@kernel.org,
-	memxor@gmail.com
-Cc: mykolal@fb.com,
-	martin.lau@linux.dev,
-	song@kernel.org,
-	yonghong.song@linux.dev,
-	john.fastabend@gmail.com,
-	kpsingh@kernel.org,
-	sdf@google.com,
-	haoluo@google.com,
-	jolsa@kernel.org,
-	bpf@vger.kernel.org,
-	linux-kselftest@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH bpf-next 3/3] bpf: selftests: Test bpf_assert_if() and bpf_assert_with_if()
-Date: Thu, 14 Dec 2023 15:56:27 -0700
-Message-ID: <b94a4280fb281f13cba3cc314f4c20a34138e6a6.1702594357.git.dxu@dxuuu.xyz>
-X-Mailer: git-send-email 2.42.1
-In-Reply-To: <cover.1702594357.git.dxu@dxuuu.xyz>
-References: <cover.1702594357.git.dxu@dxuuu.xyz>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 764A76C6DF
+	for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 23:19:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=ZpX9OyVmsooR71iBff+A80aL9guypQAVqM/obfLf98M=; b=amm0jq7wabv6SCHJhqIwRv3xPy
+	EhUiM5cB2+Mjp9HMu+G06vCXsQd+tfcx1bcc5YchcZUIx4FAVV0VzJgtdOyF7nFY4RBoXHfETMalt
+	szimEYe3iSqfh18Z3K6MQUeC7xw8/TMbgkaCoAkbcNgzFKsCmTdFAMm1242vXq7KG0jckxr+OFecQ
+	0SCv+yThDYGMAeJwV8aVJI291SXmmnOOOX1SfRoOBi6e58aRNjHxJ9KafSsxGlxsM6nHptHuGAIoA
+	mxgOMDplG5KBG5Pj7lz5E5Twy0ZMVZ92+3q7Eee/CbeZNJDbEfx2+C1gYASFKeqNK+VJMPUir0zpu
+	A5Fb++zQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+	id 1rDuhM-00B27e-Vk; Thu, 14 Dec 2023 23:00:57 +0000
+Date: Thu, 14 Dec 2023 23:00:56 +0000
+From: Matthew Wilcox <willy@infradead.org>
+To: Jianfeng Wang <jianfeng.w.wang@oracle.com>
+Cc: akpm@linux-foundation.org, tim.c.chen@linux.intel.com,
+	linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] mm: remove redundant lru_add_drain() prior to
+ unmapping pages
+Message-ID: <ZXuJKAInbgtuSU9b@casper.infradead.org>
+References: <20231214222717.50277-1-jianfeng.w.wang@oracle.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231214222717.50277-1-jianfeng.w.wang@oracle.com>
 
-Add some positive and negative test cases that exercise the "callback"
-semantics.
+On Thu, Dec 14, 2023 at 02:27:17PM -0800, Jianfeng Wang wrote:
+> When unmapping VMA pages, pages will be gathered in batch and released by
+> tlb_finish_mmu() if CONFIG_MMU_GATHER_NO_GATHER is not set. The function
+> tlb_finish_mmu() is responsible for calling free_pages_and_swap_cache(),
+> which calls lru_add_drain() to drain cached pages in folio_batch before
+> releasing gathered pages. Thus, it is redundant to call lru_add_drain()
+> before gathering pages, if CONFIG_MMU_GATHER_NO_GATHER is not set.
+> 
+> Remove lru_add_drain() prior to gathering and unmapping pages in
+> exit_mmap() and unmap_region() if CONFIG_MMU_GATHER_NO_GATHER is not set.
+> 
+> Note that the page unmapping process in oom_killer (e.g., in
+> __oom_reap_task_mm()) also uses tlb_finish_mmu() and does not have
+> redundant lru_add_drain(). So, this commit makes the code more consistent.
 
-Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
----
- .../selftests/bpf/prog_tests/exceptions.c     |  5 ++
- .../testing/selftests/bpf/progs/exceptions.c  | 61 +++++++++++++++++++
- 2 files changed, 66 insertions(+)
+Shouldn't we put this in __tlb_gather_mmu() which already has the
+CONFIG_MMU_GATHER_NO_GATHER ifdefs?  That would presuambly help with, eg
+zap_page_range_single() too.
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/exceptions.c b/tools/testing/selftests/bpf/prog_tests/exceptions.c
-index 516f4a13013c..a41113d72d0d 100644
---- a/tools/testing/selftests/bpf/prog_tests/exceptions.c
-+++ b/tools/testing/selftests/bpf/prog_tests/exceptions.c
-@@ -83,6 +83,11 @@ static void test_exceptions_success(void)
- 	RUN_SUCCESS(exception_assert_range_with, 1);
- 	RUN_SUCCESS(exception_bad_assert_range, 0);
- 	RUN_SUCCESS(exception_bad_assert_range_with, 10);
-+	RUN_SUCCESS(exception_assert_if_body_not_executed, 2);
-+	RUN_SUCCESS(exception_bad_assert_if_body_executed, 1);
-+	RUN_SUCCESS(exception_bad_assert_if_throws, 0);
-+	RUN_SUCCESS(exception_assert_with_if_body_not_executed, 3);
-+	RUN_SUCCESS(exception_bad_assert_with_if_body_executed, 2);
- 
- #define RUN_EXT(load_ret, attach_err, expr, msg, after_link)			  \
- 	{									  \
-diff --git a/tools/testing/selftests/bpf/progs/exceptions.c b/tools/testing/selftests/bpf/progs/exceptions.c
-index 2811ee842b01..e61cb794a305 100644
---- a/tools/testing/selftests/bpf/progs/exceptions.c
-+++ b/tools/testing/selftests/bpf/progs/exceptions.c
-@@ -365,4 +365,65 @@ int exception_bad_assert_range_with(struct __sk_buff *ctx)
- 	return 1;
- }
- 
-+SEC("tc")
-+int exception_assert_if_body_not_executed(struct __sk_buff *ctx)
-+{
-+	u64 time = bpf_ktime_get_ns();
-+
-+	bpf_assert_if(time != 0) {
-+		return 1;
-+	}
-+
-+	return 2;
-+}
-+
-+SEC("tc")
-+int exception_bad_assert_if_body_executed(struct __sk_buff *ctx)
-+{
-+	u64 time = bpf_ktime_get_ns();
-+
-+	bpf_assert_if(time == 0) {
-+		return 1;
-+	}
-+
-+	return 2;
-+}
-+
-+SEC("tc")
-+int exception_bad_assert_if_throws(struct __sk_buff *ctx)
-+{
-+	u64 time = bpf_ktime_get_ns();
-+
-+	bpf_assert_if(time == 0) {
-+	}
-+
-+	return 2;
-+}
-+
-+SEC("tc")
-+int exception_assert_with_if_body_not_executed(struct __sk_buff *ctx)
-+{
-+	u64 time = bpf_ktime_get_ns();
-+	int ret = 1;
-+
-+	bpf_assert_with_if(time != 0, ret) {
-+		ret = 2;
-+	}
-+
-+	return 3;
-+}
-+
-+SEC("tc")
-+int exception_bad_assert_with_if_body_executed(struct __sk_buff *ctx)
-+{
-+	u64 time = bpf_ktime_get_ns();
-+	int ret = 1;
-+
-+	bpf_assert_with_if(time == 0, ret) {
-+		ret = 2;
-+	}
-+
-+	return 3;
-+}
-+
- char _license[] SEC("license") = "GPL";
--- 
-2.42.1
-
+> Signed-off-by: Jianfeng Wang <jianfeng.w.wang@oracle.com>
+> ---
+>  mm/mmap.c | 6 ++++++
+>  1 file changed, 6 insertions(+)
+> 
+> diff --git a/mm/mmap.c b/mm/mmap.c
+> index 1971bfffcc03..da0308eef435 100644
+> --- a/mm/mmap.c
+> +++ b/mm/mmap.c
+> @@ -2330,7 +2330,10 @@ static void unmap_region(struct mm_struct *mm, struct ma_state *mas,
+>  	struct mmu_gather tlb;
+>  	unsigned long mt_start = mas->index;
+>  
+> +	/* Defer lru_add_drain() to tlb_finish_mmu() for the ifndef case. */
+> +#ifdef CONFIG_MMU_GATHER_NO_GATHER
+>  	lru_add_drain();
+> +#endif
+>  	tlb_gather_mmu(&tlb, mm);
+>  	update_hiwater_rss(mm);
+>  	unmap_vmas(&tlb, mas, vma, start, end, tree_end, mm_wr_locked);
+> @@ -3300,7 +3303,10 @@ void exit_mmap(struct mm_struct *mm)
+>  		return;
+>  	}
+>  
+> +	/* Defer lru_add_drain() to tlb_finish_mmu() for the ifndef case. */
+> +#ifdef CONFIG_MMU_GATHER_NO_GATHER
+>  	lru_add_drain();
+> +#endif
+>  	flush_cache_mm(mm);
+>  	tlb_gather_mmu_fullmm(&tlb, mm);
+>  	/* update_hiwater_rss(mm) here? but nobody should be looking */
+> -- 
+> 2.42.1
+> 
+> 
 
