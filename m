@@ -1,156 +1,162 @@
-Return-Path: <linux-kernel+bounces-45-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-24-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1AF23813B23
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 20:57:33 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 65C5C813AED
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 20:45:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D5239284939
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 19:57:31 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1B79B1F2213A
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 19:45:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3254F6A021;
-	Thu, 14 Dec 2023 19:57:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 690F6697B3;
+	Thu, 14 Dec 2023 19:45:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="T5cRHmky"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mx01.omp.ru (mx01.omp.ru [90.154.21.10])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+Received: from mail-ed1-f52.google.com (mail-ed1-f52.google.com [209.85.208.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A5CCA6A33E;
-	Thu, 14 Dec 2023 19:57:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=omp.ru
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=omp.ru
-Received: from [192.168.1.104] (178.176.74.138) by msexch01.omp.ru
- (10.188.4.12) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.1258.12; Thu, 14 Dec
- 2023 22:41:53 +0300
-Subject: Re: [PATCH net 1/2] net: ravb: Wait for operation mode to be applied
-To: Claudiu <claudiu.beznea@tuxon.dev>, <davem@davemloft.net>,
-	<edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
-	<claudiu.beznea.uj@bp.renesas.com>, <yoshihiro.shimoda.uh@renesas.com>,
-	<wsa+renesas@sang-engineering.com>, <niklas.soderlund+renesas@ragnatech.se>,
-	<biju.das.jz@bp.renesas.com>, <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-	<mitsuhiro.kimura.kc@renesas.com>, <geert+renesas@glider.be>
-CC: <netdev@vger.kernel.org>, <linux-renesas-soc@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>
-References: <20231214113137.2450292-1-claudiu.beznea.uj@bp.renesas.com>
- <20231214113137.2450292-2-claudiu.beznea.uj@bp.renesas.com>
-From: Sergey Shtylyov <s.shtylyov@omp.ru>
-Organization: Open Mobile Platform
-Message-ID: <d08dbbd4-2e63-c436-6935-df68c291bf75@omp.ru>
-Date: Thu, 14 Dec 2023 22:41:53 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E23568E83
+	for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 19:45:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
+Received: by mail-ed1-f52.google.com with SMTP id 4fb4d7f45d1cf-551e6b99490so3206249a12.0
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 11:45:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google; t=1702583114; x=1703187914; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=MpUjOoTdCqNzayaiwbixMLyZUnTZjhFDCaA6n5v3lDM=;
+        b=T5cRHmkyC1XeP1ByTEbxUxOR7s6Iy7cYdIniNLwsjt7ikJ3h5wWxdHeXZTFssUASur
+         FWgTX9GPLeeaLHOpsnNjVBqqOQsZLLAqAyOHn3RjBFr/+mMTC+Wl7ltvmIE0swwofVRe
+         0gdUzC7arOg7g/Z8a2y3OuKMlk0wNmlIYCX9E=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702583114; x=1703187914;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=MpUjOoTdCqNzayaiwbixMLyZUnTZjhFDCaA6n5v3lDM=;
+        b=E/kiVd1waxCjt2ZIzbi/b3+eSqhYmCauM1rDuxLzEKpy3AMttA/zrTCIZAGwFRTHMG
+         Sp2K8y0aqbk6PmhEisO7if8A32QoiP4m4o/Cm05ImJRtHq2XNrLy73IWLTwM+LPUmUPy
+         pZQ3/h7jQ6lwYAeJ76xcA8l31j+7uLGjfZH0UP9yMdnUFAmfW4B6muDXSVcRhBMHXFwf
+         J/rY1dwUF1pb3hloNCv0QJpwspvYxOfLPHxjtYl0a5tJ4PWmCjBgdXCnudSWRlPCaS4r
+         YOrvi05e/hZzI3dh7VxZzDInEuaEJbkd3ZezCQ4vDCnxnljzjPbpFz6EG3y4FqHVRFLn
+         kW6w==
+X-Gm-Message-State: AOJu0YxziTlTL0OIZx/DhfIZhRQhEHedLb8d0zgtyIMOfW856o0Gy2jP
+	UOQynQ8BKC6DXC8oGJH3pzOzsT/0N0DKp178ola3lw==
+X-Google-Smtp-Source: AGHT+IHUPl4DcGJiZ1YJY8R+8eKD7dHVJwDbVSK2dllBg0lYNv4FwCFhGWJUXJwZ30QKEqC/I+LVnA==
+X-Received: by 2002:a50:ccdb:0:b0:551:d8ea:e67d with SMTP id b27-20020a50ccdb000000b00551d8eae67dmr964179edj.133.1702583114146;
+        Thu, 14 Dec 2023 11:45:14 -0800 (PST)
+Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com. [209.85.218.46])
+        by smtp.gmail.com with ESMTPSA id fe1-20020a056402390100b005527c02c1d6sm776402edb.50.2023.12.14.11.45.12
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 14 Dec 2023 11:45:13 -0800 (PST)
+Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-a1ef2f5ed01so1077026366b.0
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 11:45:12 -0800 (PST)
+X-Received: by 2002:a17:907:3ac2:b0:a19:d40a:d21f with SMTP id
+ fi2-20020a1709073ac200b00a19d40ad21fmr2222801ejc.235.1702583112429; Thu, 14
+ Dec 2023 11:45:12 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20231214113137.2450292-2-claudiu.beznea.uj@bp.renesas.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: msexch01.omp.ru (10.188.4.12) To msexch01.omp.ru
- (10.188.4.12)
-X-KSE-ServerInfo: msexch01.omp.ru, 9
-X-KSE-AntiSpam-Interceptor-Info: scan successful
-X-KSE-AntiSpam-Version: 6.1.0, Database issued on: 12/14/2023 19:30:19
-X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
-X-KSE-AntiSpam-Method: none
-X-KSE-AntiSpam-Rate: 59
-X-KSE-AntiSpam-Info: Lua profiles 182128 [Dec 14 2023]
-X-KSE-AntiSpam-Info: Version: 6.1.0.3
-X-KSE-AntiSpam-Info: Envelope from: s.shtylyov@omp.ru
-X-KSE-AntiSpam-Info: LuaCore: 7 0.3.7 6d6bf5bd8eea7373134f756a2fd73e9456bb7d1a
-X-KSE-AntiSpam-Info: {rep_avail}
-X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
-X-KSE-AntiSpam-Info: {relay has no DNS name}
-X-KSE-AntiSpam-Info: {SMTP from is not routable}
-X-KSE-AntiSpam-Info: {Found in DNSBL: 178.176.74.138 in (user)
- b.barracudacentral.org}
-X-KSE-AntiSpam-Info: {Found in DNSBL: 178.176.74.138 in (user)
- dbl.spamhaus.org}
-X-KSE-AntiSpam-Info:
-	omp.ru:7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;127.0.0.199:7.1.2
-X-KSE-AntiSpam-Info: ApMailHostAddress: 178.176.74.138
-X-KSE-AntiSpam-Info: {DNS response errors}
-X-KSE-AntiSpam-Info: Rate: 59
-X-KSE-AntiSpam-Info: Status: not_detected
-X-KSE-AntiSpam-Info: Method: none
-X-KSE-AntiSpam-Info: Auth:dmarc=temperror header.from=omp.ru;spf=temperror
- smtp.mailfrom=omp.ru;dkim=none
-X-KSE-Antiphishing-Info: Clean
-X-KSE-Antiphishing-ScanningType: Heuristic
-X-KSE-Antiphishing-Method: None
-X-KSE-Antiphishing-Bases: 12/14/2023 19:36:00
-X-KSE-Antivirus-Interceptor-Info: scan successful
-X-KSE-Antivirus-Info: Clean, bases: 12/14/2023 4:35:00 PM
-X-KSE-Attachment-Filter-Triggered-Rules: Clean
-X-KSE-Attachment-Filter-Triggered-Filters: Clean
-X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
+References: <20231213211126.24f8c1dd@gandalf.local.home> <20231213214632.15047c40@gandalf.local.home>
+ <CAHk-=whESMW2v0cd0Ye+AnV0Hp9j+Mm4BO2xJo93eQcC1xghUA@mail.gmail.com> <20231214115614.2cf5a40e@gandalf.local.home>
+In-Reply-To: <20231214115614.2cf5a40e@gandalf.local.home>
+From: Linus Torvalds <torvalds@linux-foundation.org>
+Date: Thu, 14 Dec 2023 11:44:55 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wjjGEc0f4LLDxCTYvgD98kWqKy=89u=42JLRz5Qs3KKyA@mail.gmail.com>
+Message-ID: <CAHk-=wjjGEc0f4LLDxCTYvgD98kWqKy=89u=42JLRz5Qs3KKyA@mail.gmail.com>
+Subject: Re: [PATCH] ring-buffer: Remove 32bit timestamp logic
+To: Steven Rostedt <rostedt@goodmis.org>
+Cc: "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
+	Linux Trace Kernel <linux-trace-kernel@vger.kernel.org>, Masami Hiramatsu <mhiramat@kernel.org>, 
+	Mark Rutland <mark.rutland@arm.com>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Content-Type: text/plain; charset="UTF-8"
 
-resetOn 12/14/23 2:31 PM, Claudiu wrote:
+On Thu, 14 Dec 2023 at 08:55, Steven Rostedt <rostedt@goodmis.org> wrote:
+>
+> And yes, this does get called in NMI context.
 
-> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-> 
-> CSR.OPS bits specify the current operating mode and (according to
-> documentation) they are updated when the operating mode change request
-> is processed. Thus, check CSR.OPS before proceeding.
+Not on an i486-class machine they won't. You don't have a local apic
+on those, and they won't have any NMI sources under our control (ie
+NMI does exist, but we're talking purely legacy NMI for "motherboard
+problems" like RAM parity errors etc)
 
-   The manuals I have indeed say we need to check CSR.OPS... But we only
-need to wait iff we transfer from the operation mode to the config mode...
+> I had a patch that added:
+>
+> +       /* ring buffer does cmpxchg, make sure it is safe in NMI context */
+> +       if (!IS_ENABLED(CONFIG_ARCH_HAVE_NMI_SAFE_CMPXCHG) &&
+> +           (unlikely(in_nmi()))) {
+> +               return NULL;
+> +       }
 
-> Fixes: 568b3ce7a8ef ("ravb: factor out register bit twiddling code")
-> Fixes: 0184165b2f42 ("ravb: add sleep PM suspend/resume support")
-> Fixes: 7e09a052dc4e ("ravb: Exclude gPTP feature support for RZ/G2L")
-> Fixes: 3e3d647715d4 ("ravb: add wake-on-lan support via magic packet")
-> Fixes: c156633f1353 ("Renesas Ethernet AVB driver proper")
+CONFIG_ARCH_HAVE_NMI_SAFE_CMPXCHG doesn't work on x86 in this context,
+because the issue is that yes, there's a safe 'cmpxchg', but that's
+not what you want.
 
-   Hm, that long list does look weird...
+You want the save cmpxchg64, which is an entirely different beast.
 
-> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-> ---
->  drivers/net/ethernet/renesas/ravb_main.c | 47 ++++++++++++++++++++----
->  1 file changed, 39 insertions(+), 8 deletions(-)
-> 
-> diff --git a/drivers/net/ethernet/renesas/ravb_main.c b/drivers/net/ethernet/renesas/ravb_main.c
-> index 9178f6d60e74..ce95eb5af354 100644
-> --- a/drivers/net/ethernet/renesas/ravb_main.c
-> +++ b/drivers/net/ethernet/renesas/ravb_main.c
-> @@ -683,8 +683,11 @@ static int ravb_dmac_init(struct net_device *ndev)
->  
->  	/* Setting the control will start the AVB-DMAC process. */
->  	ravb_modify(ndev, CCC, CCC_OPC, CCC_OPC_OPERATION);
-> +	error = ravb_wait(ndev, CSR, CSR_OPS, CSR_OPS_OPERATION);
-> +	if (error)
-> +		netdev_err(ndev, "failed to switch device to operation mode\n");
+And honestly, I don't think that NMI_SAFE_CMPXCHG covers the
+double-word case anywhere else either, except purely by luck.
 
-   It doesn't look like ravb_wait() is needed here...
-   And besides, this pattern seems repetitive and worth factoring out into
-a single function.
+In mm/slab.c, we also use a double-wide cmpxchg, and there the rule
+has literally been that it's conditional on
 
-[...]
-> @@ -1744,6 +1747,18 @@ static inline int ravb_hook_irq(unsigned int irq, irq_handler_t handler,
->  	return error;
->  }
->  
-> +static int ravb_set_reset_mode(struct net_device *ndev)
-> +{
-> +	int error;
-> +
-> +	ravb_write(ndev, CCC_OPC_RESET, CCC);
-> +	error = ravb_wait(ndev, CSR, CSR_OPS, CSR_OPS_RESET);
-> +	if (error)
-> +		netdev_err(ndev, "failed to switch device to reset mode\n");
-> +
-> +	return error;
-> +}
-> +
+ (a) system_has_cmpxchg64() existing as a macro
 
-   Again, ravb_wait() call doesn't seem necessary here...
+ (b) using that macro to then gate - at runtime - whether it actually
+works or not
 
-[...]
+I think - but didn't check - that we essentially only enable the
+two-word case on x86 as a result, and fall back to the slow case on
+all other architectures - and on the i486 case.
 
-MBR, Sergey
+That said, other architectures *do* have a working double-word
+cmpxchg, but I wouldn't guarantee it. For example, 32-bit arm does
+have one using ldrexd/strexd, but that only exists on arm v6+.
+
+And guess what? You'll silently get a "disable interrupts, do it as a
+non-atomic load-store" on arm too for that case. And again, pre-v6 arm
+is about as relevant as i486 is, but my point is, that double-word
+cmpxchg you rely on simply DOES NOT EXIST on 32-bit platforms except
+under special circumstances.
+
+So this isn't a "x86 is the odd man out". This is literally generic.
+
+> Now back to my original question. Are you OK with me sending this to you
+> now, or should I send you just the subtle fixes to the 32-bit rb_time_*
+> code and keep this patch for the merge window?
+
+I'm absolutely not taking some untested random "let's do 64-bit
+cmpxchg that we know is broken on 32-bit using broken conditionals"
+shit.
+
+What *would* work is that slab approach, which is essentially
+
+  #ifndef system_has_cmpxchg64
+      #define system_has_cmpxchg64() false
+  #endif
+
+        ...
+        if (!system_has_cmpxchg64())
+                return error or slow case
+
+        do_64bit_cmpxchg_case();
+
+(although the slub case is much more indirect, and uses a
+__CMPXCHG_DOUBLE flag that only gets set when that define exists etc).
+
+But that would literally cut off support for all non-x86 32-bit architectures.
+
+So no. You need to forget about the whole "do a 64-bit cmpxchg on
+32-bit architectures" as being some kind of solution in the short
+term.
+
+               Linus
 
