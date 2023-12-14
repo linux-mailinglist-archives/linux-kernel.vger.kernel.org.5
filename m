@@ -2,153 +2,433 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9403681323F
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 14:54:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DB6A813241
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 14:55:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1573297AbjLNNyt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 08:54:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42564 "EHLO
+        id S1573301AbjLNNza (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 08:55:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52496 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1573115AbjLNNyr (ORCPT
+        with ESMTP id S1573115AbjLNNz1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 08:54:47 -0500
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2049.outbound.protection.outlook.com [40.107.93.49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11C18A7
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 05:54:54 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=O/9GLpJovii9eN4fynLAmbBol7fR3khdgQSvnT/KlI8JCtm3kHcUfxVi7joFdhNsAdgD5Dnwsdqly++uDOeUNCl7L8dh6PXtdP1W88isANYNDkc87wFRGWGFkSE8oPqcaqasBkNSkl6XKjCGsndxWc523zQWeKIDgdNVuagqLlU81HDEuIiTfmSLcWiCvuUjEL5kgCYZ3e/yDDhUGSQq6Ii7mvseZYTp1x4h3aqmBKhIGpX9hnbbnw707Xxr74uPpgSOXLJx2LzWtoBl43euNRZpK4G8Lrmc8rIhYbRGfV6qhkcPIDOhFgRn87m/WtMyUJ93CArwcRUpYlx58976Hw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=g3UkmMBXkbFllY+BStH5X7wm26oKapvbVTKUD3kfxzw=;
- b=MsrICBm67rttqAYIUnDfQGMBWJH0w9lOTm1YROCbdRxPLA/znXyfqczOk/YTFsMEfxfTvcc8YknrYS4H42PtZ356aYDVBzo3yansk9WoyFfx0v1mBStVAn/VI7xrWeyJaFh9bQ97qT9w5CKXSz05nO9isqaZqJz8HsySXgcx/L6uLF/Qbb4Gq333lBurrkRfh7G4XIwOZvtNA8fpGQioH4Caqgp8SEV0J1HgW4zw0lqc8SVf/U7095GtjNRzaWCpNUf9PxPG/HBLfRTYBmw42eHQrVrEeQcz0FFtPxxwmLmjhr7g8EMTkktc+YYSEvJpD9T9B+RdkvEEhDvGsRu5Ag==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=g3UkmMBXkbFllY+BStH5X7wm26oKapvbVTKUD3kfxzw=;
- b=H9/kTZaYIoztxtZEsilZyP5lobJ/CtwdPgqwsiREz0HydzTHcL5rNQ2e5IaEV0r+gCkbYz8Pdos6XwIqv9/ilpifv0zNDsr0Nc/9SO0jBnUhpqA1/uD6FUR9k0C/30vx03nmO0MLqJFOha/reKxdbaNU4/sO8UPjwqrOKH6swgW6lNj8KSNZOrbQsm6rPBXdzuWnj4mxOTtTRJsFGD6WPaNEHoJDoccXLqEB0rMtukoEHF7V8xi4jyUIIa7b0Duth+W8ezM0n9Q7FRn4+ayzFrqzEX+OzhSAHbfFGpOCwrnv3QfcMK7gdtQL8pt/kkBeDahk7jTZJTCL6kbBavAoXw==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from DM4PR12MB5040.namprd12.prod.outlook.com (2603:10b6:5:38b::19)
- by SJ2PR12MB8807.namprd12.prod.outlook.com (2603:10b6:a03:4d0::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7068.38; Thu, 14 Dec
- 2023 13:54:51 +0000
-Received: from DM4PR12MB5040.namprd12.prod.outlook.com
- ([fe80::6f3c:cedb:bf1e:7504]) by DM4PR12MB5040.namprd12.prod.outlook.com
- ([fe80::6f3c:cedb:bf1e:7504%4]) with mapi id 15.20.7091.028; Thu, 14 Dec 2023
- 13:54:51 +0000
-Message-ID: <30f26111-2b17-6ef2-6c58-4b16c890ef87@nvidia.com>
-Date:   Thu, 14 Dec 2023 15:54:43 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH v5 1/6] nvme: move ns id info to struct nvme_ns_head
-Content-Language: en-US
-To:     Christoph Hellwig <hch@lst.de>, Daniel Wagner <dwagner@suse.de>
-Cc:     Sagi Grimberg <sagi@grimberg.me>, linux-nvme@lists.infradead.org,
-        linux-kernel@vger.kernel.org, Keith Busch <kbusch@kernel.org>,
-        Hannes Reinecke <hare@suse.de>
-References: <20231208105337.23409-1-dwagner@suse.de>
- <20231208105337.23409-2-dwagner@suse.de>
- <bf20cb2a-0985-467b-842b-6b5fd752f14b@grimberg.me>
- <7ldcd6imhzxhn3wsirhxxyhb75x5iay2p67p2i4qi2euyztc5i@nbjtvyixifqm>
- <20231213153833.GC7301@lst.de>
-From:   Max Gurtovoy <mgurtovoy@nvidia.com>
-In-Reply-To: <20231213153833.GC7301@lst.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SJ0PR13CA0138.namprd13.prod.outlook.com
- (2603:10b6:a03:2c6::23) To DM4PR12MB5040.namprd12.prod.outlook.com
- (2603:10b6:5:38b::19)
+        Thu, 14 Dec 2023 08:55:27 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53BE7CF
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 05:55:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1702562130;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=hF1gaMGMLXh3LEr74JI6jicHo19bbdOl9xpleSASh8E=;
+        b=QLnhy8DZ8oxJZYYo+TNTZRPC/I5jqY9lGamD8x6sZ+aBiTgb4gcfB+J6rwSmXvqZXi5Wiu
+        5zF/zjJlKyZh3yZulfOc4lImgNxkU/wFsr+XmqqJrFPlrfJzwsVNPrR+/pBSaD1uSJN6wa
+        BgkOkNO6MW7iLwsTBOYg9mKaPZ45LP8=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-439-YZ7YQ9SXMiCniRFoHc4Kxg-1; Thu, 14 Dec 2023 08:55:29 -0500
+X-MC-Unique: YZ7YQ9SXMiCniRFoHc4Kxg-1
+Received: by mail-wm1-f70.google.com with SMTP id 5b1f17b1804b1-40c2c6f0893so54057755e9.3
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 05:55:28 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702562127; x=1703166927;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=hF1gaMGMLXh3LEr74JI6jicHo19bbdOl9xpleSASh8E=;
+        b=NXbSAm0skq9nH8QFTF3XhBhTdD6lJhR8xk/rKDQhymEkaULq5E0/6zq12YZWbQAHH0
+         uoRBbST176Fhg5bROkB19PMVvXd/7fQNUKIMb5lzjKAsBJqP6lsWvbI0RSgTZMO4yJYW
+         n8tLbKyZbQyKn2tx12uybaIMM6cycaOuxETUYl2TSczTNw0a48hYWoYdLQPApCo1H+7i
+         xo1QEhF6lHtT1I0MmtyHF1oINWW3DH01GvknWX+C+9sPRXvVxPxVRtt+o95hddFC6A46
+         SBb/icot8FX7iwJURc6poqoOoOkiqh0/fKOdgH18Nf9KoYHhVz/TX2Hn1B9l8WbeXv8h
+         QNAA==
+X-Gm-Message-State: AOJu0YyR/M2CtqLr6+bzyL0S6f67zYAgG6Mf4E0CoHe3RP1nuxvW3w7X
+        2BBO/wB5738bnDoqfVFHcMfAlSqyj4cpRVt5CDJDmx6zCC+F9p0ziZ+hAleTJL0S+hSl2MmhP57
+        hxWnIfIOzvtuoLb0SVscZPDgy
+X-Received: by 2002:a05:600c:2154:b0:40c:3314:5be6 with SMTP id v20-20020a05600c215400b0040c33145be6mr5226780wml.106.1702562126973;
+        Thu, 14 Dec 2023 05:55:26 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IFo7qRygMXqimoRgltAQCtwp7vZpZsK5ob6IgNTx/qAZpj70tQxU/1G+WctipcRU4MFmT+k+Q==
+X-Received: by 2002:a05:600c:2154:b0:40c:3314:5be6 with SMTP id v20-20020a05600c215400b0040c33145be6mr5226763wml.106.1702562126621;
+        Thu, 14 Dec 2023 05:55:26 -0800 (PST)
+Received: from ?IPV6:2a01:e0a:59e:9d80:527b:9dff:feef:3874? ([2a01:e0a:59e:9d80:527b:9dff:feef:3874])
+        by smtp.gmail.com with ESMTPSA id i1-20020a05600c354100b0040c411da99csm19289982wmq.48.2023.12.14.05.55.25
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 14 Dec 2023 05:55:26 -0800 (PST)
+Message-ID: <a34f3596-f4be-4085-8729-3772e2e44343@redhat.com>
+Date:   Thu, 14 Dec 2023 14:55:24 +0100
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM4PR12MB5040:EE_|SJ2PR12MB8807:EE_
-X-MS-Office365-Filtering-Correlation-Id: 1bd035e1-da3f-45fb-dd7b-08dbfcac3e05
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 6VnwOwgLaSCLJYpSRyvazTq37tFshc8KPJaIadn2L1EV1DTtl+pat0PP2W2xFreji3IrE0TMs66T+LOSBXxc/MJs8KsuicuOV8q9D/W+mTPhz+QpbkKJDo+Fd4mtZlQd2ayQ2cpfpGa7/E81UTISsL5DytOVn24TBqsPSiITiKSw0NxuJyTx80hBijfY0JrRE/ZfmpcrPCTD8+qgs3VUvWEDa9Y3IVeQE0d9QoSOP7wPk7ZJGnmP5l0uNI2lRtczJbJRjhnPQnKnu5ISB9WrKtYkEWWZibvb19J6VBfCBYOrZoM9Zv5QEnYOVmODAMTgG+JboGXxoF4ihj4yuWEmYWqd/PaSvedZwi5ppDFodwpSa3ZbnurOu3bsqlJRMHjF0IeIzOcMW3cTM8QLeupbJN+/L8Ov1tuQ1BGaaX/sIpVTaAZcJXFdEOFht6s6sGjiAoahB5liZ/BisA6scl1wNneuaDmkcREHovsZkGMCoqnYxaeDhW13H44DcJDe94krFb42MvcPt8tN7IqGjJg2Kg7q/mcMCg9SxI3PeYDtg+MVxRSWTn/T/MRaI03L/ZX3AonAqtdvQtaAIWZZYpUb+cGc4NuVAyMpIcSNWhlTj3v08nGNV+2Adzf3aWYi7G7SQCqKvMjJ0T+Yym2a1ChY9Q==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR12MB5040.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(346002)(366004)(136003)(396003)(376002)(230922051799003)(64100799003)(451199024)(186009)(1800799012)(6506007)(6512007)(26005)(4744005)(2616005)(478600001)(6486002)(66556008)(66476007)(54906003)(66946007)(316002)(110136005)(31696002)(6666004)(53546011)(86362001)(41300700001)(31686004)(38100700002)(4326008)(8676002)(8936002)(5660300002)(2906002)(36756003)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?TW8vNUlveW1DeTcyY2JsR1pUWVBWWjNRd3BuOHlhMFdJajlpR3F4QjNBK1BT?=
- =?utf-8?B?WDNFMnI2clV4VmNOY2VqWkFVdGpBS3BrLzlCWFBHWmlNdmk2aURWYWJiWFhv?=
- =?utf-8?B?QzZMR0kwOVE5YnJhYzR4a01sLzA0NjBna2piTXRRZjA4OW1LZnlXcWEwK0w4?=
- =?utf-8?B?OW82WXR5Zk1XcG8yM0pTSlpESDJid2FGd1M4R1JjWGIrVUJva0N1bDh3dmhF?=
- =?utf-8?B?SFZ3QXpHVTdoY1hwS0tRVmk1alVNMzdVd2hXUGYzZ3FVendFUmN0U0hxTlJh?=
- =?utf-8?B?N0NFaFcxb1JyMGJVdGlRRFdSSE83cDZldllDVDd4amRock9qWVBLYnQvdWJE?=
- =?utf-8?B?S3F6NHRSTUNBV0U0ME5aQUF6M1lwWFdlZ2FNOXliNWhNcFl3WU40a0xEOVBj?=
- =?utf-8?B?c2xhVDFxeElDZGlubE1IMzNoTEU2ZFQ2YTA0My9zZHN6bDVEUnc3cnN1cjAy?=
- =?utf-8?B?dFdQMEhJd1gyVS9scWJ5a0oyd0tkYjVlam1jeVRueW9pdjFqank0QUlscVND?=
- =?utf-8?B?UFdEb0dxODNmZzJDTnNpd29oWkJCU0VhckhEY0UwNUgyNnl5ckZ6dUVyN0tv?=
- =?utf-8?B?aFVDMkdtZkdyV0FLd1JQTmJQQVMvZk1RYnVCY1BjeXV2UG1TRzdNS0Rsa0U3?=
- =?utf-8?B?dmd0cXUxMVpGYWlHYUpaOGNoM0dTd0s2M3cxYUlwR0ExK0tIVFdwY3V4SXgx?=
- =?utf-8?B?RFZDRW9JODZSaGpDNjRCUzhVS1YvQlVjQVVKeEhpQitwdDA2YjNBYVNNSHg2?=
- =?utf-8?B?cXVJSmlFOUlrMVFqeVpRODBvUkRxNmFTVHd4OWRjbTR6UkNIdE9HcGx3Nlpx?=
- =?utf-8?B?M1dYV3hKcXJQZFNNb3p5RGZjYThrVGc2eGN2a0xoNzh3YkFBSWx5eUVBUWZj?=
- =?utf-8?B?cVhxRTJ1YmxjR0gzK1ErY2Z5VjlodVZZc1VDNEJXVVNCWUU1L0ttYnkzSE5w?=
- =?utf-8?B?SkpvcWVwa3N3c3ovQnpUcUhTWWI3M25DRlRjQzRLelE2Ny9ITVZxSXpuOXo0?=
- =?utf-8?B?YXBWTXovaTFsSlN6RjRrd2lwNVp3MVlSZ2xUdmlRQnd3RHNXSXd0L0NEZC9y?=
- =?utf-8?B?NnZMcGNpZXpvWTV1V0J5M3FHNjhudURuYythcXVpMENsWG5EN1Mzd1NwNjlL?=
- =?utf-8?B?bTExNDhFRUtqYWNmZjhFcENjMGE2emtKakU5dUhaNGZyQnpJd1NHSWEwTnBY?=
- =?utf-8?B?Snc0ai9xeDBMc00wVXBDUWIwdTNYWUhCanR4SkVidkdEdWlzTmlJYVhIZ2Q1?=
- =?utf-8?B?OXUzZkkzZ21CanZ1VzREZVc4NUdPK3VKaCtoNW9GejFXL2UrNWpta3c3RjRZ?=
- =?utf-8?B?K2NmclJvMUNiYkxEdXZZZHVQVHJ4YU1hc21EUnB2SURFVGppejQ5c1cvNS9P?=
- =?utf-8?B?RW9rc1JvRUtHVlkvMlUyL1NFbklsaGIySnc4Z2tMWWNPcktuNk1BNERnN0ZO?=
- =?utf-8?B?MUpOMCswT2g1bS9LeGQvU2YwaHdkMzFzM2pMNFp6UzY0ajV3anFmM2Q3TnFN?=
- =?utf-8?B?dDdxZUtPZDlucjd2bnlTTHF4SFBST1ZURjcrUDJMNC9ZYTVPMnFPakRsemor?=
- =?utf-8?B?RWZ1aC9tc2tJQlNxRGxPaGVXekE2YktwWldkTE1PQ2svaHc5ZVNCQmErcEpm?=
- =?utf-8?B?c3dsNWY3Mmk5dlVFNDRmRzYzSWlBTVdwYkhDMlJSd1UvYjRJL1VxYWlpdWho?=
- =?utf-8?B?Vk5QKzlzMjNXYnU0TFVGU3hPK2wwRTVyZDF4VEZVY1NFNGsyN1daaEVuaTFx?=
- =?utf-8?B?aTVsbnNDTEFRTy93eW9CNnpvRkRPUmp5RHV5V29qMEpoOXVRUkpqaWc3c1kz?=
- =?utf-8?B?OFBWMnRVS3FHdW5XcnJqeDVPRnpuVTlkMlpNdDZUOEx4dkloT2JGK2k5dDMx?=
- =?utf-8?B?NWR0eXpMWDVQTXdlYVdrMlYwa3dvMTFKb0paQ1hkSHE2TXNtak44RXdNM3Mz?=
- =?utf-8?B?bWNMcU52blVtM2k2cU1yN2NlaHNvdWJiSVQzWll3NnRlN3psMkV1R0lYeDc3?=
- =?utf-8?B?YUFINlNwK3AxT2hobkpGYkRkdE9sN0k5a3gra0toRDJDa1pGSmw1cHZpWXFP?=
- =?utf-8?B?MldHRStQS1N4N05iYjRnRm5Qc0JOcFViVnI3SmdJTC84eVdVY2krVUJIRkda?=
- =?utf-8?Q?iYQVj1kt2ULhVUz/EPxwPXMC/?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1bd035e1-da3f-45fb-dd7b-08dbfcac3e05
-X-MS-Exchange-CrossTenant-AuthSource: DM4PR12MB5040.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Dec 2023 13:54:51.0150
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: iUcEYWXtbzgCeks1pXlmbiyoRwgugVXgTMRIfDpgyPMApL9EiQgazkh+LXAPdIHxX2DuqjOng+TAM/ARa55yhQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ2PR12MB8807
-X-Spam-Status: No, score=-3.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 4/5] KVM: selftests: aarch64: Introduce
+ pmu_event_filter_test
+Content-Language: en-US
+To:     Shaoqin Huang <shahuang@redhat.com>, Marc Zyngier <maz@kernel.org>,
+        Oliver Upton <oliver.upton@linux.dev>, kvmarm@lists.linux.dev
+Cc:     Paolo Bonzini <pbonzini@redhat.com>, Shuah Khan <shuah@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Zenghui Yu <yuzenghui@huawei.com>,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        linux-kselftest@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+References: <20231129072712.2667337-1-shahuang@redhat.com>
+ <20231129072712.2667337-5-shahuang@redhat.com>
+From:   Eric Auger <eauger@redhat.com>
+In-Reply-To: <20231129072712.2667337-5-shahuang@redhat.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Shaoqin,
 
-
-On 13/12/2023 17:38, Christoph Hellwig wrote:
-> On Wed, Dec 13, 2023 at 03:54:25PM +0100, Daniel Wagner wrote:
->>> I think that the whole PI stuff needs to be taken with a bit more
->>> consideration because if not all paths agree on the pi (as we have
->>> hbas with fabrics) we can't just override or do a logical or on
->>> the capabilities/attributes.
->>
->> So should the PI variables stay in nvme_ns at this point? Or should I
->> add some checks which avoid an override and warn in this case?
+On 11/29/23 08:27, Shaoqin Huang wrote:
+> Introduce pmu_event_filter_test for arm64 platforms. The test configures
+> PMUv3 for a vCPU, and sets different pmu event filters for the vCPU, and
+> check if the guest can use those events which user allow and can't use
+> those events which use deny.
 > 
-> Didn't we merge the patch from max to require uniform PI setups
-> for all controllers that we're using in a multipath setup?  I'll
-> check the code after finishing a few more things if no one remembers
-> offhand.
+> This test refactor the create_vpmu_vm() and make it a wrapper for
+> __create_vpmu_vm(), which allows some extra init code before
+> KVM_ARM_VCPU_PMU_V3_INIT.
 > 
+> And this test use the KVM_ARM_VCPU_PMU_V3_FILTER attribute to set the
+> pmu event filter in KVM. And choose to filter two common event
+> branches_retired and instructions_retired, and let guest use the two
+> events in pmu. And check if the result is expected.
+> 
+> Signed-off-by: Shaoqin Huang <shahuang@redhat.com>
+> ---
+>  tools/testing/selftests/kvm/Makefile          |   1 +
+>  .../kvm/aarch64/pmu_event_filter_test.c       | 231 ++++++++++++++++++
+>  .../selftests/kvm/include/aarch64/vpmu.h      |   4 +
+>  .../testing/selftests/kvm/lib/aarch64/vpmu.c  |  14 +-
+>  4 files changed, 248 insertions(+), 2 deletions(-)
+>  create mode 100644 tools/testing/selftests/kvm/aarch64/pmu_event_filter_test.c
+> 
+> diff --git a/tools/testing/selftests/kvm/Makefile b/tools/testing/selftests/kvm/Makefile
+> index b60852c222ac..5f126e1a1dbf 100644
+> --- a/tools/testing/selftests/kvm/Makefile
+> +++ b/tools/testing/selftests/kvm/Makefile
+> @@ -155,6 +155,7 @@ TEST_GEN_PROGS_aarch64 += aarch64/arch_timer
+>  TEST_GEN_PROGS_aarch64 += aarch64/debug-exceptions
+>  TEST_GEN_PROGS_aarch64 += aarch64/hypercalls
+>  TEST_GEN_PROGS_aarch64 += aarch64/page_fault_test
+> +TEST_GEN_PROGS_aarch64 += aarch64/pmu_event_filter_test
+>  TEST_GEN_PROGS_aarch64 += aarch64/psci_test
+>  TEST_GEN_PROGS_aarch64 += aarch64/set_id_regs
+>  TEST_GEN_PROGS_aarch64 += aarch64/smccc_filter
+> diff --git a/tools/testing/selftests/kvm/aarch64/pmu_event_filter_test.c b/tools/testing/selftests/kvm/aarch64/pmu_event_filter_test.c
+> new file mode 100644
+> index 000000000000..0e652fbdb37a
+> --- /dev/null
+> +++ b/tools/testing/selftests/kvm/aarch64/pmu_event_filter_test.c
+> @@ -0,0 +1,231 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * pmu_event_filter_test - Test user limit pmu event for guest.
+> + *
+> + * Copyright (c) 2023 Red Hat, Inc.
+> + *
+> + * This test checks if the guest only see the limited pmu event that userspace
+> + * sets, if the guest can use those events which user allow, and if the guest
+> + * can't use those events which user deny.
+> + * This test runs only when KVM_CAP_ARM_PMU_V3, KVM_ARM_VCPU_PMU_V3_FILTER
+> + * is supported on the host.
+> + */
+> +#include <kvm_util.h>
+> +#include <processor.h>
+> +#include <vgic.h>
+> +#include <vpmu.h>
+> +#include <test_util.h>
+> +#include <perf/arm_pmuv3.h>
+> +
+> +struct {
+> +	uint64_t branches_retired;
+> +	uint64_t instructions_retired;
+> +} pmc_results;
+> +
+> +static struct vpmu_vm *vpmu_vm;
+> +static uint64_t pmceid0;
+> +
+> +#define FILTER_NR 10
+> +
+> +struct test_desc {
+> +	const char *name;
+> +	void (*check_result)(void);
+> +	struct kvm_pmu_event_filter filter[FILTER_NR];
+> +};
+> +
+> +#define __DEFINE_FILTER(base, num, act)		\
+> +	((struct kvm_pmu_event_filter) {	\
+> +		.base_event	= base,		\
+> +		.nevents	= num,		\
+> +		.action		= act,		\
+> +	})
+> +
+> +#define DEFINE_FILTER(base, act) __DEFINE_FILTER(base, 1, act)
+> +
+> +#define EMPTY_FILTER	{ 0 }
+> +
+> +#define SW_INCR		0x0
+> +#define INST_RETIRED	0x8
+> +#define BR_RETIRED	0x21
+> +
+> +#define NUM_BRANCHES	10
+> +
+> +static void run_and_measure_loop(void)
+> +{
+> +	asm volatile(
+> +		"	mov	x10, %[loop]\n"
+> +		"1:	sub	x10, x10, #1\n"
+> +		"	cmp	x10, #0x0\n"
+> +		"	b.gt	1b\n"
+> +		:
+> +		: [loop] "r" (NUM_BRANCHES)
+> +		: "x10", "cc");
+> +}
+> +
+> +static void guest_code(void)
+> +{
+> +	uint64_t pmcr = read_sysreg(pmcr_el0);
+> +
+> +	pmu_disable_reset();
+> +
+> +	write_pmevtypern(0, BR_RETIRED);
+> +	write_pmevtypern(1, INST_RETIRED);
+> +	enable_counter(0);
+> +	enable_counter(1);
+> +	write_sysreg(pmcr | ARMV8_PMU_PMCR_E, pmcr_el0);
+> +
+> +	run_and_measure_loop();
+> +
+> +	write_sysreg(pmcr, pmcr_el0);
+> +
+> +	pmc_results.branches_retired = read_sysreg(pmevcntr0_el0);
+> +	pmc_results.instructions_retired = read_sysreg(pmevcntr1_el0);
+> +
+> +	GUEST_DONE();
+> +}
+> +
+> +static void guest_get_pmceid0(void)
+> +{
+> +	uint64_t pmceid0 = read_sysreg(pmceid0_el0);
+> +
+> +	GUEST_PRINTF("%lx\n", pmceid0);
+> +
+> +	GUEST_DONE();
+> +}
+> +
+> +static void pmu_event_filter_init(struct vpmu_vm *vm, void *arg)
+> +{
+> +	struct kvm_device_attr attr = {
+> +		.group	= KVM_ARM_VCPU_PMU_V3_CTRL,
+> +		.attr	= KVM_ARM_VCPU_PMU_V3_FILTER,
+> +	};
+> +	struct kvm_pmu_event_filter *filter = (struct kvm_pmu_event_filter *)arg;
+> +
+> +	while (filter && filter->nevents != 0) {
+> +		attr.addr = (uint64_t)filter;
+> +		vcpu_ioctl(vm->vcpu, KVM_SET_DEVICE_ATTR, &attr);
+> +		filter++;
+> +	}
+> +}
+> +
+> +static void create_vpmu_vm_with_filter(void *guest_code,
+> +				       struct kvm_pmu_event_filter *filter)
+> +{
+> +	vpmu_vm = __create_vpmu_vm(guest_code, pmu_event_filter_init, filter);
+> +}
+> +
+> +static void run_vcpu(struct kvm_vcpu *vcpu)
+> +{
+> +	struct ucall uc;
+> +
+> +	while (1) {
+> +		vcpu_run(vcpu);
+> +		switch (get_ucall(vcpu, &uc)) {
+> +		case UCALL_DONE:
+> +			return;
+> +		case UCALL_PRINTF:
+> +			pmceid0 = strtoll(uc.buffer, NULL, 16);
+> +			break;
+> +		default:
+> +			TEST_FAIL("Unknown ucall %lu", uc.cmd);
+> +		}
+> +	}
+> +}
+> +
+> +static void check_pmc_counting(void)
+> +{
+> +	uint64_t br = pmc_results.branches_retired;
+> +	uint64_t ir = pmc_results.instructions_retired;
+> +
+> +	TEST_ASSERT(br && br == NUM_BRANCHES, "Branch instructions retired = "
+> +		    "%lu (expected %u)", br, NUM_BRANCHES);
+> +	TEST_ASSERT(ir, "Instructions retired = %lu (expected > 0)", ir);
+> +}
+> +
+> +static void check_pmc_not_counting(void)
+> +{
+> +	uint64_t br = pmc_results.branches_retired;
+> +	uint64_t ir = pmc_results.instructions_retired;
+> +
+> +	TEST_ASSERT(!br, "Branch instructions retired = %lu (expected 0)", br);
+> +	TEST_ASSERT(!ir, "Instructions retired = %lu (expected 0)", ir);
+> +}
+> +
+> +static void run_vcpu_and_sync_pmc_results(void)
+> +{
+> +	memset(&pmc_results, 0, sizeof(pmc_results));
+> +	sync_global_to_guest(vpmu_vm->vm, pmc_results);
+> +
+> +	run_vcpu(vpmu_vm->vcpu);
+> +
+> +	sync_global_from_guest(vpmu_vm->vm, pmc_results);
+> +}
+> +
+> +static void run_test(struct test_desc *t)
+> +{
+> +	pr_debug("Test: %s\n", t->name);
+> +
+> +	create_vpmu_vm_with_filter(guest_code, t->filter);
+> +
+> +	run_vcpu_and_sync_pmc_results();
+> +
+> +	t->check_result();
+> +
+> +	destroy_vpmu_vm(vpmu_vm);
+> +}
+> +
+> +static struct test_desc tests[] = {
+> +	{"without_filter", check_pmc_counting, { EMPTY_FILTER }},
+> +	{"member_allow_filter", check_pmc_counting,
+> +	 {DEFINE_FILTER(SW_INCR, 0), DEFINE_FILTER(INST_RETIRED, 0),
+> +	  DEFINE_FILTER(BR_RETIRED, 0), EMPTY_FILTER}},
+> +	{"member_deny_filter", check_pmc_not_counting,
+> +	 {DEFINE_FILTER(SW_INCR, 1), DEFINE_FILTER(INST_RETIRED, 1),
+> +	  DEFINE_FILTER(BR_RETIRED, 1), EMPTY_FILTER}},
+> +	{"not_member_deny_filter", check_pmc_counting,
+> +	 {DEFINE_FILTER(SW_INCR, 1), EMPTY_FILTER}},
+> +	{"not_member_allow_filter", check_pmc_not_counting,
+> +	 {DEFINE_FILTER(SW_INCR, 0), EMPTY_FILTER}},
+> +	{ 0 }
+> +};
+> +
+> +static void for_each_test(void)
+> +{
+> +	struct test_desc *t;
+> +
+> +	for (t = &tests[0]; t->name; t++)
+> +		run_test(t);
+> +}
+> +
+> +static bool kvm_supports_pmu_event_filter(void)
+> +{
+> +	int r;
+> +
+> +	vpmu_vm = create_vpmu_vm(guest_code);
+> +
+> +	r = __kvm_has_device_attr(vpmu_vm->vcpu->fd, KVM_ARM_VCPU_PMU_V3_CTRL,
+> +				  KVM_ARM_VCPU_PMU_V3_FILTER);
+> +
+> +	destroy_vpmu_vm(vpmu_vm);
+> +	return !r;
+> +}
+> +
+> +static bool host_pmu_supports_events(void)
+> +{
+> +	vpmu_vm = create_vpmu_vm(guest_get_pmceid0);
+> +
+> +	run_vcpu(vpmu_vm->vcpu);
+> +
+> +	destroy_vpmu_vm(vpmu_vm);
+> +
+> +	return pmceid0 & (BR_RETIRED | INST_RETIRED);
+> +}
+> +
+> +int main(void)
+> +{
+> +	TEST_REQUIRE(kvm_has_cap(KVM_CAP_ARM_PMU_V3));
+> +	TEST_REQUIRE(kvm_supports_pmu_event_filter());
+> +	TEST_REQUIRE(host_pmu_supports_events());
+> +
+> +	for_each_test();
+> +}
+> diff --git a/tools/testing/selftests/kvm/include/aarch64/vpmu.h b/tools/testing/selftests/kvm/include/aarch64/vpmu.h
+> index 644dae3814b5..f103d0824f8a 100644
+> --- a/tools/testing/selftests/kvm/include/aarch64/vpmu.h
+> +++ b/tools/testing/selftests/kvm/include/aarch64/vpmu.h
+> @@ -18,6 +18,10 @@ struct vpmu_vm {
+>  	int gic_fd;
+>  };
+>  
+> +struct vpmu_vm *__create_vpmu_vm(void *guest_code,
+> +				 void (*init_pmu)(struct vpmu_vm *vm, void *arg),
+> +				 void *arg);
+> +
+>  struct vpmu_vm *create_vpmu_vm(void *guest_code);
+>  
+>  void destroy_vpmu_vm(struct vpmu_vm *vpmu_vm);
+> diff --git a/tools/testing/selftests/kvm/lib/aarch64/vpmu.c b/tools/testing/selftests/kvm/lib/aarch64/vpmu.c
+> index b3de8fdc555e..76ea03d607f1 100644
+> --- a/tools/testing/selftests/kvm/lib/aarch64/vpmu.c
+> +++ b/tools/testing/selftests/kvm/lib/aarch64/vpmu.c
+> @@ -7,8 +7,9 @@
+>  #include <vpmu.h>
+>  #include <perf/arm_pmuv3.h>
+>  
+> -/* Create a VM that has one vCPU with PMUv3 configured. */
+> -struct vpmu_vm *create_vpmu_vm(void *guest_code)
+> +struct vpmu_vm *__create_vpmu_vm(void *guest_code,
+> +				 void (*init_pmu)(struct vpmu_vm *vm, void *arg),
+> +				 void *arg)
+>  {
+>  	struct kvm_vcpu_init init;
+>  	uint8_t pmuver;
+> @@ -50,12 +51,21 @@ struct vpmu_vm *create_vpmu_vm(void *guest_code)
+>  		    "Unexpected PMUVER (0x%x) on the vCPU with PMUv3", pmuver);
+>  
+>  	/* Initialize vPMU */
+> +	if (init_pmu)
+> +		init_pmu(vpmu_vm, arg);
+> +
+>  	vcpu_ioctl(vpmu_vm->vcpu, KVM_SET_DEVICE_ATTR, &irq_attr);
+>  	vcpu_ioctl(vpmu_vm->vcpu, KVM_SET_DEVICE_ATTR, &init_attr);
+>  
+>  	return vpmu_vm;
+>  }
+>  
+> +/* Create a VM that has one vCPU with PMUv3 configured. */
+> +struct vpmu_vm *create_vpmu_vm(void *guest_code)
+> +{
+> +	return __create_vpmu_vm(guest_code, NULL, NULL);
+> +}
+> +
+>  void destroy_vpmu_vm(struct vpmu_vm *vpmu_vm)
+>  {
+>  	close(vpmu_vm->gic_fd);
+While reading the doc again I can see there would be other interesting
+scenari to test such as
 
-Not yet.
-I will work on it and send it soon with some another small bug fix I found.
-Then we'll need to rebase this series on top.
+"Note: "Cancelling" a filter by registering the opposite action for the same
+range doesn't change the default action. For example, installing an ALLOW
+filter for event range [0:10) as the first filter and then applying a DENY
+action for the same range will leave the whole range as disabled."
+
+also filter ranges. Using PMCEID* would simplify your life I think.
+
+However this is more work and maybe goes beyond your original intent. Up
+to you ...
+
+Eric
+
+
