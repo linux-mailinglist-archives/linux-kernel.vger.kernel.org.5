@@ -2,99 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 29717812B99
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 10:27:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D284A812B9D
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 10:27:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234575AbjLNJ1V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 04:27:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39542 "EHLO
+        id S235522AbjLNJ1s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 04:27:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47242 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229595AbjLNJ1U (ORCPT
+        with ESMTP id S235450AbjLNJ1r (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 04:27:20 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2682B7;
-        Thu, 14 Dec 2023 01:27:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1702546045; x=1734082045;
-  h=date:from:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=j+OKMNvYP/TsJ2cZYfFOMvsa6Wp1SnLuZ4Neu5W5W1g=;
-  b=BJEVUfgF4woExtodGFQ/s8AbGf1L9fJZmKij9Df92g4sLiWqZkT9TIG7
-   RNUdIOdv2eGANMqnfo+/tkQ16mWttwu3kU2surBzhwYe5GuTW0+jyJ7f2
-   3S9n80W6jZuVF0KlrnY3FD2hoKOhZhazo+Lqa3EsYmgHoymDs9bUcnjY/
-   SId2RgTwOpiP3tGDjbno/Ebv/uCBlL8YPTslr/Z+zcUECAlxkyyBCeRis
-   EIxaExGhBZILztD6uawqZbG+CvwzHdPnrDbyAH6SJp5QieuNkEK0dzpSu
-   MyUhWUCqoARNQ68kavGHEKN3uPSpYJShqFq64B/xO/8M/O2QdXb8dhG0m
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10923"; a="394840191"
-X-IronPort-AV: E=Sophos;i="6.04,275,1695711600"; 
-   d="scan'208";a="394840191"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Dec 2023 01:27:16 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10923"; a="774286358"
-X-IronPort-AV: E=Sophos;i="6.04,275,1695711600"; 
-   d="scan'208";a="774286358"
-Received: from ijarvine-mobl1.ger.corp.intel.com (HELO ijarvine-mobl2.mshome.net) ([10.237.66.38])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Dec 2023 01:27:10 -0800
-Date:   Thu, 14 Dec 2023 11:27:03 +0200 (EET)
-From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
-To:     Lino Sanfilippo <LinoSanfilippo@gmx.de>
-cc:     Lino Sanfilippo <l.sanfilippo@kunbus.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        u.kleine-koenig@pengutronix.de, shawnguo@kernel.org,
-        s.hauer@pengutronix.de, mcoquelin.stm32@gmail.com,
-        alexandre.torgue@foss.st.com, cniedermaier@dh-electronics.com,
-        hugo@hugovil.com, LKML <linux-kernel@vger.kernel.org>,
-        linux-serial <linux-serial@vger.kernel.org>,
-        Lukas Wunner <lukas@wunner.de>, p.rosenberger@kunbus.com,
-        stable@vger.kernel.org
-Subject: Re: [PATCH v5 5/7] serial: core, imx: do not set RS485 enabled if
- it is not supported
-In-Reply-To: <9271d88a-52bf-4f3a-9861-fdc5120cfc31@gmx.de>
-Message-ID: <fb579fd-a5ae-2838-d1b-eefc16ad015@linux.intel.com>
-References: <20231209125836.16294-1-l.sanfilippo@kunbus.com> <20231209125836.16294-6-l.sanfilippo@kunbus.com> <ffdaf03b-65af-731f-992-3e90ca6fca@linux.intel.com> <9271d88a-52bf-4f3a-9861-fdc5120cfc31@gmx.de>
+        Thu, 14 Dec 2023 04:27:47 -0500
+Received: from mail-qk1-x72c.google.com (mail-qk1-x72c.google.com [IPv6:2607:f8b0:4864:20::72c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA20811A
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 01:27:53 -0800 (PST)
+Received: by mail-qk1-x72c.google.com with SMTP id af79cd13be357-77f642b9a22so34348585a.0
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 01:27:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1702546073; x=1703150873; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=HhYfjmCuo+1PmykwAbTfpZ2TUHkUhq4/jZFz8YOijBE=;
+        b=4b0PGEy6Ck3efn81p1R6h4Mz8IPgnfLmCDc2bqA05UYp4Iby39EIbzJmD+T/HklIqx
+         IM75z4yxQ+Nclcp5+aO5PwBe7BejZaJ9W5slbQrleprMfAImmD7ZN6AA6lPsLRIAq0dD
+         InnqG1gVSHVLqb0KyA1pEtEsocRwvXi7MqPEC/oEAdUquUNcZnrY6gqxQgbQ9AuV/0/H
+         fIlLYthAXTDeN41cc67WeykfRCt5FsD6vWvtF+DHk5uMTpMde7k6xWrKm+mMeBxZcwG1
+         uVkNyUJ361X1zyYPoxuBBkssWFEesakEhyYkBAJaWk2pDXhSNzDBgrscDItS3uC4o3lL
+         Hcug==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702546073; x=1703150873;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=HhYfjmCuo+1PmykwAbTfpZ2TUHkUhq4/jZFz8YOijBE=;
+        b=pSORvK2/KuAZrz5lejTXUcOEhXJxHzeDWl+CNrZdK5hmmLMvdoxoHjjSXaodMb48s8
+         6fcgGDYdJoCAhLIzZC739ldXFyx5ki6Ql/NEU0F9rlLs+qY3syDjNwuN/v7VP9ay6q9J
+         ZBUvPv0JJX+awvdZHHZcI0+/2JNYMQqazSB2QBhVNjQv5GF0+rCc7CFSfkVTbSwmbqv0
+         XLo/ke5YpOvYIeZ9tSp0b2PeSQs5gzPvfPFT42VEfJoFDFvSI4cStYfhq5z3oymSK4Hd
+         RPsTJcwBxRW7TxzsU7HZzA9WAqbGYKlzIuPMoN90hYkDksfnuj8k6PW6CDLJMVcdLR5o
+         uwsw==
+X-Gm-Message-State: AOJu0YzeMMZL+2b8pjkEu2wmUiZwZv9Fr/umesNLSqRUFeRU0ndWU9QN
+        JvKDGxnsdu+r547tec4uLpNbHKIk2YCSL+NKAb+ESA==
+X-Google-Smtp-Source: AGHT+IGPeRyQ6RFb0LNRVAmTAjz6D/BLrIPEIBX/hvRCVDcF3XdP39DP6Xi9DDyhYJG8Do/386lzxUJhjWw2XzYVS6Q=
+X-Received: by 2002:a05:6214:411:b0:67a:11bb:50ab with SMTP id
+ z17-20020a056214041100b0067a11bb50abmr13759578qvx.23.1702546072745; Thu, 14
+ Dec 2023 01:27:52 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="8323329-2144092122-1702546036=:5690"
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20231113105234.32058-1-glider@google.com> <20231113105234.32058-2-glider@google.com>
+ <ZXiVX5FAWZqHfr7m@arm.com> <20231213121605.GB31326@willie-the-truck>
+In-Reply-To: <20231213121605.GB31326@willie-the-truck>
+From:   Alexander Potapenko <glider@google.com>
+Date:   Thu, 14 Dec 2023 10:27:12 +0100
+Message-ID: <CAG_fn=X60dDWKAC6Yswr3RCW15Jpd8BOtRCYP-ijCDZZDzo14A@mail.gmail.com>
+Subject: Re: [PATCH v9 1/4] arm64: mte: implement CONFIG_ARM64_MTE_COMP
+To:     Will Deacon <will@kernel.org>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>, pcc@google.com,
+        andreyknvl@gmail.com, andriy.shevchenko@linux.intel.com,
+        aleksander.lobakin@intel.com, linux@rasmusvillemoes.dk,
+        yury.norov@gmail.com, alexandru.elisei@arm.com,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        eugenis@google.com, syednwaris@gmail.com, william.gray@linaro.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
-
---8323329-2144092122-1702546036=:5690
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
-
-On Wed, 13 Dec 2023, Lino Sanfilippo wrote:
-> On 11.12.23 12:00, Ilpo Järvinen wrote:
-> > On Sat, 9 Dec 2023, Lino Sanfilippo wrote:
-> 
-> > Looking into the code, that setting of rs485_supported from imx_no_rs485
-> > is actually superfluous as it should be already cleared to zeros on alloc.
+On Wed, Dec 13, 2023 at 1:16=E2=80=AFPM Will Deacon <will@kernel.org> wrote=
+:
+>
+> On Tue, Dec 12, 2023 at 05:16:15PM +0000, Catalin Marinas wrote:
+> > On Mon, Nov 13, 2023 at 11:52:30AM +0100, Alexander Potapenko wrote:
+> > > The config implements the algorithm compressing memory tags for ARM M=
+TE
+> > > during swapping.
+> > >
+> > > The algorithm is based on RLE and specifically targets buffers of tag=
+s
+> > > corresponding to a single page. In many cases a buffer can be compres=
+sed
+> > > into 63 bits, making it possible to store it without additional memor=
+y
+> > > allocation.
+> > >
+> > > Suggested-by: Evgenii Stepanov <eugenis@google.com>
+> > > Signed-off-by: Alexander Potapenko <glider@google.com>
 > >
-> 
-> Yes. BTW: Another "no_rs485" configuration setting can be found in the ar933x driver.
-> If we do not want to keep those assignments I can remove the one for the imx
-> driver with the next version of this patch...
+> > Acked-by: Catalin Marinas <catalin.marinas@arm.com>
+> >
+> > > +void mte_tags_to_ranges(u8 *tags, u8 *out_tags, unsigned short *out_=
+sizes,
+> > > +                   size_t *out_len)
+> > > +{
+> > [...]
+> > > +}
+> > > +EXPORT_SYMBOL_NS(mte_tags_to_ranges, MTECOMP);
+> >
+> > I may have asked before, what the reason for EXPORT_SYMBOL_NS? Is it fo=
+r
+> > the kunit tests? Otherwise we don't expect those to be accessed from
+> > modules.
+>
+> It looks like it. The Kconfig option for the test is tristate and it call=
+s
+> this symbol directly.
+>
+> Will
 
-I think they can just be dropped as it's normal in Linux code to assume 
-that things are zeroed by default. Those "no"-variants originate from the 
-time when supported_rs485 was not yet embedded but just a pointer to a 
-const struct and I didn't realize I could have removed them when I ended 
-up embedding the struct so it can be altered per port.
-
--- 
- i.
-
---8323329-2144092122-1702546036=:5690--
+What Will said.
