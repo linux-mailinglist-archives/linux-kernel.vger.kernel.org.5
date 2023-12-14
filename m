@@ -2,52 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E1009812E37
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 12:10:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B5A3812E3B
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 12:11:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1443909AbjLNLKV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 06:10:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50718 "EHLO
+        id S1443957AbjLNLLJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 06:11:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54270 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1443944AbjLNLKT (ORCPT
+        with ESMTP id S1443857AbjLNLLG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 06:10:19 -0500
+        Thu, 14 Dec 2023 06:11:06 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA129113
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 03:10:25 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 4C2AFC433C9;
-        Thu, 14 Dec 2023 11:10:25 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 265F2B7
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 03:11:13 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4A62FC433C7;
+        Thu, 14 Dec 2023 11:11:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1702552225;
-        bh=xwq0ikO0DH4IjRaxfWn3ELJXTbtrWoZcQar3Cp9coY4=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=r7iKIUNYJL2tt8CpKsqUnySzPVGJvGxjxP68NsPV/cpO8VBRIdi8XmoWkjr7vQjI+
-         itYWFGeyBhW+C8DetPiCsgp84810L/bev5rfLIxP/xpDn6CG+OK0v/mVvrIzie1Iw+
-         6Kjr/tejTbTQvRPWj7Nnf9Zc5k11UuHdC0FEcXswEfjdA3GHQifqyBA2NuCT2A9+CX
-         VGUv3N5aYiNDDOhR5cVtkqCKyGBLH4eNwJFkccc8OuUSh1AOYBmAhAUi5E98dXPP+q
-         0uBkckcSO8gOIz1LmjA+xSJpkdMjBxqb4R0A+EEYNzXx4urQT6P5gBiBiPWsZfNG0k
-         ilK/DgPLeLvXA==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 30E03DD4EFD;
-        Thu, 14 Dec 2023 11:10:25 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        s=k20201202; t=1702552272;
+        bh=tSqtRyvgEQ0GCuf1DdZJacTJr0JiylSUmZyHxqPK9OI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=cCNuWUbzFvztyPbxIPZYloc3r2gvIGR44ZX/PAhyUzpsmaGnjfVBeXjODksVQkrRv
+         rJ/Fzh7Eq8MOLQm4BiJCnhEFzio5AMHGKVo0RC5Z/J1c5sTyEw9N/zHJpo//kjmBas
+         769lb6R6o5NjA0e7soNvl7yKKYl+CuiCTRe6RcQcCZ0Jjdjyys5t0TcCjU5Y+gSN03
+         0vjqS9t9E3gECuBpRZ1ivXEE180z0qnDCTsZIYVtH4dBGX7WiLwJ4yCN+OZ7Wx4Tan
+         QhydMSyC3NzfjdQMBgQVS6YcMD0QQf/2HQu/yGgkwhTTMR8ijYGFU+3tj2v8nsHzt/
+         edNavnPrdwnWQ==
+Date:   Thu, 14 Dec 2023 11:11:06 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     Jianhua Lu <lujianhua000@gmail.com>
+Cc:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        Banajit Goswami <bgoswami@quicinc.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
+        linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 1/4] ASoC: qcom: common: Add qcom_snd_tdm_hw_params
+ function
+Message-ID: <7b13b8b6-9048-48a3-b1a1-e62de88e8171@sirena.org.uk>
+References: <20231213123556.20469-1-lujianhua000@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net v2] net: stmmac: Handle disabled MDIO busses from
- devicetree
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <170255222519.10804.11119972355205402863.git-patchwork-notify@kernel.org>
-Date:   Thu, 14 Dec 2023 11:10:25 +0000
-References: <20231212-b4-stmmac-handle-mdio-enodev-v2-1-600171acf79f@redhat.com>
-In-Reply-To: <20231212-b4-stmmac-handle-mdio-enodev-v2-1-600171acf79f@redhat.com>
-To:     Andrew Halaney <ahalaney@redhat.com>
-Cc:     alexandre.torgue@foss.st.com, joabreu@synopsys.com,
-        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com, mcoquelin.stm32@gmail.com,
-        peppe.cavallaro@st.com, andrew@lunn.ch, fancer.lancer@gmail.com,
-        netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        horms@kernel.org
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="pWlLgRFGMMJxpNhu"
+Content-Disposition: inline
+In-Reply-To: <20231213123556.20469-1-lujianhua000@gmail.com>
+X-Cookie: Preserve the old, but know the new.
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -58,30 +56,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
 
-This patch was applied to netdev/net.git (main)
-by Paolo Abeni <pabeni@redhat.com>:
+--pWlLgRFGMMJxpNhu
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-On Tue, 12 Dec 2023 16:18:33 -0600 you wrote:
-> Many hardware configurations have the MDIO bus disabled, and are instead
-> using some other MDIO bus to talk to the MAC's phy.
-> 
-> of_mdiobus_register() returns -ENODEV in this case. Let's handle it
-> gracefully instead of failing to probe the MAC.
-> 
-> Fixes: 47dd7a540b8a ("net: add support for STMicroelectronics Ethernet controllers.")
-> Signed-off-by: Andrew Halaney <ahalaney@redhat.com>
-> 
-> [...]
+On Wed, Dec 13, 2023 at 08:35:53PM +0800, Jianhua Lu wrote:
 
-Here is the summary with links:
-  - [net,v2] net: stmmac: Handle disabled MDIO busses from devicetree
-    https://git.kernel.org/netdev/net/c/e23c0d21ce92
+> Add qcom TDM setup function to support TDM ports for qcom platform.
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+> +int qcom_snd_tdm_hw_params(struct snd_pcm_substream *substream,
+> +			   struct snd_pcm_hw_params *params)
+> +{
 
+...
 
+> +		ret = snd_soc_dai_set_tdm_slot(cpu_dai, tx_mask, rx_mask, slots, slot_width);
+> +		if (ret < 0) {
+
+The expectation is that TDM is set up by the machine driver, not from
+hw_params - if the TDM setup can be changed from within hw_params then
+it's hard to see how it's going to interact well with other TDM users on
+the bus.  More usually hw_params() would be influenced by the setup done
+in set_tdm_slot().
+
+--pWlLgRFGMMJxpNhu
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmV64skACgkQJNaLcl1U
+h9C9BAf9E/yW6RaCxOVG4VbZ+wP9jHD/RCqjvzrJAain8Y2xlAPZE7PaTuVOBmRh
+276IS1kDHcPSzRkXkhKFm1KGpr9nOYR1wGrk9Fku5RQQbOwSjvlpOUSwgd5GpUMf
+8PT/7ejXSbJKG0vQZc5hsnbwrPGZdn8X381WXdnexczXxna0Vx/fv1wbkPx4OlA5
+Xv2LFN3bTEQDmczWtbGo+64Qe/OnJOudRmn/XWjTjjTY7ztP2M4rDpYN/Bd+fyq5
+VCWAFEaXIFlgGti7V3UvDBV86hs3GOWHnDHuapeAxahhWEp1U/JU8/okkRsFy+kK
+grHgwa1sQD7a7t9jN8Qc4OpT++24iA==
+=krXQ
+-----END PGP SIGNATURE-----
+
+--pWlLgRFGMMJxpNhu--
