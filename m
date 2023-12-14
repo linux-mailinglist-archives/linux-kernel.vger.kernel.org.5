@@ -2,233 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BE782812CE4
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 11:29:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CDB49812CE7
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 11:29:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1443631AbjLNK3F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 05:29:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43672 "EHLO
+        id S1443637AbjLNK3p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 05:29:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39512 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1443599AbjLNK3D (ORCPT
+        with ESMTP id S1443599AbjLNK3n (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 05:29:03 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C637AF
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 02:29:09 -0800 (PST)
+        Thu, 14 Dec 2023 05:29:43 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CB82115
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 02:29:48 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1702549748;
+        s=mimecast20190719; t=1702549788;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=WEGnuAcA6vcyz/hnSV1HfLQ52Yc/OzlpLIbZnnIF9xo=;
-        b=LYtNkeeviHlxPafvma9BTHbdjfRDFw9xGdqvok9ku27K176f0uUN3hN4ZqdKYNV9L+KdGF
-        MY9dcWnCCiFGSJlDBcuwcae0ue0HN5sod8ATEVuNsz7LyR5Y4P4Th1TvUaCw7x+5TO13kG
-        WJbqVCNeJlflnUCuKuDCroMHwyuTmOA=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+        bh=mNaidnArOatG5DPMZgGUNeTPrppTOu1ght+u2+9nPgo=;
+        b=Bo7FbkhBee1ZsvFqeKV7xlwzV5nF0IJGhAJx6U2JV8Z+ctcFplytgVYwjJX4sN88q9f9sZ
+        cC4huT7To850WW0hMa+JESjiJSw+r4Pb9KOIHxEMIZmDf2vmrTQrqZfhd8tGsX69bUN0rz
+        wS0wp8XDJQ+CwYqVBd6rbncnzCrFeao=
+Received: from mail-lj1-f199.google.com (mail-lj1-f199.google.com
+ [209.85.208.199]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-265-saQwzr8LNLeC1X0oZg-3ow-1; Thu, 14 Dec 2023 05:29:05 -0500
-X-MC-Unique: saQwzr8LNLeC1X0oZg-3ow-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.rdu2.redhat.com [10.11.54.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 10B6885A58A;
-        Thu, 14 Dec 2023 10:29:05 +0000 (UTC)
-Received: from localhost (unknown [10.72.116.38])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 5AC703C25;
-        Thu, 14 Dec 2023 10:29:03 +0000 (UTC)
-Date:   Thu, 14 Dec 2023 18:29:01 +0800
-From:   Baoquan He <bhe@redhat.com>
-To:     fuqiang wang <fuqiang.wang@easystack.cn>
-Cc:     Vivek Goyal <vgoyal@redhat.com>, Dave Young <dyoung@redhat.com>,
-        kexec@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] kexec: avoid out of bounds in crash_exclude_mem_range()
-Message-ID: <ZXrY7QbXAlxydsSC@MiWiFi-R3L-srv>
-References: <20231127025641.62210-1-fuqiang.wang@easystack.cn>
- <ZWg9aZYoo0v+tCQ8@MiWiFi-R3L-srv>
- <e588c619-9b97-4627-bce1-b595c757e5c4@easystack.cn>
+ us-mta-482-CTDXJDGqMkSVcPwJOp2I2g-1; Thu, 14 Dec 2023 05:29:46 -0500
+X-MC-Unique: CTDXJDGqMkSVcPwJOp2I2g-1
+Received: by mail-lj1-f199.google.com with SMTP id 38308e7fff4ca-2ca29454857so73217361fa.0
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 02:29:46 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702549785; x=1703154585;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=mNaidnArOatG5DPMZgGUNeTPrppTOu1ght+u2+9nPgo=;
+        b=twwVBl/3cCwEHIy73a5Z2fsM/SHqYmJO4KZ/3DXqnA2G5iPtTRj1wTkjOn84H4RqnG
+         +8NwhriGX9jWQ8UOjTcMVXItSW6iuoWo3vwihPDNepy97RpyeoBIiwE4h5P2E3tk8lfO
+         mSnb7O5VZP3VcEliFNrr/93Frm+naUqxjD1A2k2K4bZnp74+4fSnlyCigCrF8rhwmnrT
+         ZX/5YhtZc9iETofvSwAu7rNIeMEjhE/4A5/MxFFvGKVsVtwIVFA6S8cZPnLPjfRFNqjM
+         oQAFw66SLD+b5LeqpCCvPh1z1W0qGlG6QUk8pq479d9BraIwc6kn4zcYnrHtDDWw4cVi
+         r+xg==
+X-Gm-Message-State: AOJu0YwBABpt+8OpsAGgP3v770K08e1miGX0MI93NiRV2Z5jAMz/69rE
+        ZaBsl9JB2HiVTrQqBT2focgwQVLQchT3zEBm6lo954C9H64gSmjOg8SwWEm+PPBgsueXiNzsmB4
+        ah3H177NylEDS096HfReKOsKB
+X-Received: by 2002:a2e:b88a:0:b0:2cc:1c21:f729 with SMTP id r10-20020a2eb88a000000b002cc1c21f729mr3199479ljp.60.1702549785337;
+        Thu, 14 Dec 2023 02:29:45 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IEjkT5w/kdScbgQ5jnlJ/iNq1v76LhwoQiz85pVMwCHKmLvFjAg9HfOnqm6pisPjZpcYg0XYw==
+X-Received: by 2002:a2e:b88a:0:b0:2cc:1c21:f729 with SMTP id r10-20020a2eb88a000000b002cc1c21f729mr3199467ljp.60.1702549784912;
+        Thu, 14 Dec 2023 02:29:44 -0800 (PST)
+Received: from redhat.com ([2.52.132.243])
+        by smtp.gmail.com with ESMTPSA id v21-20020a2e9615000000b002c9f1316121sm2098658ljh.36.2023.12.14.02.29.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 Dec 2023 02:29:43 -0800 (PST)
+Date:   Thu, 14 Dec 2023 05:29:38 -0500
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Arseniy Krasnov <avkrasnov@salutedevices.com>
+Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
+        Stefano Garzarella <sgarzare@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Bobby Eshleman <bobby.eshleman@bytedance.com>,
+        kvm@vger.kernel.org, virtualization@lists.linux-foundation.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel@sberdevices.ru, oxffffaa@gmail.com
+Subject: Re: [PATCH net-next v9 3/4] vsock: update SO_RCVLOWAT setting
+ callback
+Message-ID: <20231214052502-mutt-send-email-mst@kernel.org>
+References: <20231214091947.395892-1-avkrasnov@salutedevices.com>
+ <20231214091947.395892-4-avkrasnov@salutedevices.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <e588c619-9b97-4627-bce1-b595c757e5c4@easystack.cn>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.1
+In-Reply-To: <20231214091947.395892-4-avkrasnov@salutedevices.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/30/23 at 09:20pm, fuqiang wang wrote:
+On Thu, Dec 14, 2023 at 12:19:46PM +0300, Arseniy Krasnov wrote:
+> Do not return if transport callback for SO_RCVLOWAT is set (only in
+> error case). In this case we don't need to set 'sk_rcvlowat' field in
+> each transport - only in 'vsock_set_rcvlowat()'. Also, if 'sk_rcvlowat'
+> is now set only in af_vsock.c, change callback name from 'set_rcvlowat'
+> to 'notify_set_rcvlowat'.
 > 
-> On 2023/11/30 15:44, Baoquan He wrote:
-> > On 11/27/23 at 10:56am, fuqiang wang wrote:
-> > > When the split happened, judge whether mem->nr_ranges is equal to
-> > > mem->max_nr_ranges. If it is true, return -ENOMEM.
-> > > 
-> > > The advantage of doing this is that it can avoid array bounds caused by
-> > > some bugs. E.g., Before commit 4831be702b95 ("arm64/kexec: Fix missing
-> > > extra range for crashkres_low."), reserve both high and low memories for
-> > > the crashkernel may cause out of bounds.
-> > > 
-> > > On the other hand, move this code before the split to ensure that the
-> > > array will not be changed when return error.
-> > If out of array boundary is caused, means the laoding failed, whether
-> > the out of boundary happened or not. I don't see how this code change
-> > makes sense. Do I miss anything?
-> > 
-> > Thanks
-> > Baoquan
-> > 
-> Hi baoquan,
+> Signed-off-by: Arseniy Krasnov <avkrasnov@salutedevices.com>
+> Reviewed-by: Stefano Garzarella <sgarzare@redhat.com>
+> Acked-by: Michael S. Tsirkin <mst@redhat.com>
+
+Maybe squash this with patch 2/4?
+
+> ---
+>  Changelog:
+>  v3 -> v4:
+>   * Rename 'set_rcvlowat' to 'notify_set_rcvlowat'.
+>   * Commit message updated.
 > 
-> In some configurations, out of bounds may not cause crash_exclude_mem_range()
-> returns error, then the load will succeed.
+>  include/net/af_vsock.h           | 2 +-
+>  net/vmw_vsock/af_vsock.c         | 9 +++++++--
+>  net/vmw_vsock/hyperv_transport.c | 4 ++--
+>  3 files changed, 10 insertions(+), 5 deletions(-)
 > 
-> E.g.
-> There is a cmem before execute crash_exclude_mem_range():
-> 
->   cmem = {
->     max_nr_ranges = 3
->     nr_ranges = 2
->     ranges = {
->        {start = 1,      end = 1000}
->        {start = 1001,    end = 2000}
->     }
->   }
-> 
-> After executing twice crash_exclude_mem_range() with the start/end params
-> 100/200, 300/400 respectively, the cmem will be:
-> 
->   cmem = {
->     max_nr_ranges = 3
->     nr_ranges = 4                    <== nr_ranges > max_nr_ranges
->     ranges = {
->       {start = 1,       end = 99  }
->       {start = 201,     end = 299 }
->       {start = 401,     end = 1000}
->       {start = 1001,    end = 2000}  <== OUT OF BOUNDS
->     }
->   }
-
-Let me borrow your example and copy them here, but I will switch the
-order of start/end params 100/200, 300/400 executing at below:
-
-There is a cmem before execute crash_exclude_mem_range():
-
-  cmem = {
-    max_nr_ranges = 3
-    nr_ranges = 2
-    ranges = {
-       {start = 1,      end = 1000}
-       {start = 1001,    end = 2000}
-    }
-  }
-
-After executing twice crash_exclude_mem_range() with the start/end params
-300/400, the cmem will be:
-
-  cmem = {
-    max_nr_ranges = 3
-    nr_ranges = 3                    <== nr_ranges == max_nr_ranges
-    ranges = {
-      {start = 1,       end = 299  }  i=0
-      {start = 401,     end = 1000}   i=1
-      {start = 1001,    end = 2000}   i=2
-    }
-  }
-When it's executing the 100/200 excluding, we have:
-
-  cmem = {
-    max_nr_ranges = 3
-    nr_ranges = 4                    <== nr_ranges > max_nr_ranges
-    ranges = {
-      {start = 1,       end = 99  }   i=0
-      {start = 401,     end = 1000}
-      {start = 1001,    end = 2000}  
-    }
-  }
-
-Then splitting happened, i == 0, then for loop is broken and jump out.
-Then we have the condition checking here:
-
-	/* Split happened */
-        if (i == mem->max_nr_ranges - 1)
-                return -ENOMEM;
-
-Obviously the conditonal checking is incorrect (given the i == 0 in
-above case), it should be 
-
-	/* Split happened */
-	if (mem->nr_ranges == mem->max_nr_ranges)
-                return -ENOMEM;
-
-So, now there are two things which need be combed up in
-crash_exclude_mem_range():
-
-1) the above conditional check is incorrect, need be fixed;
-2) whether we need have the cmem->ranges[] partly changed, or keep it
-unchanged when OOB happened;
-
-And also the incorrect handling in crash_setup_memmap_entries():
-1) the insufficient array slot in crash_setup_memmap_entries();
-2) the uninitialized cmem->max_nr_ranges;
+> diff --git a/include/net/af_vsock.h b/include/net/af_vsock.h
+> index e302c0e804d0..535701efc1e5 100644
+> --- a/include/net/af_vsock.h
+> +++ b/include/net/af_vsock.h
+> @@ -137,7 +137,6 @@ struct vsock_transport {
+>  	u64 (*stream_rcvhiwat)(struct vsock_sock *);
+>  	bool (*stream_is_active)(struct vsock_sock *);
+>  	bool (*stream_allow)(u32 cid, u32 port);
+> -	int (*set_rcvlowat)(struct vsock_sock *vsk, int val);
+>  
+>  	/* SEQ_PACKET. */
+>  	ssize_t (*seqpacket_dequeue)(struct vsock_sock *vsk, struct msghdr *msg,
+> @@ -168,6 +167,7 @@ struct vsock_transport {
+>  		struct vsock_transport_send_notify_data *);
+>  	/* sk_lock held by the caller */
+>  	void (*notify_buffer_size)(struct vsock_sock *, u64 *);
+> +	int (*notify_set_rcvlowat)(struct vsock_sock *vsk, int val);
+>  
+>  	/* Shutdown. */
+>  	int (*shutdown)(struct vsock_sock *, int);
+> diff --git a/net/vmw_vsock/af_vsock.c b/net/vmw_vsock/af_vsock.c
+> index 816725af281f..54ba7316f808 100644
+> --- a/net/vmw_vsock/af_vsock.c
+> +++ b/net/vmw_vsock/af_vsock.c
+> @@ -2264,8 +2264,13 @@ static int vsock_set_rcvlowat(struct sock *sk, int val)
+>  
+>  	transport = vsk->transport;
+>  
+> -	if (transport && transport->set_rcvlowat)
+> -		return transport->set_rcvlowat(vsk, val);
+> +	if (transport && transport->notify_set_rcvlowat) {
+> +		int err;
+> +
+> +		err = transport->notify_set_rcvlowat(vsk, val);
+> +		if (err)
+> +			return err;
+> +	}
+>  
+>  	WRITE_ONCE(sk->sk_rcvlowat, val ? : 1);
+>  	return 0;
 
 
-> 
-> When an out of bounds occurs during the second execution, the function will not
-> return error.
-> 
-> Additionally, when the function returns error, means the load failed. It seems
-> meaningless to keep the original data unchanged. But in my opinion, this will
-> make this function more rigorous and more versatile. (However, I am not sure if
-> it is self-defeating and I hope to receive more suggestions).
-> 
-> Thanks
-> fuqiang
-> 
-> 
-> > > Signed-off-by: fuqiang wang <fuqiang.wang@easystack.cn>
-> > > ---
-> > >   kernel/crash_core.c | 6 +++---
-> > >   1 file changed, 3 insertions(+), 3 deletions(-)
-> > > 
-> > > diff --git a/kernel/crash_core.c b/kernel/crash_core.c
-> > > index efe87d501c8c..ffdc246cf425 100644
-> > > --- a/kernel/crash_core.c
-> > > +++ b/kernel/crash_core.c
-> > > @@ -611,6 +611,9 @@ int crash_exclude_mem_range(struct crash_mem *mem,
-> > >   		}
-> > >   		if (p_start > start && p_end < end) {
-> > > +			/* Split happened */
-> > > +			if (mem->nr_ranges == mem->max_nr_ranges)
-> > > +				return -ENOMEM;
-> > >   			/* Split original range */
-> > >   			mem->ranges[i].end = p_start - 1;
-> > >   			temp_range.start = p_end + 1;
-> > > @@ -626,9 +629,6 @@ int crash_exclude_mem_range(struct crash_mem *mem,
-> > >   	if (!temp_range.end)
-> > >   		return 0;
-> > > -	/* Split happened */
-> > > -	if (i == mem->max_nr_ranges - 1)
-> > > -		return -ENOMEM;
-> > >   	/* Location where new range should go */
-> > >   	j = i + 1;
-> > > -- 
-> > > 2.42.0
-> > > 
-> > > 
-> > > _______________________________________________
-> > > kexec mailing list
-> > > kexec@lists.infradead.org
-> > > http://lists.infradead.org/mailman/listinfo/kexec
-> > > 
-> 
+
+I would s
+
+> diff --git a/net/vmw_vsock/hyperv_transport.c b/net/vmw_vsock/hyperv_transport.c
+> index 7cb1a9d2cdb4..e2157e387217 100644
+> --- a/net/vmw_vsock/hyperv_transport.c
+> +++ b/net/vmw_vsock/hyperv_transport.c
+> @@ -816,7 +816,7 @@ int hvs_notify_send_post_enqueue(struct vsock_sock *vsk, ssize_t written,
+>  }
+>  
+>  static
+> -int hvs_set_rcvlowat(struct vsock_sock *vsk, int val)
+> +int hvs_notify_set_rcvlowat(struct vsock_sock *vsk, int val)
+>  {
+>  	return -EOPNOTSUPP;
+>  }
+> @@ -856,7 +856,7 @@ static struct vsock_transport hvs_transport = {
+>  	.notify_send_pre_enqueue  = hvs_notify_send_pre_enqueue,
+>  	.notify_send_post_enqueue = hvs_notify_send_post_enqueue,
+>  
+> -	.set_rcvlowat             = hvs_set_rcvlowat
+> +	.notify_set_rcvlowat      = hvs_notify_set_rcvlowat
+>  };
+>  
+>  static bool hvs_check_transport(struct vsock_sock *vsk)
+> -- 
+> 2.25.1
 
