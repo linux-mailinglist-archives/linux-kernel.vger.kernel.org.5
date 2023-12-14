@@ -2,79 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C4EBC812A27
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 09:18:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 031AF812A2B
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 09:19:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230064AbjLNISm convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 14 Dec 2023 03:18:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50954 "EHLO
+        id S233609AbjLNITD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 03:19:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50740 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229869AbjLNISl (ORCPT
+        with ESMTP id S229769AbjLNITB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 03:18:41 -0500
-Received: from smtprelay01.ispgateway.de (smtprelay01.ispgateway.de [80.67.31.35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C242FB9;
-        Thu, 14 Dec 2023 00:18:46 -0800 (PST)
-Received: from [92.206.191.209] (helo=note-book.lan)
-        by smtprelay01.ispgateway.de with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.96.1)
-        (envelope-from <git@apitzsch.eu>)
-        id 1rDgvb-00033X-0C;
-        Thu, 14 Dec 2023 09:18:43 +0100
-Message-ID: <1d5de5547d5980da6040bf1c9bfc7fc3c32de88c.camel@apitzsch.eu>
-Subject: Re: [PATCH 0/2] ARM: dts: qcom: msm8926-motorola-peregrine: Add
- initial device tree
-From:   =?ISO-8859-1?Q?Andr=E9?= Apitzsch <git@apitzsch.eu>
-To:     Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>
-Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, phone-devel@vger.kernel.org,
-        ~postmarketos/upstreaming@lists.sr.ht
-Date:   Thu, 14 Dec 2023 09:18:41 +0100
-In-Reply-To: <e7f8e4bf-080d-4bb4-99ca-727d2d00f55d@linaro.org>
-References: <20231213-peregrine-v1-0-5229e21bca3f@apitzsch.eu>
-         <e7f8e4bf-080d-4bb4-99ca-727d2d00f55d@linaro.org>
-Autocrypt: addr=git@apitzsch.eu; prefer-encrypt=mutual;
- keydata=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
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-User-Agent: Evolution 3.50.2 
+        Thu, 14 Dec 2023 03:19:01 -0500
+Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B6C0109
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 00:19:08 -0800 (PST)
+Received: by mail-pf1-x431.google.com with SMTP id d2e1a72fcca58-6d2350636d6so372144b3a.2
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 00:19:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1702541948; x=1703146748; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=NUzmmsL1ZYH26dLfyMCpbQFSCnHCb1FNohT2hgdN0Ic=;
+        b=h4nsaLKJOjBrM/V7EAavCciOLQrR1T2wr1JLC6L40T+OzRHgotHDQ8Q221H0APPKC6
+         2TINIkmEjkUsxCbAPrbgSMqg9MbO4ku7HF2q4kTXNYZmoYp2MFgBo9JKkPO7AlfEqCbX
+         MA+hU0s5FRP+6ZMpeCpJXQMqeClKnsR673xJMuYnoOWEGhvt4WpWI0OYF0+Q2TOiZZZe
+         3tn1nTxHDmrPSQ4kT83JuQ+tBmOfI/WT5ZVCAv0IMnVCB4zb9sYTHUHfghIeTk9wpsPY
+         SMtwWVJ+V6y4p0lW6Y892e5XO2GZr1x9sizPiiyMUgkYNPrdS3xoi9uZMwNN31aSFEfA
+         v/8g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702541948; x=1703146748;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=NUzmmsL1ZYH26dLfyMCpbQFSCnHCb1FNohT2hgdN0Ic=;
+        b=Xg8dw0WfZFrMPW29ILIGwCFCuudt4FkVdTeiI5bfedAXG5Xp3w7n9HSpdCOjSTfXww
+         xFA2hM6/sRRFLV4ShwDnk3e5R1uRL/7xuucpct+ZAU6o1OnrY206yhSd/kd+nrK+UcP6
+         WLgayfo3l9q1K/QlNZW+7LUTNobH8ipVdQcEaQGRjSKJC4xh59Jftc6YiAujUZU77jNM
+         0JaOlUjT7WSKyXGw54wGmus2Fyi4waTfqfenOYggFb2L9BBS9Xd0tmi/RvwC3pipBbV+
+         h7y0dBuA1NymwoSRJKDFZiQrXoIyLWI0Il1l91dLT9+uixmwQkq+Cay47MOhK7+cepWm
+         /t7A==
+X-Gm-Message-State: AOJu0YxpiTQIRKSZwb7dxJLsCFf6K9E2KynkvJWekRoI9WeYCicEDNkm
+        hhzMBEF0btF1777nAtMZVEUXNVdqXib4yzXQfoansQ==
+X-Google-Smtp-Source: AGHT+IFg36rRO4Q01NMSPrW4k+oGIOCkqwVw6CJKsNMuY1Wa9C7Y6beBUgsZsNb6Lmy8+pishGPxczjnVulVmphN2ag=
+X-Received: by 2002:a05:6a00:98e:b0:6ce:10ed:7754 with SMTP id
+ u14-20020a056a00098e00b006ce10ed7754mr10885356pfg.31.1702541947775; Thu, 14
+ Dec 2023 00:19:07 -0800 (PST)
 MIME-Version: 1.0
-X-Df-Sender: YW5kcmVAYXBpdHpzY2guZXU=
-X-Spam-Status: No, score=1.4 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,RCVD_IN_SBL_CSS,SPF_HELO_PASS,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
-X-Spam-Level: *
+References: <202312141319+0800-wangjinchao@xfusion.com>
+In-Reply-To: <202312141319+0800-wangjinchao@xfusion.com>
+From:   Vincent Guittot <vincent.guittot@linaro.org>
+Date:   Thu, 14 Dec 2023 09:18:56 +0100
+Message-ID: <CAKfTPtCrBvyxJzeRDARFjbU8P5BYW27So7gYE4FPWBDC0=HL3Q@mail.gmail.com>
+Subject: Re: [PATCH] sched/fair: remove next_buddy_marked
+To:     Wang Jinchao <wangjinchao@xfusion.com>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Valentin Schneider <vschneid@redhat.com>,
+        linux-kernel@vger.kernel.org, stone.xulei@xfusion.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am Mittwoch, dem 13.12.2023 um 21:44 +0100 schrieb Konrad Dybcio:
-> 
-> 
-> On 12/13/23 21:33, André Apitzsch wrote:
-> > This dts adds support for Motorola Moto G 4G released in 2013.
-> I have a similar one in my drawer.. not the 4g kind, titan IIRC?
-> Wasn't this one codenamed thea?
-> 
-> Konrad
+On Thu, 14 Dec 2023 at 06:20, Wang Jinchao <wangjinchao@xfusion.com> wrote:
+>
+> Remove unused `next_buddy_marked` in `check_preempt_wakeup_fair`
+>
 
-Yes, thea is the 2nd generation of Moto G 4G, released in 2014.
-pregrine is the first generation, from 2013.
+Fixes: 5e963f2bd465 ("sched/fair: Commit to EEVDF")
 
-Should
-> model = "Motorola Moto G 4G";
-be updated, to reflect that it is 1st gen or should only "thea" (if it
-is added at all) have an addition in the model name?
+> Signed-off-by: Wang Jinchao <wangjinchao@xfusion.com>
 
-André
+Reviewed-by: Vincent Guittot <vincent.guittot@linaro.org>
+
+> ---
+>  kernel/sched/fair.c | 2 --
+>  1 file changed, 2 deletions(-)
+>
+> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> index d7a3c63a2171..d2028bfa4e94 100644
+> --- a/kernel/sched/fair.c
+> +++ b/kernel/sched/fair.c
+> @@ -8210,7 +8210,6 @@ static void check_preempt_wakeup_fair(struct rq *rq, struct task_struct *p, int
+>         struct task_struct *curr = rq->curr;
+>         struct sched_entity *se = &curr->se, *pse = &p->se;
+>         struct cfs_rq *cfs_rq = task_cfs_rq(curr);
+> -       int next_buddy_marked = 0;
+>         int cse_is_idle, pse_is_idle;
+>
+>         if (unlikely(se == pse))
+> @@ -8227,7 +8226,6 @@ static void check_preempt_wakeup_fair(struct rq *rq, struct task_struct *p, int
+>
+>         if (sched_feat(NEXT_BUDDY) && !(wake_flags & WF_FORK)) {
+>                 set_next_buddy(pse);
+> -               next_buddy_marked = 1;
+>         }
+>
+>         /*
+> --
+> 2.40.0
+>
