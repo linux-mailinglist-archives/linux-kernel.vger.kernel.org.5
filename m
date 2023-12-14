@@ -2,323 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AE4AD812BA1
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 10:28:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 944AF812B81
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 10:20:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235551AbjLNJ2Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 04:28:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33378 "EHLO
+        id S235413AbjLNJUF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 04:20:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60922 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235425AbjLNJ2T (ORCPT
+        with ESMTP id S229691AbjLNJUD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 04:28:19 -0500
-Received: from mx1.sberdevices.ru (mx1.sberdevices.ru [37.18.73.165])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04B3BA6;
-        Thu, 14 Dec 2023 01:28:24 -0800 (PST)
-Received: from p-infra-ksmg-sc-msk01 (localhost [127.0.0.1])
-        by mx1.sberdevices.ru (Postfix) with ESMTP id 76A5110006F;
-        Thu, 14 Dec 2023 12:28:23 +0300 (MSK)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 76A5110006F
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
-        s=mail; t=1702546103;
-        bh=Sv8rsH7eOUnxbebfktUfNJl1DL9SXKAXmrEdY/m72mo=;
-        h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type:From;
-        b=BAdCeLBlknQ42/3HyEQtOhSStX24qT2Awg4Boe+/l6v/gOMcifFEE0lLZRs07lCpm
-         5FHU95XYVjZhK0IYjVo2gBs1Q3jCr0QXlEfRFOVmvFyg9Doq9Ie4A/PfTidk3T/Gk+
-         PwgXCaq7Roh/i+rDE5zGiSOmyoqEJJP0TE4eC8CaooEglSD0A60+Dbzgf0vbrsMZw4
-         HEkg8MugZzYXex0h4Vq86Xdak19lkVJfMMXxuJxje+O4Zw7deikC0JQYHrOftGHHqa
-         8QPYgoaU5Mj6shnKf5wYa2nXuXQa9nSbwiVJn7bztUGVl6ul9x9HsxZkxwZW1jpuCZ
-         TppAktHGI/3UA==
-Received: from smtp.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mx1.sberdevices.ru (Postfix) with ESMTPS;
-        Thu, 14 Dec 2023 12:28:23 +0300 (MSK)
-Received: from localhost.localdomain (100.64.160.123) by
- p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Thu, 14 Dec 2023 12:28:22 +0300
-From:   Arseniy Krasnov <avkrasnov@salutedevices.com>
-To:     Stefan Hajnoczi <stefanha@redhat.com>,
-        Stefano Garzarella <sgarzare@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Bobby Eshleman <bobby.eshleman@bytedance.com>
-CC:     <kvm@vger.kernel.org>, <virtualization@lists.linux-foundation.org>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <kernel@sberdevices.ru>, <oxffffaa@gmail.com>,
-        <avkrasnov@salutedevices.com>
-Subject: [PATCH net-next v9 4/4] vsock/test: two tests to check credit update logic
-Date:   Thu, 14 Dec 2023 12:19:47 +0300
-Message-ID: <20231214091947.395892-5-avkrasnov@salutedevices.com>
-X-Mailer: git-send-email 2.35.0
-In-Reply-To: <20231214091947.395892-1-avkrasnov@salutedevices.com>
-References: <20231214091947.395892-1-avkrasnov@salutedevices.com>
+        Thu, 14 Dec 2023 04:20:03 -0500
+Received: from FRA01-PR2-obe.outbound.protection.outlook.com (mail-pr2fra01on2055.outbound.protection.outlook.com [40.107.12.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB5BDA6
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 01:20:09 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Afycax50xjGPNepJ+6M6erP16Pj93cM6eFE+S/c691+MbkcCfmOJ2FLL1VgQ9QX9AnnH5eeoBTQM1DNbRyse0wDdgowzXW2V7474Y2K/SGpCyX085UtrkeyGrGJvJ3f3PdgObXJbtEHufKXNunQd2Fa12GDxwHOgRuL43OkTfqh3rOCs5/+e8zvER3ADp4cym0snOjzkygrSkOYde5pxMuiUJ8BvsM6h7P02dM416yJ1hDWpofthwC8a/AenUuLM+dNVvwkDpiAHMlbV2fRO4p+sNI/WbjgJQX9uTUWQ0cM2CK74DilfbsQkQN3Rpng0dnFLbi8PYFGZxvw/XPIygg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=Fkqx4aPyZqrVhO9pnGAMQGFu3sqVyRKxctUP8Rrl7fQ=;
+ b=HokpYlC/jBy/5vSZr1EXbWCxTdZqzFAkMEyy47I5t8wc8IexsP62mhfBBnXbHUUx8/oAgy8JMv6nQOsaZC+8O2CuSzqFYOGRJ6O5AE7BlchEPnk4ZPxW5unWt4LqrjTbta6qF6L+L0JjSWdlJvu0EQPqnlLFVR4ChUfdFw3Vj2Ay272uO5463Pop8Pf+hViuVVTPB9J7TmpHXF4t8j3D4DMnkblsFsGW3YznisCriHuWKMue1yZ9ntYwWE476uQ7WOF5Z6DRoGOgYWmQ9+RKed0neIoNDpc+BhibPqbL0ylXJhuXYrCZX3OvpwxTOTxZhGAIbK2pXXMYFNelF04tew==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=csgroup.eu; dmarc=pass action=none header.from=csgroup.eu;
+ dkim=pass header.d=csgroup.eu; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=csgroup.eu;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Fkqx4aPyZqrVhO9pnGAMQGFu3sqVyRKxctUP8Rrl7fQ=;
+ b=WnwLfpPONguVlrbCJs+WBe1R82SL4g3xEtDfi2sjl1GyHDLRzJhmSKvZvj3+rQc1TUdLOytTWspkn3BCKH+OpgybFt/oTkoXFIc2ShE9VGy2Ga65Ve/t6+DlcOkj5FcIY6yM+Ka6Y8FzgPWZR0+dxAnbOODDkWp4C+AlTHiop8Tu6ng5cxMl2+T8KaIcbCvu9JHCE49NHFjl7t03Wik41BPm64C7ULBlDZeQKn29DolmFko5NnT8O2XAsWPZCEvXtQa3Np8IHBsoL77oTmqUKJmJ3VbO6FmaeGZJaoRIGZtuypXWZ+mj6tlZH8YtFl6rTNh09fwx7RDHPDxMyBrq1Q==
+Received: from MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM (2603:10a6:501:31::15)
+ by PR1P264MB3344.FRAP264.PROD.OUTLOOK.COM (2603:10a6:102:1b::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7091.28; Thu, 14 Dec
+ 2023 09:20:06 +0000
+Received: from MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM
+ ([fe80::f788:32b4:1c5e:f264]) by MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM
+ ([fe80::f788:32b4:1c5e:f264%7]) with mapi id 15.20.7091.028; Thu, 14 Dec 2023
+ 09:20:06 +0000
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+To:     Nicholas Miehlbradt <nicholas@linux.ibm.com>,
+        "glider@google.com" <glider@google.com>,
+        "elver@google.com" <elver@google.com>,
+        "dvyukov@google.com" <dvyukov@google.com>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "mpe@ellerman.id.au" <mpe@ellerman.id.au>,
+        "npiggin@gmail.com" <npiggin@gmail.com>
+CC:     "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "kasan-dev@googlegroups.com" <kasan-dev@googlegroups.com>,
+        "iii@linux.ibm.com" <iii@linux.ibm.com>,
+        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 11/13] powerpc: Implement architecture specific KMSAN
+ interface
+Thread-Topic: [PATCH 11/13] powerpc: Implement architecture specific KMSAN
+ interface
+Thread-Index: AQHaLlJRapjZClFrTEO0LVVzss3B4LCogMwA
+Date:   Thu, 14 Dec 2023 09:20:06 +0000
+Message-ID: <f75e5273-6c5f-4b47-ae2c-3cd21a0b5289@csgroup.eu>
+References: <20231214055539.9420-1-nicholas@linux.ibm.com>
+ <20231214055539.9420-12-nicholas@linux.ibm.com>
+In-Reply-To: <20231214055539.9420-12-nicholas@linux.ibm.com>
+Accept-Language: fr-FR, en-US
+Content-Language: fr-FR
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Mozilla Thunderbird
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=csgroup.eu;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: MRZP264MB2988:EE_|PR1P264MB3344:EE_
+x-ms-office365-filtering-correlation-id: 15e6f427-e304-451b-dec2-08dbfc85dc5d
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: RLcd+lcQLsOiDW0R2Of+mKInZiIVMWixg1WKw75tHjdHXx7hDFh+mBVnFksGmibLOLn11Pi0lRKLLn2xF95vURQfZJHOx5hNg5ICfHBh/8CC3gYRjpNiXiQbMIAW0kEZIgXETPN6S2KWN+iZiedO4840uKYMFIy6Ne6ULP5aTij44Om4vZrdYSL+azhjRh0OkX4PYMMykAK2binzk45yntdGkvAbGU3zlye6tuHzySQ0+i5e5OyXiWqNzf1SgMPnM5TnUjGmEoXCYukqgvdHUqXzCRlvu9Mm9uoAU8Asr9RLyfqb/OtH08u1K4mn+dzN7ZU2uMHwwVkl8Y02g0jjDWjcPPb1Lly9PVcHDTD+yQ9TKQZ2JQ6wwZtvVULHotj6q2lPlm3KNHHUDGJFTKz4UARKgpXfnBBZQFWvwtewsbsvnkzFbfn7A0j8GXMeGPTDVudydTVqtctjGd/2tlWNRbVFfJPCpRFTiaPvQBy+KgzXfH1jqTlLB7WeQp0i0VEAU2V2kMh8RExmJT8ERBrSW8VZnlOh5+AP/joF5v5DV/wRrpD48aYZ6faosFvm9BhcW15Dlfg+ndEhwqcCaD7XjCTLqNEOHWqqAMatnEaQdLGNeMCfwZ2nB2GFB5qp+P34CKn6NsM2XcU4y7M4WoirirBMCHGDg73iXQF3x6jNyWGGwl6qy96+l2Wbvngv0Jad
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230031)(39850400004)(376002)(136003)(396003)(366004)(346002)(230922051799003)(451199024)(64100799003)(1800799012)(186009)(8676002)(44832011)(8936002)(316002)(54906003)(66446008)(64756008)(4326008)(66556008)(66476007)(66946007)(76116006)(110136005)(91956017)(36756003)(122000001)(31696002)(86362001)(38100700002)(31686004)(38070700009)(478600001)(71200400001)(83380400001)(6486002)(6512007)(6506007)(41300700001)(5660300002)(2616005)(26005)(66574015)(2906002)(7416002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?Q2RwOWJES21QRVNWZG9ER0JuSXpya3cyUmxlVEZRZldSUWtYYTlJZEtuUm5J?=
+ =?utf-8?B?emRmWkpRcnF3dkdzVUkvMWtXZ3ljaWVmdG5FTk9NWERJRGRQc0lYUVBZUFNP?=
+ =?utf-8?B?bEM3YXhidDVHNFNVcGFoREJEb1JSdUFYcXg1TFY4OFVRbjF2cGVCNEN5MWRw?=
+ =?utf-8?B?R3ZFRldNcldqSGxnSVgrbFkwR2ZDc1hEVHd4SnhITXFaS2o3VDV3cDdBdTRQ?=
+ =?utf-8?B?ZTBaSVc3VVVpMy9OcUtpdy8xNURrYVJ6eitTRjBPWVVUNGhaajE2bnBJWm5Z?=
+ =?utf-8?B?U0RSVTVPMjJmUmdBdEpBOUxjdGU0bGdpbDBCUm1SQVFJRERVdGVuQTZLU3VX?=
+ =?utf-8?B?RUVVeUx4aG16WXA4SUdxYjQvR2dKNFVOL0JCY2tjWUo2WUQ3eVpIUGxuR05J?=
+ =?utf-8?B?TmE4VC94cEs3Q2xhdlM3RkhYZXlQZUNSZCtYdUZma0ZTMFcrai8zOEhkTW1D?=
+ =?utf-8?B?N24vNUhRcVN0MjdBcXRhRVRPWTd2M3Q2Q1NQQjc2YUVPaHpzbElBQU5iang4?=
+ =?utf-8?B?WjVxa3oraXZ6YUJFNUNtRkhVMVNjR29KVDhuNnJZQ0hrUktOUExMaHZxSmZZ?=
+ =?utf-8?B?aTVuUVF6ZGk0bjJYS0JOUzdiZDVpMUtDVmJpbWRsZkwrOGhhdC9maHZuTXRS?=
+ =?utf-8?B?ZnZmUEJ2ZmRLQmNrRmhkalV1clFVeUNHMkM1TXRoeHlaSFJ1bEJoQ0czVWJF?=
+ =?utf-8?B?cTlrWEtPd1E2QVpmdHV0aWhVMTN2TWJaZWdpNmJONDRSQVdLSFM5bTRiRW9w?=
+ =?utf-8?B?WW9wdkttRlhZTHhmbHZKVXZvbjk5ZlhFdHVmZ2Q5cVI0c1pPM1NDc3BjeVM3?=
+ =?utf-8?B?TjhZN2doVXpIVE80QW02M0RUNmk5Y3U0S1hMVTdJREgwenYvb1RaNDI4Q1hB?=
+ =?utf-8?B?dmhzcUtjYXNkRXJGNlRmN1Vpa0NOd1hveW1FN3FsWmVXQUdGS1NnMXV6MnlE?=
+ =?utf-8?B?NmJXM0xVbU5IdHlSeHBTTXhVTmtBNG5lL01xV0xSaE4yMTVvUFlCZFVJTzlk?=
+ =?utf-8?B?cGIyYXlhN0tWaVRKaFg3VXNmMDE2allFQ1hDRkZUKzJNcXpMdlBXelQraHdI?=
+ =?utf-8?B?SUFVaEZTMW5UQUJXK2wrdksrWVZLendaR2swdlRYNGVNMUl3WjVGS0J1dTZx?=
+ =?utf-8?B?RWgvWXpIaGVpV29NblMzLzh4MmxCRTR4cCswU1pKM015RFpiUTMyc2xNbUZW?=
+ =?utf-8?B?aUIyTGJ1eEl6U1ZCVy9CUFd1RE9GTTB4YzE3UU1TS3UzTXVxcGhFa01DRk9R?=
+ =?utf-8?B?UURlL2NKM1RXYmxPNTlONVNicDlvZ0E3S2hwWXl4Zm4wcVJLeHlLUlJxWGhG?=
+ =?utf-8?B?OU5yUWkzcWl4T2FjejIzQ0E2MVRqL2ZVdC9ET0I1S2cvNUlkVUJjRGdUTjB5?=
+ =?utf-8?B?TTJqVVRmYkhibEJSZEc1a1EwUkxFV3J0MHZpdlhWMmVncXpDNjN2N3FrbjRk?=
+ =?utf-8?B?SFA1UDJQQUZJQkxNQ0JWUEUrT0lNTDJPaWlkWElybE8zNzV6d0dBS3JhV2Vr?=
+ =?utf-8?B?SldtbllHYlpBSXkrZS9KeEpxUXNQVDNzaXRXb1pYb2F3TFlrbDJ2blBVUitq?=
+ =?utf-8?B?bjNrMEtsZmFhcHNCT2poYXJOOTlNOVFyUVhGTlY1TXlaQUVkaTRDRExNTTNi?=
+ =?utf-8?B?MUlHQXJpQXFFYVJoa05kVnFQY3JUZXlPc3B2ZUczUmxtdHJQU1BZcEFOdFZx?=
+ =?utf-8?B?NG9rOGtLQmZWK01wYSthVUFtZGNlMXJGY2hPL2VBS3BVVkVrOHBZd2sxZG01?=
+ =?utf-8?B?MEh4RUd5cm5WQkNUcnc4WjRNbGU2MW5IS2xnUTFYVjVWT1FISjFVbnczMy9G?=
+ =?utf-8?B?WWtQaTV6KzJqclN2ZGo0TXZVQjJYUlJINWJhN0xWVUpETDdqODMzVkxOODdW?=
+ =?utf-8?B?bUwxYnEvWTF6djBrUzBhOGNoeU1DcHJiZGFqZDd1akxNS2ZCeURHbFJuUXZK?=
+ =?utf-8?B?UW43VUZmdDBvc3NQS1lXb3pyK3NseUtWaURUQWpjSmF2UTdwZHFyTm8zdXI1?=
+ =?utf-8?B?dHhUVWRJOVFIa1ZBVmZvL3hUOTkyM0hKdFhCUlVzcWM1VnUvTEhSMDB2K0kw?=
+ =?utf-8?B?bjdIczFXQmYxSmhJbGpWcDYwMFdqNVEvSGVoS2IrMjlLWmJPYWNJTVBZcUJI?=
+ =?utf-8?Q?Y10rsH/N4ROU9eeNaps6+diY1?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <ED20B952632B2E4987B5228C12A31EAB@FRAP264.PROD.OUTLOOK.COM>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [100.64.160.123]
-X-ClientProxiedBy: p-i-exch-sc-m02.sberdevices.ru (172.16.192.103) To
- p-i-exch-sc-m01.sberdevices.ru (172.16.192.107)
-X-KSMG-Rule-ID: 10
-X-KSMG-Message-Action: clean
-X-KSMG-AntiSpam-Lua-Profiles: 182105 [Dec 14 2023]
-X-KSMG-AntiSpam-Version: 6.1.0.3
-X-KSMG-AntiSpam-Envelope-From: avkrasnov@salutedevices.com
-X-KSMG-AntiSpam-Rate: 0
-X-KSMG-AntiSpam-Status: not_detected
-X-KSMG-AntiSpam-Method: none
-X-KSMG-AntiSpam-Auth: dkim=none
-X-KSMG-AntiSpam-Info: LuaCore: 7 0.3.7 6d6bf5bd8eea7373134f756a2fd73e9456bb7d1a, {Tracking_from_domain_doesnt_match_to}, d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;smtp.sberdevices.ru:5.0.1,7.1.1;100.64.160.123:7.1.2;salutedevices.com:7.1.1;127.0.0.199:7.1.2, FromAlignment: s, ApMailHostAddress: 100.64.160.123
-X-MS-Exchange-Organization-SCL: -1
-X-KSMG-AntiSpam-Interceptor-Info: scan successful
-X-KSMG-AntiPhishing: Clean
-X-KSMG-LinksScanning: Clean
-X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2023/12/14 08:33:00 #22688916
-X-KSMG-AntiVirus-Status: Clean, skipped
+X-OriginatorOrg: csgroup.eu
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-Network-Message-Id: 15e6f427-e304-451b-dec2-08dbfc85dc5d
+X-MS-Exchange-CrossTenant-originalarrivaltime: 14 Dec 2023 09:20:06.0620
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 9914def7-b676-4fda-8815-5d49fb3b45c8
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: XR0YNE1DvcPoq6I2MRdrBNIwlF2/aoghjxcplejDYD+mUSqARu9WGSBDtweNGApFad+ij9adw+F3cvLy1ooBuNilsi5h61kZ9OSkyhL3Q9U=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PR1P264MB3344
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Both tests are almost same, only differs in two 'if' conditions, so
-implemented in a single function. Tests check, that credit update
-message is sent:
-
-1) During setting SO_RCVLOWAT value of the socket.
-2) When number of 'rx_bytes' become smaller than SO_RCVLOWAT value.
-
-Signed-off-by: Arseniy Krasnov <avkrasnov@salutedevices.com>
-Reviewed-by: Stefano Garzarella <sgarzare@redhat.com>
-Acked-by: Michael S. Tsirkin <mst@redhat.com>
----
- Changelog:
- v1 -> v2:
-  * Update commit message by removing 'This patch adds XXX' manner.
-  * Update commit message by adding details about dependency for this
-    test from kernel internal define VIRTIO_VSOCK_MAX_PKT_BUF_SIZE.
-  * Add comment for this dependency in 'vsock_test.c' where this define
-    is duplicated.
- v2 -> v3:
-  * Replace synchronization based on control TCP socket with vsock
-    data socket - this is needed to allow sender transmit data only
-    when new buffer size of receiver is visible to sender. Otherwise
-    there is race and test fails sometimes.
- v3 -> v4:
-  * Replace 'recv_buf()' to 'recv(MSG_DONTWAIT)' in last read operation
-    in server part. This is needed to ensure that 'poll()' wake up us
-    when number of bytes ready to read is equal to SO_RCVLOWAT value.
- v4 -> v5:
-  * Use 'recv_buf(MSG_DONTWAIT)' instead of 'recv(MSG_DONTWAIT)'.
- v5 -> v6:
-  * Add second test which checks, that credit update is sent during
-    reading data from socket.
-  * Update commit message.
-
- tools/testing/vsock/vsock_test.c | 175 +++++++++++++++++++++++++++++++
- 1 file changed, 175 insertions(+)
-
-diff --git a/tools/testing/vsock/vsock_test.c b/tools/testing/vsock/vsock_test.c
-index 01fa816868bc..66246d81d654 100644
---- a/tools/testing/vsock/vsock_test.c
-+++ b/tools/testing/vsock/vsock_test.c
-@@ -1232,6 +1232,171 @@ static void test_double_bind_connect_client(const struct test_opts *opts)
- 	}
- }
- 
-+#define RCVLOWAT_CREDIT_UPD_BUF_SIZE	(1024 * 128)
-+/* This define is the same as in 'include/linux/virtio_vsock.h':
-+ * it is used to decide when to send credit update message during
-+ * reading from rx queue of a socket. Value and its usage in
-+ * kernel is important for this test.
-+ */
-+#define VIRTIO_VSOCK_MAX_PKT_BUF_SIZE	(1024 * 64)
-+
-+static void test_stream_rcvlowat_def_cred_upd_client(const struct test_opts *opts)
-+{
-+	size_t buf_size;
-+	void *buf;
-+	int fd;
-+
-+	fd = vsock_stream_connect(opts->peer_cid, 1234);
-+	if (fd < 0) {
-+		perror("connect");
-+		exit(EXIT_FAILURE);
-+	}
-+
-+	/* Send 1 byte more than peer's buffer size. */
-+	buf_size = RCVLOWAT_CREDIT_UPD_BUF_SIZE + 1;
-+
-+	buf = malloc(buf_size);
-+	if (!buf) {
-+		perror("malloc");
-+		exit(EXIT_FAILURE);
-+	}
-+
-+	/* Wait until peer sets needed buffer size. */
-+	recv_byte(fd, 1, 0);
-+
-+	if (send(fd, buf, buf_size, 0) != buf_size) {
-+		perror("send failed");
-+		exit(EXIT_FAILURE);
-+	}
-+
-+	free(buf);
-+	close(fd);
-+}
-+
-+static void test_stream_credit_update_test(const struct test_opts *opts,
-+					   bool low_rx_bytes_test)
-+{
-+	size_t recv_buf_size;
-+	struct pollfd fds;
-+	size_t buf_size;
-+	void *buf;
-+	int fd;
-+
-+	fd = vsock_stream_accept(VMADDR_CID_ANY, 1234, NULL);
-+	if (fd < 0) {
-+		perror("accept");
-+		exit(EXIT_FAILURE);
-+	}
-+
-+	buf_size = RCVLOWAT_CREDIT_UPD_BUF_SIZE;
-+
-+	if (setsockopt(fd, AF_VSOCK, SO_VM_SOCKETS_BUFFER_SIZE,
-+		       &buf_size, sizeof(buf_size))) {
-+		perror("setsockopt(SO_VM_SOCKETS_BUFFER_SIZE)");
-+		exit(EXIT_FAILURE);
-+	}
-+
-+	if (low_rx_bytes_test) {
-+		/* Set new SO_RCVLOWAT here. This enables sending credit
-+		 * update when number of bytes if our rx queue become <
-+		 * SO_RCVLOWAT value.
-+		 */
-+		recv_buf_size = 1 + VIRTIO_VSOCK_MAX_PKT_BUF_SIZE;
-+
-+		if (setsockopt(fd, SOL_SOCKET, SO_RCVLOWAT,
-+			       &recv_buf_size, sizeof(recv_buf_size))) {
-+			perror("setsockopt(SO_RCVLOWAT)");
-+			exit(EXIT_FAILURE);
-+		}
-+	}
-+
-+	/* Send one dummy byte here, because 'setsockopt()' above also
-+	 * sends special packet which tells sender to update our buffer
-+	 * size. This 'send_byte()' will serialize such packet with data
-+	 * reads in a loop below. Sender starts transmission only when
-+	 * it receives this single byte.
-+	 */
-+	send_byte(fd, 1, 0);
-+
-+	buf = malloc(buf_size);
-+	if (!buf) {
-+		perror("malloc");
-+		exit(EXIT_FAILURE);
-+	}
-+
-+	/* Wait until there will be 128KB of data in rx queue. */
-+	while (1) {
-+		ssize_t res;
-+
-+		res = recv(fd, buf, buf_size, MSG_PEEK);
-+		if (res == buf_size)
-+			break;
-+
-+		if (res <= 0) {
-+			fprintf(stderr, "unexpected 'recv()' return: %zi\n", res);
-+			exit(EXIT_FAILURE);
-+		}
-+	}
-+
-+	/* There is 128KB of data in the socket's rx queue, dequeue first
-+	 * 64KB, credit update is sent if 'low_rx_bytes_test' == true.
-+	 * Otherwise, credit update is sent in 'if (!low_rx_bytes_test)'.
-+	 */
-+	recv_buf_size = VIRTIO_VSOCK_MAX_PKT_BUF_SIZE;
-+	recv_buf(fd, buf, recv_buf_size, 0, recv_buf_size);
-+
-+	if (!low_rx_bytes_test) {
-+		recv_buf_size++;
-+
-+		/* Updating SO_RCVLOWAT will send credit update. */
-+		if (setsockopt(fd, SOL_SOCKET, SO_RCVLOWAT,
-+			       &recv_buf_size, sizeof(recv_buf_size))) {
-+			perror("setsockopt(SO_RCVLOWAT)");
-+			exit(EXIT_FAILURE);
-+		}
-+	}
-+
-+	fds.fd = fd;
-+	fds.events = POLLIN | POLLRDNORM | POLLERR |
-+		     POLLRDHUP | POLLHUP;
-+
-+	/* This 'poll()' will return once we receive last byte
-+	 * sent by client.
-+	 */
-+	if (poll(&fds, 1, -1) < 0) {
-+		perror("poll");
-+		exit(EXIT_FAILURE);
-+	}
-+
-+	if (fds.revents & POLLERR) {
-+		fprintf(stderr, "'poll()' error\n");
-+		exit(EXIT_FAILURE);
-+	}
-+
-+	if (fds.revents & (POLLIN | POLLRDNORM)) {
-+		recv_buf(fd, buf, recv_buf_size, MSG_DONTWAIT, recv_buf_size);
-+	} else {
-+		/* These flags must be set, as there is at
-+		 * least 64KB of data ready to read.
-+		 */
-+		fprintf(stderr, "POLLIN | POLLRDNORM expected\n");
-+		exit(EXIT_FAILURE);
-+	}
-+
-+	free(buf);
-+	close(fd);
-+}
-+
-+static void test_stream_cred_upd_on_low_rx_bytes(const struct test_opts *opts)
-+{
-+	test_stream_credit_update_test(opts, true);
-+}
-+
-+static void test_stream_cred_upd_on_set_rcvlowat(const struct test_opts *opts)
-+{
-+	test_stream_credit_update_test(opts, false);
-+}
-+
- static struct test_case test_cases[] = {
- 	{
- 		.name = "SOCK_STREAM connection reset",
-@@ -1342,6 +1507,16 @@ static struct test_case test_cases[] = {
- 		.run_client = test_double_bind_connect_client,
- 		.run_server = test_double_bind_connect_server,
- 	},
-+	{
-+		.name = "SOCK_STREAM virtio credit update + SO_RCVLOWAT",
-+		.run_client = test_stream_rcvlowat_def_cred_upd_client,
-+		.run_server = test_stream_cred_upd_on_set_rcvlowat,
-+	},
-+	{
-+		.name = "SOCK_STREAM virtio credit update + low rx_bytes",
-+		.run_client = test_stream_rcvlowat_def_cred_upd_client,
-+		.run_server = test_stream_cred_upd_on_low_rx_bytes,
-+	},
- 	{},
- };
- 
--- 
-2.25.1
-
+DQoNCkxlIDE0LzEyLzIwMjMgw6AgMDY6NTUsIE5pY2hvbGFzIE1pZWhsYnJhZHQgYSDDqWNyaXTC
+oDoNCj4gYXJjaF9rbXNhbl9nZXRfbWV0YV9vcl9udWxsIGZpbmRzIHRoZSBtZXRhZGF0YSBhZGRy
+ZXNzZXMgZm9yIGFkZHJlc3Nlcw0KPiBpbiB0aGUgaW9yZW1hcCByZWdpb24gd2hpY2ggaXMgbWFw
+cGVkIHNlcGFyYXRlbHkgb24gcG93ZXJwYy4NCj4gDQo+IGttc2FuX3Zpcl9hZGRyX3ZhbGlkIGlz
+IHRoZSBzYW1lIGFzIHZpcnRfYWRkcl92YWxpZCBleGNlcHQgZXhjbHVkZXMgdGhlDQo+IGNoZWNr
+IHRoYXQgYWRkciBpcyBsZXNzIHRoYW4gaGlnaF9tZW1vcnkgc2luY2UgdGhpcyBmdW5jdGlvbiBj
+YW4gYmUNCj4gY2FsbGVkIG9uIGFkZHJlc3NlcyBoaWdoZXIgdGhhbiB0aGlzLg0KPiANCj4gU2ln
+bmVkLW9mZi1ieTogTmljaG9sYXMgTWllaGxicmFkdCA8bmljaG9sYXNAbGludXguaWJtLmNvbT4N
+Cj4gLS0tDQo+ICAgYXJjaC9wb3dlcnBjL2luY2x1ZGUvYXNtL2ttc2FuLmggfCA0NCArKysrKysr
+KysrKysrKysrKysrKysrKysrKysrKysrKw0KPiAgIDEgZmlsZSBjaGFuZ2VkLCA0NCBpbnNlcnRp
+b25zKCspDQo+ICAgY3JlYXRlIG1vZGUgMTAwNjQ0IGFyY2gvcG93ZXJwYy9pbmNsdWRlL2FzbS9r
+bXNhbi5oDQo+IA0KPiBkaWZmIC0tZ2l0IGEvYXJjaC9wb3dlcnBjL2luY2x1ZGUvYXNtL2ttc2Fu
+LmggYi9hcmNoL3Bvd2VycGMvaW5jbHVkZS9hc20va21zYW4uaA0KPiBuZXcgZmlsZSBtb2RlIDEw
+MDY0NA0KPiBpbmRleCAwMDAwMDAwMDAwMDAuLmJjODRmNmZmMmVlOQ0KPiAtLS0gL2Rldi9udWxs
+DQo+ICsrKyBiL2FyY2gvcG93ZXJwYy9pbmNsdWRlL2FzbS9rbXNhbi5oDQo+IEBAIC0wLDAgKzEs
+NDQgQEANCj4gKy8qIFNQRFgtTGljZW5zZS1JZGVudGlmaWVyOiBHUEwtMi4wICovDQo+ICsvKg0K
+PiArICogcG93ZXJwYyBLTVNBTiBzdXBwb3J0Lg0KPiArICoNCj4gKyAqLw0KPiArDQo+ICsjaWZu
+ZGVmIF9BU01fUE9XRVJQQ19LTVNBTl9IDQo+ICsjZGVmaW5lIF9BU01fUE9XRVJQQ19LTVNBTl9I
+DQo+ICsNCj4gKyNpZm5kZWYgX19BU1NFTUJMWV9fDQo+ICsjaWZuZGVmIE1PRFVMRQ0KPiArDQo+
+ICsjaW5jbHVkZSA8bGludXgvbW16b25lLmg+DQo+ICsjaW5jbHVkZSA8YXNtL3BhZ2UuaD4NCj4g
+KyNpbmNsdWRlIDxhc20vYm9vazNzLzY0L3BndGFibGUuaD4NCj4gKw0KPiArLyoNCj4gKyAqIEZ1
+bmN0aW9ucyBiZWxvdyBhcmUgZGVjbGFyZWQgaW4gdGhlIGhlYWRlciB0byBtYWtlIHN1cmUgdGhl
+eSBhcmUgaW5saW5lZC4NCj4gKyAqIFRoZXkgYWxsIGFyZSBjYWxsZWQgZnJvbSBrbXNhbl9nZXRf
+bWV0YWRhdGEoKSBmb3IgZXZlcnkgbWVtb3J5IGFjY2VzcyBpbg0KPiArICogdGhlIGtlcm5lbCwg
+c28gc3BlZWQgaXMgaW1wb3J0YW50IGhlcmUuDQo+ICsgKi8NCj4gKw0KPiArLyoNCj4gKyAqIE5v
+IHBvd2VycGMgc3BlY2lmaWMgbWV0YWRhdGEgbG9jYXRpb25zDQo+ICsgKi8NCj4gK3N0YXRpYyBp
+bmxpbmUgdm9pZCAqYXJjaF9rbXNhbl9nZXRfbWV0YV9vcl9udWxsKHZvaWQgKmFkZHIsIGJvb2wg
+aXNfb3JpZ2luKQ0KPiArew0KPiArCXVuc2lnbmVkIGxvbmcgYWRkcjY0ID0gKHVuc2lnbmVkIGxv
+bmcpYWRkciwgb2ZmOw0KDQpNaXNzaW5nIGJsYW5rIGxpbmUuDQoNCj4gKwlpZiAoS0VSTl9JT19T
+VEFSVCA8PSBhZGRyNjQgJiYgYWRkcjY0IDwgS0VSTl9JT19FTkQpIHsNCg0Kb2ZmIGlzIG9ubHkg
+dXNlZCBpbiB0aGF0IGJsb2NrIHNvIGl0IHNob3VsZCBiZSBkZWNsYXJlZCBoZXJlLCBjYW4gYmUg
+DQpkb25lIGFzIGEgc2luZ2xlIGxpbmUgKGZvbGxvd2VkIGJ5IGEgYmxhbmsgbGluZSB0b28pOg0K
+DQoJdW5zaWduZWQgbG9uZyBvZmYgPSBhZGRyNjQgLSBLRVJOX0lPX1NUQVJUOw0KDQo+ICsJCW9m
+ZiA9IGFkZHI2NCAtIEtFUk5fSU9fU1RBUlQ7DQo+ICsJCXJldHVybiAodm9pZCAqKW9mZiArIChp
+c19vcmlnaW4gPyBLRVJOX0lPX09SSUdJTl9TVEFSVCA6IEtFUk5fSU9fU0hBRE9XX1NUQVJUKTsN
+Cj4gKwl9IGVsc2Ugew0KPiArCQlyZXR1cm4gMDsNCj4gKwl9DQo+ICt9DQo+ICsNCj4gK3N0YXRp
+YyBpbmxpbmUgYm9vbCBrbXNhbl92aXJ0X2FkZHJfdmFsaWQodm9pZCAqYWRkcikNCj4gK3sNCj4g
+KwlyZXR1cm4gKHVuc2lnbmVkIGxvbmcpYWRkciA+PSBQQUdFX09GRlNFVCAmJiBwZm5fdmFsaWQo
+dmlydF90b19wZm4oYWRkcikpOw0KPiArfQ0KPiArDQo+ICsjZW5kaWYgLyogIU1PRFVMRSAqLw0K
+PiArI2VuZGlmIC8qICFfX0FTU0VNQkxZX18gKi8NCj4gKyNlbmRpZiAvKiBfQVNNX1BPV0VSUENf
+S01TQU5fSCAqLw0K
