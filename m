@@ -2,286 +2,279 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3912D8124AA
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 02:44:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E8A278124AD
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 02:46:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234166AbjLNBo3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 20:44:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53846 "EHLO
+        id S234181AbjLNBqV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 20:46:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41604 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229525AbjLNBo2 (ORCPT
+        with ESMTP id S229739AbjLNBqT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 20:44:28 -0500
-Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 3E8F2D5;
-        Wed, 13 Dec 2023 17:44:32 -0800 (PST)
-Received: from loongson.cn (unknown [111.207.111.194])
-        by gateway (Coremail) with SMTP id _____8DxBOv+XXplTOIAAA--.1118S3;
-        Thu, 14 Dec 2023 09:44:30 +0800 (CST)
-Received: from [10.180.13.176] (unknown [111.207.111.194])
-        by localhost.localdomain (Coremail) with SMTP id AQAAf8CxnuH7XXpl1msDAA--.20304S3;
-        Thu, 14 Dec 2023 09:44:27 +0800 (CST)
-Subject: Re: [PATCH v3] PM: hibernate: use acquire/release ordering when
- compress/decompress image
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     Len Brown <len.brown@intel.com>, Pavel Machek <pavel@ucw.cz>,
-        Bojan Smojver <bojan@rexursive.com>, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, loongson-kernel@lists.loongnix.cn,
-        stable@vger.kernel.org, Weihao Li <liweihao@loongson.cn>
-References: <20231213011103.1491414-1-zhanghongchen@loongson.cn>
- <CAJZ5v0iTfpo9EH3bCAwJ+E8W67uJyy_9wFBOucJVWmmGV_-XpA@mail.gmail.com>
-From:   Hongchen Zhang <zhanghongchen@loongson.cn>
-Message-ID: <d85e4c86-6dd0-4d5d-730b-91217d38ecaa@loongson.cn>
-Date:   Thu, 14 Dec 2023 09:44:27 +0800
-User-Agent: Mozilla/5.0 (X11; Linux loongarch64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        Wed, 13 Dec 2023 20:46:19 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4055BD5
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 17:46:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1702518384; x=1734054384;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=/ql9kfdsCUS1L4Z9a+UTnQBjDnU0ZhUlVbSXlfBpkOs=;
+  b=ZmbgVL/WyEIo7SWFrX6fVQ9HWW63oUJrejm3sHRyXPx7OKRpIrvkNETH
+   daG522qwAvddyyJfiY9YDvKqlOgiRHjfx6Y3rauj6lAfNX6lKhJ+zMvkp
+   20C3vf8LcdmwC2PcG2/CMMkEGu9wcV/aAjYVWUISifzUXapUEw0zDSeWl
+   Njh20o6ppLuyR4OxQqYtM+Mj3TZlRozwFMisQJyg3qU9nQhdwVTZ2boII
+   M9wjzPqGWsw6k+bAV2ahGbA1zy9oQqHnmrHpZmmUWlcivB/jQ0abzgR5m
+   bMvi6ehjGDXeo5kXFo9jyhk7tv/qwJLDYj4/y4z/taM2IZ6ieOpES4SN6
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10923"; a="393925404"
+X-IronPort-AV: E=Sophos;i="6.04,274,1695711600"; 
+   d="scan'208";a="393925404"
+Received: from orviesa001.jf.intel.com ([10.64.159.141])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Dec 2023 17:46:23 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.04,274,1695711600"; 
+   d="scan'208";a="22198620"
+Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
+  by orviesa001.jf.intel.com with ESMTP; 13 Dec 2023 17:46:22 -0800
+Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1rDanr-000LP9-1X;
+        Thu, 14 Dec 2023 01:46:19 +0000
+Date:   Thu, 14 Dec 2023 09:46:03 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Sam Ravnborg <sam@ravnborg.org>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Inki Dae <inki.dae@samsung.com>
+Subject: drivers/gpu/drm/exynos/exynos_drm_fimd.c:470:41: sparse: sparse:
+ incorrect type in argument 2 (different address spaces)
+Message-ID: <202312140930.Me9yWf8F-lkp@intel.com>
 MIME-Version: 1.0
-In-Reply-To: <CAJZ5v0iTfpo9EH3bCAwJ+E8W67uJyy_9wFBOucJVWmmGV_-XpA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: AQAAf8CxnuH7XXpl1msDAA--.20304S3
-X-CM-SenderInfo: x2kd0w5krqwupkhqwqxorr0wxvrqhubq/1tbiAQAEB2V3wy0KXABNsl
-X-Coremail-Antispam: 1Uk129KBj93XoW3Ar15Ar47KrWrtFyUCF4ftFc_yoWxuFW3pF
-        Z5Xan0kF4UJF45AwsFva10vw15Aw1FyFZrGrs3Ja4fu3sIgrs5ta40gF9Yvr1YyFyxKa40
-        9a1Ut3sIgryqvFXCm3ZEXasCq-sJn29KB7ZKAUJUUUU7529EdanIXcx71UUUUU7KY7ZEXa
-        sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
-        0xBIdaVrnRJUUUBjb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
-        IYs7xG6rWj6s0DM7CIcVAFz4kK6r1Y6r17M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
-        e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_JFI_Gr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
-        0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_
-        Gr0_Gr1UM2kKe7AKxVWUXVWUAwAS0I0E0xvYzxvE52x082IY62kv0487Mc804VCY07AIYI
-        kI8VC2zVCFFI0UMc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUAVWU
-        twAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcVAKI48JMx
-        k0xIA0c2IEe2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_
-        Gr1l4IxYO2xFxVAFwI0_Jrv_JF1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67
-        AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8I
-        cVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI
-        8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v2
-        6r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x07j5xhLUUUUU=
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rafael,
-   Thanks for your review.
-On 2023/12/13 pm 9:52, Rafael J. Wysocki wrote:
-> On Wed, Dec 13, 2023 at 2:11 AM Hongchen Zhang
-> <zhanghongchen@loongson.cn> wrote:
->>
->> When we test S4(suspend to disk) on LoongArch 3A6000 platform, the
->> test case sometimes fails. The dmesg log shows the following error:
->>          Invalid LZO compressed length
->> After we dig into the code, we find out that:
->> When compress/decompress the image, the synchronization operation
->> between the control thread and the compress/decompress/crc thread
->> uses relaxed ordering interface, which is unreliable, and the
->> following situation may occur:
->> CPU 0                                   CPU 1
->> save_image_lzo                          lzo_compress_threadfn
->>                                            atomic_set(&d->stop, 1);
->>    atomic_read(&data[thr].stop)
->>    data[thr].cmp = data[thr].cmp_len;
->>                                            WRITE data[thr].cmp_len
->> Then CPU0 get a old cmp_len and write to disk. When cpu resume from S4,
->> wrong cmp_len is loaded.
->>
->> To maintain data consistency between two threads, we should use the
->> acquire/release ordering interface. So we change atomic_read/atomic_set
->> to atomic_read_acquire/atomic_set_release.
->>
->> Fixes: 081a9d043c98 ("PM / Hibernate: Improve performance of LZO/plain hibernation, checksum image")
->> Cc: stable@vger.kernel.org
->> Co-developed-by: Weihao Li <liweihao@loongson.cn>
-> 
-> I gather that the tag above is the only difference between this
-> version of the patch and the previous one.
-> 
-Yes.
-> It is always better to list the changes made between consecutive
-> versions of a patch.
-Sorry for not updating the changelog, I will remember this next time.
-> 
->> Signed-off-by: Weihao Li <liweihao@loongson.cn>
->> Signed-off-by: Hongchen Zhang <zhanghongchen@loongson.cn>
->> ---
->>   kernel/power/swap.c | 38 +++++++++++++++++++-------------------
->>   1 file changed, 19 insertions(+), 19 deletions(-)
->>
->> diff --git a/kernel/power/swap.c b/kernel/power/swap.c
->> index a2cb0babb5ec..d44f5937f1e5 100644
->> --- a/kernel/power/swap.c
->> +++ b/kernel/power/swap.c
->> @@ -606,11 +606,11 @@ static int crc32_threadfn(void *data)
->>          unsigned i;
->>
->>          while (1) {
->> -               wait_event(d->go, atomic_read(&d->ready) ||
->> +               wait_event(d->go, atomic_read_acquire(&d->ready) ||
->>                                    kthread_should_stop());
->>                  if (kthread_should_stop()) {
->>                          d->thr = NULL;
->> -                       atomic_set(&d->stop, 1);
->> +                       atomic_set_release(&d->stop, 1);
->>                          wake_up(&d->done);
->>                          break;
->>                  }
->> @@ -619,7 +619,7 @@ static int crc32_threadfn(void *data)
->>                  for (i = 0; i < d->run_threads; i++)
->>                          *d->crc32 = crc32_le(*d->crc32,
->>                                               d->unc[i], *d->unc_len[i]);
->> -               atomic_set(&d->stop, 1);
->> +               atomic_set_release(&d->stop, 1);
->>                  wake_up(&d->done);
->>          }
->>          return 0;
->> @@ -649,12 +649,12 @@ static int lzo_compress_threadfn(void *data)
->>          struct cmp_data *d = data;
->>
->>          while (1) {
->> -               wait_event(d->go, atomic_read(&d->ready) ||
->> +               wait_event(d->go, atomic_read_acquire(&d->ready) ||
->>                                    kthread_should_stop());
->>                  if (kthread_should_stop()) {
->>                          d->thr = NULL;
->>                          d->ret = -1;
->> -                       atomic_set(&d->stop, 1);
->> +                       atomic_set_release(&d->stop, 1);
->>                          wake_up(&d->done);
->>                          break;
->>                  }
->> @@ -663,7 +663,7 @@ static int lzo_compress_threadfn(void *data)
->>                  d->ret = lzo1x_1_compress(d->unc, d->unc_len,
->>                                            d->cmp + LZO_HEADER, &d->cmp_len,
->>                                            d->wrk);
->> -               atomic_set(&d->stop, 1);
->> +               atomic_set_release(&d->stop, 1);
->>                  wake_up(&d->done);
->>          }
->>          return 0;
->> @@ -798,7 +798,7 @@ static int save_image_lzo(struct swap_map_handle *handle,
->>
->>                          data[thr].unc_len = off;
->>
->> -                       atomic_set(&data[thr].ready, 1);
->> +                       atomic_set_release(&data[thr].ready, 1);
->>                          wake_up(&data[thr].go);
->>                  }
->>
->> @@ -806,12 +806,12 @@ static int save_image_lzo(struct swap_map_handle *handle,
->>                          break;
->>
->>                  crc->run_threads = thr;
->> -               atomic_set(&crc->ready, 1);
->> +               atomic_set_release(&crc->ready, 1);
->>                  wake_up(&crc->go);
->>
->>                  for (run_threads = thr, thr = 0; thr < run_threads; thr++) {
->>                          wait_event(data[thr].done,
->> -                                  atomic_read(&data[thr].stop));
->> +                               atomic_read_acquire(&data[thr].stop));
->>                          atomic_set(&data[thr].stop, 0);
->>
->>                          ret = data[thr].ret;
->> @@ -850,7 +850,7 @@ static int save_image_lzo(struct swap_map_handle *handle,
->>                          }
->>                  }
->>
->> -               wait_event(crc->done, atomic_read(&crc->stop));
->> +               wait_event(crc->done, atomic_read_acquire(&crc->stop));
->>                  atomic_set(&crc->stop, 0);
->>          }
->>
->> @@ -1132,12 +1132,12 @@ static int lzo_decompress_threadfn(void *data)
->>          struct dec_data *d = data;
->>
->>          while (1) {
->> -               wait_event(d->go, atomic_read(&d->ready) ||
->> +               wait_event(d->go, atomic_read_acquire(&d->ready) ||
->>                                    kthread_should_stop());
->>                  if (kthread_should_stop()) {
->>                          d->thr = NULL;
->>                          d->ret = -1;
->> -                       atomic_set(&d->stop, 1);
->> +                       atomic_set_release(&d->stop, 1);
->>                          wake_up(&d->done);
->>                          break;
->>                  }
->> @@ -1150,7 +1150,7 @@ static int lzo_decompress_threadfn(void *data)
->>                          flush_icache_range((unsigned long)d->unc,
->>                                             (unsigned long)d->unc + d->unc_len);
->>
->> -               atomic_set(&d->stop, 1);
->> +               atomic_set_release(&d->stop, 1);
->>                  wake_up(&d->done);
->>          }
->>          return 0;
->> @@ -1335,7 +1335,7 @@ static int load_image_lzo(struct swap_map_handle *handle,
->>                  }
->>
->>                  if (crc->run_threads) {
->> -                       wait_event(crc->done, atomic_read(&crc->stop));
->> +                       wait_event(crc->done, atomic_read_acquire(&crc->stop));
->>                          atomic_set(&crc->stop, 0);
->>                          crc->run_threads = 0;
->>                  }
->> @@ -1371,7 +1371,7 @@ static int load_image_lzo(struct swap_map_handle *handle,
->>                                          pg = 0;
->>                          }
->>
->> -                       atomic_set(&data[thr].ready, 1);
->> +                       atomic_set_release(&data[thr].ready, 1);
->>                          wake_up(&data[thr].go);
->>                  }
->>
->> @@ -1390,7 +1390,7 @@ static int load_image_lzo(struct swap_map_handle *handle,
->>
->>                  for (run_threads = thr, thr = 0; thr < run_threads; thr++) {
->>                          wait_event(data[thr].done,
->> -                                  atomic_read(&data[thr].stop));
->> +                               atomic_read_acquire(&data[thr].stop));
->>                          atomic_set(&data[thr].stop, 0);
->>
->>                          ret = data[thr].ret;
->> @@ -1421,7 +1421,7 @@ static int load_image_lzo(struct swap_map_handle *handle,
->>                                  ret = snapshot_write_next(snapshot);
->>                                  if (ret <= 0) {
->>                                          crc->run_threads = thr + 1;
->> -                                       atomic_set(&crc->ready, 1);
->> +                                       atomic_set_release(&crc->ready, 1);
->>                                          wake_up(&crc->go);
->>                                          goto out_finish;
->>                                  }
->> @@ -1429,13 +1429,13 @@ static int load_image_lzo(struct swap_map_handle *handle,
->>                  }
->>
->>                  crc->run_threads = thr;
->> -               atomic_set(&crc->ready, 1);
->> +               atomic_set_release(&crc->ready, 1);
->>                  wake_up(&crc->go);
->>          }
->>
->>   out_finish:
->>          if (crc->run_threads) {
->> -               wait_event(crc->done, atomic_read(&crc->stop));
->> +               wait_event(crc->done, atomic_read_acquire(&crc->stop));
->>                  atomic_set(&crc->stop, 0);
->>          }
->>          stop = ktime_get();
->> --
-> 
-> Applied as 6.8 material with some edits in the subject and changelog.
-> 
-> Thanks!
-> 
+Hi Sam,
 
+First bad commit (maybe != root cause):
+
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   5bd7ef53ffe5ca580e93e74eb8c81ed191ddc4bd
+commit: 156bdac99061b4013c8e47799c6e574f7f84e9f4 drm/exynos: trigger build of all modules
+date:   4 years, 6 months ago
+config: mips-randconfig-r122-20231108 (https://download.01.org/0day-ci/archive/20231214/202312140930.Me9yWf8F-lkp@intel.com/config)
+compiler: mips-linux-gcc (GCC) 13.2.0
+reproduce: (https://download.01.org/0day-ci/archive/20231214/202312140930.Me9yWf8F-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202312140930.Me9yWf8F-lkp@intel.com/
+
+sparse warnings: (new ones prefixed by >>)
+   drivers/gpu/drm/exynos/exynos_drm_fimd.c:458:39: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected void *timing_base @@     got void [noderef] __iomem * @@
+   drivers/gpu/drm/exynos/exynos_drm_fimd.c:458:39: sparse:     expected void *timing_base
+   drivers/gpu/drm/exynos/exynos_drm_fimd.c:458:39: sparse:     got void [noderef] __iomem *
+>> drivers/gpu/drm/exynos/exynos_drm_fimd.c:470:41: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void volatile [noderef] __iomem *mem @@     got void * @@
+   drivers/gpu/drm/exynos/exynos_drm_fimd.c:470:41: sparse:     expected void volatile [noderef] __iomem *mem
+   drivers/gpu/drm/exynos/exynos_drm_fimd.c:470:41: sparse:     got void *
+   drivers/gpu/drm/exynos/exynos_drm_fimd.c:473:39: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void volatile [noderef] __iomem *mem @@     got void * @@
+   drivers/gpu/drm/exynos/exynos_drm_fimd.c:473:39: sparse:     expected void volatile [noderef] __iomem *mem
+   drivers/gpu/drm/exynos/exynos_drm_fimd.c:473:39: sparse:     got void *
+   drivers/gpu/drm/exynos/exynos_drm_fimd.c:519:53: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void volatile [noderef] __iomem *mem @@     got void * @@
+   drivers/gpu/drm/exynos/exynos_drm_fimd.c:519:53: sparse:     expected void volatile [noderef] __iomem *mem
+   drivers/gpu/drm/exynos/exynos_drm_fimd.c:519:53: sparse:     got void *
+   drivers/gpu/drm/exynos/exynos_drm_fimd.c:945:39: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected void *timing_base @@     got void [noderef] __iomem * @@
+   drivers/gpu/drm/exynos/exynos_drm_fimd.c:945:39: sparse:     expected void *timing_base
+   drivers/gpu/drm/exynos/exynos_drm_fimd.c:945:39: sparse:     got void [noderef] __iomem *
+>> drivers/gpu/drm/exynos/exynos_drm_fimd.c:958:33: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __iomem *mem @@     got void * @@
+   drivers/gpu/drm/exynos/exynos_drm_fimd.c:958:33: sparse:     expected void const volatile [noderef] __iomem *mem
+   drivers/gpu/drm/exynos/exynos_drm_fimd.c:958:33: sparse:     got void *
+   drivers/gpu/drm/exynos/exynos_drm_fimd.c:960:33: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void volatile [noderef] __iomem *mem @@     got void * @@
+   drivers/gpu/drm/exynos/exynos_drm_fimd.c:960:33: sparse:     expected void volatile [noderef] __iomem *mem
+   drivers/gpu/drm/exynos/exynos_drm_fimd.c:960:33: sparse:     got void *
+   drivers/gpu/drm/exynos/exynos_drm_fimd.c: note: in included file (through arch/mips/include/asm/mmiowb.h, include/linux/spinlock.h, include/linux/rwsem.h, ...):
+   arch/mips/include/asm/io.h:464:1: sparse: sparse: cast to restricted __le32
+   arch/mips/include/asm/io.h:464:1: sparse: sparse: cast to restricted __le32
+   arch/mips/include/asm/io.h:464:1: sparse: sparse: cast to restricted __le32
+   arch/mips/include/asm/io.h:464:1: sparse: sparse: cast to restricted __le32
+   arch/mips/include/asm/io.h:464:1: sparse: sparse: cast to restricted __le32
+   arch/mips/include/asm/io.h:464:1: sparse: sparse: cast to restricted __le32
+   arch/mips/include/asm/io.h:464:1: sparse: sparse: cast to restricted __le32
+   arch/mips/include/asm/io.h:464:1: sparse: sparse: cast to restricted __le32
+   arch/mips/include/asm/io.h:464:1: sparse: sparse: cast to restricted __le32
+   arch/mips/include/asm/io.h:464:1: sparse: sparse: cast to restricted __le32
+   arch/mips/include/asm/io.h:464:1: sparse: sparse: cast to restricted __le32
+   arch/mips/include/asm/io.h:464:1: sparse: sparse: cast to restricted __le32
+   arch/mips/include/asm/io.h:464:1: sparse: sparse: cast to restricted __le32
+   arch/mips/include/asm/io.h:464:1: sparse: sparse: cast to restricted __le32
+   arch/mips/include/asm/io.h:464:1: sparse: sparse: cast to restricted __le32
+   arch/mips/include/asm/io.h:464:1: sparse: sparse: cast to restricted __le32
+   arch/mips/include/asm/io.h:464:1: sparse: sparse: cast to restricted __le32
+   arch/mips/include/asm/io.h:464:1: sparse: sparse: cast to restricted __le32
+   arch/mips/include/asm/io.h:464:1: sparse: sparse: cast to restricted __le32
+   arch/mips/include/asm/io.h:464:1: sparse: sparse: cast to restricted __le32
+   arch/mips/include/asm/io.h:464:1: sparse: sparse: cast to restricted __le32
+   arch/mips/include/asm/io.h:464:1: sparse: sparse: cast to restricted __le32
+   arch/mips/include/asm/io.h:464:1: sparse: sparse: cast to restricted __le32
+   arch/mips/include/asm/io.h:464:1: sparse: sparse: cast to restricted __le32
+   arch/mips/include/asm/io.h:464:1: sparse: sparse: cast to restricted __le32
+   arch/mips/include/asm/io.h:464:1: sparse: sparse: cast to restricted __le32
+   arch/mips/include/asm/io.h:464:1: sparse: sparse: cast to restricted __le32
+   arch/mips/include/asm/io.h:464:1: sparse: sparse: cast to restricted __le32
+   arch/mips/include/asm/io.h:464:1: sparse: sparse: cast to restricted __le32
+   arch/mips/include/asm/io.h:464:1: sparse: sparse: cast to restricted __le32
+   arch/mips/include/asm/io.h:464:1: sparse: sparse: cast to restricted __le32
+   arch/mips/include/asm/io.h:464:1: sparse: sparse: cast to restricted __le32
+   arch/mips/include/asm/io.h:464:1: sparse: sparse: cast to restricted __le32
+   arch/mips/include/asm/io.h:464:1: sparse: sparse: cast to restricted __le32
+   arch/mips/include/asm/io.h:464:1: sparse: sparse: cast to restricted __le32
+   arch/mips/include/asm/io.h:464:1: sparse: sparse: cast to restricted __le32
+   arch/mips/include/asm/io.h:464:1: sparse: sparse: cast to restricted __le32
+   arch/mips/include/asm/io.h:464:1: sparse: sparse: cast to restricted __le32
+   arch/mips/include/asm/io.h:464:1: sparse: sparse: cast to restricted __le32
+   arch/mips/include/asm/io.h:464:1: sparse: sparse: cast to restricted __le32
+   arch/mips/include/asm/io.h:464:1: sparse: sparse: cast to restricted __le32
+   arch/mips/include/asm/io.h:464:1: sparse: sparse: cast to restricted __le32
+   arch/mips/include/asm/io.h:464:1: sparse: sparse: cast to restricted __le32
+   arch/mips/include/asm/io.h:464:1: sparse: sparse: cast to restricted __le32
+   arch/mips/include/asm/io.h:464:1: sparse: sparse: cast to restricted __le32
+   arch/mips/include/asm/io.h:464:1: sparse: sparse: cast to restricted __le32
+
+vim +470 drivers/gpu/drm/exynos/exynos_drm_fimd.c
+
+a6f75aa161c5a5 Inki Dae              2016-04-18  452  
+93bca243ec96f0 Gustavo Padovan       2015-01-18  453  static void fimd_commit(struct exynos_drm_crtc *crtc)
+1c248b7d2960fa Inki Dae              2011-10-04  454  {
+93bca243ec96f0 Gustavo Padovan       2015-01-18  455  	struct fimd_context *ctx = crtc->ctx;
+020e79de265996 Joonyoung Shim        2015-06-02  456  	struct drm_display_mode *mode = &crtc->base.state->adjusted_mode;
+e1a7b9b40d1c0c Marek Szyprowski      2016-04-18  457  	const struct fimd_driver_data *driver_data = ctx->driver_data;
+3854fab24e899c YoungJun Cho          2014-07-17  458  	void *timing_base = ctx->regs + driver_data->timing_base;
+c96fdfdeca5657 Andrzej Hajda         2016-09-23  459  	u32 val;
+1c248b7d2960fa Inki Dae              2011-10-04  460  
+e30d4bcf79b6a3 Inki Dae              2011-12-12  461  	if (ctx->suspended)
+e30d4bcf79b6a3 Inki Dae              2011-12-12  462  		return;
+e30d4bcf79b6a3 Inki Dae              2011-12-12  463  
+a968e72771ea19 Sean Paul             2014-01-30  464  	/* nothing to do if we haven't set the mode yet */
+a968e72771ea19 Sean Paul             2014-01-30  465  	if (mode->htotal == 0 || mode->vtotal == 0)
+a968e72771ea19 Sean Paul             2014-01-30  466  		return;
+a968e72771ea19 Sean Paul             2014-01-30  467  
+3854fab24e899c YoungJun Cho          2014-07-17  468  	if (ctx->i80_if) {
+3854fab24e899c YoungJun Cho          2014-07-17  469  		val = ctx->i80ifcon | I80IFEN_ENABLE;
+3854fab24e899c YoungJun Cho          2014-07-17 @470  		writel(val, timing_base + I80IFCONFAx(0));
+3854fab24e899c YoungJun Cho          2014-07-17  471  
+3854fab24e899c YoungJun Cho          2014-07-17  472  		/* disable auto frame rate */
+3854fab24e899c YoungJun Cho          2014-07-17  473  		writel(0, timing_base + I80IFCONFBx(0));
+3854fab24e899c YoungJun Cho          2014-07-17  474  
+3854fab24e899c YoungJun Cho          2014-07-17  475  		/* set video type selection to I80 interface */
+3c3c9c1d904dca Joonyoung Shim        2014-11-14  476  		if (driver_data->has_vtsel && ctx->sysreg &&
+3c3c9c1d904dca Joonyoung Shim        2014-11-14  477  				regmap_update_bits(ctx->sysreg,
+3854fab24e899c YoungJun Cho          2014-07-17  478  					driver_data->lcdblk_offset,
+3854fab24e899c YoungJun Cho          2014-07-17  479  					0x3 << driver_data->lcdblk_vt_shift,
+3854fab24e899c YoungJun Cho          2014-07-17  480  					0x1 << driver_data->lcdblk_vt_shift)) {
+6f83d20838c099 Inki Dae              2019-04-15  481  			DRM_DEV_ERROR(ctx->dev,
+6f83d20838c099 Inki Dae              2019-04-15  482  				      "Failed to update sysreg for I80 i/f.\n");
+3854fab24e899c YoungJun Cho          2014-07-17  483  			return;
+3854fab24e899c YoungJun Cho          2014-07-17  484  		}
+3854fab24e899c YoungJun Cho          2014-07-17  485  	} else {
+3854fab24e899c YoungJun Cho          2014-07-17  486  		int vsync_len, vbpd, vfpd, hsync_len, hbpd, hfpd;
+3854fab24e899c YoungJun Cho          2014-07-17  487  		u32 vidcon1;
+3854fab24e899c YoungJun Cho          2014-07-17  488  
+1417f109a82f8a Sean Paul             2014-01-30  489  		/* setup polarity values */
+1417f109a82f8a Sean Paul             2014-01-30  490  		vidcon1 = ctx->vidcon1;
+1417f109a82f8a Sean Paul             2014-01-30  491  		if (mode->flags & DRM_MODE_FLAG_NVSYNC)
+1417f109a82f8a Sean Paul             2014-01-30  492  			vidcon1 |= VIDCON1_INV_VSYNC;
+1417f109a82f8a Sean Paul             2014-01-30  493  		if (mode->flags & DRM_MODE_FLAG_NHSYNC)
+1417f109a82f8a Sean Paul             2014-01-30  494  			vidcon1 |= VIDCON1_INV_HSYNC;
+1417f109a82f8a Sean Paul             2014-01-30  495  		writel(vidcon1, ctx->regs + driver_data->timing_base + VIDCON1);
+1c248b7d2960fa Inki Dae              2011-10-04  496  
+1c248b7d2960fa Inki Dae              2011-10-04  497  		/* setup vertical timing values. */
+a968e72771ea19 Sean Paul             2014-01-30  498  		vsync_len = mode->crtc_vsync_end - mode->crtc_vsync_start;
+8b4cad23531da4 Andrzej Hajda         2014-03-17  499  		vbpd = mode->crtc_vtotal - mode->crtc_vsync_end;
+8b4cad23531da4 Andrzej Hajda         2014-03-17  500  		vfpd = mode->crtc_vsync_start - mode->crtc_vdisplay;
+a968e72771ea19 Sean Paul             2014-01-30  501  
+a968e72771ea19 Sean Paul             2014-01-30  502  		val = VIDTCON0_VBPD(vbpd - 1) |
+a968e72771ea19 Sean Paul             2014-01-30  503  			VIDTCON0_VFPD(vfpd - 1) |
+a968e72771ea19 Sean Paul             2014-01-30  504  			VIDTCON0_VSPW(vsync_len - 1);
+e2e1338900208a Leela Krishna Amudala 2012-09-21  505  		writel(val, ctx->regs + driver_data->timing_base + VIDTCON0);
+1c248b7d2960fa Inki Dae              2011-10-04  506  
+1c248b7d2960fa Inki Dae              2011-10-04  507  		/* setup horizontal timing values.  */
+a968e72771ea19 Sean Paul             2014-01-30  508  		hsync_len = mode->crtc_hsync_end - mode->crtc_hsync_start;
+8b4cad23531da4 Andrzej Hajda         2014-03-17  509  		hbpd = mode->crtc_htotal - mode->crtc_hsync_end;
+8b4cad23531da4 Andrzej Hajda         2014-03-17  510  		hfpd = mode->crtc_hsync_start - mode->crtc_hdisplay;
+a968e72771ea19 Sean Paul             2014-01-30  511  
+a968e72771ea19 Sean Paul             2014-01-30  512  		val = VIDTCON1_HBPD(hbpd - 1) |
+a968e72771ea19 Sean Paul             2014-01-30  513  			VIDTCON1_HFPD(hfpd - 1) |
+a968e72771ea19 Sean Paul             2014-01-30  514  			VIDTCON1_HSPW(hsync_len - 1);
+e2e1338900208a Leela Krishna Amudala 2012-09-21  515  		writel(val, ctx->regs + driver_data->timing_base + VIDTCON1);
+3854fab24e899c YoungJun Cho          2014-07-17  516  	}
+3854fab24e899c YoungJun Cho          2014-07-17  517  
+3854fab24e899c YoungJun Cho          2014-07-17  518  	if (driver_data->has_vidoutcon)
+3854fab24e899c YoungJun Cho          2014-07-17  519  		writel(ctx->vidout_con, timing_base + VIDOUT_CON);
+3854fab24e899c YoungJun Cho          2014-07-17  520  
+3854fab24e899c YoungJun Cho          2014-07-17  521  	/* set bypass selection */
+3854fab24e899c YoungJun Cho          2014-07-17  522  	if (ctx->sysreg && regmap_update_bits(ctx->sysreg,
+3854fab24e899c YoungJun Cho          2014-07-17  523  				driver_data->lcdblk_offset,
+3854fab24e899c YoungJun Cho          2014-07-17  524  				0x1 << driver_data->lcdblk_bypass_shift,
+3854fab24e899c YoungJun Cho          2014-07-17  525  				0x1 << driver_data->lcdblk_bypass_shift)) {
+6f83d20838c099 Inki Dae              2019-04-15  526  		DRM_DEV_ERROR(ctx->dev,
+6f83d20838c099 Inki Dae              2019-04-15  527  			      "Failed to update sysreg for bypass setting.\n");
+3854fab24e899c YoungJun Cho          2014-07-17  528  		return;
+3854fab24e899c YoungJun Cho          2014-07-17  529  	}
+1c248b7d2960fa Inki Dae              2011-10-04  530  
+1feafd3afd294b Chanho Park           2016-02-12  531  	/* TODO: When MIC is enabled for display path, the lcdblk_mic_bypass
+1feafd3afd294b Chanho Park           2016-02-12  532  	 * bit should be cleared.
+1feafd3afd294b Chanho Park           2016-02-12  533  	 */
+1feafd3afd294b Chanho Park           2016-02-12  534  	if (driver_data->has_mic_bypass && ctx->sysreg &&
+1feafd3afd294b Chanho Park           2016-02-12  535  	    regmap_update_bits(ctx->sysreg,
+1feafd3afd294b Chanho Park           2016-02-12  536  				driver_data->lcdblk_offset,
+1feafd3afd294b Chanho Park           2016-02-12  537  				0x1 << driver_data->lcdblk_mic_bypass_shift,
+1feafd3afd294b Chanho Park           2016-02-12  538  				0x1 << driver_data->lcdblk_mic_bypass_shift)) {
+6f83d20838c099 Inki Dae              2019-04-15  539  		DRM_DEV_ERROR(ctx->dev,
+6f83d20838c099 Inki Dae              2019-04-15  540  			      "Failed to update sysreg for bypass mic.\n");
+1feafd3afd294b Chanho Park           2016-02-12  541  		return;
+1feafd3afd294b Chanho Park           2016-02-12  542  	}
+1feafd3afd294b Chanho Park           2016-02-12  543  
+1c248b7d2960fa Inki Dae              2011-10-04  544  	/* setup horizontal and vertical display size. */
+a968e72771ea19 Sean Paul             2014-01-30  545  	val = VIDTCON2_LINEVAL(mode->vdisplay - 1) |
+a968e72771ea19 Sean Paul             2014-01-30  546  	       VIDTCON2_HOZVAL(mode->hdisplay - 1) |
+a968e72771ea19 Sean Paul             2014-01-30  547  	       VIDTCON2_LINEVAL_E(mode->vdisplay - 1) |
+a968e72771ea19 Sean Paul             2014-01-30  548  	       VIDTCON2_HOZVAL_E(mode->hdisplay - 1);
+e2e1338900208a Leela Krishna Amudala 2012-09-21  549  	writel(val, ctx->regs + driver_data->timing_base + VIDTCON2);
+1c248b7d2960fa Inki Dae              2011-10-04  550  
+a6f75aa161c5a5 Inki Dae              2016-04-18  551  	fimd_setup_trigger(ctx);
+a6f75aa161c5a5 Inki Dae              2016-04-18  552  
+1d531062cdc5fc Andrzej Hajda         2014-03-20  553  	/*
+1d531062cdc5fc Andrzej Hajda         2014-03-20  554  	 * fields of register with prefix '_F' would be updated
+1d531062cdc5fc Andrzej Hajda         2014-03-20  555  	 * at vsync(same as dma start)
+1d531062cdc5fc Andrzej Hajda         2014-03-20  556  	 */
+3854fab24e899c YoungJun Cho          2014-07-17  557  	val = ctx->vidcon0;
+3854fab24e899c YoungJun Cho          2014-07-17  558  	val |= VIDCON0_ENVID | VIDCON0_ENVID_F;
+1c248b7d2960fa Inki Dae              2011-10-04  559  
+1d531062cdc5fc Andrzej Hajda         2014-03-20  560  	if (ctx->driver_data->has_clksel)
+411d9ed4486a4e Tomasz Figa           2013-05-01  561  		val |= VIDCON0_CLKSEL_LCD;
+411d9ed4486a4e Tomasz Figa           2013-05-01  562  
+c96fdfdeca5657 Andrzej Hajda         2016-09-23  563  	if (ctx->clkdiv > 1)
+c96fdfdeca5657 Andrzej Hajda         2016-09-23  564  		val |= VIDCON0_CLKVAL_F(ctx->clkdiv - 1) | VIDCON0_CLKDIR;
+1c248b7d2960fa Inki Dae              2011-10-04  565  
+1c248b7d2960fa Inki Dae              2011-10-04  566  	writel(val, ctx->regs + VIDCON0);
+1c248b7d2960fa Inki Dae              2011-10-04  567  }
+1c248b7d2960fa Inki Dae              2011-10-04  568  
+
+:::::: The code at line 470 was first introduced by commit
+:::::: 3854fab24e899c02439657956ab1d2c85001958c drm/exynos: fimd: support LCD I80 interface
+
+:::::: TO: YoungJun Cho <yj44.cho@samsung.com>
+:::::: CC: Inki Dae <daeinki@gmail.com>
 
 -- 
-Best Regards
-Hongchen Zhang
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
