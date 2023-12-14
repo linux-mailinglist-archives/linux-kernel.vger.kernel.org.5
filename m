@@ -2,122 +2,372 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 91CEF812FF1
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 13:23:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A5440812FF6
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 13:25:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1572992AbjLNMXL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 07:23:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34570 "EHLO
+        id S1572996AbjLNMZX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 07:25:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49404 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1572999AbjLNMXH (ORCPT
+        with ESMTP id S1572978AbjLNMZW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 07:23:07 -0500
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [IPv6:2a00:1098:ed:100::25])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6AB511D;
-        Thu, 14 Dec 2023 04:23:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1702556592;
-        bh=UqRmqpx+L/h6JxrFWmQqgif5spnY/NSTCUX559UgFhA=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=e+0gVLmalAyHuyZtnP0qlxXRf/NQhDOPFN/UwXwWPN0Fqti/gfhfB7dDIYTMDjvmE
-         KLaAXHgoVSxF7xPxYSXKPHnJWKlzsjvlY/kPL+8pMriafEK4h7fh8BTcSiy5ZeXOhS
-         LhF9x7BHnjj9b6WQ+O1GRXkrn5SX4h3IglgGAG4MVAyGanlkgewW7o1qN4P2l6gcgc
-         iAxhRwfRP7bZXWQh7Q9TcoGtvEnlm15r0ietUg/q9r9A/kZrUn/zny/ZPeANzzT+di
-         gMf9k9Wn+iX+MNO1cmyvVY54NJRPfIc40w4Lr43HlIemROULINW9YRViISn3Vu0i9Y
-         xpIRCbCW4wNkw==
-Received: from [100.115.223.179] (cola.collaboradmins.com [195.201.22.229])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: cristicc)
-        by madrid.collaboradmins.com (Postfix) with ESMTPSA id 1CD6837814A8;
-        Thu, 14 Dec 2023 12:23:11 +0000 (UTC)
-Message-ID: <ca828ee1-93f7-432e-b95d-e67c35cdcdb5@collabora.com>
-Date:   Thu, 14 Dec 2023 14:23:10 +0200
+        Thu, 14 Dec 2023 07:25:22 -0500
+Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95392BD
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 04:25:27 -0800 (PST)
+Received: by mail-lf1-x12e.google.com with SMTP id 2adb3069b0e04-50c222a022dso8860709e87.1
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 04:25:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1702556726; x=1703161526; darn=vger.kernel.org;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Uj6YVUPTH/2Q1f0gUHdUambTFOQaLSKPqyz6G+vAYTU=;
+        b=I39u0/82GolLKeg/F4X5SzfE0ZpW+J5ZUPOSz/wQ8U2UwyCLYP/IlGDgqZuTMgPeEt
+         P3s4J6gVnrY581iuqyMjGgV0mrusEN4LF9UP4QHd9XvMmtirFY2xkcfDYLTixVCI2Kcc
+         X5g0r9/lK8zoMsIsLF0lmqJcJYoStqziSTCS5tIBH2gm2cbFhoKS1RDKi3yS9X9QkFim
+         zv/lEfN4ddiILiq4/+1OS17CQz4dgFbnuYjz0IhmY9jON6yYt3V7jKMTojseSaPJDpiD
+         C18zE/fmWf9nvPGEYZL6u6CBOHVPx1yO/PlV/AbMdHgQ76b/qMkSQNyM7C7RhxBxxVgd
+         gZDg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702556726; x=1703161526;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Uj6YVUPTH/2Q1f0gUHdUambTFOQaLSKPqyz6G+vAYTU=;
+        b=IOSjvhz1eq8Y9T87h7X1YQxZJ7QpGciEbIhtq7XgWKo9JmqwvRL0ufEy2OCEKSlyWQ
+         4Sw4QatgNQXybp3Ohh9zVH7yRUJ959myuR3ilYUZOvqgbySs5ydIHBTmN6xfPF/UbWS+
+         dBz2vFZ1nwdXkm0wUCVU3oV8p9YBIJhuizRwGCNBc4iGdFJ+jkdpmP30qomfcSkSEzcI
+         NzOMsIxsPLJVRFh3pRxxiVDwCD+hbGX99uzs+WzpUUIfeGxW5TFeqkuCqXE/BhFC73Hu
+         jokZGwrivZ1UB/zyrQAxNbmuoIQhMflkRseaWKDmHNHwwXV4wJqwAqE8xdzXf8xFa0Kf
+         HyDw==
+X-Gm-Message-State: AOJu0Yyo+IablGW3nGRotcdybEICdBIKQyZk5NrbsiRjXi3V1ijyZdWZ
+        P5J2wkeVs8xlXjtSCxusH+TClw==
+X-Google-Smtp-Source: AGHT+IGbfuxv9qy9Tbrq3dni3LQn0gIUuYY1WH3U9fnnT64Vx2dRwvI1I5S+dA9MXANpLnOPfutIAg==
+X-Received: by 2002:a05:6512:3f22:b0:50b:f152:f3e7 with SMTP id y34-20020a0565123f2200b0050bf152f3e7mr4928354lfa.71.1702556725531;
+        Thu, 14 Dec 2023 04:25:25 -0800 (PST)
+Received: from [127.0.1.1] (UNUSED.212-182-62-129.lubman.net.pl. [212.182.62.129])
+        by smtp.gmail.com with ESMTPSA id w23-20020ac254b7000000b0050bf5188390sm1850785lfk.167.2023.12.14.04.25.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 Dec 2023 04:25:25 -0800 (PST)
+From:   Konrad Dybcio <konrad.dybcio@linaro.org>
+Date:   Thu, 14 Dec 2023 13:25:15 +0100
+Subject: [PATCH] Revert "soc: qcom: stats: Add DDR sleep stats"
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 11/11] ASoC: SOF: topology: Add new DAI type entry for
- SOF_DAI_AMD_BT
-Content-Language: en-US
-To:     Venkata Prasad Potturu <venkataprasad.potturu@amd.com>,
-        Mark Brown <broonie@kernel.org>
-Cc:     Liam Girdwood <lgirdwood@gmail.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
-        Bard Liao <yung-chuan.liao@linux.intel.com>,
-        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-        Daniel Baluta <daniel.baluta@nxp.com>,
-        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
-        Alper Nebi Yasak <alpernebiyasak@gmail.com>,
-        Syed Saba Kareem <Syed.SabaKareem@amd.com>,
-        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-        Marian Postevca <posteuca@mutex.one>,
-        Vijendar Mukunda <Vijendar.Mukunda@amd.com>,
-        V sujith kumar Reddy <Vsujithkumar.Reddy@amd.com>,
-        Mastan Katragadda <Mastan.Katragadda@amd.com>,
-        Ajit Kumar Pandey <AjitKumar.Pandey@amd.com>,
-        linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org,
-        sound-open-firmware@alsa-project.org, kernel@collabora.com
-References: <20231209205351.880797-1-cristian.ciocaltea@collabora.com>
- <20231209205351.880797-12-cristian.ciocaltea@collabora.com>
- <fad8a055-eabb-4087-94d5-9e1de00933e4@amd.com>
- <aa830670-e544-43a2-9ba9-a64f1964a9f5@collabora.com>
- <318470ce-1631-4c46-b425-755c877dda65@amd.com>
- <421128f7-6a17-4be9-a72b-272ea4017fbd@collabora.com>
- <ZXXEsyBUCrBULNgk@finisterre.sirena.org.uk>
- <5095ce7b-13bd-4805-b81e-f7565ab41b67@collabora.com>
- <dea5fb18-5fdc-4be4-9981-a6876cf531eb@amd.com>
-From:   Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
-In-Reply-To: <dea5fb18-5fdc-4be4-9981-a6876cf531eb@amd.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20231214-topic-undo_ddr_stats-v1-1-1fe32c258e56@linaro.org>
+X-B4-Tracking: v=1; b=H4sIACr0emUC/x3MTQqAIBBA4avErBPSfqCuEiGSY81GY8YiiO6et
+ PwW7z0gyIQCU/UA40VCKRbouoJ1d3FDRb4YTGNabXSncjpoVWf0yXrPVrLLorDFoLt+GE0YoKQ
+ HY6D7387L+37j1G5nZgAAAA==
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>
+Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Doug Anderson <dianders@chromium.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>
+X-Mailer: b4 0.13-dev-0438c
+X-Spam-Status: No, score=1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Level: *
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/11/23 07:58, Venkata Prasad Potturu wrote:
-> 
-> On 12/10/23 21:20, Cristian Ciocaltea wrote:
->> On 12/10/23 16:01, Mark Brown wrote:
->>> On Sun, Dec 10, 2023 at 12:12:53PM +0200, Cristian Ciocaltea wrote:
->>>> On 12/10/23 11:51, Venkata Prasad Potturu wrote:
->>>>> This should send to SOF git repo for rewiew, once SOF reviewers
->>>>> approved
->>>>> this, again need to send to broonie git.
->>>>> All the changes in sound/soc/sof/ path should go to SOF git.
->>>> Unfortunately I'm not familiar with the SOF dev workflow. So it's not
->>>> enough to have this patch cc-ed to
->>>> sound-open-firmware@alsa-project.org?
->>> The SOF people basically do their own thing in github at
->>>
->>>     https://github.com/thesofproject/linux
->>>
->>> with a github workflow and submit their patches upstream in batches a
->>> few times a release, however my understanding is that their workflow can
->>> cope with things going in directly upstream as well.
->> Thanks for clarifying, Mark!  That would greatly simplify and speedup
->> the whole process, at least for trivial patches like this one.
-> 
-> Hi Cristian,
-> 
-> We have created a Pull request in SOF git hub for I2S BT support.
-> please hold v2 version SOF patches till below PR get's merged.
-> PR:- https://github.com/thesofproject/linux/pull/4742
+After recent reports ([1], [2]) of older platforms (particularly 8150 and
+7180) breaking after DDR sleep stats introduction, revert the following:
 
-Hi Venkata,
+Commit 73380e2573c3 ("soc: qcom: stats: fix 64-bit division")
+Commit e84e61bdb97c ("soc: qcom: stats: Add DDR sleep stats")
 
-If this is going to be handled via the github workflow, this patch
-should be removed from the series.  Since there is no dependency on it,
-I cannot see a reason to put v2 on hold.
+The feature itself is rather useful for debugging DRAM power management,
+however it looks like the shared RPMh stats data structures differ on
+previous SoCs.
 
-Do I miss something?
+Revert its addition for now to un-break booting on these earlier SoCs,
+while I try to come up with a better way to enable it conditionally.
 
-Thanks,
-Cristian
+[1] https://lore.kernel.org/linux-arm-msm/20231209215601.3543895-2-dmitry.baryshkov@linaro.org/
+[2] https://lore.kernel.org/linux-arm-msm/CAD=FV=XX4wLg1NNVL15RK4D4tLvuSzZyUv=k_tS4bSb3=7QJzQ@mail.gmail.com/
+
+Reported-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Reported-by: Doug Anderson <dianders@chromium.org>
+Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+---
+ drivers/soc/qcom/qcom_stats.c | 187 +-----------------------------------------
+ 1 file changed, 1 insertion(+), 186 deletions(-)
+
+diff --git a/drivers/soc/qcom/qcom_stats.c b/drivers/soc/qcom/qcom_stats.c
+index 5ec8a754b22b..0216fc24f2ca 100644
+--- a/drivers/soc/qcom/qcom_stats.c
++++ b/drivers/soc/qcom/qcom_stats.c
+@@ -3,7 +3,6 @@
+  * Copyright (c) 2011-2021, The Linux Foundation. All rights reserved.
+  */
+ 
+-#include <linux/bitfield.h>
+ #include <linux/debugfs.h>
+ #include <linux/device.h>
+ #include <linux/io.h>
+@@ -12,7 +11,6 @@
+ #include <linux/platform_device.h>
+ #include <linux/seq_file.h>
+ 
+-#include <linux/soc/qcom/qcom_aoss.h>
+ #include <linux/soc/qcom/smem.h>
+ #include <clocksource/arm_arch_timer.h>
+ 
+@@ -24,20 +22,8 @@
+ #define LAST_ENTERED_AT_OFFSET	0x8
+ #define LAST_EXITED_AT_OFFSET	0x10
+ #define ACCUMULATED_OFFSET	0x18
+-#define DDR_DYNAMIC_OFFSET	0x1c
+- #define DDR_OFFSET_MASK	GENMASK(9, 0)
+ #define CLIENT_VOTES_OFFSET	0x20
+ 
+-#define ARCH_TIMER_FREQ		19200000
+-#define DDR_MAGIC_KEY1		0xA1157A75 /* leetspeak "ALLSTATS" */
+-#define DDR_MAX_NUM_ENTRIES	20
+-
+-#define DDR_VOTE_DRV_MAX	18
+-#define DDR_VOTE_DRV_ABSENT	0xdeaddead
+-#define DDR_VOTE_DRV_INVALID	0xffffdead
+-#define DDR_VOTE_X		GENMASK(27, 14)
+-#define DDR_VOTE_Y		GENMASK(13, 0)
+-
+ struct subsystem_data {
+ 	const char *name;
+ 	u32 smem_item;
+@@ -62,7 +48,6 @@ struct stats_config {
+ 	bool appended_stats_avail;
+ 	bool dynamic_offset;
+ 	bool subsystem_stats_in_smem;
+-	bool ddr_stats;
+ };
+ 
+ struct stats_data {
+@@ -83,25 +68,6 @@ struct appended_stats {
+ 	u32 reserved[3];
+ };
+ 
+-struct ddr_stats_entry {
+-	u32 name;
+-	u32 count;
+-	u64 dur;
+-} __packed;
+-
+-struct ddr_stats {
+-	u32 key;
+-	u32 entry_count;
+-#define MAX_DDR_STAT_ENTRIES	20
+-	struct ddr_stats_entry entry[MAX_DDR_STAT_ENTRIES];
+-} __packed;
+-
+-struct ddr_stats_data {
+-	struct device *dev;
+-	void __iomem *base;
+-	struct qmp *qmp;
+-};
+-
+ static void qcom_print_stats(struct seq_file *s, const struct sleep_stats *stat)
+ {
+ 	u64 accumulated = stat->accumulated;
+@@ -152,108 +118,6 @@ static int qcom_soc_sleep_stats_show(struct seq_file *s, void *unused)
+ 	return 0;
+ }
+ 
+-#define DDR_NAME_TYPE		GENMASK(15, 8)
+- #define DDR_NAME_TYPE_LPM	0
+- #define DDR_NAME_TYPE_FREQ	1
+-
+-#define DDR_NAME_LPM_NAME	GENMASK(7, 0)
+-
+-#define DDR_NAME_FREQ_MHZ	GENMASK(31, 16)
+-#define DDR_NAME_FREQ_CP_IDX	GENMASK(4, 0)
+-static void qcom_ddr_stats_print(struct seq_file *s, struct ddr_stats_entry *entry)
+-{
+-	u32 cp_idx, name;
+-	u8 type;
+-
+-	type = FIELD_GET(DDR_NAME_TYPE, entry->name);
+-
+-	switch (type) {
+-	case DDR_NAME_TYPE_LPM:
+-		name = FIELD_GET(DDR_NAME_LPM_NAME, entry->name);
+-
+-		seq_printf(s, "LPM  | Type 0x%2x\tcount: %u\ttime: %llums\n",
+-			   name, entry->count, entry->dur);
+-		break;
+-	case DDR_NAME_TYPE_FREQ:
+-		cp_idx = FIELD_GET(DDR_NAME_FREQ_CP_IDX, entry->name);
+-		name = FIELD_GET(DDR_NAME_FREQ_MHZ, entry->name);
+-
+-		/* Neither 0Mhz nor 0 votes is very interesting */
+-		if (!name || !entry->count)
+-			return;
+-
+-		seq_printf(s, "Freq | %dMHz (idx %u)\tcount: %u\ttime: %llums\n",
+-			   name, cp_idx, entry->count, entry->dur);
+-		break;
+-	default:
+-		seq_printf(s, "Unknown data chunk (type = 0x%x count = 0x%x dur = 0x%llx)\n",
+-			   type, entry->count, entry->dur);
+-	}
+-}
+-
+-static int qcom_ddr_stats_show(struct seq_file *s, void *unused)
+-{
+-	struct ddr_stats_data *ddrd = s->private;
+-	struct ddr_stats ddr;
+-	struct ddr_stats_entry *entry = ddr.entry;
+-	u32 entry_count, stats_size;
+-	u32 votes[DDR_VOTE_DRV_MAX];
+-	int i, ret;
+-
+-	/* Request a stats sync, it may take some time to update though.. */
+-	ret = qmp_send(ddrd->qmp, "{class: ddr, action: freqsync}");
+-	if (ret) {
+-		dev_err(ddrd->dev, "failed to send QMP message\n");
+-		return ret;
+-	}
+-
+-	entry_count = readl(ddrd->base + offsetof(struct ddr_stats, entry_count));
+-	if (entry_count > DDR_MAX_NUM_ENTRIES)
+-		return -EINVAL;
+-
+-	/* We're not guaranteed to have DDR_MAX_NUM_ENTRIES */
+-	stats_size = sizeof(ddr);
+-	stats_size -= DDR_MAX_NUM_ENTRIES * sizeof(*entry);
+-	stats_size += entry_count * sizeof(*entry);
+-
+-	/* Copy and process the stats */
+-	memcpy_fromio(&ddr, ddrd->base, stats_size);
+-
+-	for (i = 0; i < ddr.entry_count; i++) {
+-		/* Convert the period to ms */
+-		entry[i].dur = div_u64(entry[i].dur, ARCH_TIMER_FREQ / MSEC_PER_SEC);
+-	}
+-
+-	for (i = 0; i < ddr.entry_count; i++)
+-		qcom_ddr_stats_print(s, &entry[i]);
+-
+-	/* Ask AOSS to dump DDR votes */
+-	ret = qmp_send(ddrd->qmp, "{class: ddr, res: drvs_ddr_votes}");
+-	if (ret) {
+-		dev_err(ddrd->dev, "failed to send QMP message\n");
+-		return ret;
+-	}
+-
+-	/* Subsystem votes */
+-	memcpy_fromio(votes, ddrd->base + stats_size, sizeof(u32) * DDR_VOTE_DRV_MAX);
+-
+-	for (i = 0; i < DDR_VOTE_DRV_MAX; i++) {
+-		u32 ab, ib;
+-
+-		if (votes[i] == DDR_VOTE_DRV_ABSENT || votes[i] == DDR_VOTE_DRV_INVALID)
+-			ab = ib = votes[i];
+-		else {
+-			ab = FIELD_GET(DDR_VOTE_X, votes[i]);
+-			ib = FIELD_GET(DDR_VOTE_Y, votes[i]);
+-		}
+-
+-		seq_printf(s, "Vote | AB = %5u\tIB = %5u\n", ab, ib);
+-	}
+-
+-	return 0;
+-}
+-
+-DEFINE_SHOW_ATTRIBUTE(qcom_ddr_stats);
+ DEFINE_SHOW_ATTRIBUTE(qcom_soc_sleep_stats);
+ DEFINE_SHOW_ATTRIBUTE(qcom_subsystem_sleep_stats);
+ 
+@@ -316,56 +180,13 @@ static void qcom_create_subsystem_stat_files(struct dentry *root,
+ 				    &qcom_subsystem_sleep_stats_fops);
+ }
+ 
+-static int qcom_create_ddr_stats_files(struct device *dev,
+-				       struct dentry *root,
+-				       void __iomem *reg,
+-				       const struct stats_config *config)
+-{
+-	struct ddr_stats_data *ddrd;
+-	u32 key, stats_offset;
+-	struct dentry *dent;
+-
+-	/* Nothing to do */
+-	if (!config->ddr_stats)
+-		return 0;
+-
+-	ddrd = devm_kzalloc(dev, sizeof(*ddrd), GFP_KERNEL);
+-	if (!ddrd)
+-		return dev_err_probe(dev, -ENOMEM, "Couldn't allocate DDR stats data\n");
+-
+-	ddrd->dev = dev;
+-
+-	/* Get the offset of DDR stats */
+-	stats_offset = readl(reg + DDR_DYNAMIC_OFFSET) & DDR_OFFSET_MASK;
+-	ddrd->base = reg + stats_offset;
+-
+-	/* Check if DDR stats are present */
+-	key = readl(ddrd->base);
+-	if (key != DDR_MAGIC_KEY1)
+-		return 0;
+-
+-	dent = debugfs_create_file("ddr_sleep_stats", 0400, root, ddrd, &qcom_ddr_stats_fops);
+-	if (IS_ERR(dent))
+-		return PTR_ERR(dent);
+-
+-	/* QMP is only necessary for DDR votes */
+-	ddrd->qmp = qmp_get(dev);
+-	if (IS_ERR(ddrd->qmp)) {
+-		dev_err(dev, "Couldn't get QMP mailbox: %ld. DDR votes won't be available.\n",
+-			PTR_ERR(ddrd->qmp));
+-		debugfs_remove(dent);
+-	}
+-
+-	return 0;
+-}
+-
+ static int qcom_stats_probe(struct platform_device *pdev)
+ {
+ 	void __iomem *reg;
+ 	struct dentry *root;
+ 	const struct stats_config *config;
+ 	struct stats_data *d;
+-	int i, ret;
++	int i;
+ 
+ 	config = device_get_match_data(&pdev->dev);
+ 	if (!config)
+@@ -387,11 +208,6 @@ static int qcom_stats_probe(struct platform_device *pdev)
+ 
+ 	qcom_create_subsystem_stat_files(root, config);
+ 	qcom_create_soc_sleep_stat_files(root, reg, d, config);
+-	ret = qcom_create_ddr_stats_files(&pdev->dev, root, reg, config);
+-	if (ret) {
+-		debugfs_remove_recursive(root);
+-		return ret;
+-	};
+ 
+ 	platform_set_drvdata(pdev, root);
+ 
+@@ -438,7 +254,6 @@ static const struct stats_config rpmh_data = {
+ 	.appended_stats_avail = false,
+ 	.dynamic_offset = false,
+ 	.subsystem_stats_in_smem = true,
+-	.ddr_stats = true,
+ };
+ 
+ static const struct of_device_id qcom_stats_table[] = {
+
+---
+base-commit: 11651f8cb2e88372d4ed523d909514dc9a613ea3
+change-id: 20231214-topic-undo_ddr_stats-e3ef145692f6
+
+Best regards,
+-- 
+Konrad Dybcio <konrad.dybcio@linaro.org>
+
