@@ -2,115 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 91C2F812FDF
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 13:16:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A382812FE4
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 13:17:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1572953AbjLNMQZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 07:16:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41040 "EHLO
+        id S1572972AbjLNMRd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 07:17:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40798 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1572951AbjLNMQX (ORCPT
+        with ESMTP id S1572951AbjLNMRc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 07:16:23 -0500
-Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89162118
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 04:16:29 -0800 (PST)
-Received: by mail-pl1-x629.google.com with SMTP id d9443c01a7336-1d3536cd414so14948645ad.2
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 04:16:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=brainfault-org.20230601.gappssmtp.com; s=20230601; t=1702556189; x=1703160989; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=2tiT7wfNqaw2vJLSE5DYIhR3c6v+dX+na4nc8HEVIgQ=;
-        b=PNL+oBMmA4ybqQboMcw6INWYK/fcxPF0zMNCA8vSPOyZuOEEbPqUskBN+6QjVPdmfA
-         dBLac9j5SRDcIfvBJxtN7/A4pTYdAzulqVtgiS8TOVLehRDRS+ZdvUYU6z5hB9kdWm1W
-         pxfxZpfLHT7cKR2sD8dlLnOLwovGg5HDZNcCCaiPaF3HcePlD+FKvz641wghA4EPoL3w
-         97n8lb/AvOYXoJ+5tGQBEdCWKINSHZjuz/xv+ZypR9fDidFX7K5zbNwiVH7guwMPovBn
-         xXKC07k0jTDbuABa97QJATQtdo7CyW9VRr755E0HWB5OQPib8M7OcWgELZjY8ordvwoe
-         Yxgg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702556189; x=1703160989;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=2tiT7wfNqaw2vJLSE5DYIhR3c6v+dX+na4nc8HEVIgQ=;
-        b=uyDVc/Vcu4OFrjoFbMS69sF46gPtZ7+l+tRP8OOLsIC57H/ILJmh/2+/SE/ZHpCrq+
-         FQqONCq8re1INc/WhpTSeFuV/Av8T8Rg6jv4mxEIwVCyilKKHoArZN8fms9JCKPJf0kG
-         2HsoV+IoblvGbwS/X39C0axGafwdEU6oykmgSCkxRe2SRWzvUsicye8O0vnTfNUZdIJM
-         IeYkHu0wq/N47DabmhjGhR+8sFEX+aTGjV/Inbx/oxDzxrIiq/mnCaigxqzHvXpcR+CR
-         RqMW+83hGW3MFfPi5gI0vEi/3uNY5zWKGFxTAf/5iFGyugfCGdZHp64nMAU7BsP/r/P3
-         ecIg==
-X-Gm-Message-State: AOJu0YwTUV3OoGWn3KkifauxmY7/Y3q9EgWVfPSQ/TWgj2WOLn1V2LfG
-        agmcZzB8qxPqmt4yj0thSAyp6VD0zNjvQsbBnC94Tw==
-X-Google-Smtp-Source: AGHT+IEthyLwcbpFlS0nGuCTagq11nyWQP0JyD3gThdiIWZOLD3HKt6owX5IozE98AMNclf4HsOdhasFFYWjQPb1jH0=
-X-Received: by 2002:a17:903:2351:b0:1d3:60f7:4620 with SMTP id
- c17-20020a170903235100b001d360f74620mr1427318plh.128.1702556188931; Thu, 14
- Dec 2023 04:16:28 -0800 (PST)
+        Thu, 14 Dec 2023 07:17:32 -0500
+Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F6D1BD;
+        Thu, 14 Dec 2023 04:17:38 -0800 (PST)
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 3BECHReC041436;
+        Thu, 14 Dec 2023 06:17:27 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1702556247;
+        bh=RUEys31RsDSUFYXrDwZ5JzMo7zxkvfU4HpC1RU/FMa0=;
+        h=Date:From:To:CC:Subject:References:In-Reply-To;
+        b=gFGZLG9s7MkIjWs5tvPVQ7wZreEb2waw2R9TltiuVJiv4CskUQDdJLI3DH/RMQVPf
+         eMVAJs55QAP0ZTbWs8diUuAu1u994fGRTlXWcXUxbd28XiS5hLp9E28TRpLRJdoxib
+         tamSQ3jIRxUKCYuJ2ag+vo3TKbYSKYstipzwHshE=
+Received: from DLEE103.ent.ti.com (dlee103.ent.ti.com [157.170.170.33])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 3BECHROq045626
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 14 Dec 2023 06:17:27 -0600
+Received: from DLEE107.ent.ti.com (157.170.170.37) by DLEE103.ent.ti.com
+ (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 14
+ Dec 2023 06:17:27 -0600
+Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DLEE107.ent.ti.com
+ (157.170.170.37) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Thu, 14 Dec 2023 06:17:27 -0600
+Received: from localhost (uda0133052.dhcp.ti.com [128.247.81.232])
+        by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 3BECHRg3094684;
+        Thu, 14 Dec 2023 06:17:27 -0600
+Date:   Thu, 14 Dec 2023 06:17:27 -0600
+From:   Nishanth Menon <nm@ti.com>
+To:     Siddharth Vadapalli <s-vadapalli@ti.com>
+CC:     <vigneshr@ti.com>, <kristo@kernel.org>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <danishanwar@ti.com>,
+        <r-gunasekaran@ti.com>, <srk@ti.com>
+Subject: Re: [PATCH v2] arm64: dts: ti: k3-am654-icssg2: Enable PHY
+ interrupts for ICSSG2
+Message-ID: <20231214121727.ayrbqz2nmeb25rpw@striving>
+References: <20231213080216.1710730-1-s-vadapalli@ti.com>
+ <20231213123819.tqh3lm2ceir3qjbk@swimmer>
+ <6f1c1a59-cec0-46d1-8ecb-a82d9d444ccf@ti.com>
 MIME-Version: 1.0
-References: <20231205024310.1593100-1-atishp@rivosinc.com> <20231205024310.1593100-4-atishp@rivosinc.com>
-In-Reply-To: <20231205024310.1593100-4-atishp@rivosinc.com>
-From:   Anup Patel <anup@brainfault.org>
-Date:   Thu, 14 Dec 2023 17:46:17 +0530
-Message-ID: <CAAhSdy0_DdCeFdzzJgoWhnrMz1-UqQXKLWNBAAXB6SQ_eJ2gyg@mail.gmail.com>
-Subject: Re: [RFC 3/9] RISC-V: Add FIRMWARE_READ_HI definition
-To:     Atish Patra <atishp@rivosinc.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Alexandre Ghiti <alexghiti@rivosinc.com>,
-        Andrew Jones <ajones@ventanamicro.com>,
-        Atish Patra <atishp@atishpatra.org>,
-        Conor Dooley <conor.dooley@microchip.com>,
-        Guo Ren <guoren@kernel.org>, Icenowy Zheng <uwu@icenowy.me>,
-        kvm-riscv@lists.infradead.org, kvm@vger.kernel.org,
-        linux-riscv@lists.infradead.org,
-        Mark Rutland <mark.rutland@arm.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Will Deacon <will@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <6f1c1a59-cec0-46d1-8ecb-a82d9d444ccf@ti.com>
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 5, 2023 at 8:13=E2=80=AFAM Atish Patra <atishp@rivosinc.com> wr=
-ote:
->
-> SBI v2.0 added another function to SBI PMU extension to read
-> the upper bits of a counter with width larger than XLEN.
->
-> Add the definition for that function.
->
-> Signed-off-by: Atish Patra <atishp@rivosinc.com>
+On 11:14-20231214, Siddharth Vadapalli wrote:
+> Hello Nishanth,
+> 
+> On 13/12/23 18:08, Nishanth Menon wrote:
+> > On 13:32-20231213, Siddharth Vadapalli wrote:
+> >> Enable interrupt mode of operation of the DP83867 Ethernet PHY which is
+> >> used by ICSSG2. The DP83867 PHY driver already supports interrupt handling
+> >> for interrupts generated by the PHY. Thus, add the necessary device-tree
+> >> support to enable it.
+> >>
+> >> Since the GPIO1_87 line is muxed with EXT_REFCLK1 and SYNC1_OUT, update
+> >> the pinmux to select GPIO1_87 for routing the interrupt.
+> >>
+> >> As the same interrupt line and therefore the same pinmux configuration is
+> >> applicable to both Ethernet PHYs used by ICSSG2, allocate the pinmux
+> >> resource to the first Ethernet PHY alone.
+> 
+> ...
+> 
+> > 
+> > https://www.ti.com/lit/ds/symlink/dp83867ir.pdf -> it looks like the
+> > interrupt pin is level event. but drivers/gpio/gpio-davinci.c::
+> > gpio_irq_type() -> The SoC cannot handle level, only edge.
+> > 
+> > A bit confused here..  GPIO 87 is shared between two phys. isn't it a
+> > case of race?
+> > 
+> > PHY1 assets low
+> > phy1 handler starts, but before the driver it clears the condition:
+> > PHY2 asserts low - but since the signal is already low, there is no
+> > pulse
+> > phy1 handler clears phy1 condition, but signal is still low due to phy2?
+> > now phy2 OR phy1 never gets handled since there is never a pulse event
+> > ever again.
+> 
+> Yes, you are right! Edge-Triggered interrupts shouldn't be shared. I missed
+> noticing this. Thank you for pointing it out. Since the SoC only supports
+> Edge-Triggered interrupts, I believe that the correct decision would be to use
+> the interrupt for only one of the two PHYs, while leaving the other PHY in
+> polled mode of operation which is the default.
+> 
+> Kindly let me know if this is acceptable and I shall update this patch accordingly.
 
-LGTM.
+Sounds like a bug in board design there (due to an choice of IP
+limitation) - I suggest getting it noted in board documentation and
+refer to the errata in the second phy (else folks will wonder why we
+aren't using interrupts on the second phy.
 
-Reviewed-by: Anup Patel <anup@brainfault.org>
+> 
+> > 
+> > 
+> >>  		ti,rx-internal-delay = <DP83867_RGMIIDCTL_2_00_NS>;
+> >>  		ti,fifo-depth = <DP83867_PHYCR_FIFO_DEPTH_4_B_NIB>;
+> >>  	};
+> >> -- 
+> >> 2.34.1
+> >>
+> > 
+> 
+> -- 
+> Regards,
+> Siddharth.
 
+-- 
 Regards,
-Anup
-
-> ---
->  arch/riscv/include/asm/sbi.h | 1 +
->  1 file changed, 1 insertion(+)
->
-> diff --git a/arch/riscv/include/asm/sbi.h b/arch/riscv/include/asm/sbi.h
-> index 0892f4421bc4..f3eeca79a02d 100644
-> --- a/arch/riscv/include/asm/sbi.h
-> +++ b/arch/riscv/include/asm/sbi.h
-> @@ -121,6 +121,7 @@ enum sbi_ext_pmu_fid {
->         SBI_EXT_PMU_COUNTER_START,
->         SBI_EXT_PMU_COUNTER_STOP,
->         SBI_EXT_PMU_COUNTER_FW_READ,
-> +       SBI_EXT_PMU_COUNTER_FW_READ_HI,
->  };
->
->  union sbi_pmu_ctr_info {
-> --
-> 2.34.1
->
+Nishanth Menon
+Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
