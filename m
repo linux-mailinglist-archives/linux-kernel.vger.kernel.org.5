@@ -2,119 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EFC76813032
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 13:32:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EBE881302D
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 13:32:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1573030AbjLNMck (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 07:32:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43898 "EHLO
+        id S1573046AbjLNMc0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 07:32:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58650 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1573044AbjLNMci (ORCPT
+        with ESMTP id S1573030AbjLNMcZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 07:32:38 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C08311A
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 04:32:45 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C6448C433C7;
-        Thu, 14 Dec 2023 12:32:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1702557164;
-        bh=9BrA7lyu3u+qJ3w2HS8iC7OSGrx00yqnLUiF+PUY4qY=;
-        h=From:To:Cc:Subject:Date:From;
-        b=RqGRfm7E4CUqLdMdONsQrsy9g06BSxdAmIdGsOYqJrCdTrL/bTqp2+5cE3ILnPqBQ
-         Y73DCSwKYh6rW6zdpzuMLHGp71tcHlXCqifNHDvgfz5tweMjGoVLm+RpRZa8oEyF7D
-         Cbe7vpzSEGuMSZe3QypQuE4l3oXf18a7bAibAh9n9OeWBirYvU/73yVhGuvAgM80KM
-         BlTw1u3MgLBT3yPwUapWu0rOH5ZvDPFJu8euhxMw8qAhf84lYj7+zFKkiOoNLY9/93
-         +p10vwkcu8ReFAVIKS7Zz+HUMZoBEuFW3CQdl4l7jj6el2sBazdyYtxl7ra3ghzpYW
-         u8F86cB/DgtGA==
-From:   Arnd Bergmann <arnd@kernel.org>
-To:     Inki Dae <inki.dae@samsung.com>,
-        Seung-Woo Kim <sw0312.kim@samsung.com>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Christoph Manszewski <c.manszewski@samsung.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Thierry Reding <treding@nvidia.com>,
-        Steven Price <steven.price@arm.com>,
-        Rob Herring <robh@kernel.org>, Robert Foss <rfoss@kernel.org>,
-        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
-        Liviu Dudau <liviu.dudau@arm.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        dri-devel@lists.freedesktop.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] drm/exynos: fix accidental on-stack copy of exynos_drm_plane
-Date:   Thu, 14 Dec 2023 13:32:15 +0100
-Message-Id: <20231214123237.1727428-1-arnd@kernel.org>
-X-Mailer: git-send-email 2.39.2
+        Thu, 14 Dec 2023 07:32:25 -0500
+Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F33BA11D
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 04:32:31 -0800 (PST)
+Received: by mail-pg1-x532.google.com with SMTP id 41be03b00d2f7-5ca5b61f101so452065a12.0
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 04:32:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=brainfault-org.20230601.gappssmtp.com; s=20230601; t=1702557151; x=1703161951; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=OHs0a9X4fElRxkh1m4Obf7cu50BAmw2Tug+rwqngNXM=;
+        b=rTUdyDnx0uZyyMLdBq/39Sz/gjFVrGgpyKLlpYbesZsJXm5qekReLG1fkuAZqUCJxF
+         GJcLI0hl2daTeRGAuY+hjKGgdaF6LaAOoo5WEQU2OXNCFLLam8F4IfFricyUnwirJ6JB
+         uVJrQTwnrn5NDXkcvqnkU2QPAPwvRffrTEZdS2RDIvhSsVyq/8D0S1YEfZIKJprABZ/m
+         zVqvH4wLBJ1Q6UlCt6SCTKN+QS2nrz9BzKEe2FAt3P4qHOrLAsvtW6Q9m9uteXrm2zvi
+         EPF8Q/sNe/RT45dXjJyNhBoctCXiO8U3qSVG0jn5sXLTJxM4RqXAMJQXUdK5i98LnyU5
+         WSww==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702557151; x=1703161951;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=OHs0a9X4fElRxkh1m4Obf7cu50BAmw2Tug+rwqngNXM=;
+        b=KNCjd6SXrKl7jpL4y/4vKXJ94c+Aae54fboiLZJygTLyudWDxNnDjc3kn02baXuYDc
+         zk59Fkq3ueVDpBkuDTgxegwOX/Uka0icBH+/8OWiN7qnry1Lb31WBtMoWm+mG/s412bO
+         K7PdXGpeDaycDj0C2d7oLDh/yN0/QCumaO+gynJcYSQkIoL96mgA8Z49eV+azHesBuUT
+         BnPv+AkCN55hnpS0aU3+4nEiJoJTlpKGbCTO385o8laeM8ggeWoP5qRaeZ/U0W7GsqA5
+         0kvyARTvOSNW8IsyIZE3odzMKqm3QdiqD2N8S51NjfeNtV4WtCIKVNIfhm6vFUig4Mw9
+         nX6A==
+X-Gm-Message-State: AOJu0Yznro+ppAnlBxIqfaItL+F95kDhOD0Fb0wRf4s7AEgzihy0Nd5E
+        Y1ZT8GcvqiSKU7MnupUEy8UpxE/pQ45k6nCM7tA4RA==
+X-Google-Smtp-Source: AGHT+IHtJNIxrFwRTRE/bqbHJp34NVZj1ThA00NgG2O+fluhMv9I0JgSLSsCVqYFeOP3WU22OtYuCLxxss5Y01LGpik=
+X-Received: by 2002:a17:90a:de94:b0:28b:1fbd:27de with SMTP id
+ n20-20020a17090ade9400b0028b1fbd27demr4566pjv.29.1702557151290; Thu, 14 Dec
+ 2023 04:32:31 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20231205024310.1593100-1-atishp@rivosinc.com> <20231205024310.1593100-6-atishp@rivosinc.com>
+In-Reply-To: <20231205024310.1593100-6-atishp@rivosinc.com>
+From:   Anup Patel <anup@brainfault.org>
+Date:   Thu, 14 Dec 2023 18:02:19 +0530
+Message-ID: <CAAhSdy1L6smTUtjO1XJp2L=EfK-jYN9CS70h9nNa639ownKJBg@mail.gmail.com>
+Subject: Re: [RFC 5/9] RISC-V: Add SBI PMU snapshot definitions
+To:     Atish Patra <atishp@rivosinc.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Alexandre Ghiti <alexghiti@rivosinc.com>,
+        Andrew Jones <ajones@ventanamicro.com>,
+        Atish Patra <atishp@atishpatra.org>,
+        Conor Dooley <conor.dooley@microchip.com>,
+        Guo Ren <guoren@kernel.org>, Icenowy Zheng <uwu@icenowy.me>,
+        kvm-riscv@lists.infradead.org, kvm@vger.kernel.org,
+        linux-riscv@lists.infradead.org,
+        Mark Rutland <mark.rutland@arm.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Will Deacon <will@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+On Tue, Dec 5, 2023 at 8:13=E2=80=AFAM Atish Patra <atishp@rivosinc.com> wr=
+ote:
+>
+> SBI PMU Snapshot function optimizes the number of traps to
+> higher privilege mode by leveraging a shared memory between the S/VS-mode
+> and the M/HS mode. Add the definitions for that extension
+>
+> Signed-off-by: Atish Patra <atishp@rivosinc.com>
 
-gcc rightfully complains about excessive stack usage in the fimd_win_set_pixfmt()
-function:
+LGTM.
 
-drivers/gpu/drm/exynos/exynos_drm_fimd.c: In function 'fimd_win_set_pixfmt':
-drivers/gpu/drm/exynos/exynos_drm_fimd.c:750:1: error: the frame size of 1032 bytes is larger than 1024 byte
-drivers/gpu/drm/exynos/exynos5433_drm_decon.c: In function 'decon_win_set_pixfmt':
-drivers/gpu/drm/exynos/exynos5433_drm_decon.c:381:1: error: the frame size of 1032 bytes is larger than 1024 bytes
+Reviewed-by: Anup Patel <anup@brainfault.org>
 
-There is really no reason to copy the large exynos_drm_plane
-structure to the stack before using one of its members, so just
-use a pointer instead.
+Regards,
+Anup
 
-Fixes: 6f8ee5c21722 ("drm/exynos: fimd: Make plane alpha configurable")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- drivers/gpu/drm/exynos/exynos5433_drm_decon.c | 4 ++--
- drivers/gpu/drm/exynos/exynos_drm_fimd.c      | 4 ++--
- 2 files changed, 4 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/gpu/drm/exynos/exynos5433_drm_decon.c b/drivers/gpu/drm/exynos/exynos5433_drm_decon.c
-index 4d986077738b..bce027552474 100644
---- a/drivers/gpu/drm/exynos/exynos5433_drm_decon.c
-+++ b/drivers/gpu/drm/exynos/exynos5433_drm_decon.c
-@@ -319,9 +319,9 @@ static void decon_win_set_bldmod(struct decon_context *ctx, unsigned int win,
- static void decon_win_set_pixfmt(struct decon_context *ctx, unsigned int win,
- 				 struct drm_framebuffer *fb)
- {
--	struct exynos_drm_plane plane = ctx->planes[win];
-+	struct exynos_drm_plane *plane = &ctx->planes[win];
- 	struct exynos_drm_plane_state *state =
--		to_exynos_plane_state(plane.base.state);
-+		to_exynos_plane_state(plane->base.state);
- 	unsigned int alpha = state->base.alpha;
- 	unsigned int pixel_alpha;
- 	unsigned long val;
-diff --git a/drivers/gpu/drm/exynos/exynos_drm_fimd.c b/drivers/gpu/drm/exynos/exynos_drm_fimd.c
-index 8dde7b1e9b35..5bdc246f5fad 100644
---- a/drivers/gpu/drm/exynos/exynos_drm_fimd.c
-+++ b/drivers/gpu/drm/exynos/exynos_drm_fimd.c
-@@ -661,9 +661,9 @@ static void fimd_win_set_bldmod(struct fimd_context *ctx, unsigned int win,
- static void fimd_win_set_pixfmt(struct fimd_context *ctx, unsigned int win,
- 				struct drm_framebuffer *fb, int width)
- {
--	struct exynos_drm_plane plane = ctx->planes[win];
-+	struct exynos_drm_plane *plane = &ctx->planes[win];
- 	struct exynos_drm_plane_state *state =
--		to_exynos_plane_state(plane.base.state);
-+		to_exynos_plane_state(plane->base.state);
- 	uint32_t pixel_format = fb->format->format;
- 	unsigned int alpha = state->base.alpha;
- 	u32 val = WINCONx_ENWIN;
--- 
-2.39.2
-
+> ---
+>  arch/riscv/include/asm/sbi.h | 10 ++++++++++
+>  1 file changed, 10 insertions(+)
+>
+> diff --git a/arch/riscv/include/asm/sbi.h b/arch/riscv/include/asm/sbi.h
+> index f3eeca79a02d..29821addb9b7 100644
+> --- a/arch/riscv/include/asm/sbi.h
+> +++ b/arch/riscv/include/asm/sbi.h
+> @@ -122,6 +122,7 @@ enum sbi_ext_pmu_fid {
+>         SBI_EXT_PMU_COUNTER_STOP,
+>         SBI_EXT_PMU_COUNTER_FW_READ,
+>         SBI_EXT_PMU_COUNTER_FW_READ_HI,
+> +       SBI_EXT_PMU_SNAPSHOT_SET_SHMEM,
+>  };
+>
+>  union sbi_pmu_ctr_info {
+> @@ -138,6 +139,13 @@ union sbi_pmu_ctr_info {
+>         };
+>  };
+>
+> +/* Data structure to contain the pmu snapshot data */
+> +struct riscv_pmu_snapshot_data {
+> +       uint64_t ctr_overflow_mask;
+> +       uint64_t ctr_values[64];
+> +       uint64_t reserved[447];
+> +};
+> +
+>  #define RISCV_PMU_RAW_EVENT_MASK GENMASK_ULL(47, 0)
+>  #define RISCV_PMU_RAW_EVENT_IDX 0x20000
+>
+> @@ -234,9 +242,11 @@ enum sbi_pmu_ctr_type {
+>
+>  /* Flags defined for counter start function */
+>  #define SBI_PMU_START_FLAG_SET_INIT_VALUE (1 << 0)
+> +#define SBI_PMU_START_FLAG_INIT_FROM_SNAPSHOT (1 << 1)
+>
+>  /* Flags defined for counter stop function */
+>  #define SBI_PMU_STOP_FLAG_RESET (1 << 0)
+> +#define SBI_PMU_STOP_FLAG_TAKE_SNAPSHOT (1 << 1)
+>
+>  enum sbi_ext_dbcn_fid {
+>         SBI_EXT_DBCN_CONSOLE_WRITE =3D 0,
+> --
+> 2.34.1
+>
