@@ -2,459 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7094F813200
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 14:46:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DA48813207
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 14:46:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1573242AbjLNNqX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 08:46:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38236 "EHLO
+        id S1573241AbjLNNqi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 08:46:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55852 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1444153AbjLNNqV (ORCPT
+        with ESMTP id S229930AbjLNNqg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 08:46:21 -0500
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99F97135
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 05:46:26 -0800 (PST)
-Received: by mail-pj1-x1030.google.com with SMTP id 98e67ed59e1d1-28659348677so502812a91.0
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 05:46:26 -0800 (PST)
+        Thu, 14 Dec 2023 08:46:36 -0500
+Received: from smtp-fw-52003.amazon.com (smtp-fw-52003.amazon.com [52.119.213.152])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 620C3128;
+        Thu, 14 Dec 2023 05:46:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=brainfault-org.20230601.gappssmtp.com; s=20230601; t=1702561586; x=1703166386; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=eqsCj1Pji2dMXUzssOKL24PMHOKuScY5OxCjdcWMM24=;
-        b=UFXu7+M+Eq1D+oaf+zUY8mV+/C+TESUsNJaIW6gKzPAa6caplb1pDkuhBSrsCc4OCM
-         2ToeS9i94/xASfJE54MWHDvWVwWqFqNQA3rm+cKJ4bxCCB/AQx9Z70RCZJwukj44erBL
-         Aoz82WtyiZKgWV2yVewI60m76Ny32/n7EQdzD46Gqp3wPp32QZQER00BYcWitSAEDUG2
-         nqbxkxtvBVoqRpEvEel1dWFRQ8D5AjekLg3QKnWuCQUZNfYmcBbQFe88/68qQaWdjvn5
-         SBoq1piqAPmI3ayLbwiAMYb33NEuhms2DVhtdAKFHf7mol1nsQMaglPl576nYD3eyZ1y
-         Mrrw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702561586; x=1703166386;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=eqsCj1Pji2dMXUzssOKL24PMHOKuScY5OxCjdcWMM24=;
-        b=i2+vssXBXqAZswS/Jtsnw6xw5Byu7GKBm0OmbBwIBZT6UsHD3GayWNDeVt7nQ8RxuN
-         cF5N4rUP2VjrC2peIBMAIqDVmlKB0kxcOoncJsXFNn7jDnV1V1ifQbSxd072Ow5oLIRH
-         U+4BVR3oAyUHZ+vBAd6VF65ygL93Jcx0btsgF33XDJvjt/r80VD8yQwch0z8uFgoLti0
-         xac2HmaTSrob9cJte0zTbCBoEPb8sc7dYXSZXmV0FV0c+ExC6ndaOfpO8D0hOxp0gIfO
-         Ivysa7BUZuckxxkk9Op3y4CBXWLA6gf7/lJTe6pna6PkoFeAFKdDjFlXfK6hDaBlwO+M
-         CoPA==
-X-Gm-Message-State: AOJu0YwQdmFhTT6CqBgBjsWcNomwwWNO96UfrOsIdMFdTGMThaZb+HF7
-        +5kxBesfd1hP8rCQFSHOdDqwaa61/tj0t6quc4NncQ==
-X-Google-Smtp-Source: AGHT+IGeny43qUFIe4BpX45oxi28cgFjsCAPznUNG/JAF7tIIG9tJABsAEjZn2TVlKcm9A/tD8jvLIRTHsDpI1pXtS4=
-X-Received: by 2002:a17:90a:ad7:b0:28b:1451:f789 with SMTP id
- r23-20020a17090a0ad700b0028b1451f789mr594645pje.14.1702561585831; Thu, 14 Dec
- 2023 05:46:25 -0800 (PST)
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1702561602; x=1734097602;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=hOEVUJq9OoG8R5is92GBHXhyEM+foNZh7lJCCzZq/p8=;
+  b=FJSB+xO5KtbyZyKyZfVxN9pFQ00s18Ta4dcMWJSvKq6VDMm+3tSHo713
+   iwtHYwty+kiqOlJVrE/ty6Imty1SXrqGBUJiM/2qHDn1otlQ9R5SIOzDr
+   TGVoCemJ9QL3rL2RDQmfox+jzykB8rO9GKNrO9+eEcyx7zCcvDGjn70Sy
+   E=;
+X-IronPort-AV: E=Sophos;i="6.04,275,1695686400"; 
+   d="scan'208";a="625228632"
+Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-iad-1a-m6i4x-47cc8a4c.us-east-1.amazon.com) ([10.43.8.6])
+  by smtp-border-fw-52003.iad7.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Dec 2023 13:46:40 +0000
+Received: from smtpout.prod.us-west-2.prod.farcaster.email.amazon.dev (iad7-ws-svc-p70-lb3-vlan2.iad.amazon.com [10.32.235.34])
+        by email-inbound-relay-iad-1a-m6i4x-47cc8a4c.us-east-1.amazon.com (Postfix) with ESMTPS id CD0A61619CB;
+        Thu, 14 Dec 2023 13:46:37 +0000 (UTC)
+Received: from EX19MTAUWB002.ant.amazon.com [10.0.21.151:16235]
+ by smtpin.naws.us-west-2.prod.farcaster.email.amazon.dev [10.0.43.236:2525] with esmtp (Farcaster)
+ id 0e3acdb6-9070-4956-aa60-7f5ffd5e720a; Thu, 14 Dec 2023 13:46:36 +0000 (UTC)
+X-Farcaster-Flow-ID: 0e3acdb6-9070-4956-aa60-7f5ffd5e720a
+Received: from EX19D004ANA001.ant.amazon.com (10.37.240.138) by
+ EX19MTAUWB002.ant.amazon.com (10.250.64.231) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Thu, 14 Dec 2023 13:46:35 +0000
+Received: from 88665a182662.ant.amazon.com (10.143.92.5) by
+ EX19D004ANA001.ant.amazon.com (10.37.240.138) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Thu, 14 Dec 2023 13:46:30 +0000
+From:   Kuniyuki Iwashima <kuniyu@amazon.com>
+To:     <syoshida@redhat.com>
+CC:     <davem@davemloft.net>, <kuba@kernel.org>, <kuniyu@amazon.com>,
+        <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <pabeni@redhat.com>,
+        <syzbot+c71bc336c5061153b502@syzkaller.appspotmail.com>,
+        Aleksandr Nogikh <nogikh@google.com>,
+        syzbot <syzkaller@googlegroups.com>
+Subject: Re: [PATCH net] net: Return error from sk_stream_wait_connect() if sk_wait_event() fails
+Date:   Thu, 14 Dec 2023 22:46:14 +0900
+Message-ID: <20231214134615.55389-1-kuniyu@amazon.com>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20231214.223106.2284573595890480656.syoshida@redhat.com>
+References: <20231214.223106.2284573595890480656.syoshida@redhat.com>
 MIME-Version: 1.0
-References: <20231205024310.1593100-1-atishp@rivosinc.com> <20231205024310.1593100-8-atishp@rivosinc.com>
-In-Reply-To: <20231205024310.1593100-8-atishp@rivosinc.com>
-From:   Anup Patel <anup@brainfault.org>
-Date:   Thu, 14 Dec 2023 19:16:13 +0530
-Message-ID: <CAAhSdy3cqeHg0HSE2qAZ3n4854xkhgZVjZa9hW0PD2NU9is4uA@mail.gmail.com>
-Subject: Re: [RFC 7/9] RISC-V: KVM: Implement SBI PMU Snapshot feature
-To:     Atish Patra <atishp@rivosinc.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Alexandre Ghiti <alexghiti@rivosinc.com>,
-        Andrew Jones <ajones@ventanamicro.com>,
-        Atish Patra <atishp@atishpatra.org>,
-        Conor Dooley <conor.dooley@microchip.com>,
-        Guo Ren <guoren@kernel.org>, Icenowy Zheng <uwu@icenowy.me>,
-        kvm-riscv@lists.infradead.org, kvm@vger.kernel.org,
-        linux-riscv@lists.infradead.org,
-        Mark Rutland <mark.rutland@arm.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Will Deacon <will@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.143.92.5]
+X-ClientProxiedBy: EX19D031UWA004.ant.amazon.com (10.13.139.19) To
+ EX19D004ANA001.ant.amazon.com (10.37.240.138)
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 5, 2023 at 8:13=E2=80=AFAM Atish Patra <atishp@rivosinc.com> wr=
-ote:
->
-> PMU Snapshot function allows to minimize the number of traps when the
-> guest access configures/access the hpmcounters. If the snapshot feature
-> is enabled, the hypervisor updates the shared memory with counter
-> data and state of overflown counters. The guest can just read the
-> shared memory instead of trap & emulate done by the hypervisor.
->
-> This patch doesn't implement the counter overflow yet.
->
-> Signed-off-by: Atish Patra <atishp@rivosinc.com>
-> ---
->  arch/riscv/include/asm/kvm_vcpu_pmu.h |  10 ++
->  arch/riscv/kvm/vcpu_pmu.c             | 129 ++++++++++++++++++++++++--
->  arch/riscv/kvm/vcpu_sbi_pmu.c         |   3 +
->  3 files changed, 134 insertions(+), 8 deletions(-)
->
-> diff --git a/arch/riscv/include/asm/kvm_vcpu_pmu.h b/arch/riscv/include/a=
-sm/kvm_vcpu_pmu.h
-> index 395518a1664e..64c75acad6ba 100644
-> --- a/arch/riscv/include/asm/kvm_vcpu_pmu.h
-> +++ b/arch/riscv/include/asm/kvm_vcpu_pmu.h
-> @@ -36,6 +36,7 @@ struct kvm_pmc {
->         bool started;
->         /* Monitoring event ID */
->         unsigned long event_idx;
-> +       struct kvm_vcpu *vcpu;
+From: Shigeru Yoshida <syoshida@redhat.com>
+Date: Thu, 14 Dec 2023 22:31:06 +0900 (JST)
+> On Thu, 14 Dec 2023 17:46:22 +0900, Kuniyuki Iwashima wrote:
+> > From: Shigeru Yoshida <syoshida@redhat.com>
+> > Date: Thu, 14 Dec 2023 14:09:22 +0900
+> >> The following NULL pointer dereference issue occurred:
+> >> 
+> >> BUG: kernel NULL pointer dereference, address: 0000000000000000
+> >> <...>
+> >> RIP: 0010:ccid_hc_tx_send_packet net/dccp/ccid.h:166 [inline]
+> >> RIP: 0010:dccp_write_xmit+0x49/0x140 net/dccp/output.c:356
+> >> <...>
+> >> Call Trace:
+> >>  <TASK>
+> >>  dccp_sendmsg+0x642/0x7e0 net/dccp/proto.c:801
+> >>  inet_sendmsg+0x63/0x90 net/ipv4/af_inet.c:846
+> >>  sock_sendmsg_nosec net/socket.c:730 [inline]
+> >>  __sock_sendmsg+0x83/0xe0 net/socket.c:745
+> >>  ____sys_sendmsg+0x443/0x510 net/socket.c:2558
+> >>  ___sys_sendmsg+0xe5/0x150 net/socket.c:2612
+> >>  __sys_sendmsg+0xa6/0x120 net/socket.c:2641
+> >>  __do_sys_sendmsg net/socket.c:2650 [inline]
+> >>  __se_sys_sendmsg net/socket.c:2648 [inline]
+> >>  __x64_sys_sendmsg+0x45/0x50 net/socket.c:2648
+> >>  do_syscall_x64 arch/x86/entry/common.c:51 [inline]
+> >>  do_syscall_64+0x43/0x110 arch/x86/entry/common.c:82
+> >>  entry_SYSCALL_64_after_hwframe+0x63/0x6b
+> >> 
+> >> sk_wait_event() returns an error (-EPIPE) if disconnect() is called on the
+> >> socket waiting for the event. However, sk_stream_wait_connect() returns
+> >> success, i.e. zero, even if sk_wait_event() returns -EPIPE, so a function
+> >> that waits for a connection with sk_stream_wait_connect() may misbehave.
+> >> 
+> >> In the case of the above DCCP issue, dccp_sendmsg() is waiting for the
+> >> connection. If disconnect() is called in concurrently, the above issue
+> >> occurs.
+> >> 
+> >> This patch fixes the issue by returning error from sk_stream_wait_connect()
+> >> if sk_wait_event() fails.
+> >> 
+> >> Fixes: 419ce133ab92 ("tcp: allow again tcp_disconnect() when threads are waiting")
+> >> Signed-off-by: Shigeru Yoshida <syoshida@redhat.com>
+> > 
+> > Reviewed-by: Kuniyuki Iwashima <kuniyu@amazon.com>
+> > 
+> > I guess you picked this issue from syzbot's report.
+> > https://lore.kernel.org/netdev/0000000000009e122006088a2b8d@google.com/
+> > 
+> > If so, let's give a proper credit to syzbot and its authors:
+> > 
+> > Reported-by: syzbot+c71bc336c5061153b502@syzkaller.appspotmail.com
+> 
+> Hi Kuniyuki-san,
+> 
+> Thank you very much for your review. I didn't notice the syzbot's
+> report. Actually, I found this issue by running syzkaller on my
+> machine.
 
-Where is this used ?
+Thanks for clarifying.
 
->  };
->
->  /* PMU data structure per vcpu */
-> @@ -50,6 +51,12 @@ struct kvm_pmu {
->         bool init_done;
->         /* Bit map of all the virtual counter used */
->         DECLARE_BITMAP(pmc_in_use, RISCV_KVM_MAX_COUNTERS);
-> +       /* Bit map of all the virtual counter overflown */
-> +       DECLARE_BITMAP(pmc_overflown, RISCV_KVM_MAX_COUNTERS);
-> +       /* The address of the counter snapshot area (guest physical addre=
-ss) */
-> +       unsigned long snapshot_addr;
-> +       /* The actual data of the snapshot */
-> +       struct riscv_pmu_snapshot_data *sdata;
->  };
->
->  #define vcpu_to_pmu(vcpu) (&(vcpu)->arch.pmu_context)
-> @@ -85,6 +92,9 @@ int kvm_riscv_vcpu_pmu_ctr_cfg_match(struct kvm_vcpu *v=
-cpu, unsigned long ctr_ba
->  int kvm_riscv_vcpu_pmu_ctr_read(struct kvm_vcpu *vcpu, unsigned long cid=
-x,
->                                 struct kvm_vcpu_sbi_return *retdata);
->  void kvm_riscv_vcpu_pmu_init(struct kvm_vcpu *vcpu);
-> +int kvm_riscv_vcpu_pmu_setup_snapshot(struct kvm_vcpu *vcpu, unsigned lo=
-ng saddr_low,
-> +                                      unsigned long saddr_high, unsigned=
- long flags,
-> +                                      struct kvm_vcpu_sbi_return *retdat=
-a);
->  void kvm_riscv_vcpu_pmu_deinit(struct kvm_vcpu *vcpu);
->  void kvm_riscv_vcpu_pmu_reset(struct kvm_vcpu *vcpu);
->
-> diff --git a/arch/riscv/kvm/vcpu_pmu.c b/arch/riscv/kvm/vcpu_pmu.c
-> index 86391a5061dd..622c4ee89e7b 100644
-> --- a/arch/riscv/kvm/vcpu_pmu.c
-> +++ b/arch/riscv/kvm/vcpu_pmu.c
-> @@ -310,6 +310,79 @@ int kvm_riscv_vcpu_pmu_read_hpm(struct kvm_vcpu *vcp=
-u, unsigned int csr_num,
->         return ret;
->  }
->
-> +static void kvm_pmu_clear_snapshot_area(struct kvm_vcpu *vcpu)
-> +{
-> +       struct kvm_pmu *kvpmu =3D vcpu_to_pmu(vcpu);
-> +       int snapshot_area_size =3D sizeof(struct riscv_pmu_snapshot_data)=
-;
-> +
-> +       if (kvpmu->sdata) {
-> +               memset(kvpmu->sdata, 0, snapshot_area_size);
-> +               if (kvpmu->snapshot_addr !=3D INVALID_GPA)
-> +                       kvm_vcpu_write_guest(vcpu, kvpmu->snapshot_addr,
-> +                                            kvpmu->sdata, snapshot_area_=
-size);
+I'm also running syzkaller locally and used to add
 
-We should free the "kvpmu->sdata" and set it to NULL. This way subsequent
-re-enabling of snapshot won't leak the kernel memory.
+  Reported-by: syzbot <syzkaller@googlegroups.com>
 
-> +       }
-> +       kvpmu->snapshot_addr =3D INVALID_GPA;
-> +}
-> +
-> +int kvm_riscv_vcpu_pmu_setup_snapshot(struct kvm_vcpu *vcpu, unsigned lo=
-ng saddr_low,
-> +                                     unsigned long saddr_high, unsigned =
-long flags,
-> +                                     struct kvm_vcpu_sbi_return *retdata=
-)
-> +{
-> +       struct kvm_pmu *kvpmu =3D vcpu_to_pmu(vcpu);
-> +       int snapshot_area_size =3D sizeof(struct riscv_pmu_snapshot_data)=
-;
-> +       int sbiret =3D 0;
-> +       gpa_t saddr;
-> +       unsigned long hva;
-> +       bool writable;
-> +
-> +       if (!kvpmu) {
-> +               sbiret =3D SBI_ERR_INVALID_PARAM;
-> +               goto out;
-> +       }
-> +
-> +       if (saddr_low =3D=3D -1 && saddr_high =3D=3D -1) {
-> +               kvm_pmu_clear_snapshot_area(vcpu);
-> +               return 0;
-> +       }
-> +
-> +       saddr =3D saddr_low;
-> +
-> +       if (saddr_high !=3D 0) {
-> +#ifdef CONFIG_32BIT
-> +               saddr |=3D ((gpa_t)saddr << 32);
-> +#else
-> +               sbiret =3D SBI_ERR_INVALID_ADDRESS;
-> +               goto out;
-> +#endif
-> +       }
-> +
-> +       if (kvm_is_error_gpa(vcpu->kvm, saddr)) {
-> +               sbiret =3D SBI_ERR_INVALID_PARAM;
-> +               goto out;
-> +       }
-> +
-> +       hva =3D kvm_vcpu_gfn_to_hva_prot(vcpu, saddr >> PAGE_SHIFT, &writ=
-able);
-> +       if (kvm_is_error_hva(hva) || !writable) {
-> +               sbiret =3D SBI_ERR_INVALID_ADDRESS;
-> +               goto out;
-> +       }
-> +
-> +       kvpmu->snapshot_addr =3D saddr;
-> +       kvpmu->sdata =3D kzalloc(snapshot_area_size, GFP_ATOMIC);
-> +       if (!kvpmu->sdata)
-> +               return -ENOMEM;
-> +
-> +       if (kvm_vcpu_write_guest(vcpu, saddr, kvpmu->sdata, snapshot_area=
-_size)) {
-> +               kfree(kvpmu->sdata);
-> +               kvpmu->snapshot_addr =3D INVALID_GPA;
-> +               sbiret =3D SBI_ERR_FAILURE;
-> +       }
+But, it was confusing for syzbot's owners, and I got a mail from one of
+the authors, Aleksandr Nogikh.  Since then, if syzkaller found an issue
+that was not on the syzbot dashboard, I have used
 
-Newline here.
+  Reported-by: syzkaller <syzkaller@googlegroups.com>
 
-> +out:
-> +       retdata->err_val =3D sbiret;
-> +
-> +       return 0;
-> +}
-> +
->  int kvm_riscv_vcpu_pmu_num_ctrs(struct kvm_vcpu *vcpu,
->                                 struct kvm_vcpu_sbi_return *retdata)
->  {
-> @@ -343,8 +416,10 @@ int kvm_riscv_vcpu_pmu_ctr_start(struct kvm_vcpu *vc=
-pu, unsigned long ctr_base,
->         int i, pmc_index, sbiret =3D 0;
->         struct kvm_pmc *pmc;
->         int fevent_code;
-> +       bool bSnapshot =3D flags & SBI_PMU_START_FLAG_INIT_FROM_SNAPSHOT;
->
-> -       if (kvm_pmu_validate_counter_mask(kvpmu, ctr_base, ctr_mask) < 0)=
- {
-> +       if ((kvm_pmu_validate_counter_mask(kvpmu, ctr_base, ctr_mask) < 0=
-) ||
-> +           (bSnapshot && kvpmu->snapshot_addr =3D=3D INVALID_GPA)) {
+.  FWIW, here's Aleksandr's words from the mail.
 
-We have a different error code when shared memory is not available.
+---8<---
+Maybe it would be just a little more clear if instead of
+Reported-by: syzbot <syzkaller@googlegroups.com>
+you'd write
+Reported-by: syzkaller <syzkaller@googlegroups.com>
+if the bug was found only by a local syzkaller instance, because
+otherwise it implies that the bug was found by syzbot, which is not
+really the case here :)
+---8<---
 
->                 sbiret =3D SBI_ERR_INVALID_PARAM;
->                 goto out;
->         }
-> @@ -355,8 +430,14 @@ int kvm_riscv_vcpu_pmu_ctr_start(struct kvm_vcpu *vc=
-pu, unsigned long ctr_base,
->                 if (!test_bit(pmc_index, kvpmu->pmc_in_use))
->                         continue;
->                 pmc =3D &kvpmu->pmc[pmc_index];
-> -               if (flags & SBI_PMU_START_FLAG_SET_INIT_VALUE)
-> +               if (flags & SBI_PMU_START_FLAG_SET_INIT_VALUE) {
->                         pmc->counter_val =3D ival;
-> +               } else if (bSnapshot) {
-> +                       kvm_vcpu_read_guest(vcpu, kvpmu->snapshot_addr, k=
-vpmu->sdata,
-> +                                           sizeof(struct riscv_pmu_snaps=
-hot_data));
-> +                       pmc->counter_val =3D kvpmu->sdata->ctr_values[pmc=
-_index];
-> +               }
-> +
->                 if (pmc->cinfo.type =3D=3D SBI_PMU_CTR_TYPE_FW) {
->                         fevent_code =3D get_event_code(pmc->event_idx);
->                         if (fevent_code >=3D SBI_PMU_FW_MAX) {
-> @@ -400,8 +481,10 @@ int kvm_riscv_vcpu_pmu_ctr_stop(struct kvm_vcpu *vcp=
-u, unsigned long ctr_base,
->         u64 enabled, running;
->         struct kvm_pmc *pmc;
->         int fevent_code;
-> +       bool bSnapshot =3D flags & SBI_PMU_STOP_FLAG_TAKE_SNAPSHOT;
->
-> -       if (kvm_pmu_validate_counter_mask(kvpmu, ctr_base, ctr_mask) < 0)=
- {
-> +       if ((kvm_pmu_validate_counter_mask(kvpmu, ctr_base, ctr_mask) < 0=
-) ||
-> +           (bSnapshot && (kvpmu->snapshot_addr =3D=3D INVALID_GPA))) {
 
-Same as above.
+> 
+> Now, I tested this patch with syzbot, and it looks good.
+> 
+> Reported-and-tested-by: syzbot+c71bc336c5061153b502@syzkaller.appspotmail.com
 
->                 sbiret =3D SBI_ERR_INVALID_PARAM;
->                 goto out;
->         }
-> @@ -423,27 +506,52 @@ int kvm_riscv_vcpu_pmu_ctr_stop(struct kvm_vcpu *vc=
-pu, unsigned long ctr_base,
->                                 sbiret =3D SBI_ERR_ALREADY_STOPPED;
->
->                         kvpmu->fw_event[fevent_code].started =3D false;
-> +                       /* No need to increment the value as it is absolu=
-te for firmware events */
-> +                       pmc->counter_val =3D kvpmu->fw_event[fevent_code]=
-.value;
+This time, this tag is best.
 
-This change does not relate to the current patch.
+Thanks!
 
->                 } else if (pmc->perf_event) {
->                         if (pmc->started) {
->                                 /* Stop counting the counter */
->                                 perf_event_disable(pmc->perf_event);
-> -                               pmc->started =3D false;
-
-Same as above.
-
->                         } else {
->                                 sbiret =3D SBI_ERR_ALREADY_STOPPED;
->                         }
->
-> -                       if (flags & SBI_PMU_STOP_FLAG_RESET) {
-> -                               /* Relase the counter if this is a reset =
-request */
-> +                       /* Stop counting the counter */
-> +                       perf_event_disable(pmc->perf_event);
-> +
-> +                       /* We only update if stopped is already called. T=
-he caller may stop/reset
-> +                        * the event in two steps.
-> +                        */
-
-Use a double winged style multiline comment block.
-
-> +                       if (pmc->started) {
->                                 pmc->counter_val +=3D perf_event_read_val=
-ue(pmc->perf_event,
->                                                                          =
- &enabled, &running);
-> +                               pmc->started =3D false;
-> +                       }
-> +
-> +                       if (flags & SBI_PMU_STOP_FLAG_RESET) {
-
-No need for braces here.
-
-> +                               /* Relase the counter if this is a reset =
-request */
-
-s/Relase/Release/
-
->                                 kvm_pmu_release_perf_event(pmc);
->                         }
->                 } else {
->                         sbiret =3D SBI_ERR_INVALID_PARAM;
->                 }
-> +
-> +               if (bSnapshot && !sbiret) {
-> +                       //TODO: Add counter overflow support when sscofpm=
-f support is added
-
-Use "/* */"
-
-> +                       kvpmu->sdata->ctr_values[i] =3D pmc->counter_val;
-> +                       kvm_vcpu_write_guest(vcpu, kvpmu->snapshot_addr, =
-kvpmu->sdata,
-> +                                            sizeof(struct riscv_pmu_snap=
-shot_data));
-> +               }
-> +
->                 if (flags & SBI_PMU_STOP_FLAG_RESET) {
->                         pmc->event_idx =3D SBI_PMU_EVENT_IDX_INVALID;
->                         clear_bit(pmc_index, kvpmu->pmc_in_use);
-> +                       if (bSnapshot) {
-> +                               /* Clear the snapshot area for the upcomi=
-ng deletion event */
-> +                               kvpmu->sdata->ctr_values[i] =3D 0;
-> +                               kvm_vcpu_write_guest(vcpu, kvpmu->snapsho=
-t_addr, kvpmu->sdata,
-> +                                                    sizeof(struct riscv_=
-pmu_snapshot_data));
-> +                       }
->                 }
->         }
->
-> @@ -517,8 +625,10 @@ int kvm_riscv_vcpu_pmu_ctr_cfg_match(struct kvm_vcpu=
- *vcpu, unsigned long ctr_ba
->                         kvpmu->fw_event[event_code].started =3D true;
->         } else {
->                 ret =3D kvm_pmu_create_perf_event(pmc, &attr, flags, eidx=
-, evtdata);
-> -               if (ret)
-> -                       return ret;
-> +               if (ret) {
-> +                       sbiret =3D SBI_ERR_NOT_SUPPORTED;
-> +                       goto out;
-> +               }
-
-This also looks like a change not related to the current patch.
-
->         }
->
->         set_bit(ctr_idx, kvpmu->pmc_in_use);
-> @@ -566,6 +676,7 @@ void kvm_riscv_vcpu_pmu_init(struct kvm_vcpu *vcpu)
->         kvpmu->num_hw_ctrs =3D num_hw_ctrs + 1;
->         kvpmu->num_fw_ctrs =3D SBI_PMU_FW_MAX;
->         memset(&kvpmu->fw_event, 0, SBI_PMU_FW_MAX * sizeof(struct kvm_fw=
-_event));
-> +       kvpmu->snapshot_addr =3D INVALID_GPA;
->
->         if (kvpmu->num_hw_ctrs > RISCV_KVM_MAX_HW_CTRS) {
->                 pr_warn_once("Limiting the hardware counters to 32 as spe=
-cified by the ISA");
-> @@ -585,6 +696,7 @@ void kvm_riscv_vcpu_pmu_init(struct kvm_vcpu *vcpu)
->                 pmc =3D &kvpmu->pmc[i];
->                 pmc->idx =3D i;
->                 pmc->event_idx =3D SBI_PMU_EVENT_IDX_INVALID;
-> +               pmc->vcpu =3D vcpu;
->                 if (i < kvpmu->num_hw_ctrs) {
->                         pmc->cinfo.type =3D SBI_PMU_CTR_TYPE_HW;
->                         if (i < 3)
-> @@ -625,6 +737,7 @@ void kvm_riscv_vcpu_pmu_deinit(struct kvm_vcpu *vcpu)
->         }
->         bitmap_zero(kvpmu->pmc_in_use, RISCV_MAX_COUNTERS);
->         memset(&kvpmu->fw_event, 0, SBI_PMU_FW_MAX * sizeof(struct kvm_fw=
-_event));
-> +       kvpmu->snapshot_addr =3D INVALID_GPA;
-
-You need to also free the sdata pointer.
-
->  }
->
->  void kvm_riscv_vcpu_pmu_reset(struct kvm_vcpu *vcpu)
-> diff --git a/arch/riscv/kvm/vcpu_sbi_pmu.c b/arch/riscv/kvm/vcpu_sbi_pmu.=
-c
-> index 7eca72df2cbd..77c20a61fd7d 100644
-> --- a/arch/riscv/kvm/vcpu_sbi_pmu.c
-> +++ b/arch/riscv/kvm/vcpu_sbi_pmu.c
-> @@ -64,6 +64,9 @@ static int kvm_sbi_ext_pmu_handler(struct kvm_vcpu *vcp=
-u, struct kvm_run *run,
->         case SBI_EXT_PMU_COUNTER_FW_READ:
->                 ret =3D kvm_riscv_vcpu_pmu_ctr_read(vcpu, cp->a0, retdata=
-);
->                 break;
-> +       case SBI_EXT_PMU_SNAPSHOT_SET_SHMEM:
-> +               ret =3D kvm_riscv_vcpu_pmu_setup_snapshot(vcpu, cp->a0, c=
-p->a1, cp->a2, retdata);
-> +               break;
->         default:
->                 retdata->err_val =3D SBI_ERR_NOT_SUPPORTED;
->         }
-> --
-> 2.34.1
->
-
-Regards,
-Anup
