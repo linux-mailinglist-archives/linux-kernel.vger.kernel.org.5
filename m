@@ -2,61 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9674B813361
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 15:41:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A851581335F
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 15:41:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1573523AbjLNOlc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 09:41:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54380 "EHLO
+        id S230287AbjLNOlG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 09:41:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40068 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230260AbjLNOla (ORCPT
+        with ESMTP id S230260AbjLNOlE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 09:41:30 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBBF4115
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 06:41:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1702564896; x=1734100896;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=9rgxfOe2FH8YxsT2QMJChnJtUV9rZKfVkhp7rG3QJIw=;
-  b=i+35Wg9kzJtmIcH0y76Haye9HrZyULpusaciWeiAYebaqo0vZyCSGFd1
-   mjF9cnx52IVOQKEfNJ4OeF7EDvLfmTqXGnPnNAmpBav7YNaFaZu9Ky8ih
-   85s4B1PdYjJed5xKvl+zN/9joDfSYVqcHAsdrTGx96u1SsIa5rf12Hued
-   egXeJp/O5vE7affcjIalKYc9973faE9pZliVNeXuoOtrM+NBcXBFf5bdz
-   8uz3x9cqmSTkjblfGSWgqELItREzIYsBF6LJsbgKFbi0JMtkKGNMrEUqQ
-   a8O5ct+RD+o3AZrtT0doWgKonZa31Xle2HYtLJ5pqN+aF8EEwRlsGsuM0
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10924"; a="392302135"
-X-IronPort-AV: E=Sophos;i="6.04,275,1695711600"; 
-   d="scan'208";a="392302135"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Dec 2023 06:41:35 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10924"; a="892488774"
-X-IronPort-AV: E=Sophos;i="6.04,275,1695711600"; 
-   d="scan'208";a="892488774"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by fmsmga002.fm.intel.com with ESMTP; 14 Dec 2023 06:41:33 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1rDmu3-000MBO-2Z;
-        Thu, 14 Dec 2023 14:41:31 +0000
-Date:   Thu, 14 Dec 2023 22:40:41 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     David Francis <David.Francis@amd.com>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Tony Cheng <Tony.Cheng@amd.com>
-Subject: drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_i2c_hw.c:809:67:
- sparse: sparse: dubious: x | !y
-Message-ID: <202312142225.r4UO3nhc-lkp@intel.com>
+        Thu, 14 Dec 2023 09:41:04 -0500
+Received: from mail-oi1-x22a.google.com (mail-oi1-x22a.google.com [IPv6:2607:f8b0:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB83D116
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 06:41:08 -0800 (PST)
+Received: by mail-oi1-x22a.google.com with SMTP id 5614622812f47-3ba1be5ad0aso2368320b6e.0
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 06:41:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=raspberrypi.com; s=google; t=1702564868; x=1703169668; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=JznIu9lNlIeiTo8wKTcxQuhhJ2zgIwL8Q7gBCogBxvY=;
+        b=mah02CWFDHeTmiEaZX6G5xe/jDGu/dsI/U6/A/xk/U36+pHEnHJrq/yhw989lBYSPl
+         RkE+ESJTpVpO2bz/X5Bjal+8ng2BhIO66S7B0msbnamgmJtPZDE4Tkvx7+E/AnrvnCGD
+         Z2l+DX+xC3zOYP1VMoDjWUVPlmNuVrqlzT1bCvOj6YiS87OV3WpZIHJ+s1hCNEMLjT9j
+         bBYRzKDsnZBjPUaegfekdAi3A9kqXzDon7+67x0rLmMWMxt5G/HCD/If6rQFz/+ZsSkh
+         RhcW2ZeNDIRofdXiyJ1PTW9O0AIcE2DIgJ62X1FnMwwIscXJfMfALRyqwumtWFtEkbCG
+         ZhkA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702564868; x=1703169668;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=JznIu9lNlIeiTo8wKTcxQuhhJ2zgIwL8Q7gBCogBxvY=;
+        b=MnwJaIg3mnIko9r5cetaUs+JYxdWAvIGh0CsHwNUM8fCQP2RPZSWmrS3M7bNU7CnH0
+         AMAS2OPSmHKY9yeKUuuEe+dt2/wfqgBYvKOSSZ4h8yZbfHAo8cu8Wv9L46yfMPqf1f27
+         pCA+n85dFdbkQ3HI7GBSR9Rox3ocfuJiBCvMukMexcA45VZjARD7XCEE+f3eDq/hr5EF
+         HQGx1s4lI8W3PLo+NnIouby8RuGEKeeog5+ypV5LiUPhF9VLNv8iU2ytBQMTUq4udUJG
+         GewBg2/ArMBbDEKC9s0p7iW9uqT52p0xq2jMS39zdsW1NvWWE0jQUlF5sv+oyHh4MPYP
+         x80Q==
+X-Gm-Message-State: AOJu0YxUZmmRymMOEhav4aXJ//jBk5nY5Enf8GjTpgnCusv9Lw3PFrLu
+        aP+lN8UpJR5wfIOGz+2pVUADAcFh5vhWreVQMyWhsw==
+X-Google-Smtp-Source: AGHT+IH6Z7ttlPWqmsWbeFA/szWdyE6FZ1U9zu49mWSIzwza1ccFf3m2KxsdaL0W2oe0vmgh5g75w+m4VqHHxQxLixU=
+X-Received: by 2002:a05:6808:140c:b0:3b9:ff46:fa9b with SMTP id
+ w12-20020a056808140c00b003b9ff46fa9bmr12542705oiv.43.1702564868089; Thu, 14
+ Dec 2023 06:41:08 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+References: <20231207-kms-hdmi-connector-state-v5-0-6538e19d634d@kernel.org> <20231207-kms-hdmi-connector-state-v5-7-6538e19d634d@kernel.org>
+In-Reply-To: <20231207-kms-hdmi-connector-state-v5-7-6538e19d634d@kernel.org>
+From:   Dave Stevenson <dave.stevenson@raspberrypi.com>
+Date:   Thu, 14 Dec 2023 14:40:52 +0000
+Message-ID: <CAPY8ntDT1X-2y7P-FAdw1CsT3SQuxCbfuhG6kPGR=v2KCnoQ8g@mail.gmail.com>
+Subject: Re: [PATCH v5 07/44] drm/connector: hdmi: Create an HDMI sub-state
+To:     Maxime Ripard <mripard@kernel.org>
+Cc:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>, Emma Anholt <emma@anholt.net>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Sandy Huang <hjc@rock-chips.com>,
+        =?UTF-8?Q?Heiko_St=C3=BCbner?= <heiko@sntech.de>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Samuel Holland <samuel@sholland.org>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, Hans Verkuil <hverkuil@xs4all.nl>,
+        linux-rockchip@lists.infradead.org, linux-sunxi@lists.linux.dev,
+        linux-arm-kernel@lists.infradead.org, linux-media@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -64,221 +79,113 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   5bd7ef53ffe5ca580e93e74eb8c81ed191ddc4bd
-commit: c85e6e546edd7e362693218a33a6f63217802fd3 drm/amd/display: Create new i2c resource
-date:   5 years ago
-config: x86_64-randconfig-121-20231101 (https://download.01.org/0day-ci/archive/20231214/202312142225.r4UO3nhc-lkp@intel.com/config)
-compiler: gcc-11 (Debian 11.3.0-12) 11.3.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231214/202312142225.r4UO3nhc-lkp@intel.com/reproduce)
+On Thu, 7 Dec 2023 at 15:50, Maxime Ripard <mripard@kernel.org> wrote:
+>
+> The next features we will need to share across drivers will need to
+> store some parameters for drivers to use, such as the selected output
+> format.
+>
+> Let's create a new connector sub-state dedicated to HDMI controllers,
+> that will eventually store everything we need.
+>
+> Signed-off-by: Maxime Ripard <mripard@kernel.org>
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202312142225.r4UO3nhc-lkp@intel.com/
+Reviewed-by: Dave Stevenson <dave.stevenson@raspberrypi.com>
 
-sparse warnings: (new ones prefixed by >>)
-   drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_i2c_hw.c:89:6: sparse: sparse: symbol 'dce_i2c_hw_engine_acquire_engine' was not declared. Should it be static?
-   drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_i2c_hw.c:113:6: sparse: sparse: symbol 'dce_i2c_engine_acquire_hw' was not declared. Should it be static?
-   drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_i2c_hw.c:301:35: sparse: sparse: symbol 'dce_i2c_hw_engine_wait_on_operation_result' was not declared. Should it be static?
-   drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_i2c_hw.c:369:10: sparse: sparse: symbol 'get_reference_clock' was not declared. Should it be static?
-   drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_i2c_hw.c:677:6: sparse: sparse: symbol 'dce_i2c_hw_engine_submit_request' was not declared. Should it be static?
->> drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_i2c_hw.c:809:67: sparse: sparse: dubious: x | !y
-   drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_i2c_hw.c:89:6: warning: no previous prototype for 'dce_i2c_hw_engine_acquire_engine' [-Wmissing-prototypes]
-      89 | bool dce_i2c_hw_engine_acquire_engine(
-         |      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_i2c_hw.c:113:6: warning: no previous prototype for 'dce_i2c_engine_acquire_hw' [-Wmissing-prototypes]
-     113 | bool dce_i2c_engine_acquire_hw(
-         |      ^~~~~~~~~~~~~~~~~~~~~~~~~
-   drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_i2c_hw.c:301:35: warning: no previous prototype for 'dce_i2c_hw_engine_wait_on_operation_result' [-Wmissing-prototypes]
-     301 | enum i2c_channel_operation_result dce_i2c_hw_engine_wait_on_operation_result(
-         |                                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_i2c_hw.c:369:10: warning: no previous prototype for 'get_reference_clock' [-Wmissing-prototypes]
-     369 | uint32_t get_reference_clock(
-         |          ^~~~~~~~~~~~~~~~~~~
-   drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_i2c_hw.c:677:6: warning: no previous prototype for 'dce_i2c_hw_engine_submit_request' [-Wmissing-prototypes]
-     677 | bool dce_i2c_hw_engine_submit_request(
-         |      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   In file included from drivers/gpu/drm/amd/amdgpu/../display/dc/inc/core_types.h:32,
-                    from drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_i2c.h:29,
-                    from drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_i2c_hw.c:25:
-   drivers/gpu/drm/amd/amdgpu/../display/include/ddc_service_types.h:120:22: warning: 'DP_DVI_CONVERTER_ID_4' defined but not used [-Wunused-const-variable=]
-     120 | static const uint8_t DP_DVI_CONVERTER_ID_4[] = "m2DVIa";
-         |                      ^~~~~~~~~~~~~~~~~~~~~
-   drivers/gpu/drm/amd/amdgpu/../display/include/ddc_service_types.h:118:22: warning: 'DP_VGA_LVDS_CONVERTER_ID_3' defined but not used [-Wunused-const-variable=]
-     118 | static const uint8_t DP_VGA_LVDS_CONVERTER_ID_3[] = "dnomlA";
-         |                      ^~~~~~~~~~~~~~~~~~~~~~~~~~
-   drivers/gpu/drm/amd/amdgpu/../display/include/ddc_service_types.h:116:22: warning: 'DP_VGA_LVDS_CONVERTER_ID_2' defined but not used [-Wunused-const-variable=]
-     116 | static const uint8_t DP_VGA_LVDS_CONVERTER_ID_2[] = "sivarT";
-         |                      ^~~~~~~~~~~~~~~~~~~~~~~~~~
-   In file included from drivers/gpu/drm/amd/amdgpu/../display/dc/dc_types.h:29,
-                    from drivers/gpu/drm/amd/amdgpu/../display/dc/dc.h:29,
-                    from drivers/gpu/drm/amd/amdgpu/../display/dc/inc/core_types.h:29,
-                    from drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_i2c.h:29,
-                    from drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_i2c_hw.c:25:
-   drivers/gpu/drm/amd/amdgpu/../display/include/fixed31_32.h:76:32: warning: 'dc_fixpt_ln2_div_2' defined but not used [-Wunused-const-variable=]
-      76 | static const struct fixed31_32 dc_fixpt_ln2_div_2 = { 1488522236LL };
-         |                                ^~~~~~~~~~~~~~~~~~
-   drivers/gpu/drm/amd/amdgpu/../display/include/fixed31_32.h:75:32: warning: 'dc_fixpt_ln2' defined but not used [-Wunused-const-variable=]
-      75 | static const struct fixed31_32 dc_fixpt_ln2 = { 2977044471LL };
-         |                                ^~~~~~~~~~~~
-   drivers/gpu/drm/amd/amdgpu/../display/include/fixed31_32.h:74:32: warning: 'dc_fixpt_e' defined but not used [-Wunused-const-variable=]
-      74 | static const struct fixed31_32 dc_fixpt_e = { 11674931555LL };
-         |                                ^~~~~~~~~~
-   drivers/gpu/drm/amd/amdgpu/../display/include/fixed31_32.h:73:32: warning: 'dc_fixpt_two_pi' defined but not used [-Wunused-const-variable=]
-      73 | static const struct fixed31_32 dc_fixpt_two_pi = { 26986075409LL };
-         |                                ^~~~~~~~~~~~~~~
-   drivers/gpu/drm/amd/amdgpu/../display/include/fixed31_32.h:72:32: warning: 'dc_fixpt_pi' defined but not used [-Wunused-const-variable=]
-      72 | static const struct fixed31_32 dc_fixpt_pi = { 13493037705LL };
-         |                                ^~~~~~~~~~~
-   drivers/gpu/drm/amd/amdgpu/../display/include/fixed31_32.h:67:32: warning: 'dc_fixpt_zero' defined but not used [-Wunused-const-variable=]
-      67 | static const struct fixed31_32 dc_fixpt_zero = { 0 };
-         |                                ^~~~~~~~~~~~~
-   drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_i2c_hw.o: warning: objtool: acquire_i2c_hw_engine()+0x4f: sibling call from callable instruction with modified stack frame
-   drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_i2c_hw.o: warning: objtool: dce_i2c_submit_command_hw()+0x1f1: sibling call from callable instruction with modified stack frame
---
-   drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_i2c_sw.c:73:35: sparse: sparse: symbol 'dce_i2c_sw_engine_get_channel_status' was not declared. Should it be static?
-   drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_i2c_sw.c:371:6: sparse: sparse: symbol 'dce_i2c_sw_engine_set_speed' was not declared. Should it be static?
-   drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_i2c_sw.c:385:6: sparse: sparse: symbol 'dce_i2c_sw_engine_acquire_engine' was not declared. Should it be static?
-   drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_i2c_sw.c:401:6: sparse: sparse: symbol 'dce_i2c_engine_acquire_sw' was not declared. Should it be static?
-   drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_i2c_sw.c:429:6: sparse: sparse: symbol 'dce_i2c_sw_engine_submit_channel_request' was not declared. Should it be static?
-   drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_i2c_sw.c:472:6: sparse: sparse: symbol 'dce_i2c_sw_engine_submit_request' was not declared. Should it be static?
->> drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_i2c_sw.c:566:67: sparse: sparse: dubious: x | !y
-   drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_i2c_sw.c:73:35: warning: no previous prototype for 'dce_i2c_sw_engine_get_channel_status' [-Wmissing-prototypes]
-      73 | enum i2c_channel_operation_result dce_i2c_sw_engine_get_channel_status(
-         |                                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_i2c_sw.c:371:6: warning: no previous prototype for 'dce_i2c_sw_engine_set_speed' [-Wmissing-prototypes]
-     371 | void dce_i2c_sw_engine_set_speed(
-         |      ^~~~~~~~~~~~~~~~~~~~~~~~~~~
-   drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_i2c_sw.c:385:6: warning: no previous prototype for 'dce_i2c_sw_engine_acquire_engine' [-Wmissing-prototypes]
-     385 | bool dce_i2c_sw_engine_acquire_engine(
-         |      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_i2c_sw.c:401:6: warning: no previous prototype for 'dce_i2c_engine_acquire_sw' [-Wmissing-prototypes]
-     401 | bool dce_i2c_engine_acquire_sw(
-         |      ^~~~~~~~~~~~~~~~~~~~~~~~~
-   drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_i2c_sw.c:429:6: warning: no previous prototype for 'dce_i2c_sw_engine_submit_channel_request' [-Wmissing-prototypes]
-     429 | void dce_i2c_sw_engine_submit_channel_request(
-         |      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_i2c_sw.c:472:6: warning: no previous prototype for 'dce_i2c_sw_engine_submit_request' [-Wmissing-prototypes]
-     472 | bool dce_i2c_sw_engine_submit_request(
-         |      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   In file included from drivers/gpu/drm/amd/amdgpu/../display/dc/inc/core_types.h:32,
-                    from drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_i2c.h:29,
-                    from drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_i2c_sw.c:25:
-   drivers/gpu/drm/amd/amdgpu/../display/include/ddc_service_types.h:120:22: warning: 'DP_DVI_CONVERTER_ID_4' defined but not used [-Wunused-const-variable=]
-     120 | static const uint8_t DP_DVI_CONVERTER_ID_4[] = "m2DVIa";
-         |                      ^~~~~~~~~~~~~~~~~~~~~
-   drivers/gpu/drm/amd/amdgpu/../display/include/ddc_service_types.h:118:22: warning: 'DP_VGA_LVDS_CONVERTER_ID_3' defined but not used [-Wunused-const-variable=]
-     118 | static const uint8_t DP_VGA_LVDS_CONVERTER_ID_3[] = "dnomlA";
-         |                      ^~~~~~~~~~~~~~~~~~~~~~~~~~
-   drivers/gpu/drm/amd/amdgpu/../display/include/ddc_service_types.h:116:22: warning: 'DP_VGA_LVDS_CONVERTER_ID_2' defined but not used [-Wunused-const-variable=]
-     116 | static const uint8_t DP_VGA_LVDS_CONVERTER_ID_2[] = "sivarT";
-         |                      ^~~~~~~~~~~~~~~~~~~~~~~~~~
-   In file included from drivers/gpu/drm/amd/amdgpu/../display/dc/dc_types.h:29,
-                    from drivers/gpu/drm/amd/amdgpu/../display/dc/dc.h:29,
-                    from drivers/gpu/drm/amd/amdgpu/../display/dc/inc/core_types.h:29,
-                    from drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_i2c.h:29,
-                    from drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_i2c_sw.c:25:
-   drivers/gpu/drm/amd/amdgpu/../display/include/fixed31_32.h:76:32: warning: 'dc_fixpt_ln2_div_2' defined but not used [-Wunused-const-variable=]
-      76 | static const struct fixed31_32 dc_fixpt_ln2_div_2 = { 1488522236LL };
-         |                                ^~~~~~~~~~~~~~~~~~
-   drivers/gpu/drm/amd/amdgpu/../display/include/fixed31_32.h:75:32: warning: 'dc_fixpt_ln2' defined but not used [-Wunused-const-variable=]
-      75 | static const struct fixed31_32 dc_fixpt_ln2 = { 2977044471LL };
-         |                                ^~~~~~~~~~~~
-   drivers/gpu/drm/amd/amdgpu/../display/include/fixed31_32.h:74:32: warning: 'dc_fixpt_e' defined but not used [-Wunused-const-variable=]
-      74 | static const struct fixed31_32 dc_fixpt_e = { 11674931555LL };
-         |                                ^~~~~~~~~~
-   drivers/gpu/drm/amd/amdgpu/../display/include/fixed31_32.h:73:32: warning: 'dc_fixpt_two_pi' defined but not used [-Wunused-const-variable=]
-      73 | static const struct fixed31_32 dc_fixpt_two_pi = { 26986075409LL };
-         |                                ^~~~~~~~~~~~~~~
-   drivers/gpu/drm/amd/amdgpu/../display/include/fixed31_32.h:72:32: warning: 'dc_fixpt_pi' defined but not used [-Wunused-const-variable=]
-      72 | static const struct fixed31_32 dc_fixpt_pi = { 13493037705LL };
-         |                                ^~~~~~~~~~~
-   drivers/gpu/drm/amd/amdgpu/../display/include/fixed31_32.h:67:32: warning: 'dc_fixpt_zero' defined but not used [-Wunused-const-variable=]
-      67 | static const struct fixed31_32 dc_fixpt_zero = { 0 };
-         |                                ^~~~~~~~~~~~~
-   drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_i2c_sw.o: warning: objtool: wait_for_scl_high_sw.constprop.0()+0x60: sibling call from callable instruction with modified stack frame
-   drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_i2c_sw.o: warning: objtool: dce_i2c_submit_command_sw()+0x190: sibling call from callable instruction with modified stack frame
-   drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_i2c_sw.o: warning: objtool: dce_i2c_acquire_i2c_sw_engine()+0x47: sibling call from callable instruction with modified stack frame
-
-vim +809 drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_i2c_hw.c
-
-   782	
-   783	bool dce_i2c_submit_command_hw(
-   784		struct resource_pool *pool,
-   785		struct ddc *ddc,
-   786		struct i2c_command *cmd,
-   787		struct dce_i2c_hw *dce_i2c_hw)
-   788	{
-   789		uint8_t index_of_payload = 0;
-   790		bool result;
-   791	
-   792		dce_i2c_hw->funcs->set_speed(dce_i2c_hw, cmd->speed);
-   793	
-   794		result = true;
-   795	
-   796		while (index_of_payload < cmd->number_of_payloads) {
-   797			bool mot = (index_of_payload != cmd->number_of_payloads - 1);
-   798	
-   799			struct i2c_payload *payload = cmd->payloads + index_of_payload;
-   800	
-   801			struct dce_i2c_transaction_request request = { 0 };
-   802	
-   803			request.operation = payload->write ?
-   804				DCE_I2C_TRANSACTION_WRITE :
-   805				DCE_I2C_TRANSACTION_READ;
-   806	
-   807			request.payload.address_space =
-   808				DCE_I2C_TRANSACTION_ADDRESS_SPACE_I2C;
- > 809			request.payload.address = (payload->address << 1) |
-   810				!payload->write;
-   811			request.payload.length = payload->length;
-   812			request.payload.data = payload->data;
-   813	
-   814	
-   815			if (!dce_i2c_hw_engine_submit_request(
-   816					dce_i2c_hw, &request, mot)) {
-   817				result = false;
-   818				break;
-   819			}
-   820	
-   821	
-   822	
-   823			++index_of_payload;
-   824		}
-   825	
-   826		release_engine_dce_hw(pool, dce_i2c_hw);
-   827	
-   828		return result;
-   829	}
-   830	static const struct dce_i2c_hw_funcs dce100_i2c_hw_funcs = {
-   831			.setup_engine = setup_engine_hw_dce100,
-   832			.set_speed = set_speed_hw_dce100,
-   833			.get_speed = get_speed_hw,
-   834			.release_engine = release_engine_hw,
-   835			.process_transaction = process_transaction_hw_dce100,
-   836			.process_channel_reply = process_channel_reply_hw_dce100,
-   837			.is_hw_busy = is_hw_busy,
-   838			.get_channel_status = get_channel_status_hw,
-   839			.execute_transaction = execute_transaction_hw,
-   840			.disable_i2c_hw_engine = disable_i2c_hw_engine
-   841	};
-   842	static const struct dce_i2c_hw_funcs dce80_i2c_hw_funcs = {
-   843			.setup_engine = setup_engine_hw_dce80,
-   844			.set_speed = set_speed_hw_dce80,
-   845			.get_speed = get_speed_hw,
-   846			.release_engine = release_engine_hw,
-   847			.process_transaction = process_transaction_hw_dce80,
-   848			.process_channel_reply = process_channel_reply_hw_dce80,
-   849			.is_hw_busy = is_hw_busy,
-   850			.get_channel_status = get_channel_status_hw,
-   851			.execute_transaction = execute_transaction_hw,
-   852			.disable_i2c_hw_engine = disable_i2c_hw_engine
-   853	};
-   854	
-   855	
-   856	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+> ---
+>  drivers/gpu/drm/drm_atomic_state_helper.c | 35 +++++++++++++++++++++++++++++++
+>  include/drm/drm_atomic_state_helper.h     |  4 ++++
+>  include/drm/drm_connector.h               |  7 +++++++
+>  3 files changed, 46 insertions(+)
+>
+> diff --git a/drivers/gpu/drm/drm_atomic_state_helper.c b/drivers/gpu/drm/drm_atomic_state_helper.c
+> index 54975de44a0e..e69c0cc1c6da 100644
+> --- a/drivers/gpu/drm/drm_atomic_state_helper.c
+> +++ b/drivers/gpu/drm/drm_atomic_state_helper.c
+> @@ -570,6 +570,22 @@ void drm_atomic_helper_connector_tv_reset(struct drm_connector *connector)
+>  }
+>  EXPORT_SYMBOL(drm_atomic_helper_connector_tv_reset);
+>
+> +/**
+> + * __drm_atomic_helper_connector_hdmi_reset() - Initializes all HDMI @drm_connector_state resources
+> + * @connector: DRM connector
+> + * @new_state: connector state to reset
+> + *
+> + * Initializes all HDMI resources from a @drm_connector_state without
+> + * actually allocating it. This is useful for HDMI drivers, in
+> + * combination with __drm_atomic_helper_connector_reset() or
+> + * drm_atomic_helper_connector_reset().
+> + */
+> +void __drm_atomic_helper_connector_hdmi_reset(struct drm_connector *connector,
+> +                                             struct drm_connector_state *new_state)
+> +{
+> +}
+> +EXPORT_SYMBOL(__drm_atomic_helper_connector_hdmi_reset);
+> +
+>  /**
+>   * drm_atomic_helper_connector_tv_check - Validate an analog TV connector state
+>   * @connector: DRM Connector
+> @@ -619,6 +635,25 @@ int drm_atomic_helper_connector_tv_check(struct drm_connector *connector,
+>  }
+>  EXPORT_SYMBOL(drm_atomic_helper_connector_tv_check);
+>
+> +/**
+> + * drm_atomic_helper_connector_hdmi_check() - Helper to check HDMI connector atomic state
+> + * @connector: DRM Connector
+> + * @state: the DRM State object
+> + *
+> + * Provides a default connector state check handler for HDMI connectors.
+> + * Checks that a desired connector update is valid, and updates various
+> + * fields of derived state.
+> + *
+> + * RETURNS:
+> + * Zero on success, or an errno code otherwise.
+> + */
+> +int drm_atomic_helper_connector_hdmi_check(struct drm_connector *connector,
+> +                                          struct drm_atomic_state *state)
+> +{
+> +       return 0;
+> +}
+> +EXPORT_SYMBOL(drm_atomic_helper_connector_hdmi_check);
+> +
+>  /**
+>   * __drm_atomic_helper_connector_duplicate_state - copy atomic connector state
+>   * @connector: connector object
+> diff --git a/include/drm/drm_atomic_state_helper.h b/include/drm/drm_atomic_state_helper.h
+> index b9740edb2658..d59d2b3aef9a 100644
+> --- a/include/drm/drm_atomic_state_helper.h
+> +++ b/include/drm/drm_atomic_state_helper.h
+> @@ -71,7 +71,11 @@ void __drm_atomic_helper_connector_state_reset(struct drm_connector_state *conn_
+>  void __drm_atomic_helper_connector_reset(struct drm_connector *connector,
+>                                          struct drm_connector_state *conn_state);
+>  void drm_atomic_helper_connector_reset(struct drm_connector *connector);
+> +void __drm_atomic_helper_connector_hdmi_reset(struct drm_connector *connector,
+> +                                             struct drm_connector_state *new_state);
+>  void drm_atomic_helper_connector_tv_reset(struct drm_connector *connector);
+> +int drm_atomic_helper_connector_hdmi_check(struct drm_connector *connector,
+> +                                          struct drm_atomic_state *state);
+>  int drm_atomic_helper_connector_tv_check(struct drm_connector *connector,
+>                                          struct drm_atomic_state *state);
+>  void drm_atomic_helper_connector_tv_margins_reset(struct drm_connector *connector);
+> diff --git a/include/drm/drm_connector.h b/include/drm/drm_connector.h
+> index 4491c4c2fb6e..000a2a156619 100644
+> --- a/include/drm/drm_connector.h
+> +++ b/include/drm/drm_connector.h
+> @@ -1031,6 +1031,13 @@ struct drm_connector_state {
+>          * DRM blob property for HDR output metadata
+>          */
+>         struct drm_property_blob *hdr_output_metadata;
+> +
+> +       /**
+> +        * @hdmi: HDMI-related variable and properties. Filled by
+> +        * @drm_atomic_helper_connector_hdmi_check().
+> +        */
+> +       struct {
+> +       } hdmi;
+>  };
+>
+>  /**
+>
+> --
+> 2.43.0
+>
