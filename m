@@ -2,237 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 31A2E81345E
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 16:14:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 21BCA813464
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 16:15:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1573794AbjLNPOf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 10:14:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59064 "EHLO
+        id S235640AbjLNPO7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 10:14:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33384 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235663AbjLNPOM (ORCPT
+        with ESMTP id S230301AbjLNPOm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 10:14:12 -0500
-Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0E5A120
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 07:13:40 -0800 (PST)
-Received: by mail-ej1-x62f.google.com with SMTP id a640c23a62f3a-a1ca24776c3so146845766b.0
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 07:13:40 -0800 (PST)
+        Thu, 14 Dec 2023 10:14:42 -0500
+Received: from mail-ot1-x330.google.com (mail-ot1-x330.google.com [IPv6:2607:f8b0:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58F0F170E;
+        Thu, 14 Dec 2023 07:14:22 -0800 (PST)
+Received: by mail-ot1-x330.google.com with SMTP id 46e09a7af769-6da2e360861so299520a34.1;
+        Thu, 14 Dec 2023 07:14:22 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1702566819; x=1703171619; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1702566861; x=1703171661; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=gvtun0x8vkG6VtfItcIBsM/hEbrzkxfGGKszvTd1N68=;
-        b=fQ7fs9AFf3nSYL9Ybhg0qZwdYIZSega3j8BZkNqTLiSH8UWIRfrIsdg/5UveUkPWA4
-         v3SdXg79D/1TE0c6F8Hy8cnsvnJOC3kBkGbbTBuQisSlXEWFuBEjHSLfsFxFZ1Hc3A2/
-         fY2VIRNi/OjqCrsHmJ/g7HEbReNP+8Ys0qzDk+mSGCpOpqssc9byqOMl2MVFkS5gl+ng
-         cBPLGIhlzzbSSbUoNSWb7zVIvlmmKHgDkSWPrh4pJR1HPJRm8WjBI4nzoNkQB6Ej+lBS
-         mLXsbTf3cYmOU3ZEk+v1QeOaXYCn+hxdSMz81pNIXDSvKXXS0oOzfDYvFSCNohVB+7HV
-         l+Eg==
+         :sender:from:to:cc:subject:date:message-id:reply-to;
+        bh=7fgmF837E/uNu2Txy17or72EnElLYhEPnc49U6CGCsg=;
+        b=Rc1EvnrshddnAYJJWUo0EbayWilZNx9bTyimLQatlKikEghuJYm4cxtxSxVTiIogh6
+         SzpF9UA6BYXPAGmcfsiyp1VhfF5wzioQ+Yy6qMjLgwxxKt8KCFSi1sCbpnGPHGMY2sQh
+         Vbv8PXMBqr84OsDlyH6QPsApGN46cF9GfmJpMjyXkOlfNp+KOS1Zia3ForAv1Pw98yxD
+         wF0dIsuM+yyQ68YObDoaJdxDVfvFbq+4q2CN16CXDciIztHYuCpxmpLQIAMa0C+uMkno
+         a8Be1hPHH5QrMrwzmhYURKtlAatxw0C9n7dsA8VvGIo8ssfE0Qm/2pO7O+BKiBZamj1o
+         4ywg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702566819; x=1703171619;
+        d=1e100.net; s=20230601; t=1702566861; x=1703171661;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=gvtun0x8vkG6VtfItcIBsM/hEbrzkxfGGKszvTd1N68=;
-        b=hQeqUye0KIwySXiLsdvXyvuEiLgVzlJSGCMApaZfVZ2tO0N90Wl0gNprjlHj18jkRm
-         KnNGHxKVEZBeewGd9dOM11N6HZE+9wYqEUJIdgni0gUosIpS216zsTPpyXen+gra73rG
-         ytfivCK+qtmPtlCwPBBgg2FRqLQU97EsjJ8sK2wosiJMrWnZGLukP0ibJNQVusW5ZAES
-         AsdlxtlYL+I08nSCgt+lO3pFAcxX6oQVHwuF6Mp3SNgQT3BnPNqCKWS1royWdjccvxQM
-         DMRYDjXdiTOXhAELToZ5B3zKHpfulqSPKR9lqmwfgoPQe3m+iHgNmsPLnlEuadHxN1K6
-         1Hmg==
-X-Gm-Message-State: AOJu0Yy//g/YXx6clb5qgnOsNTl/Snv2xuAXtGJS7du34KlADljzTUjP
-        XCceWcI53wy4q+mQC+siCNJZmg==
-X-Google-Smtp-Source: AGHT+IGZlCK/VE6KO7MumtXE2h19ILCBdjwgYnwikNv8XezVz7EdnXEJNlMQPggaj5ERPCE0tHAQ8w==
-X-Received: by 2002:a17:906:f142:b0:a1d:5483:d152 with SMTP id gw2-20020a170906f14200b00a1d5483d152mr9625965ejb.68.1702566819361;
-        Thu, 14 Dec 2023 07:13:39 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.218.27])
-        by smtp.gmail.com with ESMTPSA id tp25-20020a170907c49900b00a1f7c502736sm8235915ejc.164.2023.12.14.07.13.37
+         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=7fgmF837E/uNu2Txy17or72EnElLYhEPnc49U6CGCsg=;
+        b=vfqKul2T6XAr+p3sVb41Dz/oDZujuTGRUOLu7/fmOwRhgmE+T5J3blCdp1rq4g2WLr
+         G9RoY3BQiaIef1G5RtfNTHaJ4sSF1hMZGyq1wAZzhBVvbTN3dcva4JdyceiXMSvGKUjf
+         z8kIoPWq6k8KFp6q1Ntyl1WE39L82+UPtGZezlfbUD2iJiseI7euH1zrgJo6MxS4lt8/
+         d5bVzIhGcEhf68/3yz3DfK+dNgt0Elkelde3AlqwZZ4ie7+aGfb0qjGfCAmG/tlmgj5G
+         jXgV8oF4YhcRqwvHWHK3UG3qTeJ9y5ZcaQ4r34mz3Sasz8iHSTr/xfOHOGE1ztwzVwhJ
+         zFQw==
+X-Gm-Message-State: AOJu0Yx1gymyRML/zGkwQJ9oLoDzb8WVrcHYnUH+nTum3DykH0Ojqnq2
+        50cF9NwfvjSVW4Bo7iCWNcA=
+X-Google-Smtp-Source: AGHT+IGe3TDHZYvEOctwHxhRFK4MSZ9ZhUn6Nz/OvVWcyvXnu2e56bvn3cPoeG/b8B0zY4ZnJr7weQ==
+X-Received: by 2002:a05:6808:130c:b0:3b8:6ae0:8aef with SMTP id y12-20020a056808130c00b003b86ae08aefmr5333292oiv.9.1702566861562;
+        Thu, 14 Dec 2023 07:14:21 -0800 (PST)
+Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id v21-20020a4a3155000000b0059069b4442esm3508510oog.5.2023.12.14.07.14.19
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 14 Dec 2023 07:13:38 -0800 (PST)
-Message-ID: <fda32450-d83a-4ef9-bc24-1c2f8416ae45@linaro.org>
-Date:   Thu, 14 Dec 2023 16:13:36 +0100
+        Thu, 14 Dec 2023 07:14:20 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Message-ID: <937db277-1d3d-459a-a597-475bdc0229fe@roeck-us.net>
+Date:   Thu, 14 Dec 2023 07:14:18 -0800
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/3] dt-bindings: watchdog: add Marvell AC5 watchdog
+Subject: Re: [PATCH 3/3] hwmon: max31827: Compatible for adaq4224
 Content-Language: en-US
-To:     Elad Nachman <enachman@marvell.com>, wim@linux-watchdog.org,
-        linux@roeck-us.net, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        gregory.clement@bootlin.com, chris.packham@alliedtelesis.co.nz,
-        andrew@lunn.ch, fu.wei@linaro.org, Suravee.Suthikulpanit@amd.com,
-        al.stone@linaro.org, timur@codeaurora.org,
-        linux-watchdog@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     cyuval@marvell.com
-References: <20231214150414.1849058-1-enachman@marvell.com>
- <20231214150414.1849058-2-enachman@marvell.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231214150414.1849058-2-enachman@marvell.com>
-Content-Type: text/plain; charset=UTF-8
+To:     Daniel Matyas <daniel.matyas@analog.com>
+Cc:     Jean Delvare <jdelvare@suse.com>, Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>, linux-hwmon@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org
+References: <20231214143648.175336-1-daniel.matyas@analog.com>
+ <20231214143648.175336-3-daniel.matyas@analog.com>
+From:   Guenter Roeck <linux@roeck-us.net>
+Autocrypt: addr=linux@roeck-us.net; keydata=
+ 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
+ mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
+In-Reply-To: <20231214143648.175336-3-daniel.matyas@analog.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 14/12/2023 16:04, Elad Nachman wrote:
-> From: Elad Nachman <enachman@marvell.com>
+On 12/14/23 06:36, Daniel Matyas wrote:
+> Compatible string "adi,adaq4224_temp" is accepted in device tree.
+> When this string is seen in the device tree, the name of the device
+> changes to "adaq4224_temp" and the default configuration of max31827
+> is loaded.
 > 
-> Add definitions and examples for Marvell AC5 variant
-> of the sbsa watchdog.
-> Marvell variant requires more memory definitions,
-> since the initialization is more complex, and involves
-> several register sets.
+> This modification was requested by the costumer, so that whenever one
 
-Please wrap commit message according to Linux coding style / submission
-process (neither too early nor over the limit):
-https://elixir.bootlin.com/linux/v6.4-rc1/source/Documentation/process/submitting-patches.rst#L597
+customer
 
+> analyzes the available devices, one can know for sure, that max31827 is
+> part of the adaq4224.
 > 
-> Signed-off-by: Elad Nachman <enachman@marvell.com>
+
+There is (officially) no such chip. I have no idea if this is a new chip
+or something else, and I have no idea how it relates to max31827.
+Either case, the "_temp" in the chip name doesn't make sense to me.
+
+> Signed-off-by: Daniel Matyas <daniel.matyas@analog.com>
 > ---
->  .../bindings/watchdog/arm,sbsa-gwdt.yaml      | 52 ++++++++++++++++++-
->  1 file changed, 50 insertions(+), 2 deletions(-)
+>   drivers/hwmon/max31827.c | 12 +++++++++++-
+>   1 file changed, 11 insertions(+), 1 deletion(-)
 > 
-> diff --git a/Documentation/devicetree/bindings/watchdog/arm,sbsa-gwdt.yaml b/Documentation/devicetree/bindings/watchdog/arm,sbsa-gwdt.yaml
-> index aa804f96acba..331e9aa7c2f7 100644
-> --- a/Documentation/devicetree/bindings/watchdog/arm,sbsa-gwdt.yaml
-> +++ b/Documentation/devicetree/bindings/watchdog/arm,sbsa-gwdt.yaml
-> @@ -20,12 +20,17 @@ allOf:
->  
->  properties:
->    compatible:
-> -    const: arm,sbsa-gwdt
-> +    enum:
-> +      - arm,sbsa-gwdt
-> +      - marvell,ac5-wd
->  
->    reg:
->      items:
->        - description: Watchdog control frame
->        - description: Refresh frame
-> +      - description: Marvell CPU control frame
-> +      - description: Marvell Management frame
-> +      - description: Marvell reset control unit frame
+> diff --git a/drivers/hwmon/max31827.c b/drivers/hwmon/max31827.c
+> index db93492193bd..c3500a5b2c29 100644
+> --- a/drivers/hwmon/max31827.c
+> +++ b/drivers/hwmon/max31827.c
+> @@ -48,7 +48,7 @@
+>   #define MAX31827_M_DGR_TO_16_BIT(x)	(((x) << 4) / 1000)
+>   #define MAX31827_DEVICE_ENABLE(x)	((x) ? 0xA : 0x0)
+>   
+> -enum chips { max31827 = 1, max31828, max31829 };
+> +enum chips { max31827 = 1, max31828, max31829, adaq4224_temp };
+>   
+>   enum max31827_cnv {
+>   	MAX31827_CNV_1_DIV_64_HZ = 1,
+> @@ -592,6 +592,7 @@ static const struct i2c_device_id max31827_i2c_ids[] = {
+>   	{ "max31827", max31827 },
+>   	{ "max31828", max31828 },
+>   	{ "max31829", max31829 },
+> +	{ "adaq4224_temp", adaq4224_temp },
+>   	{ }
+>   };
+>   MODULE_DEVICE_TABLE(i2c, max31827_i2c_ids);
+> @@ -620,6 +621,9 @@ static int max31827_init_client(struct max31827_state *st)
+>   	res |= FIELD_PREP(MAX31827_CONFIGURATION_TIMEOUT_MASK, !prop);
+>   
+>   	type = (enum chips)(uintptr_t)device_get_match_data(dev);
+> +	if (type == adaq4224_temp) {
+> +		dev->driver->name = "adaq4224_temp";
+> +	}
+>   
 
-You just broke all the users... I doubt this was tested on ARM platforms.
+No, sorry, we don't make such changes. The driver has a fixed name
+which is independent of the device connected to it.
 
->  
->    interrupts:
->      description: The Watchdog Signal 0 (WS0) SPI (Shared Peripheral Interrupt)
-> @@ -39,12 +44,55 @@ required:
->  unevaluatedProperties: false
->  
->  examples:
-> +  # First example is for generic ARM one
-> +  # Next examples are for Marvell.
-
-One new example could be enough... but if it differs with one property,
-also not that much of benefit.
-
-> +  # They are organized as three sets:
-> +  # first set is for global watchdog, then CPU core #0 private watchdog,
-> +  # and finally CPU core #1 private watchdog
-> +  # Examples are given for AC5 or Ironman. For AC5X SOC, the last
-> +  # reg item's low address (0x840F8000) should be replaced with 0x944F8000
->    - |
->      watchdog@2a440000 {
->          compatible = "arm,sbsa-gwdt";
->          reg = <0x2a440000 0x1000>,
-> -              <0x2a450000 0x1000>;
-> +              <0x2a450000 0x1000>,
-> +              <0x0 0x0>,
-> +              <0x0 0x0>,
-> +              <0x0 0x0>;
-
-No, drop.
-
->          interrupts = <0 27 4>;
->          timeout-sec = <30>;
->      };
-> +  - |
-> +    watchdog@80216000 {
-> +        compatible = "marvell,ac5-wd";
-> +        reg = <0x80216000 0x1000>,
-> +              <0x80215000 0x1000>,
-> +              <0x80210000 0x1000>,
-> +              <0x7f900000 0x1000>,
-> +              <0x840F8000 0x1000>;
-> +        interrupts = <0 124 4>;
-
-Use proper defines.
-
-> +        timeout-sec = <30>;
-> +    };
-> +  - |
-> +    watchdog@80212000 {
-
-Drop example.
-
-> +        compatible = "marvell,ac5-wd";
-> +        reg = <0x80212000 0x1000>,
-> +              <0x80211000 0x1000>,
-> +              <0x80210000 0x1000>,
-> +              <0x7f900000 0x1000>,
-> +              <0x840F8000 0x1000>;
-> +        interrupts = <0 122 4>;
-> +        timeout-sec = <30>;
-> +    };
-> +  - |
-> +    watchdog@80214000 {
-
-Drop example.
-
-Best regards,
-Krzysztof
+Guenter
 
