@@ -2,96 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EBFA8126FF
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 06:37:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EEB39812701
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 06:41:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1443182AbjLNFgz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 00:36:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45994 "EHLO
+        id S1443186AbjLNFl0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 00:41:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50794 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229838AbjLNFgw (ORCPT
+        with ESMTP id S229838AbjLNFlY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 00:36:52 -0500
-Received: from mail-ot1-x32e.google.com (mail-ot1-x32e.google.com [IPv6:2607:f8b0:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D939710B
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 21:36:57 -0800 (PST)
-Received: by mail-ot1-x32e.google.com with SMTP id 46e09a7af769-6da3a585c29so813055a34.1
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 21:36:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1702532217; x=1703137017; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=rW/CLTesU9Nn+LDbwmg1S+LrWy0eO5LzJlVzZDN0NTk=;
-        b=jfo+1DlFqx8LsY6i/hotCzNlUYjU1w3ZXEtYZFQbSP0KXI4qUbKIo09XJC9c10Rbnn
-         Xp+iJwynQIu/0QwwzampcgNBc8dMd9Atlmd0rMys28PeomYDn9A5QIVm6CXhw+hGGaF2
-         fmfQJ9ILZa9yt+SwM0u2YRM1R3wt9FPsDH2jW0fd3sKaAPD1BYR+djeV4YYi2DegDjm+
-         LKZwWWQqKZ1YEJZFOehxysgPGxHsMbIuV3MM7HuqZhDniw0Zuy/4Pyqb9BZ0P2VP0+pc
-         tqGbya/ImWZpBQjcU1dbPOEj3Ugjk+3CHtu61HN1ButCzD9+ds0NqrehKojA4S8MKCR1
-         gsOw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702532217; x=1703137017;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=rW/CLTesU9Nn+LDbwmg1S+LrWy0eO5LzJlVzZDN0NTk=;
-        b=UoUeyhECMPOoGHEU537b81zrUExtXiHEpTo5jrkzJgDvErEgrXYhMeXZQcVsD2SQR4
-         CZEWzvLC65GgDcLUHJJz2wdhQ1cDO2jshKfp5YZayd+nc8xhK2k6VWdLWWuhbp9L3+08
-         dVRfu8nDnjiDQY3hV1Fc3Io/3Jp+mv3y/28sISSTCG4w71ax/ouRmmNkkKwKw5kuJPMx
-         vxgl71+vHnS9M9TTWH9TtrJz1z+01ug2RiIyPSGS8lm7fXC/ywUiJmQk7cRs3PPgjgCv
-         gxvVfaL+Fu2OifdPfT7SlBhe3ljb3mPp5jcSnZwHHwQ6WXID8N+JZbYHOJEACRc0x1ni
-         6g8Q==
-X-Gm-Message-State: AOJu0YzUGdLV768cBQQ6pSCm2qwWdx+Oxom0KCbCVI2q/DsgIl3suPux
-        cwZMk2cEOFVjgUkK1q8hFEwmLg==
-X-Google-Smtp-Source: AGHT+IH+QeozbSYX0p0iXQ2G4XEln4ZOmYJ/iRjOrOBzxt3QGNJfpEqpr0j+HhoTkIB2PwvvSueIuQ==
-X-Received: by 2002:a05:6358:7e8d:b0:170:6d55:e82e with SMTP id o13-20020a0563587e8d00b001706d55e82emr12607996rwn.2.1702532217124;
-        Wed, 13 Dec 2023 21:36:57 -0800 (PST)
-Received: from localhost ([122.172.82.6])
-        by smtp.gmail.com with ESMTPSA id pv18-20020a17090b3c9200b0028b0424a4bcsm723845pjb.54.2023.12.13.21.36.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Dec 2023 21:36:56 -0800 (PST)
-Date:   Thu, 14 Dec 2023 11:06:53 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Tim Chen <tim.c.chen@linux.intel.com>
-Cc:     Vincent Guittot <vincent.guittot@linaro.org>,
-        catalin.marinas@arm.com, will@kernel.org, sudeep.holla@arm.com,
-        rafael@kernel.org, agross@kernel.org, andersson@kernel.org,
-        konrad.dybcio@linaro.org, mingo@redhat.com, peterz@infradead.org,
-        juri.lelli@redhat.com, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        bristot@redhat.com, vschneid@redhat.com, lukasz.luba@arm.com,
-        rui.zhang@intel.com, mhiramat@kernel.org,
-        daniel.lezcano@linaro.org, amit.kachhap@gmail.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-pm@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-trace-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/4] cpufreq: Add a cpufreq pressure feedback for the
- scheduler
-Message-ID: <20231214053653.hnyeormwu42un5sc@vireshk-i7>
-References: <20231212142730.998913-1-vincent.guittot@linaro.org>
- <20231212142730.998913-2-vincent.guittot@linaro.org>
- <2e8807b68133f4b3a72227122a9d9a05f3fbf9d8.camel@linux.intel.com>
+        Thu, 14 Dec 2023 00:41:24 -0500
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE52FAC;
+        Wed, 13 Dec 2023 21:41:29 -0800 (PST)
+Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BE2hRcI016504;
+        Thu, 14 Dec 2023 05:41:17 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+        message-id:date:mime-version:subject:to:cc:references:from
+        :in-reply-to:content-type:content-transfer-encoding; s=
+        qcppdkim1; bh=WnR2V1HDkmW5PBc0e7CWYokozIJgAwQp5DJQVrfapxQ=; b=OV
+        gZWnyyHXm5GmwGpA/L4d5qgQiCm/lPMr5AtUjd8rfQcZkzO+zkHzAs5MSGqsdZyV
+        P4sq4bFhui+rXkRD03Af8JYTq1Jwr5vrVumWfvyO9DrcNt8jmCkREAWU7PINs6N4
+        B1ish8aA4j3CvUFxS2m+MIWJBjlgrQ8Ltt3dEPc3X03fjRSt7bz3M2Q29Isl0FST
+        Sn28bDDG+Waj6Ajdrt7X7WoPGvdsgCIyHHaQX6K2YM3y2qw+0OPzRr4JRzfmgVfn
+        jmojX77HH1IBTsHSRguzrBZjRkEbjN6ndfPSMl4NFeRuleUEcgInwAkB4zArOP08
+        WcMV2bszjY5Op4BX1dzw==
+Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3uyq2trh02-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 14 Dec 2023 05:41:17 +0000 (GMT)
+Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
+        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3BE5fGlL005831
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 14 Dec 2023 05:41:16 GMT
+Received: from [10.216.56.9] (10.80.80.8) by nalasex01b.na.qualcomm.com
+ (10.47.209.197) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Wed, 13 Dec
+ 2023 21:41:11 -0800
+Message-ID: <6b79c66d-7591-443b-92e5-beeff6c93ae4@quicinc.com>
+Date:   Thu, 14 Dec 2023 11:11:07 +0530
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2e8807b68133f4b3a72227122a9d9a05f3fbf9d8.camel@linux.intel.com>
-X-Spam-Status: No, score=1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH V2 2/2] arm64: dts: qcom: sc7280: add QCrypto nodes
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+CC:     <neil.armstrong@linaro.org>, <konrad.dybcio@linaro.org>,
+        <agross@kernel.org>, <andersson@kernel.org>, <conor+dt@kernel.org>,
+        <davem@davemloft.net>, <devicetree@vger.kernel.org>,
+        <herbert@gondor.apana.org.au>, <krzysztof.kozlowski+dt@linaro.org>,
+        <linux-arm-msm@vger.kernel.org>, <linux-crypto@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <marijn.suijten@somainline.org>,
+        <robh+dt@kernel.org>, <vkoul@kernel.org>
+References: <20231212133247.1366698-1-quic_omprsing@quicinc.com>
+ <20231212133247.1366698-3-quic_omprsing@quicinc.com>
+ <c848f874-3748-4d59-8e78-9ae044fb760a@linaro.org>
+Content-Language: en-US
+From:   Om Prakash Singh <quic_omprsing@quicinc.com>
+In-Reply-To: <c848f874-3748-4d59-8e78-9ae044fb760a@linaro.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01b.na.qualcomm.com (10.47.209.197)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: Wi5nIYlPga3ktMlviCFTYu4wTZDV_8Xu
+X-Proofpoint-ORIG-GUID: Wi5nIYlPga3ktMlviCFTYu4wTZDV_8Xu
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-09_02,2023-12-07_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 mlxscore=0
+ phishscore=0 clxscore=1015 mlxlogscore=921 priorityscore=1501
+ lowpriorityscore=0 malwarescore=0 suspectscore=0 bulkscore=0 adultscore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2311290000 definitions=main-2312140033
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Level: *
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 13-12-23, 16:41, Tim Chen wrote:
-> Seems like the pressure value computed from the first CPU applies to all CPU.
-> Will this be valid for non-homogeneous CPUs that could have different
-> max_freq and max_capacity?
 
-The will be part of different cpufreq policies and so it will work
-fine.
 
--- 
-viresh
+On 12/12/2023 8:32 PM, Krzysztof Kozlowski wrote:
+> On 12/12/2023 14:32, Om Prakash Singh wrote:
+>> Add the QCE and Crypto BAM DMA nodes.
+>>
+>> Signed-off-by: Om Prakash Singh <quic_omprsing@quicinc.com>
+>> ---
+>>
+>> Changes in V2:
+>>    - Update DT node sequence as per register ascending order
+> 
+> Hm, I don't see it...
+> 
+>>    - Fix DT node properties as per convention
+>>
+>>   arch/arm64/boot/dts/qcom/sc7280.dtsi | 22 ++++++++++++++++++++++
+>>   1 file changed, 22 insertions(+)
+>>
+>> diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi b/arch/arm64/boot/dts/qcom/sc7280.dtsi
+>> index 66f1eb83cca7..7b705df21f4e 100644
+>> --- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
+>> +++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
+>> @@ -2272,6 +2272,28 @@ ipa: ipa@1e40000 {
+>>   			status = "disabled";
+>>   		};
+>>   
+>> +		cryptobam: dma-controller@1dc4000 {
+> 
+> It still looks like not correctly ordered by unit address against other
+> nodes in the file.
+> 
+
+Hi Krzysztof,
+Probably I am missing something basic here. I am trying to put entries 
+addresses that are sorted wrt their current adjacent.
+
+And it looks fine to me.
+
+1c0e000 (current exist)
+1dc4000 (newly added)
+1dfa000	(newly added)
+1e40000	(current exist)
+
+> 
+> 
+> 
+> Best regards,
+> Krzysztof
+> 
