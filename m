@@ -2,56 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EAF098137D9
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 18:13:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 57E5281381A
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 18:16:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1443939AbjLNRNO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 12:13:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40114 "EHLO
+        id S1444119AbjLNRPv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 12:15:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33436 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235698AbjLNRMw (ORCPT
+        with ESMTP id S235526AbjLNRPa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 12:12:52 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00E281A2
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 09:12:57 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C8716C433C8;
-        Thu, 14 Dec 2023 17:12:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1702573977;
-        bh=BAELR7PAtgbHJ26Por16QtKzX2s0QDtbvfohshpvT7k=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=n9sZrVGqgBfPqr4iuqNawJmRCH6DZnjo9xEv9sc8Jb8tUM5X0p2lHGToKbQ71HmoH
-         44fCZG2jogO+9MP9i+gwLpTOOeyiyU8jAzQ1KbHVHCCGg37M6IvFcsH49fsWo4Bj9r
-         9YCpvO79dr6domzMwMFfmpRS9yzXx9Pzq5ie9+Pp33xnWN/ahxK5Y3byWThrLVIRzL
-         lQbkm57hE1G71W7o7ddnMWQuxFYqhvBVWMz1Y9yTRr89wMBuQ0tvGE9pbIGLfT80zN
-         VwNv612w0mqTSyIyJzwwQEthaIO3/MOA2kJ/6s8cYTWUsqwlbnGiZx4yeCY6098KxZ
-         sCIYaCsJeKvOA==
-Date:   Thu, 14 Dec 2023 17:12:51 +0000
-From:   Conor Dooley <conor@kernel.org>
-To:     Jie Luo <quic_luoj@quicinc.com>
-Cc:     agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
-        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        andrew@lunn.ch, hkallweit1@gmail.com, linux@armlinux.org.uk,
-        robert.marko@sartura.hr, linux-arm-msm@vger.kernel.org,
-        netdev@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, quic_srichara@quicinc.com
-Subject: Re: [PATCH v2 5/5] dt-bindings: net: ipq4019-mdio: Document ipq5332
- platform
-Message-ID: <20231214-outshine-shush-8a11c68607cd@spud>
-References: <20231212115151.20016-1-quic_luoj@quicinc.com>
- <20231212115151.20016-6-quic_luoj@quicinc.com>
- <20231212-caution-improvise-ed3cc6a1d305@spud>
- <11ffc985-3f2b-46b9-ae0b-911f7abe98d1@quicinc.com>
+        Thu, 14 Dec 2023 12:15:30 -0500
+Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5693BD5A;
+        Thu, 14 Dec 2023 09:15:05 -0800 (PST)
+Received: by mail-wm1-x334.google.com with SMTP id 5b1f17b1804b1-40c3f68b69aso53559025e9.1;
+        Thu, 14 Dec 2023 09:15:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1702574104; x=1703178904; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=sZcWwYsWqgvb8N253CfVL+G75y7l04rNTgihuYv69v8=;
+        b=YeST1OnN9dPK7e6VhGjctl73hiJ8oZ7EjuNuAG/+NLNeLcDr4EA3p3hw0aks/hgiYl
+         kqlXh3ZFwjZuCJQr4/UH9Shrt3UWBJGJ+oBITPOdg+R6Seybu8+FN0+AvG2OunqRvO/r
+         vNzbc5TH8ZTT0UBfTIZEf2tqPyoStaMkyqwbXzADJJ8ipM8bhOpwyosCaPGMMzqdHKEG
+         DEhXqVXnG8z7yBQbYCWSACQwHVXk2wF3x9LTDWQh6fQEk9/PHtBtSW21wXN8phQy8jpo
+         X3njm5Q/J4nyG7t3nqx96XAA1+lt7Uk5jYPdrCTk+mrBD3xmHdhA7QP3IPTYYacQWFDK
+         PSlQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702574104; x=1703178904;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=sZcWwYsWqgvb8N253CfVL+G75y7l04rNTgihuYv69v8=;
+        b=VuHtDkVx37uNq0HTxWpnVTjPoeKPENegIcmi5F54kAu2CsTXcySRD8xUL9ct5+tRPK
+         V3djkDySuNkj0fD4rpeOSMmBGsKUiuAvY2lCcC9CqiE0DBu/2wUYf2a0naqQV3ymnXME
+         +JIbo2D42miPJtXrcFRZAVjFkrKXQiXECIBUHutRlqq5Q8oqU8BzsGBdMl6G9hcVFVEl
+         eKp8oVudtdQlo2lPLMtTLBNOtN0YyKFU0mC0KADxoj2x6Jj3pYqDaN9/WmzjDv4OnpAj
+         sDBv3BqpWU1G48GQlNJ7E4TUHKiQq74aXalknnFlJjJ9cZfkJHGKhHvNMKfOVpul7ebq
+         q8nA==
+X-Gm-Message-State: AOJu0YyBP/OvWk9jrdMwxMB2GdcN0N/TGodGu/Om4kz9XGWApWhHhKVN
+        ezC09s2PqDwPq+NMTN1vnpo6mb5gG0xV7A==
+X-Google-Smtp-Source: AGHT+IH88hDNA4eO5+FpLzOmaFi9NlwWnrCx5E2RHnwKHW5L3a+1Er8kbAdZJfkQVoeIulog2uiXMg==
+X-Received: by 2002:a05:600c:4d98:b0:40c:2715:b10f with SMTP id v24-20020a05600c4d9800b0040c2715b10fmr5890947wmp.119.1702574103545;
+        Thu, 14 Dec 2023 09:15:03 -0800 (PST)
+Received: from archlinux.localnet (82-149-12-148.dynamic.telemach.net. [82.149.12.148])
+        by smtp.gmail.com with ESMTPSA id bh15-20020a05600c3d0f00b0040b4ccdcffbsm26013151wmb.2.2023.12.14.09.15.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 Dec 2023 09:15:02 -0800 (PST)
+From:   Jernej =?utf-8?B?xaBrcmFiZWM=?= <jernej.skrabec@gmail.com>
+To:     Andre Przywara <andre.przywara@arm.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Samuel Holland <samuel@sholland.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Yangtao Li <tiny.windzz@gmail.com>,
+        Brandon Cheo Fusi <fusibrandon13@gmail.com>,
+        devicetree@vger.kernel.org, linux-riscv@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
+        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org
+Subject: Re: [PATCH 2/5] cpufreq: sun50i: Add D1 support
+Date:   Thu, 14 Dec 2023 18:15:01 +0100
+Message-ID: <1921146.taCxCBeP46@archlinux>
+In-Reply-To: <20231214164010.0be50a89@donnerap.manchester.arm.com>
+References: <20231214103342.30775-1-fusibrandon13@gmail.com>
+ <8351928.NyiUUSuA9g@archlinux>
+ <20231214164010.0be50a89@donnerap.manchester.arm.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="LYJ0ceWwoY8jlvlx"
-Content-Disposition: inline
-In-Reply-To: <11ffc985-3f2b-46b9-ae0b-911f7abe98d1@quicinc.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -60,169 +87,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
---LYJ0ceWwoY8jlvlx
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Wed, Dec 13, 2023 at 04:26:56PM +0800, Jie Luo wrote:
+On Thursday, December 14, 2023 5:40:10 PM CET Andre Przywara wrote:
+> On Thu, 14 Dec 2023 17:29:30 +0100
+> Jernej =C5=A0krabec <jernej.skrabec@gmail.com> wrote:
 >=20
+> Hi,
 >=20
-> On 12/13/2023 12:06 AM, Conor Dooley wrote:
-> > On Tue, Dec 12, 2023 at 07:51:50PM +0800, Luo Jie wrote:
-> > > Update the yaml file for the new DTS properties.
+> > On Thursday, December 14, 2023 11:33:39 AM CET Brandon Cheo Fusi wrote:
+> > > Add support for D1 based devices to the Allwinner H6 cpufreq
+> > > driver
 > > >=20
-> > > 1. cmn-reference-clock for the CMN PLL source clock select.
-> > > 2. clock-frequency for MDIO clock frequency config.
-> > > 3. add uniphy AHB & SYS GCC clocks.
-> > > 4. add reset-gpios for MDIO bus level reset.
-> > >=20
-> > > Signed-off-by: Luo Jie <quic_luoj@quicinc.com>
+> > > Signed-off-by: Brandon Cheo Fusi <fusibrandon13@gmail.com>
 > > > ---
-> > >   .../bindings/net/qcom,ipq4019-mdio.yaml       | 157 +++++++++++++++=
-++-
-> > >   1 file changed, 153 insertions(+), 4 deletions(-)
+> > >  drivers/cpufreq/sun50i-cpufreq-nvmem.c | 1 +
+> > >  1 file changed, 1 insertion(+)
 > > >=20
-> > > diff --git a/Documentation/devicetree/bindings/net/qcom,ipq4019-mdio.=
-yaml b/Documentation/devicetree/bindings/net/qcom,ipq4019-mdio.yaml
-> > > index 3407e909e8a7..9546a6ad7841 100644
-> > > --- a/Documentation/devicetree/bindings/net/qcom,ipq4019-mdio.yaml
-> > > +++ b/Documentation/devicetree/bindings/net/qcom,ipq4019-mdio.yaml
-> > > @@ -20,6 +20,8 @@ properties:
-> > >             - enum:
-> > >                 - qcom,ipq6018-mdio
-> > >                 - qcom,ipq8074-mdio
-> > > +              - qcom,ipq9574-mdio
-> > > +              - qcom,ipq5332-mdio
-> > >             - const: qcom,ipq4019-mdio
-> > >     "#address-cells":
-> > > @@ -30,19 +32,71 @@ properties:
-> > >     reg:
-> > >       minItems: 1
-> > > -    maxItems: 2
-> > > +    maxItems: 5
-> > >       description:
-> > > -      the first Address and length of the register set for the MDIO =
-controller.
-> > > -      the second Address and length of the register for ethernet LDO=
-, this second
-> > > -      address range is only required by the platform IPQ50xx.
-> > > +      the first Address and length of the register set for the MDIO =
-controller,
-> > > +      the optional second, third and fourth address and length of th=
-e register
-> > > +      for ethernet LDO, these three address range are required by th=
-e platform
-> > > +      IPQ50xx/IPQ5332/IPQ9574, the last address and length is for th=
-e CMN clock
-> > > +      to select the reference clock.
-> > > +
-> > > +  reg-names:
-> > > +    minItems: 1
-> > > +    maxItems: 5
-> > >     clocks:
-> > > +    minItems: 1
-> > >       items:
-> > >         - description: MDIO clock source frequency fixed to 100MHZ
-> > > +      - description: UNIPHY0 AHB clock source frequency fixed to 100=
-MHZ
-> > > +      - description: UNIPHY1 AHB clock source frequency fixed to 100=
-MHZ
-> > > +      - description: UNIPHY0 SYS clock source frequency fixed to 24M=
-HZ
-> > > +      - description: UNIPHY1 SYS clock source frequency fixed to 24M=
-HZ
-> > >     clock-names:
-> > > +    minItems: 1
-> > >       items:
-> > >         - const: gcc_mdio_ahb_clk
-> > > +      - const: gcc_uniphy0_ahb_clk
-> > > +      - const: gcc_uniphy1_ahb_clk
-> > > +      - const: gcc_uniphy0_sys_clk
-> > > +      - const: gcc_uniphy1_sys_clk
+> > > diff --git a/drivers/cpufreq/sun50i-cpufreq-nvmem.c b/drivers/cpufreq=
+/sun50i-cpufreq-nvmem.c
+> > > index 32a9c88f8..ccf83780f 100644
+> > > --- a/drivers/cpufreq/sun50i-cpufreq-nvmem.c
+> > > +++ b/drivers/cpufreq/sun50i-cpufreq-nvmem.c
+> > > @@ -160,6 +160,7 @@ static struct platform_driver sun50i_cpufreq_driv=
+er =3D {
+> > > =20
+> > >  static const struct of_device_id sun50i_cpufreq_match_list[] =3D {
+> > >  	{ .compatible =3D "allwinner,sun50i-h6" },
+> > > +	{ .compatible =3D "allwinner,sun20i-d1" }, =20
 > >=20
-> > > +  cmn-reference-clock:
-> > > +    oneOf:
-> > > +      - items:
-> > > +          - enum:
-> > > +              - 0   # CMN PLL reference internal 48MHZ
-> > > +              - 1   # CMN PLL reference external 25MHZ
-> > > +              - 2   # CMN PLL reference external 31250KHZ
-> > > +              - 3   # CMN PLL reference external 40MHZ
-> > > +              - 4   # CMN PLL reference external 48MHZ
-> > > +              - 5   # CMN PLL reference external 50MHZ
-> > > +              - 6   # CMN PLL reference internal 96MHZ
-> >=20
-> > Why is this not represented by an element of the clocks property?
+> > This is not needed, as there is no functionality change.
 >=20
-> This property is for the reference clock source selection of CMN PLL,
-> CMN PLL generates the different clock rates for the different Ethernet
-> blocks, this CMN PLL configuration is not located in the GCC, so the
-> clock framework can't be used, which is the general hardware register
-> instead of RCG register for GCC.
+> That was my first reflex, too, but this is the *board* (fallback)
+> compatible, listed in the root node, so you have to list it here for each
+> SoC, together with the respective blocklist in the next patch.
+> We are doing the same for the H616, and actually also need that for the
+> H618. Weird, I know, but last time I check not easy to fix.
 
-I don't see how the clock being provided by the "GCC" (whatever that is)
-or by some other clock controller or fixed clock makes a difference.
-Why can't the other clock provider be represented in the devicetree?
+Oh, that's bad. What's the rationale to have so complicated probe method?
+Why not using standard, compatible based one?
 
-> > > +  clock-frequency:
-> > > +    oneOf:
-> > > +      - items:
-> > > +          - enum:
-> > > +              - 12500000
-> > > +              - 6250000
-> > > +              - 3125000
-> > > +              - 1562500
-> > > +              - 781250
-> > > +              - 390625
-> > > +    description:
-> > > +      The MDIO bus clock that must be output by the MDIO bus hardwar=
-e,
-> > > +      only the listed frequecies above can be configured, other freq=
-uency
-> > > +      will cause malfunction. If absent, the default hardware value =
-is used.
-> >=20
-> > Likewise.
-> >=20
-> > Your commit message contains a bullet point list of what you are doing,
-> > but there's no explanation here for why custom properties are required
-> > to provide clock information.
+Best regards,
+Jernej
 
-> This property clock-frequency is optional to configure the MDIO working
-> clock rate, and this is the MDIO general DT property, since the hardware
-> default clock rate is 390625HZ, there is requirement for higher clock rate
-> in the normal working case, i will update this information in the
-> next patch set.
 
-I'm just realising that this particular one is not a custom property,
-the unusual `oneOf: - items: - enum:` structure here threw me. This can
-just be
-  clock-frequency:
-    enum:
-      - 12500000
-      - 6250000
-      - 3125000
-      - 1562500
-      - 781250
-      - 390625
 
-but you're missing a default, given your commit about the last element
-in that list being one.
-
-Thanks,
-Conor.
-
---LYJ0ceWwoY8jlvlx
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZXs3kwAKCRB4tDGHoIJi
-0vu7APsHtU2RskKEI44XxHTB9wAjvT2zciB0zeCci/YTbg5d6gEAqM9G7uRaWzhA
-33QIM6/PicVe6pC2JOVaFUlBDKnW0gM=
-=Cypi
------END PGP SIGNATURE-----
-
---LYJ0ceWwoY8jlvlx--
