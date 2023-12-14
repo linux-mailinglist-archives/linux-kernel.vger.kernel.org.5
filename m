@@ -2,114 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 237F581359E
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 17:04:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A240813588
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 17:01:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1443643AbjLNQEI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 11:04:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49054 "EHLO
+        id S1573947AbjLNQA5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 11:00:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57204 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230252AbjLNQEH (ORCPT
+        with ESMTP id S1573919AbjLNQAz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 11:04:07 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE5D7123;
-        Thu, 14 Dec 2023 08:04:13 -0800 (PST)
+        Thu, 14 Dec 2023 11:00:55 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 450E5E8
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 08:01:02 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1702569853; x=1734105853;
-  h=message-id:from:to:cc:date:subject:mime-version:
-   content-transfer-encoding;
-  bh=l5WezQ4o+i/K7M7JIibngu66sNFZqkUEm5v4/5O/tF0=;
-  b=Zfoz0l3Z2rE7Ae0HXE4kSd6ZQrkj9ivS9eYnwTbtoSGCNkKVPZJ2dANb
-   ScshdGgJF/vywbGUptuNAGarbQ0GqwCY8yZ0/OYU1A9vCIra3QUSeF5Ca
-   a+TvTCVOyrTjFyr+i/Ce0k99Eqh9ZcyqDTEG4MGs2GiRw+tZgTGu92MsX
-   xyv3RrLxDarugCv0Kk17JoddmJ1hBmVqd/S1yCMnPGTPVTwKaaq736XlB
-   BNyDuaDmviMGze8vKHSC96+sI193PGT58F+O8sJzaWkWPYJjGhjgi5+3M
-   2MYKc9vn4lEkQ5boHu40scV6dmNixCmBvGQXB65xmDeZp+b1g9ELdmUfi
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10924"; a="375294417"
-X-IronPort-AV: E=Sophos;i="6.04,276,1695711600"; 
-   d="scan'208";a="375294417"
-Received: from orviesa001.jf.intel.com ([10.64.159.141])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Dec 2023 08:04:11 -0800
-Message-Id: <cdf76a$lddk7@smtpauth.intel.com>
+  t=1702569662; x=1734105662;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=MO0cb4xBumQBl6fOdYgeZbqe/Me8HN7NNVsrBWcpE/4=;
+  b=Toby5VHFSwIH8fOHaUSKgdi3JbXtkhpV4SR7daH/rEbbkAau9X4jvTJK
+   eWi3AX3+Okf+vot6fEffrKUtN2qWiYhT6XmPvNy4i625RUJQVXZrrii+U
+   ba+9e8opPRp+rfmaelfjn+8AXPuFsStb26l6IXWtoGnNpulPeBQzj4eEH
+   64zBSJ9zLQYowN51a7mo+vRbapGZXAx525QarEGSs10Mvuz3S3e1kP29K
+   cQZX2y7zSimUtKlQcfsk4cbAVWM9RWFHa9lkVyjVs1XqNdMCx1CjIoVvB
+   q/a1L9Mm5rINW5KFFxy2xh9YUJ3vBBbavRLkqdfDSEUgFjXHJAan+tkAu
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10924"; a="1990478"
+X-IronPort-AV: E=Sophos;i="6.04,275,1695711600"; 
+   d="scan'208";a="1990478"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Dec 2023 08:01:01 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.04,276,1695711600"; 
-   d="scan'208";a="22460039"
-Received: from ijarvine-desk1.ger.corp.intel.com (HELO localhost) ([10.246.49.39])
-  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Dec 2023 08:03:43 -0800
-From:   =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        PDx86 <platform-driver-x86@vger.kernel.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Andy Shevchenko <andy@kernel.org>
-Date:   Thu, 14 Dec 2023 17:59:36 +0200
-Subject: [GIT PULL] platform-drivers-x86 for v6.7-4
+X-IronPort-AV: E=McAfee;i="6600,9927,10924"; a="897787243"
+X-IronPort-AV: E=Sophos;i="6.04,275,1695711600"; 
+   d="scan'208";a="897787243"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by orsmga004.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Dec 2023 08:00:58 -0800
+Received: from andy by smile.fi.intel.com with local (Exim 4.97)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1rDo8t-00000005t4Y-0fF7;
+        Thu, 14 Dec 2023 18:00:55 +0200
+Date:   Thu, 14 Dec 2023 18:00:54 +0200
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Sakari Ailus <sakari.ailus@linux.intel.com>
+Cc:     linux-kernel@vger.kernel.org, gregkh@linuxfoundation.org,
+        alexander.usyskin@intel.com, tomas.winkler@intel.com,
+        Arnd Bergmann <arnd@arndb.de>, wentong.wu@intel.com
+Subject: Re: [PATCH 1/1] mei: vsc: Rework firmware image names
+Message-ID: <ZXsmtrGerSc7MS8h@smile.fi.intel.com>
+References: <20231213094055.446611-1-sakari.ailus@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231213094055.446611-1-sakari.ailus@linux.intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,MSGID_FROM_MTA_HEADER,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+On Wed, Dec 13, 2023 at 11:40:55AM +0200, Sakari Ailus wrote:
+> Rework firmware image names with the users in mind---there's no need for
+> variation between firmware names, apart from connected sensors. All
+> supported SoCs use the same firmware, too.
+> 
+> Use a single set of firmware binaries and assume they'll be found under
+> intel/vsc directory.
 
-Here is a fixes PR for platform-drivers-x86 for v6.7.
+I like it, FWIW,
+Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-Changes:
-- tablet-mode-switch events fix
-- kernel-doc warning fixes
-
-Regards, i.
+-- 
+With Best Regards,
+Andy Shevchenko
 
 
-The following changes since commit 3494a594315b56516988afb6854d75dee5b501db:
-
-  platform/mellanox: Check devm_hwmon_device_register_with_groups() return value (2023-12-04 15:01:46 +0200)
-
-are available in the Git repository at:
-
-  https://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git tags/platform-drivers-x86-v6.7-4
-
-for you to fetch changes up to 7bcd032370f88fd4022b6926d101403e96a86309:
-
-  platform/x86: intel_ips: fix kernel-doc formatting (2023-12-08 13:21:49 +0200)
-
-----------------------------------------------------------------
-platform-drivers-x86 for v6.7-4
-
-Changes:
-- tablet-mode-switch events fix
-- kernel-doc warning fixes
-
-The following is an automated shortlog grouped by driver:
-
-intel_ips:
- -  fix kernel-doc formatting
-
-intel-vbtn:
- -  Fix missing tablet-mode-switch events
-
-thinkpad_acpi:
- -  fix kernel-doc warnings
-
-----------------------------------------------------------------
-Hans de Goede (1):
-      platform/x86: intel-vbtn: Fix missing tablet-mode-switch events
-
-Randy Dunlap (2):
-      platform/x86: thinkpad_acpi: fix kernel-doc warnings
-      platform/x86: intel_ips: fix kernel-doc formatting
-
- drivers/platform/x86/intel/vbtn.c    | 19 +++++++++++++++----
- drivers/platform/x86/intel_ips.c     | 30 +++++++++++++++++++++++-------
- drivers/platform/x86/thinkpad_acpi.c |  6 +++---
- 3 files changed, 41 insertions(+), 14 deletions(-)
