@@ -2,167 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E29CD812B70
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 10:17:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E8C38812B74
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 10:17:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234421AbjLNJQt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 04:16:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33678 "EHLO
+        id S234530AbjLNJRD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 04:17:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39324 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234416AbjLNJQr (ORCPT
+        with ESMTP id S229691AbjLNJRC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 04:16:47 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3446D112
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 01:16:53 -0800 (PST)
+        Thu, 14 Dec 2023 04:17:02 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27DA110F
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 01:17:08 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1702545412;
+        s=mimecast20190719; t=1702545427;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=aSXTliSLRPJwWKgirD+ynnpgvILXx2haTFF7t0rHIEw=;
-        b=Nx5uV3a4jMfbpeuoFxbTM1pY9iPITeaqSUs7sbSOnrp+2fQxTe1LGlAu2SuxYJxHFYmLnk
-        OcvFmZ47izKgCkQ9RFuEV2//E2xuT82q6mLe7KdH6vewF6+BVbDYjitqvN2ACf6vDtw/Yn
-        zzxAAv6DTugGwp9SlHtVNgWeBNg40PE=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-435-DsH53_qdPEKXl44Rh_xE1Q-1; Thu, 14 Dec 2023 04:16:50 -0500
-X-MC-Unique: DsH53_qdPEKXl44Rh_xE1Q-1
-Received: by mail-ed1-f71.google.com with SMTP id 4fb4d7f45d1cf-55223b294e0so724052a12.2
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 01:16:50 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702545409; x=1703150209;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=aSXTliSLRPJwWKgirD+ynnpgvILXx2haTFF7t0rHIEw=;
-        b=atWf53smRfwpHyrvwOIcPrbxFEyz4DvG03HfQTFuf86PB0Vj9VWMyz3UVuXda8fD9Z
-         F3C/8rHC0VGqmOlE7Et++zv1q+0MxYKXJriAwKmljEyLAHiEOwXnmZQj4JpSCWb6KnVd
-         1jbX9NZDOYhXeZaw6r9H/LSjaB1fhb08n6r5eYz5ReL7hZDv+K9g1lg49xBzRm6Pw2IS
-         6usWfBVhnrMtHO8vE4oAXqDZseB+rv7HWKJE5v1BLNEKBw/9jyKvhoIYoA+mbidSp3TJ
-         fE/U8F9DOTbcCE2BKxYy/4bZSsK9kDc76DcejTmX5jLuCwEsPdsjluNM2dIqQCzsS9JZ
-         IJQg==
-X-Gm-Message-State: AOJu0Yzg9w/PneZVa86WNLjab7sEvEzXKtOjmnF1RVASGpWswGIMwV8x
-        A1Vp/6lVm916f5crknZl5rjS2xL7iSdlNu+HBbawy1BMLWZC7NNediHntowxcINLBa2rctIacPN
-        TmAmVknWaccSAoOyhQ8YWPzsI
-X-Received: by 2002:a17:907:268e:b0:a1d:b7b9:3263 with SMTP id bn14-20020a170907268e00b00a1db7b93263mr2986289ejc.164.1702545409802;
-        Thu, 14 Dec 2023 01:16:49 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IFVQE/9DmmfQQ7JcgUanGLiAM3AoyRWgj4qusaFgzl7bO8ELi8lg6GnTyvH3KcEx592UQ4ElQ==
-X-Received: by 2002:a17:907:268e:b0:a1d:b7b9:3263 with SMTP id bn14-20020a170907268e00b00a1db7b93263mr2986277ejc.164.1702545409439;
-        Thu, 14 Dec 2023 01:16:49 -0800 (PST)
-Received: from ?IPV6:2001:1c00:c32:7800:5bfa:a036:83f0:f9ec? (2001-1c00-0c32-7800-5bfa-a036-83f0-f9ec.cable.dynamic.v6.ziggo.nl. [2001:1c00:c32:7800:5bfa:a036:83f0:f9ec])
-        by smtp.gmail.com with ESMTPSA id tq14-20020a170907c50e00b00a1f83646eb6sm7701080ejc.149.2023.12.14.01.16.48
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 14 Dec 2023 01:16:48 -0800 (PST)
-Message-ID: <56e74264-6f98-4216-9f9a-e8f718375602@redhat.com>
-Date:   Thu, 14 Dec 2023 10:16:47 +0100
+        bh=uUDsFrdozAvlpGaxLHtyNeP/OnotbqYqMUVE5yB4sEs=;
+        b=D0pa7oyvyZlNdsd4L4PqeHpai8H8M8jjqqbNH36+LChBXw90vG+F0C6ui+u1FuSoKWZjDT
+        0nS95XA0pc1T3c1NqnNC0T06FwHNlxkr10+vPrzci8SF5T53Dsfo7ntP/jgnhtFQ8Z4Xek
+        NZewtkeRXXtsrsrNH8E31P44OCB4UXg=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-114-5ChW8uqMO92L_niAB7szIw-1; Thu,
+ 14 Dec 2023 04:17:06 -0500
+X-MC-Unique: 5ChW8uqMO92L_niAB7szIw-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 9D7382820B79;
+        Thu, 14 Dec 2023 09:17:05 +0000 (UTC)
+Received: from localhost (unknown [10.72.116.38])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id E2E112026D66;
+        Thu, 14 Dec 2023 09:17:03 +0000 (UTC)
+Date:   Thu, 14 Dec 2023 17:17:00 +0800
+From:   Baoquan He <bhe@redhat.com>
+To:     fuqiang wang <fuqiang.wang@easystack.cn>
+Cc:     Vivek Goyal <vgoyal@redhat.com>, Dave Young <dyoung@redhat.com>,
+        kexec@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] kexec: avoid out of bounds in crash_exclude_mem_range()
+Message-ID: <ZXrIDNvvlpZyiLYK@MiWiFi-R3L-srv>
+References: <20231127025641.62210-1-fuqiang.wang@easystack.cn>
+ <ZWg9aZYoo0v+tCQ8@MiWiFi-R3L-srv>
+ <e588c619-9b97-4627-bce1-b595c757e5c4@easystack.cn>
+ <ZXk2oBf/T1Ul6o0c@MiWiFi-R3L-srv>
+ <92a1bdff-e988-48ff-8e78-2998834a3e02@easystack.cn>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 03/11] devm-helpers: introduce devm_mutex_init
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        George Stark <gnstark@salutedevices.com>
-Cc:     pavel@ucw.cz, lee@kernel.org, vadimp@nvidia.com,
-        mpe@ellerman.id.au, npiggin@gmail.com, christophe.leroy@csgroup.eu,
-        mazziesaccount@gmail.com, peterz@infradead.org, mingo@redhat.com,
-        will@kernel.org, longman@redhat.com, boqun.feng@gmail.com,
-        nikitos.tr@gmail.com, linux-leds@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        kernel@salutedevices.com
-References: <20231213223020.2713164-1-gnstark@salutedevices.com>
- <20231213223020.2713164-4-gnstark@salutedevices.com>
- <CAHp75Vc1zZFWB8PPrg8oeAKz9aHnQrrSjdGyGd8mWcmeZdJ9qA@mail.gmail.com>
- <CAHp75Vdxa5k-CLhL+PmK0iTPTNSpP77DA6ooWnxfViwSKiEOSw@mail.gmail.com>
-Content-Language: en-US, nl
-From:   Hans de Goede <hdegoede@redhat.com>
-In-Reply-To: <CAHp75Vdxa5k-CLhL+PmK0iTPTNSpP77DA6ooWnxfViwSKiEOSw@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <92a1bdff-e988-48ff-8e78-2998834a3e02@easystack.cn>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.4
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On 12/13/23 23:38, Andy Shevchenko wrote:
-> On Thu, Dec 14, 2023 at 12:36 AM Andy Shevchenko
-> <andy.shevchenko@gmail.com> wrote:
->> On Thu, Dec 14, 2023 at 12:30 AM George Stark <gnstark@salutedevices.com> wrote:
->>>
->>> Using of devm API leads to a certain order of releasing resources.
->>> So all dependent resources which are not devm-wrapped should be deleted
->>> with respect to devm-release order. Mutex is one of such objects that
->>> often is bound to other resources and has no own devm wrapper.
->>> Since mutex_destroy() actually does nothing in non-debug builds
->>> frequently calling mutex_destroy() is just ignored which is safe for now
->>> but wrong formally and can lead to a problem if mutex_destroy() is
->>> extended so introduce devm_mutex_init().
+On 12/13/23 at 09:10pm, fuqiang wang wrote:
+> 在 2023/12/13 12:44, Baoquan He 写道:
 > 
-> ...
+> > On 11/30/23 at 09:20pm, fuqiang wang wrote:
+> > > On 2023/11/30 15:44, Baoquan He wrote:
+> > > > On 11/27/23 at 10:56am, fuqiang wang wrote:
+> > > > > When the split happened, judge whether mem->nr_ranges is equal to
+> > > > > mem->max_nr_ranges. If it is true, return -ENOMEM.
+> > > > > 
+> > > > > The advantage of doing this is that it can avoid array bounds caused by
+> > > > > some bugs. E.g., Before commit 4831be702b95 ("arm64/kexec: Fix missing
+> > > > > extra range for crashkres_low."), reserve both high and low memories for
+> > > > > the crashkernel may cause out of bounds.
+> > > > > 
+> > > > > On the other hand, move this code before the split to ensure that the
+> > > > > array will not be changed when return error.
+> > > > If out of array boundary is caused, means the laoding failed, whether
+> > > > the out of boundary happened or not. I don't see how this code change
+> > > > makes sense. Do I miss anything?
+> > > > 
+> > > > Thanks
+> > > > Baoquan
+> > > > 
+> > > Hi baoquan,
+> > > 
+> > > In some configurations, out of bounds may not cause crash_exclude_mem_range()
+> > > returns error, then the load will succeed.
+> > > 
+> > > E.g.
+> > > There is a cmem before execute crash_exclude_mem_range():
+> > > 
+> > >    cmem = {
+> > >      max_nr_ranges = 3
+> > >      nr_ranges = 2
+> > >      ranges = {
+> > >         {start = 1,      end = 1000}
+> > >         {start = 1001,    end = 2000}
+> > >      }
+> > >    }
+> > > 
+> > > After executing twice crash_exclude_mem_range() with the start/end params
+> > > 100/200, 300/400 respectively, the cmem will be:
+> > > 
+> > >    cmem = {
+> > >      max_nr_ranges = 3
+> > >      nr_ranges = 4                    <== nr_ranges > max_nr_ranges
+> > >      ranges = {
+> > >        {start = 1,       end = 99  }
+> > >        {start = 201,     end = 299 }
+> > >        {start = 401,     end = 1000}
+> > >        {start = 1001,    end = 2000}  <== OUT OF BOUNDS
+> > >      }
+> > >    }
+> > > 
+> > > When an out of bounds occurs during the second execution, the function will not
+> > > return error.
+> > > 
+> > > Additionally, when the function returns error, means the load failed. It seems
+> > > meaningless to keep the original data unchanged. But in my opinion, this will
+> > > make this function more rigorous and more versatile. (However, I am not sure if
+> > > it is self-defeating and I hope to receive more suggestions).
+> > Sorry for late reply.
+> > 
+> > I checked the code again, there seems to be cases out of bounds occur
+> > very possiblly. We may need to enlarge the cmem array to avoid the risk.
+> > 
+> > In below draft code, we need add another slot to exclude the low 1M area
+> > when preparing elfcorehdr. And to exclude the elf header region from
+> > crash kernel region, we need create the cmem with 2 slots.
+> > 
+> > With these change, we can absolutely avoid out of bounds occurence.
+> > What do you think?
+> > 
+> > diff --git a/arch/x86/kernel/crash.c b/arch/x86/kernel/crash.c
+> > index 1715e5f06a59..21facabcf699 100644
+> > --- a/arch/x86/kernel/crash.c
+> > +++ b/arch/x86/kernel/crash.c
+> > @@ -147,10 +147,10 @@ static struct crash_mem *fill_up_crash_elf_data(void)
+> >   		return NULL;
+> >   	/*
+> > -	 * Exclusion of crash region and/or crashk_low_res may cause
+> > -	 * another range split. So add extra two slots here.
+> > +	 * Exclusion of low 1M, crash region and/or crashk_low_res may
+> > +	 * cause another range split. So add extra two slots here.
+> >   	 */
+> > -	nr_ranges += 2;
+> > +	nr_ranges += 3;
+> >   	cmem = vzalloc(struct_size(cmem, ranges, nr_ranges));
+> >   	if (!cmem)
+> >   		return NULL;
+> Hi baoquan,
 > 
->>> +#ifdef mutex_destroy
->>> +static inline void devm_mutex_release(void *res)
->>> +{
->>> +       mutex_destroy(res);
->>> +}
->>> +#endif
->>> +
->>> +/**
->>> + * devm_mutex_init - Resource-managed mutex initialization
->>> + * @dev:       Device which lifetime mutex is bound to
->>> + * @lock:      Pointer to a mutex
->>> + *
->>> + * Initialize mutex which is automatically destroyed when the driver is detached.
->>> + *
->>> + * Returns: 0 on success or a negative error code on failure.
->>> + */
->>> +static inline int devm_mutex_init(struct device *dev, struct mutex *lock)
->>> +{
->>> +       mutex_init(lock);
->>> +#ifdef mutex_destroy
->>> +       return devm_add_action_or_reset(dev, devm_mutex_release, lock);
->>> +#else
->>> +       return 0;
->>> +#endif
->>> +}
->>
->> If this is going to be accepted, you may decrease the amount of ifdeffery.
->>
->> #ifdef ...
->> #else
->> #define devm_mutex_init(dev, lock)  mutex_init(lock)
+> Exclusion of low 1M may not cause new region. Because when calling
+> crash_exclude_mem_range(), the start parameter is 0 and the condition for
+> splitting a new region is that the start, end parameters are both in a certain
+> existing region in cmem and cannot be equal to existing region's start or end.
+> Obviously, start (0) cannot meet this condition.
+
+OK, this is an special case.
+
+> > @@ -282,7 +282,7 @@ int crash_setup_memmap_entries(struct kimage *image, struct boot_params *params)
+> >   	struct crash_memmap_data cmd;
+> >   	struct crash_mem *cmem;
+> > -	cmem = vzalloc(struct_size(cmem, ranges, 1));
+> > +	cmem = vzalloc(struct_size(cmem, ranges, 2));
+> >   	if (!cmem)
+> >   		return -ENOMEM;
+> > 
+> Yes, you are right. Exclude the elf header region from crash kernel region may
+> cause split a new region. And there seems to be another issue with this code
+> path: Before calling crash_exclude_mem_range(), cmem->max_nr_ranges was not
+> initialized.
+
+Yeah, the init need be added.
+
 > 
-> More precisely ({ mutex_init(lock); 0; }) or as a static inline...
+> In my opinion, these change can absolutely avoid out of bounds occurence. But
+> when we forget to modify max_nr_ranges due to a mistakes in the future, is it
+> better to report it by returning an error through crash_exclude_mem_range().
+> What do you think about it?
 
-With a static inline we are pretty much back to the original
-v3 patch.
-
-I believe the best way to reduce the ifdef-ery is to remove
-the #ifdef around devm_mutex_release() having unused
-static inline ... functions in .h files is quite common,
-so this one does not need a #ifdef around it and with
-that removed we are down to just one #ifdef so just
-removing the #ifdef around devm_mutex_release() seems
-the best fix.
-
-With that fixed you may add my:
-
-Reviewed-by: Hans de Goede <hdegoede@redhat.com>
-
-to the patch and I'm fine with this being routed
-upstream through whatever tree is convenient.
-
-Regards,
-
-Hans
-
-
+I don't see the difference between your patch and the current code.
+Please see my comment in your earlier example.
 
