@@ -2,70 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B92181259C
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 03:59:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EADF8125CC
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 04:13:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1443081AbjLNC7N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 21:59:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54158 "EHLO
+        id S1443068AbjLNDNr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 22:13:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33680 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229725AbjLNC7I (ORCPT
+        with ESMTP id S229525AbjLNDNp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 21:59:08 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B04DAD
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 18:59:15 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 142B7C43397;
-        Thu, 14 Dec 2023 02:59:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1702522754;
-        bh=ZaYFh+XfLjUJmX9Psu4A6X4K8BeU6LmR81W42dUb/GM=;
-        h=From:Date:Subject:References:In-Reply-To:To:Cc:Reply-To:From;
-        b=C+qUX7YmMoPZW51ohDugvk/Rv7lCOHoi3WDhfQIxIJnlyyzBbyauGtfqDAM9dqczR
-         w6QXoZv+fHXYuC4xzbxazFexcc/KCR8lhMC72QxIe5LUQSu0mVXLUFVp++pmDhNE9h
-         uHG6VbKCGjU0CgKhznMQrqjprDZeHLwolR7wrt3BhjOONEFcHBKTQ8oappe6qfO/J1
-         wNXWWjA5pd+Pu1pHNBKm/xKg5PM47ZMxdDAYGE+dVVuS8NfvCQ3NLaOXqaXMkqBxhq
-         sgUxV4PLVULZLmpX6rJB7RqO/JwJL83NHeud00w3KQ9+4N5UUQUvKtOgdY3Gg+EuUd
-         B6OmrLY+Ky0zw==
-Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by smtp.lore.kernel.org (Postfix) with ESMTP id ECA89C46CA3;
-        Thu, 14 Dec 2023 02:59:13 +0000 (UTC)
-From:   Fenglin Wu via B4 Relay 
-        <devnull+quic_fenglinw.quicinc.com@kernel.org>
-Date:   Thu, 14 Dec 2023 10:59:15 +0800
-Subject: [PATCH v2 5/5] arm64: dts: qcom: sm8550-qrd: add PM8010 regulators
+        Wed, 13 Dec 2023 22:13:45 -0500
+Received: from mail-oa1-x2d.google.com (mail-oa1-x2d.google.com [IPv6:2001:4860:4864:20::2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D922D0;
+        Wed, 13 Dec 2023 19:13:52 -0800 (PST)
+Received: by mail-oa1-x2d.google.com with SMTP id 586e51a60fabf-1fb33059466so5402769fac.2;
+        Wed, 13 Dec 2023 19:13:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1702523631; x=1703128431; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=xfe6G/+lWo1DQS2DwiB9RkFIHFnA2iv0Ouilk3h+svg=;
+        b=hmIuJleeVUahWXnc8gvSmufp4KEloOArYcVi3wYXspIlsGFMm5wm3aApVb6gXtWcP2
+         fzz8+Se9ExZSbTvrNk1CNWbQ2Hz1cToZDAyHyfUeF+NJCId3vheGv61THnATlgZcKa/h
+         t6XYW0gWjaP4t+2IUatnhkE/z3g56Tdo3wTTa8fjNc+2xE6eRTX39XLrDKxOhSf06Qem
+         BkDDxMDlDtYnPjHof7zAHw/QU+ipV7dyGOHFdiWD9zWO6VjnKxE1i3KL113RnISORRU7
+         kwMDF7WvZtd0/P+tYeqvlJRgiczugTZrwSHXreJnMzY+ZxIxf/Cq+peZ+pCGmHMDFWPz
+         qTrQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702523631; x=1703128431;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=xfe6G/+lWo1DQS2DwiB9RkFIHFnA2iv0Ouilk3h+svg=;
+        b=eRltxhpBo4tNw8Ztqvmq7EHw5WDrvUul0MYCUKuzeO8b7o+yJKqaIIqvwi9egE+XjC
+         c336+LHSZDcmdLV0nHMqeiBmgJhK9Dn6dJ8Y6vpiHWQrBk3Iv5Nxi9cP6fwsYS+Flvr9
+         9P9x1bAY0PSKif0ZXU0DkSkNRMfaSdkSV2RQZceop2vuTO98j5Y/nqymotMsCmiGRzEk
+         OoXSvbjRN3g5BMpB83h5mu1ZIH9ZWBld+p1q4sMu+5QGYiFvLUTbhgH+2XDmypz82oXF
+         ubz1Q1xqlDtgPw1IDhcRViknhHmcRmlU28OEcLfnn21qprF/ITAVnCNpH8PpRVQPLxLJ
+         36xw==
+X-Gm-Message-State: AOJu0YzZz4UmqIYhgFida2Bnr+v7qD/0d3FH/yBmZLswjZS+efwRq0tD
+        UJkXNmm0VOFIKNZFI3henoA=
+X-Google-Smtp-Source: AGHT+IG2Bd3WCKM1ocHYVo7O4Rs6lI8Oe4qFoIPc+atyNbrf8SNuBraJey7A/rFFES0b+bpZX9ZRtQ==
+X-Received: by 2002:a05:6358:59:b0:170:17ea:f4f0 with SMTP id 25-20020a056358005900b0017017eaf4f0mr7109068rwx.61.1702523631447;
+        Wed, 13 Dec 2023 19:13:51 -0800 (PST)
+Received: from [192.168.54.90] (static.220.238.itcsa.net. [190.15.220.238])
+        by smtp.gmail.com with ESMTPSA id u14-20020a170902e80e00b001d0c37a9ccfsm11199832plg.303.2023.12.13.19.13.48
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 13 Dec 2023 19:13:51 -0800 (PST)
+Message-ID: <f9b8f95e-1e72-4907-9964-6a4ecfc435b1@gmail.com>
+Date:   Wed, 13 Dec 2023 23:57:29 -0300
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 1/3] rust: macros: add `decl_generics` to
+ `parse_generics()`
+Content-Language: en-US
+To:     Benno Lossin <benno.lossin@proton.me>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Alex Gaynor <alex.gaynor@gmail.com>,
+        Wedson Almeida Filho <wedsonaf@gmail.com>,
+        Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
+        =?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
+        Andreas Hindborg <a.hindborg@samsung.com>,
+        Alice Ryhl <aliceryhl@google.com>,
+        Sumera Priyadarsini <sylphrenadin@gmail.com>,
+        Vincenzo Palazzo <vincenzopalazzodev@gmail.com>,
+        Asahi Lina <lina@asahilina.net>
+Cc:     rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20231213220447.3613500-1-benno.lossin@proton.me>
+From:   Martin Rodriguez Reboredo <yakoyoku@gmail.com>
+In-Reply-To: <20231213220447.3613500-1-benno.lossin@proton.me>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Message-Id: <20231214-pm8010-regulator-v2-5-82131df6b97b@quicinc.com>
-References: <20231214-pm8010-regulator-v2-0-82131df6b97b@quicinc.com>
-In-Reply-To: <20231214-pm8010-regulator-v2-0-82131df6b97b@quicinc.com>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>, kernel@quicinc.com
-Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, quic_collinsd@quicinc.com,
-        quic_subbaram@quicinc.com, quic_jprakash@quicinc.com,
-        Fenglin Wu <quic_fenglinw@quicinc.com>
-X-Mailer: b4 0.13-dev-83828
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1702522752; l=4210;
- i=quic_fenglinw@quicinc.com; s=20230725; h=from:subject:message-id;
- bh=Uw7hfR/4pMi0fyvOVpXG2sUU2LLsU8c8fd4IwNmDJIU=;
- b=KRGkOXLmixQwqOnTzAmjoeUMMKd4rYrLST6Tw9n1Q4pEIGjBDOil1tRI4QJEKFfWpbcu5TPNi
- FSo8gmWtscJBD/NjNAOLcTHS5UfOLrR9IVWR/Q92bGr82BrQIpQjg8W
-X-Developer-Key: i=quic_fenglinw@quicinc.com; a=ed25519;
- pk=hleIDz3Unk1zeiwwOnZUjoQVMMelRancDFXg927lNjI=
-X-Endpoint-Received: by B4 Relay for quic_fenglinw@quicinc.com/20230725 with auth_id=68
-X-Original-From: Fenglin Wu <quic_fenglinw@quicinc.com>
-Reply-To: <quic_fenglinw@quicinc.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -74,147 +84,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Fenglin Wu <quic_fenglinw@quicinc.com>
+On 12/13/23 19:08, Benno Lossin wrote:
+> The generic parameters on a type definition can specify default values.
+> Currently `parse_generics()` cannot handle this though. For example when
+> parsing the following generics:
+> 
+>      <T: Clone, const N: usize = 0>
+> 
+> The `impl_generics` will be set to `T: Clone, const N: usize = 0` and
+> `ty_generics` will be set to `T, N`. Now using the `impl_generics` on an
+> impl block:
+> 
+>      impl<$($impl_generics)*> Foo {}
+> 
+> will result in invalid Rust code, because default values are only
+> available on type definitions.
+> 
+> Therefore add parsing support for generic parameter default values using
+> a new kind of generics called `decl_generics` and change the old
+> behavior of `impl_generics` to not contain the generic parameter default
+> values.
+> 
+> Now `Generics` has three fields:
+> - `impl_generics`: the generics with bounds
+>    (e.g. `T: Clone, const N: usize`)
+> - `decl_generics`: the generics with bounds and default values
+>    (e.g. `T: Clone, const N: usize = 0`)
+> - `ty_generics`:  contains the generics without bounds and without
+>    default values (e.g. `T, N`)
+> 
+> `impl_generics` is designed to be used on `impl<$impl_generics>`,
+> `decl_generics` for the type definition, so `struct Foo<$decl_generics>`
+> and `ty_generics` whenever you use the type, so `Foo<$ty_generics>`.
+> 
+> Here is an example that uses all three different types of generics:
+> 
+>      let (Generics { decl_generics, impl_generics, ty_generics }, rest) = parse_generics(input);
+>      quote! {
+>          struct Foo<$($decl_generics)*> {
+>              // ...
+>          }
+> 
+>          impl<$impl_generics> Foo<$ty_generics> {
+>              fn foo() {
+>                  // ...
+>              }
+>          }
+>      }
+> 
+> The next commit contains a fix to the `#[pin_data]` macro making it
+> compatible with generic parameter default values by relying on this new
+> behavior.
+> 
+> Signed-off-by: Benno Lossin <benno.lossin@proton.me>
+> ---
+> [...]
 
-Add PM8010 regulator device nodes for sm8550-qrd board.
-
-Signed-off-by: Fenglin Wu <quic_fenglinw@quicinc.com>
----
- arch/arm64/boot/dts/qcom/sm8550-qrd.dts | 120 ++++++++++++++++++++++++++++++++
- 1 file changed, 120 insertions(+)
-
-diff --git a/arch/arm64/boot/dts/qcom/sm8550-qrd.dts b/arch/arm64/boot/dts/qcom/sm8550-qrd.dts
-index eef811def39b..7ca93c149215 100644
---- a/arch/arm64/boot/dts/qcom/sm8550-qrd.dts
-+++ b/arch/arm64/boot/dts/qcom/sm8550-qrd.dts
-@@ -527,6 +527,126 @@ vreg_l3g_1p2: ldo3 {
- 			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
- 		};
- 	};
-+
-+	regulators-6 {
-+		compatible = "qcom,pm8010-rpmh-regulators";
-+		qcom,pmic-id = "m";
-+
-+		vdd-l1-l2-supply = <&vreg_s4g_1p25>;
-+		vdd-l3-l4-supply = <&vreg_bob2>;
-+		vdd-l5-supply = <&vreg_s6g_1p86>;
-+		vdd-l6-supply = <&vreg_s6g_1p86>;
-+		vdd-l7-supply = <&vreg_bob1>;
-+
-+		vreg_l1m_1p056: ldo1 {
-+			regulator-name = "vreg_l1m_1p056";
-+			regulator-min-microvolt = <1056000>;
-+			regulator-max-microvolt = <1056000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l2m_1p056: ldo2 {
-+			regulator-name = "vreg_l2m_1p056";
-+			regulator-min-microvolt = <1056000>;
-+			regulator-max-microvolt = <1056000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l3m_2p8: ldo3 {
-+			regulator-name = "vreg_l3m_2p8";
-+			regulator-min-microvolt = <2800000>;
-+			regulator-max-microvolt = <2800000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l4m_2p8: ldo4 {
-+			regulator-name = "vreg_l4m_2p8";
-+			regulator-min-microvolt = <2800000>;
-+			regulator-max-microvolt = <2800000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l5m_1p8: ldo5 {
-+			regulator-name = "vreg_l5m_1p8";
-+			regulator-min-microvolt = <1800000>;
-+			regulator-max-microvolt = <1800000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l6m_1p8: ldo6 {
-+			regulator-name = "vreg_l6m_1p8";
-+			regulator-min-microvolt = <1800000>;
-+			regulator-max-microvolt = <1800000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l7m_2p9: ldo7 {
-+			regulator-name = "vreg_l7m_2p9";
-+			regulator-min-microvolt = <2800000>;
-+			regulator-max-microvolt = <2904000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+	};
-+
-+	regulators-7 {
-+		compatible = "qcom,pm8010-rpmh-regulators";
-+		qcom,pmic-id = "n";
-+
-+		vdd-l1-l2-supply = <&vreg_s4g_1p25>;
-+		vdd-l3-l4-supply = <&vreg_bob2>;
-+		vdd-l5-supply = <&vreg_s6g_1p86>;
-+		vdd-l6-supply = <&vreg_bob1>;
-+		vdd-l7-supply = <&vreg_bob1>;
-+
-+		vreg_l1n_1p1: ldo1 {
-+			regulator-name = "vreg_l1n_1p1";
-+			regulator-min-microvolt = <1104000>;
-+			regulator-max-microvolt = <1200000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l2n_1p1: ldo2 {
-+			regulator-name = "vreg_l2n_1p1";
-+			regulator-min-microvolt = <1104000>;
-+			regulator-max-microvolt = <1200000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l3n_2p8: ldo3 {
-+			regulator-name = "vreg_l3n_2p8";
-+			regulator-min-microvolt = <2800000>;
-+			regulator-max-microvolt = <3000000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l4n_2p8: ldo4 {
-+			regulator-name = "vreg_l4n_2p8";
-+			regulator-min-microvolt = <2800000>;
-+			regulator-max-microvolt = <3300000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l5n_1p8: ldo5 {
-+			regulator-name = "vreg_l5n_1p8";
-+			regulator-min-microvolt = <1800000>;
-+			regulator-max-microvolt = <1800000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l6n_3p3: ldo6 {
-+			regulator-name = "vreg_l6n_3p3";
-+			regulator-min-microvolt = <2800000>;
-+			regulator-max-microvolt = <3304000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l7n_2p96: ldo7 {
-+			regulator-name = "vreg_l7n_2p96";
-+			regulator-min-microvolt = <2800000>;
-+			regulator-max-microvolt = <2960000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+	};
- };
- 
- &i2c_master_hub_0 {
-
--- 
-2.25.1
-
+Reviewed-by: Martin Rodriguez Reboredo <yakoyoku@gmail.com>
