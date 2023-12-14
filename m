@@ -2,138 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A7F6A812BBB
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 10:31:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B6E01812BC3
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 10:33:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1443379AbjLNJbZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 04:31:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35670 "EHLO
+        id S1443454AbjLNJdk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 04:33:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45266 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229633AbjLNJbX (ORCPT
+        with ESMTP id S229633AbjLNJdi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 04:31:23 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 623BE98
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 01:31:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1702546289;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
+        Thu, 14 Dec 2023 04:33:38 -0500
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FFAA98
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 01:33:45 -0800 (PST)
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:98])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id EEA55220E0;
+        Thu, 14 Dec 2023 09:33:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1702546423; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=tTE0cMZgmLT4mbBDje7gzm+ln7P9WsJQeR7EiRHzoUg=;
-        b=bdgEI6di7G9lPBavmDo4uBPBhGkfhDKh8mKGlvenUgoCKUVk3uS7iZNvhuNJh3TNSRhatI
-        zx8dX8YUa9aLB0jyE2oBXL/p/ajZx5s3PIbvSZRrzfKqm7yOv4bNH0IElEiSuaTXqhRuev
-        WNkdHK8LR/1Yxxq8/SZTgKFS1ePSDCo=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-370-Qvc7B4AjOu-G8iD0fwHZMQ-1; Thu, 14 Dec 2023 04:31:27 -0500
-X-MC-Unique: Qvc7B4AjOu-G8iD0fwHZMQ-1
-Received: by mail-wm1-f70.google.com with SMTP id 5b1f17b1804b1-40c299d1e36so54279315e9.1
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 01:31:27 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702546286; x=1703151086;
-        h=content-transfer-encoding:mime-version:user-agent:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=tTE0cMZgmLT4mbBDje7gzm+ln7P9WsJQeR7EiRHzoUg=;
-        b=luOwyzWVJcrq/LdDnUkmRf/eRbRYAlCIlarQ/qHCCQnr1gFiEz1x8Vh+MfIpgK77af
-         rv0RIMQxUga79wfT4wDS2TppAASDIG2YC0mOUWMfiCppKGltqTvRKxxqxJtADfHYTna9
-         R/iFoxSa/Sl4ry5G6YnoaRfhvzY2ZpxL2qYxPvUGIaTeKBDHrWns6AsBGcD+CA/YL7AZ
-         AogkkABU5h32UAMqJf08Se3s53axfYC1AXQQalWNfFMD7CF7OgzvpcejGwGo2lUbv0M3
-         M8pYf/dXZ+P24PknnbArEWJZsKT/HpI1H2t7sBEUpyktxpzgH8QvlWhylUmc2Q6Wtk5s
-         tF4Q==
-X-Gm-Message-State: AOJu0YxIGk0yLEi/UYZb1thqIeU+m9TNoGpHrkTBEYtuBERYlI1QmT6Q
-        CjtlmwRwQzBusHUMWfAuhZ8EnZJLNZNtndT2tv7u+UZRKr2KT9hpqGjrlSq3BQmFQftf+yTSX/j
-        iVPHJ9v6QI/BZaNV2w3+yzxEa
-X-Received: by 2002:a05:600c:188f:b0:40c:32e6:d567 with SMTP id x15-20020a05600c188f00b0040c32e6d567mr3338885wmp.119.1702546286718;
-        Thu, 14 Dec 2023 01:31:26 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IFRxP7fEK8hsKy8ujv5AAy1+oBp2F4A/KQqv4ZVDGZIIzspF+szw+DRvb7Fz+JaTSBb7ZWKhg==
-X-Received: by 2002:a05:600c:188f:b0:40c:32e6:d567 with SMTP id x15-20020a05600c188f00b0040c32e6d567mr3338872wmp.119.1702546286273;
-        Thu, 14 Dec 2023 01:31:26 -0800 (PST)
-Received: from starship ([77.137.131.62])
-        by smtp.gmail.com with ESMTPSA id fl9-20020a05600c0b8900b0040b43da0bbasm24076640wmb.30.2023.12.14.01.31.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Dec 2023 01:31:25 -0800 (PST)
-Message-ID: <aa7aa5ea5b112a0ec70c6276beb281e19c052f0e.camel@redhat.com>
-Subject: Re: [PATCH v2 1/3] KVM: x86: Make the hardcoded APIC bus frequency
- vm variable
-From:   Maxim Levitsky <mlevitsk@redhat.com>
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     isaku.yamahata@intel.com, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, isaku.yamahata@gmail.com,
-        Paolo Bonzini <pbonzini@redhat.com>, erdemaktas@google.com,
-        Vishal Annapurve <vannapurve@google.com>,
-        Jim Mattson <jmattson@google.com>
-Date:   Thu, 14 Dec 2023 11:31:24 +0200
-In-Reply-To: <ZXo54VNuIqbMsYv-@google.com>
-References: <cover.1699936040.git.isaku.yamahata@intel.com>
-         <1c12f378af7de16d7895f8badb18c3b1715e9271.1699936040.git.isaku.yamahata@intel.com>
-         <938efd3cfcb25d828deab0cc0ba797177cc69602.camel@redhat.com>
-         <ZXo54VNuIqbMsYv-@google.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
+        bh=8LqHwD4UGn1zZYNa5Woz1k2VMDd8pQo3bwLIR8Mlgw0=;
+        b=KiyCg9T6jGKbZVGUnw7BORbHd6Z0pp2GszcyINcAEI+B4KSglvg7qvLiTqrF8ahMzUl6Rg
+        N+WF9j86ZO5PsJb4ovvO6xNwDD8ekrm3WcRrtT6pkRyn+3m98DTheFVeP8jlJlSAM8+xp3
+        WZz1KJxXeh6+t+8WUIFzjxBj+8tMmWQ=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1702546423;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=8LqHwD4UGn1zZYNa5Woz1k2VMDd8pQo3bwLIR8Mlgw0=;
+        b=fkjkBDFBg5ZewdPz8vlQ2a4obfMBtqOnIjr0gLTCSBWKgDl0pDyebDt4A+XWs2O5QfPtxd
+        nKCfqOq1iAega/Dg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1702546423; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=8LqHwD4UGn1zZYNa5Woz1k2VMDd8pQo3bwLIR8Mlgw0=;
+        b=KiyCg9T6jGKbZVGUnw7BORbHd6Z0pp2GszcyINcAEI+B4KSglvg7qvLiTqrF8ahMzUl6Rg
+        N+WF9j86ZO5PsJb4ovvO6xNwDD8ekrm3WcRrtT6pkRyn+3m98DTheFVeP8jlJlSAM8+xp3
+        WZz1KJxXeh6+t+8WUIFzjxBj+8tMmWQ=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1702546423;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=8LqHwD4UGn1zZYNa5Woz1k2VMDd8pQo3bwLIR8Mlgw0=;
+        b=fkjkBDFBg5ZewdPz8vlQ2a4obfMBtqOnIjr0gLTCSBWKgDl0pDyebDt4A+XWs2O5QfPtxd
+        nKCfqOq1iAega/Dg==
+Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id DEA68138F2;
+        Thu, 14 Dec 2023 09:33:42 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+        by imap2.dmz-prg2.suse.org with ESMTPSA
+        id WzWuNfbLemU1PwAAn2gu4w
+        (envelope-from <dwagner@suse.de>); Thu, 14 Dec 2023 09:33:42 +0000
+Date:   Thu, 14 Dec 2023 10:31:28 +0100
+From:   Daniel Wagner <dwagner@suse.de>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Sagi Grimberg <sagi@grimberg.me>, linux-nvme@lists.infradead.org,
+        linux-kernel@vger.kernel.org, Keith Busch <kbusch@kernel.org>,
+        Hannes Reinecke <hare@suse.de>,
+        Max Gurtovoy <mgurtovoy@nvidia.com>
+Subject: Re: [PATCH v5 1/6] nvme: move ns id info to struct nvme_ns_head
+Message-ID: <jt7wqbbuk7wh2dxjkkbdxp7afwy5y5yaudz4jg4ucnxbwz3nni@rg7hzchx6qix>
+References: <20231208105337.23409-1-dwagner@suse.de>
+ <20231208105337.23409-2-dwagner@suse.de>
+ <bf20cb2a-0985-467b-842b-6b5fd752f14b@grimberg.me>
+ <7ldcd6imhzxhn3wsirhxxyhb75x5iay2p67p2i4qi2euyztc5i@nbjtvyixifqm>
+ <20231213153833.GC7301@lst.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231213153833.GC7301@lst.de>
+X-Spam-Level: *********
+X-Spam-Score: 9.29
+X-Spamd-Result: default: False [-11.17 / 50.00];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:98:from];
+         TO_DN_SOME(0.00)[];
+         R_SPF_SOFTFAIL(0.00)[~all:c];
+         RCVD_COUNT_THREE(0.00)[3];
+         DKIM_TRACE(0.00)[suse.de:+];
+         DMARC_POLICY_ALLOW(0.00)[suse.de,none];
+         RCPT_COUNT_SEVEN(0.00)[7];
+         MX_GOOD(-0.01)[];
+         DMARC_POLICY_ALLOW_WITH_FAILURES(-0.50)[];
+         NEURAL_HAM_SHORT(-0.20)[-1.000];
+         FROM_EQ_ENVFROM(0.00)[];
+         MIME_TRACE(0.00)[0:+];
+         BAYES_HAM(-0.16)[69.18%];
+         ARC_NA(0.00)[];
+         R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+         FROM_HAS_DN(0.00)[];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         MIME_GOOD(-0.10)[text/plain];
+         DWL_DNSWL_HI(-3.50)[suse.de:dkim];
+         DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+         WHITELIST_DMARC(-7.00)[suse.de:D:+];
+         DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:dkim];
+         FUZZY_BLOCKED(0.00)[rspamd.com];
+         MID_RHS_NOT_FQDN(0.50)[];
+         RCVD_TLS_ALL(0.00)[]
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Spam-Level: 
+X-Rspamd-Queue-Id: EEA55220E0
+X-Spam-Score: -11.17
+X-Spam-Flag: NO
+Authentication-Results: smtp-out1.suse.de;
+        dkim=pass header.d=suse.de header.s=susede2_rsa header.b=KiyCg9T6;
+        dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=fkjkBDFB;
+        dmarc=pass (policy=none) header.from=suse.de;
+        spf=softfail (smtp-out1.suse.de: 2a07:de40:b281:104:10:150:64:98 is neither permitted nor denied by domain of dwagner@suse.de) smtp.mailfrom=dwagner@suse.de
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2023-12-13 at 15:10 -0800, Sean Christopherson wrote:
-> On Thu, Dec 14, 2023, Maxim Levitsky wrote:
-> > On Mon, 2023-11-13 at 20:35 -0800, isaku.yamahata@intel.com wrote:
-> > > From: Isaku Yamahata <isaku.yamahata@intel.com>
-> > > 
-> > > TDX virtualizes the advertised APIC bus frequency to be 25MHz. 
+On Wed, Dec 13, 2023 at 04:38:34PM +0100, Christoph Hellwig wrote:
+> On Wed, Dec 13, 2023 at 03:54:25PM +0100, Daniel Wagner wrote:
+> > > I think that the whole PI stuff needs to be taken with a bit more
+> > > consideration because if not all paths agree on the pi (as we have
+> > > hbas with fabrics) we can't just override or do a logical or on
+> > > the capabilities/attributes.
 > > 
-> > Can you explain a bit better why TDX needs this? I am not familiar
-> > with TDX well enough yet to fully understand.
+> > So should the PI variables stay in nvme_ns at this point? Or should I
+> > add some checks which avoid an override and warn in this case?
 > 
-> TDX (the module/architecture) hardcodes the core crystal frequency to 25Mhz,
-> whereas KVM hardcodes the APIC bus frequency to 1Ghz.  And TDX (again, the module)
-> *unconditionally* enumerates CPUID 0x15 to TDX guests, i.e. _tells_ the guest that
-> the frequency is 25MHz regardless of what the VMM/hypervisor actually emulates.
-> And so the guest skips calibrating the APIC timer, which results in the guest
-> scheduling timer interrupts waaaaaaay too frequently, i.e. the guest ends up
-> gettings interrupts at 40x the rate it wants.
+> Didn't we merge the patch from max to require uniform PI setups
+> for all controllers that we're using in a multipath setup?  I'll
+> check the code after finishing a few more things if no one remembers
+> offhand.
 
-That is what I wanted to hear without opening the PRM ;) - so there is a CPUID leaf,
-but KVM just doesn't advertise it. Now it makes sense.
+The newest discussion on this topic I found was this:
 
-Please add something like that to the commit message:
-
-"TDX guests have the APIC bus frequency hardcoded to 25 Mhz in the CPUID leaf 0x15.
-KVM doesn't expose this leaf, but TDX mandates it to be exposed,
-and doesn't allow to override it's value either.
-
-To ensure that the guest doesn't have a conflicting view of the APIC bus frequency, 
-allow the userspace to tell KVM to use the same frequency that TDX mandates,
-instead of the default 1Ghz"
-
-> 
-> Upstream KVM's non-TDX behavior is fine, because KVM doesn't advertise support
-> for CPUID 0x15, i.e. doesn't announce to host userspace that it's safe to expose
-> CPUID 0x15 to the guest.  Because TDX makes exposing CPUID 0x15 mandatory, KVM
-> needs to be taught to correctly emulate the guest's APIC bus frequency, a.k.a.
-> the TDX guest core crystal frequency of 25Mhz.
-
-I assume that TDX doesn't allow to change the CPUID 0x15 leaf.
-
-> 
-> I halfheartedly floated the idea of "fixing" the TDX module/architecture to either
-> use 1Ghz as the base frequency (off list), but it definitely isn't a hill worth
-> dying on since the KVM changes are relatively simple.
-> 
-> https://lore.kernel.org/all/ZSnIKQ4bUavAtBz6@google.com
-> 
-
-Best regards,
-	Maxim Levitsky
-
+https://lore.kernel.org/linux-nvme/ec66d848-5246-529a-7050-afca3d1d981f@nvidia.com/
