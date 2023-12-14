@@ -2,128 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 96425812C7F
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 11:07:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CCC18812C86
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 11:09:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1443543AbjLNKHf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 05:07:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40312 "EHLO
+        id S1443551AbjLNKJi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 05:09:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50392 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1443503AbjLNKHd (ORCPT
+        with ESMTP id S1443503AbjLNKJh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 05:07:33 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E781DBD;
-        Thu, 14 Dec 2023 02:07:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1702548459; x=1734084459;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=7nYqpc7DtxTseeDVLSGfvUOGoJe3vkZw3P+N4mPsjNU=;
-  b=HReMX5YUR6ibBflkte62aVVnn42pMbS6Eo1iLHNn3WeeS51eGd1fwp4g
-   zGf1zcOqKnBSRpG7Lvji1CW8dnBzwfw+L8FxMSFC1xSbefdPpYIIqjnXk
-   FMRgs/Ocw1kFkwU8C1rdNMbsNrMi12IBAeBn/Vp79pN7kb7HotOS0cY99
-   8m0g5YJjWaLAVStOFIlCuCc8sQAgrrcVoaObh6rg2B+mBXrwcqWmO4jy7
-   MhQ2+1eGpFVoVRjPKnpTZu8F0RaN2TIdzuqP0FWxyd8mICrsBnUeogMJf
-   AKCBpWFsIhfY+JmiVQreKA9DN3tr/mVC6eEf4gLc863qsil+oym40Lg5i
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10923"; a="461563519"
-X-IronPort-AV: E=Sophos;i="6.04,275,1695711600"; 
-   d="scan'208";a="461563519"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Dec 2023 02:07:38 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10923"; a="1105644568"
-X-IronPort-AV: E=Sophos;i="6.04,275,1695711600"; 
-   d="scan'208";a="1105644568"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by fmsmga005.fm.intel.com with ESMTP; 14 Dec 2023 02:07:33 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1rDict-000Lsp-0w;
-        Thu, 14 Dec 2023 10:07:31 +0000
-Date:   Thu, 14 Dec 2023 18:06:42 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Sherry Sun <sherry.sun@nxp.com>, hongxing.zhu@nxp.com,
-        l.stach@pengutronix.de, lpieralisi@kernel.org, kw@linux.com,
-        robh@kernel.org, bhelgaas@google.com,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
-        festevam@gmail.com
-Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-        linux-imx@nxp.com, linux-pci@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        Thu, 14 Dec 2023 05:09:37 -0500
+Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2FABBD
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 02:09:43 -0800 (PST)
+Received: by mail-pf1-x430.google.com with SMTP id d2e1a72fcca58-6cebcf8a48aso6715023b3a.3
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 02:09:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1702548583; x=1703153383; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=WWNR+uChpD2XCXHiRI7apkxqBy405ej3EqIXUwuAYoY=;
+        b=JMKhkrudGBgnElxQGlQTxUO2CM6RMZzBPWNxIl3d1beMbjshgWsQMUMMciYIQc6uOx
+         LvpUqdMW/CLRrG0uRxKT8PCAz4SkiN44dN6gLO3EXEpUjsOblZULrMEzmPc0c+vh++iU
+         dWQPKJD/oKfWh2r8wSC/DICoVyoZmjfvIDOzSpdVGrKzclcGaxOxh+KwhJo3pNtqjKIs
+         Fw0rH6JGw7qJ/gUMcQW9fd3tAxPcrkWqDxv9oFK+3+wSGP210smgcBdnXc4JZoXwWajV
+         2ccAr9OyCyCc+xP5OnpE0Pqgr4l9vwAYkHP13eg6C3wR8Ro3GN0GWnZ4NDMfW66dljV7
+         fLXg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702548583; x=1703153383;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=WWNR+uChpD2XCXHiRI7apkxqBy405ej3EqIXUwuAYoY=;
+        b=VRsAuAF2Vz6+nQx9qr2VFqKvf8hMK7SVlJr6CJfbY72aWxE28YfJEf1KC1mcOGplvq
+         bjXAxHcr4aAEgiOCyEK+DL1qiho1ibmCs6O965m/FNCU4rywtAdWgPwMqzgnEW1C3ZTs
+         6b4sBS8+FfGNZtFCOPexQV6I+F+bxiNf05vHO3GUGQVXoJD8OXZtvgGR9Z1qb6qDESHx
+         lKeXNR6Q3A8IyQFa+JDCPuRqGUkXgyyFqQqOrRKZNxT+qQDB0OMbja2ZfdauipD9kAlw
+         E9aUCEyfUyVW/kTqQwHLNNqJ+94z5hcebx+hiVWmxPszEBkU7wOV0+8G6PVIdbBS0W0G
+         UfAw==
+X-Gm-Message-State: AOJu0YzM9nG/tZeIErqXIDOrBAA2uyYhfHo62ihloB05gpPFY+qv0BKS
+        kZtleFcA8Em9PC8qlDLy9u2n
+X-Google-Smtp-Source: AGHT+IFoBTL8upshvJpDsA2gdrqL9OnkLrHFDhbqOefDhz6lfrJvqtCI/Af60s/auvjujU8gBjKneQ==
+X-Received: by 2002:a05:6a00:2195:b0:6ce:6518:702f with SMTP id h21-20020a056a00219500b006ce6518702fmr11386629pfi.28.1702548583327;
+        Thu, 14 Dec 2023 02:09:43 -0800 (PST)
+Received: from thinkpad ([117.216.120.87])
+        by smtp.gmail.com with ESMTPSA id ca40-20020a056a0206a800b005897bfc2ed3sm9703702pgb.93.2023.12.14.02.09.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 Dec 2023 02:09:42 -0800 (PST)
+Date:   Thu, 14 Dec 2023 15:39:36 +0530
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     Krishna Chaitanya Chundru <quic_krichai@quicinc.com>
+Cc:     lpieralisi@kernel.org, kw@linux.com, kishon@kernel.org,
+        bhelgaas@google.com, mhi@lists.linux.dev,
+        linux-arm-msm@vger.kernel.org, linux-pci@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH V2 1/4] PCI: imx6: Add pci host wakeup support on imx
- platforms.
-Message-ID: <202312141726.nPrR7WDt-lkp@intel.com>
-References: <20231213092850.1706042-2-sherry.sun@nxp.com>
+Subject: Re: [PATCH 6/9] PCI: epf-mhi: Enable MHI async read/write support
+Message-ID: <20231214100936.GI2938@thinkpad>
+References: <20231127124529.78203-1-manivannan.sadhasivam@linaro.org>
+ <20231127124529.78203-7-manivannan.sadhasivam@linaro.org>
+ <feb4ed1b-ed74-aebe-0ab8-dec123fe0a31@quicinc.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20231213092850.1706042-2-sherry.sun@nxp.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <feb4ed1b-ed74-aebe-0ab8-dec123fe0a31@quicinc.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sherry,
+On Thu, Dec 14, 2023 at 03:10:01PM +0530, Krishna Chaitanya Chundru wrote:
+> 
+> On 11/27/2023 6:15 PM, Manivannan Sadhasivam wrote:
+> > Now that both eDMA and iATU are prepared to support async transfer, let's
+> > enable MHI async read/write by supplying the relevant callbacks.
+> > 
+> > In the absence of eDMA, iATU will be used for both sync and async
+> > operations.
+> > 
+> > Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> > ---
+> >   drivers/pci/endpoint/functions/pci-epf-mhi.c | 7 ++++---
+> >   1 file changed, 4 insertions(+), 3 deletions(-)
+> > 
+> > diff --git a/drivers/pci/endpoint/functions/pci-epf-mhi.c b/drivers/pci/endpoint/functions/pci-epf-mhi.c
+> > index 3d09a37e5f7c..d3d6a1054036 100644
+> > --- a/drivers/pci/endpoint/functions/pci-epf-mhi.c
+> > +++ b/drivers/pci/endpoint/functions/pci-epf-mhi.c
+> > @@ -766,12 +766,13 @@ static int pci_epf_mhi_link_up(struct pci_epf *epf)
+> >   	mhi_cntrl->raise_irq = pci_epf_mhi_raise_irq;
+> >   	mhi_cntrl->alloc_map = pci_epf_mhi_alloc_map;
+> >   	mhi_cntrl->unmap_free = pci_epf_mhi_unmap_free;
+> > +	mhi_cntrl->read_sync = mhi_cntrl->read_async = pci_epf_mhi_iatu_read;
+> > +	mhi_cntrl->write_sync = mhi_cntrl->write_async = pci_epf_mhi_iatu_write;
+> >   	if (info->flags & MHI_EPF_USE_DMA) {
+> >   		mhi_cntrl->read_sync = pci_epf_mhi_edma_read;
+> >   		mhi_cntrl->write_sync = pci_epf_mhi_edma_write;
+> > -	} else {
+> > -		mhi_cntrl->read_sync = pci_epf_mhi_iatu_read;
+> > -		mhi_cntrl->write_sync = pci_epf_mhi_iatu_write;
+> > +		mhi_cntrl->read_async = pci_epf_mhi_edma_read_async;
+> > +		mhi_cntrl->write_async = pci_epf_mhi_edma_write_async;
+> 
+> I think the read_async & write async should be updated inside the if
+> condition where MHI_EPF_USE_DMA flag is set.
+> 
 
-kernel test robot noticed the following build warnings:
+That's what being done here. Am I missing anything?
 
-[auto build test WARNING on pci/next]
-[also build test WARNING on pci/for-linus shawnguo/for-next robh/for-next linus/master v6.7-rc5 next-20231214]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+- Mani
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Sherry-Sun/PCI-imx6-Add-pci-host-wakeup-support-on-imx-platforms/20231213-173031
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/pci/pci.git next
-patch link:    https://lore.kernel.org/r/20231213092850.1706042-2-sherry.sun%40nxp.com
-patch subject: [PATCH V2 1/4] PCI: imx6: Add pci host wakeup support on imx platforms.
-config: arm-randconfig-004-20231213 (https://download.01.org/0day-ci/archive/20231214/202312141726.nPrR7WDt-lkp@intel.com/config)
-compiler: clang version 17.0.0 (https://github.com/llvm/llvm-project.git 4a5ac14ee968ff0ad5d2cc1ffa0299048db4c88a)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231214/202312141726.nPrR7WDt-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202312141726.nPrR7WDt-lkp@intel.com/
-
-All warnings (new ones prefixed by >>):
-
->> drivers/pci/controller/dwc/pci-imx6.c:1267:13: warning: no previous prototype for function 'host_wake_irq_handler' [-Wmissing-prototypes]
-    1267 | irqreturn_t host_wake_irq_handler(int irq, void *priv)
-         |             ^
-   drivers/pci/controller/dwc/pci-imx6.c:1267:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
-    1267 | irqreturn_t host_wake_irq_handler(int irq, void *priv)
-         | ^
-         | static 
-   1 warning generated.
-
-
-vim +/host_wake_irq_handler +1267 drivers/pci/controller/dwc/pci-imx6.c
-
-  1266	
-> 1267	irqreturn_t host_wake_irq_handler(int irq, void *priv)
-  1268	{
-  1269		struct imx6_pcie *imx6_pcie = priv;
-  1270		struct device *dev = imx6_pcie->pci->dev;
-  1271	
-  1272		/* Notify PM core we are wakeup source */
-  1273		pm_wakeup_event(dev, 0);
-  1274		pm_system_wakeup();
-  1275	
-  1276		return IRQ_HANDLED;
-  1277	}
-  1278	
+> - Krishna Chaitanya.
+> 
+> >   	}
+> >   	/* Register the MHI EP controller */
 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+மணிவண்ணன் சதாசிவம்
