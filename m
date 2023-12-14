@@ -2,168 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BF8B481336E
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 15:44:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A340813371
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 15:45:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229974AbjLNOo1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 09:44:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42950 "EHLO
+        id S1573389AbjLNOpS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 09:45:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42750 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230015AbjLNOoZ (ORCPT
+        with ESMTP id S230012AbjLNOpR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 09:44:25 -0500
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2a07:de40:b251:101:10:150:64:1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 907E6115;
-        Thu, 14 Dec 2023 06:44:31 -0800 (PST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 31145221F2;
-        Thu, 14 Dec 2023 14:44:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1702565070; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=vsmrNQCMF0LaolhCZphfif1VFSP9rpU97GQ9x/JHWt4=;
-        b=G8Mle9Gd3DbKrF2if092q2td8tfT+LX9FRC+16c0knZpByDNgYyJGYWocoiGo/E3JAXJam
-        nwo5FfNwNnVoygeaJvUhc4avXdNI5H7dB9P6ldgzrtoI5G0bqIa9/jXtKgYtARWghpazhc
-        EzNuBtMODqQlkG8MH1+hsLufl4ePOP0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1702565070;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=vsmrNQCMF0LaolhCZphfif1VFSP9rpU97GQ9x/JHWt4=;
-        b=6v19oXnJqzViNUzIQTc0kVQOxs1jtdBtrfo+Vn0jL/hOn+G0wP4Eu1+0yd8RZfCmkYNjpG
-        eXO/TGC9hS5nIeAw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1702565070; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=vsmrNQCMF0LaolhCZphfif1VFSP9rpU97GQ9x/JHWt4=;
-        b=G8Mle9Gd3DbKrF2if092q2td8tfT+LX9FRC+16c0knZpByDNgYyJGYWocoiGo/E3JAXJam
-        nwo5FfNwNnVoygeaJvUhc4avXdNI5H7dB9P6ldgzrtoI5G0bqIa9/jXtKgYtARWghpazhc
-        EzNuBtMODqQlkG8MH1+hsLufl4ePOP0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1702565070;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=vsmrNQCMF0LaolhCZphfif1VFSP9rpU97GQ9x/JHWt4=;
-        b=6v19oXnJqzViNUzIQTc0kVQOxs1jtdBtrfo+Vn0jL/hOn+G0wP4Eu1+0yd8RZfCmkYNjpG
-        eXO/TGC9hS5nIeAw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id B8E8D137E8;
-        Thu, 14 Dec 2023 14:44:29 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-        by imap1.dmz-prg2.suse.org with ESMTPSA
-        id eEJ2Kc0Ue2V3KQAAD6G6ig
-        (envelope-from <lhenriques@suse.de>); Thu, 14 Dec 2023 14:44:29 +0000
-Received: from localhost (brahms.olymp [local])
-        by brahms.olymp (OpenSMTPD) with ESMTPA id feb62ca6;
-        Thu, 14 Dec 2023 14:44:28 +0000 (UTC)
-Date:   Thu, 14 Dec 2023 14:44:28 +0000
-From:   =?iso-8859-1?Q?Lu=EDs?= Henriques <lhenriques@suse.de>
-To:     David Howells <dhowells@redhat.com>
-Cc:     Eric Biggers <ebiggers@kernel.org>,
-        Jarkko Sakkinen <jarkko@kernel.org>, keyrings@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH] keys: flush work when accessing /proc/key-users
-Message-ID: <ZXsUzBRR2uc81FK0@suse.de>
-References: <20231207024323.GA1994@sol.localdomain>
- <20231206145744.17277-1-lhenriques@suse.de>
- <498294.1701878642@warthog.procyon.org.uk>
- <87bkb3z047.fsf@suse.de>
- <2744563.1702303367@warthog.procyon.org.uk>
+        Thu, 14 Dec 2023 09:45:17 -0500
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6548D91;
+        Thu, 14 Dec 2023 06:45:23 -0800 (PST)
+Received: by mail-pj1-x1034.google.com with SMTP id 98e67ed59e1d1-28af2f9a0f6so1015417a91.0;
+        Thu, 14 Dec 2023 06:45:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1702565123; x=1703169923; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=0OGUCjiWquGGsTrpvsPwR69C78xlzg3lziD6TLbqES8=;
+        b=RZ8Zs4fy02E4KcM8ysZ3MCN0dhSQ34LVTlyv1f/WCBY3+b6GjRZgQt9wnb51rwNm2N
+         Bje+Shd0RS5STqjPkfaG9p6yuxGYT3HlBl8pvzqW2U5/JncQyFWBFXpmOR1MT3A+UoWk
+         /6TJBEM5nfmKoKuQMpTV1cgrnY+c6asTb4L0ATMFKBn0+m6ODcxU7A0/GtETemNEEGuv
+         qSq2HkJWJLTQjX3lZTZ8luy4jpEYo5usbs6pkQNpgzDlFRHVxImL5SebUFT/b+Yj9tA4
+         k6JgRcaxzXgGZn9Xe3mmOJpGeztW33bJFqUhMaAuJ/+ZPFJcLSSYdpVTqi13RVxC/YAB
+         bVdA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702565123; x=1703169923;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=0OGUCjiWquGGsTrpvsPwR69C78xlzg3lziD6TLbqES8=;
+        b=k9/bqfWw0bodtTytzGiM/5XLdfS6MftupSzwleull5BHsvXyPcMZEOnhcM3EagxEQu
+         fH89JmvrDOBcCi4+xRDK0t1ve5aKyYlBHOSC18Q74s65ypP2daVcmXoC7YWGexnGsimu
+         fgN1mC+rriM1mpno/lpWYPIwa3QoQqJsvkMInMxtoz37jCN3cE5j/RqxqhEaEARVA+nh
+         ryJRUdhMoOJ8Ehgi7nNHq88ekb6r6hg6cK75VjjzuLJSb/up60fAR+WDcy7vZTH9V1AV
+         YpHwblYKOrN63trTjgLSoGmLIY8m3EYjP//6E4tWeIkaNQmLNiSrtj5OOjqY06MvIR9N
+         FIcw==
+X-Gm-Message-State: AOJu0Yx3lpFvFAGMOdtAb+PHfWkd4qhJkU7Jainpl63H3OCgacnBu0sJ
+        bVSeOyfpZ07gWLkp+EO8U/k=
+X-Google-Smtp-Source: AGHT+IHlvDwW8/5QhXnoHYWgF0ufF5XpxbzlaA0e2gNQShtcPzR0gE3UtTlJOecqDkGfggAg8j5Qvw==
+X-Received: by 2002:a17:90b:1d0d:b0:286:6cc1:2cc2 with SMTP id on13-20020a17090b1d0d00b002866cc12cc2mr4538662pjb.76.1702565122780;
+        Thu, 14 Dec 2023 06:45:22 -0800 (PST)
+Received: from rigel (60-241-235-125.tpgi.com.au. [60.241.235.125])
+        by smtp.gmail.com with ESMTPSA id nb11-20020a17090b35cb00b0028017a2a8fasm13360780pjb.3.2023.12.14.06.45.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 Dec 2023 06:45:22 -0800 (PST)
+Date:   Thu, 14 Dec 2023 22:45:17 +0800
+From:   Kent Gibson <warthog618@gmail.com>
+To:     Bartosz Golaszewski <brgl@bgdev.pl>
+Cc:     linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linus.walleij@linaro.org, andy@kernel.org
+Subject: Re: [PATCH v2 2/5] gpiolib: cdev: relocate debounce_period_us from
+ struct gpio_desc
+Message-ID: <ZXsU_UN6g0Fdj4qx@rigel>
+References: <20231214095814.132400-1-warthog618@gmail.com>
+ <20231214095814.132400-3-warthog618@gmail.com>
+ <CAMRc=MeoeOgZaz6xT+ScVjOemVovrEHvQDBvqsN1pD9U3haE_A@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <2744563.1702303367@warthog.procyon.org.uk>
-X-Spam-Score: -1.30
-X-Spam-Level: 
-Authentication-Results: smtp-out1.suse.de;
-        none
-X-Spam-Level: 
-X-Spam-Score: -1.30
-X-Spamd-Result: default: False [-1.30 / 50.00];
-         ARC_NA(0.00)[];
-         RCVD_VIA_SMTP_AUTH(0.00)[];
-         FROM_HAS_DN(0.00)[];
-         TO_DN_SOME(0.00)[];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         NEURAL_HAM_LONG(-1.00)[-1.000];
-         MIME_GOOD(-0.10)[text/plain];
-         RCPT_COUNT_FIVE(0.00)[5];
-         RCVD_COUNT_THREE(0.00)[4];
-         DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-         NEURAL_HAM_SHORT(-0.20)[-0.981];
-         FUZZY_BLOCKED(0.00)[rspamd.com];
-         FROM_EQ_ENVFROM(0.00)[];
-         MIME_TRACE(0.00)[0:+];
-         RCVD_TLS_LAST(0.00)[];
-         MID_RHS_MATCH_FROM(0.00)[];
-         BAYES_HAM(-0.00)[16.82%]
-X-Spam-Flag: NO
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <CAMRc=MeoeOgZaz6xT+ScVjOemVovrEHvQDBvqsN1pD9U3haE_A@mail.gmail.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi David,
+On Thu, Dec 14, 2023 at 03:29:28PM +0100, Bartosz Golaszewski wrote:
+> On Thu, Dec 14, 2023 at 10:58â€¯AM Kent Gibson <warthog618@gmail.com> wrote:
+> >
+> >
+> > +/*
+> > + * Used to populate gpio_v2_line_info with cdev specific fields not contained
+> > + * in the struct gpio_desc.
+> > + * A line is determined to contain supplemental information by
+> > + * line_is_supplemental().
+> > + */
+> > +static struct {
+> > +       /* a rbtree of the struct lines containing the supplemental info */
+> > +       struct rb_root tree;
+> > +       /* covers tree */
+> > +       spinlock_t lock;
+>
+> Looks like this is never taken from atomic context? Can this be a mutex instead?
+>
 
-On Mon, Dec 11, 2023 at 02:02:47PM +0000, David Howells wrote:
-<snip>
-> > However, that would only fix the flakiness of the key quota for fs/crypto/,
-> > not for other users of the keyrings service.  Maybe this suggests that
-> > key_put() should release the key's quota right away if the key's refcount
-> > drops to 0?
-> 
-> That I would be okay with as the key should be removed in short order.
-> 
-> Note that you'd have to change the spinlocks on key->user->lock to irq-locking
-> types.  Or maybe we can do without them, at least for key gc, and use atomic
-> counters.  key_invalidate() should probably drop the quota also.
+Correct, only from thread context.
 
-I was trying to help with this but, first, I don't think atomic counters
-would actually be a solution.  For example, we have the following in
-key_alloc():
-
-	spin_lock(&user->lock);
-	if (!(flags & KEY_ALLOC_QUOTA_OVERRUN)) {
-		if (user->qnkeys + 1 > maxkeys ||
-		    user->qnbytes + quotalen > maxbytes ||
-		    user->qnbytes + quotalen < user->qnbytes)
-			goto no_quota;
-	}
-	user->qnkeys++;
-	user->qnbytes += quotalen;
-	spin_unlock(&user->lock);
-
-Thus, I don't think it's really possible to simply stop using a lock
-without making these checks+changes non-atomic.
-
-As for using spin_lock_irq() or spin_lock_irqsave(), my understanding is
-that the only places where this could be necessary is in key_put() and,
-possibly, key_payload_reserve().  key_alloc() shouldn't need that.
-
-Finally, why would key_invalidate() require handling quotas?  I'm probably
-just missing some subtlety, but I don't see the user->usage refcount being
-decremented anywhere in that path (or anywhere else, really).
+Can be a mutex, but it only covers tree lookups which should be quick
+as the tree is kept minimal, and I wouldn't expect it to ever get to the
+mutex slowpath, so a spinlock seemed more appropriate.
 
 Cheers,
---
-Luís
+Kent.
