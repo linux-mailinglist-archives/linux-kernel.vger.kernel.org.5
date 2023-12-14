@@ -2,63 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 27BE281320C
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 14:47:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 330B981320E
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 14:47:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1573105AbjLNNrR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 08:47:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33696 "EHLO
+        id S1573110AbjLNNr1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 08:47:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33292 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229922AbjLNNrP (ORCPT
+        with ESMTP id S230015AbjLNNrY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 08:47:15 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 001818E
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 05:47:21 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 03207C433C8;
-        Thu, 14 Dec 2023 13:47:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1702561641;
-        bh=lWqoyY+Lp0x9QIy2h5s/P2Ib5HZKYH1QdBbOLtUFQsE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=p/Diy8RFki0Xj0UHq3i2rCZfhaqQg8EttcvF9psMEeM0+YTNy7zkRYMakriJZiqLK
-         dBOBbHJ+2pqIQ0Qiwgg2Tr1V9wqcoRJR7PDuwBSk4mBYFvTth01psHiZwYVmPnOXFz
-         5ZxP23bDpK1suw9uvM+qoQSUZ5tw10ARjNfqk6zQtsFdG1PWOwxgbD2ZmqHv2CYbpC
-         9VPpcEJFmiFv05M30RH9pLf4nm5OPAT2tauPWu6Qol9Fq1zAhY/NLJC7PSJXfnbV27
-         uuzPsug4M8oVleSFbo6yHZdfymHCVUNOMf/YNt6auGzR7/YglzJO7oLpFmFiQT9mXD
-         5eH3JiIG3ZIhQ==
-Date:   Thu, 14 Dec 2023 13:47:14 +0000
-From:   Conor Dooley <conor@kernel.org>
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Brandon Cheo Fusi <fusibrandon13@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Samuel Holland <samuel@sholland.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Yangtao Li <tiny.windzz@gmail.com>, devicetree@vger.kernel.org,
-        linux-riscv@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
-        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org
-Subject: Re: [PATCH 1/5] riscv: dts: allwinner: Update opp table to allow CPU
- frequency scaling
-Message-ID: <20231214-junkyard-corset-d35b01bad69f@spud>
-References: <20231214103342.30775-1-fusibrandon13@gmail.com>
- <20231214103342.30775-2-fusibrandon13@gmail.com>
- <20231214111446.camz2krqanaieybh@vireshk-i7>
+        Thu, 14 Dec 2023 08:47:24 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B297137;
+        Thu, 14 Dec 2023 05:47:30 -0800 (PST)
+X-IronPort-AV: E=McAfee;i="6600,9927,10924"; a="426251469"
+X-IronPort-AV: E=Sophos;i="6.04,275,1695711600"; 
+   d="scan'208";a="426251469"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Dec 2023 05:47:30 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10924"; a="1105719674"
+X-IronPort-AV: E=Sophos;i="6.04,275,1695711600"; 
+   d="scan'208";a="1105719674"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmsmga005.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Dec 2023 05:47:25 -0800
+Received: from andy by smile.fi.intel.com with local (Exim 4.97)
+        (envelope-from <andy.shevchenko@gmail.com>)
+        id 1rDm3d-00000005r64-20mK;
+        Thu, 14 Dec 2023 15:47:21 +0200
+Date:   Thu, 14 Dec 2023 15:47:21 +0200
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+To:     George Stark <gnstark@salutedevices.com>
+Cc:     Nikita Travkin <nikita@trvn.ru>, pavel@ucw.cz, lee@kernel.org,
+        vadimp@nvidia.com, mpe@ellerman.id.au, npiggin@gmail.com,
+        christophe.leroy@csgroup.eu, hdegoede@redhat.com,
+        mazziesaccount@gmail.com, peterz@infradead.org, mingo@redhat.com,
+        will@kernel.org, longman@redhat.com, boqun.feng@gmail.com,
+        nikitos.tr@gmail.com, linux-leds@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        kernel@salutedevices.com
+Subject: Re: [PATCH v3 04/11] leds: aw2013: use devm API to cleanup module's
+ resources
+Message-ID: <ZXsHaXOHs5qlKt9g@smile.fi.intel.com>
+References: <20231213223020.2713164-1-gnstark@salutedevices.com>
+ <20231213223020.2713164-5-gnstark@salutedevices.com>
+ <c709e0f33da06db40127f3a0adcbebbd@trvn.ru>
+ <fa048fec-86f2-42b5-ad36-7776c569a349@salutedevices.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="4Bt0sbK2SeaAxN2v"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20231214111446.camz2krqanaieybh@vireshk-i7>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <fa048fec-86f2-42b5-ad36-7776c569a349@salutedevices.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=0.7 required=5.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
+        FORGED_GMAIL_RCVD,FREEMAIL_FROM,NML_ADSP_CUSTOM_MED,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_SOFTFAIL,T_SCC_BODY_TEXT_LINE autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -66,67 +65,23 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Dec 14, 2023 at 03:58:56PM +0300, George Stark wrote:
+> On 12/14/23 08:42, Nikita Travkin wrote:
+> > George Stark писал(а) 14.12.2023 03:30:
 
---4Bt0sbK2SeaAxN2v
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+...
 
-On Thu, Dec 14, 2023 at 04:44:46PM +0530, Viresh Kumar wrote:
-> On 14-12-23, 11:33, Brandon Cheo Fusi wrote:
-> > Two OPPs are currently defined for the D1/D1s; one at 408MHz and
-> > another at 1.08GHz. Switching between these can be done with the
-> > "sun50i-cpufreq-nvmem" driver. This patch populates the opp table
-> > appropriately, with inspiration from
-> > https://github.com/Tina-Linux/linux-5.4/blob/master/arch/riscv/boot/dts=
-/sunxi/sun20iw1p1.dtsi
-> >=20
-> > The supply voltages are PWM-controlled, but support for that IP
-> > is still in the works. So stick to a fixed 0.9V vdd-cpu supply,
-> > which seems to be the default on most D1 boards.
-> >=20
-> > Signed-off-by: Brandon Cheo Fusi <fusibrandon13@gmail.com>
-> > ---
-> >  arch/riscv/boot/dts/allwinner/sun20i-d1s.dtsi | 18 +++++++++++++++---
-> >  1 file changed, 15 insertions(+), 3 deletions(-)
-> >=20
-> > diff --git a/arch/riscv/boot/dts/allwinner/sun20i-d1s.dtsi b/arch/riscv=
-/boot/dts/allwinner/sun20i-d1s.dtsi
-> > index 64c3c2e6c..e211fe4c7 100644
-> > --- a/arch/riscv/boot/dts/allwinner/sun20i-d1s.dtsi
-> > +++ b/arch/riscv/boot/dts/allwinner/sun20i-d1s.dtsi
-> > @@ -39,16 +39,22 @@ cpu0_intc: interrupt-controller {
-> >  	};
-> > =20
-> >  	opp_table_cpu: opp-table-cpu {
-> > -		compatible =3D "operating-points-v2";
-> > +		compatible =3D "allwinner,sun20i-d1-operating-points",
->=20
-> I don't think you should add a new compatible for every SoC that needs
-> to be supported by a DT bindings and cpufreq driver. Maybe you should
-> just reuse "allwinner,sun50i-h6-operating-points" and it will work
-> fine for you ?
->=20
-> Rob ?
+> > Btw, seems like (5..11)/11 never arrived to the lists...
+> 
+> Yeah there was a delay, but now all patches from series #3 are online.
 
-The driver can definitely just reuse sun50i-h6, but the binding and
-devicetree should have a soc-specific compatible for the sun20i-d1.
+Nikita is right. This patch was the last in the mailing lists. Fix your mail
+gateways, it quite likely the mail server in your organisation filters out
+some mails as spam or so. I highly recommend to escalate this with your IT
+department.
 
-That said, the compatible does need to be documented, there's a
-dt-bindings patch missing from this series.
+-- 
+With Best Regards,
+Andy Shevchenko
 
-Cheers,
-Conor.
 
---4Bt0sbK2SeaAxN2v
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZXsHYgAKCRB4tDGHoIJi
-0llNAPwPlCtHYqdw3PHm/F9o63nh77wIsWE9SawYpIg6XvVYSQEA3ontbKuKxaUy
-sMpsYI0c/7MsH2HbQPLjiFJVxobR5wo=
-=L6Mk
------END PGP SIGNATURE-----
-
---4Bt0sbK2SeaAxN2v--
