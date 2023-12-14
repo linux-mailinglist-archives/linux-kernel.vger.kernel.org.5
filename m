@@ -2,130 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 79761812C50
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 10:57:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C5EEE812C56
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 10:58:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1443483AbjLNJ5h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 04:57:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47462 "EHLO
+        id S1443484AbjLNJ6U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 04:58:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59394 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1443458AbjLNJ5f (ORCPT
+        with ESMTP id S1443458AbjLNJ6T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 04:57:35 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFD92F5
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 01:57:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1702547861;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=VbNgQOlqA6uJ+zRh1fYoyaXPvn6oHay0OVtTkel+hcE=;
-        b=afl6yFNrcPSPQhR5d7Q5SiztbiWRVtiA3HdPD+6TRZo84J3kdvI8MqrJNxuRhnfGSvBTzv
-        XRmNmeC4RPkavbeY8W/Kmt6TY2ITHY2t++u92/SH3iiOBsfQ5yDFmk3KjaN8ekHHDT3tqB
-        bCdW7YBzJ8vVycxc7M1YcyLMHKCi4Sc=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-499-DbT9u2H8O7ywFS9t4f7Bjw-1; Thu, 14 Dec 2023 04:57:38 -0500
-X-MC-Unique: DbT9u2H8O7ywFS9t4f7Bjw-1
-Received: by mail-wr1-f71.google.com with SMTP id ffacd0b85a97d-33608b14b3cso5643117f8f.0
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 01:57:38 -0800 (PST)
+        Thu, 14 Dec 2023 04:58:19 -0500
+Received: from mail-oi1-x233.google.com (mail-oi1-x233.google.com [IPv6:2607:f8b0:4864:20::233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 187CB93;
+        Thu, 14 Dec 2023 01:58:26 -0800 (PST)
+Received: by mail-oi1-x233.google.com with SMTP id 5614622812f47-3b9fcb3223dso4646909b6e.3;
+        Thu, 14 Dec 2023 01:58:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1702547905; x=1703152705; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=mBj7RL25jbZQJZu3V58QPdOY7UU4w5KbjP1/HAQoJQc=;
+        b=BY8cFaejWGj+Kn+tbBWZBjenbCe6FqxPpf4lc/Lq5InXB+iaY0o8wYFe+reW7fkBKa
+         ZLvU2d/M6M/ZEnP03EUJR0Pp7zpsZk8Ro3tHqUluMthTmHlgTHhHt61m3Xeiq8RiQT5S
+         ubsH9w8nKlXO1tW132kiTYiCL0O/22IzCAnKc6EW2AajENItYgzEc/b/q1jNhO/KDh7I
+         oa6R+C1PxLNzlja8ZFrwPGIcwLoVpm5YSWu0/lWMU3mij/vv3Bp1ThVb4Mq9o0SNqiEn
+         HbJ6AWVyaUQGX26LmiGPNeqrQba2sVSgfrW96GNQ5MDmtqsvHJ9oJpnSHcUey39J6ru1
+         6MEA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702547857; x=1703152657;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=VbNgQOlqA6uJ+zRh1fYoyaXPvn6oHay0OVtTkel+hcE=;
-        b=gsh0BbMEytQbp71xpldxHA8Rg6e5WcYduti5LFxhslkAYjIk3Nq8+gWOUVrv2/Z9Hs
-         vZinopiHnkfiiDYky5bEpOufO3/DsL84dmZK+VIbPMRMyX7bSMEGXWg2qOeENHoVZcgx
-         6wWvDvIOvlyWRlj3t7KRr5ITrdwbUEl6ti8WnEbTSZaZQ4G6tqhFjYha6p2/9Mdkim+z
-         2hOojrs+icfMFX4I6GM28lkNsXIvX9MOq0RQKv8DXvF4BB0COqRBIN9YcERXcHHtA4Wg
-         RGg5BaxWAjQ710I5orS9uvleTWU95CUOG/Y65xOLFM8FlVjsY7gkS2SMZcH7BvS5KWKx
-         b7sA==
-X-Gm-Message-State: AOJu0YwVtewp52YRaa0cQMBga+iXOtuQ+ACffbir+Srle0bveVRb2Y4p
-        +ZMo6f+GBhWDxGcSbDskj1NOdO1mL7hgwMxOG0AI3L820RSxwnIFTbLKtm3gP2NsDFLCXpro5KI
-        FPhI+lD9diWEDB3k2kiwkV1Kb
-X-Received: by 2002:a05:600c:b43:b0:40b:5e1e:cf2 with SMTP id k3-20020a05600c0b4300b0040b5e1e0cf2mr4879013wmr.45.1702547857609;
-        Thu, 14 Dec 2023 01:57:37 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IFIMcrRPUr2M5N3AZHrTn2j7CFarP7ZToRtVz3Wt+VPt0vGWHfE5JUVAn5fPT1rWcRb4rxeWQ==
-X-Received: by 2002:a05:600c:b43:b0:40b:5e1e:cf2 with SMTP id k3-20020a05600c0b4300b0040b5e1e0cf2mr4878999wmr.45.1702547857326;
-        Thu, 14 Dec 2023 01:57:37 -0800 (PST)
-Received: from sgarzare-redhat ([5.11.101.217])
-        by smtp.gmail.com with ESMTPSA id s13-20020a05600c384d00b004030e8ff964sm26261376wmr.34.2023.12.14.01.57.35
+        d=1e100.net; s=20230601; t=1702547905; x=1703152705;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=mBj7RL25jbZQJZu3V58QPdOY7UU4w5KbjP1/HAQoJQc=;
+        b=Yt91U5YtGWNoK7UTmPpDTMSXsD4fPynVYHJKaCVpNrVvrjI59TXBIomIUcFdbDuDpr
+         lWWoz55SNi2dfCSfDbMnQQKQUUYEPCvDr0oOE4G8wi55tISBcu8PyjYVj1VAJuTNlCGi
+         ePhvPDcR8ua1nEQMf5ZtpDOXx4YDfa2poCxIQ/73o7yAohRb9VvQA8QPkdFHnE+Qi/I9
+         IptN8wMnUrT3hco3jg26ecsB2qdFHzwa8k+mOPfPf+FsxSxmYW7ms2GNyHedqVNNyGwT
+         AKqEZbl1voeFBUBhkYl7M1K/1fXEV+dMlZKUR7/knZyWz21OzIqOSwUwPnIrbaYNQ8Xw
+         yiNA==
+X-Gm-Message-State: AOJu0YyoqGMO2pl7A/FWQq3SkOxaKP1dr0ig9O6w0Gnu7XMXW2rVNQgm
+        0cyWZiIsiIGOkfjl9XAJF4FVsfcdfOk=
+X-Google-Smtp-Source: AGHT+IFkF+ufeIwxlSBBBhlDMQFiZZHm5xWiEx6PZerY3d8RjVQhhodheaErJGLQAEzehKGK/D6N+w==
+X-Received: by 2002:a05:6808:1a20:b0:3b8:b063:adf7 with SMTP id bk32-20020a0568081a2000b003b8b063adf7mr13044206oib.84.1702547905174;
+        Thu, 14 Dec 2023 01:58:25 -0800 (PST)
+Received: from rigel.home.arpa (60-241-235-125.tpgi.com.au. [60.241.235.125])
+        by smtp.gmail.com with ESMTPSA id r2-20020a1709028bc200b001bc6e6069a6sm922807plo.122.2023.12.14.01.58.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Dec 2023 01:57:36 -0800 (PST)
-Date:   Thu, 14 Dec 2023 10:57:30 +0100
-From:   Stefano Garzarella <sgarzare@redhat.com>
-To:     Arseniy Krasnov <avkrasnov@salutedevices.com>
-Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Bobby Eshleman <bobby.eshleman@bytedance.com>,
-        kvm@vger.kernel.org, virtualization@lists.linux-foundation.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel@sberdevices.ru, oxffffaa@gmail.com
-Subject: Re: [PATCH net-next v9 2/4] virtio/vsock: send credit update during
- setting SO_RCVLOWAT
-Message-ID: <rambimqosesmdqnko3ttcntpzrq7cm376pln6qsohtz7phm3un@ln3ate7qmcp7>
-References: <20231214091947.395892-1-avkrasnov@salutedevices.com>
- <20231214091947.395892-3-avkrasnov@salutedevices.com>
+        Thu, 14 Dec 2023 01:58:24 -0800 (PST)
+From:   Kent Gibson <warthog618@gmail.com>
+To:     linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
+        brgl@bgdev.pl, linus.walleij@linaro.org, andy@kernel.org
+Cc:     Kent Gibson <warthog618@gmail.com>
+Subject: [PATCH v2 0/5] gpiolib: cdev: relocate debounce_period_us
+Date:   Thu, 14 Dec 2023 17:58:09 +0800
+Message-Id: <20231214095814.132400-1-warthog618@gmail.com>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20231214091947.395892-3-avkrasnov@salutedevices.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 14, 2023 at 12:19:45PM +0300, Arseniy Krasnov wrote:
->Send credit update message when SO_RCVLOWAT is updated and it is bigger
->than number of bytes in rx queue. It is needed, because 'poll()' will
->wait until number of bytes in rx queue will be not smaller than
->SO_RCVLOWAT, so kick sender to send more data. Otherwise mutual hungup
->for tx/rx is possible: sender waits for free space and receiver is
->waiting data in 'poll()'.
->
->Fixes: b89d882dc9fc ("vsock/virtio: reduce credit update messages")
->Signed-off-by: Arseniy Krasnov <avkrasnov@salutedevices.com>
->Reviewed-by: Stefano Garzarella <sgarzare@redhat.com>
->Acked-by: Michael S. Tsirkin <mst@redhat.com>
->---
-> Changelog:
-> v1 -> v2:
->  * Update commit message by removing 'This patch adds XXX' manner.
->  * Do not initialize 'send_update' variable - set it directly during
->    first usage.
-> v3 -> v4:
->  * Fit comment in 'virtio_transport_notify_set_rcvlowat()' to 80 chars.
-> v4 -> v5:
->  * Do not change callbacks order in transport structures.
-> v5 -> v6:
->  * Reorder callbacks in transport structures.
->  * Do to send credit update when 'fwd_cnt' == 'last_fwd_cnt'.
-> v8 -> v9:
->  * Add 'Fixes' tag.
->
-> drivers/vhost/vsock.c                   |  1 +
-> include/linux/virtio_vsock.h            |  1 +
-> net/vmw_vsock/virtio_transport.c        |  1 +
-> net/vmw_vsock/virtio_transport_common.c | 30 +++++++++++++++++++++++++
-> net/vmw_vsock/vsock_loopback.c          |  1 +
-> 5 files changed, 34 insertions(+)
+This series contains minor improvements to gpiolib-cdev.
 
-As I already mentioned in the cover letter, this patch doesn't compile
-unless we apply patch 3 before this one, so:
+Patch 1 replaces discrete lock/unlock calls around critical sections
+with scoped_guard().  Excludes desc_gpio_to_lineinfo() as delaying
+the change until patch 4 produces a cleaner change.
 
-Nacked-by: Stefano Garzarella <sgarzare@redhat.com>
+The banner change is relocating the debounce_period_us from gpiolib's
+struct gpio_desc to cdev's struct line.  Patch 2 stores the field
+locally in cdev.  Patch 3 removes the now unused field from gpiolib.
+
+Patch 4 is somewhat related and removes a FIXME from
+gpio_desc_to_lineinfo().  The FIXME relates to a race condition in
+the calculation of the used  flag, but I would assert that from
+the userspace perspective the read operation itself is inherently racy.
+The line being reported as unused in the info provides no guarantee -
+it just an indicator that requesting the line is likely to succeed -
+assuming the line is not otherwise requested in the meantime.
+Give the overall operation is racy, trying to stamp out an unlikely
+race within the operation is pointless. Accept it as a possibility
+that has negligible side-effects and reduce the number of locks held
+simultaneously and the duration that the gpio_lock is held.
+
+Patch 5 is unrelated to debounce or info, but addresses Andy's
+recent complaint that the linereq get/set values functions are
+confusing and under documented.
+Figured I may as well add that while I was in there.
+
+Changes v1 -> v2:
+ (changes are to patch 2 unless otherwise noted)
+ - adopt scoped_guard() for critical sections, inserting patch 1 and
+   updating patch 2 and 4.
+ - move rb_node field to beginning of struct line.
+ - merge struct supinfo into supinfo var declaration.
+ - move rb_tree field to beginning of struct supinfo.
+ - replace pr_warn() with WARN().
+ - drop explicit int to bool conversion in line_is_supplemental().
+ - use continue to bypass cleanup in linereq_free().
+ - fix typo in commit message (patch 4)
+
+Kent Gibson (5):
+  gpiolib: cdev: adopt scoped_guard()
+  gpiolib: cdev: relocate debounce_period_us from struct gpio_desc
+  gpiolib: remove debounce_period_us from struct gpio_desc
+  gpiolib: cdev: reduce locking in gpio_desc_to_lineinfo()
+  gpiolib: cdev: improve documentation of get/set values
+
+ drivers/gpio/gpiolib-cdev.c | 403 +++++++++++++++++++++++-------------
+ drivers/gpio/gpiolib.c      |   3 -
+ drivers/gpio/gpiolib.h      |   5 -
+ 3 files changed, 260 insertions(+), 151 deletions(-)
+
+--
+2.39.2
 
