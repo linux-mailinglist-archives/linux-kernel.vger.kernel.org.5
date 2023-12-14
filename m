@@ -2,372 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 848AF812D06
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 11:34:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DD1C812D1F
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 11:36:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1443668AbjLNKeh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 05:34:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38230 "EHLO
+        id S1443659AbjLNKg3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 05:36:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52860 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1443692AbjLNKec (ORCPT
+        with ESMTP id S1443641AbjLNKg0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 05:34:32 -0500
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 784F81A4;
-        Thu, 14 Dec 2023 02:34:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1702550074;
-        bh=nltRWsAk/z5jbHqdz583haqpjD3b8mytV4HvccmjS1M=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=U6qXFrpKKN6G8mLVuSK8cGP+mUp5gDU+9MBNmXkzA+7Ct+9rrLNDU055ecalOWEwt
-         5uOGZSLOvpAqSMdPJKiTlMLj9/reAicbtItg7erQk1kPTeEDeBC2f6N6HY65qwRqZv
-         +t1IN2KhCQFrB8xVxIhKncDnWzo3hwHAWccj/s20jA7rEN5AQHN1gZDwpsVQ74J4yx
-         2++E0YOVOxvNUnyhi1vElo64Q8xRTdbV35WWS++TDVgTOO2ooI6Zh/a1L/5R8pVvHK
-         10Uypqvbx4KofIxU2IBQ6x7jaBMs0bWGy1p+esHRsOCb10DNtncyJm7aVWNwywkytx
-         yuVAR5FlFHXCA==
-Received: from [100.113.186.2] (cola.collaboradmins.com [195.201.22.229])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: kholk11)
-        by madrid.collaboradmins.com (Postfix) with ESMTPSA id 1BB07378000B;
-        Thu, 14 Dec 2023 10:34:34 +0000 (UTC)
-Message-ID: <8d855e5e-4938-4d4f-a79f-bbf89e30f6ca@collabora.com>
-Date:   Thu, 14 Dec 2023 11:34:33 +0100
+        Thu, 14 Dec 2023 05:36:26 -0500
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A67D10F;
+        Thu, 14 Dec 2023 02:36:32 -0800 (PST)
+Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BEAMOhO028695;
+        Thu, 14 Dec 2023 10:36:23 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+        from:to:cc:subject:date:message-id:mime-version
+        :content-transfer-encoding:content-type; s=qcppdkim1; bh=WiwISKr
+        ta03GsjC7RA50OM5yZACKJsWKrxM3ona5Oqo=; b=Qt12NR5DvBbt05trAKPp232
+        c9/1suAh1ZY9pTKQ0/atLbFwa6Usdl+g4/5h2k0jpvH7E6zgcar+TgOMLcV9cYH1
+        cHO4WZKCHWMt1HUswiOzC1/9Elxh3fME25dL/kZVg02+Pdv1LmWInlAToTT/dlbA
+        9LVprj9YyutYQX6XxjQzCp08RSqCtK5a3Hwlz7/y1DlTafHOg3NXUl5047h8u+n3
+        yrVuDessg4w/W1W8VtV8w41tuvnX+KEUr71FGk9pl48lQJ5yWYoSAyFc6VWi4OII
+        tvyYhhiUJH0tzdq+uyJXOwztCNbLn1TeE7ezdhh0PF+O3gaDxGlzlNXl0yECTtg=
+        =
+Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3uynre15se-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 14 Dec 2023 10:36:22 +0000 (GMT)
+Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
+        by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3BEAaM6t020702
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 14 Dec 2023 10:36:22 GMT
+Received: from hu-omprsing-hyd.qualcomm.com (10.80.80.8) by
+ nalasex01b.na.qualcomm.com (10.47.209.197) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Thu, 14 Dec 2023 02:36:16 -0800
+From:   Om Prakash Singh <quic_omprsing@quicinc.com>
+To:     <quic_omprsing@quicinc.com>
+CC:     <neil.armstrong@linaro.org>, <konrad.dybcio@linaro.org>,
+        <agross@kernel.org>, <andersson@kernel.org>, <conor+dt@kernel.org>,
+        <davem@davemloft.net>, <devicetree@vger.kernel.org>,
+        <herbert@gondor.apana.org.au>, <krzysztof.kozlowski+dt@linaro.org>,
+        <linux-arm-msm@vger.kernel.org>, <linux-crypto@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <marijn.suijten@somainline.org>,
+        <robh+dt@kernel.org>, <vkoul@kernel.org>,
+        <cros-qcom-dts-watchers@chromium.org>
+Subject: [PATCH V3 0/2] Add QCrypto support for SC7280
+Date:   Thu, 14 Dec 2023 16:05:58 +0530
+Message-ID: <20231214103600.2613988-1-quic_omprsing@quicinc.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 7/9] arm64: dts: mediatek: Introduce MT8186 Steelix
-Content-Language: en-US
-To:     Chen-Yu Tsai <wenst@chromium.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-mediatek@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Eugen Hristev <eugen.hristev@collabora.com>,
-        Conor Dooley <conor.dooley@microchip.com>
-References: <20231213150435.4134390-1-wenst@chromium.org>
- <20231213150435.4134390-8-wenst@chromium.org>
-From:   AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>
-In-Reply-To: <20231213150435.4134390-8-wenst@chromium.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01b.na.qualcomm.com (10.47.209.197)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: zc3oyIzzS3Jn07E_B2sryJ8hPqOiaK4a
+X-Proofpoint-GUID: zc3oyIzzS3Jn07E_B2sryJ8hPqOiaK4a
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-09_01,2023-12-07_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 mlxlogscore=611
+ suspectscore=0 impostorscore=0 phishscore=0 bulkscore=0 spamscore=0
+ malwarescore=0 priorityscore=1501 lowpriorityscore=0 clxscore=1015
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2311290000 definitions=main-2312140070
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Il 13/12/23 16:04, Chen-Yu Tsai ha scritto:
-> The MT8186 Steelix, also known as the Lenovo 300e Yoga Chromebook Gen 4,
-> is a convertible device based on a common design of the same name. The
-> device comes in different variants. Of them, whether a world facing
-> camera is integrated is the only differentiating factor between the
-> two device trees added. The different SKU IDs describe this alone.
-> 
-> The other device difference is the touchpad component used. This is
-> simply handled by having both possible components described in the
-> device tree, and letting the implementation figure out which one is
-> actually available. The system bootloader / firmware does not
-> differentiate this in that they share the same SKU IDs.
-> 
-> Signed-off-by: Chen-Yu Tsai <wenst@chromium.org>
-> Acked-by: Conor Dooley <conor.dooley@microchip.com>
-> ---
-> Changes since v2:
-> - Picked up Conor's ack
-> 
-> Changes since v1:
-> - Removed trackpad_pins reference (moved to i2c2 in corsola dtsi)
-> - Fixed copyright year
-> - Renamed touchpad to trackpad
-> ---
->   arch/arm64/boot/dts/mediatek/Makefile         |   2 +
->   .../mt8186-corsola-steelix-sku131072.dts      |  18 ++
->   .../mt8186-corsola-steelix-sku131073.dts      |  18 ++
->   .../dts/mediatek/mt8186-corsola-steelix.dtsi  | 195 ++++++++++++++++++
->   4 files changed, 233 insertions(+)
->   create mode 100644 arch/arm64/boot/dts/mediatek/mt8186-corsola-steelix-sku131072.dts
->   create mode 100644 arch/arm64/boot/dts/mediatek/mt8186-corsola-steelix-sku131073.dts
->   create mode 100644 arch/arm64/boot/dts/mediatek/mt8186-corsola-steelix.dtsi
-> 
-> diff --git a/arch/arm64/boot/dts/mediatek/Makefile b/arch/arm64/boot/dts/mediatek/Makefile
-> index 442af61b1305..7bd9471b89f9 100644
-> --- a/arch/arm64/boot/dts/mediatek/Makefile
-> +++ b/arch/arm64/boot/dts/mediatek/Makefile
-> @@ -43,6 +43,8 @@ dtb-$(CONFIG_ARCH_MEDIATEK) += mt8183-kukui-kodama-sku32.dtb
->   dtb-$(CONFIG_ARCH_MEDIATEK) += mt8183-kukui-krane-sku0.dtb
->   dtb-$(CONFIG_ARCH_MEDIATEK) += mt8183-kukui-krane-sku176.dtb
->   dtb-$(CONFIG_ARCH_MEDIATEK) += mt8183-pumpkin.dtb
-> +dtb-$(CONFIG_ARCH_MEDIATEK) += mt8186-corsola-steelix-sku131072.dtb
-> +dtb-$(CONFIG_ARCH_MEDIATEK) += mt8186-corsola-steelix-sku131073.dtb
->   dtb-$(CONFIG_ARCH_MEDIATEK) += mt8186-corsola-tentacool-sku327681.dtb
->   dtb-$(CONFIG_ARCH_MEDIATEK) += mt8186-corsola-tentacool-sku327683.dtb
->   dtb-$(CONFIG_ARCH_MEDIATEK) += mt8186-corsola-tentacruel-sku262144.dtb
-> diff --git a/arch/arm64/boot/dts/mediatek/mt8186-corsola-steelix-sku131072.dts b/arch/arm64/boot/dts/mediatek/mt8186-corsola-steelix-sku131072.dts
-> new file mode 100644
-> index 000000000000..eae17bca8585
-> --- /dev/null
-> +++ b/arch/arm64/boot/dts/mediatek/mt8186-corsola-steelix-sku131072.dts
-> @@ -0,0 +1,18 @@
-> +// SPDX-License-Identifier: (GPL-2.0 OR MIT)
-> +/*
-> + * Copyright 2022 Google LLC
-> + */
-> +
-> +/dts-v1/;
-> +#include "mt8186-corsola-steelix.dtsi"
-> +
-> +/ {
-> +	model = "Google Steelix board";
-> +	compatible = "google,steelix-sku131072", "google,steelix",
-> +		     "mediatek,mt8186";
-> +	chassis-type = "convertible";
-> +};
-> +
-> +&mt6366codec {
-> +	mediatek,dmic-mode = <0>; /* two-wire */
-> +};
-> diff --git a/arch/arm64/boot/dts/mediatek/mt8186-corsola-steelix-sku131073.dts b/arch/arm64/boot/dts/mediatek/mt8186-corsola-steelix-sku131073.dts
-> new file mode 100644
-> index 000000000000..a55375b95d0d
-> --- /dev/null
-> +++ b/arch/arm64/boot/dts/mediatek/mt8186-corsola-steelix-sku131073.dts
-> @@ -0,0 +1,18 @@
-> +// SPDX-License-Identifier: (GPL-2.0 OR MIT)
-> +/*
-> + * Copyright 2022 Google LLC
-> + */
-> +
-> +/dts-v1/;
-> +#include "mt8186-corsola-steelix.dtsi"
-> +
-> +/ {
-> +	model = "Google Steelix board";
-> +	compatible = "google,steelix-sku131073", "google,steelix",
-> +		     "mediatek,mt8186";
-> +	chassis-type = "convertible";
-> +};
-> +
-> +&mt6366codec {
-> +	mediatek,dmic-mode = <1>; /* one-wire */
-> +};
-> diff --git a/arch/arm64/boot/dts/mediatek/mt8186-corsola-steelix.dtsi b/arch/arm64/boot/dts/mediatek/mt8186-corsola-steelix.dtsi
-> new file mode 100644
-> index 000000000000..47262bc499ad
-> --- /dev/null
-> +++ b/arch/arm64/boot/dts/mediatek/mt8186-corsola-steelix.dtsi
-> @@ -0,0 +1,195 @@
-> +// SPDX-License-Identifier: (GPL-2.0 OR MIT)
-> +/*
-> + * Copyright 2022 Google LLC
-> + */
-> +
-> +/dts-v1/;
-> +#include "mt8186-corsola.dtsi"
-> +#include <dt-bindings/gpio/gpio.h>
-> +#include <dt-bindings/input/input.h>
-> +
-> +/{
-> +	pp1000_edpbrdg: regulator-pp1000-edpbrdg {
-> +		compatible = "regulator-fixed";
-> +		regulator-name = "pp1000_edpbrdg";
-> +		pinctrl-names = "default";
-> +		pinctrl-0 = <&en_pp1000_edpbrdg>;
-> +		enable-active-high;
-> +		regulator-boot-on;
-> +		gpio = <&pio 29 GPIO_ACTIVE_HIGH>;
-> +		vin-supply = <&pp3300_z2>;
-> +	};
-> +
-> +	pp1800_edpbrdg_dx: regulator-pp1800-edpbrdg-dx {
-> +		compatible = "regulator-fixed";
-> +		regulator-name = "pp1800_edpbrdg_dx";
-> +		pinctrl-names = "default";
-> +		pinctrl-0 = <&en_pp1800_edpbrdg>;
-> +		enable-active-high;
-> +		regulator-boot-on;
-> +		gpio = <&pio 30 GPIO_ACTIVE_HIGH>;
-> +		vin-supply = <&mt6366_vio18_reg>;
-> +	};
-> +
-> +	pp3300_edp_dx: regulator-pp3300-edp-dx {
-> +		compatible = "regulator-fixed";
-> +		regulator-name = "pp3300_edp_dx";
-> +		pinctrl-names = "default";
-> +		pinctrl-0 = <&en_pp3300_edpbrdg>;
-> +		enable-active-high;
-> +		regulator-boot-on;
-> +		gpio = <&pio 31 GPIO_ACTIVE_HIGH>;
-> +		vin-supply = <&pp3300_z2>;
-> +	};
-> +};
-> +
-> +&dsi_out {
-> +	remote-endpoint = <&anx7625_in>;
-> +};
-> +
-> +&i2c0 {
-> +	clock-frequency = <400000>;
-> +
-> +	anx_bridge: anx7625@58 {
-> +		compatible = "analogix,anx7625";
-> +		reg = <0x58>;
-> +		pinctrl-names = "default";
-> +		pinctrl-0 = <&anx7625_pins>;
-> +		enable-gpios = <&pio 96 GPIO_ACTIVE_HIGH>;
-> +		reset-gpios = <&pio 98 GPIO_ACTIVE_HIGH>;
-> +		vdd10-supply = <&pp1000_edpbrdg>;
-> +		vdd18-supply = <&pp1800_edpbrdg_dx>;
-> +		vdd33-supply = <&pp3300_edp_dx>;
-> +		analogix,lane0-swing = /bits/ 8 <0x70 0x30>;
-> +		analogix,lane1-swing = /bits/ 8 <0x70 0x30>;
-> +
-> +		ports {
-> +			#address-cells = <1>;
-> +			#size-cells = <0>;
-> +
-> +			port@0 {
-> +				reg = <0>;
-> +
-> +				anx7625_in: endpoint {
-> +					remote-endpoint = <&dsi_out>;
-> +					data-lanes = <0 1 2 3>;
-> +				};
-> +			};
-> +
-> +			port@1 {
-> +				reg = <1>;
-> +
-> +				anx7625_out: endpoint {
-> +					remote-endpoint = <&panel_in>;
-> +				};
-> +			};
-> +		};
-> +
-> +		aux-bus {
-> +			panel: panel {
-> +				compatible = "edp-panel";
-> +				power-supply = <&pp3300_disp_x>;
-> +				backlight = <&backlight_lcd0>;
-> +
-> +				port {
-> +					panel_in: endpoint {
-> +						remote-endpoint = <&anx7625_out>;
-> +					};
-> +				};
-> +			};
-> +		};
-> +	};
-> +};
-> +
-> +&i2c1 {
-> +	touchscreen: touchscreen@5d {
-> +		compatible = "goodix,gt7375p";
-> +		reg = <0x5d>;
-> +		interrupts-extended = <&pio 12 IRQ_TYPE_EDGE_FALLING>;
-> +		pinctrl-names = "default";
-> +		pinctrl-0 = <&touchscreen_pins>;
-> +		reset-gpios = <&pio 60 GPIO_ACTIVE_LOW>;
-> +		vdd-supply = <&pp3300_s3>;
-> +		goodix,no-reset-during-suspend;
-> +	};
-> +};
-> +
-> +&i2c2 {
-> +	i2c-scl-internal-delay-ns = <22000>;
-> +
-> +	/* second source component */
-> +	trackpad@2c {
-> +		compatible = "hid-over-i2c";
-> +		reg = <0x2c>;
-> +		hid-descr-addr = <0x20>;
-> +		interrupts-extended = <&pio 11 IRQ_TYPE_LEVEL_LOW>;
-> +		vdd-supply = <&pp3300_s3>;
-> +		wakeup-source;
-> +	};
-> +};
-> +
-> +&keyboard_controller {
-> +	function-row-physmap = <
-> +		MATRIX_KEY(0x00, 0x02, 0)	/* T1 */
-> +		MATRIX_KEY(0x03, 0x02, 0)	/* T2 */
-> +		MATRIX_KEY(0x02, 0x02, 0)	/* T3 */
-> +		MATRIX_KEY(0x01, 0x02, 0)	/* T4 */
-> +		MATRIX_KEY(0x03, 0x04, 0)	/* T5 */
-> +		MATRIX_KEY(0x02, 0x04, 0)	/* T6 */
-> +		MATRIX_KEY(0x01, 0x04, 0)	/* T7 */
-> +		MATRIX_KEY(0x02, 0x09, 0)	/* T8 */
-> +		MATRIX_KEY(0x01, 0x09, 0)	/* T9 */
-> +		MATRIX_KEY(0x00, 0x04, 0)	/* T10 */
-> +	>;
-> +
-> +	linux,keymap = <
-> +		MATRIX_KEY(0x00, 0x02, KEY_BACK)
-> +		MATRIX_KEY(0x03, 0x02, KEY_REFRESH)
-> +		MATRIX_KEY(0x02, 0x02, KEY_ZOOM)
-> +		MATRIX_KEY(0x01, 0x02, KEY_SCALE)
-> +		MATRIX_KEY(0x03, 0x04, KEY_BRIGHTNESSDOWN)
-> +		MATRIX_KEY(0x02, 0x04, KEY_BRIGHTNESSUP)
-> +		MATRIX_KEY(0x01, 0x04, KEY_MICMUTE)
-> +		MATRIX_KEY(0x02, 0x09, KEY_MUTE)
-> +		MATRIX_KEY(0x01, 0x09, KEY_VOLUMEDOWN)
-> +		MATRIX_KEY(0x00, 0x04, KEY_VOLUMEUP)
-> +		CROS_STD_MAIN_KEYMAP
-> +	>;
-> +};
-> +
-> +&pio {
-> +	anx7625_pins: anx7625-pins {
-> +		pins1 {
+Document SC7280 support for QCrypto driver and add QCE and Crypto BAM DMA nodes
 
-pins-en-rst
+Om Prakash Singh (2):
+  dt-bindings: crypto: qcom-qce: document the SC7280 crypto engine
+  arm64: dts: qcom: sc7280: add QCrypto nodes
 
-> +			pinmux = <PINMUX_GPIO96__FUNC_GPIO96>,
-> +				 <PINMUX_GPIO98__FUNC_GPIO98>;
-> +			output-low;
-> +		};
-> +
-> +		pins2 {
+ .../devicetree/bindings/crypto/qcom-qce.yaml  |  1 +
+ arch/arm64/boot/dts/qcom/sc7280.dtsi          | 22 +++++++++++++++++++
+ 2 files changed, 23 insertions(+)
 
-pins-is-this-an-interrupt? :-)
-
-> +			pinmux = <PINMUX_GPIO9__FUNC_GPIO9>;
-> +			input-enable;
-> +			bias-disable;
-> +		};
-> +	};
-> +
-> +	en_pp1000_edpbrdg: pp1000-edpbrdg-en-pins {
-> +		pins {
-
-pins-vreg-en like in corsola.dtsi
-
-> +			pinmux = <PINMUX_GPIO29__FUNC_GPIO29>;
-> +			output-low;
-> +		};
-> +	};
-> +
-> +	en_pp1800_edpbrdg: pp1800-edpbrdg-en-pins {
-> +		pins {
-
-same
-
-> +			pinmux = <PINMUX_GPIO30__FUNC_GPIO30>;
-> +			output-low;
-> +		};
-> +	};
-> +
-> +	en_pp3300_edpbrdg: pp3300-edpbrdg-en-pins {
-> +		pins {
-
-ditto
-
-Cheers,
-Angelo
+-- 
+2.25.1
 
