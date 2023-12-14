@@ -2,95 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 59E9F813620
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 17:25:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BB1EC813625
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 17:26:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229693AbjLNQZW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 11:25:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40784 "EHLO
+        id S229621AbjLNQ0N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 11:26:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59518 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229464AbjLNQZV (ORCPT
+        with ESMTP id S229464AbjLNQ0K (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 11:25:21 -0500
-Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0A0710F;
-        Thu, 14 Dec 2023 08:25:27 -0800 (PST)
-Received: by mail-ej1-x62f.google.com with SMTP id a640c23a62f3a-a1e35c2807fso1099593166b.3;
-        Thu, 14 Dec 2023 08:25:27 -0800 (PST)
+        Thu, 14 Dec 2023 11:26:10 -0500
+Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EABEF11A;
+        Thu, 14 Dec 2023 08:26:16 -0800 (PST)
+Received: by mail-wm1-x336.google.com with SMTP id 5b1f17b1804b1-40b5155e154so94667175e9.3;
+        Thu, 14 Dec 2023 08:26:16 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702571126; x=1703175926; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=nAh9hLA7/3vJZkTHk2ApYbTI4ADCNqSEYHhLSzcSf7g=;
-        b=DfdipaSn8GBSt0vGKyWk6+i1XW02Vzeuy6Bz/CjQzNfoFdiMeqxaXZ15BnNXpqwJMB
-         DtFD9mRhLf8FCAEddJsTW8zABRaadUJZrQWmhDh7clPB/5hV7vN0wCgW2aIBLiHnlyn4
-         X2zUPDX5c5+s0R1xATpfiIw7QISKKjAR09bjDd4muPYP8wKn6GBcRDY/Qal8u2+dAcPG
-         ehxPTfgwoaBdov2yExbR52qa9Qll8H7DLxc5GazWpIoke0eAkisxHsUqzwHbEK8LQ0M0
-         3MKC8/A0Y4auVBYczH3gF5XOauw/3GdxhNh83mD3J7lv5jY0LNX4ck+3/nD8d9652wQ1
-         iZwg==
+        d=gmail.com; s=20230601; t=1702571175; x=1703175975; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:autocrypt
+         :references:in-reply-to:date:cc:to:from:subject:message-id:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=zdH9gMnQNKHXOKBUC+84ODN/O33buQFJ4juryMWVkgI=;
+        b=RSuX2lt56KLhnnZWvvuvOqsJDlE1uOM/kuk+JXTv0yk+Xuj1i3n09hHvk4fdTMzajd
+         BZILWW5nMfM8j1Vi8V0gH0P+L+bp91h30FymBh2PcS4XRhfLzcajHWagb9K51IayXMbx
+         r8IG2Gy2aiaNV1pclypufqWNJXE3zBAi6iyxxZYV8EZ8JAIgIH1jUTz+gawn4KQ9OzeC
+         8fPuFDbg4vTrVAb7QYC0bDFHt5Jn9fwenn4e32FCCDmeyq1uvODsYDoqhBbsTjBqvK15
+         P+3Kybfv0oEQ2NR5LerqQI2dYnSfvN0f6VJLKI3tsCmXYgnektPcCKLrPnk5XNb52ecQ
+         JdXQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702571126; x=1703175926;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=nAh9hLA7/3vJZkTHk2ApYbTI4ADCNqSEYHhLSzcSf7g=;
-        b=n3qC9JA8KWSuywFfGCJSlWpmmINpfgjwg6JCTCF8hXtY/vEvTEnuzSEj1R7u60HufI
-         Jf3olvIp+nWlAbQoB1o/iOIZNXZwNjEwkIFBgvAN3dt89e19GmcPE124szTDTWBbM5J2
-         Tz0rV95XKAkNrMPpkx7ApP9fdQIIfxfcAPmERhHueYxIOoSgxAkrT6TFj/DT1coQ5/0O
-         1BJtYlPUPLembycyXapWnLdHuIh2sTqZHy7MmVktP0YecdlrWDBSvsPp3ptY8zi2ENyQ
-         F5xxpTf51MC62iASV1W+El/IYFWqp8WwncJWXeLincFKBmhQHEeRwcXnf+ipPvlUVeHv
-         //PA==
-X-Gm-Message-State: AOJu0Yzpq0IjW763liEuln88KuGBsiytpWUQLN4ILMrVMEoHGoenYU7C
-        BJAx7f3lQ1/vptdEizrcTb8=
-X-Google-Smtp-Source: AGHT+IE2yCLDkuvnAGzuGQCgb+g82SQy0V+xnj+sV1DuFTKwWQZGgTCilxOSm5OBuK/K6XS2NmhyxQ==
-X-Received: by 2002:a17:906:1c4b:b0:a1c:8f41:299b with SMTP id l11-20020a1709061c4b00b00a1c8f41299bmr4936084ejg.56.1702571125834;
-        Thu, 14 Dec 2023 08:25:25 -0800 (PST)
-Received: from localhost (p200300e41f0fa600f22f74fffe1f3a53.dip0.t-ipconnect.de. [2003:e4:1f0f:a600:f22f:74ff:fe1f:3a53])
-        by smtp.gmail.com with ESMTPSA id uv6-20020a170907cf4600b00a1f699e5217sm9307467ejc.135.2023.12.14.08.25.25
+        d=1e100.net; s=20230601; t=1702571175; x=1703175975;
+        h=mime-version:user-agent:content-transfer-encoding:autocrypt
+         :references:in-reply-to:date:cc:to:from:subject:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=zdH9gMnQNKHXOKBUC+84ODN/O33buQFJ4juryMWVkgI=;
+        b=D9LpyLC6Ta5DMIUr/2I+UH0lOMIJtUjWqpZWlgO+DUVuxC2b48dYKuXIaYRiT4EwEr
+         OIHzeGzLhiG8YUyIjZva7LHt4hhlq20WF/IEp+YD+Ufbv35y2VNAumiuApBMcbYova7p
+         6jZ1Pd0Jn/m5hTBLDICvYV5mttutlEOOW96n5c22wzz63MJCpnPTJFfpTgaIG96Y6u2+
+         Xn8UrvRNQQDna70wq5qcTsNHE1qERJ1vAlTHAfJoSfoCrXg28RrXIh9QGEwvP3bhjwSg
+         V4HiaVuzQz2LQYrPRJY6btGgQrqD3wCf0/od9CONYq80lo878V3M5aGLA+d5AMsV/ABK
+         kkvA==
+X-Gm-Message-State: AOJu0YyK+Q8/9VkDLl0mmn3BjE8GmkZDKoG9kbsi9ModF2Og1s/c75Vp
+        vMvQThsavxhNiJ2cCcic7kU=
+X-Google-Smtp-Source: AGHT+IFSvs7inmRD3CjtZ1DiI/02fJjItdpi0G7+kaDgomGVUYnPJ4Sgw2GkbyVc7gp4TR+YbZn3eA==
+X-Received: by 2002:a05:600c:4e8d:b0:401:b6f6:d90c with SMTP id f13-20020a05600c4e8d00b00401b6f6d90cmr4917532wmq.35.1702571175243;
+        Thu, 14 Dec 2023 08:26:15 -0800 (PST)
+Received: from [192.168.1.95] (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
+        by smtp.gmail.com with ESMTPSA id s18-20020a5d4ed2000000b00336421f1818sm3978765wrv.112.2023.12.14.08.26.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Dec 2023 08:25:25 -0800 (PST)
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        David Heidelberg <david@ixit.cz>
-Cc:     Rob Herring <robh@kernel.org>, linux-hwmon@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: (subset) [PATCH v4 1/3] dt-bindings: arm: hwmon: gpio-fan: Convert txt bindings to yaml
-Date:   Thu, 14 Dec 2023 17:25:21 +0100
-Message-ID: <170257110824.3783528.16373927104486935046.b4-ty@nvidia.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20231209171653.85468-1-david@ixit.cz>
-References: <20231209171653.85468-1-david@ixit.cz>
+        Thu, 14 Dec 2023 08:26:14 -0800 (PST)
+Message-ID: <73d021e3f77161668aae833e478b210ed5cd2f4d.camel@gmail.com>
+Subject: Re: [Bug Report] bpf: incorrectly pruning runtime execution path
+From:   Eduard Zingerman <eddyz87@gmail.com>
+To:     Hao Sun <sunhao.th@gmail.com>
+Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        bpf <bpf@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Date:   Thu, 14 Dec 2023 18:26:13 +0200
+In-Reply-To: <9dee19c7d39795242c15b2f7aa56fb4a6c3ebffa.camel@gmail.com>
+References: <CACkBjsbj4y4EhqpV-ZVt645UtERJRTxfEab21jXD1ahPyzH4_g@mail.gmail.com>
+         <CAEf4BzZ0xidVCqB47XnkXcNhkPWF6_nTV7yt+_Lf0kcFEut2Mg@mail.gmail.com>
+         <CACkBjsaEQxCaZ0ERRnBXduBqdw3MXB5r7naJx_anqxi0Wa-M_Q@mail.gmail.com>
+         <480a5cfefc23446f7c82c5b87eef6306364132b9.camel@gmail.com>
+         <917DAD9F-8697-45B8-8890-D33393F6CDF1@gmail.com>
+         <9dee19c7d39795242c15b2f7aa56fb4a6c3ebffa.camel@gmail.com>
+Autocrypt: addr=eddyz87@gmail.com; prefer-encrypt=mutual; keydata=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
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thierry Reding <treding@nvidia.com>
+On Thu, 2023-12-14 at 17:10 +0200, Eduard Zingerman wrote:
+> [...]
+> > The reason why retval checks fails is that the way you disable dead
+> > code removal pass is not complete. Disable opt_remove_dead_code()
+> > just prevent the instruction #30 from being removed, but also note
+> > opt_hard_wire_dead_code_branches(), which convert conditional jump
+> > into unconditional one, so #30 is still skipped.
+> >=20
+> > > Note that I tried this test with two functions:
+> > > - bpf_get_current_cgroup_id, with this function I get retval 2, not 4=
+ :)
+> > > - bpf_get_prandom_u32, with this function I get a random retval each =
+time.
+> > >=20
+> > > What is the expectation when 'bpf_get_current_cgroup_id' is used?
+> > > That it is some known (to us) number, but verifier treats it as unkno=
+wn scalar?
+> > >=20
+> >=20
+> > Either one would work, but to make #30 always taken, r0 should be
+> > non-zero.
+>=20
+> Oh, thank you, I made opt_hard_wire_dead_code_branches() a noop,
+> replaced r0 =3D 0x4 by r0 /=3D 0 and see "divide error: 0000 [#1] PREEMPT=
+ SMP NOPTI"
+> error in the kernel log on every second or third run of the test
+> (when using prandom).
+>=20
+> Working to minimize the test case will share results a bit later.
 
+Here is the minimized version of the test:
+https://gist.github.com/eddyz87/fb4d3c7d5aabdc2ae247ed73fefccd32
 
-On Sat, 09 Dec 2023 18:15:39 +0100, David Heidelberg wrote:
-> Convert fan devices connected to GPIOs to the YAML syntax.
-> 
-> 
+If executed several times: ./test_progs -vvv -a verifier_and/pruning_test
+it eventually crashes VM with the following error:
 
-Applied, thanks!
+[    2.039066] divide error: 0000 [#1] PREEMPT SMP NOPTI
+               ...
+[    2.039987] Call Trace:
+[    2.039987]  <TASK>
+[    2.039987]  ? die+0x36/0x90
+[    2.039987]  ? do_trap+0xdb/0x100
+[    2.039987]  ? bpf_prog_32cfdb2c00b08250_pruning_test+0x4d/0x60
+[    2.039987]  ? do_error_trap+0x7d/0x110
+[    2.039987]  ? bpf_prog_32cfdb2c00b08250_pruning_test+0x4d/0x60
+[    2.039987]  ? exc_divide_error+0x38/0x50
+[    2.039987]  ? bpf_prog_32cfdb2c00b08250_pruning_test+0x4d/0x60
+[    2.039987]  ? asm_exc_divide_error+0x1a/0x20
+[    2.039987]  ? bpf_prog_32cfdb2c00b08250_pruning_test+0x4d/0x60
+[    2.039987]  bpf_test_run+0x1b5/0x350
+[    2.039987]  ? bpf_test_run+0x115/0x350
+               ...
 
-[3/3] ARM: dts: tegra30-ouya: make dts use gpio-fan matrix instead of array
-      (no commit info)
+I'll continue debugging this a bit later today.
 
-Best regards,
--- 
-Thierry Reding <treding@nvidia.com>
