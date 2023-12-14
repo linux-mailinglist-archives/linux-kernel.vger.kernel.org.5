@@ -2,104 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 09D2A812E5E
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 12:17:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DA1A2812E63
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 12:18:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1443731AbjLNLRB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 06:17:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60184 "EHLO
+        id S1443797AbjLNLR5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 06:17:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54272 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1443635AbjLNLQ7 (ORCPT
+        with ESMTP id S1443730AbjLNLRz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 06:16:59 -0500
-Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4B4ACF
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 03:17:05 -0800 (PST)
-Received: by mail-pg1-x531.google.com with SMTP id 41be03b00d2f7-5c21e185df5so6874007a12.1
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 03:17:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1702552625; x=1703157425; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=PhCwqmV8xLeKliC/IPYCJgesOy9krq9jbqPfrEK110U=;
-        b=U4mfJcqX3m54VsdVzL4nix77soE66bGG2Te9nVi0c6csFEDYFi4C5HFm2D6S6FhX7s
-         9/2cb6xmW0PHIh8woA/A12Vuyod0EJ5PA+z2pHyEy7q+O3YLBi6bwrBVblofS4mDd4YU
-         bYkoYs8WvK1cdgaiq77Xdylvc6I5Gj8GDL0SmZJ2+W6O0bbQUa2Nc+orCWBG2p+Qh8Xz
-         MEDeUw3YjJy+y00ogQlxHXtTENklAUFYU0+Vo7IpESRXIgWCKdDB2If21JZ9u79R9DtM
-         ykUhXY9UFxgFIVzGHKGxYyY/hCCScYU/Uhrv8sLPa1HNsTEoquxj8G6/Whny5atqirPz
-         X2Hg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702552625; x=1703157425;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=PhCwqmV8xLeKliC/IPYCJgesOy9krq9jbqPfrEK110U=;
-        b=FMa803uMaSyNTGNS6xILd/54FMSL2m5HAvkYxPvdxZTae/DSx/nnPKW/oOaOlBEDgd
-         VEz4kBPFR6VJvOSpceAUCyWdNdJwxMMsJHRiH1RIgU0rrLdbQOeOglQeoGDSQP5iFqEH
-         t/axuHq6vjfAojN+3/FyjVZOed67uA/iAgjMjuA0MyeePs3MuWbvD04U/7mU0S+TZnsF
-         r44fqIA8YjcAFNhl+riwi9FiTorgmVAzdJkn4FiQObbEnMusAZWpQ8VUEUcXmj9YLmNI
-         m/w9FCWDkvVnqRAFEm50RpP2AxsYorvzpfwg7fWVm0dmehgxtqmNMOEco/gFliM2k48o
-         rb8w==
-X-Gm-Message-State: AOJu0YzlyhOpCxrUR+kkGxtl63GzWU/SA+JCQBWOyezysmzb7i34RgWa
-        mWlG+xjgSCiPMB9xMkadd67EPQ==
-X-Google-Smtp-Source: AGHT+IEGJ5iYsTvFrjTZorn1/MwkkSYEnSuscp/ZLU2pi2M1jcJ955V1my91fjw6E7prxIYt4wTjYw==
-X-Received: by 2002:a05:6a20:8e13:b0:18f:f57a:e761 with SMTP id y19-20020a056a208e1300b0018ff57ae761mr12774382pzj.63.1702552625048;
-        Thu, 14 Dec 2023 03:17:05 -0800 (PST)
-Received: from localhost ([122.172.82.6])
-        by smtp.gmail.com with ESMTPSA id f7-20020aa79d87000000b006ce5b4ade28sm11799418pfq.174.2023.12.14.03.17.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Dec 2023 03:17:04 -0800 (PST)
-Date:   Thu, 14 Dec 2023 16:47:02 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Brandon Cheo Fusi <fusibrandon13@gmail.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
+        Thu, 14 Dec 2023 06:17:55 -0500
+Received: from gloria.sntech.de (gloria.sntech.de [185.11.138.130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBE2011D;
+        Thu, 14 Dec 2023 03:17:59 -0800 (PST)
+Received: from i53875b61.versanet.de ([83.135.91.97] helo=diego.localnet)
+        by gloria.sntech.de with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <heiko@sntech.de>)
+        id 1rDjii-0002lZ-0Q; Thu, 14 Dec 2023 12:17:36 +0100
+From:   Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>
+To:     Maxime Ripard <mripard@kernel.org>, Alex Bee <knaerzche@gmail.com>
+Cc:     Sandy Huang <hjc@rock-chips.com>, Andy Yan <andyshrk@163.com>,
+        Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
         Conor Dooley <conor+dt@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Samuel Holland <samuel@sholland.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Yangtao Li <tiny.windzz@gmail.com>, devicetree@vger.kernel.org,
-        linux-riscv@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
-        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org
-Subject: Re: [PATCH 4/5] cpufreq: Add support for RISC-V CPU Frequency
- scaling drivers
-Message-ID: <20231214111702.xdd7qlcrpqh74i3j@vireshk-i7>
-References: <20231214103342.30775-1-fusibrandon13@gmail.com>
- <20231214103342.30775-5-fusibrandon13@gmail.com>
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 04/11] drm/rockchip: inno_hdmi: Correctly setup HDMI quantization
+ range
+Date:   Thu, 14 Dec 2023 12:17:34 +0100
+Message-ID: <3053311.k3LOHGUjKi@diego>
+In-Reply-To: <5f4fc919-681f-44ec-bd44-5788e5b718ca@gmail.com>
+References: <20231213195125.212923-1-knaerzche@gmail.com>
+ <w7cj24se5gjomfynp5yindnh3s2pea4p3f46u6y7lcci7hri32@62i6hg26pheb>
+ <5f4fc919-681f-44ec-bd44-5788e5b718ca@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231214103342.30775-5-fusibrandon13@gmail.com>
-X-Spam-Status: No, score=1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Level: *
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        T_SPF_HELO_TEMPERROR autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 14-12-23, 11:33, Brandon Cheo Fusi wrote:
-> Add Kconfig file for cpufreq scaling drivers that can handle RISC-V
-> CPUs. An entry is included for the Allwinner H6 cpufreq driver that
-> works with D1.
+Am Donnerstag, 14. Dezember 2023, 12:12:08 CET schrieb Alex Bee:
+> Hi Maxime
 > 
-> Signed-off-by: Brandon Cheo Fusi <fusibrandon13@gmail.com>
-> ---
->  drivers/cpufreq/Kconfig       |  4 ++++
->  drivers/cpufreq/Kconfig.riscv | 16 ++++++++++++++++
->  2 files changed, 20 insertions(+)
->  create mode 100644 drivers/cpufreq/Kconfig.riscv
+> Am 14.12.23 um 08:56 schrieb Maxime Ripard:
+> > Hi Alex,
+> >
+> > Thanks for working on this!
+> >
+> > On Wed, Dec 13, 2023 at 08:51:18PM +0100, Alex Bee wrote:
+> >> The display controller will always give full range RGB regardless of the
+> >> mode set, but HDMI requires certain modes to be transmitted in limited
+> >> range RGB. This is especially required for HDMI sinks which do not support
+> >> non-standard quantization ranges.
+> >>
+> >> This enables color space conversion for those modes and sets the
+> >> quantization range accordingly in the AVI infoframe.
+> >>
+> >> Fixes: 412d4ae6b7a5 ("drm/rockchip: hdmi: add Innosilicon HDMI support")
+> >> Signed-off-by: Alex Bee <knaerzche@gmail.com>
+> >> ---
+> >>   drivers/gpu/drm/rockchip/inno_hdmi.c | 40 ++++++++++++++++++++++------
+> >>   1 file changed, 32 insertions(+), 8 deletions(-)
+> >>
+> >> diff --git a/drivers/gpu/drm/rockchip/inno_hdmi.c b/drivers/gpu/drm/rockchip/inno_hdmi.c
+> >> index 345253e033c5..32626a75723c 100644
+> >> --- a/drivers/gpu/drm/rockchip/inno_hdmi.c
+> >> +++ b/drivers/gpu/drm/rockchip/inno_hdmi.c
+> >> @@ -33,6 +33,7 @@ struct hdmi_data_info {
+> >>   	unsigned int enc_in_format;
+> >>   	unsigned int enc_out_format;
+> >>   	unsigned int colorimetry;
+> >> +	bool rgb_limited_range;
+> >>   };
+> >>   
+> >>   struct inno_hdmi_i2c {
+> >> @@ -308,6 +309,18 @@ static int inno_hdmi_config_video_avi(struct inno_hdmi *hdmi,
+> >>   	else
+> >>   		frame.avi.colorspace = HDMI_COLORSPACE_RGB;
+> >>   
+> >> +	if (hdmi->hdmi_data.enc_out_format == HDMI_COLORSPACE_RGB) {
+> >> +		drm_hdmi_avi_infoframe_quant_range(&frame.avi,
+> >> +						   &hdmi->connector, mode,
+> >> +						   hdmi->hdmi_data.rgb_limited_range ?
+> >> +						   HDMI_QUANTIZATION_RANGE_LIMITED :
+> >> +						   HDMI_QUANTIZATION_RANGE_FULL);
+> >> +	} else {
+> >> +		frame.avi.quantization_range = HDMI_QUANTIZATION_RANGE_DEFAULT;
+> >> +		frame.avi.ycc_quantization_range =
+> >> +			HDMI_YCC_QUANTIZATION_RANGE_LIMITED;
+> >> +	}
+> >> +
+> >>   	return inno_hdmi_upload_frame(hdmi, rc, &frame, INFOFRAME_AVI, 0, 0, 0);
+> >>   }
+> >>   
+> >> @@ -334,14 +347,22 @@ static int inno_hdmi_config_video_csc(struct inno_hdmi *hdmi)
+> >>   	if (data->enc_in_format == data->enc_out_format) {
+> >>   		if ((data->enc_in_format == HDMI_COLORSPACE_RGB) ||
+> >>   		    (data->enc_in_format >= HDMI_COLORSPACE_YUV444)) {
+> >> -			value = v_SOF_DISABLE | v_COLOR_DEPTH_NOT_INDICATED(1);
+> >> -			hdmi_writeb(hdmi, HDMI_VIDEO_CONTRL3, value);
+> >> -
+> >> -			hdmi_modb(hdmi, HDMI_VIDEO_CONTRL,
+> >> -				  m_VIDEO_AUTO_CSC | m_VIDEO_C0_C2_SWAP,
+> >> -				  v_VIDEO_AUTO_CSC(AUTO_CSC_DISABLE) |
+> >> -				  v_VIDEO_C0_C2_SWAP(C0_C2_CHANGE_DISABLE));
+> >> -			return 0;
+> >> +			if (data->enc_in_format == HDMI_COLORSPACE_RGB &&
+> >> +			    data->enc_out_format == HDMI_COLORSPACE_RGB &&
+> >> +			    hdmi->hdmi_data.rgb_limited_range) {
+> >> +				csc_mode = CSC_RGB_0_255_TO_RGB_16_235_8BIT;
+> >> +				auto_csc = AUTO_CSC_DISABLE;
+> >> +				c0_c2_change = C0_C2_CHANGE_DISABLE;
+> >> +				csc_enable = v_CSC_ENABLE;
+> >> +			} else {
+> >> +				value = v_SOF_DISABLE | v_COLOR_DEPTH_NOT_INDICATED(1);
+> >> +				hdmi_writeb(hdmi, HDMI_VIDEO_CONTRL3, value);
+> >> +				hdmi_modb(hdmi, HDMI_VIDEO_CONTRL,
+> >> +					  m_VIDEO_AUTO_CSC | m_VIDEO_C0_C2_SWAP,
+> >> +					  v_VIDEO_AUTO_CSC(AUTO_CSC_DISABLE) |
+> >> +					  v_VIDEO_C0_C2_SWAP(C0_C2_CHANGE_DISABLE));
+> >> +				return 0;
+> >> +			}
+> >>   		}
+> >>   	}
+> >>   
+> >> @@ -458,6 +479,9 @@ static int inno_hdmi_setup(struct inno_hdmi *hdmi,
+> >>   	else
+> >>   		hdmi->hdmi_data.colorimetry = HDMI_COLORIMETRY_ITU_709;
+> >>   
+> >> +	hdmi->hdmi_data.rgb_limited_range =
+> >> +		drm_default_rgb_quant_range(mode) == HDMI_QUANTIZATION_RANGE_LIMITED;
+> >> +
+> > This patch conflicts heavily with my inno_hdmi patches here (patches 22 to 38):
+> > https://lore.kernel.org/dri-devel/20231207-kms-hdmi-connector-state-v5-0-6538e19d634d@kernel.org/
+> I'm aware of that and I mentioned it in the cover letter. Your series is 
+> not merged yet and it didn't get much feedback so far. What is the 
+> status there? Especially because you are removing things from inno-hdmi 
+> driver (which aren't really required to remove there) which will I have 
+> to reintroduce.
 
-We don't have a separate kconfig file for each architecture. Only if
-there are too many entries for an architecture, we add a new file.
+Sadly I haven't found the time to look closer at Maxime's series so far,
+but I got the impression that it separates into multiple cleanup steps
+for a number of controllers.
 
--- 
-viresh
+So the sentence below suggests that Maxime wanted you to pick the
+appropriate patches from there and incorporate them into your series
+(as it looks like you developed a nice working knowledge of the inno-hdmi
+driver). So there is no need to first drop and then reintroduce stuff, but
+there may be other interesting cleanups there.
+
+> > I would appreciate if you could test and merge them into your series.
+
+
+Heiko
+
+> > In particular, there's no need to store the range here: enc_out_format
+> rgb_limited_range is currently not only used for csc, but also for for 
+> infoframe creation. So it makes sense to have this stored  to avoid 
+> calling drm_default_rgb_quant_range twice.
+> 
+> > is always RGB, so you'll always end up calling
+> > drm_hdmi_avi_infoframe_quant_range(), and you'll always have the same csc values.
+> 
+> I don't think that's true. Non-VIC modes like 800x600 or 1024x764 want 
+> full range RGB and csc must not be done in those cases.
+
+
+
+
