@@ -2,148 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C2D828134CF
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 16:30:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 224B38134D4
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 16:33:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1573799AbjLNPai (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 10:30:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34972 "EHLO
+        id S1573807AbjLNPdo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 10:33:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37504 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230322AbjLNPag (ORCPT
+        with ESMTP id S1573757AbjLNPdn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 10:30:36 -0500
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB1FF10F;
-        Thu, 14 Dec 2023 07:30:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1702567840;
-        bh=L6OpDbiNLcyPXuRO6mFK0GaJHqzS5h9be+Rfj9yM16w=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=Arxh6yRblL+S+abOSng3LoCgobcTIFL1Sfj70f2rPJ2F8ICmR6jzWjb79Q+QzuR+l
-         L7E4IYpViuGzezjARvfu0F/lwHVzCkK/m5lr2evtA44lae7kTzMJp+GziWwtAC4MvC
-         uvILG76Uxa18u6cffX+b5hb25Xq8Y74P0yIyQ/CKt6tbnulkQ0OeY6g1+gD5a3uy0p
-         swgdvEcQIxsN4SnGd4/hFT9C0SaBUj1lHYCNU6dQMDhYN2bjVb5olLum/2gO7gNeLM
-         PVPW9TMDkBEEJPCgFGRLc0G+2qfKv2z6eB0yMPXZTxryzE4VU7tD7JiMZqZWU4VDxY
-         2U64vXmMe6KMA==
-Received: from [100.90.194.27] (cola.collaboradmins.com [195.201.22.229])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: ehristev)
-        by madrid.collaboradmins.com (Postfix) with ESMTPSA id 2B81A3781485;
-        Thu, 14 Dec 2023 15:30:39 +0000 (UTC)
-Message-ID: <18406191-1b7c-490a-852b-eed3db23a3c1@collabora.com>
-Date:   Thu, 14 Dec 2023 17:30:38 +0200
+        Thu, 14 Dec 2023 10:33:43 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28E9D10F
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 07:33:50 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6B1B7C433C7;
+        Thu, 14 Dec 2023 15:33:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1702568029;
+        bh=3dRVPojxVarxqc+k64+h1j/nb68HVbqD8FQgiohBXbA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=XTdkSdM1sLzi4D/PSBmJ2eDH19Bmp4X+y6BgJ1F+GShGRM/Cw/ypKQnB9w8xbS4Xu
+         CfX5oreZxh4gy08/z77Gy3aRf/0oHo1S1w0oZnvwEsfrfYcepS9/iwpPTNyn5Mtl2x
+         HkAJlUHreRrUpbQiCjy1h/wWRPLQ19pRl+imLyBk=
+Date:   Thu, 14 Dec 2023 16:33:47 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Dan Williams <dan.j.williams@intel.com>
+Cc:     Vishal Verma <vishal.l.verma@intel.com>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-cxl@vger.kernel.org,
+        nvdimm@lists.linux.dev
+Subject: Re: [PATCH] driver core: Add a guard() definition for the
+ device_lock()
+Message-ID: <2023121456-violation-unthawed-3ae3@gregkh>
+References: <170250854466.1522182.17555361077409628655.stgit@dwillia2-xfh.jf.intel.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 4/4] arm64: dts: mediatek: mt8186: Add venc node
-Content-Language: en-US
-To:     AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-mediatek@lists.infradead.org
-Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        kernel@collabora.com, tiffany.lin@mediatek.com,
-        andrew-ct.chen@mediatek.com, matthias.bgg@gmail.com,
-        Kyrie Wu <kyrie.wu@mediatek.com>,
-        Allen-KH Cheng <allen-kh.cheng@mediatek.com>,
-        Hsin-Yi Wang <hsinyi@chromium.org>
-References: <20231213122017.102100-1-eugen.hristev@collabora.com>
- <20231213122017.102100-4-eugen.hristev@collabora.com>
- <d20c35e2-cc40-436d-90ca-4cab555874ca@collabora.com>
-From:   Eugen Hristev <eugen.hristev@collabora.com>
-In-Reply-To: <d20c35e2-cc40-436d-90ca-4cab555874ca@collabora.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <170250854466.1522182.17555361077409628655.stgit@dwillia2-xfh.jf.intel.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/14/23 12:44, AngeloGioacchino Del Regno wrote:
-> Il 13/12/23 13:20, Eugen Hristev ha scritto:
->> From: Kyrie Wu <kyrie.wu@mediatek.com>
->>
->> Add video encoder node.
->>
->> Signed-off-by: Kyrie Wu <kyrie.wu@mediatek.com>
->> Signed-off-by: Allen-KH Cheng <allen-kh.cheng@mediatek.com>
->> Reviewed-by: Hsin-Yi Wang <hsinyi@chromium.org>
->> [eugen.hristev@collabora.com: minor cleanup]
->> Signed-off-by: Eugen Hristev <eugen.hristev@collabora.com>
->> ---
->>   arch/arm64/boot/dts/mediatek/mt8186.dtsi | 24 ++++++++++++++++++++++++
->>   1 file changed, 24 insertions(+)
->>
->> diff --git a/arch/arm64/boot/dts/mediatek/mt8186.dtsi b/arch/arm64/boot/dts/mediatek/mt8186.dtsi
->> index 66ead3f23336..8535ff2b44e9 100644
->> --- a/arch/arm64/boot/dts/mediatek/mt8186.dtsi
->> +++ b/arch/arm64/boot/dts/mediatek/mt8186.dtsi
->> @@ -1993,6 +1993,30 @@ larb7: smi@17010000 {
->>   			power-domains = <&spm MT8186_POWER_DOMAIN_VENC>;
->>   		};
->>   
->> +		venc: venc@17020000 {
->> +			compatible = "mediatek,mt8183-vcodec-enc";
->> +			#address-cells = <2>;
->> +			#size-cells = <2>;
->> +			reg = <0 0x17020000 0 0x2000>;
->> +			interrupts = <GIC_SPI 243 IRQ_TYPE_LEVEL_HIGH 0>;
->> +			iommus = <&iommu_mm IOMMU_PORT_L7_VENC_RCPU>,
->> +				 <&iommu_mm IOMMU_PORT_L7_VENC_REC>,
->> +				 <&iommu_mm IOMMU_PORT_L7_VENC_BSDMA>,
->> +				 <&iommu_mm IOMMU_PORT_L7_VENC_SV_COMV>,
->> +				 <&iommu_mm IOMMU_PORT_L7_VENC_RD_COMV>,
->> +				 <&iommu_mm IOMMU_PORT_L7_VENC_CUR_LUMA>,
->> +				 <&iommu_mm IOMMU_PORT_L7_VENC_CUR_CHROMA>,
->> +				 <&iommu_mm IOMMU_PORT_L7_VENC_REF_LUMA>,
->> +				 <&iommu_mm IOMMU_PORT_L7_VENC_REF_CHROMA>;
->> +			dma-ranges = <0x1 0x0 0x1 0x0 0x1 0x0>;
->> +			mediatek,scp = <&scp>;
->> +			clocks = <&vencsys CLK_VENC_CKE1_VENC>;
->> +			clock-names = "MT_CG_VENC";
+On Wed, Dec 13, 2023 at 03:02:35PM -0800, Dan Williams wrote:
+> At present there are ~200 usages of device_lock() in the kernel. Some of
+> those usages lead to "goto unlock;" patterns which have proven to be
+> error prone. Define a "device" guard() definition to allow for those to
+> be cleaned up and prevent new ones from appearing.
 > 
-> clock-names = "venc"; (please no underscores and please lower case)
+> Link: http://lore.kernel.org/r/657897453dda8_269bd29492@dwillia2-mobl3.amr.corp.intel.com.notmuch
+> Link: http://lore.kernel.org/r/6577b0c2a02df_a04c5294bb@dwillia2-xfh.jf.intel.com.notmuch
+> Cc: Vishal Verma <vishal.l.verma@intel.com>
+> Cc: Ira Weiny <ira.weiny@intel.com>
+> Cc: Peter Zijlstra <peterz@infradead.org>
+> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Signed-off-by: Dan Williams <dan.j.williams@intel.com>
+> ---
+> Hi Greg,
+> 
+> I wonder if you might include this change in v6.7-rc to ease some patch
+> sets alternately going through my tree and Andrew's tree. Those
+> discussions are linked above. Alternately I can can just take it through
+> my tree with your ack and the other use case can circle back to it in
+> the v6.9 cycle.
 
-The clock name must be `venc_sel` (*with* underscores) and it's ABI as defined in
-Documentation/devicetree/bindings/media/mediatek,vcodec-encoder.yaml
+Sure, I'll queue it up now for 6.7-final, makes sense to have it now for
+others to build off of, and for me to fix up some places in the driver
+core to use it as well.
 
-so I will it change to that.
+> I considered also defining a __free() helper similar to __free(mutex),
+> but I think "__free(device)" would be a surprising name for something
+> that drops a lock. Also, I like the syntax of guard(device) over
+> something like guard(device_lock) since a 'struct device *' is the
+> argument, not a lock type, but I'm open to your or Peter's thoughts on
+> the naming.
 
+guard(device); makes sense to me, as that's what you are doing here, so
+I'm good with it.
 
-> 
->> +			assigned-clocks = <&topckgen CLK_TOP_VENC>;
->> +			assigned-clock-parents = <&topckgen CLK_TOP_UNIVPLL_D3>;
->> +			power-domains = <&spm MT8186_POWER_DOMAIN_VENC>;
->> +		};
-> 
-> 
-> ....also:
-> 
-> The following order of properties in device nodes is preferred:
-> 
-> 1. "compatible"
-> 2. "reg"
-> 3. "ranges"
-> 4. Standard/common properties (defined by common bindings, e.g. without
->     vendor-prefixes)
-> 5. Vendor-specific properties
-> 6. "status" (if applicable)
-> 7. Child nodes, where each node is preceded with a blank line
-> 
-> Documentation/devicetree/bindings/dts-coding-style.rst
-> 
-> Please reorder as per the DTS coding style document, and also please rename the
-> venc node to use a generic name, such as "video-encoder@xxxx"
-> 
-> Cheers,
-> Angelo
-> _______________________________________________
-> Kernel mailing list -- kernel@mailman.collabora.com
-> To unsubscribe send an email to kernel-leave@mailman.collabora.com
+thanks,
 
+greg k-h
