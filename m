@@ -2,469 +2,268 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EE824812569
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 03:46:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F86281256B
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 03:47:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234129AbjLNCpp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 21:45:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35436 "EHLO
+        id S230288AbjLNCr3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 21:47:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41940 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229647AbjLNCpm (ORCPT
+        with ESMTP id S229572AbjLNCr1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 21:45:42 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72E5BBD
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 18:45:48 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4091FC433C8;
-        Thu, 14 Dec 2023 02:45:47 +0000 (UTC)
-Date:   Wed, 13 Dec 2023 21:46:32 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>,
-        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Linux Trace Kernel <linux-trace-kernel@vger.kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Subject: Re: [PATCH] ring-buffer: Remove 32bit timestamp logic
-Message-ID: <20231213214632.15047c40@gandalf.local.home>
-In-Reply-To: <20231213211126.24f8c1dd@gandalf.local.home>
-References: <20231213211126.24f8c1dd@gandalf.local.home>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        Wed, 13 Dec 2023 21:47:27 -0500
+Received: from mail-qt1-x835.google.com (mail-qt1-x835.google.com [IPv6:2607:f8b0:4864:20::835])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABBBDCF
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 18:47:33 -0800 (PST)
+Received: by mail-qt1-x835.google.com with SMTP id d75a77b69052e-425baafa3c3so34474051cf.0
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 18:47:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bitbyteword.org; s=google; t=1702522053; x=1703126853; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=8RE5hEVhTsOaUL4lmbv8vOX8tm/L/gi42RzGRxsUiRw=;
+        b=QrpamL3wvwZP+fQoduYmb9uCD+tnBlJ58TP2mcZWGL8UfKj9HBjKns6C0Qs/9ISERX
+         WP9H+I8xfBD87j3QeakY8pPtb2QMwl4Zpvv5EHon4tfmYKhnb7hT5lSYrLwWyvFDEIlA
+         ZOm2rqtw4G3ud2mWmMgK0gZ4Q1LW9CRMc1DP6f6RF/6lIw+Vlg7qmgVTNUSoXh5Ecrbw
+         3R6kIW9//VgrPgRzpr9mnthifDdfErN82GfdK8eNhx4Xzlvs5kq0cXxS615LM6Pr7TD4
+         F7TVjAhiQtvpMrjUMeT5rxFJExh+pQdpm77mi/OLbTh6vm6M7pcUQ+/5H/xAj8NR6ohC
+         tyGw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702522053; x=1703126853;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=8RE5hEVhTsOaUL4lmbv8vOX8tm/L/gi42RzGRxsUiRw=;
+        b=Qt+nv9DrYnUfyMuZ2JFqNQG3EqnLBKLheQLIakg2uGgW2pwfwqbLi/gB/YmJeGoPW/
+         0J2/bFaddd3NoxLiPTKs5+W3DKqWsRanfZ5XGpK6qyOZIai34Ce4Wo40iwFmjFXAbwvi
+         0WqcUFiDWuY98VUH1NEpyGZjklGKWMidvD8QL/kYjF6tV/JOqB49GCfYO3Hgcm9uRJ3Z
+         IiNVNZreahjRurXq1yXk1khGDSVz9jhje+9eHXYWakPivpgyREEvRYL6SvK3dceL6GDG
+         U4zf5/PrYvKJggjFFm+aQkhUvl2LFSOLzGe+H+zf8Pl93zNDPsQQKpGh/ibeoH83nd4M
+         O36g==
+X-Gm-Message-State: AOJu0YwRXpHO4EMvl3HjsvLuHhOd1GUj3yMCJehcpn8oFSddGtF0s2ct
+        EG7i9g8UYJWBCd9MHMTNS56ifw==
+X-Google-Smtp-Source: AGHT+IHMwLi9coKYUGWdIMf+3vT4/sPoyQApW5V3T+v5P+Act2ClXrOb2+jUYTav9lf19f81VtzsQw==
+X-Received: by 2002:a05:622a:24a:b0:41e:26a1:7b3e with SMTP id c10-20020a05622a024a00b0041e26a17b3emr13003580qtx.29.1702522052617;
+        Wed, 13 Dec 2023 18:47:32 -0800 (PST)
+Received: from vinp3lin.lan (c-73-143-21-186.hsd1.vt.comcast.net. [73.143.21.186])
+        by smtp.gmail.com with ESMTPSA id fh3-20020a05622a588300b00425b356b919sm4240208qtb.55.2023.12.13.18.47.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Dec 2023 18:47:31 -0800 (PST)
+From:   "Vineeth Pillai (Google)" <vineeth@bitbyteword.org>
+To:     Ben Segall <bsegall@google.com>, Borislav Petkov <bp@alien8.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        "H . Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Mel Gorman <mgorman@suse.de>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Sean Christopherson <seanjc@google.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Valentin Schneider <vschneid@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>
+Cc:     "Vineeth Pillai (Google)" <vineeth@bitbyteword.org>,
+        Suleiman Souhlal <suleiman@google.com>,
+        Masami Hiramatsu <mhiramat@google.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, x86@kernel.org
+Subject: [RFC PATCH 0/8] Dynamic vcpu priority management in kvm
+Date:   Wed, 13 Dec 2023 21:47:17 -0500
+Message-ID: <20231214024727.3503870-1-vineeth@bitbyteword.org>
+X-Mailer: git-send-email 2.43.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Linus,
+Double scheduling is a concern with virtualization hosts where the host
+schedules vcpus without knowing whats run by the vcpu and guest schedules
+tasks without knowing where the vcpu is physically running. This causes
+issues related to latencies, power consumption, resource utilization
+etc. An ideal solution would be to have a cooperative scheduling
+framework where the guest and host shares scheduling related information
+and makes an educated scheduling decision to optimally handle the
+workloads. As a first step, we are taking a stab at reducing latencies
+for latency sensitive workloads in the guest.
 
-Looking for some advice on this.
+This series of patches aims to implement a framework for dynamically
+managing the priority of vcpu threads based on the needs of the workload
+running on the vcpu. Latency sensitive workloads (nmi, irq, softirq,
+critcal sections, RT tasks etc) will get a boost from the host so as to
+minimize the latency.
 
-tl;dr;  The ring-buffer timestamp requires a 64-bit cmpxchg to keep the
-timestamps in sync (only in the slow paths). I was told that 64-bit cmpxchg
-can be extremely slow on 32-bit architectures. So I created a rb_time_t
-that on 64-bit was a normal local64_t type, and on 32-bit it's represented
-by 3 32-bit words and a counter for synchronization. But this now requires
-three 32-bit cmpxchgs for where one simple 64-bit cmpxchg would do.
+The host can proactively boost the vcpu threads when it has enough
+information about what is going to run on the vcpu - fo eg: injecting
+interrupts. For rest of the case, guest can request boost if the vcpu is
+not already boosted. The guest can subsequently request unboost after
+the latency sensitive workloads completes. Guest can also request a
+boost if needed.
 
-Not having any 32-bit hardware to test on, I simply push through this
-complex code for the 32-bit case. I tested it on both 32-bit (running on a
-x86_64 machine) and 64-bit kernels and it seemed rather robust.
+A shared memory region is used to communicate the scheduling information.
+Guest shares its needs for priority boosting and host shares the boosting
+status of the vcpu. Guest sets a flag when it needs a boost and continues
+running. Host reads this on next VMEXIT and boosts the vcpu thread. For
+unboosting, it is done synchronously so that host workloads can fairly
+compete with guests when guest is not running any latency sensitive
+workload.
 
-But now that I'm doing some heavy development on the ring buffer again, I
-came across a few very subtle bugs in this code (and so has Mathieu Desnoyers).
-We started discussing how much time this is actually saving to be worth the
-complexity, and actually found some hardware to test. One Atom processor.
+This RFC is x86 specific. This is mostly feature complete, but more work
+needs to be done on the following areas:
+- Use of paravirt ops framework.
+- Optimizing critical paths for speed, cache efficiency etc
+- Extensibility of this idea for sharing more scheduling information to
+  make better educated scheduling decisions in guest and host.
+- Prevent misuse by rogue/buggy guest kernels
 
-For the Atom it was 11.5ns for 32-bit and 16ns for 64-bit.
+Tests
+------
 
-Granted, this isn't being contended on. But a 30% improvement doesn't
-justify 3 to 1 cmpxchgs.
+Real world workload on chromeos shows considerable improvement. Audio
+and video applications running on low end devices experience high
+latencies when the system is under load. This patch helps in mitigating
+the audio and video glitches caused due to scheduling latencies.
 
-I plan on just nuking the whole thing (the patch below), which is basically
-a revert of 10464b4aa605e ("ring-buffer: Add rb_time_t 64 bit operations for
-speeding up 32 bit").
+Following are the results from oboetester app on android vm running in
+chromeos. This app tests for audio glitches.
 
-Now my question to you. Should I bother with pushing to you the subtle
-fixes to this code and send you the revert for the next merge window, or do
-you think I should just say "screw it" and nuke it now?
+ -------------------------------------------------------
+ |             |      Noload       ||        Busy       |
+ | Buffer Size |----------------------------------------
+ |             | Vanilla | patches || Vanilla | Patches | 
+ -------------------------------------------------------
+ |  96 (2ms)   |   20    |    4    ||  1365   |    67   |
+ -------------------------------------------------------
+ |  256 (4ms)  |    3    |    1    ||   524   |    23   |
+ -------------------------------------------------------
+ |  512 (10ms) |    0    |    0    ||    25   |    24   |
+ -------------------------------------------------------
 
-Or do you think it's worth keeping for some other architecture that 3
-32-bit cmpxchgs are still faster than a single 64-bit one?
+ Noload: Tests run on idle system
+ Busy: Busy system simulated by Speedometer benchmark
 
-Thanks,
+The test shows considerable reduction in glitches especially with
+smaller buffer sizes.
 
--- Steve
+Following are data collected from few micro benchmark tests. cyclictest
+was run on a VM to measure the latency with and without the patches. We
+also took a baseline of the results with all vcpus statically boosted to
+RT(chrt). This is to observe the difference between dynamic and static
+boosting and its effect on host as well. Cyclictest on guest is to
+observe the effect of the patches on guest and cyclictest on host is to
+see if the patch affects workloads on the host.
 
+cyclictest is run on both host and guest.
+cyclictest cmdline: "cyclictest -q -D 90s -i 500 -d $INTERVAL"
+ where $INTERVAL used was 500 and 1000 us.
 
+Host is Intel N4500 4C/4T. Guest also has 4 vcpus.
 
-On Wed, 13 Dec 2023 21:11:26 -0500
-Steven Rostedt <rostedt@goodmis.org> wrote:
+In the following tables,
+ Vanilla: baseline: vanilla kernel
+ Dynamic: the patches applied
+ Static: baseline: all vcpus statically boosted to RT(chrt)
 
-> From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
-> 
-> Each event has a 27 bit timestamp delta that is used to hold the delta
-> from the last event. If the time between events is greater than 2^27, then
-> a timestamp is added that holds a 59 bit absolute timestamp.
-> 
-> Until a389d86f7fd09 ("ring-buffer: Have nested events still record running
-> time stamp"), if an interrupt interrupted an event in progress, all the
-> events delta would be zero to not deal with the races that need to be
-> handled. The commit a389d86f7fd09 changed that to handle the races giving
-> all events, even those that preempt other events, still have an accurate
-> timestamp.
-> 
-> To handle those races requires performing 64-bit cmpxchg on the
-> timestamps. But doing 64-bit cmpxchg on 32-bit architectures is considered
-> very slow. To try to deal with this the timestamp logic was broken into
-> two and then three 32-bit cmpxchgs, with the thought that two (or three)
-> 32-bit cmpxchgs are still faster than a single 64-bit cmpxchg on 32-bit
-> architectures.
-> 
-> Part of the problem with this is that I didn't have any 32-bit
-> architectures to test on. After hitting several subtle bugs in this code,
-> an effort was made to try and see if three 32-bit cmpxchgs are indeed
-> faster than a single 64-bit. After a few people brushed off the dust of
-> their old 32-bit machines, tests were done, and even though 32-bit cmpxchg
-> was faster than a single 64-bit, it was in the order of 50% at best, not
-> 300%.
-> 
-> This means that this complex code is not only complex but also not even
-> faster than just using 64-bit cmpxchg.
-> 
-> Nuke it!
-> 
-> Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
-> ---
-> [
->    Should we just push this now and mark it for stable?
->    That is, just get rid of this logic for all kernels.
-> ]
->  kernel/trace/ring_buffer.c | 226 ++-----------------------------------
->  1 file changed, 12 insertions(+), 214 deletions(-)
-> 
-> diff --git a/kernel/trace/ring_buffer.c b/kernel/trace/ring_buffer.c
-> index 3fce5e4b4f2b..b05416e14cb6 100644
-> --- a/kernel/trace/ring_buffer.c
-> +++ b/kernel/trace/ring_buffer.c
-> @@ -27,6 +27,7 @@
->  #include <linux/cpu.h>
->  #include <linux/oom.h>
->  
-> +#include <asm/local64.h>
->  #include <asm/local.h>
->  
->  /*
-> @@ -463,27 +464,9 @@ enum {
->  	RB_CTX_MAX
->  };
->  
-> -#if BITS_PER_LONG == 32
-> -#define RB_TIME_32
-> -#endif
-> -
-> -/* To test on 64 bit machines */
-> -//#define RB_TIME_32
-> -
-> -#ifdef RB_TIME_32
-> -
-> -struct rb_time_struct {
-> -	local_t		cnt;
-> -	local_t		top;
-> -	local_t		bottom;
-> -	local_t		msb;
-> -};
-> -#else
-> -#include <asm/local64.h>
->  struct rb_time_struct {
->  	local64_t	time;
->  };
-> -#endif
->  typedef struct rb_time_struct rb_time_t;
->  
->  #define MAX_NEST	5
-> @@ -573,183 +556,9 @@ struct ring_buffer_iter {
->  	int				missed_events;
->  };
->  
-> -#ifdef RB_TIME_32
-> -
-> -/*
-> - * On 32 bit machines, local64_t is very expensive. As the ring
-> - * buffer doesn't need all the features of a true 64 bit atomic,
-> - * on 32 bit, it uses these functions (64 still uses local64_t).
-> - *
-> - * For the ring buffer, 64 bit required operations for the time is
-> - * the following:
-> - *
-> - *  - Reads may fail if it interrupted a modification of the time stamp.
-> - *      It will succeed if it did not interrupt another write even if
-> - *      the read itself is interrupted by a write.
-> - *      It returns whether it was successful or not.
-> - *
-> - *  - Writes always succeed and will overwrite other writes and writes
-> - *      that were done by events interrupting the current write.
-> - *
-> - *  - A write followed by a read of the same time stamp will always succeed,
-> - *      but may not contain the same value.
-> - *
-> - *  - A cmpxchg will fail if it interrupted another write or cmpxchg.
-> - *      Other than that, it acts like a normal cmpxchg.
-> - *
-> - * The 60 bit time stamp is broken up by 30 bits in a top and bottom half
-> - *  (bottom being the least significant 30 bits of the 60 bit time stamp).
-> - *
-> - * The two most significant bits of each half holds a 2 bit counter (0-3).
-> - * Each update will increment this counter by one.
-> - * When reading the top and bottom, if the two counter bits match then the
-> - *  top and bottom together make a valid 60 bit number.
-> - */
-> -#define RB_TIME_SHIFT	30
-> -#define RB_TIME_VAL_MASK ((1 << RB_TIME_SHIFT) - 1)
-> -#define RB_TIME_MSB_SHIFT	 60
-> -
-> -static inline int rb_time_cnt(unsigned long val)
-> -{
-> -	return (val >> RB_TIME_SHIFT) & 3;
-> -}
-> -
-> -static inline u64 rb_time_val(unsigned long top, unsigned long bottom)
-> -{
-> -	u64 val;
-> -
-> -	val = top & RB_TIME_VAL_MASK;
-> -	val <<= RB_TIME_SHIFT;
-> -	val |= bottom & RB_TIME_VAL_MASK;
-> -
-> -	return val;
-> -}
-> -
-> -static inline bool __rb_time_read(rb_time_t *t, u64 *ret, unsigned long *cnt)
-> -{
-> -	unsigned long top, bottom, msb;
-> -	unsigned long c;
-> -
-> -	/*
-> -	 * If the read is interrupted by a write, then the cnt will
-> -	 * be different. Loop until both top and bottom have been read
-> -	 * without interruption.
-> -	 */
-> -	do {
-> -		c = local_read(&t->cnt);
-> -		top = local_read(&t->top);
-> -		bottom = local_read(&t->bottom);
-> -		msb = local_read(&t->msb);
-> -	} while (c != local_read(&t->cnt));
-> -
-> -	*cnt = rb_time_cnt(top);
-> -
-> -	/* If top, msb or bottom counts don't match, this interrupted a write */
-> -	if (*cnt != rb_time_cnt(msb) || *cnt != rb_time_cnt(bottom))
-> -		return false;
-> -
-> -	/* The shift to msb will lose its cnt bits */
-> -	*ret = rb_time_val(top, bottom) | ((u64)msb << RB_TIME_MSB_SHIFT);
-> -	return true;
-> -}
-> -
-> -static bool rb_time_read(rb_time_t *t, u64 *ret)
-> -{
-> -	unsigned long cnt;
-> -
-> -	return __rb_time_read(t, ret, &cnt);
-> -}
-> -
-> -static inline unsigned long rb_time_val_cnt(unsigned long val, unsigned long cnt)
-> -{
-> -	return (val & RB_TIME_VAL_MASK) | ((cnt & 3) << RB_TIME_SHIFT);
-> -}
-> -
-> -static inline void rb_time_split(u64 val, unsigned long *top, unsigned long *bottom,
-> -				 unsigned long *msb)
-> -{
-> -	*top = (unsigned long)((val >> RB_TIME_SHIFT) & RB_TIME_VAL_MASK);
-> -	*bottom = (unsigned long)(val & RB_TIME_VAL_MASK);
-> -	*msb = (unsigned long)(val >> RB_TIME_MSB_SHIFT);
-> -}
-> -
-> -static inline void rb_time_val_set(local_t *t, unsigned long val, unsigned long cnt)
-> -{
-> -	val = rb_time_val_cnt(val, cnt);
-> -	local_set(t, val);
-> -}
-> -
-> -static void rb_time_set(rb_time_t *t, u64 val)
-> -{
-> -	unsigned long cnt, top, bottom, msb;
-> -
-> -	rb_time_split(val, &top, &bottom, &msb);
-> -
-> -	/* Writes always succeed with a valid number even if it gets interrupted. */
-> -	do {
-> -		cnt = local_inc_return(&t->cnt);
-> -		rb_time_val_set(&t->top, top, cnt);
-> -		rb_time_val_set(&t->bottom, bottom, cnt);
-> -		rb_time_val_set(&t->msb, val >> RB_TIME_MSB_SHIFT, cnt);
-> -	} while (cnt != local_read(&t->cnt));
-> -}
-> -
-> -static inline bool
-> -rb_time_read_cmpxchg(local_t *l, unsigned long expect, unsigned long set)
-> -{
-> -	return local_try_cmpxchg(l, &expect, set);
-> -}
-> -
-> -static bool rb_time_cmpxchg(rb_time_t *t, u64 expect, u64 set)
-> -{
-> -	unsigned long cnt, top, bottom, msb;
-> -	unsigned long cnt2, top2, bottom2, msb2;
-> -	u64 val;
-> -
-> -	/* Any interruptions in this function should cause a failure */
-> -	cnt = local_read(&t->cnt);
-> -
-> -	/* The cmpxchg always fails if it interrupted an update */
-> -	 if (!__rb_time_read(t, &val, &cnt2))
-> -		 return false;
-> -
-> -	 if (val != expect)
-> -		 return false;
-> -
-> -	 if ((cnt & 3) != cnt2)
-> -		 return false;
-> -
-> -	 cnt2 = cnt + 1;
-> -
-> -	 rb_time_split(val, &top, &bottom, &msb);
-> -	 msb = rb_time_val_cnt(msb, cnt);
-> -	 top = rb_time_val_cnt(top, cnt);
-> -	 bottom = rb_time_val_cnt(bottom, cnt);
-> -
-> -	 rb_time_split(set, &top2, &bottom2, &msb2);
-> -	 msb2 = rb_time_val_cnt(msb2, cnt);
-> -	 top2 = rb_time_val_cnt(top2, cnt2);
-> -	 bottom2 = rb_time_val_cnt(bottom2, cnt2);
-> -
-> -	if (!rb_time_read_cmpxchg(&t->cnt, cnt, cnt2))
-> -		return false;
-> -	if (!rb_time_read_cmpxchg(&t->msb, msb, msb2))
-> -		return false;
-> -	if (!rb_time_read_cmpxchg(&t->top, top, top2))
-> -		return false;
-> -	if (!rb_time_read_cmpxchg(&t->bottom, bottom, bottom2))
-> -		return false;
-> -	return true;
-> -}
-> -
-> -#else /* 64 bits */
-> -
-> -/* local64_t always succeeds */
-> -
-> -static inline bool rb_time_read(rb_time_t *t, u64 *ret)
-> +static inline void rb_time_read(rb_time_t *t, u64 *ret)
->  {
->  	*ret = local64_read(&t->time);
-> -	return true;
->  }
->  static void rb_time_set(rb_time_t *t, u64 val)
->  {
-> @@ -760,7 +569,6 @@ static bool rb_time_cmpxchg(rb_time_t *t, u64 expect, u64 set)
->  {
->  	return local64_try_cmpxchg(&t->time, &expect, set);
->  }
-> -#endif
->  
->  /*
->   * Enable this to make sure that the event passed to
-> @@ -867,10 +675,7 @@ u64 ring_buffer_event_time_stamp(struct trace_buffer *buffer,
->  	WARN_ONCE(1, "nest (%d) greater than max", nest);
->  
->   fail:
-> -	/* Can only fail on 32 bit */
-> -	if (!rb_time_read(&cpu_buffer->write_stamp, &ts))
-> -		/* Screw it, just read the current time */
-> -		ts = rb_time_stamp(cpu_buffer->buffer);
-> +	rb_time_read(&cpu_buffer->write_stamp, &ts);
->  
->  	return ts;
->  }
-> @@ -2867,7 +2672,7 @@ rb_check_timestamp(struct ring_buffer_per_cpu *cpu_buffer,
->  		  (unsigned long long)info->ts,
->  		  (unsigned long long)info->before,
->  		  (unsigned long long)info->after,
-> -		  (unsigned long long)(rb_time_read(&cpu_buffer->write_stamp, &write_stamp) ? write_stamp : 0),
-> +		  (unsigned long long)({rb_time_read(&cpu_buffer->write_stamp, &write_stamp); write_stamp;}),
->  		  sched_clock_stable() ? "" :
->  		  "If you just came from a suspend/resume,\n"
->  		  "please switch to the trace global clock:\n"
-> @@ -3025,8 +2830,7 @@ rb_try_to_discard(struct ring_buffer_per_cpu *cpu_buffer,
->  
->  	delta = rb_time_delta(event);
->  
-> -	if (!rb_time_read(&cpu_buffer->write_stamp, &write_stamp))
-> -		return false;
-> +	rb_time_read(&cpu_buffer->write_stamp, &write_stamp);
->  
->  	/* Make sure the write stamp is read before testing the location */
->  	barrier();
-> @@ -3569,16 +3373,14 @@ __rb_reserve_next(struct ring_buffer_per_cpu *cpu_buffer,
->  	struct ring_buffer_event *event;
->  	struct buffer_page *tail_page;
->  	unsigned long tail, write, w;
-> -	bool a_ok;
-> -	bool b_ok;
->  
->  	/* Don't let the compiler play games with cpu_buffer->tail_page */
->  	tail_page = info->tail_page = READ_ONCE(cpu_buffer->tail_page);
->  
->   /*A*/	w = local_read(&tail_page->write) & RB_WRITE_MASK;
->  	barrier();
-> -	b_ok = rb_time_read(&cpu_buffer->before_stamp, &info->before);
-> -	a_ok = rb_time_read(&cpu_buffer->write_stamp, &info->after);
-> +	rb_time_read(&cpu_buffer->before_stamp, &info->before);
-> +	rb_time_read(&cpu_buffer->write_stamp, &info->after);
->  	barrier();
->  	info->ts = rb_time_stamp(cpu_buffer->buffer);
->  
-> @@ -3593,7 +3395,7 @@ __rb_reserve_next(struct ring_buffer_per_cpu *cpu_buffer,
->  		if (!w) {
->  			/* Use the sub-buffer timestamp */
->  			info->delta = 0;
-> -		} else if (unlikely(!a_ok || !b_ok || info->before != info->after)) {
-> +		} else if (unlikely(info->before != info->after)) {
->  			info->add_timestamp |= RB_ADD_STAMP_FORCE | RB_ADD_STAMP_EXTEND;
->  			info->length += RB_LEN_TIME_EXTEND;
->  		} else {
-> @@ -3622,13 +3424,11 @@ __rb_reserve_next(struct ring_buffer_per_cpu *cpu_buffer,
->  
->  	if (likely(tail == w)) {
->  		u64 save_before;
-> -		bool s_ok;
->  
->  		/* Nothing interrupted us between A and C */
->   /*D*/		rb_time_set(&cpu_buffer->write_stamp, info->ts);
->  		barrier();
-> - /*E*/		s_ok = rb_time_read(&cpu_buffer->before_stamp, &save_before);
-> -		RB_WARN_ON(cpu_buffer, !s_ok);
-> + /*E*/		rb_time_read(&cpu_buffer->before_stamp, &save_before);
->  		if (likely(!(info->add_timestamp &
->  			     (RB_ADD_STAMP_FORCE | RB_ADD_STAMP_ABSOLUTE))))
->  			/* This did not interrupt any time update */
-> @@ -3641,8 +3441,7 @@ __rb_reserve_next(struct ring_buffer_per_cpu *cpu_buffer,
->  		if (unlikely(info->ts != save_before)) {
->  			/* SLOW PATH - Interrupted between C and E */
->  
-> -			a_ok = rb_time_read(&cpu_buffer->write_stamp, &info->after);
-> -			RB_WARN_ON(cpu_buffer, !a_ok);
-> +			rb_time_read(&cpu_buffer->write_stamp, &info->after);
->  
->  			/* Write stamp must only go forward */
->  			if (save_before > info->after) {
-> @@ -3657,9 +3456,7 @@ __rb_reserve_next(struct ring_buffer_per_cpu *cpu_buffer,
->  	} else {
->  		u64 ts;
->  		/* SLOW PATH - Interrupted between A and C */
-> -		a_ok = rb_time_read(&cpu_buffer->write_stamp, &info->after);
-> -		/* Was interrupted before here, write_stamp must be valid */
-> -		RB_WARN_ON(cpu_buffer, !a_ok);
-> +		rb_time_read(&cpu_buffer->write_stamp, &info->after);
->  		ts = rb_time_stamp(cpu_buffer->buffer);
->  		barrier();
->   /*E*/		if (write == (local_read(&tail_page->write) & RB_WRITE_MASK) &&
-> @@ -3720,6 +3517,7 @@ rb_reserve_next_event(struct trace_buffer *buffer,
->  	struct rb_event_info info;
->  	int nr_loops = 0;
->  	int add_ts_default;
-> +	static int once;
->  
->  	/* ring buffer does cmpxchg, make sure it is safe in NMI context */
->  	if (!IS_ENABLED(CONFIG_ARCH_HAVE_NMI_SAFE_CMPXCHG) &&
+Idle tests
+----------
+The Host is idle and cyclictest on host and guest.
+
+-----------------------------------------------------------------------
+|          |   Avg Latency(us): Guest   ||    Avg Latency(us): Host   |
+-----------------------------------------------------------------------
+| Interval | vanilla | dynamic | static || vanilla | dynamic | static |
+-----------------------------------------------------------------------
+|   500    |    9    |    9    |  10    ||    5    |    3    |   3    |
+-----------------------------------------------------------------------
+|  1000    |   34    |    35   |  35    ||    5    |    3    |   3    |
+----------------------------------------------------------------------
+
+-----------------------------------------------------------------------
+|          |   Max Latency(us): Guest   ||    Max Latency(us): Host   |
+-----------------------------------------------------------------------
+| Interval | vanilla | dynamic | static || vanilla | dynamic | static |
+-----------------------------------------------------------------------
+|   500    |   1577  |    1433 |  140   ||    1577 |    1526 | 15969  |
+-----------------------------------------------------------------------
+|  1000    |   6649  |    765  |  204   ||    697  |    174  |  2444  |
+-----------------------------------------------------------------------
+
+Busy Tests
+----------
+Here the a busy host was simulated using stress-ng and cyclictest was
+run on both host and guest.
+
+-----------------------------------------------------------------------
+|          |   Avg Latency(us): Guest   ||    Avg Latency(us): Host   |
+-----------------------------------------------------------------------
+| Interval | vanilla | dynamic | static || vanilla | dynamic | static |
+-----------------------------------------------------------------------
+|   500    |    887  |   21    |  25    ||    6    |    6    |   7    |
+-----------------------------------------------------------------------
+|  1000    |   6335  |    45   |  38    ||   11    |   11    |  14    |
+----------------------------------------------------------------------
+
+-----------------------------------------------------------------------
+|          |   Max Latency(us): Guest   ||    Max Latency(us): Host   |
+-----------------------------------------------------------------------
+| Interval | vanilla | dynamic | static || vanilla | dynamic | static |
+-----------------------------------------------------------------------
+|   500    | 216835  |   13978 | 1728   ||   2075  |   2114  |  2447  |
+-----------------------------------------------------------------------
+|  1000    | 199575  |   70651 | 1537   ||   1886  |   1285  | 27104  |
+-----------------------------------------------------------------------
+
+These patches are rebased on 6.5.10.
+Patches 1-4: Implementation of the core host side feature
+Patch 5: A naive throttling mechanism for limiting boosted duration
+ for preemption disabled state in the guest. This is a placeholder for
+ the throttling mechanism for now and would need to be implemented
+ differently
+Patch 6: Enable/disable tunables - global and per-vm
+Patches 7-8: Implementation of the code guest side feature
+
+---
+Vineeth Pillai (Google) (8):
+  kvm: x86: MSR for setting up scheduler info shared memory
+  sched/core: sched_setscheduler_pi_nocheck for interrupt context usage
+  kvm: x86: vcpu boosting/unboosting framework
+  kvm: x86: boost vcpu threads on latency sensitive paths
+  kvm: x86: upper bound for preemption based boost duration
+  kvm: x86: enable/disable global/per-guest vcpu boost feature
+  sched/core: boost/unboost in guest scheduler
+  irq: boost/unboost in irq/nmi entry/exit and softirq
+
+ arch/x86/Kconfig                     |  13 +++
+ arch/x86/include/asm/kvm_host.h      |  69 ++++++++++++
+ arch/x86/include/asm/kvm_para.h      |   7 ++
+ arch/x86/include/uapi/asm/kvm_para.h |  43 ++++++++
+ arch/x86/kernel/kvm.c                |  16 +++
+ arch/x86/kvm/Kconfig                 |  12 +++
+ arch/x86/kvm/cpuid.c                 |   2 +
+ arch/x86/kvm/i8259.c                 |   2 +-
+ arch/x86/kvm/lapic.c                 |   8 +-
+ arch/x86/kvm/svm/svm.c               |   2 +-
+ arch/x86/kvm/vmx/vmx.c               |   2 +-
+ arch/x86/kvm/x86.c                   | 154 +++++++++++++++++++++++++++
+ include/linux/kvm_host.h             |  56 ++++++++++
+ include/linux/sched.h                |  23 ++++
+ include/uapi/linux/kvm.h             |   5 +
+ kernel/entry/common.c                |  39 +++++++
+ kernel/sched/core.c                  | 127 +++++++++++++++++++++-
+ kernel/softirq.c                     |  11 ++
+ virt/kvm/kvm_main.c                  | 150 ++++++++++++++++++++++++++
+ 19 files changed, 730 insertions(+), 11 deletions(-)
+
+-- 
+2.43.0
 
