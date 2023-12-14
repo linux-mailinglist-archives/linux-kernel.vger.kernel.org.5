@@ -2,53 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 694ED8130F6
+	by mail.lfdr.de (Postfix) with ESMTP id BE5C78130F7
 	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 14:10:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1573211AbjLNNKQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 08:10:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57476 "EHLO
+        id S1573248AbjLNNKU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 08:10:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57490 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1573195AbjLNNKP (ORCPT
+        with ESMTP id S1573195AbjLNNKR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 08:10:15 -0500
+        Thu, 14 Dec 2023 08:10:17 -0500
 Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F48C98
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 05:10:21 -0800 (PST)
-Received: by mail-ej1-x62d.google.com with SMTP id a640c23a62f3a-a22eba5a290so376768366b.3
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 05:10:21 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB0A011B
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 05:10:22 -0800 (PST)
+Received: by mail-ej1-x62d.google.com with SMTP id a640c23a62f3a-a1f5cb80a91so936620666b.3
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 05:10:22 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1702559420; x=1703164220; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=AUIDfecuT3CPgdXD9xs9nBICujuqZFrFJljrYUStf5M=;
-        b=TtNVA4PiDYtLuFLRTcI7YwiGX9MV6OC+xM7vWbEVgc2QYsR43j++JwA8OAmVN1+JP8
-         I5qeDPtLSqclF60lK7nx4ycMVpGwgMPIcdvq6t2mSeGLkXp4MjM8SYvTSrFL9sfdI6+3
-         6kkCV2WEVaRyI0/XJl16x03WTnqzwsbqU+n1bNJXTb5s1XS85SWtUM1Wy1jw/MenNeUQ
-         VRFkb6OpRlLxq+6STt99wcZKHwiI+TllA/gQ4Z/ndem+owOn56QHHFmbhsZNZAzBk4zi
-         HOImXyC4wD8bMU7XJ6kNugiss0K9g/4bc40UHCkL47LMa4FJqk3HdDYgv4laPTHtp3Re
-         bIlQ==
+        d=linaro.org; s=google; t=1702559421; x=1703164221; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Dj/xdv07DFvQtnBJiRse372jufWHWRedV/q2JB552Gw=;
+        b=nTXdC07591BgP8o66euCQCNJUPSL1TSEJSnfQGJhwIpH/zxMcIagr46Kz9yMmvXsca
+         PYUbqpJfUvdDbIDh7F8IRJTAgbzI5oR7ql3GJOVbQ8/BVM8z6wTyhCZBYrVY0w2Wq6gw
+         tN4Z1gOfF87eb/hZsgAuPccMvrbH3S9kWetwNH6Lh1+XwFQf6u9aXpyfxTqPmlGR4DLp
+         CHKpmMKR4celz5Fhj7q+JRHXVmPppOcPN22+hd12w+ZWFzCKOMENNqnfPFnK3VAMvYwG
+         kPcnd7F/+a4xrbKyTkT5PaiYKOx+ySuZsku+f3/e2HfeJxSuSdl5HGEjYCpRN3Ymo0bV
+         +vBA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702559420; x=1703164220;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=AUIDfecuT3CPgdXD9xs9nBICujuqZFrFJljrYUStf5M=;
-        b=hjJEt/zb/FfyXDYaJAHTFEz3k4uynFE3VKR1CvzaoEgtfgEVxIx7JVwXhYaHHvktrV
-         qvZv/Gjxem+e4YOQNC/y/lp2LHNLAxgb90m8PGimk9H7EJ6yZy4hKniL98lLURjK7beE
-         ZnrdBGasKtlCEYdjnnLsiQZIMW2Lup+1UjMbm5CRK0xNf69ZufqeqHgtuSsSAU9x/BaA
-         J6iq+8yCekZYEoK4fQDFAIUJa4hi4qYwTfq4lgYsWudHmmtf7lGkJq9YvS46gaA2P3sO
-         lil1//qOucOJ9M1iPQQMulifn9tT85TbH1jw0YD4s8DRp0Y/Hepy2fz+jOR/WC6BnTsi
-         05RA==
-X-Gm-Message-State: AOJu0Yx8/UVpOLhmYm2GdXauIHdcpbcrDzu382bdFTKQ34UD8nKCqTjN
-        /AKNmiMUhLXlcPfE27cZKtUMPw==
-X-Google-Smtp-Source: AGHT+IHcI+CB3dbqOBHc6gZyiSRJLCh66jgUkizSK5tB7H8mSiwkIVstbwBUz8Ca/NrqwqFnQQ219w==
-X-Received: by 2002:a17:907:2d11:b0:a1f:60d2:f0af with SMTP id gs17-20020a1709072d1100b00a1f60d2f0afmr6420294ejc.70.1702559419956;
-        Thu, 14 Dec 2023 05:10:19 -0800 (PST)
+        d=1e100.net; s=20230601; t=1702559421; x=1703164221;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Dj/xdv07DFvQtnBJiRse372jufWHWRedV/q2JB552Gw=;
+        b=DVXYk50MAM0v9giESjOFFY8R6PF1hdDhTKQGFlej7ZkTxQF/enV/UuHe4xLBJQJdVY
+         jUIJlu2EiGA0+iOQ6oc7rQ1A1383OWkc70xxJFAdnk28m2DHEepCR9z6f98D8JOX20mz
+         87hpA9Q2+1LYYkUxa/NxSvcglC0fDEkUrgdVf64VCZp1DVgZU8YiyZUiA+fQxbptyDHC
+         WY1ws740l7PlLiRqgUdsU+9aObZCBlP03UzeyYMZC3jQi5XUo0qtBOa+h+zOxlUSGr+n
+         /i/M8fIwXZ6eyK7/tm2eFDxV2rw4EXQWvcD1nihwaZJa6zekQExO8TbzjhlP+fqf4Hp0
+         pNfw==
+X-Gm-Message-State: AOJu0YxsuD/vac6pbFA/8dTHCuZ6CTgVH2/d333NNdqc9lp2/YB4vcGn
+        lzqPCBPYoow3PrCeDbnXZmqhQg==
+X-Google-Smtp-Source: AGHT+IE9v21JflqGlQeQvlZapXPuTSOiq+n0C6xc3Zp/62SYVeg6jgOoAVfQMHHbtA/BY10Zg+TeNA==
+X-Received: by 2002:a17:906:495a:b0:a1b:9f36:f37b with SMTP id f26-20020a170906495a00b00a1b9f36f37bmr3562323ejt.91.1702559421446;
+        Thu, 14 Dec 2023 05:10:21 -0800 (PST)
 Received: from krzk-bin.. ([178.197.218.27])
-        by smtp.gmail.com with ESMTPSA id vq2-20020a170907a4c200b00a22faee6649sm2547776ejc.117.2023.12.14.05.10.18
+        by smtp.gmail.com with ESMTPSA id vq2-20020a170907a4c200b00a22faee6649sm2547776ejc.117.2023.12.14.05.10.20
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Dec 2023 05:10:19 -0800 (PST)
+        Thu, 14 Dec 2023 05:10:21 -0800 (PST)
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 To:     Andy Gross <agross@kernel.org>,
         Bjorn Andersson <andersson@kernel.org>,
@@ -60,10 +61,12 @@ To:     Andy Gross <agross@kernel.org>,
         linux-kernel@vger.kernel.org
 Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
         Abel Vesa <abel.vesa@linaro.org>
-Subject: [PATCH 0/4] arm64: dts: qcom: x1e80100: audio support components
-Date:   Thu, 14 Dec 2023 14:10:12 +0100
-Message-Id: <20231214131016.30502-1-krzysztof.kozlowski@linaro.org>
+Subject: [PATCH 1/4] arm64: dts: qcom: x1e80100: add ADSP audio codec macros
+Date:   Thu, 14 Dec 2023 14:10:13 +0100
+Message-Id: <20231214131016.30502-2-krzysztof.kozlowski@linaro.org>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20231214131016.30502-1-krzysztof.kozlowski@linaro.org>
+References: <20231214131016.30502-1-krzysztof.kozlowski@linaro.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -76,32 +79,112 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-Still not complete, but most of audio support.
-
-Dependency
-=========
-Depends on:
-https://lore.kernel.org/linux-arm-msm/20231212125632.54021-1-krzysztof.kozlowski@linaro.org/
-
-Bindings were already applied.
+Add the Low Power Audio SubSystem (LPASS) / ADSP audio codec macros on
+Qualcomm SM8650.  The nodes are exactly the same as on SM8550 and
+SM8650.
 
 Cc: Abel Vesa <abel.vesa@linaro.org>
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+---
+ arch/arm64/boot/dts/qcom/x1e80100.dtsi | 85 ++++++++++++++++++++++++++
+ 1 file changed, 85 insertions(+)
 
-Best regards,
-Krzysztof
-
-Krzysztof Kozlowski (4):
-  arm64: dts: qcom: x1e80100: add ADSP audio codec macros
-  arm64: dts: qcom: x1e80100: add Soundwire controllers
-  arm64: dts: qcom: x1e80100-crd: add WCD9385 Audio Codec
-  arm64: dts: qcom: x1e80100-crd: add WSA8845 speakers
-
- arch/arm64/boot/dts/qcom/x1e80100-crd.dts | 132 +++++++++
- arch/arm64/boot/dts/qcom/x1e80100.dtsi    | 311 ++++++++++++++++++++++
- 2 files changed, 443 insertions(+)
-
+diff --git a/arch/arm64/boot/dts/qcom/x1e80100.dtsi b/arch/arm64/boot/dts/qcom/x1e80100.dtsi
+index 8c18d7f82166..8bc6e544bbc9 100644
+--- a/arch/arm64/boot/dts/qcom/x1e80100.dtsi
++++ b/arch/arm64/boot/dts/qcom/x1e80100.dtsi
+@@ -2981,6 +2981,91 @@ nsp_noc: interconnect@320c0000 {
+ 			#interconnect-cells = <2>;
+ 		};
+ 
++		lpass_wsa2macro: codec@6aa0000 {
++			compatible = "qcom,x1e80100-lpass-wsa-macro", "qcom,sm8550-lpass-wsa-macro";
++			reg = <0 0x06aa0000 0 0x1000>;
++			clocks = <&q6prmcc LPASS_CLK_ID_WSA2_CORE_TX_MCLK LPASS_CLK_ATTRIBUTE_COUPLE_NO>,
++				 <&q6prmcc LPASS_HW_MACRO_VOTE LPASS_CLK_ATTRIBUTE_COUPLE_NO>,
++				 <&q6prmcc LPASS_HW_DCODEC_VOTE LPASS_CLK_ATTRIBUTE_COUPLE_NO>,
++				 <&lpass_vamacro>;
++			clock-names = "mclk",
++				      "macro",
++				      "dcodec",
++				      "fsgen";
++
++			#clock-cells = <0>;
++			clock-output-names = "wsa2-mclk";
++			#sound-dai-cells = <1>;
++			sound-name-prefix = "WSA2";
++		};
++
++		lpass_rxmacro: codec@6ac0000 {
++			compatible = "qcom,x1e80100-lpass-rx-macro", "qcom,sm8550-lpass-rx-macro";
++			reg = <0 0x06ac0000 0 0x1000>;
++			clocks = <&q6prmcc LPASS_CLK_ID_RX_CORE_TX_MCLK LPASS_CLK_ATTRIBUTE_COUPLE_NO>,
++				 <&q6prmcc LPASS_HW_MACRO_VOTE LPASS_CLK_ATTRIBUTE_COUPLE_NO>,
++				 <&q6prmcc LPASS_HW_DCODEC_VOTE LPASS_CLK_ATTRIBUTE_COUPLE_NO>,
++				 <&lpass_vamacro>;
++			clock-names = "mclk",
++				      "macro",
++				      "dcodec",
++				      "fsgen";
++
++			#clock-cells = <0>;
++			clock-output-names = "mclk";
++			#sound-dai-cells = <1>;
++		};
++
++		lpass_txmacro: codec@6ae0000 {
++			compatible = "qcom,x1e80100-lpass-tx-macro", "qcom,sm8550-lpass-tx-macro";
++			reg = <0 0x06ae0000 0 0x1000>;
++			clocks = <&q6prmcc LPASS_CLK_ID_TX_CORE_MCLK LPASS_CLK_ATTRIBUTE_COUPLE_NO>,
++				 <&q6prmcc LPASS_HW_MACRO_VOTE LPASS_CLK_ATTRIBUTE_COUPLE_NO>,
++				 <&q6prmcc LPASS_HW_DCODEC_VOTE LPASS_CLK_ATTRIBUTE_COUPLE_NO>,
++				 <&lpass_vamacro>;
++			clock-names = "mclk",
++				      "macro",
++				      "dcodec",
++				      "fsgen";
++
++			#clock-cells = <0>;
++			clock-output-names = "mclk";
++			#sound-dai-cells = <1>;
++		};
++
++		lpass_wsamacro: codec@6b00000 {
++			compatible = "qcom,x1e80100-lpass-wsa-macro", "qcom,sm8550-lpass-wsa-macro";
++			reg = <0 0x06b00000 0 0x1000>;
++			clocks = <&q6prmcc LPASS_CLK_ID_WSA_CORE_TX_MCLK LPASS_CLK_ATTRIBUTE_COUPLE_NO>,
++				 <&q6prmcc LPASS_HW_MACRO_VOTE LPASS_CLK_ATTRIBUTE_COUPLE_NO>,
++				 <&q6prmcc LPASS_HW_DCODEC_VOTE LPASS_CLK_ATTRIBUTE_COUPLE_NO>,
++				 <&lpass_vamacro>;
++			clock-names = "mclk",
++				      "macro",
++				      "dcodec",
++				      "fsgen";
++
++			#clock-cells = <0>;
++			clock-output-names = "mclk";
++			#sound-dai-cells = <1>;
++			sound-name-prefix = "WSA";
++		};
++
++		lpass_vamacro: codec@6d44000 {
++			compatible = "qcom,x1e80100-lpass-va-macro", "qcom,sm8550-lpass-va-macro";
++			reg = <0 0x06d44000 0 0x1000>;
++			clocks = <&q6prmcc LPASS_CLK_ID_TX_CORE_MCLK LPASS_CLK_ATTRIBUTE_COUPLE_NO>,
++				 <&q6prmcc LPASS_HW_MACRO_VOTE LPASS_CLK_ATTRIBUTE_COUPLE_NO>,
++				 <&q6prmcc LPASS_HW_DCODEC_VOTE LPASS_CLK_ATTRIBUTE_COUPLE_NO>;
++			clock-names = "mclk",
++				      "macro",
++				      "dcodec";
++
++			#clock-cells = <0>;
++			clock-output-names = "fsgen";
++			#sound-dai-cells = <1>;
++		};
++
+ 		lpass_tlmm: pinctrl@6e80000 {
+ 			compatible = "qcom,x1e80100-lpass-lpi-pinctrl", "qcom,sm8550-lpass-lpi-pinctrl";
+ 			reg = <0 0x06e80000 0 0x20000>,
 -- 
 2.34.1
 
