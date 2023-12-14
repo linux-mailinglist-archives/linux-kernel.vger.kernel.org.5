@@ -2,66 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 18C7F813322
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 15:30:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 96E4F813327
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 15:31:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1573481AbjLNOaW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 09:30:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40216 "EHLO
+        id S1573486AbjLNObW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 09:31:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33192 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230260AbjLNOaT (ORCPT
+        with ESMTP id S230260AbjLNObV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 09:30:19 -0500
-Received: from mail.alien8.de (mail.alien8.de [IPv6:2a01:4f9:3051:3f93::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A190132;
-        Thu, 14 Dec 2023 06:30:25 -0800 (PST)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 1393F40E0140;
-        Thu, 14 Dec 2023 14:30:23 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-        header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id gAPdoYuNOTGW; Thu, 14 Dec 2023 14:30:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-        t=1702564221; bh=LK/AU/A+aF7T8cXp3zZKCi7x8DkBYfCbgQoPPthBTN8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=BFYbKciB1F2hqGU/NaNH5wSl7D3an8RkGmtHn38OvfNloOSgg0pPqMr85BKCRE6kO
-         WmIVFxZdB/VHOqrDLnxcJ0iK2Pd03njhB/oP4gLuzZ+yLqQld3GdQ1Ij/R0uCJ4v25
-         wdGQ2RMZ6BCfDvw89suYoIgtikqSax2S4vJkIj5RyCww9EP/JDx27tA1Uqkea12lLH
-         L3JX7WMElth6Zl+X0+E3C0e2FmcCagartPcHZHBLRkHBNWS8uzxskk12wjT7tJwLX1
-         P998+6ZfEfTbreH2d1l3p91gfQLPPBJB0Rxkb+K68Rt+A9qwK1tGjVFoF+uOhoo3fW
-         xJASeqqZOrGbzOi+XBPRPdlzDjDf8o+IU+M4rCp76BWsJqKKu3iruQXXdVzaKyYkmY
-         +u5Yg8v5vge7UtNSoRqQ0AaCJ7sOvj1qwKRknZSv06hHlHh2j7AmGEuiGFQipQs6Xh
-         1CVnsLo4H4b3ecLkmc19s+z8Spgb1l4jTEK+VeH9HNUHCKsSeakj+2wvcomAYf6MdR
-         KuFoiR76UesmnaMLZAhmVUfCx5NXIdyU2C7vQ2Wbcf8RwGEJqN5BVufCAEUavdpsl2
-         Ti513mNkem82OebKfJuoc0NJv9QmdZuenHULqBfBG1O5RBlbKqKas/f/OQI3O4IpSE
-         Yn2JtH4oW7qbYSoDD4GCBN08=
-Received: from zn.tnic (pd95304da.dip0.t-ipconnect.de [217.83.4.218])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-        (No client certificate requested)
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id E8B0C40E00CD;
-        Thu, 14 Dec 2023 14:30:11 +0000 (UTC)
-Date:   Thu, 14 Dec 2023 15:30:05 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     Yazen Ghannam <yazen.ghannam@amd.com>
-Cc:     linux-edac@vger.kernel.org, linux-kernel@vger.kernel.org,
-        tony.luck@intel.com, x86@kernel.org, avadhut.naik@amd.com,
-        john.allen@amd.com, william.roche@oracle.com,
-        muralidhara.mk@amd.com
-Subject: Re: [PATCH v3 1/3] RAS: Introduce AMD Address Translation Library
-Message-ID: <20231214143005.GNZXsRbcALa1/TW2OK@fat_crate.local>
-References: <20231210194932.43992-1-yazen.ghannam@amd.com>
- <20231210194932.43992-2-yazen.ghannam@amd.com>
+        Thu, 14 Dec 2023 09:31:21 -0500
+Received: from relay4-d.mail.gandi.net (relay4-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::224])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C0C485;
+        Thu, 14 Dec 2023 06:31:26 -0800 (PST)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 35E1CE0013;
+        Thu, 14 Dec 2023 14:31:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+        t=1702564285;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=fIKB/u0MwMXc68VORzrHfiOCkFzYFHAP6fqFR+4r6Ug=;
+        b=OkoMNqoi80SZDHZtuNk44+7+YekGVFzt+vnyeT0QLxrHrOoQ5foP4cFqa6MjMy/tnW5AaJ
+        D8DLL1Z5ybHoa8zMQh0oTzAmNwohE/UuKnZ1Jq4fpcAaSwFxkeVedjwvoS2TLDMnHUYm05
+        Lmc075id4Ybj4Uqe18OWz4efvF1Zb5EgnrgsMUkhaw7aLwIVKwI0KhfgDsFWmj5qO/ZDVn
+        cpPQEPi17JAuMnRzLQLpfyOOyp+z+sQSRttuzR7RiAEZa5vnMMSsRI0Dtw8gaJ9GhSCoAq
+        geJcwz7vaIT7yAbX5UuKyfH7Q1J4gy7JpcLt5Z8pYMidWfXoHSci+idho1zxAw==
+Date:   Thu, 14 Dec 2023 15:31:22 +0100
+From:   Herve Codina <herve.codina@bootlin.com>
+To:     Rob Herring <robh@kernel.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Lizhi Hou <lizhi.hou@amd.com>, Max Zhen <max.zhen@amd.com>,
+        Sonal Santan <sonal.santan@amd.com>,
+        Stefano Stabellini <stefano.stabellini@xilinx.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        PCI <linux-pci@vger.kernel.org>,
+        Allan Nielsen <allan.nielsen@microchip.com>,
+        Horatiu Vultur <horatiu.vultur@microchip.com>,
+        Steen Hegelund <steen.hegelund@microchip.com>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+Subject: Re: [PATCH v2 0/2] Attach DT nodes to existing PCI devices
+Message-ID: <20231214153122.07e99a5a@bootlin.com>
+In-Reply-To: <20231208094840.01d74fec@bootlin.com>
+References: <20231130165700.685764-1-herve.codina@bootlin.com>
+        <CAL_JsqJvt6FpXK+FgAwE8xN3G5Z23Ktq=SEY-K7VA7nM5XgZRg@mail.gmail.com>
+        <20231204134335.3ded3d46@bootlin.com>
+        <CAL_JsqLtCS3otZ1sfiPEWwrWB4dyNpu4e0xANWJriCEUYr+4Og@mail.gmail.com>
+        <20231204163014.4da383f2@bootlin.com>
+        <CAL_JsqJJ64513pyQggU71agTzawNWPpm6ZpWMB6e0zu-tWL8yw@mail.gmail.com>
+        <20231205090452.7c601eb5@bootlin.com>
+        <CAL_Jsq+je7+9ATR=B6jXHjEJHjn24vQFs4Tvi9=vhDeK9n42Aw@mail.gmail.com>
+        <20231208094840.01d74fec@bootlin.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20231210194932.43992-2-yazen.ghannam@amd.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-GND-Sasl: herve.codina@bootlin.com
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -69,174 +73,92 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Dec 10, 2023 at 01:49:30PM -0600, Yazen Ghannam wrote:
-> +/*
-> + * Some, but not all, cases have asserts.
-> + * So use return values to indicate failure where needed.
-> + */
+Hi Rob,
 
-No need for that comment.
+On Fri, 8 Dec 2023 09:48:40 +0100
+Herve Codina <herve.codina@bootlin.com> wrote:
 
-> +static int get_intlv_mode(struct addr_ctx *ctx)
-> +{
-> +	switch (df_cfg.rev) {
-> +	case DF2:	return df2_get_intlv_mode(ctx);
-> +	case DF3:	return df3_get_intlv_mode(ctx);
-> +	case DF3p5:	return df3p5_get_intlv_mode(ctx);
-> +	case DF4:	return df4_get_intlv_mode(ctx);
-> +	case DF4p5:	return df4p5_get_intlv_mode(ctx);
-> +	default:
-> +			warn_on_bad_df_rev();
-> +			return -EINVAL;
-> +	}
+> > 
+> > But you don't. The logic to find the interrupt parent is walk up the
+> > parent nodes until you find 'interrupt-parent' or
+> > '#interrupt-controller' (and interrupt-map always has
+> > #interrupt-controller). So your overlay just needs 'interrupts = <1>'
+> > for INTA and it should all just work.  
+> 
+> Yes, I tried some stuffs in that way...
+> > 
+> > That of course implies that we need interrupt properties in all the
+> > bridges which I was hoping to avoid. In the ACPI case, for DT
+> > interrupt parsing to work, we're going to need to end up in an
+> > 'interrupt-controller' node somewhere. I think the options are either  
+> 
+> ... and I went up to that point.
+> Further more with that way, we need to update the addr value retrieved
+> from the device requesting the interrupt.
+>   https://elixir.bootlin.com/linux/latest/source/drivers/of/irq.c#L343
+> Indeed, with the current 'interrupt-map' at bridges level, a addr value
+> update is needed at the PCI device level if the interrupt is requested
+> from some PCI device children.
+> This is were my (not so good) interrupt-ranges property could play a
+> role.
+> 
+> > we walk interrupt-map properties up to the host bridge which then
+> > points to something or the PCI device is the interrupt controller. I
+> > think the PCI device is the right place. How the downstream interrupts  
+> 
+> Agree, the PCI device seems to be the best candidate.
+> 
+> > are routed to PCI interrupts are defined by the device. That would
+> > work the same way for both DT and ACPI. If you are concerned about
+> > implementing in each driver needing this, some library functions can
+> > mitigate that.
+> > 
+> > I'm trying to play around with the IRQ domains and get this to work,
+> > but not having any luck yet.  
+> 
 
-You can warn once here instead of the callers:
+Got some piece of code creating an interrupt controller at PCI device level.
+To have it working, '#interrupt-cell = <1>' and 'interrupt-controller'
+properties need to be set in the PCI device DT node.
 
-	int ret;
+I can set them when the PCI device DT node is created (add them in
+of_pci_add_properties()) but as this interrupt controller is specific to the
+PCI device driver (it needs to be created after the pci_enable_device() call
+and will probably be device specific with MSI), it would make sense to have
+these properties set by the PCI device driver itself or in the overlay it
+applies.
 
-	switch () {
-		... ret = ...get_intlv_mode();
-		...
-	default:
-		ret = -EINVAL;
-	}
+But these properties creation done by the device driver itself (or the
+overlay) lead to memory leaks.
+Indeed, we cannot add properties to an existing node without memory
+leaks. When a property is removed, the property is not freed but moved
+to the node->deadprops list (of_remove_property()).
+The properties present in the list will be free once the node itself is
+removed.
+In our use-case, the node (PCI device node) is not removed when the driver
+is removed and probe again (rmmod/insmod).
 
-	if (ret)
-		warn_on_bad_df_rev();
+Do you have any opinion about the '#interrupt-cell' and
+'interrupt-controller' properties creation:
 
-	return ret;
+- Created by of_pci_add_properties():
+  No mem leak but done outside the specific device driver itself and done for
+  all PCI devices.
+  Maybe the driver will not create the interrupt controller, maybe it will
+  prefer an other value for '#interrupt-cell', maybe it will handle MSI and
+  will need to set other properties, ... All of these are device specific.
 
-and save some text lines.
-
-> +}
-> +
-> +static u64 get_hi_addr_offset(u32 reg_dram_offset)
-> +{
-> +	u8 shift = DF_DRAM_BASE_LIMIT_LSB;
-> +	u64 hi_addr_offset = 0;
-
-Move that assignment to 0...
-
-> +
-> +	switch (df_cfg.rev) {
-> +	case DF2:
-> +		hi_addr_offset = FIELD_GET(DF2_HI_ADDR_OFFSET, reg_dram_offset);
-> +		break;
-> +	case DF3:
-> +	case DF3p5:
-> +		hi_addr_offset = FIELD_GET(DF3_HI_ADDR_OFFSET, reg_dram_offset);
-> +		break;
-> +	case DF4:
-> +	case DF4p5:
-> +		hi_addr_offset = FIELD_GET(DF4_HI_ADDR_OFFSET, reg_dram_offset);
-> +		break;
-> +	default:
-
-... here.
-
-<---
-
-> +		warn_on_bad_df_rev();
-> +	}
-> +
-> +	return hi_addr_offset << shift;
-> +}
-> +
-> +static int get_dram_offset(struct addr_ctx *ctx, bool *enabled, u64 *norm_offset)
-> +{
-
-You don't need *enabled. The retval can be:
-
-< 0: fail
-0: disabled
->0: enabled
-
-and then you get rid of the IO param.
-
-> +	u32 reg_dram_offset;
-> +	u8 map_num;
-> +
-> +	/* Should not be called for map 0. */
-> +	if (!ctx->map.num) {
-> +		warn_on_assert("Trying to find DRAM offset for map 0");
-> +		return -EINVAL;
-> +	}
-> +
-> +	/*
-> +	 * DramOffset registers don't exist for map 0, so the base register
-> +	 * actually refers to map 1.
-> +	 * Adjust the map_num for the register offsets.
-> +	 */
-> +	map_num = ctx->map.num - 1;
-> +
-> +	if (df_cfg.rev >= DF4) {
-> +		/* Read D18F7x140 (DramOffset) */
-> +		if (df_indirect_read_instance(ctx->node_id, 7, 0x140 + (4 * map_num),
-> +					      ctx->inst_id, &reg_dram_offset))
-> +			return -EINVAL;
-> +
-> +	} else {
-> +		/* Read D18F0x1B4 (DramOffset) */
-> +		if (df_indirect_read_instance(ctx->node_id, 0, 0x1B4 + (4 * map_num),
-> +					      ctx->inst_id, &reg_dram_offset))
-> +			return -EINVAL;
-> +	}
-> +
-> +	if (!FIELD_GET(DF_HI_ADDR_OFFSET_EN, reg_dram_offset))
-> +		return 0;
-> +
-> +	*enabled = true;
-> +	*norm_offset = get_hi_addr_offset(reg_dram_offset);
-> +
-> +	return 0;
-> +}
-
-...
-
-> +static int get_cs_fabric_id(struct addr_ctx *ctx)
-> +{
-> +	return lookup_cs_fabric_id(ctx);
-> +}
-
-Get rid of that silly helper.
-
-> +
-> +static bool valid_map(struct addr_ctx *ctx)
-> +{
-> +	if (df_cfg.rev >= DF4)
-> +		return FIELD_GET(DF_ADDR_RANGE_VAL, ctx->map.ctl);
-> +
-> +	return FIELD_GET(DF_ADDR_RANGE_VAL, ctx->map.base);
-
-	if (... )
-		return
-	else
-		return
-
-Balanced.
+- Created by the device driver itself (or the overlay it applies):
+  The mem leak is present. Any idea about a way to fix that or at least having
+  a fix for some properties ?
+  I was thinking about avoiding to export properties (of_find_property()) and
+  so avoid references properties or introducing refcount on properties but
+  these modifications touch a lot of drivers and subsystems and are subject
+  to errors.
+  That's said, checking a property presence based on its name can be done without
+  exporting the property, as well as getting a single value. Iterating over array
+  values need some more complicated code.
 
 
-> +int get_address_map(struct addr_ctx *ctx)
-> +{
-> +	int ret = 0;
-> +
-> +	ret = get_address_map_common(ctx);
-> +	if (ret)
-> +		return ret;
-> +
-> +	if (get_global_map_data(ctx))
-> +		return -EINVAL;
-
-Use ret here too.
-
-> +
-> +	dump_address_map(&ctx->map);
-> +
-> +	return ret;
-> +}
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+Best regards,
+Hervé
