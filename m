@@ -2,161 +2,234 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6781F8124E3
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 03:01:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6795E8124E6
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 03:05:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235180AbjLNCA5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 21:00:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45232 "EHLO
+        id S234287AbjLNCFc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 21:05:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39056 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229525AbjLNCAx (ORCPT
+        with ESMTP id S229525AbjLNCF3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 21:00:53 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32BA385
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 18:01:00 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2FCE5C433C7;
-        Thu, 14 Dec 2023 02:00:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1702519259;
-        bh=mJwp9Wt+3zEWxjwj3NDYHejaJVXV/U4TQs6qHUx4VHI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Bbv6SkU2FR2YvI6T24wzRg992B38pmh7L41ohUxSe6RXDkhpste+v8Cob4JbuN9jg
-         jdCG3utQeZLu1nGgTVPcR46Fxy1m3aW8mf6NvCUF2aRpy8ZIIFBpjx6QNfLFnJeN8D
-         JgfjFC7NCZakROeSipOhMOb2H0Azjj2lUOIUu5B76WL6a5JSi0OFFfrsZr3ri9WpJx
-         dBV1AABeAZJyUo4doOWyNjhrNDLeyQmhcrCmP5+wm6Yau9G8w/2QEmzAIcmaBkDdaG
-         1y6bJmfr1VNUT4EWbUeK1ZMsDAOUSuQwwilHV3F+YtkoVTAwkigMSlLpVxjK61lmrT
-         8YzXqiz+Cu9Vw==
-Date:   Thu, 14 Dec 2023 10:00:53 +0800
-From:   Shawn Guo <shawnguo@kernel.org>
-To:     Frank Li <Frank.Li@nxp.com>
-Cc:     imx@lists.linux.dev, Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
+        Wed, 13 Dec 2023 21:05:29 -0500
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B2C4F4
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 18:05:36 -0800 (PST)
+Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-db53919e062so8568495276.0
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 18:05:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1702519535; x=1703124335; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:from:subject:message-id
+         :mime-version:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=ZEZvumk7MgtmWweazFTl3ViX2nGxgFVZEAs/ufpHI5M=;
+        b=neg1a/BIWXM/MAD5vta/dZqWHpqOuN93ROqTn4BGpe7sZ4wN8/8Ef97zUZExi5sZMa
+         sbNpaCN8Y9lMCARCHs7kLsvrYRsgCg1KQ31QfiRIFisLk1cODdNLIgD91pHEJswS07LI
+         BN3xbzLnqsSkxRzONVykCYISbFDWgEyTc9xRYCmSlDawBwKYTityKpmsJo9PAsADJ36A
+         j2OYub/q5FV7tQziph1lnp5mUsPHQBrfwj/RS17ErghJ/lOxzjMMDZ73WBuLU4hhIxRw
+         yygMhm4UlW/OjUBbBmYeUqPpooairasFeuQGK+IC6Jq0xY1PMBN5yLIQAL4GR7rh3B5r
+         BUrg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702519535; x=1703124335;
+        h=content-transfer-encoding:cc:to:from:subject:message-id
+         :mime-version:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ZEZvumk7MgtmWweazFTl3ViX2nGxgFVZEAs/ufpHI5M=;
+        b=Um05Err78eVZ83rPL95zBU6+7Xzd929J09LK6+TELimzRX75J/qpGimlEflQLv6cxs
+         SLLf2dL7ztSr4UdUmYlCjgh3/2zP4+XCeszik6/LGvz521cLnzPHR0nLoCJ6lOaa7Om6
+         RVsGLXxRGVlIkJTp0pJc+GfDzWtTXASAf0W+WSSJvpUHrGAHSiwx50cY+ru06HsD0ys+
+         JunKJhe1g2gxWifNz7ihXNJdGOat/FFwyPaL3UoEuxLi5QkU8ksLE+gEK2gIAcPzawOp
+         BSFUsr6bdY8jjZJZ/gVfK4kkCIjtFjDj/84drEOHQwA4Dw0LDtnPRgIizCf89tg3HD2R
+         KOEw==
+X-Gm-Message-State: AOJu0YzYd4NTt6eLygeZHt92ZSbMggICl/NY2prPYCxQ9KgpKfipFqfo
+        5rOlTixCatDEiD11vT+x0DhOaK4NtsgSGiT25pljuWoDTYY39E5LNSUy8EZNRC0W8RwpAR7Ggpw
+        QPW+w5leHO5qzw45BnpCitdYYqHmdkntJ4i6AgIlb3SPeoQddLwDBYdfPsEdOOtEhw/Y9u3bFQC
+        DhU5JO/HA=
+X-Google-Smtp-Source: AGHT+IEeQgDesKe3i+QDS/rezaXpGa7RoKAiDBO9Ys/1XaviI6mis9BGhANKrNA1DQEcY996FnoLnUQecY6J10j8wA==
+X-Received: from almasrymina.svl.corp.google.com ([2620:15c:2c4:200:d31b:c1a:fb6a:2488])
+ (user=almasrymina job=sendgmr) by 2002:a5b:783:0:b0:db5:4766:e363 with SMTP
+ id b3-20020a5b0783000000b00db54766e363mr77867ybq.6.1702519534471; Wed, 13 Dec
+ 2023 18:05:34 -0800 (PST)
+Date:   Wed, 13 Dec 2023 18:05:23 -0800
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.43.0.472.g3155946c3a-goog
+Message-ID: <20231214020530.2267499-1-almasrymina@google.com>
+Subject: [RFC PATCH net-next v1 0/4] Abstract page from net stack
+From:   Mina Almasry <almasrymina@google.com>
+To:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Cc:     Mina Almasry <almasrymina@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        "=?UTF-8?q?Christian=20K=C3=B6nig?=" <christian.koenig@amd.com>,
+        Michael Chan <michael.chan@broadcom.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Wei Fang <wei.fang@nxp.com>,
+        Shenwei Wang <shenwei.wang@nxp.com>,
+        Clark Wang <xiaoning.wang@nxp.com>,
         NXP Linux Team <linux-imx@nxp.com>,
-        Joakim Zhang <qiangqing.zhang@nxp.com>,
-        Marcel Ziswiler <marcel.ziswiler@toradex.com>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/1] arm64: dts: imx8qm: Fix edma3 power-domains and
- interrupt number
-Message-ID: <20231214020053.GQ270430@dragon>
-References: <20231206201256.1113800-1-Frank.Li@nxp.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231206201256.1113800-1-Frank.Li@nxp.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        Jeroen de Borst <jeroendb@google.com>,
+        Praveen Kaligineedi <pkaligineedi@google.com>,
+        Shailend Chand <shailend@google.com>,
+        Yisen Zhuang <yisen.zhuang@huawei.com>,
+        Salil Mehta <salil.mehta@huawei.com>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Marcin Wojtas <mw@semihalf.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Sunil Goutham <sgoutham@marvell.com>,
+        Geetha sowjanya <gakula@marvell.com>,
+        Subbaraya Sundeep <sbhatta@marvell.com>,
+        hariprasad <hkelam@marvell.com>, Felix Fietkau <nbd@nbd.name>,
+        John Crispin <john@phrozen.org>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Mark Lee <Mark-MC.Lee@mediatek.com>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Horatiu Vultur <horatiu.vultur@microchip.com>,
+        UNGLinuxDriver@microchip.com,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
+        Jassi Brar <jaswinder.singh@linaro.org>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Siddharth Vadapalli <s-vadapalli@ti.com>,
+        Ravi Gunasekaran <r-gunasekaran@ti.com>,
+        Roger Quadros <rogerq@kernel.org>,
+        Jiawen Wu <jiawenwu@trustnetic.com>,
+        Mengyuan Lou <mengyuanlou@net-swift.com>,
+        Ronak Doshi <doshir@vmware.com>,
+        VMware PV-Drivers Reviewers <pv-drivers@vmware.com>,
+        Ryder Lee <ryder.lee@mediatek.com>,
+        Shayne Chen <shayne.chen@mediatek.com>,
+        Kalle Valo <kvalo@kernel.org>, Juergen Gross <jgross@suse.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>,
+        Yonghong Song <yonghong.song@linux.dev>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        Stefano Garzarella <sgarzare@redhat.com>,
+        Shuah Khan <shuah@kernel.org>,
+        "=?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?=" <mic@digikod.net>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Bill Wendling <morbo@google.com>,
+        Justin Stitt <justinstitt@google.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Yunsheng Lin <linyunsheng@huawei.com>,
+        Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 06, 2023 at 03:12:55PM -0500, Frank Li wrote:
-> Fixed a kernel dump when access edma3 registers.
-> 
-> [    1.517547] SError Interrupt on CPU1, code 0x00000000bf000002 -- SError
-> [    1.517556] CPU: 1 PID: 59 Comm: kworker/u8:2 Not tainted 6.7.0-rc3-next-20231129-dirty #3
-> [    1.517564] Hardware name: Freescale i.MX8QM MEK (DT)
-> [    1.517570] Workqueue: events_unbound deferred_probe_work_func
-> [    1.517593] pstate: 80000005 (Nzcv daif -PAN -UAO -TCO -DIT -SSBS BTYPE=--)
-> [    1.517601] pc : vsnprintf+0x60/0x770
-> [    1.517612] lr : snprintf+0x58/0x80
-> [    1.517619] sp : ffff800082f0b9e0
-> [    1.517622] x29: ffff800082f0b9e0 x28: ffff8000819a8af8 x27: ffff000801f90080
-> [    1.517632] x26: ffff000801f90510 x25: 0000000000000001 x24: 0000000000000020
-> [    1.517640] x23: 00000000ffffffd8 x22: ffff000800114800 x21: ffff800082f0baf0
-> [    1.517650] x20: ffff000801f90698 x19: ffff000801f906b8 x18: ffffffffffffffff
-> [    1.517659] x17: 6e6f632d616d642e x16: 3030303066396135 x15: ffff800102f0b687
-> [    1.517668] x14: 0000000000000000 x13: 30206e6168632065 x12: 74697277203a7265
-> [    1.517677] x11: 6c6c6f72746e6f63 x10: 2d616d642e303030 x9 : 72656c6c6f72746e
-> [    1.517686] x8 : ffff000800396740 x7 : 205d333337383035 x6 : ffff800082f0baf0
-> [    1.517694] x5 : 00000000ffffffd8 x4 : ffff000800396740 x3 : ffff800082f0ba70
-> [    1.517703] x2 : ffff8000819a8af8 x1 : ffff800082f0baf0 x0 : 0000000000000025
-> [    1.517713] Kernel panic - not syncing: Asynchronous SError Interrupt
-> [    1.517718] CPU: 1 PID: 59 Comm: kworker/u8:2 Not tainted 6.7.0-rc3-next-20231129-dirty #3
-> [    1.517724] Hardware name: Freescale i.MX8QM MEK (DT)
-> [    1.517727] Workqueue: events_unbound deferred_probe_work_func
-> [    1.517736] Call trace:
-> [    1.517739]  dump_backtrace+0x90/0xe8
-> [    1.517752]  show_stack+0x18/0x24
-> [    1.517761]  dump_stack_lvl+0x48/0x60
-> [    1.517771]  dump_stack+0x18/0x24
-> [    1.517780]  panic+0x36c/0x3ac
-> [    1.517789]  nmi_panic+0x48/0x94
-> [    1.517796]  arm64_serror_panic+0x6c/0x78
-> [    1.517801]  do_serror+0x3c/0x78
-> [    1.517806]  el1h_64_error_handler+0x30/0x48
-> [    1.517813]  el1h_64_error+0x64/0x68
-> [    1.517819]  vsnprintf+0x60/0x770
-> [    1.517827]  snprintf+0x58/0x80
-> [    1.517834]  fsl_edma_probe+0x2ac/0x830
-> 
-> It is eDMA1 at QM, which have the same register with eDMA3 at qxp.
-> 
-> Fixes: e4d7a330fb7a ("arm64: dts: imx8: add edma[0..3]")
-> Signed-off-by: Frank Li <Frank.Li@nxp.com>
+Currently these components in the net stack use the struct page
+directly:
 
-Hi Frank,
+1. Drivers.
+2. Page pool.
+3. skb_frag_t.
 
-Did you see the fix [1] from Xiaolei?  It has landed on Linus' tree.
+To add support for new (non struct page) memory types to the net stack, we
+must first abstract the current memory type.
 
-Shawn
+Originally the plan was to reuse struct page* for the new memory types,
+and to set the LSB on the page* to indicate it's not really a page.
+However, for safe compiler type checking we need to introduce a new type.
 
-[1] https://lore.kernel.org/all/20231110072531.1957891-1-xiaolei.wang@windriver.com/
+struct netmem is introduced to abstract the underlying memory type.
+Currently it's a no-op abstraction that is always a struct page underneath.
+In parallel there is an undergoing effort to add support for devmem to the
+net stack:
 
-> ---
->  .../boot/dts/freescale/imx8qm-ss-dma.dtsi     | 27 +++++++++++++++++++
->  1 file changed, 27 insertions(+)
-> 
-> diff --git a/arch/arm64/boot/dts/freescale/imx8qm-ss-dma.dtsi b/arch/arm64/boot/dts/freescale/imx8qm-ss-dma.dtsi
-> index 01539df335f8c..5d76b4dee4cef 100644
-> --- a/arch/arm64/boot/dts/freescale/imx8qm-ss-dma.dtsi
-> +++ b/arch/arm64/boot/dts/freescale/imx8qm-ss-dma.dtsi
-> @@ -44,6 +44,33 @@ can2_lpcg: clock-controller@5acf0000 {
->  	};
->  };
->  
-> +/* It is eDMA1 in 8QM RM, but 8QXP it is eDMA3 */
-> +&edma3 {
-> +	reg = <0x5a9f0000 0x210000>;
-> +	dma-channels = <10>;
-> +	interrupts = <GIC_SPI 424 IRQ_TYPE_LEVEL_HIGH>,
-> +		     <GIC_SPI 425 IRQ_TYPE_LEVEL_HIGH>,
-> +		     <GIC_SPI 426 IRQ_TYPE_LEVEL_HIGH>,
-> +		     <GIC_SPI 427 IRQ_TYPE_LEVEL_HIGH>,
-> +		     <GIC_SPI 428 IRQ_TYPE_LEVEL_HIGH>,
-> +		     <GIC_SPI 429 IRQ_TYPE_LEVEL_HIGH>,
-> +		     <GIC_SPI 430 IRQ_TYPE_LEVEL_HIGH>,
-> +		     <GIC_SPI 431 IRQ_TYPE_LEVEL_HIGH>,
-> +		     <GIC_SPI 432 IRQ_TYPE_LEVEL_HIGH>,
-> +		     <GIC_SPI 433 IRQ_TYPE_LEVEL_HIGH>;
-> +	power-domains = <&pd IMX_SC_R_DMA_1_CH0>,
-> +			<&pd IMX_SC_R_DMA_1_CH1>,
-> +			<&pd IMX_SC_R_DMA_1_CH2>,
-> +			<&pd IMX_SC_R_DMA_1_CH3>,
-> +			<&pd IMX_SC_R_DMA_1_CH4>,
-> +			<&pd IMX_SC_R_DMA_1_CH5>,
-> +			<&pd IMX_SC_R_DMA_1_CH6>,
-> +			<&pd IMX_SC_R_DMA_1_CH7>,
-> +			<&pd IMX_SC_R_DMA_1_CH8>,
-> +			<&pd IMX_SC_R_DMA_1_CH9>;
-> +};
-> +
-> +/* It is edma0 in 8QM RM, but it is eDMA2 at 8QXP */
->  &edma2 {
->  	reg = <0x5a1f0000 0x170000>;
->  	#dma-cells = <3>;
-> -- 
-> 2.34.1
-> 
+https://lore.kernel.org/netdev/20231208005250.2910004-1-almasrymina@google.=
+com/
+
+Cc: Jason Gunthorpe <jgg@nvidia.com>
+Cc: Christian K=C3=B6nig <christian.koenig@amd.com>
+Cc: Shakeel Butt <shakeelb@google.com>
+Cc: Yunsheng Lin <linyunsheng@huawei.com>
+Cc: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+
+Mina Almasry (4):
+  vsock/virtio: use skb_frag_page() helper
+  net: introduce abstraction for network memory
+  net: add netmem_t to skb_frag_t
+  net: page_pool: use netmem_t instead of struct page in API
+
+ drivers/net/ethernet/broadcom/bnxt/bnxt.c     | 15 ++--
+ drivers/net/ethernet/broadcom/bnxt/bnxt_xdp.c |  8 ++-
+ drivers/net/ethernet/engleder/tsnep_main.c    | 22 +++---
+ drivers/net/ethernet/freescale/fec_main.c     | 33 ++++++---
+ .../net/ethernet/hisilicon/hns3/hns3_enet.c   | 14 ++--
+ drivers/net/ethernet/intel/idpf/idpf_txrx.c   |  2 +-
+ drivers/net/ethernet/intel/idpf/idpf_txrx.h   | 15 ++--
+ drivers/net/ethernet/marvell/mvneta.c         | 24 ++++---
+ .../net/ethernet/marvell/mvpp2/mvpp2_main.c   | 18 +++--
+ .../marvell/octeontx2/nic/otx2_common.c       |  8 ++-
+ drivers/net/ethernet/mediatek/mtk_eth_soc.c   | 22 +++---
+ .../net/ethernet/mellanox/mlx5/core/en/xdp.c  | 27 ++++---
+ .../net/ethernet/mellanox/mlx5/core/en_rx.c   | 28 ++++----
+ .../ethernet/microchip/lan966x/lan966x_fdma.c | 16 +++--
+ drivers/net/ethernet/microsoft/mana/mana_en.c | 10 +--
+ drivers/net/ethernet/socionext/netsec.c       | 25 ++++---
+ .../net/ethernet/stmicro/stmmac/stmmac_main.c | 48 ++++++++-----
+ drivers/net/ethernet/ti/cpsw.c                | 11 +--
+ drivers/net/ethernet/ti/cpsw_new.c            | 11 +--
+ drivers/net/ethernet/ti/cpsw_priv.c           | 12 ++--
+ drivers/net/ethernet/wangxun/libwx/wx_lib.c   | 18 +++--
+ drivers/net/veth.c                            |  5 +-
+ drivers/net/vmxnet3/vmxnet3_drv.c             |  7 +-
+ drivers/net/vmxnet3/vmxnet3_xdp.c             | 20 +++---
+ drivers/net/wireless/mediatek/mt76/dma.c      |  4 +-
+ drivers/net/wireless/mediatek/mt76/mt76.h     |  5 +-
+ .../net/wireless/mediatek/mt76/mt7915/mmio.c  |  4 +-
+ drivers/net/xen-netfront.c                    |  4 +-
+ include/linux/skbuff.h                        | 11 ++-
+ include/net/netmem.h                          | 35 +++++++++
+ include/net/page_pool/helpers.h               | 72 ++++++++++---------
+ include/net/page_pool/types.h                 |  9 +--
+ net/bpf/test_run.c                            |  2 +-
+ net/core/page_pool.c                          | 39 +++++-----
+ net/core/skbuff.c                             |  2 +-
+ net/core/xdp.c                                |  3 +-
+ net/kcm/kcmsock.c                             |  9 ++-
+ net/vmw_vsock/virtio_transport.c              |  2 +-
+ 38 files changed, 381 insertions(+), 239 deletions(-)
+ create mode 100644 include/net/netmem.h
+
+--=20
+2.43.0.472.g3155946c3a-goog
+
