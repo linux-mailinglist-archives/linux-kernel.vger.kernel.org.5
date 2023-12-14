@@ -2,162 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 14AFD812D0B
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 11:35:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 50E1A812D04
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 11:34:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1443682AbjLNKet (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 05:34:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54238 "EHLO
+        id S1443673AbjLNKeL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 05:34:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45934 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1443680AbjLNKen (ORCPT
+        with ESMTP id S1443655AbjLNKeJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 05:34:43 -0500
-Received: from mx08-00376f01.pphosted.com (mx08-00376f01.pphosted.com [91.207.212.86])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61DD6114
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 02:34:49 -0800 (PST)
-Received: from pps.filterd (m0168888.ppops.net [127.0.0.1])
-        by mx08-00376f01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BE802Tw001848;
-        Thu, 14 Dec 2023 10:34:35 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=imgtec.com; h=
-        from:to:cc:subject:date:message-id:content-transfer-encoding
-        :content-type:mime-version; s=dk201812; bh=LAGUe2B/RBQTEREPl9wTD
-        s1Izsez/CTwKRo5fnnmk9w=; b=oDt6dBhgxvUq/wCgUK1lA9Cx2y510P1ffVFm3
-        ueEKGP1cinlAMkU1D6OYSpquz1Zu2izAaGmphCq+VV6V61cc/GErJ0SeNhKyzO2i
-        RKBjA0X2wdGd5TT6HwcihlKWNoJDXxRHUstrgwrquz8Ujbw7hyf1Vdynu2bD9INO
-        Wb1pr6fVzfjogUOgQzP3u9+3CKfUszxx8oZQbf2botIGjYsSGCHEwf/nQNUp99cT
-        6UAa9PIWapl9c+GxCWByI5Ss6mNAw8OfiRHEfXbIpw7Uz5Jh+MnTiYvEerFAva8u
-        wSW2MMZUqpXYuIPUxWGMx0rt00fUHC1krwUg/8/M2yh2vUudA==
-Received: from hhmail05.hh.imgtec.org ([217.156.249.195])
-        by mx08-00376f01.pphosted.com (PPS) with ESMTPS id 3uyr3u87ty-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Thu, 14 Dec 2023 10:34:35 +0000 (GMT)
-Received: from HHMAIL05.hh.imgtec.org (10.100.10.120) by
- HHMAIL05.hh.imgtec.org (10.100.10.120) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Thu, 14 Dec 2023 10:34:35 +0000
-Received: from GBR01-LO4-obe.outbound.protection.outlook.com (104.47.85.104)
- by email.imgtec.com (10.100.10.121) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Thu, 14 Dec 2023 10:34:35 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=nI1z6AlvMnUmDeGawBafmgeuqCYgkXVdT8/dWJ/Yu2gekUbBeXdgrdbAa5nKnltDIsoS5o3vV/BIJ9cihjn/H0a/ygqiwzMhnx1QXSOL9UvJ3n9zRhkffZDj5e4qnCMYXKrspeyMggU2aI7TBVRhVgsQngvqAdZc/mOX77iN8LiKlbjjmTKwHv1fXmiqELLv20D+IiTUFVoHF7MfZnLOkPMGqFMfH57/Q+ewANnZ/Pg/nuE0OpdzXRBg2Ri7+fOHF+JX1zvCsJTZnmK/9chh6xUA6I10UYbRuGlklu3w7H0QTvHHlr7UkwqwjvD/KdgcAUuJSZ8YR94j71LQk4cxTA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=LAGUe2B/RBQTEREPl9wTDs1Izsez/CTwKRo5fnnmk9w=;
- b=D1f/9vFAkvY0AqDxP85UZvfT0sEe1wrD6wa59Vj7fh5/MJm23ldR6z40sY4b2Y0CVRLJHrZ/Ie3mLjN7aVIKSj2e3DNdhVEjVjPR0z/Sd7l4Zb045zj/Vd2KZSD1xsJh/XspSGNWIUribDn5OS6HnfHpdIL7MomemE/E32P6EqZlm6p9pGTzBXvC4WxMZG8kUVWVOMRG5UB+ez8pMf00I4S/xd0kYh9WVVH+U05dYsj1wWgEYfTCTPyPEeT11VmE2C6ZuYb+kiuaK96xMFriC08hTA24LqTVDITDf/ab0plGmwQsfnryFTZGPUyc5rjbcLip/7azVRBHhSrL3IdmJQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=imgtec.com; dmarc=pass action=none header.from=imgtec.com;
- dkim=pass header.d=imgtec.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=IMGTecCRM.onmicrosoft.com; s=selector2-IMGTecCRM-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=LAGUe2B/RBQTEREPl9wTDs1Izsez/CTwKRo5fnnmk9w=;
- b=RTVl/kGhAVg7pfvQyDURrqV4gp3gDa86qB5HxpM9VIYoIW+L7W67XXCuW+ol32hmIe61vyqD4SljwB2NuB21kiMlVaOIz4ygOJGZrw7My0wroOO6kH1k/JZ0h/sb0LPHKzWeBfw14SNdqFbfUeBhuS3+Dk+g2uESN/w6+1htQ5Q=
-Received: from LO2P265MB4600.GBRP265.PROD.OUTLOOK.COM (2603:10a6:600:23c::11)
- by LO4P265MB5915.GBRP265.PROD.OUTLOOK.COM (2603:10a6:600:29a::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7091.28; Thu, 14 Dec
- 2023 10:34:30 +0000
-Received: from LO2P265MB4600.GBRP265.PROD.OUTLOOK.COM
- ([fe80::a3f5:aa1a:ff75:79a2]) by LO2P265MB4600.GBRP265.PROD.OUTLOOK.COM
- ([fe80::a3f5:aa1a:ff75:79a2%4]) with mapi id 15.20.7091.028; Thu, 14 Dec 2023
- 10:34:30 +0000
-From:   Donald Robson <donald.robson@imgtec.com>
-To:     <dri-devel@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>
-CC:     <frank.binns@imgtec.com>, <matt.coster@imgtec.com>,
-        <mripard@kernel.org>, <airlied@gmail.com>
-Subject: [PATCH] MAINTAINERS: Remove Donald Robson from powervr driver maintainers
-Date:   Thu, 14 Dec 2023 10:33:53 +0000
-Message-Id: <20231214103353.122257-1-donald.robson@imgtec.com>
-X-Mailer: git-send-email 2.25.1
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: LO4P123CA0095.GBRP123.PROD.OUTLOOK.COM
- (2603:10a6:600:191::10) To LO2P265MB4600.GBRP265.PROD.OUTLOOK.COM
- (2603:10a6:600:23c::11)
+        Thu, 14 Dec 2023 05:34:09 -0500
+Received: from relay1-d.mail.gandi.net (relay1-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::221])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69FCB114;
+        Thu, 14 Dec 2023 02:34:14 -0800 (PST)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id B26C3240008;
+        Thu, 14 Dec 2023 10:34:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+        t=1702550052;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=jugSzKA5RANlnPt+1c8lwCcp54ROkWZ7TeiH8CT7p/A=;
+        b=brU8mEhL7FkhQ9ky50byWcLBDM0D5qpw0kEMSokgUJptsEhuGASnYkJylJIguGZ6nO/q5J
+        FVbxguP1/E1tO9XDiuTLGfldOsfc1FU4ii0sRUurXO/55O7AXbGT89jWBc+J7WVxs2w79q
+        2QtfsWgH7gzMiZPFWmwUC1JzHH/bLPKnS+4d0kNRG1yZgoJqPzgqgQwkO4FXsqlo4xa/yl
+        jTYFvc/Sf9BuQTy8+ZkRNEvv0ynT3nNW18Y796+iQIBUbNCr+ZVPDtWI8HLD3zWC22fhb7
+        Z6myHK497Hh5VFtbSEr1R1E7GtDYKK4nPwYj7nf4pyOjEAD3W0B+Pa8LBbu5WA==
+Date:   Thu, 14 Dec 2023 11:34:07 +0100
+From:   Miquel Raynal <miquel.raynal@bootlin.com>
+To:     Davidlohr Bueso <dave@stgolabs.net>
+Cc:     Romain Gantois <romain.gantois@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Jens Axboe <axboe@kernel.dk>, Ard Biesheuvel <ardb@kernel.org>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Herve Codina <herve.codina@bootlin.com>,
+        linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-efi@vger.kernel.org
+Subject: Re: [RFC PATCH 0/6] Add GPT parser to MTD layer
+Message-ID: <20231214113407.484e24a5@xps-13>
+In-Reply-To: <cykfpuff32nuq3t27vd5tv463cx32phri473fjnrruvom5dk5u@uao5e3ml73ai>
+References: <20231211151244.289349-1-romain.gantois@bootlin.com>
+ <cykfpuff32nuq3t27vd5tv463cx32phri473fjnrruvom5dk5u@uao5e3ml73ai>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: LO2P265MB4600:EE_|LO4P265MB5915:EE_
-X-MS-Office365-Filtering-Correlation-Id: 619c71ee-c6a9-4db0-94d1-08dbfc9040e7
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 8rjwceMH3h9PoIhsVgupZdE7QKdtLUWDUT+2qcC0s/iwfT9bAP3Ds9UGy+IhnvoETbyQlxnpFrKQ/duG7kHL8okP1ANrxx78Y+QoiMrIwx/l3wx+eysnn1uUAvwlHasvL5FUfqqqXeNh2sPiXYTDmVZkZ8WW0UeWhkPSoRyaOdgUehDNnYxd4V/gnZXdQjhOkxYgRYMgs2j0swtXNKPhOLyobWMzDa4C6T+kK4SQQ07lnrZu01/dfCYAC15we5UZk3cgB92tBOrcuEMPfGwVvFp8tyybozFvrMsNWS4Fm0ZYhFzsZ/aMPgfxdEA4igN0oKS7Vc82m0OlnPFHokKiE6H7VHCfk03h1+sG0Nxrgy27eGTqSNno61fCADEMOmCHcpIEVlCXuVbKj6kc3wOYSDxUkbzpXIM129g6C/iE8b3BtaBtF3AQtcpHui1QZCV9gQQckKnVuOokULu/BRctUfv8B9BRGJvr/hGB6FsX0j/1mdZBMjpOkgMTh/Hf/Po8KBzaA5GriAwZieTFYiPdYiwf8ZvWkv+p3WV/XjiHOxPVGKq6KTW1duv2wCLRqeZgQ8suvmTUPz1ZPElVHr957dJ6EGjIVFzu+La34NfylmqBIURSb60jzFXAk/hWOH2F
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LO2P265MB4600.GBRP265.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230031)(136003)(39850400004)(346002)(376002)(396003)(366004)(230922051799003)(1800799012)(451199024)(64100799003)(186009)(8676002)(4326008)(8936002)(44832011)(4744005)(2906002)(4001150100001)(5660300002)(6506007)(6486002)(6666004)(6512007)(478600001)(52116002)(66556008)(66946007)(66476007)(316002)(41300700001)(38100700002)(86362001)(36756003)(38350700005)(83380400001)(2616005)(1076003)(26005);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?CO/v7lR7oj9aeSZpyunRg8l6dNs6tIid1FwCaXTGGvW9XbxydBSlGAzHTkb7?=
- =?us-ascii?Q?D89vC8qbg5M8D41SmeUzWSgpoWA20pxYrqZHbEovOVmPjdHbUin7h2OLvCpg?=
- =?us-ascii?Q?aULChZFmDfCvOpEtE1e6u8A+lGXRXN5MDSgQTIbE66KVxFLea6SiHvNJWjgE?=
- =?us-ascii?Q?CikPqdJtN6FpA62j4qHFf+vp1uTL7EdjxLz4Wa/uBm5EOnp/PGmtTmKL747C?=
- =?us-ascii?Q?6BjAFNDqdbaz7O0w4DZ7etYGGmVbpYCr7BMFBrRGSDsE4zc3EMrJIhSUE9B7?=
- =?us-ascii?Q?AtNem84eSMwBf8kix5hTmA78rmRXEwbCuNvb4CULkn0+Qu1ONkoIxCauln6b?=
- =?us-ascii?Q?I0P6nHmE7WRHZ3vS471nWtxlBadPbZ7TNAQIjT2vYiKQW+Z5+H0SV9MZQL9S?=
- =?us-ascii?Q?v3/LKq7mdg8NGq9PqFSoJZbecSCwef+tQmnLfjTmyevfDYiibJX+TKAncUsi?=
- =?us-ascii?Q?0QdC6d8gWLvLQlqxXyECnpu9VwWRx9bQRHQYzhK3NiDkF/BXP5rj3COWkDZC?=
- =?us-ascii?Q?E3QlQGJJyNsW3nKR9l9g/nzBCGQKOnDSkg8zcvoCyQfAmV1RhPOvd0kY/8Vu?=
- =?us-ascii?Q?h90ariBnVvrByO/5MEjCvZ48CZHXWwtmq8CU31225ESri/YoHW8F+8YjX6RS?=
- =?us-ascii?Q?M2PmX4Aeay53BW1nHkrW3m2tJpGNVN8JvOqAUTMRuoPTOfkVIc5IWGnh+Y6E?=
- =?us-ascii?Q?CXki3qJqIGO67Ydh5l8NkdkNJNExg8Dni5VHPxD8AslVwPQfG/eRb5vVFOMA?=
- =?us-ascii?Q?PJGwNhOeURKgtHAY1wGCrCD7Id3Gu+156jSNtmezpwPd0KZnndqyCAIR6zaK?=
- =?us-ascii?Q?D9fJ01AeLQsh6CfzPZlHuEWuxyPaEeiPZDI1sJR1YoWeA4zK612ieaV5cbE4?=
- =?us-ascii?Q?nMVmxoPtUslVxyzNsGMlXX5rPMzATBf22ehwg7E3DneiMaV1eYvWmf/mVhgx?=
- =?us-ascii?Q?DvuEHih6b+Ead4H0WCVe7uXIc9S0t2LeS2EAml2bb1BLxkbE2hbllh2Jmzoe?=
- =?us-ascii?Q?B4EDCNZsrNfVZzspImsFRJQWoGD/o/08plS53R0HOztXHqOLfu69sP6ry8rX?=
- =?us-ascii?Q?f0qN+fBq2PnDf5K++2iV+aDv5UmwcgSK5k4NktZ9qczhgc6EsfgL6oE/vbos?=
- =?us-ascii?Q?L0DonaQ1H+DrwK/c/UQBIOxPkwePHx7qncPRBzb5Be2ya4vKgAZFsaUYn8V6?=
- =?us-ascii?Q?Jgw3Recdv9LudKC+fK0qMVf90DvU9k7nLzMrag4VMezUQkU2JpJLmlEOiUAE?=
- =?us-ascii?Q?9fYBYpbIJXm/1CkKrH8r6+psD9A7W/RnVx7jLaeF2DXVwSzei4orQXCK6u/F?=
- =?us-ascii?Q?XU2fv9hoOUdj8Z94Qjba80s+Bq9c7CJHhPur9OynLKwGRJib0rB6VrIITCKA?=
- =?us-ascii?Q?gKwtOFX9NIrNElNogC/e/oTd1OUSe+2RXlPvxduXDhfK5o5kxXkzdGCbnqNu?=
- =?us-ascii?Q?x7P1pMNTMfd2IBfz7LzSue9nEJoA1Ph0aVhNSPQFNgN6qvWL4likjyJP4pje?=
- =?us-ascii?Q?58qpn218oqN/E6hH5/HU3ETc2ueXHAQKPxf/9vRAOVxLVZQxxTDldDif0eDj?=
- =?us-ascii?Q?si2Q/d2WGQHBWLnxpHN8bzsEbYW6/nEF6ZiZgcmBPa9ece91Ji11hMDXtU31?=
- =?us-ascii?Q?1g=3D=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 619c71ee-c6a9-4db0-94d1-08dbfc9040e7
-X-MS-Exchange-CrossTenant-AuthSource: LO2P265MB4600.GBRP265.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Dec 2023 10:34:29.9203
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 0d5fd8bb-e8c2-4e0a-8dd5-2c264f7140fe
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: jhsXsndPWYSV8hp0HcE8qTW7tKOvdDTEIAvRSu2Z6LguA6X5pW4Zm/BBRspdXBRLOBrvtdc718M+uN+3bh7TxSNUXLysZejPQD3EPRD7Uho=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: LO4P265MB5915
-X-OriginatorOrg: imgtec.com
-X-EXCLAIMER-MD-CONFIG: 15a78312-3e47-46eb-9010-2e54d84a9631
-X-Proofpoint-GUID: tQT0zu_b0YxHh3fEl_7iGe8PNqjESsNj
-X-Proofpoint-ORIG-GUID: tQT0zu_b0YxHh3fEl_7iGe8PNqjESsNj
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,TVD_SUBJ_WIPE_DEBT,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-GND-Sasl: miquel.raynal@bootlin.com
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I will be leaving Imagination Technologies on 2023-12-15 and will no
-longer be working on this driver.
+Hi Davidlohr,
 
-Signed-off-by: Donald Robson <donald.robson@imgtec.com>
----
- MAINTAINERS | 1 -
- 1 file changed, 1 deletion(-)
+dave@stgolabs.net wrote on Mon, 11 Dec 2023 16:43:58 -0800:
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index d4b46b3db022..0eba015ac5f1 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -10394,7 +10394,6 @@ F:	drivers/media/rc/img-ir/
- 
- IMGTEC POWERVR DRM DRIVER
- M:	Frank Binns <frank.binns@imgtec.com>
--M:	Donald Robson <donald.robson@imgtec.com>
- M:	Matt Coster <matt.coster@imgtec.com>
- S:	Supported
- T:	git git://anongit.freedesktop.org/drm/drm-misc
--- 
-2.25.1
+> On Mon, 11 Dec 2023, Romain Gantois wrote:
+>=20
+> >Hello everyone,
+> >
+> >MTD devices were historically partitioned using fixed partitions schemes
+> >defined in the kernel device tree or on the cmdline. More recently, a bu=
+nch
+> >of dynamic parsers have been introduced, allowing partitioning informati=
+on
+> >to be stored in-band. However, unlike disks, parsers for MTD devices do =
+not
+> >support runtime discovery of the partition format. This format is instead
+> >named in the device-tree using a compatible string.
+> >
+> >The GUID Partition Table is one of the most common ways of partitioning a
+> >block device. As of now, there is no support in the MTD layer for parsing
+> >GPT tables. Indeed, use cases for layouts like GPT on raw Flash devices =
+are
+> >rare, and for good reason since these partitioning schemes are sensitive=
+ to
+> >bad blocks in strategic locations such as LBA 2.  Moreover, they do not
+> >allow proper wear-leveling to be performed on the full span of the devic=
+e.
+> >
+> >However, allowing GPT to be used on MTD devices can be practical in some
+> >cases. In the context of an A/B OTA upgrade that can act on either NOR of
+> >eMMC devices, having the same partition table format for both kinds of
+> >devices can simplify the task of the update software.
+> >
+> >This series adds a fully working MTD GPT parser to the kernel. Use of the
+> >parser is restricted to NOR flash devices, since NAND flashes are too
+> >susceptible to bad blocks. To ensure coherence and code-reuse between
+> >subsystems, I've factored device-agnostic code from the block layer GPT
+> >parser and moved it to a new generic library in lib/gpt.c. No functional
+> >change is intended in the block layer parser.
+> >
+> >I understand that this can seem like a strange feature for MTD devices, =
+but
+> >with the restriction to NOR devices, the partition table can be fairly
+> >reliable. Moreover, this addition fits nicely into the MTD parser model.
+> >Please tell me what you think. =20
+>=20
+> I am not a fan of this. The usecase seems very hacky and ad-hoc to justify
+> decoupling from the block layer,
 
+The use case indeed is a bit ad-hoc, as it is an OTA tool which makes
+it painful to handle two separate types of partitioning between blocks
+and mtd devices, so being able to parse a GPT on an mtd device would
+help a lot.
+
+> not to mention move complexity out of
+> userspace and into the kernel (new parser) for something that is already
+> being done/worked around.
+
+This is the part I don't fully agree with. There is no added
+complexity, the parser exists and is kept untouched (apart from the
+cosmetic changes). For a long time mtd partitioning information was
+kept out of the storage (through fixed-partitions) but it's been quite
+some time since the need for more flexible approaches arised, so we do
+have "dynamic" partition parsers already and the one proposed by Romain
+looks very straightforward and is thus not a problem to me. It
+basically just extends the list of partition tables mtd devices know
+about with a very common and popular format.
+
+To be honest I do not have a strong opinion on whether this should be
+merged or not but my reluctance is more about the mix of styles between
+'block' and 'mtd'. People shall not treat them similarly for a number
+of reasons, and this parser is an obvious step towards a more common
+handling, knowing that it's been exclusively used on blocks for
+decades.
+
+> Also, what other user would consume this new gpt
+> lib abstraction in the future? I don't think it is worth it.
+
+Well, again I don't feel like this is a problem, sharing code between
+two parties is already a win and the choice for a lib sounds rational
+to me. The question being, shall we do it/do we want to do it.
+
+Thanks,
+Miqu=C3=A8l
