@@ -2,83 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AB0A8136A2
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 17:45:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D6A28136AB
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 17:46:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229599AbjLNQpo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 11:45:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50048 "EHLO
+        id S234413AbjLNQq3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 11:46:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36496 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229727AbjLNQpk (ORCPT
+        with ESMTP id S230372AbjLNQqZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 11:45:40 -0500
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1970E112
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 08:45:46 -0800 (PST)
-Received: from mail.maildlp.com (unknown [172.18.186.216])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4SrdVc6P6Cz67CtB;
-        Fri, 15 Dec 2023 00:44:40 +0800 (CST)
-Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
-        by mail.maildlp.com (Postfix) with ESMTPS id AF11C1400CA;
-        Fri, 15 Dec 2023 00:45:43 +0800 (CST)
-Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
- (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Thu, 14 Dec
- 2023 16:45:43 +0000
-Date:   Thu, 14 Dec 2023 16:45:41 +0000
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     Jean-Philippe Brucker <jean-philippe@linaro.org>
-CC:     Robin Murphy <robin.murphy@arm.com>, Will Deacon <will@kernel.org>,
-        "Ryan Roberts" <ryan.roberts@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Marc Zyngier <maz@kernel.org>,
-        "Oliver Upton" <oliver.upton@linux.dev>,
-        James Morse <james.morse@arm.com>,
-        "Suzuki K Poulose" <suzuki.poulose@arm.com>,
-        Zenghui Yu <yuzenghui@huawei.com>,
-        "Andrey Ryabinin" <ryabinin.a.a@gmail.com>,
-        Alexander Potapenko <glider@google.com>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        "Andrew Morton" <akpm@linux-foundation.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Yu Zhao <yuzhao@google.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        David Hildenbrand <david@redhat.com>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        John Hubbard <jhubbard@nvidia.com>, Zi Yan <ziy@nvidia.com>,
-        Barry Song <21cnbao@gmail.com>,
-        Alistair Popple <apopple@nvidia.com>,
-        Yang Shi <shy828301@gmail.com>,
-        <linux-arm-kernel@lists.infradead.org>, <linux-mm@kvack.org>,
-        <linux-kernel@vger.kernel.org>,
-        <shameerali.kolothum.thodi@huawei.com>
-Subject: Re: [PATCH v3 12/15] arm64/mm: Split __flush_tlb_range() to elide
- trailing DSB
-Message-ID: <20231214164541.000027a1@Huawei.com>
-In-Reply-To: <20231214152206.GA3625745@myrica>
-References: <20231204105440.61448-1-ryan.roberts@arm.com>
-        <20231204105440.61448-13-ryan.roberts@arm.com>
-        <20231212113517.GA28857@willie-the-truck>
-        <0969c413-bf40-4c46-9f1e-a92101ff2d2e@arm.com>
-        <2e6f06d3-6c8e-4b44-b6f2-e55bd5be83d6@arm.com>
-        <20231214121336.GA1015@willie-the-truck>
-        <fbcda9e1-0473-4669-a869-d4de351c3197@arm.com>
-        <20231214152206.GA3625745@myrica>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
+        Thu, 14 Dec 2023 11:46:25 -0500
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF6D2129;
+        Thu, 14 Dec 2023 08:46:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+        Message-ID:Sender:Reply-To:Content-ID:Content-Description;
+        bh=KFQntNityiHH+/UdbCUVWZRw9YvJLMgmVI5Az93hmjQ=; b=IM9/nSfD9of+z7g3I48W0bxn06
+        2iFUJmsUNAYOJKrCeRWhcRjuTIkhF8HjZIicADH8iVFnf615BMznsGdXc6dyy0PdXV6kOMhmzByVD
+        lLOlI849SQNZD5xFS5dd7EnLmh3ilNNe/a3zRf7P2eqQnXIJvfg7jraXiAVnwBVNMkyhAyZVqhCu3
+        SmsIFcJuTDpRkZBdi5dzlnz13dLu7u9eqQbHhxVjqHCSMNH6RCbov8qUJ7NHWYW/PvEkkmgTFGd5R
+        fad9PUD9rCwAbHDtfTmrEg7oCbWTpVB224z6jGLu2ECwXJejnSjvx/KCcojOjE15T5RCdrjk2JcPT
+        g/JzVjfA==;
+Received: from [50.53.46.231] (helo=[192.168.254.15])
+        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1rDoqv-000qQy-3D;
+        Thu, 14 Dec 2023 16:46:26 +0000
+Message-ID: <f3a196d0-d15b-4929-857d-18ef77f693a3@infradead.org>
+Date:   Thu, 14 Dec 2023 08:46:21 -0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] media: platform: xilinx: Fix Kconfig indentation
+To:     Michal Simek <michal.simek@amd.com>, linux-kernel@vger.kernel.org,
+        monstr@monstr.eu, michal.simek@xilinx.com, git@xilinx.com
+Cc:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-media@vger.kernel.org
+References: <72c40d216769a97973cac9a347e826b943f71d7f.1702543638.git.michal.simek@amd.com>
+Content-Language: en-US
+From:   Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <72c40d216769a97973cac9a347e826b943f71d7f.1702543638.git.michal.simek@amd.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.202.227.76]
-X-ClientProxiedBy: lhrpeml500006.china.huawei.com (7.191.161.198) To
- lhrpeml500005.china.huawei.com (7.191.163.240)
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -86,43 +55,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 14 Dec 2023 15:22:06 +0000
-Jean-Philippe Brucker <jean-philippe@linaro.org> wrote:
+Hi,
 
-> On Thu, Dec 14, 2023 at 12:30:55PM +0000, Robin Murphy wrote:
-> > > Robin, Jean-Philippe -- do we need to make sure that the SMMU has completed
-> > > its TLB invalidation before issuing an ATC invalidate? My half-baked worry
-> > > is whether or not an ATS request could refill the ATC before the TLBI
-> > > has completed, therefore rendering the ATC invalidation useless.  
-> > 
-> > I would agree, and the spec for CMD_ATC_INV does call out a
-> > TLBI->sync->ATCI->sync sequence. At the moment the SVA notifier is issuing
-> > its own command-based TLBIs anyway so the necessary sync is implicit there,
-> > but if and when we get BTM support wired up properly it would be nice not to
-> > have to bodge in an additional sync/DSB.  
+On 12/14/23 00:47, Michal Simek wrote:
+> Use proper indentation for Kconfig fragments - help part.
 > 
-> Yes agreed, with BTM the CPU must call the notifier that issues ATC
-> invalidation after completing the TLBI+DSB instructions.
-> 
-> SMMU IHI0070F.a  3.9.1 ATS Interface
-> 
-> 	Software must ensure that the SMMU TLB invalidation is complete before
-> 	initiating the ATC invalidation.
-> 
-> I'm guessing BTM will be enabled in the SMMU driver sometime soon, given
-> that there already is one implementation in the wild that could use it. I
-> think we didn't enable it because of the lack of separation between shared
-> and private VMIDs, but that may now be solvable with the recent rework of
-> the VMID allocator.
-> 
+> Signed-off-by: Michal Simek <michal.simek@amd.com>
 
-+CC Shameer.  We'll indeed need to fix this when enabling BTM.
+Reviewed-by: Randy Dunlap <rdunlap@infradead.org>
+Tested-by: Randy Dunlap <rdunlap@infradead.org>
 
-Thanks for the heads up.
+Thanks.
 
-Jonathan
-
-> Thanks,
-> Jean
+> ---
 > 
+>  drivers/media/platform/xilinx/Kconfig | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/media/platform/xilinx/Kconfig b/drivers/media/platform/xilinx/Kconfig
+> index 93ef78bf62e6..601edd9acd5b 100644
+> --- a/drivers/media/platform/xilinx/Kconfig
+> +++ b/drivers/media/platform/xilinx/Kconfig
+> @@ -26,10 +26,10 @@ config VIDEO_XILINX_TPG
+>  	depends on VIDEO_XILINX
+>  	select VIDEO_XILINX_VTC
+>  	help
+> -	   Driver for the Xilinx Video Test Pattern Generator
+> +	  Driver for the Xilinx Video Test Pattern Generator
+>  
+>  config VIDEO_XILINX_VTC
+>  	tristate "Xilinx Video Timing Controller"
+>  	depends on VIDEO_XILINX
+>  	help
+> -	   Driver for the Xilinx Video Timing Controller
+> +	  Driver for the Xilinx Video Timing Controller
 
+-- 
+#Randy
+https://people.kernel.org/tglx/notes-about-netiquette
+https://subspace.kernel.org/etiquette.html
