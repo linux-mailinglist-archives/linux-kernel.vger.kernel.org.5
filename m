@@ -1,74 +1,62 @@
-Return-Path: <linux-kernel+bounces-57-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-58-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DB8BA813B66
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 21:16:57 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 46E42813B68
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 21:18:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B76621C213F7
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 20:16:56 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AC9F41F2119F
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 20:18:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 717E26A321;
-	Thu, 14 Dec 2023 20:16:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 22D6A6A32A;
+	Thu, 14 Dec 2023 20:18:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Qb8AmRnp"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="chOt2JYJ"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-yw1-f169.google.com (mail-yw1-f169.google.com [209.85.128.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10CE065EC3
-	for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 20:16:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f169.google.com with SMTP id 00721157ae682-5e282ec7537so26600317b3.3
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 12:16:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702585007; x=1703189807; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=X5g2byoLusvMZBQ+muoPkNAr9deF2Ysnv7UXdX8LxO0=;
-        b=Qb8AmRnp7R5u91wtl7UJp/DzY2lxuSLhPj8I4+sNKGhb5MBOy7cQIHjVpBsyBjjLYZ
-         1p5+W078SnnsFtNXubSxydaXftXGKWt2rD+7wSySADrECiynbh8mdH59A1XgwhEke0RQ
-         8i4C4HPkBaRUFf1yYwaj69VcyDc5puMxhqL6YXc51ydPq2akOJytdUgi7sIBN5rBthAk
-         tv0FBjaXbgKh6X9Cq/OpnKBgpyr6Cr5YJPZba8JuRyy/AzfHneo6eIuyE22Mnqcdavop
-         /y+HHAq8mctZgwDqmNms/2AKst4gVdnKz3jK8bkzgmvZNwa4H9Uc96tqMlaQBrtL/dqy
-         bggA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702585007; x=1703189807;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=X5g2byoLusvMZBQ+muoPkNAr9deF2Ysnv7UXdX8LxO0=;
-        b=UQoATZDkC+hJY272idd3NZ0N2XqMIN3/v9K+dY4u1W/MevZedsYsquL1/1Nqof4Ppa
-         afdx4D0xe7Y35k+7IPACsqsaP9r93NKZiOTT9rM+TrgafqqXdQsGQQZ9f3+VdBNtm3vp
-         kpliNdyj9FpDXhHA583eWE99sQaBl6v2X3xLomHjuttHGi8GeykMO2cJfZCBPxwUoFjI
-         WxbcWsoW5D/h9JCQjXucR4pU4ZGyHoZfSJ9zcd+6LMFzev+l0PZ/i97F7L3gCSc+3qiv
-         rCH/DgnvkmpL69yYui/vxTCZxWcvNcwNSreMnIAnWHKolJKtZIRmB1lml6JodcFX4GPP
-         JgFw==
-X-Gm-Message-State: AOJu0Yw6gj1TkT8r0y1i0yQO/YAj0YLyzfscHFJoaRqLtzGSC3s5TiwW
-	fGDjLTKpDv63mB6q3SuNbPnbYIgR2Fs=
-X-Google-Smtp-Source: AGHT+IGYOleiZP485KOHAB3NCS06s/7QdASWnmQbPfAfN0UuOFbXrOen5AcqgCoCll0fFwdBnepKWA==
-X-Received: by 2002:a0d:ed46:0:b0:5d7:3444:3fb2 with SMTP id w67-20020a0ded46000000b005d734443fb2mr8710974ywe.65.1702585006577;
-        Thu, 14 Dec 2023 12:16:46 -0800 (PST)
-Received: from localhost ([2601:344:8301:57f0:e177:373d:4717:ff6c])
-        by smtp.gmail.com with ESMTPSA id w70-20020a0dd449000000b005e3a81f6d7dsm620192ywd.121.2023.12.14.12.16.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Dec 2023 12:16:46 -0800 (PST)
-Date: Thu, 14 Dec 2023 12:16:45 -0800
-From: Yury Norov <yury.norov@gmail.com>
-To: Alexander Potapenko <glider@google.com>
-Cc: catalin.marinas@arm.com, will@kernel.org, pcc@google.com,
-	andreyknvl@gmail.com, andriy.shevchenko@linux.intel.com,
-	aleksander.lobakin@intel.com, linux@rasmusvillemoes.dk,
-	alexandru.elisei@arm.com, linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, eugenis@google.com,
-	syednwaris@gmail.com, william.gray@linaro.org
-Subject: Re: [PATCH v10-mte 4/7] arm64: mte: implement CONFIG_ARM64_MTE_COMP
-Message-ID: <ZXtircr4TllpqyeS@yury-ThinkPad>
-References: <20231214110639.2294687-1-glider@google.com>
- <20231214110639.2294687-5-glider@google.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0FD0F6A032
+	for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 20:18:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1702585096; x=1734121096;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=S5AvH5qXgNCy7/YpRO8MlsA5n+BPhAyXtUQD3vFZEbo=;
+  b=chOt2JYJFnR/1/m4ApzyBBL0AvbEFKAwoh+caiCxj+SBuKRfRTiQpP8w
+   Ml/lFkALpN82x05uZsW77/p8bzjj2s3t0isFECEYH07aESehmLZFSE4jo
+   N3b+Vf881AvHULBQICtGSIxPRCG4ieFGYza5+0LgTaBBAY4VHcfLzXiw3
+   9WXk42C6UCN67lJ6ivJ0YiT/GvUXUO4ILTOiuFb7dsYfmgMmedQm/zR9A
+   lSzhOIiquhzj8BqMgGitm10uTjQqQj1HnYGkJE2PTbGmviSs0f0PB62Hh
+   3T9H45615ec5UbRwj2KqIioX4NFwZtNHu9nESiVjqLkayHPqLonkkjRKI
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10924"; a="394051702"
+X-IronPort-AV: E=Sophos;i="6.04,276,1695711600"; 
+   d="scan'208";a="394051702"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Dec 2023 12:18:15 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10924"; a="724191743"
+X-IronPort-AV: E=Sophos;i="6.04,276,1695711600"; 
+   d="scan'208";a="724191743"
+Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
+  by orsmga003.jf.intel.com with ESMTP; 14 Dec 2023 12:18:12 -0800
+Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rDs9q-000MZk-08;
+	Thu, 14 Dec 2023 20:18:10 +0000
+Date: Fri, 15 Dec 2023 04:18:09 +0800
+From: kernel test robot <lkp@intel.com>
+To: Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+	Michael Ellerman <mpe@ellerman.id.au>
+Subject: drivers/soc/fsl/qe/qmc.c:1342:9: sparse: sparse: incorrect type in
+ argument 1 (different address spaces)
+Message-ID: <202312150441.3iL1BKQE-lkp@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -77,641 +65,360 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231214110639.2294687-5-glider@google.com>
 
-On Thu, Dec 14, 2023 at 12:06:36PM +0100, Alexander Potapenko wrote:
-> The config implements the algorithm compressing memory tags for ARM MTE
-> during swapping.
-> 
-> The algorithm is based on RLE and specifically targets buffers of tags
-> corresponding to a single page. In many cases a buffer can be compressed
-> into 63 bits, making it possible to store it without additional memory
-> allocation.
-> 
-> Suggested-by: Evgenii Stepanov <eugenis@google.com>
-> Signed-off-by: Alexander Potapenko <glider@google.com>
-> Acked-by: Catalin Marinas <catalin.marinas@arm.com>
-> 
-> ---
->  v10-mte:
->   - added Catalin's Acked-by:
-> 
->  v8:
->   - As suggested by Catalin Marinas, only compress tags if they can be
->     stored inline. This simplifies the code drastically.
->   - Update the documentation.
->   - Split off patches introducing bitmap_read()/bitmap_write().
-> 
->  v6:
->   - shuffle bits in inline handles so that they can't be confused with
->     canonical pointers;
->   - use kmem_cache_zalloc() to allocate compressed storage
->   - correctly handle range size overflow
->   - minor documentation fixes, clarify the special cases
-> 
->  v5:
->   - make code PAGE_SIZE-agnostic, remove hardcoded constants, updated
->     the docs
->   - implement debugfs interface
->   - Address comments by Andy Shevchenko:
->     - update description of mtecomp.c
->     - remove redundant assignments, simplify mte_tags_to_ranges()
->     - various code simplifications
->     - introduce mtecomp.h
->     - add :export: to Documentation/arch/arm64/mte-tag-compression.rst
-> 
->  v4:
->   - Addressed comments by Andy Shevchenko:
->     - expanded "MTE" to "Memory Tagging Extension" in Kconfig
->     - fixed kernel-doc comments, moved them to C source
->     - changed variables to unsigned where applicable
->     - some code simplifications, fewer unnecessary assignments
->     - added the mte_largest_idx_bits() helper
->     - added namespace prefixes to all functions
->     - added missing headers (but removed bits.h)
->   - Addressed comments by Yury Norov:
->     - removed test-only functions from mtecomp.h
->     - dropped the algoritm name (all functions are now prefixed with
->       "mte")
->     - added more comments
->     - got rid of MTE_RANGES_INLINE
->     - renamed bitmap_{get,set}_value() to bitmap_{read,write}()
->     - moved the big comment explaining the algorithm to
->       Documentation/arch/arm64/mte-tag-compression.rst, expanded it,
->       add a link to it from Documentation/arch/arm64/index.rst
->     - removed hardcoded ranges from mte_alloc_size()/mte_size_to_ranges()
-> 
->  v3:
->   - Addressed comments by Andy Shevchenko:
->    - use bitmap_{set,get}_value() writte by Syed Nayyar Waris
->    - switched to unsigned long everywhere (fewer casts)
->    - simplified the code, removed redundant checks
->    - dropped ea0_compress_inline()
->  - added bit size constants and helpers to access the bitmap
->  - explicitly initialize all compressed sizes in ea0_compress_to_buf()
->  - initialize all handle bits
-> 
->  v2:
->   - as suggested by Yury Norov, switched from struct bitq (which is
->     not needed anymore) to <linux/bitmap.h>
->   - add missing symbol exports
-> ---
->  Documentation/arch/arm64/index.rst            |   1 +
->  .../arch/arm64/mte-tag-compression.rst        | 154 +++++++++++
->  arch/arm64/Kconfig                            |  11 +
->  arch/arm64/include/asm/mtecomp.h              |  39 +++
->  arch/arm64/mm/Makefile                        |   1 +
->  arch/arm64/mm/mtecomp.c                       | 257 ++++++++++++++++++
->  arch/arm64/mm/mtecomp.h                       |  12 +
->  7 files changed, 475 insertions(+)
->  create mode 100644 Documentation/arch/arm64/mte-tag-compression.rst
->  create mode 100644 arch/arm64/include/asm/mtecomp.h
->  create mode 100644 arch/arm64/mm/mtecomp.c
->  create mode 100644 arch/arm64/mm/mtecomp.h
-> 
-> diff --git a/Documentation/arch/arm64/index.rst b/Documentation/arch/arm64/index.rst
-> index d08e924204bf1..bf6c1583233a9 100644
-> --- a/Documentation/arch/arm64/index.rst
-> +++ b/Documentation/arch/arm64/index.rst
-> @@ -19,6 +19,7 @@ ARM64 Architecture
->      legacy_instructions
->      memory
->      memory-tagging-extension
-> +    mte-tag-compression
->      perf
->      pointer-authentication
->      ptdump
-> diff --git a/Documentation/arch/arm64/mte-tag-compression.rst b/Documentation/arch/arm64/mte-tag-compression.rst
-> new file mode 100644
-> index 0000000000000..8fe6b51a9db6d
-> --- /dev/null
-> +++ b/Documentation/arch/arm64/mte-tag-compression.rst
-> @@ -0,0 +1,154 @@
-> +.. SPDX-License-Identifier: GPL-2.0
-> +
-> +==================================================
-> +Tag Compression for Memory Tagging Extension (MTE)
-> +==================================================
-> +
-> +This document describes the algorithm used to compress memory tags used by the
-> +ARM Memory Tagging Extension (MTE).
-> +
-> +Introduction
-> +============
-> +
-> +MTE assigns tags to memory pages: for 4K pages those tags occupy 128 bytes
-> +(256 4-bit tags each corresponding to a 16-byte MTE granule), for 16K pages -
-> +512 bytes, for 64K pages - 2048 bytes. By default, MTE carves out 3.125% (1/16)
-> +of the available physical memory to store the tags.
-> +
-> +When MTE pages are saved to swap, their tags need to be stored in the kernel
-> +memory. If the system swap is used heavily, these tags may take a substantial
-> +portion of the physical memory. To reduce memory waste, ``CONFIG_ARM64_MTE_COMP``
-> +allows the kernel to store the tags in compressed form.
-> +
-> +Implementation details
-> +======================
-> +
-> +The algorithm attempts to compress an array of ``MTE_PAGE_TAG_STORAGE``
-> +tag bytes into a byte sequence that can be stored in an 8-byte pointer. If that
-> +is not possible, the data is stored uncompressed.
-> +
-> +Tag manipulation and storage
-> +----------------------------
-> +
-> +Tags for swapped pages are stored in an XArray that maps swap entries to 63-bit
-> +values (see ``arch/arm64/mm/mteswap.c``). Bit 0 of these values indicates how
-> +their contents should be treated:
-> +
-> + - 0: value is a pointer to an uncompressed buffer allocated with kmalloc()
-> +   (always the case if ``CONFIG_ARM64_MTE_COMP=n``) with the highest bit set
-> +   to 0;
-> + - 1: value contains compressed data.
-> +
-> +``arch/arm64/include/asm/mtecomp.h`` declares the following functions that
-> +manipulate with tags:
-> +
-> +- mte_compress() - compresses the given ``MTE_PAGE_TAG_STORAGE``-byte ``tags``
-> +  buffer into a pointer;
-> +- mte_decompress() - decompresses the tags from a pointer;
-> +- mte_is_compressed() - returns ``true`` iff the pointer passed to it should be
-> +  treated as compressed data.
-> +
-> +Tag compression
-> +---------------
-> +
-> +The compression algorithm is a variation of RLE (run-length encoding) and works
-> +as follows (we will be considering 4K pages and 128-byte tag buffers, but the
-> +same approach scales to 16K and 64K pages):
-> +
-> +1. The input array of 128 (``MTE_PAGE_TAG_STORAGE``) bytes is transformed into
-> +   tag ranges (two arrays: ``r_tags[]`` containing tag values and ``r_sizes[]``
-> +   containing range lengths) by mte_tags_to_ranges(). Note that
-> +   ``r_sizes[]`` sums up to 256 (``MTE_GRANULES_PER_PAGE``).
-> +
-> +   If ``r_sizes[]`` consists of a single element
-> +   (``{ MTE_GRANULES_PER_PAGE }``), the corresponding range is split into two
-> +   halves, i.e.::
-> +
-> +     r_sizes_new[2] = { MTE_GRANULES_PER_PAGE/2, MTE_GRANULES_PER_PAGE/2 };
-> +     r_tags_new[2] = { r_tags[0], r_tags[0] };
-> +
-> +2. The number of the largest element of ``r_sizes[]`` is stored in
-> +   ``largest_idx``. The element itself is thrown away from ``r_sizes[]``,
-> +   because it can be reconstructed from the sum of the remaining elements. Note
-> +   that now none of the remaining ``r_sizes[]`` elements exceeds
-> +   ``MTE_GRANULES_PER_PAGE/2``.
-> +
-> +3. If the number ``N`` of ranges does not exceed ``6``, the ranges can be
-> +   compressed into 64 bits. This is done by storing the following values packed
-> +   into the pointer (``i<size>`` means a ``<size>``-bit unsigned integer)
-> +   treated as a bitmap (see ``include/linux/bitmap.h``)::
-> +
-> +    bit 0      :      (always 1) : i1
-> +    bits 1-3   :     largest_idx : i3
-> +    bits 4-27  :    r_tags[0..5] : i4 x 6
-> +    bits 28-62 :   r_sizes[0..4] : i7 x 5
-> +    bit 63     :      (always 0) : i1
-> +
-> +   If N is less than 6, ``r_tags`` and ``r_sizes`` are padded up with zero
-> +   values. The unused bits in the pointer, including bit 63, are also set to 0,
-> +   so the compressed data can be stored in XArray.
-> +
-> +   Range size of ``MTE_GRANULES_PER_PAGE/2`` (at most one) does not fit into
-> +   i7 and will be written as 0. This case is handled separately by the
-> +   decompressing procedure.
-> +
-> +Tag decompression
-> +-----------------
-> +
-> +The decompression algorithm performs the steps below.
-> +
-> +1. Read the lowest bit of the data from the input buffer and check that it is 1,
-> +   otherwise bail out.
-> +
-> +2. Read ``largest_idx``, ``r_tags[]`` and ``r_sizes[]`` from the
-> +   input buffer.
-> +
-> +   If ``largest_idx`` is zero, and all ``r_sizes[]`` are zero, set
-> +   ``r_sizes[0] = MTE_GRANULES_PER_PAGE/2``.
-> +
-> +   Calculate the removed largest element of ``r_sizes[]`` as
-> +   ``largest = 256 - sum(r_sizes)`` and insert it into ``r_sizes`` at
-> +   position ``largest_idx``.
-> +
-> +6. For each ``r_sizes[i] > 0``, add a 4-bit value ``r_tags[i]`` to the output
-> +   buffer ``r_sizes[i]`` times.
-> +
-> +
-> +Why these numbers?
-> +------------------
-> +
-> +To be able to reconstruct ``N`` tag ranges from the compressed data, we need to
-> +store the indicator bit together with ``largest_idx``, ``r_tags[N]``, and
-> +``r_sizes[N-1]`` in 63 bits.
-> +Knowing that the sizes do not exceed ``MTE_PAGE_TAG_STORAGE``, each of them can be
-> +packed into ``S = ilog2(MTE_PAGE_TAG_STORAGE)`` bits, whereas a single tag occupies
-> +4 bits.
-> +
-> +It is evident that the number of ranges that can be stored in 63 bits is
-> +strictly less than 8, therefore we only need 3 bits to store ``largest_idx``.
-> +
-> +The maximum values of ``N`` so that the number ``1 + 3 + N * 4 + (N-1) * S`` of
-> +storage bits does not exceed 63, are shown in the table below::
-> +
-> + +-----------+-----------------+----+---+-------------------+
-> + | Page size | Tag buffer size |  S | N |    Storage bits   |
-> + +-----------+-----------------+----+---+-------------------+
-> + |      4 KB |           128 B |  7 | 6 | 63 = 1+3+6*4+5*7  |
-> + |     16 KB |           512 B |  9 | 5 | 60 = 1+3+5*4+4*9  |
-> + |     64 KB |          2048 B | 11 | 4 | 53 = 1+3+4*4+3*11 |
-> + +-----------+-----------------+----+---+-------------------+
-> +
-> +Note
-> +----
-> +
-> +Tag compression and decompression implicitly rely on the fixed MTE tag size
-> +(4 bits) and number of tags per page. Should these values change, the algorithm
-> +may need to be revised.
-> +
-> +
-> +Programming Interface
-> +=====================
-> +
-> + .. kernel-doc:: arch/arm64/include/asm/mtecomp.h
-> + .. kernel-doc:: arch/arm64/mm/mtecomp.c
-> +   :export:
-> diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
-> index 7b071a00425d2..5f4d4b49a512e 100644
-> --- a/arch/arm64/Kconfig
-> +++ b/arch/arm64/Kconfig
-> @@ -2078,6 +2078,17 @@ config ARM64_EPAN
->  	  if the cpu does not implement the feature.
->  endmenu # "ARMv8.7 architectural features"
->  
-> +config ARM64_MTE_COMP
-> +	bool "Tag compression for ARM64 Memory Tagging Extension"
-> +	default y
-> +	depends on ARM64_MTE
-> +	help
-> +	  Enable tag compression support for ARM64 Memory Tagging Extension.
-> +
-> +	  Tag buffers corresponding to swapped RAM pages are compressed using
-> +	  RLE to conserve heap memory. In the common case compressed tags
-> +	  occupy 2.5x less memory.
-> +
->  config ARM64_SVE
->  	bool "ARM Scalable Vector Extension support"
->  	default y
-> diff --git a/arch/arm64/include/asm/mtecomp.h b/arch/arm64/include/asm/mtecomp.h
-> new file mode 100644
-> index 0000000000000..b9a3a921a38d4
-> --- /dev/null
-> +++ b/arch/arm64/include/asm/mtecomp.h
-> @@ -0,0 +1,39 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +
-> +#ifndef __ASM_MTECOMP_H
-> +#define __ASM_MTECOMP_H
-> +
-> +#include <linux/types.h>
-> +
-> +/**
-> + * mte_is_compressed() - check if the supplied pointer contains compressed tags.
-> + * @ptr: pointer returned by kmalloc() or mte_compress().
-> + *
-> + * Returns: true iff bit 0 of @ptr is 1, which is only possible if @ptr was
-> + * returned by mte_is_compressed().
-> + */
-> +static inline bool mte_is_compressed(void *ptr)
-> +{
-> +	return ((unsigned long)ptr & 1);
-> +}
-> +
-> +#if defined(CONFIG_ARM64_MTE_COMP)
-> +
-> +void *mte_compress(u8 *tags);
-> +bool mte_decompress(void *handle, u8 *tags);
-> +
-> +#else
-> +
-> +static inline void *mte_compress(u8 *tags)
-> +{
-> +	return NULL;
-> +}
-> +
-> +static inline bool mte_decompress(void *data, u8 *tags)
-> +{
-> +	return false;
-> +}
-> +
-> +#endif // CONFIG_ARM64_MTE_COMP
-> +
-> +#endif // __ASM_MTECOMP_H
-> diff --git a/arch/arm64/mm/Makefile b/arch/arm64/mm/Makefile
-> index dbd1bc95967d0..46778f6dd83c2 100644
-> --- a/arch/arm64/mm/Makefile
-> +++ b/arch/arm64/mm/Makefile
-> @@ -10,6 +10,7 @@ obj-$(CONFIG_TRANS_TABLE)	+= trans_pgd.o
->  obj-$(CONFIG_TRANS_TABLE)	+= trans_pgd-asm.o
->  obj-$(CONFIG_DEBUG_VIRTUAL)	+= physaddr.o
->  obj-$(CONFIG_ARM64_MTE)		+= mteswap.o
-> +obj-$(CONFIG_ARM64_MTE_COMP)	+= mtecomp.o
->  KASAN_SANITIZE_physaddr.o	+= n
->  
->  obj-$(CONFIG_KASAN)		+= kasan_init.o
-> diff --git a/arch/arm64/mm/mtecomp.c b/arch/arm64/mm/mtecomp.c
-> new file mode 100644
-> index 0000000000000..c948921525030
-> --- /dev/null
-> +++ b/arch/arm64/mm/mtecomp.c
-> @@ -0,0 +1,257 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +
-> +/*
-> + * MTE tag compression algorithm.
-> + * See Documentation/arch/arm64/mte-tag-compression.rst for more details.
-> + */
-> +
-> +#include <linux/bits.h>
-> +#include <linux/bitmap.h>
-> +#include <linux/bitops.h>
-> +#include <linux/export.h>
-> +#include <linux/gfp.h>
-> +#include <linux/module.h>
-> +#include <linux/slab.h>
-> +#include <linux/string.h>
-> +#include <linux/types.h>
-> +
-> +#include <asm/mtecomp.h>
-> +
-> +#include "mtecomp.h"
-> +
-> +#define MTE_BITS_PER_LARGEST_IDX 3
-> +/* Range size cannot exceed MTE_GRANULES_PER_PAGE / 2. */
-> +#define MTE_BITS_PER_SIZE (ilog2(MTE_GRANULES_PER_PAGE) - 1)
-> +
-> +/*
-> + * See Documentation/arch/arm64/mte-tag-compression.rst for details on how the
-> + * maximum number of ranges is calculated.
-> + */
-> +#if defined(CONFIG_ARM64_4K_PAGES)
-> +#define MTE_MAX_RANGES 6
-> +#elif defined(CONFIG_ARM64_16K_PAGES)
-> +#define MTE_MAX_RANGES 5
-> +#else
-> +#define MTE_MAX_RANGES 4
-> +#endif
-> +
-> +/**
-> + * mte_tags_to_ranges() - break @tags into arrays of tag ranges.
-> + * @tags: MTE_GRANULES_PER_PAGE-byte array containing MTE tags.
-> + * @out_tags: u8 array to store the tag of every range.
-> + * @out_sizes: unsigned short array to store the size of every range.
-> + * @out_len: length of @out_tags and @out_sizes (output parameter, initially
-> + *           equal to lengths of out_tags[] and out_sizes[]).
-> + *
-> + * This function is exported for testing purposes.
-> + */
-> +void mte_tags_to_ranges(u8 *tags, u8 *out_tags, unsigned short *out_sizes,
-> +			size_t *out_len)
-> +{
-> +	u8 prev_tag = tags[0] / 16; /* First tag in the array. */
-> +	unsigned int cur_idx = 0, i, j;
-> +	u8 cur_tag;
-> +
-> +	memset(out_tags, 0, array_size(*out_len, sizeof(*out_tags)));
-> +	memset(out_sizes, 0, array_size(*out_len, sizeof(*out_sizes)));
-> +
-> +	out_tags[cur_idx] = prev_tag;
-> +	for (i = 0; i < MTE_GRANULES_PER_PAGE; i++) {
-> +		j = i % 2;
-> +		cur_tag = j ? (tags[i / 2] % 16) : (tags[i / 2] / 16);
-> +		if (cur_tag == prev_tag) {
-> +			out_sizes[cur_idx]++;
-> +		} else {
-> +			cur_idx++;
-> +			prev_tag = cur_tag;
-> +			out_tags[cur_idx] = prev_tag;
-> +			out_sizes[cur_idx] = 1;
-> +		}
-> +	}
-> +	*out_len = cur_idx + 1;
-> +}
-> +EXPORT_SYMBOL_NS(mte_tags_to_ranges, MTECOMP);
-> +
-> +/**
-> + * mte_ranges_to_tags() - fill @tags using given tag ranges.
-> + * @r_tags: u8[] containing the tag of every range.
-> + * @r_sizes: unsigned short[] containing the size of every range.
-> + * @r_len: length of @r_tags and @r_sizes.
-> + * @tags: MTE_GRANULES_PER_PAGE-byte array to write the tags to.
-> + *
-> + * This function is exported for testing purposes.
-> + */
-> +void mte_ranges_to_tags(u8 *r_tags, unsigned short *r_sizes, size_t r_len,
-> +			u8 *tags)
-> +{
-> +	unsigned int i, j, pos = 0;
-> +	u8 prev;
-> +
-> +	for (i = 0; i < r_len; i++) {
-> +		for (j = 0; j < r_sizes[i]; j++) {
-> +			if (pos % 2)
-> +				tags[pos / 2] = (prev << 4) | r_tags[i];
-> +			else
-> +				prev = r_tags[i];
-> +			pos++;
-> +		}
-> +	}
-> +}
-> +EXPORT_SYMBOL_NS(mte_ranges_to_tags, MTECOMP);
-> +
-> +static void mte_bitmap_write(unsigned long *bitmap, unsigned long value,
-> +			     unsigned long *pos, unsigned long bits)
-> +{
-> +	bitmap_write(bitmap, value, *pos, bits);
-> +	*pos += bits;
-> +}
-> +
-> +/* Compress ranges into an unsigned long. */
-> +static void mte_compress_to_ulong(size_t len, u8 *tags, unsigned short *sizes,
-> +				  unsigned long *result)
-> +{
-> +	unsigned long bit_pos = 0;
-> +	unsigned int largest_idx, i;
-> +	unsigned short largest = 0;
-> +
-> +	for (i = 0; i < len; i++) {
-> +		if (sizes[i] > largest) {
-> +			largest = sizes[i];
-> +			largest_idx = i;
-> +		}
-> +	}
-> +	/* Bit 1 in position 0 indicates compressed data. */
-> +	mte_bitmap_write(result, 1, &bit_pos, 1);
-> +	mte_bitmap_write(result, largest_idx, &bit_pos,
-> +			 MTE_BITS_PER_LARGEST_IDX);
-> +	for (i = 0; i < len; i++)
-> +		mte_bitmap_write(result, tags[i], &bit_pos, MTE_TAG_SIZE);
-> +	if (len == 1) {
-> +		/*
-> +		 * We are compressing MTE_GRANULES_PER_PAGE of identical tags.
-> +		 * Split it into two ranges containing
-> +		 * MTE_GRANULES_PER_PAGE / 2 tags, so that it falls into the
-> +		 * special case described below.
-> +		 */
-> +		mte_bitmap_write(result, tags[0], &bit_pos, MTE_TAG_SIZE);
-> +		i = 2;
-> +	} else {
-> +		i = len;
-> +	}
-> +	for (; i < MTE_MAX_RANGES; i++)
-> +		mte_bitmap_write(result, 0, &bit_pos, MTE_TAG_SIZE);
-> +	/*
-> +	 * Most of the time sizes[i] fits into MTE_BITS_PER_SIZE, apart from a
-> +	 * special case when:
-> +	 *   len = 2;
-> +	 *   sizes = { MTE_GRANULES_PER_PAGE / 2, MTE_GRANULES_PER_PAGE / 2};
-> +	 * In this case largest_idx will be set to 0, and the size written to
-> +	 * the bitmap will be also 0.
-> +	 */
-> +	for (i = 0; i < len; i++) {
-> +		if (i != largest_idx)
-> +			mte_bitmap_write(result, sizes[i], &bit_pos,
-> +					 MTE_BITS_PER_SIZE);
-> +	}
-> +	for (i = len; i < MTE_MAX_RANGES; i++)
-> +		mte_bitmap_write(result, 0, &bit_pos, MTE_BITS_PER_SIZE);
-> +}
-> +
-> +/**
-> + * mte_compress() - compress the given tag array.
-> + * @tags: MTE_GRANULES_PER_PAGE-byte array to read the tags from.
-> + *
-> + * Attempts to compress the user-supplied tag array.
-> + *
-> + * Returns: compressed data or NULL.
-> + */
-> +void *mte_compress(u8 *tags)
-> +{
-> +	unsigned short *r_sizes;
-> +	void *result = NULL;
-> +	u8 *r_tags;
-> +	size_t r_len;
-> +
-> +	r_sizes = kmalloc_array(MTE_GRANULES_PER_PAGE, sizeof(unsigned short),
-> +				GFP_KERNEL);
-> +	r_tags = kmalloc(MTE_GRANULES_PER_PAGE, GFP_KERNEL);
-> +	if (!r_sizes || !r_tags)
-> +		goto ret;
-> +	r_len = MTE_GRANULES_PER_PAGE;
-> +	mte_tags_to_ranges(tags, r_tags, r_sizes, &r_len);
-> +	if (r_len <= MTE_MAX_RANGES)
-> +		mte_compress_to_ulong(r_len, r_tags, r_sizes,
-> +				      (unsigned long *)&result);
-> +ret:
-> +	kfree(r_tags);
-> +	kfree(r_sizes);
-> +	return result;
-> +}
-> +EXPORT_SYMBOL_NS(mte_compress, MTECOMP);
-> +
-> +static unsigned long mte_bitmap_read(const unsigned long *bitmap,
-> +				     unsigned long *pos, unsigned long bits)
-> +{
-> +	unsigned long start = *pos;
-> +
-> +	*pos += bits;
-> +	return bitmap_read(bitmap, start, bits);
-> +}
-> +
-> +/**
-> + * mte_decompress() - decompress the tag array from the given pointer.
-> + * @data: pointer returned by @mte_compress()
-> + * @tags: MTE_GRANULES_PER_PAGE-byte array to write the tags to.
-> + *
-> + * Reads the compressed data and writes it into the user-supplied tag array.
-> + *
-> + * Returns: true on success, false if the passed data is uncompressed.
-> + */
-> +bool mte_decompress(void *data, u8 *tags)
-> +{
-> +	unsigned short r_sizes[MTE_MAX_RANGES];
-> +	u8 r_tags[MTE_MAX_RANGES];
-> +	unsigned int largest_idx, i;
-> +	unsigned long bit_pos = 0;
-> +	unsigned long *bitmap;
-> +	unsigned short sum;
-> +	size_t max_ranges;
-> +
-> +	if (!mte_is_compressed(data))
-> +		return false;
-> +
-> +	bitmap = (unsigned long *)&data;
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   5bd7ef53ffe5ca580e93e74eb8c81ed191ddc4bd
+commit: eb5aa2137275da82052586f9bd405a1358b48139 powerpc/82xx: Remove CONFIG_8260 and CONFIG_8272
+date:   4 months ago
+config: powerpc-randconfig-r131-20231118 (https://download.01.org/0day-ci/archive/20231215/202312150441.3iL1BKQE-lkp@intel.com/config)
+compiler: powerpc-linux-gcc (GCC) 13.2.0
+reproduce: (https://download.01.org/0day-ci/archive/20231215/202312150441.3iL1BKQE-lkp@intel.com/reproduce)
 
-That looks weird... You're casting address of a 'data' to a bitmap
-instead of 'data'. At the 1st glance it makes little sense because
-'data' is passed as parameter. Moreover, in mte_is_compressed()
-you pass 'data', not '&data'. Can you please comment on your
-intention?
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202312150441.3iL1BKQE-lkp@intel.com/
 
-> +	max_ranges = MTE_MAX_RANGES;
-> +	/* Skip the leading bit indicating the inline case. */
-> +	mte_bitmap_read(bitmap, &bit_pos, 1);
-> +	largest_idx =
-> +		mte_bitmap_read(bitmap, &bit_pos, MTE_BITS_PER_LARGEST_IDX);
+sparse warnings: (new ones prefixed by >>)
+   drivers/soc/fsl/qe/qmc.c:334:12: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected struct cpm_buf_desc [usertype] *[noderef] __iomem bd @@     got struct cpm_buf_desc [noderef] [usertype] __iomem *txbd_free @@
+   drivers/soc/fsl/qe/qmc.c:334:12: sparse:     expected struct cpm_buf_desc [usertype] *[noderef] __iomem bd
+   drivers/soc/fsl/qe/qmc.c:334:12: sparse:     got struct cpm_buf_desc [noderef] [usertype] __iomem *txbd_free
+   drivers/soc/fsl/qe/qmc.c:346:39: sparse: sparse: subtraction of different types can't work (different address spaces)
+   drivers/soc/fsl/qe/qmc.c:389:12: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected struct cpm_buf_desc [usertype] *[noderef] __iomem bd @@     got struct cpm_buf_desc [noderef] [usertype] __iomem *txbd_done @@
+   drivers/soc/fsl/qe/qmc.c:389:12: sparse:     expected struct cpm_buf_desc [usertype] *[noderef] __iomem bd
+   drivers/soc/fsl/qe/qmc.c:389:12: sparse:     got struct cpm_buf_desc [noderef] [usertype] __iomem *txbd_done
+   drivers/soc/fsl/qe/qmc.c:396:47: sparse: sparse: subtraction of different types can't work (different address spaces)
+   drivers/soc/fsl/qe/qmc.c:441:12: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected struct cpm_buf_desc [usertype] *[noderef] __iomem bd @@     got struct cpm_buf_desc [noderef] [usertype] __iomem *rxbd_free @@
+   drivers/soc/fsl/qe/qmc.c:453:39: sparse: sparse: subtraction of different types can't work (different address spaces)
+   drivers/soc/fsl/qe/qmc.c:505:12: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected struct cpm_buf_desc [usertype] *[noderef] __iomem bd @@     got struct cpm_buf_desc [noderef] [usertype] __iomem *rxbd_done @@
+   drivers/soc/fsl/qe/qmc.c:505:12: sparse:     expected struct cpm_buf_desc [usertype] *[noderef] __iomem bd
+   drivers/soc/fsl/qe/qmc.c:505:12: sparse:     got struct cpm_buf_desc [noderef] [usertype] __iomem *rxbd_done
+   drivers/soc/fsl/qe/qmc.c:512:47: sparse: sparse: subtraction of different types can't work (different address spaces)
+   drivers/soc/fsl/qe/qmc.c:670:12: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected struct cpm_buf_desc [usertype] *[noderef] __iomem bd @@     got struct cpm_buf_desc [noderef] [usertype] __iomem *rxbds @@
+   drivers/soc/fsl/qe/qmc.c:675:47: sparse: sparse: subtraction of different types can't work (different address spaces)
+   drivers/soc/fsl/qe/qmc.c:705:12: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected struct cpm_buf_desc [usertype] *[noderef] __iomem bd @@     got struct cpm_buf_desc [noderef] [usertype] __iomem *txbds @@
+   drivers/soc/fsl/qe/qmc.c:705:12: sparse:     expected struct cpm_buf_desc [usertype] *[noderef] __iomem bd
+   drivers/soc/fsl/qe/qmc.c:705:12: sparse:     got struct cpm_buf_desc [noderef] [usertype] __iomem *txbds
+   drivers/soc/fsl/qe/qmc.c:710:47: sparse: sparse: subtraction of different types can't work (different address spaces)
+   drivers/soc/fsl/qe/qmc.c:1108:30: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *[noderef] __iomem addr @@     got unsigned short [noderef] __iomem * @@
+   drivers/soc/fsl/qe/qmc.c:1108:30: sparse:     expected void *[noderef] __iomem addr
+   drivers/soc/fsl/qe/qmc.c:1108:30: sparse:     got unsigned short [noderef] __iomem *
+   drivers/soc/fsl/qe/qmc.c:1111:22: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *[noderef] __iomem addr @@     got unsigned short [noderef] __iomem * @@
+   drivers/soc/fsl/qe/qmc.c:1111:22: sparse:     expected void *[noderef] __iomem addr
+   drivers/soc/fsl/qe/qmc.c:1111:22: sparse:     got unsigned short [noderef] __iomem *
+   drivers/soc/fsl/qe/qmc.c:1120:30: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *[noderef] __iomem addr @@     got unsigned short [noderef] __iomem * @@
+   drivers/soc/fsl/qe/qmc.c:1120:30: sparse:     expected void *[noderef] __iomem addr
+   drivers/soc/fsl/qe/qmc.c:1120:30: sparse:     got unsigned short [noderef] __iomem *
+   drivers/soc/fsl/qe/qmc.c:1123:22: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *[noderef] __iomem addr @@     got unsigned short [noderef] __iomem * @@
+   drivers/soc/fsl/qe/qmc.c:1123:22: sparse:     expected void *[noderef] __iomem addr
+   drivers/soc/fsl/qe/qmc.c:1123:22: sparse:     got unsigned short [noderef] __iomem *
+   drivers/soc/fsl/qe/qmc.c:1176:44: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *[noderef] __iomem addr @@     got unsigned short [noderef] [usertype] __iomem * @@
+   drivers/soc/fsl/qe/qmc.c:1176:44: sparse:     expected void *[noderef] __iomem addr
+   drivers/soc/fsl/qe/qmc.c:1176:44: sparse:     got unsigned short [noderef] [usertype] __iomem *
+   drivers/soc/fsl/qe/qmc.c:1181:29: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *[noderef] __iomem addr @@     got unsigned short [noderef] [usertype] __iomem *[assigned] last @@
+   drivers/soc/fsl/qe/qmc.c:1181:29: sparse:     expected void *[noderef] __iomem addr
+   drivers/soc/fsl/qe/qmc.c:1181:29: sparse:     got unsigned short [noderef] [usertype] __iomem *[assigned] last
+   drivers/soc/fsl/qe/qmc.c:1194:35: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *[noderef] __iomem addr @@     got unsigned short [noderef] [usertype] __iomem *int_curr @@
+   drivers/soc/fsl/qe/qmc.c:1194:35: sparse:     expected void *[noderef] __iomem addr
+   drivers/soc/fsl/qe/qmc.c:1194:35: sparse:     got unsigned short [noderef] [usertype] __iomem *int_curr
+   drivers/soc/fsl/qe/qmc.c:1197:32: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *[noderef] __iomem addr @@     got unsigned short [noderef] [usertype] __iomem *int_curr @@
+   drivers/soc/fsl/qe/qmc.c:1197:32: sparse:     expected void *[noderef] __iomem addr
+   drivers/soc/fsl/qe/qmc.c:1197:32: sparse:     got unsigned short [noderef] [usertype] __iomem *int_curr
+   drivers/soc/fsl/qe/qmc.c:1242:43: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *[noderef] __iomem addr @@     got unsigned short [noderef] [usertype] __iomem *int_curr @@
+   drivers/soc/fsl/qe/qmc.c:1242:43: sparse:     expected void *[noderef] __iomem addr
+   drivers/soc/fsl/qe/qmc.c:1242:43: sparse:     got unsigned short [noderef] [usertype] __iomem *int_curr
+   drivers/soc/fsl/qe/qmc.c:1286:23: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected void *[noderef] scc_regs @@     got void [noderef] __iomem * @@
+   drivers/soc/fsl/qe/qmc.c:1286:23: sparse:     expected void *[noderef] scc_regs
+   drivers/soc/fsl/qe/qmc.c:1286:23: sparse:     got void [noderef] __iomem *
+   drivers/soc/fsl/qe/qmc.c:1295:23: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected void *[noderef] scc_pram @@     got void [noderef] __iomem * @@
+   drivers/soc/fsl/qe/qmc.c:1295:23: sparse:     expected void *[noderef] scc_pram
+   drivers/soc/fsl/qe/qmc.c:1295:23: sparse:     got void [noderef] __iomem *
+   drivers/soc/fsl/qe/qmc.c:1299:21: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected void *[noderef] dpram @@     got void [noderef] __iomem * @@
+   drivers/soc/fsl/qe/qmc.c:1299:21: sparse:     expected void *[noderef] dpram
+   drivers/soc/fsl/qe/qmc.c:1299:21: sparse:     got void [noderef] __iomem *
+   drivers/soc/fsl/qe/qmc.c:1335:23: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected struct cpm_buf_desc [noderef] [usertype] __iomem *bd_table @@     got void * @@
+   drivers/soc/fsl/qe/qmc.c:1335:23: sparse:     expected struct cpm_buf_desc [noderef] [usertype] __iomem *bd_table
+   drivers/soc/fsl/qe/qmc.c:1335:23: sparse:     got void *
+>> drivers/soc/fsl/qe/qmc.c:1342:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const * @@     got struct cpm_buf_desc [noderef] [usertype] __iomem *bd_table @@
+   drivers/soc/fsl/qe/qmc.c:1342:9: sparse:     expected void const *
+   drivers/soc/fsl/qe/qmc.c:1342:9: sparse:     got struct cpm_buf_desc [noderef] [usertype] __iomem *bd_table
+>> drivers/soc/fsl/qe/qmc.c:1342:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const * @@     got struct cpm_buf_desc [noderef] [usertype] __iomem *bd_table @@
+   drivers/soc/fsl/qe/qmc.c:1342:9: sparse:     expected void const *
+   drivers/soc/fsl/qe/qmc.c:1342:9: sparse:     got struct cpm_buf_desc [noderef] [usertype] __iomem *bd_table
+   drivers/soc/fsl/qe/qmc.c:1342:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void * @@     got struct cpm_buf_desc [noderef] [usertype] __iomem *bd_table @@
+   drivers/soc/fsl/qe/qmc.c:1342:9: sparse:     expected void *
+   drivers/soc/fsl/qe/qmc.c:1342:9: sparse:     got struct cpm_buf_desc [noderef] [usertype] __iomem *bd_table
+   drivers/soc/fsl/qe/qmc.c:1348:24: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected unsigned short [noderef] [usertype] __iomem *int_table @@     got void * @@
+   drivers/soc/fsl/qe/qmc.c:1348:24: sparse:     expected unsigned short [noderef] [usertype] __iomem *int_table
+   drivers/soc/fsl/qe/qmc.c:1348:24: sparse:     got void *
+>> drivers/soc/fsl/qe/qmc.c:1355:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const * @@     got unsigned short [noderef] [usertype] __iomem *int_table @@
+   drivers/soc/fsl/qe/qmc.c:1355:9: sparse:     expected void const *
+   drivers/soc/fsl/qe/qmc.c:1355:9: sparse:     got unsigned short [noderef] [usertype] __iomem *int_table
+>> drivers/soc/fsl/qe/qmc.c:1355:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const * @@     got unsigned short [noderef] [usertype] __iomem *int_table @@
+   drivers/soc/fsl/qe/qmc.c:1355:9: sparse:     expected void const *
+   drivers/soc/fsl/qe/qmc.c:1355:9: sparse:     got unsigned short [noderef] [usertype] __iomem *int_table
+   drivers/soc/fsl/qe/qmc.c:1355:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void * @@     got unsigned short [noderef] [usertype] __iomem *int_table @@
+   drivers/soc/fsl/qe/qmc.c:1355:9: sparse:     expected void *
+   drivers/soc/fsl/qe/qmc.c:1355:9: sparse:     got unsigned short [noderef] [usertype] __iomem *int_table
+   drivers/soc/fsl/qe/qmc.c:290:33: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void [noderef] __iomem *addr @@     got void *[noderef] __iomem addr @@
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse:     expected void [noderef] __iomem *addr
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse:     got void *[noderef] __iomem addr
+   drivers/soc/fsl/qe/qmc.c:290:33: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:292:29: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void [noderef] __iomem *addr @@     got void *[noderef] __iomem addr @@
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse:     expected void [noderef] __iomem *addr
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse:     got void *[noderef] __iomem addr
+   drivers/soc/fsl/qe/qmc.c:292:29: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:295:39: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:295:39: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:233:21: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:233:38: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:228:27: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const [noderef] __iomem *addr @@     got void *[noderef] __iomem addr @@
+   drivers/soc/fsl/qe/qmc.c:228:27: sparse:     expected void const [noderef] __iomem *addr
+   drivers/soc/fsl/qe/qmc.c:228:27: sparse:     got void *[noderef] __iomem addr
+   drivers/soc/fsl/qe/qmc.c:233:38: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:228:27: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:228:27: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void [noderef] __iomem *addr @@     got void *[noderef] __iomem addr @@
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse:     expected void [noderef] __iomem *addr
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse:     got void *[noderef] __iomem addr
+   drivers/soc/fsl/qe/qmc.c:233:21: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:233:38: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:228:27: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:298:39: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:298:39: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:238:21: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:238:38: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:228:27: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const [noderef] __iomem *addr @@     got void *[noderef] __iomem addr @@
+   drivers/soc/fsl/qe/qmc.c:228:27: sparse:     expected void const [noderef] __iomem *addr
+   drivers/soc/fsl/qe/qmc.c:228:27: sparse:     got void *[noderef] __iomem addr
+   drivers/soc/fsl/qe/qmc.c:238:38: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:228:27: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:228:27: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void [noderef] __iomem *addr @@     got void *[noderef] __iomem addr @@
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse:     expected void [noderef] __iomem *addr
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse:     got void *[noderef] __iomem addr
+   drivers/soc/fsl/qe/qmc.c:238:21: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:238:38: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:228:27: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:304:29: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void [noderef] __iomem *addr @@     got void *[noderef] __iomem addr @@
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse:     expected void [noderef] __iomem *addr
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse:     got void *[noderef] __iomem addr
+   drivers/soc/fsl/qe/qmc.c:304:29: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:336:28: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:228:27: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const [noderef] __iomem *addr @@     got void *[noderef] __iomem addr @@
+   drivers/soc/fsl/qe/qmc.c:228:27: sparse:     expected void const [noderef] __iomem *addr
+   drivers/soc/fsl/qe/qmc.c:228:27: sparse:     got void *[noderef] __iomem addr
+   drivers/soc/fsl/qe/qmc.c:336:28: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:228:27: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:228:27: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:343:22: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void [noderef] __iomem *addr @@     got void *[noderef] __iomem addr @@
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse:     expected void [noderef] __iomem *addr
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse:     got void *[noderef] __iomem addr
+   drivers/soc/fsl/qe/qmc.c:343:22: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:344:22: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:243:26: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void [noderef] __iomem *addr @@     got void *[noderef] __iomem addr @@
+   drivers/soc/fsl/qe/qmc.c:243:26: sparse:     expected void [noderef] __iomem *addr
+   drivers/soc/fsl/qe/qmc.c:243:26: sparse:     got void *[noderef] __iomem addr
+   drivers/soc/fsl/qe/qmc.c:344:22: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:243:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:243:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:346:36: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:353:22: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void [noderef] __iomem *addr @@     got void *[noderef] __iomem addr @@
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse:     expected void [noderef] __iomem *addr
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse:     got void *[noderef] __iomem addr
+   drivers/soc/fsl/qe/qmc.c:353:22: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:223:26: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:356:31: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:356:31: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:233:21: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:233:38: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:228:27: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const [noderef] __iomem *addr @@     got void *[noderef] __iomem addr @@
+   drivers/soc/fsl/qe/qmc.c:228:27: sparse:     expected void const [noderef] __iomem *addr
+   drivers/soc/fsl/qe/qmc.c:228:27: sparse:     got void *[noderef] __iomem addr
+   drivers/soc/fsl/qe/qmc.c:233:38: sparse: sparse: dereference of noderef expression
+   drivers/soc/fsl/qe/qmc.c:228:27: sparse: sparse: dereference of noderef expression
+--
+>> drivers/i2c/busses/i2c-cpm.c:661:58: sparse: sparse: incorrect type in argument 1 (different base types) @@     expected restricted __be32 const [usertype] *p @@     got unsigned int const [usertype] *[assigned] data @@
+   drivers/i2c/busses/i2c-cpm.c:661:58: sparse:     expected restricted __be32 const [usertype] *p
+   drivers/i2c/busses/i2c-cpm.c:661:58: sparse:     got unsigned int const [usertype] *[assigned] data
 
-Nit: really no need to split the line - we're OK with 100-chars per
-line now.
+vim +1342 drivers/soc/fsl/qe/qmc.c
 
-> +	if (largest_idx >= MTE_MAX_RANGES)
-> +		return false;
-> +
-> +	for (i = 0; i < max_ranges; i++)
-> +		r_tags[i] = mte_bitmap_read(bitmap, &bit_pos, MTE_TAG_SIZE);
-> +	for (i = 0, sum = 0; i < max_ranges; i++) {
-> +		if (i == largest_idx)
-> +			continue;
-> +		r_sizes[i] =
-> +			mte_bitmap_read(bitmap, &bit_pos, MTE_BITS_PER_SIZE);
-> +		/*
-> +		 * Special case: tag array consists of two ranges of
-> +		 * `MTE_GRANULES_PER_PAGE / 2` tags.
-> +		 */
-> +		if ((largest_idx == 0) && (i == 1) && (r_sizes[i] == 0))
-> +			r_sizes[i] = MTE_GRANULES_PER_PAGE / 2;
-> +		if (!r_sizes[i]) {
-> +			max_ranges = i;
-> +			break;
-> +		}
-> +		sum += r_sizes[i];
-> +	}
-> +	if (sum >= MTE_GRANULES_PER_PAGE)
-> +		return false;
-> +	r_sizes[largest_idx] = MTE_GRANULES_PER_PAGE - sum;
-> +	mte_ranges_to_tags(r_tags, r_sizes, max_ranges, tags);
-> +	return true;
-> +}
-> +EXPORT_SYMBOL_NS(mte_decompress, MTECOMP);
-> diff --git a/arch/arm64/mm/mtecomp.h b/arch/arm64/mm/mtecomp.h
-> new file mode 100644
-> index 0000000000000..b94cf0384f2af
-> --- /dev/null
-> +++ b/arch/arm64/mm/mtecomp.h
-> @@ -0,0 +1,12 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +
-> +#ifndef ARCH_ARM64_MM_MTECOMP_H_
-> +#define ARCH_ARM64_MM_MTECOMP_H_
-> +
-> +/* Functions exported from mtecomp.c for test_mtecomp.c. */
-> +void mte_tags_to_ranges(u8 *tags, u8 *out_tags, unsigned short *out_sizes,
-> +			size_t *out_len);
-> +void mte_ranges_to_tags(u8 *r_tags, unsigned short *r_sizes, size_t r_len,
-> +			u8 *tags);
-> +
-> +#endif  // ARCH_ARM64_MM_TEST_MTECOMP_H_
-> -- 
-> 2.43.0.472.g3155946c3a-goog
+3178d58e0b9772 Herve Codina 2023-02-17  1269  
+3178d58e0b9772 Herve Codina 2023-02-17  1270  static int qmc_probe(struct platform_device *pdev)
+3178d58e0b9772 Herve Codina 2023-02-17  1271  {
+3178d58e0b9772 Herve Codina 2023-02-17  1272  	struct device_node *np = pdev->dev.of_node;
+3178d58e0b9772 Herve Codina 2023-02-17  1273  	unsigned int nb_chans;
+3178d58e0b9772 Herve Codina 2023-02-17  1274  	struct resource *res;
+3178d58e0b9772 Herve Codina 2023-02-17  1275  	struct qmc *qmc;
+3178d58e0b9772 Herve Codina 2023-02-17  1276  	int irq;
+3178d58e0b9772 Herve Codina 2023-02-17  1277  	int ret;
+3178d58e0b9772 Herve Codina 2023-02-17  1278  
+3178d58e0b9772 Herve Codina 2023-02-17  1279  	qmc = devm_kzalloc(&pdev->dev, sizeof(*qmc), GFP_KERNEL);
+3178d58e0b9772 Herve Codina 2023-02-17  1280  	if (!qmc)
+3178d58e0b9772 Herve Codina 2023-02-17  1281  		return -ENOMEM;
+3178d58e0b9772 Herve Codina 2023-02-17  1282  
+3178d58e0b9772 Herve Codina 2023-02-17  1283  	qmc->dev = &pdev->dev;
+3178d58e0b9772 Herve Codina 2023-02-17  1284  	INIT_LIST_HEAD(&qmc->chan_head);
+3178d58e0b9772 Herve Codina 2023-02-17  1285  
+3178d58e0b9772 Herve Codina 2023-02-17  1286  	qmc->scc_regs = devm_platform_ioremap_resource_byname(pdev, "scc_regs");
+3178d58e0b9772 Herve Codina 2023-02-17  1287  	if (IS_ERR(qmc->scc_regs))
+3178d58e0b9772 Herve Codina 2023-02-17  1288  		return PTR_ERR(qmc->scc_regs);
+3178d58e0b9772 Herve Codina 2023-02-17  1289  
+3178d58e0b9772 Herve Codina 2023-02-17  1290  
+3178d58e0b9772 Herve Codina 2023-02-17  1291  	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "scc_pram");
+3178d58e0b9772 Herve Codina 2023-02-17  1292  	if (!res)
+3178d58e0b9772 Herve Codina 2023-02-17  1293  		return -EINVAL;
+3178d58e0b9772 Herve Codina 2023-02-17  1294  	qmc->scc_pram_offset = res->start - get_immrbase();
+3178d58e0b9772 Herve Codina 2023-02-17  1295  	qmc->scc_pram = devm_ioremap_resource(qmc->dev, res);
+3178d58e0b9772 Herve Codina 2023-02-17  1296  	if (IS_ERR(qmc->scc_pram))
+3178d58e0b9772 Herve Codina 2023-02-17  1297  		return PTR_ERR(qmc->scc_pram);
+3178d58e0b9772 Herve Codina 2023-02-17  1298  
+3178d58e0b9772 Herve Codina 2023-02-17  1299  	qmc->dpram  = devm_platform_ioremap_resource_byname(pdev, "dpram");
+3178d58e0b9772 Herve Codina 2023-02-17  1300  	if (IS_ERR(qmc->dpram))
+3178d58e0b9772 Herve Codina 2023-02-17  1301  		return PTR_ERR(qmc->dpram);
+3178d58e0b9772 Herve Codina 2023-02-17  1302  
+3178d58e0b9772 Herve Codina 2023-02-17  1303  	qmc->tsa_serial = devm_tsa_serial_get_byphandle(qmc->dev, np, "fsl,tsa-serial");
+3178d58e0b9772 Herve Codina 2023-02-17  1304  	if (IS_ERR(qmc->tsa_serial)) {
+3178d58e0b9772 Herve Codina 2023-02-17  1305  		return dev_err_probe(qmc->dev, PTR_ERR(qmc->tsa_serial),
+3178d58e0b9772 Herve Codina 2023-02-17  1306  				     "Failed to get TSA serial\n");
+3178d58e0b9772 Herve Codina 2023-02-17  1307  	}
+3178d58e0b9772 Herve Codina 2023-02-17  1308  
+3178d58e0b9772 Herve Codina 2023-02-17  1309  	/* Connect the serial (SCC) to TSA */
+3178d58e0b9772 Herve Codina 2023-02-17  1310  	ret = tsa_serial_connect(qmc->tsa_serial);
+3178d58e0b9772 Herve Codina 2023-02-17  1311  	if (ret) {
+3178d58e0b9772 Herve Codina 2023-02-17  1312  		dev_err(qmc->dev, "Failed to connect TSA serial\n");
+3178d58e0b9772 Herve Codina 2023-02-17  1313  		return ret;
+3178d58e0b9772 Herve Codina 2023-02-17  1314  	}
+3178d58e0b9772 Herve Codina 2023-02-17  1315  
+3178d58e0b9772 Herve Codina 2023-02-17  1316  	/* Parse channels informationss */
+3178d58e0b9772 Herve Codina 2023-02-17  1317  	ret = qmc_of_parse_chans(qmc, np);
+3178d58e0b9772 Herve Codina 2023-02-17  1318  	if (ret)
+3178d58e0b9772 Herve Codina 2023-02-17  1319  		goto err_tsa_serial_disconnect;
+3178d58e0b9772 Herve Codina 2023-02-17  1320  
+3178d58e0b9772 Herve Codina 2023-02-17  1321  	nb_chans = qmc_nb_chans(qmc);
+3178d58e0b9772 Herve Codina 2023-02-17  1322  
+3178d58e0b9772 Herve Codina 2023-02-17  1323  	/* Init GMSR_H and GMSR_L registers */
+3178d58e0b9772 Herve Codina 2023-02-17  1324  	qmc_write32(qmc->scc_regs + SCC_GSMRH,
+3178d58e0b9772 Herve Codina 2023-02-17  1325  		    SCC_GSMRH_CDS | SCC_GSMRH_CTSS | SCC_GSMRH_CDP | SCC_GSMRH_CTSP);
+3178d58e0b9772 Herve Codina 2023-02-17  1326  
+3178d58e0b9772 Herve Codina 2023-02-17  1327  	/* enable QMC mode */
+3178d58e0b9772 Herve Codina 2023-02-17  1328  	qmc_write32(qmc->scc_regs + SCC_GSMRL, SCC_GSMRL_MODE_QMC);
+3178d58e0b9772 Herve Codina 2023-02-17  1329  
+3178d58e0b9772 Herve Codina 2023-02-17  1330  	/*
+3178d58e0b9772 Herve Codina 2023-02-17  1331  	 * Allocate the buffer descriptor table
+3178d58e0b9772 Herve Codina 2023-02-17  1332  	 * 8 rx and 8 tx descriptors per channel
+3178d58e0b9772 Herve Codina 2023-02-17  1333  	 */
+3178d58e0b9772 Herve Codina 2023-02-17  1334  	qmc->bd_size = (nb_chans * (QMC_NB_TXBDS + QMC_NB_RXBDS)) * sizeof(cbd_t);
+3178d58e0b9772 Herve Codina 2023-02-17  1335  	qmc->bd_table = dmam_alloc_coherent(qmc->dev, qmc->bd_size,
+3178d58e0b9772 Herve Codina 2023-02-17  1336  		&qmc->bd_dma_addr, GFP_KERNEL);
+3178d58e0b9772 Herve Codina 2023-02-17  1337  	if (!qmc->bd_table) {
+3178d58e0b9772 Herve Codina 2023-02-17  1338  		dev_err(qmc->dev, "Failed to allocate bd table\n");
+3178d58e0b9772 Herve Codina 2023-02-17  1339  		ret = -ENOMEM;
+3178d58e0b9772 Herve Codina 2023-02-17  1340  		goto err_tsa_serial_disconnect;
+3178d58e0b9772 Herve Codina 2023-02-17  1341  	}
+3178d58e0b9772 Herve Codina 2023-02-17 @1342  	memset(qmc->bd_table, 0, qmc->bd_size);
+3178d58e0b9772 Herve Codina 2023-02-17  1343  
+3178d58e0b9772 Herve Codina 2023-02-17  1344  	qmc_write32(qmc->scc_pram + QMC_GBL_MCBASE, qmc->bd_dma_addr);
+3178d58e0b9772 Herve Codina 2023-02-17  1345  
+3178d58e0b9772 Herve Codina 2023-02-17  1346  	/* Allocate the interrupt table */
+3178d58e0b9772 Herve Codina 2023-02-17  1347  	qmc->int_size = QMC_NB_INTS * sizeof(u16);
+3178d58e0b9772 Herve Codina 2023-02-17  1348  	qmc->int_table = dmam_alloc_coherent(qmc->dev, qmc->int_size,
+3178d58e0b9772 Herve Codina 2023-02-17  1349  		&qmc->int_dma_addr, GFP_KERNEL);
+3178d58e0b9772 Herve Codina 2023-02-17  1350  	if (!qmc->int_table) {
+3178d58e0b9772 Herve Codina 2023-02-17  1351  		dev_err(qmc->dev, "Failed to allocate interrupt table\n");
+3178d58e0b9772 Herve Codina 2023-02-17  1352  		ret = -ENOMEM;
+3178d58e0b9772 Herve Codina 2023-02-17  1353  		goto err_tsa_serial_disconnect;
+3178d58e0b9772 Herve Codina 2023-02-17  1354  	}
+3178d58e0b9772 Herve Codina 2023-02-17 @1355  	memset(qmc->int_table, 0, qmc->int_size);
+3178d58e0b9772 Herve Codina 2023-02-17  1356  
+3178d58e0b9772 Herve Codina 2023-02-17  1357  	qmc->int_curr = qmc->int_table;
+3178d58e0b9772 Herve Codina 2023-02-17  1358  	qmc_write32(qmc->scc_pram + QMC_GBL_INTBASE, qmc->int_dma_addr);
+3178d58e0b9772 Herve Codina 2023-02-17  1359  	qmc_write32(qmc->scc_pram + QMC_GBL_INTPTR, qmc->int_dma_addr);
+3178d58e0b9772 Herve Codina 2023-02-17  1360  
+3178d58e0b9772 Herve Codina 2023-02-17  1361  	/* Set MRBLR (valid for HDLC only) max MRU + max CRC */
+3178d58e0b9772 Herve Codina 2023-02-17  1362  	qmc_write16(qmc->scc_pram + QMC_GBL_MRBLR, HDLC_MAX_MRU + 4);
+3178d58e0b9772 Herve Codina 2023-02-17  1363  
+3178d58e0b9772 Herve Codina 2023-02-17  1364  	qmc_write16(qmc->scc_pram + QMC_GBL_GRFTHR, 1);
+3178d58e0b9772 Herve Codina 2023-02-17  1365  	qmc_write16(qmc->scc_pram + QMC_GBL_GRFCNT, 1);
+3178d58e0b9772 Herve Codina 2023-02-17  1366  
+3178d58e0b9772 Herve Codina 2023-02-17  1367  	qmc_write32(qmc->scc_pram + QMC_GBL_C_MASK32, 0xDEBB20E3);
+3178d58e0b9772 Herve Codina 2023-02-17  1368  	qmc_write16(qmc->scc_pram + QMC_GBL_C_MASK16, 0xF0B8);
+3178d58e0b9772 Herve Codina 2023-02-17  1369  
+3178d58e0b9772 Herve Codina 2023-02-17  1370  	ret = qmc_setup_tsa(qmc);
+3178d58e0b9772 Herve Codina 2023-02-17  1371  	if (ret)
+3178d58e0b9772 Herve Codina 2023-02-17  1372  		goto err_tsa_serial_disconnect;
+3178d58e0b9772 Herve Codina 2023-02-17  1373  
+3178d58e0b9772 Herve Codina 2023-02-17  1374  	qmc_write16(qmc->scc_pram + QMC_GBL_QMCSTATE, 0x8000);
+3178d58e0b9772 Herve Codina 2023-02-17  1375  
+3178d58e0b9772 Herve Codina 2023-02-17  1376  	ret = qmc_setup_chans(qmc);
+3178d58e0b9772 Herve Codina 2023-02-17  1377  	if (ret)
+3178d58e0b9772 Herve Codina 2023-02-17  1378  		goto err_tsa_serial_disconnect;
+3178d58e0b9772 Herve Codina 2023-02-17  1379  
+3178d58e0b9772 Herve Codina 2023-02-17  1380  	/* Init interrupts table */
+3178d58e0b9772 Herve Codina 2023-02-17  1381  	ret = qmc_setup_ints(qmc);
+3178d58e0b9772 Herve Codina 2023-02-17  1382  	if (ret)
+3178d58e0b9772 Herve Codina 2023-02-17  1383  		goto err_tsa_serial_disconnect;
+3178d58e0b9772 Herve Codina 2023-02-17  1384  
+3178d58e0b9772 Herve Codina 2023-02-17  1385  	/* Disable and clear interrupts,  set the irq handler */
+3178d58e0b9772 Herve Codina 2023-02-17  1386  	qmc_write16(qmc->scc_regs + SCC_SCCM, 0x0000);
+3178d58e0b9772 Herve Codina 2023-02-17  1387  	qmc_write16(qmc->scc_regs + SCC_SCCE, 0x000F);
+3178d58e0b9772 Herve Codina 2023-02-17  1388  	irq = platform_get_irq(pdev, 0);
+3178d58e0b9772 Herve Codina 2023-02-17  1389  	if (irq < 0)
+3178d58e0b9772 Herve Codina 2023-02-17  1390  		goto err_tsa_serial_disconnect;
+3178d58e0b9772 Herve Codina 2023-02-17  1391  	ret = devm_request_irq(qmc->dev, irq, qmc_irq_handler, 0, "qmc", qmc);
+3178d58e0b9772 Herve Codina 2023-02-17  1392  	if (ret < 0)
+3178d58e0b9772 Herve Codina 2023-02-17  1393  		goto err_tsa_serial_disconnect;
+3178d58e0b9772 Herve Codina 2023-02-17  1394  
+3178d58e0b9772 Herve Codina 2023-02-17  1395  	/* Enable interrupts */
+3178d58e0b9772 Herve Codina 2023-02-17  1396  	qmc_write16(qmc->scc_regs + SCC_SCCM,
+3178d58e0b9772 Herve Codina 2023-02-17  1397  		SCC_SCCE_IQOV | SCC_SCCE_GINT | SCC_SCCE_GUN | SCC_SCCE_GOV);
+3178d58e0b9772 Herve Codina 2023-02-17  1398  
+3178d58e0b9772 Herve Codina 2023-02-17  1399  	ret = qmc_finalize_chans(qmc);
+3178d58e0b9772 Herve Codina 2023-02-17  1400  	if (ret < 0)
+3178d58e0b9772 Herve Codina 2023-02-17  1401  		goto err_disable_intr;
+3178d58e0b9772 Herve Codina 2023-02-17  1402  
+3178d58e0b9772 Herve Codina 2023-02-17  1403  	/* Enable transmiter and receiver */
+3178d58e0b9772 Herve Codina 2023-02-17  1404  	qmc_setbits32(qmc->scc_regs + SCC_GSMRL, SCC_GSMRL_ENR | SCC_GSMRL_ENT);
+3178d58e0b9772 Herve Codina 2023-02-17  1405  
+3178d58e0b9772 Herve Codina 2023-02-17  1406  	platform_set_drvdata(pdev, qmc);
+3178d58e0b9772 Herve Codina 2023-02-17  1407  
+3178d58e0b9772 Herve Codina 2023-02-17  1408  	return 0;
+3178d58e0b9772 Herve Codina 2023-02-17  1409  
+3178d58e0b9772 Herve Codina 2023-02-17  1410  err_disable_intr:
+3178d58e0b9772 Herve Codina 2023-02-17  1411  	qmc_write16(qmc->scc_regs + SCC_SCCM, 0);
+3178d58e0b9772 Herve Codina 2023-02-17  1412  
+3178d58e0b9772 Herve Codina 2023-02-17  1413  err_tsa_serial_disconnect:
+3178d58e0b9772 Herve Codina 2023-02-17  1414  	tsa_serial_disconnect(qmc->tsa_serial);
+3178d58e0b9772 Herve Codina 2023-02-17  1415  	return ret;
+3178d58e0b9772 Herve Codina 2023-02-17  1416  }
+3178d58e0b9772 Herve Codina 2023-02-17  1417  
+
+:::::: The code at line 1342 was first introduced by commit
+:::::: 3178d58e0b9772d690456c0bdf8c9f5e191d45f1 soc: fsl: cpm1: Add support for QMC
+
+:::::: TO: Herve Codina <herve.codina@bootlin.com>
+:::::: CC: Mark Brown <broonie@kernel.org>
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
