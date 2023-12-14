@@ -2,74 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 70DD581298F
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 08:39:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 176C0812992
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 08:42:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1443328AbjLNHjq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 02:39:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34560 "EHLO
+        id S234354AbjLNHmG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 02:42:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37808 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234354AbjLNHjo (ORCPT
+        with ESMTP id S229629AbjLNHmF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 02:39:44 -0500
-Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 049CFB9
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 23:39:50 -0800 (PST)
-Received: by mail-wm1-x330.google.com with SMTP id 5b1f17b1804b1-40c3ca9472dso57512635e9.2
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 23:39:49 -0800 (PST)
+        Thu, 14 Dec 2023 02:42:05 -0500
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02EA3B9
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 23:42:11 -0800 (PST)
+Received: by mail-ed1-x52f.google.com with SMTP id 4fb4d7f45d1cf-5522ba3f94aso1570952a12.1
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 23:42:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1702539588; x=1703144388; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1702539729; x=1703144529; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=VW4wVDHDIDRG/QG+aGoy/gqSKcXM6UwBG8v8hXKmGlA=;
-        b=l6W/vGRZpK+v2pmqGZG1WYAvErxX2/wC+iJLfaeJ6n4Yst2nKDicfHaS8+zVkG+tIz
-         e4RPWVmNcYFgBCU7+rzPAAP+3CLpxfV3THerVNfiFl4RhBgS4PuwDPdukpZ1QV8t7dPx
-         4C74ZEp47vYjrAWgtuBHQqwNsz1N0xX8NZyCozo3LG4zNRhyjHM+r1rAeYUHf5Z4iPdI
-         ri+ddsPrIYNgAhQCowAacKygbMlWnWKzcJWxeJLgz+fN++ujfwXzzFj5upfF2UYWeiAu
-         F6TZeQ+qbP5XJ1fFhNzytDzYvzPPN+ousmtO7OaGRhis1h7N8Ncw4hCIbNNJ+75W93gt
-         J/ZQ==
+        bh=eMElSWC9iwqGvBmo8uWjNFZojYiZXvN/GQzRbqzsr2g=;
+        b=QvMP9wP9q4xuj3E/AJ+wqlySet6YjzMdjlhf23iNCF1H3bWhrsXllevrt4T2391f1l
+         rhbZA5j/1/NA4xLWrXDD1O6VD4IWtJkB1FlB9cipqgdQVpv6kD5MBsN1NkypSnV8TYgq
+         yTN4SX56jEDcyigr1CxYbKFVuRehWEX0mZPhKSZJvU83G4HXlNgSwX5l0jfua6bO2FZm
+         lOi9rkdfpaIw2SLDleSj2My6UEUppQixJCVTHuysVC4IB0qGIxaayXawo7A76YvBtjgp
+         hgD4d0QlTaOH7V+gjlenLyi31yVQ6iEk6gWubWUw31gQtvP4/oD22Y6GlAGGAuYMITWP
+         HLvQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702539588; x=1703144388;
+        d=1e100.net; s=20230601; t=1702539729; x=1703144529;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=VW4wVDHDIDRG/QG+aGoy/gqSKcXM6UwBG8v8hXKmGlA=;
-        b=RWl97CQy2Iemau1sK9JC+CvhCgeV4dj/dktY2pm33zAMuaQ59S92UB82bafiQuqfTm
-         cyaZk1fO51S/i16OEN5DptbWEE0e6YGZwQUCrskpQXuBbFtra9xDz3I5TO9nUQ1ziQqP
-         QO7K+HmOQ+CmVbuGqeNzGkBQRRjN8gOvO5MGn8Sfkdw53UlZ7cg2KhKLxdSxH8wJpJa3
-         Pvfd08TPyDdZqi+FO7brtvnrsJdlPie0b+Sg0GGXn2ikURJOIBAKRRZ4vVMuLo0cGJf5
-         IzTFcDoh7/RPYaNeS7ba6KAFEVLaDUrvqSEt+QkRYwzDrKizBjikK16K4YgTygwgX5q/
-         y1DA==
-X-Gm-Message-State: AOJu0YzoSejiLCdSL+N0577rylpJMYSDuL4B6iW3THbJqm3z1RSTL4VK
-        vxQI06/ThjtLQX9Rl3CSWnnb1w==
-X-Google-Smtp-Source: AGHT+IFKfVsa71JYjz6AOShAoEET5JTqa7UESNpG9Wz3xkSPVHkkhcXSxiTRLFBGsag/bUgSJ0RlfQ==
-X-Received: by 2002:a05:600c:430c:b0:409:6e0e:e948 with SMTP id p12-20020a05600c430c00b004096e0ee948mr3260793wme.1.1702539588412;
-        Wed, 13 Dec 2023 23:39:48 -0800 (PST)
+        bh=eMElSWC9iwqGvBmo8uWjNFZojYiZXvN/GQzRbqzsr2g=;
+        b=c/tqnGjOQrgVvnRsE08Ssnao2sUYSRai/a1s3CQyTnYNnpSiy1nIwDe0rNcDh1XIZs
+         j5un+UKkG6R1F5YH5YBGzW+ZffV8vTf+NEta1TUxmu8aGgjBWADBvXoj+EDyqbuHWWlg
+         q0Dx8nnW3R/Hka1pLwagGaGirw5Q4Lz+6I8ZoxR3HRaIY2WAxFAm+lMVSQ4sSlc/+zcG
+         v9/tbUN5cYR5ocEwwAbd5NlIeZIVdGLYDfa4F/J2Gtbyw0vYXczW3jWIOgBmOt3yqgIZ
+         D32aWyysu3+qwXNJtEGxH1K2g9OGjxH9TAWl5ykPPGVt8+9y1sP/Hiz5Lr9282IZKN2H
+         Xmiw==
+X-Gm-Message-State: AOJu0Yw/awVcAQfafCwGitrjDALNyeIMyhgSV2O3q0jScHyZmRUohH3O
+        s2YkiFQkhzmYFqTxUuguYQwnbw==
+X-Google-Smtp-Source: AGHT+IHB62sUmG4NZm7gqH7rBQdPOt++ROP30/V+3OFwfrVoKGceiRJailrXbaDFjD2RBDlmS/axZA==
+X-Received: by 2002:aa7:cf83:0:b0:54c:4fec:f9 with SMTP id z3-20020aa7cf83000000b0054c4fec00f9mr2533739edx.136.1702539729402;
+        Wed, 13 Dec 2023 23:42:09 -0800 (PST)
 Received: from [192.168.1.20] ([178.197.218.27])
-        by smtp.gmail.com with ESMTPSA id fm14-20020a05600c0c0e00b00407b93d8085sm25890269wmb.27.2023.12.13.23.39.47
+        by smtp.gmail.com with ESMTPSA id ew12-20020a056402538c00b00552691fc7f9sm458868edb.66.2023.12.13.23.42.08
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 13 Dec 2023 23:39:48 -0800 (PST)
-Message-ID: <40b5d1a8-37d2-4c68-8d16-33c92c3e5716@linaro.org>
-Date:   Thu, 14 Dec 2023 08:39:46 +0100
+        Wed, 13 Dec 2023 23:42:09 -0800 (PST)
+Message-ID: <d6cbc405-6113-4d6c-a9b9-8f5a32159963@linaro.org>
+Date:   Thu, 14 Dec 2023 08:42:07 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 1/1] dt-bindings: watchdog: starfive,jh7100-wdt: Add
- compatible for JH8100
+Subject: Re: [PATCH] media: dt-bindings: samsung,s5p-mfc: Fix iommu properties
+ schemas
 Content-Language: en-US
-To:     Ji Sheng Teoh <jisheng.teoh@starfivetech.com>,
-        Xingyu Wu <xingyu.wu@starfivetech.com>,
-        Samin Guo <samin.guo@starfivetech.com>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Rob Herring <robh+dt@kernel.org>,
+To:     Rob Herring <robh@kernel.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>
-Cc:     Ley Foon Tan <leyfoon.tan@starfivetech.com>,
-        linux-watchdog@vger.kernel.org, devicetree@vger.kernel.org,
+        Conor Dooley <conor+dt@kernel.org>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Aakarsh Jain <aakarsh.jain@samsung.com>
+Cc:     linux-media@vger.kernel.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org
-References: <20231214033056.3953143-1-jisheng.teoh@starfivetech.com>
- <20231214033056.3953143-2-jisheng.teoh@starfivetech.com>
+References: <20231213224227.2191897-1-robh@kernel.org>
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -115,7 +111,7 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231214033056.3953143-2-jisheng.teoh@starfivetech.com>
+In-Reply-To: <20231213224227.2191897-1-robh@kernel.org>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -128,106 +124,70 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 14/12/2023 04:30, Ji Sheng Teoh wrote:
-> Add "starfive,jh8100-wdt" compatible string for StarFive's JH8100
-> watchdog.
-> Since JH8100 watchdog only has 1 reset signal, update binding
-> document to support one reset for "starfive,jh8100-wdt" compatible.
+On 13/12/2023 23:42, Rob Herring wrote:
+> The iommus and iommu-names property schemas have several issues. First,
+> 'iommus-names' in the if/then schemas is the wrong name. As all the names
+> are the same, they can be defined at the top level instead. Then the
+> if/then schemas just need to define how many entries. The iommus if/then
+> schemas are also redundant. Best I can tell, the desire was to require 2
+> entries for "samsung,exynos5433-mfc", "samsung,mfc-v5", "samsung,mfc-v6",
+> and "samsung,mfc-v8".
 > 
-> Signed-off-by: Ley Foon Tan <leyfoon.tan@starfivetech.com>
-> Signed-off-by: Ji Sheng Teoh <jisheng.teoh@starfivetech.com>
-> ---
->  .../watchdog/starfive,jh7100-wdt.yaml         | 48 ++++++++++++++++---
->  1 file changed, 42 insertions(+), 6 deletions(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/watchdog/starfive,jh7100-wdt.yaml b/Documentation/devicetree/bindings/watchdog/starfive,jh7100-wdt.yaml
-> index 68f3f6fd08a6..79082c5f9971 100644
-> --- a/Documentation/devicetree/bindings/watchdog/starfive,jh7100-wdt.yaml
-> +++ b/Documentation/devicetree/bindings/watchdog/starfive,jh7100-wdt.yaml
-> @@ -19,14 +19,17 @@ description:
->    isn't cleared, the watchdog will reset the system unless the watchdog
->    reset is disabled.
+
+...
+
+> -        iommus-names: false
+> +        iommu-names: false
 >  
-> -allOf:
-> -  - $ref: watchdog.yaml#
-> -
->  properties:
->    compatible:
-> -    enum:
-> -      - starfive,jh7100-wdt
-> -      - starfive,jh7110-wdt
-> +    oneOf:
-> +      - items:
-
-Drop items, it wasn't here in the first place.
-
-> +          - enum:
-> +              - starfive,jh7100-wdt
-> +              - starfive,jh7110-wdt
-> +      - items:
-> +          - enum:
-> +              - starfive,jh8100-wdt
-> +          - const: starfive,jh7110-wdt
->  
->    reg:
->      maxItems: 1
-> @@ -45,10 +48,33 @@ properties:
->        - const: core
->  
->    resets:
-> +    minItems: 1
->      items:
->        - description: APB reset
->        - description: Core reset
-
-This is not valid for jh8100. Move it to else: part. Here maxItems: 2.
-
->  
-> +allOf:
-
-allOf goes after required:, see example-schema
-
-> +  - $ref: watchdog.yaml#
-> +
-> +  - if:
-> +      properties:
-> +        compatible:
-> +          contains:
-> +            enum:
-> +              - starfive,jh8100-wdt
-> +    then:
-> +      properties:
-> +        resets:
-> +          description: |
-> +            Must contain Core reset entry.
-> +          maxItems: 1
-
-Instead of both, items: with description.
-
-> +    else:
-> +      properties:
-> +        resets:
-> +          description: |
-> +            Must contain APB reset and Core reset entry.
+>    - if:
+>        properties:
+> @@ -102,11 +104,9 @@ allOf:
+>              - const: aclk
+>              - const: aclk_xiu
+>          iommus:
+> -          maxItems: 2
+> -        iommus-names:
+> -          items:
+> -            - const: left
+> -            - const: right
 > +          minItems: 2
-> +
->  required:
->    - compatible
->    - reg
-> @@ -69,3 +95,13 @@ examples:
->          resets = <&rst 99>,
->                   <&rst 100>;
->      };
-> +
-> +  - |
-> +    watchdog@12270000 {
-> +        compatible = "starfive,jh8100-wdt", "starfive,jh7110-wdt";
-> +        reg = <0x12270000 0x10000>;
-> +        clocks = <&clk 78>,
-> +                 <&clk 79>;
+> +        iommu-names:
+> +          minItems: 2
+>  
+>    - if:
+>        properties:
+> @@ -123,11 +123,9 @@ allOf:
+>              - const: mfc
+>              - const: sclk_mfc
+>          iommus:
+> -          maxItems: 2
+> +          minItems: 2
+>          iommus-names:
 
-No need for new example with difference in one property.
+Also here -> iommu-names
 
+> -          items:
+> -            - const: left
+> -            - const: right
+> +          minItems: 2
+>  
+>    - if:
+>        properties:
+> @@ -144,11 +142,9 @@ allOf:
+>            items:
+>              - const: mfc
+>          iommus:
+> -          maxItems: 2
+> +          minItems: 2
+>          iommus-names:
+
+Also here
+
+> -          items:
+> -            - const: left
+> -            - const: right
+> +          minItems: 2
+>  
 Best regards,
 Krzysztof
 
