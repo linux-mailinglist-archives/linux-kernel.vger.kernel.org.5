@@ -2,130 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 51BC1812A90
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 09:41:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CFEBB812A92
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 09:42:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230308AbjLNIk6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 03:40:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34916 "EHLO
+        id S234431AbjLNImH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 03:42:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48956 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229441AbjLNIkz (ORCPT
+        with ESMTP id S229441AbjLNImF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 03:40:55 -0500
-Received: from mail-il1-f170.google.com (mail-il1-f170.google.com [209.85.166.170])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A76DE3;
-        Thu, 14 Dec 2023 00:41:02 -0800 (PST)
-Received: by mail-il1-f170.google.com with SMTP id e9e14a558f8ab-35f833adaa6so346865ab.3;
-        Thu, 14 Dec 2023 00:41:02 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702543261; x=1703148061;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=aQbR2JO/KFK5RF93JUmmx4V523VsDvrN1w2XiDVyh7c=;
-        b=sC6+OGtMVPBf3BeuD1kktIfv9O3ogQa/33PK13qGxHjte53nFKFKF65vX7UdqExZHQ
-         O/wlnENRDg4sofnJ1+B1ZTcFeIbwsnTcKmCbLzuQzcHerpc/J/Ws3uKg0MhPllgUBza7
-         or9abWiXWgmSa3e7nEvAJgX94Agc5OsFRC2u2An0sEc1zf5RGI2sl3axiBM0UVEmVMTr
-         iNIy6qJJaudPInvNtLyzGCH81tAkr4lueKPTFGidS0HfU9JDS9Lvg2uD+YXK6Bd1KvfY
-         v7D1o7v2RBHmUc26OhUGZQToa0e1Uwiwqy5Ebp+FXa7gEtW+WMysOcWgFMUrjeERomTq
-         AN0Q==
-X-Gm-Message-State: AOJu0YziyXunf8HNNebY+uV4VVNMDIrDq+3v9mnv1eqVs/9iirU2CrQe
-        kKBDpNo9FMLd0PibiBPu1/M=
-X-Google-Smtp-Source: AGHT+IHTijws84bT+t+wUZlzE5DTLKpXqSjvyPgKeN8xOqYkuQ5p52nrDNR5ore1Nt4kSFPYClVCrA==
-X-Received: by 2002:a05:6e02:1c4d:b0:35f:7629:87d3 with SMTP id d13-20020a056e021c4d00b0035f762987d3mr2870814ilg.43.1702543261164;
-        Thu, 14 Dec 2023 00:41:01 -0800 (PST)
-Received: from snowbird ([136.25.84.107])
-        by smtp.gmail.com with ESMTPSA id o2-20020a1709026b0200b001cfad034756sm11747930plk.138.2023.12.14.00.40.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Dec 2023 00:41:00 -0800 (PST)
-Date:   Thu, 14 Dec 2023 00:40:58 -0800
-From:   Dennis Zhou <dennis@kernel.org>
-To:     Alexandre Ghiti <alexghiti@rivosinc.com>
-Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-        Alexander Potapenko <glider@google.com>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Arnd Bergmann <arnd@arndb.de>, Tejun Heo <tj@kernel.org>,
-        Christoph Lameter <cl@linux.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kasan-dev@googlegroups.com, linux-arch@vger.kernel.org,
-        linux-mm@kvack.org
-Subject: Re: [PATCH v2 0/2] riscv: Enable percpu page first chunk allocator
-Message-ID: <ZXq/msjihOEZAo3w@snowbird>
-References: <20231212213457.132605-1-alexghiti@rivosinc.com>
+        Thu, 14 Dec 2023 03:42:05 -0500
+Received: from FRA01-MR2-obe.outbound.protection.outlook.com (mail-mr2fra01on2085.outbound.protection.outlook.com [40.107.9.85])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34F4CE3
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 00:42:11 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=VY6pXp+aeWgWZcwlr3YqGidrjA4WPdg9hOMf/gqBIJkjEUMUS/joOPEqo7Smk8j0i6RdDZlOifUP1lBb4QDrRrVIBJq8yZnh6yAMoA692K8dqj2frx5ZfaBovNOabJDnVlZerSGcIKu4eXvXCm1t5CBOwGkVhhY7IC9PjpQbvcNDwKLUEb5GBP20FYItvRj0dL1EHOxDWkLRnuJBudPT1gBiTlIKj59wfHFSRCHVlfTi+de9r8OXaDlD/GRFpft+wjOlvvkaBMUaiU5RBEmGs5fjqL8iJi64LaFZuFvqyz51hbi/rqiqPkBTda7HjOa0A6tVjKPV7K4t9UdxeDwxBA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=bOBftX54unTZAXgBMVOuXlqf2REtbmWB6W31i13K4dw=;
+ b=CsFvUu+uv2ANJnOirAt5UMbuJOkeJO151iwS42erqSfZD2YM7H/Tp8xSFNGdX6ESDbGtp1E0zFtaUqziUt1Y+qSbosmNEh8+unKnNVDusK4z8VZk9bG2M2vGbNMpah0PQLuzg9N5/e71zDuoT5UXlelIYvO7Ht/DSkSvzBUxczTHqvga+mS+oHGMVxxLdOyGE4b430MLr984HUXdTCArnrR7TlsZjYVokTBVdX+XINQqaEvy5RPrxlz9dz5wpfR6mtqFw9X2nvbDCtvfLaGlBg1oJz20xpl2UIpgDy1+oUogExVMIqXLGle02QNUERrEcem7gJ4n6aWpEtVUKIvEXQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=csgroup.eu; dmarc=pass action=none header.from=csgroup.eu;
+ dkim=pass header.d=csgroup.eu; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=csgroup.eu;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=bOBftX54unTZAXgBMVOuXlqf2REtbmWB6W31i13K4dw=;
+ b=XXmxVduq3GyHdj+qPgKCmu+fmF2eWEOo/0AzIfJ8y5xd9XvSTu1F805eTaUUd5DneDopzee/pnR/C0x1CQD+7pRYuKWp1tspfcWORUYZDZtLL9hOaimcZh7hMI2XTtWlMPrgCyVvc6oYKYfv2mJ5ByaiicMIHKGpvVRRz4BMoAJVueFdyGyg1RIcANJChaF8gk5w+hpLpDQnXB7TsWiTEawZn8TsCqLtBFnfu2puuX/wy1ANUlXTojvWTvieNSjozmq6TzjRNzvhN+4wAfvJk0CmOycE4fF9dj+d9oocyY5rA+ehxeL9d+H3oxX2vUhq5x/XJBN0Cnmy9lqCa3Cp5w==
+Received: from MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM (2603:10a6:501:31::15)
+ by PR0P264MB3353.FRAP264.PROD.OUTLOOK.COM (2603:10a6:102:110::5) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7091.28; Thu, 14 Dec
+ 2023 08:42:07 +0000
+Received: from MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM
+ ([fe80::f788:32b4:1c5e:f264]) by MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM
+ ([fe80::f788:32b4:1c5e:f264%7]) with mapi id 15.20.7091.028; Thu, 14 Dec 2023
+ 08:42:06 +0000
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+To:     Nicholas Miehlbradt <nicholas@linux.ibm.com>,
+        "glider@google.com" <glider@google.com>,
+        "elver@google.com" <elver@google.com>,
+        "dvyukov@google.com" <dvyukov@google.com>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "mpe@ellerman.id.au" <mpe@ellerman.id.au>,
+        "npiggin@gmail.com" <npiggin@gmail.com>
+CC:     "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "kasan-dev@googlegroups.com" <kasan-dev@googlegroups.com>,
+        "iii@linux.ibm.com" <iii@linux.ibm.com>,
+        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 04/13] powerpc: Disable CONFIG_DCACHE_WORD_ACCESS when
+ KMSAN is enabled
+Thread-Topic: [PATCH 04/13] powerpc: Disable CONFIG_DCACHE_WORD_ACCESS when
+ KMSAN is enabled
+Thread-Index: AQHaLlJI6LSmE5V5qk+oa6hKFZGaxrCodi+A
+Date:   Thu, 14 Dec 2023 08:42:06 +0000
+Message-ID: <1f3b22d4-00b3-4ff9-b29b-a901c03988e3@csgroup.eu>
+References: <20231214055539.9420-1-nicholas@linux.ibm.com>
+ <20231214055539.9420-5-nicholas@linux.ibm.com>
+In-Reply-To: <20231214055539.9420-5-nicholas@linux.ibm.com>
+Accept-Language: fr-FR, en-US
+Content-Language: fr-FR
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Mozilla Thunderbird
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=csgroup.eu;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: MRZP264MB2988:EE_|PR0P264MB3353:EE_
+x-ms-office365-filtering-correlation-id: a0787351-02a9-4ed7-fcde-08dbfc808de3
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: x0Bc7+krDRkjLqVAe63sv0nmryxan3HPJ7h5tjy0pCIL3fm76ZJ0MD7LWzzvDLY8oe+L5Hz+gzRt+JbtUOeQYEuo/e8BdqYCHACA67U46xHvfPOgesBuW9Cxm/r8kVVH9V6XwPr8sH2JWZ9D6P55mNZUbBLOXBDV3RCWZU6kF6lmQzd+SXPnroXHkv7MqPM4uayOQNelHKe3Dl4qQv+FS0MmCemOy4NHEI6rXs8qKQugRRIibng/jJ7oaIBtFMF5sHZnEuBVHqyrouEKddBHqIvSg7titK6doOxm1t74FS5B8W3u4uJv1vy0Qzjhorh3YfyGU9dJJ5z4mCRnTA5m68hOPTQ6CAvJZrxpdDLEu9WxINWLnQm0ivCYemn8iOv3s13UczPbDrM91wy3JvyNzkdHfejwPD0KrmqTWQ/tLrA8mohF96WpBPucpiOxZshFzSzZkBcnO65ie3Hux42f/bfEVM7nDbQibkzPTB8V13lzDDpf4FX9xdK6UGEoqWAildtve/jX0nDKkUA63kbaZTojyl02SCVX56S1Nch4LPV774OnMp842NIZt63ahG7jwkbw49Y2u/+xc4+kRs5Ngrr4bXOr9o+MWPl+uVgdKP0cTcn7y1TlwjKwN5paIIkuLk5ZoXszWlMuTNFgKXgMBRY62w9iu1DcDkMg5Q6Fz3Srd6LZFE9rAxnoGRGJWcGd
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230031)(396003)(136003)(366004)(376002)(39850400004)(346002)(230922051799003)(451199024)(64100799003)(186009)(1800799012)(31686004)(26005)(66574015)(6506007)(2616005)(36756003)(38070700009)(31696002)(86362001)(38100700002)(122000001)(6512007)(4326008)(83380400001)(5660300002)(44832011)(7416002)(71200400001)(76116006)(91956017)(2906002)(66946007)(110136005)(8936002)(64756008)(54906003)(66556008)(66476007)(66446008)(316002)(41300700001)(8676002)(478600001)(6486002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?d1c2N0tWSW1CME53TFRKQVB1bXk5YXpiYmZEbzg4SGYzZTR4TTJtU3N3TXpT?=
+ =?utf-8?B?SmkrdXZza2VFU0JzclJRUHU2cTlYNWZpVmFYNlN4bWtaZGF6MEtaQnlDSS9k?=
+ =?utf-8?B?MHo3d1V0SGJ0c3RLNUtYdFpvaU45dmd2UUNzVW1MSjRMMGtFcFAybythQWxa?=
+ =?utf-8?B?RHUwckdQZ1k3NC9VaGhSeEhCZzNKZTNJZTZTYlJseFM1MFJLL2RhblJ3VG1h?=
+ =?utf-8?B?dkI1WXprb08zN3NBMU1NV2ZLbjE3b0ZIZGRxaGpkNU8zNnVvaU5CVUUrRlZG?=
+ =?utf-8?B?QURQUkI1UU9xaVJ0NmdmaWFFb1FwRVFaSUZrZEttbnFTQTZzRFJ1WFVwZEZX?=
+ =?utf-8?B?L0V2KzM3QTIxNWUyK1pZb3RPK3BFYjFSdTcwMStkVnVyTjgwRVNZMXdhV2ho?=
+ =?utf-8?B?MDJPWkk4Vm5FOEpOT1kvQnZQT3ZSRE9Ca0pYSFFGa0c4M1l0SkVFL0hPMTN3?=
+ =?utf-8?B?WUJYbmgzdGFWMnljUXJtTThTSDIrZ2h3RWY2aDFmZ011RkFRTEh2dndkaUc3?=
+ =?utf-8?B?eUZqMHR5N0FHem12RUZ5a2VzM2FpOEVkcnVwcEVyUG5jTDRJSm1TOU84L0xG?=
+ =?utf-8?B?YlpsT2RWUndkNERFNXM0STdEY0xoTkswaTVUUTZOcWVrMGMyM2N4bTA2NmRa?=
+ =?utf-8?B?MENnZEl5Nk9TODFwVVdacEJDWHdBOUJrYlJoZm04OTI5K01GekVVNGxiYTF5?=
+ =?utf-8?B?RG9iR0tzaFZCelAyTjc5WlNuYlVaa2o2Zncxenk4SzRJRGUvZDFMSGZFSTQ5?=
+ =?utf-8?B?OEpIZ0tXNS9LcnRWTitBaXZtUExLRm9wdkltU0J4QW5CcGxLZ3psc1V5SVRl?=
+ =?utf-8?B?MEJLVHhhUUE5cm5FSXVFb2FicXlrVlRNODJLM0FERU9JRDM2cis5dXNQOHRX?=
+ =?utf-8?B?WVdMa2lnbTZBR0VKU25CUG5XN0grUFk3V1pwNVFrOWNaY2oyUDlLeDI5dmJY?=
+ =?utf-8?B?OUFJWW53QVN3Z2NnOTFvQnVkNnNEMU1kZmpvNXdJR3Bwais2ZWdrMkFmMVVi?=
+ =?utf-8?B?L1lBNFhDSTR6T1EramNBS3puMk1qZWNsQlBmYklzZHdhck5UYWVrS2Y0UHcz?=
+ =?utf-8?B?dDB2Uk9PZ3l2WnprZlFJcm9jd2FpSmRWV3ZDSmZaQTA5aThpYlEyOE80Q0VS?=
+ =?utf-8?B?dnFhdVdBQjVpTjV3bDZ0d2tJUi91aktYQm5CK3F2bDRVVmQ0V3VLcWRjWmQx?=
+ =?utf-8?B?bDlNazNVYzByTVlKbXRXcExaMDRjc1dMTE1STmh3cktVL0tyMlYzSE95RHVk?=
+ =?utf-8?B?cFA4VFNjL2lQaUwxeFdPYzhsN1kwNHFWUkQyU3RnMGFJM3VGbWZGR2h2RmVa?=
+ =?utf-8?B?amZLbGJyWjNQS3l1OEZWK0tMRVpPaDBUOHpPL0l2QUpDOVJjOFc1QW5VOW84?=
+ =?utf-8?B?SU9UREtXM05CeWV3ZWt0R0hEYUJobTBZVXllK25UYXZVb0lzeGVtZVg3a3hS?=
+ =?utf-8?B?Z0syb1hiY05LdU5Oa2ZvKzBuTE9yRnNTV3JpLyt3T3U4Q0ZqNnNPUHhldWxI?=
+ =?utf-8?B?TmREVWV6aWxUV3d5RzNEaG1wZzcyZmlkVU5FaE0zNUNhMFBsdmtBU2UrbTQ3?=
+ =?utf-8?B?VklUaGVrRGxFbFErMzdsUlpSUW1pWnhYWkdWSThJNDZtd1JpY0doU1pmSEpF?=
+ =?utf-8?B?R29yNm1RbWRyYS9jK2diVS9LeFZyMGY0OHlHUTFra2FLY2dIRXBJd0w1SVg3?=
+ =?utf-8?B?U01pSjdkQUtOeTYyVkM2NlVaWWR6L09GZGZOWlF4WlRLL0tiZGo1WlVrQ05R?=
+ =?utf-8?B?RUwyS0hORmo4OTc5UGFvUlFkNFpsbkFCRGhqVjZSSjVKSXpOUEt4UW45TUxh?=
+ =?utf-8?B?UEorY2k3eHZkSzk4RDJxVEkrZUhSczk5S3dqakpHdTh3Mmt2UVlxaU82T291?=
+ =?utf-8?B?d1p4REp3VTdtUUQ1ZlRXQ1A5T3d2RGp2dW1lTHE0UFhFUVo2czU3K0NYd1N0?=
+ =?utf-8?B?cDlpbUFsOHp4STlYYjYyVkdNM1ZjMU01RDkxQ0F6TDMyUTNMc21DdGNQcVBt?=
+ =?utf-8?B?YWpmTmNvQy9oN28rb2FFTDFSK203RjBDNDZoNU1rZDc2L3VRbys5ZkRIVU9t?=
+ =?utf-8?B?cnRDenR2bTkrejB1MEJ6OWUyL2tNa3NNNmFFR1lyWWppL29xRTV4bDB5Z0p6?=
+ =?utf-8?B?bElQNW82eWVXck5yKzgvZlJMOFpaSS84R2NzVU5qdWxqMEI5ZnF4ZVpCdHl1?=
+ =?utf-8?B?RGc9PQ==?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <A7DE56272EF88841A21E4624DEEC8060@FRAP264.PROD.OUTLOOK.COM>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231212213457.132605-1-alexghiti@rivosinc.com>
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+X-OriginatorOrg: csgroup.eu
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-Network-Message-Id: a0787351-02a9-4ed7-fcde-08dbfc808de3
+X-MS-Exchange-CrossTenant-originalarrivaltime: 14 Dec 2023 08:42:06.8995
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 9914def7-b676-4fda-8815-5d49fb3b45c8
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: LqglYRFHhNzM5li4Bb6jl8ocPxE4K4R/Zmqolu4NZi5FfObH/QgjVGfeqvTifWDbRoSrVGxqCNsILT7LwPPc8po47O65WWdcmnNQVFhixqw=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PR0P264MB3353
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
-
-On Tue, Dec 12, 2023 at 10:34:55PM +0100, Alexandre Ghiti wrote:
-> While working with pcpu variables, I noticed that riscv did not support
-> first chunk allocation in the vmalloc area which may be needed as a fallback
-> in case of a sparse NUMA configuration.
-> 
-> patch 1 starts by introducing a new function flush_cache_vmap_early() which
-> is needed since a new vmalloc mapping is established and directly accessed:
-> on riscv, this would likely fail in case of a reordered access or if the
-> uarch caches invalid entries in TLB.
-> Note that most architectures do not include asm-generic/cacheflush.h so to
-> avoid build failures, this patch implements the new function on each of
-> those architectures. For all architectures except riscv, this new function
-> is implemented as a no-op to keep the existing behaviour but it likely
-> needs another implementation.
-> 
-> patch 2 simply enables the page percpu first chunk allocator in riscv.
-> 
-> Changes in v2:
-> - Rebase on top of 6.7
-> - Define flush_cache_vmap_early() for all architectures that do
->   not include <asm-generic/cacheflush.h> to avoid build failures
-> 
-> Alexandre Ghiti (2):
->   mm: Introduce flush_cache_vmap_early()
->   riscv: Enable pcpu page first chunk allocator
-> 
->  arch/arc/include/asm/cacheflush.h      | 1 +
->  arch/arm/include/asm/cacheflush.h      | 2 ++
->  arch/csky/abiv1/inc/abi/cacheflush.h   | 1 +
->  arch/csky/abiv2/inc/abi/cacheflush.h   | 1 +
->  arch/m68k/include/asm/cacheflush_mm.h  | 1 +
->  arch/mips/include/asm/cacheflush.h     | 2 ++
->  arch/nios2/include/asm/cacheflush.h    | 1 +
->  arch/parisc/include/asm/cacheflush.h   | 1 +
->  arch/riscv/Kconfig                     | 2 ++
->  arch/riscv/include/asm/cacheflush.h    | 3 ++-
->  arch/riscv/include/asm/tlbflush.h      | 1 +
->  arch/riscv/mm/kasan_init.c             | 8 ++++++++
->  arch/riscv/mm/tlbflush.c               | 5 +++++
->  arch/sh/include/asm/cacheflush.h       | 1 +
->  arch/sparc/include/asm/cacheflush_32.h | 1 +
->  arch/sparc/include/asm/cacheflush_64.h | 1 +
->  arch/xtensa/include/asm/cacheflush.h   | 6 ++++--
->  include/asm-generic/cacheflush.h       | 6 ++++++
->  mm/percpu.c                            | 8 +-------
->  19 files changed, 42 insertions(+), 10 deletions(-)
-> 
-> -- 
-> 2.39.2
-> 
-
-Thanks for the quick v2. Applied to percpu#for-6.8.
-
-Thanks,
-Dennis
+DQoNCkxlIDE0LzEyLzIwMjMgw6AgMDY6NTUsIE5pY2hvbGFzIE1pZWhsYnJhZHQgYSDDqWNyaXTC
+oDoNCj4gV29yZCBzaXplZCBhY2Nlc3NlcyBtYXkgcmVhZCB1bmluaXRpYWxpemVkIGRhdGEgd2hl
+biBvcHRpbWl6aW5nIGxvYWRzLg0KPiBEaXNhYmxlIHRoaXMgb3B0aW1pemF0aW9uIHdoZW4gS01T
+QU4gaXMgZW5hYmxlZCB0byBwcmV2ZW50IGZhbHNlDQo+IHBvc2l0aXZlcy4NCj4gDQo+IFNpZ25l
+ZC1vZmYtYnk6IE5pY2hvbGFzIE1pZWhsYnJhZHQgPG5pY2hvbGFzQGxpbnV4LmlibS5jb20+DQo+
+IC0tLQ0KPiAgIGFyY2gvcG93ZXJwYy9LY29uZmlnIHwgMiArLQ0KPiAgIDEgZmlsZSBjaGFuZ2Vk
+LCAxIGluc2VydGlvbigrKSwgMSBkZWxldGlvbigtKQ0KPiANCj4gZGlmZiAtLWdpdCBhL2FyY2gv
+cG93ZXJwYy9LY29uZmlnIGIvYXJjaC9wb3dlcnBjL0tjb25maWcNCj4gaW5kZXggNmYxMDVlZTRm
+M2NmLi5lMzNlMzI1MGM0NzggMTAwNjQ0DQo+IC0tLSBhL2FyY2gvcG93ZXJwYy9LY29uZmlnDQo+
+ICsrKyBiL2FyY2gvcG93ZXJwYy9LY29uZmlnDQo+IEBAIC0xODIsNyArMTgyLDcgQEAgY29uZmln
+IFBQQw0KPiAgIAlzZWxlY3QgQlVJTERUSU1FX1RBQkxFX1NPUlQNCj4gICAJc2VsZWN0IENMT05F
+X0JBQ0tXQVJEUw0KPiAgIAlzZWxlY3QgQ1BVTUFTS19PRkZTVEFDSwkJCWlmIE5SX0NQVVMgPj0g
+ODE5Mg0KPiAtCXNlbGVjdCBEQ0FDSEVfV09SRF9BQ0NFU1MJCWlmIFBQQzY0ICYmIENQVV9MSVRU
+TEVfRU5ESUFODQo+ICsJc2VsZWN0IERDQUNIRV9XT1JEX0FDQ0VTUwkJaWYgUFBDNjQgJiYgQ1BV
+X0xJVFRMRV9FTkRJQU4gJiYgIUtNU0FODQo+ICAgCXNlbGVjdCBETUFfT1BTX0JZUEFTUwkJCWlm
+IFBQQzY0DQo+ICAgCXNlbGVjdCBETUFfT1BTCQkJCWlmIFBQQzY0DQo+ICAgCXNlbGVjdCBEWU5B
+TUlDX0ZUUkFDRQkJCWlmIEZVTkNUSU9OX1RSQUNFUg0KDQoNClNlZW1zIGxpa2UgYWxsIGFyY2hz
+IGRvIHRoaXMuIE1heWJlIGEgYmV0dGVyIGFwcHJvYWNoIHdvdWxkIGJlIHRvIGRlZmluZSANCmEg
+SEFWRV9EQ0FDSEVfV09SRF9BQ0NFU1MgdGhhdCBpcyBzZWxlY3RlZCBieSBhcmNoZXMsIGFuZCB0
+aGVuIHRoZSBjb3JlIA0KcGFydCBzZWxlY3QgRENBQ0hFX1dPUkRfQUNDRVNTIHdoZW4gSEFWRV9E
+Q0FDSEVfV09SRF9BQ0NFU1MgJiYgIUtNU0FODQoNCkNocmlzdG9waGUNCg==
