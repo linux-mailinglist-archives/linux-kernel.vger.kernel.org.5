@@ -2,285 +2,428 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6637B812FAF
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 13:07:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9451E812FB3
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 13:08:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1572912AbjLNMHn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 07:07:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58514 "EHLO
+        id S1572913AbjLNMI3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 07:08:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36660 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1572936AbjLNMHj (ORCPT
+        with ESMTP id S1572903AbjLNMI1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 07:07:39 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7AE011D
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 04:07:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1702555662; x=1734091662;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=a5l6AyeZg5uA2PXcmvELUL5lCX1KzgHNYFWNUx48pIY=;
-  b=lpzhfouQdr30wSskcW41rn9JXgwjx6UMa8sGaFa4ejA7Drlk5Rqp3pPJ
-   W5GkNizaDg+QgxSmz9XhdfztdQ+m47NBPM93IS1sN1tk5orojilKw6SBw
-   ARlqYNIDL59MpUIo2w3uhBpBHsRIHCKoZfo1sYkH36sVJbYQlHLnxUmYw
-   Pmpqu3ZXX6/HOkwssf3qIKmmNRoMnel4r80cC1fMDEuJ2j2poaiHQt0Dn
-   IR3fNRNhIwGyiwL3lHcLKubKDSsjTWS6F3UbPn58T58UcK4iYW145haM5
-   G1GLUuXkzOj1wocUm2CahpV42ogfJHvB5Nt5e3AjqDW5wXxwzmZ/qQNlI
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10923"; a="374617405"
-X-IronPort-AV: E=Sophos;i="6.04,275,1695711600"; 
-   d="scan'208";a="374617405"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Dec 2023 04:07:42 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10923"; a="774350337"
-X-IronPort-AV: E=Sophos;i="6.04,275,1695711600"; 
-   d="scan'208";a="774350337"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by orsmga002.jf.intel.com with ESMTP; 14 Dec 2023 04:07:40 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1rDkV8-000M1t-1J;
-        Thu, 14 Dec 2023 12:07:38 +0000
-Date:   Thu, 14 Dec 2023 20:07:26 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Jiaxun Yang <jiaxun.yang@flygoat.com>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Subject: arch/mips/kernel/smp-cps.c:165:37: sparse: sparse: cast removes
- address space '__iomem' of expression
-Message-ID: <202312142008.8HExX4uH-lkp@intel.com>
+        Thu, 14 Dec 2023 07:08:27 -0500
+Received: from out2-smtp.messagingengine.com (out2-smtp.messagingengine.com [66.111.4.26])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B5BBB9;
+        Thu, 14 Dec 2023 04:08:33 -0800 (PST)
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailout.nyi.internal (Postfix) with ESMTP id 755335C01CF;
+        Thu, 14 Dec 2023 07:08:32 -0500 (EST)
+Received: from imap51 ([10.202.2.101])
+  by compute5.internal (MEProxy); Thu, 14 Dec 2023 07:08:32 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+        :cc:content-type:content-type:date:date:from:from:in-reply-to
+        :in-reply-to:message-id:mime-version:references:reply-to:subject
+        :subject:to:to; s=fm1; t=1702555712; x=1702642112; bh=I3zDpA1e2z
+        4eS6eRyiMCBK2+M59mbhlW+pG/DGYz/0g=; b=oGFvv+SOy0v7tesgWGwsR/PzMC
+        dTDTbiUR3yOb2/H0jiax16dyTyOtG91U6JDr4i4w8TA17z9crCyNQDd5YtG7lH9k
+        iHpWa7U7E6kOmDuS4ZzNYyaOI9WotzcX+Rd4SYjxuwOA0qxr5eCcNnPAnKeLdID/
+        xmhOwW6c6i8IpQuDupfUGea4b9748S0ACrfRUbPjn9OH7qOMpPFgr3KPiJZwFUhH
+        9jhdZesPTHlIzBmnOWQ/tCU9gG7zdvVOvxujkIwHwnsVXMSlio+FpXuyKwPs/N1P
+        2zH46eA4KxCJFKV9KZmApsWEhk7PMi4BHSWAMEc8XYNtZ++0AxEA+Wfu25dw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-type:content-type:date:date
+        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+        :message-id:mime-version:references:reply-to:subject:subject:to
+        :to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+        fm1; t=1702555712; x=1702642112; bh=I3zDpA1e2z4eS6eRyiMCBK2+M59m
+        bhlW+pG/DGYz/0g=; b=rpXaCRpC8y2y+/vbyA4hrlBraidM7DVZtyM7y3AHm9wR
+        Swmlp6Crp707NKwOucq+3+c3Aud55iUYGJGr/hvmDBbrrKp0lZsUdjVXCFORsz8u
+        iKo2KWZmjfcGWY6qTyWjfmbha7AeZO0DP19/6v1X+eZvvqYnznjyb4wff9SVsWaN
+        mv+5x6loZUJpsL0EuvGtXFxYM6Xev1yqk9R0M6sbyoRWX82rUPGUW9thD5NJD5z/
+        5dv+jcd963lNqtXpCTVLboWXTh48MZ5SpyXKPHbuSKfOHnaYXh5qrSd6g6jLFynK
+        jrWMXGgX45EOclPxucgkYB7lZay80WQtg1eL4MC51g==
+X-ME-Sender: <xms:P_B6Zabwp5ulDsnlmdTRGFB-6do0y5BESrp8r2MRLfHZaN8UB-bWsw>
+    <xme:P_B6Zda2tD1TZMr2I_CyLRIft80TpYeH4LLhpb5sOepG0fAqvwgJxbewAlb33Wni6
+    0R8sciiZpsgJG8e0sA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrudelledgfeehucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedftehr
+    nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
+    htvghrnhepffehueegteeihfegtefhjefgtdeugfegjeelheejueethfefgeeghfektdek
+    teffnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprg
+    hrnhgusegrrhhnuggsrdguvg
+X-ME-Proxy: <xmx:P_B6ZU913rpDEYzsPH0SyTIKiphbc3u-eDMzJSLJ3ajgAvyqJ85CQA>
+    <xmx:P_B6ZcpY1FlQW4f_kmD2_38RQiMil73nYRzrBIdaU4ub-30_vP9N7Q>
+    <xmx:P_B6ZVoOq0mqtDKvZ_6ZyLlkDOXa26lKM6fsbSh-uCfGFYZ-deCvhw>
+    <xmx:QPB6ZfYqTcPswEQsdgT5WdSQB7TUNk5e-YuxCveqhdfyI1-4Rm-7zA>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 9B050B6008D; Thu, 14 Dec 2023 07:08:31 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.9.0-alpha0-1283-g327e3ec917-fm-20231207.002-g327e3ec9
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Message-Id: <1153987b-a818-454a-a292-57f2b3898771@app.fastmail.com>
+In-Reply-To: <20231214105243.3707730-13-tudor.ambarus@linaro.org>
+References: <20231214105243.3707730-1-tudor.ambarus@linaro.org>
+ <20231214105243.3707730-13-tudor.ambarus@linaro.org>
+Date:   Thu, 14 Dec 2023 13:08:08 +0100
+From:   "Arnd Bergmann" <arnd@arndb.de>
+To:     "Tudor Ambarus" <tudor.ambarus@linaro.org>,
+        "Peter Griffin" <peter.griffin@linaro.org>,
+        "Rob Herring" <robh+dt@kernel.org>,
+        krzysztof.kozlowski+dt@linaro.org,
+        "Michael Turquette" <mturquette@baylibre.com>,
+        "Stephen Boyd" <sboyd@kernel.org>,
+        "Conor Dooley" <conor+dt@kernel.org>, andi.shyti@kernel.org,
+        "Alim Akhtar" <alim.akhtar@samsung.com>,
+        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
+        "Jiri Slaby" <jirislaby@kernel.org>,
+        "Catalin Marinas" <catalin.marinas@arm.com>,
+        "Will Deacon" <will@kernel.org>,
+        "Sylwester Nawrocki" <s.nawrocki@samsung.com>,
+        "Tomasz Figa" <tomasz.figa@gmail.com>,
+        "Chanwoo Choi" <cw00.choi@samsung.com>,
+        "Sam Protsenko" <semen.protsenko@linaro.org>
+Cc:     =?UTF-8?Q?Andr=C3=A9_Draszik?= <andre.draszik@linaro.org>,
+        saravanak@google.com, "William McVicker" <willmcvicker@google.com>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-clk@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-i2c@vger.kernel.org, linux-serial@vger.kernel.org
+Subject: Re: [PATCH 12/13] arm64: defconfig: sync with savedefconfig
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,UPPERCASE_50_75 autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   5bd7ef53ffe5ca580e93e74eb8c81ed191ddc4bd
-commit: fea8826d5fdc4ff5c93e883a738597129614039c MIPS: smp-cps: Don't rely on CP0_CMGCRBASE
-date:   10 months ago
-config: mips-randconfig-r122-20231108 (https://download.01.org/0day-ci/archive/20231214/202312142008.8HExX4uH-lkp@intel.com/config)
-compiler: mips-linux-gcc (GCC) 13.2.0
-reproduce: (https://download.01.org/0day-ci/archive/20231214/202312142008.8HExX4uH-lkp@intel.com/reproduce)
+On Thu, Dec 14, 2023, at 11:52, Tudor Ambarus wrote:
+> Sync the defconfig with savedefconfig as config options
+> change/move over time.
+>
+> Generated with the following commands:
+> make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- defconfig
+> make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- savedefconfig
+> cp defconfig arch/arm64/configs/defconfig
+>
+> Signed-off-by: Tudor Ambarus <tudor.ambarus@linaro.org>
+> ---
+>  arch/arm64/configs/defconfig | 144 +++++++++++++----------------------
+>  1 file changed, 55 insertions(+), 89 deletions(-)
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202312142008.8HExX4uH-lkp@intel.com/
+I usually ask for defconfig changes to be merged when someone just
+adds a single line per patch, but a 144 line change is clearly too
+big, please split this up.
 
-sparse warnings: (new ones prefixed by >>)
->> arch/mips/kernel/smp-cps.c:165:37: sparse: sparse: cast removes address space '__iomem' of expression
-   arch/mips/kernel/smp-cps.c: note: in included file (through arch/mips/include/asm/mips-cps.h, arch/mips/include/asm/smp-ops.h, arch/mips/include/asm/smp.h, ...):
-   arch/mips/include/asm/mips-cm.h:152:1: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __iomem *mem @@     got void * @@
-   arch/mips/include/asm/mips-cm.h:152:1: sparse:     expected void const volatile [noderef] __iomem *mem
-   arch/mips/include/asm/mips-cm.h:152:1: sparse:     got void *
-   arch/mips/include/asm/mips-cm.h:152:1: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __iomem *mem @@     got void * @@
-   arch/mips/include/asm/mips-cm.h:152:1: sparse:     expected void const volatile [noderef] __iomem *mem
-   arch/mips/include/asm/mips-cm.h:152:1: sparse:     got void *
-   arch/mips/include/asm/mips-cm.h:152:1: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __iomem *mem @@     got void * @@
-   arch/mips/include/asm/mips-cm.h:152:1: sparse:     expected void const volatile [noderef] __iomem *mem
-   arch/mips/include/asm/mips-cm.h:152:1: sparse:     got void *
-   arch/mips/include/asm/mips-cm.h:152:1: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __iomem *mem @@     got void * @@
-   arch/mips/include/asm/mips-cm.h:152:1: sparse:     expected void const volatile [noderef] __iomem *mem
-   arch/mips/include/asm/mips-cm.h:152:1: sparse:     got void *
-   arch/mips/include/asm/mips-cm.h:152:1: sparse: sparse: incorrect type in return expression (different address spaces) @@     expected void * @@     got void [noderef] __iomem * @@
-   arch/mips/include/asm/mips-cm.h:152:1: sparse:     expected void *
-   arch/mips/include/asm/mips-cm.h:152:1: sparse:     got void [noderef] __iomem *
-   arch/mips/include/asm/mips-cm.h:152:1: sparse: sparse: incorrect type in return expression (different address spaces) @@     expected void * @@     got void [noderef] __iomem * @@
-   arch/mips/include/asm/mips-cm.h:152:1: sparse:     expected void *
-   arch/mips/include/asm/mips-cm.h:152:1: sparse:     got void [noderef] __iomem *
-   arch/mips/include/asm/mips-cm.h:152:1: sparse: sparse: incorrect type in return expression (different address spaces) @@     expected void * @@     got void [noderef] __iomem * @@
-   arch/mips/include/asm/mips-cm.h:152:1: sparse:     expected void *
-   arch/mips/include/asm/mips-cm.h:152:1: sparse:     got void [noderef] __iomem *
-   arch/mips/include/asm/mips-cm.h:152:1: sparse: sparse: incorrect type in return expression (different address spaces) @@     expected void * @@     got void [noderef] __iomem * @@
-   arch/mips/include/asm/mips-cm.h:152:1: sparse:     expected void *
-   arch/mips/include/asm/mips-cm.h:152:1: sparse:     got void [noderef] __iomem *
-   arch/mips/include/asm/mips-cm.h:292:1: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __iomem *mem @@     got void * @@
-   arch/mips/include/asm/mips-cm.h:292:1: sparse:     expected void const volatile [noderef] __iomem *mem
-   arch/mips/include/asm/mips-cm.h:292:1: sparse:     got void *
-   arch/mips/include/asm/mips-cm.h:292:1: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __iomem *mem @@     got void * @@
-   arch/mips/include/asm/mips-cm.h:292:1: sparse:     expected void const volatile [noderef] __iomem *mem
-   arch/mips/include/asm/mips-cm.h:292:1: sparse:     got void *
-   arch/mips/include/asm/mips-cm.h:292:1: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __iomem *mem @@     got void * @@
-   arch/mips/include/asm/mips-cm.h:292:1: sparse:     expected void const volatile [noderef] __iomem *mem
-   arch/mips/include/asm/mips-cm.h:292:1: sparse:     got void *
-   arch/mips/include/asm/mips-cm.h:292:1: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __iomem *mem @@     got void * @@
-   arch/mips/include/asm/mips-cm.h:292:1: sparse:     expected void const volatile [noderef] __iomem *mem
-   arch/mips/include/asm/mips-cm.h:292:1: sparse:     got void *
-   arch/mips/include/asm/mips-cm.h:292:1: sparse: sparse: incorrect type in return expression (different address spaces) @@     expected void * @@     got void [noderef] __iomem * @@
-   arch/mips/include/asm/mips-cm.h:292:1: sparse:     expected void *
-   arch/mips/include/asm/mips-cm.h:292:1: sparse:     got void [noderef] __iomem *
-   arch/mips/include/asm/mips-cm.h:292:1: sparse: sparse: incorrect type in return expression (different address spaces) @@     expected void * @@     got void [noderef] __iomem * @@
-   arch/mips/include/asm/mips-cm.h:292:1: sparse:     expected void *
-   arch/mips/include/asm/mips-cm.h:292:1: sparse:     got void [noderef] __iomem *
-   arch/mips/include/asm/mips-cm.h:292:1: sparse: sparse: incorrect type in return expression (different address spaces) @@     expected void * @@     got void [noderef] __iomem * @@
-   arch/mips/include/asm/mips-cm.h:292:1: sparse:     expected void *
-   arch/mips/include/asm/mips-cm.h:292:1: sparse:     got void [noderef] __iomem *
-   arch/mips/include/asm/mips-cm.h:292:1: sparse: sparse: incorrect type in return expression (different address spaces) @@     expected void * @@     got void [noderef] __iomem * @@
-   arch/mips/include/asm/mips-cm.h:292:1: sparse:     expected void *
-   arch/mips/include/asm/mips-cm.h:292:1: sparse:     got void [noderef] __iomem *
-   arch/mips/kernel/smp-cps.c: note: in included file (through arch/mips/include/asm/mips-cps.h, arch/mips/include/asm/smp-ops.h, arch/mips/include/asm/smp.h, ...):
-   arch/mips/include/asm/mips-cpc.h:149:1: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __iomem *mem @@     got void * @@
-   arch/mips/include/asm/mips-cpc.h:149:1: sparse:     expected void const volatile [noderef] __iomem *mem
-   arch/mips/include/asm/mips-cpc.h:149:1: sparse:     got void *
-   arch/mips/include/asm/mips-cpc.h:149:1: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __iomem *mem @@     got void * @@
-   arch/mips/include/asm/mips-cpc.h:149:1: sparse:     expected void const volatile [noderef] __iomem *mem
-   arch/mips/include/asm/mips-cpc.h:149:1: sparse:     got void *
-   arch/mips/include/asm/mips-cpc.h:149:1: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __iomem *mem @@     got void * @@
-   arch/mips/include/asm/mips-cpc.h:149:1: sparse:     expected void const volatile [noderef] __iomem *mem
-   arch/mips/include/asm/mips-cpc.h:149:1: sparse:     got void *
-   arch/mips/include/asm/mips-cpc.h:149:1: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __iomem *mem @@     got void * @@
-   arch/mips/include/asm/mips-cpc.h:149:1: sparse:     expected void const volatile [noderef] __iomem *mem
-   arch/mips/include/asm/mips-cpc.h:149:1: sparse:     got void *
-   arch/mips/include/asm/mips-cpc.h:149:1: sparse: sparse: incorrect type in return expression (different address spaces) @@     expected void * @@     got void [noderef] __iomem * @@
-   arch/mips/include/asm/mips-cpc.h:149:1: sparse:     expected void *
-   arch/mips/include/asm/mips-cpc.h:149:1: sparse:     got void [noderef] __iomem *
-   arch/mips/include/asm/mips-cpc.h:149:1: sparse: sparse: incorrect type in return expression (different address spaces) @@     expected void * @@     got void [noderef] __iomem * @@
-   arch/mips/include/asm/mips-cpc.h:149:1: sparse:     expected void *
-   arch/mips/include/asm/mips-cpc.h:149:1: sparse:     got void [noderef] __iomem *
-   arch/mips/include/asm/mips-cpc.h:149:1: sparse: sparse: incorrect type in return expression (different address spaces) @@     expected void * @@     got void [noderef] __iomem * @@
-   arch/mips/include/asm/mips-cpc.h:149:1: sparse:     expected void *
-   arch/mips/include/asm/mips-cpc.h:149:1: sparse:     got void [noderef] __iomem *
-   arch/mips/include/asm/mips-cpc.h:149:1: sparse: sparse: incorrect type in return expression (different address spaces) @@     expected void * @@     got void [noderef] __iomem * @@
-   arch/mips/include/asm/mips-cpc.h:149:1: sparse:     expected void *
-   arch/mips/include/asm/mips-cpc.h:149:1: sparse:     got void [noderef] __iomem *
-   arch/mips/kernel/smp-cps.c: note: in included file (through arch/mips/include/asm/mips-cps.h, arch/mips/include/asm/smp-ops.h, arch/mips/include/asm/smp.h, ...):
-   arch/mips/include/asm/mips-cm.h:152:1: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __iomem *mem @@     got void * @@
-   arch/mips/include/asm/mips-cm.h:152:1: sparse:     expected void const volatile [noderef] __iomem *mem
-   arch/mips/include/asm/mips-cm.h:152:1: sparse:     got void *
-   arch/mips/include/asm/mips-cm.h:152:1: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __iomem *mem @@     got void * @@
-   arch/mips/include/asm/mips-cm.h:152:1: sparse:     expected void const volatile [noderef] __iomem *mem
-   arch/mips/include/asm/mips-cm.h:152:1: sparse:     got void *
-   arch/mips/include/asm/mips-cm.h:152:1: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __iomem *mem @@     got void * @@
-   arch/mips/include/asm/mips-cm.h:152:1: sparse:     expected void const volatile [noderef] __iomem *mem
-   arch/mips/include/asm/mips-cm.h:152:1: sparse:     got void *
-   arch/mips/include/asm/mips-cm.h:152:1: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __iomem *mem @@     got void * @@
-   arch/mips/include/asm/mips-cm.h:152:1: sparse:     expected void const volatile [noderef] __iomem *mem
-   arch/mips/include/asm/mips-cm.h:152:1: sparse:     got void *
-   arch/mips/include/asm/mips-cm.h:152:1: sparse: sparse: incorrect type in return expression (different address spaces) @@     expected void * @@     got void [noderef] __iomem * @@
-   arch/mips/include/asm/mips-cm.h:152:1: sparse:     expected void *
-   arch/mips/include/asm/mips-cm.h:152:1: sparse:     got void [noderef] __iomem *
-   arch/mips/include/asm/mips-cm.h:152:1: sparse: sparse: incorrect type in return expression (different address spaces) @@     expected void * @@     got void [noderef] __iomem * @@
-   arch/mips/include/asm/mips-cm.h:152:1: sparse:     expected void *
-   arch/mips/include/asm/mips-cm.h:152:1: sparse:     got void [noderef] __iomem *
-   arch/mips/include/asm/mips-cm.h:152:1: sparse: sparse: incorrect type in return expression (different address spaces) @@     expected void * @@     got void [noderef] __iomem * @@
-   arch/mips/include/asm/mips-cm.h:152:1: sparse:     expected void *
-   arch/mips/include/asm/mips-cm.h:152:1: sparse:     got void [noderef] __iomem *
-   arch/mips/include/asm/mips-cm.h:152:1: sparse: sparse: incorrect type in return expression (different address spaces) @@     expected void * @@     got void [noderef] __iomem * @@
-   arch/mips/include/asm/mips-cm.h:152:1: sparse:     expected void *
-   arch/mips/include/asm/mips-cm.h:152:1: sparse:     got void [noderef] __iomem *
-   arch/mips/include/asm/mips-cm.h:131:1: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __iomem *mem @@     got void * @@
+> diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
+> index b60aa1f89343..09fb467303ba 100644
+> --- a/arch/arm64/configs/defconfig
+> +++ b/arch/arm64/configs/defconfig
+> @@ -30,6 +30,8 @@ CONFIG_SCHED_AUTOGROUP=y
+>  CONFIG_BLK_DEV_INITRD=y
+>  CONFIG_KALLSYMS_ALL=y
+>  CONFIG_PROFILING=y
+> +CONFIG_KEXEC_FILE=y
+> +CONFIG_CRASH_DUMP=y
+>  CONFIG_ARCH_ACTIONS=y
+>  CONFIG_ARCH_SUNXI=y
+>  CONFIG_ARCH_ALPINE=y
+> @@ -77,9 +79,6 @@ CONFIG_ARM64_VA_BITS_48=y
+>  CONFIG_SCHED_MC=y
+>  CONFIG_SCHED_SMT=y
+>  CONFIG_NUMA=y
+> -CONFIG_KEXEC=y
+> -CONFIG_KEXEC_FILE=y
+> -CONFIG_CRASH_DUMP=y
+>  CONFIG_XEN=y
+>  CONFIG_COMPAT=y
+>  CONFIG_RANDOMIZE_BASE=y
 
-vim +/__iomem +165 arch/mips/kernel/smp-cps.c
+These two hunks seem to go together, but it needs an explanation
+why you are removing CONFIG_KEXEC.
 
-   118	
-   119	static void __init cps_prepare_cpus(unsigned int max_cpus)
-   120	{
-   121		unsigned ncores, core_vpes, c, cca;
-   122		bool cca_unsuitable, cores_limited;
-   123		u32 *entry_code;
-   124	
-   125		mips_mt_set_cpuoptions();
-   126	
-   127		/* Detect whether the CCA is unsuited to multi-core SMP */
-   128		cca = read_c0_config() & CONF_CM_CMASK;
-   129		switch (cca) {
-   130		case 0x4: /* CWBE */
-   131		case 0x5: /* CWB */
-   132			/* The CCA is coherent, multi-core is fine */
-   133			cca_unsuitable = false;
-   134			break;
-   135	
-   136		default:
-   137			/* CCA is not coherent, multi-core is not usable */
-   138			cca_unsuitable = true;
-   139		}
-   140	
-   141		/* Warn the user if the CCA prevents multi-core */
-   142		cores_limited = false;
-   143		if (cca_unsuitable || cpu_has_dc_aliases) {
-   144			for_each_present_cpu(c) {
-   145				if (cpus_are_siblings(smp_processor_id(), c))
-   146					continue;
-   147	
-   148				set_cpu_present(c, false);
-   149				cores_limited = true;
-   150			}
-   151		}
-   152		if (cores_limited)
-   153			pr_warn("Using only one core due to %s%s%s\n",
-   154				cca_unsuitable ? "unsuitable CCA" : "",
-   155				(cca_unsuitable && cpu_has_dc_aliases) ? " & " : "",
-   156				cpu_has_dc_aliases ? "dcache aliasing" : "");
-   157	
-   158		/*
-   159		 * Patch the start of mips_cps_core_entry to provide:
-   160		 *
-   161		 * s0 = kseg0 CCA
-   162		 */
-   163		entry_code = (u32 *)&mips_cps_core_entry;
-   164		uasm_i_addiu(&entry_code, 16, 0, cca);
- > 165		UASM_i_LA(&entry_code, 17, (long)mips_gcr_base);
-   166		BUG_ON((void *)entry_code > (void *)&mips_cps_core_entry_patch_end);
-   167		blast_dcache_range((unsigned long)&mips_cps_core_entry,
-   168				   (unsigned long)entry_code);
-   169		bc_wback_inv((unsigned long)&mips_cps_core_entry,
-   170			     (void *)entry_code - (void *)&mips_cps_core_entry);
-   171		__sync();
-   172	
-   173		/* Allocate core boot configuration structs */
-   174		ncores = mips_cps_numcores(0);
-   175		mips_cps_core_bootcfg = kcalloc(ncores, sizeof(*mips_cps_core_bootcfg),
-   176						GFP_KERNEL);
-   177		if (!mips_cps_core_bootcfg) {
-   178			pr_err("Failed to allocate boot config for %u cores\n", ncores);
-   179			goto err_out;
-   180		}
-   181	
-   182		/* Allocate VPE boot configuration structs */
-   183		for (c = 0; c < ncores; c++) {
-   184			core_vpes = core_vpe_count(0, c);
-   185			mips_cps_core_bootcfg[c].vpe_config = kcalloc(core_vpes,
-   186					sizeof(*mips_cps_core_bootcfg[c].vpe_config),
-   187					GFP_KERNEL);
-   188			if (!mips_cps_core_bootcfg[c].vpe_config) {
-   189				pr_err("Failed to allocate %u VPE boot configs\n",
-   190				       core_vpes);
-   191				goto err_out;
-   192			}
-   193		}
-   194	
-   195		/* Mark this CPU as booted */
-   196		atomic_set(&mips_cps_core_bootcfg[cpu_core(&current_cpu_data)].vpe_mask,
-   197			   1 << cpu_vpe_id(&current_cpu_data));
-   198	
-   199		return;
-   200	err_out:
-   201		/* Clean up allocations */
-   202		if (mips_cps_core_bootcfg) {
-   203			for (c = 0; c < ncores; c++)
-   204				kfree(mips_cps_core_bootcfg[c].vpe_config);
-   205			kfree(mips_cps_core_bootcfg);
-   206			mips_cps_core_bootcfg = NULL;
-   207		}
-   208	
-   209		/* Effectively disable SMP by declaring CPUs not present */
-   210		for_each_possible_cpu(c) {
-   211			if (c == 0)
-   212				continue;
-   213			set_cpu_present(c, false);
-   214		}
-   215	}
-   216	
+> @@ -119,7 +118,6 @@ CONFIG_KVM=y
+>  CONFIG_JUMP_LABEL=y
+>  CONFIG_MODULES=y
+>  CONFIG_MODULE_UNLOAD=y
+> -CONFIG_IOSCHED_BFQ=y
+>  # CONFIG_CORE_DUMP_DEFAULT_ELF_HEADERS is not set
+>  # CONFIG_COMPAT_BRK is not set
+>  CONFIG_MEMORY_HOTPLUG=y
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+No, I definitely want CONFIG_IOSCHED_BFQ=y, it is essential
+for performance on certain classes of machines. It would
+be better to drop the 'imply IOSCHED_BFQ' in two Kconfig
+files.
+
+> @@ -129,8 +127,6 @@ CONFIG_MEMORY_FAILURE=y
+>  CONFIG_TRANSPARENT_HUGEPAGE=y
+>  CONFIG_NET=y
+>  CONFIG_PACKET=y
+> -CONFIG_UNIX=y
+> -CONFIG_INET=y
+>  CONFIG_IP_MULTICAST=y
+>  CONFIG_IP_PNP=y
+>  CONFIG_IP_PNP_DHCP=y
+
+These also seem kind of essential for almost any machine,
+I assume you are doing something wrong here.
+
+> @@ -180,8 +176,6 @@ CONFIG_NET_ACT_GATE=m
+>  CONFIG_QRTR_SMD=m
+>  CONFIG_QRTR_TUN=m
+>  CONFIG_CAN=m
+> -CONFIG_CAN_M_CAN=m
+> -CONFIG_CAN_M_CAN_PLATFORM=m
+>  CONFIG_BT=m
+>  CONFIG_BT_HIDP=m
+>  # CONFIG_BT_LE is not set
+> @@ -384,6 +372,8 @@ CONFIG_DP83869_PHY=m
+>  CONFIG_DP83TD510_PHY=y
+>  CONFIG_VITESSE_PHY=y
+>  CONFIG_CAN_FLEXCAN=m
+> +CONFIG_CAN_M_CAN=m
+> +CONFIG_CAN_M_CAN_PLATFORM=m
+>  CONFIG_CAN_RCAR=m
+>  CONFIG_CAN_RCAR_CANFD=m
+>  CONFIG_CAN_MCP251XFD=m
+
+These just get moved around in the file, please don't
+mix those changes with other changes that change the behavior.
+
+> @@ -215,27 +209,27 @@ CONFIG_PCI_PASID=y
+>  CONFIG_HOTPLUG_PCI=y
+>  CONFIG_HOTPLUG_PCI_ACPI=y
+>  CONFIG_PCI_AARDVARK=y
+> -CONFIG_PCI_TEGRA=y
+> -CONFIG_PCIE_RCAR_HOST=y
+> -CONFIG_PCIE_RCAR_EP=y
+> -CONFIG_PCI_HOST_GENERIC=y
+> -CONFIG_PCI_XGENE=y
+>  CONFIG_PCIE_ALTERA=y
+>  CONFIG_PCIE_ALTERA_MSI=y
+> +CONFIG_PCIE_BRCMSTB=m
+>  CONFIG_PCI_HOST_THUNDER_PEM=y
+>  CONFIG_PCI_HOST_THUNDER_ECAM=y
+> -CONFIG_PCIE_ROCKCHIP_HOST=m
+> +CONFIG_PCI_HOST_GENERIC=y
+>  CONFIG_PCIE_MEDIATEK_GEN3=m
+> -CONFIG_PCIE_BRCMSTB=m
+> +CONFIG_PCI_TEGRA=y
+> +CONFIG_PCIE_RCAR_HOST=y
+> +CONFIG_PCIE_RCAR_EP=y
+> +CONFIG_PCIE_ROCKCHIP_HOST=m
+> +CONFIG_PCI_XGENE=y
+>  CONFIG_PCI_IMX6_HOST=y
+>  CONFIG_PCI_LAYERSCAPE=y
+>  CONFIG_PCI_HISI=y
+> -CONFIG_PCIE_QCOM=y
+> -CONFIG_PCIE_ARMADA_8K=y
+> -CONFIG_PCIE_ROCKCHIP_DW_HOST=y
+>  CONFIG_PCIE_KIRIN=y
+>  CONFIG_PCIE_HISI_STB=y
+> +CONFIG_PCIE_ARMADA_8K=y
+>  CONFIG_PCIE_TEGRA194_HOST=m
+> +CONFIG_PCIE_QCOM=y
+> +CONFIG_PCIE_ROCKCHIP_DW_HOST=y
+>  CONFIG_PCIE_VISCONTI_HOST=y
+>  CONFIG_PCIE_LAYERSCAPE_GEN4=y
+>  CONFIG_PCI_ENDPOINT=y
+
+Same here
+
+> @@ -247,14 +241,12 @@ CONFIG_FW_LOADER_USER_HELPER=y
+>  CONFIG_HISILICON_LPC=y
+>  CONFIG_TEGRA_ACONNECT=m
+>  CONFIG_MHI_BUS_PCI_GENERIC=m
+> -CONFIG_ARM_SCMI_PROTOCOL=y
+>  CONFIG_ARM_SCPI_PROTOCOL=y
+>  CONFIG_RASPBERRYPI_FIRMWARE=y
+>  CONFIG_INTEL_STRATIX10_SERVICE=y
+> @@ -1185,7 +1168,6 @@ CONFIG_CROS_EC_RPMSG=m
+>  CONFIG_CROS_EC_SPI=y
+>  CONFIG_CROS_EC_CHARDEV=m
+>  CONFIG_COMMON_CLK_RK808=y
+> -CONFIG_COMMON_CLK_SCMI=y
+>  CONFIG_COMMON_CLK_SCPI=y
+>  CONFIG_COMMON_CLK_CS2000_CP=y
+>  CONFIG_COMMON_CLK_FSL_SAI=y
+
+This was caused by commit 9e4e24414cc6 ("arm64:
+introduce STM32 family on Armv8 architecture"),
+which selects ARM_SCMI_PROTOCOL and COMMON_CLK_SCMI.
+I think we should instead revert those and enable
+them in the defconfig for consistency with the other
+platforms that need the same driver.
+
+>  CONFIG_INTEL_STRATIX10_RSU=m
+>  CONFIG_EFI_CAPSULE_LOADER=y
+>  CONFIG_IMX_SCU=y
+> -CONFIG_IMX_SCU_PD=y
+>  CONFIG_GNSS=m
+>  CONFIG_GNSS_MTK_SERIAL=m
+>  CONFIG_MTD=y
+> @@ -276,15 +268,12 @@ CONFIG_MTD_NAND_FSL_IFC=y
+>  CONFIG_MTD_NAND_QCOM=y
+>  CONFIG_MTD_SPI_NOR=y
+>  CONFIG_MTD_UBI=m
+> -CONFIG_UBIFS_FS=m
+>  CONFIG_BLK_DEV_LOOP=y
+>  CONFIG_BLK_DEV_NBD=m
+>  CONFIG_VIRTIO_BLK=y
+>  CONFIG_BLK_DEV_NVME=m
+>  CONFIG_QCOM_COINCELL=m
+>  CONFIG_QCOM_FASTRPC=m
+> -CONFIG_BATTERY_QCOM_BATTMGR=m
+> -CONFIG_UCSI_PMIC_GLINK=m
+>  CONFIG_SRAM=y
+>  CONFIG_PCI_ENDPOINT_TEST=m
+>  CONFIG_EEPROM_AT24=m
+
+Again, just moved around.
+
+> @@ -308,7 +297,6 @@ CONFIG_AHCI_XGENE=y
+>  CONFIG_AHCI_QORIQ=y
+>  CONFIG_SATA_SIL24=y
+>  CONFIG_SATA_RCAR=y
+> -CONFIG_PATA_PLATFORM=y
+>  CONFIG_PATA_OF_PLATFORM=y
+>  CONFIG_MD=y
+>  CONFIG_BLK_DEV_MD=m
+
+For the ones that got removed for a good and trivial reason,
+you can probably combine the patches and just list what
+happened.
+
+> @@ -635,7 +625,7 @@ CONFIG_GPIO_PCA953X_IRQ=y
+>  CONFIG_GPIO_BD9571MWV=m
+>  CONFIG_GPIO_MAX77620=y
+>  CONFIG_GPIO_SL28CPLD=m
+> -CONFIG_GPIO_SYSCON=y
+
+Apparently caused by GPIO_SAMA5D2_PIOBU, please change that
+to 'depends on'.
+
+> @@ -856,7 +843,6 @@ CONFIG_DRM_LONTIUM_LT9611UXC=m
+>  CONFIG_DRM_ITE_IT66121=m
+>  CONFIG_DRM_NWL_MIPI_DSI=m
+>  CONFIG_DRM_PARADE_PS8640=m
+> -CONFIG_DRM_SAMSUNG_DSIM=m
+>  CONFIG_DRM_SII902X=m
+>  CONFIG_DRM_SIMPLE_BRIDGE=m
+>  CONFIG_DRM_THINE_THC63LVD1024=m
+
+DRM_EXYNOS_DSI should probably depend on this rather than
+selecting it.
+
+> @@ -1203,18 +1185,6 @@ CONFIG_CLK_IMX8QXP=y
+>  CONFIG_CLK_IMX8ULP=y
+>  CONFIG_CLK_IMX93=y
+>  CONFIG_TI_SCI_CLK=y
+> -CONFIG_COMMON_CLK_MT8192_AUDSYS=y
+> -CONFIG_COMMON_CLK_MT8192_CAMSYS=y
+> -CONFIG_COMMON_CLK_MT8192_IMGSYS=y
+> -CONFIG_COMMON_CLK_MT8192_IMP_IIC_WRAP=y
+> -CONFIG_COMMON_CLK_MT8192_IPESYS=y
+> -CONFIG_COMMON_CLK_MT8192_MDPSYS=y
+> -CONFIG_COMMON_CLK_MT8192_MFGCFG=y
+> -CONFIG_COMMON_CLK_MT8192_MMSYS=y
+> -CONFIG_COMMON_CLK_MT8192_MSDC=y
+> -CONFIG_COMMON_CLK_MT8192_SCP_ADSP=y
+> -CONFIG_COMMON_CLK_MT8192_VDECSYS=y
+> -CONFIG_COMMON_CLK_MT8192_VENCSYS=y
+>  CONFIG_COMMON_CLK_QCOM=y
+>  CONFIG_QCOM_A53PLL=y
+>  CONFIG_QCOM_CLK_APCS_MSM8916=y
+
+These looks legitimate
+
+> @@ -1275,7 +1244,6 @@ CONFIG_TEGRA186_TIMER=y
+>  CONFIG_RENESAS_OSTM=y
+>  CONFIG_ARM_MHU=y
+>  CONFIG_IMX_MBOX=y
+> -CONFIG_OMAP2PLUS_MBOX=m
+>  CONFIG_PLATFORM_MHU=y
+>  CONFIG_BCM2835_MBOX=y
+>  CONFIG_QCOM_APCS_IPC=y
+
+Again we have a mix of select and depends:
+
+drivers/remoteproc/Kconfig:     select OMAP2PLUS_MBOX
+drivers/remoteproc/Kconfig:     select OMAP2PLUS_MBOX
+drivers/remoteproc/Kconfig:     select OMAP2PLUS_MBOX
+drivers/soc/ti/Kconfig: depends on OMAP2PLUS_MBOX
+
+We probably want the latter for all of them.
+
+> @@ -1462,7 +1431,6 @@ CONFIG_PHY_J721E_WIZ=m
+>  CONFIG_ARM_CCI_PMU=m
+>  CONFIG_ARM_CCN=m
+>  CONFIG_ARM_CMN=m
+> -CONFIG_ARM_CORESIGHT_PMU_ARCH_SYSTEM_PMU=m
+>  CONFIG_ARM_SMMU_V3_PMU=m
+>  CONFIG_ARM_DSU_PMU=m
+>  CONFIG_FSL_IMX8_DDR_PMU=m
+> @@ -1471,6 +1439,7 @@ CONFIG_QCOM_L3_PMU=y
+>  CONFIG_ARM_SPE_PMU=m
+>  CONFIG_ARM_DMC620_PMU=m
+>  CONFIG_HISI_PMU=y
+> +CONFIG_ARM_CORESIGHT_PMU_ARCH_SYSTEM_PMU=m
+>  CONFIG_MESON_DDR_PMU=m
+>  CONFIG_NVMEM_LAYOUT_SL28_VPD=m
+>  CONFIG_NVMEM_IMX_OCOTP=y
+
+Just moved
+
+> @@ -1498,10 +1467,8 @@ CONFIG_TEE=y
+>  CONFIG_OPTEE=y
+>  CONFIG_MUX_GPIO=m
+>  CONFIG_MUX_MMIO=y
+> -CONFIG_SLIMBUS=m
+>  CONFIG_SLIM_QCOM_CTRL=m
+
+Please fix SOUNDWIRE_QCOM to no longer 'imply SLIMBUS'.
+
+>  CONFIG_SLIM_QCOM_NGD_CTRL=m
+> -CONFIG_INTERCONNECT=y
+>  CONFIG_INTERCONNECT_IMX=y
+>  CONFIG_INTERCONNECT_IMX8MM=m
+>  CONFIG_INTERCONNECT_IMX8MN=m
+
+I think the problem here are some Tegra device drivers that
+incorrectly 'select INTERCONNECT' rather than using the
+'depends on' that every other interconnect driver has.
+Please fix those instead.
+
+> @@ -1544,8 +1511,8 @@ CONFIG_OVERLAY_FS=m
+>  CONFIG_VFAT_FS=y
+>  CONFIG_TMPFS_POSIX_ACL=y
+>  CONFIG_HUGETLBFS=y
+> -CONFIG_CONFIGFS_FS=y
+>  CONFIG_EFIVAR_FS=y
+
+For CONFIG_CONFIGFS_FS, we have a mix of 'depends on' and 'select'
+in the Kconfig options that use it. Before you remove this here,
+let's discuss with all the users which of the two should actually
+be used and then change them to be consistent.
+
+> @@ -1593,7 +1560,6 @@ CONFIG_DEBUG_INFO_REDUCED=y
+>  CONFIG_MAGIC_SYSRQ=y
+>  CONFIG_DEBUG_FS=y
+>  # CONFIG_SCHED_DEBUG is not set
+> -# CONFIG_DEBUG_PREEMPT is not set
+>  # CONFIG_FTRACE is not set
+>  CONFIG_CORESIGHT=m
+>  CONFIG_CORESIGHT_LINK_AND_SINK_TMC=m
+
+These looks sensible. Can you do the same thing for
+arch/arm/configs/* in a combined patch?
+
+      Arnd
