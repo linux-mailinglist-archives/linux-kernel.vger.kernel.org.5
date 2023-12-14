@@ -2,73 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A01CF8123F3
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 01:36:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CDDF8123F5
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 01:36:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229706AbjLNAgE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 19:36:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48104 "EHLO
+        id S1442803AbjLNAgn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 19:36:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54136 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234121AbjLNAgB (ORCPT
+        with ESMTP id S229739AbjLNAgm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 19:36:01 -0500
-Received: from mail-qt1-x835.google.com (mail-qt1-x835.google.com [IPv6:2607:f8b0:4864:20::835])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B688410A
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 16:36:05 -0800 (PST)
-Received: by mail-qt1-x835.google.com with SMTP id d75a77b69052e-4258b6df295so140131cf.0
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 16:36:05 -0800 (PST)
+        Wed, 13 Dec 2023 19:36:42 -0500
+Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5804EB0;
+        Wed, 13 Dec 2023 16:36:48 -0800 (PST)
+Received: by mail-ej1-x629.google.com with SMTP id a640c23a62f3a-9fa2714e828so981414566b.1;
+        Wed, 13 Dec 2023 16:36:48 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1702514164; x=1703118964; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1702514207; x=1703119007; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Rh/JIPLuSc5XTJsnIXetpV5afhDLqc5qWgt+ZxYeVCQ=;
-        b=zugocgvmf1lxu84yfv4X9DbDntLR0AzZNqnReBvdS2ZE8OIoEw93XOQHmlvBQ0TZUn
-         857KK9j5mIUY3RRJspg+5g/UO/nyZR4x0W7oBG53ARP+Th6LvdCQhNm3lVTD14GqjNhW
-         VkGFrYefsMSFtfiQjVsFypCX4azcnrMif+HBWhdbf9p6wk8LqkBDBIFPj/qhvI07TsTW
-         XwodgsLBUWbZMpE4ZlglFfU0eQApAafb1wh4721RL7hl/pFxr8HTSCO7AqKeo3b4LLXf
-         BxIlqususmWl76ubddE7o8dq48aSKph0oKJxDUX9aKBeu3Buy0fqyi97CNfhoQJSG14G
-         KSsQ==
+        bh=Q4/cg7NnZrD+0jLGfKo4qZyvj9UTKzYk6re95esi4sQ=;
+        b=mijrqFO3EoJa4IVWofcrrhjWCFUt9OGmzUo56B7MnJ9i5xFIUw1Hc3LKWhUP2BCdn6
+         q2XjUKG5cZ4Xy5NwIBdr+jvEtWry82okM0Rfo1loIBwcwGMASb5Xvnd0NKKuBr/MmVx0
+         XKY8V3UXg6vf9WCJxTxJN19w7xUAG8znlmvy8SvD+WCu1ckcU33VPlc+vN1s8Spk760N
+         aq9mQj4/rY5EfcqaEUOP1L0LIuzvkHq33O6cVbG6WTnIBsIk/c4inisZDUUILDhlcRYu
+         3j8I5dBbAfn5WPgvm/RMnV+SzAZ5102OMayy8JqQWdw2HwCsALsdonm1Ef1QEKb/+t6P
+         jJpQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702514164; x=1703118964;
+        d=1e100.net; s=20230601; t=1702514207; x=1703119007;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Rh/JIPLuSc5XTJsnIXetpV5afhDLqc5qWgt+ZxYeVCQ=;
-        b=czKyBD+QFHmvHJoFl+o+Eubc0bnviTjI5qePoDUFa3F/vxjLolkStQpxeD+Twkn2Mb
-         NhballUymVPJJbieN3+FBgsPVtJTQPrUl2aYNaPeS85K/mWZkruM9a6eTwyhy0jGulU0
-         J11Js06FkFtzaigV5EwcoL6L/kJBAqQl5QRaHPRjolR+nQ3bGG2w3gTXeIuL7WFMXeKx
-         A1fh+vQL62UUU20xOB9Dhbl05cHT3a+d6SHRdWq5EWOKRJ+mybA5/uBtvd9p9caCNEb2
-         4bzGCxV1TFrFxUWU0Qph/fvVK1nfJMVxY53651vUgQZsvETS98y0cZifj6bRkGfG4fuF
-         apJQ==
-X-Gm-Message-State: AOJu0YwbrpML2DQLO1sQaDs5bRzTubKNPN++61GdXfiJAuoYoc2NBCj4
-        HfZECjaaAapkd9s9KMSmmu3AxT5gS3titkzdi26ndntoiQxZdQK775jZBpgx
-X-Google-Smtp-Source: AGHT+IFV9mswBOSTplU3GbpxbWwY83oDLBB8lfMgKwsXIlFx4/MATC30VcWkHbqFp7WCIuN5thSLGmaeWN2qqtvo+f4=
-X-Received: by 2002:a05:622a:1a15:b0:425:47fc:e6e6 with SMTP id
- f21-20020a05622a1a1500b0042547fce6e6mr1655213qtb.4.1702514164149; Wed, 13 Dec
- 2023 16:36:04 -0800 (PST)
+        bh=Q4/cg7NnZrD+0jLGfKo4qZyvj9UTKzYk6re95esi4sQ=;
+        b=ijuV25tRujZSnBJkvsCudQCO9XymD8hv0sUypfAeWlxsAo/71ngS8NSXr1F8TSa2NF
+         YDG6is17naVrNkxcwT8J0tZE58Xs//bppwtWa7c3Zl8UKYEfFP22RtMJokh//8msKS5N
+         KkNryYI5N2CaLXdFRTROXDGEGn/C2eciiC3AYgRVGCTU+fV+TbacFCtO/iIIShtWpkT1
+         1QJRWdGCjzUWVZoWKWqzVAuNeVmzl9f0Okkpm81+A8g2czfSR+S1OrIuWKg0S43aKOd0
+         yrScrMyfXJ9IPIMqqQOS8ricAgDN7nz0qe/PVfFsXFUCinNG6SXh8iCJcMvckMo/l/VW
+         oUKw==
+X-Gm-Message-State: AOJu0Yzchyako1OcgkYiUmgoyCIUFypxQ8gTKBkn3XfU8tCaUVdxnsAi
+        NlVRYQ9dywDl2dePYTTTE28WWpyuafkA4pwKwxo=
+X-Google-Smtp-Source: AGHT+IEZIJ6EmNROX5ipvPf5YbEnCt7fbA9/NkEfEn/5k6Z/aNsWMC+eGTLaU0t3NOlrYDfesLdLG4wrX4LWEtRMkwc=
+X-Received: by 2002:a17:906:82:b0:a1f:99e1:8a61 with SMTP id
+ 2-20020a170906008200b00a1f99e18a61mr2845709ejc.24.1702514206384; Wed, 13 Dec
+ 2023 16:36:46 -0800 (PST)
 MIME-Version: 1.0
-References: <20231212231706.2680890-1-jeffxu@chromium.org> <20231212231706.2680890-12-jeffxu@chromium.org>
- <CAHk-=wgn02cpoFEDQGgS+5BUqA2z-=Ks9+PNd-pEJy8h+NOs5g@mail.gmail.com>
-In-Reply-To: <CAHk-=wgn02cpoFEDQGgS+5BUqA2z-=Ks9+PNd-pEJy8h+NOs5g@mail.gmail.com>
-From:   Jeff Xu <jeffxu@google.com>
-Date:   Wed, 13 Dec 2023 16:35:26 -0800
-Message-ID: <CALmYWFu39nzHvBmRsA326GcmV9u=eM-2aCGOvLK31rrb2R9NEw@mail.gmail.com>
-Subject: Re: [RFC PATCH v3 11/11] mseal:add documentation
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     jeffxu@chromium.org, akpm@linux-foundation.org,
-        keescook@chromium.org, jannh@google.com, sroettger@google.com,
-        willy@infradead.org, gregkh@linuxfoundation.org,
-        jorgelo@chromium.org, groeck@chromium.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-mm@kvack.org, pedro.falcato@gmail.com, dave.hansen@intel.com,
-        linux-hardening@vger.kernel.org, deraadt@openbsd.org
+References: <CACkBjsbj4y4EhqpV-ZVt645UtERJRTxfEab21jXD1ahPyzH4_g@mail.gmail.com>
+ <CAEf4BzZ0xidVCqB47XnkXcNhkPWF6_nTV7yt+_Lf0kcFEut2Mg@mail.gmail.com>
+ <CACkBjsaEQxCaZ0ERRnBXduBqdw3MXB5r7naJx_anqxi0Wa-M_Q@mail.gmail.com>
+ <CAEf4BzbGSrU4NgM1Ps0g_ch8G68CWEsP50Y+Wy8-SfYnpHwVGA@mail.gmail.com> <35be3c5f29ee0e9a49ed29e71044f0ad25d97d9d.camel@gmail.com>
+In-Reply-To: <35be3c5f29ee0e9a49ed29e71044f0ad25d97d9d.camel@gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Wed, 13 Dec 2023 16:36:33 -0800
+Message-ID: <CAEf4BzZ783F4DV0Mq-xtSph-vTvF-O8AyZpnwOC=6hw=N3x1vw@mail.gmail.com>
+Subject: Re: [Bug Report] bpf: incorrectly pruning runtime execution path
+To:     Eduard Zingerman <eddyz87@gmail.com>
+Cc:     Hao Sun <sunhao.th@gmail.com>, Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        bpf <bpf@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -76,80 +75,118 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 12, 2023 at 4:39=E2=80=AFPM Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
+On Wed, Dec 13, 2023 at 4:08=E2=80=AFPM Eduard Zingerman <eddyz87@gmail.com=
+> wrote:
 >
-> On Tue, 12 Dec 2023 at 15:17, <jeffxu@chromium.org> wrote:
-> > +
-> > +**types**: bit mask to specify the sealing types, they are:
+> On Wed, 2023-12-13 at 15:30 -0800, Andrii Nakryiko wrote:
+> [...]
+> > Yes, thanks, the execution trace above was helpful. Let's try to
+> > minimize the example here, I'll keep original instruction indices,
+> > though:
+> >
+> >    23: (bf) r5 =3D r8                   ; here we link r5 and r8 togeth=
+er
+> >    26: (7e) if w8 s>=3D w0 goto pc+5    ; here it's not always/never
+> > taken, so w8 and w0 remain imprecise
+> >    28: (0f) r8 +=3D r8                  ; here link between r8 and r5 i=
+s broken
+> >    29: (d6) if w5 s<=3D 0x1d goto pc+2  ; here we know value of w5 and
+> > so it's always/never taken, r5 is marked precise
+> >
+> > Now, if we look at r5's precision log at this instruction:
+> >
+> > 29: (d6) if w5 s<=3D 0x1d goto pc+2
+> > mark_precise: frame0: last_idx 29 first_idx 26 subseq_idx -1
+> > mark_precise: frame0: regs=3Dr5 stack=3D before 28: (0f) r8 +=3D r8
+> > mark_precise: frame0: regs=3Dr5 stack=3D before 27: (4f) r8 |=3D r8
+> > mark_precise: frame0: regs=3Dr5 stack=3D before 26: (7e) if w8 s>=3D w0=
+ goto pc+5
 >
-> I really want a real-life use-case for more than one bit of "don't modify=
-".
+> Sorry, maybe it's time for me to get some sleep, but I don't see an
+> issue here. The "before" log is printed by backtrack_insn() before
+> instruction is backtracked. So the following:
 >
-For the real-life use case question, Stephen R=C3=B6ttger and I put
-description in the cover letter as well as the open discussion section
-(mseal() vs immutable()) of patch 0/11.  Perhaps you are looking for more
-details in chrome usage of the API, e.g. code-wise ?
-
-> IOW, when would you *ever* say "seal this area, but MADV_DONTNEED is ok"?
+> > mark_precise: frame0: regs=3Dr5 stack=3D before 26: (7e) if w8 s>=3D w0=
+ goto pc+5
 >
-The MADV_DONTNEED is OK for file-backed mapping.
-As state in man page of madvise: [1]
-
-"subsequent accesses of pages in the range will succeed,  but will
-result in either repopulating the memory contents from the up-to-date
-contents of the underlying mapped file"
-
-> Or when would you *ever* say "seal this area, but mprotect()" is ok.
+> Is a state of backtracker before "if w8 s>=3D w0 ..." is processed.
+> But running the test case I've shared wider precision trace for
+> this instruction looks as follows:
 >
-The fact  that openBSD allows RW=3D>RO transaction, as in its man page [2]
+>   26: (7e) if w8 s>=3D w0 goto pc+5       ; R0=3Dscalar(smin=3Dsmin32=3D0=
+,smax=3Dumax=3Dsmax32=3Dumax32=3D2,var_off=3D(0x0; 0x3))
+>                                           R8=3Dscalar(id=3D2,smax32=3D1)
+>   27: (4f) r8 |=3D r8                     ; R8_w=3Dscalar()
+>   28: (0f) r8 +=3D r8                     ; R8_w=3Dscalar()
+>   29: (d6) if w5 s<=3D 0x1d goto pc+2
+>   mark_precise: frame0: last_idx 29 first_idx 26 subseq_idx -1
+>   mark_precise: frame0: regs=3Dr5 stack=3D before 28: (0f) r8 +=3D r8
 
- "  At present, mprotect(2) may reduce permissions on immutable pages
-  marked PROT_READ | PROT_WRITE to the less permissive PROT_READ."
+What if we had a checkpoint here and not have a checkpoint at
+conditional jump instruction?
 
-suggests application might desire multiple ways to seal the "PROT" bits.
+The general point is that the checkpoint has information about linked
+registers at the very end of the instruction span that it represents,
+but any intermediate changes will be lost.
 
-E.g.
-Applications that wants a full lockdown of PROT and PKEY might use
-SEAL_PROT_PKEY (Chrome case and implemented in this patch)
+It's a similar issue to stack access tracking. At some point we know
+that r3 is actually fp-8, but we will lose it by the time we actually
+get to the checkpoint. Yet this information is important in the
+context of some instruction before the checkpoint.
 
-Application that desires RW=3D>RO transaction, might implement
-SEAL_PROT_DOWNGRADEABLE, or specifically allow RW=3D>RO.
-(not implemented but can be added in future as extension if  needed.)
+I might be missing something as well, my brain is fried from all these
+verifier issues.
 
-> IOW, I want to know why we don't just do the BSD immutable thing, and
-> why we need this multi-level sealing thing.
+>   mark_precise: frame0: regs=3Dr5 stack=3D before 27: (4f) r8 |=3D r8
+>   mark_precise: frame0: regs=3Dr5 stack=3D before 26: (7e) if w8 s>=3D w0=
+ goto pc+5
+>   mark_precise: frame0: parent state regs=3Dr5 stack=3D:
+>      R0_rw=3Dscalar(smin=3Dsmin32=3D0,smax=3Dumax=3Dsmax32=3Dumax32=3D2,v=
+ar_off=3D(0x0; 0x3))
+>      R2_w=3D4
+>      R3_w=3D0x1f00000034
+>      R4_w=3Dscalar(smin=3D0,smax=3Dumax=3D0x3fffffffc,smax32=3D0x7ffffffc=
+,umax32=3D0xfffffffc,
+>                  var_off=3D(0x0; 0x3fffffffc))
+>      R5_rw=3DPscalar(id=3D2)
+>      R8_rw=3Dscalar(id=3D2) R10=3Dfp0
+>   mark_precise: frame0: last_idx 24 first_idx 11 subseq_idx 26
+
+would this all work if we didn't have a checkpoint here?
+
+>   mark_precise: frame0: regs=3Dr5,r8 stack=3D before 24: (18) r2 =3D 0x4 =
+    <------ !!!
+>   mark_precise: frame0: regs=3Dr5,r8 stack=3D before 23: (bf) r5 =3D r8
+>   mark_precise: frame0: regs=3Dr8 stack=3D before 22: (67) r4 <<=3D 2
+>   ...
 >
-The details are discussed in mseal() vs immutable()) of the cover letter
-(patch 0/11)
+> Note, that right after "if w8 s>=3D w0 goto pc+5" is processed the
+> backtracker state is:
+>
+>   mark_precise: frame0: regs=3Dr5,r8 stack=3D before 24: (18) r2 =3D 0x4
+>
+> So both r5 and r8 are accounted for.
+>
+> > Note how at this instruction r5 and r8 *WERE* linked together, but we
+> > already lost this information for backtracking. So we don't mark w8 as
+> > precise. That's one part of the problem.
+> >
+> > The second part is that even if we knew that w8/r8 is precise, should
+> > we mark w0/r0 as precise? I actually need to think about this some
+> > more. Right now for conditional jumps we eagerly mark precision for
+> > both registers only in always/never taken scenarios.
+> >
+> > For now just narrowing down the issue, as I'm sure not many people
+> > followed all the above stuff carefully.
+> >
+> >
+> > P.S. For solving tracking of linked registers we can probably utilize
+> > instruction history, though technically they can be spread across
+> > multiple frames, between registers and stack slots, so that's a bit
+> > tricky.
+>
+> For precision back-propagation we currently rely on id values stored
+> in the parent state, when moving up from child to parent boundary.
 
-In short, BSD's immutable is designed specific for libc case, and Chrome
-case is just different (e.g. the lifetime of those mappings and requirement=
- of
-free/discard unused memory).
-
-Single bit vs multi-bits are still up for discussion.
-If there are strong opinions on the multiple-bits approach, (and
-no objection on applying MM_SEAL_DISCARD_RO_ANON to the .text part
-during libc dynamic loading, which has no effect anyway because it is
-file backed.), we could combine all three bits into one. A side note is tha=
-t we
-could not add something such as SEAL_PROT_DOWNGRADEABLE later,
-since pkey_mprotect is sealed.
-
-I'm open to one bit approach. If we took that approach,
-We might consider the following:
-
-mseal() or
-mseal(flags), flags are reserved for future use.
-
-I appreciate a direction on this.
-
- [1] https://man7.org/linux/man-pages/man2/madvise.2.html
- [2] https://man.openbsd.org/mimmutable.2
-
--Jeff
-
-
-
->                Linus
+Everything might be good with linked IDs. But there is a real issue
+here, let's find what it is.
