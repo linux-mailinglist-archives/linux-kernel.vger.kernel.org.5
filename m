@@ -2,60 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 913878128A0
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 07:59:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F26F8128AE
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 08:02:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1443234AbjLNG7Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 01:59:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46530 "EHLO
+        id S230223AbjLNHB5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 02:01:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55786 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229629AbjLNG7X (ORCPT
+        with ESMTP id S230117AbjLNHBz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 01:59:23 -0500
+        Thu, 14 Dec 2023 02:01:55 -0500
 Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4333CB9;
-        Wed, 13 Dec 2023 22:59:30 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07CEEB9;
+        Wed, 13 Dec 2023 23:02:01 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Transfer-Encoding
-        :Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-        Sender:Reply-To:Content-ID:Content-Description;
-        bh=sCcjsVfvGrL10f8KrjBhxlZMbVCOfy10t/MAoJlx8KE=; b=CViAJ6fS5ELM4EZ55saHCscxb6
-        55bQzcdnMTPt49sOOjGICOW9sPzDsc5RmzyJGX/og7owMIZ+TRHC0++ZFHXPlJlf1tcdncRsUlvJK
-        TAweBcvzHZVOgsyZCmbK0A1jUya1ddqZVcX2MjtmUAwxkZyrBaAgtcRmbkek24gKkPfj4yED8QIdT
-        vUHm/3dV8GlRjnfqJb6mhk7pvEd5YUcliFV+vGD8cKQ/CtVu5acx5WDqNJC1ig4oJrvqBLmjrZYlZ
-        ZgMF+L2vR2xIm9IlUrvthVJeokCDIcovGuRsHoVzQ6xYOdvKJpAI7AhtZVLLCHf+zKPXp22UUBrnZ
-        8d6Ah8RA==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
-        id 1rDfgs-00H2ux-0b;
-        Thu, 14 Dec 2023 06:59:26 +0000
-Date:   Wed, 13 Dec 2023 22:59:26 -0800
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Mina Almasry <almasrymina@google.com>
-Cc:     Christoph Hellwig <hch@infradead.org>,
-        patchwork-bot+netdevbpf@kernel.org, shailend@google.com,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, bpf@vger.kernel.org,
-        linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com, corbet@lwn.net, jeroendb@google.com,
-        pkaligineedi@google.com, hawk@kernel.org,
-        ilias.apalodimas@linaro.org, arnd@arndb.de, dsahern@kernel.org,
-        willemdebruijn.kernel@gmail.com, shuah@kernel.org,
-        sumit.semwal@linaro.org, christian.koenig@amd.com,
-        linyunsheng@huawei.com, hramamurthy@google.com, shakeelb@google.com
-Subject: Re: [net-next v1 00/16] Device Memory TCP
-Message-ID: <ZXqnzuYxcqlapcpa@infradead.org>
-References: <20231208005250.2910004-1-almasrymina@google.com>
- <170253482786.28524.10625748175644260187.git-patchwork-notify@kernel.org>
- <ZXqlWT2JYg0sa7IF@infradead.org>
- <CAHS8izNCvxuTsKV73oTu3xS7ZVr0riBdYGbKnsHptVe_e-t5MQ@mail.gmail.com>
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        MIME-Version:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=FZaOAO5vmABT0i97bp/ZMibUxD398U4/Yahe2hBKgzU=; b=W8n+jLe/I0E2TDYrMLqrBgsuqL
+        62NNBe7JtDtRBDwETRGttWq8l+UCTtbI/AGYcEqPN61UpWs+ihrwRWLpGa96hnYlkrMDjNynPE9bb
+        2l+zjow865xzGyC1+vbEZZhJjArWX6zHprnskaa9VIFc//MlTZH2tW7SyOKZZ+hTVdnKXzpKFDNIO
+        qnf7h+LTmN2UPGIOOrZTXZjn43bsLCT9r/1IEqrhqBpFvxAB92bdVDhwNTgvP5WWIfZ3t2OFKdILC
+        seuw6NA9eQbR9xkuDm7fHXPhVpS1qfr7QpLTZB3mYP8QBmq98Gs2/Yofyt6WOhUXKVSEqCaIqb5lo
+        rCFc2/HQ==;
+Received: from [50.53.46.231] (helo=bombadil.infradead.org)
+        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1rDfjM-00H3K5-2k;
+        Thu, 14 Dec 2023 07:02:00 +0000
+From:   Randy Dunlap <rdunlap@infradead.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        Mauro Carvalho Chehab <mchehab@s-opensource.com>,
+        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org
+Subject: [PATCH] scripts/kernel-doc: restore warning for Excess struct/union
+Date:   Wed, 13 Dec 2023 23:02:00 -0800
+Message-ID: <20231214070200.24405-1-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.43.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAHS8izNCvxuTsKV73oTu3xS7ZVr0riBdYGbKnsHptVe_e-t5MQ@mail.gmail.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
         SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
@@ -66,23 +50,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 13, 2023 at 10:51:25PM -0800, Mina Almasry wrote:
-> On Wed, Dec 13, 2023 at 10:49 PM Christoph Hellwig <hch@infradead.org> wrote:
-> >
-> > On Thu, Dec 14, 2023 at 06:20:27AM +0000, patchwork-bot+netdevbpf@kernel.org wrote:
-> > > Hello:
-> > >
-> > > This series was applied to netdev/net-next.git (main)
-> > > by Jakub Kicinski <kuba@kernel.org>:
-> >
-> > Umm, this is still very broken in intraction with other subsystems.
-> > Please don't push ahead so quickly.
-> >
-> 
-> The bot is just a bit optimistic. Only this first patch was applied.
-> It does not interact with other subsystems.
-> 
->   - [net-next,v1,01/16] net: page_pool: factor out releasing DMA from
-> releasing the page
+The warning for Excess struct or union member description was
+removed when the $nested parameter of check_sections() was removed.
+This causes some kernel-doc notation warnings to be missed.
 
-Ah, that makes sense.  Thanks for the update!
+Recently the kernel test robot somehow reported an Excess member. The
+code in kernel-doc has not issued that warning since kernel v4.16, so I
+don't know how the robot did it. (See the Link for the report.)
+
+  drivers/net/wireless/intel/iwlwifi/fw/dbg.c:86: warning: Excess struct/union/enum/typedef member 'trans_len' description in 'iwl_fw_dump_ptrs'
+
+I patched that warning away even though I could not reproduce the
+warning from kernel-doc. The warning should be issued for extraneous
+struct member or union member description, so restore it.
+
+Fixes: 1081de2d2f91 ("scripts: kernel-doc: get rid of $nested parameter")
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Link: https://lore.kernel.org/all/202312060810.QT9zourt-lkp@intel.com/
+Cc: Mauro Carvalho Chehab <mchehab@s-opensource.com>
+Cc: Jonathan Corbet <corbet@lwn.net>
+Cc: linux-doc@vger.kernel.org
+---
+ scripts/kernel-doc |    7 +++++++
+ 1 file changed, 7 insertions(+)
+
+diff -- a/scripts/kernel-doc b/scripts/kernel-doc
+--- a/scripts/kernel-doc
++++ b/scripts/kernel-doc
+@@ -1659,6 +1659,13 @@ sub check_sections($$$$$) {
+ 					"'$sects[$sx]' " .
+ 					"description in '$decl_name'\n");
+ 			}
++			elsif (($decl_type eq "struct") or
++		       	       ($decl_type eq "union")) {
++				emit_warning("${file}:$.",
++					"Excess $decl_type member " .
++					"'$sects[$sx]' " .
++					"description in '$decl_name'\n");
++			}
+ 		}
+ 	}
+ }
