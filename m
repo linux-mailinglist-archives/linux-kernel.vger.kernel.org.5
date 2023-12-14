@@ -2,138 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C789813AAD
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 20:24:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 75FC9813AAB
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 20:24:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230369AbjLNTUv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 14:20:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44784 "EHLO
+        id S230140AbjLNTUr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 14:20:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39580 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231864AbjLNRko (ORCPT
+        with ESMTP id S232492AbjLNRlE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 12:40:44 -0500
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEAE6121;
-        Thu, 14 Dec 2023 09:40:50 -0800 (PST)
-Received: by mail-ed1-x529.google.com with SMTP id 4fb4d7f45d1cf-54c4f95e27fso7910901a12.1;
-        Thu, 14 Dec 2023 09:40:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702575649; x=1703180449; darn=vger.kernel.org;
-        h=user-agent:in-reply-to:content-disposition:mime-version:references
-         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=g1N4WLdf7sdlP56PS4ELYG6Uf5jhTf+hRZAedOnp114=;
-        b=cQraBOG3mat1Eloaoc8+Y24tpxu4poxTw74iycUwZ0W554MBa/SQtdPEhqtB9/zXas
-         +/TRm6NASEBG3jGft9MzIWCyKgOpHZlb1sdM8xhVyy4jMHxpUumfnuLwgh5XQl+5cNrX
-         pEpRiEZOFapl2FTZEuCgbluprfOU94QOZTd0HfEaNzXspyoj0yi5zY9GXiNVySoP31gE
-         IY029GSXzjTupmfiTcV7slWhIB2Rz9ynlbJjcYhHhgQejUuYenOiZQ/hk2GB5DhvIQE8
-         PnctuQYWiUZmgUwTNAydjzhg+Rkzq9fOj2Mz+sxD6Pm9EVqcWRrJh+HEUANr+tt/3GJu
-         aetg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702575649; x=1703180449;
-        h=user-agent:in-reply-to:content-disposition:mime-version:references
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=g1N4WLdf7sdlP56PS4ELYG6Uf5jhTf+hRZAedOnp114=;
-        b=ZOV2gQXWDOgJT1uNrBQCC+dSKYwUgYgU3EVkKFosalESQTddzHTW/6Ut1Ldm0pGbbZ
-         d6eIvPJzpijG4RUBZ7zQeJgBl/J9XEMizEZpv3iBqBSFurjuOOiY83HIcN7LKOWK9kN0
-         0Dj8zErQb3ZW9RbQj+G4V/kciCttKcGWGHKFy7Z4fXJFagnOwd+LB8Co2t0B9mC+ki3w
-         HviahpflvRWcJ8ye5MSoVGvhGGmuMG0JiJA29MKpjZP6dWBkO4xZOLUXBZBNRLDV0VC9
-         o2p/ZXsX0qfuXUsSj8DsrpcPB0o3gr79XlLd5TE8po/u9msDKxtBaHYAi36ChTGVRxf1
-         PqxA==
-X-Gm-Message-State: AOJu0YzYp/XiGhu3IKZFXab7R1ksmfGQJYvPFpNVGV/yeBI3wpE5Hd2I
-        YMehMACvdcX29NDV4x53aws=
-X-Google-Smtp-Source: AGHT+IFcl9XlzbvFL+8a3OrPkQbfjXbIVp/KME6onEiUZmeuxVQdKBh9vlarUhl0lcc0nX1MDxy64A==
-X-Received: by 2002:a50:c88b:0:b0:551:e411:3b04 with SMTP id d11-20020a50c88b000000b00551e4113b04mr2198866edh.54.1702575648799;
-        Thu, 14 Dec 2023 09:40:48 -0800 (PST)
-Received: from orome.fritz.box (p200300e41f0fa600f22f74fffe1f3a53.dip0.t-ipconnect.de. [2003:e4:1f0f:a600:f22f:74ff:fe1f:3a53])
-        by smtp.gmail.com with ESMTPSA id l12-20020a50cbcc000000b0054b53aacd86sm6850033edi.65.2023.12.14.09.40.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Dec 2023 09:40:48 -0800 (PST)
-Date:   Thu, 14 Dec 2023 18:40:46 +0100
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc:     mperttunen@nvidia.com, airlied@gmail.com, daniel@ffwll.ch,
-        jonathanh@nvidia.com, digetx@gmail.com,
-        dri-devel@lists.freedesktop.org, linux-tegra@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH 0/6] drm/tegra: Fix some error handling paths
-Message-ID: <ZXs-HmMORtbEKtTB@orome.fritz.box>
-References: <cover.1693667005.git.christophe.jaillet@wanadoo.fr>
+        Thu, 14 Dec 2023 12:41:04 -0500
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCFB8B7;
+        Thu, 14 Dec 2023 09:41:10 -0800 (PST)
+Received: from mail.maildlp.com (unknown [172.18.186.231])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4SrflK5yzwz6K61J;
+        Fri, 15 Dec 2023 01:40:45 +0800 (CST)
+Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
+        by mail.maildlp.com (Postfix) with ESMTPS id 0FB9E1400DB;
+        Fri, 15 Dec 2023 01:41:09 +0800 (CST)
+Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Thu, 14 Dec
+ 2023 17:41:08 +0000
+Date:   Thu, 14 Dec 2023 17:41:07 +0000
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>
+CC:     <linux-pm@vger.kernel.org>, <loongarch@lists.linux.dev>,
+        <linux-acpi@vger.kernel.org>, <linux-arch@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-riscv@lists.infradead.org>, <kvmarm@lists.linux.dev>,
+        <x86@kernel.org>, <acpica-devel@lists.linuxfoundation.org>,
+        <linux-csky@vger.kernel.org>, <linux-doc@vger.kernel.org>,
+        <linux-ia64@vger.kernel.org>, <linux-parisc@vger.kernel.org>,
+        Salil Mehta <salil.mehta@huawei.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        <jianyong.wu@arm.com>, <justin.he@arm.com>,
+        James Morse <james.morse@arm.com>
+Subject: Re: [PATCH RFC v3 05/21] ACPI: Rename ACPI_HOTPLUG_CPU to include
+ 'present'
+Message-ID: <20231214174107.0000171f@Huawei.com>
+In-Reply-To: <E1rDOgD-00Dvk2-3h@rmk-PC.armlinux.org.uk>
+References: <ZXmn46ptis59F0CO@shell.armlinux.org.uk>
+        <E1rDOgD-00Dvk2-3h@rmk-PC.armlinux.org.uk>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="B7QFJ7EdQEv+w64a"
-Content-Disposition: inline
-In-Reply-To: <cover.1693667005.git.christophe.jaillet@wanadoo.fr>
-User-Agent: Mutt/2.2.12 (2023-09-09)
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.202.227.76]
+X-ClientProxiedBy: lhrpeml100002.china.huawei.com (7.191.160.241) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, 13 Dec 2023 12:49:37 +0000
+Russell King (Oracle) <rmk+kernel@armlinux.org.uk> wrote:
 
---B7QFJ7EdQEv+w64a
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> From: James Morse <james.morse@arm.com>
+> 
+> The code behind ACPI_HOTPLUG_CPU allows a not-present CPU to become
+> present. This isn't the only use of HOTPLUG_CPU. On arm64 and riscv
+> CPUs can be taken offline as a power saving measure.
+> 
+> On arm64 an offline CPU may be disabled by firmware, preventing it from
+> being brought back online, but it remains present throughout.
+> 
+> Adding code to prevent user-space trying to online these disabled CPUs
+> needs some additional terminology.
+> 
+> Rename the Kconfig symbol CONFIG_ACPI_HOTPLUG_PRESENT_CPU to reflect
+> that it makes possible CPUs present.
+> 
+> HOTPLUG_CPU is untouched as this is only about the ACPI mechanism.
+> 
+> Signed-off-by: James Morse <james.morse@arm.com>
+> Tested-by: Miguel Luis <miguel.luis@oracle.com>
+> Tested-by: Vishnu Pajjuri <vishnu@os.amperecomputing.com>
+> Tested-by: Jianyong Wu <jianyong.wu@arm.com>
+> Signed-off-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
+Formatting nitpick inline. Either way FWIW:
+Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 
-On Sat, Sep 02, 2023 at 05:22:07PM +0200, Christophe JAILLET wrote:
-> Most of the patches are retated to tegra_output_probe() and missing
-> tegra_output_remove(). Others are things spotted while writting the serie.
->=20
->=20
-> Patches 1, 3, 4 are verbose, but some functions called in the probe can
-> return -EPROBE_DEFER, so it is nice to correctly release resources.
->=20
-> Maybe moving the tegra_output_probe() call would minimize the changes, bu=
-t I'm
-> always reluctant to move code, because of possible side-effects.
->=20
->=20
-> Christophe JAILLET (6):
->   drm/tegra: dsi: Fix some error handling paths in tegra_dsi_probe()
->   drm/tegra: dsi: Fix missing pm_runtime_disable() in the error handling
->     path of tegra_dsi_probe()
->   drm/tegra: dsi: Fix some error handling paths in tegra_hdmi_probe()
->   drm/tegra: rgb: Fix some error handling paths in tegra_dc_rgb_probe()
->   drm/tegra: rgb: Fix missing clk_put() in the error handling paths of
->     tegra_dc_rgb_probe()
->   drm/tegra: output: Fix missing i2c_put_adapter() in the error handling
->     paths of tegra_output_probe()
->=20
->  drivers/gpu/drm/tegra/dsi.c    | 55 ++++++++++++++++++++++------------
->  drivers/gpu/drm/tegra/hdmi.c   | 20 ++++++++-----
->  drivers/gpu/drm/tegra/output.c | 16 +++++++---
->  drivers/gpu/drm/tegra/rgb.c    | 18 +++++++----
->  4 files changed, 74 insertions(+), 35 deletions(-)
+> diff --git a/include/linux/acpi.h b/include/linux/acpi.h
+> index 4db54e928b36..36071bc11acd 100644
+> --- a/include/linux/acpi.h
+> +++ b/include/linux/acpi.h
 
-Sorry, this fell through the cracks. Applied now, thanks.
+>  #ifdef CONFIG_ACPI_HOTPLUG_IOAPIC
+>  int acpi_get_ioapic_id(acpi_handle handle, u32 gsi_base, u64 *phys_addr);
+> @@ -629,7 +629,7 @@ static inline u32 acpi_osc_ctx_get_cxl_control(struct acpi_osc_context *context)
+>  #define ACPI_GSB_ACCESS_ATTRIB_RAW_PROCESS	0x0000000F
+>  
+>  /* Enable _OST when all relevant hotplug operations are enabled */
+> -#if defined(CONFIG_ACPI_HOTPLUG_CPU) &&			\
+> +#if defined(CONFIG_ACPI_HOTPLUG_PRESENT_CPU) &&			\
 
-Thierry
+Trivial but I think there is a tab to many before that \
 
---B7QFJ7EdQEv+w64a
-Content-Type: application/pgp-signature; name="signature.asc"
+>  	defined(CONFIG_ACPI_HOTPLUG_MEMORY) &&		\
+>  	defined(CONFIG_ACPI_CONTAINER)
+>  #define ACPI_HOTPLUG_OST
 
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmV7PhwACgkQ3SOs138+
-s6GS9w//STu4g/vBWEfc4q5m0e7gCrQ3UzXsy8t1imWkMTk852LmQdXLz5vl5sBf
-wIsHVsun6jAYMHL6ItSZkUz5Qrxw+3WQpwTP757lUyNI9ECxE2A5QUfuYq+hDtAq
-YDs7VQODIJs6yj1aKHVVYsW1QW/xiQu/oH1YuA6AhJ5TzhR01R8ihVnFHrO1QrbL
-OXd0SSlf3t8zMrIxqnBJonMKBlWt64FgG8qIs2+M/FJLFnqnCo97FLJdzpSFVhnA
-Wbmp4ddR/tAhgMamFVkcFxRJ+ug8UEohMYdb73Hu5m0IlNIjygVyr2328RUAzB1u
-NveWNQBp082mPd7Vuaf2dapDKD+oAmFEqkIDsPWQjYSWUp3v6xHk4IHPACMrqsx6
-zdnLqhXU2u8nK+eFIAd1/NVVhYq43IV5yOFI8rwfsjq+fUPhQoZM5vH7A5MPGKsa
-Dya+y2ysUsBMzZxvpDjUG/nXBhuJ6aDXQggNZPVdNpcnvkTrpakl7WaJQCn6WtMB
-gxO7x2dXcbwFSW8mWLFB1W7ZwAOS7TRTYRvHlwZGHQHvejDePb9FyxGT26OG9Urp
-cK9KfH1WmPSLJvM1iAADFApGD9CvY09US/b4+tH1Tz0K9gjoTPEeP/W/wj4/bYW1
-y+hWfjwbfh79c8Nfg4gnWJFo2AaqtZmlwWDHiiO2pDnA2W289BQ=
-=MZfe
------END PGP SIGNATURE-----
-
---B7QFJ7EdQEv+w64a--
