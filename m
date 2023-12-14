@@ -1,201 +1,297 @@
-Return-Path: <linux-kernel+bounces-15-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-16-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D470B813AC5
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 20:30:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 74461813AC7
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 20:31:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 12A481C20E3B
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 19:30:41 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8B26E1C20F3F
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 19:31:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E6A44697A8;
-	Thu, 14 Dec 2023 19:30:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E98F1697A4;
+	Thu, 14 Dec 2023 19:31:31 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-pf1-f199.google.com (mail-pf1-f199.google.com [209.85.210.199])
+Received: from mail-ot1-f45.google.com (mail-ot1-f45.google.com [209.85.210.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 77E4869791
-	for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 19:30:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-pf1-f199.google.com with SMTP id d2e1a72fcca58-6d0908565f8so7009460b3a.1
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 11:30:27 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 59C0F69790;
+	Thu, 14 Dec 2023 19:31:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ot1-f45.google.com with SMTP id 46e09a7af769-6d9d6f8485eso1180153a34.0;
+        Thu, 14 Dec 2023 11:31:29 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702582227; x=1703187027;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=oFxef2h5lrExuJ8D5wN9A1CJDkySZu+2Kkfu5Vl6v+Q=;
-        b=hzH4MgU28UvLO7Ka9iBpcvN3X4t+ZIO2MeEZ8x8EIGu6X85Jli/OvPNhxBhIX4CLto
-         LUWpmGd6gwJ2pBPpQVD3bCXEzsaX6uqK7tiW3iDrzofBdrmkmCAaBrA4V224Fk/wIJc3
-         1JYtTpWSVviSkDdD18+zftazW9gGP1tzUT5kf+l/9op9xFU0lKvOHm94UtRv1Vll1dDr
-         T7TYBVOQdFuARQKngbLli+TdYUSgkz7ZUkOtXI/aRP/iG3BRvkwUW3mShwV1Ybnu9LSh
-         Ix7HBsDVu752S+WKtr7LX6CmkC8rWgAhd6eJxj1gT8xqxnzbMJcH2Q4WXs6jTb6SWjmJ
-         sarA==
-X-Gm-Message-State: AOJu0YwpMgFcTMWWgzl8NIbYCrH99nqzzn4lMgCHAFhcas0Pm4x7dpmw
-	FGzPL2Y5YgOwITxNQtx4rv2gK6EemWFZZ+4k38OC8uT7wJgD
-X-Google-Smtp-Source: AGHT+IEZmS2KDd1o4gzGWFiiliXEyQLQO5gWVjZyRM0uF2KOupYUaFLfAkmCQCVNKz36roMZ09oblsWXT1+m0IrYth2UBOtBzHTz
+        d=1e100.net; s=20230601; t=1702582288; x=1703187088;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=T2HZk8v/RsD0JKPft+UxXNVM6N+oiGp8mnW19Rl92ho=;
+        b=DXf9X6O+pspD4oXYlP9G8nfNejpJYNdzJcCRNc4EQX4XvJ88axQCTn4YuW+g4BCDFo
+         L0shO8fDA8NKySVqncIAv80ZTaLdvmz8k+uylBwIX+GxY02ZOXC37mXGqSUv3SuZeKx0
+         iz8DuPJ3rTxvRlU21PoeudLG2lCN6/mhcm+y/7Ao2y9FnlYjnOdFLEP3Q4vTSzAfejXJ
+         NPefy3jHb7u6gOuXeNQ9PY63rJyol4+LI7JHXGnanHbT0b+cRxuTzXYmc7kmlGFi+A8g
+         iLIDRAhl/da6MfWi5vr/5asMowjJ//UasOj8N3kIb7j2F1XjrVGYNcIOXyEhWTG14pjS
+         OFYA==
+X-Gm-Message-State: AOJu0YxBVTFcTzGwvORMITTXJR84So7FpT5D+5sn1IcrCskRzsWYUV/k
+	pCVOfGsaMcpYRJkT5AU1MPWXhx0ffxfevSDP+pg=
+X-Google-Smtp-Source: AGHT+IEC0xVxvkwc5escb+tNQvJB+H0lUpyobal4AjpzQyhi/i4Oq0kFUcNVb0yFJDpAGV5WCcMkznODVDUeWCwECvo=
+X-Received: by 2002:a05:6871:d287:b0:1fb:790:72fa with SMTP id
+ pl7-20020a056871d28700b001fb079072famr17624418oac.0.1702582288292; Thu, 14
+ Dec 2023 11:31:28 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:aa7:93b4:0:b0:6d2:671e:84cc with SMTP id
- x20-20020aa793b4000000b006d2671e84ccmr587103pff.0.1702582226950; Thu, 14 Dec
- 2023 11:30:26 -0800 (PST)
-Date: Thu, 14 Dec 2023 11:30:26 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000d69fc4060c7d50a2@google.com>
-Subject: [syzbot] [mm?] [hfs?] KASAN: slab-out-of-bounds Write in shmem_file_read_iter
-From: syzbot <syzbot+3e719fc23ab95580e4c2@syzkaller.appspotmail.com>
-To: akpm@linux-foundation.org, hughd@google.com, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-mm@kvack.org, 
-	syzkaller-bugs@googlegroups.com
+References: <20231212072617.14756-1-lihuisong@huawei.com>
+In-Reply-To: <20231212072617.14756-1-lihuisong@huawei.com>
+From: "Rafael J. Wysocki" <rafael@kernel.org>
+Date: Thu, 14 Dec 2023 20:31:17 +0100
+Message-ID: <CAJZ5v0jwW0=8cNvC-Vu_o+pEHFpN9nrPD4LXCpmSTgQBTHODgg@mail.gmail.com>
+Subject: Re: [PATCH] cpufreq: CPPC: Resolve the large frequency discrepancy
+ from cpuinfo_cur_freq
+To: Huisong Li <lihuisong@huawei.com>
+Cc: linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org, 
+	linux-arm-kernel@lists.infradead.org, rafael@kernel.org, 
+	beata.michalska@arm.com, sumitg@nvidia.com, ionela.voinescu@arm.com, 
+	zengheng4@huawei.com, yang@os.amperecomputing.com, will@kernel.org, 
+	sudeep.holla@arm.com, liuyonglong@huawei.com, zhanjie9@hisilicon.com
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hello,
+On Tue, Dec 12, 2023 at 8:26=E2=80=AFAM Huisong Li <lihuisong@huawei.com> w=
+rote:
+>
+> Many developers found that the cpu current frequency is greater than
+> the maximum frequency of the platform, please see [1], [2] and [3].
+>
+> In the scenarios with high memory access pressure, the patch [1] has
+> proved the significant latency of cpc_read() which is used to obtain
+> delivered and reference performance counter cause an absurd frequency.
+> The sampling interval for this counters is very critical and is expected
+> to be equal. However, the different latency of cpc_read() has a direct
+> impact on their sampling interval.
+>
+> This patch adds a interface, cpc_read_arch_counters_on_cpu, to read
+> delivered and reference performance counter together. According to my
+> test[4], the discrepancy of cpu current frequency in the scenarios with
+> high memory access pressure is lower than 0.2% by stress-ng application.
+>
+> [1] https://lore.kernel.org/all/20231025093847.3740104-4-zengheng4@huawei=
+.com/
+> [2] https://lore.kernel.org/all/20230328193846.8757-1-yang@os.amperecompu=
+ting.com/
+> [3] https://lore.kernel.org/all/20230418113459.12860-7-sumitg@nvidia.com/
+>
+> [4] My local test:
+> The testing platform enable SMT and include 128 logical CPU in total,
+> and CPU base frequency is 2.7GHz. Reading "cpuinfo_cur_freq" for each
+> physical core on platform during the high memory access pressure from
+> stress-ng, and the output is as follows:
+>   0: 2699133     2: 2699942     4: 2698189     6: 2704347
+>   8: 2704009    10: 2696277    12: 2702016    14: 2701388
+>  16: 2700358    18: 2696741    20: 2700091    22: 2700122
+>  24: 2701713    26: 2702025    28: 2699816    30: 2700121
+>  32: 2700000    34: 2699788    36: 2698884    38: 2699109
+>  40: 2704494    42: 2698350    44: 2699997    46: 2701023
+>  48: 2703448    50: 2699501    52: 2700000    54: 2699999
+>  56: 2702645    58: 2696923    60: 2697718    62: 2700547
+>  64: 2700313    66: 2700000    68: 2699904    70: 2699259
+>  72: 2699511    74: 2700644    76: 2702201    78: 2700000
+>  80: 2700776    82: 2700364    84: 2702674    86: 2700255
+>  88: 2699886    90: 2700359    92: 2699662    94: 2696188
+>  96: 2705454    98: 2699260   100: 2701097   102: 2699630
+> 104: 2700463   106: 2698408   108: 2697766   110: 2701181
+> 112: 2699166   114: 2701804   116: 2701907   118: 2701973
+> 120: 2699584   122: 2700474   124: 2700768   126: 2701963
+>
+> Signed-off-by: Huisong Li <lihuisong@huawei.com>
 
-syzbot found the following issue on:
+First off, please Cc ACPI-related patches to linux-acpi.
 
-HEAD commit:    d46efae31672 Merge branch 'for-next/core' into for-kernelci
-git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git for-kernelci
-console output: https://syzkaller.appspot.com/x/log.txt?x=16803d66e80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=f62dd67b72f86455
-dashboard link: https://syzkaller.appspot.com/bug?extid=3e719fc23ab95580e4c2
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-userspace arch: arm64
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1743a366e80000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=17d5101ee80000
+> ---
+>  arch/arm64/kernel/topology.c | 43 ++++++++++++++++++++++++++++++++++--
+>  drivers/acpi/cppc_acpi.c     | 22 +++++++++++++++---
+>  include/acpi/cppc_acpi.h     |  5 +++++
+>  3 files changed, 65 insertions(+), 5 deletions(-)
+>
+> diff --git a/arch/arm64/kernel/topology.c b/arch/arm64/kernel/topology.c
+> index 7d37e458e2f5..c3122154d738 100644
+> --- a/arch/arm64/kernel/topology.c
+> +++ b/arch/arm64/kernel/topology.c
+> @@ -299,6 +299,11 @@ core_initcall(init_amu_fie);
+>  #ifdef CONFIG_ACPI_CPPC_LIB
+>  #include <acpi/cppc_acpi.h>
+>
+> +struct amu_counters {
+> +       u64 corecnt;
+> +       u64 constcnt;
+> +};
+> +
+>  static void cpu_read_corecnt(void *val)
+>  {
+>         /*
+> @@ -322,8 +327,27 @@ static void cpu_read_constcnt(void *val)
+>                       0UL : read_constcnt();
+>  }
+>
+> +static void cpu_read_amu_counters(void *data)
+> +{
+> +       struct amu_counters *cnt =3D (struct amu_counters *)data;
+> +
+> +       /*
+> +        * The running time of the this_cpu_has_cap() might have a couple=
+ of
+> +        * microseconds and is significantly increased to tens of microse=
+conds.
+> +        * But AMU core and constant counter need to be read togeter with=
+out any
+> +        * time interval to reduce the calculation discrepancy using this=
+ counters.
+> +        */
+> +       if (this_cpu_has_cap(ARM64_WORKAROUND_2457168)) {
+> +               cnt->corecnt =3D read_corecnt();
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/f1c7fab7b512/disk-d46efae3.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/44ed3d86d2c1/vmlinux-d46efae3.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/2e0b5f52455a/Image-d46efae3.gz.xz
-mounted in repro: https://storage.googleapis.com/syzbot-assets/3e3c3babb0db/mount_2.gz
+This statement is present in both branches, so can it be moved before the i=
+f ()?
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+3e719fc23ab95580e4c2@syzkaller.appspotmail.com
+> +               cnt->constcnt =3D 0;
+> +       } else {
+> +               cnt->corecnt =3D read_corecnt();
+> +               cnt->constcnt =3D read_constcnt();
+> +       }
+> +}
+> +
+>  static inline
+> -int counters_read_on_cpu(int cpu, smp_call_func_t func, u64 *val)
+> +int counters_read_on_cpu(int cpu, smp_call_func_t func, void *data)
+>  {
+>         /*
+>          * Abort call on counterless CPU or when interrupts are
+> @@ -335,7 +359,7 @@ int counters_read_on_cpu(int cpu, smp_call_func_t fun=
+c, u64 *val)
+>         if (WARN_ON_ONCE(irqs_disabled()))
+>                 return -EPERM;
+>
+> -       smp_call_function_single(cpu, func, val, 1);
+> +       smp_call_function_single(cpu, func, data, 1);
+>
+>         return 0;
+>  }
+> @@ -364,6 +388,21 @@ bool cpc_ffh_supported(void)
+>         return true;
+>  }
+>
+> +int cpc_read_arch_counters_on_cpu(int cpu, u64 *delivered, u64 *referenc=
+e)
+> +{
+> +       struct amu_counters cnts =3D {0};
+> +       int ret;
+> +
+> +       ret =3D counters_read_on_cpu(cpu, cpu_read_amu_counters, &cnts);
+> +       if (ret)
+> +               return ret;
+> +
+> +       *delivered =3D cnts.corecnt;
+> +       *reference =3D cnts.constcnt;
+> +
+> +       return 0;
+> +}
+> +
+>  int cpc_read_ffh(int cpu, struct cpc_reg *reg, u64 *val)
+>  {
+>         int ret =3D -EOPNOTSUPP;
+> diff --git a/drivers/acpi/cppc_acpi.c b/drivers/acpi/cppc_acpi.c
+> index 7ff269a78c20..f303fabd7cfe 100644
+> --- a/drivers/acpi/cppc_acpi.c
+> +++ b/drivers/acpi/cppc_acpi.c
+> @@ -1299,6 +1299,11 @@ bool cppc_perf_ctrs_in_pcc(void)
+>  }
+>  EXPORT_SYMBOL_GPL(cppc_perf_ctrs_in_pcc);
+>
+> +int __weak cpc_read_arch_counters_on_cpu(int cpu, u64 *delivered, u64 *r=
+eference)
+> +{
+> +       return 0;
+> +}
+> +
+>  /**
+>   * cppc_get_perf_ctrs - Read a CPU's performance feedback counters.
+>   * @cpunum: CPU from which to read counters.
+> @@ -1313,7 +1318,8 @@ int cppc_get_perf_ctrs(int cpunum, struct cppc_perf=
+_fb_ctrs *perf_fb_ctrs)
+>                 *ref_perf_reg, *ctr_wrap_reg;
+>         int pcc_ss_id =3D per_cpu(cpu_pcc_subspace_idx, cpunum);
+>         struct cppc_pcc_data *pcc_ss_data =3D NULL;
+> -       u64 delivered, reference, ref_perf, ctr_wrap_time;
+> +       u64 delivered =3D 0, reference =3D 0;
+> +       u64 ref_perf, ctr_wrap_time;
+>         int ret =3D 0, regs_in_pcc =3D 0;
+>
+>         if (!cpc_desc) {
+> @@ -1350,8 +1356,18 @@ int cppc_get_perf_ctrs(int cpunum, struct cppc_per=
+f_fb_ctrs *perf_fb_ctrs)
+>                 }
+>         }
+>
+> -       cpc_read(cpunum, delivered_reg, &delivered);
+> -       cpc_read(cpunum, reference_reg, &reference);
+> +       if (cpc_ffh_supported()) {
+> +               ret =3D cpc_read_arch_counters_on_cpu(cpunum, &delivered,=
+ &reference);
+> +               if (ret) {
+> +                       pr_debug("read arch counters failed, ret=3D%d.\n"=
+, ret);
+> +                       ret =3D 0;
+> +               }
+> +       }
 
-==================================================================
-BUG: KASAN: slab-out-of-bounds in memcpy_to_iter lib/iov_iter.c:65 [inline]
-BUG: KASAN: slab-out-of-bounds in iterate_bvec include/linux/iov_iter.h:122 [inline]
-BUG: KASAN: slab-out-of-bounds in iterate_and_advance2 include/linux/iov_iter.h:249 [inline]
-BUG: KASAN: slab-out-of-bounds in iterate_and_advance include/linux/iov_iter.h:271 [inline]
-BUG: KASAN: slab-out-of-bounds in _copy_to_iter+0x7dc/0x1500 lib/iov_iter.c:186
-Write of size 2048 at addr ffff0000ce31a400 by task kworker/u4:5/220
+The above is surely not applicable to every platform using CPPC.  Also
+it looks like in the ARM64_WORKAROUND_2457168 enabled case it is just
+pointless overhead, because "reference" is always going to be 0 here
+then.
 
-CPU: 1 PID: 220 Comm: kworker/u4:5 Not tainted 6.7.0-rc4-syzkaller-gd46efae31672 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 11/10/2023
-Workqueue: loop0 loop_rootcg_workfn
-Call trace:
- dump_backtrace+0x1b8/0x1e4 arch/arm64/kernel/stacktrace.c:233
- show_stack+0x2c/0x44 arch/arm64/kernel/stacktrace.c:240
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0xd0/0x124 lib/dump_stack.c:106
- print_address_description mm/kasan/report.c:364 [inline]
- print_report+0x174/0x514 mm/kasan/report.c:475
- kasan_report+0xd8/0x138 mm/kasan/report.c:588
- kasan_check_range+0x254/0x294 mm/kasan/generic.c:187
- __asan_memcpy+0x54/0x84 mm/kasan/shadow.c:106
- memcpy_to_iter lib/iov_iter.c:65 [inline]
- iterate_bvec include/linux/iov_iter.h:122 [inline]
- iterate_and_advance2 include/linux/iov_iter.h:249 [inline]
- iterate_and_advance include/linux/iov_iter.h:271 [inline]
- _copy_to_iter+0x7dc/0x1500 lib/iov_iter.c:186
- copy_page_to_iter+0x200/0x2f8 lib/iov_iter.c:381
- shmem_file_read_iter+0x4a0/0x9dc mm/shmem.c:2824
- do_iter_read+0x668/0xa80 fs/read_write.c:795
- vfs_iter_read+0x88/0xac fs/read_write.c:837
- lo_read_simple drivers/block/loop.c:290 [inline]
- do_req_filebacked drivers/block/loop.c:500 [inline]
- loop_handle_cmd drivers/block/loop.c:1915 [inline]
- loop_process_work+0xe9c/0x2498 drivers/block/loop.c:1950
- loop_rootcg_workfn+0x28/0x38 drivers/block/loop.c:1981
- process_one_work+0x694/0x1204 kernel/workqueue.c:2630
- process_scheduled_works kernel/workqueue.c:2703 [inline]
- worker_thread+0x938/0xef4 kernel/workqueue.c:2784
- kthread+0x288/0x310 kernel/kthread.c:388
- ret_from_fork+0x10/0x20 arch/arm64/kernel/entry.S:857
+Please clean that up.
 
-Allocated by task 6095:
- kasan_save_stack mm/kasan/common.c:45 [inline]
- kasan_set_track+0x4c/0x7c mm/kasan/common.c:52
- kasan_save_alloc_info+0x24/0x30 mm/kasan/generic.c:511
- ____kasan_kmalloc mm/kasan/common.c:374 [inline]
- __kasan_kmalloc+0xac/0xc4 mm/kasan/common.c:383
- kasan_kmalloc include/linux/kasan.h:198 [inline]
- __do_kmalloc_node mm/slab_common.c:1007 [inline]
- __kmalloc+0xcc/0x1b8 mm/slab_common.c:1020
- kmalloc include/linux/slab.h:604 [inline]
- hfsplus_read_wrapper+0x46c/0xfcc fs/hfsplus/wrapper.c:181
- hfsplus_fill_super+0x2f0/0x166c fs/hfsplus/super.c:413
- mount_bdev+0x1e8/0x2b4 fs/super.c:1650
- hfsplus_mount+0x44/0x58 fs/hfsplus/super.c:641
- legacy_get_tree+0xd4/0x16c fs/fs_context.c:662
- vfs_get_tree+0x90/0x288 fs/super.c:1771
- do_new_mount+0x25c/0x8c8 fs/namespace.c:3337
- path_mount+0x590/0xe04 fs/namespace.c:3664
- do_mount fs/namespace.c:3677 [inline]
- __do_sys_mount fs/namespace.c:3886 [inline]
- __se_sys_mount fs/namespace.c:3863 [inline]
- __arm64_sys_mount+0x45c/0x594 fs/namespace.c:3863
- __invoke_syscall arch/arm64/kernel/syscall.c:37 [inline]
- invoke_syscall+0x98/0x2b8 arch/arm64/kernel/syscall.c:51
- el0_svc_common+0x130/0x23c arch/arm64/kernel/syscall.c:136
- do_el0_svc+0x48/0x58 arch/arm64/kernel/syscall.c:155
- el0_svc+0x54/0x158 arch/arm64/kernel/entry-common.c:678
- el0t_64_sync_handler+0x84/0xfc arch/arm64/kernel/entry-common.c:696
- el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:595
-
-The buggy address belongs to the object at ffff0000ce31a400
- which belongs to the cache kmalloc-512 of size 512
-The buggy address is located 0 bytes inside of
- allocated 512-byte region [ffff0000ce31a400, ffff0000ce31a600)
-
-The buggy address belongs to the physical page:
-page:00000000950b7bf3 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x10e318
-head:00000000950b7bf3 order:2 entire_mapcount:0 nr_pages_mapped:0 pincount:0
-anon flags: 0x5ffc00000000840(slab|head|node=0|zone=2|lastcpupid=0x7ff)
-page_type: 0xffffffff()
-raw: 05ffc00000000840 ffff0000c0001c80 0000000000000000 dead000000000001
-raw: 0000000000000000 0000000000100010 00000001ffffffff 0000000000000000
-page dumped because: kasan: bad access detected
-
-Memory state around the buggy address:
- ffff0000ce31a500: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
- ffff0000ce31a580: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
->ffff0000ce31a600: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
-                   ^
- ffff0000ce31a680: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
- ffff0000ce31a700: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
-==================================================================
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+> +       if (!delivered || !reference) {
+> +               cpc_read(cpunum, delivered_reg, &delivered);
+> +               cpc_read(cpunum, reference_reg, &reference);
+> +       }
+> +
+>         cpc_read(cpunum, ref_perf_reg, &ref_perf);
+>
+>         /*
+> diff --git a/include/acpi/cppc_acpi.h b/include/acpi/cppc_acpi.h
+> index 6126c977ece0..07d4fd82d499 100644
+> --- a/include/acpi/cppc_acpi.h
+> +++ b/include/acpi/cppc_acpi.h
+> @@ -152,6 +152,7 @@ extern bool cpc_ffh_supported(void);
+>  extern bool cpc_supported_by_cpu(void);
+>  extern int cpc_read_ffh(int cpunum, struct cpc_reg *reg, u64 *val);
+>  extern int cpc_write_ffh(int cpunum, struct cpc_reg *reg, u64 val);
+> +extern int cpc_read_arch_counters_on_cpu(int cpu, u64 *delivered, u64 *r=
+eference);
+>  extern int cppc_get_epp_perf(int cpunum, u64 *epp_perf);
+>  extern int cppc_set_epp_perf(int cpu, struct cppc_perf_ctrls *perf_ctrls=
+, bool enable);
+>  extern int cppc_get_auto_sel_caps(int cpunum, struct cppc_perf_caps *per=
+f_caps);
+> @@ -209,6 +210,10 @@ static inline int cpc_write_ffh(int cpunum, struct c=
+pc_reg *reg, u64 val)
+>  {
+>         return -ENOTSUPP;
+>  }
+> +static inline int cpc_read_arch_counters_on_cpu(int cpu, u64 *delivered,=
+ u64 *reference)
+> +{
+> +       return -EOPNOTSUPP;
+> +}
+>  static inline int cppc_set_epp_perf(int cpu, struct cppc_perf_ctrls *per=
+f_ctrls, bool enable)
+>  {
+>         return -ENOTSUPP;
+> --
 
