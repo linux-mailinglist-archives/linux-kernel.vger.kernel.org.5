@@ -2,136 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CAFC813552
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 16:53:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A2B70813557
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 16:55:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1573941AbjLNPxN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 10:53:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45828 "EHLO
+        id S1573931AbjLNPzL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 10:55:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35568 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1573902AbjLNPxJ (ORCPT
+        with ESMTP id S1573902AbjLNPzJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 10:53:09 -0500
-Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20EA0B2;
-        Thu, 14 Dec 2023 07:53:16 -0800 (PST)
-Received: by mail-pl1-x634.google.com with SMTP id d9443c01a7336-1d37a6926f7so1613755ad.3;
-        Thu, 14 Dec 2023 07:53:16 -0800 (PST)
+        Thu, 14 Dec 2023 10:55:09 -0500
+Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22AF5115
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 07:55:15 -0800 (PST)
+Received: by mail-pj1-x1033.google.com with SMTP id 98e67ed59e1d1-28b05a2490bso961189a91.1
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 07:55:15 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702569195; x=1703173995; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=wsHrNooczI2aqm3M6rMha8X9i2K4VFA8VCRi3SyFwoo=;
-        b=FqXbUWnUJiI7aXKZASy0ignfqPRr+OW35+ut5Khwl2/153B4u0agDQxDKmT8Uz/f9A
-         ZUivFqbqTWswwc4PGxuP8b2ynvTappWde6zEQWFomoBLomC/35Lq1z5i+4ZwdpbrdvyG
-         eZYLRncsp6SETT8NwJo0DCWsDJLvZx3RLg06kEGRKF1pu3hvEXm4ehVfYym3aj0TrVp6
-         n/jTnpFGeZ4jk6LVJFGFVk1t3tm1guNSzOW0vZpmvKf81puw1HY864Q2t8Gp0bSVApIB
-         ApQX9xAoKOTxXHz84IqHJuouDjjGhnzL33iqoHaYcXAkA/i9ygJztJ+15KfnAFoD5oKT
-         0E9w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702569195; x=1703173995;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=linaro.org; s=google; t=1702569314; x=1703174114; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=wsHrNooczI2aqm3M6rMha8X9i2K4VFA8VCRi3SyFwoo=;
-        b=FDydoU8csA/0OtxNizVtHf8NUsxzcd8cJqdk3X7hsZ2U0cFFr7zRqn8+pwt0yDDPMj
-         sbrk1fy8FGFOvBJD9KqU0MFKIfGI33iMYE2VmePJtUwEMp7RXSf8jJ3q40R3eRf93TfD
-         85FWzpVa8EA2p4zNBIYdPW1E8Bn2l33ZHtbKibJekfBMb/B/7vrBCyDYGIuLCL3LXH37
-         Xaa1sXGtqdv9H2nlq2eCzXboKoKzx3rX26rylET+snWc9yU+BOr0mMDzUqU/0lkiNsqz
-         fot3yBbtLOQr5pNxE7p7YPrSPeb5yifnSY8VKFDL/MaF9i4DK/xyxBjoYIbvi324h90e
-         SkuA==
-X-Gm-Message-State: AOJu0Yw63xIiP5L5eEzQ/b615KUNl3F8WtyTPQssv1KHuKd/54DlC5Dx
-        /SmjkvUVtYUG4CmSzyc+ldg=
-X-Google-Smtp-Source: AGHT+IEBo4BdiAYmx3Bc6qTraGpNE0NfuGJQ08CTLfP/Z2iZcEsK4lBPnIOMnDEC9q7AJ2v/ly7UTA==
-X-Received: by 2002:a17:902:e74e:b0:1d0:b693:ae15 with SMTP id p14-20020a170902e74e00b001d0b693ae15mr6461391plf.43.1702569195474;
-        Thu, 14 Dec 2023 07:53:15 -0800 (PST)
-Received: from rigel (60-241-235-125.tpgi.com.au. [60.241.235.125])
-        by smtp.gmail.com with ESMTPSA id u14-20020a170902e80e00b001d0c37a9ccfsm12521675plg.303.2023.12.14.07.53.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Dec 2023 07:53:15 -0800 (PST)
-Date:   Thu, 14 Dec 2023 23:53:10 +0800
-From:   Kent Gibson <warthog618@gmail.com>
-To:     Andy Shevchenko <andy@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
-        brgl@bgdev.pl, linus.walleij@linaro.org
-Subject: Re: [PATCH v2 4/5] gpiolib: cdev: reduce locking in
- gpio_desc_to_lineinfo()
-Message-ID: <ZXsk5hOxXM7oJIy4@rigel>
-References: <20231214095814.132400-1-warthog618@gmail.com>
- <20231214095814.132400-5-warthog618@gmail.com>
- <ZXsa39xneH6Rh7Gd@smile.fi.intel.com>
- <ZXsc5T1G5Y28lVqw@rigel>
- <ZXse4UDKGlVqzsyD@smile.fi.intel.com>
- <ZXsglIJtK50XYCIV@rigel>
- <ZXsjbvUYJGmGU6bs@rigel>
+        bh=F3dEU5MDIKfW+qCgC0PdqFKd7O+g3bLPZxWTXEaaam8=;
+        b=LUyqbVXObIzpamKp0fyTc+Rjv3sguhqfdpED9TmePWCZv+DQG/dqABjbEk0V9Q+uRg
+         nD0pZis1uUfhbvMV5ZpUNXnIWzvwEmssJkxnzs5vknuwPWCN1CQFOmtEBppmxh4xVxS6
+         KcrEUnjnK8ll51DompifLrq+hhtrACZorfqCrAFgGokXqwzz/3AkrYjEhKgdJLf8TKHD
+         WNqSuGRt/DTZNcxdV6vGL5bfJKU6P5WWvmwqoz12BOSNydE17EfFC/y6fSisGB7bCKks
+         uDImIVJsm27r8qyePzoYzOkSF4SS9POTHWtJC1EWaCCwdjeQhG+t67dnl1Ft3Bi+gBue
+         fr3w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702569314; x=1703174114;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=F3dEU5MDIKfW+qCgC0PdqFKd7O+g3bLPZxWTXEaaam8=;
+        b=O0cTqTTfsjOcOVLtYXlD1j/sXkbI+LExjhMntFcTubgd3Nfu8UdPWHc8hdvb0YpjdS
+         QPeeoFbzlVyeOAcZYL5yVr4f5QwFlbhudMcd4hDWgaVJu+81S9dW6/EtccUiAkqT5n7E
+         X0jYG7PQQUgilUmo9X2ev02md7237imcNz8XE5c13tHl5e/zhBGtkg/ghJk2aY4nn/KQ
+         WZeZPYga9tTTjXqTZyBLnFMIl+t3R7I5gwUr41pzWVpkmFPYmMA2jn2feN5oOEiFe8W1
+         zU7dXXO4CZ18c9C/jfzPKJZbjZwAkSAC//jqc3TH14jg+9QFAjbzr934UZrPzCqCrjfj
+         JwNQ==
+X-Gm-Message-State: AOJu0YyEyXZ+w8FCvIaGz/P0dSkNxUG50TJdfFHOzNxpgVbYbS9QvBFu
+        ot8Z+GbxEh7Fdt++kaclYl2unTfefNPcqF1si1j46Q==
+X-Google-Smtp-Source: AGHT+IGkTnLdOtrqyXltKJs1dUID0ysgTZE7BI1PV4SJTjovnObU8OGLzeMvBOaKswBq0xLjC9rksw67hcvGeMcAL24=
+X-Received: by 2002:a17:90b:948:b0:28a:e356:459b with SMTP id
+ dw8-20020a17090b094800b0028ae356459bmr2009364pjb.34.1702569314569; Thu, 14
+ Dec 2023 07:55:14 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZXsjbvUYJGmGU6bs@rigel>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+References: <20231214105243.3707730-1-tudor.ambarus@linaro.org> <20231214105243.3707730-12-tudor.ambarus@linaro.org>
+In-Reply-To: <20231214105243.3707730-12-tudor.ambarus@linaro.org>
+From:   Sam Protsenko <semen.protsenko@linaro.org>
+Date:   Thu, 14 Dec 2023 09:55:03 -0600
+Message-ID: <CAPLW+4nTgam4jZ+s5m5E05jWO_kfSy=fMS0Ywp3yQEEn-UESbg@mail.gmail.com>
+Subject: Re: [PATCH 11/13] arm64: dts: exynos: gs101: enable eeprom on gs101-oriole
+To:     Tudor Ambarus <tudor.ambarus@linaro.org>,
+        krzysztof.kozlowski+dt@linaro.org
+Cc:     peter.griffin@linaro.org, robh+dt@kernel.org,
+        mturquette@baylibre.com, sboyd@kernel.org, conor+dt@kernel.org,
+        andi.shyti@kernel.org, alim.akhtar@samsung.com,
+        gregkh@linuxfoundation.org, jirislaby@kernel.org,
+        catalin.marinas@arm.com, will@kernel.org, s.nawrocki@samsung.com,
+        tomasz.figa@gmail.com, cw00.choi@samsung.com, arnd@arndb.de,
+        andre.draszik@linaro.org, saravanak@google.com,
+        willmcvicker@google.com, linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-clk@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-i2c@vger.kernel.org, linux-serial@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 14, 2023 at 11:46:54PM +0800, Kent Gibson wrote:
-> On Thu, Dec 14, 2023 at 11:34:44PM +0800, Kent Gibson wrote:
-> > On Thu, Dec 14, 2023 at 05:27:29PM +0200, Andy Shevchenko wrote:
-> > > On Thu, Dec 14, 2023 at 11:19:01PM +0800, Kent Gibson wrote:
-> > > > On Thu, Dec 14, 2023 at 05:10:23PM +0200, Andy Shevchenko wrote:
-> > > > > On Thu, Dec 14, 2023 at 05:58:13PM +0800, Kent Gibson wrote:
-> > > > > > Reduce the time holding the gpio_lock by snapshotting the desc flags,
-> > > > > > rather than testing them individually while holding the lock.
-> > > > > >
-> > > > > > Accept that the calculation of the used field is inherently racy, and
-> > > > > > only check the availability of the line from pinctrl if other checks
-> > > > > > pass, so avoiding the check for lines that are otherwise in use.
-> > >
-> > > ...
-> > >
-> > > > > > -	spin_lock_irqsave(&gpio_lock, flags);
-> > > > >
-> > > > > Shouldn't this be covered by patch 1 (I mean conversion to scoped_guard()
-> > > > > instead of spinlock)?
-> > > > >
-> > > >
-> > > > Read the cover letter.
-> > > > Doing that made the change larger, as flags gets removed then restored.
-> > > > I had also thought the flag tests would get indented then unindented, but
-> > > > if we use guard() the indentation should remain unchanged.
-> > >
-> > > I'm fine with that as I pointed out (have you received that mail? I had
-> > > problems with my mail server) the dflags is better semantically, so restoration
-> > > with _different_ name is fine.
-> > >
-> >
-> > I have noted that some of your replies have been delayed, and I can't be sure
-> > of what I might not've received. I can't say I've seen one that mentions the
-> > dflags name being preferable.
-> >
-> > I prefer the plain flags name, if there is only one flag variable in the
-> > function.
-> >
-> > > > Can do it in 1 if you are happy with the flags declaration being
-> > > > removed in patch 1 and restored in 4.
-> > >
-> > > Definitely.
-> > >
-> >
-> > Ok will re-arrange in v3.
-> >
+On Thu, Dec 14, 2023 at 4:53=E2=80=AFAM Tudor Ambarus <tudor.ambarus@linaro=
+.org> wrote:
 >
-> Hang on - patch 4 has to use a scoped_guard(), so are you ok for patch 1
-> to introduce a guard(), to avoid changing the indentation, only to
-> replace it with a scoped_guard(), to perform the tests after releasing
-> the lock, in patch 4?
+> Enable the eeprom found on the battery connector.
 >
+> Signed-off-by: Tudor Ambarus <tudor.ambarus@linaro.org>
+> ---
+>  .../boot/dts/exynos/google/gs101-oriole.dts    | 18 ++++++++++++++++++
+>  1 file changed, 18 insertions(+)
+>
+> diff --git a/arch/arm64/boot/dts/exynos/google/gs101-oriole.dts b/arch/ar=
+m64/boot/dts/exynos/google/gs101-oriole.dts
+> index 4a71f752200d..11b299d21c5d 100644
+> --- a/arch/arm64/boot/dts/exynos/google/gs101-oriole.dts
+> +++ b/arch/arm64/boot/dts/exynos/google/gs101-oriole.dts
+> @@ -63,6 +63,19 @@ &ext_200m {
+>         clock-frequency =3D <200000000>;
+>  };
+>
+> +&hsi2c_8 {
+> +       pinctrl-names =3D "default";
+> +       pinctrl-0 =3D <&hsi2c8_bus>;
+> +       #address-cells =3D <1>;
+> +       #size-cells =3D <0>;
 
-Alternatively, I can move patch 4 to the top of the series.
+Not sure if those 4 above properties belong in board's dts or in SoC's
+dtsi. Krzysztof, what do you think?
 
-Cheers,
-Kent.
+Other than that:
+
+Reviewed-by: Sam Protsenko <semen.protsenko@linaro.org>
+
+> +       status =3D "okay";
+> +
+> +       eeprom: eeprom@50 {
+> +               compatible =3D "atmel,24c08";
+> +               reg =3D <0x50>;
+> +       };
+> +};
+> +
+>  &pinctrl_far_alive {
+>         key_voldown: key-voldown-pins {
+>                 samsung,pins =3D "gpa7-3";
+> @@ -99,6 +112,11 @@ &usi_uart {
+>         status =3D "okay";
+>  };
+>
+> +&usi8 {
+> +       samsung,mode =3D <USI_V2_I2C>;
+> +       status =3D "okay";
+> +};
+> +
+>  &watchdog_cl0 {
+>         timeout-sec =3D <30>;
+>         status =3D "okay";
+> --
+> 2.43.0.472.g3155946c3a-goog
+>
