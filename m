@@ -2,83 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 617558138BD
+	by mail.lfdr.de (Postfix) with ESMTP id 0B5678138BC
 	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 18:37:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1572976AbjLNRhC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 12:37:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51464 "EHLO
+        id S229464AbjLNRgy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 12:36:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59894 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235526AbjLNRgX (ORCPT
+        with ESMTP id S235547AbjLNRgX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 14 Dec 2023 12:36:23 -0500
-Received: from mx1.sberdevices.ru (mx2.sberdevices.ru [45.89.224.132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FF0D133;
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9318A134;
         Thu, 14 Dec 2023 09:36:29 -0800 (PST)
-Received: from p-infra-ksmg-sc-msk02 (localhost [127.0.0.1])
-        by mx1.sberdevices.ru (Postfix) with ESMTP id B1302120020;
-        Thu, 14 Dec 2023 20:36:26 +0300 (MSK)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru B1302120020
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
-        s=mail; t=1702575386;
-        bh=IipliOBxVO1mB0P9vxh3aTZrhIFdLT6fPsP0SLsHsZA=;
-        h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type:From;
-        b=ogWeDn6x5Jc6Am38+/f3ozPM/OnYdYI1EQ4Z/NZQ1rrQld2H+yUlwlfE0t1Ls1IHn
-         jSXRRda4eritSb7OIENH3IwFBCWe9MxMVnDSqdMBDBeh63I22arzTmcOPal4zMzqBn
-         N18Pzd+nrGZ5G5fXso7721xybvU0M4xEhGeMXUvqibwY0NB9S7lygfMyaMcqEevK5/
-         JfAzsR+Z7LSXw+MDQ0yIEJ9pHiWnGqSgqGBAt0fRmsYyxEUQpSDzPD6rgDZStnqu33
-         ejI6wuLvzAPvJPjMVgy5xLtjfTmyRXHolzZ4kqyJUEjjLindDKlcxqAMjdC1bEx6B6
-         B+Bofz6+b10Hw==
-Received: from smtp.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mx1.sberdevices.ru (Postfix) with ESMTPS;
-        Thu, 14 Dec 2023 20:36:26 +0300 (MSK)
-Received: from localhost.localdomain (100.64.160.123) by
- p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Thu, 14 Dec 2023 20:36:26 +0300
-From:   George Stark <gnstark@salutedevices.com>
-To:     <andy.shevchenko@gmail.com>, <pavel@ucw.cz>, <lee@kernel.org>,
-        <vadimp@nvidia.com>, <mpe@ellerman.id.au>, <npiggin@gmail.com>,
-        <christophe.leroy@csgroup.eu>, <hdegoede@redhat.com>,
-        <mazziesaccount@gmail.com>, <peterz@infradead.org>,
-        <mingo@redhat.com>, <will@kernel.org>, <longman@redhat.com>,
-        <boqun.feng@gmail.com>, <nikitos.tr@gmail.com>
-CC:     <linux-leds@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linuxppc-dev@lists.ozlabs.org>, <kernel@salutedevices.com>,
-        George Stark <gnstark@salutedevices.com>
-Subject: [PATCH v4 10/10] leds: powernv: use LED_RETAIN_AT_SHUTDOWN flag for leds
-Date:   Thu, 14 Dec 2023 20:36:14 +0300
-Message-ID: <20231214173614.2820929-11-gnstark@salutedevices.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20231214173614.2820929-1-gnstark@salutedevices.com>
-References: <20231214173614.2820929-1-gnstark@salutedevices.com>
+Received: from mail.maildlp.com (unknown [172.18.186.231])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Srfc62XW9z688KN;
+        Fri, 15 Dec 2023 01:34:30 +0800 (CST)
+Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
+        by mail.maildlp.com (Postfix) with ESMTPS id CC9911400DB;
+        Fri, 15 Dec 2023 01:36:27 +0800 (CST)
+Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Thu, 14 Dec
+ 2023 17:36:27 +0000
+Date:   Thu, 14 Dec 2023 17:36:26 +0000
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>
+CC:     <linux-pm@vger.kernel.org>, <loongarch@lists.linux.dev>,
+        <linux-acpi@vger.kernel.org>, <linux-arch@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-riscv@lists.infradead.org>, <kvmarm@lists.linux.dev>,
+        <x86@kernel.org>, <acpica-devel@lists.linuxfoundation.org>,
+        <linux-csky@vger.kernel.org>, <linux-doc@vger.kernel.org>,
+        <linux-ia64@vger.kernel.org>, <linux-parisc@vger.kernel.org>,
+        Salil Mehta <salil.mehta@huawei.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        <jianyong.wu@arm.com>, <justin.he@arm.com>,
+        James Morse <james.morse@arm.com>
+Subject: Re: [PATCH RFC v3 02/21] ACPI: processor: Add support for
+ processors described as container packages
+Message-ID: <20231214173626.00005062@Huawei.com>
+In-Reply-To: <E1rDOfx-00Dvje-MS@rmk-PC.armlinux.org.uk>
+References: <ZXmn46ptis59F0CO@shell.armlinux.org.uk>
+        <E1rDOfx-00Dvje-MS@rmk-PC.armlinux.org.uk>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [100.64.160.123]
-X-ClientProxiedBy: p-i-exch-sc-m02.sberdevices.ru (172.16.192.103) To
- p-i-exch-sc-m01.sberdevices.ru (172.16.192.107)
-X-KSMG-Rule-ID: 10
-X-KSMG-Message-Action: clean
-X-KSMG-AntiSpam-Lua-Profiles: 182125 [Dec 14 2023]
-X-KSMG-AntiSpam-Version: 6.1.0.3
-X-KSMG-AntiSpam-Envelope-From: gnstark@salutedevices.com
-X-KSMG-AntiSpam-Rate: 0
-X-KSMG-AntiSpam-Status: not_detected
-X-KSMG-AntiSpam-Method: none
-X-KSMG-AntiSpam-Auth: dkim=none
-X-KSMG-AntiSpam-Info: LuaCore: 7 0.3.7 6d6bf5bd8eea7373134f756a2fd73e9456bb7d1a, {Tracking_from_domain_doesnt_match_to}, salutedevices.com:7.1.1;smtp.sberdevices.ru:5.0.1,7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;100.64.160.123:7.1.2;127.0.0.199:7.1.2, FromAlignment: s, ApMailHostAddress: 100.64.160.123
-X-MS-Exchange-Organization-SCL: -1
-X-KSMG-AntiSpam-Interceptor-Info: scan successful
-X-KSMG-AntiPhishing: Clean
-X-KSMG-LinksScanning: Clean
-X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2023/12/14 10:50:00 #22693095
-X-KSMG-AntiVirus-Status: Clean, skipped
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.202.227.76]
+X-ClientProxiedBy: lhrpeml100002.china.huawei.com (7.191.160.241) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -86,72 +64,99 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This driver wants to keep its LEDs state after module is removed
-and implemented it in its own way. LED subsystem supports dedicated
-flag LED_RETAIN_AT_SHUTDOWN for the same purpose so use the flag
-instead of custom implementation.
+On Wed, 13 Dec 2023 12:49:21 +0000
+Russell King (Oracle) <rmk+kernel@armlinux.org.uk> wrote:
 
-Signed-off-by: George Stark <gnstark@salutedevices.com>
----
- drivers/leds/leds-powernv.c | 23 ++++++++---------------
- 1 file changed, 8 insertions(+), 15 deletions(-)
+> From: James Morse <james.morse@arm.com>
+> 
+> ACPI has two ways of describing processors in the DSDT. From ACPI v6.5,
+> 5.2.12:
+> 
+> "Starting with ACPI Specification 6.3, the use of the Processor() object
+> was deprecated. Only legacy systems should continue with this usage. On
+> the Itanium architecture only, a _UID is provided for the Processor()
+> that is a string object. This usage of _UID is also deprecated since it
+> can preclude an OSPM from being able to match a processor to a
+> non-enumerable device, such as those defined in the MADT. From ACPI
+> Specification 6.3 onward, all processor objects for all architectures
+> except Itanium must now use Device() objects with an _HID of ACPI0007,
+> and use only integer _UID values."
+> 
+> Also see https://uefi.org/specs/ACPI/6.5/08_Processor_Configuration_and_Control.html#declaring-processors
+> 
+> Duplicate descriptions are not allowed, the ACPI processor driver already
+> parses the UID from both devices and containers. acpi_processor_get_info()
+> returns an error if the UID exists twice in the DSDT.
+> 
+> The missing probe for CPUs described as packages creates a problem for
+> moving the cpu_register() calls into the acpi_processor driver, as CPUs
+> described like this don't get registered, leading to errors from other
+> subsystems when they try to add new sysfs entries to the CPU node.
+> (e.g. topology_sysfs_init()'s use of topology_add_dev() via cpuhp)
+> 
+> To fix this, parse the processor container and call acpi_processor_add()
+> for each processor that is discovered like this. The processor container
+> handler is added with acpi_scan_add_handler(), so no detach call will
+> arrive.
+> 
+> Qemu TCG describes CPUs using processor devices in a processor container.
+> For more information, see build_cpus_aml() in Qemu hw/acpi/cpu.c and
+> https://uefi.org/specs/ACPI/6.5/08_Processor_Configuration_and_Control.html#processor-container-device
+> 
+> Signed-off-by: James Morse <james.morse@arm.com>
+> Tested-by: Miguel Luis <miguel.luis@oracle.com>
+> Tested-by: Vishnu Pajjuri <vishnu@os.amperecomputing.com>
+> Tested-by: Jianyong Wu <jianyong.wu@arm.com>
+> ---
+> Outstanding comments:
+>  https://lore.kernel.org/r/20230914145353.000072e2@Huawei.com
+Looks like you resolved those (were all patch description things).
 
-diff --git a/drivers/leds/leds-powernv.c b/drivers/leds/leds-powernv.c
-index 743e2cdd0891..018ec933ac10 100644
---- a/drivers/leds/leds-powernv.c
-+++ b/drivers/leds/leds-powernv.c
-@@ -30,15 +30,6 @@ static const struct led_type_map led_type_map[] = {
- };
- 
- struct powernv_led_common {
--	/*
--	 * By default unload path resets all the LEDs. But on PowerNV
--	 * platform we want to retain LED state across reboot as these
--	 * are controlled by firmware. Also service processor can modify
--	 * the LEDs independent of OS. Hence avoid resetting LEDs in
--	 * unload path.
--	 */
--	bool		led_disabled;
--
- 	/* Max supported LED type */
- 	__be64		max_led_type;
- 
-@@ -178,10 +169,6 @@ static int powernv_brightness_set(struct led_classdev *led_cdev,
- 	struct powernv_led_common *powernv_led_common = powernv_led->common;
- 	int rc;
- 
--	/* Do not modify LED in unload path */
--	if (powernv_led_common->led_disabled)
--		return 0;
--
- 	mutex_lock(&powernv_led_common->lock);
- 	rc = powernv_led_set(powernv_led, value);
- 	mutex_unlock(&powernv_led_common->lock);
-@@ -225,6 +212,14 @@ static int powernv_led_create(struct device *dev,
- 
- 	powernv_led->cdev.brightness_set_blocking = powernv_brightness_set;
- 	powernv_led->cdev.brightness_get = powernv_brightness_get;
-+	/*
-+	 * By default unload path resets all the LEDs. But on PowerNV
-+	 * platform we want to retain LED state across reboot as these
-+	 * are controlled by firmware. Also service processor can modify
-+	 * the LEDs independent of OS. Hence avoid resetting LEDs in
-+	 * unload path.
-+	 */
-+	powernv_led->cdev.flags = LED_RETAIN_AT_SHUTDOWN;
- 	powernv_led->cdev.brightness = LED_OFF;
- 	powernv_led->cdev.max_brightness = LED_FULL;
- 
-@@ -313,9 +308,7 @@ static int powernv_led_remove(struct platform_device *pdev)
- {
- 	struct powernv_led_common *powernv_led_common;
- 
--	/* Disable LED operation */
- 	powernv_led_common = platform_get_drvdata(pdev);
--	powernv_led_common->led_disabled = true;
- 
- 	/* Destroy lock */
- 	mutex_destroy(&powernv_led_common->lock);
--- 
-2.25.1
+So I'm happy.
+Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+
+Thanks,
+
+J
+>  https://lore.kernel.org/r/50571c2f-aa3c-baeb-3add-cd59e0eddc02@redhat.com
+> ---
+>  drivers/acpi/acpi_processor.c | 22 ++++++++++++++++++++++
+>  1 file changed, 22 insertions(+)
+> 
+> diff --git a/drivers/acpi/acpi_processor.c b/drivers/acpi/acpi_processor.c
+> index 4fe2ef54088c..6a542e0ce396 100644
+> --- a/drivers/acpi/acpi_processor.c
+> +++ b/drivers/acpi/acpi_processor.c
+> @@ -626,9 +626,31 @@ static struct acpi_scan_handler processor_handler = {
+>  	},
+>  };
+>  
+> +static acpi_status acpi_processor_container_walk(acpi_handle handle,
+> +						 u32 lvl,
+> +						 void *context,
+> +						 void **rv)
+> +{
+> +	struct acpi_device *adev;
+> +	acpi_status status;
+> +
+> +	adev = acpi_get_acpi_dev(handle);
+> +	if (!adev)
+> +		return AE_ERROR;
+> +
+> +	status = acpi_processor_add(adev, &processor_device_ids[0]);
+> +	acpi_put_acpi_dev(adev);
+> +
+> +	return status;
+> +}
+> +
+>  static int acpi_processor_container_attach(struct acpi_device *dev,
+>  					   const struct acpi_device_id *id)
+>  {
+> +	acpi_walk_namespace(ACPI_TYPE_PROCESSOR, dev->handle,
+> +			    ACPI_UINT32_MAX, acpi_processor_container_walk,
+> +			    NULL, NULL, NULL);
+> +
+>  	return 1;
+>  }
+>  
 
