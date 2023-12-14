@@ -2,186 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 47411812838
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 07:34:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8852F81284F
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 07:37:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234272AbjLNGem (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 01:34:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60676 "EHLO
+        id S1443113AbjLNGhU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 01:37:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56652 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229629AbjLNGek (ORCPT
+        with ESMTP id S229629AbjLNGhT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 01:34:40 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D42AF4
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 22:34:47 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C84CCC433C8;
-        Thu, 14 Dec 2023 06:34:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1702535686;
-        bh=1KvqRRdnwqEvmlU+FTtgALcCS9FN2+H6/ZpytPxQYp8=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=VlJb41ftGhuFO+GxwcbjBxwGRGB2zf1smUTBpPP4JBA21Ox58C2c4TJJyLD2oij5K
-         mhW89hPQm8fkU3MEjAcZ53HkyHmCdWYJQhc/LAI1IGQAIuilBVJ6gO00dm42gKkRK9
-         T7P/gPUcj7Y3pkkaSoG3q/lhkVoLzh1sDJjSvR7LrXNUBxF8Ep4GagCnjp4YRTCjIl
-         f5haY1z8EdeGAaTNu6Xej1GiLHDG9EFd/kM3doSgDZS1KbY6yxPLrJSkvhiuYkdYYK
-         /q7BhYSEXQSWZIKGts3JsXifLENy7qPEzo+qd1/2oy0Lu4OzsIrqNxAnpvL2KkQUpK
-         iDg8FMq/DWfPw==
-Message-ID: <80e14311-61ba-4dda-93bb-991ad4b779df@kernel.org>
-Date:   Wed, 13 Dec 2023 22:34:43 -0800
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH net-next v1 2/4] net: introduce abstraction for
- network memory
-Content-Language: en-US
-To:     Mina Almasry <almasrymina@google.com>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        Michael Chan <michael.chan@broadcom.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Wei Fang <wei.fang@nxp.com>,
-        Shenwei Wang <shenwei.wang@nxp.com>,
-        Clark Wang <xiaoning.wang@nxp.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Jeroen de Borst <jeroendb@google.com>,
-        Praveen Kaligineedi <pkaligineedi@google.com>,
-        Shailend Chand <shailend@google.com>,
-        Yisen Zhuang <yisen.zhuang@huawei.com>,
-        Salil Mehta <salil.mehta@huawei.com>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Marcin Wojtas <mw@semihalf.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Sunil Goutham <sgoutham@marvell.com>,
-        Geetha sowjanya <gakula@marvell.com>,
-        Subbaraya Sundeep <sbhatta@marvell.com>,
-        hariprasad <hkelam@marvell.com>, Felix Fietkau <nbd@nbd.name>,
-        John Crispin <john@phrozen.org>,
-        Sean Wang <sean.wang@mediatek.com>,
-        Mark Lee <Mark-MC.Lee@mediatek.com>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Horatiu Vultur <horatiu.vultur@microchip.com>,
-        UNGLinuxDriver@microchip.com,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
-        Jassi Brar <jaswinder.singh@linaro.org>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Siddharth Vadapalli <s-vadapalli@ti.com>,
-        Ravi Gunasekaran <r-gunasekaran@ti.com>,
-        Roger Quadros <rogerq@kernel.org>,
-        Jiawen Wu <jiawenwu@trustnetic.com>,
-        Mengyuan Lou <mengyuanlou@net-swift.com>,
-        Ronak Doshi <doshir@vmware.com>,
-        VMware PV-Drivers Reviewers <pv-drivers@vmware.com>,
-        Ryder Lee <ryder.lee@mediatek.com>,
-        Shayne Chen <shayne.chen@mediatek.com>,
-        Kalle Valo <kvalo@kernel.org>, Juergen Gross <jgross@suse.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>,
-        Yonghong Song <yonghong.song@linux.dev>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Stefano Garzarella <sgarzare@redhat.com>,
-        Shuah Khan <shuah@kernel.org>,
-        =?UTF-8?Q?Micka=C3=ABl_Sala=C3=BCn?= <mic@digikod.net>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Bill Wendling <morbo@google.com>,
-        Justin Stitt <justinstitt@google.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Yunsheng Lin <linyunsheng@huawei.com>,
-        Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-References: <20231214020530.2267499-1-almasrymina@google.com>
- <20231214020530.2267499-3-almasrymina@google.com>
-From:   David Ahern <dsahern@kernel.org>
-In-Reply-To: <20231214020530.2267499-3-almasrymina@google.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        Thu, 14 Dec 2023 01:37:19 -0500
+Received: from mail-oo1-xc2d.google.com (mail-oo1-xc2d.google.com [IPv6:2607:f8b0:4864:20::c2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E959EA6
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 22:37:24 -0800 (PST)
+Received: by mail-oo1-xc2d.google.com with SMTP id 006d021491bc7-58dd3528497so4917206eaf.3
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 22:37:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=purestorage.com; s=google2022; t=1702535844; x=1703140644; darn=vger.kernel.org;
+        h=references:in-reply-to:message-id:date:subject:cc:to:from:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=ByMsI+TQi9NOnAmZv30hIBVObC1nPLx9Qj7duP4chNM=;
+        b=ObavcbfyQbfE8jemvKgIfGrRI+91HnMmCxyE1adfJFdxRXzNxu7P2/BwV2rMc0Xhu5
+         Gi/+zVbZgeL8D3lqpgl7runcUtjd8mg62JGh6cn+mmzBoFzbpBw5iHrMg81CsBF6OwHA
+         15CsOq+YuX+x+N4EEfAywXzYBXYnISyO26WvD9MxGTlXloq5hlGQUrqO0yWn51adx+JC
+         QutL2YTSdQh/p361TaSZViQec4W/z4s3T2fgQbqfpfn/FDd3aly02jmR6y47U7PMoI2y
+         FTXaTjbDHAgsPbzW5eRtgpihngxYEII5T5OPLBHwBfa2+y2ormTQqhkoD8Vy940EPz4j
+         3N1Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702535844; x=1703140644;
+        h=references:in-reply-to:message-id:date:subject:cc:to:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ByMsI+TQi9NOnAmZv30hIBVObC1nPLx9Qj7duP4chNM=;
+        b=JWqvp2F42p5r7E8OGuLQVp8iAI0ATr7kpqSMSXgE5ZI4VWegNrdbVh9af4tHBI3GTg
+         +BLUrZRtnhkxS8Pax1L6WCaPQg1vkHzIzK+0M0ZxKb+xrv2K8/aksGGHR/2mIr8A4e/g
+         rgq57lsvU2nrv4XXM+y6KO6IKHu2IHQwrzX8JFlu58p6Fg93sbPeGyL74rJTo9bNsCHv
+         o5xVnyglu/nUReIx270HUlhqmnv7YNWapf/DxNU37wFJjavWzxOtx3wo7jfP017Y5oVo
+         G17DlfxgYDXWg9bfJrRXvjDBYu5kI1sUMqgzUX/E/QbHDVEXXTooQCHiQQXT0lQ2/P5M
+         2lew==
+X-Gm-Message-State: AOJu0YxGlqCRb6RgLNpYgxgi9WuIXhUwKosRWuBd6NJwJeSyGo361kJJ
+        ftfUGSCQHi5cxtQs5ph9d703JQ==
+X-Google-Smtp-Source: AGHT+IGDYgeMUV/OiBQYd+6hLIHIWc2eMQukN7gerceviPNB12bAQ2UKGqVe84ZOgh2+rdPXNyqT1A==
+X-Received: by 2002:a4a:d28f:0:b0:590:e85:199c with SMTP id h15-20020a4ad28f000000b005900e85199cmr6792637oos.6.1702535844207;
+        Wed, 13 Dec 2023 22:37:24 -0800 (PST)
+Received: from dev-mattc2.dev.purestorage.com ([208.88.159.128])
+        by smtp.googlemail.com with ESMTPSA id m20-20020a4a2414000000b005902a5bc3easm3390878oof.22.2023.12.13.22.37.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Dec 2023 22:37:23 -0800 (PST)
+From:   Matthew W Carlis <mattc@purestorage.com>
+To:     helgaas@kernel.org
+Cc:     bhelgaas@google.com, linux-kernel@vger.kernel.org,
+        linux-pci@vger.kernel.org, mika.westerberg@linux.intel.com,
+        sathyanarayanan.kuppuswamy@linux.intel.com
+Subject: [PATCH v3] PCI/portdrv: Allow AER service only for Root Ports & RCECs
+Date:   Wed, 13 Dec 2023 23:37:17 -0700
+Message-Id: <20231214063717.992-1-mattc@purestorage.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20221210002922.1749403-1-helgaas@kernel.org>
+References: <20221210002922.1749403-1-helgaas@kernel.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/13/23 7:05 PM, Mina Almasry wrote:
-> diff --git a/include/net/netmem.h b/include/net/netmem.h
-> new file mode 100644
-> index 000000000000..e4309242d8be
-> --- /dev/null
-> +++ b/include/net/netmem.h
-> @@ -0,0 +1,35 @@
-> +/* SPDX-License-Identifier: GPL-2.0
-> + *
-> + * netmem.h
-> + *	Author:	Mina Almasry <almasrymina@google.com>
-> + *	Copyright (C) 2023 Google LLC
-> + */
-> +
-> +#ifndef _NET_NETMEM_H
-> +#define _NET_NETMEM_H
-> +
-> +struct netmem {
-> +	union {
-> +		struct page page;
-> +
-> +		/* Stub to prevent compiler implicitly converting from page*
-> +		 * to netmem_t* and vice versa.
-> +		 *
-> +		 * Other memory type(s) net stack would like to support
-> +		 * can be added to this union.
-> +		 */
-> +		void *addr;
-> +	};
-> +};
-> +
-> +static inline struct page *netmem_to_page(struct netmem *netmem)
-> +{
-> +	return &netmem->page;
-> +}
-> +
-> +static inline struct netmem *page_to_netmem(struct page *page)
-> +{
-> +	return (struct netmem *)page;
+Hello Any Interested
 
-container_of; no typecasts.
+Recently found that this patch had the affect of requiring us to set
+pcie_ports_dpc_native in order to use the kernel DPC driver with PCIe switch
+downstream ports. The kernel check for the DPC capability in portdrv.c has;
+if pci_aer_available() and (dpc-native or using AER port service driver on
+the device). I wonder if we couldn't do away with the requirement of the
+AER service being used on the port if pci_aer_available() & host->native_aer
+don't lie. I'm still trying to decide exactly what the condition ought to
+look like, but it might draw from the AER service check above it. For example:
 
+        if (pci_find_ext_capability(dev, PCI_EXT_CAP_ID_DPC) &&
+-           pci_aer_available() &&
+-           (pcie_ports_dpc_native || (services & PCIE_PORT_SERVICE_AER)))
++           dev->aer_cap && pci_aer_available() &&
++           (pcie_ports_dpc_native || host->native_aer))
+                services |= PCIE_PORT_SERVICE_DPC;
 
-> +}
-> +
-> +#endif /* _NET_NETMEM_H */
+Thanks,
+-Matt
+
 
