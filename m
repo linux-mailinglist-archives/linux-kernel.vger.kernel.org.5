@@ -2,137 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A382812FE4
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 13:17:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F074B812FE6
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 13:19:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1572972AbjLNMRd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 07:17:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40798 "EHLO
+        id S1572971AbjLNMTi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 07:19:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50054 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1572951AbjLNMRc (ORCPT
+        with ESMTP id S1572923AbjLNMTg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 07:17:32 -0500
-Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F6D1BD;
-        Thu, 14 Dec 2023 04:17:38 -0800 (PST)
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 3BECHReC041436;
-        Thu, 14 Dec 2023 06:17:27 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1702556247;
-        bh=RUEys31RsDSUFYXrDwZ5JzMo7zxkvfU4HpC1RU/FMa0=;
-        h=Date:From:To:CC:Subject:References:In-Reply-To;
-        b=gFGZLG9s7MkIjWs5tvPVQ7wZreEb2waw2R9TltiuVJiv4CskUQDdJLI3DH/RMQVPf
-         eMVAJs55QAP0ZTbWs8diUuAu1u994fGRTlXWcXUxbd28XiS5hLp9E28TRpLRJdoxib
-         tamSQ3jIRxUKCYuJ2ag+vo3TKbYSKYstipzwHshE=
-Received: from DLEE103.ent.ti.com (dlee103.ent.ti.com [157.170.170.33])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 3BECHROq045626
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 14 Dec 2023 06:17:27 -0600
-Received: from DLEE107.ent.ti.com (157.170.170.37) by DLEE103.ent.ti.com
- (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 14
- Dec 2023 06:17:27 -0600
-Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DLEE107.ent.ti.com
- (157.170.170.37) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Thu, 14 Dec 2023 06:17:27 -0600
-Received: from localhost (uda0133052.dhcp.ti.com [128.247.81.232])
-        by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 3BECHRg3094684;
-        Thu, 14 Dec 2023 06:17:27 -0600
-Date:   Thu, 14 Dec 2023 06:17:27 -0600
-From:   Nishanth Menon <nm@ti.com>
-To:     Siddharth Vadapalli <s-vadapalli@ti.com>
-CC:     <vigneshr@ti.com>, <kristo@kernel.org>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <danishanwar@ti.com>,
-        <r-gunasekaran@ti.com>, <srk@ti.com>
-Subject: Re: [PATCH v2] arm64: dts: ti: k3-am654-icssg2: Enable PHY
- interrupts for ICSSG2
-Message-ID: <20231214121727.ayrbqz2nmeb25rpw@striving>
-References: <20231213080216.1710730-1-s-vadapalli@ti.com>
- <20231213123819.tqh3lm2ceir3qjbk@swimmer>
- <6f1c1a59-cec0-46d1-8ecb-a82d9d444ccf@ti.com>
+        Thu, 14 Dec 2023 07:19:36 -0500
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0D0CBD;
+        Thu, 14 Dec 2023 04:19:42 -0800 (PST)
+Received: from pendragon.ideasonboard.com (213-243-189-158.bb.dnainternet.fi [213.243.189.158])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id E1C5F4A9;
+        Thu, 14 Dec 2023 13:18:54 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1702556335;
+        bh=YiTF6JHTIBaYstNwMrE+QdjSiz7s49VYWh8YMsvV9Ds=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=GfoOR2NtgGHS+ihYhAAIWAG/jedCD6LOU4Gt7x45cgWD06wzRgmednBtbUQaIXXSa
+         K3KSkv5lHg0ru+ptfrVtmXhWrv7cJjKB9FruXklyXPh+HMKMkLih5GQXo05qSZYYqD
+         qdBRddludmHkUg/lWPIL3hx9vAwu8GUjPkxaEn6k=
+Date:   Thu, 14 Dec 2023 14:19:48 +0200
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Changhuang Liang <changhuang.liang@starfivetech.com>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Marvin Lin <milkfafa@gmail.com>,
+        Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
+        Ming Qian <ming.qian@nxp.com>,
+        Nicolas Dufresne <nicolas.dufresne@collabora.com>,
+        Benjamin Gaignard <benjamin.gaignard@collabora.com>,
+        Tomi Valkeinen <tomi.valkeinen+renesas@ideasonboard.com>,
+        Mingjia Zhang <mingjia.zhang@mediatek.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Dan Carpenter <dan.carpenter@linaro.org>,
+        Jack Zhu <jack.zhu@starfivetech.com>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-staging@lists.linux.dev
+Subject: Re: [PATCH v1 8/9] staging: media: starfive: Add frame sync event
+ for video capture device
+Message-ID: <20231214121948.GC21146@pendragon.ideasonboard.com>
+References: <20231214065027.28564-1-changhuang.liang@starfivetech.com>
+ <20231214065027.28564-9-changhuang.liang@starfivetech.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <6f1c1a59-cec0-46d1-8ecb-a82d9d444ccf@ti.com>
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20231214065027.28564-9-changhuang.liang@starfivetech.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11:14-20231214, Siddharth Vadapalli wrote:
-> Hello Nishanth,
-> 
-> On 13/12/23 18:08, Nishanth Menon wrote:
-> > On 13:32-20231213, Siddharth Vadapalli wrote:
-> >> Enable interrupt mode of operation of the DP83867 Ethernet PHY which is
-> >> used by ICSSG2. The DP83867 PHY driver already supports interrupt handling
-> >> for interrupts generated by the PHY. Thus, add the necessary device-tree
-> >> support to enable it.
-> >>
-> >> Since the GPIO1_87 line is muxed with EXT_REFCLK1 and SYNC1_OUT, update
-> >> the pinmux to select GPIO1_87 for routing the interrupt.
-> >>
-> >> As the same interrupt line and therefore the same pinmux configuration is
-> >> applicable to both Ethernet PHYs used by ICSSG2, allocate the pinmux
-> >> resource to the first Ethernet PHY alone.
-> 
-> ...
-> 
-> > 
-> > https://www.ti.com/lit/ds/symlink/dp83867ir.pdf -> it looks like the
-> > interrupt pin is level event. but drivers/gpio/gpio-davinci.c::
-> > gpio_irq_type() -> The SoC cannot handle level, only edge.
-> > 
-> > A bit confused here..  GPIO 87 is shared between two phys. isn't it a
-> > case of race?
-> > 
-> > PHY1 assets low
-> > phy1 handler starts, but before the driver it clears the condition:
-> > PHY2 asserts low - but since the signal is already low, there is no
-> > pulse
-> > phy1 handler clears phy1 condition, but signal is still low due to phy2?
-> > now phy2 OR phy1 never gets handled since there is never a pulse event
-> > ever again.
-> 
-> Yes, you are right! Edge-Triggered interrupts shouldn't be shared. I missed
-> noticing this. Thank you for pointing it out. Since the SoC only supports
-> Edge-Triggered interrupts, I believe that the correct decision would be to use
-> the interrupt for only one of the two PHYs, while leaving the other PHY in
-> polled mode of operation which is the default.
-> 
-> Kindly let me know if this is acceptable and I shall update this patch accordingly.
+Hi Changhuang,
 
-Sounds like a bug in board design there (due to an choice of IP
-limitation) - I suggest getting it noted in board documentation and
-refer to the errata in the second phy (else folks will wonder why we
-aren't using interrupts on the second phy.
+Thank you for the patch.
 
+On Wed, Dec 13, 2023 at 10:50:26PM -0800, Changhuang Liang wrote:
+> Add frame sync event for video capture device.
+
+Here too the commit message needs to explain why.
+
+> Signed-off-by: Changhuang Liang <changhuang.liang@starfivetech.com>
+> ---
+>  .../staging/media/starfive/camss/stf-capture.c    |  9 +++++++++
+>  drivers/staging/media/starfive/camss/stf-video.c  | 15 +++++++++++++++
+>  2 files changed, 24 insertions(+)
 > 
-> > 
-> > 
-> >>  		ti,rx-internal-delay = <DP83867_RGMIIDCTL_2_00_NS>;
-> >>  		ti,fifo-depth = <DP83867_PHYCR_FIFO_DEPTH_4_B_NIB>;
-> >>  	};
-> >> -- 
-> >> 2.34.1
-> >>
-> > 
-> 
-> -- 
-> Regards,
-> Siddharth.
+> diff --git a/drivers/staging/media/starfive/camss/stf-capture.c b/drivers/staging/media/starfive/camss/stf-capture.c
+> index 6a137a273c8a..d0be769da11b 100644
+> --- a/drivers/staging/media/starfive/camss/stf-capture.c
+> +++ b/drivers/staging/media/starfive/camss/stf-capture.c
+> @@ -7,6 +7,7 @@
+>   * Copyright (C) 2021-2023 StarFive Technology Co., Ltd.
+>   */
+>  
+> +#include <media/v4l2-event.h>
+>  #include "stf-camss.h"
+>  
+>  static const char * const stf_cap_names[] = {
+> @@ -430,10 +431,15 @@ static void stf_buf_flush(struct stf_v_buf *output, enum vb2_buffer_state state)
+>  
+>  static void stf_buf_done(struct stf_v_buf *output)
+>  {
+> +	struct stf_capture *cap = container_of(output, struct stf_capture,
+> +					       buffers);
+
+This looks like it belongs to a previous patch, because ...
+
+>  	struct stfcamss_buffer *ready_buf;
+>  	struct stfcamss *stfcamss = cap->video.stfcamss;
+
+... cap is already used there.
+
+Please compile each commit, not just the end result. Compilation must
+not break at any point in the middle of the series, or it would make git
+bisection impossible.
+
+>  	u64 ts = ktime_get_ns();
+>  	unsigned long flags;
+> +	struct v4l2_event event = {
+> +		.type = V4L2_EVENT_FRAME_SYNC,
+> +	};
+>  
+>  	if (output->state == STF_OUTPUT_OFF ||
+>  	    output->state == STF_OUTPUT_RESERVED)
+> @@ -445,6 +451,9 @@ static void stf_buf_done(struct stf_v_buf *output)
+>  		if (cap->type == STF_CAPTURE_SCD)
+>  			stf_isp_fill_yhist(stfcamss, ready_buf->vaddr_sc);
+>  
+> +		event.u.frame_sync.frame_sequence = output->sequence;
+> +		v4l2_event_queue(&cap->video.vdev, &event);
+
+This doesn't like to be the right place to generate the
+V4L2_EVENT_FRAME_SYNC event. V4L2_EVENT_FRAME_SYNC is defined as
+
+      - Triggered immediately when the reception of a frame has begun.
+        This event has a struct
+        :c:type:`v4l2_event_frame_sync`
+        associated with it.
+
+It would be best to generate V4L2_EVENT_FRAME_SYNC in response to a
+CSI-2 RX interrupt that signals the beginning of the frame, if the
+hardware provides that. If not, an ISP interrupt that signals the
+beginning of the frame would work too.
+
+> +
+>  		ready_buf->vb.vb2_buf.timestamp = ts;
+>  		ready_buf->vb.sequence = output->sequence++;
+>  
+> diff --git a/drivers/staging/media/starfive/camss/stf-video.c b/drivers/staging/media/starfive/camss/stf-video.c
+> index 54d855ba0b57..32381e9ad049 100644
+> --- a/drivers/staging/media/starfive/camss/stf-video.c
+> +++ b/drivers/staging/media/starfive/camss/stf-video.c
+> @@ -507,6 +507,17 @@ static int video_try_fmt(struct file *file, void *fh, struct v4l2_format *f)
+>  	return __video_try_fmt(video, f);
+>  }
+>  
+> +static int video_subscribe_event(struct v4l2_fh *fh,
+> +				 const struct v4l2_event_subscription *sub)
+> +{
+> +	switch (sub->type) {
+> +	case V4L2_EVENT_FRAME_SYNC:
+> +		return v4l2_event_subscribe(fh, sub, 0, NULL);
+> +	default:
+> +		return -EINVAL;
+> +	}
+> +}
+> +
+>  static const struct v4l2_ioctl_ops stf_vid_ioctl_ops = {
+>  	.vidioc_querycap                = video_querycap,
+>  	.vidioc_enum_fmt_vid_cap        = video_enum_fmt,
+> @@ -523,6 +534,8 @@ static const struct v4l2_ioctl_ops stf_vid_ioctl_ops = {
+>  	.vidioc_prepare_buf             = vb2_ioctl_prepare_buf,
+>  	.vidioc_streamon                = vb2_ioctl_streamon,
+>  	.vidioc_streamoff               = vb2_ioctl_streamoff,
+> +	.vidioc_subscribe_event         = video_subscribe_event,
+> +	.vidioc_unsubscribe_event       = v4l2_event_unsubscribe,
+
+Don't implement the event on the video device, implement it on the CSI-2
+RX or ISP subdev, depending on whether you get it from the CSI-2 RX or
+the ISP.
+
+>  };
+>  
+>  static int video_scd_g_fmt(struct file *file, void *fh, struct v4l2_format *f)
+> @@ -554,6 +567,8 @@ static const struct v4l2_ioctl_ops stf_vid_scd_ioctl_ops = {
+>  	.vidioc_prepare_buf             = vb2_ioctl_prepare_buf,
+>  	.vidioc_streamon                = vb2_ioctl_streamon,
+>  	.vidioc_streamoff               = vb2_ioctl_streamoff,
+> +	.vidioc_subscribe_event         = video_subscribe_event,
+> +	.vidioc_unsubscribe_event       = v4l2_event_unsubscribe,
+>  };
+>  
+>  /* -----------------------------------------------------------------------------
 
 -- 
 Regards,
-Nishanth Menon
-Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
+
+Laurent Pinchart
