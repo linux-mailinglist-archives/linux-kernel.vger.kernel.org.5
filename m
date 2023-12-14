@@ -2,185 +2,238 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 47C53812FA8
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 13:05:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 78A40812FAB
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 13:07:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1572904AbjLNMFi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 07:05:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41564 "EHLO
+        id S1572902AbjLNMHF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 07:07:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42538 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1444227AbjLNMFe (ORCPT
+        with ESMTP id S1572910AbjLNMHD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 07:05:34 -0500
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9306BD;
-        Thu, 14 Dec 2023 04:05:39 -0800 (PST)
-Received: from mail.maildlp.com (unknown [172.19.88.105])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4SrWHj4l4yzvS9D;
-        Thu, 14 Dec 2023 20:04:49 +0800 (CST)
-Received: from dggpemm500005.china.huawei.com (unknown [7.185.36.74])
-        by mail.maildlp.com (Postfix) with ESMTPS id A0C3F1400CD;
-        Thu, 14 Dec 2023 20:05:37 +0800 (CST)
-Received: from [10.69.30.204] (10.69.30.204) by dggpemm500005.china.huawei.com
- (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Thu, 14 Dec
- 2023 20:05:37 +0800
-Subject: Re: [RFC PATCH net-next v1 4/4] net: page_pool: use netmem_t instead
- of struct page in API
-To:     Mina Almasry <almasrymina@google.com>,
-        <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <bpf@vger.kernel.org>
-CC:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
-        Michael Chan <michael.chan@broadcom.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Wei Fang <wei.fang@nxp.com>,
-        Shenwei Wang <shenwei.wang@nxp.com>,
-        Clark Wang <xiaoning.wang@nxp.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Jeroen de Borst <jeroendb@google.com>,
-        Praveen Kaligineedi <pkaligineedi@google.com>,
-        Shailend Chand <shailend@google.com>,
-        Yisen Zhuang <yisen.zhuang@huawei.com>,
-        Salil Mehta <salil.mehta@huawei.com>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Marcin Wojtas <mw@semihalf.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Sunil Goutham <sgoutham@marvell.com>,
-        Geetha sowjanya <gakula@marvell.com>,
-        Subbaraya Sundeep <sbhatta@marvell.com>,
-        hariprasad <hkelam@marvell.com>, Felix Fietkau <nbd@nbd.name>,
-        John Crispin <john@phrozen.org>,
-        Sean Wang <sean.wang@mediatek.com>,
-        Mark Lee <Mark-MC.Lee@mediatek.com>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Horatiu Vultur <horatiu.vultur@microchip.com>,
-        <UNGLinuxDriver@microchip.com>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
-        Jassi Brar <jaswinder.singh@linaro.org>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Siddharth Vadapalli <s-vadapalli@ti.com>,
-        Ravi Gunasekaran <r-gunasekaran@ti.com>,
-        Roger Quadros <rogerq@kernel.org>,
-        Jiawen Wu <jiawenwu@trustnetic.com>,
-        Mengyuan Lou <mengyuanlou@net-swift.com>,
-        Ronak Doshi <doshir@vmware.com>,
-        VMware PV-Drivers Reviewers <pv-drivers@vmware.com>,
-        Ryder Lee <ryder.lee@mediatek.com>,
-        Shayne Chen <shayne.chen@mediatek.com>,
-        Kalle Valo <kvalo@kernel.org>, Juergen Gross <jgross@suse.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>,
-        Yonghong Song <yonghong.song@linux.dev>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Stefano Garzarella <sgarzare@redhat.com>,
-        Shuah Khan <shuah@kernel.org>,
-        =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@digikod.net>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Bill Wendling <morbo@google.com>,
-        Justin Stitt <justinstitt@google.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-References: <20231214020530.2267499-1-almasrymina@google.com>
- <20231214020530.2267499-5-almasrymina@google.com>
-From:   Yunsheng Lin <linyunsheng@huawei.com>
-Message-ID: <ddffff98-f3de-6a5d-eb26-636dacefe9aa@huawei.com>
-Date:   Thu, 14 Dec 2023 20:05:36 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.2.0
+        Thu, 14 Dec 2023 07:07:03 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18CD0BD;
+        Thu, 14 Dec 2023 04:07:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1702555627; x=1734091627;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=9Q+luyd4pSCUnS9q7QWXSG0Qvk/mCCFyLh+qA2EsHcU=;
+  b=O0qtsOQfQ3LgETCj7VfHIwGRVWL5g/7r1biQ64m69HLT5XhwBWhKwYCi
+   6wtdYVsoKvFyNy+nzi0T0ig9giM/Oz6PObEnVB2ZbhsKk5fhPM9xSdXVT
+   AL9xa2Dv9grNoUL2li4RgDFtzXcRCPhJPnRUvfUDaSwpX7RyknBeNu1c6
+   9Oxjs6G+yqh3Sc12q09uMHb5m0DKCj1jlns7OFmVPYZn1V91i5IVRGeXT
+   v9QCGhI6jAezZU0SJ7hGGS8TL4egV90WEhpqydl00ponPh4LSkyBJochE
+   PQLTnMm53Yvk4HcR56wxw42bOTyVl4V7kMA1HAaf2QMErar6vfYqWrcCs
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10923"; a="385523791"
+X-IronPort-AV: E=Sophos;i="6.04,275,1695711600"; 
+   d="scan'208";a="385523791"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Dec 2023 04:07:06 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10923"; a="947553760"
+X-IronPort-AV: E=Sophos;i="6.04,275,1695711600"; 
+   d="scan'208";a="947553760"
+Received: from fdefranc-mobl3.ger.corp.intel.com (HELO fdefranc-mobl3.localnet) ([10.213.7.207])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Dec 2023 04:07:01 -0800
+From:   "Fabio M. De Francesco" <fabio.maria.de.francesco@linux.intel.com>
+To:     linux-fsdevel@vger.kernel.org, Al Viro <viro@zeniv.linux.org.uk>
+Cc:     linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 4/4] minixfs: switch to kmap_local_page()
+Date:   Thu, 14 Dec 2023 13:06:57 +0100
+Message-ID: <5180693.aeNJFYEL58@fdefranc-mobl3>
+Organization: intel
+In-Reply-To: <20231213000849.2748576-4-viro@zeniv.linux.org.uk>
+References: <20231213000656.GI1674809@ZenIV>
+ <20231213000849.2748576-1-viro@zeniv.linux.org.uk>
+ <20231213000849.2748576-4-viro@zeniv.linux.org.uk>
 MIME-Version: 1.0
-In-Reply-To: <20231214020530.2267499-5-almasrymina@google.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.69.30.204]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- dggpemm500005.china.huawei.com (7.185.36.74)
-X-Spam-Status: No, score=-6.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/12/14 10:05, Mina Almasry wrote:
+On Wednesday, 13 December 2023 01:08:49 CET Al Viro wrote:
+> Again, a counterpart of Fabio's fs/sysv patch
+> 
+> Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
+> ---
+>  fs/minix/dir.c   | 27 +++++++++++++--------------
+>  fs/minix/minix.h |  5 -----
+>  fs/minix/namei.c |  6 +++---
+>  3 files changed, 16 insertions(+), 22 deletions(-)
 
-...
+Reviewed-by: Fabio M. De Francesco <fabio.maria.de.francesco@linux.intel.com>
 
-> diff --git a/include/net/page_pool/types.h b/include/net/page_pool/types.h
-> index ac286ea8ce2d..0faa5207a394 100644
-> --- a/include/net/page_pool/types.h
-> +++ b/include/net/page_pool/types.h
-> @@ -6,6 +6,7 @@
->  #include <linux/dma-direction.h>
->  #include <linux/ptr_ring.h>
->  #include <linux/types.h>
-> +#include <net/netmem.h>
->  
->  #define PP_FLAG_DMA_MAP		BIT(0) /* Should page_pool do the DMA
->  					* map/unmap
-> @@ -199,9 +200,9 @@ struct page_pool {
->  	} user;
->  };
->  
-> -struct page *page_pool_alloc_pages(struct page_pool *pool, gfp_t gfp);
-> -struct page *page_pool_alloc_frag(struct page_pool *pool, unsigned int *offset,
-> -				  unsigned int size, gfp_t gfp);
-> +struct netmem *page_pool_alloc_pages(struct page_pool *pool, gfp_t gfp);
-> +struct netmem *page_pool_alloc_frag(struct page_pool *pool, unsigned int *offset,
-> +			       unsigned int size, gfp_t gfp);
+> diff --git a/fs/minix/dir.c b/fs/minix/dir.c
+> index ccb6c47fd7fe..a224cf222570 100644
+> --- a/fs/minix/dir.c
+> +++ b/fs/minix/dir.c
+> @@ -70,9 +70,8 @@ static void *dir_get_page(struct inode *dir, unsigned long
+> n, struct page **p) struct page *page = read_mapping_page(mapping, n,
+> NULL);
+>  	if (IS_ERR(page))
+>  		return ERR_CAST(page);
+> -	kmap(page);
+>  	*p = page;
+> -	return page_address(page);
+> +	return kmap_local_page(page);
+>  }
+> 
+>  static inline void *minix_next_entry(void *de, struct minix_sb_info *sbi)
+> @@ -123,13 +122,13 @@ static int minix_readdir(struct file *file, struct
+> dir_context *ctx) unsigned l = strnlen(name, sbi->s_namelen);
+>  				if (!dir_emit(ctx, name, l,
+>  					      inumber, DT_UNKNOWN)) {
+> -					dir_put_page(page);
+> +					unmap_and_put_page(page, p);
+>  					return 0;
+>  				}
+>  			}
+>  			ctx->pos += chunk_size;
+>  		}
+> -		dir_put_page(page);
+> +		unmap_and_put_page(page, kaddr);
+>  	}
+>  	return 0;
+>  }
+> @@ -189,7 +188,7 @@ minix_dirent *minix_find_entry(struct dentry *dentry,
+> struct page **res_page) if (namecompare(namelen, sbi->s_namelen, name,
+> namx))
+>  				goto found;
+>  		}
+> -		dir_put_page(page);
+> +		unmap_and_put_page(page, kaddr);
+>  	}
+>  	return NULL;
+> 
+> @@ -255,7 +254,7 @@ int minix_add_link(struct dentry *dentry, struct inode
+> *inode) goto out_unlock;
+>  		}
+>  		unlock_page(page);
+> -		dir_put_page(page);
+> +		unmap_and_put_page(page, kaddr);
+>  	}
+>  	BUG();
+>  	return -EINVAL;
+> @@ -278,7 +277,7 @@ int minix_add_link(struct dentry *dentry, struct inode
+> *inode) mark_inode_dirty(dir);
+>  	err = minix_handle_dirsync(dir);
+>  out_put:
+> -	dir_put_page(page);
+> +	unmap_and_put_page(page, kaddr);
+>  	return err;
+>  out_unlock:
+>  	unlock_page(page);
+> @@ -324,7 +323,7 @@ int minix_make_empty(struct inode *inode, struct inode
+> *dir) goto fail;
+>  	}
+> 
+> -	kaddr = kmap_atomic(page);
+> +	kaddr = kmap_local_page(page);
+>  	memset(kaddr, 0, PAGE_SIZE);
+> 
+>  	if (sbi->s_version == MINIX_V3) {
+> @@ -344,7 +343,7 @@ int minix_make_empty(struct inode *inode, struct inode
+> *dir) de->inode = dir->i_ino;
+>  		strcpy(de->name, "..");
+>  	}
+> -	kunmap_atomic(kaddr);
+> +	kunmap_local(kaddr);
+> 
+>  	dir_commit_chunk(page, 0, 2 * sbi->s_dirsize);
+>  	err = minix_handle_dirsync(inode);
+> @@ -361,11 +360,11 @@ int minix_empty_dir(struct inode * inode)
+>  	struct page *page = NULL;
+>  	unsigned long i, npages = dir_pages(inode);
+>  	struct minix_sb_info *sbi = minix_sb(inode->i_sb);
+> -	char *name;
+> +	char *name, *kaddr;
+>  	__u32 inumber;
+> 
+>  	for (i = 0; i < npages; i++) {
+> -		char *p, *kaddr, *limit;
+> +		char *p, *limit;
+> 
+>  		kaddr = dir_get_page(inode, i, &page);
+>  		if (IS_ERR(kaddr))
+> @@ -396,12 +395,12 @@ int minix_empty_dir(struct inode * inode)
+>  					goto not_empty;
+>  			}
+>  		}
+> -		dir_put_page(page);
+> +		unmap_and_put_page(page, kaddr);
+>  	}
+>  	return 1;
+> 
+>  not_empty:
+> -	dir_put_page(page);
+> +	unmap_and_put_page(page, kaddr);
+>  	return 0;
+>  }
+> 
+> @@ -455,7 +454,7 @@ ino_t minix_inode_by_name(struct dentry *dentry)
+>  			res = ((minix3_dirent *) de)->inode;
+>  		else
+>  			res = de->inode;
+> -		dir_put_page(page);
+> +		unmap_and_put_page(page, de);
+>  	}
+>  	return res;
+>  }
+> diff --git a/fs/minix/minix.h b/fs/minix/minix.h
+> index cb42b6cf7909..d493507c064f 100644
+> --- a/fs/minix/minix.h
+> +++ b/fs/minix/minix.h
+> @@ -64,11 +64,6 @@ extern int V2_minix_get_block(struct inode *, long,
+> struct buffer_head *, int); extern unsigned V1_minix_blocks(loff_t, struct
+> super_block *);
+>  extern unsigned V2_minix_blocks(loff_t, struct super_block *);
+> 
+> -static inline void dir_put_page(struct page *page)
+> -{
+> -	kunmap(page);
+> -	put_page(page);
+> -}
+>  extern struct minix_dir_entry *minix_find_entry(struct dentry*, struct
+> page**); extern int minix_add_link(struct dentry*, struct inode*);
+>  extern int minix_delete_entry(struct minix_dir_entry*, struct page*);
+> diff --git a/fs/minix/namei.c b/fs/minix/namei.c
+> index 20923a15e30a..d6031acc34f0 100644
+> --- a/fs/minix/namei.c
+> +++ b/fs/minix/namei.c
+> @@ -149,7 +149,7 @@ static int minix_unlink(struct inode * dir, struct
+> dentry *dentry) if (!de)
+>  		return -ENOENT;
+>  	err = minix_delete_entry(de, page);
+> -	dir_put_page(page);
+> +	unmap_and_put_page(page, de);
+> 
+>  	if (err)
+>  		return err;
+> @@ -242,9 +242,9 @@ static int minix_rename(struct mnt_idmap *idmap,
+>  	}
+>  out_dir:
+>  	if (dir_de)
+> -		dir_put_page(dir_page);
+> +		unmap_and_put_page(dir_page, dir_de);
+>  out_old:
+> -	dir_put_page(old_page);
+> +	unmap_and_put_page(old_page, old_de);
+>  out:
+>  	return err;
+>  }
 
-Is it possible that we add a thin layer caller on top of the page_pool API?
-So that the existing users can still use the old API, the new user supporting
-the devmem can use the new API, something like below:
 
-struct netmem *netmem_pool_alloc(struct netmem_pool *pool, gfp_t gfp)
-or
-struct devmem *devmem_pool_alloc(struct devmem_pool *pool, gfp_t gfp)
 
-I perfer the second one personally, as devmem means that it is not
-readable from cpu.
-Perhaps netmem can be used in the networking core in the future to
-indicate the generic type for all types of memory supported by networking
-core.
 
-As the main concern from Jason seems to be about safe type protection for
-large driver facing API surface. And touching a lot of existing users does
-not seem to bring a lot of benefit when we have not a clear idea how to
-proceed yet.
