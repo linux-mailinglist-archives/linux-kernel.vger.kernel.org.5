@@ -2,163 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 015F58134EE
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 16:37:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EC8B28134F2
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 16:38:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1573834AbjLNPhp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 10:37:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49978 "EHLO
+        id S1573823AbjLNPif (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 10:38:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34704 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1573801AbjLNPho (ORCPT
+        with ESMTP id S1573801AbjLNPic (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 10:37:44 -0500
-Received: from mx07-00178001.pphosted.com (mx08-00178001.pphosted.com [91.207.212.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4671C10F;
-        Thu, 14 Dec 2023 07:37:50 -0800 (PST)
-Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 3BEFRSLY006650;
-        Thu, 14 Dec 2023 16:37:34 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
-        message-id:date:mime-version:subject:to:cc:references:from
-        :in-reply-to:content-type:content-transfer-encoding; s=
-        selector1; bh=z+Okecx9m3lcQPbiL7ZlZzQneMvRP6AYBDxySkUnCxA=; b=e6
-        f2Z6krzrutBAiwdO7Z2D4b7/heMdokJJ/UEjc9gVA1NIYUflmISkKwznYUtUSVQ1
-        eCOHF321XRe+RyBRHoJe8zDnLkaloW7HUfOhSjHnuf2f9+3MGJszOQXMvtLHDF85
-        U2HwpVw0ig8p9GCHPP6RKouLZyyHjPQPY8i6VeN8LrtXO0jVSTAIBa8KGlnKFcLZ
-        WqIZ2qlyFqavLQ169t/eM4VOljjW2ZBnSSAYOT9z+0WbQ6zZ5Tpgah9JMgkWwpPS
-        6XVxDd53fW/lYADzwYau6pCL+lJS/6lPFoDziDe/bs2C5TUQ2alurFqOqWuKenvy
-        tVC7dsnPq69aRo8u5NSg==
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3uvg0h5m92-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 14 Dec 2023 16:37:34 +0100 (CET)
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 1A19D100053;
-        Thu, 14 Dec 2023 16:37:33 +0100 (CET)
-Received: from Webmail-eu.st.com (shfdag1node1.st.com [10.75.129.69])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 107ED26C06D;
-        Thu, 14 Dec 2023 16:37:33 +0100 (CET)
-Received: from [10.201.21.122] (10.201.21.122) by SHFDAG1NODE1.st.com
- (10.75.129.69) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Thu, 14 Dec
- 2023 16:37:32 +0100
-Message-ID: <8adec7b4-bdd9-4ad0-a302-326ed99ea732@foss.st.com>
-Date:   Thu, 14 Dec 2023 16:37:31 +0100
+        Thu, 14 Dec 2023 10:38:32 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F7CD125
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 07:38:38 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 214F1C433C8;
+        Thu, 14 Dec 2023 15:38:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1702568318;
+        bh=brtBYO+yjwauuTE/WiwDaux0zB+BgCD25n+R1WAC2ZU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=OitvvanXq20Vh7pXwImIER2xZrfgDg27ss6pa2YNQAujQPxMSX+hOJbhwXpMbOaWq
+         Uy805fr1ljRaj+p+OHsK2rSRoDSyROAtebpHfDck1N6iIbaLAr42166FF132Sl5jKw
+         Xmb+q3YR67kSG8SJw4uB6ZJ5F5tyXs2AhXl+xLxL3u41ZcMTugV39/6QWEUFo77Acf
+         UOFNwzojiSMFg6aq7aw6EHvPnShZ46Q7X+genuYdPUAtlue4nvSc9oPKtRvGAyn0z1
+         K2Y1HJ1rsW1xkvC0wnGbtHBKjJfBwV8OdErm2VYMjB/dMq07nBnY++bKaAB7owp++K
+         8klBI2Fypstmw==
+Received: from johan by xi.lan with local (Exim 4.96.2)
+        (envelope-from <johan@kernel.org>)
+        id 1rDnnH-0004m5-0e;
+        Thu, 14 Dec 2023 16:38:35 +0100
+Date:   Thu, 14 Dec 2023 16:38:35 +0100
+From:   Johan Hovold <johan@kernel.org>
+To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Rob Clark <robdclark@gmail.com>
+Cc:     linux-arm-msm@vger.kernel.org, Rob Clark <robdclark@chromium.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] soc: qcom: pmic_glink: Fix boot when QRTR=m
+Message-ID: <ZXshe83quTE0jO_Z@hovoldconsulting.com>
+References: <20231213210644.8702-1-robdclark@gmail.com>
+ <ZXqr0RFw9KsP876v@hovoldconsulting.com>
+ <CAA8EJpoSvaq9imP-dT4p=4jveZyFmh=OoWOP7jWGo4OYkHQDTA@mail.gmail.com>
+ <ZXsKzsij3Xb50Ap9@hovoldconsulting.com>
+ <CAA8EJpqBstKyAfUcBPzoF2CitTwWBZ9Xhd28Y+FCo14OoBqkxw@mail.gmail.com>
+ <ZXsMoFiivUCWA0yr@hovoldconsulting.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/2] ARM: dts: stm32: don't mix SCMI and non-SCMI board
- compatibles
-Content-Language: en-US
-To:     Ahmad Fatoum <a.fatoum@pengutronix.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>
-CC:     <kernel@pengutronix.de>, <devicetree@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20231122185235.2017642-1-a.fatoum@pengutronix.de>
- <20231122185235.2017642-2-a.fatoum@pengutronix.de>
-From:   Alexandre TORGUE <alexandre.torgue@foss.st.com>
-In-Reply-To: <20231122185235.2017642-2-a.fatoum@pengutronix.de>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.201.21.122]
-X-ClientProxiedBy: EQNCAS1NODE4.st.com (10.75.129.82) To SHFDAG1NODE1.st.com
- (10.75.129.69)
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-14_10,2023-12-14_01,2023-05-22_02
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZXsMoFiivUCWA0yr@hovoldconsulting.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Ahmad
+On Thu, Dec 14, 2023 at 03:09:36PM +0100, Johan Hovold wrote:
+> On Thu, Dec 14, 2023 at 04:04:49PM +0200, Dmitry Baryshkov wrote:
+> > On Thu, 14 Dec 2023 at 16:01, Johan Hovold <johan@kernel.org> wrote:
+> > > On Thu, Dec 14, 2023 at 01:04:43PM +0200, Dmitry Baryshkov wrote:
 
-On 11/22/23 19:52, Ahmad Fatoum wrote:
-> The binding erroneously decreed that the SCMI variants of the ST
-> evaluation kits are compatible with the non-SCMI variants.
+> > > > This is a known problem. Successful probes during the probe deferral
+> > > > loop causes the whole loop to be reiterated. Creating child devices
+> > > > usually results in  a successful probe. Aso I thought that just
+> > > > creating new device also causes a reprobe, but I can not find any
+> > > > evidence now.
+> > >
+> > > This still needs to be described in the commit message.
+> > >
+> > > Only a successful probe should trigger a reprobe, and when the child
+> > > devices are registered the parent is not yet on the deferred probe list.
+> > > So something is not right or missing here.
+> > 
+> > Child devices can be successfully probed, then the parent gets
+> > -EPROBE_DEFER, removes children and then it goes on and on.
 > 
-> This is not correct, as a kernel or bootloader compatible with the non-SCMI
-> variant is not necessarily able to function, when direct access
-> to resources is replaced by having to talk SCMI to the secure monitor.
+> So what? As I described above, the successful probe of the children
+> should have nothing to do with whether the parent is reprobed.
 > 
-> The binding has been adjusted to reflect thus, so synchronize the device
-> trees now.
-> 
-> Fixes: 5b7e58313a77 ("ARM: dts: stm32: Add SCMI version of STM32 boards (DK1/DK2/ED1/EV1)")
-> Signed-off-by: Ahmad Fatoum <a.fatoum@pengutronix.de>
-> ---
+> If that isn't the case, then explain how.
 
-Thanks to have fix my error.
+I took a closer look at this and indeed we do have code that triggers a
+reprobe of a device in case there was a successful probe while the
+device was probing.
 
-Both patches applied on stm32-next.
+This was introduced by commit 58b116bce136 ("drivercore: deferral race
+condition fix") and the workaround for the reprobe-loop bug that hack
+led to is to not return -EPROBE_DEFER after registering child devices as
+no one managed to come up with a proper fix. This was documented here:
 
-Cheers
-Alex
+	fbc35b45f9f6 ("Add documentation on meaning of -EPROBE_DEFER")
 
->   arch/arm/boot/dts/st/stm32mp157a-dk1-scmi.dts | 2 +-
->   arch/arm/boot/dts/st/stm32mp157c-dk2-scmi.dts | 2 +-
->   arch/arm/boot/dts/st/stm32mp157c-ed1-scmi.dts | 2 +-
->   arch/arm/boot/dts/st/stm32mp157c-ev1-scmi.dts | 3 +--
->   4 files changed, 4 insertions(+), 5 deletions(-)
-> 
-> diff --git a/arch/arm/boot/dts/st/stm32mp157a-dk1-scmi.dts b/arch/arm/boot/dts/st/stm32mp157a-dk1-scmi.dts
-> index afcd6285890c..c27963898b5e 100644
-> --- a/arch/arm/boot/dts/st/stm32mp157a-dk1-scmi.dts
-> +++ b/arch/arm/boot/dts/st/stm32mp157a-dk1-scmi.dts
-> @@ -11,7 +11,7 @@
->   
->   / {
->   	model = "STMicroelectronics STM32MP157A-DK1 SCMI Discovery Board";
-> -	compatible = "st,stm32mp157a-dk1-scmi", "st,stm32mp157a-dk1", "st,stm32mp157";
-> +	compatible = "st,stm32mp157a-dk1-scmi", "st,stm32mp157";
->   
->   	reserved-memory {
->   		optee@de000000 {
-> diff --git a/arch/arm/boot/dts/st/stm32mp157c-dk2-scmi.dts b/arch/arm/boot/dts/st/stm32mp157c-dk2-scmi.dts
-> index 39358d902000..622618943134 100644
-> --- a/arch/arm/boot/dts/st/stm32mp157c-dk2-scmi.dts
-> +++ b/arch/arm/boot/dts/st/stm32mp157c-dk2-scmi.dts
-> @@ -11,7 +11,7 @@
->   
->   / {
->   	model = "STMicroelectronics STM32MP157C-DK2 SCMI Discovery Board";
-> -	compatible = "st,stm32mp157c-dk2-scmi", "st,stm32mp157c-dk2", "st,stm32mp157";
-> +	compatible = "st,stm32mp157c-dk2-scmi", "st,stm32mp157";
->   
->   	reserved-memory {
->   		optee@de000000 {
-> diff --git a/arch/arm/boot/dts/st/stm32mp157c-ed1-scmi.dts b/arch/arm/boot/dts/st/stm32mp157c-ed1-scmi.dts
-> index 07ea765a4553..c7c4d7e89d61 100644
-> --- a/arch/arm/boot/dts/st/stm32mp157c-ed1-scmi.dts
-> +++ b/arch/arm/boot/dts/st/stm32mp157c-ed1-scmi.dts
-> @@ -11,7 +11,7 @@
->   
->   / {
->   	model = "STMicroelectronics STM32MP157C-ED1 SCMI eval daughter";
-> -	compatible = "st,stm32mp157c-ed1-scmi", "st,stm32mp157c-ed1", "st,stm32mp157";
-> +	compatible = "st,stm32mp157c-ed1-scmi", "st,stm32mp157";
->   
->   	reserved-memory {
->   		optee@fe000000 {
-> diff --git a/arch/arm/boot/dts/st/stm32mp157c-ev1-scmi.dts b/arch/arm/boot/dts/st/stm32mp157c-ev1-scmi.dts
-> index 813086ec2489..2ab77e64f1bb 100644
-> --- a/arch/arm/boot/dts/st/stm32mp157c-ev1-scmi.dts
-> +++ b/arch/arm/boot/dts/st/stm32mp157c-ev1-scmi.dts
-> @@ -11,8 +11,7 @@
->   
->   / {
->   	model = "STMicroelectronics STM32MP157C-EV1 SCMI eval daughter on eval mother";
-> -	compatible = "st,stm32mp157c-ev1-scmi", "st,stm32mp157c-ev1", "st,stm32mp157c-ed1",
-> -		     "st,stm32mp157";
-> +	compatible = "st,stm32mp157c-ev1-scmi", "st,stm32mp157c-ed1", "st,stm32mp157";
->   
->   	reserved-memory {
->   		optee@fe000000 {
+But please spell this out in some more detail in the commit message, and
+add a Fixes and CC stable tag.
+
+Johan
