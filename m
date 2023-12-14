@@ -2,124 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 09D14813598
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 17:03:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C2D238135A3
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 17:04:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1443706AbjLNQDB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 11:03:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41568 "EHLO
+        id S230269AbjLNQEb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 11:04:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46244 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230430AbjLNQC7 (ORCPT
+        with ESMTP id S230198AbjLNQE2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 11:02:59 -0500
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 72A5811A
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 08:03:06 -0800 (PST)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9E6D2C15;
-        Thu, 14 Dec 2023 08:03:51 -0800 (PST)
-Received: from e125769.cambridge.arm.com (e125769.cambridge.arm.com [10.1.196.26])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2B66C3F5A1;
-        Thu, 14 Dec 2023 08:03:03 -0800 (PST)
-From:   Ryan Roberts <ryan.roberts@arm.com>
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Yin Fengwei <fengwei.yin@intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        Yu Zhao <yuzhao@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Yang Shi <shy828301@gmail.com>,
-        "Huang, Ying" <ying.huang@intel.com>, Zi Yan <ziy@nvidia.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Itaru Kitayama <itaru.kitayama@gmail.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        David Rientjes <rientjes@google.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Hugh Dickins <hughd@google.com>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        Barry Song <21cnbao@gmail.com>,
-        Alistair Popple <apopple@nvidia.com>,
-        Dan Carpenter <dan.carpenter@linaro.org>
-Cc:     Ryan Roberts <ryan.roberts@arm.com>, linux-mm@kvack.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] mm: Resolve some multi-size THP review nits
-Date:   Thu, 14 Dec 2023 16:02:51 +0000
-Message-Id: <20231214160251.3574571-1-ryan.roberts@arm.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <e2da3c78-85f7-4516-bbab-97fac9629dcc@suswa.mountain>
-References: <e2da3c78-85f7-4516-bbab-97fac9629dcc@suswa.mountain>
+        Thu, 14 Dec 2023 11:04:28 -0500
+Received: from mail-qt1-x831.google.com (mail-qt1-x831.google.com [IPv6:2607:f8b0:4864:20::831])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67DA2115
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 08:04:34 -0800 (PST)
+Received: by mail-qt1-x831.google.com with SMTP id d75a77b69052e-425cbee636fso33248891cf.0
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 08:04:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1702569873; x=1703174673; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=SSa6pGgyJKtkWWJBgToju2bl1vy3r2pnMsbZh5DB9Rw=;
+        b=k8ZaViC5niKSXKLvN8bgBRfcYUJdLHHnwI+tMZvyCA0szFQuyF/bAVdVX7lsPmXR6U
+         8syXSznM3RszohJFz5N5l22ikfPu6cWI+YGV8QfKqS+irMLPAIOtjsqamrILohFeK1PL
+         hsM7/T1v8sr2Yt5URUzwWfZDmhAHtzHhYLMuya5VWeHrvRu4q8szlrEprD6Nxw4I7tE7
+         SR1Zj0zdut4rg8/XzVFVItcnJmOwGdGQrzVu/4qWQ9TWY/TXlP4cDa1QQTpN2cCxxyhC
+         J8FBqE31RLk1/+s6VTkyOB4eM751RzgzbbcoQj4LDzYCsY4bl3nRT86zkXTbj/ovv7AC
+         iwBQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702569873; x=1703174673;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=SSa6pGgyJKtkWWJBgToju2bl1vy3r2pnMsbZh5DB9Rw=;
+        b=jNfRU2XQFX7WiDVw+HvdcJP4yze+1hgtjlJXUptO22yNz5eTP1wEW/i5szwl01BVvu
+         K53YK5qjIFjSIHlGL3m+IPoqGuv94NxYOPpgjK7x8LR6HDKJ/uRsEBSwDRWJpDBKebwd
+         3b3V12AppPUTfDtJOjHPBh8ZZ/nGR95+ybwTK+1cfszd8XXrb2ofT49kbbhcXpq5M0rk
+         0MeDctdgFZAAEd9zhJVoAppqCWcCtTS6tfFmVSs2srur4IWlvhNa4juCyH64NyA+Giev
+         XgPfiQ6rMRl8dNHtvxSiaIWiFQRles4w6D57A7VGMI2rG3EPmEY2hrMuxBMHShR8sbPc
+         z4UA==
+X-Gm-Message-State: AOJu0YwxVgkokypWedf4xX4OTRTdAhX5XNIGs0p3ineeSFR1JWSJnuUk
+        S/aeiamso2DWdPHaCcLcQXwrknee0MzRlKbukZziYw==
+X-Google-Smtp-Source: AGHT+IED5SZ6xGFBDrg9Ijyz3Cz25T5pnkTh7Y3J4D3Ph83X5TDhmg/CJcC0oYf+JFNsK+/1YOVcZ7tYE3fCt9RCCE8=
+X-Received: by 2002:ad4:5906:0:b0:67e:af87:6d11 with SMTP id
+ ez6-20020ad45906000000b0067eaf876d11mr10979067qvb.128.1702569873534; Thu, 14
+ Dec 2023 08:04:33 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20231214105243.3707730-1-tudor.ambarus@linaro.org> <20231214105243.3707730-2-tudor.ambarus@linaro.org>
+In-Reply-To: <20231214105243.3707730-2-tudor.ambarus@linaro.org>
+From:   Peter Griffin <peter.griffin@linaro.org>
+Date:   Thu, 14 Dec 2023 16:04:22 +0000
+Message-ID: <CADrjBPr=j8sjG3gwRQBGjb7G+NQ6EDcxE+XixY6mT1rf06tyeA@mail.gmail.com>
+Subject: Re: [PATCH 01/13] dt-bindings: clock: google,gs101: fix CMU_TOP gate
+ clock names
+To:     Tudor Ambarus <tudor.ambarus@linaro.org>
+Cc:     robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        mturquette@baylibre.com, sboyd@kernel.org, conor+dt@kernel.org,
+        andi.shyti@kernel.org, alim.akhtar@samsung.com,
+        gregkh@linuxfoundation.org, jirislaby@kernel.org,
+        catalin.marinas@arm.com, will@kernel.org, s.nawrocki@samsung.com,
+        tomasz.figa@gmail.com, cw00.choi@samsung.com, arnd@arndb.de,
+        semen.protsenko@linaro.org, andre.draszik@linaro.org,
+        saravanak@google.com, willmcvicker@google.com,
+        linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-clk@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-i2c@vger.kernel.org, linux-serial@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Tidy code based on review feedback for final version of multi-size THP:
+Hi Tudor,
 
- - Comment added to explain alloc_anon_folio() error protocol
- - ifdefery simplified for alloc_anon_folio()
+On Thu, 14 Dec 2023 at 10:52, Tudor Ambarus <tudor.ambarus@linaro.org> wrote:
+>
+> The gs101 clock names are derived from the clock register names under
+> some certain rules. In particular, for the gate clocks the following is
+> documented and expected in the gs101 clock driver:
+>
+>   Replace CLK_CON_GAT_CLKCMU      with CLK_GOUT_CMU and gout_cmu
+>   Replace CLK_CON_GAT_GATE_CLKCMU with CLK_GOUT_CMU and gout_cmu
+>
+>   For gates remove _UID _BLK _IPCLKPORT and _RSTNSYNC
+>
+> The CMU TOP gate clock names missed to include the required "CMU"
+> differentiator which will cause name collisions with the gate clock names
+> of other clock units. Fix the TOP gate clock names and include "CMU" in
+> their name.
+>
+> Fixes: 0a910f160638 ("dt-bindings: clock: Add Google gs101 clock management unit bindings")
+> Signed-off-by: Tudor Ambarus <tudor.ambarus@linaro.org>
 
-Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
----
-Hi Andrew,
+[...]
 
-Hopefully this is the final tweak. Could you please squash this with the
-"mm: thp: Support allocation of anonymous multi-size THP" patch in mm-unstable?
+Thanks for spotting this inconsistency on the cmu_top gates and fixing it!
 
-Or if you prefer me to re-post the entire series, just let me know.
-
-Thanks,
-Ryan
-
-
- mm/memory.c | 10 ++++------
- 1 file changed, 4 insertions(+), 6 deletions(-)
-
-diff --git a/mm/memory.c b/mm/memory.c
-index 8f0b936b90b5..3c530b639559 100644
---- a/mm/memory.c
-+++ b/mm/memory.c
-@@ -4137,9 +4137,9 @@ static bool pte_range_none(pte_t *pte, int nr_pages)
- 	return true;
- }
-
--#ifdef CONFIG_TRANSPARENT_HUGEPAGE
- static struct folio *alloc_anon_folio(struct vm_fault *vmf)
- {
-+#ifdef CONFIG_TRANSPARENT_HUGEPAGE
- 	struct vm_area_struct *vma = vmf->vma;
- 	unsigned long orders;
- 	struct folio *folio;
-@@ -4199,12 +4199,9 @@ static struct folio *alloc_anon_folio(struct vm_fault *vmf)
- 	}
-
- fallback:
--	return vma_alloc_zeroed_movable_folio(vma, vmf->address);
--}
--#else
--#define alloc_anon_folio(vmf) \
--		vma_alloc_zeroed_movable_folio((vmf)->vma, (vmf)->address)
- #endif
-+	return vma_alloc_zeroed_movable_folio(vmf->vma, vmf->address);
-+}
-
- /*
-  * We enter with non-exclusive mmap_lock (to exclude vma changes,
-@@ -4260,6 +4257,7 @@ static vm_fault_t do_anonymous_page(struct vm_fault *vmf)
- 	/* Allocate our own private page. */
- 	if (unlikely(anon_vma_prepare(vma)))
- 		goto oom;
-+	/* Returns NULL on OOM or ERR_PTR(-EAGAIN) if we must retry the fault */
- 	folio = alloc_anon_folio(vmf);
- 	if (IS_ERR(folio))
- 		return 0;
---
-2.25.1
-
+Reviewed-by: Peter Griffin <peter.griffin@linaro.org>
