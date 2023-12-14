@@ -2,89 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 04443813332
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 15:33:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E5149813333
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 15:35:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1573495AbjLNOd1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 09:33:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38784 "EHLO
+        id S1573498AbjLNOfJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 09:35:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42088 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1573453AbjLNOdZ (ORCPT
+        with ESMTP id S1573453AbjLNOfH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 09:33:25 -0500
-Received: from mail2-relais-roc.national.inria.fr (mail2-relais-roc.national.inria.fr [192.134.164.83])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50FF7B7
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 06:33:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=inria.fr; s=dc;
-  h=date:from:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=ykBvY5pn5JR4ZN5c1iGVYQ+AhIwtbVMb4WlhLmTxFBY=;
-  b=jkXcNv0GNPvVjbgg8jJNErbVOk06kwf51bE5qqfvxAD8Z9wHWiBIpxR4
-   LB3X+qdsOOu/cmJGB5sKXdru+vzLXNHdouKDzvdIFGSPn4qDs9X3P7y4K
-   K9ZPjz6eGgN6x63HN9HWNo1Fc3QjfJ+n3a6P5/zkwJMatrhV3KqpwFs5Y
-   A=;
-Authentication-Results: mail2-relais-roc.national.inria.fr; dkim=none (message not signed) header.i=none; spf=SoftFail smtp.mailfrom=julia.lawall@inria.fr; dmarc=fail (p=none dis=none) d=inria.fr
-X-IronPort-AV: E=Sophos;i="6.04,275,1695679200"; 
-   d="scan'208";a="142328063"
-Received: from 231.85.89.92.rev.sfr.net (HELO hadrien) ([92.89.85.231])
-  by mail2-relais-roc.national.inria.fr with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Dec 2023 15:33:28 +0100
-Date:   Thu, 14 Dec 2023 15:33:28 +0100 (CET)
-From:   Julia Lawall <julia.lawall@inria.fr>
-X-X-Sender: jll@hadrien
-To:     Ivan Vecera <ivecera@redhat.com>
-cc:     "David S. Miller" <davem@davemloft.net>,
-        linux-kernel@vger.kernel.org
-Subject: Re: Failed to start Raise network interfaces error
-In-Reply-To: <88a7a623-ad80-406c-a63b-3136df963888@redhat.com>
-Message-ID: <alpine.DEB.2.22.394.2312141530500.3217@hadrien>
-References: <alpine.DEB.2.22.394.2312102317350.3198@hadrien> <21977757-3a63-4586-ae03-e6630c1f009d@redhat.com> <d87c79b9-d0d2-2819-030-12c7df86eb38@inria.fr> <a79a13b9-b4d1-45ba-a104-01e911631863@redhat.com> <4c707e3e-a324-a5e6-dc21-833b6d40324d@inria.fr>
- <88a7a623-ad80-406c-a63b-3136df963888@redhat.com>
-User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+        Thu, 14 Dec 2023 09:35:07 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 759D1A7;
+        Thu, 14 Dec 2023 06:35:14 -0800 (PST)
+X-IronPort-AV: E=McAfee;i="6600,9927,10924"; a="394873872"
+X-IronPort-AV: E=Sophos;i="6.04,275,1695711600"; 
+   d="scan'208";a="394873872"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Dec 2023 06:35:14 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10924"; a="918076811"
+X-IronPort-AV: E=Sophos;i="6.04,275,1695711600"; 
+   d="scan'208";a="918076811"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmsmga001.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Dec 2023 06:35:12 -0800
+Received: from andy by smile.fi.intel.com with local (Exim 4.97)
+        (envelope-from <andy@kernel.org>)
+        id 1rDmnu-00000005rsw-18w9;
+        Thu, 14 Dec 2023 16:35:10 +0200
+Date:   Thu, 14 Dec 2023 16:35:09 +0200
+From:   Andy Shevchenko <andy@kernel.org>
+To:     Bartosz Golaszewski <brgl@bgdev.pl>
+Cc:     Kent Gibson <warthog618@gmail.com>, linux-kernel@vger.kernel.org,
+        linux-gpio@vger.kernel.org, linus.walleij@linaro.org
+Subject: Re: [PATCH 1/4] gpiolib: cdev: relocate debounce_period_us from
+ struct gpio_desc
+Message-ID: <ZXsSnTcnAsopYodl@smile.fi.intel.com>
+References: <CAMRc=Mfri8K4ZqcHb_eQY6gi+q_-uBZc2wiMrrb-+a7Tric3FA@mail.gmail.com>
+ <ZXnU3tMYCc2Rw8Qv@rigel>
+ <ZXnX8jPHxRLW8lhi@smile.fi.intel.com>
+ <CAMRc=Mfj_4YvQVP=UWkULBwJniDDjapttU+qSgqfN5ZWNgikKw@mail.gmail.com>
+ <ZXnb-ks_noYLWZZ2@smile.fi.intel.com>
+ <CAMRc=MfaHKKKNkXW0L1FPjCH4VvG22Vn9q8z9tupZCtCEKZU2g@mail.gmail.com>
+ <ZXoO8B0N3S49GnvX@smile.fi.intel.com>
+ <ZXpJueTnmtUIecCd@rigel>
+ <ZXplMThBSD53UV0s@rigel>
+ <CAMRc=MeZg0xg7ASA3x4PxCYymCmCEp0zZbUgGTCCzrjPaPZCag@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAMRc=MeZg0xg7ASA3x4PxCYymCmCEp0zZbUgGTCCzrjPaPZCag@mail.gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-3.5 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_SOFTFAIL,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Dec 14, 2023 at 10:40:26AM +0100, Bartosz Golaszewski wrote:
+> On Thu, Dec 14, 2023 at 3:15 AM Kent Gibson <warthog618@gmail.com> wrote:
+> > On Thu, Dec 14, 2023 at 08:18:01AM +0800, Kent Gibson wrote:
+> > > On Wed, Dec 13, 2023 at 10:07:12PM +0200, Andy Shevchenko wrote:
+> > > > On Wed, Dec 13, 2023 at 08:03:44PM +0100, Bartosz Golaszewski wrote:
 
+...
 
-On Tue, 12 Dec 2023, Ivan Vecera wrote:
-
->
->
-> On 12. 12. 23 17:33, Julia Lawall wrote:
-> > > Look at 'systemd.net-naming-scheme' man page for details how the interface
-> > > names are composed.
-> > After booting into 6.7.0-rc4, I have the following in
-> > /etc/network/interfaces:
+> > > > > > - it adds complications for no benefit
+> > >
+> > > It provides a placeholder for collective documentation and clarifies
+> > > scope for the reader.
 > >
-> > # This file describes the network interfaces available on your system
-> > # and how to activate them. For more information, see interfaces(5).
+> > Turns out kernel-doc can't deal with a struct variable declaration - it
+> > needs the struct to be named.
 > >
-> > source/etc/network/interfaces.d/*
+> > So this doesn't parse:
 > >
-> > # The loopback network interface
-> > auto lo
-> > iface lo inet loopback
+> > static struct {
+> >         struct rb_root tree;
+> >         spinlock_t lock;
+> > } supinfo;
 > >
-> > auto enp24s0f0
-> > iface enp24s0f0 inet dhcp
->
-> Just change 'enp24s0f0' in /etc/network/interfaces to 'enp24s0f0np0'
+> > but this does:
+> >
+> > static struct supinfo {
+> >         struct rb_root tree;
+> >         spinlock_t lock;
+> > } supinfo;
+> >
+> > at which point I prefer the separate struct and var declarations as per
+> > the patch.
+> >
+> > Opinions?
+> 
+> Yeah, don't make it a kernel doc. It's a private structure, no need to
+> expose documentation for it in docs. Just use a regular comment - say
+> what it is and why it's here.
 
-Hello,
+I agree with Bart, make it plain comment if needed.
 
-I don't know if anything can be done about it, but this change introduces
-complexities.  The people who manage the cluster that I use say that the
-name of the network interface should be predictable, which is no longer
-the case because it now depends on the kernel version.
+-- 
+With Best Regards,
+Andy Shevchenko
 
-thanks,
-julia
+
