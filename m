@@ -2,413 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A179812582
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 03:50:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FDE4812586
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 03:52:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442935AbjLNCuc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 21:50:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55664 "EHLO
+        id S1442994AbjLNCwg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 21:52:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59380 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229739AbjLNCua (ORCPT
+        with ESMTP id S229725AbjLNCwf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 21:50:30 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC9EBBD;
-        Wed, 13 Dec 2023 18:50:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1702522236; x=1734058236;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=I15hJujeofSj5fxuFiA6C/A8qOOHMoj68xaDjhNImok=;
-  b=HR4+eKfoq5quv77MO2Q0bV6YMaBEdXG8/8IMgZMq86zhKTjzKrpv8iDz
-   lsDIE+6puofHtQO2/+oOk62vB3mF+QfISMCU4JLggdItGGQWuRxlqCXC9
-   wnxyS6PDEFoR+0uZ5SJjuSed7/022+LI8iO3hJ4sBAe2jktj7seokqdjQ
-   QsmO2vkJzNFnI9B98jgO1geLG/51421552AWyS7mA/4pp6n7Lqelwx06J
-   p+loGoMAftiwVeK4+v87HwNfuU0U/u44DKTA2tnTt9ly+QwpvaHzSQva4
-   PrV48fhSO1xZsKoVyf6OQROxne4L64BxJRalR12gkb5EYymjktbgu1zjX
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10923"; a="2231264"
-X-IronPort-AV: E=Sophos;i="6.04,274,1695711600"; 
-   d="scan'208";a="2231264"
-Received: from orviesa001.jf.intel.com ([10.64.159.141])
-  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Dec 2023 18:50:35 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.04,274,1695711600"; 
-   d="scan'208";a="22215947"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by orviesa001.jf.intel.com with ESMTP; 13 Dec 2023 18:50:33 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1rDbnx-000LSd-1Y;
-        Thu, 14 Dec 2023 02:50:29 +0000
-Date:   Thu, 14 Dec 2023 10:50:19 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Akhil R <akhilrajeev@nvidia.com>, herbert@gondor.apana.org.au,
-        davem@davemloft.net, linux-crypto@vger.kernel.org,
-        linux-kernel@vger.kernel.org, thierry.reding@gmail.com,
-        jonathanh@nvidia.com, linux-tegra@vger.kernel.org
-Cc:     oe-kbuild-all@lists.linux.dev, Akhil R <akhilrajeev@nvidia.com>
-Subject: Re: [PATCH 3/5] crypto: tegra: Add Tegra Security Engine driver
-Message-ID: <202312141027.GVOE05ds-lkp@intel.com>
-References: <20231213122030.11734-4-akhilrajeev@nvidia.com>
+        Wed, 13 Dec 2023 21:52:35 -0500
+Received: from m1383.mail.163.com (m1383.mail.163.com [220.181.13.83])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id EDBDFCF;
+        Wed, 13 Dec 2023 18:52:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=Date:From:Subject:Content-Type:MIME-Version:
+        Message-ID; bh=xV7Vx8tS0tyyHXVfhUmHe11vUeyW+o711irs3ufCGBo=; b=a
+        Ktx/JTJmzrUn+k1af5pafI4jKaMB6NT6oq+g59e6ScGhXnGZyTfWbADdEe7lWQZa
+        Iz1REOfMqRxaWutF044zQt5nOKznzFiC+zKAv7rjdPtl4XKBPlUko26p//McMLXL
+        y94HGKqf5+AEWAaE1xzoRWXtmlcoymLAGmyWUyRajo=
+Received: from andyshrk$163.com ( [58.22.7.114] ) by ajax-webmail-wmsvr83
+ (Coremail) ; Thu, 14 Dec 2023 10:51:17 +0800 (CST)
+X-Originating-IP: [58.22.7.114]
+Date:   Thu, 14 Dec 2023 10:51:17 +0800 (CST)
+From:   "Andy Yan" <andyshrk@163.com>
+To:     "Keith Zhao" <keith.zhao@starfivetech.com>
+Cc:     "Maxime Ripard" <mripard@kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
+        "tzimmermann@suse.de" <tzimmermann@suse.de>,
+        "airlied@gmail.com" <airlied@gmail.com>,
+        "krzysztof.kozlowski+dt@linaro.org" 
+        <krzysztof.kozlowski+dt@linaro.org>,
+        "William Qiu" <william.qiu@starfivetech.com>,
+        "Xingyu Wu" <xingyu.wu@starfivetech.com>,
+        "paul.walmsley@sifive.com" <paul.walmsley@sifive.com>,
+        "aou@eecs.berkeley.edu" <aou@eecs.berkeley.edu>,
+        "palmer@dabbelt.com" <palmer@dabbelt.com>,
+        "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>,
+        "Shengyang Chen" <shengyang.chen@starfivetech.com>,
+        "Jack Zhu" <jack.zhu@starfivetech.com>,
+        "Changhuang Liang" <changhuang.liang@starfivetech.com>,
+        "maarten.lankhorst@linux.intel.com" 
+        <maarten.lankhorst@linux.intel.com>,
+        "suijingfeng@loongson.cn" <suijingfeng@loongson.cn>
+Subject: Re:Re: [v3 5/6] drm/vs: Add hdmi driver
+X-Priority: 3
+X-Mailer: Coremail Webmail Server Version XT5.0.14 build 20230109(dcb5de15)
+ Copyright (c) 2002-2023 www.mailtech.cn 163com
+In-Reply-To: <10e2ab3c-950f-4a1c-8806-74e5bba2c24a@starfivetech.com>
+References: <20231204123315.28456-6-keith.zhao@starfivetech.com>
+ <esetsiqgqpk35zue4c6aq7l6zn4kezhxkqqa7ompaz2vhdy3lr@4d5awfqgs2ss>
+ <94a1f9fc-82fb-4a04-a44b-f9b20c2bdfdd@starfivetech.com>
+ <abdl6kmighvpwojvafq443q7grn6w3abwpvw7zwbna4jvtsvjf@fa42rv46n2wh>
+ <40cdd3c7-174e-4611-9ea6-22cb56d1f62b@starfivetech.com>
+ <e90142d.44b1.18c43833b63.Coremail.andyshrk@163.com>
+ <e0b84511-dbb4-46fa-9465-713369232f6f@starfivetech.com>
+ <43e42269.314.18c46dbb4c5.Coremail.andyshrk@163.com>
+ <e1c362dc-8aac-4d13-9356-8b7ccae4727f@starfivetech.com>
+ <5a79a4b9.1bd7.18c4773c1ea.Coremail.andyshrk@163.com>
+ <xevxqusbizjfs4qt5rufhntd3vd656o2smocvivvulzceh3aeu@uuihphhat5wi>
+ <2dc5ea49-9a5f-484a-98dc-1b35b79d0945@starfivetech.com>
+ <6f7acc9d.5648.18c58cba9be.Coremail.andyshrk@163.com>
+ <10e2ab3c-950f-4a1c-8806-74e5bba2c24a@starfivetech.com>
+X-NTES-SC: AL_Qu2bAPmZvUos4SCaYOkXn0kXhec2W8Czvvgg34JRP5k0iirk3SMSXlxhE0v68fyvKR+9kzubTzpfw/hgfJt2Ub7ginXnRdpaOux4AXV3G4xX
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=UTF-8
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231213122030.11734-4-akhilrajeev@nvidia.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Message-ID: <178ec98c.140b.18c663c4ca3.Coremail.andyshrk@163.com>
+X-Coremail-Locale: zh_CN
+X-CM-TRANSID: U8GowADnL4ylbXplzy0uAA--.21822W
+X-CM-SenderInfo: 5dqg52xkunqiywtou0bp/1tbiqARGXmVOA8NfdwACs1
+X-Coremail-Antispam: 1U5529EdanIXcx71UUUUU7vcSsGvfC2KfnxnUU==
+X-Spam-Status: No, score=-0.2 required=5.0 tests=BAYES_00,DKIM_INVALID,
+        DKIM_SIGNED,FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_SORBS_WEB,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Akhil,
-
-kernel test robot noticed the following build errors:
-
-[auto build test ERROR on herbert-cryptodev-2.6/master]
-[also build test ERROR on drm/drm-next arm64/for-next/core robh/for-next linus/master v6.7-rc5 next-20231213]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Akhil-R/dt-bindings-crypto-Add-Tegra-SE-DT-binding-doc/20231213-202407
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/herbert/cryptodev-2.6.git master
-patch link:    https://lore.kernel.org/r/20231213122030.11734-4-akhilrajeev%40nvidia.com
-patch subject: [PATCH 3/5] crypto: tegra: Add Tegra Security Engine driver
-config: hexagon-randconfig-r071-20231214 (https://download.01.org/0day-ci/archive/20231214/202312141027.GVOE05ds-lkp@intel.com/config)
-compiler: clang version 14.0.6 (https://github.com/llvm/llvm-project.git f28c006a5895fc0e329fe15fead81e37457cb1d1)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231214/202312141027.GVOE05ds-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202312141027.GVOE05ds-lkp@intel.com/
-
-All errors (new ones prefixed by >>):
-
-   In file included from drivers/crypto/tegra/tegra-se-key.c:11:
-   In file included from drivers/crypto/tegra/tegra-se.h:10:
-   In file included from include/linux/iommu.h:10:
-   In file included from include/linux/scatterlist.h:9:
-   In file included from arch/hexagon/include/asm/io.h:337:
-   include/asm-generic/io.h:547:31: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-           val = __raw_readb(PCI_IOBASE + addr);
-                             ~~~~~~~~~~ ^
-   include/asm-generic/io.h:560:61: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-           val = __le16_to_cpu((__le16 __force)__raw_readw(PCI_IOBASE + addr));
-                                                           ~~~~~~~~~~ ^
-   include/uapi/linux/byteorder/little_endian.h:37:51: note: expanded from macro '__le16_to_cpu'
-   #define __le16_to_cpu(x) ((__force __u16)(__le16)(x))
-                                                     ^
-   In file included from drivers/crypto/tegra/tegra-se-key.c:11:
-   In file included from drivers/crypto/tegra/tegra-se.h:10:
-   In file included from include/linux/iommu.h:10:
-   In file included from include/linux/scatterlist.h:9:
-   In file included from arch/hexagon/include/asm/io.h:337:
-   include/asm-generic/io.h:573:61: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-           val = __le32_to_cpu((__le32 __force)__raw_readl(PCI_IOBASE + addr));
-                                                           ~~~~~~~~~~ ^
-   include/uapi/linux/byteorder/little_endian.h:35:51: note: expanded from macro '__le32_to_cpu'
-   #define __le32_to_cpu(x) ((__force __u32)(__le32)(x))
-                                                     ^
-   In file included from drivers/crypto/tegra/tegra-se-key.c:11:
-   In file included from drivers/crypto/tegra/tegra-se.h:10:
-   In file included from include/linux/iommu.h:10:
-   In file included from include/linux/scatterlist.h:9:
-   In file included from arch/hexagon/include/asm/io.h:337:
-   include/asm-generic/io.h:584:33: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-           __raw_writeb(value, PCI_IOBASE + addr);
-                               ~~~~~~~~~~ ^
-   include/asm-generic/io.h:594:59: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-           __raw_writew((u16 __force)cpu_to_le16(value), PCI_IOBASE + addr);
-                                                         ~~~~~~~~~~ ^
-   include/asm-generic/io.h:604:59: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-           __raw_writel((u32 __force)cpu_to_le32(value), PCI_IOBASE + addr);
-                                                         ~~~~~~~~~~ ^
->> drivers/crypto/tegra/tegra-se-key.c:57:18: error: implicit declaration of function 'FIELD_PREP' is invalid in C99 [-Werror,-Wimplicit-function-declaration]
-           cpuvaddr[i++] = SE_AES_OP_WRSTALL | SE_AES_OP_DUMMY;
-                           ^
-   drivers/crypto/tegra/tegra-se.h:202:30: note: expanded from macro 'SE_AES_OP_WRSTALL'
-   #define SE_AES_OP_WRSTALL                               FIELD_PREP(BIT(15), 1)
-                                                           ^
-   6 warnings and 1 error generated.
---
-   In file included from drivers/crypto/tegra/tegra-se-aes.c:8:
-   In file included from include/linux/dma-mapping.h:11:
-   In file included from include/linux/scatterlist.h:9:
-   In file included from arch/hexagon/include/asm/io.h:337:
-   include/asm-generic/io.h:547:31: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-           val = __raw_readb(PCI_IOBASE + addr);
-                             ~~~~~~~~~~ ^
-   include/asm-generic/io.h:560:61: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-           val = __le16_to_cpu((__le16 __force)__raw_readw(PCI_IOBASE + addr));
-                                                           ~~~~~~~~~~ ^
-   include/uapi/linux/byteorder/little_endian.h:37:51: note: expanded from macro '__le16_to_cpu'
-   #define __le16_to_cpu(x) ((__force __u16)(__le16)(x))
-                                                     ^
-   In file included from drivers/crypto/tegra/tegra-se-aes.c:8:
-   In file included from include/linux/dma-mapping.h:11:
-   In file included from include/linux/scatterlist.h:9:
-   In file included from arch/hexagon/include/asm/io.h:337:
-   include/asm-generic/io.h:573:61: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-           val = __le32_to_cpu((__le32 __force)__raw_readl(PCI_IOBASE + addr));
-                                                           ~~~~~~~~~~ ^
-   include/uapi/linux/byteorder/little_endian.h:35:51: note: expanded from macro '__le32_to_cpu'
-   #define __le32_to_cpu(x) ((__force __u32)(__le32)(x))
-                                                     ^
-   In file included from drivers/crypto/tegra/tegra-se-aes.c:8:
-   In file included from include/linux/dma-mapping.h:11:
-   In file included from include/linux/scatterlist.h:9:
-   In file included from arch/hexagon/include/asm/io.h:337:
-   include/asm-generic/io.h:584:33: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-           __raw_writeb(value, PCI_IOBASE + addr);
-                               ~~~~~~~~~~ ^
-   include/asm-generic/io.h:594:59: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-           __raw_writew((u16 __force)cpu_to_le16(value), PCI_IOBASE + addr);
-                                                         ~~~~~~~~~~ ^
-   include/asm-generic/io.h:604:59: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-           __raw_writel((u32 __force)cpu_to_le32(value), PCI_IOBASE + addr);
-                                                         ~~~~~~~~~~ ^
->> drivers/crypto/tegra/tegra-se-aes.c:136:11: error: implicit declaration of function 'FIELD_PREP' is invalid in C99 [-Werror,-Wimplicit-function-declaration]
-                           return SE_CRYPTO_CFG_CBC_ENCRYPT;
-                                  ^
-   drivers/crypto/tegra/tegra-se.h:293:38: note: expanded from macro 'SE_CRYPTO_CFG_CBC_ENCRYPT'
-   #define SE_CRYPTO_CFG_CBC_ENCRYPT                       (SE_AES_INPUT_SEL_MEMORY | \
-                                                            ^
-   drivers/crypto/tegra/tegra-se.h:182:36: note: expanded from macro 'SE_AES_INPUT_SEL_MEMORY'
-   #define SE_AES_INPUT_SEL_MEMORY                         SE_AES_CRYPTO_CFG_INPUT_SEL(0)
-                                                           ^
-   drivers/crypto/tegra/tegra-se.h:181:42: note: expanded from macro 'SE_AES_CRYPTO_CFG_INPUT_SEL'
-   #define SE_AES_CRYPTO_CFG_INPUT_SEL(x)                  FIELD_PREP(GENMASK(4, 3), x)
-                                                           ^
-   drivers/crypto/tegra/tegra-se-aes.c:173:11: error: implicit declaration of function 'FIELD_PREP' is invalid in C99 [-Werror,-Wimplicit-function-declaration]
-                           return SE_CFG_AES_ENCRYPT;
-                                  ^
-   drivers/crypto/tegra/tegra-se.h:237:32: note: expanded from macro 'SE_CFG_AES_ENCRYPT'
-   #define SE_CFG_AES_ENCRYPT                              (SE_AES_ENC_ALG_AES_ENC | \
-                                                            ^
-   drivers/crypto/tegra/tegra-se.h:137:35: note: expanded from macro 'SE_AES_ENC_ALG_AES_ENC'
-   #define SE_AES_ENC_ALG_AES_ENC                          SE_AES_CFG_ENC_ALG(1)
-                                                           ^
-   drivers/crypto/tegra/tegra-se.h:135:34: note: expanded from macro 'SE_AES_CFG_ENC_ALG'
-   #define SE_AES_CFG_ENC_ALG(x)                           FIELD_PREP(GENMASK(15, 12), x)
-                                                           ^
-   drivers/crypto/tegra/tegra-se-aes.c:228:18: error: implicit declaration of function 'FIELD_PREP' is invalid in C99 [-Werror,-Wimplicit-function-declaration]
-           cpuvaddr[i++] = SE_ADDR_HI_MSB(upper_32_bits(addr)) | SE_ADDR_HI_SZ(rctx->len);
-                           ^
-   drivers/crypto/tegra/tegra-se.h:234:30: note: expanded from macro 'SE_ADDR_HI_MSB'
-   #define SE_ADDR_HI_MSB(x)                               FIELD_PREP(GENMASK(31, 24), x)
-                                                           ^
-   drivers/crypto/tegra/tegra-se-aes.c:373:13: error: implicit declaration of function 'FIELD_PREP' is invalid in C99 [-Werror,-Wimplicit-function-declaration]
-           manifest = SE_KAC_USER_NS;
-                      ^
-   drivers/crypto/tegra/tegra-se.h:231:28: note: expanded from macro 'SE_KAC_USER_NS'
-   #define SE_KAC_USER_NS                                  FIELD_PREP(GENMASK(6, 4), 3)
-                                                           ^
-   drivers/crypto/tegra/tegra-se-aes.c:426:25: error: implicit declaration of function 'FIELD_PREP' is invalid in C99 [-Werror,-Wimplicit-function-declaration]
-           rctx->crypto_config |= SE_AES_KEY_INDEX(ctx->key1_id);
-                                  ^
-   drivers/crypto/tegra/tegra-se.h:156:32: note: expanded from macro 'SE_AES_KEY_INDEX'
-   #define SE_AES_KEY_INDEX(x)                             FIELD_PREP(GENMASK(27, 24), x)
-                                                           ^
-   drivers/crypto/tegra/tegra-se-aes.c:445:25: error: implicit declaration of function 'FIELD_PREP' is invalid in C99 [-Werror,-Wimplicit-function-declaration]
-           rctx->crypto_config |= SE_AES_KEY_INDEX(ctx->key1_id);
-                                  ^
-   drivers/crypto/tegra/tegra-se.h:156:32: note: expanded from macro 'SE_AES_KEY_INDEX'
-   #define SE_AES_KEY_INDEX(x)                             FIELD_PREP(GENMASK(27, 24), x)
-                                                           ^
-   drivers/crypto/tegra/tegra-se-aes.c:585:18: error: implicit declaration of function 'FIELD_PREP' is invalid in C99 [-Werror,-Wimplicit-function-declaration]
-           cpuvaddr[i++] = SE_LAST_BLOCK_VAL(data_count) |
-                           ^
-   drivers/crypto/tegra/tegra-se.h:198:33: note: expanded from macro 'SE_LAST_BLOCK_VAL'
-   #define SE_LAST_BLOCK_VAL(x)                            FIELD_PREP(GENMASK(19, 0), x)
-                                                           ^
-   drivers/crypto/tegra/tegra-se-aes.c:616:7: error: implicit declaration of function 'FIELD_PREP' is invalid in C99 [-Werror,-Wimplicit-function-declaration]
-           op = SE_AES_OP_WRSTALL | SE_AES_OP_FINAL |
-                ^
-   drivers/crypto/tegra/tegra-se.h:202:30: note: expanded from macro 'SE_AES_OP_WRSTALL'
-   #define SE_AES_OP_WRSTALL                               FIELD_PREP(BIT(15), 1)
-                                                           ^
-   drivers/crypto/tegra/tegra-se-aes.c:673:7: error: implicit declaration of function 'FIELD_PREP' is invalid in C99 [-Werror,-Wimplicit-function-declaration]
-           op = SE_AES_OP_WRSTALL | SE_AES_OP_FINAL |
-                ^
-   drivers/crypto/tegra/tegra-se.h:202:30: note: expanded from macro 'SE_AES_OP_WRSTALL'
-   #define SE_AES_OP_WRSTALL                               FIELD_PREP(BIT(15), 1)
-                                                           ^
-   drivers/crypto/tegra/tegra-se-aes.c:728:10: error: implicit declaration of function 'FIELD_PREP' is invalid in C99 [-Werror,-Wimplicit-function-declaration]
-                                 SE_AES_KEY_INDEX(ctx->key_id);
-                                 ^
-   drivers/crypto/tegra/tegra-se.h:156:32: note: expanded from macro 'SE_AES_KEY_INDEX'
-   #define SE_AES_KEY_INDEX(x)                             FIELD_PREP(GENMASK(27, 24), x)
-                                                           ^
-   drivers/crypto/tegra/tegra-se-aes.c:745:10: error: implicit declaration of function 'FIELD_PREP' is invalid in C99 [-Werror,-Wimplicit-function-declaration]
-                                 SE_AES_KEY_INDEX(ctx->key_id);
-                                 ^
-   drivers/crypto/tegra/tegra-se.h:156:32: note: expanded from macro 'SE_AES_KEY_INDEX'
-   #define SE_AES_KEY_INDEX(x)                             FIELD_PREP(GENMASK(27, 24), x)
-                                                           ^
-   drivers/crypto/tegra/tegra-se-aes.c:768:10: error: implicit declaration of function 'FIELD_PREP' is invalid in C99 [-Werror,-Wimplicit-function-declaration]
-                                 SE_AES_KEY_INDEX(ctx->key_id);
-                                 ^
-   drivers/crypto/tegra/tegra-se.h:156:32: note: expanded from macro 'SE_AES_KEY_INDEX'
-   #define SE_AES_KEY_INDEX(x)                             FIELD_PREP(GENMASK(27, 24), x)
-                                                           ^
-   drivers/crypto/tegra/tegra-se-aes.c:824:18: error: implicit declaration of function 'FIELD_PREP' is invalid in C99 [-Werror,-Wimplicit-function-declaration]
-           cpuvaddr[i++] = SE_LAST_BLOCK_VAL(data_count);
-                           ^
-   drivers/crypto/tegra/tegra-se.h:198:33: note: expanded from macro 'SE_LAST_BLOCK_VAL'
-   #define SE_LAST_BLOCK_VAL(x)                            FIELD_PREP(GENMASK(19, 0), x)
-                                                           ^
-   drivers/crypto/tegra/tegra-se-aes.c:869:18: error: implicit declaration of function 'FIELD_PREP' is invalid in C99 [-Werror,-Wimplicit-function-declaration]
-           cpuvaddr[i++] = SE_ADDR_HI_MSB(upper_32_bits(rctx->inbuf.addr)) |
-                           ^
-   drivers/crypto/tegra/tegra-se.h:234:30: note: expanded from macro 'SE_ADDR_HI_MSB'
-   #define SE_ADDR_HI_MSB(x)                               FIELD_PREP(GENMASK(31, 24), x)
-                                                           ^
-   drivers/crypto/tegra/tegra-se-aes.c:899:13: error: implicit declaration of function 'FIELD_PREP' is invalid in C99 [-Werror,-Wimplicit-function-declaration]
-                                                         SE_AES_KEY_INDEX(ctx->key_id);
-                                                         ^
-   drivers/crypto/tegra/tegra-se.h:156:32: note: expanded from macro 'SE_AES_KEY_INDEX'
-   #define SE_AES_KEY_INDEX(x)                             FIELD_PREP(GENMASK(27, 24), x)
---
-   In file included from drivers/crypto/tegra/tegra-se-hash.c:8:
-   In file included from include/linux/dma-mapping.h:11:
-   In file included from include/linux/scatterlist.h:9:
-   In file included from arch/hexagon/include/asm/io.h:337:
-   include/asm-generic/io.h:547:31: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-           val = __raw_readb(PCI_IOBASE + addr);
-                             ~~~~~~~~~~ ^
-   include/asm-generic/io.h:560:61: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-           val = __le16_to_cpu((__le16 __force)__raw_readw(PCI_IOBASE + addr));
-                                                           ~~~~~~~~~~ ^
-   include/uapi/linux/byteorder/little_endian.h:37:51: note: expanded from macro '__le16_to_cpu'
-   #define __le16_to_cpu(x) ((__force __u16)(__le16)(x))
-                                                     ^
-   In file included from drivers/crypto/tegra/tegra-se-hash.c:8:
-   In file included from include/linux/dma-mapping.h:11:
-   In file included from include/linux/scatterlist.h:9:
-   In file included from arch/hexagon/include/asm/io.h:337:
-   include/asm-generic/io.h:573:61: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-           val = __le32_to_cpu((__le32 __force)__raw_readl(PCI_IOBASE + addr));
-                                                           ~~~~~~~~~~ ^
-   include/uapi/linux/byteorder/little_endian.h:35:51: note: expanded from macro '__le32_to_cpu'
-   #define __le32_to_cpu(x) ((__force __u32)(__le32)(x))
-                                                     ^
-   In file included from drivers/crypto/tegra/tegra-se-hash.c:8:
-   In file included from include/linux/dma-mapping.h:11:
-   In file included from include/linux/scatterlist.h:9:
-   In file included from arch/hexagon/include/asm/io.h:337:
-   include/asm-generic/io.h:584:33: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-           __raw_writeb(value, PCI_IOBASE + addr);
-                               ~~~~~~~~~~ ^
-   include/asm-generic/io.h:594:59: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-           __raw_writew((u16 __force)cpu_to_le16(value), PCI_IOBASE + addr);
-                                                         ~~~~~~~~~~ ^
-   include/asm-generic/io.h:604:59: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-           __raw_writel((u32 __force)cpu_to_le32(value), PCI_IOBASE + addr);
-                                                         ~~~~~~~~~~ ^
->> drivers/crypto/tegra/tegra-se-hash.c:53:10: error: implicit declaration of function 'FIELD_PREP' is invalid in C99 [-Werror,-Wimplicit-function-declaration]
-                   cfg |= SE_SHA_ENC_ALG_SHA;
-                          ^
-   drivers/crypto/tegra/tegra-se.h:59:31: note: expanded from macro 'SE_SHA_ENC_ALG_SHA'
-   #define SE_SHA_ENC_ALG_SHA                              SE_SHA_CFG_ENC_ALG(3)
-                                                           ^
-   drivers/crypto/tegra/tegra-se.h:55:34: note: expanded from macro 'SE_SHA_CFG_ENC_ALG'
-   #define SE_SHA_CFG_ENC_ALG(x)                           FIELD_PREP(GENMASK(15, 12), x)
-                                                           ^
-   drivers/crypto/tegra/tegra-se-hash.c:256:24: error: implicit declaration of function 'FIELD_PREP' is invalid in C99 [-Werror,-Wimplicit-function-declaration]
-           cpuvaddr[i++] = (u32)(SE_ADDR_HI_MSB(upper_32_bits(rctx->datbuf.addr)) |
-                                 ^
-   drivers/crypto/tegra/tegra-se.h:234:30: note: expanded from macro 'SE_ADDR_HI_MSB'
-   #define SE_ADDR_HI_MSB(x)                               FIELD_PREP(GENMASK(31, 24), x)
-                                                           ^
-   drivers/crypto/tegra/tegra-se-hash.c:331:4: error: implicit declaration of function 'FIELD_PREP' is invalid in C99 [-Werror,-Wimplicit-function-declaration]
-                           SE_SHA_DST_HASH_REG;
-                           ^
-   drivers/crypto/tegra/tegra-se.h:85:32: note: expanded from macro 'SE_SHA_DST_HASH_REG'
-   #define SE_SHA_DST_HASH_REG                             SE_SHA_CFG_DST(1)
-                                                           ^
-   drivers/crypto/tegra/tegra-se.h:83:30: note: expanded from macro 'SE_SHA_CFG_DST'
-   #define SE_SHA_CFG_DST(x)                               FIELD_PREP(GENMASK(4, 2), x)
-                                                           ^
-   drivers/crypto/tegra/tegra-se-hash.c:352:10: error: implicit declaration of function 'FIELD_PREP' is invalid in C99 [-Werror,-Wimplicit-function-declaration]
-                          SE_SHA_DST_MEMORY;
-                          ^
-   drivers/crypto/tegra/tegra-se.h:84:30: note: expanded from macro 'SE_SHA_DST_MEMORY'
-   #define SE_SHA_DST_MEMORY                               SE_SHA_CFG_DST(0)
-                                                           ^
-   drivers/crypto/tegra/tegra-se.h:83:30: note: expanded from macro 'SE_SHA_CFG_DST'
-   #define SE_SHA_CFG_DST(x)                               FIELD_PREP(GENMASK(4, 2), x)
-                                                           ^
-   drivers/crypto/tegra/tegra-se-hash.c:457:14: warning: variable 'algname' set but not used [-Wunused-but-set-variable]
-           const char *algname;
-                       ^
-   drivers/crypto/tegra/tegra-se-hash.c:961:13: error: implicit declaration of function 'FIELD_PREP' is invalid in C99 [-Werror,-Wimplicit-function-declaration]
-           manifest = SE_KAC_USER_NS;
-                      ^
-   drivers/crypto/tegra/tegra-se.h:231:28: note: expanded from macro 'SE_KAC_USER_NS'
-   #define SE_KAC_USER_NS                                  FIELD_PREP(GENMASK(6, 4), 3)
-                                                           ^
-   7 warnings and 5 errors generated.
-
-
-vim +/FIELD_PREP +57 drivers/crypto/tegra/tegra-se-key.c
-
-    49	
-    50	static unsigned int tegra_key_prep_ins_cmd(struct tegra_se *se, u32 *cpuvaddr,
-    51						   const u32 *key, u32 keylen, u16 slot, u32 alg)
-    52	{
-    53		int i = 0, j;
-    54	
-    55		cpuvaddr[i++] = host1x_opcode_setpayload(1);
-    56		cpuvaddr[i++] = se_host1x_opcode_incr_w(se->hw->regs->op);
-  > 57		cpuvaddr[i++] = SE_AES_OP_WRSTALL | SE_AES_OP_DUMMY;
-    58	
-    59		cpuvaddr[i++] = host1x_opcode_setpayload(1);
-    60		cpuvaddr[i++] = se_host1x_opcode_incr_w(se->hw->regs->manifest);
-    61		cpuvaddr[i++] = se->manifest(se->owner, alg, keylen);
-    62		cpuvaddr[i++] = host1x_opcode_setpayload(1);
-    63		cpuvaddr[i++] = se_host1x_opcode_incr_w(se->hw->regs->key_dst);
-    64	
-    65		cpuvaddr[i++] = SE_AES_KEY_DST_INDEX(slot);
-    66	
-    67		for (j = 0; j < keylen / 4; j++) {
-    68			/* Set key address */
-    69			cpuvaddr[i++] = host1x_opcode_setpayload(1);
-    70			cpuvaddr[i++] = se_host1x_opcode_incr_w(se->hw->regs->key_addr);
-    71			cpuvaddr[i++] = j;
-    72	
-    73			/* Set key data */
-    74			cpuvaddr[i++] = host1x_opcode_setpayload(1);
-    75			cpuvaddr[i++] = se_host1x_opcode_incr_w(se->hw->regs->key_data);
-    76			cpuvaddr[i++] = key[j];
-    77		}
-    78	
-    79		cpuvaddr[i++] = host1x_opcode_setpayload(1);
-    80		cpuvaddr[i++] = se_host1x_opcode_incr_w(se->hw->regs->config);
-    81		cpuvaddr[i++] = SE_CFG_INS;
-    82	
-    83		cpuvaddr[i++] = host1x_opcode_setpayload(1);
-    84		cpuvaddr[i++] = se_host1x_opcode_incr_w(se->hw->regs->op);
-    85		cpuvaddr[i++] = SE_AES_OP_WRSTALL | SE_AES_OP_START |
-    86				SE_AES_OP_LASTBUF;
-    87	
-    88		cpuvaddr[i++] = se_host1x_opcode_nonincr(host1x_uclass_incr_syncpt_r(), 1);
-    89		cpuvaddr[i++] = host1x_uclass_incr_syncpt_cond_f(1) |
-    90				host1x_uclass_incr_syncpt_indx_f(se->syncpt_id);
-    91	
-    92		dev_dbg(se->dev, "key-slot %u key-manifest %#x\n",
-    93			slot, se->manifest(se->owner, alg, keylen));
-    94	
-    95		return i;
-    96	}
-    97	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+CkhpIEtlaXRoOgoK5ZyoIDIwMjMtMTItMTMgMDk6NDA6MzHvvIwiS2VpdGggWmhhbyIgPGtlaXRo
+LnpoYW9Ac3RhcmZpdmV0ZWNoLmNvbT4g5YaZ6YGT77yaCj4KPgo+T24gMjAyMy8xMi8xMSAyMDox
+MywgQW5keSBZYW4gd3JvdGU6Cj4+IEhpIEtlaXRo77yaCj4+IAo+PiDlnKggMjAyMy0xMi0xMSAx
+ODoyNDozNe+8jCJLZWl0aCBaaGFvIiA8a2VpdGguemhhb0BzdGFyZml2ZXRlY2guY29tPiDlhpnp
+gZPvvJoKPj4+aGkgTWF4aW1lOgo+Pj5oaSBBbmR5Ogo+Pj4KPj4+T24gMjAyMy8xMi84IDE3OjE0
+LCBNYXhpbWUgUmlwYXJkIHdyb3RlOgo+Pj4+IEhpLAo+Pj4+IAo+Pj4+IE9uIEZyaSwgRGVjIDA4
+LCAyMDIzIGF0IDExOjIzOjM3QU0gKzA4MDAsIEFuZHkgWWFuIHdyb3RlOgo+Pj4+PiDlnKggMjAy
+My0xMi0wOCAxMTowMDozMe+8jCJLZWl0aCBaaGFvIiA8a2VpdGguemhhb0BzdGFyZml2ZXRlY2gu
+Y29tPiDlhpnpgZPvvJoKPj4+Pj4gPgo+Pj4+PiA+Cj4+Pj4+ID5PbiAyMDIzLzEyLzggODozNywg
+QW5keSBZYW4gd3JvdGU6Cj4+Pj4+ID4+IEhpIEtldGjvvJoKPj4+Pj4gPj4gCj4+Pj4+ID4+IAo+
+Pj4+PiA+PiAKPj4+Pj4gPj4gCj4+Pj4+ID4+IAo+Pj4+PiA+PiAKPj4+Pj4gPj4g5ZyoIDIwMjMt
+MTItMDcgMTg6NDg6MTPvvIwiS2VpdGggWmhhbyIgPGtlaXRoLnpoYW9Ac3RhcmZpdmV0ZWNoLmNv
+bT4g5YaZ6YGT77yaCj4+Pj4+ID4+Pgo+Pj4+PiA+Pj4KPj4+Pj4gPj4+T24gMjAyMy8xMi83IDE3
+OjAyLCBBbmR5IFlhbiB3cm90ZToKPj4+Pj4gPj4+PiAKPj4+Pj4gPj4+PiAKPj4+Pj4gPj4+PiAK
+Pj4+Pj4gPj4+PiAKPj4+Pj4gPj4+PiBIaSBLZWl0aO+8mgo+Pj4+PiA+Pj4+IAo+Pj4+PiA+Pj4+
+IAo+Pj4+PiA+Pj4+IAo+Pj4+PiA+Pj4+IAo+Pj4+PiA+Pj4+IAo+Pj4+PiA+Pj4+IAo+Pj4+PiA+
+Pj4+IAo+Pj4+PiA+Pj4+IAo+Pj4+PiA+Pj4+IAo+Pj4+PiA+Pj4+IAo+Pj4+PiA+Pj4+IAo+Pj4+
+PiA+Pj4+IEF0IDIwMjMtMTItMDYgMjI6MTE6MzMsICJLZWl0aCBaaGFvIiA8a2VpdGguemhhb0Bz
+dGFyZml2ZXRlY2guY29tPiB3cm90ZToKPj4+Pj4gPj4+Pj4KPj4+Pj4gPj4+Pj4KPj4+Pj4gPj4+
+Pj5PbiAyMDIzLzEyLzYgMjA6NTYsIE1heGltZSBSaXBhcmQgd3JvdGU6Cj4+Pj4+ID4+Pj4+PiBP
+biBXZWQsIERlYyAwNiwgMjAyMyBhdCAwODowMjo1NVBNICswODAwLCBLZWl0aCBaaGFvIHdyb3Rl
+Ogo+Pj4+PiA+Pj4+Pj4+ID4+ICtzdGF0aWMgY29uc3Qgc3RydWN0IG9mX2RldmljZV9pZCBzdGFy
+Zml2ZV9oZG1pX2R0X2lkc1tdID0gewo+Pj4+PiA+Pj4+Pj4+ID4+ICsJeyAuY29tcGF0aWJsZSA9
+ICJzdGFyZml2ZSxqaDcxMTAtaW5uby1oZG1pIix9LAo+Pj4+PiA+Pj4+Pj4+ID4gCj4+Pj4+ID4+
+Pj4+Pj4gPiBTbyBpdCdzIGlubm8gaGRtaSwganVzdCBsaWtlIFJvY2tjaGlwIHRoZW4/Cj4+Pj4+
+ID4+Pj4+Pj4gPiAKPj4+Pj4gPj4+Pj4+PiA+IFRoaXMgc2hvdWxkIGJlIGEgY29tbW9uIGRyaXZl
+ci4KPj4+Pj4gPj4+Pj4+Pgo+Pj4+PiA+Pj4+Pj4+IFJvY2tjaGlwIGhhcyBhIGlubm8gaGRtaSBJ
+UC4gYW5kIFN0YXJmaXZlIGhhcyBhIGlubm8gaGRtaSBJUC4KPj4+Pj4gPj4+Pj4+PiBidXQgdGhl
+IGhhcmV3YXdyZSBkaWZmZXJlbmNlIG9mIHRoZW0gaXMgYmlnICwgaXQgaXMgbm90IGVhc3kgdG8g
+dXNlIHRoZSBjb21tb24gZHJpdmVyCj4+Pj4+ID4+Pj4+Pj4gbWF5YmUgaSBuZWVkIHRoZSBpbm5v
+IGhkbWkgdmVyc2lvbiBoZXJlIHRvIG1ha2UgYSBkaXN0aW5jdGlvbgo+Pj4+PiA+Pj4+Pj4gCj4+
+Pj4+ID4+Pj4+PiBJIGp1c3QgaGFkIGEgbG9vayBhdCB0aGUgcm9ja2NoaXAgaGVhZGVyIGZpbGU6
+IGFsbCB0aGUgcmVnaXN0ZXJzIGJ1dCB0aGUKPj4+Pj4gPj4+Pj4+IFNUQVJGSVZFXyogb25lcyBh
+cmUgaWRlbnRpY2FsLgo+Pj4+PiA+Pj4+Pj4gCj4+Pj4+ID4+Pj4+PiBUaGVyZSdzIG5vIG5lZWQg
+dG8gaGF2ZSB0d28gaWRlbnRpY2FsIGRyaXZlcnMgdGhlbiwgcGxlYXNlIHVzZSB0aGUKPj4+Pj4g
+Pj4+Pj4+IHJvY2tjaGlwIGRyaXZlciBpbnN0ZWFkLgo+Pj4+PiA+Pj4+Pj4gCj4+Pj4+ID4+Pj4+
+PiBNYXhpbWUKPj4+Pj4gPj4+Pj4KPj4+Pj4gPj4+Pj5vaywgaGF2ZSBhIHNpbXBsZSB0ZXN0ICwg
+ZWRpZCBjYW4gZ2V0IC4gaSB3aWxsIGNvbnRpbnVlIAo+Pj4+PiA+Pj4+IAo+Pj4+PiA+Pj4+IE1h
+eWJlIHlvdSBjYW4gdGFrZSBkcml2ZXJzL2dwdS9kcm0vYnJpZGdlL3N5bm9wc3lzL2R3LWhkbWkg
+YXMgYSByZWZlcmVuY2XvvIwgdGhpcwo+Pj4+PiA+Pj4+IGlzIGFsc28gYSBoZG1pIGlwIHVzZWQg
+Ynkgcm9ja2NoaXAvbWVzb24vc3VueGkvanovaW1444CCCj4+Pj4+ID4+Pj4gV2UgZmluYWxseSBt
+YWtlIGl0IHNoYXJlIG9uZSBkcml2ZXLjgIIKPj4+Pj4gPj4+Pj4KPj4+Pj4gPj4+aGkgQW5keToK
+Pj4+Pj4gPj4+Cj4+Pj4+ID4+PmR3X2hkbWkgc2VlbXMgYSBnb29kIGNob2ljZSAsIGl0IGNhbiBo
+YW5kbGUgaW5ubyBoZG1pIGhhcmR3YXJlIGJ5IGRlZmluZSBpdHMgZHdfaGRtaV9wbGF0X2RhdGEu
+Cj4+Pj4+ID4+PmRvZXMgaXQgbWVhbnMgaSBjYW4gd3JpdGUgb3duIGRyaXZlciBmaWxlcyBzdWNo
+IGFzKGR3X2hkbWktc3RhcmZpdmUuYykgYmFzZWQgb24gZHdfaGRtaSBpbnN0ZWFkIG9mIGFkZCBw
+bGF0X2RhdGEgaW4gaW5ub19oZG1pLmMKPj4+Pj4gPj4+Cj4+Pj4+ID4+IAo+Pj4+PiA+PiBJIHRo
+aW5rIHRoZSBwcm9jZXNzIG1heWJlIGxpa2UgdGhpc++8mgo+Pj4+PiA+PiAKPj4+Pj4gPj4gMS4g
+c3BsaXQgdGhlIGlubm9faGRtaS5jIHVuZGVyIHJvY2tjaGlwIHRvICBpbm5vX2hkbWkuYyh0aGUg
+Y29tbW9uIHBhcnQpLCBpbm5vX2hkbWktcm9ja2NoaXAuYyh0aGUgc29jIHNwZWNpZmljIHBhcnQp
+Cj4+Pj4+ID4+IDIuIG1vdmUgdGhlIGNvbW1vbiBwYXJ0IGlubm9faGRtaS5jIHRvIGRyaXZlcnMv
+Z3B1L2RybS9icmlkZ2UvaW5ub3NpbGljb24vCj4+Pj4+ID4+IDMuIGFkZCBzdGFydGZpdmUgc3Bl
+Y2lmaWMgcGFydCwgaW5ub19oZG1pLXN0YXJ0Zml2ZS5jCj4+Pj4+ID4+IAo+Pj4+PiA+PiBiZWxs
+b3cgZ2l0IGxvZyBmcm9tIGtlcm5lbCB0aHJlZSBzaG93IGhvdyB3ZSBjb252ZXJ0ICBkd19oZG1p
+IHRvIGEgY29tbW9uIGRyaXZlcjogCj4+Pj4+ID4+IAo+Pj4+PiA+PiAKPj4+Pj4gPj4gCj4+Pj4+
+ID4+IDEyYjlmMjA0ZTgwNCBkcm06IGJyaWRnZS9kd19oZG1pOiBhZGQgcm9ja2NoaXAgcmszMjg4
+IHN1cHBvcnQKPj4+Pj4gPj4gNzRhZjllNGQwM2I4IGR0LWJpbmRpbmdzOiBBZGQgZG9jdW1lbnRh
+dGlvbiBmb3Igcm9ja2NoaXAgZHcgaGRtaQo+Pj4+PiA+PiBkMzQ2YzE0ZWVlYTkgZHJtOiBicmlk
+Z2UvZHdfaGRtaTogYWRkIGZ1bmN0aW9uIGR3X2hkbWlfcGh5X2VuYWJsZV9zcGFyZQo+Pj4+PiA+
+PiBhNGQzYjhiMDUwZDUgZHJtOiBicmlkZ2UvZHdfaGRtaTogY2xlYXIgaTJjbXBoeV9zdGF0MCBy
+ZWcgaW4gaGRtaV9waHlfd2FpdF9pMmNfZG9uZQo+Pj4+PiA+PiA2MzJkMDM1YmFjZTIgZHJtOiBi
+cmlkZ2UvZHdfaGRtaTogYWRkIG1vZGVfdmFsaWQgc3VwcG9ydAo+Pj4+PiA+PiAwY2Q5ZDE0Mjgz
+MjIgZHJtOiBicmlkZ2UvZHdfaGRtaTogYWRkIHN1cHBvcnQgZm9yIG11bHRpLWJ5dGUgcmVnaXN0
+ZXIgd2lkdGggYWNjZXNzCj4+Pj4+ID4+IGNkMTUyMzkzOTY3ZSBkdC1iaW5kaW5nczogYWRkIGRv
+Y3VtZW50IGZvciBkd19oZG1pCj4+Pj4+ID4+IGIyMWY0YjY1OGRmOCBkcm06IGlteDogaW14LWhk
+bWk6IG1vdmUgaW14LWhkbWkgdG8gYnJpZGdlL2R3X2hkbWkKPj4+Pj4gPj4gYWFhNzU3YTA5MmMy
+IGRybTogaW14OiBpbXgtaGRtaTogc3BsaXQgcGh5IGNvbmZpZ3VyYXRpb24gdG8gcGxhdGZvcm0g
+ZHJpdmVyCj4+Pj4+ID4+IDNkMWIzNWEzZDlmMyBkcm06IGlteDogaW14LWhkbWk6IGNvbnZlcnQg
+aW14LWhkbWkgdG8gZHJtX2JyaWRnZSBtb2RlCj4+Pj4+ID4+IGMyYzM4NDg4NTFhNyBkcm06IGlt
+eDogaW14LWhkbWk6IHJldHVybiBkZWZlciBpZiBjYW4ndCBnZXQgZGRjIGkyYyBhZGFwdGVyCj4+
+Pj4+ID4+IGI1ODc4MzM5MzNkZSBkcm06IGlteDogaW14LWhkbWk6IG1ha2UgY2hlY2twYXRjaCBo
+YXBweQo+Pj4+PiA+PiAKPj4+Pj4gPmhpIEFuZHk6Cj4+Pj4+ID5JIGdvdCB5b3UgbWVhbnMsIAo+
+Pj4+PiA+YXMgSSBkb24ndCBoYXZlIGEgcm9ja2NoaXAgYm9hcmQgb24gaGFuZCAsIHRvIHNwbGl0
+IHRoZSBpbm5vX2hkbWkuYyBjYW4gbm90IGJlIHRlc3RlZC4KPj4+Pj4gPgo+Pj4+PiA+aG93IGFk
+b3V0IHRoaXMgaWRlYToKPj4+Pj4gPjHjgIFzcGxpdCB0aGUgc3RhcmZpdmVfaGRtaS5jIHVuZGVy
+IHZlcmlzaWxpY2lvbiB0byAgaW5ub19oZG1pLmModGhlIGNvbW1vbiBwYXJ0KSwgaW5ub19oZG1p
+LXN0YXJmaXZlLmModGhlIHNvYyBzcGVjaWZpYyBwYXJ0KQo+Pj4+PiA+Mi4gbW92ZSB0aGUgY29t
+bW9uIHBhcnQgaW5ub19oZG1pLmMgdG8gZHJpdmVycy9ncHUvZHJtL2JyaWRnZS9pbm5vc2lsaWNv
+bi8KPj4+Pj4gPjMuIEluIHRoZSBmdXR1cmUsIGlubm8gaGRtaS5jIHVuZGVyIHJvY2tjaGlwIHdp
+bGwgcmV1c2UgdGhlIHB1YmxpYyBkcml2ZXIuCj4+Pj4+IAo+Pj4+PiBJIGFtIG5vdCBzdXJlIGlm
+IGRybSBtYWludGFpbmVycyBhcmUgaGFwcHkgd2l0aCB0aGlz44CCCj4+Pj4gCj4+Pj4gTm90IHJl
+YWxseSwgbm8uCj4+Pj4gCj4+Pj4gQmVjYXVzZSB3ZSB3b3VsZCBzdGlsbCBoYXZlIHR3byBkcml2
+ZXJzIGZvciB0aGUgc2FtZSBjb250cm9sbGVyLCBhbmQgYQo+Pj4+IGNvbW1vbiBvbmUgdGhhdCBo
+YXZlbid0IHJlYWxseSBiZWVuIHRlc3RlZCBvbiBhbnl0aGluZyBidXQgYSBzaW5nbGUKPj4+PiBw
+bGF0Zm9ybS4gU28gYXJndWFibHkgYSB3b3JzZSBzaXR1YXRpb24gdGhhbiB3aGF0IHlvdSB3ZXJl
+IHN1Z2dlc3RpbmcgaW4KPj4+PiB0aGUgZmlyc3QgcGxhY2UuCj4+Pj4gCj4+Pj4gVGhlIGJlc3Qg
+c29sdXRpb24gd291bGQgYmUgdG8gZmluZCBzb21lb25lIHdpdGggYSBSb2NrY2hpcCBib2FyZCB0
+byB0ZXN0Cj4+Pj4geW91ciBjaGFuZ2VzLCBvciB0byBnZXQgb25lIGlmIGl0J3MgZG9hYmxlIHNv
+IHlvdSBjYW4gdGVzdCB5b3Vyc2VsZi4KPj4+Cj4+Pm9rIEkgd2lsbCBhbHNvIHRyeSB0byBidXkg
+YSBSb2NrY2hpcCAzMDM2IGJvYXJkIGZvciBzZWxmLXRlc3QuCj4+PkFjY29yZGluZyB0byB0aGUg
+Y29tbWl0IGxvZyBpZGVhIHByb3ZpZGVkIGJ5IEFuZHkgYmVmb3JlLCBtYWtlIHRoZSBpbm5vX2hk
+bWkgZHJpdmVyIGNvbW1vbiBtb2R1bGUuCj4+IAo+PiBJIGZpbmFsbHkgIG1ha2UgbXkgcmszMDM2
+IGJhc2VkIGt5bGluIGJvYXJkIGJvb3R1cCDvvIh1c2UgYSBsaW51eCA0LjQgZG93bnN0cmVhbSBi
+c3DvvIxJIHdpbGwgZmluZCB0aW1lIHRvIHRyeSBib290Cj4+IGl0IHdpdGggbWFpbmxpbmXvvInj
+gIIgU28gSSBjYW4gaGVscCBkbyB0aGUgdGVzdCBmb3Igcm9ja2NoaXAgc2lkZeOAggo+PiAKPj4g
+SXQgc2VlbXMgbm90IHRoYXQgZWFzeSB0byBidXkgYSByazMwMzYgYmFzZWQgYm9hcmQgZnJvbSBt
+YXJrZXQgbm9344CCCj5lbiwgVGhlIG9ubGluZSBzdG9yZSBzZWVtcyB0byBoYXZlIHN0b3BwZWQg
+c2VsbGluZyByazMwMzYgCj5yZWFsbHkgbm90IGVhc3kgdG8gYnV5IG9uZSAsIEkgd3JpdGUgdGhl
+IGNvZGUgZmlyc3QgLCBuZWVkIGhlbHAgdGVzdGluZyByazMwMzYgaW4gdGhlIGZ1dHVyZS4KCgpJ
+IGZvdW5kIEEgUkszMTI4IGJhc2VkIGJvYXJkIFhQSS0zMTI4IGlzIGZvciBzYWxlWzBdLCB3aGlj
+aCBhbHNvIGhhcyBhIGlubm8taGRtaS4KQW5kIEFseCBCZWUgaXMgd29ya2luZyBvbiBhZGRpbmcg
+dXBzdHJlYW0gc3VwcG9ydCBmb3IgaXRbMV0uCgpbMF0gaHR0cHM6Ly93d3cuZ2VuaWF0ZWNoLmNv
+bS9wcm9kdWN0L3hwaS0zMTI4LwoKWzFdaHR0cHM6Ly9wYXRjaHdvcmsua2VybmVsLm9yZy9wcm9q
+ZWN0L2xpbnV4LWFybS1rZXJuZWwvY292ZXIvMjAyMzEyMTMxOTUxMjUuMjEyOTIzLTEta25hZXJ6
+Y2hlQGdtYWlsLmNvbS8KPgo+dGhhbmtzCj4+IAo+Pj4KPj4+d291bGQgdGhlIHN0ZXBzIGJlIG9r
+PyAoaWYgSSB0ZXN0ZWQgcm9ja2NoaXAgYW5kIHN0YXJpZnZlIHBhc3MpCj4+PjEuIHNwbGl0IHRo
+ZSBpbm5vX2hkbWkuYyB1bmRlciByb2NrY2hpcCB0byAgaW5ub19oZG1pLmModGhlIGNvbW1vbiBw
+YXJ0KSwgaW5ub19oZG1pLXJvY2tjaGlwLmModGhlIHNvYyBzcGVjaWZpYyBwYXJ0KQo+Pj4yLiBt
+b3ZlIHRoZSBjb21tb24gcGFydCBpbm5vX2hkbWkuYyB0byBkcml2ZXJzL2dwdS9kcm0vYnJpZGdl
+L2lubm9zaWxpY29uLwo+Pj4zLiBhZGQgc3RhcnRmaXZlIHNwZWNpZmljIHBhcnQsIGlubm9faGRt
+aS1zdGFydGZpdmUuYwo+Pj4KPj4+VGhhbmtzCj4+Pj4gCj4+Pj4gTWF4aW1lCg==
