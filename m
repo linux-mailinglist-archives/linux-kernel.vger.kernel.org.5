@@ -2,53 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 95A3F812B23
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 10:11:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D684812B29
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 10:11:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234535AbjLNJLO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 04:11:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46440 "EHLO
+        id S235634AbjLNJLU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 04:11:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59848 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229787AbjLNJLM (ORCPT
+        with ESMTP id S229787AbjLNJLS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 04:11:12 -0500
-Received: from mail-qk1-x72d.google.com (mail-qk1-x72d.google.com [IPv6:2607:f8b0:4864:20::72d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2C03116
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 01:11:18 -0800 (PST)
-Received: by mail-qk1-x72d.google.com with SMTP id af79cd13be357-77f3b4394fdso429049485a.0
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 01:11:18 -0800 (PST)
+        Thu, 14 Dec 2023 04:11:18 -0500
+Received: from mail-qv1-xf33.google.com (mail-qv1-xf33.google.com [IPv6:2607:f8b0:4864:20::f33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFACA112
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 01:11:24 -0800 (PST)
+Received: by mail-qv1-xf33.google.com with SMTP id 6a1803df08f44-67efd2cde42so3499336d6.0
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 01:11:24 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1702545078; x=1703149878; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=fAhAJU5yP9YNumHSLe8ZpA4RAtCq2Rb2d15S/ucYWeo=;
-        b=bGCvINlDRccgTjBeFtLbI1oG/SrWWvDZpJ1mxXgCNBoXMItDgZb6FPXU07Jx/evJhV
-         7wfr3c7aYaccoynVOs7uMvVCeOyMovsDqPAGcSUbDWm8B/0nf76HkjwMTlCGDlJ/dNSy
-         E0T0XkgjmbVYL+24RuQ6DQQIZ5lYuOhoax43U6PR7taHJEKmesHzhaw6VxMWqoeDKFRv
-         yfXyYLv4e0VZl2wKLmLveEHtdZlonrGSbupgwZPzn1Jwd3zgDZcv+lzw0fLPIXyMIAxx
-         pqcXW40YOgxk1IyA8fOBHbsUbAExzT+6MSG/sXK2pUi8AUxgBTgJ+kLUGXgfXXujEvwm
-         XF0A==
+        d=linaro.org; s=google; t=1702545084; x=1703149884; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=6IaFDod8qWxr8WQM1D5UKzpQIEJXDdQljMHqbalXZ3w=;
+        b=v6GugAjacGMiysiqS+LvRSW+534dEbJV6uHyAugGIE3J4a2fD2qKUvmXi04JZWnclW
+         rj376tfm7dAFf8L33GlDdRFkKO8UZ1gZ+MugIppmlLtbfJprQgKUHgfI9W80XZV162Ea
+         n+hocNHTpgsM1k+JorocrToecA/7nb4DLTWSkcDqbDMJIKFUhgXUlmXnkUSOv+D/XU0a
+         cKxU1p+20cSUQ5jYGZactHgJGhtLlr0fMpKx/m8jB9w0zm62xHnYlJE9YU+DmOrZGsuM
+         XNiqqX0eOjGtsf+BB9HWX4+2FS3xn2PtrPGfFqSwahfP410C3iqruHDYXm9lDF1OohE7
+         br1w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702545078; x=1703149878;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=fAhAJU5yP9YNumHSLe8ZpA4RAtCq2Rb2d15S/ucYWeo=;
-        b=N7QlbOqw/Mh+36Gr0jaUs4x1vq8OdoHioCy5dWb6LZSLIgB3PyJz4Iqzpkyta16bjX
-         it2EHAT5Ozrbd17KOe/IvJ9Dj5/NJcgGWaSMNhrACof5w8kGVP2jS4A02UIjZcEAlatY
-         iQ7cS5qmpsQbR9xcDUiH7xZoZAUs5RU7XwzlJO+3ScNvPxiiwOZesyT8KHyx9qskJ/FO
-         fDH3VX/x43BSu0HafE1U2/Ip9utPQ1KGMxMi6YtUEtrMvkslYpdQAbIxhlq0lf7xV+wx
-         6E/R/0o6dVo+wZ9yvlCGMhNbBypV/g6ofyr2CWk0mViQSSVlt9vKSuSo/ZDa7pc9fy0Z
-         VWUg==
-X-Gm-Message-State: AOJu0YyoLoQCIeakvj7/u/V1S9yZDr7CQJWLGZkuofki7clfAfRVA0sm
-        GTqRlfWwjcUM9S8G8OQJHAbA
-X-Google-Smtp-Source: AGHT+IG/Re2qE2ey+m/qkbqpMLsYm5+OUKhCYWWHNlVIfYfzMWRf+NwwVM2BQnGRuNjT6j5kJqDtSQ==
-X-Received: by 2002:ae9:f810:0:b0:77f:55b6:7d00 with SMTP id x16-20020ae9f810000000b0077f55b67d00mr10371015qkh.46.1702545077885;
-        Thu, 14 Dec 2023 01:11:17 -0800 (PST)
+        d=1e100.net; s=20230601; t=1702545084; x=1703149884;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=6IaFDod8qWxr8WQM1D5UKzpQIEJXDdQljMHqbalXZ3w=;
+        b=wXDduGxfhMmfLGSciDS6mnoGgCOoRYNrtRkV5jrPjuzpKpY29BQZPGQTziLhHyC7od
+         xxuIis4gPK7+kAKRdDLX1tHpcFW8zQnE0v74t5NwgkbDuYh9IzMxeqgi8OI56r7iclJg
+         JKp5PyH/0z7qTUQ+nL0w28m4q/T8auBtCTf0I1ecXUlwsPZ7yPEEfG1u8RDfayk4kPt0
+         URAC2Q7gufnrCVbsv/gcdljK7+qE8cfGB5fWw3nhWDqrVFSlFTfQitCrh6K6pzZl0p7M
+         WgIfAOvP65uOPo0OyS6tvwr04wCMtcR7MYXVd8KGU3K1mf16/Q8DUv9LhUib1sDhcgOJ
+         Y05A==
+X-Gm-Message-State: AOJu0Ywv7p424KcJCQAsBo1IbdiZbXKozDAjZgsYDSaWPIXLSi2haSAt
+        CRYOjrZPrdONLvB4+eeJ9IYE
+X-Google-Smtp-Source: AGHT+IFWS5tXUoDuwKS0Y+S8DpQ1nM36WsP8DhgZT5a4e5se0ymj9dUim0tvEitMjyqjox+W7p/Ugg==
+X-Received: by 2002:ad4:5dec:0:b0:67a:568e:5b10 with SMTP id jn12-20020ad45dec000000b0067a568e5b10mr15074701qvb.20.1702545083823;
+        Thu, 14 Dec 2023 01:11:23 -0800 (PST)
 Received: from localhost.localdomain ([117.213.102.12])
-        by smtp.gmail.com with ESMTPSA id qt13-20020a05620a8a0d00b0077d75164ef9sm5144119qkn.124.2023.12.14.01.11.12
+        by smtp.gmail.com with ESMTPSA id qt13-20020a05620a8a0d00b0077d75164ef9sm5144119qkn.124.2023.12.14.01.11.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Dec 2023 01:11:17 -0800 (PST)
+        Thu, 14 Dec 2023 01:11:23 -0800 (PST)
 From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
 To:     andersson@kernel.org, konrad.dybcio@linaro.org, vkoul@kernel.org,
         sboyd@kernel.org, mturquette@baylibre.com, robh+dt@kernel.org,
@@ -57,15 +58,17 @@ Cc:     linux-arm-msm@vger.kernel.org, linux-phy@lists.infradead.org,
         linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
         devicetree@vger.kernel.org,
         Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Subject: [PATCH 00/16] Fix Qcom UFS PHY clocks
-Date:   Thu, 14 Dec 2023 14:40:45 +0530
-Message-Id: <20231214091101.45713-1-manivannan.sadhasivam@linaro.org>
+Subject: [PATCH 01/16] dt-bindings: phy: qmp-ufs: Fix PHY clocks
+Date:   Thu, 14 Dec 2023 14:40:46 +0530
+Message-Id: <20231214091101.45713-2-manivannan.sadhasivam@linaro.org>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20231214091101.45713-1-manivannan.sadhasivam@linaro.org>
+References: <20231214091101.45713-1-manivannan.sadhasivam@linaro.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -73,64 +76,121 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+All QMP UFS PHYs except MSM8996 require 3 clocks:
 
-This series fixes the clocks supplied to QMP PHY IPs in the Qcom SoCs. All
-of the Qcom SoCs except MSM8996 require 3 clocks for QMP UFS:
-
-* ref - 19.2MHz reference clock from RPM/RPMh
+* ref - 19.2MHz reference clock from RPMh
 * ref_aux - Auxiliary reference clock from GCC
-* qref - QREF clock from GCC or TCSR (TCSR since SM8550)
+* qref - QREF clock from GCC or TCSR (since SM8550)
 
-MSM8996 only requires 'ref' and 'qref' clocks.
+MSM8996 only requires 'ref' and 'qref' clocks. Hence, fix the binding to
+reflect the actual clock topology.
 
-Hence, this series fixes the binding, DT and GCC driver to reflect the
-actual clock topology.
+Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+---
+ .../phy/qcom,sc8280xp-qmp-ufs-phy.yaml        | 47 +++++++++----------
+ 1 file changed, 21 insertions(+), 26 deletions(-)
 
-Testing
-=======
-
-Tested on Qualcomm RB5 development board based on SM8250 SoC. I don't
-expect this series to break other SoCs too.
-
-- Mani
-
-Manivannan Sadhasivam (16):
-  dt-bindings: phy: qmp-ufs: Fix PHY clocks
-  phy: qcom-qmp-ufs: Switch to devm_clk_bulk_get_all() API
-  dt-bindings: clock: qcom: Add missing UFS QREF clocks
-  clk: qcom: gcc-sc8180x: Add missing UFS QREF clocks
-  arm64: dts: qcom: msm8996: Fix UFS PHY clocks
-  arm64: dts: qcom: msm8998: Fix UFS PHY clocks
-  arm64: dts: qcom: sdm845: Fix UFS PHY clocks
-  arm64: dts: qcom: sm6115: Fix UFS PHY clocks
-  arm64: dts: qcom: sm6125: Fix UFS PHY clocks
-  arm64: dts: qcom: sm6350: Fix UFS PHY clocks
-  arm64: dts: qcom: sm8150: Fix UFS PHY clocks
-  arm64: dts: qcom: sm8250: Fix UFS PHY clocks
-  arm64: dts: qcom: sc8180x: Fix UFS PHY clocks
-  arm64: dts: qcom: sc8280xp: Fix UFS PHY clocks
-  arm64: dts: qcom: sm8350: Fix UFS PHY clocks
-  arm64: dts: qcom: sm8550: Fix UFS PHY clocks
-
- .../phy/qcom,sc8280xp-qmp-ufs-phy.yaml        | 47 +++++++-------
- arch/arm64/boot/dts/qcom/msm8996.dtsi         |  4 +-
- arch/arm64/boot/dts/qcom/msm8998.dtsi         | 12 ++--
- arch/arm64/boot/dts/qcom/sc8180x.dtsi         |  6 +-
- arch/arm64/boot/dts/qcom/sc8280xp.dtsi        | 18 ++++--
- arch/arm64/boot/dts/qcom/sdm845.dtsi          |  8 ++-
- arch/arm64/boot/dts/qcom/sm6115.dtsi          |  8 ++-
- arch/arm64/boot/dts/qcom/sm6125.dtsi          |  8 ++-
- arch/arm64/boot/dts/qcom/sm6350.dtsi          |  8 ++-
- arch/arm64/boot/dts/qcom/sm8150.dtsi          |  8 ++-
- arch/arm64/boot/dts/qcom/sm8250.dtsi          |  8 ++-
- arch/arm64/boot/dts/qcom/sm8350.dtsi          |  8 ++-
- arch/arm64/boot/dts/qcom/sm8550.dtsi          |  9 ++-
- drivers/clk/qcom/gcc-sc8180x.c                | 28 +++++++++
- drivers/phy/qualcomm/phy-qcom-qmp-ufs.c       | 61 +++----------------
- include/dt-bindings/clock/qcom,gcc-sc8180x.h  |  2 +
- 16 files changed, 124 insertions(+), 119 deletions(-)
-
+diff --git a/Documentation/devicetree/bindings/phy/qcom,sc8280xp-qmp-ufs-phy.yaml b/Documentation/devicetree/bindings/phy/qcom,sc8280xp-qmp-ufs-phy.yaml
+index f3a3296c811c..800f11b29dcd 100644
+--- a/Documentation/devicetree/bindings/phy/qcom,sc8280xp-qmp-ufs-phy.yaml
++++ b/Documentation/devicetree/bindings/phy/qcom,sc8280xp-qmp-ufs-phy.yaml
+@@ -37,15 +37,12 @@ properties:
+     maxItems: 1
+ 
+   clocks:
+-    minItems: 1
++    minItems: 2
+     maxItems: 3
+ 
+   clock-names:
+-    minItems: 1
+-    items:
+-      - const: ref
+-      - const: ref_aux
+-      - const: qref
++    minItems: 2
++    maxItems: 3
+ 
+   power-domains:
+     maxItems: 1
+@@ -85,22 +82,9 @@ allOf:
+         compatible:
+           contains:
+             enum:
++              - qcom,msm8998-qmp-ufs-phy
+               - qcom,sa8775p-qmp-ufs-phy
+               - qcom,sc7280-qmp-ufs-phy
+-              - qcom,sm8450-qmp-ufs-phy
+-    then:
+-      properties:
+-        clocks:
+-          minItems: 3
+-        clock-names:
+-          minItems: 3
+-
+-  - if:
+-      properties:
+-        compatible:
+-          contains:
+-            enum:
+-              - qcom,msm8998-qmp-ufs-phy
+               - qcom,sc8180x-qmp-ufs-phy
+               - qcom,sc8280xp-qmp-ufs-phy
+               - qcom,sdm845-qmp-ufs-phy
+@@ -111,13 +95,18 @@ allOf:
+               - qcom,sm8150-qmp-ufs-phy
+               - qcom,sm8250-qmp-ufs-phy
+               - qcom,sm8350-qmp-ufs-phy
++              - qcom,sm8450-qmp-ufs-phy
+               - qcom,sm8550-qmp-ufs-phy
+     then:
+       properties:
+         clocks:
+-          maxItems: 2
++          minItems: 3
++          maxItems: 3
+         clock-names:
+-          maxItems: 2
++          items:
++            - const: ref
++            - const: ref_aux
++            - const: qref
+ 
+   - if:
+       properties:
+@@ -128,22 +117,28 @@ allOf:
+     then:
+       properties:
+         clocks:
+-          maxItems: 1
++          minItems: 2
++          maxItems: 2
+         clock-names:
+-          maxItems: 1
++          items:
++            - const: ref
++            - const: qref
+ 
+ additionalProperties: false
+ 
+ examples:
+   - |
+     #include <dt-bindings/clock/qcom,gcc-sc8280xp.h>
++    #include <dt-bindings/clock/qcom,rpmh.h>
+ 
+     ufs_mem_phy: phy@1d87000 {
+         compatible = "qcom,sc8280xp-qmp-ufs-phy";
+         reg = <0x01d87000 0x1000>;
+ 
+-        clocks = <&gcc GCC_UFS_REF_CLKREF_CLK>, <&gcc GCC_UFS_PHY_PHY_AUX_CLK>;
+-        clock-names = "ref", "ref_aux";
++        clocks = <&rpmhcc RPMH_CXO_CLK>, <&gcc GCC_UFS_PHY_PHY_AUX_CLK>,
++                 <&gcc GCC_UFS_REF_CLKREF_CLK>;
++
++        clock-names = "ref", "ref_aux", "qref";
+ 
+         power-domains = <&gcc UFS_PHY_GDSC>;
+ 
 -- 
 2.25.1
 
