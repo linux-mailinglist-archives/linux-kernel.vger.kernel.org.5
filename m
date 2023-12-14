@@ -2,93 +2,356 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 478E18137BA
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 18:11:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BACB8137BE
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 18:12:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1444055AbjLNRLm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 12:11:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39916 "EHLO
+        id S1444102AbjLNRMI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 12:12:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40032 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230387AbjLNRLW (ORCPT
+        with ESMTP id S1444117AbjLNRLr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 12:11:22 -0500
-Received: from out-188.mta0.migadu.com (out-188.mta0.migadu.com [IPv6:2001:41d0:1004:224b::bc])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EA0D1A1
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 09:11:26 -0800 (PST)
-Date:   Thu, 14 Dec 2023 17:11:20 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1702573885;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Z7KQyebLnTixJI+7HeEOxa3aIwOhIUy62//tcXLarcA=;
-        b=eQO/oAZcgvq6R0r3lvE7/mtXOn8K/LZeYyr5WruA3hOZyK6lKh34CkDmm2beyE4oHY3uEs
-        j+sKJRhrezWPn9lH4JrmhgS/8+AmJbgnhEMkW/+pzhR+8mMBAUYCPnvPG+DdJ3VtgYJj4k
-        whPLSPId+LYxelegpcceWypPhGccd1Y=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Oliver Upton <oliver.upton@linux.dev>
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        James Houghton <jthoughton@google.com>,
-        Peter Xu <peterx@redhat.com>,
-        Axel Rasmussen <axelrasmussen@google.com>,
-        Isaku Yamahata <isaku.yamahata@linux.intel.com>,
-        David Matlack <dmatlack@google.com>,
-        Yan Zhao <yan.y.zhao@intel.com>, Marc Zyngier <maz@kernel.org>,
-        Michael Roth <michael.roth@amd.com>,
-        Aaron Lewis <aaronlewis@google.com>
-Subject: Re: [ANNOUNCE / RFC] PUCK Future Topics
-Message-ID: <ZXs3OASFnic62LL6@linux.dev>
-References: <20231214001753.779022-1-seanjc@google.com>
+        Thu, 14 Dec 2023 12:11:47 -0500
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD54A131;
+        Thu, 14 Dec 2023 09:11:49 -0800 (PST)
+Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BE7Rh5N003416;
+        Thu, 14 Dec 2023 17:11:36 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+        message-id:date:mime-version:subject:to:cc:references:from
+        :in-reply-to:content-type:content-transfer-encoding; s=
+        qcppdkim1; bh=+rZapPt9WbacdJFkI+AbBPDUwZgMyB0gAFuy9ycSzlE=; b=B5
+        HGk11YkJeo9EFLgHc+NZmgtZe2EGE5/xJNK0EU0/l1q5O38G4ktrVIMK8N2PXuI/
+        YtTa80etgXC2LFJAoHnOQYoTV3Avl5CwJ4oej+wr8UYNt5MpxEopnYOycDBJGWlK
+        Rk1F3Ne6ZHfUESCJq2lSSmenmy9Y8FmhlO0S9bMI+WsFKYOqXHq20/tSoAHoI6PJ
+        OZSefg/WfzHz7iKWDybJNUggNsdrTw0NvJRGqXPQEZwjixlRxaljtKA5pawOtiEy
+        9rBcMr1YGUdXtMHzvuhJZL8Ya5uwNVSAR6A49aCHrLyDjX1Gb5Vcv4A2bf3273ew
+        0ZWyacigbddRjreo6/0A==
+Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3uynre228b-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 14 Dec 2023 17:11:35 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3BEHBYdm011501
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 14 Dec 2023 17:11:34 GMT
+Received: from [10.110.80.224] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Thu, 14 Dec
+ 2023 09:11:33 -0800
+Message-ID: <35b8005d-c4a5-66fa-5158-e48109210864@quicinc.com>
+Date:   Thu, 14 Dec 2023 09:11:32 -0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231214001753.779022-1-seanjc@google.com>
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v5] drm/msm/dpu: improve DSC allocation
+Content-Language: en-US
+To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+CC:     <dri-devel@lists.freedesktop.org>, <robdclark@gmail.com>,
+        <sean@poorly.run>, <swboyd@chromium.org>, <dianders@chromium.org>,
+        <vkoul@kernel.org>, <daniel@ffwll.ch>, <airlied@gmail.com>,
+        <agross@kernel.org>, <andersson@kernel.org>,
+        <quic_abhinavk@quicinc.com>, <quic_jesszhan@quicinc.com>,
+        <quic_sbillaka@quicinc.com>, <marijn.suijten@somainline.org>,
+        <freedreno@lists.freedesktop.org>, <linux-arm-msm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+References: <1702493883-30148-1-git-send-email-quic_khsieh@quicinc.com>
+ <CAA8EJppypE-0tUfVD-24YMOQ+3cP+_D1BZYju0K7qzaUE_RnKA@mail.gmail.com>
+From:   Kuogee Hsieh <quic_khsieh@quicinc.com>
+In-Reply-To: <CAA8EJppypE-0tUfVD-24YMOQ+3cP+_D1BZYju0K7qzaUE_RnKA@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: m7aBbiOugR-fg1CfLEE_ofxIdejSBrOp
+X-Proofpoint-GUID: m7aBbiOugR-fg1CfLEE_ofxIdejSBrOp
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-09_01,2023-12-07_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 mlxlogscore=738
+ suspectscore=0 impostorscore=0 phishscore=0 bulkscore=0 spamscore=0
+ malwarescore=0 priorityscore=1501 lowpriorityscore=0 clxscore=1015
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2311290000 definitions=main-2312140122
+X-Spam-Status: No, score=-4.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 13, 2023 at 04:17:53PM -0800, Sean Christopherson wrote:
-> Hi all!  There are a handful of PUCK topics that I want to get scheduled, and
-> would like your help/input in confirming attendance to ensure we reach critical
-> mass.
-> 
-> If you are on the Cc, please confirm that you are willing and able to attend
-> PUCK on the proposed/tentative date for any topics tagged with your name.  Or
-> if you simply don't want to attend, I suppose that's a valid answer too. :-)
-> 
-> If you are not on the Cc but want to ensure that you can be present for a given
-> topic, please speak up asap if you have a conflict.  I will do my best to
-> accomodate everyone's schedules, and the more warning I get the easier that will
-> be.
-> 
-> Note, the proposed schedule is largely arbitrary, I am not wedded to any
-> particular order.  The only known conflict at this time is the guest_memfd()
-> post-copy discussion can't land on Jan 10th.
-> 
-> Thanks!
-> 
-> 
-> 2024.01.03 - Post-copy for guest_memfd()
->     Needs: David M, Paolo, Peter Xu, James, Oliver, Aaron
-> 
-> 2024.01.10 - Unified uAPI for protected VMs
->     Needs: Paolo, Isaku, Mike R
-> 
-> 2024.01.17 - Memtypes for non-coherent MDA
->     Needs: Paolo, Yan, Oliver, Marc, more ARM folks?
 
-Can we move this one? I'm traveling 01.08-01.16 and really don't want
-to miss this due to jetlag or travel delays.
+On 12/13/2023 3:00 PM, Dmitry Baryshkov wrote:
+> On Wed, 13 Dec 2023 at 20:58, Kuogee Hsieh <quic_khsieh@quicinc.com> wrote:
+>> At DSC V1.1 DCE (Display Compression Engine) contains a DSC encoder.
+>> However, at DSC V1.2 DCE consists of two DSC encoders, one has an odd
+>> index and another one has an even index. Each encoder can work
+>> independently. But only two DSC encoders from same DCE can be paired
+>> to work together to support DSC merge mode at DSC V1.2. For DSC V1.1
+>> two consecutive DSC encoders (start with even index) have to be paired
+>> to support DSC merge mode.  In addition, the DSC with even index have
+>> to be mapped to even PINGPONG index and DSC with odd index have to be
+>> mapped to odd PINGPONG index at its data path in regardless of DSC
+>> V1.1 or V1.2. This patch improves DSC allocation mechanism with
+>> consideration of those factors.
+>>
+>> Changes in V5:
+>> -- delete dsc_id[]
+>> -- update to global_state->dsc_to_enc_id[] directly
+>> -- replace ndx with idx
+>> -- fix indentation at function declaration
+>> -- only one for loop at _dpu_rm_reserve_dsc_single()
+>>
+>> Changes in V4:
+>> -- rework commit message
+>> -- use reserved_by_other()
+>> -- add _dpu_rm_pingpong_next_index()
+>> -- revise _dpu_rm_pingpong_dsc_check()
+>>
+>> Changes in V3:
+>> -- add dpu_rm_pingpong_dsc_check()
+>> -- for pair allocation use i += 2 at for loop
+>>
+>> Changes in V2:
+>>      -- split _dpu_rm_reserve_dsc() into _dpu_rm_reserve_dsc_single() and
+>>         _dpu_rm_reserve_dsc_pair()
+>>
+>> Fixes: f2803ee91a41 ("drm/msm/disp/dpu1: Add DSC support in RM")
+>> Signed-off-by: Kuogee Hsieh <quic_khsieh@quicinc.com>
+>> ---
+>>   drivers/gpu/drm/msm/disp/dpu1/dpu_rm.c | 162 +++++++++++++++++++++++++++++----
+>>   1 file changed, 146 insertions(+), 16 deletions(-)
+>>
+>> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_rm.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_rm.c
+>> index f9215643..7c7a88f 100644
+>> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_rm.c
+>> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_rm.c
+>> @@ -461,29 +461,159 @@ static int _dpu_rm_reserve_ctls(
+>>          return 0;
+>>   }
+>>
+>> -static int _dpu_rm_reserve_dsc(struct dpu_rm *rm,
+>> -                              struct dpu_global_state *global_state,
+>> -                              struct drm_encoder *enc,
+>> -                              const struct msm_display_topology *top)
+>> +static int _dpu_rm_pingpong_next_index(int start,
+>> +                                      uint32_t enc_id,
+>> +                                      uint32_t *pp_to_enc_id,
+>> +                                      int pp_max)
+>>   {
+>> -       int num_dsc = top->num_dsc;
+>>          int i;
+>>
+>> -       /* check if DSC required are allocated or not */
+>> -       for (i = 0; i < num_dsc; i++) {
+>> -               if (!rm->dsc_blks[i]) {
+>> -                       DPU_ERROR("DSC %d does not exist\n", i);
+>> -                       return -EIO;
+>> -               }
+>> +       for (i = start; i < pp_max; i++) {
+>> +               if (pp_to_enc_id[i] == enc_id)
+>> +                       return i;
+>> +       }
+>> +
+>> +       return -ENAVAIL;
+>> +}
+>> +
+>> +static int _dpu_rm_pingpong_dsc_check(int dsc_idx, int pp_idx)
+>> +{
+>> +
+> CHECK: Blank lines aren't necessary after an open brace '{'
+> #85: FILE: drivers/gpu/drm/msm/disp/dpu1/dpu_rm.c:481:
+>
+>> +       /*
+>> +        * DSC with even index must be used with the PINGPONG with even index
+>> +        * DSC with odd index must be used with the PINGPONG with odd index
+>> +        */
+>> +       if ((dsc_idx & 0x01) != (pp_idx & 0x01))
+>> +               return -ENAVAIL;
+>> +
+>> +       return 0;
+>> +}
+>> +
+>> +static int _dpu_rm_reserve_dsc_single(struct dpu_rm *rm,
+>> +                                     struct dpu_global_state *global_state,
+>> +                                     uint32_t enc_id,
+>> +                                     const struct msm_display_topology *top)
+>> +{
+>> +       int num_dsc = 0;
+>> +       uint32_t *pp_to_enc_id = global_state->pingpong_to_enc_id;
+>> +       uint32_t *dsc_enc_id = global_state->dsc_to_enc_id;
+>> +       int pp_max = PINGPONG_MAX - PINGPONG_0;
+>> +       int pp_idx;
+>> +       int dsc_idx;
+>> +       int ret;
+>> +
+>> +       for (dsc_idx = 0; dsc_idx < ARRAY_SIZE(rm->dsc_blks) &&
+>> +                         num_dsc < 1; dsc_idx++) {
+> The condition is wrong here. Also it is misaligned.
+>
+>> +               if (!rm->dsc_blks[dsc_idx])
+>> +                       continue;
+>> +
+>> +               if (reserved_by_other(dsc_enc_id, dsc_idx, enc_id))
+>> +                       continue;
+>> +
+>> +               pp_idx = _dpu_rm_pingpong_next_index(0, enc_id,
+> And this is wrong too. You should start relatively to your previous PP index.
+>
+>> +                                                    pp_to_enc_id, pp_max);
+>> +               if (pp_idx < 0)
+>> +                       return -ENAVAIL;
+>> +
+>> +               ret = _dpu_rm_pingpong_dsc_check(dsc_idx, pp_idx);
+>> +               if (ret)
+>> +                       return -ENAVAIL;
+>> +
+>> +               dsc_enc_id[dsc_idx] = enc_id;
+>> +               num_dsc++;
+>> +       }
+>> +
+>> +       if (!num_dsc) {
+>> +               DPU_ERROR("DSC allocation failed num_dsc=%d\n", num_dsc);
+>> +               return -ENAVAIL;
+>> +       }
+>>
+>> -               if (global_state->dsc_to_enc_id[i]) {
+>> -                       DPU_ERROR("DSC %d is already allocated\n", i);
+>> -                       return -EIO;
+>> +       return 0;
+>> +}
+>> +
+>> +static int _dpu_rm_reserve_dsc_pair(struct dpu_rm *rm,
+>> +                                   struct dpu_global_state *global_state,
+>> +                                   uint32_t enc_id,
+>> +                                   const struct msm_display_topology *top)
+>> +{
+>> +       int num_dsc = 0;
+>> +       uint32_t *pp_to_enc_id = global_state->pingpong_to_enc_id;
+>> +       uint32_t *dsc_enc_id = global_state->dsc_to_enc_id;
+> No need for these anymore. Please inline them. Or simply pass
+> global_state to _dpu_rm_pingpong_next_index().
+> Other functions in dpu_rm.c don't define local variables for these
+> arrays. I don't see why this patch should deviate from that.
+>
+>> +       int pp_max = PINGPONG_MAX - PINGPONG_0;
+>> +       int start_pp_idx = 0;
+>> +       int dsc_idx, pp_idx;
+>> +       int ret;
+>> +
+>> +       /* only start from even dsc index */
+>> +       for (dsc_idx = 0; dsc_idx < ARRAY_SIZE(rm->dsc_blks) &&
+>> +                         num_dsc < top->num_dsc; dsc_idx += 2) {
+> Misaligned
+>
+>> +               if (!rm->dsc_blks[dsc_idx] ||
+>> +                   !rm->dsc_blks[dsc_idx + 1])
+>> +                       continue;
+>> +
+>> +               /* consective dsc index to be paired */
+>> +               if (reserved_by_other(dsc_enc_id, dsc_idx, enc_id) ||
+>> +                   reserved_by_other(dsc_enc_id, dsc_idx + 1, enc_id))
+>> +                       continue;
+>> +
+>> +               pp_idx = _dpu_rm_pingpong_next_index(start_pp_idx, enc_id,
+>> +                                                    pp_to_enc_id, pp_max);
+>> +               if (pp_idx < 0)
+>> +                       return -ENAVAIL;
+>> +
+>> +               ret = _dpu_rm_pingpong_dsc_check(dsc_idx, pp_idx);
+>> +               if (ret) {
+>> +                       pp_idx = 0;
+>> +                       continue;
+>>                  }
+>> +
+>> +               pp_idx = _dpu_rm_pingpong_next_index(pp_idx + 1, enc_id,
+>> +                                                    pp_to_enc_id, pp_max);
+>> +               if (pp_idx < 0)
+>> +                       return -ENAVAIL;
+> Fresh pp_idx has to be checked against dsc_idx + 1.
+>
+> Let me also have a suggestion for you. The pp_max is a constant. You
+> don't have to pass it to _dpu_rm_pingpong_next_index() at all! Also if
+> you change the function to accept enum dpu_pingpong, you can start
+> with PINGPONG_NONE and move +1 into the function, making the callers
+> simpler, removing the need or start_pp_idx (which I asked to do in v4)
+> etc.
+>
+>> +
+>> +               dsc_enc_id[dsc_idx] = enc_id;
+>> +               dsc_enc_id[dsc_idx + 1] = enc_id;
+>> +               num_dsc += 2;
+>> +
+>> +               start_pp_idx = pp_idx + 1;      /* start for next pair */
+>>          }
+>>
+>> -       for (i = 0; i < num_dsc; i++)
+>> -               global_state->dsc_to_enc_id[i] = enc->base.id;
+>> +       if (num_dsc < top->num_dsc) {
+>> +               DPU_ERROR("DSC allocation failed num_dsc=%d required=%d\n",
+>> +                                               num_dsc, top->num_dsc);
+> Misaligned
+>
+>> +               return -ENAVAIL;
+>> +       }
+>> +
+>> +       return 0;
+>> +}
+>> +
+>> +static int _dpu_rm_reserve_dsc(struct dpu_rm *rm,
+>> +                              struct dpu_global_state *global_state,
+>> +                              struct drm_encoder *enc,
+>> +                              const struct msm_display_topology *top)
+>> +{
+>> +       uint32_t enc_id = enc->base.id;
+>> +
+>> +       if (!top->num_dsc || !top->num_intf)
+>> +               return 0;
+>> +
+>> +       /*
+>> +        * Facts:
+>> +        * 1) DSCs ouput to an interface
+> WARNING: 'ouput' may be misspelled - perhaps 'output'?
+>
+> Also, what does it bring to us?
+>
+>> +        * 2) no pingpong split (two layer mixers shared one pingpong)
+>> +        * 3) DSC pair start from even index, such as index(0,1), (2,3), etc
+> starts
+>
+>> +        * 4) even PINGPONG connects to even DSC
+>> +        * 5) odd PINGPONG connects to odd DSC
+>> +        * 6) pair: encoder +--> pp_idx_0 --> dsc_idx_0
+>> +        *                  +--> pp_idx_1 --> dsc_idx_1
+>> +        */
+>> +
+>> +       /* num_dsc should be either 1, 2 or 4 */
+>> +       if (top->num_dsc > top->num_intf)       /* merge mode */
+>> +               return _dpu_rm_reserve_dsc_pair(rm, global_state, enc_id, top);
+>> +       else
+>> +               return _dpu_rm_reserve_dsc_single(rm, global_state, enc_id, top);
+>>
+>>          return 0;
+>>   }
+>> --
+>> 2.7.4
+>>
+> Kuogee, we value your patches. But could you please fix your editor
+> settings to properly align C statements? E.g. Vim has the "set
+> cino=(0" setting, which does most of the work. I suspect that your
+> code editor should also have a similar setting. Also could you please
+> establish a practice of using checkpatch.pl at least until we stop
+> hitting obvious issues there?
 
--- 
-Thanks,
-Oliver
+1) yes, i have "set cino=(0" seeting t my vim editor
+
+2)  i had run checkpaych.pl at previous patches, I will make sure run 
+checkpatch.pl for every patch from now on
+
