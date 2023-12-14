@@ -2,133 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4381F812FD6
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 13:13:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4192B812FD9
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 13:13:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1572947AbjLNMNR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 07:13:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38828 "EHLO
+        id S1572952AbjLNMNl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 07:13:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44718 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1572923AbjLNMNP (ORCPT
+        with ESMTP id S1572930AbjLNMNk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 07:13:15 -0500
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46E87BD
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 04:13:21 -0800 (PST)
-Received: by mail-pj1-x102f.google.com with SMTP id 98e67ed59e1d1-28aeb049942so1542347a91.2
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 04:13:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=brainfault-org.20230601.gappssmtp.com; s=20230601; t=1702556001; x=1703160801; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=RxoH3e1pqfRG5EpbAAgxwCw1oRjLeMfi1qyzwQu8z4E=;
-        b=ZPgGIYmcWPNimFXItEwd7PxKG6mCBrxpr8rzWObBC5fI9MwAH9tvcN6Yrdao1FOCc9
-         nYc7iElwrvB07IA2UV1c7TYI3BuSY5mvJrABPAdS5wSA0WbpFdReu5RfQhJrKSiOB238
-         9WG/bJ+Fn4OiYfPk/fD0m2OKv2kjMmCLQAuEskYsVa0N6vCn8mfh+xtU1m4SIYTA3PZn
-         yogxhp2FCgQWBejmxldXRgLEAhJQTuqP7XNaqUVCyYnCW9n/XF8ncGUjkbrYn6LBQ1me
-         7BMdwVnL1uOe0YyhJuTdRtWhmVE90wn50ndrMk7QJGCrNIov0+VvH0C02ol/xwwRbpoO
-         GQSg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702556001; x=1703160801;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=RxoH3e1pqfRG5EpbAAgxwCw1oRjLeMfi1qyzwQu8z4E=;
-        b=bxV3gj3zkTGwE6lB2CEuIrYuvDiVcRp5okMg8/5mZd3JYCNlr8rMGcJp8vH/0peoA4
-         bGmSK8ruKMWkhFJ7ofCnjteKF++aXkk9XpkVev3N8vAp+1/ihc21vQMTiAuo7T0BOYH/
-         Z+isy8BbBZy1RrUtbp/js3iu0A4azX6s0iNCh91CVY1LWeXmTpe2ssHUY2dh1lIVfPxa
-         f6ingLERfPv/leiTHuM+WoUl8kvPpOckw/LmoKJ4nRAG1sbML2raOsP8T/UPZ5Hk0hub
-         690J4/Z2/dn65NSmFpSDu/m+i4yxqXDfYIqiXbjIcI1RQ5wr9ZvXKV/60np10XfRuDRe
-         skTQ==
-X-Gm-Message-State: AOJu0YyNy0PEZnMv5HoPgTj4Yt0tUfScvRZm6FyEI8HQWEmSWs00s2k7
-        /173cizGo/0jN/G+XVp4T9WiY2FuM2BoUxi5bSJA1g==
-X-Google-Smtp-Source: AGHT+IEooiD5rkngFLDpel3wTKhmmCpJGezIc1l7FQ/uXS5019jlAjf7Ozjts7D2t9f+t/Nftwhsc5T2VEWM2r0TPEI=
-X-Received: by 2002:a17:90a:ae0d:b0:286:9b69:a0f6 with SMTP id
- t13-20020a17090aae0d00b002869b69a0f6mr7104084pjq.39.1702556000638; Thu, 14
- Dec 2023 04:13:20 -0800 (PST)
-MIME-Version: 1.0
-References: <20231205024310.1593100-1-atishp@rivosinc.com> <20231205024310.1593100-2-atishp@rivosinc.com>
-In-Reply-To: <20231205024310.1593100-2-atishp@rivosinc.com>
-From:   Anup Patel <anup@brainfault.org>
-Date:   Thu, 14 Dec 2023 17:43:09 +0530
-Message-ID: <CAAhSdy0j=BKfoNFr2+P+z0YK29LkudpHQ5XQUZhY_F1mfWQAug@mail.gmail.com>
-Subject: Re: [RFC 1/9] RISC-V: Fix the typo in Scountovf CSR name
-To:     Atish Patra <atishp@rivosinc.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Alexandre Ghiti <alexghiti@rivosinc.com>,
-        Andrew Jones <ajones@ventanamicro.com>,
-        Atish Patra <atishp@atishpatra.org>,
-        Conor Dooley <conor.dooley@microchip.com>,
-        Guo Ren <guoren@kernel.org>, Icenowy Zheng <uwu@icenowy.me>,
-        kvm-riscv@lists.infradead.org, kvm@vger.kernel.org,
-        linux-riscv@lists.infradead.org,
+        Thu, 14 Dec 2023 07:13:40 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5F08115
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 04:13:45 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5E84BC433C7;
+        Thu, 14 Dec 2023 12:13:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1702556025;
+        bh=zGI9MKm0R/y1myqJM3IMh1whT+Jpo0eTry8ctu4P1bE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ZIl4tQ4tSkoE1FaBtknKS70y7rg0PHYdhs8pC5K0km1raen4r8b8buSTrlB/cQeS5
+         V88CmYspZi4PyQ7fUpZk1k02eq8RZ9Lazj9PQ6GQB3OMdzr5/BWdRoXx4mzwa0Nw2u
+         HJLI2chg1HTUpTbbQZNm66O6fqhzGQh4eyeyhZOcU4pbElBM+hwMZXajVWJZzfOZw5
+         d8CnikTugVZdXY0UacDQpykecqCZLVHnxOHxyijCDVCzf6o1ioEjtNo/dpj4d3HJbC
+         2AeWA7gxst5ON/uHCIS780fqlq6nWAjEExI5RDXm5i/5JQHQfDRf8q9o2JqlWZFm0i
+         oVkGVEehtCQRQ==
+Date:   Thu, 14 Dec 2023 12:13:36 +0000
+From:   Will Deacon <will@kernel.org>
+To:     Ryan Roberts <ryan.roberts@arm.com>, robin.murphy@arm.com,
+        jean-philippe@linaro.org
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Zenghui Yu <yuzenghui@huawei.com>,
+        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+        Alexander Potapenko <glider@google.com>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Yu Zhao <yuzhao@google.com>,
         Mark Rutland <mark.rutland@arm.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Will Deacon <will@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        David Hildenbrand <david@redhat.com>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        John Hubbard <jhubbard@nvidia.com>, Zi Yan <ziy@nvidia.com>,
+        Barry Song <21cnbao@gmail.com>,
+        Alistair Popple <apopple@nvidia.com>,
+        Yang Shi <shy828301@gmail.com>,
+        linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 12/15] arm64/mm: Split __flush_tlb_range() to elide
+ trailing DSB
+Message-ID: <20231214121336.GA1015@willie-the-truck>
+References: <20231204105440.61448-1-ryan.roberts@arm.com>
+ <20231204105440.61448-13-ryan.roberts@arm.com>
+ <20231212113517.GA28857@willie-the-truck>
+ <0969c413-bf40-4c46-9f1e-a92101ff2d2e@arm.com>
+ <2e6f06d3-6c8e-4b44-b6f2-e55bd5be83d6@arm.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2e6f06d3-6c8e-4b44-b6f2-e55bd5be83d6@arm.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 5, 2023 at 8:13=E2=80=AFAM Atish Patra <atishp@rivosinc.com> wr=
-ote:
->
-> The counter overflow CSR name is "scountovf" not "sscountovf".
->
-> Fix the csr name.
->
-> Fixes: 4905ec2fb7e6 ("RISC-V: Add sscofpmf extension support")
->
-> Signed-off-by: Atish Patra <atishp@rivosinc.com>
+On Thu, Dec 14, 2023 at 11:53:52AM +0000, Ryan Roberts wrote:
+> On 12/12/2023 11:47, Ryan Roberts wrote:
+> > On 12/12/2023 11:35, Will Deacon wrote:
+> >> On Mon, Dec 04, 2023 at 10:54:37AM +0000, Ryan Roberts wrote:
+> >>> diff --git a/arch/arm64/include/asm/tlbflush.h b/arch/arm64/include/asm/tlbflush.h
+> >>> index bb2c2833a987..925ef3bdf9ed 100644
+> >>> --- a/arch/arm64/include/asm/tlbflush.h
+> >>> +++ b/arch/arm64/include/asm/tlbflush.h
+> >>> @@ -399,7 +399,7 @@ do {									\
+> >>>  #define __flush_s2_tlb_range_op(op, start, pages, stride, tlb_level) \
+> >>>  	__flush_tlb_range_op(op, start, pages, stride, 0, tlb_level, false)
+> >>>  
+> >>> -static inline void __flush_tlb_range(struct vm_area_struct *vma,
+> >>> +static inline void __flush_tlb_range_nosync(struct vm_area_struct *vma,
+> >>>  				     unsigned long start, unsigned long end,
+> >>>  				     unsigned long stride, bool last_level,
+> >>>  				     int tlb_level)
+> >>> @@ -431,10 +431,19 @@ static inline void __flush_tlb_range(struct vm_area_struct *vma,
+> >>>  	else
+> >>>  		__flush_tlb_range_op(vae1is, start, pages, stride, asid, tlb_level, true);
+> >>>  
+> >>> -	dsb(ish);
+> >>>  	mmu_notifier_arch_invalidate_secondary_tlbs(vma->vm_mm, start, end);
+> >>>  }
+> >>>  
+> >>> +static inline void __flush_tlb_range(struct vm_area_struct *vma,
+> >>> +				     unsigned long start, unsigned long end,
+> >>> +				     unsigned long stride, bool last_level,
+> >>> +				     int tlb_level)
+> >>> +{
+> >>> +	__flush_tlb_range_nosync(vma, start, end, stride,
+> >>> +				 last_level, tlb_level);
+> >>> +	dsb(ish);
+> >>> +}
+> >>
+> >> Hmm, are you sure it's safe to defer the DSB until after the secondary TLB
+> >> invalidation? It will have a subtle effect on e.g. an SMMU participating
+> >> in broadcast TLB maintenance, because now the ATC will be invalidated
+> >> before completion of the TLB invalidation and it's not obviously safe to me.
+> > 
+> > I'll be honest; I don't know that it's safe. The notifier calls turned up during
+> > a rebase and I stared at it for a while, before eventually concluding that I
+> > should just follow the existing pattern in __flush_tlb_page_nosync(): That one
+> > calls the mmu notifier without the dsb, then flush_tlb_page() does the dsb
+> > after. So I assumed it was safe.
+> > 
+> > If you think it's not safe, I guess there is a bug to fix in
+> > __flush_tlb_page_nosync()?
+> 
+> Did you have an opinion on this? I'm just putting together a v4 of this series,
+> and I'll remove this optimization if you think it's unsound. But in that case, I
+> guess we have an existing bug to fix too?
 
-LGTM.
+Sorry, Ryan, I've not had a chance to look into it in more detail. But as
+you rightly point out, you're not introducing the issue (assuming it is
+one), so I don't think it needs to hold you up. Your code just makes the
+thing more "obvious" to me.
 
-Reviewed-by: Anup Patel <anup@brainfault.org>
+Robin, Jean-Philippe -- do we need to make sure that the SMMU has completed
+its TLB invalidation before issuing an ATC invalidate? My half-baked worry
+is whether or not an ATS request could refill the ATC before the TLBI
+has completed, therefore rendering the ATC invalidation useless.
 
-Regards,
-Anup
-
-> ---
->  arch/riscv/include/asm/csr.h         | 2 +-
->  arch/riscv/include/asm/errata_list.h | 2 +-
->  2 files changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/arch/riscv/include/asm/csr.h b/arch/riscv/include/asm/csr.h
-> index 306a19a5509c..88cdc8a3e654 100644
-> --- a/arch/riscv/include/asm/csr.h
-> +++ b/arch/riscv/include/asm/csr.h
-> @@ -281,7 +281,7 @@
->  #define CSR_HPMCOUNTER30H      0xc9e
->  #define CSR_HPMCOUNTER31H      0xc9f
->
-> -#define CSR_SSCOUNTOVF         0xda0
-> +#define CSR_SCOUNTOVF          0xda0
->
->  #define CSR_SSTATUS            0x100
->  #define CSR_SIE                        0x104
-> diff --git a/arch/riscv/include/asm/errata_list.h b/arch/riscv/include/as=
-m/errata_list.h
-> index 83ed25e43553..7026fba12eeb 100644
-> --- a/arch/riscv/include/asm/errata_list.h
-> +++ b/arch/riscv/include/asm/errata_list.h
-> @@ -152,7 +152,7 @@ asm volatile(ALTERNATIVE_2(                          =
-               \
->
->  #define ALT_SBI_PMU_OVERFLOW(__ovl)                                    \
->  asm volatile(ALTERNATIVE(                                              \
-> -       "csrr %0, " __stringify(CSR_SSCOUNTOVF),                        \
-> +       "csrr %0, " __stringify(CSR_SCOUNTOVF),                         \
->         "csrr %0, " __stringify(THEAD_C9XX_CSR_SCOUNTEROF),             \
->                 THEAD_VENDOR_ID, ERRATA_THEAD_PMU,                      \
->                 CONFIG_ERRATA_THEAD_PMU)                                \
-> --
-> 2.34.1
->
+Will
