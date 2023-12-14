@@ -2,101 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DE075812D3A
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 11:41:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A7C8812D35
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 11:40:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1443709AbjLNKld (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 05:41:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45006 "EHLO
+        id S1443712AbjLNKkE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 05:40:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46078 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1443641AbjLNKlc (ORCPT
+        with ESMTP id S1443694AbjLNKkC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 05:41:32 -0500
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5450E3;
-        Thu, 14 Dec 2023 02:41:38 -0800 (PST)
-Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BE2aLdQ023225;
-        Thu, 14 Dec 2023 10:41:34 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-        from:to:cc:subject:date:message-id:mime-version
-        :content-transfer-encoding:content-type; s=qcppdkim1; bh=VHVrSPE
-        x7yMYOapnlmrO0EMsqodHECDF4yBhBZxHFkA=; b=mgGhoHQXtUY5buFzNBWWdqe
-        0f8bxtHeOanP9rRvyjBOYpc3fa+EGJPhuXSxumsjqhbCuBEu+r9xDWJXBVE2on8F
-        JorqqXwO4bo9Fj6nZ60a3ROwdRv0BS4Nj6Gz+rQOVNGqwrC6EdL6oVvNPBoOAw86
-        JcPH9Pp1CkHJa+5SpFHM5GITcBDQ7ARmmc4qgl4rl0W38fNpGJSsShrJ3pQ5r8IJ
-        Lv/klCChFg1xR15aimuCTiRAC8TAj4H0s2/yANJ/o8cmvfFMW650WNBCPiPysiLv
-        CnIdI5k39jLfr7DcPQCSykEDUC47kN6riNKWU88zdL0TsRmWrlL+DpCIhRO0LKg=
-        =
-Received: from nasanppmta04.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3uyqd512qj-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 14 Dec 2023 10:41:34 +0000 (GMT)
-Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
-        by NASANPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3BEAfXj7004154
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 14 Dec 2023 10:41:33 GMT
-Received: from hu-varada-blr.qualcomm.com (10.80.80.8) by
- nasanex01b.na.qualcomm.com (10.46.141.250) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Thu, 14 Dec 2023 02:41:30 -0800
-From:   Varadarajan Narayanan <quic_varada@quicinc.com>
-To:     <agross@kernel.org>, <andersson@kernel.org>,
-        <konrad.dybcio@linaro.org>, <lgirdwood@gmail.com>,
-        <broonie@kernel.org>, <linux-arm-msm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <stable@vger.kernel.org>,
-        Varadarajan Narayanan <quic_varada@quicinc.com>
-Subject: [PATCH] regulator: qcom_smd: Add LDO5 MP5496 regulator
-Date:   Thu, 14 Dec 2023 16:10:52 +0530
-Message-ID: <20231214104052.3267039-1-quic_varada@quicinc.com>
-X-Mailer: git-send-email 2.34.1
+        Thu, 14 Dec 2023 05:40:02 -0500
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 8FBAC11B;
+        Thu, 14 Dec 2023 02:40:07 -0800 (PST)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B5180C15;
+        Thu, 14 Dec 2023 02:40:52 -0800 (PST)
+Received: from [10.57.85.242] (unknown [10.57.85.242])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B810C3F738;
+        Thu, 14 Dec 2023 02:40:02 -0800 (PST)
+Message-ID: <fe8f8d00-1720-4a47-83ae-1aa4c005c4f5@arm.com>
+Date:   Thu, 14 Dec 2023 10:41:05 +0000
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/4] cpufreq: Add a cpufreq pressure feedback for the
+ scheduler
+Content-Language: en-US
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     Vincent Guittot <vincent.guittot@linaro.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        catalin.marinas@arm.com, will@kernel.org, sudeep.holla@arm.com,
+        agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
+        mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
+        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+        mgorman@suse.de, bristot@redhat.com, vschneid@redhat.com,
+        rui.zhang@intel.com, mhiramat@kernel.org,
+        daniel.lezcano@linaro.org, amit.kachhap@gmail.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-pm@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-trace-kernel@vger.kernel.org
+References: <20231212142730.998913-1-vincent.guittot@linaro.org>
+ <20231212142730.998913-2-vincent.guittot@linaro.org>
+ <20231214054307.axl33gagxacidjbn@vireshk-i7>
+ <CAKfTPtDam5eQO1DHxALsCaU53Rtawbfrvswy+z2unnV_eXeVLA@mail.gmail.com>
+ <54f3b98c-1f7d-4205-9e3c-a4a19ad3d941@arm.com>
+ <CAJZ5v0gD-utGhM3vN7JmPia1CVcSQa6RPnk2xMBXXc6asRTn=g@mail.gmail.com>
+From:   Lukasz Luba <lukasz.luba@arm.com>
+In-Reply-To: <CAJZ5v0gD-utGhM3vN7JmPia1CVcSQa6RPnk2xMBXXc6asRTn=g@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nasanex01b.na.qualcomm.com (10.46.141.250)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: tLRtoh7logdbI6pqJzVZmROlrpw5qusD
-X-Proofpoint-ORIG-GUID: tLRtoh7logdbI6pqJzVZmROlrpw5qusD
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-09_02,2023-12-07_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 mlxscore=0
- adultscore=0 clxscore=1011 suspectscore=0 phishscore=0 bulkscore=0
- malwarescore=0 mlxlogscore=772 priorityscore=1501 impostorscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2311290000 definitions=main-2312140071
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support for LDO5 regulator. This is used by IPQ9574 USB.
 
-Signed-off-by: Varadarajan Narayanan <quic_varada@quicinc.com>
----
- drivers/regulator/qcom_smd-regulator.c | 1 +
- 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/regulator/qcom_smd-regulator.c b/drivers/regulator/qcom_smd-regulator.c
-index 09c471a0ba2e..d1be9568025e 100644
---- a/drivers/regulator/qcom_smd-regulator.c
-+++ b/drivers/regulator/qcom_smd-regulator.c
-@@ -796,6 +796,7 @@ static const struct rpm_regulator_data rpm_mp5496_regulators[] = {
- 	{ "s1", QCOM_SMD_RPM_SMPA, 1, &mp5496_smps, "s1" },
- 	{ "s2", QCOM_SMD_RPM_SMPA, 2, &mp5496_smps, "s2" },
- 	{ "l2", QCOM_SMD_RPM_LDOA, 2, &mp5496_ldoa2, "l2" },
-+	{ "l5", QCOM_SMD_RPM_LDOA, 5, &mp5496_ldoa2, "l5" },
- 	{}
- };
- 
--- 
-2.34.1
+On 12/14/23 09:40, Rafael J. Wysocki wrote:
+> On Thu, Dec 14, 2023 at 10:07 AM Lukasz Luba <lukasz.luba@arm.com> wrote:
+>>
+>> On 12/14/23 07:57, Vincent Guittot wrote:
+>>> On Thu, 14 Dec 2023 at 06:43, Viresh Kumar <viresh.kumar@linaro.org> wrote:
+>>>>
+>>>> On 12-12-23, 15:27, Vincent Guittot wrote:
+>>>>> @@ -2618,6 +2663,9 @@ static int cpufreq_set_policy(struct cpufreq_policy *policy,
+>>>>>         policy->max = __resolve_freq(policy, policy->max, CPUFREQ_RELATION_H);
+>>>>>         trace_cpu_frequency_limits(policy);
+>>>>>
+>>>>> +     cpus = policy->related_cpus;
+>>>>> +     cpufreq_update_pressure(cpus, policy->max);
+>>>>> +
+>>>>>         policy->cached_target_freq = UINT_MAX;
+>>>>
+>>>> One more question, why are you doing this from cpufreq_set_policy ? If
+>>>> due to cpufreq cooling or from userspace, we end up limiting the
+>>>> maximum possible frequency, will this routine always get called ?
+>>>
+>>> Yes, any update of a FREQ_QOS_MAX ends up calling cpufreq_set_policy()
+>>> to update the policy->max
+>>>
+>>
+>> Agree, cpufreq sysfs scaling_max_freq is also important to handle
+>> in this new design. Currently we don't reflect that as reduced CPU
+>> capacity in the scheduler. There was discussion when I proposed to feed
+>> that CPU frequency reduction into thermal_pressure [1].
+>>
+>> The same applies for the DTPM which is missing currently the proper
+>> impact to the CPU reduced capacity in the scheduler.
+>>
+>> IMHO any limit set into FREQ_QOS_MAX should be visible in this
+>> new design of capacity reduction signaling.
+>>
+>> [1] https://lore.kernel.org/lkml/20220930094821.31665-2-lukasz.luba@arm.com/
+> 
+> Actually, freq_qos_read_value(&policy->constraints, FREQ_QOS_MAX) will
+> return the requisite limit.
 
+Yes, but we need to translate that information from freq domain
+into capacity domain and plumb ii into scheduler as stolen CPU capacity.
+Ideally, w/o any 'smoothing' but just instant value.
+That's the hope of this patch set re-design.
