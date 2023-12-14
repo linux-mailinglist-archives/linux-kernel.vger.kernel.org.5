@@ -2,85 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CDB49812CE7
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 11:29:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 567E5812CF2
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 11:31:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1443637AbjLNK3p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 05:29:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39512 "EHLO
+        id S1443636AbjLNKbj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 05:31:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60848 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1443599AbjLNK3n (ORCPT
+        with ESMTP id S1443599AbjLNKbi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 05:29:43 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CB82115
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 02:29:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1702549788;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=mNaidnArOatG5DPMZgGUNeTPrppTOu1ght+u2+9nPgo=;
-        b=Bo7FbkhBee1ZsvFqeKV7xlwzV5nF0IJGhAJx6U2JV8Z+ctcFplytgVYwjJX4sN88q9f9sZ
-        cC4huT7To850WW0hMa+JESjiJSw+r4Pb9KOIHxEMIZmDf2vmrTQrqZfhd8tGsX69bUN0rz
-        wS0wp8XDJQ+CwYqVBd6rbncnzCrFeao=
-Received: from mail-lj1-f199.google.com (mail-lj1-f199.google.com
- [209.85.208.199]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-482-CTDXJDGqMkSVcPwJOp2I2g-1; Thu, 14 Dec 2023 05:29:46 -0500
-X-MC-Unique: CTDXJDGqMkSVcPwJOp2I2g-1
-Received: by mail-lj1-f199.google.com with SMTP id 38308e7fff4ca-2ca29454857so73217361fa.0
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 02:29:46 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702549785; x=1703154585;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=mNaidnArOatG5DPMZgGUNeTPrppTOu1ght+u2+9nPgo=;
-        b=twwVBl/3cCwEHIy73a5Z2fsM/SHqYmJO4KZ/3DXqnA2G5iPtTRj1wTkjOn84H4RqnG
-         +8NwhriGX9jWQ8UOjTcMVXItSW6iuoWo3vwihPDNepy97RpyeoBIiwE4h5P2E3tk8lfO
-         mSnb7O5VZP3VcEliFNrr/93Frm+naUqxjD1A2k2K4bZnp74+4fSnlyCigCrF8rhwmnrT
-         ZX/5YhtZc9iETofvSwAu7rNIeMEjhE/4A5/MxFFvGKVsVtwIVFA6S8cZPnLPjfRFNqjM
-         oQAFw66SLD+b5LeqpCCvPh1z1W0qGlG6QUk8pq479d9BraIwc6kn4zcYnrHtDDWw4cVi
-         r+xg==
-X-Gm-Message-State: AOJu0YwBABpt+8OpsAGgP3v770K08e1miGX0MI93NiRV2Z5jAMz/69rE
-        ZaBsl9JB2HiVTrQqBT2focgwQVLQchT3zEBm6lo954C9H64gSmjOg8SwWEm+PPBgsueXiNzsmB4
-        ah3H177NylEDS096HfReKOsKB
-X-Received: by 2002:a2e:b88a:0:b0:2cc:1c21:f729 with SMTP id r10-20020a2eb88a000000b002cc1c21f729mr3199479ljp.60.1702549785337;
-        Thu, 14 Dec 2023 02:29:45 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IEjkT5w/kdScbgQ5jnlJ/iNq1v76LhwoQiz85pVMwCHKmLvFjAg9HfOnqm6pisPjZpcYg0XYw==
-X-Received: by 2002:a2e:b88a:0:b0:2cc:1c21:f729 with SMTP id r10-20020a2eb88a000000b002cc1c21f729mr3199467ljp.60.1702549784912;
-        Thu, 14 Dec 2023 02:29:44 -0800 (PST)
-Received: from redhat.com ([2.52.132.243])
-        by smtp.gmail.com with ESMTPSA id v21-20020a2e9615000000b002c9f1316121sm2098658ljh.36.2023.12.14.02.29.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Dec 2023 02:29:43 -0800 (PST)
-Date:   Thu, 14 Dec 2023 05:29:38 -0500
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Arseniy Krasnov <avkrasnov@salutedevices.com>
-Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
-        Stefano Garzarella <sgarzare@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Bobby Eshleman <bobby.eshleman@bytedance.com>,
-        kvm@vger.kernel.org, virtualization@lists.linux-foundation.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel@sberdevices.ru, oxffffaa@gmail.com
-Subject: Re: [PATCH net-next v9 3/4] vsock: update SO_RCVLOWAT setting
- callback
-Message-ID: <20231214052502-mutt-send-email-mst@kernel.org>
-References: <20231214091947.395892-1-avkrasnov@salutedevices.com>
- <20231214091947.395892-4-avkrasnov@salutedevices.com>
+        Thu, 14 Dec 2023 05:31:38 -0500
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F8F8AF;
+        Thu, 14 Dec 2023 02:31:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1702549903;
+        bh=hAEE7gN/tX8xVA6dmhtKspxa0JnRlGiTqZPWAS3zgDY=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=uqycB/5RIGAkwL3i+H8xhqNcU3DDhsjo6RCTvOyBuZVcSYxuk9BdrepCKV7XxrJVR
+         1wA2DrKCxY6hMxHSX4LpIp6XF2uypcIY7d7hlP6ItfpgMibAP4OlSTagHMfvUnXrob
+         fORXnpWP1gDU+5SI+xtxjfxb9uDUZzzdwPCy+oF54gBSnAPI9/X8vyduw14+E2An/B
+         iozcd6fInEgMZl5HLQ1IOQ52Y16TIk84nX1+I1aHqJ4AHbe+s6OlV+Z+PNNNVG0AFs
+         pbFuzogNkQkk7Oba4znaBYFPB9+U2Nk+WmEjEOZiA39HF9+JG6zLbfJxxhk4LGpcPD
+         SPT4wYIgA4IOA==
+Received: from [100.113.186.2] (cola.collaboradmins.com [195.201.22.229])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: kholk11)
+        by madrid.collaboradmins.com (Postfix) with ESMTPSA id 4E065378000B;
+        Thu, 14 Dec 2023 10:31:42 +0000 (UTC)
+Message-ID: <13c8ccbc-0eef-43f5-ae37-29ec64d1606b@collabora.com>
+Date:   Thu, 14 Dec 2023 11:31:41 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231214091947.395892-4-avkrasnov@salutedevices.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 6/9] arm64: dts: mediatek: Add MT8186 Krabby platform
+ based Tentacruel / Tentacool
+To:     Chen-Yu Tsai <wenst@chromium.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-mediatek@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Eugen Hristev <eugen.hristev@collabora.com>,
+        Conor Dooley <conor.dooley@microchip.com>
+References: <20231213150435.4134390-1-wenst@chromium.org>
+ <20231213150435.4134390-7-wenst@chromium.org>
+From:   AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+Content-Language: en-US
+In-Reply-To: <20231213150435.4134390-7-wenst@chromium.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -88,97 +64,218 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 14, 2023 at 12:19:46PM +0300, Arseniy Krasnov wrote:
-> Do not return if transport callback for SO_RCVLOWAT is set (only in
-> error case). In this case we don't need to set 'sk_rcvlowat' field in
-> each transport - only in 'vsock_set_rcvlowat()'. Also, if 'sk_rcvlowat'
-> is now set only in af_vsock.c, change callback name from 'set_rcvlowat'
-> to 'notify_set_rcvlowat'.
+Il 13/12/23 16:04, Chen-Yu Tsai ha scritto:
+> Tentacruel and Tentacool are MT8186 based Chromebooks based on the
+> Krabby design.
 > 
-> Signed-off-by: Arseniy Krasnov <avkrasnov@salutedevices.com>
-> Reviewed-by: Stefano Garzarella <sgarzare@redhat.com>
-> Acked-by: Michael S. Tsirkin <mst@redhat.com>
-
-Maybe squash this with patch 2/4?
-
+> Tentacruel, also known as the ASUS Chromebook CM14 Flip CM1402F, is a
+> convertible device with touchscreen and stylus.
+> 
+> Tentacool, also known as the ASUS Chromebook CM14 CM1402C, is a laptop
+> device. It does not have a touchscreen or stylus.
+> 
+> The two devices both have two variants. The difference is a second
+> source touchpad controller that shares the same address as the original,
+> but is incompatible.
+> 
+> The extra SKU IDs for the Tentacruel devices map to different sensor
+> components attached to the Embedded Controller. These are not visible
+> to the main processor.
+> 
+> Signed-off-by: Chen-Yu Tsai <wenst@chromium.org>
+> Acked-by: Conor Dooley <conor.dooley@microchip.com>
 > ---
->  Changelog:
->  v3 -> v4:
->   * Rename 'set_rcvlowat' to 'notify_set_rcvlowat'.
->   * Commit message updated.
+> Changes since v3:
+> - Reorder some properties to conform better to the newly proposed DT
+>    style guidelines
+> - Drop unused labels
+> - Rename bt-sco node name to bt-sco-codec
+> - Drop i2s*-share properties from afe node
+> - Drop aud_gpio_tdm_{on,off} pinctrl nodes
+> - Replace interrupts with interrupts-extended in tpm node
+> - Enable adsp device
 > 
->  include/net/af_vsock.h           | 2 +-
->  net/vmw_vsock/af_vsock.c         | 9 +++++++--
->  net/vmw_vsock/hyperv_transport.c | 4 ++--
->  3 files changed, 10 insertions(+), 5 deletions(-)
+> Changes since v2:
+> - Picked up Conor's ack
+> - Rename touchpad to trackpad
+> - Drop pinctrl properties from trackpad in tentacruel/tentacool second
+>    source trackpad
 > 
-> diff --git a/include/net/af_vsock.h b/include/net/af_vsock.h
-> index e302c0e804d0..535701efc1e5 100644
-> --- a/include/net/af_vsock.h
-> +++ b/include/net/af_vsock.h
-> @@ -137,7 +137,6 @@ struct vsock_transport {
->  	u64 (*stream_rcvhiwat)(struct vsock_sock *);
->  	bool (*stream_is_active)(struct vsock_sock *);
->  	bool (*stream_allow)(u32 cid, u32 port);
-> -	int (*set_rcvlowat)(struct vsock_sock *vsk, int val);
->  
->  	/* SEQ_PACKET. */
->  	ssize_t (*seqpacket_dequeue)(struct vsock_sock *vsk, struct msghdr *msg,
-> @@ -168,6 +167,7 @@ struct vsock_transport {
->  		struct vsock_transport_send_notify_data *);
->  	/* sk_lock held by the caller */
->  	void (*notify_buffer_size)(struct vsock_sock *, u64 *);
-> +	int (*notify_set_rcvlowat)(struct vsock_sock *vsk, int val);
->  
->  	/* Shutdown. */
->  	int (*shutdown)(struct vsock_sock *, int);
-> diff --git a/net/vmw_vsock/af_vsock.c b/net/vmw_vsock/af_vsock.c
-> index 816725af281f..54ba7316f808 100644
-> --- a/net/vmw_vsock/af_vsock.c
-> +++ b/net/vmw_vsock/af_vsock.c
-> @@ -2264,8 +2264,13 @@ static int vsock_set_rcvlowat(struct sock *sk, int val)
->  
->  	transport = vsk->transport;
->  
-> -	if (transport && transport->set_rcvlowat)
-> -		return transport->set_rcvlowat(vsk, val);
-> +	if (transport && transport->notify_set_rcvlowat) {
-> +		int err;
+> Changes since v1:
+> - Reorder SKU numbers in descending order.
+> - Fixed pinconfig node names
+> - Moved pinctrl-* properties after interrupts-*
+> - Switched to interrupts-extended for external components
+> - Marked ADSP as explicitly disabled, with a comment explaining that it
+>    stalls the system
+> - Renamed "touchpad" to "trackpad"
+> - Dropped bogus "no-laneswap" property from it6505 node
+> - Moved "realtek,jd-src" property to after all the regulator supplies
+> - Switched to macros for MT6366 regulator "regulator-allowed-modes"
+> - Renamed "vgpu" regulator name to allow coupling, with a comment
+>    containing the name used in the design
+> - Renamed "cr50" node name to "tpm"
+> - Moved trackpad_pins reference up to i2c2; workaround for second source
+>    component resource sharing.
+> - Fix copyright year
+> - Fixed touchscreen supply name
+> ---
+>   arch/arm64/boot/dts/mediatek/Makefile         |    4 +
+>   .../dts/mediatek/mt8186-corsola-krabby.dtsi   |  129 ++
+>   .../mt8186-corsola-tentacool-sku327681.dts    |   57 +
+>   .../mt8186-corsola-tentacool-sku327683.dts    |   24 +
+>   .../mt8186-corsola-tentacruel-sku262144.dts   |   44 +
+>   .../mt8186-corsola-tentacruel-sku262148.dts   |   26 +
+>   .../boot/dts/mediatek/mt8186-corsola.dtsi     | 1707 +++++++++++++++++
+>   7 files changed, 1991 insertions(+)
+>   create mode 100644 arch/arm64/boot/dts/mediatek/mt8186-corsola-krabby.dtsi
+>   create mode 100644 arch/arm64/boot/dts/mediatek/mt8186-corsola-tentacool-sku327681.dts
+>   create mode 100644 arch/arm64/boot/dts/mediatek/mt8186-corsola-tentacool-sku327683.dts
+>   create mode 100644 arch/arm64/boot/dts/mediatek/mt8186-corsola-tentacruel-sku262144.dts
+>   create mode 100644 arch/arm64/boot/dts/mediatek/mt8186-corsola-tentacruel-sku262148.dts
+>   create mode 100644 arch/arm64/boot/dts/mediatek/mt8186-corsola.dtsi
+> 
+> diff --git a/arch/arm64/boot/dts/mediatek/Makefile b/arch/arm64/boot/dts/mediatek/Makefile
+> index e6e7592a3645..442af61b1305 100644
+> --- a/arch/arm64/boot/dts/mediatek/Makefile
+> +++ b/arch/arm64/boot/dts/mediatek/Makefile
+> @@ -43,6 +43,10 @@ dtb-$(CONFIG_ARCH_MEDIATEK) += mt8183-kukui-kodama-sku32.dtb
+>   dtb-$(CONFIG_ARCH_MEDIATEK) += mt8183-kukui-krane-sku0.dtb
+>   dtb-$(CONFIG_ARCH_MEDIATEK) += mt8183-kukui-krane-sku176.dtb
+>   dtb-$(CONFIG_ARCH_MEDIATEK) += mt8183-pumpkin.dtb
+> +dtb-$(CONFIG_ARCH_MEDIATEK) += mt8186-corsola-tentacool-sku327681.dtb
+> +dtb-$(CONFIG_ARCH_MEDIATEK) += mt8186-corsola-tentacool-sku327683.dtb
+> +dtb-$(CONFIG_ARCH_MEDIATEK) += mt8186-corsola-tentacruel-sku262144.dtb
+> +dtb-$(CONFIG_ARCH_MEDIATEK) += mt8186-corsola-tentacruel-sku262148.dtb
+>   dtb-$(CONFIG_ARCH_MEDIATEK) += mt8186-evb.dtb
+>   dtb-$(CONFIG_ARCH_MEDIATEK) += mt8192-asurada-hayato-r1.dtb
+>   dtb-$(CONFIG_ARCH_MEDIATEK) += mt8192-asurada-hayato-r5-sku2.dtb
+
+..snip..
+
+> diff --git a/arch/arm64/boot/dts/mediatek/mt8186-corsola-tentacruel-sku262148.dts b/arch/arm64/boot/dts/mediatek/mt8186-corsola-tentacruel-sku262148.dts
+> new file mode 100644
+> index 000000000000..447b57b12b41
+> --- /dev/null
+> +++ b/arch/arm64/boot/dts/mediatek/mt8186-corsola-tentacruel-sku262148.dts
+> @@ -0,0 +1,26 @@
+> +// SPDX-License-Identifier: (GPL-2.0 OR MIT)
+> +/*
+> + * Copyright 2023 Google LLC
+> + */
 > +
-> +		err = transport->notify_set_rcvlowat(vsk, val);
-> +		if (err)
-> +			return err;
-> +	}
->  
->  	WRITE_ONCE(sk->sk_rcvlowat, val ? : 1);
->  	return 0;
+> +#include "mt8186-corsola-tentacruel-sku262144.dts"
+> +
+> +/ {
+> +	compatible = "google,tentacruel-sku262151", "google,tentacruel-sku262150",
+> +		     "google,tentacruel-sku262149", "google,tentacruel-sku262148",
+> +		     "google,tentacruel", "mediatek,mt8186";
+> +};
+> +
+> +/* This variant replaces only the trackpad controller. */
+> +&i2c2 {
+> +	/delete-node/ trackpad@15;
+> +
+> +	trackpad@15 {
+> +		compatible = "hid-over-i2c";
+> +		reg = <0x15>;
+> +		interrupts-extended = <&pio 11 IRQ_TYPE_LEVEL_LOW>;
+> +		hid-descr-addr = <0x0001>;
+> +		vdd-supply = <&pp3300_s3>;
+> +		wakeup-source;
+> +	};
+> +};
+> diff --git a/arch/arm64/boot/dts/mediatek/mt8186-corsola.dtsi b/arch/arm64/boot/dts/mediatek/mt8186-corsola.dtsi
+> new file mode 100644
+> index 000000000000..adbeb0c765d3
+> --- /dev/null
+> +++ b/arch/arm64/boot/dts/mediatek/mt8186-corsola.dtsi
+> @@ -0,0 +1,1707 @@
+> +// SPDX-License-Identifier: (GPL-2.0 OR MIT)
+> +/*
+> + * Copyright (C) 2022 MediaTek Inc.
+> + */
+> +/dts-v1/;
+> +#include "mt8186.dtsi"
+> +#include <dt-bindings/pinctrl/mt8186-pinfunc.h>
+> +#include <dt-bindings/gpio/gpio.h>
+> +#include <dt-bindings/input/input.h>
+> +#include <dt-bindings/input/gpio-keys.h>
+> +#include <dt-bindings/regulator/mediatek,mt6397-regulator.h>
+> +
+
+..snip..
+
+> +
+> +&i2c2 {
+> +	pinctrl-names = "default";
+> +	/*
+> +	 * Trackpad pin put here to work around second source components
+> +	 * sharing the pinmux in steelix designs.
+> +	 */
+> +	pinctrl-0 = <&i2c2_pins>, <&trackpad_pin>;
+> +	clock-frequency = <400000>;
+> +	i2c-scl-internal-delay-ns = <10000>;
+> +	status = "okay";
+> +
+> +	trackpad@15 {
+> +		compatible = "elan,ekth3000";
+
+You forgot to change this one.
+
+Remove compatible from this node and stop using /delete-node/ in device specific
+devicetrees.
+
+> +		reg = <0x15>;
+> +		interrupts-extended = <&pio 11 IRQ_TYPE_LEVEL_LOW>;
+> +		vcc-supply = <&pp3300_s3>;
+> +		wakeup-source;
+> +	};
+> +};
 
 
+corsola.dtsi (here):
 
-I would s
+&i2c2 {
+	pinctrl-names = "default";
+	/*
+	 * Trackpad pin put here to work around second source components
+	 * sharing the pinmux in steelix designs.
+	 */
+	pinctrl-0 = <&i2c2_pins>, <&trackpad_pin>;
+	clock-frequency = <400000>;
+	i2c-scl-internal-delay-ns = <10000>;
+	status = "okay";
 
-> diff --git a/net/vmw_vsock/hyperv_transport.c b/net/vmw_vsock/hyperv_transport.c
-> index 7cb1a9d2cdb4..e2157e387217 100644
-> --- a/net/vmw_vsock/hyperv_transport.c
-> +++ b/net/vmw_vsock/hyperv_transport.c
-> @@ -816,7 +816,7 @@ int hvs_notify_send_post_enqueue(struct vsock_sock *vsk, ssize_t written,
->  }
->  
->  static
-> -int hvs_set_rcvlowat(struct vsock_sock *vsk, int val)
-> +int hvs_notify_set_rcvlowat(struct vsock_sock *vsk, int val)
->  {
->  	return -EOPNOTSUPP;
->  }
-> @@ -856,7 +856,7 @@ static struct vsock_transport hvs_transport = {
->  	.notify_send_pre_enqueue  = hvs_notify_send_pre_enqueue,
->  	.notify_send_post_enqueue = hvs_notify_send_post_enqueue,
->  
-> -	.set_rcvlowat             = hvs_set_rcvlowat
-> +	.notify_set_rcvlowat      = hvs_notify_set_rcvlowat
->  };
->  
->  static bool hvs_check_transport(struct vsock_sock *vsk)
-> -- 
-> 2.25.1
+	trackpad_i2c2_15: trackpad@15 {
+		/*
+		 * Those are common properties for i2c2 trackpad on Corsola boards.
+		 * The compatible string is declared in device specific devicetrees
+		 */
+		reg = <0x15>;
+		interrupts-extended = <&pio 11 IRQ_TYPE_LEVEL_LOW>;
+		vcc-supply = <&pp3300_s3>;
+		wakeup-source;
+		status = "disabled";
+	};
+};
 
+corsola-some-device.dts:
+
+&trackpad_i2c2_15 {
+	compatible = "hid-over-i2c";
+	hid-descr-addr = <0x0001>;
+	status = "okay";
+};
+
+corsola-some-other-device.dts:
+
+&trackpad_i2c2_15 {
+	compatible = "elan,ekth3000";
+	status = "okay";
+};
+
+....everything else looks good.
+
+Cheers,
+Angelo
