@@ -2,141 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 10C04812C77
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 11:06:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 62665812C7B
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 11:06:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1443530AbjLNKGP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 05:06:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55786 "EHLO
+        id S1443565AbjLNKG0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 05:06:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55918 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1443529AbjLNKGN (ORCPT
+        with ESMTP id S1443529AbjLNKGW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 05:06:13 -0500
-Received: from FRA01-MR2-obe.outbound.protection.outlook.com (mail-mr2fra01on2045.outbound.protection.outlook.com [40.107.9.45])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 779EDB2;
-        Thu, 14 Dec 2023 02:06:18 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=j3SSVJo191XyERLgZc6FIDGs+O2U0zyqP1MoKTKlbpsfPQdg1cwQ1NNjd2uv2p8J9C5l9f2zqmBA1vElDR3bCau1GlQOcy9/kCdILWqzaUHD7AY/mCEwSCnXKsS12BKGN3R8Mqi3DGWtOcMEko3vbnDQoeXy15jmxfXs+t6Qs2k1wPtIHgzm6reSGdnElfTYGJ8so93nX+Avgh6XkT/IPSuwkDqAeh6HKnuk/yNcZv5vzmCc00U6ng8+107Bn+Sov3HOjOlk+bTHyJ6usSkH2DILzyQeWAXP/u0mICcLuDh0jVgwuZ+7i/7U0lLdNHXaYBJUN6KT6CzAFbQ/dYTIHw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=X0geG+idqdCbIRUqjpU/QuH6oRdBjNpbzz13EXG/z2s=;
- b=hPSW940VsSYcJ4RI8o6FXacF+EvV2I5Huhv7hK0Zxs9LhllfO96kbeJhFjr1Ns046nJWlKwb8pbpwclN98LeX3F/GJZWnpapwuYo+VhYGBVpkoLZIjYg/qNNeL7v6udq1o7w6MyQRyiU1lIyVDqCUGgpkKTYaVVvCeasOOMNLtWz+ij9p9LB2K9ej4r50vtznQfzb7uQ7e02aJjAM9ZsHTkTZ06DBZ9zClgQjg7dA4cdPRGJ0FaIF+d7dtgp3uUO7gSDwZvBCK5ybG16pwqHJwV4znbV3GrZPZKFtySF9z0UEXsMmF8BpTF42HeczdKw1XMFpRdBXEdGe0LfLapgJA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=csgroup.eu; dmarc=pass action=none header.from=csgroup.eu;
- dkim=pass header.d=csgroup.eu; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=csgroup.eu;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=X0geG+idqdCbIRUqjpU/QuH6oRdBjNpbzz13EXG/z2s=;
- b=BLqrxx+tnGbUIlczUeQ/exqv8yv3ksAPJ9JU2ig+pUm2psmnpOeK0fMBNjmn1vw/Dp3fbb5TNK2kkt0Wx4vfFySRCfvsvgi439EYLUhzMk5kB3cgA5woFtQBG0Y40rAaV2Z7hXmBl4LGr+FuQ/XdKjjbpUetUOcOOgDVf66md1Hz7dUAo599ZIQOjistABCRAPIH9iFgvIcidYh9tWgB1FLt7Y45LW3VW2BqldT0Q9i5/diVzrhJJpLUBT9SUxbi7vrzNpgPsdsfOVzO/8GWmWb7GcNqW2aHLsO6zoxJvH6RKBKWcRb7Zkly0RM9wW4XNDjnB57eL5NOVNsyuJobUQ==
-Received: from MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM (2603:10a6:501:31::15)
- by PR1P264MB2048.FRAP264.PROD.OUTLOOK.COM (2603:10a6:102:1b3::5) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7091.28; Thu, 14 Dec
- 2023 10:06:15 +0000
-Received: from MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM
- ([fe80::f788:32b4:1c5e:f264]) by MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM
- ([fe80::f788:32b4:1c5e:f264%7]) with mapi id 15.20.7091.028; Thu, 14 Dec 2023
- 10:06:15 +0000
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-To:     George Stark <gnstark@salutedevices.com>,
-        "andy.shevchenko@gmail.com" <andy.shevchenko@gmail.com>,
-        "pavel@ucw.cz" <pavel@ucw.cz>, "lee@kernel.org" <lee@kernel.org>,
-        "vadimp@nvidia.com" <vadimp@nvidia.com>,
-        "mpe@ellerman.id.au" <mpe@ellerman.id.au>,
-        "npiggin@gmail.com" <npiggin@gmail.com>,
-        "hdegoede@redhat.com" <hdegoede@redhat.com>,
-        "mazziesaccount@gmail.com" <mazziesaccount@gmail.com>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "will@kernel.org" <will@kernel.org>,
-        "longman@redhat.com" <longman@redhat.com>,
-        "boqun.feng@gmail.com" <boqun.feng@gmail.com>,
-        "nikitos.tr@gmail.com" <nikitos.tr@gmail.com>
-CC:     "linux-leds@vger.kernel.org" <linux-leds@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
-        "kernel@salutedevices.com" <kernel@salutedevices.com>
-Subject: Re: [PATCH v3 03/11] devm-helpers: introduce devm_mutex_init
-Thread-Topic: [PATCH v3 03/11] devm-helpers: introduce devm_mutex_init
-Thread-Index: AQHaLhP7EUtTiJmPIEy5WnZk/rrl9LCoji8A
-Date:   Thu, 14 Dec 2023 10:06:15 +0000
-Message-ID: <80881d5d-3ae9-4580-84c1-f25b421cc518@csgroup.eu>
-References: <20231213223020.2713164-1-gnstark@salutedevices.com>
- <20231213223020.2713164-4-gnstark@salutedevices.com>
-In-Reply-To: <20231213223020.2713164-4-gnstark@salutedevices.com>
-Accept-Language: fr-FR, en-US
-Content-Language: fr-FR
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Mozilla Thunderbird
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=csgroup.eu;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: MRZP264MB2988:EE_|PR1P264MB2048:EE_
-x-ms-office365-filtering-correlation-id: a6d39062-d614-49c0-cda2-08dbfc8c4f22
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: +kYouZM2YZwI1T5iUR2cdBOBdnOKzLJphIQxNcR30qmeOU3Y1O68qlUu2z9TMuV2yXakUPVONaJa6zHqbzhweJiLVqJuMO+zMvruGCWQtSJYR+hjOLV4Uys0olINgI/AAYVCHBQa4FU9qbGI29ofcnLmmQpy+ecY1zghk3hOXmgaT3YCLOO/Oc9oa0lQHkkwSf6KUpP4jMTEU7ZCweYj+yJBZoQDZwyBhOrKvnZqrScxS6grCYmiR86SEag3l+KxkDJ/ujOKi3gu1KecxtDh21t8DRn+askJlhwtasVOHqXgnK21zUkt92Be7egpY65xkXuw3rWysG4kElrpQnzJJxnStKgwFg36O3tiAtsC8N/Vs7//aeOlAd7cCzaAFz9XyQerT813NyTHWNlBc+79/j7WgnUkOzojkVfChlZrVdiWOZHRbVN8qNSBdiahZ9tfnvsgNHT7IqVgv9YS84lJVNkVmfR5VlyjObxNkBmghFZHhByie1WOGQR9cU5LmplzvgOczd+1Ns+FuRGXJXFXf3IaKlK5YXOOIMs6Ytp1D8bhjTpGyyiq2IAVhnt5b4Ah8TUrB784zpEuBzo2lES22+j6STo36fsk/GFfzMsTuae8OL0sTUPE5daDStJjW6/ZWA7iUi/KMOQO8IQGHFG7dYDsDWy21JL3RKXDA5m2yMSiVdsQlkbiiToSit8h1P1xhzZ2cNGrwyTZMHowB7RJqA==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(376002)(136003)(346002)(396003)(366004)(230922051799003)(1800799012)(64100799003)(451199024)(186009)(31696002)(86362001)(36756003)(31686004)(91956017)(41300700001)(66556008)(478600001)(6506007)(76116006)(66946007)(66476007)(66446008)(64756008)(54906003)(71200400001)(38070700009)(921008)(26005)(6512007)(38100700002)(122000001)(83380400001)(2616005)(66574015)(7416002)(2906002)(5660300002)(316002)(110136005)(6486002)(966005)(44832011)(4326008)(8936002)(8676002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?YXhnWjZ3NlpVRTRCWmE4VjlXaXBoQnlHWS8za3hNQm0vdWVReSsycklKU09z?=
- =?utf-8?B?UHVmYUNhM0orVE50K0swSW43SjRxYWRPWk9QcTE5V0Ftb2RBS2FjMFlwYTQ3?=
- =?utf-8?B?d0gwcGo2UHdodmVqdWlZek1oOG4zaWh6bTF2aEsvQW90TElaczBkTFFNYm1B?=
- =?utf-8?B?NTd1MFRmOU80ZGtjdWsyY3lGN0N0djBKdDRmZ0RyTUNNQmJ5bW1PdkdrOXk3?=
- =?utf-8?B?RnlNdmkzZ1haOXdoTloxZVVuVTBDeklwYWFZSTVNeDRRS0phTGttRWlYU0hM?=
- =?utf-8?B?dlM1ZFNFMjV4TUZwZ3FzOEZMWmdacjJyQWNGYjc5UzlQT1Y0QmVWaldyUUJD?=
- =?utf-8?B?MW1kWS8yUFVrZzBHNllnd0pPQ1VsbmN0ODcvMWdPczZIMytCbWtTazR0SGt0?=
- =?utf-8?B?RXd2R3VGYTVSODNNTHpWUngrZEcvczdKUmQwRFBWQ0VWQjRiRlpmaHd5Titr?=
- =?utf-8?B?MURKdXNYc3Q0c1JOYzNIYWJtYXMyVS9RQkNhNTFEZm9BaEpjQmxzSW14V25G?=
- =?utf-8?B?ck53dm8xaXp5RWllMU83SkladFZ6L3JYUFV5UW0xUi9sZGtSckRIc0JRV1Nl?=
- =?utf-8?B?ZlozcDJsZi9Na0Nua2UzbkhVUm1ERFdJVi9yRDJ6SXMzK1RUUlRUWU44Y05a?=
- =?utf-8?B?S3RtY05CYzlkMTBNN0tSTFYxdCtDMDNmT3pGZFgwd1J0RDBPUStBT21vWE5B?=
- =?utf-8?B?OGNzRzFVQkdVN0J4VThCZUs0RGxoRWFiUklTWDhwMUVoWmRkek4zeDY1Y2t5?=
- =?utf-8?B?VjBCcWIwQ3VhUk1DckRYcHVMbWNkaFYxSG1tL05tL3J0YnRTNDRFK011YmhC?=
- =?utf-8?B?dm0vRFJmdFc5dkxTQW9nKy9VQm51Uy9vVldCQlJOS2pDWU1mM0Jab3NQbGxv?=
- =?utf-8?B?UGttcmVydVhjZ0dTNnBkdXlKL3RyY3ZoWWpXcHZlYXl3Ny9iYmdORFZrNFY2?=
- =?utf-8?B?NWJtSTRpcEZ3a3RjUStXTDB3b29IOGIyZ3lGS3JzNjkzMEYyeDBabHE1U3hI?=
- =?utf-8?B?Snk0a0c3U2Q0MkM2cG1OZkNsWjhPaXhTWHhVRDRvblUxMEY1QVZGRzUxUXEz?=
- =?utf-8?B?Uy9SQy9FZzRZUXkwdlZ5aUc1d1JmblIwUEVsbDFzMDVUSVQ3eEtYd0tlRFBr?=
- =?utf-8?B?ckUwblN2K0MxTmRBMEdRQWkvWUlqOWVHZEFPZ3owcWxYS1NSZWxqa2VkckJs?=
- =?utf-8?B?SGxMd3kvOExlbDY2ZFp5N05uL2lIa1Job1V2V3dkTGtBcjF1aUtaRjJtTWk3?=
- =?utf-8?B?K2pVSTdvZ2xwWFF2cFY3c2ZyMlVnWlZBNGZFUVRhUXNTTEdpY2ZESVQyaUVL?=
- =?utf-8?B?Q3BsVURjbHhUSDJiM1BPVDBoWk15dVdWRjAwMVdJZmpIb0dKU2RrbFpwNEx3?=
- =?utf-8?B?NlJ5ZnNXZjJNWXFyU0o3Ykl2RmpxdFRZTmxXTlc1T1UzYmsvNHFBT3diZEVD?=
- =?utf-8?B?T2pnSWJMM3htZ1lnQ0JwMWxpanpBTjhMaFIxZlFGNU1WaTBTZUd1T09YRUdJ?=
- =?utf-8?B?aEJLenhVZTd5eXBKU1FoKzU1emhZeHI3d1V2ZGdLVkJEbzFYMjFtS3RRdjQv?=
- =?utf-8?B?VTdNcG5LZy85OUhVSVRSdXJwajV0OVhkcWhZNHc3Lzh1ZlFzNWJmelNyWUds?=
- =?utf-8?B?ckZGVFJBN2NhdWpQL2RweXBPb0o0NXdoNmFHNmVsQ3NmQWxsYVNxS0tyODNu?=
- =?utf-8?B?TTVtZWRtUi9FbU8wdXp3QzJCN0JiUG8yV3k3Ty9ZY3A4VFpqOVkzbFhMdUJE?=
- =?utf-8?B?U29kbnBieWRHbHR2bC9EWTRZZjNRZS90OG50SkRZU25hNHFTSjhvOWNLQmZ2?=
- =?utf-8?B?YVJCUzNsSURxVTJpOWtaRTZnUXhhRVVPbFkxYlF1dUZLSXQvU3NnZEEyQ2tE?=
- =?utf-8?B?OGFNZzR4WjNrVjN6RHBkODJ1R3Q3WENsa3JXcUh0NGh0ZGp1NkFsMlRuOHNY?=
- =?utf-8?B?MkZpME1JSVlxWjVRYmY1UlNTeER3a2JUZFg0SGV5VkFuVldBTThSeDEwRjZu?=
- =?utf-8?B?VWlNWkNYSW8yckFXTHVLV3RBMkhaR3hRbVVSUWxPVlZWUi9pYVhYazZzZ294?=
- =?utf-8?B?M1FJbGFCVFZOcGR3WGRxcHU1MjlBZzVBVWFnT0w4a2VHS0k5RVlzWDR2b2xL?=
- =?utf-8?B?d3MyakUwbmJQUUlSVGgxV0dtd3FKd2o4WXhWUzVzT1hLT25nYS81dUFXaVhq?=
- =?utf-8?B?NUE9PQ==?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <3FDC7E099C05AC4FBB5FCB90D554C5EB@FRAP264.PROD.OUTLOOK.COM>
-Content-Transfer-Encoding: base64
+        Thu, 14 Dec 2023 05:06:22 -0500
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72656125;
+        Thu, 14 Dec 2023 02:06:28 -0800 (PST)
+Received: by mail-lf1-x12a.google.com with SMTP id 2adb3069b0e04-50be24167efso9159240e87.3;
+        Thu, 14 Dec 2023 02:06:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1702548386; x=1703153186; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=5V4Zfz6XRU9uCFd234VmP4ICcrU9hXjNDlJGMb8vpTg=;
+        b=h3oJWEYOy6NBVWCdapTuL9EqUm4WzZ0HQI034vzVXUSVYdGCyxhR91WvTGLpjiShdK
+         8r0zottbvLHNuW3duz31ZFvFuMPMIeSh7+4qWBa10pjNMSNuCed7zBkGOb3ZaU/7aR+x
+         zTeEU/LRzsDm+pop+I11xCDhOgLfSH20iQ/DZDZPghpAIAqPjJv4kbb1WqENmWW6W2tv
+         280sOAf0UnBnoN6SfD9Nb1zVYnQdjNFB47rc9jAAk/9Imx29HCKhmykIYAHTX8qZywzR
+         2p7MWmIR+v5VHoQ7AShwFrhrGxienh1liYERkxN0cIWsVoDusR+jCsd+4Scf6vpiZFb0
+         mE2A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702548386; x=1703153186;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=5V4Zfz6XRU9uCFd234VmP4ICcrU9hXjNDlJGMb8vpTg=;
+        b=nEfjPsI0ocl+e+AxQZTCsx4dKK8FYiS4F+Vkm4skrKHOOm97z3dUUVhqHYQpnXaqMf
+         AiAaXpKQKWyaE4GUS5ZrL3tBPqPLEgbNMl0hYKoLMZMadJcwpfZOqHCM2u32yghluhRT
+         LFIQ7NaYW223F15EWeVe0zx/Dl7C57AmKgwXGqXI9+5It3q5SPWJnzOEQg7AbgKuTxoh
+         lx5QLj8hc7G9/PiG3tYAG7pfp3oi2kgnm7jR6RTLkHDm64ZvmQQ29LCQ9WT7JfyTQzl0
+         OG0y30vzhZoeCUboGVmw92GoXos68pQPRsWkZ+GfZsjMRxcC4YjFEKGFf/VqJuwRRN93
+         ZSGQ==
+X-Gm-Message-State: AOJu0YzbSxS8OWbqrePLSj1JYtkpV2ql56BMVrLpMQUWjxnWFKp8OjNq
+        6zX9POBAMWu73b1rLzbFMIg=
+X-Google-Smtp-Source: AGHT+IGopw4QyFfgA+rRb4sowL1hUkxX9gnIMDNKEAqTFmIs/F3tmFpZSM60D3lFcsprsv7XAhb4WQ==
+X-Received: by 2002:ac2:559a:0:b0:50b:e73c:ff55 with SMTP id v26-20020ac2559a000000b0050be73cff55mr1967278lfg.250.1702548386238;
+        Thu, 14 Dec 2023 02:06:26 -0800 (PST)
+Received: from mobilestation ([178.176.56.174])
+        by smtp.gmail.com with ESMTPSA id j4-20020a056512028400b0050e1b5304b2sm14508lfp.170.2023.12.14.02.06.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 Dec 2023 02:06:25 -0800 (PST)
+Date:   Thu, 14 Dec 2023 13:06:23 +0300
+From:   Serge Semin <fancer.lancer@gmail.com>
+To:     xiongxin <xiongxin@kylinos.cn>,
+        Thomas Gleixner <tglx@linutronix.de>
+Cc:     jikos@kernel.org, benjamin.tissoires@redhat.com,
+        linux-input@vger.kernel.org, stable@vger.kernel.org,
+        Riwen Lu <luriwen@kylinos.cn>, hoan@os.amperecomputing.com,
+        linus.walleij@linaro.org, brgl@bgdev.pl, andy@kernel.org,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] irq: Resolve that mask_irq/unmask_irq may not be called
+ in pairs
+Message-ID: <f5vtfoqylht5ijj6tdvxee3f3u6ywps2it7kv3fhmfsx75od2y@ftjlt4t4z4dk>
+References: <20231207014003.12919-1-xiongxin@kylinos.cn>
+ <87ttosssxd.ffs@tglx>
+ <e125491c-4cdb-4870-924a-baeb7453bf78@kylinos.cn>
+ <874jgnqwlo.ffs@tglx>
+ <bf4004bf-4868-4953-8d8e-0c0e03be673e@kylinos.cn>
+ <875y12p2r0.ffs@tglx>
+ <1844c927-2dd4-49b4-a6c4-c4c176b1f75d@kylinos.cn>
 MIME-Version: 1.0
-X-OriginatorOrg: csgroup.eu
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-Network-Message-Id: a6d39062-d614-49c0-cda2-08dbfc8c4f22
-X-MS-Exchange-CrossTenant-originalarrivaltime: 14 Dec 2023 10:06:15.6054
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 9914def7-b676-4fda-8815-5d49fb3b45c8
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: dg7zzZRC3P0Odd9zjsYTclh0eE276QhUt0JXZTPSgGR11/XB8YnxCyiGpBacDrdJ2tSPzVeJFQpemfLJ+delkxBxjS85Ga/T8sbbu1hIwxg=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PR1P264MB2048
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1844c927-2dd4-49b4-a6c4-c4c176b1f75d@kylinos.cn>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -144,56 +84,117 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DQoNCkxlIDEzLzEyLzIwMjMgw6AgMjM6MzAsIEdlb3JnZSBTdGFyayBhIMOpY3JpdMKgOg0KPiBb
-Vm91cyBuZSByZWNldmV6IHBhcyBzb3V2ZW50IGRlIGNvdXJyaWVycyBkZSBnbnN0YXJrQHNhbHV0
-ZWRldmljZXMuY29tLiBEw6ljb3V2cmV6IHBvdXJxdW9pIGNlY2kgZXN0IGltcG9ydGFudCDDoCBo
-dHRwczovL2FrYS5tcy9MZWFybkFib3V0U2VuZGVySWRlbnRpZmljYXRpb24gXQ0KPiANCj4gVXNp
-bmcgb2YgZGV2bSBBUEkgbGVhZHMgdG8gYSBjZXJ0YWluIG9yZGVyIG9mIHJlbGVhc2luZyByZXNv
-dXJjZXMuDQo+IFNvIGFsbCBkZXBlbmRlbnQgcmVzb3VyY2VzIHdoaWNoIGFyZSBub3QgZGV2bS13
-cmFwcGVkIHNob3VsZCBiZSBkZWxldGVkDQo+IHdpdGggcmVzcGVjdCB0byBkZXZtLXJlbGVhc2Ug
-b3JkZXIuIE11dGV4IGlzIG9uZSBvZiBzdWNoIG9iamVjdHMgdGhhdA0KPiBvZnRlbiBpcyBib3Vu
-ZCB0byBvdGhlciByZXNvdXJjZXMgYW5kIGhhcyBubyBvd24gZGV2bSB3cmFwcGVyLg0KPiBTaW5j
-ZSBtdXRleF9kZXN0cm95KCkgYWN0dWFsbHkgZG9lcyBub3RoaW5nIGluIG5vbi1kZWJ1ZyBidWls
-ZHMNCj4gZnJlcXVlbnRseSBjYWxsaW5nIG11dGV4X2Rlc3Ryb3koKSBpcyBqdXN0IGlnbm9yZWQg
-d2hpY2ggaXMgc2FmZSBmb3Igbm93DQo+IGJ1dCB3cm9uZyBmb3JtYWxseSBhbmQgY2FuIGxlYWQg
-dG8gYSBwcm9ibGVtIGlmIG11dGV4X2Rlc3Ryb3koKSBpcw0KPiBleHRlbmRlZCBzbyBpbnRyb2R1
-Y2UgZGV2bV9tdXRleF9pbml0KCkuDQoNClNvIHlvdSBhYmFuZG9ubmVkIHRoZSBpZGVhIG9mIHVz
-aW5nIG11dGV4LmggPw0KDQpJIGNhbid0IHNlZSB0aGUgcG9pbnQgdG8gc3ByZWFkIG11dGV4IGZ1
-bmN0aW9ucyBpbnRvIGRldm0taGVscGVycy5oDQoNCkFkZGluZyBhIG11dGV4X2Rlc3Ryb3kgbWFj
-cm8gZm9yIHRoaXMgcHVycG9zZSBsb29rcyBvZGQuIEFuZCBpZiBzb21lb25lIA0KZGVmaW5lcyBh
-IG5ldyB2ZXJzaW9uIG9mIG11dGV4X2Rlc3Ryb3koKSBhbmQgZm9yZ2V0IHRoZSBtYWNybywgaXQg
-d2lsbCANCmdvIHVuZGV0ZWN0ZWQuDQoNClVzdWFsbHkgbWFjcm9zIG9mIHRoYXQgdHlwZSBzZXJ2
-ZSB0aGUgcHVycG9zZSBvZiBkZWZpbmluZyBhIGZhbGxiYWNrIA0Kd2hlbiB0aGUgbWFjcm8gaXMg
-bm90IGRlZmluZWQuIEluIHRoYXQgY2FzZSwgd2hlbiBzb21lb25lIGFkZHMgYSBuZXcgDQp2ZXJz
-aW9uIHdpdGhvdXQgZGVmaW5pbmcgdGhlIG1hY3JvLCBpdCBnZXRzIGRldGVjdGVkIGJlY2F1c2Ug
-aWYgDQpjb25mbGljdHMgd2l0aCB0aGUgZmFsbGJhY2suDQpCdXQgaW4geW91ciBjYXNlIGl0IHdv
-cmtzIHRoZSBvdGhlciB3YXkgcm91bmQsIHNvIEkgd2lsbCBqdXN0IGdvIHVuZGV0ZWN0ZWQuDQoN
-CkZvciBtZSB0aGUgYmVzdCBzb2x1dGlvbiByZW1haW5zIHRvIHVzZSBtdXRleC5oIGFuZCBoYXZl
-IA0KZGV2bV9tdXRleF9pbml0KCkgZGVmaW5lZCBvciBkZWNsYXJlZCBhdCB0aGUgc2FtZSBwbGFj
-ZSBhcyBtdXRleF9kZXN0cm95KCkuDQoNCg0KPiANCj4gU2lnbmVkLW9mZi1ieTogR2VvcmdlIFN0
-YXJrIDxnbnN0YXJrQHNhbHV0ZWRldmljZXMuY29tPg0KPiAtLS0NCj4gICBpbmNsdWRlL2xpbnV4
-L2Rldm0taGVscGVycy5oIHwgMjcgKysrKysrKysrKysrKysrKysrKysrKysrKysrDQo+ICAgMSBm
-aWxlIGNoYW5nZWQsIDI3IGluc2VydGlvbnMoKykNCj4gDQo+IGRpZmYgLS1naXQgYS9pbmNsdWRl
-L2xpbnV4L2Rldm0taGVscGVycy5oIGIvaW5jbHVkZS9saW51eC9kZXZtLWhlbHBlcnMuaA0KPiBp
-bmRleCA3NDg5MTgwMjIwMGQuLjQwNDNjMzQ4MWQyZSAxMDA2NDQNCj4gLS0tIGEvaW5jbHVkZS9s
-aW51eC9kZXZtLWhlbHBlcnMuaA0KPiArKysgYi9pbmNsdWRlL2xpbnV4L2Rldm0taGVscGVycy5o
-DQo+IEBAIC0yNCw2ICsyNCw3IEBADQo+ICAgICovDQo+IA0KPiAgICNpbmNsdWRlIDxsaW51eC9k
-ZXZpY2UuaD4NCj4gKyNpbmNsdWRlIDxsaW51eC9tdXRleC5oPg0KPiAgICNpbmNsdWRlIDxsaW51
-eC93b3JrcXVldWUuaD4NCj4gDQo+ICAgc3RhdGljIGlubGluZSB2b2lkIGRldm1fZGVsYXllZF93
-b3JrX2Ryb3Aodm9pZCAqcmVzKQ0KPiBAQCAtNzYsNCArNzcsMzAgQEAgc3RhdGljIGlubGluZSBp
-bnQgZGV2bV93b3JrX2F1dG9jYW5jZWwoc3RydWN0IGRldmljZSAqZGV2LA0KPiAgICAgICAgICBy
-ZXR1cm4gZGV2bV9hZGRfYWN0aW9uKGRldiwgZGV2bV93b3JrX2Ryb3AsIHcpOw0KPiAgIH0NCj4g
-DQo+ICsjaWZkZWYgbXV0ZXhfZGVzdHJveQ0KPiArc3RhdGljIGlubGluZSB2b2lkIGRldm1fbXV0
-ZXhfcmVsZWFzZSh2b2lkICpyZXMpDQo+ICt7DQo+ICsgICAgICAgbXV0ZXhfZGVzdHJveShyZXMp
-Ow0KPiArfQ0KPiArI2VuZGlmDQo+ICsNCj4gKy8qKg0KPiArICogZGV2bV9tdXRleF9pbml0IC0g
-UmVzb3VyY2UtbWFuYWdlZCBtdXRleCBpbml0aWFsaXphdGlvbg0KPiArICogQGRldjogICAgICAg
-RGV2aWNlIHdoaWNoIGxpZmV0aW1lIG11dGV4IGlzIGJvdW5kIHRvDQo+ICsgKiBAbG9jazogICAg
-ICBQb2ludGVyIHRvIGEgbXV0ZXgNCj4gKyAqDQo+ICsgKiBJbml0aWFsaXplIG11dGV4IHdoaWNo
-IGlzIGF1dG9tYXRpY2FsbHkgZGVzdHJveWVkIHdoZW4gdGhlIGRyaXZlciBpcyBkZXRhY2hlZC4N
-Cj4gKyAqDQo+ICsgKiBSZXR1cm5zOiAwIG9uIHN1Y2Nlc3Mgb3IgYSBuZWdhdGl2ZSBlcnJvciBj
-b2RlIG9uIGZhaWx1cmUuDQo+ICsgKi8NCj4gK3N0YXRpYyBpbmxpbmUgaW50IGRldm1fbXV0ZXhf
-aW5pdChzdHJ1Y3QgZGV2aWNlICpkZXYsIHN0cnVjdCBtdXRleCAqbG9jaykNCj4gK3sNCj4gKyAg
-ICAgICBtdXRleF9pbml0KGxvY2spOw0KPiArI2lmZGVmIG11dGV4X2Rlc3Ryb3kNCj4gKyAgICAg
-ICByZXR1cm4gZGV2bV9hZGRfYWN0aW9uX29yX3Jlc2V0KGRldiwgZGV2bV9tdXRleF9yZWxlYXNl
-LCBsb2NrKTsNCj4gKyNlbHNlDQo+ICsgICAgICAgcmV0dXJuIDA7DQo+ICsjZW5kaWYNCj4gK30N
-Cj4gKw0KPiAgICNlbmRpZg0KPiAtLQ0KPiAyLjI1LjENCj4gDQo=
+Hi Thomas, Xiong
+
+On Thu, Dec 14, 2023 at 09:54:06AM +0800, xiongxin wrote:
+> 在 2023/12/13 22:59, Thomas Gleixner 写道:
+> > On Wed, Dec 13 2023 at 10:29, xiongxin wrote:
+> > > 在 2023/12/12 23:17, Thomas Gleixner 写道:
+> > > Sorry, the previous reply may not have clarified the BUG process. I
+> > > re-debugged and confirmed it yesterday. The current BUG execution
+> > > sequence is described as follows:
+> > 
+> > It's the sequence how this works and it works correctly.
+> > 
+> > Just because it does not work on your machine it does not mean that this
+> > is incorrect and a BUG.
+> > 
+> > You are trying to fix a symptom and thereby violating guarantees of the
+> > core code.
+> > 
+> > > That is, there is a time between the 1:handle_level_irq() and
+> > > 3:irq_thread_fn() calls for the 2:disable_irq() call to acquire the lock
+> > > and then implement the irq_state_set_disabled() operation. When finally
+> > > call irq_thread_fn()->irq_finalize_oneshot(), it cannot enter the
+> > > unmask_thread_irq() process.
+> > 
+> > Correct, because the interrupt has been DISABLED in the mean time.
+> > 
+> > > In this case, the gpio irq_chip irq_mask()/irq_unmask() callback pairs
+> > > are not called in pairs, so I think this is a BUG, but not necessarily
+> > > fixed from the irq core code layer.
+> > 
+> > No. It is _NOT_ a BUG. unmask() is not allowed to be invoked when the
+> > interrupt is DISABLED. That's the last time I'm going to tell you that.
+> > Only enable_irq() can undo the effect of disable_irq(), period.
+> > 
+> > > Next, when the gpio controller driver calls the suspend/resume process,
+> > > it is as follows:
+> > > 
+> > > suspend process:
+> > > dwapb_gpio_suspend()
+> > >       ctx->int_mask   = dwapb_read(gpio, GPIO_INTMASK);
+> > > 
+> > > resume process:
+> > > dwapb_gpio_resume()
+> > >       dwapb_write(gpio, GPIO_INTMASK, ctx->int_mask);
+> > 
+> > Did you actually look at the sequence I gave you?
+> > 
+> >     Suspend:
+> > 
+> > 	  i2c_hid_core_suspend()
+> > 	     disable_irq();       <- Marks it disabled and eventually
+> > 				     masks it.
+> > 
+> > 	  gpio_irq_suspend()
+> > 	     save_registers();    <- Saves masked interrupt
+> > 
+> >     Resume:
+> > 
+> > 	  gpio_irq_resume()
+> > 	     restore_registers(); <- Restores masked interrupt
+> > 
+> > 	  i2c_hid_core_resume()
+> > 	     enable_irq();        <- Unmasks interrupt and removes the
+> > 				     disabled marker
+> > 
+> > 
+> > Have you verified that this order of invocations is what happens on
+> > your machine?
+> > 
+> > Thanks,
+> > 
+> >          tglx
+> 
+> As described earlier, in the current situation, the irq_mask() callback of
+> gpio irq_chip is called in mask_irq(), followed by the disable_irq() in
+> i2c_hid_core_suspend(), unmask_irq() will not be executed.
+> 
+> Then call enable_irq() in i2c_hid_core_resume(). Since gpio irq_chip does
+> not implement the irq_startup() callback, it ends up calling irq_enable().
+> 
+> The irq_enable() function is then implemented as follows:
+> 
+> irq_state_clr_disabled(desc);
+> if (desc->irq_data.chip->irq_enable) {
+> 	desc->irq_data.chip->irq_enable(&desc->irq_data);
+> 	irq_state_clr_masked(desc);
+> } else {
+> 	unmask_irq(desc);
+> }
+> 
+> Because gpio irq_chip implements irq_enable(), unmask_irq() is not executed,
+> and gpio irq_chip's irq_unmask() callback is not called. Instead,
+> irq_state_clr_masked() was called to clear the masked flag.
+> 
+> The irq masked behavior is actually controlled by the
+> irq_mask()/irq_unmask() callback function pairs in gpio irq_chip. When the
+> whole situation occurs, there is one more irq_mask() operation, or one less
+> irq_unmask() operation. This ends the i2c hid resume and the gpio
+> corresponding i2c hid interrupt is also masked.
+> 
+> Please help confirm whether the current situation is a BUG, or suggest other
+> solutions to fix it.
+> 
+
+I has just been Cc'ed to this thread from the very start of the thread
+so not sure whether I fully understand the problem. But a while ago an
+IRQ disable/undisable-mask/unmask-unpairing problem was reported for
+DW APB GPIO driver implementation, but in a another context though:
+https://lore.kernel.org/linux-gpio/1606728979-44259-1-git-send-email-luojiaxing@huawei.com/
+We didn't come to a final conclusion back then, so the patch got lost
+in the emails archive. Xiong, is it related to the problem in your
+case?
+
+-Serge(y)
