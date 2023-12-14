@@ -1,169 +1,137 @@
-Return-Path: <linux-kernel+bounces-193-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-194-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9E1AE813D4E
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 23:35:04 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 85D17813D50
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 23:35:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 54B1B28310F
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 22:35:03 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3D9C81F21663
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 22:35:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E9F6C2C69B;
-	Thu, 14 Dec 2023 22:34:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6599666ABA;
+	Thu, 14 Dec 2023 22:35:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=os.amperecomputing.com header.i=@os.amperecomputing.com header.b="EGvakLnA"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="mQvxasax"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2115.outbound.protection.outlook.com [40.107.94.115])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f43.google.com (mail-ej1-f43.google.com [209.85.218.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1BE51671E7
-	for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 22:34:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=os.amperecomputing.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=os.amperecomputing.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=TdI06iJu09/dCtncdvdurFnNY3xG3XNcTOdwH8cv6O/U9jc5Z6qRiJqJF/eWTQZBFpNV1iiWEY65+SOxlrNxUoeox5k6poP/FG47aE37VYSqPnEOmOsZT5wN31xXigqdvxEqjU0dwe/pXTaVXHTdQDyQnHkShnUyIAOanul1zrpiiRjlbEu6NxsqSViG5C4pOdd0OYeLH7tpe8hG4wXgHn7a0aW4k3P0z+1bs77uJEpMHOM0VqQ5U6ispMuNFrkXSRZOPS/czMTvl4arBWQ4cH+mbTIZxMQxRdVRO0ziNfBozkdRSnNwGm/Keedcp6hQQkri9UhSsZLwNrH1oYsefw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=+BbGHNFDqbLs84+grYdyze7BUBnAr0BBq8KJg5XdSIs=;
- b=ILVQH7gmhA2qV36SJQ1vJRo981bJ8TZAWqtJFE6EXMcvl2ZZSsMssp0x/Ok4rnFUvANDZNiT7F7+wRlxkQkWidXpwhHiL/33vtD8GjjJrbmraaVkZ100pMe1bzxLG4TnU//S/56rGaC/euGCcU9fKnH7qjcjk3CSLDJdO15pnNXddLkJpzrGIxOq57WfVGBS+oMlYEqGTPbeXNyDHbC72CsrCABEgDyHCqM440gL8AYRcHDXTcqkumS7BuKxpxveMoykcB+LFIA8XfNyAe01mM39tAUFujesaLSeYZa+iH80Z2iKc6BEfpmYEqB2jIuc7MoOl4JC/y/yRDFjbcO+tw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=os.amperecomputing.com; dmarc=pass action=none
- header.from=os.amperecomputing.com; dkim=pass
- header.d=os.amperecomputing.com; arc=none
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B2626671E7
+	for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 22:35:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ej1-f43.google.com with SMTP id a640c23a62f3a-a1e2ded3d9fso11512466b.0
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 14:35:45 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=os.amperecomputing.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=+BbGHNFDqbLs84+grYdyze7BUBnAr0BBq8KJg5XdSIs=;
- b=EGvakLnA/Io13ZX9LdALGtA1xBDVa5yT1HdbU0BeL73z6622Kt6QTyYwG4FtmbEKnErN3pRx3LX6Eh1ZDsimm+Nve2g2aJW7MdckGtwevI13p65wkiW25W40MPNoE4ETotSLaPoLFKrd1aGjfJ2P2XVpZym3x82c0E9Swki86IU=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=os.amperecomputing.com;
-Received: from PH0PR01MB7492.prod.exchangelabs.com (2603:10b6:510:f3::6) by
- PH0PR01MB8166.prod.exchangelabs.com (2603:10b6:510:293::17) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7091.28; Thu, 14 Dec 2023 22:34:44 +0000
-Received: from PH0PR01MB7492.prod.exchangelabs.com
- ([fe80::f6b3:cbb5:65c9:b0ef]) by PH0PR01MB7492.prod.exchangelabs.com
- ([fe80::f6b3:cbb5:65c9:b0ef%3]) with mapi id 15.20.7091.028; Thu, 14 Dec 2023
- 22:34:44 +0000
-From: Yang Shi <yang@os.amperecomputing.com>
-To: riel@surriel.com,
-	shy828301@gmail.com,
-	willy@infradead.org,
-	cl@linux.com,
-	akpm@linux-foundation.org
-Cc: linux-kernel@vger.kernel.org,
-	linux-mm@kvack.org
-Subject: [RESEND PATCH] mm: align larger anonymous mappings on THP boundaries
-Date: Thu, 14 Dec 2023 14:34:23 -0800
-Message-ID: <20231214223423.1133074-1-yang@os.amperecomputing.com>
-X-Mailer: git-send-email 2.41.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: CH2PR20CA0011.namprd20.prod.outlook.com
- (2603:10b6:610:58::21) To PH0PR01MB7492.prod.exchangelabs.com
- (2603:10b6:510:f3::6)
+        d=linaro.org; s=google; t=1702593344; x=1703198144; darn=vger.kernel.org;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=W/Wmx4TpLF8+lB6I8uR0FvmZriN6eFrYagCqgmm2SWk=;
+        b=mQvxasaxdKcxCBG0SK8QJNaBk7qIKNdAOJ4ybw6Qmn/IT0hNuQ3y939DiB0FTbiKjm
+         lo4fd7AFt1xTrBhYpA+fENL6D1NiaF4PuvlfkNJFBUzYOmqohBgfFVyNY40uXxjJrOO3
+         jxA4GZ/ILmxErr6MM7yZWfh/dnlKEoc4NqBgBOSpYhLJgiXz8UlvK4nWq6XRaJvRoEww
+         8Ob5WAALCBp9N3VHBQKsxElG8iqq9mR/fe09crM786lDXWTYhzRCJA2L5LOxxDrpXBgU
+         nRwraldb+KnZcyhxNcmQAiPyrWzYzx6/DKLFOq21Nt/1xIzRW1FYokUqDO5XpIWt2vfs
+         aGmw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702593344; x=1703198144;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=W/Wmx4TpLF8+lB6I8uR0FvmZriN6eFrYagCqgmm2SWk=;
+        b=RTnkka8J7ONww5VJr3XOiLjeROSnNMlTZkg8VmAwpUMVANMtObPjdRjmx0aJs3+xR/
+         xjc7e386HPHSpS0VPDE1JcjxS8owcgowQFSiaEDFtkMduHTX8sxaWOh7P7/l8j6iYGzu
+         M1PFzpbaI0CQFj9N3Iyeqi8ATPnrBX6otAQc7mT9r5VoV0LhcAcbj2dtLcNe3MrpNLB2
+         qyz4RAMhwZztmVK+s6UsCg3BkyJQ0F2OdEs2IYTqCewpThG+4/GtFVCwV7V9GlR+m+zD
+         zjVW/ajHvmovGinrc3j0//RYsiuLN9Eyof9F6mOKIEd9R7/kEor16q2RPQCcv02TeZTG
+         0ofQ==
+X-Gm-Message-State: AOJu0YxIJm6LUKGm05liHaSIKxzxEguutCODnb+5wbvZX54ozG9YT6qE
+	x0kt+v7RIxy4vY7n3zrp0k+Oxw==
+X-Google-Smtp-Source: AGHT+IHBUfjW/U017n6GjofZz9DRM/BS29ZM6w1w/ASVPM8T7ljlXUtro1pAKrugLXsPufPCrI8nnw==
+X-Received: by 2002:a17:906:c0c5:b0:a19:a19b:78cf with SMTP id bn5-20020a170906c0c500b00a19a19b78cfmr5571775ejb.146.1702593344037;
+        Thu, 14 Dec 2023 14:35:44 -0800 (PST)
+Received: from [127.0.1.1] ([79.115.23.25])
+        by smtp.gmail.com with ESMTPSA id z9-20020a170906d00900b009c5c5c2c5a4sm9975877ejy.219.2023.12.14.14.35.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 Dec 2023 14:35:43 -0800 (PST)
+From: Abel Vesa <abel.vesa@linaro.org>
+Subject: [PATCH v2 0/2] arm64: dts: qcom: Add missing nodes to X1E80100
+ base dtsi and CRD dts
+Date: Fri, 15 Dec 2023 00:35:36 +0200
+Message-Id: <20231215-x1e80100-dts-missing-nodes-v2-0-5a6efc04d00c@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH0PR01MB7492:EE_|PH0PR01MB8166:EE_
-X-MS-Office365-Filtering-Correlation-Id: 8604f7ff-84a5-41c3-2a20-08dbfcf4decf
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	alfkTjEEtnIj0tgP2MuvCZclvmQRGTnijB88RLQE85GBI/QEv0QQtUR5k6XejXPz/91hsK967dHcsPJi4G3U3vXQjywnujuomyvTMNgje9X9AUW1rQZvGiuCTHEMmwM7qAe5ZUWEyGZ/DDGGjNGxOlwAW5VXck/PxdUnE4M0jyTpzw+or7s3XxsdgPTGp6fVWpsRNtp9I/llsk+Wpo3VXahFuSTGyEXAo1h6IImukDriix053cR4SHwODxG4t67EF5n5aP3EdetZiBThPtvEE65e+CdcSWlpd6Sx9S4iHweEo+uBwxRgn/u8kpwVTbDgi0iwvCFcGmO2cPC/QwFgnS1zHJfmxF531EGNpviAGEcTy4Ln13ICfe/PXigCk1lTIxU0Lq2xxKhHGkOFT2YLad0iZypHGE9eFB1LNfV10Z1VPnrTP/FLTycI3jKJeHXBIcceYQfHpnQEZPtrwAlfDB1lhFBG8XVaJuWs0D4bS6SWSMwvdDJ2Nnqo0xz4Bhkk5YBe+CclmXK1qMowRpCE4+FapLcvifDYEK3tUeApkEhq2rfaJPNsbNxrDrmPWIcRt+KGygKbzjOvwDI0JvvSZXYbVJK/ZRz3c7f4ioc9H2U=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR01MB7492.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(136003)(39850400004)(396003)(346002)(376002)(230922051799003)(186009)(451199024)(64100799003)(1800799012)(8936002)(8676002)(4326008)(38100700002)(5660300002)(38350700005)(2906002)(966005)(6486002)(478600001)(1076003)(2616005)(26005)(6506007)(52116002)(6512007)(6666004)(86362001)(41300700001)(316002)(66476007)(66946007)(66556008);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?Yx9Q+ASuDo4HxeC026AfmbjQPZTTAncbCGBToBQALFf+fMieEacJApSJ34c3?=
- =?us-ascii?Q?Ti8vypclQX6Z66KqQ4vxPgfjHCTcTxLzI/4DcB14DJkMl878bh17bMEbc1xi?=
- =?us-ascii?Q?S5Vi9z9my4xM+yOWElxf8/9Iu08mCjjgAwjq7OvodkgETKNWA4yfxkxOkTvx?=
- =?us-ascii?Q?2wvoK9KhQgSuFKn5CiO2mZ4t4I99jJ6XXkuUG6j61z42xeOH+8KZ+9sey56x?=
- =?us-ascii?Q?zdJ3msIaOmBWLnKckJFvh7JEBABCz14cPYmO8if+J9UEeE+T9JiaxFrp+Nro?=
- =?us-ascii?Q?27jVTGr6zAmuZayFRm87o1XzK3m5UQQEUhfNnE5P8tndWQ05H5MX+URb9j0s?=
- =?us-ascii?Q?TacpkS5uheIAobi/jqILhyyXReGBLKMn4sW+0WrbQQks2ia4DEQskto6NtLs?=
- =?us-ascii?Q?RfOxcDvr5yT77/RLhTgVtg7UaVCn/OAWVIP63usRKY6lxqQFgKSMfJKBEwWT?=
- =?us-ascii?Q?oq/NWK0XxOgLAnw4xj2kG6yIG2zSQgmJA/Q1giNqm+8BToyWnNZndgH7v3Sb?=
- =?us-ascii?Q?cbSE20xitz1zgtf6fA499poa9OB3kXp1eOGuvUnssahSmvCjWqDgJF11b02m?=
- =?us-ascii?Q?SEMfs70ne3xSJs7K42cd9cqpr+T+LeCpGGhauqBoZB2wvXiOgdZMc2GGUYDB?=
- =?us-ascii?Q?VWmPDJ1J58ytWm78EI7/yOky+sjhRw9n695PSGDMgRr0vkYIxz1wF2BboEGn?=
- =?us-ascii?Q?Y2jp9emzA7Bj998wXQdMoFQd4/LoqWR24pzVGZtqm6skhVGsCJ3LGI9G7Wso?=
- =?us-ascii?Q?eRB4sfoQe4e8cHDxvT0e8X4jFeWDr0cM1ec70EKsXq5VfcVXoD7FzOdoAhCz?=
- =?us-ascii?Q?6d0kquA/xUkZ7hRcA+2l2EdDIr1lMuRMJ+/n+xeYtw3Yps16whdpmYrgjm73?=
- =?us-ascii?Q?aeyaKmyYZvSZ8EvlSGRhzjNzesyk0vSsJv+57+4hYN5bbY6Gsr97RC8RABri?=
- =?us-ascii?Q?kuIhkmFQpPsjN81cGQvwg8LAla+NyL8BOJAsy+FkkQc0/1QS0au+S6rA7cKt?=
- =?us-ascii?Q?Eg9RnVc6g5WHnoAWzfJjL9l8HCKXi1bUbsMHtOTPhAynkKF876EsJ4NtDtIy?=
- =?us-ascii?Q?Ys6sL8bnYnwS8Yw38yRamKkYcgc6aXKlzJfVEux8i112tg2jgovpmWd961pA?=
- =?us-ascii?Q?Dbi99mM7KT4jIJsqqtvsJ/pucL1y3Kx70t84PLSOm7H6CbbsTZjN0BPoD+WJ?=
- =?us-ascii?Q?bxZRHykUF3ijndzrL8M0RvZWKfEcfW/R/oU0abIcwK2XaENSzXdkbcuAVVnD?=
- =?us-ascii?Q?+J9qtTWp+YMHGBjU2Qhrp5eGLnHcvaTr4h/salCOfXuxfBPF5mMIcL5fY+gr?=
- =?us-ascii?Q?N9/su8rE8HTSdizCCuBDG4d7owo5AVWHCgVNkEe6O3QlR+zRtOfhtUWpwfkY?=
- =?us-ascii?Q?vNKRPsUcxsRX0S8q6aeITih+HJrXIhDZOgatAYbJFNtEkKc9c/kZHB46ZM6m?=
- =?us-ascii?Q?NoWteuy+R6Z7pClwQU5BnbQ6qkAkdENBiZvL4Y+aAbg6+OpWQBbJ5PwG2dWY?=
- =?us-ascii?Q?KhzWM9hm/FgXEyNY7FRhR5+HkxLWg256ldfw1huGWoXyOazdUjvLxLdNU1Sr?=
- =?us-ascii?Q?ZK6FGFdJLwKga7AXRdMwsMFVs8yFGYO+rTIQsSTKrGacsVfj7nXsQviTPRDW?=
- =?us-ascii?Q?eGFy5TJq7F0DLhLvFIuGXZM=3D?=
-X-OriginatorOrg: os.amperecomputing.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8604f7ff-84a5-41c3-2a20-08dbfcf4decf
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR01MB7492.prod.exchangelabs.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Dec 2023 22:34:44.5659
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3bc2b170-fd94-476d-b0ce-4229bdc904a7
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: nMh+cJuTSCSEaxPuJK5UHrbOqOTVxYik36Yj3sQwUkfRuXorecVFy+GXGgusia3tA4ClrJDFqN3E16YUR0IH7oALZAZUcXC1+wdzPNsD9uE=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR01MB8166
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIADiDe2UC/32OQQ6CMBBFr0K6drRTSQRX3sOwaOkAk2BrOoRgC
+ HcX0Lh0dm9+/s+blVBiEnXNZpVoZOEYVjCHTNWdDS0B+5WV0eaMRiNMSIVGrcEPAg8W4dBCiJ4
+ ErC4bJF9up9YBZ4XAJRvqbptw+elX/kQxDjBEkI76fis8EzU87Tb3auWOZYjptcuNuH2/Hmj+e
+ YwIGjC/GGqoNk4Xt56DTfEYU6uqZVneQ8La7fYAAAA=
+To: Andy Gross <agross@kernel.org>, Bjorn Andersson <andersson@kernel.org>, 
+ Konrad Dybcio <konrad.dybcio@linaro.org>, Rob Herring <robh+dt@kernel.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ Conor Dooley <conor+dt@kernel.org>
+Cc: linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, Abel Vesa <abel.vesa@linaro.org>, 
+ Rajendra Nayak <quic_rjendra@quicinc.com>, 
+ Sibi Sankar <quic_sibis@quicinc.com>
+X-Mailer: b4 0.12.4
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1426; i=abel.vesa@linaro.org;
+ h=from:subject:message-id; bh=2F6tRQ7/oxH542LMukW9vn1KG7LtBFSh18s72W3oEeo=;
+ b=owEBbQKS/ZANAwAKARtfRMkAlRVWAcsmYgBle4M6YPe/bj0I8kobAFpU4NA68XLEfwdh74R4d
+ D4MzZaQOhmJAjMEAAEKAB0WIQRO8+4RTnqPKsqn0bgbX0TJAJUVVgUCZXuDOgAKCRAbX0TJAJUV
+ Vo2uD/9ujiFDXQPb95MYYVmrdSwmIZbRrdjI7Db/1OgT1BnuO6pa/UhmPSfcdutVYudyh6ZOKfr
+ FXEM7E7klN1fZgtXKrHxFrwVv9M41e1Llzd2Gka5YJoBMhNZZ4yRVlGvMDsSXIyWpbXtAjAJEDN
+ HdDX6DY4mKWcnmgU+vG+Lp7jNo/ajz7cUcZ9DGyN4IcEXUrnx7nzGwJ5yTWCwzAkxJO0G03KbVa
+ Nmpx/gUsBJ2G2pzU4PFAyoBGm9Pxlx3LlO8B6hKmNyW1y1EhA+zufW+7mzJp22kUtG+KShPCSv5
+ XA4dRpCj81p08g0HW6FZJSKq+YH1Sw/7uXQGWPAoDGltY+e31PdPhceNr8MeNlkpaEazPV4GRtm
+ 4xBkGYIgDeP0nA3pyWokJozrrSb+0bxQ4wKEvD7Srz06TBBlHSAAwtLC+VM5LJrWs56ktotMuMN
+ OX/thTm2lxrnMO6AOmYNObTwjKlL0ewUeNGFCsVX9xBGQSJju39k4NUG8CTh6KaGda/oQQRBXfJ
+ ASyFl5X5ADKRT/T0LcIt2W+pXWIozIV9e/0s+X8eIG9+W5/heTKPCfVqFrEecfnekgVn7oH2yOV
+ BehrCnQg/hNUyPVd3fj5tzZ6IisXjkV8zpWaSY9cTIcguRaNcgddQJsUP/0fPpMeXlrKPjzNpZ+
+ gImiXOPTqGylCZA==
+X-Developer-Key: i=abel.vesa@linaro.org; a=openpgp;
+ fpr=6AFF162D57F4223A8770EF5AF7BF214136F41FAE
 
-From: Rik van Riel <riel@surriel.com>
+This patchset adds most of the nodes towards describing the entire
+platform. Most of these have dependencies on multimedia clock
+controllers and so the entire patchset depends on the clock controllers
+patchset:
+https://lore.kernel.org/all/20231214-x1e80100-clock-controllers-v2-0-2b0739bebd27@linaro.org/
 
-Align larger anonymous memory mappings on THP boundaries by going through
-thp_get_unmapped_area if THPs are enabled for the current process.
-
-With this patch, larger anonymous mappings are now THP aligned.  When a
-malloc library allocates a 2MB or larger arena, that arena can now be
-mapped with THPs right from the start, which can result in better TLB hit
-rates and execution time.
-
-Link: https://lkml.kernel.org/r/20220809142457.4751229f@imladris.surriel.com
-Signed-off-by: Rik van Riel <riel@surriel.com>
-Reviewed-by: Yang Shi <shy828301@gmail.com>
-Cc: Matthew Wilcox <willy@infradead.org>
-Cc: Christopher Lameter <cl@linux.com>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Abel Vesa <abel.vesa@linaro.org>
 ---
-This patch was applied to v6.1, but was reverted due to a regression
-report.  However it turned out the regression was not due to this patch.
-I ping'ed Andrew to reapply this patch, Andrew may forget it.  This
-patch helps promote THP, so I rebased it onto the latest mm-unstable.
+Changes in v2:
+- Reword both commits to make it more clear nodes that are being added
+- Dropped comments from interrupt maps from pcie nodes
+- Replace all 0x0 with 0 in all reg properties
+- Moved on separate lines reg, reset and clock names
+- Dropped the sram and cpucp nodes
+- Dropped pmic glink node
+- Reordered all new clock controller nodes based on address
+- Dropped unnecessary indent from touchpad and keyboard TLMM nodes
+- Link to v1: https://lore.kernel.org/r/20231212-x1e80100-dts-missing-nodes-v1-0-1472efec2b08@linaro.org
 
+---
+Abel Vesa (2):
+      arm64: dts: qcom: x1e80100: Add all missing nodes
+      arm64: dts: qcom: x1e80100: Add some issing nodes for CRD
 
- mm/mmap.c | 3 +++
- 1 file changed, 3 insertions(+)
+ arch/arm64/boot/dts/qcom/x1e80100-crd.dts |  221 +++++
+ arch/arm64/boot/dts/qcom/x1e80100.dtsi    | 1323 ++++++++++++++++++++++++++++-
+ 2 files changed, 1539 insertions(+), 5 deletions(-)
+---
+base-commit: d0f93829813ccb38ad35811da864672e32595f9c
+change-id: 20231201-x1e80100-dts-missing-nodes-a09f1ed99999
 
-diff --git a/mm/mmap.c b/mm/mmap.c
-index 9d780f415be3..dd25a2aa94f7 100644
---- a/mm/mmap.c
-+++ b/mm/mmap.c
-@@ -2232,6 +2232,9 @@ get_unmapped_area(struct file *file, unsigned long addr, unsigned long len,
- 		 */
- 		pgoff = 0;
- 		get_area = shmem_get_unmapped_area;
-+	} else if (IS_ENABLED(CONFIG_TRANSPARENT_HUGEPAGE)) {
-+		/* Ensures that larger anonymous mappings are THP aligned. */
-+		get_area = thp_get_unmapped_area;
- 	}
- 
- 	addr = get_area(file, addr, len, pgoff, flags);
+Best regards,
 -- 
-2.41.0
+Abel Vesa <abel.vesa@linaro.org>
 
 
