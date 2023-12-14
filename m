@@ -2,194 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 226ED81340A
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 16:07:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 28F29813402
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 16:07:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1573658AbjLNPHt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 10:07:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33954 "EHLO
+        id S1573651AbjLNPHe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 10:07:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41082 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1573635AbjLNPHr (ORCPT
+        with ESMTP id S1573635AbjLNPHd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 10:07:47 -0500
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE5F2120;
-        Thu, 14 Dec 2023 07:07:52 -0800 (PST)
-Received: from pps.filterd (m0356516.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3BEF39YV007104;
-        Thu, 14 Dec 2023 15:07:04 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=XLAPwt/xKWgpqNhyPSWPN7P7tLR1EqSOMV1/eU72kZ4=;
- b=KLaU5YH4YiELCKICEf6K/5bLMvFEaMfWy1cnmB2yq3w8r32Z2207faBJ99fMOlgpvaLi
- lSmrFCKOLHBgpOpR/jh3cFVMEeJFoXn7qEuZkR4d7ttuRQwUrTUsJ7YN8oRG/LopdHZw
- kLh6mbwtH9wfR7poABQXYdiVTxTK/JzMBXiZlFCjg+CmTLrGf+OusrAsLv5bgKvIBNJw
- zUIfUs42ethQ4EAr0SQ+iASDmXSIrC0VycYkO1rdV4PbK1l6Ik7TDSdgJQmMvVN11eWn
- 8iGaBIYxtSNMJsMM4YOQc2wdTlNCd5/I4zqsmVvXxwAIFOP7l/7W/3u+avcw9rpanlrD NA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3v040j04vg-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 14 Dec 2023 15:07:02 +0000
-Received: from m0356516.ppops.net (m0356516.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3BEF434O009478;
-        Thu, 14 Dec 2023 15:07:00 GMT
-Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3v040j04u1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 14 Dec 2023 15:07:00 +0000
-Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
-        by ppma13.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3BEDnVYD005049;
-        Thu, 14 Dec 2023 15:06:59 GMT
-Received: from smtprelay05.wdc07v.mail.ibm.com ([172.16.1.72])
-        by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 3uw4skrwca-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 14 Dec 2023 15:06:58 +0000
-Received: from smtpav05.dal12v.mail.ibm.com (smtpav05.dal12v.mail.ibm.com [10.241.53.104])
-        by smtprelay05.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3BEF6vqJ26215096
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 14 Dec 2023 15:06:58 GMT
-Received: from smtpav05.dal12v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id D9B785805D;
-        Thu, 14 Dec 2023 15:06:57 +0000 (GMT)
-Received: from smtpav05.dal12v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id D145458069;
-        Thu, 14 Dec 2023 15:06:54 +0000 (GMT)
-Received: from [9.67.23.198] (unknown [9.67.23.198])
-        by smtpav05.dal12v.mail.ibm.com (Postfix) with ESMTP;
-        Thu, 14 Dec 2023 15:06:54 +0000 (GMT)
-Message-ID: <e8e4e5fe-5fa6-4098-97fc-7c6a48da9c4e@linux.ibm.com>
-Date:   Thu, 14 Dec 2023 09:06:54 -0600
+        Thu, 14 Dec 2023 10:07:33 -0500
+Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6538111B
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 07:07:40 -0800 (PST)
+Received: by mail-pg1-x52f.google.com with SMTP id 41be03b00d2f7-517ab9a4a13so6953819a12.1
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 07:07:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1702566460; x=1703171260; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=J9lMPrZwLiHFysOzsWqCBFNM5vjGopX4XPDNLVg4mW8=;
+        b=fCGuC6t2nN42viOr2YKBAq0Xo+hUP/amRbiGwv5e07F6PM6Mz+7Qzwi8Fs/ucMcYC3
+         jZUtbY7uUH83tmsBWDQiU7PSXgAbdVKVxK+B+ruiRN/iRXF4903eqTh7qyWKvZOzcyHW
+         qNNku8yRzWPt9p6JxnHLUDcBeH9ig3E+74EPq+NhnmScZm//E3f+6h4qQH1yGuztgw+A
+         wEqLBIA4ektv/MpIXTQc5iUHjld32HE0/V2KWFTYrILpAm1FVwRe/csOy2V5o9g+TWIT
+         8P5Ldid5sSWvqZ+MOEw1nX+rfl3Bof3rc60I4FVnfH6ckR8GBKLJf6bggQ0pmgNey/f8
+         Q+Nw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702566460; x=1703171260;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=J9lMPrZwLiHFysOzsWqCBFNM5vjGopX4XPDNLVg4mW8=;
+        b=SByhEHTZUfQY5twX7LfvZKOibeFLaYr1LB6lmWqlNTFekDqUCqP6aSMfEq3DA4hup/
+         a04CvllHelWntmGdKGoD2O0vylMVs3MhYQu9SpioOla9Ylz5iqXYirXJAhFlPz3q/khu
+         DzojM7QkkfADa/Xwc3wBcPITuy/tSxTe5DY7oJorODB1S8ofOeMeZ3TR2TOoeLdbbOiL
+         +S5t/TfY0lzdPimiIveMf/K+kPnR0oY/bzoiokEDtViD8t7KvSMi0Z7cftjPeKTB8WM3
+         ddOe6zz0t/cenb9RgdelPdSEj1up/l+ufy9DoZ/XR3SeZrm0+PFGvSlBg65PlSA6iDLv
+         +23Q==
+X-Gm-Message-State: AOJu0YziVbfbURkFgsC/ljHbvllkqSnfwIVYsj5WCbbX+5X9MoyI/dg4
+        ivmNi1ER3sf9WHRIrr4OjPeG75JPdDJmnRwL6tedcg==
+X-Google-Smtp-Source: AGHT+IEe4LHmA9Ois0luIdXZnO0T77VZxNQ9yNINBTZ2R/6zYH/aXq6Vfe7Uba+cQAfGN4QaX7I8+rAiF6Etw8yknyU=
+X-Received: by 2002:a17:90b:388:b0:28a:f2dd:9441 with SMTP id
+ ga8-20020a17090b038800b0028af2dd9441mr1630238pjb.64.1702566459845; Thu, 14
+ Dec 2023 07:07:39 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 3/8] ARM: dts: aspeed: System1: IBM system1 BMC board
-Content-Language: en-US
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, joel@jms.id.au, andrew@codeconstruct.com.au,
-        peterhuewe@gmx.de, jarkko@kernel.org, jgg@ziepe.ca,
-        keescook@chromium.org, tony.luck@intel.com, gpiccoli@igalia.com,
-        johannes.holland@infineon.com, linux@roeck-us.net,
-        broonie@kernel.org
-Cc:     Andrew Geissler <geissonator@yahoo.com>,
-        patrick.rudolph@9elements.com, vincent@vtremblay.dev,
-        peteryin.openbmc@gmail.com, lakshmiy@us.ibm.com,
-        bhelgaas@google.com, naresh.solanki@9elements.com,
-        alexander.stein@ew.tq-group.com, festevam@denx.de,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        linux-integrity@vger.kernel.org, linux-hardening@vger.kernel.org
-References: <20231212164004.1683589-1-ninad@linux.ibm.com>
- <20231212164004.1683589-4-ninad@linux.ibm.com>
- <81d90c0d-9d7e-43a9-ade8-16b85a242b48@linaro.org>
-From:   Ninad Palsule <ninad@linux.ibm.com>
-In-Reply-To: <81d90c0d-9d7e-43a9-ade8-16b85a242b48@linaro.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: _0Y2OpjlnhnlX4ia8j9LaXeQCu3ERE6u
-X-Proofpoint-ORIG-GUID: 1pWyN-yfwi67Cf8clBBDrf-toaFCfvnp
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-14_09,2023-12-14_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 mlxlogscore=999
- malwarescore=0 clxscore=1015 bulkscore=0 suspectscore=0 impostorscore=0
- priorityscore=1501 adultscore=0 spamscore=0 mlxscore=0 lowpriorityscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311290000
- definitions=main-2312140105
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20231214105243.3707730-1-tudor.ambarus@linaro.org> <20231214105243.3707730-2-tudor.ambarus@linaro.org>
+In-Reply-To: <20231214105243.3707730-2-tudor.ambarus@linaro.org>
+From:   Sam Protsenko <semen.protsenko@linaro.org>
+Date:   Thu, 14 Dec 2023 09:07:28 -0600
+Message-ID: <CAPLW+4kr=aVjuqGz3ps5f6EzM+QASTFEoB57g+fR7jKH0s+1Zw@mail.gmail.com>
+Subject: Re: [PATCH 01/13] dt-bindings: clock: google,gs101: fix CMU_TOP gate
+ clock names
+To:     Tudor Ambarus <tudor.ambarus@linaro.org>
+Cc:     peter.griffin@linaro.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, mturquette@baylibre.com,
+        sboyd@kernel.org, conor+dt@kernel.org, andi.shyti@kernel.org,
+        alim.akhtar@samsung.com, gregkh@linuxfoundation.org,
+        jirislaby@kernel.org, catalin.marinas@arm.com, will@kernel.org,
+        s.nawrocki@samsung.com, tomasz.figa@gmail.com,
+        cw00.choi@samsung.com, arnd@arndb.de, andre.draszik@linaro.org,
+        saravanak@google.com, willmcvicker@google.com,
+        linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-clk@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-i2c@vger.kernel.org, linux-serial@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Krzysztof,
-
-
-On 12/12/23 14:20, Krzysztof Kozlowski wrote:
-> On 12/12/2023 17:39, Ninad Palsule wrote:
->> From: Andrew Geissler <geissonator@yahoo.com>
->>
->> Add a device tree for IBM system1 BMC board. It uses AST2600 SOC.
->>
->> Tested:
->>      This board is tested using the simics simulator.
->>
->> Signed-off-by: Andrew Geissler <geissonator@yahoo.com>
->> Signed-off-by: Ninad Palsule <ninad@linux.ibm.com>
->> ---
->>   arch/arm/boot/dts/aspeed/Makefile             |   1 +
->>   .../dts/aspeed/aspeed-bmc-ibm-system1.dts     | 188 ++++++++++++++++++
->>   2 files changed, 189 insertions(+)
->>   create mode 100644 arch/arm/boot/dts/aspeed/aspeed-bmc-ibm-system1.dts
->>
->> diff --git a/arch/arm/boot/dts/aspeed/Makefile b/arch/arm/boot/dts/aspeed/Makefile
->> index 3e3e6b96cb79..6f7ed11978ff 100644
->> --- a/arch/arm/boot/dts/aspeed/Makefile
->> +++ b/arch/arm/boot/dts/aspeed/Makefile
->> @@ -35,6 +35,7 @@ dtb-$(CONFIG_ARCH_ASPEED) += \
->>   	aspeed-bmc-ibm-rainier.dtb \
->>   	aspeed-bmc-ibm-rainier-1s4u.dtb \
->>   	aspeed-bmc-ibm-rainier-4u.dtb \
->> +	aspeed-bmc-ibm-system1.dtb \
->>   	aspeed-bmc-intel-s2600wf.dtb \
->>   	aspeed-bmc-inspur-fp5280g2.dtb \
->>   	aspeed-bmc-inspur-nf5280m6.dtb \
->> diff --git a/arch/arm/boot/dts/aspeed/aspeed-bmc-ibm-system1.dts b/arch/arm/boot/dts/aspeed/aspeed-bmc-ibm-system1.dts
->> new file mode 100644
->> index 000000000000..01291b407f59
->> --- /dev/null
->> +++ b/arch/arm/boot/dts/aspeed/aspeed-bmc-ibm-system1.dts
->> @@ -0,0 +1,188 @@
->> +// SPDX-License-Identifier: GPL-2.0-or-later
->> +// Copyright 2023 IBM Corp.
->> +/dts-v1/;
->> +
->> +#include "aspeed-g6.dtsi"
->> +#include <dt-bindings/gpio/aspeed-gpio.h>
->> +#include <dt-bindings/i2c/i2c.h>
->> +#include <dt-bindings/leds/leds-pca955x.h>
->> +
->> +/ {
->> +	model = "System1";
->> +	compatible = "ibm,system1-bmc", "aspeed,ast2600";
->> +
->> +	chosen {
->> +		stdout-path = &uart5;
->> +		bootargs = "console=ttyS4,115200n8 earlycon";
-> Drop early con, debugging feature not release. Then use stdout path
-> alone, so drop console as well.
-Fixed as per your suggestion.
+On Thu, Dec 14, 2023 at 4:52=E2=80=AFAM Tudor Ambarus <tudor.ambarus@linaro=
+.org> wrote:
 >
->> +	};
->> +
->> +	memory@80000000 {
->> +		device_type = "memory";
->> +		reg = <0x80000000 0x40000000>;
->> +	};
->> +
->> +	reserved-memory {
->> +		#address-cells = <1>;
->> +		#size-cells = <1>;
->> +		ranges;
->> +
->> +		event_log: tcg_event_log@b3d00000 {
-> No underscores in node names.
-
-Fixed.
-
-Thanks for the review.
-
-Regards,
-
-Ninad
-
+> The gs101 clock names are derived from the clock register names under
+> some certain rules. In particular, for the gate clocks the following is
+> documented and expected in the gs101 clock driver:
 >
+>   Replace CLK_CON_GAT_CLKCMU      with CLK_GOUT_CMU and gout_cmu
+>   Replace CLK_CON_GAT_GATE_CLKCMU with CLK_GOUT_CMU and gout_cmu
 >
-> Best regards,
-> Krzysztof
+>   For gates remove _UID _BLK _IPCLKPORT and _RSTNSYNC
 >
+
+Doesn't it break existing gs101 device tree?
+
+> The CMU TOP gate clock names missed to include the required "CMU"
+> differentiator which will cause name collisions with the gate clock names
+> of other clock units. Fix the TOP gate clock names and include "CMU" in
+> their name.
+>
+> Fixes: 0a910f160638 ("dt-bindings: clock: Add Google gs101 clock manageme=
+nt unit bindings")
+> Signed-off-by: Tudor Ambarus <tudor.ambarus@linaro.org>
+> ---
+
+(snip)
