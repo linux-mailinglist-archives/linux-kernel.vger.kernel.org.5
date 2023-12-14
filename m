@@ -2,121 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FA8C812526
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 03:20:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 715A481252A
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 03:21:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1443027AbjLNCUr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 21:20:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48418 "EHLO
+        id S1443030AbjLNCVN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 21:21:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57810 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229525AbjLNCUo (ORCPT
+        with ESMTP id S230096AbjLNCVM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 21:20:44 -0500
-Received: from EUR05-DB8-obe.outbound.protection.outlook.com (mail-db8eur05on2086.outbound.protection.outlook.com [40.107.20.86])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61578BD;
-        Wed, 13 Dec 2023 18:20:49 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=G7WG/DspcyvzhWOSlj712nL1J6f+yXH+9ylndy4VfuSCXdbNP/Me+y+mGxbZLiadglG37f3Mb58GR13QtCHQspPD5SBDVy878teJMXtAEGkdf9zxqekkgys3huTdOzmmBOaNMnCBuvAL2F6gfrR6QZphFeERYrTdvn8+OB9PAyHDuaJLQ79we/LtRxMGqZ3uG/ooOaSI+5LEm+NtkM5j/9RU4a8vGqhk+gXKTWmLpbh15P00UBGXDD/qrX6y+k/kx8VxEP9hC59sMD1l7UxrR1CPaH75xuyOIhevyV/9+73T6ajVvJBa4Gtd/h+CrIGIt+b56HCAr+2ZMTD868UJJw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=flqlZIL6m0N8CDq3wHTmY0ZyXGQ5lgxpKOi1iweAy+M=;
- b=jkYrVReg445BirFZzotqwF64N9l/9cUMjWLJHRcQXeG8/9V/aQ4TnJQqVgfjm/hbxKf642xLrDvRyAD1ajO7Ua+LE5HEQF4k2pb4yzLPx+woFPCLwD2uFnhTug0ATf2ZI82aq3o3mN6DEIIHwZO2hYQP6hbE1AUM0upDmmPRFSndTU+NPjJiZhtALkdlzJQ3h87yeSH4POjunb/UUmJli18cmCYPcP7qjQ5AM2rUDVTnJExxcr7u8Nu6tPX7f/I8VI+P9c8nxGpx/A0KxlgaVmm3GeEohg9NljRho5ODKJsNNCNsqN2cXAauLuMZp3qfFybKXIOWo58Ed/qwLVMXNQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=flqlZIL6m0N8CDq3wHTmY0ZyXGQ5lgxpKOi1iweAy+M=;
- b=EF3wqtcCwAGoduYJCsdZoiIFzGVvonzxufQnLdP1uv4Tmsmk+ERp8J2pkMSzhXFrJgMv4zA0TwAzv4z6i5pCtsPuaQDlWUr5Lyu3W0AaqW7gEvL9VFu+Wvuj5QzEFtuUoNCvxWk6F+nkFdjz80r2wdImozzFzjwUaCeArcy9ae8=
-Received: from PA4PR04MB9638.eurprd04.prod.outlook.com (2603:10a6:102:273::20)
- by PA4PR04MB7775.eurprd04.prod.outlook.com (2603:10a6:102:c3::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7068.33; Thu, 14 Dec
- 2023 02:20:47 +0000
-Received: from PA4PR04MB9638.eurprd04.prod.outlook.com
- ([fe80::34dd:289e:9e8b:9c9b]) by PA4PR04MB9638.eurprd04.prod.outlook.com
- ([fe80::34dd:289e:9e8b:9c9b%7]) with mapi id 15.20.7068.033; Thu, 14 Dec 2023
- 02:20:47 +0000
-From:   David Lin <yu-hao.lin@nxp.com>
-To:     Brian Norris <briannorris@chromium.org>
-CC:     Francesco Dolcini <francesco@dolcini.it>,
-        "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "kvalo@kernel.org" <kvalo@kernel.org>,
-        Pete Hsieh <tsung-hsien.hsieh@nxp.com>
-Subject: RE: [EXT] Re: [PATCH v7 04/12] wifi: mwifiex: fixed missing WMM IE
- for assoc req.
-Thread-Topic: [EXT] Re: [PATCH v7 04/12] wifi: mwifiex: fixed missing WMM IE
- for assoc req.
-Thread-Index: AQHaIdVYu6BJedWzZkuajUNTuEil2bCUO9iAgADQvWCAExa5gIAAAKJg
-Date:   Thu, 14 Dec 2023 02:20:47 +0000
-Message-ID: <PA4PR04MB963845409055281417132AA3D18CA@PA4PR04MB9638.eurprd04.prod.outlook.com>
-References: <20231128083115.613235-1-yu-hao.lin@nxp.com>
- <20231128083115.613235-5-yu-hao.lin@nxp.com>
- <ZWmzAWlh7o4bLZB8@francesco-nb.int.toradex.com>
- <PA4PR04MB963816B99845D943B4D061E2D181A@PA4PR04MB9638.eurprd04.prod.outlook.com>
- <ZXplY3Gi6Fv19Y_t@google.com>
-In-Reply-To: <ZXplY3Gi6Fv19Y_t@google.com>
-Accept-Language: zh-TW, en-US
-Content-Language: zh-TW
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: PA4PR04MB9638:EE_|PA4PR04MB7775:EE_
-x-ms-office365-filtering-correlation-id: 1f3e7503-371a-4a21-ec7f-08dbfc4b4873
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: qJZJr35ye+6lsuYdHbJLnhcz2GDbmhvB/fkLVUATfWXdN41cwwFQXGu4FJnaJELeleBjd5hXLoHRa78RnwTsD0rmyNdQEnH2wAxcjTiqbyYydfHxHeaCy43LuljcwAImJ37qYWGuiLVYj+EVN4s4Mhhiu6EKT8ZN8zKW+wzhtLw6p1KZh5pBewQWu3+6LcllU/xiIlON9E5LmNdopaOVpHcKn2Bs5ofVYhL8I0Eb0qf8DbxIt2YAEUh75nxZa9CMqHG0CAjkoMyFits4O9D1pXT32U+5C8L29iYfft0UEnk9zF4wqUXKyEU7RW+iEWjLwSVT5o0ggY0nJnlXfozk4aYR/OIx2iAs12gwOBEDQENEM2A7FBBh73PHOUNEvqPfvc43AfFv5KW15Mn557IY9MqzDIvN34CQoFGSuS04gd3DdVLPMXxd4OmEnbqUk5ZarZp85+ogmPEpqLiL1hZ0haUuyW+Oj5S0j7Foh9dAEyDuwHLCmNBEmVdjc+gyvR3p7ICi2PzrCkpBiHmenrSYlHxn0wjIKt3qRieodgnr0Y17McjOHYBMsro9suNiGCvn7bCmpNmxLaImwIFEKw70DTrSDvnHCA1v/jY3r9uBB/AxAGXO/Kqdry7fj5hBOxD1/jpitqWvwvJD5p5vkB2Hkw==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PA4PR04MB9638.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(396003)(39860400002)(376002)(346002)(136003)(230922051799003)(230173577357003)(230273577357003)(186009)(64100799003)(451199024)(1800799012)(26005)(6506007)(53546011)(71200400001)(9686003)(52536014)(83380400001)(45080400002)(5660300002)(966005)(2906002)(41300700001)(4326008)(478600001)(54906003)(8676002)(8936002)(66946007)(66446008)(66556008)(7696005)(76116006)(64756008)(66476007)(316002)(6916009)(86362001)(38100700002)(33656002)(122000001)(38070700009)(55016003);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?aTmQJrFgKPYrAl/GxskwDSTrClN0mw0K8D5wPw6toxOI9dX24F4sl+ObZpHP?=
- =?us-ascii?Q?H72x9x6/yIyVa4wN0+H/ymxhIR90wpiwkrva8w1aUZMm02FmgEW+F3zP7bxi?=
- =?us-ascii?Q?yvOl73k0Rh0Vus/Bopp24MCU46lkS+tx6EOI+9Xc0vJY86+s34CkhInyfAI3?=
- =?us-ascii?Q?pxdXuCHv/mS/7SVheRxRVaH1gfMkdhUB7BflyeQdm2tRYX+apzQqA9LcHY+u?=
- =?us-ascii?Q?9DZLpdSGnHn6jkJG5pLj9K7x6+eTUWovtx5V9OdVGO4rkwgbe1QpLXC6gbBU?=
- =?us-ascii?Q?8IW9E3aKZAWrUekkQreE1j3luxC0Fey2HSY9ZOkvjVOQU58HbzfFWMTTuH6y?=
- =?us-ascii?Q?hPIisIhBmtbTHgrTXexZEAcjqFgtxk3KjkXdLLsG79ilx0UR8YZxOjB4TAbY?=
- =?us-ascii?Q?kVaFsAPUExcUcGS5/zYlFkVZfFBoxVITRn7YTdmx+w8QLKplthyamIXWbgtI?=
- =?us-ascii?Q?4v7IKUxJbAauOlI4M+rn/GHrkNCz7iVXCoSufFlbqEXgqwDpxs5EzsbnaQCn?=
- =?us-ascii?Q?5yqO23ZI7czSozJaGR3lCiU/jgfJKMH5KSC2tebEYKdIicixbZDQ1s70xJwF?=
- =?us-ascii?Q?iZ+1edtlOCMHu2nf6LkflFQCYhQX6QGuiV2Ww4QuQUhizaqSG0CkgELVIwSn?=
- =?us-ascii?Q?LP1y9JprcW/7gZjEubEoCiHNa4tt/QVq8ENVABO07vU5k72WXenE3B3KJpu3?=
- =?us-ascii?Q?cdUcdBaQasl4dmNNYXWPBFoBIEsIqsuXmyg0K+/ZDDTUuRUNTaJmJGCjy9mY?=
- =?us-ascii?Q?+o4Vvi3gHKdqTUC1Ijw6NvAxKNHfY8sodNHrW8CA6yHZp95Vm6Iy2y/vFOr7?=
- =?us-ascii?Q?KyJw4bxujUrTMKyNlrj/nduhK1XvHHz6UsuwSGi9aW1ZdwQPIJBCHnoLbtyp?=
- =?us-ascii?Q?UE3T/6aXeg++zwPoyH5zTeEsvL0tuIr0w0jaojV5Augn6DDV9kkKzBGMJFJl?=
- =?us-ascii?Q?uSaQ+fEZnQaIab3Va7tHuWBEOJo25eE4+JNZtK3w4LYcfOzM6SMWSserVUbL?=
- =?us-ascii?Q?VQk3q4onxH8t385UfhgGxyXU4BShMGbWK3ftoP8ZkLqweoqaD5WlrztYQXet?=
- =?us-ascii?Q?Y8zhAx49eovFr+P+MMSEDIU/rN/v3tsHp2RmLgHcKSvGtonZ6x/Ljkn7Dx9w?=
- =?us-ascii?Q?Uh8IWPRNtpKeUXv5LPLkPWadC0EjGz6v3bapLvHn+MVOfrcEs2dh2OvAryic?=
- =?us-ascii?Q?QwA+PdveetT2P1hS3gKvlm1SuYHpM4WHD/UkAP3RCIj49p17IiFPCZI2oXbj?=
- =?us-ascii?Q?2+lfuttxZM46R2tZ05nyfdwNjpceDNTaUjtGhlacH9yc1I6OCH3p65TEfnAU?=
- =?us-ascii?Q?+3GIGupYcI1Pqrht/Ggx4MuGa+y0O/h0s8fUtFAiknQlyiMnCmRDVqIWdwtM?=
- =?us-ascii?Q?0Azn/kBo3mHh8PZAonWnex2ApsphBS1b3QzBhSCDoFSHTVoYbLvsR5HU7+BY?=
- =?us-ascii?Q?PICAAVGbwrbeEvhdSxb+yl+VnCmpQJiEEmOvFjZ6XeDGfUctLhOaowf6rMIF?=
- =?us-ascii?Q?cVbV6EbygtKY7l3FFj+KTkX3PyBnlNmkWLAMhfLe/D/1aDM2URVwxUb4/Sv+?=
- =?us-ascii?Q?PEH+21oZOPvNBmC/XHrjU6SeDx+QGn30E9SWcrCC?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        Wed, 13 Dec 2023 21:21:12 -0500
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 0D21AE3;
+        Wed, 13 Dec 2023 18:21:16 -0800 (PST)
+Received: from loongson.cn (unknown [10.20.42.173])
+        by gateway (Coremail) with SMTP id _____8DxBOubZnpls+QAAA--.1172S3;
+        Thu, 14 Dec 2023 10:21:15 +0800 (CST)
+Received: from [10.20.42.173] (unknown [10.20.42.173])
+        by localhost.localdomain (Coremail) with SMTP id AQAAf8CxrnOUZnpl5XkDAA--.18609S3;
+        Thu, 14 Dec 2023 10:21:10 +0800 (CST)
+Subject: Re: [PATCH v5 1/4] KVM: selftests: Add KVM selftests header files for
+ LoongArch
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     zhaotianrui <zhaotianrui@loongson.cn>,
+        Shuah Khan <shuah@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        Vishal Annapurve <vannapurve@google.com>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        WANG Xuerui <kernel@xen0n.name>, loongarch@lists.linux.dev,
+        Peter Xu <peterx@redhat.com>,
+        Vipin Sharma <vipinsh@google.com>, huangpei@loongson.cn
+References: <20231130111804.2227570-1-zhaotianrui@loongson.cn>
+ <20231130111804.2227570-2-zhaotianrui@loongson.cn>
+ <e40d3884-bf39-8286-627f-e0ce7dacfcbe@loongson.cn>
+ <ZXiV1rMrXY0hNgvZ@google.com>
+ <023b6f8f-301b-a6d0-448b-09a602ba1141@loongson.cn>
+ <06076290-4efb-5d71-74eb-396d325447e0@loongson.cn>
+ <ZXpErTHBn6HeQUOp@google.com>
+From:   maobibo <maobibo@loongson.cn>
+Message-ID: <4b05a834-9584-0a06-c6c8-ab191eddd5f8@loongson.cn>
+Date:   Thu, 14 Dec 2023 10:20:57 +0800
+User-Agent: Mozilla/5.0 (X11; Linux loongarch64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: PA4PR04MB9638.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1f3e7503-371a-4a21-ec7f-08dbfc4b4873
-X-MS-Exchange-CrossTenant-originalarrivaltime: 14 Dec 2023 02:20:47.1020
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: CYWa6tDUT6VcMkSt+a53wa+Kv9FgDKP8Qt+1p0vmvoEcbwObE4WZBZk4jEdGtGM+a1jwRK9rRx0C+bcqBk552Q==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PA4PR04MB7775
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
+In-Reply-To: <ZXpErTHBn6HeQUOp@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: AQAAf8CxrnOUZnpl5XkDAA--.18609S3
+X-CM-SenderInfo: xpdruxter6z05rqj20fqof0/
+X-Coremail-Antispam: 1Uk129KBj93XoWxJw1rAw1xAF45tFyfKw13KFX_yoWrtFyfpF
+        W0kF45Kw4kGrsFyws2qw18WF1aga93Z3WUurn8GryDCan0qr1xZr1jkw1Y9a9aqr48AayF
+        qF4IqwnrKw15Z3gCm3ZEXasCq-sJn29KB7ZKAUJUUUU7529EdanIXcx71UUUUU7KY7ZEXa
+        sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
+        0xBIdaVrnRJUUUPFb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
+        IYs7xG6rWj6s0DM7CIcVAFz4kK6r1Y6r17M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
+        e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_JFI_Gr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
+        0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVWxJVW8Jr1l84ACjcxK6I8E87Iv6xkF7I0E14v2
+        6r4j6r4UJwAaw2AFwI0_Jrv_JF1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqjxCEc2xF0c
+        Ia020Ex4CE44I27wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_JF0_
+        Jw1lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvEwIxGrw
+        CYjI0SjxkI62AI1cAE67vIY487MxkF7I0En4kS14v26r126r1DMxAIw28IcxkI7VAKI48J
+        MxC20s026xCaFVCjc4AY6r1j6r4UMxCIbckI1I0E14v26r1Y6r17MI8I3I0E5I8CrVAFwI
+        0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y
+        0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxV
+        WUJVW8JwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1l
+        IxAIcVC2z280aVCY1x0267AKxVWUJVW8JbIYCTnIWIevJa73UjIFyTuYvjxUcpBTUUUUU
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -124,75 +78,108 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> From: Brian Norris <briannorris@chromium.org>
-> Sent: Thursday, December 14, 2023 10:16 AM
-> To: David Lin <yu-hao.lin@nxp.com>
-> Cc: Francesco Dolcini <francesco@dolcini.it>; linux-wireless@vger.kernel.=
-org;
-> linux-kernel@vger.kernel.org; kvalo@kernel.org; Pete Hsieh
-> <tsung-hsien.hsieh@nxp.com>
-> Subject: Re: [EXT] Re: [PATCH v7 04/12] wifi: mwifiex: fixed missing WMM =
-IE
-> for assoc req.
->
-> Caution: This is an external email. Please take care when clicking links =
-or
-> opening attachments. When in doubt, report the message using the 'Report
-> this email' button
->
->
-> On Fri, Dec 01, 2023 at 10:47:41PM +0000, David Lin wrote:
-> > > From: Francesco Dolcini <francesco@dolcini.it>
-> > > Sent: Friday, December 1, 2023 6:19 PM
->
-> > > On Tue, Nov 28, 2023 at 04:31:07PM +0800, David Lin wrote:
-> > > > Remain on channel must be removed after authentication is done.
-> > > > Otherwise WMM setting for assoiation request will be removed.
-> > >
-> > > Same comment as patch 2, this seems a fixup of commit 1, you should
-> > > fix that patch, not add a followup fixup commit.
-> >
-> > So you think patch 1 to 4 should be merged as a single patch? In fact,
-> > patch 2 to 4 is issues reported by our QA for patch 1. If you insisted
-> > merge all of them, I can do this for patch v8.
->
-> In case you didn't get a sufficient answer elsewhere: yes, probably? We d=
-on't
-> care to see:
->
->   patch 1: introduce feature
->   patch 2: fix bug in patch 1
->   patch 3: fix bug in patch 1 and 2
->   patch 4: ...
->
->
-> Just ... actually fix patch 1, and send 1 patch. (Or more, if you have se=
-veral
-> logical changes. Be sure to read [1].)
->
-> In case you're used to GitHub: we don't work like GitHub, where people te=
-nd
-> to stack a bunch of incremental changes during review, and then the
-> changes get squashed together before committing. We expect each patch to
-> be a good commit, and that it will get committed as-is.
->
-> If we're interested in the history and evolution of your changes, we can =
-look
-> at the mailing list archives.
->
-> Brian
 
-Thanks for your information. In fact Patch v8 is almost ready and it only i=
-ncludes two patches: one for client mode and one for AP mode.
 
-David
+On 2023/12/14 上午7:56, Sean Christopherson wrote:
+> On Wed, Dec 13, 2023, maobibo wrote:
+>>
+>> On 2023/12/13 下午3:15, zhaotianrui wrote:
+>>>
+>>> 在 2023/12/13 上午1:18, Sean Christopherson 写道:
+>>>> On Tue, Dec 12, 2023, zhaotianrui wrote:
+>>>>> Hi, Sean:
+>>>>>
+>>>>> I want to change the definition of  DEFAULT_GUEST_TEST_MEM in the common
+>>>>> file "memstress.h", like this:
+>>>>>
+>>>>>    /* Default guest test virtual memory offset */
+>>>>> +#ifndef DEFAULT_GUEST_TEST_MEM
+>>>>>    #define DEFAULT_GUEST_TEST_MEM        0xc0000000
+>>>>> +#endif
+>>>>>
+>>>>> As this address should be re-defined in LoongArch headers.
+>>>>
+>>>> Why?  E.g. is 0xc0000000 unconditionally reserved, not guaranteed to
+>>>> be valid,
+>>>> something else?
+>>>>
+>>>>> So, do you have any suggesstion?
+>>>>
+>>>> Hmm, I think ideally kvm_util_base.h would define a range of memory that
+>>>> can be used by tests for arbitrary data.  Multiple tests use 0xc0000000,
+>>>> which is not entirely arbitrary, i.e. it doesn't _need_ to be 0xc0000000,
+>>>> but 0xc0000000 is convenient because it's 32-bit addressable and doesn't
+>>>> overlap reserved areas in other architectures.
+>> In general text entry address of user application on x86/arm64 Linux
+>> is 0x200000, however on LoongArch system text entry address is strange, its
+>> value 0x120000000.
+>>
+>> When DEFAULT_GUEST_TEST_MEM is defined as 0xc0000000, there is limitation
+>> for guest memory size, it cannot exceed 0x120000000 - 0xc000000 = 1.5G
+>> bytes, else there will be conflict. However there is no such issue on
+>> x86/arm64, since 0xc0000000 is above text entry address 0x200000.
+> 
+> Ugh, I spent a good 30 minutes trying to figure out how any of this works on x86
+> before I realized DEFAULT_GUEST_TEST_MEM is used for the guest _virtual_ address
+> space.
+> 
+> I was thinking we were talking about guest _physical_ address, hence my comments
+> about it being 32-bit addressable and not overlappin reserved areas.  E.g. on x86,
+> anything remotely resembling a real system has regular memory, a.k.a. DRAM, split
+> between low memory (below the 32-bit boundary, i.e. below 4GiB) and high memory
+> (from 4GiB to the max legal physical address).  Addresses above "top of lower
+> usable DRAM" (TOLUD) are reserved (again, in a "real" system) for things like
+> PCI, local APIC, I/O APIC, and the _architecturally_ defined RESET vector.
+> 
+> I couldn't figure out how x86 worked, because KVM creates an KVM-internal memslot
+> at address 0xfee00000.  And then I realized the test creates memslots at completely
+> different GPAs, and DEFAULT_GUEST_TEST_MEM is used only as super arbitrary
+> guest virtual address.
+The framework and idea of kvm selftest is very good and intrinsic, and 
+it is very easy to write unit test case for kvm -:)
 
->
-> [1]
-> https://docs.ke/
-> rnel.org%2Fprocess%2Fsubmitting-patches.html%23separate-your-changes&
-> data=3D05%7C02%7Cyu-hao.lin%40nxp.com%7Cc031726831234d8efdf108dbfc4
-> aa160%7C686ea1d3bc2b4c6fa92cd99c5c301635%7C0%7C0%7C638381169686
-> 467616%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2l
-> uMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C3000%7C%7C%7C&sdata=3Dfg0y2
-> dg6hCyUyHyDnBQS3PmMQqJD5n1h2lpq0ea9tys%3D&reserved=3D0
+> 
+> *sigh*
+> 
+> Anyways...
+> 
+>> The LoongArch link scripts actually is strange, it brings out some
+>> compatible issues such dpdk/kvm selftest when user applications
+>> want fixed virtual address space.
+> 
+> Can you elaborate on compatiblity issues?  I don't see the connection between
+> DPDK and KVM selftests.
+No, there is no the connection between DPDK and KVM selftests. I mean 
+that some applications which use fixed VA address have the same issue, 
+however this kind of usage is OK on X86/ARM. DPDK also uses fixed IOVA 
+address(0xC0000000) when it is combined with IOMMU, there is the similar 
+conflict issue on LoongArch machines.
+
+> 
+>> So here DEFAULT_GUEST_TEST_MEM is defined as 0x130000000 separately, maybe
+>> 0x140000000 is better since it is 1G super-page aligned for 4K page size.
+> 
+> I would strongly prefer we carve out a virtual address range that *all* tests
+> can safely use for test-specific code and data.  E.g. if/when we add userspace
+> support to selftests, I like the idea of having dedicated address spaces for
+> kernel vs. user[*].
+> 
+> Maybe we can march in that generally direction and define test's virtual address
+> range to be in kernel space, i.e. the high half.  I assume/hope that would play
+> nice with all architectures' entry points?
+yeap, it will solve the issue, virtual address range in kernel space can 
+be used. Also both unprivileged and  privileged instruction can be 
+tested with ZengGuang's patch.
+
+And is this patchset eligible to merge if common file 
+selftests/kvm/include/memstress.h is kept unchanged? Since it is pending 
+for a period of time, also LoongArch kvm selftest can pass with guest 
+memory size below 1.5G . We can add kernel/user mode support if 
+ZengGuang's patch is merged.
+
+Regards
+Bibo Mao
+> 
+> [*] https://lore.kernel.org/all/20231102155111.28821-1-guang.zeng@intel.com
+> 
+
