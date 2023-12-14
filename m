@@ -2,52 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 54EBC8130E7
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 14:06:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E5E48130ED
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 14:07:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1573201AbjLNNGq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 08:06:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39814 "EHLO
+        id S1573206AbjLNNGz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 08:06:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53332 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1573177AbjLNNGo (ORCPT
+        with ESMTP id S1573177AbjLNNGw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 08:06:44 -0500
-Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F979113
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 05:06:50 -0800 (PST)
-Received: from mail.maildlp.com (unknown [172.19.88.214])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4SrXdv3BRwz29fpL;
-        Thu, 14 Dec 2023 21:05:39 +0800 (CST)
-Received: from canpemm500010.china.huawei.com (unknown [7.192.105.118])
-        by mail.maildlp.com (Postfix) with ESMTPS id E3A3A1A0190;
-        Thu, 14 Dec 2023 21:06:47 +0800 (CST)
-Received: from [10.174.178.185] (10.174.178.185) by
- canpemm500010.china.huawei.com (7.192.105.118) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Thu, 14 Dec 2023 21:06:47 +0800
-Subject: Re: [PATCH] ext4: fix inconsistent between segment fstrim and full
- fstrim
-To:     Jan Kara <jack@suse.cz>
-References: <20231214064635.4128391-1-yebin10@huawei.com>
- <20231214085834.svce3mvfnctikwyq@quack3>
-CC:     <tytso@mit.edu>, <adilger.kernel@dilger.ca>,
-        <linux-ext4@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-From:   "yebin (H)" <yebin10@huawei.com>
-Message-ID: <657AFDE6.1090606@huawei.com>
-Date:   Thu, 14 Dec 2023 21:06:46 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:38.0) Gecko/20100101
- Thunderbird/38.1.0
+        Thu, 14 Dec 2023 08:06:52 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7352118
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 05:06:58 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 829CFC433C9;
+        Thu, 14 Dec 2023 13:06:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1702559218;
+        bh=4DmhfcKP5a7QiKawraF+mw/pvVqMPyK0S58+roaapOU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=oiul8EewigOeqOx6Mi9PQ6UZF0YQOATTHlzqVv7wkqi4OqclyCpebjS1KjirRDmEJ
+         SvN6nIAF5QFu3Rcpr05GHKOL9eWgDgCzQnhmYlLvXsoBM5YepIaVkkk87flH4foOMk
+         HaEEHOk0t2MkerO7erR4Tg+mK9QVlxsBk7Li9xJ41U0gwmHV/F1W6wdcrgGytQYVC6
+         l+8sai6EDx5PdMp0sZGLrrvruoCIlp5nUBPWXV5vXuL6jbYuhR4pxOxmDPiJk4Tuig
+         EUYn8D2ZMCCIcBnTMtuI4S6P9Gk70pgl1fWKnsQog7jGOaMaIc+kHPMXoL5wrB9y7/
+         vLwEC5YUsRGug==
+Date:   Thu, 14 Dec 2023 14:06:54 +0100
+From:   Wolfram Sang <wsa@kernel.org>
+To:     Tudor Ambarus <tudor.ambarus@linaro.org>
+Cc:     peter.griffin@linaro.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, mturquette@baylibre.com,
+        sboyd@kernel.org, conor+dt@kernel.org, andi.shyti@kernel.org,
+        alim.akhtar@samsung.com, gregkh@linuxfoundation.org,
+        jirislaby@kernel.org, catalin.marinas@arm.com, will@kernel.org,
+        s.nawrocki@samsung.com, tomasz.figa@gmail.com,
+        cw00.choi@samsung.com, arnd@arndb.de, semen.protsenko@linaro.org,
+        andre.draszik@linaro.org, saravanak@google.com,
+        willmcvicker@google.com, linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-clk@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-i2c@vger.kernel.org, linux-serial@vger.kernel.org
+Subject: Re: [PATCH 03/13] dt-bindings: i2c: exynos5: add google,gs101-hsi2c
+ compatible
+Message-ID: <ZXr97owdnLq3viNc@shikoro>
+Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
+        Tudor Ambarus <tudor.ambarus@linaro.org>, peter.griffin@linaro.org,
+        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        mturquette@baylibre.com, sboyd@kernel.org, conor+dt@kernel.org,
+        andi.shyti@kernel.org, alim.akhtar@samsung.com,
+        gregkh@linuxfoundation.org, jirislaby@kernel.org,
+        catalin.marinas@arm.com, will@kernel.org, s.nawrocki@samsung.com,
+        tomasz.figa@gmail.com, cw00.choi@samsung.com, arnd@arndb.de,
+        semen.protsenko@linaro.org, andre.draszik@linaro.org,
+        saravanak@google.com, willmcvicker@google.com,
+        linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-clk@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-i2c@vger.kernel.org, linux-serial@vger.kernel.org
+References: <20231214105243.3707730-1-tudor.ambarus@linaro.org>
+ <20231214105243.3707730-4-tudor.ambarus@linaro.org>
 MIME-Version: 1.0
-In-Reply-To: <20231214085834.svce3mvfnctikwyq@quack3>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.178.185]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- canpemm500010.china.huawei.com (7.192.105.118)
-X-Spam-Status: No, score=-6.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="HQnYG9fD4BDlpmSL"
+Content-Disposition: inline
+In-Reply-To: <20231214105243.3707730-4-tudor.ambarus@linaro.org>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -55,87 +77,38 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+--HQnYG9fD4BDlpmSL
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On 2023/12/14 16:58, Jan Kara wrote:
-> On Thu 14-12-23 14:46:35, Ye Bin wrote:
->> There will not issue discard cmd when do segment fstrim for ext4 fs, however,
->> if full fstrim for the same fs will issue discard cmd.
->> Above issue may happens as follows:
->> Precondition:
->> 1. Fstrim range [0, 15] and [16, 31];
->> 2. Discard granularity is 16;
->>              Range1          Range2
->>        1111000000000000 0000111010101011
->> There's no free space length large or equal than 16 in 'Range1' or 'Range2'.
->> As ext4_try_to_trim_range() only search free space among range which user
->> specified. However, there's maximum free space length 16 in 'Range1'+ 'Range2'.
->> To solve above issue, we need to find the longest free space to discard.
->>
->> Signed-off-by: Ye Bin <yebin10@huawei.com>
-> OK, I agree that there is this behavioral difference. However is that a
-> practical problem? I mean I would not expect the range to be particularly
-> small, rather something like 1GB and then these boundary conditions don't
-> really matter. This is also sensible so that we can properly track whether
-> the whole block group was trimmed or not. Finally I'd also argue that
-> trimming outside of specified range might be unexpected for the user. So a
-> *fix* for this in my opinion lays in userspace which needs to select
-> sensible ranges to use for trimming.
->
-> 								Honza
-Thanks for your reply.
-Our product fstrim entire file system, found to take a long time, thus 
-affecting other processes.
-So they want to segment the file system fstrim based on the IO of the 
-system. But they found
-that fragmented fstrims didn't work the same as fstrim  for the entire 
-file system.
-Users do not know the distribution of free blocks in the file system, 
-and they do not know the
-reasonable range. The user's simple perception is that the effect of 
-segmented fstrim and full
-fstrim should be consistent.
-I researched the implementation of fstrim on the XFS file system, and 
-for the scenario described
-in my patch, the results of both operations are consistent.
->> ---
->>   fs/ext4/mballoc.c | 11 ++++++++---
->>   1 file changed, 8 insertions(+), 3 deletions(-)
->>
->> diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
->> index d72b5e3c92ec..d195461123d8 100644
->> --- a/fs/ext4/mballoc.c
->> +++ b/fs/ext4/mballoc.c
->> @@ -6753,13 +6753,15 @@ static int ext4_try_to_trim_range(struct super_block *sb,
->>   __acquires(ext4_group_lock_ptr(sb, e4b->bd_group))
->>   __releases(ext4_group_lock_ptr(sb, e4b->bd_group))
->>   {
->> -	ext4_grpblk_t next, count, free_count;
->> +	ext4_grpblk_t next, count, free_count, last, origin_start;
->>   	bool set_trimmed = false;
->>   	void *bitmap;
->>   
->> +	last = ext4_last_grp_cluster(sb, e4b->bd_group);
->>   	bitmap = e4b->bd_bitmap;
->> -	if (start == 0 && max >= ext4_last_grp_cluster(sb, e4b->bd_group))
->> +	if (start == 0 && max >= last)
->>   		set_trimmed = true;
->> +	origin_start = start;
->>   	start = max(e4b->bd_info->bb_first_free, start);
->>   	count = 0;
->>   	free_count = 0;
->> @@ -6768,7 +6770,10 @@ __releases(ext4_group_lock_ptr(sb, e4b->bd_group))
->>   		start = mb_find_next_zero_bit(bitmap, max + 1, start);
->>   		if (start > max)
->>   			break;
->> -		next = mb_find_next_bit(bitmap, max + 1, start);
->> +
->> +		next = mb_find_next_bit(bitmap, last + 1, start);
->> +		if (origin_start == 0 && next >= last)
->> +			set_trimmed = true;
->>   
->>   		if ((next - start) >= minblocks) {
->>   			int ret = ext4_trim_extent(sb, start, next - start, e4b);
->> -- 
->> 2.31.1
->>
+On Thu, Dec 14, 2023 at 10:52:33AM +0000, Tudor Ambarus wrote:
+> Add google,gs101-hsi2c dedicated compatible for representing
+> I2C of Google GS101 SoC.
+>=20
+> Signed-off-by: Tudor Ambarus <tudor.ambarus@linaro.org>
 
+Acked-by: Wolfram Sang <wsa@kernel.org>
+
+
+--HQnYG9fD4BDlpmSL
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmV6/ekACgkQFA3kzBSg
+Kbac1hAAtEeMMhA9NKxHiemKCgdvzxVb71vVFzKZTa0rM9HstusgWrnxcXTU4XWd
+tQMUwAVVs6G5Lxho0WuFLuJXRVmc/XOFSyDLeo75vHop/khJpREg5/4x5S953V7j
+SDY4ThYVJuYdXFhZKFsiH04nV3O4zrxm3leDvT0q9C9P09Xh7DYeMu2PnHPV/Gu1
+JFGknNxP4nAb86hKMMsZIkhWZ9Wk+XZAluArjyu17rKeSQHcbE6QJoR95AEydEUy
+PolkM4ZOh/SHRffnMO+FG1+IX2lIEMM9dOX2eLpjZzMRI4iW0I39iQaoPz7WSqQs
+fWa8LdXndWGIZvQmYN4lRjQFhzDKDEOheg/SglzLuGa+48tkqrrcRKGRM+Kx/cGo
+yHbtA6qimdxi/o8+YmUWl+X57X8JIbgmSHsucm/+lNCG6JFtfMyOskeS1hsIgWws
+PV3BPNAY32hJLbEnTf2royzKnJbWMt75RZJTsu/8j54DPydhhLO9IqdHDqngnHpp
+d5WPhOebKuYdqH5YHqVG6C7hOYTR903tWy0annEcAKm64bboWZ9EWYs5Z0IP2/af
+i/i9y1Nou+YYvlSmkp0asWHhpHySkIR3rkThW9eIHVBEWkSS2si6WJSfWQBvDGro
+hEYeczzfDuUcb3v6vuIinWdDcVoHWyrlRbJS5GLIT8LoVAc8ohs=
+=msdb
+-----END PGP SIGNATURE-----
+
+--HQnYG9fD4BDlpmSL--
