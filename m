@@ -2,168 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 81C3781365A
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 17:35:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E4CF81365D
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 17:35:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230237AbjLNQfP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 11:35:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52960 "EHLO
+        id S1443458AbjLNQfb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 11:35:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48714 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229743AbjLNQfN (ORCPT
+        with ESMTP id S230267AbjLNQf3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 11:35:13 -0500
-Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26AFD11D
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 08:35:19 -0800 (PST)
-Received: by mail-pl1-x62b.google.com with SMTP id d9443c01a7336-1d075392ff6so6555755ad.1
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 08:35:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1702571718; x=1703176518; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=luawVzpNb+QxL668ocEaZVPjlwFQcIxmSlMsAYgwWS4=;
-        b=RUWcVQ1YHbWs+RsKvjl8kD81OtgOmQQEWEY8Ku88pfAnPQpxkdAGcGz5HjlACheAQD
-         GtcmqQUJpqJWMRNAJacLGcTqsBx4PEUKIsiqspW9WJZSc/o9WCKxT6IS5P/n9M/qgezj
-         FBh/AHGLiKM4OPwAcI81S6Nx6Gru5pdkTUdQA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702571718; x=1703176518;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=luawVzpNb+QxL668ocEaZVPjlwFQcIxmSlMsAYgwWS4=;
-        b=CixKYW+ODNjAjeWJyP+D2tFIUOAx+efdBHvilZ20dbujB52lvyi/zLymh25CJu8cG4
-         7zOpInssH2rfrffRgrJWZZeNe5XRBmL8p3a/XzMGCSA5J4f0rUVK+LNDY4Q2vOLwUlmd
-         kibbK2nVrY1ggv262DByRff4Bhmd7ninfZddl4FZOCLflNj4rnxcehGYZe5gl1QXku+e
-         3AR0pSWtM++3kTKNBCT1G+s1DCXuzk0BnYpy9LL0opvrEcG1xnCJ5vrxw1/YuMglWQD2
-         pWH4uimMb8RGpUtf/8dAxyw+zjmqWfv4zLTDvg/CcS25fcGhLDEwhfoOV9V2I2c2Rt9H
-         UrIg==
-X-Gm-Message-State: AOJu0YyTBha7fK4H/3Hka9B7Mo78gMWV5sDsg65VSq7MJt/wskU4YFKm
-        xBbIWjjGYoQSkQtdO52kgkcXiQ==
-X-Google-Smtp-Source: AGHT+IGMWhJzEdepoAGmiKRWvixiMXZQ5VqwgLuRg6NDcnO9mPPEhzlmlU+yN2Yxf/7Q1lbZjCM1dg==
-X-Received: by 2002:a17:902:f283:b0:1d3:3676:c9d with SMTP id k3-20020a170902f28300b001d336760c9dmr4808777plc.19.1702571718563;
-        Thu, 14 Dec 2023 08:35:18 -0800 (PST)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id c2-20020a170902d48200b001cfb4d36eb1sm12611665plg.215.2023.12.14.08.35.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Dec 2023 08:35:17 -0800 (PST)
-Date:   Thu, 14 Dec 2023 08:35:17 -0800
-From:   Kees Cook <keescook@chromium.org>
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc:     Benson Leung <bleung@chromium.org>,
-        Guenter Roeck <groeck@chromium.org>,
-        chrome-platform@lists.linux.dev, linux-kernel@vger.kernel.org,
-        linux-hardening@vger.kernel.org
-Subject: Re: [PATCH][next] platform/chrome: Fix -Warray-bounds warnings
-Message-ID: <202312140830.953C55AC9@keescook>
-References: <ZCTrutoN+9TiJM8u@work>
+        Thu, 14 Dec 2023 11:35:29 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFFA610F
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 08:35:35 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 04F85C433C8;
+        Thu, 14 Dec 2023 16:35:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1702571735;
+        bh=xLP+CoYVRLf33dBZWy5D+JKVopjIGSKoYshwiIZs8WA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=osr3FgHOd4SxcHlgM+KOE3JV5uBYP9C8KxGaoG2GKSPe6NrSS8k4Otmqu4xV46Yas
+         waqEXYeDYaxMmJiZn/Ld0KbTKe1csyUB23OvBJMSRempX0Te7sC4TA3JrVvyJp5qar
+         EX642T5u02Fu+1kmlzxxE0xK5FczFoX5t6PD2QIUWiPXcXlYRUkyJOe1UAWR5vAftl
+         8tWrd1VeDeWfI+HH8oAycivpbskmMyPDLLF4okV29ou9JImHjNKXIExJWL11P+OtjW
+         UjjKb4KEtvajbahh8rfFn/MGo3ArVlhAFke2+6PTj58UqBfSR+owDpZhR3CcFz8ww1
+         NSSQ3uH/wi5xQ==
+Date:   Thu, 14 Dec 2023 16:35:27 +0000
+From:   Conor Dooley <conor@kernel.org>
+To:     Ninad Palsule <ninad@linux.ibm.com>
+Cc:     robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, joel@jms.id.au, andrew@codeconstruct.com.au,
+        peterhuewe@gmx.de, jarkko@kernel.org, jgg@ziepe.ca,
+        keescook@chromium.org, tony.luck@intel.com, gpiccoli@igalia.com,
+        johannes.holland@infineon.com, linux@roeck-us.net,
+        broonie@kernel.org, patrick.rudolph@9elements.com,
+        vincent@vtremblay.dev, peteryin.openbmc@gmail.com,
+        lakshmiy@us.ibm.com, bhelgaas@google.com,
+        naresh.solanki@9elements.com, alexander.stein@ew.tq-group.com,
+        festevam@denx.de, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        linux-integrity@vger.kernel.org, linux-hardening@vger.kernel.org,
+        geissonator@yahoo.com
+Subject: Re: [PATCH v1 2/8] dt-bindings: tpm: Add schema for TIS I2C devices
+Message-ID: <20231214-stopper-bounce-ca9002869293@spud>
+References: <20231212164004.1683589-1-ninad@linux.ibm.com>
+ <20231212164004.1683589-3-ninad@linux.ibm.com>
+ <20231212-amusement-elevation-28e42bcccc35@spud>
+ <d8b5df1c-c732-4cf3-ae28-cc2017d3b0b6@linux.ibm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="MMQ9s9pZoIm9/Al5"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ZCTrutoN+9TiJM8u@work>
+In-Reply-To: <d8b5df1c-c732-4cf3-ae28-cc2017d3b0b6@linux.ibm.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 29, 2023 at 07:54:02PM -0600, Gustavo A. R. Silva wrote:
-> GCC-13 (and Clang) does not like having a partially allocated object,
-> since it cannot reason about it for bounds checking.
-> 
-> Notice that the compiler is legitimately complaining about accessing
-> an object (params, in this case) for which not enough memory was
-> allocated.
-> 
-> The object is of size 20 bytes:
-> 
-> struct ec_params_vbnvcontext {
-> 	uint32_t                   op;                   /*     0     4 */
-> 	uint8_t                    block[16];            /*     4    16 */
-> 
-> 	/* size: 20, cachelines: 1, members: 2 */
-> 	/* last cacheline: 20 bytes */
-> };
-> 
-> but only 16 bytes are allocated:
-> 
-> sizeof(struct ec_response_vbnvcontext) == 16
-> 
-> In this case, as only enough space for the op field is allocated,
-> we can use an object of type uint32_t instead of a whole
-> struct ec_params_vbnvcontext (for which not enough memory is
-> allocated).
-> 
-> Fix the following warning seen under GCC 13:
-> drivers/platform/chrome/cros_ec_vbc.c: In function ‘vboot_context_read’:
-> drivers/platform/chrome/cros_ec_vbc.c:36:15: warning: array subscript ‘struct ec_params_vbnvcontext[1]’ is partly outside array bounds of ‘unsigned char[36]’ [-Warray-bounds=]
->    36 |         params->op = EC_VBNV_CONTEXT_OP_READ;
->       |               ^~
-> In file included from drivers/platform/chrome/cros_ec_vbc.c:12:
-> In function ‘kmalloc’,
->     inlined from ‘vboot_context_read’ at drivers/platform/chrome/cros_ec_vbc.c:30:8:
-> ./include/linux/slab.h:580:24: note: at offset 20 into object of size 36 allocated by ‘kmalloc_trace’
->   580 |                 return kmalloc_trace(
->       |                        ^~~~~~~~~~~~~~
->   581 |                                 kmalloc_caches[kmalloc_type(flags)][index],
->       |                                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->   582 |                                 flags, size);
->       |                                 ~~~~~~~~~~~~
-> 
-> Link: https://github.com/KSPP/linux/issues/278
-> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
 
-This patch seems to have gotten lost? Looking at the conversation, I
-think it should land as-is rather than changing the allocation size.
+--MMQ9s9pZoIm9/Al5
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-I can pick this up via my tree if that helps...
+On Thu, Dec 14, 2023 at 09:34:39AM -0600, Ninad Palsule wrote:
+> Hello Conor,
+>=20
+> On 12/12/23 11:14, Conor Dooley wrote:
+> > Hey,
+> >=20
+> > On Tue, Dec 12, 2023 at 10:39:58AM -0600, Ninad Palsule wrote:
+> > > From: Johannes Holland <johannes.holland@infineon.com>
+> > >=20
+> > > Add a dt schema to support device tree bindings
+> > "Add bindings for..."
+> Fixed.
+> >=20
+> > > for the generic I2C
+> > > physical layer. Refer to the TCG PC Client Platform TPM Profile (PTP)
+> > > Specification for TPM 2.0 v1.04 Revision 14.
+> > >=20
+> > > This includes descriptions for the Nuvoton and Infineon devices.
+> > >=20
+> > > OpenBMC-Staging-Count: 3
+> > I have no idea what this is, but it needs to be removed from the patch.
+> Removed.
+> >=20
+> > > Signed-off-by: Johannes Holland <johannes.holland@infineon.com>
+> > > Signed-off-by: Joel Stanley <joel@jms.id.au>
+> > > Signed-off-by: Ninad Palsule <ninad@linux.ibm.com>
+> > > ---
+> > >   .../bindings/security/tpm/tpm-tis-i2c.yaml    | 50 ++++++++++++++++=
++++
+> > >   1 file changed, 50 insertions(+)
+> > >   create mode 100644 Documentation/devicetree/bindings/security/tpm/t=
+pm-tis-i2c.yaml
+> > >=20
+> > > diff --git a/Documentation/devicetree/bindings/security/tpm/tpm-tis-i=
+2c.yaml b/Documentation/devicetree/bindings/security/tpm/tpm-tis-i2c.yaml
+> > > new file mode 100644
+> > > index 000000000000..de1e34065748
+> > > --- /dev/null
+> > > +++ b/Documentation/devicetree/bindings/security/tpm/tpm-tis-i2c.yaml
+> > > @@ -0,0 +1,50 @@
+> > > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> > > +%YAML 1.2
+> > > +---
+> > > +$id: http://devicetree.org/schemas/security/tpm/tpm-tis-i2c.yaml#
+> > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > > +
+> > > +title: I2C PTP based TPM Devices
+> > > +
+> > > +maintainers:
+> > > +  - Johannes Holland <johannes.holland@infineon.com>
+> > > +
+> > > +description:
+> > > +  Device Tree Bindings for I2C based Trusted Platform Module (TPM).
+> > s/Device Tree Bindings for //. Doesn't dt_binding_check now complain if
+> > you have this in a title or description?
+> Fixed.
+> >=20
+> > > +properties:
+> > > +  $nodename:
+> > > +    pattern: "^tpm(@[0-9a-f]+)?$"
+> > > +
+> > > +  compatible:
+> > > +    oneOf:
+> > > +      - description: Infineon's Trusted Platform Module (TPM) (SLB96=
+73).
+> > > +        items:
+> > > +          - const: infineon,slb9673
+> > > +          - const: tcg,tpm-tis-i2c
+> > > +      - description: Nuvoton's Trusted Platform Module (TPM) (NPCT75=
+x).
+> > > +        items:
+> > > +          - const: nuvoton,npct75x
+> > > +          - const: tcg,tpm-tis-i2c
 
--Kees
+Also, another thought - the bus is not usually encoded in the compatible
+string, so it would be good to remove that.
 
-> ---
->  drivers/platform/chrome/cros_ec_vbc.c | 12 ++++++++----
->  1 file changed, 8 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/platform/chrome/cros_ec_vbc.c b/drivers/platform/chrome/cros_ec_vbc.c
-> index c859c862d7ac..b5a584f5469a 100644
-> --- a/drivers/platform/chrome/cros_ec_vbc.c
-> +++ b/drivers/platform/chrome/cros_ec_vbc.c
-> @@ -20,10 +20,14 @@ static ssize_t vboot_context_read(struct file *filp, struct kobject *kobj,
->  	struct device *dev = kobj_to_dev(kobj);
->  	struct cros_ec_dev *ec = to_cros_ec_dev(dev);
->  	struct cros_ec_device *ecdev = ec->ec_dev;
-> -	struct ec_params_vbnvcontext *params;
->  	struct cros_ec_command *msg;
-> +	/*
-> +	 * This should be a pointer to the same type as op field in
-> +	 * struct ec_params_vbnvcontext.
-> +	 */
-> +	uint32_t *params_op;
->  	int err;
-> -	const size_t para_sz = sizeof(params->op);
-> +	const size_t para_sz = sizeof(*params_op);
->  	const size_t resp_sz = sizeof(struct ec_response_vbnvcontext);
->  	const size_t payload = max(para_sz, resp_sz);
->  
-> @@ -32,8 +36,8 @@ static ssize_t vboot_context_read(struct file *filp, struct kobject *kobj,
->  		return -ENOMEM;
->  
->  	/* NB: we only kmalloc()ated enough space for the op field */
-> -	params = (struct ec_params_vbnvcontext *)msg->data;
-> -	params->op = EC_VBNV_CONTEXT_OP_READ;
-> +	params_op = (uint32_t *)msg->data;
-> +	*params_op = EC_VBNV_CONTEXT_OP_READ;
->  
->  	msg->version = EC_VER_VBNV_CONTEXT;
->  	msg->command = EC_CMD_VBNV_CONTEXT;
-> -- 
-> 2.34.1
-> 
+> > > +      - const: tcg,tpm-tis-i2c
+> > IMO this should be removed and this fallback should only be used in
+> > combination with device specific compatibles, like you have here for the
+> > infineon and nuvoton devices.
+>=20
+> As Guenter mentioned I need to keep it as tacoma board is just using this
+> string.
 
--- 
-Kees Cook
+No, that does not mean that you have to keep this in the binding. I know
+Rob had some comments that might invalidate this binding entirely, but
+if that does not happen then I think think that the tacoma devicetree
+needs to have a device-specific compatible added for the tpm that it has.
+You could of course retain the generic fallback compatible however.
+
+--MMQ9s9pZoIm9/Al5
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZXsuzwAKCRB4tDGHoIJi
+0iCVAQDk5mHO10tmO5WDzSu3wLDAmW2sRXfnlt57B2JKfnI6ugEA4cuH9pF3plY6
+Hwto/5Zwn/wHNXZGd/jh0wVacJxniQo=
+=N8sK
+-----END PGP SIGNATURE-----
+
+--MMQ9s9pZoIm9/Al5--
