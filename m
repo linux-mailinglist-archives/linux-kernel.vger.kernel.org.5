@@ -2,109 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C312C8135C7
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 17:10:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D4C068135C0
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 17:10:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1443787AbjLNQKL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 11:10:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40636 "EHLO
+        id S1443576AbjLNQJt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 11:09:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54122 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230179AbjLNQKI (ORCPT
+        with ESMTP id S230015AbjLNQJs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 11:10:08 -0500
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC083115;
-        Thu, 14 Dec 2023 08:10:13 -0800 (PST)
-Received: from pps.filterd (m0356517.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3BEFW6Fa010339;
-        Thu, 14 Dec 2023 16:09:48 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- content-transfer-encoding : mime-version; s=pp1;
- bh=65zoArfKlAIKj+jHAyVvOkf//7nWNHHCKZamla+kz0Y=;
- b=TClWSD6Qx0RGjGrbdNeLoCsTdrhG4E5pK6b975v+r8iHZ7BuVhFIam8BVLKja0EV8RdM
- O7PZ9S3ZQP/dPbFUzi6qSNo2rmQR8LR16aCFphHL5Mamla5kShsoyD6dry7ewjqVxhbk
- Dn/k1z70RerMnxPIs9QNmHLw3PrM8w8TtKhCZnmFoqjwA/7Bk8hoVAw1w/O+kX8jwTcX
- xO73n+FvpGh/SSbRrI/a2lhJ4xL+uGBWxLSaxnV9+JGQDQoNbuPRAa3zB7nNNcxmF4nI
- 2LOc7RttJcPjZV2PnGX75MKJQ4ilfQFpWGJy6r7Hi1E7cHaef0gt4h/n64nXq1CAh/gZ UA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3v04ea94sk-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 14 Dec 2023 16:09:48 +0000
-Received: from m0356517.ppops.net (m0356517.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3BEFWCPH010489;
-        Thu, 14 Dec 2023 16:09:47 GMT
-Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3v04ea94s3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 14 Dec 2023 16:09:47 +0000
-Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
-        by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3BEEFE4g013874;
-        Thu, 14 Dec 2023 16:09:46 GMT
-Received: from smtprelay03.wdc07v.mail.ibm.com ([172.16.1.70])
-        by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3uw592h39a-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 14 Dec 2023 16:09:46 +0000
-Received: from smtpav05.dal12v.mail.ibm.com (smtpav05.dal12v.mail.ibm.com [10.241.53.104])
-        by smtprelay03.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3BEG9jV618612888
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 14 Dec 2023 16:09:45 GMT
-Received: from smtpav05.dal12v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 4CF5458068;
-        Thu, 14 Dec 2023 16:09:45 +0000 (GMT)
-Received: from smtpav05.dal12v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 7297B58065;
-        Thu, 14 Dec 2023 16:09:42 +0000 (GMT)
-Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.watson.ibm.com (unknown [9.31.99.90])
-        by smtpav05.dal12v.mail.ibm.com (Postfix) with ESMTP;
-        Thu, 14 Dec 2023 16:09:42 +0000 (GMT)
-Message-ID: <579803fe4750b2ac1cbf31f4d38929c9ec901a41.camel@linux.ibm.com>
-Subject: Re: [RFC][PATCH] overlayfs: Redirect xattr ops on security.evm to
- security.evm_overlayfs
-From:   Mimi Zohar <zohar@linux.ibm.com>
-To:     Amir Goldstein <amir73il@gmail.com>,
-        Roberto Sassu <roberto.sassu@huaweicloud.com>
-Cc:     Christian Brauner <brauner@kernel.org>,
-        Seth Forshee <sforshee@kernel.org>, miklos@szeredi.hu,
-        linux-unionfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        paul@paul-moore.com, stefanb@linux.ibm.com, jlayton@kernel.org,
-        linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org,
-        Roberto Sassu <roberto.sassu@huawei.com>,
-        Eric Snowberg <eric.snowberg@oracle.com>
-Date:   Thu, 14 Dec 2023 11:09:41 -0500
-In-Reply-To: <CAOQ4uxhwHgj-bE7N5SNcRZfnVHn9yCdY_=LFuOxEBkVBbrZKiw@mail.gmail.com>
-References: <20231208172308.2876481-1-roberto.sassu@huaweicloud.com>
-         <CAOQ4uxivpZ+u0A5kE962XST37-ey2Tv9EtddnZQhk3ohRkcQTw@mail.gmail.com>
-         <20231208-tauziehen-zerfetzt-026e7ee800a0@brauner>
-         <c95b24f27021052209ec6911d2b7e7b20e410f43.camel@huaweicloud.com>
-         <20231211-fortziehen-basen-b8c0639044b8@brauner>
-         <019f134a-6ab4-48ca-991c-5a5c94e042ea@huaweicloud.com>
-         <CAOQ4uxgpNt7qKEF_NEJPsKU7-XhM7N_3eP68FrOpMpcRcHt4rQ@mail.gmail.com>
-         <59bf3530-2a6e-4caa-ac42-4d0dab9a71d1@huaweicloud.com>
-         <a9297cc1bf23e34aba3c7597681e9e71a03b37f9.camel@linux.ibm.com>
-         <d6b43b5780770637a724d129c22d5212860f494a.camel@huaweicloud.com>
-         <CAOQ4uxhwHgj-bE7N5SNcRZfnVHn9yCdY_=LFuOxEBkVBbrZKiw@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5 (3.28.5-22.el8) 
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: xcpWVQEhxlE-8galbqQJSAxdGFwLi2Nv
-X-Proofpoint-ORIG-GUID: EUrIUsu8j469rbUs2Joh63Hlbwdqbz-X
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        Thu, 14 Dec 2023 11:09:48 -0500
+Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41CAC112
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 08:09:54 -0800 (PST)
+Received: by mail-pj1-x102b.google.com with SMTP id 98e67ed59e1d1-28b012f93eeso934218a91.0
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 08:09:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1702570194; x=1703174994; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=NZVsCOUCWp3r2s6KA7Me5wHvSzIEdtAlQPG+T626S2w=;
+        b=EXhPnKduL+YxpIbEonb/Oym2yrGu1klih9TiqIHlsADbwGh3c08Ir4iMvAmReP4z4/
+         RAf2DFc/1EtO3FIzAy90pqnehUoRlRNaLkgx4ulY5vC+3SxNB3kyB91Y9H/o7nvRLEWB
+         7A1pbKved1g9/TgINRxgZzoU2UT4duJN69BbcDyaNYeAyHuoN3EUOwFI5SKXbmC6oDz6
+         4FSqRbfadx2no25NAGLfhiGXmjwME3oIpkgl6Q56HginK0dvRt66KxpVlY+/jkDZhQ0b
+         fNuT5D7NAAh5ZtAXZ3dmWOmSYl+8I4T0xRkv72j3WDHMfJ3dgYzjM9sxb0/Pdkg2WULR
+         VnWQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702570194; x=1703174994;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=NZVsCOUCWp3r2s6KA7Me5wHvSzIEdtAlQPG+T626S2w=;
+        b=q7KCG1xrFZ0QQWjVYof7ObUq7G88+yNVQVHlSqXLXfX4ZkLsV2TjSpiBJaA/OQ6Wj/
+         qmGjyL3+Ox333TrFKsrjuq+4aoA4/VQyn3IXjpTFURxWrdUgbS5BtBK0dlpa2Q3PHqq/
+         Lk6SlU8rqUoM+19OdkQ6pHfGt5g+HIc51nkjqOTJL4TvTDoqMRx9wCkgiaxCqhLU2RrH
+         HuNYjiLTVDbZUpGgqi+JtlOpzP3aXlhM4K0U/qKzHNxxRP/7lcfexVN8KbHmVpZeiAwH
+         IKJf0S9I7qZTgwAD1Kes5YUWwRSVAjes1mWFwarKhXvB/OdEb8nBl3KXZFDG7MbYVXFH
+         gW9Q==
+X-Gm-Message-State: AOJu0YxGvkCs1VYAbTfamx2gLSYvUClKtrNAvRIgmQq7ZEBesfab2wzd
+        dXJ7Tsc5Es+S0/eZVn6tT4Lte1vMQ9G/f2bPi+amEQ==
+X-Google-Smtp-Source: AGHT+IHgafXcl6uWTefWFIJRyeqXdrYGV5RXS8+kJHFhH0PuyZUdD/H20OtjnIZrJjKb8ef0Vtp3nDt4ll1PDFL+Jro=
+X-Received: by 2002:a17:90b:46:b0:28b:9a5:d159 with SMTP id
+ d6-20020a17090b004600b0028b09a5d159mr527734pjt.50.1702570193686; Thu, 14 Dec
+ 2023 08:09:53 -0800 (PST)
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-14_11,2023-12-14_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 mlxscore=0
- spamscore=0 bulkscore=0 suspectscore=0 mlxlogscore=999 lowpriorityscore=0
- priorityscore=1501 impostorscore=0 clxscore=1015 adultscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311290000 definitions=main-2312140114
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+References: <20231214105243.3707730-1-tudor.ambarus@linaro.org>
+ <20231214105243.3707730-8-tudor.ambarus@linaro.org> <CAPLW+4mNjCbJ+VbKR66DFSkiXHyxdjgvwjN7azxjJQ6UxQikEw@mail.gmail.com>
+ <f3d61c49-1a46-476c-b7a5-6cc6a06a33ed@linaro.org>
+In-Reply-To: <f3d61c49-1a46-476c-b7a5-6cc6a06a33ed@linaro.org>
+From:   Sam Protsenko <semen.protsenko@linaro.org>
+Date:   Thu, 14 Dec 2023 10:09:42 -0600
+Message-ID: <CAPLW+4=tyr8Pcoe6Wm0Wtmkk4udDpuAiOKy7+C+Fwa6mvt3VoQ@mail.gmail.com>
+Subject: Re: [PATCH 07/13] clk: samsung: gs101: mark PERIC0 IP TOP gate clock
+ as critical
+To:     Tudor Ambarus <tudor.ambarus@linaro.org>
+Cc:     peter.griffin@linaro.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, mturquette@baylibre.com,
+        sboyd@kernel.org, conor+dt@kernel.org, andi.shyti@kernel.org,
+        alim.akhtar@samsung.com, gregkh@linuxfoundation.org,
+        jirislaby@kernel.org, catalin.marinas@arm.com, will@kernel.org,
+        s.nawrocki@samsung.com, tomasz.figa@gmail.com,
+        cw00.choi@samsung.com, arnd@arndb.de, andre.draszik@linaro.org,
+        saravanak@google.com, willmcvicker@google.com,
+        linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-clk@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-i2c@vger.kernel.org, linux-serial@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -112,161 +82,81 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2023-12-14 at 17:09 +0200, Amir Goldstein wrote:
-> On Thu, Dec 14, 2023 at 3:43 PM Roberto Sassu
-> <roberto.sassu@huaweicloud.com> wrote:
+On Thu, Dec 14, 2023 at 10:01=E2=80=AFAM Tudor Ambarus <tudor.ambarus@linar=
+o.org> wrote:
+>
+>
+>
+> On 12/14/23 15:37, Sam Protsenko wrote:
+> > On Thu, Dec 14, 2023 at 4:52=E2=80=AFAM Tudor Ambarus <tudor.ambarus@li=
+naro.org> wrote:
+> >>
+> >> Testing USI8 I2C with an eeprom revealed that when the USI8 leaf clock
+> >> is disabled it leads to the CMU_TOP PERIC0 IP gate clock disablement,
+> >> which then makes the system hang. To prevent this, mark
+> >> CLK_GOUT_CMU_PERIC0_IP as critical. Other clocks will be marked
+> >> accordingly when tested.
+> >>
+> >> Signed-off-by: Tudor Ambarus <tudor.ambarus@linaro.org>
+> >> ---
+> >>  drivers/clk/samsung/clk-gs101.c | 2 +-
+> >>  1 file changed, 1 insertion(+), 1 deletion(-)
+> >>
+> >> diff --git a/drivers/clk/samsung/clk-gs101.c b/drivers/clk/samsung/clk=
+-gs101.c
+> >> index 3d194520b05e..08d80fca9cd6 100644
+> >> --- a/drivers/clk/samsung/clk-gs101.c
+> >> +++ b/drivers/clk/samsung/clk-gs101.c
+> >> @@ -1402,7 +1402,7 @@ static const struct samsung_gate_clock cmu_top_g=
+ate_clks[] __initconst =3D {
+> >>              "mout_cmu_peric0_bus", CLK_CON_GAT_GATE_CLKCMU_PERIC0_BUS=
+,
+> >>              21, 0, 0),
+> >>         GATE(CLK_GOUT_CMU_PERIC0_IP, "gout_cmu_peric0_ip", "mout_cmu_p=
+eric0_ip",
+> >> -            CLK_CON_GAT_GATE_CLKCMU_PERIC0_IP, 21, 0, 0),
+> >> +            CLK_CON_GAT_GATE_CLKCMU_PERIC0_IP, 21, CLK_IS_CRITICAL, 0=
+),
 > >
-> > On Tue, 2023-12-12 at 10:27 -0500, Mimi Zohar wrote:
-> > > On Tue, 2023-12-12 at 14:13 +0100, Roberto Sassu wrote:
-> > > > On 12.12.23 11:44, Amir Goldstein wrote:
-> > > > > On Tue, Dec 12, 2023 at 12:25 PM Roberto Sassu
-> > > > > <roberto.sassu@huaweicloud.com> wrote:
-> > > > > >
-> > > > > > On 11.12.23 19:01, Christian Brauner wrote:
-> > > > > > > > The second problem is that one security.evm is not enough. We need two,
-> > > > > > > > to store the two different HMACs. And we need both at the same time,
-> > > > > > > > since when overlayfs is mounted the lower/upper directories can be
-> > > > > > > > still accessible.
-> > > > > > >
-> > > > > > > "Changes to the underlying filesystems while part of a mounted overlay
-> > > > > > > filesystem are not allowed. If the underlying filesystem is changed, the
-> > > > > > > behavior of the overlay is undefined, though it will not result in a
-> > > > > > > crash or deadlock."
-> > > > > > >
-> > > > > > > https://docs.kernel.org/filesystems/overlayfs.html#changes-to-underlying-filesystems
-> > > > > > >
-> > > > > > > So I don't know why this would be a problem.
-> > > > > >
-> > > > > > + Eric Snowberg
-> > > > > >
-> > > > > > Ok, that would reduce the surface of attack. However, when looking at:
-> > > > > >
-> > > > > >        ovl: Always reevaluate the file signature for IMA
-> > > > > >
-> > > > > >        Commit db1d1e8b9867 ("IMA: use vfs_getattr_nosec to get the
-> > > > > > i_version")
-> > > > > >        partially closed an IMA integrity issue when directly modifying a file
-> > > > > >        on the lower filesystem.  If the overlay file is first opened by a
-> > > > > > user
-> > > > > >        and later the lower backing file is modified by root, but the extended
-> > > > > >        attribute is NOT updated, the signature validation succeeds with
-> > > > > > the old
-> > > > > >        original signature.
-> > > > > >
-> > > > > > Ok, so if the behavior of overlayfs is undefined if the lower backing
-> > > > > > file is modified by root, do we need to reevaluate? Or instead would be
-> > > > > > better to forbid the write from IMA (legitimate, I think, since the
-> > > > > > behavior is documented)? I just saw that we have d_real_inode(), we can
-> > > > > > use it to determine if the write should be denied.
-> > > > > >
-> > > > >
-> > > > > There may be several possible legitimate actions in this case, but the
-> > > > > overall concept IMO should be the same as I said about EVM -
-> > > > > overlayfs does not need an IMA signature of its own, because it
-> > > > > can use the IMA signature of the underlying file.
-> > > > >
-> > > > > Whether overlayfs reads a file from lower fs or upper fs, it does not
-> > > > > matter, the only thing that matters is that the underlying file content
-> > > > > is attested when needed.
-> > > > >
-> > > > > The only incident that requires special attention is copy-up.
-> > > > > This is what the security hooks security_inode_copy_up() and
-> > > > > security_inode_copy_up_xattr() are for.
-> > > > >
-> > > > > When a file starts in state "lower" and has security.ima,evm xattrs
-> > > > > then before a user changes the file, it is copied up to upper fs
-> > > > > and suppose that security.ima,evm xattrs are copied as is?
-> > >
-> > > For IMA copying up security.ima is fine.  Other than EVM portable
-> > > signatures, security.evm contains filesystem specific metadata.
-> > > Copying security.evm up only works if the metadata is the same on both
-> > > filesystems.  Currently the i_generation and i_sb->s_uuid are
-> > > different.
-> > >
-> > > > > When later the overlayfs file content is read from the upper copy
-> > > > > the security.ima signature should be enough to attest that file content
-> > > > > was not tampered with between going from "lower" to "upper".
-> > > > >
-> > > > > security.evm may need to be fixed on copy up, but that should be
-> > > > > easy to do with the security_inode_copy_up_xattr() hook. No?
-> > >
-> > > Writing security.evm requires the existing security.evm to be valid.
-> > > After each security xattr in the protected list is modified,
-> > > security.evm HMAC needs to be updated.  Perhaps calculating and writing
-> > > security.evm could be triggered by security_inode_copy_up_xattr().
-> > > Just copying a non-portable EVM signature wouldn't work, or for that
-> > > matter copying an EVM HMAC with different filesystem metadata.
-> >
-> > There is another problem, when delayed copy is used. The content comes
-> > from one source, metadata from another.
-> >
-> > I initially created test-file-lower on the lower directory
-> > (overlayfs/data), before mounting overlayfs. After mount on
-> > overlayfs/mnt:
-> >
-> > # getfattr -m - -e hex -d overlayfs/mnt/test-file-lower
-> > # file: overlayfs/mnt/test-file-lower
-> > security.evm=0x02c86ec91a4c0cf024537fd24347b780b90973402e
-> > security.ima=0x0404f2ca1bb6c7e907d06dafe4687e579fce76b37e4e93b7605022da52e6ccc26fd2
-> > security.selinux=0x73797374656d5f753a6f626a6563745f723a756e6c6162656c65645f743a733000
-> >
-> > # chcon -t unconfined_t overlayfs/mnt/test-file-lower
-> >
-> > After this, IMA creates an empty file in the upper directory
-> > (overlayfs/root/data), and writes security.ima at file close.
-> > Unfortunately, this is what is presented from overlayfs, which is not
-> > in sync with the content.
-> >
-> > # getfattr -m - -e hex -d overlayfs/mnt/test-file-lower
-> > # file: overlayfs/mnt/test-file-lower
-> > security.evm=0x021d71e7df78c36745e3b651ce29cb9f47dc301248
-> > security.ima=0x04048855508aade16ec573d21e6a485dfd0a7624085c1a14b5ecdd6485de0c6839a4
-> > security.selinux=0x73797374656d5f753a6f626a6563745f723a756e636f6e66696e65645f743a733000
-> >
-> > # sha256sum overlayfs/mnt/test-file-lower
-> > f2ca1bb6c7e907d06dafe4687e579fce76b37e4e93b7605022da52e6ccc26fd2  overlayfs/mnt/test-file-lower
-> >
-> > # sha256sum overlayfs/root/data/test-file-lower
-> > 8855508aade16ec573d21e6a485dfd0a7624085c1a14b5ecdd6485de0c6839a4  overlayfs/root/data/test-file-lower (upperdir)
-> >
-> > We would need to use the lower security.ima until the copy is made, but
-> > at the same time we need to keep the upper valid (with all xattrs) so
-> > that IMA can update the next time overlayfs requests that.
-> >
-> 
-> Yap.
-> 
-> As Seth wrote, overlayfs is a combination of upper and lower.
-> The information that IMA needs should be accessible from either lower
-> or upper, but sometimes we will need to make the right choice.
-> 
-> The case of security.ima is similar to that of st_blocks -
-> it is a data-related metadata, so it needs to be taken from the lowerdata inode
-> (not even the lower inode). See example of getting STATX_BLOCKS
-> in ovl_getattr().
-> 
-> I would accept a patch that special cases security.ima in ovl_xattr_get()
-> and gets it from ovl_i_path_lowerdata(), which would need to be
-> factored out of ovl_path_lowerdata().
-> 
-> I would also accept filtering out security.{ima,evm} from
-> 
-> But I would only accept it if I know that IMA is not trying to write the
-> security.ima xattr when closing an overlayfs file, only when closing the
-> real underlying upper file.
+> > This clock doesn't seem like a leaf clock. It's also not a bus clock.
+> > Leaving it always running makes the whole PERIC0 CMU clocked, which
+> > usually should be avoided. Is it possible that the system freezes
+> > because some other clock (which depends on peric0_ip) gets disabled as
+> > a consequence of disabling peric0_ip? Maybe it's some leaf clock which
+> > is not implemented yet in the clock driver? Just looks weird to me
+> > that the system hangs because of CMU IP clock disablement. It's
+> > usually something much more specific.
+>
+> The system hang happened when I tested USI8 in I2C configuration with an
+> eeprom. After the eeprom is read the leaf gate clock that gets disabled
+> is the one on PERIC0 (CLK_GOUT_PERIC0_CLK_PERIC0_USI8_USI_CLK). I assume
+> this leads to the CMU_TOP gate (CLK_CON_GAT_GATE_CLKCMU_PERIC0_IP)
+> disablement which makes the system hang. Either marking the CMU_TOP gate
+> clock as critical (as I did in this patch) or marking the leaf PERIC0
+> gate clock as critical, gets rid of the system hang. Did I choose wrong?
+>
 
-I don't see how that would be possible.  As far as I'm aware, the
-correlation is between the overlay and the underlying lower/uppper
-file, not the other way around.  How could a close on the underlying
-file trigger IMA on an overlay file?
+Did you already implement 100% of clocks in CMU_PERIC0? If no, there
+is a chance some other leaf clock (which is not implemented yet in
+your driver) gets disabled as a result of PERIC0_IP disablement, which
+might actually lead to that hang you observe. Usually it's some
+meaningful leaf clock, e.g. GIC or interconnect clocks. Please check
+clk-exynos850.c driver for CLK_IS_CRITICAL and CLK_IGNORE_UNUSED flags
+and the corresponding comments I left there, maybe it'll give you more
+particular idea about what to look for. Yes, making the whole CMU
+always running without understanding why (i.e. because of which
+particular leaf clock) might not be the best way of handling this
+issue. I might be mistaken, but at least please check if you
+implemented all clocks for PERIC0 first and if making some meaningful
+leaf clock critical makes more sense.
 
-> 
-> I would also expect IMA to filter out security.{ima,evm} xattrs in
-> security_inode_copy_up_xattr() (i.e. return 1).
-> and most importantly, a documentation of the model of IMA/EVM
-> and overlayfs.
-
-Ok.
-
-Mimi
-
+> Thanks,
+> ta
+> >
+> >>         GATE(CLK_GOUT_CMU_PERIC1_BUS, "gout_cmu_peric1_bus",
+> >>              "mout_cmu_peric1_bus", CLK_CON_GAT_GATE_CLKCMU_PERIC1_BUS=
+,
+> >>              21, 0, 0),
+> >> --
+> >> 2.43.0.472.g3155946c3a-goog
+> >>
