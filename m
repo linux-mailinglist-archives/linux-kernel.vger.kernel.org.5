@@ -2,58 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E24A6812C9A
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 11:14:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D554E812C9C
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 11:14:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1443578AbjLNKOP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 05:14:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56510 "EHLO
+        id S1443584AbjLNKOi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 05:14:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49180 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1443555AbjLNKON (ORCPT
+        with ESMTP id S1443580AbjLNKOg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 05:14:13 -0500
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 081B0BD;
-        Thu, 14 Dec 2023 02:14:19 -0800 (PST)
-Received: from mail.maildlp.com (unknown [172.18.186.231])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4SrSpz4b1nz6J9fR;
-        Thu, 14 Dec 2023 18:13:15 +0800 (CST)
-Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
-        by mail.maildlp.com (Postfix) with ESMTPS id C39D61400CA;
-        Thu, 14 Dec 2023 18:14:17 +0800 (CST)
-Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
- (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Thu, 14 Dec
- 2023 10:14:17 +0000
-Date:   Thu, 14 Dec 2023 10:14:15 +0000
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     David Lechner <dlechner@baylibre.com>
-CC:     <linux-iio@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Michael Hennerich <michael.hennerich@analog.com>,
-        Nuno =?ISO-8859-1?Q?S=E1?= <nuno.sa@analog.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        Stefan Popa <stefan.popa@analog.com>
-Subject: Re: [PATCH v2 3/3] iio: adc: ad7380: new driver for AD7380 ADCs
-Message-ID: <20231214101415.0000060c@Huawei.com>
-In-Reply-To: <20231213-ad7380-mainline-v2-3-cd32150d84a3@baylibre.com>
-References: <20231213-ad7380-mainline-v2-0-cd32150d84a3@baylibre.com>
-        <20231213-ad7380-mainline-v2-3-cd32150d84a3@baylibre.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
+        Thu, 14 Dec 2023 05:14:36 -0500
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 936E510E;
+        Thu, 14 Dec 2023 02:14:41 -0800 (PST)
+Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BE9Amoq013135;
+        Thu, 14 Dec 2023 10:14:28 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+        message-id:date:mime-version:subject:to:cc:references:from
+        :in-reply-to:content-type:content-transfer-encoding; s=
+        qcppdkim1; bh=5Eh2WYQpbZ/3Zec81rTCR6KeMKnTOxtD+S6i90Tlwy4=; b=lI
+        pCFK0mCU/YpYaLzMD170ajo3GljWOklARLpMvatDsPPYyfsTrNsrpvELz+mbyBmt
+        r2afsJIn+QTArNPMrcMfmcJ9YfXzsycVDKf8Ad4FrYsP6ah0ywROBrK3dQLVnnyR
+        IlFL+2MptCZxnFV4lJwC5PEiMz+McE6WqzBVMT1q61EGLFUj8gk1pB3J/Pk4wdyc
+        2AyXdVijk2uR7VZ0qEsyhIXYPZdEiCLso/FlDnrwYScpTiIX+hl7cQFA9mQ1MSfV
+        I6aD+fxggF+HNgaD3X3bYE+qt5Dx1OwyIvFQbF2YOqe5Hytnb15+MOEH3D/KRVNN
+        qNPU04FyxipsD2z9Zabw==
+Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3uynre14jv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 14 Dec 2023 10:14:28 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3BEAER4j026127
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 14 Dec 2023 10:14:27 GMT
+Received: from [10.217.219.216] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Thu, 14 Dec
+ 2023 02:14:24 -0800
+Message-ID: <8929dcd0-af98-5b18-2d90-aad7b5928578@quicinc.com>
+Date:   Thu, 14 Dec 2023 15:44:21 +0530
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.202.227.76]
-X-ClientProxiedBy: lhrpeml100003.china.huawei.com (7.191.160.210) To
- lhrpeml500005.china.huawei.com (7.191.163.240)
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.13.1
+Subject: Re: [PATCH 6/9] PCI: epf-mhi: Enable MHI async read/write support
+Content-Language: en-US
+To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+CC:     <lpieralisi@kernel.org>, <kw@linux.com>, <kishon@kernel.org>,
+        <bhelgaas@google.com>, <mhi@lists.linux.dev>,
+        <linux-arm-msm@vger.kernel.org>, <linux-pci@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20231127124529.78203-1-manivannan.sadhasivam@linaro.org>
+ <20231127124529.78203-7-manivannan.sadhasivam@linaro.org>
+ <feb4ed1b-ed74-aebe-0ab8-dec123fe0a31@quicinc.com>
+ <20231214100936.GI2938@thinkpad>
+From:   Krishna Chaitanya Chundru <quic_krichai@quicinc.com>
+In-Reply-To: <20231214100936.GI2938@thinkpad>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: hRUBvUOtAIqms4wGoJ6kJ7n8P9XE4vua
+X-Proofpoint-GUID: hRUBvUOtAIqms4wGoJ6kJ7n8P9XE4vua
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-09_01,2023-12-07_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 mlxlogscore=759
+ suspectscore=0 impostorscore=0 phishscore=0 bulkscore=0 spamscore=0
+ malwarescore=0 priorityscore=1501 lowpriorityscore=0 clxscore=1015
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2311290000 definitions=main-2312140068
+X-Spam-Status: No, score=-4.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -62,52 +85,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 13 Dec 2023 05:21:20 -0600
-David Lechner <dlechner@baylibre.com> wrote:
 
-> This adds a new driver for the AD7380 family ADCs.
-> 
-> The driver currently implements basic support for the AD7380, AD7381,
-> AD7383, and AD7384 2-channel differential ADCs. Support for additional
-> single-ended and 4-channel chips that use the same register map as well
-> as additional features of the chip will be added in future patches.
-> 
-> Co-developed-by: Stefan Popa <stefan.popa@analog.com>
-> Signed-off-by: Stefan Popa <stefan.popa@analog.com>
-> Signed-off-by: David Lechner <dlechner@baylibre.com>
+On 12/14/2023 3:39 PM, Manivannan Sadhasivam wrote:
+> On Thu, Dec 14, 2023 at 03:10:01PM +0530, Krishna Chaitanya Chundru wrote:
+>> On 11/27/2023 6:15 PM, Manivannan Sadhasivam wrote:
+>>> Now that both eDMA and iATU are prepared to support async transfer, let's
+>>> enable MHI async read/write by supplying the relevant callbacks.
+>>>
+>>> In the absence of eDMA, iATU will be used for both sync and async
+>>> operations.
+>>>
+>>> Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+>>> ---
+>>>    drivers/pci/endpoint/functions/pci-epf-mhi.c | 7 ++++---
+>>>    1 file changed, 4 insertions(+), 3 deletions(-)
+>>>
+>>> diff --git a/drivers/pci/endpoint/functions/pci-epf-mhi.c b/drivers/pci/endpoint/functions/pci-epf-mhi.c
+>>> index 3d09a37e5f7c..d3d6a1054036 100644
+>>> --- a/drivers/pci/endpoint/functions/pci-epf-mhi.c
+>>> +++ b/drivers/pci/endpoint/functions/pci-epf-mhi.c
+>>> @@ -766,12 +766,13 @@ static int pci_epf_mhi_link_up(struct pci_epf *epf)
+>>>    	mhi_cntrl->raise_irq = pci_epf_mhi_raise_irq;
+>>>    	mhi_cntrl->alloc_map = pci_epf_mhi_alloc_map;
+>>>    	mhi_cntrl->unmap_free = pci_epf_mhi_unmap_free;
+>>> +	mhi_cntrl->read_sync = mhi_cntrl->read_async = pci_epf_mhi_iatu_read;
+>>> +	mhi_cntrl->write_sync = mhi_cntrl->write_async = pci_epf_mhi_iatu_write;
+>>>    	if (info->flags & MHI_EPF_USE_DMA) {
+>>>    		mhi_cntrl->read_sync = pci_epf_mhi_edma_read;
+>>>    		mhi_cntrl->write_sync = pci_epf_mhi_edma_write;
+>>> -	} else {
+>>> -		mhi_cntrl->read_sync = pci_epf_mhi_iatu_read;
+>>> -		mhi_cntrl->write_sync = pci_epf_mhi_iatu_write;
+>>> +		mhi_cntrl->read_async = pci_epf_mhi_edma_read_async;
+>>> +		mhi_cntrl->write_async = pci_epf_mhi_edma_write_async;
+>> I think the read_async & write async should be updated inside the if
+>> condition where MHI_EPF_USE_DMA flag is set.
+>>
+> That's what being done here. Am I missing anything?
+>
+> - Mani
 
-Just one additional comment.  I 'might' sort both this an Nuno's comment
-if Mark is fine with the SPI and no on else has review comments.
-Feel free to send a v3 though if you like ;)
+It should be like this as edma sync & aysnc read write should be update 
+only if DMA is supported, in the patch I see async function pointers are 
+being updated with the edma function pointers for IATU operations.
 
+                 if (info->flags & MHI_EPF_USE_DMA) {
 
-> +/* fully differential */
-> +DEFINE_AD7380_DIFFERENTIAL_2_CHANNEL(ad7380_channels, 16);
-> +DEFINE_AD7380_DIFFERENTIAL_2_CHANNEL(ad7381_channels, 14);
-> +/* pseudo differential */
-> +DEFINE_AD7380_DIFFERENTIAL_2_CHANNEL(ad7383_channels, 16);
-> +DEFINE_AD7380_DIFFERENTIAL_2_CHANNEL(ad7384_channels, 14);
-> +
-> +/* Since this is simultaneous sampling, we don't allow individual channels. */
-> +static const unsigned long ad7380_2_channel_scan_masks[] = {
-> +	GENMASK(2, 0), /* both ADC channels and soft timestamp */
-> +	GENMASK(1, 0), /* both ADC channels, no timestamp */
+   		mhi_cntrl->read_sync = pci_epf_mhi_edma_read;
+   		mhi_cntrl->write_sync = pci_epf_mhi_edma_write;
+		mhi_cntrl->read_async = pci_epf_mhi_edma_read_async;
+		mhi_cntrl->write_async = pci_epf_mhi_edma_write_async;
+	}
+- Krishna Chaitanya.
 
-https://elixir.bootlin.com/linux/v6.7-rc5/source/include/linux/iio/iio.h#L567
-See the comment (added recently!)
-
-Also, if I remember how this works correctly there is no need to include
-the timestamp in the mask.  We do special handling for it to avoid having to double
-the number of provided masks.  The details being that it uses
-iio_scan_el_ts_store rather than iio_scan_el_Store.
-
-So as you have it I think you'll always end up with the first entry
-and that will include a bonus bit that isn't a problem as it will match
-anyway.
-
-So just have the second entry and 0.
-
-Jonathan
-
-> +	0
-> +};
+>> - Krishna Chaitanya.
+>>
+>>>    	}
+>>>    	/* Register the MHI EP controller */
