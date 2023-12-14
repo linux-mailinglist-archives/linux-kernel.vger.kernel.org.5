@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 954B981363A
+	by mail.lfdr.de (Postfix) with ESMTP id 3EDD1813639
 	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 17:29:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1443507AbjLNQ3W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 11:29:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45720 "EHLO
+        id S230124AbjLNQ3Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 11:29:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45738 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229851AbjLNQ3O (ORCPT
+        with ESMTP id S1443458AbjLNQ3Q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 11:29:14 -0500
+        Thu, 14 Dec 2023 11:29:16 -0500
 Received: from EUR04-VI1-obe.outbound.protection.outlook.com (mail-vi1eur04on2082.outbound.protection.outlook.com [40.107.8.82])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D794125;
-        Thu, 14 Dec 2023 08:29:21 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A238711B;
+        Thu, 14 Dec 2023 08:29:22 -0800 (PST)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=LC/GedQ0M8c3vvDrPd8WNx+gHBZq8WX8WUwlEimV0Yb2ZxGoz4sByLa0RY8HYBIz7LeRLBdTpAe25wEj6OCjpykbXo0lb7qjR9G/Lh6TUX0NYO7XXu4yYKWx2bIJjYEFJq1swnbl1HiXK3GqF0elx9bLJcvF32Fs/wfZiK0As/dnWtSYbFkCkOJ7s/AmZC4k9bRiI2Mn1RB7VOBSt+ax4evkAN482dwKYew9iHH2GAKpT1koz4Zz5Y/nqPKBHZ0k5n7a4DlQVxOyfHEt4FG2cKTSR7vvSz2/NKsWjbBfkxduZscM8q/EkFcoYCsEM1DrVkNiZdKLZbFkRc5MYmdfXA==
+ b=IBxfwrf2kSaIMs1tDY5FPf7vKoF+hStGGxJKfSJuQ+jfvS9DrzRYoiI1Ejsv6lzcT0r50WxTZ7BNGvEDLTSIXPj7fGZgxHnmSQSfnRi5LLonz0neZwnEWr4xe2ZnTf3fFDrOnWab1BTs5+1xtqAxzrbXaecmzKZS9RCcV91WO3TzRhJG1KrgCAUEcFKpBWTsmixvKB9kW9ynQpJRHFkGtAKmjCv+MKIm6yHKabsoAgiDGRJr0HgTwwxbTZjTYp0biBruI1QgVeULGRn5xjn75ak1Nr8zg9bHExcnorR8QXnrayvnKuNpdKl+fE9xSGTyxX4z19O4Y9FHenCVk89ZXQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Alf3X77o95+4npf2Xmg3XH0mq/gq3JSYWbS2tW+Hm+4=;
- b=Rp8AfizAK/cFmUUaKp42wjlhfB/H2egD2pxtbmIUhsE0NH1sg8PzD229ESj5xVXaMSQMi72a0VTpC+v55m3kF/YmOgA6fv+/x+shFEVpOOQ+t3SKODPjqzbocg85Mx86y1N1U475VZBJRLUcBg7VXfqkXhQW5Wkt9kv4Pj+EZVKezp6UEvX6dSmOrSw248qnVUhbuMVtJCFvlbQpmDwt5JgWR1lfoBxVYfM7kVE33kkbHH0540EG5x4T8tefF+mYAMKnyDNlEgNR889azxTTo+MwgP+B524ityEpnLb6bGJTSvwCJv7+meYe/6DgDHWhsPgJA2F7zMSGTS535orZPA==
+ bh=9Nbp7KXbUxxTU41IvOZEP4Y+wSOIC/dVuJsy2ah9s2E=;
+ b=mh55u7loVLpSV3fwpXguWeANLhyTQqh4kEmBq4/D1hC2gPEQGYXkwJm2Wq17ccFOTeChE5xWz6OpU5EN+BVbuMsCAoKyDWtlmiZiGadDCriP1nt61MGP1Pl0W/FzjOK8gE7nhZe667270HGA9/dKEs6DwGidD/QpJabXeN46NyRltawUrv7mliPJidJUV3iv9I6Ymaa29dbut3jb99TmDvm+vjQSYrJIBmbGRcUrHDSl/8QZILHIqsNiqfXcal36CSd5kWGkfs8u5mljRzl3OjESmFBe18pfRVaJ7rygIfB0r3Yh2W0GwgW8Ffkq5oqd6Kl3p5e+78JYbrwNbW5uPA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=wolfvision.net; dmarc=pass action=none
  header.from=wolfvision.net; dkim=pass header.d=wolfvision.net; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wolfvision.net;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Alf3X77o95+4npf2Xmg3XH0mq/gq3JSYWbS2tW+Hm+4=;
- b=VcEM6raCuel7OKb81UHkq4EOYCdHt8dFlr7wCkX2UGqx6A+H/5QIZiP+BDt1EXocTHrPefDIPnlIUIjgD/R1cutyTffRmmLMZuqcGlo/vABJNtQ4UvqINqWEfRjaXD5kAXU2KvV43KRfBl6OQAKAX5xKV6OO1CH/l+j/mfLTSMg=
+ bh=9Nbp7KXbUxxTU41IvOZEP4Y+wSOIC/dVuJsy2ah9s2E=;
+ b=JnHWoiou5Mz1J3nn7mkUlKYX4JzWE2NFfbZtSxUBExTeJq34cjwtDj9EH85FnNv9ezPzEZsuc3WPiLF2175Ndm2us7ZNOSNi2XxVyhSdW7lLNRzEQRGEESMYjpSX9hGGOs6ErgMyWllpsQvU7l6DDGGFEHVm4D9ehY4fL5FzfmU=
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=wolfvision.net;
 Received: from VE1PR08MB4974.eurprd08.prod.outlook.com (2603:10a6:803:111::15)
@@ -42,11 +42,12 @@ Received: from VE1PR08MB4974.eurprd08.prod.outlook.com
  ([fe80::6b40:1e6f:7c94:71dc%4]) with mapi id 15.20.7091.028; Thu, 14 Dec 2023
  16:29:16 +0000
 From:   Javier Carrasco <javier.carrasco@wolfvision.net>
-Date:   Thu, 14 Dec 2023 17:29:10 +0100
-Subject: [PATCH v2 2/4] usb: typec: tipd: add function to request firmware
+Date:   Thu, 14 Dec 2023 17:29:11 +0100
+Subject: [PATCH v2 3/4] usb: typec: tipd: declare in_data in as const in
+ exec_cmd functions
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20231207-tps6598x_update-v2-2-f3cfcde6d890@wolfvision.net>
+Message-Id: <20231207-tps6598x_update-v2-3-f3cfcde6d890@wolfvision.net>
 References: <20231207-tps6598x_update-v2-0-f3cfcde6d890@wolfvision.net>
 In-Reply-To: <20231207-tps6598x_update-v2-0-f3cfcde6d890@wolfvision.net>
 To:     Heikki Krogerus <heikki.krogerus@linux.intel.com>,
@@ -54,11 +55,11 @@ To:     Heikki Krogerus <heikki.krogerus@linux.intel.com>,
 Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
         Javier Carrasco <javier.carrasco@wolfvision.net>
 X-Mailer: b4 0.12.0
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1702571354; l=1726;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1702571354; l=1739;
  i=javier.carrasco@wolfvision.net; s=20230509; h=from:subject:message-id;
- bh=lu6STSMTUjxa+BhbXAPxJC7PhXobLmfFr1D/or+2rAI=;
- b=RSHvW9zwcGH7+aW/7UCIa4jd5kXjoEA2JuQNqkLNVXbd/4ps3mZSCh5/3he3xYYHGrzHA6FC+
- O6qDgge+zLlDIhZ1O+DVsFsyx13IJIPJWke1FWYMnodeLUtSy+pvvEz
+ bh=G8jD1YMhqm/GwQuFi+8ybk99Xtsx5Enpb51VaGZhocc=;
+ b=ks125/rMHj9MP/oDOQ4RVolGqp+bBk2Gkt+jrvOZVYLyCbSkJHD7Gb3/E0eKr0pn0JiU7q74K
+ v/jlWNtyGo+AR8PYew9gYCxv+K9zuJwMguB2WJ0bHhHoI1TgCZKEQQE
 X-Developer-Key: i=javier.carrasco@wolfvision.net; a=ed25519;
  pk=tIGJV7M+tCizagNijF0eGMBGcOsPD+0cWGfKjl4h6K8=
 X-ClientProxiedBy: VI1P191CA0011.EURP191.PROD.OUTLOOK.COM
@@ -67,60 +68,60 @@ X-ClientProxiedBy: VI1P191CA0011.EURP191.PROD.OUTLOOK.COM
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
 X-MS-TrafficTypeDiagnostic: VE1PR08MB4974:EE_|DU0PR08MB8302:EE_
-X-MS-Office365-Filtering-Correlation-Id: 48531cf0-c2f1-4d82-9c25-08dbfcc1d08d
+X-MS-Office365-Filtering-Correlation-Id: d396dd6f-1995-445e-708a-08dbfcc1d0e3
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: mHBgiFvIdmh6ojZbOwIHJY/TuvJxE6JG+gYPXV6tPIJ23oDoBug1XGPSZtmZh1i6WZWKJAyM7gY/rzM+gMPhKggMarTtNciM3H0iD+JlfOmYnTCYzEjLvQOzQjkSPniHI7unFseOGE9IrAQZCZNQM0c1joZcmqPyPFDr48TKOxXLPHCHX7QX9BV5u2NcQD1MOtE9vVwuxC7J5xf0VvQ7yj4hBigCZ3Ec4cHHSipCd17zDw9YQ2gvZhjPb5dEkvPflPmxWyE83zxTOCNk0ZazB88m2KOAQjzMXI3W5P0IY9WBRJFVj9Buf1mccmU3e+c11eAGhArnMAOds9fvq7K3L8G3AwUn5P8Y30RoDj72f68aJxq/dtSeu4Gxse9hf92gpjnEcGiPz9IvIr8b549+Gj780itg5+60NSb9Jcucmu3RcCof83bOcrNpUzD5aDTLzPP/KdkrnzaOZXp9/33SYfGL/2AQmDFp5K7+915s/66Vs73bllSK/2Jb8UVa0JinWDnQ/TidYnVcoa2uILPGc4J7cUv/DrxKtHYk88BoKlNkEOYubZTHENF2f6XEqb9LW3Ohzu+mIeRzEvbsPSZf3glGkivog+vCIpTxH92jTQ5NYoUds7OjH5LVRIujf3Kr
+X-Microsoft-Antispam-Message-Info: YOkrW8J1in8njbgWfVLXutUWGWql1LPL4gF7a7fcDGDUWOYvuz0Sfjwm2sKG6GwqNQzp98WAbFZ0rT5xr+8uBtc8eGwzKgWBGdYDazhjFJXj4AOaTRS3okZ7V5O4EerYy1t/Vmk96Ef4SE+OrED9W5rjtsZofXXVriYAmjPhoRy+QDeNA+mgkqZEYVFnbVqPoAejc3qrNJ8H6fBg5fRatf9XAunLD2iaGNTjgqbeVDbPHpAei7WcaJIiKlkCnVsjcjMlpEfTFvPhrKi9Mx2RMjk3T00B2Y83DvUyi0g0DuXobTLMrkT0s3KvFooPxBYciscjTHQAJGMR1lLugnK/msLYKI4fJhENJPYin9KGQEDZgSmgGc9o1anoUuOltJq5lntgYHCc1Zf9D3Ax/cmWR0T/O+x//cgX2L9f6iiRFzna7+1qbkBnkrsk1J3mXpFZusi7+N63n4ma72WrJ1kqsetvt+ztl4kzeWYT6ZDjpxqscozIg0S64qfWNJYMNnkefvrgJ/747hPbyHNT3pgG2hTRmQiwjgIEVxK0GSxVvMLKrTezGqR5QZ7/gjWEzhEVwRgf82Q6IDP+UcZmt3fUOsw9uhVJ+16S9aS6XjcZNNVkC6vCzpxdZTMGZE6Ev2UF
 X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VE1PR08MB4974.eurprd08.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(136003)(396003)(39850400004)(376002)(366004)(230922051799003)(1800799012)(451199024)(64100799003)(186009)(52116002)(107886003)(2616005)(26005)(6666004)(6512007)(6506007)(66556008)(83380400001)(44832011)(2906002)(5660300002)(41300700001)(6486002)(478600001)(66946007)(8936002)(4326008)(66476007)(316002)(110136005)(8676002)(38350700005)(86362001)(38100700002)(36756003);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?d2RWeGMxbldxUlFWdlR6QmpJVlFaOUgzY0Y0VHpmdlkyY3Z0V1kxc1VxWE8v?=
- =?utf-8?B?VTNiSUllZDk5bzVqUWh1VXFENFZSRWtHS3djOTFsK3J6ZjlBcjVnanhPdXl4?=
- =?utf-8?B?TDlGNmJoUHY2WUxUUEdZNWJDd2ozVEt0SFFYUWkvdzhReXBhTHZyamJCY3dO?=
- =?utf-8?B?Z0ZaTWlTMHVGVzNabmNlbnBSMVRKOWxHYXR1THJGR0NwUWlQcWt3VEpmbmFj?=
- =?utf-8?B?SFNlQWU1TUdIejIyaFBuSktRWlZMcHJseG1RUDIwQVNhdm5pZTd1SVlNek1B?=
- =?utf-8?B?ZE5naDlIaUVsOUpNaGV4MzFYUlZIK1JacGxzSWh2aytSSlBuSktxTnQxYUlm?=
- =?utf-8?B?dXN6bmx6cEpEcm8yUkFJcEN0dGtHMzBGR2ZLYTJlR25HUE5hZjE1MldRbGZE?=
- =?utf-8?B?U1dycDFHbmFDNEljUXVMWEc1NE5RTWVMVUxmOVF5ZnlCWHJjUG0xVjErbFdB?=
- =?utf-8?B?VDZrWThZVGtkeVZxOWdJZVRpWjY1L3F2aUJCK0tKYk5XWFZDWkZMaEREVzV0?=
- =?utf-8?B?Y3p1RFN6TVMxRmJwWTkxRkZzWTFSVDJWdGtuZ0ViY1hFUThuSDRFNTJpdHNi?=
- =?utf-8?B?cnN3RFJ4TVJRUlB4bHFHa24yVDlQck5ZQXBaQUJhWWI1SUFVNXUzK2N5a1B2?=
- =?utf-8?B?aWpSem16bkczKzY2Z3orajZyQllTRWZUb1B5eGMzeFhyUU9hdEJBcjZpNGpq?=
- =?utf-8?B?ajRZWnl5d09uNVlNRlNYNVM4c21Qdm5DeDRiTElGbFczNVBXMVptT1pLT2Y2?=
- =?utf-8?B?STNISzJmaElCU1pJN3h5LzFvYXZyU1paRFRQdUNsRVlQS2I1NnNQM2FmTVVM?=
- =?utf-8?B?bng4L0ltVnVqYVNoS3R2UDZxdWI3WXpSOU5mMnBsSkUrQmY1M0d1enRodHd3?=
- =?utf-8?B?K3EyMURpdE90L0JNS2FBeGpUaktGdmN5dWVFSTZOZTVxUG9sYVZ5S3padWZU?=
- =?utf-8?B?Nm1WQ0FWRzNqM1U2VUI5SVlSZHdRM3Q0amI3S1pmTE1JVmF4Qk5VaWtmY2Mr?=
- =?utf-8?B?ZnZuYmJMWnk5UFpkcWpBQVJkYmU2TU5kSDhWSDhYbkRmalE3WUdDWkZ6aUVj?=
- =?utf-8?B?VThON2l6L3c2MEN2amNPSy9wY1U3WFVldWhMNEVUdDIwZnlYS0FoaVd0bjJa?=
- =?utf-8?B?bmpZbnZDU3RUYXhJQ0o5R2VlclRENXhITExyYmkwZjNHODUzQmE4YnlpN1VE?=
- =?utf-8?B?ZDEvNy9WbXkwRHF5aWJvUzVTRUtidjYwMDcyUmNlL3BkaG1wNGhwUVBvUVVm?=
- =?utf-8?B?Mzd5b1pTTHZYY0MyU3NBRzh4UXlGcUxMRDhIY29hb0pFU3RiZDhWMnRhMDUr?=
- =?utf-8?B?MGJKSlZuV2FFWEd4dFJsaWpteDB4M0NIMFdUSDg4Z0xnNUV1cmhETVRuanNO?=
- =?utf-8?B?TkZWYlJJNmZGQktCRlhjNnRYVzlmVGhUODBCb0xEV2hjT3FYTVJDR0hjY2h4?=
- =?utf-8?B?WDliQzZVd0pVcDNjZjhhUUxMeWtIdktPR1ZJRC9EK3V0VlpseFZUaVJrSEY5?=
- =?utf-8?B?c3hOY3FUM1ozMTg1dDlFWFVkMXFmV3ZVTnJxOFNjcE4xNFpSbHAzWEc2S2F4?=
- =?utf-8?B?U2l3TzNpMXFmdDhpVll2MnNtV0U2ZW9VMFFlUmdyYW1TQnBnRnd6U2NucWMv?=
- =?utf-8?B?cFNRQzluWTVkcWdNY1hRc2VNRmVtaGR3eWxiWDRHVFlRcEZ6RVJaOVFuQU1V?=
- =?utf-8?B?RW1TVXIrbVozSGNPTzU2YTZLZng0VHJxOXl0VUhjcUNRdzExL0t2UldnSXZN?=
- =?utf-8?B?ZGF1VE53aTZ5cEN5bE84UkZlQWJoMXp4TDlqUVoyTWNXMGpHS01CRitzVzdk?=
- =?utf-8?B?cHloMlgyaVh2UFo2Mm1LcWxpTUpYTGNkcG8vOU1OSFFna0t1NzVjc2xpSEZj?=
- =?utf-8?B?cEJtR203VEhlMGt6RVVVTklwRVVtaDhRc3l5REkxMzB5NDhLbVpwYUI5UWMy?=
- =?utf-8?B?QUNleENGejVLSktmMU5idklpSEVJWnFHN1FCbUNxR1d6dHJ3a0U1NHF2UnRU?=
- =?utf-8?B?MWVzQ3VscysrU0k1d3VucFdRMkdwbnV1UFJ6Vlc3NTdJMTdnZzNZWitUK2hR?=
- =?utf-8?B?MzVia1krR0pyektuUFhwTGVydlc4R2UwYnpJY1RZRDhCTFNQdkJEaDFOZUhJ?=
- =?utf-8?B?eFNDa202UER4Rm0rSFZDT25IMjhuVEtaR2svbytYRitrbU5wS2liTWxTR2pa?=
- =?utf-8?Q?kW0pCi6AiDJiUfadRBG0LTs=3D?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?Uk5qSlRzeEpSK1BPci82LzBNRSswdk5HQlVVK3FySmxuWXNGWDNpZU0zcjZR?=
+ =?utf-8?B?N0NUdEIxMWVTTGR6RVdza1BLN1FGZVB0emszTzBHWGI1WG9VN1hPSUYwNFBY?=
+ =?utf-8?B?QTdVMzZxUElBMm11UGJwRnhmaFlxd2w4TjE4d1IvVDhhSk9CbS9QcU82K3Za?=
+ =?utf-8?B?bit6N1oycUlPM0tJQ3VCeDZ5WjA0NjRLUWN5T2tuZTRZSWJGZnRiZHhiWVdm?=
+ =?utf-8?B?Qlo5aytMMktacHJEYi8rVlU4Wk1uUjhoQjRZYndLWGI4WkY3K0c5N3ZuZlpU?=
+ =?utf-8?B?aGxuUkdPQ2hZUDBoQWdLL005QTZ1Vmt6Nm9rNk5ua2pSN2JRRkFiaDJYNkti?=
+ =?utf-8?B?WVc0b29YbUlPR1NJUmxhb3NSYWFHa2JQUnNFT1p4bXlWeE8ybkgzOWtUajl6?=
+ =?utf-8?B?eVlEK1RNeFB5b0ZFU1dCSERIUlBkOUFVYUozSDZpOXp5UHRVajhuczRKUFRn?=
+ =?utf-8?B?WmJTTzJnUWxkQ2FaSTNYbHN5TlhLM0NjZTdTV0NOc1lnd1hRR1NITEZEdHhZ?=
+ =?utf-8?B?U3M5MkRlMUFibGpvajVLNmZkU1dLdS80K1lxZ3RHV3FMK1lIbnh5M3haQmE0?=
+ =?utf-8?B?RUZYWk5GTm9IUkJieFk3ajZaTmNMQ0I1dDI2aWYwSmZFNnN6c09RRkZ6a2x0?=
+ =?utf-8?B?Q1pQWFoxbEV4a2M1Nnd0NjlNcEx3YnplUGRYUHRlN3kvYjVKWCtqWkdSOGYw?=
+ =?utf-8?B?WFlXb1dsUHJNQ2xtK3BxMTYrVzRMT2xCTzVMTVpsN2FVV05zN2xGZUR4K21S?=
+ =?utf-8?B?NVdiL3pBNGJwdkppQ2xSeDZwNmRQTGM5ZlVzK1VMUms0WXdxUm5SWVg2Zldw?=
+ =?utf-8?B?bkhmc0x5dTRHRE9xNXBuYytrU0ZTeUZ2Qlg2d0k4VVZ4blNFNkxucWlJdkNC?=
+ =?utf-8?B?L3JWbmttN2d3OS9DeklWcWRwanNQRlBwSC9Zd0xUQnJYeDY1OWtUV1JsSTV0?=
+ =?utf-8?B?dS9HcUZaWWQ1WHhNMjJpbWZpN3dCTURxZ1lENGxrSzNNNGxnWFYwaXJNcEpp?=
+ =?utf-8?B?Uk1hdDFhNnptNlY0SGRXNC9mVEN6aG9TREhtYnJQUk91V2wzeXdQNW93L3Rl?=
+ =?utf-8?B?OHFrbmVDTFlYVHdnaGFoSVo3MEtDT0UyS29YeGxKZmxkeXpxVndCQWVKbHZJ?=
+ =?utf-8?B?VWpvSVNzTUpldysxQW5ydVZQTXVxVGo4WWFUN3RWbVUraHRNNG9UMkwvVVow?=
+ =?utf-8?B?VldWdnNtNjlEN0lobGZCQlRReUVML0RDZTNDb0JhUFlRR09ydXhRcWM3NnN0?=
+ =?utf-8?B?UHVMeHJ6YlhwSjJveFBiNlFXdHBKYmNlRkwxbVFQYXYxTk0wTjZTd21mbCtC?=
+ =?utf-8?B?RWpYcHozR29ZaktweWFIbVEzYXZyZ1A1VXoySjZFKzFLTTdMcmhQWXY4cm9N?=
+ =?utf-8?B?bUc2WFlNWTVSRk5Ia1pBSkxSZzdod0ZncnlJTnJLOElsdzZZYTdnVlpuTkNs?=
+ =?utf-8?B?Zkp0cUJrbkhITHhMTTBwYWJhcnVHMWh0Wm52VGRIblVyNnZ1SGZtcHU3dko5?=
+ =?utf-8?B?OTgvU2NDYSt6eGd2cGpUMVNIOERlbEQrRnhnRXNWUmFPa3NpR1J1WnBjVmM1?=
+ =?utf-8?B?cGJSc3R3SmNJZ2VEVTN3emRuNlF3TG5PVmc3TThWNlB3ZnM0ZzZ1dDB1c09m?=
+ =?utf-8?B?d3YrRkNacHk3aEQwQW5HSWFJczRaamtlbDdTcEh3VisrblkrZENWcDA5cDRo?=
+ =?utf-8?B?aFBtTVFlMS9DNUdwTmFOU1FXUmo4YnZwRFNuMkZ6c2phWWFLbnM1R1M0ei9H?=
+ =?utf-8?B?NlYyTUhiN1pKeDhIOXFyUjZEblZQdkxNVGlEejk5dm1GNzBWZ092RjMxUktm?=
+ =?utf-8?B?MndtQndhRGp3bGRtNDdaWnhrZmU4djIxWEQwd0xIQjJEZjU2UmlwZVNPOVdv?=
+ =?utf-8?B?VkswK0ZDR1EzNmNOVkZUbnZ0MTdFcGVFT2NwVzRBQytYQm4vT3pTT21nQU1p?=
+ =?utf-8?B?QmxyRitCVlRYekdjNDdqMGcxc1lyNkpObzdpU1pqWkNEUnFyU3V3ZUVpMmh0?=
+ =?utf-8?B?TW5BTmxPN1BTbjU0S0s2Q01KQ3V6NFFHQVZuUk5nV0Y2YTQ3SE56M1NPV2hV?=
+ =?utf-8?B?cDBrL3pRM0pmaXpYY213Uy9SNFVzK1JVczRMNmFCcWZaRC9sYm1VR3c5bmFU?=
+ =?utf-8?B?UkE2dlpYTHhvaXBzMHdGQUR6Y2l6ZFpLaDFOYXBSWE1QY1k5S0V0YXpCTHNo?=
+ =?utf-8?Q?hjeJpHXGrjIXEHCZPAGasBo=3D?=
 X-OriginatorOrg: wolfvision.net
-X-MS-Exchange-CrossTenant-Network-Message-Id: 48531cf0-c2f1-4d82-9c25-08dbfcc1d08d
+X-MS-Exchange-CrossTenant-Network-Message-Id: d396dd6f-1995-445e-708a-08dbfcc1d0e3
 X-MS-Exchange-CrossTenant-AuthSource: VE1PR08MB4974.eurprd08.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Dec 2023 16:29:16.2077
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Dec 2023 16:29:16.7878
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: e94ec9da-9183-471e-83b3-51baa8eb804f
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: P6aWcS4NVFV9qzCNh6ULaQtrwrBgBZDIXjQ8nTTnsEpZTCIsfGaGjCMChrpCQjiXLeE3F+OexB+k1eDss9BT14SUw9zIBLxhWFOZg3BTAKY=
+X-MS-Exchange-CrossTenant-UserPrincipalName: 8gAqaoFCD69lPL89BonTnrsUDM8zLav8QsjB347qJzPG9N8iqnnyZfbF4u+A5y3wW1I9EOMrxufWmj/0QdYF+UwJW6x5Rr5d8yErbvi6dcc=
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: DU0PR08MB8302
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
@@ -132,68 +133,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The firmware request process is device agnostic and can be used for
-other parts.
+The input data passed to execute commands with tps6598x_exec_cmd()
+is not supposed to be modified by the function. Moreover, this data is
+passed to tps6598x_exec_cmd_tmo() and finally to tps6598x_block_write(),
+which expects a const pointer.
+
+The current implementation does not produce any bugs, but it discards
+const qualifiers from the pointers passed as arguments. This leads to
+compile issues if 'discarded-qualifiers' is active and a const pointer
+is passed to the function, which is the case if data from a firmware
+structure is passed to execute update commands. Adding the const
+modifier to in_data prevents such issues and provides code consistency.
 
 Signed-off-by: Javier Carrasco <javier.carrasco@wolfvision.net>
 ---
- drivers/usb/typec/tipd/core.c | 35 ++++++++++++++++++++++++++---------
- 1 file changed, 26 insertions(+), 9 deletions(-)
+ drivers/usb/typec/tipd/core.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/usb/typec/tipd/core.c b/drivers/usb/typec/tipd/core.c
-index f0c4cd571a37..83e5eeecdf5c 100644
+index 83e5eeecdf5c..7f4bbc0629b0 100644
 --- a/drivers/usb/typec/tipd/core.c
 +++ b/drivers/usb/typec/tipd/core.c
-@@ -873,6 +873,30 @@ tps6598x_register_port(struct tps6598x *tps, struct fwnode_handle *fwnode)
- 	return 0;
+@@ -330,7 +330,7 @@ static void tps6598x_disconnect(struct tps6598x *tps, u32 status)
  }
  
-+static int tps_request_firmware(struct tps6598x *tps, const struct firmware **fw)
-+{
-+	const char *firmware_name;
-+	int ret;
-+
-+	ret = device_property_read_string(tps->dev, "firmware-name",
-+					  &firmware_name);
-+	if (ret)
-+		return ret;
-+
-+	ret = request_firmware(fw, firmware_name, tps->dev);
-+	if (ret) {
-+		dev_err(tps->dev, "failed to retrieve \"%s\"\n", firmware_name);
-+		return ret;
-+	}
-+
-+	if ((*fw)->size == 0) {
-+		release_firmware(*fw);
-+		ret = -EINVAL;
-+	}
-+
-+	return ret;
-+}
-+
- static int
- tps25750_write_firmware(struct tps6598x *tps,
- 			u8 bpms_addr, const u8 *data, size_t len)
-@@ -961,16 +985,9 @@ static int tps25750_start_patch_burst_mode(struct tps6598x *tps)
- 	if (ret)
- 		return ret;
+ static int tps6598x_exec_cmd_tmo(struct tps6598x *tps, const char *cmd,
+-			     size_t in_len, u8 *in_data,
++			     size_t in_len, const u8 *in_data,
+ 			     size_t out_len, u8 *out_data,
+ 			     u32 cmd_timeout_ms, u32 res_delay_ms)
+ {
+@@ -396,7 +396,7 @@ static int tps6598x_exec_cmd_tmo(struct tps6598x *tps, const char *cmd,
+ }
  
--	ret = request_firmware(&fw, firmware_name, tps->dev);
--	if (ret) {
--		dev_err(tps->dev, "failed to retrieve \"%s\"\n", firmware_name);
-+	ret = tps_request_firmware(tps, &fw);
-+	if (ret)
- 		return ret;
--	}
--
--	if (fw->size == 0) {
--		ret = -EINVAL;
--		goto release_fw;
--	}
- 
- 	ret = of_property_match_string(np, "reg-names", "patch-address");
- 	if (ret < 0) {
+ static int tps6598x_exec_cmd(struct tps6598x *tps, const char *cmd,
+-			     size_t in_len, u8 *in_data,
++			     size_t in_len, const u8 *in_data,
+ 			     size_t out_len, u8 *out_data)
+ {
+ 	return tps6598x_exec_cmd_tmo(tps, cmd, in_len, in_data,
 
 -- 
 2.39.2
