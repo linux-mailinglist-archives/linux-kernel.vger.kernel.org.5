@@ -2,126 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EAD55812594
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 03:57:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EB2C812596
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 03:59:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1443056AbjLNC5u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 21:57:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37078 "EHLO
+        id S1443061AbjLNC7I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 21:59:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54124 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229739AbjLNC5s (ORCPT
+        with ESMTP id S229725AbjLNC7H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 21:57:48 -0500
-Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0131FE8
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 18:57:51 -0800 (PST)
-X-UUID: 7287c9da24384222a37dc75100d2e0a0-20231214
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.33,REQID:9a133655-a489-41ce-8782-2516dbf6c0e1,IP:15,
-        URL:0,TC:0,Content:0,EDM:0,RT:1,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTI
-        ON:release,TS:1
-X-CID-INFO: VERSION:1.1.33,REQID:9a133655-a489-41ce-8782-2516dbf6c0e1,IP:15,UR
-        L:0,TC:0,Content:0,EDM:0,RT:1,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTION
-        :release,TS:1
-X-CID-META: VersionHash:364b77b,CLOUDID:22f1a5fd-4a48-46e2-b946-12f04f20af8c,B
-        ulkID:231214105741G5LGQI09,BulkQuantity:0,Recheck:0,SF:66|24|17|19|44|64|1
-        02,TC:nil,Content:0,EDM:-3,IP:-2,URL:11|1,File:nil,Bulk:nil,QS:nil,BEC:nil
-        ,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0,NGT
-X-CID-BAS: 0,NGT,0,_
-X-CID-FACTOR: TF_CID_SPAM_ULN,TF_CID_SPAM_SNR,TF_CID_SPAM_FAS,TF_CID_SPAM_FSD,
-        TF_CID_SPAM_FSI
-X-UUID: 7287c9da24384222a37dc75100d2e0a0-20231214
-X-User: chentao@kylinos.cn
-Received: from [172.20.15.254] [(116.128.244.169)] by mailgw
-        (envelope-from <chentao@kylinos.cn>)
-        (Generic MTA)
-        with ESMTP id 381816646; Thu, 14 Dec 2023 10:57:38 +0800
-Message-ID: <9586be60-35f9-401f-b473-b16e86d13d07@kylinos.cn>
-Date:   Thu, 14 Dec 2023 10:57:38 +0800
+        Wed, 13 Dec 2023 21:59:07 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C10BAD
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 18:59:14 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id CF2A0C433C8;
+        Thu, 14 Dec 2023 02:59:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1702522753;
+        bh=Ke3Hfe/ljNKuZm1h7cmur868QzI0qQ9j6+vgudXVa3g=;
+        h=From:Subject:Date:To:Cc:Reply-To:From;
+        b=UU6LexRaKVLqZ5X6ZBbjpNFaJ/XlO7guAsGpktg7UvesDoHGD/EtjWmEG0r/ob2j6
+         PqyFWV6vc0mzk/Gc7BDbVr1M6EEKfRhXA070X3DESZqGFUiWUY9H3M/x12eDnS04Eh
+         3ER7Mfe15tSyj9RWkXdsU743Sw6ol95IpKmTiaME5/OGno1l/8oQ7JAB0NQ0bny7xR
+         gD8SQpTZ6aCvdDzqBpJOsEm7qhmJMTkiowBNB7qMm3VA6T9Xx/GB7BEolb4cnuUEZ/
+         6on2HviaxtXt2Y9ytDmXDDHF21PBzZclCfg5o9GU0nAMjJJhGtPgLy52Wl4MrSspQR
+         m/eXoo/w/MPhg==
+Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by smtp.lore.kernel.org (Postfix) with ESMTP id BDD02C4332F;
+        Thu, 14 Dec 2023 02:59:13 +0000 (UTC)
+From:   Fenglin Wu via B4 Relay 
+        <devnull+quic_fenglinw.quicinc.com@kernel.org>
+Subject: [PATCH v2 0/5] Add pm8010 RPMH regulators for sm8550 boards
+Date:   Thu, 14 Dec 2023 10:59:10 +0800
+Message-Id: <20231214-pm8010-regulator-v2-0-82131df6b97b@quicinc.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] drivers/perf: Fix some null pointer dereference issues in
- thunderx2_pmu.c
-Content-Language: en-US
-To:     Will Deacon <will@kernel.org>
-Cc:     mark.rutland@arm.com, Ganapatrao.Kulkarni@cavium.com,
-        suzuki.poulose@arm.com, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, Kunwu Chan <kunwu.chan@hotmail.com>
-References: <20231211090347.265240-1-chentao@kylinos.cn>
- <20231212092523.GC28174@willie-the-truck>
-From:   Kunwu Chan <chentao@kylinos.cn>
-In-Reply-To: <20231212092523.GC28174@willie-the-truck>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+X-B4-Tracking: v=1; b=H4sIAH9vemUC/2WNSw6CQBBEr0J67ZjuAQK68h6GBbQNdCIfZ4Roy
+ Nzdkbhz+SpVrzbw4lQ8nJMNnKzqdRoj2EMC3NdjJ0ZvkcGiTclibuahRELjpFvu9XNyBtOs5IZ
+ OWBY1xNnspNXXrrxWkXv1sfbeH1b6pj8Z0b9sJYMmL0gwb5tMmC+PRVlHPvI0QBVC+ADKJw6zs
+ gAAAA==
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>, kernel@quicinc.com
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, quic_collinsd@quicinc.com,
+        quic_subbaram@quicinc.com, quic_jprakash@quicinc.com,
+        Fenglin Wu <quic_fenglinw@quicinc.com>
+X-Mailer: b4 0.13-dev-83828
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1702522752; l=1307;
+ i=quic_fenglinw@quicinc.com; s=20230725; h=from:subject:message-id;
+ bh=Ke3Hfe/ljNKuZm1h7cmur868QzI0qQ9j6+vgudXVa3g=;
+ b=5EIvBK0008mKfFkqIlHkM9+7i4Yw6lKkrWQ8+ty7d8AIKFEV2zL6xkfIfF5udccUINlvJC3pf
+ 30F4q5n3TzQD+/w8fkr1WZS8wQEsq9qEMXn5uyoiZpGeL/fTHhq6Mv7
+X-Developer-Key: i=quic_fenglinw@quicinc.com; a=ed25519;
+ pk=hleIDz3Unk1zeiwwOnZUjoQVMMelRancDFXg927lNjI=
+X-Endpoint-Received: by B4 Relay for quic_fenglinw@quicinc.com/20230725 with auth_id=68
+X-Original-From: Fenglin Wu <quic_fenglinw@quicinc.com>
+Reply-To: <quic_fenglinw@quicinc.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks for your reply.
+There are 2 PM8010 PMICs present in sm8550-mtp/sm8550-qrd boards and
+each of them exposes 7 LDOs. Add RPMH regulator support for them.
 
-After read tx2_uncore_pmu_register again.
- From the defination: 'char *name = tx2_pmu->name;',
-we could know 'tx2_pmu->pmu.name' equals 'tx2_pmu->name'
+Signed-off-by: Fenglin Wu <quic_fenglinw@quicinc.com>
+---
+Changes in v2:
+- Updated subject prefix in the dt-binding commit and fixed the typo.
+- Separate the DTS commit with board name prefixes.
+- Link to v1: https://lore.kernel.org/r/20231211-pm8010-regulator-v1-0-571e05fb4ecc@quicinc.com
 
-The difference is that a new memory space is allocated for 
-'tx2_pmu->pmu.name'.
+---
+Fenglin Wu (5):
+      regulator: qcom-rpmh: extend to support multiple linear voltage ranges
+      regulator: dt-bindings: qcom,rpmh: add compatible for pm8010
+      regulator: qcom-rpmh: add support for pm8010 regulators
+      arm64: dts: qcom: sm8550-mtp: Add pm8010 regulators
+      arm64: dts: qcom: sm8550-qrd: add PM8010 regulators
 
-If 'tx2_pmu->pmu.name' is always the same as 'tx2_pmu->name', whether we 
-should use 'tx2_pmu->pmu.name =  tx2_pmu->name;'
-to replace the 'devm_kasprintf'.
+ .../bindings/regulator/qcom,rpmh-regulator.yaml    |  14 ++
+ arch/arm64/boot/dts/qcom/sm8550-mtp.dts            | 120 ++++++++++++++
+ arch/arm64/boot/dts/qcom/sm8550-qrd.dts            | 120 ++++++++++++++
+ drivers/regulator/qcom-rpmh-regulator.c            | 177 ++++++++++++++++++---
+ 4 files changed, 405 insertions(+), 26 deletions(-)
+---
+base-commit: 753e4d5c433da57da75dd4c3e1aececc8e874a62
+change-id: 20231205-pm8010-regulator-0348cb19087a
 
-I'm not sure it's appropriate to do that.
+Best regards,
+-- 
+Fenglin Wu <quic_fenglinw@quicinc.com>
 
-Thanks again.
-
-
-On 2023/12/12 17:25, Will Deacon wrote:
-> On Mon, Dec 11, 2023 at 05:03:47PM +0800, Kunwu Chan wrote:
->> devm_kasprintf() returns a pointer to dynamically allocated memory
->> which can be NULL upon failure.
->>
->> Fixes: 69c32972d593 ("drivers/perf: Add Cavium ThunderX2 SoC UNCORE PMU driver")
->> Cc: Kunwu Chan <kunwu.chan@hotmail.com>
->> Signed-off-by: Kunwu Chan <chentao@kylinos.cn>
->> ---
->>   drivers/perf/thunderx2_pmu.c | 7 +++++++
->>   1 file changed, 7 insertions(+)
->>
->> diff --git a/drivers/perf/thunderx2_pmu.c b/drivers/perf/thunderx2_pmu.c
->> index 1edb9c03704f..07edb174a0d7 100644
->> --- a/drivers/perf/thunderx2_pmu.c
->> +++ b/drivers/perf/thunderx2_pmu.c
->> @@ -742,6 +742,8 @@ static int tx2_uncore_pmu_register(
->>   
->>   	tx2_pmu->pmu.name = devm_kasprintf(dev, GFP_KERNEL,
->>   			"%s", name);
->> +	if (!tx2_pmu->pmu.name)
->> +		return -ENOMEM;
->>   
->>   	return perf_pmu_register(&tx2_pmu->pmu, tx2_pmu->pmu.name, -1);
-> 
-> AFAICT, perf_pmu_register() will WARN and return NULL, so I'm not sure what
-> we gain from the additional check.
-> 
->>   }
->> @@ -881,6 +883,11 @@ static struct tx2_uncore_pmu *tx2_uncore_pmu_init_dev(struct device *dev,
->>   		return NULL;
->>   	}
->>   
->> +	if (!tx2_pmu->name) {
->> +		dev_err(dev, "PMU type %d: Fail to allocate memory\n", type);
->> +		devm_kfree(dev, tx2_pmu);
->> +		return NULL;
->> +	}
-> 
-> In the _highly_ unlikely even that devm_kasprintf() failed to allocate,
-> shouldn't we get a splat from the allocator? I don't think it's useful
-> to print another message.
-> 
-> Will
