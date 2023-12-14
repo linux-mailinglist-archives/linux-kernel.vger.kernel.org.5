@@ -2,176 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A63D8129F1
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 09:06:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BF2E812A13
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 09:11:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1443382AbjLNIF7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 03:05:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52888 "EHLO
+        id S234401AbjLNIK5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 03:10:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51832 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234397AbjLNIF6 (ORCPT
+        with ESMTP id S234409AbjLNIKv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 03:05:58 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D01AC9
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 00:06:01 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C1301C433C7;
-        Thu, 14 Dec 2023 08:06:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1702541161;
-        bh=sYEhTF8PFiCP41kQDsfl473xLEZ+XXLgBpyKrt1TpZ0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=LY2zHWvRamfUM7o1LtV8JnaxofEdItKMw+27NQM3lch6E+1MGPOJA2pCQIWppcvMG
-         641jfW0dbA4X9MXirOWme2ggJCA0rQ8mmNvRy0jcsT8DzQOPDSqbSQmt3B33vsLAtA
-         dkC7IR5y7QsI/N95hOp6G+IN+NT0puCHHp7TKCZX07X6qCjfIKq4NAKG75MJjS51RL
-         iJgrkK5kDLyFe33Hu2/pDXFAYwhf47d15DvnU2B2+f8FYqzMluDW5k4XZPqK4U8RK4
-         8ZEM+z10IqeH9ge1ozkfw6/noYBww1USJSTWzRMaZdVCLzwZnhZsAbqMeU6kS+NE0y
-         3qE2qdKH84cDA==
-Date:   Thu, 14 Dec 2023 09:05:58 +0100
-From:   Maxime Ripard <mripard@kernel.org>
-To:     Alex Bee <knaerzche@gmail.com>
-Cc:     Sandy Huang <hjc@rock-chips.com>,
-        Heiko =?utf-8?Q?St=C3=BCbner?= <heiko@sntech.de>,
-        Andy Yan <andyshrk@163.com>, Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 07/11] drm/rockchip: inno_hdmi: Add basic mode validation
-Message-ID: <wz4e43ateg3gb7745mz22wwyruwavevvpfbqsdxeynejcjxhzn@qbqldsnkktei>
-References: <20231213195125.212923-1-knaerzche@gmail.com>
- <20231213195125.212923-8-knaerzche@gmail.com>
+        Thu, 14 Dec 2023 03:10:51 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.11])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF796B9
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 00:10:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1702541448; x=1734077448;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=i8XSla6hrQt6zIq4G6Aba+318oa4y1bEQ+Pf+qR2Hcw=;
+  b=ifgF2mMQjm0yl9A2LX2LdpNODtvgS7BZvj7pTxpgP/makPRUeLqwTLkb
+   +PY6uBjZbAhUb2Q441jfPard2lkTLO7HcuzX/u4YZRCBipLadjlqmnZlI
+   QjUCJ07gO1w2aiOMjHzkz4UD0GAF+QaiOSG19dWVUPnzjaIciVNyGv1Ss
+   +jIzFYAimFjidPw5M7DYB8BZojWYVbjgaTDRHpJyv9SsTXph00ygRv+E8
+   KKj+iDh+ubD7WjTV0Zh/Gt4lhuDJWvCnk05g+3fO88a1RDrwdOJ/IyFC9
+   TCG94d7uacgaDlsIspaAm66+qPXGzIhl4jP+Ga4PLwZe7mRUP39bo5MYP
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10923"; a="1903236"
+X-IronPort-AV: E=Sophos;i="6.04,274,1695711600"; 
+   d="scan'208";a="1903236"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Dec 2023 00:10:48 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10923"; a="803191192"
+X-IronPort-AV: E=Sophos;i="6.04,274,1695711600"; 
+   d="scan'208";a="803191192"
+Received: from mrejmak-mobl.ger.corp.intel.com (HELO fdefranc-mobl3.Hitronhub.home) ([10.213.24.154])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Dec 2023 00:10:45 -0800
+From:   "Fabio M. De Francesco" <fabio.maria.de.francesco@linux.intel.com>
+To:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Cc:     "Fabio M. De Francesco" <fabio.maria.de.francesco@intel.com>,
+        Ira Weiny <ira.weiny@intel.com>,
+        "Fabio M . De Francesco" <fabio.maria.de.francesco@linux.intel.com>
+Subject: [PATCH] mm/memory: Replace kmap() with kmap_local_page()
+Date:   Thu, 14 Dec 2023 09:10:04 +0100
+Message-ID: <20231214081039.1919328-1-fabio.maria.de.francesco@linux.intel.com>
+X-Mailer: git-send-email 2.43.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="b7pooqjn5gbbri2j"
-Content-Disposition: inline
-In-Reply-To: <20231213195125.212923-8-knaerzche@gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=0.5 required=5.0 tests=AC_FROM_MANY_DOTS,BAYES_00,
+        DKIMWL_WL_HIGH,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: "Fabio M. De Francesco" <fabio.maria.de.francesco@intel.com>
 
---b7pooqjn5gbbri2j
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+kmap() has been deprecated in favor of kmap_local_page().
 
-Hi,
+Therefore, replace kmap() with kmap_local_page() in mm/memory.c.
 
-On Wed, Dec 13, 2023 at 08:51:21PM +0100, Alex Bee wrote:
-> As per TRM this controller supports pixelclocks starting from 25 MHz. The
-> maximum supported pixelclocks are defined by the phy configurations we
-> have. Also it can't support modes that require doubled clocks.
-> If there is a phy reference clock we can additionally validate against
-> VESA DMT's recommendations.
-> Those checks are added to the mode_valid hook of the connector and
-> encoder's mode_fixup hook.
->=20
-> Signed-off-by: Alex Bee <knaerzche@gmail.com>
-> ---
->  drivers/gpu/drm/rockchip/inno_hdmi.c | 38 ++++++++++++++++++++++++++--
->  1 file changed, 36 insertions(+), 2 deletions(-)
->=20
-> diff --git a/drivers/gpu/drm/rockchip/inno_hdmi.c b/drivers/gpu/drm/rockc=
-hip/inno_hdmi.c
-> index f7f0bec725f9..2f839ff31c1c 100644
-> --- a/drivers/gpu/drm/rockchip/inno_hdmi.c
-> +++ b/drivers/gpu/drm/rockchip/inno_hdmi.c
-> @@ -38,6 +38,8 @@ struct inno_hdmi_variant {
->  	struct inno_hdmi_phy_config *default_phy_config;
->  };
-> =20
-> +#define INNO_HDMI_MIN_TMDS_CLOCK  25000000U
-> +
->  struct hdmi_data_info {
->  	int vic;
->  	bool sink_has_audio;
-> @@ -572,6 +574,34 @@ static int inno_hdmi_setup(struct inno_hdmi *hdmi,
->  	return 0;
->  }
-> =20
-> +static enum drm_mode_status inno_hdmi_mode_valid(struct inno_hdmi *hdmi,
-> +						 struct drm_display_mode *mode)
-> +{
+There are two main problems with kmap(): (1) It comes with an overhead as
+the mapping space is restricted and protected by a global lock for
+synchronization and (2) it also requires global TLB invalidation when the
+kmap’s pool wraps and it might block when the mapping space is fully
+utilized until a slot becomes available.
 
-So, mode_valid is only called to filter out the modes retrieved by
-get_modes, but it won't be called when userspace programs a mode. That's
-atomic_check's job.
+With kmap_local_page() the mappings are per thread, CPU local, can take
+page-faults, and can be called from any context (including interrupts).
+It is faster than kmap() in kernels with HIGHMEM enabled. The tasks can
+be preempted and, when they are scheduled to run again, the kernel
+virtual addresses are restored and still valid.
 
-So you probably want to create a shared function between atomic_check
-and mode_valid, and call it from both places (or call mode_valid from
-atomic_check).
+Obviously, thread locality implies that the kernel virtual addresses
+returned by kmap_local_page() are only valid in the context of the
+callers (i.e., they cannot be handed to other threads).
 
-> +	/* No support for double-clock modes */
-> +	if (mode->flags & DRM_MODE_FLAG_DBLCLK)
-> +		return MODE_BAD;
-> +
-> +	unsigned int mpixelclk =3D mode->clock * 1000;
+The use of kmap_local_page() in mm/memory.c does not break the
+above-mentioned assumption, so it is allowed and preferred.
 
-Variables should be declared at the top of the function.
+Cc: Ira Weiny <ira.weiny@intel.com>
+Signed-off-by: Fabio M. De Francesco <fabio.maria.de.francesco@linux.intel.com>
+---
+ mm/memory.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-> +	if (mpixelclk < INNO_HDMI_MIN_TMDS_CLOCK)
-> +		return MODE_CLOCK_LOW;
+diff --git a/mm/memory.c b/mm/memory.c
+index 7d9f6b685032..88377a107fbe 100644
+--- a/mm/memory.c
++++ b/mm/memory.c
+@@ -5852,7 +5852,7 @@ static int __access_remote_vm(struct mm_struct *mm, unsigned long addr,
+ 			if (bytes > PAGE_SIZE-offset)
+ 				bytes = PAGE_SIZE-offset;
+ 
+-			maddr = kmap(page);
++			maddr = kmap_local_page(page);
+ 			if (write) {
+ 				copy_to_user_page(vma, page, addr,
+ 						  maddr + offset, buf, bytes);
+@@ -5861,8 +5861,7 @@ static int __access_remote_vm(struct mm_struct *mm, unsigned long addr,
+ 				copy_from_user_page(vma, page, addr,
+ 						    buf, maddr + offset, bytes);
+ 			}
+-			kunmap(page);
+-			put_page(page);
++			unmap_and_put_page(page, maddr);
+ 		}
+ 		len -= bytes;
+ 		buf += bytes;
+-- 
+2.43.0
 
-You probably want to check the max TMDS clock too?
-
-> +	if (inno_hdmi_find_phy_config(hdmi, mpixelclk) < 0)
-> +		return MODE_CLOCK_HIGH;
-> +
-> +	if (hdmi->refclk) {
-> +		long refclk =3D clk_round_rate(hdmi->refclk, mpixelclk);
-> +		unsigned int max_tolerance =3D mpixelclk / 5000;
-> +
-> +		/* Vesa DMT standard mentions +/- 0.5% max tolerance */
-> +		if (abs(refclk - mpixelclk) > max_tolerance ||
-> +		    mpixelclk - refclk > max_tolerance;
-> +			return MODE_NOCLOCK;
-
-You should use abs_diff here. abs() will get confused by the unsigned vs
-signed comparison.
-
-> +	}
-> +
-> +	return MODE_OK;
-> +}
-> +
->  static void inno_hdmi_encoder_mode_set(struct drm_encoder *encoder,
->  				       struct drm_display_mode *mode,
->  				       struct drm_display_mode *adj_mode)
-> @@ -602,7 +632,9 @@ static bool inno_hdmi_encoder_mode_fixup(struct drm_e=
-ncoder *encoder,
->  					 const struct drm_display_mode *mode,
->  					 struct drm_display_mode *adj_mode)
->  {
-> -	return true;
-> +	struct inno_hdmi *hdmi =3D encoder_to_inno_hdmi(encoder);
-> +
-> +	return inno_hdmi_mode_valid(hdmi, adj_mode) =3D=3D MODE_OK;
->  }
-
-Why do you call mode_valid in mode_fixup?
-
-Maxime
-
---b7pooqjn5gbbri2j
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCZXq3ZgAKCRDj7w1vZxhR
-xaVDAP9cv6mFeTDpg7RgRea+Sf7bjeLk6ZsJ3l3oNXqnHls6gAD/cxaEFtITXR/A
-ujMQfG/WE5YLTNoxJiT+lbA9A4vu3QA=
-=ufKw
------END PGP SIGNATURE-----
-
---b7pooqjn5gbbri2j--
