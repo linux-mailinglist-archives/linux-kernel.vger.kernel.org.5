@@ -2,372 +2,263 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A5440812FF6
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 13:25:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 198C6812FF7
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 13:26:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1572996AbjLNMZX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 07:25:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49404 "EHLO
+        id S1573003AbjLNM0D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 07:26:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47812 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1572978AbjLNMZW (ORCPT
+        with ESMTP id S1572989AbjLNM0C (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 07:25:22 -0500
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95392BD
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 04:25:27 -0800 (PST)
-Received: by mail-lf1-x12e.google.com with SMTP id 2adb3069b0e04-50c222a022dso8860709e87.1
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 04:25:27 -0800 (PST)
+        Thu, 14 Dec 2023 07:26:02 -0500
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8020113
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 04:26:05 -0800 (PST)
+Received: by mail-lf1-x12f.google.com with SMTP id 2adb3069b0e04-50e0daa57b3so2257187e87.3
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 04:26:05 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1702556726; x=1703161526; darn=vger.kernel.org;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=Uj6YVUPTH/2Q1f0gUHdUambTFOQaLSKPqyz6G+vAYTU=;
-        b=I39u0/82GolLKeg/F4X5SzfE0ZpW+J5ZUPOSz/wQ8U2UwyCLYP/IlGDgqZuTMgPeEt
-         P3s4J6gVnrY581iuqyMjGgV0mrusEN4LF9UP4QHd9XvMmtirFY2xkcfDYLTixVCI2Kcc
-         X5g0r9/lK8zoMsIsLF0lmqJcJYoStqziSTCS5tIBH2gm2cbFhoKS1RDKi3yS9X9QkFim
-         zv/lEfN4ddiILiq4/+1OS17CQz4dgFbnuYjz0IhmY9jON6yYt3V7jKMTojseSaPJDpiD
-         C18zE/fmWf9nvPGEYZL6u6CBOHVPx1yO/PlV/AbMdHgQ76b/qMkSQNyM7C7RhxBxxVgd
-         gZDg==
+        d=tuxon.dev; s=google; t=1702556764; x=1703161564; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=wuwUSmV/kVrAbENuuZFkPgGMGjiOEuNoJMZtwfSZm0w=;
+        b=DCij6W3vK1/6bSttEFccHSjhZLu+YuhzfcsGKX13h5egtLe1/MvKqPhIXVdm9Ampjd
+         LzTZEmhGDOGI40IfwEFVeX3RYcnDEqviSZJN/cs8BU9p7xatKEQAWnHZS6nmL7eyz9E/
+         QdsZ8LEmpxFWV2pZwPHOoq960Ilyw0wswyX1MdCZEbJLWQsT4zK7ZzkIOSo2luHertc0
+         J0PnWtaSjtAtcDn8OTH05BymVqFSQlZI9FgfLK6krtGVWZT/FXu2GGjqdjRkaVt4SKuf
+         Lp3MYMbDea5ySuP7DyMzdgjfwdPPwTwCRck5SAeLSRMs5vPYTKyDpyLB96YD6+le+xW2
+         WZSw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702556726; x=1703161526;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Uj6YVUPTH/2Q1f0gUHdUambTFOQaLSKPqyz6G+vAYTU=;
-        b=IOSjvhz1eq8Y9T87h7X1YQxZJ7QpGciEbIhtq7XgWKo9JmqwvRL0ufEy2OCEKSlyWQ
-         4Sw4QatgNQXybp3Ohh9zVH7yRUJ959myuR3ilYUZOvqgbySs5ydIHBTmN6xfPF/UbWS+
-         dBz2vFZ1nwdXkm0wUCVU3oV8p9YBIJhuizRwGCNBc4iGdFJ+jkdpmP30qomfcSkSEzcI
-         NzOMsIxsPLJVRFh3pRxxiVDwCD+hbGX99uzs+WzpUUIfeGxW5TFeqkuCqXE/BhFC73Hu
-         jokZGwrivZ1UB/zyrQAxNbmuoIQhMflkRseaWKDmHNHwwXV4wJqwAqE8xdzXf8xFa0Kf
-         HyDw==
-X-Gm-Message-State: AOJu0Yyo+IablGW3nGRotcdybEICdBIKQyZk5NrbsiRjXi3V1ijyZdWZ
-        P5J2wkeVs8xlXjtSCxusH+TClw==
-X-Google-Smtp-Source: AGHT+IGbfuxv9qy9Tbrq3dni3LQn0gIUuYY1WH3U9fnnT64Vx2dRwvI1I5S+dA9MXANpLnOPfutIAg==
-X-Received: by 2002:a05:6512:3f22:b0:50b:f152:f3e7 with SMTP id y34-20020a0565123f2200b0050bf152f3e7mr4928354lfa.71.1702556725531;
-        Thu, 14 Dec 2023 04:25:25 -0800 (PST)
-Received: from [127.0.1.1] (UNUSED.212-182-62-129.lubman.net.pl. [212.182.62.129])
-        by smtp.gmail.com with ESMTPSA id w23-20020ac254b7000000b0050bf5188390sm1850785lfk.167.2023.12.14.04.25.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Dec 2023 04:25:25 -0800 (PST)
-From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-Date:   Thu, 14 Dec 2023 13:25:15 +0100
-Subject: [PATCH] Revert "soc: qcom: stats: Add DDR sleep stats"
+        d=1e100.net; s=20230601; t=1702556764; x=1703161564;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=wuwUSmV/kVrAbENuuZFkPgGMGjiOEuNoJMZtwfSZm0w=;
+        b=C6BWWOgZCrglWTjM/pnfvHVpuu7TALLEBQaEygUKyREGRPShlj1pfK0fTOYxPa0mFM
+         3BgsqCpOj7fpT5h3eulmZAMZkqiiQoy+213bi71nzLbK2G108b9dh1bfT3Ych7VInVnp
+         fYCCt6wLAoWOXsVH/om5tlLFzXEuvFK2NJsoMZdzUDouJfRGXMNVrYWxujAVfCYs21g3
+         oZ7pD81/rHE5M4qrdHIndBatbZXMtQJSwT5MIgCc063ABtdDr5C1zw29r+wGi1mXMo6O
+         d2r+ZlTfJiVA9UB/eLxZhnXk5SPv3x7F1auN574OJrVxCF8DLRC+T2lp1GLRVWYPg8vR
+         XeYg==
+X-Gm-Message-State: AOJu0YxM4rqV4TgGJmIezlyuPW/iiXRLhx1yzKNZxo+sqkG3+vma+X3F
+        GC0QXsz5B8dJ0R29tmAvrMzq6w==
+X-Google-Smtp-Source: AGHT+IGlUqLsuH+kw3wJpuXR2PGCNVzPATeb3/5HChBlXycaDNyuH09w8Y7apf9yILfeCdGXornVbg==
+X-Received: by 2002:ac2:47eb:0:b0:50e:1b5d:4dda with SMTP id b11-20020ac247eb000000b0050e1b5d4ddamr99465lfp.166.1702556763878;
+        Thu, 14 Dec 2023 04:26:03 -0800 (PST)
+Received: from [192.168.50.4] ([82.78.167.103])
+        by smtp.gmail.com with ESMTPSA id mm20-20020a1709077a9400b00a1a53e9f401sm9327866ejc.132.2023.12.14.04.26.01
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 14 Dec 2023 04:26:03 -0800 (PST)
+Message-ID: <7f514abe-7f18-44c8-9a0e-d2f4772713f7@tuxon.dev>
+Date:   Thu, 14 Dec 2023 14:25:57 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20231214-topic-undo_ddr_stats-v1-1-1fe32c258e56@linaro.org>
-X-B4-Tracking: v=1; b=H4sIACr0emUC/x3MTQqAIBBA4avErBPSfqCuEiGSY81GY8YiiO6et
- PwW7z0gyIQCU/UA40VCKRbouoJ1d3FDRb4YTGNabXSncjpoVWf0yXrPVrLLorDFoLt+GE0YoKQ
- HY6D7387L+37j1G5nZgAAAA==
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>
-Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Doug Anderson <dianders@chromium.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>
-X-Mailer: b4 0.13-dev-0438c
-X-Spam-Status: No, score=1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net 1/2] net: ravb: Wait for operation mode to be applied
+Content-Language: en-US
+To:     =?UTF-8?Q?Niklas_S=C3=B6derlund?= 
+        <niklas.soderlund+renesas@ragnatech.se>
+Cc:     s.shtylyov@omp.ru, davem@davemloft.net, edumazet@google.com,
+        kuba@kernel.org, pabeni@redhat.com,
+        claudiu.beznea.uj@bp.renesas.com, yoshihiro.shimoda.uh@renesas.com,
+        wsa+renesas@sang-engineering.com, biju.das.jz@bp.renesas.com,
+        prabhakar.mahadev-lad.rj@bp.renesas.com,
+        mitsuhiro.kimura.kc@renesas.com, geert+renesas@glider.be,
+        netdev@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20231214113137.2450292-1-claudiu.beznea.uj@bp.renesas.com>
+ <20231214113137.2450292-2-claudiu.beznea.uj@bp.renesas.com>
+ <20231214121109.GK1863068@ragnatech.se>
+From:   claudiu beznea <claudiu.beznea@tuxon.dev>
+In-Reply-To: <20231214121109.GK1863068@ragnatech.se>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Level: *
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-After recent reports ([1], [2]) of older platforms (particularly 8150 and
-7180) breaking after DDR sleep stats introduction, revert the following:
+Hi, Niklas,
 
-Commit 73380e2573c3 ("soc: qcom: stats: fix 64-bit division")
-Commit e84e61bdb97c ("soc: qcom: stats: Add DDR sleep stats")
+On 14.12.2023 14:11, Niklas Söderlund wrote:
+> Hi Claudiu,
+> 
+> Thanks for your patch.
+> 
+> On 2023-12-14 13:31:36 +0200, Claudiu wrote:
+>> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+>>
+>> CSR.OPS bits specify the current operating mode and (according to
+>> documentation) they are updated when the operating mode change request
+>> is processed. Thus, check CSR.OPS before proceeding.
+>>
+>> Fixes: 568b3ce7a8ef ("ravb: factor out register bit twiddling code")
+>> Fixes: 0184165b2f42 ("ravb: add sleep PM suspend/resume support")
+>> Fixes: 7e09a052dc4e ("ravb: Exclude gPTP feature support for RZ/G2L")
+>> Fixes: 3e3d647715d4 ("ravb: add wake-on-lan support via magic packet")
+>> Fixes: c156633f1353 ("Renesas Ethernet AVB driver proper")
+> 
+> I think the list of fixes tags can be reduced. The last item in the list 
+> is the patch which adds the RAVB driver so what's the point of listing 
+> the rest?
 
-The feature itself is rather useful for debugging DRAM power management,
-however it looks like the shared RPMh stats data structures differ on
-previous SoCs.
+In commit c156633f1353 ("Renesas Ethernet AVB driver proper") different
+features that were touched by the rest of commits in the fixes list might
+not be present. So, it might be possible that this patch to not be
+back-portable to c156633f1353 ("Renesas Ethernet AVB driver proper") but to
+other commits in the list.
 
-Revert its addition for now to un-break booting on these earlier SoCs,
-while I try to come up with a better way to enable it conditionally.
+> 
+>> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+>> ---
+>>  drivers/net/ethernet/renesas/ravb_main.c | 47 ++++++++++++++++++++----
+>>  1 file changed, 39 insertions(+), 8 deletions(-)
+>>
+>> diff --git a/drivers/net/ethernet/renesas/ravb_main.c b/drivers/net/ethernet/renesas/ravb_main.c
+>> index 9178f6d60e74..ce95eb5af354 100644
+>> --- a/drivers/net/ethernet/renesas/ravb_main.c
+>> +++ b/drivers/net/ethernet/renesas/ravb_main.c
+>> @@ -683,8 +683,11 @@ static int ravb_dmac_init(struct net_device *ndev)
+>>  
+>>  	/* Setting the control will start the AVB-DMAC process. */
+>>  	ravb_modify(ndev, CCC, CCC_OPC, CCC_OPC_OPERATION);
+>> +	error = ravb_wait(ndev, CSR, CSR_OPS, CSR_OPS_OPERATION);
+>> +	if (error)
+>> +		netdev_err(ndev, "failed to switch device to operation mode\n");
+> 
+> As you add ravb_set_reset_mode() to compliment the existing 
+> ravb_set_config_mode(), would it not be coherent to also add a 
+> ravb_set_operation_mode() instead of open coding it here?
 
-[1] https://lore.kernel.org/linux-arm-msm/20231209215601.3543895-2-dmitry.baryshkov@linaro.org/
-[2] https://lore.kernel.org/linux-arm-msm/CAD=FV=XX4wLg1NNVL15RK4D4tLvuSzZyUv=k_tS4bSb3=7QJzQ@mail.gmail.com/
+CSR_OPS_OPERATION is set only in this place. Reset is done in more than one
+place. Due to this I've added a function for it.
 
-Reported-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Reported-by: Doug Anderson <dianders@chromium.org>
-Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
----
- drivers/soc/qcom/qcom_stats.c | 187 +-----------------------------------------
- 1 file changed, 1 insertion(+), 186 deletions(-)
+> 
+>>  
+>> -	return 0;
+>> +	return error;
+>>  }
+>>  
+>>  static void ravb_get_tx_tstamp(struct net_device *ndev)
+>> @@ -1744,6 +1747,18 @@ static inline int ravb_hook_irq(unsigned int irq, irq_handler_t handler,
+>>  	return error;
+>>  }
+>>  
+>> +static int ravb_set_reset_mode(struct net_device *ndev)
+> 
+> nit: Maybe move this to be close to ravb_set_config_mode() to co-locate 
+> all mode changing logic?
 
-diff --git a/drivers/soc/qcom/qcom_stats.c b/drivers/soc/qcom/qcom_stats.c
-index 5ec8a754b22b..0216fc24f2ca 100644
---- a/drivers/soc/qcom/qcom_stats.c
-+++ b/drivers/soc/qcom/qcom_stats.c
-@@ -3,7 +3,6 @@
-  * Copyright (c) 2011-2021, The Linux Foundation. All rights reserved.
-  */
- 
--#include <linux/bitfield.h>
- #include <linux/debugfs.h>
- #include <linux/device.h>
- #include <linux/io.h>
-@@ -12,7 +11,6 @@
- #include <linux/platform_device.h>
- #include <linux/seq_file.h>
- 
--#include <linux/soc/qcom/qcom_aoss.h>
- #include <linux/soc/qcom/smem.h>
- #include <clocksource/arm_arch_timer.h>
- 
-@@ -24,20 +22,8 @@
- #define LAST_ENTERED_AT_OFFSET	0x8
- #define LAST_EXITED_AT_OFFSET	0x10
- #define ACCUMULATED_OFFSET	0x18
--#define DDR_DYNAMIC_OFFSET	0x1c
-- #define DDR_OFFSET_MASK	GENMASK(9, 0)
- #define CLIENT_VOTES_OFFSET	0x20
- 
--#define ARCH_TIMER_FREQ		19200000
--#define DDR_MAGIC_KEY1		0xA1157A75 /* leetspeak "ALLSTATS" */
--#define DDR_MAX_NUM_ENTRIES	20
--
--#define DDR_VOTE_DRV_MAX	18
--#define DDR_VOTE_DRV_ABSENT	0xdeaddead
--#define DDR_VOTE_DRV_INVALID	0xffffdead
--#define DDR_VOTE_X		GENMASK(27, 14)
--#define DDR_VOTE_Y		GENMASK(13, 0)
--
- struct subsystem_data {
- 	const char *name;
- 	u32 smem_item;
-@@ -62,7 +48,6 @@ struct stats_config {
- 	bool appended_stats_avail;
- 	bool dynamic_offset;
- 	bool subsystem_stats_in_smem;
--	bool ddr_stats;
- };
- 
- struct stats_data {
-@@ -83,25 +68,6 @@ struct appended_stats {
- 	u32 reserved[3];
- };
- 
--struct ddr_stats_entry {
--	u32 name;
--	u32 count;
--	u64 dur;
--} __packed;
--
--struct ddr_stats {
--	u32 key;
--	u32 entry_count;
--#define MAX_DDR_STAT_ENTRIES	20
--	struct ddr_stats_entry entry[MAX_DDR_STAT_ENTRIES];
--} __packed;
--
--struct ddr_stats_data {
--	struct device *dev;
--	void __iomem *base;
--	struct qmp *qmp;
--};
--
- static void qcom_print_stats(struct seq_file *s, const struct sleep_stats *stat)
- {
- 	u64 accumulated = stat->accumulated;
-@@ -152,108 +118,6 @@ static int qcom_soc_sleep_stats_show(struct seq_file *s, void *unused)
- 	return 0;
- }
- 
--#define DDR_NAME_TYPE		GENMASK(15, 8)
-- #define DDR_NAME_TYPE_LPM	0
-- #define DDR_NAME_TYPE_FREQ	1
--
--#define DDR_NAME_LPM_NAME	GENMASK(7, 0)
--
--#define DDR_NAME_FREQ_MHZ	GENMASK(31, 16)
--#define DDR_NAME_FREQ_CP_IDX	GENMASK(4, 0)
--static void qcom_ddr_stats_print(struct seq_file *s, struct ddr_stats_entry *entry)
--{
--	u32 cp_idx, name;
--	u8 type;
--
--	type = FIELD_GET(DDR_NAME_TYPE, entry->name);
--
--	switch (type) {
--	case DDR_NAME_TYPE_LPM:
--		name = FIELD_GET(DDR_NAME_LPM_NAME, entry->name);
--
--		seq_printf(s, "LPM  | Type 0x%2x\tcount: %u\ttime: %llums\n",
--			   name, entry->count, entry->dur);
--		break;
--	case DDR_NAME_TYPE_FREQ:
--		cp_idx = FIELD_GET(DDR_NAME_FREQ_CP_IDX, entry->name);
--		name = FIELD_GET(DDR_NAME_FREQ_MHZ, entry->name);
--
--		/* Neither 0Mhz nor 0 votes is very interesting */
--		if (!name || !entry->count)
--			return;
--
--		seq_printf(s, "Freq | %dMHz (idx %u)\tcount: %u\ttime: %llums\n",
--			   name, cp_idx, entry->count, entry->dur);
--		break;
--	default:
--		seq_printf(s, "Unknown data chunk (type = 0x%x count = 0x%x dur = 0x%llx)\n",
--			   type, entry->count, entry->dur);
--	}
--}
--
--static int qcom_ddr_stats_show(struct seq_file *s, void *unused)
--{
--	struct ddr_stats_data *ddrd = s->private;
--	struct ddr_stats ddr;
--	struct ddr_stats_entry *entry = ddr.entry;
--	u32 entry_count, stats_size;
--	u32 votes[DDR_VOTE_DRV_MAX];
--	int i, ret;
--
--	/* Request a stats sync, it may take some time to update though.. */
--	ret = qmp_send(ddrd->qmp, "{class: ddr, action: freqsync}");
--	if (ret) {
--		dev_err(ddrd->dev, "failed to send QMP message\n");
--		return ret;
--	}
--
--	entry_count = readl(ddrd->base + offsetof(struct ddr_stats, entry_count));
--	if (entry_count > DDR_MAX_NUM_ENTRIES)
--		return -EINVAL;
--
--	/* We're not guaranteed to have DDR_MAX_NUM_ENTRIES */
--	stats_size = sizeof(ddr);
--	stats_size -= DDR_MAX_NUM_ENTRIES * sizeof(*entry);
--	stats_size += entry_count * sizeof(*entry);
--
--	/* Copy and process the stats */
--	memcpy_fromio(&ddr, ddrd->base, stats_size);
--
--	for (i = 0; i < ddr.entry_count; i++) {
--		/* Convert the period to ms */
--		entry[i].dur = div_u64(entry[i].dur, ARCH_TIMER_FREQ / MSEC_PER_SEC);
--	}
--
--	for (i = 0; i < ddr.entry_count; i++)
--		qcom_ddr_stats_print(s, &entry[i]);
--
--	/* Ask AOSS to dump DDR votes */
--	ret = qmp_send(ddrd->qmp, "{class: ddr, res: drvs_ddr_votes}");
--	if (ret) {
--		dev_err(ddrd->dev, "failed to send QMP message\n");
--		return ret;
--	}
--
--	/* Subsystem votes */
--	memcpy_fromio(votes, ddrd->base + stats_size, sizeof(u32) * DDR_VOTE_DRV_MAX);
--
--	for (i = 0; i < DDR_VOTE_DRV_MAX; i++) {
--		u32 ab, ib;
--
--		if (votes[i] == DDR_VOTE_DRV_ABSENT || votes[i] == DDR_VOTE_DRV_INVALID)
--			ab = ib = votes[i];
--		else {
--			ab = FIELD_GET(DDR_VOTE_X, votes[i]);
--			ib = FIELD_GET(DDR_VOTE_Y, votes[i]);
--		}
--
--		seq_printf(s, "Vote | AB = %5u\tIB = %5u\n", ab, ib);
--	}
--
--	return 0;
--}
--
--DEFINE_SHOW_ATTRIBUTE(qcom_ddr_stats);
- DEFINE_SHOW_ATTRIBUTE(qcom_soc_sleep_stats);
- DEFINE_SHOW_ATTRIBUTE(qcom_subsystem_sleep_stats);
- 
-@@ -316,56 +180,13 @@ static void qcom_create_subsystem_stat_files(struct dentry *root,
- 				    &qcom_subsystem_sleep_stats_fops);
- }
- 
--static int qcom_create_ddr_stats_files(struct device *dev,
--				       struct dentry *root,
--				       void __iomem *reg,
--				       const struct stats_config *config)
--{
--	struct ddr_stats_data *ddrd;
--	u32 key, stats_offset;
--	struct dentry *dent;
--
--	/* Nothing to do */
--	if (!config->ddr_stats)
--		return 0;
--
--	ddrd = devm_kzalloc(dev, sizeof(*ddrd), GFP_KERNEL);
--	if (!ddrd)
--		return dev_err_probe(dev, -ENOMEM, "Couldn't allocate DDR stats data\n");
--
--	ddrd->dev = dev;
--
--	/* Get the offset of DDR stats */
--	stats_offset = readl(reg + DDR_DYNAMIC_OFFSET) & DDR_OFFSET_MASK;
--	ddrd->base = reg + stats_offset;
--
--	/* Check if DDR stats are present */
--	key = readl(ddrd->base);
--	if (key != DDR_MAGIC_KEY1)
--		return 0;
--
--	dent = debugfs_create_file("ddr_sleep_stats", 0400, root, ddrd, &qcom_ddr_stats_fops);
--	if (IS_ERR(dent))
--		return PTR_ERR(dent);
--
--	/* QMP is only necessary for DDR votes */
--	ddrd->qmp = qmp_get(dev);
--	if (IS_ERR(ddrd->qmp)) {
--		dev_err(dev, "Couldn't get QMP mailbox: %ld. DDR votes won't be available.\n",
--			PTR_ERR(ddrd->qmp));
--		debugfs_remove(dent);
--	}
--
--	return 0;
--}
--
- static int qcom_stats_probe(struct platform_device *pdev)
- {
- 	void __iomem *reg;
- 	struct dentry *root;
- 	const struct stats_config *config;
- 	struct stats_data *d;
--	int i, ret;
-+	int i;
- 
- 	config = device_get_match_data(&pdev->dev);
- 	if (!config)
-@@ -387,11 +208,6 @@ static int qcom_stats_probe(struct platform_device *pdev)
- 
- 	qcom_create_subsystem_stat_files(root, config);
- 	qcom_create_soc_sleep_stat_files(root, reg, d, config);
--	ret = qcom_create_ddr_stats_files(&pdev->dev, root, reg, config);
--	if (ret) {
--		debugfs_remove_recursive(root);
--		return ret;
--	};
- 
- 	platform_set_drvdata(pdev, root);
- 
-@@ -438,7 +254,6 @@ static const struct stats_config rpmh_data = {
- 	.appended_stats_avail = false,
- 	.dynamic_offset = false,
- 	.subsystem_stats_in_smem = true,
--	.ddr_stats = true,
- };
- 
- static const struct of_device_id qcom_stats_table[] = {
+I've did this but not in this patch. It could be found on the final version
+of the driver proposed by
+https://lore.kernel.org/all/20231214114600.2451162-1-claudiu.beznea.uj@bp.renesas.com/
 
----
-base-commit: 11651f8cb2e88372d4ed523d909514dc9a613ea3
-change-id: 20231214-topic-undo_ddr_stats-e3ef145692f6
+Thank you for your review,
+Claudiu Beznea
 
-Best regards,
--- 
-Konrad Dybcio <konrad.dybcio@linaro.org>
-
+> 
+>> +{
+>> +	int error;
+>> +
+>> +	ravb_write(ndev, CCC_OPC_RESET, CCC);
+>> +	error = ravb_wait(ndev, CSR, CSR_OPS, CSR_OPS_RESET);
+>> +	if (error)
+>> +		netdev_err(ndev, "failed to switch device to reset mode\n");
+>> +
+>> +	return error;
+>> +}
+>> +
+>>  /* Network device open function for Ethernet AVB */
+>>  static int ravb_open(struct net_device *ndev)
+>>  {
+>> @@ -2551,10 +2566,11 @@ static int ravb_set_gti(struct net_device *ndev)
+>>  	return 0;
+>>  }
+>>  
+>> -static void ravb_set_config_mode(struct net_device *ndev)
+>> +static int ravb_set_config_mode(struct net_device *ndev)
+>>  {
+>>  	struct ravb_private *priv = netdev_priv(ndev);
+>>  	const struct ravb_hw_info *info = priv->info;
+>> +	int error;
+>>  
+>>  	if (info->gptp) {
+>>  		ravb_modify(ndev, CCC, CCC_OPC, CCC_OPC_CONFIG);
+>> @@ -2566,6 +2582,12 @@ static void ravb_set_config_mode(struct net_device *ndev)
+>>  	} else {
+>>  		ravb_modify(ndev, CCC, CCC_OPC, CCC_OPC_CONFIG);
+>>  	}
+>> +
+>> +	error = ravb_wait(ndev, CSR, CSR_OPS, CSR_OPS_CONFIG);
+>> +	if (error)
+>> +		netdev_err(ndev, "failed to switch device to config mode\n");
+>> +
+>> +	return error;
+>>  }
+>>  
+>>  /* Set tx and rx clock internal delay modes */
+>> @@ -2785,7 +2807,9 @@ static int ravb_probe(struct platform_device *pdev)
+>>  	ndev->ethtool_ops = &ravb_ethtool_ops;
+>>  
+>>  	/* Set AVB config mode */
+>> -	ravb_set_config_mode(ndev);
+>> +	error = ravb_set_config_mode(ndev);
+>> +	if (error)
+>> +		goto out_disable_refclk;
+>>  
+>>  	if (info->gptp || info->ccc_gac) {
+>>  		/* Set GTI value */
+>> @@ -2893,6 +2917,7 @@ static void ravb_remove(struct platform_device *pdev)
+>>  	struct net_device *ndev = platform_get_drvdata(pdev);
+>>  	struct ravb_private *priv = netdev_priv(ndev);
+>>  	const struct ravb_hw_info *info = priv->info;
+>> +	int error;
+>>  
+>>  	unregister_netdev(ndev);
+>>  	if (info->nc_queues)
+>> @@ -2908,8 +2933,9 @@ static void ravb_remove(struct platform_device *pdev)
+>>  	dma_free_coherent(ndev->dev.parent, priv->desc_bat_size, priv->desc_bat,
+>>  			  priv->desc_bat_dma);
+>>  
+>> -	/* Set reset mode */
+>> -	ravb_write(ndev, CCC_OPC_RESET, CCC);
+>> +	error = ravb_set_reset_mode(ndev);
+>> +	if (error)
+>> +		netdev_err(ndev, "Failed to reset ndev\n");
+>>  
+>>  	clk_disable_unprepare(priv->gptp_clk);
+>>  	clk_disable_unprepare(priv->refclk);
+>> @@ -2991,8 +3017,11 @@ static int __maybe_unused ravb_resume(struct device *dev)
+>>  	int ret = 0;
+>>  
+>>  	/* If WoL is enabled set reset mode to rearm the WoL logic */
+>> -	if (priv->wol_enabled)
+>> -		ravb_write(ndev, CCC_OPC_RESET, CCC);
+>> +	if (priv->wol_enabled) {
+>> +		ret = ravb_set_reset_mode(ndev);
+>> +		if (ret)
+>> +			return ret;
+>> +	}
+>>  
+>>  	/* All register have been reset to default values.
+>>  	 * Restore all registers which where setup at probe time and
+>> @@ -3000,7 +3029,9 @@ static int __maybe_unused ravb_resume(struct device *dev)
+>>  	 */
+>>  
+>>  	/* Set AVB config mode */
+>> -	ravb_set_config_mode(ndev);
+>> +	ret = ravb_set_config_mode(ndev);
+>> +	if (ret)
+>> +		return ret;
+>>  
+>>  	if (info->gptp || info->ccc_gac) {
+>>  		/* Set GTI value */
+>> -- 
+>> 2.39.2
+>>
+> 
