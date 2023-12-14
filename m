@@ -2,170 +2,293 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B5C7081260F
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 04:46:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BF1A1812614
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 04:47:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1443100AbjLNDpB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 22:45:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55042 "EHLO
+        id S234179AbjLNDqu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 22:46:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36804 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229525AbjLNDpA (ORCPT
+        with ESMTP id S229525AbjLNDqs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 22:45:00 -0500
-Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7933793;
-        Wed, 13 Dec 2023 19:45:06 -0800 (PST)
-Received: from pps.filterd (m0246630.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3BE0S65V015237;
-        Thu, 14 Dec 2023 03:44:42 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
- from : message-id : references : date : in-reply-to : content-type :
- mime-version; s=corp-2023-11-20;
- bh=8w1//EMNTcW34SWYuLHRcQ7CSF83B21kQIxof+3pfAg=;
- b=kR/Qr/qA/o35NxOWmHGKdmVqVWOiXe2ql7akZ7N24yas/7mTHSgcdtNddFfTs2Xe6fEB
- UheqKAEX/0/vQH0hSXH1IEWNZaFmUhv1Wp8vBY9KxpxqU81p7TaoBVzxTtRHv9xoDuhY
- MK/GdF86rNgPhBU1LHWO0YlqlNIVHb+873OIthpttUlJWYHhC8i5tHO0OiJCAR7wdkti
- Dz0fr4LQ/8VgmVlRXmZ5JlQC80Zp4wVtswfowdWxNjN1LFc4YxQhd8A0BUGEXb+39Hfj
- b3Yu+JtsIAYjwdU4B/1nQYvigg0Ux6JcNTcPb1CssXhQApi19VpbQk7Hp/4NQC5eE3NW XQ== 
-Received: from phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta03.appoci.oracle.com [138.1.37.129])
-        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3uwgn3r0j8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 14 Dec 2023 03:44:42 +0000
-Received: from pps.filterd (phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-        by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 3BE3cU1q012823;
-        Thu, 14 Dec 2023 03:44:41 GMT
-Received: from nam12-bn8-obe.outbound.protection.outlook.com (mail-bn8nam12lp2168.outbound.protection.outlook.com [104.47.55.168])
-        by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3uvep9f10x-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 14 Dec 2023 03:44:40 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=lBnWlsMC52YsBSCwckhFMB/wQ3iA9pvYyM973780aMeM45t66WQCoJtc8+mnCnusJXdVn26aGY04TZtG8HFA9SahXKsM38U9Z2Yz+fg+Bm2tHpQnAe0N9chMLci7/j188sHUzPjil3VTuO2bZlQlDXetF22QJkfvjfdGEqf8ybVFrlTsKUFrfQk0RCJ2GpB+bxA0O3fVtpWq7+hlq+IaqitRG2PYVzl9fJP5VRT0o+40kWeUJXuuKG1PtuVxmatzB6vw2l3cHuu3L6SUm2sTpJdeYSTM2lqwxkBCq69CwwteznasjWevhYBxmaBSxzjbHTAG6JO3tQmoYfRzTtCxKA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=8w1//EMNTcW34SWYuLHRcQ7CSF83B21kQIxof+3pfAg=;
- b=llPoPnXMuHsc924MeCS34gOHjBfLB2eEn43Q0TkjZyJ5CEQjxykMOC/CEyf2uQMHv7i5Xeh92Z8RhFs3KvCM+QglmBk5qJNH5gl5OdVxWl2MXkYo3FJW7kXfEevNSxNIdVa1D+Hkx+P/FcduzDRF7vnzg4eX5BgPFWjA5UPkHxALlcnrwkYlu6eaDIWOZOtv1TIFkgfNFAewEFSLZggrEze0M5uc2WfpCTeXELupwOzSlIfrFIslZJK3fm3BrG9M1GEQ/tFq8XPNEjP9DoRwlVSGN9JwCyQ2uX69erfv4dTGt0qNDcZD6KTvHlEXS3kq+sWTAEjs6OyAWCK5jM5XuQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=8w1//EMNTcW34SWYuLHRcQ7CSF83B21kQIxof+3pfAg=;
- b=eTPayn1tIqzhxvxkJcoOknLGJzAKAkQipMYOOYWLev0W7bnVZEfn5YCNHEaTZujEW6jGxPFnKq17S9zHJYGnm6SoQULznWtTen1xQmI4kvORa4RntXCrWt1sFQfcdmSZbQHZG3pmS2jIq/tnfmoNiMsJTb8EaijjY88d7iiCjl8=
-Received: from PH0PR10MB4759.namprd10.prod.outlook.com (2603:10b6:510:3d::12)
- by PH7PR10MB6460.namprd10.prod.outlook.com (2603:10b6:510:1ef::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7091.26; Thu, 14 Dec
- 2023 03:44:38 +0000
-Received: from PH0PR10MB4759.namprd10.prod.outlook.com
- ([fe80::2b0c:62b3:f9a9:5972]) by PH0PR10MB4759.namprd10.prod.outlook.com
- ([fe80::2b0c:62b3:f9a9:5972%4]) with mapi id 15.20.7091.028; Thu, 14 Dec 2023
- 03:44:38 +0000
-To:     Can Guo <quic_cang@quicinc.com>
-Cc:     bvanassche@acm.org, mani@kernel.org, adrian.hunter@intel.com,
-        vkoul@kernel.org, beanhuo@micron.com, avri.altman@wdc.com,
-        junwoo80.lee@samsung.com, martin.petersen@oracle.com,
-        linux-scsi@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        linux-kernel@vger.kernel.org (open list:ARM/Mediatek SoC
-        support:Keyword:mediatek),
-        linux-arm-kernel@lists.infradead.org (moderated list:ARM/Mediatek SoC
-        support:Keyword:mediatek),
-        linux-mediatek@lists.infradead.org (moderated list:ARM/Mediatek SoC
-        support:Keyword:mediatek)
-Subject: Re: [PATCH v8 00/10] Enable HS-G5 support on SM8550
-From:   "Martin K. Petersen" <martin.petersen@oracle.com>
-Organization: Oracle Corporation
-Message-ID: <yq1fs05h2j0.fsf@ca-mkp.ca.oracle.com>
-References: <1701520577-31163-1-git-send-email-quic_cang@quicinc.com>
-Date:   Wed, 13 Dec 2023 22:44:36 -0500
-In-Reply-To: <1701520577-31163-1-git-send-email-quic_cang@quicinc.com> (Can
-        Guo's message of "Sat, 2 Dec 2023 04:36:06 -0800")
-Content-Type: text/plain
-X-ClientProxiedBy: SJ0PR03CA0105.namprd03.prod.outlook.com
- (2603:10b6:a03:333::20) To PH0PR10MB4759.namprd10.prod.outlook.com
- (2603:10b6:510:3d::12)
+        Wed, 13 Dec 2023 22:46:48 -0500
+Received: from smtp-relay-internal-0.canonical.com (smtp-relay-internal-0.canonical.com [185.125.188.122])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30820A6
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 19:46:53 -0800 (PST)
+Received: from mail-pg1-f200.google.com (mail-pg1-f200.google.com [209.85.215.200])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 649B63F2A4
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 03:46:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1702525610;
+        bh=mAj5KY1nspINqw/SCbRzykUa333yY3abgaSC16X+Xik=;
+        h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+         To:Cc:Content-Type;
+        b=FN0DgIccb0df/rRJNGoYM8u2+nNUaXPsZEHZVsZ02DgM9TZx9V85vWRbQXUfThC+C
+         cW1LYYK3dnYHIuQhGtbuS1e1LxfOSYF4iilZ/t8jTiGM/yeZ3Rx57Ea/4rKFBwTYum
+         md8BeWkcT/JaT1t/u9CwTxAqpfw3ewCZeTZWmUi5Ixc/twfdAx6iXdtESaBltPc99U
+         w7W/HLw24/YVIHVZczkrHqLL8GnpEk3lyeJ0i/tKZ4EqemuWdQcCTwozYvrgC/4K+r
+         Wsz2Za5BKgBEbVeVaX0dgdPJXs/JOJy4WrxDqwfs6KMExOXX8OqqjXcx151d4Hy0Gq
+         mKjpCMOLcn/SQ==
+Received: by mail-pg1-f200.google.com with SMTP id 41be03b00d2f7-5c668dc7f7bso6878809a12.3
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 19:46:50 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702525609; x=1703130409;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=mAj5KY1nspINqw/SCbRzykUa333yY3abgaSC16X+Xik=;
+        b=eYUEccSBWjVFfVHfCW0la+uKhu8RNzn/kqilDRjlUNo7R550Y0oEhJDhxsYrpdF1nQ
+         PAbgnw1kgNz/WUsaVWaJbBUblpz4bFlfoBpCNx4bXU3ep5n8c+UQISnNcD9nK9NlHizA
+         NiBVD+hFIi58ZIbF2ICfUrZfmDkxZ/UcCKEmRMEqr6x2yMoH89uHWtyDdw8iQNn/2KvC
+         lqEtijop61iQ3db3OWjFtTkgEjP0zfcMe+AHfwWoe1x/tHFkAGlL4DXD8EkS/XtkxEbs
+         q2TJ9FZ/dMPx5Vv4DeOD1ukZ0sayoEyGKivhgxsCPolma4luDLz4IKC96rPbE2oBdKrO
+         OTWg==
+X-Gm-Message-State: AOJu0YwQiiDFERj9wl1XomSXmKWE7QgxMfQovg5TgmKzHl3L2jq9IY6N
+        aDySfOAyZ3S9x8G9LWGRp7YFlc4lV4LBPXI+FemieLCAgY8Ff5mLeYMJUQ/LhJMPpFf/+YwCpFI
+        qSl5ho1f5XW+5x5jM26n5Mnn5YRozPYJyxvo93lZC5CDJL9rvdIcH7Mvq1HPy8Bv4XEDv
+X-Received: by 2002:a05:6a20:9481:b0:18b:4a28:6e15 with SMTP id hs1-20020a056a20948100b0018b4a286e15mr9199559pzb.34.1702525608891;
+        Wed, 13 Dec 2023 19:46:48 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IE+jMwj//+47Gy0XOAIsVnk/FONKC8nacpKm8Mvphdg0ANxd9HVQ//KT49KW30Ybqi3HynexSqMVLvzm890jYw=
+X-Received: by 2002:a05:6a20:9481:b0:18b:4a28:6e15 with SMTP id
+ hs1-20020a056a20948100b0018b4a286e15mr9199548pzb.34.1702525608527; Wed, 13
+ Dec 2023 19:46:48 -0800 (PST)
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH0PR10MB4759:EE_|PH7PR10MB6460:EE_
-X-MS-Office365-Filtering-Correlation-Id: 3bec2da1-1077-43fd-aa95-08dbfc56ff54
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: phTcRoPCitWkMAzUJeKtcyu84iGhF3NEHhTMUtOIm3Jp3D7lu1RmHJznstGzmDc8FlQua5+vXWsKFVTBgI1wspCNPFdm+p8sNs+shUahlim3uczasacPtjl+sDiXGgZOEtLk4KhentUDS24t+9Rdtkh59GX1zqZCvdfYCZ1Cb1MJzIR5C21CaaIRzTpg/G1Z1a8i/74kcj8+qZ/YbFmJ2EwqeB5QQVf2jUSP6was1+utOw6LBOLq64gOKAD9aVESSqrnyF7TJf8dQnIcFHzqYoecpjVktu0idr5rSsqIaSbdgTkCkZx2yYFKW0cditi84jDzjZFrtl1wGZuzKjGWivTEWOPJiWPhmvG0+/V2YbfRH+BMEFUlH7WWW3UpSt+FqI6fcHykh5I2KC96Js+cPU8aspJYDfzo+EHnu38NIe10a7j9IqPhyx0fZOkSspHLKvTZp64bIoRq99dsPQPZGRcDfKMXwvcMA4xA8zfglC5f1JWblMPwFcdKuKNQTCZc9KXDKCVBi2nPI9ptrxnuSBTB1dn45mZbCAMrDW3oaMu9RIl5SFFSjYl4WKXus8AT
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB4759.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(396003)(39860400002)(346002)(366004)(376002)(230922051799003)(1800799012)(64100799003)(186009)(451199024)(26005)(36916002)(6506007)(6512007)(4326008)(5660300002)(7416002)(8936002)(8676002)(41300700001)(2906002)(6486002)(478600001)(316002)(6916009)(66556008)(66946007)(66476007)(54906003)(558084003)(86362001)(38100700002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?t0JsWGLWsIXLinKxP9SZkrD5hdY+M4pYDYUoF4ldWIUTVRr609sLLbqIumY4?=
- =?us-ascii?Q?CU9rqUl6bHARE7aIEO9NTNs8lNoWdPz0/9C0LH0/YPfszyXgml0yfX6vXbzs?=
- =?us-ascii?Q?PWrGr6GfeagmsQfKrvPKf6j+2O0BFqyQ6W/l9ZQImso7PvAt7nr7GVAXWC3V?=
- =?us-ascii?Q?iOIU8X75a8ZQD5u5QhnCippUUrkqfANmre6gG82sJ1OPfdmjwP4zQPpK+msq?=
- =?us-ascii?Q?Q/KsofxXdFvULqm5quFeSzIavylQFJdTO2ZoWwhlpvRVFEXk6VuJ83+pu8iq?=
- =?us-ascii?Q?GhjL+oc3dmzo/83Uur3W91NblHIiofM3LZ2AQvgI7zND9nE3MhhvtDfU7zw+?=
- =?us-ascii?Q?I/8pSletUTk785TXrRPyNuxhYyfzsyrwAmw7Y7l+V1XCa77IM4PMQAUbOBHO?=
- =?us-ascii?Q?AucrhepkM3X4KyiymfJReCAyQ7LUoX6TatqpD6GNMGat80141b+MCifrdxt2?=
- =?us-ascii?Q?bLf0QN09JfAC4DJe/z+RiyWm0qG259CSZ1FpDCTKL+QdZWouvJ+nm6jkOFi9?=
- =?us-ascii?Q?sDYFr/NCfRWtEa+0PbkzY1LgdTY65B4NaU0wBb37XEXaf7nEh2YS7ndfVjBP?=
- =?us-ascii?Q?0OT13gax84baXVOJM0PWxN8ShkbZ8ZlEH6CtI3FK4Bnp0TqSXHbvhmEX7Z2v?=
- =?us-ascii?Q?nPX0eaw6lNIX9Rqi3HF2wctQTT1rK8y61lCyRSSqkQvNs/tsxUYRKHBwcUie?=
- =?us-ascii?Q?uVZoUHwb7U6qvsj3gvAuH7H24G6C8LVB5SkzdQpAMG0dc9JfhodFqK32kWOb?=
- =?us-ascii?Q?ON3elkiSSyHG1F8RW80tjoGw0jH6FzM2U/437FBVJBskVbgCJONEHYWU0YaR?=
- =?us-ascii?Q?jliYh+cLtPnP/WJnkPpWBqcyY7NfU2MVyRsFWKqiKshAvnxAxc+gc57Za362?=
- =?us-ascii?Q?pDMVkwXpKK1h5HOPQeunJ217boahdYrH6R3A/+Hb34DuobwGcX+hHBXKeM0A?=
- =?us-ascii?Q?PiGPNsNleNGl6QUOm/OXW8mRxmHxTkoCBWWOCEx4FPdzKCczrn6dsYRgWENk?=
- =?us-ascii?Q?40bprsloAEsQbR9Jr/IEVKFqHsIQUK/MKB0dS0Rw+04Nc3A+Maa6gGF6+vN5?=
- =?us-ascii?Q?jAp7Bg9LXMkqctG+OUcM0nqGQj/kZ5q3Xzd1eneemBaCXEBEE6XnAOBLqJm2?=
- =?us-ascii?Q?gDu2Jqk+RYg1y0wvlDbGW/A5T42yuVgcUzEy+OyAcIhiaTG/Lp1SuN++jlH3?=
- =?us-ascii?Q?ogKO3ZAFGFHJLhyoPqZfLbdfUfjhBH8O2LAT6Xh4pzw683VVvAw84CwxvK/Y?=
- =?us-ascii?Q?I85X8781A5qf7mLMHUERhs01cBdwlnyveB73wqzjtNskzosmLkcuaZGTOnYi?=
- =?us-ascii?Q?JOyC62slJ1xTAl7O5Z+8wWkDYBscv3X+ftl39s5tiq2fN4rqn5lORPqv7ifF?=
- =?us-ascii?Q?xsAmPLfrrsb8HQsHdTAyMS/JyQII5iBD8a5/ZH/54Gk3Iahmas6lHbMl6AlT?=
- =?us-ascii?Q?OPWeXlNPROW/3dbvmm250Fwv6DL1SfFGpr1E1Z1zSL6TqgrFj6J8eP9B7YCa?=
- =?us-ascii?Q?kFFcGrcG/8YY/y8udysET9prMr7Iy+NQj5/DdKkP5fmMnGoM+q6+YddF3wsv?=
- =?us-ascii?Q?ONYvmJnjBd2vkKtlkzNUnm6i/dq0PN8PUucWai+M888BoxZjBAgeSGcDfHAu?=
- =?us-ascii?Q?mQ=3D=3D?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: Z2/VWdqJg7cc9AWAEhwHpYviGEIV7p8tZB4ufyarFmxc5pnDsrVRm7081CmtxhNnogJv/avqaviFo5nmELx/7Dek6jbDTICTW7hcjo5zH4Rls4UvaluNG7FIxb33nhhjTDdKQ32osI5rBvPhHlANlBxy/eYSaYnnVpYDLJdyBsHG0RfZIFQPdNhl2TMmaXXr6MJVaJeuKe5HirKqSztJwE4itaxPCGSmd6+J6GuzjYMOMbgoOOVBhbfIaFL23mVHVOHdcGaFZvXMoeDkL7VE9igqa2sj3jYfmULea40hOcipraQla9YzkOWKXiYdkAp/Wh+FX/rhQwtvlVQ/3zO9bC+/QglGqdOosR+BJzjMkuhgS6+bM4GuiYtmBho53DTM54QpKnjuudBWrGhmkpcakbr+e3534ek+Vh6jNYub9QRS8HcVHPqv9sbMgIzcyrOXC5X9FAGyeaUMbigTkR1GGtZp1+ojQSSN3yL10Kp/2iEsMwEl0BYx7kU6z3FUGQDMKUanN3EIhSZMAkKEDweNvQt7g5fWgGH5IuH5AQfPh27DZ+hDytL/CF54YANyyh0gB4WBEX/iIx+YyiD+RJY3Eh2F9LvkNBI9nbkfstF0uD4=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3bec2da1-1077-43fd-aa95-08dbfc56ff54
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB4759.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Dec 2023 03:44:38.5263
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: +gIQuveDqU/gXwVp71CRpH+/wyk6sx+x7DozcGFmnW+UI4rvFWpI3LuQqK+KoHlFQ2kavk4H+oVKxrQPYti/PldGkUGvrFK/5hFOv8fdqwk=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR10MB6460
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-13_16,2023-12-13_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=920 bulkscore=0 spamscore=0
- mlxscore=0 adultscore=0 phishscore=0 malwarescore=0 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311290000
- definitions=main-2312140020
-X-Proofpoint-ORIG-GUID: 0YfaHu17VhVgUutTKyHE1G493YG7xXeK
-X-Proofpoint-GUID: 0YfaHu17VhVgUutTKyHE1G493YG7xXeK
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+References: <20231213182656.6165-1-mario.limonciello@amd.com>
+ <20231213182656.6165-3-mario.limonciello@amd.com> <CAJZ5v0gDjwEpx-WNSY0=qchoSGxizsD3XM7Bgq=i0xufBm=Cag@mail.gmail.com>
+ <766d621c-695d-4ae7-87cf-690cb8d066df@amd.com> <CAJZ5v0i95EeS40pzkBH=jgB1wbMP6SNO_s=pNZ8FPOtcMywgAA@mail.gmail.com>
+In-Reply-To: <CAJZ5v0i95EeS40pzkBH=jgB1wbMP6SNO_s=pNZ8FPOtcMywgAA@mail.gmail.com>
+From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
+Date:   Thu, 14 Dec 2023 11:46:37 +0800
+Message-ID: <CAAd53p6XynUJimepnXDzcVa4Dps4-F0BNEXxGZh_O38LvSdkkg@mail.gmail.com>
+Subject: Re: [PATCH 2/2] PCI/portdrv: Place PCIe port hierarchy into D3cold at shutdown
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     Mario Limonciello <mario.limonciello@amd.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        linux-pci@vger.kernel.org, linux-acpi@vger.kernel.org,
+        linux-kernel@vger.kernel.org, mpearson-lenovo@squebb.ca
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Mario and Rafael,
 
-Can,
+On Thu, Dec 14, 2023 at 2:46=E2=80=AFAM Rafael J. Wysocki <rafael@kernel.or=
+g> wrote:
+>
+> On Wed, Dec 13, 2023 at 7:42=E2=80=AFPM Mario Limonciello
+> <mario.limonciello@amd.com> wrote:
+> >
+> > On 12/13/2023 12:38, Rafael J. Wysocki wrote:
+> > > On Wed, Dec 13, 2023 at 7:27=E2=80=AFPM Mario Limonciello
+> > > <mario.limonciello@amd.com> wrote:
+> > >>
+> > >> When a system is being powered off it's important that PCIe ports
+> > >> have been put into D3cold as there is no other software to turn
+> > >> off the devices at S5.
+> > >>
+> > >> If PCIe ports are left in D0 then any GPIOs toggled by the ACPI
+> > >> power resources may be left enabled and devices may consume excess
+> > >> power.
+> > >
+> > > Isn't that a platform firmware issue?
+> > >
+> > > It is the responsibility of the platform firmware to properly put the
+> > > platform into S5, including power removal from devices that are not
+> > > armed for power-on.
+> >
+> > The specific issues that triggered this series were tied to the PCIe
+> > ports for dGPUs.  There is a GPIO that is toggled by _ON or _OFF.
+> >
+> > Windows calls _OFF as part of S5..
+>
+> I see.
+>
+> > >
+> > >> Cc: mpearson-lenovo@squebb.ca
+> > >> Signed-off-by: Mario Limonciello <mario.limonciello@amd.com>
+> > >> ---
+> > >>   drivers/pci/pcie/portdrv.c | 11 ++++++++---
+> > >>   1 file changed, 8 insertions(+), 3 deletions(-)
+> > >>
+> > >> diff --git a/drivers/pci/pcie/portdrv.c b/drivers/pci/pcie/portdrv.c
+> > >> index 14a4b89a3b83..08238680c481 100644
+> > >> --- a/drivers/pci/pcie/portdrv.c
+> > >> +++ b/drivers/pci/pcie/portdrv.c
+> > >> @@ -734,9 +734,14 @@ static void pcie_portdrv_remove(struct pci_dev =
+*dev)
+> > >>   static void pcie_portdrv_shutdown(struct pci_dev *dev)
+> > >>   {
+> > >>          if (pci_bridge_d3_possible(dev)) {
+> > >> -               pm_runtime_forbid(&dev->dev);
+> > >> -               pm_runtime_get_noresume(&dev->dev);
+> > >> -               pm_runtime_dont_use_autosuspend(&dev->dev);
+> > >> +               /* whole hierarchy goes into a low power state for S=
+5 */
+> > >> +               if (system_state =3D=3D SYSTEM_POWER_OFF) {
+> > >> +                       pci_set_power_state(dev, PCI_D3cold);
+> > >> +               } else {
+> > >> +                       pm_runtime_forbid(&dev->dev);
+> > >> +                       pm_runtime_get_noresume(&dev->dev);
+> > >> +                       pm_runtime_dont_use_autosuspend(&dev->dev);
+> > >> +               }
+> > >>          }
+> > >
+> > > Wouldn't it be better to remove power from the port after running the
+> > > code below?
+> > >
+> >
+> > Yes; I think you're right.  I'll do some more testing with this.
+> >
+> > >>          pcie_port_device_remove(dev);
+> > >> --
+>
+> IIRC, to do this all properly, you'd need to rework the shutdown path
+> to look like the hibernation power-off one.  Or even use the latter
+> for shutdown?
+>
+> There was no reason to do that till now, so it has not been done, but
+> it looks like you have one.
+>
 
-> This series enables HS-G5 support on SM8550.
+I am working on exactly same thing but with a different approach.
+Because this is needed for more than just PCI devices.
+I haven't written a proper commit message yet, but the implementation
+is quite simple:
 
-Applied patches 1-8 to 6.8/scsi-staging, thanks!
+diff --git a/drivers/acpi/device_pm.c b/drivers/acpi/device_pm.c
+index f007116a8427..b90c6cf6faf4 100644
+--- a/drivers/acpi/device_pm.c
++++ b/drivers/acpi/device_pm.c
+@@ -967,15 +967,17 @@ EXPORT_SYMBOL_GPL(acpi_pm_set_device_wakeup);
+  * @adev: ACPI device node corresponding to @dev.
+  * @system_state: System state to choose the device state for.
+  */
+-static int acpi_dev_pm_low_power(struct device *dev, struct acpi_device *a=
+dev,
+-                 u32 system_state)
++static int acpi_dev_pm_low_power(struct acpi_device *adev, void* data)
+ {
+     int ret, state;
++    u32 *system_state =3D data;
 
-The phy patches didn't apply. I assume they'll go through the phy tree.
+     if (!acpi_device_power_manageable(adev))
+         return 0;
 
--- 
-Martin K. Petersen	Oracle Linux Engineering
+-    ret =3D acpi_dev_pm_get_state(dev, adev, system_state, NULL, &state);
++    acpi_dev_for_each_child(adev, acpi_dev_pm_low_power, data);
++
++    ret =3D acpi_dev_pm_get_state(&adev->dev, adev, *system_state, NULL, &=
+state);
+     return ret ? ret : acpi_device_set_power(adev, state);
+ }
+
+@@ -1016,7 +1018,7 @@ int acpi_dev_suspend(struct device *dev, bool wakeup)
+         wakeup =3D false;
+     }
+
+-    error =3D acpi_dev_pm_low_power(dev, adev, target_state);
++    error =3D acpi_dev_pm_low_power(adev, &target_state);
+     if (error && wakeup)
+         acpi_device_wakeup_disable(adev);
+
+@@ -1386,6 +1388,7 @@ static struct dev_pm_domain acpi_general_pm_domain =
+=3D {
+ static void acpi_dev_pm_detach(struct device *dev, bool power_off)
+ {
+     struct acpi_device *adev =3D ACPI_COMPANION(dev);
++    u32 state =3D ACPI_STATE_S0;
+
+     if (adev && dev->pm_domain =3D=3D &acpi_general_pm_domain) {
+         dev_pm_domain_set(dev, NULL);
+@@ -1400,7 +1403,7 @@ static void acpi_dev_pm_detach(struct device
+*dev, bool power_off)
+             dev_pm_qos_hide_latency_limit(dev);
+             dev_pm_qos_hide_flags(dev);
+             acpi_device_wakeup_disable(adev);
+-            acpi_dev_pm_low_power(dev, adev, ACPI_STATE_S0);
++            acpi_dev_pm_low_power(adev, &state);
+         }
+     }
+ }
+@@ -1514,4 +1517,16 @@ bool acpi_dev_state_d0(struct device *dev)
+ }
+ EXPORT_SYMBOL_GPL(acpi_dev_state_d0);
+
++void acpi_dev_shutdown(struct device *dev)
++{
++    struct acpi_device *adev =3D ACPI_COMPANION(dev);
++    u32 state =3D ACPI_STATE_S5;
++
++    if (!adev)
++        return;
++
++    acpi_device_wakeup_disable(adev);
++    acpi_dev_pm_low_power(adev, &state);
++}
++EXPORT_SYMBOL_GPL(acpi_dev_shutdown);
+ #endif /* CONFIG_PM */
+diff --git a/drivers/base/core.c b/drivers/base/core.c
+index 6ceaf50f5a67..7e7c99eade63 100644
+--- a/drivers/base/core.c
++++ b/drivers/base/core.c
+@@ -45,6 +45,15 @@ static void __fw_devlink_link_to_consumers(struct
+device *dev);
+ static bool fw_devlink_drv_reg_done;
+ static bool fw_devlink_best_effort;
+
++#ifdef CONFIG_ACPI
++static inline void fw_dev_shutdown(struct device *dev)
++{
++    acpi_dev_shutdown(dev);
++}
++#else
++static inline void fw_dev_shutdown(struct device *dev) {  }
++#endif
++
+ /**
+  * __fwnode_link_add - Create a link between two fwnode_handles.
+  * @con: Consumer end of the link.
+@@ -4780,6 +4789,8 @@ void device_shutdown(void)
+             dev->driver->shutdown(dev);
+         }
+
++        fw_dev_shutdown(dev);
++
+         device_unlock(dev);
+         if (parent)
+             device_unlock(parent);
+diff --git a/include/linux/acpi.h b/include/linux/acpi.h
+index 641dc4843987..374f9eb75c22 100644
+--- a/include/linux/acpi.h
++++ b/include/linux/acpi.h
+@@ -1130,6 +1130,7 @@ int acpi_subsys_runtime_resume(struct device *dev);
+ int acpi_dev_pm_attach(struct device *dev, bool power_on);
+ bool acpi_storage_d3(struct device *dev);
+ bool acpi_dev_state_d0(struct device *dev);
++void acpi_dev_shutdown(struct device *dev);
+ #else
+ static inline int acpi_subsys_runtime_suspend(struct device *dev) { return=
+ 0; }
+ static inline int acpi_subsys_runtime_resume(struct device *dev) { return =
+0; }
+@@ -1145,6 +1146,7 @@ static inline bool acpi_dev_state_d0(struct device *d=
+ev)
+ {
+     return true;
+ }
++static inline void acpi_dev_shutdown(struct device *dev) { }
+ #endif
+
+ #if defined(CONFIG_ACPI) && defined(CONFIG_PM_SLEEP)
