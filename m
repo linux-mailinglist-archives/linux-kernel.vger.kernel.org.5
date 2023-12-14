@@ -2,71 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D49E4813502
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 16:40:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C3FC7813506
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 16:41:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1573862AbjLNPkM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 10:40:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36376 "EHLO
+        id S1573844AbjLNPlY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 10:41:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60274 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1573844AbjLNPkK (ORCPT
+        with ESMTP id S230298AbjLNPlW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 10:40:10 -0500
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com [67.231.152.168])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2926998
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 07:40:15 -0800 (PST)
-Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
-        by mx0b-001ae601.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BECwqvj011581;
-        Thu, 14 Dec 2023 09:40:01 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
-        message-id:date:mime-version:subject:to:cc:references:from
-        :in-reply-to:content-type:content-transfer-encoding; s=
-        PODMain02222019; bh=z3TGw5/xezw89jMNYCXSuUDyHpcWKRZb/6RcGoYuygE=; b=
-        jkWP3dlqx/A9WQkKPMxF1whG/BUJzvaf36HAJldN9eW7WaU4TJ65ZimSatJr7jSu
-        YAkMJBWShqnZGGjmQSPTgka6u1LDkC8Uq658dGEs6wiInYopckxU32q9G/zsmSC/
-        XYQZBebxuTGSgEbzKrED1lzpGh2rA+dkImOJqFFdBpTZXAZGgr8Wg5oymTnMIWkP
-        nwaDtFAQPZV5QDRr5aoovgTgJlx201N65Zduls9MqxO6zu139x2vdN/ts9rNixbU
-        EmFQAkQ8JM3Cbn8MjGN2+uQYINm3fSOrQNGUMGtDaiY+NwbOhK/+RiJcnRv/L91C
-        Q3euNMQwlExvPpDfTo6Ubw==
-Received: from ediex02.ad.cirrus.com ([84.19.233.68])
-        by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3uvnhpp9c4-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 14 Dec 2023 09:40:00 -0600 (CST)
-Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Thu, 14 Dec
- 2023 15:39:59 +0000
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by ediex01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.2.1118.40 via Frontend
- Transport; Thu, 14 Dec 2023 15:39:59 +0000
-Received: from [198.90.251.142] (EDIN4WRCFY3.ad.cirrus.com [198.90.251.142])
-        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 2580F11CC;
-        Thu, 14 Dec 2023 15:39:59 +0000 (UTC)
-Message-ID: <d98a3157-6e58-4dd9-a35a-759bcdcbe0c9@opensource.cirrus.com>
-Date:   Thu, 14 Dec 2023 15:39:58 +0000
+        Thu, 14 Dec 2023 10:41:22 -0500
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5884D98;
+        Thu, 14 Dec 2023 07:41:28 -0800 (PST)
+Received: by mail-lf1-x135.google.com with SMTP id 2adb3069b0e04-50c222a022dso9128454e87.1;
+        Thu, 14 Dec 2023 07:41:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1702568486; x=1703173286; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=S7HDmzsaHFHq+DU4TEpp0WIaGVnds4w3KOhZMOHkczk=;
+        b=LOLnNWQtwwz1iSTsZLikzRosDO+aPu07JcohVfUEwVf1kYlbVhSupe6TKwC7wOL5F/
+         kuloYclUce1gsa0Aq66VJ3M7yqkxbFu4/XeDKsMlCiEc5ZPAGl2t9kGJ8m3aPl7DWbQl
+         Zw0A1LhFsDkJbzxD0qrSsLGNyuhufS0/kH3paXxNmF8PwJRbWxtpV8g+Xde0uET4gue7
+         Ii4zGTMD0/14XHYi5y5s8MPF2p8lqvg+vImZkKQy/mAWD1V7HRNj6Zz8x8s52ufq4BVg
+         KtdGtz2H93KJONty65v5uVo3n0JbB7LDH2gHUxq2XYvoXoWWWeJm+EABSaWti8xmoeGT
+         vIgg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702568486; x=1703173286;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=S7HDmzsaHFHq+DU4TEpp0WIaGVnds4w3KOhZMOHkczk=;
+        b=IZ+orzjiWtOT0Tb6rN6hQv2tA23NTCH98jN5YxjBHLTy6HtkAChluODEJtwaqnK8jb
+         yPHA5jKFVFTlrE7wGX3DuM4yWw+6y2AZihWtjYkUkFSt4VkUy2l3o/frhZqGVFiUWe0H
+         LDfiN96GG6ODE0rBLYlhfHgkRCBE/isYULqzH+cHzia3WXizk9bbg+iBb5vJJlhgktyf
+         4x5KCQX1pcJYiezxaG/n0Jy5JT8WL2l7FzZwVdff+QI2CcgqbRSewsBhs6lkhJrUTLYU
+         vyjI9iJ4pw5mwTxvyTuQF+E4R3Vr4X7OA+KkdsmOcbNqoOExigJwlVDK2R3gzPrneurI
+         7SAw==
+X-Gm-Message-State: AOJu0YxwdCY2pOU8LbT+bbzrZWt+VFz3hZUAZ4PhBL/68sR/4j3gZf6C
+        IeMJxGNOZHZvYfo9YwYsn4JW0cRK0BVwyZel
+X-Google-Smtp-Source: AGHT+IHl7aZiwhhSRVsewhLH5eWdMf5cDNNTiNfsCc2LqT324H/ylI7lzlHhqRDqjAn8UastjVE5aA==
+X-Received: by 2002:ac2:414e:0:b0:50b:ea8e:b42c with SMTP id c14-20020ac2414e000000b0050bea8eb42cmr4179283lfi.97.1702568486367;
+        Thu, 14 Dec 2023 07:41:26 -0800 (PST)
+Received: from ?IPV6:2001:999:500:b28b:4dc9:e5af:1ee1:c18e? ([2001:999:500:b28b:4dc9:e5af:1ee1:c18e])
+        by smtp.gmail.com with ESMTPSA id u10-20020a05651206ca00b0050c0beaba37sm1900526lff.154.2023.12.14.07.41.25
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 14 Dec 2023 07:41:25 -0800 (PST)
+Message-ID: <800ccf2e-65cc-4524-8a42-1657a5906482@gmail.com>
+Date:   Thu, 14 Dec 2023 17:41:37 +0200
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird Beta
-Subject: Re: [PATCH 1/1] ALSA: hda: cs35l41: Dell Fiorano add missing _DSD
- properties
-To:     Takashi Iwai <tiwai@suse.de>, <patches@opensource.cirrus.com>
-CC:     Aleksandrs Vinarskis <alex.vinarskis@gmail.com>, <perex@perex.cz>,
-        <tiwai@suse.com>, <sbinding@opensource.cirrus.com>,
-        <james.schulman@cirrus.com>, <david.rhodes@cirrus.com>,
-        <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>,
-        Jasper Smet <josbeir@gmail.com>
-References: <20231212195243.10666-1-alex.vinarskis@gmail.com>
- <87fs05qc65.wl-tiwai@suse.de>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 3/4] dmaengine: ti: k3-udma-glue: Add function to
+ request TX channel by ID
 Content-Language: en-US
-From:   Stuart Henderson <stuarth@opensource.cirrus.com>
-In-Reply-To: <87fs05qc65.wl-tiwai@suse.de>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+To:     Siddharth Vadapalli <s-vadapalli@ti.com>, vkoul@kernel.org
+Cc:     dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, srk@ti.com, vigneshr@ti.com
+References: <20231212111011.1401641-1-s-vadapalli@ti.com>
+ <20231212111011.1401641-4-s-vadapalli@ti.com>
+From:   =?UTF-8?Q?P=C3=A9ter_Ujfalusi?= <peter.ujfalusi@gmail.com>
+In-Reply-To: <20231212111011.1401641-4-s-vadapalli@ti.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Proofpoint-GUID: rHyxExfuHEw1QW_H6SzrQsJ3uLSBj6WG
-X-Proofpoint-ORIG-GUID: rHyxExfuHEw1QW_H6SzrQsJ3uLSBj6WG
-X-Proofpoint-Spam-Reason: safe
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -74,124 +77,227 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-On 14/12/2023 11:02, Takashi Iwai wrote:
-> On Tue, 12 Dec 2023 20:52:43 +0100,
-> Aleksandrs Vinarskis wrote:
->> Dell XPS 9530 (2023) has two SPI connected CS35L41 amplifiers, however
->> is missing _DSD properties, cs-gpios and has a firmware bug which caps SPI
->> controller's speed to unusable 3051Hz. This patch adds _DSD properties and
->> sets second cs-gpio. In case SPI speed bug is detected, it will not
->> initialize the device to avoid hangs on wake up.
->>
->> Resolution of SPI speed bug requires either a patch to `intel-lpss.c` or an
->> UEFI update with corrected values from Dell. Tested with locally applied
->> patch to `intel-lpss` on multiple XPS 9530 devices.
->>
->> Co-developed-by: Jasper Smet <josbeir@gmail.com>
->> Signed-off-by: Jasper Smet <josbeir@gmail.com>
->> Signed-off-by: Aleksandrs Vinarskis <alex.vinarskis@gmail.com>
-> Can Cirrus team review this?
->
->
-> thanks,
->
-> Takashi
 
-The patch looks sensible, with some minor comments below, however we're 
-just at the tail end of testing a patch chain that genericises a lot of 
-this code and adds support for a rather large batch of other laptops 
-with incomplete DSD.  We're hoping to push this upstream on Monday.
+On 12/12/2023 13:10, Siddharth Vadapalli wrote:
+> The existing function k3_udma_glue_request_tx_chn() supports requesting
+> a TX DMA channel by its name. Add support to request TX channel by ID in
+> the form of a new function k3_udma_glue_request_tx_chn_by_id() and export
+> it for use by drivers which are probed by alternate methods (non
+> device-tree) but still wish to make use of the existing DMA APIs. Such
+> drivers could be informed about the TX channel to use by RPMsg for example.
+> 
+> Since the implementation of k3_udma_glue_request_tx_chn_by_id() reuses
+> most of the code in k3_udma_glue_request_tx_chn(), create a new function
+> for the common code named as k3_udma_glue_request_tx_chn_common().
+> 
+> Signed-off-by: Siddharth Vadapalli <s-vadapalli@ti.com>
+> ---
+> Changes since v1:
+> - Updated commit message indicating the use-case for which the patch is
+>   being added.
+> 
+>  drivers/dma/ti/k3-udma-glue.c    | 101 +++++++++++++++++++++++--------
+>  include/linux/dma/k3-udma-glue.h |   4 ++
+>  2 files changed, 79 insertions(+), 26 deletions(-)
+> 
+> diff --git a/drivers/dma/ti/k3-udma-glue.c b/drivers/dma/ti/k3-udma-glue.c
+> index eff1ae3d3efe..ea5119a5e8eb 100644
+> --- a/drivers/dma/ti/k3-udma-glue.c
+> +++ b/drivers/dma/ti/k3-udma-glue.c
+> @@ -274,29 +274,13 @@ static int k3_udma_glue_cfg_tx_chn(struct k3_udma_glue_tx_channel *tx_chn)
+>  	return tisci_rm->tisci_udmap_ops->tx_ch_cfg(tisci_rm->tisci, &req);
+>  }
+>  
+> -struct k3_udma_glue_tx_channel *k3_udma_glue_request_tx_chn(struct device *dev,
+> -		const char *name, struct k3_udma_glue_tx_channel_cfg *cfg)
+> +static int
+> +k3_udma_glue_request_tx_chn_common(struct device *dev,
+> +				   struct k3_udma_glue_tx_channel *tx_chn,
+> +				   struct k3_udma_glue_tx_channel_cfg *cfg)
+>  {
+> -	struct k3_udma_glue_tx_channel *tx_chn;
+>  	int ret;
+>  
+> -	tx_chn = devm_kzalloc(dev, sizeof(*tx_chn), GFP_KERNEL);
+> -	if (!tx_chn)
+> -		return ERR_PTR(-ENOMEM);
+> -
+> -	tx_chn->common.dev = dev;
+> -	tx_chn->common.swdata_size = cfg->swdata_size;
+> -	tx_chn->tx_pause_on_err = cfg->tx_pause_on_err;
+> -	tx_chn->tx_filt_einfo = cfg->tx_filt_einfo;
+> -	tx_chn->tx_filt_pswords = cfg->tx_filt_pswords;
+> -	tx_chn->tx_supr_tdpkt = cfg->tx_supr_tdpkt;
+> -
+> -	/* parse of udmap channel */
+> -	ret = of_k3_udma_glue_parse_chn(dev->of_node, name,
+> -					&tx_chn->common, true);
+> -	if (ret)
+> -		goto err;
+> -
+>  	tx_chn->common.hdesc_size = cppi5_hdesc_calc_size(tx_chn->common.epib,
+>  						tx_chn->common.psdata_size,
+>  						tx_chn->common.swdata_size);
+> @@ -312,7 +296,7 @@ struct k3_udma_glue_tx_channel *k3_udma_glue_request_tx_chn(struct device *dev,
+>  	if (IS_ERR(tx_chn->udma_tchanx)) {
+>  		ret = PTR_ERR(tx_chn->udma_tchanx);
+>  		dev_err(dev, "UDMAX tchanx get err %d\n", ret);
+> -		goto err;
+> +		return ret;
+>  	}
+>  	tx_chn->udma_tchan_id = xudma_tchan_get_id(tx_chn->udma_tchanx);
+>  
+> @@ -325,7 +309,7 @@ struct k3_udma_glue_tx_channel *k3_udma_glue_request_tx_chn(struct device *dev,
+>  		dev_err(dev, "Channel Device registration failed %d\n", ret);
+>  		put_device(&tx_chn->common.chan_dev);
+>  		tx_chn->common.chan_dev.parent = NULL;
+> -		goto err;
+> +		return ret;
+>  	}
+>  
+>  	if (xudma_is_pktdma(tx_chn->common.udmax)) {
+> @@ -349,7 +333,7 @@ struct k3_udma_glue_tx_channel *k3_udma_glue_request_tx_chn(struct device *dev,
+>  					     &tx_chn->ringtxcq);
+>  	if (ret) {
+>  		dev_err(dev, "Failed to get TX/TXCQ rings %d\n", ret);
+> -		goto err;
+> +		return ret;
+>  	}
+>  
+>  	/* Set the dma_dev for the rings to be configured */
+> @@ -365,13 +349,13 @@ struct k3_udma_glue_tx_channel *k3_udma_glue_request_tx_chn(struct device *dev,
+>  	ret = k3_ringacc_ring_cfg(tx_chn->ringtx, &cfg->tx_cfg);
+>  	if (ret) {
+>  		dev_err(dev, "Failed to cfg ringtx %d\n", ret);
+> -		goto err;
+> +		return ret;
+>  	}
+>  
+>  	ret = k3_ringacc_ring_cfg(tx_chn->ringtxcq, &cfg->txcq_cfg);
+>  	if (ret) {
+>  		dev_err(dev, "Failed to cfg ringtx %d\n", ret);
+> -		goto err;
+> +		return ret;
+>  	}
+>  
+>  	/* request and cfg psi-l */
+> @@ -382,11 +366,42 @@ struct k3_udma_glue_tx_channel *k3_udma_glue_request_tx_chn(struct device *dev,
+>  	ret = k3_udma_glue_cfg_tx_chn(tx_chn);
+>  	if (ret) {
+>  		dev_err(dev, "Failed to cfg tchan %d\n", ret);
+> -		goto err;
+> +		return ret;
+>  	}
+>  
+>  	k3_udma_glue_dump_tx_chn(tx_chn);
+>  
+> +	return 0;
+> +}
+> +
+> +struct k3_udma_glue_tx_channel *
+> +k3_udma_glue_request_tx_chn(struct device *dev, const char *name,
+> +			    struct k3_udma_glue_tx_channel_cfg *cfg)
+> +{
+> +	struct k3_udma_glue_tx_channel *tx_chn;
+> +	int ret;
+> +
+> +	tx_chn = devm_kzalloc(dev, sizeof(*tx_chn), GFP_KERNEL);
+> +	if (!tx_chn)
+> +		return ERR_PTR(-ENOMEM);
+> +
+> +	tx_chn->common.dev = dev;
+> +	tx_chn->common.swdata_size = cfg->swdata_size;
+> +	tx_chn->tx_pause_on_err = cfg->tx_pause_on_err;
+> +	tx_chn->tx_filt_einfo = cfg->tx_filt_einfo;
+> +	tx_chn->tx_filt_pswords = cfg->tx_filt_pswords;
+> +	tx_chn->tx_supr_tdpkt = cfg->tx_supr_tdpkt;
+> +
+> +	/* parse of udmap channel */
+> +	ret = of_k3_udma_glue_parse_chn(dev->of_node, name,
+> +					&tx_chn->common, true);
+> +	if (ret)
+> +		goto err;
+> +
+> +	ret = k3_udma_glue_request_tx_chn_common(dev, tx_chn, cfg);
+> +	if (ret)
+> +		goto err;
+> +
+>  	return tx_chn;
+>  
+>  err:
+> @@ -395,6 +410,40 @@ struct k3_udma_glue_tx_channel *k3_udma_glue_request_tx_chn(struct device *dev,
+>  }
+>  EXPORT_SYMBOL_GPL(k3_udma_glue_request_tx_chn);
+>  
+> +struct k3_udma_glue_tx_channel *
+> +k3_udma_glue_request_tx_chn_by_id(struct device *dev, struct k3_udma_glue_tx_channel_cfg *cfg,
+> +				  struct device_node *udmax_np, u32 thread_id)
 
-Can I be awkward and ask that we hold off on this patch chain until 
-then?  Then we can add this laptop using the new approach.
+udmax_np is not dev->of_node ?
 
-If/when the chain is accepted, we will add support for a few Dell 
-laptops as well, including this one.
+> +{
+> +	struct k3_udma_glue_tx_channel *tx_chn;
+> +	int ret;
+> +
+> +	tx_chn = devm_kzalloc(dev, sizeof(*tx_chn), GFP_KERNEL);
+> +	if (!tx_chn)
+> +		return ERR_PTR(-ENOMEM);
+> +
+> +	tx_chn->common.dev = dev;
+> +	tx_chn->common.swdata_size = cfg->swdata_size;
+> +	tx_chn->tx_pause_on_err = cfg->tx_pause_on_err;
+> +	tx_chn->tx_filt_einfo = cfg->tx_filt_einfo;
+> +	tx_chn->tx_filt_pswords = cfg->tx_filt_pswords;
+> +	tx_chn->tx_supr_tdpkt = cfg->tx_supr_tdpkt;
+> +
+> +	ret = of_k3_udma_glue_parse_chn_by_id(udmax_np, &tx_chn->common, true, thread_id);
+> +	if (ret)
+> +		goto err;
+> +
+> +	ret = k3_udma_glue_request_tx_chn_common(dev, tx_chn, cfg);
+> +	if (ret)
+> +		goto err;
+> +
+> +	return tx_chn;
+> +
+> +err:
+> +	k3_udma_glue_release_tx_chn(tx_chn);
+> +	return ERR_PTR(ret);
+> +}
+> +EXPORT_SYMBOL_GPL(k3_udma_glue_request_tx_chn_by_id);
+> +
+>  void k3_udma_glue_release_tx_chn(struct k3_udma_glue_tx_channel *tx_chn)
+>  {
+>  	if (tx_chn->psil_paired) {
+> diff --git a/include/linux/dma/k3-udma-glue.h b/include/linux/dma/k3-udma-glue.h
+> index e443be4d3b4b..6205d84430ca 100644
+> --- a/include/linux/dma/k3-udma-glue.h
+> +++ b/include/linux/dma/k3-udma-glue.h
+> @@ -26,6 +26,10 @@ struct k3_udma_glue_tx_channel;
+>  struct k3_udma_glue_tx_channel *k3_udma_glue_request_tx_chn(struct device *dev,
+>  		const char *name, struct k3_udma_glue_tx_channel_cfg *cfg);
+>  
+> +struct k3_udma_glue_tx_channel *
+> +k3_udma_glue_request_tx_chn_by_id(struct device *dev, struct k3_udma_glue_tx_channel_cfg *cfg,
 
->> ---
->>   sound/pci/hda/cs35l41_hda_property.c | 47 ++++++++++++++++++++++++++++
->>   1 file changed, 47 insertions(+)
->>
->> diff --git a/sound/pci/hda/cs35l41_hda_property.c b/sound/pci/hda/cs35l41_hda_property.c
->> index c83328971728..69446a794397 100644
->> --- a/sound/pci/hda/cs35l41_hda_property.c
->> +++ b/sound/pci/hda/cs35l41_hda_property.c
->> @@ -7,9 +7,55 @@
->>   // Author: Stefan Binding <sbinding@opensource.cirrus.com>
->>   
->>   #include <linux/gpio/consumer.h>
->> +#include <linux/spi/spi.h>
->>   #include <linux/string.h>
->>   #include "cs35l41_hda_property.h"
->>   
->> +/*
->> + * Device 10280BEB (Dell XPS 9530) doesn't have _DSD at all. Moreover, pin that is typically
->> + * used for `speaker_id` is missing. SPI's cs-gpios definitions are also missing.
->> + */
->> +static int dell_fiorano_no_acpi(struct cs35l41_hda *cs35l41, struct device *physdev, int id,
->> +				const char *hid)
->> +{
->> +	struct cs35l41_hw_cfg *hw_cfg = &cs35l41->hw_cfg;
->> +	struct spi_device *spi = to_spi_device(cs35l41->dev);
->> +
->> +	/*
->> +	 * 10280BEB has a firmware bug, which wrongly enables clock divider for intel-lpss
->> +	 * Resultant SPI clock is 100Mhz/32767=3051Hz, which leads to ~3 minute hang on boot/wake up
->> +	 * Avoid initializing device if lpss was not patched/fixed UEFI was not installed
->> +	 */
->> +	if (spi->max_speed_hz < CS35L41_SPI_MAX_FREQ) {
->> +		dev_err(cs35l41->dev, "SPI's max_speed_hz is capped at %u Hz, will not continue to avoid hanging\n",
->> +			spi->max_speed_hz);
->> +		return -EINVAL;
->> +	}
+I know it is going to be longer, but can the function be named more
+precisely?
+k3_udma_glue_request_tx_chn_by_thread_id
 
-Instead of erroring out, I wonder if we can noodle our way to the 
-appropriate clk and clk_set_rate it up to 4MHz for this particular 
-laptop only?  Stefan's taking a look at that.
+For TX/RX: a channel is always for one thread, right?
+Probably:
+k3_udma_glue_request_tx_chn_for_thread_id()
 
-Also, any SPI rate >~100k is probably just about usable, so we don't 
-want to error on <4MHz.  Quite often the spi clock is set at some value 
-just below 4MHz.  It's unclear if this is going to get fixed in the BIOS 
-at this point, so we don't know what exact rate we'd eventually receive.
+?
 
->> +
->> +	dev_info(cs35l41->dev, "Adding DSD properties for %s\n", cs35l41->acpi_subsystem_id);
->> +
->> +	/* check SPI address to assign the index */
->> +	cs35l41->index = id;
->> +	cs35l41->channel_index = 0;
->> +	/* 10280BEB is missing pin which is typically assigned to `spk-id-gpios` */
->> +	cs35l41->speaker_id = cs35l41_get_speaker_id(physdev, cs35l41->index, 2, -1);
->> +	cs35l41->reset_gpio = gpiod_get_index(physdev, NULL, 1, GPIOD_OUT_LOW);
->> +
->> +	hw_cfg->spk_pos = cs35l41->index  ? 1 : 0;	// 0th L, 1st R
->> +	hw_cfg->bst_type = CS35L41_EXT_BOOST;
->> +	hw_cfg->gpio1.func = CS35l41_VSPK_SWITCH;
->> +	hw_cfg->gpio1.valid = true;
->> +	hw_cfg->gpio2.func = CS35L41_INTERRUPT;
->> +	hw_cfg->gpio2.valid = true;
->> +	hw_cfg->valid = true;
->> +
->> +	/* Add second cs-gpio here */
->> +	if (cs35l41->index)
->> +		spi->cs_gpiod = gpiod_get_index(physdev, NULL, 0, GPIOD_OUT_HIGH);
-This will break once you pick up AMD's multi-cs patches, we should use 
-spi_set_csgpiod instead.
->> +
->> +	return 0;
->> +}
->> +
->>   /*
->>    * Device CLSA010(0/1) doesn't have _DSD so a gpiod_get by the label reset won't work.
->>    * And devices created by serial-multi-instantiate don't have their device struct
->> @@ -92,6 +138,7 @@ static const struct cs35l41_prop_model cs35l41_prop_model_table[] = {
->>   	{ "CLSA0100", NULL, lenovo_legion_no_acpi },
->>   	{ "CLSA0101", NULL, lenovo_legion_no_acpi },
->>   	{ "CSC3551", "103C89C6", hp_vision_acpi_fix },
->> +	{ "CSC3551", "10280BEB", dell_fiorano_no_acpi },
->>   	{}
->>   };
->>   
->> -- 
->> 2.40.1
->>
+Other then this the series looks OK.
+
+
+> +				  struct device_node *udmax_np, u32 thread_id);
+> +
+>  void k3_udma_glue_release_tx_chn(struct k3_udma_glue_tx_channel *tx_chn);
+>  int k3_udma_glue_push_tx_chn(struct k3_udma_glue_tx_channel *tx_chn,
+>  			     struct cppi5_host_desc_t *desc_tx,
+
+-- 
+Péter
