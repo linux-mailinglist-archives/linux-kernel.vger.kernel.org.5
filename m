@@ -2,71 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CD59813814
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 18:15:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A32881375A
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 18:08:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1443952AbjLNROu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 12:14:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49212 "EHLO
+        id S1443669AbjLNRIa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 12:08:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46998 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235595AbjLNRO0 (ORCPT
+        with ESMTP id S230314AbjLNRI1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 12:14:26 -0500
-Received: from frasgout13.his.huawei.com (frasgout13.his.huawei.com [14.137.139.46])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 918CB1719;
-        Thu, 14 Dec 2023 09:14:23 -0800 (PST)
-Received: from mail.maildlp.com (unknown [172.18.186.51])
-        by frasgout13.his.huawei.com (SkyGuard) with ESMTP id 4Srdrg2GnSz9y7ZG;
-        Fri, 15 Dec 2023 01:00:19 +0800 (CST)
-Received: from mail02.huawei.com (unknown [7.182.16.27])
-        by mail.maildlp.com (Postfix) with ESMTP id 13C1814064D;
-        Fri, 15 Dec 2023 01:14:11 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.204.63.22])
-        by APP2 (Coremail) with SMTP id GxC2BwAHuGFtN3tlDa2DAg--.53313S10;
-        Thu, 14 Dec 2023 18:14:10 +0100 (CET)
-From:   Roberto Sassu <roberto.sassu@huaweicloud.com>
-To:     viro@zeniv.linux.org.uk, brauner@kernel.org,
-        chuck.lever@oracle.com, jlayton@kernel.org, neilb@suse.de,
-        kolga@netapp.com, Dai.Ngo@oracle.com, tom@talpey.com,
-        paul@paul-moore.com, jmorris@namei.org, serge@hallyn.com,
-        zohar@linux.ibm.com, dmitry.kasatkin@gmail.com,
-        dhowells@redhat.com, jarkko@kernel.org,
-        stephen.smalley.work@gmail.com, eparis@parisplace.org,
-        casey@schaufler-ca.com, shuah@kernel.org, mic@digikod.net
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-nfs@vger.kernel.org, linux-security-module@vger.kernel.org,
-        linux-integrity@vger.kernel.org, keyrings@vger.kernel.org,
-        selinux@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        Roberto Sassu <roberto.sassu@huawei.com>,
-        Stefan Berger <stefanb@linux.ibm.com>
-Subject: [PATCH v8 18/24] security: Introduce key_post_create_or_update hook
-Date:   Thu, 14 Dec 2023 18:08:28 +0100
-Message-Id: <20231214170834.3324559-19-roberto.sassu@huaweicloud.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231214170834.3324559-1-roberto.sassu@huaweicloud.com>
-References: <20231214170834.3324559-1-roberto.sassu@huaweicloud.com>
+        Thu, 14 Dec 2023 12:08:27 -0500
+Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2CBCA7;
+        Thu, 14 Dec 2023 09:08:33 -0800 (PST)
+Received: by mail-wr1-x433.google.com with SMTP id ffacd0b85a97d-3363aa1b7d2so1790258f8f.0;
+        Thu, 14 Dec 2023 09:08:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1702573712; x=1703178512; darn=vger.kernel.org;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=8OE/8mXjrMU0VRAVo2/zTiAmO3H3nOr6wGjTnBkrh1Y=;
+        b=NsDlk9J5olvYaC4Rh4NKLu8zhjr+AJus3QeUsLXhhG0S3CjYhfXaNB0FTvqFVuu0/h
+         SaPe6Hu62u0meKlAAq+atGI9sWytsH9u9+LCSNe82gHHzt7tUOLaZYxU1mVsYGke0KEo
+         tE8kZEfdlxL8xmdNwAC1dgGWRoivViEMHL4hcAcRHv3sg4vbxflF6M5VvYD0YV9MuIsp
+         FFnty0g6Pc/v5kp1E1XfzrcBOLJrc5JStpCl70fZrn8lbrs1Z77uEeic+wCqU/ZIKVlV
+         0OIGcbJCRVmPvbmKXAcdJz/Bs56ZYARMYVE/c02Oe8hOp7eIwBgdhkWaJ0/Pbet9NFF2
+         +bWA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702573712; x=1703178512;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=8OE/8mXjrMU0VRAVo2/zTiAmO3H3nOr6wGjTnBkrh1Y=;
+        b=wBPf2Alk1BzUmczD4IQqXSoLtNpLEDOuEHQ1dDW8y3GzSUj8R2KGP9OX5TavtqL2Ny
+         0IHl+1Ad3+VikEFqMpjnd0vN4sfyypbWZf8a9WOl4wrVLyQJEdxgwzU8Vg3XpWIdQydZ
+         YzgECigtDWmLRFdxoCbmzj3TJnKxkh2asE752ehjDNa4dYwk8Fy0OwzN0TgViunoL1N/
+         f16cnh9IxZgEcwL80YORS7hBubjyxlmW8Hn9DMdmTo/iMOMlrewH0qVR+9KYHxAiUDSD
+         HuLu1tqj7bZ5IDIfZ3PBxqoEX6fnP2VtbPBc4/wh4aFW6NpqGJf14+vhx4iyba2km6BE
+         06jA==
+X-Gm-Message-State: AOJu0YzMtAz3oAvNXjkx4LdV4O0m5wJEPZtTxciUoR0qOdMI/wRrsTiC
+        yvRhuZ+R+Q1d6lqATB8VWt0=
+X-Google-Smtp-Source: AGHT+IEAUYfOBXYYnc2yQqqz71wshDGUNQnukfsm5O9xbU1g8r/c72f5CCNKZoJCbdtbW9F8wDuiQg==
+X-Received: by 2002:adf:cc92:0:b0:336:4c79:3236 with SMTP id p18-20020adfcc92000000b003364c793236mr156665wrj.38.1702573712021;
+        Thu, 14 Dec 2023 09:08:32 -0800 (PST)
+Received: from orome.fritz.box (p200300e41f0fa600f22f74fffe1f3a53.dip0.t-ipconnect.de. [2003:e4:1f0f:a600:f22f:74ff:fe1f:3a53])
+        by smtp.gmail.com with ESMTPSA id r8-20020a056000014800b003364360839esm3372357wrx.81.2023.12.14.09.08.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 Dec 2023 09:08:31 -0800 (PST)
+Date:   Thu, 14 Dec 2023 18:08:29 +0100
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Kartik <kkartik@nvidia.com>
+Cc:     jonathanh@nvidia.com, keescook@chromium.org, andy@kernel.org,
+        akpm@linux-foundation.org, arnd@arndb.de, ulf.hansson@linaro.org,
+        linus.walleij@linaro.org, pshete@nvidia.com, petlozup@nvidia.com,
+        frank.li@vivo.com, robh@kernel.org, stefank@nvidia.com,
+        pdeschrijver@nvidia.com, christophe.jaillet@wanadoo.fr,
+        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: [PATCH v7 0/8] soc/tegra: fuse: Add ACPI support
+Message-ID: <ZXs2jVeQtzU7668I@orome.fritz.box>
+References: <20231017052322.2636-1-kkartik@nvidia.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: GxC2BwAHuGFtN3tlDa2DAg--.53313S10
-X-Coremail-Antispam: 1UD129KBjvJXoWxGr43CFW3tryUWF15KFyDWrg_yoWrur4Dpa
-        y5K3W5t3ykKFyaqrZxAF12kayrK3y8Kry7K39xWryjkFnYvw4xXr42kFn8CrW5AryfJry0
-        va12vrW3GF1qyrJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUBIb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
-        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUAV
-        Cq3wA2048vs2IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0
-        rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW8JVW5JwA2z4x0Y4vE2Ix0cI8IcVCY1x0267
-        AKxVWxJr0_GcWl84ACjcxK6I8E87Iv67AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIEc7CjxVAF
-        wI0_Cr1j6rxdM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7
-        xfMcIj6xIIjxv20xvE14v26r106r15McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Y
-        z7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l42xK82IYc2
-        Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s02
-        6x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a6rW5MIIYrxkI7VAKI48JMIIF0x
-        vE2Ix0cI8IcVAFwI0_Gr0_Xr1lIxAIcVC0I7IYx2IY6xkF7I0E14v26F4UJVW0owCI42IY
-        6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Gr0_Cr1lIxAIcVC2z280aV
-        CY1x0267AKxVWxJr0_GcJvcSsGvfC2KfnxnUUI43ZEXa7IUbGXdUUUUUU==
-X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAgALBF1jj5OoPwAAs4
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="7ihAXFEyzJFczZOQ"
+Content-Disposition: inline
+In-Reply-To: <20231017052322.2636-1-kkartik@nvidia.com>
+User-Agent: Mutt/2.2.12 (2023-09-09)
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -74,132 +79,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Roberto Sassu <roberto.sassu@huawei.com>
 
-In preparation for moving IMA and EVM to the LSM infrastructure, introduce
-the key_post_create_or_update hook.
+--7ihAXFEyzJFczZOQ
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Depending on policy, IMA measures the key content after creation or update,
-so that remote verifiers are aware of the operation.
+On Tue, Oct 17, 2023 at 10:53:14AM +0530, Kartik wrote:
+> This series of patches add ACPI support for Tegra194 and Tegra234 in
+> Tegra fuse and apbmisc drivers. It also adds support for Tegra241
+> which uses ACPI boot.
+>=20
+> Kartik (8):
+>   mm/util: Introduce kmemdup_array()
+>   soc/tegra: fuse: Use dev_err_probe for probe failures
+>   soc/tegra: fuse: Refactor resource mapping
+>   soc/tegra: fuse: Add tegra_acpi_init_apbmisc()
+>   soc/tegra: fuse: Add function to add lookups
+>   soc/tegra: fuse: Add function to print SKU info
+>   soc/tegra: fuse: Add ACPI support for Tegra194 and Tegra234
+>   soc/tegra: fuse: Add support for Tegra241
+>=20
+>  drivers/soc/tegra/Kconfig              |   5 ++
+>  drivers/soc/tegra/fuse/fuse-tegra.c    | 112 ++++++++++++++++++-------
+>  drivers/soc/tegra/fuse/fuse-tegra30.c  |  20 +++++
+>  drivers/soc/tegra/fuse/fuse.h          |   5 ++
+>  drivers/soc/tegra/fuse/tegra-apbmisc.c | 110 ++++++++++++++++++++----
+>  include/linux/string.h                 |   1 +
+>  include/soc/tegra/fuse.h               |   1 +
+>  mm/util.c                              |  17 ++++
+>  8 files changed, 227 insertions(+), 44 deletions(-)
 
-Other LSMs could similarly take some action after successful key creation
-or update.
+Applied, thanks.
 
-The new hook cannot return an error and cannot cause the operation to be
-reverted.
+Thierry
 
-Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
-Reviewed-by: Stefan Berger <stefanb@linux.ibm.com>
-Acked-by: Casey Schaufler <casey@schaufler-ca.com>
-Reviewed-by: Mimi Zohar <zohar@linux.ibm.com>
----
- include/linux/lsm_hook_defs.h |  3 +++
- include/linux/security.h      | 11 +++++++++++
- security/keys/key.c           |  7 ++++++-
- security/security.c           | 19 +++++++++++++++++++
- 4 files changed, 39 insertions(+), 1 deletion(-)
+--7ihAXFEyzJFczZOQ
+Content-Type: application/pgp-signature; name="signature.asc"
 
-diff --git a/include/linux/lsm_hook_defs.h b/include/linux/lsm_hook_defs.h
-index bfb10a1e6a44..2679905f4260 100644
---- a/include/linux/lsm_hook_defs.h
-+++ b/include/linux/lsm_hook_defs.h
-@@ -403,6 +403,9 @@ LSM_HOOK(void, LSM_RET_VOID, key_free, struct key *key)
- LSM_HOOK(int, 0, key_permission, key_ref_t key_ref, const struct cred *cred,
- 	 enum key_need_perm need_perm)
- LSM_HOOK(int, 0, key_getsecurity, struct key *key, char **buffer)
-+LSM_HOOK(void, LSM_RET_VOID, key_post_create_or_update, struct key *keyring,
-+	 struct key *key, const void *payload, size_t payload_len,
-+	 unsigned long flags, bool create)
- #endif /* CONFIG_KEYS */
- 
- #ifdef CONFIG_AUDIT
-diff --git a/include/linux/security.h b/include/linux/security.h
-index 7b753460f09d..766eaccc4679 100644
---- a/include/linux/security.h
-+++ b/include/linux/security.h
-@@ -1995,6 +1995,9 @@ void security_key_free(struct key *key);
- int security_key_permission(key_ref_t key_ref, const struct cred *cred,
- 			    enum key_need_perm need_perm);
- int security_key_getsecurity(struct key *key, char **_buffer);
-+void security_key_post_create_or_update(struct key *keyring, struct key *key,
-+					const void *payload, size_t payload_len,
-+					unsigned long flags, bool create);
- 
- #else
- 
-@@ -2022,6 +2025,14 @@ static inline int security_key_getsecurity(struct key *key, char **_buffer)
- 	return 0;
- }
- 
-+static inline void security_key_post_create_or_update(struct key *keyring,
-+						      struct key *key,
-+						      const void *payload,
-+						      size_t payload_len,
-+						      unsigned long flags,
-+						      bool create)
-+{ }
-+
- #endif
- #endif /* CONFIG_KEYS */
- 
-diff --git a/security/keys/key.c b/security/keys/key.c
-index 0260a1902922..f75fe66c2f03 100644
---- a/security/keys/key.c
-+++ b/security/keys/key.c
-@@ -935,6 +935,8 @@ static key_ref_t __key_create_or_update(key_ref_t keyring_ref,
- 		goto error_link_end;
- 	}
- 
-+	security_key_post_create_or_update(keyring, key, payload, plen, flags,
-+					   true);
- 	ima_post_key_create_or_update(keyring, key, payload, plen,
- 				      flags, true);
- 
-@@ -968,10 +970,13 @@ static key_ref_t __key_create_or_update(key_ref_t keyring_ref,
- 
- 	key_ref = __key_update(key_ref, &prep);
- 
--	if (!IS_ERR(key_ref))
-+	if (!IS_ERR(key_ref)) {
-+		security_key_post_create_or_update(keyring, key, payload, plen,
-+						   flags, false);
- 		ima_post_key_create_or_update(keyring, key,
- 					      payload, plen,
- 					      flags, false);
-+	}
- 
- 	goto error_free_prep;
- }
-diff --git a/security/security.c b/security/security.c
-index a722d5db0a2c..423d53092604 100644
---- a/security/security.c
-+++ b/security/security.c
-@@ -5406,6 +5406,25 @@ int security_key_getsecurity(struct key *key, char **buffer)
- 	*buffer = NULL;
- 	return call_int_hook(key_getsecurity, 0, key, buffer);
- }
-+
-+/**
-+ * security_key_post_create_or_update() - Notification of key create or update
-+ * @keyring: keyring to which the key is linked to
-+ * @key: created or updated key
-+ * @payload: data used to instantiate or update the key
-+ * @payload_len: length of payload
-+ * @flags: key flags
-+ * @create: flag indicating whether the key was created or updated
-+ *
-+ * Notify the caller of a key creation or update.
-+ */
-+void security_key_post_create_or_update(struct key *keyring, struct key *key,
-+					const void *payload, size_t payload_len,
-+					unsigned long flags, bool create)
-+{
-+	call_void_hook(key_post_create_or_update, keyring, key, payload,
-+		       payload_len, flags, create);
-+}
- #endif	/* CONFIG_KEYS */
- 
- #ifdef CONFIG_AUDIT
--- 
-2.34.1
+-----BEGIN PGP SIGNATURE-----
 
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmV7No0ACgkQ3SOs138+
+s6HdXg/9FA/vYnQmXMQe06CT1xhFNbKB6aJgVm5DTwnTHPo0dBQNy3x2dgMK5DT3
+j+jmOJcl53GaKXKwUbA6u0nnebvP3kmLJWxbLnuAw3TcJdPJLzrzrRyynvwWAwM7
+Nxi13gAVW/YV039w4As0c8IoTIfwcswNJzXjfPDnw5vokT6FkzKOx4YutiCWGfFo
+QcxOD8PbxPAAHvsuJmP/BEBtpHxGS+Yl9pd/CTS42uRkaGvHJq/DflviF38aTcXE
+6Qczt0rfVZRRncz5rc0RMNJT54eMrbKd2PVMu8VjFuKsCz29Hfk/A2CahJ0XZn5K
+bbzWgMCTgyaBQu+1/L1tY++t6eeC8tVY0JUqs9vykJqOwukp6uOOZy2wv4hJ5i86
+BZ106BkBaBUyA7uKz00cOBoxSTJwNRuyrQZ8kZ1+sb4aZAlQ5Hbsn8tKRij7yvBa
+WmDngH/DwqjnHp3YHtegotb9pjwG2MBoPHuNFftT4xnaI+rWbDIsW1pOmxAx6lmp
+r1oljZt8p0+g09O4iylPNGrDzebW5X0KdB1uZqa8t4TAwsjN/pEKDdx9SdoIhOA5
+BGMHyXgIbVFv7xktVZcwHXu459g4yalCgq+GZrd/3OTt0rdwfY/iJwn6Lp5GiDvu
+39Pb9kuWKwpUdW48lkCSIET6gzy6omQry42gAscqFTW7m2nxrA0=
+=dqlZ
+-----END PGP SIGNATURE-----
+
+--7ihAXFEyzJFczZOQ--
