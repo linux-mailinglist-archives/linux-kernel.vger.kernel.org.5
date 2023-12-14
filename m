@@ -1,97 +1,68 @@
-Return-Path: <linux-kernel+bounces-83-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-84-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1BD8C813BF1
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 21:46:39 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 17552813BF5
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 21:47:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4E02D1C21B5B
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 20:46:38 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C1CCA1F21D69
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 20:47:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C47E273FE;
-	Thu, 14 Dec 2023 20:46:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C48D282E5;
+	Thu, 14 Dec 2023 20:47:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="I/HuxuFm"
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F24712112;
-	Thu, 14 Dec 2023 20:46:29 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A7EE9C433C7;
-	Thu, 14 Dec 2023 20:46:28 +0000 (UTC)
-Date: Thu, 14 Dec 2023 15:47:15 -0500
-From: Steven Rostedt <rostedt@goodmis.org>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: LKML <linux-kernel@vger.kernel.org>, Linux Trace Kernel
- <linux-trace-kernel@vger.kernel.org>, Masami Hiramatsu
- <mhiramat@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Mathieu
- Desnoyers <mathieu.desnoyers@efficios.com>, Linux Arch
- <linux-arch@vger.kernel.org>
-Subject: Re: [PATCH v3] ring-buffer: Remove 32bit timestamp logic
-Message-ID: <20231214154715.223f245d@gandalf.local.home>
-In-Reply-To: <CAHk-=wjHf48o15sugNeZkzNy2sJ2XUjaJLUWskTB0FnrnFGDeA@mail.gmail.com>
-References: <20231214125433.03091e5e@gandalf.local.home>
-	<CAHk-=wiKooX5vOu6TgGPEwdX--k0DyE4ntJDU4QzbVFMWGVXFw@mail.gmail.com>
-	<20231214151911.2df9f845@gandalf.local.home>
-	<CAHk-=wh5XgB4Jb9cRLe6gh_C_wXK3YevqCLi1BFRk5z1pJDkQA@mail.gmail.com>
-	<CAHk-=wjHf48o15sugNeZkzNy2sJ2XUjaJLUWskTB0FnrnFGDeA@mail.gmail.com>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 54B282112;
+	Thu, 14 Dec 2023 20:47:23 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7FDBCC433C8;
+	Thu, 14 Dec 2023 20:47:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1702586842;
+	bh=XBTCrm9Z6noOhx8k4QP8cDAa4mMuvdKLjnFpE1hRFMc=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=I/HuxuFm0l1bqR4C04ys22yXD5H7eQAcwfXtdYpZxEm47IbFOjsZrSAlu7k5G8Pvk
+	 CbuF5gxXNF4wfaScHrnIk6cFJpP2izcU63ByS33kQ4XstzOtxgT9mRAcVEEFVK7nFA
+	 O6F0CssyE+ZOeoXOVPI3tmjPI5cl9fa1vZoWWxZE2+FwrUVE/NBSVPiUmpjs/ZaqAV
+	 /sYL05yKGvyX0VXTR+d1intwu+3jWShrK/iLOJ2caDLS6X2FvYiFLAIKl6K/Lb0Lk7
+	 sNH/sm8YIV9mGSVay50BOt+FGTTC2Ah8mv3XrENT/V2x+NNXHvDWa53n/gomvNDxAb
+	 X7QoIsXEYHLxg==
+Date: Thu, 14 Dec 2023 21:47:20 +0100
+From: Andi Shyti <andi.shyti@kernel.org>
+To: Wolfram Sang <wsa+renesas@sang-engineering.com>
+Cc: linux-renesas-soc@vger.kernel.org,
+	Geert Uytterhoeven <geert+renesas@glider.be>,
+	Magnus Damm <magnus.damm@gmail.com>, linux-i2c@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/2] i2c: rcar: introduce Gen4 devices
+Message-ID: <20231214204720.xfdz3lwdjgzvo7bk@zenone.zhora.eu>
+References: <20231214074358.8711-1-wsa+renesas@sang-engineering.com>
+ <20231214074358.8711-2-wsa+renesas@sang-engineering.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231214074358.8711-2-wsa+renesas@sang-engineering.com>
 
-On Thu, 14 Dec 2023 12:32:38 -0800
-Linus Torvalds <torvalds@linux-foundation.org> wrote:
+Hi Wolfram,
 
-> On Thu, 14 Dec 2023 at 12:30, Linus Torvalds
-> <torvalds@linux-foundation.org> wrote:
-> >
-> > Read my email. Don't do random x86-centric things. We have that
-> >
-> >   #ifndef system_has_cmpxchg64
-> >       #define system_has_cmpxchg64() false
-> >   #endif
-> >
-> > which should work.  
+On Thu, Dec 14, 2023 at 08:43:57AM +0100, Wolfram Sang wrote:
+> So far, we treated Gen4 as Gen3. But we are soon adding FM+ as a Gen4
+> specific feature, so prepare the code for the new devtype.
 > 
-> And again, by "should work" I mean that it would disable this entirely
-> on things like arm32 until the arm people decide they care. But at
-> least it won't use an unsafe non-working 64-bit cmpxchg.
+> Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
 
-If archs have no implementation of cmpxchg64 then the code cannot be
-removed. If it's just slower and emulated, then it shouldn't be a big deal.
-The only thing it may lose is tracing in NMI context, which I'm not sure
-that really matters.
+Reviewed-by: Andi Shyti <andi.shyti@kernel.org>
 
-> 
-> And no, for 6.7, only fix reported bugs. No big reorgs at all,
-> particularly for something that likely has never been hit by any user
-> and sounds like this all just came out of discussion.
-
-The discussion came out of adding new tests to cover new changes I'm making
-in the ring buffer code that happened to trigger subtle bugs in the 32-bit
-version of reading the 64-bit timestamps. The reason for that code, is
-because of the 64-bit cmpcxhg that is required to implement it. If we are
-keeping this code, then there's 2 or 3 fixes to it that I need to send to
-you, and also one outstanding one that in theory can be a bug, but in
-practice is highly unlikely to ever be hit. The fix for that one is a bit
-more involved, and will have to come later.
-
-When I was discussing these fixes and other changes with Mathieu, we
-started thinking "is this complexity worth it?" and "does anything actually
-need this?".
-
-That's where this patch originated from.
-
-Now, I could also make this special code only compile for the
-"!system_has_cmpxchg64" case as well, which shouldn't punish the Atom
-processor to do 3 cmpxchg's instead of one cmpxchg8b.
-
--- Steve
+Thanks,
+Andi
 
