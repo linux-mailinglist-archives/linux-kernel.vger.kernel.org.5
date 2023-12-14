@@ -2,202 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E985812F74
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 12:52:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C2D3812F73
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 12:52:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1572890AbjLNLwR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 06:52:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53232 "EHLO
+        id S1444197AbjLNLwO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 06:52:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53138 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1444241AbjLNLvx (ORCPT
+        with ESMTP id S1572879AbjLNLvt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 06:51:53 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EB0E181
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 03:51:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1702554718;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=aS/6XnBRIdVtrYOp4wLHjvS6oz2atR3YP9ICgOB3iGg=;
-        b=KPVCy4JoG5Zi1WZBbThBmgzcPQP47UmD0HsBh8Zw2DvPE6uG4/xs7xsl7dqZFNk5jhDT82
-        VABqJBLUkJ/+IfkcrnTPMMzSi4OF0r5m3kewmYedQPYPLPTQWxB2F7sB2GB0ICJ4FX+tzP
-        FPhWCy8+gLVhKkZaPapN01EcI3pVxq0=
-Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
- [209.85.218.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-634-vMFVh_K3OauNld3RDMOvjg-1; Thu, 14 Dec 2023 06:51:56 -0500
-X-MC-Unique: vMFVh_K3OauNld3RDMOvjg-1
-Received: by mail-ej1-f70.google.com with SMTP id a640c23a62f3a-a1eb3f3dc2eso219978766b.2
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 03:51:56 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702554715; x=1703159515;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=aS/6XnBRIdVtrYOp4wLHjvS6oz2atR3YP9ICgOB3iGg=;
-        b=DPhDykDcBPW7Z0o1kmVVk2dGd2xQyOHvU1tx9C2hNa6fCrlAAemqWFt4zwSWWnGobj
-         HLJYmpglZWZ8MjN+9/YqzIZPuMnAu5RXXGtxjYHCp0V3DYynRIyvqH5K9CHlIoT9ogx7
-         7LjolmKnlRMiH6h2R4PIPkEZdQ/0Z7IzxSCcNOmf62oEpfTEtTFN142ip832hUzU0TyJ
-         M1e4679D0Ec3+bhxegE1h1IpsiI7mCC+SOa+Y/nFFxtICa2tpe2wLcshH1AlZBVcyD9y
-         Jo4ycw63P/yUXSlwpA/fEHDJCGnj6pV6rz/HeBEtK7A+QJDt9j1wP0U7+3OdCOHc2bHj
-         xvZw==
-X-Gm-Message-State: AOJu0Yz/AdIl48aT1bTXjV6Y3STwBLVDX6xYzN5W4g57nOOlnW80R7aD
-        KyGA8aNNaqqefFNMWe/MmIR1i7o5bF8aGD2oim0kjGd34+pFw4ya2bneDJqjXnD4umNa/fNtUiF
-        VJDcGDzJXiwJ6YJDk97T/DNG1
-X-Received: by 2002:a17:906:10c7:b0:a1c:e980:3c3 with SMTP id v7-20020a17090610c700b00a1ce98003c3mr4066589ejv.28.1702554715590;
+        Thu, 14 Dec 2023 06:51:49 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDA4E121;
         Thu, 14 Dec 2023 03:51:55 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IHFL7HyiSYut4T02F873+WBU/5sTp49/HyQIdZ0Go18ospT2UlJqi27N9WVGJWziHpX9DdSow==
-X-Received: by 2002:a17:906:10c7:b0:a1c:e980:3c3 with SMTP id v7-20020a17090610c700b00a1ce98003c3mr4066575ejv.28.1702554715217;
-        Thu, 14 Dec 2023 03:51:55 -0800 (PST)
-Received: from ?IPV6:2001:1c00:c32:7800:5bfa:a036:83f0:f9ec? (2001-1c00-0c32-7800-5bfa-a036-83f0-f9ec.cable.dynamic.v6.ziggo.nl. [2001:1c00:c32:7800:5bfa:a036:83f0:f9ec])
-        by smtp.gmail.com with ESMTPSA id se13-20020a170907a38d00b00a1f78048f08sm8487004ejc.146.2023.12.14.03.51.54
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 14 Dec 2023 03:51:54 -0800 (PST)
-Message-ID: <c8950992-9b3e-4740-8ad6-f22d5a043fb1@redhat.com>
-Date:   Thu, 14 Dec 2023 12:51:53 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1702554715; x=1734090715;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=7DIzJoA783ehSXZq5QT19MaDC2Kt/5kl2+bQRbjAKow=;
+  b=UMeqVj3i7WiX7Mb5hnEaX5Stb2IwpT017ZFb5FQQ0IokmIfr9Pur1Bwz
+   McE2tjIMO/U84WsJIGTEQG5pjezrM1YDgWcAHzr+i7+9cswG2S+ybycYo
+   C2FSFdbQhoj27kWj6uqUn3YIBkjzG+HVlHoSzjXQwiWw11tAV62J+8h6j
+   vjWIC0ec/hH0fdnHOGJY5Gkr94QEj+SE05LVhFsHe4t8Qka3Cimz5wwf0
+   BUmZuz16RQKfbmjwH2FqvKfiNAStu+1s+iKgiF/BF8zUPa65YzvIY8cCS
+   pNo8uz0hW2WH8fhprkzhKFsTv/zdGvT3+ZpgQQ2P667mPX//XU6Cj9yBP
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10923"; a="375263569"
+X-IronPort-AV: E=Sophos;i="6.04,275,1695711600"; 
+   d="scan'208";a="375263569"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Dec 2023 03:51:55 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10923"; a="777874832"
+X-IronPort-AV: E=Sophos;i="6.04,275,1695711600"; 
+   d="scan'208";a="777874832"
+Received: from eborisov-mobl2.ger.corp.intel.com (HELO [10.249.34.72]) ([10.249.34.72])
+  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Dec 2023 03:51:49 -0800
+Message-ID: <df852f40-bc4a-4071-87f8-c8cb885d68ed@linux.intel.com>
+Date:   Thu, 14 Dec 2023 13:52:33 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 03/11] devm-helpers: introduce devm_mutex_init
-Content-Language: en-US, nl
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        George Stark <gnstark@salutedevices.com>,
-        "andy.shevchenko@gmail.com" <andy.shevchenko@gmail.com>,
-        "pavel@ucw.cz" <pavel@ucw.cz>, "lee@kernel.org" <lee@kernel.org>,
-        "vadimp@nvidia.com" <vadimp@nvidia.com>,
-        "mpe@ellerman.id.au" <mpe@ellerman.id.au>,
-        "npiggin@gmail.com" <npiggin@gmail.com>,
-        "mazziesaccount@gmail.com" <mazziesaccount@gmail.com>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "will@kernel.org" <will@kernel.org>,
-        "longman@redhat.com" <longman@redhat.com>,
-        "boqun.feng@gmail.com" <boqun.feng@gmail.com>,
-        "nikitos.tr@gmail.com" <nikitos.tr@gmail.com>
-Cc:     "linux-leds@vger.kernel.org" <linux-leds@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
-        "kernel@salutedevices.com" <kernel@salutedevices.com>
-References: <20231213223020.2713164-1-gnstark@salutedevices.com>
- <20231213223020.2713164-4-gnstark@salutedevices.com>
- <80881d5d-3ae9-4580-84c1-f25b421cc518@csgroup.eu>
-From:   Hans de Goede <hdegoede@redhat.com>
-In-Reply-To: <80881d5d-3ae9-4580-84c1-f25b421cc518@csgroup.eu>
+Subject: Re: [PATCH 07/11] ASoC: SOF: core: Skip firmware test for undefined
+ fw_name
+Content-Language: en-US
+To:     Cristian Ciocaltea <cristian.ciocaltea@collabora.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Bard Liao <yung-chuan.liao@linux.intel.com>,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        Daniel Baluta <daniel.baluta@nxp.com>,
+        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+        Venkata Prasad Potturu <venkataprasad.potturu@amd.com>,
+        Alper Nebi Yasak <alpernebiyasak@gmail.com>,
+        Syed Saba Kareem <Syed.SabaKareem@amd.com>,
+        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+        Marian Postevca <posteuca@mutex.one>,
+        Vijendar Mukunda <Vijendar.Mukunda@amd.com>,
+        V sujith kumar Reddy <Vsujithkumar.Reddy@amd.com>,
+        Mastan Katragadda <Mastan.Katragadda@amd.com>,
+        Ajit Kumar Pandey <AjitKumar.Pandey@amd.com>
+Cc:     linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org,
+        sound-open-firmware@alsa-project.org, kernel@collabora.com
+References: <20231209205351.880797-1-cristian.ciocaltea@collabora.com>
+ <20231209205351.880797-8-cristian.ciocaltea@collabora.com>
+ <6e52c5a2-24d5-422a-9a40-a0053729c98e@linux.intel.com>
+ <81af6357-8338-4768-a180-305516ac89e3@collabora.com>
+ <40d92933-c9f0-472f-b5dc-f95b087cdb3e@linux.intel.com>
+ <d112d7dd-de80-4c5b-9600-039758c56352@collabora.com>
+From:   =?UTF-8?Q?P=C3=A9ter_Ujfalusi?= <peter.ujfalusi@linux.intel.com>
+In-Reply-To: <d112d7dd-de80-4c5b-9600-039758c56352@collabora.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
 
-On 12/14/23 11:06, Christophe Leroy wrote:
-> 
-> 
-> Le 13/12/2023 à 23:30, George Stark a écrit :
->> [Vous ne recevez pas souvent de courriers de gnstark@salutedevices.com. Découvrez pourquoi ceci est important à https://aka.ms/LearnAboutSenderIdentification ]
+
+On 14/12/2023 13:40, Cristian Ciocaltea wrote:
+> On 12/14/23 13:35, Péter Ujfalusi wrote:
 >>
->> Using of devm API leads to a certain order of releasing resources.
->> So all dependent resources which are not devm-wrapped should be deleted
->> with respect to devm-release order. Mutex is one of such objects that
->> often is bound to other resources and has no own devm wrapper.
->> Since mutex_destroy() actually does nothing in non-debug builds
->> frequently calling mutex_destroy() is just ignored which is safe for now
->> but wrong formally and can lead to a problem if mutex_destroy() is
->> extended so introduce devm_mutex_init().
-> 
-> So you abandonned the idea of using mutex.h ?
-> 
-> I can't see the point to spread mutex functions into devm-helpers.h
-> 
-> Adding a mutex_destroy macro for this purpose looks odd. And if someone 
-> defines a new version of mutex_destroy() and forget the macro, it will 
-> go undetected.
-> 
-> Usually macros of that type serve the purpose of defining a fallback 
-> when the macro is not defined. In that case, when someone adds a new 
-> version without defining the macro, it gets detected because if 
-> conflicts with the fallback.
-> But in your case it works the other way round, so I will just go undetected.
-> 
-> For me the best solution remains to use mutex.h and have 
-> devm_mutex_init() defined or declared at the same place as mutex_destroy().
-
-FWIW defining devm_mutex_init() in mutex.h is fine
-with me and makes sense to me. I also agree that putting
-it there would be better if that is acceptable for
-the mutex maintainers.
-
-devm-helpers.h is there for helpers which don't fit
-in another place.
-
-Regards,
-
-Hans
-
-
-
-
-> 
-> 
 >>
->> Signed-off-by: George Stark <gnstark@salutedevices.com>
->> ---
->>   include/linux/devm-helpers.h | 27 +++++++++++++++++++++++++++
->>   1 file changed, 27 insertions(+)
+>> On 14/12/2023 13:29, Cristian Ciocaltea wrote:
+>>>> diff --git a/sound/soc/sof/fw-file-profile.c b/sound/soc/sof/fw-file-profile.c
+>>>> index 138a1ca2c4a8..7b91c9551ada 100644
+>>>> --- a/sound/soc/sof/fw-file-profile.c
+>>>> +++ b/sound/soc/sof/fw-file-profile.c
+>>>> @@ -89,6 +89,15 @@ static int sof_test_topology_file(struct device *dev,
+>>>>  	return ret;
+>>>>  }
+>>>>  
+>>>> +static bool sof_platform_uses_generic_loader(struct snd_sof_dev *sdev)
+>>>> +{
+>>>> +	if (sdev->pdata->desc->ops->load_firmware == snd_sof_load_firmware_raw ||
+>>>> +	    sdev->pdata->desc->ops->load_firmware == snd_sof_load_firmware_memcpy)
+>>>> +		return true;
+>>>> +
+>>>> +	return false;
+>>>> +}
+>>>
+>>> I would drop the conditional and simply return.
 >>
->> diff --git a/include/linux/devm-helpers.h b/include/linux/devm-helpers.h
->> index 74891802200d..4043c3481d2e 100644
->> --- a/include/linux/devm-helpers.h
->> +++ b/include/linux/devm-helpers.h
->> @@ -24,6 +24,7 @@
->>    */
->>
->>   #include <linux/device.h>
->> +#include <linux/mutex.h>
->>   #include <linux/workqueue.h>
->>
->>   static inline void devm_delayed_work_drop(void *res)
->> @@ -76,4 +77,30 @@ static inline int devm_work_autocancel(struct device *dev,
->>          return devm_add_action(dev, devm_work_drop, w);
->>   }
->>
->> +#ifdef mutex_destroy
->> +static inline void devm_mutex_release(void *res)
->> +{
->> +       mutex_destroy(res);
->> +}
->> +#endif
->> +
->> +/**
->> + * devm_mutex_init - Resource-managed mutex initialization
->> + * @dev:       Device which lifetime mutex is bound to
->> + * @lock:      Pointer to a mutex
->> + *
->> + * Initialize mutex which is automatically destroyed when the driver is detached.
->> + *
->> + * Returns: 0 on success or a negative error code on failure.
->> + */
->> +static inline int devm_mutex_init(struct device *dev, struct mutex *lock)
->> +{
->> +       mutex_init(lock);
->> +#ifdef mutex_destroy
->> +       return devm_add_action_or_reset(dev, devm_mutex_release, lock);
->> +#else
->> +       return 0;
->> +#endif
->> +}
->> +
->>   #endif
->> --
->> 2.25.1
->>
+>> What do you mean? We need to check if the platform is using either type
+>> of the generic load_firmware helper (the _memcpy is calling the _raw to
+>> load the file).
+> 
+> I mean to simply replace the if statement with:
+> 
+> static bool sof_platform_uses_generic_loader(struct snd_sof_dev *sdev)
+> {
+>     return (sdev->pdata->desc->ops->load_firmware == snd_sof_load_firmware_raw ||
+> 	    sdev->pdata->desc->ops->load_firmware == snd_sof_load_firmware_memcpy);
+> }
 
+ah, OK.
+
+-- 
+Péter
