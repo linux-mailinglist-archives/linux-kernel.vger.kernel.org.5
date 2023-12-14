@@ -2,80 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 26E06813A67
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 19:57:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 01DED813A6B
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 19:58:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1573165AbjLNS53 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 13:57:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56810 "EHLO
+        id S235736AbjLNS6C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 13:58:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59080 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229519AbjLNS52 (ORCPT
+        with ESMTP id S229519AbjLNS6B (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 13:57:28 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44535A0
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 10:57:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1702580254;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Pl3HqjIcCyU6c5THUJl64ri1en3ap6gGnuAwV6P1ius=;
-        b=I3qRxIIHJyubkoodoOrCRlVuBFC3OzjyO8AhHeNu5HdOgWt/T1L4zYXUDtF8yXw/GrtSXh
-        GmtozC9lVGbJdhpGCf4DiriflRxJl1byn6VeoBnx1QA++FnhMbDGfAd+79sLPPvGpXaffb
-        jCbaqaIlrFVlMnQkev4AjbTm1Li2NfY=
-Received: from mail-oi1-f200.google.com (mail-oi1-f200.google.com
- [209.85.167.200]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-584-2ALOuAONMTWd4joAU1I4Vg-1; Thu, 14 Dec 2023 13:57:33 -0500
-X-MC-Unique: 2ALOuAONMTWd4joAU1I4Vg-1
-Received: by mail-oi1-f200.google.com with SMTP id 5614622812f47-3b9e358994fso11615172b6e.0
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 10:57:32 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702580252; x=1703185052;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        Thu, 14 Dec 2023 13:58:01 -0500
+Received: from mail-qt1-x833.google.com (mail-qt1-x833.google.com [IPv6:2607:f8b0:4864:20::833])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74DF510F
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 10:58:07 -0800 (PST)
+Received: by mail-qt1-x833.google.com with SMTP id d75a77b69052e-42588e94019so7835221cf.0
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 10:58:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=soleen.com; s=google; t=1702580286; x=1703185086; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Pl3HqjIcCyU6c5THUJl64ri1en3ap6gGnuAwV6P1ius=;
-        b=RIHzG5LIFgMLu1ylwKNwRHGVoWIh3W/RphHlMS6jHv027v69n6Yd2AFaE2Jd6CTOhN
-         cQOP6UvRWtfUtLKc7czJ9FSii41vehNSn5uGS4d6zn+k1rDYCYShaluB226dmI45l0of
-         mc+dmOiaskgyMK2QXcQ1cZl/ruK18ScQULHm2Earwkj54+BRMd5duGF5o0nGvlOotNCL
-         7v0+JdW4Qs2zIiBWTdebr4CALWk1SQWnm4VupTlS4/r/A/SWhIc6YRqs+REaR2YL1wKP
-         /t94QrrFhNhsLUdKdA9g+d0gFg0JnaVBkHiZFYYG4j3CbmjLwrZIjq5O5ij1vohY/pZ8
-         hpjw==
-X-Gm-Message-State: AOJu0Yx+2+UCsm3QGvih5jZhe4KHdmCUetc6O/zFPKJ0T6H+ldziyJZ0
-        aV8nHHiusdzE977RfduxtYZq7DMt8o69hElXx4rRU/uJ3ggdcJBpjYjbFBBs88OBMBISKBc376T
-        hHORnuu4Ytl59+PBiKSQhzQRk
-X-Received: by 2002:a05:6808:4182:b0:3b9:dcb8:2ad1 with SMTP id dj2-20020a056808418200b003b9dcb82ad1mr11604255oib.112.1702580252371;
-        Thu, 14 Dec 2023 10:57:32 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IHIc/zQX7LU/xm/BRS3QmT0M8wjT9iAR291mFBSuyPsGWBGKLM7TSjmQtN7SWzeOZ/FV26rkw==
-X-Received: by 2002:a05:6808:4182:b0:3b9:dcb8:2ad1 with SMTP id dj2-20020a056808418200b003b9dcb82ad1mr11604248oib.112.1702580252180;
-        Thu, 14 Dec 2023 10:57:32 -0800 (PST)
-Received: from fedora ([2600:1700:1ff0:d0e0::37])
-        by smtp.gmail.com with ESMTPSA id dg1-20020a056214084100b0067ed87e51edsm3466800qvb.36.2023.12.14.10.57.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Dec 2023 10:57:31 -0800 (PST)
-Date:   Thu, 14 Dec 2023 12:57:29 -0600
-From:   Andrew Halaney <ahalaney@redhat.com>
-To:     Chanwoo Lee <cw9316.lee@samsung.com>
-Cc:     agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
-        mani@kernel.org, jejb@linux.ibm.com, martin.petersen@oracle.com,
-        p.zabel@pengutronix.de, linux-arm-msm@vger.kernel.org,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        grant.jung@samsung.com, jt77.jang@samsung.com,
-        dh0421.hwang@samsung.com, sh043.lee@samsung.com
-Subject: Re: [PATCH v2] scsi: ufs: qcom: Re-fix for error handling
-Message-ID: <rrp3umto2jhti5n6iwhhj2vwub7uh4q2jsbqmlfmvzn6fyp2nr@nzzr4ah4gdd5>
-References: <CGME20231214021405epcas1p3cef80b85df56b7bead7f2f2ebd52f4ac@epcas1p3.samsung.com>
- <20231214021401.26474-1-cw9316.lee@samsung.com>
+        bh=kbRUvh91lczsHsuPwuxCeC//+oO/v5EJyyqmBzZyIng=;
+        b=EUXMasxe9AhFo//EOPmkkuBdjVHTmrpDWnlEXhkGPn0JAfvvB69r6GuYSCINGRghez
+         MmDw7wEUuLIXegti5KZdN5sDouIKuugip9ND93AMUh3JLaDO23LZ4gDyMweCyGHKs+An
+         lM73TbK+lRRb0X+JM6RVlnZ11IwarDU8EahDM2vYJmIaLQpHBUNU4tffaP0dWFdJCAix
+         yeFJSQ5dwCkEyARpEScOxliZRpsBf49xEPbZwqAPUg4RF1eoYl6vjuUupvY7oTUSgSxI
+         pRpeAw9ztgfYXYVJ8r4lNd+sDyxzWIqfLHioOMVKWjRxwMUWh0E9iTNBa7PH1+/+VPHI
+         9eqA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702580286; x=1703185086;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=kbRUvh91lczsHsuPwuxCeC//+oO/v5EJyyqmBzZyIng=;
+        b=HJ2tsrJ/vKfI//LpRf/MdO14CkZ7r3oKu5kQC+zBbX3xQ/LiT0FPNYnAw1LcymKlQP
+         Jyf+BIGe0vzv6wxDyzUp3IAjWgvtGAXz0JvmaICEkVpxwle0UelzjC3B3jG4M5sEfpON
+         EcAQXyxGJK5+95GIxkJq61kNUWK0ax9zM8ujFNO6SgzBL8R9LWdVYZS2kobcgFBG22W3
+         ZNi049rgxkdp1xEDHIQvYszUyzXEtw1crERxNUa98NCbTQBeQQN1kSNmHbk1lTwi/3LL
+         mjDnAY6XmktvAJrj/Xv4434w0843j+uH9PkC0OMAVunJPkDc13r274RvQ7F9roMEjPnT
+         lt5A==
+X-Gm-Message-State: AOJu0YzE1L4B/YpsmRLhmS1RrlsS2updbJYCmGd4iA+2e9KB+GhdTeZ2
+        wgEcxmBc7E/hIAXNjNdidrBvIeS8XC1YEZg4tdAZ6Qi4y05mmVsxBsA=
+X-Google-Smtp-Source: AGHT+IHA88EdWJi6YEaUjD/G5Alic42eMo76cOAWFc0QtX1OeP9Hoaw7Y53/0yZMK7MTS4ytkjNfaQ4yEVSKsvmYBtg=
+X-Received: by 2002:ac8:5792:0:b0:425:8b1b:a286 with SMTP id
+ v18-20020ac85792000000b004258b1ba286mr18152227qta.39.1702580286617; Thu, 14
+ Dec 2023 10:58:06 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231214021401.26474-1-cw9316.lee@samsung.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+References: <20231211154644.4103495-1-pasha.tatashin@soleen.com> <3d415ab4-e8c7-7e72-0379-952370612bdd@google.com>
+In-Reply-To: <3d415ab4-e8c7-7e72-0379-952370612bdd@google.com>
+From:   Pasha Tatashin <pasha.tatashin@soleen.com>
+Date:   Thu, 14 Dec 2023 13:57:30 -0500
+Message-ID: <CA+CK2bA2vZp3e+HHfB-sdLsPUYghMxvKcWURktDtNjwPL79Csw@mail.gmail.com>
+Subject: Re: [PATCH] vmstat: don't auto expand the sysfs files
+To:     David Rientjes <rientjes@google.com>
+Cc:     gregkh@linuxfoundation.org, rafael@kernel.org,
+        akpm@linux-foundation.org, surenb@google.com,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        souravpanda@google.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -83,79 +71,73 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 14, 2023 at 11:14:01AM +0900, Chanwoo Lee wrote:
-> From: ChanWoo Lee <cw9316.lee@samsung.com>
-> 
-> I modified the code to handle errors.
-> 
-> The error handling code has been changed from the patch below.
-> -'commit 031312dbc695 ("scsi: ufs: ufs-qcom: Remove unnecessary goto statements")'
-> 
-> This is the case I checked.
-> * ufs_qcom_clk_scale_notify -> 'ufs_qcom_clk_scale_up_/down_pre_change' error -> return 0;
-> 
-> It is unknown whether the above commit was intended to change error handling.
-> However, if it is not an intended fix, a patch may be needed.
+Hi David,
 
-Can you be a bit specific about what you fixed here in the commit?
-Both the subject and the description is vague and sounds like you're
-still unsure if this change is a good idea. The review on the prior
-patch and this one is indicating that this change is necessary and a
-fix, so let's be more confident in the description for future readers.
+Thank you for taking a look at this patch, my replies below.
 
-Write as you please, but something like:
+On Thu, Dec 14, 2023 at 12:52=E2=80=AFPM David Rientjes <rientjes@google.co=
+m> wrote:
+>
+> On Mon, 11 Dec 2023, Pasha Tatashin wrote:
+>
+> > Whenever a new fields are added one of the following: node_stat_item
+> > numa_stat_item zone_stat_item, the /sys/devices/system/node/nodeX/vmsta=
+t
+> > files are auto expanded.
+> >
+> > This is a problem, as sysfs files should be only one value per file.
+>
+> Does this patch address the one-value-per-file issue?  (I think that ship
+> has sailed for vmstat.)
 
-    scsi: ufs: qcom: Return ufs_qcom_clk_scale_*() errors in ufs_qcom_clk_scale_notify()
+That ship has sailed for vmstat, this patch addresses what was asked
+by GregKH: not to add new values to vmstat, as not to make the
+existing problem even worse. The sysfs file system has a one page
+limit per file. The developers will decide how to export the new items
+added to node_stat, numa_stat, zone_stat individually. Each new item
+can be exported in its own files, and must have its own documentation
+about interface stability, value meaning, and expectations when the
+stat file is absent.
 
-    In commit 031312dbc695 ("scsi: ufs: ufs-qcom: Remove unnecessary goto statements")
-    the error handling was accidentally changed, resulting in the error of
-    ufs_qcom_clk_scale_*() calls not being returned.
+> /sys/devices/system/node/nodeX/vmstat has been documented as a stable ABI
+> in Linux for 13 years.
+>
+> That said, the contents of the file has not been documented so I assume
+> it's "whatever stats make sense for the current implementation of the
+> Linux VM".
+>
+> > Also, once a field is exported via vmstat it is hard to remove it as
+> > there could be user applications that rely on this field. This is why
+> > we still cary "nr_unstable 0" in /proc/vmstat that is not used.
+> >
+>
+> Implementations change over time, so this would be expected.
+>
+> I'm assuming, but perhaps incorrectly, that userspace won't crash if
+> nr_unstable just don't appear anymore.  That whoever is using it would
+> just assume that it's zero if it doesn't appear.
+>
+> So I think we need to answer the question of: are the *contents* of files
+> like vmstat that are heavily dependent on implementation level details
+> really part of a stable ABI that people can expect will carry on forever?
 
-    Let's make sure those errors are properly returned.
+I agree, but that is outside of the scope of this patch. The intent of
+this patch is to keep the existing interfaces, and only prevents
+future auto expansion of vmstat files. In the future, we work on
+documenting the existing vmstat interfaces, and perhaps cleaning-up
+them when possible.
 
-> 
-> Signed-off-by: ChanWoo Lee <cw9316.lee@samsung.com>
+> > Also, since vmstat is auto-expanded the fields are not documented, so
+> > users do not know whether they are counted in bytes/kilobytes/pages,
+> > and the exact meaning of these fields.
+> >
+>
+> I think that's actually intended since there can also be ones that are
+> event counters.  I don't think any fields in vmstat are intended to be
+> long-term sacred stable ABIs.
 
-This deserves a Fixes: tag (I see Mani mentioned that)
+Right, but we already carry fields i.e nr_unstable that are hardcoded,
+but were removed from the kernel otherwise.
 
-> Reviewed-by: Andrew Halaney <ahalaney@redhat.com>
-
-I did not provide a Reviewed-by tag in v1, this is not accurate:
-
-    https://lore.kernel.org/linux-arm-msm/m5wjp3yb3qpheyzgipekeagycboifqdpw54nquzqsftufap3yc@kxjwi4y63adj/
-
-Outside of that this looks good, thanks!
-
-> ---
-> v1->v2: Remove things already in progress
->  1) ufs_qcom_host_reset -> 'reset_control_deassert' error -> return 0;
->    -> https://lore.kernel.org/linux-arm-msm/20231208065902.11006-8-manivannan.sadhasivam@linaro.org/#t
->  2) ufs_qcom_init_lane_clks -> 'ufs_qcom_host_clk_get(tx_lane1_sync_clk)' error -> return 0;
->    -> https://lore.kernel.org/linux-arm-msm/20231208065902.11006-2-manivannan.sadhasivam@linaro.org/
-> ---
-> ---
->  drivers/ufs/host/ufs-qcom.c | 6 ++++--
->  1 file changed, 4 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/ufs/host/ufs-qcom.c b/drivers/ufs/host/ufs-qcom.c
-> index 96cb8b5b4e66..17e24270477d 100644
-> --- a/drivers/ufs/host/ufs-qcom.c
-> +++ b/drivers/ufs/host/ufs-qcom.c
-> @@ -1516,9 +1516,11 @@ static int ufs_qcom_clk_scale_notify(struct ufs_hba *hba,
->  			err = ufs_qcom_clk_scale_up_pre_change(hba);
->  		else
->  			err = ufs_qcom_clk_scale_down_pre_change(hba);
-> -		if (err)
-> -			ufshcd_uic_hibern8_exit(hba);
->  
-> +		if (err) {
-> +			ufshcd_uic_hibern8_exit(hba);
-> +			return err;
-> +		}
->  	} else {
->  		if (scale_up)
->  			err = ufs_qcom_clk_scale_up_post_change(hba);
-> -- 
-> 2.29.0
-> 
-
+Thank you,
+Pasha
