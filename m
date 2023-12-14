@@ -2,111 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0414F812A37
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 09:21:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F08E812A40
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 09:25:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230216AbjLNIVO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 03:21:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46684 "EHLO
+        id S234365AbjLNIZJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 03:25:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43334 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229441AbjLNIVL (ORCPT
+        with ESMTP id S229441AbjLNIZH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 03:21:11 -0500
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id A3AA8E0;
-        Thu, 14 Dec 2023 00:21:12 -0800 (PST)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0371CC15;
-        Thu, 14 Dec 2023 00:21:58 -0800 (PST)
-Received: from [10.57.85.242] (unknown [10.57.85.242])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id EF95D3F5A1;
-        Thu, 14 Dec 2023 00:21:07 -0800 (PST)
-Message-ID: <47b4cbcb-d33d-4699-a148-0108cf734e23@arm.com>
-Date:   Thu, 14 Dec 2023 08:22:10 +0000
+        Thu, 14 Dec 2023 03:25:07 -0500
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E185CF
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 00:25:13 -0800 (PST)
+Received: by mail-ed1-x531.google.com with SMTP id 4fb4d7f45d1cf-548ce39b101so10619688a12.2
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 00:25:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=amarulasolutions.com; s=google; t=1702542311; x=1703147111; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=raZdHuIfZmo8sVIIlB+4E73joCIULjSMqNEVVCKbeTQ=;
+        b=iwjL/wgRSwxYLGLMpiKnUWbJjoU94BWYNsoANvY5pwkXdu72Krpbfsym22AC5VH1Uo
+         LFxfZBXbFo9xFHLfOPVfxjoJwj2/ef6jb2VSYbjsxrZoxyhNifN5+0f0lpF43jjo5ds5
+         VAjsirQ5sS3HtuJr/WJzYzn0CS0F+qIzwJKX8=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702542311; x=1703147111;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=raZdHuIfZmo8sVIIlB+4E73joCIULjSMqNEVVCKbeTQ=;
+        b=O9xxLmXiMkxlHQh5kIs+ESxH0zzIYwNNYERC39WXpvDv+fK45t0Kymp94dBqoNxran
+         p9PijH5MqWoc2V8x6HlO6m8sfAlWT+AYwRZmmRAJkqwPzdrmqhG5eaU1f9RS1UpU+S0g
+         OUkLa8BwQB95nKQ21k4HvfAmTEoaTV4QDPoyerITMEDICxH8iiQo5GxoXNz/ZBwmL9rB
+         ordbN3j8Hw6j51hAFfTgFFLdQ/jbLJouViW1V5LfGuXkH1TRlDYr50zKq0E8daSrHhGW
+         SyYokUbRw9VzJAc915ydCN4Kb3zphxt8UsY5nvBiPFFHW8BFCmP7DzBUcJ9UZmQs9THF
+         jvrQ==
+X-Gm-Message-State: AOJu0YwlJV/KBenBf0l4ClOUyuvxf1U8YM3+BKsFTN+z4jBtn8/YHBXG
+        sXzQudv0hHOnEJECbX6wR+tIlKDe5iw3qZYQ/EwNxg==
+X-Google-Smtp-Source: AGHT+IEwqtoPH8cpgAfOky/qjhC4w5wCINRYQZuRUrWf8QH/ByS+0CimBtppfQ28CarPOGrM03rX3Q==
+X-Received: by 2002:a17:906:3417:b0:a19:a19b:423a with SMTP id c23-20020a170906341700b00a19a19b423amr3145666ejb.165.1702542311617;
+        Thu, 14 Dec 2023 00:25:11 -0800 (PST)
+Received: from dario-ThinkPad-T14s-Gen-2i.homenet.telecomitalia.it (host-80-182-13-188.retail.telecomitalia.it. [80.182.13.188])
+        by smtp.gmail.com with ESMTPSA id hw18-20020a170907a0d200b00a1cbe52300csm9026226ejc.56.2023.12.14.00.25.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 Dec 2023 00:25:11 -0800 (PST)
+From:   Dario Binacchi <dario.binacchi@amarulasolutions.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     michael@amarulasolutions.com,
+        Amarula patchwork <linux-amarula@amarulasolutions.com>,
+        Dario Binacchi <dario.binacchi@amarulasolutions.com>,
+        Andrzej Hajda <andrzej.hajda@intel.com>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@gmail.com>,
+        Fabio Estevam <festevam@gmail.com>,
+        Inki Dae <inki.dae@samsung.com>,
+        Jagan Teki <jagan@amarulasolutions.com>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Robert Foss <rfoss@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        devicetree@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: [PATCH v8 0/3] Add displays support for bsh-smm-s2/pro boards
+Date:   Thu, 14 Dec 2023 09:24:03 +0100
+Message-ID: <20231214082457.18737-1-dario.binacchi@amarulasolutions.com>
+X-Mailer: git-send-email 2.43.0
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 0/5] Rework system pressure interface to the scheduler
-Content-Language: en-US
-To:     Vincent Guittot <vincent.guittot@linaro.org>
-References: <20231212142730.998913-1-vincent.guittot@linaro.org>
-Cc:     catalin.marinas@arm.com, will@kernel.org,
-        linux-trace-kernel@vger.kernel.org, amit.kachhap@gmail.com,
-        daniel.lezcano@linaro.org, mhiramat@kernel.org,
-        vschneid@redhat.com, bristot@redhat.com, mgorman@suse.de,
-        bsegall@google.com, juri.lelli@redhat.com, peterz@infradead.org,
-        mingo@redhat.com, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, konrad.dybcio@linaro.org,
-        andersson@kernel.org, agross@kernel.org, rui.zhang@intel.com,
-        viresh.kumar@linaro.org, rafael@kernel.org, sudeep.holla@arm.com,
-        dietmar.eggemann@arm.com, rostedt@goodmis.org,
-        linux-arm-kernel@lists.infradead.org, linux-arm-msm@vger.kernel.org
-From:   Lukasz Luba <lukasz.luba@arm.com>
-In-Reply-To: <20231212142730.998913-1-vincent.guittot@linaro.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Vincent,
+The series adds drivers for the displays used by bsh-smm-s2/pro boards.
+This required applying some patches to the samsung-dsim driver and the
+drm_bridge.c module.
 
-I've been waiting for this feature, thanks!
+Changes in v8:
+- Move the 'status' property to the end of the list of nodes:
+  - pwm1
+  - lcdif
+  - mipi_dsi
+- Add a newline between properties and child node (mipi_dsi_out).
+- Sort the iomuxc node alphabetically
+- Rename pwm1grp to blgrp
 
+Changes in v7:
+- Drop [3/4] dt-bindings: display: panel: Add synaptics r63353 panel controller
+  because applied.
 
-On 12/12/23 14:27, Vincent Guittot wrote:
-> Following the consolidation and cleanup of CPU capacity in [1], this serie
-> reworks how the scheduler gets the pressures on CPUs. We need to take into
-> account all pressures applied by cpufreq on the compute capacity of a CPU
-> for dozens of ms or more and not only cpufreq cooling device or HW
-> mitigiations. we split the pressure applied on CPU's capacity in 2 parts:
-> - one from cpufreq and freq_qos
-> - one from HW high freq mitigiation.
-> 
-> The next step will be to add a dedicated interface for long standing
-> capping of the CPU capacity (i.e. for seconds or more) like the
-> scaling_max_freq of cpufreq sysfs. The latter is already taken into
-> account by this serie but as a temporary pressure which is not always the
-> best choice when we know that it will happen for seconds or more.
-> 
-> [1] https://lore.kernel.org/lkml/20231211104855.558096-1-vincent.guittot@linaro.org/
-> 
-> Vincent Guittot (4):
->    cpufreq: Add a cpufreq pressure feedback for the scheduler
->    sched: Take cpufreq feedback into account
->    thermal/cpufreq: Remove arch_update_thermal_pressure()
->    sched: Rename arch_update_thermal_pressure into
->      arch_update_hw_pressure
-> 
->   arch/arm/include/asm/topology.h               |  6 +--
->   arch/arm64/include/asm/topology.h             |  6 +--
->   drivers/base/arch_topology.c                  | 26 ++++-----
->   drivers/cpufreq/cpufreq.c                     | 48 +++++++++++++++++
->   drivers/cpufreq/qcom-cpufreq-hw.c             |  4 +-
->   drivers/thermal/cpufreq_cooling.c             |  3 --
->   include/linux/arch_topology.h                 |  8 +--
->   include/linux/cpufreq.h                       | 10 ++++
->   include/linux/sched/topology.h                |  8 +--
->   .../{thermal_pressure.h => hw_pressure.h}     | 14 ++---
->   include/trace/events/sched.h                  |  2 +-
->   init/Kconfig                                  | 12 ++---
->   kernel/sched/core.c                           |  8 +--
->   kernel/sched/fair.c                           | 53 ++++++++++---------
->   kernel/sched/pelt.c                           | 18 +++----
->   kernel/sched/pelt.h                           | 16 +++---
->   kernel/sched/sched.h                          |  4 +-
->   17 files changed, 152 insertions(+), 94 deletions(-)
->   rename include/trace/events/{thermal_pressure.h => hw_pressure.h} (55%)
-> 
+Changes in v6:
+- Drop patches:
+  - [06/10] drm/panel: Add Synaptics R63353 panel driver
+  - [07/10] dt-bindings: display: panel: Add Ilitek ili9805 panel controller
+  - [08/10] drm/panel: Add Ilitek ILI9805 panel driver
+  - [09/10] drm/panel: ilitek-ili9805: add support for Tianma TM041XDHG01 panel
+  Because applied to https://anongit.freedesktop.org/git/drm/drm-misc.git (drm-misc-next)
+  Drop patches:
+  - [01/10] drm/bridge: Fix bridge disable logic
+  - [02/10] drm/bridge: Fix a use case in the bridge disable logic
+  Because they are wrong
 
-I would like to test it, but something worries me. Why there is 0/5 in
-this subject and only 4 patches?
+Changes in v3:
+- Replace "synaptics,r63353" compatible with "syna,r63353", as
+  required by vendor-prefixes.yaml.
+- Squash patch [09/11] dt-bindings: ili9805: add compatible string for Tianma TM041XDHG01
+  into [07/11] dt-bindings: display: panel: Add Ilitek ili9805 panel controller.
 
-Could you tell me your base branch that I can apply this, please?
+Changes in v2:
+- Adjust the mipi_dsi node based on the latest patches merged into
+  the mainline in the dtsi files it includes.
+- Added to the series the following patches:
+  - 0001 drm/bridge: Fix bridge disable logic
+  - 0002 drm/bridge: Fix a use case in the bridge disable logic
+  - 0003 samsung-dsim: enter display mode in the enable() callback
+  - 0004 drm: bridge: samsung-dsim: complete the CLKLANE_STOP setting
 
-Regards,
-Lukasz
+Dario Binacchi (2):
+  drm: bridge: samsung-dsim: enter display mode in the enable() callback
+  drm: bridge: samsung-dsim: complete the CLKLANE_STOP setting
+
+Michael Trimarchi (1):
+  arm64: dts: imx8mn-bsh-smm-s2/pro: add display setup
+
+ .../freescale/imx8mn-bsh-smm-s2-common.dtsi   |   1 +
+ .../freescale/imx8mn-bsh-smm-s2-display.dtsi  | 121 ++++++++++++++++++
+ drivers/gpu/drm/bridge/samsung-dsim.c         |  14 +-
+ 3 files changed, 133 insertions(+), 3 deletions(-)
+ create mode 100644 arch/arm64/boot/dts/freescale/imx8mn-bsh-smm-s2-display.dtsi
+
+-- 
+2.43.0
+
