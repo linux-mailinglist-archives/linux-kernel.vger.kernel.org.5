@@ -1,62 +1,90 @@
-Return-Path: <linux-kernel+bounces-65-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-66-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CE8D6813B7D
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 21:27:01 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 190FB813B83
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 21:29:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CEABD1C20FCD
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 20:27:00 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AD182B21AD9
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 20:29:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0385D6A344;
-	Thu, 14 Dec 2023 20:26:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 86D846A346;
+	Thu, 14 Dec 2023 20:29:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="N33HgyIL"
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 68EBE675CD;
-	Thu, 14 Dec 2023 20:26:54 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 26AE4C433C8;
-	Thu, 14 Dec 2023 20:26:53 +0000 (UTC)
-Date: Thu, 14 Dec 2023 15:27:40 -0500
-From: Steven Rostedt <rostedt@goodmis.org>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: LKML <linux-kernel@vger.kernel.org>, Linux Trace Kernel
- <linux-trace-kernel@vger.kernel.org>, Masami Hiramatsu
- <mhiramat@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Mathieu
- Desnoyers <mathieu.desnoyers@efficios.com>, Linux Arch
- <linux-arch@vger.kernel.org>
-Subject: Re: [PATCH v3] ring-buffer: Remove 32bit timestamp logic
-Message-ID: <20231214152740.24d01893@gandalf.local.home>
-In-Reply-To: <20231214151911.2df9f845@gandalf.local.home>
-References: <20231214125433.03091e5e@gandalf.local.home>
-	<CAHk-=wiKooX5vOu6TgGPEwdX--k0DyE4ntJDU4QzbVFMWGVXFw@mail.gmail.com>
-	<20231214151911.2df9f845@gandalf.local.home>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A91133399F;
+	Thu, 14 Dec 2023 20:28:58 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 02A21C433C9;
+	Thu, 14 Dec 2023 20:28:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1702585738;
+	bh=OaiTbbrvZXCtjfNH5fz9wg1DzywuRnjlIJFtRbNr8AU=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:From;
+	b=N33HgyILK6ugvQdbWmmacvvP0QbZZPodEK4aqwKSO++CMA2t9be3pHegxU27A/3P8
+	 ME0JcW1ZCX/lVM7T/WILas734s5Ql/DmCWO0Z7NdlR28npx5SqYtKSVNMLcM12JDVL
+	 gpBwUyAHb8OVeQtrNIqLjySek5k7p1kdDXRUwUDCVB+8CdS6WaxJMkcm9DX5AY9ZYv
+	 3qZWRBVt/BQ3GotHU7Pf53CHfCyWHmVGquNQsvDnh5sMfou5PeRmcPD9CZe00n0rJ3
+	 xaNHK3WveWjraWXLvuNZpoB+uZyeB9vepWDB21Fio53sLvm6wdF1TOfnmeES87ooa6
+	 FS3B2T9nGzMxw==
+Date: Thu, 14 Dec 2023 14:28:56 -0600
+From: Bjorn Helgaas <helgaas@kernel.org>
+To: Matthew W Carlis <mattc@purestorage.com>
+Cc: bhelgaas@google.com, linux-kernel@vger.kernel.org,
+	linux-pci@vger.kernel.org, mika.westerberg@linux.intel.com,
+	sathyanarayanan.kuppuswamy@linux.intel.com
+Subject: Re: [PATCH v3] PCI/portdrv: Allow AER service only for Root Ports &
+ RCECs
+Message-ID: <20231214202856.GA1101963@bhelgaas>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231214063717.992-1-mattc@purestorage.com>
 
-On Thu, 14 Dec 2023 15:19:11 -0500
-Steven Rostedt <rostedt@goodmis.org> wrote:
-
-> For this issue of the 64bit cmpxchg, is there any config that works for any
-> arch that do not have a safe 64-bit cmpxchg? At least for 486, is the
-> second half of the if condition reasonable?
+On Wed, Dec 13, 2023 at 11:37:17PM -0700, Matthew W Carlis wrote:
+> Hello Any Interested
 > 
-> 	if (IS_ENABLED(CONFIG_X86_32) && !IS_ENABLED(CONFIG_X86_CMPXCHG64)) {
-> 		if (unlikely(in_nmi()))
-> 			return NULL;
-> 	}
+> Recently found that this patch had the affect of requiring us to set
+> pcie_ports_dpc_native in order to use the kernel DPC driver with PCIe switch
+> downstream ports. The kernel check for the DPC capability in portdrv.c has;
+> if pci_aer_available() and (dpc-native or using AER port service driver on
+> the device). I wonder if we couldn't do away with the requirement of the
+> AER service being used on the port if pci_aer_available() & host->native_aer
+> don't lie. I'm still trying to decide exactly what the condition ought to
+> look like, but it might draw from the AER service check above it. For example:
+> 
+>         if (pci_find_ext_capability(dev, PCI_EXT_CAP_ID_DPC) &&
+> -           pci_aer_available() &&
+> -           (pcie_ports_dpc_native || (services & PCIE_PORT_SERVICE_AER)))
+> +           dev->aer_cap && pci_aer_available() &&
+> +           (pcie_ports_dpc_native || host->native_aer))
+>                 services |= PCIE_PORT_SERVICE_DPC;
 
-Ignore this, I'm now reading your other email. I'll have more questions there.
+This sounds like it might be a regression report for d8d2b65a940b
+("PCI/portdrv: Allow AER service only for Root Ports & RCECs"), which
+appeared in v6.2.  Is that true?
 
--- Steve
+If d8d2b65a940b requires you to use the "pcie_ports=dpc-native" kernel
+parameter when you didn't need it before, that sounds like a
+regression.
+
+Looking at the code, that "services & PCIE_PORT_SERVICE_AER"
+definitely looks like a problem.  We added that with 
+https://git.kernel.org/linus/4e5fad429bd1 ("PCI/DPC: Do not enable DPC
+if AER control is not allowed by the BIOS"), but I think your
+suggestion of checking host->native_aer is better.
+
+Do you want to post a formal patch for it?
+
+Bjorn
 
