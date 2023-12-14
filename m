@@ -2,186 +2,249 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B0EB681344C
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 16:13:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C506813456
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 16:13:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230371AbjLNPM7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 10:12:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59078 "EHLO
+        id S1573689AbjLNPNp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 10:13:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59006 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230346AbjLNPMm (ORCPT
+        with ESMTP id S235718AbjLNPN3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 10:12:42 -0500
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id B521B26B0;
-        Thu, 14 Dec 2023 07:11:32 -0800 (PST)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 94CDFC15;
-        Thu, 14 Dec 2023 07:12:17 -0800 (PST)
-Received: from FVFF77S0Q05N.cambridge.arm.com (FVFF77S0Q05N.cambridge.arm.com [10.1.38.161])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 1EEBC3F5A1;
-        Thu, 14 Dec 2023 07:11:31 -0800 (PST)
-Date:   Thu, 14 Dec 2023 15:11:25 +0000
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Lucas De Marchi <lucas.demarchi@intel.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] Revert "perf: Fix perf_event_validate_size()"
-Message-ID: <ZXsbHQOWkp4D6mXI@FVFF77S0Q05N.cambridge.arm.com>
-References: <20231214000620.3081018-1-lucas.demarchi@intel.com>
+        Thu, 14 Dec 2023 10:13:29 -0500
+Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EED48188
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 07:12:13 -0800 (PST)
+Received: by mail-pg1-x532.google.com with SMTP id 41be03b00d2f7-5c65ca2e1eeso4070181a12.2
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 07:12:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1702566733; x=1703171533; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=LwHpdQvNy5J0Igg1Vsz7T/zPUieTC2ctDg1RFLI3Irg=;
+        b=yjrscuM+kOzgQMSFtd+6A38cXtxRDYPuNjaXgIiT1p8geNzIAOv4PPOFAlQf1WMZY5
+         84aEdIDMhc6+6Dc4LBGbesemcwCmc+pHV8ayjGeG2uKT50VUzsIu7IHcM4K9cheg5Xvv
+         rjZnfaul9kf/EOo+EHKGy1xIMvOrQspVvq4iwF58rpm+/sDyWb29uoUxrmXAHWiFXh6S
+         s4F8y305T7kSA2amD4rrEnescyIGZjIqmUz1X5IBtVGRKALIZUbXlHgvpJRe6JMsyqAx
+         5xDrEKgyHOeOp9+Znfl8vwnEPclIDXfdy53Hcw8W5l1SNVQxbFt+A5jU3tJrdkiVlDkK
+         2a6Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702566733; x=1703171533;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=LwHpdQvNy5J0Igg1Vsz7T/zPUieTC2ctDg1RFLI3Irg=;
+        b=l8mb6VX6zaJ++3ZjDP43EbMmFLITagB7ndPB5vQ2CLMRoQh3kZIJg6Ksjxehg6L7Ph
+         5RW6RHc6TB0N2LPRCDK72OfNMZzMS+lwAqivQAKiAfbzCEokI4v+/KIMUhzIyYtR9UeK
+         +T6sfqfrdakQF2EfwR+GZ/XxLF8r36esWuaPhtEHUK3jyTio4uA1/0X6SZe6xdpVdp4d
+         ddvZOdayi54iI3xIA66EKaRgqMc80PQSAQ/8q5q9iP7M1jRJ57JqR0AcIC6hK5yh36qW
+         i6+1EkElJK6P0+6/vqDg36hHS1yEBb/jkDP5WjD+uOFIFe4ybYb6MD+Z5qtdVQk6R4jo
+         tbjw==
+X-Gm-Message-State: AOJu0YwKMgeJ+IjNPOC+QtFq2gkEnXTzzK48W1+xzhFz9KhHR/8Ybs3X
+        isWNsdHPh//0M4WUkaMYLmIVlkaM7/ra3CUhL0o5+g==
+X-Google-Smtp-Source: AGHT+IHkdlxZI9BdksvtM5U64iab2h/pY7ggP309thulz4NiNhxzZYZ8yM7zHvmhWWBCVkGuUgTGrAki3o9iWrNX200=
+X-Received: by 2002:a17:90a:c49:b0:28b:559:3916 with SMTP id
+ u9-20020a17090a0c4900b0028b05593916mr499392pje.79.1702566733415; Thu, 14 Dec
+ 2023 07:12:13 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231214000620.3081018-1-lucas.demarchi@intel.com>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20231214105243.3707730-1-tudor.ambarus@linaro.org> <20231214105243.3707730-3-tudor.ambarus@linaro.org>
+In-Reply-To: <20231214105243.3707730-3-tudor.ambarus@linaro.org>
+From:   Sam Protsenko <semen.protsenko@linaro.org>
+Date:   Thu, 14 Dec 2023 09:12:02 -0600
+Message-ID: <CAPLW+4=3naHwG4co=7bOf4LxmOPKR0qpn_hNGxys_N3AUzfiOA@mail.gmail.com>
+Subject: Re: [PATCH 02/13] dt-bindings: clock: google,gs101-clock: add PERIC0
+ clock management unit
+To:     Tudor Ambarus <tudor.ambarus@linaro.org>
+Cc:     peter.griffin@linaro.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, mturquette@baylibre.com,
+        sboyd@kernel.org, conor+dt@kernel.org, andi.shyti@kernel.org,
+        alim.akhtar@samsung.com, gregkh@linuxfoundation.org,
+        jirislaby@kernel.org, catalin.marinas@arm.com, will@kernel.org,
+        s.nawrocki@samsung.com, tomasz.figa@gmail.com,
+        cw00.choi@samsung.com, arnd@arndb.de, andre.draszik@linaro.org,
+        saravanak@google.com, willmcvicker@google.com,
+        linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-clk@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-i2c@vger.kernel.org, linux-serial@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 13, 2023 at 04:06:20PM -0800, Lucas De Marchi wrote:
-> This reverts commit 382c27f4ed28f803b1f1473ac2d8db0afc795a1b.
-> 
-> When using for_each_sibling_event() lockdep complains on
-> 
->         WARN_ON_ONCE(__lockdep_enabled &&                       \
->                      (this_cpu_read(hardirqs_enabled) &&        \
->                       lockdep_is_held(&(event)->ctx->mutex) != LOCK_STATE_HELD))
-> 
-> after a simple `perf stat -e instructions sleep 1`:
-> 
-> 	WARNING: CPU: 8 PID: 1471 at kernel/events/core.c:1950 __do_sys_perf_event_open+0xf37/0x1080
-> 	Modules linked in: x86_pkg_temp_thermal coretemp kvm_intel kvm e1000e igc irqbypass mei_pxp mei_hdcp crct10dif_pclmul wmi_bmof crc32_pclmul ghash_clmulni_intel i2c_i801 ptp mei_me i2c_smbus pps_core mei intel_lpss_pci video wmi fuse
-> 	CPU: 8 PID: 1471 Comm: perf Not tainted 6.7.0-rc5-linus-demarchi+ #8
-> 	Hardware name: Intel Corporation Rocket Lake Client Platform/RocketLake S UDIMM 4L ERB, BIOS RKLSFWI1.R00.2022.A00.2101052151 01/05/2021
-> 	RIP: 0010:__do_sys_perf_event_open+0xf37/0x1080
-> 	Code: ff e8 ed 30 ab 00 48 8b 81 28 02 00 00 83 ce ff 48 8d b8 a8 00 00 00 e8 67 38 ab 00 48 8b 4c 24 08 83 e8 01 0f 84 56 f9 ff ff <0f> 0b e9 4f f9 ff ff be 03 00 00 00 e8 d8 74 40 00 e9 54 fa ff ff
-> 	RSP: 0018:ffffc90001d6be40 EFLAGS: 00010297
-> 	RAX: 00000000ffffffff RBX: ffff888112bc8040 RCX: ffff888100c34568
-> 	RDX: 0000000080000000 RSI: ffffffff823e2806 RDI: ffffffff824023cb
-> 	RBP: 0000000000000000 R08: 0000000000000001 R09: 0000000000000001
-> 	R10: 0000000000000001 R11: 0000000000000000 R12: ffff888106560800
-> 	R13: 0000000000000000 R14: 0000000000080002 R15: ffff888100c34568
-> 	FS:  00007f723d196c00(0000) GS:ffff888450800000(0000) knlGS:0000000000000000
-> 	CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> 	CR2: 00005624c0efdaa0 CR3: 00000001199de002 CR4: 0000000000770ef0
-> 	PKRU: 55555554
-> 	Call Trace:
-> 	 <TASK>
-> 	 ? __do_sys_perf_event_open+0xf37/0x1080
-> 	 ? __warn+0x80/0x170
-> 	 ? __do_sys_perf_event_open+0xf37/0x1080
-> 	 ? report_bug+0x191/0x1c0
-> 	 ? handle_bug+0x3c/0x70
-> 	 ? exc_invalid_op+0x17/0x70
-> 	 ? asm_exc_invalid_op+0x1a/0x20
-> 	 ? __do_sys_perf_event_open+0xf37/0x1080
-> 	 do_syscall_64+0x42/0xf0
-> 	 entry_SYSCALL_64_after_hwframe+0x6e/0x76
-> 	RIP: 0033:0x7f723bf1ea7d
-> 	Code: 5b 41 5c c3 66 0f 1f 84 00 00 00 00 00 f3 0f 1e fa 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d 83 a3 0f 00 f7 d8 64 89 01 48
-> 	RSP: 002b:00007ffc7118ba68 EFLAGS: 00000246 ORIG_RAX: 000000000000012a
-> 	RAX: ffffffffffffffda RBX: 00000000ffffffff RCX: 00007f723bf1ea7d
-> 	RDX: 00000000ffffffff RSI: 00000000000005c0 RDI: 00005624c0efb0c0
-> 	RBP: 00007ffc7118bb20 R08: 0000000000000008 R09: 0000000000000000
-> 	R10: 00000000ffffffff R11: 0000000000000246 R12: 0000000000000000
-> 	R13: 0000000000000008 R14: 00005624c0efb0b0 R15: 00005624c0efb0b0
-> 	 </TASK>
-> 	irq event stamp: 45697
-> 	hardirqs last  enabled at (45703): [<ffffffff81173dca>] console_unlock+0x10a/0x160
-> 	hardirqs last disabled at (45708): [<ffffffff81173daf>] console_unlock+0xef/0x160
-> 	softirqs last  enabled at (45276): [<ffffffff810dab0e>] irq_exit_rcu+0x8e/0xf0
-> 	softirqs last disabled at (45267): [<ffffffff810dab0e>] irq_exit_rcu+0x8e/0xf0
-> 
-> References: https://gitlab.freedesktop.org/drm/intel/-/issues/9847
-> Signed-off-by: Lucas De Marchi <lucas.demarchi@intel.com>
+On Thu, Dec 14, 2023 at 4:52=E2=80=AFAM Tudor Ambarus <tudor.ambarus@linaro=
+.org> wrote:
+>
+> Add dt-schema documentation for the Connectivity Peripheral 0 (PERIC0)
+> clock management unit.
+>
+> Signed-off-by: Tudor Ambarus <tudor.ambarus@linaro.org>
 > ---
-> 
-> Not sure about a proper fix for this. At first I thought it was indeed
-> because previously it was not validating the the size correctly. However
-> then I noticed the warning is actually due to for_each_sibling_event().
+>  .../bindings/clock/google,gs101-clock.yaml    | 25 +++++-
+>  include/dt-bindings/clock/google,gs101.h      | 86 +++++++++++++++++++
+>  2 files changed, 109 insertions(+), 2 deletions(-)
+>
+> diff --git a/Documentation/devicetree/bindings/clock/google,gs101-clock.y=
+aml b/Documentation/devicetree/bindings/clock/google,gs101-clock.yaml
+> index 3eebc03a309b..ba54c13c55bc 100644
+> --- a/Documentation/devicetree/bindings/clock/google,gs101-clock.yaml
+> +++ b/Documentation/devicetree/bindings/clock/google,gs101-clock.yaml
+> @@ -30,14 +30,15 @@ properties:
+>        - google,gs101-cmu-top
+>        - google,gs101-cmu-apm
+>        - google,gs101-cmu-misc
+> +      - google,gs101-cmu-peric0
+>
+>    clocks:
+>      minItems: 1
+> -    maxItems: 2
+> +    maxItems: 3
+>
+>    clock-names:
+>      minItems: 1
+> -    maxItems: 2
+> +    maxItems: 3
+>
+>    "#clock-cells":
+>      const: 1
+> @@ -88,6 +89,26 @@ allOf:
+>              - const: dout_cmu_misc_bus
+>              - const: dout_cmu_misc_sss
+>
+> +  - if:
+> +      properties:
+> +        compatible:
+> +          contains:
+> +            const: google,gs101-cmu-peric0
+> +
+> +    then:
+> +      properties:
+> +        clocks:
+> +          items:
+> +            - description: External reference clock (24.576 MHz)
+> +            - description: Connectivity Peripheral 0 bus clock (from CMU=
+_TOP)
+> +            - description: Connectivity Peripheral 0 IP clock (from CMU_=
+TOP)
+> +
+> +        clock-names:
+> +          items:
+> +            - const: oscclk
+> +            - const: dout_cmu_peric0_bus
+> +            - const: dout_cmu_peric0_ip
+> +
+>  additionalProperties: false
+>
+>  examples:
+> diff --git a/include/dt-bindings/clock/google,gs101.h b/include/dt-bindin=
+gs/clock/google,gs101.h
+> index 21adec22387c..7d7a896416a7 100644
+> --- a/include/dt-bindings/clock/google,gs101.h
+> +++ b/include/dt-bindings/clock/google,gs101.h
+> @@ -389,4 +389,90 @@
+>  #define CLK_GOUT_MISC_WDT_CLUSTER1_PCLK                        73
+>  #define CLK_GOUT_MISC_XIU_D_MISC_ACLK                  74
+>
+> +/* CMU_PERIC0 */
 
-I think what's happening here is that at the point we call
-perf_event_validate_size(), we've found and locked the relevant
-perf_event_context, but haven't set event->ctx yet via
-perf_install_in_context().
+This comments looks off here. Other than than, LGTM:
 
-Thanks to earlier checks, we know that group_leader->ctx == ctx, so we have
-actually locked the relevant context, but for_each_sibling_event() doesn't have
-access to the context to discover that.
+Reviewed-by: Sam Protsenko <semen.protsenko@linaro.org>
 
-The diff below worked for me, though it's a bit ugly.
-
-Peter, thoughts?
-
-Mark.
- 
----->8----
-diff --git a/include/linux/perf_event.h b/include/linux/perf_event.h
-index 5547ba68e6e4..c1e625cef6ca 100644
---- a/include/linux/perf_event.h
-+++ b/include/linux/perf_event.h
-@@ -652,19 +652,22 @@ struct pmu_event_list {
-  * disabled is sufficient since it will hold-off the IPIs.
-  */
- #ifdef CONFIG_PROVE_LOCKING
--#define lockdep_assert_event_ctx(event)				\
-+#define lockdep_assert_event_ctx(ctx)				\
- 	WARN_ON_ONCE(__lockdep_enabled &&			\
- 		     (this_cpu_read(hardirqs_enabled) &&	\
--		      lockdep_is_held(&(event)->ctx->mutex) != LOCK_STATE_HELD))
-+		      lockdep_is_held(&(ctx)->mutex) != LOCK_STATE_HELD))
- #else
- #define lockdep_assert_event_ctx(event)
- #endif
- 
--#define for_each_sibling_event(sibling, event)			\
--	lockdep_assert_event_ctx(event);			\
-+#define for_each_sibling_event_ctx(sibling, event, ctx)		\
-+	lockdep_assert_event_ctx(ctx);			\
- 	if ((event)->group_leader == (event))			\
- 		list_for_each_entry((sibling), &(event)->sibling_list, sibling_list)
- 
-+#define for_each_sibling_event(sibling, event)			\
-+	for_each_sibling_event_ctx(sibling, event, event->ctx)
-+
- /**
-  * struct perf_event - performance event kernel representation:
-  */
-diff --git a/kernel/events/core.c b/kernel/events/core.c
-index c9d123e13b57..2745de6c4faf 100644
---- a/kernel/events/core.c
-+++ b/kernel/events/core.c
-@@ -1935,7 +1935,8 @@ static void perf_event__id_header_size(struct perf_event *event)
-  * This leaves 48k for the constant size fields and things like callchains,
-  * branch stacks and register sets.
-  */
--static bool perf_event_validate_size(struct perf_event *event)
-+static bool perf_event_validate_size(struct perf_event *event,
-+				     struct perf_event_context *ctx)
- {
- 	struct perf_event *sibling, *group_leader = event->group_leader;
- 
-@@ -1947,7 +1948,7 @@ static bool perf_event_validate_size(struct perf_event *event)
- 				   group_leader->nr_siblings + 1) > 16*1024)
- 		return false;
- 
--	for_each_sibling_event(sibling, group_leader) {
-+	for_each_sibling_event_ctx(sibling, group_leader, ctx) {
- 		if (__perf_event_read_size(sibling->attr.read_format,
- 					   group_leader->nr_siblings + 1) > 16*1024)
- 			return false;
-@@ -12652,7 +12653,7 @@ SYSCALL_DEFINE5(perf_event_open,
- 			goto err_context;
- 	}
- 
--	if (!perf_event_validate_size(event)) {
-+	if (!perf_event_validate_size(event, ctx)) {
- 		err = -E2BIG;
- 		goto err_context;
- 	}
+> +/* CMU_PERIC0 MUX */
+> +#define CLK_MOUT_PERIC0_BUS_USER                       1
+> +#define CLK_MOUT_PERIC0_I3C_USER                       2
+> +#define CLK_MOUT_PERIC0_USI0_UART_USER                 3
+> +#define CLK_MOUT_PERIC0_USI14_USI_USER                 4
+> +#define CLK_MOUT_PERIC0_USI1_USI_USER                  5
+> +#define CLK_MOUT_PERIC0_USI2_USI_USER                  6
+> +#define CLK_MOUT_PERIC0_USI3_USI_USER                  7
+> +#define CLK_MOUT_PERIC0_USI4_USI_USER                  8
+> +#define CLK_MOUT_PERIC0_USI5_USI_USER                  9
+> +#define CLK_MOUT_PERIC0_USI6_USI_USER                  10
+> +#define CLK_MOUT_PERIC0_USI7_USI_USER                  11
+> +#define CLK_MOUT_PERIC0_USI8_USI_USER                  12
+> +
+> +/* CMU_PERIC0 Dividers */
+> +#define CLK_DOUT_PERIC0_I3C                            13
+> +#define CLK_DOUT_PERIC0_USI0_UART                      14
+> +#define CLK_DOUT_PERIC0_USI14_USI                      15
+> +#define CLK_DOUT_PERIC0_USI1_USI                       16
+> +#define CLK_DOUT_PERIC0_USI2_USI                       17
+> +#define CLK_DOUT_PERIC0_USI3_USI                       18
+> +#define CLK_DOUT_PERIC0_USI4_USI                       19
+> +#define CLK_DOUT_PERIC0_USI5_USI                       20
+> +#define CLK_DOUT_PERIC0_USI6_USI                       21
+> +#define CLK_DOUT_PERIC0_USI7_USI                       22
+> +#define CLK_DOUT_PERIC0_USI8_USI                       23
+> +
+> +/* CMU_PERIC0 Gates */
+> +#define CLK_GOUT_PERIC0_IP                             24
+> +#define CLK_GOUT_PERIC0_PERIC0_CMU_PERIC0_PCLK         25
+> +#define CLK_GOUT_PERIC0_CLK_PERIC0_OSCCLK_CLK          26
+> +#define CLK_GOUT_PERIC0_D_TZPC_PERIC0_PCLK             27
+> +#define CLK_GOUT_PERIC0_GPC_PERIC0_PCLK                        28
+> +#define CLK_GOUT_PERIC0_GPIO_PERIC0_PCLK               29
+> +#define CLK_GOUT_PERIC0_LHM_AXI_P_PERIC0_I_CLK         30
+> +#define CLK_GOUT_PERIC0_PERIC0_TOP0_IPCLK_0            31
+> +#define CLK_GOUT_PERIC0_PERIC0_TOP0_IPCLK_1            32
+> +#define CLK_GOUT_PERIC0_PERIC0_TOP0_IPCLK_10           33
+> +#define CLK_GOUT_PERIC0_PERIC0_TOP0_IPCLK_11           34
+> +#define CLK_GOUT_PERIC0_PERIC0_TOP0_IPCLK_12           35
+> +#define CLK_GOUT_PERIC0_PERIC0_TOP0_IPCLK_13           36
+> +#define CLK_GOUT_PERIC0_PERIC0_TOP0_IPCLK_14           37
+> +#define CLK_GOUT_PERIC0_PERIC0_TOP0_IPCLK_15           38
+> +#define CLK_GOUT_PERIC0_PERIC0_TOP0_IPCLK_2            39
+> +#define CLK_GOUT_PERIC0_PERIC0_TOP0_IPCLK_3            40
+> +#define CLK_GOUT_PERIC0_PERIC0_TOP0_IPCLK_4            41
+> +#define CLK_GOUT_PERIC0_PERIC0_TOP0_IPCLK_5            42
+> +#define CLK_GOUT_PERIC0_PERIC0_TOP0_IPCLK_6            43
+> +#define CLK_GOUT_PERIC0_PERIC0_TOP0_IPCLK_7            44
+> +#define CLK_GOUT_PERIC0_PERIC0_TOP0_IPCLK_8            45
+> +#define CLK_GOUT_PERIC0_PERIC0_TOP0_IPCLK_9            46
+> +#define CLK_GOUT_PERIC0_PERIC0_TOP0_PCLK_0             47
+> +#define CLK_GOUT_PERIC0_PERIC0_TOP0_PCLK_1             48
+> +#define CLK_GOUT_PERIC0_PERIC0_TOP0_PCLK_10            49
+> +#define CLK_GOUT_PERIC0_PERIC0_TOP0_PCLK_11            50
+> +#define CLK_GOUT_PERIC0_PERIC0_TOP0_PCLK_12            51
+> +#define CLK_GOUT_PERIC0_PERIC0_TOP0_PCLK_13            52
+> +#define CLK_GOUT_PERIC0_PERIC0_TOP0_PCLK_14            53
+> +#define CLK_GOUT_PERIC0_PERIC0_TOP0_PCLK_15            54
+> +#define CLK_GOUT_PERIC0_PERIC0_TOP0_PCLK_2             55
+> +#define CLK_GOUT_PERIC0_PERIC0_TOP0_PCLK_3             56
+> +#define CLK_GOUT_PERIC0_PERIC0_TOP0_PCLK_4             57
+> +#define CLK_GOUT_PERIC0_PERIC0_TOP0_PCLK_5             58
+> +#define CLK_GOUT_PERIC0_PERIC0_TOP0_PCLK_6             59
+> +#define CLK_GOUT_PERIC0_PERIC0_TOP0_PCLK_7             60
+> +#define CLK_GOUT_PERIC0_PERIC0_TOP0_PCLK_8             61
+> +#define CLK_GOUT_PERIC0_PERIC0_TOP0_PCLK_9             62
+> +#define CLK_GOUT_PERIC0_PERIC0_TOP1_IPCLK_0            63
+> +#define CLK_GOUT_PERIC0_PERIC0_TOP1_IPCLK_2            64
+> +#define CLK_GOUT_PERIC0_PERIC0_TOP1_PCLK_0             65
+> +#define CLK_GOUT_PERIC0_PERIC0_TOP1_PCLK_2             66
+> +#define CLK_GOUT_PERIC0_CLK_PERIC0_BUSP_CLK            67
+> +#define CLK_GOUT_PERIC0_CLK_PERIC0_I3C_CLK             68
+> +#define CLK_GOUT_PERIC0_CLK_PERIC0_USI0_UART_CLK       69
+> +#define CLK_GOUT_PERIC0_CLK_PERIC0_USI14_USI_CLK       70
+> +#define CLK_GOUT_PERIC0_CLK_PERIC0_USI1_USI_CLK                71
+> +#define CLK_GOUT_PERIC0_CLK_PERIC0_USI2_USI_CLK                72
+> +#define CLK_GOUT_PERIC0_CLK_PERIC0_USI3_USI_CLK                73
+> +#define CLK_GOUT_PERIC0_CLK_PERIC0_USI4_USI_CLK                74
+> +#define CLK_GOUT_PERIC0_CLK_PERIC0_USI5_USI_CLK                75
+> +#define CLK_GOUT_PERIC0_CLK_PERIC0_USI6_USI_CLK                76
+> +#define CLK_GOUT_PERIC0_CLK_PERIC0_USI7_USI_CLK                77
+> +#define CLK_GOUT_PERIC0_CLK_PERIC0_USI8_USI_CLK                78
+> +#define CLK_GOUT_PERIC0_SYSREG_PERIC0_PCLK             79
+> +
+>  #endif /* _DT_BINDINGS_CLOCK_GOOGLE_GS101_H */
+> --
+> 2.43.0.472.g3155946c3a-goog
+>
