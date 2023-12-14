@@ -2,316 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D13F9813938
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 18:58:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C9A2481393E
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 18:59:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235681AbjLNR6X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 12:58:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49896 "EHLO
+        id S235637AbjLNR72 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 12:59:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51134 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230523AbjLNR6V (ORCPT
+        with ESMTP id S229532AbjLNR70 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 12:58:21 -0500
-Received: from mail-il1-x136.google.com (mail-il1-x136.google.com [IPv6:2607:f8b0:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEEAB121
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 09:58:26 -0800 (PST)
-Received: by mail-il1-x136.google.com with SMTP id e9e14a558f8ab-357d0d15b29so1395ab.1
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 09:58:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1702576706; x=1703181506; darn=vger.kernel.org;
-        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=o8hhXPzgTkSbGrZlVoxMVSGKEuHWo76SGrFtR2YZpAU=;
-        b=xGZbKlpO2u0cKvAWGqFmHSjb3EV1nYmRpMMA6kG0/SCMBMXGAp6bWV8OVzcCkECcty
-         LEaQDCIecag6Gccbo/Wzy7bHgsEIo9pJ1ETPxYTw4/+I8DqfAzEbBPmvtGRomXSIegfh
-         NYgd2JfxHDyyjvYsA60GReXCQBsyARo2jHJwjckE3bnGD1q+C+TMfttWqB0WqJDaHdho
-         TW6zCjF9DFIaKhw3QZk0WK01/VqFIibX0Hq6azcwIWmisqG6jSuKyzZcrDhlQPWt02b+
-         DBsSqQZosN7/8xOtx2yBm4qmdAcHyWKBCLG8rOqNkobZ5ttgcZ01J4yJq7W3iWXpJwJD
-         TUUQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702576706; x=1703181506;
-        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=o8hhXPzgTkSbGrZlVoxMVSGKEuHWo76SGrFtR2YZpAU=;
-        b=bfWE2d7H94hKAIwiwQl5OKPZKWE/oWUc2ivAdWQFcxrjkeDm5ROIElCM54slGBncit
-         TCA/pH3Zd95oGTDudIO1+EmXgAkK7KCpqVam4bNSAqqY8Qt2zf49gCabWbtmn/JQzvLC
-         /nfoORrrsNQ7cgP/Ldhz84hcOi6KT9SdVIm1tsavzYGt8X7t3IOgWiqVvBDVbCd6nb9s
-         d3D1R/cogxhNJDG74E3gIvekOch/CQu1AaNRhPqe05m8thmvnrw//W0HIzmY3AAMH1hP
-         AY8q0/vGhz22qcnYico333V5cNk0xCkChQtJjA0hwAjz6zzQioCFCSlLNkieYy/jNja7
-         sYyQ==
-X-Gm-Message-State: AOJu0YzPmX2LoiUWpRBSCIUxO/Vf3AN96gt1iICJqcMYrGvNZPBP9l2D
-        huQIZNnR5CvkhykajEnT1af/0g==
-X-Google-Smtp-Source: AGHT+IHmJZOc6yIjryc1hqs+mSoywAgy/Kw7JX+y+PxO7dXRpBhV7x9zJfpibywCzeGN/8UCDSSJcQ==
-X-Received: by 2002:a05:6e02:4a3:b0:35f:7497:181a with SMTP id e3-20020a056e0204a300b0035f7497181amr419773ils.2.1702576705658;
-        Thu, 14 Dec 2023 09:58:25 -0800 (PST)
-Received: from [2620:0:1008:15:740b:4c24:bdb6:a42a] ([2620:0:1008:15:740b:4c24:bdb6:a42a])
-        by smtp.gmail.com with ESMTPSA id ba1-20020a170902720100b001d09c539c95sm12769653plb.90.2023.12.14.09.58.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Dec 2023 09:58:25 -0800 (PST)
-Date:   Thu, 14 Dec 2023 09:58:23 -0800 (PST)
-From:   David Rientjes <rientjes@google.com>
-To:     Pasha Tatashin <pasha.tatashin@soleen.com>
-cc:     Andrew Morton <akpm@linux-foundation.org>, alim.akhtar@samsung.com,
-        alyssa@rosenzweig.io, asahi@lists.linux.dev,
-        baolu.lu@linux.intel.com, bhelgaas@google.com,
-        cgroups@vger.kernel.org, corbet@lwn.net, david@redhat.com,
-        dwmw2@infradead.org, hannes@cmpxchg.org, heiko@sntech.de,
-        iommu@lists.linux.dev, jernej.skrabec@gmail.com,
-        jonathanh@nvidia.com, joro@8bytes.org,
-        krzysztof.kozlowski@linaro.org, linux-doc@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linux-rockchip@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-sunxi@lists.linux.dev,
-        linux-tegra@vger.kernel.org, lizefan.x@bytedance.com,
-        marcan@marcan.st, mhiramat@kernel.org, m.szyprowski@samsung.com,
-        paulmck@kernel.org, rdunlap@infradead.org, robin.murphy@arm.com,
-        samuel@sholland.org, suravee.suthikulpanit@amd.com,
-        sven@svenpeter.dev, thierry.reding@gmail.com, tj@kernel.org,
-        tomas.mudrunka@gmail.com, vdumpa@nvidia.com, wens@csie.org,
-        will@kernel.org, yu-cheng.yu@intel.com
-Subject: Re: [PATCH v2 01/10] iommu/vt-d: add wrapper functions for page
- allocations
-In-Reply-To: <20231130201504.2322355-2-pasha.tatashin@soleen.com>
-Message-ID: <776e17af-ae25-16a0-f443-66f3972b00c0@google.com>
-References: <20231130201504.2322355-1-pasha.tatashin@soleen.com> <20231130201504.2322355-2-pasha.tatashin@soleen.com>
+        Thu, 14 Dec 2023 12:59:26 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 088C2AF
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 09:59:33 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6CC60C433CC
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 17:59:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1702576772;
+        bh=uqBnNJDLNbYm6pyh21nyjtNJssu0wb0DQLI/0nBbEYM=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=Egxc0hmdtjS1VLxrw5xpoHYoVRRHFSWiVpf95NRcSlM82ZnZa98Puor5DJi2SrD8b
+         HWW6Qg1TEqF3OS1gRiwQTqhDe/Vn+OSRTpc9gCvzwefcg+ZPDE4wMqDYsGFUiS9Lf2
+         fGVfaM7KUQq0jwGIPw0w3NrvWh88p1w1pU2wxCP7HhBqGv9adNmoTEjPPJKHXeRSQC
+         Dk2D0KjHJ+QZnYU2BYr6eCm49pGMlMWyVATqyd0vHboVKH09UWsDQ2KqrzIpodKJAz
+         wEtLkZVEjppXDqRKwRIxKTcM1amXHDF5TOkbS4o8dzQsyap1hK/pl/k/nADfm855z7
+         Zobfpd1+pNmjQ==
+Received: by mail-pj1-f48.google.com with SMTP id 98e67ed59e1d1-28af0b85f58so1132107a91.2
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 09:59:32 -0800 (PST)
+X-Gm-Message-State: AOJu0YyicZGlnRmgi/cGd9XEqFSsspoEW2f5d0MymdsjrL5QiUKpaiJp
+        G0hyimYJBDHVlm8ayU8VAN16kET8uY9TPnStidQzdA==
+X-Google-Smtp-Source: AGHT+IFNWxaSic8oiERsgiihMfNvZhB76oUvs/IXNgurMwl22WlqJP8LNReHsIoSnBTAheGNCnSNkrgbgc2C15Faw6M=
+X-Received: by 2002:a17:90b:1d83:b0:28b:f9b:d6db with SMTP id
+ pf3-20020a17090b1d8300b0028b0f9bd6dbmr483554pjb.8.1702576771751; Thu, 14 Dec
+ 2023 09:59:31 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+References: <20231213-zswap-dstmem-v1-0-896763369d04@bytedance.com> <20231213-zswap-dstmem-v1-1-896763369d04@bytedance.com>
+In-Reply-To: <20231213-zswap-dstmem-v1-1-896763369d04@bytedance.com>
+From:   Chris Li <chrisl@kernel.org>
+Date:   Thu, 14 Dec 2023 09:59:20 -0800
+X-Gmail-Original-Message-ID: <CAF8kJuPCPGdsT9Yxmeu1t9XT9xpsq2mSXcz1agcm5iKb13owPQ@mail.gmail.com>
+Message-ID: <CAF8kJuPCPGdsT9Yxmeu1t9XT9xpsq2mSXcz1agcm5iKb13owPQ@mail.gmail.com>
+Subject: Re: [PATCH 1/5] mm/zswap: reuse dstmem when decompress
+To:     Chengming Zhou <zhouchengming@bytedance.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Nhat Pham <nphamcs@gmail.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Seth Jennings <sjenning@redhat.com>,
+        Dan Streetman <ddstreet@ieee.org>,
+        Vitaly Wool <vitaly.wool@konsulko.com>,
+        Yosry Ahmed <yosryahmed@google.com>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 30 Nov 2023, Pasha Tatashin wrote:
+On Tue, Dec 12, 2023 at 8:18=E2=80=AFPM Chengming Zhou
+<zhouchengming@bytedance.com> wrote:
+>
+> In the !zpool_can_sleep_mapped() case such as zsmalloc, we need to first
+> copy the entry->handle memory to a temporary memory, which is allocated
+> using kmalloc.
+>
+> Obviously we can reuse the per-compressor dstmem to avoid allocating
+> every time, since it's percpu-compressor and protected in mutex.
 
-> diff --git a/drivers/iommu/iommu-pages.h b/drivers/iommu/iommu-pages.h
-> new file mode 100644
-> index 000000000000..2332f807d514
-> --- /dev/null
-> +++ b/drivers/iommu/iommu-pages.h
-> @@ -0,0 +1,199 @@
-> +/* SPDX-License-Identifier: GPL-2.0-only */
-> +/*
-> + * Copyright (c) 2023, Google LLC.
-> + * Pasha Tatashin <pasha.tatashin@soleen.com>
-> + */
-> +
-> +#ifndef __IOMMU_PAGES_H
-> +#define __IOMMU_PAGES_H
-> +
-> +#include <linux/vmstat.h>
-> +#include <linux/gfp.h>
-> +#include <linux/mm.h>
-> +
-> +/*
-> + * All page allocation that are performed in the IOMMU subsystem must use one of
-> + * the functions below.  This is necessary for the proper accounting as IOMMU
-> + * state can be rather large, i.e. multiple gigabytes in size.
-> + */
-> +
-> +/**
-> + * __iommu_alloc_pages_node - allocate a zeroed page of a given order from
-> + * specific NUMA node.
-> + * @nid: memory NUMA node id
+You are trading more memory for faster speed.
+Per-cpu data structure does not come free. It is expensive in terms of
+memory on a big server with a lot of CPU. Think more than a few
+hundred CPU. On the big servers, we might want to disable this
+optimization to save a few MB RAM, depending on the gain of this
+optimization.
+Do we have any benchmark suggesting how much CPU overhead or latency
+this per-CPU page buys us, compared to using kmalloc?
 
-NUMA_NO_NODE if no locality requirements?
+Chris
 
-> + * @gfp: buddy allocator flags
-> + * @order: page order
-> + *
-> + * returns the head struct page of the allocated page.
-> + */
-> +static inline struct page *__iommu_alloc_pages_node(int nid, gfp_t gfp,
-> +						    int order)
-> +{
-> +	struct page *pages;
-
-s/pages/page/ here and later in this file.
-
+>
+> Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
+> Reviewed-by: Nhat Pham <nphamcs@gmail.com>
+> ---
+>  mm/zswap.c | 29 +++++++++--------------------
+>  1 file changed, 9 insertions(+), 20 deletions(-)
+>
+> diff --git a/mm/zswap.c b/mm/zswap.c
+> index 7ee54a3d8281..edb8b45ed5a1 100644
+> --- a/mm/zswap.c
+> +++ b/mm/zswap.c
+> @@ -1772,9 +1772,9 @@ bool zswap_load(struct folio *folio)
+>         struct zswap_entry *entry;
+>         struct scatterlist input, output;
+>         struct crypto_acomp_ctx *acomp_ctx;
+> -       u8 *src, *dst, *tmp;
+> +       unsigned int dlen =3D PAGE_SIZE;
+> +       u8 *src, *dst;
+>         struct zpool *zpool;
+> -       unsigned int dlen;
+>         bool ret;
+>
+>         VM_WARN_ON_ONCE(!folio_test_locked(folio));
+> @@ -1796,27 +1796,18 @@ bool zswap_load(struct folio *folio)
+>                 goto stats;
+>         }
+>
+> -       zpool =3D zswap_find_zpool(entry);
+> -       if (!zpool_can_sleep_mapped(zpool)) {
+> -               tmp =3D kmalloc(entry->length, GFP_KERNEL);
+> -               if (!tmp) {
+> -                       ret =3D false;
+> -                       goto freeentry;
+> -               }
+> -       }
+> -
+>         /* decompress */
+> -       dlen =3D PAGE_SIZE;
+> -       src =3D zpool_map_handle(zpool, entry->handle, ZPOOL_MM_RO);
+> +       acomp_ctx =3D raw_cpu_ptr(entry->pool->acomp_ctx);
+> +       mutex_lock(acomp_ctx->mutex);
+>
+> +       zpool =3D zswap_find_zpool(entry);
+> +       src =3D zpool_map_handle(zpool, entry->handle, ZPOOL_MM_RO);
+>         if (!zpool_can_sleep_mapped(zpool)) {
+> -               memcpy(tmp, src, entry->length);
+> -               src =3D tmp;
+> +               memcpy(acomp_ctx->dstmem, src, entry->length);
+> +               src =3D acomp_ctx->dstmem;
+>                 zpool_unmap_handle(zpool, entry->handle);
+>         }
+>
+> -       acomp_ctx =3D raw_cpu_ptr(entry->pool->acomp_ctx);
+> -       mutex_lock(acomp_ctx->mutex);
+>         sg_init_one(&input, src, entry->length);
+>         sg_init_table(&output, 1);
+>         sg_set_page(&output, page, PAGE_SIZE, 0);
+> @@ -1827,15 +1818,13 @@ bool zswap_load(struct folio *folio)
+>
+>         if (zpool_can_sleep_mapped(zpool))
+>                 zpool_unmap_handle(zpool, entry->handle);
+> -       else
+> -               kfree(tmp);
+>
+>         ret =3D true;
+>  stats:
+>         count_vm_event(ZSWPIN);
+>         if (entry->objcg)
+>                 count_objcg_event(entry->objcg, ZSWPIN);
+> -freeentry:
 > +
-> +	pages = alloc_pages_node(nid, gfp | __GFP_ZERO, order);
-> +	if (!pages)
-
-unlikely()?
-
-> +		return NULL;
-> +
-> +	return pages;
-> +}
-> +
-> +/**
-> + * __iommu_alloc_pages - allocate a zeroed page of a given order.
-> + * @gfp: buddy allocator flags
-> + * @order: page order
-> + *
-> + * returns the head struct page of the allocated page.
-> + */
-> +static inline struct page *__iommu_alloc_pages(gfp_t gfp, int order)
-> +{
-> +	struct page *pages;
-> +
-> +	pages = alloc_pages(gfp | __GFP_ZERO, order);
-> +	if (!pages)
-> +		return NULL;
-> +
-> +	return pages;
-> +}
-> +
-> +/**
-> + * __iommu_alloc_page_node - allocate a zeroed page at specific NUMA node.
-> + * @nid: memory NUMA node id
-> + * @gfp: buddy allocator flags
-> + *
-> + * returns the struct page of the allocated page.
-> + */
-> +static inline struct page *__iommu_alloc_page_node(int nid, gfp_t gfp)
-> +{
-> +	return __iommu_alloc_pages_node(nid, gfp, 0);
-> +}
-> +
-> +/**
-> + * __iommu_alloc_page - allocate a zeroed page
-> + * @gfp: buddy allocator flags
-> + *
-> + * returns the struct page of the allocated page.
-> + */
-> +static inline struct page *__iommu_alloc_page(gfp_t gfp)
-> +{
-> +	return __iommu_alloc_pages(gfp, 0);
-> +}
-> +
-> +/**
-> + * __iommu_free_pages - free page of a given order
-> + * @pages: head struct page of the page
-
-I think "pages" implies more than one page, this is just a (potentially 
-compound) page?
-
-> + * @order: page order
-> + */
-> +static inline void __iommu_free_pages(struct page *pages, int order)
-> +{
-> +	if (!pages)
-> +		return;
-> +
-> +	__free_pages(pages, order);
-> +}
-> +
-> +/**
-> + * __iommu_free_page - free page
-> + * @page: struct page of the page
-> + */
-> +static inline void __iommu_free_page(struct page *page)
-> +{
-> +	__iommu_free_pages(page, 0);
-> +}
-> +
-> +/**
-> + * iommu_alloc_pages_node - allocate a zeroed page of a given order from
-> + * specific NUMA node.
-> + * @nid: memory NUMA node id
-> + * @gfp: buddy allocator flags
-> + * @order: page order
-> + *
-> + * returns the virtual address of the allocated page
-> + */
-> +static inline void *iommu_alloc_pages_node(int nid, gfp_t gfp, int order)
-> +{
-> +	struct page *pages = __iommu_alloc_pages_node(nid, gfp, order);
-> +
-> +	if (!pages)
-> +		return NULL;
-> +
-> +	return page_address(pages);
-> +}
-> +
-> +/**
-> + * iommu_alloc_pages - allocate a zeroed page of a given order
-> + * @gfp: buddy allocator flags
-> + * @order: page order
-> + *
-> + * returns the virtual address of the allocated page
-> + */
-> +static inline void *iommu_alloc_pages(gfp_t gfp, int order)
-> +{
-> +	struct page *pages = __iommu_alloc_pages(gfp, order);
-> +
-> +	if (!pages)
-> +		return NULL;
-> +
-> +	return page_address(pages);
-> +}
-> +
-> +/**
-> + * iommu_alloc_page_node - allocate a zeroed page at specific NUMA node.
-> + * @nid: memory NUMA node id
-> + * @gfp: buddy allocator flags
-> + *
-> + * returns the virtual address of the allocated page
-> + */
-> +static inline void *iommu_alloc_page_node(int nid, gfp_t gfp)
-> +{
-> +	return iommu_alloc_pages_node(nid, gfp, 0);
-> +}
-> +
-> +/**
-> + * iommu_alloc_page - allocate a zeroed page
-> + * @gfp: buddy allocator flags
-> + *
-> + * returns the virtual address of the allocated page
-> + */
-> +static inline void *iommu_alloc_page(gfp_t gfp)
-> +{
-> +	return iommu_alloc_pages(gfp, 0);
-> +}
-> +
-> +/**
-> + * iommu_free_pages - free page of a given order
-> + * @virt: virtual address of the page to be freed.
-> + * @order: page order
-> + */
-> +static inline void iommu_free_pages(void *virt, int order)
-> +{
-> +	if (!virt)
-> +		return;
-> +
-> +	__iommu_free_pages(virt_to_page(virt), order);
-> +}
-> +
-> +/**
-> + * iommu_free_page - free page
-> + * @virt: virtual address of the page to be freed.
-> + */
-> +static inline void iommu_free_page(void *virt)
-> +{
-> +	iommu_free_pages(virt, 0);
-> +}
-> +
-> +/**
-> + * iommu_free_pages_list - free a list of pages.
-> + * @pages: the head of the lru list to be freed.
-
-Document the locking requirements for this?
-
-> + */
-> +static inline void iommu_free_pages_list(struct list_head *pages)
-> +{
-> +	while (!list_empty(pages)) {
-> +		struct page *p = list_entry(pages->prev, struct page, lru);
-> +
-> +		list_del(&p->lru);
-> +		put_page(p);
-> +	}
-> +}
-> +
-> +#endif	/* __IOMMU_PAGES_H */
-> -- 
-> 2.43.0.rc2.451.g8631bc7472-goog
-> 
-> 
-> 
+>         spin_lock(&tree->lock);
+>         if (ret && zswap_exclusive_loads_enabled) {
+>                 zswap_invalidate_entry(tree, entry);
+>
+> --
+> b4 0.10.1
