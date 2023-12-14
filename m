@@ -2,182 +2,227 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B144812CD8
+	by mail.lfdr.de (Postfix) with ESMTP id 06240812CD7
 	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 11:24:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1443615AbjLNKYk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 05:24:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40070 "EHLO
+        id S1443623AbjLNKYq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 05:24:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55038 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1443555AbjLNKYj (ORCPT
+        with ESMTP id S1443617AbjLNKYo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 05:24:39 -0500
-Received: from APC01-SG2-obe.outbound.protection.outlook.com (mail-sgaapc01on2059.outbound.protection.outlook.com [40.107.215.59])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28D37AF;
+        Thu, 14 Dec 2023 05:24:44 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9160E0
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 02:24:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1702549490;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=DSSH8LtzM2s/nHi8p5P1p50CtgKbNQDA/Xelk2DiA14=;
+        b=HP4qSm2La8BFs5PuUsColw3oP1quGz6AGYQ2aYJlpJh2PJBuWU4OEaP/TRKryl0BZUkVdh
+        BhIGb9+vW1f0Po2UKHiR2q++2nBFC73oqXJ9M2J2Dar2rWqfQK7B4BIdnkC0vJzF1kMYi3
+        jriaGF59wNIiRKOPqnJNI9AllVvHl3g=
+Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
+ [209.85.218.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-66-LALcHKd5N0Cj6DGEm-krGw-1; Thu, 14 Dec 2023 05:24:46 -0500
+X-MC-Unique: LALcHKd5N0Cj6DGEm-krGw-1
+Received: by mail-ej1-f72.google.com with SMTP id a640c23a62f3a-a1f99dd182dso260860666b.3
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 02:24:46 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702549485; x=1703154285;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=DSSH8LtzM2s/nHi8p5P1p50CtgKbNQDA/Xelk2DiA14=;
+        b=UhMp65D4TbWdOMbFcPR2M9oxF7kNPSBEKpxJscpShfSf0GoZQH7mMd7clSDRa10n3c
+         2yK1JNz43s2UjguW8R1sbVjySHOVUblqdX6Z39b3uwduQw6ptoMUsV0FLwyvw0lDk2Y7
+         arBSfd/yYSlB4wdspVrSWLPkPgu4St5tWxA9YToFwTJUBErAx6V4j0jDtxFKCgafz5WL
+         tT6oi60yviqSSk+XjOMx1qLBAtCChUI8mhNvNJRN6M1XAd06CNYy/UtxTW4q5Gs2WcRz
+         0wrE4fPjON3QQRRlKtmZjVutOX5DyXFVef/t5BKbEPKNHNbsMz6DwqlIqML9GgWS1nil
+         cPrQ==
+X-Gm-Message-State: AOJu0YxLlsy18utjuz9tGnzipH/69YltICo7cxvayAJGlcjdMsaNi5Dc
+        UW48j2ACRvUBP2pW3WY/iTBlpP1atpVPCF6ch7keSQdQ/AvXEANEFjAwH7+/6ZW5csiwGUkj6TX
+        SaQYS1LFkCI+Li731uS7t+/Fg
+X-Received: by 2002:a17:907:3a97:b0:a1f:7352:3c0 with SMTP id fh23-20020a1709073a9700b00a1f735203c0mr4111140ejc.59.1702549485733;
+        Thu, 14 Dec 2023 02:24:45 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IFJ4mtbeRMe02kWwF6Hh+xBcu1mR/wHuPokTQ+4Rni40u2pBzA16VxW6ly8OowEf1SbmDDVig==
+X-Received: by 2002:a17:907:3a97:b0:a1f:7352:3c0 with SMTP id fh23-20020a1709073a9700b00a1f735203c0mr4111122ejc.59.1702549485320;
+        Thu, 14 Dec 2023 02:24:45 -0800 (PST)
+Received: from redhat.com ([2.52.132.243])
+        by smtp.gmail.com with ESMTPSA id vv6-20020a170907a68600b00a1dff479037sm9103575ejc.127.2023.12.14.02.24.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Thu, 14 Dec 2023 02:24:44 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=KkVefg99o4LE747T3nbLEhwYYRLq1QylAdd4lTR0B4ulVSunISLAMNWz1ldi9Frde7BfssAmgOtM3VqZ6SOBExpXyoarYlFDpNlcS0yJRjaH9pI5SflU9QZ6uF80sHhNvv7e6pqxbNl8HOXv3Y6Ru/sXQodntWjnp4IbP+KyWEV9fOx1OKxf5yq9BLCJ8vlM3uSmkYu95HSTWD7sypoAR1gJ32feHfOefGtWNS4d8ATDFFZE2dsSqqcm9xEWMeDU+MkKbUveA//yU9yzTA4895vAtWEh7IfDWh55f2JLD9Vdn1YhvakTAJ7D1BwDszzqJWBsaFnztKKHZ+mn2Cr1uQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=eiOimk1oZIn/bwWRx0kWMlf5zDV2wGTUT5OQv4GHfVA=;
- b=kQOSJFF5usnrASOOWSTedQH9XQqPMK/VrK+orc8MECeFHj1grprmti1J++VovqnjCbVbcxfNcdALmxPXuYA04Zh/DRjudo7lh4vGUKc/t8pJp80ZUjngOaffMWDG1qKKN4tAENN8mPnzJuON0Px1VaHvaZ/ImkNn3/7X/thZfQUoqUTb8hiOjPY7VA1igJk/iqe3vR0DZEv7AY2J8XpahZmM0Oqjs6EDpFeXhiQN9n1u3cz9RPg+skcNtzlnRSqHR3vh04gO+haCXhQeIC4etIOlyBbKcnt97vi0v7zUxCS1JlsD0lNqhNEG4iD6dx5pDq7SWdgBv9p85TuLBjcYbA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=moxa.com; dmarc=pass action=none header.from=moxa.com;
- dkim=pass header.d=moxa.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=moxa.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=eiOimk1oZIn/bwWRx0kWMlf5zDV2wGTUT5OQv4GHfVA=;
- b=T9YZgwyGhroIjXTX0psaMbSlzrjlwLyHlbazlE/fKxUUQCRo68TZEa+MfImikZTmZf8AhnWBK3JfDbDDxypFjVyAO004rGvhKah65OU3R8EgXxFoXUo//mZiwkbNCqA9GpuLwtoblvz7SLtJJJaGS/Stzyi+AwIjXvWBNebHxqw=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=moxa.com;
-Received: from SEYPR01MB5387.apcprd01.prod.exchangelabs.com
- (2603:1096:101:d8::6) by TYZPR01MB4943.apcprd01.prod.exchangelabs.com
- (2603:1096:400:280::10) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7091.28; Thu, 14 Dec
- 2023 10:24:40 +0000
-Received: from SEYPR01MB5387.apcprd01.prod.exchangelabs.com
- ([fe80::a480:d88f:100:3a92]) by SEYPR01MB5387.apcprd01.prod.exchangelabs.com
- ([fe80::a480:d88f:100:3a92%7]) with mapi id 15.20.7091.028; Thu, 14 Dec 2023
- 10:24:40 +0000
-Date:   Thu, 14 Dec 2023 18:24:34 +0800
-From:   Crescent CY Hsieh <crescentcy.hsieh@moxa.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Lino Sanfilippo <LinoSanfilippo@gmx.de>,
-        Christoph Niedermaier <cniedermaier@dh-electronics.com>,
-        Lukas Wunner <lukas@wunner.de>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-serial@vger.kernel.org" <linux-serial@vger.kernel.org>,
-        Ilpo =?iso-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>,
-        "brenda.streiff@ni.com" <brenda.streiff@ni.com>,
-        Tomas Paukrt <tomaspaukrt@email.cz>
-Subject: Re: [PATCH 1/2] dt-bindings: serial: rs485: add rs485-mux-gpios
- binding
-Message-ID: <ZXrX4mQXPLum0jL3@moxa-ThinkCentre-M90t>
-References: <20231120151056.148450-1-linux@rasmusvillemoes.dk>
- <20231120151056.148450-2-linux@rasmusvillemoes.dk>
- <20231122145344.GA18949@wunner.de>
- <3b8548b1-b8a9-0c9e-4040-5cfda06a85c6@gmx.de>
- <ec66d25162de4cbc92720df1e7008fe8@dh-electronics.com>
- <5c140498-69e3-4187-8703-db0c41e7ca89@gmx.de>
- <fe28eb93-daa1-41af-a005-f21aa87e1984@gmx.de>
- <ZXcJr4VS_uGr_6TV@smile.fi.intel.com>
+Date:   Thu, 14 Dec 2023 05:24:40 -0500
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Arseniy Krasnov <avkrasnov@salutedevices.com>
+Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
+        Stefano Garzarella <sgarzare@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Bobby Eshleman <bobby.eshleman@bytedance.com>,
+        kvm@vger.kernel.org, virtualization@lists.linux-foundation.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel@sberdevices.ru, oxffffaa@gmail.com
+Subject: Re: [PATCH net-next v9 2/4] virtio/vsock: send credit update during
+ setting SO_RCVLOWAT
+Message-ID: <20231214052234-mutt-send-email-mst@kernel.org>
+References: <20231214091947.395892-1-avkrasnov@salutedevices.com>
+ <20231214091947.395892-3-avkrasnov@salutedevices.com>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZXcJr4VS_uGr_6TV@smile.fi.intel.com>
-X-ClientProxiedBy: TYCP301CA0059.JPNP301.PROD.OUTLOOK.COM
- (2603:1096:400:384::19) To SEYPR01MB5387.apcprd01.prod.exchangelabs.com
- (2603:1096:101:d8::6)
-MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SEYPR01MB5387:EE_|TYZPR01MB4943:EE_
-X-MS-Office365-Filtering-Correlation-Id: 20d96746-ac5f-46de-2ff6-08dbfc8ee15c
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: InHd4dTw6S0UZbMC/c+V9vjt3PO0vtrtexVHMGlqYmTs0fByKcKbuXkY6HQhbyM9idsuB5CVKC/zNJ00RqW4ScUTilteVlUrqo95tKKSoAVBIqqeaCyOu/DxtdH6FNh/3LPb4OcwJPVk4L5DLA3UYrPlOVSIXpYmtVLSv21MfpiZI+lLu3TsBb/eEVVKCfFmmYKkDbWwBbp7cSk9+p/jRfRr9dDQkzDgGPCKKzojh5M5tXNnakXcncyi3RE6BILEWKErdJzJtM8iL7ok2r8uF7JZNiy1upBl9nUJtYe5ltCLz6V7TEHLhDgnLAe1g8znfQhQLm/mru2FyH6EaQ4NiXjxZ48pjhV47QBM8S2nGgCmILE6kFayM/xhoXBnyAJDv8gkJGsCsT1KTEvgGNk/YCop6BXaE82RF7Ok47rzZYcBbFTckEIvztxSeCuA5vOTe3Gi1JjU5DD/9ddIGAPIVSJ3ZKSxBiVIrp2s3oz9Su6bLOdJHqYLRUe5tKqnsHJAouIxGhTQxc1JU6VGdYz1LQGKcNyt/8DSX7BLWYGDpvoDodgFU4gSLjtNFyrpxawKVMOGrkNl7O4dHIUXmjET1V8MOW6kS9RrZFYQIcfo1Sg=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SEYPR01MB5387.apcprd01.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(366004)(376002)(136003)(346002)(39850400004)(396003)(230922051799003)(186009)(1800799012)(64100799003)(451199024)(6512007)(9686003)(6666004)(966005)(6486002)(26005)(478600001)(86362001)(4326008)(8936002)(8676002)(66946007)(53546011)(52116002)(66556008)(66476007)(54906003)(6916009)(316002)(6506007)(5660300002)(33716001)(38350700005)(38100700002)(7416002)(41300700001)(2906002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?JFOS2qTCKacVX09tFnnMbCxrv0xLemZ9OrSk3tG2L9+YFoArAw+ROqBOr+wN?=
- =?us-ascii?Q?KFfwZWYoZ4KZI8q4FD9+XyiyLcE1ysUpWqWIW0jdTBG8Y52mjXvriMB0LIRe?=
- =?us-ascii?Q?XUfJ1B7HzISSgQvriWWucU5kpq2thBRuMPe20BJDeg0vuvhdhRPZrIKP/6o8?=
- =?us-ascii?Q?UIIvoy28fMOUD3IFzTiiK95PmaaUWzu+JCcdpTrBjJ4ZrXXJFUKq9rGXbeXj?=
- =?us-ascii?Q?9l9lZxyvJMqJ0YgXTIjYyBep2YIcdxrNxvj/gFLDUjqBOKMcTgxeaTaUmRfZ?=
- =?us-ascii?Q?QYIU6DKXX59wpmlLRg6ku+pbDZZlSBJDlksQdpPpR1klhKpb2qzFtD8HCqDS?=
- =?us-ascii?Q?bd1HhGQjGqUTr1idgxAA9rtnkdzbYrfnqVIiMitO+IA8GoTfC/P8l+O/uwOZ?=
- =?us-ascii?Q?UB1CRw1ec54BGoGhxCgLf3JvPS/JVSWUKbPUc0SdT5FscLX1le7HCxdv4Oqs?=
- =?us-ascii?Q?M4upbzkkZDByCoiGZds2LaIuto0lgP46p0Nb9uijYmJA/PykNGcgsGpESqhC?=
- =?us-ascii?Q?+IzEmp6nvHZ38SPki7uLWAn3HzWpqGmh95Ia/myTjptH2x4e7XHqznMDc5an?=
- =?us-ascii?Q?y9k63+6nWeUYTpHJo+YESuLuy29bFHA0is2fusrk2y/yDQ3jE3fzKg4rxDoO?=
- =?us-ascii?Q?CCphlp1pkpZ9WhEMEdbajMJ6RPwc3OGruSfvK5DAawckqAtDHCYL6HjrBfOR?=
- =?us-ascii?Q?eIMcYDQBJOJ2BJ01NNhZkcoW7ppC5ZFyBWTKdedpi3FPzauEtF39OLvxNoDV?=
- =?us-ascii?Q?uKves+FcEjFHzfujJZDzKKJl24IeDa0plRiaZtawkNMXa0vfvW0Pxqu9hSKz?=
- =?us-ascii?Q?QQ5JDETni451QQ/GbTveKG4qyUJQgc/Nz8AEEZgNmCR1C/zlpQilKhoUKYZZ?=
- =?us-ascii?Q?rZGviqVkO6bNrB5ejsjYfOw4cnZuLj2CFBw58U58tJ8wCqt4BgKu+X44lq3E?=
- =?us-ascii?Q?WBTz0gkxmZaV24NONpWqw9K8r8zypa5LF390ByRvwUfpIVAMfhuqTrZ/FvER?=
- =?us-ascii?Q?IhZMVBNl7m5H+SN/x0gAGPf0OaSojGC/wE6qcjcfl++zyut4TMFNI6VsRTjJ?=
- =?us-ascii?Q?TJ3LxXLVUtUhXyvzUlLDCs6FrQZhaCnaUOAFw1Gw+iPpKiiJ7gf8awTWszCK?=
- =?us-ascii?Q?cHGjgmdHPijU/tJwybrTD6wsHxINdVNfLJr4CXk1ta+0wFX3r4DziimbYyyI?=
- =?us-ascii?Q?9sIyE37rpnl5n53q33LiuUDxMILN2kC9o2hlkm2jBUbfHHYew2h8h7vseoI4?=
- =?us-ascii?Q?nF90ttiBQlbnmT73tNoXxDPTCJiFN9VoinTc4Q94WYuZLSkDU3oYs+9ZxGsT?=
- =?us-ascii?Q?I7JeA5SJDbXDGBbAJobUVALdjPHbHF202QXcUlPUAg/mRcqOgBgbCvEjMEj2?=
- =?us-ascii?Q?PL2sZyXaqykADYWlqe0EL9waYV8z965QVQoBqgHJJpeIRg8HXQa99uG9Kwoa?=
- =?us-ascii?Q?3fBcgttyhlIwiGsVcXrV3ZERsNrMVdoQaOhD9TdSm/efUdW+bIpE6DRf5wN/?=
- =?us-ascii?Q?rgRVilrAXoG9X9aUqDUoQruNPu5sqMIUwqNg7/OfBEMqTH89v8oux3rS2KFa?=
- =?us-ascii?Q?7IJYnXQWzPrxyT6w+nW6XgjhR7YbmFn+sPCNk/jjArGqiNRzVAoTiR63j+ja?=
- =?us-ascii?Q?gg=3D=3D?=
-X-OriginatorOrg: moxa.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 20d96746-ac5f-46de-2ff6-08dbfc8ee15c
-X-MS-Exchange-CrossTenant-AuthSource: SEYPR01MB5387.apcprd01.prod.exchangelabs.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Dec 2023 10:24:40.0977
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 5571c7d4-286b-47f6-9dd5-0aa688773c8e
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: lB4+DYWNzYd0eZOwueX8D/2akxLHFhlPQBlyKRp0M3SfUyndTOuPqgwbKju4pbG5S0Sf2w4V5wwZI/vMka5zsH4LDgCP4wpWDh0Qow8LESQ=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYZPR01MB4943
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20231214091947.395892-3-avkrasnov@salutedevices.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 11, 2023 at 03:07:59PM +0200, Andy Shevchenko wrote:
-> On Sat, Dec 09, 2023 at 12:47:47PM +0100, Lino Sanfilippo wrote:
-> > On 06.12.23 16:42, Lino Sanfilippo wrote:
+On Thu, Dec 14, 2023 at 12:19:45PM +0300, Arseniy Krasnov wrote:
+> Send credit update message when SO_RCVLOWAT is updated and it is bigger
+> than number of bytes in rx queue. It is needed, because 'poll()' will
+> wait until number of bytes in rx queue will be not smaller than
+> SO_RCVLOWAT, so kick sender to send more data. Otherwise mutual hungup
+> for tx/rx is possible: sender waits for free space and receiver is
+> waiting data in 'poll()'.
 > 
-> > >>>> Crescent CY Hsieh (+cc) is in parallel trying to add an RS-422 mode bit
-> > >>>> to struct serial_rs485:
-> > >>>>
-> > >>>> https://lore.kernel.org/all/20231121095122.15948-1-crescentcy.hsieh@moxa.com/
-> > >>>>
-> > >>>
-> > >>> That new flag was suggested by me instead of using SER_RS422_ENABLED, which
-> > >>> would mostly be redundant to SER_RS485_ENABLED.
-> > 
-> > A cleaner solution would probably be to not handle RS422 with the RS485 settings at
-> > all, but to introduce another set of ioctls to set and read it.
-> > 
-> > An own RS422 structure like
-> > 
-> > struct serial_rs422 {
-> > 	__u32	flags;
-> > #define SER_RS422_ENABLED		(1 << 0)
-> > #define SER_RS422_TERMINATE_BUS		(1 << 1)
-> > };
-> > 
-> > 
-> > could be used as the parameter for these new ioctls.
-> > 
-> > Any comments on this?
+> Fixes: b89d882dc9fc ("vsock/virtio: reduce credit update messages")
+> Signed-off-by: Arseniy Krasnov <avkrasnov@salutedevices.com>
+> Reviewed-by: Stefano Garzarella <sgarzare@redhat.com>
+> Acked-by: Michael S. Tsirkin <mst@redhat.com>
+> ---
+>  Changelog:
+>  v1 -> v2:
+>   * Update commit message by removing 'This patch adds XXX' manner.
+>   * Do not initialize 'send_update' variable - set it directly during
+>     first usage.
+>  v3 -> v4:
+>   * Fit comment in 'virtio_transport_notify_set_rcvlowat()' to 80 chars.
+>  v4 -> v5:
+>   * Do not change callbacks order in transport structures.
+>  v5 -> v6:
+>   * Reorder callbacks in transport structures.
+>   * Do to send credit update when 'fwd_cnt' == 'last_fwd_cnt'.
+>  v8 -> v9:
+>   * Add 'Fixes' tag.
 > 
-> I have (maybe not so constructive) a comment. Please, at all means try to not
-> extend the existing serial data structures, we have too many ones with too many
-> fields already. For user space, though, one may use unions and flags, but for
-> internal ones it might be better ways, I think.
+>  drivers/vhost/vsock.c                   |  1 +
+>  include/linux/virtio_vsock.h            |  1 +
+>  net/vmw_vsock/virtio_transport.c        |  1 +
+>  net/vmw_vsock/virtio_transport_common.c | 30 +++++++++++++++++++++++++
+>  net/vmw_vsock/vsock_loopback.c          |  1 +
+>  5 files changed, 34 insertions(+)
+> 
+> diff --git a/drivers/vhost/vsock.c b/drivers/vhost/vsock.c
+> index f75731396b7e..ec20ecff85c7 100644
+> --- a/drivers/vhost/vsock.c
+> +++ b/drivers/vhost/vsock.c
+> @@ -449,6 +449,7 @@ static struct virtio_transport vhost_transport = {
+>  		.notify_send_pre_enqueue  = virtio_transport_notify_send_pre_enqueue,
+>  		.notify_send_post_enqueue = virtio_transport_notify_send_post_enqueue,
+>  		.notify_buffer_size       = virtio_transport_notify_buffer_size,
+> +		.notify_set_rcvlowat      = virtio_transport_notify_set_rcvlowat,
+>  
 
-How about revising the name of 'TIOCSRS485' and 'serial_rs485' to a
-general one, and put RS422 and RS485 configuration flags into that
-structure?
+This needs to be set_rcvlowat.
 
-So that in userspace it could set RS422 or RS485 configurations using a
-single ioctl command and one structure.
+>  		.read_skb = virtio_transport_read_skb,
+>  	},
+> diff --git a/include/linux/virtio_vsock.h b/include/linux/virtio_vsock.h
+> index ebb3ce63d64d..c82089dee0c8 100644
+> --- a/include/linux/virtio_vsock.h
+> +++ b/include/linux/virtio_vsock.h
+> @@ -256,4 +256,5 @@ void virtio_transport_put_credit(struct virtio_vsock_sock *vvs, u32 credit);
+>  void virtio_transport_deliver_tap_pkt(struct sk_buff *skb);
+>  int virtio_transport_purge_skbs(void *vsk, struct sk_buff_head *list);
+>  int virtio_transport_read_skb(struct vsock_sock *vsk, skb_read_actor_t read_actor);
+> +int virtio_transport_notify_set_rcvlowat(struct vsock_sock *vsk, int val);
+>  #endif /* _LINUX_VIRTIO_VSOCK_H */
+> diff --git a/net/vmw_vsock/virtio_transport.c b/net/vmw_vsock/virtio_transport.c
+> index af5bab1acee1..f495b9e5186b 100644
+> --- a/net/vmw_vsock/virtio_transport.c
+> +++ b/net/vmw_vsock/virtio_transport.c
+> @@ -537,6 +537,7 @@ static struct virtio_transport virtio_transport = {
+>  		.notify_send_pre_enqueue  = virtio_transport_notify_send_pre_enqueue,
+>  		.notify_send_post_enqueue = virtio_transport_notify_send_post_enqueue,
+>  		.notify_buffer_size       = virtio_transport_notify_buffer_size,
+> +		.notify_set_rcvlowat      = virtio_transport_notify_set_rcvlowat,
+>  
+>  		.read_skb = virtio_transport_read_skb,
+>  	},
 
-In this way, it won't be confused in userspace and won't add new data
-structure internally as well.
 
----
-Sincerely,
-Crescent Hsieh.
+This, too.
+
+> diff --git a/net/vmw_vsock/virtio_transport_common.c b/net/vmw_vsock/virtio_transport_common.c
+> index 7eabe5219ef7..9d2305fdc65c 100644
+> --- a/net/vmw_vsock/virtio_transport_common.c
+> +++ b/net/vmw_vsock/virtio_transport_common.c
+> @@ -1690,6 +1690,36 @@ int virtio_transport_read_skb(struct vsock_sock *vsk, skb_read_actor_t recv_acto
+>  }
+>  EXPORT_SYMBOL_GPL(virtio_transport_read_skb);
+>  
+> +int virtio_transport_notify_set_rcvlowat(struct vsock_sock *vsk, int val)
+> +{
+> +	struct virtio_vsock_sock *vvs = vsk->trans;
+> +	bool send_update;
+> +
+> +	spin_lock_bh(&vvs->rx_lock);
+> +
+> +	/* If number of available bytes is less than new SO_RCVLOWAT value,
+> +	 * kick sender to send more data, because sender may sleep in its
+> +	 * 'send()' syscall waiting for enough space at our side. Also
+> +	 * don't send credit update when peer already knows actual value -
+> +	 * such transmission will be useless.
+> +	 */
+> +	send_update = (vvs->rx_bytes < val) &&
+> +		      (vvs->fwd_cnt != vvs->last_fwd_cnt);
+> +
+> +	spin_unlock_bh(&vvs->rx_lock);
+> +
+> +	if (send_update) {
+> +		int err;
+> +
+> +		err = virtio_transport_send_credit_update(vsk);
+> +		if (err < 0)
+> +			return err;
+> +	}
+> +
+> +	return 0;
+> +}
+> +EXPORT_SYMBOL_GPL(virtio_transport_notify_set_rcvlowat);
+> +
+>  MODULE_LICENSE("GPL v2");
+>  MODULE_AUTHOR("Asias He");
+>  MODULE_DESCRIPTION("common code for virtio vsock");
+
+I think you need to set sk->sk_rcvlowat here, no?
+Follow up patch will move it to transport independent code.
+
+
+> diff --git a/net/vmw_vsock/vsock_loopback.c b/net/vmw_vsock/vsock_loopback.c
+> index 048640167411..6dea6119f5b2 100644
+> --- a/net/vmw_vsock/vsock_loopback.c
+> +++ b/net/vmw_vsock/vsock_loopback.c
+> @@ -96,6 +96,7 @@ static struct virtio_transport loopback_transport = {
+>  		.notify_send_pre_enqueue  = virtio_transport_notify_send_pre_enqueue,
+>  		.notify_send_post_enqueue = virtio_transport_notify_send_post_enqueue,
+>  		.notify_buffer_size       = virtio_transport_notify_buffer_size,
+> +		.notify_set_rcvlowat      = virtio_transport_notify_set_rcvlowat,
+>  
+>  		.read_skb = virtio_transport_read_skb,
+>  	},
+> -- 
+> 2.25.1
+
