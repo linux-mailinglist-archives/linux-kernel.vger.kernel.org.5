@@ -2,76 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F38B2813438
+	by mail.lfdr.de (Postfix) with ESMTP id 77AAE813436
 	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 16:11:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230318AbjLNPLS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 10:11:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60462 "EHLO
+        id S1573748AbjLNPLP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 10:11:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60440 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1573703AbjLNPKW (ORCPT
+        with ESMTP id S1573698AbjLNPKS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 10:10:22 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CE27111;
-        Thu, 14 Dec 2023 07:10:28 -0800 (PST)
-X-IronPort-AV: E=McAfee;i="6600,9927,10924"; a="426261795"
-X-IronPort-AV: E=Sophos;i="6.04,275,1695711600"; 
-   d="scan'208";a="426261795"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Dec 2023 07:10:28 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10924"; a="774400393"
-X-IronPort-AV: E=Sophos;i="6.04,275,1695711600"; 
-   d="scan'208";a="774400393"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by orsmga002.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Dec 2023 07:10:26 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-        (envelope-from <andy@kernel.org>)
-        id 1rDnLz-00000005sIR-1rWc;
-        Thu, 14 Dec 2023 17:10:23 +0200
-Date:   Thu, 14 Dec 2023 17:10:23 +0200
-From:   Andy Shevchenko <andy@kernel.org>
-To:     Kent Gibson <warthog618@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
-        brgl@bgdev.pl, linus.walleij@linaro.org
-Subject: Re: [PATCH v2 4/5] gpiolib: cdev: reduce locking in
- gpio_desc_to_lineinfo()
-Message-ID: <ZXsa39xneH6Rh7Gd@smile.fi.intel.com>
-References: <20231214095814.132400-1-warthog618@gmail.com>
- <20231214095814.132400-5-warthog618@gmail.com>
+        Thu, 14 Dec 2023 10:10:18 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6540A11D
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 07:10:25 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 00082C433CA;
+        Thu, 14 Dec 2023 15:10:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1702566625;
+        bh=zdcPAZnAA+fnlDDoOYRTGowddn9N6RX9Wu2qUUDSKFw=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=U+RJZv5r0gLIx1b3cdJt/uFDST4E6gp7GYxQJeBvkUc2GzO+4DjPNLFelmqSpuwWn
+         Z0b1KPzxRPu7M4knGDGvD+M3hfJ3mxnvw/LPHA+Rn+J5ayq6MHVO3w7mjFgAU9xqut
+         wx6ziqUtWJ2fGWpgUoqcZ6tyekdhUTOpygbSA/pfBBLlr+erR+L/8U2lq7hfNOSUT7
+         ebgCoiHesHIsOvd1F6fDdEevhBF4xvdPuQs7QH2ur0Y1aqcZ5QvtwPchHQDSoVDs0q
+         KZa3yvx8QSqHHxT6bgjVGbc3jLx+jsn91tktRCTIKouLnDSv6z0QXB9qQpYiTrNO6i
+         aI+jcgLBnOcdA==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id D9BBCDD4EFB;
+        Thu, 14 Dec 2023 15:10:24 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231214095814.132400-5-warthog618@gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_SOFTFAIL,T_SCC_BODY_TEXT_LINE autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net-next v2] net: mvpp2: add support for mii
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <170256662488.26207.4155748684872594821.git-patchwork-notify@kernel.org>
+Date:   Thu, 14 Dec 2023 15:10:24 +0000
+References: <20231212141200.62579-1-eichest@gmail.com>
+In-Reply-To: <20231212141200.62579-1-eichest@gmail.com>
+To:     Stefan Eichenberger <eichest@gmail.com>
+Cc:     maxime.chevallier@bootlin.com, mw@semihalf.com,
+        linux@armlinux.org.uk, davem@davemloft.net, edumazet@google.com,
+        kuba@kernel.org, pabeni@redhat.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 14, 2023 at 05:58:13PM +0800, Kent Gibson wrote:
-> Reduce the time holding the gpio_lock by snapshotting the desc flags,
-> rather than testing them individually while holding the lock.
+Hello:
+
+This patch was applied to netdev/net-next.git (main)
+by Paolo Abeni <pabeni@redhat.com>:
+
+On Tue, 12 Dec 2023 15:12:00 +0100 you wrote:
+> Currently, mvpp2 only supports RGMII. This commit adds support for MII.
+> The description in Marvell's functional specification seems to be wrong.
+> To enable MII, we need to set GENCONF_CTRL0_PORT3_RGMII, while for RGMII
+> we need to clear it. This is also how U-Boot handles it.
 > 
-> Accept that the calculation of the used field is inherently racy, and
-> only check the availability of the line from pinctrl if other checks
-> pass, so avoiding the check for lines that are otherwise in use.
+> Signed-off-by: Stefan Eichenberger <eichest@gmail.com>
+> 
+> [...]
 
-...
+Here is the summary with links:
+  - [net-next,v2] net: mvpp2: add support for mii
+    https://git.kernel.org/netdev/net-next/c/1b666016d0ad
 
-> -	spin_lock_irqsave(&gpio_lock, flags);
-
-Shouldn't this be covered by patch 1 (I mean conversion to scoped_guard()
-instead of spinlock)?
-
+You are awesome, thank you!
 -- 
-With Best Regards,
-Andy Shevchenko
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
 
