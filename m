@@ -1,173 +1,194 @@
-Return-Path: <linux-kernel+bounces-241-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-236-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1667D813E2D
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 00:21:58 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 37F9D813E1E
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 00:13:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C348E283681
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 23:21:56 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8D674B223DD
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 23:13:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7875E6C6DC;
-	Thu, 14 Dec 2023 23:21:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EDFA7224DF;
+	Thu, 14 Dec 2023 23:12:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="dzzJ5ELw"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YK+haT9l"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-qk1-f176.google.com (mail-qk1-f176.google.com [209.85.222.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E5C86C6D7
-	for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 23:21:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-qk1-f176.google.com with SMTP id af79cd13be357-77f8dd477fcso6979785a.0
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 15:21:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1702596109; x=1703200909; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=qmbndnjcrhmBBoxS6pcuDX2mGwfUQXEv+7vBpDoTDrg=;
-        b=dzzJ5ELwc1qH8EKe/Cyt1XCrGAl9DRHAfuYscFetU0GOQK9uAhTXbE3+i4UQoG/+k2
-         tQ8sv1oIwK1U4NRkA9dK4AV1IsPEwohaKiEcOe8JYTk8XGMXj5kfCHtXLcMaZ0pS+MwA
-         gNeH52PAJcUOh/zl6a9S4cCaE2zaQmeRFHVc8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702596109; x=1703200909;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=qmbndnjcrhmBBoxS6pcuDX2mGwfUQXEv+7vBpDoTDrg=;
-        b=hoVi8Uq1oJnHPHnTNk3YKZGw4kiFo4fhry9STK68poKxUA3QEeNCjPQ1Soy8TlMG2F
-         lKyOQqvG2hSv++GukiFDLyh40LfKFsOTXwV/yuvZQlKwd/aOw0AGv45BO6vEODSCxA08
-         qyK377dOF6wMpzC4DNT7hOJcRcIS3oTtFlIX63v+C2VOnwU3iYjAKZpO202l1or2Wogi
-         bO0v/ZW4MIWBBhLejaRW11yq8VqNyCZrsgzzS+SeLNhyH0ThqX3zeBOAIib+Qq39SOV0
-         5hO+rVWVUHu8y0U51Ao/c2oQZ4gZibdulHFdoEpMPs7XKL78M+Wp+rteo/CB4xPTatEE
-         WHjA==
-X-Gm-Message-State: AOJu0YyWPIo037VUW+VEAHcOYpKhAsHDpkvUpr23zoJViKjSnI5henfJ
-	IcoBq/68DtTeh0+1WWVQkfOK239x2vleBlEVj3rBEmNe23BawJxgDDA=
-X-Google-Smtp-Source: AGHT+IFJ3y2PMmXoZvkDVH8ICFf94qmbkoc3S1Oy8RrT8fx8p95Ie2no/+Omtw/FDZnEY3SV+ywQp6V5BnIOf2HtW54=
-X-Received: by 2002:a05:6870:41cc:b0:203:4c85:562f with SMTP id
- z12-20020a05687041cc00b002034c85562fmr1695983oac.59.1702594390274; Thu, 14
- Dec 2023 14:53:10 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 336236C6D7
+	for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 23:12:16 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CD9A7C433C8
+	for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 22:55:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1702594524;
+	bh=Grf7p7fPCkEqN65KUDfnN0gBmOwNPSpfdD7NmMiKon0=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=YK+haT9lDBRy48C8SkGaXc9Jt2QHWGOKKMsfh7BZyUXivV5EybgNW2KQfayWRTqmi
+	 DezakAI3UDJBZYVWzUf5nH2GPxWBZDGZXn/x0Ynly3IoH4Jtznmdd8uwlB1nW6oPKn
+	 8TrL5VFmF9RrRu+qr/bvugfAmoy0B3KwJy9E3ZmhnN1/eOyfPj25CNdvNtSCR0Gw7H
+	 XFdP9jZekNF/VQUELtpTIbDwZuxFRng7IAqAI8IujYK/A+fD4IgTpRW4KAucySQNLf
+	 RQhJ0/WJVbIRpEfUAtAdtR2Qz9ZSqa7ZnL/8gmP31biJKEhByrCgMFBikzYE8CU9CG
+	 ZruD68G7+92mA==
+Received: by mail-oi1-f178.google.com with SMTP id 5614622812f47-3ba0dfc9001so38166b6e.2
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 14:55:24 -0800 (PST)
+X-Gm-Message-State: AOJu0YzSXmrhT+65lc74u3OMMhUy9sxVslzYp0CMbZJXr70yJr65OI/N
+	a5svg258Bdhx8/RsqrFVsyW2lHZgLcBpaFm83Y6+zQ==
+X-Google-Smtp-Source: AGHT+IG/TtHGU7JVw2TZsapT4A3vzYF0UL0RzdAkU+Dfl1UY00/kcl+wiH08OnNQ1vnM6rdLPBxBSvf2V30zZrft7aE=
+X-Received: by 2002:a05:6a20:4ca2:b0:18f:c21d:7ec4 with SMTP id
+ fq34-20020a056a204ca200b0018fc21d7ec4mr10153997pzb.40.1702594503804; Thu, 14
+ Dec 2023 14:55:03 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231212231706.2680890-1-jeffxu@chromium.org> <20231212231706.2680890-12-jeffxu@chromium.org>
- <CAHk-=wgn02cpoFEDQGgS+5BUqA2z-=Ks9+PNd-pEJy8h+NOs5g@mail.gmail.com>
- <CALmYWFu39nzHvBmRsA326GcmV9u=eM-2aCGOvLK31rrb2R9NEw@mail.gmail.com>
- <CAHk-=wh_VViVZxjiQ5jtB0q=p=JtJMj2R24UAmj-fL-RNLWxNw@mail.gmail.com>
- <CAEAAPHZpYXHNPdca+xfj77bwYaL6PY-c_oQ54r+=wtJa6_hmCA@mail.gmail.com> <CAHk-=wiVhHmnXviy1xqStLRozC4ziSugTk=1JOc8ORWd2_0h7g@mail.gmail.com>
-In-Reply-To: <CAHk-=wiVhHmnXviy1xqStLRozC4ziSugTk=1JOc8ORWd2_0h7g@mail.gmail.com>
-From: Jeff Xu <jeffxu@chromium.org>
-Date: Thu, 14 Dec 2023 14:52:58 -0800
-Message-ID: <CABi2SkUTdF6PHrudHTZZ0oWK-oU+T-5+7Eqnei4yCj2fsW2jHg@mail.gmail.com>
-Subject: Re: [RFC PATCH v3 11/11] mseal:add documentation
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: =?UTF-8?Q?Stephen_R=C3=B6ttger?= <sroettger@google.com>, 
-	Jeff Xu <jeffxu@google.com>, akpm@linux-foundation.org, keescook@chromium.org, 
-	jannh@google.com, willy@infradead.org, gregkh@linuxfoundation.org, 
-	jorgelo@chromium.org, groeck@chromium.org, linux-kernel@vger.kernel.org, 
-	linux-kselftest@vger.kernel.org, linux-mm@kvack.org, pedro.falcato@gmail.com, 
-	dave.hansen@intel.com, linux-hardening@vger.kernel.org, deraadt@openbsd.org
+References: <20231207192406.3809579-1-nphamcs@gmail.com> <CAF8kJuPEKWbr_1a-OzqrYKSPmuty==KhC2vbTPAmm9xcJHo4cg@mail.gmail.com>
+ <CAKEwX=Oj0Rur8i9Oo7y2Py7svx-g11sEj3GKQfMVL62x=4hvdA@mail.gmail.com>
+ <CAF8kJuNpnqTM5x1QmQ7h-FaRWVnHBdNGvGvB3txohSOmZhYA-Q@mail.gmail.com>
+ <20231209034229.GA1001962@cmpxchg.org> <ZXeTb_ACou7TEVsa@google.com>
+ <20231214171137.GA261942@cmpxchg.org> <CANeU7QnR+4Lgt8D9Z+Zo3Ydktx_7n45K0b=kVj+qSOzT=5GGQA@mail.gmail.com>
+ <20231214221140.GA269753@cmpxchg.org>
+In-Reply-To: <20231214221140.GA269753@cmpxchg.org>
+From: Chris Li <chrisl@kernel.org>
+Date: Thu, 14 Dec 2023 14:54:52 -0800
+X-Gmail-Original-Message-ID: <CAF8kJuN=6CfU2mXP4VFgCkngRGz6Ni67SSHLps8_A+ZScDckUw@mail.gmail.com>
+Message-ID: <CAF8kJuN=6CfU2mXP4VFgCkngRGz6Ni67SSHLps8_A+ZScDckUw@mail.gmail.com>
+Subject: Re: [PATCH v6] zswap: memcontrol: implement zswap writeback disabling
+To: Johannes Weiner <hannes@cmpxchg.org>
+Cc: Minchan Kim <minchan@kernel.org>, Nhat Pham <nphamcs@gmail.com>, akpm@linux-foundation.org, 
+	tj@kernel.org, lizefan.x@bytedance.com, cerasuolodomenico@gmail.com, 
+	yosryahmed@google.com, sjenning@redhat.com, ddstreet@ieee.org, 
+	vitaly.wool@konsulko.com, mhocko@kernel.org, roman.gushchin@linux.dev, 
+	shakeelb@google.com, muchun.song@linux.dev, hughd@google.com, corbet@lwn.net, 
+	konrad.wilk@oracle.com, senozhatsky@chromium.org, rppt@kernel.org, 
+	linux-mm@kvack.org, kernel-team@meta.com, linux-kernel@vger.kernel.org, 
+	linux-doc@vger.kernel.org, david@ixit.cz, Kairui Song <kasong@tencent.com>, 
+	Zhongkun He <hezhongkun.hzk@bytedance.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Dec 14, 2023 at 12:14=E2=80=AFPM Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
+On Thu, Dec 14, 2023 at 2:11=E2=80=AFPM Johannes Weiner <hannes@cmpxchg.org=
+> wrote:
 >
-> On Thu, 14 Dec 2023 at 10:07, Stephen R=C3=B6ttger <sroettger@google.com>=
- wrote:
+> On Thu, Dec 14, 2023 at 09:34:06AM -0800, Christopher Li wrote:
+> > On Thu, Dec 14, 2023 at 9:11=E2=80=AFAM Johannes Weiner <hannes@cmpxchg=
+.org> wrote:
 > >
-> > AIUI, the madvise(DONTNEED) should effectively only change the content =
-of
-> > anonymous pages, i.e. it's similar to a memset(0) in that case. That's =
-why we
-> > added this special case: if you want to madvise(DONTNEED) an anonymous =
-page,
-> > you should have write permissions to the page.
+> > > > Hi Johannes,
+> > > >
+> > > > I haven't been following the thread closely, but I noticed the disc=
+ussion
+> > > > about potential use cases for zram with memcg.
+> > > >
+> > > > One interesting idea I have is to implement a swap controller per c=
+group.
+> > > > This would allow us to tailor the zram swap behavior to the specifi=
+c needs of
+> > > > different groups.
+> > > >
+> > > > For example, Group A, which is sensitive to swap latency, could use=
+ zram swap
+> > > > with a fast compression setting, even if it sacrifices some compres=
+sion ratio.
+> > > > This would prioritize quick access to swapped data, even if it take=
+s up more space.
+> > > >
+> > > > On the other hand, Group B, which can tolerate higher swap latency,=
+ could benefit
+> > > > from a slower compression setting that achieves a higher compressio=
+n ratio.
+> > > > This would maximize memory efficiency at the cost of slightly slowe=
+r data access.
+> > > >
+> > > > This approach could provide a more nuanced and flexible way to mana=
+ge swap usage
+> > > > within different cgroups.
+> > >
+> > > That makes sense to me.
+> > >
+> > > It sounds to me like per-cgroup swapfiles would be the easiest
+> > > solution to this. Then you can create zram devices with different
+> > > configurations and assign them to individual cgroups.
+> >
+> > Ideally you need zram then following swap file after the zram. That
+> > would be a list of the swap files rather than just one swapfile per
+> > cgroup.
+> >
+> > > This would also apply to Kairu's usecase: assign zrams and hdd backup=
+s
+> > > as needed on a per-cgroup basis.
+> >
+> > Same there, Kairui's request involves ZRAM and at least one extra swap
+> > file. In other words, you really need a per cgroup swap file list.
 >
-> Hmm. I actually would be happier if we just made that change in
-> general. Maybe even without sealing, but I agree that it *definitely*
-> makes sense in general as a sealing thing.
+> Why is that a problem?
+
+It is not a problem. It is the necessary infrastructure to support the
+requirement. I am merely saying just having one swap file is not
+enough.
+
 >
-> IOW, just saying
+> swapon(zram, cgroup=3Dfoo)
+> swapon(hdd, cgroup=3Dfoo)
+
+Interesting idea. I assume you want to use swapon/swapoff to turn on
+off a device for a specific cgroup.
+That seems to implite each cgroup will have a private copy of the swap
+device list.
+
+I have considered the memory.swap.tiers for the same thing, with one
+minor optimization. The list is system wide maintained with a name.
+The per cgroup just has a pointer to that named list. There shouldn't
+be too many such lists of swap back end combinations on the system.
+
+We are getting into the weeds. The bottom line is, we need to have per
+cgroup a swap file list. That is the necessary evil we can't get away
+with.
+
 >
->  "madvise(DONTNEED) needs write permissions to an anonymous mapping when =
-sealed"
+> > > In addition, it would naturally solve scalability and isolation
+> > > problems when multiple containers would otherwise be hammering on the
+> > > same swap backends and locks.
+> > >
+> > > It would also only require one, relatively simple new interface, such
+> > > as a cgroup parameter to swapon().
+> > >
+> > > That's highly preferable over a complex configuration file like
+> > > memory.swap.tiers that needs to solve all sorts of visibility and
+> > > namespace issues and duplicate the full configuration interface of
+> > > every backend in some new, custom syntax.
+> >
+> > If you don't like the syntax of memory.swap.tiers, I am open to
+> > suggestions of your preferred syntax as well. The essicents of the
+> > swap.tiers is a per cgroup list of the swap back ends. The names imply
+> > that. I am not married to any given syntax of how to specify the list.
+> > Its goal matches the above requirement pretty well.
 >
-> makes 100% sense to me. Having a separate _flag_ to give sensible
-> semantics is just odd.
->
-> IOW, what I really want is exactly that "sensible semantics, not random f=
-lags".
->
-> Particularly for new system calls with fairly specialized use, I think
-> it's very important that the semantics are sensible on a conceptual
-> level, and that we do not add system calls that are based on "random
-> implementation issue of the day".
->
-> Yes, yes, then as we have to maintain things long-term, and we hit
-> some compatibility issue, at *THAT* point we'll end up facing nasty
-> "we had an implementation that had these semantics in practice, so now
-> we're stuck with it", but when introducing a new system call, let's
-> try really hard to start off from those kinds of random things.
->
-> Wouldn't it be lovely if we can just come up with a sane set of "this
-> is what it means to seal a vma", and enumerate those, and make those
-> sane conceptual rules be the initial definition. By all means have a
-> "flags" argument for future cases when we figure out there was
-> something wrong or the notion needed to be extended, but if we already
-> *start* with random extensions, I feel there's something wrong with
-> the whole concept.
->
-> So I would really wish for the first version of
->
->      mseal(start, len, flags);
->
-> to have "flags=3D0" be the one and only case we actually handle
-> initially, and only add a single PROT_SEAL flag to mmap() that says
-> "create this mapping already pre-sealed".
->
-> Strive very hard to make sealing be a single VM_SEALED flag in the
-> vma->vm_flags that we already have, just admit that none of this
-> matters on 32-bit architectures, so that VM_SEALED can just use one of
-> the high flags that we have several free of (and that pkeys already
-> depends on), and make this a standard feature with no #ifdef's.
->
-> Can chrome live with that? And what would the required semantics be?
-> I'll start the list:
->
->  - you can't unmap or remap in any way (including over-mapping)
->
->  - you can't change protections (but with architecture support like
-> pkey, you can obviously change the protections indirectly with PKRU
-> etc)
->
->  - you can't do VM operations that change data without the area being
-> writable (so the DONTNEED case - maybe there are others)
->
->  - anything else?
->
-> Wouldn't it be lovely to have just a single notion of sealing that is
-> well-documented and makes sense, and doesn't require people to worry
-> about odd special cases?
->
-> And yes, we'd have the 'flags' argument for future special cases, and
-> hope really hard that it's never needed.
+> Except Minchan said that he would also like different zram parameters
+> depending on the cgroup.
+
+Minchan's requirement is new. We will need to expand the original
+"memory.swap.tiers" to support such usage.
+
+> There is no way we'll add a memory.swap.tiers with a new configuration
+> language for backend parameters.
 >
 
-Yes, those inputs make a lot of sense !
-I will start the next version. In the meantime, if there are more
-comments, please continue to post, I appreciate those to make the API
-better and simple to use.
+I agree that we don't want a complicated configuration language for
+"memory.swap.tiers".
 
--Jeff
+Those backend parameters should be configured on the back end side.
+The "memory.swap.tiers" just reference the already configured object.
+Just brainstorming:
+/dev/zram0 has compression algo1 for fast speed low compression ratio.
+/dev/zram1 has compression algo2 for slow speed high compression ratio.
 
->            Linus
->
+"memory.swap.tiers" point to zram0 or zram1 or a custom list has "zram0 + h=
+dd"
+
+Chris
 
