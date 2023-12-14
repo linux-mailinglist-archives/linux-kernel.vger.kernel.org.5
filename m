@@ -2,123 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C96BA813400
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 16:07:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 226ED81340A
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 16:07:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1573640AbjLNPHH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 10:07:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49528 "EHLO
+        id S1573658AbjLNPHt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 10:07:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33954 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1573629AbjLNPHG (ORCPT
+        with ESMTP id S1573635AbjLNPHr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 10:07:06 -0500
-Received: from out-176.mta1.migadu.com (out-176.mta1.migadu.com [IPv6:2001:41d0:203:375::b0])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EBF611B
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 07:07:10 -0800 (PST)
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pqrs.dk; s=key1;
-        t=1702566427;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=Zr4tfF93uxRBpIQm7Itom01eR+K81zCOIkvaVvYrtXk=;
-        b=UGdfi8uYqVky/1c2eFLH/hEl/cC3Bz7hK8JrlIAob3vCyWoLsEvryHvgy07v1XRwssOG4e
-        C+zm0VCGsNFbLjcbMzKC+nIwNpOl2jUzCV3sLvLd674iYFjuUMELiVCC7lzpPAJp8h+C5s
-        eqGSgIqFaL7E9liVCBYkpxKCIlx1uqT0PvR3e+XQARyMnR8+zecjWc1B2+LCcpbr87XIwd
-        mQ75u7Gb3Cksdqi8FgBuse2EsTV4QegXl8z3sF3M6F3N++XdD+RzaxtMquCxpnFEuC+U/1
-        fzC3EXBIY5o+ojtiP0BHqKTKZjFDRbuJcxjxOvA6miKuc64FPljItvMrJcxi4Q==
-From:   =?utf-8?q?Alvin_=C5=A0ipraga?= <alvin@pqrs.dk>
-Date:   Thu, 14 Dec 2023 16:06:53 +0100
-Subject: [PATCH v2] get_maintainer: correctly parse UTF-8 encoded names in
- files
+        Thu, 14 Dec 2023 10:07:47 -0500
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE5F2120;
+        Thu, 14 Dec 2023 07:07:52 -0800 (PST)
+Received: from pps.filterd (m0356516.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3BEF39YV007104;
+        Thu, 14 Dec 2023 15:07:04 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=XLAPwt/xKWgpqNhyPSWPN7P7tLR1EqSOMV1/eU72kZ4=;
+ b=KLaU5YH4YiELCKICEf6K/5bLMvFEaMfWy1cnmB2yq3w8r32Z2207faBJ99fMOlgpvaLi
+ lSmrFCKOLHBgpOpR/jh3cFVMEeJFoXn7qEuZkR4d7ttuRQwUrTUsJ7YN8oRG/LopdHZw
+ kLh6mbwtH9wfR7poABQXYdiVTxTK/JzMBXiZlFCjg+CmTLrGf+OusrAsLv5bgKvIBNJw
+ zUIfUs42ethQ4EAr0SQ+iASDmXSIrC0VycYkO1rdV4PbK1l6Ik7TDSdgJQmMvVN11eWn
+ 8iGaBIYxtSNMJsMM4YOQc2wdTlNCd5/I4zqsmVvXxwAIFOP7l/7W/3u+avcw9rpanlrD NA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3v040j04vg-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 14 Dec 2023 15:07:02 +0000
+Received: from m0356516.ppops.net (m0356516.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3BEF434O009478;
+        Thu, 14 Dec 2023 15:07:00 GMT
+Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3v040j04u1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 14 Dec 2023 15:07:00 +0000
+Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
+        by ppma13.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3BEDnVYD005049;
+        Thu, 14 Dec 2023 15:06:59 GMT
+Received: from smtprelay05.wdc07v.mail.ibm.com ([172.16.1.72])
+        by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 3uw4skrwca-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 14 Dec 2023 15:06:58 +0000
+Received: from smtpav05.dal12v.mail.ibm.com (smtpav05.dal12v.mail.ibm.com [10.241.53.104])
+        by smtprelay05.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3BEF6vqJ26215096
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 14 Dec 2023 15:06:58 GMT
+Received: from smtpav05.dal12v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id D9B785805D;
+        Thu, 14 Dec 2023 15:06:57 +0000 (GMT)
+Received: from smtpav05.dal12v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id D145458069;
+        Thu, 14 Dec 2023 15:06:54 +0000 (GMT)
+Received: from [9.67.23.198] (unknown [9.67.23.198])
+        by smtpav05.dal12v.mail.ibm.com (Postfix) with ESMTP;
+        Thu, 14 Dec 2023 15:06:54 +0000 (GMT)
+Message-ID: <e8e4e5fe-5fa6-4098-97fc-7c6a48da9c4e@linux.ibm.com>
+Date:   Thu, 14 Dec 2023 09:06:54 -0600
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Message-Id: <20231214-get-maintainers-utf8-v2-1-b188dc7042a4@bang-olufsen.dk>
-X-B4-Tracking: v=1; b=H4sIAAwae2UC/4WOTQ6CMBCFr0Jm7RjaIiIr72FYlDKFiVpMWxoN4
- e5WLuDiLb6XvJ8VAnmmAG2xgqfEgWeXQR4KMJN2IyEPmUGWUolSVDhSxKdmF7PIB1yibVBJU59
- MNdS20ZCjL0+W33vtrcs8cYiz/+wrSfzcP4VJoEClbWPOmnqpLtc+n8H5sdhA7jjcodu27Qukz
- Ts+vgAAAA==
-To:     Joe Perches <joe@perches.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     =?utf-8?q?Duje_Mihanovi=C4=87?= <duje.mihanovic@skole.hr>,
-        Konstantin Ryabitsev <konstantin@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org,
-        =?utf-8?q?Alvin_=C5=A0ipraga?= <alsi@bang-olufsen.dk>
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1 3/8] ARM: dts: aspeed: System1: IBM system1 BMC board
+Content-Language: en-US
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, joel@jms.id.au, andrew@codeconstruct.com.au,
+        peterhuewe@gmx.de, jarkko@kernel.org, jgg@ziepe.ca,
+        keescook@chromium.org, tony.luck@intel.com, gpiccoli@igalia.com,
+        johannes.holland@infineon.com, linux@roeck-us.net,
+        broonie@kernel.org
+Cc:     Andrew Geissler <geissonator@yahoo.com>,
+        patrick.rudolph@9elements.com, vincent@vtremblay.dev,
+        peteryin.openbmc@gmail.com, lakshmiy@us.ibm.com,
+        bhelgaas@google.com, naresh.solanki@9elements.com,
+        alexander.stein@ew.tq-group.com, festevam@denx.de,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        linux-integrity@vger.kernel.org, linux-hardening@vger.kernel.org
+References: <20231212164004.1683589-1-ninad@linux.ibm.com>
+ <20231212164004.1683589-4-ninad@linux.ibm.com>
+ <81d90c0d-9d7e-43a9-ade8-16b85a242b48@linaro.org>
+From:   Ninad Palsule <ninad@linux.ibm.com>
+In-Reply-To: <81d90c0d-9d7e-43a9-ade8-16b85a242b48@linaro.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: _0Y2OpjlnhnlX4ia8j9LaXeQCu3ERE6u
+X-Proofpoint-ORIG-GUID: 1pWyN-yfwi67Cf8clBBDrf-toaFCfvnp
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-14_09,2023-12-14_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 mlxlogscore=999
+ malwarescore=0 clxscore=1015 bulkscore=0 suspectscore=0 impostorscore=0
+ priorityscore=1501 adultscore=0 spamscore=0 mlxscore=0 lowpriorityscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311290000
+ definitions=main-2312140105
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alvin Šipraga <alsi@bang-olufsen.dk>
+Hello Krzysztof,
 
-While the script correctly extracts UTF-8 encoded names from the
-MAINTAINERS file, the regular expressions damage my name when parsing
-from .yaml files. Fix this by replacing the Latin-1-compatible regular
-expressions with the unicode property matcher \p{L}, which matches on
-any letter according to the Unicode General Category of letters. It's
-also necessary to instruct Perl to open all files with UTF-8 encoding.
 
-The issue was also identified on the tools mailing list [1]. This should
-solve the observed side effects there as well.
+On 12/12/23 14:20, Krzysztof Kozlowski wrote:
+> On 12/12/2023 17:39, Ninad Palsule wrote:
+>> From: Andrew Geissler <geissonator@yahoo.com>
+>>
+>> Add a device tree for IBM system1 BMC board. It uses AST2600 SOC.
+>>
+>> Tested:
+>>      This board is tested using the simics simulator.
+>>
+>> Signed-off-by: Andrew Geissler <geissonator@yahoo.com>
+>> Signed-off-by: Ninad Palsule <ninad@linux.ibm.com>
+>> ---
+>>   arch/arm/boot/dts/aspeed/Makefile             |   1 +
+>>   .../dts/aspeed/aspeed-bmc-ibm-system1.dts     | 188 ++++++++++++++++++
+>>   2 files changed, 189 insertions(+)
+>>   create mode 100644 arch/arm/boot/dts/aspeed/aspeed-bmc-ibm-system1.dts
+>>
+>> diff --git a/arch/arm/boot/dts/aspeed/Makefile b/arch/arm/boot/dts/aspeed/Makefile
+>> index 3e3e6b96cb79..6f7ed11978ff 100644
+>> --- a/arch/arm/boot/dts/aspeed/Makefile
+>> +++ b/arch/arm/boot/dts/aspeed/Makefile
+>> @@ -35,6 +35,7 @@ dtb-$(CONFIG_ARCH_ASPEED) += \
+>>   	aspeed-bmc-ibm-rainier.dtb \
+>>   	aspeed-bmc-ibm-rainier-1s4u.dtb \
+>>   	aspeed-bmc-ibm-rainier-4u.dtb \
+>> +	aspeed-bmc-ibm-system1.dtb \
+>>   	aspeed-bmc-intel-s2600wf.dtb \
+>>   	aspeed-bmc-inspur-fp5280g2.dtb \
+>>   	aspeed-bmc-inspur-nf5280m6.dtb \
+>> diff --git a/arch/arm/boot/dts/aspeed/aspeed-bmc-ibm-system1.dts b/arch/arm/boot/dts/aspeed/aspeed-bmc-ibm-system1.dts
+>> new file mode 100644
+>> index 000000000000..01291b407f59
+>> --- /dev/null
+>> +++ b/arch/arm/boot/dts/aspeed/aspeed-bmc-ibm-system1.dts
+>> @@ -0,0 +1,188 @@
+>> +// SPDX-License-Identifier: GPL-2.0-or-later
+>> +// Copyright 2023 IBM Corp.
+>> +/dts-v1/;
+>> +
+>> +#include "aspeed-g6.dtsi"
+>> +#include <dt-bindings/gpio/aspeed-gpio.h>
+>> +#include <dt-bindings/i2c/i2c.h>
+>> +#include <dt-bindings/leds/leds-pca955x.h>
+>> +
+>> +/ {
+>> +	model = "System1";
+>> +	compatible = "ibm,system1-bmc", "aspeed,ast2600";
+>> +
+>> +	chosen {
+>> +		stdout-path = &uart5;
+>> +		bootargs = "console=ttyS4,115200n8 earlycon";
+> Drop early con, debugging feature not release. Then use stdout path
+> alone, so drop console as well.
+Fixed as per your suggestion.
+>
+>> +	};
+>> +
+>> +	memory@80000000 {
+>> +		device_type = "memory";
+>> +		reg = <0x80000000 0x40000000>;
+>> +	};
+>> +
+>> +	reserved-memory {
+>> +		#address-cells = <1>;
+>> +		#size-cells = <1>;
+>> +		ranges;
+>> +
+>> +		event_log: tcg_event_log@b3d00000 {
+> No underscores in node names.
 
-Link: https://lore.kernel.org/tools/20230726-gush-slouching-a5cd41@meerkat/ [1]
-Signed-off-by: Alvin Šipraga <alsi@bang-olufsen.dk>
----
-Changes in v2:
-- use '\p{L}' rather than '\p{Latin}', so that matching is even more
-  inclusive (i.e. match also Greek letters, CJK, etc.)
-- fix commit message to refer to tools mailing list, not b4 mailing list
-- Link to v1: https://lore.kernel.org/r/20231014-get-maintainers-utf8-v1-1-3af8c7aeb239@bang-olufsen.dk
----
- scripts/get_maintainer.pl | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+Fixed.
 
-diff --git a/scripts/get_maintainer.pl b/scripts/get_maintainer.pl
-index ab123b498fd9..344d0cda9854 100755
---- a/scripts/get_maintainer.pl
-+++ b/scripts/get_maintainer.pl
-@@ -20,6 +20,7 @@ use Getopt::Long qw(:config no_auto_abbrev);
- use Cwd;
- use File::Find;
- use File::Spec::Functions;
-+use open qw(:std :encoding(UTF-8));
- 
- my $cur_path = fastgetcwd() . '/';
- my $lk_path = "./";
-@@ -442,7 +443,7 @@ sub maintainers_in_file {
- 	my $text = do { local($/) ; <$f> };
- 	close($f);
- 
--	my @poss_addr = $text =~ m$[A-Za-zÀ-ÿ\"\' \,\.\+-]*\s*[\,]*\s*[\(\<\{]{0,1}[A-Za-z0-9_\.\+-]+\@[A-Za-z0-9\.-]+\.[A-Za-z0-9]+[\)\>\}]{0,1}$g;
-+	my @poss_addr = $text =~ m$[\p{L}\"\' \,\.\+-]*\s*[\,]*\s*[\(\<\{]{0,1}[A-Za-z0-9_\.\+-]+\@[A-Za-z0-9\.-]+\.[A-Za-z0-9]+[\)\>\}]{0,1}$g;
- 	push(@file_emails, clean_file_emails(@poss_addr));
-     }
- }
-@@ -2460,13 +2461,13 @@ sub clean_file_emails {
- 	    $name = "";
- 	}
- 
--	my @nw = split(/[^A-Za-zÀ-ÿ\'\,\.\+-]/, $name);
-+	my @nw = split(/[^\p{L}\'\,\.\+-]/, $name);
- 	if (@nw > 2) {
- 	    my $first = $nw[@nw - 3];
- 	    my $middle = $nw[@nw - 2];
- 	    my $last = $nw[@nw - 1];
- 
--	    if (((length($first) == 1 && $first =~ m/[A-Za-z]/) ||
-+	    if (((length($first) == 1 && $first =~ m/\p{L}/) ||
- 		 (length($first) == 2 && substr($first, -1) eq ".")) ||
- 		(length($middle) == 1 ||
- 		 (length($middle) == 2 && substr($middle, -1) eq "."))) {
+Thanks for the review.
 
----
-base-commit: 70f8c6f8f8800d970b10676cceae42bba51a4899
-change-id: 20231014-get-maintainers-utf8-32c65c4d6f8a
+Regards,
 
+Ninad
+
+>
+>
+> Best regards,
+> Krzysztof
+>
