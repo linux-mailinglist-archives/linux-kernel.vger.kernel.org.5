@@ -2,381 +2,273 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C077381279E
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 07:04:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2254F81279F
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 07:04:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1443178AbjLNGEf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 01:04:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37400 "EHLO
+        id S229437AbjLNGEu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 01:04:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36128 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230034AbjLNGES (ORCPT
+        with ESMTP id S234277AbjLNGEa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 01:04:18 -0500
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6504F1988
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 22:02:47 -0800 (PST)
-Received: by mail-pl1-x632.google.com with SMTP id d9443c01a7336-1d350dff621so13702505ad.1
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 22:02:47 -0800 (PST)
+        Thu, 14 Dec 2023 01:04:30 -0500
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A586F1FD8
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 22:03:08 -0800 (PST)
+Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-dbcc6933a14so2262504276.1
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 22:03:08 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=brainfault-org.20230601.gappssmtp.com; s=20230601; t=1702533767; x=1703138567; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=rR88+KJ4oetYgNJPPfLxYGb3zN8cHiA15JFTdJl3Cf4=;
-        b=EYzBOEyqOU2OeUHkT0F0MAJeYrxovJZes3YbwZ8yE89ghw1axwSVwBud02jKXET/CM
-         f4iO3xgPngtKp4HPOHqoDhv8ogNvYem25PHWKB/CBWn/MK17LdLOhDyefRlW2Fbgi6rs
-         qv7iTm1+WBrUEGpYjcvSyRVq8EL6BbSn7l1O/1is5N6EWCu/ti9546YuDJpsTYRSb5A9
-         n2DovChO3B+c5TWpY58d+Hwz+U0QNhOVGECzbjDTv96SOkuOAQUO744miTrhYwjrDk64
-         RCJmWsH2up6A+YvEcTZVqhQtQo5RxhIt5omaRIfESGDdxjFCArCJyxC563bb9NGIML/k
-         JmHw==
+        d=google.com; s=20230601; t=1702533787; x=1703138587; darn=vger.kernel.org;
+        h=to:from:subject:mime-version:message-id:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=4PUfny+V4K7JdYxjOjoh/zOyx459HJYl83NL6Gprj10=;
+        b=rQl8xWOXnuGEraM6l/BLM+gFunjD2YrIIx+mVZn1Ma3nuV9hKYKJyCLEZlfOB9k6QA
+         WXqcbSAZO+MlBdXlPCbF96fZg3hlFq3dT0v/DIaZGaO+17e5r65p8vEvGrjZfoQhks7V
+         NFHN0GacXlbiOUpfvv2EdAyDN29o3KYSr0Kt9DP6UXGbw3GTJD0uFjQWfRbZ2BskpbIR
+         u2qGlBLFtQO5wbsEGNCQjEt6IjFxCYfP/4i3e/hEDuFxe79SoRTOqqlpgNbEMmUTVgxz
+         DnJ24Qf7BFoZTp3qn7tUUsLz/nlkYql9HOKZl0aD2N7HOLFTbgeQPMP4yCgI8Gt6FCQe
+         twVg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702533767; x=1703138567;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=rR88+KJ4oetYgNJPPfLxYGb3zN8cHiA15JFTdJl3Cf4=;
-        b=wrV99G0xjU7dz5jlg9BPN5pCBkLjQb9mbA96zfiA55qtfOYN3WzvMdknor04xZZaI/
-         8M8SgLuZJ2+o6g2/PRKL28ru6WjVBVWI6fei6appcppsLFNzJwPsPCbkx17QJQDmEQ4c
-         uVSfCgbqp2/WKNf3qzoYM09lJaReC9zSZEF0UOaxWjP+6hw9ZRDKcSVOEyACURGX0Ao3
-         EguaV0aCVCr9BPkC1wGpj8UglsvM9/GGu4OSbjMnsG3QN0NuanuR/Be1S1vi5P/glW5O
-         Bb2Gg8xsMYh40fW1P0nt7ACYKRBMYsXPhJFprBIAFOM2IVVV7TUvBSTC0LkfCGcUx/0V
-         LaJg==
-X-Gm-Message-State: AOJu0YwgXAeJ47B4E+LTAkjvXEYJoim37qKAK+b1kj31oKzA5YTYi6va
-        qhpXYkt16kuk9OSE4KwaoHe0mHSnfzzMBUbkiZVihA==
-X-Google-Smtp-Source: AGHT+IHApeJ6ArYXy3rl2+lkJnBjQtf5ZPUukPygJf2EkLx2G75ff0WSU5JG6Xt465dG74MxwoWECoutji/AYS76NKE=
-X-Received: by 2002:a17:90b:3692:b0:28a:ee4d:20e4 with SMTP id
- mj18-20020a17090b369200b0028aee4d20e4mr1197143pjb.87.1702533766622; Wed, 13
- Dec 2023 22:02:46 -0800 (PST)
-MIME-Version: 1.0
-References: <20230916003118.2540661-1-seanjc@google.com> <20230916003118.2540661-16-seanjc@google.com>
-In-Reply-To: <20230916003118.2540661-16-seanjc@google.com>
-From:   Anup Patel <anup@brainfault.org>
-Date:   Thu, 14 Dec 2023 11:32:35 +0530
-Message-ID: <CAAhSdy2aW0vUsaA_sVKROv8tr9ixuY+RZQt6XFs86bzy++AegA@mail.gmail.com>
-Subject: Re: [PATCH 15/26] KVM: Move include/kvm/iodev.h to include/linux as kvm_iodev.h
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Marc Zyngier <maz@kernel.org>,
-        Oliver Upton <oliver.upton@linux.dev>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Janosch Frank <frankja@linux.ibm.com>,
-        Claudio Imbrenda <imbrenda@linux.ibm.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
+        d=1e100.net; s=20230601; t=1702533787; x=1703138587;
+        h=to:from:subject:mime-version:message-id:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=4PUfny+V4K7JdYxjOjoh/zOyx459HJYl83NL6Gprj10=;
+        b=KN7E+45zgZF073qhDUa/NPDvsLCH2w/QJgEmqNuOWwOzFFYQF9U2NLMguEYpp5Z52R
+         +8LBUGQ3q31o2qctGV5gvSvHNxUEYyN5GmG3goGdXqTMk/7zKNLrv4cWjEyLHaaODpnU
+         5FxLy3FkLHuvHALxqF/qWdkjGcB/hLjM725BUVVqkU8tubkngF932q3IAJ/XhFDMnYbn
+         K3Fa70UfrKEbLuMAC8nE5WiFUGfdZOpFao+0Yq3UDHPFkDR50JlOABp0VcXsc16/OVrR
+         wgFE45UCxusCmmywVFjMFfcBMOWBNPxSSI6/UL1rCz2cxbiWKkZtTGMj+ZUzB0JHeT7w
+         sI+g==
+X-Gm-Message-State: AOJu0Yx4DCH38PQgptTsAIwtcsdV4JyCc46//P0Oc3e1Cjk/0AoXWMdq
+        uLPwwQ0i9INbEYSe8ReP2Ha0hL17DzBR
+X-Google-Smtp-Source: AGHT+IFcS75cNx03y3Bc3EAju03RPpdE51givPJNziGrBBAtq6ZYga6BWWHY8ZXnGFc36WPB4Y7johreOuie
+X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:58bc:716b:84a8:e482])
+ (user=irogers job=sendgmr) by 2002:a25:b292:0:b0:dbc:c697:63bd with SMTP id
+ k18-20020a25b292000000b00dbcc69763bdmr42183ybj.0.1702533787423; Wed, 13 Dec
+ 2023 22:03:07 -0800 (PST)
+Date:   Wed, 13 Dec 2023 22:02:56 -0800
+Message-Id: <20231214060256.2094017-1-irogers@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.43.0.472.g3155946c3a-goog
+Subject: [PATCH v1] perf stat: Combine the -A/--no-aggr and --no-merge options
+From:   Ian Rogers <irogers@google.com>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
         Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Tony Krowiak <akrowiak@linux.ibm.com>,
-        Halil Pasic <pasic@linux.ibm.com>,
-        Jason Herne <jjherne@linux.ibm.com>,
-        Harald Freudenberger <freude@linux.ibm.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
-        linux-mips@vger.kernel.org, kvm@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, kvm-riscv@lists.infradead.org,
-        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        Anish Ghulati <aghulati@google.com>,
-        Venkatesh Srinivas <venkateshs@chromium.org>,
-        Andrew Thornton <andrewth@google.com>
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Ian Rogers <irogers@google.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        K Prateek Nayak <kprateek.nayak@amd.com>,
+        Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
+        Kaige Ye <ye@kaige.org>, James Clark <james.clark@arm.com>,
+        Changbin Du <changbin.du@huawei.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        John Garry <john.g.garry@oracle.com>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Sep 16, 2023 at 6:01=E2=80=AFAM Sean Christopherson <seanjc@google.=
-com> wrote:
->
-> Move iodev.h, the last remaining holdout in include/kvm, to the standard
-> include/linux directory as kvm_iodev.h and delete include/kvm.
->
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
+The -A or --no-aggr option disables aggregation of core events:
+```
+$ perf stat -A -e cycles,data_total -a true
 
-For KVM RISC-V:
-Acked-by: Anup Patel <anup@brainfault.org>
+ Performance counter stats for 'system wide':
 
-Regards,
-Anup
+CPU0            1,287,665      cycles
+CPU1            1,831,681      cycles
+CPU2           27,345,998      cycles
+CPU3            1,964,799      cycles
+CPU4              236,174      cycles
+CPU5            3,302,825      cycles
+CPU6            9,201,446      cycles
+CPU7            1,403,043      cycles
+CPU0               110.90 MiB  data_total
 
-> ---
->  MAINTAINERS                                | 1 -
->  arch/arm64/include/asm/kvm_vgic.h          | 2 +-
->  arch/arm64/kvm/vgic/vgic-mmio-v2.c         | 2 +-
->  arch/arm64/kvm/vgic/vgic-mmio-v3.c         | 2 +-
->  arch/arm64/kvm/vgic/vgic-mmio.c            | 2 +-
->  arch/mips/include/asm/kvm_host.h           | 3 +--
->  arch/powerpc/kvm/mpic.c                    | 2 +-
->  arch/riscv/kvm/aia_aplic.c                 | 2 +-
->  arch/riscv/kvm/aia_imsic.c                 | 2 +-
->  arch/x86/kvm/i8254.h                       | 2 +-
->  arch/x86/kvm/ioapic.h                      | 2 +-
->  arch/x86/kvm/irq.h                         | 2 +-
->  arch/x86/kvm/lapic.h                       | 2 +-
->  include/{kvm/iodev.h =3D> linux/kvm_iodev.h} | 0
->  virt/kvm/coalesced_mmio.c                  | 3 +--
->  virt/kvm/eventfd.c                         | 2 +-
->  virt/kvm/kvm_main.c                        | 3 +--
->  17 files changed, 15 insertions(+), 19 deletions(-)
->  rename include/{kvm/iodev.h =3D> linux/kvm_iodev.h} (100%)
->
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 90f13281d297..ddc8375d536c 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -11498,7 +11498,6 @@ W:      http://www.linux-kvm.org
->  T:     git git://git.kernel.org/pub/scm/virt/kvm/kvm.git
->  F:     Documentation/virt/kvm/
->  F:     include/asm-generic/kvm*
-> -F:     include/kvm/iodev.h
->  F:     include/linux/kvm*
->  F:     include/trace/events/kvm.h
->  F:     include/uapi/asm-generic/kvm*
-> diff --git a/arch/arm64/include/asm/kvm_vgic.h b/arch/arm64/include/asm/k=
-vm_vgic.h
-> index 5b27f94d4fad..2ca52888bc75 100644
-> --- a/arch/arm64/include/asm/kvm_vgic.h
-> +++ b/arch/arm64/include/asm/kvm_vgic.h
-> @@ -13,7 +13,7 @@
->  #include <linux/spinlock.h>
->  #include <linux/static_key.h>
->  #include <linux/types.h>
-> -#include <kvm/iodev.h>
-> +#include <linux/kvm_iodev.h>
->  #include <linux/list.h>
->  #include <linux/jump_label.h>
->
-> diff --git a/arch/arm64/kvm/vgic/vgic-mmio-v2.c b/arch/arm64/kvm/vgic/vgi=
-c-mmio-v2.c
-> index bba0cfeefffe..646053ee892f 100644
-> --- a/arch/arm64/kvm/vgic/vgic-mmio-v2.c
-> +++ b/arch/arm64/kvm/vgic/vgic-mmio-v2.c
-> @@ -6,9 +6,9 @@
->  #include <linux/irqchip/arm-gic.h>
->  #include <linux/kvm.h>
->  #include <linux/kvm_host.h>
-> +#include <linux/kvm_iodev.h>
->  #include <linux/nospec.h>
->
-> -#include <kvm/iodev.h>
->  #include <asm/kvm_vgic.h>
->
->  #include "vgic.h"
-> diff --git a/arch/arm64/kvm/vgic/vgic-mmio-v3.c b/arch/arm64/kvm/vgic/vgi=
-c-mmio-v3.c
-> index d54a90beef61..b79a2e860415 100644
-> --- a/arch/arm64/kvm/vgic/vgic-mmio-v3.c
-> +++ b/arch/arm64/kvm/vgic/vgic-mmio-v3.c
-> @@ -7,8 +7,8 @@
->  #include <linux/irqchip/arm-gic-v3.h>
->  #include <linux/kvm.h>
->  #include <linux/kvm_host.h>
-> +#include <linux/kvm_iodev.h>
->  #include <linux/interrupt.h>
-> -#include <kvm/iodev.h>
->
->  #include <asm/kvm_emulate.h>
->  #include <asm/kvm_arm.h>
-> diff --git a/arch/arm64/kvm/vgic/vgic-mmio.c b/arch/arm64/kvm/vgic/vgic-m=
-mio.c
-> index 68a3d8062473..4feca3b1d915 100644
-> --- a/arch/arm64/kvm/vgic/vgic-mmio.c
-> +++ b/arch/arm64/kvm/vgic/vgic-mmio.c
-> @@ -9,7 +9,7 @@
->  #include <linux/irq.h>
->  #include <linux/kvm.h>
->  #include <linux/kvm_host.h>
-> -#include <kvm/iodev.h>
-> +#include <linux/kvm_iodev.h>
->  #include <asm/kvm_arch_timer.h>
->  #include <asm/kvm_vgic.h>
->
-> diff --git a/arch/mips/include/asm/kvm_host.h b/arch/mips/include/asm/kvm=
-_host.h
-> index 54a85f1d4f2c..f8f63d0aa399 100644
-> --- a/arch/mips/include/asm/kvm_host.h
-> +++ b/arch/mips/include/asm/kvm_host.h
-> @@ -16,6 +16,7 @@
->  #include <linux/interrupt.h>
->  #include <linux/types.h>
->  #include <linux/kvm.h>
-> +#include <linux/kvm_iodev.h>
->  #include <linux/kvm_types.h>
->  #include <linux/threads.h>
->  #include <linux/spinlock.h>
-> @@ -24,8 +25,6 @@
->  #include <asm/inst.h>
->  #include <asm/mipsregs.h>
->
-> -#include <kvm/iodev.h>
-> -
->  /* MIPS KVM register ids */
->  #define MIPS_CP0_32(_R, _S)                                    \
->         (KVM_REG_MIPS_CP0 | KVM_REG_SIZE_U32 | (8 * (_R) + (_S)))
-> diff --git a/arch/powerpc/kvm/mpic.c b/arch/powerpc/kvm/mpic.c
-> index 23e9c2bd9f27..b25a03251544 100644
-> --- a/arch/powerpc/kvm/mpic.c
-> +++ b/arch/powerpc/kvm/mpic.c
-> @@ -26,6 +26,7 @@
->  #include <linux/slab.h>
->  #include <linux/mutex.h>
->  #include <linux/kvm_host.h>
-> +#include <linux/kvm_iodev.h>
->  #include <linux/errno.h>
->  #include <linux/fs.h>
->  #include <linux/anon_inodes.h>
-> @@ -33,7 +34,6 @@
->  #include <asm/mpic.h>
->  #include <asm/kvm_para.h>
->  #include <asm/kvm_ppc.h>
-> -#include <kvm/iodev.h>
->
->  #define MAX_CPU     32
->  #define MAX_SRC     256
-> diff --git a/arch/riscv/kvm/aia_aplic.c b/arch/riscv/kvm/aia_aplic.c
-> index 39e72aa016a4..b49e747f2bad 100644
-> --- a/arch/riscv/kvm/aia_aplic.c
-> +++ b/arch/riscv/kvm/aia_aplic.c
-> @@ -11,7 +11,7 @@
->  #include <linux/math.h>
->  #include <linux/spinlock.h>
->  #include <linux/swab.h>
-> -#include <kvm/iodev.h>
-> +#include <linux/kvm_iodev.h>
->  #include <asm/kvm_aia_aplic.h>
->
->  struct aplic_irq {
-> diff --git a/arch/riscv/kvm/aia_imsic.c b/arch/riscv/kvm/aia_imsic.c
-> index 6cf23b8adb71..586e466a1c6d 100644
-> --- a/arch/riscv/kvm/aia_imsic.c
-> +++ b/arch/riscv/kvm/aia_imsic.c
-> @@ -10,10 +10,10 @@
->  #include <linux/atomic.h>
->  #include <linux/bitmap.h>
->  #include <linux/kvm_host.h>
-> +#include <linux/kvm_iodev.h>
->  #include <linux/math.h>
->  #include <linux/spinlock.h>
->  #include <linux/swab.h>
-> -#include <kvm/iodev.h>
->  #include <asm/csr.h>
->  #include <asm/kvm_aia_imsic.h>
->
-> diff --git a/arch/x86/kvm/i8254.h b/arch/x86/kvm/i8254.h
-> index a768212ba821..4de7a0b88e4f 100644
-> --- a/arch/x86/kvm/i8254.h
-> +++ b/arch/x86/kvm/i8254.h
-> @@ -4,7 +4,7 @@
->
->  #include <linux/kthread.h>
->
-> -#include <kvm/iodev.h>
-> +#include <linux/kvm_iodev.h>
->
->  struct kvm_kpit_channel_state {
->         u32 count; /* can be 65536 */
-> diff --git a/arch/x86/kvm/ioapic.h b/arch/x86/kvm/ioapic.h
-> index 539333ac4b38..2beec2daf1a3 100644
-> --- a/arch/x86/kvm/ioapic.h
-> +++ b/arch/x86/kvm/ioapic.h
-> @@ -3,7 +3,7 @@
->  #define __KVM_IO_APIC_H
->
->  #include <linux/kvm_host.h>
-> -#include <kvm/iodev.h>
-> +#include <linux/kvm_iodev.h>
->  #include "irq.h"
->
->  struct kvm;
-> diff --git a/arch/x86/kvm/irq.h b/arch/x86/kvm/irq.h
-> index c2d7cfe82d00..f9530e9a66f8 100644
-> --- a/arch/x86/kvm/irq.h
-> +++ b/arch/x86/kvm/irq.h
-> @@ -13,9 +13,9 @@
->  #include <linux/mm_types.h>
->  #include <linux/hrtimer.h>
->  #include <linux/kvm_host.h>
-> +#include <linux/kvm_iodev.h>
->  #include <linux/spinlock.h>
->
-> -#include <kvm/iodev.h>
->  #include "lapic.h"
->
->  #define PIC_NUM_PINS 16
-> diff --git a/arch/x86/kvm/lapic.h b/arch/x86/kvm/lapic.h
-> index 0a0ea4b5dd8c..bfd99ad1882e 100644
-> --- a/arch/x86/kvm/lapic.h
-> +++ b/arch/x86/kvm/lapic.h
-> @@ -2,7 +2,7 @@
->  #ifndef __KVM_X86_LAPIC_H
->  #define __KVM_X86_LAPIC_H
->
-> -#include <kvm/iodev.h>
-> +#include <linux/kvm_iodev.h>
->
->  #include <linux/kvm_host.h>
->
-> diff --git a/include/kvm/iodev.h b/include/linux/kvm_iodev.h
-> similarity index 100%
-> rename from include/kvm/iodev.h
-> rename to include/linux/kvm_iodev.h
-> diff --git a/virt/kvm/coalesced_mmio.c b/virt/kvm/coalesced_mmio.c
-> index 1b90acb6e3fe..cfcb4b84d632 100644
-> --- a/virt/kvm/coalesced_mmio.c
-> +++ b/virt/kvm/coalesced_mmio.c
-> @@ -9,8 +9,7 @@
->   *
->   */
->
-> -#include <kvm/iodev.h>
-> -
-> +#include <linux/kvm_iodev.h>
->  #include <linux/kvm_host.h>
->  #include <linux/slab.h>
->  #include <linux/kvm.h>
-> diff --git a/virt/kvm/eventfd.c b/virt/kvm/eventfd.c
-> index 89912a17f5d5..4d7cfb1095fd 100644
-> --- a/virt/kvm/eventfd.c
-> +++ b/virt/kvm/eventfd.c
-> @@ -26,7 +26,7 @@
->  #include <linux/irqbypass.h>
->  #include <trace/events/kvm.h>
->
-> -#include <kvm/iodev.h>
-> +#include <linux/kvm_iodev.h>
->
->  #ifdef CONFIG_HAVE_KVM_IRQFD
->
-> diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
-> index 486800a7024b..f585a159b4f5 100644
-> --- a/virt/kvm/kvm_main.c
-> +++ b/virt/kvm/kvm_main.c
-> @@ -13,9 +13,8 @@
->   *   Yaniv Kamay  <yaniv@qumranet.com>
->   */
->
-> -#include <kvm/iodev.h>
-> -
->  #include <linux/kvm_host.h>
-> +#include <linux/kvm_iodev.h>
->  #include <linux/kvm.h>
->  #include <linux/module.h>
->  #include <linux/errno.h>
-> --
-> 2.42.0.459.ge4e396fd5e-goog
->
+       0.008961761 seconds time elapsed
+```
+
+The --no-merge option disables the aggregation of uncore events:
+```
+$ perf stat --no-merge -e cycles,data_total -a true
+
+ Performance counter stats for 'system wide':
+
+        38,482,778      cycles
+             15.04 MiB  data_total [uncore_imc_free_running_1]
+             15.00 MiB  data_total [uncore_imc_free_running_0]
+
+       0.005915155 seconds time elapsed
+```
+
+Having two options confuses users who generally don't appreciate the
+difference in PMUs. Keep all the options but make it so they all
+disable aggregation both of core and uncore events:
+```
+$ perf stat -A -e cycles,data_total -a true
+
+ Performance counter stats for 'system wide':
+
+CPU0               85,878      cycles
+CPU1               88,179      cycles
+CPU2               60,872      cycles
+CPU3            3,265,567      cycles
+CPU4               82,357      cycles
+CPU5               83,383      cycles
+CPU6               84,156      cycles
+CPU7              220,803      cycles
+CPU0                 2.38 MiB  data_total [uncore_imc_free_running_0]
+CPU0                 2.38 MiB  data_total [uncore_imc_free_running_1]
+
+       0.001397205 seconds time elapsed
+```
+
+Update the relevant perf-stat man page information.
+
+Signed-off-by: Ian Rogers <irogers@google.com>
+---
+ tools/perf/Documentation/perf-stat.txt | 52 ++++++++++++++------------
+ tools/perf/builtin-stat.c              |  5 ++-
+ tools/perf/util/stat-display.c         |  2 +-
+ tools/perf/util/stat.c                 |  2 +-
+ tools/perf/util/stat.h                 |  1 -
+ 5 files changed, 33 insertions(+), 29 deletions(-)
+
+diff --git a/tools/perf/Documentation/perf-stat.txt b/tools/perf/Documentation/perf-stat.txt
+index 8f789fa1242e..5af2e432b54f 100644
+--- a/tools/perf/Documentation/perf-stat.txt
++++ b/tools/perf/Documentation/perf-stat.txt
+@@ -422,7 +422,34 @@ See perf list output for the possible metrics and metricgroups.
+ 
+ -A::
+ --no-aggr::
+-Do not aggregate counts across all monitored CPUs.
++--no-merge::
++Do not aggregate/merge counts across monitored CPUs or PMUs.
++
++When multiple events are created from a single event specification,
++stat will, by default, aggregate the event counts and show the result
++in a single row. This option disables that behavior and shows the
++individual events and counts.
++
++Multiple events are created from a single event specification when:
++
++1. PID monitoring isn't requested and the system has more than one
++   CPU. For example, a system with 8 SMT threads will have one event
++   opened on each thread and aggregation is performed across them.
++
++2. Prefix or glob wildcard matching is used for the PMU name. For
++   example, multiple memory controller PMUs may exist typically with a
++   suffix of _0, _1, etc. By default the event counts will all be
++   combined if the PMU is specified without the suffix such as
++   uncore_imc rather than uncore_imc_0.
++
++3. Aliases, which are listed immediately after the Kernel PMU events
++   by perf list, are used.
++
++--hybrid-merge::
++Merge core event counts from all core PMUs. In hybrid or big.LITTLE
++systems by default each core PMU will report its count
++separately. This option forces core PMU counts to be combined to give
++a behavior closer to having a single CPU type in the system.
+ 
+ --topdown::
+ Print top-down metrics supported by the CPU. This allows to determine
+@@ -475,29 +502,6 @@ highlight 'tma_frontend_bound'. This metric may be drilled into with
+ 
+ Error out if the input is higher than the supported max level.
+ 
+---no-merge::
+-Do not merge results from same PMUs.
+-
+-When multiple events are created from a single event specification,
+-stat will, by default, aggregate the event counts and show the result
+-in a single row. This option disables that behavior and shows
+-the individual events and counts.
+-
+-Multiple events are created from a single event specification when:
+-1. Prefix or glob matching is used for the PMU name.
+-2. Aliases, which are listed immediately after the Kernel PMU events
+-   by perf list, are used.
+-
+---hybrid-merge::
+-Merge the hybrid event counts from all PMUs.
+-
+-For hybrid events, by default, the stat aggregates and reports the event
+-counts per PMU. But sometimes, it's also useful to aggregate event counts
+-from all PMUs. This option enables that behavior and reports the counts
+-without PMUs.
+-
+-For non-hybrid events, it should be no effect.
+-
+ --smi-cost::
+ Measure SMI cost if msr/aperf/ and msr/smi/ events are supported.
+ 
+diff --git a/tools/perf/builtin-stat.c b/tools/perf/builtin-stat.c
+index bda020c0b9d5..5fe9abc6a524 100644
+--- a/tools/perf/builtin-stat.c
++++ b/tools/perf/builtin-stat.c
+@@ -1204,8 +1204,9 @@ static struct option stat_options[] = {
+ 	OPT_STRING('C', "cpu", &target.cpu_list, "cpu",
+ 		    "list of cpus to monitor in system-wide"),
+ 	OPT_SET_UINT('A', "no-aggr", &stat_config.aggr_mode,
+-		    "disable CPU count aggregation", AGGR_NONE),
+-	OPT_BOOLEAN(0, "no-merge", &stat_config.no_merge, "Do not merge identical named events"),
++		    "disable aggregation across CPUs or PMUs", AGGR_NONE),
++	OPT_SET_UINT(0, "no-merge", &stat_config.aggr_mode,
++		    "disable aggregation the same as -A or -no-aggr", AGGR_NONE),
+ 	OPT_BOOLEAN(0, "hybrid-merge", &stat_config.hybrid_merge,
+ 		    "Merge identical named hybrid events"),
+ 	OPT_STRING('x', "field-separator", &stat_config.csv_sep, "separator",
+diff --git a/tools/perf/util/stat-display.c b/tools/perf/util/stat-display.c
+index afe6db8e7bf4..8c61f8627ebc 100644
+--- a/tools/perf/util/stat-display.c
++++ b/tools/perf/util/stat-display.c
+@@ -898,7 +898,7 @@ static bool hybrid_uniquify(struct evsel *evsel, struct perf_stat_config *config
+ 
+ static void uniquify_counter(struct perf_stat_config *config, struct evsel *counter)
+ {
+-	if (config->no_merge || hybrid_uniquify(counter, config))
++	if (config->aggr_mode == AGGR_NONE || hybrid_uniquify(counter, config))
+ 		uniquify_event_name(counter);
+ }
+ 
+diff --git a/tools/perf/util/stat.c b/tools/perf/util/stat.c
+index 012c4946b9c4..b0bcf92f0f9c 100644
+--- a/tools/perf/util/stat.c
++++ b/tools/perf/util/stat.c
+@@ -592,7 +592,7 @@ void perf_stat_merge_counters(struct perf_stat_config *config, struct evlist *ev
+ {
+ 	struct evsel *evsel;
+ 
+-	if (config->no_merge)
++	if (config->aggr_mode == AGGR_NONE)
+ 		return;
+ 
+ 	evlist__for_each_entry(evlist, evsel)
+diff --git a/tools/perf/util/stat.h b/tools/perf/util/stat.h
+index 325d0fad1842..4357ba114822 100644
+--- a/tools/perf/util/stat.h
++++ b/tools/perf/util/stat.h
+@@ -76,7 +76,6 @@ struct perf_stat_config {
+ 	bool			 null_run;
+ 	bool			 ru_display;
+ 	bool			 big_num;
+-	bool			 no_merge;
+ 	bool			 hybrid_merge;
+ 	bool			 walltime_run_table;
+ 	bool			 all_kernel;
+-- 
+2.43.0.472.g3155946c3a-goog
+
