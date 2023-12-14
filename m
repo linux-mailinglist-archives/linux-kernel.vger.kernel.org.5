@@ -2,54 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A573812982
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 08:38:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D6923812983
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 08:38:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235502AbjLNHiI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 02:38:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37746 "EHLO
+        id S229461AbjLNHiK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 02:38:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37748 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229461AbjLNHiG (ORCPT
+        with ESMTP id S229629AbjLNHiH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 02:38:06 -0500
+        Thu, 14 Dec 2023 02:38:07 -0500
 Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7686DA3;
-        Wed, 13 Dec 2023 23:38:12 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D535B9;
+        Wed, 13 Dec 2023 23:38:13 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1702539492; x=1734075492;
-  h=from:subject:date:message-id:mime-version:
-   content-transfer-encoding:to:cc;
-  bh=h6iwtR+Emw2EX9lZjGEXRQCb3JKoPyQmhXB1JkGLNZE=;
-  b=DHFjAJPTQQqzUfMwsqBd71kL8avEX6nkCsuX6jPY4NCUrGjVONKIeMFq
-   aSn/UJtPnd0u0B0NB3zbss/gTwSlKqLhftK7WMmc8tDpBm7pnMfsqKTpJ
-   fvuEgyzS/o6XinjjFAb1ynqcGMzxyeUzupyEjk0TE3euOskGU2iyIDPYR
-   wsnXCMYCOF6GkpH0ZCYf2JG3d+okEwBM7msml6/bJ4akskSRmVM+M2z/K
-   RKlTsZdCXmoFqDs1rTmmZm4G3vkUyV597cay07nQwOfyUbKJORHKOqMlD
-   vO+OxFcs4xRSTmfoO/kOehLKaiOEKYaTieHk+L/P0J/AOTZAYuxl0hE9a
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10923"; a="481275504"
+  t=1702539493; x=1734075493;
+  h=from:date:subject:mime-version:content-transfer-encoding:
+   message-id:references:in-reply-to:to:cc;
+  bh=s2pn4yZl0XYTp65Nn5lvuI7n/QI1GItpUEXHrwpjM9A=;
+  b=BBgxT82kFOUkxCI4MYyQPQKAfHIHKZc50MvaP7ltfnOxFpmZhuSHRYKN
+   3dgMT3TMoP3wzOM5EYuywcHiWCb8Vlw6za8Ub/c2Or9wX7R4T4+tKIi1T
+   EIcV0k3QM2cz6v+Eo3PT1+0yIiM3eGtMwwm9YsB1yJinZYWU1ODSzqvvM
+   uo5h5FL99MNf6RWdDckoa4eJvp7jr/E8mqTXSlGmu/sKJ5Ap5bDEK9hWB
+   uenAHWK3DpeYlI7XZ6NhtNRnj/lgbYvhsmUifjG9d9mUwjyXYFcJ9RTHR
+   hOm8EIbGwm+R55yfPw5aLevRddLquF/5jD8l/vpeEpK+vDHSobzx8r+/z
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10923"; a="481275512"
 X-IronPort-AV: E=Sophos;i="6.04,274,1695711600"; 
-   d="scan'208";a="481275504"
+   d="scan'208";a="481275512"
 Received: from orsmga003.jf.intel.com ([10.7.209.27])
   by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Dec 2023 23:38:12 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10923"; a="723972055"
+X-IronPort-AV: E=McAfee;i="6600,9927,10923"; a="723972059"
 X-IronPort-AV: E=Sophos;i="6.04,274,1695711600"; 
-   d="scan'208";a="723972055"
+   d="scan'208";a="723972059"
 Received: from llblake-mobl1.amr.corp.intel.com (HELO [192.168.1.200]) ([10.213.191.124])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Dec 2023 23:38:10 -0800
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Dec 2023 23:38:11 -0800
 From:   Vishal Verma <vishal.l.verma@intel.com>
-Subject: [PATCH v5 0/4] Add DAX ABI for memmap_on_memory
-Date:   Thu, 14 Dec 2023 00:37:53 -0700
-Message-Id: <20231214-vv-dax_abi-v5-0-3f7b006960b4@intel.com>
+Date:   Thu, 14 Dec 2023 00:37:54 -0700
+Subject: [PATCH v5 1/4] Documentatiion/ABI: Add ABI documentation for
+ sys-bus-dax
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-B4-Tracking: v=1; b=H4sIANGwemUC/3XM0QqCMBTG8VeJXbfYOZtTu+o9ImLOsxyUhsowx
- Hdv2o0Kca6+A7//yDpqPXXsfBhZS8F3vqnjSI4HZitTP4j7Mm6GAiUITHgIvDTD3RSeQ2oQcqu
- 0SDWL4N2S88MSu97irnzXN+1naQeYv78MCr3OBOCCq1RRkWWEAuzF1z09T7Z5sTkT8D/FSJ2Kh
- 1LqUmR7KlcUYENlpMY6bS0UJeVuT9Wa4oaqSEEmkCaZEzbHNZ2m6QsSnChrVQEAAA==
+Message-Id: <20231214-vv-dax_abi-v5-1-3f7b006960b4@intel.com>
+References: <20231214-vv-dax_abi-v5-0-3f7b006960b4@intel.com>
+In-Reply-To: <20231214-vv-dax_abi-v5-0-3f7b006960b4@intel.com>
 To:     Dan Williams <dan.j.williams@intel.com>,
         Vishal Verma <vishal.l.verma@intel.com>,
         Dave Jiang <dave.jiang@intel.com>,
@@ -60,18 +59,15 @@ Cc:     linux-kernel@vger.kernel.org, nvdimm@lists.linux.dev,
         Dave Hansen <dave.hansen@linux.intel.com>,
         Huang Ying <ying.huang@intel.com>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-mm@kvack.org, Joao Martins <joao.m.martins@oracle.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Li Zhijian <lizhijian@fujitsu.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>
+        linux-mm@kvack.org
 X-Mailer: b4 0.13-dev-433a8
-X-Developer-Signature: v=1; a=openpgp-sha256; l=3873;
+X-Developer-Signature: v=1; a=openpgp-sha256; l=5934;
  i=vishal.l.verma@intel.com; h=from:subject:message-id;
- bh=h6iwtR+Emw2EX9lZjGEXRQCb3JKoPyQmhXB1JkGLNZE=;
- b=owGbwMvMwCXGf25diOft7jLG02pJDKlVG+499hN/bHjHzIXZ4f2aqSon9dUneh0P2eQcxcVfK
- /DPnkeoo5SFQYyLQVZMkeXvno+Mx+S25/MEJjjCzGFlAhnCwMUpABPJtWL4n2F/7nClCXdxvPpS
- YYsUNav9Z7eYdszbHpJ1n++8vc6BPQz/fWdYypxe3vOiMflFb6D3rHenfu58/z3m1ls3/dQ1b1e
- o8gAA
+ bh=s2pn4yZl0XYTp65Nn5lvuI7n/QI1GItpUEXHrwpjM9A=;
+ b=owGbwMvMwCXGf25diOft7jLG02pJDKlVGx4VxXeVLzrzw/Rzevi5Y9KH3GbOf7RvZum9o3Ouq
+ E1sv6TV21HKwiDGxSArpsjyd89HxmNy2/N5AhMcYeawMoEMYeDiFICJ2Isx/OHn+2U8ea3O/vwu
+ Tesphzmq5lYYaJ1peJkQ9+FcOvPT7GhGhs2HTzq8qm+IF3kimLko9v/0y/bhllrfTy0IN5ZJ/lB
+ 7hQsA
 X-Developer-Key: i=vishal.l.verma@intel.com; a=openpgp;
  fpr=F8682BE134C67A12332A2ED07AFA61BEA3B84DFF
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
@@ -84,96 +80,160 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The DAX drivers were missing sysfs ABI documentation entirely.  Add this
-missing documentation for the sysfs ABI for DAX regions and Dax devices
-in patch 1. Switch to guard(device) semantics for Scope Based Resource
-Management for device_{lock,unlock} flows in drivers/dax/bus.c in patch
-2. Export mhp_supports_memmap_on_memory() in patch 3. Add a new ABI for
-toggling memmap_on_memory semantics in patch 4.
+Add the missing sysfs ABI documentation for the device DAX subsystem.
+Various ABI attributes under this have been present since v5.1, and more
+have been added over time. In preparation for adding a new attribute,
+add this file with the historical details.
 
-The missing ABI was spotted in [1], this series is a split of the new
-ABI additions behind the initial documentation creation.
-
-[1]: https://lore.kernel.org/linux-cxl/651f27b728fef_ae7e7294b3@dwillia2-xfh.jf.intel.com.notmuch/
-
+Cc: Dan Williams <dan.j.williams@intel.com>
+Signed-off-by: Vishal Verma <vishal.l.verma@intel.com>
 ---
-This series depends on [2] which adds the definition for guard(device).
-[2]: https://lore.kernel.org/r/170250854466.1522182.17555361077409628655.stgit@dwillia2-xfh.jf.intel.com
+ Documentation/ABI/testing/sysfs-bus-dax | 136 ++++++++++++++++++++++++++++++++
+ 1 file changed, 136 insertions(+)
 
----
+diff --git a/Documentation/ABI/testing/sysfs-bus-dax b/Documentation/ABI/testing/sysfs-bus-dax
+new file mode 100644
+index 000000000000..6359f7bc9bf4
+--- /dev/null
++++ b/Documentation/ABI/testing/sysfs-bus-dax
+@@ -0,0 +1,136 @@
++What:		/sys/bus/dax/devices/daxX.Y/align
++Date:		October, 2020
++KernelVersion:	v5.10
++Contact:	nvdimm@lists.linux.dev
++Description:
++		(RW) Provides a way to specify an alignment for a dax device.
++		Values allowed are constrained by the physical address ranges
++		that back the dax device, and also by arch requirements.
++
++What:		/sys/bus/dax/devices/daxX.Y/mapping
++Date:		October, 2020
++KernelVersion:	v5.10
++Contact:	nvdimm@lists.linux.dev
++Description:
++		(WO) Provides a way to allocate a mapping range under a dax
++		device. Specified in the format <start>-<end>.
++
++What:		/sys/bus/dax/devices/daxX.Y/mapping[0..N]/start
++What:		/sys/bus/dax/devices/daxX.Y/mapping[0..N]/end
++What:		/sys/bus/dax/devices/daxX.Y/mapping[0..N]/page_offset
++Date:		October, 2020
++KernelVersion:	v5.10
++Contact:	nvdimm@lists.linux.dev
++Description:
++		(RO) A dax device may have multiple constituent discontiguous
++		address ranges. These are represented by the different
++		'mappingX' subdirectories. The 'start' attribute indicates the
++		start physical address for the given range. The 'end' attribute
++		indicates the end physical address for the given range. The
++		'page_offset' attribute indicates the offset of the current
++		range in the dax device.
++
++What:		/sys/bus/dax/devices/daxX.Y/resource
++Date:		June, 2019
++KernelVersion:	v5.3
++Contact:	nvdimm@lists.linux.dev
++Description:
++		(RO) The resource attribute indicates the starting physical
++		address of a dax device. In case of a device with multiple
++		constituent ranges, it indicates the starting address of the
++		first range.
++
++What:		/sys/bus/dax/devices/daxX.Y/size
++Date:		October, 2020
++KernelVersion:	v5.10
++Contact:	nvdimm@lists.linux.dev
++Description:
++		(RW) The size attribute indicates the total size of a dax
++		device. For creating subdivided dax devices, or for resizing
++		an existing device, the new size can be written to this as
++		part of the reconfiguration process.
++
++What:		/sys/bus/dax/devices/daxX.Y/numa_node
++Date:		November, 2019
++KernelVersion:	v5.5
++Contact:	nvdimm@lists.linux.dev
++Description:
++		(RO) If NUMA is enabled and the platform has affinitized the
++		backing device for this dax device, emit the CPU node
++		affinity for this device.
++
++What:		/sys/bus/dax/devices/daxX.Y/target_node
++Date:		February, 2019
++KernelVersion:	v5.1
++Contact:	nvdimm@lists.linux.dev
++Description:
++		(RO) The target-node attribute is the Linux numa-node that a
++		device-dax instance may create when it is online. Prior to
++		being online the device's 'numa_node' property reflects the
++		closest online cpu node which is the typical expectation of a
++		device 'numa_node'. Once it is online it becomes its own
++		distinct numa node.
++
++What:		$(readlink -f /sys/bus/dax/devices/daxX.Y)/../dax_region/available_size
++Date:		October, 2020
++KernelVersion:	v5.10
++Contact:	nvdimm@lists.linux.dev
++Description:
++		(RO) The available_size attribute tracks available dax region
++		capacity. This only applies to volatile hmem devices, not pmem
++		devices, since pmem devices are defined by nvdimm namespace
++		boundaries.
++
++What:		$(readlink -f /sys/bus/dax/devices/daxX.Y)/../dax_region/size
++Date:		July, 2017
++KernelVersion:	v5.1
++Contact:	nvdimm@lists.linux.dev
++Description:
++		(RO) The size attribute indicates the size of a given dax region
++		in bytes.
++
++What:		$(readlink -f /sys/bus/dax/devices/daxX.Y)/../dax_region/align
++Date:		October, 2020
++KernelVersion:	v5.10
++Contact:	nvdimm@lists.linux.dev
++Description:
++		(RO) The align attribute indicates alignment of the dax region.
++		Changes on align may not always be valid, when say certain
++		mappings were created with 2M and then we switch to 1G. This
++		validates all ranges against the new value being attempted, post
++		resizing.
++
++What:		$(readlink -f /sys/bus/dax/devices/daxX.Y)/../dax_region/seed
++Date:		October, 2020
++KernelVersion:	v5.10
++Contact:	nvdimm@lists.linux.dev
++Description:
++		(RO) The seed device is a concept for dynamic dax regions to be
++		able to split the region amongst multiple sub-instances.  The
++		seed device, similar to libnvdimm seed devices, is a device
++		that starts with zero capacity allocated and unbound to a
++		driver.
++
++What:		$(readlink -f /sys/bus/dax/devices/daxX.Y)/../dax_region/create
++Date:		October, 2020
++KernelVersion:	v5.10
++Contact:	nvdimm@lists.linux.dev
++Description:
++		(RW) The create interface to the dax region provides a way to
++		create a new unconfigured dax device under the given region, which
++		can then be configured (with a size etc.) and then probed.
++
++What:		$(readlink -f /sys/bus/dax/devices/daxX.Y)/../dax_region/delete
++Date:		October, 2020
++KernelVersion:	v5.10
++Contact:	nvdimm@lists.linux.dev
++Description:
++		(WO) The delete interface for a dax region provides for deletion
++		of any 0-sized and idle dax devices.
++
++What:		$(readlink -f /sys/bus/dax/devices/daxX.Y)/../dax_region/id
++Date:		July, 2017
++KernelVersion:	v5.1
++Contact:	nvdimm@lists.linux.dev
++Description:
++		(RO) The id attribute indicates the region id of a dax region.
 
-Other Logistics -
-
-Andrew, would you prefer patch 3 to go through mm? Or through the dax
-tree with an mm ack? The remaining patches are all contained to dax, but
-do depend on the memmap_on_memory set that is currently in mm-stable.
-
----
-
-Changes in v5:
-- Export and check mhp_supports_memmap_on_memory() in the DAX sysfs ABI
-  (David)
-- Obtain dax_drv under the device lock (Ying)
-- Check dax_drv for NULL before dereferencing it (Ying)
-- Clean up some repetition in sysfs-bus-dax documentation entries
-  (Jonathan)
-- A few additional cleanups enabled by guard(device) (Jonathan)
-- Drop the DEFINE_GUARD() part of patch 2, add dependency on Dan's patch
-  above so it can be backported / applied separately (Jonathan, Dan)
-- Link to v4: https://lore.kernel.org/r/20231212-vv-dax_abi-v4-0-1351758f0c92@intel.com
-
-Changes in v4:
-- Hold the device lock when checking if the dax_dev is bound to kmem
-  (Ying, Dan)
-- Remove dax region checks (and locks) as they were unnecessary.
-- Introduce guard(device) for device lock/unlock (Dan)
-- Convert the rest of drivers/dax/bus.c to guard(device)
-- Link to v3: https://lore.kernel.org/r/20231211-vv-dax_abi-v3-0-acf6cc1bde9f@intel.com
-
-Changes in v3:
-- Fix typo in ABI docs (Zhijian Li)
-- Add kernel config and module parameter dependencies to the ABI docs
-  entry (David Hildenbrand)
-- Ensure kmem isn't active when setting the sysfs attribute (Ying
-  Huang)
-- Simplify returning from memmap_on_memory_store()
-- Link to v2: https://lore.kernel.org/r/20231206-vv-dax_abi-v2-0-f4f4f2336d08@intel.com
-
-Changes in v2:
-- Fix CC lists, patch 1/2 didn't get sent correctly in v1
-- Link to v1: https://lore.kernel.org/r/20231206-vv-dax_abi-v1-0-474eb88e201c@intel.com
-
-Cc: <linux-kernel@vger.kernel.org>
-Cc: <nvdimm@lists.linux.dev>
-Cc: <linux-cxl@vger.kernel.org>
-Cc: David Hildenbrand <david@redhat.com>
-Cc: Dave Hansen <dave.hansen@linux.intel.com>
-Cc: Huang Ying <ying.huang@intel.com>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: <linux-mm@kvack.org>
-To: Dan Williams <dan.j.williams@intel.com>
-To: Vishal Verma <vishal.l.verma@intel.com>
-To: Dave Jiang <dave.jiang@intel.com>
-To: Andrew Morton <akpm@linux-foundation.org>
-To: Oscar Salvador <osalvador@suse.de>
-
----
-Vishal Verma (4):
-      Documentatiion/ABI: Add ABI documentation for sys-bus-dax
-      dax/bus: Use guard(device) in sysfs attribute helpers
-      mm/memory_hotplug: export mhp_supports_memmap_on_memory()
-      dax: add a sysfs knob to control memmap_on_memory behavior
-
- include/linux/memory_hotplug.h          |   6 ++
- drivers/dax/bus.c                       | 181 +++++++++++++++++---------------
- mm/memory_hotplug.c                     |  17 ++-
- Documentation/ABI/testing/sysfs-bus-dax | 153 +++++++++++++++++++++++++++
- 4 files changed, 262 insertions(+), 95 deletions(-)
----
-base-commit: a6e0c2ca980d75d5ac6b2902c5c0028eaf094db3
-change-id: 20231025-vv-dax_abi-17a219c46076
-
-Best regards,
 -- 
-Vishal Verma <vishal.l.verma@intel.com>
+2.41.0
 
