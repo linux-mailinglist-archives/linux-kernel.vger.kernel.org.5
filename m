@@ -2,183 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D1A78137BD
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 18:12:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C3DF8137E1
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 18:13:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1443898AbjLNRL7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 12:11:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57956 "EHLO
+        id S1443974AbjLNRNU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 12:13:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41474 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230344AbjLNRLj (ORCPT
+        with ESMTP id S230018AbjLNRNE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 12:11:39 -0500
-Received: from mail-qt1-x830.google.com (mail-qt1-x830.google.com [IPv6:2607:f8b0:4864:20::830])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5659BD43
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 09:11:44 -0800 (PST)
-Received: by mail-qt1-x830.google.com with SMTP id d75a77b69052e-42542b1ed5dso62934621cf.1
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 09:11:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1702573903; x=1703178703; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=mxUe6pUm6l0Cf+AsboBSISPAY2O3/ATI4QcyYk76Qaw=;
-        b=ZuWmgDP2RPaxeToLI4GdiMy0n9VxgleimNq2Ve4UflR5VmtBU/ObovLmEhb8iV6WCX
-         q08ZFqn9iBh0SPTx7tbVeCSrRH8RtzvpeMMo6TU06LNRldgfAavMySNRqRL9s7ZULgGx
-         PNOprntlR9j+rTVN1mELsQ8Bv+ZniUijGGoeLamYbtTPesAS9ZejDsxiLcpJScYpIvJR
-         W8Tiw4m0H8xjZVbglShYPEol5K7oNPazMeni8ExOpd7QHTmFCku4cf2QMCD/EhKynml+
-         qEcOp1Aj1ihSJHusQt7/SeHiDKo9rJspkAgJzUlZ5Lw0/BvlY2xR/fnonBUrYWZWzcjz
-         jNzQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702573903; x=1703178703;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=mxUe6pUm6l0Cf+AsboBSISPAY2O3/ATI4QcyYk76Qaw=;
-        b=b3cipJnPxuIIOxOncC9v5SesX8/b4hSbVILeHYlVvpmabfkq9vrtZTEq4ZfjWgcLNB
-         HL5osy/eY7e0aWA0CBjk2zd+sBidr6ZQikjIEwJCkpuGBKy1otQhJJ8NPqjZEoal8i76
-         wZqMgR9cRK0xFzIOqV1cUwPRKYo9aiH5QZP6LopgMMPQXpX8zCjVgz5u8RTzUPY/ZhQB
-         wRXcpowBdk2f+JZgXUPPT2z0ZLMkmGTVu6b0sqz7IFQfJ3z7XosKpGz03LGftORlUz9g
-         LhrNC6zAD929GLubNKBWsnGyOAoqgR61FOZ8PsY9l4FQNSvSBVmQTGz7uhhFzUBNjdnE
-         aXhg==
-X-Gm-Message-State: AOJu0YzF9QvW8mt7XoSogdxrfj71mUFw5uKDtGuVpf5OiicNKtkPkto6
-        KhOPVqRaQ1Ccxbybyq4j61bMuA==
-X-Google-Smtp-Source: AGHT+IGDCYzqXWzUxXKjMVSmW4MwYuT+8dRIEGxntC/zMVHNGiAZX7h9jOSwoAdpLErOc9Au0X9hgA==
-X-Received: by 2002:ac8:7d52:0:b0:425:4043:96e2 with SMTP id h18-20020ac87d52000000b00425404396e2mr15224897qtb.111.1702573903122;
-        Thu, 14 Dec 2023 09:11:43 -0800 (PST)
-Received: from localhost ([2620:10d:c091:400::5:a0a6])
-        by smtp.gmail.com with ESMTPSA id e7-20020ac845c7000000b00418122186ccsm5911083qto.12.2023.12.14.09.11.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Dec 2023 09:11:42 -0800 (PST)
-Date:   Thu, 14 Dec 2023 12:11:37 -0500
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Minchan Kim <minchan@kernel.org>
-Cc:     Chris Li <chrisl@kernel.org>, Nhat Pham <nphamcs@gmail.com>,
-        akpm@linux-foundation.org, tj@kernel.org, lizefan.x@bytedance.com,
-        cerasuolodomenico@gmail.com, yosryahmed@google.com,
-        sjenning@redhat.com, ddstreet@ieee.org, vitaly.wool@konsulko.com,
-        mhocko@kernel.org, roman.gushchin@linux.dev, shakeelb@google.com,
-        muchun.song@linux.dev, hughd@google.com, corbet@lwn.net,
-        konrad.wilk@oracle.com, senozhatsky@chromium.org, rppt@kernel.org,
-        linux-mm@kvack.org, kernel-team@meta.com,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        david@ixit.cz, Kairui Song <kasong@tencent.com>,
-        Zhongkun He <hezhongkun.hzk@bytedance.com>
-Subject: Re: [PATCH v6] zswap: memcontrol: implement zswap writeback disabling
-Message-ID: <20231214171137.GA261942@cmpxchg.org>
-References: <20231207192406.3809579-1-nphamcs@gmail.com>
- <CAF8kJuPEKWbr_1a-OzqrYKSPmuty==KhC2vbTPAmm9xcJHo4cg@mail.gmail.com>
- <CAKEwX=Oj0Rur8i9Oo7y2Py7svx-g11sEj3GKQfMVL62x=4hvdA@mail.gmail.com>
- <CAF8kJuNpnqTM5x1QmQ7h-FaRWVnHBdNGvGvB3txohSOmZhYA-Q@mail.gmail.com>
- <20231209034229.GA1001962@cmpxchg.org>
- <ZXeTb_ACou7TEVsa@google.com>
+        Thu, 14 Dec 2023 12:13:04 -0500
+Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com [185.132.182.106])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A67D11A;
+        Thu, 14 Dec 2023 09:13:10 -0800 (PST)
+Received: from pps.filterd (m0241204.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 3BEFknrP009412;
+        Thu, 14 Dec 2023 18:12:49 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
+        message-id:subject:from:to:cc:date:in-reply-to:references
+        :content-type:content-transfer-encoding:mime-version; s=
+        selector1; bh=K1A/PPNJBGqkruf8X8nVhc1/sg7nXB8ln3XDnZhh2B0=; b=ZK
+        W4NG7CAR9E7mB1Zc39RfsI5XhrgZoMHpLE7ZXNd77c5lcOREZ4zZ2DKxSsROHzpI
+        +YIbCIII20Mykc6BhTIGKen698cnupimeGgMTbk1I+VgJoK9cNxf8xB9t8vtVafR
+        v5AuyNrzQXkuekspHya2StNpF4iuVUwzRiMD7nHuJuuNTqUa/ugNh6q99Gq4dsQ8
+        v77W3S8JtmZFkZSHlzn4L6HLdJgg9W2gZhrsNEGZe0wbjr2uz6jZOf392vppDF6m
+        Pypc0dtyWJ01kMqwD3Hsjs3znulEfJbockN/eehlpuC6woFe1qEB7fTTlWOILX9G
+        cph3ctGHoWMgC1yCnS+w==
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3uvgf1xash-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 14 Dec 2023 18:12:49 +0100 (CET)
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 17E2F100053;
+        Thu, 14 Dec 2023 18:12:49 +0100 (CET)
+Received: from Webmail-eu.st.com (shfdag1node1.st.com [10.75.129.69])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 0E8252291A9;
+        Thu, 14 Dec 2023 18:12:49 +0100 (CET)
+Received: from [192.168.8.15] (10.201.20.114) by SHFDAG1NODE1.st.com
+ (10.75.129.69) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Thu, 14 Dec
+ 2023 18:12:48 +0100
+Message-ID: <72700f397d32f6a81164aafbf6f9d30b510672cf.camel@foss.st.com>
+Subject: Re: [Linux-stm32] [PATCH 2/2] pinctrl: stm32: fix GPIO level
+ interrupts
+From:   Antonio Borneo <antonio.borneo@foss.st.com>
+To:     Ben Wolsieffer <ben.wolsieffer@hefring.com>
+CC:     Thomas Gleixner <tglx@linutronix.de>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-gpio@vger.kernel.org>
+Date:   Thu, 14 Dec 2023 18:12:46 +0100
+In-Reply-To: <20231204203357.2897008-3-ben.wolsieffer@hefring.com>
+References: <20231204203357.2897008-1-ben.wolsieffer@hefring.com>
+         <20231204203357.2897008-3-ben.wolsieffer@hefring.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.48.3 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZXeTb_ACou7TEVsa@google.com>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+X-Originating-IP: [10.201.20.114]
+X-ClientProxiedBy: EQNCAS1NODE4.st.com (10.75.129.82) To SHFDAG1NODE1.st.com
+ (10.75.129.69)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-14_11,2023-12-14_01,2023-05-22_02
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 11, 2023 at 02:55:43PM -0800, Minchan Kim wrote:
-> On Fri, Dec 08, 2023 at 10:42:29PM -0500, Johannes Weiner wrote:
-> > On Fri, Dec 08, 2023 at 03:55:59PM -0800, Chris Li wrote:
-> > > I can give you three usage cases right now:
-> > > 1) Google producting kernel uses SSD only swap, it is currently on
-> > > pilot. This is not expressible by the memory.zswap.writeback. You can
-> > > set the memory.zswap.max = 0 and memory.zswap.writeback = 1, then SSD
-> > > backed swapfile. But the whole thing feels very clunky, especially
-> > > what you really want is SSD only swap, you need to do all this zswap
-> > > config dance. Google has an internal memory.swapfile feature
-> > > implemented per cgroup swap file type by "zswap only", "real swap file
-> > > only", "both", "none" (the exact keyword might be different). running
-> > > in the production for almost 10 years. The need for more than zswap
-> > > type of per cgroup control is really there.
-> > 
-> > We use regular swap on SSD without zswap just fine. Of course it's
-> > expressible.
-> > 
-> > On dedicated systems, zswap is disabled in sysfs. On shared hosts
-> > where it's determined based on which workload is scheduled, zswap is
-> > generally enabled through sysfs, and individual cgroup access is
-> > controlled via memory.zswap.max - which is what this knob is for.
-> > 
-> > This is analogous to enabling swap globally, and then opting
-> > individual cgroups in and out with memory.swap.max.
-> > 
-> > So this usecase is very much already supported, and it's expressed in
-> > a way that's pretty natural for how cgroups express access and lack of
-> > access to certain resources.
-> > 
-> > I don't see how memory.swap.type or memory.swap.tiers would improve
-> > this in any way. On the contrary, it would overlap and conflict with
-> > existing controls to manage swap and zswap on a per-cgroup basis.
-> > 
-> > > 2) As indicated by this discussion, Tencent has a usage case for SSD
-> > > and hard disk swap as overflow.
-> > > https://lore.kernel.org/linux-mm/20231119194740.94101-9-ryncsn@gmail.com/
-> > > +Kairui
-> > 
-> > Multiple swap devices for round robin or with different priorities
-> > aren't new, they have been supported for a very, very long time. So
-> > far nobody has proposed to control the exact behavior on a per-cgroup
-> > basis, and I didn't see anybody in this thread asking for it either.
-> > 
-> > So I don't see how this counts as an obvious and automatic usecase for
-> > memory.swap.tiers.
-> > 
-> > > 3) Android has some fancy swap ideas led by those patches.
-> > > https://lore.kernel.org/linux-mm/20230710221659.2473460-1-minchan@kernel.org/
-> > > It got shot down due to removal of frontswap. But the usage case and
-> > > product requirement is there.
-> > > +Minchan
-> > 
-> > This looks like an optimization for zram to bypass the block layer and
-> > hook directly into the swap code. Correct me if I'm wrong, but this
-> > doesn't appear to have anything to do with per-cgroup backend control.
-> 
-> Hi Johannes,
-> 
-> I haven't been following the thread closely, but I noticed the discussion
-> about potential use cases for zram with memcg.
-> 
-> One interesting idea I have is to implement a swap controller per cgroup.
-> This would allow us to tailor the zram swap behavior to the specific needs of
-> different groups.
-> 
-> For example, Group A, which is sensitive to swap latency, could use zram swap
-> with a fast compression setting, even if it sacrifices some compression ratio.
-> This would prioritize quick access to swapped data, even if it takes up more space.
-> 
-> On the other hand, Group B, which can tolerate higher swap latency, could benefit
-> from a slower compression setting that achieves a higher compression ratio.
-> This would maximize memory efficiency at the cost of slightly slower data access.
-> 
-> This approach could provide a more nuanced and flexible way to manage swap usage
-> within different cgroups.
+On Mon, 2023-12-04 at 15:33 -0500, Ben Wolsieffer wrote:
+> The STM32 doesn't support GPIO level interrupts in hardware, so the
+> driver tries to emulate them using edge interrupts, by retriggering the
+> interrupt if necessary based on the pin state after the handler
+> finishes.
+>=20
+> Currently, this functionality does not work because the irqchip uses
+> handle_edge_irq(), which doesn't run the irq_eoi() or irq_unmask()
+> callbacks after handling the interrupt. This patch fixes this by using
+> handle_level_irq() for level interrupts, which causes irq_unmask() to be
+> called to retrigger the interrupt.
+>=20
+> Signed-off-by: Ben Wolsieffer <ben.wolsieffer@hefring.com>
+> ---
+> =C2=A0drivers/pinctrl/stm32/pinctrl-stm32.c | 3 +++
+> =C2=A01 file changed, 3 insertions(+)
+>=20
+> diff --git a/drivers/pinctrl/stm32/pinctrl-stm32.c b/drivers/pinctrl/stm3=
+2/pinctrl-stm32.c
+> index 603f900e88c1..fb9532601cbb 100644
+> --- a/drivers/pinctrl/stm32/pinctrl-stm32.c
+> +++ b/drivers/pinctrl/stm32/pinctrl-stm32.c
+> @@ -348,12 +348,15 @@ static int stm32_gpio_set_type(struct irq_data *d, =
+unsigned int type)
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0case IRQ_TYPE_EDGE_RISING=
+:
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0case IRQ_TYPE_EDGE_FALLIN=
+G:
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0case IRQ_TYPE_EDGE_BOTH:
+> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0irq_set_handler_locked(d, handle_edge_irq);
 
-That makes sense to me.
+Hi,
+this patch causes a NULL pointer dereference and crashes the kernel boot on=
+ STM32 MPU's,
+either STM32MP13x, STM32MP15x and the new STM32MP25x.
 
-It sounds to me like per-cgroup swapfiles would be the easiest
-solution to this. Then you can create zram devices with different
-configurations and assign them to individual cgroups.
+Please do not merge it as is.
 
-This would also apply to Kairu's usecase: assign zrams and hdd backups
-as needed on a per-cgroup basis.
+This pinctrl-stm32 driver is shared between STM32 MCUs and MPUs.
+In both cases the EXTI is the parent interrupt controller of this pinctrl, =
+but despite
+the fact that there is a single file irq-stm32-exti.c, it contains two inde=
+pendent
+drivers, one for MCUs and the other for MPUs.
+Swapping in this function the irq_desc::handle_irq between handle_edge_irq(=
+) and
+handle_level_irq() is probably fine for MCU (I have not tested it).
+But on MPUs the default handler is handle_fasteoi_irq(); should not be chan=
+ged here.
 
-In addition, it would naturally solve scalability and isolation
-problems when multiple containers would otherwise be hammering on the
-same swap backends and locks.
+Checking quickly ... this function calls irq_chip_set_type_parent() at the =
+very end.
+It will in turn call EXTI's irq_set_type(), which has different implementat=
+ions for MCU
+and MPU.
+By moving this handler swap in the MCU specific stm32_irq_set_type() it wil=
+l not impact
+MPUs.
 
-It would also only require one, relatively simple new interface, such
-as a cgroup parameter to swapon().
+Best Regards,
+Antonio
 
-That's highly preferable over a complex configuration file like
-memory.swap.tiers that needs to solve all sorts of visibility and
-namespace issues and duplicate the full configuration interface of
-every backend in some new, custom syntax.
+
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0parent_type =3D type;
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0break;
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0case IRQ_TYPE_LEVEL_HIGH:
+> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0irq_set_handler_locked(d, handle_level_irq);
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0parent_type =3D IRQ_TYPE_EDGE_RISING;
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0break;
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0case IRQ_TYPE_LEVEL_LOW:
+> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0irq_set_handler_locked(d, handle_level_irq);
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0parent_type =3D IRQ_TYPE_EDGE_FALLING;
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0break;
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0default:
+
