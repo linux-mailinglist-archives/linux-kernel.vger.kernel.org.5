@@ -2,299 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C8DF81357E
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 16:58:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B119F813580
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 16:59:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1573936AbjLNP6r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 10:58:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33364 "EHLO
+        id S1573940AbjLNP7R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 10:59:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37706 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230372AbjLNP6p (ORCPT
+        with ESMTP id S230419AbjLNP7P (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 10:58:45 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC4D2E8
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 07:58:51 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 94D91C433C7;
-        Thu, 14 Dec 2023 15:58:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1702569531;
-        bh=colVxJZGu2M1qpIiH155RF1LfudJwQRVdNr3PNYQ6WA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ZxTmwLJXcO7/6ns+VgTHU2lymexTWWzRiF5DruIkE7luNr4dHfsRoS25p16xeliBM
-         zb3HGQrlUMIq+umt+IIcPR3nPipx0TfqK04H7WYOJ5be6JLbLoQ8rJTl8BJgUg71Rt
-         QEqLjKWNAWgbivBMVnk0a+Cv4uTTIAeTA2g0bvSNUVWc7DqtuF6b9pL8HhW+AKXlWI
-         f0L3Lkl2Oz9Bu2cqi9yo9Z4YAVp6Frt2mGyjnIDEO7/JwxpWafV+FE0R1Aamc+w59b
-         BHUWsntST5AbE3HO23jK9CxKDmarr988t9C1Lk05SFj0xR/D923piBCj7KGT2Z1z/L
-         W4M4Y0wNaBLhg==
-Date:   Thu, 14 Dec 2023 15:58:45 +0000
-From:   Conor Dooley <conor@kernel.org>
-To:     Luo Jie <quic_luoj@quicinc.com>
-Cc:     agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
-        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        andrew@lunn.ch, hkallweit1@gmail.com, linux@armlinux.org.uk,
-        robert.marko@sartura.hr, linux-arm-msm@vger.kernel.org,
-        netdev@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, quic_srichara@quicinc.com
-Subject: Re: [PATCH v3 5/5] dt-bindings: net: ipq4019-mdio: Document ipq5332
- platform
-Message-ID: <20231214-crafty-ride-b238a32c2f6f@spud>
-References: <20231214090304.16884-1-quic_luoj@quicinc.com>
- <20231214090304.16884-6-quic_luoj@quicinc.com>
+        Thu, 14 Dec 2023 10:59:15 -0500
+Received: from mailout1.w1.samsung.com (mailout1.w1.samsung.com [210.118.77.11])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EFE9121
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 07:59:21 -0800 (PST)
+Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
+        by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20231214155915euoutp01844239b48477c54eb7af5c115e6262be~gvf2LsbAy2062620626euoutp01o
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 15:59:15 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20231214155915euoutp01844239b48477c54eb7af5c115e6262be~gvf2LsbAy2062620626euoutp01o
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1702569555;
+        bh=t1Ri1k88YEtJXFLu4apS8OAYzivDLP6IYWLM6Hz470Q=;
+        h=Date:Subject:To:Cc:From:In-Reply-To:References:From;
+        b=ZJHvADc3B4C/FT1ThSS0qmAJenVNV4kLogS5UG1mUI6/B0tro/4SCXVGamorndpcJ
+         n7u6Eo7Ic5yaIfUNQmnYKxHqhJuQaK43dRw/1+L5KlspmzR+tkAAW2Oc5Ef7DMQwKq
+         kmQeHMu0P9XAxswrcpfSJr3ZWwzdZqugGatqmyQ8=
+Received: from eusmges1new.samsung.com (unknown [203.254.199.242]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
+        20231214155915eucas1p26a90c53486421a4576d223badfb3f49b~gvf132k6v0218202182eucas1p2Q;
+        Thu, 14 Dec 2023 15:59:15 +0000 (GMT)
+Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
+        eusmges1new.samsung.com (EUCPMTA) with SMTP id CF.D9.09539.3562B756; Thu, 14
+        Dec 2023 15:59:15 +0000 (GMT)
+Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
+        20231214155915eucas1p2c518336996033a817222877b35ea4fd3~gvf1dNbqE0218202182eucas1p2N;
+        Thu, 14 Dec 2023 15:59:15 +0000 (GMT)
+Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
+        eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20231214155915eusmtrp16e110281bd355ea0351c1cb636cbff39~gvf1cSySh2480424804eusmtrp1z;
+        Thu, 14 Dec 2023 15:59:15 +0000 (GMT)
+X-AuditID: cbfec7f2-52bff70000002543-e7-657b2653c492
+Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
+        eusmgms1.samsung.com (EUCPMTA) with SMTP id 2C.7D.09146.2562B756; Thu, 14
+        Dec 2023 15:59:14 +0000 (GMT)
+Received: from [106.210.134.192] (unknown [106.210.134.192]) by
+        eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
+        20231214155913eusmtip1e7453cbacef6362492c4fd6cab56598d~gvf0a9H2D1522115221eusmtip1b;
+        Thu, 14 Dec 2023 15:59:13 +0000 (GMT)
+Message-ID: <699636b7-d737-4df4-92e9-43b0f52d4b99@samsung.com>
+Date:   Thu, 14 Dec 2023 16:59:13 +0100
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="OPjTojH4wDE5tT+1"
-Content-Disposition: inline
-In-Reply-To: <20231214090304.16884-6-quic_luoj@quicinc.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] drm/exynos: fix accidental on-stack copy of
+ exynos_drm_plane
+Content-Language: en-US
+To:     Arnd Bergmann <arnd@kernel.org>, Inki Dae <inki.dae@samsung.com>,
+        Seung-Woo Kim <sw0312.kim@samsung.com>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Thierry Reding <treding@nvidia.com>,
+        Steven Price <steven.price@arm.com>,
+        Rob Herring <robh@kernel.org>, Robert Foss <rfoss@kernel.org>,
+        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
+        Liviu Dudau <liviu.dudau@arm.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        dri-devel@lists.freedesktop.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org
+From:   Marek Szyprowski <m.szyprowski@samsung.com>
+In-Reply-To: <20231214123237.1727428-1-arnd@kernel.org>
+Content-Transfer-Encoding: 7bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA01SbUxTVxj23Ht7b9useC0oR7bQrAk4toDCzDyZhK3bXG6CPwwwWWama8Zd
+        JQLV1uIHPygQoBbBUrVCgY4wBGwIiwVKh8I2hlRxU0BgtLCURDcjjs9WFBlube/c+Pc87/s8
+        53nfN4ePi0vJCH5mznFWlSPPkpJCwj6wcic2NTqP3XFDuxXd/LUBQ9MWO4nWjAMUsnfYeOhv
+        eyWORp/Mk8joMRBoabwMoJ7HnRT6pfBPCtnuj/PQve5aElXd7cXQD5dLCWS0uPy26w4Ktax0
+        AlTQ7/dWnX9EosnVkPfDmFZLK2BWnxsB07NcTzDfmX+jmBpdNY+xWc+QzNT4dZLxlDkxpr0x
+        nykvmiOZRtMYyVR0WAHjtUXuE30mTMxgszJzWdX2pC+Eh436xKMjW04Wl6ziWmAK1QMBH9I7
+        4R+ufkIPhHwx3QJgn6kB54gPwBv2YowjXgCbF86RLy2uwS7ANZoBNFz4+V/VIoDeK+d4AZWI
+        ToLOmQEqgAk6CvbXLJNcfRO8Vf2ACODNtAR63FVBTSidCit6JrEAxulw6H7wdfDRMNqEwea7
+        TWSA4PR9HP7uHgm6SToe6mf1wVcF9C54pXuI4twS2DVbG9wC0ssC+LRmmMcN/hHUtU1gHA6F
+        M84OisOvwdvnzxKcoRTA+lUPxhEDgNqHbsCpdsOpO8/9cXx/RAz8tns7V5bBHs8cFihDOgRO
+        zG7ihgiBRvslnCuLoK5EzKmjodnZ9l/sj0MjuAFIzesOY153APO6dcz/59YDwgrCWY06W8Gq
+        43PYE3FqebZak6OI+1KZbQP+v3r7hXPJAepmFuP6AMYHfQDycWmY6JbjBCsWZchPnWZVykMq
+        TRar7gOv8glpuCgqQ8KKaYX8OHuEZY+yqpddjC+I0GKmbzaMDl4tmrgaURw3vycqEVs7kjsp
+        K+Slp5j3WxQbFzekKt9yVDbefJsau7bPkVxW3jX3/ZbNn8/VJeyadkQ+Xlj0+vIS3vXKk30V
+        mda8offeqbz3SHPyolU8dqj2YeiOUbuEyV9LCaF0Sssn6Wkw90B0oevMtfafUvTlNqdgfmOs
+        r/bi8BsL26b2wsjotHTdRP62FsnkQcOpC6LpT2Nf0RTxm2TxewuWEgYPaJvs3S+2lmCy3a//
+        JZo+ljTuSt5jfIK+aul0w16bY7Dt7GXf6PBy2scVB2PaC5JKLn0o6/0g1pzwtLpB3St51llV
+        rFESMRHWMMXpYyvPWoeF+3dq66SE+rA8/k1cpZb/A1AB3pkaBAAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprBKsWRmVeSWpSXmKPExsVy+t/xu7pBatWpBvM+GVucuL6IyeLBvG1s
+        Fn8nHWO32LZlE6vF/20TmS2ufH3PZjHp/gQWi0/Xuhkt9r7eym5xtukNu8Wmx9dYLS7vmsNm
+        MeP8PiaLA0vbWSwmzbsJ1LZnB7vFip9bGS0ajwD1zpj8ks3i9m8+BxGPNfPWMHr8/jWJ0WPv
+        twUsHjtn3WX3mN0xk9Vj06pONo871/awedzvPs7ksXlJvUdv8zs2jyXTrrJ59G1ZxejxeZNc
+        AG+Unk1RfmlJqkJGfnGJrVK0oYWRnqGlhZ6RiaWeobF5rJWRqZK+nU1Kak5mWWqRvl2CXsak
+        LpuCS2IVrW2/mRsYpwl3MXJySAiYSNw8tZ2xi5GLQ0hgKaPE+zPvmCESMhInpzWwQtjCEn+u
+        dbFBFL1nlJh58RATSIJXwE7i+Ktj7CA2i4CqxJHZ39gg4oISJ2c+YQGxRQXkJe7fmgFWIywQ
+        LNG39zZYL7OAuMStJ/OZQIaKCMxgkvi/qANsA7PAY2aJ/ue/wLqFBLqA1j02BbHZBAwlut52
+        gW3gFDCXWLnrAjvEJDOJrq1djBC2vMT2t3OYJzAKzUJyyCwkC2chaZmFpGUBI8sqRpHU0uLc
+        9NxiQ73ixNzi0rx0veT83E2MwCSy7djPzTsY5736qHeIkYmD8RCjBAezkgjvyR3lqUK8KYmV
+        ValF+fFFpTmpxYcYTYGhMZFZSjQ5H5jG8kriDc0MTA1NzCwNTC3NjJXEeT0LOhKFBNITS1Kz
+        U1MLUotg+pg4OKUamGok4l4dVTSc8Fk2U3/vy1PtXlJ2qy39G+ZPFUx/wHzmStrs3rp1GmEW
+        r5JWq+3e9W49q3e50t8rezsP+/0rN+uu2T5j/ZIn7dvyup5l2RibCiwpOGrfu2fHpiw9NR/B
+        zovPS9o/fOTq/7IywdqOa9+PQ+3d8VFZiRWHz3Ht2vzGcbpZQsDR1WK3p89If/58eYLSGTXj
+        0+rdgvIMjo6/nZlsJati0pmS660lr9hPvyw2o7bdiPlqePmNpZXbPSo0lxY21s7Q2Xrn5bot
+        XXXGh3ZGCC5yZH528NuPC6nbRAprLXL2HTYtMJLhePtj2ZLjG398dF7+UlHv6sdOx0Pb32hs
+        0T3Yv/J/2nUf458vTiuxFGckGmoxFxUnAgAQVosAqwMAAA==
+X-CMS-MailID: 20231214155915eucas1p2c518336996033a817222877b35ea4fd3
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-RootMTR: 20231214123248eucas1p1577bc2064401fce57a752234e1338f5a
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20231214123248eucas1p1577bc2064401fce57a752234e1338f5a
+References: <CGME20231214123248eucas1p1577bc2064401fce57a752234e1338f5a@eucas1p1.samsung.com>
+        <20231214123237.1727428-1-arnd@kernel.org>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 14.12.2023 13:32, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
+>
+> gcc rightfully complains about excessive stack usage in the fimd_win_set_pixfmt()
+> function:
+>
+> drivers/gpu/drm/exynos/exynos_drm_fimd.c: In function 'fimd_win_set_pixfmt':
+> drivers/gpu/drm/exynos/exynos_drm_fimd.c:750:1: error: the frame size of 1032 bytes is larger than 1024 byte
+> drivers/gpu/drm/exynos/exynos5433_drm_decon.c: In function 'decon_win_set_pixfmt':
+> drivers/gpu/drm/exynos/exynos5433_drm_decon.c:381:1: error: the frame size of 1032 bytes is larger than 1024 bytes
+>
+> There is really no reason to copy the large exynos_drm_plane
+> structure to the stack before using one of its members, so just
+> use a pointer instead.
+>
+> Fixes: 6f8ee5c21722 ("drm/exynos: fimd: Make plane alpha configurable")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
---OPjTojH4wDE5tT+1
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Thu, Dec 14, 2023 at 05:03:04PM +0800, Luo Jie wrote:
-> Update the yaml file for the new DTS properties.
->=20
-> 1. cmn-reference-clock for the CMN PLL source clock select.
-> 2. clock-frequency for MDIO clock frequency config.
-> 3. add uniphy AHB & SYS GCC clocks.
-> 4. add reset-gpios for MDIO bus level reset.
->=20
-> Signed-off-by: Luo Jie <quic_luoj@quicinc.com>
+Reviewed-by: Marek Szyprowski <m.szyprowski@samsung.com>
 
-Can you please wait until discussion has finished on a patchset before
-sending another version? I had not yet got a chance to look at the
-reply you sent to my comments on v2.
-
-Thanks,
-Conor.
 
 > ---
->  .../bindings/net/qcom,ipq4019-mdio.yaml       | 143 +++++++++++++++++-
->  1 file changed, 139 insertions(+), 4 deletions(-)
->=20
-> diff --git a/Documentation/devicetree/bindings/net/qcom,ipq4019-mdio.yaml=
- b/Documentation/devicetree/bindings/net/qcom,ipq4019-mdio.yaml
-> index 3407e909e8a7..79f8513739e7 100644
-> --- a/Documentation/devicetree/bindings/net/qcom,ipq4019-mdio.yaml
-> +++ b/Documentation/devicetree/bindings/net/qcom,ipq4019-mdio.yaml
-> @@ -20,6 +20,8 @@ properties:
->            - enum:
->                - qcom,ipq6018-mdio
->                - qcom,ipq8074-mdio
-> +              - qcom,ipq9574-mdio
-> +              - qcom,ipq5332-mdio
->            - const: qcom,ipq4019-mdio
-> =20
->    "#address-cells":
-> @@ -30,19 +32,77 @@ properties:
-> =20
->    reg:
->      minItems: 1
-> -    maxItems: 2
-> +    maxItems: 5
->      description:
-> -      the first Address and length of the register set for the MDIO cont=
-roller.
-> -      the second Address and length of the register for ethernet LDO, th=
-is second
-> -      address range is only required by the platform IPQ50xx.
-> +      the first Address and length of the register set for the MDIO cont=
-roller,
-> +      the optional second, third and fourth address and length of the re=
-gister
-> +      for ethernet LDO, these three address range are required by the pl=
-atform
-> +      IPQ50xx/IPQ5332, the last address and length is for the CMN clock =
-to
-> +      select the reference clock.
-> +
-> +  reg-names:
-> +    minItems: 1
-> +    maxItems: 5
-> =20
->    clocks:
-> +    minItems: 1
->      items:
->        - description: MDIO clock source frequency fixed to 100MHZ
-> +      - description: UNIPHY0 AHB clock source frequency fixed to 100MHZ
-> +      - description: UNIPHY1 AHB clock source frequency fixed to 100MHZ
-> +      - description: UNIPHY0 SYS clock source frequency fixed to 24MHZ
-> +      - description: UNIPHY1 SYS clock source frequency fixed to 24MHZ
-> =20
->    clock-names:
-> +    minItems: 1
->      items:
->        - const: gcc_mdio_ahb_clk
-> +      - const: uniphy0_ahb
-> +      - const: uniphy1_ahb
-> +      - const: uniphy0_sys
-> +      - const: uniphy1_sys
-> +
-> +  cmn-reference-clock:
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-> +    oneOf:
-> +      - items:
-> +          - enum:
-> +              - 0   # CMN PLL reference internal 48MHZ
-> +              - 1   # CMN PLL reference external 25MHZ
-> +              - 2   # CMN PLL reference external 31250KHZ
-> +              - 3   # CMN PLL reference external 40MHZ
-> +              - 4   # CMN PLL reference external 48MHZ
-> +              - 5   # CMN PLL reference external 50MHZ
-> +              - 6   # CMN PLL reference internal 96MHZ
-> +
-> +  clock-frequency:
-> +    oneOf:
-> +      - items:
-> +          - enum:
-> +              - 12500000
-> +              - 6250000
-> +              - 3125000
-> +              - 1562500
-> +              - 781250
-> +              - 390625
-> +    description:
-> +      The MDIO bus clock that must be output by the MDIO bus hardware,
-> +      only the listed frequencies above can be supported, other frequency
-> +      will cause malfunction. If absent, the default hardware value 0xff
-> +      is used, which means the default MDIO clock frequency 390625HZ, The
-> +      MDIO clock frequency is MDIO_SYS_CLK/(MDIO_CLK_DIV + 1), the SoC
-> +      MDIO_SYS_CLK is fixed to 100MHZ, the MDIO_CLK_DIV is from MDIO con=
-trol
-> +      register, there is higher clock frequency requirement on the normal
-> +      working case where the MDIO slave devices support high clock frequ=
-ency.
-> +
-> +  reset-gpios:
-> +    maxItems: 1
-> +
-> +  reset-assert-us:
-> +    maxItems: 1
-> +
-> +  reset-deassert-us:
-> +    maxItems: 1
-> =20
->  required:
->    - compatible
-> @@ -61,6 +121,8 @@ allOf:
->                - qcom,ipq5018-mdio
->                - qcom,ipq6018-mdio
->                - qcom,ipq8074-mdio
-> +              - qcom,ipq5332-mdio
-> +              - qcom,ipq9574-mdio
->      then:
->        required:
->          - clocks
-> @@ -70,6 +132,20 @@ allOf:
->          clocks: false
->          clock-names: false
-> =20
-> +  - if:
-> +      properties:
-> +        compatible:
-> +          contains:
-> +            enum:
-> +              - qcom,ipq5332-mdio
-> +    then:
-> +      properties:
-> +        clocks:
-> +          minItems: 5
-> +          maxItems: 5
-> +        reg-names:
-> +          minItems: 4
-> +
->  unevaluatedProperties: false
-> =20
->  examples:
-> @@ -100,3 +176,62 @@ examples:
->          reg =3D <4>;
->        };
->      };
-> +
-> +  - |
-> +    #include <dt-bindings/clock/qcom,ipq5332-gcc.h>
-> +    #include <dt-bindings/gpio/gpio.h>
-> +
-> +    mdio@90000 {
-> +      #address-cells =3D <1>;
-> +      #size-cells =3D <0>;
-> +      compatible =3D "qcom,ipq5332-mdio",
-> +                   "qcom,ipq4019-mdio";
-> +      cmn-reference-clock =3D <0>;
-> +      clock-frequency =3D <6250000>;
-> +
-> +      reset-gpios =3D <&tlmm 51 GPIO_ACTIVE_LOW>;
-> +      reset-assert-us =3D <100000>;
-> +      reset-deassert-us =3D <100000>;
-> +
-> +      reg =3D <0x90000 0x64>,
-> +            <0x9B000 0x800>,
-> +            <0x7A00610 0x4>,
-> +            <0x7A10610 0x4>;
-> +
-> +      reg-names =3D "mdio",
-> +                  "cmn_blk",
-> +                  "eth_ldo1",
-> +                  "eth_ldo2";
-> +
-> +      clocks =3D <&gcc GCC_MDIO_AHB_CLK>,
-> +               <&gcc GCC_UNIPHY0_AHB_CLK>,
-> +               <&gcc GCC_UNIPHY1_AHB_CLK>,
-> +               <&gcc GCC_UNIPHY0_SYS_CLK>,
-> +               <&gcc GCC_UNIPHY1_SYS_CLK>;
-> +
-> +      clock-names =3D "gcc_mdio_ahb_clk",
-> +                    "uniphy0_ahb",
-> +                    "uniphy1_ahb",
-> +                    "uniphy0_sys",
-> +                    "uniphy1_sys";
-> +
-> +      qca8kphy0: ethernet-phy@1 {
-> +        compatible =3D "ethernet-phy-id004d.d180";
-> +        reg =3D <1>;
-> +      };
-> +
-> +      qca8kphy1: ethernet-phy@2 {
-> +        compatible =3D "ethernet-phy-id004d.d180";
-> +        reg =3D <2>;
-> +      };
-> +
-> +      qca8kphy2: ethernet-phy@3 {
-> +        compatible =3D "ethernet-phy-id004d.d180";
-> +        reg =3D <3>;
-> +      };
-> +
-> +      qca8kphy3: ethernet-phy@4 {
-> +        compatible =3D "ethernet-phy-id004d.d180";
-> +        reg =3D <4>;
-> +      };
-> +    };
-> --=20
-> 2.42.0
->=20
+>   drivers/gpu/drm/exynos/exynos5433_drm_decon.c | 4 ++--
+>   drivers/gpu/drm/exynos/exynos_drm_fimd.c      | 4 ++--
+>   2 files changed, 4 insertions(+), 4 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/exynos/exynos5433_drm_decon.c b/drivers/gpu/drm/exynos/exynos5433_drm_decon.c
+> index 4d986077738b..bce027552474 100644
+> --- a/drivers/gpu/drm/exynos/exynos5433_drm_decon.c
+> +++ b/drivers/gpu/drm/exynos/exynos5433_drm_decon.c
+> @@ -319,9 +319,9 @@ static void decon_win_set_bldmod(struct decon_context *ctx, unsigned int win,
+>   static void decon_win_set_pixfmt(struct decon_context *ctx, unsigned int win,
+>   				 struct drm_framebuffer *fb)
+>   {
+> -	struct exynos_drm_plane plane = ctx->planes[win];
+> +	struct exynos_drm_plane *plane = &ctx->planes[win];
+>   	struct exynos_drm_plane_state *state =
+> -		to_exynos_plane_state(plane.base.state);
+> +		to_exynos_plane_state(plane->base.state);
+>   	unsigned int alpha = state->base.alpha;
+>   	unsigned int pixel_alpha;
+>   	unsigned long val;
+> diff --git a/drivers/gpu/drm/exynos/exynos_drm_fimd.c b/drivers/gpu/drm/exynos/exynos_drm_fimd.c
+> index 8dde7b1e9b35..5bdc246f5fad 100644
+> --- a/drivers/gpu/drm/exynos/exynos_drm_fimd.c
+> +++ b/drivers/gpu/drm/exynos/exynos_drm_fimd.c
+> @@ -661,9 +661,9 @@ static void fimd_win_set_bldmod(struct fimd_context *ctx, unsigned int win,
+>   static void fimd_win_set_pixfmt(struct fimd_context *ctx, unsigned int win,
+>   				struct drm_framebuffer *fb, int width)
+>   {
+> -	struct exynos_drm_plane plane = ctx->planes[win];
+> +	struct exynos_drm_plane *plane = &ctx->planes[win];
+>   	struct exynos_drm_plane_state *state =
+> -		to_exynos_plane_state(plane.base.state);
+> +		to_exynos_plane_state(plane->base.state);
+>   	uint32_t pixel_format = fb->format->format;
+>   	unsigned int alpha = state->base.alpha;
+>   	u32 val = WINCONx_ENWIN;
 
---OPjTojH4wDE5tT+1
-Content-Type: application/pgp-signature; name="signature.asc"
+Best regards
+-- 
+Marek Szyprowski, PhD
+Samsung R&D Institute Poland
 
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZXsmNQAKCRB4tDGHoIJi
-0u1BAQDUZA4XxZBjkN3W+Yk91os42qv0uGTg8hBT+cEDrl2qGwEAnc/NLwOJ06xE
-xkm97BpJMJO/GJMgQdZ9Tv+iCu7VLw0=
-=ix5f
------END PGP SIGNATURE-----
-
---OPjTojH4wDE5tT+1--
