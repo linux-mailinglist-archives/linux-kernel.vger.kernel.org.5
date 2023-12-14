@@ -1,59 +1,50 @@
-Return-Path: <linux-kernel+bounces-103-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-105-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3D902813C43
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 22:04:18 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B4718813C48
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 22:04:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8CA5DB21B3D
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 21:04:15 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 66891281D82
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 21:04:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 890B5282E5;
-	Thu, 14 Dec 2023 21:04:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D64336AB85;
+	Thu, 14 Dec 2023 21:04:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b="vHqwe+0C"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Vnm7jFLS"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [62.89.141.173])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D10897494;
-	Thu, 14 Dec 2023 21:04:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ftp.linux.org.uk
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=linux.org.uk; s=zeniv-20220401; h=Sender:In-Reply-To:Content-Type:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=7FrhxwWPxjd1nrVnDhmOIzmALWzUB7ji13bBSfV+Dm4=; b=vHqwe+0C8DVTzGY92KpnnNrZ61
-	9AjwcGxoG3Z+B6DxOIX8VQEGOmuosBI6oPZmY2zpXNULYfiyLkl8djZ+AEFgYzpt49vAy0GAniFJ4
-	5v9WbrwDHC97+uhc5/D/1PUPO2LYNKGAKJLMZgDVPQ754lKyl15E4c1FP5wSBXJZudT/yt5i6qp3n
-	jv3eydn+WQiJ1sz6nQKrPf0OjctP6s90DUcXuzC6eD9aKqYJNiVlsX/6snjTx5Umg7anTdjOFQBYR
-	GBSvFcFbH9466jNlUaKxsFV6HabQYMdWsSOiXmhYhq/qmoMnr8kVAmrjAPgPtA8VackjJOvkA/lzl
-	vf07MJPA==;
-Received: from viro by zeniv.linux.org.uk with local (Exim 4.96 #2 (Red Hat Linux))
-	id 1rDssC-00CS2n-1P;
-	Thu, 14 Dec 2023 21:04:00 +0000
-Date: Thu, 14 Dec 2023 21:04:00 +0000
-From: Al Viro <viro@zeniv.linux.org.uk>
-To: Greg KH <greg@kroah.com>
-Cc: Nick Desaulniers <ndesaulniers@google.com>, tanzirh@google.com,
-	Kees Cook <keescook@chromium.org>,
-	Andy Shevchenko <andy@kernel.org>, linux-hardening@vger.kernel.org,
-	linux-kernel@vger.kernel.org, Nick DeSaulniers <nnn@google.com>,
-	Andrew Morton <akpm@linux-foundation.org>, llvm@lists.linux.dev
-Subject: Re: [PATCH] lib/string: shrink lib/string.i via IWYU
-Message-ID: <20231214210400.GR1674809@ZenIV>
-References: <20231205-libstringheader-v1-1-7f9c573053a7@gmail.com>
- <20231205213807.GE1674809@ZenIV>
- <CAKwvOd=2VASkaLvjU+7kkbvhu2CimYn5KUGJBDRePyUhtrNK2Q@mail.gmail.com>
- <2023120608-ivy-snowdrop-890d@gregkh>
- <CAKwvOdmFJ=ZGN8ZScS5oQpXnAL0wwtTDCeNNGpBKZXzQ4kRAVA@mail.gmail.com>
- <2023120657-henna-spongy-9ef6@gregkh>
- <20231206005542.GJ1674809@ZenIV>
- <20231206030047.GL1674809@ZenIV>
- <2023120650-faucet-palpable-f1a3@gregkh>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 79DC054279;
+	Thu, 14 Dec 2023 21:04:40 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1A0D3C433C7;
+	Thu, 14 Dec 2023 21:04:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1702587879;
+	bh=mtzD5oPpQFsNruIyS4e/UCD7JvY0HhXS/g0lTi+ReBI=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Vnm7jFLSwMHyXOgapWsPuU0LDcVMQ/LbCrrpJ39D9CzD0R+oQXEn19ygQBzaeRJV6
+	 b06E4PJJrpkaq0oAMTanqhTekqVMP++fPlRHMg/fLaeiBBurK7t4is0vsKLLyGqJ/n
+	 I8nXrrtjU6bmwwF0/L2OvF5nsVuI6fMQWFV7Qxb0SFJMR8qHl3EjYpW9wRfRk+A5KH
+	 5eubmBm6oABnoed4GenKeWbiq97SXWLsiv362Np2At7Q5QDNHMpG/MsmXDf811toEM
+	 X6Xqm5Q2nWbKY+CSJfQ1/xBoCgWQ1SWqduCSxa3DjnxlIZC9be4CEcDS2PmCXJKw3H
+	 y+cKJrjvQI2gQ==
+Date: Thu, 14 Dec 2023 21:04:34 +0000
+From: Simon Horman <horms@kernel.org>
+To: Jijie Shao <shaojijie@huawei.com>
+Cc: yisen.zhuang@huawei.com, salil.mehta@huawei.com, davem@davemloft.net,
+	edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+	shenjian15@huawei.com, wangjie125@huawei.com,
+	liuyonglong@huawei.com, lanhao@huawei.com, wangpeiyang1@huawei.com,
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH V2 net-next 1/3] net: hns3: add command queue trace for
+ hns3
+Message-ID: <20231214210434.GU5817@kernel.org>
+References: <20231214141135.613485-1-shaojijie@huawei.com>
+ <20231214141135.613485-2-shaojijie@huawei.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -62,91 +53,440 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <2023120650-faucet-palpable-f1a3@gregkh>
-Sender: Al Viro <viro@ftp.linux.org.uk>
+In-Reply-To: <20231214141135.613485-2-shaojijie@huawei.com>
 
-On Wed, Dec 06, 2023 at 12:09:17PM +0900, Greg KH wrote:
-> > slap #include "unaligned.h" into their traps.c and unaligned.c
-> > (callers and definitions resp.) and strip those from asm/unaligned.h?
-> > At that point we can remove arch/{arc,parisc}/asm/unaligned.h - everything
-> > will pick include/asm-generic/unaligned.h.
-> > 
-> > Then the next cycle we ask Linus to run the following:
-> > for i in `git grep -l -w asm/unaligned.h`; do
-> > 	sed -i -e "s/asm\/unaligned.h/linux\/unaligned.h/" $i
-> > done
-> > git mv include/asm-generic/unaligned.h include/linux/unaligned.h
-> > sed -i -e "/unaligned.h/d" include/asm-generic/Kbuild
-> > right before releasing -rc1 and asm/unaligned.h is gone...
+On Thu, Dec 14, 2023 at 10:11:33PM +0800, Jijie Shao wrote:
+> From: Hao Lan <lanhao@huawei.com>
 > 
-> Please do, it's really annoying and would be great to fix up.
+> Currently, the hns3 driver does not have the trace
+> of the command queue. As a result, it is difficult to
+> locate the communication between the driver and firmware.
+> Therefore, the trace function of the command queue is
+> added in this test case to facilitate the locating of
+> communication problems between the driver and firmware.
+> 
+> Signed-off-by: Hao Lan <lanhao@huawei.com>
+> Signed-off-by: Jijie Shao <shaojijie@huawei.com>
+> ---
+>  .../hns3/hns3_common/hclge_comm_cmd.c         | 18 ++++
+>  .../hns3/hns3_common/hclge_comm_cmd.h         | 14 ++-
+>  .../hisilicon/hns3/hns3pf/hclge_main.c        | 45 +++++++++
+>  .../hisilicon/hns3/hns3pf/hclge_trace.h       | 94 +++++++++++++++++++
+>  .../hisilicon/hns3/hns3vf/hclgevf_main.c      | 40 ++++++++
+>  .../hisilicon/hns3/hns3vf/hclgevf_trace.h     | 50 ++++++++++
+>  6 files changed, 260 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3_common/hclge_comm_cmd.c b/drivers/net/ethernet/hisilicon/hns3/hns3_common/hclge_comm_cmd.c
+> index d92ad6082d8e..424555e00e05 100644
+> --- a/drivers/net/ethernet/hisilicon/hns3/hns3_common/hclge_comm_cmd.c
+> +++ b/drivers/net/ethernet/hisilicon/hns3/hns3_common/hclge_comm_cmd.c
+> @@ -470,10 +470,14 @@ static int hclge_comm_cmd_check_result(struct hclge_comm_hw *hw,
+>  int hclge_comm_cmd_send(struct hclge_comm_hw *hw, struct hclge_desc *desc,
+>  			int num)
+>  {
+> +	bool is_special = hclge_comm_is_special_opcode(desc->opcode);
+>  	struct hclge_comm_cmq_ring *csq = &hw->cmq.csq;
+>  	int ret;
+>  	int ntc;
 
-	FWIW, turns out that we have several places in drivers/* that pull
-asm-generic/unaligned.h.  IMO that's completely wrong - not just in this
-case (it's a matter of trivially adjusting the script), but I think that
-as a matter of policy we should *NOT* have includes of asm-generic/*.h
-anywhere in drivers/ fs/ io_uring/ kernel/ mm/ net/ sound/
+hclge_comm_is_special_opcode takes a u16 value as it's argument,
+but the type of desc->opcode is __le16. So perhaps this should be
+(completely untested!):
 
-	Current situation (outside of arch, include, scripts and tools,
-with asm-generic/unaligned.h cases already taken out):
+	struct hclge_comm_cmq_ring *csq = &hw->cmq.csq;
+	bool is_special;
+	...
 
-drivers/android/binderfs.c:32:#include <uapi/asm-generic/errno-base.h>
-drivers/clk/microchip/clk-mpfs-ccc.c:7:#include "asm-generic/errno-base.h"
-drivers/firmware/arm_scmi/shmem.c:13:#include <asm-generic/bug.h>
-drivers/irqchip/irq-ti-sci-inta.c:24:#include <asm-generic/msi.h>
-drivers/mtd/nand/raw/ingenic/ingenic_ecc.h:9:#include <uapi/asm-generic/errno-base.h>
-drivers/platform/x86/hp/hp-bioscfg/passwdobj-attributes.c:10:#include <asm-generic/posix_types.h>
-io_uring/uring_cmd.c:10:#include <uapi/asm-generic/ioctls.h>
-lib/trace_readwrite.c:10:#include <asm-generic/io.h>
-mm/damon/vaddr.c:10:#include <asm-generic/mman-common.h>
-net/sunrpc/xprtrdma/verbs.c:58:#include <asm-generic/barrier.h>
-rust/uapi/uapi_helper.h:9:#include <uapi/asm-generic/ioctl.h>
+	is_special = hclge_comm_is_special_opcode(le16_to_cpu(desc->opcode));
 
-That's it.  asm-generic/errno-base.h cases - just use linux/errno.h and
-be done with it.  Anyone who goes "I've got ENOENT and ENOMEM in my driver,
-but those two are covered by errno-base.h and I can be clever and use
-just that" is wrong.
+Flagged by Sparse.
 
-asm-generic/mman-common.h - and linux/mman.h would not serve why, exactly?
-uapi/linux/linux/mman.h, if one really feels like it...
-
-asm-generic/ioctls.h in io_uring - definitely wrong; SIOCINQ is what
-it's brought for, but that's in sockios.h.  It expands to FIONREAD, which
-*is* in ioctls.h, but...
-
-arch/alpha/include/uapi/asm/ioctls.h:11:#define FIONREAD        _IOR('f', 127, int)
-arch/mips/include/uapi/asm/ioctls.h:64:#define FIONREAD 0x467f
-arch/parisc/include/uapi/asm/ioctls.h:35:#define FIONREAD       0x541B
-arch/powerpc/include/uapi/asm/ioctls.h:11:#define FIONREAD      _IOR('f', 127, int)
-arch/sh/include/uapi/asm/ioctls.h:11:#define FIONREAD   _IOR('f', 127, int)
-arch/sparc/include/uapi/asm/ioctls.h:101:#define FIONREAD       _IOR('f', 127, int)
-arch/xtensa/include/uapi/asm/ioctls.h:23:#define FIONREAD       _IOR('f', 127, int)
-include/uapi/asm-generic/ioctls.h:46:#define FIONREAD   0x541B
-
-See the problem?  On mips the value is not 0x541B - it's 0x467F; on
-alpha, powerpc and sparc it's 0x4004667F, on sh and xtensa - 0x8004667F
-(different expansions of _IOR).
-
-The only thing that has any business including asm-generic/ioctls.h is
-arch/*/include/uapi/asm/ioctls.h - if it feels like doing so.  Anywhere
-else it ought to be asm/ioctls.h.
-
-asm-generic/msi.h - looks bogus; there's an include of linux/msi.h several lines
-above, and that pulls asm/msi.h.  Which makes it either a no-op or a build bug
-(the latter - if that driver can be built on x86 with CONFIG_GENERIC_MSI_IRQ
-defined;
-typedef struct irq_alloc_info msi_alloc_info_t;
-in asm/msi.h vs.
-typedef struct msi_alloc_info {
-        struct msi_desc                 *desc;
-        irq_hw_number_t                 hwirq;
-        unsigned long                   flags;
-        union {
-                unsigned long           ul;
-                void                    *ptr;
-        } scratchpad[NUM_MSI_ALLOC_SCRATCHPAD_REGS];
-} msi_alloc_info_t;
-in asm-generic/msi.h).
-
-Hell knows about the rest, but they all look very dubious...
+>  
+> +	if (hw->cmq.ops.trace_cmd_send)
+> +		hw->cmq.ops.trace_cmd_send(hw, desc, num, is_special);
+> +
+>  	spin_lock_bh(&hw->cmq.csq.lock);
+>  
+>  	if (test_bit(HCLGE_COMM_STATE_CMD_DISABLE, &hw->comm_state)) {
+> @@ -507,6 +511,9 @@ int hclge_comm_cmd_send(struct hclge_comm_hw *hw, struct hclge_desc *desc,
+>  
+>  	spin_unlock_bh(&hw->cmq.csq.lock);
+>  
+> +	if (hw->cmq.ops.trace_cmd_get)
+> +		hw->cmq.ops.trace_cmd_get(hw, desc, num, is_special);
+> +
+>  	return ret;
+>  }
+>  
+> @@ -584,6 +591,17 @@ int hclge_comm_cmd_queue_init(struct pci_dev *pdev, struct hclge_comm_hw *hw)
+>  	return ret;
+>  }
+>  
+> +void hclge_comm_cmd_init_ops(struct hclge_comm_hw *hw,
+> +			     const struct hclge_comm_cmq_ops *ops)
+> +{
+> +	struct hclge_comm_cmq *cmdq = &hw->cmq;
+> +
+> +	if (ops) {
+> +		cmdq->ops.trace_cmd_send = ops->trace_cmd_send;
+> +		cmdq->ops.trace_cmd_get = ops->trace_cmd_get;
+> +	}
+> +}
+> +
+>  int hclge_comm_cmd_init(struct hnae3_ae_dev *ae_dev, struct hclge_comm_hw *hw,
+>  			u32 *fw_version, bool is_pf,
+>  			unsigned long reset_pending)
+> diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3_common/hclge_comm_cmd.h b/drivers/net/ethernet/hisilicon/hns3/hns3_common/hclge_comm_cmd.h
+> index 533c19d25e4f..387807b47d9a 100644
+> --- a/drivers/net/ethernet/hisilicon/hns3/hns3_common/hclge_comm_cmd.h
+> +++ b/drivers/net/ethernet/hisilicon/hns3/hns3_common/hclge_comm_cmd.h
+> @@ -423,11 +423,22 @@ enum hclge_comm_cmd_status {
+>  	HCLGE_COMM_ERR_CSQ_ERROR	= -3,
+>  };
+>  
+> +struct hclge_comm_hw;
+> +struct hclge_comm_cmq_ops {
+> +	void (*trace_cmd_send)(struct hclge_comm_hw *hw,
+> +			       struct hclge_desc *desc,
+> +			       int num, bool is_special);
+> +	void (*trace_cmd_get)(struct hclge_comm_hw *hw,
+> +			      struct hclge_desc *desc,
+> +			      int num, bool is_special);
+> +};
+> +
+>  struct hclge_comm_cmq {
+>  	struct hclge_comm_cmq_ring csq;
+>  	struct hclge_comm_cmq_ring crq;
+>  	u16 tx_timeout;
+>  	enum hclge_comm_cmd_status last_status;
+> +	struct hclge_comm_cmq_ops ops;
+>  };
+>  
+>  struct hclge_comm_hw {
+> @@ -474,5 +485,6 @@ int hclge_comm_cmd_queue_init(struct pci_dev *pdev, struct hclge_comm_hw *hw);
+>  int hclge_comm_cmd_init(struct hnae3_ae_dev *ae_dev, struct hclge_comm_hw *hw,
+>  			u32 *fw_version, bool is_pf,
+>  			unsigned long reset_pending);
+> -
+> +void hclge_comm_cmd_init_ops(struct hclge_comm_hw *hw,
+> +			     const struct hclge_comm_cmq_ops *ops);
+>  #endif
+> diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c
+> index 5ea9e59569ef..8c2562ae3c69 100644
+> --- a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c
+> +++ b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c
+> @@ -27,6 +27,8 @@
+>  #include "hclge_devlink.h"
+>  #include "hclge_comm_cmd.h"
+>  
+> +#include "hclge_trace.h"
+> +
+>  #define HCLGE_NAME			"hclge"
+>  
+>  #define HCLGE_BUF_SIZE_UNIT	256U
+> @@ -391,6 +393,48 @@ int hclge_cmd_send(struct hclge_hw *hw, struct hclge_desc *desc, int num)
+>  	return hclge_comm_cmd_send(&hw->hw, desc, num);
+>  }
+>  
+> +static void hclge_trace_cmd_send(struct hclge_comm_hw *hw, struct hclge_desc *desc,
+> +				 int num, bool is_special)
+> +{
+> +	int i;
+> +
+> +	trace_hclge_pf_cmd_send(hw, desc, 0, num);
+> +
+> +	if (!is_special) {
+> +		for (i = 1; i < num; i++)
+> +			trace_hclge_pf_cmd_send(hw, &desc[i], i, num);
+> +	} else {
+> +		for (i = 1; i < num; i++)
+> +			trace_hclge_pf_special_cmd_send(hw, (u32 *)&desc[i],
+> +							i, num);
+> +	}
+> +}
+> +
+> +static void hclge_trace_cmd_get(struct hclge_comm_hw *hw, struct hclge_desc *desc,
+> +				int num, bool is_special)
+> +{
+> +	int i;
+> +
+> +	if (!HCLGE_COMM_SEND_SYNC(le16_to_cpu(desc->flag)))
+> +		return;
+> +
+> +	trace_hclge_pf_cmd_get(hw, desc, 0, num);
+> +
+> +	if (!is_special) {
+> +		for (i = 1; i < num; i++)
+> +			trace_hclge_pf_cmd_get(hw, &desc[i], i, num);
+> +	} else {
+> +		for (i = 1; i < num; i++)
+> +			trace_hclge_pf_special_cmd_get(hw, (u32 *)&desc[i],
+> +						       i, num);
+> +	}
+> +}
+> +
+> +static const struct hclge_comm_cmq_ops hclge_cmq_ops = {
+> +	.trace_cmd_send = hclge_trace_cmd_send,
+> +	.trace_cmd_get = hclge_trace_cmd_get,
+> +};
+> +
+>  static int hclge_mac_update_stats_defective(struct hclge_dev *hdev)
+>  {
+>  #define HCLGE_MAC_CMD_NUM 21
+> @@ -11616,6 +11660,7 @@ static int hclge_init_ae_dev(struct hnae3_ae_dev *ae_dev)
+>  		goto err_devlink_uninit;
+>  
+>  	/* Firmware command initialize */
+> +	hclge_comm_cmd_init_ops(&hdev->hw.hw, &hclge_cmq_ops);
+>  	ret = hclge_comm_cmd_init(hdev->ae_dev, &hdev->hw.hw, &hdev->fw_version,
+>  				  true, hdev->reset_pending);
+>  	if (ret)
+> diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_trace.h b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_trace.h
+> index 8510b88d4982..116ac3a5ffc5 100644
+> --- a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_trace.h
+> +++ b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_trace.h
+> @@ -10,6 +10,7 @@
+>  
+>  #include <linux/tracepoint.h>
+>  
+> +#define PF_DESC_LEN	(sizeof(struct hclge_desc) / sizeof(u32))
+>  #define PF_GET_MBX_LEN	(sizeof(struct hclge_mbx_vf_to_pf_cmd) / sizeof(u32))
+>  #define PF_SEND_MBX_LEN	(sizeof(struct hclge_mbx_pf_to_vf_cmd) / sizeof(u32))
+>  
+> @@ -77,6 +78,99 @@ TRACE_EVENT(hclge_pf_mbx_send,
+>  	)
+>  );
+>  
+> +DECLARE_EVENT_CLASS(hclge_pf_cmd_template,
+> +		    TP_PROTO(struct hclge_comm_hw *hw,
+> +			     struct hclge_desc *desc,
+> +			     int index,
+> +			     int num),
+> +		    TP_ARGS(hw, desc, index, num),
+> +
+> +		    TP_STRUCT__entry(__field(u16, opcode)
+> +			__field(u16, flag)
+> +			__field(u16, retval)
+> +			__field(u16, rsv)
+> +			__field(int, index)
+> +			__field(int, num)
+> +			__string(pciname, pci_name(hw->cmq.csq.pdev))
+> +			__array(u32, data, HCLGE_DESC_DATA_LEN)),
+> +
+> +		    TP_fast_assign(int i;
+> +			__entry->opcode = le16_to_cpu(desc->opcode);
+> +			__entry->flag = le16_to_cpu(desc->flag);
+> +			__entry->retval = le16_to_cpu(desc->retval);
+> +			__entry->rsv = le16_to_cpu(desc->rsv);
+> +			__entry->index = index;
+> +			__entry->num = num;
+> +			__assign_str(pciname, pci_name(hw->cmq.csq.pdev));
+> +			for (i = 0; i < HCLGE_DESC_DATA_LEN; i++)
+> +				__entry->data[i] = le32_to_cpu(desc->data[i]);),
+> +
+> +		    TP_printk("%s opcode:0x%04x %d-%d flag:0x%04x retval:0x%04x rsv:0x%04x data:%s",
+> +			      __get_str(pciname), __entry->opcode,
+> +			      __entry->index, __entry->num,
+> +			      __entry->flag, __entry->retval, __entry->rsv,
+> +			      __print_array(__entry->data,
+> +					    HCLGE_DESC_DATA_LEN, sizeof(u32)))
+> +);
+> +
+> +DEFINE_EVENT(hclge_pf_cmd_template, hclge_pf_cmd_send,
+> +	     TP_PROTO(struct hclge_comm_hw *hw,
+> +		      struct hclge_desc *desc,
+> +		      int index,
+> +		      int num),
+> +	     TP_ARGS(hw, desc, index, num)
+> +);
+> +
+> +DEFINE_EVENT(hclge_pf_cmd_template, hclge_pf_cmd_get,
+> +	     TP_PROTO(struct hclge_comm_hw *hw,
+> +		      struct hclge_desc *desc,
+> +		      int index,
+> +		      int num),
+> +	     TP_ARGS(hw, desc, index, num)
+> +);
+> +
+> +DECLARE_EVENT_CLASS(hclge_pf_special_cmd_template,
+> +		    TP_PROTO(struct hclge_comm_hw *hw,
+> +			     u32 *data,
+> +			     int index,
+> +			     int num),
+> +		    TP_ARGS(hw, data, index, num),
+> +
+> +		    TP_STRUCT__entry(__field(int, index)
+> +			__field(int, num)
+> +			__string(pciname, pci_name(hw->cmq.csq.pdev))
+> +			__array(u32, data, PF_DESC_LEN)),
+> +
+> +		    TP_fast_assign(int i;
+> +			__entry->index = index;
+> +			__entry->num = num;
+> +			__assign_str(pciname, pci_name(hw->cmq.csq.pdev));
+> +			for (i = 0; i < PF_DESC_LEN; i++)
+> +				__entry->data[i] = le32_to_cpu(data[i]);
+> +		),
+> +
+> +		    TP_printk("%s %d-%d data:%s",
+> +			      __get_str(pciname),
+> +			      __entry->index, __entry->num,
+> +			      __print_array(__entry->data,
+> +					    PF_DESC_LEN, sizeof(u32)))
+> +);
+> +
+> +DEFINE_EVENT(hclge_pf_special_cmd_template, hclge_pf_special_cmd_send,
+> +	     TP_PROTO(struct hclge_comm_hw *hw,
+> +		      u32 *desc,
+> +		      int index,
+> +		      int num),
+> +	     TP_ARGS(hw, desc, index, num));
+> +
+> +DEFINE_EVENT(hclge_pf_special_cmd_template, hclge_pf_special_cmd_get,
+> +	     TP_PROTO(struct hclge_comm_hw *hw,
+> +		      u32 *desc,
+> +		      int index,
+> +		      int num),
+> +	     TP_ARGS(hw, desc, index, num)
+> +);
+> +
+>  #endif /* _HCLGE_TRACE_H_ */
+>  
+>  /* This must be outside ifdef _HCLGE_TRACE_H */
+> diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3vf/hclgevf_main.c b/drivers/net/ethernet/hisilicon/hns3/hns3vf/hclgevf_main.c
+> index 0aa9beefd1c7..ecc092555362 100644
+> --- a/drivers/net/ethernet/hisilicon/hns3/hns3vf/hclgevf_main.c
+> +++ b/drivers/net/ethernet/hisilicon/hns3/hns3vf/hclgevf_main.c
+> @@ -11,6 +11,7 @@
+>  #include "hnae3.h"
+>  #include "hclgevf_devlink.h"
+>  #include "hclge_comm_rss.h"
+> +#include "hclgevf_trace.h"
+>  
+>  #define HCLGEVF_NAME	"hclgevf"
+>  
+> @@ -47,6 +48,42 @@ int hclgevf_cmd_send(struct hclgevf_hw *hw, struct hclge_desc *desc, int num)
+>  	return hclge_comm_cmd_send(&hw->hw, desc, num);
+>  }
+>  
+> +static void hclgevf_trace_cmd_send(struct hclge_comm_hw *hw, struct hclge_desc *desc,
+> +				   int num, bool is_special)
+> +{
+> +	int i;
+> +
+> +	trace_hclge_vf_cmd_send(hw, desc, 0, num);
+> +
+> +	if (is_special)
+> +		return;
+> +
+> +	for (i = 1; i < num; i++)
+> +		trace_hclge_vf_cmd_send(hw, &desc[i], i, num);
+> +}
+> +
+> +static void hclgevf_trace_cmd_get(struct hclge_comm_hw *hw, struct hclge_desc *desc,
+> +				  int num, bool is_special)
+> +{
+> +	int i;
+> +
+> +	if (!HCLGE_COMM_SEND_SYNC(le16_to_cpu(desc->flag)))
+> +		return;
+> +
+> +	trace_hclge_vf_cmd_get(hw, desc, 0, num);
+> +
+> +	if (is_special)
+> +		return;
+> +
+> +	for (i = 1; i < num; i++)
+> +		trace_hclge_vf_cmd_get(hw, &desc[i], i, num);
+> +}
+> +
+> +static const struct hclge_comm_cmq_ops hclgevf_cmq_ops = {
+> +	.trace_cmd_send = hclgevf_trace_cmd_send,
+> +	.trace_cmd_get = hclgevf_trace_cmd_get,
+> +};
+> +
+>  void hclgevf_arq_init(struct hclgevf_dev *hdev)
+>  {
+>  	struct hclge_comm_cmq *cmdq = &hdev->hw.hw.cmq;
+> @@ -2796,6 +2833,7 @@ static int hclgevf_reset_hdev(struct hclgevf_dev *hdev)
+>  	}
+>  
+>  	hclgevf_arq_init(hdev);
+> +
+>  	ret = hclge_comm_cmd_init(hdev->ae_dev, &hdev->hw.hw,
+>  				  &hdev->fw_version, false,
+>  				  hdev->reset_pending);
+> @@ -2854,6 +2892,8 @@ static int hclgevf_init_hdev(struct hclgevf_dev *hdev)
+>  		goto err_cmd_queue_init;
+>  
+>  	hclgevf_arq_init(hdev);
+> +
+> +	hclge_comm_cmd_init_ops(&hdev->hw.hw, &hclgevf_cmq_ops);
+>  	ret = hclge_comm_cmd_init(hdev->ae_dev, &hdev->hw.hw,
+>  				  &hdev->fw_version, false,
+>  				  hdev->reset_pending);
+> diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3vf/hclgevf_trace.h b/drivers/net/ethernet/hisilicon/hns3/hns3vf/hclgevf_trace.h
+> index 5d4895bb57a1..82263cb5e47b 100644
+> --- a/drivers/net/ethernet/hisilicon/hns3/hns3vf/hclgevf_trace.h
+> +++ b/drivers/net/ethernet/hisilicon/hns3/hns3vf/hclgevf_trace.h
+> @@ -77,6 +77,56 @@ TRACE_EVENT(hclge_vf_mbx_send,
+>  	)
+>  );
+>  
+> +DECLARE_EVENT_CLASS(hclge_vf_cmd_template,
+> +		    TP_PROTO(struct hclge_comm_hw *hw,
+> +			     struct hclge_desc *desc,
+> +			     int index,
+> +			     int num),
+> +
+> +		    TP_ARGS(hw, desc, index, num),
+> +
+> +		    TP_STRUCT__entry(__field(u16, opcode)
+> +			__field(u16, flag)
+> +			__field(u16, retval)
+> +			__field(u16, rsv)
+> +			__field(int, index)
+> +			__field(int, num)
+> +			__string(pciname, pci_name(hw->cmq.csq.pdev))
+> +			__array(u32, data, HCLGE_DESC_DATA_LEN)),
+> +
+> +		    TP_fast_assign(int i;
+> +			__entry->opcode = le16_to_cpu(desc->opcode);
+> +			__entry->flag = le16_to_cpu(desc->flag);
+> +			__entry->retval = le16_to_cpu(desc->retval);
+> +			__entry->rsv = le16_to_cpu(desc->rsv);
+> +			__entry->index = index;
+> +			__entry->num = num;
+> +			__assign_str(pciname, pci_name(hw->cmq.csq.pdev));
+> +			for (i = 0; i < HCLGE_DESC_DATA_LEN; i++)
+> +				__entry->data[i] = le32_to_cpu(desc->data[i]);),
+> +
+> +		    TP_printk("%s opcode:0x%04x %d-%d flag:0x%04x retval:0x%04x rsv:0x%04x data:%s",
+> +			      __get_str(pciname), __entry->opcode,
+> +			      __entry->index, __entry->num,
+> +			      __entry->flag, __entry->retval, __entry->rsv,
+> +			      __print_array(__entry->data,
+> +					    HCLGE_DESC_DATA_LEN, sizeof(u32)))
+> +);
+> +
+> +DEFINE_EVENT(hclge_vf_cmd_template, hclge_vf_cmd_send,
+> +	     TP_PROTO(struct hclge_comm_hw *hw,
+> +		      struct hclge_desc *desc,
+> +		      int index,
+> +		      int num),
+> +	     TP_ARGS(hw, desc, index, num));
+> +
+> +DEFINE_EVENT(hclge_vf_cmd_template, hclge_vf_cmd_get,
+> +	     TP_PROTO(struct hclge_comm_hw *hw,
+> +		      struct hclge_desc *desc,
+> +		      int index,
+> +		      int num),
+> +	     TP_ARGS(hw, desc, index, num));
+> +
+>  #endif /* _HCLGEVF_TRACE_H_ */
+>  
+>  /* This must be outside ifdef _HCLGEVF_TRACE_H */
+> -- 
+> 2.30.0
+> 
 
