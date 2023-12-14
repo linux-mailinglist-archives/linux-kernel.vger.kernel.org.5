@@ -2,340 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2011A8124C3
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 02:52:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 602F78124C4
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 02:52:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442958AbjLNBv5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 20:51:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39096 "EHLO
+        id S1442987AbjLNBwD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 20:52:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53992 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1442961AbjLNBvw (ORCPT
+        with ESMTP id S1442971AbjLNBwC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 20:51:52 -0500
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 37659D5;
-        Wed, 13 Dec 2023 17:51:58 -0800 (PST)
-Received: by linux.microsoft.com (Postfix, from userid 1004)
-        id BF40820B74C2; Wed, 13 Dec 2023 17:51:57 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com BF40820B74C2
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linuxonhyperv.com;
-        s=default; t=1702518717;
-        bh=9DmiYK6vtk0UEVfpM1tbiCZ5HYhsJr5J6AvvsY08cw4=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YbMJ56a78S73TMrA0MoZnjg+RRB7vAjF43gAYd6W4b3QxRfcYp5DaKMA+gGSAdydF
-         30mAKg63OeH/1GPDLedLlseC+9e/Ea9lTaodMwnGwq3bbb4QkZJm1UHbfRh+10oV/e
-         /szJyUYgQ3H4afvWloanYfZPbxxSfbOFAYo796eU=
-From:   longli@linuxonhyperv.com
-To:     Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>,
-        Ajay Sharma <sharmaajay@microsoft.com>,
-        Dexuan Cui <decui@microsoft.com>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>
-Cc:     linux-rdma@vger.kernel.org, linux-hyperv@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Long Li <longli@microsoft.com>
-Subject: [Patch v3 3/3] RDMA/mana_ib: Add CQ interrupt support for RAW QP
-Date:   Wed, 13 Dec 2023 17:51:44 -0800
-Message-Id: <1702518704-15886-4-git-send-email-longli@linuxonhyperv.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1702518704-15886-1-git-send-email-longli@linuxonhyperv.com>
-References: <1702518704-15886-1-git-send-email-longli@linuxonhyperv.com>
-X-Spam-Status: No, score=-9.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,SPF_HELO_PASS,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_SPF_WL autolearn=no
-        autolearn_force=no version=3.4.6
+        Wed, 13 Dec 2023 20:52:02 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1625E0
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 17:52:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1702518727;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=9AXXFjkdvphmQ1MZVdZxrm1IU4YccGEU/JmOtXsDs6c=;
+        b=OE/OHna9DsPkQGLY2qVXz9FCpEfSDPD23MpBYRyeOZZJNANxHTi7diiyFGb5iEdhOcaeeR
+        qa0UBD5YQmscmeL654cDYxc2iPKNiSYvAXDJr8+hvoHjMuxcnVoqiwFnv7fv/7/GBSjDlL
+        hQNZb1g7kBuo1tjxg0kjgITVQ49/+og=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-222-FawC5tQhPU2pB8SQSY2xmw-1; Wed, 13 Dec 2023 20:52:05 -0500
+X-MC-Unique: FawC5tQhPU2pB8SQSY2xmw-1
+Received: from smtp.corp.redhat.com (int-mx10.intmail.prod.int.rdu2.redhat.com [10.11.54.10])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 7A21685A588;
+        Thu, 14 Dec 2023 01:52:04 +0000 (UTC)
+Received: from [10.22.33.1] (unknown [10.22.33.1])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 017AD492BF0;
+        Thu, 14 Dec 2023 01:52:02 +0000 (UTC)
+Message-ID: <ff0c735e-9e8e-4f26-96eb-3927c26e1e01@redhat.com>
+Date:   Wed, 13 Dec 2023 20:52:02 -0500
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 02/11] locking: add define if mutex_destroy() is not an
+ empty function
+Content-Language: en-US
+To:     George Stark <gnstark@salutedevices.com>,
+        andy.shevchenko@gmail.com, pavel@ucw.cz, lee@kernel.org,
+        vadimp@nvidia.com, mpe@ellerman.id.au, npiggin@gmail.com,
+        christophe.leroy@csgroup.eu, hdegoede@redhat.com,
+        mazziesaccount@gmail.com, peterz@infradead.org, mingo@redhat.com,
+        will@kernel.org, boqun.feng@gmail.com, nikitos.tr@gmail.com
+Cc:     linux-leds@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, kernel@salutedevices.com
+References: <20231213223020.2713164-1-gnstark@salutedevices.com>
+ <20231213223020.2713164-3-gnstark@salutedevices.com>
+From:   Waiman Long <longman@redhat.com>
+In-Reply-To: <20231213223020.2713164-3-gnstark@salutedevices.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.10
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Long Li <longli@microsoft.com>
 
-At probing time, the MANA core code allocates EQs for supporting interrupts
-on Ethernet queues. The same interrupt mechanisum is used by RAW QP.
-
-Use the same EQs for delivering interrupts on the CQ for the RAW QP.
-
-Signed-off-by: Long Li <longli@microsoft.com>
----
-Change in v3:
-Removed unused varaible mana_ucontext in mana_ib_create_qp_rss().
-Simplified error handling in mana_ib_create_qp_rss() on failure to allocate queues for rss table.
-
- drivers/infiniband/hw/mana/cq.c      | 32 +++++++++++-
- drivers/infiniband/hw/mana/mana_ib.h |  3 ++
- drivers/infiniband/hw/mana/qp.c      | 73 ++++++++++++++++++++++++++--
- 3 files changed, 102 insertions(+), 6 deletions(-)
-
-diff --git a/drivers/infiniband/hw/mana/cq.c b/drivers/infiniband/hw/mana/cq.c
-index 09a2c263e39b..83ebd070535a 100644
---- a/drivers/infiniband/hw/mana/cq.c
-+++ b/drivers/infiniband/hw/mana/cq.c
-@@ -12,13 +12,20 @@ int mana_ib_create_cq(struct ib_cq *ibcq, const struct ib_cq_init_attr *attr,
- 	struct ib_device *ibdev = ibcq->device;
- 	struct mana_ib_create_cq ucmd = {};
- 	struct mana_ib_dev *mdev;
-+	struct gdma_context *gc;
- 	int err;
- 
- 	mdev = container_of(ibdev, struct mana_ib_dev, ib_dev);
-+	gc = mdev->gdma_dev->gdma_context;
- 
- 	if (udata->inlen < sizeof(ucmd))
- 		return -EINVAL;
- 
-+	if (attr->comp_vector > gc->max_num_queues)
-+		return -EINVAL;
-+
-+	cq->comp_vector = attr->comp_vector;
-+
- 	err = ib_copy_from_udata(&ucmd, udata, min(sizeof(ucmd), udata->inlen));
- 	if (err) {
- 		ibdev_dbg(ibdev,
-@@ -56,6 +63,7 @@ int mana_ib_create_cq(struct ib_cq *ibcq, const struct ib_cq_init_attr *attr,
- 	/*
- 	 * The CQ ID is not known at this time. The ID is generated at create_qp
- 	 */
-+	cq->id = INVALID_QUEUE_ID;
- 
- 	return 0;
- 
-@@ -69,11 +77,33 @@ int mana_ib_destroy_cq(struct ib_cq *ibcq, struct ib_udata *udata)
- 	struct mana_ib_cq *cq = container_of(ibcq, struct mana_ib_cq, ibcq);
- 	struct ib_device *ibdev = ibcq->device;
- 	struct mana_ib_dev *mdev;
-+	struct gdma_context *gc;
-+	int err;
- 
- 	mdev = container_of(ibdev, struct mana_ib_dev, ib_dev);
-+	gc = mdev->gdma_dev->gdma_context;
-+
-+	err = mana_ib_gd_destroy_dma_region(mdev, cq->gdma_region);
-+	if (err) {
-+		ibdev_dbg(ibdev,
-+			  "Failed to destroy dma region, %d\n", err);
-+		return err;
-+	}
-+
-+	if (cq->id != INVALID_QUEUE_ID) {
-+		kfree(gc->cq_table[cq->id]);
-+		gc->cq_table[cq->id] = NULL;
-+	}
- 
--	mana_ib_gd_destroy_dma_region(mdev, cq->gdma_region);
- 	ib_umem_release(cq->umem);
- 
- 	return 0;
- }
-+
-+void mana_ib_cq_handler(void *ctx, struct gdma_queue *gdma_cq)
-+{
-+	struct mana_ib_cq *cq = ctx;
-+
-+	if (cq->ibcq.comp_handler)
-+		cq->ibcq.comp_handler(&cq->ibcq, cq->ibcq.cq_context);
-+}
-diff --git a/drivers/infiniband/hw/mana/mana_ib.h b/drivers/infiniband/hw/mana/mana_ib.h
-index 7cb3d8ee4292..53bb4905afd5 100644
---- a/drivers/infiniband/hw/mana/mana_ib.h
-+++ b/drivers/infiniband/hw/mana/mana_ib.h
-@@ -86,6 +86,7 @@ struct mana_ib_cq {
- 	int cqe;
- 	u64 gdma_region;
- 	u64 id;
-+	u32 comp_vector;
- };
- 
- struct mana_ib_qp {
-@@ -209,4 +210,6 @@ int mana_ib_query_gid(struct ib_device *ibdev, u32 port, int index,
- void mana_ib_disassociate_ucontext(struct ib_ucontext *ibcontext);
- 
- int mana_ib_query_adapter_caps(struct mana_ib_dev *mdev);
-+
-+void mana_ib_cq_handler(void *ctx, struct gdma_queue *gdma_cq);
- #endif
-diff --git a/drivers/infiniband/hw/mana/qp.c b/drivers/infiniband/hw/mana/qp.c
-index 4667b18ec1dd..19998082a376 100644
---- a/drivers/infiniband/hw/mana/qp.c
-+++ b/drivers/infiniband/hw/mana/qp.c
-@@ -102,21 +102,26 @@ static int mana_ib_create_qp_rss(struct ib_qp *ibqp, struct ib_pd *pd,
- 	struct ib_rwq_ind_table *ind_tbl = attr->rwq_ind_tbl;
- 	struct mana_ib_create_qp_rss_resp resp = {};
- 	struct mana_ib_create_qp_rss ucmd = {};
-+	struct gdma_queue **gdma_cq_allocated;
- 	mana_handle_t *mana_ind_table;
- 	struct mana_port_context *mpc;
-+	struct gdma_queue *gdma_cq;
- 	unsigned int ind_tbl_size;
- 	struct mana_context *mc;
- 	struct net_device *ndev;
-+	struct gdma_context *gc;
- 	struct mana_ib_cq *cq;
- 	struct mana_ib_wq *wq;
- 	struct gdma_dev *gd;
-+	struct mana_eq *eq;
- 	struct ib_cq *ibcq;
- 	struct ib_wq *ibwq;
- 	int i = 0;
- 	u32 port;
- 	int ret;
- 
--	gd = &mdev->gdma_dev->gdma_context->mana;
-+	gc = mdev->gdma_dev->gdma_context;
-+	gd = &gc->mana;
- 	mc = gd->driver_data;
- 
- 	if (!udata || udata->inlen < sizeof(ucmd))
-@@ -179,6 +184,13 @@ static int mana_ib_create_qp_rss(struct ib_qp *ibqp, struct ib_pd *pd,
- 		goto fail;
- 	}
- 
-+	gdma_cq_allocated = kcalloc(ind_tbl_size, sizeof(*gdma_cq_allocated),
-+				    GFP_KERNEL);
-+	if (!gdma_cq_allocated) {
-+		ret = -ENOMEM;
-+		goto fail;
-+	}
-+
- 	qp->port = port;
- 
- 	for (i = 0; i < ind_tbl_size; i++) {
-@@ -197,12 +209,16 @@ static int mana_ib_create_qp_rss(struct ib_qp *ibqp, struct ib_pd *pd,
- 		cq_spec.gdma_region = cq->gdma_region;
- 		cq_spec.queue_size = cq->cqe * COMP_ENTRY_SIZE;
- 		cq_spec.modr_ctx_id = 0;
--		cq_spec.attached_eq = GDMA_CQ_NO_EQ;
-+		eq = &mc->eqs[cq->comp_vector % gc->max_num_queues];
-+		cq_spec.attached_eq = eq->eq->id;
- 
- 		ret = mana_create_wq_obj(mpc, mpc->port_handle, GDMA_RQ,
- 					 &wq_spec, &cq_spec, &wq->rx_object);
--		if (ret)
-+		if (ret) {
-+			/* Do cleanup starting with index i-1 */
-+			i--;
- 			goto fail;
-+		}
- 
- 		/* The GDMA regions are now owned by the WQ object */
- 		wq->gdma_region = GDMA_INVALID_DMA_REGION;
-@@ -219,6 +235,21 @@ static int mana_ib_create_qp_rss(struct ib_qp *ibqp, struct ib_pd *pd,
- 		resp.entries[i].wqid = wq->id;
- 
- 		mana_ind_table[i] = wq->rx_object;
-+
-+		/* Create CQ table entry */
-+		WARN_ON(gc->cq_table[cq->id]);
-+		gdma_cq = kzalloc(sizeof(*gdma_cq), GFP_KERNEL);
-+		if (!gdma_cq) {
-+			ret = -ENOMEM;
-+			goto fail;
-+		}
-+		gdma_cq_allocated[i] = gdma_cq;
-+
-+		gdma_cq->cq.context = cq;
-+		gdma_cq->type = GDMA_CQ;
-+		gdma_cq->cq.callback = mana_ib_cq_handler;
-+		gdma_cq->id = cq->id;
-+		gc->cq_table[cq->id] = gdma_cq;
- 	}
- 	resp.num_entries = i;
- 
-@@ -238,6 +269,7 @@ static int mana_ib_create_qp_rss(struct ib_qp *ibqp, struct ib_pd *pd,
- 		goto fail;
- 	}
- 
-+	kfree(gdma_cq_allocated);
- 	kfree(mana_ind_table);
- 
- 	return 0;
-@@ -245,10 +277,17 @@ static int mana_ib_create_qp_rss(struct ib_qp *ibqp, struct ib_pd *pd,
- fail:
- 	while (i-- > 0) {
- 		ibwq = ind_tbl->ind_tbl[i];
-+		ibcq = ibwq->cq;
- 		wq = container_of(ibwq, struct mana_ib_wq, ibwq);
-+		cq = container_of(ibcq, struct mana_ib_cq, ibcq);
-+
-+		gc->cq_table[cq->id] = NULL;
-+		kfree(gdma_cq_allocated[i]);
-+
- 		mana_destroy_wq_obj(mpc, GDMA_RQ, wq->rx_object);
- 	}
- 
-+	kfree(gdma_cq_allocated);
- 	kfree(mana_ind_table);
- 
- 	return ret;
-@@ -270,14 +309,17 @@ static int mana_ib_create_qp_raw(struct ib_qp *ibqp, struct ib_pd *ibpd,
- 	struct gdma_dev *gd = &mdev->gdma_dev->gdma_context->mana;
- 	struct mana_ib_create_qp_resp resp = {};
- 	struct mana_ib_create_qp ucmd = {};
-+	struct gdma_queue *gdma_cq = NULL;
- 	struct mana_obj_spec wq_spec = {};
- 	struct mana_obj_spec cq_spec = {};
- 	struct mana_port_context *mpc;
- 	struct mana_context *mc;
- 	struct net_device *ndev;
- 	struct ib_umem *umem;
--	int err;
-+	struct mana_eq *eq;
-+	int eq_vec;
- 	u32 port;
-+	int err;
- 
- 	mc = gd->driver_data;
- 
-@@ -354,7 +396,9 @@ static int mana_ib_create_qp_raw(struct ib_qp *ibqp, struct ib_pd *ibpd,
- 	cq_spec.gdma_region = send_cq->gdma_region;
- 	cq_spec.queue_size = send_cq->cqe * COMP_ENTRY_SIZE;
- 	cq_spec.modr_ctx_id = 0;
--	cq_spec.attached_eq = GDMA_CQ_NO_EQ;
-+	eq_vec = send_cq->comp_vector % gd->gdma_context->max_num_queues;
-+	eq = &mc->eqs[eq_vec];
-+	cq_spec.attached_eq = eq->eq->id;
- 
- 	err = mana_create_wq_obj(mpc, mpc->port_handle, GDMA_SQ, &wq_spec,
- 				 &cq_spec, &qp->tx_object);
-@@ -372,6 +416,20 @@ static int mana_ib_create_qp_raw(struct ib_qp *ibqp, struct ib_pd *ibpd,
- 	qp->sq_id = wq_spec.queue_index;
- 	send_cq->id = cq_spec.queue_index;
- 
-+	/* Create CQ table entry */
-+	WARN_ON(gd->gdma_context->cq_table[send_cq->id]);
-+	gdma_cq = kzalloc(sizeof(*gdma_cq), GFP_KERNEL);
-+	if (!gdma_cq) {
-+		err = -ENOMEM;
-+		goto err_destroy_wq_obj;
-+	}
-+
-+	gdma_cq->cq.context = send_cq;
-+	gdma_cq->type = GDMA_CQ;
-+	gdma_cq->cq.callback = mana_ib_cq_handler;
-+	gdma_cq->id = send_cq->id;
-+	gd->gdma_context->cq_table[send_cq->id] = gdma_cq;
-+
- 	ibdev_dbg(&mdev->ib_dev,
- 		  "ret %d qp->tx_object 0x%llx sq id %llu cq id %llu\n", err,
- 		  qp->tx_object, qp->sq_id, send_cq->id);
-@@ -391,6 +449,11 @@ static int mana_ib_create_qp_raw(struct ib_qp *ibqp, struct ib_pd *ibpd,
- 	return 0;
- 
- err_destroy_wq_obj:
-+	if (gdma_cq) {
-+		kfree(gdma_cq);
-+		gd->gdma_context->cq_table[send_cq->id] = NULL;
-+	}
-+
- 	mana_destroy_wq_obj(mpc, GDMA_SQ, qp->tx_object);
- 
- err_destroy_dma_region:
--- 
-2.25.1
+On 12/13/23 17:30, George Stark wrote:
+> mutex_destroy() is only a debug helper and an empty function on non-debug
+> configurations still we can't legally ignore it because it's the
+> established API call and it can be extended theoretically in the future.
+> Sometimes it could be useful to know e.g. in the higher-level API if
+> mutex_destroy() really does something in the current configuration
+> and it's should be called or skipped otherwise for the sake of
+> optimization so add dedicated define to recognize these cases.
+>
+> Signed-off-by: George Stark <gnstark@salutedevices.com>
+> ---
+>   include/linux/mutex.h | 3 +++
+>   1 file changed, 3 insertions(+)
+>
+> diff --git a/include/linux/mutex.h b/include/linux/mutex.h
+> index a33aa9eb9fc3..2395ce4fcaf6 100644
+> --- a/include/linux/mutex.h
+> +++ b/include/linux/mutex.h
+> @@ -83,6 +83,9 @@ struct mutex {
+>   
+>   extern void mutex_destroy(struct mutex *lock);
+>   
+> +/* mutex_destroy() is a real function, not a NOP */
+> +#define mutex_destroy  mutex_destroy
+> +
+>   #else
+>   
+>   # define __DEBUG_MUTEX_INITIALIZER(lockname)
+Acked-by: Waiman Long <longman@redhat.com>
 
