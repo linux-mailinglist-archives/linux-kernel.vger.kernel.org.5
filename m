@@ -2,97 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EE397813538
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 16:50:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 723AB81353C
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 16:51:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1573884AbjLNPuS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 10:50:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45014 "EHLO
+        id S1573906AbjLNPvZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 10:51:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38504 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1573892AbjLNPuP (ORCPT
+        with ESMTP id S1573889AbjLNPvX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 10:50:15 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 351F7121;
-        Thu, 14 Dec 2023 07:50:22 -0800 (PST)
-X-IronPort-AV: E=McAfee;i="6600,9927,10924"; a="2295708"
-X-IronPort-AV: E=Sophos;i="6.04,275,1695711600"; 
-   d="scan'208";a="2295708"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Dec 2023 07:50:22 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10924"; a="918098808"
-X-IronPort-AV: E=Sophos;i="6.04,275,1695711600"; 
-   d="scan'208";a="918098808"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga001.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Dec 2023 07:50:20 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-        (envelope-from <andy@kernel.org>)
-        id 1rDnyb-00000005st6-0zna;
-        Thu, 14 Dec 2023 17:50:17 +0200
-Date:   Thu, 14 Dec 2023 17:50:16 +0200
-From:   Andy Shevchenko <andy@kernel.org>
-To:     Kent Gibson <warthog618@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
-        brgl@bgdev.pl, linus.walleij@linaro.org
-Subject: Re: [PATCH v2 4/5] gpiolib: cdev: reduce locking in
- gpio_desc_to_lineinfo()
-Message-ID: <ZXskOKAyEtXTLMRt@smile.fi.intel.com>
-References: <20231214095814.132400-1-warthog618@gmail.com>
- <20231214095814.132400-5-warthog618@gmail.com>
- <ZXsa39xneH6Rh7Gd@smile.fi.intel.com>
- <ZXsc5T1G5Y28lVqw@rigel>
- <ZXse4UDKGlVqzsyD@smile.fi.intel.com>
- <ZXsglIJtK50XYCIV@rigel>
+        Thu, 14 Dec 2023 10:51:23 -0500
+Received: from mail.zeus03.de (www.zeus03.de [194.117.254.33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3F9410F
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 07:51:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        sang-engineering.com; h=date:from:to:cc:subject:message-id
+        :references:mime-version:content-type:in-reply-to; s=k1; bh=SWD5
+        0egKwLc0Rybwi1RAvz7QScMU5f/Ur7h95KrgliU=; b=j2tM1WaStkNaKN+yr1RR
+        s50Kn/z2eapPW+OrIq8j0AnGUlzSEezIVhXFoiijiVysPGSsQ3DQ+QeiWkyHwy72
+        yPkF3Jiky+QwoC02lGZK7uB+jzALuEzaeEBP08NxUDS5YipV+mdFt2uIZMY2rqkj
+        zThG5pSGjdVjzbF+xocSH5wrWyevC+AEP+T7IUa/Lwx4o8r2tOFuXupLJYFd8F/d
+        32x9jiaVL2vKgbye2+0Bz3zYs33WXQtsaSQlHpxcTiS6dh3OU7H2hE72NurAs7mX
+        m1chOTFGgbI5DIpPNY+ilgzX/WVfXfucLH/pZhM83uXL8kGLah425UFOc4T1pV2/
+        Vw==
+Received: (qmail 972578 invoked from network); 14 Dec 2023 16:51:24 +0100
+Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 14 Dec 2023 16:51:24 +0100
+X-UD-Smtp-Session: l3s3148p1@+qV/QXoMAMIujnuR
+Date:   Thu, 14 Dec 2023 16:51:23 +0100
+From:   Wolfram Sang <wsa+renesas@sang-engineering.com>
+To:     linux-renesas-soc@vger.kernel.org
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-pci@vger.kernel.org,
+        Marek Vasut <marek.vasut+renesas@gmail.com>,
+        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
+Subject: Re: [PATCH v5 RESEND 0/2] PCI: rcar: support regulators for PCIe
+Message-ID: <ZXske3k8CkMcGjr5@shikoro>
+Mail-Followup-To: Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        linux-renesas-soc@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+        Marek Vasut <marek.vasut+renesas@gmail.com>,
+        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
+References: <20231105092908.3792-1-wsa+renesas@sang-engineering.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="iYf0e0WBJmy2fgy7"
 Content-Disposition: inline
-In-Reply-To: <ZXsglIJtK50XYCIV@rigel>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_SOFTFAIL,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+In-Reply-To: <20231105092908.3792-1-wsa+renesas@sang-engineering.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 14, 2023 at 11:34:44PM +0800, Kent Gibson wrote:
-> On Thu, Dec 14, 2023 at 05:27:29PM +0200, Andy Shevchenko wrote:
-> > On Thu, Dec 14, 2023 at 11:19:01PM +0800, Kent Gibson wrote:
-> > > On Thu, Dec 14, 2023 at 05:10:23PM +0200, Andy Shevchenko wrote:
-> > > > On Thu, Dec 14, 2023 at 05:58:13PM +0800, Kent Gibson wrote:
 
-...
+--iYf0e0WBJmy2fgy7
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> > > > > -	spin_lock_irqsave(&gpio_lock, flags);
-> > > >
-> > > > Shouldn't this be covered by patch 1 (I mean conversion to scoped_guard()
-> > > > instead of spinlock)?
-> > >
-> > > Read the cover letter.
-> > > Doing that made the change larger, as flags gets removed then restored.
-> > > I had also thought the flag tests would get indented then unindented, but
-> > > if we use guard() the indentation should remain unchanged.
-> >
-> > I'm fine with that as I pointed out (have you received that mail? I had
-> > problems with my mail server) the dflags is better semantically, so restoration
-> > with _different_ name is fine.
-> 
-> I have noted that some of your replies have been delayed, and I can't be sure
-> of what I might not've received. I can't say I've seen one that mentions the
-> dflags name being preferable.
-> 
-> I prefer the plain flags name, if there is only one flag variable in the
-> function.
+On Sun, Nov 05, 2023 at 10:29:06AM +0100, Wolfram Sang wrote:
+> Here are the patches to make PCIe cards work in slot CN15 on a Renesas
+> KingFisher board. Please apply.
+>=20
+> Changes since v4:
+> * rebased to 6.6
+> * added ack from Mani (Thanks!)
+>=20
+> Wolfram Sang (2):
+>   dt-bindings: PCI: rcar-pci-host: add optional regulators
+>   PCI: rcar-host: add support for optional regulators
+>=20
+>  .../devicetree/bindings/pci/rcar-pci-host.yaml   | 11 +++++++++++
+>  drivers/pci/controller/pcie-rcar-host.c          | 16 +++++++++++++++-
+>  2 files changed, 26 insertions(+), 1 deletion(-)
 
-I pointed out that lflags / dflags is kinda idiomatic internally to gpiolib*
-code base. Using flags might feel misleading and otherwise will hint about
-semantics of the variable. That said, I prefer it being named dflags.
-
--- 
-With Best Regards,
-Andy Shevchenko
+Can we have this series in 6.8, pretty please?
 
 
+--iYf0e0WBJmy2fgy7
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmV7JHgACgkQFA3kzBSg
+KbY3KhAAn1LjgCchuymBK5WOFv1iQU8JHdrudMbyioMalewF7lH/NVT6vA2FPeNN
+X5X0FZ6JmGyrnOj8qbkakl0iB1ZYf1lKOoGjiAVzS3qj2lxsP5NpBXX3yQuF2m2A
+Ajc8wp0P6z2q11gWkVHjYnDAW1SawtLSJtHhsFdfDL9WzTOXO01CDYU87Rshckno
+Ckyjo9Mc69R8XNdsubdYzIipRBQGnFuz6lTjYXlJvWk/siwTPc95pB9fmF398eJn
+DIoqYPBccsb4484o9oJ5LUlG/pov1ud7kPsKu197A1SaxUwS3j+C/ghIhTl3Rq7W
+jpK2eZp/tGyfPnkr72niLCJvd+mkwg6EB4Xy9tocBMgUsK0JG7dBzuD5AJopbOVu
+fm94Wc2/mKaUXVdMY4REG9u4kLMl3v9RZxlbtqvv4aSHobnIGWX2jkMmrnm5ztQf
+HbK+X809vP3owl++JmD0K+CjxLNusiYqVHZmfbXgR5IzlnLCgShsROPquuVT1bvG
+EJti4TXSAxUU8zbDDEoBF7xcaxiynRlsg9NROsQ3hs60rz6JYAG/oxdnv050juSV
+bIwnZLSAdaYbx8UxevSSX+TXxMjzUmBHvyj96w09U0ckVTcz4AEm4gH2lXppL3qi
+8bwbzUJ2CV3ZlsYOgBTdgWpPFQIqm8XVgnB9TyFX4FpPmBtP8UE=
+=8XDE
+-----END PGP SIGNATURE-----
+
+--iYf0e0WBJmy2fgy7--
