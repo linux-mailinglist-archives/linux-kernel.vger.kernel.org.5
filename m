@@ -2,76 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2ABD68134D5
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 16:34:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 978B68134E0
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 16:35:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1573815AbjLNPdy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 10:33:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37654 "EHLO
+        id S1573825AbjLNPf3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 10:35:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35572 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1573757AbjLNPdv (ORCPT
+        with ESMTP id S1573777AbjLNPf2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 10:33:51 -0500
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C148D129
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 07:33:57 -0800 (PST)
-Received: by mail-ed1-x534.google.com with SMTP id 4fb4d7f45d1cf-54bf9a54fe3so11409160a12.3
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 07:33:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1702568036; x=1703172836; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=rcNFHsvsaISwcnJ44Tj/kSFoKPbKk6xV4s4VLMajfFs=;
-        b=qWC9kpazK5N7TSfBDoB003CGguNo09f+g/ssJy3Tla7YhjJXVdtAnCfbMjIoYW/Ugc
-         pzc+gqXvZbFfHXGcZQWkWkXjHMx3OvlHgiHWOrmYxrY9fUkfpDL4vQ74j12ZBTXEr4TI
-         wKJ73segD/79cJuJupYuTpUwCyJbDAd8Fmn5YmHK6Jb+R5a9luXVQx4lqO5jz8t+Md1s
-         i5ucvNWYST+WQFovbvdtXm2/T2VN95gYK8xlzsyvZuvg5LOHE+b7wRB4EF0he2FlIwqQ
-         1it8PqWuPMJh/FNoean/qJD4cXEPTlnOLd4Dwd+ygiOtfBCZgSGfiQ9qQlhBmDwRzDc8
-         fjeg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702568036; x=1703172836;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=rcNFHsvsaISwcnJ44Tj/kSFoKPbKk6xV4s4VLMajfFs=;
-        b=nJRAPSkn3/ZHkwe7cVyzjq/stat02D9yY76OaYHJf4uqsC/5lineDd6Xm0RiG7s78E
-         nfdTPv77TBgvJmKc90eqKBLH84JMHS44t0ChWdbSwRocf5Vo7xxPz7SyP23cv8wdrEZI
-         jMCwZf5EzarsVlj48/AUOyhqfJrbBy+ABdwMxmFZZfhwVoM05YEhEGPizy4Toa0hOuIu
-         p281NQR1xjwlOi2G2E1javHPSljKfRhQZlpbnnp1B3imuOXUZaeSHO+OuQXQnlh5hkHF
-         NPS3EJSMmM7BURns394Sbs+jpKtKdLmGc2/jSqxNMEx1FSYesLBo4dy9/8JDZJ4TWQnn
-         FMug==
-X-Gm-Message-State: AOJu0YwyPK6ppxZjpryaOn97oXpKQU253OpulKDcP7qRCcw/4TkcvNhS
-        FjculZgs2SI9TPl+G4H21DwkVQ==
-X-Google-Smtp-Source: AGHT+IHpCzuG3dSo9YnxxO1fHrPwtpgEirEfzFvfJfdjbeZ42lGaFJZmYbQg9L5a+MCECUIKSy7vjQ==
-X-Received: by 2002:a17:906:690:b0:a19:a1ba:8ceb with SMTP id u16-20020a170906069000b00a19a1ba8cebmr4191517ejb.137.1702568036071;
-        Thu, 14 Dec 2023 07:33:56 -0800 (PST)
-Received: from linaro.org ([79.115.23.25])
-        by smtp.gmail.com with ESMTPSA id fb4-20020a1709073a0400b00a1c76114fcesm9526650ejc.218.2023.12.14.07.33.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Dec 2023 07:33:55 -0800 (PST)
-Date:   Thu, 14 Dec 2023 17:33:54 +0200
-From:   Abel Vesa <abel.vesa@linaro.org>
-To:     Konrad Dybcio <konrad.dybcio@linaro.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Rajendra Nayak <quic_rjendra@quicinc.com>
-Subject: Re: [PATCH 1/2] arm64: dts: qcom: x1e80100: Add all missing nodes
-Message-ID: <ZXsgYl2h+MnTIz7D@linaro.org>
-References: <20231212-x1e80100-dts-missing-nodes-v1-0-1472efec2b08@linaro.org>
- <20231212-x1e80100-dts-missing-nodes-v1-1-1472efec2b08@linaro.org>
- <9c8e887b-429c-4226-9851-5f1cbb93524a@linaro.org>
+        Thu, 14 Dec 2023 10:35:28 -0500
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EE7B9A;
+        Thu, 14 Dec 2023 07:35:34 -0800 (PST)
+Received: from pps.filterd (m0356517.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3BEFW6Vo010365;
+        Thu, 14 Dec 2023 15:34:47 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ subject : to : cc : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=pp1;
+ bh=L/ve6YvU//yFlBn2lmIsmFmAv1mrLVrfzMtE874dy74=;
+ b=XwjCrVD/tcub69LPnxozh1nRa9yPxGoYov3sHuGAEhfghwQFtPj4bWIvTyOROEYHhFcE
+ 8ci2pL+xYQROzSQUZU1/kf5ABaoO7MQg9ZEWWEG638W1g8efGxBnBAaD42A8Y0AB5spF
+ mj+GfwwyooDYH5tEUhlxrNdUifh2ta8w4buLtTnsPVI2b2Gr9bGWVgumU+bGGHqIdw7K
+ Lv8E8blf7WxgJ/L3pZiRuS35uKJ6J7s0MJeOeazTyhvpXgf8VeSqJYAq1CgwAkPqkAeH
+ Kq6HdcOrjDPRoGkaesqULTO4tVTiVzNtYAckiUpQR5KJ8DzCvwv1m1YIVS3bxFt6iBC2 6g== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3v04ea824t-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 14 Dec 2023 15:34:46 +0000
+Received: from m0356517.ppops.net (m0356517.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3BEFYawe017843;
+        Thu, 14 Dec 2023 15:34:46 GMT
+Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3v04ea824c-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 14 Dec 2023 15:34:45 +0000
+Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
+        by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3BEETnXW013878;
+        Thu, 14 Dec 2023 15:34:44 GMT
+Received: from smtprelay07.wdc07v.mail.ibm.com ([172.16.1.74])
+        by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3uw592gw0g-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 14 Dec 2023 15:34:44 +0000
+Received: from smtpav05.dal12v.mail.ibm.com (smtpav05.dal12v.mail.ibm.com [10.241.53.104])
+        by smtprelay07.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3BEFYhJT47120750
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 14 Dec 2023 15:34:43 GMT
+Received: from smtpav05.dal12v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 8DED058065;
+        Thu, 14 Dec 2023 15:34:43 +0000 (GMT)
+Received: from smtpav05.dal12v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 8379D58056;
+        Thu, 14 Dec 2023 15:34:40 +0000 (GMT)
+Received: from [9.67.23.198] (unknown [9.67.23.198])
+        by smtpav05.dal12v.mail.ibm.com (Postfix) with ESMTP;
+        Thu, 14 Dec 2023 15:34:40 +0000 (GMT)
+Message-ID: <d8b5df1c-c732-4cf3-ae28-cc2017d3b0b6@linux.ibm.com>
+Date:   Thu, 14 Dec 2023 09:34:39 -0600
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1 2/8] dt-bindings: tpm: Add schema for TIS I2C devices
+Content-Language: en-US
+To:     Conor Dooley <conor@kernel.org>
+Cc:     robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, joel@jms.id.au, andrew@codeconstruct.com.au,
+        peterhuewe@gmx.de, jarkko@kernel.org, jgg@ziepe.ca,
+        keescook@chromium.org, tony.luck@intel.com, gpiccoli@igalia.com,
+        johannes.holland@infineon.com, linux@roeck-us.net,
+        broonie@kernel.org, patrick.rudolph@9elements.com,
+        vincent@vtremblay.dev, peteryin.openbmc@gmail.com,
+        lakshmiy@us.ibm.com, bhelgaas@google.com,
+        naresh.solanki@9elements.com, alexander.stein@ew.tq-group.com,
+        festevam@denx.de, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        linux-integrity@vger.kernel.org, linux-hardening@vger.kernel.org,
+        geissonator@yahoo.com
+References: <20231212164004.1683589-1-ninad@linux.ibm.com>
+ <20231212164004.1683589-3-ninad@linux.ibm.com>
+ <20231212-amusement-elevation-28e42bcccc35@spud>
+From:   Ninad Palsule <ninad@linux.ibm.com>
+In-Reply-To: <20231212-amusement-elevation-28e42bcccc35@spud>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: hogr06fT5Mw5qJW3QkIJJvD-IOfJs-Zl
+X-Proofpoint-ORIG-GUID: UmYUUzzx44Lo6i8qLBzL1okG6XCyDP4W
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <9c8e887b-429c-4226-9851-5f1cbb93524a@linaro.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-14_10,2023-12-14_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 mlxscore=0
+ spamscore=0 bulkscore=0 suspectscore=0 mlxlogscore=999 lowpriorityscore=0
+ priorityscore=1501 impostorscore=0 clxscore=1015 adultscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311290000 definitions=main-2312140109
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -79,112 +108,112 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 23-12-12 17:21:19, Konrad Dybcio wrote:
-> 
-> 
-> On 12/12/23 11:24, Abel Vesa wrote:
-> > Add all missing nodes which describe entire X1E80100 platform.
-> "all" doesn't really mean all :|
-> 
+Hello Conor,
 
-Well, all the nodes where we have support working (for now).
+On 12/12/23 11:14, Conor Dooley wrote:
+> Hey,
+>
+> On Tue, Dec 12, 2023 at 10:39:58AM -0600, Ninad Palsule wrote:
+>> From: Johannes Holland <johannes.holland@infineon.com>
+>>
+>> Add a dt schema to support device tree bindings
+> "Add bindings for..."
+Fixed.
+>
+>> for the generic I2C
+>> physical layer. Refer to the TCG PC Client Platform TPM Profile (PTP)
+>> Specification for TPM 2.0 v1.04 Revision 14.
+>>
+>> This includes descriptions for the Nuvoton and Infineon devices.
+>>
+>> OpenBMC-Staging-Count: 3
+> I have no idea what this is, but it needs to be removed from the patch.
+Removed.
+>
+>> Signed-off-by: Johannes Holland <johannes.holland@infineon.com>
+>> Signed-off-by: Joel Stanley <joel@jms.id.au>
+>> Signed-off-by: Ninad Palsule <ninad@linux.ibm.com>
+>> ---
+>>   .../bindings/security/tpm/tpm-tis-i2c.yaml    | 50 +++++++++++++++++++
+>>   1 file changed, 50 insertions(+)
+>>   create mode 100644 Documentation/devicetree/bindings/security/tpm/tpm-tis-i2c.yaml
+>>
+>> diff --git a/Documentation/devicetree/bindings/security/tpm/tpm-tis-i2c.yaml b/Documentation/devicetree/bindings/security/tpm/tpm-tis-i2c.yaml
+>> new file mode 100644
+>> index 000000000000..de1e34065748
+>> --- /dev/null
+>> +++ b/Documentation/devicetree/bindings/security/tpm/tpm-tis-i2c.yaml
+>> @@ -0,0 +1,50 @@
+>> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+>> +%YAML 1.2
+>> +---
+>> +$id: http://devicetree.org/schemas/security/tpm/tpm-tis-i2c.yaml#
+>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+>> +
+>> +title: I2C PTP based TPM Devices
+>> +
+>> +maintainers:
+>> +  - Johannes Holland <johannes.holland@infineon.com>
+>> +
+>> +description:
+>> +  Device Tree Bindings for I2C based Trusted Platform Module (TPM).
+> s/Device Tree Bindings for //. Doesn't dt_binding_check now complain if
+> you have this in a title or description?
+Fixed.
+>
+>> +properties:
+>> +  $nodename:
+>> +    pattern: "^tpm(@[0-9a-f]+)?$"
+>> +
+>> +  compatible:
+>> +    oneOf:
+>> +      - description: Infineon's Trusted Platform Module (TPM) (SLB9673).
+>> +        items:
+>> +          - const: infineon,slb9673
+>> +          - const: tcg,tpm-tis-i2c
+>> +      - description: Nuvoton's Trusted Platform Module (TPM) (NPCT75x).
+>> +        items:
+>> +          - const: nuvoton,npct75x
+>> +          - const: tcg,tpm-tis-i2c
+>> +      - const: tcg,tpm-tis-i2c
+> IMO this should be removed and this fallback should only be used in
+> combination with device specific compatibles, like you have here for the
+> infineon and nuvoton devices.
 
-But I'll re-word it to say "add some missing nodes".
+As Guenter mentioned I need to keep it as tacoma board is just using 
+this string.
 
-> couple of patch-wide observations below
-> 
-> [...]
-> 
-> > +		gpucc: clock-controller@3d90000 {
-> > +			compatible = "qcom,x1e80100-gpucc";
-> > +			reg = <0 0x3d90000 0 0xa000>;
-> Please make sure the address part is padded to 8 hex digits
+Thanks for the review.
 
-Will do.
+Regards,
 
-> [...]
-> 
-> > +		usb_1_ss2_hsphy: phy@fde000 {
-> > +			compatible = "qcom,x1e80100-snps-eusb2-phy",
-> > +				     "qcom,sm8550-snps-eusb2-phy";
-> > +			reg = <0x0 0x0fde000 0x0 0x154>;
-> and please choose 0x0 vs 0 and stick to one (which seems to
-> be 0 in this file)
+Ninad
 
-I'll use 0x0 in all reg as I think this is more consistent.
-
-> 
-> [...]
-> 
-> > +		pcie6a: pci@1bf8000 {
-> > +			device_type = "pci";
-> > +			compatible = "qcom,pcie-x1e80100";
-> > +			reg = <0x0 0x01bf8000 0x0 0x3000>,
-> > +			      <0x0 0x70000000 0x0 0xf1d>,
-> > +			      <0x0 0x70000f20 0x0 0xa8>,
-> > +			      <0x0 0x70001000 0x0 0x1000>,
-> > +			      <0x0 0x70100000 0x0 0x100000>;
-> > +			reg-names = "parf", "dbi", "elbi", "atu", "config";
-> one per line, please
-
-Will do.
-
-> 
-> > +			#address-cells = <3>;
-> > +			#size-cells = <2>;
-> > +			ranges = <0x01000000 0x0 0x00000000 0x0 0x70200000 0x0 0x100000>,
-> > +				 <0x02000000 0x0 0x70300000 0x0 0x70300000 0x0 0x3d00000>;
-> > +			bus-range = <0x00 0xff>;
-> > +
-> > +			dma-coherent;
-> > +
-> > +			linux,pci-domain = <7>;
-> > +			num-lanes = <2>;
-> > +
-> > +			interrupts = <GIC_SPI 773 IRQ_TYPE_LEVEL_HIGH>;
-> > +			interrupt-names = "msi";
-> > +
-> > +			#interrupt-cells = <1>;
-> > +			interrupt-map-mask = <0 0 0 0x7>;
-> > +			interrupt-map = <0 0 0 1 &intc 0 0 0 843 IRQ_TYPE_LEVEL_HIGH>, /* int_a */
-> > +					<0 0 0 2 &intc 0 0 0 844 IRQ_TYPE_LEVEL_HIGH>, /* int_b */
-> > +					<0 0 0 3 &intc 0 0 0 845 IRQ_TYPE_LEVEL_HIGH>, /* int_c */
-> > +					<0 0 0 4 &intc 0 0 0 772 IRQ_TYPE_LEVEL_HIGH>; /* int_d */
-> you can drop these comments
-
-Will do.
-
-> [...]
-> 
-> > +				clocks = <&gcc GCC_DISP_AHB_CLK>,
-> > +					 <&gcc GCC_DISP_HF_AXI_CLK>,
-> > +					 <&dispcc DISP_CC_MDSS_AHB_CLK>,
-> > +					 <&dispcc DISP_CC_MDSS_MDP_LUT_CLK>,
-> > +					 <&dispcc DISP_CC_MDSS_MDP_CLK>,
-> > +					 <&dispcc DISP_CC_MDSS_VSYNC_CLK>;
-> > +				clock-names = "bus",
-> > +					      "nrt_bus",
-> > +					      "iface",
-> > +					      "lut",
-> > +					      "core",
-> > +					      "vsync";
-> you probably should list the ROT clock here too
-
-Will look into it.
-
-> [...]
-> 
-> > +		cpucp_mbox: mailbox@18830000 {
-> > +			compatible = "qcom,x1e80100-cpucp-mbox", "qcom,cpucp-mbox";
-> This is not upstream
-
-It's a new driver, so bindings patches will come with it.
-
-> 
-> > +			reg = <0 0x18830000 0 0x300>, <0 0x17430000 0 0x4C08>;
-> lowercase hex
-
-Will do.
-
-> 
-> Konrad
+>
+> Cheers,
+> Conor.
+>
+>> +  reg:
+>> +    maxItems: 1
+>> +
+>> +required:
+>> +  - compatible
+>> +  - reg
+>> +
+>> +additionalProperties: false
+>> +
+>> +examples:
+>> +  - |
+>> +    i2c {
+>> +      #address-cells = <1>;
+>> +      #size-cells = <0>;
+>> +
+>> +      tpm@2e {
+>> +        compatible = "nuvoton,npct75x", "tcg,tpm-tis-i2c";
+>> +        reg = <0x2e>;
+>> +      };
+>> +    };
+>> +...
+>> -- 
+>> 2.39.2
+>>
