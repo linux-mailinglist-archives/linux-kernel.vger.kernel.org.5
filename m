@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 39B12812F25
+	by mail.lfdr.de (Postfix) with ESMTP id 8FBD9812F26
 	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 12:47:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1444218AbjLNLqj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 06:46:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46296 "EHLO
+        id S1444229AbjLNLqp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 06:46:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46304 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1444146AbjLNLq1 (ORCPT
+        with ESMTP id S1444145AbjLNLq1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 14 Dec 2023 06:46:27 -0500
-Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47A0A132
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 03:46:27 -0800 (PST)
-Received: by mail-ej1-x62d.google.com with SMTP id a640c23a62f3a-a1f6433bc1eso101502666b.1
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 03:46:27 -0800 (PST)
+Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75300183
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 03:46:29 -0800 (PST)
+Received: by mail-ej1-x62b.google.com with SMTP id a640c23a62f3a-a1e83adfe72so736212166b.1
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 03:46:29 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=tuxon.dev; s=google; t=1702554386; x=1703159186; darn=vger.kernel.org;
+        d=tuxon.dev; s=google; t=1702554388; x=1703159188; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=sboPzcqED4l7A2TcVT8TTFqV3DguoQYe1ei2qrslI+E=;
-        b=ebcRxg6kZ6cjtU0xL4eBRKIbE+gPxPeJ3BYGM4TCCvSvMaRG5QIqhI63YeGOF41/CL
-         2rVetTJdjjOYkFASXmuTSmrvr+9RQlfZhmMfZVMlpF5BHLucnIzNfHwf2FHHk1FPpxrQ
-         YGKjwGih8kuKQmzSE9CTUWxOosTTPi7H/phQGFw3MSZ6xP3POdxRkto3YoUZdpu9L6AV
-         Sa1O47InUGCYa4vCBfmCYoRGpur9/0GoRQZWOfGZE+wHR2xm4SNnj76jp5UgyA/1kFvl
-         ssuQtcoN5pgrz6tJQMnQDXd7UPyhBq9kMtv/4RPGFOQCTQ93AsUxa252ti0YmD3/ZGmC
-         3BCg==
+        bh=zPmtetqkn+6AHMt4qrWAH+XK1NCRm1PmSoAA4AvSe08=;
+        b=BtVfCesJcX7uXnFqQj+QHIRwpHKXSpwIdKN1kqLlTULuVmWU8Ph3KbRc5+UZdUky6y
+         JSyPtSXAMVFh1eutGr2XZlEGAZ9tRvoGEnpYPbj2weZsmbS4y7qoBnDY+C3b2roG/VuT
+         2dX9vFNwiBmETk1l9rApf3j+zlHDUfesugHYmNvE+NPdtAWPHvcAtqh/VA3eW/+L1IlD
+         dMM/9ggcQHJcshOv0WAXI6V+IeJRRbgZEYzMq8BKY+dl7iDVd8KEvPrkaI0Hbun8chOd
+         tZDjFTy8/LJEOXasJwmALVe1Kk+fKStlYaKCR/pmH2m78TIuP+1NsCRdlQerBlg2bnS1
+         uvpA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702554386; x=1703159186;
+        d=1e100.net; s=20230601; t=1702554388; x=1703159188;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=sboPzcqED4l7A2TcVT8TTFqV3DguoQYe1ei2qrslI+E=;
-        b=o1rNz+ci2ye4Z8mjzlsaTt1GlWctfjxpErUyT9z/ZD+pFpz0or6IHvnUUXRuz0p0Ib
-         MNMeDRGRIrPqTVV1Jvyw2cyw+mNzjk2lAFeBwjToZvXO7F52NYNYma7RnTu17sK9JEK3
-         cXju/+i1zO8b6IhhqawFkGKawNxObPaa9DaZX9kJrod4YgYjIWxotWSm+S1sq+1P25HK
-         pQozNCCDk/ihn8xLSihWWCMkI5RfrTYFQs6bct6ex+ceE5qGLuJ7kWoZUKphK9OqMrwF
-         KiFMi1QQcAgCHqRKmdTx/uLrmu+g2D6NuAUbLEGIb9FMfQmdHShIrGRGUfiOnxcFq0Qf
-         wV/w==
-X-Gm-Message-State: AOJu0Yx8tU7HyAbLYYgvZL2UAq3wtbE1/O7jAC292/H0JrIuCdUJFp/I
-        yE/Ztn8H0rJmUTusfCmQDog4Ug==
-X-Google-Smtp-Source: AGHT+IHl53VNtTjSgWUmsHo7m90haNzQ56Bx9egUjEPl/J+iHBivUUh8qpwlQivBaht+nSz2egnnTQ==
-X-Received: by 2002:a17:906:104d:b0:a19:c793:c85c with SMTP id j13-20020a170906104d00b00a19c793c85cmr8063016ejj.6.1702554386392;
-        Thu, 14 Dec 2023 03:46:26 -0800 (PST)
+        bh=zPmtetqkn+6AHMt4qrWAH+XK1NCRm1PmSoAA4AvSe08=;
+        b=Xe3fxPbSBKGeWtCzNXYjVBOuFue9pZg3kl0LvR9/6uV5QKkw3GREF97pxp/UvWG4Nn
+         hBpKaOmIcGvQ4OQfGbl/6W/GEM2INhxKcEA+oTjDYhfsgNdQOsvXELkc8j9LpgMJXAOv
+         1UUABhBQN8Netm1ePpu88DuD0CFAqUGG1HO9coShFHF+ZKeqUG7dNpQW+JMm3ZOO8kXs
+         RU+Eu+Tqg6zlwFpMB2ZQ2Oau1UXfb1sG2+ziX+OtsUxKJIQBH1yHyHZN1XHxcXWRhHaD
+         pLmyiHD5YY08ZnNM5EBpebHC99KIxBkxomwMEPtAWDDAgACjSpmp3BpU7cIlAWC/dWhQ
+         Q2xg==
+X-Gm-Message-State: AOJu0YyuMpt0EDCvWD9IqZkuoCV0YSVt/qRFRhCnje9FoBx83fDkcVr7
+        C31aHjHS4/bDok8mUAZzs8X0Ng==
+X-Google-Smtp-Source: AGHT+IEV1vVXY4yCrxuSZjg06XM9leKb7L6pjYLxoh7jJlhdAxhghURah8mlsJHVPQriywu6r3+kgQ==
+X-Received: by 2002:a17:907:aa2:b0:a10:f9a8:bfe1 with SMTP id bz2-20020a1709070aa200b00a10f9a8bfe1mr4762907ejc.16.1702554387976;
+        Thu, 14 Dec 2023 03:46:27 -0800 (PST)
 Received: from claudiu-X670E-Pro-RS.. ([82.78.167.103])
-        by smtp.gmail.com with ESMTPSA id ll9-20020a170907190900b00a1da2f7c1d8sm9240877ejc.77.2023.12.14.03.46.25
+        by smtp.gmail.com with ESMTPSA id ll9-20020a170907190900b00a1da2f7c1d8sm9240877ejc.77.2023.12.14.03.46.26
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Dec 2023 03:46:26 -0800 (PST)
+        Thu, 14 Dec 2023 03:46:27 -0800 (PST)
 From:   Claudiu <claudiu.beznea@tuxon.dev>
 X-Google-Original-From: Claudiu <claudiu.beznea.uj@bp.renesas.com>
 To:     s.shtylyov@omp.ru, davem@davemloft.net, edumazet@google.com,
@@ -59,9 +59,9 @@ To:     s.shtylyov@omp.ru, davem@davemloft.net, edumazet@google.com,
 Cc:     netdev@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
         linux-kernel@vger.kernel.org,
         Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-Subject: [PATCH net-next v2 05/21] net: ravb: Use tabs instead of spaces
-Date:   Thu, 14 Dec 2023 13:45:44 +0200
-Message-Id: <20231214114600.2451162-6-claudiu.beznea.uj@bp.renesas.com>
+Subject: [PATCH net-next v2 06/21] net: ravb: Assert/de-assert reset on suspend/resume
+Date:   Thu, 14 Dec 2023 13:45:45 +0200
+Message-Id: <20231214114600.2451162-7-claudiu.beznea.uj@bp.renesas.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20231214114600.2451162-1-claudiu.beznea.uj@bp.renesas.com>
 References: <20231214114600.2451162-1-claudiu.beznea.uj@bp.renesas.com>
@@ -79,40 +79,65 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
 
-Use tabs instead of spaces in the ravb_set_rate_gbeth() function.
-This aligns with the coding style requirements.
+RZ/G3S can go to deep sleep states where power to most of the SoC parts is
+off. When resuming from such a state, the Ethernet controller needs to be
+reinitialized. De-asserting the reset signal for it should also be done.
+Thus, add reset assert/de-assert on suspend/resume functions.
+
+On the resume function, the de-assert was not reverted in case of failures
+to give the user a chance to restore the interface (e.g., bringing down/up
+the interface) in case suspend/resume failed.
 
 Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-Reviewed-by: Sergey Shtylyov <s.shtylyov@omp.ru>
 ---
 
 Changes in v2:
-- collected tags
+- fixed typos in patch description and subject
+- on ravb_suspend() assert the reset signal in case interface is down;
+  due to this the Sergey's Rb tag was left aside in this version
 
- drivers/net/ethernet/renesas/ravb_main.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/net/ethernet/renesas/ravb_main.c | 14 +++++++++++---
+ 1 file changed, 11 insertions(+), 3 deletions(-)
 
 diff --git a/drivers/net/ethernet/renesas/ravb_main.c b/drivers/net/ethernet/renesas/ravb_main.c
-index 82085bb9b7a3..5a57383762e7 100644
+index 5a57383762e7..9a618d8dbfcd 100644
 --- a/drivers/net/ethernet/renesas/ravb_main.c
 +++ b/drivers/net/ethernet/renesas/ravb_main.c
-@@ -85,13 +85,13 @@ static void ravb_set_rate_gbeth(struct net_device *ndev)
- 	struct ravb_private *priv = netdev_priv(ndev);
+@@ -2985,7 +2985,7 @@ static int ravb_suspend(struct device *dev)
+ 	int ret;
  
- 	switch (priv->speed) {
--	case 10:                /* 10BASE */
-+	case 10:		/* 10BASE */
- 		ravb_write(ndev, GBETH_GECMR_SPEED_10, GECMR);
- 		break;
--	case 100:               /* 100BASE */
-+	case 100:		/* 100BASE */
- 		ravb_write(ndev, GBETH_GECMR_SPEED_100, GECMR);
- 		break;
--	case 1000:              /* 1000BASE */
-+	case 1000:		/* 1000BASE */
- 		ravb_write(ndev, GBETH_GECMR_SPEED_1000, GECMR);
- 		break;
- 	}
+ 	if (!netif_running(ndev))
+-		return 0;
++		goto reset_assert;
+ 
+ 	netif_device_detach(ndev);
+ 
+@@ -2997,7 +2997,11 @@ static int ravb_suspend(struct device *dev)
+ 	if (priv->info->ccc_gac)
+ 		ravb_ptp_stop(ndev);
+ 
+-	return ret;
++	if (priv->wol_enabled)
++		return ret;
++
++reset_assert:
++	return reset_control_assert(priv->rstc);
+ }
+ 
+ static int ravb_resume(struct device *dev)
+@@ -3005,7 +3009,11 @@ static int ravb_resume(struct device *dev)
+ 	struct net_device *ndev = dev_get_drvdata(dev);
+ 	struct ravb_private *priv = netdev_priv(ndev);
+ 	const struct ravb_hw_info *info = priv->info;
+-	int ret = 0;
++	int ret;
++
++	ret = reset_control_deassert(priv->rstc);
++	if (ret)
++		return ret;
+ 
+ 	/* If WoL is enabled set reset mode to rearm the WoL logic */
+ 	if (priv->wol_enabled) {
 -- 
 2.39.2
 
