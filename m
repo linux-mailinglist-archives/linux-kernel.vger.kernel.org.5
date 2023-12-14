@@ -2,205 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 46319812AC3
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 09:52:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 128CC812AC7
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 09:52:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1443423AbjLNIwF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 03:52:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39676 "EHLO
+        id S235585AbjLNIwj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 03:52:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33118 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229441AbjLNIwD (ORCPT
+        with ESMTP id S229633AbjLNIwg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 03:52:03 -0500
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D234310B
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 00:52:09 -0800 (PST)
-Received: by mail-ed1-x534.google.com with SMTP id 4fb4d7f45d1cf-54744e66d27so9685a12.0
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 00:52:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1702543928; x=1703148728; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=UUxaNns8MKgtDi73hmRWloOzLGpVuEOa+auYSGQh/QU=;
-        b=3BCkHDhp5lgAzwbuBXPXV10DczaeZ9BJkGNgF06wnQYPFBduF46fd+BIfAhhAj9IGn
-         /FOo3OujXgH0N1NmoEKDcWx9vNRb3lXWaa+HEgZAYJAvBDgCAeiGR8EBaNC2915HiXbw
-         1WAS2jLe8nIqK9PCY6RwRqahHNZbGmyXITGtRhGATJiY1vfzu43EXFtDOf7fgH66IdNM
-         TR0cZhiIZxauOQB6pdZxr2DWeSBBsOXz/TYR3BE4OKaLUVFR2ZI9jzECb0TjHd4OEPzB
-         SD/vdcM7pn4ea44KB0uy4oYGVMICspMJcBslm/9NzBKNEJ+yqkJi/dD/3wpm27P163/7
-         MHCQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702543928; x=1703148728;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=UUxaNns8MKgtDi73hmRWloOzLGpVuEOa+auYSGQh/QU=;
-        b=F4Ih3PMmsH8WLRRdsnWWxuIBK5cUVPNsYR4glEnAkyPCJiuv9mztionKOHTfryGNHi
-         Llis2m0WUpj630M/sEzNcuCrKRiI/XHQ6jcoo2nsa6RR4kFYpEHsqzhx9GkyAVLCGBgG
-         hs5Jl+NCLTU3K6uzklBqqR5fj96byx/ff1a/Nc4mKnTkcI486ChVjuFD/f2j41juL+yY
-         NJO7QbYOg93y2fZ/m7qne3Nn4hzOzLG8AwukQ2/lp1FzvLe/nixNYfsRBuc9QdaINJ4q
-         r9MJyZWgZtfre0TEsjoV1YQeTdQVQG2xiWj6vLTGzleg40NjSpuVm3jXBmQTC8O26gJY
-         ZDPw==
-X-Gm-Message-State: AOJu0YzHH5rPhFh57CL6XRhMOl0prA6CpGYSbOuyYn9+bbs5SD/HONBl
-        rHGXD+hq8HSZkq3T9Oj552yrz/ba7KGbBTmUTpl/4g==
-X-Google-Smtp-Source: AGHT+IGr7SURlrVqQjCd6Nbh6tM7k/YJj+gzxCpSmMn1ZluV7ILkdLH+8yeuqAiwZK1QSvDikUGGHogQ3hlOPDeMG/U=
-X-Received: by 2002:a50:d7ca:0:b0:54a:ee8b:7a8c with SMTP id
- m10-20020a50d7ca000000b0054aee8b7a8cmr598463edj.0.1702543928070; Thu, 14 Dec
- 2023 00:52:08 -0800 (PST)
+        Thu, 14 Dec 2023 03:52:36 -0500
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 129F4A0;
+        Thu, 14 Dec 2023 00:52:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de; s=s31663417;
+        t=1702543935; x=1703148735; i=linosanfilippo@gmx.de;
+        bh=nVGZXwaLHN7v4BUnHdEIrojj3cfgCeXb8jS185agoEo=;
+        h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
+         In-Reply-To;
+        b=rbFh6xG4CahoZaL/sMgl/3if2tf0TOBiPvD5QcPYaPhBQJa7G4E3164qwAP8xTor
+         lP7SQ9HoO67Y5Yu0Ak6bqCnFm6/yn9aORt4u+Rhx7RXjC7MCAwgD/f9MUY0UBPcIb
+         DXUomy83R5yO4VFYeTLtPh2Pbz9o4xrWwhPLMQTflGtPQJzjjigN6/qCnKPMm5enH
+         2BDEDL0c4c2QrWErfGFjJjkhynSJ6iKpukgwwBf0arIjeWN59i9FsRKu2MzSmSgRh
+         KLcQ3XaxSKNvv0rqYxHQ8t/l4AzN1zjeJPfy3oNQpEHUQ3RBUss3TWLA9f5j2dtt3
+         BSAAFsYy/3KZBYRWww==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [192.168.2.42] ([84.180.3.177]) by mail.gmx.net (mrgmx105
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1MKbkC-1quwfz0BTQ-00L1Zg; Thu, 14
+ Dec 2023 09:52:15 +0100
+Message-ID: <d4a7ab35-cb81-4681-84bb-703f2d63fe43@gmx.de>
+Date:   Thu, 14 Dec 2023 09:52:13 +0100
 MIME-Version: 1.0
-References: <20231208-kunit_bus-v2-0-e95905d9b325@google.com> <7rgeotye4grxdtbxip53fykjm4a3sudochsfzdvkmyqltvj7zv@qekkt42x2j25>
-In-Reply-To: <7rgeotye4grxdtbxip53fykjm4a3sudochsfzdvkmyqltvj7zv@qekkt42x2j25>
-From:   David Gow <davidgow@google.com>
-Date:   Thu, 14 Dec 2023 16:51:54 +0800
-Message-ID: <CABVgOSmnf8XbS92f4=-ZX8Of6JUwCy7U2wz2-3udvByDKxXABg@mail.gmail.com>
-Subject: Re: [PATCH v2 0/4] kunit: Add helpers for creating test-managed devices
-To:     Maxime Ripard <mripard@kernel.org>
-Cc:     Rae Moar <rmoar@google.com>,
-        Brendan Higgins <brendan.higgins@linux.dev>,
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/2] dt-bindings: serial: rs485: add rs485-mux-gpios
+ binding
+Content-Language: en-US
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Christoph Niedermaier <cniedermaier@dh-electronics.com>,
+        Lukas Wunner <lukas@wunner.de>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Matti Vaittinen <mazziesaccount@gmail.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>, linux-kselftest@vger.kernel.org,
-        kunit-dev@googlegroups.com, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org,
-        linux-sound@vger.kernel.org
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="0000000000001373a4060c7466a3"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        Jiri Slaby <jirislaby@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-serial@vger.kernel.org" <linux-serial@vger.kernel.org>,
+        =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+        "brenda.streiff@ni.com" <brenda.streiff@ni.com>,
+        Crescent CY Hsieh <crescentcy.hsieh@moxa.com>,
+        Tomas Paukrt <tomaspaukrt@email.cz>
+References: <20231120151056.148450-1-linux@rasmusvillemoes.dk>
+ <20231120151056.148450-2-linux@rasmusvillemoes.dk>
+ <20231122145344.GA18949@wunner.de>
+ <3b8548b1-b8a9-0c9e-4040-5cfda06a85c6@gmx.de>
+ <ec66d25162de4cbc92720df1e7008fe8@dh-electronics.com>
+ <5c140498-69e3-4187-8703-db0c41e7ca89@gmx.de>
+ <fe28eb93-daa1-41af-a005-f21aa87e1984@gmx.de>
+ <ZXcJr4VS_uGr_6TV@smile.fi.intel.com>
+From:   Lino Sanfilippo <LinoSanfilippo@gmx.de>
+In-Reply-To: <ZXcJr4VS_uGr_6TV@smile.fi.intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:Il2EdiqegOFeHXIgLDNacYB57UTBj/2H78z8fR1nAnaR3vju0uW
+ 6wIQlPcrsViy5HQGYy5nBtZE5YIwzfm9uh0syGDS8UF/tbVNz101FncwoIKLt9y+fYl49jF
+ jkALz49RAkvCKi6IseMcXFvMhviTdWBYqX89Id7xPh8IuYgOLSqI76R3OSd8xwuE08X/wJt
+ /0YA6Iu5jc7vowk6NxGrQ==
+UI-OutboundReport: notjunk:1;M01:P0:y73/cztHYiE=;pUtBUjJgBrX8akDqFkq++QJ48kp
+ lHZhpzLI/m7EARbZ02k5hbxdJNasRxaPpK4cgYi46oUmfrNw4oORjpEVHsne8ZzeeZk1wYNHX
+ 3sfXXeIWHkRVQL/Cw81l53RRWdYX24hAKERtjrGWOgQO/Ayt/3IPVQJqK3j5WucVHhDuVMekt
+ TAF2IxLK8VfI0K8in9whGxhu7jMWdI0brXwvOlREcJILmfPkQxYmQJsgM3+nB7zvGIEdgzNVX
+ awv4lAhG4e7AaUBJl0NenNL9SarGKZJnVlrd+klCCmEpIZnBgCDSfdPxwahVTTK50/D1H16aL
+ F1y0nXJg0qI5S5Ftan6vdagZZ56rbWsCotVwIW35ieADZ6NGmyUeLgq7tFsC3ziRYUy+xh2ID
+ 2EtipEkI3eeJb2bbwxyOXzvHLeXQxGYybyQ7FnYKBno3uzCJIb7KWIDCR1nwVoFM4jvjuhjMY
+ +4k39lJV2d/qTcB3p+FDIXNO6HRUpfl3ku5KpgHNt9zHQUYrqfuHt2mszowujOApFvRMfQSRK
+ 1PUX+FAW0QZuEyrd8i+XCjjBe7uFjNT80SiiDAaQCP9bPaxLy9j4nMNswfq+OQoXNiP0ZlDeS
+ QVnRUuI509Tx+6BXDQb5yyWkXuEhCPnLLQ4EX2vzIEX3ofb0HpsyDaXnR6SODZehirtdjU8wP
+ O6KVayLdnwg20/7gBLC59v7Ir6f9WSFcSQowWDVQXg0RMEfdkpsdK1pz9x0KoyExyppqtsebs
+ LMVzDpqrWnUasRZKW9bI1QFPbAkV+UY/GmwR07yP3U6AHuMLrNQW0xvnxWLjFXKaEcwvjf43g
+ Xenn/MLgq9Gvz6iP+scHKpIS0WR7JiXooUk7zRm6eqSRUfzkz+XqCpSI8gKGOLkWc20HKf3VG
+ zipRw7ljepD9JEZlgZi5DG6dVpg3C4T+GovEo1+aQIkQ34B1X7yMnp5cJWe1Uy/tvDUo3vCy4
+ rYNq+VTcnrqCXvTjEX0SZKlWjL8=
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---0000000000001373a4060c7466a3
-Content-Type: text/plain; charset="UTF-8"
+Hi,
 
-On Wed, 13 Dec 2023 at 23:04, Maxime Ripard <mripard@kernel.org> wrote:
+On 11.12.23 14:07, Andy Shevchenko wrote:
+> On Sat, Dec 09, 2023 at 12:47:47PM +0100, Lino Sanfilippo wrote:
+>> On 06.12.23 16:42, Lino Sanfilippo wrote:
 >
-> Hi David,
+>>>>>> Crescent CY Hsieh (+cc) is in parallel trying to add an RS-422 mode=
+ bit
+>>>>>> to struct serial_rs485:
+>>>>>>
+>>>>>> https://lore.kernel.org/all/20231121095122.15948-1-crescentcy.hsieh=
+@moxa.com/
+>>>>>>
+>>>>>
+>>>>> That new flag was suggested by me instead of using SER_RS422_ENABLED=
+, which
+>>>>> would mostly be redundant to SER_RS485_ENABLED.
+>>
+>> A cleaner solution would probably be to not handle RS422 with the RS485=
+ settings at
+>> all, but to introduce another set of ioctls to set and read it.
+>>
+>> An own RS422 structure like
+>>
+>> struct serial_rs422 {
+>> 	__u32	flags;
+>> #define SER_RS422_ENABLED		(1 << 0)
+>> #define SER_RS422_TERMINATE_BUS		(1 << 1)
+>> };
+>>
+>>
+>> could be used as the parameter for these new ioctls.
+>>
+>> Any comments on this?
 >
-> On Fri, Dec 08, 2023 at 06:09:28PM +0800, davidgow@google.com wrote:
-> > KUnit tests often need to provide a struct device, and thus far have
-> > mostly been using root_device_register() or platform devices to create
-> > a 'fake device' for use with, e.g., code which uses device-managed
-> > resources. This has several disadvantages, including not being designed
-> > for test use, scattering files in sysfs, and requiring manual teardown
-> > on test exit, which may not always be possible in case of failure.
-> >
-> > Instead, introduce a set of helper functions which allow devices
-> > (internally a struct kunit_device) to be created and managed by KUnit --
-> > i.e., they will be automatically unregistered on test exit. These
-> > helpers can either use a user-provided struct device_driver, or have one
-> > automatically created and managed by KUnit. In both cases, the device
-> > lives on a new kunit_bus.
-> >
-> > This is a follow-up to a previous proposal here:
-> > https://lore.kernel.org/linux-kselftest/20230325043104.3761770-1-davidgow@google.com/
-> >
-> > (The kunit_defer() function in the first patch there has since been
-> > merged as the 'deferred actions' feature.)
-> >
-> > My intention is to take this whole series in via the kselftest/kunit
-> > branch, but I'm equally okay with splitting up the later patches which
-> > use this to go via the various subsystem trees in case there are merge
-> > conflicts.
->
-> Could you take (and apply eventually) that patch as part of your series?
-> https://lore.kernel.org/linux-kselftest/20231205090405.153140-1-mripard@kernel.org/
+> I have (maybe not so constructive) a comment. Please, at all means try t=
+o not
+> extend the existing serial data structures, we have too many ones with t=
+oo many
+> fields already. For user space, though, one may use unions and flags, bu=
+t for
+> internal ones it might be better ways, I think.
 >
 
-Thanks -- I've included it in v3 (which fixes a few other issues), and
-will take it along with the rest of the series:
-https://lore.kernel.org/linux-kselftest/20231214-kunit_bus-v3-0-7e9a287d3048@google.com/T/
+Ok, thanks. This is still a valuable information. So what if the above str=
+ucture (serial_rs422)
+is only used as a parameter of a new TIOCSRS422 ioctl and only internally =
+we set a SER_RS485_MODE_RS422
+flag in the serial_rs485 struct?
+So we do not have to add something new to uart_port but also do not expose=
+ the mixture of RS485 and RS422
+settings within the serial_rs485 structure to userspace.
 
-Cheers,
--- David
-
---0000000000001373a4060c7466a3
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
-
-MIIPnwYJKoZIhvcNAQcCoIIPkDCCD4wCAQExDzANBglghkgBZQMEAgEFADALBgkqhkiG9w0BBwGg
-ggz5MIIEtjCCA56gAwIBAgIQeAMYYHb81ngUVR0WyMTzqzANBgkqhkiG9w0BAQsFADBMMSAwHgYD
-VQQLExdHbG9iYWxTaWduIFJvb3QgQ0EgLSBSMzETMBEGA1UEChMKR2xvYmFsU2lnbjETMBEGA1UE
-AxMKR2xvYmFsU2lnbjAeFw0yMDA3MjgwMDAwMDBaFw0yOTAzMTgwMDAwMDBaMFQxCzAJBgNVBAYT
-AkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMSowKAYDVQQDEyFHbG9iYWxTaWduIEF0bGFz
-IFIzIFNNSU1FIENBIDIwMjAwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQCvLe9xPU9W
-dpiHLAvX7kFnaFZPuJLey7LYaMO8P/xSngB9IN73mVc7YiLov12Fekdtn5kL8PjmDBEvTYmWsuQS
-6VBo3vdlqqXZ0M9eMkjcKqijrmDRleudEoPDzTumwQ18VB/3I+vbN039HIaRQ5x+NHGiPHVfk6Rx
-c6KAbYceyeqqfuJEcq23vhTdium/Bf5hHqYUhuJwnBQ+dAUcFndUKMJrth6lHeoifkbw2bv81zxJ
-I9cvIy516+oUekqiSFGfzAqByv41OrgLV4fLGCDH3yRh1tj7EtV3l2TngqtrDLUs5R+sWIItPa/4
-AJXB1Q3nGNl2tNjVpcSn0uJ7aFPbAgMBAAGjggGKMIIBhjAOBgNVHQ8BAf8EBAMCAYYwHQYDVR0l
-BBYwFAYIKwYBBQUHAwIGCCsGAQUFBwMEMBIGA1UdEwEB/wQIMAYBAf8CAQAwHQYDVR0OBBYEFHzM
-CmjXouseLHIb0c1dlW+N+/JjMB8GA1UdIwQYMBaAFI/wS3+oLkUkrk1Q+mOai97i3Ru8MHsGCCsG
-AQUFBwEBBG8wbTAuBggrBgEFBQcwAYYiaHR0cDovL29jc3AyLmdsb2JhbHNpZ24uY29tL3Jvb3Ry
-MzA7BggrBgEFBQcwAoYvaHR0cDovL3NlY3VyZS5nbG9iYWxzaWduLmNvbS9jYWNlcnQvcm9vdC1y
-My5jcnQwNgYDVR0fBC8wLTAroCmgJ4YlaHR0cDovL2NybC5nbG9iYWxzaWduLmNvbS9yb290LXIz
-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
-ddIn9n5Jt6Z1o79zxraLMEwGA1UdIARFMEMwQQYJKwYBBAGgMgEoMDQwMgYIKwYBBQUHAgEWJmh0
-dHBzOi8vd3d3Lmdsb2JhbHNpZ24uY29tL3JlcG9zaXRvcnkvMAwGA1UdEwEB/wQCMAAwgZoGCCsG
-AQUFBwEBBIGNMIGKMD4GCCsGAQUFBzABhjJodHRwOi8vb2NzcC5nbG9iYWxzaWduLmNvbS9jYS9n
-c2F0bGFzcjNzbWltZWNhMjAyMDBIBggrBgEFBQcwAoY8aHR0cDovL3NlY3VyZS5nbG9iYWxzaWdu
-LmNvbS9jYWNlcnQvZ3NhdGxhc3Izc21pbWVjYTIwMjAuY3J0MB8GA1UdIwQYMBaAFHzMCmjXouse
-LHIb0c1dlW+N+/JjMEYGA1UdHwQ/MD0wO6A5oDeGNWh0dHA6Ly9jcmwuZ2xvYmFsc2lnbi5jb20v
-Y2EvZ3NhdGxhc3Izc21pbWVjYTIwMjAuY3JsMA0GCSqGSIb3DQEBCwUAA4IBAQBtHFwIgQZjer5K
-H+4Q+wns10k7qN+4wN2Uf+JsyOYjukaMEgdLErfA1wwtQ9uHkoYQZcWBuVVkQFa5hI+sqI2m1Weq
-riMCFSiU38s1tADdMX12IMfJRN60Nznhrw+nPyDRZqRhUTW24TwnHorkDnFPW8PHo7fAw4FrpI0n
-impZAng7ccvvK09K3ZuhwTIxJMsPXCZYsrXWORTw5sczRAP6XvKbPBJnsJoSTe5dFBPBHOQJOGhU
-qWfEfWnWMJPF3LxSGLpLFQXO3RwQqmxv08avwXfVPouh1xuB3FX7rpDabT8YDhu9JgIZkLEKko7L
-yQt6zWwng7k8YF/jGbiAta6VMYICajCCAmYCAQEwaDBUMQswCQYDVQQGEwJCRTEZMBcGA1UEChMQ
-R2xvYmFsU2lnbiBudi1zYTEqMCgGA1UEAxMhR2xvYmFsU2lnbiBBdGxhcyBSMyBTTUlNRSBDQSAy
-MDIwAhABzgV+4+mJnUzG7XDy6d2uMA0GCWCGSAFlAwQCAQUAoIHUMC8GCSqGSIb3DQEJBDEiBCDm
-F4Ic9SffzyaDMQPCLkKQW+taWwYpJm+BECAkfDyJnzAYBgkqhkiG9w0BCQMxCwYJKoZIhvcNAQcB
-MBwGCSqGSIb3DQEJBTEPFw0yMzEyMTQwODUyMDhaMGkGCSqGSIb3DQEJDzFcMFowCwYJYIZIAWUD
-BAEqMAsGCWCGSAFlAwQBFjALBglghkgBZQMEAQIwCgYIKoZIhvcNAwcwCwYJKoZIhvcNAQEKMAsG
-CSqGSIb3DQEBBzALBglghkgBZQMEAgEwDQYJKoZIhvcNAQEBBQAEggEARS3tFy1kAs0G8X3o4TWH
-oEKuwTgMnhZ5fz7z9rQ6YlIk+yhp9dnsyqKFp/VpdGCO5av2Yv834BDTZtRjp3hZFvnI8x6ay5rx
-LcSpX/6ebX/U/QLMsyj9+Mx0Vwcu6++9ycv3W2ffL+oRa2kGEIi3bHvi2aLU9ObTJc/pBW6luEVV
-1uXNtvMAmpBarA6NQvo38j5dPt5ypLXSJtoIXnVdNqGXqAnqJq1xYxJBTzooY5mQB04E9NKm4dVT
-OMz4ot55/KLmY14DLuJBF+8FlqKa48uA4p3nLyOJFC9C0A5G7ejA4TwCOPDc6Hj9KZEqbqPCag+q
-ohe82MUWiZzz47sOyA==
---0000000000001373a4060c7466a3--
+Regards,
+Lino
