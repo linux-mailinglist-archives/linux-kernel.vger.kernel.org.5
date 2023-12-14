@@ -2,94 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 155A281266E
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 05:29:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D68C8812682
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 05:30:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1443119AbjLNE3N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 23:29:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42966 "EHLO
+        id S235346AbjLNE34 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 23:29:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42906 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1443108AbjLNE3M (ORCPT
+        with ESMTP id S1443157AbjLNE3h (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 23:29:12 -0500
-Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AE4D106;
-        Wed, 13 Dec 2023 20:29:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1702528153;
-        bh=fSio+a5hsquQcmFGlgo3t3PTAmDJ0JhFaGUBOmHBkOg=;
-        h=Date:From:To:Cc:Subject:From;
-        b=jw09IomDoeIwO8NkRPDRjaVG1dSceWD9O5jN6C1uM73ZLDgWedWDrETl6bKiZgA6E
-         aWX6CjqUJtUeiJwjZzZSiI5EM6+OQs2dGCeIw6JHUYKZtTM8uGt6xtzpwy686LAsHY
-         4GBNll2Amn9JDwEXZ6cTPbqDn/c/YV4BRNvskQRWgKTr3N/fEjmICoSEQorTvxMQep
-         X6lu6xvYLxtJ6DmKOH5+t0Tl1ZGIMguxPx98lIP6ZIJj7eyz/Kjb/AJ0i+46Z0iYK+
-         buFhpStmxqYiXze4QrKbEcsrAjWF1eWsydVVC/KWvPNRAie6k2AlFsLI22CkJtsYR8
-         tEnjytqUicz8Q==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4SrKB03bMTz4wqN;
-        Thu, 14 Dec 2023 15:29:12 +1100 (AEDT)
-Date:   Thu, 14 Dec 2023 15:29:10 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Alex Deucher <alexdeucher@gmail.com>
-Cc:     Alex Deucher <alexander.deucher@amd.com>,
-        Melissa Wen <mwen@igalia.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build warning after merge of the amdgpu tree
-Message-ID: <20231214152910.79669d55@canb.auug.org.au>
+        Wed, 13 Dec 2023 23:29:37 -0500
+Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFC54136;
+        Wed, 13 Dec 2023 20:29:43 -0800 (PST)
+Received: from pps.filterd (m0246631.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3BE0UK5n016583;
+        Thu, 14 Dec 2023 04:29:30 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : in-reply-to : references : mime-version :
+ content-type : content-transfer-encoding; s=corp-2023-11-20;
+ bh=yKEqQl9gsil6mOmOfS3MH81l1GTX93NGG+JkhqNdLqU=;
+ b=hfh68A8zN29s7DnRVpJ+i2xO58X7x489Fg/2gk8WjTTIQWdreVQBvwX9KbOcvVd+hosc
+ 2Cv3Ma8TFUWwp0wV1IcshYLgGLhzLNInFTt4LqW0LieAY8+dlCWj9YuW4ZZCuuVHrJ3i
+ 3exSG+XwEx04nz4nw4WFEP4Nhpk+AlE62RoAd6adqS7uEh/djqXqCjzm+TPAVmA3O6My
+ fe0Gt9g+h6M6Xh8NjRtMUhdxv4JvZe45PwVdXagRelxCt18kkv4I0Yw6naHx90SVdZ8P
+ i02icy/7P/6947Lqu9HrQLVwc1T3vlLYHhO2GX3v5P/Y59WiqYo2Y43q9SNWW5b6ielt tw== 
+Received: from iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta01.appoci.oracle.com [130.35.100.223])
+        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3uwfrrr80n-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 14 Dec 2023 04:29:30 +0000
+Received: from pps.filterd (iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+        by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 3BE4DNaT010136;
+        Thu, 14 Dec 2023 04:29:29 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3uvep9ev34-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 14 Dec 2023 04:29:29 +0000
+Received: from iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3BE4TQMG035965;
+        Thu, 14 Dec 2023 04:29:28 GMT
+Received: from ca-mkp2.ca.oracle.com.com (mpeterse-ol9.allregionaliads.osdevelopmeniad.oraclevcn.com [100.100.251.135])
+        by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTP id 3uvep9ev0g-7;
+        Thu, 14 Dec 2023 04:29:28 +0000
+From:   "Martin K. Petersen" <martin.petersen@oracle.com>
+To:     Tyrel Datwyler <tyreld@linux.ibm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        Justin Stitt <justinstitt@google.com>
+Cc:     "Martin K . Petersen" <martin.petersen@oracle.com>,
+        linux-scsi@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: Re: [PATCH] scsi: ibmvfc: replace deprecated strncpy with strscpy
+Date:   Wed, 13 Dec 2023 23:29:12 -0500
+Message-ID: <170205513098.1790765.790754719475852189.b4-ty@oracle.com>
+X-Mailer: git-send-email 2.42.1
+In-Reply-To: <20231030-strncpy-drivers-scsi-ibmvscsi-ibmvfc-c-v1-1-5a4909688435@google.com>
+References: <20231030-strncpy-drivers-scsi-ibmvscsi-ibmvfc-c-v1-1-5a4909688435@google.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/P_BLPKXO6mXYrOnn7/Xy=dZ";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-14_01,2023-12-13_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 suspectscore=0
+ phishscore=0 malwarescore=0 spamscore=0 mlxlogscore=764 bulkscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311290000 definitions=main-2312140024
+X-Proofpoint-GUID: ZAmarbD8rNyIDwQf6ako5Cczn0fu8kVF
+X-Proofpoint-ORIG-GUID: ZAmarbD8rNyIDwQf6ako5Cczn0fu8kVF
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/P_BLPKXO6mXYrOnn7/Xy=dZ
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Mon, 30 Oct 2023 19:04:33 +0000, Justin Stitt wrote:
 
-Hi all,
+> strncpy() is deprecated for use on NUL-terminated destination strings
+> [1] and as such we should prefer more robust and less ambiguous string
+> interfaces.
+> 
+> We expect these fields to be NUL-terminated as the property names from
+> which they are derived are also NUL-terminated.
+> 
+> [...]
 
-After merging the amdgpu tree, today's linux-next build (htmldocs)
-produced this warning:
+Applied to 6.8/scsi-queue, thanks!
 
-drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_color.c:666: warning: Exces=
-s function parameter 'crtc_state' description in 'amdgpu_dm_verify_lut3d_si=
-ze'
-drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_color.c:666: warning: Funct=
-ion parameter or member 'plane_state' not described in 'amdgpu_dm_verify_lu=
-t3d_size'
+[1/1] scsi: ibmvfc: replace deprecated strncpy with strscpy
+      https://git.kernel.org/mkp/scsi/c/a9baa16b4fc1
 
-Introduced by commit
-
-  aba8b76baabd ("drm/amd/display: add plane shaper LUT support")
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/P_BLPKXO6mXYrOnn7/Xy=dZ
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmV6hJYACgkQAVBC80lX
-0Gz65ggAkY5wM7ftzJDSboo2uOdckggzqOiwUFwq5MBhPPV2fny4SaOFIBp/fiqd
-DUz8dsU8nLRaRFWDOSGIyBmETXDdqAc74JzCkda3bEiyABViyZydr3LytUJVheJg
-o2j/MvOqUD275Y4E2EAekflFt6KpKGpcNUP+Q5YU9QlyIBk/aigCF48vwrFJnrkT
-cLI80ooKwEDo11LjQrQ+2QpCPVUISJvk5nsIlP0nFIzres1WSwUnagtoZc9Ac0Ep
-h/7fEMfIPVPvW+lpc27roPuXAbNjX7ymPDnOqUCgPckKRhUnoNZvGRVzF7ieNbZS
-qU6gC8sjWL4Xkm/CIbxnX7n2gCql/A==
-=Rma6
------END PGP SIGNATURE-----
-
---Sig_/P_BLPKXO6mXYrOnn7/Xy=dZ--
+-- 
+Martin K. Petersen	Oracle Linux Engineering
