@@ -2,129 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 700D88139FB
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 19:30:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 67CF58139FD
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 19:31:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1572995AbjLNSaD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 13:30:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42152 "EHLO
+        id S229705AbjLNSay (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 13:30:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32926 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235734AbjLNSaA (ORCPT
+        with ESMTP id S235727AbjLNSav (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 13:30:00 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F19911B
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 10:30:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1702578606; x=1734114606;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=Ew09GcjkZYq5BSwV4yo5CvVrIH5rflhUjotYPDNsyGI=;
-  b=Lv4K0OXC+LskXODW+mHY/tB+Pupj9BNK3cBbE96kJKEwShuAcDtDhuxl
-   kKvAKBeX1g9H4+b6mZF54g5i1U61uajolOAWYoamZ8pWaX7UyLtsfHVy5
-   I0rX7Kaild7ScBI5ey0ElNNlOiaVeJxhpztDLQyuv/8vzuqAoe7fsOnVU
-   0HyiHojp+Lzvt4TF0iL5c5MDe7jlr8CeJQ4Jj51lFK/rarRjAjw1VrXZE
-   qAXeg4SethJFszMEQu8DGt2vTjyzN5RwZPEumv2g+qEl5R3lSImvvhyIv
-   FPygiEcpAiPJyHZ8yhE6p5hCO+wshY54+HNWNSASXeNxrEe5dpY1G8w+X
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10924"; a="459487335"
-X-IronPort-AV: E=Sophos;i="6.04,276,1695711600"; 
-   d="scan'208";a="459487335"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Dec 2023 10:30:06 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10924"; a="777980982"
-X-IronPort-AV: E=Sophos;i="6.04,276,1695711600"; 
-   d="scan'208";a="777980982"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by fmsmga007.fm.intel.com with ESMTP; 14 Dec 2023 10:30:04 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1rDqTB-000MTB-1f;
-        Thu, 14 Dec 2023 18:30:01 +0000
-Date:   Fri, 15 Dec 2023 02:29:11 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
-        Marc Zyngier <maz@kernel.org>
-Subject: drivers/gpio/gpio-xilinx.c:75: warning: Excess struct member
- 'irqchip' description in 'xgpio_instance'
-Message-ID: <202312150239.IyuTVvrL-lkp@intel.com>
+        Thu, 14 Dec 2023 13:30:51 -0500
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21E3C10E
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 10:30:57 -0800 (PST)
+Received: by mail-ej1-x62e.google.com with SMTP id a640c23a62f3a-a1db99cd1b2so1091300166b.2
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 10:30:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1702578655; x=1703183455; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=d0isHYCiVxibANo8wxo3LG8B7bIVEbLb07RnvwdIrmw=;
+        b=p3YT405/v5n574k2njC7i9lCzfplElKudeRMDTToPb8fe3k9/PKxdnKXiJNO+ErhYN
+         WAEXaNgwkxkLxMnQMw8M9TQ0HW6h3DTJv9d9R/LbvRWafDVQfqsBT3FtXeeyjiojrT1D
+         ojndw8TiAXSbU/Ydw3wqkr5mIPkBYsVPdIZ69/rWw7SumdcdmBw3kvn3zyDo3r19yWjr
+         90ofbtCLJe5nvf1mvZ9syNwFEn75Jf7VsLffRRdTCPaQfyRJ/qLQNGmydZI6Kh/agfTs
+         I1WZ2KNsZ3wrhhceGPAc9QtRS5MgCMGsMbr/RZaKbtJ8/+gtARB2EgX9Po5GnywKbIec
+         2aUg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702578655; x=1703183455;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=d0isHYCiVxibANo8wxo3LG8B7bIVEbLb07RnvwdIrmw=;
+        b=TV6PkW6eQZHxkn4iQhLlViqb0Y/TAMDud0+BNof+S+WUJ2F+fzPKEM1bufO913H4oD
+         blswDcGuBtUndJl4di8co8hR+UQKUEgontAWbU597EAeLNSvXQllywYEBCTwRUN39xTZ
+         kmqooVOi+j84ERTsihBmElPQufroKiH1NEadceW5VCQnVmTvPX0Ws+/XN1kpjcjY4JFZ
+         aQo3j/DnOmH2I2Vk58tCACKbLMzLXqXfjGi5LQgjPukOfsrhrWsF8ewznn98V0bZ8Lhr
+         BLts4qIS5qb4/a2FFml21wRAWdOmYYiUSUx9gKUqaDdMbP91h5YQY9c+BfFlTdfRGf+G
+         O9KA==
+X-Gm-Message-State: AOJu0YyHmbP4FeKTSxjx7N+cQWkcPI7W+6Cf/p4/J7q3DENj8AmpNGcT
+        jPXXVx3pI1xwW77MiQZ6wIkW0pdQc9IlH5sjRfxbRA==
+X-Google-Smtp-Source: AGHT+IEUFszL8h/1cdpd9DMqyYZ2SF8nRyLs+ah6p9bPeu0mJPZbAx73R3QqYlfZITvOOycY5HkSxfeE6o+Az18O0ew=
+X-Received: by 2002:a17:907:6d07:b0:9fd:ab4:5859 with SMTP id
+ sa7-20020a1709076d0700b009fd0ab45859mr4569015ejc.66.1702578655351; Thu, 14
+ Dec 2023 10:30:55 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20231213-zswap-dstmem-v1-0-896763369d04@bytedance.com>
+ <20231213-zswap-dstmem-v1-2-896763369d04@bytedance.com> <CAJD7tkZJRgf+502QU_ECVPey0w-5vw_e6HSL+Ay7unetq5gL0A@mail.gmail.com>
+ <CAKEwX=P4=YbvoRCa5+BB+==f4YL_5-6AaUNUCdH3v2faTx-PYQ@mail.gmail.com>
+ <cb558f85-4f9b-4eb9-b60c-9b609075920d@bytedance.com> <CAJD7tkY_fe9SeTxOSVmYHNgi2tKvZ+EoM15KifJihF_Zn_LqDg@mail.gmail.com>
+ <7a8c77b0-c78c-427d-9545-2b328c7dc727@bytedance.com>
+In-Reply-To: <7a8c77b0-c78c-427d-9545-2b328c7dc727@bytedance.com>
+From:   Yosry Ahmed <yosryahmed@google.com>
+Date:   Thu, 14 Dec 2023 10:30:19 -0800
+Message-ID: <CAJD7tkba0O=Qfc-yuq6BNfYbrebmBy2NzywGmogdQmRwoS06dw@mail.gmail.com>
+Subject: Re: [PATCH 2/5] mm/zswap: change dstmem size to one page
+To:     Chengming Zhou <zhouchengming@bytedance.com>
+Cc:     Nhat Pham <nphamcs@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Chris Li <chriscli@google.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Seth Jennings <sjenning@redhat.com>,
+        Dan Streetman <ddstreet@ieee.org>,
+        Vitaly Wool <vitaly.wool@konsulko.com>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   5bd7ef53ffe5ca580e93e74eb8c81ed191ddc4bd
-commit: b4510f8fd5d0e9afa777f115871f5d522540c417 gpio: xilinx: Convert to immutable irq_chip
-date:   9 months ago
-config: arm-randconfig-r081-20231214 (https://download.01.org/0day-ci/archive/20231215/202312150239.IyuTVvrL-lkp@intel.com/config)
-compiler: arm-linux-gnueabi-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231215/202312150239.IyuTVvrL-lkp@intel.com/reproduce)
+On Thu, Dec 14, 2023 at 5:57=E2=80=AFAM Chengming Zhou
+<zhouchengming@bytedance.com> wrote:
+>
+> On 2023/12/14 21:37, Yosry Ahmed wrote:
+> > On Thu, Dec 14, 2023 at 5:33=E2=80=AFAM Chengming Zhou
+> > <zhouchengming@bytedance.com> wrote:
+> >>
+> >> On 2023/12/14 08:18, Nhat Pham wrote:
+> >>> On Wed, Dec 13, 2023 at 3:34=E2=80=AFPM Yosry Ahmed <yosryahmed@googl=
+e.com> wrote:
+> >>>>
+> >>>> On Tue, Dec 12, 2023 at 8:18=E2=80=AFPM Chengming Zhou
+> >>>> <zhouchengming@bytedance.com> wrote:
+> >>>>>
+> >>>>> Change the dstmem size from 2 * PAGE_SIZE to only one page since
+> >>>>> we only need at most one page when compress, and the "dlen" is also
+> >>>>> PAGE_SIZE in acomp_request_set_params(). If the output size > PAGE_=
+SIZE
+> >>>>> we don't wanna store the output in zswap anyway.
+> >>>>>
+> >>>>> So change it to one page, and delete the stale comment.
+> >>>>
+> >>>> I couldn't find the history of why we needed 2 * PAGE_SIZE, it would
+> >>>> be nice if someone has the context, perhaps one of the maintainers.
+> >>>
+> >>> It'd be very nice indeed.
+> >>>
+> >>>>
+> >>>> One potential reason is that we used to store a zswap header
+> >>>> containing the swap entry in the compressed page for writeback
+> >>>> purposes, but we don't do that anymore. Maybe we wanted to be able t=
+o
+> >>>> handle the case where an incompressible page would exceed PAGE_SIZE
+> >>>> because of that?
+> >>>
+> >>> It could be hmm. I didn't study the old zswap architecture too much,
+> >>> but it has been 2 * PAGE_SIZE since the time zswap was first merged
+> >>> last I checked.
+> >>> I'm not 100% comfortable ACK-ing the undoing of something that looks
+> >>> so intentional, but FTR, AFAICT, this looks correct to me.
+> >>
+> >> Right, there is no any history about the reason why we needed 2 pages.
+> >> But obviously only one page is needed from the current code and no any
+> >> problem found in the kernel build stress testing.
+> >
+> > Could you try manually stressing the compression with data that
+> > doesn't compress at all (i.e. dlen =3D=3D PAGE_SIZE)? I want to make su=
+re
+> > that this case is specifically handled. I think using data from
+> > /dev/random will do that but please double check that dlen =3D=3D
+> > PAGE_SIZE.
+>
+> I just did the same kernel build testing, indeed there are a few cases
+> that output dlen =3D=3D PAGE_SIZE.
+>
+> bpftrace -e 'k:zpool_malloc {@[(uint32)arg1=3D=3D4096]=3Dcount()}'
+>
+> @[1]: 2
+> @[0]: 12011430
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202312150239.IyuTVvrL-lkp@intel.com/
+That's very useful information, thanks for testing that. Please
+include this in the commit log. Please also include the fact that we
+used to store a zswap header with the compressed page but don't do
+that anymore, which *may* be the reason why this was needed back then.
 
-All warnings (new ones prefixed by >>):
-
->> drivers/gpio/gpio-xilinx.c:75: warning: Excess struct member 'irqchip' description in 'xgpio_instance'
-
-
-vim +75 drivers/gpio/gpio-xilinx.c
-
-74600ee017557b drivers/gpio/gpio-xilinx.c Michal Simek    2013-06-03  43  
-74600ee017557b drivers/gpio/gpio-xilinx.c Michal Simek    2013-06-03  44  /**
-74600ee017557b drivers/gpio/gpio-xilinx.c Michal Simek    2013-06-03  45   * struct xgpio_instance - Stores information about GPIO device
-1ebd06871b57a6 drivers/gpio/gpio-xilinx.c Robert Hancock  2019-06-07  46   * @gc: GPIO chip
-1ebd06871b57a6 drivers/gpio/gpio-xilinx.c Robert Hancock  2019-06-07  47   * @regs: register block
-02b3f84d9080b0 drivers/gpio/gpio-xilinx.c Andy Shevchenko 2021-05-10  48   * @hw_map: GPIO pin mapping on hardware side
-02b3f84d9080b0 drivers/gpio/gpio-xilinx.c Andy Shevchenko 2021-05-10  49   * @sw_map: GPIO pin mapping on software side
-02b3f84d9080b0 drivers/gpio/gpio-xilinx.c Andy Shevchenko 2021-05-10  50   * @state: GPIO write state shadow register
-02b3f84d9080b0 drivers/gpio/gpio-xilinx.c Andy Shevchenko 2021-05-10  51   * @last_irq_read: GPIO read state register from last interrupt
-02b3f84d9080b0 drivers/gpio/gpio-xilinx.c Andy Shevchenko 2021-05-10  52   * @dir: GPIO direction shadow register
-4ae798fae200f1 drivers/gpio/gpio-xilinx.c Ricardo Ribalda 2014-12-17  53   * @gpio_lock: Lock used for synchronization
-a32c7caea292c4 drivers/gpio/gpio-xilinx.c Srinivas Neeli  2021-01-29  54   * @irq: IRQ used by GPIO device
-a32c7caea292c4 drivers/gpio/gpio-xilinx.c Srinivas Neeli  2021-01-29  55   * @irqchip: IRQ chip
-02b3f84d9080b0 drivers/gpio/gpio-xilinx.c Andy Shevchenko 2021-05-10  56   * @enable: GPIO IRQ enable/disable bitfield
-02b3f84d9080b0 drivers/gpio/gpio-xilinx.c Andy Shevchenko 2021-05-10  57   * @rising_edge: GPIO IRQ rising edge enable/disable bitfield
-02b3f84d9080b0 drivers/gpio/gpio-xilinx.c Andy Shevchenko 2021-05-10  58   * @falling_edge: GPIO IRQ falling edge enable/disable bitfield
-65bbe531b54668 drivers/gpio/gpio-xilinx.c Srinivas Neeli  2020-11-12  59   * @clk: clock resource for this driver
-74600ee017557b drivers/gpio/gpio-xilinx.c Michal Simek    2013-06-03  60   */
-0bcb6069a6e1af drivers/gpio/xilinx_gpio.c John Linn       2008-11-12  61  struct xgpio_instance {
-1ebd06871b57a6 drivers/gpio/gpio-xilinx.c Robert Hancock  2019-06-07  62  	struct gpio_chip gc;
-1ebd06871b57a6 drivers/gpio/gpio-xilinx.c Robert Hancock  2019-06-07  63  	void __iomem *regs;
-02b3f84d9080b0 drivers/gpio/gpio-xilinx.c Andy Shevchenko 2021-05-10  64  	DECLARE_BITMAP(hw_map, 64);
-02b3f84d9080b0 drivers/gpio/gpio-xilinx.c Andy Shevchenko 2021-05-10  65  	DECLARE_BITMAP(sw_map, 64);
-02b3f84d9080b0 drivers/gpio/gpio-xilinx.c Andy Shevchenko 2021-05-10  66  	DECLARE_BITMAP(state, 64);
-02b3f84d9080b0 drivers/gpio/gpio-xilinx.c Andy Shevchenko 2021-05-10  67  	DECLARE_BITMAP(last_irq_read, 64);
-02b3f84d9080b0 drivers/gpio/gpio-xilinx.c Andy Shevchenko 2021-05-10  68  	DECLARE_BITMAP(dir, 64);
-37ef3346808002 drivers/gpio/gpio-xilinx.c Srinivas Neeli  2021-01-29  69  	spinlock_t gpio_lock;	/* For serializing operations */
-a32c7caea292c4 drivers/gpio/gpio-xilinx.c Srinivas Neeli  2021-01-29  70  	int irq;
-02b3f84d9080b0 drivers/gpio/gpio-xilinx.c Andy Shevchenko 2021-05-10  71  	DECLARE_BITMAP(enable, 64);
-02b3f84d9080b0 drivers/gpio/gpio-xilinx.c Andy Shevchenko 2021-05-10  72  	DECLARE_BITMAP(rising_edge, 64);
-02b3f84d9080b0 drivers/gpio/gpio-xilinx.c Andy Shevchenko 2021-05-10  73  	DECLARE_BITMAP(falling_edge, 64);
-65bbe531b54668 drivers/gpio/gpio-xilinx.c Srinivas Neeli  2020-11-12  74  	struct clk *clk;
-749564ffd52d91 drivers/gpio/gpio-xilinx.c Ricardo Ribalda 2014-12-17 @75  };
-749564ffd52d91 drivers/gpio/gpio-xilinx.c Ricardo Ribalda 2014-12-17  76  
-
-:::::: The code at line 75 was first introduced by commit
-:::::: 749564ffd52d91ddf9917315e6fba2a3dcf3137e gpio/xilinx: Convert the driver to platform device interface
-
-:::::: TO: Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>
-:::::: CC: Linus Walleij <linus.walleij@linaro.org>
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+I still want someone who knows the history to Ack this, but FWIW it
+looks correct to me, so low-key:
+Reviewed-by: Yosry Ahmed <yosryahmed@google.com>
