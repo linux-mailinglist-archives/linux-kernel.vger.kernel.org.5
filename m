@@ -2,117 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E35648130A4
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 13:55:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 042058130A6
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 13:57:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1573163AbjLNMzi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 07:55:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48632 "EHLO
+        id S1573166AbjLNM5f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 07:57:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40608 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1573145AbjLNMzh (ORCPT
+        with ESMTP id S1573145AbjLNM5d (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 07:55:37 -0500
-Received: from mail-qt1-x82c.google.com (mail-qt1-x82c.google.com [IPv6:2607:f8b0:4864:20::82c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE88C113
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 04:55:43 -0800 (PST)
-Received: by mail-qt1-x82c.google.com with SMTP id d75a77b69052e-425e58bd4c8so16487921cf.3
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 04:55:43 -0800 (PST)
+        Thu, 14 Dec 2023 07:57:33 -0500
+Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7751BA6;
+        Thu, 14 Dec 2023 04:57:39 -0800 (PST)
+Received: by mail-ej1-x636.google.com with SMTP id a640c23a62f3a-a1db6c63028so935949866b.2;
+        Thu, 14 Dec 2023 04:57:39 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1702558543; x=1703163343; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=ZYvEigRoKhZbgGLuv/4wRFyGkLXXYVjXdCoJrdge4oY=;
-        b=Sqi3qwLlbp9FeKdI8GmTTRhMRTWkZp9S19FW4xUBP6+ZaUbH1O+R0Lmo4ayjaOpsHr
-         VlwnVZBNQCtyzgu/xLlxjmKZTnTyBUfmgRNsjwIhNTlsqDAtGt3oT+IemsSoXbWm+pxn
-         xevbT7swASnyBLZBUQK6u+2QSjwpVNauCD3iJx0DxGwaDrbR0ehQ+7VEA2XPSI3+dQz9
-         zMzpqNHStUnbBItYmEcghuBzlrQyweXyJYMoz2IaqrC3dXtlr2FeqExB5UmEMFzfF8kZ
-         5zDHu9wOHsjNYkFUfDAmnsqg6Yma/H29Kx6zb9xhBIeLFnaMYYLUP/vv64xSwVpQ0eXd
-         NFZQ==
+        d=gmail.com; s=20230601; t=1702558658; x=1703163458; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=g2GKWz1rRyCNwha7gGcRolq2RILUdPIiIt5FzDdvILQ=;
+        b=R55KsC/NDMFJnCucTbjK5g5o6ELzDY2jFcfTZR678xc3Cyqzv4YZEAfkohXIY2IU07
+         4dl4paNF15fmPy/hDhPj4ZT9E/ws8+OPCaaEZXSf745M3Mza6oET9Y+g0BvZub2aDCKH
+         lHVcwFLKwhyCwvdWLhDXy6mUPqgAe7lfRhv0ubP7boMtSjypehMixvZk41QdZXx2NyM/
+         RrI7cu6nbU3pT9XRYB/PtgZUKhsJg+O4JqxnSS1H9uloO3a794NcJJy3ijw+CpFR99tL
+         fvRd7A/zUqUO0zZCvA1kM/ZfLPRFL//PzPpphkn4gvi2h/VVWCi4WBOQDKAyhvvQeWZE
+         sQSw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702558543; x=1703163343;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=ZYvEigRoKhZbgGLuv/4wRFyGkLXXYVjXdCoJrdge4oY=;
-        b=uGKzJc4e9NgBGllQF50fhM14AVDa8z4OZ1l7Ss/Hr8n/bc9CvAtAdZ6+8IuhZeeBcT
-         Ah9uYDI8/Tci5Ty3tpAonQ9VtP91TFsSVA7UBozot7YST4vHfCjyXCPAZhQi8ROKOdNi
-         iZJh/UrcYS01QQTbwF5NwLOYcYppoTJFUiz8JaLBx4av91idu8kCcUrNGa786tIpG3/L
-         Umov9X0nPtxgTl68ODH0nCBSrlyXTscsMmxQ9mEOS063eUwf2/04ORQ5Fn2/4WM4tcby
-         BCQcLgpvJiDF9N3p8B7/joy47I3u7RkWK8wFSdFun2f75ruKh+0YF3wY1qAYxnyDCnhN
-         XjPg==
-X-Gm-Message-State: AOJu0Yxkcn1cpvJZNtbMXTwnALYhuMaYze1QbxwIQS6N5YFdg7SGU6kn
-        NV/C3tb6qsXM39OoQ6e/uUXZ
-X-Google-Smtp-Source: AGHT+IEy7mhPx0wsyEsM+VLjF3KlKQ6SL9f68/1wLMmcgtKQD6pj0h3a0IGYh27ImtTH/GZ7DXYtFw==
-X-Received: by 2002:ac8:5fce:0:b0:423:77aa:163b with SMTP id k14-20020ac85fce000000b0042377aa163bmr11944057qta.51.1702558542823;
-        Thu, 14 Dec 2023 04:55:42 -0800 (PST)
-Received: from localhost.localdomain ([117.216.120.87])
-        by smtp.gmail.com with ESMTPSA id hj1-20020a05622a620100b0042601b60861sm302377qtb.26.2023.12.14.04.55.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Dec 2023 04:55:42 -0800 (PST)
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     andersson@kernel.org, konrad.dybcio@linaro.org, jejb@linux.ibm.com,
-        martin.petersen@oracle.com
-Cc:     linux-arm-msm@vger.kernel.org, linux-scsi@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        Andrew Halaney <ahalaney@redhat.com>
-Subject: [PATCH] scsi: ufs: qcom: Fix ESI vector mask
-Date:   Thu, 14 Dec 2023 18:25:32 +0530
-Message-Id: <20231214125532.55109-1-manivannan.sadhasivam@linaro.org>
-X-Mailer: git-send-email 2.25.1
+        d=1e100.net; s=20230601; t=1702558658; x=1703163458;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=g2GKWz1rRyCNwha7gGcRolq2RILUdPIiIt5FzDdvILQ=;
+        b=fnXUPG4rDFyD+WBn32ix6SI74MeCIA64XP/p0HXV+lPPaNrNkMYKKigvQvLSrgan10
+         MNbXKTPo3YdP8gZiqPPs8p11Tvwi860UvQN6cN91+EMsj8oUE0SdwZB6j5Dg15KVNLF/
+         1krsZgZ1qo88P+JxiET/QX7UAh5o9KsNo0nUfOPW7LIffr1jpmWNp+8RPf3hcewuIRI2
+         5pr8jvlkydqj+9pqCx9VQ27meRr5TN6di+wabj3Xa+xG1HMpnU9e07DN0K5GMQ0992hK
+         yojN3OiqGXLHEB4lTfQdN3puUoUlTGN9DJNONA/VlLBdz9OhodWMxBs259ElAl0enwfS
+         Swmw==
+X-Gm-Message-State: AOJu0YyTmFIzCznmuAM9dzM5NctEhmlUlOFmuQXcXqXEZeTOfv0smpyU
+        EmHXAhpHTWNxtcV3CMLbtlU=
+X-Google-Smtp-Source: AGHT+IHtIY7rFcQC93tfnJBXkLGQRNbPQabINCfXb9w5tCgijrk98Ge2WRXokyVfdLbqczA2V1R56A==
+X-Received: by 2002:a17:906:4546:b0:a01:fc1b:8197 with SMTP id s6-20020a170906454600b00a01fc1b8197mr4262851ejq.62.1702558657491;
+        Thu, 14 Dec 2023 04:57:37 -0800 (PST)
+Received: from [172.25.98.130] ([5.2.194.157])
+        by smtp.gmail.com with ESMTPSA id ub14-20020a170907c80e00b00a1da5d9a602sm9368347ejc.138.2023.12.14.04.57.35
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 14 Dec 2023 04:57:36 -0800 (PST)
+Message-ID: <375bf803-a5d5-4778-938a-b8218b116375@gmail.com>
+Date:   Thu, 14 Dec 2023 14:57:35 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v8 2/2] iio: adc: ad7173: add AD7173 driver
+Content-Language: en-US
+To:     Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+Cc:     linus.walleij@linaro.org, brgl@bgdev.pl, andy@kernel.org,
+        linux-gpio@vger.kernel.org, Lars-Peter Clausen <lars@metafoo.de>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Michael Walle <michael@walle.cc>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        ChiaEn Wu <chiaen_wu@richtek.com>,
+        Niklas Schnelle <schnelle@linux.ibm.com>,
+        =?UTF-8?Q?Leonard_G=C3=B6hrs?= <l.goehrs@pengutronix.de>,
+        Mike Looijmans <mike.looijmans@topic.nl>,
+        Haibo Chen <haibo.chen@nxp.com>,
+        Hugo Villeneuve <hvilleneuve@dimonoff.com>,
+        Ceclan Dumitru <dumitru.ceclan@analog.com>,
+        linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20231212104451.22522-1-mitrutzceclan@gmail.com>
+ <20231212104451.22522-2-mitrutzceclan@gmail.com>
+ <20231214123029.000002f1@Huawei.com>
+From:   Ceclan Dumitru <mitrutzceclan@gmail.com>
+In-Reply-To: <20231214123029.000002f1@Huawei.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-While cleaning up the code to use ufshcd_rmwl() helper, the ESI vector mask
-was changed incorrectly. Fix it and also define a proper macro for the
-value together with FIELD_PREP().
 
-Reported-by: Andrew Halaney <ahalaney@redhat.com>
-Fixes: 0e9f4375db1c ("scsi: ufs: qcom: Use ufshcd_rmwl() where applicable")
-Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
----
- drivers/ufs/host/ufs-qcom.c | 4 +++-
- drivers/ufs/host/ufs-qcom.h | 1 +
- 2 files changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/ufs/host/ufs-qcom.c b/drivers/ufs/host/ufs-qcom.c
-index d5cca5d3a98f..9fd8d737edea 100644
---- a/drivers/ufs/host/ufs-qcom.c
-+++ b/drivers/ufs/host/ufs-qcom.c
-@@ -1744,7 +1744,9 @@ static int ufs_qcom_config_esi(struct ufs_hba *hba)
- 	} else {
- 		if (host->hw_ver.major == 6 && host->hw_ver.minor == 0 &&
- 		    host->hw_ver.step == 0)
--			ufshcd_rmwl(hba, ESI_VEC_MASK, 0x1f00, REG_UFS_CFG3);
-+			ufshcd_rmwl(hba, ESI_VEC_MASK,
-+				    FIELD_PREP(ESI_VEC_MASK, MAX_ESI_VEC - 1),
-+				    REG_UFS_CFG3);
- 		ufshcd_mcq_enable_esi(hba);
- 	}
- 
-diff --git a/drivers/ufs/host/ufs-qcom.h b/drivers/ufs/host/ufs-qcom.h
-index 9026fe243307..9dd9a391ebb7 100644
---- a/drivers/ufs/host/ufs-qcom.h
-+++ b/drivers/ufs/host/ufs-qcom.h
-@@ -15,6 +15,7 @@
- #define HBRN8_POLL_TOUT_MS      100
- #define DEFAULT_CLK_RATE_HZ     1000000
- #define MAX_SUPP_MAC		64
-+#define MAX_ESI_VEC		32
- 
- #define UFS_HW_VER_MAJOR_MASK	GENMASK(31, 28)
- #define UFS_HW_VER_MINOR_MASK	GENMASK(27, 16)
+On 12/14/23 14:30, Jonathan Cameron wrote:
+> On Tue, 12 Dec 2023 12:44:36 +0200
+> Dumitru Ceclan <mitrutzceclan@gmail.com> wrote:
+> 
+>> The AD7173 family offer a complete integrated Sigma-Delta ADC solution
+>> which can be used in high precision, low noise single channel
+>> applications or higher speed multiplexed applications. The Sigma-Delta
+>> ADC is intended primarily for measurement of signals close to DC but also
+>> delivers outstanding performance with input bandwidths out to ~10kHz.
+>>
+>> Reviewed-by: Michael Walle <michael@walle.cc> # for gpio-regmap
+>> Signed-off-by: Dumitru Ceclan <mitrutzceclan@gmail.com>
+> Hi
+> 
+> Given it seems like you'll be doing a v9, one quick comment from me below.
+> 
+> Jonathan
+> 
+>> diff --git a/drivers/iio/adc/ad7173.c b/drivers/iio/adc/ad7173.c
+>> new file mode 100644
+>> index 000000000000..96918b24a10a
+>> --- /dev/null
+>> +++ b/drivers/iio/adc/ad7173.c
+>> @@ -0,0 +1,964 @@
+> ...
+> 
+>> +static int ad7173_fw_parse_channel_config(struct iio_dev *indio_dev)
+>> +{
+> 
+> ...
+> 
+>> +
+>> +	if (st->info->has_temp) {
+>> +		chan_arr[chan_index] = ad7173_temp_iio_channel_template;
+>> +		chan_st_priv = &channels_st_priv_arr[chan_index];
+>> +		chan_st_priv->ain =
+>> +			AD7173_CH_ADDRESS(chan_arr[chan_index].channel, chan_arr[chan_index].channel2);
+>> +		chan_st_priv->cfg.bipolar = false;
+>> +		chan_st_priv->cfg.input_buf = true;
+>> +		chan_st_priv->cfg.ref_sel = AD7173_SETUP_REF_SEL_INT_REF;
+>> +		st->adc_mode |= AD7173_ADC_MODE_REF_EN;
+>> +
+>> +		chan_index++;
+>> +	}
+>> +
+>> +	device_for_each_child_node(dev, child) {
+>> +		chan = &chan_arr[chan_index];
+>> +		chan_st_priv = &channels_st_priv_arr[chan_index];
+>> +		ret = fwnode_property_read_u32_array(child, "diff-channels",
+>> +						     ain, ARRAY_SIZE(ain));
+>> +		if (ret) {
+>> +			fwnode_handle_put(child);
+>> +			return ret;
+>> +		}
+>> +
+>> +		if (ain[0] >= st->info->num_inputs ||
+>> +		    ain[1] >= st->info->num_inputs) {
+>> +			fwnode_handle_put(child);
+>> +			return dev_err_probe(dev, -EINVAL,
+>> +					     "Input pin number out of range for pair (%d %d).\n",
+>> +					     ain[0], ain[1]);
+>> +		}
+>> +
+>> +		ret = fwnode_property_match_property_string(child,
+>> +							    "adi,reference-select",
+>> +							    ad7173_ref_sel_str,
+>> +							    ARRAY_SIZE(ad7173_ref_sel_str));
+>> +
+>> +		if (ret < 0)
+>> +			ref_sel = AD7173_SETUP_REF_SEL_INT_REF;
+>> +		else
+>> +			ref_sel = ret;
+> Simpler pattern for properties with a default is not to check the error code.
+> 
+> 		ref_sel = AD7173_SETUP_REF_SEL_INT_REF;
+> 
+> 		fwnode_property_match_property_String(child, ...
+> 
+> so only if it succeeds is the value overridden.
 
-base-commit: ed340d13aa1db6773667ed4bf907738df203fbda
--- 
-2.25.1
+Where exactly would the value be overridden, the function does not have
+an argument passed for the found index. The function is written to
+return either the found index or a negative error.
 
+The proposed pattern would just ignore the returned index and would
+always leave ref_sel to default. Am I missing something?
+
+I can see in the thread where it was introduced that you proposed:
+"Looking at the usecases I wonder if it would be better to pass in
+
+an unsigned int *ret which is only updated on a match?"
+
+But on the iio togreg branch that was suggested I could the function on,
+it does not have that parameter.
