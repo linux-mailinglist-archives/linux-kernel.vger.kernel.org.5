@@ -2,164 +2,272 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C4C081264C
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 05:11:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8199381264F
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 05:14:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1443103AbjLNELL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 23:11:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39136 "EHLO
+        id S1443109AbjLNEN6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 23:13:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36790 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230117AbjLNELH (ORCPT
+        with ESMTP id S230117AbjLNEN5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 23:11:07 -0500
-Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E8EED5;
-        Wed, 13 Dec 2023 20:11:14 -0800 (PST)
-Received: from pps.filterd (m0246630.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3BE0TVSr016204;
-        Thu, 14 Dec 2023 04:10:47 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
- from : message-id : references : date : in-reply-to : content-type :
- mime-version; s=corp-2023-11-20;
- bh=R/tzr1+GfRKNUf+EvXmJaSUI9DlqH027WTwj/tZqLBA=;
- b=kqzxI4YM4BcFp5hAyt2b5jsF5x/5TSPIZ3pFLGjnW39eMAei64tn88FhtJrVYsXe5TaS
- rJx4tfIKYBldeJJpQ/un2vHVHyEoZwnG2tCFrarJ21iVjRiblE0JZWVq7NmdvAV1/Ggw
- CKlE9ILshcUOfNdJbKaDjJtMiIsyzbrAtrRK16mG+1V6m6+A5kr/LWTjyf8IJjKMw0Na
- MQWgjdcrJXzFWmFGlaAU3SURgZrxpiz9Gzk/wFr3nLSjKCkuV/JfkPHj3RzR5BTXRjIJ
- DJvraWA5N1VHZGZ0/J5Q81Y6BIcDkVALyQzl8NmI8O4Rm3KoP1AqJloOiO3ZzVU8agPu dQ== 
-Received: from phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta01.appoci.oracle.com [138.1.114.2])
-        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3uwgn3r1g8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 14 Dec 2023 04:10:47 +0000
-Received: from pps.filterd (phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-        by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 3BE3Z6QX008350;
-        Thu, 14 Dec 2023 04:10:46 GMT
-Received: from nam11-co1-obe.outbound.protection.outlook.com (mail-co1nam11lp2168.outbound.protection.outlook.com [104.47.56.168])
-        by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3uvep9e8gn-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 14 Dec 2023 04:10:46 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=IrpyaqC/YVL6QpyTf1nP8Xl6MzQtj4kskOz85/1x0hJuAG5lirfSrdY9msWm1ZZhxtEi8etEXNS2cXVP5SdQb1z7WvWAgn4SPJvZp0mLyOmLHQj3T84IwenKt8eRXUrOsQsjrNMp//vImZFzZllNLeMBksuMR0a0vDq2Vrjl9w9bKxSIY1U9wwKbOhePHjIayJCWmepQXnZELOLqGFo85Pr1ioT2hA7bosdQOCwLgj3W6u9GI7FVSWcrqRnN9VTMKJ55uy18DY51GrZsJff3KlX7wVYWubjXW2HU4ISL9jtJk2/oSISp2mmtskjSdJ3lk7hfkz/gb3hehB/p9uqnKw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=R/tzr1+GfRKNUf+EvXmJaSUI9DlqH027WTwj/tZqLBA=;
- b=Z+0GGMvFYwKvmkouke3HYdLszO5adZb+LG+uNENVLoggW3QHn81W3oJYUQwhoeuKSQw+L3OV3JsaeDpSM/vlsDCu+CClPIDaT7sn/CRhzYzQMsGoRDX7reFBMweBFUh5bt+7na7o4ZvLxWLCqiKAcf5vTmuPMpJojlF7dhWzU+d/jo70/oIvxqCLy5N7kFg+6aVcVnKXR2Zt66ijZPIbY2kKqUx5BKl7xiTiAtFpPaOG6KT7H9/4VIPXWt4Ko3cjYRManHtAmINcElF7kYDvPJXkzUt8GxBtkutg1O9cJmzJ7TG6pQcxd2AdgLMw7SZ/gSzH5IWVpOD1dVMlmIxzzg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
+        Wed, 13 Dec 2023 23:13:57 -0500
+Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF8E4CF
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 20:14:02 -0800 (PST)
+Received: by mail-lj1-x22c.google.com with SMTP id 38308e7fff4ca-2c9f413d6b2so96721631fa.1
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 20:14:02 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=R/tzr1+GfRKNUf+EvXmJaSUI9DlqH027WTwj/tZqLBA=;
- b=lZNELHqsXKTmVm49heFZukr5RVmNWcSjKBmTI3TuIMhrDa+IXuJTsZoSYGxvxYAfOTICmVUuqSGwgBEniHH3BhPKzRVZZefUTng1k5QVlE6sACBYmywX5lG9+8Vy4icGD3GzwMb9qHcUb9Fulux52+uxOaYy44E+X+Gf6JCxt84=
-Received: from PH0PR10MB4759.namprd10.prod.outlook.com (2603:10b6:510:3d::12)
- by DS0PR10MB7019.namprd10.prod.outlook.com (2603:10b6:8:14c::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7091.28; Thu, 14 Dec
- 2023 04:10:44 +0000
-Received: from PH0PR10MB4759.namprd10.prod.outlook.com
- ([fe80::2b0c:62b3:f9a9:5972]) by PH0PR10MB4759.namprd10.prod.outlook.com
- ([fe80::2b0c:62b3:f9a9:5972%4]) with mapi id 15.20.7091.028; Thu, 14 Dec 2023
- 04:10:43 +0000
-To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc:     martin.petersen@oracle.com, jejb@linux.ibm.com,
-        andersson@kernel.org, konrad.dybcio@linaro.org,
-        linux-arm-msm@vger.kernel.org, linux-scsi@vger.kernel.org,
-        linux-kernel@vger.kernel.org, quic_cang@quicinc.com,
-        ahalaney@redhat.com, quic_nitirawa@quicinc.com
-Subject: Re: [PATCH v2 00/17] scsi: ufs: qcom: Code cleanups
-From:   "Martin K. Petersen" <martin.petersen@oracle.com>
-Organization: Oracle Corporation
-Message-ID: <yq1zfydfmqu.fsf@ca-mkp.ca.oracle.com>
-References: <20231208065902.11006-1-manivannan.sadhasivam@linaro.org>
-Date:   Wed, 13 Dec 2023 23:10:41 -0500
-In-Reply-To: <20231208065902.11006-1-manivannan.sadhasivam@linaro.org>
-        (Manivannan Sadhasivam's message of "Fri, 8 Dec 2023 12:28:45 +0530")
-Content-Type: text/plain
-X-ClientProxiedBy: SA0PR11CA0112.namprd11.prod.outlook.com
- (2603:10b6:806:d1::27) To PH0PR10MB4759.namprd10.prod.outlook.com
- (2603:10b6:510:3d::12)
+        d=chromium.org; s=google; t=1702527241; x=1703132041; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ko9+5c+M0rsdOliJjz79vbwez7kfxRfvV4P4ddiTQ70=;
+        b=JlJRLg6p8xGb+OxYo+6hTnr4XDIGsPQSM84VGKOg2zhwpAn96nwUCdJKZUZ5Tar+Bd
+         9TN4wUVRrgMYKQcxO2SQHFF6xRkO7/5uih6bG9w2/utlca+MbVjGLDUETwAWiUCMkGo9
+         5vkGqDWx3jvPcPw/vAxSuV2OuyayX2/yDl1sw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702527241; x=1703132041;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ko9+5c+M0rsdOliJjz79vbwez7kfxRfvV4P4ddiTQ70=;
+        b=tPtqGKWTaSZGFZQEj6tUxEd2k4tCRfqcHNGBmKEPtYGXOJmtcvF00MEqy/rHoIKX6B
+         eNRK1F2FfI1LkzvK6zK5fchKetkb75r9TP29Fp2eEIuUnw/FUkxwrCFGSXI81r/5zi+l
+         286zv/V3Sm6PHDnvDDSRS3ohiKHUIzYBCxJ6qPieGr61O39IesZeAis+6VbNsjrecF64
+         bqxEetbKFI/7oWnC9zHulEDIn6kKBf/eMv2d0Evmi1a522RnRxFQlXGfuI94hrfhyaQq
+         3o7fWVY/ZqRPPYOc+WXBuFeupuALdJPLn7e8oNYCT8u81UVfOB92iMXv1LbNkYa1TckT
+         ZM3w==
+X-Gm-Message-State: AOJu0YybWJKQFN1Oo/uGYCHK7mJ3bCBsNkiBpopsuUMtJLmA95qgrPpM
+        0ZOnTmLjO40fxLn2n7IKU6EFcOqgj/Y+RenTC1vd3A==
+X-Google-Smtp-Source: AGHT+IF8dhpQCQv0logOf7SKeTioSy3lVUJdPz0lrUuXryPldBFF7hIb3KbzKDbva/fjX/cLx+sBOjPxhKlq/1NGB+8=
+X-Received: by 2002:ac2:5511:0:b0:50c:4af:f2d7 with SMTP id
+ j17-20020ac25511000000b0050c04aff2d7mr2607874lfk.135.1702527240864; Wed, 13
+ Dec 2023 20:14:00 -0800 (PST)
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH0PR10MB4759:EE_|DS0PR10MB7019:EE_
-X-MS-Office365-Filtering-Correlation-Id: e8410c3c-ddd1-4137-a0bf-08dbfc5aa457
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 2wRgZv6T7P2cAHTvYECNilBmvpdyxZg6lfXrPNc+JH6jtlYxvBUZLHoUSVFPDQfWFLf9zGnEbVWQ4DkwsG3SmgkxVR0G8oGdZkuZV3e0OIjdQY9KW8fapmsKQNfLIqGnTk1hHdpKk+sJsKHQPWyP8Ho2dYohv43jN8he3s8dGn6UDUXGYOO9HiioQOH7Lb8dprEIN6FHkQyRxhoflWnqtblkhASS8UrIxQGBU2jiNlvaJ8DpnKLbkmURiNMcfSZEiPjqzc8NJbZBB/Q8xRc9BJ/konMP3sBzUt6dwM4ZOH9HMm4Ohh29OqigY63hpB9oD4Qp7Pz6G3BKw6p8y51r5mZw4LIWcGQs6cmREGkeziKN7lV53wDkJbmZpB4aw+Bnm9UG6U6R+TKFy8LLAf/+eF5o72n9dEmRiRwyKVHsP4wlfGYLm+NQdtSxUmrhzAhUyP/4wKh4/++IFBIFencIRkOppgYP0cMjs6tSBNXz/Wn6YmDw5AEu7W0Xoz6jhOeNoZrVZ7twTgX78LIQPgUCrqZ96E/JOIbXZhYSeSLGednsq+K3WdaEv3Zi3agXIygU
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB4759.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(366004)(396003)(346002)(376002)(39860400002)(230922051799003)(451199024)(1800799012)(64100799003)(186009)(41300700001)(38100700002)(5660300002)(7416002)(478600001)(6486002)(6512007)(2906002)(4744005)(36916002)(6916009)(316002)(66476007)(66556008)(66946007)(8676002)(4326008)(8936002)(86362001)(26005)(6506007);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?R5wGAxXlnyb8DQ9XishKIGSB/X5uN4lKmd5fSqo6Qs2EYqcluKNX/lPgxZPu?=
- =?us-ascii?Q?VXDon6D6qw4+19lpCT/EZYVFLJLEmbeiDq1KlsI0886sbMSg74cdTSuPXDh9?=
- =?us-ascii?Q?VR3eMhW9QT0PM6gIlAP9fFFqgVrpnuyQPlfbUAYjGOni0C/0RHZrKushHCdR?=
- =?us-ascii?Q?aUpM14tP+JlYTvkyzy0h95plc5keFLPaOBaUZcY0aEfefE6xUnSKPLJy1Bcf?=
- =?us-ascii?Q?xg3O4IMy9hfBJRnD72E7fon9y3adOhC/aNOj3gKN+vi9mo434NNiojMk+0Xh?=
- =?us-ascii?Q?mhpW9RpU2c6hA2QLe/HHIdoN7Q6wc/B+7TVd2cG9OGJx0buuEbQboVcs8pI7?=
- =?us-ascii?Q?SnR3D9YNtXeoLz8Q2cFvngsqlww7nQJVSFCCzAHSU7xPMaF9g0R9c1o3SkSP?=
- =?us-ascii?Q?kLeB9sJa6UqY+iLwffpw7Tu5y06gnoZ3RBWQdZf/7hzLyxR6g+ctgCU438X5?=
- =?us-ascii?Q?oRxGj1vPUJnx1wGEWy6dumrDbgvYUFl03szDEdSY58CelbeAo0zzwwbU1lUD?=
- =?us-ascii?Q?hHqAL9WGMHw3eon6PWPfiBiu2IXQO6/YPJWqxoEbd5/q7vhgyCXba6uB+ZmS?=
- =?us-ascii?Q?Z6qx1auKjwyte0/pN0jwx9SVAmU+h7bgP8k5ggHMrXknu3kz5BbYWSAagp5z?=
- =?us-ascii?Q?L1EPSLXkEs+WFUyvEnkOmvhIHrXRRa+6vlB+Uv0iJr4u+cQFAt3IDDhnIjhV?=
- =?us-ascii?Q?Nob1g8zCOCJJfJJBa9or1C/G/ZI6yG/cLrKqzUNbBspGh5uH0lI9arSWEFzK?=
- =?us-ascii?Q?jRpzd5ZWWdEjrcgffL4H1spsVR27CLTtRK2r1CElImhdvS2eGQrFCU4+Vz9+?=
- =?us-ascii?Q?719Xs7EzhBoQpj1vxlQSY0u5uhPcwiTTNIP3bIwVCP5ODDcLOV4TkwxI1A5q?=
- =?us-ascii?Q?zD3FdI0KECJSbrzXJEZjQ8qdaZOu528wTcz3z3m+fGwFa1uoA/kMkxtd0mPX?=
- =?us-ascii?Q?+0qnkF3ITMgvHStSk+IZFp32sGbaRapuIr7xVUNPmU8kRMau7/9oHisNn6cA?=
- =?us-ascii?Q?kqln6zdAewrz39LQb5ZNKd1RXbTkhNhj6IGjyGAMTgXhzfFxQFjpMPU21b7z?=
- =?us-ascii?Q?KdCF8z7Xs3dRGZHXR9kPaHNS8dwxq5SRlSM3AKtf2QzquD5R8u4d8mv9aMhK?=
- =?us-ascii?Q?/7o5p2hKNQeMxe5VM5y5h9WOP/CHgoAFAIFbi9YXzykyoSMT78yj9XetCNVx?=
- =?us-ascii?Q?Ly8+MRE4riCLksGdTRQUpuX0q4/AwAITlevQRTdaX+VmfFNp8WCsNyAWYn2K?=
- =?us-ascii?Q?qxZ3XM4RV62n179HJieMu19heYsCZA7HZUTIAJF3NW52sFQFosg+8664I6LH?=
- =?us-ascii?Q?ArPdU36rNWy6E7FVaJdGyu030YpgCgP7aDOX9LavZcFjlCsloiw53VJYpX4b?=
- =?us-ascii?Q?zdsVVrdKtV2pvi3/zG6FV8MxXwT5/MFhj5wicH1f0h4BeUy+i04vWwVb8byx?=
- =?us-ascii?Q?IbYzp5o74L+n3e6pw1Zx4BSR1HAiFAdjRkyKsnvxt84Ui3V1pE1wCytjDWFt?=
- =?us-ascii?Q?efEnb9vBRlG+Y2RhmeWdxeuI4nli1FQjheD/4jz++2pHIda8/rXo5e5KvQON?=
- =?us-ascii?Q?fIVI4J77G0+H2dXNvW/6zMgdI29J6nTUoIJMi87WdPKD8xI9d1zCWpNAoNnp?=
- =?us-ascii?Q?RQ=3D=3D?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: PeSl4W2B2IqLfhNmOcSXkcPhAowjFbBhtPCN9mEfWxX8zhRq8ujXzzEBhWLij0K+QMKL8492MAmEgxxIXVEUs5Q6CGc4qteNwTBcLsqwfax40pG7+XXqEXWNpzNh19eOSLiCC/73RWEOFlQzq4076hOszeSjBmm9sWnFbVzYbzeUdT1Uc0bc77kxhF3JGb61j759VtoaWRbAwcfhRVaLxd4OYbmE3LuHfryn8NTzJSrSeTcjdrObcLTIx2s23Qbg+SHvjfnoVinbqgvtzXNkMfg5iR7GKO4OOCcXBZA6yYdFHCb0NzfNgmucLxNofo+TME6TiWzPZg0wRLpBa8stio37p8idmUV2xOewGrQMgc6jMkDTfthe+IadgTb8OlwNmVrjCL6VFwoNHaCdJby8n5DKWcwUTqFTSXyr78Un4OdSGyBYmxvPsd728pILBtpjr1pBHowcWkHlZw+/9iJH8s98HzYZrG7Brmo5al2lgE41L8i8yvYEe6FDGaUkXlghE3UuW0o6UuSM9aUc9sjnuUTw7LVnyyeY/F4LZbBZ0TZukJnzZVUji9olK9Y/afviKZaFwhhFzPTndcDwIx6j+VAUDfQ/lROMhnnga7fAcMI=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e8410c3c-ddd1-4137-a0bf-08dbfc5aa457
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB4759.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Dec 2023 04:10:43.9160
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: GRC6lvTN5Zaz1mSrcR4lC6aEbNPa4Po8dJAoXAW8Rd7aJT8NoVelsh6uA8eW7lRCJ6S9qJesu1u7CFegD3uWT+BFZZkJrwENsqmrGfGJQH4=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR10MB7019
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-14_01,2023-12-13_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 malwarescore=0
- mlxlogscore=862 adultscore=0 phishscore=0 suspectscore=0 mlxscore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311290000 definitions=main-2312140022
-X-Proofpoint-ORIG-GUID: aA6Z1IFSOw6nR_DofSU1Pnqivhludz7F
-X-Proofpoint-GUID: aA6Z1IFSOw6nR_DofSU1Pnqivhludz7F
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+References: <20231211114346.1132386-1-stevensd@google.com> <2146e48d-5fb3-4444-81c5-9c8d8cb18811@redhat.com>
+In-Reply-To: <2146e48d-5fb3-4444-81c5-9c8d8cb18811@redhat.com>
+From:   David Stevens <stevensd@chromium.org>
+Date:   Thu, 14 Dec 2023 13:13:49 +0900
+Message-ID: <CAD=HUj7e9NaaYhos82JZoxhyX6J0bu+m0i7-_TqNbXiCDZ-Uxg@mail.gmail.com>
+Subject: Re: [PATCH] virtio_balloon: stay awake while adjusting balloon
+To:     David Hildenbrand <david@redhat.com>
+Cc:     "Michael S . Tsirkin" <mst@redhat.com>,
+        virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-Manivannan,
-
-> This series has code some cleanups to the Qcom UFS driver. No functional
-> change. In this version, I've removed code supporting legacy controllers
-> ver < 2.0, as the respective platforms were never supported in upstream.
+On Wed, Dec 13, 2023 at 5:44=E2=80=AFPM David Hildenbrand <david@redhat.com=
+> wrote:
 >
-> Tested on: RB5 development board based on Qcom SM8250 SoC.
+> On 11.12.23 12:43, David Stevens wrote:
+> > From: David Stevens <stevensd@chromium.org>
+> >
+>
+> Hi David,
+>
+> > Add a wakeup event for when the balloon is inflating or deflating.
+> > Userspace can enable this wakeup event to prevent the system from
+> > suspending while the balloon is being adjusted. This allows
+> > /sys/power/wakeup_count to be used without breaking virtio_balloon's
+> > cooperative memory management.
+>
+> Can you add/share some more details
 
-Applied to 6.8/scsi-staging, thanks!
+I'm working on enabling support for Linux s2Idle in our Android
+virtual machine, to restrict apps from running in the background
+without holding an Android partial wakelock. With the patch I recently
+sent out [1], since crosvm advertises native PCI power management for
+virtio devices, the Android guest can properly enter s2idle, and it
+can be woken up by incoming IO. However, one of the remaining problems
+is that when the host needs to reclaim memory from the guest via the
+virtio-balloon, there is nothing preventing the guest from entering
+s2idle before the balloon driver finishes returning memory to the
+host.
 
--- 
-Martin K. Petersen	Oracle Linux Engineering
+One alternative to this approach would be to add a virtballoon_suspend
+callback to abort suspend if the balloon is inflating/adjusting.
+However, it seems cleaner to just prevent suspend in the first place.
+
+[1] https://lore.kernel.org/lkml/20231208070754.3132339-1-stevensd@chromium=
+.org/
+
+> >
+> > Signed-off-by: David Stevens <stevensd@chromium.org>
+> > ---
+> >   drivers/virtio/virtio_balloon.c | 59 +++++++++++++++++++++++++++-----=
+-
+> >   1 file changed, 49 insertions(+), 10 deletions(-)
+> >
+> > diff --git a/drivers/virtio/virtio_balloon.c b/drivers/virtio/virtio_ba=
+lloon.c
+> > index 1fe93e93f5bc..811d8937246a 100644
+> > --- a/drivers/virtio/virtio_balloon.c
+> > +++ b/drivers/virtio/virtio_balloon.c
+> > @@ -119,6 +119,11 @@ struct virtio_balloon {
+> >       /* Free page reporting device */
+> >       struct virtqueue *reporting_vq;
+> >       struct page_reporting_dev_info pr_dev_info;
+> > +
+> > +     /* State for keeping the wakeup_source active while adjusting the=
+ balloon */
+> > +     spinlock_t adjustment_lock;
+> > +     u32 adjustment_seqno;
+>
+> Using a simple flag that gets set when updating the balloon size and
+> test-and-clear when testing for changes should be easier to get.
+>
+> bool adjustment_balloon_size_changed;
+>
+> or sth like that.
+
+That's a good simplification, thanks.
+
+> > +     bool adjustment_in_progress;
+> >   };
+> >
+> >   static const struct virtio_device_id id_table[] =3D {
+> > @@ -437,6 +442,31 @@ static void virtio_balloon_queue_free_page_work(st=
+ruct virtio_balloon *vb)
+> >       queue_work(vb->balloon_wq, &vb->report_free_page_work);
+> >   }
+> >
+> > +static void start_update_balloon_size(struct virtio_balloon *vb)
+> > +{
+> > +     unsigned long flags;
+> > +
+> > +     spin_lock_irqsave(&vb->adjustment_lock, flags);
+> > +     vb->adjustment_seqno++;
+> > +     if (!vb->adjustment_in_progress) {
+> > +             vb->adjustment_in_progress =3D true;
+> > +             pm_stay_awake(&vb->vdev->dev);
+> > +     }
+> > +     spin_unlock_irqrestore(&vb->adjustment_lock, flags);
+> > +
+> > +     queue_work(system_freezable_wq, &vb->update_balloon_size_work);
+> > +}
+> > +
+> > +static void end_update_balloon_size(struct virtio_balloon *vb, u32 seq=
+no)
+> > +{
+> > +     spin_lock(&vb->adjustment_lock);
+> > +     if (vb->adjustment_seqno =3D=3D seqno && vb->adjustment_in_progre=
+ss) {
+> > +             vb->adjustment_in_progress =3D false;
+> > +             pm_relax(&vb->vdev->dev);
+> > +     }
+> > +     spin_unlock(&vb->adjustment_lock);
+> > +}
+> > +
+> >   static void virtballoon_changed(struct virtio_device *vdev)
+> >   {
+> >       struct virtio_balloon *vb =3D vdev->priv;
+> > @@ -444,8 +474,7 @@ static void virtballoon_changed(struct virtio_devic=
+e *vdev)
+> >
+> >       spin_lock_irqsave(&vb->stop_update_lock, flags);
+> >       if (!vb->stop_update) {
+> > -             queue_work(system_freezable_wq,
+> > -                        &vb->update_balloon_size_work);
+> > +             start_update_balloon_size(vb);
+> >               virtio_balloon_queue_free_page_work(vb);
+> >       }
+> >       spin_unlock_irqrestore(&vb->stop_update_lock, flags);
+> > @@ -473,22 +502,29 @@ static void update_balloon_size_func(struct work_=
+struct *work)
+> >   {
+> >       struct virtio_balloon *vb;
+> >       s64 diff;
+> > +     u32 seqno;
+> >
+> >       vb =3D container_of(work, struct virtio_balloon,
+> >                         update_balloon_size_work);
+> > -     diff =3D towards_target(vb);
+> >
+> > -     if (!diff)
+> > -             return;
+> > +     spin_lock(&vb->adjustment_lock);
+> > +     seqno =3D vb->adjustment_seqno;
+> > +     spin_unlock(&vb->adjustment_lock);
+> >
+> > -     if (diff > 0)
+> > -             diff -=3D fill_balloon(vb, diff);
+> > -     else
+> > -             diff +=3D leak_balloon(vb, -diff);
+> > -     update_balloon_size(vb);
+> > +     diff =3D towards_target(vb);
+> > +
+> > +     if (diff) {
+> > +             if (diff > 0)
+> > +                     diff -=3D fill_balloon(vb, diff);
+> > +             else
+> > +                     diff +=3D leak_balloon(vb, -diff);
+> > +             update_balloon_size(vb);
+> > +     }
+> >
+> >       if (diff)
+> >               queue_work(system_freezable_wq, work);
+> > +     else
+> > +             end_update_balloon_size(vb, seqno);
+>
+> What if we stop the workqueue and unload the driver -- see
+> remove_common() -- won't you leave pm_stay_awake() wrongly set?
+
+When a device gets removed, its wakeup source is destroyed, which
+automatically calls __pm_relax.
+
+> >   }
+> >
+> >   static int init_vqs(struct virtio_balloon *vb)
+> > @@ -992,6 +1028,9 @@ static int virtballoon_probe(struct virtio_device =
+*vdev)
+> >                       goto out_unregister_oom;
+> >       }
+> >
+> > +     spin_lock_init(&vb->adjustment_lock);
+> > +     device_set_wakeup_capable(&vb->vdev->dev, true);
+>
+>
+> I'm a bit confused: Documentation/driver-api/pm/devices.rst documents
+>
+> "
+> The :c:member:`power.can_wakeup` flag just records whether the device
+> (and its driver) can physically support wakeup events.  The
+> :c:func:`device_set_wakeup_capable()` routine affects this flag.
+> "
+>
+> ...
+>
+> "
+> Whether or not a device is capable of issuing wakeup events is a
+> hardware matter, and the kernel is responsible for keeping track of it.
+> "
+>
+> But how is the virtio-balloon device capable of waking up the machine?
+> Your patch merely implies that the virtio-baloon device is capable to
+> prohbit going to sleep.
+>
+> What am I missing?
+
+The underlying virtio_pci_device is capable of waking up the machine,
+if it supports PCI power management. The core PCI code will keep the
+machine awake while processing the interrupt (i.e. during
+virtballoon_changed), but after processing is handed off to the
+virtio-balloon driver, the virtio-balloon driver needs to keep the
+machine awake until the processing is actually completed.
+
+An alternative to making vb->vdev->dev wakeup capable is to plumb the
+pm_stay_awake/pm_relax calls to the underlying virtio_pci_device. Would
+that be a preferable approach?
+
+-David
