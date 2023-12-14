@@ -2,213 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 59F278129D7
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 08:58:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 558B48129DB
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 08:58:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1443347AbjLNH6C convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 14 Dec 2023 02:58:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41032 "EHLO
+        id S234386AbjLNH6S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 02:58:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44574 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234342AbjLNH6A (ORCPT
+        with ESMTP id S234339AbjLNH6O (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 02:58:00 -0500
-Received: from mail-yb1-f178.google.com (mail-yb1-f178.google.com [209.85.219.178])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91497E0;
-        Wed, 13 Dec 2023 23:58:05 -0800 (PST)
-Received: by mail-yb1-f178.google.com with SMTP id 3f1490d57ef6-dbcdfad714aso707894276.3;
-        Wed, 13 Dec 2023 23:58:05 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702540684; x=1703145484;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=sj0NwqxPiof3ml42MbQY4Ahv5ohZXpex6OnUgaYQww8=;
-        b=WJi/ohrGdnui+xHmqlYZ0jR7MAZ6XBk6cPmXjaN4qj3dMTl9zN1HGq66RyYnl9rlb5
-         xq9TnDWuGyXDdTBzZESIBk4TnVYlRkpYx9xpN6T6wDYc4nT+WlSqycTpXnRIUtaqEyrg
-         DFZd7y+IU1d2ZuoSoRIaokqyiW3XC1rDa0GTYbkdGtJXqFoyJHPBKhmwOq7iKRTvyXkA
-         albWcAXmUqS7f77l+rLLSbXK/QI5nkzT1lQgGSYuWzOyHrmNE1yhnkKmgG5PObsyUrKi
-         bTnM516NcVUyTUSv5wG97bXVLEZeKTc36643sDpnjdyLKU9fIkAGnYjv9E2yiH4X7UMe
-         g22A==
-X-Gm-Message-State: AOJu0YyGDDPBtyBQYfDNW9LfOF63NF02Cx9OCPP89r8dq5k+OuW75WOI
-        4iUxAZ+2MymYyEDLo1TKc5EvynVAw2WHcA==
-X-Google-Smtp-Source: AGHT+IGmGY/s839VHzJmmPpAftTdQg4AhG/3K9CTqyyHA24aK6e+tyX6vGcqUdXulWCDFUjA2B9YoQ==
-X-Received: by 2002:a25:f45:0:b0:dbc:e89d:659d with SMTP id 66-20020a250f45000000b00dbce89d659dmr75478ybp.50.1702540684524;
-        Wed, 13 Dec 2023 23:58:04 -0800 (PST)
-Received: from mail-yb1-f177.google.com (mail-yb1-f177.google.com. [209.85.219.177])
-        by smtp.gmail.com with ESMTPSA id v139-20020a252f91000000b00dbccadd6dd8sm1265708ybv.59.2023.12.13.23.58.04
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 13 Dec 2023 23:58:04 -0800 (PST)
-Received: by mail-yb1-f177.google.com with SMTP id 3f1490d57ef6-dbcdec51ed9so779788276.0;
-        Wed, 13 Dec 2023 23:58:04 -0800 (PST)
-X-Received: by 2002:a5b:7cf:0:b0:da0:442f:988e with SMTP id
- t15-20020a5b07cf000000b00da0442f988emr5673057ybq.19.1702540684087; Wed, 13
- Dec 2023 23:58:04 -0800 (PST)
+        Thu, 14 Dec 2023 02:58:14 -0500
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77D2F126;
+        Wed, 13 Dec 2023 23:58:15 -0800 (PST)
+X-SpamFilter-By: ArmorX SpamTrap 5.78 with qID 3BE7vucY7703674, This message is accepted by code: ctloc85258
+Received: from mail.realtek.com (rtexh36505.realtek.com.tw[172.21.6.25])
+        by rtits2.realtek.com.tw (8.15.2/2.95/5.92) with ESMTPS id 3BE7vucY7703674
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 14 Dec 2023 15:57:56 +0800
+Received: from RTEXDAG02.realtek.com.tw (172.21.6.101) by
+ RTEXH36505.realtek.com.tw (172.21.6.25) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.32; Thu, 14 Dec 2023 15:57:56 +0800
+Received: from RTEXMBS04.realtek.com.tw (172.21.6.97) by
+ RTEXDAG02.realtek.com.tw (172.21.6.101) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.7; Thu, 14 Dec 2023 15:57:55 +0800
+Received: from RTEXMBS04.realtek.com.tw ([fe80::40c2:6c24:2df4:e6c7]) by
+ RTEXMBS04.realtek.com.tw ([fe80::40c2:6c24:2df4:e6c7%5]) with mapi id
+ 15.01.2375.007; Thu, 14 Dec 2023 15:57:55 +0800
+From:   =?utf-8?B?VFlfQ2hhbmdb5by15a2Q6YC4XQ==?= <tychang@realtek.com>
+To:     Andy Shevchenko <andy@kernel.org>
+CC:     Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <brgl@bgdev.pl>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH v3 2/2] Add GPIO support for Realtek DHC(Digital Home Center) RTD SoCs.
+Thread-Topic: [PATCH v3 2/2] Add GPIO support for Realtek DHC(Digital Home
+ Center) RTD SoCs.
+Thread-Index: AQHaKPU79lITdFvfw06smVDh+ZvZWbCdTzKAgAeXZrCAAdUdAIABjNeA
+Date:   Thu, 14 Dec 2023 07:57:55 +0000
+Message-ID: <23574204547646779d02f0109c20b3ff@realtek.com>
+References: <20231207100723.15015-1-tychang@realtek.com>
+ <20231207100723.15015-3-tychang@realtek.com>
+ <ZXHMbZRXLXGa_tq8@smile.fi.intel.com>
+ <989146448858478b975c66899b8f3fed@realtek.com>
+ <ZXm0MIub8X2q_lnp@smile.fi.intel.com>
+In-Reply-To: <ZXm0MIub8X2q_lnp@smile.fi.intel.com>
+Accept-Language: zh-TW, en-US
+Content-Language: zh-TW
+x-originating-ip: [172.21.181.166]
+x-kse-serverinfo: RTEXDAG02.realtek.com.tw, 9
+x-kse-antispam-interceptor-info: fallback
+x-kse-antivirus-interceptor-info: fallback
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-References: <20231202035511.487946-1-sjg@chromium.org> <20231202035511.487946-3-sjg@chromium.org>
- <20231203153401.GV8402@pendragon.ideasonboard.com> <20231207142723.GA3187877@google.com>
- <20231207143814.GD15521@pendragon.ideasonboard.com> <CAGXv+5Go_0pEVAOLQmRCc_a9-YUtZEmBfXtMuBupX_nb9iqwbw@mail.gmail.com>
- <20231209152946.GC13421@pendragon.ideasonboard.com> <CAMuHMdVMZs6mnwWBgFwktO=8o=QzROv60cfZe085MhD6HxQjpQ@mail.gmail.com>
- <CAGXv+5Est3FL-XcEL-vB-6zVNas0mqb2cNYa==Yb7W2SQU9xVQ@mail.gmail.com> <CAK7LNATyD-PeNbaLTjJmU9=koqqE+V6QvFe09c2VrXopWvjpcw@mail.gmail.com>
-In-Reply-To: <CAK7LNATyD-PeNbaLTjJmU9=koqqE+V6QvFe09c2VrXopWvjpcw@mail.gmail.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Thu, 14 Dec 2023 08:57:52 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdXDPSQXNhBH5LCrggfJCWG32v_ZtcRdPfaGRuLj20N+Lg@mail.gmail.com>
-Message-ID: <CAMuHMdXDPSQXNhBH5LCrggfJCWG32v_ZtcRdPfaGRuLj20N+Lg@mail.gmail.com>
-Subject: Re: [PATCH v9 2/2] arm64: boot: Support Flat Image Tree
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     Chen-Yu Tsai <wenst@chromium.org>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Simon Glass <sjg@chromium.org>,
-        linux-arm-kernel@lists.infradead.org,
-        Ahmad Fatoum <a.fatoum@pengutronix.de>,
-        U-Boot Mailing List <u-boot@lists.denx.de>,
-        Nicolas Schier <nicolas@fjasle.eu>,
-        Tom Rini <trini@konsulko.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Terrell <terrelln@fb.com>, Will Deacon <will@kernel.org>,
-        linux-doc@vger.kernel.org, linux-kbuild@vger.kernel.org,
-        linux-kernel@vger.kernel.org, workflows@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=0.6 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        PDS_OTHER_BAD_TLD,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
-        autolearn_force=no version=3.4.6
+X-KSE-AntiSpam-Interceptor-Info: fallback
+X-KSE-ServerInfo: RTEXH36505.realtek.com.tw, 9
+X-KSE-AntiSpam-Interceptor-Info: fallback
+X-KSE-Antivirus-Interceptor-Info: fallback
+X-KSE-AntiSpam-Interceptor-Info: fallback
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Yamada-san,
-
-On Thu, Dec 14, 2023 at 7:12 AM Masahiro Yamada <masahiroy@kernel.org> wrote:
-> On Thu, Dec 14, 2023 at 1:03 PM Chen-Yu Tsai <wenst@chromium.org> wrote:
-> > On Sun, Dec 10, 2023 at 1:31 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> > > On Sat, Dec 9, 2023 at 4:29 PM Laurent Pinchart
-> > > <laurent.pinchart@ideasonboard.com> wrote:
-> > > > On Sat, Dec 09, 2023 at 10:13:59PM +0900, Chen-Yu Tsai wrote:
-> > > > > On Thu, Dec 7, 2023 at 11:38 PM Laurent Pinchart
-> > > > > <laurent.pinchart@ideasonboard.com> wrote:
-> > > > > > On Thu, Dec 07, 2023 at 10:27:23PM +0800, Chen-Yu Tsai wrote:
-> > > > > > > On Sun, Dec 03, 2023 at 05:34:01PM +0200, Laurent Pinchart wrote:
-> > > > > > > > On Fri, Dec 01, 2023 at 08:54:42PM -0700, Simon Glass wrote:
-> > > > > > > > > Add a script which produces a Flat Image Tree (FIT), a single file
-> > > > > > > > > containing the built kernel and associated devicetree files.
-> > > > > > > > > Compression defaults to gzip which gives a good balance of size and
-> > > > > > > > > performance.
-> > > > > > > > >
-> > > > > > > > > The files compress from about 86MB to 24MB using this approach.
-> > > > > > > > >
-> > > > > > > > > The FIT can be used by bootloaders which support it, such as U-Boot
-> > > > > > > > > and Linuxboot. It permits automatic selection of the correct
-> > > > > > > > > devicetree, matching the compatible string of the running board with
-> > > > > > > > > the closest compatible string in the FIT. There is no need for
-> > > > > > > > > filenames or other workarounds.
-> > > > > > > > >
-> > > > > > > > > Add a 'make image.fit' build target for arm64, as well. Use
-> > > > > > > > > FIT_COMPRESSION to select a different algorithm.
-> > > > > > > > >
-> > > > > > > > > The FIT can be examined using 'dumpimage -l'.
-> > > > > > > > >
-> > > > > > > > > This features requires pylibfdt (use 'pip install libfdt'). It also
-> > > > > > > > > requires compression utilities for the algorithm being used. Supported
-> > > > > > > > > compression options are the same as the Image.xxx files. For now there
-> > > > > > > > > is no way to change the compression other than by editing the rule for
-> > > > > > > > > $(obj)/image.fit
-> > > > > > > > >
-> > > > > > > > > While FIT supports a ramdisk / initrd, no attempt is made to support
-> > > > > > > > > this here, since it must be built separately from the Linux build.
-> > > > > > > >
-> > > > > > > > FIT images are very useful, so I think this is a very welcome addition
-> > > > > > > > to the kernel build system. It can get tricky though: given the
-> > > > > > > > versatile nature of FIT images, there can't be any
-> > > > > > > > one-size-fits-them-all solution to build them, and striking the right
-> > > > > > > > balance between what makes sense for the kernel and the features that
-> > > > > > > > users may request will probably lead to bikeshedding. As we all love
-> > > > > > > > bikeshedding, I thought I would start selfishly, with a personal use
-> > > > > > > > case :-) This isn't a yak-shaving request though, I don't see any reason
-> > > > > > > > to delay merging this series.
-> > > > > > > >
-> > > > > > > > Have you envisioned building FIT images with a subset of DTBs, or adding
-> > > > > > > > DTBOs ? Both would be fairly trivial extensions to this script by
-> > > > > > > > extending the supported command line arguments. It would perhaps be more
-> > > > > > > > difficult to integrate in the kernel build system though. This leads me
-> > > > > > > > to a second question: would you consider merging extensions to this
-> > > > > > > > script if they are not used by the kernel build system, but meant for
-> > > > > > > > users who manually invoke the script ? More generally, is the script
-> > > > > > >
-> > > > > > > We'd also be interested in some customization, though in a different way.
-> > > > > > > We imagine having a rule file that says X compatible string should map
-> > > > > > > to A base DTB, plus B and C DTBO for the configuration section. The base
-> > > > > > > DTB would carry all common elements of some device, while the DTBOs
-> > > > > > > carry all the possible second source components, like different display
-> > > > > > > panels or MIPI cameras for instance. This could drastically reduce the
-> > > > > > > size of FIT images in ChromeOS by deduplicating all the common stuff.
-> > > > > >
-> > > > > > Do you envision the "mapping" compatible string mapping to a config
-> > > > > > section in the FIT image, that would bundle the base DTB and the DTBOs ?
-> > > > >
-> > > > > That's exactly the idea. The mapping compatible string could be untied
-> > > > > from the base board's compatible string if needed (which we probably do).
-> > > > >
-> > > > > So something like:
-> > > > >
-> > > > > config {
-> > > > >     config-1 {
-> > > > >         compatible = "google,krane-sku0";
-> > > > >         fdt = "krane-baseboard", "krane-sku0-overlay";
-> > > > >     };
-> > > > > };
-> > > > >
-> > > > > With "krane-sku0-overlay" being an overlay that holds the differences
-> > > > > between the SKUs, in this case the display panel and MIPI camera (not
-> > > > > upstreamed) that applies to SKU0 in particular.
-> > > >
-> > > > The kernel DT makefiles already contain information on what overlays to
-> > > > apply to what base boards, in order to test the overlays and produce
-> > > > "full" DTBs. Maybe that information could be leveraged to create the
-> > > > configurations in the FIT image ?
-> > >
-> > > Although the "full" DTBs created may only be a subset of all possible
-> > > combinations (I believe Rob just started with creating one "full" DTB
-> > > for each overlay, cfr. the additions I made in commit a09c3e105a208580
-> > > ("arm64: dts: renesas: Apply overlays to base dtbs")), that could
-> > > definitely be a start.
-> > >
-> > > Now, since the kernel build system already creates "full" DTBs, does
-> > > that mean that all of the base DTBs, overlays, and "full" DTBs will
-> > > end up in the FIT image?
-> >
-> > I suppose we could add an option to the packing tool to be able to _not_
-> > add the "full" DTBs if they can also be assembled with a base DTB and
-> > overlays. Think of it as a firmware compatibility option: if the firmware
-> > supports overlays, then you almost always want the deconstructed parts,
-> > not the fully assembled ones. Vice versa.
-> >
-> > If we don't we could end up with two configurations that have the same
-> > compatible string?
->
-> Right.
->
-> We would end up with such situations because applying
-> an overlay does not change the compatible string.
-
-That is correct.  Which is one of the reasons for not using overlays
-for this, cfr. the details in my reply in the other thread
-"Re: Proposal: FIT support for extension boards / overlays"
-https://lore.kernel.org/all/CAMuHMdXQdMeXUOAAw5nDO4+q5_HFvUc86Wi8ykMwjUwPex6wvQ@mail.gmail.com/
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+SGkgQW5keSwNCg0KVGhhbmsgeW91IGZvciB0aGUgc3VnZ2VzdGlvbnMuDQoNCj5PbiBUdWUsIERl
+YyAxMiwgMjAyMyBhdCAwOTo1NTo1OUFNICswMDAwLCBUWV9DaGFuZ1vlvLXlrZDpgLhdIHdyb3Rl
+Og0KPj4gPk9uIFRodSwgRGVjIDA3LCAyMDIzIGF0IDA2OjA3OjIzUE0gKzA4MDAsIFRZIENoYW5n
+IHdyb3RlOg0KPg0KPi4uLg0KPg0KPj4gPj4gVGhpcyBkcml2ZXIgZW5hYmxlcyBjb25maWd1cmF0
+aW9uIG9mIEdQSU8gZGlyZWN0aW9uLCBHUElPIHZhbHVlcywNCj4+ID4+IEdQSU8gZGVib3VuY2Ug
+c2V0dGluZ3MgYW5kIGhhbmRsZXMgR1BJTyBpbnRlcnJ1cHRzLg0KPj4gPg0KPj4gPldoeSBncGlv
+LXJlZ21hcCBjYW4ndCBiZSB1c2VkPw0KPj4NCj4+IEkgd2lsbCB0cnkgdG8gdXNlIGdwaW8tcmVt
+YXAgaW4gdGhlIG5leHQgdmVyc2lvbi4NCj4NCj5JZiBpdCBhcHBlYXJzIHRoYXQgaXQgbWFrZXMg
+Y29kZSB1Z2xpZXIgLyBjb21wbGljYXRlZCwgcGxlYXNlIGFkZCB0aGUgbm90ZQ0KPnNvbWV3aGVy
+ZSB0byBhbnN3ZXIgdGhlIGFib3ZlIHF1ZXN0aW9uLg0KPg0KDQpJJ3ZlIHRyYWNlZCB0aGUgZ3Bp
+by1yZWdtYXAuYyBmaWxlLiBJdCBhcHBlYXJzIHRoYXQgZm9yIHRoZSBkcml2ZXIgdG8gcmVnaXN0
+ZXINCmdwaW9faXJxX2NoaXAsIGl0IG11c3QgY3JlYXRlIHRoZSBpcnFfZG9tYWluIGFuZCBhZGQg
+aXQgaW50byBncGlvX3JlZ21hcF9jb25maWcuDQpBZGRpdGlvbmFsbHksIHRoZSBkcml2ZXIgbmVl
+ZHMgdG8gcmVnaXN0ZXIgdGhlIGlycSBoYW5kbGVyIGJ5IGl0c2VsZi4NCkhvd2V2ZXIsIHRoaXMg
+cHJvY2VzcyBjYW4gYmUgbWFuYWdlZCBieSB0aGUgZ3Bpb2xpYiBpZiB0aGUgZHJpdmVyIGZpbGxz
+IGluIHRoZSBzdHJ1Y3QNCmdwaW9faXJxX2NoaXAgaW5zaWRlIHN0cnVjdCBncGlvX2NoaXAgYmVm
+b3JlIGludm9raW5nIGdwaW9jaGlwX2FkZF9kYXRhLg0KDQpNb3Jlb3ZlciwgYXBhcnQgZnJvbSBt
+YW5hZ2luZyB0aGUgcmVnaXN0ZXJzIGZvciBncGlvIGRpcmVjdGlvbiBhbmQgdmFsdWUsIHRoZXJl
+DQphcmUgc2V2ZXJhbCBvdGhlciByZWdpc3RlcnMgdGhhdCByZXF1aXJlIGFjY2VzcyhpbnRlcnJ1
+cHQgZW5hYmxlLCBkZWJvdW5jZS4uLikuDQpUaGUgR1BJTyBJUlEgc3RhdHVzIHJlZ2lzdGVycyBh
+cmUgbG9jYXRlZCBhdCBkaWZmZXJlbnQgYmFzZSBhZGRyZXNzZXMgYW5kIGFyZQ0Kbm90IGNvbnRp
+Z3VvdXMuIEl0IG1heSBuZWVkIHRvIGNyZWF0ZSBhbiBhZGRpdGlvbmFsIHJlZ21hcCBhbmQgYXNz
+aWduIHRoZSBhY2Nlc3MNCnRhYmxlIHRvIHRoaXMgcmVnbWFwLg0KDQpXaXRoIHRoZSBhYm92ZSBj
+b25zaWRlcmF0aW9uLCBJIHRlbmQgdG8ga2VlcCB1c2luZyB0aGUgZXhpc3RpbmcgbWV0aG9kLg0K
+DQo+Li4uDQo+DQo+PiA+PiArICAgICBpZiAoaW5kZXggPiBkYXRhLT5pbmZvLT5udW1fZGlyKQ0K
+Pj4gPj4gKyAgICAgICAgICAgICByZXR1cm4gLUVJTlZBTDsNCj4+ID4NCj4+ID5XaGVuIHRoaXMg
+Y29uZGl0aW9uYWwgY2FuIGJlIHRydWU/DQo+PiA+U2FtZSBRIHRvIHRoZSBzaW1pbGFyIGNoZWNr
+cyBvdmVyIHRoZSBjb2RlLg0KPj4NCj4+IEl0IGlzIG9ubHkgdG8gY2hlY2sgaWYgdGhlIG9mZnNl
+dCB2YWx1ZSBpcyBtaXNzaW5nIGluIHRoZSBydGRfZ3Bpb19pbmZvLg0KPj4gSSdtIHVuY2VydGFp
+biBhYm91dCB0aGUgbmVjZXNzaXR5IG9mIHRoZXNlIGNoZWNrcy4gSWYgdGhleSBhcmUgbm90DQo+
+PiBuZWNlc3NhcnksIEkgd2lsbCByZW1vdmUgdGhlIG51bV8qIG1lbWJlcnMgaW4gdGhlIHJ0ZF9n
+cGlvX2luZm8NCj4+IHN0cnVjdHVyZSBhbG9uZyB3aXRoIHRoZXNlIGNoZWNrcy4NCj4NCj5NeSB1
+bmRlcnN0YW5kaW5nIHRoYXQgdGhlc2UgY2hlY2tzIGFyZSBlcXVpdmFsZW50IHRvIHRoZQ0KPg0K
+PiAgICAgICAgaWYgKG9mZnNldCA+PSBuZ3BpbykNCj4NCj5vbmUsIHdoaWNoIGlzIHBlcmZvcm1l
+ZCBieSBHUElPIGxpYnJhcnksIGkuby53LiB5b3Ugd2lsbCBuZXZlciBnZXQgYW4gb2Zmc2V0DQo+
+b3V0c2lkZSB0aGUgcmFuZ2Ugb2Ygc3VwcG9ydGVkIEdQSU8gbGluZXMuDQo+DQo+SWYgbXkgdW5k
+ZXJzdGFuZGluZyBpcyB3cm9uZywgdGhlc2UgY2hlY2tzIG5lZWQgYSBjb21tZW50IHdoeS4NCj4N
+Cg0KSSBhZ3JlZSB3aXRoIHlvdS4gSSB3aWxsIHJlbW92ZSB0aGVzZSBjaGVja3MuDQoNCj4uLi4N
+Cj4NCj4+ID4+ICsgICAgIGlmIChpcnEgPT0gZGF0YS0+aXJxc1swXSkNCj4+ID4+ICsgICAgICAg
+ICAgICAgZ2V0X3JlZ19vZmZzZXQgPSAmcnRkX2dwaW9fZ3BhX29mZnNldDsNCj4+ID4+ICsgICAg
+IGVsc2UgaWYgKGlycSA9PSBkYXRhLT5pcnFzWzFdKQ0KPj4gPj4gKyAgICAgICAgICAgICBnZXRf
+cmVnX29mZnNldCA9ICZydGRfZ3Bpb19ncGRhX29mZnNldDsNCj4+ID4NCj4+ID5DYW4ndCBpdCBi
+ZSBkb25lIGJlZm9yZSBlbnRlcmluZyBpbnRvIGNoYWluZWQgSVJRIGhhbmRsZXI/DQo+Pg0KPj4g
+SSB3aWxsIHJldmlzZSBpdC4NCj4NCj5UaGlua2luZyBhYm91dCB0aGlzIG1vcmUsIHBlcmhhcHMg
+eW91IGNhbiByZWdpc3RlciB0d28gSVJRIGNoaXBzIHdpdGggZGlmZmVyZW50DQo+ZnVuY3Rpb25z
+LCBzbyB0aGlzIHdvbid0IGJlIHBhcnQgb2YgdGhlIHZlcnkgY3JpdGljYWwgaW50ZXJydXB0IGhh
+bmRsZXIgKGFzIHdlIGFsbA0KPndhbnQgdG8gcmVkdWNlIG92ZXJoZWFkIGluIGl0IGFzIG11Y2gg
+YXMgcG9zc2libGUpLg0KPkFueXdheSwgdGhpbmsgYWJvdXQgdGhpcyBhbmQgdHJ5IGRpZmZlcmVu
+dCBvcHRpb25zLCBjaG9vc2UgdGhlIG9uZSB5b3UgdGhpbmsgdGhlDQo+YmVzdC4NCj4NCg0KSW4g
+dGhlIHByZXZpb3VzIHBhdGNoICh2MSksIEkgaGFkIHJlZ2lzdGVyZWQgdHdvIElSUSBjaGlwcyB3
+aXRoIGRpZmZlcmVudCBoYW5kbGVycy4gDQpIb3dldmVyLCB0aGVzZSB0d28gaGFuZGxlcnMgYXBw
+ZWFyZWQgcXVpdGUgc2ltaWxhciBhbmQgdGhlIGdwaW9faXJxX2NoaXAgb25seSBhbGxvd3MNCnRo
+ZSByZWdpc3RyYXRpb24gb2YgYSBzaW5nbGUgaGFuZGxlci4gVGhlcmVmb3JlLCBJIGVuZGVkIHVw
+IHJlZ2lzdGVyaW5nIG9uZSBoYW5kbGVyDQpmb3IgYm90aCBJUlFzIGFuZCBpbmNsdWRlZCBjb25k
+aXRpb25hbCBjaGVja3Mgd2l0aGluIHRoZSBoYW5kbGVyIHRvIGRpZmZlcmVudGlhdGUNCmJldHdl
+ZW4gdGhlIHR3by4NCg0KPi0tDQo+V2l0aCBCZXN0IFJlZ2FyZHMsDQo+QW5keSBTaGV2Y2hlbmtv
+DQoNClRoYW5rcywNClR6dXlpIENoYW5nDQo=
