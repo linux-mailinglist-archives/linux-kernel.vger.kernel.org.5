@@ -2,122 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 65EF48123B3
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 01:08:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DACB98123B4
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 01:09:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442684AbjLNAIS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 19:08:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48348 "EHLO
+        id S1442688AbjLNAIz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 19:08:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43754 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229706AbjLNAIR (ORCPT
+        with ESMTP id S229706AbjLNAIx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 19:08:17 -0500
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDE70A6
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 16:08:23 -0800 (PST)
-Received: from pps.filterd (m0353724.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3BDNHiXk032758;
-        Thu, 14 Dec 2023 00:08:12 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-transfer-encoding; s=pp1;
- bh=TtvhaOg9jPDPBdDCBRPbw5S67qdZw1uJRVGCfj1Llbg=;
- b=rq0tCafps8G+rqUL+KZ2gVOZ2clcy2H9KonSqLe7fx0C+xXfT/wsISz51JEKGddkdzwc
- K7CwIuOeXV1Z7PtR10aX7wUxxZoPIGpers9LvS1OEgjL03sYiCLs9yBsIAtewMC6vele
- I1HP7p/MO6344ab3Bta1d2rcTdIO0mNppmmBoZ7hlOHQMip2DeZNTuZ80ya2kp5EwdrG
- 3vbXHfvAJaN7zlTqySr61QfgxuS1lHxF7jUWn0G0pAmgjbJSU+EPLfIusKCrQdQO7zXq
- hUD9U+wK7YspGwXjZIBEBmp+4sLxVXyvADpE9/9yenQc/je4RJjb1WWXCBqOcToJFyh2 Cg== 
-Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3uynbt1xff-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 14 Dec 2023 00:08:12 +0000
-Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
-        by ppma21.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3BDLKgUZ012588;
-        Thu, 14 Dec 2023 00:08:11 GMT
-Received: from smtprelay05.dal12v.mail.ibm.com ([172.16.1.7])
-        by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3uw3jp4tn9-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 14 Dec 2023 00:08:11 +0000
-Received: from smtpav01.wdc07v.mail.ibm.com (smtpav01.wdc07v.mail.ibm.com [10.39.53.228])
-        by smtprelay05.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3BE089Gw3539542
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 14 Dec 2023 00:08:09 GMT
-Received: from smtpav01.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 04E2858068;
-        Thu, 14 Dec 2023 00:08:09 +0000 (GMT)
-Received: from smtpav01.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id E013758055;
-        Thu, 14 Dec 2023 00:08:08 +0000 (GMT)
-Received: from gfwa600.aus.stglabs.ibm.com (unknown [9.3.84.101])
-        by smtpav01.wdc07v.mail.ibm.com (Postfix) with ESMTPS;
-        Thu, 14 Dec 2023 00:08:08 +0000 (GMT)
-Received: by gfwa600.aus.stglabs.ibm.com (Postfix, from userid 181152)
-        id 3D838740051; Wed, 13 Dec 2023 18:08:08 -0600 (CST)
-From:   Lakshmi Yadlapati <lakshmiy@us.ibm.com>
-To:     joel@jms.id.au, eajames@linux.ibm.com, ninad@linux.ibm.com,
-        alistair@popple.id.au
-Cc:     Lakshmi Yadlapati <lakshmiy@us.ibm.com>,
-        linux-fsi@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v1] fsi: Fix panic on scom file read
-Date:   Wed, 13 Dec 2023 18:07:44 -0600
-Message-Id: <20231214000744.1281464-1-lakshmiy@us.ibm.com>
-X-Mailer: git-send-email 2.39.2
+        Wed, 13 Dec 2023 19:08:53 -0500
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DB7B85;
+        Wed, 13 Dec 2023 16:09:00 -0800 (PST)
+Received: by mail-wr1-x436.google.com with SMTP id ffacd0b85a97d-336437ae847so645410f8f.2;
+        Wed, 13 Dec 2023 16:08:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1702512538; x=1703117338; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:autocrypt
+         :references:in-reply-to:date:cc:to:from:subject:message-id:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=q5/M47CiHwU265p/4DazyjJg2apbPY8v/ugoyTcBk3c=;
+        b=ni9u3NPVj2NL2iWwcHdKB0RYICXhF6pCvqmGJSW0kJsl+hZS0OoVF2xJRjYY4LK+Bf
+         yXMWGF0VzKGam9K80hE2hgdX3ex55OOTDuwFil54ZyChs9SvcauC/uptpYHEwPrVzuww
+         wEoFIgYbavBy7PbVHnGxE+V/5wuMPWfUT1XAdaNZwZbytIaY/FbqyU7Tw4L3ri5vf68E
+         pWW3+4QNSJgWgX8twhZuttXcSbPYV2M0QmMiCaUlEomdFr6HKwrNTelqTm5WF6hbMuRS
+         947hr8Rt5s8vHJCTpPa8ECZmc8gtUH+e4EMIxnYRxDISXaJq3GndwvPSjHYyHYEhjPNq
+         puwg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702512538; x=1703117338;
+        h=mime-version:user-agent:content-transfer-encoding:autocrypt
+         :references:in-reply-to:date:cc:to:from:subject:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=q5/M47CiHwU265p/4DazyjJg2apbPY8v/ugoyTcBk3c=;
+        b=UsDbBdIDOum8Rcb2r75cl80he5eExj2l0h72EJXMMDXV/G0TI3NNxhdTz1ab6o/pPa
+         WQ2ZMUiRdOVJ+w7zXE9HB5sv5Vq2f08GkN8UqS7V4g08Zq0AvpWVCYiEyjWqHlkKZa7H
+         uqT02s9HM+pxAseP20VDaZkVNvDba4bnYiT3C64/GJ+BaXShswiUbAwwFuXUPJcyGssq
+         C76wJfFjgrkWX448bxt7xIkp6ckJCDYQ529qak5Yog+HhqOxvS/owgzDZgxCKDEY7czI
+         5m/fAZJieB1PUeEyWg0Y6J405WewWo9wdv/RUFMFq+31OTQCJDhuwwCe3lt4AWZVuUYR
+         EJBQ==
+X-Gm-Message-State: AOJu0YxrmkVtYQASLgHDJrMyA/kgtmLN0jmkTTPJGvP1oBj/IBG4npRA
+        dzkfFTWvMsk0Ie2jFAK8BDE=
+X-Google-Smtp-Source: AGHT+IFaFslENLfjBBN50kKA4B3LRuLG8ZpbGkzeUvfUvfoj0qlRLDQNmS2baKQq3xatQsKhhqBDgQ==
+X-Received: by 2002:a5d:5cc5:0:b0:333:2f1e:cbc4 with SMTP id cg5-20020a5d5cc5000000b003332f1ecbc4mr5131223wrb.13.1702512538293;
+        Wed, 13 Dec 2023 16:08:58 -0800 (PST)
+Received: from [192.168.1.95] (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
+        by smtp.gmail.com with ESMTPSA id h6-20020a5d6886000000b00336430ad57csm1475334wru.106.2023.12.13.16.08.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Dec 2023 16:08:57 -0800 (PST)
+Message-ID: <35be3c5f29ee0e9a49ed29e71044f0ad25d97d9d.camel@gmail.com>
+Subject: Re: [Bug Report] bpf: incorrectly pruning runtime execution path
+From:   Eduard Zingerman <eddyz87@gmail.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Hao Sun <sunhao.th@gmail.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        bpf <bpf@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Date:   Thu, 14 Dec 2023 02:08:56 +0200
+In-Reply-To: <CAEf4BzbGSrU4NgM1Ps0g_ch8G68CWEsP50Y+Wy8-SfYnpHwVGA@mail.gmail.com>
+References: <CACkBjsbj4y4EhqpV-ZVt645UtERJRTxfEab21jXD1ahPyzH4_g@mail.gmail.com>
+         <CAEf4BzZ0xidVCqB47XnkXcNhkPWF6_nTV7yt+_Lf0kcFEut2Mg@mail.gmail.com>
+         <CACkBjsaEQxCaZ0ERRnBXduBqdw3MXB5r7naJx_anqxi0Wa-M_Q@mail.gmail.com>
+         <CAEf4BzbGSrU4NgM1Ps0g_ch8G68CWEsP50Y+Wy8-SfYnpHwVGA@mail.gmail.com>
+Autocrypt: addr=eddyz87@gmail.com; prefer-encrypt=mutual; keydata=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
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.1 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: 3Ik0TkYMBeazdKCvzsrjrQcsREMgJWN_
-X-Proofpoint-ORIG-GUID: 3Ik0TkYMBeazdKCvzsrjrQcsREMgJWN_
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-13_15,2023-12-13_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- adultscore=0 clxscore=1011 bulkscore=0 mlxscore=0 spamscore=0
- suspectscore=0 impostorscore=0 mlxlogscore=734 phishscore=0
- lowpriorityscore=0 malwarescore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2311290000 definitions=main-2312130170
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Reading the scom file without the custom open method (i2cr_scom_open)
-causes a kernel panic. This change replaces simple_open with i2cr_scom_open
-to properly initialize the private_data field in the file structure,
-preventing the panic during scom file operations.
+On Wed, 2023-12-13 at 15:30 -0800, Andrii Nakryiko wrote:
+[...]
+> Yes, thanks, the execution trace above was helpful. Let's try to
+> minimize the example here, I'll keep original instruction indices,
+> though:
+>=20
+>    23: (bf) r5 =3D r8                   ; here we link r5 and r8 together
+>    26: (7e) if w8 s>=3D w0 goto pc+5    ; here it's not always/never
+> taken, so w8 and w0 remain imprecise
+>    28: (0f) r8 +=3D r8                  ; here link between r8 and r5 is =
+broken
+>    29: (d6) if w5 s<=3D 0x1d goto pc+2  ; here we know value of w5 and
+> so it's always/never taken, r5 is marked precise
+>=20
+> Now, if we look at r5's precision log at this instruction:
+>=20
+> 29: (d6) if w5 s<=3D 0x1d goto pc+2
+> mark_precise: frame0: last_idx 29 first_idx 26 subseq_idx -1
+> mark_precise: frame0: regs=3Dr5 stack=3D before 28: (0f) r8 +=3D r8
+> mark_precise: frame0: regs=3Dr5 stack=3D before 27: (4f) r8 |=3D r8
+> mark_precise: frame0: regs=3Dr5 stack=3D before 26: (7e) if w8 s>=3D w0 g=
+oto pc+5
 
-Signed-off-by: Lakshmi Yadlapati <lakshmiy@us.ibm.com>
----
- drivers/fsi/i2cr-scom.c | 11 ++++++++++-
- 1 file changed, 10 insertions(+), 1 deletion(-)
+Sorry, maybe it's time for me to get some sleep, but I don't see an
+issue here. The "before" log is printed by backtrack_insn() before
+instruction is backtracked. So the following:
 
-diff --git a/drivers/fsi/i2cr-scom.c b/drivers/fsi/i2cr-scom.c
-index cb7e02213032..8d65c562b488 100644
---- a/drivers/fsi/i2cr-scom.c
-+++ b/drivers/fsi/i2cr-scom.c
-@@ -73,9 +73,18 @@ static ssize_t i2cr_scom_write(struct file *filep, const char __user *buf, size_
- 	return len;
- }
- 
-+static int i2cr_scom_open(struct inode *inode, struct file *file)
-+{
-+	struct i2cr_scom *scom = container_of(inode->i_cdev, struct i2cr_scom, cdev);
-+
-+	file->private_data = scom;
-+
-+	return 0;
-+}
-+
- static const struct file_operations i2cr_scom_fops = {
- 	.owner		= THIS_MODULE,
--	.open		= simple_open,
-+	.open		= i2cr_scom_open,
- 	.llseek		= i2cr_scom_llseek,
- 	.read		= i2cr_scom_read,
- 	.write		= i2cr_scom_write,
--- 
-2.39.2
+> mark_precise: frame0: regs=3Dr5 stack=3D before 26: (7e) if w8 s>=3D w0 g=
+oto pc+5
 
+Is a state of backtracker before "if w8 s>=3D w0 ..." is processed.
+But running the test case I've shared wider precision trace for
+this instruction looks as follows:
+
+  26: (7e) if w8 s>=3D w0 goto pc+5       ; R0=3Dscalar(smin=3Dsmin32=3D0,s=
+max=3Dumax=3Dsmax32=3Dumax32=3D2,var_off=3D(0x0; 0x3))
+                                          R8=3Dscalar(id=3D2,smax32=3D1)
+  27: (4f) r8 |=3D r8                     ; R8_w=3Dscalar()
+  28: (0f) r8 +=3D r8                     ; R8_w=3Dscalar()
+  29: (d6) if w5 s<=3D 0x1d goto pc+2
+  mark_precise: frame0: last_idx 29 first_idx 26 subseq_idx -1=20
+  mark_precise: frame0: regs=3Dr5 stack=3D before 28: (0f) r8 +=3D r8
+  mark_precise: frame0: regs=3Dr5 stack=3D before 27: (4f) r8 |=3D r8
+  mark_precise: frame0: regs=3Dr5 stack=3D before 26: (7e) if w8 s>=3D w0 g=
+oto pc+5
+  mark_precise: frame0: parent state regs=3Dr5 stack=3D:=20
+     R0_rw=3Dscalar(smin=3Dsmin32=3D0,smax=3Dumax=3Dsmax32=3Dumax32=3D2,var=
+_off=3D(0x0; 0x3))
+     R2_w=3D4
+     R3_w=3D0x1f00000034
+     R4_w=3Dscalar(smin=3D0,smax=3Dumax=3D0x3fffffffc,smax32=3D0x7ffffffc,u=
+max32=3D0xfffffffc,
+                 var_off=3D(0x0; 0x3fffffffc))
+     R5_rw=3DPscalar(id=3D2)
+     R8_rw=3Dscalar(id=3D2) R10=3Dfp0
+  mark_precise: frame0: last_idx 24 first_idx 11 subseq_idx 26=20
+  mark_precise: frame0: regs=3Dr5,r8 stack=3D before 24: (18) r2 =3D 0x4   =
+  <------ !!!
+  mark_precise: frame0: regs=3Dr5,r8 stack=3D before 23: (bf) r5 =3D r8
+  mark_precise: frame0: regs=3Dr8 stack=3D before 22: (67) r4 <<=3D 2
+  ...
+
+Note, that right after "if w8 s>=3D w0 goto pc+5" is processed the
+backtracker state is:
+
+  mark_precise: frame0: regs=3Dr5,r8 stack=3D before 24: (18) r2 =3D 0x4
+
+So both r5 and r8 are accounted for.
+
+> Note how at this instruction r5 and r8 *WERE* linked together, but we
+> already lost this information for backtracking. So we don't mark w8 as
+> precise. That's one part of the problem.
+>=20
+> The second part is that even if we knew that w8/r8 is precise, should
+> we mark w0/r0 as precise? I actually need to think about this some
+> more. Right now for conditional jumps we eagerly mark precision for
+> both registers only in always/never taken scenarios.
+>=20
+> For now just narrowing down the issue, as I'm sure not many people
+> followed all the above stuff carefully.
+>=20
+>=20
+> P.S. For solving tracking of linked registers we can probably utilize
+> instruction history, though technically they can be spread across
+> multiple frames, between registers and stack slots, so that's a bit
+> tricky.
+
+For precision back-propagation we currently rely on id values stored
+in the parent state, when moving up from child to parent boundary.
