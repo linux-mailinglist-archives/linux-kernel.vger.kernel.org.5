@@ -2,50 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CA13812A65
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 09:30:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C8A49812A70
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 09:31:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235662AbjLNIac (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 03:30:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55596 "EHLO
+        id S235622AbjLNIbp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 03:31:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46428 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235613AbjLNIaY (ORCPT
+        with ESMTP id S234448AbjLNIbd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 03:30:24 -0500
+        Thu, 14 Dec 2023 03:31:33 -0500
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id D3E41123;
-        Thu, 14 Dec 2023 00:30:21 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id A1CC812A;
+        Thu, 14 Dec 2023 00:31:39 -0800 (PST)
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2A76EC15;
-        Thu, 14 Dec 2023 00:31:07 -0800 (PST)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 021BEC15;
+        Thu, 14 Dec 2023 00:32:25 -0800 (PST)
 Received: from [10.57.85.242] (unknown [10.57.85.242])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id BAAEC3F5A1;
-        Thu, 14 Dec 2023 00:30:16 -0800 (PST)
-Message-ID: <274a6562-46c9-4b03-9295-c24e5eb9e6cd@arm.com>
-Date:   Thu, 14 Dec 2023 08:31:19 +0000
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 3249B3F5A1;
+        Thu, 14 Dec 2023 00:31:34 -0800 (PST)
+Message-ID: <2c2fad2b-89ce-437e-96b3-f06e6f99639f@arm.com>
+Date:   Thu, 14 Dec 2023 08:32:38 +0000
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 4/4] sched: Rename arch_update_thermal_pressure into
- arch_update_hw_pressure
+Subject: Re: [PATCH 0/5] Rework system pressure interface to the scheduler
 Content-Language: en-US
 To:     Vincent Guittot <vincent.guittot@linaro.org>
-References: <20231212142730.998913-1-vincent.guittot@linaro.org>
- <20231212142730.998913-5-vincent.guittot@linaro.org>
-Cc:     catalin.marinas@arm.com, bristot@redhat.com,
-        linux-pm@vger.kernel.org, juri.lelli@redhat.com, agross@kernel.org,
-        viresh.kumar@linaro.org, rafael@kernel.org,
-        linux-kernel@vger.kernel.org, rui.zhang@intel.com,
-        dietmar.eggemann@arm.com, mgorman@suse.de,
-        linux-trace-kernel@vger.kernel.org, mingo@redhat.com,
-        peterz@infradead.org, konrad.dybcio@linaro.org,
-        andersson@kernel.org, rostedt@goodmis.org,
-        linux-arm-msm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, bsegall@google.com,
-        vschneid@redhat.com, will@kernel.org, sudeep.holla@arm.com,
+Cc:     catalin.marinas@arm.com, will@kernel.org,
+        linux-trace-kernel@vger.kernel.org, amit.kachhap@gmail.com,
         daniel.lezcano@linaro.org, mhiramat@kernel.org,
-        amit.kachhap@gmail.com
+        vschneid@redhat.com, bristot@redhat.com, mgorman@suse.de,
+        bsegall@google.com, juri.lelli@redhat.com, peterz@infradead.org,
+        mingo@redhat.com, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, konrad.dybcio@linaro.org,
+        andersson@kernel.org, agross@kernel.org, rui.zhang@intel.com,
+        viresh.kumar@linaro.org, rafael@kernel.org, sudeep.holla@arm.com,
+        dietmar.eggemann@arm.com, rostedt@goodmis.org,
+        linux-arm-kernel@lists.infradead.org, linux-arm-msm@vger.kernel.org
+References: <20231212142730.998913-1-vincent.guittot@linaro.org>
+ <47b4cbcb-d33d-4699-a148-0108cf734e23@arm.com>
+ <CAKfTPtATWSWdk1dhnMvBqTZigtprv7d_0j0zpf48WfVDfMit5g@mail.gmail.com>
 From:   Lukasz Luba <lukasz.luba@arm.com>
-In-Reply-To: <20231212142730.998913-5-vincent.guittot@linaro.org>
+In-Reply-To: <CAKfTPtATWSWdk1dhnMvBqTZigtprv7d_0j0zpf48WfVDfMit5g@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
@@ -58,282 +56,74 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-On 12/12/23 14:27, Vincent Guittot wrote:
-> Now that cpufreq provides a pressure value to the scheduler, rename
-> arch_update_thermal_pressure into hw pressure to reflect that it returns
-> a pressure applied by HW with a high frequency and which needs filtering.
 
-I would elaborte this meaning 'filtering' here. Something like:
-'... high frequency and which needs filtering to smooth the singal and
-get an average value. That reflects available capacity of the CPU in
-longer period'
-
-> This pressure is not always related to thermal mitigation but can also be
-> generated by max current limitation as an example.
+On 12/14/23 08:29, Vincent Guittot wrote:
+> On Thu, 14 Dec 2023 at 09:21, Lukasz Luba <lukasz.luba@arm.com> wrote:
+>>
+>> Hi Vincent,
+>>
+>> I've been waiting for this feature, thanks!
+>>
+>>
+>> On 12/12/23 14:27, Vincent Guittot wrote:
+>>> Following the consolidation and cleanup of CPU capacity in [1], this serie
+>>> reworks how the scheduler gets the pressures on CPUs. We need to take into
+>>> account all pressures applied by cpufreq on the compute capacity of a CPU
+>>> for dozens of ms or more and not only cpufreq cooling device or HW
+>>> mitigiations. we split the pressure applied on CPU's capacity in 2 parts:
+>>> - one from cpufreq and freq_qos
+>>> - one from HW high freq mitigiation.
+>>>
+>>> The next step will be to add a dedicated interface for long standing
+>>> capping of the CPU capacity (i.e. for seconds or more) like the
+>>> scaling_max_freq of cpufreq sysfs. The latter is already taken into
+>>> account by this serie but as a temporary pressure which is not always the
+>>> best choice when we know that it will happen for seconds or more.
+>>>
+>>> [1] https://lore.kernel.org/lkml/20231211104855.558096-1-vincent.guittot@linaro.org/
+>>>
+>>> Vincent Guittot (4):
+>>>     cpufreq: Add a cpufreq pressure feedback for the scheduler
+>>>     sched: Take cpufreq feedback into account
+>>>     thermal/cpufreq: Remove arch_update_thermal_pressure()
+>>>     sched: Rename arch_update_thermal_pressure into
+>>>       arch_update_hw_pressure
+>>>
+>>>    arch/arm/include/asm/topology.h               |  6 +--
+>>>    arch/arm64/include/asm/topology.h             |  6 +--
+>>>    drivers/base/arch_topology.c                  | 26 ++++-----
+>>>    drivers/cpufreq/cpufreq.c                     | 48 +++++++++++++++++
+>>>    drivers/cpufreq/qcom-cpufreq-hw.c             |  4 +-
+>>>    drivers/thermal/cpufreq_cooling.c             |  3 --
+>>>    include/linux/arch_topology.h                 |  8 +--
+>>>    include/linux/cpufreq.h                       | 10 ++++
+>>>    include/linux/sched/topology.h                |  8 +--
+>>>    .../{thermal_pressure.h => hw_pressure.h}     | 14 ++---
+>>>    include/trace/events/sched.h                  |  2 +-
+>>>    init/Kconfig                                  | 12 ++---
+>>>    kernel/sched/core.c                           |  8 +--
+>>>    kernel/sched/fair.c                           | 53 ++++++++++---------
+>>>    kernel/sched/pelt.c                           | 18 +++----
+>>>    kernel/sched/pelt.h                           | 16 +++---
+>>>    kernel/sched/sched.h                          |  4 +-
+>>>    17 files changed, 152 insertions(+), 94 deletions(-)
+>>>    rename include/trace/events/{thermal_pressure.h => hw_pressure.h} (55%)
+>>>
+>>
+>> I would like to test it, but something worries me. Why there is 0/5 in
+>> this subject and only 4 patches?
 > 
-> Signed-off-by: Vincent Guittot <vincent.guittot@linaro.org>
-> ---
->   arch/arm/include/asm/topology.h               |  6 ++---
->   arch/arm64/include/asm/topology.h             |  6 ++---
->   drivers/base/arch_topology.c                  | 26 +++++++++----------
->   drivers/cpufreq/qcom-cpufreq-hw.c             |  4 +--
->   include/linux/arch_topology.h                 |  8 +++---
->   include/linux/sched/topology.h                |  8 +++---
->   .../{thermal_pressure.h => hw_pressure.h}     | 14 +++++-----
->   include/trace/events/sched.h                  |  2 +-
->   init/Kconfig                                  | 12 ++++-----
->   kernel/sched/core.c                           |  8 +++---
->   kernel/sched/fair.c                           | 12 ++++-----
->   kernel/sched/pelt.c                           | 18 ++++++-------
->   kernel/sched/pelt.h                           | 16 ++++++------
->   kernel/sched/sched.h                          |  4 +--
->   14 files changed, 72 insertions(+), 72 deletions(-)
->   rename include/trace/events/{thermal_pressure.h => hw_pressure.h} (55%)
+> I removed a patch from the series but copied/pasted the cover letter
+> subject without noticing the /5 instead of /4
+
+OK
+
 > 
-> diff --git a/arch/arm/include/asm/topology.h b/arch/arm/include/asm/topology.h
-> index 853c4f81ba4a..e175e8596b5d 100644
-> --- a/arch/arm/include/asm/topology.h
-> +++ b/arch/arm/include/asm/topology.h
-> @@ -22,9 +22,9 @@
->   /* Enable topology flag updates */
->   #define arch_update_cpu_topology topology_update_cpu_topology
->   
-> -/* Replace task scheduler's default thermal pressure API */
-> -#define arch_scale_thermal_pressure topology_get_thermal_pressure
-> -#define arch_update_thermal_pressure	topology_update_thermal_pressure
-> +/* Replace task scheduler's default hw pressure API */
-> +#define arch_scale_hw_pressure topology_get_hw_pressure
-> +#define arch_update_hw_pressure	topology_update_hw_pressure
->   
->   #else
->   
-> diff --git a/arch/arm64/include/asm/topology.h b/arch/arm64/include/asm/topology.h
-> index a323b109b9c4..a427650bdfba 100644
-> --- a/arch/arm64/include/asm/topology.h
-> +++ b/arch/arm64/include/asm/topology.h
-> @@ -35,9 +35,9 @@ void update_freq_counters_refs(void);
->   /* Enable topology flag updates */
->   #define arch_update_cpu_topology topology_update_cpu_topology
->   
-> -/* Replace task scheduler's default thermal pressure API */
-> -#define arch_scale_thermal_pressure topology_get_thermal_pressure
-> -#define arch_update_thermal_pressure	topology_update_thermal_pressure
-> +/* Replace task scheduler's default hw pressure API */
+>>
+>> Could you tell me your base branch that I can apply this, please?
+> 
+> It applies on top of tip/sched/core + [1]
+> and you can find it here:
+> https://git.linaro.org/people/vincent.guittot/kernel.git/log/?h=sched/system-pressure
 
-s/hw/HW/ ?
-
-> +#define arch_scale_hw_pressure topology_get_hw_pressure
-> +#define arch_update_hw_pressure	topology_update_hw_pressure
->   
->   #include <asm-generic/topology.h>
->   
-> diff --git a/drivers/base/arch_topology.c b/drivers/base/arch_topology.c
-> index 0906114963ff..3d8dc9d5c3ad 100644
-> --- a/drivers/base/arch_topology.c
-> +++ b/drivers/base/arch_topology.c
-> @@ -22,7 +22,7 @@
->   #include <linux/units.h>
->   
->   #define CREATE_TRACE_POINTS
-> -#include <trace/events/thermal_pressure.h>
-> +#include <trace/events/hw_pressure.h>
->   
->   static DEFINE_PER_CPU(struct scale_freq_data __rcu *, sft_data);
->   static struct cpumask scale_freq_counters_mask;
-> @@ -160,26 +160,26 @@ void topology_set_cpu_scale(unsigned int cpu, unsigned long capacity)
->   	per_cpu(cpu_scale, cpu) = capacity;
->   }
->   
-> -DEFINE_PER_CPU(unsigned long, thermal_pressure);
-> +DEFINE_PER_CPU(unsigned long, hw_pressure);
->   
->   /**
-> - * topology_update_thermal_pressure() - Update thermal pressure for CPUs
-> + * topology_update_hw_pressure() - Update hw pressure for CPUs
-
-same here: HW?
-
->    * @cpus        : The related CPUs for which capacity has been reduced
->    * @capped_freq : The maximum allowed frequency that CPUs can run at
->    *
-> - * Update the value of thermal pressure for all @cpus in the mask. The
-> + * Update the value of hw pressure for all @cpus in the mask. The
-
-HW?
-
->    * cpumask should include all (online+offline) affected CPUs, to avoid
->    * operating on stale data when hot-plug is used for some CPUs. The
->    * @capped_freq reflects the currently allowed max CPUs frequency due to
-> - * thermal capping. It might be also a boost frequency value, which is bigger
-> + * hw capping. It might be also a boost frequency value, which is bigger
-
-HW?
-
->    * than the internal 'capacity_freq_ref' max frequency. In such case the
->    * pressure value should simply be removed, since this is an indication that
-> - * there is no thermal throttling. The @capped_freq must be provided in kHz.
-> + * there is no hw throttling. The @capped_freq must be provided in kHz.
-
-HW?
-
->    */
-> -void topology_update_thermal_pressure(const struct cpumask *cpus,
-> +void topology_update_hw_pressure(const struct cpumask *cpus,
->   				      unsigned long capped_freq)
->   {
-> -	unsigned long max_capacity, capacity, th_pressure;
-> +	unsigned long max_capacity, capacity, hw_pressure;
->   	u32 max_freq;
->   	int cpu;
->   
-> @@ -189,21 +189,21 @@ void topology_update_thermal_pressure(const struct cpumask *cpus,
->   
->   	/*
->   	 * Handle properly the boost frequencies, which should simply clean
-> -	 * the thermal pressure value.
-> +	 * the hw pressure value.
-
-HW?
-
->   	 */
->   	if (max_freq <= capped_freq)
->   		capacity = max_capacity;
->   	else
->   		capacity = mult_frac(max_capacity, capped_freq, max_freq);
->   
-> -	th_pressure = max_capacity - capacity;
-> +	hw_pressure = max_capacity - capacity;
->   
-> -	trace_thermal_pressure_update(cpu, th_pressure);
-> +	trace_hw_pressure_update(cpu, hw_pressure);
->   
->   	for_each_cpu(cpu, cpus)
-> -		WRITE_ONCE(per_cpu(thermal_pressure, cpu), th_pressure);
-> +		WRITE_ONCE(per_cpu(hw_pressure, cpu), hw_pressure);
->   }
-> -EXPORT_SYMBOL_GPL(topology_update_thermal_pressure);
-> +EXPORT_SYMBOL_GPL(topology_update_hw_pressure);
->   
->   static ssize_t cpu_capacity_show(struct device *dev,
->   				 struct device_attribute *attr,
-> diff --git a/drivers/cpufreq/qcom-cpufreq-hw.c b/drivers/cpufreq/qcom-cpufreq-hw.c
-> index 70b0f21968a0..a619202ba81d 100644
-> --- a/drivers/cpufreq/qcom-cpufreq-hw.c
-> +++ b/drivers/cpufreq/qcom-cpufreq-hw.c
-> @@ -347,8 +347,8 @@ static void qcom_lmh_dcvs_notify(struct qcom_cpufreq_data *data)
->   
->   	throttled_freq = freq_hz / HZ_PER_KHZ;
->   
-> -	/* Update thermal pressure (the boost frequencies are accepted) */
-> -	arch_update_thermal_pressure(policy->related_cpus, throttled_freq);
-> +	/* Update hw pressure (the boost frequencies are accepted) */
-
-HW?
-
-> +	arch_update_hw_pressure(policy->related_cpus, throttled_freq);
->   
-
-[snip]
-
->   
->   	if (housekeeping_cpu(cpu, HK_TYPE_TICK))
-> @@ -5669,8 +5669,8 @@ void scheduler_tick(void)
->   	rq_lock(rq, &rf);
->   
->   	update_rq_clock(rq);
-> -	thermal_pressure = arch_scale_thermal_pressure(cpu_of(rq));
-> -	update_thermal_load_avg(rq_clock_thermal(rq), rq, thermal_pressure);
-> +	hw_pressure = arch_scale_hw_pressure(cpu_of(rq));
-> +	update_hw_load_avg(rq_clock_task(rq), rq, hw_pressure);
-
-We switch to task clock here, could you tell me why?
-Don't we have to maintain the boot command parameter for the shift?
-
->   	curr->sched_class->task_tick(rq, curr, 0);
->   	if (sched_feat(LATENCY_WARN))
->   		resched_latency = cpu_resched_latency(rq);
-> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index 11d3be829302..07050955d6e0 100644
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -4936,7 +4936,7 @@ static inline unsigned long get_actual_cpu_capacity(int cpu)
->   {
->   	unsigned long capacity = arch_scale_cpu_capacity(cpu);
->   
-> -	capacity -= max(thermal_load_avg(cpu_rq(cpu)), cpufreq_get_pressure(cpu));
-> +	capacity -= max(hw_load_avg(cpu_rq(cpu)), cpufreq_get_pressure(cpu));
->   
->   	return capacity;
->   }
-> @@ -4968,7 +4968,7 @@ static inline int util_fits_cpu(unsigned long util,
->   	 * Similarly if a task is capped to arch_scale_cpu_capacity(little_cpu), it
->   	 * should fit a little cpu even if there's some pressure.
->   	 *
-> -	 * Only exception is for thermal pressure since it has a direct impact
-> +	 * Only exception is for hw or cpufreq pressure since it has a direct impact
-
-HW?
-
->   	 * on available OPP of the system.
->   	 *
->   	 * We honour it for uclamp_min only as a drop in performance level
-> @@ -9224,7 +9224,7 @@ static inline bool others_have_blocked(struct rq *rq)
->   	if (READ_ONCE(rq->avg_dl.util_avg))
->   		return true;
->   
-> -	if (thermal_load_avg(rq))
-> +	if (hw_load_avg(rq))
->   		return true;
->   
->   #ifdef CONFIG_HAVE_SCHED_AVG_IRQ
-> @@ -9256,7 +9256,7 @@ static bool __update_blocked_others(struct rq *rq, bool *done)
->   {
->   	const struct sched_class *curr_class;
->   	u64 now = rq_clock_pelt(rq);
-> -	unsigned long thermal_pressure;
-> +	unsigned long hw_pressure;
->   	bool decayed;
->   
->   	/*
-> @@ -9265,11 +9265,11 @@ static bool __update_blocked_others(struct rq *rq, bool *done)
->   	 */
->   	curr_class = rq->curr->sched_class;
->   
-> -	thermal_pressure = arch_scale_thermal_pressure(cpu_of(rq));
-> +	hw_pressure = arch_scale_hw_pressure(cpu_of(rq));
->   
->   	decayed = update_rt_rq_load_avg(now, rq, curr_class == &rt_sched_class) |
->   		  update_dl_rq_load_avg(now, rq, curr_class == &dl_sched_class) |
-> -		  update_thermal_load_avg(rq_clock_thermal(rq), rq, thermal_pressure) |
-> +		  update_hw_load_avg(now, rq, hw_pressure) |
-
-Here also the rq_clock_thermal() is not used anymore. Shouldn't we
-remove the rq_clock_thermal() if not used anymore (I cannot se this in
-the patch)?
-
->   		  update_irq_load_avg(rq, 0);
->   
->   	if (others_have_blocked(rq))
-
-[snip]
-
-> diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-> index e58a54bda77d..7eaf186d071e 100644
-> --- a/kernel/sched/sched.h
-> +++ b/kernel/sched/sched.h
-> @@ -1078,8 +1078,8 @@ struct rq {
->   #ifdef CONFIG_HAVE_SCHED_AVG_IRQ
->   	struct sched_avg	avg_irq;
->   #endif
-> -#ifdef CONFIG_SCHED_THERMAL_PRESSURE
-> -	struct sched_avg	avg_thermal;
-> +#ifdef CONFIG_SCHED_HW_PRESSURE
-> +	struct sched_avg	avg_hw;
->   #endif
->   	u64			idle_stamp;
->   	u64			avg_idle;
-
-I don't see that rq_clock_thermal() removal in this header.
-Maybe I miss some patch?
-
-BTW, I like the name 'HW pressure' for this information/signal.
+Thanks for the info and handy link.
