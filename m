@@ -2,74 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E2BDA81371A
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 17:59:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6997981371F
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 18:00:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230192AbjLNQ67 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 11:58:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53732 "EHLO
+        id S1443593AbjLNQ77 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 11:59:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35080 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229451AbjLNQ66 (ORCPT
+        with ESMTP id S229743AbjLNQ75 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 11:58:58 -0500
-Received: from mail.alien8.de (mail.alien8.de [IPv6:2a01:4f9:3051:3f93::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BEFAB7;
-        Thu, 14 Dec 2023 08:59:04 -0800 (PST)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 4511140E014B;
-        Thu, 14 Dec 2023 16:59:02 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-        header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id XaqjZfZWziAL; Thu, 14 Dec 2023 16:59:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-        t=1702573139; bh=CRyA3kt/MINT0pQrhYvKMWzWXjiH97CfyNBCklL4uuM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=dFbgypeJeubtWY1fTt8gDNOF+r3uoa1KG/GZnxSe3a9Y723iEJogp94cSIrFGVeD8
-         Dggv0EUFpL/UkFDpT/t0sZrPS5Er00xWFGqnUZw67xh/dZHJv21s9L76po+FumIudf
-         I3/IApGn/+07anBqY09HVxLdyMltDh+uWjUgC5m4dfuTHo7mC3sfAI1x7+psYXPbns
-         K4HkXy3VeEPDq8PJrYwgKPBqaHDkePt9Yyf5aOOmnLqWzKRjYRaICVrGBmh0NK2eHP
-         dnlbBBLNtTuYpK+YId+8AQPDWNEVEN0s+/f1+oNYIyWSbureRQ1sJGftxduSII1efr
-         Slfk8Caw1/zwVr6BmpNcqm02/ZMg4+bBjKogxWqZSQlMS0f8zpv3qeqdoJjkWh4H8f
-         kt+vJNd7uDCLigefgz8X1rvP/yvL8VcQWAxPgGHMssgey0JsII7/YmX6fN41ruairK
-         futeoT+wWP7/ArNa3FizB5gl2Nx9EeE7qgDeQ73xMCMtzJrMFFJ2cvkVvdbH51CLLO
-         1FVVp/RKuqCjXT3NxoUJ4F5fvNJZhBeeMF+pFht9stUkSlwrM3ay3b0V1pIsMQK+XE
-         5+RWvVRT9IdfSmMVuND1Erged0kJF/RN+GXcWkmXNNUgaMvI1MiX1/5G/5gxsJZwuZ
-         g/S60tySQoi0NVWfBam5h82o=
-Received: from zn.tnic (pd95304da.dip0.t-ipconnect.de [217.83.4.218])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-        (No client certificate requested)
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id A6E9440E00CB;
-        Thu, 14 Dec 2023 16:58:51 +0000 (UTC)
-Date:   Thu, 14 Dec 2023 17:58:46 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     Tony Luck <tony.luck@intel.com>
-Cc:     Yazen Ghannam <yazen.ghannam@amd.com>,
-        Smita.KoralahalliChannabasappa@amd.com,
-        dave.hansen@linux.intel.com, x86@kernel.org,
-        linux-edac@vger.kernel.org, linux-kernel@vger.kernel.org,
-        patches@lists.linux.dev
-Subject: Re: [PATCH v9 2/3] x86/mce: Add per-bank CMCI storm mitigation
-Message-ID: <20231214165846.GOZXs0RqkbpovdQWKH@fat_crate.local>
-References: <20231004183623.17067-1-tony.luck@intel.com>
- <20231004183623.17067-3-tony.luck@intel.com>
- <20231019151211.GHZTFHS3osBIL1IJbF@fat_crate.local>
- <ZTa37L2nlnbok8dz@agluck-desk3>
- <20231114192324.GAZVPJLGZmfJBS181/@fat_crate.local>
- <ZVPu/hX9b7lUkrBY@agluck-desk3>
- <20231121115448.GCZVyaiNkNvb4t2NxB@fat_crate.local>
- <ZWTzAujHdrJ950F3@agluck-desk3>
- <ZWT4pAJ6g0i78wec@agluck-desk3>
- <ZWU3WkmUMz3Wk9wT@agluck-desk3>
+        Thu, 14 Dec 2023 11:59:57 -0500
+Received: from zg8tmty3ljk5ljewns4xndka.icoremail.net (zg8tmty3ljk5ljewns4xndka.icoremail.net [167.99.105.149])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id BE0C79A
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 09:00:02 -0800 (PST)
+Received: from luzhipeng.223.5.5.5 (unknown [115.200.224.93])
+        by mail-app4 (Coremail) with SMTP id cS_KCgCHjTWKNHtlNyaWAA--.38081S2;
+        Fri, 15 Dec 2023 00:59:54 +0800 (CST)
+From:   Zhipeng Lu <alexious@zju.edu.cn>
+To:     alexious@zju.edu.cn
+Cc:     Evan Quan <evan.quan@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Kees Cook <keescook@chromium.org>,
+        Azeem Shaikh <azeemshaikh38@gmail.com>,
+        Lijo Lazar <lijo.lazar@amd.com>, amd-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] drm/amd/pm: fix a double-free in amdgpu_parse_extended_power_table
+Date:   Fri, 15 Dec 2023 00:59:38 +0800
+Message-Id: <20231214165941.3484829-1-alexious@zju.edu.cn>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <ZWU3WkmUMz3Wk9wT@agluck-desk3>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: cS_KCgCHjTWKNHtlNyaWAA--.38081S2
+X-Coremail-Antispam: 1UD129KBjvJXoW3XrW3Cr4kWFWktryUtw4ktFb_yoWfGry8pF
+        Z3Gr9xKry5Xr18Xr42qr4jvr1q9w4q9w4UGryUAry5ta47uryF93Z3ArWYva4kuFZ7uwnr
+        tFWjqFyDZa10gF7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvC14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
+        JVWxJr1l84ACjcxK6I8E87Iv67AKxVWxJr0_GcWl84ACjcxK6I8E87Iv6xkF7I0E14v26r
+        xl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj
+        6xIIjxv20xvE14v26r1Y6r17McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr
+        0_Gr1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7M4IIrI8v6xkF7I0E
+        8cxan2IY04v7MxkIecxEwVAFwVWUMxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r
+        1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CE
+        b7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0x
+        vE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAI
+        cVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2Kf
+        nxnUUI43ZEXa7VUUQVy7UUUUU==
+X-CM-SenderInfo: qrsrjiarszq6lmxovvfxof0/
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -78,67 +64,190 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 27, 2023 at 04:42:02PM -0800, Tony Luck wrote:
-> On Mon, Nov 27, 2023 at 12:14:28PM -0800, Tony Luck wrote:
-> > On Mon, Nov 27, 2023 at 11:50:26AM -0800, Tony Luck wrote:
-> > > On Tue, Nov 21, 2023 at 12:54:48PM +0100, Borislav Petkov wrote:
-> > > > On Tue, Nov 14, 2023 at 02:04:46PM -0800, Tony Luck wrote:
-> > > But it isn't doing the same thing.  The timer calls:
-> > > 
-> > > 	machine_check_poll(0, this_cpu_ptr(&mce_poll_banks));
-> > > 
-> > > and cmci_mc_poll_banks() calls:
-> > > 
-> > > 	machine_check_poll(0, this_cpu_ptr(&mce_poll_banks));
-> 
->         machine_check_poll(0, this_cpu_ptr(&mce_banks_owned));
+The amdgpu_free_extended_power_table is called in every error-handling
+paths of amdgpu_parse_extended_power_table. However, after the following
+call chain of returning:
 
-Hmm, so I applied your v10 and this call with mce_banks_owned is done in
-cmci_recheck() only. Which is on some init path.
+amdgpu_parse_extended_power_table
+  |-> kv_dpm_init / si_dpm_init
+      (the only two caller of amdgpu_parse_extended_power_table)
+        |-> kv_dpm_sw_init / si_dpm_sw_init
+            (the only caller of kv_dpm_init / si_dpm_init, accordingly)
+              |-> kv_dpm_fini / si_dpm_fini
+                  (goto dpm_failed in xx_dpm_sw_init)
+                    |-> amdgpu_free_extended_power_table
 
-The thresholding interrupt calls it too.
+As above, the amdgpu_free_extended_power_table is called twice in this
+returning chain and thus a double-free is triggered. Similarily, the
+last kfree in amdgpu_parse_extended_power_table also cause a double free
+with amdgpu_free_extended_power_table in kv_dpm_fini.
 
-The timer ends up calling mc_poll_banks_default() which does
+Fixes: 84176663e70d ("drm/amd/pm: create a new holder for those APIs used only by legacy ASICs(si/kv)")
+Signed-off-by: Zhipeng Lu <alexious@zju.edu.cn>
+---
+ .../gpu/drm/amd/pm/legacy-dpm/legacy_dpm.c    | 52 +++++--------------
+ 1 file changed, 13 insertions(+), 39 deletions(-)
 
-	machine_check_poll(0, this_cpu_ptr(&mce_poll_banks));
-
-I presume we don't do:
-
-        if (!cmci_supported(&banks)) {
-                mc_poll_banks = cmci_mc_poll_banks;
-                return;
-        }
-
-usually on Intel. And even if we did, cmci_mc_poll_banks() calls
-
-	machine_check_poll(0, this_cpu_ptr(&mce_poll_banks));
-
-too.
-
-So regardless what machine you have, you do call the mc_poll_banks
-pointer which in both cases does
-
-	machine_check_poll(0, this_cpu_ptr(&mce_poll_banks));
-
-The *thresholding* interrupt does
-
-	machine_check_poll(0, this_cpu_ptr(&mce_banks_owned));
-
-and you're saying
-
-	mce_poll_banks and mce_banks_owned
-
-are disjoint.
-
-That's what you mean, right?
-
-Because if so, yes, that makes sense. If the sets of MCA banks polled
-and handled in the thresholding interrupt are disjoint, we should be ok.
-
-Thx.
-
+diff --git a/drivers/gpu/drm/amd/pm/legacy-dpm/legacy_dpm.c b/drivers/gpu/drm/amd/pm/legacy-dpm/legacy_dpm.c
+index 81fb4e5dd804..60377747bab4 100644
+--- a/drivers/gpu/drm/amd/pm/legacy-dpm/legacy_dpm.c
++++ b/drivers/gpu/drm/amd/pm/legacy-dpm/legacy_dpm.c
+@@ -272,10 +272,8 @@ int amdgpu_parse_extended_power_table(struct amdgpu_device *adev)
+ 				 le16_to_cpu(power_info->pplib4.usVddcDependencyOnSCLKOffset));
+ 			ret = amdgpu_parse_clk_voltage_dep_table(&adev->pm.dpm.dyn_state.vddc_dependency_on_sclk,
+ 								 dep_table);
+-			if (ret) {
+-				amdgpu_free_extended_power_table(adev);
++			if (ret)
+ 				return ret;
+-			}
+ 		}
+ 		if (power_info->pplib4.usVddciDependencyOnMCLKOffset) {
+ 			dep_table = (ATOM_PPLIB_Clock_Voltage_Dependency_Table *)
+@@ -283,10 +281,8 @@ int amdgpu_parse_extended_power_table(struct amdgpu_device *adev)
+ 				 le16_to_cpu(power_info->pplib4.usVddciDependencyOnMCLKOffset));
+ 			ret = amdgpu_parse_clk_voltage_dep_table(&adev->pm.dpm.dyn_state.vddci_dependency_on_mclk,
+ 								 dep_table);
+-			if (ret) {
+-				amdgpu_free_extended_power_table(adev);
++			if (ret)
+ 				return ret;
+-			}
+ 		}
+ 		if (power_info->pplib4.usVddcDependencyOnMCLKOffset) {
+ 			dep_table = (ATOM_PPLIB_Clock_Voltage_Dependency_Table *)
+@@ -294,10 +290,8 @@ int amdgpu_parse_extended_power_table(struct amdgpu_device *adev)
+ 				 le16_to_cpu(power_info->pplib4.usVddcDependencyOnMCLKOffset));
+ 			ret = amdgpu_parse_clk_voltage_dep_table(&adev->pm.dpm.dyn_state.vddc_dependency_on_mclk,
+ 								 dep_table);
+-			if (ret) {
+-				amdgpu_free_extended_power_table(adev);
++			if (ret)
+ 				return ret;
+-			}
+ 		}
+ 		if (power_info->pplib4.usMvddDependencyOnMCLKOffset) {
+ 			dep_table = (ATOM_PPLIB_Clock_Voltage_Dependency_Table *)
+@@ -305,10 +299,8 @@ int amdgpu_parse_extended_power_table(struct amdgpu_device *adev)
+ 				 le16_to_cpu(power_info->pplib4.usMvddDependencyOnMCLKOffset));
+ 			ret = amdgpu_parse_clk_voltage_dep_table(&adev->pm.dpm.dyn_state.mvdd_dependency_on_mclk,
+ 								 dep_table);
+-			if (ret) {
+-				amdgpu_free_extended_power_table(adev);
++			if (ret)
+ 				return ret;
+-			}
+ 		}
+ 		if (power_info->pplib4.usMaxClockVoltageOnDCOffset) {
+ 			ATOM_PPLIB_Clock_Voltage_Limit_Table *clk_v =
+@@ -339,10 +331,8 @@ int amdgpu_parse_extended_power_table(struct amdgpu_device *adev)
+ 				kcalloc(psl->ucNumEntries,
+ 					sizeof(struct amdgpu_phase_shedding_limits_entry),
+ 					GFP_KERNEL);
+-			if (!adev->pm.dpm.dyn_state.phase_shedding_limits_table.entries) {
+-				amdgpu_free_extended_power_table(adev);
++			if (!adev->pm.dpm.dyn_state.phase_shedding_limits_table.entries)
+ 				return -ENOMEM;
+-			}
+ 
+ 			entry = &psl->entries[0];
+ 			for (i = 0; i < psl->ucNumEntries; i++) {
+@@ -383,10 +373,8 @@ int amdgpu_parse_extended_power_table(struct amdgpu_device *adev)
+ 			ATOM_PPLIB_CAC_Leakage_Record *entry;
+ 			u32 size = cac_table->ucNumEntries * sizeof(struct amdgpu_cac_leakage_table);
+ 			adev->pm.dpm.dyn_state.cac_leakage_table.entries = kzalloc(size, GFP_KERNEL);
+-			if (!adev->pm.dpm.dyn_state.cac_leakage_table.entries) {
+-				amdgpu_free_extended_power_table(adev);
++			if (!adev->pm.dpm.dyn_state.cac_leakage_table.entries)
+ 				return -ENOMEM;
+-			}
+ 			entry = &cac_table->entries[0];
+ 			for (i = 0; i < cac_table->ucNumEntries; i++) {
+ 				if (adev->pm.dpm.platform_caps & ATOM_PP_PLATFORM_CAP_EVV) {
+@@ -438,10 +426,8 @@ int amdgpu_parse_extended_power_table(struct amdgpu_device *adev)
+ 				sizeof(struct amdgpu_vce_clock_voltage_dependency_entry);
+ 			adev->pm.dpm.dyn_state.vce_clock_voltage_dependency_table.entries =
+ 				kzalloc(size, GFP_KERNEL);
+-			if (!adev->pm.dpm.dyn_state.vce_clock_voltage_dependency_table.entries) {
+-				amdgpu_free_extended_power_table(adev);
++			if (!adev->pm.dpm.dyn_state.vce_clock_voltage_dependency_table.entries)
+ 				return -ENOMEM;
+-			}
+ 			adev->pm.dpm.dyn_state.vce_clock_voltage_dependency_table.count =
+ 				limits->numEntries;
+ 			entry = &limits->entries[0];
+@@ -493,10 +479,8 @@ int amdgpu_parse_extended_power_table(struct amdgpu_device *adev)
+ 				sizeof(struct amdgpu_uvd_clock_voltage_dependency_entry);
+ 			adev->pm.dpm.dyn_state.uvd_clock_voltage_dependency_table.entries =
+ 				kzalloc(size, GFP_KERNEL);
+-			if (!adev->pm.dpm.dyn_state.uvd_clock_voltage_dependency_table.entries) {
+-				amdgpu_free_extended_power_table(adev);
++			if (!adev->pm.dpm.dyn_state.uvd_clock_voltage_dependency_table.entries)
+ 				return -ENOMEM;
+-			}
+ 			adev->pm.dpm.dyn_state.uvd_clock_voltage_dependency_table.count =
+ 				limits->numEntries;
+ 			entry = &limits->entries[0];
+@@ -525,10 +509,8 @@ int amdgpu_parse_extended_power_table(struct amdgpu_device *adev)
+ 				sizeof(struct amdgpu_clock_voltage_dependency_entry);
+ 			adev->pm.dpm.dyn_state.samu_clock_voltage_dependency_table.entries =
+ 				kzalloc(size, GFP_KERNEL);
+-			if (!adev->pm.dpm.dyn_state.samu_clock_voltage_dependency_table.entries) {
+-				amdgpu_free_extended_power_table(adev);
++			if (!adev->pm.dpm.dyn_state.samu_clock_voltage_dependency_table.entries)
+ 				return -ENOMEM;
+-			}
+ 			adev->pm.dpm.dyn_state.samu_clock_voltage_dependency_table.count =
+ 				limits->numEntries;
+ 			entry = &limits->entries[0];
+@@ -548,10 +530,8 @@ int amdgpu_parse_extended_power_table(struct amdgpu_device *adev)
+ 				 le16_to_cpu(ext_hdr->usPPMTableOffset));
+ 			adev->pm.dpm.dyn_state.ppm_table =
+ 				kzalloc(sizeof(struct amdgpu_ppm_table), GFP_KERNEL);
+-			if (!adev->pm.dpm.dyn_state.ppm_table) {
+-				amdgpu_free_extended_power_table(adev);
++			if (!adev->pm.dpm.dyn_state.ppm_table)
+ 				return -ENOMEM;
+-			}
+ 			adev->pm.dpm.dyn_state.ppm_table->ppm_design = ppm->ucPpmDesign;
+ 			adev->pm.dpm.dyn_state.ppm_table->cpu_core_number =
+ 				le16_to_cpu(ppm->usCpuCoreNumber);
+@@ -583,10 +563,8 @@ int amdgpu_parse_extended_power_table(struct amdgpu_device *adev)
+ 				sizeof(struct amdgpu_clock_voltage_dependency_entry);
+ 			adev->pm.dpm.dyn_state.acp_clock_voltage_dependency_table.entries =
+ 				kzalloc(size, GFP_KERNEL);
+-			if (!adev->pm.dpm.dyn_state.acp_clock_voltage_dependency_table.entries) {
+-				amdgpu_free_extended_power_table(adev);
++			if (!adev->pm.dpm.dyn_state.acp_clock_voltage_dependency_table.entries)
+ 				return -ENOMEM;
+-			}
+ 			adev->pm.dpm.dyn_state.acp_clock_voltage_dependency_table.count =
+ 				limits->numEntries;
+ 			entry = &limits->entries[0];
+@@ -606,10 +584,8 @@ int amdgpu_parse_extended_power_table(struct amdgpu_device *adev)
+ 			ATOM_PowerTune_Table *pt;
+ 			adev->pm.dpm.dyn_state.cac_tdp_table =
+ 				kzalloc(sizeof(struct amdgpu_cac_tdp_table), GFP_KERNEL);
+-			if (!adev->pm.dpm.dyn_state.cac_tdp_table) {
+-				amdgpu_free_extended_power_table(adev);
++			if (!adev->pm.dpm.dyn_state.cac_tdp_table)
+ 				return -ENOMEM;
+-			}
+ 			if (rev > 0) {
+ 				ATOM_PPLIB_POWERTUNE_Table_V1 *ppt = (ATOM_PPLIB_POWERTUNE_Table_V1 *)
+ 					(mode_info->atom_context->bios + data_offset +
+@@ -645,10 +621,8 @@ int amdgpu_parse_extended_power_table(struct amdgpu_device *adev)
+ 			ret = amdgpu_parse_clk_voltage_dep_table(
+ 					&adev->pm.dpm.dyn_state.vddgfx_dependency_on_sclk,
+ 					dep_table);
+-			if (ret) {
+-				kfree(adev->pm.dpm.dyn_state.vddgfx_dependency_on_sclk.entries);
++			if (ret)
+ 				return ret;
+-			}
+ 		}
+ 	}
+ 
 -- 
-Regards/Gruss,
-    Boris.
+2.34.1
 
-https://people.kernel.org/tglx/notes-about-netiquette
