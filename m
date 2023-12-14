@@ -2,156 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B1F86812A5E
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 09:30:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0566E812A6E
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 09:31:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235570AbjLNI35 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 03:29:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59018 "EHLO
+        id S235606AbjLNIbh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 03:31:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46326 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229441AbjLNI3s (ORCPT
+        with ESMTP id S235648AbjLNIbY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 03:29:48 -0500
-Received: from mx1.sberdevices.ru (mx2.sberdevices.ru [45.89.224.132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FFAD10B;
-        Thu, 14 Dec 2023 00:29:51 -0800 (PST)
-Received: from p-infra-ksmg-sc-msk02 (localhost [127.0.0.1])
-        by mx1.sberdevices.ru (Postfix) with ESMTP id DF64012004E;
-        Thu, 14 Dec 2023 11:29:49 +0300 (MSK)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru DF64012004E
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
-        s=mail; t=1702542589;
-        bh=IipliOBxVO1mB0P9vxh3aTZrhIFdLT6fPsP0SLsHsZA=;
-        h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type:From;
-        b=jqjhhqiB/+anaFc34B+FJmzHIV8CpFNjoCkCIDLydqBcwljVDX7AlrUWRGw8C9iAk
-         c/hrdk2fWtox+w01FdHzNqiZWln97DcN3LsgkgmRshr8SM+YgZrMdp33yi1aLlOXsl
-         9z/wSTD7oPG6nFov1jtJE9vcGDjNiybCu/SH1g1g/vSi7355/84FxUmJbJlXvF1sTf
-         pNiL+2zzyDVvhe/e8r26JKgMoot3PSQvbHNpv8RNwrlso9rMM/SgzvWHH8qmDC/vFK
-         8zjF6wj7e8a8qd0Uy/PzcGXn+zcLZujMsb+SDd3+URo1yTrM3f1GmmoABZO/2XwSY3
-         tKKmkI8uTUniA==
-Received: from smtp.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mx1.sberdevices.ru (Postfix) with ESMTPS;
-        Thu, 14 Dec 2023 11:29:49 +0300 (MSK)
-Received: from localhost.localdomain (100.64.160.123) by
- p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Thu, 14 Dec 2023 11:29:49 +0300
-From:   George Stark <gnstark@salutedevices.com>
-To:     <andy.shevchenko@gmail.com>, <pavel@ucw.cz>, <lee@kernel.org>,
-        <vadimp@nvidia.com>, <mpe@ellerman.id.au>, <npiggin@gmail.com>,
-        <christophe.leroy@csgroup.eu>, <hdegoede@redhat.com>,
-        <mazziesaccount@gmail.com>, <peterz@infradead.org>,
-        <mingo@redhat.com>, <will@kernel.org>, <longman@redhat.com>,
-        <boqun.feng@gmail.com>, <nikitos.tr@gmail.com>
-CC:     <linux-leds@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linuxppc-dev@lists.ozlabs.org>, <kernel@salutedevices.com>,
-        George Stark <gnstark@salutedevices.com>
-Subject: [PATCH v3 11/11] leds: powernv: use LED_RETAIN_AT_SHUTDOWN flag for leds
-Date:   Thu, 14 Dec 2023 11:29:40 +0300
-Message-ID: <20231214082940.2718303-7-gnstark@salutedevices.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20231214082940.2718303-1-gnstark@salutedevices.com>
-References: <20231214082940.2718303-1-gnstark@salutedevices.com>
+        Thu, 14 Dec 2023 03:31:24 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 880A8D42
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 00:31:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1702542683; x=1734078683;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=t6uZljv2bIkPW9EPL18TpWUX9ABoK9bO0kk+uCDQC0M=;
+  b=hQCIOn3aovLLazeQ0yvSos3NsCgmXB5+lpPEuuTahbSjDtDG0PCgFV92
+   HWnkC1fByRE9q8TP8A1UBX/COKEbdYkFas1O0DIKhOzSZ8xwm4tFJ8IPb
+   jWU+qx/shyqAGFRLeFJTG7OLTaAd7Qxg+zD9Jet+QEdvMTGcX/MqmOAM9
+   +ow6Wjnlo6q5mO7WZnH+7PYolCmzF5P26L+OKKpvBfwFJ9dN9XdqAhY42
+   I8loeEWA5U1mFcVPpPOd8XaK2bLaawlq1wpcuUKTC59BdUSEI8kMK+975
+   zRo3i23sy0Zv2TrEjn5WjT2Xfiep1xmgQGff6ukEvvuOI9Q7K/78d4Qoc
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10923"; a="1918522"
+X-IronPort-AV: E=Sophos;i="6.04,274,1695711600"; 
+   d="scan'208";a="1918522"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Dec 2023 00:31:23 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10923"; a="767537243"
+X-IronPort-AV: E=Sophos;i="6.04,274,1695711600"; 
+   d="scan'208";a="767537243"
+Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
+  by orsmga007.jf.intel.com with ESMTP; 14 Dec 2023 00:31:21 -0800
+Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1rDh7n-000LoT-1x;
+        Thu, 14 Dec 2023 08:31:19 +0000
+Date:   Thu, 14 Dec 2023 16:30:45 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Gregory CLEMENT <gregory.clement@bootlin.com>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Viresh Kumar <viresh.kumar@linaro.org>
+Subject: drivers/cpufreq/armada-8k-cpufreq.c:53:40: sparse: sparse: Using
+ plain integer as NULL pointer
+Message-ID: <202312141651.lCAXGAZ2-lkp@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [100.64.160.123]
-X-ClientProxiedBy: p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) To
- p-i-exch-sc-m01.sberdevices.ru (172.16.192.107)
-X-KSMG-Rule-ID: 10
-X-KSMG-Message-Action: clean
-X-KSMG-AntiSpam-Lua-Profiles: 182104 [Dec 14 2023]
-X-KSMG-AntiSpam-Version: 6.1.0.3
-X-KSMG-AntiSpam-Envelope-From: gnstark@salutedevices.com
-X-KSMG-AntiSpam-Rate: 0
-X-KSMG-AntiSpam-Status: not_detected
-X-KSMG-AntiSpam-Method: none
-X-KSMG-AntiSpam-Auth: dkim=none
-X-KSMG-AntiSpam-Info: LuaCore: 7 0.3.7 6d6bf5bd8eea7373134f756a2fd73e9456bb7d1a, {Tracking_from_domain_doesnt_match_to}, 127.0.0.199:7.1.2;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;smtp.sberdevices.ru:5.0.1,7.1.1;salutedevices.com:7.1.1;100.64.160.123:7.1.2, FromAlignment: s, ApMailHostAddress: 100.64.160.123
-X-MS-Exchange-Organization-SCL: -1
-X-KSMG-AntiSpam-Interceptor-Info: scan successful
-X-KSMG-AntiPhishing: Clean
-X-KSMG-LinksScanning: Clean
-X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2023/12/14 06:13:00 #22683038
-X-KSMG-AntiVirus-Status: Clean, skipped
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This driver wants to keep its LEDs state after module is removed
-and implemented it in its own way. LED subsystem supports dedicated
-flag LED_RETAIN_AT_SHUTDOWN for the same purpose so use the flag
-instead of custom implementation.
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   5bd7ef53ffe5ca580e93e74eb8c81ed191ddc4bd
+commit: f525a670533d961fd72ab748e3aac002d7b3d1b9 cpufreq: ap806: add cpufreq driver for Armada 8K
+date:   4 years, 10 months ago
+config: arm-randconfig-r131-20231117 (https://download.01.org/0day-ci/archive/20231214/202312141651.lCAXGAZ2-lkp@intel.com/config)
+compiler: arm-linux-gnueabi-gcc (GCC) 13.2.0
+reproduce: (https://download.01.org/0day-ci/archive/20231214/202312141651.lCAXGAZ2-lkp@intel.com/reproduce)
 
-Signed-off-by: George Stark <gnstark@salutedevices.com>
----
- drivers/leds/leds-powernv.c | 23 ++++++++---------------
- 1 file changed, 8 insertions(+), 15 deletions(-)
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202312141651.lCAXGAZ2-lkp@intel.com/
 
-diff --git a/drivers/leds/leds-powernv.c b/drivers/leds/leds-powernv.c
-index 743e2cdd0891..018ec933ac10 100644
---- a/drivers/leds/leds-powernv.c
-+++ b/drivers/leds/leds-powernv.c
-@@ -30,15 +30,6 @@ static const struct led_type_map led_type_map[] = {
- };
- 
- struct powernv_led_common {
--	/*
--	 * By default unload path resets all the LEDs. But on PowerNV
--	 * platform we want to retain LED state across reboot as these
--	 * are controlled by firmware. Also service processor can modify
--	 * the LEDs independent of OS. Hence avoid resetting LEDs in
--	 * unload path.
--	 */
--	bool		led_disabled;
--
- 	/* Max supported LED type */
- 	__be64		max_led_type;
- 
-@@ -178,10 +169,6 @@ static int powernv_brightness_set(struct led_classdev *led_cdev,
- 	struct powernv_led_common *powernv_led_common = powernv_led->common;
- 	int rc;
- 
--	/* Do not modify LED in unload path */
--	if (powernv_led_common->led_disabled)
--		return 0;
--
- 	mutex_lock(&powernv_led_common->lock);
- 	rc = powernv_led_set(powernv_led, value);
- 	mutex_unlock(&powernv_led_common->lock);
-@@ -225,6 +212,14 @@ static int powernv_led_create(struct device *dev,
- 
- 	powernv_led->cdev.brightness_set_blocking = powernv_brightness_set;
- 	powernv_led->cdev.brightness_get = powernv_brightness_get;
-+	/*
-+	 * By default unload path resets all the LEDs. But on PowerNV
-+	 * platform we want to retain LED state across reboot as these
-+	 * are controlled by firmware. Also service processor can modify
-+	 * the LEDs independent of OS. Hence avoid resetting LEDs in
-+	 * unload path.
-+	 */
-+	powernv_led->cdev.flags = LED_RETAIN_AT_SHUTDOWN;
- 	powernv_led->cdev.brightness = LED_OFF;
- 	powernv_led->cdev.max_brightness = LED_FULL;
- 
-@@ -313,9 +308,7 @@ static int powernv_led_remove(struct platform_device *pdev)
- {
- 	struct powernv_led_common *powernv_led_common;
- 
--	/* Disable LED operation */
- 	powernv_led_common = platform_get_drvdata(pdev);
--	powernv_led_common->led_disabled = true;
- 
- 	/* Destroy lock */
- 	mutex_destroy(&powernv_led_common->lock);
+sparse warnings: (new ones prefixed by >>)
+>> drivers/cpufreq/armada-8k-cpufreq.c:53:40: sparse: sparse: Using plain integer as NULL pointer
+   drivers/cpufreq/armada-8k-cpufreq.c:155:40: sparse: sparse: Using plain integer as NULL pointer
+
+vim +53 drivers/cpufreq/armada-8k-cpufreq.c
+
+    36	
+    37	/* If the CPUs share the same clock, then they are in the same cluster. */
+    38	static void __init armada_8k_get_sharing_cpus(struct clk *cur_clk,
+    39						      struct cpumask *cpumask)
+    40	{
+    41		int cpu;
+    42	
+    43		for_each_possible_cpu(cpu) {
+    44			struct device *cpu_dev;
+    45			struct clk *clk;
+    46	
+    47			cpu_dev = get_cpu_device(cpu);
+    48			if (!cpu_dev) {
+    49				pr_warn("Failed to get cpu%d device\n", cpu);
+    50				continue;
+    51			}
+    52	
+  > 53			clk = clk_get(cpu_dev, 0);
+    54			if (IS_ERR(clk)) {
+    55				pr_warn("Cannot get clock for CPU %d\n", cpu);
+    56			} else {
+    57				if (clk_is_match(clk, cur_clk))
+    58					cpumask_set_cpu(cpu, cpumask);
+    59	
+    60				clk_put(clk);
+    61			}
+    62		}
+    63	}
+    64	
+
 -- 
-2.25.1
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
