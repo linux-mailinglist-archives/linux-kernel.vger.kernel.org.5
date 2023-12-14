@@ -2,176 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D1998133BC
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 15:59:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AF8288133BE
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 16:00:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1573598AbjLNO7R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 09:59:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33136 "EHLO
+        id S1573601AbjLNPAD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 10:00:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51402 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1573569AbjLNO7Q (ORCPT
+        with ESMTP id S1573569AbjLNPAB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 09:59:16 -0500
-Received: from out03.mta.xmission.com (out03.mta.xmission.com [166.70.13.233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE919BD
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 06:59:21 -0800 (PST)
-Received: from in01.mta.xmission.com ([166.70.13.51]:55106)
-        by out03.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1rDnBD-00298x-8O; Thu, 14 Dec 2023 07:59:15 -0700
-Received: from ip68-227-168-167.om.om.cox.net ([68.227.168.167]:48054 helo=email.froward.int.ebiederm.org.xmission.com)
-        by in01.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1rDnBC-009bes-10; Thu, 14 Dec 2023 07:59:14 -0700
-From:   "Eric W. Biederman" <ebiederm@xmission.com>
-To:     Alexander Graf <graf@amazon.com>
-Cc:     <linux-kernel@vger.kernel.org>,
-        <linux-trace-kernel@vger.kernel.org>, <linux-mm@kvack.org>,
-        <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <kexec@lists.infradead.org>, <linux-doc@vger.kernel.org>,
-        <x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Rob Herring" <robh+dt@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        "Andrew Morton" <akpm@linux-foundation.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        "Tom Lendacky" <thomas.lendacky@amd.com>,
-        Ashish Kalra <ashish.kalra@amd.com>,
-        James Gowans <jgowans@amazon.com>,
-        Stanislav Kinsburskii <skinsburskii@linux.microsoft.com>,
-        <arnd@arndb.de>, <pbonzini@redhat.com>,
-        <madvenka@linux.microsoft.com>,
-        Anthony Yznaga <anthony.yznaga@oracle.com>,
-        Usama Arif <usama.arif@bytedance.com>,
-        David Woodhouse <dwmw@amazon.co.uk>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>
-References: <20231213000452.88295-1-graf@amazon.com>
-Date:   Thu, 14 Dec 2023 08:58:49 -0600
-In-Reply-To: <20231213000452.88295-1-graf@amazon.com> (Alexander Graf's
-        message of "Wed, 13 Dec 2023 00:04:37 +0000")
-Message-ID: <87r0jo7rva.fsf@email.froward.int.ebiederm.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
+        Thu, 14 Dec 2023 10:00:01 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CC0BBD
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 07:00:08 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 27E51C433C7;
+        Thu, 14 Dec 2023 15:00:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1702566007;
+        bh=1YjS65z8+/pfGjEqHXCMW75YMXrkf8CXxmJj2AiwZhY=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=GDqOhThtvGROp4PSSxZkUah0QZE7Q1Kt4vyNMFrncdliBFkCDDm4ETYYrzhQGljSb
+         PRp4/AY678LS6VHo3sIj946k+urm3FyM5N5Y3a43+HfiF1JN3lz1uk29BbW7GoT+Dc
+         Rn+a0eKilpL+LIfaz0lIgYEYzLIR0iEA7C+gdTEpB8aEm4BK7274NjegNcAYStnBQg
+         uZfLhPxjreTASYzcKnQH7ilIroLmxWhjy9ANr5sBXcCEMgH8gzatHXxthEHDdLQrET
+         gonsUNeJDQCVQBVj74M8MbEDnX8sQN+Cv5LXpSRdX/z2DFTvU5lzwLC0Uol30cRDJ9
+         +tRRPm1PfDyzA==
+Message-ID: <47790c53-cfe0-4731-99d6-cd6ec2fec9be@kernel.org>
+Date:   Thu, 14 Dec 2023 23:00:07 +0800
 MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1rDnBC-009bes-10;;;mid=<87r0jo7rva.fsf@email.froward.int.ebiederm.org>;;;hst=in01.mta.xmission.com;;;ip=68.227.168.167;;;frm=ebiederm@xmission.com;;;spf=pass
-X-XM-AID: U2FsdGVkX1/OhbNhEazZ4D40H/sN4yD6DjQIF1U06u0=
-X-SA-Exim-Connect-IP: 68.227.168.167
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
-        lindbergh.monkeyblade.net
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] erofs: fix memory leak on short-lived bounced pages
+Content-Language: en-US
+To:     Gao Xiang <hsiangkao@linux.alibaba.com>,
+        linux-erofs@lists.ozlabs.org
+Cc:     LKML <linux-kernel@vger.kernel.org>
+References: <20231128175810.4105671-1-hsiangkao@linux.alibaba.com>
+ <20231128180431.4116991-1-hsiangkao@linux.alibaba.com>
+From:   Chao Yu <chao@kernel.org>
+Autocrypt: addr=chao@kernel.org; keydata=
+ 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
+In-Reply-To: <20231128180431.4116991-1-hsiangkao@linux.alibaba.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
-X-Spam-DCC: XMission; sa04 1397; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: **;Alexander Graf <graf@amazon.com>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 587 ms - load_scoreonly_sql: 0.05 (0.0%),
-        signal_user_changed: 11 (1.9%), b_tie_ro: 10 (1.6%), parse: 1.07
-        (0.2%), extract_message_metadata: 12 (2.1%), get_uri_detail_list: 2.7
-        (0.5%), tests_pri_-2000: 4.8 (0.8%), tests_pri_-1000: 3.8 (0.6%),
-        tests_pri_-950: 1.19 (0.2%), tests_pri_-900: 1.01 (0.2%),
-        tests_pri_-90: 68 (11.7%), check_bayes: 67 (11.4%), b_tokenize: 12
-        (2.0%), b_tok_get_all: 13 (2.3%), b_comp_prob: 3.8 (0.7%),
-        b_tok_touch_all: 34 (5.8%), b_finish: 0.86 (0.1%), tests_pri_0: 461
-        (78.6%), check_dkim_signature: 0.63 (0.1%), check_dkim_adsp: 2.2
-        (0.4%), poll_dns_idle: 0.70 (0.1%), tests_pri_10: 2.4 (0.4%),
-        tests_pri_500: 16 (2.8%), rewrite_mail: 0.00 (0.0%)
-Subject: Re: [PATCH 00/15] kexec: Allow preservation of ftrace buffers
-X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
-X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+        lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Alexander Graf <graf@amazon.com> writes:
+On 2023/11/29 2:04, Gao Xiang wrote:
+> Both MicroLZMA and DEFLATE algorithms can use short-lived pages on
+> demand for overlap inplace I/O decompression.
+> 
+> However, those short-lived pages are actually added to
+> `be->compressed_pages`.  Thus, it should be checked instead of
+> `pcl->compressed_bvecs`.
+> 
+> The LZ4 algorithm doesn't work like this, so it won't be impacted.
+> 
+> Fixes: 67139e36d970 ("erofs: introduce `z_erofs_parse_in_bvecs'")
+> Signed-off-by: Gao Xiang <hsiangkao@linux.alibaba.com>
 
-> Kexec today considers itself purely a boot loader: When we enter the new
-> kernel, any state the previous kernel left behind is irrelevant and the
-> new kernel reinitializes the system.
->
-> However, there are use cases where this mode of operation is not what we
-> actually want. In virtualization hosts for example, we want to use kexec
-> to update the host kernel while virtual machine memory stays untouched.
-> When we add device assignment to the mix, we also need to ensure that
-> IOMMU and VFIO states are untouched. If we add PCIe peer to peer DMA, we
-> need to do the same for the PCI subsystem. If we want to kexec while an
-> SEV-SNP enabled virtual machine is running, we need to preserve the VM
-> context pages and physical memory. See James' and my Linux Plumbers
-> Conference 2023 presentation for details:
->
->   https://lpc.events/event/17/contributions/1485/
->
-> To start us on the journey to support all the use cases above, this
-> patch implements basic infrastructure to allow hand over of kernel state
-> across kexec (Kexec HandOver, aka KHO). As example target, we use ftrace:
-> With this patch set applied, you can read ftrace records from the
-> pre-kexec environment in your post-kexec one. This creates a very powerful
-> debugging and performance analysis tool for kexec. It's also slightly
-> easier to reason about than full blown VFIO state preservation.
->
-> == Alternatives ==
->
-> There are alternative approaches to (parts of) the problems above:
->
->   * Memory Pools [1] - preallocated persistent memory region + allocator
->   * PRMEM [2] - resizable persistent memory regions with fixed metadata
->                 pointer on the kernel command line + allocator
->   * Pkernfs [3] - preallocated file system for in-kernel data with fixed
->                   address location on the kernel command line
->   * PKRAM [4] - handover of user space pages using a fixed metadata page
->                 specified via command line
->
-> All of the approaches above fundamentally have the same problem: They
-> require the administrator to explicitly carve out a physical memory
-> location because they have no mechanism outside of the kernel command
-> line to pass data (including memory reservations) between kexec'ing
-> kernels.
->
-> KHO provides that base foundation. We will determine later whether we
-> still need any of the approaches above for fast bulk memory handover of for
-> example IOMMU page tables. But IMHO they would all be users of KHO, with
-> KHO providing the foundational primitive to pass metadata and bulk memory
-> reservations as well as provide easy versioning for data.
+Reviewed-by: Chao Yu <chao@kernel.org>
 
-What you are describe in many ways is the same problem as
-kexec-on-panic.  The goal of leaving devices running absolutely requires
-carving out memory for the new kernel to live in while it is coming up
-so that DMA from a device that was not shutdown down does not stomp the
-kernel coming up.
-
-If I understand the virtualization case some of those virtual machines
-are going to have virtual NICs that are going to want to DMA memory to
-the host system.  Which if I understand things correctly means that
-among the devices you explicitly want to keep running there is a not
-a way to avoid the chance of DMA coming in while the kernel is being
-changed.
-
-There is also a huge maintenance challenge associated with all of this.
-
-If you go with something that is essentially kexec-on-panic and then
-add a little bit to help find things in the memory of the previous
-kernel while the new kernel is coming up I can see it as a possibility.
-
-As an example I think preserving ftrace data of kexec seems bizarre.
-I don't see how that is an interesting use case at all.  Not in
-the situation of preserving virtual machines, and not in the situation
-of kexec on panic.
-
-If you are doing an orderly shutdown and kernel switch you should be
-able to manually change the memory.  If you are not doing an orderly
-shutdown then I really don't get it.
-
-I don't hate the capability you are trying to build.
-
-I have not read or looked at most of this so I am probably
-missing subtle details.
-
-As you are currently describing things I have the sense you have
-completely misframed the problem and are trying to solve the wrong parts
-of the problem.
-
-Eric
+Thanks,
