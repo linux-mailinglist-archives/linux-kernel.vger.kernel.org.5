@@ -2,96 +2,333 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A019D813A08
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 19:34:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D00DB813A0A
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 19:35:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235718AbjLNSeg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 13:34:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39702 "EHLO
+        id S1573024AbjLNSfF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 13:35:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51434 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229519AbjLNSef (ORCPT
+        with ESMTP id S229753AbjLNSfD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 13:34:35 -0500
-Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E047CF
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 10:34:42 -0800 (PST)
-Received: by mail-lj1-x22c.google.com with SMTP id 38308e7fff4ca-2cc48cf8e70so6668771fa.3
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 10:34:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1702578880; x=1703183680; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=kd5phlPt7VtJUezgR3/onk5WgF0KF/KEQizyh1jeonM=;
-        b=f/JSjEnI5q9a92LHU575jelJN9L41cb2D61eMgF9yD9WOjumu8X5qaHE/eFjm6ji2d
-         2tHqd66y6qEHcB7NE2rRhqW8juCZFoWjC9si+ZJPFlvo5P22NXAB59DvuJiVgDV2Ksw2
-         71CGSMASCzIAj0dh7cr0TozeUhgOEzh48fLCXf5sCzsI+IWOxaSHRmty1yxvXoHFYDAN
-         91H9Gq0riuV1n9MYsC8L1560keI0lqTE2ozE9WoFi7KjmIRQGUNdSl9U7NHHEP3LlH0H
-         /vRtT62eGvuWu/8bOmq6NlekFKFH9O0iz5qCWVvH/hVNAboXbUI0n7rgSRF+FK/2w6JR
-         lYMA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702578880; x=1703183680;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=kd5phlPt7VtJUezgR3/onk5WgF0KF/KEQizyh1jeonM=;
-        b=nzdMu9uTblBPKta6Pnj1mf9urq0V/yNeQUkBUcHp/Rd656Bk5rvIThJIdC8q7Oc/ZE
-         RRfy+0HJ64QzpGdho71E07X7eawFxcYJX7GgJh8k/I1ZaNhxz2AZ6/L2k9/TNXX1IGvf
-         35o5uYjSL44p3S4kBQFk68OAhrLiwcuzJbuh86mc2um5Q+84veVQetVObyiIxJ8aogea
-         Kt8LQRoq/Y5TNMKRF3Lk59r0suUQdGpGz5pO1nw2Ncn1KoT9cCiHkmLph6egc+qtujXQ
-         xIPYSpvklNZ877OOcfpBn49mm7mpsWkXLj+rm8TDQCfl4sEEdzsiL5ob8spQthy5u6fn
-         CTYQ==
-X-Gm-Message-State: AOJu0Yyn6tG8iQx/r1I/B/I0ig6IqK2b8xqSSzzBixl5Bjy8nUw/MaD+
-        Ae/rdyVOVH2eTTTTk4+hVhNe1Tr4b5v7xU5roOASODM4GFwXRvlU2M4=
-X-Google-Smtp-Source: AGHT+IHuohIc7ndJPih2o8S6kIrL4T6xCKUlR5QkoUQk8hygZL43couKufKeWx2DVpZaqEMzUz9vu3539rMGlUt7eRI=
-X-Received: by 2002:a05:6512:4026:b0:50b:fe58:d6f1 with SMTP id
- br38-20020a056512402600b0050bfe58d6f1mr6772518lfb.87.1702578880160; Thu, 14
- Dec 2023 10:34:40 -0800 (PST)
+        Thu, 14 Dec 2023 13:35:03 -0500
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 648ED111;
+        Thu, 14 Dec 2023 10:35:09 -0800 (PST)
+Received: from pps.filterd (m0353722.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3BEIVkrm012030;
+        Thu, 14 Dec 2023 18:34:23 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=aZfItAC16OpY8Y87+kaxK+6Wy7sVgwOm4UYAmq8AAhc=;
+ b=IYgjFJMmcgD3ceQdzJU0wRBQXHCOT3CZX9YgqKWvOo2vanSnqkOdQ67Dq92BaM5Z5R5W
+ g+e6Rz6YlNVck/VPwy5TxxfLvpYS9XNJA7brDMhS4aUjfUz5NC/hD5WMntYoTbDZxNj2
+ 81vMhGfewItxp+nBfugU4UA/Zw9DM/e8zhi5aOvwgafkZL+kj2vBFuu73GJKwUrntaIY
+ RhbG9AGLb9LC9aKOdVfMMKojC2NPcnwgMxFdpwab8bbKitz4zZAegcYiLCzqwzeqAVVX
+ 4nBv4FPhaeAyb4fnlaV+Kbltiuu3q46uQgQjLUkiwiOmdYpfG0lSZgl0hWjmK3cyMsME uA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3v072ag26k-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 14 Dec 2023 18:34:22 +0000
+Received: from m0353722.ppops.net (m0353722.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3BEIXAjM016214;
+        Thu, 14 Dec 2023 18:34:21 GMT
+Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3v072ag264-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 14 Dec 2023 18:34:21 +0000
+Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
+        by ppma23.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3BECe1XP014799;
+        Thu, 14 Dec 2023 18:34:20 GMT
+Received: from smtprelay06.wdc07v.mail.ibm.com ([172.16.1.73])
+        by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3uw42khrus-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 14 Dec 2023 18:34:20 +0000
+Received: from smtpav05.dal12v.mail.ibm.com (smtpav05.dal12v.mail.ibm.com [10.241.53.104])
+        by smtprelay06.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3BEIYJq69830950
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 14 Dec 2023 18:34:20 GMT
+Received: from smtpav05.dal12v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id D07D65805D;
+        Thu, 14 Dec 2023 18:34:19 +0000 (GMT)
+Received: from smtpav05.dal12v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 254E358056;
+        Thu, 14 Dec 2023 18:34:16 +0000 (GMT)
+Received: from [9.67.23.198] (unknown [9.67.23.198])
+        by smtpav05.dal12v.mail.ibm.com (Postfix) with ESMTP;
+        Thu, 14 Dec 2023 18:34:15 +0000 (GMT)
+Message-ID: <8cdadff2-055a-48ab-8495-45c8285d3d8f@linux.ibm.com>
+Date:   Thu, 14 Dec 2023 12:34:14 -0600
 MIME-Version: 1.0
-References: <20231213-zswap-dstmem-v1-0-896763369d04@bytedance.com>
- <20231213-zswap-dstmem-v1-2-896763369d04@bytedance.com> <CAJD7tkZJRgf+502QU_ECVPey0w-5vw_e6HSL+Ay7unetq5gL0A@mail.gmail.com>
- <CAKEwX=P4=YbvoRCa5+BB+==f4YL_5-6AaUNUCdH3v2faTx-PYQ@mail.gmail.com>
- <cb558f85-4f9b-4eb9-b60c-9b609075920d@bytedance.com> <CAJD7tkY_fe9SeTxOSVmYHNgi2tKvZ+EoM15KifJihF_Zn_LqDg@mail.gmail.com>
- <7a8c77b0-c78c-427d-9545-2b328c7dc727@bytedance.com> <7a0e3229-be63-4a24-a3fe-7e3ff517de10@bytedance.com>
-In-Reply-To: <7a0e3229-be63-4a24-a3fe-7e3ff517de10@bytedance.com>
-From:   Yosry Ahmed <yosryahmed@google.com>
-Date:   Thu, 14 Dec 2023 10:34:04 -0800
-Message-ID: <CAJD7tkYB1MHC+rJa0wA8FHVM_sJb-DFcaqT1Oz+nSxdvkE0DyQ@mail.gmail.com>
-Subject: Re: [PATCH 2/5] mm/zswap: change dstmem size to one page
-To:     Chengming Zhou <zhouchengming@bytedance.com>
-Cc:     Nhat Pham <nphamcs@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Chris Li <chriscli@google.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Seth Jennings <sjenning@redhat.com>,
-        Dan Streetman <ddstreet@ieee.org>,
-        Vitaly Wool <vitaly.wool@konsulko.com>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1 4/8] ARM: dts: aspeed: System1: Add i2c and muxes
+Content-Language: en-US
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, joel@jms.id.au, andrew@codeconstruct.com.au,
+        peterhuewe@gmx.de, jarkko@kernel.org, jgg@ziepe.ca,
+        keescook@chromium.org, tony.luck@intel.com, gpiccoli@igalia.com,
+        johannes.holland@infineon.com, linux@roeck-us.net,
+        broonie@kernel.org
+Cc:     patrick.rudolph@9elements.com, vincent@vtremblay.dev,
+        peteryin.openbmc@gmail.com, lakshmiy@us.ibm.com,
+        bhelgaas@google.com, naresh.solanki@9elements.com,
+        alexander.stein@ew.tq-group.com, festevam@denx.de,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        linux-integrity@vger.kernel.org, linux-hardening@vger.kernel.org,
+        geissonator@yahoo.com
+References: <20231212164004.1683589-1-ninad@linux.ibm.com>
+ <20231212164004.1683589-5-ninad@linux.ibm.com>
+ <72a749b9-b9be-4496-9bcc-37519044c109@linaro.org>
+From:   Ninad Palsule <ninad@linux.ibm.com>
+In-Reply-To: <72a749b9-b9be-4496-9bcc-37519044c109@linaro.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: KIu3tM4aH2p_1s1TvaCGkUi7cGT1eyM9
+X-Proofpoint-GUID: 7-F53l8el8CAhlx9LMigtTCwyZjJNqJO
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-14_13,2023-12-14_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 adultscore=0
+ malwarescore=0 mlxlogscore=999 mlxscore=0 priorityscore=1501 phishscore=0
+ lowpriorityscore=0 spamscore=0 bulkscore=0 suspectscore=0 clxscore=1015
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311290000
+ definitions=main-2312140131
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[..]
+Hello Krzysztof,
+
+On 12/12/23 14:21, Krzysztof Kozlowski wrote:
+> On 12/12/2023 17:40, Ninad Palsule wrote:
+>> This commit adds i2c devices and muxes.
+>>
+>> Tested:
+>>      This board is tested using the simics simulator.
+>>
+>> Signed-off-by: Ninad Palsule <ninad@linux.ibm.com>
+>> ---
+>>   .../dts/aspeed/aspeed-bmc-ibm-system1.dts     | 577 ++++++++++++++++++
+>>   1 file changed, 577 insertions(+)
+>>
+> Why do you split new submission into multiple chunks? The logical
+> feature here is new board, so all your DTS patches adding new board
+> should be in one patch.
+Oh,ok. I thought it might be easier to review but now I squashed them 
+together.
 >
-> I think we shouldn't put these poorly compressed output into zswap,
-> maybe it's better to early return in these cases when compress ratio
-> < threshold ratio, which can be tune by the user?
+>> diff --git a/arch/arm/boot/dts/aspeed/aspeed-bmc-ibm-system1.dts b/arch/arm/boot/dts/aspeed/aspeed-bmc-ibm-system1.dts
+>> index 01291b407f59..0557bff9f36a 100644
+>> --- a/arch/arm/boot/dts/aspeed/aspeed-bmc-ibm-system1.dts
+>> +++ b/arch/arm/boot/dts/aspeed/aspeed-bmc-ibm-system1.dts
+>> @@ -11,6 +11,65 @@ / {
+>>   	model = "System1";
+>>   	compatible = "ibm,system1-bmc", "aspeed,ast2600";
+>>   
+>> +	aliases {
+>> +		i2c16 = &i2c8mux1chn0;
+>> +		i2c17 = &i2c8mux1chn1;
+>> +		i2c18 = &i2c8mux1chn2;
+>> +		i2c19 = &i2c8mux1chn3;
+>> +		i2c20 = &i2c8mux1chn4;
+>> +		i2c21 = &i2c8mux1chn5;
+>> +		i2c22 = &i2c8mux1chn6;
+>> +		i2c23 = &i2c8mux1chn7;
+>> +		i2c24 = &i2c3mux0chn0;
+>> +		i2c25 = &i2c3mux0chn1;
+>> +		i2c26 = &i2c3mux0chn2;
+>> +		i2c27 = &i2c3mux0chn3;
+>> +		i2c28 = &i2c3mux0chn4;
+>> +		i2c29 = &i2c3mux0chn5;
+>> +		i2c30 = &i2c3mux0chn6;
+>> +		i2c31 = &i2c3mux0chn7;
+>> +		i2c32 = &i2c6mux0chn0;
+>> +		i2c33 = &i2c6mux0chn1;
+>> +		i2c34 = &i2c6mux0chn2;
+>> +		i2c35 = &i2c6mux0chn3;
+>> +		i2c36 = &i2c6mux0chn4;
+>> +		i2c37 = &i2c6mux0chn5;
+>> +		i2c38 = &i2c6mux0chn6;
+>> +		i2c39 = &i2c6mux0chn7;
+>> +		i2c40 = &i2c7mux0chn0;
+>> +		i2c41 = &i2c7mux0chn1;
+>> +		i2c42 = &i2c7mux0chn2;
+>> +		i2c43 = &i2c7mux0chn3;
+>> +		i2c44 = &i2c7mux0chn4;
+>> +		i2c45 = &i2c7mux0chn5;
+>> +		i2c46 = &i2c7mux0chn6;
+>> +		i2c47 = &i2c7mux0chn7;
+>> +		i2c48 = &i2c8mux0chn0;
+>> +		i2c49 = &i2c8mux0chn1;
+>> +		i2c50 = &i2c8mux0chn2;
+>> +		i2c51 = &i2c8mux0chn3;
+>> +		i2c52 = &i2c8mux0chn4;
+>> +		i2c53 = &i2c8mux0chn5;
+>> +		i2c54 = &i2c8mux0chn6;
+>> +		i2c55 = &i2c8mux0chn7;
+>> +		i2c56 = &i2c14mux0chn0;
+>> +		i2c57 = &i2c14mux0chn1;
+>> +		i2c58 = &i2c14mux0chn2;
+>> +		i2c59 = &i2c14mux0chn3;
+>> +		i2c60 = &i2c14mux0chn4;
+>> +		i2c61 = &i2c14mux0chn5;
+>> +		i2c62 = &i2c14mux0chn6;
+>> +		i2c63 = &i2c14mux0chn7;
+>> +		i2c64 = &i2c15mux0chn0;
+>> +		i2c65 = &i2c15mux0chn1;
+>> +		i2c66 = &i2c15mux0chn2;
+>> +		i2c67 = &i2c15mux0chn3;
+>> +		i2c68 = &i2c15mux0chn4;
+>> +		i2c69 = &i2c15mux0chn5;
+>> +		i2c70 = &i2c15mux0chn6;
+>> +		i2c71 = &i2c15mux0chn7;
+>> +	};
+>> +
+>>   	chosen {
+>>   		stdout-path = &uart5;
+>>   		bootargs = "console=ttyS4,115200n8 earlycon";
+>> @@ -54,10 +113,12 @@ vga_memory: region@bf000000 {
+>>   			reg = <0xbf000000 0x01000000>;  /* 16M */
+>>   		};
+>>   	};
+>> +
+> You need to clean your patchset...
+I made changes about the stdout-path, is that what you mean?
+>
+>
+>>   };
+>>   
+>>   &adc1 {
+>>   	status = "okay";
+>> +
+> Really.
+I need to add "status = okay" otherwise its not instantiated.
+>
+>>   	aspeed,int-vref-microvolt = <2500000>;
+>>   	pinctrl-names = "default";
+>>   	pinctrl-0 = <&pinctrl_adc8_default
+>> @@ -186,3 +247,519 @@ &kcs3 {
+>>   	aspeed,lpc-io-reg = <0xca2>;
+>>   	aspeed,lpc-interrupts = <11 IRQ_TYPE_LEVEL_LOW>;
+>>   };
+>> +
+>> +&i2c0 {
+>> +	status = "okay";
+>> +};
+>> +
+>> +&i2c1 {
+>> +	status = "okay";
+>> +};
+>> +
+>> +&i2c2 {
+>> +	status = "okay";
+>> +};
+>> +
+>> +&i2c3 {
+>> +	status = "okay";
+>> +
+>> +	i2c-mux@70 {
+>> +		compatible = "nxp,pca9548";
+>> +		reg = <0x70>;
+>> +		#address-cells = <1>;
+>> +		#size-cells = <0>;
+>> +		status = "okay";
+> Drop
+Done.
+>
+>> +		i2c-mux-idle-disconnect;
+>> +
+>> +		i2c3mux0chn0: i2c@0 {
+>> +			#address-cells = <1>;
+>> +			#size-cells = <0>;
+>> +			reg = <0>;
+>> +		};
+>> +
+>> +		i2c3mux0chn1: i2c@1 {
+>> +			#address-cells = <1>;
+>> +			#size-cells = <0>;
+>> +			reg = <1>;
+>> +		};
+>> +
+>> +		i2c3mux0chn2: i2c@2 {
+>> +			#address-cells = <1>;
+>> +			#size-cells = <0>;
+>> +			reg = <2>;
+>> +		};
+>> +
+>> +		i2c3mux0chn3: i2c@3 {
+>> +			#address-cells = <1>;
+>> +			#size-cells = <0>;
+>> +			reg = <3>;
+>> +		};
+>> +
+>> +		i2c3mux0chn4: i2c@4 {
+>> +			#address-cells = <1>;
+>> +			#size-cells = <0>;
+>> +			reg = <4>;
+>> +		};
+>> +
+>> +		i2c3mux0chn5: i2c@5 {
+>> +			#address-cells = <1>;
+>> +			#size-cells = <0>;
+>> +			reg = <5>;
+>> +		};
+>> +
+>> +		i2c3mux0chn6: i2c@6 {
+>> +			#address-cells = <1>;
+>> +			#size-cells = <0>;
+>> +			reg = <6>;
+>> +		};
+>> +
+>> +		i2c3mux0chn7: i2c@7 {
+>> +			#address-cells = <1>;
+>> +			#size-cells = <0>;
+>> +			reg = <7>;
+>> +		};
+>> +	};
+>> +};
+>> +
+>> +&i2c4 {
+>> +	status = "okay";
+>> +};
+>> +
+>> +&i2c5 {
+>> +	status = "okay";
+>> +};
+>> +
+>> +&i2c6 {
+>> +	status = "okay";
+>> +
+>> +	i2c-mux@70 {
+>> +		compatible = "nxp,pca9548";
+>> +		reg = <0x70>;
+>> +		#address-cells = <1>;
+>> +		#size-cells = <0>;
+>> +		status = "okay";
+> Drop
 
-We have something similar at Google, but because we use zswap without
-a backing swapfile, we make those pages unevictable. For the upstream
-code, the pages will go to a backing swapfile, which arguably violates
-the LRU ordering, but may be the correct thing to do. There was a
-recent upstream attempt to solidify storing those incompressible pages
-in zswap in their uncompressed form to retain the LRU ordering.
+Done
 
-If you want, feel free to start a discussion about this separately,
-it's out of context for this patch series.
+Thanks for the review.
 
-Thanks!
+Regards,
+
+Ninad
+
+>
+> Other places as well.
+>
+>
+> Best regards,
+> Krzysztof
+>
