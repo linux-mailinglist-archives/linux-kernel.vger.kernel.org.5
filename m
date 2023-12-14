@@ -2,88 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 65152813710
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 17:57:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 19530813713
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 17:57:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1443573AbjLNQ4x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 11:56:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33660 "EHLO
+        id S230281AbjLNQ5c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 11:57:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37706 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229532AbjLNQ4v (ORCPT
+        with ESMTP id S229532AbjLNQ5a (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 11:56:51 -0500
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D68DB7;
-        Thu, 14 Dec 2023 08:56:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=sDm7wWb97EArguPYrHSDzVIrzzbQV+nRlZDKlaNEHZI=; b=PKvovX7u8VrlZ4nhLc3ZsFB3AU
-        U67c6p3pQ3HdwedZzCC91TR/O2ZSmuytQUwJbmy8BMNAlZZRUXJ4LjkmBxRnrRb1kaCXESRMlFoZD
-        V586InL0fEZCrXpdaS2ir5j3SiDTyUbCB2Je46NcBekp/ZDV0Uc6MRw6q5Ep7zHUv5lptRyjzW4W1
-        stbjq7uCUZxRDsiy6zatBivSJLTror3JLx6kHDXEp/AcvBvlf7EJeJ9c9W8uAjuWM/nof4GJ16Zw8
-        dnLBwboJrdllnZiNabi7fIMceBmVFUqSPnmy6nK+ysyDT9fjbn1WFNLHPJ7P0rGrIk45243UiyGu4
-        BDZb5lqQ==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:58514)
-        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.96)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1rDp0x-0001ij-0M;
-        Thu, 14 Dec 2023 16:56:47 +0000
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1rDp0y-0002hi-1S; Thu, 14 Dec 2023 16:56:48 +0000
-Date:   Thu, 14 Dec 2023 16:56:47 +0000
-From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
-To:     Christian Marangi <ansuelsmth@gmail.com>
-Cc:     Florian Fainelli <florian.fainelli@broadcom.com>,
-        Broadcom internal kernel review list 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
+        Thu, 14 Dec 2023 11:57:30 -0500
+Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6378FB7
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 08:57:36 -0800 (PST)
+Received: by mail-io1-xd2e.google.com with SMTP id ca18e2360f4ac-7b709f8ba01so72330639f.1
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 08:57:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1702573056; x=1703177856; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=bF6JAIGkdcWEDAxYfIlQw3OSyrt6nxRKSkcWVcaayZU=;
+        b=ez7aJSHpNmVv1H/2VNFP+XRnCwtwjnJuPlbf1RujMYUaS5TwF5i+UNRIG0kGeCIrva
+         E9BiVSdjOhuv0m0V3fqlTFbkLAjIN7e4RY1MPfeOiNCCmYJsZNs8jQ+4TBeae32aKCZD
+         UljhMivp5KgHETOdFfEWvUogrhyAC0vXh/sEkILqKeKalS5IfnE4yVo4ICVAWmn9r4Gq
+         lAhIDibydYmaCd1rPHNETO/INYLBbsOUlTGdAqWHuwVX3ADMbqm6s3p+PTTYLRjlhwNs
+         6BBlw9bVdDYlgFbADzocb/SBtRkDmUuuEV947Q1DC0O+IQcC68X4GmhGATOCDaE4a6Ga
+         ovCw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702573056; x=1703177856;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=bF6JAIGkdcWEDAxYfIlQw3OSyrt6nxRKSkcWVcaayZU=;
+        b=JWqcM9r73aD9CGakSBYxOy0On77C5SlLU2o0RnQNXoWhBQpNvUzj2aZVeclq/rcoQj
+         LDgHstilibWC6xSgeqpBFnsrNLBTFnDQl5yEau2CMr1ztB5jHEN0pX0wKw2y19PRvc34
+         ZYrEj4GRX4eXArx3A0yE9c9IVB9qqeftHqbgYEAkjNSrvGATSa+N8vFojXM5ZHqWaCMY
+         pfhZbfKobKNAsSttSBkvRXK1DkarhZymH/T+uMcgjtBp5odxP4sgxYC94KKBDegvAyk0
+         nG5Ht82725xMyXhTC/+pDigAvuU5CKadrChgfkJlc0rvJEcEiBayltSRoFdXyjyPwbUF
+         4lFw==
+X-Gm-Message-State: AOJu0YzzsVMoE/ebOWDq5UK6jiOlqMg5u7aBiWA1BBqbMk5FesL3cvtn
+        ejyqY2WncAgHezizKK8bZ7YdgQ==
+X-Google-Smtp-Source: AGHT+IFlw+XRTrT7e71YKSTcDQk//pRdpkg0t26kRH8ZiJIsDpZhk7PFQa8ipkgdwGtQW7W2DeCpYw==
+X-Received: by 2002:a05:6e02:1bac:b0:35f:692e:2049 with SMTP id n12-20020a056e021bac00b0035f692e2049mr8161692ili.2.1702573055728;
+        Thu, 14 Dec 2023 08:57:35 -0800 (PST)
+Received: from [192.168.1.116] ([96.43.243.2])
+        by smtp.gmail.com with ESMTPSA id bn14-20020a056e02338e00b00357ca1ed25esm1231116ilb.80.2023.12.14.08.57.34
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 14 Dec 2023 08:57:35 -0800 (PST)
+Message-ID: <3d025aeb-7766-4148-b2fd-01ec3653b4a7@kernel.dk>
+Date:   Thu, 14 Dec 2023 09:57:32 -0700
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH RESEND 06/11] net/smc: smc_splice_read: always request
+ MSG_DONTWAIT
+To:     Christian Brauner <brauner@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     Tony Lu <tonylu@linux.alibaba.com>,
+        Ahelenia Ziemia'nska <nabijaczleweli@nabijaczleweli.xyz>,
+        Karsten Graul <kgraul@linux.ibm.com>,
+        Wenjia Zhang <wenjia@linux.ibm.com>,
+        Jan Karcher <jaka@linux.ibm.com>,
+        "D. Wythe" <alibuda@linux.alibaba.com>,
+        Wen Gu <guwen@linux.alibaba.com>,
         "David S. Miller" <davem@davemloft.net>,
         Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        David Epping <david.epping@missinglinkelectronics.com>,
-        Harini Katakam <harini.katakam@amd.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [net-next PATCH v7 1/4] net: phy: make addr type u8 in
- phy_package_shared struct
-Message-ID: <ZXszz/U/jOAL5MLe@shell.armlinux.org.uk>
-References: <20231214121026.4340-1-ansuelsmth@gmail.com>
- <20231214121026.4340-2-ansuelsmth@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231214121026.4340-2-ansuelsmth@gmail.com>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        Paolo Abeni <pabeni@redhat.com>, linux-s390@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org,
+        Alexander Viro <viro@zeniv.linux.org.uk>
+References: <cover.1697486714.git.nabijaczleweli@nabijaczleweli.xyz>
+ <145da5ab094bcc7d3331385e8813074922c2a13c6.1697486714.git.nabijaczleweli@nabijaczleweli.xyz>
+ <ZXkNf9vvtzR7oqoE@TONYMAC-ALIBABA.local> <20231213162854.4acfbd9f@kernel.org>
+ <20231214-glimmen-abspielen-12b68e7cb3a7@brauner>
+Content-Language: en-US
+From:   Jens Axboe <axboe@kernel.dk>
+In-Reply-To: <20231214-glimmen-abspielen-12b68e7cb3a7@brauner>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 14, 2023 at 01:10:23PM +0100, Christian Marangi wrote:
-> Switch addr type in phy_package_shared struct to u8.
+On 12/14/23 3:50 AM, Christian Brauner wrote:
+>> Let's figure that out before we get another repost.
 > 
-> The value is already checked to be non negative and to be less than
-> PHY_MAX_ADDR, hence u8 is better suited than using int.
-> 
-> Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
+> I'm just waiting for Jens to review it as he had comments on this
+> before.
 
-Reviewed-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
+Well, I do wish the CC list had been setup a bit more deliberately.
+Especially as this is a resend, and I didn't even know about any of this
+before Christian pointed me this way the other day.
 
-Thanks!
+Checking lore, I can't even see all the patches. So while it may be
+annoying, I do think it may be a good idea to resend the series so I can
+take a closer look as well. I do think it's interesting and I'd love to
+have it work in a non-blocking fashion, both solving the issue of splice
+holding the pipe lock while doing IO, and also then being able to
+eliminate the pipe_clear_nowait() hack hopefully.
 
 -- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
+Jens Axboe
+
