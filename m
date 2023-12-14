@@ -2,251 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BFC6813972
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 19:08:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D513813974
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 19:09:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1572975AbjLNSIm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 13:08:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37362 "EHLO
+        id S1572905AbjLNSJq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 13:09:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46338 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1572929AbjLNSIc (ORCPT
+        with ESMTP id S235736AbjLNSJn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 13:08:32 -0500
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B7CBA6
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 10:08:39 -0800 (PST)
-Received: from pps.filterd (m0353723.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3BEHHtvJ031155;
-        Thu, 14 Dec 2023 18:08:22 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=pp1;
- bh=kSRGxFo5gG0a/Y18f3ozNyYBdBaI5uNGjN6/lpUbqDY=;
- b=YSqsXatrbB8AIWwAkOQTiCM6FNWfn6GhIPilbJ4GWhfPK3vPmGFwB9iAc8gb/xk0i4Lh
- zIVMr61y8gH3qqJ2U2olXpuvPJM7qj7tQffX+UnNxDXGHREwRrpqFl9qxw5OmaJe3Nda
- M8yVHlmR7lrQjAa1JPm7Jk4NFC4LReI84/NO92IUot29lGQ9jGJkIJcQtNUIh0Lw+rDn
- kO7R0M4sFAFtH1GLw7A6OcDpB7lRn5WqZsrj2GD7si/jn5Rwo5nuQpANzhK78qAcF9Vp
- fSBXB5GLfCSI7qE+nFwc87sNpm61o6FZz9/FuK8J4eZMCyRKKWv0QWxukqEAG6JGUXbx SQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3v05yu9a72-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 14 Dec 2023 18:08:22 +0000
-Received: from m0353723.ppops.net (m0353723.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3BEHrQUl015467;
-        Thu, 14 Dec 2023 18:08:21 GMT
-Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3v05yu9a6m-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 14 Dec 2023 18:08:21 +0000
-Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
-        by ppma22.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3BEHY59x028217;
-        Thu, 14 Dec 2023 18:08:21 GMT
-Received: from smtprelay07.fra02v.mail.ibm.com ([9.218.2.229])
-        by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3uw2y02me1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 14 Dec 2023 18:08:20 +0000
-Received: from smtpav06.fra02v.mail.ibm.com (smtpav06.fra02v.mail.ibm.com [10.20.54.105])
-        by smtprelay07.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3BEI8I5h11993782
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 14 Dec 2023 18:08:19 GMT
-Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id D6E6120049;
-        Thu, 14 Dec 2023 18:08:18 +0000 (GMT)
-Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 98B9920040;
-        Thu, 14 Dec 2023 18:08:15 +0000 (GMT)
-Received: from sapthagiri.in.ibm.com (unknown [9.43.25.55])
-        by smtpav06.fra02v.mail.ibm.com (Postfix) with ESMTP;
-        Thu, 14 Dec 2023 18:08:15 +0000 (GMT)
-From:   Srikar Dronamraju <srikar@linux.vnet.ibm.com>
-To:     Michael Ellerman <mpe@ellerman.id.au>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc:     linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
-        Josh Poimboeuf <jpoimboe@kernel.org>,
-        linux-kernel@vger.kernel.org, Mark Rutland <mark.rutland@arm.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Rohan McLure <rmclure@linux.ibm.com>,
-        Valentin Schneider <vschneid@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Aneesh <aneesh.kumar@kernel.org>,
-        "ndesaulniers@google.com" <ndesaulniers@google.com>
-Subject: [PATCH v5 5/5] powerpc/smp: Dynamically build Powerpc topology
-Date:   Thu, 14 Dec 2023 23:37:15 +0530
-Message-ID: <20231214180720.310852-6-srikar@linux.vnet.ibm.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20231214180720.310852-1-srikar@linux.vnet.ibm.com>
-References: <20231214180720.310852-1-srikar@linux.vnet.ibm.com>
+        Thu, 14 Dec 2023 13:09:43 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5E67123;
+        Thu, 14 Dec 2023 10:09:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1702577381; x=1734113381;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=kQsTyReN6U5/B4j4CeAMns8RYLO2IGmgecq4Y3yTN6Q=;
+  b=eWQXK28E7cw+A0LqiVZ+2g607VPCrwTR8H7aAh+U3tu7+TpQ9SNOITtn
+   4qFX6axLpY11OeYjjYoOs9zhi3N2VlWDsQkM2O7Kg01tRIvRUu5NonR8q
+   iRgoY0dazhEHCXL5QLeimy8QmkBH9/UwjOtLZtSpnCM4SHmutivymVibn
+   Z+58/rJEo7qqhswecRcAo5v8KsXa8mdphVHgzwOMBhbcrMvUxrzBnLrtW
+   MvIYZsBieCAvVZRpZZU0gkcqFbMreXRSPTxsW2M01Af0K2seoYwaOJdKV
+   ZfDWFBmg5sdaFHDFTWRzcLo4SMSuJ/f5SXoDfahict2Q7EmKWwQX7XL9i
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10924"; a="13852775"
+X-IronPort-AV: E=Sophos;i="6.04,276,1695711600"; 
+   d="scan'208";a="13852775"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Dec 2023 10:09:41 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10924"; a="897825349"
+X-IronPort-AV: E=Sophos;i="6.04,276,1695711600"; 
+   d="scan'208";a="897825349"
+Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
+  by orsmga004.jf.intel.com with ESMTP; 14 Dec 2023 10:09:37 -0800
+Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1rDq9A-000MSI-11;
+        Thu, 14 Dec 2023 18:09:27 +0000
+Date:   Fri, 15 Dec 2023 02:08:31 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Akhil R <akhilrajeev@nvidia.com>, herbert@gondor.apana.org.au,
+        davem@davemloft.net, linux-crypto@vger.kernel.org,
+        linux-kernel@vger.kernel.org, thierry.reding@gmail.com,
+        jonathanh@nvidia.com, linux-tegra@vger.kernel.org
+Cc:     oe-kbuild-all@lists.linux.dev, Akhil R <akhilrajeev@nvidia.com>
+Subject: Re: [PATCH 3/5] crypto: tegra: Add Tegra Security Engine driver
+Message-ID: <202312150118.ydw2nowl-lkp@intel.com>
+References: <20231213122030.11734-4-akhilrajeev@nvidia.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: 9vLLj_W6yaXcKHksMtZ7A8088n46A80J
-X-Proofpoint-GUID: mtXEDbzLlTk5SslFsmsgTHIeloCAk8hy
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-14_12,2023-12-14_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 mlxscore=0
- mlxlogscore=999 priorityscore=1501 adultscore=0 impostorscore=0
- suspectscore=0 malwarescore=0 bulkscore=0 phishscore=0 clxscore=1015
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311290000 definitions=main-2312140128
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231213122030.11734-4-akhilrajeev@nvidia.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently there are four Powerpc specific sched topologies.  These are
-all statically defined.  However not all these topologies are used by
-all Powerpc systems.
+Hi Akhil,
 
-To avoid unnecessary degenerations by the scheduler, masks and flags
-are compared. However if the sched topologies are build dynamically then
-the code is simpler and there are greater chances of avoiding
-degenerations.
+kernel test robot noticed the following build warnings:
 
-Note:
-Even X86 builds its sched topologies dynamically and proposed changes
-are very similar to the way X86 is building its topologies.
+[auto build test WARNING on herbert-cryptodev-2.6/master]
+[also build test WARNING on drm/drm-next arm64/for-next/core robh/for-next linus/master v6.7-rc5 next-20231214]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-Signed-off-by: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
----
-Changelog:
-v3 -> v4:
-- Conflict resolution due to rebase
-	(DIE changed to PKG)
+url:    https://github.com/intel-lab-lkp/linux/commits/Akhil-R/dt-bindings-crypto-Add-Tegra-SE-DT-binding-doc/20231213-202407
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/herbert/cryptodev-2.6.git master
+patch link:    https://lore.kernel.org/r/20231213122030.11734-4-akhilrajeev%40nvidia.com
+patch subject: [PATCH 3/5] crypto: tegra: Add Tegra Security Engine driver
+config: parisc-allmodconfig (https://download.01.org/0day-ci/archive/20231215/202312150118.ydw2nowl-lkp@intel.com/config)
+compiler: hppa-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231215/202312150118.ydw2nowl-lkp@intel.com/reproduce)
 
- arch/powerpc/kernel/smp.c | 78 ++++++++++++++-------------------------
- 1 file changed, 28 insertions(+), 50 deletions(-)
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202312150118.ydw2nowl-lkp@intel.com/
 
-diff --git a/arch/powerpc/kernel/smp.c b/arch/powerpc/kernel/smp.c
-index 9d8bb9a084bd..693334c20d07 100644
---- a/arch/powerpc/kernel/smp.c
-+++ b/arch/powerpc/kernel/smp.c
-@@ -93,15 +93,6 @@ EXPORT_PER_CPU_SYMBOL(cpu_l2_cache_map);
- EXPORT_PER_CPU_SYMBOL(cpu_core_map);
- EXPORT_SYMBOL_GPL(has_big_cores);
- 
--enum {
--#ifdef CONFIG_SCHED_SMT
--	smt_idx,
--#endif
--	cache_idx,
--	mc_idx,
--	die_idx,
--};
--
- #define MAX_THREAD_LIST_SIZE	8
- #define THREAD_GROUP_SHARE_L1   1
- #define THREAD_GROUP_SHARE_L2_L3 2
-@@ -1067,16 +1058,6 @@ static const struct cpumask *cpu_mc_mask(int cpu)
- 	return cpu_coregroup_mask(cpu);
- }
- 
--static struct sched_domain_topology_level powerpc_topology[] = {
--#ifdef CONFIG_SCHED_SMT
--	{ cpu_smt_mask, powerpc_smt_flags, SD_INIT_NAME(SMT) },
--#endif
--	{ shared_cache_mask, powerpc_shared_cache_flags, SD_INIT_NAME(CACHE) },
--	{ cpu_mc_mask, powerpc_shared_proc_flags, SD_INIT_NAME(MC) },
--	{ cpu_cpu_mask, powerpc_shared_proc_flags, SD_INIT_NAME(PKG) },
--	{ NULL, },
--};
--
- static int __init init_big_cores(void)
- {
- 	int cpu;
-@@ -1704,9 +1685,11 @@ void start_secondary(void *unused)
- 	BUG();
- }
- 
--static void __init fixup_topology(void)
-+static struct sched_domain_topology_level powerpc_topology[6];
-+
-+static void __init build_sched_topology(void)
- {
--	int i;
-+	int i = 0;
- 
- 	if (is_shared_processor() && has_big_cores)
- 		static_branch_enable(&splpar_asym_pack);
-@@ -1714,36 +1697,33 @@ static void __init fixup_topology(void)
- #ifdef CONFIG_SCHED_SMT
- 	if (has_big_cores) {
- 		pr_info("Big cores detected but using small core scheduling\n");
--		powerpc_topology[smt_idx].mask = smallcore_smt_mask;
-+		powerpc_topology[i++] = (struct sched_domain_topology_level){
-+			smallcore_smt_mask, powerpc_smt_flags, SD_INIT_NAME(SMT)
-+		};
-+	} else {
-+		powerpc_topology[i++] = (struct sched_domain_topology_level){
-+			cpu_smt_mask, powerpc_smt_flags, SD_INIT_NAME(SMT)
-+		};
- 	}
- #endif
-+	if (shared_caches) {
-+		powerpc_topology[i++] = (struct sched_domain_topology_level){
-+			shared_cache_mask, powerpc_shared_cache_flags, SD_INIT_NAME(CACHE)
-+		};
-+	}
-+	if (has_coregroup_support()) {
-+		powerpc_topology[i++] = (struct sched_domain_topology_level){
-+			cpu_mc_mask, powerpc_shared_proc_flags, SD_INIT_NAME(MC)
-+		};
-+	}
-+	powerpc_topology[i++] = (struct sched_domain_topology_level){
-+		cpu_cpu_mask, powerpc_shared_proc_flags, SD_INIT_NAME(PKG)
-+	};
- 
--	if (!has_coregroup_support())
--		powerpc_topology[mc_idx].mask = powerpc_topology[cache_idx].mask;
--
--	/*
--	 * Try to consolidate topology levels here instead of
--	 * allowing scheduler to degenerate.
--	 * - Dont consolidate if masks are different.
--	 * - Dont consolidate if sd_flags exists and are different.
--	 */
--	for (i = 1; i <= die_idx; i++) {
--		if (powerpc_topology[i].mask != powerpc_topology[i - 1].mask)
--			continue;
--
--		if (powerpc_topology[i].sd_flags && powerpc_topology[i - 1].sd_flags &&
--				powerpc_topology[i].sd_flags != powerpc_topology[i - 1].sd_flags)
--			continue;
--
--		if (!powerpc_topology[i - 1].sd_flags)
--			powerpc_topology[i - 1].sd_flags = powerpc_topology[i].sd_flags;
-+	/* There must be one trailing NULL entry left.  */
-+	BUG_ON(i >= ARRAY_SIZE(powerpc_topology) - 1);
- 
--		powerpc_topology[i].mask = powerpc_topology[i + 1].mask;
--		powerpc_topology[i].sd_flags = powerpc_topology[i + 1].sd_flags;
--#ifdef CONFIG_SCHED_DEBUG
--		powerpc_topology[i].name = powerpc_topology[i + 1].name;
--#endif
--	}
-+	set_sched_topology(powerpc_topology);
- }
- 
- void __init smp_cpus_done(unsigned int max_cpus)
-@@ -1758,9 +1738,7 @@ void __init smp_cpus_done(unsigned int max_cpus)
- 		smp_ops->bringup_done();
- 
- 	dump_numa_cpu_topology();
--
--	fixup_topology();
--	set_sched_topology(powerpc_topology);
-+	build_sched_topology();
- }
- 
- /*
+All warnings (new ones prefixed by >>):
+
+   In file included from drivers/crypto/tegra/tegra-se-hash.c:22:
+   drivers/crypto/tegra/tegra-se-hash.c: In function 'tegra_sha_get_config':
+   drivers/crypto/tegra/tegra-se.h:55:57: error: implicit declaration of function 'FIELD_PREP' [-Werror=implicit-function-declaration]
+      55 | #define SE_SHA_CFG_ENC_ALG(x)                           FIELD_PREP(GENMASK(15, 12), x)
+         |                                                         ^~~~~~~~~~
+   drivers/crypto/tegra/tegra-se.h:59:57: note: in expansion of macro 'SE_SHA_CFG_ENC_ALG'
+      59 | #define SE_SHA_ENC_ALG_SHA                              SE_SHA_CFG_ENC_ALG(3)
+         |                                                         ^~~~~~~~~~~~~~~~~~
+   drivers/crypto/tegra/tegra-se-hash.c:53:24: note: in expansion of macro 'SE_SHA_ENC_ALG_SHA'
+      53 |                 cfg |= SE_SHA_ENC_ALG_SHA;
+         |                        ^~~~~~~~~~~~~~~~~~
+   drivers/crypto/tegra/tegra-se-hash.c: In function 'tegra_sha_init':
+>> drivers/crypto/tegra/tegra-se-hash.c:457:21: warning: variable 'algname' set but not used [-Wunused-but-set-variable]
+     457 |         const char *algname;
+         |                     ^~~~~~~
+   cc1: some warnings being treated as errors
+
+
+vim +/algname +457 drivers/crypto/tegra/tegra-se-hash.c
+
+   450	
+   451	static int tegra_sha_init(struct ahash_request *req)
+   452	{
+   453		struct tegra_sha_reqctx *rctx = ahash_request_ctx(req);
+   454		struct crypto_ahash *tfm = crypto_ahash_reqtfm(req);
+   455		struct tegra_sha_ctx *ctx = crypto_ahash_ctx(tfm);
+   456		struct tegra_se *se = ctx->se;
+ > 457		const char *algname;
+   458	
+   459		if (ctx->fallback)
+   460			return tegra_sha_fallback_init(req);
+   461	
+   462		algname = crypto_tfm_alg_name(&tfm->base);
+   463	
+   464		rctx->total_len = 0;
+   465		rctx->datbuf.size = 0;
+   466		rctx->residue.size = 0;
+   467		rctx->key_id = ctx->key_id;
+   468		rctx->task = SHA_FIRST;
+   469		rctx->alg = ctx->alg;
+   470		rctx->blk_size = crypto_ahash_blocksize(tfm);
+   471		rctx->digest.size = crypto_ahash_digestsize(tfm);
+   472	
+   473		rctx->digest.buf = dma_alloc_coherent(se->dev, rctx->digest.size,
+   474						      &rctx->digest.addr, GFP_KERNEL);
+   475		if (!rctx->digest.buf)
+   476			goto digbuf_fail;
+   477	
+   478		rctx->residue.buf = dma_alloc_coherent(se->dev, rctx->blk_size,
+   479						       &rctx->residue.addr, GFP_KERNEL);
+   480		if (!rctx->residue.buf)
+   481			goto resbuf_fail;
+   482	
+   483		rctx->datbuf.buf = dma_alloc_coherent(se->dev, SE_SHA_BUFLEN,
+   484						      &rctx->datbuf.addr, GFP_KERNEL);
+   485		if (!rctx->datbuf.buf)
+   486			goto datbuf_fail;
+   487	
+   488		return 0;
+   489	
+   490	datbuf_fail:
+   491		dma_free_coherent(se->dev, rctx->blk_size, rctx->residue.buf,
+   492				  rctx->residue.addr);
+   493	resbuf_fail:
+   494		dma_free_coherent(se->dev, SE_SHA_BUFLEN, rctx->datbuf.buf,
+   495				  rctx->datbuf.addr);
+   496	digbuf_fail:
+   497		return -ENOMEM;
+   498	}
+   499	
+
 -- 
-2.35.3
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
