@@ -2,107 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FBCE81244B
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 02:06:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CAC0081245F
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 02:16:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442932AbjLNBGe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 20:06:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54284 "EHLO
+        id S234207AbjLNBQP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 20:16:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57732 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234117AbjLNBGc (ORCPT
+        with ESMTP id S234093AbjLNBQN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 20:06:32 -0500
-Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFDB7E8
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 17:06:38 -0800 (PST)
-Received: by mail-lj1-x22a.google.com with SMTP id 38308e7fff4ca-2c9f84533beso87083851fa.1
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 17:06:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1702515996; x=1703120796; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:user-agent:from:references
-         :in-reply-to:mime-version:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=peKqQhahD9JRG6w67FwL0sZR7IqqMN+7cEJCPbXgpS8=;
-        b=cw/Wz/qBmUDgWvZLY+mt8wuaD0gqN0/KuzCVbuYonRQULoYb6y6stZG5p5X1pukETH
-         x8kD44ObrdpdQSS9gbw5DRGSheuDkfm++CnyjVR6KhDfeKIP4/k17QZlWEiw07eArlRX
-         hwfHEvF3jnUWAb8NozrTA5cUbzZl1SxRupyJw=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702515996; x=1703120796;
-        h=cc:to:subject:message-id:date:user-agent:from:references
-         :in-reply-to:mime-version:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=peKqQhahD9JRG6w67FwL0sZR7IqqMN+7cEJCPbXgpS8=;
-        b=n8ouClHhiTz4Mk91GhR6aLBOxnAoJuSGcy09CRuhErUJoENCVU0i6plCLRQEPLtD0B
-         kMGrGxuvJt18QuN3hWaVcp0JH9YaYD1ae3Wv3bH+6taz0XefH3cDfnKwlbbN3GtlGkej
-         eVyMjE1CjO2QO8joiLz8vOjVlcd8cCQUYe9s3BzRjkzHz/Iar5uFqN/41+f4hh+rTrWa
-         o37WQMZbS41hBIazo0jSRA5dtFsdR6l3AM9WzNfO5dDznD6xfynsNywvKOLwN8IqnMJe
-         ga53FP1iU+4hGlPiWkDbZDDLbrgcF07GR8eZD4HqVcvfsn8B5js7tdzGs5Ca61OHpBzW
-         X7Ng==
-X-Gm-Message-State: AOJu0YzjwoFFlUeR21255BXGVVAseoWS8GvPuVxE6kLyYyS62HpNy5Ed
-        9DeqfjnQxv70CpsDxhWz/xWncYgMVdjHNAr/vjoJxA==
-X-Google-Smtp-Source: AGHT+IHvs8FX8jR+oHMtbXK5cvMpQXiJFEHExpih0ehnbtikW0K8fvGV2686+EyTLWM3fZDJz3SeNMCcCHHM7UeoTbg=
-X-Received: by 2002:a2e:a373:0:b0:2cc:2591:bcd3 with SMTP id
- i19-20020a2ea373000000b002cc2591bcd3mr2000691ljn.106.1702515996638; Wed, 13
- Dec 2023 17:06:36 -0800 (PST)
-Received: from 753933720722 named unknown by gmailapi.google.com with
- HTTPREST; Wed, 13 Dec 2023 17:06:36 -0800
+        Wed, 13 Dec 2023 20:16:13 -0500
+X-Greylist: delayed 399 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 13 Dec 2023 17:16:18 PST
+Received: from cvs.openbsd.org (cvs.openbsd.org [199.185.137.3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEA1CE4;
+        Wed, 13 Dec 2023 17:16:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; s=selector1; bh=whGKbpn2mK
+        dixz+7VYNABz/psNG/LtxK3IfpFNItFm0=; h=date:references:in-reply-to:
+        subject:cc:to:from; d=openbsd.org; b=f8EJnL1pM686HWnsDZ2MM+QERZ5fn5hkB
+        jS2UEz9O0HQ3CMCPdqYpqvgemPzK/k3sYnnneBkmxRB2mwcLGksMDxQUepWmAMwQXOZWow
+        UnukNeZTT7/fyuRPG/vc6WY0665nhjTCzO3swQTttAdyYfO+ykooxNcn7hq9Jif7k877Zg
+        NzTQhv5fS8QmQ1kODqjycmd0+HMFk6tqn25KWRfbvwutgEQ8WduyIIyF5VupOqoooaYpMm
+        PcMkj3UvHwRNaSIbk8cWjCxE4kuZUOGfwXj+Pof8/c4Lkak7sNxM8KgYhPRr+6RT7pTSqL
+        cfcNtU11WwqUAXQZzouEGgjK2Ln1A==
+Received: from cvs.openbsd.org (localhost [127.0.0.1])
+        by cvs.openbsd.org (OpenSMTPD) with ESMTP id 3f9af318;
+        Wed, 13 Dec 2023 18:09:38 -0700 (MST)
+From:   "Theo de Raadt" <deraadt@openbsd.org>
+To:     Jeff Xu <jeffxu@google.com>
+cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        jeffxu@chromium.org, akpm@linux-foundation.org,
+        keescook@chromium.org, jannh@google.com, sroettger@google.com,
+        willy@infradead.org, gregkh@linuxfoundation.org,
+        jorgelo@chromium.org, groeck@chromium.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-mm@kvack.org, pedro.falcato@gmail.com, dave.hansen@intel.com,
+        linux-hardening@vger.kernel.org
+Subject: Re: [RFC PATCH v3 11/11] mseal:add documentation
+In-reply-to: <CALmYWFu39nzHvBmRsA326GcmV9u=eM-2aCGOvLK31rrb2R9NEw@mail.gmail.com>
+References: <20231212231706.2680890-1-jeffxu@chromium.org> <20231212231706.2680890-12-jeffxu@chromium.org> <CAHk-=wgn02cpoFEDQGgS+5BUqA2z-=Ks9+PNd-pEJy8h+NOs5g@mail.gmail.com> <CALmYWFu39nzHvBmRsA326GcmV9u=eM-2aCGOvLK31rrb2R9NEw@mail.gmail.com>
+Comments: In-reply-to Jeff Xu <jeffxu@google.com>
+   message dated "Wed, 13 Dec 2023 16:35:26 -0800."
 MIME-Version: 1.0
-In-Reply-To: <20231213163501.1.I8c20f926d15c9ddc12e423e07df1e89db1105d93@changeid>
-References: <20231213163501.1.I8c20f926d15c9ddc12e423e07df1e89db1105d93@changeid>
-From:   Stephen Boyd <swboyd@chromium.org>
-User-Agent: alot/0.10
-Date:   Wed, 13 Dec 2023 17:06:36 -0800
-Message-ID: <CAE-0n52vfejT7a9Dh177dvD7G3cCx3paB7i_xgSCi=1Z4aE9nw@mail.gmail.com>
-Subject: Re: [PATCH] arm64: dts: qcom: sc7180: Switch pompom to the generic edp-panel
-To:     Bjorn Andersson <andersson@kernel.org>,
-        Douglas Anderson <dianders@chromium.org>
-Cc:     Andy Gross <agross@kernel.org>, Conor Dooley <conor+dt@kernel.org>,
-        Hsin-Yi Wang <hsinyi@chromium.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        cros-qcom-dts-watchers@chromium.org, devicetree@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <45779.1702516178.1@cvs.openbsd.org>
+Date:   Wed, 13 Dec 2023 18:09:38 -0700
+Message-ID: <58421.1702516178@cvs.openbsd.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Douglas Anderson (2023-12-13 16:35:02)
-> Pompom has several sources for its panel. Let's switch it to the
-> generic edp-panel compatible string to account for this.
->
-> This fixes a problem where the panel wouldn't come up on some pompon
-> devices after commit fb3f43d50d9b ("drm/panel-edp: Avoid adding
-> multiple preferred modes"). Specifically, some models of pompom have a
-> 1920x1080 panel which is _very_ different than the 1366x768 panel
-> specified in the dts. Before the recent panel-edp fix on Linux things
-> kinda/sorta worked because the panel-edp driver would include both the
-> hardcoded and probed mode, AKA:
->
-> * #0 1920x1080
->   60.00 1920 1944 1960 2000 1080 1083 1088 1111 133320
->   flags: nhsync, nvsync; type: preferred, driver
-> * #1 1366x768
->   60.00 1366 1406 1438 1500 768 773 778 900 81000
->   flags: nhsync, nvsync; type: preferred, driver
->
-> ...and, at least on ChromeOS, the userspace was consistently picking
-> the first mode even though both were marked as "preferred". Now that
-> the Linux driver is fixed we only get the hardcoded mode. That means
-> we end up trying to drive a 1920x1080 panel at 1366x768 and it doesn't
-> work so well.
->
-> Let's switch over to the generic panel-edp.
->
-> Fixes: fb3f43d50d9b ("drm/panel-edp: Avoid adding multiple preferred modes")
-> Signed-off-by: Douglas Anderson <dianders@chromium.org>
-> ---
+Jeff Xu <jeffxu@google.com> wrote:
 
-Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+> > Or when would you *ever* say "seal this area, but mprotect()" is ok.
+> >
+> The fact  that openBSD allows RW=>RO transaction, as in its man page [2]
+> 
+>  "  At present, mprotect(2) may reduce permissions on immutable pages
+>   marked PROT_READ | PROT_WRITE to the less permissive PROT_READ."
+
+Let me explain this.
+
+We encountered two places that needed this less-permission-transition.
+
+Both of these problems were found in either .data or bss, which the
+kernel makes immutable by default.  The OpenBSD kernel makes those
+regions immutable BY DEFAULT, and there is no way to turn that off.
+
+One was in our libc malloc, which after initialization, wants to protect
+a control data structure from being written in the future.
+
+The other was in chrome v8, for the v8_flags variable, this is
+similarily mprotected to less permission after initialization to avoid
+tampering (because it's an amazing relative-address located control
+gadget).
+
+We introduced a different mechanism to solve these problem.
+
+So we added a new ELF section which annotates objects you need to be
+MUTABLE.  If these are .data or .bss, they are placed in the MUTABLE
+region annotated with the following Program Header:
+
+Program Headers:
+  Type           Offset   VirtAddr           PhysAddr           FileSiz  MemSiz   Flg Align
+  OPENBSD_MUTABLE 0x0e9000 0x00000000000ec000 0x00000000000ec000 0x001000 0x001000 RW  0x1000
+
+associated with this Section Header
+
+  [20] .openbsd.mutable  PROGBITS        00000000000ec000 0e9000 001000 00  WA  0   0 4096
+
+(It is vaguely similar to RELRO).
+
+You can place objects there using the a compiler __attribute__((section
+declaration, like this example from our libc/malloc.c code
+
+static union {
+        struct malloc_readonly mopts;
+        u_char _pad[MALLOC_PAGESIZE];
+} malloc_readonly __attribute__((aligned(MALLOC_PAGESIZE)))
+                __attribute__((section(".openbsd.mutable")));
+
+During startup the code can set the protection and then the immutability
+of the object correctly.
+
+Since we have no purpose left for this permission reduction semantic
+upon immutable mappings, we may be deleting that behaviour in the
+future.  I wrote that code, because I needed it to make progress with some
+difficult pieces of code.  But we found a better way.
+
