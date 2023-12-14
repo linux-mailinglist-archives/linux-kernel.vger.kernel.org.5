@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BF2A8129A4
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 08:43:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 241B681299C
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 08:43:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1443413AbjLNHnm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 02:43:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38990 "EHLO
+        id S1443360AbjLNHnf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 02:43:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38954 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235492AbjLNHne (ORCPT
+        with ESMTP id S234348AbjLNHnd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 02:43:34 -0500
+        Thu, 14 Dec 2023 02:43:33 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E22B109
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 296BDB9
         for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 23:43:40 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BECA3C433C8;
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B7EAEC433C7;
         Thu, 14 Dec 2023 07:43:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1702539819;
-        bh=OEMk/nxMTR+a3ksA2UJ1yTut+dCnmQnWva7ppIneGCc=;
-        h=From:To:Cc:Subject:Date:From;
-        b=osFoWmK9rwckrPYfephyKYoWACTfSb/oyYSpzZ71wSgHuVd5F+y0II14i2SQ4SLRQ
-         3N3GPkj7/NQMtXu/JbC+z8gFSjlBufcTnavtSou6wrB1CutW29Jk8d6axLfuMgreFF
-         I5qVRxdgkmgnCq9IHdiGWWZ01QuQM5hz+bcax6GrPzuDWqjuSl+nROJPBj+RixWP97
-         QRGQBObLS7S7G77H4+hBMxkNvNyrwgKzc2WOtNVchvG7wcGYUPzJO78UST0I3oWVb+
-         OG2GEkef9Cz32wddWMrqn0aV4eXSYK8ihOlCGMX1kAvBfr2XZLCXuNrQLyLKCQzVTJ
-         ODq5tQBWGGOpA==
+        bh=Yl2x7eLhM78aBJkayHAzBhB3fDnzcX22imLrs5W4058=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=SsqxBolGwNn2WnFESjwwmEsD54cH3Z9K77vTR8cTgI2DXnvMZ1nALvvOulJJJtnNe
+         ikisnu2cwX6pz4NPDFO8vXhVYy0ilA52gzBMjmB+fwLq89tvqfZPARYPxzdKU5c4Km
+         SjjmWGErk0sq4lAGnMSphoGYi3pPcYMRyXFnhVNYffJzKavKW48yMlVVHVg0Dt+pPF
+         apzjFgtMtMTYHfNy6vl3YC1zFif9FhfJreUf95DCvX7sff2JNHXRM6WkwYEPWBg23o
+         ffKecZ70VB9xsgpSzvDf4MeF4MXiGZidX4d/Hei6+UQt3+rTPfhLyqjBQiu8Qh4Aku
+         hMh3I0+qGy6eg==
 Received: from johan by xi.lan with local (Exim 4.96.2)
         (envelope-from <johan+linaro@kernel.org>)
-        id 1rDgNe-0002s4-1A;
+        id 1rDgNf-0002s6-0Y;
         Thu, 14 Dec 2023 08:43:39 +0100
 From:   Johan Hovold <johan+linaro@kernel.org>
 To:     Bjorn Andersson <andersson@kernel.org>
@@ -41,11 +41,14 @@ Cc:     Andy Gross <agross@kernel.org>,
         Krishna Kurapati PSSNV <quic_kriskura@quicinc.com>,
         linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org,
-        Johan Hovold <johan+linaro@kernel.org>
-Subject: [PATCH 0/3] arm64: dts: qcom: fix USB wakeup interrupts again (pt 2)
-Date:   Thu, 14 Dec 2023 08:43:16 +0100
-Message-ID: <20231214074319.11023-1-johan+linaro@kernel.org>
+        Johan Hovold <johan+linaro@kernel.org>, stable@vger.kernel.org,
+        Richard Acayan <mailingradian@gmail.com>
+Subject: [PATCH 1/3] arm64: dts: qcom: sdm670: fix USB DP/DM HS PHY interrupts
+Date:   Thu, 14 Dec 2023 08:43:17 +0100
+Message-ID: <20231214074319.11023-2-johan+linaro@kernel.org>
 X-Mailer: git-send-email 2.41.0
+In-Reply-To: <20231214074319.11023-1-johan+linaro@kernel.org>
+References: <20231214074319.11023-1-johan+linaro@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
@@ -68,30 +71,34 @@ interrupt provider as required. This leads to the current Linux driver
 failing to probe instead of printing an error during suspend and USB
 wakeup not working as intended.
 
-While at it, fix also the SS PHY interrupt so that it too can be used to
-wakeup the system up.
+Fixes: de3b3de30999 ("arm64: dts: qcom: sdm670: fix USB wakeup interrupt types")
+Fixes: 07c8ded6e373 ("arm64: dts: qcom: add sdm670 and pixel 3a device trees")
+Cc: stable@vger.kernel.org      # 6.2
+Cc: Richard Acayan <mailingradian@gmail.com>
+Signed-off-by: Johan Hovold <johan+linaro@kernel.org>
+---
+ arch/arm64/boot/dts/qcom/sdm670.dtsi | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-Thanks to Konrad and Krishna for providing the sdm670 PDC interrupts
-numbers. The sc8180x SS PHY vectors I inferred from sdm670/sdm845/sm8150
-which appear to use the name configuration.
-
-After this series, only sm6375 remains to be fixed and I believe Bjorn
-is trying to dig out the corresponding vectors.
-
-Also note that these patches have only been compile tested.
-
-Johan
-
-
-Johan Hovold (3):
-  arm64: dts: qcom: sdm670: fix USB DP/DM HS PHY interrupts
-  arm64: dts: qcom: sdm670: fix USB SS wakeup
-  arm64: dts: qcom: sc8180x: fix USB SS wakeup
-
- arch/arm64/boot/dts/qcom/sc8180x.dtsi | 4 ++--
- arch/arm64/boot/dts/qcom/sdm670.dtsi  | 8 ++++----
- 2 files changed, 6 insertions(+), 6 deletions(-)
-
+diff --git a/arch/arm64/boot/dts/qcom/sdm670.dtsi b/arch/arm64/boot/dts/qcom/sdm670.dtsi
+index c873560ae9d5..fe4067c012a0 100644
+--- a/arch/arm64/boot/dts/qcom/sdm670.dtsi
++++ b/arch/arm64/boot/dts/qcom/sdm670.dtsi
+@@ -1295,10 +1295,10 @@ usb_1: usb@a6f8800 {
+ 					  <&gcc GCC_USB30_PRIM_MASTER_CLK>;
+ 			assigned-clock-rates = <19200000>, <150000000>;
+ 
+-			interrupts = <GIC_SPI 131 IRQ_TYPE_LEVEL_HIGH>,
+-				     <GIC_SPI 486 IRQ_TYPE_LEVEL_HIGH>,
+-				     <GIC_SPI 488 IRQ_TYPE_EDGE_BOTH>,
+-				     <GIC_SPI 489 IRQ_TYPE_EDGE_BOTH>;
++			interrupts-extended = <&intc GIC_SPI 131 IRQ_TYPE_LEVEL_HIGH>,
++					      <&intc GIC_SPI 486 IRQ_TYPE_LEVEL_HIGH>,
++					      <&pdc 8 IRQ_TYPE_EDGE_BOTH>,
++					      <&pdc 9 IRQ_TYPE_EDGE_BOTH>;
+ 			interrupt-names = "hs_phy_irq", "ss_phy_irq",
+ 					  "dm_hs_phy_irq", "dp_hs_phy_irq";
+ 
 -- 
 2.41.0
 
