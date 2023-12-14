@@ -2,91 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BAB08128E3
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 08:15:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ED6158128E7
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 08:16:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234366AbjLNHPD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 02:15:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33568 "EHLO
+        id S234380AbjLNHPy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 02:15:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43670 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229492AbjLNHPB (ORCPT
+        with ESMTP id S229492AbjLNHPv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 02:15:01 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8974B9
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 23:15:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1702538107;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=vRaJaBGglr58sTQWQMVIiejNzndVXiVSrMNWKcapZYU=;
-        b=b1ISzpPVDfN8HBVeRnXludRbdLuybfmt7npNef2mz17XLC+sIpDOLu0peqmXyd1fHMtx7t
-        lMWQLT/bPJLKn2Ssfl/jTVqOHkVaaPGXinzOfKSkHd+idd9QzLuDtGnRgBjVIpt5reqZ3S
-        0nQUqXpN/PtOcZUwL9zqxtE3POsQtqo=
-Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
- [209.85.218.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-378-DGbOokMKM9SMY25CZroZTw-1; Thu, 14 Dec 2023 02:15:05 -0500
-X-MC-Unique: DGbOokMKM9SMY25CZroZTw-1
-Received: by mail-ej1-f70.google.com with SMTP id a640c23a62f3a-a1bd7a5931eso423617166b.3
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 23:15:05 -0800 (PST)
+        Thu, 14 Dec 2023 02:15:51 -0500
+Received: from mail-yw1-x1134.google.com (mail-yw1-x1134.google.com [IPv6:2607:f8b0:4864:20::1134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2322EB9
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 23:15:57 -0800 (PST)
+Received: by mail-yw1-x1134.google.com with SMTP id 00721157ae682-5e248b40c97so22632667b3.2
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 23:15:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1702538156; x=1703142956; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=Hyuj6L4AEIo77b1y5Vbh5MTrD0n68EvFYvH7xGhCjqA=;
+        b=HW2dUlKuh5ESUmOaYRbiyzbvaDRcmFw2QlVR3dGYxoYY67WfLWhwJkf9aMmGkWyTp4
+         wsNFeQinxl3D9mBay7BhlCy2dJ1NaVz9AZrFIPikHQeeSKbXfe1fEyDWI5ssjI41YmUa
+         yNTIVS/g043RyNT0CLAQkdE2OmqTMuvqsOGX71IqOI51+YPiafFSHg2KfqdN9INXqu5S
+         jTS+rFJoSyHZLb1R9tr32CJQe4NuFjNSmwZoPH8+8GicVX12jPv+dr3mO+FsHgrkiU5v
+         0EvAoyrZIreVSge7g8N60KOjR1RlNW4Wx0JBYdrubeoRK3HqT6DQpDhyg3YNLA63WjdR
+         3nQQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702538104; x=1703142904;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=vRaJaBGglr58sTQWQMVIiejNzndVXiVSrMNWKcapZYU=;
-        b=jZedDLs9WumqwEW9Yok1YrQxIvbzq8/rkW+I9I0zf0BpfEl7kzRSAWShXlVoSuOxNE
-         cnJHa9eqx6KGSaCUPw5TwCoZbdJnA3y3LXtj89nx8rtdFiPtN7RRZ8oZ1ekacbOcTV+7
-         iXSteZmRhh+3CIHurU3pTsELZgDUsk2HxJB1uAU5xJ19KTfn6rEtNBGLpYE1m54CgJoE
-         SXZjQHfEO5bKCyMJ2S9J6da7m0hPkFvs3lunvPU+pzTEvZU/9SF6dnQ8TWZITh3BpirX
-         EHG/kB9F9PDpfoASxWCKjPQM6BDy9F9eJlyXsR4/E/tpakNapdsKla2Fc3FrWxgpDC26
-         FpAQ==
-X-Gm-Message-State: AOJu0Yy8jU49bXdYbct7ZSImQo8nS/b6k16TipU1qK2qAnsPi0igPhqZ
-        2jvko7c4ciMYlLUEbvajLQ2ui6MRscBEeT4/4zQjAP9Xc/C7W+t576wy98Vf1h6X+2NrHCcyrEm
-        pm5m6/87nFY4pKuqev1YIoibU
-X-Received: by 2002:a17:907:9150:b0:a1d:5864:9471 with SMTP id l16-20020a170907915000b00a1d58649471mr3654529ejs.131.1702538104440;
-        Wed, 13 Dec 2023 23:15:04 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IEWMkmj5x4pGRiF3eBg98WEH/O85pbvq4edeImvdFfJoL9RengQ8lWWzDOAG01wA77QaoZCrA==
-X-Received: by 2002:a17:907:9150:b0:a1d:5864:9471 with SMTP id l16-20020a170907915000b00a1d58649471mr3654523ejs.131.1702538104099;
-        Wed, 13 Dec 2023 23:15:04 -0800 (PST)
-Received: from redhat.com ([2.52.132.243])
-        by smtp.gmail.com with ESMTPSA id li14-20020a170907198e00b00a1f738318a5sm8388046ejc.155.2023.12.13.23.15.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Dec 2023 23:15:03 -0800 (PST)
-Date:   Thu, 14 Dec 2023 02:14:59 -0500
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Tobias Huschle <huschle@linux.ibm.com>
-Cc:     Jason Wang <jasowang@redhat.com>,
-        Abel Wu <wuyun.abel@bytedance.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Linux Kernel <linux-kernel@vger.kernel.org>,
-        kvm@vger.kernel.org, virtualization@lists.linux.dev,
-        netdev@vger.kernel.org
-Subject: Re: Re: Re: EEVDF/vhost regression (bisected to 86bfbb7ce4f6
- sched/fair: Add lag based placement)
-Message-ID: <20231214021328-mutt-send-email-mst@kernel.org>
-References: <53044.123120806415900549@us-mta-342.us.mimecast.lan>
- <20231209053443-mutt-send-email-mst@kernel.org>
- <CACGkMEuSGT-e-i-8U7hum-N_xEnsEKL+_07Mipf6gMLFFhj2Aw@mail.gmail.com>
- <20231211115329-mutt-send-email-mst@kernel.org>
- <CACGkMEudZnF7hUajgt0wtNPCxH8j6A3L1DgJj2ayJWhv9Bh1WA@mail.gmail.com>
- <20231212111433-mutt-send-email-mst@kernel.org>
- <42870.123121305373200110@us-mta-641.us.mimecast.lan>
- <20231213061719-mutt-send-email-mst@kernel.org>
- <25485.123121307454100283@us-mta-18.us.mimecast.lan>
- <20231213094854-mutt-send-email-mst@kernel.org>
+        d=1e100.net; s=20230601; t=1702538156; x=1703142956;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Hyuj6L4AEIo77b1y5Vbh5MTrD0n68EvFYvH7xGhCjqA=;
+        b=uLoROFOLJTTtKxaQos9/uqbLPn33Qv4AQw4il4qzPFqGA07Q+WDho4q9K4fO3tuQgn
+         isltDfqoG1/H0fEw6C1X/WINEuhowbykDUiiUoexDSXCnFt1QB6A0W5POwtdwv1CSCJv
+         VvblmGUe1tTkDcZXElvczIn6f1j3AxHJW7i31zXve1ec64gX6OMKgg92EkV5/09uOOWu
+         +jOdI/lEMm6GtxqKqXWZMOEMyPyvivEQTUXqwCXNmdOZ0LSPUD/WvI0P/lKsn/dloupC
+         qRJ2uxKVxAhcJAX2b7rBoSH5s7eoi5XE086qTnqiwVpoRhjK6BcMU84cqokSqBdbzey0
+         vwNA==
+X-Gm-Message-State: AOJu0Ywo62sAcs21OfVD+sCgY9qnj8kdMI885jdvP6AkQALYvvDR32+7
+        UbErcEvhBJEzD3MxpCxmkotCQe0wJ0izHnYCnFT5dg==
+X-Google-Smtp-Source: AGHT+IH3+Sw3exQcLiS7Au2pmyJWOiOy946o670EL9T8G4UD/WLVLtSaMDRzk5R+ja2Q0rT5BFDKfRPi9nleUY6Lf3Q=
+X-Received: by 2002:a81:c30e:0:b0:5e3:9b5f:e3f with SMTP id
+ r14-20020a81c30e000000b005e39b5f0e3fmr358653ywk.59.1702538156139; Wed, 13 Dec
+ 2023 23:15:56 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20231213094854-mutt-send-email-mst@kernel.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+References: <20231214062847.2215542-1-quic_ipkumar@quicinc.com> <20231214062847.2215542-8-quic_ipkumar@quicinc.com>
+In-Reply-To: <20231214062847.2215542-8-quic_ipkumar@quicinc.com>
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date:   Thu, 14 Dec 2023 09:15:45 +0200
+Message-ID: <CAA8EJppyd5-TQmvzRB3rBhRQtMLdu=6u5aQd5rWHitRuaJXzpA@mail.gmail.com>
+Subject: Re: [PATCH 07/10] dt-bindings: PCI: qcom: Add IPQ5332 SoC
+To:     Praveenkumar I <quic_ipkumar@quicinc.com>
+Cc:     agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
+        mturquette@baylibre.com, sboyd@kernel.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        bhelgaas@google.com, lpieralisi@kernel.org, kw@linux.com,
+        vkoul@kernel.org, kishon@kernel.org, mani@kernel.org,
+        quic_nsekar@quicinc.com, quic_srichara@quicinc.com,
+        linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-pci@vger.kernel.org, linux-phy@lists.infradead.org,
+        quic_varada@quicinc.com, quic_devipriy@quicinc.com,
+        quic_kathirav@quicinc.com, quic_anusha@quicinc.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -94,84 +76,94 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 13, 2023 at 09:55:23AM -0500, Michael S. Tsirkin wrote:
-> On Wed, Dec 13, 2023 at 01:45:35PM +0100, Tobias Huschle wrote:
-> > On Wed, Dec 13, 2023 at 07:00:53AM -0500, Michael S. Tsirkin wrote:
-> > > On Wed, Dec 13, 2023 at 11:37:23AM +0100, Tobias Huschle wrote:
-> > > > On Tue, Dec 12, 2023 at 11:15:01AM -0500, Michael S. Tsirkin wrote:
-> > > > > On Tue, Dec 12, 2023 at 11:00:12AM +0800, Jason Wang wrote:
-> > > > > > On Tue, Dec 12, 2023 at 12:54 AM Michael S. Tsirkin <mst@redhat.com> wrote:
-> > 
-> > [...]
-> > > 
-> > > Apparently schedule is already called?
-> > > 
-> > 
-> > What about this: 
-> > 
-> > static int vhost_task_fn(void *data)
-> > {
-> > 	<...>
-> > 	did_work = vtsk->fn(vtsk->data);  --> this calls vhost_worker if I'm not mistaken
-> > 	if (!did_work)
-> > 		schedule();
-> > 	<...>
-> > }
-> > 
-> > static bool vhost_worker(void *data)
-> > {
-> > 	struct vhost_worker *worker = data;
-> > 	struct vhost_work *work, *work_next;
-> > 	struct llist_node *node;
-> > 
-> > 	node = llist_del_all(&worker->work_list);
-> > 	if (node) {
-> > 		<...>
-> > 		llist_for_each_entry_safe(work, work_next, node, node) {
-> > 			<...>
-> > 		}
-> > 	}
-> > 
-> > 	return !!node;
-> > }
-> > 
-> > The llist_for_each_entry_safe does not actually change the node value, doesn't it?
-> > 
-> > If it does not change it, !!node would return 1.
-> > Thereby skipping the schedule.
-> > 
-> > This was changed recently with:
-> > f9010dbdce91 fork, vhost: Use CLONE_THREAD to fix freezer/ps regression
-> > 
-> > It returned a hardcoded 0 before. The commit message explicitly mentions this
-> > change to make vhost_worker return 1 if it did something.
-> > 
-> > Seems indeed like a nasty little side effect caused by EEVDF not scheduling
-> > the woken up kworker right away.
-> 
-> 
-> So we are actually making an effort to be nice.
-> Documentation/kernel-hacking/hacking.rst says:
-> 
-> If you're doing longer computations: first think userspace. If you
-> **really** want to do it in kernel you should regularly check if you need
-> to give up the CPU (remember there is cooperative multitasking per CPU).
-> Idiom::
-> 
->     cond_resched(); /* Will sleep */
-> 
-> 
-> and this is what vhost.c does.
-> 
-> At this point I'm not sure why it's appropriate to call schedule() as opposed to
-> cond_resched(). Ideas?
-> 
+On Thu, 14 Dec 2023 at 08:30, Praveenkumar I <quic_ipkumar@quicinc.com> wrote:
+>
+> Add support for the PCIe controller on the Qualcomm
+> IPQ5332 SoC to the bindings.
+>
+> Signed-off-by: Praveenkumar I <quic_ipkumar@quicinc.com>
+> ---
+>  .../devicetree/bindings/pci/qcom,pcie.yaml    | 36 +++++++++++++++++++
+>  1 file changed, 36 insertions(+)
+>
+> diff --git a/Documentation/devicetree/bindings/pci/qcom,pcie.yaml b/Documentation/devicetree/bindings/pci/qcom,pcie.yaml
+> index eadba38171e1..af5e67d2a984 100644
+> --- a/Documentation/devicetree/bindings/pci/qcom,pcie.yaml
+> +++ b/Documentation/devicetree/bindings/pci/qcom,pcie.yaml
+> @@ -21,6 +21,7 @@ properties:
+>            - qcom,pcie-apq8064
+>            - qcom,pcie-apq8084
+>            - qcom,pcie-ipq4019
+> +          - qcom,pcie-ipq5332
+>            - qcom,pcie-ipq6018
+>            - qcom,pcie-ipq8064
+>            - qcom,pcie-ipq8064-v2
+> @@ -170,6 +171,7 @@ allOf:
+>          compatible:
+>            contains:
+>              enum:
+> +              - qcom,pcie-ipq5332
+>                - qcom,pcie-ipq6018
+>                - qcom,pcie-ipq8074-gen3
+>      then:
+> @@ -332,6 +334,39 @@ allOf:
+>              - const: ahb # AHB reset
+>              - const: phy_ahb # PHY AHB reset
+>
+> +  - if:
+> +      properties:
+> +        compatible:
+> +          contains:
+> +            enum:
+> +              - qcom,pcie-ipq5332
 
-Peter, would appreciate feedback on this. When is cond_resched()
-insufficient to give up the CPU? Should Documentation/kernel-hacking/hacking.rst
-be updated to require schedule() instead?
+As you seem to be depending on the ipq9574, could you please reuse the
+DT entry too?
+
+> +    then:
+> +      properties:
+> +        clocks:
+> +          minItems: 6
+> +          maxItems: 6
+> +        clock-names:
+> +          items:
+> +            - const: ahb # AHB clock
+> +            - const: aux # Auxiliary clock
+> +            - const: axi_m # AXI Master clock
+> +            - const: axi_s # AXI Slave clock
+> +            - const: axi_bridge # AXI bridge clock
+> +            - const: rchng
+> +        resets:
+> +          minItems: 8
+> +          maxItems: 8
+> +        reset-names:
+> +          items:
+> +            - const: pipe # PIPE reset
+> +            - const: sticky # Core sticky reset
+> +            - const: axi_m_sticky # AXI master sticky reset
+> +            - const: axi_m # AXI master reset
+> +            - const: axi_s_sticky # AXI slave sticky reset
+> +            - const: axi_s # AXI slave reset
+> +            - const: ahb # AHB reset
+> +            - const: aux # AUX reset
+> +
+>    - if:
+>        properties:
+>          compatible:
+> @@ -790,6 +825,7 @@ allOf:
+>                enum:
+>                  - qcom,pcie-apq8064
+>                  - qcom,pcie-ipq4019
+> +                - qcom,pcie-ipq5332
+>                  - qcom,pcie-ipq8064
+>                  - qcom,pcie-ipq8064v2
+>                  - qcom,pcie-ipq8074
+> --
+> 2.34.1
+>
+>
 
 
-> -- 
-> MST
-
+-- 
+With best wishes
+Dmitry
