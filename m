@@ -2,151 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 259BF8133DE
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 16:04:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 076F88133DB
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 16:04:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1573630AbjLNPD5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 10:03:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48634 "EHLO
+        id S1573622AbjLNPDu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 10:03:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57560 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1573628AbjLNPDw (ORCPT
+        with ESMTP id S1573588AbjLNPDs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 10:03:52 -0500
-Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 087D3121
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 07:03:35 -0800 (PST)
-Received: by mail-pl1-x62f.google.com with SMTP id d9443c01a7336-1d351848c9fso9090045ad.0
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 07:03:35 -0800 (PST)
+        Thu, 14 Dec 2023 10:03:48 -0500
+Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1D4411D
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 07:03:53 -0800 (PST)
+Received: by mail-lj1-x230.google.com with SMTP id 38308e7fff4ca-2c9e9c2989dso111035401fa.0
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 07:03:53 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1702566214; x=1703171014; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:references:cc:to:from
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=fpQnNUGEK78CSlHK0BOK2Wt8OQGIkPegoGE2UWWfI/k=;
-        b=lqAn/oRij59dJWcZebmsJY9kKASa7m+Kx3agkacSylEFltU3Gi0ThNFcYLud36oTtA
-         /o1fljrvFsZD8YmR03tPl0xvbf+qPCJuWXcSMobMTUSkipbugFrn4r8U6SSiBwS7/QDs
-         MfRJMNZf6pDxcRb3EaULc1fuC50BVo4zvmv6s70Et+hLaKCes83zRVjWKWji9KV3GJgm
-         F3sZ905j8/UmFJCO+WD6Gio1+vH3axgZj93iLtux13sIukf+PJggylVz3Xx2CNSVoXbS
-         EHY6MQhyjLzqtNXIRxC8jtfn1NqqfvDgHmsuK+T1ZENhQO7UTJ7VJqUPubeGTP9FgRX6
-         yF8g==
+        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1702566232; x=1703171032; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Bdds0ORz8v+5B0f4PxBAIWXX7DWm0YzECYB8nL+ZDRg=;
+        b=KclSK1B1CcPLhM0aUywjXMEsqXYJjb83l6nM+NlX87fmak/R33YXfUuh3E6TAOaa/g
+         NiUZqE2lxir3Wl2lGEa9cEa0VoVf+PcnOsDTjuvFnSxt5hpdnvPwaEFHXKOUlgQZDToW
+         9qO5hQM8R6Ns4bcVujuk6I3BGXOxYrhUJT24RqB35RPqNs0rS2AfNhTaSeCBHTXoRjUU
+         kz1HaBrMKSRiATXdecZ+9CRBeXmppUVcy0+dlnDNk7UBQoKnk0/r+NT68aVxI/GsEVxr
+         qzvq0gNLFamrpTkjCqTv9GkYZ5UHhHDOv4rtuWCatZDpa+gwT/FebYUsChVJSYUcsm1h
+         T4Ng==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702566214; x=1703171014;
-        h=content-transfer-encoding:in-reply-to:references:cc:to:from
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=fpQnNUGEK78CSlHK0BOK2Wt8OQGIkPegoGE2UWWfI/k=;
-        b=gyEj4Tkj6XBPJnIa5BPsoiHYwZMzXCV0gVZqxVT7wSktaiMQs79upa5sA/2Kyy7RFR
-         bxt89PH8QLw4qiOibgCGolrjxON5sM2e5HABchWnkB6f05voAzRVTQjyMgd7xAFD5hi8
-         hdqGwbcPn26qjvKiCdIyzYJKfUORzF7dR5LjMIqJ+7sEyMfPJ4pSGDoxH/4f88Qtg/qQ
-         py0yIrKZ0qbZeV7CGcEQ+Ab97bu+o4K/aqU/A6+78bETGLOBy6079ajqZFA2pW8eHBTZ
-         Bf5LeAXpOrbmTITknzk46P7Cn9OoTgoOU3XmQ6PFfCiO+hkOUiRBA7YC5I6k/wy8VsN2
-         cZ9Q==
-X-Gm-Message-State: AOJu0YyIz9cb2Jb2B3tdHtN4NCLEeyvb88YXk0U2vhOpuhfOsCiah0is
-        PUctmVsgbkuSm4hl89/sy1Ufmg==
-X-Google-Smtp-Source: AGHT+IGYz/2+L0p5SsOU/NDOJKQnVfxunA2s6iKI7KEfAi+/IkBVaiEd6ovyb3samZgQxOKpywWTAg==
-X-Received: by 2002:a17:90b:890:b0:286:6cc0:b90b with SMTP id bj16-20020a17090b089000b002866cc0b90bmr3947002pjb.66.1702566214512;
-        Thu, 14 Dec 2023 07:03:34 -0800 (PST)
-Received: from ?IPV6:2409:8a28:e64:34f0:4525:57e4:217e:6e2c? ([2409:8a28:e64:34f0:4525:57e4:217e:6e2c])
-        by smtp.gmail.com with ESMTPSA id sf3-20020a17090b51c300b0028a42f9d3ebsm12147138pjb.53.2023.12.14.07.03.28
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 14 Dec 2023 07:03:34 -0800 (PST)
-Message-ID: <7a0e3229-be63-4a24-a3fe-7e3ff517de10@bytedance.com>
-Date:   Thu, 14 Dec 2023 23:03:22 +0800
+        d=1e100.net; s=20230601; t=1702566232; x=1703171032;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Bdds0ORz8v+5B0f4PxBAIWXX7DWm0YzECYB8nL+ZDRg=;
+        b=ED8AF4fDdiJZZFN9ur9muTLRKSF9QF7JimW5YTFKRd5ipxQ5aYupaRbrXIepSiDeTv
+         YYsd0hTnJ/UDdhA77Xrtb/gK3YNIlB1viD1B7B/5zEGe5z/D4zdmHgqFgmLa1kGEk4/m
+         rHvDXCwdQB/yb5WepFjJU8pvvD70xU9KFlucmO4g8N4dLoSkMKs93LIooJauAIZc83XT
+         8ixwW7yjF0rZMM7QGXWljLL9PLTMjTinsrSJTYMcgugcwX/DHZ4+vng8DZlMJn0U3ZiS
+         kMNrnRmKxB/eY+HsG4CgK25xmp3mBQinEixOPutTroa4Czh4QbpfTo0xJjliUJQlxZO5
+         YYyw==
+X-Gm-Message-State: AOJu0YzGOpuVmSTZR2d14G4qD9BASTohthgZYtjugPXy+vFi58JbsVDq
+        YT1Q6cuMDdD4an4/TH76aaeJEeJtbra6/iUpaYRSzg==
+X-Google-Smtp-Source: AGHT+IFmyI386iLiUHPlW4WwtKlMnA6myG4ZHBLhXxLLf/cnJZpar+DOGncWRfIpEZelwC7WbFhYsO1g5sBePkgkHrc=
+X-Received: by 2002:a05:651c:c1:b0:2cc:479d:2d15 with SMTP id
+ 1-20020a05651c00c100b002cc479d2d15mr255200ljr.81.1702566231864; Thu, 14 Dec
+ 2023 07:03:51 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/5] mm/zswap: change dstmem size to one page
-Content-Language: en-US
-From:   Chengming Zhou <zhouchengming@bytedance.com>
-To:     Nhat Pham <nphamcs@gmail.com>, Yosry Ahmed <yosryahmed@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Chris Li <chriscli@google.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Seth Jennings <sjenning@redhat.com>,
-        Dan Streetman <ddstreet@ieee.org>,
-        Vitaly Wool <vitaly.wool@konsulko.com>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org
-References: <20231213-zswap-dstmem-v1-0-896763369d04@bytedance.com>
- <20231213-zswap-dstmem-v1-2-896763369d04@bytedance.com>
- <CAJD7tkZJRgf+502QU_ECVPey0w-5vw_e6HSL+Ay7unetq5gL0A@mail.gmail.com>
- <CAKEwX=P4=YbvoRCa5+BB+==f4YL_5-6AaUNUCdH3v2faTx-PYQ@mail.gmail.com>
- <cb558f85-4f9b-4eb9-b60c-9b609075920d@bytedance.com>
- <CAJD7tkY_fe9SeTxOSVmYHNgi2tKvZ+EoM15KifJihF_Zn_LqDg@mail.gmail.com>
- <7a8c77b0-c78c-427d-9545-2b328c7dc727@bytedance.com>
-In-Reply-To: <7a8c77b0-c78c-427d-9545-2b328c7dc727@bytedance.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20231213-ad7380-mainline-v2-0-cd32150d84a3@baylibre.com>
+ <20231213-ad7380-mainline-v2-3-cd32150d84a3@baylibre.com> <20231214101415.0000060c@Huawei.com>
+ <CAMknhBF9GtbOP_M2q8DrrMOePFOaQzGxqcS2P8OHjtGN-Z27Vg@mail.gmail.com> <20231214123613.00002b69@Huawei.com>
+In-Reply-To: <20231214123613.00002b69@Huawei.com>
+From:   David Lechner <dlechner@baylibre.com>
+Date:   Thu, 14 Dec 2023 16:03:40 +0100
+Message-ID: <CAMknhBGR9mkk+mG-vFJqSBFFykyppLpeOYRqcXwUWi6dtMh28Q@mail.gmail.com>
+Subject: Re: [PATCH v2 3/3] iio: adc: ad7380: new driver for AD7380 ADCs
+To:     Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Cc:     linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Michael Hennerich <michael.hennerich@analog.com>,
+        =?UTF-8?B?TnVubyBTw6E=?= <nuno.sa@analog.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org,
+        Stefan Popa <stefan.popa@analog.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/12/14 21:57, Chengming Zhou wrote:
-> On 2023/12/14 21:37, Yosry Ahmed wrote:
->> On Thu, Dec 14, 2023 at 5:33 AM Chengming Zhou
->> <zhouchengming@bytedance.com> wrote:
->>>
->>> On 2023/12/14 08:18, Nhat Pham wrote:
->>>> On Wed, Dec 13, 2023 at 3:34 PM Yosry Ahmed <yosryahmed@google.com> wrote:
->>>>>
->>>>> On Tue, Dec 12, 2023 at 8:18 PM Chengming Zhou
->>>>> <zhouchengming@bytedance.com> wrote:
->>>>>>
->>>>>> Change the dstmem size from 2 * PAGE_SIZE to only one page since
->>>>>> we only need at most one page when compress, and the "dlen" is also
->>>>>> PAGE_SIZE in acomp_request_set_params(). If the output size > PAGE_SIZE
->>>>>> we don't wanna store the output in zswap anyway.
->>>>>>
->>>>>> So change it to one page, and delete the stale comment.
->>>>>
->>>>> I couldn't find the history of why we needed 2 * PAGE_SIZE, it would
->>>>> be nice if someone has the context, perhaps one of the maintainers.
->>>>
->>>> It'd be very nice indeed.
->>>>
->>>>>
->>>>> One potential reason is that we used to store a zswap header
->>>>> containing the swap entry in the compressed page for writeback
->>>>> purposes, but we don't do that anymore. Maybe we wanted to be able to
->>>>> handle the case where an incompressible page would exceed PAGE_SIZE
->>>>> because of that?
->>>>
->>>> It could be hmm. I didn't study the old zswap architecture too much,
->>>> but it has been 2 * PAGE_SIZE since the time zswap was first merged
->>>> last I checked.
->>>> I'm not 100% comfortable ACK-ing the undoing of something that looks
->>>> so intentional, but FTR, AFAICT, this looks correct to me.
->>>
->>> Right, there is no any history about the reason why we needed 2 pages.
->>> But obviously only one page is needed from the current code and no any
->>> problem found in the kernel build stress testing.
->>
->> Could you try manually stressing the compression with data that
->> doesn't compress at all (i.e. dlen == PAGE_SIZE)? I want to make sure
->> that this case is specifically handled. I think using data from
->> /dev/random will do that but please double check that dlen ==
->> PAGE_SIZE.
-> 
-> I just did the same kernel build testing, indeed there are a few cases
-> that output dlen == PAGE_SIZE.
-> 
-> bpftrace -e 'k:zpool_malloc {@[(uint32)arg1==4096]=count()}'
-> 
-> @[1]: 2
-> @[0]: 12011430
+On Thu, Dec 14, 2023 at 1:36=E2=80=AFPM Jonathan Cameron
+<Jonathan.Cameron@huawei.com> wrote:
+>
+> On Thu, 14 Dec 2023 11:33:51 +0100
+> David Lechner <dlechner@baylibre.com> wrote:
+>
+> > On Thu, Dec 14, 2023 at 11:14=E2=80=AFAM Jonathan Cameron
+> > <Jonathan.Cameron@huawei.com> wrote:
+> > >
+> > > On Wed, 13 Dec 2023 05:21:20 -0600
+> > > David Lechner <dlechner@baylibre.com> wrote:
+> > >
+> > > > This adds a new driver for the AD7380 family ADCs.
+> > > >
+> > > > The driver currently implements basic support for the AD7380, AD738=
+1,
+> > > > AD7383, and AD7384 2-channel differential ADCs. Support for additio=
+nal
+> > > > single-ended and 4-channel chips that use the same register map as =
+well
+> > > > as additional features of the chip will be added in future patches.
+> > > >
+> > > > Co-developed-by: Stefan Popa <stefan.popa@analog.com>
+> > > > Signed-off-by: Stefan Popa <stefan.popa@analog.com>
+> > > > Signed-off-by: David Lechner <dlechner@baylibre.com>
+> > >
+> > > Just one additional comment.  I 'might' sort both this an Nuno's comm=
+ent
+> > > if Mark is fine with the SPI and no on else has review comments.
+> > > Feel free to send a v3 though if you like ;)
+> > >
+> > >
+> > > > +/* fully differential */
+> > > > +DEFINE_AD7380_DIFFERENTIAL_2_CHANNEL(ad7380_channels, 16);
+> > > > +DEFINE_AD7380_DIFFERENTIAL_2_CHANNEL(ad7381_channels, 14);
+> > > > +/* pseudo differential */
+> > > > +DEFINE_AD7380_DIFFERENTIAL_2_CHANNEL(ad7383_channels, 16);
+> > > > +DEFINE_AD7380_DIFFERENTIAL_2_CHANNEL(ad7384_channels, 14);
+> > > > +
+> > > > +/* Since this is simultaneous sampling, we don't allow individual =
+channels. */
+> > > > +static const unsigned long ad7380_2_channel_scan_masks[] =3D {
+> > > > +     GENMASK(2, 0), /* both ADC channels and soft timestamp */
+> > > > +     GENMASK(1, 0), /* both ADC channels, no timestamp */
+> > >
+> > > https://elixir.bootlin.com/linux/v6.7-rc5/source/include/linux/iio/ii=
+o.h#L567
+> > > See the comment (added recently!)
+> >
+> > I did see this comment but this is already sorted in order of
+> > preference, so I'm not sure why you are calling it out. Just FYI, I
+> > guess?
+>
+> No. Order of preference would be turn on the minimal if that is enough.
+> First item is the highest preference (if the requested channels are a sub=
+set of
+> that we don't look any further).  Here that means we always stop on the f=
+irst
+> entry and never look at the second.
 
-I think we shouldn't put these poorly compressed output into zswap,
-maybe it's better to early return in these cases when compress ratio
-< threshold ratio, which can be tune by the user?
+OK, I understand what you are getting at now. I thought the preference
+could be my personal preference rather than the minimal case. :-)
 
-e.g. in the same kernel build testing:
+But as you pointed out, the timestamp is handled separately, so it
+doesn't make a difference here. The main point was to ensure that both
+channels are always enabled since the ADC is doing simultaneous
+sampling and always reading two channels at the same time.
 
-bpftrace -e 'k:zpool_malloc {@[(uint32)arg1>2048]=count()}'
-
-@[1]: 1597706
-@[0]: 10886138
-
+>
+> >
+> > >
+> > > Also, if I remember how this works correctly there is no need to incl=
+ude
+> > > the timestamp in the mask.  We do special handling for it to avoid ha=
+ving to double
+> > > the number of provided masks.  The details being that it uses
+> > > iio_scan_el_ts_store rather than iio_scan_el_Store.
+> >
+> > Indeed. I've been working ahead on adding more features and noticed
+> > this. So we will need to find a way to say that we the timestamp
+> > should not be allowed under certain conditions. But that will be a
+> > discussion for a later series.
+>
+> Interesting - you have cases where it's not valid at all?
+> It sometimes becomes inaccurate because we are interpolating across
+> data from a fifo, but I've not seen a case where we can't provide anythin=
+g
+> useful.  Ah well - as you say I'll wait for that later series!
+>
+> Jonathan
+>
+> >
+> > >
+> > > So as you have it I think you'll always end up with the first entry
+> > > and that will include a bonus bit that isn't a problem as it will mat=
+ch
+> > > anyway.
+> > >
+> > > So just have the second entry and 0.
+> > >
+> > > Jonathan
+> > >
+> > > > +     0
+> > > > +};
+>
