@@ -2,323 +2,318 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 391F48138F0
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 18:41:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 715118138EC
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 18:41:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1572888AbjLNRkz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 12:40:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39352 "EHLO
+        id S231708AbjLNRlH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 12:41:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52360 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230349AbjLNRkk (ORCPT
+        with ESMTP id S235649AbjLNRk4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 12:40:40 -0500
-Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00D9D114
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 09:40:45 -0800 (PST)
-Received: by mail-pf1-x42e.google.com with SMTP id d2e1a72fcca58-6ce72faf1e8so5413588b3a.0
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 09:40:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=networkplumber-org.20230601.gappssmtp.com; s=20230601; t=1702575645; x=1703180445; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=H40nK5IpwIy9PQlp7QwxJH6+lSaRPIO031fd0w6k2mM=;
-        b=HtpH4jdQ2kUP5QG5waUErTB6IWLsGrKrx4CbmWQVa43lgHvZxjD/UVJ/rpr3K2BCOb
-         +3cuMjQzv9Dc/4jMMOZP02NcDKFMu9koKgzs7SzzGlLzt5kFuH/XyUI9nXGN1Zm2HjOq
-         uYdoa6+E89rfKFTbOvyJzOnoPAAoR/3tOtfnyJWl24dw9G69nMUsE1xo+VVSKq8UtfOC
-         JT0WM2F7WewNqAdBcpMExKgn0A4YQmBiSNoc1z7nQsaYdKfNYL39m9Pnvr2xiGZNIUJX
-         ZNcuMdtDOffzl9Ca/ISyL30vRIdBD8YAKiR8PNTS/yXZelJWypowKiwqzKLzOXmDj3JP
-         Iv1A==
+        Thu, 14 Dec 2023 12:40:56 -0500
+Received: from mail-ot1-f50.google.com (mail-ot1-f50.google.com [209.85.210.50])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFCF0B7;
+        Thu, 14 Dec 2023 09:41:01 -0800 (PST)
+Received: by mail-ot1-f50.google.com with SMTP id 46e09a7af769-6da3659535fso1679881a34.3;
+        Thu, 14 Dec 2023 09:41:01 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702575645; x=1703180445;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=H40nK5IpwIy9PQlp7QwxJH6+lSaRPIO031fd0w6k2mM=;
-        b=bRePUzhwplgOOumo0BhGfKr3//xjKJKhfo7J0EjdkjJgE/bCrfmn5zafbr+3I3UFKm
-         rG4xOMU3Ps1HhruuxzDWMOIJCF1nuSNaZXqQCCxhHcozkoRiArGbTjiPuLi3rH7VuZtw
-         ybL45tqmoq4N2tz/TobUSS5LvNIOgICo9VWsqM8GXmqOU5lpjNIondqPlpCcAkWBWyYX
-         A3ciWn4Ws3bRmjKKF+0h4qAV0XMougyhUI477Ih9UB/DRoDAfFwm+xIcKGKMiFvueojw
-         a9m4idB4JunqqkrTtpZpiRTezW9f7+Q55P7jIHr4FftP5rKUK057iat7gaNUdSMWu2JZ
-         hpkA==
-X-Gm-Message-State: AOJu0YywatWJ4pASMOtTFqwmYyteAJsFZycr7+TJB+MgcysKRiB/y96L
-        qYtaeIzjAtx4fP8Bp9TijDcwHA==
-X-Google-Smtp-Source: AGHT+IG7BgMGBuhTiCRVz5+mmRVftl5nKnTPsJ0urkZwVBwUIyjnJt5RfXGtkUUTbsy+ZMQJSeGPrg==
-X-Received: by 2002:a05:6a00:1381:b0:6ce:fa6e:5781 with SMTP id t1-20020a056a00138100b006cefa6e5781mr6017348pfg.45.1702575645311;
-        Thu, 14 Dec 2023 09:40:45 -0800 (PST)
-Received: from hermes.local (204-195-123-141.wavecable.com. [204.195.123.141])
-        by smtp.gmail.com with ESMTPSA id x26-20020a62fb1a000000b006ce48a0b7c6sm12066018pfm.109.2023.12.14.09.40.44
+        d=1e100.net; s=20230601; t=1702575661; x=1703180461;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=/zdZ0ienZCoKJGn2KtzvEpwkVAjav3OsYiEGG0EDFsQ=;
+        b=MdxNoYG8mnf7H7rwtMbTgmgt657I4lZn/kg2GVj7uFbSm6VsWulkBaOPTvV7ov0IgM
+         UIuLqZ9n4uqOYlWajNBo13ubh87/YbVRRzrSX0Ej0Izn5XTuRXsZgz6OULjZl40K7Kuv
+         sJgbSLXdptUKCsnVmIZIipkaoWYcJLiXSxGDlUeZnuFrxx12MuCXmkAyEDm7wsazifSG
+         FRzOKHyegNTMFTWrE5t3IfXnhCgRgeZaDwMCIC8Rcz94ng30lTI/BzFyUvAB0jl+JtEF
+         Zx6sGlHxosJjQ2FDVJ5ywPUEhT9IPwJlwtVlpNGEiDqZtdUyzGAOKyCykdGIT87IwxQ9
+         Y0mA==
+X-Gm-Message-State: AOJu0YwNJH0PrXUL7+KwcVzov3q67NZaLuAyU/1X2MQM7+oSpJyjeudR
+        lUItby6PTaiTb34UUT+Quw==
+X-Google-Smtp-Source: AGHT+IHR2mKGPjA6Cg6K+KNOwWucrAolfXP5PFsqGvuPXW8Q0CZP7l8Ljjc4B2Rq9DyeloElLkdsyA==
+X-Received: by 2002:a05:6830:4d6:b0:6da:2ec0:c738 with SMTP id s22-20020a05683004d600b006da2ec0c738mr4821847otd.31.1702575660920;
+        Thu, 14 Dec 2023 09:41:00 -0800 (PST)
+Received: from herring.priv ([2607:fb91:e6c7:a40:1c2d:b875:912d:c28])
+        by smtp.gmail.com with ESMTPSA id t15-20020a9d66cf000000b006d7f41c7e11sm3236498otm.33.2023.12.14.09.40.59
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Dec 2023 09:40:45 -0800 (PST)
-Date:   Thu, 14 Dec 2023 09:40:42 -0800
-From:   Stephen Hemminger <stephen@networkplumber.org>
-To:     Akihiko Odaki <akihiko.odaki@daynix.com>
-Cc:     Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Yonghong Song <yonghong.song@linux.dev>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+        Thu, 14 Dec 2023 09:41:00 -0800 (PST)
+Received: (nullmailer pid 637311 invoked by uid 1000);
+        Thu, 14 Dec 2023 17:40:58 -0000
+Date:   Thu, 14 Dec 2023 11:40:58 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Serge Semin <fancer.lancer@gmail.com>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        Jose Abreu <Jose.Abreu@synopsys.com>,
+        Maxime Chevallier <maxime.chevallier@bootlin.com>,
+        Tomer Maimon <tmaimon77@gmail.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
         "David S. Miller" <davem@davemloft.net>,
         Eric Dumazet <edumazet@google.com>,
         Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
-        Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
-        Yuri Benditovich <yuri.benditovich@daynix.com>,
-        Andrew Melnychenko <andrew@daynix.com>,
-        Benjamin Tissoires <bentiss@kernel.org>,
-        bpf <bpf@vger.kernel.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        kvm@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        virtualization@lists.linux-foundation.org,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>
-Subject: Re: Should I add BPF kfuncs for userspace apps? And how?
-Message-ID: <20231214094042.75f704f6@hermes.local>
-In-Reply-To: <0d68722c-9e29-407b-9ef0-331683c995d2@daynix.com>
-References: <2f33be45-fe11-4b69-8e89-4d2824a0bf01@daynix.com>
-        <CAO-hwJJhzHtKrUEw0zrjgub3+eapgJG-zsG0HRB=PaPi6BxG+w@mail.gmail.com>
-        <e256c6df-0a66-4f86-ae96-bff17920c2fb@daynix.com>
-        <CAO-hwJKMrWYRNpuprDj9=k87V0yHtLPEJuQ94bpOF3O81=v0kA@mail.gmail.com>
-        <0d68722c-9e29-407b-9ef0-331683c995d2@daynix.com>
+        Paolo Abeni <pabeni@redhat.com>, openbmc@lists.ozlabs.org,
+        netdev@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next 08/16] dt-bindings: net: Add Synopsys DW xPCS
+ bindings
+Message-ID: <20231214174058.GA624576-robh@kernel.org>
+References: <20231205103559.9605-1-fancer.lancer@gmail.com>
+ <20231205103559.9605-9-fancer.lancer@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231205103559.9605-9-fancer.lancer@gmail.com>
+X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,
+        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 14 Dec 2023 14:51:12 +0900
-Akihiko Odaki <akihiko.odaki@daynix.com> wrote:
+On Tue, Dec 05, 2023 at 01:35:29PM +0300, Serge Semin wrote:
+> Synopsys DesignWare XPCS IP-core is a Physical Coding Sublayer (PCS) layer
+> providing an interface between the Media Access Control (MAC) and Physical
+> Medium Attachment Sublayer (PMA) through a Media independent interface.
+> >From software point of view it exposes IEEE std. Clause 45 CSR space and
+> can be accessible either by MDIO or MCI/APB3 bus interfaces. The later
+> case is described by means of a dedicated DT-bindings which imply having
+> the DW XPCS Management Interface defined as a DT-supernode which child the
+> PCSs nodes would be (in the same way as the standard MDIO buses and
+> devices are normally defined).
+> 
+> Besides of that DW XPCS DT-nodes can have the interrupts and clock source
+> properties specified. The former one indicates the Clause 73/37
+> auto-negotiation events like: negotiation page received, AN is completed
+> or incompatible link partner. The clock DT-properties can describe up to
+> two clock sources: internal one and the one connected to the chip pad.
+> Either of them is supposed to be used as the device reference clocks.
+> 
+> Finally the DW XPCS IP-core can be optionally synthesized with a
+> vendor-specific interface connected to Synopsys PMA (also called
+> DesignWare Consumer/Enterprise PHY). Alas that isn't auto-detectable
+> anyhow so if the DW XPCS device has the respective PMA attached then it
+> should be reflected in the DT-node compatible string so the driver would
+> be aware of the PMA-specific device capabilities (mainly connected with
+> CSRs available for the fine-tunings).
+> 
+> Signed-off-by: Serge Semin <fancer.lancer@gmail.com>
+> ---
+>  .../bindings/net/pcs/snps,dw-xpcs.yaml        | 88 +++++++++++++++++++
+>  .../bindings/net/snps,dw-xpcs-mi.yaml         | 88 +++++++++++++++++++
+>  2 files changed, 176 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/net/pcs/snps,dw-xpcs.yaml
+>  create mode 100644 Documentation/devicetree/bindings/net/snps,dw-xpcs-mi.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/net/pcs/snps,dw-xpcs.yaml b/Documentation/devicetree/bindings/net/pcs/snps,dw-xpcs.yaml
+> new file mode 100644
+> index 000000000000..9694ef51abad
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/net/pcs/snps,dw-xpcs.yaml
+> @@ -0,0 +1,88 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/net/pcs/snps,dw-xpcs.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Synopsys DesignWare Ethernet PCS
+> +
+> +maintainers:
+> +  - Jose Abreu <Jose.Abreu@synopsys.com>
+> +
+> +description:
+> +  Synopsys DesignWare Ethernet Physical Coding Sublayer provides an interface
+> +  between Media Access Control and Physical Medium Attachment Sublayer through
+> +  the Media Independent Interface (XGMII, USXGMII, XLGMII, GMII, etc)
+> +  controlled by means of the IEEE std. Clause 45 registers set. The PCS can be
+> +  optionally synthesized with a vendor-specific interface connected to
+> +  Synopsys PMA (also called DesignWare Consumer/Enterprise PHY) although in
+> +  general it can be used to communicate with any compatible PHY.
+> +
+> +properties:
+> +  compatible:
+> +    oneOf:
+> +      - description: Synopsys DesignWare XPCS with none or unknown PMA
+> +        const: snps,dw-xpcs
+> +      - description: Synopsys DesignWare XPCS with Consumer Gen1 3G PMA
+> +        const: snps,dw-xpcs-gen1-3g
+> +      - description: Synopsys DesignWare XPCS with Consumer Gen2 3G PMA
+> +        const: snps,dw-xpcs-gen2-3g
+> +      - description: Synopsys DesignWare XPCS with Consumer Gen2 6G PMA
+> +        const: snps,dw-xpcs-gen2-6g
+> +      - description: Synopsys DesignWare XPCS with Consumer Gen4 3G PMA
+> +        const: snps,dw-xpcs-gen4-3g
+> +      - description: Synopsys DesignWare XPCS with Consumer Gen4 6G PMA
+> +        const: snps,dw-xpcs-gen4-6g
+> +      - description: Synopsys DesignWare XPCS with Consumer Gen5 10G PMA
+> +        const: snps,dw-xpcs-gen5-10g
+> +      - description: Synopsys DesignWare XPCS with Consumer Gen5 12G PMA
+> +        const: snps,dw-xpcs-gen5-12g
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  interrupts:
+> +    description:
+> +      System interface interrupt output (sbd_intr_o) indicating Clause 73/37
+> +      auto-negotiation events like':' Page received, AN is completed or
 
-> On 2023/12/13 19:22, Benjamin Tissoires wrote:
-> > On Tue, Dec 12, 2023 at 1:41=E2=80=AFPM Akihiko Odaki <akihiko.odaki@da=
-ynix.com> wrote: =20
-> >>
-> >> On 2023/12/12 19:39, Benjamin Tissoires wrote: =20
-> >>> Hi,
-> >>>
-> >>> On Tue, Dec 12, 2023 at 9:11=E2=80=AFAM Akihiko Odaki <akihiko.odaki@=
-daynix.com> wrote: =20
-> >>>>
-> >>>> Hi, =20
-> >>
-> >> Hi,
-> >>
-> >> Thanks for reply.
-> >> =20
-> >>>>
-> >>>> It is said eBPF is a safe way to extend kernels and that is very
-> >>>> attarctive, but we need to use kfuncs to add new usage of eBPF and
-> >>>> kfuncs are said as unstable as EXPORT_SYMBOL_GPL. So now I'd like to=
- ask
-> >>>> some questions:
-> >>>>
-> >>>> 1) Which should I choose, BPF kfuncs or ioctl, when adding a new fea=
-ture
-> >>>> for userspace apps?
-> >>>> 2) How should I use BPF kfuncs from userspace apps if I add them?
-> >>>>
-> >>>> Here, a "userspace app" means something not like a system-wide daemon
-> >>>> like systemd (particularly, I have QEMU in mind). I'll describe the
-> >>>> context more below: =20
-> >>>
-> >>> I'm probably not the best person in the world to answer your
-> >>> questions, Alexei and others from the BPF core group are, but given
-> >>> that you pointed at a thread I was involved in, I feel I can give you
-> >>> a few pointers.
-> >>>
-> >>> But first and foremost, I encourage you to schedule an agenda item in
-> >>> the BPF office hour[4]. Being able to talk with the core people
-> >>> directly was tremendously helpful to me to understand their point. =20
-> >>
-> >> I prefer emails because I'm not very fluent when speaking in English a=
-nd
-> >> may have a difficultly to listen to other people, but I may try it in
-> >> future.
-> >> =20
-> >>>
-> >>> =20
-> >>>>
-> >>>> ---
-> >>>>
-> >>>> I'm working on a new feature that aids virtio-net implementations us=
-ing
-> >>>> tuntap virtual network device. You can see [1] for details, but
-> >>>> basically it's to extend BPF_PROG_TYPE_SOCKET_FILTER to report four =
-more
-> >>>> bytes.
-> >>>>
-> >>>> However, with long discussions we have confirmed extending
-> >>>> BPF_PROG_TYPE_SOCKET_FILTER is not going to happen, and adding kfunc=
-s is
-> >>>> the way forward. So I decided how to add kfuncs to the kernel and ho=
-w to
-> >>>> use it. There are rich documentations for the kernel side, but I fou=
-nd
-> >>>> little about the userspace. The best I could find is a systemd change
-> >>>> proposal that is based on WIP kernel changes[2]. =20
-> >>>
-> >>> Yes, as Alexei already replied, BPF is not adding new stable APIs,
-> >>> only kfuncs. The reason being that once it's marked as stable, you
-> >>> can't really remove it, even if you think it's badly designed and
-> >>> useless.
-> >>>
-> >>> Kfuncs, OTOH are "unstable" by default meaning that the constraints
-> >>> around it are more relaxed.
-> >>>
-> >>> However, "unstable" doesn't mean "unusable". It just means that the
-> >>> kernel might or might not have the function when you load your program
-> >>> in userspace. So you have to take that fact into account from day one,
-> >>> both from the kernel side and the userspace side. The kernel docs have
-> >>> a nice paragraph explaining that situation and makes the distinction
-> >>> between relatively unused kfuncs, and well known established ones.
-> >>>
-> >>> Regarding the systemd discussion you are mentioning ([2]), this is
-> >>> something that I have on my plate for a long time. I think I even
-> >>> mentioned it to Alexei at Kernel Recipes this year, and he frowned his
-> >>> eyebrows when I mentioned it. And looking at the systemd code and the
-> >>> benefits over a plain ioctl, it is clearer that in that case, a plain
-> >>> ioctl is better, mostly because we already know the API and the
-> >>> semantic.
-> >>>
-> >>> A kfunc would be interesting in cases where you are not sure about the
-> >>> overall design, and so you can give a shot at various API solutions
-> >>> without having to keep your bad v1 design forever.
-> >>> =20
-> >>>>
-> >>>> So now I'm wondering how I should use BPF kfuncs from userspace apps=
- if
-> >>>> I add them. In the systemd discussion, it is told that Linus said it=
-'s
-> >>>> fine to use BPF kfuncs in a private infrastructure big companies own=
-, or
-> >>>> in systemd as those users know well about the system[3]. Indeed, tho=
-se
-> >>>> users should be able to make more assumptions on the kernel than
-> >>>> "normal" userspace applications can.
-> >>>>
-> >>>> Returning to my proposal, I'm proposing a new feature to be used by =
-QEMU
-> >>>> or other VMM applications. QEMU is more like a normal userspace
-> >>>> application, and usually does not make much assumptions on the kerne=
-l it
-> >>>> runs on. For example, it's generally safe to run a Debian container
-> >>>> including QEMU installed with apt on Fedora. BPF kfuncs may work eve=
-n in
-> >>>> such a situation thanks to CO-RE, but it sounds like *accidentally*
-> >>>> creating UAPIs.
-> >>>>
-> >>>> Considering all above, how can I integrate BPF kfuncs to the applica=
-tion? =20
-> >>>
-> >>> FWIW, I'm not sure you can rely on BPF calls from a container. There
-> >>> is a high chance the syscall gets disabled by the runtime. =20
-> >>
-> >> Right. Container runtimes will not pass CAP_BPF by default, but that
-> >> restriction can be lifted and I think that's a valid scenario.
-> >> =20
-> >>> =20
-> >>>>
-> >>>> If BPF kfuncs are like EXPORT_SYMBOL_GPL, the natural way to handle =
-them
-> >>>> is to think of BPF programs as some sort of kernel modules and
-> >>>> incorporate logic that behaves like modprobe. More concretely, I can=
- put
-> >>>> eBPF binaries to a directory like:
-> >>>> /usr/local/share/qemu/ebpf/$KERNEL_RELEASE =20
-> >>>
-> >>> I would advise against that (one program per kernel release). Simply
-> >>> because your kfunc may or may not have been backported to kernel
-> >>> release v6.X.Y+1 while it was not there when v6.X.Y was out. So
-> >>> relying on the kernel number is just going to be a headache.
-> >>>
-> >>> As I understand it, the way forward is to rely on the kernel, libbpf
-> >>> and CO-RE: if the function is not available, the program will simply
-> >>> not load, and you'll know that this version of the code is not
-> >>> available (or has changed API).
-> >>>
-> >>> So what I would do if some kfunc API is becoming deprecated, is
-> >>> embedding both code paths in the same BPF unit, but marking them as
-> >>> not loaded by libppf. Then I can load the compilation unit, try v2 of
-> >>> the API, and if it's not available, try v1, and if not, then mention
-> >>> that I can not rely on BPF. Of course, this can also be done with
-> >>> separate compilation units. =20
-> >>
-> >> Doesn't it mean that the kernel is free to break old versions of QEMU
-> >> including BPF programs? That's something I'd like to avoid. =20
-> >=20
-> > Couple of points here:
-> > - when you say "the kernel", it feels like you are talking about an
-> > external actor tampering with your code. But if you submit a kernel
-> > patch with a specific use case and get yourself involved in the
-> > community, why would anybody change your kfunc API without you knowing
-> > it? =20
->=20
-> You are right in the practical aspect.  I can pay efforts to keep kfunc=20
-> APIs alive and I'm also sure other developers would also try not to=20
-> break them for good.
->=20
-> Nevertheless I'm being careful to evaluate APIs from both of the kernel=20
-> and userspace (QEMU) viewpoints. If I fail to keep kfuncs stable because=
-=20
-> I die in an accident, for example, it's a poor excuse for other QEMU=20
-> developers that I intended to keep them stable with my personal effort.
->=20
-> > - the whole warning about "unstable" policy means that the user space
-> > component should not take for granted the capability. So if the kfunc
-> > changes/disappears for good reasons (because it was marked as well
-> > used and deprecated for quite some time), qemu should not *break*, it
-> > should not provide the functionality, or have a secondary plan.
-> >=20
-> > But even if you are encountering such issues, in case of a change in
-> > the ABI of your kfunc, it should be easy enough to backport the bpf
-> > changes to your old QEMUs and ask users to upgrade the user space if
-> > they upgrade their kernel.
-> >=20
-> > AFAIU, it is as unstable as you want it to be. It's just that we are
-> > not in the "we don't break user space" contract, because we are
-> > talking about adding a kernel functionality from userspace, which
-> > requires knowing the kernel intrinsics. =20
->=20
-> I must admit I'm still not convinced the proposed BPF program=20
-> functionality needs to know internals of the kernel.
->=20
-> The eBPF program QEMU carries is just to calculate hashes from packets.=20
-> It doesn't need to know the details of how the kernel handles packets.=20
-> It only needs to have an access to the packet content.
->=20
-> It is exactly what BPF_PROG_TYPE_SOCKET_FILTER does, but it lacks a=20
-> mechanism to report hash values so I need to extend it or invent a new=20
-> method. Extending BPF_PROG_TYPE_SOCKET_FILTER is not a way forward since=
-=20
-> CO-RE is superior to the context rewrite it relies on. But apparently=20
-> adopting kfuncs and CO-RE also means to lose the "we don't break user=20
-> space" contract although I have no intention to expose kernel internals=20
-> to the eBPF program.
+like':' ?
 
-An example is how one part of DPDK recomputes RSS over TAP.
+> +      incompatible link partner.
+> +    maxItems: 1
+> +
+> +  clocks:
+> +    description:
+> +      PCS/PMA interface be can clocked either by internal reference clock
+> +      source or by an externally connected (via a pad) clock generator.
+> +    minItems: 1
+> +    maxItems: 2
+> +
+> +  clock-names:
+> +    minItems: 1
+> +    maxItems: 2
+> +    items:
+> +      enum: [ core, pad ]
+> +
+> +required:
+> +  - compatible
+> +  - reg
 
-https://git.dpdk.org/dpdk/tree/drivers/net/tap/bpf/tap_bpf_program.c
+Don't you always need a clock?
 
-This feature is likely to be removed, because it is not actively used
-and the changes in BPF program loading broke it on current kernel
-releases.  Which brings up the point that since the kernel does
-not have stable API/ABI for BPF program infrastructure, I would
-avoid it for projects that don't want to deal with that.
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/interrupt-controller/irq.h>
+> +
+> +    mdio-bus {
+> +      #address-cells = <1>;
+> +      #size-cells = <0>;
+> +
+> +      xgmac_pcs: ethernet-pcs@0 {
+> +        compatible = "snps,dw-xpcs";
+> +        reg = <0>;
+> +
+> +        interrupts = <79 IRQ_TYPE_LEVEL_HIGH>;
+> +
+> +        clocks = <&ccu_core>, <&ccu_pad>;
+> +        clock-names = "core", "pad";
+> +      };
+> +    };
+> +...
+> diff --git a/Documentation/devicetree/bindings/net/snps,dw-xpcs-mi.yaml b/Documentation/devicetree/bindings/net/snps,dw-xpcs-mi.yaml
+> new file mode 100644
+> index 000000000000..67ddba9d61fd
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/net/snps,dw-xpcs-mi.yaml
+> @@ -0,0 +1,88 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/net/snps,dw-xpcs-mi.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Synopsys DesignWare Ethernet PCS Management Interface
+> +
+> +maintainers:
+> +  - Serge Semin <fancer.lancer@gmail.com>
+> +
+> +description:
+> +  Synopsys DesignWare Ethernet PCS provides an interface between MAC and PMA
+> +  through the Media Independent Interface. The PCS CSRs can be accessible over
+> +  the Ethernet MDIO bus or directly by means of the APB3/MCI interfaces. In the
+> +  later case the XPCS can be mapped right to the system IO memory space.
+> +
+> +allOf:
+> +  - $ref: mdio.yaml#
+> +
+> +properties:
+> +  compatible:
+> +    const: snps,dw-xpcs-mi
+> +
+> +  reg:
+> +    items:
+> +      - description:
+> +          DW XPCS CSRs space can be either 'directly' or 'indirectly'
+> +          accessible. In the former case all Clause 45 registers are
+> +          contiguously mapped within the address space MMD '[20:16]',
+> +          Reg '[15:0]'. In the later case the space is divided to the
+> +          multiple 256 register sets. There is a special viewport CSR
+> +          which is responsible for the set selection. The upper part of
+> +          the CSR address is supposed to be written in there thus the
+> +          corresponding subset would be mapped over the lowest 255 CSRs.
+> +
+> +  reg-names:
+> +    items:
+> +      - enum: [ direct, indirect ]
+> +
+> +  reg-io-width:
+> +    description:
+> +      The way the CSRs are mapped to the memory is platform depended. Since
+
+dependent
+
+> +      each Clause 45 CSR is of 16-bits wide the access instructions must be
+> +      two bytes aligned at least.
+> +    default: 2
+> +    enum: [ 2, 4 ]
+> +
+> +  clocks:
+> +    items:
+> +      - description: Peripheral MCI/APB3 bus clock source
+> +
+> +  clock-names:
+> +    items:
+> +      - const: pclk
+> +
+> +patternProperties:
+> +  'ethernet-pcs@[0-9a-f]+$':
+> +    type: object
+> +
+> +    $ref: pcs/snps,dw-xpcs.yaml#
+
+This causes dw-xpcs to be validated twice. Does this MDIO bus support 
+other devices on it or it is fixed config?
+
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - reg-names
+> +
+> +unevaluatedProperties: false
+> +
+> +examples:
+> +  - |
+> +    mdio@1f05d000 {
+> +      compatible = "snps,dw-xpcs-mi";
+> +      reg = <0x1f05d000 0x1000>;
+> +      reg-names = "indirect";
+> +      #address-cells = <1>;
+> +      #size-cells = <0>;
+> +
+> +      clocks = <&ccu_pclk>;
+> +      clock-names = "pclk";
+> +
+> +      reg-io-width = <4>;
+> +
+> +      ethernet-pcs@0 {
+> +        compatible = "snps,dw-xpcs";
+> +        reg = <0>;
+> +      };
+> +    };
+> -- 
+> 2.42.1
+> 
