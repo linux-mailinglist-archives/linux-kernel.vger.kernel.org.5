@@ -2,139 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BC8F81328F
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 15:09:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A957681328E
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 15:09:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1573427AbjLNOJg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 09:09:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39710 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1573415AbjLNOJe (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S1573393AbjLNOJe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Thu, 14 Dec 2023 09:09:34 -0500
-Received: from mail-oi1-x22b.google.com (mail-oi1-x22b.google.com [IPv6:2607:f8b0:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18282CF;
-        Thu, 14 Dec 2023 06:09:41 -0800 (PST)
-Received: by mail-oi1-x22b.google.com with SMTP id 5614622812f47-3b9df0a6560so5617566b6e.2;
-        Thu, 14 Dec 2023 06:09:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702562980; x=1703167780; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=OnDoJ6wVmo9VoXzzMiE8cFoyXSZgzadjzCBeRZFN5gs=;
-        b=N6udWIjPR42EV3mF0HsCdZ8AJRJnqFSLT/nbX7a/j9+ZkN3ufzit9LrX7aPiqHKBtQ
-         WJoUAFXOu4qFHDIQDpDiwMI0el8EhzrDvSJHareCFvOwrPpf3cAzL2FCDTqWVVDRAo+0
-         TgFZLn83b5nRR6NEwi5C8pGhF47EXKsG4AHV9sv3ldEdwCJI+hMz7Fr/6Ug02chfu7i7
-         aDbms3ibQ55Uj/xaamrMdOhN2fk5Uk4C4F3/s9fygrtrkk3uFvoWFERj1Npr3uBPndyW
-         cskwDfTHRsJvddNY+PhNj9aYCcpt33lYo1sabakK5+gJZ37GRlcAElnCDJXMAsJIM1Oj
-         k6hQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702562980; x=1703167780;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=OnDoJ6wVmo9VoXzzMiE8cFoyXSZgzadjzCBeRZFN5gs=;
-        b=tThvsQNPO1l80N0E/P5d6aE11z+2ve+N8R9OFOj92nIhXLSArLHbANWeFhAzHSByW4
-         xmTooAUwUVv5oFxZryRE+8OCEm7KytAjhS4PMlJPeYvTQmCFkUtX1i4ScOexakWtOHOS
-         v0IDd4XviR21zP/WM66+44RCsCPwrqeffxvXnjCg06AYJH7Z0Gq3lqMJQlCKSF9nVI9N
-         KF4DE+C9iigot1+1+meThVkwXGhcs2CEneGlu0lcrGiptrtObt5GPx4DcLSHNs4+5vCk
-         ZTKqfm76100xd1GIC5aD3otuJAx5bELUZAB+/lAEiURQ6TOWlDaAjuRD3h1ikA/m+IU8
-         DlUQ==
-X-Gm-Message-State: AOJu0Yxma45T5dvB+YyyQBwq0dyQ47R7Df9JpIAQWPlx1MKxFQIdUhT1
-        qlvR4dbnqFJQDToP04vrcxEIDmJ13szEsFJvSnI=
-X-Google-Smtp-Source: AGHT+IGPp77OIeq0HPwK1G1mRuXPVT/TNiXRQRsdPVwq0HzCh+/6goRnf27mZqKmRhoHC4FS1baWhsKabTH7NXn1ZHo=
-X-Received: by 2002:a05:6808:f91:b0:3b9:e654:9010 with SMTP id
- o17-20020a0568080f9100b003b9e6549010mr10465714oiw.34.1702562980290; Thu, 14
- Dec 2023 06:09:40 -0800 (PST)
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39698 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1573115AbjLNOJd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 14 Dec 2023 09:09:33 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CA17A7
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 06:09:40 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CE3E9C433C8;
+        Thu, 14 Dec 2023 14:09:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1702562979;
+        bh=F3Budhbk+oO4EaTBoG3jnHcriilK7yvDChjm2zriBQo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=fonDCcbmN11dfo8tFhAC9T0TGc8c1GNGBfvFzoWua/DlBDFRbYa56Lbj8ZKCdvVol
+         LlZEPSN6l96Pzz9AsWP6PWvZMRvYLxLDtof/FQS6TKJNWs0o8F/dWYGRi1tCHq6wbK
+         n1LWvn+lq9Q+x4suypErvJ5VUTFax2vilb4NQbt53YeO5ePBxQqxEu5zUjYaOlAM4X
+         fP2TF/Sjugrm3SelgTZaLM6Pzv8aIw1HMdKr5ktJGSVPq1bca2bZr9rCBf3DueLnOF
+         vTTUD8fIx8kyYwhuX06tNHH8ELTaEdwMm/H7p8jYgubuqusFNl0l+q0YtLjLWJQIex
+         SeS9Y38XCKRGQ==
+Received: from johan by xi.lan with local (Exim 4.96.2)
+        (envelope-from <johan@kernel.org>)
+        id 1rDmPA-0007zy-14;
+        Thu, 14 Dec 2023 15:09:36 +0100
+Date:   Thu, 14 Dec 2023 15:09:36 +0100
+From:   Johan Hovold <johan@kernel.org>
+To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc:     Rob Clark <robdclark@gmail.com>, linux-arm-msm@vger.kernel.org,
+        Rob Clark <robdclark@chromium.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] soc: qcom: pmic_glink: Fix boot when QRTR=m
+Message-ID: <ZXsMoFiivUCWA0yr@hovoldconsulting.com>
+References: <20231213210644.8702-1-robdclark@gmail.com>
+ <ZXqr0RFw9KsP876v@hovoldconsulting.com>
+ <CAA8EJpoSvaq9imP-dT4p=4jveZyFmh=OoWOP7jWGo4OYkHQDTA@mail.gmail.com>
+ <ZXsKzsij3Xb50Ap9@hovoldconsulting.com>
+ <CAA8EJpqBstKyAfUcBPzoF2CitTwWBZ9Xhd28Y+FCo14OoBqkxw@mail.gmail.com>
 MIME-Version: 1.0
-References: <20231213190528.3751583-1-tmaimon77@gmail.com> <20231213190528.3751583-4-tmaimon77@gmail.com>
- <cf3ce945-2f1c-4dae-86b8-349dae3d962b@app.fastmail.com>
-In-Reply-To: <cf3ce945-2f1c-4dae-86b8-349dae3d962b@app.fastmail.com>
-From:   Tomer Maimon <tmaimon77@gmail.com>
-Date:   Thu, 14 Dec 2023 16:09:29 +0200
-Message-ID: <CAP6Zq1inLOMHORqO8=RbP6NfwJ63kLaH0G3+TKBhfn0p2CE53w@mail.gmail.com>
-Subject: Re: [PATCH v3 3/3] soc: nuvoton: add NPCM BPC driver
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     pmenzel@molgen.mpg.de, Rob Herring <robh+dt@kernel.org>,
-        krzysztof.kozlowski+dt@linaro.org,
-        Conor Dooley <conor+dt@kernel.org>, avifishman70@gmail.com,
-        tali.perry1@gmail.com, Joel Stanley <joel@jms.id.au>,
-        venture@google.com, yuenn@google.com, benjaminfair@google.com,
-        =?UTF-8?Q?Jonathan_Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>,
-        openbmc@lists.ozlabs.org,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAA8EJpqBstKyAfUcBPzoF2CitTwWBZ9Xhd28Y+FCo14OoBqkxw@mail.gmail.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Arnd,
-
-Thanks for your comments.
-
-On Thu, 14 Dec 2023 at 14:44, Arnd Bergmann <arnd@arndb.de> wrote:
->
-> On Wed, Dec 13, 2023, at 20:05, Tomer Maimon wrote:
-> > Add Nuvoton BMC NPCM BIOS post code (BPC) driver.
+On Thu, Dec 14, 2023 at 04:04:49PM +0200, Dmitry Baryshkov wrote:
+> On Thu, 14 Dec 2023 at 16:01, Johan Hovold <johan@kernel.org> wrote:
+> > On Thu, Dec 14, 2023 at 01:04:43PM +0200, Dmitry Baryshkov wrote:
+> > > On Thu, 14 Dec 2023 at 09:16, Johan Hovold <johan@kernel.org> wrote:
+> > > > On Wed, Dec 13, 2023 at 01:06:43PM -0800, Rob Clark wrote:
+> > > > > From: Rob Clark <robdclark@chromium.org>
+> > > > >
+> > > > > We need to bail out before adding/removing devices, if we are going
+> > > > > to -EPROBE_DEFER.  Otherwise boot will get stuck forever at
+> > > > > deferred_probe_initcall().
+> > > >
+> > > > Can please you expand on why this is a problem here in the commit
+> > > > message?
+> > > >
+> > > > The aux devices appear to be tore down correctly in the probe error
+> > > > paths so how exactly does that lead to deferred_probe_initcall() being
+> > > > stuck? This sounds like we may have a problem elsewhere which this patch
+> > > > is papering over.
+> > >
+> > > This is a known problem. Successful probes during the probe deferral
+> > > loop causes the whole loop to be reiterated. Creating child devices
+> > > usually results in  a successful probe. Aso I thought that just
+> > > creating new device also causes a reprobe, but I can not find any
+> > > evidence now.
 > >
-> > The NPCM BPC monitoring two configurable I/O address written by the host
-> > on the bus.
+> > This still needs to be described in the commit message.
 > >
-> > Signed-off-by: Tomer Maimon <tmaimon77@gmail.com>
-> > ---
-> >  drivers/soc/nuvoton/Kconfig    |   9 +
-> >  drivers/soc/nuvoton/Makefile   |   1 +
-> >  drivers/soc/nuvoton/npcm-bpc.c | 387 +++++++++++++++++++++++++++++++++
-> >  3 files changed, 397 insertions(+)
-> >  create mode 100644 drivers/soc/nuvoton/npcm-bpc.c
->
-> I try hard to avoid having user interfaces in drivers/soc/, that
-> subsystem should primarily be used for things that don't have an
-> existing subsystem in the kernel and are used by other in-kernel
-> drivers but don't export hteir own misc device.
->
-> > diff --git a/drivers/soc/nuvoton/Kconfig b/drivers/soc/nuvoton/Kconfig
-> > index d5102f5f0c28..ebd162633942 100644
-> > --- a/drivers/soc/nuvoton/Kconfig
-> > +++ b/drivers/soc/nuvoton/Kconfig
-> > @@ -2,6 +2,15 @@
-> >
-> >  menu "NUVOTON SoC drivers"
-> >
-> > +config NPCM_BPC
-> > +     tristate "NPCM BIOS Post Code support"
-> > +     depends on (ARCH_NPCM || COMPILE_TEST)
-> > +     help
-> > +       Provides NPCM driver to control the BIOS Post Code
-> > +       interface which allows the BMC to monitor and save
-> > +       the data written by the host to an arbitrary I/O port,
-> > +       the BPC is connected to the host thourgh LPC or eSPI bus.
-> > +
->
-> This one in particular looks like this might be implemented
-> by more than one BMC type, it's a fairly generic functionality.
->
-> Have you talked to the other maintainers of SoCs used in
-> OpenBMC about coming up with a common interface?
-Yes, Both Nuvoton and Aspeed use the same user-facing code to manage
-the host snooping.
-https://github.com/openbmc/phosphor-host-postd
->
-> > +#define DEVICE_NAME  "npcm-bpc"
-Will do.
->
-> [nitpicking] No need for macros like this one, open-coding the
-> string is usually more readable.
->
->     Arnd
+> > Only a successful probe should trigger a reprobe, and when the child
+> > devices are registered the parent is not yet on the deferred probe list.
+> > So something is not right or missing here.
+> 
+> Child devices can be successfully probed, then the parent gets
+> -EPROBE_DEFER, removes children and then it goes on and on.
 
-Thanks,
+So what? As I described above, the successful probe of the children
+should have nothing to do with whether the parent is reprobed.
 
-Tomer
+If that isn't the case, then explain how.
+
+Johan
