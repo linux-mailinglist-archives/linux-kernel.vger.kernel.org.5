@@ -2,318 +2,367 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 715118138EC
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 18:41:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0219E8138F7
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 18:42:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231708AbjLNRlH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 12:41:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52360 "EHLO
+        id S229743AbjLNRmS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 12:42:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54586 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235649AbjLNRk4 (ORCPT
+        with ESMTP id S229519AbjLNRmR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 12:40:56 -0500
-Received: from mail-ot1-f50.google.com (mail-ot1-f50.google.com [209.85.210.50])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFCF0B7;
-        Thu, 14 Dec 2023 09:41:01 -0800 (PST)
-Received: by mail-ot1-f50.google.com with SMTP id 46e09a7af769-6da3659535fso1679881a34.3;
-        Thu, 14 Dec 2023 09:41:01 -0800 (PST)
+        Thu, 14 Dec 2023 12:42:17 -0500
+Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FD7099
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 09:42:23 -0800 (PST)
+Received: by mail-yb1-xb2c.google.com with SMTP id 3f1490d57ef6-db4422fff15so7115040276.1
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 09:42:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1702575742; x=1703180542; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=g0LtA3RcxjW8vTbuZqn9CO5WSi3XER//Pr1fbXwAcxM=;
+        b=Xf/9H3hLqpClvwW8/BYxjwC9JTB61zVFljmRD9tx1Ik+ij8edVs8L6c15iVNuAwvHP
+         tGP739v5yHF34rt0ghjkq6p40Pn4q5eoAooJ2EKLskBYjvAmQa7aebVqDATMxsVaYodi
+         rVtRMrNFZupVVJIG7B8gxfWm5O2ByPghDvxaleWwwxgYW/p4GNHvPLMAqoEFj6wg0maF
+         ixjWJBrNLDzMRi7I/NUHXmuEzXQSLxKBj/wrlP8IPH8a03hVsVbTO/GtZ6Qpe/A07rPy
+         j8FLrL30UFpvQAwmNlG1cpKwve6nTSF+J7W8bIPllKXqkJi8wA3XjQ1xsprzlRk8sSTW
+         IKxg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702575661; x=1703180461;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=/zdZ0ienZCoKJGn2KtzvEpwkVAjav3OsYiEGG0EDFsQ=;
-        b=MdxNoYG8mnf7H7rwtMbTgmgt657I4lZn/kg2GVj7uFbSm6VsWulkBaOPTvV7ov0IgM
-         UIuLqZ9n4uqOYlWajNBo13ubh87/YbVRRzrSX0Ej0Izn5XTuRXsZgz6OULjZl40K7Kuv
-         sJgbSLXdptUKCsnVmIZIipkaoWYcJLiXSxGDlUeZnuFrxx12MuCXmkAyEDm7wsazifSG
-         FRzOKHyegNTMFTWrE5t3IfXnhCgRgeZaDwMCIC8Rcz94ng30lTI/BzFyUvAB0jl+JtEF
-         Zx6sGlHxosJjQ2FDVJ5ywPUEhT9IPwJlwtVlpNGEiDqZtdUyzGAOKyCykdGIT87IwxQ9
-         Y0mA==
-X-Gm-Message-State: AOJu0YwNJH0PrXUL7+KwcVzov3q67NZaLuAyU/1X2MQM7+oSpJyjeudR
-        lUItby6PTaiTb34UUT+Quw==
-X-Google-Smtp-Source: AGHT+IHR2mKGPjA6Cg6K+KNOwWucrAolfXP5PFsqGvuPXW8Q0CZP7l8Ljjc4B2Rq9DyeloElLkdsyA==
-X-Received: by 2002:a05:6830:4d6:b0:6da:2ec0:c738 with SMTP id s22-20020a05683004d600b006da2ec0c738mr4821847otd.31.1702575660920;
-        Thu, 14 Dec 2023 09:41:00 -0800 (PST)
-Received: from herring.priv ([2607:fb91:e6c7:a40:1c2d:b875:912d:c28])
-        by smtp.gmail.com with ESMTPSA id t15-20020a9d66cf000000b006d7f41c7e11sm3236498otm.33.2023.12.14.09.40.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Dec 2023 09:41:00 -0800 (PST)
-Received: (nullmailer pid 637311 invoked by uid 1000);
-        Thu, 14 Dec 2023 17:40:58 -0000
-Date:   Thu, 14 Dec 2023 11:40:58 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Serge Semin <fancer.lancer@gmail.com>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        Jose Abreu <Jose.Abreu@synopsys.com>,
-        Maxime Chevallier <maxime.chevallier@bootlin.com>,
-        Tomer Maimon <tmaimon77@gmail.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, openbmc@lists.ozlabs.org,
-        netdev@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next 08/16] dt-bindings: net: Add Synopsys DW xPCS
- bindings
-Message-ID: <20231214174058.GA624576-robh@kernel.org>
-References: <20231205103559.9605-1-fancer.lancer@gmail.com>
- <20231205103559.9605-9-fancer.lancer@gmail.com>
+        d=1e100.net; s=20230601; t=1702575742; x=1703180542;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=g0LtA3RcxjW8vTbuZqn9CO5WSi3XER//Pr1fbXwAcxM=;
+        b=AQ7S/kBov2bBkPUgX7MNufiBwm4nRTYjUj8sMqLlqdGdB8WKNx4UVIDiAveu/wQM8w
+         MPaKh/rlj5RpnJTY9sAyGFyOjtnsBVZ0esG2gDttSPUev0aGSWQ7udn3ZaeHW4xYQ3Q6
+         5oqt6DKrNVhCN8T0EEuKCxyPg62jUq2Xiw/aErYwtekwaMUVwOYeMmPEyBBrxAWlyrnI
+         HDwn17ROgLr260QzSy5pdgmdIgVHdXTW3vr9KwCcxvDNx1HoXffoxW/R3/JO4PRem4tH
+         AtAPnzPMX++Ri9MwrEza9xE+03/MO1/4KXhcoIUUP+DhOPXWkIrte5K6ZXof5ZuFN9tI
+         itJg==
+X-Gm-Message-State: AOJu0Yxb1ArX51fR8uOuOyK+umgLjlZIauHnmD4kcC2LdTXqHN6N2LE3
+        CGYuGEeR7wRRrTSTKt0XtteMKJCYiGPxzlR0UXQs/A==
+X-Google-Smtp-Source: AGHT+IFnj3g/SgfAeLkquhUQHDuy6XEO5JpKxJ5SEflXowFLhUKUgPtEG67blDHWMI0wKboRKWkCzGeFSdED0V4W4NE=
+X-Received: by 2002:a25:938e:0:b0:dbc:eda9:a8f5 with SMTP id
+ a14-20020a25938e000000b00dbceda9a8f5mr589837ybm.44.1702575742141; Thu, 14 Dec
+ 2023 09:42:22 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231205103559.9605-9-fancer.lancer@gmail.com>
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,
-        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+References: <1702493883-30148-1-git-send-email-quic_khsieh@quicinc.com>
+ <CAA8EJppypE-0tUfVD-24YMOQ+3cP+_D1BZYju0K7qzaUE_RnKA@mail.gmail.com> <dab2beed-78de-6638-8389-d3e03c8cfc44@quicinc.com>
+In-Reply-To: <dab2beed-78de-6638-8389-d3e03c8cfc44@quicinc.com>
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date:   Thu, 14 Dec 2023 19:42:10 +0200
+Message-ID: <CAA8EJppizUj3wWMXn32Ro6QfQ+er+vnetbLd+Bff6YhAQj7zYw@mail.gmail.com>
+Subject: Re: [PATCH v5] drm/msm/dpu: improve DSC allocation
+To:     Kuogee Hsieh <quic_khsieh@quicinc.com>
+Cc:     dri-devel@lists.freedesktop.org, robdclark@gmail.com,
+        sean@poorly.run, swboyd@chromium.org, dianders@chromium.org,
+        vkoul@kernel.org, daniel@ffwll.ch, airlied@gmail.com,
+        agross@kernel.org, andersson@kernel.org, quic_abhinavk@quicinc.com,
+        quic_jesszhan@quicinc.com, quic_sbillaka@quicinc.com,
+        marijn.suijten@somainline.org, freedreno@lists.freedesktop.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 05, 2023 at 01:35:29PM +0300, Serge Semin wrote:
-> Synopsys DesignWare XPCS IP-core is a Physical Coding Sublayer (PCS) layer
-> providing an interface between the Media Access Control (MAC) and Physical
-> Medium Attachment Sublayer (PMA) through a Media independent interface.
-> >From software point of view it exposes IEEE std. Clause 45 CSR space and
-> can be accessible either by MDIO or MCI/APB3 bus interfaces. The later
-> case is described by means of a dedicated DT-bindings which imply having
-> the DW XPCS Management Interface defined as a DT-supernode which child the
-> PCSs nodes would be (in the same way as the standard MDIO buses and
-> devices are normally defined).
-> 
-> Besides of that DW XPCS DT-nodes can have the interrupts and clock source
-> properties specified. The former one indicates the Clause 73/37
-> auto-negotiation events like: negotiation page received, AN is completed
-> or incompatible link partner. The clock DT-properties can describe up to
-> two clock sources: internal one and the one connected to the chip pad.
-> Either of them is supposed to be used as the device reference clocks.
-> 
-> Finally the DW XPCS IP-core can be optionally synthesized with a
-> vendor-specific interface connected to Synopsys PMA (also called
-> DesignWare Consumer/Enterprise PHY). Alas that isn't auto-detectable
-> anyhow so if the DW XPCS device has the respective PMA attached then it
-> should be reflected in the DT-node compatible string so the driver would
-> be aware of the PMA-specific device capabilities (mainly connected with
-> CSRs available for the fine-tunings).
-> 
-> Signed-off-by: Serge Semin <fancer.lancer@gmail.com>
-> ---
->  .../bindings/net/pcs/snps,dw-xpcs.yaml        | 88 +++++++++++++++++++
->  .../bindings/net/snps,dw-xpcs-mi.yaml         | 88 +++++++++++++++++++
->  2 files changed, 176 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/net/pcs/snps,dw-xpcs.yaml
->  create mode 100644 Documentation/devicetree/bindings/net/snps,dw-xpcs-mi.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/net/pcs/snps,dw-xpcs.yaml b/Documentation/devicetree/bindings/net/pcs/snps,dw-xpcs.yaml
-> new file mode 100644
-> index 000000000000..9694ef51abad
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/net/pcs/snps,dw-xpcs.yaml
-> @@ -0,0 +1,88 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/net/pcs/snps,dw-xpcs.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Synopsys DesignWare Ethernet PCS
-> +
-> +maintainers:
-> +  - Jose Abreu <Jose.Abreu@synopsys.com>
-> +
-> +description:
-> +  Synopsys DesignWare Ethernet Physical Coding Sublayer provides an interface
-> +  between Media Access Control and Physical Medium Attachment Sublayer through
-> +  the Media Independent Interface (XGMII, USXGMII, XLGMII, GMII, etc)
-> +  controlled by means of the IEEE std. Clause 45 registers set. The PCS can be
-> +  optionally synthesized with a vendor-specific interface connected to
-> +  Synopsys PMA (also called DesignWare Consumer/Enterprise PHY) although in
-> +  general it can be used to communicate with any compatible PHY.
-> +
-> +properties:
-> +  compatible:
-> +    oneOf:
-> +      - description: Synopsys DesignWare XPCS with none or unknown PMA
-> +        const: snps,dw-xpcs
-> +      - description: Synopsys DesignWare XPCS with Consumer Gen1 3G PMA
-> +        const: snps,dw-xpcs-gen1-3g
-> +      - description: Synopsys DesignWare XPCS with Consumer Gen2 3G PMA
-> +        const: snps,dw-xpcs-gen2-3g
-> +      - description: Synopsys DesignWare XPCS with Consumer Gen2 6G PMA
-> +        const: snps,dw-xpcs-gen2-6g
-> +      - description: Synopsys DesignWare XPCS with Consumer Gen4 3G PMA
-> +        const: snps,dw-xpcs-gen4-3g
-> +      - description: Synopsys DesignWare XPCS with Consumer Gen4 6G PMA
-> +        const: snps,dw-xpcs-gen4-6g
-> +      - description: Synopsys DesignWare XPCS with Consumer Gen5 10G PMA
-> +        const: snps,dw-xpcs-gen5-10g
-> +      - description: Synopsys DesignWare XPCS with Consumer Gen5 12G PMA
-> +        const: snps,dw-xpcs-gen5-12g
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  interrupts:
-> +    description:
-> +      System interface interrupt output (sbd_intr_o) indicating Clause 73/37
-> +      auto-negotiation events like':' Page received, AN is completed or
+On Thu, 14 Dec 2023 at 19:34, Kuogee Hsieh <quic_khsieh@quicinc.com> wrote:
+>
+>
+> On 12/13/2023 3:00 PM, Dmitry Baryshkov wrote:
+> > On Wed, 13 Dec 2023 at 20:58, Kuogee Hsieh <quic_khsieh@quicinc.com> wrote:
+> >> At DSC V1.1 DCE (Display Compression Engine) contains a DSC encoder.
+> >> However, at DSC V1.2 DCE consists of two DSC encoders, one has an odd
+> >> index and another one has an even index. Each encoder can work
+> >> independently. But only two DSC encoders from same DCE can be paired
+> >> to work together to support DSC merge mode at DSC V1.2. For DSC V1.1
+> >> two consecutive DSC encoders (start with even index) have to be paired
+> >> to support DSC merge mode.  In addition, the DSC with even index have
+> >> to be mapped to even PINGPONG index and DSC with odd index have to be
+> >> mapped to odd PINGPONG index at its data path in regardless of DSC
+> >> V1.1 or V1.2. This patch improves DSC allocation mechanism with
+> >> consideration of those factors.
+> >>
+> >> Changes in V5:
+> >> -- delete dsc_id[]
+> >> -- update to global_state->dsc_to_enc_id[] directly
+> >> -- replace ndx with idx
+> >> -- fix indentation at function declaration
+> >> -- only one for loop at _dpu_rm_reserve_dsc_single()
+> >>
+> >> Changes in V4:
+> >> -- rework commit message
+> >> -- use reserved_by_other()
+> >> -- add _dpu_rm_pingpong_next_index()
+> >> -- revise _dpu_rm_pingpong_dsc_check()
+> >>
+> >> Changes in V3:
+> >> -- add dpu_rm_pingpong_dsc_check()
+> >> -- for pair allocation use i += 2 at for loop
+> >>
+> >> Changes in V2:
+> >>      -- split _dpu_rm_reserve_dsc() into _dpu_rm_reserve_dsc_single() and
+> >>         _dpu_rm_reserve_dsc_pair()
+> >>
+> >> Fixes: f2803ee91a41 ("drm/msm/disp/dpu1: Add DSC support in RM")
+> >> Signed-off-by: Kuogee Hsieh <quic_khsieh@quicinc.com>
+> >> ---
+> >>   drivers/gpu/drm/msm/disp/dpu1/dpu_rm.c | 162 +++++++++++++++++++++++++++++----
+> >>   1 file changed, 146 insertions(+), 16 deletions(-)
+> >>
+> >> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_rm.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_rm.c
+> >> index f9215643..7c7a88f 100644
+> >> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_rm.c
+> >> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_rm.c
+> >> @@ -461,29 +461,159 @@ static int _dpu_rm_reserve_ctls(
+> >>          return 0;
+> >>   }
+> >>
+> >> -static int _dpu_rm_reserve_dsc(struct dpu_rm *rm,
+> >> -                              struct dpu_global_state *global_state,
+> >> -                              struct drm_encoder *enc,
+> >> -                              const struct msm_display_topology *top)
+> >> +static int _dpu_rm_pingpong_next_index(int start,
+> >> +                                      uint32_t enc_id,
+> >> +                                      uint32_t *pp_to_enc_id,
+> >> +                                      int pp_max)
+> >>   {
+> >> -       int num_dsc = top->num_dsc;
+> >>          int i;
+> >>
+> >> -       /* check if DSC required are allocated or not */
+> >> -       for (i = 0; i < num_dsc; i++) {
+> >> -               if (!rm->dsc_blks[i]) {
+> >> -                       DPU_ERROR("DSC %d does not exist\n", i);
+> >> -                       return -EIO;
+> >> -               }
+> >> +       for (i = start; i < pp_max; i++) {
+> >> +               if (pp_to_enc_id[i] == enc_id)
+> >> +                       return i;
+> >> +       }
+> >> +
+> >> +       return -ENAVAIL;
+> >> +}
+> >> +
+> >> +static int _dpu_rm_pingpong_dsc_check(int dsc_idx, int pp_idx)
+> >> +{
+> >> +
+> > CHECK: Blank lines aren't necessary after an open brace '{'
+> > #85: FILE: drivers/gpu/drm/msm/disp/dpu1/dpu_rm.c:481:
+> >
+> >> +       /*
+> >> +        * DSC with even index must be used with the PINGPONG with even index
+> >> +        * DSC with odd index must be used with the PINGPONG with odd index
+> >> +        */
+> >> +       if ((dsc_idx & 0x01) != (pp_idx & 0x01))
+> >> +               return -ENAVAIL;
+> >> +
+> >> +       return 0;
+> >> +}
+> >> +
+> >> +static int _dpu_rm_reserve_dsc_single(struct dpu_rm *rm,
+> >> +                                     struct dpu_global_state *global_state,
+> >> +                                     uint32_t enc_id,
+> >> +                                     const struct msm_display_topology *top)
+> >> +{
+> >> +       int num_dsc = 0;
+> >> +       uint32_t *pp_to_enc_id = global_state->pingpong_to_enc_id;
+> >> +       uint32_t *dsc_enc_id = global_state->dsc_to_enc_id;
+> >> +       int pp_max = PINGPONG_MAX - PINGPONG_0;
+> >> +       int pp_idx;
+> >> +       int dsc_idx;
+> >> +       int ret;
+> >> +
+> >> +       for (dsc_idx = 0; dsc_idx < ARRAY_SIZE(rm->dsc_blks) &&
+> >> +                         num_dsc < 1; dsc_idx++) {
+> > The condition is wrong here. Also it is misaligned.
+>
+> i will remove checking  num_dsc < 1 here and add break at end of body of
+> for loop since it only allocate one dsc
 
-like':' ?
+I thought we established that in v4 or v3 that _single can get two DSC
+interfaces to be allocated.
 
-> +      incompatible link partner.
-> +    maxItems: 1
-> +
-> +  clocks:
-> +    description:
-> +      PCS/PMA interface be can clocked either by internal reference clock
-> +      source or by an externally connected (via a pad) clock generator.
-> +    minItems: 1
-> +    maxItems: 2
-> +
-> +  clock-names:
-> +    minItems: 1
-> +    maxItems: 2
-> +    items:
-> +      enum: [ core, pad ]
-> +
-> +required:
-> +  - compatible
-> +  - reg
+       if (top->num_dsc > top->num_intf)       /* merge mode */
+               return _dpu_rm_reserve_dsc_pair(rm, global_state, enc_id, top);
+       else
+               return _dpu_rm_reserve_dsc_single(rm, global_state, enc_id, top);
 
-Don't you always need a clock?
 
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/interrupt-controller/irq.h>
-> +
-> +    mdio-bus {
-> +      #address-cells = <1>;
-> +      #size-cells = <0>;
-> +
-> +      xgmac_pcs: ethernet-pcs@0 {
-> +        compatible = "snps,dw-xpcs";
-> +        reg = <0>;
-> +
-> +        interrupts = <79 IRQ_TYPE_LEVEL_HIGH>;
-> +
-> +        clocks = <&ccu_core>, <&ccu_pad>;
-> +        clock-names = "core", "pad";
-> +      };
-> +    };
-> +...
-> diff --git a/Documentation/devicetree/bindings/net/snps,dw-xpcs-mi.yaml b/Documentation/devicetree/bindings/net/snps,dw-xpcs-mi.yaml
-> new file mode 100644
-> index 000000000000..67ddba9d61fd
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/net/snps,dw-xpcs-mi.yaml
-> @@ -0,0 +1,88 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/net/snps,dw-xpcs-mi.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Synopsys DesignWare Ethernet PCS Management Interface
-> +
-> +maintainers:
-> +  - Serge Semin <fancer.lancer@gmail.com>
-> +
-> +description:
-> +  Synopsys DesignWare Ethernet PCS provides an interface between MAC and PMA
-> +  through the Media Independent Interface. The PCS CSRs can be accessible over
-> +  the Ethernet MDIO bus or directly by means of the APB3/MCI interfaces. In the
-> +  later case the XPCS can be mapped right to the system IO memory space.
-> +
-> +allOf:
-> +  - $ref: mdio.yaml#
-> +
-> +properties:
-> +  compatible:
-> +    const: snps,dw-xpcs-mi
-> +
-> +  reg:
-> +    items:
-> +      - description:
-> +          DW XPCS CSRs space can be either 'directly' or 'indirectly'
-> +          accessible. In the former case all Clause 45 registers are
-> +          contiguously mapped within the address space MMD '[20:16]',
-> +          Reg '[15:0]'. In the later case the space is divided to the
-> +          multiple 256 register sets. There is a special viewport CSR
-> +          which is responsible for the set selection. The upper part of
-> +          the CSR address is supposed to be written in there thus the
-> +          corresponding subset would be mapped over the lowest 255 CSRs.
-> +
-> +  reg-names:
-> +    items:
-> +      - enum: [ direct, indirect ]
-> +
-> +  reg-io-width:
-> +    description:
-> +      The way the CSRs are mapped to the memory is platform depended. Since
+Consider a bonded DSI panel (num_intf = 2) and two DSC encoders being
+requested (num_dsc = 2). The code goes to the
+_dpu_rm_reserve_dsc_single().
 
-dependent
+>
+>
+> >
+> >> +               if (!rm->dsc_blks[dsc_idx])
+> >> +                       continue;
+> >> +
+> >> +               if (reserved_by_other(dsc_enc_id, dsc_idx, enc_id))
+> >> +                       continue;
+> >> +
+> >> +               pp_idx = _dpu_rm_pingpong_next_index(0, enc_id,
+> > And this is wrong too. You should start relatively to your previous PP index.
+>
+> It does not have previous pp_index since it only allocate on dsc.
+>
+> >
+> >> +                                                    pp_to_enc_id, pp_max);
+> >> +               if (pp_idx < 0)
+> >> +                       return -ENAVAIL;
+> >> +
+> >> +               ret = _dpu_rm_pingpong_dsc_check(dsc_idx, pp_idx);
+> >> +               if (ret)
+> >> +                       return -ENAVAIL;
+> >> +
+> >> +               dsc_enc_id[dsc_idx] = enc_id;
+> >> +               num_dsc++;
+> >> +       }
+> >> +
+> >> +       if (!num_dsc) {
+> >> +               DPU_ERROR("DSC allocation failed num_dsc=%d\n", num_dsc);
+> >> +               return -ENAVAIL;
+> >> +       }
+> >>
+> >> -               if (global_state->dsc_to_enc_id[i]) {
+> >> -                       DPU_ERROR("DSC %d is already allocated\n", i);
+> >> -                       return -EIO;
+> >> +       return 0;
+> >> +}
+> >> +
+> >> +static int _dpu_rm_reserve_dsc_pair(struct dpu_rm *rm,
+> >> +                                   struct dpu_global_state *global_state,
+> >> +                                   uint32_t enc_id,
+> >> +                                   const struct msm_display_topology *top)
+> >> +{
+> >> +       int num_dsc = 0;
+> >> +       uint32_t *pp_to_enc_id = global_state->pingpong_to_enc_id;
+> >> +       uint32_t *dsc_enc_id = global_state->dsc_to_enc_id;
+> > No need for these anymore. Please inline them. Or simply pass
+> > global_state to _dpu_rm_pingpong_next_index().
+> > Other functions in dpu_rm.c don't define local variables for these
+> > arrays. I don't see why this patch should deviate from that.
+> >
+> >> +       int pp_max = PINGPONG_MAX - PINGPONG_0;
+> >> +       int start_pp_idx = 0;
+> >> +       int dsc_idx, pp_idx;
+> >> +       int ret;
+> >> +
+> >> +       /* only start from even dsc index */
+> >> +       for (dsc_idx = 0; dsc_idx < ARRAY_SIZE(rm->dsc_blks) &&
+> >> +                         num_dsc < top->num_dsc; dsc_idx += 2) {
+> > Misaligned
+> >
+> >> +               if (!rm->dsc_blks[dsc_idx] ||
+> >> +                   !rm->dsc_blks[dsc_idx + 1])
+> >> +                       continue;
+> >> +
+> >> +               /* consective dsc index to be paired */
+> >> +               if (reserved_by_other(dsc_enc_id, dsc_idx, enc_id) ||
+> >> +                   reserved_by_other(dsc_enc_id, dsc_idx + 1, enc_id))
+> >> +                       continue;
+> >> +
+> >> +               pp_idx = _dpu_rm_pingpong_next_index(start_pp_idx, enc_id,
+> >> +                                                    pp_to_enc_id, pp_max);
+> >> +               if (pp_idx < 0)
+> >> +                       return -ENAVAIL;
+> >> +
+> >> +               ret = _dpu_rm_pingpong_dsc_check(dsc_idx, pp_idx);
+> >> +               if (ret) {
+> >> +                       pp_idx = 0;
+> >> +                       continue;
+> >>                  }
+> >> +
+> >> +               pp_idx = _dpu_rm_pingpong_next_index(pp_idx + 1, enc_id,
+> >> +                                                    pp_to_enc_id, pp_max);
+> >> +               if (pp_idx < 0)
+> >> +                       return -ENAVAIL;
+> > Fresh pp_idx has to be checked against dsc_idx + 1.
+> >
+> > Let me also have a suggestion for you. The pp_max is a constant. You
+> > don't have to pass it to _dpu_rm_pingpong_next_index() at all! Also if
+> > you change the function to accept enum dpu_pingpong, you can start
+> > with PINGPONG_NONE and move +1 into the function, making the callers
+> > simpler, removing the need or start_pp_idx (which I asked to do in v4)
+> > etc.
+> >
+> >> +
+> >> +               dsc_enc_id[dsc_idx] = enc_id;
+> >> +               dsc_enc_id[dsc_idx + 1] = enc_id;
+> >> +               num_dsc += 2;
+> >> +
+> >> +               start_pp_idx = pp_idx + 1;      /* start for next pair */
+> >>          }
+> >>
+> >> -       for (i = 0; i < num_dsc; i++)
+> >> -               global_state->dsc_to_enc_id[i] = enc->base.id;
+> >> +       if (num_dsc < top->num_dsc) {
+> >> +               DPU_ERROR("DSC allocation failed num_dsc=%d required=%d\n",
+> >> +                                               num_dsc, top->num_dsc);
+> > Misaligned
+> >
+> >> +               return -ENAVAIL;
+> >> +       }
+> >> +
+> >> +       return 0;
+> >> +}
+> >> +
+> >> +static int _dpu_rm_reserve_dsc(struct dpu_rm *rm,
+> >> +                              struct dpu_global_state *global_state,
+> >> +                              struct drm_encoder *enc,
+> >> +                              const struct msm_display_topology *top)
+> >> +{
+> >> +       uint32_t enc_id = enc->base.id;
+> >> +
+> >> +       if (!top->num_dsc || !top->num_intf)
+> >> +               return 0;
+> >> +
+> >> +       /*
+> >> +        * Facts:
+> >> +        * 1) DSCs ouput to an interface
+> > WARNING: 'ouput' may be misspelled - perhaps 'output'?
+> >
+> > Also, what does it bring to us?
+> >
+> >> +        * 2) no pingpong split (two layer mixers shared one pingpong)
+> >> +        * 3) DSC pair start from even index, such as index(0,1), (2,3), etc
+> > starts
+> >
+> >> +        * 4) even PINGPONG connects to even DSC
+> >> +        * 5) odd PINGPONG connects to odd DSC
+> >> +        * 6) pair: encoder +--> pp_idx_0 --> dsc_idx_0
+> >> +        *                  +--> pp_idx_1 --> dsc_idx_1
+> >> +        */
+> >> +
+> >> +       /* num_dsc should be either 1, 2 or 4 */
+> >> +       if (top->num_dsc > top->num_intf)       /* merge mode */
+> >> +               return _dpu_rm_reserve_dsc_pair(rm, global_state, enc_id, top);
+> >> +       else
+> >> +               return _dpu_rm_reserve_dsc_single(rm, global_state, enc_id, top);
+> >>
+> >>          return 0;
+> >>   }
+> >> --
+> >> 2.7.4
+> >>
+> > Kuogee, we value your patches. But could you please fix your editor
+> > settings to properly align C statements? E.g. Vim has the "set
+> > cino=(0" setting, which does most of the work. I suspect that your
+> > code editor should also have a similar setting. Also could you please
+> > establish a practice of using checkpatch.pl at least until we stop
+> > hitting obvious issues there?
+> >
 
-> +      each Clause 45 CSR is of 16-bits wide the access instructions must be
-> +      two bytes aligned at least.
-> +    default: 2
-> +    enum: [ 2, 4 ]
-> +
-> +  clocks:
-> +    items:
-> +      - description: Peripheral MCI/APB3 bus clock source
-> +
-> +  clock-names:
-> +    items:
-> +      - const: pclk
-> +
-> +patternProperties:
-> +  'ethernet-pcs@[0-9a-f]+$':
-> +    type: object
-> +
-> +    $ref: pcs/snps,dw-xpcs.yaml#
 
-This causes dw-xpcs to be validated twice. Does this MDIO bus support 
-other devices on it or it is fixed config?
 
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - reg-names
-> +
-> +unevaluatedProperties: false
-> +
-> +examples:
-> +  - |
-> +    mdio@1f05d000 {
-> +      compatible = "snps,dw-xpcs-mi";
-> +      reg = <0x1f05d000 0x1000>;
-> +      reg-names = "indirect";
-> +      #address-cells = <1>;
-> +      #size-cells = <0>;
-> +
-> +      clocks = <&ccu_pclk>;
-> +      clock-names = "pclk";
-> +
-> +      reg-io-width = <4>;
-> +
-> +      ethernet-pcs@0 {
-> +        compatible = "snps,dw-xpcs";
-> +        reg = <0>;
-> +      };
-> +    };
-> -- 
-> 2.42.1
-> 
+-- 
+With best wishes
+Dmitry
