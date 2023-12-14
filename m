@@ -2,71 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CA198125F5
+	by mail.lfdr.de (Postfix) with ESMTP id 7418D8125F6
 	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 04:36:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235242AbjLNDcK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 22:32:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60022 "EHLO
+        id S1443106AbjLNDcN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 22:32:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60106 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235192AbjLNDcI (ORCPT
+        with ESMTP id S1443086AbjLNDcL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 22:32:08 -0500
-Received: from out-188.mta0.migadu.com (out-188.mta0.migadu.com [91.218.175.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1FF0111
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 19:32:13 -0800 (PST)
-Message-ID: <c8b952ea-e5fb-491f-b444-0a4e179716c0@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1702524729;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=8nrtfzVsKhb+pEEnD9Dv72GTrmorIJAeKuyjqO56so4=;
-        b=XHRyd9Jcy68UY2+b6OIO4TsTUvyimNKSumeotXqxtvjPUDwBFsPS6QZ2OxVWzCrdXKjOBh
-        fPFtwXoydoAnjsiZn6157IVAEWdnxpxxHyRDqJttEnRoJR/udUtoD56DvXL0U+Dtazhkq9
-        O2thaA9yED7ZczwVxPiYuy3XI4yzLs4=
-Date:   Wed, 13 Dec 2023 19:32:05 -0800
-MIME-Version: 1.0
-Subject: Re: [PATCH] ARC: add hugetlb definitions
-Content-Language: en-US
-To:     Pavel Kozlov <Pavel.Kozlov@synopsys.com>,
-        linux-snps-arc@lists.infradead.org
-Cc:     linux-kernel@vger.kernel.org, Vineet Gupta <vgupta@kernel.org>
-References: <20231213150710.13574-1-kozlov@synopsys.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Vineet Gupta <vineet.gupta@linux.dev>
-In-Reply-To: <20231213150710.13574-1-kozlov@synopsys.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        Wed, 13 Dec 2023 22:32:11 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93304F4
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 19:32:18 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 22B70C433C9;
+        Thu, 14 Dec 2023 03:32:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1702524738;
+        bh=qzXUtYZqB/VmdxsvHE8IQryw8R9k/q1YYjcMtcceOKI=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=nF1S2AxmgOOpF1+IxaxnARH6uLocjjusye/qBdbyDs0WxFHg0ouQ2c9eFeZb4mS/d
+         q+TeFiwWfAJgPdIoud5fDMX1GgZTL68kaUIARY1360NsMvDc1V5rtS6gUmFaYtRFER
+         DPGvL7os8WZNmX8QA7SwWHIOcpzppCNB0+/miSVq8FS6BQO1OI73/CrUn1SCAdjw3N
+         mCZtnGWpsx6uYSuJgeNxU1GD+JR3QhNL4tBO+msGcVlWM/8R55wLnprPYiV1q66QVi
+         jl7wh0WfDUzxSRqBaLV7snaHpVKhjFd57KXvJb66R8rKKCOj9Va0PjwUeVK9uIUYKk
+         nhv/GohgDcKSQ==
+Received: from sofa.misterjones.org ([185.219.108.64] helo=goblin-girl.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.95)
+        (envelope-from <maz@kernel.org>)
+        id 1rDcSM-003xw6-Kh;
+        Thu, 14 Dec 2023 03:32:14 +0000
+Date:   Thu, 14 Dec 2023 03:32:14 +0000
+Message-ID: <864jglbgsh.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        James Houghton <jthoughton@google.com>,
+        Peter Xu <peterx@redhat.com>,
+        Axel Rasmussen <axelrasmussen@google.com>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        Isaku Yamahata <isaku.yamahata@linux.intel.com>,
+        David Matlack <dmatlack@google.com>,
+        Yan Zhao <yan.y.zhao@intel.com>,
+        Michael Roth <michael.roth@amd.com>,
+        Aaron Lewis <aaronlewis@google.com>
+Subject: Re: [ANNOUNCE / RFC] PUCK Future Topics
+In-Reply-To: <20231214001753.779022-1-seanjc@google.com>
+References: <20231214001753.779022-1-seanjc@google.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/29.1
+ (aarch64-unknown-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: seanjc@google.com, kvm@vger.kernel.org, linux-kernel@vger.kernel.org, pbonzini@redhat.com, jthoughton@google.com, peterx@redhat.com, axelrasmussen@google.com, oliver.upton@linux.dev, isaku.yamahata@linux.intel.com, dmatlack@google.com, yan.y.zhao@intel.com, michael.roth@amd.com, aaronlewis@google.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, 14 Dec 2023 00:17:53 +0000,
+Sean Christopherson <seanjc@google.com> wrote:
+> 
+> Hi all!  There are a handful of PUCK topics that I want to get scheduled, and
+> would like your help/input in confirming attendance to ensure we reach critical
+> mass.
+> 
+> If you are on the Cc, please confirm that you are willing and able to attend
+> PUCK on the proposed/tentative date for any topics tagged with your name.  Or
+> if you simply don't want to attend, I suppose that's a valid answer too. :-)
+> 
+> If you are not on the Cc but want to ensure that you can be present for a given
+> topic, please speak up asap if you have a conflict.  I will do my best to
+> accomodate everyone's schedules, and the more warning I get the easier that will
+> be.
+> 
+> Note, the proposed schedule is largely arbitrary, I am not wedded to any
+> particular order.  The only known conflict at this time is the guest_memfd()
+> post-copy discussion can't land on Jan 10th.
+> 
+> Thanks!
+> 
+> 
+> 2024.01.03 - Post-copy for guest_memfd()
+>     Needs: David M, Paolo, Peter Xu, James, Oliver, Aaron
+> 
+> 2024.01.10 - Unified uAPI for protected VMs
+>     Needs: Paolo, Isaku, Mike R
+> 
+> 2024.01.17 - Memtypes for non-coherent MDA
 
+DMA?
 
-On 12/13/23 07:07, Pavel Kozlov wrote:
-> From: Pavel Kozlov <pavel.kozlov@synopsys.com>
->
-> Add hugetlb definitions if THP enabled. ARC doesn't support
-> HugeTLB FS but it supports THP. Some kernel code such as pagemap
-> uses hugetlb definitions with THP.
->
-> This patch fixes ARC build issue (HPAGE_SIZE undeclared error) with
-> TRANSPARENT_HUGEPAGE enabled.
->
-> Signed-off-by: Pavel Kozlov <pavel.kozlov@synopsys.com>
+>     Needs: Paolo, Yan, Oliver, Marc, more ARM folks?
 
-Added to for-curr.
+Do we need anyone from the other architectures? I wouldn't be
+surprised if RISC-V was at least as picky as ARM on that front
+(assuming this really is about DMA and not something else).
 
-I'll pile this will rest of patches for some linux-next soaking.
+	M.
 
-Thx,
--Vineet
+-- 
+Without deviation from the norm, progress is not possible.
