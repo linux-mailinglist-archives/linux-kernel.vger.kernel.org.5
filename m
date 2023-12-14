@@ -2,281 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2685881344A
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 16:12:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B0EB681344C
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 16:13:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1573749AbjLNPMP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 10:12:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59214 "EHLO
+        id S230371AbjLNPM7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 10:12:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59078 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1573664AbjLNPLz (ORCPT
+        with ESMTP id S230346AbjLNPMm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 10:11:55 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56845D49;
-        Thu, 14 Dec 2023 07:11:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1702566667; x=1734102667;
-  h=message-id:date:mime-version:subject:to:references:from:
-   in-reply-to:content-transfer-encoding;
-  bh=zYZ+WoQdZiwn9W+G6vQS09KFd/oMW6fzrJc6u7vXV0k=;
-  b=O+U27j6uQPbsOuT5z7JT4Et85rxvzvBdpWKmb9l+5/+8vEXqwXn29b3z
-   u3DOb/390CJSpeI773nrds5aWT1SaC2hFHc+YTnCysCa0rNR3ky7OUw2Y
-   Rk4jTN+vK3DEs027VFHfyErCTxfxN0gBhWTaYszd8mAHtNXoBKobxVGqZ
-   1UxdrnMZ8fvWj1VqAd7/CAHKeVqaAzYis+t0UJPzcwfXgMfenLB2cfwKX
-   LbtSw2eIBWoRKt9AMIIEZVZ7rs3RHUTyBIEa0rrfOnvGr7VRIXHwolCo2
-   H1HVzKl/w1KudVbruwz/8L0yU3p9Zxus8o+F4J2pvg9pIoVyryMbIbDPt
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10924"; a="397914539"
-X-IronPort-AV: E=Sophos;i="6.04,275,1695711600"; 
-   d="scan'208";a="397914539"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Dec 2023 07:11:04 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10924"; a="892501890"
-X-IronPort-AV: E=Sophos;i="6.04,275,1695711600"; 
-   d="scan'208";a="892501890"
-Received: from linux.intel.com ([10.54.29.200])
-  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Dec 2023 07:11:01 -0800
-Received: from [10.213.191.138] (kliang2-mobl1.ccr.corp.intel.com [10.213.191.138])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by linux.intel.com (Postfix) with ESMTPS id 456DD580919;
-        Thu, 14 Dec 2023 07:10:59 -0800 (PST)
-Message-ID: <cd3c9e63-1ae8-4106-b4ed-e1332b29a4ce@linux.intel.com>
-Date:   Thu, 14 Dec 2023 10:10:57 -0500
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1] perf stat: Combine the -A/--no-aggr and --no-merge
- options
-Content-Language: en-US
-To:     Ian Rogers <irogers@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
+        Thu, 14 Dec 2023 10:12:42 -0500
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id B521B26B0;
+        Thu, 14 Dec 2023 07:11:32 -0800 (PST)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 94CDFC15;
+        Thu, 14 Dec 2023 07:12:17 -0800 (PST)
+Received: from FVFF77S0Q05N.cambridge.arm.com (FVFF77S0Q05N.cambridge.arm.com [10.1.38.161])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 1EEBC3F5A1;
+        Thu, 14 Dec 2023 07:11:31 -0800 (PST)
+Date:   Thu, 14 Dec 2023 15:11:25 +0000
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     Lucas De Marchi <lucas.demarchi@intel.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@redhat.com>,
         Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        K Prateek Nayak <kprateek.nayak@amd.com>,
-        Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
-        Kaige Ye <ye@kaige.org>, James Clark <james.clark@arm.com>,
-        Changbin Du <changbin.du@huawei.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        John Garry <john.g.garry@oracle.com>,
         linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20231214060256.2094017-1-irogers@google.com>
-From:   "Liang, Kan" <kan.liang@linux.intel.com>
-In-Reply-To: <20231214060256.2094017-1-irogers@google.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Subject: Re: [PATCH] Revert "perf: Fix perf_event_validate_size()"
+Message-ID: <ZXsbHQOWkp4D6mXI@FVFF77S0Q05N.cambridge.arm.com>
+References: <20231214000620.3081018-1-lucas.demarchi@intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231214000620.3081018-1-lucas.demarchi@intel.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 2023-12-14 1:02 a.m., Ian Rogers wrote:
-> The -A or --no-aggr option disables aggregation of core events:
-> ```
-> $ perf stat -A -e cycles,data_total -a true
+On Wed, Dec 13, 2023 at 04:06:20PM -0800, Lucas De Marchi wrote:
+> This reverts commit 382c27f4ed28f803b1f1473ac2d8db0afc795a1b.
 > 
->  Performance counter stats for 'system wide':
+> When using for_each_sibling_event() lockdep complains on
 > 
-> CPU0            1,287,665      cycles
-> CPU1            1,831,681      cycles
-> CPU2           27,345,998      cycles
-> CPU3            1,964,799      cycles
-> CPU4              236,174      cycles
-> CPU5            3,302,825      cycles
-> CPU6            9,201,446      cycles
-> CPU7            1,403,043      cycles
-> CPU0               110.90 MiB  data_total
+>         WARN_ON_ONCE(__lockdep_enabled &&                       \
+>                      (this_cpu_read(hardirqs_enabled) &&        \
+>                       lockdep_is_held(&(event)->ctx->mutex) != LOCK_STATE_HELD))
 > 
->        0.008961761 seconds time elapsed
-> ```
+> after a simple `perf stat -e instructions sleep 1`:
 > 
-> The --no-merge option disables the aggregation of uncore events:
-> ```
-> $ perf stat --no-merge -e cycles,data_total -a true
+> 	WARNING: CPU: 8 PID: 1471 at kernel/events/core.c:1950 __do_sys_perf_event_open+0xf37/0x1080
+> 	Modules linked in: x86_pkg_temp_thermal coretemp kvm_intel kvm e1000e igc irqbypass mei_pxp mei_hdcp crct10dif_pclmul wmi_bmof crc32_pclmul ghash_clmulni_intel i2c_i801 ptp mei_me i2c_smbus pps_core mei intel_lpss_pci video wmi fuse
+> 	CPU: 8 PID: 1471 Comm: perf Not tainted 6.7.0-rc5-linus-demarchi+ #8
+> 	Hardware name: Intel Corporation Rocket Lake Client Platform/RocketLake S UDIMM 4L ERB, BIOS RKLSFWI1.R00.2022.A00.2101052151 01/05/2021
+> 	RIP: 0010:__do_sys_perf_event_open+0xf37/0x1080
+> 	Code: ff e8 ed 30 ab 00 48 8b 81 28 02 00 00 83 ce ff 48 8d b8 a8 00 00 00 e8 67 38 ab 00 48 8b 4c 24 08 83 e8 01 0f 84 56 f9 ff ff <0f> 0b e9 4f f9 ff ff be 03 00 00 00 e8 d8 74 40 00 e9 54 fa ff ff
+> 	RSP: 0018:ffffc90001d6be40 EFLAGS: 00010297
+> 	RAX: 00000000ffffffff RBX: ffff888112bc8040 RCX: ffff888100c34568
+> 	RDX: 0000000080000000 RSI: ffffffff823e2806 RDI: ffffffff824023cb
+> 	RBP: 0000000000000000 R08: 0000000000000001 R09: 0000000000000001
+> 	R10: 0000000000000001 R11: 0000000000000000 R12: ffff888106560800
+> 	R13: 0000000000000000 R14: 0000000000080002 R15: ffff888100c34568
+> 	FS:  00007f723d196c00(0000) GS:ffff888450800000(0000) knlGS:0000000000000000
+> 	CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> 	CR2: 00005624c0efdaa0 CR3: 00000001199de002 CR4: 0000000000770ef0
+> 	PKRU: 55555554
+> 	Call Trace:
+> 	 <TASK>
+> 	 ? __do_sys_perf_event_open+0xf37/0x1080
+> 	 ? __warn+0x80/0x170
+> 	 ? __do_sys_perf_event_open+0xf37/0x1080
+> 	 ? report_bug+0x191/0x1c0
+> 	 ? handle_bug+0x3c/0x70
+> 	 ? exc_invalid_op+0x17/0x70
+> 	 ? asm_exc_invalid_op+0x1a/0x20
+> 	 ? __do_sys_perf_event_open+0xf37/0x1080
+> 	 do_syscall_64+0x42/0xf0
+> 	 entry_SYSCALL_64_after_hwframe+0x6e/0x76
+> 	RIP: 0033:0x7f723bf1ea7d
+> 	Code: 5b 41 5c c3 66 0f 1f 84 00 00 00 00 00 f3 0f 1e fa 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d 83 a3 0f 00 f7 d8 64 89 01 48
+> 	RSP: 002b:00007ffc7118ba68 EFLAGS: 00000246 ORIG_RAX: 000000000000012a
+> 	RAX: ffffffffffffffda RBX: 00000000ffffffff RCX: 00007f723bf1ea7d
+> 	RDX: 00000000ffffffff RSI: 00000000000005c0 RDI: 00005624c0efb0c0
+> 	RBP: 00007ffc7118bb20 R08: 0000000000000008 R09: 0000000000000000
+> 	R10: 00000000ffffffff R11: 0000000000000246 R12: 0000000000000000
+> 	R13: 0000000000000008 R14: 00005624c0efb0b0 R15: 00005624c0efb0b0
+> 	 </TASK>
+> 	irq event stamp: 45697
+> 	hardirqs last  enabled at (45703): [<ffffffff81173dca>] console_unlock+0x10a/0x160
+> 	hardirqs last disabled at (45708): [<ffffffff81173daf>] console_unlock+0xef/0x160
+> 	softirqs last  enabled at (45276): [<ffffffff810dab0e>] irq_exit_rcu+0x8e/0xf0
+> 	softirqs last disabled at (45267): [<ffffffff810dab0e>] irq_exit_rcu+0x8e/0xf0
 > 
->  Performance counter stats for 'system wide':
-> 
->         38,482,778      cycles
->              15.04 MiB  data_total [uncore_imc_free_running_1]
->              15.00 MiB  data_total [uncore_imc_free_running_0]
-> 
->        0.005915155 seconds time elapsed
-> ```
-> 
-> Having two options confuses users who generally don't appreciate the
-> difference in PMUs. Keep all the options but make it so they all
-> disable aggregation both of core and uncore events:
-> ```
-> $ perf stat -A -e cycles,data_total -a true
-> 
->  Performance counter stats for 'system wide':
-> 
-> CPU0               85,878      cycles
-> CPU1               88,179      cycles
-> CPU2               60,872      cycles
-> CPU3            3,265,567      cycles
-> CPU4               82,357      cycles
-> CPU5               83,383      cycles
-> CPU6               84,156      cycles
-> CPU7              220,803      cycles
-> CPU0                 2.38 MiB  data_total [uncore_imc_free_running_0]
-> CPU0                 2.38 MiB  data_total [uncore_imc_free_running_1]
-> 
->        0.001397205 seconds time elapsed
-> ```
-> 
-> Update the relevant perf-stat man page information.
-> 
-> Signed-off-by: Ian Rogers <irogers@google.com>
-
-Reviewed-by: Kan Liang <kan.liang@linux.intel.com>
-
-Thanks,
-Kan
-
+> References: https://gitlab.freedesktop.org/drm/intel/-/issues/9847
+> Signed-off-by: Lucas De Marchi <lucas.demarchi@intel.com>
 > ---
->  tools/perf/Documentation/perf-stat.txt | 52 ++++++++++++++------------
->  tools/perf/builtin-stat.c              |  5 ++-
->  tools/perf/util/stat-display.c         |  2 +-
->  tools/perf/util/stat.c                 |  2 +-
->  tools/perf/util/stat.h                 |  1 -
->  5 files changed, 33 insertions(+), 29 deletions(-)
 > 
-> diff --git a/tools/perf/Documentation/perf-stat.txt b/tools/perf/Documentation/perf-stat.txt
-> index 8f789fa1242e..5af2e432b54f 100644
-> --- a/tools/perf/Documentation/perf-stat.txt
-> +++ b/tools/perf/Documentation/perf-stat.txt
-> @@ -422,7 +422,34 @@ See perf list output for the possible metrics and metricgroups.
->  
->  -A::
->  --no-aggr::
-> -Do not aggregate counts across all monitored CPUs.
-> +--no-merge::
-> +Do not aggregate/merge counts across monitored CPUs or PMUs.
-> +
-> +When multiple events are created from a single event specification,
-> +stat will, by default, aggregate the event counts and show the result
-> +in a single row. This option disables that behavior and shows the
-> +individual events and counts.
-> +
-> +Multiple events are created from a single event specification when:
-> +
-> +1. PID monitoring isn't requested and the system has more than one
-> +   CPU. For example, a system with 8 SMT threads will have one event
-> +   opened on each thread and aggregation is performed across them.
-> +
-> +2. Prefix or glob wildcard matching is used for the PMU name. For
-> +   example, multiple memory controller PMUs may exist typically with a
-> +   suffix of _0, _1, etc. By default the event counts will all be
-> +   combined if the PMU is specified without the suffix such as
-> +   uncore_imc rather than uncore_imc_0.
-> +
-> +3. Aliases, which are listed immediately after the Kernel PMU events
-> +   by perf list, are used.
-> +
-> +--hybrid-merge::
-> +Merge core event counts from all core PMUs. In hybrid or big.LITTLE
-> +systems by default each core PMU will report its count
-> +separately. This option forces core PMU counts to be combined to give
-> +a behavior closer to having a single CPU type in the system.
->  
->  --topdown::
->  Print top-down metrics supported by the CPU. This allows to determine
-> @@ -475,29 +502,6 @@ highlight 'tma_frontend_bound'. This metric may be drilled into with
->  
->  Error out if the input is higher than the supported max level.
->  
-> ---no-merge::
-> -Do not merge results from same PMUs.
-> -
-> -When multiple events are created from a single event specification,
-> -stat will, by default, aggregate the event counts and show the result
-> -in a single row. This option disables that behavior and shows
-> -the individual events and counts.
-> -
-> -Multiple events are created from a single event specification when:
-> -1. Prefix or glob matching is used for the PMU name.
-> -2. Aliases, which are listed immediately after the Kernel PMU events
-> -   by perf list, are used.
-> -
-> ---hybrid-merge::
-> -Merge the hybrid event counts from all PMUs.
-> -
-> -For hybrid events, by default, the stat aggregates and reports the event
-> -counts per PMU. But sometimes, it's also useful to aggregate event counts
-> -from all PMUs. This option enables that behavior and reports the counts
-> -without PMUs.
-> -
-> -For non-hybrid events, it should be no effect.
-> -
->  --smi-cost::
->  Measure SMI cost if msr/aperf/ and msr/smi/ events are supported.
->  
-> diff --git a/tools/perf/builtin-stat.c b/tools/perf/builtin-stat.c
-> index bda020c0b9d5..5fe9abc6a524 100644
-> --- a/tools/perf/builtin-stat.c
-> +++ b/tools/perf/builtin-stat.c
-> @@ -1204,8 +1204,9 @@ static struct option stat_options[] = {
->  	OPT_STRING('C', "cpu", &target.cpu_list, "cpu",
->  		    "list of cpus to monitor in system-wide"),
->  	OPT_SET_UINT('A', "no-aggr", &stat_config.aggr_mode,
-> -		    "disable CPU count aggregation", AGGR_NONE),
-> -	OPT_BOOLEAN(0, "no-merge", &stat_config.no_merge, "Do not merge identical named events"),
-> +		    "disable aggregation across CPUs or PMUs", AGGR_NONE),
-> +	OPT_SET_UINT(0, "no-merge", &stat_config.aggr_mode,
-> +		    "disable aggregation the same as -A or -no-aggr", AGGR_NONE),
->  	OPT_BOOLEAN(0, "hybrid-merge", &stat_config.hybrid_merge,
->  		    "Merge identical named hybrid events"),
->  	OPT_STRING('x', "field-separator", &stat_config.csv_sep, "separator",
-> diff --git a/tools/perf/util/stat-display.c b/tools/perf/util/stat-display.c
-> index afe6db8e7bf4..8c61f8627ebc 100644
-> --- a/tools/perf/util/stat-display.c
-> +++ b/tools/perf/util/stat-display.c
-> @@ -898,7 +898,7 @@ static bool hybrid_uniquify(struct evsel *evsel, struct perf_stat_config *config
->  
->  static void uniquify_counter(struct perf_stat_config *config, struct evsel *counter)
->  {
-> -	if (config->no_merge || hybrid_uniquify(counter, config))
-> +	if (config->aggr_mode == AGGR_NONE || hybrid_uniquify(counter, config))
->  		uniquify_event_name(counter);
->  }
->  
-> diff --git a/tools/perf/util/stat.c b/tools/perf/util/stat.c
-> index 012c4946b9c4..b0bcf92f0f9c 100644
-> --- a/tools/perf/util/stat.c
-> +++ b/tools/perf/util/stat.c
-> @@ -592,7 +592,7 @@ void perf_stat_merge_counters(struct perf_stat_config *config, struct evlist *ev
->  {
->  	struct evsel *evsel;
->  
-> -	if (config->no_merge)
-> +	if (config->aggr_mode == AGGR_NONE)
->  		return;
->  
->  	evlist__for_each_entry(evlist, evsel)
-> diff --git a/tools/perf/util/stat.h b/tools/perf/util/stat.h
-> index 325d0fad1842..4357ba114822 100644
-> --- a/tools/perf/util/stat.h
-> +++ b/tools/perf/util/stat.h
-> @@ -76,7 +76,6 @@ struct perf_stat_config {
->  	bool			 null_run;
->  	bool			 ru_display;
->  	bool			 big_num;
-> -	bool			 no_merge;
->  	bool			 hybrid_merge;
->  	bool			 walltime_run_table;
->  	bool			 all_kernel;
+> Not sure about a proper fix for this. At first I thought it was indeed
+> because previously it was not validating the the size correctly. However
+> then I noticed the warning is actually due to for_each_sibling_event().
+
+I think what's happening here is that at the point we call
+perf_event_validate_size(), we've found and locked the relevant
+perf_event_context, but haven't set event->ctx yet via
+perf_install_in_context().
+
+Thanks to earlier checks, we know that group_leader->ctx == ctx, so we have
+actually locked the relevant context, but for_each_sibling_event() doesn't have
+access to the context to discover that.
+
+The diff below worked for me, though it's a bit ugly.
+
+Peter, thoughts?
+
+Mark.
+ 
+---->8----
+diff --git a/include/linux/perf_event.h b/include/linux/perf_event.h
+index 5547ba68e6e4..c1e625cef6ca 100644
+--- a/include/linux/perf_event.h
++++ b/include/linux/perf_event.h
+@@ -652,19 +652,22 @@ struct pmu_event_list {
+  * disabled is sufficient since it will hold-off the IPIs.
+  */
+ #ifdef CONFIG_PROVE_LOCKING
+-#define lockdep_assert_event_ctx(event)				\
++#define lockdep_assert_event_ctx(ctx)				\
+ 	WARN_ON_ONCE(__lockdep_enabled &&			\
+ 		     (this_cpu_read(hardirqs_enabled) &&	\
+-		      lockdep_is_held(&(event)->ctx->mutex) != LOCK_STATE_HELD))
++		      lockdep_is_held(&(ctx)->mutex) != LOCK_STATE_HELD))
+ #else
+ #define lockdep_assert_event_ctx(event)
+ #endif
+ 
+-#define for_each_sibling_event(sibling, event)			\
+-	lockdep_assert_event_ctx(event);			\
++#define for_each_sibling_event_ctx(sibling, event, ctx)		\
++	lockdep_assert_event_ctx(ctx);			\
+ 	if ((event)->group_leader == (event))			\
+ 		list_for_each_entry((sibling), &(event)->sibling_list, sibling_list)
+ 
++#define for_each_sibling_event(sibling, event)			\
++	for_each_sibling_event_ctx(sibling, event, event->ctx)
++
+ /**
+  * struct perf_event - performance event kernel representation:
+  */
+diff --git a/kernel/events/core.c b/kernel/events/core.c
+index c9d123e13b57..2745de6c4faf 100644
+--- a/kernel/events/core.c
++++ b/kernel/events/core.c
+@@ -1935,7 +1935,8 @@ static void perf_event__id_header_size(struct perf_event *event)
+  * This leaves 48k for the constant size fields and things like callchains,
+  * branch stacks and register sets.
+  */
+-static bool perf_event_validate_size(struct perf_event *event)
++static bool perf_event_validate_size(struct perf_event *event,
++				     struct perf_event_context *ctx)
+ {
+ 	struct perf_event *sibling, *group_leader = event->group_leader;
+ 
+@@ -1947,7 +1948,7 @@ static bool perf_event_validate_size(struct perf_event *event)
+ 				   group_leader->nr_siblings + 1) > 16*1024)
+ 		return false;
+ 
+-	for_each_sibling_event(sibling, group_leader) {
++	for_each_sibling_event_ctx(sibling, group_leader, ctx) {
+ 		if (__perf_event_read_size(sibling->attr.read_format,
+ 					   group_leader->nr_siblings + 1) > 16*1024)
+ 			return false;
+@@ -12652,7 +12653,7 @@ SYSCALL_DEFINE5(perf_event_open,
+ 			goto err_context;
+ 	}
+ 
+-	if (!perf_event_validate_size(event)) {
++	if (!perf_event_validate_size(event, ctx)) {
+ 		err = -E2BIG;
+ 		goto err_context;
+ 	}
