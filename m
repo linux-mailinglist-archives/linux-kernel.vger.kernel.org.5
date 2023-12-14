@@ -2,161 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 33E27812D6D
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 11:53:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 637B3812DF6
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 12:01:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1443762AbjLNKws (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 05:52:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48840 "EHLO
+        id S1443812AbjLNLBO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 06:01:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49700 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1443745AbjLNKwq (ORCPT
+        with ESMTP id S1443808AbjLNLBN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 05:52:46 -0500
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [IPv6:2a00:1098:ed:100::25])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 202BE116;
-        Thu, 14 Dec 2023 02:52:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1702551170;
-        bh=KdM45sfm+eGY9YVK/KcmBv13GTLPFxIxJQNtxyNWCQ0=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=CRok9X898ifzj+gS0bQ0BbUWwVEM5h5smxro6yD4A9MBfRJO0u+hm5g44nXn1yV52
-         pvz2s3a7y/KyrRD6krcJlI+4XY4I0XMfqk62PnnQdOuSAIdpJ8YjHHD3nOAncDL6NA
-         FXnFJenJotgMWZhRp/KS9AXwov4hIrubEYZeyj6Zh4OVsCCLSU1+JTDUYlz9kHp0rQ
-         ZeWu9/Ul2TEB/Iv1fbyWfxBWOVEvFVZqhpMlkcoHy7m4fLmc4D0yavH9bHkmbvE0no
-         y12xcxWxrpP+G9VOb6FZX2UvISjRqbGfYqKyfSnLAbDrizKXmoobSmNcCNih9H3seh
-         t22nvFFr3rD+g==
-Received: from [100.90.194.27] (cola.collaboradmins.com [195.201.22.229])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        Thu, 14 Dec 2023 06:01:13 -0500
+Received: from mx1.sberdevices.ru (mx1.sberdevices.ru [37.18.73.165])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80E1712A;
+        Thu, 14 Dec 2023 03:01:16 -0800 (PST)
+Received: from p-infra-ksmg-sc-msk01 (localhost [127.0.0.1])
+        by mx1.sberdevices.ru (Postfix) with ESMTP id 9D06410002A;
+        Thu, 14 Dec 2023 14:01:13 +0300 (MSK)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 9D06410002A
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
+        s=mail; t=1702551673;
+        bh=Ocja7oLDcU2O2ANLOIyPEwBcA8pE24kYRcLiOan5xok=;
+        h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type:From;
+        b=XTPV9i/4hEsj0ZH0ZnUL4L4qi6NFTyCbyJyrhwEBeG/40659PSOwVxLBaXYF36AqZ
+         OE4WoOaEaI2nUMisuHA9lIGp7EoDWeAH1w56j13GauAKBU8juoc0/7WY8kwHTYM6+P
+         /C9nfY/ntx/hX1uIPQrwJZDuVvJSpZxlygivzBezrvquTuxzTWfigV1wC8WEDzL8KY
+         /PFlkKqIyc3rNjx5zb0p1TrgcYHZFfwZZ92sZJ8OibH6/zEyeeC3HIFqNE9sOOGxfB
+         2QTMPl+LBUGY1EshExG2z8s+MVwqkxWQfGi1E4mzXM0+x1Cl8n5AEKIU0eXF6zdOHr
+         h/c4LW2IHdFwQ==
+Received: from smtp.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: ehristev)
-        by madrid.collaboradmins.com (Postfix) with ESMTPSA id 25516378000B;
-        Thu, 14 Dec 2023 10:52:49 +0000 (UTC)
-Message-ID: <952a01c3-1ca0-42f8-bdbe-ab8857e27dc4@collabora.com>
-Date:   Thu, 14 Dec 2023 12:52:46 +0200
+        by mx1.sberdevices.ru (Postfix) with ESMTPS;
+        Thu, 14 Dec 2023 14:01:13 +0300 (MSK)
+Received: from [192.168.0.106] (100.64.160.123) by
+ p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Thu, 14 Dec 2023 14:01:13 +0300
+Message-ID: <e0e601a9-6cb2-e484-eb70-f41e7ec69c65@salutedevices.com>
+Date:   Thu, 14 Dec 2023 13:52:50 +0300
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 4/4] arm64: dts: mediatek: mt8186: Add venc node
-To:     AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-mediatek@lists.infradead.org
-Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        kernel@collabora.com, tiffany.lin@mediatek.com,
-        andrew-ct.chen@mediatek.com, matthias.bgg@gmail.com,
-        Kyrie Wu <kyrie.wu@mediatek.com>,
-        Allen-KH Cheng <allen-kh.cheng@mediatek.com>,
-        Hsin-Yi Wang <hsinyi@chromium.org>
-References: <20231213122017.102100-1-eugen.hristev@collabora.com>
- <20231213122017.102100-4-eugen.hristev@collabora.com>
- <d20c35e2-cc40-436d-90ca-4cab555874ca@collabora.com>
- <ff4f8365-d329-422c-ae04-d39a26f27552@collabora.com>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.7.1
+Subject: Re: [PATCH net-next v9 3/4] vsock: update SO_RCVLOWAT setting
+ callback
 Content-Language: en-US
-From:   Eugen Hristev <eugen.hristev@collabora.com>
-In-Reply-To: <ff4f8365-d329-422c-ae04-d39a26f27552@collabora.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+To:     "Michael S. Tsirkin" <mst@redhat.com>
+CC:     Stefan Hajnoczi <stefanha@redhat.com>,
+        Stefano Garzarella <sgarzare@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Bobby Eshleman <bobby.eshleman@bytedance.com>,
+        <kvm@vger.kernel.org>, <virtualization@lists.linux-foundation.org>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <kernel@sberdevices.ru>, <oxffffaa@gmail.com>
+References: <20231214091947.395892-1-avkrasnov@salutedevices.com>
+ <20231214091947.395892-4-avkrasnov@salutedevices.com>
+ <20231214052502-mutt-send-email-mst@kernel.org>
+From:   Arseniy Krasnov <avkrasnov@salutedevices.com>
+In-Reply-To: <20231214052502-mutt-send-email-mst@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [100.64.160.123]
+X-ClientProxiedBy: p-i-exch-sc-m02.sberdevices.ru (172.16.192.103) To
+ p-i-exch-sc-m01.sberdevices.ru (172.16.192.107)
+X-KSMG-Rule-ID: 10
+X-KSMG-Message-Action: clean
+X-KSMG-AntiSpam-Lua-Profiles: 182107 [Dec 14 2023]
+X-KSMG-AntiSpam-Version: 6.1.0.3
+X-KSMG-AntiSpam-Envelope-From: avkrasnov@salutedevices.com
+X-KSMG-AntiSpam-Rate: 0
+X-KSMG-AntiSpam-Status: not_detected
+X-KSMG-AntiSpam-Method: none
+X-KSMG-AntiSpam-Auth: dkim=none
+X-KSMG-AntiSpam-Info: LuaCore: 7 0.3.7 6d6bf5bd8eea7373134f756a2fd73e9456bb7d1a, {Tracking_from_domain_doesnt_match_to}, smtp.sberdevices.ru:7.1.1,5.0.1;127.0.0.199:7.1.2;100.64.160.123:7.1.2;salutedevices.com:7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1, FromAlignment: s, ApMailHostAddress: 100.64.160.123
+X-MS-Exchange-Organization-SCL: -1
+X-KSMG-AntiSpam-Interceptor-Info: scan successful
+X-KSMG-AntiPhishing: Clean
+X-KSMG-LinksScanning: Clean
+X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2023/12/14 08:33:00 #22688916
+X-KSMG-AntiVirus-Status: Clean, skipped
+X-Spam-Status: No, score=-4.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/14/23 12:50, AngeloGioacchino Del Regno wrote:
-> Il 14/12/23 11:44, AngeloGioacchino Del Regno ha scritto:
->> Il 13/12/23 13:20, Eugen Hristev ha scritto:
->>> From: Kyrie Wu <kyrie.wu@mediatek.com>
->>>
->>> Add video encoder node.
->>>
->>> Signed-off-by: Kyrie Wu <kyrie.wu@mediatek.com>
->>> Signed-off-by: Allen-KH Cheng <allen-kh.cheng@mediatek.com>
->>> Reviewed-by: Hsin-Yi Wang <hsinyi@chromium.org>
->>> [eugen.hristev@collabora.com: minor cleanup]
->>> Signed-off-by: Eugen Hristev <eugen.hristev@collabora.com>
->>> ---
->>>   arch/arm64/boot/dts/mediatek/mt8186.dtsi | 24 ++++++++++++++++++++++++
->>>   1 file changed, 24 insertions(+)
->>>
->>> diff --git a/arch/arm64/boot/dts/mediatek/mt8186.dtsi 
->>> b/arch/arm64/boot/dts/mediatek/mt8186.dtsi
->>> index 66ead3f23336..8535ff2b44e9 100644
->>> --- a/arch/arm64/boot/dts/mediatek/mt8186.dtsi
->>> +++ b/arch/arm64/boot/dts/mediatek/mt8186.dtsi
->>> @@ -1993,6 +1993,30 @@ larb7: smi@17010000 {
->>>               power-domains = <&spm MT8186_POWER_DOMAIN_VENC>;
->>>           };
->>> +        venc: venc@17020000 {
->>> +            compatible = "mediatek,mt8183-vcodec-enc";
+
+
+On 14.12.2023 13:29, Michael S. Tsirkin wrote:
+> On Thu, Dec 14, 2023 at 12:19:46PM +0300, Arseniy Krasnov wrote:
+>> Do not return if transport callback for SO_RCVLOWAT is set (only in
+>> error case). In this case we don't need to set 'sk_rcvlowat' field in
+>> each transport - only in 'vsock_set_rcvlowat()'. Also, if 'sk_rcvlowat'
+>> is now set only in af_vsock.c, change callback name from 'set_rcvlowat'
+>> to 'notify_set_rcvlowat'.
+>>
+>> Signed-off-by: Arseniy Krasnov <avkrasnov@salutedevices.com>
+>> Reviewed-by: Stefano Garzarella <sgarzare@redhat.com>
+>> Acked-by: Michael S. Tsirkin <mst@redhat.com>
 > 
-> Sorry for the double email;
-> 
-> I've just noticed: where's mediatek,mt8186-vcodec-enc? :-)
+> Maybe squash this with patch 2/4?
 
-Hi,
+You mean just do 'git squash' without updating commit message manually?
 
-There is none.
-This just works exactly as mt8183, thus reusing the same compatible.
-
-Do you want a new dedicated mt8186 compatible as well for the situation *just in
-case* some specific difference showing up later ?
-
-Eugen
+Thanks, Arseniy
 
 > 
->>> +            #address-cells = <2>;
->>> +            #size-cells = <2>;
->>> +            reg = <0 0x17020000 0 0x2000>;
->>> +            interrupts = <GIC_SPI 243 IRQ_TYPE_LEVEL_HIGH 0>;
->>> +            iommus = <&iommu_mm IOMMU_PORT_L7_VENC_RCPU>,
->>> +                 <&iommu_mm IOMMU_PORT_L7_VENC_REC>,
->>> +                 <&iommu_mm IOMMU_PORT_L7_VENC_BSDMA>,
->>> +                 <&iommu_mm IOMMU_PORT_L7_VENC_SV_COMV>,
->>> +                 <&iommu_mm IOMMU_PORT_L7_VENC_RD_COMV>,
->>> +                 <&iommu_mm IOMMU_PORT_L7_VENC_CUR_LUMA>,
->>> +                 <&iommu_mm IOMMU_PORT_L7_VENC_CUR_CHROMA>,
->>> +                 <&iommu_mm IOMMU_PORT_L7_VENC_REF_LUMA>,
->>> +                 <&iommu_mm IOMMU_PORT_L7_VENC_REF_CHROMA>;
->>> +            dma-ranges = <0x1 0x0 0x1 0x0 0x1 0x0>;
->>> +            mediatek,scp = <&scp>;
->>> +            clocks = <&vencsys CLK_VENC_CKE1_VENC>;
->>> +            clock-names = "MT_CG_VENC";
+>> ---
+>>  Changelog:
+>>  v3 -> v4:
+>>   * Rename 'set_rcvlowat' to 'notify_set_rcvlowat'.
+>>   * Commit message updated.
 >>
->> clock-names = "venc"; (please no underscores and please lower case)
+>>  include/net/af_vsock.h           | 2 +-
+>>  net/vmw_vsock/af_vsock.c         | 9 +++++++--
+>>  net/vmw_vsock/hyperv_transport.c | 4 ++--
+>>  3 files changed, 10 insertions(+), 5 deletions(-)
 >>
->>> +            assigned-clocks = <&topckgen CLK_TOP_VENC>;
->>> +            assigned-clock-parents = <&topckgen CLK_TOP_UNIVPLL_D3>;
->>> +            power-domains = <&spm MT8186_POWER_DOMAIN_VENC>;
->>> +        };
->>
->>
->> ....also:
->>
->> The following order of properties in device nodes is preferred:
->>
->> 1. "compatible"
->> 2. "reg"
->> 3. "ranges"
->> 4. Standard/common properties (defined by common bindings, e.g. without
->>     vendor-prefixes)
->> 5. Vendor-specific properties
->> 6. "status" (if applicable)
->> 7. Child nodes, where each node is preceded with a blank line
->>
->> Documentation/devicetree/bindings/dts-coding-style.rst
->>
->> Please reorder as per the DTS coding style document, and also please rename the
->> venc node to use a generic name, such as "video-encoder@xxxx"
->>
->> Cheers,
->> Angelo
+>> diff --git a/include/net/af_vsock.h b/include/net/af_vsock.h
+>> index e302c0e804d0..535701efc1e5 100644
+>> --- a/include/net/af_vsock.h
+>> +++ b/include/net/af_vsock.h
+>> @@ -137,7 +137,6 @@ struct vsock_transport {
+>>  	u64 (*stream_rcvhiwat)(struct vsock_sock *);
+>>  	bool (*stream_is_active)(struct vsock_sock *);
+>>  	bool (*stream_allow)(u32 cid, u32 port);
+>> -	int (*set_rcvlowat)(struct vsock_sock *vsk, int val);
+>>  
+>>  	/* SEQ_PACKET. */
+>>  	ssize_t (*seqpacket_dequeue)(struct vsock_sock *vsk, struct msghdr *msg,
+>> @@ -168,6 +167,7 @@ struct vsock_transport {
+>>  		struct vsock_transport_send_notify_data *);
+>>  	/* sk_lock held by the caller */
+>>  	void (*notify_buffer_size)(struct vsock_sock *, u64 *);
+>> +	int (*notify_set_rcvlowat)(struct vsock_sock *vsk, int val);
+>>  
+>>  	/* Shutdown. */
+>>  	int (*shutdown)(struct vsock_sock *, int);
+>> diff --git a/net/vmw_vsock/af_vsock.c b/net/vmw_vsock/af_vsock.c
+>> index 816725af281f..54ba7316f808 100644
+>> --- a/net/vmw_vsock/af_vsock.c
+>> +++ b/net/vmw_vsock/af_vsock.c
+>> @@ -2264,8 +2264,13 @@ static int vsock_set_rcvlowat(struct sock *sk, int val)
+>>  
+>>  	transport = vsk->transport;
+>>  
+>> -	if (transport && transport->set_rcvlowat)
+>> -		return transport->set_rcvlowat(vsk, val);
+>> +	if (transport && transport->notify_set_rcvlowat) {
+>> +		int err;
+>> +
+>> +		err = transport->notify_set_rcvlowat(vsk, val);
+>> +		if (err)
+>> +			return err;
+>> +	}
+>>  
+>>  	WRITE_ONCE(sk->sk_rcvlowat, val ? : 1);
+>>  	return 0;
 > 
 > 
-> _______________________________________________
-> Kernel mailing list -- kernel@mailman.collabora.com
-> To unsubscribe send an email to kernel-leave@mailman.collabora.com
-
+> 
+> I would s
+> 
+>> diff --git a/net/vmw_vsock/hyperv_transport.c b/net/vmw_vsock/hyperv_transport.c
+>> index 7cb1a9d2cdb4..e2157e387217 100644
+>> --- a/net/vmw_vsock/hyperv_transport.c
+>> +++ b/net/vmw_vsock/hyperv_transport.c
+>> @@ -816,7 +816,7 @@ int hvs_notify_send_post_enqueue(struct vsock_sock *vsk, ssize_t written,
+>>  }
+>>  
+>>  static
+>> -int hvs_set_rcvlowat(struct vsock_sock *vsk, int val)
+>> +int hvs_notify_set_rcvlowat(struct vsock_sock *vsk, int val)
+>>  {
+>>  	return -EOPNOTSUPP;
+>>  }
+>> @@ -856,7 +856,7 @@ static struct vsock_transport hvs_transport = {
+>>  	.notify_send_pre_enqueue  = hvs_notify_send_pre_enqueue,
+>>  	.notify_send_post_enqueue = hvs_notify_send_post_enqueue,
+>>  
+>> -	.set_rcvlowat             = hvs_set_rcvlowat
+>> +	.notify_set_rcvlowat      = hvs_notify_set_rcvlowat
+>>  };
+>>  
+>>  static bool hvs_check_transport(struct vsock_sock *vsk)
+>> -- 
+>> 2.25.1
+> 
