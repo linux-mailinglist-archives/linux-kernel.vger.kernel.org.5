@@ -2,297 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A927681285D
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 07:44:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C95C381285F
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 07:44:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1443236AbjLNGoa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 01:44:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35998 "EHLO
+        id S1443240AbjLNGol (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 01:44:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40282 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229629AbjLNGo2 (ORCPT
+        with ESMTP id S229629AbjLNGok (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 01:44:28 -0500
-Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8AD56A6
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 22:44:34 -0800 (PST)
-Received: by mail-ot1-x32b.google.com with SMTP id 46e09a7af769-6d9f879f784so4636993a34.2
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 22:44:34 -0800 (PST)
+        Thu, 14 Dec 2023 01:44:40 -0500
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED107B7
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 22:44:45 -0800 (PST)
+Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-dbcb5eb96f7so3344672276.3
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 22:44:45 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=brainfault-org.20230601.gappssmtp.com; s=20230601; t=1702536274; x=1703141074; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=gxtiy01D8WpTYbLcMD+XHOmT3EOIKEJTAtmXTdX58vM=;
-        b=lhFWUWZ/M5A9H75XVqXeeaRQLoxE1agNv2KgPpbL7X8QG2cJY446sqLefE9oRtcoEJ
-         kHKBwWDECGK1Y8cdZOizt0NAN3I3iaI0liL8RFPGG/yuDgySlhINBzDF5joPmdzOjgEn
-         BXrWnJn1ln9EtyZgDwqDyNZb9I5KtqVkF5XKV2Bgli90TXVFKzwS+N9HBy/Ylr/v0iLL
-         hZXo/WErCLavzHhToLrZLCHh10LLOk9O5NXJeQfCicNu3XS+koQn4PpNY6Kq96hV5G9Q
-         WYnIKACI3nt/ONIvahrFKdGVZp6MdWCrj9wnsTYNl91Q5WO5QOP0De15l83SCug/gdL5
-         WdKw==
+        d=google.com; s=20230601; t=1702536285; x=1703141085; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=Iko8D140eCOFohGA7VQkAes9lkzKAM1WQZ+wO/F/i90=;
+        b=onHZnr5/C76u4WAUhTwmVougnLzUmAv+9rDMgFylCd+MXirdjLsJk5w4yOzvVXOhvZ
+         /g4AgkKjfdC4HOcRAfYmhcxNmGi3z1q/mYVKugEQoEdI+7cnCh7BmqUhiWcm8wpQTLcF
+         GDT2D35fDRC7k+3WdpAsL9WLmtbgEHqanb6JgPQZ0sZ8+55pWZS6XUdLfH6ROB7cQfyd
+         w0u++OgNvwHPTjjoX1OQjlA4bDe4H0Zmmhzgk29gtNea1O5l1h5dYZ1fvhwCxdBxmqn3
+         JjXg/r5fGVlmG2oXfsz1jwtMFdIAoJmAPCXVcBS8d18RwzjpOgr8RybW6a+nAXArzaXU
+         kgRw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702536274; x=1703141074;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=gxtiy01D8WpTYbLcMD+XHOmT3EOIKEJTAtmXTdX58vM=;
-        b=I6zs3xjJTsLeIgdaQnhzct5sq5yswxYk52fkxA6ot73WUDLZlfsPen6i4fAi2d97Ce
-         CDOn+qnGO+ZjLMnA5pSsLpWcpiDnnOMk5rVVbfwMR0Og8qBC6CKIrxB4GFPpX99A/+Tk
-         A1oF+okaiP1NtQJoMSPUWAErU++dN1nR5KmD3AXj6M4gPU5r6roZY6q4Gy3ukYApA4dI
-         Fro0Bitejg3bsve3AY4OjCThpB3kbqTjYWXLdqhDmOUcAVnFc0X9+AsnSqq9PK7nSwMn
-         H+rRw0PqhJFxHQpCNdwdrfjvF1PXTZdp1TlmolI1wIhOnkPPTvUCzy9nTV87lBaIHtfj
-         txog==
-X-Gm-Message-State: AOJu0Yznxmbq7RPEMUVhVbIACgrcmA4kK4YriDftvALtkAzfw/5V7WSL
-        k7dn8+8nwyKPGdPF7hl9ypoL8XKhzacwZ1DeXwQ1qg==
-X-Google-Smtp-Source: AGHT+IEPsCwgVMN/5iD2oOj8vwOEPOEacEvG4g4lr9eVc/vyryWU5/8R+8uC7/Gdwf/ytphMPl6gKCzWeBK6P1MjHrE=
-X-Received: by 2002:a05:6808:13c4:b0:3b9:dea6:f336 with SMTP id
- d4-20020a05680813c400b003b9dea6f336mr11212909oiw.50.1702536273720; Wed, 13
- Dec 2023 22:44:33 -0800 (PST)
-MIME-Version: 1.0
-References: <cover.1702371136.git.haibo1.xu@intel.com> <0343a9e4bfa8011fbb6bca0286cee7eab1f17d5d.1702371136.git.haibo1.xu@intel.com>
-In-Reply-To: <0343a9e4bfa8011fbb6bca0286cee7eab1f17d5d.1702371136.git.haibo1.xu@intel.com>
-From:   Anup Patel <anup@brainfault.org>
-Date:   Thu, 14 Dec 2023 12:14:22 +0530
-Message-ID: <CAAhSdy3hXNvGiSL0VToDp2GbWcaPveg8SoMeGFeGL=MmuCpsCg@mail.gmail.com>
-Subject: Re: [PATCH v4 11/11] KVM: selftests: Enable tunning of err_margin_us
- in arch timer test
-To:     Marc Zyngier <maz@kernel.org>,
-        Oliver Upton <oliver.upton@linux.dev>
-Cc:     xiaobo55x@gmail.com, haibo1.xu@intel.com, ajones@ventanamicro.com,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Shuah Khan <shuah@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Zenghui Yu <yuzenghui@huawei.com>,
-        Atish Patra <atishp@atishpatra.org>,
-        Guo Ren <guoren@kernel.org>,
-        Mayuresh Chitale <mchitale@ventanamicro.com>,
-        Greentime Hu <greentime.hu@sifive.com>,
-        wchen <waylingii@gmail.com>,
-        Conor Dooley <conor.dooley@microchip.com>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Minda Chen <minda.chen@starfivetech.com>,
-        Samuel Holland <samuel@sholland.org>,
-        Jisheng Zhang <jszhang@kernel.org>,
-        Sean Christopherson <seanjc@google.com>,
-        Peter Xu <peterx@redhat.com>, Like Xu <likexu@tencent.com>,
-        Vipin Sharma <vipinsh@google.com>,
-        Maciej Wieczor-Retman <maciej.wieczor-retman@intel.com>,
-        Aaron Lewis <aaronlewis@google.com>,
-        Thomas Huth <thuth@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-riscv@lists.infradead.org, kvm@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
-        kvm-riscv@lists.infradead.org
+        d=1e100.net; s=20230601; t=1702536285; x=1703141085;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Iko8D140eCOFohGA7VQkAes9lkzKAM1WQZ+wO/F/i90=;
+        b=PSjI3iPWS5HV351SWicok4DB1QxY3wtBPy+w7Xta8y3KQmfOb1LTl0llZPckksSUVM
+         o2IV9b1IPJZ0XcbLbInElH1XQJ44wxMA/8EqEkJB/x/h0V8VIqykTztdBCwz0+kBpj1f
+         1djSGneQ+2AUz7CptT1wEHBBcFksI+UgKb4y4Hg38kNl0Ds/IAeO0XfuzjnoOQ/pYmns
+         uqbSVwLh8hlSKZy63dMULNJbo3G4Hh4vKa7vCPmZTqF8fNVx4ieBJoOX2JJDJI9ZliUs
+         nJZ+lYc3vnPaB6x96AH3tkfffNVBFcoIOei97TVCtJ485s2lXm5VwC9hDHabNfk1RRER
+         AFNA==
+X-Gm-Message-State: AOJu0YyUozgcOI2kVYmOT5zNJCz+CU3LRFEbvnI8EyQf2yDguZh3WOSz
+        1Fr7tN16NWlUGzyD55TdULpzOHkzyhk=
+X-Google-Smtp-Source: AGHT+IG0bWK9d5BDpYNZYAfiffy36nbfNQQS2AsIHHcETXtjO30MXnPlbJFmNayBbGuGgdo4DBpN1u3Fs3I=
+X-Received: from avagin.kir.corp.google.com ([2620:0:1008:10:e986:a7c7:2814:c9a8])
+ (user=avagin job=sendgmr) by 2002:a25:2d2:0:b0:dbc:ca4d:4c1 with SMTP id
+ 201-20020a2502d2000000b00dbcca4d04c1mr32671ybc.11.1702536285111; Wed, 13 Dec
+ 2023 22:44:45 -0800 (PST)
+Date:   Wed, 13 Dec 2023 22:44:38 -0800
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.43.0.472.g3155946c3a-goog
+Message-ID: <20231214064439.1023011-1-avagin@google.com>
+Subject: [PATCH 1/2 v2] fs/proc: show correct device and inode numbers in /proc/pid/maps
+From:   Andrei Vagin <avagin@google.com>
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Amir Goldstein <amir73il@gmail.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Alexander Mikhalitsyn <alexander@mihalicyn.com>,
+        Christian Brauner <brauner@kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        linux-fsdevel@vger.kernel.org,
+        overlayfs <linux-unionfs@vger.kernel.org>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Andrei Vagin <avagin@google.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Marc, Hi Oliver,
+/proc/pid/maps shows device and inode numbers of vma->vm_file-s. Here is
+an issue. If a mapped file is on a stackable file system (e.g.,
+overlayfs), vma->vm_file is a backing file whose f_inode is on the
+underlying filesystem. To show correct numbers, we need to get a user
+file and shows its numbers. The same trick is used to show file paths in
+/proc/pid/maps.
 
-On Tue, Dec 12, 2023 at 2:52=E2=80=AFPM Haibo Xu <haibo1.xu@intel.com> wrot=
-e:
->
-> There are intermittent failures occured when stressing the
-> arch-timer test in a Qemu VM:
->
->  Guest assert failed,  vcpu 0; stage; 4; iter: 3
->  =3D=3D=3D=3D Test Assertion Failure =3D=3D=3D=3D
->    aarch64/arch_timer.c:196: config_iter + 1 =3D=3D irq_iter
->    pid=3D4048 tid=3D4049 errno=3D4 - Interrupted system call
->       1  0x000000000040253b: test_vcpu_run at arch_timer.c:248
->       2  0x0000ffffb60dd5c7: ?? ??:0
->       3  0x0000ffffb6145d1b: ?? ??:0
->    0x3 !=3D 0x2 (config_iter + 1 !=3D irq_iter)e
->
-> Further test and debug show that the timeout for an interrupt
-> to arrive do have random high fluctuation, espectially when
-> testing in an virtual environment.
->
-> To alleviate this issue, just expose the timeout value as user
-> configurable and print some hint message to increase the value
-> when hitting the failure..
->
-> Signed-off-by: Haibo Xu <haibo1.xu@intel.com>
+Cc: Alexander Mikhalitsyn <alexander@mihalicyn.com>
+Suggested-by: Amir Goldstein <amir73il@gmail.com>
+Signed-off-by: Andrei Vagin <avagin@google.com>
+---
+v2: Amir explained that vfs_getattr isn't needed, because
+file_user_inode(vma->vm_file).i_ino always matches an inode number
+returned by statx.
 
-Can you please review this patch ?
+ fs/proc/task_mmu.c |  3 ++-
+ include/linux/fs.h | 18 +++++++++++++-----
+ 2 files changed, 15 insertions(+), 6 deletions(-)
 
-We want to take this entire series through the KVM RISC-V tree.
+diff --git a/fs/proc/task_mmu.c b/fs/proc/task_mmu.c
+index 435b61054b5b..1801e409a061 100644
+--- a/fs/proc/task_mmu.c
++++ b/fs/proc/task_mmu.c
+@@ -273,7 +273,8 @@ show_map_vma(struct seq_file *m, struct vm_area_struct *vma)
+ 	const char *name = NULL;
+ 
+ 	if (file) {
+-		struct inode *inode = file_inode(vma->vm_file);
++		const struct inode *inode = file_user_inode(vma->vm_file);
++
+ 		dev = inode->i_sb->s_dev;
+ 		ino = inode->i_ino;
+ 		pgoff = ((loff_t)vma->vm_pgoff) << PAGE_SHIFT;
+diff --git a/include/linux/fs.h b/include/linux/fs.h
+index 98b7a7a8c42e..838ccfc63323 100644
+--- a/include/linux/fs.h
++++ b/include/linux/fs.h
+@@ -2523,20 +2523,28 @@ struct file *backing_file_open(const struct path *user_path, int flags,
+ struct path *backing_file_user_path(struct file *f);
+ 
+ /*
+- * file_user_path - get the path to display for memory mapped file
+- *
+  * When mmapping a file on a stackable filesystem (e.g., overlayfs), the file
+  * stored in ->vm_file is a backing file whose f_inode is on the underlying
+- * filesystem.  When the mapped file path is displayed to user (e.g. via
+- * /proc/<pid>/maps), this helper should be used to get the path to display
+- * to the user, which is the path of the fd that user has requested to map.
++ * filesystem.  When the mapped file path and inode number are displayed to
++ * user (e.g. via /proc/<pid>/maps), these helpers should be used to get the
++ * path and inode number to display to the user, which is the path of the fd
++ * that user has requested to map and the inode number that would be returned
++ * by fstat() on that same fd.
+  */
++/* Get the path to display in /proc/<pid>/maps */
+ static inline const struct path *file_user_path(struct file *f)
+ {
+ 	if (unlikely(f->f_mode & FMODE_BACKING))
+ 		return backing_file_user_path(f);
+ 	return &f->f_path;
+ }
++/* Get the inode whose inode number to display in /proc/<pid>/maps */
++static inline const struct inode *file_user_inode(struct file *f)
++{
++	if (unlikely(f->f_mode & FMODE_BACKING))
++		return d_inode(backing_file_user_path(f)->dentry);
++	return file_inode(f);
++}
+ 
+ static inline struct file *file_clone_open(struct file *file)
+ {
+-- 
+2.43.0.472.g3155946c3a-goog
 
-Regards,
-Anup
-
-> ---
->  .../selftests/kvm/aarch64/arch_timer.c        |  8 +++++--
->  tools/testing/selftests/kvm/arch_timer.c      | 22 +++++++++++++------
->  .../selftests/kvm/include/timer_test.h        |  1 +
->  .../testing/selftests/kvm/riscv/arch_timer.c  |  8 +++++--
->  4 files changed, 28 insertions(+), 11 deletions(-)
->
-> diff --git a/tools/testing/selftests/kvm/aarch64/arch_timer.c b/tools/tes=
-ting/selftests/kvm/aarch64/arch_timer.c
-> index 4b421d421c3f..139eecbf77e7 100644
-> --- a/tools/testing/selftests/kvm/aarch64/arch_timer.c
-> +++ b/tools/testing/selftests/kvm/aarch64/arch_timer.c
-> @@ -131,10 +131,14 @@ static void guest_run_stage(struct test_vcpu_shared=
-_data *shared_data,
->
->                 /* Setup a timeout for the interrupt to arrive */
->                 udelay(msecs_to_usecs(test_args.timer_period_ms) +
-> -                       TIMER_TEST_ERR_MARGIN_US);
-> +                       test_args.timer_err_margin_us);
->
->                 irq_iter =3D READ_ONCE(shared_data->nr_iter);
-> -               GUEST_ASSERT_EQ(config_iter + 1, irq_iter);
-> +               __GUEST_ASSERT(config_iter + 1 =3D=3D irq_iter,
-> +                       "config_iter + 1 =3D 0x%lx, irq_iter =3D 0x%lx.\n=
-"
-> +                       "  Guest timer interrupt was not trigged within t=
-he specified\n"
-> +                       "  interval, try to increase the error margin by =
-[-e] option.\n",
-> +                       config_iter + 1, irq_iter);
->         }
->  }
->
-> diff --git a/tools/testing/selftests/kvm/arch_timer.c b/tools/testing/sel=
-ftests/kvm/arch_timer.c
-> index 60963fce16f2..5050022fd345 100644
-> --- a/tools/testing/selftests/kvm/arch_timer.c
-> +++ b/tools/testing/selftests/kvm/arch_timer.c
-> @@ -5,16 +5,17 @@
->   * The guest's main thread configures the timer interrupt and waits
->   * for it to fire, with a timeout equal to the timer period.
->   * It asserts that the timeout doesn't exceed the timer period plus
-> - * an error margin of 100us.
-> + * an user configurable error margin(default to 100us).
->   *
->   * On the other hand, upon receipt of an interrupt, the guest's interrup=
-t
->   * handler validates the interrupt by checking if the architectural stat=
-e
->   * is in compliance with the specifications.
->   *
->   * The test provides command-line options to configure the timer's
-> - * period (-p), number of vCPUs (-n), and iterations per stage (-i).
-> - * To stress-test the timer stack even more, an option to migrate the
-> - * vCPUs across pCPUs (-m), at a particular rate, is also provided.
-> + * period (-p), number of vCPUs (-n), iterations per stage (-i), and tim=
-er
-> + * interrupt arrival error margin (-e). To stress-test the timer stack e=
-ven
-> + * more, an option to migrate the vCPUs across pCPUs (-m), at a particul=
-ar
-> + * rate, is also provided.
->   *
->   * Copyright (c) 2021, Google LLC.
->   */
-> @@ -34,6 +35,7 @@ struct test_args test_args =3D {
->         .nr_iter =3D NR_TEST_ITERS_DEF,
->         .timer_period_ms =3D TIMER_TEST_PERIOD_MS_DEF,
->         .migration_freq_ms =3D TIMER_TEST_MIGRATION_FREQ_MS,
-> +       .timer_err_margin_us =3D TIMER_TEST_ERR_MARGIN_US,
->         .reserved =3D 1,
->  };
->
-> @@ -179,8 +181,9 @@ static void test_run(struct kvm_vm *vm)
->
->  static void test_print_help(char *name)
->  {
-> -       pr_info("Usage: %s [-h] [-n nr_vcpus] [-i iterations] [-p timer_p=
-eriod_ms]\n",
-> -               name);
-> +       pr_info("Usage: %s [-h] [-n nr_vcpus] [-i iterations] [-p timer_p=
-eriod_ms]\n"
-> +               "\t\t    [-m migration_freq_ms] [-o counter_offset]\n"
-> +               "\t\t    [-e timer_err_margin_us]\n", name);
->         pr_info("\t-n: Number of vCPUs to configure (default: %u; max: %u=
-)\n",
->                 NR_VCPUS_DEF, KVM_MAX_VCPUS);
->         pr_info("\t-i: Number of iterations per stage (default: %u)\n",
-> @@ -190,6 +193,8 @@ static void test_print_help(char *name)
->         pr_info("\t-m: Frequency (in ms) of vCPUs to migrate to different=
- pCPU. 0 to turn off (default: %u)\n",
->                 TIMER_TEST_MIGRATION_FREQ_MS);
->         pr_info("\t-o: Counter offset (in counter cycles, default: 0) [aa=
-rch64-only]\n");
-> +       pr_info("\t-e: Interrupt arrival error margin(in us) of the guest=
- timer (default: %u)\n",
-> +               TIMER_TEST_ERR_MARGIN_US);
->         pr_info("\t-h: print this help screen\n");
->  }
->
-> @@ -197,7 +202,7 @@ static bool parse_args(int argc, char *argv[])
->  {
->         int opt;
->
-> -       while ((opt =3D getopt(argc, argv, "hn:i:p:m:o:")) !=3D -1) {
-> +       while ((opt =3D getopt(argc, argv, "hn:i:p:m:o:e:")) !=3D -1) {
->                 switch (opt) {
->                 case 'n':
->                         test_args.nr_vcpus =3D atoi_positive("Number of v=
-CPUs", optarg);
-> @@ -216,6 +221,9 @@ static bool parse_args(int argc, char *argv[])
->                 case 'm':
->                         test_args.migration_freq_ms =3D atoi_non_negative=
-("Frequency", optarg);
->                         break;
-> +               case 'e':
-> +                       test_args.timer_err_margin_us =3D atoi_non_negati=
-ve("Error Margin", optarg);
-> +                       break;
->                 case 'o':
->                         test_args.counter_offset =3D strtol(optarg, NULL,=
- 0);
->                         test_args.reserved =3D 0;
-> diff --git a/tools/testing/selftests/kvm/include/timer_test.h b/tools/tes=
-ting/selftests/kvm/include/timer_test.h
-> index 968257b893a7..b1d405e7157d 100644
-> --- a/tools/testing/selftests/kvm/include/timer_test.h
-> +++ b/tools/testing/selftests/kvm/include/timer_test.h
-> @@ -22,6 +22,7 @@ struct test_args {
->         int nr_iter;
->         int timer_period_ms;
->         int migration_freq_ms;
-> +       int timer_err_margin_us;
->         /* Members of struct kvm_arm_counter_offset */
->         uint64_t counter_offset;
->         uint64_t reserved;
-> diff --git a/tools/testing/selftests/kvm/riscv/arch_timer.c b/tools/testi=
-ng/selftests/kvm/riscv/arch_timer.c
-> index 13bf184d1ff5..45a139dc7ce3 100644
-> --- a/tools/testing/selftests/kvm/riscv/arch_timer.c
-> +++ b/tools/testing/selftests/kvm/riscv/arch_timer.c
-> @@ -55,10 +55,14 @@ static void guest_run(struct test_vcpu_shared_data *s=
-hared_data)
->
->                 /* Setup a timeout for the interrupt to arrive */
->                 udelay(msecs_to_usecs(test_args.timer_period_ms) +
-> -                       TIMER_TEST_ERR_MARGIN_US);
-> +                       test_args.timer_err_margin_us);
->
->                 irq_iter =3D READ_ONCE(shared_data->nr_iter);
-> -               GUEST_ASSERT_EQ(config_iter + 1, irq_iter);
-> +               __GUEST_ASSERT(config_iter + 1 =3D=3D irq_iter,
-> +                       "config_iter + 1 =3D 0x%lx, irq_iter =3D 0x%lx.\n=
-"
-> +                       "  Guest timer interrupt was not trigged within t=
-he specified\n"
-> +                       "  interval, try to increase the error margin by =
-[-e] option.\n",
-> +                       config_iter + 1, irq_iter);
->         }
->  }
->
-> --
-> 2.34.1
->
