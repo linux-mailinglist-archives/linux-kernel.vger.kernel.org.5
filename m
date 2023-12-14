@@ -2,159 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 74649812C66
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 10:59:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AFF5E812C6A
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 11:01:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1443514AbjLNJ7O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 04:59:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54310 "EHLO
+        id S1443505AbjLNKB3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 05:01:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41208 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1443528AbjLNJ7L (ORCPT
+        with ESMTP id S1443478AbjLNKBZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 04:59:11 -0500
-Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A82A0106;
-        Thu, 14 Dec 2023 01:59:17 -0800 (PST)
-Received: by mail-pg1-x533.google.com with SMTP id 41be03b00d2f7-5c68da9d639so4551720a12.3;
-        Thu, 14 Dec 2023 01:59:17 -0800 (PST)
+        Thu, 14 Dec 2023 05:01:25 -0500
+Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7D7D91
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 02:01:30 -0800 (PST)
+Received: by mail-ej1-x62f.google.com with SMTP id a640c23a62f3a-a1c7d8f89a5so1044751166b.2
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 02:01:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702547957; x=1703152757; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=lsNugrMTLdavqUaTzPaiiSqSEI8478i76rEA8WzTmjs=;
-        b=HYrx/Bmpb0/ztK7gQIfH+pYDdKhH9068NrDelmWb32ex09PSBiCSxIns9wUk7fDv/1
-         RspvSfurCi4wdMylvOMbys0w3uIKh9yhk8B3UFeB+UlAd7IrDnVokzcjWTMKPTmdWKBz
-         D/H7gwu6iC/CYr7sz33A6JSLOHeg3lG7jM5/VgIc3xsc5suXY/xXY0IGle+pOQbjTuB3
-         D5tBjphS9sK2oXV444Xpg7Petn+Gjldm9f6LTI3jaTtBE1+lsuEJC4cV7D4SUDs5QeMW
-         52PULRB40T9eKsfisxhToW7phjzkswYhfoofI0kWjOg4zi9SEK5WZdV67mxgHRp7hYE8
-         Y/bg==
+        d=suse.com; s=google; t=1702548089; x=1703152889; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=B1Akq8V3bknfGJps/yFde6v1w7I15tVFGRLtdFJ361Q=;
+        b=SkpUqCAgkjFwiau2TMxXcKjTCnVrTESj4C3mM4qe0C62vdqE4GDJtKzfM4TyqYncin
+         HdCwGLTTYzpioo8b0bOAuCiDkLyZt5JyAUhxChf9+8pYSR4LTDQdGUNvmquDhkgn0rC0
+         NDumcXsj2ABixcvxXabxT3ZQn+dm8LGplUkzZSLebRZJR3yWyWZUdmH3L1TbFmdnWelr
+         TOkrCJY3DQPgI6wzgTwaK4ay2e5TVr0Mljhnz5Jk5LMqXVwr1AcJLKhdzrRtVZeqqX7M
+         Ys3k33VFQwTigcw0wQE2Hsk/3vv2cWn1l4IK49Xk4lzEPtjlBmFMcWEvWre8NdGA3afs
+         5d6Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702547957; x=1703152757;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=lsNugrMTLdavqUaTzPaiiSqSEI8478i76rEA8WzTmjs=;
-        b=IE1JGUxFWR3yqK6p74fNvJRi/BDmnliCW0+7CHDXBwx8yoj1hoWZBL66LDSDHdwdYy
-         FO8HSsJOSkwJLUi3iQCbpFwwaVKeegTr2+Arbakx4xiuFw93LMZZXlqz9oeVFqvbFZlX
-         8QXBE02f+OMA7ZLwMQlz0fM259mvYySydGvmYYvwYVA+mTYkFo/CogAnHBWd03aqAfYf
-         bFUSAa6hR2HSRSdM+6mVPsf2UK64n69n5B9xUhmjXnLmb7dKoEGKcsPnCM2XRXkVjUvt
-         S+1yEMHPpViN2TQ6JXFZWau51peAN7a5R5NwNOtz5zETkKmMt7d/alVK6nJ34M/bcVjU
-         rdFg==
-X-Gm-Message-State: AOJu0Ywt1NqzglXG1C3z8gKq3ydS/62GSIzoOWbevv4vcIB6eySUvyTE
-        np6KUevDwX1pqxn1a6lBmxbR+ed6+b4=
-X-Google-Smtp-Source: AGHT+IGM+QUj5jfgwYUikQjoJ+FGUpcrZqFUvb0379eV8vCZ5ZbYeawfXIyV7Ry/FZdckig20vHtcQ==
-X-Received: by 2002:a17:902:c40a:b0:1cf:c37f:7158 with SMTP id k10-20020a170902c40a00b001cfc37f7158mr5879146plk.23.1702547956967;
-        Thu, 14 Dec 2023 01:59:16 -0800 (PST)
-Received: from rigel.home.arpa (60-241-235-125.tpgi.com.au. [60.241.235.125])
-        by smtp.gmail.com with ESMTPSA id r2-20020a1709028bc200b001bc6e6069a6sm922807plo.122.2023.12.14.01.59.14
+        d=1e100.net; s=20230601; t=1702548089; x=1703152889;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=B1Akq8V3bknfGJps/yFde6v1w7I15tVFGRLtdFJ361Q=;
+        b=pM29dJ6K5Yjsff+Ar5dfl7E21cLHIKpc7y/tvDj4hhTtyUXKslxXlLwpEEP5cULEcI
+         Dc4FKulaqtl4PhxiHwP6LgWDZFfYScjBwXG5Pth5OOSi9ZIRfq5ceBlY7SS2+oU17J+G
+         VW+v2kTNDpSatVtZWqAQDPfqc+YjNsLA0zymTAhb4QIsu5xkl8y2yzDRdKLvI5kAsPAa
+         U4+MWZL2B3i/sC06cF1k8+1PWZ6WbQD2VHlQTAncsUGKc5rQfGriM2KLPZILUi+4X7UX
+         L9nN+NfLRe6s7n+Tx16Bv6yxuy8Pj7+mfFQoXuQSSYip7EpGHJkjsPnGk267cqF79lEt
+         hJhw==
+X-Gm-Message-State: AOJu0YyYlD2Y6vFLB5w4Uyx8UYd+bEPQTiI8P9Z4vtdADm1O1deaB/GK
+        DR9E4S8YWj6TmDHqU3qlNqACuQ==
+X-Google-Smtp-Source: AGHT+IEO/PF4PkRunvCCQIYpB8GCVvcgDib1ERF20CnB1/QvpCuOT0LoQF4Rxj9CHgFUTOChSzJRNw==
+X-Received: by 2002:a17:906:5346:b0:a02:a2cc:66b8 with SMTP id j6-20020a170906534600b00a02a2cc66b8mr4653812ejo.14.1702548089098;
+        Thu, 14 Dec 2023 02:01:29 -0800 (PST)
+Received: from u94a (2001-b011-fa04-f750-b2dc-efff-fee8-7e7a.dynamic-ip6.hinet.net. [2001:b011:fa04:f750:b2dc:efff:fee8:7e7a])
+        by smtp.gmail.com with ESMTPSA id vs6-20020a170907a58600b00a1fa6a70b8dsm5511673ejc.133.2023.12.14.02.01.23
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Dec 2023 01:59:16 -0800 (PST)
-From:   Kent Gibson <warthog618@gmail.com>
-To:     linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
-        brgl@bgdev.pl, linus.walleij@linaro.org, andy@kernel.org
-Cc:     Kent Gibson <warthog618@gmail.com>
-Subject: [PATCH v2 5/5] gpiolib: cdev: improve documentation of get/set values
-Date:   Thu, 14 Dec 2023 17:58:14 +0800
-Message-Id: <20231214095814.132400-6-warthog618@gmail.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20231214095814.132400-1-warthog618@gmail.com>
-References: <20231214095814.132400-1-warthog618@gmail.com>
+        Thu, 14 Dec 2023 02:01:28 -0800 (PST)
+Date:   Thu, 14 Dec 2023 18:00:26 +0800
+From:   Shung-Hsi Yu <shung-hsi.yu@suse.com>
+To:     Menglong Dong <menglong8.dong@gmail.com>
+Cc:     andrii@kernel.org, eddyz87@gmail.com, yonghong.song@linux.dev,
+        ast@kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com,
+        martin.lau@linux.dev, song@kernel.org, kpsingh@kernel.org,
+        sdf@google.com, haoluo@google.com, jolsa@kernel.org,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH bpf-next v3 1/2] bpf: make the verifier tracks the "not
+ equal" for regs
+Message-ID: <zbqhpcp5labyt5spryxfshb54hijyysfyooxtteeq2iaydzwe6@tfa3f7ct7h6a>
+References: <20231214062434.3565630-1-menglong8.dong@gmail.com>
+ <20231214062434.3565630-2-menglong8.dong@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231214062434.3565630-2-menglong8.dong@gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add documentation of the algorithm used to perform scatter/gather
-of the requested lines and values in linereq_get_values() and
-linereq_set_values_unlocked() to improve maintainability.
+On Thu, Dec 14, 2023 at 02:24:33PM +0800, Menglong Dong wrote:
+> We can derive some new information for BPF_JNE in regs_refine_cond_op().
+> Take following code for example:
+> 
+>   /* The type of "a" is u16 */
+>   if (a > 0 && a < 100) {
+>     /* the range of the register for a is [0, 99], not [1, 99],
+>      * and will cause the following error:
+>      *
+>      *   invalid zero-sized read
+>      *
+>      * as a can be 0.
+>      */
+>     bpf_skb_store_bytes(skb, xx, xx, a, 0);
+>   }
+> 
+> In the code above, "a > 0" will be compiled to "jmp xxx if a == 0". In the
+> TRUE branch, the dst_reg will be marked as known to 0. However, in the
+> fallthrough(FALSE) branch, the dst_reg will not be handled, which makes
+> the [min, max] for a is [0, 99], not [1, 99].
+> 
+> For BPF_JNE, we can reduce the range of the dst reg if the src reg is a
+> const and is exactly the edge of the dst reg.
+> 
+> Signed-off-by: Menglong Dong <menglong8.dong@gmail.com>
 
-Signed-off-by: Kent Gibson <warthog618@gmail.com>
----
- drivers/gpio/gpiolib-cdev.c | 24 +++++++++++++++++++++++-
- 1 file changed, 23 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/gpio/gpiolib-cdev.c b/drivers/gpio/gpiolib-cdev.c
-index 73262305de0f..27cfed748b0a 100644
---- a/drivers/gpio/gpiolib-cdev.c
-+++ b/drivers/gpio/gpiolib-cdev.c
-@@ -1391,9 +1391,18 @@ static long linereq_get_values(struct linereq *lr, void __user *ip)
- 	if (copy_from_user(&lv, ip, sizeof(lv)))
- 		return -EFAULT;
- 
-+	/*
-+	 * gpiod_get_array_value_complex() requires compacted desc and val
-+	 * arrays, rather than the sparse ones in lv.
-+	 * Calculation of num_get and construction of the desc array is
-+	 * optimized to avoid allocation for the desc array for the common
-+	 * num_get == 1 case.
-+	 */
-+	/* scan requested lines to calculate the subset to get */
- 	for (num_get = 0, i = 0; i < lr->num_lines; i++) {
- 		if (lv.mask & BIT_ULL(i)) {
- 			num_get++;
-+			/* capture desc for the num_get == 1 case */
- 			descs = &lr->lines[i].desc;
- 		}
- 	}
-@@ -1402,6 +1411,7 @@ static long linereq_get_values(struct linereq *lr, void __user *ip)
- 		return -EINVAL;
- 
- 	if (num_get != 1) {
-+		/* build compacted desc array */
- 		descs = kmalloc_array(num_get, sizeof(*descs), GFP_KERNEL);
- 		if (!descs)
- 			return -ENOMEM;
-@@ -1422,6 +1432,7 @@ static long linereq_get_values(struct linereq *lr, void __user *ip)
- 
- 	lv.bits = 0;
- 	for (didx = 0, i = 0; i < lr->num_lines; i++) {
-+		/* unpack compacted vals for the response */
- 		if (lv.mask & BIT_ULL(i)) {
- 			if (lr->lines[i].sw_debounced)
- 				val = debounced_value(&lr->lines[i]);
-@@ -1447,14 +1458,25 @@ static long linereq_set_values_unlocked(struct linereq *lr,
- 	unsigned int i, didx, num_set;
- 	int ret;
- 
-+	/*
-+	 * gpiod_set_array_value_complex() requires compacted desc and val
-+	 * arrays, rather than the sparse ones in lv.
-+	 * Calculation of num_set and construction of the descs and vals arrays
-+	 * is optimized to minimize scanning the lv->mask, and to avoid
-+	 * allocation for the desc array for the common num_set == 1 case.
-+	 */
- 	bitmap_zero(vals, GPIO_V2_LINES_MAX);
-+	/* scan requested lines to determine the subset to be set */
- 	for (num_set = 0, i = 0; i < lr->num_lines; i++) {
- 		if (lv->mask & BIT_ULL(i)) {
-+			/* setting inputs is not allowed */
- 			if (!test_bit(FLAG_IS_OUT, &lr->lines[i].desc->flags))
- 				return -EPERM;
-+			/* add to compacted values */
- 			if (lv->bits & BIT_ULL(i))
- 				__set_bit(num_set, vals);
- 			num_set++;
-+			/* capture desc for the num_set == 1 case */
- 			descs = &lr->lines[i].desc;
- 		}
- 	}
-@@ -1462,7 +1484,7 @@ static long linereq_set_values_unlocked(struct linereq *lr,
- 		return -EINVAL;
- 
- 	if (num_set != 1) {
--		/* build compacted desc array and values */
-+		/* build compacted desc array */
- 		descs = kmalloc_array(num_set, sizeof(*descs), GFP_KERNEL);
- 		if (!descs)
- 			return -ENOMEM;
--- 
-2.39.2
-
+Acked-by: Shung-Hsi Yu <shung-hsi.yu@suse.com>
