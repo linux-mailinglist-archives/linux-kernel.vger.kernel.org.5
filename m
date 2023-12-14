@@ -2,133 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D6B7C813A70
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 20:02:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CB70F813AAC
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 20:24:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1573202AbjLNTCX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 14:02:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40498 "EHLO
+        id S1443799AbjLNRKk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 12:10:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54744 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229519AbjLNTCV (ORCPT
+        with ESMTP id S229743AbjLNRKh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 14:02:21 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D0FA10E
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 11:02:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1702580548; x=1734116548;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=6PUMFCKy5rUwaQ3rE8TRKOBhqSE6XK+cMxtD5pFiIGA=;
-  b=B4CfJmxscymgELKKhxiPdoXQF69IQxyv3D/0cRRTFFK+EQHl0NtaXqXw
-   uwvgk9gdjHV1tb5bzkthz1IJiWPhDMCw7pIgD6D16Y1gxZ8jCSrtBJXhs
-   6ix1veGXZfkw0mcOzbItFHuVCkZZwBdD1ZYHeE4OzMP5A+7/mTLiR3o+v
-   HmHyvv+ahBIQivA7I291AZQCJuNCHUNi115uKJ0mMjKlOAIGnAodw96KO
-   LywaFM1ZnzzbmtiwPAnvpGBFQOzjf5p1ujuo6hvaC0Piu5oyhFXml/LNc
-   HP3bp/nLuC+oKwquCD7P3kWSYgM3Lqf+hNdx2+0rXSmxpw8MKGjvWZ96A
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10924"; a="461635081"
-X-IronPort-AV: E=Sophos;i="6.04,276,1695711600"; 
-   d="scan'208";a="461635081"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Dec 2023 11:02:09 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10924"; a="844835880"
-X-IronPort-AV: E=Sophos;i="6.04,276,1695711600"; 
-   d="scan'208";a="844835880"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by fmsmga004.fm.intel.com with ESMTP; 14 Dec 2023 11:02:07 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1rDqyC-000MVE-1x;
-        Thu, 14 Dec 2023 19:02:04 +0000
-Date:   Fri, 15 Dec 2023 03:01:41 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Luis Chamberlain <mcgrof@kernel.org>
-Subject: lib/test_kmod.c:134: warning: Excess struct member 'thread_lock'
- description in 'kmod_test_device'
-Message-ID: <202312150205.NY5AKrJM-lkp@intel.com>
+        Thu, 14 Dec 2023 12:10:37 -0500
+Received: from frasgout11.his.huawei.com (frasgout11.his.huawei.com [14.137.139.23])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F87CA0;
+        Thu, 14 Dec 2023 09:10:43 -0800 (PST)
+Received: from mail.maildlp.com (unknown [172.18.186.51])
+        by frasgout11.his.huawei.com (SkyGuard) with ESMTP id 4SrdmN6bp8z9y4SV;
+        Fri, 15 Dec 2023 00:56:36 +0800 (CST)
+Received: from mail02.huawei.com (unknown [7.182.16.47])
+        by mail.maildlp.com (Postfix) with ESMTP id 061D4140661;
+        Fri, 15 Dec 2023 01:10:31 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.204.63.22])
+        by APP1 (Coremail) with SMTP id LxC2BwBXlHSpNntl4xuLAg--.58219S8;
+        Thu, 14 Dec 2023 18:10:30 +0100 (CET)
+From:   Roberto Sassu <roberto.sassu@huaweicloud.com>
+To:     viro@zeniv.linux.org.uk, brauner@kernel.org,
+        chuck.lever@oracle.com, jlayton@kernel.org, neilb@suse.de,
+        kolga@netapp.com, Dai.Ngo@oracle.com, tom@talpey.com,
+        paul@paul-moore.com, jmorris@namei.org, serge@hallyn.com,
+        zohar@linux.ibm.com, dmitry.kasatkin@gmail.com,
+        dhowells@redhat.com, jarkko@kernel.org,
+        stephen.smalley.work@gmail.com, eparis@parisplace.org,
+        casey@schaufler-ca.com, shuah@kernel.org, mic@digikod.net
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-nfs@vger.kernel.org, linux-security-module@vger.kernel.org,
+        linux-integrity@vger.kernel.org, keyrings@vger.kernel.org,
+        selinux@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        Roberto Sassu <roberto.sassu@huawei.com>,
+        Stefan Berger <stefanb@linux.ibm.com>
+Subject: [PATCH v8 06/24] evm: Align evm_inode_post_setattr() definition with LSM infrastructure
+Date:   Thu, 14 Dec 2023 18:08:16 +0100
+Message-Id: <20231214170834.3324559-7-roberto.sassu@huaweicloud.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20231214170834.3324559-1-roberto.sassu@huaweicloud.com>
+References: <20231214170834.3324559-1-roberto.sassu@huaweicloud.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: LxC2BwBXlHSpNntl4xuLAg--.58219S8
+X-Coremail-Antispam: 1UD129KBjvJXoWxuF4fuFy5GFWkXry7uFWrGrg_yoW5Aw4kpF
+        Z5K3WkCw1ruryUWr95GF48ZayFgFyrWryUX3yFgw1YyFnrtrnIqFn7K3yUAry5GrW8Grn0
+        qFnFvrn5Cr15A3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUBvb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
+        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUAV
+        Cq3wA2048vs2IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0
+        rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVWUCVW8JwA2z4x0Y4vE2Ix0cI8IcVCY1x0267
+        AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv6xkF7I0E
+        14v26r4UJVWxJr1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrV
+        C2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE
+        7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwACI402YVCY1x02628vn2kIc2xKxwCF04k20x
+        vY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I
+        3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_GFv_WrylIxkGc2Ij64vIr41lIx
+        AIcVC0I7IYx2IY67AKxVWUCVW8JwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr1j6F4UJwCI
+        42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Gr0_Cr1lIxAIcVC2z2
+        80aVCY1x0267AKxVW8Jr0_Cr1UYxBIdaVFxhVjvjDU0xZFpf9x07UZo7tUUUUU=
+X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAQALBF1jj5entgADs6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   5bd7ef53ffe5ca580e93e74eb8c81ed191ddc4bd
-commit: c093a74dac1c008daee92d6d613e9e3fe20b6585 test_kmod: stop kernel-doc warnings
-date:   11 months ago
-config: sh-allyesconfig (https://download.01.org/0day-ci/archive/20231215/202312150205.NY5AKrJM-lkp@intel.com/config)
-compiler: sh4-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231215/202312150205.NY5AKrJM-lkp@intel.com/reproduce)
+From: Roberto Sassu <roberto.sassu@huawei.com>
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202312150205.NY5AKrJM-lkp@intel.com/
+Change evm_inode_post_setattr() definition, so that it can be registered as
+implementation of the inode_post_setattr hook (to be introduced).
 
-All warnings (new ones prefixed by >>):
+Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
+Reviewed-by: Stefan Berger <stefanb@linux.ibm.com>
+Reviewed-by: Casey Schaufler <casey@schaufler-ca.com>
+Reviewed-by: Mimi Zohar <zohar@linux.ibm.com>
+---
+ fs/attr.c                         | 2 +-
+ include/linux/evm.h               | 6 ++++--
+ security/integrity/evm/evm_main.c | 4 +++-
+ 3 files changed, 8 insertions(+), 4 deletions(-)
 
-   lib/test_kmod.c:67: warning: Enum value '__TEST_KMOD_INVALID' not described in enum 'kmod_test_case'
-   lib/test_kmod.c:67: warning: Enum value '__TEST_KMOD_MAX' not described in enum 'kmod_test_case'
-   lib/test_kmod.c:100: warning: Function parameter or member 'task_sync' not described in 'kmod_test_device_info'
-   lib/test_kmod.c:134: warning: Function parameter or member 'thread_mutex' not described in 'kmod_test_device'
->> lib/test_kmod.c:134: warning: Excess struct member 'thread_lock' description in 'kmod_test_device'
-
-
-vim +134 lib/test_kmod.c
-
-d9c6a72d6fa29d Luis R. Rodriguez 2017-07-14  101  
-d9c6a72d6fa29d Luis R. Rodriguez 2017-07-14  102  /**
-c093a74dac1c00 Randy Dunlap      2023-01-02  103   * struct kmod_test_device - test device to help test kmod
-d9c6a72d6fa29d Luis R. Rodriguez 2017-07-14  104   *
-d9c6a72d6fa29d Luis R. Rodriguez 2017-07-14  105   * @dev_idx: unique ID for test device
-d9c6a72d6fa29d Luis R. Rodriguez 2017-07-14  106   * @config: configuration for the test
-d9c6a72d6fa29d Luis R. Rodriguez 2017-07-14  107   * @misc_dev: we use a misc device under the hood
-d9c6a72d6fa29d Luis R. Rodriguez 2017-07-14  108   * @dev: pointer to misc_dev's own struct device
-d9c6a72d6fa29d Luis R. Rodriguez 2017-07-14  109   * @config_mutex: protects configuration of test
-d9c6a72d6fa29d Luis R. Rodriguez 2017-07-14  110   * @trigger_mutex: the test trigger can only be fired once at a time
-d9c6a72d6fa29d Luis R. Rodriguez 2017-07-14  111   * @thread_lock: protects @done count, and the @info per each thread
-d9c6a72d6fa29d Luis R. Rodriguez 2017-07-14  112   * @done: number of threads which have completed or failed
-d9c6a72d6fa29d Luis R. Rodriguez 2017-07-14  113   * @test_is_oom: when we run out of memory, use this to halt moving forward
-d9c6a72d6fa29d Luis R. Rodriguez 2017-07-14  114   * @kthreads_done: completion used to signal when all work is done
-d9c6a72d6fa29d Luis R. Rodriguez 2017-07-14  115   * @list: needed to be part of the reg_test_devs
-d9c6a72d6fa29d Luis R. Rodriguez 2017-07-14  116   * @info: array of info for each thread
-d9c6a72d6fa29d Luis R. Rodriguez 2017-07-14  117   */
-d9c6a72d6fa29d Luis R. Rodriguez 2017-07-14  118  struct kmod_test_device {
-d9c6a72d6fa29d Luis R. Rodriguez 2017-07-14  119  	int dev_idx;
-d9c6a72d6fa29d Luis R. Rodriguez 2017-07-14  120  	struct test_config config;
-d9c6a72d6fa29d Luis R. Rodriguez 2017-07-14  121  	struct miscdevice misc_dev;
-d9c6a72d6fa29d Luis R. Rodriguez 2017-07-14  122  	struct device *dev;
-d9c6a72d6fa29d Luis R. Rodriguez 2017-07-14  123  	struct mutex config_mutex;
-d9c6a72d6fa29d Luis R. Rodriguez 2017-07-14  124  	struct mutex trigger_mutex;
-d9c6a72d6fa29d Luis R. Rodriguez 2017-07-14  125  	struct mutex thread_mutex;
-d9c6a72d6fa29d Luis R. Rodriguez 2017-07-14  126  
-d9c6a72d6fa29d Luis R. Rodriguez 2017-07-14  127  	unsigned int done;
-d9c6a72d6fa29d Luis R. Rodriguez 2017-07-14  128  
-d9c6a72d6fa29d Luis R. Rodriguez 2017-07-14  129  	bool test_is_oom;
-d9c6a72d6fa29d Luis R. Rodriguez 2017-07-14  130  	struct completion kthreads_done;
-d9c6a72d6fa29d Luis R. Rodriguez 2017-07-14  131  	struct list_head list;
-d9c6a72d6fa29d Luis R. Rodriguez 2017-07-14  132  
-d9c6a72d6fa29d Luis R. Rodriguez 2017-07-14  133  	struct kmod_test_device_info *info;
-d9c6a72d6fa29d Luis R. Rodriguez 2017-07-14 @134  };
-d9c6a72d6fa29d Luis R. Rodriguez 2017-07-14  135  
-
-:::::: The code at line 134 was first introduced by commit
-:::::: d9c6a72d6fa29d3a7999dda726577e5d1fccafa5 kmod: add test driver to stress test the module loader
-
-:::::: TO: Luis R. Rodriguez <mcgrof@kernel.org>
-:::::: CC: Linus Torvalds <torvalds@linux-foundation.org>
-
+diff --git a/fs/attr.c b/fs/attr.c
+index 9bddc0a6352c..498e673bdf06 100644
+--- a/fs/attr.c
++++ b/fs/attr.c
+@@ -503,7 +503,7 @@ int notify_change(struct mnt_idmap *idmap, struct dentry *dentry,
+ 	if (!error) {
+ 		fsnotify_change(dentry, ia_valid);
+ 		ima_inode_post_setattr(idmap, dentry, ia_valid);
+-		evm_inode_post_setattr(dentry, ia_valid);
++		evm_inode_post_setattr(idmap, dentry, ia_valid);
+ 	}
+ 
+ 	return error;
+diff --git a/include/linux/evm.h b/include/linux/evm.h
+index 01fc495a83e2..cf976d8dbd7a 100644
+--- a/include/linux/evm.h
++++ b/include/linux/evm.h
+@@ -23,7 +23,8 @@ extern enum integrity_status evm_verifyxattr(struct dentry *dentry,
+ 					     struct integrity_iint_cache *iint);
+ extern int evm_inode_setattr(struct mnt_idmap *idmap,
+ 			     struct dentry *dentry, struct iattr *attr);
+-extern void evm_inode_post_setattr(struct dentry *dentry, int ia_valid);
++extern void evm_inode_post_setattr(struct mnt_idmap *idmap,
++				   struct dentry *dentry, int ia_valid);
+ extern int evm_inode_setxattr(struct mnt_idmap *idmap,
+ 			      struct dentry *dentry, const char *name,
+ 			      const void *value, size_t size);
+@@ -97,7 +98,8 @@ static inline int evm_inode_setattr(struct mnt_idmap *idmap,
+ 	return 0;
+ }
+ 
+-static inline void evm_inode_post_setattr(struct dentry *dentry, int ia_valid)
++static inline void evm_inode_post_setattr(struct mnt_idmap *idmap,
++					  struct dentry *dentry, int ia_valid)
+ {
+ 	return;
+ }
+diff --git a/security/integrity/evm/evm_main.c b/security/integrity/evm/evm_main.c
+index 894570fe39bc..d452d469c503 100644
+--- a/security/integrity/evm/evm_main.c
++++ b/security/integrity/evm/evm_main.c
+@@ -840,6 +840,7 @@ int evm_inode_setattr(struct mnt_idmap *idmap, struct dentry *dentry,
+ 
+ /**
+  * evm_inode_post_setattr - update 'security.evm' after modifying metadata
++ * @idmap: idmap of the idmapped mount
+  * @dentry: pointer to the affected dentry
+  * @ia_valid: for the UID and GID status
+  *
+@@ -849,7 +850,8 @@ int evm_inode_setattr(struct mnt_idmap *idmap, struct dentry *dentry,
+  * This function is called from notify_change(), which expects the caller
+  * to lock the inode's i_mutex.
+  */
+-void evm_inode_post_setattr(struct dentry *dentry, int ia_valid)
++void evm_inode_post_setattr(struct mnt_idmap *idmap, struct dentry *dentry,
++			    int ia_valid)
+ {
+ 	if (!evm_revalidate_status(NULL))
+ 		return;
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.34.1
+
