@@ -2,68 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 25DFD812C8B
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 11:11:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AEBE812C8D
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 11:13:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1443556AbjLNKLU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 05:11:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53794 "EHLO
+        id S1443562AbjLNKMv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 05:12:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55886 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1443503AbjLNKLS (ORCPT
+        with ESMTP id S1443503AbjLNKMu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 05:11:18 -0500
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E771B2
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 02:11:24 -0800 (PST)
-Received: by mail-wm1-x334.google.com with SMTP id 5b1f17b1804b1-40c39e936b4so54999585e9.1
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 02:11:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mwa.re; s=google; t=1702548683; x=1703153483; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:date:cc:to:from
-         :subject:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=DwJPwRC5n42ZUrIXnJ3iNJ62mEI4hAuX8AmnWt5GOxU=;
-        b=AAH5T3/rqEOq2dzaJ2Ufabe5Mk6VaPvprls3UoMcYTv3bRd2kHUJyazl7R9nr1vPWj
-         5ZUCc3fuGsOgDCOCFmc1+o6j+Ydd79pY7yi8VIg65Kk1fIDUlm3uKrq/2Vk10bTOjVTM
-         /4G/SxdXrDOhOnPCKjuC070BEjLNgO3j8jLtJ2W6ER8/JkTxT39VXK42aR7ohNzBmBRj
-         gYPaL3NwFw7I2y8gugnda4SgSqL2eDIAoYjft1emCBKqLLapFCHlvH2uPHSwI6IlFTPc
-         c1lUSiMohcKB8urIMmbh7r/4KPtRxbVfOR72xm7HXUbPE7lBnEa+TvVFA/j8uQ2Ow4QM
-         Vhew==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702548683; x=1703153483;
-        h=mime-version:user-agent:content-transfer-encoding:date:cc:to:from
-         :subject:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=DwJPwRC5n42ZUrIXnJ3iNJ62mEI4hAuX8AmnWt5GOxU=;
-        b=jhFQbY3u0J1EL7TektzjEJGyd0yUwwLgJ3ZGQ8AnLN+puWfRGrcpdzjZCNb0sDz11o
-         xK3fwtIyapHLkJGx4MMoDViFS3AqdPdmEfyeA55YYyAVjvd9nYjV+66NpaM85aC2LAOl
-         6s5ti13smgW8gsXzO3WY9aTNesOj7sSx4T+1C2DtldCmjtsFsvEHgpu3znDJtdYsvmJd
-         ST5loz95MTq1pw3DzSDJFsIfzId/7lyMaDQMrP2i2b8Ms164UJSY9RqdFuPHlQWOEvMQ
-         8K6Lv5wzIZkFjh22uREAAlIosSLa3b/clTCXdYr5mHlLKeIsMVlWy3NV/4nWajNviNgW
-         Ww+g==
-X-Gm-Message-State: AOJu0Yz6HFoygLyNxFaxJQyeh4RybGlFX/sTRnpuTYpnyhTDuskzibi0
-        +ihkHHw1TzKUCR4TnNxpJF7iAfyvgGDJDWNlHCGdUQ==
-X-Google-Smtp-Source: AGHT+IEwCgUn9rve/eSSnIs2eQKl/d1mHCrM3llLrsOtX7YNvUUHF9eUP2ONysYZWLp41VSUnG0cLA==
-X-Received: by 2002:a05:600c:3b1f:b0:40b:5f03:b39b with SMTP id m31-20020a05600c3b1f00b0040b5f03b39bmr2857734wms.189.1702548682746;
-        Thu, 14 Dec 2023 02:11:22 -0800 (PST)
-Received: from 2001-4dd0-53c2-1-52b8-d67b-716b-9a96.ipv6dyn.netcologne.de (2001-4dd0-53c2-1-52b8-d67b-716b-9a96.ipv6dyn.netcologne.de. [2001:4dd0:53c2:1:52b8:d67b:716b:9a96])
-        by smtp.gmail.com with ESMTPSA id v6-20020a05600c444600b0040c4886f254sm14119157wmn.13.2023.12.14.02.11.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Dec 2023 02:11:22 -0800 (PST)
-Message-ID: <c812ea74dd02d1baf85dc6fb32701e103984d25d.camel@mwa.re>
-Subject: element sizes in input_event struct on riscv32
-From:   Antonios Salios <antonios@mwa.re>
-To:     dmitry.torokhov@gmail.com
-Cc:     rydberg@bitmath.org, linux-input@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Jan Henrik Weinstock <jan@mwa.re>,
-        Lukas =?ISO-8859-1?Q?J=FCnger?= <lukas@mwa.re>
-Date:   Thu, 14 Dec 2023 11:11:18 +0100
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.2 
+        Thu, 14 Dec 2023 05:12:50 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94CFAB2;
+        Thu, 14 Dec 2023 02:12:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1702548777; x=1734084777;
+  h=date:from:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=INz0o1RXXFJG7rPpR1emQNovSti+g5Nnf66owG44gU8=;
+  b=NwczzJHdjwpsJDJM+aLRo/+05Bg1YzKAEvq1D6CQ2cmSoviKixmvd99N
+   Hzls0SZT81Ihlipsacgg6MgPhUf7uu0R4EoWQT91XULweCV2MqcIM5rB3
+   KBAwtNJgwRJM6rb5voVloHqQKTNDxM/aSth8ccJ4PsiUcMxLPXZSoXkqq
+   Y6OFhLmIWwJY/5oXVynitp7FrDyqcycDUpdGoI5z7/UuyZ1SxMzkkYgwP
+   u2rkDedCAo53Ultf/T72xh+XoqkiStR9wHzziQ5/wmToJugY/aFyzWKSl
+   VdSI1cp84KP+zz2Xn9j50MEr2HNqhRiFUy9fruFKa9lfj2UJl85w/kzTa
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10923"; a="1950190"
+X-IronPort-AV: E=Sophos;i="6.04,275,1695711600"; 
+   d="scan'208";a="1950190"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Dec 2023 02:12:56 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10923"; a="808533599"
+X-IronPort-AV: E=Sophos;i="6.04,275,1695711600"; 
+   d="scan'208";a="808533599"
+Received: from ijarvine-mobl1.ger.corp.intel.com (HELO ijarvine-mobl2.mshome.net) ([10.237.66.38])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Dec 2023 02:12:53 -0800
+Date:   Thu, 14 Dec 2023 12:12:50 +0200 (EET)
+From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
+To:     Reinette Chatre <reinette.chatre@intel.com>
+cc:     linux-kselftest@vger.kernel.org, Shuah Khan <shuah@kernel.org>,
+        Shaopeng Tan <tan.shaopeng@jp.fujitsu.com>,
+        =?ISO-8859-15?Q?Maciej_Wiecz=F3r-Retman?= 
+        <maciej.wieczor-retman@intel.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v3 01/29] selftests/resctrl: Convert perror() to
+ ksft_perror() or ksft_print_msg()
+In-Reply-To: <1e7ede83-ac80-43aa-a452-0f95b32d849c@intel.com>
+Message-ID: <c82b5c4-72e-c1ad-dce9-e5adf5d4a9b@linux.intel.com>
+References: <20231211121826.14392-1-ilpo.jarvinen@linux.intel.com> <20231211121826.14392-2-ilpo.jarvinen@linux.intel.com> <1e7ede83-ac80-43aa-a452-0f95b32d849c@intel.com>
 MIME-Version: 1.0
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Type: multipart/mixed; boundary="8323329-830180910-1702548775=:5690"
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -71,32 +65,79 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi all.
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-I'm having trouble getting evdev to run in a simulated Buildroot
-environment on riscv32. Evtest (and the x11 driver) seems to be
-receiving garbage data from input devices.
+--8323329-830180910-1702548775=:5690
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 
-Analyzing the input_event struct shows that the kernel uses 32-bit (aka
-__kernel_ulong_t) values for __sec & __usec.
-Evtest on the other hand interprets these variables as 64-bit time_t
-values in a timeval struct, resulting in a mismatch between the kernel
-and userspace.
+On Wed, 13 Dec 2023, Reinette Chatre wrote:
 
-What would be the correct size for these values on a 32-bit
-architecture that uses 64-bit time_t values?
+> Hi Ilpo,
+> 
+> On 12/11/2023 4:17 AM, Ilpo Järvinen wrote:
+> > The resctrl selftest code contains a number of perror() calls. Some of
+> > them come with hash character and some don't. The kselftest framework
+> > provides ksft_perror() that is compatible with test output formatting
+> > so it should be used instead of adding custom hash signs.
+> > 
+> > Some perror() calls are too far away from anything that sets error.
+> > For those call sites, ksft_print_msg() must be used instead.
+> > 
+> > Convert perror() to ksft_perror() or ksft_print_msg().
+> > 
+> > Other related changes:
+> > - Remove hash signs
+> > - Remove trailing stops & newlines from ksft_perror()
+> > - Add terminating newlines for converted ksft_print_msg()
+> > - Use consistent capitalization
+> > 
+> 
+> Another great cleanup. Also thanks for fixing some non-sensical messages.
+> 
+> ...
+> 
+> > @@ -149,7 +149,7 @@ int cat_perf_miss_val(int cpu_no, int n, char *cache_type)
+> >  	param.num_of_runs = 0;
+> >  
+> >  	if (pipe(pipefd)) {
+> > -		perror("# Unable to create pipe");
+> > +		ksft_perror("Unable to create pipe");
+> >  		return errno;
+> >  	}
+> >  
+> > @@ -185,7 +185,7 @@ int cat_perf_miss_val(int cpu_no, int n, char *cache_type)
+> >  			 * Just print the error message.
+> >  			 * Let while(1) run and wait for itself to be killed.
+> >  			 */
+> > -			perror("# failed signaling parent process");
+> > +			ksft_perror("Failed signaling parent process");
+> >  
+> 
+> Partial writes are not actually errors and it cannot be expected that errno be set
+> in these cases. In these cases I think ksft_print_msg() would be more appropriate.
 
+I can change those to use print instead although I don't think these will
+fail for other reasons than a real error as the pipe should be empty and 
+only single byte is written to it.
 
-Kind regards
+> >  		if (fprintf(fp, "Pid: %d \t Mem_BW_iMC: %f \t Mem_BW_resc: %lu \t Difference: %lu\n",
+> >  			    bm_pid, bw_imc, bw_resc, diff) <= 0) {
+> > +			ksft_perror("Could not log results");
+> >  			fclose(fp);
+> > -			perror("Could not log results.");
+> >  
+> >  			return errno;
+> 
+> >From what I can tell fprintf() does not set errno on error. Perhaps this
+> should rather be ksft_print_msg()?
 
---=20
-Antonios Salios
-Student Employee
+Oh, what a stupid gotcha in libc. I just assumed it does set errno without 
+even checking... because why it wouldn't follow the custom. ...It seems 
+nothing can be relied on :-/.
 
-MachineWare GmbH | www.machineware.de
-H=C3=BChnermarkt 19, 52062 Aachen, Germany
-Amtsgericht Aachen HRB25734
+-- 
+ i.
 
-Gesch=C3=A4ftsf=C3=BChrung
-Lukas J=C3=BCnger
-Dr.-Ing. Jan Henrik Weinstock
+--8323329-830180910-1702548775=:5690--
