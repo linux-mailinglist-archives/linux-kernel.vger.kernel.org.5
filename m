@@ -2,133 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 694BD812E8E
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 12:30:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 59EB5812E97
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 12:31:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1443960AbjLNLap (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 06:30:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47308 "EHLO
+        id S1443954AbjLNLbg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 06:31:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52902 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1443921AbjLNLan (ORCPT
+        with ESMTP id S1443866AbjLNLbe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 06:30:43 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3194B7
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 03:30:49 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5F7E6C433C7;
-        Thu, 14 Dec 2023 11:30:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1702553449;
-        bh=Fk0lWlyniz2h5a3rEQxROF0ImdCpeMxK4CdTL7O7dQc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=V4XPPGfs7RCX22aO8nbSp3XIZux1Lb2jKnmSf9SHDPgFiZMu5zgYkzmzL4PgIOH4t
-         QuZ0eCyXprrpyBJQQgTMltqZ8ZVyWj4uTJDAphoVJ8oFckdNACOC0WGNKn9r04t2oq
-         xltWlehbXiB67ZMAQWnrQoVj+DiZFHN+NBfjuvU1NjyfB2Ddu2aM8iXCgFRBLDoYay
-         g16QEPXF4AC9zWT9gmFiFBsI33WYK0hPLPOcUfOEHPmaactnayJJez1VEVBtwiNR9Y
-         JXNF0ItDpZyc3IIfSo37+EWJEtomFXaWoVDWCwsbw7IKpOoNzZjlXdqVxDxK0o7E4d
-         aB6mka1O0ln2A==
-Received: from johan by xi.lan with local (Exim 4.96.2)
-        (envelope-from <johan@kernel.org>)
-        id 1rDjvR-0008HE-0v;
-        Thu, 14 Dec 2023 12:30:46 +0100
-Date:   Thu, 14 Dec 2023 12:30:45 +0100
-From:   Johan Hovold <johan@kernel.org>
-To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc:     Manivannan Sadhasivam <mani@kernel.org>, andersson@kernel.org,
-        konrad.dybcio@linaro.org, vkoul@kernel.org, sboyd@kernel.org,
-        mturquette@baylibre.com, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-phy@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
-        devicetree@vger.kernel.org,
-        Shazad Hussain <quic_shazhuss@quicinc.com>,
-        quic_cang@quicinc.com
-Subject: Re: [PATCH 00/16] Fix Qcom UFS PHY clocks
-Message-ID: <ZXrnZeDYOsteY5zT@hovoldconsulting.com>
-References: <20231214091101.45713-1-manivannan.sadhasivam@linaro.org>
- <ZXrVxmxY6wZprbBa@hovoldconsulting.com>
- <20231214103907.GL2938@thinkpad>
- <ZXrgWK5wZz6dAkKP@hovoldconsulting.com>
- <20231214111409.GB48078@thinkpad>
+        Thu, 14 Dec 2023 06:31:34 -0500
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7048B7
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 03:31:40 -0800 (PST)
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <mkl@pengutronix.de>)
+        id 1rDjvo-0007MZ-Dp; Thu, 14 Dec 2023 12:31:08 +0100
+Received: from [2a0a:edc0:0:b01:1d::7b] (helo=bjornoya.blackshift.org)
+        by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <mkl@pengutronix.de>)
+        id 1rDjvm-00Fn0N-Dm; Thu, 14 Dec 2023 12:31:06 +0100
+Received: from pengutronix.de (unknown [172.20.34.65])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        (Authenticated sender: mkl-all@blackshift.org)
+        by smtp.blackshift.org (Postfix) with ESMTPSA id 5826D262EFD;
+        Thu, 14 Dec 2023 11:31:05 +0000 (UTC)
+Date:   Thu, 14 Dec 2023 12:31:04 +0100
+From:   Marc Kleine-Budde <mkl@pengutronix.de>
+To:     Conor Dooley <conor@kernel.org>
+Cc:     linux-riscv@lists.infradead.org,
+        Conor Dooley <conor.dooley@microchip.com>,
+        Daire McNamara <daire.mcnamara@microchip.com>,
+        Wolfgang Grandegger <wg@grandegger.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>, linux-can@vger.kernel.org,
+        netdev@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org
+Subject: Re: [PATCH RESEND v1 2/7] dt-bindings: can: mpfs: add missing
+ required clock
+Message-ID: <20231214-tinderbox-glitzy-60d1936ab85f-mkl@pengutronix.de>
+References: <20231208-reenter-ajar-b6223e5134b3@spud>
+ <20231208-palpitate-passable-c79bacf2036c@spud>
+ <20231212-unreeling-depose-8b6b2e032555-mkl@pengutronix.de>
+ <20231213-waffle-grueling-3a5c3879395b@spud>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="td3sd7zfsqtxdr4k"
 Content-Disposition: inline
-In-Reply-To: <20231214111409.GB48078@thinkpad>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+In-Reply-To: <20231213-waffle-grueling-3a5c3879395b@spud>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: mkl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 14, 2023 at 04:44:09PM +0530, Manivannan Sadhasivam wrote:
-> + Can
-> 
-> On Thu, Dec 14, 2023 at 12:00:40PM +0100, Johan Hovold wrote:
-> > [ +CC: Shazad ]
-> > 
-> > On Thu, Dec 14, 2023 at 04:09:07PM +0530, Manivannan Sadhasivam wrote:
-> > > On Thu, Dec 14, 2023 at 11:15:34AM +0100, Johan Hovold wrote:
-> > > > On Thu, Dec 14, 2023 at 02:40:45PM +0530, Manivannan Sadhasivam wrote:
 
-> > Unless the PHY consumes CXO directly, it should not be included in the
-> > binding as you are suggesting here.
-> 
-> PHY is indeed directly consuming CXO. That's why I included it in the binding.
+--td3sd7zfsqtxdr4k
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Ok, good. It's a bit frustrating that people can even seem to agree on
-answers to direct questions about that.
- 
-> > We discussed this at some length at the time with Bjorn and Shazad who
-> > had access to the documentation and the conclusion was that, at least on
-> > sc8280xp, the PHY does not use CXO directly and instead it should be
-> > described as a parent to the UFS refclocks in the clock driver:
-> > 
-> > 	https://lore.kernel.org/lkml/Y2OEjNAPXg5BfOxH@hovoldconsulting.com/
-> > 
-> > The downstream devicetrees have a bad habit of including parent clocks
-> > directly in the consumer node instead of modelling this in clock driver
-> > also for other peripherals.
-> >  
-> 
-> No, I can assure that you got the wrong info. UFS PHY consumes the clock
-> directly from RPMh. It took me several days to dig through the UFS and PHY docs
-> and special thanks to Can Guo from UFS team, who provided much valuable
-> information about these clocks.
+On 13.12.2023 13:02:49, Conor Dooley wrote:
+> On Tue, Dec 12, 2023 at 09:49:41PM +0100, Marc Kleine-Budde wrote:
+> > On 08.12.2023 17:12:24, Conor Dooley wrote:
+> > > From: Conor Dooley <conor.dooley@microchip.com>
+> > >=20
+> > > The CAN controller on PolarFire SoC has an AHB peripheral clock _and_=
+ a
+> > > CAN bus clock. The bus clock was omitted when the binding was written,
+> > > but is required for operation. Make up for lost time and add it.
+> > >=20
+> > > Cautionary tale in adding bindings without having implemented a real
+> > > user for them perhaps.
+> > >=20
+> > > Fixes: c878d518d7b6 ("dt-bindings: can: mpfs: document the mpfs CAN c=
+ontroller")
+> > > Signed-off-by: Conor Dooley <conor.dooley@microchip.com>
+> > > ---
+> > >  .../devicetree/bindings/net/can/microchip,mpfs-can.yaml    | 7 +++++=
+--
+> > >  1 file changed, 5 insertions(+), 2 deletions(-)
+> > >=20
+> > > diff --git a/Documentation/devicetree/bindings/net/can/microchip,mpfs=
+-can.yaml b/Documentation/devicetree/bindings/net/can/microchip,mpfs-can.ya=
+ml
+> > > index 45aa3de7cf01..05f680f15b17 100644
+> > > --- a/Documentation/devicetree/bindings/net/can/microchip,mpfs-can.ya=
+ml
+> > > +++ b/Documentation/devicetree/bindings/net/can/microchip,mpfs-can.ya=
+ml
+> > > @@ -24,7 +24,10 @@ properties:
+> > >      maxItems: 1
+> > > =20
+> > >    clocks:
+> > > -    maxItems: 1
+> > > +    maxItems: 2
+> > > +    items:
+> > > +      - description: AHB peripheral clock
+> > > +      - description: CAN bus clock
+> >=20
+> > Do we we want to have a "clock-names" property, as we need the clock
+> > rate of the CAN bus clock.
+>=20
+> We should not need the clock-names property to be able to get both of
+> the clocks. clk_bulk_get_all() for example should be usable here.
 
-Sounds like you've done your research.
+ACK, but we need the clock rate of CAN clock. Does this binding check
+that the CAN clock rate is the 2nd one?
 
-> > What exactly is wrong with those commits? We know that the controller
-> > does not consume GCC_UFS_REF_CLKREF_CLK directly, but describing that as
-> > such for now was a deliberate choice:
-> > 
-> > 	GCC_UFS_REF_CLKREF_CLK is the clock to the devices, but as we
-> > 	don't represent the memory device explicitly it seems suitable
-> > 	to use as "ref_clk" in the ufshc nodes - which would then match
-> > 	the special handling of the "link clock" in the UFS driver.
-> >  
-> 
-> No, GCC_UFS_REF_CLKREF_CLK is _not_ the clock to UFS devices. I haven't found
-> information about this specific register in GCC. Initially I thought this is for
-> enabling QREF clocks for the UFS MEM phy, but I haven't found the answer yet.
+regards,
+Marc
 
-Just quoting Bjorn.
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde          |
+Embedded Linux                   | https://www.pengutronix.de |
+Vertretung N=C3=BCrnberg              | Phone: +49-5121-206917-129 |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-9   |
 
-> But as I said earlier, reference clock to UFS devices comes directly from the
-> controller and there is a specfic register for controlling that. Starting from
-> SM8550, reference clock comes from RPMh.
+--td3sd7zfsqtxdr4k
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Sure, but that was only part of what those commits did or claimed. Bjorn
-also explicitly stated that those refclocks were sourced from CXO, even
-though I now see a claim from Shazad in that thread claiming the
-opposite:
+-----BEGIN PGP SIGNATURE-----
 
-	https://lore.kernel.org/all/Y2Imnf1+v5j5CH9r@hovoldconsulting.com/
+iQEzBAABCgAdFiEEDs2BvajyNKlf9TJQvlAcSiqKBOgFAmV653YACgkQvlAcSiqK
+BOhMmggApdGofXs7BcJbjT8hpDnLCGwmugpp0y3veU4Okm1P5NHwewyOaznIC4l7
+VKu8jX23jiHIWYz2czWfTtoPskoi2RCs5Hj4t1eoFYywF9BAAwHITK7KtsR9fuZ7
+XwdRZzjWHEh+I0BFmKv6GEpldjTZz269Nn47wy96FKErGKF2taHACZ97p5nqIwMz
+uB7dZtekAf4scC6jKLZYwUUl68YwktTMZWu9PkjfH3oLS+H2oXHxxzUg6mME5R/o
+2Nj92O17r0Md7j3QioEGIKNrr7dKubY0QPgZ+lP/ImoLgFDmAPC6tYlWR00kDf9b
+ho3kmb28TrV4g0HQA1ZMBrJX78JxlA==
+=M/Nz
+-----END PGP SIGNATURE-----
 
-Without access to docs I can only ask questions and try to do tedious
-inferences from incomplete open sources (e.g. downstream devicetrees).
-
-Johan
+--td3sd7zfsqtxdr4k--
