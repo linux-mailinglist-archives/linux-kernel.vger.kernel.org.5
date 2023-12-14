@@ -2,107 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 28F29813402
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 16:07:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AC9081340E
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 16:08:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1573651AbjLNPHe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 10:07:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41082 "EHLO
+        id S1573654AbjLNPIH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 10:08:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51452 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1573635AbjLNPHd (ORCPT
+        with ESMTP id S1573643AbjLNPIF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 10:07:33 -0500
-Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6538111B
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 07:07:40 -0800 (PST)
-Received: by mail-pg1-x52f.google.com with SMTP id 41be03b00d2f7-517ab9a4a13so6953819a12.1
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 07:07:40 -0800 (PST)
+        Thu, 14 Dec 2023 10:08:05 -0500
+Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C4F712A;
+        Thu, 14 Dec 2023 07:08:11 -0800 (PST)
+Received: by mail-pf1-x432.google.com with SMTP id d2e1a72fcca58-6ceb27ec331so5356076b3a.1;
+        Thu, 14 Dec 2023 07:08:11 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1702566460; x=1703171260; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=J9lMPrZwLiHFysOzsWqCBFNM5vjGopX4XPDNLVg4mW8=;
-        b=fCGuC6t2nN42viOr2YKBAq0Xo+hUP/amRbiGwv5e07F6PM6Mz+7Qzwi8Fs/ucMcYC3
-         jZUtbY7uUH83tmsBWDQiU7PSXgAbdVKVxK+B+ruiRN/iRXF4903eqTh7qyWKvZOzcyHW
-         qNNku8yRzWPt9p6JxnHLUDcBeH9ig3E+74EPq+NhnmScZm//E3f+6h4qQH1yGuztgw+A
-         wEqLBIA4ektv/MpIXTQc5iUHjld32HE0/V2KWFTYrILpAm1FVwRe/csOy2V5o9g+TWIT
-         8P5Ldid5sSWvqZ+MOEw1nX+rfl3Bof3rc60I4FVnfH6ckR8GBKLJf6bggQ0pmgNey/f8
-         Q+Nw==
+        d=gmail.com; s=20230601; t=1702566491; x=1703171291; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=+Vk5vGqMfI0jrxtf/OidVbCY3Nu25fYb1sjU0YfaOb4=;
+        b=Pf96+4HjHSmofVr1XYlUVkA5vFGavVdSzTJN9Ccy17ycswGT3bkEG/i4h4kOAkOUGg
+         h4kFmMyrQHiKOVi9u0UCj5yked+BeUXcdMeKXAt/DEX0PN6zBiReteKaYPBGjO+M8Zst
+         8vEcxPG0UKsppspf49estqbo6G/v0ETIY/qhn9/UwddonlU3DMQdiXLUtQG8SrIUa+Bq
+         1jb5xNEIiS0UMb+Tr+7dv1w9RVoK2C0svnc/p8SnxKGJ+ftoE5eh64n4PToxdN6rA+th
+         pKOfRVakU1/qBeFVUo0+awJlPYl7OzlIzd9FVe++c4vO1dod3oONyKCOl+ECFiTl4Tku
+         gZkQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702566460; x=1703171260;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=J9lMPrZwLiHFysOzsWqCBFNM5vjGopX4XPDNLVg4mW8=;
-        b=SByhEHTZUfQY5twX7LfvZKOibeFLaYr1LB6lmWqlNTFekDqUCqP6aSMfEq3DA4hup/
-         a04CvllHelWntmGdKGoD2O0vylMVs3MhYQu9SpioOla9Ylz5iqXYirXJAhFlPz3q/khu
-         DzojM7QkkfADa/Xwc3wBcPITuy/tSxTe5DY7oJorODB1S8ofOeMeZ3TR2TOoeLdbbOiL
-         +S5t/TfY0lzdPimiIveMf/K+kPnR0oY/bzoiokEDtViD8t7KvSMi0Z7cftjPeKTB8WM3
-         ddOe6zz0t/cenb9RgdelPdSEj1up/l+ufy9DoZ/XR3SeZrm0+PFGvSlBg65PlSA6iDLv
-         +23Q==
-X-Gm-Message-State: AOJu0YziVbfbURkFgsC/ljHbvllkqSnfwIVYsj5WCbbX+5X9MoyI/dg4
-        ivmNi1ER3sf9WHRIrr4OjPeG75JPdDJmnRwL6tedcg==
-X-Google-Smtp-Source: AGHT+IEe4LHmA9Ois0luIdXZnO0T77VZxNQ9yNINBTZ2R/6zYH/aXq6Vfe7Uba+cQAfGN4QaX7I8+rAiF6Etw8yknyU=
-X-Received: by 2002:a17:90b:388:b0:28a:f2dd:9441 with SMTP id
- ga8-20020a17090b038800b0028af2dd9441mr1630238pjb.64.1702566459845; Thu, 14
- Dec 2023 07:07:39 -0800 (PST)
+        d=1e100.net; s=20230601; t=1702566491; x=1703171291;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=+Vk5vGqMfI0jrxtf/OidVbCY3Nu25fYb1sjU0YfaOb4=;
+        b=sba5nNwLqusMMHCJ5fmRV6C5rpBcn6MsgXhcQilKEpfPoxYM2uiFsT8XEqAIiXTDRP
+         SqIOOlwB/SUFn6vrwMmGn6eRuZLgmsgZpCr8BKCefbGtUy4+YAI/eS++NpTD/SWtckU+
+         G3Tb5kk7gT7CyUKkCVYj3bXsNU6e+fpH7zJM49ih/LA4yM+2uMmjKSs8LMwjA0XcJUd8
+         2d9skS4yMP3wz703MczLUl83H6Ip5Zcr+FEJdnKkXCaB1+AHFNIJKnvrMbHUlOWYduB9
+         1G4m7HZ5yc/2kWr6jTM4pl5uqaFrc4IYMe7B1DUdxuqv1V30xcgF2UlNTVFaa2s225t6
+         FD5g==
+X-Gm-Message-State: AOJu0YwU4chdEL/jA1Hg3z3Nr7qvjdIvvA9GqAem/IEbtdYrzpKJT9rO
+        ENOgy8AM2pfVT5/t/bUtaEE=
+X-Google-Smtp-Source: AGHT+IFcad40d+eKko2pITmDPqtGE+aRifb8ZZ9Ogo/7g+a9X7FduxuChJw6GnsoUqp9+h/NGy6QFA==
+X-Received: by 2002:a05:6a00:2286:b0:6ce:4288:f749 with SMTP id f6-20020a056a00228600b006ce4288f749mr6708017pfe.14.1702566489680;
+        Thu, 14 Dec 2023 07:08:09 -0800 (PST)
+Received: from rigel (60-241-235-125.tpgi.com.au. [60.241.235.125])
+        by smtp.gmail.com with ESMTPSA id y19-20020a056a00191300b006ce75111ce7sm11808980pfi.162.2023.12.14.07.08.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 Dec 2023 07:08:09 -0800 (PST)
+Date:   Thu, 14 Dec 2023 23:08:05 +0800
+From:   Kent Gibson <warthog618@gmail.com>
+To:     Bartosz Golaszewski <brgl@bgdev.pl>
+Cc:     linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linus.walleij@linaro.org, andy@kernel.org
+Subject: Re: [PATCH v2 2/5] gpiolib: cdev: relocate debounce_period_us from
+ struct gpio_desc
+Message-ID: <ZXsaVSskFOXcSLZG@rigel>
+References: <20231214095814.132400-1-warthog618@gmail.com>
+ <20231214095814.132400-3-warthog618@gmail.com>
+ <CAMRc=MeoeOgZaz6xT+ScVjOemVovrEHvQDBvqsN1pD9U3haE_A@mail.gmail.com>
+ <ZXsU_UN6g0Fdj4qx@rigel>
+ <CAMRc=Mf4FpzLqQZ5phRZLbTsGCfdYaELZHnLM13vnWnkAkLXkQ@mail.gmail.com>
 MIME-Version: 1.0
-References: <20231214105243.3707730-1-tudor.ambarus@linaro.org> <20231214105243.3707730-2-tudor.ambarus@linaro.org>
-In-Reply-To: <20231214105243.3707730-2-tudor.ambarus@linaro.org>
-From:   Sam Protsenko <semen.protsenko@linaro.org>
-Date:   Thu, 14 Dec 2023 09:07:28 -0600
-Message-ID: <CAPLW+4kr=aVjuqGz3ps5f6EzM+QASTFEoB57g+fR7jKH0s+1Zw@mail.gmail.com>
-Subject: Re: [PATCH 01/13] dt-bindings: clock: google,gs101: fix CMU_TOP gate
- clock names
-To:     Tudor Ambarus <tudor.ambarus@linaro.org>
-Cc:     peter.griffin@linaro.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, mturquette@baylibre.com,
-        sboyd@kernel.org, conor+dt@kernel.org, andi.shyti@kernel.org,
-        alim.akhtar@samsung.com, gregkh@linuxfoundation.org,
-        jirislaby@kernel.org, catalin.marinas@arm.com, will@kernel.org,
-        s.nawrocki@samsung.com, tomasz.figa@gmail.com,
-        cw00.choi@samsung.com, arnd@arndb.de, andre.draszik@linaro.org,
-        saravanak@google.com, willmcvicker@google.com,
-        linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-clk@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-i2c@vger.kernel.org, linux-serial@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAMRc=Mf4FpzLqQZ5phRZLbTsGCfdYaELZHnLM13vnWnkAkLXkQ@mail.gmail.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 14, 2023 at 4:52=E2=80=AFAM Tudor Ambarus <tudor.ambarus@linaro=
-.org> wrote:
+On Thu, Dec 14, 2023 at 03:56:37PM +0100, Bartosz Golaszewski wrote:
+> On Thu, Dec 14, 2023 at 3:45 PM Kent Gibson <warthog618@gmail.com> wrote:
+> >
+> > On Thu, Dec 14, 2023 at 03:29:28PM +0100, Bartosz Golaszewski wrote:
+> > > On Thu, Dec 14, 2023 at 10:58 AM Kent Gibson <warthog618@gmail.com> wrote:
+> > > >
+> > > >
+> > > > +/*
+> > > > + * Used to populate gpio_v2_line_info with cdev specific fields not contained
+> > > > + * in the struct gpio_desc.
+> > > > + * A line is determined to contain supplemental information by
+> > > > + * line_is_supplemental().
+> > > > + */
+> > > > +static struct {
+> > > > +       /* a rbtree of the struct lines containing the supplemental info */
+> > > > +       struct rb_root tree;
+> > > > +       /* covers tree */
+> > > > +       spinlock_t lock;
+> > >
+> > > Looks like this is never taken from atomic context? Can this be a mutex instead?
+> > >
+> >
+> > Correct, only from thread context.
+> >
+> > Can be a mutex, but it only covers tree lookups which should be quick
+> > as the tree is kept minimal, and I wouldn't expect it to ever get to the
+> > mutex slowpath, so a spinlock seemed more appropriate.
+> >
 >
-> The gs101 clock names are derived from the clock register names under
-> some certain rules. In particular, for the gate clocks the following is
-> documented and expected in the gs101 clock driver:
+> Fair enough.
 >
->   Replace CLK_CON_GAT_CLKCMU      with CLK_GOUT_CMU and gout_cmu
->   Replace CLK_CON_GAT_GATE_CLKCMU with CLK_GOUT_CMU and gout_cmu
->
->   For gates remove _UID _BLK _IPCLKPORT and _RSTNSYNC
+> Bart
 >
 
-Doesn't it break existing gs101 device tree?
+While I think of it, what tree should I be basing on?
+These patches are based on v6.7-rc5, and I'm not aware of any other
+changes they may contend with, but best to be on the right tree to be
+sure.
 
-> The CMU TOP gate clock names missed to include the required "CMU"
-> differentiator which will cause name collisions with the gate clock names
-> of other clock units. Fix the TOP gate clock names and include "CMU" in
-> their name.
->
-> Fixes: 0a910f160638 ("dt-bindings: clock: Add Google gs101 clock manageme=
-nt unit bindings")
-> Signed-off-by: Tudor Ambarus <tudor.ambarus@linaro.org>
-> ---
+Cheers,
+Kent.
 
-(snip)
