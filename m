@@ -2,94 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AE4581374D
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 18:07:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C0C42813752
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 18:07:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1443630AbjLNRGx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 12:06:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33832 "EHLO
+        id S1443716AbjLNRHB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 12:07:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33874 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229446AbjLNRGw (ORCPT
+        with ESMTP id S230365AbjLNRG4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 12:06:52 -0500
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9F1DB7
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 09:06:57 -0800 (PST)
-Received: by mail-ed1-x533.google.com with SMTP id 4fb4d7f45d1cf-54dcfca54e0so10954010a12.1
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 09:06:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1702573616; x=1703178416; darn=vger.kernel.org;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=Vg4pzsKp2Qe/t4K3eYUmtV9LkGCsbM0iu+iGTaqM5Ck=;
-        b=F2sIpfGDpB6dmvn2e3bPyI+qV/p3URKD27bn+g/EhOBcqA6Y9M19bfmll9ZA6QUG2g
-         2V8NKMTEoDhRxmyp+rdOCwlY4vFyzuRPwVmLRCL59lFtWP/HUVDIipARUMrPiuvbvPj7
-         xSj7LP/wFI0YBm6Lmt/PQqt/4LBjkMwc12smF/a0jq5x339wVkzlrFfzqWCoj9U4oqKX
-         ReP2q13gGMi3Elj1AvFxbrVfpuIdhyssyboNJN5fP/d4y3v6i+g2G+Soe1Pr431/N3cy
-         bJIv0ESkP0KapRncK2F0OAvipbeI3ni9Z5TdJ57nt4j7aYVX7QGdpFRNyi9/JAFx0kd9
-         MHiA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702573616; x=1703178416;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Vg4pzsKp2Qe/t4K3eYUmtV9LkGCsbM0iu+iGTaqM5Ck=;
-        b=cpjb7CEkxstaW5koZmLEpzTLnj6ze/aBOTwGrnW+mcDx0fEFWoGrouawHXPrIoi8te
-         YMY7HxlTnE0QBmRFxjyzheaWqrF3mn4B4meJASh5JGpBNGZD8JRmuFvZGpVHz0O6mrso
-         +jR0rXAC8xZSK5InMLj3Rw8PSewQpbu5hI1hAh/d+iK57vwzlNpNivIIVozr1/+STckz
-         C30AMxxuRYiuORpPERkK6LjGbvmRwMYAN+RsmbOzxjCFyyKmSex8ppHNbFwnJCLgfChT
-         aFwCUbxGlRjby3U33+Uxk0w2nz0gVFeWGb+CtDWwfekl40Vm35SOgu4lrLRqf25Jg33+
-         g67Q==
-X-Gm-Message-State: AOJu0Yz1e+SSC6TB7wX/+kFtZ3bZBkVUIun868zGJiWNTvhThx8npqb4
-        hpu1jfbYlCNc4zqyANb7ee9gKQ==
-X-Google-Smtp-Source: AGHT+IFwnubd/IcCm6zKJxoRCySo1E+aDWxfOl0YfDbKYnbz4Qx8e3oh/+MYHR5/NygWBwZ41rV4+w==
-X-Received: by 2002:a05:6402:2313:b0:552:1be8:422 with SMTP id l19-20020a056402231300b005521be80422mr1727337eda.51.1702573616379;
-        Thu, 14 Dec 2023 09:06:56 -0800 (PST)
-Received: from [127.0.1.1] ([79.115.23.25])
-        by smtp.gmail.com with ESMTPSA id y66-20020a50bb48000000b0054c77ac01f4sm7182863ede.51.2023.12.14.09.06.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Dec 2023 09:06:56 -0800 (PST)
-From:   Abel Vesa <abel.vesa@linaro.org>
-Date:   Thu, 14 Dec 2023 19:06:52 +0200
-Subject: [PATCH] dt-bindings: usb: qcom,dwc3: Add X1E80100 binding
+        Thu, 14 Dec 2023 12:06:56 -0500
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30F29114;
+        Thu, 14 Dec 2023 09:07:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=ugFB1vBKVW+nDdvfwJiPPX7fgDivYw5u4az0IoQczq4=; b=frk4DnczFWbtesoE20GmeIo/VL
+        Y9yr1aTI8RXlJaHXybkDTnXnD2SnpKUumSNlR6HzaHyNbHuzuKnC0YVIsn8TEPor2nc0L9JBinvEf
+        Z7GtRcTCc5fJCDrPlkiCMJ+bSYqfmlwKRG3L7iO8iGbJFZ0cQ9Fj9oKP2wOapkruhq2W/5pP34jeM
+        QREsOn+5C8366EnOkmKBzp53gdHTqXC2I3v7hpnx6OVZXPkLOV+7cDhaVTt1bvxmRHZ8/guR2TLJv
+        s44yCr8m8AWNtAm0WdsqTR+ZmKif+EdAsxwfPtytVEhLDzkjbA69lsGcBuWHP7SF/KYH5dz4qwsHa
+        pqw3eQKg==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:50230)
+        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.96)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1rDpAk-0001jY-0t;
+        Thu, 14 Dec 2023 17:06:54 +0000
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1rDpAl-0002i0-Nq; Thu, 14 Dec 2023 17:06:55 +0000
+Date:   Thu, 14 Dec 2023 17:06:55 +0000
+From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
+To:     Christian Marangi <ansuelsmth@gmail.com>
+Cc:     Florian Fainelli <florian.fainelli@broadcom.com>,
+        Broadcom internal kernel review list 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        David Epping <david.epping@missinglinkelectronics.com>,
+        Harini Katakam <harini.katakam@amd.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [net-next PATCH v7 4/4] net: phy: add support for PHY package
+ MMD read/write
+Message-ID: <ZXs2L0zfMaXTf+Ls@shell.armlinux.org.uk>
+References: <20231214121026.4340-1-ansuelsmth@gmail.com>
+ <20231214121026.4340-5-ansuelsmth@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20231214-x1e80100-usb-v1-1-c22be5c0109e@linaro.org>
-X-B4-Tracking: v=1; b=H4sIACs2e2UC/x3MMQqAMAxA0atIZgtJRQ1eRRy0Rs1SpUUpSO9uc
- XzD/y9ECSoRhuqFII9GPX0B1RW4Y/a7GF2LwaJtyBKZRMJIiOaOi1kct8y9cNcglOQKsmn6d+O
- U8wctMyjmXgAAAA==
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Wesley Cheng <quic_wcheng@quicinc.com>
-Cc:     linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Abel Vesa <abel.vesa@linaro.org>
-X-Mailer: b4 0.12.4
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1223; i=abel.vesa@linaro.org;
- h=from:subject:message-id; bh=M6miljaqwJPNWjTWUdahHGSlgKOEzXafA/Gjh7eL4QQ=;
- b=owEBbQKS/ZANAwAKARtfRMkAlRVWAcsmYgBlezYujPA2t+ofl5U22PW88pc91HxN9ggKKvB4Q
- uunpvqYfliJAjMEAAEKAB0WIQRO8+4RTnqPKsqn0bgbX0TJAJUVVgUCZXs2LgAKCRAbX0TJAJUV
- VowlD/9TfX/CZHexvlo32hwGjhczMG95CPnUTrqn+eZB1lcJ/dNVDvN9D8fxo6ps7+O+30+jiTn
- sO3gTfxdUh+s70sYVVZEX2nnUTFYeJcwFnI9CKoJqFisK280Su4mt7bMRN/kTWVDIBYdglEIvgZ
- grgSGTMYMqxFHe+f+EN7VwsJxuR1cN53x51GNroyO8EIYgoO8T64bcdbi6O7DpqRtF3MqP2q0p5
- ShCNrpgyZt0WiN+2a9K7gEWGrFHBZur1EBNCBBzS0RtLPL98dez1JVE14AsqEfKjQCc+EDZgzDq
- +5PFfi0GiH18d5JtoO5sHPP8vTgIfJOxymEdAbDWAUPtghnrymW2BZ00pXic+5uCNJnulEbBQxC
- 6Cc1R6awioK8ET8mLsnnGTM4CoYbM9mDPf7GZCDN+znde+nBCT007rjV+xsEcGktgvtKs5nUPXp
- VSdsSsPGuw5f+djy7knLSen0V5ZleRWGG4Hp7bX3noy37OFX+to0u7ODhCuSJH+pbVan3BExOi/
- MclXJysnOJKUuBnq/vaSBzZkQGUAH4naeltzB7CCM7WyX5nl0G0k8EUcXHxGUYMDDl1j0CrOe52
- 3MSgXPDTNowzkN/sRDa7aCMKmG10fWejuLUYGZGFz44wbq1yIOpS+PBNCRMuI2a3aYOIwkOAh7t
- 38prAfbScGrMc0Q==
-X-Developer-Key: i=abel.vesa@linaro.org; a=openpgp;
- fpr=6AFF162D57F4223A8770EF5AF7BF214136F41FAE
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231214121026.4340-5-ansuelsmth@gmail.com>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -97,47 +72,75 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add X1E80100 to the DT schema.
+On Thu, Dec 14, 2023 at 01:10:26PM +0100, Christian Marangi wrote:
+> Some PHY in PHY package may require to read/write MMD regs to correctly
+> configure the PHY package.
+> 
+> Add support for these additional required function in both lock and no
+> lock variant.
+> 
+> It's assumed that the entire PHY package is either C22 or C45. We use
+> C22 or C45 way of writing/reading to mmd regs based on the passed phydev
+> whether it's C22 or C45.
+> 
+> Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
+> ---
+> Changes v7:
+> - Change addr to u8
+> Changes v6:
+> - Fix copy paste error for kdoc
+> Changes v5:
+> - Improve function description
+> Changes v4:
+> - Drop function comments in header file
+> Changes v3:
+> - Move in phy-core.c from phy.h
+> - Base c45 from phydev
+> Changes v2:
+> - Rework to use newly introduced helper
+> - Add common check for regnum and devad
+> 
+>  drivers/net/phy/phy-core.c | 144 +++++++++++++++++++++++++++++++++++++
+>  include/linux/phy.h        |  16 +++++
+>  2 files changed, 160 insertions(+)
+> 
+> diff --git a/drivers/net/phy/phy-core.c b/drivers/net/phy/phy-core.c
+> index b729ac8b2640..7af935c6abe5 100644
+> --- a/drivers/net/phy/phy-core.c
+> +++ b/drivers/net/phy/phy-core.c
+> @@ -650,6 +650,150 @@ int phy_write_mmd(struct phy_device *phydev, int devad, u32 regnum, u16 val)
+>  }
+>  EXPORT_SYMBOL(phy_write_mmd);
+>  
+> +/**
+> + * __phy_package_read_mmd - read MMD reg relative to PHY package base addr
+> + * @phydev: The phy_device struct
+> + * @addr_offset: The offset to be added to PHY package base_addr
+> + * @devad: The MMD to read from
+> + * @regnum: The register on the MMD to read
+> + *
+> + * Convenience helper for reading a register of an MMD on a given PHY
+> + * using the PHY package base address. The base address is added to
+> + * the addr_offset value.
+> + *
+> + * Same calling rules as for __phy_read();
+> + *
+> + * NOTE: It's assumed that the entire PHY package is either C22 or C45.
+> + */
+> +int __phy_package_read_mmd(struct phy_device *phydev,
+> +			   unsigned int addr_offset, int devad,
+> +			   u32 regnum)
+> +{
+> +	struct phy_package_shared *shared = phydev->shared;
+> +	u8 addr = shared->base_addr + addr_offset;
+> +
+> +	if (addr >= PHY_MAX_ADDR)
+> +		return -EIO;
 
-Signed-off-by: Abel Vesa <abel.vesa@linaro.org>
----
- Documentation/devicetree/bindings/usb/qcom,dwc3.yaml | 3 +++
- 1 file changed, 3 insertions(+)
+The helper I mentioned in the previous patch (whether or not we do the
+rest of the range checks) would probably be a good idea to get away from
+the repetitive nature of this logic. This patch adds four more!
 
-diff --git a/Documentation/devicetree/bindings/usb/qcom,dwc3.yaml b/Documentation/devicetree/bindings/usb/qcom,dwc3.yaml
-index 3ec62027f663..473c4bfaf8a2 100644
---- a/Documentation/devicetree/bindings/usb/qcom,dwc3.yaml
-+++ b/Documentation/devicetree/bindings/usb/qcom,dwc3.yaml
-@@ -47,6 +47,7 @@ properties:
-           - qcom,sm8450-dwc3
-           - qcom,sm8550-dwc3
-           - qcom,sm8650-dwc3
-+          - qcom,x1e80100-dwc3
-       - const: qcom,dwc3
- 
-   reg:
-@@ -264,6 +265,7 @@ allOf:
-           contains:
-             enum:
-               - qcom,sc8280xp-dwc3
-+              - qcom,x1e80100-dwc3
-     then:
-       properties:
-         clocks:
-@@ -459,6 +461,7 @@ allOf:
-           contains:
-             enum:
-               - qcom,sc8280xp-dwc3
-+              - qcom,x1e80100-dwc3
-     then:
-       properties:
-         interrupts:
-
----
-base-commit: 48e8992e33abf054bcc0bb2e77b2d43bb899212e
-change-id: 20231211-x1e80100-usb-bc85887e8630
-
-Best regards,
 -- 
-Abel Vesa <abel.vesa@linaro.org>
-
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
