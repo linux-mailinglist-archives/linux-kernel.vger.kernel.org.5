@@ -1,106 +1,115 @@
-Return-Path: <linux-kernel+bounces-108-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-110-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id A8054813C54
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 22:06:18 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 60B62813C57
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 22:07:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 517F01F2251A
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 21:06:18 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 75F031C21B88
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 21:07:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8FEC16D1C4;
-	Thu, 14 Dec 2023 21:06:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8FAB76D1BC;
+	Thu, 14 Dec 2023 21:07:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b="iYRrOIhB"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="zK/oBF4S"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-io1-f51.google.com (mail-io1-f51.google.com [209.85.166.51])
+Received: from mail-yb1-f202.google.com (mail-yb1-f202.google.com [209.85.219.202])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 41ACB6ABBF
-	for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 21:05:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bgdev.pl
-Received: by mail-io1-f51.google.com with SMTP id ca18e2360f4ac-7b71b10391aso321975639f.3
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 13:05:42 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 575A06ABBE
+	for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 21:07:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--tanzirh.bounces.google.com
+Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-dbccc6dfa6cso909997276.1
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 13:07:23 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1702587942; x=1703192742; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=FYSEL7MIgSG8trWNPr7NB5+x5xH37jHR4RltoDZ173Y=;
-        b=iYRrOIhBA68YyyJHlWUUlgxTPLLZgUBmrsdxz9j7DinbKPiHy5B+b5l67KhumnxeuH
-         S4adang1PkSlav5B4HsMJaCA3QcbAqXcFpEL/ohz4ZFrOdLrAhgBV/0znlYt5Ihoj7pj
-         1JChNZsY8QtalPfEp0iiSG/StmEmwNA+4FXuWMYKGBxcvtSLCoOBNucV32DV/onfSJ5b
-         WHVyE6492+PyMZcqa9kyAgpf3CBYMjtXxvwbw+FbSwV5ZxwcVI+iRMNZu1ZfBeIqYF9+
-         ISR1yK3WDMdFhMnApB5ODyPGHoc79HyhPX4PhbFePTKbXMsEFXAjfTgAXe5lGeX7k/Zh
-         j29A==
+        d=google.com; s=20230601; t=1702588042; x=1703192842; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=89BRmpC4+tGVLj0OdN3wgdyTYPw2O8NyPVJ2rVYBYWo=;
+        b=zK/oBF4SgkYQ5xaW59MHa2kqg31OwdfD1DHqHDOx9Y0QEbHNeBrUS81VD29icpPb7A
+         +jXEut6P3DVktbrTyVETejtaoJsOFoVHpyqtT2HUtDhVf+rql66BkA13xT0RhwmUo4Md
+         vVoEjYh43XiBEePnhyiTBLFdwYK39rlFxHnhZFrj8Ka/+DLei6NKq9XLqPz5vLoyyjKR
+         /mYXL/ubOoZ1nn4r6xXzQJOfw5RB8s2zFqb9IHHcP4F1fSrwpIezyh/k/zJLZCd/UMXc
+         rVbDoRTxyUTkNaRrXEw5CQARUBAX6SIVjx+7XMA3XWIsMc+3Q0cqqX8lXD96kSF8ukPX
+         kgFw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702587942; x=1703192742;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=FYSEL7MIgSG8trWNPr7NB5+x5xH37jHR4RltoDZ173Y=;
-        b=iDc+XjWrGVMd4zEnGAtYyucjfbfn475wtcezsRYTYu0X3yjNcy4yemO+FHwy0b9vxI
-         4OnZNIg68kNEfNDtvRETYBagFAzAynS9Nh3J7WFOc9JWjieU84BVGUrFN5mkRElEv5lA
-         y1G/lIDR8sXHnv5zad0AygOvoZL1QZ7ocl5nmh1aCjkCfDjY1rKsTaSPr1UFJia3n0vy
-         QAoq8umZ8e6zJJHKxAI0YDtFApUcidF8vwMLY989L1HRkgCvIotNV1tqFBFBc5Do8e7U
-         J6krAAcdW7YAOx2rJo9h3yuQsYYdKGmsPvX/iCpey9hwUN4dKFNh91yK+I+tzKI7GZaO
-         Hk1g==
-X-Gm-Message-State: AOJu0YzkAcQagm8WMMOI7h5ixKaHqDlLDekDahTZU4tR7ZOlZw/YJCa+
-	LmU+vok2XTrj4V7oJpHo6vSuyxZCcVDYh90+xJ2f5g==
-X-Google-Smtp-Source: AGHT+IGxr066RC4yxlfM9efuBAZLfPmRjNI8ZkOw8V4w3KW2qA8hkeyLMtUVXb3U6UCex4CgLOS6TSWV9tl6OAhk7Uc=
-X-Received: by 2002:a05:6e02:19ca:b0:35e:7693:7a21 with SMTP id
- r10-20020a056e0219ca00b0035e76937a21mr10610379ill.83.1702587942177; Thu, 14
- Dec 2023 13:05:42 -0800 (PST)
+        d=1e100.net; s=20230601; t=1702588042; x=1703192842;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=89BRmpC4+tGVLj0OdN3wgdyTYPw2O8NyPVJ2rVYBYWo=;
+        b=l8hwft6wiAbwlquain/f0DPgZ0DUoFLah9sHAiHG3ZQAnKdtLpibW0/xADgpW4+9Zw
+         CPvmEGcgK19/tIHqqlUuynTdRhVjcrnhlUTdL6M5oJAJBOnqaLMyhlK+kHynxAU1LBZT
+         UQSkF2sMJbZ+caJ4J9OOzMcCG4bVstAxRkUAUzvUIlXjqDuXu7zbfp5nGItCdOVeeorX
+         suHijrZ0SFwSMdBauHBONQKK33U9MLm0J+muG9KQEVkO7t1pLTXa0jRlcZC/EQQDBchk
+         sn6mgoHH98jRJjcVDgcLvaWkvqggdIrTPFzqFkldVWE5iudjciMBidRFtBR7Ecdxw7Sf
+         c/zA==
+X-Gm-Message-State: AOJu0YzphGdrmTsla5OyjqWnb2xqNaTALzAocXCyAeqVxxnF4LYKRkdX
+	mqbbiLALOYCDK1AGLRNdLQPp/BJ3Zi0z
+X-Google-Smtp-Source: AGHT+IEak763aS1pPeNAnQmbROsMYYd/NkIf8EJCbCwXKVTEc2nsI06I4KxK9BsEah7aSYwzYu2IrKAJ3sKL
+X-Received: from tanz.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:c4a])
+ (user=tanzirh job=sendgmr) by 2002:a05:6902:81:b0:dbc:5587:a079 with SMTP id
+ h1-20020a056902008100b00dbc5587a079mr192237ybs.4.1702588042049; Thu, 14 Dec
+ 2023 13:07:22 -0800 (PST)
+Date: Thu, 14 Dec 2023 21:06:11 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <ZXsxc8953uAfizLv@smile.fi.intel.com>
-In-Reply-To: <ZXsxc8953uAfizLv@smile.fi.intel.com>
-From: Bartosz Golaszewski <brgl@bgdev.pl>
-Date: Thu, 14 Dec 2023 22:05:29 +0100
-Message-ID: <CAMRc=Mc7fc2sM41oDNhCavvfZHCzwv2Y_ToquFwD+BhkVHwbhw@mail.gmail.com>
-Subject: Re: [PATCH v2 2/5] gpiolib: cdev: relocate debounce_period_us from
- struct gpio_desc
-To: Andy Shevchenko <andy@kernel.org>
-Cc: Kent Gibson <warthog618@gmail.com>, linux-kernel@vger.kernel.org, 
-	linux-gpio@vger.kernel.org, linus.walleij@linaro.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Mime-Version: 1.0
+X-B4-Tracking: v=1; b=H4sIAENue2UC/4XSTWrDMBAF4KsEr+ui0c9I01XuUbqQ5JEjSOJiB
+ 9MScvfKoZTESdFyDN97I8nnZuIx89S8bc7NyHOe8nAsg3zZNHHnjz23uStzI4VUIIVu9zlMpzE
+ f+x37jseWpXIsfTLMsSnqc+SUv66J7x9l3uXpNIzf14IZlq//Z83QQhuxUxq9DGRp2w9Dv+fXO
+ ByW7F9onkObKBqrhFHebvuDz/urW5aYZaVYLsUhKRulBmH0jf/rhadOtCoky1YFBLxb+FqsKsW
+ qFGvjrHBdchTMenFd8XrxKYCOQFYnXntT8ab4lMCRpnIAjWuPt/7JxePiJbJMIJKLtPa24m3xj
+ EKCQnAcu7V3Fe+Klz4SRUcQ4sP5qeKpeKFSedzESlNcexCVABAlgdCTRIGO0T0kQC1h+XnRmcD GitB1d3dwuVx+AMor9c6kAwAA
+X-Developer-Key: i=tanzirh@google.com; a=ed25519; pk=UeRjcUcv5W9AeLGEbAe2+0LptQpcY+o1Zg0LHHo7VN4=
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1702588040; l=922;
+ i=tanzirh@google.com; s=20231204; h=from:subject:message-id;
+ bh=nZp1XvZPyepFJiRIjWff+689JRuWK2jeokDFwb+Pi2g=; b=yfdKwq1qTjzEfhbEEXr5IeMJ/rmRQ4DlYIo+Nul0PS3tzNUos1O7TrQ3BjAxNCL7XeJ3I7Xmt
+ GTka5JhU0eSCsswrfahAS7Z3dPLTiceY8Q/arMYPCqqlHpuyexd/7Fr
+X-Mailer: b4 0.12.3
+Message-ID: <20231214-libstringheader-v2-0-0f195dcff204@google.com>
+Subject: [PATCH v2 0/2] shrink lib/string.i via IWYU
+From: tanzirh@google.com
+To: Kees Cook <keescook@chromium.org>
+Cc: Andy Shevchenko <andy@kernel.org>, linux-hardening@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, Nick DeSaulniers <nnn@google.com>, 
+	Andrew Morton <akpm@linux-foundation.org>, llvm@lists.linux.dev, 
+	Al Viro <viro@zeniv.linux.org.uk>, Tanzir Hasan <tanzirh@google.com>
+Content-Type: text/plain; charset="utf-8"
 
-On Thu, Dec 14, 2023 at 5:47=E2=80=AFPM Andy Shevchenko <andy@kernel.org> w=
-rote:
->
->
-> On Thu, Dec 14, 2023 at 11:08:05PM +0800, Kent Gibson wrote:
-> > On Thu, Dec 14, 2023 at 03:56:37PM +0100, Bartosz Golaszewski wrote:
->
-> ...
->
-> > While I think of it, what tree should I be basing on?
-> > These patches are based on v6.7-rc5, and I'm not aware of any other
-> > changes they may contend with, but best to be on the right tree to be
-> > sure.
->
-> General rule is to base on the target subsystem tree. In this case
-> it's Bart's gpio/for-next AFAIU.
->
+This patch series changes the include list of string.c to minimize
+the preprocessing size. The patch series intends to remove kernel.h
+which causes problems in the sh architecture because kernel.h is 
+not properly declared in asm/word-at-a-time.h
 
-Normally the patches should apply on top of
+---
 
-    git://git.kernel.org/pub/scm/linux/kernel/git/brgl/linux.git gpio/for-n=
-ext
+---
+Changes in v2:
+- Transformed into a patch series
+- Changed asm inclusions to linux inclusions
+- added a patch to sh
+- Link to v1: https://lore.kernel.org/r/20231205-libstringheader-v1-1-7f9c573053a7@gmail.com
 
-Any conflicts between maintainer trees are handled upstream.
+---
+Tanzir Hasan (2):
+      sh: Added kernel.h to word-at-a-time
+      lib/string: shrink lib/string.i via IWYU
 
-Bart
+ arch/sh/include/asm/word-at-a-time.h |  1 +
+ lib/string.c                         | 14 +++++++-------
+ 2 files changed, 8 insertions(+), 7 deletions(-)
+---
+base-commit: 33cc938e65a98f1d29d0a18403dbbee050dcad9a
+change-id: 20231204-libstringheader-e238e2af5eec
 
-> --
-> With Best Regards,
-> Andy Shevchenko
+Best regards,
+-- 
+Tanzir Hasan <tanzirh@google.com>
+
 
