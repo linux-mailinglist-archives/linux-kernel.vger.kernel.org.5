@@ -2,102 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E018F813549
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 16:52:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CE9B481354C
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 16:53:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1573921AbjLNPwB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 10:52:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51278 "EHLO
+        id S1573922AbjLNPw5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 10:52:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42020 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1573914AbjLNPv7 (ORCPT
+        with ESMTP id S1573902AbjLNPwz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 10:51:59 -0500
-Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E47C312E;
-        Thu, 14 Dec 2023 07:52:05 -0800 (PST)
-Received: by mail-pl1-x630.google.com with SMTP id d9443c01a7336-1d359f04514so9577995ad.2;
-        Thu, 14 Dec 2023 07:52:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702569125; x=1703173925; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=LJYbFg0YusLQd7kau+7yl+2+5aq7Aytpc7bFv1yVVFU=;
-        b=dKQI+pKlbRNW/yvwOTkrGo0E62ygUEuf6NQy8Wxuk5Zph5lLp/mqUZ99xKZ7d/dyzM
-         8mZiLmdSPD7UK/wjYIkq98u2nlfDecBmaWSqsZw/KSJXxJkljb0BF+LKFScaiVFF3pV6
-         JguGHTw335/7/5PMmlOJF6HvxCkYoWO5UIDFlwT/xRJtWshFqwY0iFJzDcYV+tC4iakA
-         lwvR6yill6ujcKxsRQ5mdtDy5dMc+JEinV/+e52imBetNxXbBdDfdAtuDKv9dC58BXoC
-         ZPJKdNHyaHQXSejM2u00vvaosLg0lTSQVBnthtNUkp+b9EYveNsNyWZnEY1t45WcI1UH
-         9JPA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702569125; x=1703173925;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=LJYbFg0YusLQd7kau+7yl+2+5aq7Aytpc7bFv1yVVFU=;
-        b=v48HDSU960MG337EZg/cbYR4IPf8RzGNxZjjjck0OATwSy/KyokI+QTWdVD4gMK3FK
-         qMPYLK5o49vrkwAUMx7vn0nhPDmE/STp/JeAx8WxKUyul6+02T2ge7IccF4z1GmYY4sh
-         9zQHYKi02nX8KNv80hd6C9bTtHTmBUuFl8XWbG2Pd6E+4c6JTu67F+k2HF7M8STLjp3Y
-         17hHDwRssvdvNXI7JP9/J+MqAuvpckt/9jkkkUccD/G6ET4/w9oZ1wW0KxcewhvASsVP
-         C7Sy9G4d1t00bgYl7L+upGU+m9oA7CplvpnlXeYY/kvUmbsIzEDNBBQTpokiUqMiD7BS
-         Cb1g==
-X-Gm-Message-State: AOJu0YzNzXfigpgcwVaEpIIxjpwyxYXREdzwL3mdQa2MwrYd0WCwW9if
-        1mRO5AMrkr1qzE97tze8xEkbMxLi3z9/fw==
-X-Google-Smtp-Source: AGHT+IGLVtkXrMWtZzPCAej2kU9rW+T3NVD3Oj2+SwbxBlJMUum28HpOEywNDJUC+UADtGETmjTfLQ==
-X-Received: by 2002:a17:90b:34a:b0:286:bd7a:9f7e with SMTP id fh10-20020a17090b034a00b00286bd7a9f7emr4439129pjb.29.1702569125260;
-        Thu, 14 Dec 2023 07:52:05 -0800 (PST)
-Received: from Gentoo ([117.189.237.103])
-        by smtp.gmail.com with ESMTPSA id nd10-20020a17090b4cca00b0028af27eeaf1sm2784079pjb.36.2023.12.14.07.51.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Dec 2023 07:52:04 -0800 (PST)
-Date:   Thu, 14 Dec 2023 23:51:50 +0800
-From:   Jianhua Lu <lujianhua000@gmail.com>
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Banajit Goswami <bgoswami@quicinc.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
-        linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 1/4] ASoC: qcom: common: Add qcom_snd_tdm_hw_params
- function
-Message-ID: <ZXsklsO7nOqBFgzt@Gentoo>
-References: <20231213123556.20469-1-lujianhua000@gmail.com>
- <7b13b8b6-9048-48a3-b1a1-e62de88e8171@sirena.org.uk>
+        Thu, 14 Dec 2023 10:52:55 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8214D98;
+        Thu, 14 Dec 2023 07:53:02 -0800 (PST)
+X-IronPort-AV: E=McAfee;i="6600,9927,10924"; a="385550865"
+X-IronPort-AV: E=Sophos;i="6.04,275,1695711600"; 
+   d="scan'208";a="385550865"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Dec 2023 07:53:02 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10924"; a="724100116"
+X-IronPort-AV: E=Sophos;i="6.04,275,1695711600"; 
+   d="scan'208";a="724100116"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by orsmga003.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Dec 2023 07:53:00 -0800
+Received: from andy by smile.fi.intel.com with local (Exim 4.97)
+        (envelope-from <andy@kernel.org>)
+        id 1rDo1C-00000005sv2-0EWE;
+        Thu, 14 Dec 2023 17:52:58 +0200
+Date:   Thu, 14 Dec 2023 17:52:57 +0200
+From:   Andy Shevchenko <andy@kernel.org>
+To:     Kent Gibson <warthog618@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
+        brgl@bgdev.pl, linus.walleij@linaro.org
+Subject: Re: [PATCH v2 4/5] gpiolib: cdev: reduce locking in
+ gpio_desc_to_lineinfo()
+Message-ID: <ZXsk2XPsNppQcQAn@smile.fi.intel.com>
+References: <20231214095814.132400-1-warthog618@gmail.com>
+ <20231214095814.132400-5-warthog618@gmail.com>
+ <ZXsa39xneH6Rh7Gd@smile.fi.intel.com>
+ <ZXsc5T1G5Y28lVqw@rigel>
+ <ZXse4UDKGlVqzsyD@smile.fi.intel.com>
+ <ZXsglIJtK50XYCIV@rigel>
+ <ZXsjbvUYJGmGU6bs@rigel>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <7b13b8b6-9048-48a3-b1a1-e62de88e8171@sirena.org.uk>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <ZXsjbvUYJGmGU6bs@rigel>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_SOFTFAIL,T_SCC_BODY_TEXT_LINE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 14, 2023 at 11:11:06AM +0000, Mark Brown wrote:
-> On Wed, Dec 13, 2023 at 08:35:53PM +0800, Jianhua Lu wrote:
-> 
-> > Add qcom TDM setup function to support TDM ports for qcom platform.
-> 
-> > +int qcom_snd_tdm_hw_params(struct snd_pcm_substream *substream,
-> > +			   struct snd_pcm_hw_params *params)
-> > +{
-> 
-> ...
-> 
-> > +		ret = snd_soc_dai_set_tdm_slot(cpu_dai, tx_mask, rx_mask, slots, slot_width);
-> > +		if (ret < 0) {
-> 
-> The expectation is that TDM is set up by the machine driver, not from
-> hw_params - if the TDM setup can be changed from within hw_params then
-> it's hard to see how it's going to interact well with other TDM users on
-> the bus.  More usually hw_params() would be influenced by the setup done
-> in set_tdm_slot().
+On Thu, Dec 14, 2023 at 11:46:54PM +0800, Kent Gibson wrote:
+> On Thu, Dec 14, 2023 at 11:34:44PM +0800, Kent Gibson wrote:
+> > On Thu, Dec 14, 2023 at 05:27:29PM +0200, Andy Shevchenko wrote:
+> > > On Thu, Dec 14, 2023 at 11:19:01PM +0800, Kent Gibson wrote:
+> > > > On Thu, Dec 14, 2023 at 05:10:23PM +0200, Andy Shevchenko wrote:
+> > > > > On Thu, Dec 14, 2023 at 05:58:13PM +0800, Kent Gibson wrote:
 
-Currently, qcom TDM setup need to read hw_params, if we want to move it
-to machine driver, we must hardcode some params, but it will reduce reduce
-readability.
+...
+
+> > > > > > -	spin_lock_irqsave(&gpio_lock, flags);
+> > > > >
+> > > > > Shouldn't this be covered by patch 1 (I mean conversion to scoped_guard()
+> > > > > instead of spinlock)?
+> > > >
+> > > > Read the cover letter.
+> > > > Doing that made the change larger, as flags gets removed then restored.
+> > > > I had also thought the flag tests would get indented then unindented, but
+> > > > if we use guard() the indentation should remain unchanged.
+> > >
+> > > I'm fine with that as I pointed out (have you received that mail? I had
+> > > problems with my mail server) the dflags is better semantically, so restoration
+> > > with _different_ name is fine.
+> >
+> > I have noted that some of your replies have been delayed, and I can't be sure
+> > of what I might not've received. I can't say I've seen one that mentions the
+> > dflags name being preferable.
+> >
+> > I prefer the plain flags name, if there is only one flag variable in the
+> > function.
+> >
+> > > > Can do it in 1 if you are happy with the flags declaration being
+> > > > removed in patch 1 and restored in 4.
+> > >
+> > > Definitely.
+> >
+> > Ok will re-arrange in v3.
+> 
+> Hang on - patch 4 has to use a scoped_guard(), so are you ok for patch 1
+> to introduce a guard(), to avoid changing the indentation, only to
+> replace it with a scoped_guard(), to perform the tests after releasing
+> the lock, in patch 4?
+
+Hmm... If we need to use scoped_guard() at the end, can we introduce it in
+patch 1?
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
 
