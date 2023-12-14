@@ -2,181 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AEB2A81387C
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 18:27:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CA49813880
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 18:27:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1444040AbjLNR1B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 12:27:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50162 "EHLO
+        id S230194AbjLNR1i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 12:27:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49650 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229519AbjLNR07 (ORCPT
+        with ESMTP id S229464AbjLNR1g (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 12:26:59 -0500
-Received: from mail-oo1-f52.google.com (mail-oo1-f52.google.com [209.85.161.52])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD1E799;
-        Thu, 14 Dec 2023 09:27:05 -0800 (PST)
-Received: by mail-oo1-f52.google.com with SMTP id 006d021491bc7-5906e03a7a4so4937482eaf.1;
-        Thu, 14 Dec 2023 09:27:05 -0800 (PST)
+        Thu, 14 Dec 2023 12:27:36 -0500
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4421EB7;
+        Thu, 14 Dec 2023 09:27:43 -0800 (PST)
+Received: by mail-wm1-x335.google.com with SMTP id 5b1f17b1804b1-40c580ba223so29611195e9.3;
+        Thu, 14 Dec 2023 09:27:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1702574862; x=1703179662; darn=vger.kernel.org;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=bhNXYxyAPYzPWe6n1/YVvZ3TcijeuBnRICz1efGH75o=;
+        b=cQKdi02F5sAauJLM9oqT9m2bNn9h8tz51M/z2AShDCnxFukeEW6lPcJVydqHLiq73M
+         lR6Re8GTIx1QzqZgLwJ5t2l+5lkoYx+ARl+WVnBaBRqd8HmdCiXUDiC3wd+Y8wizFTt7
+         WnM8fOv43r4gc6B/qwrDOoOtzH18F79Rs9Oedo1rZQQSbXdqU8v1NFjUCdp395Jna/Pb
+         fNdJEkbJQVbDfQM4VQ8y3bgldZ5ktZW4enk/YXyGTaEcg75sGOKEw6wnLJK6q3yGWiSr
+         SLaJObVRUatRsUZWjj6jvmmzF01CyHAH9OAohZkzFtAyZoY2Qk5Cg31gGxqMJjoeoxu7
+         pAHg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702574825; x=1703179625;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=bvlPaOvWZi6YT4dBhvJqrCk9Wves4WI6vEv3aL4+FYg=;
-        b=MJagL2MPO5d/r2tleyWyiCfgpeB2PaTJgSyPLHgyEwEPEU6HM/IU+5gNVsOVaKyC2b
-         BGWMoeQzwALreJwaxFLxHSDqi7nL6wEGW8yDPG3//dwxC+1LzfCtfFNLd18ZUuiSRrfY
-         TuEQuM4OgdxxsD3DCtee1/zFyAPrbbIuIh26VCMStTPGXyuFzVdFf5HSc0sAqdCALZh9
-         /bbhhru+ZJwp3+EohG9l5Sz3GsMkHO34TVj6gBMA/+j8Q4mF+EvnnGgAuH/vpi/zZExv
-         3bbl/u5gXMfwXIU57NGKi0/MZ0p2oFy6RthBLHOm7OsBYz8eev5lzi74p6upewv7TKR2
-         G7vA==
-X-Gm-Message-State: AOJu0YxY1MWBpeW+OvCCKXqKEf0vd5UTxGMv8gwnCRcECQh0kuNNoH9A
-        DP4mHSzWCA7hGjdx8g59ag==
-X-Google-Smtp-Source: AGHT+IHE3yB7iPFgi1CEIf18XQ6wLVZQxOJa4peKJpfxlxe4KfiUfxamVgaQaN9eMO+YHnRGmAJgUg==
-X-Received: by 2002:a05:6820:162c:b0:590:6f86:f3c6 with SMTP id bb44-20020a056820162c00b005906f86f3c6mr8302579oob.12.1702574825070;
-        Thu, 14 Dec 2023 09:27:05 -0800 (PST)
-Received: from herring.priv ([2607:fb91:e6c7:a40:1c2d:b875:912d:c28])
-        by smtp.gmail.com with ESMTPSA id q12-20020a056820028c00b0058d52d0ef2dsm3456842ood.38.2023.12.14.09.27.03
+        d=1e100.net; s=20230601; t=1702574862; x=1703179662;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=bhNXYxyAPYzPWe6n1/YVvZ3TcijeuBnRICz1efGH75o=;
+        b=DQoG+9E/fdQ2avjZCGH7OUESH2EQ1f5WDyO/tfPnaKDJCfPzNNeDIVULynDVF9VV8j
+         RChfreDHnmewHMZAER1SdRtIIsNVHeRU3VIzWKc5TwnN24JYSJx+NDhn85RG5bGDSW6m
+         54XrEnN4YLiF8nYNE725o+jjgSOD0cdYJ/bIDD5nKEzl7na4iPsTxEkxhpM6Gxk4gsPK
+         EFDEmd6a14e38++lRLc3btnpAEBI3Xehz3RZuM3pb2cQCJ+Udgsoo94hBbPQYCSgyPWe
+         Q/+ciEqLkcI4BF37jVzPUdsdA6hx4C9eRCpW6ohnuFviHisZKEOK35BwhmnSY+fS5sY1
+         9mjQ==
+X-Gm-Message-State: AOJu0YxMd5MLj6N865rkLysTVPVVxmKnmdKAzd2EeBefo4UVbT0vFCYq
+        9Mi7nrjSdIirSpHiwy//veMIUfmNHMc=
+X-Google-Smtp-Source: AGHT+IH6Yd3h0/uGmjXlcw9M/CRAc2BZ/TlpTItAVqacJkRFU0Q0k2bvne3xpqFXQ6P2hTW1lBP24w==
+X-Received: by 2002:a05:600c:501e:b0:40b:5e1d:83a8 with SMTP id n30-20020a05600c501e00b0040b5e1d83a8mr5741736wmr.60.1702574861554;
+        Thu, 14 Dec 2023 09:27:41 -0800 (PST)
+Received: from orome.fritz.box (p200300e41f0fa600f22f74fffe1f3a53.dip0.t-ipconnect.de. [2003:e4:1f0f:a600:f22f:74ff:fe1f:3a53])
+        by smtp.gmail.com with ESMTPSA id h2-20020a05600c350200b0040c44b4a282sm17521133wmq.43.2023.12.14.09.27.40
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Dec 2023 09:27:04 -0800 (PST)
-Received: (nullmailer pid 622570 invoked by uid 1000);
-        Thu, 14 Dec 2023 17:27:02 -0000
-Date:   Thu, 14 Dec 2023 11:27:02 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Simon Glass <sjg@chromium.org>
-Cc:     devicetree@vger.kernel.org,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        linux-mtd@lists.infradead.org, Tom Rini <trini@konsulko.com>,
-        Michael Walle <mwalle@kernel.org>,
-        U-Boot Mailing List <u-boot@lists.denx.de>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Pratyush Yadav <ptyadav@amazon.de>,
-        =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v6 1/3] dt-bindings: mtd: partitions: Add binman
- compatible
-Message-ID: <20231214172702.GA617226-robh@kernel.org>
-References: <20231116172859.393744-1-sjg@chromium.org>
- <20231208150042.GA1278773-robh@kernel.org>
- <CAPnjgZ2i4gvgiUeHPOfHuOdBooV4e=QQEq6iMo0JbDwOS6dCwA@mail.gmail.com>
- <CAL_Jsq+xMZ8yz4H9D59uCSyX4h5W+4ruGF++=wVA=msXz+Y01A@mail.gmail.com>
- <CAPnjgZ1uW8T6woXSqFUNm301=W3zBYOrADREkrz=DuwSW87qZg@mail.gmail.com>
+        Thu, 14 Dec 2023 09:27:41 -0800 (PST)
+Date:   Thu, 14 Dec 2023 18:27:39 +0100
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Zhang Shurong <zhang_shurong@foxmail.com>
+Cc:     mperttunen@nvidia.com, airlied@gmail.com, daniel@ffwll.ch,
+        jonathanh@nvidia.com, p.zabel@pengutronix.de, lgirdwood@gmail.com,
+        broonie@kernel.org, dri-devel@lists.freedesktop.org,
+        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] drm/tegra: dpaux: Fix PM disable depth imbalance in
+ tegra_dpaux_probe
+Message-ID: <ZXs7C6Yp77UoMCYV@orome.fritz.box>
+References: <tencent_B13DB7F6C0023C46157250A524966F326A09@qq.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="2ga4bhpKz+XbSCEL"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAPnjgZ1uW8T6woXSqFUNm301=W3zBYOrADREkrz=DuwSW87qZg@mail.gmail.com>
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,
-        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+In-Reply-To: <tencent_B13DB7F6C0023C46157250A524966F326A09@qq.com>
+User-Agent: Mutt/2.2.12 (2023-09-09)
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 08, 2023 at 03:58:10PM -0700, Simon Glass wrote:
-> Hi Rob,
-> 
-> On Fri, 8 Dec 2023 at 14:56, Rob Herring <robh@kernel.org> wrote:
-> >
-> > On Fri, Dec 8, 2023 at 11:47 AM Simon Glass <sjg@chromium.org> wrote:
-> > >
-> > > Hi Rob,
-> > >
-> > > On Fri, 8 Dec 2023 at 08:00, Rob Herring <robh@kernel.org> wrote:
-> > > >
-> > > > On Thu, Nov 16, 2023 at 10:28:50AM -0700, Simon Glass wrote:
-> > > > > Add a compatible string for binman, so we can extend fixed-partitions
-> > > > > in various ways.
-> > > > >
-> > > > > Signed-off-by: Simon Glass <sjg@chromium.org>
-> > > > > ---
-> > > > >
-> > > > > (no changes since v5)
-> > > > >
-> > > > > Changes in v5:
-> > > > > - Add #address/size-cells and parternProperties
-> > > > > - Drop $ref to fixed-partitions.yaml
-> > > > > - Drop 'select: false'
-> > > > >
-> > > > > Changes in v4:
-> > > > > - Change subject line
-> > > > >
-> > > > > Changes in v3:
-> > > > > - Drop fixed-partition additional compatible string
-> > > > > - Drop fixed-partitions from the example
-> > > > > - Mention use of compatible instead of label
-> > > > >
-> > > > > Changes in v2:
-> > > > > - Drop mention of 'enhanced features' in fixed-partitions.yaml
-> > > > > - Mention Binman input and output properties
-> > > > > - Use plain partition@xxx for the node name
-> > > > >
-> > > > >  .../bindings/mtd/partitions/binman.yaml       | 68 +++++++++++++++++++
-> > > > >  .../bindings/mtd/partitions/partitions.yaml   |  1 +
-> > > > >  MAINTAINERS                                   |  5 ++
-> > > > >  3 files changed, 74 insertions(+)
-> > > > >  create mode 100644 Documentation/devicetree/bindings/mtd/partitions/binman.yaml
-> > > > >
-> > > > > diff --git a/Documentation/devicetree/bindings/mtd/partitions/binman.yaml b/Documentation/devicetree/bindings/mtd/partitions/binman.yaml
-> > > > > new file mode 100644
-> > > > > index 000000000000..329217550a98
-> > > > > --- /dev/null
-> > > > > +++ b/Documentation/devicetree/bindings/mtd/partitions/binman.yaml
-> > > > > @@ -0,0 +1,68 @@
-> > > > > +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> > > > > +# Copyright 2023 Google LLC
-> > > > > +
-> > > > > +%YAML 1.2
-> > > > > +---
-> > > > > +$id: http://devicetree.org/schemas/mtd/partitions/binman.yaml#
-> > > > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > > > > +
-> > > > > +title: Binman firmware layout
-> > > > > +
-> > > > > +maintainers:
-> > > > > +  - Simon Glass <sjg@chromium.org>
-> > > > > +
-> > > > > +description: |
-> > > > > +  The binman node provides a layout for firmware, used when packaging firmware
-> > > > > +  from multiple projects. It is based on fixed-partitions, with some
-> > > > > +  extensions, but uses 'compatible' to indicate the contents of the node, to
-> > > > > +  avoid perturbing or confusing existing installations which use 'label' for a
-> > > > > +  particular purpose.
-> > > > > +
-> > > > > +  Binman supports properties used as inputs to the firmware-packaging process,
-> > > > > +  such as those which control alignment of partitions. This binding addresses
-> > > > > +  these 'input' properties. For example, it is common for the 'reg' property
-> > > > > +  (an 'output' property) to be set by Binman, based on the alignment requested
-> > > > > +  in the input.
-> > > > > +
-> > > > > +  Once processing is complete, input properties have mostly served their
-> > > > > +  purpose, at least until the firmware is repacked later, e.g. due to a
-> > > > > +  firmware update. The 'fixed-partitions' binding should provide enough
-> > > > > +  information to read the firmware at runtime, including decompression if
-> > > > > +  needed.
-> > > >
-> > > > How is this going to work exactly? binman reads these nodes and then
-> > > > writes out 'fixed-partitions' nodes. But then you've lost the binman
-> > > > specifc parts needed for repacking.
-> > >
-> > > No, they are the same node. I do want the extra information to stick
-> > > around. So long as it is compatible with fixed-partition as well, this
-> > > should work OK.
-> >
-> > How can it be both? The partitions node compatible can be either
-> > 'fixed-partitions' or 'binman'.
-> 
-> Can we not allow it to be both? I have tried to adjust things in
-> response to feedback but perhaps the feedback was leading me down the
-> wrong path?
 
-Sure, but then the schema has to and that means extending 
-fixed-partitions.
+--2ga4bhpKz+XbSCEL
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Rob
+On Wed, Oct 04, 2023 at 10:10:55PM +0800, Zhang Shurong wrote:
+> The pm_runtime_enable function increases the power disable depth,
+> which means that we must perform a matching decrement on the error
+> handling path to maintain balance within the given context.
+> Additionally, we need to address the same issue for pm_runtime_get_sync.
+> We fix this by invoking pm_runtime_disable and pm_runtime_put_sync
+> when error returns.
+>=20
+> Fixes: 82b81b3ec1a7 ("drm/tegra: dpaux: Implement runtime PM")
+> Signed-off-by: Zhang Shurong <zhang_shurong@foxmail.com>
+> ---
+>  drivers/gpu/drm/tegra/dpaux.c | 14 ++++++++++----
+>  1 file changed, 10 insertions(+), 4 deletions(-)
+
+Applied, thanks.
+
+Thierry
+
+--2ga4bhpKz+XbSCEL
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmV7OwsACgkQ3SOs138+
+s6GKVg//eVk62JGZsNwcomhQ8UjV7GIdFwOYPfRJbaYoFtmZ2jZqMOdYE/NDYYMt
+BkvN6UEK87BP4lslecYI7ooR2ORjKjtyX2/8NLqhQSsDxUCbrBjU1VhRO0eyiQvm
+0wwFvEF8nWMLnKtmmklnpO9i9T5EuKGOSshRYaRxgN6gJYJGrZLOt+snSMuGx1Pi
+BKsyukdE2vHVQ68oiyvMyoFkkEKjQljc8/mkOAhsKxFqObbOwWUJUVZusvE0AoPh
++NuzFBtkCubHntRUaUdMmomqWBufK+xzFPxSuGu3IhJFOfed6y+ENu+shaF0vP98
+vHz11q1n5UX6DRgfUhTp2yZLc3HDC/qWzUj44dvccd6HUOUW8he9o2yjle49ZOEG
+pwFpmJUICX805jFGhgsL0FenugXkacrQM+VHAnWrfQJfsXR7U5HW9H52So+V/mC/
++e3Vg2Bo7OuDwYR0z2qpxwptT1tH3igfX4t+YZOQxpHPhswPrqwtNW+4ZHWj/bD2
+J/A56TIedeoEaL2NdiwhXEV+rqEgh6kTT+OQxkUC+9r36954a2oNi7dUaA69waLk
+l+NCMB/lCA8GgFyDTQNWMTNirz0/vficWJx/lE1YArchkglCtlfIIDtiYF3udAzb
+4JeZocrkxuxwUxIZltPCyz+rMoS7FUds237S8hXO68sON4uIxRk=
+=EYX6
+-----END PGP SIGNATURE-----
+
+--2ga4bhpKz+XbSCEL--
