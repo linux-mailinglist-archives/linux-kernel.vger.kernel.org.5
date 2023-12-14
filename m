@@ -2,124 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 450E3812543
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 03:28:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A5796812548
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 03:30:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1443044AbjLNC2M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 21:28:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60096 "EHLO
+        id S1443049AbjLNCaU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 21:30:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54924 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229525AbjLNC2K (ORCPT
+        with ESMTP id S229525AbjLNCaS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 21:28:10 -0500
-Received: from JPN01-TYC-obe.outbound.protection.outlook.com (mail-tycjpn01on2126.outbound.protection.outlook.com [40.107.114.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0AAFB7;
-        Wed, 13 Dec 2023 18:28:15 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=MtXkZVB2LT+GK1s72+cfW9davwBqj4+xBV/EnszLC7WHq92H5tYW/dd7oUzqs56YNzqLM7DZGrDS+v4bIX6C4qR83t75JZQAEXwj4eYsonKAidkZtEft/bG0BfJa3o9CRExBpuqF9h3aYjg1YZ0dHzrstAPFVQhSa9lH7ce4zguyYu7xBjGi+uuUkq4evxOldogw36XiPBbUxFgta5C8RjK0XJTOdUi2YHjWYconqCJ0g0DQ0t5aqgVaIqKodam9sD3qzOc0Lqv9u91LYkbqDKO3FRla+641bhDcUBVo0NBIQm8OsViuXOVNeREfTxECK4pC5IyYegW8KXZwhoPR4Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=MiVsDSFtN7dIafs5Ghtu+Ud1/dH3ss9M0gbABos3MbY=;
- b=Aa4AtikUhJfGWERHZz8OhWsA2t0FjRmO/idufkTaFkAMAQouCQy/SNkm7LSWiwMf4C4dPupUt5HEdkxlQgQvVrJZFD9B5RAcS8iDLhuUkOKjXWl5T++8c/18U0pi6xorr37xOulKiYt/DZTAAiqyTMAQbFqaHLr2HQha9832T4UM9RTHZnk/Yxb+ayOItLBhuniLdLfDRo6CfCjptZsR9YFipHxSvDUjRnpRkKgqpZaIriZ/FHcgxhkBH+MNnNrT5mzfCA8o4bqLXPi2ePz4iHbxrtyn8kSBfEi+b24p9SzRoXeuob/2GmWmJ8NBYCLQw2Xtxc3bZX5I7zbmfBsZaQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=renesas.com; dmarc=pass action=none header.from=renesas.com;
- dkim=pass header.d=renesas.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=renesas.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=MiVsDSFtN7dIafs5Ghtu+Ud1/dH3ss9M0gbABos3MbY=;
- b=XPPUpWWdamO7PPQeV57N0rU0EnOnASOfccVZUr/EOO+IyhIb+WDEB7nLJN7muyTApVFFsdrMD0nntOwUzsiYTM858bUaE/jfqEts0UsBLMOLrhFXmBGX/1wXAdqqob+GAGb9vXOQlfi3d84PbUy557JIfyRq8Ov4z8I3GDM9Umk=
-Received: from TYBPR01MB5341.jpnprd01.prod.outlook.com
- (2603:1096:404:8028::13) by TYTPR01MB10938.jpnprd01.prod.outlook.com
- (2603:1096:400:39e::12) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7113.8; Thu, 14 Dec
- 2023 02:28:12 +0000
-Received: from TYBPR01MB5341.jpnprd01.prod.outlook.com
- ([fe80::50f5:eb2b:710a:b7c7]) by TYBPR01MB5341.jpnprd01.prod.outlook.com
- ([fe80::50f5:eb2b:710a:b7c7%7]) with mapi id 15.20.7113.008; Thu, 14 Dec 2023
- 02:28:12 +0000
-From:   Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
-To:     =?iso-8859-2?Q?Krzysztof_Wilczy=F1ski?= <kw@linux.com>,
-        Rob Herring <robh@kernel.org>
-CC:     Marek Vasut <marek.vasut+renesas@gmail.com>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "linux-renesas-soc@vger.kernel.org" 
-        <linux-renesas-soc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH] pci: rcar-gen4: Replace of_device.h with explicit of.h
- include
-Thread-Topic: [PATCH] pci: rcar-gen4: Replace of_device.h with explicit of.h
- include
-Thread-Index: AQHaKS3WeiLCWj9RKkmGuwuZnDHiF7CoCKkAgAAN/RA=
-Date:   Thu, 14 Dec 2023 02:28:12 +0000
-Message-ID: <TYBPR01MB53415F2C51CB51A0ADFBD278D88CA@TYBPR01MB5341.jpnprd01.prod.outlook.com>
-References: <20231207165251.2855783-1-robh@kernel.org>
- <20231214013316.GA1462914@rocinante>
-In-Reply-To: <20231214013316.GA1462914@rocinante>
-Accept-Language: ja-JP, en-US
-Content-Language: ja-JP
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=renesas.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: TYBPR01MB5341:EE_|TYTPR01MB10938:EE_
-x-ms-office365-filtering-correlation-id: 08c1be37-75cd-4a08-ddae-08dbfc4c51f3
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: PDO8NjqiU3WFMSNuZgIDkyWmC/lbFhfoMMX2fuNLufEmIrXueXj6payXiYBaP5P2gNH7xCsWF1eTE1H1zbPbiqTnCrdKxTANQIYrbPpq+T8poYJx5jowvbskdEFA++Nw+SAIEOi4twQ7AvGaRAQU/p0N5x7dz4JQZuAsUatUbGF3hENuvQl2VBIiLVWy6FU29cKGMo02aHWPpHGoD9nBmcrMg/nGhqYfRH6lvG6gFqr78cK3yYnfpc3+bd/dl1wWMq+fzsmZgZEh6qpeppp9cZ0LHvAiUqFm+MJFrwGcI4HYjK8toHoKi92xHbl7YOUH+xjMW2rmmFNN3bdmQIWnEHi/U1tOEkx9gvNssXN17Dn3Zm2S8PSi6Lr5I0sI7Exz5DkPp5MgLkSa+1cAefMNXwj0fvMk3cLnAp0mBN4/EHpkykOEK5l8AobyubsahMYW7TnKVk0sykwq9F8xYtQdCXLM/xidTaTyIYjc0zTanMhe+857oMbs7kWDyVUTMaH7+T+xSb0VQwRscak4MVPGVAGCT2OLfhRhJovkP4J8qTE3kfgJnL2AtLsGOp/izD+SpBj0kqX+0WpqOnPzXhZCEALzG6lzKAFH/R8vwp2uGpI=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TYBPR01MB5341.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(366004)(346002)(136003)(376002)(396003)(230922051799003)(451199024)(186009)(64100799003)(1800799012)(122000001)(41300700001)(38070700009)(5660300002)(33656002)(2906002)(71200400001)(66574015)(7696005)(6506007)(83380400001)(9686003)(966005)(478600001)(26005)(66476007)(8936002)(8676002)(4326008)(316002)(110136005)(64756008)(54906003)(76116006)(66946007)(66446008)(55016003)(66556008)(86362001)(52536014)(38100700002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?iso-8859-2?Q?9Z9WG8m+IXwiwKYLmspe60kEJnJtdQ5eC5lBFGkxHnE2iHAajlBtHv2A8f?=
- =?iso-8859-2?Q?oiQvE9dsRNBB1xQQBhcVPEJXttpwXQuR1Kj07KPmnmEM3vz7w58k5wbcbS?=
- =?iso-8859-2?Q?fclMF5umhN92juKcACrBxetLhBYxL+TrFgBHlhSYCO+1fyI7WoRaxEB7DX?=
- =?iso-8859-2?Q?FWzE4O9JBJcMYa7wTdERvOxbINefUcPMOdHcpDVj2ZpEbuvzt8hv00Uhni?=
- =?iso-8859-2?Q?rU6L5Y+DzYu3sg8jUqKu2PFwDmJKd/M4LG2R5ZiOXjt++oc6cY2J9GHZil?=
- =?iso-8859-2?Q?cUOpRffGdu5e24BhIzwL65rzvvWTQ3kPOuqnHYe7HqyOSocItrq1OEphY8?=
- =?iso-8859-2?Q?DyWR6MGaqQ4lGpX5WzIoQVPGOglOeJdzU3CHg8jZcTMyytWAa51T5YQ2lW?=
- =?iso-8859-2?Q?OurGVY38JlVpgDypEsRn/ivZn4n1JA4ijtdiEwV+mcJ0tqVQtBtNOWku3k?=
- =?iso-8859-2?Q?4PvJrWYaB344m4saYmdf6BSHNSs2XJ7AvWE8ypGhrgC9knAG2PSkO4kHe0?=
- =?iso-8859-2?Q?oaDAg/gfT1vn79KxZ6Xu2LH+b7Wc6j/gKwsvjZBbaPUSYbMTLU2yfefKoP?=
- =?iso-8859-2?Q?u7SB36+fMRoLfOLlUClcQhMQdoKKj1WLgekShw9bh7b9vhY4YGkoGm7UL+?=
- =?iso-8859-2?Q?Tv2Vfo95BMBGP5Iqq6tcO2I/sQwQitnimZzgLTAZ8iy92ACezinO3A8cc4?=
- =?iso-8859-2?Q?KyHpAhukxaU7k672xWkLRSwP9BMbLRripIn6nu0zNRdnpdDZXATGCnWnPu?=
- =?iso-8859-2?Q?BYLAXiHvm0J0ZjX8lMgKsLeaV5va++0g7LnTU3HUntLG9YJQUcpGYgXf67?=
- =?iso-8859-2?Q?cTkGXkXWeiSmPh+EdrYtyYzkfIf8gBeGfZs6eykKHOvqtbXK+sCmmDBBUj?=
- =?iso-8859-2?Q?zHJvQHX0iHlTYaT3kz3ShPY/NE4EqEON17IdJFd4k3FtX3mR0USeIK0sF6?=
- =?iso-8859-2?Q?0yGMy0a/jukH7R72317NCmsSk1XgH3vPPuUCWFD4JfiaVTo87VET0rehlR?=
- =?iso-8859-2?Q?a5X/870Nrk3umjm2YR3NZoPGVewiPCw7nvMHdFsMa8xajXioIrISfXAHKO?=
- =?iso-8859-2?Q?MQt9XsQIxrWrJzsICOvKn88Yie0dZQcNMDh0BY7FePcoE2MNXeV+HijOT+?=
- =?iso-8859-2?Q?M9IBS38tYntODcvOT3w6gSWg/RJLKpsiMQsgTVuNexlV+9MxRWLXQ0Hw85?=
- =?iso-8859-2?Q?1ADLWRD8zS0ewDwD2GOOPzcxyeB2/IM0kz5LHOqC15oPq5OtHLt8/rT4f1?=
- =?iso-8859-2?Q?e8h4tyG404xumjbkgITkeLc1KldiWqevNMDvDnTuO0xVkDctSl7TTRC6jp?=
- =?iso-8859-2?Q?swI057Bqf5saXf/GldxjeynZtRPzw+1cQPWCFrGF2RE/ayckh6Nv19m1J4?=
- =?iso-8859-2?Q?/3jmXfBRNzcbOOnt/G9prx8MyS0P07hLEwWxhEOuEWSWFmSNMw2h0dGtRi?=
- =?iso-8859-2?Q?Kq3zyKAZRwSczb3f+y/tsYFH8FfxekmR0OA2MAHVpc8ExtDzbgyL7OmJvq?=
- =?iso-8859-2?Q?GmMckR9ZQQSP7DJVihKyT2vVs6oQR8y1Bv9YOO6W6hVE4FOIbBAWgLxutj?=
- =?iso-8859-2?Q?ibp4RTjGXphbKdRybcG6mcT+kYsGknYK4h8AVfochYAuycKVIjC4QoNXrU?=
- =?iso-8859-2?Q?itCxfyhri/sZvfM2YVUg+G/DtoC0MhFXcGCRrLbkcl26SH4okwAy651JVE?=
- =?iso-8859-2?Q?CZD+50fr6xWJ5AjGghA=3D?=
-Content-Type: text/plain; charset="iso-8859-2"
-Content-Transfer-Encoding: quoted-printable
+        Wed, 13 Dec 2023 21:30:18 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA363BD
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 18:30:24 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 45A2FC433C9;
+        Thu, 14 Dec 2023 02:30:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1702521024;
+        bh=y2EG/KCgi10FK3ZjxuBE7voXPUxlA3BWrqZZbqiJ5Oo=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=AdgUcm+RBxdeixXwNYvhBeQgFJ3ag5pzjVKRfxRgFoX1/SvisIwal+nsp5IvjDLNi
+         uLSSz0Y+etp1gJeJhXfZPJ52TvnYSnRQG8+3851k6MvOsvEwNHN05vEvcqMiFM+c+6
+         qRxrbPWf+/el5giVZel4x0curTIHgUUWhj5oUiUcip3noH3zSMtP4G8g+1MHLEGqZ6
+         nwCw4520GyA089w+RJqo4Kv2fqU9rE3y64le9ghPkKznMlFzLaOTbN+rotd9D/B25e
+         QDEgfFKlf5Aw3k1YnWkBZM8r7VknUWzspCfvLUKffEPGCzxmwFMDI+UlSpHJKD6QhN
+         eNbXBHSNwUbeA==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 2C62AC4314C;
+        Thu, 14 Dec 2023 02:30:24 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-X-OriginatorOrg: renesas.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: TYBPR01MB5341.jpnprd01.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 08c1be37-75cd-4a08-ddae-08dbfc4c51f3
-X-MS-Exchange-CrossTenant-originalarrivaltime: 14 Dec 2023 02:28:12.5138
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 53d82571-da19-47e4-9cb4-625a166a4a2a
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: OsELz3nunmpN95vMFXYdjBJ+sFt84njZJlPVjP6FTSOguIvvci11/EZtujwXVr3tER244+oysJGlmF1GL0Cm/LAPSHjAZzs5vTJCN4O8IgUs+bUarewfiNH7ATr8Wm4L
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYTPR01MB10938
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH v2] vsock/virtio: Fix unsigned integer wrap around in
+ virtio_transport_has_space()
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <170252102417.28832.15985840662984348558.git-patchwork-notify@kernel.org>
+Date:   Thu, 14 Dec 2023 02:30:24 +0000
+References: <20231211162317.4116625-1-kniv@yandex-team.ru>
+In-Reply-To: <20231211162317.4116625-1-kniv@yandex-team.ru>
+To:     Nikolay Kuratov <kniv@yandex-team.ru>
+Cc:     linux-kernel@vger.kernel.org, sgarzare@redhat.com,
+        netdev@vger.kernel.org, virtualization@lists.linux.dev,
+        kvm@vger.kernel.org
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -127,38 +54,29 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Hello:
 
-> From: Krzysztof Wilczy=F1ski, Sent: Thursday, December 14, 2023 10:33 AM
->=20
-> Hello,
->=20
-> > The DT of_device.h and of_platform.h date back to the separate
-> > of_platform_bus_type before it was merged into the regular platform bus=
-.
-> > As part of that merge prepping Arm DT support 13 years ago, they
-> > "temporarily" include each other. They also include platform_device.h
-> > and of.h. As a result, there's a pretty much random mix of those includ=
-e
-> > files used throughout the tree. In order to detangle these headers and
-> > replace the implicit includes with struct declarations, users need to
-> > explicitly include the correct includes.
->=20
-> Applied to controller/rcar, thank you!
->=20
-> [1/1] PCI: rcar-gen4: Replace of_device.h with explicit of.h include
->=20
-> https://git.kernel.org/pub/scm/linux/kernel/git/pci/pci.git/commit/?id=3D=
-263714f5fcf8
+This patch was applied to netdev/net.git (main)
+by Jakub Kicinski <kuba@kernel.org>:
 
-Thank you! I completely overlooked this patch. Maybe it's too late, but I a=
-lso reviewed this patch, so
+On Mon, 11 Dec 2023 19:23:17 +0300 you wrote:
+> We need to do signed arithmetic if we expect condition
+> `if (bytes < 0)` to be possible
+> 
+> Found by Linux Verification Center (linuxtesting.org) with SVACE
+> 
+> Fixes: 06a8fc78367d ("VSOCK: Introduce virtio_vsock_common.ko")
+> Signed-off-by: Nikolay Kuratov <kniv@yandex-team.ru>
+> 
+> [...]
 
-Reviewed-by: Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
+Here is the summary with links:
+  - [v2] vsock/virtio: Fix unsigned integer wrap around in virtio_transport_has_space()
+    https://git.kernel.org/netdev/net/c/60316d7f10b1
 
-It's up to you whether my tag is added to the commit or not :)
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-Best regards,
-Yoshihiro Shimoda
 
-> 	Krzysztof
