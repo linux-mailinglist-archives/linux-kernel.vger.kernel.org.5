@@ -2,65 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AF936812609
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 04:43:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B5C7081260F
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 04:46:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1443086AbjLNDkP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 22:40:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44822 "EHLO
+        id S1443100AbjLNDpB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 22:45:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55042 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229525AbjLNDkO (ORCPT
+        with ESMTP id S229525AbjLNDpA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 22:40:14 -0500
-Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CEFA93;
-        Wed, 13 Dec 2023 19:40:21 -0800 (PST)
-Received: by mail-pf1-x436.google.com with SMTP id d2e1a72fcca58-6ce6d926f76so150881b3a.1;
-        Wed, 13 Dec 2023 19:40:21 -0800 (PST)
+        Wed, 13 Dec 2023 22:45:00 -0500
+Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7933793;
+        Wed, 13 Dec 2023 19:45:06 -0800 (PST)
+Received: from pps.filterd (m0246630.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3BE0S65V015237;
+        Thu, 14 Dec 2023 03:44:42 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
+ from : message-id : references : date : in-reply-to : content-type :
+ mime-version; s=corp-2023-11-20;
+ bh=8w1//EMNTcW34SWYuLHRcQ7CSF83B21kQIxof+3pfAg=;
+ b=kR/Qr/qA/o35NxOWmHGKdmVqVWOiXe2ql7akZ7N24yas/7mTHSgcdtNddFfTs2Xe6fEB
+ UheqKAEX/0/vQH0hSXH1IEWNZaFmUhv1Wp8vBY9KxpxqU81p7TaoBVzxTtRHv9xoDuhY
+ MK/GdF86rNgPhBU1LHWO0YlqlNIVHb+873OIthpttUlJWYHhC8i5tHO0OiJCAR7wdkti
+ Dz0fr4LQ/8VgmVlRXmZ5JlQC80Zp4wVtswfowdWxNjN1LFc4YxQhd8A0BUGEXb+39Hfj
+ b3Yu+JtsIAYjwdU4B/1nQYvigg0Ux6JcNTcPb1CssXhQApi19VpbQk7Hp/4NQC5eE3NW XQ== 
+Received: from phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta03.appoci.oracle.com [138.1.37.129])
+        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3uwgn3r0j8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 14 Dec 2023 03:44:42 +0000
+Received: from pps.filterd (phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+        by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 3BE3cU1q012823;
+        Thu, 14 Dec 2023 03:44:41 GMT
+Received: from nam12-bn8-obe.outbound.protection.outlook.com (mail-bn8nam12lp2168.outbound.protection.outlook.com [104.47.55.168])
+        by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3uvep9f10x-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 14 Dec 2023 03:44:40 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=lBnWlsMC52YsBSCwckhFMB/wQ3iA9pvYyM973780aMeM45t66WQCoJtc8+mnCnusJXdVn26aGY04TZtG8HFA9SahXKsM38U9Z2Yz+fg+Bm2tHpQnAe0N9chMLci7/j188sHUzPjil3VTuO2bZlQlDXetF22QJkfvjfdGEqf8ybVFrlTsKUFrfQk0RCJ2GpB+bxA0O3fVtpWq7+hlq+IaqitRG2PYVzl9fJP5VRT0o+40kWeUJXuuKG1PtuVxmatzB6vw2l3cHuu3L6SUm2sTpJdeYSTM2lqwxkBCq69CwwteznasjWevhYBxmaBSxzjbHTAG6JO3tQmoYfRzTtCxKA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=8w1//EMNTcW34SWYuLHRcQ7CSF83B21kQIxof+3pfAg=;
+ b=llPoPnXMuHsc924MeCS34gOHjBfLB2eEn43Q0TkjZyJ5CEQjxykMOC/CEyf2uQMHv7i5Xeh92Z8RhFs3KvCM+QglmBk5qJNH5gl5OdVxWl2MXkYo3FJW7kXfEevNSxNIdVa1D+Hkx+P/FcduzDRF7vnzg4eX5BgPFWjA5UPkHxALlcnrwkYlu6eaDIWOZOtv1TIFkgfNFAewEFSLZggrEze0M5uc2WfpCTeXELupwOzSlIfrFIslZJK3fm3BrG9M1GEQ/tFq8XPNEjP9DoRwlVSGN9JwCyQ2uX69erfv4dTGt0qNDcZD6KTvHlEXS3kq+sWTAEjs6OyAWCK5jM5XuQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702525220; x=1703130020; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=aEKOSge/hHdPwni+MLpXmsbRXBwIGAeAkdwDfsnV6NM=;
-        b=LCUCWiSEjKXQ85nf4vt76gA2BXUnPlz77ldT7k3Ut8bLk3DtyFFZa+ory2AOAn0Obs
-         zX5ULYbig23dKI8ZJ88PsJwyEdUEMEwNiAZPsAapHGYQuNA3LmMHNvv/OXrwr7BQ2TmP
-         NBZYvtNDBW6TaHzViYJ9LahTh1c+rloME+4l4+LPklWGg/unbNcA3el103/oYHNKRB36
-         3bXjVlgYo7etm5u8nYII5/KHfh0fNTYu06ovlujh9I5eKhuxruuxRE16HW6dfQNB+fq/
-         dBp8Cwbm5sg3DFfDAlI2CZgsnSwFT59p7Utr5PU2LaeZe07Gyi31DPh7ZbmI79yOWRIr
-         31FA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702525220; x=1703130020;
-        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=aEKOSge/hHdPwni+MLpXmsbRXBwIGAeAkdwDfsnV6NM=;
-        b=TWoLNzGfkQKXuWQaQ4OwwzL3E6I2uncHUiq4D0ngJJ4jx+BFj8EcpA3tR/tugp4jaM
-         wZDXSDYHSnAIXmIpBzYmyQIlQw5yPdFs73ZMSy/D+OnAjI2hvA5P61Rq9wuYG1l8BDWX
-         KTcHgQVjrReF9yMAdlaQzOgEzZxtSc8bBIJH/bDEdaSlAARkePf2K83ZJzg4ErPZLoOS
-         jD2IGJnyWu+HIbv/miGh139dGHR+MPS0dZf72gHX9DfF5WQl/JzIpzgaEA++Aqec9w/y
-         hk14YmpYJVXxqFpOWYMGbffH9bNADDwj7ukS85LGwQ09aCNjI5P9muVmCFKmHONyd6ZO
-         mlXg==
-X-Gm-Message-State: AOJu0YwL/b4fJYa0Z0C6NyNMJFKxQlc601jfhoSLrM1WuBZaxWi+G+jG
-        vh2y4KELXheMbmnfovHllcoZMOkN9h2zTAOpgg4=
-X-Google-Smtp-Source: AGHT+IHpMqACgq9LHTiNZAwoi2J+cQEbi29OE/OcCzx7PB8GPG+1KZONttunx1czLApQqXingL0j6olWVkJimBVDRYc=
-X-Received: by 2002:a05:6a20:728b:b0:18c:5178:9649 with SMTP id
- o11-20020a056a20728b00b0018c51789649mr9914980pzk.14.1702525220260; Wed, 13
- Dec 2023 19:40:20 -0800 (PST)
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=8w1//EMNTcW34SWYuLHRcQ7CSF83B21kQIxof+3pfAg=;
+ b=eTPayn1tIqzhxvxkJcoOknLGJzAKAkQipMYOOYWLev0W7bnVZEfn5YCNHEaTZujEW6jGxPFnKq17S9zHJYGnm6SoQULznWtTen1xQmI4kvORa4RntXCrWt1sFQfcdmSZbQHZG3pmS2jIq/tnfmoNiMsJTb8EaijjY88d7iiCjl8=
+Received: from PH0PR10MB4759.namprd10.prod.outlook.com (2603:10b6:510:3d::12)
+ by PH7PR10MB6460.namprd10.prod.outlook.com (2603:10b6:510:1ef::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7091.26; Thu, 14 Dec
+ 2023 03:44:38 +0000
+Received: from PH0PR10MB4759.namprd10.prod.outlook.com
+ ([fe80::2b0c:62b3:f9a9:5972]) by PH0PR10MB4759.namprd10.prod.outlook.com
+ ([fe80::2b0c:62b3:f9a9:5972%4]) with mapi id 15.20.7091.028; Thu, 14 Dec 2023
+ 03:44:38 +0000
+To:     Can Guo <quic_cang@quicinc.com>
+Cc:     bvanassche@acm.org, mani@kernel.org, adrian.hunter@intel.com,
+        vkoul@kernel.org, beanhuo@micron.com, avri.altman@wdc.com,
+        junwoo80.lee@samsung.com, martin.petersen@oracle.com,
+        linux-scsi@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        linux-kernel@vger.kernel.org (open list:ARM/Mediatek SoC
+        support:Keyword:mediatek),
+        linux-arm-kernel@lists.infradead.org (moderated list:ARM/Mediatek SoC
+        support:Keyword:mediatek),
+        linux-mediatek@lists.infradead.org (moderated list:ARM/Mediatek SoC
+        support:Keyword:mediatek)
+Subject: Re: [PATCH v8 00/10] Enable HS-G5 support on SM8550
+From:   "Martin K. Petersen" <martin.petersen@oracle.com>
+Organization: Oracle Corporation
+Message-ID: <yq1fs05h2j0.fsf@ca-mkp.ca.oracle.com>
+References: <1701520577-31163-1-git-send-email-quic_cang@quicinc.com>
+Date:   Wed, 13 Dec 2023 22:44:36 -0500
+In-Reply-To: <1701520577-31163-1-git-send-email-quic_cang@quicinc.com> (Can
+        Guo's message of "Sat, 2 Dec 2023 04:36:06 -0800")
+Content-Type: text/plain
+X-ClientProxiedBy: SJ0PR03CA0105.namprd03.prod.outlook.com
+ (2603:10b6:a03:333::20) To PH0PR10MB4759.namprd10.prod.outlook.com
+ (2603:10b6:510:3d::12)
 MIME-Version: 1.0
-From:   xingwei lee <xrivendell7@gmail.com>
-Date:   Thu, 14 Dec 2023 11:40:07 +0800
-Message-ID: <CABOYnLynjBoFZOf3Z4BhaZkc5hx_kHfsjiW+UWLoB=w33LvScw@mail.gmail.com>
-Subject: BUG: unable to handle kernel paging request in bpf_probe_read_compat_str
-To:     song@kernel.org
-Cc:     ast@kernel.org, jolsa@kernel.org, daniel@iogearbox.net,
-        yonghong.song@linux.dev, john.fastabend@gmail.com,
-        kpsingh@kernel.org, sdf@google.com, haoluo@google.com,
-        rostedt@goodmis.org, mhiramat@kernel.org,
-        mathieu.desnoyers@efficios.com, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH0PR10MB4759:EE_|PH7PR10MB6460:EE_
+X-MS-Office365-Filtering-Correlation-Id: 3bec2da1-1077-43fd-aa95-08dbfc56ff54
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: phTcRoPCitWkMAzUJeKtcyu84iGhF3NEHhTMUtOIm3Jp3D7lu1RmHJznstGzmDc8FlQua5+vXWsKFVTBgI1wspCNPFdm+p8sNs+shUahlim3uczasacPtjl+sDiXGgZOEtLk4KhentUDS24t+9Rdtkh59GX1zqZCvdfYCZ1Cb1MJzIR5C21CaaIRzTpg/G1Z1a8i/74kcj8+qZ/YbFmJ2EwqeB5QQVf2jUSP6was1+utOw6LBOLq64gOKAD9aVESSqrnyF7TJf8dQnIcFHzqYoecpjVktu0idr5rSsqIaSbdgTkCkZx2yYFKW0cditi84jDzjZFrtl1wGZuzKjGWivTEWOPJiWPhmvG0+/V2YbfRH+BMEFUlH7WWW3UpSt+FqI6fcHykh5I2KC96Js+cPU8aspJYDfzo+EHnu38NIe10a7j9IqPhyx0fZOkSspHLKvTZp64bIoRq99dsPQPZGRcDfKMXwvcMA4xA8zfglC5f1JWblMPwFcdKuKNQTCZc9KXDKCVBi2nPI9ptrxnuSBTB1dn45mZbCAMrDW3oaMu9RIl5SFFSjYl4WKXus8AT
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB4759.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(396003)(39860400002)(346002)(366004)(376002)(230922051799003)(1800799012)(64100799003)(186009)(451199024)(26005)(36916002)(6506007)(6512007)(4326008)(5660300002)(7416002)(8936002)(8676002)(41300700001)(2906002)(6486002)(478600001)(316002)(6916009)(66556008)(66946007)(66476007)(54906003)(558084003)(86362001)(38100700002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?t0JsWGLWsIXLinKxP9SZkrD5hdY+M4pYDYUoF4ldWIUTVRr609sLLbqIumY4?=
+ =?us-ascii?Q?CU9rqUl6bHARE7aIEO9NTNs8lNoWdPz0/9C0LH0/YPfszyXgml0yfX6vXbzs?=
+ =?us-ascii?Q?PWrGr6GfeagmsQfKrvPKf6j+2O0BFqyQ6W/l9ZQImso7PvAt7nr7GVAXWC3V?=
+ =?us-ascii?Q?iOIU8X75a8ZQD5u5QhnCippUUrkqfANmre6gG82sJ1OPfdmjwP4zQPpK+msq?=
+ =?us-ascii?Q?Q/KsofxXdFvULqm5quFeSzIavylQFJdTO2ZoWwhlpvRVFEXk6VuJ83+pu8iq?=
+ =?us-ascii?Q?GhjL+oc3dmzo/83Uur3W91NblHIiofM3LZ2AQvgI7zND9nE3MhhvtDfU7zw+?=
+ =?us-ascii?Q?I/8pSletUTk785TXrRPyNuxhYyfzsyrwAmw7Y7l+V1XCa77IM4PMQAUbOBHO?=
+ =?us-ascii?Q?AucrhepkM3X4KyiymfJReCAyQ7LUoX6TatqpD6GNMGat80141b+MCifrdxt2?=
+ =?us-ascii?Q?bLf0QN09JfAC4DJe/z+RiyWm0qG259CSZ1FpDCTKL+QdZWouvJ+nm6jkOFi9?=
+ =?us-ascii?Q?sDYFr/NCfRWtEa+0PbkzY1LgdTY65B4NaU0wBb37XEXaf7nEh2YS7ndfVjBP?=
+ =?us-ascii?Q?0OT13gax84baXVOJM0PWxN8ShkbZ8ZlEH6CtI3FK4Bnp0TqSXHbvhmEX7Z2v?=
+ =?us-ascii?Q?nPX0eaw6lNIX9Rqi3HF2wctQTT1rK8y61lCyRSSqkQvNs/tsxUYRKHBwcUie?=
+ =?us-ascii?Q?uVZoUHwb7U6qvsj3gvAuH7H24G6C8LVB5SkzdQpAMG0dc9JfhodFqK32kWOb?=
+ =?us-ascii?Q?ON3elkiSSyHG1F8RW80tjoGw0jH6FzM2U/437FBVJBskVbgCJONEHYWU0YaR?=
+ =?us-ascii?Q?jliYh+cLtPnP/WJnkPpWBqcyY7NfU2MVyRsFWKqiKshAvnxAxc+gc57Za362?=
+ =?us-ascii?Q?pDMVkwXpKK1h5HOPQeunJ217boahdYrH6R3A/+Hb34DuobwGcX+hHBXKeM0A?=
+ =?us-ascii?Q?PiGPNsNleNGl6QUOm/OXW8mRxmHxTkoCBWWOCEx4FPdzKCczrn6dsYRgWENk?=
+ =?us-ascii?Q?40bprsloAEsQbR9Jr/IEVKFqHsIQUK/MKB0dS0Rw+04Nc3A+Maa6gGF6+vN5?=
+ =?us-ascii?Q?jAp7Bg9LXMkqctG+OUcM0nqGQj/kZ5q3Xzd1eneemBaCXEBEE6XnAOBLqJm2?=
+ =?us-ascii?Q?gDu2Jqk+RYg1y0wvlDbGW/A5T42yuVgcUzEy+OyAcIhiaTG/Lp1SuN++jlH3?=
+ =?us-ascii?Q?ogKO3ZAFGFHJLhyoPqZfLbdfUfjhBH8O2LAT6Xh4pzw683VVvAw84CwxvK/Y?=
+ =?us-ascii?Q?I85X8781A5qf7mLMHUERhs01cBdwlnyveB73wqzjtNskzosmLkcuaZGTOnYi?=
+ =?us-ascii?Q?JOyC62slJ1xTAl7O5Z+8wWkDYBscv3X+ftl39s5tiq2fN4rqn5lORPqv7ifF?=
+ =?us-ascii?Q?xsAmPLfrrsb8HQsHdTAyMS/JyQII5iBD8a5/ZH/54Gk3Iahmas6lHbMl6AlT?=
+ =?us-ascii?Q?OPWeXlNPROW/3dbvmm250Fwv6DL1SfFGpr1E1Z1zSL6TqgrFj6J8eP9B7YCa?=
+ =?us-ascii?Q?kFFcGrcG/8YY/y8udysET9prMr7Iy+NQj5/DdKkP5fmMnGoM+q6+YddF3wsv?=
+ =?us-ascii?Q?ONYvmJnjBd2vkKtlkzNUnm6i/dq0PN8PUucWai+M888BoxZjBAgeSGcDfHAu?=
+ =?us-ascii?Q?mQ=3D=3D?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: Z2/VWdqJg7cc9AWAEhwHpYviGEIV7p8tZB4ufyarFmxc5pnDsrVRm7081CmtxhNnogJv/avqaviFo5nmELx/7Dek6jbDTICTW7hcjo5zH4Rls4UvaluNG7FIxb33nhhjTDdKQ32osI5rBvPhHlANlBxy/eYSaYnnVpYDLJdyBsHG0RfZIFQPdNhl2TMmaXXr6MJVaJeuKe5HirKqSztJwE4itaxPCGSmd6+J6GuzjYMOMbgoOOVBhbfIaFL23mVHVOHdcGaFZvXMoeDkL7VE9igqa2sj3jYfmULea40hOcipraQla9YzkOWKXiYdkAp/Wh+FX/rhQwtvlVQ/3zO9bC+/QglGqdOosR+BJzjMkuhgS6+bM4GuiYtmBho53DTM54QpKnjuudBWrGhmkpcakbr+e3534ek+Vh6jNYub9QRS8HcVHPqv9sbMgIzcyrOXC5X9FAGyeaUMbigTkR1GGtZp1+ojQSSN3yL10Kp/2iEsMwEl0BYx7kU6z3FUGQDMKUanN3EIhSZMAkKEDweNvQt7g5fWgGH5IuH5AQfPh27DZ+hDytL/CF54YANyyh0gB4WBEX/iIx+YyiD+RJY3Eh2F9LvkNBI9nbkfstF0uD4=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3bec2da1-1077-43fd-aa95-08dbfc56ff54
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB4759.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Dec 2023 03:44:38.5263
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: +gIQuveDqU/gXwVp71CRpH+/wyk6sx+x7DozcGFmnW+UI4rvFWpI3LuQqK+KoHlFQ2kavk4H+oVKxrQPYti/PldGkUGvrFK/5hFOv8fdqwk=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR10MB6460
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-13_16,2023-12-13_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=920 bulkscore=0 spamscore=0
+ mlxscore=0 adultscore=0 phishscore=0 malwarescore=0 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311290000
+ definitions=main-2312140020
+X-Proofpoint-ORIG-GUID: 0YfaHu17VhVgUutTKyHE1G493YG7xXeK
+X-Proofpoint-GUID: 0YfaHu17VhVgUutTKyHE1G493YG7xXeK
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -68,218 +158,14 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello I found a bug in net/bpf in the lastest upstream linux and
-comfired in the lastest net tree and lastest net bpf titled BUG:
-unable to handle kernel paging request in bpf_probe_read_compat_str
 
-If you fix this issue, please add the following tag to the commit:
-Reported-by: xingwei Lee <xrivendell7@gmail.com>
+Can,
 
-kernel: net 9702817384aa4a3700643d0b26e71deac0172cfd / bpf
-2f2fee2bf74a7e31d06fc6cb7ba2bd4dd7753c99
-Kernel config: https://syzkaller.appspot.com/text?tag=KernelConfig&x=b50bd31249191be8
+> This series enables HS-G5 support on SM8550.
 
-in the lastest bpf tree, the crash like:
+Applied patches 1-8 to 6.8/scsi-staging, thanks!
 
-TITLE: BUG: unable to handle kernel paging request in bpf_probe_read_compat_str
-CORRUPTED: false ()
-MAINTAINERS (TO): [akpm@linux-foundation.org linux-mm@kvack.org]
-MAINTAINERS (CC): [linux-kernel@vger.kernel.org]
+The phy patches didn't apply. I assume they'll go through the phy tree.
 
-BUG: unable to handle page fault for address: ff0
-#PF: supervisor read access in kernel mode
-#PF: error_code(0x0000) - not-present page
-PGD cf7a067 P4D cf7a067 PUD cf7c067 PMD cf9f067 0
-Oops: 0000 [#1] PREEMPT SMP KASAN
-CPU: 1 PID: 8219 Comm: 9de Not tainted 6.7.0-rc41
-Hardware name: QEMU Standard PC (i440FX + PIIX, 4
-RIP: 0010:strncpy_from_kernel_nofault+0xc4/0x270 mm/maccess.c:91
-Code: 83 85 6c 17 00 00 01 48 8b 2c 24 eb 18 e8 0
-RSP: 0018:ffffc900114e7ac0 EFLAGS: 00010293
-RAX: 0000000000000000 RBX: ffffc900114e7b30 RCX:2
-RDX: ffff8880183abcc0 RSI: ffffffff81b8c9c4 RDI:c
-RBP: ffffffffff600000 R08: 0000000000000001 R09:0
-R10: 0000000000000001 R11: 0000000000000001 R12:8
-R13: ffffffffff600000 R14: 0000000000000008 R15:0
-FS:  0000000000000000(0000) GS:ffff88823bc00000(0
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: ffffffffff600000 CR3: 000000000cf77000 CR4:0
-PKRU: 55555554
-Call Trace:
-<TASK>
-bpf_probe_read_kernel_str_common kernel/trace/bpf_trace.c:262 [inline]
-____bpf_probe_read_compat_str kernel/trace/bpf_trace.c:310 [inline]
-bpf_probe_read_compat_str+0x12f/0x170 kernel/trace/bpf_trace.c:303
-bpf_prog_f17ebaf3f5f7baf8+0x42/0x44
-bpf_dispatcher_nop_func include/linux/bpf.h:1196 [inline]
-__bpf_prog_run include/linux/filter.h:651 [inline]
-bpf_prog_run include/linux/filter.h:658 [inline]
-__bpf_trace_run kernel/trace/bpf_trace.c:2307 [inline]
-bpf_trace_run2+0x14e/0x410 kernel/trace/bpf_trace.c:2346
-trace_kfree include/trace/events/kmem.h:94 [inline]
-kfree+0xec/0x150 mm/slab_common.c:1043
-vma_numab_state_free include/linux/mm.h:638 [inline]
-__vm_area_free+0x3e/0x140 kernel/fork.c:525
-remove_vma+0x128/0x170 mm/mmap.c:146
-exit_mmap+0x453/0xa70 mm/mmap.c:3332
-__mmput+0x12a/0x4d0 kernel/fork.c:1349
-mmput+0x62/0x70 kernel/fork.c:1371
-exit_mm kernel/exit.c:567 [inline]
-do_exit+0x9aa/0x2ac0 kernel/exit.c:858
-do_group_exit+0xd4/0x2a0 kernel/exit.c:1021
-__do_sys_exit_group kernel/exit.c:1032 [inline]
-__se_sys_exit_group kernel/exit.c:1030 [inline]
-__x64_sys_exit_group+0x3e/0x50 kernel/exit.c:1030
-do_syscall_x64 arch/x86/entry/common.c:52 [inline]
-do_syscall_64+0x41/0x110 arch/x86/entry/common.c:83
-entry_SYSCALL_64_after_hwframe+0x63/0x6b
-
-
-=* repro.c =*
-// autogenerated by syzkaller (https://github.com/google/syzkaller)
-
-#define _GNU_SOURCE
-
-#include <endian.h>
-#include <stdint.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <sys/syscall.h>
-#include <sys/types.h>
-#include <unistd.h>
-
-#ifndef __NR_bpf
-#define __NR_bpf 321
-#endif
-
-#define BITMASK(bf_off, bf_len) (((1ull << (bf_len)) - 1) << (bf_off))
-#define STORE_BY_BITMASK(type, htobe, addr, val, bf_off, bf_len)     \
- *(type*)(addr) =                                                   \
-     htobe((htobe(*(type*)(addr)) & ~BITMASK((bf_off), (bf_len))) | \
-           (((type)(val) << (bf_off)) & BITMASK((bf_off), (bf_len))))
-
-uint64_t r[1] = {0xffffffffffffffff};
-
-int main(void) {
- syscall(__NR_mmap, /*addr=*/0x1ffff000ul, /*len=*/0x1000ul, /*prot=*/0ul,
-         /*flags=*/0x32ul, /*fd=*/-1, /*offset=*/0ul);
- syscall(__NR_mmap, /*addr=*/0x20000000ul, /*len=*/0x1000000ul, /*prot=*/7ul,
-         /*flags=*/0x32ul, /*fd=*/-1, /*offset=*/0ul);
- syscall(__NR_mmap, /*addr=*/0x21000000ul, /*len=*/0x1000ul, /*prot=*/0ul,
-         /*flags=*/0x32ul, /*fd=*/-1, /*offset=*/0ul);
- intptr_t res = 0;
- *(uint32_t*)0x200000c0 = 0x11;
- *(uint32_t*)0x200000c4 = 0xb;
- *(uint64_t*)0x200000c8 = 0x20000180;
- *(uint8_t*)0x20000180 = 0x18;
- STORE_BY_BITMASK(uint8_t, , 0x20000181, 0, 0, 4);
- STORE_BY_BITMASK(uint8_t, , 0x20000181, 0, 4, 4);
- *(uint16_t*)0x20000182 = 0;
- *(uint32_t*)0x20000184 = 0;
- *(uint8_t*)0x20000188 = 0;
- *(uint8_t*)0x20000189 = 0;
- *(uint16_t*)0x2000018a = 0;
- *(uint32_t*)0x2000018c = 0;
- *(uint8_t*)0x20000190 = 0x18;
- STORE_BY_BITMASK(uint8_t, , 0x20000191, 1, 0, 4);
- STORE_BY_BITMASK(uint8_t, , 0x20000191, 0, 4, 4);
- *(uint16_t*)0x20000192 = 0;
- *(uint32_t*)0x20000194 = 0x25702020;
- *(uint8_t*)0x20000198 = 0;
- *(uint8_t*)0x20000199 = 0;
- *(uint16_t*)0x2000019a = 0;
- *(uint32_t*)0x2000019c = 0x20202000;
- STORE_BY_BITMASK(uint8_t, , 0x200001a0, 3, 0, 3);
- STORE_BY_BITMASK(uint8_t, , 0x200001a0, 3, 3, 2);
- STORE_BY_BITMASK(uint8_t, , 0x200001a0, 3, 5, 3);
- STORE_BY_BITMASK(uint8_t, , 0x200001a1, 0xa, 0, 4);
- STORE_BY_BITMASK(uint8_t, , 0x200001a1, 1, 4, 4);
- *(uint16_t*)0x200001a2 = 0xfff8;
- *(uint32_t*)0x200001a4 = 0;
- STORE_BY_BITMASK(uint8_t, , 0x200001a8, 7, 0, 3);
- STORE_BY_BITMASK(uint8_t, , 0x200001a8, 1, 3, 1);
- STORE_BY_BITMASK(uint8_t, , 0x200001a8, 0xb, 4, 4);
- STORE_BY_BITMASK(uint8_t, , 0x200001a9, 1, 0, 4);
- STORE_BY_BITMASK(uint8_t, , 0x200001a9, 0xa, 4, 4);
- *(uint16_t*)0x200001aa = 0;
- *(uint32_t*)0x200001ac = 0;
- STORE_BY_BITMASK(uint8_t, , 0x200001b0, 7, 0, 3);
- STORE_BY_BITMASK(uint8_t, , 0x200001b0, 0, 3, 1);
- STORE_BY_BITMASK(uint8_t, , 0x200001b0, 0, 4, 4);
- STORE_BY_BITMASK(uint8_t, , 0x200001b1, 1, 0, 4);
- STORE_BY_BITMASK(uint8_t, , 0x200001b1, 0, 4, 4);
- *(uint16_t*)0x200001b2 = 0;
- *(uint32_t*)0x200001b4 = 0xfffffff8;
- STORE_BY_BITMASK(uint8_t, , 0x200001b8, 7, 0, 3);
- STORE_BY_BITMASK(uint8_t, , 0x200001b8, 0, 3, 1);
- STORE_BY_BITMASK(uint8_t, , 0x200001b8, 0xb, 4, 4);
- STORE_BY_BITMASK(uint8_t, , 0x200001b9, 2, 0, 4);
- STORE_BY_BITMASK(uint8_t, , 0x200001b9, 0, 4, 4);
- *(uint16_t*)0x200001ba = 0;
- *(uint32_t*)0x200001bc = 8;
- STORE_BY_BITMASK(uint8_t, , 0x200001c0, 7, 0, 3);
- STORE_BY_BITMASK(uint8_t, , 0x200001c0, 0, 3, 1);
- STORE_BY_BITMASK(uint8_t, , 0x200001c0, 0xb, 4, 4);
- STORE_BY_BITMASK(uint8_t, , 0x200001c1, 3, 0, 4);
- STORE_BY_BITMASK(uint8_t, , 0x200001c1, 0, 4, 4);
- *(uint16_t*)0x200001c2 = 0;
- *(uint32_t*)0x200001c4 = 0xff600000;
- *(uint8_t*)0x200001c8 = 0x85;
- *(uint8_t*)0x200001c9 = 0;
- *(uint16_t*)0x200001ca = 0;
- *(uint32_t*)0x200001cc = 0x2d;
- *(uint8_t*)0x200001d0 = 0x95;
- *(uint8_t*)0x200001d1 = 0;
- *(uint16_t*)0x200001d2 = 0;
- *(uint32_t*)0x200001d4 = 0;
- *(uint64_t*)0x200000d0 = 0x20000200;
- memcpy((void*)0x20000200, "GPL\000", 4);
- *(uint32_t*)0x200000d8 = 0;
- *(uint32_t*)0x200000dc = 0;
- *(uint64_t*)0x200000e0 = 0;
- *(uint32_t*)0x200000e8 = 0;
- *(uint32_t*)0x200000ec = 0;
- memset((void*)0x200000f0, 0, 16);
- *(uint32_t*)0x20000100 = 0;
- *(uint32_t*)0x20000104 = 0;
- *(uint32_t*)0x20000108 = 0;
- *(uint32_t*)0x2000010c = 0;
- *(uint64_t*)0x20000110 = 0;
- *(uint32_t*)0x20000118 = 0;
- *(uint32_t*)0x2000011c = 0;
- *(uint64_t*)0x20000120 = 0;
- *(uint32_t*)0x20000128 = 0;
- *(uint32_t*)0x2000012c = 0;
- *(uint32_t*)0x20000130 = 0;
- *(uint32_t*)0x20000134 = 0;
- *(uint64_t*)0x20000138 = 0;
- *(uint64_t*)0x20000140 = 0;
- *(uint32_t*)0x20000148 = 0;
- *(uint32_t*)0x2000014c = 0;
- res = syscall(__NR_bpf, /*cmd=*/5ul, /*arg=*/0x200000c0ul, /*size=*/0x90ul);
- if (res != -1) r[0] = res;
- *(uint64_t*)0x20000540 = 0x20000000;
- memcpy((void*)0x20000000, "kfree\000", 6);
- *(uint32_t*)0x20000548 = r[0];
- syscall(__NR_bpf, /*cmd=*/0x11ul, /*arg=*/0x20000540ul, /*size=*/0x10ul);
- return 0;
-}
-
-=* repro.txt =*
-r0 = bpf$PROG_LOAD(0x5, &(0x7f00000000c0)={0x11, 0xb,
-&(0x7f0000000180)=@framed={{}, [@printk={@p, {}, {}, {}, {}, {0x7,
-0x0, 0xb, 0x3, 0x0, 0x0, 0xff600000}, {0x85, 0x0, 0x0, 0x2d}}]},
-&(0x7f0000000200)='GPL\x00', 0x0, 0x0, 0x0, 0x0, 0x0, '\x00', 0x0,
-0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0},
-0x90)
-bpf$BPF_RAW_TRACEPOINT_OPEN(0x11,
-&(0x7f0000000540)={&(0x7f0000000000)='kfree\x00', r0}, 0x10)
-
-
-
-See aslo https://gist.github.com/xrivendell7/7bb1f0a30ccc2899fe7ea34bef882067
-I hope it helps.
-
-Best regards.
-xingwei Lee
+-- 
+Martin K. Petersen	Oracle Linux Engineering
