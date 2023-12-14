@@ -2,296 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E4A5D813005
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 13:27:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B19F813010
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 13:28:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1573016AbjLNM1X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 07:27:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57048 "EHLO
+        id S1573025AbjLNM2n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 07:28:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55684 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1573021AbjLNM1R (ORCPT
+        with ESMTP id S1573001AbjLNM2l (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 07:27:17 -0500
-Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FC4F11D;
-        Thu, 14 Dec 2023 04:27:22 -0800 (PST)
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 3BECRENt029318;
-        Thu, 14 Dec 2023 06:27:14 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1702556834;
-        bh=VqrTS3Nf0oYZo0mbPS/YZaDCqhTgpCgDvSl+aqyP2gc=;
-        h=Date:From:To:CC:Subject:References:In-Reply-To;
-        b=qHbBIAY/yhKJcOumqEy9eFVAI1w2ZLKgdoUBKye4rRZvijpxVN8IeSBG+2vUezRxD
-         yMDs5sDp4GtDDjvkvJ7jHMLE8p3tMmMe/6PaqnkymptvbF2kguGdB86QO+lWBJ9glc
-         MP9FnyJ9JcnNN9Ea42D1bW/usmCgi7KYG0sHNauo=
-Received: from DLEE110.ent.ti.com (dlee110.ent.ti.com [157.170.170.21])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 3BECRE8k059744
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 14 Dec 2023 06:27:14 -0600
-Received: from DLEE109.ent.ti.com (157.170.170.41) by DLEE110.ent.ti.com
- (157.170.170.21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 14
- Dec 2023 06:27:14 -0600
-Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DLEE109.ent.ti.com
- (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Thu, 14 Dec 2023 06:27:13 -0600
-Received: from localhost (uda0133052.dhcp.ti.com [128.247.81.232])
-        by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 3BECRDTA106764;
-        Thu, 14 Dec 2023 06:27:13 -0600
-Date:   Thu, 14 Dec 2023 06:27:13 -0600
-From:   Nishanth Menon <nm@ti.com>
-To:     Vaishnav Achath <vaishnav.a@ti.com>
-CC:     <vigneshr@ti.com>, <kristo@kernel.org>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <j-choudhary@ti.com>, <u-kumar1@ti.com>
-Subject: Re: [PATCH 2/3] arm64: dts: ti: Introduce J722S family of SoCs
-Message-ID: <20231214122713.qx7as6grpvlq3ylw@stoic>
-References: <20231213124930.3012-1-vaishnav.a@ti.com>
- <20231213124930.3012-3-vaishnav.a@ti.com>
- <20231213202705.6tspycl5qicb6gwd@germproof>
- <08eccba2-41df-91e7-c1e5-e03190402c23@ti.com>
+        Thu, 14 Dec 2023 07:28:41 -0500
+Received: from EUR04-HE1-obe.outbound.protection.outlook.com (mail-he1eur04on2072.outbound.protection.outlook.com [40.107.7.72])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2501EBD;
+        Thu, 14 Dec 2023 04:28:47 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=LmMzSDRbLDuFLmeY8g+2y+IqumFlQKCHXXQy/y/dcZCr/aqsvhLk3xpzF3/KGUMfMf7wteE2afGsU0zFLdHykK4g4ftZ0a+CpU+Z4m8EMG3oSbGjDjol7XJEyyAkNB1NTTDt3Bd81bfhMKLW+Sm0H1l5aXGuc4nGvs8hRsGXuvg/p0Op+3s9Qtm+GjPhoTj7gGhOGlQw3s7lDjRJ6Jy1izYGi1h0T9w82QAdfu/vxu26F/H3Dq3TUuIcqsX8c7IYUdIMBery6DhBnm60q6mMDa7YME2X/L+UPE9L//BM4c1CzYRrYcd/eNAPmSnX7GjQlFmWmAthZpx9OpYwQO226g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=/NSPVvs6DMe3DwSXaf6lLY3KnnDYKqeuFPAw/bOS9I8=;
+ b=f+wlY5jNwhi5HBFQIffQEOwfmI82k378hNwYe+miDGQksWetXb8qGtz/eeqzV4S70668B5ynHJr/6DX55fKNjab3DObrUanUyR573HCeiRQWuagHwgnpsjV0l0o17RAXajWzRWQf1vrYf/c60YByYpzsGQ66p3rTjjbOMVf5YqNdItX2aoxWfXF/8j7mVWgEJaRengvsdFH+nZwtAKtihS21FwvmlxwKdLTyi153gC5PLcAHdCSsXz2+LnzV4jfRlS8hg/L1ddRQco28rsI6VIWcoQlqvOLO61NfyWUlkUEGoH+jbt3DFfXTvreAVHcGGekC3lgNp7CrFPwVnAKvug==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=theobroma-systems.com; dmarc=pass action=none
+ header.from=theobroma-systems.com; dkim=pass header.d=theobroma-systems.com;
+ arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=theobroma-systems.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=/NSPVvs6DMe3DwSXaf6lLY3KnnDYKqeuFPAw/bOS9I8=;
+ b=WnZnN5Y0YfMqDU/EmRBWT0jYPJlBUNgT3QC+ejG1G1eeul4A7JWe7bc5IIwefCM4TjdO+D/2HS/btfThUL+zIROJFu3jdD2CJgK3lJB+kqpqH59MMs61rkH33MROaLs4aR1m1XYKfJJ++hRyLpWIRhC0vx+fmydWNIHYzKV77xTS0JI+Qsf5Mke/ivgmWm+ENvyCju8oVutIKzv5nSfid3qEkU2lKYOfOP+ESCNDaVikY3MFUHA661aW76V4TVJa3LxlrSxTIF7fKk2Hynt7uS4zfJGQhlArU4WoObACFprVJM40nJp8YdvIjiMh+RolhIEkLr4v5128YPkyFPSOzw==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=theobroma-systems.com;
+Received: from GVXPR04MB9780.eurprd04.prod.outlook.com (2603:10a6:150:114::21)
+ by PAXPR04MB8846.eurprd04.prod.outlook.com (2603:10a6:102:20d::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7091.28; Thu, 14 Dec
+ 2023 12:28:43 +0000
+Received: from GVXPR04MB9780.eurprd04.prod.outlook.com
+ ([fe80::69e:3527:b31d:9449]) by GVXPR04MB9780.eurprd04.prod.outlook.com
+ ([fe80::69e:3527:b31d:9449%3]) with mapi id 15.20.7091.028; Thu, 14 Dec 2023
+ 12:28:42 +0000
+From:   Vahe Grigoryan <vahe.grigoryan@theobroma-systems.com>
+To:     quentin.schulz@theobroma-systems.com, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        heiko@sntech.de
+Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Vahe Grigoryan <vahe.grigoryan@theobroma-systems.com>
+Subject: [PATCH 1/3] arm64: dts: rockchip: fix misleading comment in rk3399-puma-haikou.dts
+Date:   Thu, 14 Dec 2023 13:27:59 +0100
+Message-Id: <20231214122801.3144180-1-vahe.grigoryan@theobroma-systems.com>
+X-Mailer: git-send-email 2.34.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: VE1PR03CA0021.eurprd03.prod.outlook.com
+ (2603:10a6:802:a0::33) To GVXPR04MB9780.eurprd04.prod.outlook.com
+ (2603:10a6:150:114::21)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <08eccba2-41df-91e7-c1e5-e03190402c23@ti.com>
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: GVXPR04MB9780:EE_|PAXPR04MB8846:EE_
+X-MS-Office365-Filtering-Correlation-Id: 1040c0ea-7364-4181-9746-08dbfca03500
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 9m+2QTTVvPY9KXmhIHxejDG9JXWlav26jRx4T27Z6vxtFNwS7G880KF4/Lp2bsRXiCo1Etxms6aTGIvqloBahLZhktsG3hQIoJCBWUcor8Tp6LhzDwqnlpKhq25fZS0irs44yNbQNwOqEzQj/HsOVbuNDiMMNtl+3H/N2tp0j3FjZi8HufdCvfiXoMvBsm4LNPpaiZkHPRCzRCha+MgxmpGpt8bqQzjdoE3Qol5I1N5NSV1bK4TsFDmoZKvGIwX++coz+KZVLM0GPcBGnW7xt8GycCkZJx6nglOAnW8kSIim1pBeUiaGhfUXMSlYoybHkMmFUw0YREKCllSBCMlA93UEQ5rj1S5bdBqR1r5sR3bY+6hWxQoRSckgAYS4EJkFXFYZLfXdBxyx6O4iVkrThacAgGjVl9AmuCGS756DvZAl+3lqhNAplDhW9ev/TMbfgtkjpuaVUqW6vzkQsgZu2/9m/m7mzpV5mcOQwIElivB1CBguum2Ldz1NwXFpEtD3Y8dTr1IdcmOqNGpig0ykAgTdOHdYRutuibod5l7NGYs3sSBwA/cbxVTora0C6Y4fKNShwmjlCecQz2A2dTU1ThgC01fGz94MGjuLt32wXK0tz+i/mdNR5RXYKq7HDlLR
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:GVXPR04MB9780.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(39850400004)(136003)(376002)(396003)(346002)(230922051799003)(1800799012)(186009)(64100799003)(451199024)(52116002)(6506007)(6666004)(6512007)(6486002)(478600001)(83380400001)(107886003)(26005)(2616005)(1076003)(4744005)(2906002)(5660300002)(41300700001)(316002)(66556008)(66946007)(66476007)(4326008)(8936002)(8676002)(44832011)(38350700005)(86362001)(36756003)(38100700002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?7myCdVDX45RyC728akyXBYoNjzA0TpCfTJhvh9AdFFdPsGbVP4GpMNDjwArh?=
+ =?us-ascii?Q?a6AfV4wFG2rWHDzi5sZdoNMZF7KQeSy3PJE4THtkyGsEKKlaZEm7v0g/YC3m?=
+ =?us-ascii?Q?cqJYuExJF0/Baepb2R9TWbZA07WCRdav1d2PlSzys1hUWcNNyLAsjtDgF4yJ?=
+ =?us-ascii?Q?GkYz4zdCQEHzmkQIO9063B30n4DEkVLMw4ePfi+tmCkZbvni6HLxAkl/5k+f?=
+ =?us-ascii?Q?FA+jsRwnZ4vekiAUnmRjZ2M6JuBlEZs3Epm1Qj45PHgjBTHszBxZ+r+PvBqm?=
+ =?us-ascii?Q?wZHNC6+vZf79HUi/1INbp79tEKzHXJ9Hzxg4fLHnCQrUEcumFL9XcswExvTG?=
+ =?us-ascii?Q?6msl33g+YkAqbzTz/LLlZBfJAQoqLuejSs2poL+9ETWJFzobBMd8iskORLJC?=
+ =?us-ascii?Q?x89AXSSK0JIdVJUpKLmxWrkVlgn7XkcZPHzLFwIM39j0H5JOsOPO3zNbO49T?=
+ =?us-ascii?Q?useOev28KrkQBrGDPEJvTnsDE3SgkRzHLlrUPngLhrvEJgPF6mG37yMzKFJt?=
+ =?us-ascii?Q?v0SexXY6T2GtGzkO6aS+hyWnEp3m8qjX00oPvAzJ3M5Of1wQXaboNvoRLMRh?=
+ =?us-ascii?Q?ICXuJnX8oXDvOY0TrJ8lu2cOYeXy3SXEVmNQT9C1NgrSO2pATP7XPdMhkmKw?=
+ =?us-ascii?Q?XhUXA2XGjoQCgCQakoyQcZSGgaVWK9RdAVYBoYDVLs5Zcsn0ckiBPuV7a7j7?=
+ =?us-ascii?Q?0VconGdraebLrxVRgPFS7P7dS3SCZHHuyx+SY53+kE/orLyvLx9C1lAR/32M?=
+ =?us-ascii?Q?Y43RzRJz90v8PEaey1Mdxqk2QUim0N5zaiwZMj5QGfXhXyTR28W9I/P8/Llw?=
+ =?us-ascii?Q?RZHlov54eyqlP6/MDPPZccBJDm4Zum84JsXS24WIB/0njZT03/JvMFcdsRO9?=
+ =?us-ascii?Q?TEk2nXV0ES8dLzVINY/VPJZYpejri+2tShZ4DPYnZzIsElfzghpjbJafMTsC?=
+ =?us-ascii?Q?9kRZu6LpJjDcxuUqhqibaMnHUD74PqmA4QANcxLtGnzmhJH/WvzsFst0jXVk?=
+ =?us-ascii?Q?OOYIY4rxAR00eMBlWSNjVT25p0RZSe/H3h8YLjxfhMqa4xesh+WsgYpqvSBA?=
+ =?us-ascii?Q?3LzqwCbrAKcDnclIixqngNdYwc121qPAyqqgUZrtZonC2sr15e3QkQNYbgu/?=
+ =?us-ascii?Q?fV5lw1TPlJXzWb3IzwD2MjvgRXmG3vEM/TWtUr9lSMu3C/B0aanVTltCbyBV?=
+ =?us-ascii?Q?WxaPnDgpEG8qZnf24au8CXIVJtubQmuFhDnxuVCeB7F2cDAwvz93VMPOW8qJ?=
+ =?us-ascii?Q?mEwElTm2VWljJiMCpzyjKgWKn8Ot9Ul49b/pzSgnKa1LOccJcK9O2l/9HJ/E?=
+ =?us-ascii?Q?fLvlHTJb6uNm0z6ywxR/DA4T9KbZenUSpiwRegmunyg/CmMTZvWWGpZwdtz2?=
+ =?us-ascii?Q?3W5Dsapqq1AVU7yeMmSRxmzFCYiHd3Qh5xbDiYCPfCIO767zq/TlS2/lowYQ?=
+ =?us-ascii?Q?pPOLeWss+PRvHTmKtyArTD8KaMfa9Bas4L764sLJ9ZIIJOTPjeAWMNI4z8Vr?=
+ =?us-ascii?Q?4GymEng5BhZV4dOwxukM6W3FCUWeydxKK0+ZXD4rF/zjJVKHkx1Qt3Vf5r0+?=
+ =?us-ascii?Q?dPOnF+HAdyHxp1/sqHWrzzVadOw2signxDIm9DelsCM+Ni3OsviAm9/87XEY?=
+ =?us-ascii?Q?LW3vpkgAcpkadfACrOjKW/c=3D?=
+X-OriginatorOrg: theobroma-systems.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1040c0ea-7364-4181-9746-08dbfca03500
+X-MS-Exchange-CrossTenant-AuthSource: GVXPR04MB9780.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Dec 2023 12:28:41.9285
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 5e0e1b52-21b5-4e7b-83bb-514ec460677e
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 2HieK/k8SsJvEoVU1SAKk6lrQqlovnaG5dAjx/43wwV725vZ1OwXkdQdgSZUK7tTrCsGlqe/RboGt3bnRwkfpbHxw+Ws7bqpi2BGI5THTlTxxBmmGVYGMW5Q3zYKdlgP
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PAXPR04MB8846
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 14:07-20231214, Vaishnav Achath wrote:
-[..]
-> > Trim this down to what is different from AM62P?
-> > 
-> 
-> Thanks for the review, I will trim this down in next revision, but the above is
-> just a summary of the main features of this SoC, pointing to AM62P feature set
-> here seems confusing to me. why does a new user/developer using J722S need to be
-> aware of the existence of AM62P to just understand a high level summary about
-> this device?
+Haikou is an evaluation and development platform for System on
+Modules (SOMs).
 
-Since this is a reuse device. Helps with review and focus on deltas.
+The GPIO0_B1 is routed to the Wake button instead of BIOS_DISABLE,
+update the comment to reflect that.
 
-[...]
+Signed-off-by: Vahe Grigoryan <vahe.grigoryan@theobroma-systems.com>
+---
+ arch/arm64/boot/dts/rockchip/rk3399-puma-haikou.dts | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> >> +	l2_0: l2-cache0 {
-> >> +		compatible = "cache";
-> >> +		cache-unified;
-> >> +		cache-level = <2>;
-> >> +		cache-size = <0x80000>;
-> >> +		cache-line-size = <64>;
-> >> +		cache-sets = <512>;
-> >> +	};
-> > 
-> > ^^ this is a duplication of am62p5.dtsi? what about the spins with
-> > different CPUs enabled?
-> > 
-> 
-> Yes it is a duplicate, as of now we are not aware of plan for spins with cores
-> disabled, so just followed the pattern followed for other Jacinto devices
-> (J721e, J7200, J721s2, J784s4).
-
-None of the devices have been as close a reuse device as this has been.
-errata in one carries over to the other etc.. There are definitely some
-differences - for example: itap/otap delays for mmc those would be
-unique on this device, but overrides with documentation will make
-perfect sense there.
-
-[..]
-> >> +		cbass_wakeup: bus@b00000 {
-> >> +			compatible = "simple-bus";
-> >> +			#address-cells = <2>;
-> >> +			#size-cells = <2>;
-> >> +			ranges = <0x00 0x00b00000 0x00 0x00b00000 0x00 0x00002400>, /* VTM */
-> >> +				 <0x00 0x2b000000 0x00 0x2b000000 0x00 0x00300400>, /* Peripheral Window */
-> >> +				 <0x00 0x43000000 0x00 0x43000000 0x00 0x00020000>, /* WKUP CTRL MMR */
-> >> +				 <0x00 0x78000000 0x00 0x78000000 0x00 0x00008000>, /* DM R5 ATCM*/
-> >> +				 <0x00 0x78100000 0x00 0x78100000 0x00 0x00008000>; /* DM R5 BTCM*/
-> >> +			bootph-all;
-> > 
-> > Not in the bus nodes.. only in the leaf nodes please.
-> > 
-> > 
-> > Also what is wrong with expanding the am62p to include the
-> > missing bus segments instead of duplicating all of them?
-> > 
-> 
-> We can do that, but the same would be true for AM625, AM62A and AM62P families
-> and also for (J721E, J7200), since all these SoCs introduced new dtsi instead of
-> resuing existing ones, I thought there would be some valid reason to have
-> separate dtsi and just followed the same pattern, please let know if we need to
-> reuse from AM62P here also.
-
-See above.
-
-[...]
-
-> 
-> >> +		};
-> >> +	};
-> >> +
-> >> +	#include "k3-am62p-thermal.dtsi"
-> > 
-> > Is this correct?
-> > 
-> 
-> I think it would be preferred to have a duplicate for J722S here as users may
-> want to customize the trip points as per system and doing that without affecting
-> AM62P would be preferred, but the initial information here would be same for J722S.
-
-Please check with your hardware teams if the am62p SoC level thermal
-behavior will be similar to j722s or will it be different. If it is
-estimated to be different, then you'd prefer to hold off introducing
-the trips till the characterization provides you with the data.
-
-> 
-> >> +};
-> >> +
-> >> +/*
-> >> + * Include peripherals for each bus segment derived
-> >> + * from AM62P and overrides specific to J722S.
-> >> + */
-> >> +#include "k3-am62p-main.dtsi"
-> >> +#include "k3-am62p-mcu.dtsi"
-> >> +#include "k3-am62p-wakeup.dtsi"
-> >> +
-> >> +/* Main domain overrides */
-> >> +
-> >> +&cpsw3g {
-> >> +	status = "disabled";
-> > 
-> > 	here and rest: Why disabled?
-> 
-> These nodes seems to have dependencies that are not merged already and would
-> throw errors during boot, AM62P SoC dtsi seems to have these enabled by default
-> without these dependencies met and have errors like below during boot (seen on
-> AM62P with 6.7.0-rc4-next-20231211).
-> 
-> [   17.869092] platform 8000000.ethernet: deferred probe pending:
-> am65-cpsw-nuss: Failed to request tx dma channel
-
-OK - lets get the dependencies sorted out before merging then. I though
-all the dependencies were indicated in the cover letter.
-
-> 
-> >> +};
-> >> +
-> >> +&inta_main_dmss {
-> >> +	ti,interrupt-ranges = <5 69 35>;
-> >> +};
-> >> +
-> >> +&mailbox0_cluster0 {
-> >> +	status = "disabled";
-> >> +};
-> >> +
-> >> +&mailbox0_cluster1 {
-> >> +	status = "disabled";
-> >> +};
-> >> +
-> >> +&mailbox0_cluster2 {
-> >> +	status = "disabled";
-> >> +};
-> >> +
-> >> +&mailbox0_cluster3 {
-> >> +	status = "disabled";
-> >> +};
-> >> +
-> 
-> [    7.198470] omap-mailbox 29020000.mailbox: no available mbox devices found
-> [    7.210411] omap-mailbox 29030000.mailbox: no available mbox devices found
-
-You might want to dig into why..
-
-> 
-> >> +&oc_sram {
-> >> +	reg = <0x00 0x70000000 0x00 0x40000>;
-> >> +	ranges = <0x00 0x00 0x70000000 0x40000>;
-> >> +};
-> >> +
-> >> +/* MCU domain overrides */
-> >> +
-> >> +&mcu_r5fss0 {
-> >> +	status = "disabled";
-> >> +};
-> 
-> [    7.492406] platform 79000000.r5f: configured R5F for remoteproc mode
-> [    7.499887] platform 79000000.r5f: device does not have reserved memory
-> regions, ret = -22
-> [    7.508271] k3_r5_rproc bus@f0000:bus@4000000:r5fss@79000000: reserved memory
-> init failed, ret = -22
-> [    7.517549] remoteproc remoteproc0: releasing 79000000.r5f
-> [    7.523338] k3_r5_rproc bus@f0000:bus@4000000:r5fss@79000000:
-> k3_r5_cluster_rproc_init failed, ret = -22
-> [    7.532993] k3_r5_rproc: probe of bus@f0000:bus@4000000:r5fss@79000000 failed
-> with error -22
-
-Yes, and the approach should rather be to disable the remote procs in
-the board or at the SoC dtsi in a consistent manner. I had previously
-suggested to do that SoC level (which means at am62p dtsi) since the remoteprocs have direct
-dependency on how the memory layouts are partitioned in board.dts - but
-i had asked folks working on remote procs to do that consistently across
-SoCs. I don't see that having been done so far.
-
-> 
-> >> +
-> >> +/* wakeup domain overrides */
-> >> +
-> >> +&wkup_r5fss0 {
-> >> +	status = "disabled";
-> >> +};
-> 
-> [    7.576576] platform 78000000.r5f: configured R5F for IPC-only mode
-> [    7.605535] platform 78000000.r5f: device does not have reserved memory
-> regions, ret = -22
-> [    7.613942] k3_r5_rproc bus@f0000:bus@b00000:r5fss@78000000: reserved memory
-> init failed, ret = -22
-> [    7.635990] remoteproc remoteproc0: releasing 78000000.r5f
-> [    7.648639] k3_r5_rproc bus@f0000:bus@b00000:r5fss@78000000:
-> k3_r5_cluster_rproc_init failed, ret = -22
-> [    7.664043] k3_r5_rproc: probe of bus@f0000:bus@b00000:r5fss@78000000 failed
-> with error -22
-
-See above.
-
-> 
-> >> diff --git a/arch/arm64/boot/dts/ti/k3-pinctrl.h b/arch/arm64/boot/dts/ti/k3-pinctrl.h
-> >> index 2a4e0e084d69..591be4489f37 100644
-> >> --- a/arch/arm64/boot/dts/ti/k3-pinctrl.h
-> >> +++ b/arch/arm64/boot/dts/ti/k3-pinctrl.h
-> >> @@ -59,6 +59,9 @@
-> >>  #define J721S2_IOPAD(pa, val, muxmode)		(((pa) & 0x1fff)) ((val) | (muxmode))
-> >>  #define J721S2_WKUP_IOPAD(pa, val, muxmode)	(((pa) & 0x1fff)) ((val) | (muxmode))
-> >>  
-> >> +#define J722S_IOPAD(pa, val, muxmode)		(((pa) & 0x1fff)) ((val) | (muxmode))
-> >> +#define J722S_MCU_IOPAD(pa, val, muxmode)	(((pa) & 0x1fff)) ((val) | (muxmode))
-> >> +
-> >>  #define J784S4_IOPAD(pa, val, muxmode)		(((pa) & 0x1fff)) ((val) | (muxmode))
-> >>  #define J784S4_WKUP_IOPAD(pa, val, muxmode)	(((pa) & 0x1fff)) ((val) | (muxmode))
-> >>  
-> >> -- 
-> >> 2.17.1
-> >>
-> 
-> 0 - AM62P Boot logs (next-20231211) -
-> https://gist.github.com/vaishnavachath/7143da253bc708a1e60a13fe081d3914
-> 
-> To avoid these errors I am keeping these disabled, can we add support for these
-> also as part of the initial support addition series? then there is no need for
-> disabling these.
-
-Fix them, then introduce j722s.
-
+diff --git a/arch/arm64/boot/dts/rockchip/rk3399-puma-haikou.dts b/arch/arm64/boot/dts/rockchip/rk3399-puma-haikou.dts
+index 115c14c0a3c6..4f2d4bb12032 100644
+--- a/arch/arm64/boot/dts/rockchip/rk3399-puma-haikou.dts
++++ b/arch/arm64/boot/dts/rockchip/rk3399-puma-haikou.dts
+@@ -177,7 +177,7 @@ haikou_pin_hog: haikou-pin-hog {
+ 			  <0 RK_PB2 RK_FUNC_GPIO &pcfg_pull_up>,
+ 			  /* SLP_BTN# */
+ 			  <0 RK_PB3 RK_FUNC_GPIO &pcfg_pull_up>,
+-			  /* BIOS_DISABLE# */
++			  /* WAKE# */
+ 			  <0 RK_PB1 RK_FUNC_GPIO &pcfg_pull_up>;
+ 		};
+ 	};
 -- 
-Regards,
-Nishanth Menon
-Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
+2.34.1
+
