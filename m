@@ -2,216 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AA6F28123C3
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 01:15:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E38168123C8
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 01:18:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442764AbjLNAP3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 19:15:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48492 "EHLO
+        id S1442843AbjLNASK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 19:18:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58980 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229706AbjLNAP1 (ORCPT
+        with ESMTP id S234103AbjLNASJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 19:15:27 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24896C9
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 16:15:34 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 97E27C433C8;
-        Thu, 14 Dec 2023 00:15:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1702512933;
-        bh=aPg6Z+wmckOVQuqjd9R9p5MP1fl4PYkCvzrh/X3o2+k=;
-        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=EIV1xiGGnPi1KfF5ik21wZVX0IVcX548EChGqvxvF9o6FIUKK4MV9ZyhMVdJQc2dK
-         0ZIUlL4wy5i5AIwq3ng72t1/RNH1W28daEV+1XAWfXuDHHIAS3gRj8i29VRlZth4bS
-         rRURKTNF7v/1EzyN3jyivB6fjHeRogUxJ/7sNY62IDZP6faka+jHt48CL8i1Q8Ttf6
-         DaZJbKuUP4qqbgtuE9FmNk9m22O6QwI6vgiwX9ReHJozTm21H5FySsoyEwpihZWvOV
-         k4Q8J6KzEo6D4OZPA4NejxsU5h2WLHBd8uaGhSh+ZTKlocBC8eAO4td9O057RB+u82
-         l7SBX5pOyz2tg==
-Message-ID: <1b4b88035d7524ad3d6de7c6084e3f07.sboyd@kernel.org>
-Content-Type: text/plain; charset="utf-8"
-MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20231212-unnerving-rule-1052a5b7253e@wendy>
-References: <cover.1701997033.git.unicorn_wang@outlook.com> <d1aa4f76f360ebd7b790a4786641f1b0188dbba8.1701997033.git.unicorn_wang@outlook.com> <20231208-opposite-stand-fc92fbaaed9c@spud> <MA0P287MB0332A937E4DF0044594B19CCFE8EA@MA0P287MB0332.INDP287.PROD.OUTLOOK.COM> <20231212-unnerving-rule-1052a5b7253e@wendy>
-Subject: Re: [PATCH v6 3/4] clk: sophgo: Add SG2042 clock generator driver
-From:   Stephen Boyd <sboyd@kernel.org>
-Cc:     Conor Dooley <conor@kernel.org>, Chen Wang <unicornxw@gmail.com>,
-        aou@eecs.berkeley.edu, chao.wei@sophgo.com,
-        krzysztof.kozlowski+dt@linaro.org, mturquette@baylibre.com,
-        palmer@dabbelt.com, paul.walmsley@sifive.com,
-        richardcochran@gmail.com, robh+dt@kernel.org,
-        devicetree@vger.kernel.org, linux-clk@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
-        haijiao.liu@sophgo.com, xiaoguang.xing@sophgo.com,
-        guoren@kernel.org, jszhang@kernel.org, inochiama@outlook.com,
-        samuel.holland@sifive.com
-To:     Chen Wang <unicorn_wang@outlook.com>,
-        Conor Dooley <conor.dooley@microchip.com>
-Date:   Wed, 13 Dec 2023 16:15:31 -0800
-User-Agent: alot/0.10
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        Wed, 13 Dec 2023 19:18:09 -0500
+Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 288ACDD
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 16:18:11 -0800 (PST)
+Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-5ca26c07848so86948607b3.0
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 16:18:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1702513090; x=1703117890; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:reply-to:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=a1T9KSqGwtMQv1hbNnbP8po9bAmmjqCZKAuvRphoWag=;
+        b=QljGPwke04rTAIDpxA57e8MCTdWrGyzqMN/uqmv2hZx8HqDwpbYHRybX+f18RbsG0m
+         wd46C0oeTmjRT0KGmlGl8vQru/PWK00dHimIU0rkzCCxEK6AWlN1Rrwc/AYT9Rrf05hL
+         DYCimFEUTIfM1zXFoR5iaif/zz2CQueikYCxqK3f64Bsl4vDcTjmRRYOXcvMvbfrF2IR
+         tF+JMMDOZIb+GTXqBdovPbPMU/n+YoFhcCwsVZTP9IDxmS6xAzHEc/UP/OivMuYvr4Q7
+         gYROy4S0EPdxF2Tx3Xgtm0oFh3xixDocyzYEvydTa8YJ/OwozzjiJgqGB+elC21I+El1
+         lqmw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702513090; x=1703117890;
+        h=cc:to:from:subject:message-id:mime-version:date:reply-to
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=a1T9KSqGwtMQv1hbNnbP8po9bAmmjqCZKAuvRphoWag=;
+        b=WKhZgbseeAWyoQRNR3Vq79DxZ3VWrOWrfcoHSix/VDGNas8zb7BWDJ2SWYOAIu0d8C
+         qw3U2uSI8KhbSkw+urTI2QcpujbJOYZf+itac3pNEgu6FWZc0Zahb/eS70Fm+owZstrg
+         E4jYMJjDZVSjMr8sRlJ+yFOh1WW9wgIcNZvRf9vvZJeS9pzOqUSQNzP5aN1fc134Qc0j
+         gWQ2Fg2mFNM4y5pAJJzGeZAAt9rLgSO2esyp4+DtVYAHauOBWGqJ++MnVR6lvqyjB8Ku
+         KPmN5WPieliswbN2NGT8hDtiaJ6/Ol4yXX3+zOstGo1jkUx7CxLTp7zweO6/LJpYJdKM
+         2UyA==
+X-Gm-Message-State: AOJu0YyTa8Vt4Qox1bmTUWEQCQuT8g7G9MYt1JNeXX14m1ApZ0FJ4N43
+        pqwV3vLb8diFkjVEy3A3+Uc0iLmltNA=
+X-Google-Smtp-Source: AGHT+IFmk5v2l4+Tqax5+3GuiZuNT+GmYDfAm4pBLEOyYVVFFdfKEC01FLTLs+5lL7EdyQE6E4BpTfIGm7U=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a25:b84f:0:b0:dbc:1b46:9aeb with SMTP id
+ b15-20020a25b84f000000b00dbc1b469aebmr71552ybm.2.1702513090354; Wed, 13 Dec
+ 2023 16:18:10 -0800 (PST)
+Reply-To: Sean Christopherson <seanjc@google.com>
+Date:   Wed, 13 Dec 2023 16:17:53 -0800
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.43.0.472.g3155946c3a-goog
+Message-ID: <20231214001753.779022-1-seanjc@google.com>
+Subject: [ANNOUNCE / RFC] PUCK Future Topics
+From:   Sean Christopherson <seanjc@google.com>
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        James Houghton <jthoughton@google.com>,
+        Peter Xu <peterx@redhat.com>,
+        Axel Rasmussen <axelrasmussen@google.com>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        Isaku Yamahata <isaku.yamahata@linux.intel.com>,
+        David Matlack <dmatlack@google.com>,
+        Yan Zhao <yan.y.zhao@intel.com>, Marc Zyngier <maz@kernel.org>,
+        Michael Roth <michael.roth@amd.com>,
+        Aaron Lewis <aaronlewis@google.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Conor Dooley (2023-12-12 00:37:39)
-> On Tue, Dec 12, 2023 at 10:22:28AM +0800, Chen Wang wrote:
->=20
-> > On 2023/12/9 0:47, Conor Dooley wrote:
-> > > On Fri, Dec 08, 2023 at 09:14:32AM +0800, Chen Wang wrote:
->=20
-> > > > +#define ENCODE_PLL_CTRL(fbdiv, p1, p2, refdiv) \
-> > > > + (((fbdiv & 0xfff) << 16) | ((p2 & 0x7) << 12) | ((p1 & 0x7) << 8)=
- | (refdiv & 0x3f))
-> > > IMO this should be a function not a macro.
->=20
-> > Would like to listen why it should be a function instead of a macro? Any
-> > experiences you can share with me?
->=20
-> Readability. A function, which could be inlined allows you to break this
-> up and make it easier to read.
->=20
-> > > > +/*
-> > > > + * Based on input rate/prate/fbdiv/refdiv, look up the postdiv1_2 =
-table
-> > > > + * to get the closest postdiiv combination.
-> > > > + * @rate: FOUTPOSTDIV
-> > > > + * @prate: parent rate, i.e. FREF
-> > > > + * @fbdiv: FBDIV
-> > > > + * @refdiv: REFDIV
-> > > > + * @postdiv1: POSTDIV1, output
-> > > > + * @postdiv2: POSTDIV2, output
-> > > > + * See TRM:
-> > > > + * FOUTPOSTDIV =3D FREF * FBDIV / REFDIV / (POSTDIV1 * POSTDIV2)
-> > > > + * So we get following formula to get POSTDIV1 and POSTDIV2:
-> > > > + * POSTDIV =3D (prate/REFDIV) x FBDIV/rate
-> > > > + * above POSTDIV =3D POSTDIV1*POSTDIV2
-> > > > + */
-> > > > +static int __sg2042_pll_get_postdiv_1_2(
-> > > > + unsigned long rate,
-> > > > + unsigned long prate,
-> > > > + unsigned int fbdiv,
-> > > > + unsigned int refdiv,
-> > > > + unsigned int *postdiv1,
-> > > > + unsigned int *postdiv2)
-> > > This is not the coding style btw.
-> > Agree, will fix this.
-> > > > +{
-> > > > + int index =3D 0;
-> > > > + int ret =3D 0;
-> > > > + u64 tmp0;
-> > > > +
-> > > > + /* prate/REFDIV and result save to tmp0 */
-> > > > + tmp0 =3D prate;
-> > > > + do_div(tmp0, refdiv);
-> > > > +
-> > > > + /* ((prate/REFDIV) x FBDIV) and result save to tmp0 */
-> > > > + tmp0 *=3D fbdiv;
-> > > > +
-> > > > + /* ((prate/REFDIV) x FBDIV)/rate and result save to tmp0 */
-> > > > + do_div(tmp0, rate);
-> > > > +
-> > > > + /* tmp0 is POSTDIV1*POSTDIV2, now we calculate div1 and div2 valu=
-e */
-> > > > + if (tmp0 <=3D 7) {
-> > > > +         /* (div1 * div2) <=3D 7, no need to use array search */
-> > > > +         *postdiv1 =3D tmp0;
-> > > > +         *postdiv2 =3D 1;
+Hi all!  There are a handful of PUCK topics that I want to get scheduled, and
+would like your help/input in confirming attendance to ensure we reach critical
+mass.
 
-why not return 0 here?
+If you are on the Cc, please confirm that you are willing and able to attend
+PUCK on the proposed/tentative date for any topics tagged with your name.  Or
+if you simply don't want to attend, I suppose that's a valid answer too. :-)
 
-> > > > + } else {
+If you are not on the Cc but want to ensure that you can be present for a given
+topic, please speak up asap if you have a conflict.  I will do my best to
+accomodate everyone's schedules, and the more warning I get the easier that will
+be.
 
-And then de-indent this?
+Note, the proposed schedule is largely arbitrary, I am not wedded to any
+particular order.  The only known conflict at this time is the guest_memfd()
+post-copy discussion can't land on Jan 10th.
 
-> > > > +         /* (div1 * div2) > 7, use array search */
-> > > > +         for (index =3D 0; index < ARRAY_SIZE(postdiv1_2); index++=
-) {
-> > > > +                 if (tmp0 > postdiv1_2[index][POSTDIV_RESULT_INDEX=
-]) {
-> > > > +                         continue;
-> > > > +                 } else {
-> > > > +                         /* found it */
-> > > > +                         break;
-
-This can also return?
-
-> > > > +                 }
-> > > > +         }
-> > > > +         if (index < ARRAY_SIZE(postdiv1_2)) {
-
-And this condition can be removed.
-
-> > > > +                 *postdiv1 =3D postdiv1_2[index][1];
-> > > > +                 *postdiv2 =3D postdiv1_2[index][0];
-> > > > +         } else {
-
-This can be the default after the loop.
-
-> > > > +                 pr_debug("%s can not find in postdiv array!\n", _=
-_func__);
-> > > > +                 ret =3D -EINVAL;
+Thanks!
 
 
- /* tmp0 is POSTDIV1*POSTDIV2, now we calculate div1 and div2 value */
- if (tmp0 <=3D 7) {
-         /* (div1 * div2) <=3D 7, no need to use array search */
-         *postdiv1 =3D tmp0;
-         *postdiv2 =3D 1;
-	 return 0;
- }
+2024.01.03 - Post-copy for guest_memfd()
+    Needs: David M, Paolo, Peter Xu, James, Oliver, Aaron
 
- /* (div1 * div2) > 7, use array search */
- for (index =3D 0; index < ARRAY_SIZE(postdiv1_2); index++) {
-	 if (tmp0 > postdiv1_2[index][POSTDIV_RESULT_INDEX]) {
-		 continue;
-	 } else {
-		 *postdiv1 =3D postdiv1_2[index][1];
-		 *postdiv2 =3D postdiv1_2[index][0];
-		 return 0;
-	 }
- }
- pr_debug("%s can not find in postdiv array!\n", __func__);
- return -EINVAL;
+2024.01.10 - Unified uAPI for protected VMs
+    Needs: Paolo, Isaku, Mike R
 
-> > > Reading this function it makes me wonder if (and I am far from the be=
-st
-> > > person to comment, someone like Stephen is vastly more qualified) you
-> > > should model this as several "stages", each implemented by the
-> > > "standard" clocks - like clk_divider etc. The code here is quite
-> > > complicated IMO as it seems to be trying to implement several stages =
-of
-> > > division in one go.
-> >=20
-> > The objective of __sg2042_pll_get_postdiv_1_2() is straightforward: bas=
-ed on
-> > the formula defined by the TRM, with input rate/prate/fbdiv/refdiv, we =
-can
-> > get the possiblle combination of POSTDIV1 and POSTDIV2 by looking up the
-> > table of postdiv1_2. We will later use it to setup the clock register.
-> >=20
-> > Though the codes looks a bit complicated, but accually it is calculate =
-with
-> > the formula : POSTDIV =3D (prate/REFDIV) x FBDIV/rate, I just separate =
-it into
-> > several steps to make it easy to understand, I have listed the formula =
-in
-> > the comment on top of the function.
->=20
-> I understand what you are doing, I did something similar myself
-> previously. My suggestion/question was about using the "standard" types
-> of clock that the core provides to represent as many of the clocks in
-> this driver as is feasible.
+2024.01.17 - Memtypes for non-coherent MDA
+    Needs: Paolo, Yan, Oliver, Marc, more ARM folks?
 
-I would not twist the code to conform with the basic clk types. If
-possible it would be good to use the helpers for these things, but I
-wouldn't split up a clk that is a complex divider with multiple stages
-of division into the basic types just to make it fit. I say this because
-every clk takes more effort to maintain in the clk tree, it has a name,
-pointers, etc. If you can keep that self contained and logically it is
-really one clk, then go for it.
+2024.01.24 - TDP MMU for IOMMU
+    Needs: Paolo, Yan, Jason, ???
+
+
+P.S. if you're wondering, what the puck is PUCK?
+
+  Time:  6am PDT
+  Video: https://meet.google.com/vdb-aeqo-knk
+  Phone: https://tel.meet/vdb-aeqo-knk?pin=3003112178656
+
+  Calendar: https://calendar.google.com/calendar/u/0?cid=Y182MWE1YjFmNjQ0NzM5YmY1YmVkN2U1ZWE1ZmMzNjY5Y2UzMmEyNTQ0YzVkYjFjN2M4OTE3MDJjYTUwOTBjN2Q1QGdyb3VwLmNhbGVuZGFyLmdvb2dsZS5jb20
+  Drive:    https://drive.google.com/drive/folders/1aTqCrvTsQI9T4qLhhLs_l986SngGlhPH?resourcekey=0-FDy0ykM3RerZedI8R-zj4A&usp=drive_link
+
+  https://lore.kernel.org/all/20230512231026.799267-1-seanjc@google.com
