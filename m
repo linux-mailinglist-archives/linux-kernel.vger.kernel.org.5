@@ -1,96 +1,107 @@
-Return-Path: <linux-kernel+bounces-18-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-20-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 91324813ACE
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 20:32:44 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E51B4813AD6
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 20:35:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F1A5AB21124
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 19:32:41 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9C6C9282426
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 19:35:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 95FA16A020;
-	Thu, 14 Dec 2023 19:32:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="c+RTrvfc"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C8414697A9;
+	Thu, 14 Dec 2023 19:35:26 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-wr1-f41.google.com (mail-wr1-f41.google.com [209.85.221.41])
+Received: from mail-oo1-f51.google.com (mail-oo1-f51.google.com [209.85.161.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C4C86A336;
-	Thu, 14 Dec 2023 19:32:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC1B768B98;
+	Thu, 14 Dec 2023 19:35:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f41.google.com with SMTP id ffacd0b85a97d-3364c9ba749so272169f8f.1;
-        Thu, 14 Dec 2023 11:32:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702582331; x=1703187131; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=yZwA4coKcId6uh+NhWHu2prHRdEVSOKW+sQpZ6upqMM=;
-        b=c+RTrvfcTr5gmGWsv9b5DPhDRgRW2P4H/BeMen6V0qT49niZhSMM/m5Z2zMafnCoLi
-         7hnL73FdpOJsk8k+xNuSGlinBCrp0OHDojabP9Q6nUnMyBDSGtbhrpn4Zyen0/REAHY/
-         l+4720cdpd8/UAOSA6jm/Lk4i8qjcBbgo3VyL9IOnFPZzuHzFB7cXRZ4lzAu6hlFnjK7
-         ys5xs5MGT9LMpLDCI9/2FcwMDjJA4oJjX1Yfwn5DjF9NjvzzOITm5pgebQPgaO2x7eqS
-         G+fnYq5ST4ZuY5VrvVSdCSqhvXKscI0DsaXzca94pM/rksVI2ZxllZcgeP86MK61HIvA
-         iN5Q==
+Received: by mail-oo1-f51.google.com with SMTP id 006d021491bc7-58df5988172so5525759eaf.0;
+        Thu, 14 Dec 2023 11:35:23 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702582331; x=1703187131;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=yZwA4coKcId6uh+NhWHu2prHRdEVSOKW+sQpZ6upqMM=;
-        b=wAcK25WSran0P2dmdxe6q/zjUFxwtiHY4KZAP1a69OnPQcmsqQbgA/ABUZil5HYy6i
-         XJ+MtMZba+hU9z2LyUciQzIrUErWz+r0bcfTkueL07ycNtOo/BnBDpDYheEi+i3Jx7ci
-         uPVxb9CBDbv/WpHNRr0pWWtOUxAMLN2y8IgVL3DAjT43qhbaxBh5I/0u+dfx7Lajn4nK
-         bYQif7FUEJ1GewoQNceScCRHbL1d0jRg3l/FXPV9kWx8T0Bj1x3Pbbp5jr9XHx0nfYpD
-         fjyZAewXkbHltVtN+c5D7Two+mc8kaZ4/l/sDLfQOnlURGENFXNPZrQWxSOP//qRxO6O
-         Bbhw==
-X-Gm-Message-State: AOJu0Yx/tqOcki470jYNWWKFuZKalkl3ueVGwXISfs3zHoxYhixXcZA6
-	TxSEznYz4Kr4LegcHgZATcQ=
-X-Google-Smtp-Source: AGHT+IHtsRk3mvow3KSNtH11+JtzAaTRNz5GbH4j5brmp/1GnWTdRGOSdNUSt5RAhcs8f2RmNTqI2g==
-X-Received: by 2002:a5d:69ce:0:b0:336:3ee3:d07 with SMTP id s14-20020a5d69ce000000b003363ee30d07mr762877wrw.119.1702582330895;
-        Thu, 14 Dec 2023 11:32:10 -0800 (PST)
-Received: from archlinux.localnet (82-149-12-148.dynamic.telemach.net. [82.149.12.148])
-        by smtp.gmail.com with ESMTPSA id n6-20020a5d6606000000b00332ff137c29sm16934629wru.79.2023.12.14.11.32.10
+        d=1e100.net; s=20230601; t=1702582523; x=1703187323;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=iiR1aavtw7vArPnIPdT1sVPg3JZoC8VIGjwfufazkGQ=;
+        b=e95qb7PtP8Q58av97i3tG2kLALEme2kdQeDRy0mSNHJ1LwjgNIiwHRJFH8GPfSvx18
+         1r8qeOxZuu5NGEZ2t7APsuy6YvH6B+nmQIZhbZ9XPt9sJKV3fUdtjh2FYepWCFtwqZgz
+         MOrsSbx3a5xda1Iv2X2H87YMtXRXawDHmFj84isZM7becCezye9Sz7M3buQZMb4dVVbG
+         WM2NqzMHuz496WIurC1WKPdGeBYPcVMq7CzVf7aY+7c/ECzmow5jKTnSoPUzRfYkGDj1
+         uq5YUMmg0jfXT7OtVRCTmkkBYP5spS3CTLrX0O4i6l7di//9xWQPwCyVVxQi0WvDXJJD
+         WG0g==
+X-Gm-Message-State: AOJu0YzTpUTw+MOnCgs8Pvmw49sRymlY0zNRga3iC8DwOFS2j8H7WT62
+	vScdp8NqDCnwakaSDh0O6TfCHxjm6uisYkA1
+X-Google-Smtp-Source: AGHT+IH7vqScE0kZe88g0sxyvnMj8xa9jTh9cSHu9m3GZT/ciag+w7PInjd+itvmhYZiWmWyBphbZg==
+X-Received: by 2002:a05:6358:5e11:b0:16e:508e:1706 with SMTP id q17-20020a0563585e1100b0016e508e1706mr15025215rwn.25.1702582522873;
+        Thu, 14 Dec 2023 11:35:22 -0800 (PST)
+Received: from localhost (fpd11144dd.ap.nuro.jp. [209.17.68.221])
+        by smtp.gmail.com with ESMTPSA id y2-20020a655282000000b00588e8421fa8sm10434729pgp.84.2023.12.14.11.35.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Dec 2023 11:32:10 -0800 (PST)
-From: Jernej =?utf-8?B?xaBrcmFiZWM=?= <jernej.skrabec@gmail.com>
-To: Lee Jones <lee@kernel.org>, Samuel Holland <samuel@sholland.org>,
- Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
- linux-leds@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
- Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: Pavel Machek <pavel@ucw.cz>, Chen-Yu Tsai <wens@csie.org>
-Subject:
- Re: [PATCH v1 1/1] leds: sun50i-a100: Convert to be agnostic to property
- provider
-Date: Thu, 14 Dec 2023 20:32:09 +0100
-Message-ID: <12339724.O9o76ZdvQC@archlinux>
-In-Reply-To: <20231214192131.1309912-1-andriy.shevchenko@linux.intel.com>
-References: <20231214192131.1309912-1-andriy.shevchenko@linux.intel.com>
+        Thu, 14 Dec 2023 11:35:22 -0800 (PST)
+Date: Fri, 15 Dec 2023 04:35:21 +0900
+From: Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>
+To: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Cc: lpieralisi@kernel.org, bhelgaas@google.com, kishon@kernel.org,
+	mhi@lists.linux.dev, linux-arm-msm@vger.kernel.org,
+	linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] PCI: epf-mhi: Fix the DMA data direction of
+ dma_unmap_single()
+Message-ID: <20231214193521.GA2147106@rocinante>
+References: <20231214063328.40657-1-manivannan.sadhasivam@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20231214063328.40657-1-manivannan.sadhasivam@linaro.org>
 
-On Thursday, December 14, 2023 8:21:31 PM CET Andy Shevchenko wrote:
-> Convert the driver to be agnostic to the property provider.
-> LEDS subsytem is not dependent on OF, so no need to make drivers
-> be a such.
+Hello,
+
+> In the error path of pci_epf_mhi_edma_write() function, the DMA data
+> direction passed (DMA_FROM_DEVICE) doesn't match the actual direction used
+> for the data transfer. Fix it by passing the correct one (DMA_TO_DEVICE).
+
+Nice catch!
+
+> Fixes: 7b99aaaddabb ("PCI: epf-mhi: Add eDMA support")
+> Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> ---
 > 
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> Bjorn, Krzysztof, I'd like to apply this patch to MHI tree on top of eDMA
+> async patches due to dependency:
+> https://lore.kernel.org/linux-pci/20231127124529.78203-1-manivannan.sadhasivam@linaro.org/
 
-Reviewed-by: Jernej Skrabec <jernej.skrabec@gmail.com>
+Sounds good to me!  We still have a little time, so let me know if you
+change your mind about who should take this patch and the other series. :)
 
-Best regards,
-Jernej
+>  drivers/pci/endpoint/functions/pci-epf-mhi.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/pci/endpoint/functions/pci-epf-mhi.c b/drivers/pci/endpoint/functions/pci-epf-mhi.c
+> index 472bc489b754..d3d6a1054036 100644
+> --- a/drivers/pci/endpoint/functions/pci-epf-mhi.c
+> +++ b/drivers/pci/endpoint/functions/pci-epf-mhi.c
+> @@ -424,7 +424,7 @@ static int pci_epf_mhi_edma_write(struct mhi_ep_cntrl *mhi_cntrl,
+>  	}
+>  
+>  err_unmap:
+> -	dma_unmap_single(dma_dev, src_addr, buf_info->size, DMA_FROM_DEVICE);
+> +	dma_unmap_single(dma_dev, src_addr, buf_info->size, DMA_TO_DEVICE);
+>  err_unlock:
+>  	mutex_unlock(&epf_mhi->lock);
 
+Looks good!
 
+Reviewed-by: Krzysztof Wilczyński <kw@linux.com>
+
+	Krzysztof
 
