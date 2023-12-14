@@ -2,56 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EC8B28134F2
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 16:38:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A2E78134F6
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 16:39:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1573823AbjLNPif (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 10:38:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34704 "EHLO
+        id S1573841AbjLNPjS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 10:39:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42952 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1573801AbjLNPic (ORCPT
+        with ESMTP id S1573844AbjLNPjQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 10:38:32 -0500
+        Thu, 14 Dec 2023 10:39:16 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F7CD125
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 07:38:38 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 214F1C433C8;
-        Thu, 14 Dec 2023 15:38:38 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 119D898
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 07:39:23 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 66CBFC433C8;
+        Thu, 14 Dec 2023 15:39:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1702568318;
-        bh=brtBYO+yjwauuTE/WiwDaux0zB+BgCD25n+R1WAC2ZU=;
+        s=k20201202; t=1702568362;
+        bh=OUgQGKm22QNdpXpommaA6FLJdhjRd74GWH/14+qKI1U=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=OitvvanXq20Vh7pXwImIER2xZrfgDg27ss6pa2YNQAujQPxMSX+hOJbhwXpMbOaWq
-         Uy805fr1ljRaj+p+OHsK2rSRoDSyROAtebpHfDck1N6iIbaLAr42166FF132Sl5jKw
-         Xmb+q3YR67kSG8SJw4uB6ZJ5F5tyXs2AhXl+xLxL3u41ZcMTugV39/6QWEUFo77Acf
-         UOFNwzojiSMFg6aq7aw6EHvPnShZ46Q7X+genuYdPUAtlue4nvSc9oPKtRvGAyn0z1
-         K2Y1HJ1rsW1xkvC0wnGbtHBKjJfBwV8OdErm2VYMjB/dMq07nBnY++bKaAB7owp++K
-         8klBI2Fypstmw==
-Received: from johan by xi.lan with local (Exim 4.96.2)
-        (envelope-from <johan@kernel.org>)
-        id 1rDnnH-0004m5-0e;
-        Thu, 14 Dec 2023 16:38:35 +0100
-Date:   Thu, 14 Dec 2023 16:38:35 +0100
-From:   Johan Hovold <johan@kernel.org>
-To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Rob Clark <robdclark@gmail.com>
-Cc:     linux-arm-msm@vger.kernel.org, Rob Clark <robdclark@chromium.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] soc: qcom: pmic_glink: Fix boot when QRTR=m
-Message-ID: <ZXshe83quTE0jO_Z@hovoldconsulting.com>
-References: <20231213210644.8702-1-robdclark@gmail.com>
- <ZXqr0RFw9KsP876v@hovoldconsulting.com>
- <CAA8EJpoSvaq9imP-dT4p=4jveZyFmh=OoWOP7jWGo4OYkHQDTA@mail.gmail.com>
- <ZXsKzsij3Xb50Ap9@hovoldconsulting.com>
- <CAA8EJpqBstKyAfUcBPzoF2CitTwWBZ9Xhd28Y+FCo14OoBqkxw@mail.gmail.com>
- <ZXsMoFiivUCWA0yr@hovoldconsulting.com>
+        b=VfSZyovlHlRjpzeczdQNcJT3OK37zwhq30uHnBLvGvvflGIUUpOFBkTjj6En0yWuQ
+         4jh20GkIla24I08ShPUH5zMb/XqruDn53xePNQb1mm8yxE8HS8gFLrVSFibD3bhxFK
+         Rrr0KswEODyf/rJFxie9mAZFUEG++GSx/led50iKLilM23KjPbkmD1t4piSXLreyNZ
+         WGnwCWeYBw/gNaD2WZNkaQsdklFh0tPA/e8MNqqwQeohrXn+E4jUaoY2kHdBtb5gZH
+         bBhYbRsQIN9G8NJSzAyosSNq/wUZ8WxBdcWJUoKyzf/r2YLyqr3E7RCClkcRk3wiAd
+         4EerzlQyXdneQ==
+Date:   Thu, 14 Dec 2023 15:39:18 +0000
+From:   Conor Dooley <conor@kernel.org>
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Daniel Matyas <daniel.matyas@analog.com>,
+        Jean Delvare <jdelvare@suse.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>, linux-hwmon@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org
+Subject: Re: [PATCH 2/3] bindings: hwmon: Add adi,adaq4224_temp as compatible
+ string
+Message-ID: <20231214-coastline-fled-d7788bc2fb97@spud>
+References: <20231214143648.175336-1-daniel.matyas@analog.com>
+ <20231214143648.175336-2-daniel.matyas@analog.com>
+ <d9ccf7ba-42e6-4ec6-9de9-51802e968de9@roeck-us.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="G6GD49EJmszTie2D"
 Content-Disposition: inline
-In-Reply-To: <ZXsMoFiivUCWA0yr@hovoldconsulting.com>
+In-Reply-To: <d9ccf7ba-42e6-4ec6-9de9-51802e968de9@roeck-us.net>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -62,43 +59,72 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 14, 2023 at 03:09:36PM +0100, Johan Hovold wrote:
-> On Thu, Dec 14, 2023 at 04:04:49PM +0200, Dmitry Baryshkov wrote:
-> > On Thu, 14 Dec 2023 at 16:01, Johan Hovold <johan@kernel.org> wrote:
-> > > On Thu, Dec 14, 2023 at 01:04:43PM +0200, Dmitry Baryshkov wrote:
 
-> > > > This is a known problem. Successful probes during the probe deferral
-> > > > loop causes the whole loop to be reiterated. Creating child devices
-> > > > usually results in  a successful probe. Aso I thought that just
-> > > > creating new device also causes a reprobe, but I can not find any
-> > > > evidence now.
-> > >
-> > > This still needs to be described in the commit message.
-> > >
-> > > Only a successful probe should trigger a reprobe, and when the child
-> > > devices are registered the parent is not yet on the deferred probe list.
-> > > So something is not right or missing here.
-> > 
-> > Child devices can be successfully probed, then the parent gets
-> > -EPROBE_DEFER, removes children and then it goes on and on.
-> 
-> So what? As I described above, the successful probe of the children
-> should have nothing to do with whether the parent is reprobed.
-> 
-> If that isn't the case, then explain how.
+--G6GD49EJmszTie2D
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-I took a closer look at this and indeed we do have code that triggers a
-reprobe of a device in case there was a successful probe while the
-device was probing.
+On Thu, Dec 14, 2023 at 07:15:13AM -0800, Guenter Roeck wrote:
+> On 12/14/23 06:36, Daniel Matyas wrote:
+> > In the device ada4224 the max31827 temperature sensor will be used, so
+> > the default values corresponding to adaq4224_temp are the same for
+> > max31827.
+> >=20
+>=20
+> I don't know what that device is, but if the max31827 is used it should
+> be instantiated as max31827.
 
-This was introduced by commit 58b116bce136 ("drivercore: deferral race
-condition fix") and the workaround for the reprobe-loop bug that hack
-led to is to not return -EPROBE_DEFER after registering child devices as
-no one managed to come up with a proper fix. This was documented here:
+An improved commit message would be rather helpful here, as google did
+not turn up any information on what this new device is.
+Taking the patch on face value, a couple comments below.
 
-	fbc35b45f9f6 ("Add documentation on meaning of -EPROBE_DEFER")
+> > Signed-off-by: Daniel Matyas <daniel.matyas@analog.com>
+> > ---
+> >   Documentation/devicetree/bindings/hwmon/adi,max31827.yaml | 5 ++++-
+> >   1 file changed, 4 insertions(+), 1 deletion(-)
+> >=20
+> > diff --git a/Documentation/devicetree/bindings/hwmon/adi,max31827.yaml =
+b/Documentation/devicetree/bindings/hwmon/adi,max31827.yaml
+> > index f60e06ab7d0a..9f3b0839aa46 100644
+> > --- a/Documentation/devicetree/bindings/hwmon/adi,max31827.yaml
+> > +++ b/Documentation/devicetree/bindings/hwmon/adi,max31827.yaml
+> > @@ -20,6 +20,7 @@ properties:
+> >         - const: adi,max31827
+> >         - items:
+> >             - enum:
+> > +              - adi,adaq4224_temp
 
-But please spell this out in some more detail in the commit message, and
-add a Fixes and CC stable tag.
+No underscores in the compatible please.
 
-Johan
+> >                 - adi,max31828
+> >                 - adi,max31829
+> >             - const: adi,max31827
+> > @@ -81,7 +82,9 @@ allOf:
+> >         properties:
+> >           compatible:
+> >             contains:
+> > -            const: adi,max31827
+> > +            enum:
+> > +              - adi,max31827
+> > +              - adi,adaq4224_temp
+
+This doesn't do anything afaict, since the binding doesn't allow
+"adi,adaq4224_temp" without "adi,max31827".
+
+> >       then:
+> >         properties:
+>=20
+
+--G6GD49EJmszTie2D
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZXshpgAKCRB4tDGHoIJi
+0i+8AQDLBGQ+HVEs4oHR2QFbfWYmXqmEAx3Uw+1Fm2LmiuGhaQD/b1+AdQl6W2D9
+VXZLhAe3bLe3De2JkMLlL8u1XYmRkwc=
+=yKeT
+-----END PGP SIGNATURE-----
+
+--G6GD49EJmszTie2D--
