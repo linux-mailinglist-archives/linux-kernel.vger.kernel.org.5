@@ -2,130 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 58BCC8126DB
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 06:19:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D1108126DE
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 06:20:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1443167AbjLNFTX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 00:19:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43738 "EHLO
+        id S1443168AbjLNFTy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 00:19:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36666 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1443171AbjLNFTW (ORCPT
+        with ESMTP id S1443162AbjLNFTw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 00:19:22 -0500
-Received: from mail-oi1-x22d.google.com (mail-oi1-x22d.google.com [IPv6:2607:f8b0:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15711113
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 21:19:28 -0800 (PST)
-Received: by mail-oi1-x22d.google.com with SMTP id 5614622812f47-3b9e2d50e61so5384669b6e.2
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 21:19:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1702531167; x=1703135967; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=ebgC6Es1TWLTrA7P861m7mbGtvNZNIYlwsAipKfKxek=;
-        b=isAl+ThAtprMNGNTOz2hovcbI39ECXCm7OFgUmiSqR43kkR0Q7NY8JmymvKK+zDpRQ
-         kFMGP0FwhszabqZJtZ9VRl/Izjnl3yuWJqvrs40P6VXPoFPtAy7V22sW/wB13eqIE6/B
-         6+KkGHkZdsvsNjDWuFEmkc72rXOiq3uW7K4O0mc60wZlpo8AJqQ2ewmPtoGDJBIJK4B4
-         rD+1PJzq5zGsB8xpiT6rx0JjHqnuiBKY7gF6gGdsFZpq5p3tQ2XDhT+9Ex4hg7Q4LWcs
-         4S5wqa4+MpZSkU+sx91h3LL7VsHtIcA388q735okyZEnuXljsZYvPn0HPHFwE1liPY2k
-         9a/g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702531167; x=1703135967;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ebgC6Es1TWLTrA7P861m7mbGtvNZNIYlwsAipKfKxek=;
-        b=kWP4ul31yAT5hXg1n/otyy86obXJSkmm+XXAWiMibkonSymHJKUuKtCwIDdT2ewV4N
-         sRLQ2meK4gVKQUbVae/K86QTv84rTfpofk0E9pdRYV3+4QhKfD3Deg3Kfy6l9iSLhnjE
-         AflgLp0yTQ8ukKniRuUT9FPw2BR8v5R+QYg8mCnYyI2Aobu088BqX1fs7HrehCPChDCS
-         ukBMbQ+eMgH5JkYtynh0Tn8wX2r3EzDpL59KzG2uvf3qSOWZ+tkrC0SWcfhEkF5cL99J
-         qhgFWHAsZEEnhD5SvS5JsrY7JUEyk/BCatBzqUW+k1ukf0qJbLbgUCQE40imclfcQfra
-         9SVg==
-X-Gm-Message-State: AOJu0Yzy4KdXJGJMDEsgC3L2Sb6/xh+Syhj+GPQgJaSO/2NQhTFBsLrl
-        7jOViitljdD/ozeO6SKhdRIdApRzNnm8zvo4mw==
-X-Google-Smtp-Source: AGHT+IGW3pZ0FDvERci6/aHUcc+KUUP8SedVgnuilbHTJ7cbeMfPq5P/+/TASqLl0smV5t/gXrvQNA==
-X-Received: by 2002:a05:6808:1686:b0:3b2:c242:aaee with SMTP id bb6-20020a056808168600b003b2c242aaeemr11190614oib.42.1702531167246;
-        Wed, 13 Dec 2023 21:19:27 -0800 (PST)
-Received: from thinkpad ([117.213.102.12])
-        by smtp.gmail.com with ESMTPSA id sm5-20020a17090b2e4500b002867f87d103sm12049902pjb.50.2023.12.13.21.19.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Dec 2023 21:19:26 -0800 (PST)
-Date:   Thu, 14 Dec 2023 10:49:19 +0530
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>
-Cc:     lpieralisi@kernel.org, kishon@kernel.org, bhelgaas@google.com,
-        mhi@lists.linux.dev, linux-arm-msm@vger.kernel.org,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 6/9] PCI: epf-mhi: Enable MHI async read/write support
-Message-ID: <20231214051919.GE2938@thinkpad>
-References: <20231127124529.78203-1-manivannan.sadhasivam@linaro.org>
- <20231127124529.78203-7-manivannan.sadhasivam@linaro.org>
- <20231213184829.GA924726@rocinante>
+        Thu, 14 Dec 2023 00:19:52 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70BB2AD;
+        Wed, 13 Dec 2023 21:19:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1702531196; x=1734067196;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=LP1hgWHB8YhuPGik6J6Bc7+zlLntvB/l6rZVFN707T4=;
+  b=XOy08tALqK/UC5ISwCN8jiAjHQbypOJa5HAnMctwbOb5g4eaLJWgJmDy
+   CtlWNOiIa379eCORDJ8zCk8dNBN3iMMEca4nHU5WZ2d4sBBf6UAjDgOFE
+   hSjM9bkIjL0xY7c4IZwVpvBQKBBPhxn4c3RWlhCQ32OuETuhd8ZeMWt/M
+   YPCY2NfVD0acx6idrP1WNXE2xLrF/tvtvyRZFsDogXKUk+2lTApo7iQfq
+   fnbQjz7+6Affz2ki3ZbZ1vycjZlKmgs15L5qY3O2WfqsBVqSD9YuvFGzx
+   XP5vYHjQr7U0n2+whsFOEug7vQCVOKnjCsZlavOI/qhL0ROLVCZ1x+LMp
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10923"; a="375225560"
+X-IronPort-AV: E=Sophos;i="6.04,274,1695711600"; 
+   d="scan'208";a="375225560"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Dec 2023 21:19:55 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10923"; a="897612760"
+X-IronPort-AV: E=Sophos;i="6.04,274,1695711600"; 
+   d="scan'208";a="897612760"
+Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
+  by orsmga004.jf.intel.com with ESMTP; 13 Dec 2023 21:19:52 -0800
+Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1rDe8U-000LcB-08;
+        Thu, 14 Dec 2023 05:19:50 +0000
+Date:   Thu, 14 Dec 2023 13:19:48 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Akhil R <akhilrajeev@nvidia.com>, herbert@gondor.apana.org.au,
+        davem@davemloft.net, linux-crypto@vger.kernel.org,
+        linux-kernel@vger.kernel.org, thierry.reding@gmail.com,
+        jonathanh@nvidia.com, linux-tegra@vger.kernel.org
+Cc:     oe-kbuild-all@lists.linux.dev, Akhil R <akhilrajeev@nvidia.com>
+Subject: Re: [PATCH 3/5] crypto: tegra: Add Tegra Security Engine driver
+Message-ID: <202312141305.pZ3rThjo-lkp@intel.com>
+References: <20231213122030.11734-4-akhilrajeev@nvidia.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20231213184829.GA924726@rocinante>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20231213122030.11734-4-akhilrajeev@nvidia.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 14, 2023 at 03:48:29AM +0900, Krzysztof Wilczyński wrote:
-> Hello,
-> 
-> Manivannan, you will be taking this through the MHI tree, correct?
-> 
+Hi Akhil,
 
-Yes, to avoid conflict with other MHI patches, I'm taking this series through
-MHI tree.
+kernel test robot noticed the following build warnings:
 
-> > Now that both eDMA and iATU are prepared to support async transfer, let's
-> > enable MHI async read/write by supplying the relevant callbacks.
-> > 
-> > In the absence of eDMA, iATU will be used for both sync and async
-> > operations.
-> > 
-> > Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> > ---
-> >  drivers/pci/endpoint/functions/pci-epf-mhi.c | 7 ++++---
-> >  1 file changed, 4 insertions(+), 3 deletions(-)
-> > 
-> > diff --git a/drivers/pci/endpoint/functions/pci-epf-mhi.c b/drivers/pci/endpoint/functions/pci-epf-mhi.c
-> > index 3d09a37e5f7c..d3d6a1054036 100644
-> > --- a/drivers/pci/endpoint/functions/pci-epf-mhi.c
-> > +++ b/drivers/pci/endpoint/functions/pci-epf-mhi.c
-> > @@ -766,12 +766,13 @@ static int pci_epf_mhi_link_up(struct pci_epf *epf)
-> >  	mhi_cntrl->raise_irq = pci_epf_mhi_raise_irq;
-> >  	mhi_cntrl->alloc_map = pci_epf_mhi_alloc_map;
-> >  	mhi_cntrl->unmap_free = pci_epf_mhi_unmap_free;
-> > +	mhi_cntrl->read_sync = mhi_cntrl->read_async = pci_epf_mhi_iatu_read;
-> > +	mhi_cntrl->write_sync = mhi_cntrl->write_async = pci_epf_mhi_iatu_write;
-> >  	if (info->flags & MHI_EPF_USE_DMA) {
-> >  		mhi_cntrl->read_sync = pci_epf_mhi_edma_read;
-> >  		mhi_cntrl->write_sync = pci_epf_mhi_edma_write;
-> > -	} else {
-> > -		mhi_cntrl->read_sync = pci_epf_mhi_iatu_read;
-> > -		mhi_cntrl->write_sync = pci_epf_mhi_iatu_write;
-> > +		mhi_cntrl->read_async = pci_epf_mhi_edma_read_async;
-> > +		mhi_cntrl->write_async = pci_epf_mhi_edma_write_async;
-> >  	}
-> 
-> Looks good!
-> 
-> Reviewed-by: Krzysztof Wilczyński <kw@linux.com>
-> 
+[auto build test WARNING on herbert-cryptodev-2.6/master]
+[also build test WARNING on drm/drm-next arm64/for-next/core robh/for-next linus/master v6.7-rc5 next-20231213]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-Thanks!
+url:    https://github.com/intel-lab-lkp/linux/commits/Akhil-R/dt-bindings-crypto-Add-Tegra-SE-DT-binding-doc/20231213-202407
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/herbert/cryptodev-2.6.git master
+patch link:    https://lore.kernel.org/r/20231213122030.11734-4-akhilrajeev%40nvidia.com
+patch subject: [PATCH 3/5] crypto: tegra: Add Tegra Security Engine driver
+reproduce: (https://download.01.org/0day-ci/archive/20231214/202312141305.pZ3rThjo-lkp@intel.com/reproduce)
 
-- Mani
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202312141305.pZ3rThjo-lkp@intel.com/
 
-> 	Krzysztof
+versioncheck warnings: (new ones prefixed by >>)
+   INFO PATH=/opt/cross/clang/bin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+   /usr/bin/timeout -k 100 3h /usr/bin/make KCFLAGS= -Wtautological-compare -Wno-error=return-type -Wreturn-type -Wcast-function-type -funsigned-char -Wundef -Wformat-overflow -Wformat-truncation -Wstringop-overflow -Wrestrict -Wenum-conversion W=1 --keep-going HOSTCC=gcc-12 CC=gcc-12 -j32 KBUILD_MODPOST_WARN=1 ARCH=x86_64 versioncheck
+   find ./* \( -name SCCS -o -name BitKeeper -o -name .svn -o -name CVS -o -name .pc -o -name .hg -o -name .git \) -prune -o \
+   	-name '*.[hcS]' -type f -print | sort \
+   	| xargs perl -w ./scripts/checkversion.pl
+   ./drivers/accessibility/speakup/genmap.c: 13 linux/version.h not needed.
+   ./drivers/accessibility/speakup/makemapdata.c: 13 linux/version.h not needed.
+>> ./drivers/crypto/tegra/tegra-se.h: 12 linux/version.h not needed.
+   ./drivers/staging/media/atomisp/include/linux/atomisp.h: 23 linux/version.h not needed.
+   ./samples/bpf/spintest.bpf.c: 8 linux/version.h not needed.
+   ./samples/trace_events/trace_custom_sched.c: 11 linux/version.h not needed.
+   ./sound/soc/codecs/cs42l42.c: 14 linux/version.h not needed.
+   ./tools/lib/bpf/bpf_helpers.h: 403: need linux/version.h
+   ./tools/testing/selftests/bpf/progs/dev_cgroup.c: 9 linux/version.h not needed.
+   ./tools/testing/selftests/bpf/progs/netcnt_prog.c: 3 linux/version.h not needed.
+   ./tools/testing/selftests/bpf/progs/test_map_lock.c: 4 linux/version.h not needed.
+   ./tools/testing/selftests/bpf/progs/test_send_signal_kern.c: 4 linux/version.h not needed.
+   ./tools/testing/selftests/bpf/progs/test_spin_lock.c: 4 linux/version.h not needed.
+   ./tools/testing/selftests/bpf/progs/test_tcp_estats.c: 37 linux/version.h not needed.
+   ./tools/testing/selftests/wireguard/qemu/init.c: 27 linux/version.h not needed.
 
 -- 
-மணிவண்ணன் சதாசிவம்
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
