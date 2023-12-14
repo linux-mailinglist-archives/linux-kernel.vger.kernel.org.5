@@ -2,272 +2,235 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CBEEA81247A
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 02:20:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C296C81247D
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 02:22:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1443031AbjLNBUX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 20:20:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33348 "EHLO
+        id S1442940AbjLNBVx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 20:21:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43056 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234195AbjLNBUM (ORCPT
+        with ESMTP id S235578AbjLNBVh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 20:20:12 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 862D1118;
-        Wed, 13 Dec 2023 17:20:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1702516817; x=1734052817;
-  h=from:date:subject:mime-version:content-transfer-encoding:
-   message-id:references:in-reply-to:to:cc;
-  bh=QabimTFqHHA46EWqIGCooIWwsIn6OStsXBwnDMbb9VI=;
-  b=NV0ZBkIPLKQ1ENTVUG7DS47D7VW4I7VhKbbtnfv7Lep/R6s3em6w0yU2
-   EdvzLCYsJxtD/JC3LEsui3Dlo/jlI2T//BTVe131AxH/qYGLeTT1QJgct
-   7zNtyyXnzd3RnIAcx0Om8NyTK1NylZHt+VuDyATjgUE0DPUycKHR73uFY
-   vARhtLLvXgCX1L9NX4XouTLLDymDbVdKpYL90H3PGXpdkVx+VpQId1yl2
-   /TcUskmIyBwOMuDK4CYOy7bP8UkkGxebgYu3WBrBuvL+VyJW/OqcvsHn8
-   PhMcU3PmqgRdPHwr00qWis4RMP4rwgOfGbDoa0MdQS+23IFaZmeCe3ZQB
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10923"; a="13747648"
-X-IronPort-AV: E=Sophos;i="6.04,274,1695711600"; 
-   d="scan'208";a="13747648"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Dec 2023 17:20:17 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10923"; a="767436355"
-X-IronPort-AV: E=Sophos;i="6.04,274,1695711600"; 
-   d="scan'208";a="767436355"
-Received: from iweiny-desk3.amr.corp.intel.com (HELO localhost) ([10.212.117.241])
-  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Dec 2023 17:20:16 -0800
-From:   Ira Weiny <ira.weiny@intel.com>
-Date:   Wed, 13 Dec 2023 17:20:00 -0800
-Subject: [PATCH v3 7/7] cxl/memdev: Register for and process CPER events
+        Wed, 13 Dec 2023 20:21:37 -0500
+Received: from szxga07-in.huawei.com (szxga07-in.huawei.com [45.249.212.35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B7BBD62;
+        Wed, 13 Dec 2023 17:21:10 -0800 (PST)
+Received: from mail.maildlp.com (unknown [172.19.88.163])
+        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4SrDzh0kCQz1Q6Pg;
+        Thu, 14 Dec 2023 09:20:00 +0800 (CST)
+Received: from dggpeml500012.china.huawei.com (unknown [7.185.36.15])
+        by mail.maildlp.com (Postfix) with ESMTPS id 749E018001A;
+        Thu, 14 Dec 2023 09:21:08 +0800 (CST)
+Received: from localhost.localdomain (10.67.175.61) by
+ dggpeml500012.china.huawei.com (7.185.36.15) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Thu, 14 Dec 2023 09:21:08 +0800
+From:   Zheng Yejian <zhengyejian1@huawei.com>
+To:     <rostedt@goodmis.org>
+CC:     <linux-kernel@vger.kernel.org>,
+        <linux-trace-kernel@vger.kernel.org>,
+        <mathieu.desnoyers@efficios.com>, <mhiramat@kernel.org>,
+        <yeweihua4@huawei.com>, <zhengyejian1@huawei.com>
+Subject: [PATCH v3] tracing: Fix uaf issue when open the hist or hist_debug file
+Date:   Thu, 14 Dec 2023 09:21:53 +0800
+Message-ID: <20231214012153.676155-1-zhengyejian1@huawei.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20231213080127.6ef26247@gandalf.local.home>
+References: <20231213080127.6ef26247@gandalf.local.home>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20231213-cxl-cper-v3-7-7fd863dd0d25@intel.com>
-References: <20231213-cxl-cper-v3-0-7fd863dd0d25@intel.com>
-In-Reply-To: <20231213-cxl-cper-v3-0-7fd863dd0d25@intel.com>
-To:     Dan Williams <dan.j.williams@intel.com>,
-        Jonathan Cameron <jonathan.cameron@huawei.com>,
-        Smita Koralahalli <Smita.KoralahalliChannabasappa@amd.com>,
-        Shiju Jose <shiju.jose@huawei.com>
-Cc:     Yazen Ghannam <yazen.ghannam@amd.com>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Alison Schofield <alison.schofield@intel.com>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        Ard Biesheuvel <ardb@kernel.org>, linux-efi@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-cxl@vger.kernel.org,
-        Ira Weiny <ira.weiny@intel.com>,
-        Bjorn Helgaas <bhelgaas@google.com>
-X-Mailer: b4 0.13-dev-2539e
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1702516806; l=7003;
- i=ira.weiny@intel.com; s=20221222; h=from:subject:message-id;
- bh=QabimTFqHHA46EWqIGCooIWwsIn6OStsXBwnDMbb9VI=;
- b=10kHk0JItYn9I6Nayz73mW7YHp1JKVzr3DQj8c/fd8u98j1fS/p7cKBkbiaV1bdwWwdVkAMZS
- 8h2mIIHmVN1B+u865k0FxoPN7KChJXvsSNqMm3CS8NWtvN1M+kYl4YK
-X-Developer-Key: i=ira.weiny@intel.com; a=ed25519;
- pk=brwqReAJklzu/xZ9FpSsMPSQ/qkSalbg6scP3w809Ec=
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.67.175.61]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ dggpeml500012.china.huawei.com (7.185.36.15)
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If the firmware has configured CXL event support to be firmware first
-the OS can process those events through CPER records.  The CXL layer has
-unique DPA to HPA knowledge and standard event trace parsing in place.
+KASAN report following issue. The root cause is when opening 'hist'
+file of an instance and accessing 'trace_event_file' in hist_show(),
+but 'trace_event_file' has been freed due to the instance being removed.
+'hist_debug' file has the same problem. To fix it, call
+tracing_{open,release}_file_tr() in file_operations callback to have
+the ref count and avoid 'trace_event_file' being freed.
 
-CPER records contain Bus, Device, Function information which can be used
-to identify the PCI device which is sending the event.
+  BUG: KASAN: slab-use-after-free in hist_show+0x11e0/0x1278
+  Read of size 8 at addr ffff242541e336b8 by task head/190
 
-Change pci driver registration to include registration for a CXL CPER
-notifier to process the events through the trace subsystem.
+  CPU: 4 PID: 190 Comm: head Not tainted 6.7.0-rc5-g26aff849438c #133
+  Hardware name: linux,dummy-virt (DT)
+  Call trace:
+   dump_backtrace+0x98/0xf8
+   show_stack+0x1c/0x30
+   dump_stack_lvl+0x44/0x58
+   print_report+0xf0/0x5a0
+   kasan_report+0x80/0xc0
+   __asan_report_load8_noabort+0x1c/0x28
+   hist_show+0x11e0/0x1278
+   seq_read_iter+0x344/0xd78
+   seq_read+0x128/0x1c0
+   vfs_read+0x198/0x6c8
+   ksys_read+0xf4/0x1e0
+   __arm64_sys_read+0x70/0xa8
+   invoke_syscall+0x70/0x260
+   el0_svc_common.constprop.0+0xb0/0x280
+   do_el0_svc+0x44/0x60
+   el0_svc+0x34/0x68
+   el0t_64_sync_handler+0xb8/0xc0
+   el0t_64_sync+0x168/0x170
 
-Define and use scoped based management to simplify the handling of the
-pci device object.
+  Allocated by task 188:
+   kasan_save_stack+0x28/0x50
+   kasan_set_track+0x28/0x38
+   kasan_save_alloc_info+0x20/0x30
+   __kasan_slab_alloc+0x6c/0x80
+   kmem_cache_alloc+0x15c/0x4a8
+   trace_create_new_event+0x84/0x348
+   __trace_add_new_event+0x18/0x88
+   event_trace_add_tracer+0xc4/0x1a0
+   trace_array_create_dir+0x6c/0x100
+   trace_array_create+0x2e8/0x568
+   instance_mkdir+0x48/0x80
+   tracefs_syscall_mkdir+0x90/0xe8
+   vfs_mkdir+0x3c4/0x610
+   do_mkdirat+0x144/0x200
+   __arm64_sys_mkdirat+0x8c/0xc0
+   invoke_syscall+0x70/0x260
+   el0_svc_common.constprop.0+0xb0/0x280
+   do_el0_svc+0x44/0x60
+   el0_svc+0x34/0x68
+   el0t_64_sync_handler+0xb8/0xc0
+   el0t_64_sync+0x168/0x170
 
-Cc: Bjorn Helgaas <bhelgaas@google.com>
-Signed-off-by: Ira Weiny <ira.weiny@intel.com>
+  Freed by task 191:
+   kasan_save_stack+0x28/0x50
+   kasan_set_track+0x28/0x38
+   kasan_save_free_info+0x34/0x58
+   __kasan_slab_free+0xe4/0x158
+   kmem_cache_free+0x19c/0x508
+   event_file_put+0xa0/0x120
+   remove_event_file_dir+0x180/0x320
+   event_trace_del_tracer+0xb0/0x180
+   __remove_instance+0x224/0x508
+   instance_rmdir+0x44/0x78
+   tracefs_syscall_rmdir+0xbc/0x140
+   vfs_rmdir+0x1cc/0x4c8
+   do_rmdir+0x220/0x2b8
+   __arm64_sys_unlinkat+0xc0/0x100
+   invoke_syscall+0x70/0x260
+   el0_svc_common.constprop.0+0xb0/0x280
+   do_el0_svc+0x44/0x60
+   el0_svc+0x34/0x68
+   el0t_64_sync_handler+0xb8/0xc0
+   el0t_64_sync+0x168/0x170
 
+Suggested-by: Steven Rostedt <rostedt@goodmis.org>
+Signed-off-by: Zheng Yejian <zhengyejian1@huawei.com>
 ---
-NOTE this patch depends on Dan's addition of a device guard[1].
+ kernel/trace/trace.c             |  6 ++++++
+ kernel/trace/trace.h             |  1 +
+ kernel/trace/trace_events_hist.c | 12 ++++++++----
+ 3 files changed, 15 insertions(+), 4 deletions(-)
 
-[1] https://lore.kernel.org/all/170250854466.1522182.17555361077409628655.stgit@dwillia2-xfh.jf.intel.com/
+v3:
+  - As suggested by Steve, put the tracing_single_release_file_tr() into
+    trace.c as a non static function, put the prototype in trace.h.
+    Link: https://lore.kernel.org/all/20231213080127.6ef26247@gandalf.local.home/
 
-Changes for v3:
-[djbw: define a __free(pci_dev_put) to release the device automatically]
-[djbw: use device guard from Vishal]
-[iweiny: delete old notifier block structure]
-[iweiny: adjust for new notifier interface]
----
- drivers/cxl/core/mbox.c | 31 +++++++++++++++++++++++-----
- drivers/cxl/cxlmem.h    |  4 ++++
- drivers/cxl/pci.c       | 55 ++++++++++++++++++++++++++++++++++++++++++++++++-
- include/linux/pci.h     |  2 ++
- 4 files changed, 86 insertions(+), 6 deletions(-)
+v2:
+  - Introduce tracing_single_release_file_tr() to add the missing call for
+    single_release() as suggested by Steve;
+    Link: https://lore.kernel.org/all/20231212113546.6a51d359@gandalf.local.home/
+  - Slightly modify the commit message and comments.
+  - Link: https://lore.kernel.org/all/20231213015138.281888-1-zhengyejian1@huawei.com/
 
-diff --git a/drivers/cxl/core/mbox.c b/drivers/cxl/core/mbox.c
-index b7efa058a100..c9aa723e3391 100644
---- a/drivers/cxl/core/mbox.c
-+++ b/drivers/cxl/core/mbox.c
-@@ -840,9 +840,30 @@ static const uuid_t gen_media_event_uuid = CXL_EVENT_GEN_MEDIA_UUID;
- static const uuid_t dram_event_uuid = CXL_EVENT_DRAM_UUID;
- static const uuid_t mem_mod_event_uuid = CXL_EVENT_MEM_MODULE_UUID;
+v1:
+  Link: https://lore.kernel.org/all/20231212113317.4159890-1-zhengyejian1@huawei.com/
+
+diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
+index fbcd3bafb93e..fc1b2ada98a5 100644
+--- a/kernel/trace/trace.c
++++ b/kernel/trace/trace.c
+@@ -4964,6 +4964,12 @@ int tracing_release_file_tr(struct inode *inode, struct file *filp)
+ 	return 0;
+ }
  
--static void cxl_event_trace_record(const struct cxl_memdev *cxlmd,
--				   enum cxl_event_log_type type,
--				   struct cxl_event_record_raw *record)
-+void cxl_event_trace_record(const struct cxl_memdev *cxlmd,
-+			    enum cxl_event_log_type type,
-+			    enum cxl_event_type event_type,
-+			    union cxl_event *event)
++int tracing_single_release_file_tr(struct inode *inode, struct file *filp)
 +{
-+	switch (event_type) {
-+	case CXL_CPER_EVENT_GEN_MEDIA:
-+		trace_cxl_general_media(cxlmd, type, &gen_media_event_uuid,
-+					&event->gen_media);
-+		break;
-+	case CXL_CPER_EVENT_DRAM:
-+		trace_cxl_dram(cxlmd, type, &dram_event_uuid, &event->dram);
-+		break;
-+	case CXL_CPER_EVENT_MEM_MODULE:
-+		trace_cxl_memory_module(cxlmd, type, &mem_mod_event_uuid,
-+					&event->mem_module);
-+		break;
-+	}
++	tracing_release_file_tr(inode, filp);
++	return single_release(inode, filp);
 +}
-+EXPORT_SYMBOL_NS_GPL(cxl_event_trace_record, CXL);
 +
-+static void __cxl_event_trace_record(const struct cxl_memdev *cxlmd,
-+				     enum cxl_event_log_type type,
-+				     struct cxl_event_record_raw *record)
+ static int tracing_mark_open(struct inode *inode, struct file *filp)
  {
- 	union cxl_event *evt = &record->event;
- 	uuid_t *id = &record->id;
-@@ -965,8 +986,8 @@ static void cxl_mem_get_records_log(struct cxl_memdev_state *mds,
- 			break;
+ 	stream_open(inode, filp);
+diff --git a/kernel/trace/trace.h b/kernel/trace/trace.h
+index b7f4ea25a194..0489e72c8169 100644
+--- a/kernel/trace/trace.h
++++ b/kernel/trace/trace.h
+@@ -617,6 +617,7 @@ int tracing_open_generic(struct inode *inode, struct file *filp);
+ int tracing_open_generic_tr(struct inode *inode, struct file *filp);
+ int tracing_open_file_tr(struct inode *inode, struct file *filp);
+ int tracing_release_file_tr(struct inode *inode, struct file *filp);
++int tracing_single_release_file_tr(struct inode *inode, struct file *filp);
+ bool tracing_is_disabled(void);
+ bool tracer_tracing_is_on(struct trace_array *tr);
+ void tracer_tracing_on(struct trace_array *tr);
+diff --git a/kernel/trace/trace_events_hist.c b/kernel/trace/trace_events_hist.c
+index 1abc07fba1b9..5ecf3c8bde20 100644
+--- a/kernel/trace/trace_events_hist.c
++++ b/kernel/trace/trace_events_hist.c
+@@ -5623,10 +5623,12 @@ static int event_hist_open(struct inode *inode, struct file *file)
+ {
+ 	int ret;
  
- 		for (i = 0; i < nr_rec; i++)
--			cxl_event_trace_record(cxlmd, type,
--					       &payload->records[i]);
-+			__cxl_event_trace_record(cxlmd, type,
-+						 &payload->records[i]);
+-	ret = security_locked_down(LOCKDOWN_TRACEFS);
++	ret = tracing_open_file_tr(inode, file);
+ 	if (ret)
+ 		return ret;
  
- 		if (payload->flags & CXL_GET_EVENT_FLAG_OVERFLOW)
- 			trace_cxl_overflow(cxlmd, type, payload);
-diff --git a/drivers/cxl/cxlmem.h b/drivers/cxl/cxlmem.h
-index e5d770e26e02..e7e9508fecac 100644
---- a/drivers/cxl/cxlmem.h
-+++ b/drivers/cxl/cxlmem.h
-@@ -802,6 +802,10 @@ void set_exclusive_cxl_commands(struct cxl_memdev_state *mds,
- void clear_exclusive_cxl_commands(struct cxl_memdev_state *mds,
- 				  unsigned long *cmds);
- void cxl_mem_get_event_records(struct cxl_memdev_state *mds, u32 status);
-+void cxl_event_trace_record(const struct cxl_memdev *cxlmd,
-+			    enum cxl_event_log_type type,
-+			    enum cxl_event_type event_type,
-+			    union cxl_event *event);
- int cxl_set_timestamp(struct cxl_memdev_state *mds);
- int cxl_poison_state_init(struct cxl_memdev_state *mds);
- int cxl_mem_get_poison(struct cxl_memdev *cxlmd, u64 offset, u64 len,
-diff --git a/drivers/cxl/pci.c b/drivers/cxl/pci.c
-index 0155fb66b580..638275569d63 100644
---- a/drivers/cxl/pci.c
-+++ b/drivers/cxl/pci.c
-@@ -1,5 +1,6 @@
- // SPDX-License-Identifier: GPL-2.0-only
- /* Copyright(c) 2020 Intel Corporation. All rights reserved. */
-+#include <asm-generic/unaligned.h>
- #include <linux/io-64-nonatomic-lo-hi.h>
- #include <linux/moduleparam.h>
- #include <linux/module.h>
-@@ -969,6 +970,58 @@ static struct pci_driver cxl_pci_driver = {
- 	},
++	/* Clear private_data to avoid warning in single_open() */
++	file->private_data = NULL;
+ 	return single_open(file, hist_show, file);
+ }
+ 
+@@ -5634,7 +5636,7 @@ const struct file_operations event_hist_fops = {
+ 	.open = event_hist_open,
+ 	.read = seq_read,
+ 	.llseek = seq_lseek,
+-	.release = single_release,
++	.release = tracing_single_release_file_tr,
  };
  
-+#define CXL_EVENT_HDR_FLAGS_REC_SEVERITY GENMASK(1, 0)
-+static void cxl_cper_event_call(enum cxl_event_type ev_type,
-+				struct cxl_cper_event_rec *rec)
-+{
-+	struct cper_cxl_event_devid *device_id = &rec->hdr.device_id;
-+	struct pci_dev *pdev __free(pci_dev_put) = NULL;
-+	struct cxl_dev_state *cxlds = NULL;
-+	enum cxl_event_log_type log_type;
-+	unsigned int devfn;
-+	u32 hdr_flags;
-+
-+	devfn = PCI_DEVFN(device_id->device_num, device_id->func_num);
-+	pdev = pci_get_domain_bus_and_slot(device_id->segment_num,
-+					   device_id->bus_num, devfn);
-+	if (!pdev)
-+		return;
-+
-+	guard(device)(&pdev->dev);
-+	if (pdev->driver == &cxl_pci_driver)
-+		cxlds = pci_get_drvdata(pdev);
-+	if (!cxlds)
-+		return;
-+
-+	/* Fabricate a log type */
-+	hdr_flags = get_unaligned_le24(rec->event.generic.hdr.flags);
-+	log_type = FIELD_GET(CXL_EVENT_HDR_FLAGS_REC_SEVERITY, hdr_flags);
-+
-+	cxl_event_trace_record(cxlds->cxlmd, log_type, ev_type, &rec->event);
-+}
-+
-+static int __init cxl_pci_driver_init(void)
-+{
-+	int rc;
-+
-+	rc = pci_register_driver(&cxl_pci_driver);
-+	if (rc)
-+		return rc;
-+
-+	rc = cxl_cper_register_notifier(cxl_cper_event_call);
-+	if (rc)
-+		pci_unregister_driver(&cxl_pci_driver);
-+
-+	return rc;
-+}
-+
-+static void __exit cxl_pci_driver_exit(void)
-+{
-+	cxl_cper_unregister_notifier(cxl_cper_event_call);
-+	pci_unregister_driver(&cxl_pci_driver);
-+}
-+
-+module_init(cxl_pci_driver_init);
-+module_exit(cxl_pci_driver_exit);
- MODULE_LICENSE("GPL v2");
--module_pci_driver(cxl_pci_driver);
- MODULE_IMPORT_NS(CXL);
-diff --git a/include/linux/pci.h b/include/linux/pci.h
-index 60ca768bc867..290d0a2651b2 100644
---- a/include/linux/pci.h
-+++ b/include/linux/pci.h
-@@ -1170,6 +1170,7 @@ int pci_get_interrupt_pin(struct pci_dev *dev, struct pci_dev **bridge);
- u8 pci_common_swizzle(struct pci_dev *dev, u8 *pinp);
- struct pci_dev *pci_dev_get(struct pci_dev *dev);
- void pci_dev_put(struct pci_dev *dev);
-+DEFINE_FREE(pci_dev_put, struct pci_dev *, if (_T) pci_dev_put(_T))
- void pci_remove_bus(struct pci_bus *b);
- void pci_stop_and_remove_bus_device(struct pci_dev *dev);
- void pci_stop_and_remove_bus_device_locked(struct pci_dev *dev);
-@@ -1871,6 +1872,7 @@ void pci_cfg_access_unlock(struct pci_dev *dev);
- void pci_dev_lock(struct pci_dev *dev);
- int pci_dev_trylock(struct pci_dev *dev);
- void pci_dev_unlock(struct pci_dev *dev);
-+DEFINE_GUARD(pci_dev, struct pci_dev *, pci_dev_lock(_T), pci_dev_unlock(_T))
+ #ifdef CONFIG_HIST_TRIGGERS_DEBUG
+@@ -5900,10 +5902,12 @@ static int event_hist_debug_open(struct inode *inode, struct file *file)
+ {
+ 	int ret;
  
- /*
-  * PCI domain support.  Sometimes called PCI segment (eg by ACPI),
-
+-	ret = security_locked_down(LOCKDOWN_TRACEFS);
++	ret = tracing_open_file_tr(inode, file);
+ 	if (ret)
+ 		return ret;
+ 
++	/* Clear private_data to avoid warning in single_open() */
++	file->private_data = NULL;
+ 	return single_open(file, hist_debug_show, file);
+ }
+ 
+@@ -5911,7 +5915,7 @@ const struct file_operations event_hist_debug_fops = {
+ 	.open = event_hist_debug_open,
+ 	.read = seq_read,
+ 	.llseek = seq_lseek,
+-	.release = single_release,
++	.release = tracing_single_release_file_tr,
+ };
+ #endif
+ 
 -- 
-2.43.0
+2.25.1
 
