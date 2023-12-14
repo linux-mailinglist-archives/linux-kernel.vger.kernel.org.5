@@ -2,83 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 369CA812A61
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 09:30:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A08EF812A53
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 09:29:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235607AbjLNIaB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 03:30:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59060 "EHLO
+        id S229869AbjLNI3q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 03:29:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59002 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234438AbjLNI3u (ORCPT
+        with ESMTP id S229441AbjLNI3n (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 03:29:50 -0500
-Received: from mx1.sberdevices.ru (mx2.sberdevices.ru [45.89.224.132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F72210A;
-        Thu, 14 Dec 2023 00:29:51 -0800 (PST)
-Received: from p-infra-ksmg-sc-msk02 (localhost [127.0.0.1])
-        by mx1.sberdevices.ru (Postfix) with ESMTP id 0956112004B;
-        Thu, 14 Dec 2023 11:29:49 +0300 (MSK)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 0956112004B
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
-        s=mail; t=1702542589;
-        bh=EC3dQnKKfurosn6pqq8G2JOlIq4yy+2qbil19wlXj5E=;
-        h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type:From;
-        b=gdVw80aeGthMYYbOU9ufGil3wyDr3Am5CBNr+L1WeNhbQiTu9WyJPN+MlgK5YuEXQ
-         FGUBbAXfpLOyOZVRuLrZuyJ2pC7QwMviKjnGFkH28SXl2mJ6aQnkB6zzP3q+BXIuyd
-         rAc65Ingyh9oMYyueKW65J1+0T25qfZaWzz5SaJmDWHXLCQ5LAa39GMObuChgbnO/u
-         tpir/fqILMgF1Y+wl9gpzLbEOa7iNrLllwMEu/SRasvOvaVmv02Kb+Qshqj1PI3Opg
-         ibrBPH7l/09HyrypNAUxtDX9aCaahDKkgQM6cyXuC1sc1hPy7qqIqSz4XuWf5vKQcV
-         yKGjXWmbbwF8g==
-Received: from smtp.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mx1.sberdevices.ru (Postfix) with ESMTPS;
-        Thu, 14 Dec 2023 11:29:48 +0300 (MSK)
-Received: from localhost.localdomain (100.64.160.123) by
- p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Thu, 14 Dec 2023 11:29:48 +0300
-From:   George Stark <gnstark@salutedevices.com>
-To:     <andy.shevchenko@gmail.com>, <pavel@ucw.cz>, <lee@kernel.org>,
-        <vadimp@nvidia.com>, <mpe@ellerman.id.au>, <npiggin@gmail.com>,
-        <christophe.leroy@csgroup.eu>, <hdegoede@redhat.com>,
-        <mazziesaccount@gmail.com>, <peterz@infradead.org>,
-        <mingo@redhat.com>, <will@kernel.org>, <longman@redhat.com>,
-        <boqun.feng@gmail.com>, <nikitos.tr@gmail.com>
-CC:     <linux-leds@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linuxppc-dev@lists.ozlabs.org>, <kernel@salutedevices.com>,
-        George Stark <gnstark@salutedevices.com>
-Subject: [PATCH v3 07/11] leds: lm3532: use devm API to cleanup module's resources
-Date:   Thu, 14 Dec 2023 11:29:36 +0300
-Message-ID: <20231214082940.2718303-3-gnstark@salutedevices.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20231214082940.2718303-1-gnstark@salutedevices.com>
-References: <20231214082940.2718303-1-gnstark@salutedevices.com>
+        Thu, 14 Dec 2023 03:29:43 -0500
+Received: from mail-oi1-x22d.google.com (mail-oi1-x22d.google.com [IPv6:2607:f8b0:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0F35BD
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 00:29:48 -0800 (PST)
+Received: by mail-oi1-x22d.google.com with SMTP id 5614622812f47-3ba04b9b103so3616940b6e.0
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 00:29:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1702542588; x=1703147388; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=8j+DyWsWq3rPzqEOsQC4R8gsbQQDhgjXMsOZjWoW7Zg=;
+        b=sHc06SwI9GIJFPS0x5UUyUSgZN1rZv1U8PxLNpFZ/UOOPnUapHBPOC8SCWwhTjkGYD
+         r0kip++XNWdCWFZqMcjo1abJXscTdyd/hVEfraqAo9Vv7jQtU1a/oUPkkw36/3Ueeu3+
+         BZtwm0DVqD4PJtFUrpS3B5OC2kCI5mtoqMkrlISpMpzH1END9vdxdX4Q3Xaw0EoOFqz6
+         lbUvrJQ4uCOSwFBWeruH+JLdtAe3VzDcURvQjDITqcOrX06Xg4vv6reBJyVnJLtWtNnG
+         nXboT0cxI37Ash9amY8r1C2fGRqVssFXn7JhV9wYiGADIfEIPii7ahr8iFLkCrxhnkLt
+         PrxQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702542588; x=1703147388;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=8j+DyWsWq3rPzqEOsQC4R8gsbQQDhgjXMsOZjWoW7Zg=;
+        b=kW0+EKeU5niqUJSR76J92Mw34XNr01ua3+M3ozlLozEM0/A5jdIG0RQeo+PV1CLS1V
+         LrCmvMBEKEekWNjMptyO9BO6F/Jq4wz/F2nEpEKWeV1hlyauDpdfVmObWPyaJwbwIhxY
+         xWn6U5uCJUK0h/r9qtNY4yHvHDgxqx3iJn1XjKqzQnjv4/w7MXYRmZ2l6SjS7hkbpnSq
+         rlwbR8AQ5aHmA2jsvsGbFSKWpsRfy1gWOKD/nBj8XEvrQz73p3LxbM2NchHMO3YvV0DS
+         KxFbR6+tYkB5gHCVHP4yropEQPwHfwzmCvU3zC1MJ1Bz393y/ipkHYwvPYIrzZqo85td
+         pe2w==
+X-Gm-Message-State: AOJu0YwqCDzKAZdWP9cr97XawAy1KKWelL1BKPdJQ2eNPcyShLK1RLGf
+        Wgc6Y1E9glbn0Alu0KRMivtMczQKhuNZr22T9DdEzxvzLGXh6XPMBCU=
+X-Google-Smtp-Source: AGHT+IHx34nRT7HgMzHgkjnTUPzLya9tMyqlJCZvo8JOrIxH5qzsdOBtgYG+ga3Gr9xNvM5Ooa8pcFeabLVGZ4xUA8o=
+X-Received: by 2002:a05:6808:2019:b0:3b9:d4cd:3498 with SMTP id
+ q25-20020a056808201900b003b9d4cd3498mr12216403oiw.28.1702542588167; Thu, 14
+ Dec 2023 00:29:48 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [100.64.160.123]
-X-ClientProxiedBy: p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) To
- p-i-exch-sc-m01.sberdevices.ru (172.16.192.107)
-X-KSMG-Rule-ID: 10
-X-KSMG-Message-Action: clean
-X-KSMG-AntiSpam-Lua-Profiles: 182104 [Dec 14 2023]
-X-KSMG-AntiSpam-Version: 6.1.0.3
-X-KSMG-AntiSpam-Envelope-From: gnstark@salutedevices.com
-X-KSMG-AntiSpam-Rate: 0
-X-KSMG-AntiSpam-Status: not_detected
-X-KSMG-AntiSpam-Method: none
-X-KSMG-AntiSpam-Auth: dkim=none
-X-KSMG-AntiSpam-Info: LuaCore: 7 0.3.7 6d6bf5bd8eea7373134f756a2fd73e9456bb7d1a, {Tracking_uf_ne_domains}, {Tracking_from_domain_doesnt_match_to}, www.ti.com:7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;smtp.sberdevices.ru:5.0.1,7.1.1;127.0.0.199:7.1.2;salutedevices.com:7.1.1;100.64.160.123:7.1.2, FromAlignment: s, ApMailHostAddress: 100.64.160.123
-X-MS-Exchange-Organization-SCL: -1
-X-KSMG-AntiSpam-Interceptor-Info: scan successful
-X-KSMG-AntiPhishing: Clean, bases: 2023/12/14 08:01:00
-X-KSMG-LinksScanning: Clean, bases: 2023/12/14 08:01:00
-X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2023/12/14 06:13:00 #22683038
-X-KSMG-AntiVirus-Status: Clean, skipped
+References: <20231212142730.998913-1-vincent.guittot@linaro.org> <47b4cbcb-d33d-4699-a148-0108cf734e23@arm.com>
+In-Reply-To: <47b4cbcb-d33d-4699-a148-0108cf734e23@arm.com>
+From:   Vincent Guittot <vincent.guittot@linaro.org>
+Date:   Thu, 14 Dec 2023 09:29:37 +0100
+Message-ID: <CAKfTPtATWSWdk1dhnMvBqTZigtprv7d_0j0zpf48WfVDfMit5g@mail.gmail.com>
+Subject: Re: [PATCH 0/5] Rework system pressure interface to the scheduler
+To:     Lukasz Luba <lukasz.luba@arm.com>
+Cc:     catalin.marinas@arm.com, will@kernel.org,
+        linux-trace-kernel@vger.kernel.org, amit.kachhap@gmail.com,
+        daniel.lezcano@linaro.org, mhiramat@kernel.org,
+        vschneid@redhat.com, bristot@redhat.com, mgorman@suse.de,
+        bsegall@google.com, juri.lelli@redhat.com, peterz@infradead.org,
+        mingo@redhat.com, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, konrad.dybcio@linaro.org,
+        andersson@kernel.org, agross@kernel.org, rui.zhang@intel.com,
+        viresh.kumar@linaro.org, rafael@kernel.org, sudeep.holla@arm.com,
+        dietmar.eggemann@arm.com, rostedt@goodmis.org,
+        linux-arm-kernel@lists.infradead.org, linux-arm-msm@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -86,93 +76,71 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In this driver LEDs are registered using devm_led_classdev_register()
-so they are automatically unregistered after module's remove() is done.
-led_classdev_unregister() calls module's led_set_brightness() to turn off
-the LEDs and that callback uses resources which were destroyed already
-in module's remove() so use devm API instead of remove().
+On Thu, 14 Dec 2023 at 09:21, Lukasz Luba <lukasz.luba@arm.com> wrote:
+>
+> Hi Vincent,
+>
+> I've been waiting for this feature, thanks!
+>
+>
+> On 12/12/23 14:27, Vincent Guittot wrote:
+> > Following the consolidation and cleanup of CPU capacity in [1], this serie
+> > reworks how the scheduler gets the pressures on CPUs. We need to take into
+> > account all pressures applied by cpufreq on the compute capacity of a CPU
+> > for dozens of ms or more and not only cpufreq cooling device or HW
+> > mitigiations. we split the pressure applied on CPU's capacity in 2 parts:
+> > - one from cpufreq and freq_qos
+> > - one from HW high freq mitigiation.
+> >
+> > The next step will be to add a dedicated interface for long standing
+> > capping of the CPU capacity (i.e. for seconds or more) like the
+> > scaling_max_freq of cpufreq sysfs. The latter is already taken into
+> > account by this serie but as a temporary pressure which is not always the
+> > best choice when we know that it will happen for seconds or more.
+> >
+> > [1] https://lore.kernel.org/lkml/20231211104855.558096-1-vincent.guittot@linaro.org/
+> >
+> > Vincent Guittot (4):
+> >    cpufreq: Add a cpufreq pressure feedback for the scheduler
+> >    sched: Take cpufreq feedback into account
+> >    thermal/cpufreq: Remove arch_update_thermal_pressure()
+> >    sched: Rename arch_update_thermal_pressure into
+> >      arch_update_hw_pressure
+> >
+> >   arch/arm/include/asm/topology.h               |  6 +--
+> >   arch/arm64/include/asm/topology.h             |  6 +--
+> >   drivers/base/arch_topology.c                  | 26 ++++-----
+> >   drivers/cpufreq/cpufreq.c                     | 48 +++++++++++++++++
+> >   drivers/cpufreq/qcom-cpufreq-hw.c             |  4 +-
+> >   drivers/thermal/cpufreq_cooling.c             |  3 --
+> >   include/linux/arch_topology.h                 |  8 +--
+> >   include/linux/cpufreq.h                       | 10 ++++
+> >   include/linux/sched/topology.h                |  8 +--
+> >   .../{thermal_pressure.h => hw_pressure.h}     | 14 ++---
+> >   include/trace/events/sched.h                  |  2 +-
+> >   init/Kconfig                                  | 12 ++---
+> >   kernel/sched/core.c                           |  8 +--
+> >   kernel/sched/fair.c                           | 53 ++++++++++---------
+> >   kernel/sched/pelt.c                           | 18 +++----
+> >   kernel/sched/pelt.h                           | 16 +++---
+> >   kernel/sched/sched.h                          |  4 +-
+> >   17 files changed, 152 insertions(+), 94 deletions(-)
+> >   rename include/trace/events/{thermal_pressure.h => hw_pressure.h} (55%)
+> >
+>
+> I would like to test it, but something worries me. Why there is 0/5 in
+> this subject and only 4 patches?
 
-Signed-off-by: George Stark <gnstark@salutedevices.com>
----
- drivers/leds/leds-lm3532.c | 30 ++++++++++++++++++------------
- 1 file changed, 18 insertions(+), 12 deletions(-)
+I removed a patch from the series but copied/pasted the cover letter
+subject without noticing the /5 instead of /4
 
-diff --git a/drivers/leds/leds-lm3532.c b/drivers/leds/leds-lm3532.c
-index 13662a4aa1f2..713900947e35 100644
---- a/drivers/leds/leds-lm3532.c
-+++ b/drivers/leds/leds-lm3532.c
-@@ -3,6 +3,7 @@
- // Copyright (C) 2019 Texas Instruments Incorporated - https://www.ti.com/
- // https://www.ti.com/lit/ds/symlink/lm3532.pdf
- 
-+#include <linux/devm-helpers.h>
- #include <linux/i2c.h>
- #include <linux/leds.h>
- #include <linux/slab.h>
-@@ -542,6 +543,13 @@ static int lm3532_parse_als(struct lm3532_data *priv)
- 	return ret;
- }
- 
-+static void gpio_set_low_action(void *data)
-+{
-+	struct lm3532_data *priv = (struct lm3532_data *)data;
-+
-+	gpiod_direction_output(priv->enable_gpio, 0);
-+}
-+
- static int lm3532_parse_node(struct lm3532_data *priv)
- {
- 	struct fwnode_handle *child = NULL;
-@@ -556,6 +564,12 @@ static int lm3532_parse_node(struct lm3532_data *priv)
- 	if (IS_ERR(priv->enable_gpio))
- 		priv->enable_gpio = NULL;
- 
-+	if (priv->enable_gpio) {
-+		ret = devm_add_action(&priv->client->dev, gpio_set_low_action, priv);
-+		if (ret)
-+			return ret;
-+	}
-+
- 	priv->regulator = devm_regulator_get(&priv->client->dev, "vin");
- 	if (IS_ERR(priv->regulator))
- 		priv->regulator = NULL;
-@@ -691,7 +705,10 @@ static int lm3532_probe(struct i2c_client *client)
- 		return ret;
- 	}
- 
--	mutex_init(&drvdata->lock);
-+	ret = devm_mutex_init(&client->dev, &drvdata->lock);
-+	if (ret)
-+		return ret;
-+
- 	i2c_set_clientdata(client, drvdata);
- 
- 	ret = lm3532_parse_node(drvdata);
-@@ -703,16 +720,6 @@ static int lm3532_probe(struct i2c_client *client)
- 	return ret;
- }
- 
--static void lm3532_remove(struct i2c_client *client)
--{
--	struct lm3532_data *drvdata = i2c_get_clientdata(client);
--
--	mutex_destroy(&drvdata->lock);
--
--	if (drvdata->enable_gpio)
--		gpiod_direction_output(drvdata->enable_gpio, 0);
--}
--
- static const struct of_device_id of_lm3532_leds_match[] = {
- 	{ .compatible = "ti,lm3532", },
- 	{},
-@@ -727,7 +734,6 @@ MODULE_DEVICE_TABLE(i2c, lm3532_id);
- 
- static struct i2c_driver lm3532_i2c_driver = {
- 	.probe = lm3532_probe,
--	.remove = lm3532_remove,
- 	.id_table = lm3532_id,
- 	.driver = {
- 		.name = LM3532_NAME,
--- 
-2.25.1
+>
+> Could you tell me your base branch that I can apply this, please?
 
+It applies on top of tip/sched/core + [1]
+and you can find it here:
+https://git.linaro.org/people/vincent.guittot/kernel.git/log/?h=sched/system-pressure
+
+>
+> Regards,
+> Lukasz
