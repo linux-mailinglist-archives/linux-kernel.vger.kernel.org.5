@@ -2,252 +2,467 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6997981371F
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 18:00:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D2F9813721
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 18:02:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1443593AbjLNQ77 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 11:59:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35080 "EHLO
+        id S229957AbjLNRBw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 12:01:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52286 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229743AbjLNQ75 (ORCPT
+        with ESMTP id S229446AbjLNRBu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 11:59:57 -0500
-Received: from zg8tmty3ljk5ljewns4xndka.icoremail.net (zg8tmty3ljk5ljewns4xndka.icoremail.net [167.99.105.149])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id BE0C79A
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 09:00:02 -0800 (PST)
-Received: from luzhipeng.223.5.5.5 (unknown [115.200.224.93])
-        by mail-app4 (Coremail) with SMTP id cS_KCgCHjTWKNHtlNyaWAA--.38081S2;
-        Fri, 15 Dec 2023 00:59:54 +0800 (CST)
-From:   Zhipeng Lu <alexious@zju.edu.cn>
-To:     alexious@zju.edu.cn
-Cc:     Evan Quan <evan.quan@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Kees Cook <keescook@chromium.org>,
-        Azeem Shaikh <azeemshaikh38@gmail.com>,
-        Lijo Lazar <lijo.lazar@amd.com>, amd-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] drm/amd/pm: fix a double-free in amdgpu_parse_extended_power_table
-Date:   Fri, 15 Dec 2023 00:59:38 +0800
-Message-Id: <20231214165941.3484829-1-alexious@zju.edu.cn>
-X-Mailer: git-send-email 2.34.1
+        Thu, 14 Dec 2023 12:01:50 -0500
+Received: from mail11.truemail.it (mail11.truemail.it [217.194.8.81])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 143E18E;
+        Thu, 14 Dec 2023 09:01:54 -0800 (PST)
+Received: from francesco-nb.pivistrello.it (93-49-2-63.ip317.fastwebnet.it [93.49.2.63])
+        by mail11.truemail.it (Postfix) with ESMTPA id 8C3912144D;
+        Thu, 14 Dec 2023 18:01:51 +0100 (CET)
+From:   Francesco Dolcini <francesco@dolcini.it>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        linux-bluetooth@vger.kernel.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, greybus-dev@lists.linaro.org,
+        linux-iio@vger.kernel.org, netdev@vger.kernel.org,
+        chrome-platform@lists.linux.dev,
+        platform-driver-x86@vger.kernel.org, linux-serial@vger.kernel.org,
+        linux-sound@vger.kernel.org
+Cc:     Francesco Dolcini <francesco.dolcini@toradex.com>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        Johan Hovold <johan@kernel.org>, Alex Elder <elder@kernel.org>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Lee Jones <lee@kernel.org>, Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Eric Dumazet <edumazet@google.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Hans de Goede <hdegoede@redhat.com>,
+        =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+        Benson Leung <bleung@chromium.org>,
+        Tzung-Bi Shih <tzungbi@kernel.org>,
+        Rob Herring <robh@kernel.org>
+Subject: [PATCH v1] treewide, serdev: change receive_buf() return type to size_t
+Date:   Thu, 14 Dec 2023 18:01:46 +0100
+Message-Id: <20231214170146.641783-1-francesco@dolcini.it>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: cS_KCgCHjTWKNHtlNyaWAA--.38081S2
-X-Coremail-Antispam: 1UD129KBjvJXoW3XrW3Cr4kWFWktryUtw4ktFb_yoWfGry8pF
-        Z3Gr9xKry5Xr18Xr42qr4jvr1q9w4q9w4UGryUAry5ta47uryF93Z3ArWYva4kuFZ7uwnr
-        tFWjqFyDZa10gF7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUvC14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
-        JVWxJr1l84ACjcxK6I8E87Iv67AKxVWxJr0_GcWl84ACjcxK6I8E87Iv6xkF7I0E14v26r
-        xl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj
-        6xIIjxv20xvE14v26r1Y6r17McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr
-        0_Gr1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7M4IIrI8v6xkF7I0E
-        8cxan2IY04v7MxkIecxEwVAFwVWUMxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r
-        1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CE
-        b7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0x
-        vE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAI
-        cVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2Kf
-        nxnUUI43ZEXa7VUUQVy7UUUUU==
-X-CM-SenderInfo: qrsrjiarszq6lmxovvfxof0/
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The amdgpu_free_extended_power_table is called in every error-handling
-paths of amdgpu_parse_extended_power_table. However, after the following
-call chain of returning:
+From: Francesco Dolcini <francesco.dolcini@toradex.com>
 
-amdgpu_parse_extended_power_table
-  |-> kv_dpm_init / si_dpm_init
-      (the only two caller of amdgpu_parse_extended_power_table)
-        |-> kv_dpm_sw_init / si_dpm_sw_init
-            (the only caller of kv_dpm_init / si_dpm_init, accordingly)
-              |-> kv_dpm_fini / si_dpm_fini
-                  (goto dpm_failed in xx_dpm_sw_init)
-                    |-> amdgpu_free_extended_power_table
+receive_buf() is called from ttyport_receive_buf() that expects values
+">= 0" from serdev_controller_receive_buf(), change its return type from
+ssize_t to size_t.
 
-As above, the amdgpu_free_extended_power_table is called twice in this
-returning chain and thus a double-free is triggered. Similarily, the
-last kfree in amdgpu_parse_extended_power_table also cause a double free
-with amdgpu_free_extended_power_table in kv_dpm_fini.
-
-Fixes: 84176663e70d ("drm/amd/pm: create a new holder for those APIs used only by legacy ASICs(si/kv)")
-Signed-off-by: Zhipeng Lu <alexious@zju.edu.cn>
+Suggested-by: Jiri Slaby <jirislaby@kernel.org>
+Link: https://lore.kernel.org/all/087be419-ec6b-47ad-851a-5e1e3ea5cfcc@kernel.org/
+Signed-off-by: Francesco Dolcini <francesco.dolcini@toradex.com>
 ---
- .../gpu/drm/amd/pm/legacy-dpm/legacy_dpm.c    | 52 +++++--------------
- 1 file changed, 13 insertions(+), 39 deletions(-)
+hello,
+patch is based on current linux next.
 
-diff --git a/drivers/gpu/drm/amd/pm/legacy-dpm/legacy_dpm.c b/drivers/gpu/drm/amd/pm/legacy-dpm/legacy_dpm.c
-index 81fb4e5dd804..60377747bab4 100644
---- a/drivers/gpu/drm/amd/pm/legacy-dpm/legacy_dpm.c
-+++ b/drivers/gpu/drm/amd/pm/legacy-dpm/legacy_dpm.c
-@@ -272,10 +272,8 @@ int amdgpu_parse_extended_power_table(struct amdgpu_device *adev)
- 				 le16_to_cpu(power_info->pplib4.usVddcDependencyOnSCLKOffset));
- 			ret = amdgpu_parse_clk_voltage_dep_table(&adev->pm.dpm.dyn_state.vddc_dependency_on_sclk,
- 								 dep_table);
--			if (ret) {
--				amdgpu_free_extended_power_table(adev);
-+			if (ret)
- 				return ret;
--			}
- 		}
- 		if (power_info->pplib4.usVddciDependencyOnMCLKOffset) {
- 			dep_table = (ATOM_PPLIB_Clock_Voltage_Dependency_Table *)
-@@ -283,10 +281,8 @@ int amdgpu_parse_extended_power_table(struct amdgpu_device *adev)
- 				 le16_to_cpu(power_info->pplib4.usVddciDependencyOnMCLKOffset));
- 			ret = amdgpu_parse_clk_voltage_dep_table(&adev->pm.dpm.dyn_state.vddci_dependency_on_mclk,
- 								 dep_table);
--			if (ret) {
--				amdgpu_free_extended_power_table(adev);
-+			if (ret)
- 				return ret;
--			}
- 		}
- 		if (power_info->pplib4.usVddcDependencyOnMCLKOffset) {
- 			dep_table = (ATOM_PPLIB_Clock_Voltage_Dependency_Table *)
-@@ -294,10 +290,8 @@ int amdgpu_parse_extended_power_table(struct amdgpu_device *adev)
- 				 le16_to_cpu(power_info->pplib4.usVddcDependencyOnMCLKOffset));
- 			ret = amdgpu_parse_clk_voltage_dep_table(&adev->pm.dpm.dyn_state.vddc_dependency_on_mclk,
- 								 dep_table);
--			if (ret) {
--				amdgpu_free_extended_power_table(adev);
-+			if (ret)
- 				return ret;
--			}
- 		}
- 		if (power_info->pplib4.usMvddDependencyOnMCLKOffset) {
- 			dep_table = (ATOM_PPLIB_Clock_Voltage_Dependency_Table *)
-@@ -305,10 +299,8 @@ int amdgpu_parse_extended_power_table(struct amdgpu_device *adev)
- 				 le16_to_cpu(power_info->pplib4.usMvddDependencyOnMCLKOffset));
- 			ret = amdgpu_parse_clk_voltage_dep_table(&adev->pm.dpm.dyn_state.mvdd_dependency_on_mclk,
- 								 dep_table);
--			if (ret) {
--				amdgpu_free_extended_power_table(adev);
-+			if (ret)
- 				return ret;
--			}
- 		}
- 		if (power_info->pplib4.usMaxClockVoltageOnDCOffset) {
- 			ATOM_PPLIB_Clock_Voltage_Limit_Table *clk_v =
-@@ -339,10 +331,8 @@ int amdgpu_parse_extended_power_table(struct amdgpu_device *adev)
- 				kcalloc(psl->ucNumEntries,
- 					sizeof(struct amdgpu_phase_shedding_limits_entry),
- 					GFP_KERNEL);
--			if (!adev->pm.dpm.dyn_state.phase_shedding_limits_table.entries) {
--				amdgpu_free_extended_power_table(adev);
-+			if (!adev->pm.dpm.dyn_state.phase_shedding_limits_table.entries)
- 				return -ENOMEM;
--			}
- 
- 			entry = &psl->entries[0];
- 			for (i = 0; i < psl->ucNumEntries; i++) {
-@@ -383,10 +373,8 @@ int amdgpu_parse_extended_power_table(struct amdgpu_device *adev)
- 			ATOM_PPLIB_CAC_Leakage_Record *entry;
- 			u32 size = cac_table->ucNumEntries * sizeof(struct amdgpu_cac_leakage_table);
- 			adev->pm.dpm.dyn_state.cac_leakage_table.entries = kzalloc(size, GFP_KERNEL);
--			if (!adev->pm.dpm.dyn_state.cac_leakage_table.entries) {
--				amdgpu_free_extended_power_table(adev);
-+			if (!adev->pm.dpm.dyn_state.cac_leakage_table.entries)
- 				return -ENOMEM;
--			}
- 			entry = &cac_table->entries[0];
- 			for (i = 0; i < cac_table->ucNumEntries; i++) {
- 				if (adev->pm.dpm.platform_caps & ATOM_PP_PLATFORM_CAP_EVV) {
-@@ -438,10 +426,8 @@ int amdgpu_parse_extended_power_table(struct amdgpu_device *adev)
- 				sizeof(struct amdgpu_vce_clock_voltage_dependency_entry);
- 			adev->pm.dpm.dyn_state.vce_clock_voltage_dependency_table.entries =
- 				kzalloc(size, GFP_KERNEL);
--			if (!adev->pm.dpm.dyn_state.vce_clock_voltage_dependency_table.entries) {
--				amdgpu_free_extended_power_table(adev);
-+			if (!adev->pm.dpm.dyn_state.vce_clock_voltage_dependency_table.entries)
- 				return -ENOMEM;
--			}
- 			adev->pm.dpm.dyn_state.vce_clock_voltage_dependency_table.count =
- 				limits->numEntries;
- 			entry = &limits->entries[0];
-@@ -493,10 +479,8 @@ int amdgpu_parse_extended_power_table(struct amdgpu_device *adev)
- 				sizeof(struct amdgpu_uvd_clock_voltage_dependency_entry);
- 			adev->pm.dpm.dyn_state.uvd_clock_voltage_dependency_table.entries =
- 				kzalloc(size, GFP_KERNEL);
--			if (!adev->pm.dpm.dyn_state.uvd_clock_voltage_dependency_table.entries) {
--				amdgpu_free_extended_power_table(adev);
-+			if (!adev->pm.dpm.dyn_state.uvd_clock_voltage_dependency_table.entries)
- 				return -ENOMEM;
--			}
- 			adev->pm.dpm.dyn_state.uvd_clock_voltage_dependency_table.count =
- 				limits->numEntries;
- 			entry = &limits->entries[0];
-@@ -525,10 +509,8 @@ int amdgpu_parse_extended_power_table(struct amdgpu_device *adev)
- 				sizeof(struct amdgpu_clock_voltage_dependency_entry);
- 			adev->pm.dpm.dyn_state.samu_clock_voltage_dependency_table.entries =
- 				kzalloc(size, GFP_KERNEL);
--			if (!adev->pm.dpm.dyn_state.samu_clock_voltage_dependency_table.entries) {
--				amdgpu_free_extended_power_table(adev);
-+			if (!adev->pm.dpm.dyn_state.samu_clock_voltage_dependency_table.entries)
- 				return -ENOMEM;
--			}
- 			adev->pm.dpm.dyn_state.samu_clock_voltage_dependency_table.count =
- 				limits->numEntries;
- 			entry = &limits->entries[0];
-@@ -548,10 +530,8 @@ int amdgpu_parse_extended_power_table(struct amdgpu_device *adev)
- 				 le16_to_cpu(ext_hdr->usPPMTableOffset));
- 			adev->pm.dpm.dyn_state.ppm_table =
- 				kzalloc(sizeof(struct amdgpu_ppm_table), GFP_KERNEL);
--			if (!adev->pm.dpm.dyn_state.ppm_table) {
--				amdgpu_free_extended_power_table(adev);
-+			if (!adev->pm.dpm.dyn_state.ppm_table)
- 				return -ENOMEM;
--			}
- 			adev->pm.dpm.dyn_state.ppm_table->ppm_design = ppm->ucPpmDesign;
- 			adev->pm.dpm.dyn_state.ppm_table->cpu_core_number =
- 				le16_to_cpu(ppm->usCpuCoreNumber);
-@@ -583,10 +563,8 @@ int amdgpu_parse_extended_power_table(struct amdgpu_device *adev)
- 				sizeof(struct amdgpu_clock_voltage_dependency_entry);
- 			adev->pm.dpm.dyn_state.acp_clock_voltage_dependency_table.entries =
- 				kzalloc(size, GFP_KERNEL);
--			if (!adev->pm.dpm.dyn_state.acp_clock_voltage_dependency_table.entries) {
--				amdgpu_free_extended_power_table(adev);
-+			if (!adev->pm.dpm.dyn_state.acp_clock_voltage_dependency_table.entries)
- 				return -ENOMEM;
--			}
- 			adev->pm.dpm.dyn_state.acp_clock_voltage_dependency_table.count =
- 				limits->numEntries;
- 			entry = &limits->entries[0];
-@@ -606,10 +584,8 @@ int amdgpu_parse_extended_power_table(struct amdgpu_device *adev)
- 			ATOM_PowerTune_Table *pt;
- 			adev->pm.dpm.dyn_state.cac_tdp_table =
- 				kzalloc(sizeof(struct amdgpu_cac_tdp_table), GFP_KERNEL);
--			if (!adev->pm.dpm.dyn_state.cac_tdp_table) {
--				amdgpu_free_extended_power_table(adev);
-+			if (!adev->pm.dpm.dyn_state.cac_tdp_table)
- 				return -ENOMEM;
--			}
- 			if (rev > 0) {
- 				ATOM_PPLIB_POWERTUNE_Table_V1 *ppt = (ATOM_PPLIB_POWERTUNE_Table_V1 *)
- 					(mode_info->atom_context->bios + data_offset +
-@@ -645,10 +621,8 @@ int amdgpu_parse_extended_power_table(struct amdgpu_device *adev)
- 			ret = amdgpu_parse_clk_voltage_dep_table(
- 					&adev->pm.dpm.dyn_state.vddgfx_dependency_on_sclk,
- 					dep_table);
--			if (ret) {
--				kfree(adev->pm.dpm.dyn_state.vddgfx_dependency_on_sclk.entries);
-+			if (ret)
- 				return ret;
--			}
- 		}
+It has an obvious problem, it touches files from multiple subsystem in a single
+patch that is complicated to review and eventually merge, just splitting this
+would however not work, it will break bisectability and the build.
+
+I am looking for advise on the best way to move forward.
+
+I see the following options:
+ - keep it as it is
+ - break it down with a patch with each subsystem, and squash before applying
+   from a single (tty?) subsystem
+ - go for a multi stage approach, defining a new callback, move to it and in
+   the end remove the original one, likewise it was done for i2c lately
+
+---
+ drivers/bluetooth/btmtkuart.c              |  4 ++--
+ drivers/bluetooth/btnxpuart.c              |  4 ++--
+ drivers/bluetooth/hci_serdev.c             |  4 ++--
+ drivers/gnss/core.c                        |  6 +++---
+ drivers/gnss/serial.c                      |  4 ++--
+ drivers/gnss/sirf.c                        |  6 +++---
+ drivers/greybus/gb-beagleplay.c            |  6 +++---
+ drivers/iio/chemical/pms7003.c             |  4 ++--
+ drivers/iio/chemical/scd30_serial.c        |  4 ++--
+ drivers/iio/chemical/sps30_serial.c        |  4 ++--
+ drivers/iio/imu/bno055/bno055_ser_core.c   |  4 ++--
+ drivers/mfd/rave-sp.c                      |  4 ++--
+ drivers/net/ethernet/qualcomm/qca_uart.c   |  2 +-
+ drivers/nfc/pn533/uart.c                   |  4 ++--
+ drivers/nfc/s3fwrn5/uart.c                 |  4 ++--
+ drivers/platform/chrome/cros_ec_uart.c     |  4 ++--
+ drivers/platform/surface/aggregator/core.c |  4 ++--
+ drivers/tty/serdev/serdev-ttyport.c        | 10 ++++------
+ include/linux/gnss.h                       |  4 ++--
+ include/linux/serdev.h                     |  8 ++++----
+ sound/drivers/serial-generic.c             |  4 ++--
+ 21 files changed, 48 insertions(+), 50 deletions(-)
+
+diff --git a/drivers/bluetooth/btmtkuart.c b/drivers/bluetooth/btmtkuart.c
+index 3c84fcbda01a..e6bc4a73c9fc 100644
+--- a/drivers/bluetooth/btmtkuart.c
++++ b/drivers/bluetooth/btmtkuart.c
+@@ -383,8 +383,8 @@ static void btmtkuart_recv(struct hci_dev *hdev, const u8 *data, size_t count)
  	}
+ }
  
+-static ssize_t btmtkuart_receive_buf(struct serdev_device *serdev,
+-				     const u8 *data, size_t count)
++static size_t btmtkuart_receive_buf(struct serdev_device *serdev,
++				    const u8 *data, size_t count)
+ {
+ 	struct btmtkuart_dev *bdev = serdev_device_get_drvdata(serdev);
+ 
+diff --git a/drivers/bluetooth/btnxpuart.c b/drivers/bluetooth/btnxpuart.c
+index 1d592ac413d1..056bef5b2919 100644
+--- a/drivers/bluetooth/btnxpuart.c
++++ b/drivers/bluetooth/btnxpuart.c
+@@ -1264,8 +1264,8 @@ static const struct h4_recv_pkt nxp_recv_pkts[] = {
+ 	{ NXP_RECV_FW_REQ_V3,   .recv = nxp_recv_fw_req_v3 },
+ };
+ 
+-static ssize_t btnxpuart_receive_buf(struct serdev_device *serdev,
+-				     const u8 *data, size_t count)
++static size_t btnxpuart_receive_buf(struct serdev_device *serdev,
++				    const u8 *data, size_t count)
+ {
+ 	struct btnxpuart_dev *nxpdev = serdev_device_get_drvdata(serdev);
+ 
+diff --git a/drivers/bluetooth/hci_serdev.c b/drivers/bluetooth/hci_serdev.c
+index 39c8b567da3c..a3c3beb2806d 100644
+--- a/drivers/bluetooth/hci_serdev.c
++++ b/drivers/bluetooth/hci_serdev.c
+@@ -271,8 +271,8 @@ static void hci_uart_write_wakeup(struct serdev_device *serdev)
+  *
+  * Return: number of processed bytes
+  */
+-static ssize_t hci_uart_receive_buf(struct serdev_device *serdev,
+-				    const u8 *data, size_t count)
++static size_t hci_uart_receive_buf(struct serdev_device *serdev,
++				   const u8 *data, size_t count)
+ {
+ 	struct hci_uart *hu = serdev_device_get_drvdata(serdev);
+ 
+diff --git a/drivers/gnss/core.c b/drivers/gnss/core.c
+index 48f2ee0f78c4..9b8a0605ec76 100644
+--- a/drivers/gnss/core.c
++++ b/drivers/gnss/core.c
+@@ -317,10 +317,10 @@ EXPORT_SYMBOL_GPL(gnss_deregister_device);
+  *
+  * Must not be called for a closed device.
+  */
+-int gnss_insert_raw(struct gnss_device *gdev, const unsigned char *buf,
+-				size_t count)
++size_t gnss_insert_raw(struct gnss_device *gdev, const unsigned char *buf,
++		       size_t count)
+ {
+-	int ret;
++	size_t ret;
+ 
+ 	ret = kfifo_in(&gdev->read_fifo, buf, count);
+ 
+diff --git a/drivers/gnss/serial.c b/drivers/gnss/serial.c
+index baa956494e79..bf55aa2c1cf0 100644
+--- a/drivers/gnss/serial.c
++++ b/drivers/gnss/serial.c
+@@ -80,8 +80,8 @@ static const struct gnss_operations gnss_serial_gnss_ops = {
+ 	.write_raw	= gnss_serial_write_raw,
+ };
+ 
+-static ssize_t gnss_serial_receive_buf(struct serdev_device *serdev,
+-				       const u8 *buf, size_t count)
++static size_t gnss_serial_receive_buf(struct serdev_device *serdev,
++				      const u8 *buf, size_t count)
+ {
+ 	struct gnss_serial *gserial = serdev_device_get_drvdata(serdev);
+ 	struct gnss_device *gdev = gserial->gdev;
+diff --git a/drivers/gnss/sirf.c b/drivers/gnss/sirf.c
+index 6801a8fb2040..2aae3c02156d 100644
+--- a/drivers/gnss/sirf.c
++++ b/drivers/gnss/sirf.c
+@@ -160,12 +160,12 @@ static const struct gnss_operations sirf_gnss_ops = {
+ 	.write_raw	= sirf_write_raw,
+ };
+ 
+-static ssize_t sirf_receive_buf(struct serdev_device *serdev,
+-				const u8 *buf, size_t count)
++static size_t sirf_receive_buf(struct serdev_device *serdev,
++			       const u8 *buf, size_t count)
+ {
+ 	struct sirf_data *data = serdev_device_get_drvdata(serdev);
+ 	struct gnss_device *gdev = data->gdev;
+-	int ret = 0;
++	size_t ret = 0;
+ 
+ 	if (!data->wakeup && !data->active) {
+ 		data->active = true;
+diff --git a/drivers/greybus/gb-beagleplay.c b/drivers/greybus/gb-beagleplay.c
+index 2da37ff92cf1..26c95efe2fff 100644
+--- a/drivers/greybus/gb-beagleplay.c
++++ b/drivers/greybus/gb-beagleplay.c
+@@ -257,7 +257,7 @@ static void hdlc_rx_frame(struct gb_beagleplay *bg)
+ 	}
+ }
+ 
+-static ssize_t hdlc_rx(struct gb_beagleplay *bg, const u8 *data, size_t count)
++static size_t hdlc_rx(struct gb_beagleplay *bg, const u8 *data, size_t count)
+ {
+ 	size_t i;
+ 	u8 c;
+@@ -317,8 +317,8 @@ static void hdlc_deinit(struct gb_beagleplay *bg)
+ 	flush_work(&bg->tx_work);
+ }
+ 
+-static ssize_t gb_tty_receive(struct serdev_device *sd, const u8 *data,
+-			      size_t count)
++static size_t gb_tty_receive(struct serdev_device *sd, const u8 *data,
++			     size_t count)
+ {
+ 	struct gb_beagleplay *bg = serdev_device_get_drvdata(sd);
+ 
+diff --git a/drivers/iio/chemical/pms7003.c b/drivers/iio/chemical/pms7003.c
+index b5cf15a515d2..43025866d5b7 100644
+--- a/drivers/iio/chemical/pms7003.c
++++ b/drivers/iio/chemical/pms7003.c
+@@ -211,8 +211,8 @@ static bool pms7003_frame_is_okay(struct pms7003_frame *frame)
+ 	return checksum == pms7003_calc_checksum(frame);
+ }
+ 
+-static ssize_t pms7003_receive_buf(struct serdev_device *serdev, const u8 *buf,
+-				   size_t size)
++static size_t pms7003_receive_buf(struct serdev_device *serdev, const u8 *buf,
++				  size_t size)
+ {
+ 	struct iio_dev *indio_dev = serdev_device_get_drvdata(serdev);
+ 	struct pms7003_state *state = iio_priv(indio_dev);
+diff --git a/drivers/iio/chemical/scd30_serial.c b/drivers/iio/chemical/scd30_serial.c
+index a47654591e55..2adb76dbb020 100644
+--- a/drivers/iio/chemical/scd30_serial.c
++++ b/drivers/iio/chemical/scd30_serial.c
+@@ -174,8 +174,8 @@ static int scd30_serdev_command(struct scd30_state *state, enum scd30_cmd cmd, u
+ 	return 0;
+ }
+ 
+-static ssize_t scd30_serdev_receive_buf(struct serdev_device *serdev,
+-					const u8 *buf, size_t size)
++static size_t scd30_serdev_receive_buf(struct serdev_device *serdev,
++				       const u8 *buf, size_t size)
+ {
+ 	struct iio_dev *indio_dev = serdev_device_get_drvdata(serdev);
+ 	struct scd30_serdev_priv *priv;
+diff --git a/drivers/iio/chemical/sps30_serial.c b/drivers/iio/chemical/sps30_serial.c
+index 3afa89f8acc3..a6dfbe28c914 100644
+--- a/drivers/iio/chemical/sps30_serial.c
++++ b/drivers/iio/chemical/sps30_serial.c
+@@ -210,8 +210,8 @@ static int sps30_serial_command(struct sps30_state *state, unsigned char cmd,
+ 	return rsp_size;
+ }
+ 
+-static ssize_t sps30_serial_receive_buf(struct serdev_device *serdev,
+-					const u8 *buf, size_t size)
++static size_t sps30_serial_receive_buf(struct serdev_device *serdev,
++				       const u8 *buf, size_t size)
+ {
+ 	struct iio_dev *indio_dev = dev_get_drvdata(&serdev->dev);
+ 	struct sps30_serial_priv *priv;
+diff --git a/drivers/iio/imu/bno055/bno055_ser_core.c b/drivers/iio/imu/bno055/bno055_ser_core.c
+index 5677bdf4f846..694ff14a3aa2 100644
+--- a/drivers/iio/imu/bno055/bno055_ser_core.c
++++ b/drivers/iio/imu/bno055/bno055_ser_core.c
+@@ -378,8 +378,8 @@ static void bno055_ser_handle_rx(struct bno055_ser_priv *priv, int status)
+  * Also, we assume to RX one pkt per time (i.e. the HW doesn't send anything
+  * unless we require to AND we don't queue more than one request per time).
+  */
+-static ssize_t bno055_ser_receive_buf(struct serdev_device *serdev,
+-				      const u8 *buf, size_t size)
++static size_t bno055_ser_receive_buf(struct serdev_device *serdev,
++				     const u8 *buf, size_t size)
+ {
+ 	int status;
+ 	struct bno055_ser_priv *priv = serdev_device_get_drvdata(serdev);
+diff --git a/drivers/mfd/rave-sp.c b/drivers/mfd/rave-sp.c
+index b1229bb143ee..f517e59e1c01 100644
+--- a/drivers/mfd/rave-sp.c
++++ b/drivers/mfd/rave-sp.c
+@@ -471,8 +471,8 @@ static void rave_sp_receive_frame(struct rave_sp *sp,
+ 		rave_sp_receive_reply(sp, data, length);
+ }
+ 
+-static ssize_t rave_sp_receive_buf(struct serdev_device *serdev,
+-				   const u8 *buf, size_t size)
++static size_t rave_sp_receive_buf(struct serdev_device *serdev,
++				  const u8 *buf, size_t size)
+ {
+ 	struct device *dev = &serdev->dev;
+ 	struct rave_sp *sp = dev_get_drvdata(dev);
+diff --git a/drivers/net/ethernet/qualcomm/qca_uart.c b/drivers/net/ethernet/qualcomm/qca_uart.c
+index 223321897b96..20f50bde82ac 100644
+--- a/drivers/net/ethernet/qualcomm/qca_uart.c
++++ b/drivers/net/ethernet/qualcomm/qca_uart.c
+@@ -58,7 +58,7 @@ struct qcauart {
+ 	unsigned char *tx_buffer;
+ };
+ 
+-static ssize_t
++static size_t
+ qca_tty_receive(struct serdev_device *serdev, const u8 *data, size_t count)
+ {
+ 	struct qcauart *qca = serdev_device_get_drvdata(serdev);
+diff --git a/drivers/nfc/pn533/uart.c b/drivers/nfc/pn533/uart.c
+index 2eb5978bd79e..cfbbe0713317 100644
+--- a/drivers/nfc/pn533/uart.c
++++ b/drivers/nfc/pn533/uart.c
+@@ -203,8 +203,8 @@ static int pn532_uart_rx_is_frame(struct sk_buff *skb)
+ 	return 0;
+ }
+ 
+-static ssize_t pn532_receive_buf(struct serdev_device *serdev,
+-				 const u8 *data, size_t count)
++static size_t pn532_receive_buf(struct serdev_device *serdev,
++				const u8 *data, size_t count)
+ {
+ 	struct pn532_uart_phy *dev = serdev_device_get_drvdata(serdev);
+ 	size_t i;
+diff --git a/drivers/nfc/s3fwrn5/uart.c b/drivers/nfc/s3fwrn5/uart.c
+index 456d3947116c..9c09c10c2a46 100644
+--- a/drivers/nfc/s3fwrn5/uart.c
++++ b/drivers/nfc/s3fwrn5/uart.c
+@@ -51,8 +51,8 @@ static const struct s3fwrn5_phy_ops uart_phy_ops = {
+ 	.write = s3fwrn82_uart_write,
+ };
+ 
+-static ssize_t s3fwrn82_uart_read(struct serdev_device *serdev,
+-				  const u8 *data, size_t count)
++static size_t s3fwrn82_uart_read(struct serdev_device *serdev,
++				 const u8 *data, size_t count)
+ {
+ 	struct s3fwrn82_uart_phy *phy = serdev_device_get_drvdata(serdev);
+ 	size_t i;
+diff --git a/drivers/platform/chrome/cros_ec_uart.c b/drivers/platform/chrome/cros_ec_uart.c
+index 68d80559fddc..8ea867c2a01a 100644
+--- a/drivers/platform/chrome/cros_ec_uart.c
++++ b/drivers/platform/chrome/cros_ec_uart.c
+@@ -81,8 +81,8 @@ struct cros_ec_uart {
+ 	struct response_info response;
+ };
+ 
+-static ssize_t cros_ec_uart_rx_bytes(struct serdev_device *serdev,
+-				     const u8 *data, size_t count)
++static size_t cros_ec_uart_rx_bytes(struct serdev_device *serdev,
++				    const u8 *data, size_t count)
+ {
+ 	struct ec_host_response *host_response;
+ 	struct cros_ec_device *ec_dev = serdev_device_get_drvdata(serdev);
+diff --git a/drivers/platform/surface/aggregator/core.c b/drivers/platform/surface/aggregator/core.c
+index 9591a28bc38a..ba550eaa06fc 100644
+--- a/drivers/platform/surface/aggregator/core.c
++++ b/drivers/platform/surface/aggregator/core.c
+@@ -227,8 +227,8 @@ EXPORT_SYMBOL_GPL(ssam_client_bind);
+ 
+ /* -- Glue layer (serdev_device -> ssam_controller). ------------------------ */
+ 
+-static ssize_t ssam_receive_buf(struct serdev_device *dev, const u8 *buf,
+-				size_t n)
++static size_t ssam_receive_buf(struct serdev_device *dev, const u8 *buf,
++			       size_t n)
+ {
+ 	struct ssam_controller *ctrl;
+ 	int ret;
+diff --git a/drivers/tty/serdev/serdev-ttyport.c b/drivers/tty/serdev/serdev-ttyport.c
+index e94e090cf0a1..3d7ae7fa5018 100644
+--- a/drivers/tty/serdev/serdev-ttyport.c
++++ b/drivers/tty/serdev/serdev-ttyport.c
+@@ -27,19 +27,17 @@ static size_t ttyport_receive_buf(struct tty_port *port, const u8 *cp,
+ {
+ 	struct serdev_controller *ctrl = port->client_data;
+ 	struct serport *serport = serdev_controller_get_drvdata(ctrl);
+-	int ret;
++	size_t ret;
+ 
+ 	if (!test_bit(SERPORT_ACTIVE, &serport->flags))
+ 		return 0;
+ 
+ 	ret = serdev_controller_receive_buf(ctrl, cp, count);
+ 
+-	dev_WARN_ONCE(&ctrl->dev, ret < 0 || ret > count,
+-				"receive_buf returns %d (count = %zu)\n",
++	dev_WARN_ONCE(&ctrl->dev, ret > count,
++				"receive_buf returns %zu (count = %zu)\n",
+ 				ret, count);
+-	if (ret < 0)
+-		return 0;
+-	else if (ret > count)
++	if (ret > count)
+ 		return count;
+ 
+ 	return ret;
+diff --git a/include/linux/gnss.h b/include/linux/gnss.h
+index 36968a0f33e8..9857c4029e65 100644
+--- a/include/linux/gnss.h
++++ b/include/linux/gnss.h
+@@ -60,8 +60,8 @@ void gnss_put_device(struct gnss_device *gdev);
+ int gnss_register_device(struct gnss_device *gdev);
+ void gnss_deregister_device(struct gnss_device *gdev);
+ 
+-int gnss_insert_raw(struct gnss_device *gdev, const unsigned char *buf,
+-			size_t count);
++size_t gnss_insert_raw(struct gnss_device *gdev, const unsigned char *buf,
++		       size_t count);
+ 
+ static inline void gnss_set_drvdata(struct gnss_device *gdev, void *data)
+ {
+diff --git a/include/linux/serdev.h b/include/linux/serdev.h
+index 3fab88ba265e..ff78efc1f60d 100644
+--- a/include/linux/serdev.h
++++ b/include/linux/serdev.h
+@@ -27,7 +27,7 @@ struct serdev_device;
+  *			not sleep.
+  */
+ struct serdev_device_ops {
+-	ssize_t (*receive_buf)(struct serdev_device *, const u8 *, size_t);
++	size_t (*receive_buf)(struct serdev_device *, const u8 *, size_t);
+ 	void (*write_wakeup)(struct serdev_device *);
+ };
+ 
+@@ -185,9 +185,9 @@ static inline void serdev_controller_write_wakeup(struct serdev_controller *ctrl
+ 	serdev->ops->write_wakeup(serdev);
+ }
+ 
+-static inline ssize_t serdev_controller_receive_buf(struct serdev_controller *ctrl,
+-						    const u8 *data,
+-						    size_t count)
++static inline size_t serdev_controller_receive_buf(struct serdev_controller *ctrl,
++						   const u8 *data,
++						   size_t count)
+ {
+ 	struct serdev_device *serdev = ctrl->serdev;
+ 
+diff --git a/sound/drivers/serial-generic.c b/sound/drivers/serial-generic.c
+index d6e5aafd697c..36409a56c675 100644
+--- a/sound/drivers/serial-generic.c
++++ b/sound/drivers/serial-generic.c
+@@ -100,8 +100,8 @@ static void snd_serial_generic_write_wakeup(struct serdev_device *serdev)
+ 	snd_serial_generic_tx_wakeup(drvdata);
+ }
+ 
+-static ssize_t snd_serial_generic_receive_buf(struct serdev_device *serdev,
+-					      const u8 *buf, size_t count)
++static size_t snd_serial_generic_receive_buf(struct serdev_device *serdev,
++					     const u8 *buf, size_t count)
+ {
+ 	int ret;
+ 	struct snd_serial_generic *drvdata = serdev_device_get_drvdata(serdev);
+
+base-commit: 11651f8cb2e88372d4ed523d909514dc9a613ea3
 -- 
-2.34.1
+2.25.1
 
