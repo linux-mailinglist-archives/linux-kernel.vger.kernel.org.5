@@ -2,194 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C1F28134E3
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 16:36:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 70ADF8134F3
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 16:38:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1573824AbjLNPgY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 10:36:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43966 "EHLO
+        id S1573847AbjLNPih (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 10:38:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45990 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1573809AbjLNPgW (ORCPT
+        with ESMTP id S1573848AbjLNPid (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 10:36:22 -0500
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DB8E123;
-        Thu, 14 Dec 2023 07:36:29 -0800 (PST)
-Received: by mail-ed1-x534.google.com with SMTP id 4fb4d7f45d1cf-551ee7d5214so1490906a12.0;
-        Thu, 14 Dec 2023 07:36:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702568187; x=1703172987; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=7aoTw4OzsLC4RfHyhEqd9IMSyhLj1y7UIdS2DuMa/Jw=;
-        b=RjmpqTCpKZBYp+BtMtLQdkOxlJgT4ZjAXNx2+0DAPhHiQD7WSZNSw4JhlzhmVTwvR0
-         jBSRDIG0XbeATgHIqCvecBoRKhLcajvpMDBDIc32QnfZdPcOI0g6VaviRnioJjfVrOLA
-         0rI0uLK9vcRxIzSq4JfbsFyxIl+fPTxHQjds2FI4d7zjYspP/23zNt9OnSuAiKZN6AH6
-         LXzA84WF1bzcHBMocyKaU0PIlVBALUd7lphRa0MwaAGopZOTmCPWCPTFMKvxv81LXG6c
-         zZrZK6iYZu/FQJ7FDMMv+E8f4U4KmyrhqoPmaEn/m5Q7iTQqkl/AYKyGqM4jeGQ/JR42
-         lriw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702568187; x=1703172987;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=7aoTw4OzsLC4RfHyhEqd9IMSyhLj1y7UIdS2DuMa/Jw=;
-        b=LOoZxEU3Gqa3PgvUMNJRvNa1afp4X0ufIiGOBE1FItQGPR6hcQq2M42hnUhj7UMf1y
-         r1Ma7MX/+cpE/+K/tJkNoAE4QZjhPO+X8HymU7P7pnts0jvsL/wwiFcHe/TtvVr1ygk8
-         p5/ZUkeue+PHB/4HuqRAvCK+DaOgrtox2coEnbsoXM7/gD41WM6r62/HRmknOmN0QFYn
-         NaWCeMA3QiUHfKn/4g/XUE2TBLn1H1Sjig/2j/UPKeAkEfSFtZtzfATuBTmlyBz/3wB/
-         U6n+yaRRZEtPUSjbxALGhJvNeFU4MkFIKdR8cQhzB6hdD152BwiRoFdbjPwovEYfNXSr
-         UrWQ==
-X-Gm-Message-State: AOJu0YwnaoFwlzXpocENptopouT/v61e7fAVX1gWGHQJyBg0A2R4kgkW
-        BpjXazGfomzFvH9KaUtP3yI=
-X-Google-Smtp-Source: AGHT+IGpJEjbt5Kw87AvVHEmj7Sqpfrh6cn5IZWW6q5OWiB43w0Gdk/CJyr7aaNhgpvuSEwj4xh7tw==
-X-Received: by 2002:a50:9f4e:0:b0:551:c796:78d0 with SMTP id b72-20020a509f4e000000b00551c79678d0mr3884602edf.27.1702568187199;
-        Thu, 14 Dec 2023 07:36:27 -0800 (PST)
-Received: from localhost.lan (031011218106.poznan.vectranet.pl. [31.11.218.106])
-        by smtp.gmail.com with ESMTPSA id fd1-20020a056402388100b0055265d5f3c6sm910575edb.24.2023.12.14.07.36.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Dec 2023 07:36:26 -0800 (PST)
-From:   =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>
-Cc:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        devicetree@vger.kernel.org, linux-mtd@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        u-boot@lists.denx.de,
-        =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>
-Subject: [PATCH RFC] dt-bindings: nvmem: u-boot,env: add any-name MAC cells compatible
-Date:   Thu, 14 Dec 2023 16:36:20 +0100
-Message-Id: <20231214153620.23998-1-zajec5@gmail.com>
-X-Mailer: git-send-email 2.35.3
+        Thu, 14 Dec 2023 10:38:33 -0500
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1250D124;
+        Thu, 14 Dec 2023 07:38:40 -0800 (PST)
+Received: from pps.filterd (m0353722.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3BEFLPlQ007022;
+        Thu, 14 Dec 2023 15:37:56 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ subject : to : cc : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=pp1;
+ bh=uz6ec5HrnlcYzCx5JnYZo6Re5AuuAPgFQGb9I0NsfXw=;
+ b=bPy4wOu9PcGWVlkiXDKQ2uaw2LndkKUgiwq3bsiny9ilAqggrsF6B7wmZyspKlBtxpph
+ oac/hdVWCt7j52DC29K+NDamq6FkJpWCtRBFPYXgeXE3kUJkFz8Q01Bzl4gyuWQTTzaO
+ 4CdBRjlCLwNmHCm8q9zeqG5c2K+IFJoRHiiv8+XquyqGIH+3NFhuo4335EXqqWARoFPJ
+ QHnQ9mq0ns5GpbFXnjG1B9g4Gs4vLVXwc6UlFMMzXZNBiLKDOw00jw6HKnpRyi9Fjtm+
+ gl+8Og+3CVu3yfxavayU3RuIKRcDSZg2zFyfx0taZ6dmnJKT2mlf721FuhVAW4ae43xJ Vg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3v03xh165x-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 14 Dec 2023 15:37:55 +0000
+Received: from m0353722.ppops.net (m0353722.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3BEFG0we018952;
+        Thu, 14 Dec 2023 15:37:54 GMT
+Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3v03xh15we-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 14 Dec 2023 15:37:53 +0000
+Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
+        by ppma13.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3BEDnf3H004101;
+        Thu, 14 Dec 2023 15:37:24 GMT
+Received: from smtprelay06.dal12v.mail.ibm.com ([172.16.1.8])
+        by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 3uw4sks2xf-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 14 Dec 2023 15:37:24 +0000
+Received: from smtpav05.dal12v.mail.ibm.com (smtpav05.dal12v.mail.ibm.com [10.241.53.104])
+        by smtprelay06.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3BEFbOIA3605028
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 14 Dec 2023 15:37:24 GMT
+Received: from smtpav05.dal12v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 0135558065;
+        Thu, 14 Dec 2023 15:37:24 +0000 (GMT)
+Received: from smtpav05.dal12v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id D90EE58056;
+        Thu, 14 Dec 2023 15:37:20 +0000 (GMT)
+Received: from [9.67.23.198] (unknown [9.67.23.198])
+        by smtpav05.dal12v.mail.ibm.com (Postfix) with ESMTP;
+        Thu, 14 Dec 2023 15:37:20 +0000 (GMT)
+Message-ID: <46fcba11-5766-4c7c-91dd-0dfb5ae0e110@linux.ibm.com>
+Date:   Thu, 14 Dec 2023 09:37:20 -0600
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1 2/8] dt-bindings: tpm: Add schema for TIS I2C devices
+Content-Language: en-US
+To:     Guenter Roeck <linux@roeck-us.net>, Conor Dooley <conor@kernel.org>
+Cc:     robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, joel@jms.id.au, andrew@codeconstruct.com.au,
+        peterhuewe@gmx.de, jarkko@kernel.org, jgg@ziepe.ca,
+        keescook@chromium.org, tony.luck@intel.com, gpiccoli@igalia.com,
+        johannes.holland@infineon.com, broonie@kernel.org,
+        patrick.rudolph@9elements.com, vincent@vtremblay.dev,
+        peteryin.openbmc@gmail.com, lakshmiy@us.ibm.com,
+        bhelgaas@google.com, naresh.solanki@9elements.com,
+        alexander.stein@ew.tq-group.com, festevam@denx.de,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        linux-integrity@vger.kernel.org, linux-hardening@vger.kernel.org,
+        geissonator@yahoo.com
+References: <20231212164004.1683589-1-ninad@linux.ibm.com>
+ <20231212164004.1683589-3-ninad@linux.ibm.com>
+ <20231212-amusement-elevation-28e42bcccc35@spud>
+ <874d4416-86e5-48cc-9c84-97357e4caefe@roeck-us.net>
+From:   Ninad Palsule <ninad@linux.ibm.com>
+In-Reply-To: <874d4416-86e5-48cc-9c84-97357e4caefe@roeck-us.net>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: N5HwoJhnLEiSRi1lKuDoBdgPJnvRTJ9W
+X-Proofpoint-ORIG-GUID: 1JHEuYFTWGM-GFNRj-F9Cr370n6gV1gY
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-14_10,2023-12-14_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 phishscore=0
+ priorityscore=1501 impostorscore=0 lowpriorityscore=0 clxscore=1015
+ bulkscore=0 mlxscore=0 adultscore=0 spamscore=0 mlxlogscore=999
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311290000 definitions=main-2312140110
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rafał Miłecki <rafal@milecki.pl>
+Hello Guenter,
 
-So far we had a property for "ethaddr" NVMEM cell containing base
-Ethernet MAC address. The problem is vendors often pick non-standard
-names for storing MAC(s) (other than "ethaddr"). A few names were
-noticed over years:
-1. "wanaddr" (Edimax, ELECOM, EnGenius, I-O DATA, Sitecom)
-2. "et1macaddr" (ASUS)
-3. "eth1addr" (Buffalo)
-4. "athaddr" (EnGenius)
-5. "baseMAC" (Netgear)
-6. "mac" (Netgear)
-7. "mac_addr" (Moxa)
-and more ("HW_LAN_MAC", "HW_WAN_MAC", "INIC_MAC_ADDR", "LAN_MAC_ADDR",
-"RADIOADDR0", "RADIOADDR1", "WAN_MAC_ADDR", "lan1_mac_addr", "wanmac",
-"wmac1", "wmac2").
+On 12/12/23 12:20, Guenter Roeck wrote:
+> On Tue, Dec 12, 2023 at 05:14:26PM +0000, Conor Dooley wrote:
+>> Hey,
+>>
+>> On Tue, Dec 12, 2023 at 10:39:58AM -0600, Ninad Palsule wrote:
+>>> From: Johannes Holland <johannes.holland@infineon.com>
+>>>
+>>> Add a dt schema to support device tree bindings
+>> "Add bindings for..."
+>>
+>>> for the generic I2C
+>>> physical layer. Refer to the TCG PC Client Platform TPM Profile (PTP)
+>>> Specification for TPM 2.0 v1.04 Revision 14.
+>>>
+>>> This includes descriptions for the Nuvoton and Infineon devices.
+>>>
+>>> OpenBMC-Staging-Count: 3
+>> I have no idea what this is, but it needs to be removed from the patch.
+>>
+>>> Signed-off-by: Johannes Holland <johannes.holland@infineon.com>
+>>> Signed-off-by: Joel Stanley <joel@jms.id.au>
+>>> Signed-off-by: Ninad Palsule <ninad@linux.ibm.com>
+>>> ---
+>>>   .../bindings/security/tpm/tpm-tis-i2c.yaml    | 50 +++++++++++++++++++
+>>>   1 file changed, 50 insertions(+)
+>>>   create mode 100644 Documentation/devicetree/bindings/security/tpm/tpm-tis-i2c.yaml
+>>>
+>>> diff --git a/Documentation/devicetree/bindings/security/tpm/tpm-tis-i2c.yaml b/Documentation/devicetree/bindings/security/tpm/tpm-tis-i2c.yaml
+>>> new file mode 100644
+>>> index 000000000000..de1e34065748
+>>> --- /dev/null
+>>> +++ b/Documentation/devicetree/bindings/security/tpm/tpm-tis-i2c.yaml
+>>> @@ -0,0 +1,50 @@
+>>> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+>>> +%YAML 1.2
+>>> +---
+>>> +$id: http://devicetree.org/schemas/security/tpm/tpm-tis-i2c.yaml#
+>>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+>>> +
+>>> +title: I2C PTP based TPM Devices
+>>> +
+>>> +maintainers:
+>>> +  - Johannes Holland <johannes.holland@infineon.com>
+>>> +
+>>> +description:
+>>> +  Device Tree Bindings for I2C based Trusted Platform Module (TPM).
+>> s/Device Tree Bindings for //. Doesn't dt_binding_check now complain if
+>> you have this in a title or description?
+>>
+>>> +properties:
+>>> +  $nodename:
+>>> +    pattern: "^tpm(@[0-9a-f]+)?$"
+>>> +
+>>> +  compatible:
+>>> +    oneOf:
+>>> +      - description: Infineon's Trusted Platform Module (TPM) (SLB9673).
+>>> +        items:
+>>> +          - const: infineon,slb9673
+>>> +          - const: tcg,tpm-tis-i2c
+>>> +      - description: Nuvoton's Trusted Platform Module (TPM) (NPCT75x).
+>>> +        items:
+>>> +          - const: nuvoton,npct75x
+>>> +          - const: tcg,tpm-tis-i2c
+>>> +      - const: tcg,tpm-tis-i2c
+>> IMO this should be removed and this fallback should only be used in
+>> combination with device specific compatibles, like you have here for the
+>> infineon and nuvoton devices.
+> As mentioned in my response to the other patch, "only" isn't sufficient
+> since the tacoma devicetree file only references the generic entry.
+> It would also make support for chips from other vendors unnecessarily
+> complex.
+>
+> Question should in my opinion be if the non-fallback entries are really
+> needed.
 
-It doesn't make sense to add property for every possible MAC cell name.
-Instead allow specifying cells with "mac" compatible.
+Thanks for the response. I think generic option is in-case we have a 
+chip whose specific driver is not available.
 
-Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
----
-List of devices and their U-Boot MAC variables:
-alphanetworks,asl56026) wanmac
-asus,rt-ac65p) et1macaddr
-asus,rt-ac85p) et1macaddr
-belkin,f9k1109v1) HW_WAN_MAC + HW_LAN_MAC 
-buffalo,ls220de) eth1addr
-buffalo,ls421de) eth1addr
-checkpoint,l-50) lan1_mac_addr
-dovado,tiny-ac) INIC_MAC_ADDR
-dovado,tiny-ac) LAN_MAC_ADDR + WAN_MAC_ADDR
-edimax,ra21s) wanaddr
-edimax,rg21s) wanaddr
-elecom,wrc-2533ghbk-i) wanaddr
-elecom,wrc-2533ghbk2-t) wanaddr
-engenius,ecb1200) athaddr
-engenius,ecb1750) athaddr
-engenius,epg5000) wanaddr
-engenius,epg600) wanaddr
-engenius,esr1200) wanaddr
-engenius,esr1750) wanaddr
-engenius,esr600) wanaddr
-engenius,esr600h) wanaddr
-engenius,esr900) wanaddr
-enterasys,ws-ap3705i) RADIOADDR0 + RADIOADDR1
-iodata,wn-ac1167dgr) wanaddr
-iodata,wn-ac1167gr) wanaddr
-iodata,wn-ac1600dgr) wanaddr
-iodata,wn-ac1600dgr2) wanaddr
-iodata,wn-ac733gr3) wanaddr
-iodata,wn-ag300dgr) wanaddr
-iodata,wnpr2600g) wanaddr
-moxa,awk-1137c) mac_addr
-netgear,wax220) mac
-netgear,wndap620) baseMAC
-netgear,wndap660) baseMAC
-ocedo,panda) wmac1 + wmac2
-sitecom,wlr-7100) wanaddr
-sitecom,wlr-8100) wanaddr
+Regards,
 
- .../devicetree/bindings/nvmem/u-boot,env.yaml | 33 +++++++++++++++++++
- 1 file changed, 33 insertions(+)
+Ninad
 
-diff --git a/Documentation/devicetree/bindings/nvmem/u-boot,env.yaml b/Documentation/devicetree/bindings/nvmem/u-boot,env.yaml
-index 0006f022d0af..68214b96f5c9 100644
---- a/Documentation/devicetree/bindings/nvmem/u-boot,env.yaml
-+++ b/Documentation/devicetree/bindings/nvmem/u-boot,env.yaml
-@@ -67,6 +67,34 @@ properties:
-         description: The first argument is a MAC address offset.
-         const: 1
- 
-+patternProperties:
-+  ".*":
-+    allOf:
-+      - if:
-+          type: object
-+        then:
-+          properties:
-+            compatible:
-+              enum:
-+                - mac
-+      - if:
-+          properties:
-+            compatible:
-+              contains:
-+                const: mac
-+        then:
-+          description:
-+            Ethernet interfaces base MAC address.
-+
-+          properties:
-+            compatible: true
-+
-+            "#nvmem-cell-cells":
-+              description: The first argument is a MAC address offset.
-+              const: 1
-+
-+          additionalProperties: false
-+
- additionalProperties: false
- 
- examples:
-@@ -90,6 +118,11 @@ examples:
-             mac: ethaddr {
-                 #nvmem-cell-cells = <1>;
-             };
-+
-+            wanaddr {
-+                compatible = "mac";
-+                #nvmem-cell-cells = <1>;
-+            };
-         };
-     };
-   - |
--- 
-2.35.3
-
+>
+> Thanks,
+> Guenter
