@@ -2,56 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F13AD812B68
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 10:14:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 93F52812B6A
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 10:15:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235722AbjLNJOV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 04:14:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56018 "EHLO
+        id S235657AbjLNJPa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 04:15:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48002 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229595AbjLNJOE (ORCPT
+        with ESMTP id S229846AbjLNJP1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 04:14:04 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DF8610C0
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 01:13:45 -0800 (PST)
+        Thu, 14 Dec 2023 04:15:27 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52D01A6;
+        Thu, 14 Dec 2023 01:15:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1702545227; x=1734081227;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=FGyrzpJZ2dPIvxGmGPOv4xqqrlVGXFxSJOp+HjLBIYI=;
-  b=eZ+1aIiIYwvGMzAknQGCtzsM/HmyjM5HNhI7YARcXQ/ht/bp39nee4HH
-   Hmo3pDqwIOXr3HPqiW7GPHup5MumRjR36U48vlAEOORMSvGJL0L7NYenW
-   uQvGxcHEikgHKpY5Hr7HZci4qLdpu9b3c6NhBfu2XBPQb9JcaTsvzcaAy
-   9cnIhn7LMu5VewxWJKdBFEZ7IAL2dN63mFpKFXtbpaYUeQdYMj2SN/0Qz
-   LtfCux/MPBG8tkRhMCBc/19R+YYZX9hZtQnRAy20beNxdnbkFLqbUQJVw
-   PrbgcS9NbutGSBtmKu/2xKkVU94Z0vfSqtUaR8drpGcFPa5Kq/Wk9nNuC
+  t=1702545333; x=1734081333;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=95pMn6/FPLqknYmtJDr/SID5bH9Fjq3Kis48L3I4fEs=;
+  b=a+gDbesDrnx5RVQc1bk+59NblrU29yO77s/MnSNRP6hS1XIPM1IPZjF7
+   LmMgSTMQ1XSaMfGWhOU9FkIibBvwYL9FK1NTdTJ9zNJcRGNSDHhD2CPXP
+   U/dBJ96Eai7WXDZW2rEJeuAQQ2iCbdF/vsKw5kvwT7HYka5r/GjXSHELQ
+   faGUqbxv5Nxez3L4MqX2bxLkriS4BTo2JiyG9JSz8DXhFfNQsEfjYeEM9
+   q+W8kublPCtQSxg80XFaAgpzUxJoJPXQnz4jDrLLvOVPhYk1nSJ0XK3Uj
+   nysMy3U4bOoI5jVNlxTib1ghDE1FXUrRXo2sn0tdRoJjEIFZN38gbMYkn
    w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10923"; a="13789026"
+X-IronPort-AV: E=McAfee;i="6600,9927,10923"; a="1942499"
 X-IronPort-AV: E=Sophos;i="6.04,275,1695711600"; 
-   d="scan'208";a="13789026"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Dec 2023 01:13:44 -0800
+   d="scan'208";a="1942499"
+Received: from orviesa001.jf.intel.com ([10.64.159.141])
+  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Dec 2023 01:15:33 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10923"; a="803208081"
 X-IronPort-AV: E=Sophos;i="6.04,275,1695711600"; 
-   d="scan'208";a="803208081"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by orsmga008.jf.intel.com with ESMTP; 14 Dec 2023 01:13:23 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1rDhmS-000LqJ-2P;
-        Thu, 14 Dec 2023 09:13:20 +0000
-Date:   Thu, 14 Dec 2023 17:13:10 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Michael Ellerman <mpe@ellerman.id.au>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: drivers/net/ethernet/8390/wd.c:427:22: sparse: sparse: cast to
- restricted __le16
-Message-ID: <202312141751.nTLz3mXr-lkp@intel.com>
+   d="scan'208";a="22322797"
+Received: from ahunter6-mobl1.ger.corp.intel.com (HELO [10.0.2.15]) ([10.252.48.119])
+  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Dec 2023 01:15:28 -0800
+Message-ID: <bceac981-6174-414b-810b-5354e01830a3@intel.com>
+Date:   Thu, 14 Dec 2023 11:15:22 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] mmc: rpmb: do not force a retune before RPMB switch
+To:     "Jorge Ramirez-Ortiz, Foundries" <jorge@foundries.io>
+Cc:     Avri Altman <Avri.Altman@wdc.com>,
+        "ulf.hansson@linaro.org" <ulf.hansson@linaro.org>,
+        "christian.loehle@arm.com" <christian.loehle@arm.com>,
+        "jinpu.wang@ionos.com" <jinpu.wang@ionos.com>,
+        "axboe@kernel.dk" <axboe@kernel.dk>,
+        "beanhuo@micron.com" <beanhuo@micron.com>,
+        "yibin.ding@unisoc.com" <yibin.ding@unisoc.com>,
+        "victor.shih@genesyslogic.com.tw" <victor.shih@genesyslogic.com.tw>,
+        "asuk4.q@gmail.com" <asuk4.q@gmail.com>,
+        "hkallweit1@gmail.com" <hkallweit1@gmail.com>,
+        "yangyingliang@huawei.com" <yangyingliang@huawei.com>,
+        "yebin10@huawei.com" <yebin10@huawei.com>,
+        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20231204150111.3320071-1-jorge@foundries.io>
+ <f83933d3-6426-425c-903e-abbd2691e84a@intel.com>
+ <DM6PR04MB6575A30D162378E82B4D7DDEFC84A@DM6PR04MB6575.namprd04.prod.outlook.com>
+ <ZXBGTxS7sUSILtLs@trax> <ZXbBhjZIn5sj6EYO@trax>
+ <7443a730-411a-4dd3-b911-241356493516@intel.com> <ZXbtS9KKQY+vk7Mq@trax>
+ <a0eb3547-9bdc-40e0-8861-1d8beec50a78@intel.com> <ZXclVpvpx0sV2Hcn@trax>
+Content-Language: en-US
+From:   Adrian Hunter <adrian.hunter@intel.com>
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
+ Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+In-Reply-To: <ZXclVpvpx0sV2Hcn@trax>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
@@ -62,372 +81,285 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   5bd7ef53ffe5ca580e93e74eb8c81ed191ddc4bd
-commit: 164af597ce945751e2dcd53d0a86e84203a6d117 powerpc/Makefile: Use cflags-y/aflags-y for setting endian options
-date:   7 years ago
-config: powerpc-randconfig-r121-20231107 (https://download.01.org/0day-ci/archive/20231214/202312141751.nTLz3mXr-lkp@intel.com/config)
-compiler: powerpc-linux-gcc (GCC) 13.2.0
-reproduce: (https://download.01.org/0day-ci/archive/20231214/202312141751.nTLz3mXr-lkp@intel.com/reproduce)
+On 11/12/23 17:05, Jorge Ramirez-Ortiz, Foundries wrote:
+> On 11/12/23 13:32:57, Adrian Hunter wrote:
+>> On 11/12/23 13:06, Jorge Ramirez-Ortiz, Foundries wrote:
+>>> On 11/12/23 12:25:19, Adrian Hunter wrote:
+>>>> On 11/12/23 10:00, Jorge Ramirez-Ortiz, Foundries wrote:
+>>>>> On 06/12/23 11:00:47, Jorge Ramirez-Ortiz, Foundries wrote:
+>>>>>> On 06/12/23 07:02:43, Avri Altman wrote:
+>>>>>>>>
+>>>>>>>> On 4/12/23 17:01, Jorge Ramirez-Ortiz wrote:
+>>>>>>>>> Requesting a retune before switching to the RPMB partition has been
+>>>>>>>>> observed to cause CRC errors on the RPMB reads (-EILSEQ).
+>>>>>>>>
+>>>>>>>> There are still 2 concerns:
+>>>>>>>> 1) We don't really know the root cause.  Have you determined if here are
+>>>>>>>> CRC errors in the main partition also?
+>>>>>>
+>>>>>> right, and I don't disagree with that.
+>>>>>>
+>>>>>> As a test I created a 4GB file from /dev/random which I then copied
+>>>>>> several times (dd if= ....)
+>>>>>>
+>>>>>> root@uz3cg-dwg-sec:/sys/kernel/debug/mmc0# cat err_stats
+>>>>>> # Command Timeout Occurred:      0
+>>>>>> # Command CRC Errors Occurred:   0
+>>>>>> # Data Timeout Occurred:         0
+>>>>>> # Data CRC Errors Occurred:      0
+>>>>>> # Auto-Cmd Error Occurred:       0
+>>>>>> # ADMA Error Occurred:   0
+>>>>>> # Tuning Error Occurred:         0
+>>>>>> # CMDQ RED Errors:       0
+>>>>>> # CMDQ GCE Errors:       0
+>>>>>> # CMDQ ICCE Errors:      0
+>>>>>> # Request Timedout:      0
+>>>>>> # CMDQ Request Timedout:         0
+>>>>>> # ICE Config Errors:     0
+>>>>>> # Controller Timedout errors:    0
+>>>>>> # Unexpected IRQ errors:         0
+>>>>>>
+>>>>>> However as soon as I access RPMB and fails (it takes just a few tries) I see:
+>>>>>>
+>>>>>> I/TC: RPMB: Using generated key
+>>>>>> [   86.902118] sdhci-arasan ff160000.mmc: __mmc_blk_ioctl_cmd: data error -84
+>>>>>> E/TC:? 0
+>>>>>> E/TC:? 0 TA panicked with code 0xffff0000
+>>>>>> E/LD:  Status of TA 22250a54-0bf1-48fe-8002-7b20f1c9c9b1
+>>>>>> E/LD:   arch: aarch64
+>>>>>> E/LD:  region  0: va 0xc0004000 pa 0x7e200000 size 0x002000 flags rw-s (ldelf)
+>>>>>> E/LD:  region  1: va 0xc0006000 pa 0x7e202000 size 0x008000 flags r-xs (ldelf)
+>>>>>> E/LD:  region  2: va 0xc000e000 pa 0x7e20a000 size 0x001000 flags rw-s (ldelf)
+>>>>>> E/LD:  region  3: va 0xc000f000 pa 0x7e20b000 size 0x004000 flags rw-s (ldelf)
+>>>>>> E/LD:  region  4: va 0xc0013000 pa 0x7e20f000 size 0x001000 flags r--s
+>>>>>> E/LD:  region  5: va 0xc0014000 pa 0x7e22c000 size 0x005000 flags rw-s (stack)
+>>>>>> E/LD:  region  6: va 0xc0019000 pa 0x818ea9ba8 size 0x002000 flags rw-- (param)
+>>>>>> E/LD:  region  7: va 0xc001b000 pa 0x818e97ba8 size 0x001000 flags rw-- (param)
+>>>>>> E/LD:  region  8: va 0xc004f000 pa 0x00001000 size 0x014000 flags r-xs [0]
+>>>>>> E/LD:  region  9: va 0xc0063000 pa 0x00015000 size 0x008000 flags rw-s [0]
+>>>>>> E/LD:   [0] 22250a54-0bf1-48fe-8002-7b20f1c9c9b1 @ 0xc004f000
+>>>>>> E/LD:  Call stack:
+>>>>>> E/LD:   0xc0051a14
+>>>>>> E/LD:   0xc004f31c
+>>>>>> E/LD:   0xc0052d40
+>>>>>> E/LD:   0xc004f624
+>>>>>>
+>>>>>> root@uz3cg-dwg-sec:/var/rootdirs/home/fio# cat /sys/kernel/debug/mmc0/err_stats
+>>>>>> # Command Timeout Occurred:      0
+>>>>>> # Command CRC Errors Occurred:   0
+>>>>>> # Data Timeout Occurred:         0
+>>>>>> # Data CRC Errors Occurred:      1
+>>>>>> # Auto-Cmd Error Occurred:       0
+>>>>>> # ADMA Error Occurred:   0
+>>>>>> # Tuning Error Occurred:         0
+>>>>>> # CMDQ RED Errors:       0
+>>>>>> # CMDQ GCE Errors:       0
+>>>>>> # CMDQ ICCE Errors:      0
+>>>>>> # Request Timedout:      0
+>>>>>> # CMDQ Request Timedout:         0
+>>>>>> # ICE Config Errors:     0
+>>>>>> # Controller Timedout errors:    0
+>>>>>> # Unexpected IRQ errors:         0
+>>>>>>
+>>>>>>>> 2) Forcing this on everyone
+>>>>>>>>
+>>>>>>>> The original idea was that because re-tuning cannot be done in RPMB, the
+>>>>>>>> need to re-rune in RPMB could be avoided by always re-tuning before
+>>>>>>>> switching to RPMB and then switching straight back. IIRC re-tuning should
+>>>>>>>> guarantee at least 4MB more I/O without issue.
+>>>>>>> Performance is hardly an issue in the context of RPMB access -
+>>>>>>> For most cases it’s a single frame.
+>>>>>>
+>>>>>> Yes, the security use case typically stores hashes, variables
+>>>>>> (bootcount, upgrade_available, versions, that sort of thing) and
+>>>>>> certificates in RPMB.
+>>>>>>
+>>>>>> Since you mentioned, I am seeing that tuning before switching to RPMB
+>>>>>> has an impact on performance. As a practical test, just reading a 6 byte
+>>>>>> variable incurs in 50ms penalty in kernel space due to the need to
+>>>>>> retune 5 times. Not great since the request is coming from a Trusted
+>>>>>> Application via OP-TEE through the supplicant meaning this TEE thread
+>>>>>> (they are statically allocated CFG_NUM_THREADS) will be reserved for
+>>>>>> quite a bit of time.
+>>>>>>
+>>>>>> Roughly:
+>>>>>> TA --> OP-TEE (core) --> TEE-supplicant --> Kernel (>50ms) --> OP-TEE --> TA
+>>>>>
+>>>>> To add more detail to the timing above, when using RPMB, OP-TEE stores
+>>>>> the secure filesystem on RPMB as well, so accessing one of the variables
+>>>>> stored in the filesystem consists on a number (~5) of individual RPMB
+>>>>> requests (each one forcing a retune, each retune taking around 10ms).
+>>>>>
+>>>>> BTW, I also tried delaying the timing between those consecutive retunes
+>>>>> (up to 1 second), but the issue still persisted.
+>>>>>
+>>>>>>
+>>>>>> Adrian, I couldn't find the original performance justification for
+>>>>>> enabling this feature globally. At which point do you think it becomes
+>>>>>> beneficial to retune before accessing RPMB?
+>>>>>
+>>>>> How should we proceed with this patch then? can it be merged as I
+>>>>> proposed? should I rewrite it differently? not sure what is next
+>>>>
+>>>> It would be good to try to determine if the error happens when the
+>>>> switch command comes immediately after tuning.  For example, add
+>>>> a delay after tuning and see if that makes any difference. e.g.
+>>>>
+>>>> diff --git a/drivers/mmc/host/sdhci.c b/drivers/mmc/host/sdhci.c
+>>>> index c79f73459915..6b168659282a 100644
+>>>> --- a/drivers/mmc/host/sdhci.c
+>>>> +++ b/drivers/mmc/host/sdhci.c
+>>>> @@ -2867,8 +2867,10 @@ int __sdhci_execute_tuning(struct sdhci_host *host, u32 opcode)
+>>>>
+>>>>  		ctrl = sdhci_readw(host, SDHCI_HOST_CONTROL2);
+>>>>  		if (!(ctrl & SDHCI_CTRL_EXEC_TUNING)) {
+>>>> -			if (ctrl & SDHCI_CTRL_TUNED_CLK)
+>>>> +			if (ctrl & SDHCI_CTRL_TUNED_CLK) {
+>>>> +				msleep(10);
+>>>>  				return 0; /* Success! */
+>>>> +			}
+>>>>  			break;
+>>>>  		}
+>>>>
+>>>>
+>>>
+>>> Thanks Adrian.
+>>>
+>>> The issue sill triggers (in this case on the last but one access to
+>>> retrieve the 6 byte variable).
+>>>
+>>> --- a/drivers/mmc/host/sdhci.c
+>>> +++ b/drivers/mmc/host/sdhci.c
+>>> @@ -2781,6 +2781,7 @@ static int __sdhci_execute_tuning(struct sdhci_host *host, u32 opcode)
+>>>          * Issue opcode repeatedly till Execute Tuning is set to 0 or the number
+>>>          * of loops reaches tuning loop count.
+>>>          */
+>>> + printk(KERN_ERR "tune starts[loop %d]\n", host->tuning_loop_count);
+>>>         for (i = 0; i < host->tuning_loop_count; i++) {
+>>>                 u16 ctrl;
+>>>
+>>> @@ -2799,8 +2800,11 @@ static int __sdhci_execute_tuning(struct sdhci_host *host, u32 opcode)
+>>>
+>>>                 ctrl = sdhci_readw(host, SDHCI_HOST_CONTROL2);
+>>>                 if (!(ctrl & SDHCI_CTRL_EXEC_TUNING)) {
+>>> -                   if (ctrl & SDHCI_CTRL_TUNED_CLK)
+>>> -                           return 0; /* Success! */
+>>> +                 if (ctrl & SDHCI_CTRL_TUNED_CLK) {
+>>> +                         printk(KERN_ERR "tune success[%d]\n", i);
+>>> +                         msleep(10);
+>>> +                         return 0; /* Success! */
+>>> +                 }
+>>>                         break;
+>>>                 }
+>>>
+>>>
+>>> [  164.919090] tune starts[loop 40]
+>>> [  164.923152] tune success[39]
+>>> [  164.952106] tune starts[loop 40]
+>>> [  164.956611] tune success[39]
+>>> [  165.084402] tune starts[loop 40]
+>>> [  165.089350] tune success[39]
+>>> [  165.116491] tune starts[loop 40]
+>>> [  165.120806] tune success[39]
+>>> [  165.145016] sdhci-arasan ff160000.mmc: __mmc_blk_ioctl_cmd: data error -84
+>>> E/TC:? 0
+>>> E/TC:? 0 TA panicked with code 0xffff0000
+>>> E/LD:  Status of TA 22250a54-0bf1-48fe-8002-7b20f1c9c9b1
+>>> E/LD:   arch: aarch64
+>>> E/LD:  region  0: va 0xc0004000 pa 0x7e200000 size 0x002000 flags rw-s (ldelf)
+>>> E/LD:  region  1: va 0xc0006000 pa 0x7e202000 size 0x008000 flags r-xs (ldelf)
+>>> E/LD:  region  2: va 0xc000e000 pa 0x7e20a000 size 0x001000 flags rw-s (ldelf)
+>>> E/LD:  region  3: va 0xc000f000 pa 0x7e20b000 size 0x004000 flags rw-s (ldelf)
+>>> E/LD:  region  4: va 0xc0013000 pa 0x7e20f000 size 0x001000 flags r--s
+>>> E/LD:  region  5: va 0xc0014000 pa 0x7e22c000 size 0x005000 flags rw-s (stack)
+>>> E/LD:  region  6: va 0xc0019000 pa 0x818ac38e8 size 0x001000 flags rw-- (param)
+>>> E/LD:  region  7: va 0xc001a000 pa 0x818ac36e8 size 0x001000 flags rw-- (param)
+>>> E/LD:  region  8: va 0xc0022000 pa 0x00001000 size 0x014000 flags r-xs [0]
+>>> E/LD:  region  9: va 0xc0036000 pa 0x00015000 size 0x008000 flags rw-s [0]
+>>> E/LD:   [0] 22250a54-0bf1-48fe-8002-7b20f1c9c9b1 @ 0xc0022000
+>>> E/LD:  Call stack:
+>>> E/LD:   0xc0024e58
+>>> E/LD:   0xc0022388
+>>> E/LD:   0xc0025d40
+>>> E/LD:   0xc0022624
+>>> [  166.119598] tune starts[loop 40]
+>>> [  166.125700] tune success[39]
+>>
+>> It might make a difference if there is another command before the
+>> switch command, e.g. add a CMD13 (could keep the tune print to tell
+>> that the CMD13 comes after re-tuning)
+>>
+>> diff --git a/drivers/mmc/core/block.c b/drivers/mmc/core/block.c
+>> index 892e74e611a0..3265049f4132 100644
+>> --- a/drivers/mmc/core/block.c
+>> +++ b/drivers/mmc/core/block.c
+>> @@ -875,6 +875,7 @@ static int mmc_blk_part_switch_pre(struct mmc_card *card,
+>>  				   unsigned int part_type)
+>>  {
+>>  	int ret = 0;
+>> +	u32 status;
+>>
+>>  	if (part_type == EXT_CSD_PART_CONFIG_ACC_RPMB) {
+>>  		if (card->ext_csd.cmdq_en) {
+>> @@ -883,6 +884,9 @@ static int mmc_blk_part_switch_pre(struct mmc_card *card,
+>>  				return ret;
+>>  		}
+>>  		mmc_retune_pause(card->host);
+>> +		ret = mmc_send_status(card, &status);
+>> +		pr_info("%s: %s: status %#x, ret %d\n", mmc_hostname(card->host), __func__, status, ret);
+>> +		ret = 0;
+>>  	}
+>>
+>>  	return ret;
+>>
+>>
+>>
+>> And another thing to try is SDHCI_QUIRK2_TUNING_WORK_AROUND
+>>
+> 
+> I run it in a loop with all the proposed changes and after 6 or 7 seconds the error triggered:
+> 
+> $ while true; do if ! read_rpmb variable ;then exit 0; fi; done
+> [....]
+> 
+> 
+> [  146.686482] ldts: mmc0: mmc_blk_part_switch_pre: status 0x900, ret 0
+> [  146.699092] ldts: tune starts[loop 40]
+> [  146.704032] ldts: tune success[39]
+> [  146.726442] ldts: mmc0: mmc_blk_part_switch_pre: status 0x900, ret 0
+> [  146.745891] ldts: tune starts[loop 40]
+> [  146.750858] ldts: tune success[39]
+> [  146.774506] ldts: mmc0: mmc_blk_part_switch_pre: status 0x900, ret 0
+> [  146.787191] ldts: tune starts[loop 40]
+> [  146.792087] ldts: tune success[39]
+> [  146.814544] ldts: mmc0: mmc_blk_part_switch_pre: status 0x900, ret 0
+> [  146.826383] ldts: tune starts[loop 40]
+> [  146.830942] ldts: tune success[39]
+> [  146.854500] ldts: mmc0: mmc_blk_part_switch_pre: status 0x900, ret 0
+> [  146.863421] sdhci-arasan ff160000.mmc: __mmc_blk_ioctl_cmd: data error -84
+> E/TC:? 0
+> E/TC:? 0 TA panicked with code 0xffff0000
+> E/LD:  Status of TA 22250a54-0bf1-48fe-8002-7b20f1c9c9b1
+> E/LD:   arch: aarch64
+> E/LD:  region  0: va 0xc0004000 pa 0x7e200000 size 0x002000 flags rw-s (ldelf)
+> E/LD:  region  1: va 0xc0006000 pa 0x7e202000 size 0x008000 flags r-xs (ldelf)
+> E/LD:  region  2: va 0xc000e000 pa 0x7e20a000 size 0x001000 flags rw-s (ldelf)
+> E/LD:  region  3: va 0xc000f000 pa 0x7e20b000 size 0x004000 flags rw-s (ldelf)
+> E/LD:  region  4: va 0xc0013000 pa 0x7e20f000 size 0x001000 flags r--s
+> E/LD:  region  5: va 0xc0014000 pa 0x7e22c000 size 0x005000 flags rw-s (stack)
+> E/LD:  region  6: va 0xc0019000 pa 0x818c17b48 size 0x001000 flags rw-- (param)
+> E/LD:  region  7: va 0xc001a000 pa 0x818c17d48 size 0x001000 flags rw-- (param)
+> E/LD:  region  8: va 0xc003c000 pa 0x00001000 size 0x014000 flags r-xs [0]
+> E/LD:  region  9: va 0xc0050000 pa 0x00015000 size 0x008000 flags rw-s [0]
+> E/LD:   [0] 22250a54-0bf1-48fe-8002-7b20f1c9c9b1 @ 0xc003c000
+> E/LD:  Call stack:
+> E/LD:   0xc003ea14
+> E/LD:   0xc003c31c
+> E/LD:   0xc003fd40
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202312141751.nTLz3mXr-lkp@intel.com/
 
-sparse warnings: (new ones prefixed by >>)
->> drivers/net/ethernet/8390/wd.c:427:22: sparse: sparse: cast to restricted __le16
-   In file included from include/linux/kernel.h:11,
-                    from include/linux/list.h:8,
-                    from include/linux/module.h:9,
-                    from drivers/net/ethernet/8390/wd.c:31:
-   include/linux/log2.h:22:1: warning: ignoring attribute 'noreturn' because it conflicts with attribute 'const' [-Wattributes]
-      22 | int ____ilog2_NaN(void);
-         | ^~~
-   drivers/net/ethernet/8390/wd.c:129:28: warning: no previous prototype for 'wd_probe' [-Wmissing-prototypes]
-     129 | struct net_device * __init wd_probe(int unit)
-         |                            ^~~~~~~~
---
->> drivers/net/ethernet/8390/smc-ultra.c:452:22: sparse: sparse: cast to restricted __le16
-   In file included from include/linux/kernel.h:11,
-                    from include/linux/list.h:8,
-                    from include/linux/module.h:9,
-                    from drivers/net/ethernet/8390/smc-ultra.c:60:
-   include/linux/log2.h:22:1: warning: ignoring attribute 'noreturn' because it conflicts with attribute 'const' [-Wattributes]
-      22 | int ____ilog2_NaN(void);
-         | ^~~
---
-   drivers/scsi/be2iscsi/be_main.c:145:1: sparse: sparse: symbol 'beiscsi_log_enable_disp' was not declared. Should it be static?
-   drivers/scsi/be2iscsi/be_main.c:145:1: sparse: sparse: symbol 'dev_attr_beiscsi_log_enable' was not declared. Should it be static?
-   drivers/scsi/be2iscsi/be_main.c:155:1: sparse: sparse: symbol 'dev_attr_beiscsi_drvr_ver' was not declared. Should it be static?
-   drivers/scsi/be2iscsi/be_main.c:156:1: sparse: sparse: symbol 'dev_attr_beiscsi_adapter_family' was not declared. Should it be static?
-   drivers/scsi/be2iscsi/be_main.c:157:1: sparse: sparse: symbol 'dev_attr_beiscsi_fw_ver' was not declared. Should it be static?
-   drivers/scsi/be2iscsi/be_main.c:158:1: sparse: sparse: symbol 'dev_attr_beiscsi_phys_port' was not declared. Should it be static?
-   drivers/scsi/be2iscsi/be_main.c:159:1: sparse: sparse: symbol 'dev_attr_beiscsi_active_session_count' was not declared. Should it be static?
-   drivers/scsi/be2iscsi/be_main.c:161:1: sparse: sparse: symbol 'dev_attr_beiscsi_free_session_count' was not declared. Should it be static?
-   drivers/scsi/be2iscsi/be_main.c:163:25: sparse: sparse: symbol 'beiscsi_attrs' was not declared. Should it be static?
-   drivers/scsi/be2iscsi/be_main.c:1375:29: sparse: sparse: cast to restricted __be16
-   drivers/scsi/be2iscsi/be_main.c:1401:21: sparse: sparse: incorrect type in assignment (different base types) @@     expected restricted __be16 [usertype] t2wait @@     got int @@
-   drivers/scsi/be2iscsi/be_main.c:1401:21: sparse:     expected restricted __be16 [usertype] t2wait
-   drivers/scsi/be2iscsi/be_main.c:1401:21: sparse:     got int
-   drivers/scsi/be2iscsi/be_main.c:1982:41: sparse: sparse: cast to restricted __be16
-   drivers/scsi/be2iscsi/be_main.c:2052:28: sparse: sparse: cast to restricted __le32
-   drivers/scsi/be2iscsi/be_main.c:2068:36: sparse: sparse: cast to restricted __le32
-   drivers/scsi/be2iscsi/be_main.c:4758:19: sparse: sparse: cast from restricted itt_t
-   drivers/scsi/be2iscsi/be_main.c:4791:34: sparse: sparse: cast to restricted itt_t
-   drivers/scsi/be2iscsi/be_main.c:4891:16: sparse: sparse: cast to restricted itt_t
-   drivers/scsi/be2iscsi/be_main.c:4891:16: sparse: sparse: cast from restricted __be32
-   drivers/scsi/be2iscsi/be_main.c:4947:9: sparse: sparse: incorrect type in argument 5 (different base types) @@     expected unsigned int [usertype] value @@     got restricted __be16 [usertype] @@
-   drivers/scsi/be2iscsi/be_main.c:4947:9: sparse:     expected unsigned int [usertype] value
-   drivers/scsi/be2iscsi/be_main.c:4947:9: sparse:     got restricted __be16 [usertype]
-   drivers/scsi/be2iscsi/be_main.c:4918:5: sparse: sparse: symbol 'beiscsi_iotask_v2' was not declared. Should it be static?
-   drivers/scsi/be2iscsi/be_main.c:5007:9: sparse: sparse: incorrect type in argument 5 (different base types) @@     expected unsigned int [usertype] value @@     got restricted __be16 [usertype] @@
-   drivers/scsi/be2iscsi/be_main.c:5007:9: sparse:     expected unsigned int [usertype] value
-   drivers/scsi/be2iscsi/be_main.c:5007:9: sparse:     got restricted __be16 [usertype]
-   drivers/scsi/be2iscsi/be_main.c:5102:30: sparse: sparse: restricted __be32 degrades to integer
-   drivers/scsi/be2iscsi/be_main.c:5178:17: sparse: sparse: cast to restricted __be32
-   drivers/scsi/be2iscsi/be_main.c:5178:17: sparse: sparse: cast from restricted itt_t
-   drivers/scsi/be2iscsi/be_main.c:5280:6: sparse: sparse: symbol 'beiscsi_hba_attrs_init' was not declared. Should it be static?
-   drivers/scsi/be2iscsi/be_main.c: note: in included file (through drivers/scsi/be2iscsi/be_main.h):
->> drivers/scsi/be2iscsi/be.h:209:21: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned int [usertype] @@     got restricted __le32 [usertype] @@
-   drivers/scsi/be2iscsi/be.h:209:21: sparse:     expected unsigned int [usertype]
-   drivers/scsi/be2iscsi/be.h:209:21: sparse:     got restricted __le32 [usertype]
->> drivers/scsi/be2iscsi/be.h:209:21: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned int [usertype] @@     got restricted __le32 [usertype] @@
-   drivers/scsi/be2iscsi/be.h:209:21: sparse:     expected unsigned int [usertype]
-   drivers/scsi/be2iscsi/be.h:209:21: sparse:     got restricted __le32 [usertype]
->> drivers/scsi/be2iscsi/be.h:209:21: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned int [usertype] @@     got restricted __le32 [usertype] @@
-   drivers/scsi/be2iscsi/be.h:209:21: sparse:     expected unsigned int [usertype]
-   drivers/scsi/be2iscsi/be.h:209:21: sparse:     got restricted __le32 [usertype]
->> drivers/scsi/be2iscsi/be.h:209:21: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned int [usertype] @@     got restricted __le32 [usertype] @@
-   drivers/scsi/be2iscsi/be.h:209:21: sparse:     expected unsigned int [usertype]
-   drivers/scsi/be2iscsi/be.h:209:21: sparse:     got restricted __le32 [usertype]
-   In file included from include/linux/kernel.h:11,
-                    from include/linux/list.h:8,
-                    from include/linux/mutex.h:14,
-                    from include/linux/notifier.h:13,
-                    from include/linux/reboot.h:5,
-                    from drivers/scsi/be2iscsi/be_main.c:20:
-   include/linux/log2.h:22:1: warning: ignoring attribute 'noreturn' because it conflicts with attribute 'const' [-Wattributes]
-      22 | int ____ilog2_NaN(void);
-         | ^~~
-   drivers/scsi/be2iscsi/be_main.c:65:1: warning: no previous prototype for 'beiscsi_log_enable_disp' [-Wmissing-prototypes]
-      65 | beiscsi_##_name##_disp(struct device *dev,60-      | ^~~~~~~~
-   drivers/scsi/be2iscsi/be_main.c:134:1: note: in expansion of macro 'beiscsi_disp_param'
-     134 | beiscsi_disp_param(_name)63-      | ^~~~~~~~~~~~~~~~~~
-   drivers/scsi/be2iscsi/be_main.c:145:1: note: in expansion of macro 'BEISCSI_RW_ATTR'
-     145 | BEISCSI_RW_ATTR(log_enable, 0x00,
-         | ^~~~~~~~~~~~~~~
-   drivers/scsi/be2iscsi/be_main.c: In function 'beiscsi_log_enable_disp':
-   drivers/scsi/be2iscsi/be_main.c:70:18: warning: variable 'param_val' set but not used [-Wunused-but-set-variable]
-      70 |         uint32_t param_val = 0; 70-      |                  ^~~~~~~~~
-   drivers/scsi/be2iscsi/be_main.c:134:1: note: in expansion of macro 'beiscsi_disp_param'
-     134 | beiscsi_disp_param(_name)73-      | ^~~~~~~~~~~~~~~~~~
-   drivers/scsi/be2iscsi/be_main.c:145:1: note: in expansion of macro 'BEISCSI_RW_ATTR'
-     145 | BEISCSI_RW_ATTR(log_enable, 0x00,
-         | ^~~~~~~~~~~~~~~
-   drivers/scsi/be2iscsi/be_main.c: At top level:
-   drivers/scsi/be2iscsi/be_main.c:78:1: warning: no previous prototype for 'beiscsi_log_enable_change' [-Wmissing-prototypes]
-      78 | beiscsi_##_name##_change(struct beiscsi_hba *phba, uint32_t val)80-      | ^~~~~~~~
-   drivers/scsi/be2iscsi/be_main.c:135:1: note: in expansion of macro 'beiscsi_change_param'
-     135 | beiscsi_change_param(_name, _minval, _maxval, _defval)83-      | ^~~~~~~~~~~~~~~~~~~~
-   drivers/scsi/be2iscsi/be_main.c:145:1: note: in expansion of macro 'BEISCSI_RW_ATTR'
-     145 | BEISCSI_RW_ATTR(log_enable, 0x00,
-         | ^~~~~~~~~~~~~~~
-   drivers/scsi/be2iscsi/be_main.c: In function 'beiscsi_log_enable_change':
-   drivers/scsi/be2iscsi/be_main.c:80:17: warning: comparison of unsigned expression in '>= 0' is always true [-Wtype-limits]
-      80 |         if (val >= _minval && val <= _maxval) {90-      |                 ^~
-   drivers/scsi/be2iscsi/be_main.c:135:1: note: in expansion of macro 'beiscsi_change_param'
-     135 | beiscsi_change_param(_name, _minval, _maxval, _defval)93-      | ^~~~~~~~~~~~~~~~~~~~
-   drivers/scsi/be2iscsi/be_main.c:145:1: note: in expansion of macro 'BEISCSI_RW_ATTR'
-     145 | BEISCSI_RW_ATTR(log_enable, 0x00,
-         | ^~~~~~~~~~~~~~~
-   drivers/scsi/be2iscsi/be_main.c: At top level:
-   drivers/scsi/be2iscsi/be_main.c:97:1: warning: no previous prototype for 'beiscsi_log_enable_store' [-Wmissing-prototypes]
-      97 | beiscsi_##_name##_store(struct device *dev,100-      | ^~~~~~~~
-   drivers/scsi/be2iscsi/be_main.c:136:1: note: in expansion of macro 'beiscsi_store_param'
-     136 | beiscsi_store_param(_name)103-      | ^~~~~~~~~~~~~~~~~~~
-   drivers/scsi/be2iscsi/be_main.c:145:1: note: in expansion of macro 'BEISCSI_RW_ATTR'
-     145 | BEISCSI_RW_ATTR(log_enable, 0x00,
-         | ^~~~~~~~~~~~~~~
-   drivers/scsi/be2iscsi/be_main.c:116:1: warning: no previous prototype for 'beiscsi_log_enable_init' [-Wmissing-prototypes]
-     116 | beiscsi_##_name##_init(struct beiscsi_hba *phba, uint32_t val) 109-      | ^~~~~~~~
-   drivers/scsi/be2iscsi/be_main.c:137:1: note: in expansion of macro 'beiscsi_init_param'
-     137 | beiscsi_init_param(_name, _minval, _maxval, _defval)112-      | ^~~~~~~~~~~~~~~~~~
-   drivers/scsi/be2iscsi/be_main.c:145:1: note: in expansion of macro 'BEISCSI_RW_ATTR'
-     145 | BEISCSI_RW_ATTR(log_enable, 0x00,
-         | ^~~~~~~~~~~~~~~
-   drivers/scsi/be2iscsi/be_main.c: In function 'beiscsi_log_enable_init':
-   drivers/scsi/be2iscsi/be_main.c:118:17: warning: comparison of unsigned expression in '>= 0' is always true [-Wtype-limits]
-     118 |         if (val >= _minval && val <= _maxval) {119-      |                 ^~
-   drivers/scsi/be2iscsi/be_main.c:137:1: note: in expansion of macro 'beiscsi_init_param'
-     137 | beiscsi_init_param(_name, _minval, _maxval, _defval)122-      | ^~~~~~~~~~~~~~~~~~
-   drivers/scsi/be2iscsi/be_main.c:145:1: note: in expansion of macro 'BEISCSI_RW_ATTR'
-     145 | BEISCSI_RW_ATTR(log_enable, 0x00,
-         | ^~~~~~~~~~~~~~~
-   drivers/scsi/be2iscsi/be_main.c: In function 'be_isr':
-   drivers/scsi/be2iscsi/be_main.c:926:30: warning: variable 'index' set but not used [-Wunused-but-set-variable]
-     926 |         unsigned long flags, index;
-         |                              ^~~~~
-   drivers/scsi/be2iscsi/be_main.c: In function 'beiscsi_process_async_pdu':
-   drivers/scsi/be2iscsi/be_main.c:1112:37: warning: converting a packed 'struct pdu_base' pointer (alignment 1) to a 'struct iscsi_hdr' pointer (alignment 4) may result in an unaligned pointer value [-Waddress-of-packed-member]
-    1112 |                 login_hdr = (struct iscsi_hdr *)ppdu;
-         |                                     ^~~~~~~~~
-   In file included from drivers/scsi/be2iscsi/be_main.c:43:
-   drivers/scsi/be2iscsi/be_main.h:894:8: note: defined here
-     894 | struct pdu_base {
-         |        ^~~~~~~~
-   In file included from include/scsi/libiscsi.h:32,
-                    from drivers/scsi/be2iscsi/be_main.c:34:
-   include/scsi/iscsi_proto.h:87:8: note: defined here
-      87 | struct iscsi_hdr {
-         |        ^~~~~~~~~
-   drivers/scsi/be2iscsi/be_main.c:1126:44: warning: converting a packed 'struct pdu_base' pointer (alignment 1) to a 'struct iscsi_hdr' pointer (alignment 4) may result in an unaligned pointer value [-Waddress-of-packed-member]
-    1126 |         __iscsi_complete_pdu(conn, (struct iscsi_hdr *)ppdu, pbuffer, buf_len);
-         |                                            ^~~~~~~~~
-   drivers/scsi/be2iscsi/be_main.h:894:8: note: defined here
---
-   drivers/scsi/be2iscsi/be_cmds.c:27:32: sparse: sparse: Using plain integer as NULL pointer
-   drivers/scsi/be2iscsi/be_cmds.c:28:34: sparse: sparse: Using plain integer as NULL pointer
-   drivers/scsi/be2iscsi/be_cmds.c:29:34: sparse: sparse: Using plain integer as NULL pointer
-   drivers/scsi/be2iscsi/be_cmds.c:34:29: sparse: sparse: cast removes address space '<asn:2>' of expression
-   drivers/scsi/be2iscsi/be_cmds.c:35:31: sparse: sparse: cast removes address space '<asn:2>' of expression
-   drivers/scsi/be2iscsi/be_cmds.c:36:31: sparse: sparse: cast removes address space '<asn:2>' of expression
-   drivers/scsi/be2iscsi/be_cmds.c:37:25: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] <asn:2> *addr @@     got void * @@
-   drivers/scsi/be2iscsi/be_cmds.c:37:25: sparse:     expected void const volatile [noderef] <asn:2> *addr
-   drivers/scsi/be2iscsi/be_cmds.c:37:25: sparse:     got void *
-   drivers/scsi/be2iscsi/be_cmds.c:39:25: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void volatile [noderef] <asn:2> *addr @@     got void * @@
-   drivers/scsi/be2iscsi/be_cmds.c:39:25: sparse:     expected void volatile [noderef] <asn:2> *addr
-   drivers/scsi/be2iscsi/be_cmds.c:39:25: sparse:     got void *
-   drivers/scsi/be2iscsi/be_cmds.c:46:33: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] <asn:2> *addr @@     got void * @@
-   drivers/scsi/be2iscsi/be_cmds.c:46:33: sparse:     expected void const volatile [noderef] <asn:2> *addr
-   drivers/scsi/be2iscsi/be_cmds.c:46:33: sparse:     got void *
-   drivers/scsi/be2iscsi/be_cmds.c:56:28: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void volatile [noderef] <asn:2> *addr @@     got void * @@
-   drivers/scsi/be2iscsi/be_cmds.c:56:28: sparse:     expected void volatile [noderef] <asn:2> *addr
-   drivers/scsi/be2iscsi/be_cmds.c:56:28: sparse:     got void *
-   drivers/scsi/be2iscsi/be_cmds.c:57:28: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void volatile [noderef] <asn:2> *addr @@     got void * @@
-   drivers/scsi/be2iscsi/be_cmds.c:57:28: sparse:     expected void volatile [noderef] <asn:2> *addr
-   drivers/scsi/be2iscsi/be_cmds.c:57:28: sparse:     got void *
-   drivers/scsi/be2iscsi/be_cmds.c:60:25: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void volatile [noderef] <asn:2> *addr @@     got void * @@
-   drivers/scsi/be2iscsi/be_cmds.c:60:25: sparse:     expected void volatile [noderef] <asn:2> *addr
-   drivers/scsi/be2iscsi/be_cmds.c:60:25: sparse:     got void *
-   drivers/scsi/be2iscsi/be_cmds.c:67:33: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] <asn:2> *addr @@     got void * @@
-   drivers/scsi/be2iscsi/be_cmds.c:67:33: sparse:     expected void const volatile [noderef] <asn:2> *addr
-   drivers/scsi/be2iscsi/be_cmds.c:67:33: sparse:     got void *
-   drivers/scsi/be2iscsi/be_cmds.c:81:23: sparse: sparse: Using plain integer as NULL pointer
-   drivers/scsi/be2iscsi/be_cmds.c:85:20: sparse: sparse: cast removes address space '<asn:2>' of expression
-   drivers/scsi/be2iscsi/be_cmds.c:89:33: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] <asn:2> *addr @@     got void * @@
-   drivers/scsi/be2iscsi/be_cmds.c:89:33: sparse:     expected void const volatile [noderef] <asn:2> *addr
-   drivers/scsi/be2iscsi/be_cmds.c:89:33: sparse:     got void *
-   drivers/scsi/be2iscsi/be_cmds.c:107:14: sparse: sparse: symbol 'alloc_mcc_tag' was not declared. Should it be static?
-   drivers/scsi/be2iscsi/be_cmds.c:350:24: sparse: sparse: cast to restricted __le32
-   drivers/scsi/be2iscsi/be_cmds.c:737:33: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned int [usertype] request_length @@     got restricted __le32 [usertype] @@
-   drivers/scsi/be2iscsi/be_cmds.c:737:33: sparse:     expected unsigned int [usertype] request_length
-   drivers/scsi/be2iscsi/be_cmds.c:737:33: sparse:     got restricted __le32 [usertype]
-   drivers/scsi/be2iscsi/be_cmds.c:749:29: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned int [usertype] lo @@     got restricted __le32 [usertype] @@
-   drivers/scsi/be2iscsi/be_cmds.c:749:29: sparse:     expected unsigned int [usertype] lo
-   drivers/scsi/be2iscsi/be_cmds.c:749:29: sparse:     got restricted __le32 [usertype]
-   drivers/scsi/be2iscsi/be_cmds.c:750:29: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned int [usertype] hi @@     got restricted __le32 [usertype] @@
-   drivers/scsi/be2iscsi/be_cmds.c:750:29: sparse:     expected unsigned int [usertype] hi
-   drivers/scsi/be2iscsi/be_cmds.c:750:29: sparse:     got restricted __le32 [usertype]
-   drivers/scsi/be2iscsi/be_cmds.c:799:24: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned short [usertype] num_pages @@     got restricted __le16 [usertype] @@
-   drivers/scsi/be2iscsi/be_cmds.c:799:24: sparse:     expected unsigned short [usertype] num_pages
-   drivers/scsi/be2iscsi/be_cmds.c:799:24: sparse:     got restricted __le16 [usertype]
-   drivers/scsi/be2iscsi/be_cmds.c:815:26: sparse: sparse: cast to restricted __le16
-   drivers/scsi/be2iscsi/be_cmds.c:923:24: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned short [usertype] num_pages @@     got restricted __le16 [usertype] @@
-   drivers/scsi/be2iscsi/be_cmds.c:923:24: sparse:     expected unsigned short [usertype] num_pages
-   drivers/scsi/be2iscsi/be_cmds.c:923:24: sparse:     got restricted __le16 [usertype]
-   drivers/scsi/be2iscsi/be_cmds.c:958:26: sparse: sparse: cast to restricted __le16
-   drivers/scsi/be2iscsi/be_cmds.c:1020:28: sparse: sparse: cast to restricted __le16
-   drivers/scsi/be2iscsi/be_cmds.c:1077:25: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned short [usertype] id @@     got restricted __le16 [usertype] @@
-   drivers/scsi/be2iscsi/be_cmds.c:1077:25: sparse:     expected unsigned short [usertype] id
-   drivers/scsi/be2iscsi/be_cmds.c:1077:25: sparse:     got restricted __le16 [usertype]
-   drivers/scsi/be2iscsi/be_cmds.c:1170:26: sparse: sparse: cast to restricted __le16
-   drivers/scsi/be2iscsi/be_cmds.c:1235:28: sparse: sparse: cast to restricted __le16
-   drivers/scsi/be2iscsi/be_cmds.c: note: in included file (through arch/powerpc/include/asm/book3s/32/pgtable.h, arch/powerpc/include/asm/book3s/pgtable.h, ...):
-   arch/powerpc/include/asm/io.h:175:1: sparse: sparse: dereference of noderef expression
-   arch/powerpc/include/asm/io.h:180:1: sparse: sparse: dereference of noderef expression
-   arch/powerpc/include/asm/io.h:175:1: sparse: sparse: dereference of noderef expression
-   arch/powerpc/include/asm/io.h:180:1: sparse: sparse: dereference of noderef expression
-   arch/powerpc/include/asm/io.h:180:1: sparse: sparse: dereference of noderef expression
-   arch/powerpc/include/asm/io.h:180:1: sparse: sparse: dereference of noderef expression
-   arch/powerpc/include/asm/io.h:175:1: sparse: sparse: dereference of noderef expression
-   arch/powerpc/include/asm/io.h:175:1: sparse: sparse: dereference of noderef expression
-   drivers/scsi/be2iscsi/be_cmds.c: note: in included file (through drivers/scsi/be2iscsi/be_main.h):
->> drivers/scsi/be2iscsi/be.h:209:21: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned int [usertype] @@     got restricted __le32 [usertype] @@
-   drivers/scsi/be2iscsi/be.h:209:21: sparse:     expected unsigned int [usertype]
-   drivers/scsi/be2iscsi/be.h:209:21: sparse:     got restricted __le32 [usertype]
->> drivers/scsi/be2iscsi/be.h:209:21: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned int [usertype] @@     got restricted __le32 [usertype] @@
-   drivers/scsi/be2iscsi/be.h:209:21: sparse:     expected unsigned int [usertype]
-   drivers/scsi/be2iscsi/be.h:209:21: sparse:     got restricted __le32 [usertype]
->> drivers/scsi/be2iscsi/be.h:209:21: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned int [usertype] @@     got restricted __le32 [usertype] @@
-   drivers/scsi/be2iscsi/be.h:209:21: sparse:     expected unsigned int [usertype]
-   drivers/scsi/be2iscsi/be.h:209:21: sparse:     got restricted __le32 [usertype]
->> drivers/scsi/be2iscsi/be.h:209:21: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned int [usertype] @@     got restricted __le32 [usertype] @@
-   drivers/scsi/be2iscsi/be.h:209:21: sparse:     expected unsigned int [usertype]
-   drivers/scsi/be2iscsi/be.h:209:21: sparse:     got restricted __le32 [usertype]
->> drivers/scsi/be2iscsi/be.h:209:21: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned int [usertype] @@     got restricted __le32 [usertype] @@
-   drivers/scsi/be2iscsi/be.h:209:21: sparse:     expected unsigned int [usertype]
-   drivers/scsi/be2iscsi/be.h:209:21: sparse:     got restricted __le32 [usertype]
->> drivers/scsi/be2iscsi/be.h:209:21: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned int [usertype] @@     got restricted __le32 [usertype] @@
-   drivers/scsi/be2iscsi/be.h:209:21: sparse:     expected unsigned int [usertype]
-   drivers/scsi/be2iscsi/be.h:209:21: sparse:     got restricted __le32 [usertype]
->> drivers/scsi/be2iscsi/be.h:209:21: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned int [usertype] @@     got restricted __le32 [usertype] @@
-   drivers/scsi/be2iscsi/be.h:209:21: sparse:     expected unsigned int [usertype]
-   drivers/scsi/be2iscsi/be.h:209:21: sparse:     got restricted __le32 [usertype]
->> drivers/scsi/be2iscsi/be.h:209:21: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned int [usertype] @@     got restricted __le32 [usertype] @@
-   drivers/scsi/be2iscsi/be.h:209:21: sparse:     expected unsigned int [usertype]
-   drivers/scsi/be2iscsi/be.h:209:21: sparse:     got restricted __le32 [usertype]
->> drivers/scsi/be2iscsi/be.h:209:21: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned int [usertype] @@     got restricted __le32 [usertype] @@
-   drivers/scsi/be2iscsi/be.h:209:21: sparse:     expected unsigned int [usertype]
-   drivers/scsi/be2iscsi/be.h:209:21: sparse:     got restricted __le32 [usertype]
-   In file included from include/linux/kernel.h:11,
-                    from include/asm-generic/bug.h:13,
-                    from arch/powerpc/include/asm/bug.h:127,
-                    from include/linux/bug.h:4,
-                    from include/linux/scatterlist.h:6,
-                    from include/scsi/scsi.h:9,
-                    from include/scsi/iscsi_proto.h:25,
-                    from drivers/scsi/be2iscsi/be_cmds.c:18:
-   include/linux/log2.h:22:1: warning: ignoring attribute 'noreturn' because it conflicts with attribute 'const' [-Wattributes]
-      22 | int ____ilog2_NaN(void);
-         | ^~~
-   drivers/scsi/be2iscsi/be_cmds.c:107:14: warning: no previous prototype for 'alloc_mcc_tag' [-Wmissing-prototypes]
-     107 | unsigned int alloc_mcc_tag(struct beiscsi_hba *phba)
-         |              ^~~~~~~~~~~~~
-   drivers/scsi/be2iscsi/be_cmds.c: In function 'beiscsi_cmd_eq_create':
-   drivers/scsi/be2iscsi/be_cmds.c:796:28: warning: taking address of packed member of 'struct be_cmd_req_eq_create' may result in an unaligned pointer value [-Waddress-of-packed-member]
-     796 |         be_cmd_hdr_prepare(&req->hdr, CMD_SUBSYSTEM_COMMON,
-         |                            ^~~~~~~~~
-   drivers/scsi/be2iscsi/be_cmds.c:811:38: warning: taking address of packed member of 'struct be_cmd_req_eq_create' may result in an unaligned pointer value [-Waddress-of-packed-member]
-     811 |         be_cmd_page_addrs_prepare(req->pages, ARRAY_SIZE(req->pages), q_mem);
-         |                                   ~~~^~~~~~~
-   drivers/scsi/be2iscsi/be_cmds.c: In function 'beiscsi_cmd_cq_create':
-   drivers/scsi/be2iscsi/be_cmds.c:920:28: warning: taking address of packed member of 'struct be_cmd_req_cq_create' may result in an unaligned pointer value [-Waddress-of-packed-member]
-     920 |         be_cmd_hdr_prepare(&req->hdr, CMD_SUBSYSTEM_COMMON,
-         |                            ^~~~~~~~~
-   drivers/scsi/be2iscsi/be_cmds.c:954:38: warning: taking address of packed member of 'struct be_cmd_req_cq_create' may result in an unaligned pointer value [-Waddress-of-packed-member]
-     954 |         be_cmd_page_addrs_prepare(req->pages, ARRAY_SIZE(req->pages), q_mem);
-         |                                   ~~~^~~~~~~
-   drivers/scsi/be2iscsi/be_cmds.c: In function 'beiscsi_cmd_mccq_create':
-   drivers/scsi/be2iscsi/be_cmds.c:998:28: warning: taking address of packed member of 'struct be_cmd_req_mcc_create_ext' may result in an unaligned pointer value [-Waddress-of-packed-member]
-     998 |         be_cmd_hdr_prepare(&req->hdr, CMD_SUBSYSTEM_COMMON,
-         |                            ^~~~~~~~~
-   drivers/scsi/be2iscsi/be_cmds.c:1015:38: warning: taking address of packed member of 'struct be_cmd_req_mcc_create_ext' may result in an unaligned pointer value [-Waddress-of-packed-member]
-    1015 |         be_cmd_page_addrs_prepare(req->pages, ARRAY_SIZE(req->pages), q_mem);
-         |                                   ~~~^~~~~~~
-   drivers/scsi/be2iscsi/be_cmds.c: In function 'beiscsi_cmd_q_destroy':
-   drivers/scsi/be2iscsi/be_cmds.c:1075:28: warning: taking address of packed member of 'struct be_cmd_req_q_destroy' may result in an unaligned pointer value [-Waddress-of-packed-member]
-    1075 |         be_cmd_hdr_prepare(&req->hdr, subsys, opcode, sizeof(*req));
-         |                            ^~~~~~~~~
-   drivers/scsi/be2iscsi/be_cmds.c: In function 'be_cmd_create_default_pdu_queue':
-   drivers/scsi/be2iscsi/be_cmds.c:1121:28: warning: taking address of packed member of 'struct be_defq_create_req' may result in an unaligned pointer value [-Waddress-of-packed-member]
-    1121 |         be_cmd_hdr_prepare(&req->hdr, CMD_SUBSYSTEM_ISCSI,
-         |                            ^~~~~~~~~
-   drivers/scsi/be2iscsi/be_cmds.c:1163:38: warning: taking address of packed member of 'struct be_defq_create_req' may result in an unaligned pointer value [-Waddress-of-packed-member]
-    1163 |         be_cmd_page_addrs_prepare(req->pages, ARRAY_SIZE(req->pages), q_mem);
-         |                                   ~~~^~~~~~~
-   drivers/scsi/be2iscsi/be_cmds.c: In function 'be_cmd_wrbq_create':
-   drivers/scsi/be2iscsi/be_cmds.c:1221:28: warning: taking address of packed member of 'struct be_wrbq_create_req' may result in an unaligned pointer value [-Waddress-of-packed-member]
-    1221 |         be_cmd_hdr_prepare(&req->hdr, CMD_SUBSYSTEM_ISCSI,
-         |                            ^~~~~~~~~
-   drivers/scsi/be2iscsi/be_cmds.c:1231:38: warning: taking address of packed member of 'struct be_wrbq_create_req' may result in an unaligned pointer value [-Waddress-of-packed-member]
-    1231 |         be_cmd_page_addrs_prepare(req->pages, ARRAY_SIZE(req->pages), q_mem);
-         |                                   ~~~^~~~~~~
-   drivers/scsi/be2iscsi/be_cmds.c: In function 'be_cmd_iscsi_post_template_hdr':
-   drivers/scsi/be2iscsi/be_cmds.c:1262:28: warning: taking address of packed member of 'struct be_post_template_pages_req' may result in an unaligned pointer value [-Waddress-of-packed-member]
-    1262 |         be_cmd_hdr_prepare(&req->hdr, CMD_SUBSYSTEM_COMMON,
-         |                            ^~~~~~~~~
-   drivers/scsi/be2iscsi/be_cmds.c:1268:38: warning: taking address of packed member of 'struct be_post_template_pages_req' may result in an unaligned pointer value [-Waddress-of-packed-member]
-    1268 |         be_cmd_page_addrs_prepare(req->pages, ARRAY_SIZE(req->pages), q_mem);
-         |                                   ~~~^~~~~~~
-   drivers/scsi/be2iscsi/be_cmds.c: In function 'be_cmd_iscsi_remove_template_hdr':
-   drivers/scsi/be2iscsi/be_cmds.c:1285:28: warning: taking address of packed member of 'struct be_remove_template_pages_req' may result in an unaligned pointer value [-Waddress-of-packed-member]
-    1285 |         be_cmd_hdr_prepare(&req->hdr, CMD_SUBSYSTEM_COMMON,
-         |                            ^~~~~~~~~
-   drivers/scsi/be2iscsi/be_cmds.c: In function 'be_cmd_iscsi_post_sgl_pages':
-   drivers/scsi/be2iscsi/be_cmds.c:1315:36: warning: taking address of packed member of 'struct be_post_sgl_pages_req' may result in an unaligned pointer value [-Waddress-of-packed-member]
-    1315 |                 be_cmd_hdr_prepare(&req->hdr, CMD_SUBSYSTEM_ISCSI,
-         |                                    ^~~~~~~~~
-   drivers/scsi/be2iscsi/be_cmds.c:1322:46: warning: taking address of packed member of 'struct be_post_sgl_pages_req' may result in an unaligned pointer value [-Waddress-of-packed-member]
-    1322 |                 be_cmd_page_addrs_prepare(req->pages, req->num_pages, q_mem);
-         |                                           ~~~^~~~~~~
-   drivers/scsi/be2iscsi/be_cmds.c: In function 'beiscsi_cmd_reset_function':
-   drivers/scsi/be2iscsi/be_cmds.c:1357:28: warning: taking address of packed member of 'struct be_post_sgl_pages_req' may result in an unaligned pointer value [-Waddress-of-packed-member]
-    1357 |         be_cmd_hdr_prepare(&req->hdr, CMD_SUBSYSTEM_COMMON,
-         |                            ^~~~~~~~~
-   drivers/scsi/be2iscsi/be_cmds.c: In function 'be_cmd_set_vlan':
-   drivers/scsi/be2iscsi/be_cmds.c:1393:28: warning: taking address of packed member of 'struct be_cmd_set_vlan_req' may result in an unaligned pointer value [-Waddress-of-packed-member]
-    1393 |         be_cmd_hdr_prepare(&req->hdr, CMD_SUBSYSTEM_ISCSI,
-         |                            ^~~~~~~~~
+I sent a patch to add a re-tuning test to mmc_test.  It would be
+interesting to try that too.
 
-vim +427 drivers/net/ethernet/8390/wd.c
+https://lore.kernel.org/linux-mmc/20231214090902.43628-1-adrian.hunter@intel.com/T/#u
 
-^1da177e4c3f41 drivers/net/wd.c Linus Torvalds 2005-04-16  414  
-^1da177e4c3f41 drivers/net/wd.c Linus Torvalds 2005-04-16  415  	int wd_cmdreg = dev->base_addr - WD_NIC_OFFSET; /* WD_CMDREG */
-^1da177e4c3f41 drivers/net/wd.c Linus Torvalds 2005-04-16  416  	void __iomem *hdr_start = ei_status.mem + ((ring_page - WD_START_PG)<<8);
-^1da177e4c3f41 drivers/net/wd.c Linus Torvalds 2005-04-16  417  
-^1da177e4c3f41 drivers/net/wd.c Linus Torvalds 2005-04-16  418  	/* We'll always get a 4 byte header read followed by a packet read, so
-^1da177e4c3f41 drivers/net/wd.c Linus Torvalds 2005-04-16  419  	   we enable 16 bit mode before the header, and disable after the body. */
-^1da177e4c3f41 drivers/net/wd.c Linus Torvalds 2005-04-16  420  	if (ei_status.word16)
-^1da177e4c3f41 drivers/net/wd.c Linus Torvalds 2005-04-16  421  		outb(ISA16 | ei_status.reg5, wd_cmdreg+WD_CMDREG5);
-^1da177e4c3f41 drivers/net/wd.c Linus Torvalds 2005-04-16  422  
-^1da177e4c3f41 drivers/net/wd.c Linus Torvalds 2005-04-16  423  #ifdef __BIG_ENDIAN
-^1da177e4c3f41 drivers/net/wd.c Linus Torvalds 2005-04-16  424  	/* Officially this is what we are doing, but the readl() is faster */
-^1da177e4c3f41 drivers/net/wd.c Linus Torvalds 2005-04-16  425  	/* unfortunately it isn't endian aware of the struct               */
-^1da177e4c3f41 drivers/net/wd.c Linus Torvalds 2005-04-16  426  	memcpy_fromio(hdr, hdr_start, sizeof(struct e8390_pkt_hdr));
-^1da177e4c3f41 drivers/net/wd.c Linus Torvalds 2005-04-16 @427  	hdr->count = le16_to_cpu(hdr->count);
-^1da177e4c3f41 drivers/net/wd.c Linus Torvalds 2005-04-16  428  #else
-^1da177e4c3f41 drivers/net/wd.c Linus Torvalds 2005-04-16  429  	((unsigned int*)hdr)[0] = readl(hdr_start);
-^1da177e4c3f41 drivers/net/wd.c Linus Torvalds 2005-04-16  430  #endif
-^1da177e4c3f41 drivers/net/wd.c Linus Torvalds 2005-04-16  431  }
-^1da177e4c3f41 drivers/net/wd.c Linus Torvalds 2005-04-16  432  
-
-:::::: The code at line 427 was first introduced by commit
-:::::: 1da177e4c3f41524e886b7f1b8a0c1fc7321cac2 Linux-2.6.12-rc2
-
-:::::: TO: Linus Torvalds <torvalds@ppc970.osdl.org>
-:::::: CC: Linus Torvalds <torvalds@ppc970.osdl.org>
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
