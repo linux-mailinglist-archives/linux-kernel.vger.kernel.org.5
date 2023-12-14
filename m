@@ -1,233 +1,294 @@
-Return-Path: <linux-kernel+bounces-40-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-41-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 15E62813B16
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 20:54:28 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9CCAB813B19
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 20:54:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BF46128164E
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 19:54:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8D82C1C21009
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 19:54:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A3756A014;
-	Thu, 14 Dec 2023 19:54:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B48A46A356;
+	Thu, 14 Dec 2023 19:54:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=csgroup.eu header.i=@csgroup.eu header.b="fk5IdqGw"
+	dkim=pass (2048-bit key) header.d=bitbyteword.org header.i=@bitbyteword.org header.b="f1uo5HYh"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from FRA01-MR2-obe.outbound.protection.outlook.com (mail-mr2fra01on2047.outbound.protection.outlook.com [40.107.9.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-oa1-f53.google.com (mail-oa1-f53.google.com [209.85.160.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 699C36EB56;
-	Thu, 14 Dec 2023 19:53:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=csgroup.eu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=csgroup.eu
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=B8xujCr/mP1PTG3DL7hjy7n8movjf1Ptwputs2MKOZ9QnNyHgnxne8jBxH+VaFxOGd9qveF8tG+Oxf3D2i2EHZxTHumWmD++f9hvi5KcSHc94OgN64QnxsDnh778YSN0bTVSR0ZRs5a5/Aq+xwEIkbUA1WNKJFOm4rziGd2Fm3CT1TujsByoghGflafeVKCpPg9bO8XTu35f7hK9Gv48KLVv3Ezd8b8a+kBY33jpLHpKGqmZzCSW2ayHdNdC3KagLU5MmxYmkWGWH7IBwcWKpq3HleizxzXhjBL4y4066XUKeB6HACCudgja9fs6onSnp/YbDPmPmdh4CIre3l8ARw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=4toCinyF/HItNjanOJJj0jBDfnKbh0aI8FOErh2eG1Q=;
- b=h7Z+zmNPcYrPbDMv1YkB87aGKJXzPjmFChHhNN4AaA+pDEUGUurL3+whzXZzToSkUIWMYcvBxJOobmzIF3m22yUvqbQR2goe5AdCs6WcTdKcnaqRguVI/vZjtxCNXHyBASZmlmqY2ZSkRD9jMdlRuRXLNeYBwIbl1hO4rxgSe2ak1SudbksG1wTAD9EowBOmRdxjlNP4FQRV6OWv/dLX1Xq6SsxXlx4+s8S6L1BZF/AZq0pWIJLPW470yMTusLqs1yJE5WWndTQqiXI1Zx+q+9iCyPwS06KNgxOddIYkvQ+piXOqFHlCZTdP+GhGR9rS284FASVrB2N5W1mD0q21VQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=csgroup.eu; dmarc=pass action=none header.from=csgroup.eu;
- dkim=pass header.d=csgroup.eu; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=csgroup.eu;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=4toCinyF/HItNjanOJJj0jBDfnKbh0aI8FOErh2eG1Q=;
- b=fk5IdqGwvhgQ/adax1iOiA756jfRtcsxKVl+5n2crZ5w0m099tXBx3FThTUmHtoHSdOBx/lMEURCOXoFNoDtj+2BLq3gVz3x8wzjGu+ukROdgXzTteE7Ui5j2KXv56mEFVKqK/jOhP9z+mLFUaWKlM/Yl4au11ydntCjuIWSwhhEMYAGVgZfp/098VRrH5dg+78zOFA/Z5XmDmoLvdm7TgIMVgLQVb/j6DvpHh+EFVYjDbYUVpvr7miWeMhCWgZBIHu69/mRolaI7O/BO2j0ExLo9zyUjuXJs4muUaU3v8vgE3BzFWKwF44ZidewJPuILYvlnWeFcnmT/SXQbWeVaQ==
-Received: from MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM (2603:10a6:501:31::15)
- by PAZP264MB3053.FRAP264.PROD.OUTLOOK.COM (2603:10a6:102:1f5::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7091.28; Thu, 14 Dec
- 2023 19:53:34 +0000
-Received: from MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM
- ([fe80::f788:32b4:1c5e:f264]) by MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM
- ([fe80::f788:32b4:1c5e:f264%7]) with mapi id 15.20.7091.028; Thu, 14 Dec 2023
- 19:53:33 +0000
-From: Christophe Leroy <christophe.leroy@csgroup.eu>
-To: Waiman Long <longman@redhat.com>, George Stark
-	<gnstark@salutedevices.com>, "andy.shevchenko@gmail.com"
-	<andy.shevchenko@gmail.com>, "pavel@ucw.cz" <pavel@ucw.cz>, "lee@kernel.org"
-	<lee@kernel.org>, "vadimp@nvidia.com" <vadimp@nvidia.com>,
-	"mpe@ellerman.id.au" <mpe@ellerman.id.au>, "npiggin@gmail.com"
-	<npiggin@gmail.com>, "hdegoede@redhat.com" <hdegoede@redhat.com>,
-	"mazziesaccount@gmail.com" <mazziesaccount@gmail.com>, "peterz@infradead.org"
-	<peterz@infradead.org>, "mingo@redhat.com" <mingo@redhat.com>,
-	"will@kernel.org" <will@kernel.org>, "boqun.feng@gmail.com"
-	<boqun.feng@gmail.com>, "nikitos.tr@gmail.com" <nikitos.tr@gmail.com>
-CC: "linux-leds@vger.kernel.org" <linux-leds@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
-	"kernel@salutedevices.com" <kernel@salutedevices.com>
-Subject: Re: [PATCH v4 02/10] locking: introduce devm_mutex_init
-Thread-Topic: [PATCH v4 02/10] locking: introduce devm_mutex_init
-Thread-Index: AQHaLrQSLTXRy4mOS0OgHh/wjtvn+LCpHvQAgAASE4A=
-Date: Thu, 14 Dec 2023 19:53:33 +0000
-Message-ID: <b158ca2b-7300-4ad0-82b8-e1442d267734@csgroup.eu>
-References: <20231214173614.2820929-1-gnstark@salutedevices.com>
- <20231214173614.2820929-3-gnstark@salutedevices.com>
- <5c10f66c-3fd8-4861-994b-13e71c24f10a@redhat.com>
-In-Reply-To: <5c10f66c-3fd8-4861-994b-13e71c24f10a@redhat.com>
-Accept-Language: fr-FR, en-US
-Content-Language: fr-FR
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-user-agent: Mozilla Thunderbird
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=csgroup.eu;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: MRZP264MB2988:EE_|PAZP264MB3053:EE_
-x-ms-office365-filtering-correlation-id: 0d530c66-629a-40c3-ebbf-08dbfcde5acb
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info:
- Sz5AyOyvzoNOZXCMC+rkJx+Lum9CZd/3ayZNAANYDQNm8yKGG9HC8Xm4qcAVehpScctFxWo29o35MtU5nLR6UeuLfY6AOBA3HSkpfCLrzqNfz4FJy6L28/9m/RA+VltPh7J/z0MDcm/nZdHLvfqzB5uKEncXVEOjej1gTslx/ukBvR+ZGIkqC0PxwLMU33NMucUYif3jZB4I3DAdAIKMg7lFESyHKXmjvJSe66cbBkyOxX8wJS2PU8Eph/KhbFm4asZ7t/Zg2Dpxsluk7JHaHcvmjbgdnYme0Ycm8u631d3OcNhcfIoaIF2AGETxfwEP8KJ8B0pTeiV2oORyNrEBzlqJQFKenf6E5bwHCOFu/mVIqLPaw8PSeU4t++GDupe+UML94SDD+HOOqqt0Xz7PEjV/F3nh2nWpbz+CFlQI1ZMa2js5ZgJUhP3uFLmz/1UFqCifJ9avuAo+VMWUlkwUD0xfrD9dP5PTLnLnUdwo1e1/Y59+W7eny8Ng28s4kL3IGBJmeTgG5v1Oh7FD5kRtqNjIMf6kNJP+rH/3tfgdga5yRvz0zxEHjGfy4G4SNjM2EIy9dI0oGifBiz5cht/LPPA6ovo3N36sMHLUSf3fYnrNHa0A00+m8gPguk5zm3kseGYjISdVI9pWK1hQp+X6ZQACjaiarktHRcGkapIhiReG4OzWuSXEqa5lW0wcG1KdNUIY07phn3AGzxefRmjD2A==
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230031)(366004)(39860400002)(346002)(396003)(376002)(136003)(230922051799003)(451199024)(64100799003)(1800799012)(186009)(2906002)(31696002)(7416002)(6486002)(478600001)(41300700001)(38070700009)(921008)(31686004)(122000001)(86362001)(5660300002)(44832011)(4326008)(54906003)(91956017)(110136005)(76116006)(64756008)(66446008)(66476007)(66556008)(66946007)(316002)(83380400001)(2616005)(66574015)(26005)(53546011)(8936002)(66899024)(6506007)(6512007)(71200400001)(8676002)(36756003)(38100700002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?utf-8?B?TTBhc1BIeU0rMnRXTEF2MkdqSVh2d2FVdnZEbjFXcldQdXFMUnhLdG5nd3FB?=
- =?utf-8?B?QzJ0MEJKbjRBV2pKaHl3N0lpYk5WU1NHaVd2bHhiYlB1WVRvN1hoOHpqOU9z?=
- =?utf-8?B?MVQzVUZsYklXQnpBaytUSFZOMi9YUGdweGlDR2hmZjIvMk9HUWcrVURBYVVL?=
- =?utf-8?B?eUFaMk9aeS94WDhBTXpjWUl2VGNHUExJTVh3UDE4TG1yb3h6S0V3SkIzVVph?=
- =?utf-8?B?K3V3YUh1WXZiS0xsektISE96TVVoMEhCV3M1cnVSOEZUVnYzZytSNk5xZ3dW?=
- =?utf-8?B?eGFjRFVKclJOajVzRWxxTzd0LzAxbnJlL1Rvang3TDlqcUhPN0VjQy8waSt0?=
- =?utf-8?B?ZDNjSDc4N0NJZlZobkhsRWRFS2RLUUNJc0diVi8xTXVRMFJLaGdZRXBsNGha?=
- =?utf-8?B?M2ducHlxWllyS0RqbHYrWGZaVzJtMW5oaUVsaVhYYWdRRk91ZmVJazMyMk56?=
- =?utf-8?B?ZzlqcHdGWUxXUlV6MXhtNWUrUTIramRQRmpaMWd6OFk0VUJFWThvNTh1Sy9p?=
- =?utf-8?B?b3pvM3N0V3F4dTZxQU96M21ZcXhTY0ExNktMemxPYnNkMjNQaUMzY3pGZ0J1?=
- =?utf-8?B?MU82Y29MOVRDcFZYOUcxR2Q0a1ZveHNHNGV1RHlvMENvQlFRVENJa3dNRXU0?=
- =?utf-8?B?NGVZUU54Vjl2NDNDWFNGTXhCVkpjVVlyaEhNN3hWOEo4TVEvdTBTRXVsNHpH?=
- =?utf-8?B?NUd4M0N2R2k2Rmw4VnpHcElVdmZKUmlNSHREeDF5VFZuUUc1WGxJRzJuNW9Y?=
- =?utf-8?B?VjNMdzBoOEIrMDFjdVlXYzRYN2g5cnA3K09PTkxFOVdSYUdPczFGWFkxTGti?=
- =?utf-8?B?SlN6VkU1OVZOT3hpMzYzNEt0TXVJMG0rcGhpTEE2ME95eDA0dDRYVUxwZE5q?=
- =?utf-8?B?b25iT2FrcFR4K1AwUFZ0L1ZJazdwM3RmaHJOR3FSVmZjeGV6emxta1krSStP?=
- =?utf-8?B?bzF6VjNlMXB2YkJpenB4QzF1Zmw5eVVLaGJuQ1ZjZkp4QkVMYkFUcnVEVVVJ?=
- =?utf-8?B?R2taUUNPWSsyMkVkL0N0K1JJcWMrYkU4MzNDcVF3UlRSOWFhZXg4UEY3K0tL?=
- =?utf-8?B?K3BZNno5dXkwV3h6VVM0cHBQK2h2eGlMODU5WTd3UGxIYXJpcys5eVJ4VThn?=
- =?utf-8?B?enFJL3RXTExrTC9zVkxuYy9hdjFlUGFPYlVUWE8vTGhvRW81eWp3bUhRdkx3?=
- =?utf-8?B?MWZ6OGtGUWNpWXdOV0N5aUpvdjJ6YVlhYnJhQkoyRVdudW9iVndQL3lHK05B?=
- =?utf-8?B?dW53ZWJFa2xPYmthZCtkbGVZeVAxamVzY3VMZTAzRWpoZzVUUlZ4T0VTR20y?=
- =?utf-8?B?Kzh3bFFpRXI0YlZOb2xKV2Y4OGZkZzlrd1p0d2c5ODBzbXNUK29TaldwTUdu?=
- =?utf-8?B?MTFTUFVRUUZBL2FLU0Qxd3V0Z0tRMENQMDhncjhncEx1L256bkhnU1grUWUv?=
- =?utf-8?B?NUp2cHV0NDJEbFhVWURhSGo5bVRBL0NSK1N2SGw1eWszOFhDaFpHd00zZDJJ?=
- =?utf-8?B?KzBVM3ZXUXNPeVpEOVU2MHQ2SWlUcS9SazBGbVhZRFpiVjRxMHpxeXBKL1Q1?=
- =?utf-8?B?M3FMK1V6MTBBZUZGYU5jaWUxSGFFTjBqVUpxR1ZmME5FUDUvQXk5SktnU1VG?=
- =?utf-8?B?dzlOWWVvd2FGeEFGK1JhZWVLYkFsbUhXVGtLYTBRMDVuUmRKN1ZsVkFIQUhq?=
- =?utf-8?B?VTdHWXk5dE9OOUJKK0pmSm5SZ2JpbmpDQ25ub2E3VzVIUU5BcjRHbmJtZmJr?=
- =?utf-8?B?cS9zRGc5aW5vcEduUWVCN3I1eU1CcTNQY2FsKzkyU29PQTR3NXBXa3JJNGQz?=
- =?utf-8?B?MjZ2c1l6eGtKOEFzc3prTFVqSE9yaHNqS0YwMCtrME5XMzJDNFNOQUpnNEQ1?=
- =?utf-8?B?RlMySWJwSXg0WVVpSWxraUxYcE5XZlVOR3VUd1dwcFBOZitpODNZVjBDQWx1?=
- =?utf-8?B?UWJZemlyZFc4WGdRcVFCK0ZQbkljdGR3UFphMGtrdFFoOEorMVk1TVV1cW11?=
- =?utf-8?B?L00xSHRUKzBWd3F5VGRPalBCb1k1M2c3dE5zeE1NNUdPRFpldi9zZnZxSWZr?=
- =?utf-8?B?ZDhBZEhYd2QwS1lHaU4yaW45UmJtS3ZyRXlMUGdiaHdsMWxPMVpoUXdNM2tF?=
- =?utf-8?Q?3PonCMV1dNIQbiAYLubLU9kuu?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <4B88C21E4D068E4EAA5801FD47673A6B@FRAP264.PROD.OUTLOOK.COM>
-Content-Transfer-Encoding: base64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A697B697B4
+	for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 19:54:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bitbyteword.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bitbyteword.org
+Received: by mail-oa1-f53.google.com with SMTP id 586e51a60fabf-1fb33059466so5962021fac.2
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 11:54:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bitbyteword.org; s=google; t=1702583646; x=1703188446; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=whJNqJEvK2equSL1Yk+tP3TQhBfQ0dYWdrlrbsekLXg=;
+        b=f1uo5HYhacHQM29wEytt4BCuaOs3nSnGdNN68mQiN3C9sRjhU8qDmOd+pdhr+jEWFa
+         FdWYwgCp7lk8SdvbPq7u8GytcRg5d6vtY2tcQneCIjPQtBIthu5VXdQZ0CcnF8+WSx9G
+         fpEnuxP5vMf3ufKmrd/mJTCA6YE2mY0CCsqe22C5MU4HMBxI8SHfA7826rCuKm5w2SfZ
+         IXz8erUmGN09japhqPn24R5SbnlKh7EAIIn83K0MiGVTFbYjaI3Dv8tYNhR37bYOCYWO
+         rDIPP7DR1At7928LenT7tH1qG2UmosbuufqBiA+4CrZUbgSsiuDfdjzq6ETFicCP6nEZ
+         3RBg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702583646; x=1703188446;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=whJNqJEvK2equSL1Yk+tP3TQhBfQ0dYWdrlrbsekLXg=;
+        b=Th7qCXwj7N4xwlqhrTQUlPQhe7tB1cGVIYetURNdGjUHYZ2Lv/Iqa+ovPOsa5KR+bS
+         /gCL6xLecGDDxrmbvMHF7oiypdrKWZntCyqaM9HsGo7vy3hVuXDkOMkz39bn+pmXDVsu
+         jSVkmQCJbrG9J+dfQIuazkZ/8C1abQKd2WTxv3fvSbR29Zt6hW0tqCn/vP4XetjxqBM5
+         9weTz1uh3DSwFbVlHtNCgiwqIVf3yelJd3PMTt8ZuAPfZMYcDXJTsAKfudfbP63dJ95a
+         bZy7/oirmgCoA4JC6Buy3u3T1o9kRPC1GpNgiZukYa0If4+MFOK7ZMUplNwoO1TRXnfH
+         QxYw==
+X-Gm-Message-State: AOJu0Yx6WYWraup/QZjN7EVTPgEGPQkHuAu2POthLdzZhAdDoY7bNgKf
+	Uuzjm4x0hlz/D4jkvsQoSMPuWIeU60i6Fxj9weqzGg==
+X-Google-Smtp-Source: AGHT+IHaLrp5FbFQ3YpWs9+aTsAYCEx3GzWSlZGvk1xuyNLtqt4BpMhYleL1VDKPiiKksmT1W/bLP9mBsZ1SfhoaBUc=
+X-Received: by 2002:a05:6870:219e:b0:203:27a5:cf21 with SMTP id
+ l30-20020a056870219e00b0020327a5cf21mr3585305oae.26.1702583646337; Thu, 14
+ Dec 2023 11:54:06 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: csgroup.eu
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0d530c66-629a-40c3-ebbf-08dbfcde5acb
-X-MS-Exchange-CrossTenant-originalarrivaltime: 14 Dec 2023 19:53:33.8925
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 9914def7-b676-4fda-8815-5d49fb3b45c8
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: VBjWoyHfEybSgTLkd4uaUMrBBb/Ko3sgrNMczI3497TdQ4zBr0TO/qTIZg3JM649NO9rY1r2Pqa3bYXiTSPPBDOeoGkMeqK6o6MhhLRayhg=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PAZP264MB3053
+References: <20231214024727.3503870-1-vineeth@bitbyteword.org>
+ <20231214024727.3503870-2-vineeth@bitbyteword.org> <877clhkqct.fsf@redhat.com>
+In-Reply-To: <877clhkqct.fsf@redhat.com>
+From: Vineeth Remanan Pillai <vineeth@bitbyteword.org>
+Date: Thu, 14 Dec 2023 14:53:55 -0500
+Message-ID: <CAO7JXPg9wN3SQOciAjVTn6fdgdpKA0CjaYg5UvXosYHT=1CeuA@mail.gmail.com>
+Subject: Re: [RFC PATCH 1/8] kvm: x86: MSR for setting up scheduler info
+ shared memory
+To: Vitaly Kuznetsov <vkuznets@redhat.com>
+Cc: Suleiman Souhlal <suleiman@google.com>, Masami Hiramatsu <mhiramat@google.com>, kvm@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, x86@kernel.org, 
+	Joel Fernandes <joel@joelfernandes.org>, Ben Segall <bsegall@google.com>, 
+	Borislav Petkov <bp@alien8.de>, Daniel Bristot de Oliveira <bristot@redhat.com>, 
+	Dave Hansen <dave.hansen@linux.intel.com>, Dietmar Eggemann <dietmar.eggemann@arm.com>, 
+	"H . Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>, Juri Lelli <juri.lelli@redhat.com>, 
+	Mel Gorman <mgorman@suse.de>, Paolo Bonzini <pbonzini@redhat.com>, Andy Lutomirski <luto@kernel.org>, 
+	Peter Zijlstra <peterz@infradead.org>, Sean Christopherson <seanjc@google.com>, 
+	Steven Rostedt <rostedt@goodmis.org>, Thomas Gleixner <tglx@linutronix.de>, 
+	Valentin Schneider <vschneid@redhat.com>, Vincent Guittot <vincent.guittot@linaro.org>, 
+	Wanpeng Li <wanpengli@tencent.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-DQoNCkxlIDE0LzEyLzIwMjMgw6AgMTk6NDgsIFdhaW1hbiBMb25nIGEgw6ljcml0wqA6DQo+IA0K
-PiBPbiAxMi8xNC8yMyAxMjozNiwgR2VvcmdlIFN0YXJrIHdyb3RlOg0KPj4gVXNpbmcgb2YgZGV2
-bSBBUEkgbGVhZHMgdG8gYSBjZXJ0YWluIG9yZGVyIG9mIHJlbGVhc2luZyByZXNvdXJjZXMuDQo+
-PiBTbyBhbGwgZGVwZW5kZW50IHJlc291cmNlcyB3aGljaCBhcmUgbm90IGRldm0td3JhcHBlZCBz
-aG91bGQgYmUgZGVsZXRlZA0KPj4gd2l0aCByZXNwZWN0IHRvIGRldm0tcmVsZWFzZSBvcmRlci4g
-TXV0ZXggaXMgb25lIG9mIHN1Y2ggb2JqZWN0cyB0aGF0DQo+PiBvZnRlbiBpcyBib3VuZCB0byBv
-dGhlciByZXNvdXJjZXMgYW5kIGhhcyBubyBvd24gZGV2bSB3cmFwcGluZy4NCj4+IFNpbmNlIG11
-dGV4X2Rlc3Ryb3koKSBhY3R1YWxseSBkb2VzIG5vdGhpbmcgaW4gbm9uLWRlYnVnIGJ1aWxkcw0K
-Pj4gZnJlcXVlbnRseSBjYWxsaW5nIG11dGV4X2Rlc3Ryb3koKSBpcyBqdXN0IGlnbm9yZWQgd2hp
-Y2ggaXMgc2FmZSBmb3Igbm93DQo+PiBidXQgd3JvbmcgZm9ybWFsbHkgYW5kIGNhbiBsZWFkIHRv
-IGEgcHJvYmxlbSBpZiBtdXRleF9kZXN0cm95KCkgd2lsbCBiZQ0KPj4gZXh0ZW5kZWQgc28gaW50
-cm9kdWNlIGRldm1fbXV0ZXhfaW5pdCgpDQo+Pg0KPj4gU2lnbmVkLW9mZi1ieTogR2VvcmdlIFN0
-YXJrIDxnbnN0YXJrQHNhbHV0ZWRldmljZXMuY29tPg0KPj4gLS0tDQo+PiDCoCBpbmNsdWRlL2xp
-bnV4L211dGV4LmjCoMKgwqDCoMKgwqDCoCB8IDIzICsrKysrKysrKysrKysrKysrKysrKysrDQo+
-PiDCoCBrZXJuZWwvbG9ja2luZy9tdXRleC1kZWJ1Zy5jIHwgMjIgKysrKysrKysrKysrKysrKysr
-KysrKw0KPj4gwqAgMiBmaWxlcyBjaGFuZ2VkLCA0NSBpbnNlcnRpb25zKCspDQo+Pg0KPj4gZGlm
-ZiAtLWdpdCBhL2luY2x1ZGUvbGludXgvbXV0ZXguaCBiL2luY2x1ZGUvbGludXgvbXV0ZXguaA0K
-Pj4gaW5kZXggYTMzYWE5ZWI5ZmMzLi5lYmQwM2ZmMWVmNjYgMTAwNjQ0DQo+PiAtLS0gYS9pbmNs
-dWRlL2xpbnV4L211dGV4LmgNCj4+ICsrKyBiL2luY2x1ZGUvbGludXgvbXV0ZXguaA0KPj4gQEAg
-LTIxLDYgKzIxLDggQEANCj4+IMKgICNpbmNsdWRlIDxsaW51eC9kZWJ1Z19sb2Nrcy5oPg0KPj4g
-wqAgI2luY2x1ZGUgPGxpbnV4L2NsZWFudXAuaD4NCj4+ICtzdHJ1Y3QgZGV2aWNlOw0KPj4gKw0K
-Pj4gwqAgI2lmZGVmIENPTkZJR19ERUJVR19MT0NLX0FMTE9DDQo+PiDCoCAjIGRlZmluZSBfX0RF
-UF9NQVBfTVVURVhfSU5JVElBTElaRVIobG9ja25hbWUpwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBc
-DQo+PiDCoMKgwqDCoMKgwqDCoMKgwqAgLCAuZGVwX21hcCA9IHvCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoCBcDQo+PiBAQCAtMTI3LDYgKzEyOSwyMCBAQCBleHRlcm4gdm9p
-ZCBfX211dGV4X2luaXQoc3RydWN0IG11dGV4ICpsb2NrLCANCj4+IGNvbnN0IGNoYXIgKm5hbWUs
-DQo+PiDCoMKgICovDQo+PiDCoCBleHRlcm4gYm9vbCBtdXRleF9pc19sb2NrZWQoc3RydWN0IG11
-dGV4ICpsb2NrKTsNCj4+ICsjaWZkZWYgQ09ORklHX0RFQlVHX01VVEVYRVMNCj4+ICsNCj4+ICtp
-bnQgZGV2bV9tdXRleF9pbml0KHN0cnVjdCBkZXZpY2UgKmRldiwgc3RydWN0IG11dGV4ICpsb2Nr
-KTsNCj4gUGxlYXNlIGFkZCAiZXh0ZXJuIiB0byB0aGUgZnVuY3Rpb24gZGVjbGFyYXRpb24gdG8g
-YmUgY29uc2lzdGVudCB3aXRoIA0KPiBvdGhlciBmdW5jdGlvbmFsIGRlY2xhcmF0aW9ucyBpbiBt
-dXRleC5oLg0KDQonZXh0ZXJuJyBpcyBwb2ludGxlc3MgYW5kIGRlcHJlY2F0ZWQgb24gZnVuY3Rp
-b24gcHJvdG90eXBlcy4gQWxyZWFkeSANCmhhdmluZyBzb21lIGlzIG5vdCBhIGdvb2QgcmVhc29u
-IHRvIGFkZCBuZXcgb25lcywgZXJyb3JzIGZyb20gdGhlIHBhc3QgDQpzaG91bGQgYmUgYXZvaWRl
-ZCBub3dhZGF5cy4gV2l0aCB0aW1lIHRoZXkgc2hvdWxkIGFsbCBkaXNhcHBlYXIgc28gZG9uJ3Qg
-DQphZGQgbmV3IG9uZXMuDQoNCj4+ICsNCj4+ICsjZWxzZQ0KPj4gKw0KPj4gK3N0YXRpYyBpbmxp
-bmUgaW50IGRldm1fbXV0ZXhfaW5pdChzdHJ1Y3QgZGV2aWNlICpkZXYsIHN0cnVjdCBtdXRleCAN
-Cj4+ICpsb2NrKQ0KPj4gK3sNCj4+ICvCoMKgwqAgbXV0ZXhfaW5pdChsb2NrKTsNCj4+ICvCoMKg
-wqAgcmV0dXJuIDA7DQo+PiArfQ0KPiANCj4gSSB3b3VsZCBwcmVmZXIgeW91IHRvIGFkZCBhIGRl
-dm1fbXV0ZXhfaW5pdCBtYWNybyBhZnRlciB0aGUgZnVuY3Rpb24gDQo+IGRlY2xhcmF0aW9uIGFu
-ZCBwdXQgdGhpcyBpbmxpbmUgZnVuY3Rpb24gYXQgdGhlIGVuZCBvZiBoZWFkZXIgaWYgdGhlIA0K
-PiBkZXZtX211dGV4X2luaXQgbWFjcm8gaXNuJ3QgZGVmaW5lZC4gSW4gdGhpcyB3YXksIHlvdSBk
-b24ndCBuZWVkIHRvIA0KPiByZXBlYXQgdGhpcyBpbmxpbmUgZnVuY3Rpb24gdHdpY2UgYXMgaXQg
-aGFzIG5vIGRlcGVuZGVuY3kgb24gUFJFRU1QVF9SVC4NCg0KSXQgaXMgYWxyZWFkeSBkb25lIHRo
-YXQgd2F5IGZvciBvdGhlciBmdW5jdGlvbnMgaW4gdGhhdCBmaWxlLiBTaG91bGQgYmUgDQprZXB0
-IGNvbnNpc3RhbnQuIEkgYWdyZWUgd2l0aCB5b3UgaXQgaXMgbm90IGlkZWFsLCBtYXliZSB3ZSBz
-aG91bGQgDQpyZXdvcmsgdGhhdCBmaWxlIGNvbXBsZXRlbHkgYnV0IEkgZG9uJ3QgbGlrZSB0aGUg
-aWRlYSBvZiBhIA0KZGV2bV9tdXRleF9pbml0IG1hY3JvIGZvciB0aGF0Lg0KDQpDaHJpc3RvcGhl
-DQoNCj4gDQo+IEJ5IGRvaW5nIHRoaXMsIHlvdSBjYW4gYWxzbyBtb3ZlIHRoZSBmdW5jdGlvbiBk
-ZWNsYXJhdGlvbiByaWdodCBhZnRlciANCj4gbXV0ZXhfZGVzdHJveSgpIHdpdGhvdXQgdGhlIG5l
-ZWQgdG8gYWRkIGFub3RoZXIgI2lmZGVmIA0KPiBDT05GSUdfREVCVUdfTVVURVhFUyBibG9jay4N
-Cj4gDQo+PiArDQo+PiArI2VuZGlmDQo+PiArDQo+PiDCoCAjZWxzZSAvKiAhQ09ORklHX1BSRUVN
-UFRfUlQgKi8NCj4+IMKgIC8qDQo+PiDCoMKgICogUHJlZW1wdC1SVCB2YXJpYW50IGJhc2VkIG9u
-IHJ0bXV0ZXhlcy4NCj4+IEBAIC0xNjksNiArMTg1LDEzIEBAIGRvIHvCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgXA0KPj4gwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBcDQo+PiDCoMKg
-wqDCoMKgIF9fbXV0ZXhfaW5pdCgobXV0ZXgpLCAjbXV0ZXgsICZfX2tleSk7wqDCoMKgwqDCoMKg
-wqAgXA0KPj4gwqAgfSB3aGlsZSAoMCkNCj4+ICsNCj4+ICtzdGF0aWMgaW5saW5lIGludCBkZXZt
-X211dGV4X2luaXQoc3RydWN0IGRldmljZSAqZGV2LCBzdHJ1Y3QgbXV0ZXggDQo+PiAqbG9jaykN
-Cj4+ICt7DQo+PiArwqDCoMKgIG11dGV4X2luaXQobG9jayk7DQo+PiArwqDCoMKgIHJldHVybiAw
-Ow0KPj4gK30NCj4+ICsNCj4+IMKgICNlbmRpZiAvKiBDT05GSUdfUFJFRU1QVF9SVCAqLw0KPj4g
-wqAgLyoNCj4+IGRpZmYgLS1naXQgYS9rZXJuZWwvbG9ja2luZy9tdXRleC1kZWJ1Zy5jIGIva2Vy
-bmVsL2xvY2tpbmcvbXV0ZXgtZGVidWcuYw0KPj4gaW5kZXggYmM4YWJiODU0OWQyLi5jOWVmYWIx
-YTgwMjYgMTAwNjQ0DQo+PiAtLS0gYS9rZXJuZWwvbG9ja2luZy9tdXRleC1kZWJ1Zy5jDQo+PiAr
-KysgYi9rZXJuZWwvbG9ja2luZy9tdXRleC1kZWJ1Zy5jDQo+PiBAQCAtMTksNiArMTksNyBAQA0K
-Pj4gwqAgI2luY2x1ZGUgPGxpbnV4L2thbGxzeW1zLmg+DQo+PiDCoCAjaW5jbHVkZSA8bGludXgv
-aW50ZXJydXB0Lmg+DQo+PiDCoCAjaW5jbHVkZSA8bGludXgvZGVidWdfbG9ja3MuaD4NCj4+ICsj
-aW5jbHVkZSA8bGludXgvZGV2aWNlLmg+DQo+PiDCoCAjaW5jbHVkZSAibXV0ZXguaCINCj4+IEBA
-IC0xMDQsMyArMTA1LDI0IEBAIHZvaWQgbXV0ZXhfZGVzdHJveShzdHJ1Y3QgbXV0ZXggKmxvY2sp
-DQo+PiDCoCB9DQo+PiDCoCBFWFBPUlRfU1lNQk9MX0dQTChtdXRleF9kZXN0cm95KTsNCj4+ICsN
-Cj4+ICtzdGF0aWMgdm9pZCBkZXZtX211dGV4X3JlbGVhc2Uodm9pZCAqcmVzKQ0KPj4gK3sNCj4+
-ICvCoMKgwqAgbXV0ZXhfZGVzdHJveShyZXMpOw0KPj4gK30NCj4+ICsNCj4+ICsvKioNCj4+ICsg
-KiBkZXZtX211dGV4X2luaXQgLSBSZXNvdXJjZS1tYW5hZ2VkIG11dGV4IGluaXRpYWxpemF0aW9u
-DQo+PiArICogQGRldjrCoMKgwqAgRGV2aWNlIHdoaWNoIGxpZmV0aW1lIG11dGV4IGlzIGJvdW5k
-IHRvDQo+PiArICogQGxvY2s6wqDCoMKgIFBvaW50ZXIgdG8gYSBtdXRleA0KPj4gKyAqDQo+PiAr
-ICogSW5pdGlhbGl6ZSBtdXRleCB3aGljaCBpcyBhdXRvbWF0aWNhbGx5IGRlc3Ryb3llZCB3aGVu
-IHRoZSBkcml2ZXIgDQo+PiBpcyBkZXRhY2hlZC4NCj4+ICsgKg0KPj4gKyAqIFJldHVybnM6IDAg
-b24gc3VjY2VzcyBvciBhIG5lZ2F0aXZlIGVycm9yIGNvZGUgb24gZmFpbHVyZS4NCj4+ICsgKi8N
-Cj4+ICtpbnQgZGV2bV9tdXRleF9pbml0KHN0cnVjdCBkZXZpY2UgKmRldiwgc3RydWN0IG11dGV4
-ICpsb2NrKQ0KPj4gK3sNCj4+ICvCoMKgwqAgbXV0ZXhfaW5pdChsb2NrKTsNCj4+ICvCoMKgwqAg
-cmV0dXJuIGRldm1fYWRkX2FjdGlvbl9vcl9yZXNldChkZXYsIGRldm1fbXV0ZXhfcmVsZWFzZSwg
-bG9jayk7DQo+PiArfQ0KPj4gK0VYUE9SVF9TWU1CT0xfR1BMKGRldm1fbXV0ZXhfaW5pdCk7DQo+
-IA0KPiBUaGUgbXV0ZXgtZGVidWcuYyBjaGFuZ2UgbG9va3MgZmluZSB0byBtZS4NCj4gDQo+IENo
-ZWVycywNCj4gTG9uZ21hbg0KPiANCj4gDQo=
+On Thu, Dec 14, 2023 at 5:53=E2=80=AFAM Vitaly Kuznetsov <vkuznets@redhat.c=
+om> wrote:
+>
+> "Vineeth Pillai (Google)" <vineeth@bitbyteword.org> writes:
+>
+> > Implement a kvm MSR that guest uses to provide the GPA of shared memory
+> > for communicating the scheduling information between host and guest.
+> >
+> > wrmsr(0) disables the feature. wrmsr(valid_gpa) enables the feature and
+> > uses the gpa for further communication.
+> >
+> > Also add a new cpuid feature flag for the host to advertise the feature
+> > to the guest.
+> >
+> > Co-developed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+> > Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+> > Signed-off-by: Vineeth Pillai (Google) <vineeth@bitbyteword.org>
+> > ---
+> >  arch/x86/include/asm/kvm_host.h      | 25 ++++++++++++
+> >  arch/x86/include/uapi/asm/kvm_para.h | 24 +++++++++++
+> >  arch/x86/kvm/Kconfig                 | 12 ++++++
+> >  arch/x86/kvm/cpuid.c                 |  2 +
+> >  arch/x86/kvm/x86.c                   | 61 ++++++++++++++++++++++++++++
+> >  include/linux/kvm_host.h             |  5 +++
+> >  6 files changed, 129 insertions(+)
+> >
+> > diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm=
+_host.h
+> > index f72b30d2238a..f89ba1f07d88 100644
+> > --- a/arch/x86/include/asm/kvm_host.h
+> > +++ b/arch/x86/include/asm/kvm_host.h
+> > @@ -987,6 +987,18 @@ struct kvm_vcpu_arch {
+> >       /* Protected Guests */
+> >       bool guest_state_protected;
+> >
+> > +#ifdef CONFIG_PARAVIRT_SCHED_KVM
+> > +     /*
+> > +      * MSR to setup a shared memory for scheduling
+> > +      * information sharing between host and guest.
+> > +      */
+> > +     struct {
+> > +             enum kvm_vcpu_boost_state boost_status;
+> > +             u64 msr_val;
+> > +             struct gfn_to_hva_cache data;
+> > +     } pv_sched;
+> > +#endif
+> > +
+> >       /*
+> >        * Set when PDPTS were loaded directly by the userspace without
+> >        * reading the guest memory
+> > @@ -2217,4 +2229,17 @@ int memslot_rmap_alloc(struct kvm_memory_slot *s=
+lot, unsigned long npages);
+> >   */
+> >  #define KVM_EXIT_HYPERCALL_MBZ               GENMASK_ULL(31, 1)
+> >
+> > +#ifdef CONFIG_PARAVIRT_SCHED_KVM
+> > +static inline bool kvm_arch_vcpu_pv_sched_enabled(struct kvm_vcpu_arch=
+ *arch)
+> > +{
+> > +     return arch->pv_sched.msr_val;
+> > +}
+> > +
+> > +static inline void kvm_arch_vcpu_set_boost_status(struct kvm_vcpu_arch=
+ *arch,
+> > +             enum kvm_vcpu_boost_state boost_status)
+> > +{
+> > +     arch->pv_sched.boost_status =3D boost_status;
+> > +}
+> > +#endif
+> > +
+> >  #endif /* _ASM_X86_KVM_HOST_H */
+> > diff --git a/arch/x86/include/uapi/asm/kvm_para.h b/arch/x86/include/ua=
+pi/asm/kvm_para.h
+> > index 6e64b27b2c1e..6b1dea07a563 100644
+> > --- a/arch/x86/include/uapi/asm/kvm_para.h
+> > +++ b/arch/x86/include/uapi/asm/kvm_para.h
+> > @@ -36,6 +36,7 @@
+> >  #define KVM_FEATURE_MSI_EXT_DEST_ID  15
+> >  #define KVM_FEATURE_HC_MAP_GPA_RANGE 16
+> >  #define KVM_FEATURE_MIGRATION_CONTROL        17
+> > +#define KVM_FEATURE_PV_SCHED         18
+> >
+> >  #define KVM_HINTS_REALTIME      0
+> >
+> > @@ -58,6 +59,7 @@
+> >  #define MSR_KVM_ASYNC_PF_INT 0x4b564d06
+> >  #define MSR_KVM_ASYNC_PF_ACK 0x4b564d07
+> >  #define MSR_KVM_MIGRATION_CONTROL    0x4b564d08
+> > +#define MSR_KVM_PV_SCHED     0x4b564da0
+> >
+> >  struct kvm_steal_time {
+> >       __u64 steal;
+> > @@ -150,4 +152,26 @@ struct kvm_vcpu_pv_apf_data {
+> >  #define KVM_PV_EOI_ENABLED KVM_PV_EOI_MASK
+> >  #define KVM_PV_EOI_DISABLED 0x0
+> >
+> > +/*
+> > + * VCPU boost state shared between the host and guest.
+> > + */
+> > +enum kvm_vcpu_boost_state {
+> > +     /* Priority boosting feature disabled in host */
+> > +     VCPU_BOOST_DISABLED =3D 0,
+> > +     /*
+> > +      * vcpu is not explicitly boosted by the host.
+> > +      * (Default priority when the guest started)
+> > +      */
+> > +     VCPU_BOOST_NORMAL,
+> > +     /* vcpu is boosted by the host */
+> > +     VCPU_BOOST_BOOSTED
+> > +};
+> > +
+> > +/*
+> > + * Structure passed in via MSR_KVM_PV_SCHED
+> > + */
+> > +struct pv_sched_data {
+> > +     __u64 boost_status;
+> > +};
+> > +
+> >  #endif /* _UAPI_ASM_X86_KVM_PARA_H */
+> > diff --git a/arch/x86/kvm/Kconfig b/arch/x86/kvm/Kconfig
+> > index 89ca7f4c1464..dbcba73fb508 100644
+> > --- a/arch/x86/kvm/Kconfig
+> > +++ b/arch/x86/kvm/Kconfig
+> > @@ -141,4 +141,16 @@ config KVM_XEN
+> >  config KVM_EXTERNAL_WRITE_TRACKING
+> >       bool
+> >
+> > +config PARAVIRT_SCHED_KVM
+> > +     bool "Enable paravirt scheduling capability for kvm"
+> > +     depends on KVM
+> > +     help
+> > +       Paravirtualized scheduling facilitates the exchange of scheduli=
+ng
+> > +       related information between the host and guest through shared m=
+emory,
+> > +       enhancing the efficiency of vCPU thread scheduling by the hyper=
+visor.
+> > +       An illustrative use case involves dynamically boosting the prio=
+rity of
+> > +       a vCPU thread when the guest is executing a latency-sensitive w=
+orkload
+> > +       on that specific vCPU.
+> > +       This config enables paravirt scheduling in the kvm hypervisor.
+> > +
+> >  endif # VIRTUALIZATION
+> > diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
+> > index 7bdc66abfc92..960ef6e869f2 100644
+> > --- a/arch/x86/kvm/cpuid.c
+> > +++ b/arch/x86/kvm/cpuid.c
+> > @@ -1113,6 +1113,8 @@ static inline int __do_cpuid_func(struct kvm_cpui=
+d_array *array, u32 function)
+> >                            (1 << KVM_FEATURE_POLL_CONTROL) |
+> >                            (1 << KVM_FEATURE_PV_SCHED_YIELD) |
+> >                            (1 << KVM_FEATURE_ASYNC_PF_INT);
+> > +             if (IS_ENABLED(CONFIG_PARAVIRT_SCHED_KVM))
+> > +                     entry->eax |=3D (1 << KVM_FEATURE_PV_SCHED);
+> >
+> >               if (sched_info_on())
+> >                       entry->eax |=3D (1 << KVM_FEATURE_STEAL_TIME);
+> > diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> > index 7bcf1a76a6ab..0f475b50ac83 100644
+> > --- a/arch/x86/kvm/x86.c
+> > +++ b/arch/x86/kvm/x86.c
+> > @@ -3879,6 +3879,33 @@ int kvm_set_msr_common(struct kvm_vcpu *vcpu, st=
+ruct msr_data *msr_info)
+> >                       return 1;
+> >               break;
+> >
+> > +#ifdef CONFIG_PARAVIRT_SCHED_KVM
+> > +     case MSR_KVM_PV_SCHED:
+> > +             if (!guest_pv_has(vcpu, KVM_FEATURE_PV_SCHED))
+> > +                     return 1;
+> > +
+> > +             if (!(data & KVM_MSR_ENABLED))
+> > +                     break;
+> > +
+> > +             if (!(data & ~KVM_MSR_ENABLED)) {
+> > +                     /*
+> > +                      * Disable the feature
+> > +                      */
+> > +                     vcpu->arch.pv_sched.msr_val =3D 0;
+> > +                     kvm_set_vcpu_boosted(vcpu, false);
+> > +             } if (!kvm_gfn_to_hva_cache_init(vcpu->kvm,
+> > +                             &vcpu->arch.pv_sched.data, data & ~KVM_MS=
+R_ENABLED,
+> > +                             sizeof(struct pv_sched_data))) {
+> > +                     vcpu->arch.pv_sched.msr_val =3D data;
+> > +                     kvm_set_vcpu_boosted(vcpu, false);
+> > +             } else {
+> > +                     pr_warn("MSR_KVM_PV_SCHED: kvm:%p, vcpu:%p, "
+> > +                             "msr value: %llx, kvm_gfn_to_hva_cache_in=
+it failed!\n",
+> > +                             vcpu->kvm, vcpu, data & ~KVM_MSR_ENABLED)=
+;
+>
+> As this is triggerable by the guest please drop this print (which is not
+> even ratelimited!). I think it would be better to just 'return 1;' in cas=
+e
+> of kvm_gfn_to_hva_cache_init() failure but maybe you also need to
+> account for 'msr_info->host_initiated' to not fail setting this MSR from
+> the host upon migration.
+>
+Makes sense, shall remove the pr_warn.
+I hadn't thought about migration, thanks for bringing this up. Will
+make modifications to account for migration as well.
+
+Thanks,
+Vineeth
 
