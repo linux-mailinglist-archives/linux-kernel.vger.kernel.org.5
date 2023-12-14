@@ -2,155 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7030A812FD2
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 13:12:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 76BDF812FD3
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 13:12:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1572954AbjLNMMI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 07:12:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43676 "EHLO
+        id S1572955AbjLNMMY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 07:12:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60906 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1572948AbjLNMME (ORCPT
+        with ESMTP id S1572923AbjLNMMV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 07:12:04 -0500
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id D7548121
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 04:12:09 -0800 (PST)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1D1F0C15;
-        Thu, 14 Dec 2023 04:12:55 -0800 (PST)
-Received: from [10.1.38.142] (XHFQ2J9959.cambridge.arm.com [10.1.38.142])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A8D4B3F738;
-        Thu, 14 Dec 2023 04:12:06 -0800 (PST)
-Message-ID: <8e2a5b4c-ba3a-4dcd-8aae-e5d3170d048a@arm.com>
-Date:   Thu, 14 Dec 2023 12:12:05 +0000
+        Thu, 14 Dec 2023 07:12:21 -0500
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0159811A;
+        Thu, 14 Dec 2023 04:12:27 -0800 (PST)
+Received: from pendragon.ideasonboard.com (213-243-189-158.bb.dnainternet.fi [213.243.189.158])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id EC3F04A9;
+        Thu, 14 Dec 2023 13:11:39 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1702555900;
+        bh=J1W791y5z9tb+RMNhkJ3fZXGR3XgxrCTNy61KkwXuPw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=XVjx4qHgReg8Rrb3/ikXD7shwptR2xncpRS1Uz2UZ+Q/NccDWuxKgctDo6ngMEqRz
+         g2FmJHpQ17/JNSEwUcoj6oWU5jJw3nM0xsMx7U8/kgFARBAn5FTlINRVjG77mfL3s2
+         NjL3Z2CVj6Zp4p0VyyKyH2x8rkulkkbRy5TR3foE=
+Date:   Thu, 14 Dec 2023 14:12:33 +0200
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Changhuang Liang <changhuang.liang@starfivetech.com>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Marvin Lin <milkfafa@gmail.com>,
+        Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
+        Ming Qian <ming.qian@nxp.com>,
+        Nicolas Dufresne <nicolas.dufresne@collabora.com>,
+        Benjamin Gaignard <benjamin.gaignard@collabora.com>,
+        Tomi Valkeinen <tomi.valkeinen+renesas@ideasonboard.com>,
+        Mingjia Zhang <mingjia.zhang@mediatek.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Dan Carpenter <dan.carpenter@linaro.org>,
+        Jack Zhu <jack.zhu@starfivetech.com>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-staging@lists.linux.dev
+Subject: Re: [PATCH v1 4/9] staging: media: starfive: camss: Replace format
+ index with pad
+Message-ID: <20231214121233.GB21146@pendragon.ideasonboard.com>
+References: <20231214065027.28564-1-changhuang.liang@starfivetech.com>
+ <20231214065027.28564-5-changhuang.liang@starfivetech.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v9 04/10] mm: thp: Support allocation of anonymous
- multi-size THP
-Content-Language: en-GB
-To:     Dan Carpenter <dan.carpenter@linaro.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Yin Fengwei <fengwei.yin@intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        Yu Zhao <yuzhao@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Yang Shi <shy828301@gmail.com>,
-        "Huang, Ying" <ying.huang@intel.com>, Zi Yan <ziy@nvidia.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Itaru Kitayama <itaru.kitayama@gmail.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        David Rientjes <rientjes@google.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Hugh Dickins <hughd@google.com>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        Barry Song <21cnbao@gmail.com>,
-        Alistair Popple <apopple@nvidia.com>, linux-mm@kvack.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20231207161211.2374093-1-ryan.roberts@arm.com>
- <20231207161211.2374093-5-ryan.roberts@arm.com>
- <cb1fe352-ca47-4c3b-ab51-ecf51a83ce50@moroto.mountain>
- <43a8bfff-f939-4f2d-a8cd-97306d5e44c9@arm.com>
- <e2da3c78-85f7-4516-bbab-97fac9629dcc@suswa.mountain>
-From:   Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <e2da3c78-85f7-4516-bbab-97fac9629dcc@suswa.mountain>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLACK autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20231214065027.28564-5-changhuang.liang@starfivetech.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 14/12/2023 11:30, Dan Carpenter wrote:
-> On Thu, Dec 14, 2023 at 10:54:19AM +0000, Ryan Roberts wrote:
->> On 13/12/2023 07:21, Dan Carpenter wrote:
->>> On Thu, Dec 07, 2023 at 04:12:05PM +0000, Ryan Roberts wrote:
->>>> @@ -4176,10 +4260,15 @@ static vm_fault_t do_anonymous_page(struct vm_fault *vmf)
->>>>  	/* Allocate our own private page. */
->>>>  	if (unlikely(anon_vma_prepare(vma)))
->>>>  		goto oom;
->>>> -	folio = vma_alloc_zeroed_movable_folio(vma, vmf->address);
->>>> +	folio = alloc_anon_folio(vmf);
->>>> +	if (IS_ERR(folio))
->>>> +		return 0;
->>>>  	if (!folio)
->>>>  		goto oom;
->>>
->>> Returning zero is weird.  I think it should be a vm_fault_t code.
->>
->> It's the same pattern that the existing code a little further down this function
->> already implements:
->>
->> 	vmf->pte = pte_offset_map_lock(vma->vm_mm, vmf->pmd, addr, &vmf->ptl);
->> 	if (!vmf->pte)
->> 		goto release;
->>
->> If we fail to map/lock the pte (due to a race), then we return 0 to allow user
->> space to rerun the faulting instruction and cause the fault to happen again. The
->> above code ends up calling "return ret;" and ret is 0.
->>
-> 
-> Ah, okay.  Thanks!
-> 
->>>
->>> This mixing of error pointers and NULL is going to cause problems.
->>> Normally when we have a mix of error pointers and NULL then the NULL is
->>> not an error but instead means that the feature has been deliberately
->>> turned off.  I'm unable to figure out what the meaning is here.
->>
->> There are 3 conditions that the function can return:
->>
->>  - folio successfully allocated
->>  - folio failed to be allocated due to OOM
->>  - fault needs to be tried again due to losing race
->>
->> Previously only the first 2 conditions were possible and they were indicated by
->> NULL/not-NULL. The new 3rd condition is only possible when THP is compile-time
->> enabled. So it keeps the logic simpler to keep the NULL/not-NULL distinction for
->> the first 2, and use the error code for the final one.
->>
->> There are IS_ERR() and IS_ERR_OR_NULL() variants so I assume a pattern where you
->> can have pointer, error or NULL is somewhat common already?
-> 
-> People are confused by this a lot so I have written a blog about it:
-> 
-> https://staticthinking.wordpress.com/2022/08/01/mixing-error-pointers-and-null/
+Hi Changhuang,
 
-Nice; thanks for the pointer :)
+Thank you for the patch.
 
-> 
-> The IS_ERR_OR_NULL() function should be used like this:
-> 
-> int blink_leds()
-> {
-> 	led = get_leds();
-> 	if (IS_ERR_OR_NULL(led))
-> 		return PTR_ERR(led);  <-- NULL means zero/success
-> 	return led->blink();
-> }
-> 
-> In the case of alloc_anon_folio(), I would be tempted to create a
-> wrapper around it where NULL becomes ERR_PTR(-ENOMEM).  But this is
-> obviously fast path code and I haven't benchmarked it.
-> 
-> Adding a comment is the other option.
+On Wed, Dec 13, 2023 at 10:50:22PM -0800, Changhuang Liang wrote:
+> Replace format index with pad.
 
-I'll add a comment; as you say this is a fast path, and I'm actively being
-burned in similar places (on another series I'm working on) where an additional
-check is regressing performance significantly so not keen on risking it here.
+The code change looks good I think, but the commit message needs to
+explain *why* you're changing this.
 
-Andrew, I'll fold in the David's suggested ifdef improvement at the same time.
-Would you prefer an additional patch to squash in, or a whole new version of the
-series to swap out with the existing patches in mm-unstable?
-
+> Signed-off-by: Changhuang Liang <changhuang.liang@starfivetech.com>
+> ---
+>  drivers/staging/media/starfive/camss/stf-isp.c | 11 ++---------
+>  1 file changed, 2 insertions(+), 9 deletions(-)
 > 
-> regards,
-> dan carpenter
-> 
+> diff --git a/drivers/staging/media/starfive/camss/stf-isp.c b/drivers/staging/media/starfive/camss/stf-isp.c
+> index ac83f23842df..c3ae02cf6dd8 100644
+> --- a/drivers/staging/media/starfive/camss/stf-isp.c
+> +++ b/drivers/staging/media/starfive/camss/stf-isp.c
+> @@ -11,9 +11,6 @@
+>  
+>  #include "stf-camss.h"
+>  
+> -#define SINK_FORMATS_INDEX	0
+> -#define SOURCE_FORMATS_INDEX	1
+> -
+>  static int isp_set_selection(struct v4l2_subdev *sd,
+>  			     struct v4l2_subdev_state *state,
+>  			     struct v4l2_subdev_selection *sel);
+> @@ -95,11 +92,7 @@ static void isp_try_format(struct stf_isp_dev *isp_dev,
+>  		return;
+>  	}
+>  
+> -	if (pad == STF_ISP_PAD_SINK)
+> -		formats = &isp_dev->formats[SINK_FORMATS_INDEX];
+> -	else if (pad == STF_ISP_PAD_SRC)
+> -		formats = &isp_dev->formats[SOURCE_FORMATS_INDEX];
+> -
+> +	formats = &isp_dev->formats[pad];
+>  	fmt->width = clamp_t(u32, fmt->width, STFCAMSS_FRAME_MIN_WIDTH,
+>  			     STFCAMSS_FRAME_MAX_WIDTH);
+>  	fmt->height = clamp_t(u32, fmt->height, STFCAMSS_FRAME_MIN_HEIGHT,
+> @@ -124,7 +117,7 @@ static int isp_enum_mbus_code(struct v4l2_subdev *sd,
+>  		if (code->index >= ARRAY_SIZE(isp_formats_sink))
+>  			return -EINVAL;
+>  
+> -		formats = &isp_dev->formats[SINK_FORMATS_INDEX];
+> +		formats = &isp_dev->formats[code->pad];
+>  		code->code = formats->fmts[code->index].code;
+>  	} else {
+>  		struct v4l2_mbus_framefmt *sink_fmt;
 
+-- 
+Regards,
+
+Laurent Pinchart
