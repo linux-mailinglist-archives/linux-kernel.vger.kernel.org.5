@@ -1,61 +1,62 @@
-Return-Path: <linux-kernel+bounces-199-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-200-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B31B0813D61
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 23:39:05 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4BF29813D64
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 23:39:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E5AC61C21E41
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 22:39:04 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 795A1B21AB5
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 22:39:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 932FB68B90;
-	Thu, 14 Dec 2023 22:38:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 09E9E6DD1B;
+	Thu, 14 Dec 2023 22:38:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="c89FoXZc"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mC43kL+R"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
+Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 55D11697B7;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 35F05697B1;
 	Thu, 14 Dec 2023 22:38:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-40c69403b3eso498495e9.3;
+Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-40c48d7a7a7so452265e9.3;
         Thu, 14 Dec 2023 14:38:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702593513; x=1703198313; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=qO4xPzkioMy0PzT4rWB2kh7NbLXNeuluzCFbqlXn2HQ=;
-        b=c89FoXZcyfqrWfKDOGF7TUCkQnLCe/FVUgos/W63Ss4G8eN9oPk2dbGai5CiERa6nz
-         4CMqELW8zbkJ9Z0JUxqJTOOfcw9h6cFi9fQrePNOsXY2NwsxIMYCG+wkZzMyWtO2aPuP
-         NGZVKJNTQ0/UQxsnmJFzPgNLxV9bd39YlmgT44qIDu7uEGlHU2o7ScT3fHDY3JiD5mUQ
-         2XGc1ttKGx4KpnsLoEKtYifyCT6ra4G7WJbPG8JX0GWVVLNgGeR7gSiGmQY78oZapshd
-         wrsXhNW0usNH4672bO7a0IJSRG4tiiHeOkrvhHH7yCZSQmjSt0+5HEG250iq+65Q5cZb
-         MnZw==
+        d=gmail.com; s=20230601; t=1702593514; x=1703198314; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=PysnZlgIi6LjarqurpvkD4iKyhD/xp2NGOBU17rT3Ak=;
+        b=mC43kL+R6/vOPT2+r3M1kYbBsmolENg9LKxhrlVoDjkD2lSAyYjs+e2W8Uz6/6mSg4
+         X2tzOGUKENoqO88cQyrF3YamzVddHpgAwC3chAdzAB9+KBkUrOmgorZApj/zJk21c10F
+         MTk4dPkPSdv5ROWd9/KNjm9bGFyLQox8MeHhg4BWCMsszhXPEHta0RyTlOawumOqmF8g
+         kfjEdE94yIV2VOXxFyhFJTkG7QGxPFNCGwyg7s/LPv/2sMuMo3FGzGdZrf2yHqu4TE0d
+         1hkKfONvLevHe1Qy804euegk3RC1x9/Njm8mYk69hJoVrP5jJ8j0kP9NNi8x9JpOSigO
+         GJMw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702593513; x=1703198313;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=qO4xPzkioMy0PzT4rWB2kh7NbLXNeuluzCFbqlXn2HQ=;
-        b=YZc+pzpPhAQSCDmg9soF7qEB3HBbSttQplYskn0+diE1egz8OXRZpSlGpXZL1mfvid
-         7f98lCBPH72nbi1u/J28VS/5jSCb+EbK8PzT/1q+TZPkBcsJFhadLO0Ck2J4taBCmKI2
-         w+Jhl8s5FyHPcs1uUUZOnL9hKhfAF/7q3Wk4m5VokKzdDT/33x8N73k4MO88vm6OhliN
-         EpFgxYFFbBxUNqmnOtQMTmYWWT2RXObqsc0AUvz2iyakHqMPepIAtRyJ67TUkcuIKLGl
-         0xdysN/d5943FhmCyEu27uCxRfsznMZm7fLwR1zzMOb86Utv0BqCBzTP5JIKYgC+pAzI
-         2SCg==
-X-Gm-Message-State: AOJu0YyxhDGb3HuWC8Ao0k46FdnmVrXKt9XWRQ+iktVOH32pD45YN+5o
-	qNHJwcIBxzmw1079mFSc2JU=
-X-Google-Smtp-Source: AGHT+IFiBqXxM3+R4R4MdCuFdA9ekXm8MpK05BiJjz3ux0xXiPOWuVpfjSQ8at9eseLTPvOjBdNKoQ==
-X-Received: by 2002:a05:600c:1f1a:b0:40c:31f1:145c with SMTP id bd26-20020a05600c1f1a00b0040c31f1145cmr5011841wmb.169.1702593512901;
-        Thu, 14 Dec 2023 14:38:32 -0800 (PST)
+        d=1e100.net; s=20230601; t=1702593514; x=1703198314;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=PysnZlgIi6LjarqurpvkD4iKyhD/xp2NGOBU17rT3Ak=;
+        b=OOSUIa2JplBU2xETzN97Slgf13e9UtH+Y08Kt+7p0EkYYbRloN743vSCgVLXFH/X2L
+         LrRFi+LGQZvVBW6IWSrC8eBQ8qrrXrJGvoQtlEFM/4f/0191kfvJmFt+TCZQ5t1jCsNG
+         NrQUwHtqTUVjAeKThdk7/wqDKSAv8GiGmPm3nSMhe4/xMadOgctdgrt42HXtXP0TGQ6u
+         9vV4yC7t5GiuV1hhHrM1uRj9TdwyGvJmvxz6zTJmJaYO8hiutyPjmJdtNHieR9LzxxzK
+         knGGsgE2PmRq0Oe/BFz2DzYqox03x4lz3+7anCQm8hgX4sStINYF8rvI09pIuiZK6v4C
+         EW+A==
+X-Gm-Message-State: AOJu0YzQcvxGMlqcXsj+EV7hqL3FLG5QvWgER2cGoYc5Th98PZXBblqN
+	NrCWbmzq3TkEubtz0rvSznA=
+X-Google-Smtp-Source: AGHT+IFV2KaagGU1wW7ISYptzkLofZaljoiSAiIvtj99QDgqaxvKjZKYXi3Jl8j1bIqqqGijl6cvGw==
+X-Received: by 2002:a05:600c:2113:b0:40b:26f1:57a2 with SMTP id u19-20020a05600c211300b0040b26f157a2mr5276018wml.27.1702593513815;
+        Thu, 14 Dec 2023 14:38:33 -0800 (PST)
 Received: from localhost.localdomain (93-34-89-13.ip49.fastwebnet.it. [93.34.89.13])
-        by smtp.googlemail.com with ESMTPSA id n41-20020a05600c3ba900b0040c61ee0816sm54746wms.0.2023.12.14.14.38.31
+        by smtp.googlemail.com with ESMTPSA id n41-20020a05600c3ba900b0040c61ee0816sm54746wms.0.2023.12.14.14.38.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Dec 2023 14:38:32 -0800 (PST)
+        Thu, 14 Dec 2023 14:38:33 -0800 (PST)
 From: Christian Marangi <ansuelsmth@gmail.com>
 To: Andrew Lunn <andrew@lunn.ch>,
 	Heiner Kallweit <hkallweit1@gmail.com>,
@@ -67,10 +68,12 @@ To: Andrew Lunn <andrew@lunn.ch>,
 	netdev@vger.kernel.org,
 	linux-kernel@vger.kernel.org
 Cc: Christian Marangi <ansuelsmth@gmail.com>
-Subject: [net-next PATCH v2 0/3] net: add define to describe link speed modes
-Date: Thu, 14 Dec 2023 16:49:03 +0100
-Message-Id: <20231214154906.29436-1-ansuelsmth@gmail.com>
+Subject: [net-next PATCH v2 1/3] net: phy: refactor and better document phy_speeds function
+Date: Thu, 14 Dec 2023 16:49:04 +0100
+Message-Id: <20231214154906.29436-2-ansuelsmth@gmail.com>
 X-Mailer: git-send-email 2.40.1
+In-Reply-To: <20231214154906.29436-1-ansuelsmth@gmail.com>
+References: <20231214154906.29436-1-ansuelsmth@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -79,31 +82,84 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-This is a simple series to add a way to describe link speed modes number.
+Refactor the phy_speeds function to be more readable and understandable
+and add some documentation on it.
 
-An additional helper is added and the phy_speeds is better documented
-and expanded to return just the modes number.
+While on it extend it to take NULL speeds values to make it return only
+the count of speed modes in the passed mask.
 
-This is also needed in the upcoming changes in the netdev trigger for LEDs
-where phy_speeds functions is used to declare a more compact array instead
-of using a "big enough" approach.
+Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
+---
+ drivers/net/phy/phy-core.c | 50 ++++++++++++++++++++++++++++++++++----
+ 1 file changed, 45 insertions(+), 5 deletions(-)
 
-Changes v2:
-- Drop stupid enum-define hack
-- Introduce helper function
-- Document phy_speeds function
-- Extent phy_speeds function
-
-Christian Marangi (3):
-  net: phy: refactor and better document phy_speeds function
-  net: phy: add simple helper to return count of supported speeds
-  net: phy: led: dynamically allocate speed modes array
-
- drivers/net/phy/phy-core.c         | 50 +++++++++++++++++++++++++++---
- drivers/net/phy/phy.c              | 12 +++++++
- drivers/net/phy/phy_led_triggers.c | 16 ++++++++--
- 3 files changed, 70 insertions(+), 8 deletions(-)
-
+diff --git a/drivers/net/phy/phy-core.c b/drivers/net/phy/phy-core.c
+index 966c93cbe616..9618d89458d1 100644
+--- a/drivers/net/phy/phy-core.c
++++ b/drivers/net/phy/phy-core.c
+@@ -317,17 +317,57 @@ phy_lookup_setting(int speed, int duplex, const unsigned long *mask, bool exact)
+ }
+ EXPORT_SYMBOL_GPL(phy_lookup_setting);
+ 
++/**
++ * phy_speeds - return all speeds in mask
++ * @speeds: pointer to array where to put the speed modes
++ * @size: size of array where to put the speed modes
++ * @mask: mask of speed modes to compare with
++ *
++ * Take mask, test bit in mask with the settings table and compose the
++ * speeds array based on that as many as size permits.
++ *
++ * With speeds NULL, only the number of detected modes is returned and
++ * no array is composed. (size value is ignored)
++ *
++ * Return the number of detected modes in mask.
++ */
+ size_t phy_speeds(unsigned int *speeds, size_t size,
+ 		  unsigned long *mask)
+ {
++	unsigned int curr_speed;
+ 	size_t count;
+ 	int i;
+ 
+-	for (i = 0, count = 0; i < ARRAY_SIZE(settings) && count < size; i++)
+-		if (settings[i].bit < __ETHTOOL_LINK_MODE_MASK_NBITS &&
+-		    test_bit(settings[i].bit, mask) &&
+-		    (count == 0 || speeds[count - 1] != settings[i].speed))
+-			speeds[count++] = settings[i].speed;
++	for (i = 0, count = 0; i < ARRAY_SIZE(settings); i++) {
++		/* Inconsistent mapping with ethtool modes? */
++		if (unlikely(settings[i].bit >= __ETHTOOL_LINK_MODE_MASK_NBITS))
++			return count;
++
++		/* Skip. Speed not in provided mask */
++		if (!test_bit(settings[i].bit, mask))
++			continue;
++
++		/* settings struct is set in descending order with
++		 * ordered speed modes. Detect a new speed mode by
++		 * checking if it's different than the current one.
++		 */
++		if (count == 0 || curr_speed != settings[i].speed) {
++			curr_speed = settings[i].speed;
++
++			/* With speeds not declared, we return only
++			 * the number of detected speed mode in the mask.
++			 */
++			if (speeds) {
++				/* No more space to put new modes */
++				if (count > size)
++					return count;
++
++				speeds[count] = curr_speed;
++			}
++
++			count++;
++		}
++	}
+ 
+ 	return count;
+ }
 -- 
 2.40.1
 
