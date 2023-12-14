@@ -2,148 +2,282 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EB26F813362
+	by mail.lfdr.de (Postfix) with ESMTP id 9674B813361
 	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 15:41:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1573528AbjLNOlf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 09:41:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41754 "EHLO
+        id S1573523AbjLNOlc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 09:41:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54380 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230298AbjLNOld (ORCPT
+        with ESMTP id S230260AbjLNOla (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 09:41:33 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A937F125
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 06:41:39 -0800 (PST)
+        Thu, 14 Dec 2023 09:41:30 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBBF4115
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 06:41:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1702564900; x=1734100900;
+  t=1702564896; x=1734100896;
   h=date:from:to:cc:subject:message-id:mime-version;
-  bh=fO4V+ejCyUnzWk/Rt58KkdhI5/UtBknV5DJ/XG96U9Y=;
-  b=cKvCbDEW8Bk3Gih4ul7m72taq/M/nKTQMRXIvPVqtI3YgK2nire99ukf
-   mPp1VNBBZZ5WP6jZyrn2ucah9Wwpj+XIAYv7JVmVk8R3qr3uf+a8x/9+J
-   D7t6LByMX3YS+xFqiQVcrWJ6FcIswJfVkhM7VuN5+w+pz1GwDgr6sn9/H
-   fvsI0tYnECCUo9yT3eH3S4YXSh0l3U9MUr5htmYtLo6W2ONX1VChaLtIc
-   +FUTAbE3PWQe9DtRF5vCOAD7G3xual8rsFsn6hptwPsQG1QjA94IQtW8F
-   7u0R0k9SEXmUbni+waIrUYyard9fRBIi4oqj0oelbqX/0wovRLqMWH5iN
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10924"; a="16675699"
+  bh=9rgxfOe2FH8YxsT2QMJChnJtUV9rZKfVkhp7rG3QJIw=;
+  b=i+35Wg9kzJtmIcH0y76Haye9HrZyULpusaciWeiAYebaqo0vZyCSGFd1
+   mjF9cnx52IVOQKEfNJ4OeF7EDvLfmTqXGnPnNAmpBav7YNaFaZu9Ky8ih
+   85s4B1PdYjJed5xKvl+zN/9joDfSYVqcHAsdrTGx96u1SsIa5rf12Hued
+   egXeJp/O5vE7affcjIalKYc9973faE9pZliVNeXuoOtrM+NBcXBFf5bdz
+   8uz3x9cqmSTkjblfGSWgqELItREzIYsBF6LJsbgKFbi0JMtkKGNMrEUqQ
+   a8O5ct+RD+o3AZrtT0doWgKonZa31Xle2HYtLJ5pqN+aF8EEwRlsGsuM0
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10924"; a="392302135"
 X-IronPort-AV: E=Sophos;i="6.04,275,1695711600"; 
-   d="scan'208";a="16675699"
-Received: from orviesa001.jf.intel.com ([10.64.159.141])
-  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Dec 2023 06:41:36 -0800
+   d="scan'208";a="392302135"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Dec 2023 06:41:35 -0800
 X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10924"; a="892488774"
 X-IronPort-AV: E=Sophos;i="6.04,275,1695711600"; 
-   d="scan'208";a="22432856"
+   d="scan'208";a="892488774"
 Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by orviesa001.jf.intel.com with ESMTP; 14 Dec 2023 06:41:35 -0800
+  by fmsmga002.fm.intel.com with ESMTP; 14 Dec 2023 06:41:33 -0800
 Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
         (envelope-from <lkp@intel.com>)
-        id 1rDmu3-000MBQ-2l;
+        id 1rDmu3-000MBO-2Z;
         Thu, 14 Dec 2023 14:41:31 +0000
-Date:   Thu, 14 Dec 2023 22:40:40 +0800
+Date:   Thu, 14 Dec 2023 22:40:41 +0800
 From:   kernel test robot <lkp@intel.com>
-To:     Thomas Gleixner <tglx@linutronix.de>
+To:     David Francis <David.Francis@amd.com>
 Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Ingo Molnar <mingo@kernel.org>
-Subject: arch/x86/kernel/apic/apic.c:2135: warning: Function parameter or
- member 'spurious_interrupt' not described in 'DEFINE_IDTENTRY_IRQ'
-Message-ID: <202312142220.6hKrNeSe-lkp@intel.com>
+        Alex Deucher <alexander.deucher@amd.com>,
+        Tony Cheng <Tony.Cheng@amd.com>
+Subject: drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_i2c_hw.c:809:67:
+ sparse: sparse: dubious: x | !y
+Message-ID: <202312142225.r4UO3nhc-lkp@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Thomas,
-
-FYI, the error/warning still remains.
-
 tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
 head:   5bd7ef53ffe5ca580e93e74eb8c81ed191ddc4bd
-commit: fa5e5c409213265da8a188b4a5e4e641b1382eb4 x86/entry: Use idtentry for interrupts
-date:   3 years, 6 months ago
-config: x86_64-allnoconfig (https://download.01.org/0day-ci/archive/20231214/202312142220.6hKrNeSe-lkp@intel.com/config)
-compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231214/202312142220.6hKrNeSe-lkp@intel.com/reproduce)
+commit: c85e6e546edd7e362693218a33a6f63217802fd3 drm/amd/display: Create new i2c resource
+date:   5 years ago
+config: x86_64-randconfig-121-20231101 (https://download.01.org/0day-ci/archive/20231214/202312142225.r4UO3nhc-lkp@intel.com/config)
+compiler: gcc-11 (Debian 11.3.0-12) 11.3.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231214/202312142225.r4UO3nhc-lkp@intel.com/reproduce)
 
 If you fix the issue in a separate patch/commit (i.e. not just a new version of
 the same patch/commit), kindly add following tags
 | Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202312142220.6hKrNeSe-lkp@intel.com/
+| Closes: https://lore.kernel.org/oe-kbuild-all/202312142225.r4UO3nhc-lkp@intel.com/
 
-All warnings (new ones prefixed by >>):
+sparse warnings: (new ones prefixed by >>)
+   drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_i2c_hw.c:89:6: sparse: sparse: symbol 'dce_i2c_hw_engine_acquire_engine' was not declared. Should it be static?
+   drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_i2c_hw.c:113:6: sparse: sparse: symbol 'dce_i2c_engine_acquire_hw' was not declared. Should it be static?
+   drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_i2c_hw.c:301:35: sparse: sparse: symbol 'dce_i2c_hw_engine_wait_on_operation_result' was not declared. Should it be static?
+   drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_i2c_hw.c:369:10: sparse: sparse: symbol 'get_reference_clock' was not declared. Should it be static?
+   drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_i2c_hw.c:677:6: sparse: sparse: symbol 'dce_i2c_hw_engine_submit_request' was not declared. Should it be static?
+>> drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_i2c_hw.c:809:67: sparse: sparse: dubious: x | !y
+   drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_i2c_hw.c:89:6: warning: no previous prototype for 'dce_i2c_hw_engine_acquire_engine' [-Wmissing-prototypes]
+      89 | bool dce_i2c_hw_engine_acquire_engine(
+         |      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_i2c_hw.c:113:6: warning: no previous prototype for 'dce_i2c_engine_acquire_hw' [-Wmissing-prototypes]
+     113 | bool dce_i2c_engine_acquire_hw(
+         |      ^~~~~~~~~~~~~~~~~~~~~~~~~
+   drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_i2c_hw.c:301:35: warning: no previous prototype for 'dce_i2c_hw_engine_wait_on_operation_result' [-Wmissing-prototypes]
+     301 | enum i2c_channel_operation_result dce_i2c_hw_engine_wait_on_operation_result(
+         |                                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_i2c_hw.c:369:10: warning: no previous prototype for 'get_reference_clock' [-Wmissing-prototypes]
+     369 | uint32_t get_reference_clock(
+         |          ^~~~~~~~~~~~~~~~~~~
+   drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_i2c_hw.c:677:6: warning: no previous prototype for 'dce_i2c_hw_engine_submit_request' [-Wmissing-prototypes]
+     677 | bool dce_i2c_hw_engine_submit_request(
+         |      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   In file included from drivers/gpu/drm/amd/amdgpu/../display/dc/inc/core_types.h:32,
+                    from drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_i2c.h:29,
+                    from drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_i2c_hw.c:25:
+   drivers/gpu/drm/amd/amdgpu/../display/include/ddc_service_types.h:120:22: warning: 'DP_DVI_CONVERTER_ID_4' defined but not used [-Wunused-const-variable=]
+     120 | static const uint8_t DP_DVI_CONVERTER_ID_4[] = "m2DVIa";
+         |                      ^~~~~~~~~~~~~~~~~~~~~
+   drivers/gpu/drm/amd/amdgpu/../display/include/ddc_service_types.h:118:22: warning: 'DP_VGA_LVDS_CONVERTER_ID_3' defined but not used [-Wunused-const-variable=]
+     118 | static const uint8_t DP_VGA_LVDS_CONVERTER_ID_3[] = "dnomlA";
+         |                      ^~~~~~~~~~~~~~~~~~~~~~~~~~
+   drivers/gpu/drm/amd/amdgpu/../display/include/ddc_service_types.h:116:22: warning: 'DP_VGA_LVDS_CONVERTER_ID_2' defined but not used [-Wunused-const-variable=]
+     116 | static const uint8_t DP_VGA_LVDS_CONVERTER_ID_2[] = "sivarT";
+         |                      ^~~~~~~~~~~~~~~~~~~~~~~~~~
+   In file included from drivers/gpu/drm/amd/amdgpu/../display/dc/dc_types.h:29,
+                    from drivers/gpu/drm/amd/amdgpu/../display/dc/dc.h:29,
+                    from drivers/gpu/drm/amd/amdgpu/../display/dc/inc/core_types.h:29,
+                    from drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_i2c.h:29,
+                    from drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_i2c_hw.c:25:
+   drivers/gpu/drm/amd/amdgpu/../display/include/fixed31_32.h:76:32: warning: 'dc_fixpt_ln2_div_2' defined but not used [-Wunused-const-variable=]
+      76 | static const struct fixed31_32 dc_fixpt_ln2_div_2 = { 1488522236LL };
+         |                                ^~~~~~~~~~~~~~~~~~
+   drivers/gpu/drm/amd/amdgpu/../display/include/fixed31_32.h:75:32: warning: 'dc_fixpt_ln2' defined but not used [-Wunused-const-variable=]
+      75 | static const struct fixed31_32 dc_fixpt_ln2 = { 2977044471LL };
+         |                                ^~~~~~~~~~~~
+   drivers/gpu/drm/amd/amdgpu/../display/include/fixed31_32.h:74:32: warning: 'dc_fixpt_e' defined but not used [-Wunused-const-variable=]
+      74 | static const struct fixed31_32 dc_fixpt_e = { 11674931555LL };
+         |                                ^~~~~~~~~~
+   drivers/gpu/drm/amd/amdgpu/../display/include/fixed31_32.h:73:32: warning: 'dc_fixpt_two_pi' defined but not used [-Wunused-const-variable=]
+      73 | static const struct fixed31_32 dc_fixpt_two_pi = { 26986075409LL };
+         |                                ^~~~~~~~~~~~~~~
+   drivers/gpu/drm/amd/amdgpu/../display/include/fixed31_32.h:72:32: warning: 'dc_fixpt_pi' defined but not used [-Wunused-const-variable=]
+      72 | static const struct fixed31_32 dc_fixpt_pi = { 13493037705LL };
+         |                                ^~~~~~~~~~~
+   drivers/gpu/drm/amd/amdgpu/../display/include/fixed31_32.h:67:32: warning: 'dc_fixpt_zero' defined but not used [-Wunused-const-variable=]
+      67 | static const struct fixed31_32 dc_fixpt_zero = { 0 };
+         |                                ^~~~~~~~~~~~~
+   drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_i2c_hw.o: warning: objtool: acquire_i2c_hw_engine()+0x4f: sibling call from callable instruction with modified stack frame
+   drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_i2c_hw.o: warning: objtool: dce_i2c_submit_command_hw()+0x1f1: sibling call from callable instruction with modified stack frame
+--
+   drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_i2c_sw.c:73:35: sparse: sparse: symbol 'dce_i2c_sw_engine_get_channel_status' was not declared. Should it be static?
+   drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_i2c_sw.c:371:6: sparse: sparse: symbol 'dce_i2c_sw_engine_set_speed' was not declared. Should it be static?
+   drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_i2c_sw.c:385:6: sparse: sparse: symbol 'dce_i2c_sw_engine_acquire_engine' was not declared. Should it be static?
+   drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_i2c_sw.c:401:6: sparse: sparse: symbol 'dce_i2c_engine_acquire_sw' was not declared. Should it be static?
+   drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_i2c_sw.c:429:6: sparse: sparse: symbol 'dce_i2c_sw_engine_submit_channel_request' was not declared. Should it be static?
+   drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_i2c_sw.c:472:6: sparse: sparse: symbol 'dce_i2c_sw_engine_submit_request' was not declared. Should it be static?
+>> drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_i2c_sw.c:566:67: sparse: sparse: dubious: x | !y
+   drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_i2c_sw.c:73:35: warning: no previous prototype for 'dce_i2c_sw_engine_get_channel_status' [-Wmissing-prototypes]
+      73 | enum i2c_channel_operation_result dce_i2c_sw_engine_get_channel_status(
+         |                                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_i2c_sw.c:371:6: warning: no previous prototype for 'dce_i2c_sw_engine_set_speed' [-Wmissing-prototypes]
+     371 | void dce_i2c_sw_engine_set_speed(
+         |      ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+   drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_i2c_sw.c:385:6: warning: no previous prototype for 'dce_i2c_sw_engine_acquire_engine' [-Wmissing-prototypes]
+     385 | bool dce_i2c_sw_engine_acquire_engine(
+         |      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_i2c_sw.c:401:6: warning: no previous prototype for 'dce_i2c_engine_acquire_sw' [-Wmissing-prototypes]
+     401 | bool dce_i2c_engine_acquire_sw(
+         |      ^~~~~~~~~~~~~~~~~~~~~~~~~
+   drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_i2c_sw.c:429:6: warning: no previous prototype for 'dce_i2c_sw_engine_submit_channel_request' [-Wmissing-prototypes]
+     429 | void dce_i2c_sw_engine_submit_channel_request(
+         |      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_i2c_sw.c:472:6: warning: no previous prototype for 'dce_i2c_sw_engine_submit_request' [-Wmissing-prototypes]
+     472 | bool dce_i2c_sw_engine_submit_request(
+         |      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   In file included from drivers/gpu/drm/amd/amdgpu/../display/dc/inc/core_types.h:32,
+                    from drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_i2c.h:29,
+                    from drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_i2c_sw.c:25:
+   drivers/gpu/drm/amd/amdgpu/../display/include/ddc_service_types.h:120:22: warning: 'DP_DVI_CONVERTER_ID_4' defined but not used [-Wunused-const-variable=]
+     120 | static const uint8_t DP_DVI_CONVERTER_ID_4[] = "m2DVIa";
+         |                      ^~~~~~~~~~~~~~~~~~~~~
+   drivers/gpu/drm/amd/amdgpu/../display/include/ddc_service_types.h:118:22: warning: 'DP_VGA_LVDS_CONVERTER_ID_3' defined but not used [-Wunused-const-variable=]
+     118 | static const uint8_t DP_VGA_LVDS_CONVERTER_ID_3[] = "dnomlA";
+         |                      ^~~~~~~~~~~~~~~~~~~~~~~~~~
+   drivers/gpu/drm/amd/amdgpu/../display/include/ddc_service_types.h:116:22: warning: 'DP_VGA_LVDS_CONVERTER_ID_2' defined but not used [-Wunused-const-variable=]
+     116 | static const uint8_t DP_VGA_LVDS_CONVERTER_ID_2[] = "sivarT";
+         |                      ^~~~~~~~~~~~~~~~~~~~~~~~~~
+   In file included from drivers/gpu/drm/amd/amdgpu/../display/dc/dc_types.h:29,
+                    from drivers/gpu/drm/amd/amdgpu/../display/dc/dc.h:29,
+                    from drivers/gpu/drm/amd/amdgpu/../display/dc/inc/core_types.h:29,
+                    from drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_i2c.h:29,
+                    from drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_i2c_sw.c:25:
+   drivers/gpu/drm/amd/amdgpu/../display/include/fixed31_32.h:76:32: warning: 'dc_fixpt_ln2_div_2' defined but not used [-Wunused-const-variable=]
+      76 | static const struct fixed31_32 dc_fixpt_ln2_div_2 = { 1488522236LL };
+         |                                ^~~~~~~~~~~~~~~~~~
+   drivers/gpu/drm/amd/amdgpu/../display/include/fixed31_32.h:75:32: warning: 'dc_fixpt_ln2' defined but not used [-Wunused-const-variable=]
+      75 | static const struct fixed31_32 dc_fixpt_ln2 = { 2977044471LL };
+         |                                ^~~~~~~~~~~~
+   drivers/gpu/drm/amd/amdgpu/../display/include/fixed31_32.h:74:32: warning: 'dc_fixpt_e' defined but not used [-Wunused-const-variable=]
+      74 | static const struct fixed31_32 dc_fixpt_e = { 11674931555LL };
+         |                                ^~~~~~~~~~
+   drivers/gpu/drm/amd/amdgpu/../display/include/fixed31_32.h:73:32: warning: 'dc_fixpt_two_pi' defined but not used [-Wunused-const-variable=]
+      73 | static const struct fixed31_32 dc_fixpt_two_pi = { 26986075409LL };
+         |                                ^~~~~~~~~~~~~~~
+   drivers/gpu/drm/amd/amdgpu/../display/include/fixed31_32.h:72:32: warning: 'dc_fixpt_pi' defined but not used [-Wunused-const-variable=]
+      72 | static const struct fixed31_32 dc_fixpt_pi = { 13493037705LL };
+         |                                ^~~~~~~~~~~
+   drivers/gpu/drm/amd/amdgpu/../display/include/fixed31_32.h:67:32: warning: 'dc_fixpt_zero' defined but not used [-Wunused-const-variable=]
+      67 | static const struct fixed31_32 dc_fixpt_zero = { 0 };
+         |                                ^~~~~~~~~~~~~
+   drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_i2c_sw.o: warning: objtool: wait_for_scl_high_sw.constprop.0()+0x60: sibling call from callable instruction with modified stack frame
+   drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_i2c_sw.o: warning: objtool: dce_i2c_submit_command_sw()+0x190: sibling call from callable instruction with modified stack frame
+   drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_i2c_sw.o: warning: objtool: dce_i2c_acquire_i2c_sw_engine()+0x47: sibling call from callable instruction with modified stack frame
 
->> arch/x86/kernel/apic/apic.c:2135: warning: Function parameter or member 'spurious_interrupt' not described in 'DEFINE_IDTENTRY_IRQ'
->> arch/x86/kernel/apic/apic.c:2135: warning: expecting prototype for spurious_interrupt(). Prototype was for DEFINE_IDTENTRY_IRQ() instead
+vim +809 drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_i2c_hw.c
 
-
-vim +2135 arch/x86/kernel/apic/apic.c
-
-c0104d38a740b2 arch/x86/kernel/apic/apic.c Yinghai Lu      2010-12-07  2118  
-^1da177e4c3f41 arch/x86_64/kernel/apic.c   Linus Torvalds  2005-04-16  2119  /*
-0e078e2f5060e0 arch/x86/kernel/apic_64.c   Thomas Gleixner 2008-01-30  2120   * Local APIC interrupts
-^1da177e4c3f41 arch/x86_64/kernel/apic.c   Linus Torvalds  2005-04-16  2121   */
-^1da177e4c3f41 arch/x86_64/kernel/apic.c   Linus Torvalds  2005-04-16  2122  
-633260fa143bbe arch/x86/kernel/apic/apic.c Thomas Gleixner 2020-05-21  2123  /**
-fa5e5c40921326 arch/x86/kernel/apic/apic.c Thomas Gleixner 2020-05-21  2124   * spurious_interrupt - Catch all for interrupts raised on unused vectors
-633260fa143bbe arch/x86/kernel/apic/apic.c Thomas Gleixner 2020-05-21  2125   * @regs:	Pointer to pt_regs on stack
-fa5e5c40921326 arch/x86/kernel/apic/apic.c Thomas Gleixner 2020-05-21  2126   * @vector:	The vector number
-633260fa143bbe arch/x86/kernel/apic/apic.c Thomas Gleixner 2020-05-21  2127   *
-633260fa143bbe arch/x86/kernel/apic/apic.c Thomas Gleixner 2020-05-21  2128   * This is invoked from ASM entry code to catch all interrupts which
-633260fa143bbe arch/x86/kernel/apic/apic.c Thomas Gleixner 2020-05-21  2129   * trigger on an entry which is routed to the common_spurious idtentry
-633260fa143bbe arch/x86/kernel/apic/apic.c Thomas Gleixner 2020-05-21  2130   * point.
-633260fa143bbe arch/x86/kernel/apic/apic.c Thomas Gleixner 2020-05-21  2131   *
-633260fa143bbe arch/x86/kernel/apic/apic.c Thomas Gleixner 2020-05-21  2132   * Also called from smp_spurious_apic_interrupt().
-0e078e2f5060e0 arch/x86/kernel/apic_64.c   Thomas Gleixner 2008-01-30  2133   */
-fa5e5c40921326 arch/x86/kernel/apic/apic.c Thomas Gleixner 2020-05-21  2134  DEFINE_IDTENTRY_IRQ(spurious_interrupt)
-^1da177e4c3f41 arch/x86_64/kernel/apic.c   Linus Torvalds  2005-04-16 @2135  {
-dc1528dd864a0b arch/x86/kernel/apic_64.c   Yinghai Lu      2008-08-24  2136  	u32 v;
-dc1528dd864a0b arch/x86/kernel/apic_64.c   Yinghai Lu      2008-08-24  2137  
-61069de7a3252b arch/x86/kernel/apic/apic.c Thomas Gleixner 2017-08-28  2138  	trace_spurious_apic_entry(vector);
-61069de7a3252b arch/x86/kernel/apic/apic.c Thomas Gleixner 2017-08-28  2139  
-f8a8fe61fec800 arch/x86/kernel/apic/apic.c Thomas Gleixner 2019-06-28  2140  	inc_irq_stat(irq_spurious_count);
-f8a8fe61fec800 arch/x86/kernel/apic/apic.c Thomas Gleixner 2019-06-28  2141  
-f8a8fe61fec800 arch/x86/kernel/apic/apic.c Thomas Gleixner 2019-06-28  2142  	/*
-f8a8fe61fec800 arch/x86/kernel/apic/apic.c Thomas Gleixner 2019-06-28  2143  	 * If this is a spurious interrupt then do not acknowledge
-f8a8fe61fec800 arch/x86/kernel/apic/apic.c Thomas Gleixner 2019-06-28  2144  	 */
-f8a8fe61fec800 arch/x86/kernel/apic/apic.c Thomas Gleixner 2019-06-28  2145  	if (vector == SPURIOUS_APIC_VECTOR) {
-f8a8fe61fec800 arch/x86/kernel/apic/apic.c Thomas Gleixner 2019-06-28  2146  		/* See SDM vol 3 */
-f8a8fe61fec800 arch/x86/kernel/apic/apic.c Thomas Gleixner 2019-06-28  2147  		pr_info("Spurious APIC interrupt (vector 0xFF) on CPU#%d, should never happen.\n",
-f8a8fe61fec800 arch/x86/kernel/apic/apic.c Thomas Gleixner 2019-06-28  2148  			smp_processor_id());
-f8a8fe61fec800 arch/x86/kernel/apic/apic.c Thomas Gleixner 2019-06-28  2149  		goto out;
-f8a8fe61fec800 arch/x86/kernel/apic/apic.c Thomas Gleixner 2019-06-28  2150  	}
-f8a8fe61fec800 arch/x86/kernel/apic/apic.c Thomas Gleixner 2019-06-28  2151  
-0e078e2f5060e0 arch/x86/kernel/apic_64.c   Thomas Gleixner 2008-01-30  2152  	/*
-f8a8fe61fec800 arch/x86/kernel/apic/apic.c Thomas Gleixner 2019-06-28  2153  	 * If it is a vectored one, verify it's set in the ISR. If set,
-f8a8fe61fec800 arch/x86/kernel/apic/apic.c Thomas Gleixner 2019-06-28  2154  	 * acknowledge it.
-0e078e2f5060e0 arch/x86/kernel/apic_64.c   Thomas Gleixner 2008-01-30  2155  	 */
-2414e021ac8d58 arch/x86/kernel/apic/apic.c Jan Beulich     2014-11-03  2156  	v = apic_read(APIC_ISR + ((vector & ~0x1f) >> 1));
-f8a8fe61fec800 arch/x86/kernel/apic/apic.c Thomas Gleixner 2019-06-28  2157  	if (v & (1 << (vector & 0x1f))) {
-fa5e5c40921326 arch/x86/kernel/apic/apic.c Thomas Gleixner 2020-05-21  2158  		pr_info("Spurious interrupt (vector 0x%02x) on CPU#%d. Acked\n",
-f8a8fe61fec800 arch/x86/kernel/apic/apic.c Thomas Gleixner 2019-06-28  2159  			vector, smp_processor_id());
-0e078e2f5060e0 arch/x86/kernel/apic_64.c   Thomas Gleixner 2008-01-30  2160  		ack_APIC_irq();
-f8a8fe61fec800 arch/x86/kernel/apic/apic.c Thomas Gleixner 2019-06-28  2161  	} else {
-fa5e5c40921326 arch/x86/kernel/apic/apic.c Thomas Gleixner 2020-05-21  2162  		pr_info("Spurious interrupt (vector 0x%02x) on CPU#%d. Not pending!\n",
-f8a8fe61fec800 arch/x86/kernel/apic/apic.c Thomas Gleixner 2019-06-28  2163  			vector, smp_processor_id());
-f8a8fe61fec800 arch/x86/kernel/apic/apic.c Thomas Gleixner 2019-06-28  2164  	}
-f8a8fe61fec800 arch/x86/kernel/apic/apic.c Thomas Gleixner 2019-06-28  2165  out:
-2414e021ac8d58 arch/x86/kernel/apic/apic.c Jan Beulich     2014-11-03  2166  	trace_spurious_apic_exit(vector);
-0e078e2f5060e0 arch/x86/kernel/apic_64.c   Thomas Gleixner 2008-01-30  2167  }
-c4d58cbd158dc9 arch/x86/kernel/apic_64.c   Thomas Gleixner 2007-10-12  2168  
-
-:::::: The code at line 2135 was first introduced by commit
-:::::: 1da177e4c3f41524e886b7f1b8a0c1fc7321cac2 Linux-2.6.12-rc2
-
-:::::: TO: Linus Torvalds <torvalds@ppc970.osdl.org>
-:::::: CC: Linus Torvalds <torvalds@ppc970.osdl.org>
+   782	
+   783	bool dce_i2c_submit_command_hw(
+   784		struct resource_pool *pool,
+   785		struct ddc *ddc,
+   786		struct i2c_command *cmd,
+   787		struct dce_i2c_hw *dce_i2c_hw)
+   788	{
+   789		uint8_t index_of_payload = 0;
+   790		bool result;
+   791	
+   792		dce_i2c_hw->funcs->set_speed(dce_i2c_hw, cmd->speed);
+   793	
+   794		result = true;
+   795	
+   796		while (index_of_payload < cmd->number_of_payloads) {
+   797			bool mot = (index_of_payload != cmd->number_of_payloads - 1);
+   798	
+   799			struct i2c_payload *payload = cmd->payloads + index_of_payload;
+   800	
+   801			struct dce_i2c_transaction_request request = { 0 };
+   802	
+   803			request.operation = payload->write ?
+   804				DCE_I2C_TRANSACTION_WRITE :
+   805				DCE_I2C_TRANSACTION_READ;
+   806	
+   807			request.payload.address_space =
+   808				DCE_I2C_TRANSACTION_ADDRESS_SPACE_I2C;
+ > 809			request.payload.address = (payload->address << 1) |
+   810				!payload->write;
+   811			request.payload.length = payload->length;
+   812			request.payload.data = payload->data;
+   813	
+   814	
+   815			if (!dce_i2c_hw_engine_submit_request(
+   816					dce_i2c_hw, &request, mot)) {
+   817				result = false;
+   818				break;
+   819			}
+   820	
+   821	
+   822	
+   823			++index_of_payload;
+   824		}
+   825	
+   826		release_engine_dce_hw(pool, dce_i2c_hw);
+   827	
+   828		return result;
+   829	}
+   830	static const struct dce_i2c_hw_funcs dce100_i2c_hw_funcs = {
+   831			.setup_engine = setup_engine_hw_dce100,
+   832			.set_speed = set_speed_hw_dce100,
+   833			.get_speed = get_speed_hw,
+   834			.release_engine = release_engine_hw,
+   835			.process_transaction = process_transaction_hw_dce100,
+   836			.process_channel_reply = process_channel_reply_hw_dce100,
+   837			.is_hw_busy = is_hw_busy,
+   838			.get_channel_status = get_channel_status_hw,
+   839			.execute_transaction = execute_transaction_hw,
+   840			.disable_i2c_hw_engine = disable_i2c_hw_engine
+   841	};
+   842	static const struct dce_i2c_hw_funcs dce80_i2c_hw_funcs = {
+   843			.setup_engine = setup_engine_hw_dce80,
+   844			.set_speed = set_speed_hw_dce80,
+   845			.get_speed = get_speed_hw,
+   846			.release_engine = release_engine_hw,
+   847			.process_transaction = process_transaction_hw_dce80,
+   848			.process_channel_reply = process_channel_reply_hw_dce80,
+   849			.is_hw_busy = is_hw_busy,
+   850			.get_channel_status = get_channel_status_hw,
+   851			.execute_transaction = execute_transaction_hw,
+   852			.disable_i2c_hw_engine = disable_i2c_hw_engine
+   853	};
+   854	
+   855	
+   856	
 
 -- 
 0-DAY CI Kernel Test Service
