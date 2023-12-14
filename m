@@ -2,119 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DCFA8131AA
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 14:34:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A35438131A7
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 14:34:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1573352AbjLNNeC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 08:34:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59696 "EHLO
+        id S1573341AbjLNNdt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 08:33:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41742 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1573319AbjLNNeB (ORCPT
+        with ESMTP id S1573304AbjLNNds (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 08:34:01 -0500
-Received: from mail-oo1-xc30.google.com (mail-oo1-xc30.google.com [IPv6:2607:f8b0:4864:20::c30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0863111
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 05:33:43 -0800 (PST)
-Received: by mail-oo1-xc30.google.com with SMTP id 006d021491bc7-591553d3835so1157585eaf.3
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 05:33:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1702560823; x=1703165623; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=TGQSpV/olTYn464XLvf+Bx7XCT2e+qVX0TS6kVY/Gjg=;
-        b=EL6mK7hAtgVsqv0CSCKyjDXmw00t1vtHqgN+6JjaV/xg2IaxFQrC6iMcJx/s3S19a4
-         kLz/L8i4cFwJuzBH1FfRwlwczZyTjq9FfDeBEgdbh+X11q/DJ6p7xu+6RwwUy7DYD4h4
-         GOfcTSZyYOmNtlFLEbBQZkTy4WzNhKqTVdup/s5utWSAFhMpz/QWrK5S2nGqR7HJzMtb
-         y9xSCSrayGYNqhLTJDkFPQ3yYXnTP456uucMnhUceSm9j7wXA6hQWCOnKDmZRhqmRU2I
-         OTrm8ZOTIBiBqggJz8b1ZE2XLRdlHY4CErJ4iuNBOs75pqnDZqtNqnN7iMca7senmFl5
-         Lf2A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702560823; x=1703165623;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=TGQSpV/olTYn464XLvf+Bx7XCT2e+qVX0TS6kVY/Gjg=;
-        b=BiA59UuEcJO3UJ/9XjkMYFAyfGJ8xr7rQVKItiv1lUy51KeP/LgpUM5C/h8Q4odaV8
-         eREE3m/uLDRaRaS6EFvmppNQteKEujv3BgrI1msu9sDooF6vlt4WJHLXpBYSQ5gBna6W
-         ZKxCiEgGTo6mvSqeWobcf4ancqjgzmxucURGkeer0i9dkGFMW8wPu30Q9Rc7tjGIfLMu
-         KePEVw8n89x0k+vvRzUVs21OSqwlrSkoxIxxlb9LjhUFL80cb1wh8+7DTGsaTXU7aYRB
-         4wN8LbPgSsfU3XnoVtFDdemQqqm4nI0CKmPuXZSnISxjy4aXZv2AscbSqe9+7Ld79kHP
-         0Yrw==
-X-Gm-Message-State: AOJu0YzBcwz/yYHbxOIYK4jcV4FBf5bJbm2hsEDqb6qgMwODCVbhYn2N
-        oNXLQ5Sk257hk1gbWuUfGH3L2Q==
-X-Google-Smtp-Source: AGHT+IEsgLO6mOi7JT+gprO/GPP7X7B/o7SXKZV0aL/La/Rx0XOY2ck3DS7xg7ciCvCv5QR4TqyRfg==
-X-Received: by 2002:a05:6359:2e03:b0:170:17eb:3785 with SMTP id ro3-20020a0563592e0300b0017017eb3785mr7794874rwb.45.1702560823021;
-        Thu, 14 Dec 2023 05:33:43 -0800 (PST)
-Received: from ?IPV6:2409:8a28:e64:34f0:4525:57e4:217e:6e2c? ([2409:8a28:e64:34f0:4525:57e4:217e:6e2c])
-        by smtp.gmail.com with ESMTPSA id n37-20020a634d65000000b005c21c23180bsm11638794pgl.76.2023.12.14.05.33.39
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 14 Dec 2023 05:33:42 -0800 (PST)
-Message-ID: <cb558f85-4f9b-4eb9-b60c-9b609075920d@bytedance.com>
-Date:   Thu, 14 Dec 2023 21:33:34 +0800
+        Thu, 14 Dec 2023 08:33:48 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F401114;
+        Thu, 14 Dec 2023 05:33:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1702560834; x=1734096834;
+  h=message-id:date:mime-version:cc:subject:to:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=soBBTcL3N0Z5TyqqPy+iCs++Nwlxmcs4HlCzpCK+Ozw=;
+  b=fN6tqZiwNcL/+l9lCwbG/GJFNQswxjj+zYaHGJLzfqqbAvWPdQuxKFTF
+   DKAT515nZSkSVIIhIxerilnmI9tbNwZi2GR8ZHB5b5wC7oA0ZZlLXqiSy
+   E6OxiwTyMJPLbYbbwFgSwXdTgGy3AEetT3gJRyYq8T3E+xNcqVYidkKfj
+   wrnfA+vZosa5rdsVYULWZtCbBmxRAyTiHFeROFp96YgIpg2P61c3NF7Tl
+   piTd2rklxO0a3+Wg2ppl93eEwf+WsoQC9NkJNIETTG6tUKBtqENiiR0ZM
+   6/eiTcy1RfZeqlAEOPCsxX8cxZx0HnW55aRozEY+BHFb8JRkt7oZ7xtCZ
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10923"; a="375274190"
+X-IronPort-AV: E=Sophos;i="6.04,275,1695711600"; 
+   d="scan'208";a="375274190"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Dec 2023 05:33:54 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10923"; a="892469482"
+X-IronPort-AV: E=Sophos;i="6.04,275,1695711600"; 
+   d="scan'208";a="892469482"
+Received: from blu2-mobl.ccr.corp.intel.com (HELO [10.254.210.30]) ([10.254.210.30])
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Dec 2023 05:33:48 -0800
+Message-ID: <4e08dc77-82ce-40ce-8a0c-ac9016186c23@linux.intel.com>
+Date:   Thu, 14 Dec 2023 21:33:46 +0800
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/5] mm/zswap: change dstmem size to one page
+Cc:     baolu.lu@linux.intel.com, robin.murphy@arm.com,
+        kevin.tian@intel.com, jgg@nvidia.com, alex.williamson@redhat.com,
+        joro@8bytes.org, cohuck@redhat.com, eric.auger@redhat.com,
+        nicolinc@nvidia.com, kvm@vger.kernel.org, mjrosato@linux.ibm.com,
+        chao.p.peng@linux.intel.com, yi.y.sun@linux.intel.com,
+        peterx@redhat.com, jasowang@redhat.com,
+        shameerali.kolothum.thodi@huawei.com, lulu@redhat.com,
+        suravee.suthikulpanit@amd.com, iommu@lists.linux.dev,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        zhenzhong.duan@intel.com, joao.m.martins@oracle.com,
+        xin.zeng@intel.com, yan.y.zhao@intel.com
+Subject: Re: [PATCH 8/8] iommu/vt-d: Add set_dev_pasid callback for nested
+ domain
+To:     "Yang, Weijiang" <weijiang.yang@intel.com>,
+        Yi Liu <yi.l.liu@intel.com>
+References: <20231127063428.127436-1-yi.l.liu@intel.com>
+ <20231127063428.127436-9-yi.l.liu@intel.com>
+ <a19031b0-7c30-45e6-b171-c53e3578b867@intel.com>
 Content-Language: en-US
-To:     Nhat Pham <nphamcs@gmail.com>, Yosry Ahmed <yosryahmed@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Chris Li <chriscli@google.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Seth Jennings <sjenning@redhat.com>,
-        Dan Streetman <ddstreet@ieee.org>,
-        Vitaly Wool <vitaly.wool@konsulko.com>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org
-References: <20231213-zswap-dstmem-v1-0-896763369d04@bytedance.com>
- <20231213-zswap-dstmem-v1-2-896763369d04@bytedance.com>
- <CAJD7tkZJRgf+502QU_ECVPey0w-5vw_e6HSL+Ay7unetq5gL0A@mail.gmail.com>
- <CAKEwX=P4=YbvoRCa5+BB+==f4YL_5-6AaUNUCdH3v2faTx-PYQ@mail.gmail.com>
-From:   Chengming Zhou <zhouchengming@bytedance.com>
-In-Reply-To: <CAKEwX=P4=YbvoRCa5+BB+==f4YL_5-6AaUNUCdH3v2faTx-PYQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
+From:   Baolu Lu <baolu.lu@linux.intel.com>
+In-Reply-To: <a19031b0-7c30-45e6-b171-c53e3578b867@intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/12/14 08:18, Nhat Pham wrote:
-> On Wed, Dec 13, 2023 at 3:34 PM Yosry Ahmed <yosryahmed@google.com> wrote:
+On 2023/12/14 10:55, Yang, Weijiang wrote:
+> On 11/27/2023 2:34 PM, Yi Liu wrote:
+>> From: Lu Baolu <baolu.lu@linux.intel.com>
 >>
->> On Tue, Dec 12, 2023 at 8:18 PM Chengming Zhou
->> <zhouchengming@bytedance.com> wrote:
->>>
->>> Change the dstmem size from 2 * PAGE_SIZE to only one page since
->>> we only need at most one page when compress, and the "dlen" is also
->>> PAGE_SIZE in acomp_request_set_params(). If the output size > PAGE_SIZE
->>> we don't wanna store the output in zswap anyway.
->>>
->>> So change it to one page, and delete the stale comment.
+>> This allows the upper layers to set a nested type domain to a PASID of a
+>> device if the PASID feature is supported by the IOMMU hardware.
 >>
->> I couldn't find the history of why we needed 2 * PAGE_SIZE, it would
->> be nice if someone has the context, perhaps one of the maintainers.
-> 
-> It'd be very nice indeed.
-> 
+>> The set_dev_pasid callback for non-nest domain has already be there, so
+>> this only needs to add it for nested domains.
 >>
->> One potential reason is that we used to store a zswap header
->> containing the swap entry in the compressed page for writeback
->> purposes, but we don't do that anymore. Maybe we wanted to be able to
->> handle the case where an incompressible page would exceed PAGE_SIZE
->> because of that?
+>> Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
+>> Signed-off-by: Yi Liu <yi.l.liu@intel.com>
+>> ---
+>>   drivers/iommu/intel/nested.c | 47 ++++++++++++++++++++++++++++++++++++
+>>   1 file changed, 47 insertions(+)
+>>
+>> diff --git a/drivers/iommu/intel/nested.c b/drivers/iommu/intel/nested.c
+>> index 44ad48db7ea0..f6f687750104 100644
+>> --- a/drivers/iommu/intel/nested.c
+>> +++ b/drivers/iommu/intel/nested.c
+>> @@ -68,6 +68,52 @@ static int intel_nested_attach_dev(struct 
+>> iommu_domain *domain,
+>>       return 0;
+>>   }
+>> +static int intel_nested_set_dev_pasid(struct iommu_domain *domain,
+>> +                      struct device *dev, ioasid_t pasid)
+>> +{
+>> +    struct device_domain_info *info = dev_iommu_priv_get(dev);
+>> +    struct dmar_domain *dmar_domain = to_dmar_domain(domain);
+>> +    struct intel_iommu *iommu = info->iommu;
+>> +    struct dev_pasid_info *dev_pasid;
+>> +    unsigned long flags;
+>> +    int ret = 0;
+>> +
+>> +    if (!pasid_supported(iommu))
+>> +        return -EOPNOTSUPP;
+>> +
+>> +    if (iommu->agaw < dmar_domain->s2_domain->agaw)
+>> +        return -EINVAL;
+>> +
+>> +    ret = 
+>> prepare_domain_attach_device(&dmar_domain->s2_domain->domain, dev);
+>> +    if (ret)
+>> +        return ret;
+>> +
+>> +    dev_pasid = kzalloc(sizeof(*dev_pasid), GFP_KERNEL);
+>> +    if (!dev_pasid)
+>> +        return -ENOMEM;
+>> +
+>> +    ret = domain_attach_iommu(dmar_domain, iommu);
+>> +    if (ret)
+>> +        goto err_free;
+>> +
+>> +    ret = intel_pasid_setup_nested(iommu, dev, pasid, dmar_domain);
+>> +    if (ret)
+>> +        goto err_detach_iommu;
+>> +
+>> +    dev_pasid->dev = dev;
+>> +    dev_pasid->pasid = pasid;
+>> +    spin_lock_irqsave(&dmar_domain->lock, flags);
+>> +    list_add(&dev_pasid->link_domain, &dmar_domain->dev_pasids);
+>> +    spin_unlock_irqrestore(&dmar_domain->lock, flags);
 > 
-> It could be hmm. I didn't study the old zswap architecture too much,
-> but it has been 2 * PAGE_SIZE since the time zswap was first merged
-> last I checked.
-> I'm not 100% comfortable ACK-ing the undoing of something that looks
-> so intentional, but FTR, AFAICT, this looks correct to me.
+> ---> list_add(&dev_pasid->link_domain, &dmar_domain->dev_pasids);
+> 
+> dev_pasid is linked at later time, this leads to 
+> domain->has_iotlb_device is not correctly set, which finally results 
+> into a missing of device iotlb flush in iommu_flush_dev_iotlb()when it's 
+> called.
+> Check this call path:
+> domain_attach_iommu()->domain_update_iommu_cap()->domain_update_iotlb()->domain->has_iotlb_device = has_iotlb_device; The ugly fixup is to call domain_update_iommu_cap() or domain_update_iotlb() here again before return.
+> The similar issue is in intel_iommu_set_dev_pasid() and 
+> intel_nested_attach_dev().
 
-Right, there is no any history about the reason why we needed 2 pages.
-But obviously only one page is needed from the current code and no any
-problem found in the kernel build stress testing.
+Yes, domain->has_iotlb_device must be updated whenever a domain is
+attached to (or removed from) a RID or PASID. I would be grateful if you
+could post some patches to fix the set_device_pasid and
+nested_attach_dev paths.
 
-Thanks!
+I assume Yi can fix this series in the next version.
+
+Best regards,
+baolu
