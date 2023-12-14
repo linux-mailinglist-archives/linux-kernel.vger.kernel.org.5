@@ -2,58 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D9E248131B0
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 14:36:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C173813128
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 14:17:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1573373AbjLNNf6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 08:35:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45748 "EHLO
+        id S229709AbjLNNQ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 08:16:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53478 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1573348AbjLNNf5 (ORCPT
+        with ESMTP id S229563AbjLNNQz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 08:35:57 -0500
-X-Greylist: delayed 1154 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 14 Dec 2023 05:36:02 PST
-Received: from szxga07-in.huawei.com (szxga07-in.huawei.com [45.249.212.35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A0C1118;
-        Thu, 14 Dec 2023 05:36:02 -0800 (PST)
-Received: from mail.maildlp.com (unknown [172.19.88.234])
-        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4SrXsN4LxQz1Q6P2;
-        Thu, 14 Dec 2023 21:15:36 +0800 (CST)
-Received: from dggpeml500022.china.huawei.com (unknown [7.185.36.66])
-        by mail.maildlp.com (Postfix) with ESMTPS id 67D761400CB;
-        Thu, 14 Dec 2023 21:16:45 +0800 (CST)
-Received: from [10.67.120.135] (10.67.120.135) by
- dggpeml500022.china.huawei.com (7.185.36.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Thu, 14 Dec 2023 21:16:45 +0800
-Subject: Re: [PATCH net-next v4 2/4] octeon_ep: PF-VF mailbox version support
-To:     Shinas Rasheed <srasheed@marvell.com>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <hgani@marvell.com>, <vimleshk@marvell.com>, <egallen@redhat.com>,
-        <mschmidt@redhat.com>, <pabeni@redhat.com>, <horms@kernel.org>,
-        <kuba@kernel.org>, <davem@davemloft.net>, <wizhao@redhat.com>,
-        <kheib@redhat.com>, <konguyen@redhat.com>,
-        Veerasenareddy Burru <vburru@marvell.com>,
-        Sathesh Edara <sedara@marvell.com>,
-        Eric Dumazet <edumazet@google.com>
-References: <20231213035816.2656851-1-srasheed@marvell.com>
- <20231213035816.2656851-3-srasheed@marvell.com>
-From:   "shenjian (K)" <shenjian15@huawei.com>
-Message-ID: <59426716-2f97-2f08-1d9f-84ce6483cfa9@huawei.com>
-Date:   Thu, 14 Dec 2023 21:16:44 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.5.2
+        Thu, 14 Dec 2023 08:16:55 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41CA610E
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 05:17:02 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E2EFFC433C8;
+        Thu, 14 Dec 2023 13:16:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1702559821;
+        bh=JHyomd0Q9NPn9A6jdZewEr+8uII5CmAyP0V6PrfA4bA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=cs7sirs9h0XVwnqWYZLR/SKUFu2N9cpp0Yiz0d+uM6Gx48N7jql/U1q1F0Baw8AK0
+         KAsMhLeqa+jA25Lv7z282d9rx/9Bx3RtE/7rtOpsLo2hAMJVn/cb8uNlOCUh9G1tRa
+         Q4BlAFF9y8gqm4V1uwSrFjju+NkuQAPifpstroy8LPfPit/KVjSN39cF+u1fdTDuFr
+         wxH9zOBWW1Jj+JAaA2/6ttNAWNB3DcevrU39jZyxIV3queyCIejv1lioZzsj2CMqI5
+         YpAEj54TSUVWnVHEfGb4FtOIqjOnmePv+hf2aM31ld4yumAISfJy8yxIVIZjHqK8C8
+         P5OilGkQLL67g==
+Date:   Thu, 14 Dec 2023 13:16:55 +0000
+From:   Conor Dooley <conor@kernel.org>
+To:     Marc Kleine-Budde <mkl@pengutronix.de>
+Cc:     linux-riscv@lists.infradead.org,
+        Conor Dooley <conor.dooley@microchip.com>,
+        Daire McNamara <daire.mcnamara@microchip.com>,
+        Wolfgang Grandegger <wg@grandegger.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>, linux-can@vger.kernel.org,
+        netdev@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org
+Subject: Re: [PATCH RESEND v1 2/7] dt-bindings: can: mpfs: add missing
+ required clock
+Message-ID: <20231214-tinderbox-paver-d1ff0fc5c428@spud>
+References: <20231208-reenter-ajar-b6223e5134b3@spud>
+ <20231208-palpitate-passable-c79bacf2036c@spud>
+ <20231212-unreeling-depose-8b6b2e032555-mkl@pengutronix.de>
+ <20231213-waffle-grueling-3a5c3879395b@spud>
+ <20231214-tinderbox-glitzy-60d1936ab85f-mkl@pengutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <20231213035816.2656851-3-srasheed@marvell.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.67.120.135]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggpeml500022.china.huawei.com (7.185.36.66)
-X-Spam-Status: No, score=-6.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="8sbtDukOq8t99rKn"
+Content-Disposition: inline
+In-Reply-To: <20231214-tinderbox-glitzy-60d1936ab85f-mkl@pengutronix.de>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -61,117 +71,73 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+--8sbtDukOq8t99rKn
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-在 2023/12/13 11:58, Shinas Rasheed 写道:
-> Add PF-VF mailbox initial version support
->
-> Signed-off-by: Shinas Rasheed <srasheed@marvell.com>
-> ---
-> V4:
->    - No changes
->
-> V3: https://lore.kernel.org/all/20231211063355.2630028-3-srasheed@marvell.com/
->    - No changes
->
-> V2: https://lore.kernel.org/all/20231209081450.2613561-3-srasheed@marvell.com/
->    - No changes
->
-> V1: https://lore.kernel.org/all/20231208070352.2606192-3-srasheed@marvell.com/
->
->   .../net/ethernet/marvell/octeon_ep/octep_main.h   |  1 +
->   .../ethernet/marvell/octeon_ep/octep_pfvf_mbox.c  | 15 ++++++++++++---
->   .../ethernet/marvell/octeon_ep/octep_pfvf_mbox.h  |  7 +++++--
->   3 files changed, 18 insertions(+), 5 deletions(-)
->
-> diff --git a/drivers/net/ethernet/marvell/octeon_ep/octep_main.h b/drivers/net/ethernet/marvell/octeon_ep/octep_main.h
-> index 3223bb6f95ea..fee59e0e0138 100644
-> --- a/drivers/net/ethernet/marvell/octeon_ep/octep_main.h
-> +++ b/drivers/net/ethernet/marvell/octeon_ep/octep_main.h
-> @@ -220,6 +220,7 @@ struct octep_iface_link_info {
->   /* The Octeon VF device specific info data structure.*/
->   struct octep_pfvf_info {
->   	u8 mac_addr[ETH_ALEN];
-> +	u32 mbox_version;
->   };
->   
->   /* The Octeon device specific private data structure.
-> diff --git a/drivers/net/ethernet/marvell/octeon_ep/octep_pfvf_mbox.c b/drivers/net/ethernet/marvell/octeon_ep/octep_pfvf_mbox.c
-> index 43b40e91f7bf..baffe298a2a0 100644
-> --- a/drivers/net/ethernet/marvell/octeon_ep/octep_pfvf_mbox.c
-> +++ b/drivers/net/ethernet/marvell/octeon_ep/octep_pfvf_mbox.c
-> @@ -28,10 +28,18 @@ static void octep_pfvf_validate_version(struct octep_device *oct,  u32 vf_id,
->   {
->   	u32 vf_version = (u32)cmd.s_version.version;
->   
-> -	if (vf_version <= OCTEP_PFVF_MBOX_VERSION_V1)
-> -		rsp->s_version.type = OCTEP_PFVF_MBOX_TYPE_RSP_ACK;
-> +	dev_dbg(&oct->pdev->dev, "VF id:%d VF version:%d PF version:%d\n",
-> +		vf_id, vf_version, OCTEP_PFVF_MBOX_VERSION_CURRENT);
-> +	if (vf_version < OCTEP_PFVF_MBOX_VERSION_CURRENT)
-> +		rsp->s_version.version = vf_version;
->   	else
-> -		rsp->s_version.type = OCTEP_PFVF_MBOX_TYPE_RSP_NACK;
-> +		rsp->s_version.version = OCTEP_PFVF_MBOX_VERSION_CURRENT;
-> +
-> +	oct->vf_info[vf_id].mbox_version = rsp->s_version.version;
-> +	dev_dbg(&oct->pdev->dev, "VF id:%d negotiated VF version:%d\n",
-> +		vf_id, oct->vf_info[vf_id].mbox_version);
-> +
-> +	rsp->s_version.type = OCTEP_PFVF_MBOX_TYPE_RSP_ACK;
->   }
->   
->   static void octep_pfvf_get_link_status(struct octep_device *oct, u32 vf_id,
-> @@ -167,6 +175,7 @@ int octep_setup_pfvf_mbox(struct octep_device *oct)
->   			goto free_mbox;
->   
->   		memset(oct->mbox[ring], 0, sizeof(struct octep_mbox));
-> +		memset(&oct->vf_info[i], 0, sizeof(struct octep_pfvf_info));
->   		mutex_init(&oct->mbox[ring]->lock);
->   		INIT_WORK(&oct->mbox[ring]->wk.work, octep_pfvf_mbox_work);
->   		oct->mbox[ring]->wk.ctxptr = oct->mbox[ring];
-> diff --git a/drivers/net/ethernet/marvell/octeon_ep/octep_pfvf_mbox.h b/drivers/net/ethernet/marvell/octeon_ep/octep_pfvf_mbox.h
-> index 34feeb559b0d..af4dcf5ef7f1 100644
-> --- a/drivers/net/ethernet/marvell/octeon_ep/octep_pfvf_mbox.h
-> +++ b/drivers/net/ethernet/marvell/octeon_ep/octep_pfvf_mbox.h
-> @@ -13,11 +13,15 @@
->   #define OCTEON_SDP_16K_HW_FRS  16380UL
->   #define OCTEON_SDP_64K_HW_FRS  65531UL
->   
-> +/* When a new command is implemented,PF Mbox version should be bumped.
-> + */
->   enum octep_pfvf_mbox_version {
->   	OCTEP_PFVF_MBOX_VERSION_V0,
->   	OCTEP_PFVF_MBOX_VERSION_V1,
->   };
->   
-> +#define OCTEP_PFVF_MBOX_VERSION_CURRENT	OCTEP_PFVF_MBOX_VERSION_V1
-> +
->   enum octep_pfvf_mbox_opcode {
->   	OCTEP_PFVF_MBOX_CMD_VERSION,
->   	OCTEP_PFVF_MBOX_CMD_SET_MTU,
-> @@ -30,7 +34,7 @@ enum octep_pfvf_mbox_opcode {
->   	OCTEP_PFVF_MBOX_CMD_GET_LINK_STATUS,
->   	OCTEP_PFVF_MBOX_CMD_GET_MTU,
->   	OCTEP_PFVF_MBOX_CMD_DEV_REMOVE,
-> -	OCTEP_PFVF_MBOX_CMD_LAST,
-> +	OCTEP_PFVF_MBOX_CMD_MAX,
->   };
-This change is unrelative with
-this enum is introduced in the first patch, why not directly rename it 
-in the first one?
+On Thu, Dec 14, 2023 at 12:31:04PM +0100, Marc Kleine-Budde wrote:
+> On 13.12.2023 13:02:49, Conor Dooley wrote:
+> > On Tue, Dec 12, 2023 at 09:49:41PM +0100, Marc Kleine-Budde wrote:
+> > > On 08.12.2023 17:12:24, Conor Dooley wrote:
+> > > > From: Conor Dooley <conor.dooley@microchip.com>
+> > > >=20
+> > > > The CAN controller on PolarFire SoC has an AHB peripheral clock _an=
+d_ a
+> > > > CAN bus clock. The bus clock was omitted when the binding was writt=
+en,
+> > > > but is required for operation. Make up for lost time and add it.
+> > > >=20
+> > > > Cautionary tale in adding bindings without having implemented a real
+> > > > user for them perhaps.
+> > > >=20
+> > > > Fixes: c878d518d7b6 ("dt-bindings: can: mpfs: document the mpfs CAN=
+ controller")
+> > > > Signed-off-by: Conor Dooley <conor.dooley@microchip.com>
+> > > > ---
+> > > >  .../devicetree/bindings/net/can/microchip,mpfs-can.yaml    | 7 +++=
+++--
+> > > >  1 file changed, 5 insertions(+), 2 deletions(-)
+> > > >=20
+> > > > diff --git a/Documentation/devicetree/bindings/net/can/microchip,mp=
+fs-can.yaml b/Documentation/devicetree/bindings/net/can/microchip,mpfs-can.=
+yaml
+> > > > index 45aa3de7cf01..05f680f15b17 100644
+> > > > --- a/Documentation/devicetree/bindings/net/can/microchip,mpfs-can.=
+yaml
+> > > > +++ b/Documentation/devicetree/bindings/net/can/microchip,mpfs-can.=
+yaml
+> > > > @@ -24,7 +24,10 @@ properties:
+> > > >      maxItems: 1
+> > > > =20
+> > > >    clocks:
+> > > > -    maxItems: 1
+> > > > +    maxItems: 2
+> > > > +    items:
+> > > > +      - description: AHB peripheral clock
+> > > > +      - description: CAN bus clock
+> > >=20
+> > > Do we we want to have a "clock-names" property, as we need the clock
+> > > rate of the CAN bus clock.
+> >=20
+> > We should not need the clock-names property to be able to get both of
+> > the clocks. clk_bulk_get_all() for example should be usable here.
+>=20
+> ACK, but we need the clock rate of CAN clock. Does this binding check
+> that the CAN clock rate is the 2nd one?
 
->   
->   enum octep_pfvf_mbox_word_type {
-> @@ -79,7 +83,6 @@ enum octep_pfvf_link_autoneg {
->   
->   #define OCTEP_PFVF_MBOX_TIMEOUT_MS     500
->   #define OCTEP_PFVF_MBOX_MAX_RETRIES    2
-> -#define OCTEP_PFVF_MBOX_VERSION        0
-Similar here,  you introduce it in first patch, and no place used, then 
-remove it int the second one.
-Maybe you can reorganize this patchset ?
+The items list requires that the can clock be the second one, so drivers
+etc can rely on that ordering.
 
->   #define OCTEP_PFVF_MBOX_MAX_DATA_SIZE  6
->   #define OCTEP_PFVF_MBOX_MORE_FRAG_FLAG 1
->   #define OCTEP_PFVF_MBOX_WRITE_WAIT_TIME msecs_to_jiffies(1)
+--8sbtDukOq8t99rKn
+Content-Type: application/pgp-signature; name="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZXsARwAKCRB4tDGHoIJi
+0h9wAP903owgON0b07MdLtwGROU5QzSNFLxoBOqorLvQyAIqpAD+NUlz2g5CmXeF
+4jrpFftFyQNgWbQ8mC2atxX5XKUNvA4=
+=LB6e
+-----END PGP SIGNATURE-----
+
+--8sbtDukOq8t99rKn--
