@@ -2,119 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F1113813644
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 17:30:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 36B44813653
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 17:33:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230443AbjLNQaS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 11:30:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44552 "EHLO
+        id S229880AbjLNQdY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 11:33:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45032 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230233AbjLNQaN (ORCPT
+        with ESMTP id S229446AbjLNQdX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 11:30:13 -0500
-Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFD0F11A;
-        Thu, 14 Dec 2023 08:30:19 -0800 (PST)
-Received: by mail-wm1-x32a.google.com with SMTP id 5b1f17b1804b1-40c3f68b69aso53140185e9.1;
-        Thu, 14 Dec 2023 08:30:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702571418; x=1703176218; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=xE01ZdGgOUbKW6jdSRaQsPD8axcaxCU7gBZ6Hb9nfkU=;
-        b=L/cff3YDzj6C2mbR+/fzmUGpyZC7gKHAssDecjnplxSCcuE/amK9Tp7DaxiA+XQFot
-         m+jbAlkbYkTD49+lLhpdavtItQFqZ4XQkzaXHSWqO2mZW+OFf/KptZ+ixTSYcjBbJH71
-         CIVBYnhQf0kJh4dRoXRPq4bzKhHI4S/PvdmhPGs4iizecfUakSGoDPXU34kQnmpHR5YK
-         ufomRqsNbzfInHDJQzu18cI45sYP/nnBFfFXn72h3BR4ZtnqcPgOuoU83DK0jz7pj8eX
-         1T2YPSmUaK4mxbhaE2DC22oPPoOYmbsWnETkgqyz8eA5rFyBnGJEieCRBdS+qZhVAQYz
-         Q9dQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702571418; x=1703176218;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=xE01ZdGgOUbKW6jdSRaQsPD8axcaxCU7gBZ6Hb9nfkU=;
-        b=xU6U0rBByXfcrD5NR9fQkjzips1mdPdPRjhheS8uA7m0asxYohu1p50ybjY2bo6pFa
-         BiBf4jOZTdvIQnrbfTK0ibQ1+I9R/Pj+ThoGA6ev9QChW0oI3+bp4A4tBTkU98FK7b8W
-         18dzNP73tB4gasOadoqdkFRnZhs5iFBMCgS3uG5dHNVyh+NwsDojuKww4YAfZvLXgyuX
-         SYXpB3io0+iGfus2/WLFcHXQ7PVdO8Z9g4xXAabxKN9YrXDQs41aO56MlNZS39iu7XT/
-         b2VsQKRguilxHWzJ/Co5f9WxaUCkBDej9AET3utoUTdVaTvZggkzBmEvpFlshSpwkTif
-         L2IQ==
-X-Gm-Message-State: AOJu0Yy0+IevCr75sf+gnMCj1YNSwE+OEnDZirMYaQeKS95aBUIKbSDw
-        Mju/eEQ2M0aWgxcvAgWeG0s=
-X-Google-Smtp-Source: AGHT+IEt3Nf2FCXCesN3uRpXrcfJ59x2f6UcAcLrd557rYe94mku6UBCBQZa/o3m9hOoz7r2BA5Z3A==
-X-Received: by 2002:a05:600c:1392:b0:40c:55c4:45ec with SMTP id u18-20020a05600c139200b0040c55c445ecmr2704032wmf.46.1702571417702;
-        Thu, 14 Dec 2023 08:30:17 -0800 (PST)
-Received: from archlinux.localnet (82-149-12-148.dynamic.telemach.net. [82.149.12.148])
-        by smtp.gmail.com with ESMTPSA id i1-20020a05600c354100b0040c411da99csm19770588wmq.48.2023.12.14.08.30.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Dec 2023 08:30:17 -0800 (PST)
-From:   Jernej =?utf-8?B?xaBrcmFiZWM=?= <jernej.skrabec@gmail.com>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Samuel Holland <samuel@sholland.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Yangtao Li <tiny.windzz@gmail.com>,
-        Brandon Cheo Fusi <fusibrandon13@gmail.com>
-Cc:     devicetree@vger.kernel.org, linux-riscv@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
-        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        Brandon Cheo Fusi <fusibrandon13@gmail.com>
-Subject: Re: [PATCH 3/5] cpufreq: dt-platdev: Blocklist allwinner,sun20i-d1 SoC
-Date:   Thu, 14 Dec 2023 17:30:15 +0100
-Message-ID: <3459481.QJadu78ljV@archlinux>
-In-Reply-To: <20231214103342.30775-4-fusibrandon13@gmail.com>
-References: <20231214103342.30775-1-fusibrandon13@gmail.com>
- <20231214103342.30775-4-fusibrandon13@gmail.com>
+        Thu, 14 Dec 2023 11:33:23 -0500
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4D36A6;
+        Thu, 14 Dec 2023 08:33:29 -0800 (PST)
+Received: from pps.filterd (m0353726.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3BEGNpfb010000;
+        Thu, 14 Dec 2023 16:32:47 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=k0KaS28pCt49kw9+p3L44QcYWFnIp+iPqyK7JQMB9g8=;
+ b=WbnAA5NiNCBVwTq/DRIYImrYFEPSxxVbIoEeLXgDg52nN3jp3kXnLiVm2CfnCh/xC0XS
+ uqs4M2/57DXguWWOAHtgWlmqGaA9hSlPoxgHvOtYEessd/axv6/g2QbqQ4pLd50W3BLR
+ nJRDs41b8XU6a4fOOlrte6HQ7ygk2NAyhXkvD7fCuw2ZNTdawzqataNh/UdXhQ0tzCpT
+ uxllSKmVqsvpmtaig+gq/UrTa0/WQ9f8+oW9p10hz0N2UFOM+YfAt3EjDH/37KDGLcTh
+ YtsqXqHX/YDEXd+Nxb7KXcxXDlPjXBSguoe82WDU97HldaVhWfjENixBjMyjS+IbOQ+n hQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3v03b34rc8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 14 Dec 2023 16:32:47 +0000
+Received: from m0353726.ppops.net (m0353726.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3BEGO45B012186;
+        Thu, 14 Dec 2023 16:32:46 GMT
+Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3v03b34qmg-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 14 Dec 2023 16:32:45 +0000
+Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
+        by ppma23.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3BECe18w014799;
+        Thu, 14 Dec 2023 16:31:00 GMT
+Received: from smtprelay03.wdc07v.mail.ibm.com ([172.16.1.70])
+        by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3uw42khd6b-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 14 Dec 2023 16:31:00 +0000
+Received: from smtpav05.dal12v.mail.ibm.com (smtpav05.dal12v.mail.ibm.com [10.241.53.104])
+        by smtprelay03.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3BEGUxZf10551814
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 14 Dec 2023 16:30:59 GMT
+Received: from smtpav05.dal12v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 9026358065;
+        Thu, 14 Dec 2023 16:30:59 +0000 (GMT)
+Received: from smtpav05.dal12v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id BC26458052;
+        Thu, 14 Dec 2023 16:30:55 +0000 (GMT)
+Received: from [9.67.23.198] (unknown [9.67.23.198])
+        by smtpav05.dal12v.mail.ibm.com (Postfix) with ESMTP;
+        Thu, 14 Dec 2023 16:30:55 +0000 (GMT)
+Message-ID: <e1ec02cf-072b-4678-8986-336c1cb8ca92@linux.ibm.com>
+Date:   Thu, 14 Dec 2023 10:30:55 -0600
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1 5/8] ARM: dts: aspeed: System1: Voltage regulators
+Content-Language: en-US
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, joel@jms.id.au, andrew@codeconstruct.com.au,
+        peterhuewe@gmx.de, jarkko@kernel.org, jgg@ziepe.ca,
+        keescook@chromium.org, tony.luck@intel.com, gpiccoli@igalia.com,
+        johannes.holland@infineon.com, linux@roeck-us.net,
+        broonie@kernel.org
+Cc:     patrick.rudolph@9elements.com, vincent@vtremblay.dev,
+        peteryin.openbmc@gmail.com, lakshmiy@us.ibm.com,
+        bhelgaas@google.com, naresh.solanki@9elements.com,
+        alexander.stein@ew.tq-group.com, festevam@denx.de,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        linux-integrity@vger.kernel.org, linux-hardening@vger.kernel.org,
+        geissonator@yahoo.com
+References: <20231212164004.1683589-1-ninad@linux.ibm.com>
+ <20231212164004.1683589-6-ninad@linux.ibm.com>
+ <6a3d4551-66a2-411a-9d5f-cffb57ee0ce2@linaro.org>
+From:   Ninad Palsule <ninad@linux.ibm.com>
+In-Reply-To: <6a3d4551-66a2-411a-9d5f-cffb57ee0ce2@linaro.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: kuNvJNdtavC_dao6iJnMFctwdS96DrLO
+X-Proofpoint-GUID: Tzj1hExUyDRdIPxL0IVPxnja4Z1KmH3A
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-14_11,2023-12-14_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 mlxscore=0
+ suspectscore=0 phishscore=0 priorityscore=1501 malwarescore=0
+ impostorscore=0 mlxlogscore=999 clxscore=1015 bulkscore=0 adultscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311290000 definitions=main-2312140117
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thursday, December 14, 2023 11:33:40 AM CET Brandon Cheo Fusi wrote:
-> The Allwinner D1 uses H6 cpufreq driver. Add it to blocklist
-> so the "cpufreq-dt" device is not created twice.
-> 
-> Signed-off-by: Brandon Cheo Fusi <fusibrandon13@gmail.com>
-> ---
->  drivers/cpufreq/cpufreq-dt-platdev.c | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/drivers/cpufreq/cpufreq-dt-platdev.c b/drivers/cpufreq/cpufreq-dt-platdev.c
-> index bd1e1357c..2febcfc2c 100644
-> --- a/drivers/cpufreq/cpufreq-dt-platdev.c
-> +++ b/drivers/cpufreq/cpufreq-dt-platdev.c
-> @@ -104,6 +104,7 @@ static const struct of_device_id allowlist[] __initconst = {
->   */
->  static const struct of_device_id blocklist[] __initconst = {
->  	{ .compatible = "allwinner,sun50i-h6", },
-> +	{ .compatible = "allwinner,sun20i-d1", },
+Hello Krzysztof,
 
-This should not be needed since you're using H6 variant for a fallback.
+On 12/12/23 14:22, Krzysztof Kozlowski wrote:
+> On 12/12/2023 17:40, Ninad Palsule wrote:
+>> This commit adds different voltage regulators.
+>>
+>> Tested:
+>>      This board is tested using the simics simulator.
+>>
+>> Signed-off-by: Ninad Palsule <ninad@linux.ibm.com>
+>> ---
+>>   .../dts/aspeed/aspeed-bmc-ibm-system1.dts     | 266 ++++++++++++++++++
+> Squash it.
+Done.
+>
+>>   1 file changed, 266 insertions(+)
+>>
+>> diff --git a/arch/arm/boot/dts/aspeed/aspeed-bmc-ibm-system1.dts b/arch/arm/boot/dts/aspeed/aspeed-bmc-ibm-system1.dts
+>> index 0557bff9f36a..b8e7e52d4600 100644
+>> --- a/arch/arm/boot/dts/aspeed/aspeed-bmc-ibm-system1.dts
+>> +++ b/arch/arm/boot/dts/aspeed/aspeed-bmc-ibm-system1.dts
+>> @@ -114,10 +114,127 @@ vga_memory: region@bf000000 {
+>>   		};
+>>   	};
+>>   
+>> +	iio-hwmon {
+>> +		compatible = "iio-hwmon";
+>> +		io-channels = <&p12v_vd 0>, <&p5v_aux_vd 0>,
+>> +			<&p5v_bmc_aux_vd 0>, <&p3v3_aux_vd 0>,
+>> +			<&p3v3_bmc_aux_vd 0>, <&p1v8_bmc_aux_vd 0>,
+>> +			<&adc1 4>, <&adc0 2>, <&adc1 0>,
+>> +			<&p2V5_aux_vd 0>, <&adc1 7>;
+>> +	};
+>> +
+>> +	p12v_vd: voltage_divider1 {
+> Same comments as in other patches.
+Fixed.
+>
+>> +		compatible = "voltage-divider";
+>> +		io-channels = <&adc1 3>;
+>> +		#io-channel-cells = <1>;
+>> +
+>> +		/* Scale the system voltage by 1127/127 to fit the ADC range.
+> Use Linux coding style comments. /* and blank line
 
-Best regards,
-Jernej
+Fixed.
 
->  
->  	{ .compatible = "apple,arm-platform", },
->  
-> 
+Thanks for the review.
 
+Regards,
 
+Ninad
 
-
+>
+>
+> ....
+>
+> Best regards,
+> Krzysztof
+>
