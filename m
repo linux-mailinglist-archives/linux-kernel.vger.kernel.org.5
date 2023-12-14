@@ -2,162 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CFEBB812A92
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 09:42:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AC2C9812A96
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 09:45:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234431AbjLNImH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 03:42:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48956 "EHLO
+        id S234448AbjLNIpU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 03:45:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56484 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229441AbjLNImF (ORCPT
+        with ESMTP id S229633AbjLNIpS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 03:42:05 -0500
-Received: from FRA01-MR2-obe.outbound.protection.outlook.com (mail-mr2fra01on2085.outbound.protection.outlook.com [40.107.9.85])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34F4CE3
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 00:42:11 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=VY6pXp+aeWgWZcwlr3YqGidrjA4WPdg9hOMf/gqBIJkjEUMUS/joOPEqo7Smk8j0i6RdDZlOifUP1lBb4QDrRrVIBJq8yZnh6yAMoA692K8dqj2frx5ZfaBovNOabJDnVlZerSGcIKu4eXvXCm1t5CBOwGkVhhY7IC9PjpQbvcNDwKLUEb5GBP20FYItvRj0dL1EHOxDWkLRnuJBudPT1gBiTlIKj59wfHFSRCHVlfTi+de9r8OXaDlD/GRFpft+wjOlvvkaBMUaiU5RBEmGs5fjqL8iJi64LaFZuFvqyz51hbi/rqiqPkBTda7HjOa0A6tVjKPV7K4t9UdxeDwxBA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=bOBftX54unTZAXgBMVOuXlqf2REtbmWB6W31i13K4dw=;
- b=CsFvUu+uv2ANJnOirAt5UMbuJOkeJO151iwS42erqSfZD2YM7H/Tp8xSFNGdX6ESDbGtp1E0zFtaUqziUt1Y+qSbosmNEh8+unKnNVDusK4z8VZk9bG2M2vGbNMpah0PQLuzg9N5/e71zDuoT5UXlelIYvO7Ht/DSkSvzBUxczTHqvga+mS+oHGMVxxLdOyGE4b430MLr984HUXdTCArnrR7TlsZjYVokTBVdX+XINQqaEvy5RPrxlz9dz5wpfR6mtqFw9X2nvbDCtvfLaGlBg1oJz20xpl2UIpgDy1+oUogExVMIqXLGle02QNUERrEcem7gJ4n6aWpEtVUKIvEXQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=csgroup.eu; dmarc=pass action=none header.from=csgroup.eu;
- dkim=pass header.d=csgroup.eu; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=csgroup.eu;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=bOBftX54unTZAXgBMVOuXlqf2REtbmWB6W31i13K4dw=;
- b=XXmxVduq3GyHdj+qPgKCmu+fmF2eWEOo/0AzIfJ8y5xd9XvSTu1F805eTaUUd5DneDopzee/pnR/C0x1CQD+7pRYuKWp1tspfcWORUYZDZtLL9hOaimcZh7hMI2XTtWlMPrgCyVvc6oYKYfv2mJ5ByaiicMIHKGpvVRRz4BMoAJVueFdyGyg1RIcANJChaF8gk5w+hpLpDQnXB7TsWiTEawZn8TsCqLtBFnfu2puuX/wy1ANUlXTojvWTvieNSjozmq6TzjRNzvhN+4wAfvJk0CmOycE4fF9dj+d9oocyY5rA+ehxeL9d+H3oxX2vUhq5x/XJBN0Cnmy9lqCa3Cp5w==
-Received: from MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM (2603:10a6:501:31::15)
- by PR0P264MB3353.FRAP264.PROD.OUTLOOK.COM (2603:10a6:102:110::5) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7091.28; Thu, 14 Dec
- 2023 08:42:07 +0000
-Received: from MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM
- ([fe80::f788:32b4:1c5e:f264]) by MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM
- ([fe80::f788:32b4:1c5e:f264%7]) with mapi id 15.20.7091.028; Thu, 14 Dec 2023
- 08:42:06 +0000
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-To:     Nicholas Miehlbradt <nicholas@linux.ibm.com>,
-        "glider@google.com" <glider@google.com>,
-        "elver@google.com" <elver@google.com>,
-        "dvyukov@google.com" <dvyukov@google.com>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "mpe@ellerman.id.au" <mpe@ellerman.id.au>,
-        "npiggin@gmail.com" <npiggin@gmail.com>
-CC:     "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "kasan-dev@googlegroups.com" <kasan-dev@googlegroups.com>,
-        "iii@linux.ibm.com" <iii@linux.ibm.com>,
-        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 04/13] powerpc: Disable CONFIG_DCACHE_WORD_ACCESS when
- KMSAN is enabled
-Thread-Topic: [PATCH 04/13] powerpc: Disable CONFIG_DCACHE_WORD_ACCESS when
- KMSAN is enabled
-Thread-Index: AQHaLlJI6LSmE5V5qk+oa6hKFZGaxrCodi+A
-Date:   Thu, 14 Dec 2023 08:42:06 +0000
-Message-ID: <1f3b22d4-00b3-4ff9-b29b-a901c03988e3@csgroup.eu>
-References: <20231214055539.9420-1-nicholas@linux.ibm.com>
- <20231214055539.9420-5-nicholas@linux.ibm.com>
-In-Reply-To: <20231214055539.9420-5-nicholas@linux.ibm.com>
-Accept-Language: fr-FR, en-US
-Content-Language: fr-FR
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Mozilla Thunderbird
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=csgroup.eu;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: MRZP264MB2988:EE_|PR0P264MB3353:EE_
-x-ms-office365-filtering-correlation-id: a0787351-02a9-4ed7-fcde-08dbfc808de3
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: x0Bc7+krDRkjLqVAe63sv0nmryxan3HPJ7h5tjy0pCIL3fm76ZJ0MD7LWzzvDLY8oe+L5Hz+gzRt+JbtUOeQYEuo/e8BdqYCHACA67U46xHvfPOgesBuW9Cxm/r8kVVH9V6XwPr8sH2JWZ9D6P55mNZUbBLOXBDV3RCWZU6kF6lmQzd+SXPnroXHkv7MqPM4uayOQNelHKe3Dl4qQv+FS0MmCemOy4NHEI6rXs8qKQugRRIibng/jJ7oaIBtFMF5sHZnEuBVHqyrouEKddBHqIvSg7titK6doOxm1t74FS5B8W3u4uJv1vy0Qzjhorh3YfyGU9dJJ5z4mCRnTA5m68hOPTQ6CAvJZrxpdDLEu9WxINWLnQm0ivCYemn8iOv3s13UczPbDrM91wy3JvyNzkdHfejwPD0KrmqTWQ/tLrA8mohF96WpBPucpiOxZshFzSzZkBcnO65ie3Hux42f/bfEVM7nDbQibkzPTB8V13lzDDpf4FX9xdK6UGEoqWAildtve/jX0nDKkUA63kbaZTojyl02SCVX56S1Nch4LPV774OnMp842NIZt63ahG7jwkbw49Y2u/+xc4+kRs5Ngrr4bXOr9o+MWPl+uVgdKP0cTcn7y1TlwjKwN5paIIkuLk5ZoXszWlMuTNFgKXgMBRY62w9iu1DcDkMg5Q6Fz3Srd6LZFE9rAxnoGRGJWcGd
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230031)(396003)(136003)(366004)(376002)(39850400004)(346002)(230922051799003)(451199024)(64100799003)(186009)(1800799012)(31686004)(26005)(66574015)(6506007)(2616005)(36756003)(38070700009)(31696002)(86362001)(38100700002)(122000001)(6512007)(4326008)(83380400001)(5660300002)(44832011)(7416002)(71200400001)(76116006)(91956017)(2906002)(66946007)(110136005)(8936002)(64756008)(54906003)(66556008)(66476007)(66446008)(316002)(41300700001)(8676002)(478600001)(6486002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?d1c2N0tWSW1CME53TFRKQVB1bXk5YXpiYmZEbzg4SGYzZTR4TTJtU3N3TXpT?=
- =?utf-8?B?SmkrdXZza2VFU0JzclJRUHU2cTlYNWZpVmFYNlN4bWtaZGF6MEtaQnlDSS9k?=
- =?utf-8?B?MHo3d1V0SGJ0c3RLNUtYdFpvaU45dmd2UUNzVW1MSjRMMGtFcFAybythQWxa?=
- =?utf-8?B?RHUwckdQZ1k3NC9VaGhSeEhCZzNKZTNJZTZTYlJseFM1MFJLL2RhblJ3VG1h?=
- =?utf-8?B?dkI1WXprb08zN3NBMU1NV2ZLbjE3b0ZIZGRxaGpkNU8zNnVvaU5CVUUrRlZG?=
- =?utf-8?B?QURQUkI1UU9xaVJ0NmdmaWFFb1FwRVFaSUZrZEttbnFTQTZzRFJ1WFVwZEZX?=
- =?utf-8?B?L0V2KzM3QTIxNWUyK1pZb3RPK3BFYjFSdTcwMStkVnVyTjgwRVNZMXdhV2ho?=
- =?utf-8?B?MDJPWkk4Vm5FOEpOT1kvQnZQT3ZSRE9Ca0pYSFFGa0c4M1l0SkVFL0hPMTN3?=
- =?utf-8?B?WUJYbmgzdGFWMnljUXJtTThTSDIrZ2h3RWY2aDFmZ011RkFRTEh2dndkaUc3?=
- =?utf-8?B?eUZqMHR5N0FHem12RUZ5a2VzM2FpOEVkcnVwcEVyUG5jTDRJSm1TOU84L0xG?=
- =?utf-8?B?YlpsT2RWUndkNERFNXM0STdEY0xoTkswaTVUUTZOcWVrMGMyM2N4bTA2NmRa?=
- =?utf-8?B?MENnZEl5Nk9TODFwVVdacEJDWHdBOUJrYlJoZm04OTI5K01GekVVNGxiYTF5?=
- =?utf-8?B?RG9iR0tzaFZCelAyTjc5WlNuYlVaa2o2Zncxenk4SzRJRGUvZDFMSGZFSTQ5?=
- =?utf-8?B?OEpIZ0tXNS9LcnRWTitBaXZtUExLRm9wdkltU0J4QW5CcGxLZ3psc1V5SVRl?=
- =?utf-8?B?MEJLVHhhUUE5cm5FSXVFb2FicXlrVlRNODJLM0FERU9JRDM2cis5dXNQOHRX?=
- =?utf-8?B?WVdMa2lnbTZBR0VKU25CUG5XN0grUFk3V1pwNVFrOWNaY2oyUDlLeDI5dmJY?=
- =?utf-8?B?OUFJWW53QVN3Z2NnOTFvQnVkNnNEMU1kZmpvNXdJR3Bwais2ZWdrMkFmMVVi?=
- =?utf-8?B?L1lBNFhDSTR6T1EramNBS3puMk1qZWNsQlBmYklzZHdhck5UYWVrS2Y0UHcz?=
- =?utf-8?B?dDB2Uk9PZ3l2WnprZlFJcm9jd2FpSmRWV3ZDSmZaQTA5aThpYlEyOE80Q0VS?=
- =?utf-8?B?dnFhdVdBQjVpTjV3bDZ0d2tJUi91aktYQm5CK3F2bDRVVmQ0V3VLcWRjWmQx?=
- =?utf-8?B?bDlNazNVYzByTVlKbXRXcExaMDRjc1dMTE1STmh3cktVL0tyMlYzSE95RHVk?=
- =?utf-8?B?cFA4VFNjL2lQaUwxeFdPYzhsN1kwNHFWUkQyU3RnMGFJM3VGbWZGR2h2RmVa?=
- =?utf-8?B?amZLbGJyWjNQS3l1OEZWK0tMRVpPaDBUOHpPL0l2QUpDOVJjOFc1QW5VOW84?=
- =?utf-8?B?SU9UREtXM05CeWV3ZWt0R0hEYUJobTBZVXllK25UYXZVb0lzeGVtZVg3a3hS?=
- =?utf-8?B?Z0syb1hiY05LdU5Oa2ZvKzBuTE9yRnNTV3JpLyt3T3U4Q0ZqNnNPUHhldWxI?=
- =?utf-8?B?TmREVWV6aWxUV3d5RzNEaG1wZzcyZmlkVU5FaE0zNUNhMFBsdmtBU2UrbTQ3?=
- =?utf-8?B?VklUaGVrRGxFbFErMzdsUlpSUW1pWnhYWkdWSThJNDZtd1JpY0doU1pmSEpF?=
- =?utf-8?B?R29yNm1RbWRyYS9jK2diVS9LeFZyMGY0OHlHUTFra2FLY2dIRXBJd0w1SVg3?=
- =?utf-8?B?U01pSjdkQUtOeTYyVkM2NlVaWWR6L09GZGZOWlF4WlRLL0tiZGo1WlVrQ05R?=
- =?utf-8?B?RUwyS0hORmo4OTc5UGFvUlFkNFpsbkFCRGhqVjZSSjVKSXpOUEt4UW45TUxh?=
- =?utf-8?B?UEorY2k3eHZkSzk4RDJxVEkrZUhSczk5S3dqakpHdTh3Mmt2UVlxaU82T291?=
- =?utf-8?B?d1p4REp3VTdtUUQ1ZlRXQ1A5T3d2RGp2dW1lTHE0UFhFUVo2czU3K0NYd1N0?=
- =?utf-8?B?cDlpbUFsOHp4STlYYjYyVkdNM1ZjMU01RDkxQ0F6TDMyUTNMc21DdGNQcVBt?=
- =?utf-8?B?YWpmTmNvQy9oN28rb2FFTDFSK203RjBDNDZoNU1rZDc2L3VRbys5ZkRIVU9t?=
- =?utf-8?B?cnRDenR2bTkrejB1MEJ6OWUyL2tNa3NNNmFFR1lyWWppL29xRTV4bDB5Z0p6?=
- =?utf-8?B?bElQNW82eWVXck5yKzgvZlJMOFpaSS84R2NzVU5qdWxqMEI5ZnF4ZVpCdHl1?=
- =?utf-8?B?RGc9PQ==?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <A7DE56272EF88841A21E4624DEEC8060@FRAP264.PROD.OUTLOOK.COM>
-Content-Transfer-Encoding: base64
+        Thu, 14 Dec 2023 03:45:18 -0500
+Received: from mail.nearlyone.de (mail.nearlyone.de [49.12.199.46])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 684E0E3;
+        Thu, 14 Dec 2023 00:45:22 -0800 (PST)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id ECECCE1D60;
+        Thu, 14 Dec 2023 09:45:17 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=monom.org; s=dkim;
+        t=1702543520; h=from:subject:date:message-id:to:mime-version:content-type;
+        bh=sDSb1qqHtkUz2/XPauaz/NpVOMr1hYcEwXh+vxb5xOM=;
+        b=qkEQ9YI3iIyEBnMTfq8Jtoj5HwaF8OuTT9xFUHbpEUAAcJWp5Vmr8h2SaS42JoelIFfuqz
+        nVW0LJWPdh4dBMugTgl0EzhEOYOlBPnRI3XaBlZ1OYxvyS7o9FR4I+YUf5+m6CrhJ8g1mr
+        QByI3MT7ZmTogTGOhgjYae0+ZCMYf7TclNGE8A7IEqZ/X3jjT4Aa6mJwFeHaZyZgViyFmN
+        jKNBR6F22V9UtCk1FH7yboTfeDDZMIQqeGsqAa/D4yDNU7bX0iIEt91OrPB+CFyUKziK5z
+        kzZfHGPOyRzkShFLlD8gxm5DQJF4u8MlsTgtOXZKjH5Ka4MzeIP2KK3QIBDq1g==
+Date:   Thu, 14 Dec 2023 09:45:17 +0100
+From:   Daniel Wagner <wagi@monom.org>
+To:     LKML <linux-kernel@vger.kernel.org>,
+        linux-rt-users@vger.kernel.org, stable-rt@vger.kernel.org,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Tom Zanussi <tom.zanussi@linux.intel.com>,
+        Clark Williams <williams@redhat.com>
+Subject: [ANNOUNCE] 4.19.299-rt130
+Message-ID: <170254303594.22090.13135204123422729997@beryllium.lan>
 MIME-Version: 1.0
-X-OriginatorOrg: csgroup.eu
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-Network-Message-Id: a0787351-02a9-4ed7-fcde-08dbfc808de3
-X-MS-Exchange-CrossTenant-originalarrivaltime: 14 Dec 2023 08:42:06.8995
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 9914def7-b676-4fda-8815-5d49fb3b45c8
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: LqglYRFHhNzM5li4Bb6jl8ocPxE4K4R/Zmqolu4NZi5FfObH/QgjVGfeqvTifWDbRoSrVGxqCNsILT7LwPPc8po47O65WWdcmnNQVFhixqw=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PR0P264MB3353
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Last-TLS-Session-Version: TLSv1.3
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DQoNCkxlIDE0LzEyLzIwMjMgw6AgMDY6NTUsIE5pY2hvbGFzIE1pZWhsYnJhZHQgYSDDqWNyaXTC
-oDoNCj4gV29yZCBzaXplZCBhY2Nlc3NlcyBtYXkgcmVhZCB1bmluaXRpYWxpemVkIGRhdGEgd2hl
-biBvcHRpbWl6aW5nIGxvYWRzLg0KPiBEaXNhYmxlIHRoaXMgb3B0aW1pemF0aW9uIHdoZW4gS01T
-QU4gaXMgZW5hYmxlZCB0byBwcmV2ZW50IGZhbHNlDQo+IHBvc2l0aXZlcy4NCj4gDQo+IFNpZ25l
-ZC1vZmYtYnk6IE5pY2hvbGFzIE1pZWhsYnJhZHQgPG5pY2hvbGFzQGxpbnV4LmlibS5jb20+DQo+
-IC0tLQ0KPiAgIGFyY2gvcG93ZXJwYy9LY29uZmlnIHwgMiArLQ0KPiAgIDEgZmlsZSBjaGFuZ2Vk
-LCAxIGluc2VydGlvbigrKSwgMSBkZWxldGlvbigtKQ0KPiANCj4gZGlmZiAtLWdpdCBhL2FyY2gv
-cG93ZXJwYy9LY29uZmlnIGIvYXJjaC9wb3dlcnBjL0tjb25maWcNCj4gaW5kZXggNmYxMDVlZTRm
-M2NmLi5lMzNlMzI1MGM0NzggMTAwNjQ0DQo+IC0tLSBhL2FyY2gvcG93ZXJwYy9LY29uZmlnDQo+
-ICsrKyBiL2FyY2gvcG93ZXJwYy9LY29uZmlnDQo+IEBAIC0xODIsNyArMTgyLDcgQEAgY29uZmln
-IFBQQw0KPiAgIAlzZWxlY3QgQlVJTERUSU1FX1RBQkxFX1NPUlQNCj4gICAJc2VsZWN0IENMT05F
-X0JBQ0tXQVJEUw0KPiAgIAlzZWxlY3QgQ1BVTUFTS19PRkZTVEFDSwkJCWlmIE5SX0NQVVMgPj0g
-ODE5Mg0KPiAtCXNlbGVjdCBEQ0FDSEVfV09SRF9BQ0NFU1MJCWlmIFBQQzY0ICYmIENQVV9MSVRU
-TEVfRU5ESUFODQo+ICsJc2VsZWN0IERDQUNIRV9XT1JEX0FDQ0VTUwkJaWYgUFBDNjQgJiYgQ1BV
-X0xJVFRMRV9FTkRJQU4gJiYgIUtNU0FODQo+ICAgCXNlbGVjdCBETUFfT1BTX0JZUEFTUwkJCWlm
-IFBQQzY0DQo+ICAgCXNlbGVjdCBETUFfT1BTCQkJCWlmIFBQQzY0DQo+ICAgCXNlbGVjdCBEWU5B
-TUlDX0ZUUkFDRQkJCWlmIEZVTkNUSU9OX1RSQUNFUg0KDQoNClNlZW1zIGxpa2UgYWxsIGFyY2hz
-IGRvIHRoaXMuIE1heWJlIGEgYmV0dGVyIGFwcHJvYWNoIHdvdWxkIGJlIHRvIGRlZmluZSANCmEg
-SEFWRV9EQ0FDSEVfV09SRF9BQ0NFU1MgdGhhdCBpcyBzZWxlY3RlZCBieSBhcmNoZXMsIGFuZCB0
-aGVuIHRoZSBjb3JlIA0KcGFydCBzZWxlY3QgRENBQ0hFX1dPUkRfQUNDRVNTIHdoZW4gSEFWRV9E
-Q0FDSEVfV09SRF9BQ0NFU1MgJiYgIUtNU0FODQoNCkNocmlzdG9waGUNCg==
+Hello RT-list!
+
+I'm pleased to announce the 4.19.299-rt130 stable release. This
+is just updating the stable release 4.19.299. No RT specific changes.
+
+There was a conflict due to the backport of 56e894982522 ("sched/rt:
+Provide migrate_disable/enable() inlines") to stable. Thus I dropped the
+backport because v4.19-rt already provides these two functions.
+
+You can get this release via the git tree at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/rt/linux-stable-rt.git
+
+  branch: v4.19-rt
+  Head SHA1: a279ca52df99df429ac873bcd8cf7df8569758ae
+
+Or to build 4.19.299-rt130 directly, the following patches should be applied:
+
+  https://www.kernel.org/pub/linux/kernel/v4.x/linux-4.19.tar.xz
+
+  https://www.kernel.org/pub/linux/kernel/v4.x/patch-4.19.299.xz
+
+  https://www.kernel.org/pub/linux/kernel/projects/rt/4.19/older/patch-4.19.299-rt130.patch.xz
+
+Signing key fingerprint:
+
+  5BF6 7BC5 0826 72CA BB45  ACAE 587C 5ECA 5D0A 306C
+
+All keys used for the above files and repositories can be found on the
+following git repository:
+
+   git://git.kernel.org/pub/scm/docs/kernel/pgpkeys.git
+
+Enjoy!
+Daniel
+
+Changes from v4.19.295-rt129:
+---
+
+Daniel Wagner (2):
+      Revert "sched/rt: Provide migrate_disable/enable() inlines"
+      Linux 4.19.299-rt130
+---
+include/linux/preempt.h | 30 ------------------------------
+ localversion-rt         |  2 +-
+ 2 files changed, 1 insertion(+), 31 deletions(-)
+---
+diff --git a/include/linux/preempt.h b/include/linux/preempt.h
+index 29ecd13afdda..9c74a019bf57 100644
+--- a/include/linux/preempt.h
++++ b/include/linux/preempt.h
+@@ -422,34 +422,4 @@ static inline void preempt_notifier_init(struct preempt_notifier *notifier,
+ 
+ #endif
+ 
+-/**
+- * migrate_disable - Prevent migration of the current task
+- *
+- * Maps to preempt_disable() which also disables preemption. Use
+- * migrate_disable() to annotate that the intent is to prevent migration,
+- * but not necessarily preemption.
+- *
+- * Can be invoked nested like preempt_disable() and needs the corresponding
+- * number of migrate_enable() invocations.
+- */
+-static __always_inline void migrate_disable(void)
+-{
+-	preempt_disable();
+-}
+-
+-/**
+- * migrate_enable - Allow migration of the current task
+- *
+- * Counterpart to migrate_disable().
+- *
+- * As migrate_disable() can be invoked nested, only the outermost invocation
+- * reenables migration.
+- *
+- * Currently mapped to preempt_enable().
+- */
+-static __always_inline void migrate_enable(void)
+-{
+-	preempt_enable();
+-}
+-
+ #endif /* __LINUX_PREEMPT_H */
+diff --git a/localversion-rt b/localversion-rt
+index 90303f5aabcf..6fa797e5b850 100644
+--- a/localversion-rt
++++ b/localversion-rt
+@@ -1 +1 @@
+--rt129
++-rt130
