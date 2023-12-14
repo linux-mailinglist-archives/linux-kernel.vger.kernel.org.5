@@ -1,115 +1,77 @@
-Return-Path: <linux-kernel+bounces-6-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-5-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E599A813A9D
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 20:19:45 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4B74B813A98
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 20:19:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 247CE1C20CB9
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 19:19:45 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C3979B2177E
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 19:19:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 082CF697AA;
-	Thu, 14 Dec 2023 19:19:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=soleen.com header.i=@soleen.com header.b="M0gW0TDM"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB9F069788;
+	Thu, 14 Dec 2023 19:19:05 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-oa1-f41.google.com (mail-oa1-f41.google.com [209.85.160.41])
+Received: from mail-pf1-f177.google.com (mail-pf1-f177.google.com [209.85.210.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA22769787
-	for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 19:19:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=soleen.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=soleen.com
-Received: by mail-oa1-f41.google.com with SMTP id 586e51a60fabf-20335dcec64so1120020fac.3
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 11:19:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=soleen.com; s=google; t=1702581566; x=1703186366; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ZGqN9VyFA6bGzLMvanbVJ9xu/V9dzBL2qAxRA0SNydY=;
-        b=M0gW0TDMZ1cOi1yrWcw1W4bE11jULEKanC+u1rXJzMgCz8em1s6uFo/o25lvEJ4Hst
-         p2EnRHGV1Bac5AmfplX1dEpCP/DT287CovyVkoH/NT7Y+TV9384LgZb6/mf6n+WGgV2K
-         EtV4k10/hr+ygQ2S844dJMMJK5h0ePSkXTcvwyFygPRu8S8m4nMCSVZnaLm2ubM5e51X
-         ETH0IiTQiDh+z/7z2kJTLVYATE5/P8sLBJqEO9OZK2x3pO9hJRo5pnNPcFIF4mx8pZ4T
-         v6Nf1i4s3v/dTT0QI8wCXtHpVJwrkMb3UOokIW6x4SDQI/6jleRCOaYJX8x0tgPLwGi9
-         nPbA==
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A8A1692A0;
+	Thu, 14 Dec 2023 19:19:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f177.google.com with SMTP id d2e1a72fcca58-6d26eef7438so350653b3a.0;
+        Thu, 14 Dec 2023 11:19:03 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702581566; x=1703186366;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ZGqN9VyFA6bGzLMvanbVJ9xu/V9dzBL2qAxRA0SNydY=;
-        b=s6v+RQ8mgVeZuA/nWGvH0eZ3qaKFfVgiTcf4Mg6M20emilbqmRaeFStWm1zotPIUTV
-         NVLlV1yaJrnyZ2LG9BYNeACMId1X85vcpXUwvsetjKeGapxgKDFKgIH3WVHt5VrA/cS+
-         NqXIwJzhu6lEGPLePrDsyK7bPKlQQWPOlSkKqxcWPSSO3dhonefaWeXptHOFGMRcLSJX
-         4kkYpRzSt8P4Idy1Ab+kWeKfq2OWfO3kLoFshHkuflp4ivYVflftGHdos4p1KxoZTgRT
-         jeUIrsAzCj/lsZXMw/txWDmyfJCyxp5D5eMjIWkCrtkG0eojbA9NX//bKAhRvxd7Ckeo
-         5Tig==
-X-Gm-Message-State: AOJu0YySDqQZgTk9gM8iI3LlrrDPGwaJZxCeSICMuL818vdjE3jxTyXg
-	LWTMEoR+pfbNPkgKwRMS/EkyjdPqp0+2WAKDbzxnEA==
-X-Google-Smtp-Source: AGHT+IHAnrtenlddaWtCyLx9aBi69QrVuHVWG2rdYXiv2yuQ5vKdApOHPoLr5i+XPih06QNJDodZZT5+m5u6D1Em/48=
-X-Received: by 2002:a05:6871:4099:b0:1ff:805:b3e6 with SMTP id
- kz25-20020a056871409900b001ff0805b3e6mr13641663oab.6.1702581566484; Thu, 14
- Dec 2023 11:19:26 -0800 (PST)
+        d=1e100.net; s=20230601; t=1702581543; x=1703186343;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=HmaPv5ednXxlApkIzwmu5V1HXdcr5X0Tt25BMAujWYA=;
+        b=nh/s3ZgpE85slgefhZJqFxhwS+1R0d7TqFy5UvnC3XNQfd/JdUP+2mdDZ+tMCrE7wJ
+         bl2vuE3yWUL+xwyWOyB5pGJC1By5JLNlWaQCif9EDcU2Xwsm6m1kLG6bCcc6uYqahSSq
+         GqpKw30xoGowRUXPhXomLnNvCXVcLPTS9YrjTVABg8gBwPVeVuoALDO6g1h1WoMwYIs9
+         VU+8e1+3Ux0Kr34HJcluViME9P3vuGUs5w/+j8a05YwpcrRK7dRh5RUhJgdUqfW9cGwJ
+         WEgwv4kxfIgEIHAGPylHu6a/0v4SAqQcxiwqwwierXwyQzCCanXEH3a+jqaFtQ1MHpWH
+         DdMw==
+X-Gm-Message-State: AOJu0Yx3xxxISHklKA40hamtNzHt5X2s7Cwpg5GieZQVnMTag+Hyt6VK
+	Ctxq/zN95VGhJz6l8FU3mx/I7XBenVlBMfrI
+X-Google-Smtp-Source: AGHT+IGHCCE+L7JDS8FZbZpAIGvsdL6+lgQ1l80vl7spaWGOGjl5OMSavZxWNoQGKdgEH7IQ4IdN2w==
+X-Received: by 2002:a05:6a20:7f9b:b0:190:1b16:3558 with SMTP id d27-20020a056a207f9b00b001901b163558mr15185325pzj.2.1702581542739;
+        Thu, 14 Dec 2023 11:19:02 -0800 (PST)
+Received: from localhost (fpd11144dd.ap.nuro.jp. [209.17.68.221])
+        by smtp.gmail.com with ESMTPSA id q16-20020a62ae10000000b006a77343b0ccsm12189368pff.89.2023.12.14.11.19.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 Dec 2023 11:19:02 -0800 (PST)
+Date: Fri, 15 Dec 2023 04:19:00 +0900
+From: Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>
+To: Wolfram Sang <wsa+renesas@sang-engineering.com>,
+	linux-renesas-soc@vger.kernel.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+	Marek Vasut <marek.vasut+renesas@gmail.com>,
+	Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
+Subject: Re: [PATCH v5 RESEND 0/2] PCI: rcar: support regulators for PCIe
+Message-ID: <20231214191900.GB2079458@rocinante>
+References: <20231105092908.3792-1-wsa+renesas@sang-engineering.com>
+ <ZXske3k8CkMcGjr5@shikoro>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231130201504.2322355-1-pasha.tatashin@soleen.com>
- <20231130201504.2322355-10-pasha.tatashin@soleen.com> <88519685-abfb-e2f8-38b4-d94340b40d1d@google.com>
-In-Reply-To: <88519685-abfb-e2f8-38b4-d94340b40d1d@google.com>
-From: Pasha Tatashin <pasha.tatashin@soleen.com>
-Date: Thu, 14 Dec 2023 14:18:49 -0500
-Message-ID: <CA+CK2bD-phEK4aWQv-xK74_uR_agRN+cmt5Wq-a8YVB1Gm_gVA@mail.gmail.com>
-Subject: Re: [PATCH v2 09/10] iommu: observability of the IOMMU allocations
-To: David Rientjes <rientjes@google.com>
-Cc: akpm@linux-foundation.org, alim.akhtar@samsung.com, alyssa@rosenzweig.io, 
-	asahi@lists.linux.dev, baolu.lu@linux.intel.com, bhelgaas@google.com, 
-	cgroups@vger.kernel.org, corbet@lwn.net, david@redhat.com, 
-	dwmw2@infradead.org, hannes@cmpxchg.org, heiko@sntech.de, 
-	iommu@lists.linux.dev, jernej.skrabec@gmail.com, jonathanh@nvidia.com, 
-	joro@8bytes.org, krzysztof.kozlowski@linaro.org, linux-doc@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-mm@kvack.org, linux-rockchip@lists.infradead.org, 
-	linux-samsung-soc@vger.kernel.org, linux-sunxi@lists.linux.dev, 
-	linux-tegra@vger.kernel.org, lizefan.x@bytedance.com, marcan@marcan.st, 
-	mhiramat@kernel.org, m.szyprowski@samsung.com, paulmck@kernel.org, 
-	rdunlap@infradead.org, robin.murphy@arm.com, samuel@sholland.org, 
-	suravee.suthikulpanit@amd.com, sven@svenpeter.dev, thierry.reding@gmail.com, 
-	tj@kernel.org, tomas.mudrunka@gmail.com, vdumpa@nvidia.com, wens@csie.org, 
-	will@kernel.org, yu-cheng.yu@intel.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZXske3k8CkMcGjr5@shikoro>
 
-On Thu, Dec 14, 2023 at 12:59=E2=80=AFPM David Rientjes <rientjes@google.co=
-m> wrote:
->
-> On Thu, 30 Nov 2023, Pasha Tatashin wrote:
->
-> > Add NR_IOMMU_PAGES into node_stat_item that counts number of pages
-> > that are allocated by the IOMMU subsystem.
-> >
-> > The allocations can be view per-node via:
-> > /sys/devices/system/node/nodeN/vmstat.
-> >
-> > For example:
-> >
-> > $ grep iommu /sys/devices/system/node/node*/vmstat
-> > /sys/devices/system/node/node0/vmstat:nr_iommu_pages 106025
-> > /sys/devices/system/node/node1/vmstat:nr_iommu_pages 3464
-> >
-> > The value is in page-count, therefore, in the above example
-> > the iommu allocations amount to ~428M.
-> >
-> > Signed-off-by: Pasha Tatashin <pasha.tatashin@soleen.com>
->
-> Acked-by: David Rientjes <rientjes@google.com>
+Hello,
 
-Thank you,
-Pasha
+> > Here are the patches to make PCIe cards work in slot CN15 on a Renesas
+> > KingFisher board. Please apply.
+[...]
+> Can we have this series in 6.8, pretty please?
+
+Applied, so it should make it to 6.8.  Apologies for the delay.
+
+	Krzysztof
 
