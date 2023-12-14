@@ -2,94 +2,228 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 87A908130D2
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 14:02:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CAB48130D7
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 14:02:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1573320AbjLNNCB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 08:02:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42166 "EHLO
+        id S1573192AbjLNNCk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 08:02:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38446 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1573256AbjLNNBe (ORCPT
+        with ESMTP id S1573266AbjLNNCZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 08:01:34 -0500
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD63210D2
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 05:01:35 -0800 (PST)
-Received: by mail-lf1-x132.google.com with SMTP id 2adb3069b0e04-50bf82f4409so590999e87.0
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 05:01:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1702558894; x=1703163694; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=hEBNj87fP9250zui4T/Hvg1xpkDfzNZnKnVDxt1bMUY=;
-        b=c/cZNQ2Z0vfSqTkKgxr6lG0OXRJajUMTqpoy7zJ3VvQkPKHDIDqROQqUXD/DNNhz3w
-         soLa1tsM9s7HUvfzVaXAKPrbejdY68Kkvu5UCN4q6raPbwHXHAoNswcy6qnI+gHixg2k
-         egNpuOllT5hdaPCMfhC1KHhi+cISA249t8amqu8M7/IIr+725/WJIfq6GkQXM7YLU0aR
-         sgtp2msCe9hTpuKtrJIZCSbb0mHtqPcqIu5Vb3WxOM7hZzPKJCAFe50eYvXDkuXRx+u5
-         Ma8Kk6H811winPIQ2eRrn3d7ZBV3J8eR/x9JzfJyTCHP3hv0W37GJ2uDQMu6pehIGeX+
-         B8Kw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702558894; x=1703163694;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=hEBNj87fP9250zui4T/Hvg1xpkDfzNZnKnVDxt1bMUY=;
-        b=eSwGY0mj/IZtEgCOGGM/ee6qjrbhQ9UY4fiaFIuBDJ8INjrZdpryI4WzIg1RmyYbPY
-         B8qmVVa0qyZJW3Bc3+f+cmrWdTKRZaTD8Ze02bOKyj26RoP+AJNY3/9tDobXPHXXv8jC
-         GQDIO459cSajelkhrUd4UtddCtmYp24BWoyAwJbZrCUoIduoEGP3ReSorZUYqPLvzwgO
-         Ip/GZWu1d9tWH4vhe1dMEBKw4IO5MIa9e0HT6zt5dbyWA2qEKCkdKob1+Jw+pgi/E1FD
-         gi/vShH06wMmo+rnlulf6Q2wABhNKxGkvLk26mvdvzIxklTr5I+z+oNbbd1x/nGlariu
-         uFXA==
-X-Gm-Message-State: AOJu0YxZL/bcNy6pMBDyatUHxDbgRqsa62ebCzQdoV/RYS4lrkke7N19
-        q744dKAd6cX1sJNlum/eeT4bTw==
-X-Google-Smtp-Source: AGHT+IHDwfUDUX4A8h+6BpYMmsxXIr+8mmt9c12FvptD9zihDInwN3uM8coAVGJ5D7hEzSztlmtQhw==
-X-Received: by 2002:a05:6512:3ba6:b0:50b:e472:d825 with SMTP id g38-20020a0565123ba600b0050be472d825mr7069181lfv.20.1702558893836;
-        Thu, 14 Dec 2023 05:01:33 -0800 (PST)
-Received: from [172.30.204.158] (UNUSED.212-182-62-129.lubman.net.pl. [212.182.62.129])
-        by smtp.gmail.com with ESMTPSA id m16-20020a056512115000b0050e1b9c6ff5sm34796lfg.265.2023.12.14.05.01.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 14 Dec 2023 05:01:33 -0800 (PST)
-Message-ID: <32a47aa9-4b4a-493d-879a-0cf3f7fe9c00@linaro.org>
-Date:   Thu, 14 Dec 2023 14:01:32 +0100
+        Thu, 14 Dec 2023 08:02:25 -0500
+Received: from xry111.site (xry111.site [89.208.246.23])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F352B192
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 05:02:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=xry111.site;
+        s=default; t=1702558942;
+        bh=nd5y1bL1sccRJEldkma74vvWmJtxp5dwr9ST+xGLvJY=;
+        h=From:To:Cc:Subject:Date:From;
+        b=hE774fyzx14VKgovBrO0RjwY9yWNcBPXpDPgJm3dEjPJU8P1dIN93JDC2v2BaJ8ei
+         lU2LYBQergZegfrWlMi4yBzAh35V0KYBGmGokoZ7Y2LjQCdkN88MI/OwqfLpMf76JD
+         +b0kN6LLS1ZvYt/iab8HI+rb34RYVl5gX8Pqu+I0=
+Received: from stargazer.. (unknown [113.200.174.3])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
+        (Client did not present a certificate)
+        (Authenticated sender: xry111@xry111.site)
+        by xry111.site (Postfix) with ESMTPSA id 8563C66B90;
+        Thu, 14 Dec 2023 08:02:21 -0500 (EST)
+From:   Xi Ruoyao <xry111@xry111.site>
+To:     Huacai Chen <chenhuacai@kernel.org>,
+        WANG Xuerui <kernel@xen0n.name>
+Cc:     loongarch@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Xi Ruoyao <xry111@xry111.site>
+Subject: [PATCH] LoongArch: Micro-optimize sc_save_fcc and sc_restore_fcc for LA464
+Date:   Thu, 14 Dec 2023 21:02:06 +0800
+Message-ID: <20231214130206.21219-1-xry111@xry111.site>
+X-Mailer: git-send-email 2.43.0
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] scsi: ufs: qcom: Fix ESI vector mask
-Content-Language: en-US
-To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        andersson@kernel.org, jejb@linux.ibm.com,
-        martin.petersen@oracle.com
-Cc:     linux-arm-msm@vger.kernel.org, linux-scsi@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Andrew Halaney <ahalaney@redhat.com>
-References: <20231214125532.55109-1-manivannan.sadhasivam@linaro.org>
-From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-In-Reply-To: <20231214125532.55109-1-manivannan.sadhasivam@linaro.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Level: *
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On LA464 movcf2gr is 7 times slower than movcf2fr + movfr2gr, and
+movgr2cf is 15 times (!) slower than movgr2fr + movfr2cf.
 
+On LA664 movcf2fr + movfr2gr has a similar performance with movcf2gr,
+and movgr2fr + movfr2cf has a similar performance with movgr2cf.
 
-On 12/14/23 13:55, Manivannan Sadhasivam wrote:
-> While cleaning up the code to use ufshcd_rmwl() helper, the ESI vector mask
-> was changed incorrectly. Fix it and also define a proper macro for the
-> value together with FIELD_PREP().
-> 
-> Reported-by: Andrew Halaney <ahalaney@redhat.com>
-> Fixes: 0e9f4375db1c ("scsi: ufs: qcom: Use ufshcd_rmwl() where applicable")
-> Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> ---
-Looks sound
+To use FP registers in sc_save_fcc and sc_restore_fcc we need to save
+FP/LSX/LASX registers before sc_save_fcc, and restore FP/LSX/LASX
+registers after sc_restore_fcc.
 
-Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+Signed-off-by: Xi Ruoyao <xry111@xry111.site>
+---
+ arch/loongarch/kernel/fpu.S | 94 +++++++++++++++++++++----------------
+ 1 file changed, 54 insertions(+), 40 deletions(-)
 
-Konrad
+diff --git a/arch/loongarch/kernel/fpu.S b/arch/loongarch/kernel/fpu.S
+index d53ab10f4644..ecb127f9a673 100644
+--- a/arch/loongarch/kernel/fpu.S
++++ b/arch/loongarch/kernel/fpu.S
+@@ -96,43 +96,57 @@
+ 	.endm
+ 
+ 	.macro sc_save_fcc base, tmp0, tmp1
+-	movcf2gr	\tmp0, $fcc0
+-	move		\tmp1, \tmp0
+-	movcf2gr	\tmp0, $fcc1
+-	bstrins.d	\tmp1, \tmp0, 15, 8
+-	movcf2gr	\tmp0, $fcc2
+-	bstrins.d	\tmp1, \tmp0, 23, 16
+-	movcf2gr	\tmp0, $fcc3
+-	bstrins.d	\tmp1, \tmp0, 31, 24
+-	movcf2gr	\tmp0, $fcc4
+-	bstrins.d	\tmp1, \tmp0, 39, 32
+-	movcf2gr	\tmp0, $fcc5
+-	bstrins.d	\tmp1, \tmp0, 47, 40
+-	movcf2gr	\tmp0, $fcc6
+-	bstrins.d	\tmp1, \tmp0, 55, 48
+-	movcf2gr	\tmp0, $fcc7
+-	bstrins.d	\tmp1, \tmp0, 63, 56
+-	EX	st.d	\tmp1, \base, 0
++	movcf2fr	ft0, $fcc0
++	movcf2fr	ft1, $fcc1
++	movfr2gr.s	\tmp0, ft0
++	movfr2gr.s	\tmp1, ft1
++	EX  st.b	\tmp0, \base, 0
++	EX  st.b	\tmp0, \base, 8
++	movcf2fr	ft0, $fcc2
++	movcf2fr	ft1, $fcc3
++	movfr2gr.s	\tmp0, ft0
++	movfr2gr.s	\tmp1, ft1
++	EX  st.b	\tmp0, \base, 16
++	EX  st.b	\tmp0, \base, 24
++	movcf2fr	ft0, $fcc3
++	movcf2fr	ft1, $fcc4
++	movfr2gr.s	\tmp0, ft0
++	movfr2gr.s	\tmp1, ft1
++	EX  st.b	\tmp0, \base, 32
++	EX  st.b	\tmp0, \base, 40
++	movcf2fr	ft0, $fcc5
++	movcf2fr	ft1, $fcc6
++	movfr2gr.s	\tmp0, ft0
++	movfr2gr.s	\tmp1, ft1
++	EX  st.b	\tmp0, \base, 48
++	EX  st.b	\tmp0, \base, 56
+ 	.endm
+ 
+ 	.macro sc_restore_fcc base, tmp0, tmp1
+-	EX	ld.d	\tmp0, \base, 0
+-	bstrpick.d	\tmp1, \tmp0, 7, 0
+-	movgr2cf	$fcc0, \tmp1
+-	bstrpick.d	\tmp1, \tmp0, 15, 8
+-	movgr2cf	$fcc1, \tmp1
+-	bstrpick.d	\tmp1, \tmp0, 23, 16
+-	movgr2cf	$fcc2, \tmp1
+-	bstrpick.d	\tmp1, \tmp0, 31, 24
+-	movgr2cf	$fcc3, \tmp1
+-	bstrpick.d	\tmp1, \tmp0, 39, 32
+-	movgr2cf	$fcc4, \tmp1
+-	bstrpick.d	\tmp1, \tmp0, 47, 40
+-	movgr2cf	$fcc5, \tmp1
+-	bstrpick.d	\tmp1, \tmp0, 55, 48
+-	movgr2cf	$fcc6, \tmp1
+-	bstrpick.d	\tmp1, \tmp0, 63, 56
+-	movgr2cf	$fcc7, \tmp1
++	EX	ld.b	\tmp0, \base, 0
++	EX	ld.b	\tmp1, \base, 8
++	movgr2fr.w	ft0, \tmp0
++	movgr2fr.w	ft1, \tmp1
++	movfr2cf	$fcc0, ft0
++	movfr2cf	$fcc1, ft1
++	EX	ld.b	\tmp0, \base, 16
++	EX	ld.b	\tmp1, \base, 24
++	movgr2fr.w	ft0, \tmp0
++	movgr2fr.w	ft1, \tmp1
++	movfr2cf	$fcc2, ft0
++	movfr2cf	$fcc3, ft1
++	EX	ld.b	\tmp0, \base, 32
++	EX	ld.b	\tmp1, \base, 40
++	movgr2fr.w	ft0, \tmp0
++	movgr2fr.w	ft1, \tmp1
++	movfr2cf	$fcc4, ft0
++	movfr2cf	$fcc5, ft1
++	EX	ld.b	\tmp0, \base, 48
++	EX	ld.b	\tmp1, \base, 56
++	movgr2fr.w	ft0, \tmp0
++	movgr2fr.w	ft1, \tmp1
++	movfr2cf	$fcc6, ft0
++	movfr2cf	$fcc7, ft1
+ 	.endm
+ 
+ 	.macro sc_save_fcsr base, tmp0
+@@ -449,9 +463,9 @@ SYM_FUNC_END(_init_fpu)
+  * a2: fcsr
+  */
+ SYM_FUNC_START(_save_fp_context)
+-	sc_save_fcc	a1 t1 t2
+ 	sc_save_fcsr	a2 t1
+ 	sc_save_fp	a0
++	sc_save_fcc	a1 t1 t2
+ 	li.w		a0, 0				# success
+ 	jr		ra
+ SYM_FUNC_END(_save_fp_context)
+@@ -462,8 +476,8 @@ SYM_FUNC_END(_save_fp_context)
+  * a2: fcsr
+  */
+ SYM_FUNC_START(_restore_fp_context)
+-	sc_restore_fp	a0
+ 	sc_restore_fcc	a1 t1 t2
++	sc_restore_fp	a0
+ 	sc_restore_fcsr	a2 t1
+ 	li.w		a0, 0				# success
+ 	jr		ra
+@@ -475,9 +489,9 @@ SYM_FUNC_END(_restore_fp_context)
+  * a2: fcsr
+  */
+ SYM_FUNC_START(_save_lsx_context)
+-	sc_save_fcc a1, t0, t1
+ 	sc_save_fcsr a2, t0
+ 	sc_save_lsx a0
++	sc_save_fcc a1, t0, t1
+ 	li.w	a0, 0					# success
+ 	jr	ra
+ SYM_FUNC_END(_save_lsx_context)
+@@ -488,8 +502,8 @@ SYM_FUNC_END(_save_lsx_context)
+  * a2: fcsr
+  */
+ SYM_FUNC_START(_restore_lsx_context)
+-	sc_restore_lsx a0
+ 	sc_restore_fcc a1, t1, t2
++	sc_restore_lsx a0
+ 	sc_restore_fcsr a2, t1
+ 	li.w	a0, 0					# success
+ 	jr	ra
+@@ -501,9 +515,9 @@ SYM_FUNC_END(_restore_lsx_context)
+  * a2: fcsr
+  */
+ SYM_FUNC_START(_save_lasx_context)
+-	sc_save_fcc a1, t0, t1
+ 	sc_save_fcsr a2, t0
+ 	sc_save_lasx a0
++	sc_save_fcc a1, t0, t1
+ 	li.w	a0, 0					# success
+ 	jr	ra
+ SYM_FUNC_END(_save_lasx_context)
+@@ -514,8 +528,8 @@ SYM_FUNC_END(_save_lasx_context)
+  * a2: fcsr
+  */
+ SYM_FUNC_START(_restore_lasx_context)
+-	sc_restore_lasx a0
+ 	sc_restore_fcc a1, t1, t2
++	sc_restore_lasx a0
+ 	sc_restore_fcsr a2, t1
+ 	li.w	a0, 0					# success
+ 	jr	ra
+-- 
+2.43.0
+
