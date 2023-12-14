@@ -1,117 +1,113 @@
-Return-Path: <linux-kernel+bounces-95-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-94-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 949B9813C18
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 21:55:02 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4B61A813C15
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 21:54:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C772B1C20C5A
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 20:55:01 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EA5941F2263A
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 20:54:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AFC2F6E2A6;
-	Thu, 14 Dec 2023 20:54:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D9D356DD06;
+	Thu, 14 Dec 2023 20:54:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="QY2qj9TL"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="A0ZL9rv/"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f52.google.com (mail-wr1-f52.google.com [209.85.221.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A2C176DD13
-	for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 20:54:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1702587257; x=1734123257;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=5RFrTiDkgQjFafKopHq8ArNGfJEb513KvmN0cOMPiFk=;
-  b=QY2qj9TLvILRHh+f4a6uogQAuLgNHtqLgconcVi81xghXsgkg8Z+myR8
-   N2ZJkTT3diwbi63o1o5GNHUVYKbweELjprWcFf0Q+oLquwgLIOK9hEPTg
-   kllHQPE8Hi+VEvr1zEncqJKXnhVBESrz3MVA6/DLQBKyL0pXq4UxZmG/m
-   zs/wgbHDxowrIgW8Ns87Qw4Z64hRvtpP2CEHbNDMVuQc/qroL68qEj88c
-   3rz/Unkq2lEfVDs92/9BeHrowGTlrcvt9IkIwas6712/67Ck61GBIA6LL
-   EDCQfEcvEyLqJ/E4snpQvcPMwaapPIff9ky0A4080FUOeD7+2gzooTpMM
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10924"; a="13876901"
-X-IronPort-AV: E=Sophos;i="6.04,276,1695711600"; 
-   d="scan'208";a="13876901"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Dec 2023 12:54:16 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10924"; a="947719009"
-X-IronPort-AV: E=Sophos;i="6.04,276,1695711600"; 
-   d="scan'208";a="947719009"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by orsmga005.jf.intel.com with ESMTP; 14 Dec 2023 12:54:13 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rDsih-000Mbh-1T;
-	Thu, 14 Dec 2023 20:54:11 +0000
-Date: Fri, 15 Dec 2023 04:53:19 +0800
-From: kernel test robot <lkp@intel.com>
-To: Kees Cook <keescook@chromium.org>
-Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Linux Memory Management List <linux-mm@kvack.org>,
-	"Gustavo A. R. Silva" <gustavoars@kernel.org>,
-	Peter Oberparleiter <oberpar@linux.ibm.com>
-Subject: kernel/gcov/fs.c:103: warning: Excess struct member 'buffer'
- description in 'gcov_iterator'
-Message-ID: <202312150432.oBngC94A-lkp@intel.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 42CDB1110;
+	Thu, 14 Dec 2023 20:53:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f52.google.com with SMTP id ffacd0b85a97d-3360ae1b937so4539170f8f.0;
+        Thu, 14 Dec 2023 12:53:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1702587220; x=1703192020; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=EGYPk6/2LK4WB05DzAsE7gyIm4PhBFTb2r9q70jSsZY=;
+        b=A0ZL9rv/TCR847tKdOwWmNhARHOfMMpq6rGJzc6Ztg6Rbz35D4sWCVgBdJZpELCNS0
+         ObsEoLYfuR4D/VreB3pQzAdWGJMzilMYobk5dUmfSGZy43hIPCjhy6eb472CHUqwXt+o
+         BvmfxfUUq7Hy2Sw05fYnF+ZD/7p7D9M+Z1BYupOEAtcOiKS5OivyJPTpkrcnOELQCoZJ
+         +XZPrOq04IlWOskedEzJ+BP+zXd5WfM7yOgYNEhEIRZNvtItWo/SpYMy90o9fJ0a0rHY
+         VPs8hPY1MVm2u1Np3wLYL5ZbAhlumXm8fvXpxChL2iI17iHcsfg5f4L8+uCnC8H+f+9M
+         lEqw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702587220; x=1703192020;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=EGYPk6/2LK4WB05DzAsE7gyIm4PhBFTb2r9q70jSsZY=;
+        b=uj1rcEeJtCrFyRPgBjg6+wH2r1fOrR0UFkMhqXCSC5vzy2IvlTQfF5AOkl9D111gWz
+         zgaduFGjIvQnM1seP6pNkw7c92fop/ULnHXM//vDDog8UYnTvLRVvD1eC0Nz05sucPFz
+         3M4XQp2C0AEFajMQHjuElWKWF7yZbnJpOK/iS+YQpKODWOkesZ0CKSKQtP5v195UE8CU
+         DnWIAP/J5pon3GI1UmyMpEwoGVVuFtPBeexWTqp4HX5Hy8wQdWR/VEY606trVaBBLgin
+         wEHfIDXUzPYsQtQODPZ69V6Z6fB9I+K5gt87JeIorCW5d70mgVSjhP8+395wqxEYbnJG
+         3wcQ==
+X-Gm-Message-State: AOJu0YwJ4hZH9Csspx3FlckuvZ/SLNI4W0zjYWzcdNx9JFSRcX2odYVF
+	PiFSVtLcNxVB5rXbJXKmxqEcskCCIyS1Puqlyrv1SRU5
+X-Google-Smtp-Source: AGHT+IEn60KUK3G6CTwadCd0k9MiIqAGQ3rzBMDGyIiYKbZcEWgSu3gx0rWCz07xT2LLzY3YFYQ/rng7NW2Pl4nIbV8=
+X-Received: by 2002:a5d:54cd:0:b0:336:495c:8b39 with SMTP id
+ x13-20020a5d54cd000000b00336495c8b39mr817426wrv.137.1702587220078; Thu, 14
+ Dec 2023 12:53:40 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+References: <qiv464c4y43mo5rih5k6lgzkbpnj6wsrl52hrhgbxeqj45atun@szmqlmnccm52>
+ <CAHsH6Gujycb9RBuRk7QHorLe0Q=Np_tb3uboQfp9KmJnegVXvw@mail.gmail.com>
+ <fwadmdjjogp4ybfxfpwovnmnn36jigffopijsuqt4ly4vxqghm@ysqhd25mzylp>
+ <fecc7tpmbnqxuxqqolm44ggyeomcr3piabsjkv3pgyzlhyonq6@iiaxf34erjzq>
+ <CAP01T770poh_63vBC+Heb9ASJ9pDZd1wTDWAgm5KCYHK9GtE1g@mail.gmail.com>
+ <yshbkwaiong7qq2rsgkpvvyvzefnwud5uywbea6ocfxxenzv6s@dn45gdaygaso>
+ <CAHsH6Gu_c29Nc+cH-s3EeztwScL=A42wi_SuJD=WeYV0mtVxbA@mail.gmail.com>
+ <CAP01T76ZtehyRidmnV5A0p3LCyjw6Q4sjRH6ZhczgGn1ap-x_g@mail.gmail.com>
+ <CAP01T74dKxYKM1GfTUJZ+G4+CKbRU=JLGoNcG6b8PMYcqUyEzQ@mail.gmail.com>
+ <idbmj3y65mi7isezhlq4lip54bbngoouv5hbai2xd7bqtv7dxy@qjcmln2ovmz2> <i6kxylvo5hcttmjmhpjrmwdaxe4bi6cggk32js72ivr7qelknc@qnjkmr3df3b5>
+In-Reply-To: <i6kxylvo5hcttmjmhpjrmwdaxe4bi6cggk32js72ivr7qelknc@qnjkmr3df3b5>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Thu, 14 Dec 2023 12:53:28 -0800
+Message-ID: <CAADnVQL_=Hot71RV9dQ7FN6bm8TY3aMiouhAnQHUg3tmKtWStQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v5 9/9] bpf: xfrm: Add selftest for bpf_xdp_get_xfrm_state()
+To: Daniel Xu <dxu@dxuuu.xyz>
+Cc: Kumar Kartikeya Dwivedi <memxor@gmail.com>, Eyal Birger <eyal.birger@gmail.com>, 
+	Daniel Borkmann <daniel@iogearbox.net>, "David S. Miller" <davem@davemloft.net>, 
+	Shuah Khan <shuah@kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
+	John Fastabend <john.fastabend@gmail.com>, Jakub Kicinski <kuba@kernel.org>, 
+	Andrii Nakryiko <andrii@kernel.org>, Jesper Dangaard Brouer <hawk@kernel.org>, 
+	Steffen Klassert <steffen.klassert@secunet.com>, antony.antony@secunet.com, 
+	Yonghong Song <yonghong.song@linux.dev>, Eddy Z <eddyz87@gmail.com>, 
+	Mykola Lysenko <mykolal@fb.com>, Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, bpf <bpf@vger.kernel.org>, 
+	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
+	Network Development <netdev@vger.kernel.org>, devel@linux-ipsec.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   5bd7ef53ffe5ca580e93e74eb8c81ed191ddc4bd
-commit: fbd126f5a658b92c7f6af986a6d89cf5e5693268 gcov: annotate struct gcov_iterator with __counted_by
-date:   8 weeks ago
-config: i386-buildonly-randconfig-001-20231214 (https://download.01.org/0day-ci/archive/20231215/202312150432.oBngC94A-lkp@intel.com/config)
-compiler: gcc-11 (Debian 11.3.0-12) 11.3.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231215/202312150432.oBngC94A-lkp@intel.com/reproduce)
+On Thu, Dec 14, 2023 at 12:24=E2=80=AFPM Daniel Xu <dxu@dxuuu.xyz> wrote:
+>
+>
+> Looks like only x86 supports exceptions (looking at
+> bpf_jit_supports_exceptions()).
+>
+> This causes selftests in this patchset to fail on !x86, which is
+> unfortunate. We probably want to be running these tests on all the major
+> archs, so I will drop the assertion patches from this patchset.
+>
+> But since they're generally useful and I've already written the
+> selftests for it, I could put them up in another patchset? Or maybe not
+> cuz you're gonna fix it later anyways. WDYT?
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202312150432.oBngC94A-lkp@intel.com/
+Yeah. don't use bpf_assert in generic tests yet.
+Only tests that test bpf_assert should use it.
 
-All warnings (new ones prefixed by >>):
-
->> kernel/gcov/fs.c:103: warning: Excess struct member 'buffer' description in 'gcov_iterator'
-
-
-vim +103 kernel/gcov/fs.c
-
-7a1d55b987dfcb Johannes Berg 2021-05-06   90  
-7a1d55b987dfcb Johannes Berg 2021-05-06   91  /**
-7a1d55b987dfcb Johannes Berg 2021-05-06   92   * struct gcov_iterator - specifies current file position in logical records
-7a1d55b987dfcb Johannes Berg 2021-05-06   93   * @info: associated profiling data
-7a1d55b987dfcb Johannes Berg 2021-05-06   94   * @buffer: buffer containing file data
-7a1d55b987dfcb Johannes Berg 2021-05-06   95   * @size: size of buffer
-7a1d55b987dfcb Johannes Berg 2021-05-06   96   * @pos: current position in file
-7a1d55b987dfcb Johannes Berg 2021-05-06   97   */
-7a1d55b987dfcb Johannes Berg 2021-05-06   98  struct gcov_iterator {
-7a1d55b987dfcb Johannes Berg 2021-05-06   99  	struct gcov_info *info;
-7a1d55b987dfcb Johannes Berg 2021-05-06  100  	size_t size;
-7a1d55b987dfcb Johannes Berg 2021-05-06  101  	loff_t pos;
-fbd126f5a658b9 Kees Cook     2023-09-22  102  	char buffer[] __counted_by(size);
-7a1d55b987dfcb Johannes Berg 2021-05-06 @103  };
-7a1d55b987dfcb Johannes Berg 2021-05-06  104  
-
-:::::: The code at line 103 was first introduced by commit
-:::::: 7a1d55b987dfcbddecdb67eecc76fe555d4348ba gcov: combine common code
-
-:::::: TO: Johannes Berg <johannes.berg@intel.com>
-:::::: CC: Linus Torvalds <torvalds@linux-foundation.org>
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Pls send the ones you wrote separately, so they stay in email archives
+and we can pick them up later.
 
