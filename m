@@ -2,59 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 62A678124EC
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 03:05:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A4428124EE
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 03:06:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442989AbjLNCFr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 21:05:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34198 "EHLO
+        id S1443026AbjLNCFu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 21:05:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34214 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229739AbjLNCFe (ORCPT
+        with ESMTP id S235271AbjLNCFg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 21:05:34 -0500
+        Wed, 13 Dec 2023 21:05:36 -0500
 Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B5F1F4
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 18:05:40 -0800 (PST)
-Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-dbc4f389835so6643954276.2
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 18:05:40 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 903AC107
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 18:05:42 -0800 (PST)
+Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-dbcc62c68fdso2156905276.2
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 18:05:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1702519539; x=1703124339; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1702519542; x=1703124342; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=KzTXKjA5KWsaYAjqKhDbOIpqWzWFT9AS368JXZ2MRs8=;
-        b=dvhIQC/v1AHHBiu9xhrWi4kRmfpWMCzJe4P5d7bNTHkaEX/Qw7QPHgnupS2yzV1Ca6
-         65rtV+JwRqEnrclvbw34QOSyjJxt76awp7bgZTZmjNT74uxiopeWERjDxZEksP540jFX
-         GCA+9GUSCr7ZRwCX03Nd1GUYiKKLj2IIZHiQJP6GlNIQMBVdSjUWp+HzDF8n4byMRohe
-         l7IMSOTHQSFM5q7BoHS+SwbLYc9SzcANV2njO7MSHovSofSXzA8sQW6gut83NShKcioj
-         g4OHMyif42YSMQysGddkTrRUGw0RA4XT2HZQR1i4ZAObE5pcSziEfhTUUOU7xfns0eCl
-         4JdA==
+        bh=dUMRyPJzc2KBqp9rlzOcicivZPWQYvb+p95UviyM3iw=;
+        b=fUN8P8eaFBYXz025ievhny71hWvob2+/oQllg6fLGdRdwjGqADeA7CYptTERsYLqsm
+         DVspJIT/TkLY6wLUrC0k7gAf6DmLaERZ0lEfkVUuny03YesDuBch898IVJ3070T/0tWX
+         ppAJnbY+q+wxKDZJTWWhVIQzWFmiu7dtq0sjeocWivEuoRHZwH2W2CtSMMcSVELXQ+rH
+         61GZxyTXzTCY5Fh90R/yb9ylV8Q/GOJmspmXlXNSUNxrE0bg/nvmONpKDfoMesic+Tnf
+         DvUnTE6C0t1hx/nbOJcLR+m1t8iulLxmgE4fc0rRMYk19R3N7sLb4bDBBAJATNOy5qKm
+         yAdg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702519539; x=1703124339;
+        d=1e100.net; s=20230601; t=1702519542; x=1703124342;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=KzTXKjA5KWsaYAjqKhDbOIpqWzWFT9AS368JXZ2MRs8=;
-        b=v7nreXq3fMMIKPv0UdZwnZqvJhMdq35bLzQ/iOdBUbzGAg7yuKpELZB3/AHYK/fHw0
-         Y3DHtZ3siItzccNT8fHq8fiX9W5A3q+c0RWjFnpxvF2q49oW2WN6FWggXOM5QCWjwVoj
-         G5/SY7pYstno5QRAC0U2Ro6LOb4bjiP84U8TNC2nzKTjgOr7THggOJ3UUq86hgnV1Xed
-         NxEwmytzMXON8y7xIYNQW+zcoEPlMJxkC1NDm6e6xYTCcSsEtKadit5U/NzlpdSiKSUO
-         e+BMCoiGln5m1kMKueLCB3vnvGDp7IL7FToDpZK2wcmCiJhPT+aW7QrlYEFKO5iv8svL
-         OFIQ==
-X-Gm-Message-State: AOJu0YzFXi3Ooa2zqCq7h1+KhbJ6s0xKGiOlmbdfacQD9Ju1Pmwnkdfn
-        LgP6KBlWXGwU5J5zKAiBnNns8/LcF6CsevK8e42J4i665UATDVGVnXwwlxw2nU0vP7/3sbO2p/u
-        +paWHrp5kMqXitvtHRmh2DALmoSGj+eHrYf5ExN7nDjZlnSntxHca+bT76uq6gPy/mhye3GYE8P
-        RkdMlW9SM=
-X-Google-Smtp-Source: AGHT+IFvXUPRVjinne3eyeqMXrPSn27B36v8rluqCbSKO9WAxxureBDR9DLVkSWnv3Loqa1nvhzoL2hhHQkqKHt9JQ==
+        bh=dUMRyPJzc2KBqp9rlzOcicivZPWQYvb+p95UviyM3iw=;
+        b=ORboojoMtj8elXL/Qlt+H8el5LSX059m3S2RT+WE9zWn/By7sAdjymNgP1o5PpZSJ3
+         gth7hQTyeoHPktvu7FtmMLZR7uIQ18AtDutTw9jNZCZXloH0MWskYTiubjjNN3RGNC2m
+         BMo1SRKKHuE7L0+3XrvUFVsWa3HDqF9OKpicAPWsajP2l7PRHRQO1h73U7t30TcV2M7L
+         5BtURbzioAN8RkAZLqfzb35xe3xXoTts+u3RP0cfYexLb4pngPJVCfcBrFiQBLhXnbhI
+         NlI3/ZqJDnW0UuvrJf1O2b5t6rAQwPzzE7cFkGGwP2MYdhpFUKHfv5Crwx+PmmlX/Cyu
+         h24w==
+X-Gm-Message-State: AOJu0YwS+pZuHb9y0YSpCJLyCOVkwI7lZ9wQcfo4HHZ+8vTbVRkwlSQU
+        Z94BdYfU2EOe3avQs2hfrBTYLTN7N9fzN2bRrP83ev8V6JgpJc5nY9qHOgMiL+REVRyb9jJurZZ
+        pJVhZxwtAizJB0680NQQr2osxpxUtWogNvVrHfwAitFYNpi9SjFjoYix9YBFuQE93cN1G9+C0NJ
+        wf18elB0E=
+X-Google-Smtp-Source: AGHT+IET8r8BI9pfqS6KupRcShXv+0eu0hJA4DOJcShMg+bVFuCr5TXdWqpVc1aC50PtBVwEg1I8t4qSWt8xl7gpAg==
 X-Received: from almasrymina.svl.corp.google.com ([2620:15c:2c4:200:d31b:c1a:fb6a:2488])
- (user=almasrymina job=sendgmr) by 2002:a25:abeb:0:b0:db4:5eed:8907 with SMTP
- id v98-20020a25abeb000000b00db45eed8907mr77688ybi.8.1702519538827; Wed, 13
- Dec 2023 18:05:38 -0800 (PST)
-Date:   Wed, 13 Dec 2023 18:05:25 -0800
+ (user=almasrymina job=sendgmr) by 2002:a25:c0d4:0:b0:dbc:b692:65a7 with SMTP
+ id c203-20020a25c0d4000000b00dbcb69265a7mr49497ybf.10.1702519540921; Wed, 13
+ Dec 2023 18:05:40 -0800 (PST)
+Date:   Wed, 13 Dec 2023 18:05:26 -0800
 In-Reply-To: <20231214020530.2267499-1-almasrymina@google.com>
 Mime-Version: 1.0
 References: <20231214020530.2267499-1-almasrymina@google.com>
 X-Mailer: git-send-email 2.43.0.472.g3155946c3a-goog
-Message-ID: <20231214020530.2267499-3-almasrymina@google.com>
-Subject: [RFC PATCH net-next v1 2/4] net: introduce abstraction for network memory
+Message-ID: <20231214020530.2267499-4-almasrymina@google.com>
+Subject: [RFC PATCH net-next v1 3/4] net: add netmem_t to skb_frag_t
 From:   Mina Almasry <almasrymina@google.com>
 To:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
         bpf@vger.kernel.org
@@ -155,74 +155,84 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the netmem_t type, an abstraction for network memory.
+Use netmem_t instead of page directly in skb_frag_t. Currently netmem_t
+is always a struct page underneath, but the abstraction allows efforts
+to add support for skb frags not backed by pages.
 
-To add support for new memory types to the net stack, we must first
-abstract the current memory type from the net stack. Currently parts of
-the net stack use struct page directly:
-
-- page_pool
-- drivers
-- skb_frag_t
-
-Originally the plan was to reuse struct page* for the new memory types,
-and to set the LSB on the page* to indicate it's not really a page.
-However, for compiler type checking we need to introduce a new type.
-
-netmem_t is introduced to abstract the underlying memory type. Currently
-it's a no-op abstraction that is always a struct page underneath. In
-parallel there is an undergoing effort to add support for devmem to the
-net stack:
-
-https://lore.kernel.org/netdev/20231208005250.2910004-1-almasrymina@google.com/
+There is unfortunately 1 instance where the skb_frag_t is assumed to be
+a bio_vec in kcm. For this case, add a debug assert that the skb frag is
+indeed backed by a page, and do a cast.
 
 Signed-off-by: Mina Almasry <almasrymina@google.com>
 ---
- include/net/netmem.h | 35 +++++++++++++++++++++++++++++++++++
- 1 file changed, 35 insertions(+)
- create mode 100644 include/net/netmem.h
+ include/linux/skbuff.h | 11 ++++++++---
+ net/kcm/kcmsock.c      |  9 +++++++--
+ 2 files changed, 15 insertions(+), 5 deletions(-)
 
-diff --git a/include/net/netmem.h b/include/net/netmem.h
-new file mode 100644
-index 000000000000..e4309242d8be
---- /dev/null
-+++ b/include/net/netmem.h
-@@ -0,0 +1,35 @@
-+/* SPDX-License-Identifier: GPL-2.0
-+ *
-+ * netmem.h
-+ *	Author:	Mina Almasry <almasrymina@google.com>
-+ *	Copyright (C) 2023 Google LLC
-+ */
-+
-+#ifndef _NET_NETMEM_H
-+#define _NET_NETMEM_H
-+
-+struct netmem {
-+	union {
-+		struct page page;
-+
-+		/* Stub to prevent compiler implicitly converting from page*
-+		 * to netmem_t* and vice versa.
-+		 *
-+		 * Other memory type(s) net stack would like to support
-+		 * can be added to this union.
+diff --git a/include/linux/skbuff.h b/include/linux/skbuff.h
+index b370eb8d70f7..6d681c40213c 100644
+--- a/include/linux/skbuff.h
++++ b/include/linux/skbuff.h
+@@ -37,6 +37,7 @@
+ #endif
+ #include <net/net_debug.h>
+ #include <net/dropreason-core.h>
++#include <net/netmem.h>
+ 
+ /**
+  * DOC: skb checksums
+@@ -359,7 +360,11 @@ extern int sysctl_max_skb_frags;
+  */
+ #define GSO_BY_FRAGS	0xFFFF
+ 
+-typedef struct bio_vec skb_frag_t;
++typedef struct skb_frag {
++	struct netmem *bv_page;
++	unsigned int bv_len;
++	unsigned int bv_offset;
++} skb_frag_t;
+ 
+ /**
+  * skb_frag_size() - Returns the size of a skb fragment
+@@ -2435,7 +2440,7 @@ static inline void skb_frag_fill_page_desc(skb_frag_t *frag,
+ 					   struct page *page,
+ 					   int off, int size)
+ {
+-	frag->bv_page = page;
++	frag->bv_page = page_to_netmem(page);
+ 	frag->bv_offset = off;
+ 	skb_frag_size_set(frag, size);
+ }
+@@ -3422,7 +3427,7 @@ static inline void skb_frag_off_copy(skb_frag_t *fragto,
+  */
+ static inline struct page *skb_frag_page(const skb_frag_t *frag)
+ {
+-	return frag->bv_page;
++	return netmem_to_page(frag->bv_page);
+ }
+ 
+ /**
+diff --git a/net/kcm/kcmsock.c b/net/kcm/kcmsock.c
+index 65d1f6755f98..926349eeeaf6 100644
+--- a/net/kcm/kcmsock.c
++++ b/net/kcm/kcmsock.c
+@@ -636,9 +636,14 @@ static int kcm_write_msgs(struct kcm_sock *kcm)
+ 		for (i = 0; i < skb_shinfo(skb)->nr_frags; i++)
+ 			msize += skb_shinfo(skb)->frags[i].bv_len;
+ 
++		/* The cast to struct bio_vec* here assumes the frags are
++		 * struct page based.
 +		 */
-+		void *addr;
-+	};
-+};
++		DEBUG_NET_WARN_ON_ONCE(!skb_frag_page(&skb_shinfo(skb)->frags[0]));
 +
-+static inline struct page *netmem_to_page(struct netmem *netmem)
-+{
-+	return &netmem->page;
-+}
-+
-+static inline struct netmem *page_to_netmem(struct page *page)
-+{
-+	return (struct netmem *)page;
-+}
-+
-+#endif /* _NET_NETMEM_H */
+ 		iov_iter_bvec(&msg.msg_iter, ITER_SOURCE,
+-			      skb_shinfo(skb)->frags, skb_shinfo(skb)->nr_frags,
+-			      msize);
++			      (const struct bio_vec *)skb_shinfo(skb)->frags,
++			      skb_shinfo(skb)->nr_frags, msize);
+ 		iov_iter_advance(&msg.msg_iter, txm->frag_offset);
+ 
+ 		do {
 -- 
 2.43.0.472.g3155946c3a-goog
 
