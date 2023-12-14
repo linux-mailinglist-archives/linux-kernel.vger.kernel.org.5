@@ -2,53 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CF6581384E
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 18:17:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AAED813852
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 18:18:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1443990AbjLNRRI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 12:17:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44410 "EHLO
+        id S1444029AbjLNRSJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 12:18:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43980 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1444260AbjLNRQl (ORCPT
+        with ESMTP id S235737AbjLNRRw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 12:16:41 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E30F10C6
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 09:16:46 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9B767C433C8;
-        Thu, 14 Dec 2023 17:16:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1702574205;
-        bh=j3EMGBksbzz4Fe6xhN1+uDIfhW9IPxgGEJtUJDyFcyE=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=PoIlIpUNIR39MHVocMfe0vArZzH5sDUcqpS6ePbYC5lZXvkgGElatv6DzofTv1CJ/
-         paHWCzCnPMxzeGzVXQyw14lQzntAWCkJPTNpZurcncamYZops8rIwfOmxTDFOgNxZh
-         AMFGs4BCR58nrL6o/pwoLOFNtM74mEX/NaoTaGBsmQTtFwRho60ZI4IjvfFbeyOeS4
-         dn5RdnZf5OICu+n3oXefF67i/KvZ335zRJeojUqKUE+QYsHtVyTJv86LKdCrTRCrZ8
-         cM6lbJKJtFIHlTUKRHUmzPdCaa4hgWHFkwZuhNYpw6MCz2BpnMaPYXi1iXlVBQf/ep
-         ovwT6vQ6DgkVw==
-Message-ID: <5e0e18da-6141-4d28-9316-f796be7489d9@kernel.org>
-Date:   Thu, 14 Dec 2023 19:16:39 +0200
+        Thu, 14 Dec 2023 12:17:52 -0500
+Received: from mail-ot1-x332.google.com (mail-ot1-x332.google.com [IPv6:2607:f8b0:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31B1C170B;
+        Thu, 14 Dec 2023 09:17:34 -0800 (PST)
+Received: by mail-ot1-x332.google.com with SMTP id 46e09a7af769-6da3659535fso1660471a34.3;
+        Thu, 14 Dec 2023 09:17:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1702574253; x=1703179053; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=sdhRanQFrFV0TuBSHOaE+X1d5YXiNzoy0E1bPVU3K44=;
+        b=gjwBFQpyDzHatOM31WU9GBKhD+HvzBi7T0y+a2pvxrLc7EjqhAyUx6w0ggSFneOG/N
+         UZnDYUBCvhxVubG9Rjplrmo4B4c+Bm9HUqruCVNcQc4hdQYLbdDSgA11SbrF7D2F7PGs
+         g8Qmv3MBJv6M5t76D4Xe/Oj454seRmyo8saEFp8rvSjyuIq13JiHxUx/d61bsbu2zoBT
+         pZpjvURKrmwCnfy8pHWt0gQujcTQxsHtHi1JCoEb9LTCE25oQC+OOFI67WP6TeqTMfy3
+         w9B7UnVFmGGUXPqhb+4fyw1J9/+e3y440BsDEH1AbMUMq6YGQzfwEzTTCgRArHkP9u7r
+         cqsQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702574253; x=1703179053;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=sdhRanQFrFV0TuBSHOaE+X1d5YXiNzoy0E1bPVU3K44=;
+        b=nU46Rf+gMrN1Oh691+K4pFmZygAAiQNSXi/aJs4WzO6WMzvgrPsxdn/unQorAmRzGc
+         RciTwXpvAnQYYJeDofKlZB0cZkT61uIAO2otRYC5jq7yzrz0Wb2UwNrxhL9wcr4PFhDX
+         +w+2raeALrkRSZQQv5TdKKXysHvD13y0tuP2dRWlBb4JqyU5/ly1lj4zeGwhoAsAJYOB
+         3W/JbGGkRKrTIdZbQT2OIphZuJHZRaehaA/FW42VIMJfcMaZ98v1BgaC1ldfUrfHFn4t
+         yl2YfumXc7/d0gJtb3EbY8w/X+iXgmA83ztNxLDb8jqO32qHssydCwyKKllKCDVoCplP
+         mQPQ==
+X-Gm-Message-State: AOJu0YzD6v+TWOOmyQrjGNeizKfQzFM+Rmf1K2U+pFI93rJ4u0mFdf2D
+        7kBLarfMQmZaRNTOSMhtWl3gI/5DjDkhqz908rI=
+X-Google-Smtp-Source: AGHT+IGu0qsEalrz1YM6XxCprXRke2tEQ/qScT/H2ci6ZNr18869lf+HGxmdxY1qgpq2RIpITtyGbHOZaz8VsNvNVrc=
+X-Received: by 2002:a05:6830:3103:b0:6da:2edf:3132 with SMTP id
+ b3-20020a056830310300b006da2edf3132mr4998217ots.27.1702574253354; Thu, 14 Dec
+ 2023 09:17:33 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v8 net-next 02/11] selftests: forwarding: ethtool_mm: fall
- back to aggregate if device does not report pMAC stats
-To:     Vladimir Oltean <vladimir.oltean@nxp.com>
-Cc:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com, shuah@kernel.org, s-vadapalli@ti.com,
-        r-gunasekaran@ti.com, vigneshr@ti.com, srk@ti.com,
-        horms@kernel.org, p-varis@ti.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20231213110721.69154-1-rogerq@kernel.org>
- <20231213110721.69154-3-rogerq@kernel.org>
- <20231214141646.kdf5rnldpyglwvdd@skbuf>
-Content-Language: en-US
-From:   Roger Quadros <rogerq@kernel.org>
-In-Reply-To: <20231214141646.kdf5rnldpyglwvdd@skbuf>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+References: <20231206151600.26833-1-quic_pintu@quicinc.com>
+ <20231208203128.GA2646347-robh@kernel.org> <CAOuPNLg90T69USVQ8Ti6c8fXb_XrnaR035in_CbJHmNMUYLqOg@mail.gmail.com>
+In-Reply-To: <CAOuPNLg90T69USVQ8Ti6c8fXb_XrnaR035in_CbJHmNMUYLqOg@mail.gmail.com>
+From:   Pintu Agarwal <pintu.ping@gmail.com>
+Date:   Thu, 14 Dec 2023 22:47:04 +0530
+Message-ID: <CAOuPNLj4_pQiAHoER2VJpW_2NEaq8+zF8p1br+tf0Toe1t1UDg@mail.gmail.com>
+Subject: Re: [PATCH] of: reserved_mem: fix error log for reserved mem init failure
+To:     Rob Herring <robh@kernel.org>, vichy.kuo@gmail.com
+Cc:     Pintu Kumar <quic_pintu@quicinc.com>, linux-kernel@vger.kernel.org,
+        akpm@linux-foundation.org, linux-mm@kvack.org,
+        frowand.list@gmail.com, devicetree@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -57,79 +69,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, 11 Dec 2023 at 20:13, Pintu Agarwal <pintu.ping@gmail.com> wrote:
+>
+> Hi,
+>
+> On Sat, 9 Dec 2023 at 02:01, Rob Herring <robh@kernel.org> wrote:
+> >
+> > On Wed, Dec 06, 2023 at 08:46:00PM +0530, Pintu Kumar wrote:
+> > > During fdt_init_reserved_mem() when __reserved_mem_init_node()
+> > > fail we are using pr_info to print error.
+> > >
+> > > So, if we change the loglevel to 4 (or below), this error
+> > > message will be missed.
+> > >
+> > > Thus, change the pr_info to pr_err for fail case.
+> > >
+> > > Signed-off-by: Pintu Kumar <quic_pintu@quicinc.com>
+> > > ---
+> > >  drivers/of/of_reserved_mem.c | 2 +-
+> > >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > >
+> > > diff --git a/drivers/of/of_reserved_mem.c b/drivers/of/of_reserved_mem.c
+> > > index 7ec94cfcbddb..473665e76b6f 100644
+> > > --- a/drivers/of/of_reserved_mem.c
+> > > +++ b/drivers/of/of_reserved_mem.c
+> > > @@ -334,7 +334,7 @@ void __init fdt_init_reserved_mem(void)
+> > >               if (err == 0) {
+> > >                       err = __reserved_mem_init_node(rmem);
+> > >                       if (err != 0 && err != -ENOENT) {
+> > > -                             pr_info("node %s compatible matching fail\n",
+> > > +                             pr_err("node %s compatible matching fail\n",
+> >
+> > Isn't the message just wrong. If compatible match fails, we return
+> > ENOENT. The failure here would be from the init function.
+> >
+> Okay.
+> You mean to say, if __reserved_mem_init_node fails with default err
+> (ENOENT) then it may not hit this condition.
+> Instead it will hit the 'else' case which is wrong ?
+> Also, the "initfn" inside "__reserved_mem_init_node" may fail in which
+> case also it may return default err.
+>
+> Maybe, the initial author's intention was to free the memory only if
+> the failure type is not the default ENOENT type.
+>
+> This seems to be a different issue.
+> Can we address this separately in a different patch ?
+>
+> And how do we fix this ?
+> One option is to add another "if" condition with just ENOENT error check ?
+> if (err == -ENOENT) {
+>     pr_err("node %s compatible matching fail\n", rmem->name);
+>     return;
+> }
+> Then, correct the existing log with a different message:
+> pr_err("node %s matching reserved mem not found.\n", rmem->name);
+> Or, add one more "if else" condition ?
+> Or, fix the calling function itself : __reserved_mem_init_node ?
+>
 
-
-On 14/12/2023 16:16, Vladimir Oltean wrote:
-> On Wed, Dec 13, 2023 at 01:07:12PM +0200, Roger Quadros wrote:
->> diff --git a/tools/testing/selftests/net/forwarding/lib.sh b/tools/testing/selftests/net/forwarding/lib.sh
->> index 8f6ca458af9a..763c262a3453 100755
->> --- a/tools/testing/selftests/net/forwarding/lib.sh
->> +++ b/tools/testing/selftests/net/forwarding/lib.sh
->> @@ -146,6 +146,15 @@ check_ethtool_mm_support()
->>  	fi
->>  }
->>  
->> +check_ethtool_pmac_std_stats_support()
->> +{
->> +	local dev=$1; shift
->> +	local grp=$1; shift
->> +
->> +	[ 0 -ne $(ethtool --json -S $dev --all-groups --src pmac 2>/dev/null \
->> +		| jq '.[]."$grp" | length') ]
->> +}
->> +
->>  check_locked_port_support()
->>  {
->>  	if ! bridge -d link show | grep -q " locked"; then
->> -- 
->> 2.34.1
->>
-> 
-> FYI, there's another submitted patch that touches the exact same spot,
-> and it looks like it has a good chance of getting merged.
-> https://patchwork.kernel.org/project/netdevbpf/patch/20231214135029.383595-9-tobias@waldekranz.com/
-> 
-> You need to pay attention to merge conflicts, so you don't waste a patch
-> iteration just because of that one thing.
-> 
-> I guess you might be able to wing it, because the other patch does this:
-> 
-> diff --git a/tools/testing/selftests/net/forwarding/lib.sh b/tools/testing/selftests/net/forwarding/lib.sh
-> index 8f6ca458af9a..e3740163c384 100755
-> --- a/tools/testing/selftests/net/forwarding/lib.sh
-> +++ b/tools/testing/selftests/net/forwarding/lib.sh
-> @@ -146,6 +146,15 @@  check_ethtool_mm_support()
->  	fi
->  }
->  
-> +check_ethtool_counter_group_support()
-> +{
-> +	ethtool --help 2>&1| grep -- '--all-groups' &> /dev/null
-> +	if [[ $? -ne 0 ]]; then
-> +		echo "SKIP: ethtool too old; it is missing standard counter group support"
-> +		exit $ksft_skip
-> +	fi
-> +}
-> +
->  check_locked_port_support()
->  {
->  	if ! bridge -d link show | grep -q " locked"; then
-> 
-> which quite coincidentally does not change what your patch sees in its
-> upper context, aka 3 lines like this:
-> 
-> ----
->  	fi
->  }
->  
-> ----
-> 
-> You can check if your patch set applies on top of Tobias', by formatting
-> it as patch files on top of net-next/main, resetting HEAD to net-next,
-> applying Tobias' series and then your patches.
-
-Thanks for the heads up :)
-
--- 
-cheers,
--roger
+Any further comments on this ?
