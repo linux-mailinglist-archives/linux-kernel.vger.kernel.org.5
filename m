@@ -2,140 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FB85812499
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 02:32:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 435C681249B
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 02:32:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234193AbjLNBbz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 20:31:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45270 "EHLO
+        id S234244AbjLNBcm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 20:32:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59160 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229525AbjLNBbx (ORCPT
+        with ESMTP id S229525AbjLNBcl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 20:31:53 -0500
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09ABBE0
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 17:32:00 -0800 (PST)
-Received: by mail-ej1-x62b.google.com with SMTP id a640c23a62f3a-a1db99cd1b2so968745566b.2
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 17:31:59 -0800 (PST)
+        Wed, 13 Dec 2023 20:32:41 -0500
+Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 802A9E4
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 17:32:47 -0800 (PST)
+Received: by mail-pf1-x42c.google.com with SMTP id d2e1a72fcca58-6ceb93fb381so116459b3a.0
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 17:32:47 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1702517518; x=1703122318; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=8Bu41HfL0rPJ5dM5yXqa7CgHUFFdONYm5ZwaUE4WWVI=;
-        b=K93ycnPBXuf0EIOZYvDQoqOY3sdlq7A1KZXqTHxnGl7NJV5Dh9XjfLsSXsli/2wweN
-         +4/vCSQFukR2zFCXcM2oP98hkZ+XxWp/CDV9/9tc1zjhauCxGsUy6UzmUOLGBAd7//R5
-         zYK4J8p4/oOCchhtOD5F65gu+a/gxWp1pa6b4=
+        d=chromium.org; s=google; t=1702517567; x=1703122367; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=I/u5xPLWvkIaRrhFnI+H4oirck7C5zzyjkMINIlx0no=;
+        b=hknRTgIul0DPU+MYp7Xv55KyKUt+Pdr/k6CHm2nwMPAKnGnYv1+UCSYKj3vXvzlaZJ
+         x3cMRPivxpdL3cTmRuxfNndSzueJSBhpx8iAl8tOV7J32kMNjnSFi0o9KX5VKkC3Zva6
+         zKFiwXPnm5aCqFg1CY8Z8UtrlaEeqrssiPTto=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702517518; x=1703122318;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=8Bu41HfL0rPJ5dM5yXqa7CgHUFFdONYm5ZwaUE4WWVI=;
-        b=kPzCRqYRgLPlNfQyUX2leYJWrZBISSr4Hj3n6BzY8a0yvBYoNje+okipUrgnpwO8rL
-         3V63wAJDrQ+uE1VXf3YpmE16miKE85mgr/Is9h4++aoojdVJll414Hr238bBz8qWFU8J
-         UTOjAIlkt6bCDAwHMfBR3d0yG9iL1olpMWwd+QCSFKj75o1rS9T41WIWpG5X9sb4Xlan
-         q5shyLFWZzhf8K/xwyCEpoRXfoVkw9bMX9M1afRPzf2aPsTJAVbiOmDLlIPWXD4Pl/Tv
-         2z/8UA/57GWpvM0WN66o0ulPdXEQsNYJVMicZG7MVpX5J9owJc+9Q1KoVFwrC+cHK3xO
-         RPDQ==
-X-Gm-Message-State: AOJu0YwUq5QzY+1LnxLCLgMAKHCyCi5PAW0nRLY0+ODAGSaY4pimUIHD
-        c0l6GkqaWZCEZyFpSZVkYaK+Vp8fiYcdu8FhtEXsV5qp
-X-Google-Smtp-Source: AGHT+IEGgaNPXtNstpZ0mtA0Y871OGhuUZ2+WQsKhloqOzfAJNXmwlJ0LggpqFfxyoVc30/MIssHCA==
-X-Received: by 2002:a17:906:6a13:b0:9be:834a:f80b with SMTP id qw19-20020a1709066a1300b009be834af80bmr3674302ejc.75.1702517518410;
-        Wed, 13 Dec 2023 17:31:58 -0800 (PST)
-Received: from mail-ed1-f41.google.com (mail-ed1-f41.google.com. [209.85.208.41])
-        by smtp.gmail.com with ESMTPSA id ig8-20020a1709072e0800b00a1c6e3e454fsm8537723ejc.166.2023.12.13.17.31.57
-        for <linux-kernel@vger.kernel.org>
+        d=1e100.net; s=20230601; t=1702517567; x=1703122367;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=I/u5xPLWvkIaRrhFnI+H4oirck7C5zzyjkMINIlx0no=;
+        b=nyMpVnPgry1kzzRc9lQvwUw60kUKFMk2oufsFBRgg1CQEJOPLpzwt6MoqPh3DfljgE
+         WcnIBQ2MWTmfkFLRXgGFWRrx9ZJJU2kFAGulAQZ7VFOe5xF6PSqr2upIY6hg7LEBTwFn
+         jpJ4wWb2YxCI3hvuWFWewZGeFaPCxEtJ3e8wWivq6Gmsm4+xRAx6XvsRC6441GW8IQ0g
+         7S5Z4pMqA/MqXiJV6Jhul4YiNNY49F6aRaUmAl4js4Uf4EO4vLqPgfbtQ5tHpW4ldh6y
+         g7jcLBcmEtu5P8zyrc9aJ5Rp1+t9ZpsecCbOfl6QNu77GzWd5SIwtIgQtXHDwDdwPwDU
+         mPpQ==
+X-Gm-Message-State: AOJu0YwJhO2a9BZhDXtkf6mk8NEt3eflwnYP6bwaCA2n20QsmJI9YgxZ
+        fNo0W5BXzXK+Wv6tbH5xZ+0r4Q==
+X-Google-Smtp-Source: AGHT+IHnO4D8I+58arYWW137uvBUVvhl9xXiLGPY/CsbGcLzUXflPD8J354RvBdlqMAU+/bcP/gmew==
+X-Received: by 2002:a05:6a00:4613:b0:6cd:dc48:1fff with SMTP id ko19-20020a056a00461300b006cddc481fffmr13032446pfb.0.1702517566997;
+        Wed, 13 Dec 2023 17:32:46 -0800 (PST)
+Received: from localhost ([2620:15c:9d:2:17f:673b:ab18:3603])
+        by smtp.gmail.com with UTF8SMTPSA id r26-20020aa78b9a000000b006cbed878df6sm10590515pfd.7.2023.12.13.17.32.45
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 13 Dec 2023 17:31:57 -0800 (PST)
-Received: by mail-ed1-f41.google.com with SMTP id 4fb4d7f45d1cf-54c70c70952so10327383a12.3
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 17:31:57 -0800 (PST)
-X-Received: by 2002:a50:d592:0:b0:54c:4837:7d1e with SMTP id
- v18-20020a50d592000000b0054c48377d1emr3150337edi.93.1702517516946; Wed, 13
- Dec 2023 17:31:56 -0800 (PST)
+        Wed, 13 Dec 2023 17:32:46 -0800 (PST)
+Date:   Wed, 13 Dec 2023 17:32:45 -0800
+From:   Brian Norris <briannorris@chromium.org>
+To:     David Lin <yu-hao.lin@nxp.com>
+Cc:     linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kvalo@kernel.org, francesco@dolcini.it, tsung-hsien.hsieh@nxp.com,
+        stable@vger.kernel.org
+Subject: Re: [PATCH v3] wifi: mwifiex: add extra delay for firmware ready
+Message-ID: <ZXpbPYWsMvntaICv@google.com>
+References: <20231208234029.2197-1-yu-hao.lin@nxp.com>
 MIME-Version: 1.0
-References: <20231212231706.2680890-1-jeffxu@chromium.org> <20231212231706.2680890-12-jeffxu@chromium.org>
- <CAHk-=wgn02cpoFEDQGgS+5BUqA2z-=Ks9+PNd-pEJy8h+NOs5g@mail.gmail.com> <CALmYWFu39nzHvBmRsA326GcmV9u=eM-2aCGOvLK31rrb2R9NEw@mail.gmail.com>
-In-Reply-To: <CALmYWFu39nzHvBmRsA326GcmV9u=eM-2aCGOvLK31rrb2R9NEw@mail.gmail.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Wed, 13 Dec 2023 17:31:39 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wh_VViVZxjiQ5jtB0q=p=JtJMj2R24UAmj-fL-RNLWxNw@mail.gmail.com>
-Message-ID: <CAHk-=wh_VViVZxjiQ5jtB0q=p=JtJMj2R24UAmj-fL-RNLWxNw@mail.gmail.com>
-Subject: Re: [RFC PATCH v3 11/11] mseal:add documentation
-To:     Jeff Xu <jeffxu@google.com>
-Cc:     jeffxu@chromium.org, akpm@linux-foundation.org,
-        keescook@chromium.org, jannh@google.com, sroettger@google.com,
-        willy@infradead.org, gregkh@linuxfoundation.org,
-        jorgelo@chromium.org, groeck@chromium.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-mm@kvack.org, pedro.falcato@gmail.com, dave.hansen@intel.com,
-        linux-hardening@vger.kernel.org, deraadt@openbsd.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231208234029.2197-1-yu-hao.lin@nxp.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 13 Dec 2023 at 16:36, Jeff Xu <jeffxu@google.com> wrote:
->
->
-> > IOW, when would you *ever* say "seal this area, but MADV_DONTNEED is ok"?
-> >
-> The MADV_DONTNEED is OK for file-backed mapping.
+On Sat, Dec 09, 2023 at 07:40:29AM +0800, David Lin wrote:
+> For SDIO IW416, due to a bug, FW may return ready before complete
+> full initialization.
+> Command timeout may occur at driver load after reboot.
+> Workaround by adding 100ms delay at checking FW status.
+> 
+> Signed-off-by: David Lin <yu-hao.lin@nxp.com>
+> Cc: stable@vger.kernel.org
 
-Right. It makes no semantic difference. So there's no point to it.
-
-My point was that you added this magic flag for "not ok for RO anon mapping".
-
-It's such a *completely* random flag, that I go "that's just crazy
-random - make sealing _always_ disallow that case".
-
-So what I object to in this series is basically random small details
-that should just eb part of the basic act of sealing.
-
-I think sealing should just mean "you can't do any operations that
-have semantic meaning for the mapping, because it is SEALED".
-
-So I think sealing should automatically mean "can't do MADV_DONTNEED
-on anon memory", because that's basically equivalent to a munmap/remap
-operation.
-
-I also think that sealing should just automatically mean "can't do
-mprotect any more".
-
-And yes, the OpenBSD semantics of "immutable" apparently allowed
-reducing permissions, but even the openbsd man-page seems to think
-that was a bug, so we should just not allow it. And the openbsd case
-seems to be because of how they made certain things immutable by
-default, which is different from what this mseal() thing is.
-
-End result: I'd really like to make the thing conceptually simpler,
-rather than add all those random (*very* random in case of
-MADV_DONTNEED) special cases.
-
-Is there any actual practical example of why you'd want a half-sealed thing?
-
-And no, I didn't read the pdf that was attached. If it can't just be
-explained in plain language, it's not an explanation.
-
-I'd love for "sealed" to be just a single bit in the vm_flags things
-that we already have. Not a config option. Not some complicated thing
-that is hard to explain. A simple "I have set up this mapping, you
-can't change it any more".
-
-And if it cannot be that kind of thing, I want to have clear and
-obvious examples of why it can't be that simple thing.
-
-Not a pdf file that describes some google-chrome design. Something
-down-to-earth and practical (and not a "we might want this in the
-future" thing either).
-
-IOW, what is wrong with "THIS VMA SETUP CANNOT BE CHANGED ANY MORE"?
-
-Nothing less, but also nothing more. No random odd bits that need explaining.
-
-              Linus
+Acked-by: Brian Norris <briannorris@chromium.org>
