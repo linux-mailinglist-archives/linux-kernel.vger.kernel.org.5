@@ -2,228 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E0344812E05
+	by mail.lfdr.de (Postfix) with ESMTP id 8AD06812E04
 	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 12:03:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1443811AbjLNLC5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 06:02:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35404 "EHLO
+        id S1443843AbjLNLC6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 06:02:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35430 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1443772AbjLNLCz (ORCPT
+        with ESMTP id S1443832AbjLNLC5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 06:02:55 -0500
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C291A11A
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 03:03:01 -0800 (PST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 29243220A1;
-        Thu, 14 Dec 2023 11:02:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1702551780; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=yLX0zWLQjJXwutevBe3jiLxXnEsG/QKzwGJR5yjOdc8=;
-        b=DkFwTiB/OJ4a8hIZOPMOVfLztYJhwaTUNbhIgxWl+ULc3qZyFTIM1BryBqHYJB9tkky7hZ
-        o2umm5cfLTRG3pHfzgPHIz+nBLGLQ05zJ79cTxzx8ma4MIHyHwA+FG9fy/CyCfOnVYiPMt
-        9G7Zfl/R1796Fl45WULwEPiKOXhpylg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1702551780;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=yLX0zWLQjJXwutevBe3jiLxXnEsG/QKzwGJR5yjOdc8=;
-        b=vZZ/CcA4RvHFogtMsN23SEA9CX2EYTr+u78SmcxVo29Ldt2wSIZqsya5f8PckHW5r02QTj
-        sBTCBYnD5YW2F+AQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1702551779; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=yLX0zWLQjJXwutevBe3jiLxXnEsG/QKzwGJR5yjOdc8=;
-        b=Xl+0ARMSYReu2w0/JAdwZwClAf6cUPmwe3izDedpGDjRTOhTnmElf1gXPqA01+DmE+P7ze
-        INAUz6uGm2W5suJV5caR2c0firEMzVVwzLUXEAnAE4wgvYXKt24r7AHeJ2sB+3tQ1htEbC
-        XyXvdRQQmuOjooEtTnrGOksyyLgBRjI=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1702551779;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=yLX0zWLQjJXwutevBe3jiLxXnEsG/QKzwGJR5yjOdc8=;
-        b=LKlFm42W6vPSg88nuSGyJls9BGAzyqqjhdt2fWpS/GqjGaQdDGzXi9KSbUAfvARhlEFx6b
-        BwaBIjCeoG/ZldBw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id BEF70137E8;
-        Thu, 14 Dec 2023 11:02:58 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-        by imap1.dmz-prg2.suse.org with ESMTPSA
-        id 0xiCLOLgemWZZgAAD6G6ig
-        (envelope-from <tiwai@suse.de>); Thu, 14 Dec 2023 11:02:58 +0000
-Date:   Thu, 14 Dec 2023 12:02:58 +0100
-Message-ID: <87fs05qc65.wl-tiwai@suse.de>
-From:   Takashi Iwai <tiwai@suse.de>
-To:     patches@opensource.cirrus.com
-Cc:     Aleksandrs Vinarskis <alex.vinarskis@gmail.com>, perex@perex.cz,
-        tiwai@suse.com, sbinding@opensource.cirrus.com,
-        james.schulman@cirrus.com, david.rhodes@cirrus.com,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        Jasper Smet <josbeir@gmail.com>
-Subject: Re: [PATCH 1/1] ALSA: hda: cs35l41: Dell Fiorano add missing _DSD properties
-In-Reply-To: <20231212195243.10666-1-alex.vinarskis@gmail.com>
-References: <20231212195243.10666-1-alex.vinarskis@gmail.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-X-Spam-Level: 
-X-Spam-Score: -10.31
-X-Rspamd-Queue-Id: 29243220A1
-X-Spam-Level: 
-Authentication-Results: smtp-out1.suse.de;
-        dkim=pass header.d=suse.de header.s=susede2_rsa header.b=Xl+0ARMS;
-        dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=LKlFm42W;
-        dmarc=pass (policy=none) header.from=suse.de;
-        spf=softfail (smtp-out1.suse.de: 2a07:de40:b281:104:10:150:64:97 is neither permitted nor denied by domain of tiwai@suse.de) smtp.mailfrom=tiwai@suse.de
-X-Spamd-Result: default: False [-10.31 / 50.00];
-         RCVD_VIA_SMTP_AUTH(0.00)[];
-         TO_DN_SOME(0.00)[];
-         R_SPF_SOFTFAIL(0.00)[~all:c];
-         RCVD_COUNT_THREE(0.00)[3];
-         DKIM_TRACE(0.00)[suse.de:+];
-         DMARC_POLICY_ALLOW(0.00)[suse.de,none];
-         RCPT_COUNT_SEVEN(0.00)[10];
-         MX_GOOD(-0.01)[];
-         DMARC_POLICY_ALLOW_WITH_FAILURES(-0.50)[];
-         FROM_EQ_ENVFROM(0.00)[];
-         MIME_TRACE(0.00)[0:+];
-         BAYES_HAM(-3.00)[100.00%];
-         ARC_NA(0.00)[];
-         R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-         FROM_HAS_DN(0.00)[];
-         DWL_DNSWL_MED(-2.00)[suse.de:dkim];
-         FREEMAIL_ENVRCPT(0.00)[gmail.com];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         TAGGED_RCPT(0.00)[];
-         MIME_GOOD(-0.10)[text/plain];
-         DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-         WHITELIST_DMARC(-7.00)[suse.de:D:+];
-         MID_CONTAINS_FROM(1.00)[];
-         DBL_BLOCKED_OPENRESOLVER(0.00)[cirrus.com:email,suse.de:dkim];
-         FUZZY_BLOCKED(0.00)[rspamd.com];
-         FREEMAIL_CC(0.00)[gmail.com,perex.cz,suse.com,opensource.cirrus.com,cirrus.com,alsa-project.org,vger.kernel.org];
-         RCVD_TLS_ALL(0.00)[];
-         SUSPICIOUS_RECIPS(1.50)[];
-         RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+        Thu, 14 Dec 2023 06:02:57 -0500
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD10F11B;
+        Thu, 14 Dec 2023 03:03:03 -0800 (PST)
+Received: by mail-lf1-x135.google.com with SMTP id 2adb3069b0e04-50bfa5a6cffso9287074e87.0;
+        Thu, 14 Dec 2023 03:03:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1702551782; x=1703156582; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=wu2c3DwVvYEQBllF+/J+S28oH/5LztrNNWHtWraW0sc=;
+        b=UeNfZ/sjAcHJwE47q13oEhNa/P1qRCcN5zfyQMKC6CQV3p8qL5aDiaLeWywD7vB5Bv
+         n5W+at9asoyRx0ncRDqrNvAkotWsvks9N6ETxWiyMZMr5RKiaH4KZi5WAAKkhdGXTT9J
+         tML7SDpaCgYD+y7qVP0+eU65tHVj1BqbDDldyxqAcQTW1ECshRAbTzw3+rpdB5o3IQlT
+         lI09BzNezUDvC4bTTbGMsOVkWxy2HWDs9nBpLbzAwHnYkjAoJajFB6+KQs41JRvrQYT8
+         f/SMWM0RIFk2Yy8zvydFWARD0T3EoKA/hLtW1SqmHOicAJAmppbwKykC2ao0Cowcp/5K
+         NA4g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702551782; x=1703156582;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=wu2c3DwVvYEQBllF+/J+S28oH/5LztrNNWHtWraW0sc=;
+        b=pukQQBoUdarLuqRiLUXlskQ63rls/As9kkhHA5YK9bKRHlO5vbbUD6TRKwy37j//5R
+         N2iTWqeb785le7WHdJY8wrKKr4vrEW/RqD29Nb5sGY4G13FKi1OlwtxJ7AqWlmo+42Db
+         NiwM+tjLEpQDOPEFZnjjcmtkS4cHRo1AUn+oujto2fbbHEhvEK7QgUIprXpuUe7G7ywX
+         oVgF2ItOOPTwUsa0KIkdN5pr5ieNdw9R3/3REfd5T+6a8Vv2JxszjVaS97RTbkqAsrrH
+         XM0yRHj9eAMCtTmykXWfAJOKqCQHiKNLMi7Psu8b1DnwKFaFG5bRJCrBP3pz+JRptm7r
+         02NA==
+X-Gm-Message-State: AOJu0YxmBOqD8lhsab7i0/HGNBAGu/iAffcpN3ccKjgFEXM2XwaOMHxM
+        mDtn7fqrqWt5A/ImPn07ynU=
+X-Google-Smtp-Source: AGHT+IGkA/6XtvCqg7LSR6AbDUensyCKLPT5PPoyzAFxddrwL2e8LOG9GSSHWOPFrBJSfpn7oxdjnQ==
+X-Received: by 2002:a05:6512:11c2:b0:50b:e790:e96c with SMTP id h2-20020a05651211c200b0050be790e96cmr3522017lfr.30.1702551781616;
+        Thu, 14 Dec 2023 03:03:01 -0800 (PST)
+Received: from [172.25.98.130] ([5.2.194.157])
+        by smtp.gmail.com with ESMTPSA id vc11-20020a170907d08b00b00a1b6d503e7esm9152162ejc.157.2023.12.14.03.03.00
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 14 Dec 2023 03:03:01 -0800 (PST)
+Message-ID: <fd9f6465-fd72-401e-bcc2-59f775a43d9b@gmail.com>
+Date:   Thu, 14 Dec 2023 13:02:59 +0200
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v8 2/2] iio: adc: ad7173: add AD7173 driver
+To:     Andy Shevchenko <andy@kernel.org>
+Cc:     linus.walleij@linaro.org, brgl@bgdev.pl,
+        linux-gpio@vger.kernel.org, Lars-Peter Clausen <lars@metafoo.de>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Michael Walle <michael@walle.cc>,
+        Arnd Bergmann <arnd@arndb.de>,
+        ChiaEn Wu <chiaen_wu@richtek.com>,
+        Niklas Schnelle <schnelle@linux.ibm.com>,
+        =?UTF-8?Q?Leonard_G=C3=B6hrs?= <l.goehrs@pengutronix.de>,
+        Mike Looijmans <mike.looijmans@topic.nl>,
+        Haibo Chen <haibo.chen@nxp.com>,
+        Hugo Villeneuve <hvilleneuve@dimonoff.com>,
+        Ceclan Dumitru <dumitru.ceclan@analog.com>,
+        linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20231212104451.22522-1-mitrutzceclan@gmail.com>
+ <20231212104451.22522-2-mitrutzceclan@gmail.com>
+ <ZXm-hf8UQ3VEyP-2@smile.fi.intel.com>
+Content-Language: en-US
+From:   Ceclan Dumitru <mitrutzceclan@gmail.com>
+In-Reply-To: <ZXm-hf8UQ3VEyP-2@smile.fi.intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 12 Dec 2023 20:52:43 +0100,
-Aleksandrs Vinarskis wrote:
-> 
-> Dell XPS 9530 (2023) has two SPI connected CS35L41 amplifiers, however
-> is missing _DSD properties, cs-gpios and has a firmware bug which caps SPI
-> controller's speed to unusable 3051Hz. This patch adds _DSD properties and
-> sets second cs-gpio. In case SPI speed bug is detected, it will not
-> initialize the device to avoid hangs on wake up.
-> 
-> Resolution of SPI speed bug requires either a patch to `intel-lpss.c` or an
-> UEFI update with corrected values from Dell. Tested with locally applied
-> patch to `intel-lpss` on multiple XPS 9530 devices.
-> 
-> Co-developed-by: Jasper Smet <josbeir@gmail.com>
-> Signed-off-by: Jasper Smet <josbeir@gmail.com>
-> Signed-off-by: Aleksandrs Vinarskis <alex.vinarskis@gmail.com>
-
-Can Cirrus team review this?
 
 
-thanks,
-
-Takashi
-
-> ---
->  sound/pci/hda/cs35l41_hda_property.c | 47 ++++++++++++++++++++++++++++
->  1 file changed, 47 insertions(+)
+On 12/13/23 16:24, Andy Shevchenko wrote:
+> On Tue, Dec 12, 2023 at 12:44:36PM +0200, Dumitru Ceclan wrote:
+> ...
 > 
-> diff --git a/sound/pci/hda/cs35l41_hda_property.c b/sound/pci/hda/cs35l41_hda_property.c
-> index c83328971728..69446a794397 100644
-> --- a/sound/pci/hda/cs35l41_hda_property.c
-> +++ b/sound/pci/hda/cs35l41_hda_property.c
-> @@ -7,9 +7,55 @@
->  // Author: Stefan Binding <sbinding@opensource.cirrus.com>
->  
->  #include <linux/gpio/consumer.h>
-> +#include <linux/spi/spi.h>
->  #include <linux/string.h>
->  #include "cs35l41_hda_property.h"
->  
-> +/*
-> + * Device 10280BEB (Dell XPS 9530) doesn't have _DSD at all. Moreover, pin that is typically
-> + * used for `speaker_id` is missing. SPI's cs-gpios definitions are also missing.
-> + */
-> +static int dell_fiorano_no_acpi(struct cs35l41_hda *cs35l41, struct device *physdev, int id,
-> +				const char *hid)
-> +{
-> +	struct cs35l41_hw_cfg *hw_cfg = &cs35l41->hw_cfg;
-> +	struct spi_device *spi = to_spi_device(cs35l41->dev);
-> +
-> +	/*
-> +	 * 10280BEB has a firmware bug, which wrongly enables clock divider for intel-lpss
-> +	 * Resultant SPI clock is 100Mhz/32767=3051Hz, which leads to ~3 minute hang on boot/wake up
-> +	 * Avoid initializing device if lpss was not patched/fixed UEFI was not installed
-> +	 */
-> +	if (spi->max_speed_hz < CS35L41_SPI_MAX_FREQ) {
-> +		dev_err(cs35l41->dev, "SPI's max_speed_hz is capped at %u Hz, will not continue to avoid hanging\n",
-> +			spi->max_speed_hz);
-> +		return -EINVAL;
-> +	}
-> +
-> +	dev_info(cs35l41->dev, "Adding DSD properties for %s\n", cs35l41->acpi_subsystem_id);
-> +
-> +	/* check SPI address to assign the index */
-> +	cs35l41->index = id;
-> +	cs35l41->channel_index = 0;
-> +	/* 10280BEB is missing pin which is typically assigned to `spk-id-gpios` */
-> +	cs35l41->speaker_id = cs35l41_get_speaker_id(physdev, cs35l41->index, 2, -1);
-> +	cs35l41->reset_gpio = gpiod_get_index(physdev, NULL, 1, GPIOD_OUT_LOW);
-> +
-> +	hw_cfg->spk_pos = cs35l41->index  ? 1 : 0;	// 0th L, 1st R
-> +	hw_cfg->bst_type = CS35L41_EXT_BOOST;
-> +	hw_cfg->gpio1.func = CS35l41_VSPK_SWITCH;
-> +	hw_cfg->gpio1.valid = true;
-> +	hw_cfg->gpio2.func = CS35L41_INTERRUPT;
-> +	hw_cfg->gpio2.valid = true;
-> +	hw_cfg->valid = true;
-> +
-> +	/* Add second cs-gpio here */
-> +	if (cs35l41->index)
-> +		spi->cs_gpiod = gpiod_get_index(physdev, NULL, 0, GPIOD_OUT_HIGH);
-> +
-> +	return 0;
-> +}
-> +
->  /*
->   * Device CLSA010(0/1) doesn't have _DSD so a gpiod_get by the label reset won't work.
->   * And devices created by serial-multi-instantiate don't have their device struct
-> @@ -92,6 +138,7 @@ static const struct cs35l41_prop_model cs35l41_prop_model_table[] = {
->  	{ "CLSA0100", NULL, lenovo_legion_no_acpi },
->  	{ "CLSA0101", NULL, lenovo_legion_no_acpi },
->  	{ "CSC3551", "103C89C6", hp_vision_acpi_fix },
-> +	{ "CSC3551", "10280BEB", dell_fiorano_no_acpi },
->  	{}
->  };
->  
-> -- 
-> 2.40.1
+>> +		if (chan->type == IIO_TEMP) {
+>> +			temp = ((u32)AD7173_VOLTAGE_INT_REF_uV) * MILLI;
 > 
+> Hmm... Is the casting mandatory here?
+> 
+
+Yep, not really needed as MILLI is already declared as unsigned and it
+will promote the _INT_REF as well. On signed32 it would have overflowed.
+
+Are there any cases where this would not be alright?
