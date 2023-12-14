@@ -2,157 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B0A3D813311
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 15:28:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 35D35813318
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 15:29:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1573472AbjLNO2N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 09:28:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47624 "EHLO
+        id S1573461AbjLNO3c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 09:29:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34602 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230237AbjLNO2M (ORCPT
+        with ESMTP id S230260AbjLNO3a (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 09:28:12 -0500
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 6BDA29C
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 06:28:18 -0800 (PST)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A84EAC15;
-        Thu, 14 Dec 2023 06:29:03 -0800 (PST)
-Received: from [10.1.38.142] (XHFQ2J9959.cambridge.arm.com [10.1.38.142])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 9BB3B3F5A1;
-        Thu, 14 Dec 2023 06:28:14 -0800 (PST)
-Message-ID: <123a58b0-2ea6-4da3-9719-98ca55c8095e@arm.com>
-Date:   Thu, 14 Dec 2023 14:28:13 +0000
+        Thu, 14 Dec 2023 09:29:30 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC123A7;
+        Thu, 14 Dec 2023 06:29:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1702564176; x=1734100176;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=Y3yjRwJvTwe+dd+AJdN7EHilGx+zyRX1/RseVtZQirY=;
+  b=fW7/P2lIhW08gUCNfKuccFfHhmW56YrDWBrzqHNuYxfFY0d5zPIBjFif
+   9DkyJUvRuLSpylmBTNFozc1kn4nDKpx78CIdHKVjmg9Fo/I475B87xG1q
+   jwC37u7FvLZ44tfGHH8egm3FRlH2wmSjSi4jEjmMyoifFJ3xJzsJgFtGa
+   DVO+C9rtu/+kQnPUYAvogO4ltkLdEzJb51x/fhwlhGI1UcInkkDQGYvkE
+   69rvXhb8uVJewSHiauh6RHFB1OB3D1Djv55LEpdpgtspbEedOQ7Q/z8L3
+   Tw/MDCWBopiskm+2L3RDdYQHTByIR+OKERuZbqSRfyLRrtmJzSO9AMF/k
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10924"; a="375281546"
+X-IronPort-AV: E=Sophos;i="6.04,275,1695711600"; 
+   d="scan'208";a="375281546"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Dec 2023 06:29:36 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10924"; a="803299973"
+X-IronPort-AV: E=Sophos;i="6.04,275,1695711600"; 
+   d="scan'208";a="803299973"
+Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
+  by orsmga008.jf.intel.com with ESMTP; 14 Dec 2023 06:29:33 -0800
+Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1rDmiR-000MAi-0O;
+        Thu, 14 Dec 2023 14:29:31 +0000
+Date:   Thu, 14 Dec 2023 22:29:17 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Bixuan Cui <cuibixuan@vivo.com>, rostedt@goodmis.org,
+        mhiramat@kernel.org, mathieu.desnoyers@efficios.com,
+        akpm@linux-foundation.org
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        linux-trace-kernel@vger.kernel.org, linux-mm@kvack.org,
+        cuibixuan@vivo.com, opensource.kernel@vivo.com
+Subject: Re: [PATCH -next 2/2] mm: vmscan: add new event to trace shrink lru
+Message-ID: <202312142212.vbSe7CMs-lkp@intel.com>
+References: <20231212032640.6968-3-cuibixuan@vivo.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 12/15] arm64/mm: Split __flush_tlb_range() to elide
- trailing DSB
-Content-Language: en-GB
-To:     Robin Murphy <robin.murphy@arm.com>, Will Deacon <will@kernel.org>,
-        jean-philippe@linaro.org
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Oliver Upton <oliver.upton@linux.dev>,
-        James Morse <james.morse@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Zenghui Yu <yuzenghui@huawei.com>,
-        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-        Alexander Potapenko <glider@google.com>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Yu Zhao <yuzhao@google.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        David Hildenbrand <david@redhat.com>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        John Hubbard <jhubbard@nvidia.com>, Zi Yan <ziy@nvidia.com>,
-        Barry Song <21cnbao@gmail.com>,
-        Alistair Popple <apopple@nvidia.com>,
-        Yang Shi <shy828301@gmail.com>,
-        linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-References: <20231204105440.61448-1-ryan.roberts@arm.com>
- <20231204105440.61448-13-ryan.roberts@arm.com>
- <20231212113517.GA28857@willie-the-truck>
- <0969c413-bf40-4c46-9f1e-a92101ff2d2e@arm.com>
- <2e6f06d3-6c8e-4b44-b6f2-e55bd5be83d6@arm.com>
- <20231214121336.GA1015@willie-the-truck>
- <fbcda9e1-0473-4669-a869-d4de351c3197@arm.com>
-From:   Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <fbcda9e1-0473-4669-a869-d4de351c3197@arm.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231212032640.6968-3-cuibixuan@vivo.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 14/12/2023 12:30, Robin Murphy wrote:
-> On 2023-12-14 12:13 pm, Will Deacon wrote:
->> On Thu, Dec 14, 2023 at 11:53:52AM +0000, Ryan Roberts wrote:
->>> On 12/12/2023 11:47, Ryan Roberts wrote:
->>>> On 12/12/2023 11:35, Will Deacon wrote:
->>>>> On Mon, Dec 04, 2023 at 10:54:37AM +0000, Ryan Roberts wrote:
->>>>>> diff --git a/arch/arm64/include/asm/tlbflush.h
->>>>>> b/arch/arm64/include/asm/tlbflush.h
->>>>>> index bb2c2833a987..925ef3bdf9ed 100644
->>>>>> --- a/arch/arm64/include/asm/tlbflush.h
->>>>>> +++ b/arch/arm64/include/asm/tlbflush.h
->>>>>> @@ -399,7 +399,7 @@ do {                                    \
->>>>>>   #define __flush_s2_tlb_range_op(op, start, pages, stride, tlb_level) \
->>>>>>       __flush_tlb_range_op(op, start, pages, stride, 0, tlb_level, false)
->>>>>>   -static inline void __flush_tlb_range(struct vm_area_struct *vma,
->>>>>> +static inline void __flush_tlb_range_nosync(struct vm_area_struct *vma,
->>>>>>                        unsigned long start, unsigned long end,
->>>>>>                        unsigned long stride, bool last_level,
->>>>>>                        int tlb_level)
->>>>>> @@ -431,10 +431,19 @@ static inline void __flush_tlb_range(struct
->>>>>> vm_area_struct *vma,
->>>>>>       else
->>>>>>           __flush_tlb_range_op(vae1is, start, pages, stride, asid,
->>>>>> tlb_level, true);
->>>>>>   -    dsb(ish);
->>>>>>       mmu_notifier_arch_invalidate_secondary_tlbs(vma->vm_mm, start, end);
->>>>>>   }
->>>>>>   +static inline void __flush_tlb_range(struct vm_area_struct *vma,
->>>>>> +                     unsigned long start, unsigned long end,
->>>>>> +                     unsigned long stride, bool last_level,
->>>>>> +                     int tlb_level)
->>>>>> +{
->>>>>> +    __flush_tlb_range_nosync(vma, start, end, stride,
->>>>>> +                 last_level, tlb_level);
->>>>>> +    dsb(ish);
->>>>>> +}
->>>>>
->>>>> Hmm, are you sure it's safe to defer the DSB until after the secondary TLB
->>>>> invalidation? It will have a subtle effect on e.g. an SMMU participating
->>>>> in broadcast TLB maintenance, because now the ATC will be invalidated
->>>>> before completion of the TLB invalidation and it's not obviously safe to me.
->>>>
->>>> I'll be honest; I don't know that it's safe. The notifier calls turned up
->>>> during
->>>> a rebase and I stared at it for a while, before eventually concluding that I
->>>> should just follow the existing pattern in __flush_tlb_page_nosync(): That one
->>>> calls the mmu notifier without the dsb, then flush_tlb_page() does the dsb
->>>> after. So I assumed it was safe.
->>>>
->>>> If you think it's not safe, I guess there is a bug to fix in
->>>> __flush_tlb_page_nosync()?
->>>
->>> Did you have an opinion on this? I'm just putting together a v4 of this series,
->>> and I'll remove this optimization if you think it's unsound. But in that case, I
->>> guess we have an existing bug to fix too?
->>
->> Sorry, Ryan, I've not had a chance to look into it in more detail. But as
->> you rightly point out, you're not introducing the issue (assuming it is
->> one), so I don't think it needs to hold you up. Your code just makes the
->> thing more "obvious" to me.
+Hi Bixuan,
 
-OK thanks. I'll leave my code as is for now then - that makes it easier to do
-A/B performance comparison with the existing code. And I can change it if/when
-mainline changes (presumably to add the dsb between the tlbi and the mmu
-notifier callback).
+kernel test robot noticed the following build errors:
 
->>
->> Robin, Jean-Philippe -- do we need to make sure that the SMMU has completed
->> its TLB invalidation before issuing an ATC invalidate? My half-baked worry
->> is whether or not an ATS request could refill the ATC before the TLBI
->> has completed, therefore rendering the ATC invalidation useless.
-> 
-> I would agree, and the spec for CMD_ATC_INV does call out a
-> TLBI->sync->ATCI->sync sequence. At the moment the SVA notifier is issuing its
-> own command-based TLBIs anyway so the necessary sync is implicit there, but if
-> and when we get BTM support wired up properly it would be nice not to have to
-> bodge in an additional sync/DSB.
-> 
-> Cheers,
-> Robin.
+[auto build test ERROR on next-20231211]
 
+url:    https://github.com/intel-lab-lkp/linux/commits/Bixuan-Cui/mm-shrinker-add-new-event-to-trace-shrink-count/20231212-112824
+base:   next-20231211
+patch link:    https://lore.kernel.org/r/20231212032640.6968-3-cuibixuan%40vivo.com
+patch subject: [PATCH -next 2/2] mm: vmscan: add new event to trace shrink lru
+config: i386-buildonly-randconfig-003-20231214 (https://download.01.org/0day-ci/archive/20231214/202312142212.vbSe7CMs-lkp@intel.com/config)
+compiler: gcc-11 (Debian 11.3.0-12) 11.3.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231214/202312142212.vbSe7CMs-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202312142212.vbSe7CMs-lkp@intel.com/
+
+All errors (new ones prefixed by >>):
+
+   mm/vmscan.c: In function 'evict_folios':
+>> mm/vmscan.c:4533:9: error: implicit declaration of function 'trace_mm_vmscan_lru_shrink_inactive'; did you mean 'trace_mm_vmscan_lru_shrink_inactive_end'? [-Werror=implicit-function-declaration]
+    4533 |         trace_mm_vmscan_lru_shrink_inactive(pgdat->node_id,
+         |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+         |         trace_mm_vmscan_lru_shrink_inactive_end
+   cc1: some warnings being treated as errors
+
+
+vim +4533 mm/vmscan.c
+
+ac35a490237446 Yu Zhao                 2022-09-18  4500  
+a579086c99ed70 Yu Zhao                 2022-12-21  4501  static int evict_folios(struct lruvec *lruvec, struct scan_control *sc, int swappiness)
+ac35a490237446 Yu Zhao                 2022-09-18  4502  {
+ac35a490237446 Yu Zhao                 2022-09-18  4503  	int type;
+ac35a490237446 Yu Zhao                 2022-09-18  4504  	int scanned;
+ac35a490237446 Yu Zhao                 2022-09-18  4505  	int reclaimed;
+ac35a490237446 Yu Zhao                 2022-09-18  4506  	LIST_HEAD(list);
+359a5e1416caaf Yu Zhao                 2022-11-15  4507  	LIST_HEAD(clean);
+ac35a490237446 Yu Zhao                 2022-09-18  4508  	struct folio *folio;
+359a5e1416caaf Yu Zhao                 2022-11-15  4509  	struct folio *next;
+ac35a490237446 Yu Zhao                 2022-09-18  4510  	enum vm_event_item item;
+ac35a490237446 Yu Zhao                 2022-09-18  4511  	struct reclaim_stat stat;
+bd74fdaea14602 Yu Zhao                 2022-09-18  4512  	struct lru_gen_mm_walk *walk;
+359a5e1416caaf Yu Zhao                 2022-11-15  4513  	bool skip_retry = false;
+ac35a490237446 Yu Zhao                 2022-09-18  4514  	struct mem_cgroup *memcg = lruvec_memcg(lruvec);
+ac35a490237446 Yu Zhao                 2022-09-18  4515  	struct pglist_data *pgdat = lruvec_pgdat(lruvec);
+ac35a490237446 Yu Zhao                 2022-09-18  4516  
+ac35a490237446 Yu Zhao                 2022-09-18  4517  	spin_lock_irq(&lruvec->lru_lock);
+ac35a490237446 Yu Zhao                 2022-09-18  4518  
+ac35a490237446 Yu Zhao                 2022-09-18  4519  	scanned = isolate_folios(lruvec, sc, swappiness, &type, &list);
+ac35a490237446 Yu Zhao                 2022-09-18  4520  
+ac35a490237446 Yu Zhao                 2022-09-18  4521  	scanned += try_to_inc_min_seq(lruvec, swappiness);
+ac35a490237446 Yu Zhao                 2022-09-18  4522  
+ac35a490237446 Yu Zhao                 2022-09-18  4523  	if (get_nr_gens(lruvec, !swappiness) == MIN_NR_GENS)
+ac35a490237446 Yu Zhao                 2022-09-18  4524  		scanned = 0;
+ac35a490237446 Yu Zhao                 2022-09-18  4525  
+ac35a490237446 Yu Zhao                 2022-09-18  4526  	spin_unlock_irq(&lruvec->lru_lock);
+ac35a490237446 Yu Zhao                 2022-09-18  4527  
+ac35a490237446 Yu Zhao                 2022-09-18  4528  	if (list_empty(&list))
+ac35a490237446 Yu Zhao                 2022-09-18  4529  		return scanned;
+359a5e1416caaf Yu Zhao                 2022-11-15  4530  retry:
+49fd9b6df54e61 Matthew Wilcox (Oracle  2022-09-02  4531) 	reclaimed = shrink_folio_list(&list, pgdat, sc, &stat, false);
+359a5e1416caaf Yu Zhao                 2022-11-15  4532  	sc->nr_reclaimed += reclaimed;
+8c2214fc9a470a Jaewon Kim              2023-10-03 @4533  	trace_mm_vmscan_lru_shrink_inactive(pgdat->node_id,
+8c2214fc9a470a Jaewon Kim              2023-10-03  4534  			scanned, reclaimed, &stat, sc->priority,
+8c2214fc9a470a Jaewon Kim              2023-10-03  4535  			type ? LRU_INACTIVE_FILE : LRU_INACTIVE_ANON);
+359a5e1416caaf Yu Zhao                 2022-11-15  4536  
+359a5e1416caaf Yu Zhao                 2022-11-15  4537  	list_for_each_entry_safe_reverse(folio, next, &list, lru) {
+359a5e1416caaf Yu Zhao                 2022-11-15  4538  		if (!folio_evictable(folio)) {
+359a5e1416caaf Yu Zhao                 2022-11-15  4539  			list_del(&folio->lru);
+359a5e1416caaf Yu Zhao                 2022-11-15  4540  			folio_putback_lru(folio);
+359a5e1416caaf Yu Zhao                 2022-11-15  4541  			continue;
+359a5e1416caaf Yu Zhao                 2022-11-15  4542  		}
+ac35a490237446 Yu Zhao                 2022-09-18  4543  
+359a5e1416caaf Yu Zhao                 2022-11-15  4544  		if (folio_test_reclaim(folio) &&
+359a5e1416caaf Yu Zhao                 2022-11-15  4545  		    (folio_test_dirty(folio) || folio_test_writeback(folio))) {
+ac35a490237446 Yu Zhao                 2022-09-18  4546  			/* restore LRU_REFS_FLAGS cleared by isolate_folio() */
+ac35a490237446 Yu Zhao                 2022-09-18  4547  			if (folio_test_workingset(folio))
+ac35a490237446 Yu Zhao                 2022-09-18  4548  				folio_set_referenced(folio);
+359a5e1416caaf Yu Zhao                 2022-11-15  4549  			continue;
+359a5e1416caaf Yu Zhao                 2022-11-15  4550  		}
+ac35a490237446 Yu Zhao                 2022-09-18  4551  
+359a5e1416caaf Yu Zhao                 2022-11-15  4552  		if (skip_retry || folio_test_active(folio) || folio_test_referenced(folio) ||
+359a5e1416caaf Yu Zhao                 2022-11-15  4553  		    folio_mapped(folio) || folio_test_locked(folio) ||
+359a5e1416caaf Yu Zhao                 2022-11-15  4554  		    folio_test_dirty(folio) || folio_test_writeback(folio)) {
+359a5e1416caaf Yu Zhao                 2022-11-15  4555  			/* don't add rejected folios to the oldest generation */
+359a5e1416caaf Yu Zhao                 2022-11-15  4556  			set_mask_bits(&folio->flags, LRU_REFS_MASK | LRU_REFS_FLAGS,
+359a5e1416caaf Yu Zhao                 2022-11-15  4557  				      BIT(PG_active));
+359a5e1416caaf Yu Zhao                 2022-11-15  4558  			continue;
+359a5e1416caaf Yu Zhao                 2022-11-15  4559  		}
+359a5e1416caaf Yu Zhao                 2022-11-15  4560  
+359a5e1416caaf Yu Zhao                 2022-11-15  4561  		/* retry folios that may have missed folio_rotate_reclaimable() */
+359a5e1416caaf Yu Zhao                 2022-11-15  4562  		list_move(&folio->lru, &clean);
+359a5e1416caaf Yu Zhao                 2022-11-15  4563  		sc->nr_scanned -= folio_nr_pages(folio);
+ac35a490237446 Yu Zhao                 2022-09-18  4564  	}
+ac35a490237446 Yu Zhao                 2022-09-18  4565  
+ac35a490237446 Yu Zhao                 2022-09-18  4566  	spin_lock_irq(&lruvec->lru_lock);
+ac35a490237446 Yu Zhao                 2022-09-18  4567  
+49fd9b6df54e61 Matthew Wilcox (Oracle  2022-09-02  4568) 	move_folios_to_lru(lruvec, &list);
+ac35a490237446 Yu Zhao                 2022-09-18  4569  
+bd74fdaea14602 Yu Zhao                 2022-09-18  4570  	walk = current->reclaim_state->mm_walk;
+bd74fdaea14602 Yu Zhao                 2022-09-18  4571  	if (walk && walk->batched)
+bd74fdaea14602 Yu Zhao                 2022-09-18  4572  		reset_batch_size(lruvec, walk);
+bd74fdaea14602 Yu Zhao                 2022-09-18  4573  
+57e9cc50f4dd92 Johannes Weiner         2022-10-26  4574  	item = PGSTEAL_KSWAPD + reclaimer_offset();
+ac35a490237446 Yu Zhao                 2022-09-18  4575  	if (!cgroup_reclaim(sc))
+ac35a490237446 Yu Zhao                 2022-09-18  4576  		__count_vm_events(item, reclaimed);
+ac35a490237446 Yu Zhao                 2022-09-18  4577  	__count_memcg_events(memcg, item, reclaimed);
+ac35a490237446 Yu Zhao                 2022-09-18  4578  	__count_vm_events(PGSTEAL_ANON + type, reclaimed);
+ac35a490237446 Yu Zhao                 2022-09-18  4579  
+ac35a490237446 Yu Zhao                 2022-09-18  4580  	spin_unlock_irq(&lruvec->lru_lock);
+ac35a490237446 Yu Zhao                 2022-09-18  4581  
+ac35a490237446 Yu Zhao                 2022-09-18  4582  	mem_cgroup_uncharge_list(&list);
+ac35a490237446 Yu Zhao                 2022-09-18  4583  	free_unref_page_list(&list);
+ac35a490237446 Yu Zhao                 2022-09-18  4584  
+359a5e1416caaf Yu Zhao                 2022-11-15  4585  	INIT_LIST_HEAD(&list);
+359a5e1416caaf Yu Zhao                 2022-11-15  4586  	list_splice_init(&clean, &list);
+359a5e1416caaf Yu Zhao                 2022-11-15  4587  
+359a5e1416caaf Yu Zhao                 2022-11-15  4588  	if (!list_empty(&list)) {
+359a5e1416caaf Yu Zhao                 2022-11-15  4589  		skip_retry = true;
+359a5e1416caaf Yu Zhao                 2022-11-15  4590  		goto retry;
+359a5e1416caaf Yu Zhao                 2022-11-15  4591  	}
+ac35a490237446 Yu Zhao                 2022-09-18  4592  
+ac35a490237446 Yu Zhao                 2022-09-18  4593  	return scanned;
+ac35a490237446 Yu Zhao                 2022-09-18  4594  }
+ac35a490237446 Yu Zhao                 2022-09-18  4595  
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
