@@ -2,129 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 385DC813923
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 18:55:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 933DE813936
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 18:58:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231429AbjLNRzQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 12:55:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55002 "EHLO
+        id S232513AbjLNR6D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 12:58:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34262 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229532AbjLNRzP (ORCPT
+        with ESMTP id S229708AbjLNR6C (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 12:55:15 -0500
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89EDDA6;
-        Thu, 14 Dec 2023 09:55:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=yZZfFiLwNQEGOTfqPZeYqFsQFPoC9cJyPHRCME7+qng=; b=YZln1QZxhDK9MAc+S2Xd9heAgy
-        ie5lPli0BDZIk0s28NjnJCpwz3RwdjpjdXrpc+br3qEiudcMak40U5Z+KZNubTpGCA7kHnccAeNlr
-        Pyd4TFtyk/YlD6xLA3UBo+0SS95CobxPx1j5yl7dW43hlqLWjkB2Gt5g/Q9fQiM4IljnmObep5pma
-        mIgrXVGCHv0cZkuAsz3SmcPEpKVgoVbP/e96BvWTC3xUkbjCiKWCZs/aOpnDnusCNUH4kdYbxSCdM
-        U+6zvJBCblim05E+MMAqmh4KZVohjAhWk/AvdEovz1W7UBINZht7JDprgbbiomQQV/JJWQXrhLWtO
-        JcUuFF2w==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:45686)
-        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.96)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1rDpvX-0001ns-17;
-        Thu, 14 Dec 2023 17:55:15 +0000
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1rDpvW-0002kf-Sv; Thu, 14 Dec 2023 17:55:14 +0000
-Date:   Thu, 14 Dec 2023 17:55:14 +0000
-From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
-To:     Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Cc:     linux-pm@vger.kernel.org, loongarch@lists.linux.dev,
-        linux-acpi@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-riscv@lists.infradead.org, kvmarm@lists.linux.dev,
-        x86@kernel.org, acpica-devel@lists.linuxfoundation.org,
-        linux-csky@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-ia64@vger.kernel.org, linux-parisc@vger.kernel.org,
-        Salil Mehta <salil.mehta@huawei.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        jianyong.wu@arm.com, justin.he@arm.com,
-        James Morse <james.morse@arm.com>
-Subject: Re: [PATCH RFC v3 01/21] ACPI: Only enumerate enabled (or
- functional) devices
-Message-ID: <ZXtBgtB8FXs8ge0h@shell.armlinux.org.uk>
-References: <ZXmn46ptis59F0CO@shell.armlinux.org.uk>
- <E1rDOfs-00DvjY-HQ@rmk-PC.armlinux.org.uk>
- <20231214173241.0000260f@Huawei.com>
+        Thu, 14 Dec 2023 12:58:02 -0500
+Received: from mail2-relais-roc.national.inria.fr (mail2-relais-roc.national.inria.fr [192.134.164.83])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DB27CF
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 09:58:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=inria.fr; s=dc;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=aKNROOurZHb88kWOnJ9PyU35ja83ohgQdj0uzQIZ/FY=;
+  b=UNU+mnfC44eWGOwQRKPs4rZ6KXB9iOEAN8fELByERb0kAEfb6z/5xxte
+   +B6ttHzSOoMb3uJJaj4xc1K8iti0M8OfuaBwwllMe/g7NO6Hz0Rd9q1Ls
+   pW0o9aDSF60mDUCQHkPOt1KazOyQboD8gNqTHmu09IIaI4AotdQPaHsBP
+   U=;
+Authentication-Results: mail2-relais-roc.national.inria.fr; dkim=none (message not signed) header.i=none; spf=SoftFail smtp.mailfrom=keisuke.nishimura@inria.fr; dmarc=fail (p=none dis=none) d=inria.fr
+X-IronPort-AV: E=Sophos;i="6.04,276,1695679200"; 
+   d="scan'208";a="142377318"
+Received: from dt-aponte.paris.inria.fr (HELO keisuke-XPS-13-7390.tailde312.ts.net) ([128.93.67.66])
+  by mail2-relais-roc.national.inria.fr with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Dec 2023 18:58:06 +0100
+From:   Keisuke Nishimura <keisuke.nishimura@inria.fr>
+To:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>
+Cc:     Abel Wu <wuyun.abel@bytedance.com>, Josh Don <joshdon@google.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Xunlei Pang <xlpang@linux.alibaba.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Valentin Schneider <vschneid@redhat.com>,
+        Julia Lawall <julia.lawall@inria.fr>,
+        linux-kernel@vger.kernel.org,
+        Keisuke Nishimura <keisuke.nishimura@inria.fr>
+Subject: [PATCH 1/2] sched/fair: take into account scheduling domain in select_idle_smt()
+Date:   Thu, 14 Dec 2023 18:55:50 +0100
+Message-Id: <20231214175551.629945-1-keisuke.nishimura@inria.fr>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231214173241.0000260f@Huawei.com>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 14, 2023 at 05:32:41PM +0000, Jonathan Cameron wrote:
-> On Wed, 13 Dec 2023 12:49:16 +0000
-> Russell King (Oracle) <rmk+kernel@armlinux.org.uk> wrote:
-> 
-> > From: James Morse <james.morse@arm.com>
-> > 
-> > Today the ACPI enumeration code 'visits' all devices that are present.
-> > 
-> > This is a problem for arm64, where CPUs are always present, but not
-> > always enabled. When a device-check occurs because the firmware-policy
-> > has changed and a CPU is now enabled, the following error occurs:
-> > | acpi ACPI0007:48: Enumeration failure
-> > 
-> > This is ultimately because acpi_dev_ready_for_enumeration() returns
-> > true for a device that is not enabled. The ACPI Processor driver
-> > will not register such CPUs as they are not 'decoding their resources'.
-> > 
-> > Change acpi_dev_ready_for_enumeration() to also check the enabled bit.
-> > ACPI allows a device to be functional instead of maintaining the
-> > present and enabled bit. Make this behaviour an explicit check with
-> > a reference to the spec, and then check the present and enabled bits.
-> > This is needed to avoid enumerating present && functional devices that
-> > are not enabled.
-> > 
-> > Signed-off-by: James Morse <james.morse@arm.com>
-> > Tested-by: Miguel Luis <miguel.luis@oracle.com>
-> > Tested-by: Vishnu Pajjuri <vishnu@os.amperecomputing.com>
-> > Tested-by: Jianyong Wu <jianyong.wu@arm.com>
-> > Signed-off-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
-> > ---
-> > If this change causes problems on deployed hardware, I suggest an
-> > arch opt-in: ACPI_IGNORE_STA_ENABLED, that causes
-> > acpi_dev_ready_for_enumeration() to only check the present bit.
-> 
-> My gut feeling (having made ACPI 'fixes' in the past that ran into
-> horribly broken firmware and had to be reverted) is reduce the blast
-> radius preemptively from the start. I'd love to live in a world were
-> that wasn't necessary but I don't trust all the generators of ACPI tables.
-> I'll leave it to Rafael and other ACPI experts suggest how narrow we should
-> make it though - arch opt in might be narrow enough.
+When picking out a CPU on a task wakeup, select_idle_smt() has to take
+into account the scheduling domain of @target. This is because cpusets
+and isolcpus can remove CPUs from the domain to isolate them from other
+SMT siblings.
 
-Yes, I think an arch opt-in would be the most sensible way forward, if
-Rafael concurs with that idea. I notice that what I wrote there was
-actually an opt-out. I'll fix that.
+This fix checks if the candidate CPU is in the target scheduling domain.
 
-> > +	/*
-> > +	 * ACPI 6.5's 6.3.7 "_STA (Device Status)" allows firmware to return
-> > +	 * (!present && functional) for certain types of devices that should be
-> > +	 * enumerated. Note that the enabled bit can't be sert until the present
-> 
-> set until
+The commit df3cb4ea1fb6 ("sched/fair: Fix wrong cpu selecting from isolated
+domain") originally proposed this fix by adding the check of the scheduling
+domain in the loop. However, the commit 3e6efe87cd5cc ("sched/fair: Remove
+redundant check in select_idle_smt()") accidentally removed the check.
+This commit brings the check back with the tiny optimization of computing
+the intersection of the task's CPU mask and the sched domain mask up front.
 
-Thanks for spotting that, fixed.
+Fixes: 3e6efe87cd5c ("sched/fair: Remove redundant check in select_idle_smt()")
+Signed-off-by: Keisuke Nishimura <keisuke.nishimura@inria.fr>
+Signed-off-by: Julia Lawall <julia.lawall@inria.fr>
+---
+ kernel/sched/fair.c | 15 +++++++++++----
+ 1 file changed, 11 insertions(+), 4 deletions(-)
 
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index bcd0f230e21f..71306b48cf68 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -7284,11 +7284,18 @@ static int select_idle_core(struct task_struct *p, int core, struct cpumask *cpu
+ /*
+  * Scan the local SMT mask for idle CPUs.
+  */
+-static int select_idle_smt(struct task_struct *p, int target)
++static int select_idle_smt(struct task_struct *p, struct sched_domain *sd, int target)
+ {
+ 	int cpu;
++	struct cpumask *cpus = this_cpu_cpumask_var_ptr(select_rq_mask);
++
++	/*
++	 * Check if a candidate cpu is in the LLC scheduling domain where target exists.
++	 * Due to isolcpus and cpusets, there is no guarantee that it holds.
++	 */
++	cpumask_and(cpus, sched_domain_span(sd), p->cpus_ptr);
+ 
+-	for_each_cpu_and(cpu, cpu_smt_mask(target), p->cpus_ptr) {
++	for_each_cpu_and(cpu, cpu_smt_mask(target), cpus) {
+ 		if (cpu == target)
+ 			continue;
+ 		if (available_idle_cpu(cpu) || sched_idle_cpu(cpu))
+@@ -7314,7 +7321,7 @@ static inline int select_idle_core(struct task_struct *p, int core, struct cpuma
+ 	return __select_idle_cpu(core, p);
+ }
+ 
+-static inline int select_idle_smt(struct task_struct *p, int target)
++static inline int select_idle_smt(struct task_struct *p, struct sched_domain *sd, int target)
+ {
+ 	return -1;
+ }
+@@ -7564,7 +7571,7 @@ static int select_idle_sibling(struct task_struct *p, int prev, int target)
+ 		has_idle_core = test_idle_cores(target);
+ 
+ 		if (!has_idle_core && cpus_share_cache(prev, target)) {
+-			i = select_idle_smt(p, prev);
++			i = select_idle_smt(p, sd, prev);
+ 			if ((unsigned int)i < nr_cpumask_bits)
+ 				return i;
+ 		}
 -- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
+2.34.1
+
