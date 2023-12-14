@@ -1,128 +1,212 @@
-Return-Path: <linux-kernel+bounces-109-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-113-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id CB2D0813C56
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 22:07:02 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id D69DE813C5D
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 22:09:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 811BE1F226A5
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 21:07:02 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 47C5CB215BA
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 21:09:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 76A6B2BCF9;
-	Thu, 14 Dec 2023 21:06:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 92D1B2BCF3;
+	Thu, 14 Dec 2023 21:09:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b="e3cHDZo+"
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="XFLOhz37"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-oa1-f44.google.com (mail-oa1-f44.google.com [209.85.160.44])
+Received: from mail-ej1-f52.google.com (mail-ej1-f52.google.com [209.85.218.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 47A606AB80
-	for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 21:06:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bgdev.pl
-Received: by mail-oa1-f44.google.com with SMTP id 586e51a60fabf-2030fbc2417so2213413fac.3
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 13:06:27 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A24AB282E8
+	for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 21:09:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-a22f2a28c16so4925966b.0
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 13:09:37 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1702587987; x=1703192787; darn=vger.kernel.org;
+        d=chromium.org; s=google; t=1702588176; x=1703192976; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=crPiDH9/mhEOg/t9pVVthM+Ufb3xJC9KbI2h6yw2zqU=;
-        b=e3cHDZo+CZZgILIpUov29tmVsHzNdfShSvlA58t67CAvzN9xoJW75dPPBArm6MT0bs
-         O8z/0dQ4GC2d9vVbkOHEvOIBILID+QZ1eT/R01TsGPCreE1RZSdompqHciKpJ8OxJ2tb
-         6+yrOe0Ucgy4yoLWfnX0+xZ+CtYKPcdHqCjNPcOaq/if1Gogw0L3a/A7W4+GzKR0Hdkg
-         6LefQMBxBo+OVe5ihJ3HrLxa3hdQWjEienMnPr05bwSILTA+V/p4ROwwcMEBert0binZ
-         ygzSyKxDZO/ZDPJCjQPVwtBtir1uqPA0fEh2lpml3MfdsVZAHTQYoYaRVNRvJ+qzLVfB
-         xdDA==
+        bh=jnjPB6iX18JgpGdFMBMYrxpteo2U43QjbY9/lo9Je7Y=;
+        b=XFLOhz37wKaAxPEZKW33Pc4O9cEUoStpYuesH3C0UN5sZOSr4uZMko2q/xeud6ZCla
+         aN7q2ifarC7wZmRdu+S42IAGUnkbco0SHCuZS25C/Cem9wduKtREHaePrcsJw1Zf1HoA
+         tn5lrkgiXQ3tmymYfe8s3eKsSBqn093/cdntw=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702587987; x=1703192787;
+        d=1e100.net; s=20230601; t=1702588176; x=1703192976;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=crPiDH9/mhEOg/t9pVVthM+Ufb3xJC9KbI2h6yw2zqU=;
-        b=fCqWMSCR/3E9pfraVTP6yBiYoEcxW6zJt6AMLAlDNHGDSzoiKqr/BVaGg0CzgnZ9Gb
-         v5uFA+hl0TRP36YzsxcVmJToiDjJQUdFN0Si3xwE7DEtoSmQ3A0dySS5tBcEOTRwN52h
-         uFKkN+LazDaMUPHSdpM7ml42HwwOOZFmR/Ckiy6UigQ5DBjRIRSFpjGjCHeAnZwLxaPF
-         h3RQku2MMfT+EKAmFQZ3bgjY+c8ygjumezPrIZCdd80HN6BBXjbWlkm9PdH6lAigVqfa
-         qGPyQWeAbkJybQPLW+dWmCU5p82IHPQSg+FVRoWKA1+/1zNcT3wtMVTn2rqmfWraT5a8
-         dA7w==
-X-Gm-Message-State: AOJu0YxxHjyqYVikmaL7pJgafqIAxcXg9fcNnjSmJYOFCrVzF3iZMzDg
-	c58XMy7GkRtN6OsEc/1p4NIhoaErARWE5uUTEeEcsg==
-X-Google-Smtp-Source: AGHT+IEbW/pRgBRM2Tbl0EiCqw6habcEinR3uZrs3LL79n5Z6/pJtj4vR8fP0YMhjd29+225jiSzc+QCUtTJIpFZtvo=
-X-Received: by 2002:a05:6870:4707:b0:203:58cd:21c5 with SMTP id
- b7-20020a056870470700b0020358cd21c5mr1076743oaq.30.1702587987121; Thu, 14 Dec
- 2023 13:06:27 -0800 (PST)
+        bh=jnjPB6iX18JgpGdFMBMYrxpteo2U43QjbY9/lo9Je7Y=;
+        b=TnPmWSZbVGRk0kb9nRaWG/eDPilFaOqj4qhL8nhdImcozC1Pq5r2ak9YnqhRVxXuP5
+         fGk5VDBTkd8UUxzOINBw/no8//5g1Ie+BVR4XTyDu8qvxu1DTOKaDVc4nY5S0xgvwGqf
+         +V4e32R6NrZEs86dWLhzh8I4DSBJD8mmqJAXo85HyST2zU3DkiKnJW/mYcZuJF223LGq
+         3H+IkIhxVkcCah3KP0MCqnBwqo72NEr/Ec/cSt44KR+ttDGFdvM5EYZyp5m55OFYtwG1
+         /vaqnHLYCfj96VrNBLO4AcxKbq9GwJ+3xGFG5a1DyoIUCVk6VCrqURpO1WL/PRQoNtmR
+         chBw==
+X-Gm-Message-State: AOJu0YwNhmQB1Mb6rZlzqMY9a/1JFgcNpkC+BJaB3s2RttHwKTW55b2U
+	QipMtYl7U6NL0CeHdMQIwSCPPFyKP7WhCHoQMim8Mg==
+X-Google-Smtp-Source: AGHT+IE1mZhqGInPUAvje+k24w89h1v23G78AX9kBt06f8sNc/raFxf+pFaK2GPm69Hxyl/NeGszL+XSJBb5CtBIqnE=
+X-Received: by 2002:a17:907:2d12:b0:a19:9b79:8b45 with SMTP id
+ gs18-20020a1709072d1200b00a199b798b45mr5234161ejc.86.1702588175444; Thu, 14
+ Dec 2023 13:09:35 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231214095814.132400-1-warthog618@gmail.com> <20231214095814.132400-3-warthog618@gmail.com>
- <ZXsZJ9z7iln8uMf8@smile.fi.intel.com> <ZXsajZoQRw7HgHl1@smile.fi.intel.com>
- <ZXsp8QjxsUMPlZIR@rigel> <ZXswRCsT0OYwHe3N@smile.fi.intel.com>
-In-Reply-To: <ZXswRCsT0OYwHe3N@smile.fi.intel.com>
-From: Bartosz Golaszewski <brgl@bgdev.pl>
-Date: Thu, 14 Dec 2023 22:06:14 +0100
-Message-ID: <CAMRc=Md55pSWwbKqxO-eHJyn1+vtLMuWmD0d1_iqFT4h7dJ4Yg@mail.gmail.com>
-Subject: Re: [PATCH v2 2/5] gpiolib: cdev: relocate debounce_period_us from
- struct gpio_desc
-To: Andy Shevchenko <andy@kernel.org>
-Cc: Kent Gibson <warthog618@gmail.com>, linux-kernel@vger.kernel.org, 
-	linux-gpio@vger.kernel.org, linus.walleij@linaro.org
+References: <20231116172859.393744-1-sjg@chromium.org> <20231208150042.GA1278773-robh@kernel.org>
+ <CAPnjgZ2i4gvgiUeHPOfHuOdBooV4e=QQEq6iMo0JbDwOS6dCwA@mail.gmail.com>
+ <CAL_Jsq+xMZ8yz4H9D59uCSyX4h5W+4ruGF++=wVA=msXz+Y01A@mail.gmail.com>
+ <CAPnjgZ1uW8T6woXSqFUNm301=W3zBYOrADREkrz=DuwSW87qZg@mail.gmail.com> <20231214172702.GA617226-robh@kernel.org>
+In-Reply-To: <20231214172702.GA617226-robh@kernel.org>
+From: Simon Glass <sjg@chromium.org>
+Date: Thu, 14 Dec 2023 14:09:24 -0700
+Message-ID: <CAPnjgZ2oJSGPO91Y_aLbe+v250WFrND4n3T0mOvhERYidVu=eQ@mail.gmail.com>
+Subject: Re: [PATCH v6 1/3] dt-bindings: mtd: partitions: Add binman compatible
+To: Rob Herring <robh@kernel.org>
+Cc: devicetree@vger.kernel.org, Miquel Raynal <miquel.raynal@bootlin.com>, 
+	linux-mtd@lists.infradead.org, Tom Rini <trini@konsulko.com>, 
+	Michael Walle <mwalle@kernel.org>, U-Boot Mailing List <u-boot@lists.denx.de>, 
+	Conor Dooley <conor+dt@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Pratyush Yadav <ptyadav@amazon.de>, 
+	=?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>, 
+	Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Dec 14, 2023 at 5:41=E2=80=AFPM Andy Shevchenko <andy@kernel.org> w=
-rote:
->
-> On Fri, Dec 15, 2023 at 12:14:41AM +0800, Kent Gibson wrote:
-> > On Thu, Dec 14, 2023 at 05:09:01PM +0200, Andy Shevchenko wrote:
-> > > On Thu, Dec 14, 2023 at 05:03:03PM +0200, Andy Shevchenko wrote:
-> > > > On Thu, Dec 14, 2023 at 05:58:11PM +0800, Kent Gibson wrote:
->
-> ...
->
-> > > > > +static void supinfo_init(void)
-> > > > > +{
-> > > > > +       supinfo.tree =3D RB_ROOT;
-> > > > > +       spin_lock_init(&supinfo.lock);
-> > > > > +}
-> > > >
-> > > > Can it be done statically?
-> > > >
-> > > > supinfo =3D {
-> > > >   .tree =3D RB_ROOT,
-> > > >   .lock =3D __SPIN_LOCK_UNLOCKED(supinfo.lock),
+Hi Rob,
 
-Double underscore typically means it's private and shouldn't be used.
-
-> > >
-> > > I even checked the current tree, we have 32 users of this pattern in =
-drivers/.
+On Thu, 14 Dec 2023 at 10:27, Rob Herring <robh@kernel.org> wrote:
+>
+> On Fri, Dec 08, 2023 at 03:58:10PM -0700, Simon Glass wrote:
+> > Hi Rob,
 > >
-> > Ah, that is what you meant.  Yeah sure can - the supinfo_init() is
-> > another hangover from when I was trying to create the supinfo per chip,
-> > but now it is a global a static initialiser makes sense.
+> > On Fri, 8 Dec 2023 at 14:56, Rob Herring <robh@kernel.org> wrote:
+> > >
+> > > On Fri, Dec 8, 2023 at 11:47=E2=80=AFAM Simon Glass <sjg@chromium.org=
+> wrote:
+> > > >
+> > > > Hi Rob,
+> > > >
+> > > > On Fri, 8 Dec 2023 at 08:00, Rob Herring <robh@kernel.org> wrote:
+> > > > >
+> > > > > On Thu, Nov 16, 2023 at 10:28:50AM -0700, Simon Glass wrote:
+> > > > > > Add a compatible string for binman, so we can extend fixed-part=
+itions
+> > > > > > in various ways.
+> > > > > >
+> > > > > > Signed-off-by: Simon Glass <sjg@chromium.org>
+> > > > > > ---
+> > > > > >
+> > > > > > (no changes since v5)
+> > > > > >
+> > > > > > Changes in v5:
+> > > > > > - Add #address/size-cells and parternProperties
+> > > > > > - Drop $ref to fixed-partitions.yaml
+> > > > > > - Drop 'select: false'
+> > > > > >
+> > > > > > Changes in v4:
+> > > > > > - Change subject line
+> > > > > >
+> > > > > > Changes in v3:
+> > > > > > - Drop fixed-partition additional compatible string
+> > > > > > - Drop fixed-partitions from the example
+> > > > > > - Mention use of compatible instead of label
+> > > > > >
+> > > > > > Changes in v2:
+> > > > > > - Drop mention of 'enhanced features' in fixed-partitions.yaml
+> > > > > > - Mention Binman input and output properties
+> > > > > > - Use plain partition@xxx for the node name
+> > > > > >
+> > > > > >  .../bindings/mtd/partitions/binman.yaml       | 68 +++++++++++=
+++++++++
+> > > > > >  .../bindings/mtd/partitions/partitions.yaml   |  1 +
+> > > > > >  MAINTAINERS                                   |  5 ++
+> > > > > >  3 files changed, 74 insertions(+)
+> > > > > >  create mode 100644 Documentation/devicetree/bindings/mtd/parti=
+tions/binman.yaml
+> > > > > >
+> > > > > > diff --git a/Documentation/devicetree/bindings/mtd/partitions/b=
+inman.yaml b/Documentation/devicetree/bindings/mtd/partitions/binman.yaml
+> > > > > > new file mode 100644
+> > > > > > index 000000000000..329217550a98
+> > > > > > --- /dev/null
+> > > > > > +++ b/Documentation/devicetree/bindings/mtd/partitions/binman.y=
+aml
+> > > > > > @@ -0,0 +1,68 @@
+> > > > > > +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> > > > > > +# Copyright 2023 Google LLC
+> > > > > > +
+> > > > > > +%YAML 1.2
+> > > > > > +---
+> > > > > > +$id: http://devicetree.org/schemas/mtd/partitions/binman.yaml#
+> > > > > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > > > > > +
+> > > > > > +title: Binman firmware layout
+> > > > > > +
+> > > > > > +maintainers:
+> > > > > > +  - Simon Glass <sjg@chromium.org>
+> > > > > > +
+> > > > > > +description: |
+> > > > > > +  The binman node provides a layout for firmware, used when pa=
+ckaging firmware
+> > > > > > +  from multiple projects. It is based on fixed-partitions, wit=
+h some
+> > > > > > +  extensions, but uses 'compatible' to indicate the contents o=
+f the node, to
+> > > > > > +  avoid perturbing or confusing existing installations which u=
+se 'label' for a
+> > > > > > +  particular purpose.
+> > > > > > +
+> > > > > > +  Binman supports properties used as inputs to the firmware-pa=
+ckaging process,
+> > > > > > +  such as those which control alignment of partitions. This bi=
+nding addresses
+> > > > > > +  these 'input' properties. For example, it is common for the =
+'reg' property
+> > > > > > +  (an 'output' property) to be set by Binman, based on the ali=
+gnment requested
+> > > > > > +  in the input.
+> > > > > > +
+> > > > > > +  Once processing is complete, input properties have mostly se=
+rved their
+> > > > > > +  purpose, at least until the firmware is repacked later, e.g.=
+ due to a
+> > > > > > +  firmware update. The 'fixed-partitions' binding should provi=
+de enough
+> > > > > > +  information to read the firmware at runtime, including decom=
+pression if
+> > > > > > +  needed.
+> > > > >
+> > > > > How is this going to work exactly? binman reads these nodes and t=
+hen
+> > > > > writes out 'fixed-partitions' nodes. But then you've lost the bin=
+man
+> > > > > specifc parts needed for repacking.
+> > > >
+> > > > No, they are the same node. I do want the extra information to stic=
+k
+> > > > around. So long as it is compatible with fixed-partition as well, t=
+his
+> > > > should work OK.
+> > >
+> > > How can it be both? The partitions node compatible can be either
+> > > 'fixed-partitions' or 'binman'.
+> >
+> > Can we not allow it to be both? I have tried to adjust things in
+> > response to feedback but perhaps the feedback was leading me down the
+> > wrong path?
 >
-> Yep, the DEFINE_MUTEX() / DEFINE_SPINLOCK() / etc looks better naturally
-> than above.
+> Sure, but then the schema has to and that means extending
+> fixed-partitions.
 
-Yeah, so maybe we should use non-struct, global variables after all.
+Can we cross that bridge later? There might be resistance to it. I'm
+not sure. For now, perhaps just a binman compatible works well enough
+to make progress.
 
-Bart
-
->
-> > And I still haven't received the email you quote there.
->
-> :-( I'm not sure we will get it, it most likely that I removed it already
-> and it has disappeared due to problems with email server...
->
-> --
-> With Best Regards,
-> Andy Shevchenko
->
->
+Regards,
+Simon
 
