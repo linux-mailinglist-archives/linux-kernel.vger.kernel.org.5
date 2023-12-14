@@ -2,99 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E70F1812A2D
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 09:19:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0414F812A37
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 09:21:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232935AbjLNITl convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 14 Dec 2023 03:19:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50808 "EHLO
+        id S230216AbjLNIVO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 03:21:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46684 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229769AbjLNITk (ORCPT
+        with ESMTP id S229441AbjLNIVL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 03:19:40 -0500
-Received: from mail-yw1-f169.google.com (mail-yw1-f169.google.com [209.85.128.169])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52234CF;
-        Thu, 14 Dec 2023 00:19:45 -0800 (PST)
-Received: by mail-yw1-f169.google.com with SMTP id 00721157ae682-5e282ec7537so19738327b3.3;
-        Thu, 14 Dec 2023 00:19:45 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702541984; x=1703146784;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=VPc9UucRRwQsPIIhSc+Zwo7ILNiT77DD2oaIHdq0gow=;
-        b=UQcJlk4BFZT5PY4eB9mQRfnmL8/ivfAvE19crMWWde9REl0k6p0MAAQm2XlHIAikVA
-         /Y0RoSGcYs2VVBeQLD8Gra23fZzVcB3FQ95HGfdqGngo93MD8S+67U4nzPze8vx0doFK
-         Y3fKmwiMaK4hd+oYo200dENeZ+USRQH3IUK3WqkEUJOhaaLzlxclGVVwrrIwoYwlVGpj
-         KVrJikumvziTDW4AziWjdErLlBEOEIpXJinvlbJd2iCJQhUOn9pr5RCa76KOttifJjZT
-         NM6+l59207Op0Yt1OV+QxctQ2bwvac+QBrBQAkvb9/Ir7cLWrWmz5bmdG9BYwHQhPuzy
-         ezAg==
-X-Gm-Message-State: AOJu0Yylr2Dmgd59voaCC9VTflCb9ZoeplhvYfqP7ZJ5FuGIV18Oyja6
-        evE0m+cy4LVcU0Vce0hKCTz0RSwmfYKRFQ==
-X-Google-Smtp-Source: AGHT+IErLVuNeT51nq/c2ikhZIrEUHQnZF3mUanKftBOAb/zlWrmJqh8EG17RQcJ7dMDl27rx6PNuQ==
-X-Received: by 2002:a0d:f9c6:0:b0:5d3:464d:18d0 with SMTP id j189-20020a0df9c6000000b005d3464d18d0mr6842189ywf.22.1702541983945;
-        Thu, 14 Dec 2023 00:19:43 -0800 (PST)
-Received: from mail-yw1-f182.google.com (mail-yw1-f182.google.com. [209.85.128.182])
-        by smtp.gmail.com with ESMTPSA id x8-20020a814a08000000b005d3b4fce438sm5271562ywa.65.2023.12.14.00.19.43
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 14 Dec 2023 00:19:43 -0800 (PST)
-Received: by mail-yw1-f182.google.com with SMTP id 00721157ae682-5e2cfece112so14356677b3.2;
-        Thu, 14 Dec 2023 00:19:43 -0800 (PST)
-X-Received: by 2002:a81:6c4a:0:b0:5e3:6064:e394 with SMTP id
- h71-20020a816c4a000000b005e36064e394mr979772ywc.35.1702541983377; Thu, 14 Dec
- 2023 00:19:43 -0800 (PST)
+        Thu, 14 Dec 2023 03:21:11 -0500
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id A3AA8E0;
+        Thu, 14 Dec 2023 00:21:12 -0800 (PST)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0371CC15;
+        Thu, 14 Dec 2023 00:21:58 -0800 (PST)
+Received: from [10.57.85.242] (unknown [10.57.85.242])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id EF95D3F5A1;
+        Thu, 14 Dec 2023 00:21:07 -0800 (PST)
+Message-ID: <47b4cbcb-d33d-4699-a148-0108cf734e23@arm.com>
+Date:   Thu, 14 Dec 2023 08:22:10 +0000
 MIME-Version: 1.0
-References: <20231214074358.8711-1-wsa+renesas@sang-engineering.com> <20231214074358.8711-3-wsa+renesas@sang-engineering.com>
-In-Reply-To: <20231214074358.8711-3-wsa+renesas@sang-engineering.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Thu, 14 Dec 2023 09:19:31 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdW3wo5oaSpE5Pf7p6hg-njaQj1mvqwuVfEMc1YuZvisyQ@mail.gmail.com>
-Message-ID: <CAMuHMdW3wo5oaSpE5Pf7p6hg-njaQj1mvqwuVfEMc1YuZvisyQ@mail.gmail.com>
-Subject: Re: [PATCH v2 2/2] i2c: rcar: add FastMode+ support for Gen4
-To:     Wolfram Sang <wsa+renesas@sang-engineering.com>
-Cc:     linux-renesas-soc@vger.kernel.org,
-        Andi Shyti <andi.shyti@kernel.org>,
-        Magnus Damm <magnus.damm@gmail.com>, linux-i2c@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 0/5] Rework system pressure interface to the scheduler
+Content-Language: en-US
+To:     Vincent Guittot <vincent.guittot@linaro.org>
+References: <20231212142730.998913-1-vincent.guittot@linaro.org>
+Cc:     catalin.marinas@arm.com, will@kernel.org,
+        linux-trace-kernel@vger.kernel.org, amit.kachhap@gmail.com,
+        daniel.lezcano@linaro.org, mhiramat@kernel.org,
+        vschneid@redhat.com, bristot@redhat.com, mgorman@suse.de,
+        bsegall@google.com, juri.lelli@redhat.com, peterz@infradead.org,
+        mingo@redhat.com, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, konrad.dybcio@linaro.org,
+        andersson@kernel.org, agross@kernel.org, rui.zhang@intel.com,
+        viresh.kumar@linaro.org, rafael@kernel.org, sudeep.holla@arm.com,
+        dietmar.eggemann@arm.com, rostedt@goodmis.org,
+        linux-arm-kernel@lists.infradead.org, linux-arm-msm@vger.kernel.org
+From:   Lukasz Luba <lukasz.luba@arm.com>
+In-Reply-To: <20231212142730.998913-1-vincent.guittot@linaro.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 14, 2023 at 8:44 AM Wolfram Sang
-<wsa+renesas@sang-engineering.com> wrote:
-> To support FM+, we mainly need to turn the SMD constant into a parameter
-> and set it accordingly. That also means we can finally fix SMD to our
-> needs instead of bailing out. A sanity check for SMD then becomes a
-> sanity check for 'x == 0'. After all that, activating the enable bit for
-> FM+ is all we need to do. Tested with a Renesas Falcon board using R-Car
-> V3U.
->
-> Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
-> ---
-> Changes since v1:
->
-> * rebased to 6.7-rc4
-> * gained S4 specific handling from patch 1
-> * keep SCL filters active for FM+ by still writing to CDF
-> * if default SMD is too large, fix it instead of bailing out
+Hi Vincent,
 
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+I've been waiting for this feature, thanks!
 
-Gr{oetje,eeting}s,
 
-                        Geert
+On 12/12/23 14:27, Vincent Guittot wrote:
+> Following the consolidation and cleanup of CPU capacity in [1], this serie
+> reworks how the scheduler gets the pressures on CPUs. We need to take into
+> account all pressures applied by cpufreq on the compute capacity of a CPU
+> for dozens of ms or more and not only cpufreq cooling device or HW
+> mitigiations. we split the pressure applied on CPU's capacity in 2 parts:
+> - one from cpufreq and freq_qos
+> - one from HW high freq mitigiation.
+> 
+> The next step will be to add a dedicated interface for long standing
+> capping of the CPU capacity (i.e. for seconds or more) like the
+> scaling_max_freq of cpufreq sysfs. The latter is already taken into
+> account by this serie but as a temporary pressure which is not always the
+> best choice when we know that it will happen for seconds or more.
+> 
+> [1] https://lore.kernel.org/lkml/20231211104855.558096-1-vincent.guittot@linaro.org/
+> 
+> Vincent Guittot (4):
+>    cpufreq: Add a cpufreq pressure feedback for the scheduler
+>    sched: Take cpufreq feedback into account
+>    thermal/cpufreq: Remove arch_update_thermal_pressure()
+>    sched: Rename arch_update_thermal_pressure into
+>      arch_update_hw_pressure
+> 
+>   arch/arm/include/asm/topology.h               |  6 +--
+>   arch/arm64/include/asm/topology.h             |  6 +--
+>   drivers/base/arch_topology.c                  | 26 ++++-----
+>   drivers/cpufreq/cpufreq.c                     | 48 +++++++++++++++++
+>   drivers/cpufreq/qcom-cpufreq-hw.c             |  4 +-
+>   drivers/thermal/cpufreq_cooling.c             |  3 --
+>   include/linux/arch_topology.h                 |  8 +--
+>   include/linux/cpufreq.h                       | 10 ++++
+>   include/linux/sched/topology.h                |  8 +--
+>   .../{thermal_pressure.h => hw_pressure.h}     | 14 ++---
+>   include/trace/events/sched.h                  |  2 +-
+>   init/Kconfig                                  | 12 ++---
+>   kernel/sched/core.c                           |  8 +--
+>   kernel/sched/fair.c                           | 53 ++++++++++---------
+>   kernel/sched/pelt.c                           | 18 +++----
+>   kernel/sched/pelt.h                           | 16 +++---
+>   kernel/sched/sched.h                          |  4 +-
+>   17 files changed, 152 insertions(+), 94 deletions(-)
+>   rename include/trace/events/{thermal_pressure.h => hw_pressure.h} (55%)
+> 
 
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+I would like to test it, but something worries me. Why there is 0/5 in
+this subject and only 4 patches?
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Could you tell me your base branch that I can apply this, please?
+
+Regards,
+Lukasz
