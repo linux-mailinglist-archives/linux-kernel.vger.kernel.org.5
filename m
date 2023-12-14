@@ -2,105 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FF5681282E
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 07:33:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 47411812838
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 07:34:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234289AbjLNGdh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 01:33:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52928 "EHLO
+        id S234272AbjLNGem (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 01:34:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60676 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229629AbjLNGdg (ORCPT
+        with ESMTP id S229629AbjLNGek (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 01:33:36 -0500
-Received: from mail-il1-x131.google.com (mail-il1-x131.google.com [IPv6:2607:f8b0:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCC59B9
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 22:33:41 -0800 (PST)
-Received: by mail-il1-x131.google.com with SMTP id e9e14a558f8ab-35f418f394dso21335795ab.0
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 22:33:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1702535621; x=1703140421; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=DQa3Oh83Y7BJ5yvT1MB3NL690VGSVlOorSazsJGg8O8=;
-        b=DvBunkzR3aTXEws5zejCNZYt1dYO8HtNv22PpeD6BZKmjD3eCmS2gsZcsK+FCMSpNb
-         QS8k2g9Z/aROFkkN6BnY14YNekty0/5l1xGNxGO8EhvXOGrstspSFxWTH4A+zvTVeNQX
-         ddp6QzKJ2HIh72VkQS49DM8JLBZGnlhsln2b/UPTx4iJI7cFrm3RaHr2zH1kfyuFaHLP
-         CTzk3hfIXFofXherSmYH5jbKYjpSmUuChlAw5RCe3HjNi6pOWBfnnrTNKgtIZ2o/Qr8C
-         E5Ox8aAYefsHXyyeGqzoEMbb4p0l2CPZOs9xkm1cuTOEvAsuRQarmwSElYU9rjTfgSb2
-         z6Zw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702535621; x=1703140421;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=DQa3Oh83Y7BJ5yvT1MB3NL690VGSVlOorSazsJGg8O8=;
-        b=lRzGynY7NjYQ2u0RBCw3XOpjLgBiYY6qCftWfU+4K7pmntReJQRf5nkmuaOesTJf6p
-         Cmaa6nneCGDLojun2yqpAZoNryzoHUyasLwCXWCpMWOT5kUTPrA+1uqETUYxVq1VlDg7
-         8Cn2daviy/iyzxpf+LZx07Nhww9IdZXESoIjrd9Bje3dSzDtB12ZLJtTJWL3GuPvLOET
-         LtwQzT1vifi7KqvZG39eDIrAVpwdhhKzRJqdVXahq2ynZ5cqKT80H4lMViuChDylVVQt
-         y5Zf84mOX4ZdTrGnYTHwDzf0i/EIsN+qYXxluVL2VEmQHZbaMkK/i9B/4MiQOFcxG/O8
-         nDcA==
-X-Gm-Message-State: AOJu0Yw1ptAgI985u8Fuhz7QP1qXGSp28fMZUeFi5ebNgkixAPzY/B4Q
-        qUkQP2+oyHppVFwGSbw/3Sq6
-X-Google-Smtp-Source: AGHT+IEz9WJYleLURMpZ+fxmZXd0E4sPrwuGGZyApaPAAwDEgLTtswTy+mHFNCYGonBLoIypIEFaLQ==
-X-Received: by 2002:a05:6e02:184b:b0:35d:6d53:5439 with SMTP id b11-20020a056e02184b00b0035d6d535439mr14590043ilv.11.1702535621114;
-        Wed, 13 Dec 2023 22:33:41 -0800 (PST)
-Received: from localhost.localdomain ([117.213.102.12])
-        by smtp.gmail.com with ESMTPSA id q19-20020a170902bd9300b001cc2ebd2c2csm11639491pls.256.2023.12.13.22.33.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Dec 2023 22:33:40 -0800 (PST)
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     lpieralisi@kernel.org, kw@linux.com, bhelgaas@google.com
-Cc:     kishon@kernel.org, mhi@lists.linux.dev,
-        linux-arm-msm@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Subject: [PATCH] PCI: epf-mhi: Fix the DMA data direction of dma_unmap_single()
-Date:   Thu, 14 Dec 2023 12:03:28 +0530
-Message-Id: <20231214063328.40657-1-manivannan.sadhasivam@linaro.org>
-X-Mailer: git-send-email 2.25.1
+        Thu, 14 Dec 2023 01:34:40 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D42AF4
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 22:34:47 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C84CCC433C8;
+        Thu, 14 Dec 2023 06:34:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1702535686;
+        bh=1KvqRRdnwqEvmlU+FTtgALcCS9FN2+H6/ZpytPxQYp8=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=VlJb41ftGhuFO+GxwcbjBxwGRGB2zf1smUTBpPP4JBA21Ox58C2c4TJJyLD2oij5K
+         mhW89hPQm8fkU3MEjAcZ53HkyHmCdWYJQhc/LAI1IGQAIuilBVJ6gO00dm42gKkRK9
+         T7P/gPUcj7Y3pkkaSoG3q/lhkVoLzh1sDJjSvR7LrXNUBxF8Ep4GagCnjp4YRTCjIl
+         f5haY1z8EdeGAaTNu6Xej1GiLHDG9EFd/kM3doSgDZS1KbY6yxPLrJSkvhiuYkdYYK
+         /q7BhYSEXQSWZIKGts3JsXifLENy7qPEzo+qd1/2oy0Lu4OzsIrqNxAnpvL2KkQUpK
+         iDg8FMq/DWfPw==
+Message-ID: <80e14311-61ba-4dda-93bb-991ad4b779df@kernel.org>
+Date:   Wed, 13 Dec 2023 22:34:43 -0800
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH net-next v1 2/4] net: introduce abstraction for
+ network memory
+Content-Language: en-US
+To:     Mina Almasry <almasrymina@google.com>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        Michael Chan <michael.chan@broadcom.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Wei Fang <wei.fang@nxp.com>,
+        Shenwei Wang <shenwei.wang@nxp.com>,
+        Clark Wang <xiaoning.wang@nxp.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Jeroen de Borst <jeroendb@google.com>,
+        Praveen Kaligineedi <pkaligineedi@google.com>,
+        Shailend Chand <shailend@google.com>,
+        Yisen Zhuang <yisen.zhuang@huawei.com>,
+        Salil Mehta <salil.mehta@huawei.com>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Marcin Wojtas <mw@semihalf.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Sunil Goutham <sgoutham@marvell.com>,
+        Geetha sowjanya <gakula@marvell.com>,
+        Subbaraya Sundeep <sbhatta@marvell.com>,
+        hariprasad <hkelam@marvell.com>, Felix Fietkau <nbd@nbd.name>,
+        John Crispin <john@phrozen.org>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Mark Lee <Mark-MC.Lee@mediatek.com>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Horatiu Vultur <horatiu.vultur@microchip.com>,
+        UNGLinuxDriver@microchip.com,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
+        Jassi Brar <jaswinder.singh@linaro.org>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Siddharth Vadapalli <s-vadapalli@ti.com>,
+        Ravi Gunasekaran <r-gunasekaran@ti.com>,
+        Roger Quadros <rogerq@kernel.org>,
+        Jiawen Wu <jiawenwu@trustnetic.com>,
+        Mengyuan Lou <mengyuanlou@net-swift.com>,
+        Ronak Doshi <doshir@vmware.com>,
+        VMware PV-Drivers Reviewers <pv-drivers@vmware.com>,
+        Ryder Lee <ryder.lee@mediatek.com>,
+        Shayne Chen <shayne.chen@mediatek.com>,
+        Kalle Valo <kvalo@kernel.org>, Juergen Gross <jgross@suse.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>,
+        Yonghong Song <yonghong.song@linux.dev>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        Stefano Garzarella <sgarzare@redhat.com>,
+        Shuah Khan <shuah@kernel.org>,
+        =?UTF-8?Q?Micka=C3=ABl_Sala=C3=BCn?= <mic@digikod.net>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Bill Wendling <morbo@google.com>,
+        Justin Stitt <justinstitt@google.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Yunsheng Lin <linyunsheng@huawei.com>,
+        Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+References: <20231214020530.2267499-1-almasrymina@google.com>
+ <20231214020530.2267499-3-almasrymina@google.com>
+From:   David Ahern <dsahern@kernel.org>
+In-Reply-To: <20231214020530.2267499-3-almasrymina@google.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In the error path of pci_epf_mhi_edma_write() function, the DMA data
-direction passed (DMA_FROM_DEVICE) doesn't match the actual direction used
-for the data transfer. Fix it by passing the correct one (DMA_TO_DEVICE).
+On 12/13/23 7:05 PM, Mina Almasry wrote:
+> diff --git a/include/net/netmem.h b/include/net/netmem.h
+> new file mode 100644
+> index 000000000000..e4309242d8be
+> --- /dev/null
+> +++ b/include/net/netmem.h
+> @@ -0,0 +1,35 @@
+> +/* SPDX-License-Identifier: GPL-2.0
+> + *
+> + * netmem.h
+> + *	Author:	Mina Almasry <almasrymina@google.com>
+> + *	Copyright (C) 2023 Google LLC
+> + */
+> +
+> +#ifndef _NET_NETMEM_H
+> +#define _NET_NETMEM_H
+> +
+> +struct netmem {
+> +	union {
+> +		struct page page;
+> +
+> +		/* Stub to prevent compiler implicitly converting from page*
+> +		 * to netmem_t* and vice versa.
+> +		 *
+> +		 * Other memory type(s) net stack would like to support
+> +		 * can be added to this union.
+> +		 */
+> +		void *addr;
+> +	};
+> +};
+> +
+> +static inline struct page *netmem_to_page(struct netmem *netmem)
+> +{
+> +	return &netmem->page;
+> +}
+> +
+> +static inline struct netmem *page_to_netmem(struct page *page)
+> +{
+> +	return (struct netmem *)page;
 
-Fixes: 7b99aaaddabb ("PCI: epf-mhi: Add eDMA support")
-Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
----
+container_of; no typecasts.
 
-Bjorn, Krzysztof, I'd like to apply this patch to MHI tree on top of eDMA
-async patches due to dependency:
-https://lore.kernel.org/linux-pci/20231127124529.78203-1-manivannan.sadhasivam@linaro.org/
 
- drivers/pci/endpoint/functions/pci-epf-mhi.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/pci/endpoint/functions/pci-epf-mhi.c b/drivers/pci/endpoint/functions/pci-epf-mhi.c
-index 472bc489b754..d3d6a1054036 100644
---- a/drivers/pci/endpoint/functions/pci-epf-mhi.c
-+++ b/drivers/pci/endpoint/functions/pci-epf-mhi.c
-@@ -424,7 +424,7 @@ static int pci_epf_mhi_edma_write(struct mhi_ep_cntrl *mhi_cntrl,
- 	}
- 
- err_unmap:
--	dma_unmap_single(dma_dev, src_addr, buf_info->size, DMA_FROM_DEVICE);
-+	dma_unmap_single(dma_dev, src_addr, buf_info->size, DMA_TO_DEVICE);
- err_unlock:
- 	mutex_unlock(&epf_mhi->lock);
- 
-
-base-commit: f5668f251e29292326e45a022f933c15740a8af2
--- 
-2.25.1
+> +}
+> +
+> +#endif /* _NET_NETMEM_H */
 
