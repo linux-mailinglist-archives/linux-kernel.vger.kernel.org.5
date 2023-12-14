@@ -1,129 +1,128 @@
-Return-Path: <linux-kernel+bounces-112-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-109-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3ED82813C59
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 22:08:20 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id CB2D0813C56
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 22:07:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DABE21F22403
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 21:08:19 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 811BE1F226A5
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 21:07:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C48C06ABB0;
-	Thu, 14 Dec 2023 21:07:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 76A6B2BCF9;
+	Thu, 14 Dec 2023 21:06:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="s2JW2PSt"
+	dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b="e3cHDZo+"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-yw1-f202.google.com (mail-yw1-f202.google.com [209.85.128.202])
+Received: from mail-oa1-f44.google.com (mail-oa1-f44.google.com [209.85.160.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0662B6D1C5
-	for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 21:07:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--tanzirh.bounces.google.com
-Received: by mail-yw1-f202.google.com with SMTP id 00721157ae682-5deda822167so78259507b3.1
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 13:07:26 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 47A606AB80
+	for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 21:06:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bgdev.pl
+Received: by mail-oa1-f44.google.com with SMTP id 586e51a60fabf-2030fbc2417so2213413fac.3
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 13:06:27 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1702588046; x=1703192846; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=mvHrK2O7Pjqorqre2FxP3aimz1/5eGTahkzwWcaIuP8=;
-        b=s2JW2PStbuaGHxZwdN7kl62GZcpsxyROdO7keJRE3sxOq8SaqPfq9J0jSAKcfrVcDC
-         x7CFWRJ4j27LPToXuT38OzHO161DH4YTnHPSrASM3T6Th79u4vbZ2vXVufuKPeb/exxl
-         mL1R/2AxRckJWSJjKFT8jmlQ24HPby+taws918exeG34A5wjYJMNoPLtAxEc2MkLh++l
-         MyYRBlBbLdux9VpY8Rkq4YTbco66fFMFePCMcUX8V+7NV9uRvBDKAuTqAt4IRrWgZcIv
-         W5nEyPD1Wp+ROyNcz/032mfL+/RWkWW53aNggOeAnLBwJcbJF9127+h62tq5xybWM7xH
-         OsJw==
+        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1702587987; x=1703192787; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=crPiDH9/mhEOg/t9pVVthM+Ufb3xJC9KbI2h6yw2zqU=;
+        b=e3cHDZo+CZZgILIpUov29tmVsHzNdfShSvlA58t67CAvzN9xoJW75dPPBArm6MT0bs
+         O8z/0dQ4GC2d9vVbkOHEvOIBILID+QZ1eT/R01TsGPCreE1RZSdompqHciKpJ8OxJ2tb
+         6+yrOe0Ucgy4yoLWfnX0+xZ+CtYKPcdHqCjNPcOaq/if1Gogw0L3a/A7W4+GzKR0Hdkg
+         6LefQMBxBo+OVe5ihJ3HrLxa3hdQWjEienMnPr05bwSILTA+V/p4ROwwcMEBert0binZ
+         ygzSyKxDZO/ZDPJCjQPVwtBtir1uqPA0fEh2lpml3MfdsVZAHTQYoYaRVNRvJ+qzLVfB
+         xdDA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702588046; x=1703192846;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=mvHrK2O7Pjqorqre2FxP3aimz1/5eGTahkzwWcaIuP8=;
-        b=QRSr+A+3s2RlO2MC/JNNxFyVqVebvCEWZs5nS7CfqlZ4QLTDiwGqTN4SBdHaCiSjFJ
-         GPFQVWtPOLlc+X/VBhy4lRE/VS1hLSSde4EyRbC1cpcezAh4I2JScBn+LCg2rCGVMFWX
-         ELKkQ/g/BUuJSF4Zai4CEruojEvTEfK9kAv4eSKy56+192miHBwmVd23MB6OomZaha/o
-         MhuiWJgPJr17sICcGyu3R/O9hdiso0XGFq2n2ukqeEFbxPR36SbNQdpy77vjGWMKnOeq
-         z9QLxP02CrdbWF9e2plA4H5YzBnx9U/jKfJ/tIpboKvs9CQpqJuaVhfDMOubb4gs6a/I
-         0hdQ==
-X-Gm-Message-State: AOJu0YzV6P6764bMt4qu5E/xJmb03rDebuqIRI6GAe1qtw9jUuLQDMur
-	x9Yw/nWTKq49qXXHG7rkdiaMMREfzdDy
-X-Google-Smtp-Source: AGHT+IFi8YNAQ3xyc8K/sY7hjOazzHdUVZNGzoO2ZJiuSwVCb2AJazUd20DqytBNBjyv2QYzqs6581eY60+q
-X-Received: from tanz.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:c4a])
- (user=tanzirh job=sendgmr) by 2002:a05:690c:c9c:b0:5e2:1d4d:bb78 with SMTP id
- cm28-20020a05690c0c9c00b005e21d4dbb78mr67840ywb.2.1702588045822; Thu, 14 Dec
- 2023 13:07:25 -0800 (PST)
-Date: Thu, 14 Dec 2023 21:06:13 +0000
-In-Reply-To: <20231214-libstringheader-v2-0-0f195dcff204@google.com>
+        d=1e100.net; s=20230601; t=1702587987; x=1703192787;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=crPiDH9/mhEOg/t9pVVthM+Ufb3xJC9KbI2h6yw2zqU=;
+        b=fCqWMSCR/3E9pfraVTP6yBiYoEcxW6zJt6AMLAlDNHGDSzoiKqr/BVaGg0CzgnZ9Gb
+         v5uFA+hl0TRP36YzsxcVmJToiDjJQUdFN0Si3xwE7DEtoSmQ3A0dySS5tBcEOTRwN52h
+         uFKkN+LazDaMUPHSdpM7ml42HwwOOZFmR/Ckiy6UigQ5DBjRIRSFpjGjCHeAnZwLxaPF
+         h3RQku2MMfT+EKAmFQZ3bgjY+c8ygjumezPrIZCdd80HN6BBXjbWlkm9PdH6lAigVqfa
+         qGPyQWeAbkJybQPLW+dWmCU5p82IHPQSg+FVRoWKA1+/1zNcT3wtMVTn2rqmfWraT5a8
+         dA7w==
+X-Gm-Message-State: AOJu0YxxHjyqYVikmaL7pJgafqIAxcXg9fcNnjSmJYOFCrVzF3iZMzDg
+	c58XMy7GkRtN6OsEc/1p4NIhoaErARWE5uUTEeEcsg==
+X-Google-Smtp-Source: AGHT+IEbW/pRgBRM2Tbl0EiCqw6habcEinR3uZrs3LL79n5Z6/pJtj4vR8fP0YMhjd29+225jiSzc+QCUtTJIpFZtvo=
+X-Received: by 2002:a05:6870:4707:b0:203:58cd:21c5 with SMTP id
+ b7-20020a056870470700b0020358cd21c5mr1076743oaq.30.1702587987121; Thu, 14 Dec
+ 2023 13:06:27 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20231214-libstringheader-v2-0-0f195dcff204@google.com>
-X-Developer-Key: i=tanzirh@google.com; a=ed25519; pk=UeRjcUcv5W9AeLGEbAe2+0LptQpcY+o1Zg0LHHo7VN4=
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1702588040; l=1379;
- i=tanzirh@google.com; s=20231204; h=from:subject:message-id;
- bh=91dW9F9BO6/svU0lSPP0Jze6wT7/fMBiGl2CPin/YSo=; b=WmYdOEcw8kfyBDG2Wa2MRk8zfL5fW+W7stfIilOpCB+z9MN2lr2zZu4E1EXEZBuy7UDS85vqO
- 7r94wjCSS35DlEuOxcBJPDigqi+vOS0OkFs34Ft/7vEMr23/ERvn2Wk
-X-Mailer: b4 0.12.3
-Message-ID: <20231214-libstringheader-v2-2-0f195dcff204@google.com>
-Subject: [PATCH v2 2/2] lib/string: shrink lib/string.i via IWYU
-From: tanzirh@google.com
-To: Kees Cook <keescook@chromium.org>
-Cc: Andy Shevchenko <andy@kernel.org>, linux-hardening@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, Nick DeSaulniers <nnn@google.com>, 
-	Andrew Morton <akpm@linux-foundation.org>, llvm@lists.linux.dev, 
-	Tanzir Hasan <tanzirh@google.com>
-Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+References: <20231214095814.132400-1-warthog618@gmail.com> <20231214095814.132400-3-warthog618@gmail.com>
+ <ZXsZJ9z7iln8uMf8@smile.fi.intel.com> <ZXsajZoQRw7HgHl1@smile.fi.intel.com>
+ <ZXsp8QjxsUMPlZIR@rigel> <ZXswRCsT0OYwHe3N@smile.fi.intel.com>
+In-Reply-To: <ZXswRCsT0OYwHe3N@smile.fi.intel.com>
+From: Bartosz Golaszewski <brgl@bgdev.pl>
+Date: Thu, 14 Dec 2023 22:06:14 +0100
+Message-ID: <CAMRc=Md55pSWwbKqxO-eHJyn1+vtLMuWmD0d1_iqFT4h7dJ4Yg@mail.gmail.com>
+Subject: Re: [PATCH v2 2/5] gpiolib: cdev: relocate debounce_period_us from
+ struct gpio_desc
+To: Andy Shevchenko <andy@kernel.org>
+Cc: Kent Gibson <warthog618@gmail.com>, linux-kernel@vger.kernel.org, 
+	linux-gpio@vger.kernel.org, linus.walleij@linaro.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-This diff uses an open source tool include-what-you-use (IWYU) to modify
-the include list changing indirect includes to direct includes.
-IWYU is implemented using the IWYUScripts github repository which is a tool that is
-currently undergoing development. These changes seek to improve build times.
+On Thu, Dec 14, 2023 at 5:41=E2=80=AFPM Andy Shevchenko <andy@kernel.org> w=
+rote:
+>
+> On Fri, Dec 15, 2023 at 12:14:41AM +0800, Kent Gibson wrote:
+> > On Thu, Dec 14, 2023 at 05:09:01PM +0200, Andy Shevchenko wrote:
+> > > On Thu, Dec 14, 2023 at 05:03:03PM +0200, Andy Shevchenko wrote:
+> > > > On Thu, Dec 14, 2023 at 05:58:11PM +0800, Kent Gibson wrote:
+>
+> ...
+>
+> > > > > +static void supinfo_init(void)
+> > > > > +{
+> > > > > +       supinfo.tree =3D RB_ROOT;
+> > > > > +       spin_lock_init(&supinfo.lock);
+> > > > > +}
+> > > >
+> > > > Can it be done statically?
+> > > >
+> > > > supinfo =3D {
+> > > >   .tree =3D RB_ROOT,
+> > > >   .lock =3D __SPIN_LOCK_UNLOCKED(supinfo.lock),
 
-This change to lib/string.c resulted in a preprocessed size of
-lib/string.i from 26371 lines to 5259 lines (-80%) for the x86
-defconfig.
+Double underscore typically means it's private and shouldn't be used.
 
-Link: https://github.com/ClangBuiltLinux/IWYUScripts
+> > >
+> > > I even checked the current tree, we have 32 users of this pattern in =
+drivers/.
+> >
+> > Ah, that is what you meant.  Yeah sure can - the supinfo_init() is
+> > another hangover from when I was trying to create the supinfo per chip,
+> > but now it is a global a static initialiser makes sense.
+>
+> Yep, the DEFINE_MUTEX() / DEFINE_SPINLOCK() / etc looks better naturally
+> than above.
 
-Signed-off-by: Tanzir Hasan <tanzirh@google.com>
----
- lib/string.c | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+Yeah, so maybe we should use non-struct, global variables after all.
 
-diff --git a/lib/string.c b/lib/string.c
-index be26623953d2..7fe1acefb1a1 100644
---- a/lib/string.c
-+++ b/lib/string.c
-@@ -16,16 +16,16 @@
- 
- #define __NO_FORTIFY
- #include <linux/types.h>
--#include <linux/string.h>
--#include <linux/ctype.h>
--#include <linux/kernel.h>
--#include <linux/export.h>
-+#include <linux/bits.h>
- #include <linux/bug.h>
- #include <linux/errno.h>
--#include <linux/slab.h>
--
-+#include <asm/rwonce.h>
-+#include <linux/linkage.h>
-+#include <linux/stddef.h>
-+#include <vdso/limits.h>
-+#include <linux/string.h>
-+#include <linux/ctype.h>
- #include <asm/unaligned.h>
--#include <asm/byteorder.h>
- #include <asm/word-at-a-time.h>
- #include <asm/page.h>
- 
+Bart
 
--- 
-2.43.0.472.g3155946c3a-goog
-
+>
+> > And I still haven't received the email you quote there.
+>
+> :-( I'm not sure we will get it, it most likely that I removed it already
+> and it has disappeared due to problems with email server...
+>
+> --
+> With Best Regards,
+> Andy Shevchenko
+>
+>
 
