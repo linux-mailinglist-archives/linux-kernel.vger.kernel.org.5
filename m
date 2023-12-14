@@ -1,146 +1,223 @@
-Return-Path: <linux-kernel+bounces-62-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-64-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D99D9813B70
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 21:22:42 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6546D813B79
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 21:25:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 47CC5B2180C
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 20:22:40 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4EE331C20A41
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 20:25:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4DC596A33A;
-	Thu, 14 Dec 2023 20:22:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C33E56A34A;
+	Thu, 14 Dec 2023 20:25:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b="XssIEsre";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="n7nuOxai"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mx01.omp.ru (mx01.omp.ru [90.154.21.10])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+Received: from wnew4-smtp.messagingengine.com (wnew4-smtp.messagingengine.com [64.147.123.18])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 306446AB81;
-	Thu, 14 Dec 2023 20:22:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=omp.ru
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=omp.ru
-Received: from [192.168.1.104] (178.176.74.138) by msexch01.omp.ru
- (10.188.4.12) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.1258.12; Thu, 14 Dec
- 2023 23:22:15 +0300
-Subject: Re: [PATCH net 2/2] net: ravb: Check that GTI loading request is done
-To: Claudiu <claudiu.beznea@tuxon.dev>, <davem@davemloft.net>,
-	<edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
-	<claudiu.beznea.uj@bp.renesas.com>, <yoshihiro.shimoda.uh@renesas.com>,
-	<wsa+renesas@sang-engineering.com>, <niklas.soderlund+renesas@ragnatech.se>,
-	<biju.das.jz@bp.renesas.com>, <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-	<mitsuhiro.kimura.kc@renesas.com>, <geert+renesas@glider.be>
-CC: <netdev@vger.kernel.org>, <linux-renesas-soc@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>
-References: <20231214113137.2450292-1-claudiu.beznea.uj@bp.renesas.com>
- <20231214113137.2450292-3-claudiu.beznea.uj@bp.renesas.com>
-From: Sergey Shtylyov <s.shtylyov@omp.ru>
-Organization: Open Mobile Platform
-Message-ID: <884a4c36-25e4-1049-8410-cc5df9bcc4d1@omp.ru>
-Date: Thu, 14 Dec 2023 23:22:15 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 821AC675CD;
+	Thu, 14 Dec 2023 20:24:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dxuuu.xyz
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+	by mailnew.west.internal (Postfix) with ESMTP id 346A72B007D8;
+	Thu, 14 Dec 2023 15:24:56 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute4.internal (MEProxy); Thu, 14 Dec 2023 15:24:58 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
+	:cc:content-transfer-encoding:content-type:content-type:date
+	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to; s=fm3; t=1702585495;
+	 x=1702592695; bh=+t4pVgVSi2R2QRypiJjLIGqmBMSDOZdJg7dHN9HfN3g=; b=
+	XssIEsreV4K1heTY+91HoJX52cZPmrrpOYEqSO83jF/mx/4N9g6qLaN67bxVdlrM
+	gbQLIWXkwxqDkExCf8o5OMz2J8aWyy3eOgm1UZAbT3sEUzWeIg63AmOvo1mD+Ef8
+	YaraA/fKVPL8YZWtMa3YKKNttWkdo6wQ7aXGywwsf7iOpRyH7G9U+PPe5vvu6GHq
+	irs0SMewZVr0KKLtdNWRV4ZGRD7QdMLFXE+Ih3ziDTtiJW+RaByNl4dKIcV8DRkF
+	rt77Mf8rw/d4C0CYFA1x/ugMUTFQoJJcv+AwFFJyP5dy8MUL/Wp1wvxPwkP9jTlK
+	cmq89oQMUShG6CPmvnovEw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:content-type:date:date:feedback-id:feedback-id
+	:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1702585495; x=
+	1702592695; bh=+t4pVgVSi2R2QRypiJjLIGqmBMSDOZdJg7dHN9HfN3g=; b=n
+	7nuOxaiJegwukTTbdEOHgVrsaojYuvEbAZGMkrWLg+wxWGYwt2jmpak/zFoaI8Ei
+	Q9lqu2AD6MNZictbUqPH+/xqEex2VCRCAdbn7vbdeOwdo7Fl1VzXi932RL0xSw/L
+	xfa0lSqusL8YeIxoJ59m8H7fkOjd2gF4bHd+syamQJxseVcjrVbCANtuRLUBx1yR
+	tRDqKMyZg0APRmKHsmDleWuV0JbfVq2XsgYJGzLJlEZpuQqvF1AV9SZYkBR2Vd2W
+	PWnLCQUIHPOEVCkLIEjHCbMXEsSpc/c3ZaTso/55ETAE7/HG7ZfKiq9ii49VIZi0
+	ejkPVVzP93VFmU0MJviig==
+X-ME-Sender: <xms:l2R7ZVgsl6HJ6-vzvv9P299qixo0hDZrWux9ZFimb8nmjaEl6oHZOA>
+    <xme:l2R7ZaANSxi_Q1vKDkiWuou3LW3xVmvcbENZkWL3kNQjgwW92mwO7we1A0nBwrM4t
+    HbEamfBpngp50acQA>
+X-ME-Received: <xmr:l2R7ZVHlEg1prvGc6mN8Z4u_fhGuBIQTPhNS8M2GbWBsQYd1oTr2yHhMurLis6YKooJCxbJ9yGLDOO-FkYRKGjcRfVmBcHERfhGCrow>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrudelledgudefhecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enfghrlhcuvffnffculdefhedmnecujfgurhepfffhvfevuffkfhggtggugfgjsehtkefs
+    tddttdejnecuhfhrohhmpeffrghnihgvlhcuighuuceougiguhesugiguhhuuhdrgiihii
+    eqnecuggftrfgrthhtvghrnheptdfgueeuueekieekgfeiueekffelteekkeekgeegffev
+    tddvjeeuheeuueelfeetnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrg
+    hilhhfrhhomhepugiguhesugiguhhuuhdrgiihii
+X-ME-Proxy: <xmx:l2R7ZaTVoXTmId-GbkkIGRmhGaWXuWPcdD6_C5r1Hu-yzcXnl0jhyw>
+    <xmx:l2R7ZSwTTXZWGTwF7ArpmKY8WpeTsSmOHWfQXQhpPo7r_Me01b5Mfw>
+    <xmx:l2R7ZQ5OgfOSnYuoe3ksj1o7Dd0JMpmbtHTQ9R-kK5Ffh5jHP019EA>
+    <xmx:l2R7ZZL9cMn54QLmQHESJvSRjlZCbZr3vUZp3PiG4iUFJ6V_iIAg_jwyLRs>
+Feedback-ID: i6a694271:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
+ 14 Dec 2023 15:24:53 -0500 (EST)
+Date: Thu, 14 Dec 2023 13:24:51 -0700
+From: Daniel Xu <dxu@dxuuu.xyz>
+To: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Cc: Eyal Birger <eyal.birger@gmail.com>, daniel@iogearbox.net, 
+	davem@davemloft.net, shuah@kernel.org, ast@kernel.org, john.fastabend@gmail.com, 
+	kuba@kernel.org, andrii@kernel.org, hawk@kernel.org, steffen.klassert@secunet.com, 
+	antony.antony@secunet.com, alexei.starovoitov@gmail.com, yonghong.song@linux.dev, 
+	eddyz87@gmail.com, mykolal@fb.com, martin.lau@linux.dev, song@kernel.org, 
+	kpsingh@kernel.org, sdf@google.com, haoluo@google.com, jolsa@kernel.org, 
+	bpf@vger.kernel.org, linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	netdev@vger.kernel.org, devel@linux-ipsec.org
+Subject: Re: [PATCH bpf-next v5 9/9] bpf: xfrm: Add selftest for
+ bpf_xdp_get_xfrm_state()
+Message-ID: <i6kxylvo5hcttmjmhpjrmwdaxe4bi6cggk32js72ivr7qelknc@qnjkmr3df3b5>
+References: <qiv464c4y43mo5rih5k6lgzkbpnj6wsrl52hrhgbxeqj45atun@szmqlmnccm52>
+ <CAHsH6Gujycb9RBuRk7QHorLe0Q=Np_tb3uboQfp9KmJnegVXvw@mail.gmail.com>
+ <fwadmdjjogp4ybfxfpwovnmnn36jigffopijsuqt4ly4vxqghm@ysqhd25mzylp>
+ <fecc7tpmbnqxuxqqolm44ggyeomcr3piabsjkv3pgyzlhyonq6@iiaxf34erjzq>
+ <CAP01T770poh_63vBC+Heb9ASJ9pDZd1wTDWAgm5KCYHK9GtE1g@mail.gmail.com>
+ <yshbkwaiong7qq2rsgkpvvyvzefnwud5uywbea6ocfxxenzv6s@dn45gdaygaso>
+ <CAHsH6Gu_c29Nc+cH-s3EeztwScL=A42wi_SuJD=WeYV0mtVxbA@mail.gmail.com>
+ <CAP01T76ZtehyRidmnV5A0p3LCyjw6Q4sjRH6ZhczgGn1ap-x_g@mail.gmail.com>
+ <CAP01T74dKxYKM1GfTUJZ+G4+CKbRU=JLGoNcG6b8PMYcqUyEzQ@mail.gmail.com>
+ <idbmj3y65mi7isezhlq4lip54bbngoouv5hbai2xd7bqtv7dxy@qjcmln2ovmz2>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20231214113137.2450292-3-claudiu.beznea.uj@bp.renesas.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: msexch01.omp.ru (10.188.4.12) To msexch01.omp.ru
- (10.188.4.12)
-X-KSE-ServerInfo: msexch01.omp.ru, 9
-X-KSE-AntiSpam-Interceptor-Info: scan successful
-X-KSE-AntiSpam-Version: 6.1.0, Database issued on: 12/14/2023 20:07:00
-X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
-X-KSE-AntiSpam-Method: none
-X-KSE-AntiSpam-Rate: 59
-X-KSE-AntiSpam-Info: Lua profiles 182128 [Dec 14 2023]
-X-KSE-AntiSpam-Info: Version: 6.1.0.3
-X-KSE-AntiSpam-Info: Envelope from: s.shtylyov@omp.ru
-X-KSE-AntiSpam-Info: LuaCore: 7 0.3.7 6d6bf5bd8eea7373134f756a2fd73e9456bb7d1a
-X-KSE-AntiSpam-Info: {rep_avail}
-X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
-X-KSE-AntiSpam-Info: {relay has no DNS name}
-X-KSE-AntiSpam-Info: {SMTP from is not routable}
-X-KSE-AntiSpam-Info: {Found in DNSBL: 178.176.74.138 in (user)
- b.barracudacentral.org}
-X-KSE-AntiSpam-Info: {Found in DNSBL: 178.176.74.138 in (user)
- dbl.spamhaus.org}
-X-KSE-AntiSpam-Info:
-	127.0.0.199:7.1.2;omp.ru:7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1
-X-KSE-AntiSpam-Info: ApMailHostAddress: 178.176.74.138
-X-KSE-AntiSpam-Info: {DNS response errors}
-X-KSE-AntiSpam-Info: Rate: 59
-X-KSE-AntiSpam-Info: Status: not_detected
-X-KSE-AntiSpam-Info: Method: none
-X-KSE-AntiSpam-Info: Auth:dmarc=temperror header.from=omp.ru;spf=temperror
- smtp.mailfrom=omp.ru;dkim=none
-X-KSE-Antiphishing-Info: Clean
-X-KSE-Antiphishing-ScanningType: Heuristic
-X-KSE-Antiphishing-Method: None
-X-KSE-Antiphishing-Bases: 12/14/2023 20:12:00
-X-KSE-Antivirus-Interceptor-Info: scan successful
-X-KSE-Antivirus-Info: Clean, bases: 12/14/2023 7:08:00 PM
-X-KSE-Attachment-Filter-Triggered-Rules: Clean
-X-KSE-Attachment-Filter-Triggered-Filters: Clean
-X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <idbmj3y65mi7isezhlq4lip54bbngoouv5hbai2xd7bqtv7dxy@qjcmln2ovmz2>
 
-On 12/14/23 2:31 PM, Claudiu wrote:
-
-> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+On Thu, Dec 14, 2023 at 11:23:02AM -0700, Daniel Xu wrote:
+> On Thu, Dec 14, 2023 at 05:16:08PM +0100, Kumar Kartikeya Dwivedi wrote:
+> > On Thu, 14 Dec 2023 at 17:08, Kumar Kartikeya Dwivedi <memxor@gmail.com> wrote:
+> > >
+> > > On Thu, 14 Dec 2023 at 00:49, Eyal Birger <eyal.birger@gmail.com> wrote:
+> > > >
+> > > > On Wed, Dec 13, 2023 at 3:15 PM Daniel Xu <dxu@dxuuu.xyz> wrote:
+> > > > > > > [...]
+> > > > > > >
+> > > > > > > diff --git a/tools/testing/selftests/bpf/progs/test_tunnel_kern.c b/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
+> > > > > > > index c0dd38616562..f00dba85ac5d 100644
+> > > > > > > --- a/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
+> > > > > > > +++ b/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
+> > > > > > > @@ -8,8 +8,9 @@
+> > > > > > >   */
+> > > > > > >  #include "vmlinux.h"
+> > > > > > >  #include <bpf/bpf_core_read.h>
+> > > > > > > -#include <bpf/bpf_helpers.h>
+> > > > > > >  #include <bpf/bpf_endian.h>
+> > > > > > > +#include <bpf/bpf_helpers.h>
+> > > > > > > +#include "bpf_experimental.h"
+> > > > > > >  #include "bpf_kfuncs.h"
+> > > > > > >  #include "bpf_tracing_net.h"
+> > > > > > >
+> > > > > > > @@ -988,8 +989,9 @@ int xfrm_get_state_xdp(struct xdp_md *xdp)
+> > > > > > >         opts.family = AF_INET;
+> > > > > > >
+> > > > > > >         x = bpf_xdp_get_xfrm_state(xdp, &opts, sizeof(opts));
+> > > > > > > -       if (!x || opts.error)
+> > > > > > > +       if (!x)
+> > > > > > >                 goto out;
+> > > > > > > +       bpf_assert_with(opts.error == 0, XDP_PASS);
+> > > > > > >
+> > > > > > >         if (!x->replay_esn)
+> > > > > > >                 goto out;
+> > > > > > >
+> > > > > > > results in:
+> > > > > > >
+> > > > > > > 57: (b7) r1 = 2                       ; R1_w=2 refs=5
+> > > > > > > 58: (85) call bpf_throw#115436
+> > > > > > > calling kernel function bpf_throw is not allowed
+> > > > > > >
+> > > > > >
+> > > > > > I think this might be because bpf_throw is not registered for use by
+> > > > > > BPF_PROG_TYPE_XDP. I would simply register the generic_kfunc_set for
+> > > > > > this program type as well, since it's already done for TC.
+> > > > >
+> > > > > Ah yeah, that was it.
+> > > > >
+> > > > > >
+> > > > > > > It looks like the above error comes from verifier.c:fetch_kfunc_meta,
+> > > > > > > but I can run the exceptions selftests just fine with the same bzImage.
+> > > > > > > So I'm thinking it's not a kfunc registration or BTF issue.
+> > > > > > >
+> > > > > > > Maybe it's cuz I'm holding onto KFUNC_ACQUIRE'd `x`? Not sure.
+> > > > > > >
+> > > > > >
+> > > > > > Yes, even once you enable this, this will fail for now. I am sending
+> > > > > > out a series later this week that enables bpf_throw with acquired
+> > > > > > references, but until then may I suggest the following:
+> > > > > >
+> > > > > > #define bpf_assert_if(cond) for (int ___i = 0, ___j = (cond); !(___j) \
+> > > > > > && !___j; bpf_throw(), ___i++)
+> > > > > >
+> > > > > > This will allow you to insert some cleanup code with an assertion.
+> > > > > > Then in my series, I will convert this temporary bpf_assert_if back to
+> > > > > > the normal bpf_assert.
+> > > > > >
+> > > > > > It would look like:
+> > > > > > bpf_assert_if(opts.error == 0) {
+> > > > > >   // Execute if assertion failed
+> > > > > >   bpf_xdp_xfrm_state_release(x);
+> > > > > > }
+> > > > > >
+> > > > > > Likewise for bpf_assert_with_if, you get the idea.
+> > > > >
+> > > > > I gave it a try and I'm getting this compile error:
+> > > > >
+> > > > >         progs/test_tunnel_kern.c:996:2: error: variable '___j' used in loop condition not modified in loop body [-Werror,-Wfor-loop-analysis]
+> > > > >                 bpf_assert_with_if(opts.error == 0, XDP_PASS) {
+> > > > >                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> > > > >         /home/dxu/dev/linux/tools/testing/selftests/bpf/bpf_experimental.h:295:38: note: expanded from macro 'bpf_assert_with_if'
+> > > > >                 for (int ___i = 0, ___j = (cond); !(___j) && !___j; bpf_throw(value), ___i++)
+> > > > >                                                     ^~~~      ~~~~
+> > > > >         1 error generated.
+> > > > >         make: *** [Makefile:618: /home/dxu/dev/linux/tools/testing/selftests/bpf/test_tunnel_kern.bpf.o] Error 1
+> > > > >
+> > > > > Seems like the compiler is being clever.
+> > > >
+> > > > It looks like ___j is used twice - maybe it was meant to be ___i? i.e.:
+> > > >
+> > > >    for (int ___i = 0, ___j = (cond); !(___j) && !___i; bpf_throw(value), ___i++)
+> > > >
+> > >
+> > > Ah, yes, that's a typo. Eyal is right, it should be ___i.
+> > 
+> > Additionally, I would modify the macro to do ___j = !!(cond).
 > 
-> Hardware manual specifies the following for GCCR.LTI bit:
-> 0: Setting completed
-> 1: When written: Issue a configuration request.
-> When read: Completion of settings is pending
-> 
-> Thus, check the completion status when setting 1 to GCCR.LTI.
-
-   But do we really need to? Seems quite dubious... currently we
-just let it the loading complete asynchronously...
-
-> Fixes: 7e09a052dc4e ("ravb: Exclude gPTP feature support for RZ/G2L")
-> Fixes: 568b3ce7a8ef ("ravb: factor out register bit twiddling code")
-> Fixes: 0184165b2f42 ("ravb: add sleep PM suspend/resume support")
-> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-> ---
->  drivers/net/ethernet/renesas/ravb_main.c | 8 ++++++++
->  1 file changed, 8 insertions(+)
-> 
-> diff --git a/drivers/net/ethernet/renesas/ravb_main.c b/drivers/net/ethernet/renesas/ravb_main.c
-> index ce95eb5af354..1c253403a297 100644
-> --- a/drivers/net/ethernet/renesas/ravb_main.c
-> +++ b/drivers/net/ethernet/renesas/ravb_main.c
-> @@ -2819,6 +2819,10 @@ static int ravb_probe(struct platform_device *pdev)
->  
->  		/* Request GTI loading */
->  		ravb_modify(ndev, GCCR, GCCR_LTI, GCCR_LTI);
-> +		/* Check completion status. */
-> +		error = ravb_wait(ndev, GCCR, GCCR_LTI, 0);
-> +		if (error)
-> +			goto out_disable_refclk;
->  	}
->  
->  	if (info->internal_delay) {
-> @@ -3041,6 +3045,10 @@ static int __maybe_unused ravb_resume(struct device *dev)
->  
->  		/* Request GTI loading */
->  		ravb_modify(ndev, GCCR, GCCR_LTI, GCCR_LTI);
-> +		/* Check completion status. */
-> +		ret = ravb_wait(ndev, GCCR, GCCR_LTI, 0);
-> +		if (ret)
-> +			return ret;
->  	}
->  
->  	if (info->internal_delay)
+> Makes sense. Will send out v6 with these fixes today.
 > 
 
-   BTW, seems worth factoring out into a separate function...
+Looks like only x86 supports exceptions (looking at
+bpf_jit_supports_exceptions()).
 
-MBR, Sergey
+This causes selftests in this patchset to fail on !x86, which is
+unfortunate. We probably want to be running these tests on all the major
+archs, so I will drop the assertion patches from this patchset.
+
+But since they're generally useful and I've already written the
+selftests for it, I could put them up in another patchset? Or maybe not
+cuz you're gonna fix it later anyways. WDYT?
+
+Thanks,
+Daniel
 
