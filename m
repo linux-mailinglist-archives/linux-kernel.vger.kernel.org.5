@@ -2,80 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DACB98123B4
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 01:09:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5033B8123B9
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 01:11:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442688AbjLNAIz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 19:08:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43754 "EHLO
+        id S1442686AbjLNALk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 19:11:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49790 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229706AbjLNAIx (ORCPT
+        with ESMTP id S229706AbjLNALi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 19:08:53 -0500
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DB7B85;
-        Wed, 13 Dec 2023 16:09:00 -0800 (PST)
-Received: by mail-wr1-x436.google.com with SMTP id ffacd0b85a97d-336437ae847so645410f8f.2;
-        Wed, 13 Dec 2023 16:08:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702512538; x=1703117338; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:autocrypt
-         :references:in-reply-to:date:cc:to:from:subject:message-id:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=q5/M47CiHwU265p/4DazyjJg2apbPY8v/ugoyTcBk3c=;
-        b=ni9u3NPVj2NL2iWwcHdKB0RYICXhF6pCvqmGJSW0kJsl+hZS0OoVF2xJRjYY4LK+Bf
-         yXMWGF0VzKGam9K80hE2hgdX3ex55OOTDuwFil54ZyChs9SvcauC/uptpYHEwPrVzuww
-         wEoFIgYbavBy7PbVHnGxE+V/5wuMPWfUT1XAdaNZwZbytIaY/FbqyU7Tw4L3ri5vf68E
-         pWW3+4QNSJgWgX8twhZuttXcSbPYV2M0QmMiCaUlEomdFr6HKwrNTelqTm5WF6hbMuRS
-         947hr8Rt5s8vHJCTpPa8ECZmc8gtUH+e4EMIxnYRxDISXaJq3GndwvPSjHYyHYEhjPNq
-         puwg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702512538; x=1703117338;
-        h=mime-version:user-agent:content-transfer-encoding:autocrypt
-         :references:in-reply-to:date:cc:to:from:subject:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=q5/M47CiHwU265p/4DazyjJg2apbPY8v/ugoyTcBk3c=;
-        b=UsDbBdIDOum8Rcb2r75cl80he5eExj2l0h72EJXMMDXV/G0TI3NNxhdTz1ab6o/pPa
-         WQ2ZMUiRdOVJ+w7zXE9HB5sv5Vq2f08GkN8UqS7V4g08Zq0AvpWVCYiEyjWqHlkKZa7H
-         uqT02s9HM+pxAseP20VDaZkVNvDba4bnYiT3C64/GJ+BaXShswiUbAwwFuXUPJcyGssq
-         C76wJfFjgrkWX448bxt7xIkp6ckJCDYQ529qak5Yog+HhqOxvS/owgzDZgxCKDEY7czI
-         5m/fAZJieB1PUeEyWg0Y6J405WewWo9wdv/RUFMFq+31OTQCJDhuwwCe3lt4AWZVuUYR
-         EJBQ==
-X-Gm-Message-State: AOJu0YxrmkVtYQASLgHDJrMyA/kgtmLN0jmkTTPJGvP1oBj/IBG4npRA
-        dzkfFTWvMsk0Ie2jFAK8BDE=
-X-Google-Smtp-Source: AGHT+IFaFslENLfjBBN50kKA4B3LRuLG8ZpbGkzeUvfUvfoj0qlRLDQNmS2baKQq3xatQsKhhqBDgQ==
-X-Received: by 2002:a5d:5cc5:0:b0:333:2f1e:cbc4 with SMTP id cg5-20020a5d5cc5000000b003332f1ecbc4mr5131223wrb.13.1702512538293;
-        Wed, 13 Dec 2023 16:08:58 -0800 (PST)
-Received: from [192.168.1.95] (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
-        by smtp.gmail.com with ESMTPSA id h6-20020a5d6886000000b00336430ad57csm1475334wru.106.2023.12.13.16.08.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Dec 2023 16:08:57 -0800 (PST)
-Message-ID: <35be3c5f29ee0e9a49ed29e71044f0ad25d97d9d.camel@gmail.com>
-Subject: Re: [Bug Report] bpf: incorrectly pruning runtime execution path
-From:   Eduard Zingerman <eddyz87@gmail.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Hao Sun <sunhao.th@gmail.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        bpf <bpf@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Date:   Thu, 14 Dec 2023 02:08:56 +0200
-In-Reply-To: <CAEf4BzbGSrU4NgM1Ps0g_ch8G68CWEsP50Y+Wy8-SfYnpHwVGA@mail.gmail.com>
-References: <CACkBjsbj4y4EhqpV-ZVt645UtERJRTxfEab21jXD1ahPyzH4_g@mail.gmail.com>
-         <CAEf4BzZ0xidVCqB47XnkXcNhkPWF6_nTV7yt+_Lf0kcFEut2Mg@mail.gmail.com>
-         <CACkBjsaEQxCaZ0ERRnBXduBqdw3MXB5r7naJx_anqxi0Wa-M_Q@mail.gmail.com>
-         <CAEf4BzbGSrU4NgM1Ps0g_ch8G68CWEsP50Y+Wy8-SfYnpHwVGA@mail.gmail.com>
-Autocrypt: addr=eddyz87@gmail.com; prefer-encrypt=mutual; keydata=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
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.1 
+        Wed, 13 Dec 2023 19:11:38 -0500
+Received: from wout4-smtp.messagingengine.com (wout4-smtp.messagingengine.com [64.147.123.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C31FDD;
+        Wed, 13 Dec 2023 16:11:45 -0800 (PST)
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
+        by mailout.west.internal (Postfix) with ESMTP id 5633E3200B69;
+        Wed, 13 Dec 2023 19:11:41 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute6.internal (MEProxy); Wed, 13 Dec 2023 19:11:42 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=themaw.net; h=cc
+        :cc:content-transfer-encoding:content-type:content-type:date
+        :date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+        :references:reply-to:subject:subject:to:to; s=fm3; t=1702512700;
+         x=1702599100; bh=VAqYPxgc+/bKFX3mKOr2AnsJnWJikiX4oD9KxuWgxIo=; b=
+        byuu6jSjOxjC+6XDHeFG1ZaEupTQmCuFgV0DOt7qy+j07zlLKyF0jnc528VrLrpt
+        TCZtN6GFGeGgszzhnKckZ3JDLHvLEIrjjjr+1EdrFP4l04IszvRMAh1a6MLTSw4o
+        znV8LMdLRX0PeFiW7NLKS0KU470oVDid33bJ+uhnM17IV5Mv1KoBZ/7HqmI/Dtrz
+        lfvHgdabRyv5NRNYB+GklM15/p+w2qJVrbl2qyO6aAVypQFaH8t4pR56NwJM8RC6
+        M5CAQ/gKgVNu9ifnNHZVdLAlHktykFF+y0RW54m7E/IIwzk3fnCznVPEB5+u79A8
+        GlF91Vqv0q+dsqtqxkvKpw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-transfer-encoding
+        :content-type:content-type:date:date:feedback-id:feedback-id
+        :from:from:in-reply-to:in-reply-to:message-id:mime-version
+        :references:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1702512700; x=
+        1702599100; bh=VAqYPxgc+/bKFX3mKOr2AnsJnWJikiX4oD9KxuWgxIo=; b=U
+        29m5jOibtqGsH6gPzE+6te4lbuhC1mza/WeIFvjyWNKrd8Up3yvCx1uhSXRmCnQA
+        fjoWrTxIhETsvsi0foyo6gtWUqL/2uS2yrrLLdr4jdWfpu66IhmQalr3BcQR1X9J
+        ZeNcWKKTa2dwe6hWR63Z5dcP1CdoWYIajnRHLPwCCWi7NdagUXoF3Iv9M403s+Ki
+        9ACHT8VA++iGJZ0E9rJLOz1vyDzdFCiYfBO4wr1flFw8OuTnXfRW3i+3CGW2FYCu
+        b2H2gK5r5xv2BMUGdIPdAbapRA1PCOLrcfF8V2QTdEA89LNh1T3SLLtYt1FXWNtV
+        AMPPg437q9XnVB+8Q22DA==
+X-ME-Sender: <xms:PEh6Zdymy-Krp3814Gq9xeI5GaDzdJYyjMHvDzOk8glGj7XFjyX4vw>
+    <xme:PEh6ZdTPZWvJYiQmxZ4xhsqbvKf1Pgqg427T_1TA1bG-0V3Bn67_eccIZzotgg-0A
+    GT7TauKpBtK>
+X-ME-Received: <xmr:PEh6ZXVN4pkxW8_cS_wS2EOa7HvCzazLAzk1edLEQeOCCFz8NvkhnQNkgGciuw1-cDgihG-bQGobWBpsC6Ab2pUABfJdq-eOF78odOTKshREXCpD8NSnNCzo>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrudelkedgudelucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepkfffgggfuffvvehfhfgjtgfgsehtjeertddtfeejnecuhfhrohhmpefkrghn
+    ucfmvghnthcuoehrrghvvghnsehthhgvmhgrfidrnhgvtheqnecuggftrfgrthhtvghrnh
+    epuefhueeiieejueevkefgiedtteehgfdutdelfffhleeflefhudeuvdefhfeghfehnecu
+    vehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprhgrvhgvnh
+    esthhhvghmrgifrdhnvght
+X-ME-Proxy: <xmx:PEh6ZfiEsfkJYjADCg01VSaPm2RGOXer0rZx0pOMVCPsS5MoQUZkEg>
+    <xmx:PEh6ZfAx8K4RqeMO9shaZWPB19c-4vHbdLICQ_S7VKtaYcfvoOpUnA>
+    <xmx:PEh6ZYJ_SfOmw-OLivmtAYsWXr-4JWzZF_sNxDk2kxrIZKWkGvufLw>
+    <xmx:PEh6ZT19wwea3jB5gmKMmSdB1_n8bqs9y2HKDXqaAh0cNVGlVpIV-g>
+Feedback-ID: i31e841b0:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 13 Dec 2023 19:11:36 -0500 (EST)
+Message-ID: <6608665d-a255-7b1d-653f-1d13d2b3fa2e@themaw.net>
+Date:   Thu, 14 Dec 2023 08:11:32 +0800
 MIME-Version: 1.0
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH] [v2] statmount: reduce runtime stack usage
+To:     Arnd Bergmann <arnd@kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Jan Kara <jack@suse.cz>,
+        Miklos Szeredi <mszeredi@redhat.com>,
+        "Seth Forshee (DigitalOcean)" <sforshee@kernel.org>,
+        Dave Chinner <dchinner@redhat.com>,
+        Amir Goldstein <amir73il@gmail.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20231213090015.518044-1-arnd@kernel.org>
+Content-Language: en-US
+From:   Ian Kent <raven@themaw.net>
+In-Reply-To: <20231213090015.518044-1-arnd@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_NONE,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -83,92 +94,69 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2023-12-13 at 15:30 -0800, Andrii Nakryiko wrote:
-[...]
-> Yes, thanks, the execution trace above was helpful. Let's try to
-> minimize the example here, I'll keep original instruction indices,
-> though:
->=20
->    23: (bf) r5 =3D r8                   ; here we link r5 and r8 together
->    26: (7e) if w8 s>=3D w0 goto pc+5    ; here it's not always/never
-> taken, so w8 and w0 remain imprecise
->    28: (0f) r8 +=3D r8                  ; here link between r8 and r5 is =
-broken
->    29: (d6) if w5 s<=3D 0x1d goto pc+2  ; here we know value of w5 and
-> so it's always/never taken, r5 is marked precise
->=20
-> Now, if we look at r5's precision log at this instruction:
->=20
-> 29: (d6) if w5 s<=3D 0x1d goto pc+2
-> mark_precise: frame0: last_idx 29 first_idx 26 subseq_idx -1
-> mark_precise: frame0: regs=3Dr5 stack=3D before 28: (0f) r8 +=3D r8
-> mark_precise: frame0: regs=3Dr5 stack=3D before 27: (4f) r8 |=3D r8
-> mark_precise: frame0: regs=3Dr5 stack=3D before 26: (7e) if w8 s>=3D w0 g=
-oto pc+5
 
-Sorry, maybe it's time for me to get some sleep, but I don't see an
-issue here. The "before" log is printed by backtrack_insn() before
-instruction is backtracked. So the following:
+On 13/12/23 17:00, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
+>
+> prepare_kstatmount() constructs a copy of 'struct kstatmount' on the stack
+> and copies it into the local variable on the stack of its caller. Because
+> of the size of this structure, this ends up overflowing the limit for
+> a single function's stack frame when prepare_kstatmount() gets inlined
+> and both copies are on the same frame without the compiler being able
+> to collapse them into one:
+>
+> fs/namespace.c:4995:1: error: stack frame size (1536) exceeds limit (1024) in '__se_sys_statmount' [-Werror,-Wframe-larger-than]
+>   4995 | SYSCALL_DEFINE4(statmount, const struct mnt_id_req __user *, req,
+>
+> Replace the assignment with an in-place memset() plus assignment that
+> should always be more efficient for both stack usage and runtime cost.
 
-> mark_precise: frame0: regs=3Dr5 stack=3D before 26: (7e) if w8 s>=3D w0 g=
-oto pc+5
+Cunning plan, to use the work efficient instead of inefficient, ;(
 
-Is a state of backtracker before "if w8 s>=3D w0 ..." is processed.
-But running the test case I've shared wider precision trace for
-this instruction looks as follows:
+But, TBH, the libc integration seems complex but I also feel there's
 
-  26: (7e) if w8 s>=3D w0 goto pc+5       ; R0=3Dscalar(smin=3Dsmin32=3D0,s=
-max=3Dumax=3Dsmax32=3Dumax32=3D2,var_off=3D(0x0; 0x3))
-                                          R8=3Dscalar(id=3D2,smax32=3D1)
-  27: (4f) r8 |=3D r8                     ; R8_w=3Dscalar()
-  28: (0f) r8 +=3D r8                     ; R8_w=3Dscalar()
-  29: (d6) if w5 s<=3D 0x1d goto pc+2
-  mark_precise: frame0: last_idx 29 first_idx 26 subseq_idx -1=20
-  mark_precise: frame0: regs=3Dr5 stack=3D before 28: (0f) r8 +=3D r8
-  mark_precise: frame0: regs=3Dr5 stack=3D before 27: (4f) r8 |=3D r8
-  mark_precise: frame0: regs=3Dr5 stack=3D before 26: (7e) if w8 s>=3D w0 g=
-oto pc+5
-  mark_precise: frame0: parent state regs=3Dr5 stack=3D:=20
-     R0_rw=3Dscalar(smin=3Dsmin32=3D0,smax=3Dumax=3Dsmax32=3Dumax32=3D2,var=
-_off=3D(0x0; 0x3))
-     R2_w=3D4
-     R3_w=3D0x1f00000034
-     R4_w=3Dscalar(smin=3D0,smax=3Dumax=3D0x3fffffffc,smax32=3D0x7ffffffc,u=
-max32=3D0xfffffffc,
-                 var_off=3D(0x0; 0x3fffffffc))
-     R5_rw=3DPscalar(id=3D2)
-     R8_rw=3Dscalar(id=3D2) R10=3Dfp0
-  mark_precise: frame0: last_idx 24 first_idx 11 subseq_idx 26=20
-  mark_precise: frame0: regs=3Dr5,r8 stack=3D before 24: (18) r2 =3D 0x4   =
-  <------ !!!
-  mark_precise: frame0: regs=3Dr5,r8 stack=3D before 23: (bf) r5 =3D r8
-  mark_precise: frame0: regs=3Dr8 stack=3D before 22: (67) r4 <<=3D 2
-  ...
+no choice and this looks fine too.
 
-Note, that right after "if w8 s>=3D w0 goto pc+5" is processed the
-backtracker state is:
 
-  mark_precise: frame0: regs=3Dr5,r8 stack=3D before 24: (18) r2 =3D 0x4
+>
+> Fixes: 49889374ab92 ("statmount: simplify string option retrieval")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
+>   fs/namespace.c | 15 ++++++---------
+>   1 file changed, 6 insertions(+), 9 deletions(-)
+>
+> diff --git a/fs/namespace.c b/fs/namespace.c
+> index d036196f949c..159f1df379fc 100644
+> --- a/fs/namespace.c
+> +++ b/fs/namespace.c
+> @@ -4957,15 +4957,12 @@ static int prepare_kstatmount(struct kstatmount *ks, struct mnt_id_req *kreq,
+>   	if (!access_ok(buf, bufsize))
+>   		return -EFAULT;
+>   
+> -	*ks = (struct kstatmount){
+> -		.mask		= kreq->param,
+> -		.buf		= buf,
+> -		.bufsize	= bufsize,
+> -		.seq = {
+> -			.size	= seq_size,
+> -			.buf	= kvmalloc(seq_size, GFP_KERNEL_ACCOUNT),
+> -		},
+> -	};
+> +	memset(ks, 0, sizeof(*ks));
+> +	ks->mask = kreq->param;
+> +	ks->buf = buf;
+> +	ks->bufsize = bufsize;
+> +	ks->seq.size = seq_size;
+> +	ks->seq.buf = kvmalloc(seq_size, GFP_KERNEL_ACCOUNT);
+>   	if (!ks->seq.buf)
+>   		return -ENOMEM;
+>   	return 0;
 
-So both r5 and r8 are accounted for.
+This looks much better than what it replaces IMHO.
 
-> Note how at this instruction r5 and r8 *WERE* linked together, but we
-> already lost this information for backtracking. So we don't mark w8 as
-> precise. That's one part of the problem.
->=20
-> The second part is that even if we knew that w8/r8 is precise, should
-> we mark w0/r0 as precise? I actually need to think about this some
-> more. Right now for conditional jumps we eagerly mark precision for
-> both registers only in always/never taken scenarios.
->=20
-> For now just narrowing down the issue, as I'm sure not many people
-> followed all the above stuff carefully.
->=20
->=20
-> P.S. For solving tracking of linked registers we can probably utilize
-> instruction history, though technically they can be spread across
-> multiple frames, between registers and stack slots, so that's a bit
-> tricky.
 
-For precision back-propagation we currently rely on id values stored
-in the parent state, when moving up from child to parent boundary.
+Reviewed-by: Ian Kent <raven@themaw.net>
+
+
+Ian
+
