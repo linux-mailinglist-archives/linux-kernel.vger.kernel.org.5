@@ -2,80 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 77AAE813436
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 16:11:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8762E81343B
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 16:11:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1573748AbjLNPLP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 10:11:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60440 "EHLO
+        id S1573722AbjLNPLU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 10:11:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59168 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1573698AbjLNPKS (ORCPT
+        with ESMTP id S231174AbjLNPKp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 10:10:18 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6540A11D
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 07:10:25 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 00082C433CA;
-        Thu, 14 Dec 2023 15:10:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1702566625;
-        bh=zdcPAZnAA+fnlDDoOYRTGowddn9N6RX9Wu2qUUDSKFw=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=U+RJZv5r0gLIx1b3cdJt/uFDST4E6gp7GYxQJeBvkUc2GzO+4DjPNLFelmqSpuwWn
-         Z0b1KPzxRPu7M4knGDGvD+M3hfJ3mxnvw/LPHA+Rn+J5ayq6MHVO3w7mjFgAU9xqut
-         wx6ziqUtWJ2fGWpgUoqcZ6tyekdhUTOpygbSA/pfBBLlr+erR+L/8U2lq7hfNOSUT7
-         ebgCoiHesHIsOvd1F6fDdEevhBF4xvdPuQs7QH2ur0Y1aqcZ5QvtwPchHQDSoVDs0q
-         KZa3yvx8QSqHHxT6bgjVGbc3jLx+jsn91tktRCTIKouLnDSv6z0QXB9qQpYiTrNO6i
-         aI+jcgLBnOcdA==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id D9BBCDD4EFB;
-        Thu, 14 Dec 2023 15:10:24 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        Thu, 14 Dec 2023 10:10:45 -0500
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6AF7D4B;
+        Thu, 14 Dec 2023 07:10:35 -0800 (PST)
+Received: by mail-wm1-x32e.google.com with SMTP id 5b1f17b1804b1-40c339d2b88so67437185e9.3;
+        Thu, 14 Dec 2023 07:10:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1702566634; x=1703171434; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:autocrypt
+         :references:in-reply-to:date:cc:to:from:subject:message-id:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=EvtzWefn1WPNp4reMmyULAN0Mj1CqMWBOzDb+RWo1TU=;
+        b=fsoWB1UD1b2sRnQ3Fg8FSVEDsxHRGO0CoBB3n58rA4LbezLBaTPjxl+04f52hPBvaK
+         FPU5Kj3ZYtjlVS6LCweW/GodbndGrtxLGxVec5w6e8CjOn6AY32GJlgBWN0JThvrOdMu
+         5GFhY5Wk84eIRkjfFh5XQB+4xmkQ94Dl6kuvQui+7n1CG4DE1IG74Qa0ABMXxKg+NO28
+         wkqFTvwOOJh18BZQRs3QGk3R6ZTvqhkNJbpo7NWoZ+nvGRGmDvIluJfXDrhO+aQfqIF4
+         hDKgfoR6JA+/vDKtSn2etwQv6Fz82gcagPf9xIy8jrP25ZVGb1V5voHZOeITNlw5yW7n
+         mUjA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702566634; x=1703171434;
+        h=mime-version:user-agent:content-transfer-encoding:autocrypt
+         :references:in-reply-to:date:cc:to:from:subject:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=EvtzWefn1WPNp4reMmyULAN0Mj1CqMWBOzDb+RWo1TU=;
+        b=vNILBF22Z0DWFDWZfSfzn0/URkqngEcnE8efKaIsnzsGc955/zLfT1j+LPtDkN5xaJ
+         ubxoTRVFjRIlUp9ECJw/7ieFjXx79eHv3AZMOWX3WVTVwwZKLp2gNqAjXjF0U9q1IpJj
+         uT07RjruRDyZzeP39kwcnoLO9Hj35w18Ek2mCXohZLbUSBfVW0UlthaGQq840LDlMxMF
+         8OCJhqXQ/A9Do5SH3n2apvRGJACInUJO0O1DqrAbfOi/4qvIPb6sQjr6QrZSyws4JMsa
+         RRcAW7bs2ckM8Hf1O9KRC6yY4p22mcxDP8evdxcByEUNCqjnx9Owi6vO/r6Mu5vrJGxp
+         yIGA==
+X-Gm-Message-State: AOJu0YxEHaU0KrA7g9SZ45uJeuD/co6bONPKQxHPcJmbTM4a8oz7xUMs
+        zrLR3NxjQ/W9at88GkyoqMQ=
+X-Google-Smtp-Source: AGHT+IGZ8puUQcAZ8Zi5ZuXaAQ8xvw/HxS9GlZLfpUI2wiUByVxFBXkmzOrFaIy4zcQXitIiumQ/gg==
+X-Received: by 2002:a7b:c410:0:b0:40c:2ba6:81e with SMTP id k16-20020a7bc410000000b0040c2ba6081emr5135071wmi.121.1702566633586;
+        Thu, 14 Dec 2023 07:10:33 -0800 (PST)
+Received: from [192.168.1.95] (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
+        by smtp.gmail.com with ESMTPSA id s7-20020a05600c45c700b0040c45071c18sm17016455wmo.39.2023.12.14.07.10.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 Dec 2023 07:10:32 -0800 (PST)
+Message-ID: <9dee19c7d39795242c15b2f7aa56fb4a6c3ebffa.camel@gmail.com>
+Subject: Re: [Bug Report] bpf: incorrectly pruning runtime execution path
+From:   Eduard Zingerman <eddyz87@gmail.com>
+To:     Hao Sun <sunhao.th@gmail.com>
+Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        bpf <bpf@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Date:   Thu, 14 Dec 2023 17:10:31 +0200
+In-Reply-To: <917DAD9F-8697-45B8-8890-D33393F6CDF1@gmail.com>
+References: <CACkBjsbj4y4EhqpV-ZVt645UtERJRTxfEab21jXD1ahPyzH4_g@mail.gmail.com>
+         <CAEf4BzZ0xidVCqB47XnkXcNhkPWF6_nTV7yt+_Lf0kcFEut2Mg@mail.gmail.com>
+         <CACkBjsaEQxCaZ0ERRnBXduBqdw3MXB5r7naJx_anqxi0Wa-M_Q@mail.gmail.com>
+         <480a5cfefc23446f7c82c5b87eef6306364132b9.camel@gmail.com>
+         <917DAD9F-8697-45B8-8890-D33393F6CDF1@gmail.com>
+Autocrypt: addr=eddyz87@gmail.com; prefer-encrypt=mutual; keydata=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
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.1 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next v2] net: mvpp2: add support for mii
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <170256662488.26207.4155748684872594821.git-patchwork-notify@kernel.org>
-Date:   Thu, 14 Dec 2023 15:10:24 +0000
-References: <20231212141200.62579-1-eichest@gmail.com>
-In-Reply-To: <20231212141200.62579-1-eichest@gmail.com>
-To:     Stefan Eichenberger <eichest@gmail.com>
-Cc:     maxime.chevallier@bootlin.com, mw@semihalf.com,
-        linux@armlinux.org.uk, davem@davemloft.net, edumazet@google.com,
-        kuba@kernel.org, pabeni@redhat.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+[...]
+> The reason why retval checks fails is that the way you disable dead
+> code removal pass is not complete. Disable opt_remove_dead_code()
+> just prevent the instruction #30 from being removed, but also note
+> opt_hard_wire_dead_code_branches(), which convert conditional jump
+> into unconditional one, so #30 is still skipped.
+>=20
+> > Note that I tried this test with two functions:
+> > - bpf_get_current_cgroup_id, with this function I get retval 2, not 4 :=
+)
+> > - bpf_get_prandom_u32, with this function I get a random retval each ti=
+me.
+> >=20
+> > What is the expectation when 'bpf_get_current_cgroup_id' is used?
+> > That it is some known (to us) number, but verifier treats it as unknown=
+ scalar?
+> >=20
+>=20
+> Either one would work, but to make #30 always taken, r0 should be
+> non-zero.
 
-This patch was applied to netdev/net-next.git (main)
-by Paolo Abeni <pabeni@redhat.com>:
+Oh, thank you, I made opt_hard_wire_dead_code_branches() a noop,
+replaced r0 =3D 0x4 by r0 /=3D 0 and see "divide error: 0000 [#1] PREEMPT S=
+MP NOPTI"
+error in the kernel log on every second or third run of the test
+(when using prandom).
 
-On Tue, 12 Dec 2023 15:12:00 +0100 you wrote:
-> Currently, mvpp2 only supports RGMII. This commit adds support for MII.
-> The description in Marvell's functional specification seems to be wrong.
-> To enable MII, we need to set GENCONF_CTRL0_PORT3_RGMII, while for RGMII
-> we need to clear it. This is also how U-Boot handles it.
-> 
-> Signed-off-by: Stefan Eichenberger <eichest@gmail.com>
-> 
-> [...]
-
-Here is the summary with links:
-  - [net-next,v2] net: mvpp2: add support for mii
-    https://git.kernel.org/netdev/net-next/c/1b666016d0ad
-
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+Working to minimize the test case will share results a bit later.
