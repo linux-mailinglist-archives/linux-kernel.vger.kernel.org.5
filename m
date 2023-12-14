@@ -2,85 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6384B81360C
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 17:20:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9135C81360F
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 17:21:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229916AbjLNQU0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 11:20:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37776 "EHLO
+        id S230150AbjLNQUs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 11:20:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37312 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229510AbjLNQUX (ORCPT
+        with ESMTP id S1443573AbjLNQUp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 11:20:23 -0500
-Received: from gloria.sntech.de (gloria.sntech.de [185.11.138.130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 507B710A;
-        Thu, 14 Dec 2023 08:20:28 -0800 (PST)
-Received: from i53875b61.versanet.de ([83.135.91.97] helo=diego.localnet)
-        by gloria.sntech.de with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <heiko@sntech.de>)
-        id 1rDoRR-0005iB-OR; Thu, 14 Dec 2023 17:20:05 +0100
-From:   Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>
-To:     Alex Bee <knaerzche@gmail.com>, Sandy Huang <hjc@rock-chips.com>,
-        Andy Yan <andyshrk@163.com>, Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc:     David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 01/11] dt-bindings: display: rockchip,inno-hdmi: Document RK3128
- compatible
-Date:   Thu, 14 Dec 2023 17:20:04 +0100
-Message-ID: <2221612.3VsfAaAtOV@diego>
-In-Reply-To: <df84a0cc-cb38-431f-864b-012ada7bb0d5@linaro.org>
-References: <20231213195125.212923-1-knaerzche@gmail.com>
- <288857ab-bebd-4f80-9cdc-9b04fa6c7386@gmail.com>
- <df84a0cc-cb38-431f-864b-012ada7bb0d5@linaro.org>
+        Thu, 14 Dec 2023 11:20:45 -0500
+Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3401E121
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 08:20:51 -0800 (PST)
+Received: by mail-pj1-x1033.google.com with SMTP id 98e67ed59e1d1-28aec2f2b74so1162238a91.1
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 08:20:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1702570850; x=1703175650; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=79GfLUa0xMatqK9z0JePPS7PR/6+NWr/zvH936PUut4=;
+        b=l0DZzb17IQWERdrx6jzedry2WIMfb8k35YeV7kF52pw/nDgsk/A0BGuRWuOcqXW/rD
+         lqSDY9cm4BdvmnKAhT7SNSPHHlEMzLOdN8Y5gmHafhuLPPEz9W0bNydOhe7Ehj9/HTqb
+         b/7VRSGuYNC4Pp4/A8KKl0TBjPUdLae4zP9fQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702570850; x=1703175650;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=79GfLUa0xMatqK9z0JePPS7PR/6+NWr/zvH936PUut4=;
+        b=gClKn1KJ1Fwh8sJyMp+2dtakbvrHGQn53PyBEX/kIOzJXkEU3QtqHfsztmLph3OCYQ
+         KvCJVCDK16ZjSMxiaSNC+77Su36Q5UPbYOKl3bULmC7hBCrIxniH8aDat48Ps7dHAxWY
+         xz4WMxvBaNuP8JG8Y0DGJDP1RbQ/xQtytzIEiDp8qZXdQOBxhakBUfmVOOeJBudnw86A
+         AbPVOFQ9IealXkRxJ1CbtPsStSWXz4NbQvX7kY5ZHP9iVc6EelJrOS/g/AzwyBHf3BzR
+         Re80WWj/m5sqesSg5n6gfJmgr8vuyKcGkoiTws/pUk88OKhdqO05AxEswL8YNiAiDzCQ
+         R2hA==
+X-Gm-Message-State: AOJu0YwrhT3F9qG7BcFHCOLar1c1qeKhV/ay/4ZyMZdI45XWfwbou3o9
+        Y7H2zRs0QE+DKzVhMMQyBKQ79bGKi3674fKprug=
+X-Google-Smtp-Source: AGHT+IEhI+QDxAaic/CLBtw+Zk3ZLQbTienw7Lr5nTBHffs68v9bR0Iv7kinrPvub6G8TOnFIQ6ZgQ==
+X-Received: by 2002:a17:90a:fb4d:b0:28b:2519:4764 with SMTP id iq13-20020a17090afb4d00b0028b25194764mr42334pjb.44.1702570850749;
+        Thu, 14 Dec 2023 08:20:50 -0800 (PST)
+Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id 8-20020a17090a018800b0028b07d1f63csm1833557pjc.50.2023.12.14.08.20.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 Dec 2023 08:20:50 -0800 (PST)
+Date:   Thu, 14 Dec 2023 08:20:49 -0800
+From:   Kees Cook <keescook@chromium.org>
+To:     yang.guang5@zte.com.cn
+Cc:     kherbst@redhat.com, jiang.xuexin@zte.com.cn,
+        chen.haonan2@zte.com.cn, cgel.zte@gmail.com, lyude@redhat.com,
+        dakr@redhat.com, airlied@gmail.com, daniel@ffwll.ch,
+        bskeggs@redhat.com, dri-devel@lists.freedesktop.org,
+        nouveau@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH linux-next] drm/nouveau/disp: switch to use kmemdup()
+ helper
+Message-ID: <202312140820.EC1C6079F@keescook>
+References: <202312142003220684160@zte.com.cn>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        T_SPF_HELO_TEMPERROR autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <202312142003220684160@zte.com.cn>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am Donnerstag, 14. Dezember 2023, 17:07:27 CET schrieb Krzysztof Kozlowski:
-> On 14/12/2023 16:22, Alex Bee wrote:
-> > 
-> > Am 14.12.23 um 08:53 schrieb Krzysztof Kozlowski:
-> >> On 13/12/2023 20:51, Alex Bee wrote:
-> >>> Document the compatible for RK3128's HDMI controller block.
-> >>> The integration for this SoC is somewhat different here: It needs the PHY's
-> >> Please wrap commit message according to Linux coding style / submission
-> >> process (neither too early nor over the limit):
-> >> https://elixir.bootlin.com/linux/v6.4-rc1/source/Documentation/process/submitting-patches.rst#L597
-> > OK. Not sure why checkpatch --strict  didn't tell me that I'm over the 
-> > limit here.
-> >>
-> >>> reference clock rate to calculate the ddc bus frequency correctly. This
-> >>> clock is part of a power-domain (PD_VIO), so this gets added as an optional
-> >>> property too.
-> >> If clock is part of power domain, then the power domain must be in the
-> >> clock controller, not here. So either you put power domain in wrong
-> >> place or you used incorrect reason for a change.
-> >   Rockchip defines it's powerdomains per clock and I was little to much 
-> > in that world when writing this. Actually the controller itself is part 
-> > of the powerdomain. Will rephrase.
+On Thu, Dec 14, 2023 at 08:03:22PM +0800, yang.guang5@zte.com.cn wrote:
+> From: Yang Guang <yang.guang5@zte.com.cn>
 > 
-> Does it mean you have like 200 different power domains in one SoC? Then
-> how are they different than clock if there is one-to-one mapping?
+> Use kmemdup() helper instead of open-coding to
+> simplify the code.
+> 
+> Signed-off-by: Chen Haonan <chen.haonan2@zte.com.cn>
 
-It's more like the other way around. Controllers and their clocks belong
-to specific power-domains. So there are of course more clocks than domains.
+Sure, good cleanup.
 
+Reviewed-by: Kees Cook <keescook@chromium.org>
 
-
-
+-- 
+Kees Cook
