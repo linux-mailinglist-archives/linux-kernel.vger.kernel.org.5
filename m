@@ -2,239 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C7F481336D
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 15:44:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BF8B481336E
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 15:44:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230079AbjLNOoO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 09:44:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53962 "EHLO
+        id S229974AbjLNOo1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 09:44:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42950 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229957AbjLNOoN (ORCPT
+        with ESMTP id S230015AbjLNOoZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 09:44:13 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A8D512B;
-        Thu, 14 Dec 2023 06:44:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1702565059; x=1734101059;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=FICAqgrBMjAmlIFhUkbff+egjDTpSE5fRShduafzR/4=;
-  b=X4DSX0yqwGpJg7xNjBQgCAEv7qod0ngpn4w3tEeLrgHvF9GAjh5yKUjz
-   1AxFbIENqInvrtcceJejPJml1p/3ldIlLN1qvZ1t0zmXR/QJnXfBtD77I
-   1jOdE0qA0kM2ohBauy3VLX7888Pn6TOLg7vyYkwHOymKyPmq6bM3GsO20
-   VVl3HLUUmDgIsVXtCmw1YcyWj//6E/EUiqiV/RRbsirWJe1eehRwtikdS
-   Fqj7ywOidS2GztP62HT9+y9gw8g69hchDiclvN9/63jek/NSXx6bxBevf
-   TZZ2ITg3MPTPzqIjYHgSpsYjX/8l+GIpJTEnzuNB51Tv+svWkPzNxQtGE
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10924"; a="1963052"
-X-IronPort-AV: E=Sophos;i="6.04,275,1695711600"; 
-   d="scan'208";a="1963052"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Dec 2023 06:44:19 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10924"; a="808606240"
-X-IronPort-AV: E=Sophos;i="6.04,275,1695711600"; 
-   d="scan'208";a="808606240"
-Received: from linux.intel.com ([10.54.29.200])
-  by orsmga001.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Dec 2023 06:44:18 -0800
-Received: from [10.213.191.138] (kliang2-mobl1.ccr.corp.intel.com [10.213.191.138])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        Thu, 14 Dec 2023 09:44:25 -0500
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2a07:de40:b251:101:10:150:64:1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 907E6115;
+        Thu, 14 Dec 2023 06:44:31 -0800 (PST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by linux.intel.com (Postfix) with ESMTPS id 719F6580CD0;
-        Thu, 14 Dec 2023 06:44:17 -0800 (PST)
-Message-ID: <23a3de90-6740-4fde-9771-4f25681f6a2d@linux.intel.com>
-Date:   Thu, 14 Dec 2023 09:44:15 -0500
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 31145221F2;
+        Thu, 14 Dec 2023 14:44:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1702565070; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=vsmrNQCMF0LaolhCZphfif1VFSP9rpU97GQ9x/JHWt4=;
+        b=G8Mle9Gd3DbKrF2if092q2td8tfT+LX9FRC+16c0knZpByDNgYyJGYWocoiGo/E3JAXJam
+        nwo5FfNwNnVoygeaJvUhc4avXdNI5H7dB9P6ldgzrtoI5G0bqIa9/jXtKgYtARWghpazhc
+        EzNuBtMODqQlkG8MH1+hsLufl4ePOP0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1702565070;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=vsmrNQCMF0LaolhCZphfif1VFSP9rpU97GQ9x/JHWt4=;
+        b=6v19oXnJqzViNUzIQTc0kVQOxs1jtdBtrfo+Vn0jL/hOn+G0wP4Eu1+0yd8RZfCmkYNjpG
+        eXO/TGC9hS5nIeAw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1702565070; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=vsmrNQCMF0LaolhCZphfif1VFSP9rpU97GQ9x/JHWt4=;
+        b=G8Mle9Gd3DbKrF2if092q2td8tfT+LX9FRC+16c0knZpByDNgYyJGYWocoiGo/E3JAXJam
+        nwo5FfNwNnVoygeaJvUhc4avXdNI5H7dB9P6ldgzrtoI5G0bqIa9/jXtKgYtARWghpazhc
+        EzNuBtMODqQlkG8MH1+hsLufl4ePOP0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1702565070;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=vsmrNQCMF0LaolhCZphfif1VFSP9rpU97GQ9x/JHWt4=;
+        b=6v19oXnJqzViNUzIQTc0kVQOxs1jtdBtrfo+Vn0jL/hOn+G0wP4Eu1+0yd8RZfCmkYNjpG
+        eXO/TGC9hS5nIeAw==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id B8E8D137E8;
+        Thu, 14 Dec 2023 14:44:29 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+        by imap1.dmz-prg2.suse.org with ESMTPSA
+        id eEJ2Kc0Ue2V3KQAAD6G6ig
+        (envelope-from <lhenriques@suse.de>); Thu, 14 Dec 2023 14:44:29 +0000
+Received: from localhost (brahms.olymp [local])
+        by brahms.olymp (OpenSMTPD) with ESMTPA id feb62ca6;
+        Thu, 14 Dec 2023 14:44:28 +0000 (UTC)
+Date:   Thu, 14 Dec 2023 14:44:28 +0000
+From:   =?iso-8859-1?Q?Lu=EDs?= Henriques <lhenriques@suse.de>
+To:     David Howells <dhowells@redhat.com>
+Cc:     Eric Biggers <ebiggers@kernel.org>,
+        Jarkko Sakkinen <jarkko@kernel.org>, keyrings@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH] keys: flush work when accessing /proc/key-users
+Message-ID: <ZXsUzBRR2uc81FK0@suse.de>
+References: <20231207024323.GA1994@sol.localdomain>
+ <20231206145744.17277-1-lhenriques@suse.de>
+ <498294.1701878642@warthog.procyon.org.uk>
+ <87bkb3z047.fsf@suse.de>
+ <2744563.1702303367@warthog.procyon.org.uk>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH V3 2/2] perf top: Uniform the event name for the hybrid
- machine
-To:     Namhyung Kim <namhyung@kernel.org>
-Cc:     acme@kernel.org, irogers@google.com, mark.rutland@arm.com,
-        maz@kernel.org, marcan@marcan.st, linux-kernel@vger.kernel.org,
-        linux-perf-users@vger.kernel.org
-References: <20231213213633.1088026-1-kan.liang@linux.intel.com>
- <20231213213633.1088026-2-kan.liang@linux.intel.com>
- <CAM9d7ch+rHDp3E40QvBu+PGs8N+5iOP3i=HmYXKshcohs05MaQ@mail.gmail.com>
-Content-Language: en-US
-From:   "Liang, Kan" <kan.liang@linux.intel.com>
-In-Reply-To: <CAM9d7ch+rHDp3E40QvBu+PGs8N+5iOP3i=HmYXKshcohs05MaQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <2744563.1702303367@warthog.procyon.org.uk>
+X-Spam-Score: -1.30
+X-Spam-Level: 
+Authentication-Results: smtp-out1.suse.de;
+        none
+X-Spam-Level: 
+X-Spam-Score: -1.30
+X-Spamd-Result: default: False [-1.30 / 50.00];
+         ARC_NA(0.00)[];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         FROM_HAS_DN(0.00)[];
+         TO_DN_SOME(0.00)[];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         NEURAL_HAM_LONG(-1.00)[-1.000];
+         MIME_GOOD(-0.10)[text/plain];
+         RCPT_COUNT_FIVE(0.00)[5];
+         RCVD_COUNT_THREE(0.00)[4];
+         DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+         NEURAL_HAM_SHORT(-0.20)[-0.981];
+         FUZZY_BLOCKED(0.00)[rspamd.com];
+         FROM_EQ_ENVFROM(0.00)[];
+         MIME_TRACE(0.00)[0:+];
+         RCVD_TLS_LAST(0.00)[];
+         MID_RHS_MATCH_FROM(0.00)[];
+         BAYES_HAM(-0.00)[16.82%]
+X-Spam-Flag: NO
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi David,
 
-
-On 2023-12-13 4:57 p.m., Namhyung Kim wrote:
-> On Wed, Dec 13, 2023 at 1:36â€¯PM <kan.liang@linux.intel.com> wrote:
->>
->> From: Kan Liang <kan.liang@linux.intel.com>
->>
->> It's hard to distinguish the default cycles events among hybrid PMUs.
->> For example,
->>
->>  $perf top
->> Available samples
->> 385 cycles:P
->> 903 cycles:P
->>
->> The other tool, e.g., perf record, uniforms the event name and adds the
->> hybrid PMU name before opening the event. So the events can be easily
->> distinguished. Apply the same methodology for the perf top as well.
->>
->> The record__uniquify_name() will be invoked by both record and top.
->> Move it to util/record.c
+On Mon, Dec 11, 2023 at 02:02:47PM +0000, David Howells wrote:
+<snip>
+> > However, that would only fix the flakiness of the key quota for fs/crypto/,
+> > not for other users of the keyrings service.  Maybe this suggests that
+> > key_put() should release the key's quota right away if the key's refcount
+> > drops to 0?
 > 
-> Maybe better to rename it to evlist__uniquify_name() and move it
-> to util/evlist.c.
-
-Sure, I will change it in V4.
-
-Thanks,
-Kan
-
+> That I would be okay with as the key should be removed in short order.
 > 
-> Thanks,
-> Namhyung
-> 
->>
->> With the patch
->>  $perf top
->> Available samples
->> 148 cpu_atom/cycles:P/
->> 1K cpu_core/cycles:P/
->>
->> Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
->> ---
->>
->> New patch to address the display concern
->> https://lore.kernel.org/lkml/e9383607-1e43-4c1a-9512-29f27784d035@linux.intel.com/
->>
->>  tools/perf/builtin-record.c | 28 +---------------------------
->>  tools/perf/builtin-top.c    |  1 +
->>  tools/perf/util/record.c    | 25 +++++++++++++++++++++++++
->>  tools/perf/util/record.h    |  2 ++
->>  4 files changed, 29 insertions(+), 27 deletions(-)
->>
->> diff --git a/tools/perf/builtin-record.c b/tools/perf/builtin-record.c
->> index dcf288a4fb9a..a096422a4a14 100644
->> --- a/tools/perf/builtin-record.c
->> +++ b/tools/perf/builtin-record.c
->> @@ -2216,32 +2216,6 @@ static void hit_auxtrace_snapshot_trigger(struct record *rec)
->>         }
->>  }
->>
->> -static void record__uniquify_name(struct record *rec)
->> -{
->> -       struct evsel *pos;
->> -       struct evlist *evlist = rec->evlist;
->> -       char *new_name;
->> -       int ret;
->> -
->> -       if (perf_pmus__num_core_pmus() == 1)
->> -               return;
->> -
->> -       evlist__for_each_entry(evlist, pos) {
->> -               if (!evsel__is_hybrid(pos))
->> -                       continue;
->> -
->> -               if (strchr(pos->name, '/'))
->> -                       continue;
->> -
->> -               ret = asprintf(&new_name, "%s/%s/",
->> -                              pos->pmu_name, pos->name);
->> -               if (ret) {
->> -                       free(pos->name);
->> -                       pos->name = new_name;
->> -               }
->> -       }
->> -}
->> -
->>  static int record__terminate_thread(struct record_thread *thread_data)
->>  {
->>         int err;
->> @@ -2475,7 +2449,7 @@ static int __cmd_record(struct record *rec, int argc, const char **argv)
->>         if (data->is_pipe && rec->evlist->core.nr_entries == 1)
->>                 rec->opts.sample_id = true;
->>
->> -       record__uniquify_name(rec);
->> +       record__uniquify_name(rec->evlist);
->>
->>         /* Debug message used by test scripts */
->>         pr_debug3("perf record opening and mmapping events\n");
->> diff --git a/tools/perf/builtin-top.c b/tools/perf/builtin-top.c
->> index cce9350177e2..4e8296654280 100644
->> --- a/tools/perf/builtin-top.c
->> +++ b/tools/perf/builtin-top.c
->> @@ -1299,6 +1299,7 @@ static int __cmd_top(struct perf_top *top)
->>                 }
->>         }
->>
->> +       record__uniquify_name(top->evlist);
->>         ret = perf_top__start_counters(top);
->>         if (ret)
->>                 return ret;
->> diff --git a/tools/perf/util/record.c b/tools/perf/util/record.c
->> index 9eb5c6a08999..5b4be3c72cbc 100644
->> --- a/tools/perf/util/record.c
->> +++ b/tools/perf/util/record.c
->> @@ -289,3 +289,28 @@ int record__parse_freq(const struct option *opt, const char *str, int unset __ma
->>         opts->user_freq = freq;
->>         return 0;
->>  }
->> +
->> +void record__uniquify_name(struct evlist *evlist)
->> +{
->> +       struct evsel *pos;
->> +       char *new_name;
->> +       int ret;
->> +
->> +       if (perf_pmus__num_core_pmus() == 1)
->> +               return;
->> +
->> +       evlist__for_each_entry(evlist, pos) {
->> +               if (!evsel__is_hybrid(pos))
->> +                       continue;
->> +
->> +               if (strchr(pos->name, '/'))
->> +                       continue;
->> +
->> +               ret = asprintf(&new_name, "%s/%s/",
->> +                              pos->pmu_name, pos->name);
->> +               if (ret) {
->> +                       free(pos->name);
->> +                       pos->name = new_name;
->> +               }
->> +       }
->> +}
->> diff --git a/tools/perf/util/record.h b/tools/perf/util/record.h
->> index a6566134e09e..9b520ab784bc 100644
->> --- a/tools/perf/util/record.h
->> +++ b/tools/perf/util/record.h
->> @@ -8,6 +8,7 @@
->>  #include <linux/stddef.h>
->>  #include <linux/perf_event.h>
->>  #include "util/target.h"
->> +#include "util/evlist.h"
->>
->>  struct option;
->>
->> @@ -85,6 +86,7 @@ extern const char * const *record_usage;
->>  extern struct option *record_options;
->>
->>  int record__parse_freq(const struct option *opt, const char *str, int unset);
->> +void record__uniquify_name(struct evlist *evlist);
->>
->>  static inline bool record_opts__no_switch_events(const struct record_opts *opts)
->>  {
->> --
->> 2.35.1
->>
+> Note that you'd have to change the spinlocks on key->user->lock to irq-locking
+> types.  Or maybe we can do without them, at least for key gc, and use atomic
+> counters.  key_invalidate() should probably drop the quota also.
+
+I was trying to help with this but, first, I don't think atomic counters
+would actually be a solution.  For example, we have the following in
+key_alloc():
+
+	spin_lock(&user->lock);
+	if (!(flags & KEY_ALLOC_QUOTA_OVERRUN)) {
+		if (user->qnkeys + 1 > maxkeys ||
+		    user->qnbytes + quotalen > maxbytes ||
+		    user->qnbytes + quotalen < user->qnbytes)
+			goto no_quota;
+	}
+	user->qnkeys++;
+	user->qnbytes += quotalen;
+	spin_unlock(&user->lock);
+
+Thus, I don't think it's really possible to simply stop using a lock
+without making these checks+changes non-atomic.
+
+As for using spin_lock_irq() or spin_lock_irqsave(), my understanding is
+that the only places where this could be necessary is in key_put() and,
+possibly, key_payload_reserve().  key_alloc() shouldn't need that.
+
+Finally, why would key_invalidate() require handling quotas?  I'm probably
+just missing some subtlety, but I don't see the user->usage refcount being
+decremented anywhere in that path (or anywhere else, really).
+
+Cheers,
+--
+Luís
