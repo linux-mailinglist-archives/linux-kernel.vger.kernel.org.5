@@ -2,106 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 43D468123E8
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 01:30:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DCD438123EE
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 01:35:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234024AbjLNAam (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 19:30:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48916 "EHLO
+        id S234072AbjLNAey (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 19:34:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38456 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229725AbjLNAak (ORCPT
+        with ESMTP id S229706AbjLNAex (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 19:30:40 -0500
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1023DC9;
-        Wed, 13 Dec 2023 16:30:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1702513844;
-        bh=+73VdIH+l1vbZl3wpgzGVdBkqDMH+xbOJV9chvjsKfY=;
-        h=Date:From:To:Cc:Subject:From;
-        b=qtncVbeCc3b5GRiDeDtwdXtE3IYjreXmcz8XK3opugiLBSqAnJ7uySiqlmF2tEAQd
-         Yev4TBHADoYshNogSfM8N5XwHXqj7oNnBj6Dfq3WL5xtDWzTyRtAQ+gQASvOfQsKAG
-         GxlWnkIzS4IJttI3pwOyvg/FhLQ68BrkuvWInLHBHynhtvaMSVZfgqQrZlbhtp+SZz
-         EY9dsA7eZiYR87SvfMi8Fwmip7aGcv1XzymTINlfvN1tuPIu3nVvpVeLMs+Pv6MISE
-         9jVLg8Exlc+EMsHD/0cq+VWAPpmzMnNVR1fgmrQ1qkmiPYY6l/ijZNPWmERW7m+AHY
-         ZwL/macoGYxOg==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4SrCtq6gflz4wc8;
-        Thu, 14 Dec 2023 11:30:43 +1100 (AEDT)
-Date:   Thu, 14 Dec 2023 11:30:41 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>
-Cc:     Kalesh AP <kalesh-anakkur.purayil@broadcom.com>,
-        Networking <netdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Michael Chan <michael.chan@broadcom.com>,
-        Pavan Chebbi <pavan.chebbi@broadcom.com>
-Subject: linux-next: manual merge of the net-next tree with the net tree
-Message-ID: <20231214113041.3a0c003c@canb.auug.org.au>
+        Wed, 13 Dec 2023 19:34:53 -0500
+Received: from ex01.ufhost.com (ex01.ufhost.com [61.152.239.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E3DEC9;
+        Wed, 13 Dec 2023 16:34:56 -0800 (PST)
+Received: from EXMBX165.cuchost.com (unknown [175.102.18.54])
+        (using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+        (Client CN "EXMBX165", Issuer "EXMBX165" (not verified))
+        by ex01.ufhost.com (Postfix) with ESMTP id 15D3C24E25A;
+        Thu, 14 Dec 2023 08:34:54 +0800 (CST)
+Received: from EXMBX067.cuchost.com (172.16.6.67) by EXMBX165.cuchost.com
+ (172.16.6.75) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Thu, 14 Dec
+ 2023 08:34:53 +0800
+Received: from EXMBX066.cuchost.com (172.16.7.66) by EXMBX067.cuchost.com
+ (172.16.6.67) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Thu, 14 Dec
+ 2023 08:34:53 +0800
+Received: from EXMBX066.cuchost.com ([fe80::5947:9245:907e:339f]) by
+ EXMBX066.cuchost.com ([fe80::5947:9245:907e:339f%17]) with mapi id
+ 15.00.1497.044; Thu, 14 Dec 2023 08:34:53 +0800
+From:   JeeHeng Sia <jeeheng.sia@starfivetech.com>
+To:     Emil Renner Berthing <emil.renner.berthing@canonical.com>,
+        "kernel@esmil.dk" <kernel@esmil.dk>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "krzysztof.kozlowski+dt@linaro.org" 
+        <krzysztof.kozlowski+dt@linaro.org>,
+        "krzk@kernel.org" <krzk@kernel.org>,
+        "conor+dt@kernel.org" <conor+dt@kernel.org>,
+        "paul.walmsley@sifive.com" <paul.walmsley@sifive.com>,
+        "palmer@dabbelt.com" <palmer@dabbelt.com>,
+        "aou@eecs.berkeley.edu" <aou@eecs.berkeley.edu>,
+        "daniel.lezcano@linaro.org" <daniel.lezcano@linaro.org>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "conor@kernel.org" <conor@kernel.org>,
+        "anup@brainfault.org" <anup@brainfault.org>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "jirislaby@kernel.org" <jirislaby@kernel.org>,
+        "michal.simek@amd.com" <michal.simek@amd.com>,
+        Michael Zhu <michael.zhu@starfivetech.com>,
+        "drew@beagleboard.org" <drew@beagleboard.org>
+CC:     "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Leyfoon Tan <leyfoon.tan@starfivetech.com>
+Subject: RE: [PATCH v3 6/6] riscv: dts: starfive: Add initial StarFive JH8100
+ device tree
+Thread-Topic: [PATCH v3 6/6] riscv: dts: starfive: Add initial StarFive JH8100
+ device tree
+Thread-Index: AQHaJFAfN2r53q/6u0mikZZoJRWxOLCfEf+AgAeiAoCAAUw4MA==
+Date:   Thu, 14 Dec 2023 00:34:53 +0000
+Message-ID: <e18a1f301dfc403d966e4f050c87eb10@EXMBX066.cuchost.com>
+References: <20231201121410.95298-1-jeeheng.sia@starfivetech.com>
+ <20231201121410.95298-7-jeeheng.sia@starfivetech.com>
+ <CAJM55Z831ucY4QqPTR_0zJVB05UUT4W-3M0CGzvtyPo=AMD=Vw@mail.gmail.com>
+ <CAJM55Z-BJMi=rbe8op5EQ-efwo-9AbmavVE1BVJ9_xuHQzMhLQ@mail.gmail.com>
+In-Reply-To: <CAJM55Z-BJMi=rbe8op5EQ-efwo-9AbmavVE1BVJ9_xuHQzMhLQ@mail.gmail.com>
+Accept-Language: en-US, zh-CN
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [202.188.176.82]
+x-yovoleruleagent: yovoleflag
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/hEnblnRG.vC/RW3TIeCOmTM";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/hEnblnRG.vC/RW3TIeCOmTM
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
-
-Hi all,
-
-Today's linux-next merge of the net-next tree got a conflict in:
-
-  drivers/net/ethernet/broadcom/bnxt/bnxt_ptp.c
-
-between commit:
-
-  bd6781c18cb5 ("bnxt_en: Fix wrong return value check in bnxt_close_nic()")
-
-from the net tree and commit:
-
-  84793a499578 ("bnxt_en: Skip nic close/open when configuring tstamp filte=
-rs")
-
-from the net-next tree.
-
-I fixed it up (I just used the latter) and can carry the fix as
-necessary. This is now fixed as far as linux-next is concerned, but any
-non trivial conflicts should be mentioned to your upstream maintainer
-when your tree is submitted for merging.  You may also want to consider
-cooperating with the maintainer of the conflicting tree to minimise any
-particularly complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/hEnblnRG.vC/RW3TIeCOmTM
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmV6TLEACgkQAVBC80lX
-0Gyduwf/ZqPVHbvKCTdr9wvSTpKY/zAYHIZoyTVPexbE1O5RAqd4axotWLeiL/hB
-0zFeE6zT8jdSENUZPr/Qyxb/XSLC3p+BHA8UZu3UC7wDaJcLqo5xPfEku2kuG/0g
-gbVy5OEi9aM9c1r+jiC0rcumsK7NHg7/YPoIaF79yXujf8VvXd9aq+rA0at2mupi
-ZsdLMMGm0ZHFEU/tPEdIQ63AFOvd2F+jNlKmN7OsIvFGYpEYL8KNgcKRadQWcWpE
-dzfqq7Gpkplyu2HFrrtfM72O+Or2+7y5+StBvzG/KS7m9Ef3hgR7I7lmoF+W/4p5
-MpDbn6EogDMmrHp6UUmQTJ72RWbxgQ==
-=ymwH
------END PGP SIGNATURE-----
-
---Sig_/hEnblnRG.vC/RW3TIeCOmTM--
+DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogRW1pbCBSZW5uZXIgQmVy
+dGhpbmcgPGVtaWwucmVubmVyLmJlcnRoaW5nQGNhbm9uaWNhbC5jb20+DQo+IFNlbnQ6IFdlZG5l
+c2RheSwgRGVjZW1iZXIgMTMsIDIwMjMgODozOSBQTQ0KPiBUbzogRW1pbCBSZW5uZXIgQmVydGhp
+bmcgPGVtaWwucmVubmVyLmJlcnRoaW5nQGNhbm9uaWNhbC5jb20+OyBKZWVIZW5nIFNpYSA8amVl
+aGVuZy5zaWFAc3RhcmZpdmV0ZWNoLmNvbT47IGtlcm5lbEBlc21pbC5kazsNCj4gcm9iaCtkdEBr
+ZXJuZWwub3JnOyBrcnp5c3p0b2Yua296bG93c2tpK2R0QGxpbmFyby5vcmc7IGtyemtAa2VybmVs
+Lm9yZzsgY29ub3IrZHRAa2VybmVsLm9yZzsgcGF1bC53YWxtc2xleUBzaWZpdmUuY29tOw0KPiBw
+YWxtZXJAZGFiYmVsdC5jb207IGFvdUBlZWNzLmJlcmtlbGV5LmVkdTsgZGFuaWVsLmxlemNhbm9A
+bGluYXJvLm9yZzsgdGdseEBsaW51dHJvbml4LmRlOyBjb25vckBrZXJuZWwub3JnOw0KPiBhbnVw
+QGJyYWluZmF1bHQub3JnOyBncmVna2hAbGludXhmb3VuZGF0aW9uLm9yZzsgamlyaXNsYWJ5QGtl
+cm5lbC5vcmc7IG1pY2hhbC5zaW1la0BhbWQuY29tOyBNaWNoYWVsIFpodQ0KPiA8bWljaGFlbC56
+aHVAc3RhcmZpdmV0ZWNoLmNvbT47IGRyZXdAYmVhZ2xlYm9hcmQub3JnDQo+IENjOiBkZXZpY2V0
+cmVlQHZnZXIua2VybmVsLm9yZzsgbGludXgtcmlzY3ZAbGlzdHMuaW5mcmFkZWFkLm9yZzsgbGlu
+dXgta2VybmVsQHZnZXIua2VybmVsLm9yZzsgTGV5Zm9vbiBUYW4NCj4gPGxleWZvb24udGFuQHN0
+YXJmaXZldGVjaC5jb20+DQo+IFN1YmplY3Q6IFJlOiBbUEFUQ0ggdjMgNi82XSByaXNjdjogZHRz
+OiBzdGFyZml2ZTogQWRkIGluaXRpYWwgU3RhckZpdmUgSkg4MTAwIGRldmljZSB0cmVlDQo+IA0K
+PiBFbWlsIFJlbm5lciBCZXJ0aGluZyB3cm90ZToNCj4gPiBTaWEgSmVlIEhlbmcgd3JvdGU6DQo+
+ID4gPiBBZGQgaW5pdGlhbCBkZXZpY2UgdHJlZSBmb3IgdGhlIFN0YXJGaXZlIEpIODEwMCBSSVND
+LVYgU29DLg0KPiA+ID4NCj4gPiA+IFNpZ25lZC1vZmYtYnk6IFNpYSBKZWUgSGVuZyA8amVlaGVu
+Zy5zaWFAc3RhcmZpdmV0ZWNoLmNvbT4NCj4gPiA+IFJldmlld2VkLWJ5OiBMZXkgRm9vbiBUYW4g
+PGxleWZvb24udGFuQHN0YXJmaXZldGVjaC5jb20+DQo+ID4NCj4gPiBMb29rcyBnb29kIHRvIG1l
+LCB0aGFua3MuDQo+ID4NCj4gPiBBY2tlZC1ieTogRW1pbCBSZW5uZXIgQmVydGhpbmcgPGVtaWwu
+cmVubmVyLmJlcnRoaW5nQGNhbm9uaWNhbC5jb20+DQo+IA0KPiBJIGp1c3QgbGVhcm5lZCB0aGF0
+IHRoaXMgSkg4MTAwIGlzIG5vdCBhY3R1YWxseSBhIHJlYWwgU29DIHlldCBidXQganVzdCBhbiBG
+UEdBDQo+IGltcGxlbWVudGF0aW9uLCBhbmQgbm8gaW5kaWNhdGlvbiB0aGF0IHRoYXQncyBhY3R1
+YWxseSBhIHByb2R1Y3QgdGhhdCB3aWxsIGJlDQo+IG1hc3MgcHJvZHVjZWQuIEhlbmNlIGEgbG90
+IG9mIGRldGFpbHMgbWF5IGNoYW5nZSBiZWZvcmUgaXQgYmVjb21lcyBhIHJlYWwNCj4gU29DL3By
+b2R1Y3QgcGVvcGxlIGNhbiBidXksIHNvIGxldCdzIG5vdCBhZGQgdGhpcyBkZXZpY2UgdHJlZSB5
+ZXQgYmVmb3JlDQo+IGV2ZXJ5dGhpbmcgaXMgc2V0IGluIHNpbGljb24uDQo+IA0KPiBQbGVhc2Ug
+Y29uc2lkZXIgbXkgQWNrZWQtYnkgYWJldmUgcmV2b2tlZC4NCj4gDQo+IFNpYSBKZWUgSGVuZzog
+V2l0aCB0aGF0IHNhaWQgSSBzdGlsbCB0aGluayBpdCdzIHN1cGVyIGF3ZXNvbWUgdGhhdCB5b3Un
+cmUNCj4gYmVnaW5uaW5nIHVwc3RyZWFtaW5nIHN1cHBvcnQgZm9yIHlvdXIgbmV3IFNvQ3MgZWFy
+bHkuIEkgd2lzaCBtb3JlIFNvQyB2ZW5kb3JzDQo+IHdvdWxkIGZvbGxvdyB5b3VyIGV4YW1wbGUu
+DQpIaSBFbWlsLCBJIGFtIG5vdCBzdXJlIHdoYXQgeW91IG1lYW4uIFdlIHZlcmlmaWVkIG9uIEZQ
+R0EgJiBFbXVsYXRvciwgYW5kIHRoZSBsb2dpYw0KaXMgcHJldHR5IG11Y2ggY2xvc2UgdG8gdGhl
+IHJlYWwgc2lsaWNvbi4gSSBkaWQgbWVudGlvbiB0aGF0IGluIHRoZSBjb3ZlciBsZXR0ZXIgYXMg
+d2VsbC4NCkkgYW0gbmV3IHRvIExpbnV4LCBzbyBJIGFtIHdvbmRlcmluZyBpZiB0aGVyZSBpcyBh
+IExpbnV4IHVwc3RyZWFtIGd1aWRlbGluZSBtZW50aW9uaW5nDQp0aGF0IHByZS1zaWxpY29uIHNv
+ZnR3YXJlIGlzIG5vdCBhbGxvd2VkIHRvIHVwc3RyZWFtPyBIb3BlIHRoZXJlIGlzIGFuIHVwZGF0
+ZWQgTGludXgNCnVwc3RyZWFtIGd1aWRlbGluZSB0aGF0IGJlbmVmaXQgb3RoZXIgdmVuZG9ycy4N
+Cj4gDQo+IC9FbWlsDQo=
