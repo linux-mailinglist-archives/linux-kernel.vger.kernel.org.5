@@ -2,152 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CD4F481351E
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 16:45:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 542FD81351A
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 16:45:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1573879AbjLNPpj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 10:45:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34990 "EHLO
+        id S1573873AbjLNPpd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 10:45:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46114 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1573858AbjLNPpf (ORCPT
+        with ESMTP id S1573858AbjLNPpb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 10:45:35 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E4F6B2;
-        Thu, 14 Dec 2023 07:45:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1702568740; x=1734104740;
-  h=date:from:to:cc:subject:message-id:references:
-   in-reply-to:mime-version;
-  bh=Hwmv8afl2cShPBlo+JtVg2D3LpNRtLEMhkLxJ210Fsw=;
-  b=iQTZAOvp4pfEqDITEUfYZCEgSoG4lNXimJrXIBisE7lddkVone2PIh3U
-   xOlmXN18AsN6kvSMJWoKh/NxImhYZaMoJ0H63lTA4opyIYJXE3tEVh54L
-   FaCOcYFwstel+Tn3WR1flbbY2VEaXpzcF2aAMqpnoVJOflMioJ20qn+n/
-   gkUoJQ5UwqPzvHihlV/0GoVS4X0xliiqudDrCa9RKGj3+5XiPuoJncKot
-   SaXcq/OnleIgKlGUTKTu+d0jgbvvNqYwiiv5GrrmMtRlsKYXfBFd6+sKB
-   vx0xQ3fudbcEQB/0K5l7HXJ3kDtQ6vcIdlULYNhpKLY2qIOnQN25VsIVk
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10924"; a="380121949"
-X-IronPort-AV: E=Sophos;i="6.04,275,1695711600"; 
-   d="scan'208";a="380121949"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Dec 2023 07:45:29 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10924"; a="865044726"
-X-IronPort-AV: E=Sophos;i="6.04,275,1695711600"; 
-   d="scan'208";a="865044726"
-Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
-  by FMSMGA003.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 14 Dec 2023 07:45:28 -0800
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Thu, 14 Dec 2023 07:45:28 -0800
-Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
- fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Thu, 14 Dec 2023 07:45:28 -0800
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (104.47.59.169)
- by edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Thu, 14 Dec 2023 07:45:24 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=m6TGKDWyidHoTbXJFwzd9ux5a244Z4PJiPmC4xyBQ3TBAUJQnZgs9DVNaM72meR4Wo9Q2L15V2hPqg2VbZYJ12bY7GAMA2TUsQa0+qnEcHuuxjkToNfmvj9OApHjDJxjQqutCxE8y95eyCo53dguMv+c+a3g9LSsbDKP3yyl98JsOL00suDkErINWE5yylIRKKf2aCBhsMijHAG8bnxexEtPetrSQYLDBcadVaWo2WSVcJ9qu/Eh0oQmKY2UcQcRecRIJ1YgdjVEsSHFCqkkOVvgXKZS1hUAvc33sbEK/U2bz8ryU2PaDe+4BBwH2CehiuKY4QPdw93b4ZsujxA+bA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Hwmv8afl2cShPBlo+JtVg2D3LpNRtLEMhkLxJ210Fsw=;
- b=CagYu0dXO7gsmm5wFdy565NXWgelnVV7Iv23RgB3dhK44cz4yX0HViPO2O6DLTXfLLNUwLYl7x/gHrJANZQuFCxvWNacS7Mar3YDVZ5VnGw7Po1BNAFEvN0jtzJ9tjuWdIk+tLQ/okAn3NXq76VuQQaCvuzsNudpqPuaxONuLF/Lvd2urcNGWz3Mn4gl5mdwXsZP+xkY51F3ph+s8VyR9An/yRei+nynlY5t26RPsolo5uRu/MDj4i2Su6qmmEfFoj1lE6wq2diZJ9w+Pzqay/1FgbYg2ovGKZgL6uefElqDFB54fpLERHEyruD5fTp4V1uouEwyRhVH0vGJlsrWaA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from SA1PR11MB6733.namprd11.prod.outlook.com (2603:10b6:806:25c::17)
- by DM4PR11MB5993.namprd11.prod.outlook.com (2603:10b6:8:5c::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7068.38; Thu, 14 Dec
- 2023 15:45:22 +0000
-Received: from SA1PR11MB6733.namprd11.prod.outlook.com
- ([fe80::da91:dbe5:857c:fa9c]) by SA1PR11MB6733.namprd11.prod.outlook.com
- ([fe80::da91:dbe5:857c:fa9c%4]) with mapi id 15.20.7091.028; Thu, 14 Dec 2023
- 15:45:22 +0000
-Date:   Thu, 14 Dec 2023 07:45:18 -0800
-From:   Ira Weiny <ira.weiny@intel.com>
-To:     Ira Weiny <ira.weiny@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Jonathan Cameron <jonathan.cameron@huawei.com>,
-        Smita Koralahalli <Smita.KoralahalliChannabasappa@amd.com>,
-        Shiju Jose <shiju.jose@huawei.com>
-CC:     Yazen Ghannam <yazen.ghannam@amd.com>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Alison Schofield <alison.schofield@intel.com>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        "Ard Biesheuvel" <ardb@kernel.org>, <linux-efi@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-cxl@vger.kernel.org>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Bjorn Helgaas <bhelgaas@google.com>
-Subject: Re: [PATCH v3 0/7] efi/cxl-cper: Report CPER CXL component events
- through trace events
-Message-ID: <657b230e8c070_27323529445@iweiny-mobl.notmuch>
-References: <20231213-cxl-cper-v3-0-7fd863dd0d25@intel.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20231213-cxl-cper-v3-0-7fd863dd0d25@intel.com>
-X-ClientProxiedBy: BYAPR01CA0069.prod.exchangelabs.com (2603:10b6:a03:94::46)
- To SA1PR11MB6733.namprd11.prod.outlook.com (2603:10b6:806:25c::17)
+        Thu, 14 Dec 2023 10:45:31 -0500
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 6ADFB9A;
+        Thu, 14 Dec 2023 07:45:37 -0800 (PST)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9BF2AC15;
+        Thu, 14 Dec 2023 07:46:22 -0800 (PST)
+Received: from raptor (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id EA4D93F5A1;
+        Thu, 14 Dec 2023 07:45:31 -0800 (PST)
+Date:   Thu, 14 Dec 2023 15:45:25 +0000
+From:   Alexandru Elisei <alexandru.elisei@arm.com>
+To:     Rob Herring <robh@kernel.org>
+Cc:     catalin.marinas@arm.com, will@kernel.org, oliver.upton@linux.dev,
+        maz@kernel.org, james.morse@arm.com, suzuki.poulose@arm.com,
+        yuzenghui@huawei.com, arnd@arndb.de, akpm@linux-foundation.org,
+        mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        bristot@redhat.com, vschneid@redhat.com, mhiramat@kernel.org,
+        rppt@kernel.org, hughd@google.com, pcc@google.com,
+        steven.price@arm.com, anshuman.khandual@arm.com,
+        vincenzo.frascino@arm.com, david@redhat.com, eugenis@google.com,
+        kcc@google.com, hyesoo.yu@samsung.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kvmarm@lists.linux.dev, linux-fsdevel@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-mm@kvack.org,
+        linux-trace-kernel@vger.kernel.org
+Subject: Re: [PATCH RFC v2 11/27] arm64: mte: Reserve tag storage memory
+Message-ID: <ZXsjFYKHkJM_JLCy@raptor>
+References: <20231119165721.9849-12-alexandru.elisei@arm.com>
+ <CAL_Jsq+k5BeM9+u12AQvWQ0b4Uv5Cy0vPOpK_uLcYtRnunq4iQ@mail.gmail.com>
+ <ZXiMiLz9ZyUdxUP8@raptor>
+ <CAL_Jsq+U_GR=mOK3-phnd4jeJKf79aOmhPwDOSj+f=s-7fZZWQ@mail.gmail.com>
+ <ZXmr-Kl9L2SO13--@raptor>
+ <CAL_JsqL=P1Y6w38LD_xw+vK4CNqt22FW_FE9oi_XTLHVQEne7Q@mail.gmail.com>
+ <ZXnE3724jYYSg4o6@raptor>
+ <CAL_JsqJgTnuQjo13cKo1Ebm5j9tCRT8GhNavdqu5vwp+fdnTLw@mail.gmail.com>
+ <ZXnthcg0BkEd-RgK@raptor>
+ <CAL_JsqLAW0--F8R0oTaajN3YpbK2KgE6Ypn8tk4_pf_s=xC+aw@mail.gmail.com>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SA1PR11MB6733:EE_|DM4PR11MB5993:EE_
-X-MS-Office365-Filtering-Correlation-Id: 645655cf-eb4f-4b4c-0e80-08dbfcbbae68
-X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: LOF8q8XqM4De2f/+Wgg3fa13wRntFrhRoVWzuqAllRt4guzN/Zt80q2MrhXPiS4+ZcInc9lOoD6GlVtO2o2itsTGBazGbykbW63qO2Y+vshiP2ULQJDkZZbqXFSz/VQJGtkTjJ/Za/JFxgLuULdayeF9z+85CyBJXh5Lm5kTLvrs71h0RqOZaF5xQg3ZKNLBb1zjRphOcuLcW36ATKEKF8tbVRsi3UcG+uJqQD0gAB0bp0F5f1zz/7Ox54HOtzaqXlFp0sqVokeHXf89uODMyzk3e9PE/TuTgYT3PI/c46cJb5k9r9nz3kBhOBA+H3MSY6ViC2YhOTe0/ay4EPYLB6vddSCHdMjRX2FRvS8q6t7lq80ofYjcpdzTjDYX/1il2082rV5IUbLVYq88JS6Q9vPjYE4nFhc7sMlNCG1d8MOavKfXlBjsTskT76aO4NpoIFnhVyJpyECfS1R2qG4Lfx4flhRAxAbTGITNfb1H03JLbecYlhfvHMDDNyJtSUC9vyN9cXKBqhsXi5lMGymqtRjYa0+clMv8vhhXOw1XcmXKJDG7vJoQGNBfzzk2R9Zo
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR11MB6733.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(366004)(136003)(396003)(346002)(39860400002)(230922051799003)(1800799012)(186009)(64100799003)(451199024)(9686003)(6486002)(6512007)(8936002)(6666004)(4326008)(8676002)(83380400001)(478600001)(44832011)(26005)(110136005)(54906003)(66556008)(66476007)(66946007)(316002)(6506007)(5660300002)(7416002)(2906002)(82960400001)(41300700001)(86362001)(38100700002)(558084003);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?wsO6dRFLznCTnuF0cT+Fc8EIUIzWWfbjq70Rr2ruo4z8c1b1guzu6wUUvJED?=
- =?us-ascii?Q?edRwnzVIBC5RYJOeCz07k2le+q4wkssNHd9LpPH7se3s/4Z4dI7IpSa0FFOi?=
- =?us-ascii?Q?p1Tgmvq4QWsuGPsn2w2T7TQx7wAIVoD2O89K9dVSGWnqh11f4OEU1X6rps0M?=
- =?us-ascii?Q?6QUxXliGAFXipWCaSpXFR9M4id0WK17h1dTj0LRbCrcSB1N1GF+Q5r873/Lf?=
- =?us-ascii?Q?r3pPiK4YF/XewRTmAtZfXs1LDGFeuI5eCStvlSenMzR7ryU1EjHX3PQRXqN8?=
- =?us-ascii?Q?HOzIoN94L6qR447hucaiaxrdUZSlZkraKw4um9itlO4pdXCW8NfxN0RPf4H5?=
- =?us-ascii?Q?gHjKHX42ddQosBbOYHXK9IwmGBuZnvT/loHxqWWHDUHgXSxg8bDj3937qm8S?=
- =?us-ascii?Q?n/y4wo5vxO3PPTlj6s20FMytOhKVF2Wct9dmHa7PJ+LxcYAAkNEYW+CaGs5r?=
- =?us-ascii?Q?P4YQM+VpwVl+h0mbRx5uZ5djznIVRVCV8xhpBexVb+/bFSZCAuMN1iafLCDN?=
- =?us-ascii?Q?ypGTIb1/xM7fcRgFvA4+nno+dvBMDAocqrwB8PwF+ecQeUJ2pqyaqEd40UNQ?=
- =?us-ascii?Q?RFiRT5n/wzyTkMo367iPBDdE/pSl66swpqxXfTmsaCN9Uw76q/l1Na6n1YZb?=
- =?us-ascii?Q?1x/9oXthPNcHMiQhc1FSIlKXxY5UgDezzJDWNTCyhDTuC/0GeZbvySLpUXSz?=
- =?us-ascii?Q?g2rd+KOdzavPzXdoTeKlBT7ukiXmmscllTR9voS3ES5oPvoLOhrdy3FmTSHF?=
- =?us-ascii?Q?BQ0EjMaL1HUZXPXLQDBE4EOgSgnfxfU1oyLfPxD8kWiwDqOnXMSrnFu8fZPZ?=
- =?us-ascii?Q?JtXnCwg0S/2b/4BwakFiaBVgw929zHo61bado0cS6XfTpXK/ImG21ts7B8QG?=
- =?us-ascii?Q?nRTtvSAss1sgmSmu9QjsKpDp4X1sL4+4jR55HJTkvKM6Kbq4u8ZdluFE1MlU?=
- =?us-ascii?Q?1fbdD9xe+K9qBU2j4ZLxavC6V0ulaSXKCdz2WogAcP0NPLcx/KuBbGmSXezY?=
- =?us-ascii?Q?XTuZJp50M9ndim263hXvDZgyOXCIF1gwztpuzf6ioDau1vU55L2rhlqZ0I7a?=
- =?us-ascii?Q?RsR7xu9dSVEZ40hqSGFuhxQDNi1JKJlwOeYBeXFDt6vDHBMHrG7O8TjjS8KE?=
- =?us-ascii?Q?NxHX58Q7NsihmauxeBn0P8DRizOVyDhb6C4ULG21K0EjckESUx8na72QIZiz?=
- =?us-ascii?Q?Yb3Urjn+mUwW9B+zxWvxMIxgQUBdK9/E+Q1VPLH8PTz056QDYgroPq6KW93j?=
- =?us-ascii?Q?7+bLkXmMBuMZrSPpp/lVXB5hAyVhen2FOs1q3BGFtqVtK+p4xCDSDRUyEWh+?=
- =?us-ascii?Q?7O9PyClyHI66DRDE8BxNVD5V3lto3eTbOdNVWM2dDhzOXi24Fck8Qd0UPDx9?=
- =?us-ascii?Q?qk7sVqyU9fg/JnckU+LqSedycXV8HfASKKxm07k7+V26ibFSxxL/hrYbBAu6?=
- =?us-ascii?Q?djlgBWhhqplqPcEl1DrUARs503bYOxOIcBLPGx37jf1Nz1cm031MZCZwiAyX?=
- =?us-ascii?Q?UbGfQE+iVQb1nfHiCMkemj0JhondR9dBEpyBz9m6mtJoX+hkWOcHkRqJLFc3?=
- =?us-ascii?Q?fcdwZjaddSCOtMLS7d4ZAYIkWyZiQSXEkfCS7nyx?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 645655cf-eb4f-4b4c-0e80-08dbfcbbae68
-X-MS-Exchange-CrossTenant-AuthSource: SA1PR11MB6733.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Dec 2023 15:45:22.0093
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: YyBaNjDtNZ3g7h26ekxNn5G0N5/7kr2PTCR9e3bbSOp6jeOPQEb7EDyZdV7cMoF5Pd96OD3nwHgP3De8JCH8Jw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR11MB5993
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAL_JsqLAW0--F8R0oTaajN3YpbK2KgE6Ypn8tk4_pf_s=xC+aw@mail.gmail.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -156,12 +65,166 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Ira Weiny wrote:
-> Series status/background
-> ========================
+Hi,
 
-I'll need to send a V4 on this because 0day caught that the changes I made
-to the notifier functions were not updated for CONFIG_UEFI_CPER=n case.
+On Wed, Dec 13, 2023 at 02:30:42PM -0600, Rob Herring wrote:
+> On Wed, Dec 13, 2023 at 11:44 AM Alexandru Elisei
+> <alexandru.elisei@arm.com> wrote:
+> >
+> > On Wed, Dec 13, 2023 at 11:22:17AM -0600, Rob Herring wrote:
+> > > On Wed, Dec 13, 2023 at 8:51 AM Alexandru Elisei
+> > > <alexandru.elisei@arm.com> wrote:
+> > > >
+> > > > Hi,
+> > > >
+> > > > On Wed, Dec 13, 2023 at 08:06:44AM -0600, Rob Herring wrote:
+> > > > > On Wed, Dec 13, 2023 at 7:05 AM Alexandru Elisei
+> > > > > <alexandru.elisei@arm.com> wrote:
+> > > > > >
+> > > > > > Hi Rob,
+> > > > > >
+> > > > > > On Tue, Dec 12, 2023 at 12:44:06PM -0600, Rob Herring wrote:
+> > > > > > > On Tue, Dec 12, 2023 at 10:38 AM Alexandru Elisei
+> > > > > > > <alexandru.elisei@arm.com> wrote:
+> > > > > > > >
+> > > > > > > > Hi Rob,
+> > > > > > > >
+> > > > > > > > Thank you so much for the feedback, I'm not very familiar with device tree,
+> > > > > > > > and any comments are very useful.
+> > > > > > > >
+> > > > > > > > On Mon, Dec 11, 2023 at 11:29:40AM -0600, Rob Herring wrote:
+> > > > > > > > > On Sun, Nov 19, 2023 at 10:59 AM Alexandru Elisei
+> > > > > > > > > <alexandru.elisei@arm.com> wrote:
+> > > > > > > > > >
+> > > > > > > > > > Allow the kernel to get the size and location of the MTE tag storage
+> > > > > > > > > > regions from the DTB. This memory is marked as reserved for now.
+> > > > > > > > > >
+> > > > > > > > > > The DTB node for the tag storage region is defined as:
+> > > > > > > > > >
+> > > > > > > > > >         tags0: tag-storage@8f8000000 {
+> > > > > > > > > >                 compatible = "arm,mte-tag-storage";
+> > > > > > > > > >                 reg = <0x08 0xf8000000 0x00 0x4000000>;
+> > > > > > > > > >                 block-size = <0x1000>;
+> > > > > > > > > >                 memory = <&memory0>;    // Associated tagged memory node
+> > > > > > > > > >         };
+> > > > > > > > >
+> > > > > > > > > I skimmed thru the discussion some. If this memory range is within
+> > > > > > > > > main RAM, then it definitely belongs in /reserved-memory.
+> > > > > > > >
+> > > > > > > > Ok, will do that.
+> > > > > > > >
+> > > > > > > > If you don't mind, why do you say that it definitely belongs in
+> > > > > > > > reserved-memory? I'm not trying to argue otherwise, I'm curious about the
+> > > > > > > > motivation.
+> > > > > > >
+> > > > > > > Simply so that /memory nodes describe all possible memory and
+> > > > > > > /reserved-memory is just adding restrictions. It's also because
+> > > > > > > /reserved-memory is what gets handled early, and we don't need
+> > > > > > > multiple things to handle early.
+> > > > > > >
+> > > > > > > > Tag storage is not DMA and can live anywhere in memory.
+> > > > > > >
+> > > > > > > Then why put it in DT at all? The only reason CMA is there is to set
+> > > > > > > the size. It's not even clear to me we need CMA in DT either. The
+> > > > > > > reasoning long ago was the kernel didn't do a good job of moving and
+> > > > > > > reclaiming contiguous space, but that's supposed to be better now (and
+> > > > > > > most h/w figured out they need IOMMUs).
+> > > > > > >
+> > > > > > > But for tag storage you know the size as it is a function of the
+> > > > > > > memory size, right? After all, you are validating the size is correct.
+> > > > > > > I guess there is still the aspect of whether you want enable MTE or
+> > > > > > > not which could be done in a variety of ways.
+> > > > > >
+> > > > > > Oh, sorry, my bad, I should have been clearer about this. I don't want to
+> > > > > > put it in the DT as a "linux,cma" node. But I want it to be managed by CMA.
+> > > > >
+> > > > > Yes, I understand, but my point remains. Why do you need this in DT?
+> > > > > If the location doesn't matter and you can calculate the size from the
+> > > > > memory size, what else is there to add to the DT?
+> > > >
+> > > > I am afraid there has been a misunderstanding. What do you mean by
+> > > > "location doesn't matter"?
+> > >
+> > > You said:
+> > > > Tag storage is not DMA and can live anywhere in memory.
+> > >
+> > > Which I took as the kernel can figure out where to put it. But maybe
+> > > you meant the h/w platform can hard code it to be anywhere in memory?
+> > > If so, then yes, DT is needed.
+> >
+> > Ah, I see, sorry for not being clear enough, you are correct: tag storage
+> > is a hardware property, and software needs a mechanism (in this case, the
+> > dt) to discover its properties.
+> >
+> > >
+> > > > At the very least, Linux needs to know the address and size of a memory
+> > > > region to use it. The series is about using the tag storage memory for
+> > > > data. Tag storage cannot be described as a regular memory node because it
+> > > > cannot be tagged (and normal memory can).
+> > >
+> > > If the tag storage lives in the middle of memory, then it would be
+> > > described in the memory node, but removed by being in reserved-memory
+> > > node.
+> >
+> > I don't follow. Would you mind going into more details?
+> 
+> It goes back to what I said earlier about /memory nodes describing all
+> the memory. There's no reason to reserve memory if you haven't
+> described that range as memory to begin with. One could presumably
+> just have a memory node for each contiguous chunk and not need
+> /reserved-memory (ignoring the need to say what things are reserved
+> for). That would become very difficult to adjust. Note that the kernel
+> has a hardcoded limit of 64 reserved regions currently and that is not
+> enough for some people. Seems like a lot, but I have no idea how they
+> are (ab)using /reserved-memory.
 
-Apologies,
-Ira
+Ah, I see what you mean, reserved memory is about marking existing memory
+(from a /memory node) as special, not about adding new memory.
+
+After the memblock allocator is initialized, the kernel can use it for its
+own allocations. Kernel allocations are not movable.
+
+When a page is allocated as tagged, the associated tag storage cannot be
+used for data, otherwise the tags would corrupt that data. To avoid this,
+the requirement is that tag storage pages are only used for movable
+allocations. When a page is allocated as tagged, the data in the associated
+tag storage is migrated and the tag storage is taken from the page
+allocator (via alloc_contig_range()).
+
+My understanding is that the memblock allocator can use all the memory from
+a /memory node. If the tags storage memory is declared in a /memory node,
+there exists the possibility that Linux will use tag storage memory for its
+own allocation, which would make that tags storage memory unmovable, and
+thus unusable for storing tags.
+
+Looking at early_init_dt_scan_memory(), even if a /memory node if marked at
+hotpluggable, memblock will still use it, unless "movable_node" is set on
+the kernel command line.
+
+That's the reason why I'm not describing tag storage in a /memory node.  Is
+there way to tell the memblock allocator not to use memory from a /memory
+node?
+
+> 
+> Let me give an example. Presumably using MTE at all is configurable.
+> If you boot a kernel with MTE disabled (or older and not supporting
+> it), then I'd assume you'd want to use the tag storage for regular
+> memory. Well, If tag storage is already part of /memory, then all you
+> have to do is ignore the tag reserved-memory region. Tweaking the
+> memory nodes would be more work.
+
+Right now, memory is added via memblock_reserve(), and if MTE is disabled
+(for example, via the kernel command line), the code calls
+free_reserved_page() for each tag storage page. I find that straightfoward
+to implement.
+
+Thanks,
+Alex
+
+> 
+> 
+> Also, I should point out that /memory and /reserved-memory nodes are
+> not used for UEFI boot.
+> 
+> Rob
+> 
