@@ -2,107 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A7C8812D35
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 11:40:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A357812D3D
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 11:43:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1443712AbjLNKkE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 05:40:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46078 "EHLO
+        id S1443714AbjLNKn2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 05:43:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48982 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1443694AbjLNKkC (ORCPT
+        with ESMTP id S1443641AbjLNKn0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 05:40:02 -0500
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 8FBAC11B;
-        Thu, 14 Dec 2023 02:40:07 -0800 (PST)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B5180C15;
-        Thu, 14 Dec 2023 02:40:52 -0800 (PST)
-Received: from [10.57.85.242] (unknown [10.57.85.242])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B810C3F738;
-        Thu, 14 Dec 2023 02:40:02 -0800 (PST)
-Message-ID: <fe8f8d00-1720-4a47-83ae-1aa4c005c4f5@arm.com>
-Date:   Thu, 14 Dec 2023 10:41:05 +0000
+        Thu, 14 Dec 2023 05:43:26 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E44FBD
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 02:43:33 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 89274C433C8;
+        Thu, 14 Dec 2023 10:43:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1702550612;
+        bh=0bR4DQSOTx7dFp+Uy7dGDy1FL138/1iTrRlHcJbU9BQ=;
+        h=Date:From:To:Cc:Subject:From;
+        b=FL55BBnEcotWFkU1OW9srDH2/9JP+OOG0ygqlG6GnwpV6yoBntCqZ4dx34HEIPOo2
+         0FYDG0duDbLLygjUiAkkh2aYrlLSS3OiooTrAQuxpsQdsq8tMzxCSj3r6vNp7R5SON
+         5oIOUbXVzFzEXH6LkCqthBgc1RvkMxunN+0pSomKgITYqOINduLcgnXwJHOFGhpe3J
+         xQYZC8iKWOp7b+6n8C42+Kzrm8t5NXVhd7k28L2UtlfydLNOEdP+mKCbLsP/PMEw0q
+         1WNkRQYh8j6EhBmzfxXPEHRfatWBpt/sRyi45RlQhcnEwi51zw6I3tn5fgjolu32Il
+         A+zjkKmMj/FYw==
+Date:   Thu, 14 Dec 2023 10:43:28 +0000
+From:   Will Deacon <will@kernel.org>
+To:     joro@8bytes.org
+Cc:     iommu@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, robin.murphy@arm.com,
+        kernel-team@android.com
+Subject: [GIT PULL] iommu/arm-smmu: Updates for 6.8
+Message-ID: <20231214104327.GA924@willie-the-truck>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/4] cpufreq: Add a cpufreq pressure feedback for the
- scheduler
-Content-Language: en-US
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     Vincent Guittot <vincent.guittot@linaro.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        catalin.marinas@arm.com, will@kernel.org, sudeep.holla@arm.com,
-        agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
-        mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
-        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
-        mgorman@suse.de, bristot@redhat.com, vschneid@redhat.com,
-        rui.zhang@intel.com, mhiramat@kernel.org,
-        daniel.lezcano@linaro.org, amit.kachhap@gmail.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-pm@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-trace-kernel@vger.kernel.org
-References: <20231212142730.998913-1-vincent.guittot@linaro.org>
- <20231212142730.998913-2-vincent.guittot@linaro.org>
- <20231214054307.axl33gagxacidjbn@vireshk-i7>
- <CAKfTPtDam5eQO1DHxALsCaU53Rtawbfrvswy+z2unnV_eXeVLA@mail.gmail.com>
- <54f3b98c-1f7d-4205-9e3c-a4a19ad3d941@arm.com>
- <CAJZ5v0gD-utGhM3vN7JmPia1CVcSQa6RPnk2xMBXXc6asRTn=g@mail.gmail.com>
-From:   Lukasz Luba <lukasz.luba@arm.com>
-In-Reply-To: <CAJZ5v0gD-utGhM3vN7JmPia1CVcSQa6RPnk2xMBXXc6asRTn=g@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Joerg,
 
+Please pull these Arm SMMU updates for 6.8 ahead of the Christmas break.
+I'll be disappearing shortly, but I'll keep half an eye on the list in
+case any issues crop up.
 
-On 12/14/23 09:40, Rafael J. Wysocki wrote:
-> On Thu, Dec 14, 2023 at 10:07 AM Lukasz Luba <lukasz.luba@arm.com> wrote:
->>
->> On 12/14/23 07:57, Vincent Guittot wrote:
->>> On Thu, 14 Dec 2023 at 06:43, Viresh Kumar <viresh.kumar@linaro.org> wrote:
->>>>
->>>> On 12-12-23, 15:27, Vincent Guittot wrote:
->>>>> @@ -2618,6 +2663,9 @@ static int cpufreq_set_policy(struct cpufreq_policy *policy,
->>>>>         policy->max = __resolve_freq(policy, policy->max, CPUFREQ_RELATION_H);
->>>>>         trace_cpu_frequency_limits(policy);
->>>>>
->>>>> +     cpus = policy->related_cpus;
->>>>> +     cpufreq_update_pressure(cpus, policy->max);
->>>>> +
->>>>>         policy->cached_target_freq = UINT_MAX;
->>>>
->>>> One more question, why are you doing this from cpufreq_set_policy ? If
->>>> due to cpufreq cooling or from userspace, we end up limiting the
->>>> maximum possible frequency, will this routine always get called ?
->>>
->>> Yes, any update of a FREQ_QOS_MAX ends up calling cpufreq_set_policy()
->>> to update the policy->max
->>>
->>
->> Agree, cpufreq sysfs scaling_max_freq is also important to handle
->> in this new design. Currently we don't reflect that as reduced CPU
->> capacity in the scheduler. There was discussion when I proposed to feed
->> that CPU frequency reduction into thermal_pressure [1].
->>
->> The same applies for the DTPM which is missing currently the proper
->> impact to the CPU reduced capacity in the scheduler.
->>
->> IMHO any limit set into FREQ_QOS_MAX should be visible in this
->> new design of capacity reduction signaling.
->>
->> [1] https://lore.kernel.org/lkml/20220930094821.31665-2-lukasz.luba@arm.com/
-> 
-> Actually, freq_qos_read_value(&policy->constraints, FREQ_QOS_MAX) will
-> return the requisite limit.
+There's the usual summary of changes in the tag.
 
-Yes, but we need to translate that information from freq domain
-into capacity domain and plumb ii into scheduler as stolen CPU capacity.
-Ideally, w/o any 'smoothing' but just instant value.
-That's the hope of this patch set re-design.
+Cheers,
+
+Will
+
+--->8
+
+The following changes since commit 2cc14f52aeb78ce3f29677c2de1f06c0e91471ab:
+
+  Linux 6.7-rc3 (2023-11-26 19:59:33 -0800)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/will/linux.git tags/arm-smmu-updates
+
+for you to fetch changes up to 1343121f08e6df62b14e6c0a8c193256ac225b0c:
+
+  Merge branch 'for-joerg/arm-smmu/bindings' into for-joerg/arm-smmu/updates (2023-12-13 15:53:02 +0000)
+
+----------------------------------------------------------------
+Arm SMMU updates for 6.8
+
+- Device-tree binding updates:
+  * Add additional compatible strings for Qualcomm SoCs
+  * Document Adreno clocks for Qualcomm's SM8350 SoC
+
+- SMMUv2:
+  * Implement support for the ->domain_alloc_paging() callback
+  * Ensure Secure context is restored following suspend of Qualcomm SMMU
+    implementation
+
+- SMMUv3:
+  * Disable stalling mode for the "quiet" context descriptor
+  * Minor refactoring and driver cleanups
+
+----------------------------------------------------------------
+Jason Gunthorpe (8):
+      iommu/arm-smmu-v3: Add a type for the STE
+      iommu/arm-smmu-v3: Master cannot be NULL in arm_smmu_write_strtab_ent()
+      iommu/arm-smmu-v3: Remove ARM_SMMU_DOMAIN_NESTED
+      iommu/arm-smmu: Reorganize arm_smmu_domain_add_master()
+      iommu/arm-smmu: Convert to a global static identity domain
+      iommu/arm-smmu: Implement IOMMU_DOMAIN_BLOCKED
+      iommu/arm-smmu: Pass arm_smmu_domain to internal functions
+      iommu/arm-smmu: Convert to domain_alloc_paging()
+
+Konrad Dybcio (2):
+      dt-bindings: arm-smmu: Document SM8[45]50 GPU SMMU
+      iommu/arm-smmu-qcom: Add QCM2290 MDSS compatible
+
+Krzysztof Kozlowski (1):
+      dt-bindings: iommu: arm,smmu: document clocks for the SM8350 GPU SMMU
+
+Neil Armstrong (1):
+      dt-bindings: iommu: arm,smmu: document the SM8650 System MMU
+
+Rajendra Nayak (1):
+      dt-bindings: arm-smmu: Add compatible for X1E80100 SoC
+
+Rob Clark (1):
+      iommu/arm-smmu-qcom: Add missing GMU entry to match table
+
+Vladimir Lypak (1):
+      iommu/qcom: restore IOMMU state if needed
+
+Wenkai Lin (1):
+      iommu/arm-smmu-v3: disable stall for quiet_cd
+
+Will Deacon (1):
+      Merge branch 'for-joerg/arm-smmu/bindings' into for-joerg/arm-smmu/updates
+
+ .../devicetree/bindings/iommu/arm,smmu.yaml        |  77 ++++++++++-
+ drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c        |  75 +++++-----
+ drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h        |   8 +-
+ drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c         |   2 +
+ drivers/iommu/arm/arm-smmu/arm-smmu.c              | 153 ++++++++++++++-------
+ drivers/iommu/arm/arm-smmu/arm-smmu.h              |   1 -
+ drivers/iommu/arm/arm-smmu/qcom_iommu.c            |  10 +-
+ 7 files changed, 226 insertions(+), 100 deletions(-)
