@@ -2,56 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 463BD812EBE
+	by mail.lfdr.de (Postfix) with ESMTP id 9B984812EBF
 	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 12:37:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1444057AbjLNLhE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 06:37:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52772 "EHLO
+        id S1444068AbjLNLhF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 06:37:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52816 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1444016AbjLNLgq (ORCPT
+        with ESMTP id S1444063AbjLNLgq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 14 Dec 2023 06:36:46 -0500
 Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F02A519E;
-        Thu, 14 Dec 2023 03:36:51 -0800 (PST)
-Date:   Thu, 14 Dec 2023 11:36:49 -0000
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D355219F;
+        Thu, 14 Dec 2023 03:36:52 -0800 (PST)
+Date:   Thu, 14 Dec 2023 11:36:50 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1702553810;
+        s=2020; t=1702553811;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=zs8gKTAbaLj6Ugbppwcmr7EJztUM6IrhnlHBemGHW7Y=;
-        b=pWYmJd5lfkY/cET3wcTYGdmzWjLpcKfLasuGpN8iBLyrM4cgygeNmvESQSYsCMyB/QJT++
-        seS0M+ArcQpO+J2pHwSapXr3m6Y8yAwAAKq20H3McjA5nc/f50pSaxBjwIz3dOVrpoGR5d
-        dmTuJMGnL6HpJ2KkJfYBPJQSo+vSY3Z0/XtSBbXP7RfCAe/jREhjL9nzdXPWxH3YJGxiXi
-        g/2lVQOclyYdsG5omYp+hu3cLqt7MAB0ixJ4IOXeRbjGe4DKG2y7mrCBDTchAYYJPzsTPM
-        t4dF1RaJ1tZ5Mj805UywgWWSItBprE+INzwv/3zvWX5+XHMP7Xf1H0LQ4w1pNA==
+        bh=/B2R4viVt/hMzo/6ly26OBh7Dy6Gncq7sc2oXBZ/reY=;
+        b=S80IgDem3rtkoM9zr8jYBGuGyw2hEPXSgXc8Swa/J9sVzwZom5jBIG4CuB5UzIGyVy/8r3
+        EHgA92LE1p+/xh5F/j0ZpZoyvHg+nncMqwNC9mHcvCWv/QPbVLzaCEMGsaVhwFGFgGNDxe
+        5Z8aneYyhsXt4HyeuroSB+TyUsdw+6ibj4CRTJGsKHh5IMFow91yEhAAGano0PZ3KLklHR
+        LLJY/DaPvqk/MXa/RFI8/NZRssODzWZzWTuSre77kSJ7QXd6q9frahedm37s/VILL9U9GO
+        PspsMp5iL1Ik6WzNH6rDo+tfxdE+ylyRhws+/sTqL22TXsUXb7F/D1LGHhr0xw==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1702553810;
+        s=2020e; t=1702553811;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=zs8gKTAbaLj6Ugbppwcmr7EJztUM6IrhnlHBemGHW7Y=;
-        b=7KaPOmzQPvs9z5Ebb8RiMTLXa2SgFijKXTWWNkTdMyIBXIodhhmDiECPQ9itVtsGZ6dLXt
-        QWHEMfC6oKqXfJBg==
+        bh=/B2R4viVt/hMzo/6ly26OBh7Dy6Gncq7sc2oXBZ/reY=;
+        b=iXayjQQFjwxI1+1BO4YTmphUgUwaC26OB/IBATvEzkaCqzJ+/qnUI7WEhcn3zjDtBwZttT
+        7Oiw15YKtcWXJMBg==
 From:   "tip-bot2 for Juergen Gross" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/paravirt] x86/paravirt: Move some functions and defines to
- alternative.c
-Cc:     Juergen Gross <jgross@suse.com>,
+Subject: [tip: x86/paravirt] x86/paravirt: Introduce ALT_NOT_XEN
+Cc:     "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Juergen Gross <jgross@suse.com>,
         "Borislav Petkov (AMD)" <bp@alien8.de>, x86@kernel.org,
         linux-kernel@vger.kernel.org
-In-Reply-To: <20231129133332.31043-3-jgross@suse.com>
-References: <20231129133332.31043-3-jgross@suse.com>
+In-Reply-To: <20231129133332.31043-2-jgross@suse.com>
+References: <20231129133332.31043-2-jgross@suse.com>
 MIME-Version: 1.0
-Message-ID: <170255380982.398.7785469441002504669.tip-bot2@tip-bot2>
+Message-ID: <170255381064.398.12143357445240308585.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -68,229 +68,194 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the x86/paravirt branch of tip:
 
-Commit-ID:     9824b00c2b58f9e1072ef3ece571a2cfc71089d4
-Gitweb:        https://git.kernel.org/tip/9824b00c2b58f9e1072ef3ece571a2cfc71089d4
+Commit-ID:     772ca413537eca9010e93922699537f56db9c8c4
+Gitweb:        https://git.kernel.org/tip/772ca413537eca9010e93922699537f56db9c8c4
 Author:        Juergen Gross <jgross@suse.com>
-AuthorDate:    Wed, 29 Nov 2023 14:33:29 +01:00
+AuthorDate:    Wed, 29 Nov 2023 14:33:28 +01:00
 Committer:     Borislav Petkov (AMD) <bp@alien8.de>
-CommitterDate: Sun, 10 Dec 2023 20:30:31 +01:00
+CommitterDate: Sun, 10 Dec 2023 19:16:38 +01:00
 
-x86/paravirt: Move some functions and defines to alternative.c
+x86/paravirt: Introduce ALT_NOT_XEN
 
-As a preparation for replacing paravirt patching completely by
-alternative patching, move some backend functions and #defines to
-the alternatives code and header.
+Introduce the macro ALT_NOT_XEN as a short form of
+ALT_NOT(X86_FEATURE_XENPV).
 
+No functional changes.
+
+Suggested-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 Signed-off-by: Juergen Gross <jgross@suse.com>
 Signed-off-by: Borislav Petkov (AMD) <bp@alien8.de>
-Link: https://lore.kernel.org/r/20231129133332.31043-3-jgross@suse.com
+Link: https://lore.kernel.org/r/20231129133332.31043-2-jgross@suse.com
 ---
- arch/x86/include/asm/alternative.h        | 16 ++++++++++++-
- arch/x86/include/asm/paravirt.h           | 12 +---------
- arch/x86/include/asm/paravirt_types.h     |  4 +---
- arch/x86/include/asm/qspinlock_paravirt.h |  4 +--
- arch/x86/kernel/alternative.c             | 10 +++++++-
- arch/x86/kernel/kvm.c                     |  4 +--
- arch/x86/kernel/paravirt.c                | 30 ++++++----------------
- arch/x86/xen/irq.c                        |  2 +-
- 8 files changed, 41 insertions(+), 41 deletions(-)
+ arch/x86/include/asm/paravirt.h       | 42 +++++++++++---------------
+ arch/x86/include/asm/paravirt_types.h |  3 ++-
+ 2 files changed, 21 insertions(+), 24 deletions(-)
 
-diff --git a/arch/x86/include/asm/alternative.h b/arch/x86/include/asm/alternative.h
-index 65f7909..ce788ab 100644
---- a/arch/x86/include/asm/alternative.h
-+++ b/arch/x86/include/asm/alternative.h
-@@ -330,6 +330,22 @@ static inline int alternatives_text_reserved(void *start, void *end)
-  */
- #define ASM_NO_INPUT_CLOBBER(clbr...) "i" (0) : clbr
- 
-+/* Macro for creating assembler functions avoiding any C magic. */
-+#define DEFINE_ASM_FUNC(func, instr, sec)		\
-+	asm (".pushsection " #sec ", \"ax\"\n"		\
-+	     ".global " #func "\n\t"			\
-+	     ".type " #func ", @function\n\t"		\
-+	     ASM_FUNC_ALIGN "\n"			\
-+	     #func ":\n\t"				\
-+	     ASM_ENDBR					\
-+	     instr "\n\t"				\
-+	     ASM_RET					\
-+	     ".size " #func ", . - " #func "\n\t"	\
-+	     ".popsection")
-+
-+void BUG_func(void);
-+void nop_func(void);
-+
- #else /* __ASSEMBLY__ */
- 
- #ifdef CONFIG_SMP
 diff --git a/arch/x86/include/asm/paravirt.h b/arch/x86/include/asm/paravirt.h
-index aa76ac7..f18bfa7 100644
+index 693c61d..aa76ac7 100644
 --- a/arch/x86/include/asm/paravirt.h
 +++ b/arch/x86/include/asm/paravirt.h
-@@ -720,18 +720,6 @@ static __always_inline unsigned long arch_local_irq_save(void)
- #undef PVOP_VCALL4
- #undef PVOP_CALL4
+@@ -142,8 +142,7 @@ static inline void write_cr0(unsigned long x)
+ static __always_inline unsigned long read_cr2(void)
+ {
+ 	return PVOP_ALT_CALLEE0(unsigned long, mmu.read_cr2,
+-				"mov %%cr2, %%rax;",
+-				ALT_NOT(X86_FEATURE_XENPV));
++				"mov %%cr2, %%rax;", ALT_NOT_XEN);
+ }
  
--#define DEFINE_PARAVIRT_ASM(func, instr, sec)		\
--	asm (".pushsection " #sec ", \"ax\"\n"		\
--	     ".global " #func "\n\t"			\
--	     ".type " #func ", @function\n\t"		\
--	     ASM_FUNC_ALIGN "\n"			\
--	     #func ":\n\t"				\
--	     ASM_ENDBR					\
--	     instr "\n\t"				\
--	     ASM_RET					\
--	     ".size " #func ", . - " #func "\n\t"	\
--	     ".popsection")
--
- extern void default_banner(void);
- void native_pv_lock_init(void) __init;
+ static __always_inline void write_cr2(unsigned long x)
+@@ -154,13 +153,12 @@ static __always_inline void write_cr2(unsigned long x)
+ static inline unsigned long __read_cr3(void)
+ {
+ 	return PVOP_ALT_CALL0(unsigned long, mmu.read_cr3,
+-			      "mov %%cr3, %%rax;", ALT_NOT(X86_FEATURE_XENPV));
++			      "mov %%cr3, %%rax;", ALT_NOT_XEN);
+ }
  
+ static inline void write_cr3(unsigned long x)
+ {
+-	PVOP_ALT_VCALL1(mmu.write_cr3, x,
+-			"mov %%rdi, %%cr3", ALT_NOT(X86_FEATURE_XENPV));
++	PVOP_ALT_VCALL1(mmu.write_cr3, x, "mov %%rdi, %%cr3", ALT_NOT_XEN);
+ }
+ 
+ static inline void __write_cr4(unsigned long x)
+@@ -182,7 +180,7 @@ extern noinstr void pv_native_wbinvd(void);
+ 
+ static __always_inline void wbinvd(void)
+ {
+-	PVOP_ALT_VCALL0(cpu.wbinvd, "wbinvd", ALT_NOT(X86_FEATURE_XENPV));
++	PVOP_ALT_VCALL0(cpu.wbinvd, "wbinvd", ALT_NOT_XEN);
+ }
+ 
+ static inline u64 paravirt_read_msr(unsigned msr)
+@@ -390,27 +388,25 @@ static inline void paravirt_release_p4d(unsigned long pfn)
+ static inline pte_t __pte(pteval_t val)
+ {
+ 	return (pte_t) { PVOP_ALT_CALLEE1(pteval_t, mmu.make_pte, val,
+-					  "mov %%rdi, %%rax",
+-					  ALT_NOT(X86_FEATURE_XENPV)) };
++					  "mov %%rdi, %%rax", ALT_NOT_XEN) };
+ }
+ 
+ static inline pteval_t pte_val(pte_t pte)
+ {
+ 	return PVOP_ALT_CALLEE1(pteval_t, mmu.pte_val, pte.pte,
+-				"mov %%rdi, %%rax", ALT_NOT(X86_FEATURE_XENPV));
++				"mov %%rdi, %%rax", ALT_NOT_XEN);
+ }
+ 
+ static inline pgd_t __pgd(pgdval_t val)
+ {
+ 	return (pgd_t) { PVOP_ALT_CALLEE1(pgdval_t, mmu.make_pgd, val,
+-					  "mov %%rdi, %%rax",
+-					  ALT_NOT(X86_FEATURE_XENPV)) };
++					  "mov %%rdi, %%rax", ALT_NOT_XEN) };
+ }
+ 
+ static inline pgdval_t pgd_val(pgd_t pgd)
+ {
+ 	return PVOP_ALT_CALLEE1(pgdval_t, mmu.pgd_val, pgd.pgd,
+-				"mov %%rdi, %%rax", ALT_NOT(X86_FEATURE_XENPV));
++				"mov %%rdi, %%rax", ALT_NOT_XEN);
+ }
+ 
+ #define  __HAVE_ARCH_PTEP_MODIFY_PROT_TRANSACTION
+@@ -444,14 +440,13 @@ static inline void set_pmd(pmd_t *pmdp, pmd_t pmd)
+ static inline pmd_t __pmd(pmdval_t val)
+ {
+ 	return (pmd_t) { PVOP_ALT_CALLEE1(pmdval_t, mmu.make_pmd, val,
+-					  "mov %%rdi, %%rax",
+-					  ALT_NOT(X86_FEATURE_XENPV)) };
++					  "mov %%rdi, %%rax", ALT_NOT_XEN) };
+ }
+ 
+ static inline pmdval_t pmd_val(pmd_t pmd)
+ {
+ 	return PVOP_ALT_CALLEE1(pmdval_t, mmu.pmd_val, pmd.pmd,
+-				"mov %%rdi, %%rax", ALT_NOT(X86_FEATURE_XENPV));
++				"mov %%rdi, %%rax", ALT_NOT_XEN);
+ }
+ 
+ static inline void set_pud(pud_t *pudp, pud_t pud)
+@@ -464,7 +459,7 @@ static inline pud_t __pud(pudval_t val)
+ 	pudval_t ret;
+ 
+ 	ret = PVOP_ALT_CALLEE1(pudval_t, mmu.make_pud, val,
+-			       "mov %%rdi, %%rax", ALT_NOT(X86_FEATURE_XENPV));
++			       "mov %%rdi, %%rax", ALT_NOT_XEN);
+ 
+ 	return (pud_t) { ret };
+ }
+@@ -472,7 +467,7 @@ static inline pud_t __pud(pudval_t val)
+ static inline pudval_t pud_val(pud_t pud)
+ {
+ 	return PVOP_ALT_CALLEE1(pudval_t, mmu.pud_val, pud.pud,
+-				"mov %%rdi, %%rax", ALT_NOT(X86_FEATURE_XENPV));
++				"mov %%rdi, %%rax", ALT_NOT_XEN);
+ }
+ 
+ static inline void pud_clear(pud_t *pudp)
+@@ -492,8 +487,7 @@ static inline void set_p4d(p4d_t *p4dp, p4d_t p4d)
+ static inline p4d_t __p4d(p4dval_t val)
+ {
+ 	p4dval_t ret = PVOP_ALT_CALLEE1(p4dval_t, mmu.make_p4d, val,
+-					"mov %%rdi, %%rax",
+-					ALT_NOT(X86_FEATURE_XENPV));
++					"mov %%rdi, %%rax", ALT_NOT_XEN);
+ 
+ 	return (p4d_t) { ret };
+ }
+@@ -501,7 +495,7 @@ static inline p4d_t __p4d(p4dval_t val)
+ static inline p4dval_t p4d_val(p4d_t p4d)
+ {
+ 	return PVOP_ALT_CALLEE1(p4dval_t, mmu.p4d_val, p4d.p4d,
+-				"mov %%rdi, %%rax", ALT_NOT(X86_FEATURE_XENPV));
++				"mov %%rdi, %%rax", ALT_NOT_XEN);
+ }
+ 
+ static inline void __set_pgd(pgd_t *pgdp, pgd_t pgd)
+@@ -687,17 +681,17 @@ bool __raw_callee_save___native_vcpu_is_preempted(long cpu);
+ static __always_inline unsigned long arch_local_save_flags(void)
+ {
+ 	return PVOP_ALT_CALLEE0(unsigned long, irq.save_fl, "pushf; pop %%rax;",
+-				ALT_NOT(X86_FEATURE_XENPV));
++				ALT_NOT_XEN);
+ }
+ 
+ static __always_inline void arch_local_irq_disable(void)
+ {
+-	PVOP_ALT_VCALLEE0(irq.irq_disable, "cli;", ALT_NOT(X86_FEATURE_XENPV));
++	PVOP_ALT_VCALLEE0(irq.irq_disable, "cli;", ALT_NOT_XEN);
+ }
+ 
+ static __always_inline void arch_local_irq_enable(void)
+ {
+-	PVOP_ALT_VCALLEE0(irq.irq_enable, "sti;", ALT_NOT(X86_FEATURE_XENPV));
++	PVOP_ALT_VCALLEE0(irq.irq_enable, "sti;", ALT_NOT_XEN);
+ }
+ 
+ static __always_inline unsigned long arch_local_irq_save(void)
+@@ -769,7 +763,7 @@ void native_pv_lock_init(void) __init;
+ .endm
+ 
+ #define SAVE_FLAGS	ALTERNATIVE "PARA_IRQ_save_fl;", "pushf; pop %rax;", \
+-				    ALT_NOT(X86_FEATURE_XENPV)
++				    ALT_NOT_XEN
+ #endif
+ #endif /* CONFIG_PARAVIRT_XXL */
+ #endif	/* CONFIG_X86_64 */
 diff --git a/arch/x86/include/asm/paravirt_types.h b/arch/x86/include/asm/paravirt_types.h
-index 483e19e..166e961 100644
+index f4fb2e3..483e19e 100644
 --- a/arch/x86/include/asm/paravirt_types.h
 +++ b/arch/x86/include/asm/paravirt_types.h
-@@ -540,8 +540,6 @@ int paravirt_disable_iospace(void);
- 	__PVOP_VCALL(op, PVOP_CALL_ARG1(arg1), PVOP_CALL_ARG2(arg2),	\
- 		     PVOP_CALL_ARG3(arg3), PVOP_CALL_ARG4(arg4))
- 
--void _paravirt_nop(void);
--void paravirt_BUG(void);
- unsigned long paravirt_ret0(void);
- #ifdef CONFIG_PARAVIRT_XXL
- u64 _paravirt_ident_64(u64);
-@@ -551,7 +549,7 @@ void pv_native_irq_enable(void);
- unsigned long pv_native_read_cr2(void);
- #endif
- 
--#define paravirt_nop	((void *)_paravirt_nop)
-+#define paravirt_nop	((void *)nop_func)
- 
- extern struct paravirt_patch_site __parainstructions[],
+@@ -557,5 +557,8 @@ extern struct paravirt_patch_site __parainstructions[],
  	__parainstructions_end[];
-diff --git a/arch/x86/include/asm/qspinlock_paravirt.h b/arch/x86/include/asm/qspinlock_paravirt.h
-index 85b6e36..ef9697f 100644
---- a/arch/x86/include/asm/qspinlock_paravirt.h
-+++ b/arch/x86/include/asm/qspinlock_paravirt.h
-@@ -56,8 +56,8 @@ __PV_CALLEE_SAVE_REGS_THUNK(__pv_queued_spin_unlock_slowpath, ".spinlock.text");
- 	"pop    %rdx\n\t"						\
- 	FRAME_END
  
--DEFINE_PARAVIRT_ASM(__raw_callee_save___pv_queued_spin_unlock,
--		    PV_UNLOCK_ASM, .spinlock.text);
-+DEFINE_ASM_FUNC(__raw_callee_save___pv_queued_spin_unlock,
-+		PV_UNLOCK_ASM, .spinlock.text);
- 
- #else /* CONFIG_64BIT */
- 
-diff --git a/arch/x86/kernel/alternative.c b/arch/x86/kernel/alternative.c
-index be35c8c..ca25dd2 100644
---- a/arch/x86/kernel/alternative.c
-+++ b/arch/x86/kernel/alternative.c
-@@ -385,6 +385,16 @@ apply_relocation(u8 *buf, size_t len, u8 *dest, u8 *src, size_t src_len)
- 	}
- }
- 
-+/* Low-level backend functions usable from alternative code replacements. */
-+DEFINE_ASM_FUNC(nop_func, "", .entry.text);
-+EXPORT_SYMBOL_GPL(nop_func);
+ #endif	/* __ASSEMBLY__ */
 +
-+noinstr void BUG_func(void)
-+{
-+	BUG();
-+}
-+EXPORT_SYMBOL_GPL(BUG_func);
++#define ALT_NOT_XEN	ALT_NOT(X86_FEATURE_XENPV)
 +
- /*
-  * Replace instructions with better alternatives for this CPU type. This runs
-  * before SMP is initialized to avoid SMP problems with self modifying code.
-diff --git a/arch/x86/kernel/kvm.c b/arch/x86/kernel/kvm.c
-index 0ddb3bd..c461c1a 100644
---- a/arch/x86/kernel/kvm.c
-+++ b/arch/x86/kernel/kvm.c
-@@ -803,8 +803,8 @@ extern bool __raw_callee_save___kvm_vcpu_is_preempted(long);
-  "cmpb   $0, " __stringify(KVM_STEAL_TIME_preempted) "+steal_time(%rax)\n\t" \
-  "setne  %al\n\t"
- 
--DEFINE_PARAVIRT_ASM(__raw_callee_save___kvm_vcpu_is_preempted,
--		    PV_VCPU_PREEMPTED_ASM, .text);
-+DEFINE_ASM_FUNC(__raw_callee_save___kvm_vcpu_is_preempted,
-+		PV_VCPU_PREEMPTED_ASM, .text);
- #endif
- 
- static void __init kvm_guest_init(void)
-diff --git a/arch/x86/kernel/paravirt.c b/arch/x86/kernel/paravirt.c
-index 97f1436..acc5b10 100644
---- a/arch/x86/kernel/paravirt.c
-+++ b/arch/x86/kernel/paravirt.c
-@@ -34,14 +34,8 @@
- #include <asm/io_bitmap.h>
- #include <asm/gsseg.h>
- 
--/*
-- * nop stub, which must not clobber anything *including the stack* to
-- * avoid confusing the entry prologues.
-- */
--DEFINE_PARAVIRT_ASM(_paravirt_nop, "", .entry.text);
--
- /* stub always returning 0. */
--DEFINE_PARAVIRT_ASM(paravirt_ret0, "xor %eax,%eax", .entry.text);
-+DEFINE_ASM_FUNC(paravirt_ret0, "xor %eax,%eax", .entry.text);
- 
- void __init default_banner(void)
- {
-@@ -49,12 +43,6 @@ void __init default_banner(void)
- 	       pv_info.name);
- }
- 
--/* Undefined instruction for dealing with missing ops pointers. */
--noinstr void paravirt_BUG(void)
--{
--	BUG();
--}
--
- static unsigned paravirt_patch_call(void *insn_buff, const void *target,
- 				    unsigned long addr, unsigned len)
- {
-@@ -64,11 +52,11 @@ static unsigned paravirt_patch_call(void *insn_buff, const void *target,
- }
- 
- #ifdef CONFIG_PARAVIRT_XXL
--DEFINE_PARAVIRT_ASM(_paravirt_ident_64, "mov %rdi, %rax", .text);
--DEFINE_PARAVIRT_ASM(pv_native_save_fl, "pushf; pop %rax", .noinstr.text);
--DEFINE_PARAVIRT_ASM(pv_native_irq_disable, "cli", .noinstr.text);
--DEFINE_PARAVIRT_ASM(pv_native_irq_enable, "sti", .noinstr.text);
--DEFINE_PARAVIRT_ASM(pv_native_read_cr2, "mov %cr2, %rax", .noinstr.text);
-+DEFINE_ASM_FUNC(_paravirt_ident_64, "mov %rdi, %rax", .text);
-+DEFINE_ASM_FUNC(pv_native_save_fl, "pushf; pop %rax", .noinstr.text);
-+DEFINE_ASM_FUNC(pv_native_irq_disable, "cli", .noinstr.text);
-+DEFINE_ASM_FUNC(pv_native_irq_enable, "sti", .noinstr.text);
-+DEFINE_ASM_FUNC(pv_native_read_cr2, "mov %cr2, %rax", .noinstr.text);
- #endif
- 
- DEFINE_STATIC_KEY_TRUE(virt_spin_lock_key);
-@@ -96,9 +84,9 @@ unsigned int paravirt_patch(u8 type, void *insn_buff, unsigned long addr,
- 	unsigned ret;
- 
- 	if (opfunc == NULL)
--		/* If there's no function, patch it with paravirt_BUG() */
--		ret = paravirt_patch_call(insn_buff, paravirt_BUG, addr, len);
--	else if (opfunc == _paravirt_nop)
-+		/* If there's no function, patch it with BUG_func() */
-+		ret = paravirt_patch_call(insn_buff, BUG_func, addr, len);
-+	else if (opfunc == nop_func)
- 		ret = 0;
- 	else
- 		/* Otherwise call the function. */
-diff --git a/arch/x86/xen/irq.c b/arch/x86/xen/irq.c
-index 6092fea..39982f9 100644
---- a/arch/x86/xen/irq.c
-+++ b/arch/x86/xen/irq.c
-@@ -45,7 +45,7 @@ static const typeof(pv_ops) xen_irq_ops __initconst = {
- 		/* Initial interrupt flag handling only called while interrupts off. */
- 		.save_fl = __PV_IS_CALLEE_SAVE(paravirt_ret0),
- 		.irq_disable = __PV_IS_CALLEE_SAVE(paravirt_nop),
--		.irq_enable = __PV_IS_CALLEE_SAVE(paravirt_BUG),
-+		.irq_enable = __PV_IS_CALLEE_SAVE(BUG_func),
- 
- 		.safe_halt = xen_safe_halt,
- 		.halt = xen_halt,
+ #endif  /* CONFIG_PARAVIRT */
+ #endif	/* _ASM_X86_PARAVIRT_TYPES_H */
