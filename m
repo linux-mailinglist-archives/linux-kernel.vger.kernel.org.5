@@ -2,204 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F4888139E0
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 19:23:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AFA88139E5
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 19:24:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230406AbjLNSXI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 13:23:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52056 "EHLO
+        id S235614AbjLNSYd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 13:24:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40618 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229519AbjLNSXF (ORCPT
+        with ESMTP id S229519AbjLNSYc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 13:23:05 -0500
-Received: from wnew3-smtp.messagingengine.com (wnew3-smtp.messagingengine.com [64.147.123.17])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9923310A;
-        Thu, 14 Dec 2023 10:23:11 -0800 (PST)
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailnew.west.internal (Postfix) with ESMTP id 022982B000CF;
-        Thu, 14 Dec 2023 13:23:06 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute5.internal (MEProxy); Thu, 14 Dec 2023 13:23:09 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
-        :cc:content-transfer-encoding:content-type:content-type:date
-        :date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-        :references:reply-to:subject:subject:to:to; s=fm3; t=1702578186;
-         x=1702585386; bh=jO8QFkyxT8UnwR2dcix1epeyX1NgYymqMvBUkD8jyH4=; b=
-        LqG+BjVVn4Z890upuU+L9WS2St9a3ZnojxXfbpRBnK7O9s2AS1bMbGNSKHeOT/1w
-        SoCPQ+MBULtS7Es1+sV64ePILKocDVHsHh+rHbHd/2SpuFK9O3OLyRJMFKDWvgXM
-        v7lAPyYZ1l96d6ljhskKAmvwnt8kLfo6etclrSfWLi+dtnBbVeCFjTS6+pvNNDWD
-        ym391Yw+8+XG5bNc4vvQT5Rz/8mZ/iF3vlRrv/U14SshKjU/3UFHOQo6+3zLPXzA
-        rDdlBXQTNg5Nx/z5fB+XqvNGGW/ZDsTZwvhH3/wHRfq2KpRcNichLdVp9e+EDQYL
-        9cKCRRhJxfYQDGmZWpJHLA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-transfer-encoding
-        :content-type:content-type:date:date:feedback-id:feedback-id
-        :from:from:in-reply-to:in-reply-to:message-id:mime-version
-        :references:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
-        :x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1702578186; x=
-        1702585386; bh=jO8QFkyxT8UnwR2dcix1epeyX1NgYymqMvBUkD8jyH4=; b=B
-        pbf0Ttm/qZDdaZfK8by5DZs02Zn4xHoqby1dDmnF+SD1Fe9pC5JjQ0/gez6wgo/i
-        fqqFihaMwY4HGlE6PyatQ9TPk4JzYHPtKJu4bjTMbL4XGMUM8yNHn7SQUmZAfRyY
-        4DH/spKE2Ddh+5J29by+fhiVIitOzsBS4Q9dZUbVF2dm+WgYFaANjQnYBTxBXj6d
-        EHvzAHb93C05ysNj/vymwaEfXmvXBrSqhR/MYkTeaIKMET1r8+sgUXvCXFdo0q7G
-        YppJqaaz/gk1RDvoCk3h2ex7u0ZLOrMQmE0PxpQ5Pkte5LWXvKphKobRFAg5rd16
-        58ww+AcHucbFNQsitTeKg==
-X-ME-Sender: <xms:CUh7ZXluxcKsKKaJRLO-eL7CHVajHOVe3-SJpW8YU0XUXVeDN6D5Tg>
-    <xme:CUh7Za3b0lzqga_v_Yu8H14V_ibdaIlFaRW22FvWXyqLlii6B8bUI5Gzo6kQGK2jn
-    xZKAeGbgUnRc4WOtg>
-X-ME-Received: <xmr:CUh7ZdpOAXiFqFBxOX81ivQmHkQUrh1nOQMDtgstUneRE0DMHvncLF1wnmuhydvzZwxqi-IE3JhDHPieZ13S-qId1vsyz5IY0ZLskhk>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrudelledguddutdcutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enfghrlhcuvffnffculdefhedmnecujfgurhepfffhvfevuffkfhggtggugfgjsehtkefs
-    tddttdejnecuhfhrohhmpeffrghnihgvlhcuighuuceougiguhesugiguhhuuhdrgiihii
-    eqnecuggftrfgrthhtvghrnheptdfgueeuueekieekgfeiueekffelteekkeekgeegffev
-    tddvjeeuheeuueelfeetnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrg
-    hilhhfrhhomhepugiguhesugiguhhuuhdrgiihii
-X-ME-Proxy: <xmx:CUh7ZfnaQUe6SAmGWExXbx3L-NoWo8Nfytc1BIUvogDtWqKWDF_ysQ>
-    <xmx:CUh7ZV22lYlqlf0yp219Uej1Z7r8hZF1i6jAdQ5emVc8mxroJbrSAg>
-    <xmx:CUh7ZevPOFt-EhzSk7f_HzRs3b20z5o2kfUB5AiEDinq80uz1hhS1Q>
-    <xmx:Ckh7ZWdRL25ZhskGJdEUsV97KpeqO1iTp-p8snaYoNjOKjX2qUXgmGh4Ebs>
-Feedback-ID: i6a694271:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 14 Dec 2023 13:23:03 -0500 (EST)
-Date:   Thu, 14 Dec 2023 11:23:02 -0700
-From:   Daniel Xu <dxu@dxuuu.xyz>
-To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc:     Eyal Birger <eyal.birger@gmail.com>, daniel@iogearbox.net,
-        davem@davemloft.net, shuah@kernel.org, ast@kernel.org,
-        john.fastabend@gmail.com, kuba@kernel.org, andrii@kernel.org,
-        hawk@kernel.org, steffen.klassert@secunet.com,
-        antony.antony@secunet.com, alexei.starovoitov@gmail.com,
-        yonghong.song@linux.dev, eddyz87@gmail.com, mykolal@fb.com,
-        martin.lau@linux.dev, song@kernel.org, kpsingh@kernel.org,
-        sdf@google.com, haoluo@google.com, jolsa@kernel.org,
-        bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        devel@linux-ipsec.org
-Subject: Re: [PATCH bpf-next v5 9/9] bpf: xfrm: Add selftest for
- bpf_xdp_get_xfrm_state()
-Message-ID: <idbmj3y65mi7isezhlq4lip54bbngoouv5hbai2xd7bqtv7dxy@qjcmln2ovmz2>
-References: <CAHsH6Gs1vUQnhR_a4qFnAF37Vx=68Do28sfVfFxQ9pVj9jSzjw@mail.gmail.com>
- <qiv464c4y43mo5rih5k6lgzkbpnj6wsrl52hrhgbxeqj45atun@szmqlmnccm52>
- <CAHsH6Gujycb9RBuRk7QHorLe0Q=Np_tb3uboQfp9KmJnegVXvw@mail.gmail.com>
- <fwadmdjjogp4ybfxfpwovnmnn36jigffopijsuqt4ly4vxqghm@ysqhd25mzylp>
- <fecc7tpmbnqxuxqqolm44ggyeomcr3piabsjkv3pgyzlhyonq6@iiaxf34erjzq>
- <CAP01T770poh_63vBC+Heb9ASJ9pDZd1wTDWAgm5KCYHK9GtE1g@mail.gmail.com>
- <yshbkwaiong7qq2rsgkpvvyvzefnwud5uywbea6ocfxxenzv6s@dn45gdaygaso>
- <CAHsH6Gu_c29Nc+cH-s3EeztwScL=A42wi_SuJD=WeYV0mtVxbA@mail.gmail.com>
- <CAP01T76ZtehyRidmnV5A0p3LCyjw6Q4sjRH6ZhczgGn1ap-x_g@mail.gmail.com>
- <CAP01T74dKxYKM1GfTUJZ+G4+CKbRU=JLGoNcG6b8PMYcqUyEzQ@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+        Thu, 14 Dec 2023 13:24:32 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 253B5CF;
+        Thu, 14 Dec 2023 10:24:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1702578279; x=1734114279;
+  h=date:from:to:cc:subject:message-id:references:
+   in-reply-to:mime-version;
+  bh=rD1iekt3mcmDSqVT5FL/LX4KO77llj1TKAqs5saF8YA=;
+  b=IbcpNtH1HLuSVROjh0ihWouoOLXlUVn9iQCOfWmN7DJMaWFfePwdy90q
+   ga+v3qCZeW0clT+sbQ/zj6jRdPOX8qUHUfJv+T7WowaAi+bRxHq1rTXgZ
+   Lrn4ysJdVggZDO4Tf9RBTBsWfuwhiEujmLVIhlSvy75CUL+hxWeGDJNeD
+   ypSWOXJUiSsKv4/Yj1UvZXQr39fwgZDJxzOea4UhWyw69PWWSQ5WZy7Ou
+   6tPb0yKwlcYhzteYzMG5OIY/bsZXPS+vKC01VGg+zFdPHt6XWIdJDNPW+
+   AXm2qHsK8NzKqVm5EF/Ze7sTsNZMLeo38NWOlRQ6kAlCed6Y/xhoatqZd
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10924"; a="481359735"
+X-IronPort-AV: E=Sophos;i="6.04,276,1695711600"; 
+   d="scan'208";a="481359735"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Dec 2023 10:24:38 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10924"; a="1021637995"
+X-IronPort-AV: E=Sophos;i="6.04,276,1695711600"; 
+   d="scan'208";a="1021637995"
+Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
+  by fmsmga006.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 14 Dec 2023 10:24:38 -0800
+Received: from orsmsx601.amr.corp.intel.com (10.22.229.14) by
+ ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Thu, 14 Dec 2023 10:24:37 -0800
+Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
+ orsmsx601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Thu, 14 Dec 2023 10:24:37 -0800
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (104.47.56.168)
+ by edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Thu, 14 Dec 2023 10:24:37 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=kt4HVCaZWk987w77mYl6UQvEPDBZIXrdqEE2fZ5UDU4VzNEduLgm4bWogSyMxS/KYSjMHYObhx/bajmCMILyWwjPmsTemqxrYWiGPeIM4MaickgvAwWAsvmZXlN6XiRxLXVJ26f6waCfMCSmrUZ0l8h9YCpcU3YhS5xi7yHtvBsx04LH+6GeLfXSRbEI4H/IcQzq1qo2egq+0natSix+YsjuE6sSFpzoeZ74cSwSm7DroJwCixZ1ky/2GYGJIUi9FAk7Yh8NisuyTAeM/QVHMoSrh/CYT7QDjoeL5o5CcxAr+hH2TGq6v7dC1KGylelTfIyinM4wvtDvHEARjA+XQg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=P4kGGSCVFia1JICuyMZBAJBFa0OPG+Zx1g/9FVeKHU0=;
+ b=Gilfe/E53O+fqFHrZd18CPsgKuzK6iHcRjocgMPuSH2LKfK4y/qxFwKBlq+fwTvFpdec2IYRUlXZNvUAyP6QGW5T11EWhKI+rBg/4mR31WLZjD9s3nGv07aUsMEnPCMVoJox5iciBH+OvjBwV8JYl8/QhECMj7BeLjhoHIBs4JqZvXza6QNaDXvCsJUfMB679h1KHvJAbIKqUpYSQVvPmSFWAkEaAJ+1AUEcxFrStnrKcZcGRr4reqWbT1gGETA+tU+MgbTShCAkfSOkkyZWiCFSH7x5j5D8+RbFUmzmPRUn8jwhYteZ43ark10Q7t3SmzWYqeSrmdLvhL9SyR14jQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from SA1PR11MB6733.namprd11.prod.outlook.com (2603:10b6:806:25c::17)
+ by DM3PR11MB8682.namprd11.prod.outlook.com (2603:10b6:8:1ae::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7068.38; Thu, 14 Dec
+ 2023 18:24:31 +0000
+Received: from SA1PR11MB6733.namprd11.prod.outlook.com
+ ([fe80::da91:dbe5:857c:fa9c]) by SA1PR11MB6733.namprd11.prod.outlook.com
+ ([fe80::da91:dbe5:857c:fa9c%4]) with mapi id 15.20.7091.028; Thu, 14 Dec 2023
+ 18:24:31 +0000
+Date:   Thu, 14 Dec 2023 10:24:26 -0800
+From:   Ira Weiny <ira.weiny@intel.com>
+To:     Ira Weiny <ira.weiny@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Jonathan Cameron <jonathan.cameron@huawei.com>,
+        Smita Koralahalli <Smita.KoralahalliChannabasappa@amd.com>,
+        Shiju Jose <shiju.jose@huawei.com>
+CC:     Yazen Ghannam <yazen.ghannam@amd.com>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Alison Schofield <alison.schofield@intel.com>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        "Ard Biesheuvel" <ardb@kernel.org>, <linux-efi@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-cxl@vger.kernel.org>,
+        Ira Weiny <ira.weiny@intel.com>
+Subject: Re: [PATCH v3 6/7] firmware/efi: Process CXL Component Events
+Message-ID: <657b485a49a06_273ab0294ae@iweiny-mobl.notmuch>
+References: <20231213-cxl-cper-v3-0-7fd863dd0d25@intel.com>
+ <20231213-cxl-cper-v3-6-7fd863dd0d25@intel.com>
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAP01T74dKxYKM1GfTUJZ+G4+CKbRU=JLGoNcG6b8PMYcqUyEzQ@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20231213-cxl-cper-v3-6-7fd863dd0d25@intel.com>
+X-ClientProxiedBy: SJ0PR05CA0048.namprd05.prod.outlook.com
+ (2603:10b6:a03:33f::23) To SA1PR11MB6733.namprd11.prod.outlook.com
+ (2603:10b6:806:25c::17)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SA1PR11MB6733:EE_|DM3PR11MB8682:EE_
+X-MS-Office365-Filtering-Correlation-Id: e746706a-61a6-437a-6f83-08dbfcd1e9db
+X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: POCN9m70RBJHbwE1Dz4UZ585cMcckgz1YohYMM9cjqYVO5eyhMNZd/gxUj2ADLJwv5fhrHwreR3hW5hNFBJOB5gj1/NDS+qN+EslJKgSCupNe2YJ8t02kaQmDlOQeyme209bE3+1NnHM0KhxM1uN73KK5272VEyd0Eb3v6+qRdBrmZLuuOXva7Vi/w0XrSZMsVhK8lyMppX1PyReplG8yNMmOgW9Tg0kOFGlooqmyTnHbknui2rnUYDZoMu8UNjut/2goN33aVdSgbwtKOLOAsbRyj9G6fcx2V6h08/Zdj3X4eABu3CREosJbp9b6kJCAbP8GSMHkVbaLNOX5BP7yukpRK6qmuP78ZByNzlxbWHxEwBHHjN7dmRSLZYhaW2T8YkoQ7Ew9E7XxUdQZptivmNQpn/To5n5GFYm4Vyn/pggz6GUkejG7i24DYQ3I/oymVeAJIVJXMF3UaO6OeP8lmZTcZhrDuURQsnwl/H2jwyDLc/ZXd//NMrH/NutgjCvmXoJNSA5e6ncaHBJ888P58/0pfde7mk6pr4Ikk1jJYU2LQ253OB3lRbnnJ8oBvx/
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR11MB6733.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(376002)(136003)(366004)(346002)(396003)(230922051799003)(1800799012)(186009)(64100799003)(451199024)(86362001)(82960400001)(41300700001)(6666004)(66556008)(478600001)(6506007)(66946007)(54906003)(66476007)(26005)(9686003)(6512007)(38100700002)(83380400001)(5660300002)(2906002)(4744005)(110136005)(316002)(107886003)(6486002)(44832011)(8936002)(8676002)(4326008);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?thiIyRjfIE5nWWNliEa0ueZRzwkueH+IYHol/jKfXJx1sFhjbTplKOA/uCXr?=
+ =?us-ascii?Q?O6ESDFkGX+eeNXLi1VfJ4uOGxcvFFhiBJ7rQe/g1W5JOe6zCrWcVoHmIbQzr?=
+ =?us-ascii?Q?5Z7Y+d9GMsOIZMuXCb/5sIpStteztzddy26+DbUeu4ooA7cdcLWaDTRxQ/Kr?=
+ =?us-ascii?Q?FpvXvobSSaHGqfrNE8HaEp8LpWLbaXTowEYJTqqEmIDwLYtZavHJCOWYwSrI?=
+ =?us-ascii?Q?x8EWxCOoUxXPcbu3xspFDGSqNaYgrV4/o8C37j3XKWOjBmdkr1isW3i9jSiZ?=
+ =?us-ascii?Q?DuTwSnz1kZFXTz3muUWGArAmxeQUn//S7qngGzub7peMOyg6mGrfZF5BEDoB?=
+ =?us-ascii?Q?vYAPw+3xKYkoIvjuhgF5RiSqErXWBoOwVOygCyqQGP0Vp0utejTVeNh/QHwZ?=
+ =?us-ascii?Q?VvV+RpS/C6Sy87sSDTDSAAY4rlWHQT+yg/S4QUih6ivDPsWunppUrIuZsc+T?=
+ =?us-ascii?Q?AFZwB8abIeSzfcTZ4vKWep3XC0L34rU8SZN61rNpAtD457BwxJljmzkecAWS?=
+ =?us-ascii?Q?FPKCnOeztZJ3u3m+bFZdW3HWm2mzpcyvUKkHj8qZ1Aks2yT/AgJ9hjkeAAKy?=
+ =?us-ascii?Q?+NFTpROhOKlbtE/aTiAKlUeTGVHP5XvQUh5fNo+1y674z5w3qCMUQY/yTen2?=
+ =?us-ascii?Q?XGLIiqn2u5SVid/q9XmGsNpBuTupjumnnMKFzBBz3kJbwe9Lv2Q/gU8aVsR/?=
+ =?us-ascii?Q?q/Z+eYN1aY020STvvQjG2JcLhCZLX9iUYJEnU1OUl9rDWyB2G48mfahRK31I?=
+ =?us-ascii?Q?s9XO+c8K+vyk7O0jtUXkiWMnkoNuubmZxcGnhPMuIqCQq50ralU9Uo2PGcmM?=
+ =?us-ascii?Q?7MN3dEBLDzxvwtydS0qJwbDfgZD/tsoMqGqwiOBiXsG/Dn7cztcfh2ANowHV?=
+ =?us-ascii?Q?Wxl8Wn8gt9tdykKa+V01asga9HWWskOE5OLLMsVstZyeHVxJ0eiFeu3cQ7qJ?=
+ =?us-ascii?Q?emsT9tBNSurnryoP9SexmWPDM8ogQKHRcUinjrnma2AnrNZyraOO223L0i7B?=
+ =?us-ascii?Q?E/Ts2WVDsa38reFmjfQFcq3QBn55RSzWGufeeNSbk069IfQ4c77Gfkj2PsVq?=
+ =?us-ascii?Q?UT976XOlJDOf66DNjMoJerQHgNXma1eYgn6D3Inr76/TLEDhp/Lgo1o430a5?=
+ =?us-ascii?Q?KKdC7SQlEa2ac0KFldpzy5rUf2bw2kLpbUfrvpSxpVxCZm5vmPja+BdpbwH8?=
+ =?us-ascii?Q?Hy8d4lrix6CscYkIvnbw9jnXpfvti8oEaGVKZE2o80lkJyDMWYNdOi0gDl7t?=
+ =?us-ascii?Q?0ddlVlqyqoXvn6jf/NHJHJgAoTvrCWirKnXhQEDMlEFTGZVdhx2vTofQF3uQ?=
+ =?us-ascii?Q?/zr5vK1HNq+lJ/Y36CmPff5TYHs0m+kPF4r3OpA803uNVG3S/zI4oWbBYXFm?=
+ =?us-ascii?Q?Amv149mCd/UBAIdZ6jVBczK+iKC7TloNYik9qhIoMotb+xL5ZwXCJsBfcuSD?=
+ =?us-ascii?Q?Cm6CEodJJ48Nchz6AWwwwNhVRkhkilYv2CDrLIyBCDduLbVEdECXN3f5CfOw?=
+ =?us-ascii?Q?efy2uMN6D1MeTzYaVt0ZqcXv3JMJgiEPN7NqW4U1HgZT0kXamKKqrMyRX55g?=
+ =?us-ascii?Q?aKrVXBZGtGGLcNljKNYP7W1kEaOnUHCFq/Nc1QeJ?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: e746706a-61a6-437a-6f83-08dbfcd1e9db
+X-MS-Exchange-CrossTenant-AuthSource: SA1PR11MB6733.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Dec 2023 18:24:30.9455
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: g5BusJFC8zyIhAir0aEznoK8yCOXGzrW/bzOrJEseEObJC67VcPhbYPefaAzGBU71oYaTN0sVy0CX/aDE9ixAQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM3PR11MB8682
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 14, 2023 at 05:16:08PM +0100, Kumar Kartikeya Dwivedi wrote:
-> On Thu, 14 Dec 2023 at 17:08, Kumar Kartikeya Dwivedi <memxor@gmail.com> wrote:
-> >
-> > On Thu, 14 Dec 2023 at 00:49, Eyal Birger <eyal.birger@gmail.com> wrote:
-> > >
-> > > On Wed, Dec 13, 2023 at 3:15 PM Daniel Xu <dxu@dxuuu.xyz> wrote:
-> > > > > > [...]
-> > > > > >
-> > > > > > diff --git a/tools/testing/selftests/bpf/progs/test_tunnel_kern.c b/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
-> > > > > > index c0dd38616562..f00dba85ac5d 100644
-> > > > > > --- a/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
-> > > > > > +++ b/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
-> > > > > > @@ -8,8 +8,9 @@
-> > > > > >   */
-> > > > > >  #include "vmlinux.h"
-> > > > > >  #include <bpf/bpf_core_read.h>
-> > > > > > -#include <bpf/bpf_helpers.h>
-> > > > > >  #include <bpf/bpf_endian.h>
-> > > > > > +#include <bpf/bpf_helpers.h>
-> > > > > > +#include "bpf_experimental.h"
-> > > > > >  #include "bpf_kfuncs.h"
-> > > > > >  #include "bpf_tracing_net.h"
-> > > > > >
-> > > > > > @@ -988,8 +989,9 @@ int xfrm_get_state_xdp(struct xdp_md *xdp)
-> > > > > >         opts.family = AF_INET;
-> > > > > >
-> > > > > >         x = bpf_xdp_get_xfrm_state(xdp, &opts, sizeof(opts));
-> > > > > > -       if (!x || opts.error)
-> > > > > > +       if (!x)
-> > > > > >                 goto out;
-> > > > > > +       bpf_assert_with(opts.error == 0, XDP_PASS);
-> > > > > >
-> > > > > >         if (!x->replay_esn)
-> > > > > >                 goto out;
-> > > > > >
-> > > > > > results in:
-> > > > > >
-> > > > > > 57: (b7) r1 = 2                       ; R1_w=2 refs=5
-> > > > > > 58: (85) call bpf_throw#115436
-> > > > > > calling kernel function bpf_throw is not allowed
-> > > > > >
-> > > > >
-> > > > > I think this might be because bpf_throw is not registered for use by
-> > > > > BPF_PROG_TYPE_XDP. I would simply register the generic_kfunc_set for
-> > > > > this program type as well, since it's already done for TC.
-> > > >
-> > > > Ah yeah, that was it.
-> > > >
-> > > > >
-> > > > > > It looks like the above error comes from verifier.c:fetch_kfunc_meta,
-> > > > > > but I can run the exceptions selftests just fine with the same bzImage.
-> > > > > > So I'm thinking it's not a kfunc registration or BTF issue.
-> > > > > >
-> > > > > > Maybe it's cuz I'm holding onto KFUNC_ACQUIRE'd `x`? Not sure.
-> > > > > >
-> > > > >
-> > > > > Yes, even once you enable this, this will fail for now. I am sending
-> > > > > out a series later this week that enables bpf_throw with acquired
-> > > > > references, but until then may I suggest the following:
-> > > > >
-> > > > > #define bpf_assert_if(cond) for (int ___i = 0, ___j = (cond); !(___j) \
-> > > > > && !___j; bpf_throw(), ___i++)
-> > > > >
-> > > > > This will allow you to insert some cleanup code with an assertion.
-> > > > > Then in my series, I will convert this temporary bpf_assert_if back to
-> > > > > the normal bpf_assert.
-> > > > >
-> > > > > It would look like:
-> > > > > bpf_assert_if(opts.error == 0) {
-> > > > >   // Execute if assertion failed
-> > > > >   bpf_xdp_xfrm_state_release(x);
-> > > > > }
-> > > > >
-> > > > > Likewise for bpf_assert_with_if, you get the idea.
-> > > >
-> > > > I gave it a try and I'm getting this compile error:
-> > > >
-> > > >         progs/test_tunnel_kern.c:996:2: error: variable '___j' used in loop condition not modified in loop body [-Werror,-Wfor-loop-analysis]
-> > > >                 bpf_assert_with_if(opts.error == 0, XDP_PASS) {
-> > > >                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> > > >         /home/dxu/dev/linux/tools/testing/selftests/bpf/bpf_experimental.h:295:38: note: expanded from macro 'bpf_assert_with_if'
-> > > >                 for (int ___i = 0, ___j = (cond); !(___j) && !___j; bpf_throw(value), ___i++)
-> > > >                                                     ^~~~      ~~~~
-> > > >         1 error generated.
-> > > >         make: *** [Makefile:618: /home/dxu/dev/linux/tools/testing/selftests/bpf/test_tunnel_kern.bpf.o] Error 1
-> > > >
-> > > > Seems like the compiler is being clever.
-> > >
-> > > It looks like ___j is used twice - maybe it was meant to be ___i? i.e.:
-> > >
-> > >    for (int ___i = 0, ___j = (cond); !(___j) && !___i; bpf_throw(value), ___i++)
-> > >
-> >
-> > Ah, yes, that's a typo. Eyal is right, it should be ___i.
+Ira Weiny wrote:
+> BIOS can configure memory devices as firmware first.  This will send CXL
+> events to the firmware instead of the OS.  The firmware can then send
+> these events to the OS via UEFI.
 > 
-> Additionally, I would modify the macro to do ___j = !!(cond).
+> UEFI v2.10 section N.2.14 defines a Common Platform Error Record (CPER)
+> format for CXL Component Events.  The format is mostly the same as the
+> CXL Common Event Record Format.  The difference is the use of a GUID in
+> the Section Type rather than a UUID as part of the event itself.
+> 
+> Add EFI support to detect CXL CPER records and call a registered
+> notifier with the event.  Enforce that only one notifier call can be
+> registered at any time.
+> 
+> Cc: Ard Biesheuvel <ardb@kernel.org>
+> Signed-off-by: Ira Weiny <ira.weiny@intel.com>
 
-Makes sense. Will send out v6 with these fixes today.
+V4 coming with 0day build fixes for the CONFIG_UEFI_CPER=n case.
+
+Ira
