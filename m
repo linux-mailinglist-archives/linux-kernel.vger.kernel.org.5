@@ -2,42 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A5D68125A3
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 03:59:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B92181259C
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 03:59:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1443087AbjLNC7Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 21:59:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54154 "EHLO
+        id S1443081AbjLNC7N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 21:59:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54158 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1443064AbjLNC7I (ORCPT
+        with ESMTP id S229725AbjLNC7I (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 13 Dec 2023 21:59:08 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77169F5
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 18:59:14 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 0B117C433CB;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B04DAD
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 18:59:15 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 142B7C43397;
         Thu, 14 Dec 2023 02:59:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1702522754;
-        bh=mPBI3axJp4GnuoWzQtdEkiausI696uT7jgGjUdK6/q8=;
+        bh=ZaYFh+XfLjUJmX9Psu4A6X4K8BeU6LmR81W42dUb/GM=;
         h=From:Date:Subject:References:In-Reply-To:To:Cc:Reply-To:From;
-        b=jBTG9Btyv2bjjOsa3lLtHkkMv4BVnnZtRpowH8e9R0PcB90nYUeJzBj8pP7/r22wL
-         xBkFtPTx6IUPH+EL+WVqQh9HDkE9LjFsQmFJL+u7B+tuMmToefaeVyOwKwXYyg/taN
-         C/jJr13ebM6EfGvMo+aSnS6amsytLYvNgts74ebSXKvMyWY4e7PmuWCSVNGUWhr/da
-         KT3b9mvod2FnzmtO9iEp7vH31i4EaMW295Xximll+oVgO0wBuUM+zD2pX6hIJJWmEP
-         SFGM91w6/dGQ6PwNtaagZgAw+CUbif5ZOOy5oaEswk3UpxJ3LzgKM3jfN5WNOPDJry
-         QRlaoEAZnUSBg==
+        b=C+qUX7YmMoPZW51ohDugvk/Rv7lCOHoi3WDhfQIxIJnlyyzBbyauGtfqDAM9dqczR
+         w6QXoZv+fHXYuC4xzbxazFexcc/KCR8lhMC72QxIe5LUQSu0mVXLUFVp++pmDhNE9h
+         uHG6VbKCGjU0CgKhznMQrqjprDZeHLwolR7wrt3BhjOONEFcHBKTQ8oappe6qfO/J1
+         wNXWWjA5pd+Pu1pHNBKm/xKg5PM47ZMxdDAYGE+dVVuS8NfvCQ3NLaOXqaXMkqBxhq
+         sgUxV4PLVULZLmpX6rJB7RqO/JwJL83NHeud00w3KQ9+4N5UUQUvKtOgdY3Gg+EuUd
+         B6OmrLY+Ky0zw==
 Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by smtp.lore.kernel.org (Postfix) with ESMTP id E3D31C46CA2;
+        by smtp.lore.kernel.org (Postfix) with ESMTP id ECA89C46CA3;
         Thu, 14 Dec 2023 02:59:13 +0000 (UTC)
 From:   Fenglin Wu via B4 Relay 
         <devnull+quic_fenglinw.quicinc.com@kernel.org>
-Date:   Thu, 14 Dec 2023 10:59:14 +0800
-Subject: [PATCH v2 4/5] arm64: dts: qcom: sm8550-mtp: Add pm8010 regulators
+Date:   Thu, 14 Dec 2023 10:59:15 +0800
+Subject: [PATCH v2 5/5] arm64: dts: qcom: sm8550-qrd: add PM8010 regulators
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20231214-pm8010-regulator-v2-4-82131df6b97b@quicinc.com>
+Message-Id: <20231214-pm8010-regulator-v2-5-82131df6b97b@quicinc.com>
 References: <20231214-pm8010-regulator-v2-0-82131df6b97b@quicinc.com>
 In-Reply-To: <20231214-pm8010-regulator-v2-0-82131df6b97b@quicinc.com>
 To:     Andy Gross <agross@kernel.org>,
@@ -54,11 +54,11 @@ Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
         quic_subbaram@quicinc.com, quic_jprakash@quicinc.com,
         Fenglin Wu <quic_fenglinw@quicinc.com>
 X-Mailer: b4 0.13-dev-83828
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1702522752; l=4205;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1702522752; l=4210;
  i=quic_fenglinw@quicinc.com; s=20230725; h=from:subject:message-id;
- bh=4C8r1RX6jrprmI3bI9Nod0mp3ISCSyQLdpiWSlrmkOE=;
- b=1Rji7b2dj+2vfGExHlkN46xe7+Qr0OGIoHdNTEC2ZriIqR8pFgAfoDTSHBNcaJ6+oP6kMDviT
- aLOCev936BzDKcau3FT+Kh2Z+upnz8ufv5MGiGFLy4MN5sg1sCSBQFp
+ bh=Uw7hfR/4pMi0fyvOVpXG2sUU2LLsU8c8fd4IwNmDJIU=;
+ b=KRGkOXLmixQwqOnTzAmjoeUMMKd4rYrLST6Tw9n1Q4pEIGjBDOil1tRI4QJEKFfWpbcu5TPNi
+ FSo8gmWtscJBD/NjNAOLcTHS5UfOLrR9IVWR/Q92bGr82BrQIpQjg8W
 X-Developer-Key: i=quic_fenglinw@quicinc.com; a=ed25519;
  pk=hleIDz3Unk1zeiwwOnZUjoQVMMelRancDFXg927lNjI=
 X-Endpoint-Received: by B4 Relay for quic_fenglinw@quicinc.com/20230725 with auth_id=68
@@ -76,18 +76,18 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Fenglin Wu <quic_fenglinw@quicinc.com>
 
-Add PM8010 regulator device nodes for sm8550-mtp board.
+Add PM8010 regulator device nodes for sm8550-qrd board.
 
 Signed-off-by: Fenglin Wu <quic_fenglinw@quicinc.com>
 ---
- arch/arm64/boot/dts/qcom/sm8550-mtp.dts | 120 ++++++++++++++++++++++++++++++++
+ arch/arm64/boot/dts/qcom/sm8550-qrd.dts | 120 ++++++++++++++++++++++++++++++++
  1 file changed, 120 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/qcom/sm8550-mtp.dts b/arch/arm64/boot/dts/qcom/sm8550-mtp.dts
-index 9a70875028b7..8395d363d18d 100644
---- a/arch/arm64/boot/dts/qcom/sm8550-mtp.dts
-+++ b/arch/arm64/boot/dts/qcom/sm8550-mtp.dts
-@@ -510,6 +510,126 @@ vreg_l3g_1p2: ldo3 {
+diff --git a/arch/arm64/boot/dts/qcom/sm8550-qrd.dts b/arch/arm64/boot/dts/qcom/sm8550-qrd.dts
+index eef811def39b..7ca93c149215 100644
+--- a/arch/arm64/boot/dts/qcom/sm8550-qrd.dts
++++ b/arch/arm64/boot/dts/qcom/sm8550-qrd.dts
+@@ -527,6 +527,126 @@ vreg_l3g_1p2: ldo3 {
  			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
  		};
  	};
@@ -96,10 +96,10 @@ index 9a70875028b7..8395d363d18d 100644
 +		compatible = "qcom,pm8010-rpmh-regulators";
 +		qcom,pmic-id = "m";
 +
-+		vdd-l1-l2-supply = <&vreg_s4g_1p3>;
++		vdd-l1-l2-supply = <&vreg_s4g_1p25>;
 +		vdd-l3-l4-supply = <&vreg_bob2>;
-+		vdd-l5-supply = <&vreg_s6g_1p8>;
-+		vdd-l6-supply = <&vreg_s6g_1p8>;
++		vdd-l5-supply = <&vreg_s6g_1p86>;
++		vdd-l6-supply = <&vreg_s6g_1p86>;
 +		vdd-l7-supply = <&vreg_bob1>;
 +
 +		vreg_l1m_1p056: ldo1 {
@@ -156,9 +156,9 @@ index 9a70875028b7..8395d363d18d 100644
 +		compatible = "qcom,pm8010-rpmh-regulators";
 +		qcom,pmic-id = "n";
 +
-+		vdd-l1-l2-supply = <&vreg_s4g_1p3>;
++		vdd-l1-l2-supply = <&vreg_s4g_1p25>;
 +		vdd-l3-l4-supply = <&vreg_bob2>;
-+		vdd-l5-supply = <&vreg_s6g_1p8>;
++		vdd-l5-supply = <&vreg_s6g_1p86>;
 +		vdd-l6-supply = <&vreg_bob1>;
 +		vdd-l7-supply = <&vreg_bob1>;
 +
