@@ -1,162 +1,179 @@
-Return-Path: <linux-kernel+bounces-54-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-55-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5310E813B54
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 21:13:29 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id E2AE0813B57
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 21:13:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0DC862819DF
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 20:13:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5F50B1F223A9
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 20:13:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B3F306A324;
-	Thu, 14 Dec 2023 20:13:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 66DB96A350;
+	Thu, 14 Dec 2023 20:13:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jO7HT/kz"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="3uXO53yS"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pg1-f202.google.com (mail-pg1-f202.google.com [209.85.215.202])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CADF56A021;
-	Thu, 14 Dec 2023 20:13:18 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 58C24C433B9;
-	Thu, 14 Dec 2023 20:13:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1702584798;
-	bh=DE5oZHxnY2FnfLLm9CrhQ8lZCYG3nLE1BorF38WzfFU=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=jO7HT/kzC/0e5zyKvEwCgBKNFSmhYNZle6KooVc59NDXQjgb6obiFUHPgs1uAvAwy
-	 ZXJDNqAUwphT0pfOMqJ5eJc0veFLExwNXzexEdgyieZZ+n7IJMgqFRNxSA/DwRG3d6
-	 9kGZzpRtlXzpcPVJHI35wuNkkBUl0qS3UsQO2FPvLm91jrODGUs4/7l7bHTQkJj4Qh
-	 QuvhvmXGu1EdenVwO+q1Dz6wmqlmY6aAXXi0pxaD5stWd/rnUYpRai9ywnm3YDcBoH
-	 88J4pxvCl4JHz/VHDmT2RnJX3stj7KpK3Ip5xxNpOY2HDyjSSv0lIU84UAvQA7lYFl
-	 dO9yozw8KXuJg==
-Received: by mail-lf1-f49.google.com with SMTP id 2adb3069b0e04-50c02628291so9176102e87.0;
-        Thu, 14 Dec 2023 12:13:18 -0800 (PST)
-X-Gm-Message-State: AOJu0YyDGdIhxQYTGdNwHf5a9XQm9Vnud9OpEbbE6rqyDVAQLPdHkxoM
-	UiBuS+D9Q/qRoMQ0ksBQ5z6Cjw0f3O4ZTApV8Q==
-X-Google-Smtp-Source: AGHT+IHDKZo8Iz9evcWsSlbRyWsjf9ZmHonlKRtMaMEtFTEvbkKWDgkxQU9xVlEHJQrHQKr9MJyv9JPsWzfEzSGK/Wg=
-X-Received: by 2002:a05:6512:2019:b0:50b:d764:8046 with SMTP id
- a25-20020a056512201900b0050bd7648046mr4254179lfb.121.1702584796440; Thu, 14
- Dec 2023 12:13:16 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D1A776A03D
+	for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 20:13:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Received: by mail-pg1-f202.google.com with SMTP id 41be03b00d2f7-5be39ccc2e9so8400577a12.3
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 12:13:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1702584816; x=1703189616; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=o6UuF2I+ksa0nRBkfH8g4L0LiVSfO6AHAS12VBA0d84=;
+        b=3uXO53yS0xx9GMoa+komR8PI861qPpzCKzKGgx56phJ8Hs2Bgv1uJfdXktZ1DtAf+h
+         LMpt+mcZiChHv4qbuyM9LI+CGrJNAriiPtatLimiZp9Y41osIH4nu3+QaYQa9ylrtp9c
+         5XFOnAdGlNNMZmSwqtIBU87d/AbBuy+Zx0egjOtZmvDQZuot3Y92Q/+KUbJ4NWxR31Ci
+         TY1i5HPd93n+XrZ9a+LE2NPhE1cX9lYO0t+sHD/vPL0IxZus8SjQF/u/RkJCZZfEzpgP
+         Sl25R2eTWqEldgUPSw2vtHsi792+1hzII1t1YpSE4U10WnU/KUCMqeRZhMckVE/88TC4
+         +8Og==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702584816; x=1703189616;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=o6UuF2I+ksa0nRBkfH8g4L0LiVSfO6AHAS12VBA0d84=;
+        b=N3gi6UlUBFpMMZtnxNtSNtz5fEYSSFSlePDQcwO1/ZwofjxzzJqnu/hn/waC9ky1uv
+         lfClYBfkH6MtSgEm6RmMcQ9Ehh2qWqX7OJMRzvUiSooQjZ909yToddYEQjrNW2f0HjSF
+         pwzkLgjafT/qnW/0HR+cgWIn7kGgp3vBD4uk32vbnRXA45WhJ6JlhobWB336PSf1MXEv
+         mnwRzR7B8uOaSA5MOajhruHeCLTVl7/JUk6VXXpYVNUOuSIlCvD69Q7cJkDreitF5kzq
+         ENo5ec+7bwoqUCWc9NMrckoLF5BHsuaMNPKGTbbkjKJMjJ11Zeot85EsQjdWjHwOTyt5
+         cTsQ==
+X-Gm-Message-State: AOJu0Yw8v2GVEKiszD1uUfdAW4gapAeKI+Me7AKetpwfmWFejG7v/74Q
+	adSsK4U7ZGeFCj7IbrgjKuLvJN07P4U=
+X-Google-Smtp-Source: AGHT+IGEiwa1cSoRDflydMN7++Q6taulTF4HV3L/RNxde17wAejKqSXkzjYYxVXM2/0619dGhrSppCrZiaM=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a17:902:b18f:b0:1d0:9b2d:5651 with SMTP id
+ s15-20020a170902b18f00b001d09b2d5651mr1570045plr.1.1702584816052; Thu, 14 Dec
+ 2023 12:13:36 -0800 (PST)
+Date: Thu, 14 Dec 2023 12:13:34 -0800
+In-Reply-To: <CAO7JXPihjjko6qe8tr6e6UE=L7uSR6AACq1Zwg+7n95s5A-yoQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20231212164004.1683589-1-ninad@linux.ibm.com> <20231212164004.1683589-3-ninad@linux.ibm.com>
- <20231212-amusement-elevation-28e42bcccc35@spud> <d8b5df1c-c732-4cf3-ae28-cc2017d3b0b6@linux.ibm.com>
- <20231214-stopper-bounce-ca9002869293@spud>
-In-Reply-To: <20231214-stopper-bounce-ca9002869293@spud>
-From: Rob Herring <robh+dt@kernel.org>
-Date: Thu, 14 Dec 2023 14:13:04 -0600
-X-Gmail-Original-Message-ID: <CAL_JsqJCbRREnUyKkvkutyWP2GYK2ZqzfC1TS1pwQ=4xY_1J5w@mail.gmail.com>
-Message-ID: <CAL_JsqJCbRREnUyKkvkutyWP2GYK2ZqzfC1TS1pwQ=4xY_1J5w@mail.gmail.com>
-Subject: Re: [PATCH v1 2/8] dt-bindings: tpm: Add schema for TIS I2C devices
-To: Conor Dooley <conor@kernel.org>
-Cc: Ninad Palsule <ninad@linux.ibm.com>, krzysztof.kozlowski+dt@linaro.org, 
-	conor+dt@kernel.org, joel@jms.id.au, andrew@codeconstruct.com.au, 
-	peterhuewe@gmx.de, jarkko@kernel.org, jgg@ziepe.ca, keescook@chromium.org, 
-	tony.luck@intel.com, gpiccoli@igalia.com, johannes.holland@infineon.com, 
-	linux@roeck-us.net, broonie@kernel.org, patrick.rudolph@9elements.com, 
-	vincent@vtremblay.dev, peteryin.openbmc@gmail.com, lakshmiy@us.ibm.com, 
-	bhelgaas@google.com, naresh.solanki@9elements.com, 
-	alexander.stein@ew.tq-group.com, festevam@denx.de, devicetree@vger.kernel.org, 
-	linux-arm-kernel@lists.infradead.org, linux-aspeed@lists.ozlabs.org, 
-	linux-kernel@vger.kernel.org, linux-integrity@vger.kernel.org, 
-	linux-hardening@vger.kernel.org, geissonator@yahoo.com
-Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+References: <20231214024727.3503870-1-vineeth@bitbyteword.org>
+ <ZXsvl7mabUuNkWcY@google.com> <CAO7JXPihjjko6qe8tr6e6UE=L7uSR6AACq1Zwg+7n95s5A-yoQ@mail.gmail.com>
+Message-ID: <ZXth7hu7jaHbJZnj@google.com>
+Subject: Re: [RFC PATCH 0/8] Dynamic vcpu priority management in kvm
+From: Sean Christopherson <seanjc@google.com>
+To: Vineeth Remanan Pillai <vineeth@bitbyteword.org>
+Cc: Ben Segall <bsegall@google.com>, Borislav Petkov <bp@alien8.de>, 
+	Daniel Bristot de Oliveira <bristot@redhat.com>, Dave Hansen <dave.hansen@linux.intel.com>, 
+	Dietmar Eggemann <dietmar.eggemann@arm.com>, "H . Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>, 
+	Juri Lelli <juri.lelli@redhat.com>, Mel Gorman <mgorman@suse.de>, 
+	Paolo Bonzini <pbonzini@redhat.com>, Andy Lutomirski <luto@kernel.org>, 
+	Peter Zijlstra <peterz@infradead.org>, Steven Rostedt <rostedt@goodmis.org>, 
+	Thomas Gleixner <tglx@linutronix.de>, Valentin Schneider <vschneid@redhat.com>, 
+	Vincent Guittot <vincent.guittot@linaro.org>, Vitaly Kuznetsov <vkuznets@redhat.com>, 
+	Wanpeng Li <wanpengli@tencent.com>, Suleiman Souhlal <suleiman@google.com>, 
+	Masami Hiramatsu <mhiramat@google.com>, kvm@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	x86@kernel.org, Tejun Heo <tj@kernel.org>, Josh Don <joshdon@google.com>, 
+	Barret Rhoden <brho@google.com>, David Vernet <dvernet@meta.com>, 
+	Joel Fernandes <joel@joelfernandes.org>
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Dec 14, 2023 at 10:35=E2=80=AFAM Conor Dooley <conor@kernel.org> wr=
-ote:
->
-> On Thu, Dec 14, 2023 at 09:34:39AM -0600, Ninad Palsule wrote:
-> > Hello Conor,
+On Thu, Dec 14, 2023, Vineeth Remanan Pillai wrote:
+> On Thu, Dec 14, 2023 at 11:38=E2=80=AFAM Sean Christopherson <seanjc@goog=
+le.com> wrote:
+> Now when I think about it, the implementation seems to
+> suggest that we are putting policies in kvm. Ideally, the goal is:
+> - guest scheduler communicates the priority requirements of the workload
+> - kvm applies the priority to the vcpu task.
+
+Why?  Tasks are tasks, why does KVM need to get involved?  E.g. if the prob=
+lem
+is that userspace doesn't have the right knobs to adjust the priority of a =
+task
+quickly and efficiently, then wouldn't it be better to solve that problem i=
+n a
+generic way?
+
+> - Now that vcpu is appropriately prioritized, host scheduler can make
+> the right choice of picking the next best task.
+>=20
+> We have an exception of proactive boosting for interrupts/nmis. I
+> don't expect these proactive boosting cases to grow. And I think this
+> also to be controlled by the guest where the guest can say what
+> scenarios would it like to be proactive boosted.
+>=20
+> That would make kvm just a medium to communicate the scheduler
+> requirements from guest to host and not house any policies.  What do
+> you think?
+
+...
+=20
+> > Pushing the scheduling policies to host userspace would allow for far m=
+ore control
+> > and flexibility.  E.g. a heavily paravirtualized environment where host=
+ userspace
+> > knows *exactly* what workloads are being run could have wildly differen=
+t policies
+> > than an environment where the guest is a fairly vanilla Linux VM that h=
+as received
+> > a small amount of enlightment.
 > >
-> > On 12/12/23 11:14, Conor Dooley wrote:
-> > > Hey,
-> > >
-> > > On Tue, Dec 12, 2023 at 10:39:58AM -0600, Ninad Palsule wrote:
-> > > > From: Johannes Holland <johannes.holland@infineon.com>
-> > > >
-> > > > Add a dt schema to support device tree bindings
-> > > "Add bindings for..."
-> > Fixed.
-> > >
-> > > > for the generic I2C
-> > > > physical layer. Refer to the TCG PC Client Platform TPM Profile (PT=
-P)
-> > > > Specification for TPM 2.0 v1.04 Revision 14.
-> > > >
-> > > > This includes descriptions for the Nuvoton and Infineon devices.
-> > > >
-> > > > OpenBMC-Staging-Count: 3
-> > > I have no idea what this is, but it needs to be removed from the patc=
-h.
-> > Removed.
-> > >
-> > > > Signed-off-by: Johannes Holland <johannes.holland@infineon.com>
-> > > > Signed-off-by: Joel Stanley <joel@jms.id.au>
-> > > > Signed-off-by: Ninad Palsule <ninad@linux.ibm.com>
-> > > > ---
-> > > >   .../bindings/security/tpm/tpm-tis-i2c.yaml    | 50 ++++++++++++++=
-+++++
-> > > >   1 file changed, 50 insertions(+)
-> > > >   create mode 100644 Documentation/devicetree/bindings/security/tpm=
-/tpm-tis-i2c.yaml
-> > > >
-> > > > diff --git a/Documentation/devicetree/bindings/security/tpm/tpm-tis=
--i2c.yaml b/Documentation/devicetree/bindings/security/tpm/tpm-tis-i2c.yaml
-> > > > new file mode 100644
-> > > > index 000000000000..de1e34065748
-> > > > --- /dev/null
-> > > > +++ b/Documentation/devicetree/bindings/security/tpm/tpm-tis-i2c.ya=
-ml
-> > > > @@ -0,0 +1,50 @@
-> > > > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> > > > +%YAML 1.2
-> > > > +---
-> > > > +$id: http://devicetree.org/schemas/security/tpm/tpm-tis-i2c.yaml#
-> > > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > > > +
-> > > > +title: I2C PTP based TPM Devices
-> > > > +
-> > > > +maintainers:
-> > > > +  - Johannes Holland <johannes.holland@infineon.com>
-> > > > +
-> > > > +description:
-> > > > +  Device Tree Bindings for I2C based Trusted Platform Module (TPM)=
-.
-> > > s/Device Tree Bindings for //. Doesn't dt_binding_check now complain =
-if
-> > > you have this in a title or description?
-> > Fixed.
-> > >
-> > > > +properties:
-> > > > +  $nodename:
-> > > > +    pattern: "^tpm(@[0-9a-f]+)?$"
-> > > > +
-> > > > +  compatible:
-> > > > +    oneOf:
-> > > > +      - description: Infineon's Trusted Platform Module (TPM) (SLB=
-9673).
-> > > > +        items:
-> > > > +          - const: infineon,slb9673
-> > > > +          - const: tcg,tpm-tis-i2c
-> > > > +      - description: Nuvoton's Trusted Platform Module (TPM) (NPCT=
-75x).
-> > > > +        items:
-> > > > +          - const: nuvoton,npct75x
-> > > > +          - const: tcg,tpm-tis-i2c
->
-> Also, another thought - the bus is not usually encoded in the compatible
-> string, so it would be good to remove that.
+> > Lastly, if the concern/argument is that userspace doesn't have the righ=
+t knobs
+> > to (quickly) boost vCPU tasks, then the proposed sched_ext functionalit=
+y seems
+> > tailor made for the problems you are trying to solve.
+> >
+> > https://lkml.kernel.org/r/20231111024835.2164816-1-tj%40kernel.org
+> >
+> You are right, sched_ext is a good choice to have policies
+> implemented. In our case, we would need a communication mechanism as
+> well and hence we thought kvm would work best to be a medium between
+> the guest and the host.
 
-True, but we already have 3 different bus variants in this case. So
-that ship has sailed.
+Making KVM be the medium may be convenient and the quickest way to get a Po=
+C
+out the door, but effectively making KVM a middle-man is going to be a huge=
+ net
+negative in the long term.  Userspace can communicate with the guest just a=
+s
+easily as KVM, and if you make KVM the middle-man, then you effectively *mu=
+st*
+define a relatively rigid guest/host ABI.
 
-Rob
+If instead the contract is between host userspace and the guest, the ABI ca=
+n be
+much more fluid, e.g. if you (or any setup) can control at least some amoun=
+t of
+code that runs in the guest, then the contract between the guest and host d=
+oesn't
+even need to be formally defined, it could simply be a matter of bundling h=
+ost
+and guest code appropriately.
+
+If you want to land support for a given contract in upstream repositories, =
+e.g.
+to broadly enable paravirt scheduling support across a variety of usersepac=
+e VMMs
+and/or guests, then yeah, you'll need a formal ABI.  But that's still not a=
+ good
+reason to have KVM define the ABI.  Doing it in KVM might be a wee bit easi=
+er because
+it's largely just a matter of writing code, and LKML provides a centralized=
+ channel
+for getting buyin from all parties.  But defining an ABI that's independent=
+ of the
+kernel is absolutely doable, e.g. see the many virtio specs.
+
+I'm not saying KVM can't help, e.g. if there is information that is known o=
+nly
+to KVM, but the vast majority of the contract doesn't need to be defined by=
+ KVM.
 
