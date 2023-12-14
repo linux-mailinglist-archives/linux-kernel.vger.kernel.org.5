@@ -2,103 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 144EA812DE5
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 11:57:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 205B7812DE6
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 11:57:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1443878AbjLNK4p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 05:56:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60884 "EHLO
+        id S1443965AbjLNK5J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 05:57:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42564 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1444003AbjLNK4X (ORCPT
+        with ESMTP id S1443821AbjLNK44 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 05:56:23 -0500
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45E48D5A;
-        Thu, 14 Dec 2023 02:55:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1702551336;
-        bh=nDwI9Pl6CCoEAnD+fTst64/YqkRvVVhKmZlxyty2nAw=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=b7wF6oaus0TpnLvYOVI62QNuXci/Xd3tppTa1l12+jGW1Kj5elHnVNfXkkGE7eZ63
-         pH2QiLUgHz3yAa1sph4DwjxkOEtItW9JA7tOiaeVPI3XJxZ+LUg9kpdXNCQ6CSyDtT
-         Kz9WcagvFIPcdgmMs/cunw0MOn0c8Adx0y5aPLEdIogQgkHXSUVfBqqtwKerzyR9j+
-         lDYUQlLMeMI8UvoRBIfpMSXhqh3aL+vgIsiZBPKSwHIOfom2G1h0InEGlmBfFH/LBg
-         Tf6CqIsaJPMOtJZsY0m7yPZwKNHCOR1nuWbWG7xm4ew/Ckb6GhFDaKGwbY6juzH0ca
-         OEORjJUAhZVbA==
-Received: from [100.113.186.2] (cola.collaboradmins.com [195.201.22.229])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: kholk11)
-        by madrid.collaboradmins.com (Postfix) with ESMTPSA id F1D31378000B;
-        Thu, 14 Dec 2023 10:55:34 +0000 (UTC)
-Message-ID: <e5625051-e9e2-4a75-a11a-cf5b40606fa4@collabora.com>
-Date:   Thu, 14 Dec 2023 11:55:34 +0100
+        Thu, 14 Dec 2023 05:56:56 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45F971FDA
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 02:56:06 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 22312C433C7;
+        Thu, 14 Dec 2023 10:56:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1702551365;
+        bh=D5o6l3wN/A0AzdkfzCJLlF4j6x2lNjUAr69eYDp9ii8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ROTiuxiKLcUEU/QgjAwxSE4yOVU17cC9b+JrpyXCCup4tV3vGYkuRvaCeK6CUUo86
+         tY3vdb/BMDcLXOEX8y+andPDbXg46+25Twq3jFqFAJ4JdLxa2N2Jdj0cBZcF+KDss/
+         W1AwdGQ9Taqzu7y7k7uFZx7E0Lu4r2f/36pp9EPJiKBgg8IVc8N/RghxCWjkS1clMU
+         K+hx/jc+EtsKOX8wQxYP61mb0ekENbdZhS+VKxB2HKdZ1NgsUlzI1kflyUC+lPeaLw
+         25hYBkZetNk1/vSNJ6a0A+Gk+G398Yqe9ZVIf4CEdWZV4TLfYNsh4Jb6lzPTjEnfuq
+         dbhDlpN1niNrA==
+Date:   Thu, 14 Dec 2023 10:56:00 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     Chen-Yu Tsai <wenst@chromium.org>
+Cc:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
+        Bard Liao <yung-chuan.liao@linux.intel.com>,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        Daniel Baluta <daniel.baluta@nxp.com>,
+        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        sound-open-firmware@alsa-project.org, linux-sound@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] ASoC: SOF: Move sof_of_machine_select() to core.c from
+ sof-of-dev.c
+Message-ID: <32f59e8e-2dc6-4fab-b32f-0220c99ff0ef@sirena.org.uk>
+References: <20231204033549.2020289-1-wenst@chromium.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 2/6] arm: arm64: dts: Enable cros-ec-spi as wake source
-Content-Language: en-US
-To:     Mark Hasemeyer <markhas@chromium.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Cc:     Raul Rangel <rrangel@chromium.org>,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Andre Przywara <andre.przywara@arm.com>,
-        Andy Gross <agross@kernel.org>,
-        Baruch Siach <baruch@tkos.co.il>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Claudiu Beznea <claudiu.beznea@microchip.com>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Jesper Nilsson <jesper.nilsson@axis.com>,
-        Jisheng Zhang <jszhang@kernel.org>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Michal Simek <michal.simek@amd.com>,
-        Paul Barker <paul.barker@sancloud.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        cros-qcom-dts-watchers@chromium.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-arm-msm@vger.kernel.org, linux-mediatek@lists.infradead.org,
-        linux-rockchip@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-tegra@vger.kernel.org
-References: <20231213110009.v1.1.Ifd0903f1c351e84376d71dbdadbd43931197f5ea@changeid>
- <20231213110009.v1.2.I274b2d2255eb539cc9d251c9d65a385cc4014c79@changeid>
-From:   AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>
-In-Reply-To: <20231213110009.v1.2.I274b2d2255eb539cc9d251c9d65a385cc4014c79@changeid>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="usW1bNavSoBzSGhB"
+Content-Disposition: inline
+In-Reply-To: <20231204033549.2020289-1-wenst@chromium.org>
+X-Cookie: Don't get mad, get interest.
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Il 13/12/23 19:00, Mark Hasemeyer ha scritto:
-> The cros_ec driver currently assumes that cros-ec-spi compatible device
-> nodes are a wakeup-source even though the wakeup-source property is not
-> defined.
-> 
-> Add the wakeup-source property to all cros-ec-spi compatible device
-> nodes to match expected behavior.
-> 
-> Signed-off-by: Mark Hasemeyer <markhas@chromium.org>
 
-I received only patch [2/6] - please send the entire series to the relevant
-maintainers, as otherwise it's difficult to understand what's going on.
+--usW1bNavSoBzSGhB
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-As for this patch alone:
-  1. arch/arm stuff goes to a different commit
-  2. I would prefer if you split per-arch and per-SoC.
+On Mon, Dec 04, 2023 at 11:35:47AM +0800, Chen-Yu Tsai wrote:
+> This reverts commit 014fdeb0d747304111cfecf93df4407c1a0c80db.
+>=20
+> Commit 014fdeb0d747 ("ASoC: SOF: Move sof_of_machine_select() to
+> sof-of-dev.c from sof-audio.c") caused a circular dependency between
+> the snd_sof and snd_sof_of modules:
 
-Regards,
-Angelo
+This doesn't apply against current code, please check and resend.
 
+Please include human readable descriptions of things like commits and
+issues being discussed in e-mail in your mails, this makes them much
+easier for humans to read especially when they have no internet access.
+I do frequently catch up on my mail on flights or while otherwise
+travelling so this is even more pressing for me than just being about
+making things a bit easier to read.
 
+--usW1bNavSoBzSGhB
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmV63z8ACgkQJNaLcl1U
+h9BYqwf7BnnlFFe8IXBcVnwVe89isLMqt2rcFs/1QluSDslQblODxH85D2e9f4j/
+Da/uLb41osW6b4vs5uJf4L5kEfmMdtMO+BIc7/OFTmWO0Euv8xB+g0kqFL0bQ091
+hNg0pQuXpNiV2lMBwxvUp7aTBWdXD3Sf/OhuaPhMzH1t3mRyB6xW55b9Cwsar9Pn
+hmb0sCGiMFBpwrtQff1WQBS1QQ6A4cBWbyvWpgUxHJQEpyV8trjv+t81NxN9ycfx
+ydzrEwd0caLFhw4LOT6k8Ao6A6IGloWwIpPNAeHGX6uuz6s6c8Bhzg4YG9UjvzNI
+kwQsNa+9F3ex+XtTfnIhYZoYth64IQ==
+=jtvh
+-----END PGP SIGNATURE-----
+
+--usW1bNavSoBzSGhB--
