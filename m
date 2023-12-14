@@ -2,422 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B1FEE81266A
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 05:29:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C01E812699
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 05:35:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1443115AbjLNE3M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Dec 2023 23:29:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42870 "EHLO
+        id S1443117AbjLNEfG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Dec 2023 23:35:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36378 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230190AbjLNE3J (ORCPT
+        with ESMTP id S230034AbjLNEfD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Dec 2023 23:29:09 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76201107
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Dec 2023 20:29:13 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 36229C433C7;
-        Thu, 14 Dec 2023 04:29:12 +0000 (UTC)
-Date:   Wed, 13 Dec 2023 23:29:57 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     LKML <linux-kernel@vger.kernel.org>,
-        Linux Trace Kernel <linux-trace-kernel@vger.kernel.org>
-Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-arch@vger.kernel.org
-Subject: [PATCH v2] ring-buffer: Remove 32bit timestamp logic
-Message-ID: <20231213232957.498cd339@gandalf.local.home>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        Wed, 13 Dec 2023 23:35:03 -0500
+Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32647B9;
+        Wed, 13 Dec 2023 20:35:10 -0800 (PST)
+Received: from pps.filterd (m0246627.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3BE0SEvR009683;
+        Thu, 14 Dec 2023 04:34:44 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
+ from : message-id : references : date : in-reply-to : content-type :
+ mime-version; s=corp-2023-11-20;
+ bh=1GBcMPwGDIaxPTXtjVZnAevLkR7jfTRLsRJf0QZNV80=;
+ b=NyNtB44SVhV86XBZ16IZDJUsBcR16Qs1qkKPC1L4B6kMNsm4l5hxvFSkvEVJvcDUxKUZ
+ IKtLKzk6IC7U42VpwDPudmXMF+Q1pAf88POM20MJzT4DhAq/ClISvIF0ylD0+p338pPA
+ pkcZeV9mZJbdwN5r/lcifkuQh5skWiJVHm/wT12EofFfD0dGf+4Qk+I71129YIhz+F50
+ A9s0Pb7Jwfnwm9UF1WqhIp630e3BD9rpA0f9eOeutr4kCDSc8hXf99E0PRMrKv1pj2/n
+ rjCRCrMa6Yk8tQ0MA3nlDnSdvkV/hVAWBx1ne/Jxap7tffKZY3qluy69CDyRpv2wyNLJ WA== 
+Received: from iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta03.appoci.oracle.com [130.35.103.27])
+        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3uveu29smt-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 14 Dec 2023 04:34:43 +0000
+Received: from pps.filterd (iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+        by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 3BE4URX0013052;
+        Thu, 14 Dec 2023 04:34:42 GMT
+Received: from nam11-bn8-obe.outbound.protection.outlook.com (mail-bn8nam11lp2169.outbound.protection.outlook.com [104.47.58.169])
+        by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3uvepfqk5f-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 14 Dec 2023 04:34:42 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=HMp8tDRH1wcoujgkZ1nFYNs1Ex3rC6VbpXFK29JnS6vFTEV/5TFBsTfioQmZjq3ByAkuzLeL5HFs6Z/ZH9wC2jnp3ydO98M0Pajt9RyOELsv38+DRF32ZS+SLZ8GQRcsUyvnfN8raESCVcXOsrR6Z8rhAu54G4mNkFvxD1d1UP5+6ylS3tBk6cUTLg/6SaedPxuvm97D+zpnBPBghfHOG3uVPSqso6kdGxvKDZBr9PBihXIkbSWT4JITVoJwDF8CWzsA1mFCyOj47c0nbv0BcwEwvxXITHLU184rjZGNaCThIEjZOY3F1Zgf/Bs2scOPN53dZ4fwQr1EDis5llx3SA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=1GBcMPwGDIaxPTXtjVZnAevLkR7jfTRLsRJf0QZNV80=;
+ b=DduMJInB0lLshXcocLPGR+tGobhIpeoecswDQze87l5TYDVv2hG64zFUYm2Zd/2423Bs5xqCqBSw+LBuiqwPOB1xyEBvbSnOm0oois/PjowLlTvbxgjRAZpyHz+JMpJ1BIzVgxbgifCO/iGldO53TRi7o1B4ZOEmbZPfRIuau8ifnu7UpGwAyVFkXrcpGzSUWQFK4jsF5iuZNjVPuSpTy9rlsqFaXTiDjynzC/LRcZ4c+xBwwvOdgQTkTIgJHahZJ1CG7bylUUNO7yN8gyeQtHuAje9g5RURW9HpYe/C5TRuoDwFL227kZqLreK449hNIXI76BoHsW6qLLJzHfpkTQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=1GBcMPwGDIaxPTXtjVZnAevLkR7jfTRLsRJf0QZNV80=;
+ b=DuQdkZIrVk7rRiQOE81/g1FFqHrkvoybhmHZsKGxhXwjA3hkn6PRno0yP5F2F2kktbb0Ot5OL2Ya5cKkOarmwtUey8jpr3XOkg8bW7umPigpXo7Au8J1qywqHHdILGdCJGtB0G3p5nND03duDG9rS8BLw5Uq/10wZgMkmawYN/I=
+Received: from PH0PR10MB4759.namprd10.prod.outlook.com (2603:10b6:510:3d::12)
+ by SA1PR10MB5865.namprd10.prod.outlook.com (2603:10b6:806:231::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7091.28; Thu, 14 Dec
+ 2023 04:34:39 +0000
+Received: from PH0PR10MB4759.namprd10.prod.outlook.com
+ ([fe80::2b0c:62b3:f9a9:5972]) by PH0PR10MB4759.namprd10.prod.outlook.com
+ ([fe80::2b0c:62b3:f9a9:5972%4]) with mapi id 15.20.7091.028; Thu, 14 Dec 2023
+ 04:34:39 +0000
+To:     Ming Lei <ming.lei@redhat.com>
+Cc:     John Garry <john.g.garry@oracle.com>, axboe@kernel.dk,
+        kbusch@kernel.org, hch@lst.de, sagi@grimberg.me,
+        jejb@linux.ibm.com, martin.petersen@oracle.com, djwong@kernel.org,
+        viro@zeniv.linux.org.uk, brauner@kernel.org, dchinner@redhat.com,
+        jack@suse.cz, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
+        linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        tytso@mit.edu, jbongio@google.com, linux-scsi@vger.kernel.org,
+        jaswin@linux.ibm.com, bvanassche@acm.org,
+        Himanshu Madhani <himanshu.madhani@oracle.com>
+Subject: Re: [PATCH v2 01/16] block: Add atomic write operations to
+ request_queue limits
+From:   "Martin K. Petersen" <martin.petersen@oracle.com>
+Organization: Oracle Corporation
+Message-ID: <yq1il51flnj.fsf@ca-mkp.ca.oracle.com>
+References: <20231212110844.19698-1-john.g.garry@oracle.com>
+        <20231212110844.19698-2-john.g.garry@oracle.com>
+        <ZXkIEnQld577uHqu@fedora>
+Date:   Wed, 13 Dec 2023 23:34:37 -0500
+In-Reply-To: <ZXkIEnQld577uHqu@fedora> (Ming Lei's message of "Wed, 13 Dec
+        2023 09:25:38 +0800")
+Content-Type: text/plain
+X-ClientProxiedBy: SJ0PR03CA0358.namprd03.prod.outlook.com
+ (2603:10b6:a03:39c::33) To PH0PR10MB4759.namprd10.prod.outlook.com
+ (2603:10b6:510:3d::12)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH0PR10MB4759:EE_|SA1PR10MB5865:EE_
+X-MS-Office365-Filtering-Correlation-Id: 07f95380-e308-4315-ed11-08dbfc5dfbcc
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: SHWT8m+0+3TVKX46iqHWgnQwEiq3JB/ffwC8HsA5+DDfOYzKVnCdAQmv0FM2ccBXCZeZHaIC8Iek8cEVjvpLtA98WIq8D/VNvwBCmOTJkglMjQPPyPCd+OWUKP3s2yRPrD9NcaeV7WSHXWrZCdv3db9vI74X4241kgwT64FWGpfnzi6XNWERVP1jtr+4CAxvH4FFJoGE0H9n9uju80Tb+xCTMc/fU2l3WfMZa5lP3iRJ8MPfQMCbHsrm90BJ5cT0ZTUEDnRnl/32JgZx+eUKYJpUFdLRyPoUzrEGQ5VDgz8/b7It/d5owDtSjslSwko3omN9M6DAU1y3jjAEjhmTW8ldkp1RvaWptITKqdrGsKFtNOx3IAXLGyQZ3Gf2hriyhbClKwZ4bw9mECfFUEhAje4JGeepsyz8WxOzeSr+Lh+TgmFyobc/jh2RmiU29Lf53PKqibHrOPF70YW4f1iX1bYZAabGGCxCK8pohQsq3Vo5XIbFhNB+h7QF5ydLa/qdVMAUit09poqmR/15pzuSKuogR9SPowOgJHElt8aLtxrfpG+aVeV212BE+25ym6z0
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB4759.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(346002)(39860400002)(136003)(376002)(396003)(230922051799003)(64100799003)(451199024)(1800799012)(186009)(4744005)(2906002)(7416002)(86362001)(4326008)(8676002)(8936002)(316002)(5660300002)(41300700001)(6486002)(478600001)(6512007)(107886003)(26005)(36916002)(6506007)(83380400001)(38100700002)(66946007)(66556008)(66476007)(54906003)(6916009);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?du34uuax/nkU58dxoXn7xm17iJGAT8FVT1T7LgGef7BrHMJDBqhkQ+vk61cl?=
+ =?us-ascii?Q?40DyChZHXTlTxQONbQiujFVEkqkngRoRZXss0yCvyCQRHRuy/gX6Q7mtLhIt?=
+ =?us-ascii?Q?gZS79qPsmd4T6S1Zha5IYFerw6+rwzeAbCLF/+SZcZc5ouWdzm26dfp+dbwL?=
+ =?us-ascii?Q?ECtGwsJwDF5absD58D9aq+re57g/mFWZ36eVEoJZhqoCfwDY9XzweMf9xjip?=
+ =?us-ascii?Q?kDClkaRdFcgEeGyXMd2fhxWgCvw8ZJV8VgjygPSGvTNqfsTvqWxDKjilnVyz?=
+ =?us-ascii?Q?UX5Uhfw6vAvbMp3Iww7IntITAKJagkLj0wxE6YlPArSPncmerf1WhrmfX/SF?=
+ =?us-ascii?Q?L/wML1iD5ghrExwZTr/1xdDQLkG6LUtjBhVQCPMvKkWYGxICCi6NhFWMjkP7?=
+ =?us-ascii?Q?tyHhTVOhpMuCAzvk6/oMhT9S9wmVYPCs10ZF9VErH6RWky+3bXG7j7IAr5kz?=
+ =?us-ascii?Q?+fwjvPESPbJlw8xevmPLzATY566NLPbc0XTcR1TivFlzGd7mAAIj+ZiQQQaC?=
+ =?us-ascii?Q?ggLCl8moOUztu6tY7VqIKQDL+wrNaznPOWTK6R/ydaXKGFQ8pkdd2ReDQc5s?=
+ =?us-ascii?Q?tw/YE1NOyjBiNLicz6ua41eUmShrdFlB9DvswEL1CKafS0tNnPmyFsmG6AhY?=
+ =?us-ascii?Q?0dh4tykHO+3PMaAxGnlu9vTsGyCMlyS2DWwZH7wDBwaWHsFrwe2s90rUtv3c?=
+ =?us-ascii?Q?NPBOcF+Yoz7h31cFzx77PFwjSfdYOoSYBo/aPByYroUXXg8eGL2sHrWYNWwy?=
+ =?us-ascii?Q?QawKFC0p/4J9+Wpr4rtbBeN8X0dRSeH3egwT6asms+kiMST9PK3ALWtuVxTB?=
+ =?us-ascii?Q?hI/VJeHFTtsx5oIKQWhKNWMWuE5P/75PBy0Hcy+zRiAHdPn5HbxRCffCJWK4?=
+ =?us-ascii?Q?0A6Ck9re8x1qp7Vd9tVmmTq0pC6ktvZuXAhT3r5PtbDGLrIJh0kyoyH+5IXz?=
+ =?us-ascii?Q?HUlYRRnyp5OE6H4CzMwHRBhQ7LR5tjKbqFQlOTstRKJV7vknOGWMbWpit873?=
+ =?us-ascii?Q?qc4FfW4fvS5PP63/jXUnJuCteinmvR8/hzEWDUQc2R8HBI3ootNO126hkNGU?=
+ =?us-ascii?Q?6xMkfUWtMWLA9P3Y6Lhhl9QyEzrgr4CCRt1446N5BB29pp8LYNNTbJ+o4qOy?=
+ =?us-ascii?Q?m06FHgJexU6H3046KFl8iWHkf3LyypXc9QOZjkonMWTy0qeMg+qCnadfaOCo?=
+ =?us-ascii?Q?5dJY1Au8uMyDrw3d7O5/y1RM3hxSJdRKGFLEtNQczlmWSAOmvx05Ulw3JRb1?=
+ =?us-ascii?Q?M4+aj/bRdjFpx1PtuYxTM3wXIpZoCYUrXo92mE8Ev02NZllJZ5tZQM3xR93q?=
+ =?us-ascii?Q?Uofl38d7HBMTH1V9l37tkRqujwtKDQ/hZmfdbFpbe40mR85+weC8iXpieEFI?=
+ =?us-ascii?Q?ROAdapRuUMDoaj+EL2NRyzeVCA3MZ9hID5hQuLUdNeXFh97gpkpNrKcEd4P8?=
+ =?us-ascii?Q?ZB0bO3gJnMLe7BG1WvG/Cf3bWq6rmgdhjM4Whxl+1DGn3xMc5lYnnqAutDza?=
+ =?us-ascii?Q?mMA8aEbh5Vq2cP2HSpanzEBWhDWFt33meCWGwW0eB46IR5FcLpG7/8jn/r/D?=
+ =?us-ascii?Q?2mubmNV94OHrsjUVugybRp7XymTlOs1bOAA74Ig9hMGNAUbawxkRw2RQe1Tg?=
+ =?us-ascii?Q?ug=3D=3D?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: GTo7gIznNzRromdPyZ+g/oWRKlV7ER+AuXsPX4Upf5DmKSbSAGulx2QxVSb3/mX/5iRCAs3bp22Jk2qf6++l9jQQPt49HSeYbqareTCI8pBFejZ3Vu8P5PoEppfprCitx3rbbjn8g95/Na/V1swh4WDc3lXTEU4xbjMQ0E58tFkSGb3X8+jUZTJN2i8DJgT5+ejmv+71cqCtySlKC7S1aPpGp9x4YyixX7D5ET+1jYgRYOHNc/CkANJv1yKPmxrf8WcOJhTo8BlfAqOHKtui36QIMUTssR7wZSfeXD/JrrL1HntJrW7Ze40PvmcwT/OaSnI0qeO7m02T2nsSf7o+0zFh/lm5pWrKTdKragFghu9owZDfWBiEaZ/S82xWM3typpsb+BGhH6BRD+nhCRlAsid89pDMTwLR9Crutp/LieRCkKRzvKpXqPOAPWkVzliG6+Xgws4+2RBtd7+zXbIFl850LVQqr83zqrmc4SOwUUJJDNjLMFS49ZDGOaaJHjeAwgqhdpYfOwXNruv/e0cvV69Dg0DkjiLrN+iiH8P0qdGwOFQ7Sqf2Mxm3r1yB23+317uS56CoGqdvg0an/gWKQLNAZ8bfn+ysq2fpyWKu9+A=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 07f95380-e308-4315-ed11-08dbfc5dfbcc
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB4759.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Dec 2023 04:34:39.3078
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 5qBumKp/KCl5PT6Ljx0beDAZKUBiOiTfIByr9YITgHLbePrhrgH+H9YuoTqFa4y8qB6piuhD+H+QN7NVCJ4KbfVjA1eyRIaXS0UYWKLo548=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR10MB5865
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-14_01,2023-12-13_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 mlxscore=0 suspectscore=0
+ phishscore=0 adultscore=0 mlxlogscore=782 bulkscore=0 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311290000
+ definitions=main-2312140024
+X-Proofpoint-ORIG-GUID: 2okomzqzP-A77CCi_1M0DD3yTweOsuvC
+X-Proofpoint-GUID: 2okomzqzP-A77CCi_1M0DD3yTweOsuvC
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 
-Each event has a 27 bit timestamp delta that is used to hold the delta
-from the last event. If the time between events is greater than 2^27, then
-a timestamp is added that holds a 59 bit absolute timestamp.
+Hi Ming!
 
-Until a389d86f7fd09 ("ring-buffer: Have nested events still record running
-time stamp"), if an interrupt interrupted an event in progress, all the
-events delta would be zero to not deal with the races that need to be
-handled. The commit a389d86f7fd09 changed that to handle the races giving
-all events, even those that preempt other events, still have an accurate
-timestamp.
+>> +	lim->atomic_write_unit_min_sectors = 0;
+>> +	lim->atomic_write_unit_max_sectors = 0;
+>> +	lim->atomic_write_max_sectors = 0;
+>> +	lim->atomic_write_boundary_sectors = 0;
+>
+> Can we move the four into single structure and setup them in single
+> API? Then cross-validation can be done in this API.
 
-To handle those races requires performing 64-bit cmpxchg on the
-timestamps. But doing 64-bit cmpxchg on 32-bit architectures is considered
-very slow. To try to deal with this the timestamp logic was broken into
-two and then three 32-bit cmpxchgs, with the thought that two (or three)
-32-bit cmpxchgs are still faster than a single 64-bit cmpxchg on 32-bit
-architectures.
+Why would we put them in a separate struct? We don't do that for any of
+the other queue_limits.
 
-Part of the problem with this is that I didn't have any 32-bit
-architectures to test on. After hitting several subtle bugs in this code,
-an effort was made to try and see if three 32-bit cmpxchgs are indeed
-faster than a single 64-bit. After a few people brushed off the dust of
-their old 32-bit machines, tests were done, and even though 32-bit cmpxchg
-was faster than a single 64-bit, it was in the order of 50% at best, not
-300%.
-
-This means that this complex code is not only complex but also not even
-faster than just using 64-bit cmpxchg.
-
-Nuke it!
-
-This is basically a revert of 10464b4aa605e ("ring-buffer: Add rb_time_t
-64 bit operations for speeding up 32 bit").
-
-Cc: stable@vger.kernel.org
-Fixes: 10464b4aa605e ("ring-buffer: Add rb_time_t 64 bit operations for speeding up 32 bit")
-Acked-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
----
-Changes since v1: https://lore.kernel.org/linux-trace-kernel/20231213211126.24f8c1dd@gandalf.local.home/
-
-- Removed left over debug code
-
-- Rebased on my urgent branch before the updates to this code, thinking
-  that I'm going to send this now and have this get backported to the
-  stable kernels, instead of the other updates.
-
- kernel/trace/ring_buffer.c | 221 ++-----------------------------------
- 1 file changed, 11 insertions(+), 210 deletions(-)
-
-diff --git a/kernel/trace/ring_buffer.c b/kernel/trace/ring_buffer.c
-index 1d9caee7f542..42f1bb8c794c 100644
---- a/kernel/trace/ring_buffer.c
-+++ b/kernel/trace/ring_buffer.c
-@@ -27,6 +27,7 @@
- #include <linux/cpu.h>
- #include <linux/oom.h>
- 
-+#include <asm/local64.h>
- #include <asm/local.h>
- 
- /*
-@@ -463,27 +464,9 @@ enum {
- 	RB_CTX_MAX
- };
- 
--#if BITS_PER_LONG == 32
--#define RB_TIME_32
--#endif
--
--/* To test on 64 bit machines */
--//#define RB_TIME_32
--
--#ifdef RB_TIME_32
--
--struct rb_time_struct {
--	local_t		cnt;
--	local_t		top;
--	local_t		bottom;
--	local_t		msb;
--};
--#else
--#include <asm/local64.h>
- struct rb_time_struct {
- 	local64_t	time;
- };
--#endif
- typedef struct rb_time_struct rb_time_t;
- 
- #define MAX_NEST	5
-@@ -573,179 +556,9 @@ struct ring_buffer_iter {
- 	int				missed_events;
- };
- 
--#ifdef RB_TIME_32
--
--/*
-- * On 32 bit machines, local64_t is very expensive. As the ring
-- * buffer doesn't need all the features of a true 64 bit atomic,
-- * on 32 bit, it uses these functions (64 still uses local64_t).
-- *
-- * For the ring buffer, 64 bit required operations for the time is
-- * the following:
-- *
-- *  - Reads may fail if it interrupted a modification of the time stamp.
-- *      It will succeed if it did not interrupt another write even if
-- *      the read itself is interrupted by a write.
-- *      It returns whether it was successful or not.
-- *
-- *  - Writes always succeed and will overwrite other writes and writes
-- *      that were done by events interrupting the current write.
-- *
-- *  - A write followed by a read of the same time stamp will always succeed,
-- *      but may not contain the same value.
-- *
-- *  - A cmpxchg will fail if it interrupted another write or cmpxchg.
-- *      Other than that, it acts like a normal cmpxchg.
-- *
-- * The 60 bit time stamp is broken up by 30 bits in a top and bottom half
-- *  (bottom being the least significant 30 bits of the 60 bit time stamp).
-- *
-- * The two most significant bits of each half holds a 2 bit counter (0-3).
-- * Each update will increment this counter by one.
-- * When reading the top and bottom, if the two counter bits match then the
-- *  top and bottom together make a valid 60 bit number.
-- */
--#define RB_TIME_SHIFT	30
--#define RB_TIME_VAL_MASK ((1 << RB_TIME_SHIFT) - 1)
--#define RB_TIME_MSB_SHIFT	 60
--
--static inline int rb_time_cnt(unsigned long val)
--{
--	return (val >> RB_TIME_SHIFT) & 3;
--}
--
--static inline u64 rb_time_val(unsigned long top, unsigned long bottom)
--{
--	u64 val;
--
--	val = top & RB_TIME_VAL_MASK;
--	val <<= RB_TIME_SHIFT;
--	val |= bottom & RB_TIME_VAL_MASK;
--
--	return val;
--}
--
--static inline bool __rb_time_read(rb_time_t *t, u64 *ret, unsigned long *cnt)
--{
--	unsigned long top, bottom, msb;
--	unsigned long c;
--
--	/*
--	 * If the read is interrupted by a write, then the cnt will
--	 * be different. Loop until both top and bottom have been read
--	 * without interruption.
--	 */
--	do {
--		c = local_read(&t->cnt);
--		top = local_read(&t->top);
--		bottom = local_read(&t->bottom);
--		msb = local_read(&t->msb);
--	} while (c != local_read(&t->cnt));
--
--	*cnt = rb_time_cnt(top);
--
--	/* If top and msb counts don't match, this interrupted a write */
--	if (*cnt != rb_time_cnt(msb))
--		return false;
--
--	/* The shift to msb will lose its cnt bits */
--	*ret = rb_time_val(top, bottom) | ((u64)msb << RB_TIME_MSB_SHIFT);
--	return true;
--}
--
--static bool rb_time_read(rb_time_t *t, u64 *ret)
--{
--	unsigned long cnt;
--
--	return __rb_time_read(t, ret, &cnt);
--}
--
--static inline unsigned long rb_time_val_cnt(unsigned long val, unsigned long cnt)
--{
--	return (val & RB_TIME_VAL_MASK) | ((cnt & 3) << RB_TIME_SHIFT);
--}
--
--static inline void rb_time_split(u64 val, unsigned long *top, unsigned long *bottom,
--				 unsigned long *msb)
--{
--	*top = (unsigned long)((val >> RB_TIME_SHIFT) & RB_TIME_VAL_MASK);
--	*bottom = (unsigned long)(val & RB_TIME_VAL_MASK);
--	*msb = (unsigned long)(val >> RB_TIME_MSB_SHIFT);
--}
--
--static inline void rb_time_val_set(local_t *t, unsigned long val, unsigned long cnt)
--{
--	val = rb_time_val_cnt(val, cnt);
--	local_set(t, val);
--}
--
--static void rb_time_set(rb_time_t *t, u64 val)
--{
--	unsigned long cnt, top, bottom, msb;
--
--	rb_time_split(val, &top, &bottom, &msb);
--
--	/* Writes always succeed with a valid number even if it gets interrupted. */
--	do {
--		cnt = local_inc_return(&t->cnt);
--		rb_time_val_set(&t->top, top, cnt);
--		rb_time_val_set(&t->bottom, bottom, cnt);
--		rb_time_val_set(&t->msb, val >> RB_TIME_MSB_SHIFT, cnt);
--	} while (cnt != local_read(&t->cnt));
--}
--
--static inline bool
--rb_time_read_cmpxchg(local_t *l, unsigned long expect, unsigned long set)
--{
--	return local_try_cmpxchg(l, &expect, set);
--}
--
--static bool rb_time_cmpxchg(rb_time_t *t, u64 expect, u64 set)
--{
--	unsigned long cnt, top, bottom, msb;
--	unsigned long cnt2, top2, bottom2, msb2;
--	u64 val;
--
--	/* The cmpxchg always fails if it interrupted an update */
--	 if (!__rb_time_read(t, &val, &cnt2))
--		 return false;
--
--	 if (val != expect)
--		 return false;
--
--	 cnt = local_read(&t->cnt);
--	 if ((cnt & 3) != cnt2)
--		 return false;
--
--	 cnt2 = cnt + 1;
--
--	 rb_time_split(val, &top, &bottom, &msb);
--	 top = rb_time_val_cnt(top, cnt);
--	 bottom = rb_time_val_cnt(bottom, cnt);
--
--	 rb_time_split(set, &top2, &bottom2, &msb2);
--	 top2 = rb_time_val_cnt(top2, cnt2);
--	 bottom2 = rb_time_val_cnt(bottom2, cnt2);
--
--	if (!rb_time_read_cmpxchg(&t->cnt, cnt, cnt2))
--		return false;
--	if (!rb_time_read_cmpxchg(&t->msb, msb, msb2))
--		return false;
--	if (!rb_time_read_cmpxchg(&t->top, top, top2))
--		return false;
--	if (!rb_time_read_cmpxchg(&t->bottom, bottom, bottom2))
--		return false;
--	return true;
--}
--
--#else /* 64 bits */
--
--/* local64_t always succeeds */
--
--static inline bool rb_time_read(rb_time_t *t, u64 *ret)
-+static inline void rb_time_read(rb_time_t *t, u64 *ret)
- {
- 	*ret = local64_read(&t->time);
--	return true;
- }
- static void rb_time_set(rb_time_t *t, u64 val)
- {
-@@ -756,7 +569,6 @@ static bool rb_time_cmpxchg(rb_time_t *t, u64 expect, u64 set)
- {
- 	return local64_try_cmpxchg(&t->time, &expect, set);
- }
--#endif
- 
- /*
-  * Enable this to make sure that the event passed to
-@@ -863,10 +675,7 @@ u64 ring_buffer_event_time_stamp(struct trace_buffer *buffer,
- 	WARN_ONCE(1, "nest (%d) greater than max", nest);
- 
-  fail:
--	/* Can only fail on 32 bit */
--	if (!rb_time_read(&cpu_buffer->write_stamp, &ts))
--		/* Screw it, just read the current time */
--		ts = rb_time_stamp(cpu_buffer->buffer);
-+	rb_time_read(&cpu_buffer->write_stamp, &ts);
- 
- 	return ts;
- }
-@@ -2863,7 +2672,7 @@ rb_check_timestamp(struct ring_buffer_per_cpu *cpu_buffer,
- 		  (unsigned long long)info->ts,
- 		  (unsigned long long)info->before,
- 		  (unsigned long long)info->after,
--		  (unsigned long long)(rb_time_read(&cpu_buffer->write_stamp, &write_stamp) ? write_stamp : 0),
-+		  (unsigned long long)({rb_time_read(&cpu_buffer->write_stamp, &write_stamp); write_stamp;}),
- 		  sched_clock_stable() ? "" :
- 		  "If you just came from a suspend/resume,\n"
- 		  "please switch to the trace global clock:\n"
-@@ -3021,8 +2830,7 @@ rb_try_to_discard(struct ring_buffer_per_cpu *cpu_buffer,
- 
- 	delta = rb_time_delta(event);
- 
--	if (!rb_time_read(&cpu_buffer->write_stamp, &write_stamp))
--		return false;
-+	rb_time_read(&cpu_buffer->write_stamp, &write_stamp);
- 
- 	/* Make sure the write stamp is read before testing the location */
- 	barrier();
-@@ -3560,16 +3368,14 @@ __rb_reserve_next(struct ring_buffer_per_cpu *cpu_buffer,
- 	struct ring_buffer_event *event;
- 	struct buffer_page *tail_page;
- 	unsigned long tail, write, w;
--	bool a_ok;
--	bool b_ok;
- 
- 	/* Don't let the compiler play games with cpu_buffer->tail_page */
- 	tail_page = info->tail_page = READ_ONCE(cpu_buffer->tail_page);
- 
-  /*A*/	w = local_read(&tail_page->write) & RB_WRITE_MASK;
- 	barrier();
--	b_ok = rb_time_read(&cpu_buffer->before_stamp, &info->before);
--	a_ok = rb_time_read(&cpu_buffer->write_stamp, &info->after);
-+	rb_time_read(&cpu_buffer->before_stamp, &info->before);
-+	rb_time_read(&cpu_buffer->write_stamp, &info->after);
- 	barrier();
- 	info->ts = rb_time_stamp(cpu_buffer->buffer);
- 
-@@ -3584,7 +3390,7 @@ __rb_reserve_next(struct ring_buffer_per_cpu *cpu_buffer,
- 		if (!w) {
- 			/* Use the sub-buffer timestamp */
- 			info->delta = 0;
--		} else if (unlikely(!a_ok || !b_ok || info->before != info->after)) {
-+		} else if (unlikely(info->before != info->after)) {
- 			info->add_timestamp |= RB_ADD_STAMP_FORCE | RB_ADD_STAMP_EXTEND;
- 			info->length += RB_LEN_TIME_EXTEND;
- 		} else {
-@@ -3613,13 +3419,11 @@ __rb_reserve_next(struct ring_buffer_per_cpu *cpu_buffer,
- 
- 	if (likely(tail == w)) {
- 		u64 save_before;
--		bool s_ok;
- 
- 		/* Nothing interrupted us between A and C */
-  /*D*/		rb_time_set(&cpu_buffer->write_stamp, info->ts);
- 		barrier();
-- /*E*/		s_ok = rb_time_read(&cpu_buffer->before_stamp, &save_before);
--		RB_WARN_ON(cpu_buffer, !s_ok);
-+ /*E*/		rb_time_read(&cpu_buffer->before_stamp, &save_before);
- 		if (likely(!(info->add_timestamp &
- 			     (RB_ADD_STAMP_FORCE | RB_ADD_STAMP_ABSOLUTE))))
- 			/* This did not interrupt any time update */
-@@ -3632,8 +3436,7 @@ __rb_reserve_next(struct ring_buffer_per_cpu *cpu_buffer,
- 		if (unlikely(info->ts != save_before)) {
- 			/* SLOW PATH - Interrupted between C and E */
- 
--			a_ok = rb_time_read(&cpu_buffer->write_stamp, &info->after);
--			RB_WARN_ON(cpu_buffer, !a_ok);
-+			rb_time_read(&cpu_buffer->write_stamp, &info->after);
- 
- 			/* Write stamp must only go forward */
- 			if (save_before > info->after) {
-@@ -3648,9 +3451,7 @@ __rb_reserve_next(struct ring_buffer_per_cpu *cpu_buffer,
- 	} else {
- 		u64 ts;
- 		/* SLOW PATH - Interrupted between A and C */
--		a_ok = rb_time_read(&cpu_buffer->write_stamp, &info->after);
--		/* Was interrupted before here, write_stamp must be valid */
--		RB_WARN_ON(cpu_buffer, !a_ok);
-+		rb_time_read(&cpu_buffer->write_stamp, &info->after);
- 		ts = rb_time_stamp(cpu_buffer->buffer);
- 		barrier();
-  /*E*/		if (write == (local_read(&tail_page->write) & RB_WRITE_MASK) &&
 -- 
-2.42.0
-
+Martin K. Petersen	Oracle Linux Engineering
