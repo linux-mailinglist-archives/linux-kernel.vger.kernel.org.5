@@ -2,64 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DB6178138CE
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 18:39:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F40188138D3
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 18:39:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1444082AbjLNRi5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 12:38:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57146 "EHLO
+        id S1444127AbjLNRjn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 12:39:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55960 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229519AbjLNRi4 (ORCPT
+        with ESMTP id S229532AbjLNRjm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 12:38:56 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2B6710E
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 09:39:01 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BB98BC433C7;
-        Thu, 14 Dec 2023 17:39:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1702575541;
-        bh=V/fbxsK7q1OnjNdRchrl8etLwYN7DQR4SahFULXkoe4=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=PN906fd563Q8HLlx91Hl7Dq4NFroiwUoyofjLvvPbk2wF8OvvtszM8A/AK2ycUTu9
-         BCGTLKaNEXbHvuKgeDjkYKLjeKmpeUiBOWK96sZbof20gqWp6ViVkE34qDhIr57LYd
-         PfDssee2KM5WkvGXQ4xbH5nLcyFE66ZPnBYXx9JW+LPGbdE3WoUAqQNRPKfOXQiWZG
-         obXvXu919sT/jBR2ZQdEqZJDo5bK8UTvY1E6dG/ur1BvAt9Tg2/tm1oMTfGfZAAg8I
-         WzpZqyvZrb+/Vn+1TFd3opBt6eFsiLJW6N7lQLYtAnKJEVIFjn0gui03KHzZNyWM0b
-         aBgPhDFE2qA5g==
-Date:   Thu, 14 Dec 2023 09:38:59 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Ahelenia Ziemia'nska <nabijaczleweli@nabijaczleweli.xyz>
-Cc:     Jens Axboe <axboe@kernel.dk>,
-        Christian Brauner <brauner@kernel.org>,
-        Tony Lu <tonylu@linux.alibaba.com>,
-        Karsten Graul <kgraul@linux.ibm.com>,
-        Wenjia Zhang <wenjia@linux.ibm.com>,
-        Jan Karcher <jaka@linux.ibm.com>,
-        "D. Wythe" <alibuda@linux.alibaba.com>,
-        Wen Gu <guwen@linux.alibaba.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        Thu, 14 Dec 2023 12:39:42 -0500
+Received: from mail11.truemail.it (mail11.truemail.it [217.194.8.81])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E5ACA7;
+        Thu, 14 Dec 2023 09:39:48 -0800 (PST)
+Received: from francesco-nb.int.toradex.com (93-49-2-63.ip317.fastwebnet.it [93.49.2.63])
+        by mail11.truemail.it (Postfix) with ESMTPA id BD29721454;
+        Thu, 14 Dec 2023 18:39:45 +0100 (CET)
+Date:   Thu, 14 Dec 2023 18:39:44 +0100
+From:   Francesco Dolcini <francesco@dolcini.it>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>
+Cc:     Francesco Dolcini <francesco@dolcini.it>,
+        linux-bluetooth@vger.kernel.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, greybus-dev@lists.linaro.org,
+        linux-iio@vger.kernel.org, netdev@vger.kernel.org,
+        chrome-platform@lists.linux.dev,
+        platform-driver-x86@vger.kernel.org, linux-serial@vger.kernel.org,
+        linux-sound@vger.kernel.org,
+        Francesco Dolcini <francesco.dolcini@toradex.com>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        Johan Hovold <johan@kernel.org>, Alex Elder <elder@kernel.org>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Lee Jones <lee@kernel.org>, Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
         Eric Dumazet <edumazet@google.com>,
-        Paolo Abeni <pabeni@redhat.com>, linux-s390@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org,
-        Alexander Viro <viro@zeniv.linux.org.uk>
-Subject: Re: [PATCH RESEND 06/11] net/smc: smc_splice_read: always request
- MSG_DONTWAIT
-Message-ID: <20231214093859.01f6e2cd@kernel.org>
-In-Reply-To: <3d025aeb-7766-4148-b2fd-01ec3653b4a7@kernel.dk>
-References: <cover.1697486714.git.nabijaczleweli@nabijaczleweli.xyz>
-        <145da5ab094bcc7d3331385e8813074922c2a13c6.1697486714.git.nabijaczleweli@nabijaczleweli.xyz>
-        <ZXkNf9vvtzR7oqoE@TONYMAC-ALIBABA.local>
-        <20231213162854.4acfbd9f@kernel.org>
-        <20231214-glimmen-abspielen-12b68e7cb3a7@brauner>
-        <3d025aeb-7766-4148-b2fd-01ec3653b4a7@kernel.dk>
+        "David S. Miller" <davem@davemloft.net>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Ilpo =?iso-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+        Benson Leung <bleung@chromium.org>,
+        Tzung-Bi Shih <tzungbi@kernel.org>,
+        Rob Herring <robh@kernel.org>
+Subject: Re: [PATCH v1] treewide, serdev: change receive_buf() return type to
+ size_t
+Message-ID: <ZXs94Mf1eOMCmGpT@francesco-nb.int.toradex.com>
+References: <20231214170146.641783-1-francesco@dolcini.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231214170146.641783-1-francesco@dolcini.it>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -67,27 +61,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 14 Dec 2023 09:57:32 -0700 Jens Axboe wrote:
-> On 12/14/23 3:50 AM, Christian Brauner wrote:
-> >> Let's figure that out before we get another repost.  
-> > 
-> > I'm just waiting for Jens to review it as he had comments on this
-> > before.  
+On Thu, Dec 14, 2023 at 06:01:46PM +0100, Francesco Dolcini wrote:
+> From: Francesco Dolcini <francesco.dolcini@toradex.com>
 > 
-> Well, I do wish the CC list had been setup a bit more deliberately.
-> Especially as this is a resend, and I didn't even know about any of this
-> before Christian pointed me this way the other day.
+> receive_buf() is called from ttyport_receive_buf() that expects values
+> ">= 0" from serdev_controller_receive_buf(), change its return type from
+> ssize_t to size_t.
 > 
-> Checking lore, I can't even see all the patches. So while it may be
-> annoying, I do think it may be a good idea to resend the series so I can
-> take a closer look as well.
+> Suggested-by: Jiri Slaby <jirislaby@kernel.org>
+> Link: https://lore.kernel.org/all/087be419-ec6b-47ad-851a-5e1e3ea5cfcc@kernel.org/
+> Signed-off-by: Francesco Dolcini <francesco.dolcini@toradex.com>
+> ---
+> hello,
+> patch is based on current linux next.
+> 
+> It has an obvious problem, it touches files from multiple subsystem in a single
+> patch that is complicated to review and eventually merge, just splitting this
+> would however not work, it will break bisectability and the build.
+> 
+> I am looking for advise on the best way to move forward.
+> 
+> I see the following options:
+>  - keep it as it is
+>  - break it down with a patch with each subsystem, and squash before applying
+>    from a single (tty?) subsystem
+>  - go for a multi stage approach, defining a new callback, move to it and in
+>    the end remove the original one, likewise it was done for i2c lately
 
-So to summarize - for the repost please make sure to CC Jens,
-Christian, Al, linux-fsdevel@vger.kernel.org on *all* patches.
+whoops. I just noticed Greg applied commit 475fc6e2de6f ("tty: serdev:
+convert to u8 and size_t") that touch the exact same files without much
+of an issue.
 
-No need to add "net" to subject prefix, or CC net on all.
+Probably the "keep it as it is" is just the way to go.
 
-> I do think it's interesting and I'd love to
-> have it work in a non-blocking fashion, both solving the issue of splice
-> holding the pipe lock while doing IO, and also then being able to
-> eliminate the pipe_clear_nowait() hack hopefully.
+> 
+> ---
+>  drivers/bluetooth/btmtkuart.c              |  4 ++--
+>  drivers/bluetooth/btnxpuart.c              |  4 ++--
+>  drivers/bluetooth/hci_serdev.c             |  4 ++--
+>  drivers/gnss/core.c                        |  6 +++---
+>  drivers/gnss/serial.c                      |  4 ++--
+>  drivers/gnss/sirf.c                        |  6 +++---
+>  drivers/greybus/gb-beagleplay.c            |  6 +++---
+>  drivers/iio/chemical/pms7003.c             |  4 ++--
+>  drivers/iio/chemical/scd30_serial.c        |  4 ++--
+>  drivers/iio/chemical/sps30_serial.c        |  4 ++--
+>  drivers/iio/imu/bno055/bno055_ser_core.c   |  4 ++--
+>  drivers/mfd/rave-sp.c                      |  4 ++--
+>  drivers/net/ethernet/qualcomm/qca_uart.c   |  2 +-
+>  drivers/nfc/pn533/uart.c                   |  4 ++--
+>  drivers/nfc/s3fwrn5/uart.c                 |  4 ++--
+>  drivers/platform/chrome/cros_ec_uart.c     |  4 ++--
+>  drivers/platform/surface/aggregator/core.c |  4 ++--
+>  drivers/tty/serdev/serdev-ttyport.c        | 10 ++++------
+>  include/linux/gnss.h                       |  4 ++--
+>  include/linux/serdev.h                     |  8 ++++----
+>  sound/drivers/serial-generic.c             |  4 ++--
+>  21 files changed, 48 insertions(+), 50 deletions(-)
