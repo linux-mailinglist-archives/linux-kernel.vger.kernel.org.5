@@ -2,153 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E8576813352
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 15:37:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D9293813341
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 15:37:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1573538AbjLNOhc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 09:37:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35068 "EHLO
+        id S1573513AbjLNOhJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 09:37:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35180 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1573528AbjLNOh2 (ORCPT
+        with ESMTP id S1573497AbjLNOhH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 09:37:28 -0500
-Received: from mx0b-00128a01.pphosted.com (mx0a-00128a01.pphosted.com [148.163.135.77])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78CCC10E;
-        Thu, 14 Dec 2023 06:37:34 -0800 (PST)
-Received: from pps.filterd (m0375855.ppops.net [127.0.0.1])
-        by mx0b-00128a01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BEDbMT8014342;
-        Thu, 14 Dec 2023 09:37:13 -0500
-Received: from nwd2mta4.analog.com ([137.71.173.58])
-        by mx0b-00128a01.pphosted.com (PPS) with ESMTPS id 3v02rj0758-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 14 Dec 2023 09:37:13 -0500 (EST)
-Received: from ASHBMBX8.ad.analog.com (ASHBMBX8.ad.analog.com [10.64.17.5])
-        by nwd2mta4.analog.com (8.14.7/8.14.7) with ESMTP id 3BEEbC7K003520
-        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 14 Dec 2023 09:37:12 -0500
-Received: from ASHBMBX8.ad.analog.com (10.64.17.5) by ASHBMBX8.ad.analog.com
- (10.64.17.5) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.14; Thu, 14 Dec
- 2023 09:37:11 -0500
-Received: from zeus.spd.analog.com (10.66.68.11) by ashbmbx8.ad.analog.com
- (10.64.17.5) with Microsoft SMTP Server id 15.2.986.14 via Frontend
- Transport; Thu, 14 Dec 2023 09:37:11 -0500
-Received: from daniel-Precision-5530.ad.analog.com ([10.48.65.152])
-        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 3BEEaqwf017595;
-        Thu, 14 Dec 2023 09:37:05 -0500
-From:   Daniel Matyas <daniel.matyas@analog.com>
-CC:     Daniel Matyas <daniel.matyas@analog.com>,
-        Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        <linux-hwmon@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-doc@vger.kernel.org>
-Subject: [PATCH 3/3] hwmon: max31827: Compatible for adaq4224
-Date:   Thu, 14 Dec 2023 16:36:47 +0200
-Message-ID: <20231214143648.175336-3-daniel.matyas@analog.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231214143648.175336-1-daniel.matyas@analog.com>
-References: <20231214143648.175336-1-daniel.matyas@analog.com>
+        Thu, 14 Dec 2023 09:37:07 -0500
+Received: from verein.lst.de (verein.lst.de [213.95.11.211])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECC0DE8;
+        Thu, 14 Dec 2023 06:37:13 -0800 (PST)
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id 4CA3968AFE; Thu, 14 Dec 2023 15:37:09 +0100 (CET)
+Date:   Thu, 14 Dec 2023 15:37:09 +0100
+From:   Christoph Hellwig <hch@lst.de>
+To:     John Garry <john.g.garry@oracle.com>
+Cc:     Christoph Hellwig <hch@lst.de>, axboe@kernel.dk, kbusch@kernel.org,
+        sagi@grimberg.me, jejb@linux.ibm.com, martin.petersen@oracle.com,
+        djwong@kernel.org, viro@zeniv.linux.org.uk, brauner@kernel.org,
+        dchinner@redhat.com, jack@suse.cz, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
+        linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        tytso@mit.edu, jbongio@google.com, linux-scsi@vger.kernel.org,
+        ming.lei@redhat.com, jaswin@linux.ibm.com, bvanassche@acm.org
+Subject: Re: [PATCH v2 00/16] block atomic writes
+Message-ID: <20231214143708.GA5331@lst.de>
+References: <20231212110844.19698-1-john.g.garry@oracle.com> <20231212163246.GA24594@lst.de> <b8b0a9d7-88d2-45a9-877a-ecc5e0f1e645@oracle.com> <20231213154409.GA7724@lst.de> <c729b03c-b1d1-4458-9983-113f8cd752cd@oracle.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-ADIRuleOP-NewSCL: Rule Triggered
-X-Proofpoint-GUID: yDk8UywQApKBChYIyuwG22fgLvWSUpGZ
-X-Proofpoint-ORIG-GUID: yDk8UywQApKBChYIyuwG22fgLvWSUpGZ
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-02_01,2023-11-30_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- malwarescore=0 phishscore=0 bulkscore=0 adultscore=0 mlxscore=0
- impostorscore=0 mlxlogscore=999 spamscore=0 suspectscore=0
- lowpriorityscore=0 clxscore=1015 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.19.0-2311290000 definitions=main-2312140102
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <c729b03c-b1d1-4458-9983-113f8cd752cd@oracle.com>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
-To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Compatible string "adi,adaq4224_temp" is accepted in device tree.
-When this string is seen in the device tree, the name of the device
-changes to "adaq4224_temp" and the default configuration of max31827
-is loaded.
+On Wed, Dec 13, 2023 at 04:27:35PM +0000, John Garry wrote:
+>>> Are there any patches yet for the change to always use SGLs for transfers
+>>> larger than a single PRP?
+>> No.
 
-This modification was requested by the costumer, so that whenever one
-analyzes the available devices, one can know for sure, that max31827 is
-part of the adaq4224.
+Here is the WIP version.  With that you'd need to make atomic writes
+conditional on !ctrl->need_virt_boundary.
 
-Signed-off-by: Daniel Matyas <daniel.matyas@analog.com>
----
- drivers/hwmon/max31827.c | 12 +++++++++++-
- 1 file changed, 11 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/hwmon/max31827.c b/drivers/hwmon/max31827.c
-index db93492193bd..c3500a5b2c29 100644
---- a/drivers/hwmon/max31827.c
-+++ b/drivers/hwmon/max31827.c
-@@ -48,7 +48,7 @@
- #define MAX31827_M_DGR_TO_16_BIT(x)	(((x) << 4) / 1000)
- #define MAX31827_DEVICE_ENABLE(x)	((x) ? 0xA : 0x0)
+diff --git a/drivers/nvme/host/core.c b/drivers/nvme/host/core.c
+index 8ebdfd623e0f78..e04faffd6551fe 100644
+--- a/drivers/nvme/host/core.c
++++ b/drivers/nvme/host/core.c
+@@ -1889,7 +1889,8 @@ static void nvme_set_queue_limits(struct nvme_ctrl *ctrl,
+ 		blk_queue_max_hw_sectors(q, ctrl->max_hw_sectors);
+ 		blk_queue_max_segments(q, min_t(u32, max_segments, USHRT_MAX));
+ 	}
+-	blk_queue_virt_boundary(q, NVME_CTRL_PAGE_SIZE - 1);
++	if (q == ctrl->admin_q || ctrl->need_virt_boundary)
++		blk_queue_virt_boundary(q, NVME_CTRL_PAGE_SIZE - 1);
+ 	blk_queue_dma_alignment(q, 3);
+ 	blk_queue_write_cache(q, vwc, vwc);
+ }
+diff --git a/drivers/nvme/host/nvme.h b/drivers/nvme/host/nvme.h
+index e7411dac00f725..aa98794a3ec53d 100644
+--- a/drivers/nvme/host/nvme.h
++++ b/drivers/nvme/host/nvme.h
+@@ -262,6 +262,7 @@ enum nvme_ctrl_flags {
+ struct nvme_ctrl {
+ 	bool comp_seen;
+ 	bool identified;
++	bool need_virt_boundary;
+ 	enum nvme_ctrl_state state;
+ 	spinlock_t lock;
+ 	struct mutex scan_lock;
+diff --git a/drivers/nvme/host/pci.c b/drivers/nvme/host/pci.c
+index 61af7ff1a9d6ba..a8d273b475cb40 100644
+--- a/drivers/nvme/host/pci.c
++++ b/drivers/nvme/host/pci.c
+@@ -60,8 +60,7 @@ MODULE_PARM_DESC(max_host_mem_size_mb,
+ static unsigned int sgl_threshold = SZ_32K;
+ module_param(sgl_threshold, uint, 0644);
+ MODULE_PARM_DESC(sgl_threshold,
+-		"Use SGLs when average request segment size is larger or equal to "
+-		"this size. Use 0 to disable SGLs.");
++		"Use SGLs when > 0. Use 0 to disable SGLs.");
  
--enum chips { max31827 = 1, max31828, max31829 };
-+enum chips { max31827 = 1, max31828, max31829, adaq4224_temp };
+ #define NVME_PCI_MIN_QUEUE_SIZE 2
+ #define NVME_PCI_MAX_QUEUE_SIZE 4095
+@@ -504,23 +503,6 @@ static void nvme_commit_rqs(struct blk_mq_hw_ctx *hctx)
+ 	spin_unlock(&nvmeq->sq_lock);
+ }
  
- enum max31827_cnv {
- 	MAX31827_CNV_1_DIV_64_HZ = 1,
-@@ -592,6 +592,7 @@ static const struct i2c_device_id max31827_i2c_ids[] = {
- 	{ "max31827", max31827 },
- 	{ "max31828", max31828 },
- 	{ "max31829", max31829 },
-+	{ "adaq4224_temp", adaq4224_temp },
- 	{ }
- };
- MODULE_DEVICE_TABLE(i2c, max31827_i2c_ids);
-@@ -620,6 +621,9 @@ static int max31827_init_client(struct max31827_state *st)
- 	res |= FIELD_PREP(MAX31827_CONFIGURATION_TIMEOUT_MASK, !prop);
+-static inline bool nvme_pci_use_sgls(struct nvme_dev *dev, struct request *req,
+-				     int nseg)
+-{
+-	struct nvme_queue *nvmeq = req->mq_hctx->driver_data;
+-	unsigned int avg_seg_size;
+-
+-	avg_seg_size = DIV_ROUND_UP(blk_rq_payload_bytes(req), nseg);
+-
+-	if (!nvme_ctrl_sgl_supported(&dev->ctrl))
+-		return false;
+-	if (!nvmeq->qid)
+-		return false;
+-	if (!sgl_threshold || avg_seg_size < sgl_threshold)
+-		return false;
+-	return true;
+-}
+-
+ static void nvme_free_prps(struct nvme_dev *dev, struct request *req)
+ {
+ 	const int last_prp = NVME_CTRL_PAGE_SIZE / sizeof(__le64) - 1;
+@@ -769,12 +751,14 @@ static blk_status_t nvme_setup_sgl_simple(struct nvme_dev *dev,
+ static blk_status_t nvme_map_data(struct nvme_dev *dev, struct request *req,
+ 		struct nvme_command *cmnd)
+ {
++	struct nvme_queue *nvmeq = req->mq_hctx->driver_data;
+ 	struct nvme_iod *iod = blk_mq_rq_to_pdu(req);
++	bool sgl_supported = nvme_ctrl_sgl_supported(&dev->ctrl) &&
++			nvmeq->qid && sgl_threshold;
+ 	blk_status_t ret = BLK_STS_RESOURCE;
+ 	int rc;
  
- 	type = (enum chips)(uintptr_t)device_get_match_data(dev);
-+	if (type == adaq4224_temp) {
-+		dev->driver->name = "adaq4224_temp";
-+	}
+ 	if (blk_rq_nr_phys_segments(req) == 1) {
+-		struct nvme_queue *nvmeq = req->mq_hctx->driver_data;
+ 		struct bio_vec bv = req_bvec(req);
  
- 	if (fwnode_property_present(fwnode, "adi,alarm-pol")) {
- 		ret = fwnode_property_read_u32(fwnode, "adi,alarm-pol", &data);
-@@ -633,6 +637,7 @@ static int max31827_init_client(struct max31827_state *st)
- 		 */
- 		switch (type) {
- 		case max31827:
-+		case adaq4224_temp:
- 		case max31828:
- 			res |= FIELD_PREP(MAX31827_CONFIGURATION_ALRM_POL_MASK,
- 					  MAX31827_ALRM_POL_LOW);
-@@ -669,6 +674,7 @@ static int max31827_init_client(struct max31827_state *st)
- 		 */
- 		switch (type) {
- 		case max31827:
-+		case adaq4224_temp:
- 			res |= FIELD_PREP(MAX31827_CONFIGURATION_FLT_Q_MASK,
- 					  MAX31827_FLT_Q_1);
- 			break;
-@@ -750,6 +756,10 @@ static const struct of_device_id max31827_of_match[] = {
- 		.compatible = "adi,max31829",
- 		.data = (void *)max31829
- 	},
-+	{
-+		.compatible = "adi,adaq4224_temp",
-+		.data = (void *)adaq4224_temp
-+	},
- 	{ }
- };
- MODULE_DEVICE_TABLE(of, max31827_of_match);
--- 
-2.34.1
-
+ 		if (!is_pci_p2pdma_page(bv.bv_page)) {
+@@ -782,8 +766,7 @@ static blk_status_t nvme_map_data(struct nvme_dev *dev, struct request *req,
+ 				return nvme_setup_prp_simple(dev, req,
+ 							     &cmnd->rw, &bv);
+ 
+-			if (nvmeq->qid && sgl_threshold &&
+-			    nvme_ctrl_sgl_supported(&dev->ctrl))
++			if (sgl_supported)
+ 				return nvme_setup_sgl_simple(dev, req,
+ 							     &cmnd->rw, &bv);
+ 		}
+@@ -806,7 +789,7 @@ static blk_status_t nvme_map_data(struct nvme_dev *dev, struct request *req,
+ 		goto out_free_sg;
+ 	}
+ 
+-	if (nvme_pci_use_sgls(dev, req, iod->sgt.nents))
++	if (sgl_supported)
+ 		ret = nvme_pci_setup_sgls(dev, req, &cmnd->rw);
+ 	else
+ 		ret = nvme_pci_setup_prps(dev, req, &cmnd->rw);
+@@ -3036,6 +3019,8 @@ static int nvme_probe(struct pci_dev *pdev, const struct pci_device_id *id)
+ 	result = nvme_init_ctrl_finish(&dev->ctrl, false);
+ 	if (result)
+ 		goto out_disable;
++	if (!nvme_ctrl_sgl_supported(&dev->ctrl))
++		dev->ctrl.need_virt_boundary = true;
+ 
+ 	nvme_dbbuf_dma_alloc(dev);
+ 
+diff --git a/drivers/nvme/host/rdma.c b/drivers/nvme/host/rdma.c
+index 81e2621169e5d3..416a9fbcccfc74 100644
+--- a/drivers/nvme/host/rdma.c
++++ b/drivers/nvme/host/rdma.c
+@@ -838,6 +838,7 @@ static int nvme_rdma_configure_admin_queue(struct nvme_rdma_ctrl *ctrl,
+ 	error = nvme_init_ctrl_finish(&ctrl->ctrl, false);
+ 	if (error)
+ 		goto out_quiesce_queue;
++	ctrl->ctrl.need_virt_boundary = true;
+ 
+ 	return 0;
+ 
