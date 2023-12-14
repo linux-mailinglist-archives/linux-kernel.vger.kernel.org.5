@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AB81813678
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 17:40:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ACAF881367C
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Dec 2023 17:41:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230263AbjLNQk2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 14 Dec 2023 11:40:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59870 "EHLO
+        id S1443547AbjLNQki (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 14 Dec 2023 11:40:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40730 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229873AbjLNQkZ (ORCPT
+        with ESMTP id S230281AbjLNQke (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 14 Dec 2023 11:40:25 -0500
-Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FC9811B
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 08:40:31 -0800 (PST)
-Received: by mail-pl1-x636.google.com with SMTP id d9443c01a7336-1d351cb8b82so10529615ad.3
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 08:40:31 -0800 (PST)
+        Thu, 14 Dec 2023 11:40:34 -0500
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EF2F131
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 08:40:39 -0800 (PST)
+Received: by mail-pl1-x62e.google.com with SMTP id d9443c01a7336-1d0c4d84bf6so50125525ad.1
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 08:40:39 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702572031; x=1703176831; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1702572038; x=1703176838; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=pQ3Qdqt0V+ZhHZ5PlObynzpb2Nb+bXeilCmC71DhFUE=;
-        b=NFuagq7EQ1o5adNeSTINoY3k5HDp6hroJuKtLxQTfZljxCRPhY/ExElKll/zwihQ4l
-         qCqd+lATftJnwZ90rorN5bPF5e0rwtSPxm2gdyH2ZovbOg1mCVQ+ctJT2j9i+AWURgp/
-         mF/RaqiXSUtNWMoIvKSmGXY984KqDFcDcfsZMG7XpHPzVfOZbE7/gd0deafYsWchnECc
-         7P/Fz69OWuVF7Ti8JswM0qmSLFfBSMUK8vX8Fd5iY9GtnbHeq2S6ynY7/HOo7GC5UsqY
-         HAKb0i8NEmFv5BwofuOIH/sQVWYLMu3F7toDFu1pv6Q7zcD0+H4NocCWT+X9TE8K+Rla
-         pcMw==
+        bh=VRn1DTbbmWGLB1nxG36xstbG89fQMD3XiAVHtLkUKlI=;
+        b=dOC8w8ZkjgYsSIKHdseod5HSGGz2xSe09FURQkBUmu+B5bBO8x+3T6QUOEZ4Y/K9Xi
+         hnynuV/qS6f/A8//ztca9zirppl1oaW7uJ0iEUIka+q9U2bLOAR1HKKExNA2z4eDSU5G
+         xUT8T31E3N0KuMr8f8S03nZEvHO/rhToBYtbHEQJYb+gGi0E/lqdtZd0TaTH91bra5+C
+         XBc5Fj7GZEJ05Ce8dTipbjMrCVMB/OdQACs/euGG2Bff+XrDxVKS6v+QGwfMXb4/NHfT
+         xCIa6VPNz3ICPCnlhQbKW8X/cpTXg3AwXTl6RUw25D64umwc2g0qvc7BSi6eq8wwvSuW
+         cIXg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702572031; x=1703176831;
+        d=1e100.net; s=20230601; t=1702572038; x=1703176838;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=pQ3Qdqt0V+ZhHZ5PlObynzpb2Nb+bXeilCmC71DhFUE=;
-        b=XTb3yfc3yr/p9E/YFtx+XXnF1wtDPh/Ern8oHSFo0Z9fKlyM1MrjH+hQsrnwIsc5WQ
-         uyxK3vyX0EnmuryeOVi4IxHikuFMJpRWmvAHozqbSkTtKxNlHQ3fLCcemPJG9cv11CXF
-         Ytl5Ei9SFzfIHqGMDC7W3YYFngKX+0weYr4VGdw+F+yZhWv16yx5229hSrw3O7tuq4JL
-         qxG3J8BaFkkcJn0Qe2HKG3TgwpFwm3hqJrmuMP9ZDGf4ooOVmQmbjXgXEVk9Sva0JAWm
-         f81jMyrFtX+l1+d6UXfuLREDz+KjjJ92fdmXfDGKjzIFUG5pxLl2B+90PijUSSP0o22m
-         CoKw==
-X-Gm-Message-State: AOJu0YxyhWlwNlVXGas5/ZH3LHn9zVG9YkeXfjNMXM6cG4MdmHwWOq/H
-        1T/WlSdfFWm9ZDVgkmF63B+RSkIzmZE=
-X-Google-Smtp-Source: AGHT+IH2DfA4x6xKySy2o3svU4hSncEcqlwcYRSA4lqR7ptqakTKaNBJD+2zF0pkzhSr+P6S1sAA7A==
-X-Received: by 2002:a17:903:22c8:b0:1d0:6ffd:adfc with SMTP id y8-20020a17090322c800b001d06ffdadfcmr6419298plg.99.1702572031036;
-        Thu, 14 Dec 2023 08:40:31 -0800 (PST)
+        bh=VRn1DTbbmWGLB1nxG36xstbG89fQMD3XiAVHtLkUKlI=;
+        b=wTjFm54nyDXxCt+CoffqtuaUutCE7Df8MV77YRrWP2obi123adEhzVctfCfk3AXYsS
+         ObN8763wMWOADvgo1OD3eMz4sBgF97ItLi8x66VC/a512m7pArf74Fa7s5T3mqOgX/ri
+         QLsERUbR0qgNn6Dvu+8s9wrM4pwGvG3+h02myDT0/RxxQOEvunkLOYf2uh4NmhzrHIYm
+         qOpDwDlokSUxbUV7k6/Oc5p7gx7/w1yAH8Eu6wvWty5YMMImhVITfqOt0zohI3nEG93i
+         VZN152xgA+T/+GWghgHV2KdbyEiZUURXQlErFqE3WzITZ/e9Qx7I6cNctFux5O6cI5Pz
+         veCA==
+X-Gm-Message-State: AOJu0Yx5kHLrHtw8ZMkfdl9fIeP326vZsLPOR0M5+wAqXPoHpE/ZYncq
+        DMQbL+DQwTcVZ8WZjq9s1pgt+geH9GI=
+X-Google-Smtp-Source: AGHT+IESkQlL7JhHRaVr6xofo//eAXSa64RW84yr+T6FldHHTCobQXcxJcnZQDwsiYeR88Wr3ZnhTQ==
+X-Received: by 2002:a17:902:c3c5:b0:1d3:64dc:e9d0 with SMTP id j5-20020a170902c3c500b001d364dce9d0mr848917plj.26.1702572038411;
+        Thu, 14 Dec 2023 08:40:38 -0800 (PST)
 Received: from code.. ([144.202.108.46])
-        by smtp.gmail.com with ESMTPSA id p12-20020a170902e74c00b001d0b32ec81esm12595897plf.79.2023.12.14.08.40.24
+        by smtp.gmail.com with ESMTPSA id p12-20020a170902e74c00b001d0b32ec81esm12595897plf.79.2023.12.14.08.40.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Dec 2023 08:40:30 -0800 (PST)
+        Thu, 14 Dec 2023 08:40:38 -0800 (PST)
 From:   Yuntao Wang <ytcoode@gmail.com>
 To:     linux-kernel@vger.kernel.org, kexec@lists.infradead.org,
         x86@kernel.org
@@ -67,9 +67,9 @@ Cc:     Thomas Gleixner <tglx@linutronix.de>,
         Takashi Iwai <tiwai@suse.de>,
         Lianbo Jiang <lijiang@redhat.com>,
         Yuntao Wang <ytcoode@gmail.com>
-Subject: [PATCH 1/3] x86/crash: remove the unused image parameter from prepare_elf_headers()
-Date:   Fri, 15 Dec 2023 00:38:40 +0800
-Message-ID: <20231214163842.129139-2-ytcoode@gmail.com>
+Subject: [PATCH 2/3] x86/crash: use SZ_1M macro instead of hardcoded value
+Date:   Fri, 15 Dec 2023 00:38:41 +0800
+Message-ID: <20231214163842.129139-3-ytcoode@gmail.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20231214163842.129139-1-ytcoode@gmail.com>
 References: <20231214163842.129139-1-ytcoode@gmail.com>
@@ -85,56 +85,26 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The image parameter is no longer in use, remove it. Also, tidy up the code
-formatting.
+Use SZ_1M macro instead of hardcoded 1<<20 to make code more readable.
 
 Signed-off-by: Yuntao Wang <ytcoode@gmail.com>
 ---
- arch/x86/kernel/crash.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ arch/x86/kernel/crash.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/arch/x86/kernel/crash.c b/arch/x86/kernel/crash.c
-index c92d88680dbf..792231a56d11 100644
+index 792231a56d11..249b5876e7ec 100644
 --- a/arch/x86/kernel/crash.c
 +++ b/arch/x86/kernel/crash.c
-@@ -198,8 +198,8 @@ static int prepare_elf64_ram_headers_callback(struct resource *res, void *arg)
- }
+@@ -170,7 +170,7 @@ static int elf_header_exclude_ranges(struct crash_mem *cmem)
+ 	int ret = 0;
  
- /* Prepare elf headers. Return addr and size */
--static int prepare_elf_headers(struct kimage *image, void **addr,
--					unsigned long *sz, unsigned long *nr_mem_ranges)
-+static int prepare_elf_headers(void **addr, unsigned long *sz,
-+			       unsigned long *nr_mem_ranges)
- {
- 	struct crash_mem *cmem;
- 	int ret;
-@@ -221,7 +221,7 @@ static int prepare_elf_headers(struct kimage *image, void **addr,
- 	*nr_mem_ranges = cmem->nr_ranges;
- 
- 	/* By default prepare 64bit headers */
--	ret =  crash_prepare_elf64_headers(cmem, IS_ENABLED(CONFIG_X86_64), addr, sz);
-+	ret = crash_prepare_elf64_headers(cmem, IS_ENABLED(CONFIG_X86_64), addr, sz);
- 
- out:
- 	vfree(cmem);
-@@ -349,7 +349,7 @@ int crash_load_segments(struct kimage *image)
- 				  .buf_max = ULONG_MAX, .top_down = false };
- 
- 	/* Prepare elf headers and add a segment */
--	ret = prepare_elf_headers(image, &kbuf.buffer, &kbuf.bufsz, &pnum);
-+	ret = prepare_elf_headers(&kbuf.buffer, &kbuf.bufsz, &pnum);
+ 	/* Exclude the low 1M because it is always reserved */
+-	ret = crash_exclude_mem_range(cmem, 0, (1<<20)-1);
++	ret = crash_exclude_mem_range(cmem, 0, SZ_1M - 1);
  	if (ret)
  		return ret;
  
-@@ -452,7 +452,7 @@ void arch_crash_handle_hotplug_event(struct kimage *image)
- 	 * Create the new elfcorehdr reflecting the changes to CPU and/or
- 	 * memory resources.
- 	 */
--	if (prepare_elf_headers(image, &elfbuf, &elfsz, &nr_mem_ranges)) {
-+	if (prepare_elf_headers(&elfbuf, &elfsz, &nr_mem_ranges)) {
- 		pr_err("unable to create new elfcorehdr");
- 		goto out;
- 	}
 -- 
 2.43.0
 
