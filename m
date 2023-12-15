@@ -1,106 +1,93 @@
-Return-Path: <linux-kernel+bounces-856-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-865-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8C5A781471C
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 12:41:03 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 82FFC814737
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 12:45:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EF559B21F11
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 11:41:00 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B5D6F1C2325C
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 11:45:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 321BF250F6;
-	Fri, 15 Dec 2023 11:40:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ECdepV4+"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2EC7225108;
+	Fri, 15 Dec 2023 11:45:42 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
+Received: from SHSQR01.spreadtrum.com (mx1.unisoc.com [222.66.158.135])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2192224B31;
-	Fri, 15 Dec 2023 11:40:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1702640448; x=1734176448;
-  h=date:from:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=PbtD99dYPA9EHTb3b9FLxpZzIQ0yDjkgxxrR4eFWJYs=;
-  b=ECdepV4+vqHfM5ol045Ydpd97ykMs6H+rf16C7KwkAKza1uXKqxbzL9h
-   j4J27Fo4/TmgUVJRUlzd19eNeMxbVTg2cuv3diQ0knMfYSHpo6JfpnPGm
-   8MxDqlsshFd4LjF0pXg0iMhpT2N5ZMrE4Z0aBVpqT7vJEgt8Ak/u1W6CP
-   BtawFQuGbagsJrMBhr0AvyueZzQ+n37CGI4WCdEtbjpPMstKoDwfVhvqX
-   8eM8jFbqLLWGJg40bNKlc4UQ68vBq4uFq7dJrdycSE1reF112mTMl5oFr
-   YMPqbG02nrhbo7CRflPc06frAGJ5rZoxNJkRFyP7WehybwkoKk6CXr2k/
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10924"; a="398056158"
-X-IronPort-AV: E=Sophos;i="6.04,278,1695711600"; 
-   d="scan'208";a="398056158"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Dec 2023 03:40:47 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10924"; a="898113841"
-X-IronPort-AV: E=Sophos;i="6.04,278,1695711600"; 
-   d="scan'208";a="898113841"
-Received: from plchavex-mobl.amr.corp.intel.com ([10.249.34.221])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Dec 2023 03:40:45 -0800
-Date: Fri, 15 Dec 2023 13:40:40 +0200 (EET)
-From: =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
-To: Colin Ian King <colin.i.king@gmail.com>
-cc: Henry Shi <henryshi2018@gmail.com>, Hans de Goede <hdegoede@redhat.com>, 
-    platform-driver-x86@vger.kernel.org, kernel-janitors@vger.kernel.org, 
-    LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH][next] platform/x86: silicom-platform: Fix spelling
- mistake "platfomr" -> "platform"
-In-Reply-To: <20231215112746.13752-1-colin.i.king@gmail.com>
-Message-ID: <9e1d8d9-5d59-a29a-73b6-e7e04f98a96@linux.intel.com>
-References: <20231215112746.13752-1-colin.i.king@gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F0BE2555B;
+	Fri, 15 Dec 2023 11:45:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=unisoc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=unisoc.com
+Received: from dlp.unisoc.com ([10.29.3.86])
+	by SHSQR01.spreadtrum.com with ESMTP id 3BFBg8l2006898;
+	Fri, 15 Dec 2023 19:42:08 +0800 (+08)
+	(envelope-from zhifeng.tang@unisoc.com)
+Received: from SHDLP.spreadtrum.com (shmbx04.spreadtrum.com [10.0.1.214])
+	by dlp.unisoc.com (SkyGuard) with ESMTPS id 4Ss6c337Vlz2PDtHV;
+	Fri, 15 Dec 2023 19:36:03 +0800 (CST)
+Received: from xm9614pcu.spreadtrum.com (10.13.2.29) by shmbx04.spreadtrum.com
+ (10.0.1.214) with Microsoft SMTP Server (TLS) id 15.0.1497.23; Fri, 15 Dec
+ 2023 19:42:07 +0800
+From: Zhifeng Tang <zhifeng.tang@unisoc.com>
+To: Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd
+	<sboyd@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski
+	<krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>, Orson Zhai <orsonzhai@gmail.com>,
+        Baolin Wang
+	<baolin.wang@linux.alibaba.com>,
+        Chunyan Zhang <zhang.lyra@gmail.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>
+CC: <linux-clk@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        Zhifeng Tang <zhifeng.tang23@gmail.com>,
+        Wenming Wu <wenming.wu@unisoc.com>
+Subject: [PATCH V2 0/3] clk: sprd: Add reset controller driver for ums512
+Date: Fri, 15 Dec 2023 19:41:26 +0800
+Message-ID: <20231215114129.11313-1-zhifeng.tang@unisoc.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="8323329-1452261007-1702640447=:2400"
+Content-Type: text/plain
+X-ClientProxiedBy: SHCAS03.spreadtrum.com (10.0.1.207) To
+ shmbx04.spreadtrum.com (10.0.1.214)
+X-MAIL:SHSQR01.spreadtrum.com 3BFBg8l2006898
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
+From: "zhifeng.tang" <zhifeng.tang@unisoc.com>
 
---8323329-1452261007-1702640447=:2400
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8BIT
+Add reset controller driver for ums512,The reset register has 
+the same base address as the gate register.
 
-On Fri, 15 Dec 2023, Colin Ian King wrote:
+Changes in v2:
+  - The binding files are combined into one patch
 
-> There is a spelling mistake in a literal string. Fix it.
-> 
-> Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
-> ---
->  drivers/platform/x86/silicom-platform.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/platform/x86/silicom-platform.c b/drivers/platform/x86/silicom-platform.c
-> index 84b92b3f9f4b..6ce43ccb3112 100644
-> --- a/drivers/platform/x86/silicom-platform.c
-> +++ b/drivers/platform/x86/silicom-platform.c
-> @@ -866,7 +866,7 @@ static int silicom_fan_control_read_labels(struct device *dev,
->  {
->  	switch (type) {
->  	case hwmon_fan:
-> -		*str = "Silicom_platfomr: Fan Speed";
-> +		*str = "Silicom_platform: Fan Speed";
->  		return 0;
->  	case hwmon_temp:
->  		*str = "Silicom_platform: Thermostat Sensor";
-> 
+zhifeng.tang (3):
+  dt-bindings: reset: Add reset controller bindings for Unisoc's ums512
+  clk: sprd: Add reset controller driver for ums512
+  arm64: dts: sprd: Add reset controller driver for UMS512
 
-Reviewed-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
-
+ .../bindings/clock/sprd,ums512-clk.yaml       |   3 +
+ arch/arm64/boot/dts/sprd/ums512.dtsi          |   9 +
+ drivers/clk/sprd/Makefile                     |   1 +
+ drivers/clk/sprd/common.c                     |   1 +
+ drivers/clk/sprd/common.h                     |   2 +
+ drivers/clk/sprd/reset.c                      |  78 ++++++
+ drivers/clk/sprd/reset.h                      |  30 +++
+ drivers/clk/sprd/ums512-clk.c                 | 240 ++++++++++++++++++
+ include/dt-bindings/reset/sprd,ums512-reset.h | 203 +++++++++++++++
+ 9 files changed, 567 insertions(+)
+ create mode 100644 drivers/clk/sprd/reset.c
+ create mode 100644 drivers/clk/sprd/reset.h
+ create mode 100644 include/dt-bindings/reset/sprd,ums512-reset.h
 
 -- 
- i.
+2.17.1
 
---8323329-1452261007-1702640447=:2400--
 
