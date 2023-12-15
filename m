@@ -1,249 +1,172 @@
-Return-Path: <linux-kernel+bounces-1072-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-1073-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4E02B8149F1
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 15:04:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 305A18149F3
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 15:05:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7390B1C226DE
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 14:04:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 52AE21C20DDC
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 14:05:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D3783035B;
-	Fri, 15 Dec 2023 14:01:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 84B5430FB8;
+	Fri, 15 Dec 2023 14:02:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=yandex-team.ru header.i=@yandex-team.ru header.b="gpXoOR8A"
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="NpdIUB3P"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from forwardcorp1c.mail.yandex.net (forwardcorp1c.mail.yandex.net [178.154.239.200])
+Received: from NAM02-DM3-obe.outbound.protection.outlook.com (mail-dm3nam02on2054.outbound.protection.outlook.com [40.107.95.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0997C2F847
-	for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 14:01:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=yandex-team.ru
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=yandex-team.ru
-Received: from mail-nwsmtp-smtp-corp-main-26.myt.yp-c.yandex.net (mail-nwsmtp-smtp-corp-main-26.myt.yp-c.yandex.net [IPv6:2a02:6b8:c12:42a6:0:640:15f4:0])
-	by forwardcorp1c.mail.yandex.net (Yandex) with ESMTP id A497060EE3;
-	Fri, 15 Dec 2023 17:01:31 +0300 (MSK)
-Received: from davydov-max-nux.yandex.net (unknown [2a02:6b8:0:419:ed5e:f8e6:ca7f:c00d])
-	by mail-nwsmtp-smtp-corp-main-26.myt.yp-c.yandex.net (smtpcorp/Yandex) with ESMTPSA id D1mgmB0GfOs0-kI8EEad7;
-	Fri, 15 Dec 2023 17:01:30 +0300
-X-Yandex-Fwd: 1
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex-team.ru;
-	s=default; t=1702648890;
-	bh=hBgvleu0cfg4lHgVjkdztt7M4UQsQ0LacEUkFkN556Q=;
-	h=Message-Id:Date:Cc:Subject:To:From;
-	b=gpXoOR8ApfZx9SQ6kydNVgLY8E/gEEWnNhUcHg1HP6UhKkSn4CZGEfJO8ePqkuJEq
-	 mJrKy0xqcT5JCWbhBJEJZtxjZd7JyC1z3PW7R4jbQg7rEXvsJEL6rx/e4w/NC3YAdu
-	 i8R0v/JwvPyB/96zhJ8AYjDXMFW/KHQxfpAlqm6w=
-Authentication-Results: mail-nwsmtp-smtp-corp-main-26.myt.yp-c.yandex.net; dkim=pass header.i=@yandex-team.ru
-From: Maksim Davydov <davydov-max@yandex-team.ru>
-To: linux-kernel@vger.kernel.org,
-	x86@kernel.org
-Cc: davydov-max@yandex-team.ru,
-	den-plotnikov@yandex-team.ru,
-	tony.luck@intel.com,
-	tglx@linutronix.de,
-	mingo@redhat.com,
-	bp@alien8.de,
-	dave.hansen@linux.intel.com,
-	hpa@zytor.com,
-	peterz@infradead.org,
-	juri.lelli@redhat.com,
-	vincent.guittot@linaro.org
-Subject: [PATCH] x86/split_lock: add split lock counter
-Date: Fri, 15 Dec 2023 17:01:13 +0300
-Message-Id: <20231215140113.57173-1-davydov-max@yandex-team.ru>
-X-Mailer: git-send-email 2.34.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F17630F8F;
+	Fri, 15 Dec 2023 14:02:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=kjL4+QHptssua1PEzn4p5j+pRzI1a4OAb0ulz068xAqXe5EIpm2AVhjOjbFexn+M7la6i0zsBK4rhHCqfcu2uPXMnU/VASMNNtzhRxa693m3N1RchzMk8ru1wWteA3z2Zjtm9v2nLfVLYWY4dQZgFkC7t0JtIbfrxd+Ko0iAA7V5GT/dDUxoszPVq2Vbq9fcggAXBbbGyNTDiZSgw6o7CphlnACG2k5BGMMwYWxbho1JuguEYYHE2w2us2w+qM8Z9r86pldcWPzG88EjtJzraOqfr7W1ZpxB5us5Xb0V6etAJWLqwzGmHoa+U+AEvyRs0zUVb0ueLBPT/Px05E/yHw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=+IHvmAfjUqijN8PnCS+2/qUcK2cIWV+k6bjPEbRCSk8=;
+ b=aNtwisfaWC/oL8qiiSMl+fSRNNIj/OWn0v7M77jPFXAYXCWJlwGRJMr9rDAu1iCN1qZBEeEURn/IAxVGE4vYlKqoOn4ZDRpDuP15bmtuLH7N14/vz6dHY5dhaHukZVoAPOpIeAWpal5iVLSucXH3DEKmKN1xZiTgjAHTOxRTZpCAHCMYjIUbAZyIux89VenqqIiC8mvW2B0vm7PmoG9ZzfhdCBE9TwbXr5EwqEJ7wYTtF0l9G3qDYjXsHrxas/w3uLvlyVs1iHKQcFBW5kdS2qmFLgxHds+w3YlJtg1+SmjWocBhxYLbCAqSn/8tLBMvBND6V/UOqTjiu8jXNQTonA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.117.161) smtp.rcpttodomain=redhat.com smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=+IHvmAfjUqijN8PnCS+2/qUcK2cIWV+k6bjPEbRCSk8=;
+ b=NpdIUB3PLqcjrnMCq3D4teQnciwYb9x6HoJ8uFWZwW8jDNs0uUA6hGsnLdI0WFFfyjhaVt3Gzz6j9slYF8zUm306wveEJ/LQkAxhUsmot6j15ZHSfIAX8uSNVIUEPNCB50HOTATLQ+9nJIi/klmo+oSBCH3SdgRCjREah0RFFNUx7o5zTljzG3F877BcNi3WqoqNEFGIQjg1coIZhy4U4vCUbUZHTnkm0gi7o9Vp1motNRcKrFS/fRGKrG1L0ODKyy4RUjpGcOHbgowuf7yhK72c/YHtu2Y0vHWY6KUP8XCEnS0D7qM+v4aq8MsPi22nwBvX3pE2ZCvZV+cBZjXR7w==
+Received: from MW4PR03CA0140.namprd03.prod.outlook.com (2603:10b6:303:8c::25)
+ by IA1PR12MB8189.namprd12.prod.outlook.com (2603:10b6:208:3f0::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7091.28; Fri, 15 Dec
+ 2023 14:02:11 +0000
+Received: from CO1PEPF000044F7.namprd21.prod.outlook.com
+ (2603:10b6:303:8c:cafe::76) by MW4PR03CA0140.outlook.office365.com
+ (2603:10b6:303:8c::25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7091.32 via Frontend
+ Transport; Fri, 15 Dec 2023 14:02:10 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.161)
+ smtp.mailfrom=nvidia.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.117.161 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.117.161; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.117.161) by
+ CO1PEPF000044F7.mail.protection.outlook.com (10.167.241.197) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.7113.8 via Frontend Transport; Fri, 15 Dec 2023 14:02:10 +0000
+Received: from rnnvmail205.nvidia.com (10.129.68.10) by mail.nvidia.com
+ (10.129.200.67) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Fri, 15 Dec
+ 2023 06:01:54 -0800
+Received: from rnnvmail201.nvidia.com (10.129.68.8) by rnnvmail205.nvidia.com
+ (10.129.68.10) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Fri, 15 Dec
+ 2023 06:01:54 -0800
+Received: from c-237-113-220-225.mtl.labs.mlnx (10.127.8.12) by
+ mail.nvidia.com (10.129.68.8) with Microsoft SMTP Server id 15.2.986.41 via
+ Frontend Transport; Fri, 15 Dec 2023 06:01:51 -0800
+From: Dragos Tatulea <dtatulea@nvidia.com>
+To: "Michael S . Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>,
+	Eugenio Perez Martin <eperezma@redhat.com>, Si-Wei Liu
+	<si-wei.liu@oracle.com>, Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky
+	<leon@kernel.org>, <virtualization@lists.linux-foundation.org>, Gal Pressman
+	<gal@nvidia.com>
+CC: Dragos Tatulea <dtatulea@nvidia.com>, <kvm@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, Parav Pandit <parav@nvidia.com>, Xuan Zhuo
+	<xuanzhuo@linux.alibaba.com>
+Subject: [PATCH vhost v3 0/6] vdpa/mlx5: Add support for resumable vqs
+Date: Fri, 15 Dec 2023 16:01:40 +0200
+Message-ID: <20231215140146.95816-1-dtatulea@nvidia.com>
+X-Mailer: git-send-email 2.42.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8bit
+X-NV-OnPremToCloud: ExternallySecured
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CO1PEPF000044F7:EE_|IA1PR12MB8189:EE_
+X-MS-Office365-Filtering-Correlation-Id: c7b516d8-351b-4398-627c-08dbfd766e8f
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	J88lf+Jk/fhU6Mm0hSkEnJi/cCipyJWnFxAgrqzAp05qEDjMlXqfAdg2BNlOeQBud6n9Dw0w9IVl7YwF4rtVp7AWuaylmijxKlar2hE42OfCMt1yMTGFcx/84vZVA5v/dDCXqfF2WGGg8N3KX5BKoXcEW9t3UxpAz1yDNH5NHDMZZ6lHZqIKb85Ik6JdcPpoL2ir0mtCh1B84JYjYLwN65p+qyC+PJpOdkbAvKel6Rc7YhYKunPwDqNEDoWzKXNbOP82GyLsirsEvwHeG3SE7yRSSBSPDhwEFL7bGIJ9r2TV1BlkV0OGDpa08VQD8XRQwXDwXYGE3oG+c3YdVPbRgNNxJejnQRu5vmFbpeDMXlE8oEeWKSfSq+9CKmUHgl5JIoT5ypUjsyV/ZrNmgpogIKoTues/9qhCTLWrgnptB11mwuo+wUgwGWvfwwFxfg6oG2eHQ06cvOSfjWLLNDZ5lVfGTbz+TdAzj7OUzpJYk6JnSjM99WnpElEoKXozgobaJnx0Zud1hAhGnexM4GVZkrNODxTcxbwE1DvnSaLFbUgw+Ofqbj2kBfVTo+rT956B4Gv63m15sXwzxIkS/5KcjxEVVu1n16mTrf7u3lskTDcfThp6dhulDCHX/XeoCwsalXwMVOiw7M3hepbM5wxuL4fXLoABuwC2C0qCQ1/gawA03jeOPOyNFA1zl3K3l7WzfV+XcHl2rHAVo/Yl/l8AK2tYC7rDrrjydvoGtapFtfKw8IcNHTX8/p35BHjIIURYMx3pK49UXmAa7N5kLE5tejakCpMb+3PbW88p8/lAJ7E=
+X-Forefront-Antispam-Report:
+	CIP:216.228.117.161;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge2.nvidia.com;CAT:NONE;SFS:(13230031)(4636009)(396003)(346002)(39860400002)(136003)(376002)(230922051799003)(1800799012)(186009)(64100799003)(451199024)(82310400011)(36840700001)(40470700004)(46966006)(478600001)(5660300002)(40480700001)(966005)(54906003)(6666004)(82740400003)(2906002)(47076005)(1076003)(2616005)(26005)(86362001)(426003)(336012)(36756003)(70206006)(70586007)(316002)(6636002)(110136005)(40460700003)(8676002)(4326008)(8936002)(7636003)(356005)(41300700001)(83380400001)(36860700001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Dec 2023 14:02:10.4978
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: c7b516d8-351b-4398-627c-08dbfd766e8f
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.161];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	CO1PEPF000044F7.namprd21.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR12MB8189
 
-Provides per task split locks counter to monitor split locks rate
-in the system. It can be helpful in split locks monitoring to get a clear
-sense of which process causing split locks and how many of them have
-happened by the moment. For instance, it might be used by cloud providers
-who can't control guest executable code and want to make decisions based
-on the rate value like ratelimiting or notifing the split lock origins.
+Add support for resumable vqs in the driver. This is a firmware feature
+that can be used for the following benefits:
+- Full device .suspend/.resume.
+- .set_map doesn't need to destroy and create new vqs anymore just to
+  update the map. When resumable vqs are supported it is enough to
+  suspend the vqs, set the new maps, and then resume the vqs.
 
-To implement this functionality the per-task flag have been transformed
-into the counter. But procfs interface is used to provide the counter
-in machine-readable format.
+The first patch exposes the relevant bits in mlx5_ifc.h. That means it
+needs to be applied to the mlx5-vhost tree [0] first. Once applied
+there, the change has to be pulled from mlx5-vhost into the vhost tree
+and only then the remaining patches can be applied. Same flow as the vq
+descriptor mappings patchset [1].
 
-Signed-off-by: Maksim Davydov <davydov-max@yandex-team.ru>
----
- arch/x86/include/asm/cpu.h  | 18 ++++++++++++++++++
- arch/x86/kernel/cpu/intel.c | 35 +++++++++++++++++++++++++++++++++--
- fs/proc/base.c              |  7 +++++++
- include/linux/sched.h       |  6 +++---
- kernel/fork.c               |  2 +-
- 5 files changed, 62 insertions(+), 6 deletions(-)
+The second part adds support for resumable vqs in the form of a device .resume
+operation but also for the .set_map call (suspend/resume device instead
+of re-creating vqs with new mappings).
 
-diff --git a/arch/x86/include/asm/cpu.h b/arch/x86/include/asm/cpu.h
-index fecc4fe1d68a..1470124e1d63 100644
---- a/arch/x86/include/asm/cpu.h
-+++ b/arch/x86/include/asm/cpu.h
-@@ -44,6 +44,12 @@ extern bool handle_user_split_lock(struct pt_regs *regs, long error_code);
- extern bool handle_guest_split_lock(unsigned long ip);
- extern void handle_bus_lock(struct pt_regs *regs);
- u8 get_this_hybrid_cpu_type(void);
-+extern int proc_pid_split_locks_show(struct seq_file *s,
-+		struct pid_namespace *ns, struct pid *pid,
-+		struct task_struct *tsk);
-+extern int proc_tgid_split_locks_show(struct seq_file *s,
-+		struct pid_namespace *ns, struct pid *pid,
-+		struct task_struct *tsk);
- #else
- static inline void __init sld_setup(struct cpuinfo_x86 *c) {}
- static inline bool handle_user_split_lock(struct pt_regs *regs, long error_code)
-@@ -62,6 +68,18 @@ static inline u8 get_this_hybrid_cpu_type(void)
- {
- 	return 0;
- }
-+static inline int proc_pid_split_locks_show(struct seq_file *s,
-+		struct pid_namespace *ns, struct pid *pid,
-+		struct task_struct *tsk)
-+{
-+	return 0;
-+}
-+static inline int proc_tgid_split_locks_show(struct seq_file *s,
-+		struct pid_namespace *ns, struct pid *pid,
-+		struct task_struct *tsk)
-+{
-+	return 0;
-+}
- #endif
- #ifdef CONFIG_IA32_FEAT_CTL
- void init_ia32_feat_ctl(struct cpuinfo_x86 *c);
-diff --git a/arch/x86/kernel/cpu/intel.c b/arch/x86/kernel/cpu/intel.c
-index a927a8fc9624..20640a4b9eac 100644
---- a/arch/x86/kernel/cpu/intel.c
-+++ b/arch/x86/kernel/cpu/intel.c
-@@ -1160,10 +1160,10 @@ static void split_lock_warn(unsigned long ip)
- 	struct delayed_work *work;
- 	int cpu;
- 
--	if (!current->reported_split_lock)
-+	if (!current->detected_split_locks)
- 		pr_warn_ratelimited("#AC: %s/%d took a split_lock trap at address: 0x%lx\n",
- 				    current->comm, current->pid, ip);
--	current->reported_split_lock = 1;
-+	current->detected_split_locks++;
- 
- 	if (sysctl_sld_mitigate) {
- 		/*
-@@ -1191,6 +1191,37 @@ static void split_lock_warn(unsigned long ip)
- 	put_cpu();
- }
- 
-+static int split_locks_show(struct seq_file *s, struct task_struct *tsk,
-+			    int whole)
-+{
-+	u64 detected_split_locks = tsk->detected_split_locks;
-+
-+	if (whole) {
-+		struct task_struct *t = tsk;
-+
-+		while_each_thread(tsk, t) {
-+			detected_split_locks += t->detected_split_locks;
-+		}
-+	}
-+
-+	seq_put_decimal_ull(s, "", detected_split_locks);
-+	seq_putc(s, '\n');
-+
-+	return 0;
-+}
-+
-+int proc_pid_split_locks_show(struct seq_file *s, struct pid_namespace *ns,
-+			      struct pid *pid, struct task_struct *tsk)
-+{
-+	return split_locks_show(s, tsk, 0);
-+}
-+
-+int proc_tgid_split_locks_show(struct seq_file *s, struct pid_namespace *ns,
-+			       struct pid *pid, struct task_struct *tsk)
-+{
-+	return split_locks_show(s, tsk, 1);
-+}
-+
- bool handle_guest_split_lock(unsigned long ip)
- {
- 	if (sld_state == sld_warn) {
-diff --git a/fs/proc/base.c b/fs/proc/base.c
-index dd31e3b6bf77..3c533312dbbc 100644
---- a/fs/proc/base.c
-+++ b/fs/proc/base.c
-@@ -98,6 +98,7 @@
- #include <linux/cn_proc.h>
- #include <linux/ksm.h>
- #include <trace/events/oom.h>
-+#include <asm/cpu.h>
- #include "internal.h"
- #include "fd.h"
- 
-@@ -3360,6 +3361,9 @@ static const struct pid_entry tgid_base_stuff[] = {
- 	ONE("ksm_merging_pages",  S_IRUSR, proc_pid_ksm_merging_pages),
- 	ONE("ksm_stat",  S_IRUSR, proc_pid_ksm_stat),
- #endif
-+#ifdef CONFIG_CPU_SUP_INTEL
-+	ONE("split_locks", S_IRUGO, proc_tgid_split_locks_show),
-+#endif
- };
- 
- static int proc_tgid_base_readdir(struct file *file, struct dir_context *ctx)
-@@ -3699,6 +3703,9 @@ static const struct pid_entry tid_base_stuff[] = {
- 	ONE("ksm_merging_pages",  S_IRUSR, proc_pid_ksm_merging_pages),
- 	ONE("ksm_stat",  S_IRUSR, proc_pid_ksm_stat),
- #endif
-+#ifdef CONFIG_CPU_SUP_INTEL
-+	ONE("split_locks", S_IRUGO, proc_pid_split_locks_show),
-+#endif
- };
- 
- static int proc_tid_base_readdir(struct file *file, struct dir_context *ctx)
-diff --git a/include/linux/sched.h b/include/linux/sched.h
-index 292c31697248..5b9cd4524405 100644
---- a/include/linux/sched.h
-+++ b/include/linux/sched.h
-@@ -957,9 +957,6 @@ struct task_struct {
- #ifdef CONFIG_IOMMU_SVA
- 	unsigned			pasid_activated:1;
- #endif
--#ifdef	CONFIG_CPU_SUP_INTEL
--	unsigned			reported_split_lock:1;
--#endif
- #ifdef CONFIG_TASK_DELAY_ACCT
- 	/* delay due to memory thrashing */
- 	unsigned                        in_thrashing:1;
-@@ -1027,6 +1024,9 @@ struct task_struct {
- 	u64				stimescaled;
- #endif
- 	u64				gtime;
-+#ifdef	CONFIG_CPU_SUP_INTEL
-+	u64				detected_split_locks;
-+#endif
- 	struct prev_cputime		prev_cputime;
- #ifdef CONFIG_VIRT_CPU_ACCOUNTING_GEN
- 	struct vtime			vtime;
-diff --git a/kernel/fork.c b/kernel/fork.c
-index 10917c3e1f03..5a0318010dd5 100644
---- a/kernel/fork.c
-+++ b/kernel/fork.c
-@@ -1188,7 +1188,7 @@ static struct task_struct *dup_task_struct(struct task_struct *orig, int node)
- #endif
- 
- #ifdef CONFIG_CPU_SUP_INTEL
--	tsk->reported_split_lock = 0;
-+	tsk->detected_split_locks = 0;
- #endif
- 
- #ifdef CONFIG_SCHED_MM_CID
+The last part of the series introduces reference counting for mrs which
+is necessary to avoid freeing mkeys too early or leaking them.
+
+* Changes in v3:
+- Dropped patches that allowed vq modification of state and addresses
+  when state is DRIVER_OK. This is not allowed by the standard.
+  Should be re-added under a vdpa feature flag.
+
+* Changes in v2:
+- Added mr refcounting patches.
+- Deleted unnecessary patch: "vdpa/mlx5: Split function into locked and
+  unlocked variants"
+- Small print improvement in "Introduce per vq and device resume"
+  patch.
+- Patch 1/7 has been applied to mlx5-vhost branch.
+
+[0] https://git.kernel.org/pub/scm/linux/kernel/git/mellanox/linux.git/log/?h=mlx5-vhost
+[1] https://lore.kernel.org/virtualization/20231018171456.1624030-2-dtatulea@nvidia.com/
+
+
+Dragos Tatulea (6):
+  vdpa/mlx5: Expose resumable vq capability
+  vdpa/mlx5: Allow modifying multiple vq fields in one modify command
+  vdpa/mlx5: Introduce per vq and device resume
+  vdpa/mlx5: Use vq suspend/resume during .set_map
+  vdpa/mlx5: Introduce reference counting to mrs
+  vdpa/mlx5: Add mkey leak detection
+
+ drivers/vdpa/mlx5/core/mlx5_vdpa.h |  10 +-
+ drivers/vdpa/mlx5/core/mr.c        |  69 +++++++---
+ drivers/vdpa/mlx5/net/mlx5_vnet.c  | 194 +++++++++++++++++++++++++----
+ include/linux/mlx5/mlx5_ifc.h      |   3 +-
+ include/linux/mlx5/mlx5_ifc_vdpa.h |   1 +
+ 5 files changed, 239 insertions(+), 38 deletions(-)
+
 -- 
-2.34.1
+2.43.0
 
 
