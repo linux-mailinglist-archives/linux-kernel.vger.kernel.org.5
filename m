@@ -1,119 +1,149 @@
-Return-Path: <linux-kernel+bounces-1558-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-1547-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5D15381500F
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 20:14:47 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D1DD9814FF2
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 20:05:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 881D91C23B8F
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 19:14:46 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 84ECD286F60
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 19:05:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB3C03FE2C;
-	Fri, 15 Dec 2023 19:14:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D74943FB21;
+	Fri, 15 Dec 2023 19:05:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="GbJAeEfO"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="4t2ccSA6"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yw1-f201.google.com (mail-yw1-f201.google.com [209.85.128.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 581713FE30;
-	Fri, 15 Dec 2023 19:14:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-	by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 3BFHKTbZ106791;
-	Fri, 15 Dec 2023 11:20:29 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1702660829;
-	bh=lObQGXRy7yerKMFMrSX94IqXBTrSCZaZ+7s2Ymz0ppM=;
-	h=From:To:CC:Subject:Date:In-Reply-To:References;
-	b=GbJAeEfOIgYqZc7By09SzhM3ZsXHOo/+thL6K3e7HdB4WS9s1TJ3Jz6j8Un9BR0Rx
-	 px8QZ1YxF4z8l1gw0jB8Ctk0dP++dobJ4aQ+6bW92fILTBXbNK6Mp7iy6yUqed7tUL
-	 LL1VgpGaTLYlXubavaD/7aFhEHDV3wyp766T/z84=
-Received: from DLEE113.ent.ti.com (dlee113.ent.ti.com [157.170.170.24])
-	by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 3BFHKTmI036460
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Fri, 15 Dec 2023 11:20:29 -0600
-Received: from DLEE100.ent.ti.com (157.170.170.30) by DLEE113.ent.ti.com
- (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Fri, 15
- Dec 2023 11:20:29 -0600
-Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DLEE100.ent.ti.com
- (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Fri, 15 Dec 2023 11:20:29 -0600
-Received: from localhost (uda0133052.dhcp.ti.com [128.247.81.232])
-	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 3BFHKTX3115662;
-	Fri, 15 Dec 2023 11:20:29 -0600
-From: Nishanth Menon <nm@ti.com>
-To: Tero Kristo <kristo@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley
-	<conor+dt@kernel.org>,
-        Vignesh Raghavendra <vigneshr@ti.com>
-CC: Nishanth Menon <nm@ti.com>, <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <j-luthra@ti.com>
-Subject: Re: [PATCH v2 0/3] arm64: dts: ti: k3: Add additioal regs for DMA components
-Date: Fri, 15 Dec 2023 11:20:26 -0600
-Message-ID: <170266081594.3490039.10351809799939114334.b4-ty@ti.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20231213135138.929517-1-vigneshr@ti.com>
-References: <20231213135138.929517-1-vigneshr@ti.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D753E3DB84
+	for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 19:05:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--chrisko.bounces.google.com
+Received: by mail-yw1-f201.google.com with SMTP id 00721157ae682-5ca2a6f07b6so10249547b3.2
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 11:05:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1702667132; x=1703271932; darn=vger.kernel.org;
+        h=cc:to:from:subject:mime-version:message-id:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=Y2a+vYqwL9l6xBg4DFt6cMK8Dyw8YN60AVOn/yVmOWc=;
+        b=4t2ccSA6kBiz0m5EVv8S6xk+bu+HV7DN2HFLwFXismTf/yjLZ4f7POCHXJLiB0ad/7
+         jB+mdgRb8TX9wyFvGszUEXgjhMULbtjtX8azFEsQqF8viSe4aD7om9ebaUF9nSa5cCNi
+         mlGLmQ7uQ0cTWx5mfOo0v/Lmjlu3PJwPk0cefR0fYSRF2wQE5wMOPxS0W3k90WMAz8Zh
+         ZRKB3BeZ0ygmV6qapZALiCkA4/Wx8XfMjFrRCvSMO2jKH4fH8HD3jCmmPG2nvKrvq4cf
+         giL7emwm2+g+dedlp03AndXg3FxWK8tFzmWybnpUuN+BtovAl9fbyFshe3XrGHgJb1Ms
+         MiJw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702667132; x=1703271932;
+        h=cc:to:from:subject:mime-version:message-id:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Y2a+vYqwL9l6xBg4DFt6cMK8Dyw8YN60AVOn/yVmOWc=;
+        b=JwlooM9dyLxaUKfKSzuuxL0o3CRmUSbOqBPYW7HLbgD1CmxFvxBPwDbn5qs7F0LKQl
+         HSafdVeObqbeIaF+SBWPIEu1vNaPD+sQNkpJ+BGKHlW2+buIQcCxfUIye9eek8pNjNaL
+         YYj4BATpM1WSnOi5aC2ISu0Duf2aS/tFaj3oj6XNfMhF1fQsk3ltf9BZKI7RSPNTMJLY
+         dcjf7lEmfOx1mQOUqfVR7+TEDTYvFqa1k9wsPqzeK4IS+GuW36LoAXGWRvg7LuVJ/nCi
+         vhFqxamNp7m4zS5wValEuLD8A3zV8K7qNkoWs6KmrYrOgqlxjGZ8pTdivJBAhqb7T7Ni
+         FgiQ==
+X-Gm-Message-State: AOJu0YxXwTp1UtvYOmrzpL1iHH2BviVWOjLvG2Uctk2j5izpcDJHDTPG
+	0iu98UBruYB0HwrdeoDYjmz2zwY49SnG
+X-Google-Smtp-Source: AGHT+IERzZP7n0f0QvRhYtWleDCWsunFYUOCv7b+O0V2hrHuHhiRnWmo94EZZWt1+tzO4lx1tzA7VAaOEIFL
+X-Received: from hugelgupf.svl.corp.google.com ([2620:15c:2d1:203:8424:6c22:2469:67f6])
+ (user=chrisko job=sendgmr) by 2002:a05:690c:891:b0:5d3:9513:4aad with SMTP id
+ cd17-20020a05690c089100b005d395134aadmr158935ywb.3.1702667131839; Fri, 15 Dec
+ 2023 11:05:31 -0800 (PST)
+Date: Fri, 15 Dec 2023 11:05:21 -0800
+Message-Id: <20231215190521.3796022-1-chrisko@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.43.0.472.g3155946c3a-goog
+Subject: [PATCH] kexec: allocate kernel above bzImage's pref_address
+From: Chris Koch <chrisko@google.com>
+To: Jonathan Corbet <corbet@lwn.net>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, 
+	Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>, 
+	"H. Peter Anvin" <hpa@zytor.com>, linux-doc@vger.kernel.org, x86@kernel.org, 
+	linux-kernel@vger.kernel.org
+Cc: Chris Koch <chrisko@google.com>, Cloud Hsu <cloudhsu@google.com>
+Content-Type: text/plain; charset="UTF-8"
 
-Hi Vignesh Raghavendra,
+A relocatable kernel will relocate itself to pref_address if it is
+loaded below pref_address. This means a booted kernel may be relocating
+itself to an area with reserved memory on modern systems, potentially
+clobbering arbitrary data that may be important to the system.
 
-On Wed, 13 Dec 2023 19:21:35 +0530, Vignesh Raghavendra wrote:
-> This adds additional reg ranges which are not directly used by Linux but
-> by other components like U-Boot
-> 
-> Binding is accepted via dmaengine tree and is in linux-next[0]
-> 
-> [0] https://lore.kernel.org/dmaengine/170083278148.771517.1841889156174413563.b4-ty@kernel.org/
-> 
-> [...]
+This is often the case, as the default value of PHYSICAL_START is
+0x1000000 and kernels are typically loaded at 0x100000 or above by
+bootloaders like iPXE or kexec. GRUB behaves like this patch does.
 
-I have applied the following to branch ti-k3-dts-next on [1].
-Thank you!
+Also fixes the documentation around pref_address and PHYSICAL_START to
+be accurate.
 
-[1/3] arm64: dts: ti: k3-am65: Add additional regs for DMA components
-      commit: 0fa8d3a5eb8e737726a3c7376222ee40fae1988d
-[2/3] arm64: dts: ti: k3-j7*: Add additional regs for DMA components
-      commit: 1b62a3cfddbb5664bc4360b3cb0d76b9b99abdc5
-[3/3] arm64: dts: ti: k3-am6*: Add additional regs for DMA components
-      commit: 7643f7ebcbc723e682d22c207ac35b41d7248650
+Co-developed-by: Cloud Hsu <cloudhsu@google.com>
+Signed-off-by: Cloud Hsu <cloudhsu@google.com>
+Signed-off-by: Chris Koch <chrisko@google.com>
+---
+ Documentation/arch/x86/boot.rst   |  3 ++-
+ arch/x86/Kconfig                  | 10 +++++-----
+ arch/x86/kernel/kexec-bzimage64.c |  5 ++++-
+ 3 files changed, 11 insertions(+), 7 deletions(-)
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent up the chain during
-the next merge window (or sooner if it is a relevant bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-[1] https://git.kernel.org/pub/scm/linux/kernel/git/ti/linux.git
+diff --git a/Documentation/arch/x86/boot.rst b/Documentation/arch/x86/boot.rst
+index 22cc7a040dae..49bea8986620 100644
+--- a/Documentation/arch/x86/boot.rst
++++ b/Documentation/arch/x86/boot.rst
+@@ -878,7 +878,8 @@ Protocol:	2.10+
+   address if possible.
+ 
+   A non-relocatable kernel will unconditionally move itself and to run
+-  at this address.
++  at this address. A relocatable kernel will move itself to this address if it
++  loaded below this address.
+ 
+ ============	=======
+ Field name:	init_size
+diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+index 3762f41bb092..1370f43328d7 100644
+--- a/arch/x86/Kconfig
++++ b/arch/x86/Kconfig
+@@ -2109,11 +2109,11 @@ config PHYSICAL_START
+ 	help
+ 	  This gives the physical address where the kernel is loaded.
+ 
+-	  If kernel is a not relocatable (CONFIG_RELOCATABLE=n) then
+-	  bzImage will decompress itself to above physical address and
+-	  run from there. Otherwise, bzImage will run from the address where
+-	  it has been loaded by the boot loader and will ignore above physical
+-	  address.
++	  If the kernel is not relocatable (CONFIG_RELOCATABLE=n) then bzImage
++	  will decompress itself to above physical address and run from there.
++	  Otherwise, bzImage will run from the address where it has been loaded
++	  by the boot loader. The only exception is if it is loaded below the
++	  above physical address, in which case it will relocate itself there.
+ 
+ 	  In normal kdump cases one does not have to set/change this option
+ 	  as now bzImage can be compiled as a completely relocatable image
+diff --git a/arch/x86/kernel/kexec-bzimage64.c b/arch/x86/kernel/kexec-bzimage64.c
+index a61c12c01270..5dcd232d58bf 100644
+--- a/arch/x86/kernel/kexec-bzimage64.c
++++ b/arch/x86/kernel/kexec-bzimage64.c
+@@ -498,7 +498,10 @@ static void *bzImage64_load(struct kimage *image, char *kernel,
+ 	kbuf.bufsz =  kernel_len - kern16_size;
+ 	kbuf.memsz = PAGE_ALIGN(header->init_size);
+ 	kbuf.buf_align = header->kernel_alignment;
+-	kbuf.buf_min = MIN_KERNEL_LOAD_ADDR;
++	if (header->pref_address < MIN_KERNEL_LOAD_ADDR)
++		kbuf.buf_min = MIN_KERNEL_LOAD_ADDR;
++	else
++		kbuf.buf_min = header->pref_address;
+ 	kbuf.mem = KEXEC_BUF_MEM_UNKNOWN;
+ 	ret = kexec_add_buffer(&kbuf);
+ 	if (ret)
 -- 
-Regards,
-Nishanth Menon
-Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
+2.43.0.472.g3155946c3a-goog
 
 
