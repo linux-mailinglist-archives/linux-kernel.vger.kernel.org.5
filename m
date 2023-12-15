@@ -1,191 +1,176 @@
-Return-Path: <linux-kernel+bounces-894-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-895-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 99684814796
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 13:03:43 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id B6FEF81479A
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 13:04:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 52F1C28498A
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 12:03:42 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 44D9E1F2419B
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 12:04:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E99792C698;
-	Fri, 15 Dec 2023 12:03:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B467F2C685;
+	Fri, 15 Dec 2023 12:03:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eEdkeyJ+"
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="WkKIP2Mg"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2086725572;
-	Fri, 15 Dec 2023 12:03:26 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 97454C433C8;
-	Fri, 15 Dec 2023 12:03:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1702641806;
-	bh=HBrttvezNQe0QQVMwijBpOeV4YQmzTr0YV92KoJQ8ZE=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=eEdkeyJ+YkOxXK7th6GRD7Su1DsGpLwnVcFzG3pqhXXV6sI6Tn6btiHFay3VqWF+h
-	 T+lrgu/3HmiLtAI0QKKQ62wvS1K4bOc0BGKCu+rJ3MHBjANlPTc1cgwbhuu7Qs0qxa
-	 LVYHmvsKnnzSWcXuVttKC63psYuNX0maV8G8MjvrciytdpGH7Yvdza/mcYRZ1Ni4Kf
-	 sy+F5V7FcG6mbiknZbtPYM54eM9rsKahjq0oe2NL7D6gXgGlUJDU/D9a80iEYIRvaS
-	 5x2NrNfBun9TS+2Hac++AYbPUvA/6Rtpn4/d+HKcTvbMkziwMRKyPObJkJCT4XoKGN
-	 305s520nTspaQ==
-From: Christian Brauner <brauner@kernel.org>
-To: Jeff Layton <jlayton@kernel.org>,
-	Steve French <smfrench@gmail.com>,
-	David Howells <dhowells@redhat.com>
-Cc: Christian Brauner <brauner@kernel.org>,
-	Matthew Wilcox <willy@infradead.org>,
-	Marc Dionne <marc.dionne@auristor.com>,
-	Paulo Alcantara <pc@manguebit.com>,
-	Shyam Prasad N <sprasad@microsoft.com>,
-	Tom Talpey <tom@talpey.com>,
-	Dominique Martinet <asmadeus@codewreck.org>,
-	Eric Van Hensbergen <ericvh@kernel.org>,
-	Ilya Dryomov <idryomov@gmail.com>,
-	linux-cachefs@redhat.com,
-	linux-afs@lists.infradead.org,
-	linux-cifs@vger.kernel.org,
-	linux-nfs@vger.kernel.org,
-	ceph-devel@vger.kernel.org,
-	v9fs@lists.linux.dev,
-	linux-fsdevel@vger.kernel.org,
-	linux-mm@kvack.org,
-	netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 00/39] netfs, afs, 9p: Delegate high-level I/O to netfslib
-Date: Fri, 15 Dec 2023 13:03:14 +0100
-Message-ID: <20231215-einziehen-landen-94a63dd17637@brauner>
-X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20231213152350.431591-1-dhowells@redhat.com>
-References: <20231213152350.431591-1-dhowells@redhat.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B52BD2575D;
+	Fri, 15 Dec 2023 12:03:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BFBZ5Yt024275;
+	Fri, 15 Dec 2023 12:03:37 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=aE0c1EkjLW/+RUIzVcz6aNx+2hD6djlO8gcFyOrHy7s=; b=Wk
+	KIP2MgSQtTV0PA+MRvtTe1J1N6LEWkbxRCMlQxMNtoaLGz+Re2Z89P9O5Xa/zI1O
+	TfT/E4DM8aUThABs6f9uhEz/fQA8SW6ZWjFiq22Z2o4ZbUgpSJWkVUMLEjTYDYIN
+	fYZ81dGcRia1/0A1ULNgmbDFlDTCrGpskLdMKIlrUd6EYgK07ya9WPP5bTRygmyT
+	dkYh5jBNCEQWUud8IvNEkh/gDqFCdqzLKUUFwBpoDxM2GoSy3dhPprYeD6ILNrCC
+	l10ZuR54/p9DObkpHG9kTXCR4paXoFPcrLPHoox6AJOkwM6/X+wqTGdlJNaagIci
+	bGrT98YwEgJhdym6dyCg==
+Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3v0p1001kv-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 15 Dec 2023 12:03:37 +0000 (GMT)
+Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
+	by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3BFC3ZGE010291
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 15 Dec 2023 12:03:35 GMT
+Received: from [10.253.13.71] (10.80.80.8) by nalasex01c.na.qualcomm.com
+ (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Fri, 15 Dec
+ 2023 04:03:27 -0800
+Message-ID: <f16dfe78-2e31-45fb-b2fe-f72b7e6c51a5@quicinc.com>
+Date: Fri, 15 Dec 2023 20:03:23 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-X-Developer-Signature: v=1; a=openpgp-sha256; l=6217; i=brauner@kernel.org; h=from:subject:message-id; bh=HBrttvezNQe0QQVMwijBpOeV4YQmzTr0YV92KoJQ8ZE=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMaTWODS2Tfm66uSZXeJqJUsnCukueuim0bUrM61+qxbj4 TCO/EdGHaUsDGJcDLJiiiwO7Sbhcst5KjYbZWrAzGFlAhnCwMUpABNxkGD4Z8bHlZptWDLtokYW 6+zLF4+csT+Y/8qobP1VpUfHVsZ6FzH8U2Pb/zzyZqDya7H3sT/98l8W3bEPlJEzjP+6P/tTSOk NFgA=
-X-Developer-Key: i=brauner@kernel.org; a=openpgp; fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 5/5] dt-bindings: net: ipq4019-mdio: Document ipq5332
+ platform
+Content-Language: en-US
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, <agross@kernel.org>,
+        <andersson@kernel.org>, <konrad.dybcio@linaro.org>,
+        <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
+        <pabeni@redhat.com>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <andrew@lunn.ch>, <hkallweit1@gmail.com>, <linux@armlinux.org.uk>,
+        <robert.marko@sartura.hr>
+CC: <linux-arm-msm@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <quic_srichara@quicinc.com>
+References: <20231214090304.16884-1-quic_luoj@quicinc.com>
+ <20231214090304.16884-6-quic_luoj@quicinc.com>
+ <1e4c55c8-8ed6-4f2e-8328-8a173f09b62f@linaro.org>
+ <3c8e33b4-6ebc-476f-a00f-15cc8a1ad9e4@quicinc.com>
+ <b89abf8c-57f8-46a6-a071-b1591340fbdf@linaro.org>
+ <3de98516-9a28-4f58-8951-2a7752621fee@quicinc.com>
+ <1fa2d219-63d7-45cf-9e05-b85dbce24076@linaro.org>
+From: Jie Luo <quic_luoj@quicinc.com>
+In-Reply-To: <1fa2d219-63d7-45cf-9e05-b85dbce24076@linaro.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: YTWMcRTNNJL9kwHQLhgDz2vXrZzLq2Fq
+X-Proofpoint-ORIG-GUID: YTWMcRTNNJL9kwHQLhgDz2vXrZzLq2Fq
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-09_02,2023-12-07_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 adultscore=0
+ spamscore=0 bulkscore=0 mlxlogscore=925 lowpriorityscore=0
+ priorityscore=1501 phishscore=0 malwarescore=0 impostorscore=0
+ clxscore=1015 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2311290000 definitions=main-2312150080
 
-On Wed, 13 Dec 2023 15:23:10 +0000, David Howells wrote:
-> I have been working on my netfslib helpers to the point that I can run
-> xfstests on AFS to completion (both with write-back buffering and, with a
-> small patch, write-through buffering in the pagecache).  I have a patch for
-> 9P, but am currently unable to test it.
+
+
+On 12/15/2023 6:21 PM, Krzysztof Kozlowski wrote:
+> On 15/12/2023 11:03, Jie Luo wrote:
+>>>>>> +  cmn-reference-clock:
+>>>>>> +    $ref: /schemas/types.yaml#/definitions/uint32
+>>>>>
+>>>>> Nothing improved here
+>>>>
+>>>> With this change, the warning is not reported when i run
+>>>> dt_binding_check, looks the new added property needs
+>>>> the type ref to avoid the warning reported.
+>>>
+>>> Nothing improved in the property name, nor its style, nor in the actual
+>>> contents/values.
+>>
+>> This property is for CMN PLL block reference clock configuration,
+>> so i use this property name.
+>>
+>> it will be appreciated if you can suggest a suitable name, thanks.
 > 
-> The patches remove a little over 800 lines from AFS, 300 from 9P, albeit with
-> around 3000 lines added to netfs.  Hopefully, I will be able to remove a bunch
-> of lines from Ceph too.
+> See example-schema about naming. Read writing-bindings. You need vendor
+> prefix for custom properties.
+
+Ok, thanks.
+
 > 
-> [...]
+>>
+>>>
+>>> ...
+>>>
+>>>>>> +  reset-gpios:
+>>>>>> +    maxItems: 1
+>>>>>> +
+>>>>>> +  reset-assert-us:
+>>>>>> +    maxItems: 1
+>>>>>
+>>>>> This does not look related to ipq5332.
+>>>>
+>>>> The reset gpio properties are needed on ipq5332, since qca8084 phy is
+>>>> connected, which uses the MDIO bus level gpio reset.
+>>>
+>>> I am talking about this property, not these properties.
+>>
+>> ok.
+>>
+>>>
+>>>>
+>>>> Without declaring these gpio properties, the warning will be reported
+>>>> by dt_binding_check.
+>>>
+>>> How is it even possible to have warnings if there is no such node in
+>>> DTS? We do not care about warnings in your downstream code.
+>>>
+>>>
+>>> Best regards,
+>>> Krzysztof
+>>>
+>>
+>> If i do not declare the property "reset-assert-us" and
+>> "reset-deassert-us", the warning will be reported by "make
+>> dt_binding_check" since i
+>> add a example in this file.
+> 
+> This argument does not make sense, sorry. Obviously if property is not
+> allowed, it should be removed.
+> 
+> Provide rationale, in terms of hardware, why this property must be added
+> and why it cannot be deduced from the compatible.
+> 
+> Best regards,
+> Krzysztof
+> 
 
-Ok, that's on vfs.netfs for now. It's based on vfs.rw as that has splice
-changes that would cause needless conflicts. It helps to not have such
-series based on -next.
-
-Fwiw, I'd rather have this based on a mainline tag in the future. Linus
-has stated loads of times that he doesn't mind handling merge conflicts
-and for me it's a lot easier if I have a stable mainline tag. linux-next
-is too volatile. Thanks!
-
----
-
-Applied to the vfs.netfs branch of the vfs/vfs.git tree.
-Patches in the vfs.netfs branch should appear in linux-next soon.
-
-Please report any outstanding bugs that were missed during review in a
-new review to the original patch series allowing us to drop it.
-
-It's encouraged to provide Acked-bys and Reviewed-bys even though the
-patch has now been applied. If possible patch trailers will be updated.
-
-Note that commit hashes shown below are subject to change due to rebase,
-trailer updates or similar. If in doubt, please check the listed branch.
-
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs.git
-branch: vfs.netfs
-
-[01/39] netfs, fscache: Move fs/fscache/* into fs/netfs/
-        https://git.kernel.org/vfs/vfs/c/94029f4c6459
-[02/39] netfs, fscache: Combine fscache with netfs
-        https://git.kernel.org/vfs/vfs/c/77eb7aa4805e
-[03/39] netfs, fscache: Remove ->begin_cache_operation
-        https://git.kernel.org/vfs/vfs/c/a7f70e4b4ebf
-[04/39] netfs, fscache: Move /proc/fs/fscache to /proc/fs/netfs and put in a symlink
-        https://git.kernel.org/vfs/vfs/c/131e9eb7bd1f
-[05/39] netfs: Move pinning-for-writeback from fscache to netfs
-        https://git.kernel.org/vfs/vfs/c/1792e1940f54
-[06/39] netfs: Add a procfile to list in-progress requests
-        https://git.kernel.org/vfs/vfs/c/1491057f69dc
-[07/39] netfs: Allow the netfs to make the io (sub)request alloc larger
-        https://git.kernel.org/vfs/vfs/c/6c3efd20150f
-[08/39] netfs: Add a ->free_subrequest() op
-        https://git.kernel.org/vfs/vfs/c/e0b44a08ac20
-[09/39] afs: Don't use folio->private to record partial modification
-        https://git.kernel.org/vfs/vfs/c/9d2a996de9a2
-[10/39] netfs: Provide invalidate_folio and release_folio calls
-        https://git.kernel.org/vfs/vfs/c/6136f4723a2e
-[11/39] netfs: Implement unbuffered/DIO vs buffered I/O locking
-        https://git.kernel.org/vfs/vfs/c/1243d122feca
-[12/39] netfs: Add iov_iters to (sub)requests to describe various buffers
-        https://git.kernel.org/vfs/vfs/c/a164fd03f073
-[13/39] netfs: Add support for DIO buffering
-        https://git.kernel.org/vfs/vfs/c/669e8c33691d
-[14/39] netfs: Provide tools to create a buffer in an xarray
-        https://git.kernel.org/vfs/vfs/c/c554dc89292d
-[15/39] netfs: Add bounce buffering support
-        https://git.kernel.org/vfs/vfs/c/476c24c3e80b
-[16/39] netfs: Add func to calculate pagecount/size-limited span of an iterator
-        https://git.kernel.org/vfs/vfs/c/25d0f84de71d
-[17/39] netfs: Limit subrequest by size or number of segments
-        https://git.kernel.org/vfs/vfs/c/53ee4e38619a
-[18/39] netfs: Export netfs_put_subrequest() and some tracepoints
-        https://git.kernel.org/vfs/vfs/c/ac3fc1846a06
-[19/39] netfs: Extend the netfs_io_*request structs to handle writes
-        https://git.kernel.org/vfs/vfs/c/90999722fa0b
-[20/39] netfs: Add a hook to allow tell the netfs to update its i_size
-        https://git.kernel.org/vfs/vfs/c/27dfd078db66
-[21/39] netfs: Make netfs_put_request() handle a NULL pointer
-        https://git.kernel.org/vfs/vfs/c/0ffd2319fb64
-[22/39] netfs: Make the refcounting of netfs_begin_read() easier to use
-        https://git.kernel.org/vfs/vfs/c/f7125395caba
-[23/39] netfs: Prep to use folio->private for write grouping and streaming write
-        https://git.kernel.org/vfs/vfs/c/acadf22234e3
-[24/39] netfs: Dispatch write requests to process a writeback slice
-        https://git.kernel.org/vfs/vfs/c/17c2b775e3f4
-[25/39] netfs: Provide func to copy data to pagecache for buffered write
-        https://git.kernel.org/vfs/vfs/c/dd6ed9717a0b
-[26/39] netfs: Make netfs_read_folio() handle streaming-write pages
-        https://git.kernel.org/vfs/vfs/c/c958b464f07f
-[27/39] netfs: Allocate multipage folios in the writepath
-        https://git.kernel.org/vfs/vfs/c/6076cc863769
-[28/39] netfs: Implement support for unbuffered/DIO read
-        https://git.kernel.org/vfs/vfs/c/9409fe70ca46
-[29/39] netfs: Implement unbuffered/DIO write support
-        https://git.kernel.org/vfs/vfs/c/7acd7b902241
-[30/39] netfs: Implement buffered write API
-        https://git.kernel.org/vfs/vfs/c/7b1321366337
-[31/39] netfs: Allow buffered shared-writeable mmap through netfs_page_mkwrite()
-        https://git.kernel.org/vfs/vfs/c/d156da6e235c
-[32/39] netfs: Provide netfs_file_read_iter()
-        https://git.kernel.org/vfs/vfs/c/899ae1e25a64
-[33/39] netfs, cachefiles: Pass upper bound length to allow expansion
-        https://git.kernel.org/vfs/vfs/c/52882c158a30
-[34/39] netfs: Provide a writepages implementation
-        https://git.kernel.org/vfs/vfs/c/02bf7b4afdba
-[35/39] netfs: Provide a launder_folio implementation
-        https://git.kernel.org/vfs/vfs/c/cf4e16d98659
-[36/39] netfs: Implement a write-through caching option
-        https://git.kernel.org/vfs/vfs/c/7bf6f13f4a63
-[37/39] netfs: Optimise away reads above the point at which there can be no data
-        https://git.kernel.org/vfs/vfs/c/fad15293bd0d
-[38/39] afs: Use the netfs write helpers
-        https://git.kernel.org/vfs/vfs/c/0095df30ad7b
-[39/39] 9p: Use netfslib read/write_iter
-        https://git.kernel.org/vfs/vfs/c/361e79613421
+So i can remove "reset-assert-us" and "reset-deassert-us" from the added
+example to avoid the dt check warning? even these two properties are
+needed to be defined in the device tree to make this driver working
+correctly.
 
