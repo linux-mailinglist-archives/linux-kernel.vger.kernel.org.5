@@ -1,280 +1,100 @@
-Return-Path: <linux-kernel+bounces-293-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-294-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E47B8813ED1
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 01:48:00 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 81F19813ED5
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 01:50:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 148281C21C55
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 00:48:00 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B52501C21FF8
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 00:50:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 12078807;
-	Fri, 15 Dec 2023 00:47:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 95A6C804;
+	Fri, 15 Dec 2023 00:49:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="D/ezQFnb"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Vy9RQT8I"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
+Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C7CB036A
-	for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 00:47:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-db7dd9a8bd6so120701276.1
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 16:47:49 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 711D4A34;
+	Fri, 15 Dec 2023 00:49:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-40b5155e154so1584995e9.3;
+        Thu, 14 Dec 2023 16:49:55 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1702601269; x=1703206069; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=J/OqsU/wKLZASXzbR9+FvmNwQRC2skgcu27wx2pyGOk=;
-        b=D/ezQFnbztLQk90UqjM6w7qI3F3l3NMP17lxOWt/K12lv4vIlDMTfX7g9LVinyZIdq
-         K2gc70HEs2m6olRfdWuAIqgGbisxEZyDZoezCKarDt3EhTbpxZqDYohpe2xvaaGaKIeC
-         Ve3guYraFNYcDYMKevtSY+AlBS+AaXClmTiNgwHTkhPnqPbm9nQtTXSNC4ImC1vq0WFr
-         FOM5slsTJ38DA6jiy0/Ft9sLfK5MIsTYQUPO3hQ+9hW0S92y4m+TqXMQIxxcgbvseLli
-         zv1u+Q2je8VPkexYe9DLSou5SgTka5wDdeEor436NQ9zXP0I5zJCF5GmyPVuspFdEM+9
-         glmg==
+        d=gmail.com; s=20230601; t=1702601393; x=1703206193; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:autocrypt
+         :references:in-reply-to:date:cc:to:from:subject:message-id:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=vWDCfTgrMnjG8GpBS1b4pGEfSNMD7D80zgBIrS8hZGs=;
+        b=Vy9RQT8IQkf6bTialyqA1Z+DfbRmMzfUy/i41uj5iWL1UUNq1Tg2j6YJbWW8Hs8RSy
+         OEi32FQQIpxx6XLSwMHkTEZU5Wf4v7c7kKiCOL3HVoFcz/R5HZ2oemx+4qYWtwPtBbT4
+         uqK0PoufvPUg3iZjRwv5ERrG1tjUL6YmNnXTRPmRjSOXQgulM6DfNshgf++0BsWOY81p
+         2nJ8M8fMLAbWZtm/f2cM+kqTxQCCKva7VTdoiae9pRcreLlA/hlaGr28uxPIcf+chEqQ
+         JPSTPXhiHT4Ji6PlrY9K+bbd03W7zNgNjR/mnSSoIrZhFxcc+LYS7nQH1jMrLLRdh5ob
+         IPGg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702601269; x=1703206069;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=J/OqsU/wKLZASXzbR9+FvmNwQRC2skgcu27wx2pyGOk=;
-        b=E8JyFgffefkm5zGY5ybvwelhoNGPV1FwTQS3+k0I/5mVPus2uKl1NYzmKN+2QuCtMc
-         ZGk0LYDAlMUPUJa3Ywtq5UPRT7c/CdUiylgpnIFNJu+tmDd+S9seKAjXKwaNZKmBK6JF
-         CgGr6uMbNfqi7KetBrDSkVXt8l/y+baTemiD0Uj+waWQ3mnLM6uJQPS5nJqs3bmAdX7g
-         zB5yGUArAszW0wfJHJ50gvMXYnfRoKMhepkBjn76IR48InjBLH7KgI3VpXpHDfBwRBuh
-         jCM9W+5HlIMo6EGAf/XdlLjl3t10V5NtfV49ZAuX89DGTbg/NPsFFljZngTACGa9zTtA
-         EpKw==
-X-Gm-Message-State: AOJu0YxShHu9VryAeg27pyxrW0z32wUp3YOdvHrfX1qRBkARPguA5+18
-	qZ0CoPxt6i3KNTo8GXqhBiUhD6dyEYU=
-X-Google-Smtp-Source: AGHT+IHCTrULdWUnuMZ3DE3sjKqJ0QjQ3AsQRHIFsQZLGwiEy5A8Nj70e5TPwcElCWV0m7/BeSSDs+5Svmo=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a25:86ce:0:b0:dbc:d2e9:39e7 with SMTP id
- y14-20020a2586ce000000b00dbcd2e939e7mr36518ybm.10.1702601268729; Thu, 14 Dec
- 2023 16:47:48 -0800 (PST)
-Date: Thu, 14 Dec 2023 16:47:47 -0800
-In-Reply-To: <CAO7JXPhQ3zPzsNeuUphLx7o_+DOfJrmCoyRXXjcQMEzrKnGc9g@mail.gmail.com>
+        d=1e100.net; s=20230601; t=1702601393; x=1703206193;
+        h=mime-version:user-agent:content-transfer-encoding:autocrypt
+         :references:in-reply-to:date:cc:to:from:subject:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=vWDCfTgrMnjG8GpBS1b4pGEfSNMD7D80zgBIrS8hZGs=;
+        b=j3Y2c6nHsW7Xnb87jfhpnwFvC8guvxknmDkNlFBLbz6f2CL4WO0/pb6TPZ1geHMi2Z
+         mNGQ1OwYR/Cit0VPLv7aicNqnvovIu0GKDepZvgjp27jtfHYCxlIrstIeCYLQK6oOoDx
+         8DAC6pKOg63nx2CMVkpe/eDKxO6NBR2jkIkPrq8MUx2O2fIOZAqulsl7jrb4tnpXmUka
+         Eq8zj+XfPse4PZxZKMsH6++1NCd3cDdW0Pv0R7Oe6az10hbQzx72ywlYtl3k31aUs+kI
+         wNC1mqxlnFJlnQuyKSgxKVXt9299PW4iqOJJ9WZ4YsRCG1Da/sUCB7AyoerSEhaUMdva
+         UVeQ==
+X-Gm-Message-State: AOJu0YzYFk+w+UkYUR/C90aXKa3Hk4t/NkQq48E59lDmxCz4qbwRR9wy
+	H0+9xg7Uj8iOciS0afjz6yc=
+X-Google-Smtp-Source: AGHT+IFw/NDwlvqZdn4+GqBVjV4BI2pUn45kispKti51xi/d1GqX7udbwZd7nIOMUBjVRdX0CQ0Ubg==
+X-Received: by 2002:a05:600c:2146:b0:40c:2b26:970f with SMTP id v6-20020a05600c214600b0040c2b26970fmr5326861wml.198.1702601393500;
+        Thu, 14 Dec 2023 16:49:53 -0800 (PST)
+Received: from [192.168.1.95] (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
+        by smtp.gmail.com with ESMTPSA id s5-20020a05600c384500b0040b632f31d2sm27005390wmr.5.2023.12.14.16.49.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 Dec 2023 16:49:52 -0800 (PST)
+Message-ID: <526d4ac8f6788d3323d29fdbad0e0e5d09a534db.camel@gmail.com>
+Subject: Re: [Bug Report] bpf: incorrectly pruning runtime execution path
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: Hao Sun <sunhao.th@gmail.com>, Alexei Starovoitov <ast@kernel.org>, 
+ Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann
+ <daniel@iogearbox.net>, bpf <bpf@vger.kernel.org>, Linux Kernel Mailing
+ List <linux-kernel@vger.kernel.org>
+Date: Fri, 15 Dec 2023 02:49:51 +0200
+In-Reply-To: <CAEf4BzYuV3odyj8A77ZW8H9jyx_YLhAkSiM+1hkvtH=OYcHL3w@mail.gmail.com>
+References: 
+	<CACkBjsbj4y4EhqpV-ZVt645UtERJRTxfEab21jXD1ahPyzH4_g@mail.gmail.com>
+	 <CAEf4BzZ0xidVCqB47XnkXcNhkPWF6_nTV7yt+_Lf0kcFEut2Mg@mail.gmail.com>
+	 <CACkBjsaEQxCaZ0ERRnBXduBqdw3MXB5r7naJx_anqxi0Wa-M_Q@mail.gmail.com>
+	 <480a5cfefc23446f7c82c5b87eef6306364132b9.camel@gmail.com>
+	 <917DAD9F-8697-45B8-8890-D33393F6CDF1@gmail.com>
+	 <9dee19c7d39795242c15b2f7aa56fb4a6c3ebffa.camel@gmail.com>
+	 <73d021e3f77161668aae833e478b210ed5cd2f4d.camel@gmail.com>
+	 <CAEf4BzYuV3odyj8A77ZW8H9jyx_YLhAkSiM+1hkvtH=OYcHL3w@mail.gmail.com>
+Autocrypt: addr=eddyz87@gmail.com; prefer-encrypt=mutual; keydata=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
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.1 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20231214024727.3503870-1-vineeth@bitbyteword.org>
- <ZXsvl7mabUuNkWcY@google.com> <CAO7JXPihjjko6qe8tr6e6UE=L7uSR6AACq1Zwg+7n95s5A-yoQ@mail.gmail.com>
- <ZXth7hu7jaHbJZnj@google.com> <CAO7JXPhQ3zPzsNeuUphLx7o_+DOfJrmCoyRXXjcQMEzrKnGc9g@mail.gmail.com>
-Message-ID: <ZXuiM7s7LsT5hL3_@google.com>
-Subject: Re: [RFC PATCH 0/8] Dynamic vcpu priority management in kvm
-From: Sean Christopherson <seanjc@google.com>
-To: Vineeth Remanan Pillai <vineeth@bitbyteword.org>
-Cc: Ben Segall <bsegall@google.com>, Borislav Petkov <bp@alien8.de>, 
-	Daniel Bristot de Oliveira <bristot@redhat.com>, Dave Hansen <dave.hansen@linux.intel.com>, 
-	Dietmar Eggemann <dietmar.eggemann@arm.com>, "H . Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>, 
-	Juri Lelli <juri.lelli@redhat.com>, Mel Gorman <mgorman@suse.de>, 
-	Paolo Bonzini <pbonzini@redhat.com>, Andy Lutomirski <luto@kernel.org>, 
-	Peter Zijlstra <peterz@infradead.org>, Steven Rostedt <rostedt@goodmis.org>, 
-	Thomas Gleixner <tglx@linutronix.de>, Valentin Schneider <vschneid@redhat.com>, 
-	Vincent Guittot <vincent.guittot@linaro.org>, Vitaly Kuznetsov <vkuznets@redhat.com>, 
-	Wanpeng Li <wanpengli@tencent.com>, Suleiman Souhlal <suleiman@google.com>, 
-	Masami Hiramatsu <mhiramat@google.com>, kvm@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	x86@kernel.org, Tejun Heo <tj@kernel.org>, Josh Don <joshdon@google.com>, 
-	Barret Rhoden <brho@google.com>, David Vernet <dvernet@meta.com>, 
-	Joel Fernandes <joel@joelfernandes.org>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
 
-On Thu, Dec 14, 2023, Vineeth Remanan Pillai wrote:
-> On Thu, Dec 14, 2023 at 3:13=E2=80=AFPM Sean Christopherson <seanjc@googl=
-e.com> wrote:
-> >
-> > On Thu, Dec 14, 2023, Vineeth Remanan Pillai wrote:
-> > > On Thu, Dec 14, 2023 at 11:38=E2=80=AFAM Sean Christopherson <seanjc@=
-google.com> wrote:
-> > > Now when I think about it, the implementation seems to
-> > > suggest that we are putting policies in kvm. Ideally, the goal is:
-> > > - guest scheduler communicates the priority requirements of the workl=
-oad
-> > > - kvm applies the priority to the vcpu task.
-> >
-> > Why?  Tasks are tasks, why does KVM need to get involved?  E.g. if the =
-problem
-> > is that userspace doesn't have the right knobs to adjust the priority o=
-f a task
-> > quickly and efficiently, then wouldn't it be better to solve that probl=
-em in a
-> > generic way?
-> >
-> I get your point. A generic way would have been more preferable, but I
-> feel the scenario we are tackling is a bit more time critical and kvm
-> is better equipped to handle this. kvm has control over the VM/vcpu
-> execution and hence it can take action in the most effective way.
+On Thu, 2023-12-14 at 16:06 -0800, Andrii Nakryiko wrote:
+[...]
+> If you agree with the analysis, we can start discussing what's the
+> best way to fix this.
 
-No, KVM most definitely does not.  Between sched, KVM, and userspace, I wou=
-ld
-rank KVM a very distant third.  Userspace controls when to do KVM_RUN, to w=
-hich
-cgroup(s) a vCPU task is assigned, the affinity of the task, etc.  sched de=
-cides
-when and where to run a vCPU task based on input from userspace.
-
-Only in some edge cases that are largely unique to overcommitted CPUs does =
-KVM
-have any input on scheduling whatsoever.   And even then, KVM's view is lar=
-gely
-limited to a single VM, e.g. teaching KVM to yield to a vCPU running in a d=
-ifferent
-VM would be interesting, to say the least.
-
-> One example is the place where we handle boost/unboost. By the time
-> you come out of kvm to userspace it would be too late.=20
-
-Making scheduling decisions in userspace doesn't require KVM to exit to use=
-rspace.
-It doesn't even need to require a VM-Exit to KVM.  E.g. if the scheduler (w=
-hether
-it's in kernel or userspace) is running on a different logical CPU(s), then=
- there's
-no need to trigger a VM-Exit because the scheduler can incorporate informat=
-ion
-about a vCPU in real time, and interrupt the vCPU if and only if something =
-else
-needs to run on that associated CPU.  From the sched_ext cover letter:
-
- : Google has also experimented with some promising, novel scheduling polic=
-ies.
- : One example is =E2=80=9Ccentral=E2=80=9D scheduling, wherein a single CP=
-U makes all
- : scheduling decisions for the entire system. This allows most cores on th=
-e
- : system to be fully dedicated to running workloads, and can have signific=
-ant
- : performance improvements for certain use cases. For example, central
- : scheduling with VCPUs can avoid expensive vmexits and cache flushes, by
- : instead delegating the responsibility of preemption checks from the tick=
- to
- : a single CPU. See scx_central.bpf.c for a simple example of a central
- : scheduling policy built in sched_ext.
-
-> Currently we apply the boost soon after VMEXIT before enabling preemption=
- so
-> that the next scheduler entry will consider the boosted priority. As soon=
- as
-> you enable preemption, the vcpu could be preempted and boosting would not
-> help when it is boosted. This timing correctness is very difficult to ach=
-ieve
-> if we try to do it in userland or do it out-of-band.
-
-Hooking VM-Exit isn't necessarily the fastest and/or best time to make sche=
-duling
-decisions about vCPUs.  Presumably the whole point of this is to allow runn=
-ing
-high priority, latency senstive workloads in the guest.  As above, the idea=
-l scenario
-is that a vCPU running a high priority workload would never exit in the fir=
-st place.
-
-Is it easy to get there?  No.  But it's definitely possible.
-
-> [...snip...]
-> > > > Lastly, if the concern/argument is that userspace doesn't have the =
-right knobs
-> > > > to (quickly) boost vCPU tasks, then the proposed sched_ext function=
-ality seems
-> > > > tailor made for the problems you are trying to solve.
-> > > >
-> > > > https://lkml.kernel.org/r/20231111024835.2164816-1-tj%40kernel.org
-> > > >
-> > > You are right, sched_ext is a good choice to have policies
-> > > implemented. In our case, we would need a communication mechanism as
-> > > well and hence we thought kvm would work best to be a medium between
-> > > the guest and the host.
-> >
-> > Making KVM be the medium may be convenient and the quickest way to get =
-a PoC
-> > out the door, but effectively making KVM a middle-man is going to be a =
-huge net
-> > negative in the long term.  Userspace can communicate with the guest ju=
-st as
-> > easily as KVM, and if you make KVM the middle-man, then you effectively=
- *must*
-> > define a relatively rigid guest/host ABI.
-> >
-> > If instead the contract is between host userspace and the guest, the AB=
-I can be
-> > much more fluid, e.g. if you (or any setup) can control at least some a=
-mount of
-> > code that runs in the guest, then the contract between the guest and ho=
-st doesn't
-> > even need to be formally defined, it could simply be a matter of bundli=
-ng host
-> > and guest code appropriately.
-> >
-> > If you want to land support for a given contract in upstream repositori=
-es, e.g.
-> > to broadly enable paravirt scheduling support across a variety of users=
-epace VMMs
-> > and/or guests, then yeah, you'll need a formal ABI.  But that's still n=
-ot a good
-> > reason to have KVM define the ABI.  Doing it in KVM might be a wee bit =
-easier because
-> > it's largely just a matter of writing code, and LKML provides a central=
-ized channel
-> > for getting buyin from all parties.  But defining an ABI that's indepen=
-dent of the
-> > kernel is absolutely doable, e.g. see the many virtio specs.
-> >
-> > I'm not saying KVM can't help, e.g. if there is information that is kno=
-wn only
-> > to KVM, but the vast majority of the contract doesn't need to be define=
-d by KVM.
-> >
-> As you mentioned, custom contract between guest and host userspace is
-> really flexible, but I believe tackling scheduling(especially latency)
-> issues is a bit more difficult with generic approaches. Here kvm does
-> have some information known only to kvm(which could be shared - eg:
-> interrupt injection) but more importantly kvm has some unique
-> capabilities when it comes to scheduling. kvm and scheduler are
-> cooperating currently for various cases like, steal time accounting,
-> vcpu preemption state, spinlock handling etc. We could possibly try to
-> extend it a little further in a non-intrusive way.
-
-I'm not too worried about the code being intrusive, I'm worried about the
-maintainability, longevity, and applicability of this approach.
-
-IMO, this has a significantly lower ceiling than what is possible with some=
-thing
-like sched_ext, e.g. it requires a host tick to make scheduling decisions, =
-and
-because it'd require a kernel-defined ABI, would essentially be limited to =
-knobs
-that are broadly useful.  I.e. every bit of information that you want to ad=
-d to
-the guest/host ABI will need to get approval from at least the affected sub=
-systems
-in the guest, from KVM, and possibly from the host scheduler too.  That's g=
-oing
-to make for a very high bar.
-
-> Having a formal paravirt scheduling ABI is something we would want to
-> pursue (as I mentioned in the cover letter) and this could help not
-> only with latencies, but optimal task placement for efficiency, power
-> utilization etc. kvm's role could be to set the stage and share
-> information with minimum delay and less resource overhead.
-
-Making KVM middle-man is most definitely not going to provide minimum delay=
- or
-overhead.  Minimum delay would be the guest directly communicating with the=
- host
-scheduler.  I get that convincing the sched folks to add a bunch of paravir=
-t
-stuff is a tall order (for very good reason), but that's exactly why I Cc'd=
- the
-sched_ext folks.
-
-> We could use schedulers (vanilla, sched_ext, ...) to actually make decisi=
-ons
-> based on the information it receives.
+Ok, yeap, I agree with you.=20
+Backtracker marks both registers in 'if' statement if one of them is
+tracked, but r8 is not marked at block entry and we miss r0.
 
