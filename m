@@ -1,99 +1,109 @@
-Return-Path: <linux-kernel+bounces-611-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-612-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E1B1E814385
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 09:24:54 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 24252814387
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 09:25:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9E29C2841F4
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 08:24:53 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A81CFB21AA4
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 08:25:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3111512E51;
-	Fri, 15 Dec 2023 08:24:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB78012E54;
+	Fri, 15 Dec 2023 08:24:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="IaXUyP1V"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="m5EIbYB7"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
+Received: from mail-ej1-f51.google.com (mail-ej1-f51.google.com [209.85.218.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B9DB125CF
-	for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 08:24:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-40c580ba223so4965635e9.3
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 00:24:46 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D4ADD1548D;
+	Fri, 15 Dec 2023 08:24:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-a1e35c2807fso44471166b.3;
+        Fri, 15 Dec 2023 00:24:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1702628684; x=1703233484; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Sll+9qWsACg9WSZZSvDuRd5P7YLwP0CwcrFN2KVP0h4=;
-        b=IaXUyP1VA5H5nrsQ0pqyW5AZHt3CtTGXED6BWicfF79d10box3Z4bGwYRqxpbHq8Tf
-         rkj1Q5p3xI+r18z3ARIj10kn+8xJa53SPHAQks9OoaFYw0d9Vs/XCndLxhTuLSNOpSBD
-         zvkQBhsGqwYsbh8RRVVZohE/j9gQn4OSbyMh+tdpwBqoqCo1U8Xt1+awxmcIrOCk5Q8q
-         jwVIooPiKPqKwH/HUUpXPJo18rsgJ5+TrFm3Qe2B37WB0oECwwuzVbq3l5/Gt9+mFDSr
-         W+VZVi5EB+w5Br66uKHWUZEmlKrbcEeZINz/+ISFsxSrGoWkVWck8jeoXhJ35oXSoZFE
-         PF4g==
+        d=gmail.com; s=20230601; t=1702628695; x=1703233495; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=NsXOuP1yxztbXsnzImFkfgn1DAayjDuR2ejrUR2SoFU=;
+        b=m5EIbYB7S8r0j5EttCrS4JrHkIzjr1N4ztJgL4xkFojtlnCDKLY1z7WmK1WDSk5+7j
+         itzRQxsWhJNP9zPH0B0GQace3l+TBFFXWVfrwxxktdvaWjEO8s+a8Ui1GeydCdo+oUG2
+         xToA806szBkVfTt0DUrquLm+GRhGJtz40604Mt6AJmXQ1D72CNWCbj9ceXSklQwx6vUZ
+         HspdNUXVKuInYMY/vY10FiFEPdHu2RfS39Cnno0KJzFUTgk2ikMu+w6oWrpgq1PQg3Vc
+         rgi24yRtk3QyBunJGGl5xeBCZC/J1a5TiYVDT9pXcGL+Rytciv2vyjMYAAU9l8WCQSDW
+         dzQw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702628684; x=1703233484;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Sll+9qWsACg9WSZZSvDuRd5P7YLwP0CwcrFN2KVP0h4=;
-        b=thuy52iDkZ1cp8vBxuPRmJIINQIjQsDvK4x2K+unIv/FLBSVb2Vwb1UBu0iEywAwJj
-         zQPhy8tPpDaJ7jFIvjB5AhzZ3r+BWxqNVzhzJvv73Zm03rKbzlWH3QyvHL8wGmx5NMqh
-         Oj/hBRLXxyTmiBQHsAqSon+fP8gi7nspVHEicqqpapUrolRRSkiCCTTPKbl1ryDTE/CY
-         HkYCYqSgGpML9hj9UxrR5PbgQgN1/oKtN/C1Kvgh6AuFJ9YR9NKUcr2R9QlWYdVK5zjg
-         krSRlBGQ0lEMeLUyJj+rIhMK2eO1D6Xd0EtpM9cKWWxgjuDD5n7/tzo1BwpyilpszeV4
-         wUQg==
-X-Gm-Message-State: AOJu0YyQ1Y8r9TxfX7l2YTj5PXHs+USp+S1affiznKuP8sBDD+gWAtXz
-	gSxBp2G6+VDdisFORJV6hA9i7Q==
-X-Google-Smtp-Source: AGHT+IFC8/hzB5AHQqnVCaSLspwYNhdYIQ/9XR47KJueX6t6Iyz+C59Le/39vFUnmejukr2l5BqFTQ==
-X-Received: by 2002:a05:600c:1e0a:b0:40c:6c79:2a43 with SMTP id ay10-20020a05600c1e0a00b0040c6c792a43mr159046wmb.108.1702628684547;
-        Fri, 15 Dec 2023 00:24:44 -0800 (PST)
-Received: from [192.168.2.173] ([79.115.63.202])
-        by smtp.gmail.com with ESMTPSA id t9-20020a05600c198900b0040c490db950sm17872657wmq.47.2023.12.15.00.24.43
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 15 Dec 2023 00:24:44 -0800 (PST)
-Message-ID: <120bf090-0c07-4971-a18a-a1b326f1b139@linaro.org>
-Date: Fri, 15 Dec 2023 10:24:42 +0200
+        d=1e100.net; s=20230601; t=1702628695; x=1703233495;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=NsXOuP1yxztbXsnzImFkfgn1DAayjDuR2ejrUR2SoFU=;
+        b=BOxNX6cbfBkGTueJRgOVBpVgpkhLgZ4KHz8OCd2FKT/4qvDxFVkSTVnxLkMCbXSRyU
+         onISMMRzb2ojGbFDfU1HJfWl47XTGDouaALN/wclXjHzMpbqkTrc0MftB71Q+XwzG4pG
+         6KFeB25J/YCjPqUctpBVeBXHHHhJZpFmpcHzISOVr8SnT7ZYyKlx8OubaByD6JHeNf+X
+         ESMBl4nwAGmVh0SN6bHqEVMCUPRywtjvmC6AeUCkOJZStBlhltStJMRVyJywBaiGlTX8
+         zGh3oYDu5tXcMvhx2vg/gaeyHD6HnOUFBI4V4jRpb0BQXRm5xmzlSPoZSu9i7/5VUE5C
+         XsRg==
+X-Gm-Message-State: AOJu0Yy+OcPyJpeep/Qr/ZmYqY0C5h6a4WRLguTbhGIA0NWoOXoRvwq6
+	pnMIuS4IxgQ11T1GWY+WFoY=
+X-Google-Smtp-Source: AGHT+IGxRR5Vij1w/sTHAI9ogMgBB7JhUZ2bFSXZ72mizI5IP4mf7HzD8bmT5HpCln/BVodfP9ynCQ==
+X-Received: by 2002:a17:906:474c:b0:a19:a1ba:da60 with SMTP id j12-20020a170906474c00b00a19a1bada60mr4859682ejs.135.1702628694901;
+        Fri, 15 Dec 2023 00:24:54 -0800 (PST)
+Received: from tom-HP-ZBook-Fury-15-G7-Mobile-Workstation.station (net-188-217-59-229.cust.vodafonedsl.it. [188.217.59.229])
+        by smtp.gmail.com with ESMTPSA id un7-20020a170907cb8700b00a1b65249053sm10395951ejc.128.2023.12.15.00.24.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 15 Dec 2023 00:24:54 -0800 (PST)
+From: Tommaso Merciai <tomm.merciai@gmail.com>
+To: 
+Cc: linuxfancy@googlegroups.com,
+	sakari.ailus@linux.intel.com,
+	laurent.pinchart@ideasonboard.com,
+	tomm.merciai@gmail.com,
+	Martin Hecht <martin.hecht@avnet.eu>,
+	Mauro Carvalho Chehab <mchehab@kernel.org>,
+	linux-media@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH 0/3] media: i2c: alvium: store frame interval in subdev state
+Date: Fri, 15 Dec 2023 09:24:49 +0100
+Message-Id: <20231215082452.1720481-1-tomm.merciai@gmail.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 4/4] mtd: spi-nor: drop superfluous debug prints
-Content-Language: en-US
-To: pratyush@kernel.org, michael@walle.cc, miquel.raynal@bootlin.com
-Cc: richard@nod.at, jaimeliao@mxic.com.tw, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org
-References: <20231215082138.16063-1-tudor.ambarus@linaro.org>
- <20231215082138.16063-5-tudor.ambarus@linaro.org>
-From: Tudor Ambarus <tudor.ambarus@linaro.org>
-In-Reply-To: <20231215082138.16063-5-tudor.ambarus@linaro.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-I missed to drop some unused variables. Will drop them if everything
-else is fine.
+Hi All,
+The goal of this series as suggested by LPinchart is to remove the following
+data from alvium_dev struct:
 
-diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-index a708c3448809..92c992eb73d5 100644
---- a/drivers/mtd/spi-nor/core.c
-+++ b/drivers/mtd/spi-nor/core.c
-@@ -3492,9 +3492,7 @@ int spi_nor_scan(struct spi_nor *nor, const char
-*name,
- {
-        const struct flash_info *info;
-        struct device *dev = nor->dev;
--       struct mtd_info *mtd = &nor->mtd;
-        int ret;
--       int i;
+ - struct v4l2_fract frame_interval;
+ - u64 dft_fr;
+ - u64 min_fr;
+ - u64 max_fr;
+ - u64 fr;
 
-        ret = spi_nor_check(nor);
-        if (ret)
+And use instead the the newly added storage for frame interval in the subdev state.
+This series is made on top of the following series:
+
+ - media: v4l2-subdev: Improve frame interval handling
+ - base-commit: 76cb0b74268f1347e4b7fdefc343b064410e0e10
+
+Tommaso Merciai (3):
+  media: i2c: alvium: removal of dft_fr, min_fr and max_fr
+  media: i2c: alvium: inline set_frame_interval into s_frame_interval
+  media: i2c: alvium: store frame interval in subdev state
+
+ drivers/media/i2c/alvium-csi2.c | 91 ++++++++++-----------------------
+ drivers/media/i2c/alvium-csi2.h |  5 --
+ 2 files changed, 28 insertions(+), 68 deletions(-)
+
+-- 
+2.34.1
+
 
