@@ -1,103 +1,188 @@
-Return-Path: <linux-kernel+bounces-289-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-290-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BD875813EC7
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 01:42:23 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4B998813EC9
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 01:43:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 02560283E22
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 00:42:22 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6FE151C21F81
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 00:43:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 76F01624;
-	Fri, 15 Dec 2023 00:42:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E1497EA;
+	Fri, 15 Dec 2023 00:43:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="tOpmRTOa"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ClUdxwW+"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 30A30363
-	for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 00:42:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1702600930;
-	bh=8uQA7X0TDsHumtavr3z9rkEcB9+/ly7xWDGiAAZ0ejg=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=tOpmRTOaVYB9FvaSZ5kmt1LchI1SnTSIUE1Tb/L5eDv0lITAVO018lWqGrbPgTfmk
-	 t9JRw/sT1Dnop+PueP2TfFAy9TiJlH0g2UQcc1+75KheSXGpVTugCc/w9H8s1NuSQj
-	 Mm+gatj4DTyxRvRCQlln51kiayj6ROOtd3nq7jX6T34p1+N1nArJosdZTCcZVtW7lc
-	 X55Y5cqpC739/9eprZksDxaOqfX18P71wjtAydMb1qIuDA9bN8Jh/do8yKi9N0UNmr
-	 ibp47oobtLqfT5CbLgo5zz9JVOXm+i2i+oNjp5nj66l8aIcAfZ3/4f8781scF/9sSw
-	 bG07Lu977k5pA==
-Received: from [100.109.49.129] (cola.collaboradmins.com [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: dmitry.osipenko)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 444683781485;
-	Fri, 15 Dec 2023 00:42:09 +0000 (UTC)
-Message-ID: <df31f3f3-15bd-f71b-6ca3-a10e1e43e776@collabora.com>
-Date: Fri, 15 Dec 2023 03:42:06 +0300
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 23D3A4429;
+	Fri, 15 Dec 2023 00:43:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1702601011; x=1734137011;
+  h=message-id:date:mime-version:subject:from:to:cc:
+   references:in-reply-to:content-transfer-encoding;
+  bh=Pg9SIwTVnaNf+Azqij38vs/+Y0yhd/7yApmaynqBpBk=;
+  b=ClUdxwW+zriPmj01bkD3AWk8AlmbnCc7wf8V1fUhp3r44IMgEFpwa0Rw
+   I4H7KpU15lvfOEiKmECM32H38EJefIrklrXMxCH0XZzrv2To6pSaOxFkf
+   HBUS0gvOnFwTtstcGyMpj/HmDbxcwMgN0DtecQ4dL1+xoMA/FvQEc8lRK
+   bJy1qm/xMYH/1Fzn+JpH6dsIeqCySH4DIjaMkKHyYEuV1gonups/+gFk1
+   znXTMHPNCZcaJ2bZtCMynbFuo3zoRjgLs+cr0cvmBEcrFxGA44QpgM0TX
+   vrghJYmNs2Egh0FBTrtdr+Yqr8dyDdVKtwgiJOM9fjzWX4RXLZome3uKR
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10924"; a="426342788"
+X-IronPort-AV: E=Sophos;i="6.04,277,1695711600"; 
+   d="scan'208";a="426342788"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Dec 2023 16:43:30 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10924"; a="897945493"
+X-IronPort-AV: E=Sophos;i="6.04,277,1695711600"; 
+   d="scan'208";a="897945493"
+Received: from xueyu-mobl.ccr.corp.intel.com (HELO [10.255.30.96]) ([10.255.30.96])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Dec 2023 16:43:26 -0800
+Message-ID: <b270f606-4a34-4477-9795-63cd4f019be3@linux.intel.com>
+Date: Fri, 15 Dec 2023 08:43:24 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH v18 04/26] drm/shmem-helper: Refactor locked/unlocked
- functions
-Content-Language: en-US
-To: Maxime Ripard <mripard@kernel.org>
-Cc: Boris Brezillon <boris.brezillon@collabora.com>,
- David Airlie <airlied@gmail.com>, Gerd Hoffmann <kraxel@redhat.com>,
- Gurchetan Singh <gurchetansingh@chromium.org>, Chia-I Wu
- <olvaffe@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Thomas Zimmermann <tzimmermann@suse.de>,
- =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
- Qiang Yu <yuq825@gmail.com>, Steven Price <steven.price@arm.com>,
- Emma Anholt <emma@anholt.net>, Melissa Wen <mwen@igalia.com>,
- dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
- kernel@collabora.com, virtualization@lists.linux-foundation.org
-References: <kw5bho3jx73d3glvtewmjvqt4qty4khju6dcwypuh25ya3gi4b@7slmijjqdi4p>
- <20231128133712.53a6f6cb@collabora.com>
- <37208c72-7908-0a78-fc89-2fa9b8d756a5@collabora.com>
- <20231129085330.7ccb35d3@collabora.com>
- <ioqghyaeftyo7tuyfecn252ykxwgltrkhh2pwktjejqhewntbb@bym3rsjxnxfp>
- <20231129144609.7544e773@collabora.com>
- <6da6mzwfzwbn5rhiebypo5e2v6rhtpn2fovwvfnoo333zjgobf@bgtuwhum3trp>
- <20231129164705.7461a294@collabora.com>
- <jvhedgegvavn5mvvx2men2rxitvnq7u3dsxwfx3wokxldmysjz@y5av3l2w4gk6>
- <161189c2-db65-2542-5d19-77a56b56cfac@collabora.com>
- <xvo6rwsripjoiwazvjhkxvyleiexuhvclh7wvt5kuiw5cmkaa7@jgcdrtkzw7a6>
-From: Dmitry Osipenko <dmitry.osipenko@collabora.com>
-In-Reply-To: <xvo6rwsripjoiwazvjhkxvyleiexuhvclh7wvt5kuiw5cmkaa7@jgcdrtkzw7a6>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/2] iommu/vt-d: don's issue devTLB flush request when
+ device is disconnected
+From: Ethan Zhao <haifeng.zhao@linux.intel.com>
+To: Lukas Wunner <lukas@wunner.de>
+Cc: bhelgaas@google.com, baolu.lu@linux.intel.com, dwmw2@infradead.org,
+ will@kernel.org, robin.murphy@arm.com, linux-pci@vger.kernel.org,
+ iommu@lists.linux.dev, linux-kernel@vger.kernel.org,
+ Haorong Ye <yehaorong@bytedance.com>
+References: <20231213034637.2603013-1-haifeng.zhao@linux.intel.com>
+ <20231213034637.2603013-3-haifeng.zhao@linux.intel.com>
+ <20231213104417.GA31964@wunner.de>
+ <7f756fc6-e8ea-4fea-ad8b-30066f41037e@linux.intel.com>
+In-Reply-To: <7f756fc6-e8ea-4fea-ad8b-30066f41037e@linux.intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On 12/14/23 21:16, Maxime Ripard wrote:
-> On Tue, Dec 05, 2023 at 02:43:16PM +0300, Dmitry Osipenko wrote:
->> On 12/4/23 15:55, Maxime Ripard wrote:
->>>> Okay, that means s/_locked/_nolock/ in drm_gem_shmem_helpers.{c,h}, I
->>>> guess.
+
+On 12/14/2023 10:16 AM, Ethan Zhao wrote:
+>
+> On 12/13/2023 6:44 PM, Lukas Wunner wrote:
+>> On Tue, Dec 12, 2023 at 10:46:37PM -0500, Ethan Zhao wrote:
+>>> For those endpoint devices connect to system via hotplug capable ports,
+>>> users could request a warm reset to the device by flapping device's 
+>>> link
+>>> through setting the slot's link control register,
+>> Well, users could just *unplug* the device, right?  Why is it relevant
+>> that thay could fiddle with registers in config space?
 >>
->> DRM subsys and majority of kernel uses common _locked postfix. We should
->> retain the old naming scheme by using _locked() in DRM. It's not
->> worthwhile changing the name to a much less popular variant for a no
->> good reason.
+> Yes, if the device and it's slot are hotplug capable, users could just
+>
+> 'unplug' the device.
+>
+> But this case reported, users try to do a warm reset with a tool
+>
+> command like:
+>
+>   mlxfwreset -d <busid> -y reset
+>
+> Actually, it will access configuration space  just as
+>
+>  setpci -s 0000:17:01.0 0x78.L=0x21050010
+>
+> Well, we couldn't say don't fiddle PCIe config space registers like
+>
+> that.
+>
+>>> as pciehpt_ist() DLLSC
+>>> interrupt sequence response, pciehp will unload the device driver and
+>>> then power it off. thus cause an IOMMU devTLB flush request for 
+>>> device to
+>>> be sent and a long time completion/timeout waiting in interrupt 
+>>> context.
+>> A completion timeout should be on the order of usecs or msecs, why 
+>> does it
+>> cause a hard lockup?  The dmesg excerpt you've provided shows a 12 
+>> *second*
+>> delay between hot removal and watchdog reaction.
 >>
->> Maxime, are you okay with keeping the _locked name?
-> 
-> Yeah... I still don't really like it, but you're right that it's best to
-> remain consistent over my opinion :)
-Thanks for the review!
+> In my understanding, the devTLB flush request sent to ATS capable devcie
+>
+> is non-posted request, if the ATS transaction is broken by endpoint link
+>
+> -down, power-off event, the timeout will take up to 60 seconds+-30,
+>
+> see "Invalidate Completion Timeout " part of
+>
+> chapter 10.3.1 Invalidate Request
+>
+> In PCIe spec 6.1
+>
+> "
+>
+> IMPLEMENTATION NOTE:
+>
+> INVALIDATE COMPLETION TIMEOUT
+>
+> Devices should respond to Invalidate Requests within 1 minute (+50% 
+> -0%).Having a bounded time
+>
+> permits an ATPT to implement Invalidate Completion Timeouts and reuse 
+> the associated ITag values.
+>
+> ATPT designs are implementation specific. As such, Invalidate 
+> Completion Timeouts and their
+>
+> associated error handling are outside the scope of this specification
+>
+> "
+>
+>>> Fix it by checking the device's error_state in
+>>> devtlb_invalidation_with_pasid() to avoid sending meaningless devTLB 
+>>> flush
+>>> request to link down device that is set to 
+>>> pci_channel_io_perm_failure and
+>>> then powered off in
+>> This doesn't seem to be a proper fix.  It will work most of the time
+>> but not always.  A user might bring down the slot via sysfs, then yank
+>> the card from the slot just when the iommu flush occurs such that the
+>> pci_dev_is_disconnected(pdev) check returns false but the card is
+>> physically gone immediately afterwards.  In other words, you've shrunk
+>> the time window during which the issue may occur, but haven't eliminated
+>> it completely.
+>
+> If you mean disable the slot via sysfs, that's SAFE_REMOVAL, right ?
+>
+> that would issse devTLB invalidation first, power off device later, it
+>
+> wouldn't trigger the hard lockup, though the
+>
+> pci_dev_is_disconnected() return false. this fix works such case.
 
-Best regards,
-Dmitry
+Could you help to point out if there are any other window to close ?
 
+Thanks,
+
+Ethan
+
+
+>
+>
+> Thanks,
+>
+> Ethan
+>
+>
+>
+>>
+>> Thanks,
+>>
+>> Lukas
 
