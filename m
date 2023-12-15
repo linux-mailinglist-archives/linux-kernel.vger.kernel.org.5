@@ -1,120 +1,156 @@
-Return-Path: <linux-kernel+bounces-1327-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-1328-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 41826814D71
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 17:47:26 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9E8F7814D77
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 17:48:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D53661F217E8
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 16:47:25 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2C35F1F24D52
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 16:48:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 554903EA92;
-	Fri, 15 Dec 2023 16:45:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 416103EA6C;
+	Fri, 15 Dec 2023 16:48:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="UzZK/XYR"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="bXSXDzSB"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f171.google.com (mail-pl1-f171.google.com [209.85.214.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4106A3EA81
-	for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 16:45:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1702658736;
-	bh=vKEaU/E7paNN/LvyLgKhkKfx93q+/oWb8J2lSHxqsUc=;
-	h=Date:Subject:From:To:Cc:References:In-Reply-To:From;
-	b=UzZK/XYRFidF/ekISFPtWY7Z6uyyApqvRwKGwZ+P3q1qGcikasLQ/MyE2k8qnqjwi
-	 3tXsQWZOHIZDQOuLXmOmUEPun+4VyZrd67Cp0cVUz7fFzm6iVFu7BfvX5jIaECEn1T
-	 XZAox94eFhHv9CWaH3snbzyfc9Mu6SssR2+9rkW0EccjR8DdQ8qQi3/+JhO760Ki3Z
-	 nRrnTn7jR/hwje1caiU79iIZj0qA1yQv5S2sWQqTUGbr7ysX8DYuxSZuieSj/G1GYa
-	 t7jFhRWeABAwpr5naWBJ1kO31/A7H+ZQ5U2HfmAySIDUJp/PQyFns4u2pi0MQoDlgg
-	 oEHGuTTr0odMQ==
-Received: from [100.109.49.129] (cola.collaboradmins.com [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: dmitry.osipenko)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id B16BF3781F93;
-	Fri, 15 Dec 2023 16:45:35 +0000 (UTC)
-Message-ID: <b79dcf75-c9e8-490e-644f-3b97d95f7397@collabora.com>
-Date: Fri, 15 Dec 2023 19:45:32 +0300
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6AEDA3DBAC
+	for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 16:47:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-pl1-f171.google.com with SMTP id d9443c01a7336-1d394cd331aso23325ad.1
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 08:47:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1702658879; x=1703263679; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=pFF1dta+xlyg8MLdIwibfZN3TDA+ceWGZnTEl/bvSYQ=;
+        b=bXSXDzSBSErBYcDeSf04Oo/6R6KqHXIJ+J+UecNGsyyGc36MaoAYOxn8eNe4iyKOQF
+         wxqNrO3f/8yyOsPdjso8UbmhlJwHZFDy9N8ICOxKoPX/9W04NuTzJInOW7r9Z69ZTjX7
+         FbdVV80pAEbOx0wOznxquDjqLGoER5vNn6NFHuM2hmUvXlU/XA/gC6SniHJXjvJmURes
+         FhWjTvknjXByoEo7eWAzor1aGBToDmpanONBT3eCSkN6YHhRgRUKrMMDzkAuW+fZljUV
+         74P+kNT9M6eLqYz5PUmqEJRQUBHxiLyyNoG0lMRi4CRiz0x1NKtYB6fasW83xPFyMK+V
+         +xNg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702658879; x=1703263679;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=pFF1dta+xlyg8MLdIwibfZN3TDA+ceWGZnTEl/bvSYQ=;
+        b=OdZiDKQ9QAXS2NJ6Y8Oz6eeCsNsRoYXe7zeMsmWYkF2iJ7dM6/51Yz3iqn45Z/337w
+         3HIaQD0usJPXzRmqHFHGo57nkjT2aE14Ek0tZD92fRv2omYpGKudNtwXpr+KhAUffH6J
+         uyMuRhyGNJScbtI7CzRdb8zxuLcDIKu792P1Rb6+729deDJBMJ5pyZohTzxZ/6P56dvu
+         CbRXv2vfFjFiOo9TS8VZBfBeyujrsBKJSxRlF8VgqgJ7vZGpuLxbmPjqmwAypJvj9KHn
+         HRQKmIZ8TBK3fBdgrI+li/hVnT6A9wKelkzbHWpViZc5/TR00YBmagKX95+6yPIFk5o8
+         CaXA==
+X-Gm-Message-State: AOJu0YzLkGOLJ2fNiFWK9yp5rZghRY/Cll1em+IiDPo6/1nhjRMWkOE7
+	UvsKJQ6Mn7Q06QnDQDQgmHIMTEca3+cHFrwAAmKDDQ==
+X-Google-Smtp-Source: AGHT+IEbjeJsIZp5rRAzjQJeOjn/ytdkm89roAe2N65CsvRTZlJkSLxF/eDtmABy6dq4nOdoTRoClIhD5j52IYQ8NPc=
+X-Received: by 2002:a17:903:1108:b0:1d3:40ea:bf5b with SMTP id
+ n8-20020a170903110800b001d340eabf5bmr1147864plh.21.1702658878388; Fri, 15 Dec
+ 2023 08:47:58 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH] drm/virtio: add definition for venus capset
-Content-Language: en-US
-From: Dmitry Osipenko <dmitry.osipenko@collabora.com>
-To: Huang Rui <ray.huang@amd.com>, dri-devel@lists.freedesktop.org,
- virtualization@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
- David Airlie <airlied@redhat.com>, Gerd Hoffmann <kraxel@redhat.com>,
- Gurchetan Singh <gurchetansingh@chromium.org>, Chia-I Wu
- <olvaffe@gmail.com>, Daniel Vetter <daniel.vetter@ffwll.ch>
-Cc: Alex Deucher <alexander.deucher@amd.com>
-References: <20230915105918.3763061-1-ray.huang@amd.com>
- <a7b783c8-b1c8-90e3-b6c7-7fa8c6d24d21@collabora.com>
- <68470997-bb4c-3c11-98b5-aa75c52cbaea@collabora.com>
-In-Reply-To: <68470997-bb4c-3c11-98b5-aa75c52cbaea@collabora.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20231214020530.2267499-1-almasrymina@google.com>
+ <20231214020530.2267499-5-almasrymina@google.com> <ddffff98-f3de-6a5d-eb26-636dacefe9aa@huawei.com>
+ <CAHS8izO2nDHuxKau8iLcAmnho-1TYkzW09MBZ80+JzOo9YyVFA@mail.gmail.com>
+ <20231215021114.ipvdx2bwtxckrfdg@google.com> <793eb1bd-29bd-3c66-4ed2-9297879dbaa0@huawei.com>
+In-Reply-To: <793eb1bd-29bd-3c66-4ed2-9297879dbaa0@huawei.com>
+From: Shakeel Butt <shakeelb@google.com>
+Date: Fri, 15 Dec 2023 08:47:46 -0800
+Message-ID: <CALvZod7-WsxLj8gdhu=FMfdunEDgBV+DwfOB2316NfXvf_K41g@mail.gmail.com>
+Subject: Re: [RFC PATCH net-next v1 4/4] net: page_pool: use netmem_t instead
+ of struct page in API
+To: Yunsheng Lin <linyunsheng@huawei.com>
+Cc: Mina Almasry <almasrymina@google.com>, linux-kernel@vger.kernel.org, 
+	netdev@vger.kernel.org, bpf@vger.kernel.org, 
+	Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
+	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, 
+	"H. Peter Anvin" <hpa@zytor.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
+	"Rafael J. Wysocki" <rafael@kernel.org>, Sumit Semwal <sumit.semwal@linaro.org>, 
+	=?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>, 
+	Michael Chan <michael.chan@broadcom.com>, "David S. Miller" <davem@davemloft.net>, 
+	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, Wei Fang <wei.fang@nxp.com>, 
+	Shenwei Wang <shenwei.wang@nxp.com>, Clark Wang <xiaoning.wang@nxp.com>, 
+	NXP Linux Team <linux-imx@nxp.com>, Jeroen de Borst <jeroendb@google.com>, 
+	Praveen Kaligineedi <pkaligineedi@google.com>, Shailend Chand <shailend@google.com>, 
+	Yisen Zhuang <yisen.zhuang@huawei.com>, Salil Mehta <salil.mehta@huawei.com>, 
+	Jesse Brandeburg <jesse.brandeburg@intel.com>, Tony Nguyen <anthony.l.nguyen@intel.com>, 
+	Thomas Petazzoni <thomas.petazzoni@bootlin.com>, Marcin Wojtas <mw@semihalf.com>, 
+	Russell King <linux@armlinux.org.uk>, Sunil Goutham <sgoutham@marvell.com>, 
+	Geetha sowjanya <gakula@marvell.com>, Subbaraya Sundeep <sbhatta@marvell.com>, 
+	hariprasad <hkelam@marvell.com>, Felix Fietkau <nbd@nbd.name>, John Crispin <john@phrozen.org>, 
+	Sean Wang <sean.wang@mediatek.com>, Mark Lee <Mark-MC.Lee@mediatek.com>, 
+	Lorenzo Bianconi <lorenzo@kernel.org>, Matthias Brugger <matthias.bgg@gmail.com>, 
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, 
+	Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>, 
+	Horatiu Vultur <horatiu.vultur@microchip.com>, UNGLinuxDriver@microchip.com, 
+	"K. Y. Srinivasan" <kys@microsoft.com>, Haiyang Zhang <haiyangz@microsoft.com>, Wei Liu <wei.liu@kernel.org>, 
+	Dexuan Cui <decui@microsoft.com>, Jassi Brar <jaswinder.singh@linaro.org>, 
+	Ilias Apalodimas <ilias.apalodimas@linaro.org>, 
+	Alexandre Torgue <alexandre.torgue@foss.st.com>, Jose Abreu <joabreu@synopsys.com>, 
+	Maxime Coquelin <mcoquelin.stm32@gmail.com>, Siddharth Vadapalli <s-vadapalli@ti.com>, 
+	Ravi Gunasekaran <r-gunasekaran@ti.com>, Roger Quadros <rogerq@kernel.org>, 
+	Jiawen Wu <jiawenwu@trustnetic.com>, Mengyuan Lou <mengyuanlou@net-swift.com>, 
+	Ronak Doshi <doshir@vmware.com>, VMware PV-Drivers Reviewers <pv-drivers@vmware.com>, 
+	Ryder Lee <ryder.lee@mediatek.com>, Shayne Chen <shayne.chen@mediatek.com>, 
+	Kalle Valo <kvalo@kernel.org>, Juergen Gross <jgross@suse.com>, 
+	Stefano Stabellini <sstabellini@kernel.org>, 
+	Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
+	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Stefan Hajnoczi <stefanha@redhat.com>, Stefano Garzarella <sgarzare@redhat.com>, Shuah Khan <shuah@kernel.org>, 
+	=?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@digikod.net>, 
+	Nathan Chancellor <nathan@kernel.org>, Nick Desaulniers <ndesaulniers@google.com>, 
+	Bill Wendling <morbo@google.com>, Justin Stitt <justinstitt@google.com>, 
+	Jason Gunthorpe <jgg@nvidia.com>, Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 11/19/23 06:46, Dmitry Osipenko wrote:
-> On 9/21/23 00:16, Dmitry Osipenko wrote:
->> On 9/15/23 13:59, Huang Rui wrote:
->>> This definition is used fro qemu, and qemu imports this marco in the
->>> headers to enable venus for virtio gpu. So it should add it even kernel
->>> doesn't use this.
->>>
->>> Signed-off-by: Huang Rui <ray.huang@amd.com>
->>> ---
->>>
->>> Hi all,
->>>
->>> We would like to add a new definition for venus capset, it will be used for
->>> qemu. Please see details on below discussion:
->>>
->>> https://lore.kernel.org/qemu-devel/b82982aa-5b9e-481e-9491-b9313877bcaa@daynix.com/
->>>
->>> Thanks,
->>> Ray
->>>
->>>  include/uapi/linux/virtio_gpu.h | 2 ++
->>>  1 file changed, 2 insertions(+)
->>>
->>> diff --git a/include/uapi/linux/virtio_gpu.h b/include/uapi/linux/virtio_gpu.h
->>> index f556fde07b76..0e21f3998108 100644
->>> --- a/include/uapi/linux/virtio_gpu.h
->>> +++ b/include/uapi/linux/virtio_gpu.h
->>> @@ -309,6 +309,8 @@ struct virtio_gpu_cmd_submit {
->>>  
->>>  #define VIRTIO_GPU_CAPSET_VIRGL 1
->>>  #define VIRTIO_GPU_CAPSET_VIRGL2 2
->>> +/* 3 is reserved for gfxstream */
->>> +#define VIRTIO_GPU_CAPSET_VENUS 4
->>
->> Could you please add all other capsets, so we won't needed to do it
->> again in the future
-> 
-> I've opened request to update virtio-spec with the corrected/updated
-> capsets https://github.com/oasis-tcs/virtio-spec/issues/182. I'm
-> expecting that it will take some time until spec change will be merged
-> and now leaning to apply this v1 patch to not hold the Venus work.
-> 
-> Gerd, do you have objections? R-b/ack?
+On Fri, Dec 15, 2023 at 3:04=E2=80=AFAM Yunsheng Lin <linyunsheng@huawei.co=
+m> wrote:
+>
+> On 2023/12/15 10:11, Shakeel Butt wrote:
+> > On Thu, Dec 14, 2023 at 08:27:55AM -0800, Mina Almasry wrote:
+> >> On Thu, Dec 14, 2023 at 4:05=E2=80=AFAM Yunsheng Lin <linyunsheng@huaw=
+ei.com> wrote:
+> >>>
+> > [...]
+> >>> I perfer the second one personally, as devmem means that it is not
+> >>> readable from cpu.
+> >>
+> >> From my POV it has to be the first one. We want to abstract the memory
+> >> type from the drivers as much as possible, not introduce N new memory
+> >> types and ask the driver to implement new code for each of them
+> >> separately.
+>
+> That was my initial thinking too:
+> https://www.spinics.net/lists/netdev/msg949376.html
+>
+> But after discussion, it may make more sense to have two sets of API from=
+ the
+> driver's piont of view if we want a complete safe type protection, so tha=
+t
+> compiler can check everything statically and devmem driver API have a cle=
+ar
+> semantic:
+> 1. devmem is not allowed to be called into mm subsystem.
+> 2. it will not provide a API like page_address().
+>
 
-Applied patch to misc-next with edited commit message. Updating spec
-taking much time, not worth to hold this change longer. We'll add the
-rest of capsets later on. Thanks, Rui!
-
--- 
-Best regards,
-Dmitry
-
+I think all of us are on the same page that there will be two sets of
+APIs here but Mina's point was let's aim to not make that N set of
+APIs.
 
