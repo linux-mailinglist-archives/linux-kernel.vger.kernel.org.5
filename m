@@ -1,79 +1,105 @@
-Return-Path: <linux-kernel+bounces-1147-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-1146-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id AABC7814B1B
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 16:02:20 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6C3C3814B1A
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 16:02:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 68C972835DD
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 15:02:19 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EFA4E1F23F75
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 15:02:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B0DAB37156;
-	Fri, 15 Dec 2023 15:01:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5CAA8364B6;
+	Fri, 15 Dec 2023 15:01:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="QEP7jk7Q"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="keOMVEms"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 454CE36AFF
-	for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 15:01:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=fpNr8tLv7DaR3O7eSvBZDrzrhRmQRH0saU7oGWLT/Ng=; b=QEP7jk7QKVzggKrwd8F8h78Y8i
-	Xxq+GkDU4ZLXQka8SyG5MAc6oqRvmsXdnT3l6YfPtOzsakpYEMzl4/iV7V4icASVErZ82fn8xG82Q
-	H7WPX35sxIEx+ESMNW3lj3J9A1v08xQ44JW4HOewQwkIlJr1oCxavk2JBTDqmq0JzOS3kk2l0EsuC
-	YmvPhA8C0eMlPugu4A70uwIjwQ07tjkbuCUSfEC61c/9H4bdFe7wmHLdSKZm4dwdWFtizJHmXeA8U
-	YfvrugFq3wI7xqhwlHp6b5WIkA6TyvCDDJ9cNIdgRU44UQUK6NVRpGE5LjSThBIP0wyQ5AHb29Uw8
-	JvSBWkRw==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1rE9h0-000Yy1-IV; Fri, 15 Dec 2023 15:01:34 +0000
-Date: Fri, 15 Dec 2023 15:01:34 +0000
-From: Matthew Wilcox <willy@infradead.org>
-To: Baolin Wang <baolin.wang@linux.alibaba.com>
-Cc: akpm@linux-foundation.org, david@redhat.com, ying.huang@intel.com,
-	ziy@nvidia.com, xuyu@linux.alibaba.com, linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mm: migrate: fix getting incorrect page mapping during
- page migration
-Message-ID: <ZXxqTjZR0OAvjaXr@casper.infradead.org>
-References: <e60b17a88afc38cb32f84c3e30837ec70b343d2b.1702641709.git.baolin.wang@linux.alibaba.com>
- <ZXxn/0oixJxxAnpF@casper.infradead.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C9F135F01
+	for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 15:01:46 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B7E4EC433C9;
+	Fri, 15 Dec 2023 15:01:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1702652506;
+	bh=1IdD+DH0O1yFnPHJhW8z4I+GBWeEhlCskAt74iuVyEc=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=keOMVEmscLIpnT1JxKd1YAPO7n+f+LDbpYsYu2FlxCHNO1juc4GeFFpg3LLzEwu7V
+	 Gqr6Af+eeXBhaw0rkiTq6qA7XRup8c08EuFWGiw7g4O+6dnM0ygckjOP47XFlf61Hp
+	 RtRevd1TfMi8Rl1bRT8ZYNnIKkuGRIYwX2dHksIGMVWrdBem2V1a3fwbyrWad11Aov
+	 K3oqQ756Ph+3EJ3wxE00y293jN8gJ2oexroRfL4z284KJ2eqL/RaMvZedumyYuoUxt
+	 2EnRGRtHW8R/KpwnKboMNEXZZYWK/FB8uiSNY8hU1Mx/o0OEz5VBpAPG3ED0Y6R54G
+	 s7CApqPfDPZvw==
+Message-ID: <fa32d038-e42a-43a2-9450-403ead5bada8@kernel.org>
+Date: Fri, 15 Dec 2023 23:01:41 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZXxn/0oixJxxAnpF@casper.infradead.org>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] erofs: fix ztailpacking for subpage compressed blocks
+Content-Language: en-US
+To: Gao Xiang <hsiangkao@linux.alibaba.com>, linux-erofs@lists.ozlabs.org
+Cc: LKML <linux-kernel@vger.kernel.org>
+References: <20231214161337.753049-1-hsiangkao@linux.alibaba.com>
+From: Chao Yu <chao@kernel.org>
+Autocrypt: addr=chao@kernel.org; keydata=
+ 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
+In-Reply-To: <20231214161337.753049-1-hsiangkao@linux.alibaba.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Fri, Dec 15, 2023 at 02:51:43PM +0000, Matthew Wilcox wrote:
-> I'm not saying no to this fix, but dump_mapping() is supposed to be
-> resilient against this.  Is the issue that 'dentry' is NULL, or is it
-> some field within dentry that is NULL?  eg, would this fix your
-> case?
+On 2023/12/15 0:13, Gao Xiang wrote:
+> `pageofs_in` should be the compressed data offset of the page rather
+> than of the block.
+> 
+> Signed-off-by: Gao Xiang <hsiangkao@linux.alibaba.com>
 
-Uh, dentry is an on-stack dentry.  So obviously it's a pointer within it
-that's NULL.  Maybe this, having stared at the implementation of %pd?
+Acked-by: Chao Yu <chao@kernel.org>
 
-+++ b/fs/inode.c
-@@ -588,7 +588,8 @@ void dump_mapping(const struct address_space *mapping)
-        }
-
-        dentry_ptr = container_of(dentry_first, struct dentry, d_u.d_alias);
--       if (get_kernel_nofault(dentry, dentry_ptr)) {
-+       if (get_kernel_nofault(dentry, dentry_ptr) ||
-+           !dentry->d_parent || !dentry->d_name) {
-                pr_warn("aops:%ps ino:%lx invalid dentry:%px\n",
-                                a_ops, ino, dentry_ptr);
-                return;
-
+Thanks,
 
