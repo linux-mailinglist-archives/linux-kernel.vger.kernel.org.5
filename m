@@ -1,238 +1,188 @@
-Return-Path: <linux-kernel+bounces-1191-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-1188-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 93330814B80
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 16:16:58 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id AD463814B76
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 16:16:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 49ABC285F2E
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 15:16:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3AAD31F21460
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 15:16:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E6E9F3DBB5;
-	Fri, 15 Dec 2023 15:13:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 30F3C3A8DB;
+	Fri, 15 Dec 2023 15:13:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="xiQ7qHKo"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mPhVSq6T"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f54.google.com (mail-wr1-f54.google.com [209.85.221.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3DC823FB15;
-	Fri, 15 Dec 2023 15:13:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microchip.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1702653233; x=1734189233;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=s5idXhmEOPHM3MCEEcLriHfCWCN1qs4CTulDZLbtAuI=;
-  b=xiQ7qHKoQLn3d9uzyyV6dI/1Zuty05tnR9TL4YB9TycAhHf4Cp/PMex4
-   BTwOnTkfr+E0vXxM3VEMtdsRpCKMyGkZqndRCVH12FmH19BmsuX7ZXOAY
-   Y/FHsOeEKL88M637WjgUFKLZZNz9UXnMzRn66kKnbYxOoUIqtulxYbMju
-   Y3Yzd7EIQVbdhuk19uNG1ZMQ5YTwmNPUNuftys1oW58BNyyZhFex3K7+l
-   cGQt5GkYd0U7SmSIrM8c4Kv8CBYBz41qi7Wqtw/PRlYaQTbTEYo8qajyi
-   PHLBcD+jbR4cgRr24pBB7s4jXxsKBGzWMFvrWXTsMY665HPLcmKWR+dhd
-   w==;
-X-CSE-ConnectionGUID: qwhyNkqhRvWQqhblyCRvoA==
-X-CSE-MsgGUID: hSitPxS4SUyiyih87HIsxQ==
-X-ThreatScanner-Verdict: Negative
-X-IronPort-AV: E=Sophos;i="6.04,279,1695711600"; 
-   d="scan'208";a="14326541"
-X-Amp-Result: SKIPPED(no attachment in message)
-Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa1.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 15 Dec 2023 08:13:51 -0700
-Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Fri, 15 Dec 2023 08:13:32 -0700
-Received: from che-dk-ungapp03lx.microchip.com (10.10.85.11) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server id
- 15.1.2507.35 via Frontend Transport; Fri, 15 Dec 2023 08:13:28 -0700
-From: Rengarajan S <rengarajan.s@microchip.com>
-To: <kumaravel.thiagarajan@microchip.com>,
-	<tharunkumar.pasumarthi@microchip.com>, <gregkh@linuxfoundation.org>,
-	<jirislaby@kernel.org>, <keescook@chromium.org>, <gustavoars@kernel.org>,
-	<linux-serial@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<linux-hardening@vger.kernel.org>
-CC: <unglinuxdriver@microchip.com>
-Subject: [PATCH v1 tty-next 4/4] 8250: microchip: pci1xxxx: Add Burst mode transmission support in uart driver for reading from FIFO
-Date: Fri, 15 Dec 2023 20:41:23 +0530
-Message-ID: <20231215151123.41812-5-rengarajan.s@microchip.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20231215151123.41812-1-rengarajan.s@microchip.com>
-References: <20231215151123.41812-1-rengarajan.s@microchip.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DBBD83C471;
+	Fri, 15 Dec 2023 15:13:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f54.google.com with SMTP id ffacd0b85a97d-33646dbedc9so663740f8f.3;
+        Fri, 15 Dec 2023 07:13:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1702653204; x=1703258004; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=brYOzG3g23wL22CEoDTu8T5IzltVcQQgzthieH5Rn74=;
+        b=mPhVSq6TOcznDbqFf/FCmcrpcEXIJC2ewo8P8xGcFXLN3metR8HgNasaBE2chVsufs
+         lFDK22DsKDMi1ki0w9TYfUbRKP4180WKRIWISwwxlcRFhNN1Q2nowhMmBJW+mIN2GYJB
+         CSvlYlUfNmrM9r7PhP/OjGJsH048+QzwlZZYTKWC7muTGYRRs2TDlswqulA6xrS5BJqw
+         MU2IMzDIDED0o5Hcmhd31+t0dBpkpzRWO/u/XTxrd/Wpf6aBPiXzH0CQlJAXhlDM09CC
+         E91ZNoN9wu5GtylKERyED1yAnIxQNzgQ+V8YmyWBl0bGVxOJSZbFI1cFu+0BR5XBnLJk
+         yvXw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702653204; x=1703258004;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=brYOzG3g23wL22CEoDTu8T5IzltVcQQgzthieH5Rn74=;
+        b=jN0icT0rWxUQdDRGwLcVgRf9NdsR6bfT+Uec6Fwy3dxIo5DaA/JLpGm82qqRfL8yeT
+         Gv41s75ZzTHF2dvzhsJExJszXxYZAwFnMtUDTws235ucaWczPzstJqPAWUm8W1yVF+5E
+         vh17LaKO+m0dUdj1xg78st6wUToUAb9TPPecwIQCseYMJtazCBV3tqTLIbBntzKBmsv8
+         2TuVsQSko241/kwRdFfWPGp6MxmKhrHOWaEcTPt93n3g356s7/P0vrjSQ01vMN+BC8n9
+         ZI/kok3n/tQcSzkaIdPdhfMHbcqupT8XshAZH7Trl/DFDa3mDnLwJ8Hu4kTn0oIbgeAh
+         1pRA==
+X-Gm-Message-State: AOJu0YzdytIoY0/B1DR8XCub6N/s2vy/pXKDeISLZbnBfYROKutcvxUc
+	o29OvDJoPL+abjvj84sbD3Q=
+X-Google-Smtp-Source: AGHT+IG6xfZAKkoFs/nB1j6orGlhGJ6P+tWaOcp0B83WVeZzCcdiugIKJlUguBz4lJNFDEAwHhhOIg==
+X-Received: by 2002:adf:f050:0:b0:336:3538:6636 with SMTP id t16-20020adff050000000b0033635386636mr3854305wro.86.1702653203715;
+        Fri, 15 Dec 2023 07:13:23 -0800 (PST)
+Received: from localhost.localdomain ([154.72.162.212])
+        by smtp.gmail.com with ESMTPSA id s18-20020a5d4ed2000000b00336421f1818sm6600631wrv.112.2023.12.15.07.13.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 15 Dec 2023 07:13:22 -0800 (PST)
+From: Brandon Cheo Fusi <fusibrandon13@gmail.com>
+To: viresh.kumar@linaro.org
+Cc: aou@eecs.berkeley.edu,
+	conor+dt@kernel.org,
+	devicetree@vger.kernel.org,
+	fusibrandon13@gmail.com,
+	jernej.skrabec@gmail.com,
+	krzysztof.kozlowski+dt@linaro.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	linux-pm@vger.kernel.org,
+	linux-riscv@lists.infradead.org,
+	linux-sunxi@lists.linux.dev,
+	palmer@dabbelt.com,
+	paul.walmsley@sifive.com,
+	rafael@kernel.org,
+	robh+dt@kernel.org,
+	samuel@sholland.org,
+	tiny.windzz@gmail.com,
+	wens@csie.org
+Subject: Re: [PATCH 1/5] riscv: dts: allwinner: Update opp table to allow CPU frequency scaling
+Date: Fri, 15 Dec 2023 16:12:09 +0100
+Message-Id: <20231215151209.46221-1-fusibrandon13@gmail.com>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20231214111446.camz2krqanaieybh@vireshk-i7>
+References: <20231214111446.camz2krqanaieybh@vireshk-i7>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
 
-pci1xxxx_handle_irq reads the burst status and checks if the FIFO
-is empty and is ready to accept the incoming data. The handling is
-done in pci1xxxx_tx_burst where each transaction processes data in
-block of DWORDs, while any remaining bytes are processed individually,
-one byte at a time.
+On Thu, Dec 14, 2023 at 12:14 PM Viresh Kumar <viresh.kumar@linaro.org> wrote:
+>
+> On 14-12-23, 11:33, Brandon Cheo Fusi wrote:
+> > Two OPPs are currently defined for the D1/D1s; one at 408MHz and
+> > another at 1.08GHz. Switching between these can be done with the
+> > "sun50i-cpufreq-nvmem" driver. This patch populates the opp table
+> > appropriately, with inspiration from
+> > https://github.com/Tina-Linux/linux-5.4/blob/master/arch/riscv/boot/dts/sunxi/sun20iw1p1.dtsi
+> >
+> > The supply voltages are PWM-controlled, but support for that IP
+> > is still in the works. So stick to a fixed 0.9V vdd-cpu supply,
+> > which seems to be the default on most D1 boards.
+> >
+> > Signed-off-by: Brandon Cheo Fusi <fusibrandon13@gmail.com>
+> > ---
+> >  arch/riscv/boot/dts/allwinner/sun20i-d1s.dtsi | 18 +++++++++++++++---
+> >  1 file changed, 15 insertions(+), 3 deletions(-)
+> >
+> > diff --git a/arch/riscv/boot/dts/allwinner/sun20i-d1s.dtsi b/arch/riscv/boot/dts/allwinner/sun20i-d1s.dtsi
+> > index 64c3c2e6c..e211fe4c7 100644
+> > --- a/arch/riscv/boot/dts/allwinner/sun20i-d1s.dtsi
+> > +++ b/arch/riscv/boot/dts/allwinner/sun20i-d1s.dtsi
+> > @@ -39,16 +39,22 @@ cpu0_intc: interrupt-controller {
+> >       };
+> >
+> >       opp_table_cpu: opp-table-cpu {
+> > -             compatible = "operating-points-v2";
+> > +             compatible = "allwinner,sun20i-d1-operating-points",
+>
+> I don't think you should add a new compatible for every SoC that needs
+> to be supported by a DT bindings and cpufreq driver. Maybe you should
+> just reuse "allwinner,sun50i-h6-operating-points" and it will work
+> fine for you ?
+>
+> Rob ?
+>
+> > +                              "allwinner,sun50i-h6-operating-points";
+> > +             nvmem-cells = <&cpu_speed_grade>;
+> > +             nvmem-cell-names = "speed";
+> > +             opp-shared;
+> >
+> >               opp-408000000 {
+> > +                     clock-latency-ns = <244144>; /* 8 32k periods */
+> >                       opp-hz = /bits/ 64 <408000000>;
+> > -                     opp-microvolt = <900000 900000 1100000>;
+> > +                     opp-microvolt-speed0 = <900000>;
+>
+> The separate property name thing was required when you could have
+> different values for different SoC instances, which can be read from
+> efuses, like in your case.
+>
+> But all I see is speed0 here, why don't you always set opp-microvolt
+> then ?
+>
 
-Signed-off-by: Rengarajan S <rengarajan.s@microchip.com>
----
- drivers/tty/serial/8250/8250_pci1xxxx.c | 103 ++++++++++++++++++++++++
- 1 file changed, 103 insertions(+)
+Setting opp-microvolt would be ok, but opp-microvolt-speed0 was chosen for
+consistency with the driver bindings here
+https://elixir.bootlin.com/linux/latest/source/Documentation/devicetree/bindings/opp/allwinner,sun50i-h6-operating-points.yaml#L52 
 
-diff --git a/drivers/tty/serial/8250/8250_pci1xxxx.c b/drivers/tty/serial/8250/8250_pci1xxxx.c
-index 558c4c7f3104..ebe793bf6431 100644
---- a/drivers/tty/serial/8250/8250_pci1xxxx.c
-+++ b/drivers/tty/serial/8250/8250_pci1xxxx.c
-@@ -67,6 +67,7 @@
- #define SYSLOCK_RETRY_CNT			1000
- 
- #define UART_RX_BYTE_FIFO			0x00
-+#define UART_TX_BYTE_FIFO			0x00
- #define UART_FIFO_CTL				0x02
- 
- #define UART_ACTV_REG				0x11
-@@ -100,6 +101,7 @@
- #define UART_RESET_D3_RESET_DISABLE		BIT(16)
- 
- #define UART_BURST_STATUS_REG			0x9C
-+#define UART_TX_BURST_FIFO			0xA0
- #define UART_RX_BURST_FIFO			0xA4
- 
- #define MAX_PORTS				4
-@@ -109,6 +111,7 @@
- #define UART_BURST_SIZE				4
- 
- #define UART_BST_STAT_RX_COUNT_MASK		0x00FF
-+#define UART_BST_STAT_TX_COUNT_MASK		0xFF00
- #define UART_BST_STAT_IIR_INT_PEND		0x100000
- #define UART_LSR_OVERRUN_ERR_CLR		0x43
- #define UART_BST_STAT_LSR_RX_MASK		0x9F000000
-@@ -116,6 +119,7 @@
- #define UART_BST_STAT_LSR_OVERRUN_ERR		0x2000000
- #define UART_BST_STAT_LSR_PARITY_ERR		0x4000000
- #define UART_BST_STAT_LSR_FRAME_ERR		0x8000000
-+#define UART_BST_STAT_LSR_THRE			0x20000000
- 
- struct pci1xxxx_8250 {
- 	unsigned int nr;
-@@ -344,6 +348,102 @@ static void pci1xxxx_rx_burst(struct uart_port *port, u32 uart_status)
- 	}
- }
- 
-+static void pci1xxxx_process_write_data(struct uart_port *port,
-+					struct circ_buf *xmit,
-+					int *data_empty_count,
-+					u32 *valid_byte_count)
-+{
-+	u32 valid_burst_count = *valid_byte_count / UART_BURST_SIZE;
-+
-+	/*
-+	 * Each transaction transfers data in DWORDs. If there are less than
-+	 * four remaining valid_byte_count to transfer or if the circular
-+	 * buffer has insufficient space for a DWORD, the data is transferred
-+	 * one byte at a time.
-+	 */
-+	while (valid_burst_count--) {
-+		if (*data_empty_count - UART_BURST_SIZE < 0)
-+			break;
-+		if (xmit->tail > (UART_XMIT_SIZE - UART_BURST_SIZE))
-+			break;
-+		writel(*(unsigned int *)&xmit->buf[xmit->tail],
-+		       port->membase + UART_TX_BURST_FIFO);
-+		*valid_byte_count -= UART_BURST_SIZE;
-+		*data_empty_count -= UART_BURST_SIZE;
-+		xmit->tail = (xmit->tail + UART_BURST_SIZE) &
-+			     (UART_XMIT_SIZE - 1);
-+	}
-+
-+	while (*valid_byte_count--) {
-+		if (*data_empty_count - UART_BYTE_SIZE < 0)
-+			break;
-+		writeb(xmit->buf[xmit->tail], port->membase +
-+		       UART_TX_BYTE_FIFO);
-+		*data_empty_count -= UART_BYTE_SIZE;
-+
-+		/*
-+		 * When the tail of the circular buffer is reached, the next
-+		 * byte is transferred to the beginning of the buffer.
-+		 */
-+		xmit->tail = (xmit->tail + UART_BYTE_SIZE) &
-+			     (UART_XMIT_SIZE - 1);
-+
-+		/*
-+		 * If there are any pending burst count, data is handled by
-+		 * transmitting DWORDs at a time.
-+		 */
-+		if (valid_burst_count && (xmit->tail <
-+		   (UART_XMIT_SIZE - UART_BURST_SIZE)))
-+			break;
-+	}
-+}
-+
-+static void pci1xxxx_tx_burst(struct uart_port *port, u32 uart_status)
-+{
-+	struct uart_8250_port *up = up_to_u8250p(port);
-+	u32 valid_byte_count;
-+	int data_empty_count;
-+	struct circ_buf *xmit;
-+
-+	xmit = &port->state->xmit;
-+
-+	if (port->x_char) {
-+		writeb(port->x_char, port->membase + UART_TX);
-+		port->icount.tx++;
-+		port->x_char = 0;
-+		return;
-+	}
-+
-+	if ((uart_tx_stopped(port)) || (uart_circ_empty(xmit))) {
-+		port->ops->stop_tx(port);
-+	} else {
-+		data_empty_count = (pci1xxxx_read_burst_status(port) &
-+				    UART_BST_STAT_TX_COUNT_MASK) >> 8;
-+		do {
-+			valid_byte_count = uart_circ_chars_pending(xmit);
-+
-+			pci1xxxx_process_write_data(port, xmit,
-+						    &data_empty_count,
-+						    &valid_byte_count);
-+
-+			port->icount.tx++;
-+			if (uart_circ_empty(xmit))
-+				break;
-+		} while (data_empty_count && valid_byte_count);
-+	}
-+
-+	if (uart_circ_chars_pending(xmit) < WAKEUP_CHARS)
-+		uart_write_wakeup(port);
-+
-+	 /*
-+	  * With RPM enabled, we have to wait until the FIFO is empty before
-+	  * the HW can go idle. So we get here once again with empty FIFO and
-+	  * disable the interrupt and RPM in __stop_tx()
-+	  */
-+	if (uart_circ_empty(xmit) && !(up->capabilities & UART_CAP_RPM))
-+		port->ops->stop_tx(port);
-+}
-+
- static int pci1xxxx_handle_irq(struct uart_port *port)
- {
- 	unsigned long flags;
-@@ -359,6 +459,9 @@ static int pci1xxxx_handle_irq(struct uart_port *port)
- 	if (status & UART_BST_STAT_LSR_RX_MASK)
- 		pci1xxxx_rx_burst(port, status);
- 
-+	if (status & UART_BST_STAT_LSR_THRE)
-+		pci1xxxx_tx_burst(port, status);
-+
- 	spin_unlock_irqrestore(&port->lock, flags);
- 
- 	return 1;
--- 
-2.25.1
+> Also why degrade from min/max/target type to just target ?
+>
 
+This is a mistake on my part as I thought requesting non default voltages
+was going to be a problem with lack of PWM support. Will be reverted in v2.
+
+> >               };
+> >
+> >               opp-1080000000 {
+> > +                     clock-latency-ns = <244144>; /* 8 32k periods */
+> >                       opp-hz = /bits/ 64 <1008000000>;
+> > -                     opp-microvolt = <900000 900000 1100000>;
+> > +                     opp-microvolt-speed0 = <900000>;
+> >               };
+> >       };
+> >
+> > @@ -115,3 +121,8 @@ pmu {
+> >                       <0x00000000 0x0000000f 0xffffffff 0xffffffff 0x00020000>;
+> >       };
+> >  };
+> > +
+> > +&sid {
+> > +     cpu_speed_grade: cpu-speed-grade@0 {
+> > +             reg = <0x00 0x2>;
+> > +     };
+> > +};
+> > --
+> > 2.30.2
+>
+> --
+> viresh
+
+Thank you for reviewing.
+Brandon.
 
