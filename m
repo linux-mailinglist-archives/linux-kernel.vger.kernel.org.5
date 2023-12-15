@@ -1,132 +1,113 @@
-Return-Path: <linux-kernel+bounces-421-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-422-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id E84F08140E2
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 05:11:02 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id A47808140EF
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 05:27:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DC785B22316
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 04:10:59 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4E9741F21BF5
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 04:27:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 605C9610D;
-	Fri, 15 Dec 2023 04:10:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5844863B2;
+	Fri, 15 Dec 2023 04:27:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="oyqTzhb3"
+	dkim=pass (2048-bit key) header.d=alliedtelesis.co.nz header.i=@alliedtelesis.co.nz header.b="0XwQS7wt"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+Received: from gate2.alliedtelesis.co.nz (gate2.alliedtelesis.co.nz [202.36.163.20])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 62757566C
-	for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 04:10:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.vnet.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.vnet.ibm.com
-Received: from pps.filterd (m0353726.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3BF32MJt016877;
-	Fri, 15 Dec 2023 04:10:35 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : reply-to : references : mime-version : content-type
- : in-reply-to; s=pp1; bh=JUgmFi08qpXy1eUIY5eChcvEZ8dewch6vbpeTULj1SI=;
- b=oyqTzhb3EUjwz2ERT194OXDQeKQRWpgbTB8+oyF8d5RpiQRvfQrsNjSS2i3Huxq7ag86
- Oqd3A2dQlEfAFHF3u9ZW0djumWkDBsnp0iLgNgtxGPmrEhDfkA0t4Uy/6P+C/Q8+DB+j
- XHtITrocADyI5TKtW4DZlQ2K/bjxj0289nBOEQOVpPt32M5gumKgDtYNEBLF+MtffpXo
- L5z+BUp442kKBy4IPECP77sOVLjY0dxObpCseipeReum6VJzLo6qrWE4+3i9KXieVieh
- Cj2K0D9z+Fkh09OQOvLbxia4RHavx90kWa32u42aq8Bs6LWuVV2W2hpb27RAA1c6WAdy TA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3v0ehqhasa-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 15 Dec 2023 04:10:34 +0000
-Received: from m0353726.ppops.net (m0353726.ppops.net [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3BF3QhHn016716;
-	Fri, 15 Dec 2023 04:10:34 GMT
-Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3v0ehqharm-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 15 Dec 2023 04:10:34 +0000
-Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma23.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3BEJMKQ0014824;
-	Fri, 15 Dec 2023 04:10:32 GMT
-Received: from smtprelay04.fra02v.mail.ibm.com ([9.218.2.228])
-	by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3uw42kjmus-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 15 Dec 2023 04:10:32 +0000
-Received: from smtpav04.fra02v.mail.ibm.com (smtpav04.fra02v.mail.ibm.com [10.20.54.103])
-	by smtprelay04.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3BF4AU4V41222886
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Fri, 15 Dec 2023 04:10:30 GMT
-Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 7E44A2004B;
-	Fri, 15 Dec 2023 04:10:30 +0000 (GMT)
-Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 2498120040;
-	Fri, 15 Dec 2023 04:10:28 +0000 (GMT)
-Received: from linux.vnet.ibm.com (unknown [9.126.150.29])
-	by smtpav04.fra02v.mail.ibm.com (Postfix) with SMTP;
-	Fri, 15 Dec 2023 04:10:27 +0000 (GMT)
-Date: Fri, 15 Dec 2023 09:40:27 +0530
-From: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
-To: Ingo Molnar <mingo@kernel.org>, Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>,
-        Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Valentin Schneider <vschneid@redhat.com>
-Cc: LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] sched/fair: Enable group_asym_packing in
- find_idlest_group
-Message-ID: <20231215041027.GX2194132@linux.vnet.ibm.com>
-Reply-To: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
-References: <20231018155036.2314342-1-srikar@linux.vnet.ibm.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3BD1F5698
+	for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 04:27:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=alliedtelesis.co.nz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alliedtelesis.co.nz
+Received: from svr-chch-seg1.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(Client did not present a certificate)
+	by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id 470E12C0381;
+	Fri, 15 Dec 2023 17:21:58 +1300 (NZDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
+	s=mail181024; t=1702614118;
+	bh=SVUOOR0rCQvpdqTF1+SbvUi+Db5NcfNoL6CdiMFlLV4=;
+	h=From:To:CC:Subject:Date:References:In-Reply-To:From;
+	b=0XwQS7wtY455IRqvSdYmrZyxK25QiEh6tNCgbfG+xU6M9FiyUr1DAG1A2GPNGS1O+
+	 qYqUaPzsJXWsUrnQIKAABIXp2GrQhgI0KYP2FMuJDcgVObFr5yh5T+SVsV3EDX10zb
+	 FCFVLTyFV2IR52mSwwwH2j8uheLSBnNw9Q94YjBikMgbT+b08NOFMIv/muh1gpPZPe
+	 UPR4vg7AfdCyz3GX+ZFWr0kX+x//DeAJ5+mc4W1Lq3GJ4+EYq67/wBh+AHoXSDTog4
+	 PfwC7fXg2CAd3KnFJYHx2bPP2XymZNcJuFr0Z+7j3GrR3erl/Gkp8NwKUJhmFt/H7U
+	 UDScGFPB2Tedw==
+Received: from svr-chch-ex2.atlnz.lc (Not Verified[2001:df5:b000:bc8::76]) by svr-chch-seg1.atlnz.lc with Trustwave SEG (v8,2,6,11305)
+	id <B657bd4660001>; Fri, 15 Dec 2023 17:21:58 +1300
+Received: from svr-chch-ex1.atlnz.lc (2001:df5:b000:bc8::77) by
+ svr-chch-ex2.atlnz.lc (2001:df5:b000:bc8::76) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.2.1118.40; Fri, 15 Dec 2023 17:21:58 +1300
+Received: from svr-chch-ex2.atlnz.lc (2001:df5:b000:bc8::76) by
+ svr-chch-ex1.atlnz.lc (2001:df5:b000:bc8:409d:36f5:8899:92e8) with Microsoft
+ SMTP Server (TLS) id 15.0.1497.48; Fri, 15 Dec 2023 17:21:57 +1300
+Received: from svr-chch-ex2.atlnz.lc ([fe80::a9eb:c9b7:8b52:9567]) by
+ svr-chch-ex2.atlnz.lc ([fe80::a9eb:c9b7:8b52:9567%15]) with mapi id
+ 15.02.1118.040; Fri, 15 Dec 2023 17:21:57 +1300
+From: Chris Packham <Chris.Packham@alliedtelesis.co.nz>
+To: Elad Nachman <enachman@marvell.com>, "wim@linux-watchdog.org"
+	<wim@linux-watchdog.org>, "linux@roeck-us.net" <linux@roeck-us.net>,
+	"robh+dt@kernel.org" <robh+dt@kernel.org>,
+	"krzysztof.kozlowski+dt@linaro.org" <krzysztof.kozlowski+dt@linaro.org>,
+	"conor+dt@kernel.org" <conor+dt@kernel.org>, "gregory.clement@bootlin.com"
+	<gregory.clement@bootlin.com>, "andrew@lunn.ch" <andrew@lunn.ch>,
+	"fu.wei@linaro.org" <fu.wei@linaro.org>, "Suravee.Suthikulpanit@amd.com"
+	<Suravee.Suthikulpanit@amd.com>, "al.stone@linaro.org" <al.stone@linaro.org>,
+	"timur@codeaurora.org" <timur@codeaurora.org>,
+	"linux-watchdog@vger.kernel.org" <linux-watchdog@vger.kernel.org>,
+	"devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+CC: "cyuval@marvell.com" <cyuval@marvell.com>
+Subject: Re: [PATCH 0/3] watchdog: sbsa_gwdt: add support for Marvell ac5
+Thread-Topic: [PATCH 0/3] watchdog: sbsa_gwdt: add support for Marvell ac5
+Thread-Index: AQHaLp7UhCt7s/9TXkCz5F6TLW3ne7Co5U+A
+Date: Fri, 15 Dec 2023 04:21:57 +0000
+Message-ID: <cdfee2e1-8a94-4e44-b81b-0ade384fa481@alliedtelesis.co.nz>
+References: <20231214150414.1849058-1-enachman@marvell.com>
+In-Reply-To: <20231214150414.1849058-1-enachman@marvell.com>
+Accept-Language: en-NZ, en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <A5162494EBD49B49BA2701D403EFDFFB@atlnz.lc>
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-In-Reply-To: <20231018155036.2314342-1-srikar@linux.vnet.ibm.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: I8hsLBsaCagOdzP5I1g6gEk5tZ8i9fxp
-X-Proofpoint-ORIG-GUID: TgVQuydjcxTeDdiBTTA98QBtjjxEzzL_
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-14_17,2023-12-14_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- adultscore=0 mlxscore=0 malwarescore=0 mlxlogscore=641 phishscore=0
- suspectscore=0 impostorscore=0 clxscore=1011 bulkscore=0
- lowpriorityscore=0 spamscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2311290000 definitions=main-2312150027
+X-SEG-SpamProfiler-Analysis: v=2.3 cv=CYB2G4jl c=1 sm=1 tr=0 a=Xf/6aR1Nyvzi7BryhOrcLQ==:117 a=xqWC_Br6kY4A:10 a=75chYTbOgJ0A:10 a=IkcTkHD0fZMA:10 a=e2cXIFwxEfEA:10 a=M5GUcnROAAAA:8 a=K2GjWCfgx9wMK7TpFYYA:9 a=QEXdDO2ut3YA:10 a=OBjm3rFKGHvpk9ecZwUJ:22
+X-SEG-SpamProfiler-Score: 0
 
-* Srikar Dronamraju <srikar@linux.vnet.ibm.com> [2023-10-18 21:20:35]:
-
-Hi Ingo, Peter,
-
-> Current scheduler code doesn't handle SD_ASYM_PACKING in the
-> find_idlest_cpu path. On few architectures, like Powerpc, cache is at a
-> core. Moving threads across cores may end up in cache misses.
-> 
-> While asym_packing can be enabled above SMT level, enabling Asym packing
-> across cores could result in poorer performance due to cache misses.
-> However if the initial task placement via find_idlest_cpu does take
-> Asym_packing into consideration, then scheduler can avoid asym_packing
-> migrations. This will result in lesser migrations and better packing and
-> better overall performance.
-> 
-> Signed-off-by: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
-
-I haven't heard any comments or seen any reviews on this patch.
-I have verified that it does still apply cleanly on v6.7-rc5 based
-tip/master
-
-Do let me know your thoughts on the same.
-
-Also let me know if you want me to repost the same.
-
--- 
-Thanks and Regards
-Srikar Dronamraju
+DQpPbiAxNS8xMi8yMyAwNDowNCwgRWxhZCBOYWNobWFuIHdyb3RlOg0KPiBGcm9tOiBFbGFkIE5h
+Y2htYW4gPGVuYWNobWFuQG1hcnZlbGwuY29tPg0KPg0KPiBBZGQgc3VwcG9ydCBmb3IgTWFydmVs
+bCBhYzUveCB2YXJpYW50IG9mIHRoZSBBUk0NCj4gc2JzYSBnbG9iYWwgd2F0Y2hkb2cuIFRoaXMg
+d2F0Y2hkb2cgZGV2aWF0ZXMgZnJvbQ0KPiB0aGUgc3RhbmRhcmQgZHJpdmVyIGJ5IHRoZSBmb2xs
+b3dpbmcgaXRlbXM6DQo+DQo+IDEuIFJlZ2lzdGVycyByZXNpZGUgaW4gc2VjdXJlIHJlZ2lzdGVy
+IHNlY3Rpb24uDQo+ICAgICBoZW5jZSBhY2Nlc3MgaXMgb25seSBwb3NzaWJsZSB2aWEgU01DIGNh
+bGxzIHRvIEFURi4NCj4NCj4gMi4gVGhlcmUgYXJlIGNvdXBsZSBtb3JlIHJlZ2lzdGVycyB3aGlj
+aCByZXNpZGUgaW4NCj4gICAgIG90aGVyIHJlZ2lzdGVyIGFyZWFzLCB3aGljaCBuZWVkcyB0byBi
+ZSBjb25maWd1cmVkDQo+ICAgICBpbiBvcmRlciBmb3IgdGhlIHdhdGNoZG9nIHRvIHByb3Blcmx5
+IGdlbmVyYXRlDQo+ICAgICByZXNldCB0aHJvdWdoIHRoZSBTT0MuDQo+DQo+ICAgICBUaGUgbmV3
+IE1hcnZlbGwgY29tcGF0aWJpbGl0eSBzdHJpbmcgZGlmZmVyZW50aWF0ZXMgYmV0d2Vlbg0KPiAg
+ICAgdGhlIG9yaWdpbmFsIHNic2EgbW9kZSBvZiBvcGVyYXRpb24gYW5kIHRoZSBNYXJ2ZWxsIG1v
+ZGUgb2YNCj4gICAgIG9wZXJhdGlvbi4NCg0KSSBnYXZlIHRoaXMgYSBxdWljayB0cnkgb24gb3Vy
+IEFDNVggYmFzZWQgYm9hcmQgYW5kIGl0IHdvcmtlZCB3ZWxsIHdpdGggDQpib3RoIGFjdGlvbj0w
+L2FjdGlvbj0xDQoNCj4gRWxhZCBOYWNobWFuICgzKToNCj4gICAgZHQtYmluZGluZ3M6IHdhdGNo
+ZG9nOiBhZGQgTWFydmVsbCBBQzUgd2F0Y2hkb2cNCj4gICAgYXJtNjQ6IGR0czogYWM1OiBhZGQg
+d2F0Y2hkb2cgbm9kZXMNCj4gICAgd2F0Y2hkb2c6IHNic2FfZ3dkdDogYWRkIHN1cHBvcnQgZm9y
+IE1hcnZlbGwgYWM1DQo+DQo+ICAgLi4uL2JpbmRpbmdzL3dhdGNoZG9nL2FybSxzYnNhLWd3ZHQu
+eWFtbCAgICAgIHwgIDUyICsrKy0NCj4gICBhcmNoL2FybTY0L2Jvb3QvZHRzL21hcnZlbGwvYWM1
+LTk4ZHgyNXh4LmR0c2kgfCAgMTQgKw0KPiAgIGFyY2gvYXJtNjQvYm9vdC9kdHMvbWFydmVsbC9h
+YzUtOThkeDM1eHguZHRzaSB8ICAgOCArDQo+ICAgZHJpdmVycy93YXRjaGRvZy9zYnNhX2d3ZHQu
+YyAgICAgICAgICAgICAgICAgIHwgMjQ3ICsrKysrKysrKysrKysrKystLQ0KPiAgIDQgZmlsZXMg
+Y2hhbmdlZCwgMjk4IGluc2VydGlvbnMoKyksIDIzIGRlbGV0aW9ucygtKQ0KPg==
 
