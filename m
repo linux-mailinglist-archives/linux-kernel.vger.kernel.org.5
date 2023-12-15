@@ -1,112 +1,118 @@
-Return-Path: <linux-kernel+bounces-1130-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-1131-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 54126814AEB
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 15:46:41 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id F41C7814AEF
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 15:47:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1460D1F238C1
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 14:46:41 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9DFBA282989
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 14:47:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD3BB3589F;
-	Fri, 15 Dec 2023 14:46:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 65986347D1;
+	Fri, 15 Dec 2023 14:47:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="d8pdryL7"
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="MeAeZ9JA"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-pl1-f171.google.com (mail-pl1-f171.google.com [209.85.214.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from relay2-d.mail.gandi.net (relay2-d.mail.gandi.net [217.70.183.194])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7BBC435882;
-	Fri, 15 Dec 2023 14:46:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f171.google.com with SMTP id d9443c01a7336-1d346f4a043so1501645ad.0;
-        Fri, 15 Dec 2023 06:46:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702651587; x=1703256387; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=wJpx8lDh+zgSZj5Gc1ilBxsX86teXNLADKg4dm6Oaq8=;
-        b=d8pdryL7UmwSQcJdyTKKF0h4h0DfK9utT1MoC17bv1vuJE8i5wn9AHmEeQwzlLxf7m
-         mcWUo8vKhtQfSkA4+XR9Kd5VsnNcRD78ZVhRi9Dq8bdGx+6jfiHXlx1KSnrHQE8d1fEv
-         RZ+0ReGpHhK/fjUCIJvx/RUCg3zbBWKcEdMWwmW+qW8/7FMvCFGQ3Ngz2gBvsSOmd+Yu
-         YOt+HZRV2qH8NtByl9Af89ys7XJqgN/5dNAPJ2ikN972B6YP+22GNDHdeQAYa84uIm09
-         cM+ppIbbG2cKqzuAqUltfTkEA31Z9xwl0lpG8fE8mtkxOjV0H4NsI1UF8ECrKEUAM5Kq
-         k3mw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702651587; x=1703256387;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=wJpx8lDh+zgSZj5Gc1ilBxsX86teXNLADKg4dm6Oaq8=;
-        b=AjsNPbUYssgldJ57ZvjneO8ij8OMI3CGjyM0R4rasLhdxPCogKkA6q+ACsPGfqd2oy
-         aw+80NCUjl0Slp85xOjMnLhZhGI9OJfWLfZ93lfI/F3TCduyH9WD2/qELPXWJya5qOtG
-         SJTYH0V7ERp3TuQ22CJ0SAqOqAT+5re9SOUUsugDLlaNs9Fls0YrqU/6VuCHqsz2pKZl
-         ws3ypeT2fhyt6cUhmtd2cdmw/ixowZeAVPCalFQzLkSgb6IZCHMSl6xsRF/GVqNdhl+h
-         PbHWJvrXZ9nWGfI/a0y+4+8SpKOIoctRi5Gd2Cyu4FBDiqt89Go8U0FwCW8Wk6w1P+16
-         nHXg==
-X-Gm-Message-State: AOJu0YwIImfvXpNZOSnsoPS2Lqe34A8FpuuLAjLb15/spDos73jiO2Rq
-	uoAzu/aJrsVVFW1jGYrmUcA=
-X-Google-Smtp-Source: AGHT+IHny81eaLMXZ5yyjDTCB6oMOBj6vglrdTY0sAk1mwbs3U0uy8NXK4+C8NeCNhynkXdOpdMpzw==
-X-Received: by 2002:a17:903:18e:b0:1d0:a146:f85f with SMTP id z14-20020a170903018e00b001d0a146f85fmr23491918plg.2.1702651586354;
-        Fri, 15 Dec 2023 06:46:26 -0800 (PST)
-Received: from hoboy.vegasvil.org ([2601:640:8000:54:e2d5:5eff:fea5:802f])
-        by smtp.gmail.com with ESMTPSA id n6-20020a170902e54600b001d1cd7e4ad2sm14248945plf.125.2023.12.15.06.46.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Dec 2023 06:46:25 -0800 (PST)
-Date: Fri, 15 Dec 2023 06:46:22 -0800
-From: Richard Cochran <richardcochran@gmail.com>
-To: Min Li <min.li.xe@renesas.com>
-Cc: Min Li <lnimi@hotmail.com>, "lee@kernel.org" <lee@kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"netdev@vger.kernel.org" <netdev@vger.kernel.org>
-Subject: Re: [PATCH net-next v3 1/2] ptp: introduce PTP_CLOCK_EXTOFF event
- for the measured external offset
-Message-ID: <ZXxmvsqfMFIF0OWQ@hoboy.vegasvil.org>
-References: <PH7PR03MB706431C1C25954AD76134FD8A08CA@PH7PR03MB7064.namprd03.prod.outlook.com>
- <ZXtLvOfS0uYxESQm@hoboy.vegasvil.org>
- <OS3PR01MB65938570774AF540C6BFD8F5BA8CA@OS3PR01MB6593.jpnprd01.prod.outlook.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C98381A596;
+	Fri, 15 Dec 2023 14:47:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id CC8744000D;
+	Fri, 15 Dec 2023 14:47:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1702651646;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=e1J0bCvDA9ePbUryRQa9+lEgPlGKphXrC4KMBwQZyN8=;
+	b=MeAeZ9JAg5jaFL3PtM0rjGTUefHj3GhrVMudoTlujQ/QjM6++3s8AQF1qYkZsFc0gXU1xO
+	z+DrFsBFOHON9PGyi0vp7p4o+TPeHsPokNSZ+8B6p/zAt65/p+91nuA8HcJqJf27FsNolZ
+	ZTR0iwK4tVgOEkitzo5rHp1U/b7JYkNtfb6/n8iXcK6yV2y/iuJrTi6XSVQj8FKrURFkBO
+	uw5IoJN8yeHJYt/04gPDIgpkzN14z36b4Hpeuzn1PZjjNKqZHjYkK6bBwPxw+lFx0m1hVs
+	vYiq8jHfCzDwFFZXKFSZXwAiQ40TXHr8qXjn4Ns184DhbgauyHcHNxABuc4Cvw==
+From: Gregory CLEMENT <gregory.clement@bootlin.com>
+To: Marek =?utf-8?Q?Beh=C3=BAn?= <kabel@kernel.org>
+Cc: Sjoerd Simons <sjoerd@collabora.com>, kernel@collabora.com, Andrew Lunn
+ <andrew@lunn.ch>, Conor Dooley <conor+dt@kernel.org>, Krzysztof Kozlowski
+ <krzysztof.kozlowski+dt@linaro.org>, Rob Herring <robh+dt@kernel.org>,
+ Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+ devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 0/3] Moxtet bus fixes
+In-Reply-To: <20231208161724.5f4f626a@dellmb>
+References: <20231128213536.3764212-1-sjoerd@collabora.com>
+ <87fs0ceoif.fsf@BL-laptop> <20231208161724.5f4f626a@dellmb>
+Date: Fri, 15 Dec 2023 15:47:25 +0100
+Message-ID: <87fs03cyki.fsf@BL-laptop>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <OS3PR01MB65938570774AF540C6BFD8F5BA8CA@OS3PR01MB6593.jpnprd01.prod.outlook.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-GND-Sasl: gregory.clement@bootlin.com
 
-On Thu, Dec 14, 2023 at 09:59:32PM +0000, Min Li wrote:
+Marek Beh=C3=BAn <kabel@kernel.org> writes:
 
-> Would it be Ok if I use the flags to differentiate extts events from extoff?
+> On Fri, 08 Dec 2023 15:51:20 +0100
+> Gregory CLEMENT <gregory.clement@bootlin.com> wrote:
+>
+>> Hello Marek and Sjoerd,
+>>=20
+>> > It seems the moxtet bus support was broken since 21aad8ba615e ("arm64:
+>> > dts: armada-3720-turris-mox: Add missing interrupt for RTC") for two
+>> > reasons:
+>> > * The moxtet irq isn't marked as shared so the driver fails to load if
+>> >   the rtc driver gets set up first.
+>> > * The dts change didn't set the IRQ type, so in case the rtc driver got
+>> >   probed first irq setup ended up wrong (rising instead of falling edg=
+e).
+>> >
+>> > On top of that the moxtet module isn't auto-loading due to a missing s=
+pi
+>> > table
+>> >
+>> > Changes in v2:
+>> > - Add cover letter
+>> > - Add patch to set the irq type
+>> >
+>> > Sjoerd Simons (3):
+>> >   bus: moxtet: Mark the irq as shared
+>> >   bus: moxtet: Add spi device table
+>> >   arm64: dts: armada-3720-turris-mox: set irq type for RTC=20=20
+>>=20
+>> I only received the previous patch in my inbox, I plan to apply it. But
+>> what about the 2 other patches ? Marek will you do a pull request with
+>> these 2 patches or do you expect that I take them also ?
+>>=20
+>> Regards,
+>>=20
+>> Gregory
+>
+> Gregory, as of yet I've never done a pull request. If you are willing
+> to take all 3 patches now, please do. In the future I would like to
 
-That makes sense to me.  We can return the relevant
-ptp_extts_request.flags.  Something like:
+OK I applied them on mvebu/driver.
 
-#define PTP_EXTTS_FLAGS_VALID	PTP_ENABLE_FEATURE
+> start doing it for Turris stuff, if you are OK with it.
 
-Then you can return
+No pb, just tell me when you are going to doing it.
 
-	ptp_extts_event.flags = PTP_EXTTS_FLAGS_VALID | PTP_EXT_OFFSET;
+Gregory
 
-Later on, other drivers can indicate PTP_[RISING|FALLING]_EDGE, if
-they can tell which one happened.
+>
+> Marek
 
->  struct ptp_extts_event {
-> -       struct ptp_clock_time t; /* Time event occured. */
-> +       union {
-> +               struct ptp_clock_time t; /* Time event occurred. */
-> +               __s64 offset_ns;         /* Offset event occurred. */
-
-BTW, please don't make a union here.  Instead just add text to the
-comment of `struct ptp_clock_time t`.
-
-The `struct ptp_clock_time t` can be a postive or a negative value
-(see comment at the top of the file), and so you can put an offset in
-there as well.
-
-Thanks,
-Richard
+--=20
+Gregory Clement, Bootlin
+Embedded Linux and Kernel engineering
+http://bootlin.com
 
