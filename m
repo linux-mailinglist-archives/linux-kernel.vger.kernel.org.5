@@ -1,62 +1,62 @@
-Return-Path: <linux-kernel+bounces-365-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-366-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9433F814012
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 03:42:59 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 63B5E814015
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 03:43:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 72D7BB21D58
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 02:42:56 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4E9D21C2222A
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 02:43:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 474055672;
-	Fri, 15 Dec 2023 02:38:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F0B6A748A;
+	Fri, 15 Dec 2023 02:38:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VG0XTe9H"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CZ2f8aLx"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-pf1-f179.google.com (mail-pf1-f179.google.com [209.85.210.179])
+Received: from mail-pg1-f173.google.com (mail-pg1-f173.google.com [209.85.215.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 098486139;
-	Fri, 15 Dec 2023 02:38:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 157778BF1;
+	Fri, 15 Dec 2023 02:38:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f179.google.com with SMTP id d2e1a72fcca58-6ce7c1b07e1so155138b3a.2;
-        Thu, 14 Dec 2023 18:38:37 -0800 (PST)
+Received: by mail-pg1-f173.google.com with SMTP id 41be03b00d2f7-5c6839373f8so113365a12.0;
+        Thu, 14 Dec 2023 18:38:43 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702607917; x=1703212717; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1702607923; x=1703212723; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=47cjWhSgEF8kYG8UlE2EFWvUw8VZbJWXw60QIkQYmC0=;
-        b=VG0XTe9Hx3aBx/je6kYgKJlfGn3QK4FjyNDnq9j6Mg75UWTFoQzrZXgawv+bn1yhq5
-         4f2cPhHnUN0fro9y6ndnq7b4j724eBv6zvNjXVV4vy7cOs9o1w4zIMSRYGMqNzxYwo5N
-         RQHt0FuyOCMdSEBHA4YRieP50rXY3C3mhturX5CodXke7oQ0Cw6v1P919gqiNU0RIyTU
-         hSCvSVzFFhyYdPiZLWaWgnrogqdDs3BmRkmCfh2RBPA3jlh+ZG3h/kfFjxWRiN2eIfY/
-         LDIzgXE/3Dk4ZrT6S8zKNu5WxJ0d5Jv/OYlZX20q1+K7E5tzHNMFACy7Y2b0mvu6SuwY
-         OyMQ==
+        bh=/gErARlFKGLkOKnr/eZMaU60+19wTX7Ibdpi8xmN6kM=;
+        b=CZ2f8aLxfc2/FeU6dsTWgSzXVdiKjLDVUFmYiPuBiSpEyBJrA8ih1uMhSuniXHlQ8/
+         Xh87/sk2R1TVFygwVy5YdH1NNPpmEzAEX4XbRc2JJJYQpfguyC45EEgMB9/ss7iKP3nZ
+         BYRh+byLawwL21B6DrJierMCxAtAtXT7vE8/j1SySDiw6y6uj5j1QghzzAcXCNaP/KDa
+         5M5kQNUyihPAB9jW2WeIvaiXxO60UtgMdXecteRvpaRPafDDs34dX4llXBMB/RiWchD3
+         ZQ65Gu+1JFMrFlklylGEn/DEDUFa76ErlPefpa1aND5ui2suZ4w/zj3ZTZmJSKd/0tg1
+         D/ng==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702607917; x=1703212717;
+        d=1e100.net; s=20230601; t=1702607923; x=1703212723;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=47cjWhSgEF8kYG8UlE2EFWvUw8VZbJWXw60QIkQYmC0=;
-        b=VqSeNqMHFSUw+avJgkZvRsJ+uKmszeowrG6ogMHjiR5fAO9lAlkDNKdymeoCcaMPc3
-         ssYFqmKBeG8AAcdRi19aaZYW56cPYHG7qWujVn15CbPMqcoH8MThJ+GyK1GvcT2qZNLo
-         SHWYgsYVvH62EMqVjanFMf+JT0/wSpugw+EbzyZl1thjV90qMoBwU4buWKOHGBXGqP6c
-         AtDb0KS6ZyUBRcvBu8YRECP0jFvAY2QzOfjTpIbdUvXelSkfl1uKlmUOaCrkmjCeOEna
-         jSGfa1AqXvdEEgZyC0vLyUd1tgJYh5rgzMQhuaIuqW/YsNyNl+pBAdHaJlErhQTe1sZW
-         JfgQ==
-X-Gm-Message-State: AOJu0YwESOxj8okfRCSB77jIXr/04j8nk7DOW+46kmuC3/Ej52aAf755
-	JBrlf/lSkWNcBUjOdh5ic7iEQ2l7jDI=
-X-Google-Smtp-Source: AGHT+IElj0h0bajtqVp7ozYLjA61OFapcSuY4VGVCXXAKqTL8rivWQuR8LXIwgpK5cqyZS6jl5fNrg==
-X-Received: by 2002:a05:6a20:8423:b0:190:93e:f224 with SMTP id c35-20020a056a20842300b00190093ef224mr14556562pzd.76.1702607917111;
-        Thu, 14 Dec 2023 18:38:37 -0800 (PST)
+        bh=/gErARlFKGLkOKnr/eZMaU60+19wTX7Ibdpi8xmN6kM=;
+        b=S5dcCqkbxFcU5Xtup9D7cJT2nqHZ9Z4+6qdC9oSohDR6jlDhRz6DAmkXAVG5ENn8yj
+         C9/LmRILuzWTucvxHtrermb1sur4KkQkU8svy2ynyet1h+B0AFzAl3Mmw8nz16n/O0uP
+         YkxXFvNz6bhqes/T5pNOpnlpBYMUhSyybNk0GoU/Mkb+dJ5nT7PDx7yqqkafcBVUgyqy
+         sU/Ri16y6RcYQejRrjKtYljY4SRHQRVoxqs1ERY290y2tmrgmfJTEv4Bd3HTaJ55sEcp
+         JAPbGeN1MPDJ7OT39eGdwi/NHwOu85tPMe8SWIOe3YCNk9S0YNoqRfYAipqo/pVZA5Fq
+         3HoQ==
+X-Gm-Message-State: AOJu0Yx8s/W2zZ2yYyvkjQBe3OQO0tDcE/+0BDiFoBtWU9YLPozu0zdE
+	ZSzaKu8i+Qk3nPWhDDIYZmp/oMF4Xv8=
+X-Google-Smtp-Source: AGHT+IGpWMlYV6JMB/ZdN/bvg1YD44Cb++j1qnhUBXFPrAUChu3epn7DnthHCK7PExMtPShmzMnOqA==
+X-Received: by 2002:a05:6a20:3d89:b0:190:7b07:b7e4 with SMTP id s9-20020a056a203d8900b001907b07b7e4mr12917150pzi.10.1702607923142;
+        Thu, 14 Dec 2023 18:38:43 -0800 (PST)
 Received: from rigel.home.arpa (60-241-235-125.tpgi.com.au. [60.241.235.125])
-        by smtp.gmail.com with ESMTPSA id fk16-20020a056a003a9000b006d26920a11dsm1437987pfb.0.2023.12.14.18.38.34
+        by smtp.gmail.com with ESMTPSA id fk16-20020a056a003a9000b006d26920a11dsm1437987pfb.0.2023.12.14.18.38.40
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Dec 2023 18:38:36 -0800 (PST)
+        Thu, 14 Dec 2023 18:38:42 -0800 (PST)
 From: Kent Gibson <warthog618@gmail.com>
 To: linux-kernel@vger.kernel.org,
 	linux-gpio@vger.kernel.org,
@@ -64,9 +64,9 @@ To: linux-kernel@vger.kernel.org,
 	linus.walleij@linaro.org,
 	andy@kernel.org
 Cc: Kent Gibson <warthog618@gmail.com>
-Subject: [PATCH v3 1/5] gpiolib: cdev: relocate debounce_period_us from struct gpio_desc
-Date: Fri, 15 Dec 2023 10:38:01 +0800
-Message-Id: <20231215023805.63289-2-warthog618@gmail.com>
+Subject: [PATCH v3 2/5] gpiolib: remove debounce_period_us from struct gpio_desc
+Date: Fri, 15 Dec 2023 10:38:02 +0800
+Message-Id: <20231215023805.63289-3-warthog618@gmail.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20231215023805.63289-1-warthog618@gmail.com>
 References: <20231215023805.63289-1-warthog618@gmail.com>
@@ -78,311 +78,52 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Store the debounce period for a requested line locally, rather than in
-the debounce_period_us field in the gpiolib struct gpio_desc.
-
-Add a global tree of lines containing supplemental line information
-to make the debounce period available to be reported by the
-GPIO_V2_GET_LINEINFO_IOCTL and the line change notifier.
+cdev is the only user of the debounce_period_us field in
+struct gpio_desc, and it no longer uses it, so remove it.
 
 Signed-off-by: Kent Gibson <warthog618@gmail.com>
 ---
- drivers/gpio/gpiolib-cdev.c | 152 ++++++++++++++++++++++++++++++------
- 1 file changed, 130 insertions(+), 22 deletions(-)
+ drivers/gpio/gpiolib.c | 3 ---
+ drivers/gpio/gpiolib.h | 5 -----
+ 2 files changed, 8 deletions(-)
 
-diff --git a/drivers/gpio/gpiolib-cdev.c b/drivers/gpio/gpiolib-cdev.c
-index 02ffda6c1e51..5ba900e5461a 100644
---- a/drivers/gpio/gpiolib-cdev.c
-+++ b/drivers/gpio/gpiolib-cdev.c
-@@ -21,6 +21,7 @@
- #include <linux/mutex.h>
- #include <linux/pinctrl/consumer.h>
- #include <linux/poll.h>
-+#include <linux/rbtree.h>
- #include <linux/seq_file.h>
- #include <linux/spinlock.h>
- #include <linux/timekeeping.h>
-@@ -461,6 +462,7 @@ static int linehandle_create(struct gpio_device *gdev, void __user *ip)
- 
- /**
-  * struct line - contains the state of a requested line
-+ * @node: to store the object in supinfo_tree if supplemental
-  * @desc: the GPIO descriptor for this line.
-  * @req: the corresponding line request
-  * @irq: the interrupt triggered in response to events on this GPIO
-@@ -473,6 +475,7 @@ static int linehandle_create(struct gpio_device *gdev, void __user *ip)
-  * @line_seqno: the seqno for the current edge event in the sequence of
-  * events for this line.
-  * @work: the worker that implements software debouncing
-+ * @debounce_period_us: the debounce period in microseconds
-  * @sw_debounced: flag indicating if the software debouncer is active
-  * @level: the current debounced physical level of the line
-  * @hdesc: the Hardware Timestamp Engine (HTE) descriptor
-@@ -481,6 +484,7 @@ static int linehandle_create(struct gpio_device *gdev, void __user *ip)
-  * @last_seqno: the last sequence number before debounce period expires
-  */
- struct line {
-+	struct rb_node node;
- 	struct gpio_desc *desc;
- 	/*
- 	 * -- edge detector specific fields --
-@@ -514,6 +518,15 @@ struct line {
- 	 * -- debouncer specific fields --
- 	 */
- 	struct delayed_work work;
-+	/*
-+	 * debounce_period_us is accessed by debounce_irq_handler() and
-+	 * process_hw_ts() which are disabled when modified by
-+	 * debounce_setup(), edge_detector_setup() or edge_detector_stop()
-+	 * or can live with a stale version when updated by
-+	 * edge_detector_update().
-+	 * The modifying functions are themselves mutually exclusive.
-+	 */
-+	unsigned int debounce_period_us;
- 	/*
- 	 * sw_debounce is accessed by linereq_set_config(), which is the
- 	 * only setter, and linereq_get_values(), which can live with a
-@@ -546,6 +559,17 @@ struct line {
- #endif /* CONFIG_HTE */
+diff --git a/drivers/gpio/gpiolib.c b/drivers/gpio/gpiolib.c
+index 4e190be75dc2..ca2216621619 100644
+--- a/drivers/gpio/gpiolib.c
++++ b/drivers/gpio/gpiolib.c
+@@ -2344,9 +2344,6 @@ static bool gpiod_free_commit(struct gpio_desc *desc)
+ 		clear_bit(FLAG_IS_HOGGED, &desc->flags);
+ #ifdef CONFIG_OF_DYNAMIC
+ 		desc->hog = NULL;
+-#endif
+-#ifdef CONFIG_GPIO_CDEV
+-		WRITE_ONCE(desc->debounce_period_us, 0);
+ #endif
+ 		ret = true;
+ 	}
+diff --git a/drivers/gpio/gpiolib.h b/drivers/gpio/gpiolib.h
+index 3ccacf3c1288..a4a2520b5f31 100644
+--- a/drivers/gpio/gpiolib.h
++++ b/drivers/gpio/gpiolib.h
+@@ -147,7 +147,6 @@ void gpiod_line_state_notify(struct gpio_desc *desc, unsigned long action);
+  * @label:		Name of the consumer
+  * @name:		Line name
+  * @hog:		Pointer to the device node that hogs this line (if any)
+- * @debounce_period_us:	Debounce period in microseconds
+  *
+  * These are obtained using gpiod_get() and are preferable to the old
+  * integer-based handles.
+@@ -185,10 +184,6 @@ struct gpio_desc {
+ #ifdef CONFIG_OF_DYNAMIC
+ 	struct device_node	*hog;
+ #endif
+-#ifdef CONFIG_GPIO_CDEV
+-	/* debounce period in microseconds */
+-	unsigned int		debounce_period_us;
+-#endif
  };
  
-+/*
-+ * a rbtree of the struct lines containing supplemental info.
-+ * Used to populate gpio_v2_line_info with cdev specific fields not contained
-+ * in the struct gpio_desc.
-+ * A line is determined to contain supplemental information by
-+ * line_is_supplemental().
-+ */
-+static struct rb_root supinfo_tree = RB_ROOT;
-+/* covers supinfo_tree */
-+DEFINE_SPINLOCK(supinfo_lock);
-+
- /**
-  * struct linereq - contains the state of a userspace line request
-  * @gdev: the GPIO device the line request pertains to
-@@ -575,6 +599,94 @@ struct linereq {
- 	struct line lines[] __counted_by(num_lines);
- };
- 
-+static void supinfo_insert(struct line *line)
-+{
-+	struct rb_node **new = &(supinfo_tree.rb_node), *parent = NULL;
-+	struct line *entry;
-+
-+	guard(spinlock)(&supinfo_lock);
-+
-+	while (*new) {
-+		entry = container_of(*new, struct line, node);
-+
-+		parent = *new;
-+		if (line->desc < entry->desc) {
-+			new = &((*new)->rb_left);
-+		} else if (line->desc > entry->desc) {
-+			new = &((*new)->rb_right);
-+		} else {
-+			/* this should never happen */
-+			WARN(1, "duplicate line inserted");
-+			return;
-+		}
-+	}
-+
-+	rb_link_node(&line->node, parent, new);
-+	rb_insert_color(&line->node, &supinfo_tree);
-+}
-+
-+static void supinfo_erase(struct line *line)
-+{
-+	guard(spinlock)(&supinfo_lock);
-+
-+	rb_erase(&line->node, &supinfo_tree);
-+}
-+
-+static struct line *supinfo_find(struct gpio_desc *desc)
-+{
-+	struct rb_node *node = supinfo_tree.rb_node;
-+	struct line *line;
-+
-+	while (node) {
-+		line = container_of(node, struct line, node);
-+		if (desc < line->desc)
-+			node = node->rb_left;
-+		else if (desc > line->desc)
-+			node = node->rb_right;
-+		else
-+			return line;
-+	}
-+	return NULL;
-+}
-+
-+static void supinfo_to_lineinfo(struct gpio_desc *desc,
-+				struct gpio_v2_line_info *info)
-+{
-+	struct gpio_v2_line_attribute *attr;
-+	struct line *line;
-+
-+	guard(spinlock)(&supinfo_lock);
-+
-+	line = supinfo_find(desc);
-+	if (line) {
-+		attr = &info->attrs[info->num_attrs];
-+		attr->id = GPIO_V2_LINE_ATTR_ID_DEBOUNCE;
-+		attr->debounce_period_us = READ_ONCE(line->debounce_period_us);
-+		info->num_attrs++;
-+	}
-+}
-+
-+static inline bool line_is_supplemental(struct line *line)
-+{
-+	return READ_ONCE(line->debounce_period_us);
-+}
-+
-+static void line_set_debounce_period(struct line *line,
-+				     unsigned int debounce_period_us)
-+{
-+	bool was_suppl = line_is_supplemental(line);
-+
-+	WRITE_ONCE(line->debounce_period_us, debounce_period_us);
-+
-+	if (line_is_supplemental(line) == was_suppl)
-+		return;
-+
-+	if (was_suppl)
-+		supinfo_erase(line);
-+	else
-+		supinfo_insert(line);
-+}
-+
- #define GPIO_V2_LINE_BIAS_FLAGS \
- 	(GPIO_V2_LINE_FLAG_BIAS_PULL_UP | \
- 	 GPIO_V2_LINE_FLAG_BIAS_PULL_DOWN | \
-@@ -723,7 +835,7 @@ static enum hte_return process_hw_ts(struct hte_ts_data *ts, void *p)
- 		line->total_discard_seq++;
- 		line->last_seqno = ts->seq;
- 		mod_delayed_work(system_wq, &line->work,
--		  usecs_to_jiffies(READ_ONCE(line->desc->debounce_period_us)));
-+		  usecs_to_jiffies(READ_ONCE(line->debounce_period_us)));
- 	} else {
- 		if (unlikely(ts->seq < line->line_seqno))
- 			return HTE_CB_HANDLED;
-@@ -864,7 +976,7 @@ static irqreturn_t debounce_irq_handler(int irq, void *p)
- 	struct line *line = p;
- 
- 	mod_delayed_work(system_wq, &line->work,
--		usecs_to_jiffies(READ_ONCE(line->desc->debounce_period_us)));
-+		usecs_to_jiffies(READ_ONCE(line->debounce_period_us)));
- 
- 	return IRQ_HANDLED;
- }
-@@ -946,7 +1058,7 @@ static int debounce_setup(struct line *line, unsigned int debounce_period_us)
- 	/* try hardware */
- 	ret = gpiod_set_debounce(line->desc, debounce_period_us);
- 	if (!ret) {
--		WRITE_ONCE(line->desc->debounce_period_us, debounce_period_us);
-+		line_set_debounce_period(line, debounce_period_us);
- 		return ret;
- 	}
- 	if (ret != -ENOTSUPP)
-@@ -1025,8 +1137,7 @@ static void edge_detector_stop(struct line *line)
- 	cancel_delayed_work_sync(&line->work);
- 	WRITE_ONCE(line->sw_debounced, 0);
- 	WRITE_ONCE(line->edflags, 0);
--	if (line->desc)
--		WRITE_ONCE(line->desc->debounce_period_us, 0);
-+	line_set_debounce_period(line, 0);
- 	/* do not change line->level - see comment in debounced_value() */
- }
- 
-@@ -1051,7 +1162,7 @@ static int edge_detector_setup(struct line *line,
- 		ret = debounce_setup(line, debounce_period_us);
- 		if (ret)
- 			return ret;
--		WRITE_ONCE(line->desc->debounce_period_us, debounce_period_us);
-+		line_set_debounce_period(line, debounce_period_us);
- 	}
- 
- 	/* detection disabled or sw debouncer will provide edge detection */
-@@ -1093,12 +1204,12 @@ static int edge_detector_update(struct line *line,
- 			gpio_v2_line_config_debounce_period(lc, line_idx);
- 
- 	if ((active_edflags == edflags) &&
--	    (READ_ONCE(line->desc->debounce_period_us) == debounce_period_us))
-+	    (READ_ONCE(line->debounce_period_us) == debounce_period_us))
- 		return 0;
- 
- 	/* sw debounced and still will be...*/
- 	if (debounce_period_us && READ_ONCE(line->sw_debounced)) {
--		WRITE_ONCE(line->desc->debounce_period_us, debounce_period_us);
-+		line_set_debounce_period(line, debounce_period_us);
- 		return 0;
- 	}
- 
-@@ -1573,6 +1684,7 @@ static ssize_t linereq_read(struct file *file, char __user *buf,
- 
- static void linereq_free(struct linereq *lr)
- {
-+	struct line *line;
- 	unsigned int i;
- 
- 	if (lr->device_unregistered_nb.notifier_call)
-@@ -1580,10 +1692,14 @@ static void linereq_free(struct linereq *lr)
- 						   &lr->device_unregistered_nb);
- 
- 	for (i = 0; i < lr->num_lines; i++) {
--		if (lr->lines[i].desc) {
--			edge_detector_stop(&lr->lines[i]);
--			gpiod_free(lr->lines[i].desc);
--		}
-+		line = &lr->lines[i];
-+		if (!line->desc)
-+			continue;
-+
-+		edge_detector_stop(line);
-+		if (line_is_supplemental(line))
-+			supinfo_erase(line);
-+		gpiod_free(line->desc);
- 	}
- 	kfifo_free(&lr->events);
- 	kfree(lr->label);
-@@ -2274,8 +2390,6 @@ static void gpio_desc_to_lineinfo(struct gpio_desc *desc,
- 	struct gpio_chip *gc = desc->gdev->chip;
- 	bool ok_for_pinctrl;
- 	unsigned long flags;
--	u32 debounce_period_us;
--	unsigned int num_attrs = 0;
- 
- 	memset(info, 0, sizeof(*info));
- 	info->offset = gpio_chip_hwgpio(desc);
-@@ -2341,14 +2455,6 @@ static void gpio_desc_to_lineinfo(struct gpio_desc *desc,
- 	else if (test_bit(FLAG_EVENT_CLOCK_HTE, &desc->flags))
- 		info->flags |= GPIO_V2_LINE_FLAG_EVENT_CLOCK_HTE;
- 
--	debounce_period_us = READ_ONCE(desc->debounce_period_us);
--	if (debounce_period_us) {
--		info->attrs[num_attrs].id = GPIO_V2_LINE_ATTR_ID_DEBOUNCE;
--		info->attrs[num_attrs].debounce_period_us = debounce_period_us;
--		num_attrs++;
--	}
--	info->num_attrs = num_attrs;
--
- 	spin_unlock_irqrestore(&gpio_lock, flags);
- }
- 
-@@ -2455,6 +2561,7 @@ static int lineinfo_get(struct gpio_chardev_data *cdev, void __user *ip,
- 			return -EBUSY;
- 	}
- 	gpio_desc_to_lineinfo(desc, &lineinfo);
-+	supinfo_to_lineinfo(desc, &lineinfo);
- 
- 	if (copy_to_user(ip, &lineinfo, sizeof(lineinfo))) {
- 		if (watch)
-@@ -2545,6 +2652,7 @@ static int lineinfo_changed_notify(struct notifier_block *nb,
- 	chg.event_type = action;
- 	chg.timestamp_ns = ktime_get_ns();
- 	gpio_desc_to_lineinfo(desc, &chg.info);
-+	supinfo_to_lineinfo(desc, &chg.info);
- 
- 	ret = kfifo_in_spinlocked(&cdev->events, &chg, 1, &cdev->wait.lock);
- 	if (ret)
+ #define gpiod_not_found(desc)		(IS_ERR(desc) && PTR_ERR(desc) == -ENOENT)
 -- 
 2.39.2
 
