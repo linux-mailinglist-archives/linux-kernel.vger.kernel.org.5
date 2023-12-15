@@ -1,182 +1,499 @@
-Return-Path: <linux-kernel+bounces-561-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-559-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 754148142ED
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 08:49:28 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AAE208142EA
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 08:48:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E2CB41F22E71
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 07:49:27 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E45CBB23DD9
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 07:48:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D73115EBB;
-	Fri, 15 Dec 2023 07:46:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9BE9F134C2;
+	Fri, 15 Dec 2023 07:42:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="DFQaUKYh"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="IxDRwih5"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 08EA0171BB
-	for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 07:46:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40E75107A0
+	for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 07:42:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1702626361; x=1734162361;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=hE06mtxuNpriyO1n2h72aSmIJpoO7UhVtP7EgNidcYM=;
-  b=DFQaUKYh4/TnpiEYPAqSGBMAASrMdpV3F3+K+YkGy4ysRJjAstWcwCVs
-   oRqJX6w0aVglvgFsh3ThFcvfVpnPiiLnYFTz6h3BUwba41VEn4SokW8w0
-   OYxt6gY9eTsokaz9q+eVWvkwEWxhyFnpdp3qgFz+K6iJ/saJMy0z0Zhih
-   QjhMJkChwphZiE+eRaNarsX9cP5pIODojmxKUUqX1vD28IfkZ2cSG83I2
-   BySjM+Q3FyPICiiNI/6XhH5qW+XL8tv6SO4ymZm+2nIwFA96qdRfuwozg
-   Ld+1jW/IdEJ9SvdAC1Uw1S25P3sFENpqxxKOIS2pZB6xBuuqZRuusj0qE
+  t=1702626146; x=1734162146;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=5yeRH864DCWoHH5VGhWvjXrR53z9cs1Wa1o3OaEo9mk=;
+  b=IxDRwih5Vr5xVWl2Gden+BorlRxBFQwqYF5XzAGAj/FSawxmSfPp2W0d
+   kok4zNeVDRJxzxpB76swHa1oOeEcNWki+tMKwgteWf0oz1+BShvYjo+h6
+   UrwfJzMVsjuA//OG0o8JEPGD8YK14mZfIEFxab9jmWlFitLH3AaKgXWfz
+   JpbOSlOwOh9st9MJ6UyFbRMNFdltbVpWvj8oTJxdAhO/sz0P5mXdbKXE7
+   roZ/v1oSOZAs9/jXIew0x5wJDwCRpGBuj5/MJilNM4Ay6qln0FZA2HQav
+   t2u+EDIiFq+E9fARLBAPtde7NMrilFc7svUUfGp70ve4VpWLiyUFzM3xZ
    w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10924"; a="394984802"
+X-IronPort-AV: E=McAfee;i="6600,9927,10924"; a="385660899"
 X-IronPort-AV: E=Sophos;i="6.04,278,1695711600"; 
-   d="scan'208";a="394984802"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Dec 2023 23:45:59 -0800
+   d="scan'208";a="385660899"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Dec 2023 23:42:26 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10924"; a="865309466"
+X-IronPort-AV: E=McAfee;i="6600,9927,10924"; a="808877437"
 X-IronPort-AV: E=Sophos;i="6.04,278,1695711600"; 
-   d="scan'208";a="865309466"
-Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
-  by FMSMGA003.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 14 Dec 2023 23:45:59 -0800
-Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
- fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Thu, 14 Dec 2023 23:45:59 -0800
-Received: from fmsmsx602.amr.corp.intel.com (10.18.126.82) by
- fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Thu, 14 Dec 2023 23:45:58 -0800
-Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
- fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Thu, 14 Dec 2023 23:45:58 -0800
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (104.47.55.169)
- by edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Thu, 14 Dec 2023 23:45:58 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=fai+MgTtIJ402MTzd36sBCkw0pzeuh8Xr2WSE7eFLPj4bnqv1eWmkUcnswLSwYmGTYPozcw197D4py47a873oZ79PXBBuaHVgH7yjVqHbv5eP4yqaPe3bTFw6Fz4wXfzlYN2YtFef4/OUwKEdp35hdgTEdkPf9UdSrV7BFJG8VQMSVH2DkXZpRJPfPjtgr7iH5jAbZ6H3VNzwQSR7P29Tq8kFT9ZTOOHAcfGkKXfyhOlRfrK6TFgv7A3TCIIx3gOnrz6Z5vPktv6/2TbxrIXRyouB1F7rim581wSbawIRJZOY7zQoJKUUciNT9MN/Lk7qYHjQrav6fzYSBp/KK3b6w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=hE06mtxuNpriyO1n2h72aSmIJpoO7UhVtP7EgNidcYM=;
- b=eCI3rGVRXcohY2MTO0HBQBwCQqwJIwazRdxkqMX0NUUR5m6UnXgBZQFmnlpFh2NTdeTpYt3XSXOzrHRDnJC7r1IemjcCvYZNB31Jwr8/5wPnjqM8zF16s7hI14kZJPhUZwPk2n6ppT7Xc1aU59Xx5bESCKXW2t+FJdujJUyBOM32x0UjPurmdsAlFb9xiljsyAVelxuOwQMdSaFdGvMkUp8iV9FPRSmG423LCB+QtfcDIEDVFJg3Y6oc5XFNStuNSBFx2h/TmNofIwdc6JQi3PIu/NFkxNwFvsWZuGL0BUpdsUBMlmaeFiVGWycXt3soSMjPTc4pRGy8GwcSd1//aQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Received: from BN9PR11MB5276.namprd11.prod.outlook.com (2603:10b6:408:135::18)
- by PH7PR11MB6700.namprd11.prod.outlook.com (2603:10b6:510:1ae::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7091.31; Fri, 15 Dec
- 2023 07:45:56 +0000
-Received: from BN9PR11MB5276.namprd11.prod.outlook.com
- ([fe80::e7a4:a757:2f2e:f96a]) by BN9PR11MB5276.namprd11.prod.outlook.com
- ([fe80::e7a4:a757:2f2e:f96a%3]) with mapi id 15.20.7091.029; Fri, 15 Dec 2023
- 07:45:56 +0000
-From: "Tian, Kevin" <kevin.tian@intel.com>
-To: Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"iommu@lists.linux.dev" <iommu@lists.linux.dev>, "joro@8bytes.org"
-	<joro@8bytes.org>, "jgg@nvidia.com" <jgg@nvidia.com>
-CC: "Liu, Yi L" <yi.l.liu@intel.com>, "nicolinc@nvidia.com"
-	<nicolinc@nvidia.com>, "eric.auger@redhat.com" <eric.auger@redhat.com>,
-	"vasant.hegde@amd.com" <vasant.hegde@amd.com>, "jon.grimm@amd.com"
-	<jon.grimm@amd.com>, "santosh.shukla@amd.com" <santosh.shukla@amd.com>,
-	"Dhaval.Giani@amd.com" <Dhaval.Giani@amd.com>, "pandoh@google.com"
-	<pandoh@google.com>, "loganodell@google.com" <loganodell@google.com>
-Subject: RE: [RFC PATCH 6/6] iommu/amd: Introduce nested translation support
-Thread-Topic: [RFC PATCH 6/6] iommu/amd: Introduce nested translation support
-Thread-Index: AQHaLRSotAlXhvqd00euR6r6ebkny7Cp+q5w
-Date: Fri, 15 Dec 2023 07:45:55 +0000
-Message-ID: <BN9PR11MB5276BA85118EECCCD89681EB8C93A@BN9PR11MB5276.namprd11.prod.outlook.com>
-References: <20231212160139.174229-1-suravee.suthikulpanit@amd.com>
- <20231212160139.174229-7-suravee.suthikulpanit@amd.com>
-In-Reply-To: <20231212160139.174229-7-suravee.suthikulpanit@amd.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: BN9PR11MB5276:EE_|PH7PR11MB6700:EE_
-x-ms-office365-filtering-correlation-id: 902bfdc7-789b-40a5-4fb1-08dbfd41de90
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: FBV65lnRD/40ht9wL6LqTx5psBspIUBZqpQbY530EnqhIse+2fEw1ojzc05uT9uHYzNwLLb+VszJuI+gG8RPJ9QeQXMFipjb+ssR1+YIt/j7VLwuhTjn472cPsnGYb8SdmWY9gNHlsugTOWxZwudWw4w2yWZ7unx3aviYGA44iK7W1I1qeBMa/K47dOubknnskF2G3ncmvvjgMxlZZSaIH+U36oIDpLsmSX7epXm7+agkYWOFfIFY9khNEKjfn8sY9a7fQcWsGAqVa/eO5KJowbfICKHUPKYwPxJ1XTCQcjKLTqkjT8KmeUrjUniSsFDz20AYivAIHeRlP02VpGpwjSJeHMK+g1QajdsBILs/q9b7lgQDJmc4OlSr/qkuJ4p0xB5HR7rUT8PqG31z24u6eYM/wDtde7EQtNcJGY7nYpL2D1ME67kxqJcRx6lyV6qaGMQc0Uw3UiAx29c/mdOb/mUTuF9jn1mrO19xTA9pSiC5Z9TluRkuVGuzJ/birnazu4q+ODNqO3bHNZzArxe5SEVWVcUhqxGhki4TSj+WwMhkt5bSa7AAbBPIhpKrcaD2bVjHIzkJsQkPIzbkPCRUpJk+BY37VpZjsr9F0vsT5OyjZVC6AMk5bIbKhLhnJNZ
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN9PR11MB5276.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(346002)(39860400002)(136003)(366004)(396003)(230922051799003)(1800799012)(64100799003)(451199024)(186009)(4744005)(2906002)(33656002)(4326008)(8676002)(8936002)(52536014)(86362001)(5660300002)(7416002)(38070700009)(41300700001)(478600001)(71200400001)(26005)(6506007)(7696005)(9686003)(82960400001)(55016003)(122000001)(76116006)(110136005)(316002)(66476007)(66446008)(66946007)(66556008)(38100700002)(64756008)(54906003);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?fIVdlC/yCIe0uoLRQtS0wYf01k5PdH/n09T7W1iURhevfSN7fARHhec+cpLb?=
- =?us-ascii?Q?P+WJV1TcMa+q23fOeEuyCu9YX/o7KZT+ZsORdrGqjhwVepFMcfQKyIYaM/k2?=
- =?us-ascii?Q?phpy9/ZF0iKbJPtTLm2yXAPp5z70wjOAFS/iItpLQU9AQVAupRLaIjvv6scE?=
- =?us-ascii?Q?aidRcb36nCLPrxEvBBvcAbU2ZnAa2TvWjTr3A3CEZqgPxDPzvcK6TScO14OI?=
- =?us-ascii?Q?lZYMJoPzSlI8Kqj19sSsLq8ViP1J+OWK4N8MZTBG9L/a0wL8baT4e6sEapP8?=
- =?us-ascii?Q?EcVbRB/QsUDGKYrz6y65F5tUdtMKnU36ZFFmaCjt7VQDumGCW+PhgEIwwCX7?=
- =?us-ascii?Q?wRF+1EWF10MqT+FJD+6C9iy9BFAnb1+Cbbv61e6Lc6wjJc54JSCROSCGzgr9?=
- =?us-ascii?Q?yn1JqLHQMCE4Y9bqnAB6+uARn1FAy4HrDPa2yryGsLeT+JwjarkHiJScqVyw?=
- =?us-ascii?Q?4/EvKOSyTT7aO1AjD7QtxRWFJytOPa7qQ7HfMy9pyd8WP+e//GBM1iO0ii8X?=
- =?us-ascii?Q?JqVR7UOWR4Z/1CRpGItyax+30F9FsziQeqfOf3raHWDJi2eX4PGjOv675EP9?=
- =?us-ascii?Q?p81jWJN34+hBxNuF+YPzq18k8iV8Xk7CBdWHnxzKBY3migVqlfNixaQRUCvp?=
- =?us-ascii?Q?HEYofA89BY2PBS9d4JZ1LXAwQd/f/w25Mqvq0dRpkC7nAduZFEOSX1g5B0yC?=
- =?us-ascii?Q?KR2eioySykAAs7tt+pqBfP4qCWl78gIHO+H5p56Gj5jGg2pJ0Z854QSI3/jC?=
- =?us-ascii?Q?mkzL0l4CZvKujjMJSRvLH/9AAnCZwnpCJ7xcEYlJhqB7E5spm2ZUfJrZ96D2?=
- =?us-ascii?Q?BoNcXl/9yUFYIR3xRf1as0pPAXbGXTAZiznBrWXqsjYYlgaZ4sBiubR8IPuL?=
- =?us-ascii?Q?Z50ryw2afI7yVUejN4y/RY77NBNrQ9A1esVx7AYSLJO8jWvH73wkTW3duQLY?=
- =?us-ascii?Q?sRTYcHInOla+WaGm+Gz5mcjVPKBHLAN5kzu9V7Wx1jDjqNrOcF3HMiOO79ST?=
- =?us-ascii?Q?LN6tEW306/qTqNewPpSeycaTrxlxfGGjZ9edoSP/gekmgW+MNlL6bca5ldfp?=
- =?us-ascii?Q?m50IIBWzwNU1tkXCRxG+1/Z+c7Tzw5cge18wyWjnR9hiuY84T+XXpJLznx5b?=
- =?us-ascii?Q?cRdxon23dwL1HkmDMdRAs3ameKmwg5qYwAAOCkEitM9bxWqAHpNZyw/9ZHKr?=
- =?us-ascii?Q?zPIEqgddW6GiS8kEivE4mCNflWlah6JIrHPOg90WsNyLcCoOlYKO0anBKzbD?=
- =?us-ascii?Q?T6FBLt0znXSTwfnfNGCUrDcGcz2IAIJQuei1DAvRC14qvmb0DUoxYNPTdUCC?=
- =?us-ascii?Q?DvaXKYrFPCpE9u+Z43GpwGkuqd7jRzCypuBLZsSl3j7rfW8otRBg7qkqA6Sr?=
- =?us-ascii?Q?XOSbJEoh78f9F6iZgwXhiUlPoSSk8xVNI640wcd5+x2RrJ6UbmGgMptXNzR4?=
- =?us-ascii?Q?M0LQlvp8HLAo2+4LgD+h/l/anp6S7oCi9hkngOWxVl9MP327XlgY8D6ZMOWl?=
- =?us-ascii?Q?EGKiNLhR/28d0i1jLBPfCxKOBXljvZzJTdrOfB2cIKcLLM/bgvTYyZdBYNoK?=
- =?us-ascii?Q?joDXTh4gT1rYHk/pOuNPW3NqfKxthLgE4c9oQuOs?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+   d="scan'208";a="808877437"
+Received: from adr-par-inspur1.iind.intel.com ([10.223.93.209])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Dec 2023 23:42:22 -0800
+From: Aravinda Prasad <aravinda.prasad@intel.com>
+To: damon@lists.linux.dev,
+	linux-mm@kvack.org,
+	sj@kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: aravinda.prasad@intel.com,
+	s2322819@ed.ac.uk,
+	sandeep4.kumar@intel.com,
+	ying.huang@intel.com,
+	dave.hansen@intel.com,
+	dan.j.williams@intel.com,
+	sreenivas.subramoney@intel.com,
+	antti.kervinen@intel.com,
+	alexander.kanevskiy@intel.com,
+	Alan Nair <alan.nair@intel.com>
+Subject: mm/DAMON: Profiling enhancements for DAMON
+Date: Fri, 15 Dec 2023 13:16:19 +0530
+Message-Id: <20231215074619.173787-1-aravinda.prasad@intel.com>
+X-Mailer: git-send-email 2.21.3
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BN9PR11MB5276.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 902bfdc7-789b-40a5-4fb1-08dbfd41de90
-X-MS-Exchange-CrossTenant-originalarrivaltime: 15 Dec 2023 07:45:55.1178
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: U6Ck1OsUrhbzG+B0V61i67uQGH6hHliRjoNnw905v3Fi7LTpoud5za6GdfhKYk4puuJt4iDPS7e3mSccs2FcnQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR11MB6700
-X-OriginatorOrg: intel.com
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-> From: Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
-> Sent: Wednesday, December 13, 2023 12:02 AM
->=20
-> To support nested translation on AMD IOMMU, the driver needs to
-> program DTE[GCR3 Table Root Pointer] with the address provided by
-> the guest via struct iommu_hwpt_amd_v2, which is passed as a parameter
-> of the struct iommu_ops.domain_alloc_user() with the flag
-> IOMMU_HWPT_ALLOC_NEST_PARENT.
->=20
-> Note that current implementation only support GCR3TRPMode for
-> nested translation, which uses GPA to program GCR3 Table Root Pointer.
->=20
+DAMON randomly samples one or more pages in every region and tracks
+accesses to them using the ACCESSED bit in PTE (or PMD for 2MB pages).
+When the region size is large (e.g., several GBs), which is common
+for large footprint applications, detecting whether the region is
+accessed or not completely depends on whether the pages that are
+actively accessed in the region are picked during random sampling.
+If such pages are not picked for sampling, DAMON fails to identify
+the region as accessed. However, increasing the sampling rate or
+increasing the number of regions increases CPU overheads of kdamond.
 
-means there is a plan to support another mode in the future or
-actually the nested translation requires GCR3TRPMode as a
-functional requirement? imho the point of GPA is assumed
-in the nested configuration in concept...
+This patch proposes profiling different levels of the application’s
+page table tree to detect whether a region is accessed or not. This
+patch is based on the observation that, when the accessed bit for a
+page is set, the accessed bits at the higher levels of the page table
+tree (PMD/PUD/PGD) corresponding to the path of the page table walk
+are also set. Hence, it is efficient to  check the accessed bits at
+the higher levels of the page table tree to detect whether a region
+is accessed or not. For example, if the access bit for a PUD entry
+is set, then one or more pages in the 1GB PUD subtree is accessed as
+each PUD entry covers 1GB mapping. Hence, instead of sampling
+thousands of 4K/2M pages to detect accesses in a large region, 
+sampling at the higher level of page table tree is faster and efficient.
+
+This patch is based on 6.6.3 kernel.
+
+TODO: Support 5-level page table tree
+
+Evaluation:
+
+- MASIM benchmark with 1GB, 10GB, 100GB footprint with 10% hot data
+  and 5TB with 10GB hot data.
+- DAMON: 5ms sampling, 200ms aggregation interval. Rest all
+  parameters set to default value.
+- DAMON+PTP: Page table profiling applied to DAMON with the above
+  parameters.
+
+Profiling efficiency in detecting hot data [1]:
+
+Footprint	1GB	10GB	100GB	5TB
+---------------------------------------------
+DAMON		>90%	<50%	 ~0%	  0%
+DAMON+PTP	>90%	>90%	>90%	>90%
+
+CPU overheads (in billion cycles) for kdamond:
+
+Footprint	1GB	10GB	100GB	5TB
+---------------------------------------------
+DAMON		1.15	19.53	3.52	9.55
+DAMON+PTP	0.83	 3.20	1.27	2.55
+
+A detailed explanation and evaluation can be found in the arXiv paper:
+[1] https://arxiv.org/pdf/2311.10275.pdf
+
+Regards,
+Aravinda
+
+Signed-off-by: Alan Nair <alan.nair@intel.com>
+Signed-off-by: Sandeep Kumar <sandeep4.kumar@intel.com>
+Signed-off-by: Aravinda Prasad <aravinda.prasad@intel.com>
+---
+ arch/x86/include/asm/pgtable.h |   17 +++++
+ include/linux/damon.h          |   13 ++++
+ include/linux/pgtable.h        |   31 ++++++++
+ mm/damon/core.c                |   28 ++++++++
+ mm/damon/vaddr.c               |  146 +++++++++++++++++++++++++++++++++++++---
+ 5 files changed, 223 insertions(+), 12 deletions(-)
+
+diff --git a/arch/x86/include/asm/pgtable.h b/arch/x86/include/asm/pgtable.h
+index e02b179ec..accdabb95 100644
+--- a/arch/x86/include/asm/pgtable.h
++++ b/arch/x86/include/asm/pgtable.h
+@@ -169,6 +169,11 @@ static inline int pud_young(pud_t pud)
+ 	return pud_flags(pud) & _PAGE_ACCESSED;
+ }
+ 
++static inline int pgd_young(pgd_t pgd)
++{
++	return pgd_flags(pgd) & _PAGE_ACCESSED;
++}
++
+ static inline int pte_write(pte_t pte)
+ {
+ 	/*
+@@ -681,6 +686,18 @@ static inline pud_t pud_mkwrite(pud_t pud)
+ 	return pud_clear_saveddirty(pud);
+ }
+ 
++static inline pgd_t pgd_clear_flags(pgd_t pgd, pgdval_t clear)
++{
++	pgdval_t v = native_pgd_val(pgd);
++
++	return native_make_pgd(v & ~clear);
++}
++
++static inline pgd_t pgd_mkold(pgd_t pgd)
++{
++	return pgd_clear_flags(pgd, _PAGE_ACCESSED);
++}
++
+ #ifdef CONFIG_HAVE_ARCH_SOFT_DIRTY
+ static inline int pte_soft_dirty(pte_t pte)
+ {
+diff --git a/include/linux/damon.h b/include/linux/damon.h
+index c70cca8a8..8521a62ec 100644
+--- a/include/linux/damon.h
++++ b/include/linux/damon.h
+@@ -19,6 +19,14 @@
+ /* Max priority score for DAMON-based operation schemes */
+ #define DAMOS_MAX_SCORE		(99)
+ 
++/* DAMON profiling levels */
++enum damon_profile_level {
++	PTE_LEVEL,
++	PMD_LEVEL,
++	PUD_LEVEL,
++	PGD_LEVEL,
++};
++
+ /* Get a random number in [l, r) */
+ static inline unsigned long damon_rand(unsigned long l, unsigned long r)
+ {
+@@ -57,6 +65,8 @@ struct damon_region {
+ 	unsigned int age;
+ /* private: Internal value for age calculation. */
+ 	unsigned int last_nr_accesses;
++	/* Page table profiling level */
++	enum damon_profile_level profile_level;
+ };
+ 
+ /**
+@@ -656,6 +666,9 @@ int damon_stop(struct damon_ctx **ctxs, int nr_ctxs);
+ int damon_set_region_biggest_system_ram_default(struct damon_target *t,
+ 				unsigned long *start, unsigned long *end);
+ 
++enum damon_profile_level pick_profile_level(unsigned long start,
++		unsigned long end, unsigned long addr);
++
+ #endif	/* CONFIG_DAMON */
+ 
+ #endif	/* _DAMON_H */
+diff --git a/include/linux/pgtable.h b/include/linux/pgtable.h
+index af7639c3b..82d5f67ea 100644
+--- a/include/linux/pgtable.h
++++ b/include/linux/pgtable.h
+@@ -935,6 +935,37 @@ static inline void arch_swap_restore(swp_entry_t entry, struct folio *folio)
+ #define flush_tlb_fix_spurious_fault(vma, address, ptep) flush_tlb_page(vma, address)
+ #endif
+ 
++/*
++ * When walking page tables, get the address of the current/passed boundary,
++ * or the start address of the range if that comes earlier.
++ */
++
++#define pgd_addr_start(addr, start)			\
++({	unsigned long __boundary = (addr) & PGDIR_MASK;	\
++	(__boundary > start) ? __boundary : (start);	\
++})
++
++#ifndef p4d_addr_start
++#define p4d_addr_start(addr, start)			\
++({	unsigned long __boundary = (addr) & P4D_MASK;	\
++	(__boundary > start) ? __boundary : (start);	\
++})
++#endif
++
++#ifndef pud_addr_start
++#define pud_addr_start(addr, start)			\
++({	unsigned long __boundary = (addr) & PUD_MASK;	\
++	(__boundary > start) ? __boundary : (start);	\
++})
++#endif
++
++#ifndef pmd_addr_start
++#define pmd_addr_start(addr, start)			\
++({	unsigned long __boundary = (addr) & PMD_MASK;	\
++	(__boundary > start) ? __boundary : (start);	\
++})
++#endif
++
+ /*
+  * When walking page tables, get the address of the next boundary,
+  * or the end address of the range if that comes earlier.  Although no
+diff --git a/mm/damon/core.c b/mm/damon/core.c
+index fd5be73f6..2a7d5c041 100644
+--- a/mm/damon/core.c
++++ b/mm/damon/core.c
+@@ -31,6 +31,33 @@ static struct damon_operations damon_registered_ops[NR_DAMON_OPS];
+ 
+ static struct kmem_cache *damon_region_cache __ro_after_init;
+ 
++/* Pick the highest possible page table profiling level for the
++ * region corresponding to addr
++ */
++enum damon_profile_level pick_profile_level(unsigned long start,
++	unsigned long end, unsigned long addr)
++{
++	enum damon_profile_level level = PTE_LEVEL;
++
++	if (pmd_addr_start(addr, (start) - 1) < start
++		|| pmd_addr_end(addr, (end) + 1) > end)
++		goto out;
++	level = PMD_LEVEL;
++
++	if (pud_addr_start(addr, (start) - 1) < start
++		|| pud_addr_end(addr, (end) + 1) > end)
++		goto out;
++	level = PUD_LEVEL;
++
++	if (pgd_addr_start(addr, (start) - 1) < start
++		|| pgd_addr_end(addr, (end) + 1) > end)
++		goto out;
++	level = PGD_LEVEL;
++
++out:
++	return level;
++}
++
+ /* Should be called under damon_ops_lock with id smaller than NR_DAMON_OPS */
+ static bool __damon_is_registered_ops(enum damon_ops_id id)
+ {
+@@ -132,6 +159,7 @@ struct damon_region *damon_new_region(unsigned long start, unsigned long end)
+ 
+ 	region->age = 0;
+ 	region->last_nr_accesses = 0;
++	region->profile_level = PTE_LEVEL;
+ 
+ 	return region;
+ }
+diff --git a/mm/damon/vaddr.c b/mm/damon/vaddr.c
+index cf8a9fc5c..b71221b3e 100644
+--- a/mm/damon/vaddr.c
++++ b/mm/damon/vaddr.c
+@@ -387,16 +387,76 @@ static int damon_mkold_hugetlb_entry(pte_t *pte, unsigned long hmask,
+ #define damon_mkold_hugetlb_entry NULL
+ #endif /* CONFIG_HUGETLB_PAGE */
+ 
+-static const struct mm_walk_ops damon_mkold_ops = {
+-	.pmd_entry = damon_mkold_pmd_entry,
++static int damon_mkold_pmd(pmd_t *pmd, unsigned long addr,
++	unsigned long next, struct mm_walk *walk)
++{
++	spinlock_t *ptl;
++
++	if (!pmd_present(*pmd) || pmd_none(*pmd))
++		goto out;
++
++	ptl = pmd_lock(walk->mm, pmd);
++	if (pmd_young(*pmd))
++		*pmd = pmd_mkold(*pmd);
++
++	spin_unlock(ptl);
++
++out:
++	return 0;
++}
++
++static int damon_mkold_pud(pud_t *pud, unsigned long addr,
++	unsigned long next, struct mm_walk *walk)
++{
++	spinlock_t *ptl;
++
++	if (!pud_present(*pud) || pud_none(*pud))
++		goto out;
++
++	ptl = pud_lock(walk->mm, pud);
++	if (pud_young(*pud))
++		*pud = pud_mkold(*pud);
++
++	spin_unlock(ptl);
++
++out:
++	return 0;
++}
++
++static int damon_mkold_pgd(pgd_t *pgd, unsigned long addr,
++	unsigned long next, struct mm_walk *walk)
++{
++
++	if (!pgd_present(*pgd) || pgd_none(*pgd))
++		goto out;
++
++	spin_lock(&pgd_lock);
++	if (pgd_young(*pgd))
++		*pgd = pgd_mkold(*pgd);
++
++	spin_unlock(&pgd_lock);
++
++out:
++	return 0;
++}
++
++static const struct mm_walk_ops damon_mkold_ops[] = {
++	{.pmd_entry = damon_mkold_pmd_entry,
+ 	.hugetlb_entry = damon_mkold_hugetlb_entry,
+-	.walk_lock = PGWALK_RDLOCK,
++	.walk_lock = PGWALK_RDLOCK},
++	{.pmd_entry = damon_mkold_pmd},
++	{.pud_entry = damon_mkold_pud},
++	{.pgd_entry = damon_mkold_pgd},
+ };
+ 
+-static void damon_va_mkold(struct mm_struct *mm, unsigned long addr)
++static void damon_va_mkold(struct mm_struct *mm, struct damon_region *r)
+ {
++	unsigned long addr = r->sampling_addr;
++
++	r->profile_level = pick_profile_level(r->ar.start, r->ar.end, addr);
++
+ 	mmap_read_lock(mm);
+-	walk_page_range(mm, addr, addr + 1, &damon_mkold_ops, NULL);
++	walk_page_range(mm, addr, addr + 1, damon_mkold_ops + r->profile_level, NULL);
+ 	mmap_read_unlock(mm);
+ }
+ 
+@@ -409,7 +469,7 @@ static void __damon_va_prepare_access_check(struct mm_struct *mm,
+ {
+ 	r->sampling_addr = damon_rand(r->ar.start, r->ar.end);
+ 
+-	damon_va_mkold(mm, r->sampling_addr);
++	damon_va_mkold(mm, r);
+ }
+ 
+ static void damon_va_prepare_access_checks(struct damon_ctx *ctx)
+@@ -531,22 +591,84 @@ static int damon_young_hugetlb_entry(pte_t *pte, unsigned long hmask,
+ #define damon_young_hugetlb_entry NULL
+ #endif /* CONFIG_HUGETLB_PAGE */
+ 
+-static const struct mm_walk_ops damon_young_ops = {
+-	.pmd_entry = damon_young_pmd_entry,
++static int damon_young_pmd(pmd_t *pmd, unsigned long addr,
++		unsigned long next, struct mm_walk *walk)
++{
++	spinlock_t *ptl;
++	struct damon_young_walk_private *priv = walk->private;
++
++	if (!pmd_present(*pmd) || pmd_none(*pmd))
++		goto out;
++
++	ptl = pmd_lock(walk->mm, pmd);
++	if (pmd_young(*pmd) || mmu_notifier_test_young(walk->mm, addr))
++		priv->young = true;
++
++	*priv->folio_sz = (1UL << PMD_SHIFT);
++	spin_unlock(ptl);
++out:
++	return 0;
++}
++
++static int damon_young_pud(pud_t *pud, unsigned long addr,
++		unsigned long next, struct mm_walk *walk)
++{
++	spinlock_t *ptl;
++	struct damon_young_walk_private *priv = walk->private;
++
++	if (!pud_present(*pud) || pud_none(*pud))
++		goto out;
++
++	ptl = pud_lock(walk->mm, pud);
++	if (pud_young(*pud) || mmu_notifier_test_young(walk->mm, addr))
++		priv->young = true;
++
++	*priv->folio_sz = (1UL << PUD_SHIFT);
++
++	spin_unlock(ptl);
++out:
++	return 0;
++}
++
++static int damon_young_pgd(pgd_t *pgd, unsigned long addr,
++		unsigned long next, struct mm_walk *walk)
++{
++	struct damon_young_walk_private *priv = walk->private;
++
++	if (!pgd_present(*pgd) || pgd_none(*pgd))
++		goto out;
++
++	spin_lock(&pgd_lock);
++	if (pgd_young(*pgd) || mmu_notifier_test_young(walk->mm, addr))
++		priv->young = true;
++
++	*priv->folio_sz = (1UL << PGDIR_SHIFT);
++
++	spin_unlock(&pgd_lock);
++out:
++	return 0;
++}
++
++static const struct mm_walk_ops damon_young_ops[] = {
++	{.pmd_entry = damon_young_pmd_entry,
+ 	.hugetlb_entry = damon_young_hugetlb_entry,
+-	.walk_lock = PGWALK_RDLOCK,
++	.walk_lock = PGWALK_RDLOCK},
++	{.pmd_entry = damon_young_pmd},
++	{.pud_entry = damon_young_pud},
++	{.pgd_entry = damon_young_pgd},
+ };
+ 
+-static bool damon_va_young(struct mm_struct *mm, unsigned long addr,
++static bool damon_va_young(struct mm_struct *mm, struct damon_region *r,
+ 		unsigned long *folio_sz)
+ {
++	unsigned long addr = r->sampling_addr;
+ 	struct damon_young_walk_private arg = {
+ 		.folio_sz = folio_sz,
+ 		.young = false,
+ 	};
+ 
+ 	mmap_read_lock(mm);
+-	walk_page_range(mm, addr, addr + 1, &damon_young_ops, &arg);
++	walk_page_range(mm, addr, addr + 1, damon_young_ops + r->profile_level, &arg);
+ 	mmap_read_unlock(mm);
+ 	return arg.young;
+ }
+@@ -572,7 +694,7 @@ static void __damon_va_check_access(struct mm_struct *mm,
+ 		return;
+ 	}
+ 
+-	last_accessed = damon_va_young(mm, r->sampling_addr, &last_folio_sz);
++	last_accessed = damon_va_young(mm, r, &last_folio_sz);
+ 	if (last_accessed)
+ 		r->nr_accesses++;
+ 
 
