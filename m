@@ -1,97 +1,123 @@
-Return-Path: <linux-kernel+bounces-632-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-633-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D8C418143DB
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 09:41:20 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 83F8A8143E0
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 09:44:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CC7661C22759
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 08:41:19 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0B18FB22434
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 08:44:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 239B517997;
-	Fri, 15 Dec 2023 08:40:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 158B314F93;
+	Fri, 15 Dec 2023 08:44:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="LFCNE6Bi"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="g8pPYagq"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB9EE1774F
-	for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 08:40:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 25D77D27A
+	for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 08:44:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1702629639; x=1734165639;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=Rd5viuBQiPqVA3ULp+UHOWd5TEKMyHgFH0Vs6eQQGmU=;
-  b=LFCNE6BiZXkrscUSjxlIrHGw96s6swvOmdyrzaS2vYHKP9VErzfS+GHJ
-   T0FswWQ9CLOk0EuROPLeOyHW4TTwLPu4+2k+mOE/S/Pack1H9RCw3IOJu
-   ZghYB/CgjlEttserO2UfoMKMb/1wZROuFtBxNuBvg5xP6bN33I6ls2CvU
-   qhP1KtsT5kzv41nnTxHslv6yP1klkz/BUjYgX9mH47fulaU/T9iyMlsV8
-   PjdUhyg//TOqByaYquRilqIi4B0T6r+C+OBkRU6zZIeZrgsDmoP67nV0S
-   dDVKIvlImMGfCxtvSFygBRIqN/3noaXoq1OY3H1K64c92AN89vyBqKozK
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10924"; a="2406132"
+  t=1702629866; x=1734165866;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=pN6Za6QS6gH0Sone+vJpcFhDUA34F+4C+dHQJlQSAlc=;
+  b=g8pPYagqW54B+3rP7kbG30x2G57uGPTWvP0RzFRbhfynpsszj1+h/iOP
+   HokDceLy04mFAzVFdrJ8qzp3T3evr7YoK4lKzGusm9LSby/itMMn4+iDy
+   7OA5VIuFnIl4NFjb4p7TigvqCqZZlHLSwopGz84QKeuMcBKHwqHt1Ebmi
+   eJc/MplvZrzjg/0L+jm7oTGeclutFfT3itcPElAqDoo5RJp29PEhEYzXx
+   /+r95NgN6GCn9Eg1BF5xiMizvLRQpuzFBRCqZJEUZ9npXtxSP7uSPE6RV
+   WOAmr76L88arzBzqQPUEDu6NPLe0TZqwiNY8yi9s5xy0ffD0ePUv37enb
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10924"; a="426381356"
 X-IronPort-AV: E=Sophos;i="6.04,278,1695711600"; 
-   d="scan'208";a="2406132"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Dec 2023 00:40:38 -0800
+   d="scan'208";a="426381356"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Dec 2023 00:44:25 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10924"; a="845054229"
+X-IronPort-AV: E=McAfee;i="6600,9927,10924"; a="808895806"
 X-IronPort-AV: E=Sophos;i="6.04,278,1695711600"; 
-   d="scan'208";a="845054229"
-Received: from fdefranc-mobl3.ger.corp.intel.com (HELO fdefranc-mobl3.localnet) ([10.213.25.64])
-  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Dec 2023 00:40:36 -0800
+   d="scan'208";a="808895806"
+Received: from fdefranc-mobl3.ger.corp.intel.com (HELO fdefranc-mobl3.Hitronhub.home) ([10.213.25.64])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Dec 2023 00:44:22 -0800
 From: "Fabio M. De Francesco" <fabio.maria.de.francesco@linux.intel.com>
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org,
- "Fabio M. De Francesco" <fabio.maria.de.francesco@intel.com>,
- Ira Weiny <ira.weiny@intel.com>
-Subject: Re: [PATCH] mm/memory: Replace kmap() with kmap_local_page()
-Date: Fri, 15 Dec 2023 09:40:33 +0100
-Message-ID: <3867181.PYKUYFuaPT@fdefranc-mobl3>
-Organization: intel
-In-Reply-To: <20231214114747.ddd42a1e567d2bd0f95f2095@linux-foundation.org>
-References:
- <20231214081039.1919328-1-fabio.maria.de.francesco@linux.intel.com>
- <20231214114747.ddd42a1e567d2bd0f95f2095@linux-foundation.org>
+To: Andrew Morton <akpm@linux-foundation.org>,
+	linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org
+Cc: "Fabio M. De Francesco" <fabio.maria.de.francesco@linux.intel.com>,
+	Ira Weiny <ira.weiny@intel.com>
+Subject: [PATCH] mm/memory: Replace kmap() with kmap_local_page()
+Date: Fri, 15 Dec 2023 09:43:40 +0100
+Message-ID: <20231215084417.2002370-1-fabio.maria.de.francesco@linux.intel.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Thursday, 14 December 2023 20:47:47 CET Andrew Morton wrote:
-> > From: "Fabio M. De Francesco" <fabio.maria.de.francesco@linux.intel.com>
-> > ...
-> > From: "Fabio M. De Francesco" <fabio.maria.de.francesco@intel.com>
-> > 
-> > ...
-> > 
-> > Signed-off-by: Fabio M. De Francesco
-> > <fabio.maria.de.francesco@linux.intel.com>
-> We get a complaint from checkpatch (and possibly from Stephen Rothwell)
-> that the From: and Signed-off-by: email addresses differ.
-> 
-> I tentatively rewrote your explicit From: to @linux.intel.com, which
-> may have been unwelcome.  What can we do here?
+kmap() has been deprecated in favor of kmap_local_page().
 
-I have two email addresses and sometimes some confusion arises while 
-configuring. Please discard this patch. I'm going to send another to replace 
-this.
+Therefore, replace kmap() with kmap_local_page() in mm/memory.c.
 
-Thanks,
+There are two main problems with kmap(): (1) It comes with an overhead as
+the mapping space is restricted and protected by a global lock for
+synchronization and (2) it also requires global TLB invalidation when the
+kmap’s pool wraps and it might block when the mapping space is fully
+utilized until a slot becomes available.
 
-Fabio
+With kmap_local_page() the mappings are per thread, CPU local, can take
+page-faults, and can be called from any context (including interrupts).
+It is faster than kmap() in kernels with HIGHMEM enabled. The tasks can
+be preempted and, when they are scheduled to run again, the kernel
+virtual addresses are restored and still valid.
 
+Obviously, thread locality implies that the kernel virtual addresses
+returned by kmap_local_page() are only valid in the context of the
+callers (i.e., they cannot be handed to other threads).
 
+The use of kmap_local_page() in mm/memory.c does not break the
+above-mentioned assumption, so it is allowed and preferred.
 
+Cc: Ira Weiny <ira.weiny@intel.com>
+Signed-off-by: Fabio M. De Francesco <fabio.maria.de.francesco@linux.intel.com>
+---
+ mm/memory.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
+
+diff --git a/mm/memory.c b/mm/memory.c
+index 7d9f6b685032..88377a107fbe 100644
+--- a/mm/memory.c
++++ b/mm/memory.c
+@@ -5852,7 +5852,7 @@ static int __access_remote_vm(struct mm_struct *mm, unsigned long addr,
+ 			if (bytes > PAGE_SIZE-offset)
+ 				bytes = PAGE_SIZE-offset;
+ 
+-			maddr = kmap(page);
++			maddr = kmap_local_page(page);
+ 			if (write) {
+ 				copy_to_user_page(vma, page, addr,
+ 						  maddr + offset, buf, bytes);
+@@ -5861,8 +5861,7 @@ static int __access_remote_vm(struct mm_struct *mm, unsigned long addr,
+ 				copy_from_user_page(vma, page, addr,
+ 						    buf, maddr + offset, bytes);
+ 			}
+-			kunmap(page);
+-			put_page(page);
++			unmap_and_put_page(page, maddr);
+ 		}
+ 		len -= bytes;
+ 		buf += bytes;
+-- 
+2.43.0
 
 
