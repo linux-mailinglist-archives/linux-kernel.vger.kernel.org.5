@@ -1,191 +1,142 @@
-Return-Path: <linux-kernel+bounces-766-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-767-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 08A528145B8
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 11:35:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id E56798145BB
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 11:35:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8B53D1F23DAD
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 10:35:06 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 99C631F239E0
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 10:35:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 14FCD25579;
-	Fri, 15 Dec 2023 10:34:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5040B24A1B;
+	Fri, 15 Dec 2023 10:34:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Z0kM2Uu2"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="h8hvKdis"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f42.google.com (mail-ed1-f42.google.com [209.85.208.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5271325546
-	for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 10:34:07 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 65F56C433CA;
-	Fri, 15 Dec 2023 10:34:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1702636447;
-	bh=0zM8JDSAA7dbY9XQraW+2kVK9oURsh8Sn1ND1qFpbTg=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Z0kM2Uu21g15zMfNFuyexSnC3wUZEkgsYugPDFYIBl8nJ8KkzEvBOaq+eIWIHliVv
-	 kDWuRECuHDtPPPXAClLkxbr2RsE5Goz/a6iVsH4xQ9K3lvlZLgXxqrqMJCDbqIEYVK
-	 8YOFsfMlTRdWHkL6VW/L+brCVXCpOMpn1TnuIqzPe+pDfqkb2hwlAD3t7TshhJL7Rc
-	 qAb3yros3bqbIFh0E4++VDTxJHPwSqUXVtrJye8DiWle8Apd9Lz5JPRko9O9WOP3yO
-	 ksa2qAqS9bJpb+NTNuY6jA0YrfjrE06kJAWJbRRhJxHDwoQjRpCTg8ynIkE9BDXSxt
-	 7TGQdDM/E7m8A==
-Date: Fri, 15 Dec 2023 11:34:05 +0100
-From: Maxime Ripard <mripard@kernel.org>
-To: =?utf-8?Q?Micha=C5=82?= Winiarski <michal.winiarski@intel.com>
-Cc: intel-xe@lists.freedesktop.org, dri-devel@lists.freedesktop.org, 
-	linux-kernel@vger.kernel.org, Rodrigo Vivi <rodrigo.vivi@intel.com>, 
-	Michal Wajdeczko <michal.wajdeczko@intel.com>, Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, 
-	Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>, 
-	Daniel Vetter <daniel@ffwll.ch>, Javier Martinez Canillas <javierm@redhat.com>, 
-	=?utf-8?B?TWHDrXJh?= Canal <mcanal@igalia.com>
-Subject: Re: [PATCH v3 2/3] drm/tests: managed: Extract device initialization
- into test init
-Message-ID: <nopfuutpsvckycqoasndveo5ufnar3yra57on55yznp5zwpodc@tjcnie3guy2r>
-References: <20231211220939.215024-1-michal.winiarski@intel.com>
- <20231211220939.215024-3-michal.winiarski@intel.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC9B01C2BD
+	for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 10:34:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ed1-f42.google.com with SMTP id 4fb4d7f45d1cf-55193d5e8cdso569654a12.1
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 02:34:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1702636455; x=1703241255; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=WGZztFNtyQMrkAWnFa3qCndVDwm8eWj6KVWu9evzn0I=;
+        b=h8hvKdisGjwC4Ji8vYoqFk5n9AhIKBI8uv8ctKbkGc9vIk5yd0Z9Nc4eUnOYrDryhJ
+         etYGAho20sGjbdJjzLnZXTuBfdam+Ms54SlMv0RgJK4yWFjVSRnUCqawK/MbdIslRu+t
+         b9opalwFpZKfRn6ARnAsccE+A5OMUn09KoELU/UBv5XWN3qVjk1tNWBxPVmKpdTt1tju
+         SuUOw628qyWvXvzi1/pICglQIxR0DsoVfww7h4gARed3Q6JOmoOFyBPBCMa6F4c6hLwd
+         VaiB/U8g3+PzqYbIxRkkRirQi3xQn7oPaAXZmwQjNKfUhI8f8tGjO2u8OF12AaPIVJVc
+         sh4A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702636455; x=1703241255;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=WGZztFNtyQMrkAWnFa3qCndVDwm8eWj6KVWu9evzn0I=;
+        b=BEStTMjk/bm6aoRp8smTVNDKIMyUjlbQn2UFXmtLzz8R3z/Jop7MowSTDr/3mnZXAi
+         XWoLFXU2uYaxDpwTrW/im7msIDKoRqO70LSR3TxDTp4SpJPPlBOeaZd4YNa1+efprgKv
+         Kj00+TpZoJ/vX2sbTNHAsgKcZgXUKsW+O5e8U2BEWZpPG3bPHAXJbHNNGoGW3SCfIQyf
+         obGy5IxHzZ57ApLb+ktOLt9f5bVP6SETvSD30oR/ypxMJhlqajnE0pJPpap4VbDq+xM4
+         E+7Q0kJnfgdJS2v0QluiPB+JfsL7nTxnk4yopBv89kuY+BxiBEL8RCpA8x/cZiGWidCd
+         eZ2g==
+X-Gm-Message-State: AOJu0YwRMKNfOMBoDgl52Nv7wRkdW1RbgZg2oGPrcZ/7h420ayMlaBVL
+	4ixTY2mlo5R11c3EnXsR5+377A==
+X-Google-Smtp-Source: AGHT+IGiAEsceIH40ZUtIEZccrrZAHRlf8uew/1vcFulFRMjphR02+14kKY3fYXGvRYhN84Cua6f0g==
+X-Received: by 2002:a17:906:3f0a:b0:9dc:2215:1593 with SMTP id c10-20020a1709063f0a00b009dc22151593mr5423903ejj.25.1702636455129;
+        Fri, 15 Dec 2023 02:34:15 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.218.27])
+        by smtp.gmail.com with ESMTPSA id un5-20020a170907cb8500b009ff77c2e1dasm10496826ejc.167.2023.12.15.02.34.13
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 15 Dec 2023 02:34:14 -0800 (PST)
+Message-ID: <d4aad08a-ac3b-4a34-a48a-5e413225f0de@linaro.org>
+Date: Fri, 15 Dec 2023 11:34:12 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="c7r44nner6zxrid2"
-Content-Disposition: inline
-In-Reply-To: <20231211220939.215024-3-michal.winiarski@intel.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/4] dt-bindings: arm: Add compatible strings for Unisoc's
+ UMS9620
+Content-Language: en-US
+To: Chunyan Zhang <chunyan.zhang@unisoc.com>, Rob Herring
+ <robh+dt@kernel.org>, Krzysztof Kozlowski
+ <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
+ Lee Jones <lee@kernel.org>
+Cc: devicetree@vger.kernel.org, linux-serial@vger.kernel.org,
+ Baolin Wang <baolin.wang@linux.alibaba.com>, Orson Zhai
+ <orsonzhai@gmail.com>, Chunyan Zhang <zhang.lyra@gmail.com>,
+ LKML <linux-kernel@vger.kernel.org>
+References: <20231215085630.984892-1-chunyan.zhang@unisoc.com>
+ <20231215085630.984892-3-chunyan.zhang@unisoc.com>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20231215085630.984892-3-chunyan.zhang@unisoc.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-
---c7r44nner6zxrid2
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Mon, Dec 11, 2023 at 11:09:38PM +0100, Micha=C5=82 Winiarski wrote:
-> It simplifies the process of extending the test suite with additional
-> test cases without unnecessary duplication.
->=20
-> Signed-off-by: Micha=C5=82 Winiarski <michal.winiarski@intel.com>
+On 15/12/2023 09:56, Chunyan Zhang wrote:
+> Added bindings for Unisoc's UMS9620-2H10 board and UMS9620 SoC.
+> 
+> Signed-off-by: Chunyan Zhang <chunyan.zhang@unisoc.com>
 > ---
->  drivers/gpu/drm/tests/drm_managed_test.c | 51 +++++++++++++++++-------
->  1 file changed, 36 insertions(+), 15 deletions(-)
->=20
-> diff --git a/drivers/gpu/drm/tests/drm_managed_test.c b/drivers/gpu/drm/t=
-ests/drm_managed_test.c
-> index 1652dca11d30c..15bd2474440b5 100644
-> --- a/drivers/gpu/drm/tests/drm_managed_test.c
-> +++ b/drivers/gpu/drm/tests/drm_managed_test.c
-> @@ -12,6 +12,7 @@
->  #define TEST_TIMEOUT_MS	100
-> =20
->  struct managed_test_priv {
-> +	struct drm_device *drm;
->  	bool action_done;
->  	wait_queue_head_t action_wq;
->  };
-> @@ -24,35 +25,54 @@ static void drm_action(struct drm_device *drm, void *=
-ptr)
->  	wake_up_interruptible(&priv->action_wq);
->  }
-> =20
-> +/*
-> + * The test verifies that the release action is called automatically whe=
-n the
-> + * device is released.
-> + */
->  static void drm_test_managed_run_action(struct kunit *test)
-> +{
-> +	struct managed_test_priv *priv =3D test->priv;
-> +	int ret;
-> +
-> +	ret =3D drmm_add_action_or_reset(priv->drm, drm_action, priv);
-> +	KUNIT_EXPECT_EQ(test, ret, 0);
-> +
-> +	ret =3D drm_dev_register(priv->drm, 0);
-> +	KUNIT_ASSERT_EQ(test, ret, 0);
-> +
-> +	drm_dev_unregister(priv->drm);
-> +	drm_kunit_helper_free_device(test, priv->drm->dev);
-> +
-> +	ret =3D wait_event_interruptible_timeout(priv->action_wq, priv->action_=
-done,
-> +					       msecs_to_jiffies(TEST_TIMEOUT_MS));
-> +	KUNIT_EXPECT_GT_MSG(test, ret, 0, "Release action was not called");
 
-The addition of the message should be in a separate patch
+Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
-> +}
-> +
-> +static int drm_managed_test_init(struct kunit *test)
->  {
->  	struct managed_test_priv *priv;
-> -	struct drm_device *drm;
->  	struct device *dev;
-> -	int ret;
-> =20
->  	priv =3D kunit_kzalloc(test, sizeof(*priv), GFP_KERNEL);
->  	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, priv);
-> -	init_waitqueue_head(&priv->action_wq);
-> =20
->  	dev =3D drm_kunit_helper_alloc_device(test);
->  	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, dev);
-> =20
-> -	drm =3D __drm_kunit_helper_alloc_drm_device(test, dev, sizeof(*drm), 0,=
- DRIVER_MODESET);
-> -	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, drm);
-> +	/*
-> +	 * DRM device can't be embedded in priv, since priv->action_done needs
-> +	 * to remain allocated beyond both parent device and drm_device
-> +	 * lifetime.
-> +	 */
-> +	priv->drm =3D __drm_kunit_helper_alloc_drm_device(test, dev, sizeof(*pr=
-iv->drm), 0,
-> +							DRIVER_MODESET);
-> +	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, priv->drm);
-> =20
-> -	ret =3D drmm_add_action_or_reset(drm, drm_action, priv);
-> -	KUNIT_EXPECT_EQ(test, ret, 0);
-> -
-> -	ret =3D drm_dev_register(drm, 0);
-> -	KUNIT_ASSERT_EQ(test, ret, 0);
-> +	init_waitqueue_head(&priv->action_wq);
-> =20
-> -	drm_dev_unregister(drm);
-> -	drm_kunit_helper_free_device(test, dev);
-> +	test->priv =3D priv;
-> =20
-> -	ret =3D wait_event_interruptible_timeout(priv->action_wq, priv->action_=
-done,
-> -					       msecs_to_jiffies(TEST_TIMEOUT_MS));
-> -	KUNIT_EXPECT_GT(test, ret, 0);
-> +	return 0;
->  }
-> =20
->  static struct kunit_case drm_managed_tests[] =3D {
-> @@ -62,6 +82,7 @@ static struct kunit_case drm_managed_tests[] =3D {
-> =20
->  static struct kunit_suite drm_managed_test_suite =3D {
->  	.name =3D "drm-test-managed",
-> +	.init =3D drm_managed_test_init,
->  	.test_cases =3D drm_managed_tests
->  };
-> =20
-> --=20
-> 2.43.0
->=20
+Best regards,
+Krzysztof
 
---c7r44nner6zxrid2
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCZXwrnQAKCRDj7w1vZxhR
-xdTkAP9Xx9QASfyt+BaF3DUiBfsEEb55Z6BnIUk3ZC5Hb/eP+AD9GOAhzr9p1sEU
-KPjEPtZIZW4z+Nhf6QLpV320DP5MyAA=
-=Aa4r
------END PGP SIGNATURE-----
-
---c7r44nner6zxrid2--
 
