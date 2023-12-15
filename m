@@ -1,96 +1,145 @@
-Return-Path: <linux-kernel+bounces-1013-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-1018-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8DBCE814939
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 14:29:35 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0852A814944
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 14:31:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C06E41C23BAC
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 13:29:34 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B8D5E28675F
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 13:31:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E30FE2DB78;
-	Fri, 15 Dec 2023 13:29:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 618EC30D05;
+	Fri, 15 Dec 2023 13:29:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="glqzC2cg"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Mhix1SNK"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3BFD42DB66;
-	Fri, 15 Dec 2023 13:29:26 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E4BCAC433C8;
-	Fri, 15 Dec 2023 13:29:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1702646966;
-	bh=70f6tQF0J1igTU1Bt6VBmvGx8DE41PL8adjrB1J4clQ=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=glqzC2cg+nbRf/E9dwYYGIq+LqP+Jct0V8pYjJaRUX/ODtYc3g4G9Ww9cXs/rTMwE
-	 OrFmCuFHfwj1zgM8phBIraQ+MZuIqfqd+gKo5tMVkLwzF7vMD/0ASapKSh/1TkXm22
-	 xQgdtrZpgksGsFIhouxYCaUKghD5WzVZ1AA/Mtf+DKM78wbmuoYGgM/Su3nlGorL8T
-	 tHz3a+eIbT9c+O2ciNstdDRRU/JTmfghykCpCr1rpPOlAkBg3tBJV5bYVA2EaYm+W2
-	 XpFHqBiLYqvbYcINNcdQeD0xvabkvQrOXqDxeJeDM+Qt1/ZohU1a0YRL4N/ycRBshd
-	 NY4oKQh2yJ6NQ==
-Date: Fri, 15 Dec 2023 13:29:21 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Thangaraj Samynathan <thangaraj.s@microchip.com>
-Cc: linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Tharunkumar.Pasumarthi@microchip.com,
-	Kumaravel.Thiagarajan@microchip.com, Arun.Ramadoss@microchip.com,
-	Ronnie.Kunin@microchip.com,
-	jegadheesan.gopalmanoharan@microchip.com
-Subject: Re: [PATCH SPI for-next 2/3] spi: mchp-pci1xxxx: DMA Read support
- for copying data into SPI Buf
-Message-ID: <677a17b6-39a6-4b1e-87f5-2c01b19bbe3f@sirena.org.uk>
-References: <20231215114748.152319-1-thangaraj.s@microchip.com>
- <20231215114748.152319-3-thangaraj.s@microchip.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F55530321;
+	Fri, 15 Dec 2023 13:29:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-40c38e292c8so3513915e9.0;
+        Fri, 15 Dec 2023 05:29:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1702646981; x=1703251781; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=v8KycpmoEY28RLHnfyVEt7HZvLA/Co1CVDklFA2THj0=;
+        b=Mhix1SNKzn25mpmaQJA/pZ7i75Y8TA9Q54sj3hZE+lCzV587iu5W4fwvNyq3kOvNhU
+         bH5dvQDGMrQTx/fa/0kaIQqlLrH2m9ILUSTQlcUu/sQSGOE0Rlivj94r2CTGZmlTxoNp
+         f+/cUzIRGXFNR4h13PjNVUINhYeRBx2SYs8tOF5UiewfQyosrWvwiVhPYglxHDAxLcP2
+         iavOVx+SOr5jiuamrUrfrZ8AOrSTlrwbsrgveafixUG98mJldQml6/PGSWxlHA9g3bUj
+         8rho2uZ6RojnpppcOaZ1MFeejOElKBuISSkfk11kkcmSsTVr7fPX/oKkgE5SbCfsRSRj
+         ke5g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702646981; x=1703251781;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=v8KycpmoEY28RLHnfyVEt7HZvLA/Co1CVDklFA2THj0=;
+        b=wz5BdHf4G6FLU49Wvz3HVbqwvD3lmCf3oex13kj+XyGqq56eI0weCkTy/HoumxACni
+         LxAigQF3TeKSLcVNZPbDfG9jXKcWKfdbmeYz0S9r8rRCKQ5ysz7SYddO9urE1h/mBBqg
+         Tom97nMqI5MIE3LhqPHdMEoNRSx4WV2s2ts+LMU5UlcRLxyXtLU827sUw4uZcFWOnnL5
+         hcFQMfAFcJlIr9uXg57z3N71z2VVzRsqaSEG8CkeR2Q3dj8CoDeLnoTDmgPi+Y40Wvcz
+         aU0HPBfPDYUsgAHvnbZ/bnB2CvtXbbmxJlUBeFllAmjjGWoOgXUDAI0S7MpasJwZR0ll
+         KA6A==
+X-Gm-Message-State: AOJu0YwafsAroLj6iqnesHQlrsv5MGwNfsxbPUvETEZAKBYbSuLX/pGM
+	u32gpRdt1T2m2e57rNZPxma6mfzNjpM=
+X-Google-Smtp-Source: AGHT+IGCuZef8REAlKzw59ZBBJ+UeH4/0eh5MO6e1D0CdDAZHUQXjtNFnkntk8XvYKs5aijPV2d94A==
+X-Received: by 2002:a05:600c:808e:b0:40b:47d0:cff with SMTP id ew14-20020a05600c808e00b0040b47d00cffmr6101245wmb.10.1702646981425;
+        Fri, 15 Dec 2023 05:29:41 -0800 (PST)
+Received: from localhost.localdomain (93-34-89-13.ip49.fastwebnet.it. [93.34.89.13])
+        by smtp.googlemail.com with ESMTPSA id o3-20020a05600c4fc300b004042dbb8925sm31434543wmq.38.2023.12.15.05.29.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 15 Dec 2023 05:29:41 -0800 (PST)
+From: Christian Marangi <ansuelsmth@gmail.com>
+To: Andrew Lunn <andrew@lunn.ch>,
+	Heiner Kallweit <hkallweit1@gmail.com>,
+	Russell King <linux@armlinux.org.uk>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: Christian Marangi <ansuelsmth@gmail.com>
+Subject: [net-next PATCH v3 3/3] net: phy: led: dynamically allocate speed modes array
+Date: Fri, 15 Dec 2023 14:29:21 +0100
+Message-Id: <20231215132921.16808-4-ansuelsmth@gmail.com>
+X-Mailer: git-send-email 2.40.1
+In-Reply-To: <20231215132921.16808-1-ansuelsmth@gmail.com>
+References: <20231215132921.16808-1-ansuelsmth@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="n0OeUrTOIes8jnxm"
-Content-Disposition: inline
-In-Reply-To: <20231215114748.152319-3-thangaraj.s@microchip.com>
-X-Cookie: PARDON me, am I speaking ENGLISH?
+Content-Transfer-Encoding: 8bit
 
+Instead of defining a big enough array for speed modes use the newly
+introduced API to get the actual number of supported speed modes and
+dynamically allocate them.
 
---n0OeUrTOIes8jnxm
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Allocated space is freed at the end of the LED register loop.
 
-On Fri, Dec 15, 2023 at 05:17:47PM +0530, Thangaraj Samynathan wrote:
+Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
+---
+ drivers/net/phy/phy_led_triggers.c | 16 +++++++++++++---
+ 1 file changed, 13 insertions(+), 3 deletions(-)
 
-> +	tx_dma_addr = dma_map_single(dev, (void *)xfer->tx_buf, xfer->len, DMA_TO_DEVICE);
-> +	if (dma_mapping_error(NULL, tx_dma_addr)) {
-> +		tx_dma_addr = 0;
-> +		ret = -ENOMEM;
-> +		goto error;
-> +	}
+diff --git a/drivers/net/phy/phy_led_triggers.c b/drivers/net/phy/phy_led_triggers.c
+index f550576eb9da..3b962ec13d90 100644
+--- a/drivers/net/phy/phy_led_triggers.c
++++ b/drivers/net/phy/phy_led_triggers.c
+@@ -83,14 +83,21 @@ static void phy_led_trigger_unregister(struct phy_led_trigger *plt)
+ 
+ int phy_led_triggers_register(struct phy_device *phy)
+ {
++	unsigned int *speeds;
+ 	int i, err;
+-	unsigned int speeds[50];
+ 
+-	phy->phy_num_led_triggers = phy_supported_speeds(phy, speeds,
+-							 ARRAY_SIZE(speeds));
++	phy->phy_num_led_triggers = phy_supported_speeds_num(phy);
+ 	if (!phy->phy_num_led_triggers)
+ 		return 0;
+ 
++	speeds = kmalloc_array(phy->phy_num_led_triggers, sizeof(*speeds),
++			       GFP_KERNEL);
++	if (!speeds)
++		return -ENOMEM;
++
++	/* Presence of speed modes already checked up */
++	phy_supported_speeds(phy, speeds, phy->phy_num_led_triggers);
++
+ 	phy->led_link_trigger = devm_kzalloc(&phy->mdio.dev,
+ 					     sizeof(*phy->led_link_trigger),
+ 					     GFP_KERNEL);
+@@ -123,6 +130,8 @@ int phy_led_triggers_register(struct phy_device *phy)
+ 	phy->last_triggered = NULL;
+ 	phy_led_trigger_change_speed(phy);
+ 
++	kfree(speeds);
++
+ 	return 0;
+ out_unreg:
+ 	while (i--)
+@@ -134,6 +143,7 @@ int phy_led_triggers_register(struct phy_device *phy)
+ 	devm_kfree(&phy->mdio.dev, phy->led_link_trigger);
+ 	phy->led_link_trigger = NULL;
+ out_clear:
++	kfree(speeds);
+ 	phy->phy_num_led_triggers = 0;
+ 	return err;
+ }
+-- 
+2.40.1
 
-The core can do all the DMA mapping for you if you provide a can_dma()
-operation, this supports switching between DMA and non-DMA modes per
-transfer - often you'll get better performance from PIO for smaller
-lengths due to the overhead of setting up DMA and taking the interrupt
-on completion.
-
---n0OeUrTOIes8jnxm
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmV8VLAACgkQJNaLcl1U
-h9BWMAf9H1LHCGzDRvVwox5ckKl92TN0NqELP0jLKlvE2hPdMCJOR+cUbtxpUMRw
-hoemsMMllhLscZeqhlYuJXArUAYsw7Cszl0Q2zy/LypcubZtgvBCZwWLhPMx+iKC
-1cPTtFzG+DsGcWyIB7EcWsjoUUbvYdrnuQFwR+Rg7AF6Sk+T7lzrfYAe96XuvLvn
-maJUlcRDYZcnrdoNJIUK5RSPV2pyMS23rFILoKVpV58AcbIHraoxTkiuZkL0F4zJ
-y4YJH+llb83W7AdrHZw7AMMYLbZg6mbsiCTCKVYPGC1dmNF40FET2zKLGO0s5RNt
-bYKzuYzx82rEjDRyHCG/KxjCBwzlbQ==
-=Ir3m
------END PGP SIGNATURE-----
-
---n0OeUrTOIes8jnxm--
 
