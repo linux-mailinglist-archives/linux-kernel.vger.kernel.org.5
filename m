@@ -1,304 +1,184 @@
-Return-Path: <linux-kernel+bounces-989-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-991-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 74C2C8148E5
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 14:17:13 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 66E658148EA
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 14:18:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 01AC61F24A52
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 13:17:13 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 67AA11C23B1A
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 13:18:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 87AB73064F;
-	Fri, 15 Dec 2023 13:15:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Uc+ee6YL"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9BE7D2D7A7;
+	Fri, 15 Dec 2023 13:18:13 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED7E32DF8E;
-	Fri, 15 Dec 2023 13:15:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-40c256ffdbcso7456785e9.2;
-        Fri, 15 Dec 2023 05:15:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702646146; x=1703250946; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=AbeZ6c53cwolfsJXL8W/mW8ZWbgFKNj82lz0nxrDSHc=;
-        b=Uc+ee6YLiHCJzkoOZdQuriSKXv5FOjkdoqRFPfju+Mzm7d3aiDgWzJE5HRyvjUYm0O
-         H/7b61pRtwyfzwQtLnmm9cbq39midTKr7WQmqwYp8zFMOHlfP+XCVDxKxgyBO9nmcibQ
-         cMpy7Iw7G7WzatKoA94wZyDUV3qq8UMnCULLP8AXMUvgxE7NtqGfpGEJfIFBl2KF2D38
-         fdD73C5ZWP7DSOnwhlCZxZH45owwWxZ9UI3fYb4j5cSboj1DfmCOitxLNxedZuDolIMK
-         Mc00s2Kym1edn/kXniLgJe+Ar6ogLtbnXKAqvPGf3qXc34KJUgtMW9el+juvyesxwAq5
-         8x/A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702646146; x=1703250946;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=AbeZ6c53cwolfsJXL8W/mW8ZWbgFKNj82lz0nxrDSHc=;
-        b=XaG619by3+yleEiQWhZzkCaJrYHwDnrUMfCnTrxZsfav8eAKLmfpSqNINwN99qhrhU
-         VdfpBBB9p/AQ7WKh9OXv1xnVGmbhYV0peVpqkZ0GsoQkGub70BOQyvUtFc6SwxXYS/wm
-         QV9PjzpPnuIWZ1BOrNxi3DsJueqS6Waq+jdCZAGjQ+bjNFC8BcU8Kkx6rhKjVeVg/5MO
-         wuQeCxWgNHeuW80iyzD0pnMxaZTn1YiON9nKzJw/wkxJfFLLLLbJ4yfQ1ZWsY8ON6TnZ
-         A12ffJ6xI+Hfg3zqmynKJATPkgQmPho79Mehk52sq9vsXrul8c26gS74pNndq9zST3jL
-         8sHg==
-X-Gm-Message-State: AOJu0YxgoF7fEd4QqGYiyHZdqvv+KraiC132qGFqZvZp2L7R642axNRo
-	eb3T2lZKOcY1E7+c7kaP8a8=
-X-Google-Smtp-Source: AGHT+IF/q2qRVo16yIcIrEvV2VVslJXtVvwNg4wc4iEsBIT5SJGmoFpVKc8VKOOMBrjqrScyic2AHA==
-X-Received: by 2002:a05:600c:5012:b0:40c:6bfc:4bb1 with SMTP id n18-20020a05600c501200b0040c6bfc4bb1mr407557wmr.38.1702646145765;
-        Fri, 15 Dec 2023 05:15:45 -0800 (PST)
-Received: from localhost.localdomain (93-34-89-13.ip49.fastwebnet.it. [93.34.89.13])
-        by smtp.googlemail.com with ESMTPSA id fc7-20020a05600c524700b0040c44cb251dsm21618324wmb.46.2023.12.15.05.15.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Dec 2023 05:15:45 -0800 (PST)
-From: Christian Marangi <ansuelsmth@gmail.com>
-To: Florian Fainelli <florian.fainelli@broadcom.com>,
-	Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>,
-	Andrew Lunn <andrew@lunn.ch>,
-	Heiner Kallweit <hkallweit1@gmail.com>,
-	Russell King <linux@armlinux.org.uk>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	David Epping <david.epping@missinglinkelectronics.com>,
-	Vladimir Oltean <olteanv@gmail.com>,
-	Christian Marangi <ansuelsmth@gmail.com>,
-	Harini Katakam <harini.katakam@amd.com>,
-	netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [net-next PATCH v8 4/4] net: phy: add support for PHY package MMD read/write
-Date: Fri, 15 Dec 2023 14:15:34 +0100
-Message-Id: <20231215131534.7188-5-ansuelsmth@gmail.com>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20231215131534.7188-1-ansuelsmth@gmail.com>
-References: <20231215131534.7188-1-ansuelsmth@gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3EA4930321;
+	Fri, 15 Dec 2023 13:18:12 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 43444C433C7;
+	Fri, 15 Dec 2023 13:18:12 +0000 (UTC)
+Date: Fri, 15 Dec 2023 08:18:10 -0500
+From: Steven Rostedt <rostedt@goodmis.org>
+To: LKML <linux-kernel@vger.kernel.org>, Linux trace kernel
+ <linux-trace-kernel@vger.kernel.org>
+Cc: Masami Hiramatsu <mhiramat@kernel.org>, Mark Rutland
+ <mark.rutland@arm.com>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+ Joel Fernandes <joel@joelfernandes.org>, Vincent Donnefort  
+ <vdonnefort@google.com>
+Subject: [PATCH v2] ring-buffer: Remove useless update to write_stamp in
+ rb_try_to_discard()
+Message-ID: <20231215081810.1f4f38fe@rorschach.local.home>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-Some PHY in PHY package may require to read/write MMD regs to correctly
-configure the PHY package.
+From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 
-Add support for these additional required function in both lock and no
-lock variant.
+When filtering is enabled, a temporary buffer is created to place the
+content of the trace event output so that the filter logic can decide
+from the trace event output if the trace event should be filtered out or
+not. If it is to be filtered out, the content in the temporary buffer is
+simply discarded, otherwise it is written into the trace buffer.
 
-It's assumed that the entire PHY package is either C22 or C45. We use
-C22 or C45 way of writing/reading to mmd regs based on the passed phydev
-whether it's C22 or C45.
+But if an interrupt were to come in while a previous event was using that
+temporary buffer, the event written by the interrupt would actually go
+into the ring buffer itself to prevent corrupting the data on the
+temporary buffer. If the event is to be filtered out, the event in the
+ring buffer is discarded, or if it fails to discard because another event
+were to have already come in, it is turned into padding.
 
-Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
+The update to the write_stamp in the rb_try_to_discard() happens after a
+fix was made to force the next event after the discard to use an absolute
+timestamp by setting the before_stamp to zero so it does not match the
+write_stamp (which causes an event to use the absolute timestamp).
+
+But there's an effort in rb_try_to_discard() to put back the write_stamp
+to what it was before the event was added. But this is useless and
+wasteful because nothing is going to be using that write_stamp for
+calculations as it still will not match the before_stamp.
+
+Remove this useless update, and in doing so, we remove another
+cmpxchg64()!
+
+Also update the comments to reflect this change as well as remove some
+extra white space in another comment.
+
+Fixes: b2dd797543cf ("ring-buffer: Force absolute timestamp on discard of event")
+Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 ---
-Changesv8:
-- Use helper to validate final addr 
-Changes v7:
-- Change addr to u8
-Changes v6:
-- Fix copy paste error for kdoc
-Changes v5:
-- Improve function description
-Changes v4:
-- Drop function comments in header file
-Changes v3:
-- Move in phy-core.c from phy.h
-- Base c45 from phydev
-Changes v2:
-- Rework to use newly introduced helper
-- Add common check for regnum and devad
+Changes since v1: https://lore.kernel.org/linux-trace-kernel/20231215074151.447e14c2@rorschach.local.home/
 
- drivers/net/phy/phy-core.c | 140 +++++++++++++++++++++++++++++++++++++
- include/linux/phy.h        |  16 +++++
- 2 files changed, 156 insertions(+)
+- Once again I wrote this code on the commit that removes the 32-bit
+  version of the rb_time_* functions. I need to move that commit to
+  another branch.
 
-diff --git a/drivers/net/phy/phy-core.c b/drivers/net/phy/phy-core.c
-index b729ac8b2640..15f349e5995a 100644
---- a/drivers/net/phy/phy-core.c
-+++ b/drivers/net/phy/phy-core.c
-@@ -650,6 +650,146 @@ int phy_write_mmd(struct phy_device *phydev, int devad, u32 regnum, u16 val)
- }
- EXPORT_SYMBOL(phy_write_mmd);
- 
-+/**
-+ * __phy_package_read_mmd - read MMD reg relative to PHY package base addr
-+ * @phydev: The phy_device struct
-+ * @addr_offset: The offset to be added to PHY package base_addr
-+ * @devad: The MMD to read from
-+ * @regnum: The register on the MMD to read
-+ *
-+ * Convenience helper for reading a register of an MMD on a given PHY
-+ * using the PHY package base address. The base address is added to
-+ * the addr_offset value.
-+ *
-+ * Same calling rules as for __phy_read();
-+ *
-+ * NOTE: It's assumed that the entire PHY package is either C22 or C45.
-+ */
-+int __phy_package_read_mmd(struct phy_device *phydev,
-+			   unsigned int addr_offset, int devad,
-+			   u32 regnum)
-+{
-+	int addr = phy_package_address(phydev, addr_offset);
-+
-+	if (addr < 0)
-+		return addr;
-+
-+	if (regnum > (u16)~0 || devad > 32)
-+		return -EINVAL;
-+
-+	return mmd_phy_read(phydev->mdio.bus, addr, phydev->is_c45, devad,
-+			    regnum);
-+}
-+EXPORT_SYMBOL(__phy_package_read_mmd);
-+
-+/**
-+ * phy_package_read_mmd - read MMD reg relative to PHY package base addr
-+ * @phydev: The phy_device struct
-+ * @addr_offset: The offset to be added to PHY package base_addr
-+ * @devad: The MMD to read from
-+ * @regnum: The register on the MMD to read
-+ *
-+ * Convenience helper for reading a register of an MMD on a given PHY
-+ * using the PHY package base address. The base address is added to
-+ * the addr_offset value.
-+ *
-+ * Same calling rules as for phy_read();
-+ *
-+ * NOTE: It's assumed that the entire PHY package is either C22 or C45.
-+ */
-+int phy_package_read_mmd(struct phy_device *phydev,
-+			 unsigned int addr_offset, int devad,
-+			 u32 regnum)
-+{
-+	int addr = phy_package_address(phydev, addr_offset);
-+	int val;
-+
-+	if (addr < 0)
-+		return addr;
-+
-+	if (regnum > (u16)~0 || devad > 32)
-+		return -EINVAL;
-+
-+	phy_lock_mdio_bus(phydev);
-+	val = mmd_phy_read(phydev->mdio.bus, addr, phydev->is_c45, devad,
-+			   regnum);
-+	phy_unlock_mdio_bus(phydev);
-+
-+	return val;
-+}
-+EXPORT_SYMBOL(phy_package_read_mmd);
-+
-+/**
-+ * __phy_package_write_mmd - write MMD reg relative to PHY package base addr
-+ * @phydev: The phy_device struct
-+ * @addr_offset: The offset to be added to PHY package base_addr
-+ * @devad: The MMD to write to
-+ * @regnum: The register on the MMD to write
-+ * @val: value to write to @regnum
-+ *
-+ * Convenience helper for writing a register of an MMD on a given PHY
-+ * using the PHY package base address. The base address is added to
-+ * the addr_offset value.
-+ *
-+ * Same calling rules as for __phy_write();
-+ *
-+ * NOTE: It's assumed that the entire PHY package is either C22 or C45.
-+ */
-+int __phy_package_write_mmd(struct phy_device *phydev,
-+			    unsigned int addr_offset, int devad,
-+			    u32 regnum, u16 val)
-+{
-+	int addr = phy_package_address(phydev, addr_offset);
-+
-+	if (addr < 0)
-+		return addr;
-+
-+	if (regnum > (u16)~0 || devad > 32)
-+		return -EINVAL;
-+
-+	return mmd_phy_write(phydev->mdio.bus, addr, phydev->is_c45, devad,
-+			     regnum, val);
-+}
-+EXPORT_SYMBOL(__phy_package_write_mmd);
-+
-+/**
-+ * phy_package_write_mmd - write MMD reg relative to PHY package base addr
-+ * @phydev: The phy_device struct
-+ * @addr_offset: The offset to be added to PHY package base_addr
-+ * @devad: The MMD to write to
-+ * @regnum: The register on the MMD to write
-+ * @val: value to write to @regnum
-+ *
-+ * Convenience helper for writing a register of an MMD on a given PHY
-+ * using the PHY package base address. The base address is added to
-+ * the addr_offset value.
-+ *
-+ * Same calling rules as for phy_write();
-+ *
-+ * NOTE: It's assumed that the entire PHY package is either C22 or C45.
-+ */
-+int phy_package_write_mmd(struct phy_device *phydev,
-+			  unsigned int addr_offset, int devad,
-+			  u32 regnum, u16 val)
-+{
-+	int addr = phy_package_address(phydev, addr_offset);
-+	int ret;
-+
-+	if (addr < 0)
-+		return addr;
-+
-+	if (regnum > (u16)~0 || devad > 32)
-+		return -EINVAL;
-+
-+	phy_lock_mdio_bus(phydev);
-+	ret = mmd_phy_write(phydev->mdio.bus, addr, phydev->is_c45, devad,
-+			    regnum, val);
-+	phy_unlock_mdio_bus(phydev);
-+
-+	return ret;
-+}
-+EXPORT_SYMBOL(phy_package_write_mmd);
-+
- /**
-  * phy_modify_changed - Function for modifying a PHY register
-  * @phydev: the phy_device struct
-diff --git a/include/linux/phy.h b/include/linux/phy.h
-index 85fdba43b813..191762d89ed8 100644
---- a/include/linux/phy.h
-+++ b/include/linux/phy.h
-@@ -2060,6 +2060,22 @@ static inline int __phy_package_write(struct phy_device *phydev,
- 	return __mdiobus_write(phydev->mdio.bus, addr, regnum, val);
+ kernel/trace/ring_buffer.c | 47 +++++++++-----------------------------
+ 1 file changed, 11 insertions(+), 36 deletions(-)
+
+diff --git a/kernel/trace/ring_buffer.c b/kernel/trace/ring_buffer.c
+index 2668dde23343..ad4af0cba159 100644
+--- a/kernel/trace/ring_buffer.c
++++ b/kernel/trace/ring_buffer.c
+@@ -2983,25 +2983,6 @@ static unsigned rb_calculate_event_length(unsigned length)
+ 	return length;
  }
  
-+int __phy_package_read_mmd(struct phy_device *phydev,
-+			   unsigned int addr_offset, int devad,
-+			   u32 regnum);
-+
-+int phy_package_read_mmd(struct phy_device *phydev,
-+			 unsigned int addr_offset, int devad,
-+			 u32 regnum);
-+
-+int __phy_package_write_mmd(struct phy_device *phydev,
-+			    unsigned int addr_offset, int devad,
-+			    u32 regnum, u16 val);
-+
-+int phy_package_write_mmd(struct phy_device *phydev,
-+			  unsigned int addr_offset, int devad,
-+			  u32 regnum, u16 val);
-+
- static inline bool __phy_package_set_once(struct phy_device *phydev,
- 					  unsigned int b)
- {
+-static u64 rb_time_delta(struct ring_buffer_event *event)
+-{
+-	switch (event->type_len) {
+-	case RINGBUF_TYPE_PADDING:
+-		return 0;
+-
+-	case RINGBUF_TYPE_TIME_EXTEND:
+-		return rb_event_time_stamp(event);
+-
+-	case RINGBUF_TYPE_TIME_STAMP:
+-		return 0;
+-
+-	case RINGBUF_TYPE_DATA:
+-		return event->time_delta;
+-	default:
+-		return 0;
+-	}
+-}
+-
+ static inline bool
+ rb_try_to_discard(struct ring_buffer_per_cpu *cpu_buffer,
+ 		  struct ring_buffer_event *event)
+@@ -3009,8 +2990,6 @@ rb_try_to_discard(struct ring_buffer_per_cpu *cpu_buffer,
+ 	unsigned long new_index, old_index;
+ 	struct buffer_page *bpage;
+ 	unsigned long addr;
+-	u64 write_stamp;
+-	u64 delta;
+ 
+ 	new_index = rb_event_index(event);
+ 	old_index = new_index + rb_event_ts_length(event);
+@@ -3019,14 +2998,10 @@ rb_try_to_discard(struct ring_buffer_per_cpu *cpu_buffer,
+ 
+ 	bpage = READ_ONCE(cpu_buffer->tail_page);
+ 
+-	delta = rb_time_delta(event);
+-
+-	if (!rb_time_read(&cpu_buffer->write_stamp, &write_stamp))
+-		return false;
+-
+-	/* Make sure the write stamp is read before testing the location */
+-	barrier();
+-
++	/*
++	 * Make sure the tail_page is still the same and
++	 * the next write location is the end of this event
++	 */
+ 	if (bpage->page == (void *)addr && rb_page_write(bpage) == old_index) {
+ 		unsigned long write_mask =
+ 			local_read(&bpage->write) & ~RB_WRITE_MASK;
+@@ -3037,20 +3012,20 @@ rb_try_to_discard(struct ring_buffer_per_cpu *cpu_buffer,
+ 		 * to make sure that the next event adds an absolute
+ 		 * value and does not rely on the saved write stamp, which
+ 		 * is now going to be bogus.
++		 *
++		 * By setting the before_stamp to zero, the next event
++		 * is not going to use the write_stamp and will instead
++		 * create an absolute timestamp. This means there's no
++		 * reason to update the wirte_stamp!
+ 		 */
+ 		rb_time_set(&cpu_buffer->before_stamp, 0);
+ 
+-		/* Something came in, can't discard */
+-		if (!rb_time_cmpxchg(&cpu_buffer->write_stamp,
+-				       write_stamp, write_stamp - delta))
+-			return false;
+-
+ 		/*
+ 		 * If an event were to come in now, it would see that the
+ 		 * write_stamp and the before_stamp are different, and assume
+ 		 * that this event just added itself before updating
+ 		 * the write stamp. The interrupting event will fix the
+-		 * write stamp for us, and use the before stamp as its delta.
++		 * write stamp for us, and use an absolute timestamp.
+ 		 */
+ 
+ 		/*
+@@ -3487,7 +3462,7 @@ static void check_buffer(struct ring_buffer_per_cpu *cpu_buffer,
+ 		return;
+ 
+ 	/*
+-	 * If this interrupted another event, 
++	 * If this interrupted another event,
+ 	 */
+ 	if (atomic_inc_return(this_cpu_ptr(&checking)) != 1)
+ 		goto out;
 -- 
-2.40.1
+2.42.0
 
 
