@@ -1,178 +1,184 @@
-Return-Path: <linux-kernel+bounces-532-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-534-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CDE6281428B
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 08:38:44 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id AF1BC814290
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 08:39:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 06CC21C221AA
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 07:38:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D445E1C21E15
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 07:39:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 32B13DDCA;
-	Fri, 15 Dec 2023 07:38:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DEC7A101D5;
+	Fri, 15 Dec 2023 07:39:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="BdiCH6C8"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="l/RaSu98"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yb1-f202.google.com (mail-yb1-f202.google.com [209.85.219.202])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F6D810797
-	for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 07:38:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1702625905; x=1734161905;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=zPCRJqITGD+98gkI+4OVx5rQL+6vZkkwLce8IReGN6g=;
-  b=BdiCH6C8geXLML6AtS0r6IuWSni6dFfGN3iOtb4GMWCLUJTurv/rR2HM
-   Afdrejm7fKpT4vmX69apO8jbJ0LKnI/FxedTVK381ATPqVxbSxyQcqDTu
-   e8Dew5mPUD87S/9uURBKywtQadl0BhEZT47twP3a/60fOIC9Sf2OwhA1M
-   moFaxJA4EAq/HTX7vTfRriuwqgmX1JDtrTXSbDiLkSyvmNdKuAGTvtM2t
-   j1AoQrUs8kDKxO645mQLmtSsJKXZokxrYoxZ/4FaWsoijPB45hy8kEw/N
-   ya/xjp+xGKHMSyOytZDSI+N3urFA7X32K0MJm8EZ38WGIyluio7zWOV42
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10924"; a="385660451"
-X-IronPort-AV: E=Sophos;i="6.04,278,1695711600"; 
-   d="scan'208";a="385660451"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Dec 2023 23:38:24 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10924"; a="803620494"
-X-IronPort-AV: E=Sophos;i="6.04,278,1695711600"; 
-   d="scan'208";a="803620494"
-Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
-  by orsmga008.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 14 Dec 2023 23:38:23 -0800
-Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
- fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Thu, 14 Dec 2023 23:38:22 -0800
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Thu, 14 Dec 2023 23:38:22 -0800
-Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
- fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Thu, 14 Dec 2023 23:38:22 -0800
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (104.47.56.168)
- by edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Thu, 14 Dec 2023 23:38:21 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=isKlG3n4CiEeBsCOw5SEHf3oxWlUNs6NCS+tDnNgK8NRnDlo6hfdQBlr/8ZSVm0ZRLlx1CjHfKZbVBY+oGsPw4oRkjYKzpGN2DUVyBPtRG07dRZ4NYCcJiDYz3ZnjygasnVr0O8K9D5Zwr60/IKMXwfQbnAya43jsZINhVw+ZKC81CDtM5yLILJf7uzM6ZoTXAd5BbGln5ynSA5Hox2Tfp/l/vxRPZjkmcjo71dScg1BmacBpgHACJRQeuM6mHQkHvxlkCXgM1wRlEyEuPErJQ0tlVSfbb4Yw5vnYsrWsMWD15+zCQaPLVpr7b97dlm9/Us/RflBoMYF1Di6OLd7IA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=zPCRJqITGD+98gkI+4OVx5rQL+6vZkkwLce8IReGN6g=;
- b=E1qxdKHLSohT4KjOUV0ipTLY/L40E9E8fscLbaBfry/lZnuP/WfUBk4KitO/V2+YNFIFhGz5aqsHVjTMEypIG0mrUw9jj7hvaYfpP7tNbTcRaK1EyHK9m2GdiK2lOUH8Z2rQC1rFX4SyjeaT+/2M6sJRS1V7nz8yilLcXTH9Xp0KT7jM2J/7nlSi1zjS+CTkfkWZLGdJY4fGfmkPQ41YdWQGqz72h8DXw029dlMYonnDZGx602e4U2SwhCUCRUu3SqSQMz7QYkBFPfL2JTpI7zlM/kUJUCo1ak4lqllFs3J3QkR/FnrEe+jLm/vBjMTSdZEaaDHYG0PvfPGyCTVLsg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Received: from BN9PR11MB5276.namprd11.prod.outlook.com (2603:10b6:408:135::18)
- by CY8PR11MB6817.namprd11.prod.outlook.com (2603:10b6:930:63::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7091.28; Fri, 15 Dec
- 2023 07:38:19 +0000
-Received: from BN9PR11MB5276.namprd11.prod.outlook.com
- ([fe80::e7a4:a757:2f2e:f96a]) by BN9PR11MB5276.namprd11.prod.outlook.com
- ([fe80::e7a4:a757:2f2e:f96a%3]) with mapi id 15.20.7091.029; Fri, 15 Dec 2023
- 07:38:19 +0000
-From: "Tian, Kevin" <kevin.tian@intel.com>
-To: Jason Gunthorpe <jgg@nvidia.com>, Suravee Suthikulpanit
-	<suravee.suthikulpanit@amd.com>
-CC: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"iommu@lists.linux.dev" <iommu@lists.linux.dev>, "joro@8bytes.org"
-	<joro@8bytes.org>, "Liu, Yi L" <yi.l.liu@intel.com>, "nicolinc@nvidia.com"
-	<nicolinc@nvidia.com>, "eric.auger@redhat.com" <eric.auger@redhat.com>,
-	"vasant.hegde@amd.com" <vasant.hegde@amd.com>, "jon.grimm@amd.com"
-	<jon.grimm@amd.com>, "santosh.shukla@amd.com" <santosh.shukla@amd.com>,
-	"Dhaval.Giani@amd.com" <Dhaval.Giani@amd.com>, "pandoh@google.com"
-	<pandoh@google.com>, "loganodell@google.com" <loganodell@google.com>
-Subject: RE: [RFC PATCH 4/6] iommufd: Introduce data struct for AMD nested
- domain allocation
-Thread-Topic: [RFC PATCH 4/6] iommufd: Introduce data struct for AMD nested
- domain allocation
-Thread-Index: AQHaLRSwdefkH5ERoUGP+SW1YrC2V7CnQEaAgAK4t6A=
-Date: Fri, 15 Dec 2023 07:38:19 +0000
-Message-ID: <BN9PR11MB5276083231E7C7C6FFCC6E248C93A@BN9PR11MB5276.namprd11.prod.outlook.com>
-References: <20231212160139.174229-1-suravee.suthikulpanit@amd.com>
- <20231212160139.174229-5-suravee.suthikulpanit@amd.com>
- <20231213140359.GU3014157@nvidia.com>
-In-Reply-To: <20231213140359.GU3014157@nvidia.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: BN9PR11MB5276:EE_|CY8PR11MB6817:EE_
-x-ms-office365-filtering-correlation-id: e8b3d795-5f42-4b14-8951-08dbfd40cece
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: e+F0TsGkicRqGLasVTRK+uJDK6W+Cg7tGW/8j7HiQRruRfqYWcO1/SnKOXdeZC4A44TTm5adsYxeHxjOZc/WQZ5bnFOdetIvAuOGmH88Bk4Lu5s0In04h6hltccYPYXjn6lqWIhowOhLyeTqTOxxcin4xjYK19OGRRx9bj3Gra5G69KXGKuyC/gl4+LK2MUnSaGdDSq6r45eRzUW59rxaPuTU1jeV55JDkcwbEjLCXMMvZxdYD6lcdnEJV1la86eeFBY3qKUqOv30Ap43O1voZbx1Ev9MbwexQD3NBLVUU3XzTgyQN+JG7RYepOemhQoT30NwPPMGxvYR/qkv8wo3G0Zdo13rc04D95+lyUifPLg75Pmla0tOPkHR7ycdbtfz/H4d3P3Q4fBh/89bAL1lxRnXu9ZL0GUida+0/0AB5X0TlNVOJznEW7BtBoOr6vt8nWQxYdhGeUnhEU6feZtM0G7cu+uXyW/OC1Oiy2/VRS9j1mSKDq6psQXb/wlCOz9myrZQ+7OFbBeFidCbnvqNDmk3HzRugfgcqrk3nSJ1hgHgGm4fqek45FiIBuDaeWL5gXxvlo30MthsIoj2kraXtFE84E5HEd37N/giU75XeNE4vrgRhJl1kOar+fgNKn4
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN9PR11MB5276.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(39860400002)(346002)(376002)(396003)(366004)(230922051799003)(1800799012)(64100799003)(186009)(451199024)(38100700002)(122000001)(86362001)(82960400001)(38070700009)(55016003)(6506007)(478600001)(7696005)(26005)(71200400001)(66556008)(64756008)(52536014)(4326008)(54906003)(76116006)(110136005)(66946007)(66446008)(66476007)(9686003)(316002)(8936002)(8676002)(41300700001)(33656002)(5660300002)(7416002)(4744005)(2906002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?BrElgfND85T9P1wfWVz2dC73ipfzywxZx4BG5w3usfni5arzlrN03F46kFA3?=
- =?us-ascii?Q?h/ZIgsJv3lv3IXMTiT7dbXalMAWUqVfWTfRd2jEUu2metI/+loAQ7WffPmsZ?=
- =?us-ascii?Q?nZmZbN2Mffns2fYMErH+SVBsDZpzWf1T7JkCe4zG2OCwL6vdFLdLx4cP2usW?=
- =?us-ascii?Q?tO+j/j4TItt3ooaEeMT/jo+UAC0Ce+62ugkrH4NuKRTwV0bxlCm8iseNgjas?=
- =?us-ascii?Q?9fG9n1ojoKGie0VxHq5D2GAXJa+TGmSBkHALn/YW3TqjZHFJhr8elzZRX+eU?=
- =?us-ascii?Q?aoHV5Cukh/yVfXq9zn6NkrcHBzX3lSJ0ZL9J64LqvfJgYfGJtUxUO7VlCIvr?=
- =?us-ascii?Q?N3Ci5+4P2GD2vuyZORlCfv68KrJGEQywYoLrhVBNUVWz8AuVNxZRYtnEpqxb?=
- =?us-ascii?Q?nci1mamOB1EVNJrSLgBI3m/Usa4Rk2lQTC43cgJdAKaLkzr0SyKE3HL6V6Xe?=
- =?us-ascii?Q?cIUnXm60DC8ZRh8KanKJOiPZw/ecwDNJsonSJDj4isujVl1M2Emalu1XjgEJ?=
- =?us-ascii?Q?JxSTQ/KOlDThqC+6zYGqWyIfJx2iU393ygY/ClPdHgQoOyJxDCEYr2uLuzIL?=
- =?us-ascii?Q?ZEuamjaBsYx7hDLS8dc3/pkM6IJA1aoor6bNQe/ru97+5vi/b8k2MvD/mMGK?=
- =?us-ascii?Q?est7+WispzNPKteEPVENub0Vh5Ip7MeLoXiC/aHNkx3iYPrmFa1kaXbeJ+If?=
- =?us-ascii?Q?IOrJhNSQSZHWIYK9sLnKlYrbiqDPP8EGDwZPUEKlwZwP7AskG8bhIvDsM4lB?=
- =?us-ascii?Q?jSvHS2HExI/qhVsxIAxNUelx4yxqK7Yhpbii3dUnZU3GOx1LXS6e0SGa8isl?=
- =?us-ascii?Q?k43EZrD7PPcYDawGcr8Xn4KOyaG3X6mFhw+7EMKO2Dd39ygbLIaaCzWb4HNL?=
- =?us-ascii?Q?DVDaCl2j4gyaorHtTvC6qXUtpmCNZFcV3cf7gcsC/TVekroUFO5fbrE1q60X?=
- =?us-ascii?Q?VstmWBJBxc1ZsoTj8dku5nrd2Dyq6irDpHVv5vLQaP6Nbyf9FfAXT7XtmgBM?=
- =?us-ascii?Q?rKutwSBy/itexp8fuBmI9lnfL28OQpNie8+/9eWxm+UKC3CqHxeiGqTkzqXJ?=
- =?us-ascii?Q?pTxpazDEyNzOIVguCVqOEDh7j/zC7knmRVPLqJ2+Q27zjGlhpcgSEdfLk0at?=
- =?us-ascii?Q?qW5icGgqzUrGLLgbBP+xWy9YX+CEYXieCdm+your6GsHBzgdO/JZjBk6xL30?=
- =?us-ascii?Q?b08oJ8gr6fqLim8kSiTQeRCK39qG/QGs0SWKfDsouZx5p5wNfnDBCyB6Rg7t?=
- =?us-ascii?Q?FsVA52vtgA9PW9lvJFllc6N+sOaWteTfT+eNmHpZIWSNGyzQZSOrt2Jc/zTs?=
- =?us-ascii?Q?8uuKB9hdaBy7YQEO728RyNf8UtFe0KxeD/hQopp5h9YNOjvU7rdLkWKCsGoP?=
- =?us-ascii?Q?Xt7J/2jP0MnVAje/v3m1YNzYsZHdkHS9k18Vcwpzd7XDpz095HWHFUTNu2eJ?=
- =?us-ascii?Q?L0fiWeybNLM5/A43gv+ID0sEj1zX+FLtahrFckNt/188QP7AHv3O0/dEIdWv?=
- =?us-ascii?Q?zM7alPZbP55ZSKU8T6EzMiFqe7kohteXVRqL7m5VT9D2GqolGHHmUnhXy1Zl?=
- =?us-ascii?Q?bVyErg5ahF/wGg96C8ksp8gb0sApPgcorJdjzIpz?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 48D3D12E6E
+	for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 07:39:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--davidgow.bounces.google.com
+Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-db402e6f61dso234514276.3
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 23:39:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1702625953; x=1703230753; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=Mp/8hWJv2G3IEKZLrg9ZmDkM8WmGCalwoEjWRw4iU4I=;
+        b=l/RaSu98NWmILQWuM6rpl6zMyxbpbwNz5KIo9kTWfntjLzb2z3FiQlmQAufrErANHT
+         dDzaj3j7hVnfNg5wnniuA4g2980iXazQa/BeoTi4LPn8KYKVDCtyVxqy1UvgE+kKvwq1
+         /QgqK/pi+sODqBCWmYRmR+dIkrPDWf0bHqoYn4pYa6hVNCRevcnmfBHgmSoFJzRVJpKM
+         s0Gq1ICunwOB0rDco4o3b56lRR79dtn0SbQ4BQU4PoJLjSWqMaAdLcSbNyv6JK2gz6NE
+         UixTZ816jrYR73ON6JMT1BJJEVkCt9z2SOE8ypGbKC02wKDvGMOXj22xfW/3hoZ5xKui
+         4Zpg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702625953; x=1703230753;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Mp/8hWJv2G3IEKZLrg9ZmDkM8WmGCalwoEjWRw4iU4I=;
+        b=EpQVeg0KwonK+LuZV3t+MvfAQit+XSoZeU+pNvXAOC3yaQrJLtgQVgFrsiOXIdsxS7
+         uYhx0urrIn4Xa/Lls/akA8OmWuofoe3rju5W+/Byhh9sdjbvCa1ssyGwHlzV+6P7/gZ/
+         XbV0hYUa+QkFGI2pzUrsLc12nnxXEaV5W3oCftTczsaxyPNwOty4yRXx3BUBjMB/I25P
+         t0cmdM4tfARTwz165+hWMsx4tnWAcyDlx5cXPBnfyJdsVot6f4FYNGHkjhHycY1TzhBc
+         u6Ap/ofcuWxAkE12Jnt9/FLqC0rlWsntvmhKHzwtS00NXQsBTQiosen32GphpeFzISnJ
+         ieVQ==
+X-Gm-Message-State: AOJu0YwhAwA3OzJcLEilB6iugHhluoUZXA9ZVG481Ra5PmYHp19udX0e
+	anZSNram5KEtYYS0es9TjMjnmM+cERlMBw==
+X-Google-Smtp-Source: AGHT+IGHET7uXEidWHXMGL3nVLfetoQmh9ZEua39AXsgZMYdcjq38i3NEbBG3nl+MkvvMOLIudj38fXqOB+xkA==
+X-Received: from slicestar.c.googlers.com ([fda3:e722:ac3:cc00:4f:4b78:c0a8:20a1])
+ (user=davidgow job=sendgmr) by 2002:a25:a122:0:b0:dbc:35fe:5e81 with SMTP id
+ z31-20020a25a122000000b00dbc35fe5e81mr102923ybh.12.1702625953359; Thu, 14 Dec
+ 2023 23:39:13 -0800 (PST)
+Date: Fri, 15 Dec 2023 15:39:07 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BN9PR11MB5276.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e8b3d795-5f42-4b14-8951-08dbfd40cece
-X-MS-Exchange-CrossTenant-originalarrivaltime: 15 Dec 2023 07:38:19.2379
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: JXRwJ8hdJjiSXSIA6tzj5UDex9ZFYV1UvHAa6r+TCcb1gFuapb8tXS6Rrdoh2Nx82F2mLTPlwKCJaiTBzr2LBA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY8PR11MB6817
-X-OriginatorOrg: intel.com
+Mime-Version: 1.0
+X-B4-Tracking: v=1; b=H4sIAJsCfGUC/2XO0Q6CIBTG8VdxXEcDDqh01Xu01hSOyippUqzmf
+ PfQK1qX3xm//5hJwMlhIIdiJhNGF5wf05C7gpihGXukzqZNBBPAKl7T62t0z0v7CrRpuTYSO1l
+ bQ9L7x4Sde2+t0zntwYWnnz5bOvL1ulW4YCqrRE4ZLUExKC20hsOx976/4d74O1kzUeQ0/0AUi aJWmimrWxDqj0JGucwpJFqhbkRdWWCy/qHLsnwBjE6oShkBAAA=
+X-Mailer: b4 0.13-dev-099c9
+Message-ID: <20231215-kunit_bus-v4-0-4f5160e2f95e@google.com>
+Subject: [PATCH v4 0/5] kunit: Add helpers for creating test-managed devices
+From: davidgow@google.com
+To: Rae Moar <rmoar@google.com>, Brendan Higgins <brendan.higgins@linux.dev>, 
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Matti Vaittinen <mazziesaccount@gmail.com>, 
+	Stephen Boyd <sboyd@kernel.org>, Shuah Khan <skhan@linuxfoundation.org>, 
+	Jonathan Corbet <corbet@lwn.net>, Kees Cook <keescook@chromium.org>, 
+	Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, 
+	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Maxime Ripard <mripard@kernel.org>
+Cc: linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com, 
+	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-hardening@vger.kernel.org, linux-sound@vger.kernel.org, 
+	David Gow <davidgow@google.com>, Maxime Ripard <mripard@kernel.org>
+Content-Type: text/plain; charset="utf-8"
 
-> From: Jason Gunthorpe <jgg@nvidia.com>
-> Sent: Wednesday, December 13, 2023 10:04 PM
->=20
-> The viommu object should hold the GID. I'm not sure you need a GID
-> right now (can you just issue invalidation on the physical side?), but
-> if you do need GID to bridge until the viommu is ready it should
-> probably be allocated by and stored in the nesting parent.
->=20
+KUnit tests often need to provide a struct device, and thus far have
+mostly been using root_device_register() or platform devices to create
+a 'fake device' for use with, e.g., code which uses device-managed
+resources. This has several disadvantages, including not being designed
+for test use, scattering files in sysfs, and requiring manual teardown
+on test exit, which may not always be possible in case of failure.
 
-and how is GID different from existing Domain ID of nesting parent?
+Instead, introduce a set of helper functions which allow devices
+(internally a struct kunit_device) to be created and managed by KUnit --
+i.e., they will be automatically unregistered on test exit. These
+helpers can either use a user-provided struct device_driver, or have one
+automatically created and managed by KUnit. In both cases, the device
+lives on a new kunit_bus.
+
+This is a follow-up to a previous proposal here:
+https://lore.kernel.org/linux-kselftest/20230325043104.3761770-1-davidgow@google.com/
+
+(The kunit_defer() function in the first patch there has since been
+merged as the 'deferred actions' feature.)
+
+My intention is to take this whole series in via the kselftest/kunit
+branch, but I'm equally okay with splitting up the later patches which
+use this to go via the various subsystem trees in case there are merge
+conflicts.
+
+Cheers,
+-- David
+
+Signed-off-by: David Gow <davidgow@google.com>
+---
+Changes in v4:
+- Update tags, fix a missing Signed-off-by.
+- Link to v3: https://lore.kernel.org/r/20231214-kunit_bus-v3-0-7e9a287d3048@google.com
+
+Changes in v3:
+- Port the DRM tests to these new helpers (Thanks, Maxime!)
+- Include the lib/kunit/device-impl.h file, which was missing from the
+  previous revision.
+- Fix a use-after-free bug in kunit_device_driver_test, which resulted
+  in memory corruption on some clang-built UML builds.
+  - The 'test_state' is now allocated with kunit_kzalloc(), not on the
+    stack, as the stack will be gone when cleanup occurs.
+- Link to v2: https://lore.kernel.org/r/20231208-kunit_bus-v2-0-e95905d9b325@google.com
+
+Changes in v2:
+- Simplify device/driver/bus matching, removing the no-longer-required
+  kunit_bus_match function. (Thanks, Greg)
+- The return values are both more consistent (kunit_device_register now
+  returns an explicit error pointer, rather than failing the test), and
+  better documented.
+- Add some basic documentation to the implementations as well as the
+  headers. The documentation in the headers is still more complete, and
+  is now properly compiled into the HTML documentation (under
+  dev-tools/kunit/api/resources.html). (Thanks, Matti)
+- Moved the internal-only kunit_bus_init() function to a private header,
+  lib/kunit/device-impl.h to avoid polluting the public headers, and
+  match other internal-only headers. (Thanks, Greg)
+- Alphabetise KUnit includes in other test modules. (Thanks, Amadeusz.)
+- Several code cleanups, particularly around error handling and
+  allocation. (Thanks Greg, Maxime)
+- Several const-correctness and casting improvements. (Thanks, Greg)
+- Added a new test to verify KUnit cleanup triggers device cleanup.
+  (Thanks, Maxime).
+- Improved the user-specified device test to verify that probe/remove
+  hooks are called correctly. (Thanks, Maxime).
+- The overflow test no-longer needlessly calls
+  kunit_device_unregister().
+- Several other minor cleanups and documentation improvements, which
+  hopefully make this a bit clearer and more robust.
+- Link to v1: https://lore.kernel.org/r/20231205-kunit_bus-v1-0-635036d3bc13@google.com
+
+---
+David Gow (4):
+      kunit: Add APIs for managing devices
+      fortify: test: Use kunit_device
+      overflow: Replace fake root_device with kunit_device
+      ASoC: topology: Replace fake root_device with kunit_device in tests
+
+Maxime Ripard (1):
+      drm/tests: Switch to kunit devices
+
+ Documentation/dev-tools/kunit/api/resource.rst |   9 ++
+ Documentation/dev-tools/kunit/usage.rst        |  50 +++++++
+ drivers/gpu/drm/tests/drm_kunit_helpers.c      |  66 +--------
+ include/kunit/device.h                         |  80 +++++++++++
+ lib/fortify_kunit.c                            |   5 +-
+ lib/kunit/Makefile                             |   3 +-
+ lib/kunit/device-impl.h                        |  17 +++
+ lib/kunit/device.c                             | 181 +++++++++++++++++++++++++
+ lib/kunit/kunit-test.c                         | 134 +++++++++++++++++-
+ lib/kunit/test.c                               |   3 +
+ lib/overflow_kunit.c                           |   5 +-
+ sound/soc/soc-topology-test.c                  |  10 +-
+ 12 files changed, 485 insertions(+), 78 deletions(-)
+---
+base-commit: b285ba6f8cc1b2bfece0b4350fdb92c8780bc698
+change-id: 20230718-kunit_bus-ab19c4ef48dc
+
+Best regards,
+-- 
+David Gow <davidgow@google.com>
+
 
