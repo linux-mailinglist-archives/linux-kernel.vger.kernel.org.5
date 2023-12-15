@@ -1,97 +1,112 @@
-Return-Path: <linux-kernel+bounces-321-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-322-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F10B1813F52
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 02:43:01 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id E5ABE813F57
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 02:43:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AD711283E48
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 01:43:00 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 78F05B21F93
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 01:43:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 64A4353BA;
-	Fri, 15 Dec 2023 01:42:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 26B82808;
+	Fri, 15 Dec 2023 01:43:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IZCEXQo6"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RPJ8PLMA"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com [209.85.128.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B0509538A;
-	Fri, 15 Dec 2023 01:42:51 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AC62BC433C8;
-	Fri, 15 Dec 2023 01:42:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1702604571;
-	bh=WpAhXUDP0156J7Qod8uxjWkADmlPCIE00X7Adp2r1e8=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=IZCEXQo6pawTJBvo7W+kRFb/WNCmOGU/PI7DgARIcNi17ISz65nVpcg4f/pPzcJ5E
-	 CNucasQGiaQe1/TWSM66jhPq+C4TpAgHr5mL5mo7ppCSbbSGjHc+UVmI4d2RPGj8ZJ
-	 U20wj/8qiYQ0LaH3BpSL943jq7ESdoaqfM/UG/XrzhkOmoY+6THBgc6jxD4pMIUwEN
-	 RisdElPzjsEUTLYYyLUp55lEMxUG+h0+1np7mcn8kPnr/xYPPmzmWCGrIpsFtnwzpR
-	 827xHxZmmH7Cjzu/hpZ2b+C+xbhP+Wd69sFaWcHDtwMkQpmWVXTpq3D39QNkvrNCHj
-	 x7qBkKncgHTqQ==
-Date: Fri, 15 Dec 2023 02:42:48 +0100
-From: Andi Shyti <andi.shyti@kernel.org>
-To: Quan Nguyen <quan@os.amperecomputing.com>
-Cc: Brendan Higgins <brendan.higgins@linux.dev>,
-	Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-	Joel Stanley <joel@jms.id.au>,
-	Andrew Jeffery <andrew@codeconstruct.com.au>,
-	Wolfram Sang <wsa@kernel.org>,
-	Jae Hyun Yoo <jae.hyun.yoo@linux.intel.com>,
-	Guenter Roeck <linux@roeck-us.net>, linux-i2c@vger.kernel.org,
-	openbmc@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org,
-	linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-	Cosmo Chou <chou.cosmo@gmail.com>,
-	Open Source Submission <patches@amperecomputing.com>,
-	Phong Vo <phong@os.amperecomputing.com>,
-	"Thang Q . Nguyen" <thang@os.amperecomputing.com>
-Subject: Re: [PATCH v4 1/2] i2c: aspeed: Handle the coalesced stop conditions
- with the start conditions.
-Message-ID: <20231215014248.6f7sqh6n4kmhe4js@zenone.zhora.eu>
-References: <20231211102217.2436294-1-quan@os.amperecomputing.com>
- <20231211102217.2436294-2-quan@os.amperecomputing.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 05EBC10F3;
+	Fri, 15 Dec 2023 01:43:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f42.google.com with SMTP id 5b1f17b1804b1-40c2c65e6aaso1974805e9.2;
+        Thu, 14 Dec 2023 17:43:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1702604614; x=1703209414; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:autocrypt
+         :references:in-reply-to:date:cc:to:from:subject:message-id:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=ZPXPBhj6r6wn/s7iUr6Ov+9BGjRNtkcDIxrWuGzYqqU=;
+        b=RPJ8PLMAbBBFLXfhdNL/hD+S1YytfI9setztdjqgghfH4hCHL7rwAGWSzd0x/wiuFB
+         Zr9D04NK+L/Rqqyb0/ShhhU4wgA7Koii5vaMmMl+6UfdSv1NW5p/gk1gdARneZZw38S1
+         L02bynZhEyQ0cQ/XoIQgxI9wGgoWLCv5OCN22TBax0ARRGCOmwo1+X4Sv/qAAv6Wop+I
+         bckt045hU1ZgA9Y/XeXYfyvD0d7PDabxgLbbdz7JrTe91XgFqWqS+hKF2VLdQ1b665gz
+         qjEZI3ztMO25Bf4FYl3l5WTEeo/pXX3jzFDrYkq7GAv/3W59ZXfJNVCiwLYeiUJEsDam
+         N1gw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702604614; x=1703209414;
+        h=mime-version:user-agent:content-transfer-encoding:autocrypt
+         :references:in-reply-to:date:cc:to:from:subject:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ZPXPBhj6r6wn/s7iUr6Ov+9BGjRNtkcDIxrWuGzYqqU=;
+        b=Uj3L5Yfd4EwLg6DOsObRHIDPOy4A5CWzFD3yrRK+CJT8V1FPnOWUEIcF0bUga0b6uM
+         FLR4VCYiy3a7/jK8UG7/uuiYUPn/hhfUnJZkn5/3F7qnXxRo3RoUSsP0b0ccP5lRk3k+
+         4RCT+EwkYIIO9d9JXRl5XAHe7pwfay1Oa58Jbj1kdw9DvkHvzsTqKHe4Q+8xyY84bQKW
+         xMhaa/klsDjWFIeukTBoSsKZUHVaOoUADc4OBhrwm2AibUE8FZraL77nzrGIneyRYgW2
+         cdPu02A+HAH4rvwD+7YRdz8mQgfDdk5z6pnyI/Dim83Oz9Efpd8hfR+bjjl7ApOI0Czi
+         XkMQ==
+X-Gm-Message-State: AOJu0YzvH4m9GjNxfOS+qIntgoWn/1my6vZGTkZgB2GSDwGaaBaAnmsS
+	/+5xgHwNN/4eRSZ2vcyktu4=
+X-Google-Smtp-Source: AGHT+IGHbvX/KwnnFSDijk7FhPD1SJcKVFFkFn1IWOSVYXK88SCVtOeGj0OJgpawZ/uIv8bh4y5CIQ==
+X-Received: by 2002:a05:600c:1913:b0:40b:5e21:bde8 with SMTP id j19-20020a05600c191300b0040b5e21bde8mr5092782wmq.119.1702604614043;
+        Thu, 14 Dec 2023 17:43:34 -0800 (PST)
+Received: from [192.168.1.95] (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
+        by smtp.gmail.com with ESMTPSA id p18-20020a5d6392000000b003333a216682sm17313271wru.97.2023.12.14.17.43.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 Dec 2023 17:43:33 -0800 (PST)
+Message-ID: <feffb6294801f156ed049d47483164e0d51aa77b.camel@gmail.com>
+Subject: Re: [Bug Report] bpf: incorrectly pruning runtime execution path
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: Hao Sun <sunhao.th@gmail.com>, Alexei Starovoitov <ast@kernel.org>, 
+ Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann
+ <daniel@iogearbox.net>, bpf <bpf@vger.kernel.org>, Linux Kernel Mailing
+ List <linux-kernel@vger.kernel.org>
+Date: Fri, 15 Dec 2023 03:43:32 +0200
+In-Reply-To: <2b49b96de9f8a1cd6d78cc5aebe7c35776cd2c19.camel@gmail.com>
+References: 
+	<CACkBjsbj4y4EhqpV-ZVt645UtERJRTxfEab21jXD1ahPyzH4_g@mail.gmail.com>
+	 <CAEf4BzZ0xidVCqB47XnkXcNhkPWF6_nTV7yt+_Lf0kcFEut2Mg@mail.gmail.com>
+	 <CACkBjsaEQxCaZ0ERRnBXduBqdw3MXB5r7naJx_anqxi0Wa-M_Q@mail.gmail.com>
+	 <480a5cfefc23446f7c82c5b87eef6306364132b9.camel@gmail.com>
+	 <917DAD9F-8697-45B8-8890-D33393F6CDF1@gmail.com>
+	 <9dee19c7d39795242c15b2f7aa56fb4a6c3ebffa.camel@gmail.com>
+	 <73d021e3f77161668aae833e478b210ed5cd2f4d.camel@gmail.com>
+	 <CAEf4BzYuV3odyj8A77ZW8H9jyx_YLhAkSiM+1hkvtH=OYcHL3w@mail.gmail.com>
+	 <526d4ac8f6788d3323d29fdbad0e0e5d09a534db.camel@gmail.com>
+	 <2b49b96de9f8a1cd6d78cc5aebe7c35776cd2c19.camel@gmail.com>
+Autocrypt: addr=eddyz87@gmail.com; prefer-encrypt=mutual; keydata=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
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.1 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231211102217.2436294-2-quan@os.amperecomputing.com>
 
-Hi Quan,
+On Fri, 2023-12-15 at 03:24 +0200, Eduard Zingerman wrote:
+[...]
+> Here is an option that would fix the test in question, but I'm not
+> sure if it covers all cases:
+> 1. At the last instruction of each state (first instruction to be
+>    backtracked) we know the set of IDs that should be tracked for
+>    precision, as currently marked by mark_precise_scalar_ids().
+> 2. In jump history we can record IDs for src and dst registers when new
+>    entry is pushed.
+> 3. While backtracking 'if' statement, if one of the recorded IDs is in
+>    the set identified at (1), add src/dst regs to precise registers set.
 
-On Mon, Dec 11, 2023 at 05:22:16PM +0700, Quan Nguyen wrote:
-> Some masters may drive the transfers with low enough latency between
-> the nak/stop phase of the current command and the start/address phase
-> of the following command that the interrupts are coalesced by the
-> time we process them.
-> Handle the stop conditions before processing SLAVE_MATCH to fix the
-> complaints that sometimes occur below.
-> 
-> "aspeed-i2c-bus 1e78a040.i2c-bus: irq handled != irq. Expected
-> 0x00000086, but was 0x00000084"
-> 
-> Fixes: f9eb91350bb2 ("i2c: aspeed: added slave support for Aspeed I2C driver")
-> Signed-off-by: Quan Nguyen <quan@os.amperecomputing.com>
-> Reviewed-by: Andrew Jeffery <andrew@codeconstruct.com.au>
-> Reviewed-by: Andi Shyti <andi.shyti@kernel.org>
-> ---
-> v4:
->   + Add an extra empty line before the comment                        [Andrew]
-> 
-> Note: I'd like to keep adding Reviewed-by Andrew and Andi for this patch
-> eventhough there is an extra empty line added before the comment as mentioned
-> above. Thanks for the review.
+Nah... this won't work for "second order" ids.
 
-that's OK and you should. You would remove the r-b/a-b only if
-you do some major changes. Besides, this change was asked both by
-me and Andrew.
-
-Thanks,
-Andi
+    --- suppose r2.id =3D=3D r3.id here
+    if r3 > 10 goto exit;
+    r1 +=3D r2
+    ... use r1 as precise ...
 
