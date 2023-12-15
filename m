@@ -1,137 +1,416 @@
-Return-Path: <linux-kernel+bounces-836-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-849-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8A1B98146DE
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 12:27:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id C376F814708
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 12:34:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3EE9B1F23289
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 11:27:50 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 520281F2357E
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 11:34:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C06972510D;
-	Fri, 15 Dec 2023 11:27:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ejYLrVyw"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4E9E325564;
+	Fri, 15 Dec 2023 11:34:34 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-yw1-f178.google.com (mail-yw1-f178.google.com [209.85.128.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from cloudserver094114.home.pl (cloudserver094114.home.pl [79.96.170.134])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B9EEE24B47;
-	Fri, 15 Dec 2023 11:27:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f178.google.com with SMTP id 00721157ae682-5cd81e76164so4594677b3.1;
-        Fri, 15 Dec 2023 03:27:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702639651; x=1703244451; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=smDGabhS7vctxpO+deRKUcMYfvvkEi0FhsbNu+lkOzE=;
-        b=ejYLrVyw97T5qygNZC7LN3aJ2mLL+0qxzWrJXvz1faNviNWdabvrI9qage5q9MAu4F
-         O0EUFDQdcgQNdGavEPnmmcgEPq8Mmf3LQUXpM4GZ6JiLR2/p3OnNhaNGo0ajYyXVNEE3
-         4BMnRLDufgMcbD4dXwFWZJEkkjMgwtk+h+nD2Oa90BoSfVWVfTMqhMXVJQNeon9WtdiH
-         cQ0OgJqXe5SvH0ntObi7cvc1jErvo7dZrCCZ6M0Abuc+ZKikBN/4hqxJoG5k3tjaiul4
-         hTGgGN6lgumxoIGjvEC/5j7HRpSX2GgNPBjX6FZtZ0URNrnAHxqmzfjYstvTD5tNuQzF
-         qfKg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702639651; x=1703244451;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=smDGabhS7vctxpO+deRKUcMYfvvkEi0FhsbNu+lkOzE=;
-        b=qOBHXabCNfFR6UQdr72LEkcP1nahB6f9A+I2GGJip4+MO5PFtEqSx2Bi6vyPvXGlxo
-         ZJThSZjipAz2SXGWVOCfEhoudbcoxlPOz2eodANO+qi0IR5AEEZAiy+1bUHC0FSkhJti
-         8+dM8EwewX9DGJpXhBaF62sj8s1zygojD5/aBp7V2BXQdqmcOtRkuqQIYp8mJG7S3xJh
-         NQDTGX8SvhqecIQdgJm11c0Kb/HvU3/8Z4Nbut4Vr5OJsZjwAUoDcSDcwHY+AwSpJpP0
-         uKkjN48Hy4ytdSu5CIl4fu2O3RwvjNRoOpbw+53D2/FyC4pokvl8KNQDVp2zWH48EFz1
-         X14Q==
-X-Gm-Message-State: AOJu0YzlvA3OOg/BnlW8rBuk21HSTusEjtjPpOBGNb3P6tpzqnM0URls
-	phpPs1dUuJSkJ9koP87bZQpJFfTEfVXFZLTr8LM=
-X-Google-Smtp-Source: AGHT+IGuFMMv68nUKNuq0aC/6kTpHtWXckeCIHxhvxv90ZN2tNAgt3p9+Pw0AKRTRjXfsBMA1xCqGKaRoRHmreap3fg=
-X-Received: by 2002:a81:48c1:0:b0:5e2:62c0:f18b with SMTP id
- v184-20020a8148c1000000b005e262c0f18bmr4604862ywa.37.1702639650776; Fri, 15
- Dec 2023 03:27:30 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 015E7250E5;
+	Fri, 15 Dec 2023 11:34:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rjwysocki.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rjwysocki.net
+Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
+ by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 5.4.0)
+ id a3d939aa62efad4a; Fri, 15 Dec 2023 12:27:48 +0100
+Received: from kreacher.localnet (unknown [195.136.19.94])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by cloudserver094114.home.pl (Postfix) with ESMTPSA id D8D0F668B1E;
+	Fri, 15 Dec 2023 12:27:47 +0100 (CET)
+From: "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To: Linux ACPI <linux-acpi@vger.kernel.org>
+Cc: LKML <linux-kernel@vger.kernel.org>, Zhang Rui <rui.zhang@intel.com>, Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>, Michal Wilczynski <michal.wilczynski@intel.com>, Hans de Goede <hdegoede@redhat.com>, Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Mika Westerberg <mika.westerberg@linux.intel.com>, Heikki Krogerus <heikki.krogerus@linux.intel.com>, Mario Limonciello <mario.limonciello@amd.com>, Daniel Drake <drake@endlessm.com>
+Subject: [PATCH v1 3/3] ACPI: EC: Use a spin lock without disabing interrupts
+Date: Fri, 15 Dec 2023 12:27:30 +0100
+Message-ID: <3287818.aeNJFYEL58@kreacher>
+In-Reply-To: <2330034.ElGaqSPkdT@kreacher>
+References: <2330034.ElGaqSPkdT@kreacher>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231214222253.116734-1-ojeda@kernel.org> <CABVgOS=LXUzRD-c63sxn0FMfGWvxCPP1t_8nY5Xgk30Y9qMAcw@mail.gmail.com>
-In-Reply-To: <CABVgOS=LXUzRD-c63sxn0FMfGWvxCPP1t_8nY5Xgk30Y9qMAcw@mail.gmail.com>
-From: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date: Fri, 15 Dec 2023 12:27:19 +0100
-Message-ID: <CANiq72kw326HyrDM0v0mFNu5jfb=eL1a+k-idr-5Vbc6_gmY2A@mail.gmail.com>
-Subject: Re: [PATCH] kbuild: rust: add `rustupoverride` target
-To: David Gow <davidgow@google.com>
-Cc: Miguel Ojeda <ojeda@kernel.org>, Masahiro Yamada <masahiroy@kernel.org>, 
-	Wedson Almeida Filho <wedsonaf@gmail.com>, Alex Gaynor <alex.gaynor@gmail.com>, 
-	Nathan Chancellor <nathan@kernel.org>, Nick Desaulniers <ndesaulniers@google.com>, 
-	Nicolas Schier <nicolas@fjasle.eu>, Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, 
-	=?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, 
-	Benno Lossin <benno.lossin@proton.me>, Andreas Hindborg <a.hindborg@samsung.com>, 
-	Alice Ryhl <aliceryhl@google.com>, linux-kbuild@vger.kernel.org, 
-	rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	patches@lists.linux.dev
+Content-Transfer-Encoding: 7Bit
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-CLIENT-IP: 195.136.19.94
+X-CLIENT-HOSTNAME: 195.136.19.94
+X-VADE-SPAMSTATE: clean
+X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvkedrvddtvddgvdekucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecujffqoffgrffnpdggtffipffknecuuegrihhlohhuthemucduhedtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvfevufffkfgjfhgggfgtsehtufertddttdejnecuhfhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqnecuggftrfgrthhtvghrnhepvdffueeitdfgvddtudegueejtdffteetgeefkeffvdeftddttdeuhfegfedvjefhnecukfhppeduleehrddufeeirdduledrleegnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepudelhedrudefiedrudelrdelgedphhgvlhhopehkrhgvrggthhgvrhdrlhhotggrlhhnvghtpdhmrghilhhfrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqedpnhgspghrtghpthhtohepuddupdhrtghpthhtoheplhhinhhugidqrggtphhisehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheprhhuihdriihhrghnghesihhnthgvlhdrtghomhdprhgtphhtthhopehsrhhinhhivhgrshdrphgrnhgurhhuvhgruggrsehlihhnuhigrdhinhhtvghlrdgt
+ ohhmpdhrtghpthhtohepmhhitghhrghlrdifihhltgiihihnshhkihesihhnthgvlhdrtghomhdprhgtphhtthhopehhuggvghhovgguvgesrhgvughhrghtrdgtohhm
+X-DCC--Metrics: v370.home.net.pl 1024; Body=11 Fuz1=11 Fuz2=11
 
-On Fri, Dec 15, 2023 at 8:38=E2=80=AFAM David Gow <davidgow@google.com> wro=
-te:
->
-> Would having similar targets for bindgen help? What about having this
-> install rust-src? Updating / installing those required a lot more
-> looking up of documentation (and then adding --force), so it'd be nice
-> if there were some way to do a similar override or make target.
+From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-Which docs did you need to check? i.e. we have the commands for those
-steps in the Quick Start guide. I think you may be referring to the
-case when switching between LTS and mainline, due to the `bindgen-cli`
-vs. `bindgen` name change that the tool did (since that is where
-`--force` is required, not for normal upgrading or downgrading). That
-is definitely a bit painful :-( At least `cargo` mentions the need for
-`--force` in that case. Or are you referring to something else?
+Since all of the ACPI EC driver code runs in thread context after recent
+changes, it does not need to disable interrupts on the local CPU when
+acquiring a spin lock.
 
-I considered having a `rustupsetup` target (or script) instead that
-does everything (with a `BUILDONLY=3D1` option or similar, given some
-dependencies are not strictly needed for building), since having all
-this "switching logic" is useful, but then:
+Make it use the spin lock without disabling interrupts.
 
-  - I am not sure we should "hide" the details of the setup too much:
-I thought `rustupoverride` would be OK-ish because the output
-directory is needed (so it is justified) and the command is
-straightforward, but the others do not "need" that information.
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+---
+ drivers/acpi/ec.c |  112 ++++++++++++++++++++++--------------------------------
+ 1 file changed, 46 insertions(+), 66 deletions(-)
 
-  - If we include `bindgen` there, it wouldn't be `rustup`-only
-anymore, so perhaps we would need another name like `rustsetup`. But
-that may mislead others (e.g. those looking at the Make help), because
-it is just one way of setting things up and it is not required.
-Perhaps this can be alleviated by not including it in the `make help`,
-so that everybody comes from the Quick Start guide and thus hopefully
-they have read the document at least diagonally :)
+Index: linux-pm/drivers/acpi/ec.c
+===================================================================
+--- linux-pm.orig/drivers/acpi/ec.c
++++ linux-pm/drivers/acpi/ec.c
+@@ -525,12 +525,10 @@ static void acpi_ec_clear(struct acpi_ec
+ 
+ static void acpi_ec_enable_event(struct acpi_ec *ec)
+ {
+-	unsigned long flags;
+-
+-	spin_lock_irqsave(&ec->lock, flags);
++	spin_lock(&ec->lock);
+ 	if (acpi_ec_started(ec))
+ 		__acpi_ec_enable_event(ec);
+-	spin_unlock_irqrestore(&ec->lock, flags);
++	spin_unlock(&ec->lock);
+ 
+ 	/* Drain additional events if hardware requires that */
+ 	if (EC_FLAGS_CLEAR_ON_RESUME)
+@@ -546,11 +544,9 @@ static void __acpi_ec_flush_work(void)
+ 
+ static void acpi_ec_disable_event(struct acpi_ec *ec)
+ {
+-	unsigned long flags;
+-
+-	spin_lock_irqsave(&ec->lock, flags);
++	spin_lock(&ec->lock);
+ 	__acpi_ec_disable_event(ec);
+-	spin_unlock_irqrestore(&ec->lock, flags);
++	spin_unlock(&ec->lock);
+ 
+ 	/*
+ 	 * When ec_freeze_events is true, we need to flush events in
+@@ -571,10 +567,9 @@ void acpi_ec_flush_work(void)
+ 
+ static bool acpi_ec_guard_event(struct acpi_ec *ec)
+ {
+-	unsigned long flags;
+ 	bool guarded;
+ 
+-	spin_lock_irqsave(&ec->lock, flags);
++	spin_lock(&ec->lock);
+ 	/*
+ 	 * If firmware SCI_EVT clearing timing is "event", we actually
+ 	 * don't know when the SCI_EVT will be cleared by firmware after
+@@ -590,31 +585,29 @@ static bool acpi_ec_guard_event(struct a
+ 	guarded = ec_event_clearing == ACPI_EC_EVT_TIMING_EVENT &&
+ 		ec->event_state != EC_EVENT_READY &&
+ 		(!ec->curr || ec->curr->command != ACPI_EC_COMMAND_QUERY);
+-	spin_unlock_irqrestore(&ec->lock, flags);
++	spin_unlock(&ec->lock);
+ 	return guarded;
+ }
+ 
+ static int ec_transaction_polled(struct acpi_ec *ec)
+ {
+-	unsigned long flags;
+ 	int ret = 0;
+ 
+-	spin_lock_irqsave(&ec->lock, flags);
++	spin_lock(&ec->lock);
+ 	if (ec->curr && (ec->curr->flags & ACPI_EC_COMMAND_POLL))
+ 		ret = 1;
+-	spin_unlock_irqrestore(&ec->lock, flags);
++	spin_unlock(&ec->lock);
+ 	return ret;
+ }
+ 
+ static int ec_transaction_completed(struct acpi_ec *ec)
+ {
+-	unsigned long flags;
+ 	int ret = 0;
+ 
+-	spin_lock_irqsave(&ec->lock, flags);
++	spin_lock(&ec->lock);
+ 	if (ec->curr && (ec->curr->flags & ACPI_EC_COMMAND_COMPLETE))
+ 		ret = 1;
+-	spin_unlock_irqrestore(&ec->lock, flags);
++	spin_unlock(&ec->lock);
+ 	return ret;
+ }
+ 
+@@ -756,7 +749,6 @@ static int ec_guard(struct acpi_ec *ec)
+ 
+ static int ec_poll(struct acpi_ec *ec)
+ {
+-	unsigned long flags;
+ 	int repeat = 5; /* number of command restarts */
+ 
+ 	while (repeat--) {
+@@ -765,14 +757,14 @@ static int ec_poll(struct acpi_ec *ec)
+ 		do {
+ 			if (!ec_guard(ec))
+ 				return 0;
+-			spin_lock_irqsave(&ec->lock, flags);
++			spin_lock(&ec->lock);
+ 			advance_transaction(ec, false);
+-			spin_unlock_irqrestore(&ec->lock, flags);
++			spin_unlock(&ec->lock);
+ 		} while (time_before(jiffies, delay));
+ 		pr_debug("controller reset, restart transaction\n");
+-		spin_lock_irqsave(&ec->lock, flags);
++		spin_lock(&ec->lock);
+ 		start_transaction(ec);
+-		spin_unlock_irqrestore(&ec->lock, flags);
++		spin_unlock(&ec->lock);
+ 	}
+ 	return -ETIME;
+ }
+@@ -780,11 +772,10 @@ static int ec_poll(struct acpi_ec *ec)
+ static int acpi_ec_transaction_unlocked(struct acpi_ec *ec,
+ 					struct transaction *t)
+ {
+-	unsigned long tmp;
+ 	int ret = 0;
+ 
+ 	/* start transaction */
+-	spin_lock_irqsave(&ec->lock, tmp);
++	spin_lock(&ec->lock);
+ 	/* Enable GPE for command processing (IBF=0/OBF=1) */
+ 	if (!acpi_ec_submit_flushable_request(ec)) {
+ 		ret = -EINVAL;
+@@ -795,11 +786,11 @@ static int acpi_ec_transaction_unlocked(
+ 	ec->curr = t;
+ 	ec_dbg_req("Command(%s) started", acpi_ec_cmd_string(t->command));
+ 	start_transaction(ec);
+-	spin_unlock_irqrestore(&ec->lock, tmp);
++	spin_unlock(&ec->lock);
+ 
+ 	ret = ec_poll(ec);
+ 
+-	spin_lock_irqsave(&ec->lock, tmp);
++	spin_lock(&ec->lock);
+ 	if (t->irq_count == ec_storm_threshold)
+ 		acpi_ec_unmask_events(ec);
+ 	ec_dbg_req("Command(%s) stopped", acpi_ec_cmd_string(t->command));
+@@ -808,7 +799,7 @@ static int acpi_ec_transaction_unlocked(
+ 	acpi_ec_complete_request(ec);
+ 	ec_dbg_ref(ec, "Decrease command");
+ unlock:
+-	spin_unlock_irqrestore(&ec->lock, tmp);
++	spin_unlock(&ec->lock);
+ 	return ret;
+ }
+ 
+@@ -936,9 +927,7 @@ EXPORT_SYMBOL(ec_get_handle);
+ 
+ static void acpi_ec_start(struct acpi_ec *ec, bool resuming)
+ {
+-	unsigned long flags;
+-
+-	spin_lock_irqsave(&ec->lock, flags);
++	spin_lock(&ec->lock);
+ 	if (!test_and_set_bit(EC_FLAGS_STARTED, &ec->flags)) {
+ 		ec_dbg_drv("Starting EC");
+ 		/* Enable GPE for event processing (SCI_EVT=1) */
+@@ -948,31 +937,28 @@ static void acpi_ec_start(struct acpi_ec
+ 		}
+ 		ec_log_drv("EC started");
+ 	}
+-	spin_unlock_irqrestore(&ec->lock, flags);
++	spin_unlock(&ec->lock);
+ }
+ 
+ static bool acpi_ec_stopped(struct acpi_ec *ec)
+ {
+-	unsigned long flags;
+ 	bool flushed;
+ 
+-	spin_lock_irqsave(&ec->lock, flags);
++	spin_lock(&ec->lock);
+ 	flushed = acpi_ec_flushed(ec);
+-	spin_unlock_irqrestore(&ec->lock, flags);
++	spin_unlock(&ec->lock);
+ 	return flushed;
+ }
+ 
+ static void acpi_ec_stop(struct acpi_ec *ec, bool suspending)
+ {
+-	unsigned long flags;
+-
+-	spin_lock_irqsave(&ec->lock, flags);
++	spin_lock(&ec->lock);
+ 	if (acpi_ec_started(ec)) {
+ 		ec_dbg_drv("Stopping EC");
+ 		set_bit(EC_FLAGS_STOPPED, &ec->flags);
+-		spin_unlock_irqrestore(&ec->lock, flags);
++		spin_unlock(&ec->lock);
+ 		wait_event(ec->wait, acpi_ec_stopped(ec));
+-		spin_lock_irqsave(&ec->lock, flags);
++		spin_lock(&ec->lock);
+ 		/* Disable GPE for event processing (SCI_EVT=1) */
+ 		if (!suspending) {
+ 			acpi_ec_complete_request(ec);
+@@ -983,29 +969,25 @@ static void acpi_ec_stop(struct acpi_ec
+ 		clear_bit(EC_FLAGS_STOPPED, &ec->flags);
+ 		ec_log_drv("EC stopped");
+ 	}
+-	spin_unlock_irqrestore(&ec->lock, flags);
++	spin_unlock(&ec->lock);
+ }
+ 
+ static void acpi_ec_enter_noirq(struct acpi_ec *ec)
+ {
+-	unsigned long flags;
+-
+-	spin_lock_irqsave(&ec->lock, flags);
++	spin_lock(&ec->lock);
+ 	ec->busy_polling = true;
+ 	ec->polling_guard = 0;
+ 	ec_log_drv("interrupt blocked");
+-	spin_unlock_irqrestore(&ec->lock, flags);
++	spin_unlock(&ec->lock);
+ }
+ 
+ static void acpi_ec_leave_noirq(struct acpi_ec *ec)
+ {
+-	unsigned long flags;
+-
+-	spin_lock_irqsave(&ec->lock, flags);
++	spin_lock(&ec->lock);
+ 	ec->busy_polling = ec_busy_polling;
+ 	ec->polling_guard = ec_polling_guard;
+ 	ec_log_drv("interrupt unblocked");
+-	spin_unlock_irqrestore(&ec->lock, flags);
++	spin_unlock(&ec->lock);
+ }
+ 
+ void acpi_ec_block_transactions(void)
+@@ -1137,9 +1119,9 @@ static void acpi_ec_event_processor(stru
+ 
+ 	ec_dbg_evt("Query(0x%02x) stopped", handler->query_bit);
+ 
+-	spin_lock_irq(&ec->lock);
++	spin_lock(&ec->lock);
+ 	ec->queries_in_progress--;
+-	spin_unlock_irq(&ec->lock);
++	spin_unlock(&ec->lock);
+ 
+ 	acpi_ec_put_query_handler(handler);
+ 	kfree(q);
+@@ -1202,12 +1184,12 @@ static int acpi_ec_submit_query(struct a
+ 	 */
+ 	ec_dbg_evt("Query(0x%02x) scheduled", value);
+ 
+-	spin_lock_irq(&ec->lock);
++	spin_lock(&ec->lock);
+ 
+ 	ec->queries_in_progress++;
+ 	queue_work(ec_query_wq, &q->work);
+ 
+-	spin_unlock_irq(&ec->lock);
++	spin_unlock(&ec->lock);
+ 
+ 	return 0;
+ 
+@@ -1223,14 +1205,14 @@ static void acpi_ec_event_handler(struct
+ 
+ 	ec_dbg_evt("Event started");
+ 
+-	spin_lock_irq(&ec->lock);
++	spin_lock(&ec->lock);
+ 
+ 	while (ec->events_to_process) {
+-		spin_unlock_irq(&ec->lock);
++		spin_unlock(&ec->lock);
+ 
+ 		acpi_ec_submit_query(ec);
+ 
+-		spin_lock_irq(&ec->lock);
++		spin_lock(&ec->lock);
+ 
+ 		ec->events_to_process--;
+ 	}
+@@ -1247,11 +1229,11 @@ static void acpi_ec_event_handler(struct
+ 
+ 		ec_dbg_evt("Event stopped");
+ 
+-		spin_unlock_irq(&ec->lock);
++		spin_unlock(&ec->lock);
+ 
+ 		guard_timeout = !!ec_guard(ec);
+ 
+-		spin_lock_irq(&ec->lock);
++		spin_lock(&ec->lock);
+ 
+ 		/* Take care of SCI_EVT unless someone else is doing that. */
+ 		if (guard_timeout && !ec->curr)
+@@ -1264,7 +1246,7 @@ static void acpi_ec_event_handler(struct
+ 
+ 	ec->events_in_progress--;
+ 
+-	spin_unlock_irq(&ec->lock);
++	spin_unlock(&ec->lock);
+ }
+ 
+ static void clear_gpe_and_advance_transaction(struct acpi_ec *ec, bool interrupt)
+@@ -1289,13 +1271,11 @@ static void clear_gpe_and_advance_transa
+ 
+ static void acpi_ec_handle_interrupt(struct acpi_ec *ec)
+ {
+-	unsigned long flags;
+-
+-	spin_lock_irqsave(&ec->lock, flags);
++	spin_lock(&ec->lock);
+ 
+ 	clear_gpe_and_advance_transaction(ec, true);
+ 
+-	spin_unlock_irqrestore(&ec->lock, flags);
++	spin_unlock(&ec->lock);
+ }
+ 
+ static u32 acpi_ec_gpe_handler(acpi_handle gpe_device,
+@@ -2105,7 +2085,7 @@ bool acpi_ec_dispatch_gpe(void)
+ 	 * Dispatch the EC GPE in-band, but do not report wakeup in any case
+ 	 * to allow the caller to process events properly after that.
+ 	 */
+-	spin_lock_irq(&first_ec->lock);
++	spin_lock(&first_ec->lock);
+ 
+ 	if (acpi_ec_gpe_status_set(first_ec)) {
+ 		pm_pr_dbg("ACPI EC GPE status set\n");
+@@ -2114,7 +2094,7 @@ bool acpi_ec_dispatch_gpe(void)
+ 		work_in_progress = acpi_ec_work_in_progress(first_ec);
+ 	}
+ 
+-	spin_unlock_irq(&first_ec->lock);
++	spin_unlock(&first_ec->lock);
+ 
+ 	if (!work_in_progress)
+ 		return false;
+@@ -2127,11 +2107,11 @@ bool acpi_ec_dispatch_gpe(void)
+ 
+ 		pm_pr_dbg("ACPI EC work flushed\n");
+ 
+-		spin_lock_irq(&first_ec->lock);
++		spin_lock(&first_ec->lock);
+ 
+ 		work_in_progress = acpi_ec_work_in_progress(first_ec);
+ 
+-		spin_unlock_irq(&first_ec->lock);
++		spin_unlock(&first_ec->lock);
+ 	} while (work_in_progress && !pm_wakeup_pending());
+ 
+ 	return false;
 
-  - Given there are different ways to set different sub-steps, and the
-fact that we don't have such a script for C does not have (please
-correct me if I am wrong -- I am aware of Thorsten's recent guide,
-which covers `apt` etc., but that is a Quick Start-like approach
-rather than automated script), I am not sure it would be welcome as a
-Make target (but perhaps it would be fine as a script?). Masahiro may
-have some guidelines here.
 
-  - In the future we may have to change how the setup works or add
-steps, i.e. it is not 100% settled. Thus I am concerned about adding
-complex Make targets that users may start to depend on (i.e. with
-particular/complex semantics), vs. just having docs that are manual.
-For `rustupoverride`, it thought it could be OK-ish because it is just
-a single command and unlikely that it will change (and if we stop
-using it, we can make it empty with a warning and then remove it
-eventually; while it gets harder for more complex ones).
 
-What do you think?
-
-Cheers,
-Miguel
 
