@@ -1,113 +1,85 @@
-Return-Path: <linux-kernel+bounces-1035-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-1036-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id ED89881498B
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 14:44:44 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2E99481498F
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 14:45:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8CFEF1F22D2F
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 13:44:44 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D0BBD1F223B4
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 13:45:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 976D72DF98;
-	Fri, 15 Dec 2023 13:44:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DDE322E3F3;
+	Fri, 15 Dec 2023 13:45:41 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from relay9-d.mail.gandi.net (relay9-d.mail.gandi.net [217.70.183.199])
+Received: from mxhk.zte.com.cn (mxhk.zte.com.cn [63.216.63.40])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 61ED72F840;
-	Fri, 15 Dec 2023 13:44:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ghiti.fr
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ghiti.fr
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 7DA31FF80F;
-	Fri, 15 Dec 2023 13:44:25 +0000 (UTC)
-Message-ID: <30f8bb02-5271-4a6a-9f59-12382b6e41a0@ghiti.fr>
-Date: Fri, 15 Dec 2023 14:44:25 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D5B522C852;
+	Fri, 15 Dec 2023 13:45:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zte.com.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zte.com.cn
+Received: from mse-fl1.zte.com.cn (unknown [10.5.228.132])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by mxhk.zte.com.cn (FangMail) with ESMTPS id 4Ss9TS4Pr5z8XrRL;
+	Fri, 15 Dec 2023 21:45:32 +0800 (CST)
+Received: from xaxapp02.zte.com.cn ([10.88.97.241])
+	by mse-fl1.zte.com.cn with SMTP id 3BFDjRWh071963;
+	Fri, 15 Dec 2023 21:45:27 +0800 (+08)
+	(envelope-from yang.guang5@zte.com.cn)
+Received: from mapi (xaxapp02[null])
+	by mapi (Zmail) with MAPI id mid31;
+	Fri, 15 Dec 2023 21:45:31 +0800 (CST)
+Date: Fri, 15 Dec 2023 21:45:31 +0800 (CST)
+X-Zmail-TransId: 2afa657c587b3a7-53fc0
+X-Mailer: Zmail v1.0
+Message-ID: <202312152145312776210@zte.com.cn>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 4/5] tools: selftests: riscv: Fix compile warnings in
- vector tests
-Content-Language: en-US
-To: Christoph Muellner <christoph.muellner@vrull.eu>,
- linux-riscv@lists.infradead.org, linux-kselftest@vger.kernel.org,
- linux-kernel@vger.kernel.org, Palmer Dabbelt <palmer@dabbelt.com>,
- Paul Walmsley <paul.walmsley@sifive.com>, Albert Ou <aou@eecs.berkeley.edu>,
- Shuah Khan <shuah@kernel.org>
-Cc: Philipp Tomsich <philipp.tomsich@vrull.eu>,
- Andrew Jones <ajones@ventanamicro.com>, Evan Green <evan@rivosinc.com>,
- Xiao Wang <xiao.w.wang@intel.com>, Alexandre Ghiti <alexghiti@rivosinc.com>,
- Andy Chiu <andy.chiu@sifive.com>, =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?=
- <bjorn@rivosinc.com>, Charlie Jenkins <charlie@rivosinc.com>
-References: <20231123185821.2272504-1-christoph.muellner@vrull.eu>
- <20231123185821.2272504-5-christoph.muellner@vrull.eu>
-From: Alexandre Ghiti <alex@ghiti.fr>
-In-Reply-To: <20231123185821.2272504-5-christoph.muellner@vrull.eu>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-GND-Sasl: alex@ghiti.fr
+Mime-Version: 1.0
+From: <yang.guang5@zte.com.cn>
+To: <davem@davemloft.net>
+Cc: <jiang.xuexin@zte.com.cn>, <chen.haonan2@zte.com.cn>, <cgel.zte@gmail.com>,
+        <edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
+        <sd@queasysnail.net>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: =?UTF-8?B?W1BBVENIIGxpbnV4LW5leHRdIG1seHN3OiBzcGVjdHJ1bTogdXNlIG5ldGlmX2lzX21hY3NlYygpIGluc3RlYWQgb2Ygb3BlbiBjb2Rl?=
+Content-Type: text/plain;
+	charset="UTF-8"
+X-MAIL:mse-fl1.zte.com.cn 3BFDjRWh071963
+X-Fangmail-Gw-Spam-Type: 0
+X-Fangmail-Anti-Spam-Filtered: true
+X-Fangmail-MID-QID: 657C587C.001/4Ss9TS4Pr5z8XrRL
 
-On 23/11/2023 19:58, Christoph Muellner wrote:
-> From: Christoph Müllner <christoph.muellner@vrull.eu>
->
-> GCC prints a couple of format string warnings when compiling
-> the vector tests. Let's follow the recommendation in
-> Documentation/printk-formats.txt to fix these warnings.
->
-> Signed-off-by: Christoph Müllner <christoph.muellner@vrull.eu>
-> ---
->   tools/testing/selftests/riscv/vector/v_initval_nolibc.c | 2 +-
->   tools/testing/selftests/riscv/vector/vstate_prctl.c     | 4 ++--
->   2 files changed, 3 insertions(+), 3 deletions(-)
->
-> diff --git a/tools/testing/selftests/riscv/vector/v_initval_nolibc.c b/tools/testing/selftests/riscv/vector/v_initval_nolibc.c
-> index 66764edb0d52..1dd94197da30 100644
-> --- a/tools/testing/selftests/riscv/vector/v_initval_nolibc.c
-> +++ b/tools/testing/selftests/riscv/vector/v_initval_nolibc.c
-> @@ -27,7 +27,7 @@ int main(void)
->   
->   	datap = malloc(MAX_VSIZE);
->   	if (!datap) {
-> -		ksft_test_result_fail("fail to allocate memory for size = %lu\n", MAX_VSIZE);
-> +		ksft_test_result_fail("fail to allocate memory for size = %d\n", MAX_VSIZE);
->   		exit(-1);
->   	}
->   
-> diff --git a/tools/testing/selftests/riscv/vector/vstate_prctl.c b/tools/testing/selftests/riscv/vector/vstate_prctl.c
-> index b348b475be57..8ad94e08ff4d 100644
-> --- a/tools/testing/selftests/riscv/vector/vstate_prctl.c
-> +++ b/tools/testing/selftests/riscv/vector/vstate_prctl.c
-> @@ -68,7 +68,7 @@ int test_and_compare_child(long provided, long expected, int inherit)
->   	}
->   	rc = launch_test(inherit);
->   	if (rc != expected) {
-> -		ksft_test_result_fail("Test failed, check %d != %d\n", rc,
-> +		ksft_test_result_fail("Test failed, check %d != %ld\n", rc,
->   				      expected);
->   		return -2;
->   	}
-> @@ -87,7 +87,7 @@ int main(void)
->   	pair.key = RISCV_HWPROBE_KEY_IMA_EXT_0;
->   	rc = riscv_hwprobe(&pair, 1, 0, NULL, 0);
->   	if (rc < 0) {
-> -		ksft_test_result_fail("hwprobe() failed with %d\n", rc);
-> +		ksft_test_result_fail("hwprobe() failed with %ld\n", rc);
->   		return -1;
->   	}
->   
+From: Yang Guang <yang.guang5@zte.com.cn>
 
+Open code which is dev->priv_flags & IFF_MACSEC has already defined as
+netif_is_macsec(). So use netif_is_macsec() instead of open code.
+No functional changed.
 
-You can add:
+Signed-off-by: Chen Haonan <chen.haonan2@zte.com.cn>
+---
+ include/linux/netdevice.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Reviewed-by: Alexandre Ghiti <alexghiti@rivosinc.com>
+diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
+index 1b935ee341b4..1f2b23d854c9 100644
+--- a/include/linux/netdevice.h
++++ b/include/linux/netdevice.h
+@@ -5103,7 +5103,7 @@ void netif_inherit_tso_max(struct net_device *to,
 
-Thanks!
+ static inline bool netif_is_macsec(const struct net_device *dev)
+ {
+-	return dev->priv_flags & IFF_MACSEC;
++	return netif_is_macsec(dev);
+ }
 
-Alex
-
+ static inline bool netif_is_macvlan(const struct net_device *dev)
+-- 
+2.25.1
 
