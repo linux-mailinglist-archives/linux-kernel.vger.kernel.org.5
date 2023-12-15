@@ -1,137 +1,128 @@
-Return-Path: <linux-kernel+bounces-398-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-399-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2F2B9814084
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 04:15:05 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A32FE814088
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 04:17:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BC5652838A6
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 03:15:03 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4118C1F22F34
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 03:17:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B59731879;
-	Fri, 15 Dec 2023 03:14:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="O0JkgWCa"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C3849525E;
+	Fri, 15 Dec 2023 03:17:17 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-oi1-f173.google.com (mail-oi1-f173.google.com [209.85.167.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C3E5C63A9;
-	Fri, 15 Dec 2023 03:14:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oi1-f173.google.com with SMTP id 5614622812f47-3ba00fe4e98so213694b6e.2;
-        Thu, 14 Dec 2023 19:14:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702610094; x=1703214894; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=7/HJAB1d28KOAsQBHPrBrzzCpyYZA+5xVpuQkAUAjns=;
-        b=O0JkgWCaUdZeVzVdG13DFjFd9uxnLClOdkZobvvqgESnjQ6hbTCQFQ36ANz08q/zte
-         bMAmLFcXedxIUEV/5ahN2yexGwsxC1YSj66VXQ4r3DU8Dv0uMxfeM+/78+9wc48Z/5/G
-         skSh0J4+pvDFNjyF/hEyTs60H1aVwojGXweDvncTwW8eBpUAcEavHFszoo/f/66/BPGn
-         pBIzDAfPlAXEeniYRmiM5lHZle6eNTVS+n61U+bKU4gu6mDWzZAYd8UwQN/H5qy5cE/N
-         q9VtVSeRcxhDtvKlFce3c84zPYBDoavomSG9dg+Ok8hz1mUNHlQbJrOcLAbFQJG/AgS6
-         YI0A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702610094; x=1703214894;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=7/HJAB1d28KOAsQBHPrBrzzCpyYZA+5xVpuQkAUAjns=;
-        b=PTpUpuoRqRNSdL3Guxt5tBpi9p6qrxAJ861EHzM2uQtcDlWf6rHfWP5/f5X42GHvfO
-         AFO7MTL74eButkiCBry43JsiGaW/O/Wne88eLSLI7uLZFpsGdpakkZg8n3uWvDYdSr1d
-         mn2rv2D7ZRr3vlP2Xcomkvbe5ncK4OH8ndHx9zDNlgmp+fSKRr1LWNc8zqn2RQl3iTL1
-         PVfrOTikNKcVMOV2J91j29t/shB6SGYyBMnANP0Hvcz2aksxNJe51qjzsdJpcGSUy95h
-         VcUjp50Ma3wBybdQRtoBq9/5yrTxSYpPF2/XkVgNLjHcdbutKRaoEIpFOOCkFCyg892D
-         lyuw==
-X-Gm-Message-State: AOJu0YwgSbSJ0Y6FcnH1wdIyTl7AXW1dtsm846YT56DrtfW7JWa18Y88
-	i5F2Y9ig76d1Rj9uWE1cjrFbKaODUD6TpVhz
-X-Google-Smtp-Source: AGHT+IFOL1swHqcpjjcSBJRiQmTzIdDg+kyDaywAGt2uLO+o7QjNWfqRzXrtLS1C7dmsQAnbi3D72Q==
-X-Received: by 2002:a05:6808:3022:b0:3b8:b063:825a with SMTP id ay34-20020a056808302200b003b8b063825amr12760002oib.92.1702610093592;
-        Thu, 14 Dec 2023 19:14:53 -0800 (PST)
-Received: from localhost.localdomain ([2401:4900:38f6:9fa2:8e5a:fd25:71c:8c44])
-        by smtp.gmail.com with ESMTPSA id p18-20020a056a000b5200b006ce835b77d9sm12552214pfo.20.2023.12.14.19.14.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Dec 2023 19:14:53 -0800 (PST)
-From: Ghanshyam Agrawal <ghanshyam1898@gmail.com>
-To: perex@perex.cz,
-	tiwai@suse.com
-Cc: Ghanshyam Agrawal <ghanshyam1898@gmail.com>,
-	linux-sound@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] sound: pci: au88x0: fixed spelling mistakes in au88x0_core.c
-Date: Fri, 15 Dec 2023 08:41:44 +0530
-Message-Id: <20231215031144.521359-1-ghanshyam1898@gmail.com>
-X-Mailer: git-send-email 2.25.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6315F46A0;
+	Fri, 15 Dec 2023 03:17:17 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E822FC433C7;
+	Fri, 15 Dec 2023 03:17:15 +0000 (UTC)
+Date: Thu, 14 Dec 2023 22:18:03 -0500
+From: Steven Rostedt <rostedt@goodmis.org>
+To: LKML <linux-kernel@vger.kernel.org>, Linux Trace Kernel
+ <linux-trace-kernel@vger.kernel.org>
+Cc: Masami Hiramatsu <mhiramat@kernel.org>, Mark Rutland
+ <mark.rutland@arm.com>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+ Joel Fernandes <joel@joelfernandes.org>, Vincent Donnefort
+ <vdonnefort@google.com>
+Subject: [PATCH] ring-buffer: Do not try to put back write_stamp
+Message-ID: <20231214221803.1a923e10@gandalf.local.home>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-Multiple spelling mistakes were reported by codespell.
-They were fixed.
+From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 
-Signed-off-by: Ghanshyam Agrawal <ghanshyam1898@gmail.com>
+If an update to an event is interrupted by another event between the time
+the initial event allocated its buffer and where it wrote to the
+write_stamp, the code try to reset the write stamp back to the what it had
+just overwritten. It knows that it was overwritten via checking the
+before_stamp, and if it didn't match what it wrote to the before_stamp
+before it allocated its space, it knows it was overwritten.
+
+To put back the write_stamp, it uses the before_stamp it read. The problem
+here is that by writing the before_stamp to the write_stamp it makes the
+two equal again, which means that the write_stamp can be considered valid
+as the last timestamp written to the ring buffer. But this is not
+necessarily true. The event that interrupted the event could have been
+interrupted in a way that it was interrupted as well, and can end up
+leaving with an invalid write_stamp. But if this happens and returns to
+this context that uses the before_stamp to update the write_stamp again,
+it can possibly incorrectly make it valid, causing later events to have in
+correct time stamps.
+
+As it is OK to leave this function with an invalid write_stamp (one that
+doesn't match the before_stamp), there's no reason to try to make it valid
+again in this case. If this race happens, then just leave with the invalid
+write_stamp and the next event to come along will just add a absolute
+timestamp and validate everything again.
+
+Bonus points: This gets rid of another cmpxchg64!
+
+Cc: stable@vger.kernel.org
+Fixes: a389d86f7fd09 ("ring-buffer: Have nested events still record running time stamp")
+Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 ---
- sound/pci/au88x0/au88x0_core.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ kernel/trace/ring_buffer.c | 26 ++++++--------------------
+ 1 file changed, 6 insertions(+), 20 deletions(-)
 
-diff --git a/sound/pci/au88x0/au88x0_core.c b/sound/pci/au88x0/au88x0_core.c
-index f217c02dfdfa..e5d867637336 100644
---- a/sound/pci/au88x0/au88x0_core.c
-+++ b/sound/pci/au88x0/au88x0_core.c
-@@ -1195,7 +1195,7 @@ static int vortex_adbdma_bufshift(vortex_t * vortex, int adbdma)
- 				VORTEX_ADBDMA_BUFBASE + (((adbdma << 2) + pp) << 2),
- 				snd_pcm_sgbuf_get_addr(dma->substream,
- 				dma->period_bytes * p));
--			/* Force write thru cache. */
-+			/* Force write through cache. */
- 			hwread(vortex->mmio, VORTEX_ADBDMA_BUFBASE +
- 			       (((adbdma << 2) + pp) << 2));
- 		}
-@@ -1237,7 +1237,7 @@ static void vortex_adbdma_resetup(vortex_t *vortex, int adbdma) {
- 			VORTEX_ADBDMA_BUFBASE + (((adbdma << 2) + pp) << 2),
- 			snd_pcm_sgbuf_get_addr(dma->substream,
- 					       dma->period_bytes * p));
--		/* Force write thru cache. */
-+		/* Force write through cache. */
- 		hwread(vortex->mmio, VORTEX_ADBDMA_BUFBASE + (((adbdma << 2)+pp) << 2));
+diff --git a/kernel/trace/ring_buffer.c b/kernel/trace/ring_buffer.c
+index 9fdbd08af72f..378ff9e53fe6 100644
+--- a/kernel/trace/ring_buffer.c
++++ b/kernel/trace/ring_buffer.c
+@@ -3418,12 +3418,14 @@ __rb_reserve_next(struct ring_buffer_per_cpu *cpu_buffer,
  	}
- }
-@@ -1466,7 +1466,7 @@ static int vortex_wtdma_bufshift(vortex_t * vortex, int wtdma)
- 				(((wtdma << 2) + pp) << 2),
- 				snd_pcm_sgbuf_get_addr(dma->substream,
- 						       dma->period_bytes * p));
--			/* Force write thru cache. */
-+			/* Force write through cache. */
- 			hwread(vortex->mmio, VORTEX_WTDMA_BUFBASE +
- 			       (((wtdma << 2) + pp) << 2));
- 		}
-@@ -1854,7 +1854,7 @@ vortex_connection_mixin_mix(vortex_t * vortex, int en, unsigned char mixin,
- 		vortex_mix_disableinput(vortex, mix, mixin, a);
- }
  
--// Connect absolut address to mixin.
-+// Connect absolute address to mixin.
- static void
- vortex_connection_adb_mixin(vortex_t * vortex, int en,
- 			    unsigned char channel, unsigned char source,
-@@ -1880,7 +1880,7 @@ vortex_connection_src_src_adbdma(vortex_t * vortex, int en,
- 			ADB_DMA(adbdma));
- }
- 
--// mix to absolut address.
-+// mix to absolute address.
- static void
- vortex_connection_mix_adb(vortex_t * vortex, int en, unsigned char ch,
- 			  unsigned char mix, unsigned char dest)
+ 	if (likely(tail == w)) {
+-		u64 save_before;
+-
+ 		/* Nothing interrupted us between A and C */
+  /*D*/		rb_time_set(&cpu_buffer->write_stamp, info->ts);
+-		barrier();
+- /*E*/		rb_time_read(&cpu_buffer->before_stamp, &save_before);
++		/*
++		 * If something came in between C and D, the write stamp
++		 * may now not be in sync. But that's fine as the before_stamp
++		 * will be different and then next event will just be forced
++		 * to use an absolute timestamp.
++		 */
+ 		if (likely(!(info->add_timestamp &
+ 			     (RB_ADD_STAMP_FORCE | RB_ADD_STAMP_ABSOLUTE))))
+ 			/* This did not interrupt any time update */
+@@ -3431,23 +3433,7 @@ __rb_reserve_next(struct ring_buffer_per_cpu *cpu_buffer,
+ 		else
+ 			/* Just use full timestamp for interrupting event */
+ 			info->delta = info->ts;
+-		barrier();
+ 		check_buffer(cpu_buffer, info, tail);
+-		if (unlikely(info->ts != save_before)) {
+-			/* SLOW PATH - Interrupted between C and E */
+-
+-			rb_time_read(&cpu_buffer->write_stamp, &info->after);
+-
+-			/* Write stamp must only go forward */
+-			if (save_before > info->after) {
+-				/*
+-				 * We do not care about the result, only that
+-				 * it gets updated atomically.
+-				 */
+-				(void)rb_time_cmpxchg(&cpu_buffer->write_stamp,
+-						      info->after, save_before);
+-			}
+-		}
+ 	} else {
+ 		u64 ts;
+ 		/* SLOW PATH - Interrupted between A and C */
 -- 
-2.25.1
+2.42.0
 
 
