@@ -1,188 +1,143 @@
-Return-Path: <linux-kernel+bounces-1188-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-1194-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id AD463814B76
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 16:16:03 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1A2C6814B87
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 16:17:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3AAD31F21460
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 15:16:03 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 827631F24586
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 15:17:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 30F3C3A8DB;
-	Fri, 15 Dec 2023 15:13:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C41141851;
+	Fri, 15 Dec 2023 15:15:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mPhVSq6T"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="o3P6fWjz"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-wr1-f54.google.com (mail-wr1-f54.google.com [209.85.221.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DBBD83C471;
-	Fri, 15 Dec 2023 15:13:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f54.google.com with SMTP id ffacd0b85a97d-33646dbedc9so663740f8f.3;
-        Fri, 15 Dec 2023 07:13:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702653204; x=1703258004; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=brYOzG3g23wL22CEoDTu8T5IzltVcQQgzthieH5Rn74=;
-        b=mPhVSq6TOcznDbqFf/FCmcrpcEXIJC2ewo8P8xGcFXLN3metR8HgNasaBE2chVsufs
-         lFDK22DsKDMi1ki0w9TYfUbRKP4180WKRIWISwwxlcRFhNN1Q2nowhMmBJW+mIN2GYJB
-         CSvlYlUfNmrM9r7PhP/OjGJsH048+QzwlZZYTKWC7muTGYRRs2TDlswqulA6xrS5BJqw
-         MU2IMzDIDED0o5Hcmhd31+t0dBpkpzRWO/u/XTxrd/Wpf6aBPiXzH0CQlJAXhlDM09CC
-         E91ZNoN9wu5GtylKERyED1yAnIxQNzgQ+V8YmyWBl0bGVxOJSZbFI1cFu+0BR5XBnLJk
-         yvXw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702653204; x=1703258004;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=brYOzG3g23wL22CEoDTu8T5IzltVcQQgzthieH5Rn74=;
-        b=jN0icT0rWxUQdDRGwLcVgRf9NdsR6bfT+Uec6Fwy3dxIo5DaA/JLpGm82qqRfL8yeT
-         Gv41s75ZzTHF2dvzhsJExJszXxYZAwFnMtUDTws235ucaWczPzstJqPAWUm8W1yVF+5E
-         vh17LaKO+m0dUdj1xg78st6wUToUAb9TPPecwIQCseYMJtazCBV3tqTLIbBntzKBmsv8
-         2TuVsQSko241/kwRdFfWPGp6MxmKhrHOWaEcTPt93n3g356s7/P0vrjSQ01vMN+BC8n9
-         ZI/kok3n/tQcSzkaIdPdhfMHbcqupT8XshAZH7Trl/DFDa3mDnLwJ8Hu4kTn0oIbgeAh
-         1pRA==
-X-Gm-Message-State: AOJu0YzdytIoY0/B1DR8XCub6N/s2vy/pXKDeISLZbnBfYROKutcvxUc
-	o29OvDJoPL+abjvj84sbD3Q=
-X-Google-Smtp-Source: AGHT+IG6xfZAKkoFs/nB1j6orGlhGJ6P+tWaOcp0B83WVeZzCcdiugIKJlUguBz4lJNFDEAwHhhOIg==
-X-Received: by 2002:adf:f050:0:b0:336:3538:6636 with SMTP id t16-20020adff050000000b0033635386636mr3854305wro.86.1702653203715;
-        Fri, 15 Dec 2023 07:13:23 -0800 (PST)
-Received: from localhost.localdomain ([154.72.162.212])
-        by smtp.gmail.com with ESMTPSA id s18-20020a5d4ed2000000b00336421f1818sm6600631wrv.112.2023.12.15.07.13.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Dec 2023 07:13:22 -0800 (PST)
-From: Brandon Cheo Fusi <fusibrandon13@gmail.com>
-To: viresh.kumar@linaro.org
-Cc: aou@eecs.berkeley.edu,
-	conor+dt@kernel.org,
-	devicetree@vger.kernel.org,
-	fusibrandon13@gmail.com,
-	jernej.skrabec@gmail.com,
-	krzysztof.kozlowski+dt@linaro.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	linux-pm@vger.kernel.org,
-	linux-riscv@lists.infradead.org,
-	linux-sunxi@lists.linux.dev,
-	palmer@dabbelt.com,
-	paul.walmsley@sifive.com,
-	rafael@kernel.org,
-	robh+dt@kernel.org,
-	samuel@sholland.org,
-	tiny.windzz@gmail.com,
-	wens@csie.org
-Subject: Re: [PATCH 1/5] riscv: dts: allwinner: Update opp table to allow CPU frequency scaling
-Date: Fri, 15 Dec 2023 16:12:09 +0100
-Message-Id: <20231215151209.46221-1-fusibrandon13@gmail.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20231214111446.camz2krqanaieybh@vireshk-i7>
-References: <20231214111446.camz2krqanaieybh@vireshk-i7>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 32D9D3EA6C
+	for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 15:15:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=zjfLxXDbrMtHt/IyeLuzZsV/+Apk943HO/rR5xaRTGI=; b=o3P6fWjzbD/C8zfyWzMpXV6vTA
+	Gy9uSbGXW+ugPp30wKDTaFcGsu7humKRDLTD7YxPkju0ayrcMDYIAA3nanHL5zqbL2OJi4vOJvBic
+	YZMdYh9S29R5THiAwWgZ21NOUDMLvr+bNn4NbxY72VWFLW5O/IjeHSkZzpNw4+Ig3EO62e69nk4Dc
+	2b6jvZygLQ2i6Q33TP6uTrfXbJApxg2HmEoFsuWM3d0DePXIOPMjkrwP+yuHUOmjJ1xhPjE3yMSF7
+	KUM/GYRRwP1qgz9pjOSY+2IdxuaOecvZ6f6y//vWHjQxrbvsqyGYLzYa9rzKSP0CiyE/SPDs8EYI8
+	wMrh9Fbw==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+	by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+	id 1rE9tc-009xM4-05;
+	Fri, 15 Dec 2023 15:14:37 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+	id CF1243005B2; Fri, 15 Dec 2023 16:14:34 +0100 (CET)
+Date: Fri, 15 Dec 2023 16:14:34 +0100
+From: Peter Zijlstra <peterz@infradead.org>
+To: Keisuke Nishimura <keisuke.nishimura@inria.fr>
+Cc: Ingo Molnar <mingo@redhat.com>, Abel Wu <wuyun.abel@bytedance.com>,
+	Josh Don <joshdon@google.com>,
+	Mel Gorman <mgorman@techsingularity.net>,
+	Xunlei Pang <xlpang@linux.alibaba.com>,
+	Dietmar Eggemann <dietmar.eggemann@arm.com>,
+	Valentin Schneider <vschneid@redhat.com>,
+	Julia Lawall <julia.lawall@inria.fr>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] sched/fair: take into account scheduling domain in
+ select_idle_smt()
+Message-ID: <20231215151434.GK36716@noisy.programming.kicks-ass.net>
+References: <20231214175551.629945-1-keisuke.nishimura@inria.fr>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231214175551.629945-1-keisuke.nishimura@inria.fr>
 
-On Thu, Dec 14, 2023 at 12:14 PM Viresh Kumar <viresh.kumar@linaro.org> wrote:
->
-> On 14-12-23, 11:33, Brandon Cheo Fusi wrote:
-> > Two OPPs are currently defined for the D1/D1s; one at 408MHz and
-> > another at 1.08GHz. Switching between these can be done with the
-> > "sun50i-cpufreq-nvmem" driver. This patch populates the opp table
-> > appropriately, with inspiration from
-> > https://github.com/Tina-Linux/linux-5.4/blob/master/arch/riscv/boot/dts/sunxi/sun20iw1p1.dtsi
-> >
-> > The supply voltages are PWM-controlled, but support for that IP
-> > is still in the works. So stick to a fixed 0.9V vdd-cpu supply,
-> > which seems to be the default on most D1 boards.
-> >
-> > Signed-off-by: Brandon Cheo Fusi <fusibrandon13@gmail.com>
-> > ---
-> >  arch/riscv/boot/dts/allwinner/sun20i-d1s.dtsi | 18 +++++++++++++++---
-> >  1 file changed, 15 insertions(+), 3 deletions(-)
-> >
-> > diff --git a/arch/riscv/boot/dts/allwinner/sun20i-d1s.dtsi b/arch/riscv/boot/dts/allwinner/sun20i-d1s.dtsi
-> > index 64c3c2e6c..e211fe4c7 100644
-> > --- a/arch/riscv/boot/dts/allwinner/sun20i-d1s.dtsi
-> > +++ b/arch/riscv/boot/dts/allwinner/sun20i-d1s.dtsi
-> > @@ -39,16 +39,22 @@ cpu0_intc: interrupt-controller {
-> >       };
-> >
-> >       opp_table_cpu: opp-table-cpu {
-> > -             compatible = "operating-points-v2";
-> > +             compatible = "allwinner,sun20i-d1-operating-points",
->
-> I don't think you should add a new compatible for every SoC that needs
-> to be supported by a DT bindings and cpufreq driver. Maybe you should
-> just reuse "allwinner,sun50i-h6-operating-points" and it will work
-> fine for you ?
->
-> Rob ?
->
-> > +                              "allwinner,sun50i-h6-operating-points";
-> > +             nvmem-cells = <&cpu_speed_grade>;
-> > +             nvmem-cell-names = "speed";
-> > +             opp-shared;
-> >
-> >               opp-408000000 {
-> > +                     clock-latency-ns = <244144>; /* 8 32k periods */
-> >                       opp-hz = /bits/ 64 <408000000>;
-> > -                     opp-microvolt = <900000 900000 1100000>;
-> > +                     opp-microvolt-speed0 = <900000>;
->
-> The separate property name thing was required when you could have
-> different values for different SoC instances, which can be read from
-> efuses, like in your case.
->
-> But all I see is speed0 here, why don't you always set opp-microvolt
-> then ?
->
+On Thu, Dec 14, 2023 at 06:55:50PM +0100, Keisuke Nishimura wrote:
+> When picking out a CPU on a task wakeup, select_idle_smt() has to take
+> into account the scheduling domain of @target. This is because cpusets
+> and isolcpus can remove CPUs from the domain to isolate them from other
+> SMT siblings.
+> 
+> This fix checks if the candidate CPU is in the target scheduling domain.
+> 
+> The commit df3cb4ea1fb6 ("sched/fair: Fix wrong cpu selecting from isolated
+> domain") originally proposed this fix by adding the check of the scheduling
+> domain in the loop. However, the commit 3e6efe87cd5cc ("sched/fair: Remove
+> redundant check in select_idle_smt()") accidentally removed the check.
+> This commit brings the check back with the tiny optimization of computing
+> the intersection of the task's CPU mask and the sched domain mask up front.
+> 
+> Fixes: 3e6efe87cd5c ("sched/fair: Remove redundant check in select_idle_smt()")
 
-Setting opp-microvolt would be ok, but opp-microvolt-speed0 was chosen for
-consistency with the driver bindings here
-https://elixir.bootlin.com/linux/latest/source/Documentation/devicetree/bindings/opp/allwinner,sun50i-h6-operating-points.yaml#L52 
+Simply reverting that patch is simpler no? That cpumask_and() is likely
+more expensive than anything else that function does.
 
-> Also why degrade from min/max/target type to just target ?
->
+And I'm probably already in holiday more, but I don't immediately
+understand the problem, if you're doing cpusets, then the affinity in
+p->cpus_ptr should never cross your set, so how can it go wrong?
 
-This is a mistake on my part as I thought requesting non default voltages
-was going to be a problem with lack of PWM support. Will be reverted in v2.
+Is this some isolcpus idiocy? (I so hate that option)
 
-> >               };
-> >
-> >               opp-1080000000 {
-> > +                     clock-latency-ns = <244144>; /* 8 32k periods */
-> >                       opp-hz = /bits/ 64 <1008000000>;
-> > -                     opp-microvolt = <900000 900000 1100000>;
-> > +                     opp-microvolt-speed0 = <900000>;
-> >               };
-> >       };
-> >
-> > @@ -115,3 +121,8 @@ pmu {
-> >                       <0x00000000 0x0000000f 0xffffffff 0xffffffff 0x00020000>;
-> >       };
-> >  };
-> > +
-> > +&sid {
-> > +     cpu_speed_grade: cpu-speed-grade@0 {
-> > +             reg = <0x00 0x2>;
-> > +     };
-> > +};
-> > --
-> > 2.30.2
->
-> --
-> viresh
-
-Thank you for reviewing.
-Brandon.
+> Signed-off-by: Keisuke Nishimura <keisuke.nishimura@inria.fr>
+> Signed-off-by: Julia Lawall <julia.lawall@inria.fr>
+> ---
+>  kernel/sched/fair.c | 15 +++++++++++----
+>  1 file changed, 11 insertions(+), 4 deletions(-)
+> 
+> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> index bcd0f230e21f..71306b48cf68 100644
+> --- a/kernel/sched/fair.c
+> +++ b/kernel/sched/fair.c
+> @@ -7284,11 +7284,18 @@ static int select_idle_core(struct task_struct *p, int core, struct cpumask *cpu
+>  /*
+>   * Scan the local SMT mask for idle CPUs.
+>   */
+> -static int select_idle_smt(struct task_struct *p, int target)
+> +static int select_idle_smt(struct task_struct *p, struct sched_domain *sd, int target)
+>  {
+>  	int cpu;
+> +	struct cpumask *cpus = this_cpu_cpumask_var_ptr(select_rq_mask);
+> +
+> +	/*
+> +	 * Check if a candidate cpu is in the LLC scheduling domain where target exists.
+> +	 * Due to isolcpus and cpusets, there is no guarantee that it holds.
+> +	 */
+> +	cpumask_and(cpus, sched_domain_span(sd), p->cpus_ptr);
+>  
+> -	for_each_cpu_and(cpu, cpu_smt_mask(target), p->cpus_ptr) {
+> +	for_each_cpu_and(cpu, cpu_smt_mask(target), cpus) {
+>  		if (cpu == target)
+>  			continue;
+>  		if (available_idle_cpu(cpu) || sched_idle_cpu(cpu))
+> @@ -7314,7 +7321,7 @@ static inline int select_idle_core(struct task_struct *p, int core, struct cpuma
+>  	return __select_idle_cpu(core, p);
+>  }
+>  
+> -static inline int select_idle_smt(struct task_struct *p, int target)
+> +static inline int select_idle_smt(struct task_struct *p, struct sched_domain *sd, int target)
+>  {
+>  	return -1;
+>  }
+> @@ -7564,7 +7571,7 @@ static int select_idle_sibling(struct task_struct *p, int prev, int target)
+>  		has_idle_core = test_idle_cores(target);
+>  
+>  		if (!has_idle_core && cpus_share_cache(prev, target)) {
+> -			i = select_idle_smt(p, prev);
+> +			i = select_idle_smt(p, sd, prev);
+>  			if ((unsigned int)i < nr_cpumask_bits)
+>  				return i;
+>  		}
+> -- 
+> 2.34.1
+> 
 
