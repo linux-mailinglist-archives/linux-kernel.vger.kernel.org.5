@@ -1,164 +1,214 @@
-Return-Path: <linux-kernel+bounces-897-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-898-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9F8BF8147AC
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 13:08:26 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id EFB8A8147B1
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 13:10:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 40A741F2414E
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 12:08:26 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A704D284BC8
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 12:10:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 09E5C28E0E;
-	Fri, 15 Dec 2023 12:08:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF7F428E15;
+	Fri, 15 Dec 2023 12:10:05 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from out30-98.freemail.mail.aliyun.com (out30-98.freemail.mail.aliyun.com [115.124.30.98])
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3619D1A705
-	for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 12:08:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R401e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046060;MF=baolin.wang@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0VyXjgdG_1702642084;
-Received: from localhost(mailfrom:baolin.wang@linux.alibaba.com fp:SMTPD_---0VyXjgdG_1702642084)
-          by smtp.aliyun-inc.com;
-          Fri, 15 Dec 2023 20:08:05 +0800
-From: Baolin Wang <baolin.wang@linux.alibaba.com>
-To: akpm@linux-foundation.org
-Cc: david@redhat.com,
-	ying.huang@intel.com,
-	ziy@nvidia.com,
-	xuyu@linux.alibaba.com,
-	baolin.wang@linux.alibaba.com,
-	linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] mm: migrate: fix getting incorrect page mapping during page migration
-Date: Fri, 15 Dec 2023 20:07:52 +0800
-Message-Id: <e60b17a88afc38cb32f84c3e30837ec70b343d2b.1702641709.git.baolin.wang@linux.alibaba.com>
-X-Mailer: git-send-email 2.39.3
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CBE2919469
+	for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 12:10:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1rE6zO-0001Th-VU; Fri, 15 Dec 2023 13:08:22 +0100
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1rE6zK-00G18H-0I; Fri, 15 Dec 2023 13:08:18 +0100
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1rE6zJ-003Wy8-ML; Fri, 15 Dec 2023 13:08:17 +0100
+Date: Fri, 15 Dec 2023 13:08:17 +0100
+From: Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To: James Clark <james.clark@arm.com>
+Cc: linux-arm-kernel@lists.infradead.org, linux-perf-users@vger.kernel.org,
+	suzuki.poulose@arm.com, will@kernel.org, mark.rutland@arm.com,
+	anshuman.khandual@arm.com, namhyung@gmail.com,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Ingo Molnar <mingo@redhat.com>,
+	Arnaldo Carvalho de Melo <acme@kernel.org>,
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+	Jiri Olsa <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>,
+	Ian Rogers <irogers@google.com>,
+	Adrian Hunter <adrian.hunter@intel.com>,
+	Russell King <linux@armlinux.org.uk>, Marc Zyngier <maz@kernel.org>,
+	Oliver Upton <oliver.upton@linux.dev>,
+	James Morse <james.morse@arm.com>,
+	Zenghui Yu <yuzenghui@huawei.com>,
+	Paolo Bonzini <pbonzini@redhat.com>, Shuah Khan <shuah@kernel.org>,
+	Zaid Al-Bassam <zalbassam@google.com>,
+	Raghavendra Rao Ananta <rananta@google.com>,
+	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+	kvmarm@lists.linux.dev, kvm@vger.kernel.org,
+	linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH v7 05/11] arm64: perf: Include threshold control fields
+ in PMEVTYPER mask
+Message-ID: <20231215120817.h2f3akgv72zhrtqo@pengutronix.de>
+References: <20231211161331.1277825-1-james.clark@arm.com>
+ <20231211161331.1277825-6-james.clark@arm.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="ngsobzumwfjdiywd"
+Content-Disposition: inline
+In-Reply-To: <20231211161331.1277825-6-james.clark@arm.com>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 
-When running stress-ng testing, we found below kernel crash after a few hours:
 
-Unable to handle kernel NULL pointer dereference at virtual address 0000000000000000
-pc : dentry_name+0xd8/0x224
-lr : pointer+0x22c/0x370
-sp : ffff800025f134c0
-......
-Call trace:
-  dentry_name+0xd8/0x224
-  pointer+0x22c/0x370
-  vsnprintf+0x1ec/0x730
-  vscnprintf+0x2c/0x60
-  vprintk_store+0x70/0x234
-  vprintk_emit+0xe0/0x24c
-  vprintk_default+0x3c/0x44
-  vprintk_func+0x84/0x2d0
-  printk+0x64/0x88
-  __dump_page+0x52c/0x530
-  dump_page+0x14/0x20
-  set_migratetype_isolate+0x110/0x224
-  start_isolate_page_range+0xc4/0x20c
-  offline_pages+0x124/0x474
-  memory_block_offline+0x44/0xf4
-  memory_subsys_offline+0x3c/0x70
-  device_offline+0xf0/0x120
-  ......
+--ngsobzumwfjdiywd
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-After analyzing the vmcore, I found this issue is caused by page migration.
-The scenario is that, one thread is doing page migration, and we will use the
-target page's ->mapping field to save 'anon_vma' pointer between page unmap and
-page move, and now the target page is locked and refcount is 1.
+Hello,
 
-Currently, there is another stress-ng thread performing memory hotplug,
-attempting to offline the target page that is being migrated. It discovers that
-the refcount of this target page is 1, preventing the offline operation, thus
-proceeding to dump the page. However, page_mapping() of the target page may
-return an incorrect file mapping to crash the system in dump_mapping(), since
-the target page->mapping only saves 'anon_vma' pointer without setting
-PAGE_MAPPING_ANON flag.
+On Mon, Dec 11, 2023 at 04:13:17PM +0000, James Clark wrote:
+> FEAT_PMUv3_TH (Armv8.8) adds two new fields to PMEVTYPER, so include
+> them in the mask. These aren't writable on 32 bit kernels as they are in
+> the high part of the register, so only include them for arm64.
+>=20
+> It would be difficult to do this statically in the asm header files for
+> each platform without resulting in circular includes or #ifdefs inline
+> in the code. For that reason the ARMV8_PMU_EVTYPE_MASK definition has
+> been removed and the mask is constructed programmatically.
+>=20
+> Reviewed-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+> Reviewed-by: Anshuman Khandual <anshuman.khandual@arm.com>
+> Signed-off-by: James Clark <james.clark@arm.com>
 
-There are seveval ways to fix this issue:
-(1) Setting the PAGE_MAPPING_ANON flag for target page's ->mapping when saving
-'anon_vma', but this can confuse PageAnon() for PFN walkers, since the target
-page has not built mappings yet.
-(2) Getting the page lock to call page_mapping() in __dump_page() to avoid crashing
-the system, however, there are still some PFN walkers that call page_mapping()
-without holding the page lock, such as compaction.
-(3) Using target page->private field to save the 'anon_vma' pointer and 2 bits
-page state, just as page->mapping records an anonymous page, which can remove
-the page_mapping() impact for PFN walkers and also seems a simple way.
+This change is in today's next as commit
+3115ee021bfb04efde2e96507bfcc1330261a6a1. this breaks allmodconfig
+building on ARCH=3Darm:
 
-So I choose option 3 to fix this issue, and this can also fix other potential
-issues for PFN walkers, such as compaction.
+	In file included from include/linux/ratelimit_types.h:5,
+			 from include/linux/printk.h:9,
+			 from include/asm-generic/bug.h:22,
+			 from arch/arm/include/asm/bug.h:60,
+			 from include/linux/bug.h:5,
+			 from include/linux/mmdebug.h:5,
+			 from include/linux/percpu.h:5,
+			 from include/asm-generic/irq_regs.h:11,
+			 from ./arch/arm/include/generated/asm/irq_regs.h:1,
+			 from drivers/perf/arm_pmuv3.c:11:
+	drivers/perf/arm_pmuv3.c: In function =E2=80=98armv8pmu_write_evtype=E2=80=
+=99:
+	include/linux/bits.h:34:29: error: left shift count >=3D width of type [-W=
+error=3Dshift-count-overflow]
+	   34 |         (((~UL(0)) - (UL(1) << (l)) + 1) & \
+	      |                             ^~
+	include/linux/bits.h:37:38: note: in expansion of macro =E2=80=98__GENMASK=
+=E2=80=99
+	   37 |         (GENMASK_INPUT_CHECK(h, l) + __GENMASK(h, l))
+	      |                                      ^~~~~~~~~
+	include/linux/perf/arm_pmuv3.h:238:33: note: in expansion of macro =E2=80=
+=98GENMASK=E2=80=99
+	  238 | #define ARMV8_PMU_EVTYPE_TC     GENMASK(63, 61)
+	      |                                 ^~~~~~~
+	drivers/perf/arm_pmuv3.c:567:25: note: in expansion of macro =E2=80=98ARMV=
+8_PMU_EVTYPE_TC=E2=80=99
+	  567 |                 mask |=3D ARMV8_PMU_EVTYPE_TC | ARMV8_PMU_EVTYPE_T=
+H;
+	      |                         ^~~~~~~~~~~~~~~~~~~
+	include/linux/bits.h:35:18: error: right shift count is negative [-Werror=
+=3Dshift-count-negative]
+	   35 |          (~UL(0) >> (BITS_PER_LONG - 1 - (h))))
+	      |                  ^~
+	include/linux/bits.h:37:38: note: in expansion of macro =E2=80=98__GENMASK=
+=E2=80=99
+	   37 |         (GENMASK_INPUT_CHECK(h, l) + __GENMASK(h, l))
+	      |                                      ^~~~~~~~~
+	include/linux/perf/arm_pmuv3.h:238:33: note: in expansion of macro =E2=80=
+=98GENMASK=E2=80=99
+	  238 | #define ARMV8_PMU_EVTYPE_TC     GENMASK(63, 61)
+	      |                                 ^~~~~~~
+	drivers/perf/arm_pmuv3.c:567:25: note: in expansion of macro =E2=80=98ARMV=
+8_PMU_EVTYPE_TC=E2=80=99
+	  567 |                 mask |=3D ARMV8_PMU_EVTYPE_TC | ARMV8_PMU_EVTYPE_T=
+H;
+	      |                         ^~~~~~~~~~~~~~~~~~~
+	include/linux/bits.h:34:29: error: left shift count >=3D width of type [-W=
+error=3Dshift-count-overflow]
+	   34 |         (((~UL(0)) - (UL(1) << (l)) + 1) & \
+	      |                             ^~
+	include/linux/bits.h:37:38: note: in expansion of macro =E2=80=98__GENMASK=
+=E2=80=99
+	   37 |         (GENMASK_INPUT_CHECK(h, l) + __GENMASK(h, l))
+	      |                                      ^~~~~~~~~
+	include/linux/perf/arm_pmuv3.h:237:33: note: in expansion of macro =E2=80=
+=98GENMASK=E2=80=99
+	  237 | #define ARMV8_PMU_EVTYPE_TH     GENMASK(43, 32)
+	      |                                 ^~~~~~~
+	drivers/perf/arm_pmuv3.c:567:47: note: in expansion of macro =E2=80=98ARMV=
+8_PMU_EVTYPE_TH=E2=80=99
+	  567 |                 mask |=3D ARMV8_PMU_EVTYPE_TC | ARMV8_PMU_EVTYPE_T=
+H;
+	      |                                               ^~~~~~~~~~~~~~~~~~~
+	include/linux/bits.h:35:18: error: right shift count is negative [-Werror=
+=3Dshift-count-negative]
+	   35 |          (~UL(0) >> (BITS_PER_LONG - 1 - (h))))
+	      |                  ^~
+	include/linux/bits.h:37:38: note: in expansion of macro =E2=80=98__GENMASK=
+=E2=80=99
+	   37 |         (GENMASK_INPUT_CHECK(h, l) + __GENMASK(h, l))
+	      |                                      ^~~~~~~~~
+	include/linux/perf/arm_pmuv3.h:237:33: note: in expansion of macro =E2=80=
+=98GENMASK=E2=80=99
+	  237 | #define ARMV8_PMU_EVTYPE_TH     GENMASK(43, 32)
+	      |                                 ^~~~~~~
+	drivers/perf/arm_pmuv3.c:567:47: note: in expansion of macro =E2=80=98ARMV=
+8_PMU_EVTYPE_TH=E2=80=99
+	  567 |                 mask |=3D ARMV8_PMU_EVTYPE_TC | ARMV8_PMU_EVTYPE_T=
+H;
+	      |                                               ^~~~~~~~~~~~~~~~~~~
 
-Fixes: 64c8902ed441 ("migrate_pages: split unmap_and_move() to _unmap() and _move()")
-Signed-off-by: Baolin Wang <baolin.wang@linux.alibaba.com>
----
- mm/migrate.c | 27 ++++++++++-----------------
- 1 file changed, 10 insertions(+), 17 deletions(-)
+I guess that's easy to fix but I didn't look into that.
 
-diff --git a/mm/migrate.c b/mm/migrate.c
-index 397f2a6e34cb..bad3039d165e 100644
---- a/mm/migrate.c
-+++ b/mm/migrate.c
-@@ -1025,38 +1025,31 @@ static int move_to_new_folio(struct folio *dst, struct folio *src,
- }
- 
- /*
-- * To record some information during migration, we use some unused
-- * fields (mapping and private) of struct folio of the newly allocated
-- * destination folio.  This is safe because nobody is using them
-- * except us.
-+ * To record some information during migration, we use unused private
-+ * field of struct folio of the newly allocated destination folio.
-+ * This is safe because nobody is using it except us.
-  */
--union migration_ptr {
--	struct anon_vma *anon_vma;
--	struct address_space *mapping;
--};
--
- enum {
- 	PAGE_WAS_MAPPED = BIT(0),
- 	PAGE_WAS_MLOCKED = BIT(1),
-+	PAGE_OLD_STATES = PAGE_WAS_MAPPED | PAGE_WAS_MLOCKED,
- };
- 
- static void __migrate_folio_record(struct folio *dst,
--				   unsigned long old_page_state,
-+				   int old_page_state,
- 				   struct anon_vma *anon_vma)
- {
--	union migration_ptr ptr = { .anon_vma = anon_vma };
--	dst->mapping = ptr.mapping;
--	dst->private = (void *)old_page_state;
-+	dst->private = (void *)anon_vma + old_page_state;
- }
- 
- static void __migrate_folio_extract(struct folio *dst,
- 				   int *old_page_state,
- 				   struct anon_vma **anon_vmap)
- {
--	union migration_ptr ptr = { .mapping = dst->mapping };
--	*anon_vmap = ptr.anon_vma;
--	*old_page_state = (unsigned long)dst->private;
--	dst->mapping = NULL;
-+	unsigned long private = (unsigned long)dst->private;
-+
-+	*anon_vmap = (struct anon_vma *)(private & ~PAGE_OLD_STATES);
-+	*old_page_state = private & PAGE_OLD_STATES;
- 	dst->private = NULL;
- }
- 
--- 
-2.39.3
+Best regards
+Uwe
 
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=C3=B6nig         =
+   |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--ngsobzumwfjdiywd
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmV8QbAACgkQj4D7WH0S
+/k7AiQf+P2oUWv7SoB0VqSdzaQDZiVP5cLTAQNAUd2/KvKLHcynNocmMBs36c3pg
+o+x8tw5H8hmrOREyHLMq2dFVFQOzDjUpzVl/UtvewEwJ/wer59fr31E2+O4d3RzB
+HbLD/OuVTL88TWye1hyv+43iSoG4gfff9n9SBsr/423tBmEqnCkIv/A7CMzawZMi
+Nr4oV5P03hNhNXEFy4OxIVfuLmAVxIlK4EtUtMErE/+UHeJL6gs+nhOW38UwNR+c
++9uau7zzuYGeBWLmiDYGPteZWs0/DB9/WO5xm+U4eA10oQSho6Tjd8DS4ls2katc
+cDqpu8z3U3vqJXktpE5/swkSxSAuWQ==
+=wXB9
+-----END PGP SIGNATURE-----
+
+--ngsobzumwfjdiywd--
 
