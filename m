@@ -1,44 +1,44 @@
-Return-Path: <linux-kernel+bounces-664-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-665-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0D2C4814433
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 10:09:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9F422814435
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 10:09:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 904911F2349A
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 09:09:19 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 301251F23387
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 09:09:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 72FE1199BE;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E29F61A5B0;
 	Fri, 15 Dec 2023 09:08:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="YX7qaoae"
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="qvVyR6C7"
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C9B0318C09;
-	Fri, 15 Dec 2023 09:08:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 60A9618C15;
+	Fri, 15 Dec 2023 09:08:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
 	s=mail; t=1702631304;
-	bh=Rn9+48N2ZKQS+2F6LGuA79kgUp/kkfGRhsQcVq8tUzM=;
+	bh=lP5AIE9eKRsm3pAUMbb5nmwCu/ZB+PLSBGMB1wlfz6U=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=YX7qaoaeVY/WGOHpUVzfp5n0m/bpwLK6jn9DFFtvR+kn0Q8lT4RUvK8WOXI4jDIE0
-	 fPr+PNDbCQ5v9HLBBPaHTX37ZJOWhbVGc10EHlSzApleCfV9cpVq/b7c+y/Qd9WuUR
-	 9Fplg5fgj48BuaQLICTZvcUXX4McrGjnBnOBkxCXP7szMXa74r6c6aG6FfwwZUjZRy
-	 sTSElNiV/CURB0ZlLjENQVfVg0gE67bVRuP+LVeUPdaPZZvTlMZacZaPKBj0wVuNDO
-	 4wMTpZ/XP5fq/qsBpYkFWDMAsfVrhhX/7sDtOOYjJfh85niEtKVDov7Kdskx4Hp4mG
-	 3Pj9BaDynPUNQ==
+	b=qvVyR6C7DX5nRPxidsIwEyp+tGYvtTsdUzwqFq5Am1ARIxl5zVIPOGaJEqshrrT9c
+	 V585HcwnLWSgJjqW1t4lVhZ/2bBykC+gu/bVTl6w/5yWoa6rLKSFauwl8hmG6EuKVd
+	 +x7WT4v4DdaVfY1JFcPwaMtdVLxWgH0OU1En9U5uAV164Uqvs8rOSbBGc/qB5SfqYO
+	 X7qrxdp0+9sBliip1LCQtmWHCAA/GTTA63SfOgwWdjzUlevDXnI4m1cdla8G1VmKq2
+	 uJqfmGFim9sXa3NCkxOmlQk6p3ggI7QdAGgx334cg1d/P3jANnqM64DZtNPDPGGVm+
+	 TrMBICwaph/NQ==
 Received: from benjamin-XPS-13-9310.. (cola.collaboradmins.com [195.201.22.229])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
 	(Authenticated sender: benjamin.gaignard)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id C357E3781FD5;
-	Fri, 15 Dec 2023 09:08:23 +0000 (UTC)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 5C4073781FD6;
+	Fri, 15 Dec 2023 09:08:24 +0000 (UTC)
 From: Benjamin Gaignard <benjamin.gaignard@collabora.com>
 To: hverkuil@xs4all.nl,
 	mchehab@kernel.org
@@ -46,9 +46,9 @@ Cc: linux-kernel@vger.kernel.org,
 	linux-media@vger.kernel.org,
 	kernel@collabora.com,
 	Benjamin Gaignard <benjamin.gaignard@collabora.com>
-Subject: [PATCH v16 3/8] media: core: Rework how create_buf index returned value is computed
-Date: Fri, 15 Dec 2023 10:08:08 +0100
-Message-Id: <20231215090813.15610-4-benjamin.gaignard@collabora.com>
+Subject: [PATCH v16 4/8] media: core: Add bitmap manage bufs array entries
+Date: Fri, 15 Dec 2023 10:08:09 +0100
+Message-Id: <20231215090813.15610-5-benjamin.gaignard@collabora.com>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20231215090813.15610-1-benjamin.gaignard@collabora.com>
 References: <20231215090813.15610-1-benjamin.gaignard@collabora.com>
@@ -60,165 +60,196 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-When DELETE_BUFS will be introduced holes could created in bufs array.
-To be able to reuse these unused indices reworking how create->index
-is set is mandatory.
-Let __vb2_queue_alloc() decide which first index is correct and
-forward this to the caller.
+Add a bitmap field to know which of bufs array entries are
+used or not.
+Remove no more used num_buffers field from queue structure.
+Use bitmap_find_next_zero_area() to find the first possible
+range when creating new buffers to fill the gaps.
 
 Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
 ---
- .../media/common/videobuf2/videobuf2-core.c   | 22 ++++++++++++-------
- .../media/common/videobuf2/videobuf2-v4l2.c   | 20 +++++++++++------
- include/media/videobuf2-core.h                |  5 ++++-
- 3 files changed, 31 insertions(+), 16 deletions(-)
+ .../media/common/videobuf2/videobuf2-core.c   | 37 ++++++++++++++++---
+ include/media/videobuf2-core.h                | 17 +++++----
+ 2 files changed, 41 insertions(+), 13 deletions(-)
 
 diff --git a/drivers/media/common/videobuf2/videobuf2-core.c b/drivers/media/common/videobuf2/videobuf2-core.c
-index a183edf11586..cd2b9e51b9b0 100644
+index cd2b9e51b9b0..9509535a980c 100644
 --- a/drivers/media/common/videobuf2/videobuf2-core.c
 +++ b/drivers/media/common/videobuf2/videobuf2-core.c
-@@ -447,11 +447,12 @@ static void vb2_queue_remove_buffer(struct vb2_buffer *vb)
+@@ -421,11 +421,12 @@ static void init_buffer_cache_hints(struct vb2_queue *q, struct vb2_buffer *vb)
   */
- static int __vb2_queue_alloc(struct vb2_queue *q, enum vb2_memory memory,
- 			     unsigned int num_buffers, unsigned int num_planes,
--			     const unsigned plane_sizes[VB2_MAX_PLANES])
-+			     const unsigned int plane_sizes[VB2_MAX_PLANES],
-+			     unsigned int *first_index)
+ static void vb2_queue_add_buffer(struct vb2_queue *q, struct vb2_buffer *vb, unsigned int index)
  {
--	unsigned int q_num_buffers = vb2_get_num_buffers(q);
- 	unsigned int buffer, plane;
- 	struct vb2_buffer *vb;
-+	unsigned long index;
- 	int ret;
+-	WARN_ON(index >= q->max_num_buffers || q->bufs[index] || vb->vb2_queue);
++	WARN_ON(index >= q->max_num_buffers || test_bit(index, q->bufs_bitmap) || vb->vb2_queue);
  
- 	/*
-@@ -459,7 +460,11 @@ static int __vb2_queue_alloc(struct vb2_queue *q, enum vb2_memory memory,
- 	 * in the queue is below q->max_num_buffers
- 	 */
- 	num_buffers = min_t(unsigned int, num_buffers,
--			    q->max_num_buffers - q_num_buffers);
-+			    q->max_num_buffers - vb2_get_num_buffers(q));
-+
-+	index = vb2_get_num_buffers(q);
-+
-+	*first_index = index;
- 
- 	for (buffer = 0; buffer < num_buffers; ++buffer) {
- 		/* Allocate vb2 buffer structures */
-@@ -479,7 +484,7 @@ static int __vb2_queue_alloc(struct vb2_queue *q, enum vb2_memory memory,
- 			vb->planes[plane].min_length = plane_sizes[plane];
- 		}
- 
--		vb2_queue_add_buffer(q, vb, q_num_buffers + buffer);
-+		vb2_queue_add_buffer(q, vb, index++);
- 		call_void_bufop(q, init_buffer, vb);
- 
- 		/* Allocate video buffer memory for the MMAP type */
-@@ -820,7 +825,7 @@ int vb2_core_reqbufs(struct vb2_queue *q, enum vb2_memory memory,
- 	unsigned int q_num_bufs = vb2_get_num_buffers(q);
- 	unsigned plane_sizes[VB2_MAX_PLANES] = { };
- 	bool non_coherent_mem = flags & V4L2_MEMORY_FLAG_NON_COHERENT;
--	unsigned int i;
-+	unsigned int i, first_index;
- 	int ret = 0;
- 
- 	if (q->streaming) {
-@@ -906,7 +911,7 @@ int vb2_core_reqbufs(struct vb2_queue *q, enum vb2_memory memory,
- 
- 	/* Finally, allocate buffers and video memory */
- 	allocated_buffers =
--		__vb2_queue_alloc(q, memory, num_buffers, num_planes, plane_sizes);
-+		__vb2_queue_alloc(q, memory, num_buffers, num_planes, plane_sizes, &first_index);
- 	if (allocated_buffers == 0) {
- 		dprintk(q, 1, "memory allocation failed\n");
- 		ret = -ENOMEM;
-@@ -980,7 +985,8 @@ EXPORT_SYMBOL_GPL(vb2_core_reqbufs);
- int vb2_core_create_bufs(struct vb2_queue *q, enum vb2_memory memory,
- 			 unsigned int flags, unsigned int *count,
- 			 unsigned int requested_planes,
--			 const unsigned int requested_sizes[])
-+			 const unsigned int requested_sizes[],
-+			 unsigned int *first_index)
- {
- 	unsigned int num_planes = 0, num_buffers, allocated_buffers;
- 	unsigned plane_sizes[VB2_MAX_PLANES] = { };
-@@ -1042,7 +1048,7 @@ int vb2_core_create_bufs(struct vb2_queue *q, enum vb2_memory memory,
- 
- 	/* Finally, allocate buffers and video memory */
- 	allocated_buffers = __vb2_queue_alloc(q, memory, num_buffers,
--				num_planes, plane_sizes);
-+				num_planes, plane_sizes, first_index);
- 	if (allocated_buffers == 0) {
- 		dprintk(q, 1, "memory allocation failed\n");
- 		ret = -ENOMEM;
-diff --git a/drivers/media/common/videobuf2/videobuf2-v4l2.c b/drivers/media/common/videobuf2/videobuf2-v4l2.c
-index 54d572c3b515..3c0c423c5674 100644
---- a/drivers/media/common/videobuf2/videobuf2-v4l2.c
-+++ b/drivers/media/common/videobuf2/videobuf2-v4l2.c
-@@ -797,11 +797,16 @@ int vb2_create_bufs(struct vb2_queue *q, struct v4l2_create_buffers *create)
- 	for (i = 0; i < requested_planes; i++)
- 		if (requested_sizes[i] == 0)
- 			return -EINVAL;
--	return ret ? ret : vb2_core_create_bufs(q, create->memory,
--						create->flags,
--						&create->count,
--						requested_planes,
--						requested_sizes);
-+	if (ret)
-+		return ret;
-+
-+	ret = vb2_core_create_bufs(q, create->memory,
-+				   create->flags,
-+				   &create->count,
-+				   requested_planes,
-+				   requested_sizes,
-+				   &create->index);
-+	return ret;
+ 	q->bufs[index] = vb;
+ 	vb->index = index;
+ 	vb->vb2_queue = q;
++	set_bit(index, q->bufs_bitmap);
  }
- EXPORT_SYMBOL_GPL(vb2_create_bufs);
- 
-@@ -1029,15 +1034,16 @@ int vb2_ioctl_create_bufs(struct file *file, void *priv,
- 	int res = vb2_verify_memory_type(vdev->queue, p->memory,
- 			p->format.type);
- 
--	p->index = vdev->queue->num_buffers;
- 	fill_buf_caps(vdev->queue, &p->capabilities);
- 	validate_memory_flags(vdev->queue, p->memory, &p->flags);
- 	/*
- 	 * If count == 0, then just check if memory and type are valid.
- 	 * Any -EBUSY result from vb2_verify_memory_type can be mapped to 0.
- 	 */
--	if (p->count == 0)
-+	if (p->count == 0) {
-+		p->index = vb2_get_num_buffers(vdev->queue);
- 		return res != -EBUSY ? res : 0;
-+	}
- 	if (res)
- 		return res;
- 	if (vb2_queue_is_busy(vdev->queue, file))
-diff --git a/include/media/videobuf2-core.h b/include/media/videobuf2-core.h
-index 7b84b4e2e273..607f2ba7a905 100644
---- a/include/media/videobuf2-core.h
-+++ b/include/media/videobuf2-core.h
-@@ -821,6 +821,8 @@ int vb2_core_reqbufs(struct vb2_queue *q, enum vb2_memory memory,
-  * @count: requested buffer count.
-  * @requested_planes: number of planes requested.
-  * @requested_sizes: array with the size of the planes.
-+ * @first_index: index of the first created buffer, all allocated buffers have
-+ *		 indices in the range [first..first+count]
-  *
-  * Videobuf2 core helper to implement VIDIOC_CREATE_BUFS() operation. It is
-  * called internally by VB2 by an API-specific handler, like
-@@ -837,7 +839,8 @@ int vb2_core_reqbufs(struct vb2_queue *q, enum vb2_memory memory,
- int vb2_core_create_bufs(struct vb2_queue *q, enum vb2_memory memory,
- 			 unsigned int flags, unsigned int *count,
- 			 unsigned int requested_planes,
--			 const unsigned int requested_sizes[]);
-+			 const unsigned int requested_sizes[],
-+			 unsigned int *first_index);
  
  /**
-  * vb2_core_prepare_buf() - Pass ownership of a buffer from userspace
+@@ -434,6 +435,7 @@ static void vb2_queue_add_buffer(struct vb2_queue *q, struct vb2_buffer *vb, uns
+  */
+ static void vb2_queue_remove_buffer(struct vb2_buffer *vb)
+ {
++	clear_bit(vb->index, vb->vb2_queue->bufs_bitmap);
+ 	vb->vb2_queue->bufs[vb->index] = NULL;
+ 	vb->vb2_queue = NULL;
+ }
+@@ -462,7 +464,8 @@ static int __vb2_queue_alloc(struct vb2_queue *q, enum vb2_memory memory,
+ 	num_buffers = min_t(unsigned int, num_buffers,
+ 			    q->max_num_buffers - vb2_get_num_buffers(q));
+ 
+-	index = vb2_get_num_buffers(q);
++	index = bitmap_find_next_zero_area(q->bufs_bitmap, q->max_num_buffers,
++					   0, num_buffers, 0);
+ 
+ 	*first_index = index;
+ 
+@@ -664,7 +667,6 @@ static void __vb2_queue_free(struct vb2_queue *q, unsigned int buffers)
+ 		kfree(vb);
+ 	}
+ 
+-	q->num_buffers -= buffers;
+ 	if (!vb2_get_num_buffers(q)) {
+ 		q->memory = VB2_MEMORY_UNKNOWN;
+ 		INIT_LIST_HEAD(&q->queued_list);
+@@ -882,6 +884,14 @@ int vb2_core_reqbufs(struct vb2_queue *q, enum vb2_memory memory,
+ 		q->bufs = kcalloc(q->max_num_buffers, sizeof(*q->bufs), GFP_KERNEL);
+ 	if (!q->bufs)
+ 		ret = -ENOMEM;
++
++	if (!q->bufs_bitmap)
++		q->bufs_bitmap = bitmap_zalloc(q->max_num_buffers, GFP_KERNEL);
++	if (!q->bufs_bitmap) {
++		ret = -ENOMEM;
++		kfree(q->bufs);
++		q->bufs = NULL;
++	}
+ 	q->memory = memory;
+ 	mutex_unlock(&q->mmap_lock);
+ 	if (ret)
+@@ -951,7 +961,6 @@ int vb2_core_reqbufs(struct vb2_queue *q, enum vb2_memory memory,
+ 	}
+ 
+ 	mutex_lock(&q->mmap_lock);
+-	q->num_buffers = allocated_buffers;
+ 
+ 	if (ret < 0) {
+ 		/*
+@@ -978,6 +987,10 @@ int vb2_core_reqbufs(struct vb2_queue *q, enum vb2_memory memory,
+ 	mutex_lock(&q->mmap_lock);
+ 	q->memory = VB2_MEMORY_UNKNOWN;
+ 	mutex_unlock(&q->mmap_lock);
++	kfree(q->bufs);
++	q->bufs = NULL;
++	bitmap_free(q->bufs_bitmap);
++	q->bufs_bitmap = NULL;
+ 	return ret;
+ }
+ EXPORT_SYMBOL_GPL(vb2_core_reqbufs);
+@@ -1014,9 +1027,19 @@ int vb2_core_create_bufs(struct vb2_queue *q, enum vb2_memory memory,
+ 		q->memory = memory;
+ 		if (!q->bufs)
+ 			q->bufs = kcalloc(q->max_num_buffers, sizeof(*q->bufs), GFP_KERNEL);
+-		if (!q->bufs)
++		if (!q->bufs) {
+ 			ret = -ENOMEM;
++			goto unlock;
++		}
++		if (!q->bufs_bitmap)
++			q->bufs_bitmap = bitmap_zalloc(q->max_num_buffers, GFP_KERNEL);
++		if (!q->bufs_bitmap) {
++			ret = -ENOMEM;
++			kfree(q->bufs);
++			q->bufs = NULL;
++		}
+ 		mutex_unlock(&q->mmap_lock);
++unlock:
+ 		if (ret)
+ 			return ret;
+ 		q->waiting_for_buffers = !q->is_output;
+@@ -1078,7 +1101,6 @@ int vb2_core_create_bufs(struct vb2_queue *q, enum vb2_memory memory,
+ 	}
+ 
+ 	mutex_lock(&q->mmap_lock);
+-	q->num_buffers += allocated_buffers;
+ 
+ 	if (ret < 0) {
+ 		/*
+@@ -2567,6 +2589,9 @@ void vb2_core_queue_release(struct vb2_queue *q)
+ 	__vb2_queue_free(q, vb2_get_num_buffers(q));
+ 	kfree(q->bufs);
+ 	q->bufs = NULL;
++	bitmap_free(q->bufs_bitmap);
++	q->bufs_bitmap = NULL;
++
+ 	mutex_unlock(&q->mmap_lock);
+ }
+ EXPORT_SYMBOL_GPL(vb2_core_queue_release);
+diff --git a/include/media/videobuf2-core.h b/include/media/videobuf2-core.h
+index 607f2ba7a905..e4c1fc7ae82f 100644
+--- a/include/media/videobuf2-core.h
++++ b/include/media/videobuf2-core.h
+@@ -346,8 +346,8 @@ struct vb2_buffer {
+  *			describes the requested number of planes and sizes\[\]
+  *			contains the requested plane sizes. In this case
+  *			\*num_buffers are being allocated additionally to
+- *			q->num_buffers. If either \*num_planes or the requested
+- *			sizes are invalid callback must return %-EINVAL.
++ *			the buffers already in the queue. If either \*num_planes
++ *			or the requested sizes are invalid callback must return %-EINVAL.
+  * @wait_prepare:	release any locks taken while calling vb2 functions;
+  *			it is called before an ioctl needs to wait for a new
+  *			buffer to arrive; required to avoid a deadlock in
+@@ -572,7 +572,7 @@ struct vb2_buf_ops {
+  * @memory:	current memory type used
+  * @dma_dir:	DMA mapping direction.
+  * @bufs:	videobuf2 buffer structures
+- * @num_buffers: number of allocated/used buffers
++ * @bufs_bitmap: bitmap tracking whether each bufs[] entry is used
+  * @max_num_buffers: upper limit of number of allocated/used buffers.
+  *		     If set to 0 v4l2 core will change it VB2_MAX_FRAME
+  *		     for backward compatibility.
+@@ -639,7 +639,7 @@ struct vb2_queue {
+ 	unsigned int			memory;
+ 	enum dma_data_direction		dma_dir;
+ 	struct vb2_buffer		**bufs;
+-	unsigned int			num_buffers;
++	unsigned long			*bufs_bitmap;
+ 	unsigned int			max_num_buffers;
+ 
+ 	struct list_head		queued_list;
+@@ -1168,7 +1168,10 @@ static inline bool vb2_fileio_is_active(struct vb2_queue *q)
+  */
+ static inline unsigned int vb2_get_num_buffers(struct vb2_queue *q)
+ {
+-	return q->num_buffers;
++	if (!q->bufs_bitmap)
++		return 0;
++
++	return bitmap_weight(q->bufs_bitmap, q->max_num_buffers);
+ }
+ 
+ /**
+@@ -1271,13 +1274,13 @@ static inline void vb2_clear_last_buffer_dequeued(struct vb2_queue *q)
+ static inline struct vb2_buffer *vb2_get_buffer(struct vb2_queue *q,
+ 						unsigned int index)
+ {
+-	if (!q->bufs)
++	if (!q->bufs_bitmap)
+ 		return NULL;
+ 
+ 	if (index >= q->max_num_buffers)
+ 		return NULL;
+ 
+-	if (index < q->num_buffers)
++	if (test_bit(index, q->bufs_bitmap))
+ 		return q->bufs[index];
+ 	return NULL;
+ }
 -- 
 2.40.1
 
