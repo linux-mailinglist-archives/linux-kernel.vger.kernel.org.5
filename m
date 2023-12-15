@@ -1,373 +1,134 @@
-Return-Path: <linux-kernel+bounces-1261-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-1263-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8923E814C88
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 17:10:21 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 79FFF814C8D
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 17:11:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AD36F1C2113A
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 16:10:20 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 32759288E6C
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 16:11:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 43EA83BB29;
-	Fri, 15 Dec 2023 16:10:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1965F3DBB3;
+	Fri, 15 Dec 2023 16:10:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="x4BIH5xP";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="ZTrz60FV"
+	dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="KPXbA2M3"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+Received: from EUR05-AM6-obe.outbound.protection.outlook.com (mail-am6eur05on2083.outbound.protection.outlook.com [40.107.22.83])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C2304358AE;
-	Fri, 15 Dec 2023 16:10:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-Date: Fri, 15 Dec 2023 16:10:03 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1702656604;
-	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-	 content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=vcVVoR+RZFF50yRzXY1sZhrm2rQsd1jYlF45Q+o/krU=;
-	b=x4BIH5xPi8S21JxewcuTVB5FQ7vngtJQ5G6En/lNa+Y85RONqurNewm8c2D/abInO33lku
-	FU9FXGDWl8BwUZC9MhhfCS8bB0ukknWd5af91kHxfO87rKj/YilAN8shYr/BOPpFFCkAr2
-	AN0xCUw0p4wImdDftJ78kqX3xQF5eJnXcFdmGCw2bGMabp+mELtVpsU+0lSlk7jKXv84rP
-	Rih6Q+vOSCHWqNcyg5QXJX1o5+0WHkQA7+tHmCCoNm+FszpSzpJLJk/cTw3W5HOk8n5di4
-	GESiDDwR01MVAB8QvAuVLmLqfPAQzfrdpAs+61/JOeM6STSWHQ0zG9l4WadN6A==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1702656604;
-	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-	 content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=vcVVoR+RZFF50yRzXY1sZhrm2rQsd1jYlF45Q+o/krU=;
-	b=ZTrz60FVzInklwW/n8a2qBCx7nSHiAOzVdsYxaQ9KtPTYgBHpHrhBnzaNNvk0Bxt8INovT
-	EWIFBqTkVNgorHBw==
-From: "tip-bot2 for Tony Luck" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To: linux-tip-commits@vger.kernel.org
-Subject: [tip: ras/core] x86/mce: Add per-bank CMCI storm mitigation
-Cc: Tony Luck <tony.luck@intel.com>, "Borislav Petkov (AMD)" <bp@alien8.de>,
- x86@kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20231115195450.12963-3-tony.luck@intel.com>
-References: <20231115195450.12963-3-tony.luck@intel.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A1BB3C48A;
+	Fri, 15 Dec 2023 16:10:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ia6+xWWSIyN/KeV+6/3nfR29JHrwH6cIijPAPV4Bs4rN6/mxU3j6Ofxsh2uxlzEr2oyf+HAg7eOisksn2qi8r9wPyPgU4dC64LGzsjaXlcO82mMLfotI9YlPYC4uZX+plhuB5hfDQF0K/a7G1oHteLAI5bCppdNZe+nJEnPfGAFvwTWBKKdhwuL3eBy3YUhpXdYi2Sz2pJ385fAn08Fk5/m5jzmVVbrf3eitl7MeHhzHUJ6/IZ80kMx+bT+LEoyM9HM/bkIk6Ba/5tAuFqLVsdhyupVUJUYVI/RVa8AGGScADfg+cAjhMQjjSXA/Diz43rpF669rGl6wbHtv0Ma/nA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=MPSIrYGK70h/CGaxXzAxwOwzuq0/IBKsfnAxN2tq6rA=;
+ b=JhVSNY5I9z8MjHvhHbW1oZUiEmFeQaiu6BHJPbEFgv4etPENAnDxlOrkyCd18ajH78x6Hgs3ykWpqZGUi7xajHvUu+Wycov1yADbHqbJzgFVYDJLg6mrTXbeKUbN9J7FwG4nT4oGNSh4RknMTbFATuIRQvnepRgc7ZvMe6jj9BMMZZULtUEjjKlrUvHZZTwnIMwScxfGCOICxB/SS2G5SWzY6GZVa9hvM4FAbP5wPxF67uRTMNTKVnWQrvjou5vIizlxTzqkS7K/ECRBcAhm24+N4aXTKnUVvE60hqjMtDoht3vL32zFIEmDHcYB9o+vlE5JCz+soS0HpZ7CYFDwqA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=MPSIrYGK70h/CGaxXzAxwOwzuq0/IBKsfnAxN2tq6rA=;
+ b=KPXbA2M33FWWmCfrwy4aHW7/W9nnwr2oON81SbDdCoeDnf0bf/7czfEUDHDrCBQxPPd8w4XKF6WVQiD6RODYmmTRe5XXafJ8xgfmp/3kObGM4m8vKhZmE/Q5Vj9/6z35DjHbBqGfftvQKdM0MmwyjFeEu1YvLrdzzfd6uY+ZgEc=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+Received: from AM0PR04MB6452.eurprd04.prod.outlook.com (2603:10a6:208:16d::21)
+ by AM9PR04MB8761.eurprd04.prod.outlook.com (2603:10a6:20b:408::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7091.31; Fri, 15 Dec
+ 2023 16:10:07 +0000
+Received: from AM0PR04MB6452.eurprd04.prod.outlook.com
+ ([fe80::dd33:f07:7cfd:afa4]) by AM0PR04MB6452.eurprd04.prod.outlook.com
+ ([fe80::dd33:f07:7cfd:afa4%7]) with mapi id 15.20.7091.030; Fri, 15 Dec 2023
+ 16:10:07 +0000
+Date: Fri, 15 Dec 2023 18:10:03 +0200
+From: Vladimir Oltean <vladimir.oltean@nxp.com>
+To: Roger Quadros <rogerq@kernel.org>
+Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+	pabeni@redhat.com, shuah@kernel.org, s-vadapalli@ti.com,
+	r-gunasekaran@ti.com, vigneshr@ti.com, srk@ti.com, horms@kernel.org,
+	p-varis@ti.com, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH net-next v9 03/10] net: ethernet: am65-cpsw: Build
+ am65-cpsw-qos only if required
+Message-ID: <20231215161003.jqjqdu77b5ihrpbi@skbuf>
+References: <20231215132048.43727-1-rogerq@kernel.org>
+ <20231215132048.43727-4-rogerq@kernel.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231215132048.43727-4-rogerq@kernel.org>
+X-ClientProxiedBy: FR2P281CA0163.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:99::6) To AM0PR04MB6452.eurprd04.prod.outlook.com
+ (2603:10a6:208:16d::21)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <170265660377.398.5708293697259169201.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe:
- Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Precedence: bulk
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: AM0PR04MB6452:EE_|AM9PR04MB8761:EE_
+X-MS-Office365-Filtering-Correlation-Id: e61daaa3-427b-4469-bbcd-08dbfd884e43
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	tln2pWgcj/r7RFnsbodTOU342PGmJiBQhQFZM6KNg8/hZBdmmVKyalMC5yp9CdlNmHXd6uDR1yruFXg2fxBbvj9L0papc5AZ8ytb3rrnpf47hLe+b6dNKr1FIKnH0zD5kQ7UYh7AnkT07b/FNI0IpGQ1U/b4yXOGNYdO+caMS4nT1irn4rNO37lJn7/sd1YCmR++ote+feQfPQJxXtgELh9L5b3iX7HSa+dnLOmgTgZ2C8xMn9GjlUdRr3x1mRweqFN5j4j9L+wJa4jKeDcICdmg2fvhmB1Q3Dqu3cgpOXHcPtvS99x3e0Z9kqpRciujshl2/Vb6BNzjBgW+vHX7/5yKUISAALPv2TmfMCfmxZ+bA4a47yS8AThANrG0NrI8XSIoKEbL6WU6WdGd+6wB6geMEIKLzgzMhDWZ5MG3VvWrAETWRZpSeD0iAj/R7vmDzSVftoqXCidyGwNxpj+dY0xBXPprQyN0PRKfXsZAQdq0UxLfWNuPrCFODIWnsaQFXbTBdgT+byh+udrse0PSkGt9JQm4CNPkgKhmhi3JJTk4hQCNfplE0f6LgoC6RGFC
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR04MB6452.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(396003)(366004)(376002)(346002)(39860400002)(136003)(230922051799003)(186009)(451199024)(1800799012)(64100799003)(38100700002)(26005)(1076003)(558084003)(86362001)(6506007)(9686003)(6666004)(6512007)(478600001)(6916009)(316002)(66946007)(66556008)(66476007)(2906002)(7416002)(8936002)(4326008)(44832011)(8676002)(5660300002)(33716001)(41300700001)(6486002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?VuwY/5Lwxur3sXbEAGtMvoK2GR4Oqf3oMDzfbcou+a9DxMbf0mHEvGCIGep+?=
+ =?us-ascii?Q?cdSOlU2aSc1AXo1YBKuTPssrRU5bh/hOM2BHQHTGOh2KqpodIMmUAs+ZH8V1?=
+ =?us-ascii?Q?7KPXs1OyhUpr91ISQuhFaHSwsdDHYaGvwMxD1G9ttGF5agxK/s+wR/6DjxBl?=
+ =?us-ascii?Q?Nte0esZ7ij9e+LutQnSxrh16BYlGIFQyb2pgyKfvqrqeSYDc7GqCyorRrVbp?=
+ =?us-ascii?Q?v5Giy+NDafap/i5gpVIK64TJkpnyHcUOy8I1FxkTs7Mb3F2OdANDY2Fb8Hps?=
+ =?us-ascii?Q?jQSzbNC2WVo7bgB6BLUdZ4g878EGPfqHAyd8/v8r+yH7nbFx4dyseeaDjPtX?=
+ =?us-ascii?Q?3dPDYcexTG0V32HASidtUi9tA7ZbSp5DJ4MHZegtwksIW+RuZG++Xwn8u4Wm?=
+ =?us-ascii?Q?RDd8FSTlDBgXDWex5jYOUn27Rkkiv+OcX+GDEHCj4+inSouJ+AGB/BJnqff2?=
+ =?us-ascii?Q?MAt+yFjFk9cS+kIHInl6CXWSWehEnLvsVG0+CFaMtTQ+eIjy/pK4Iw9+jlRt?=
+ =?us-ascii?Q?OPEkoIRBx9QGJ7/MQUZuT5/15dqarlP5Rjs8RB75hM9pqKJVyb6Fxr0KBrc0?=
+ =?us-ascii?Q?8y2d0qwv0tCkjo+mUU+PfG9FyWNhWeXIvdH5ArBxiLrmIY1+L1iCrE7+isET?=
+ =?us-ascii?Q?MHwwcLjotDDZrHRzRKDuz2nY0Irb+/TPpnCSJPVeG1hKXoZBUvnEZmwcIXVw?=
+ =?us-ascii?Q?rYiTceELWCAaTTOAujEGZsp/ekN5QFteuKQlqmek7t/kzhAfgfM1ib0EGb78?=
+ =?us-ascii?Q?iGGFFHcCx1oDG4R3iZd2qR7uViHLdtT4xq36TIVMsT2Du7Zf0ZtIIuuT9Ker?=
+ =?us-ascii?Q?W52J18Xk00tCx73ioZNt6nccsp+vzre2/Aq1USXZyWvbFRFnq8VzBIGyuywl?=
+ =?us-ascii?Q?d5uTBUEIyBpUDRHntnKbhxJADoPb8bpF/4UHVxzqqjkShDmImUFze3EAEMMy?=
+ =?us-ascii?Q?fA+ttjC61DFiwZxQPYKn5b9pm+crYB9ssk2qV2kcaH4Z7lLx1b7FSPTCpORQ?=
+ =?us-ascii?Q?k89uCtMWJM8PIia366NdiSChDtgaKfThwtGvSDPSS7O+TZQm6x4RoWhuCODi?=
+ =?us-ascii?Q?1otwq0bm0iRN4jyE6t5EEna/ZYyqZ1ePlz5k+lkUOzOPQ4MGcCpF1D5uPvTA?=
+ =?us-ascii?Q?yv+565cJmLlNGGHfvUyZW6XddyCtuh8zlOAr4G2nBVifMGEfUsGbniL8Vpo0?=
+ =?us-ascii?Q?s4YzuXd4EbzO1agdMed25bhLfTGU8qhyn8FsKN2UtqvGm4sOgZre+xxtakO+?=
+ =?us-ascii?Q?Tdt46KLtHDSIfLEcQ4syArzs4KfpiafEVWwO/REEjN5COtYKAFSBAgAs/uhh?=
+ =?us-ascii?Q?ZzILUKejo9ptk2YvXQjbvcip90my1y4SN/p08TYTSDLbuiUSzbv3KXWzeUDw?=
+ =?us-ascii?Q?PBDgKmXzsr340KjYTLINUfvAxJkZDvlgVlMOCKhfUjR0SqUhBHSbOC8Ocxk8?=
+ =?us-ascii?Q?wdVvzvDbWCqcXEheEJgOweL+SY2lxs6y+RmVyVzdhyfArx6Nyo16BhPEAKF2?=
+ =?us-ascii?Q?AxQLWrqNqiIGuBI+Yauz1WUMYlIFCyvnTF5cTy7DxkM/DFQ0jo3UkGvq7Vut?=
+ =?us-ascii?Q?oSKIZOt+UOkR8z98Eydzu88avsPFTQoWQZ2yaByOZ0Le2PlMYMLM0MkfA+oU?=
+ =?us-ascii?Q?wA=3D=3D?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: e61daaa3-427b-4469-bbcd-08dbfd884e43
+X-MS-Exchange-CrossTenant-AuthSource: AM0PR04MB6452.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Dec 2023 16:10:07.6120
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: TkmLLwWL9nC8G7k5yCdsbD5gVyZKp6tVhXJfxrzT60fSOxKJ51YBPplLifo/yMnKh0KOelnPm3FOB6DqhXzECA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM9PR04MB8761
 
-The following commit has been merged into the ras/core branch of tip:
+On Fri, Dec 15, 2023 at 03:20:41PM +0200, Roger Quadros wrote:
+> Build am65-cpsw-qos only if CONFIG_TI_AM65_CPSW_TAS is enabled.
+> 
+> Signed-off-by: Roger Quadros <rogerq@kernel.org>
+> ---
 
-Commit-ID:     7eae17c4add5de46efcca45356388f480103e6d9
-Gitweb:        https://git.kernel.org/tip/7eae17c4add5de46efcca45356388f480103e6d9
-Author:        Tony Luck <tony.luck@intel.com>
-AuthorDate:    Wed, 15 Nov 2023 11:54:49 -08:00
-Committer:     Borislav Petkov (AMD) <bp@alien8.de>
-CommitterDate: Fri, 15 Dec 2023 14:52:01 +01:00
-
-x86/mce: Add per-bank CMCI storm mitigation
-
-This is the core functionality to track CMCI storms at the machine check
-bank granularity. Subsequent patches will add the vendor specific hooks
-to supply input to the storm detection and take actions on the start/end
-of a storm.
-
-machine_check_poll() is called both by the CMCI interrupt code, and for
-periodic polls from a timer. Add a hook in this routine to maintain
-a bitmap history for each bank showing whether the bank logged an
-corrected error or not each time it is polled.
-
-In normal operation the interval between polls of these banks determines
-how far to shift the history. The 64 bit width corresponds to about one
-second.
-
-When a storm is observed a CPU vendor specific action is taken to reduce
-or stop CMCI from the bank that is the source of the storm.  The bank is
-added to the bitmap of banks for this CPU to poll. The polling rate is
-increased to once per second.  During a storm each bit in the history
-indicates the status of the bank each time it is polled. Thus the
-history covers just over a minute.
-
-Declare a storm for that bank if the number of corrected interrupts seen
-in that history is above some threshold (defined as 5 in this series,
-could be tuned later if there is data to suggest a better value).
-
-A storm on a bank ends if enough consecutive polls of the bank show no
-corrected errors (defined as 30, may also change). That calls the CPU
-vendor specific function to revert to normal operational mode, and
-changes the polling rate back to the default.
-
-  [ bp: Massage. ]
-
-Signed-off-by: Tony Luck <tony.luck@intel.com>
-Signed-off-by: Borislav Petkov (AMD) <bp@alien8.de>
-Link: https://lore.kernel.org/r/20231115195450.12963-3-tony.luck@intel.com
----
- arch/x86/kernel/cpu/mce/core.c      |  33 ++++++--
- arch/x86/kernel/cpu/mce/internal.h  |  58 +++++++++++++-
- arch/x86/kernel/cpu/mce/threshold.c | 112 +++++++++++++++++++++++++++-
- 3 files changed, 194 insertions(+), 9 deletions(-)
-
-diff --git a/arch/x86/kernel/cpu/mce/core.c b/arch/x86/kernel/cpu/mce/core.c
-index b2ef487..fd5ce12 100644
---- a/arch/x86/kernel/cpu/mce/core.c
-+++ b/arch/x86/kernel/cpu/mce/core.c
-@@ -686,6 +686,16 @@ bool machine_check_poll(enum mcp_flags flags, mce_banks_t *b)
- 		barrier();
- 		m.status = mce_rdmsrl(mca_msr_reg(i, MCA_STATUS));
- 
-+		/*
-+		 * Update storm tracking here, before checking for the
-+		 * MCI_STATUS_VAL bit. Valid corrected errors count
-+		 * towards declaring, or maintaining, storm status. No
-+		 * error in a bank counts towards avoiding, or ending,
-+		 * storm status.
-+		 */
-+		if (!mca_cfg.cmci_disabled)
-+			mce_track_storm(&m);
-+
- 		/* If this entry is not valid, ignore it */
- 		if (!(m.status & MCI_STATUS_VAL))
- 			continue;
-@@ -1658,22 +1668,29 @@ static void mce_timer_fn(struct timer_list *t)
- 	else
- 		iv = min(iv * 2, round_jiffies_relative(check_interval * HZ));
- 
--	__this_cpu_write(mce_next_interval, iv);
--	__start_timer(t, iv);
-+	if (mce_get_storm_mode()) {
-+		__start_timer(t, HZ);
-+	} else {
-+		__this_cpu_write(mce_next_interval, iv);
-+		__start_timer(t, iv);
-+	}
- }
- 
- /*
-- * Ensure that the timer is firing in @interval from now.
-+ * When a storm starts on any bank on this CPU, switch to polling
-+ * once per second. When the storm ends, revert to the default
-+ * polling interval.
-  */
--void mce_timer_kick(unsigned long interval)
-+void mce_timer_kick(bool storm)
- {
- 	struct timer_list *t = this_cpu_ptr(&mce_timer);
--	unsigned long iv = __this_cpu_read(mce_next_interval);
- 
--	__start_timer(t, interval);
-+	mce_set_storm_mode(storm);
- 
--	if (interval < iv)
--		__this_cpu_write(mce_next_interval, interval);
-+	if (storm)
-+		__start_timer(t, HZ);
-+	else
-+		__this_cpu_write(mce_next_interval, check_interval * HZ);
- }
- 
- /* Must not be called in IRQ context where del_timer_sync() can deadlock */
-diff --git a/arch/x86/kernel/cpu/mce/internal.h b/arch/x86/kernel/cpu/mce/internal.h
-index b18e990..157b2f2 100644
---- a/arch/x86/kernel/cpu/mce/internal.h
-+++ b/arch/x86/kernel/cpu/mce/internal.h
-@@ -56,7 +56,63 @@ static inline bool intel_filter_mce(struct mce *m) { return false; }
- static inline bool intel_mce_usable_address(struct mce *m) { return false; }
- #endif
- 
--void mce_timer_kick(unsigned long interval);
-+void mce_timer_kick(bool storm);
-+
-+#ifdef CONFIG_X86_MCE_THRESHOLD
-+void cmci_storm_begin(unsigned int bank);
-+void cmci_storm_end(unsigned int bank);
-+void mce_track_storm(struct mce *mce);
-+void mce_inherit_storm(unsigned int bank);
-+bool mce_get_storm_mode(void);
-+void mce_set_storm_mode(bool storm);
-+#else
-+static inline void cmci_storm_begin(unsigned int bank) {}
-+static inline void cmci_storm_end(unsigned int bank) {}
-+static inline void mce_track_storm(struct mce *mce) {}
-+static inline void mce_inherit_storm(unsigned int bank) {}
-+static inline bool mce_get_storm_mode(void) { return false; }
-+static inline void mce_set_storm_mode(bool storm) {}
-+#endif
-+
-+/*
-+ * history:		Bitmask tracking errors occurrence. Each set bit
-+ *			represents an error seen.
-+ *
-+ * timestamp:		Last time (in jiffies) that the bank was polled.
-+ * in_storm_mode:	Is this bank in storm mode?
-+ * poll_only:		Bank does not support CMCI, skip storm tracking.
-+ */
-+struct storm_bank {
-+	u64 history;
-+	u64 timestamp;
-+	bool in_storm_mode;
-+	bool poll_only;
-+};
-+
-+#define NUM_HISTORY_BITS (sizeof(u64) * BITS_PER_BYTE)
-+
-+/* How many errors within the history buffer mark the start of a storm. */
-+#define STORM_BEGIN_THRESHOLD	5
-+
-+/*
-+ * How many polls of machine check bank without an error before declaring
-+ * the storm is over. Since it is tracked by the bitmasks in the history
-+ * field of struct storm_bank the mask is 30 bits [0 ... 29].
-+ */
-+#define STORM_END_POLL_THRESHOLD	29
-+
-+/*
-+ * banks:		per-cpu, per-bank details
-+ * stormy_bank_count:	count of MC banks in storm state
-+ * poll_mode:		CPU is in poll mode
-+ */
-+struct mca_storm_desc {
-+	struct storm_bank	banks[MAX_NR_BANKS];
-+	u8			stormy_bank_count;
-+	bool			poll_mode;
-+};
-+
-+DECLARE_PER_CPU(struct mca_storm_desc, storm_desc);
- 
- #ifdef CONFIG_ACPI_APEI
- int apei_write_mce(struct mce *m);
-diff --git a/arch/x86/kernel/cpu/mce/threshold.c b/arch/x86/kernel/cpu/mce/threshold.c
-index ef4e7bb..0e19884 100644
---- a/arch/x86/kernel/cpu/mce/threshold.c
-+++ b/arch/x86/kernel/cpu/mce/threshold.c
-@@ -29,3 +29,115 @@ DEFINE_IDTENTRY_SYSVEC(sysvec_threshold)
- 	trace_threshold_apic_exit(THRESHOLD_APIC_VECTOR);
- 	apic_eoi();
- }
-+
-+DEFINE_PER_CPU(struct mca_storm_desc, storm_desc);
-+
-+void mce_inherit_storm(unsigned int bank)
-+{
-+	struct mca_storm_desc *storm = this_cpu_ptr(&storm_desc);
-+
-+	/*
-+	 * Previous CPU owning this bank had put it into storm mode,
-+	 * but the precise history of that storm is unknown. Assume
-+	 * the worst (all recent polls of the bank found a valid error
-+	 * logged). This will avoid the new owner prematurely declaring
-+	 * the storm has ended.
-+	 */
-+	storm->banks[bank].history = ~0ull;
-+	storm->banks[bank].timestamp = jiffies;
-+}
-+
-+bool mce_get_storm_mode(void)
-+{
-+	return __this_cpu_read(storm_desc.poll_mode);
-+}
-+
-+void mce_set_storm_mode(bool storm)
-+{
-+	__this_cpu_write(storm_desc.poll_mode, storm);
-+}
-+
-+static void mce_handle_storm(unsigned int bank, bool on)
-+{
-+	switch (boot_cpu_data.x86_vendor) {
-+	}
-+}
-+
-+void cmci_storm_begin(unsigned int bank)
-+{
-+	struct mca_storm_desc *storm = this_cpu_ptr(&storm_desc);
-+
-+	__set_bit(bank, this_cpu_ptr(mce_poll_banks));
-+	storm->banks[bank].in_storm_mode = true;
-+
-+	/*
-+	 * If this is the first bank on this CPU to enter storm mode
-+	 * start polling.
-+	 */
-+	if (++storm->stormy_bank_count == 1)
-+		mce_timer_kick(true);
-+}
-+
-+void cmci_storm_end(unsigned int bank)
-+{
-+	struct mca_storm_desc *storm = this_cpu_ptr(&storm_desc);
-+
-+	__clear_bit(bank, this_cpu_ptr(mce_poll_banks));
-+	storm->banks[bank].history = 0;
-+	storm->banks[bank].in_storm_mode = false;
-+
-+	/* If no banks left in storm mode, stop polling. */
-+	if (!this_cpu_dec_return(storm_desc.stormy_bank_count))
-+		mce_timer_kick(false);
-+}
-+
-+void mce_track_storm(struct mce *mce)
-+{
-+	struct mca_storm_desc *storm = this_cpu_ptr(&storm_desc);
-+	unsigned long now = jiffies, delta;
-+	unsigned int shift = 1;
-+	u64 history = 0;
-+
-+	/* No tracking needed for banks that do not support CMCI */
-+	if (storm->banks[mce->bank].poll_only)
-+		return;
-+
-+	/*
-+	 * When a bank is in storm mode it is polled once per second and
-+	 * the history mask will record about the last minute of poll results.
-+	 * If it is not in storm mode, then the bank is only checked when
-+	 * there is a CMCI interrupt. Check how long it has been since
-+	 * this bank was last checked, and adjust the amount of "shift"
-+	 * to apply to history.
-+	 */
-+	if (!storm->banks[mce->bank].in_storm_mode) {
-+		delta = now - storm->banks[mce->bank].timestamp;
-+		shift = (delta + HZ) / HZ;
-+	}
-+
-+	/* If it has been a long time since the last poll, clear history. */
-+	if (shift < NUM_HISTORY_BITS)
-+		history = storm->banks[mce->bank].history << shift;
-+
-+	storm->banks[mce->bank].timestamp = now;
-+
-+	/* History keeps track of corrected errors. VAL=1 && UC=0 */
-+	if ((mce->status & MCI_STATUS_VAL) && mce_is_correctable(mce))
-+		history |= 1;
-+
-+	storm->banks[mce->bank].history = history;
-+
-+	if (storm->banks[mce->bank].in_storm_mode) {
-+		if (history & GENMASK_ULL(STORM_END_POLL_THRESHOLD, 0))
-+			return;
-+		printk_deferred(KERN_NOTICE "CPU%d BANK%d CMCI storm subsided\n", smp_processor_id(), mce->bank);
-+		mce_handle_storm(mce->bank, false);
-+		cmci_storm_end(mce->bank);
-+	} else {
-+		if (hweight64(history) < STORM_BEGIN_THRESHOLD)
-+			return;
-+		printk_deferred(KERN_NOTICE "CPU%d BANK%d CMCI storm detected\n", smp_processor_id(), mce->bank);
-+		mce_handle_storm(mce->bank, true);
-+		cmci_storm_begin(mce->bank);
-+	}
-+}
+Reviewed-by: Vladimir Oltean <vladimir.oltean@nxp.com>
 
