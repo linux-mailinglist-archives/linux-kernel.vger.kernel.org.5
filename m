@@ -1,29 +1,29 @@
-Return-Path: <linux-kernel+bounces-1447-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-1448-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 15CE5814F1C
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 18:46:06 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id E9BFA814F1D
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 18:46:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BEDDF1F25936
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 17:46:05 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 88BDD1F213FC
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 17:46:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3AF5C47F72;
-	Fri, 15 Dec 2023 17:44:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F5F1495CB;
+	Fri, 15 Dec 2023 17:44:32 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 77F294777D
-	for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 17:44:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A00F147F71
+	for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 17:44:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3A2DB1650;
-	Fri, 15 Dec 2023 09:45:12 -0800 (PST)
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3D7A4C15;
+	Fri, 15 Dec 2023 09:45:15 -0800 (PST)
 Received: from merodach.members.linode.com (unknown [172.31.20.19])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4A2853F5A1;
-	Fri, 15 Dec 2023 09:44:24 -0800 (PST)
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4D9783F5A1;
+	Fri, 15 Dec 2023 09:44:27 -0800 (PST)
 From: James Morse <james.morse@arm.com>
 To: x86@kernel.org,
 	linux-kernel@vger.kernel.org
@@ -48,9 +48,9 @@ Cc: Fenghua Yu <fenghua.yu@intel.com>,
 	dfustini@baylibre.com,
 	amitsinght@marvell.com,
 	Babu Moger <babu.moger@amd.com>
-Subject: [PATCH v8 08/24] x86/resctrl: Track the number of dirty RMID a CLOSID has
-Date: Fri, 15 Dec 2023 17:43:27 +0000
-Message-Id: <20231215174343.13872-9-james.morse@arm.com>
+Subject: [PATCH v8 09/24] x86/resctrl: Use __set_bit()/__clear_bit() instead of open coding
+Date: Fri, 15 Dec 2023 17:43:28 +0000
+Message-Id: <20231215174343.13872-10-james.morse@arm.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20231215174343.13872-1-james.morse@arm.com>
 References: <20231215174343.13872-1-james.morse@arm.com>
@@ -62,17 +62,12 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-MPAM's PMG bits extend its PARTID space, meaning the same PMG value can be
-used for different control groups.
+The resctrl CLOSID allocator uses a single 32bit word to track which
+CLOSID are free. The setting and clearing of bits is open coded.
 
-This means once a CLOSID is allocated, all its monitoring ids may still be
-dirty, and held in limbo.
-
-Keep track of the number of RMID held in limbo each CLOSID has. This will
-allow a future helper to find the 'cleanest' CLOSID when allocating.
-
-The array is only needed when CONFIG_RESCTRL_RMID_DEPENDS_ON_CLOSID is
-defined. This will never be the case on x86.
+Convert the existing open coded bit manipulations of closid_free_map
+to use __set_bit() and friends. These don't need to be atomic as this
+list is protected by the mutex.
 
 Signed-off-by: James Morse <james.morse@arm.com>
 Tested-by: Shaopeng Tan <tan.shaopeng@fujitsu.com>
@@ -80,161 +75,82 @@ Tested-by: Peter Newman <peternewman@google.com>
 Tested-by: Babu Moger <babu.moger@amd.com>
 Reviewed-by: Shaopeng Tan <tan.shaopeng@fujitsu.com>
 Reviewed-by: Reinette Chatre <reinette.chatre@intel.com>
+Reviewed-by: Babu Moger <babu.moger@amd.com>
 ---
-Changes since v4:
- * Moved closid_num_dirty_rmid[] update under entry->busy check
- * Take the mutex in dom_data_init() as the caller doesn't.
-
-Changes since v5:
- * Added braces after an else.
- * Made closid_num_dirty_rmid an unsigned int.
- * Moved mutex_lock() in dom_data_init() to cover the whole function.
-
 Changes since v6:
- * Made closid_num_dirty_rmid[] and associated tmp variables u32.
+ * Use the __ inatomic helpers and add lockdep_assert_held() annotations to
+   document how this is safe.
+ * Fixed a resctrl_closid_is_free()/closid_allocated() rename in the commit
+   message.
+ * Use RESCTRL_RESERVED_CLOSID to improve readability.
 
 Changes since v7:
- * Clobber kfree()d variable with NULL.
- * Guard the use of closid_num_dirty_rmid with IS_ENABLED() so it can be
-   optimised out on x86.
+ * Removed paragraph explaining why this should be done now due to badword
+   'subsequent'.
+ * Changed a comment to refer to RESCTRL_RESERVED_CLOSID.
 ---
- arch/x86/kernel/cpu/resctrl/monitor.c | 69 +++++++++++++++++++++++----
- 1 file changed, 59 insertions(+), 10 deletions(-)
+ arch/x86/kernel/cpu/resctrl/rdtgroup.c | 18 ++++++++++++------
+ 1 file changed, 12 insertions(+), 6 deletions(-)
 
-diff --git a/arch/x86/kernel/cpu/resctrl/monitor.c b/arch/x86/kernel/cpu/resctrl/monitor.c
-index 1f371b108a74..6dfc68c800c8 100644
---- a/arch/x86/kernel/cpu/resctrl/monitor.c
-+++ b/arch/x86/kernel/cpu/resctrl/monitor.c
-@@ -50,6 +50,13 @@ struct rmid_entry {
+diff --git a/arch/x86/kernel/cpu/resctrl/rdtgroup.c b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
+index 12a557c96100..f6b52415ca3d 100644
+--- a/arch/x86/kernel/cpu/resctrl/rdtgroup.c
++++ b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
+@@ -111,7 +111,7 @@ void rdt_staged_configs_clear(void)
+  * - Our choices on how to configure each resource become progressively more
+  *   limited as the number of resources grows.
   */
- static LIST_HEAD(rmid_free_lru);
+-static int closid_free_map;
++static unsigned long closid_free_map;
+ static int closid_free_map_len;
  
-+/**
-+ * @closid_num_dirty_rmid    The number of dirty RMID each CLOSID has.
-+ *     Only allocated when CONFIG_RESCTRL_RMID_DEPENDS_ON_CLOSID is defined.
-+ *     Indexed by CLOSID. Protected by rdtgroup_mutex.
-+ */
-+static u32 *closid_num_dirty_rmid;
-+
- /*
-  * @rmid_limbo_count - count of currently unused but (potentially)
-  *     dirty RMIDs.
-@@ -292,6 +299,17 @@ int resctrl_arch_rmid_read(struct rdt_resource *r, struct rdt_domain *d,
- 	return 0;
+ int closids_supported(void)
+@@ -130,8 +130,8 @@ static void closid_init(void)
+ 
+ 	closid_free_map = BIT_MASK(rdt_min_closid) - 1;
+ 
+-	/* CLOSID 0 is always reserved for the default group */
+-	closid_free_map &= ~1;
++	/* RESCTRL_RESERVED_CLOSID is always reserved for the default group */
++	__clear_bit(RESCTRL_RESERVED_CLOSID, &closid_free_map);
+ 	closid_free_map_len = rdt_min_closid;
  }
  
-+static void limbo_release_entry(struct rmid_entry *entry)
-+{
-+	lockdep_assert_held(&rdtgroup_mutex);
-+
-+	rmid_limbo_count--;
-+	list_add_tail(&entry->list, &rmid_free_lru);
-+
-+	if (IS_ENABLED(CONFIG_RESCTRL_RMID_DEPENDS_ON_CLOSID))
-+		closid_num_dirty_rmid[entry->closid]--;
-+}
-+
- /*
-  * Check the RMIDs that are marked as busy for this domain. If the
-  * reported LLC occupancy is below the threshold clear the busy bit and
-@@ -328,10 +346,8 @@ void __check_limbo(struct rdt_domain *d, bool force_free)
- 
- 		if (force_free || !rmid_dirty) {
- 			clear_bit(idx, d->rmid_busy_llc);
--			if (!--entry->busy) {
--				rmid_limbo_count--;
--				list_add_tail(&entry->list, &rmid_free_lru);
--			}
-+			if (!--entry->busy)
-+				limbo_release_entry(entry);
- 		}
- 		cur_idx = idx + 1;
- 	}
-@@ -398,6 +414,8 @@ static void add_rmid_to_limbo(struct rmid_entry *entry)
- 	u64 val = 0;
- 	u32 idx;
+@@ -139,17 +139,21 @@ static int closid_alloc(void)
+ {
+ 	u32 closid = ffs(closid_free_map);
  
 +	lockdep_assert_held(&rdtgroup_mutex);
 +
- 	idx = resctrl_arch_rmid_idx_encode(entry->closid, entry->rmid);
+ 	if (closid == 0)
+ 		return -ENOSPC;
+ 	closid--;
+-	closid_free_map &= ~(1 << closid);
++	__clear_bit(closid, &closid_free_map);
  
- 	entry->busy = 0;
-@@ -423,10 +441,13 @@ static void add_rmid_to_limbo(struct rmid_entry *entry)
- 	}
- 	put_cpu();
- 
--	if (entry->busy)
-+	if (entry->busy) {
- 		rmid_limbo_count++;
--	else
-+		if (IS_ENABLED(CONFIG_RESCTRL_RMID_DEPENDS_ON_CLOSID))
-+			closid_num_dirty_rmid[entry->closid]++;
-+	} else {
- 		list_add_tail(&entry->list, &rmid_free_lru);
-+	}
+ 	return closid;
  }
  
- void free_rmid(u32 closid, u32 rmid)
-@@ -792,13 +813,33 @@ void mbm_setup_overflow_handler(struct rdt_domain *dom, unsigned long delay_ms)
- static int dom_data_init(struct rdt_resource *r)
+ void closid_free(int closid)
  {
- 	u32 idx_limit = resctrl_arch_system_num_rmid_idx();
-+	u32 num_closid = resctrl_arch_get_num_closid(r);
- 	struct rmid_entry *entry = NULL;
-+	int err = 0, i;
- 	u32 idx;
--	int i;
+-	closid_free_map |= 1 << closid;
++	lockdep_assert_held(&rdtgroup_mutex);
 +
-+	mutex_lock(&rdtgroup_mutex);
-+	if (IS_ENABLED(CONFIG_RESCTRL_RMID_DEPENDS_ON_CLOSID)) {
-+		u32 *tmp;
-+
-+		tmp = kcalloc(num_closid, sizeof(*tmp), GFP_KERNEL);
-+		if (!tmp) {
-+			err = -ENOMEM;
-+			goto out_unlock;
-+		}
-+
-+		closid_num_dirty_rmid = tmp;
-+	}
- 
- 	rmid_ptrs = kcalloc(idx_limit, sizeof(struct rmid_entry), GFP_KERNEL);
--	if (!rmid_ptrs)
--		return -ENOMEM;
-+	if (!rmid_ptrs) {
-+		if (IS_ENABLED(CONFIG_RESCTRL_RMID_DEPENDS_ON_CLOSID)) {
-+			kfree(closid_num_dirty_rmid);
-+			closid_num_dirty_rmid = NULL;
-+		}
-+		err = -ENOMEM;
-+		goto out_unlock;
-+	}
- 
- 	for (i = 0; i < idx_limit; i++) {
- 		entry = &rmid_ptrs[i];
-@@ -818,13 +859,21 @@ static int dom_data_init(struct rdt_resource *r)
- 	entry = __rmid_entry(idx);
- 	list_del(&entry->list);
- 
--	return 0;
-+out_unlock:
-+	mutex_unlock(&rdtgroup_mutex);
-+
-+	return err;
++	__set_bit(closid, &closid_free_map);
  }
  
- static void __exit dom_data_exit(struct rdt_resource *r)
+ /**
+@@ -161,7 +165,9 @@ void closid_free(int closid)
+  */
+ static bool closid_allocated(unsigned int closid)
  {
- 	mutex_lock(&rdtgroup_mutex);
- 
-+	if (IS_ENABLED(CONFIG_RESCTRL_RMID_DEPENDS_ON_CLOSID)) {
-+		kfree(closid_num_dirty_rmid);
-+		closid_num_dirty_rmid = NULL;
-+	}
+-	return (closid_free_map & (1 << closid)) == 0;
++	lockdep_assert_held(&rdtgroup_mutex);
 +
- 	kfree(rmid_ptrs);
- 	rmid_ptrs = NULL;
++	return !test_bit(closid, &closid_free_map);
+ }
  
+ /**
 -- 
 2.20.1
 
