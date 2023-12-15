@@ -1,129 +1,130 @@
-Return-Path: <linux-kernel+bounces-822-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-824-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 799218146AF
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 12:19:43 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 89DA38146B8
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 12:20:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A87EA1C22276
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 11:19:42 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C4651B23411
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 11:20:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 10DD224A1B;
-	Fri, 15 Dec 2023 11:19:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C1C724B3F;
+	Fri, 15 Dec 2023 11:20:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="TUEugtr0"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E40F1C2A9;
-	Fri, 15 Dec 2023 11:19:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1D56AC15;
-	Fri, 15 Dec 2023 03:20:17 -0800 (PST)
-Received: from [192.168.1.3] (unknown [172.31.20.19])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7BBA53F738;
-	Fri, 15 Dec 2023 03:19:29 -0800 (PST)
-Message-ID: <09447d69-e0ce-13e9-95ea-0db475b8bb6e@arm.com>
-Date: Fri, 15 Dec 2023 11:19:24 +0000
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 18820249F2;
+	Fri, 15 Dec 2023 11:20:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0353722.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3BFANg6M025951;
+	Fri, 15 Dec 2023 11:20:23 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : content-transfer-encoding : mime-version; s=pp1;
+ bh=eJx4Y4RaaHrqfjWnJcJuQnA/D4VZLkqigBXCP76igKI=;
+ b=TUEugtr0ijv5GXCGi37b6y9Yxd1CdNQKd01/mk/+2MX9GLZQyhjPIJK6Hx/tqTDA+UVp
+ MJWqZhHsd7jZbZDTrbllGHw+gSNlxvsFN0J3lbjFfycYHRYKIuAK35xsYv9A5NBZkK9O
+ w70psMHM9cCbhz8rwaIopqH1jWQE+wmLmnYxbVylU8g7/y+B5Pmw9Wyd9JuDw/ol8z5/
+ k4YyGQCQzNVI4N7puAVmJMCtqpU+aq4nZqKichf+5X5YvmVSYC/nHZ+7ljXSbyvXQT+l
+ mu9VfnVyMJ1e74O1qgc0Zwdjzey9XcdSEUjeu7rd6hmMYY1YG18sNj/hc7Ra//vjwk+6 eg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3v0n0j99m4-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 15 Dec 2023 11:20:23 +0000
+Received: from m0353722.ppops.net (m0353722.ppops.net [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3BFBKKfk009366;
+	Fri, 15 Dec 2023 11:20:22 GMT
+Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3v0n0j99kq-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 15 Dec 2023 11:20:22 +0000
+Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma21.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3BFBGN6l012599;
+	Fri, 15 Dec 2023 11:20:22 GMT
+Received: from smtprelay06.fra02v.mail.ibm.com ([9.218.2.230])
+	by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3uw3jpfkhd-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 15 Dec 2023 11:20:21 +0000
+Received: from smtpav06.fra02v.mail.ibm.com (smtpav06.fra02v.mail.ibm.com [10.20.54.105])
+	by smtprelay06.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3BFBKJKr42074408
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Fri, 15 Dec 2023 11:20:19 GMT
+Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id C8F4620049;
+	Fri, 15 Dec 2023 11:20:19 +0000 (GMT)
+Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id B593720040;
+	Fri, 15 Dec 2023 11:20:07 +0000 (GMT)
+Received: from li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com.com (unknown [9.43.77.136])
+	by smtpav06.fra02v.mail.ibm.com (Postfix) with ESMTP;
+	Fri, 15 Dec 2023 11:20:06 +0000 (GMT)
+From: Ojaswin Mujoo <ojaswin@linux.ibm.com>
+To: linux-ext4@vger.kernel.org, "Theodore Ts'o" <tytso@mit.edu>
+Cc: Ritesh Harjani <ritesh.list@gmail.com>, linux-kernel@vger.kernel.org,
+        Jan Kara <jack@suse.cz>, glandvador@yahoo.com, bugzilla@eyal.emu.id.au
+Subject: [PATCH 0/1] Fix for recent bugzilla reports related to long halts during block allocation
+Date: Fri, 15 Dec 2023 16:49:49 +0530
+Message-Id: <cover.1702455010.git.ojaswin@linux.ibm.com>
+X-Mailer: git-send-email 2.39.3
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: KvCVVePiPt1Odt_IQy5qFSOm81yZFcD3
+X-Proofpoint-ORIG-GUID: tct1xqpz0feQXHNGWANpOTPAxiPsgoBv
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH v3 1/8] dt-bindings: arm: Add support for CMB element size
-Content-Language: en-US
-To: Tao Zhang <quic_taozha@quicinc.com>, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
-Cc: Jinlong Mao <quic_jinlmao@quicinc.com>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>, coresight@lists.linaro.org,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
- devicetree@vger.kernel.org, Tingwei Zhang <quic_tingweiz@quicinc.com>,
- Yuanfang Zhang <quic_yuanfang@quicinc.com>,
- Trilok Soni <quic_tsoni@quicinc.com>, Song Chai <quic_songchai@quicinc.com>,
- linux-arm-msm@vger.kernel.org, andersson@kernel.org,
- Mathieu Poirier <mathieu.poirier@linaro.org>,
- Suzuki K Poulose <suzuki.poulose@arm.com>,
- Alexander Shishkin <alexander.shishkin@linux.intel.com>,
- Konrad Dybcio <konradybcio@gmail.com>, Mike Leach <mike.leach@linaro.org>
-References: <1700533494-19276-1-git-send-email-quic_taozha@quicinc.com>
- <1700533494-19276-2-git-send-email-quic_taozha@quicinc.com>
-From: James Clark <james.clark@arm.com>
-In-Reply-To: <1700533494-19276-2-git-send-email-quic_taozha@quicinc.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-15_06,2023-12-14_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 malwarescore=0
+ clxscore=1011 mlxscore=0 adultscore=0 impostorscore=0 lowpriorityscore=0
+ spamscore=0 mlxlogscore=999 priorityscore=1501 phishscore=0 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311290000
+ definitions=main-2312150073
 
+This patch intends to fix the recent bugzilla [1] report where the
+kworker flush thread seemed to be taking 100% CPU utilizationa and was
+slowing down the whole system. The backtrace indicated that we were
+stuck in mballoc allocation path. The issue was only seen kernel 6.5+
+and when ext4 was mounted with -o stripe (or stripe option was
+implicitly added due us mkfs flags used).
 
+Although I was not able to fully replicate this issue, from the perf
+probe logs collected I have a possible root cause which I have explained
+in the patch commit message. 
 
-On 21/11/2023 02:24, Tao Zhang wrote:
-> Add property "qcom,cmb-elem-size" to support CMB(Continuous
-> Multi-Bit) element for TPDM. The associated aggregator will read
-> this size before it is enabled. CMB element size currently only
-> supports 32-bit and 64-bit.
-> 
-> Signed-off-by: Tao Zhang <quic_taozha@quicinc.com>
-> Signed-off-by: Mao Jinlong <quic_jinlmao@quicinc.com>
-> ---
->  .../bindings/arm/qcom,coresight-tpdm.yaml     | 28 +++++++++++++++++++
->  1 file changed, 28 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/arm/qcom,coresight-tpdm.yaml b/Documentation/devicetree/bindings/arm/qcom,coresight-tpdm.yaml
-> index 61ddc3b5b247..0d9fe01a8b15 100644
-> --- a/Documentation/devicetree/bindings/arm/qcom,coresight-tpdm.yaml
-> +++ b/Documentation/devicetree/bindings/arm/qcom,coresight-tpdm.yaml
-> @@ -52,6 +52,15 @@ properties:
->      $ref: /schemas/types.yaml#/definitions/uint8
->      enum: [32, 64]
->  
-> +  qcom,cmb-element-size:
-> +    description:
-> +      Specifies the CMB(Continuous Multi-Bit) element size supported by
-> +      the monitor. The associated aggregator will read this size before it
-> +      is enabled. CMB element size currently only supports 8-bit, 32-bit
-> +      and 64-bit.
-> +    $ref: /schemas/types.yaml#/definitions/uint8
-> +    enum: [8, 32, 64]
-> +
->    qcom,dsb-msrs-num:
->      description:
->        Specifies the number of DSB(Discrete Single Bit) MSR(mux select register)
-> @@ -110,4 +119,23 @@ examples:
->        };
->      };
->  
-> +    tpdm@6c29000 {
-> +      compatible = "qcom,coresight-tpdm", "arm,primecell";
-> +      reg = <0x06c29000 0x1000>;
-> +      reg-names = "tpdm-base";
+Now, the one thing I'm still skeptical about is why this was only seen
+in kernel 6.5+. We added a new mballoc criteria in kernel 6.5 but I was
+not able to find a satisfactory explanation as to why that would have
+any effect here. Furter, the issue still persisted when I asked one of
+the reporters to disable the it using sysfs file and rerun the test.
+Maybe there are some more factors at play? 
 
-I think this one gives this error:
+Anyways, I would appreciate if the people experiencing this issue can
+help test this patch and see if it fixes the regression.
 
- $ make dt_binding_check DT_SCHEMA_FILES=arm/qcom,coresight
+[1] https://bugzilla.kernel.org/show_bug.cgi?id=217965
 
- DTC_CHK Documentation/devicetree/bindings/arm/qcom,coresight-
-  tpdm.example.dtb
- qcom,coresight-tpdm.example.dtb: tpdm@6c29000: 'reg-names' does not
-  match any of the regexes: 'pinctrl-[0-9]+'
-        from schema $id: http://devicetree.org/schemas
-        /arm/qcom,coresight-tpdm.yaml#
+Regards,
+ojaswin
 
-> +
-> +      qcom,cmb-element-size = /bits/ 8 <64>;
-> +
-> +      clocks = <&aoss_qmp>;
-> +      clock-names = "apb_pclk";
-> +
-> +      out-ports {
-> +        port {
-> +          tpdm_ipcc_out_funnel_center: endpoint {
-> +            remote-endpoint =
-> +              <&funnel_center_in_tpdm_ipcc>;
-> +          };
-> +        };
-> +      };
-> +    };
->  ...
+Ojaswin Mujoo (1):
+  ext4: fallback to complex scan if aligned scan doesn't work
+
+ fs/ext4/mballoc.c | 21 +++++++++++++--------
+ 1 file changed, 13 insertions(+), 8 deletions(-)
+
+-- 
+2.39.3
+
 
