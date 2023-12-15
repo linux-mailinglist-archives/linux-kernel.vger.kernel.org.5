@@ -1,134 +1,86 @@
-Return-Path: <linux-kernel+bounces-792-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-793-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8339381461F
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 12:00:30 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id AA697814623
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 12:00:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2477F1F23626
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 11:00:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 64CD8285789
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 11:00:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 343091F5F6;
-	Fri, 15 Dec 2023 11:00:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 89DD524B53;
+	Fri, 15 Dec 2023 11:00:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="mK6ktxDL"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BimTdDC/"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-pf1-f182.google.com (mail-pf1-f182.google.com [209.85.210.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A401250E3
-	for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 11:00:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-pf1-f182.google.com with SMTP id d2e1a72fcca58-6cebbf51742so343538b3a.1
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 03:00:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1702638019; x=1703242819; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=hqlj4/QUlWtIrDLHx0gmo3NTEhgLbAEJdvoypSzSkV4=;
-        b=mK6ktxDLfe53g0+1vONjJdzkAeZF2dxGCCD2kb952Ch2r4ZfpkTxFuuJFm7RZYQkxn
-         8kg+jupAMF17wpqepTCZJEg5UEJhOIpWid8VDRvvN3hhxAxoFH1Scvu0Gqf7HfFDeHrX
-         mYmDVOTvNcA+RMhT6CUaq/9Fzl8aGETdvJ2Y3Zi6+xuNPmWO45+MTBIHy2a/6vAvjYNf
-         v0Ta2ENmGuoqV21S3cet5inx/SUabj/BUBEUO8FmhS1HNELqlPbadNOAZnZhgcpYDN/z
-         I1K+1CJ45DGhE7MrTStZ2tV1nZpt57XdLW3h+lta4RgBBtgPF45livt9v8NFHhuQWB9J
-         i3Hg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702638019; x=1703242819;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=hqlj4/QUlWtIrDLHx0gmo3NTEhgLbAEJdvoypSzSkV4=;
-        b=f0QeXhq7XusnAbWItfeLehgsgEKCGufHxdvH4dd//PJxvl0LS3ngPgzSXC6wRU1tQ5
-         ZDg/nFFqLRFYgfxdpfVJsSSb7k8Q5m2ZTsZkF3tbTr1R430Sg3d2dmvDmEmhjlaPptQg
-         agSJWujoKF9mRwgWX807o1RSzTmCWBErgK9HR6HTvL3rBSEd2v7yAv6PaaeaUAFXJMwx
-         vEaEU4LnXUOoW6cXJj0Hom1PuxIXxSbjoDFlxlfJ77iDMR4EX5ci61d1zcqyJEzyUcOu
-         09cX/DXa06LN3UkLhE91Ui4WB4N3/sMh3bzhTWrb0Y+W56+Hgsm4yk0LHi3gghtGeod3
-         7zhg==
-X-Gm-Message-State: AOJu0YyRHymmwDWcGN/9f4NvhJ/7pVBvDpVFjDF1grdXAQZEKEPe0r9s
-	4VUTwh80oJOTJApiFLMys/GR
-X-Google-Smtp-Source: AGHT+IFBP0BhD4lTrTKdOfab7a3x09nSVDozE87qcYpsEL0j06A1OVhRm9jH+v/Q2SbpZhn9G0wpGw==
-X-Received: by 2002:a05:6a00:2301:b0:6c3:4bf2:7486 with SMTP id h1-20020a056a00230100b006c34bf27486mr15018314pfh.7.1702638019633;
-        Fri, 15 Dec 2023 03:00:19 -0800 (PST)
-Received: from thinkpad ([117.207.30.136])
-        by smtp.gmail.com with ESMTPSA id c12-20020aa7880c000000b006ce7ff254b9sm13249835pfo.68.2023.12.15.03.00.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Dec 2023 03:00:19 -0800 (PST)
-Date: Fri, 15 Dec 2023 16:30:12 +0530
-From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To: Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>
-Cc: lpieralisi@kernel.org, bhelgaas@google.com, kishon@kernel.org,
-	mhi@lists.linux.dev, linux-arm-msm@vger.kernel.org,
-	linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] PCI: epf-mhi: Fix the DMA data direction of
- dma_unmap_single()
-Message-ID: <20231215110012.GA13113@thinkpad>
-References: <20231214063328.40657-1-manivannan.sadhasivam@linaro.org>
- <20231214193521.GA2147106@rocinante>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D795724A0F;
+	Fri, 15 Dec 2023 11:00:23 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 6D2D0C433CD;
+	Fri, 15 Dec 2023 11:00:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1702638023;
+	bh=OlSfeJcVeNSMeoBz+YhS9wkUlwyc3tmGntZF180CBoo=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=BimTdDC/0cLHwgK+lxsDs6A4xzSfWs8RKlJWcARb2dC1TyPqvFdaAESqYMWsD97Dx
+	 5xNlOKeYag2Y2c/XCn4vT52wJ3XAylpobvT2ErXQGYpXLE2m89M772b828e0Ugn/0m
+	 i/IcfBT9UICUACDOLP95+rsecCfGiXFJ7p7YSHzwkBrIwvA/KohO1hX1Kt/e+j09aq
+	 s7ezXsPH3fHmReLqpZskj9ZUz9tQjfwZBUf8LPZoR7kkRIBQrjfP3CVLTmCZsk6hNL
+	 hsMLfviBaJcidGHqXJlxManJrGmVo+QHezm3va835671hOunMHoP8/6h3POGcxGYCT
+	 kMrJ8G3aEKO4Q==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 51BEEDD4EF5;
+	Fri, 15 Dec 2023 11:00:23 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20231214193521.GA2147106@rocinante>
+Subject: Re: [PATCH] [v3] ethernet: atheros: fix a memleak in
+ atl1e_setup_ring_resources
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <170263802333.14267.5281972789359567842.git-patchwork-notify@kernel.org>
+Date: Fri, 15 Dec 2023 11:00:23 +0000
+References: <20231214130407.3481513-1-alexious@zju.edu.cn>
+In-Reply-To: <20231214130407.3481513-1-alexious@zju.edu.cn>
+To: Zhipeng Lu <alexious@zju.edu.cn>
+Cc: sumang@marvell.com, chris.snook@gmail.com, davem@davemloft.net,
+ edumazet@google.com, kuba@kernel.org, pabeni@redhat.com, horms@kernel.org,
+ ruc_gongyuanjun@163.com, jgarzik@redhat.com, jie.yang@atheros.com,
+ netdev@vger.kernel.org, linux-kernel@vger.kernel.org
 
-On Fri, Dec 15, 2023 at 04:35:21AM +0900, Krzysztof Wilczyński wrote:
-> Hello,
-> 
-> > In the error path of pci_epf_mhi_edma_write() function, the DMA data
-> > direction passed (DMA_FROM_DEVICE) doesn't match the actual direction used
-> > for the data transfer. Fix it by passing the correct one (DMA_TO_DEVICE).
-> 
-> Nice catch!
-> 
-> > Fixes: 7b99aaaddabb ("PCI: epf-mhi: Add eDMA support")
-> > Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> > ---
-> > 
-> > Bjorn, Krzysztof, I'd like to apply this patch to MHI tree on top of eDMA
-> > async patches due to dependency:
-> > https://lore.kernel.org/linux-pci/20231127124529.78203-1-manivannan.sadhasivam@linaro.org/
-> 
-> Sounds good to me!  We still have a little time, so let me know if you
-> change your mind about who should take this patch and the other series. :)
-> 
+Hello:
 
-No change in plan :)
+This patch was applied to netdev/net.git (main)
+by David S. Miller <davem@davemloft.net>:
 
-> >  drivers/pci/endpoint/functions/pci-epf-mhi.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > 
-> > diff --git a/drivers/pci/endpoint/functions/pci-epf-mhi.c b/drivers/pci/endpoint/functions/pci-epf-mhi.c
-> > index 472bc489b754..d3d6a1054036 100644
-> > --- a/drivers/pci/endpoint/functions/pci-epf-mhi.c
-> > +++ b/drivers/pci/endpoint/functions/pci-epf-mhi.c
-> > @@ -424,7 +424,7 @@ static int pci_epf_mhi_edma_write(struct mhi_ep_cntrl *mhi_cntrl,
-> >  	}
-> >  
-> >  err_unmap:
-> > -	dma_unmap_single(dma_dev, src_addr, buf_info->size, DMA_FROM_DEVICE);
-> > +	dma_unmap_single(dma_dev, src_addr, buf_info->size, DMA_TO_DEVICE);
-> >  err_unlock:
-> >  	mutex_unlock(&epf_mhi->lock);
+On Thu, 14 Dec 2023 21:04:04 +0800 you wrote:
+> In the error handling of 'offset > adapter->ring_size', the
+> tx_ring->tx_buffer allocated by kzalloc should be freed,
+> instead of 'goto failed' instantly.
 > 
-> Looks good!
+> Fixes: a6a5325239c2 ("atl1e: Atheros L1E Gigabit Ethernet driver")
+> Signed-off-by: Zhipeng Lu <alexious@zju.edu.cn>
+> Reviewed-by: Suman Ghosh <sumang@marvell.com>
 > 
-> Reviewed-by: Krzysztof Wilczyński <kw@linux.com>
-> 
+> [...]
 
-Thanks! Applied to mhi-next.
+Here is the summary with links:
+  - [v3] ethernet: atheros: fix a memleak in atl1e_setup_ring_resources
+    https://git.kernel.org/netdev/net/c/309fdb1c33fe
 
-- Mani
-
-> 	Krzysztof
-
+You are awesome, thank you!
 -- 
-மணிவண்ணன் சதாசிவம்
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
 
