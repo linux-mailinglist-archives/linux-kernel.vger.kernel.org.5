@@ -1,134 +1,106 @@
-Return-Path: <linux-kernel+bounces-1101-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-1100-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 902D1814A62
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 15:23:06 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 64BB6814A5B
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 15:20:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2FFA41F2141A
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 14:23:06 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 97B851C239CD
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 14:20:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 581B03172E;
-	Fri, 15 Dec 2023 14:22:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 88F1C30FB8;
+	Fri, 15 Dec 2023 14:20:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="R1ZuomwB"
+	dkim=pass (2048-bit key) header.d=anarazel.de header.i=@anarazel.de header.b="PhCzasCn";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="jMKVAUcd"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+Received: from wout1-smtp.messagingengine.com (wout1-smtp.messagingengine.com [64.147.123.24])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7662E315AD;
-	Fri, 15 Dec 2023 14:22:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BFCTfXJ010194;
-	Fri, 15 Dec 2023 14:22:46 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=oRRArLvECVGH55PpYZXpIucjWY4MTvMDV/T4hZ4cdvQ=; b=R1
-	ZuomwBwZwiFQKCEqhwVy3LKiOvdaLGGeAmE4KjQ4yiOiFf7IDdb/0T9bDQb36bRX
-	B/5UICe7M0Wh/cj7SL6HnwiJv78nLOHs7sXs+tbiXKLMX+NPXKjAVLKNAlmvzKHe
-	2sBctIM7vBWDLurqwmkAAHM2PDIidZUvwUk4JyGlhqjteuIj2Ne9akqGlkIHEF4w
-	4AHlDzFGDmfXDS/kbq6jLPgef14owFndVQoc63eLN8Nlrix2o97kMV0tZlT6y7zi
-	9kvh0AxwsgmXtq0NWwcdMvS0nDP+n7OVjvafRF8/GX0AHPzKggCpz3oVRP6L/6zj
-	JodtXB78ePysFTdSCGGw==
-Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3v0hqch58d-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 15 Dec 2023 14:22:45 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3BFEMjVq002341
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 15 Dec 2023 14:22:45 GMT
-Received: from [10.218.15.57] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Fri, 15 Dec
- 2023 06:22:42 -0800
-Message-ID: <de1181fe-a948-a1e2-04c8-dcd88085f1df@quicinc.com>
-Date: Fri, 15 Dec 2023 19:49:34 +0530
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F5A130FAC;
+	Fri, 15 Dec 2023 14:20:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=anarazel.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=anarazel.de
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+	by mailout.west.internal (Postfix) with ESMTP id 6592B3200A7D;
+	Fri, 15 Dec 2023 09:20:24 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute3.internal (MEProxy); Fri, 15 Dec 2023 09:20:25 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=anarazel.de; h=
+	cc:cc:content-type:content-type:date:date:from:from:in-reply-to
+	:in-reply-to:message-id:mime-version:references:reply-to:subject
+	:subject:to:to; s=fm2; t=1702650023; x=1702736423; bh=18qEFRKK3O
+	e9XW5rui6ep0d3REKALWXbfxoaAU0FUvc=; b=PhCzasCnYa3AllDgNpCHNZahtL
+	Nk4oMW2LkzSd5s2HU9cNeIpcgyCM9pMaCXChkEVp42BdPBkpCwXLkhgr1JRxqZnN
+	s7wS23fcp3Pj9Jkk4ncDO0b9RadVi2Wn6dCAj3FqPIOhMiHtD2V5DQzRLy5gZokm
+	x1emDEBQCOPbtFG2MDXkB9FTh05exrSxyTMJxP2JC54HpxEUDuNmN4aCnDpzIlIE
+	5I3nlTcDOfXfMfdFjm+W3QPiugiix4Hn+QbzUBrwpDcC1SpnpdgVG6CEpjSiFkQU
+	JMAHw+wkd3bv26L2WHnoGaEX3ugvbkHMrbHWYM+R+bhTDRhCGcAVtifwutUw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm2; t=1702650023; x=1702736423; bh=18qEFRKK3Oe9XW5rui6ep0d3REKA
+	LWXbfxoaAU0FUvc=; b=jMKVAUcdNIqSIkPxQ5iRLCI+fvYvX6Y32OzQkRa/n1Pb
+	N1X4QQK6X6lcoypDWPrzXjukjDX75WIeHq8Ybx60QQqZNnYTHs5n25TTw4WLbB3D
+	TZVWCTu1Bm3iEf6rVlaq54cRWf1eKaF99iR0dVV5acy5W5ApNEphTM+ZTyDVZVR6
+	3Wqi5UPb2p+3vYV6ryBiQjXCX+FLO3Vk6PFOC4A20EWEShG0rblGbnLtWOEexbbp
+	Xwtj9pIp+XN4cU98Ko6Tft0eZclRLKqXCLANmqSMYdzu+iNN+LIrr6P93/3FVBV2
+	xhS9mbDs5cnvT3gmpcgmw1rQrpnaiRgk9YLSMPOETg==
+X-ME-Sender: <xms:p2B8ZQAjhymlw8GI3RkHMUA9yahWLtN9jq-dgbwSX_vZc-0eOJHDeQ>
+    <xme:p2B8ZSgD8qMH450MpY3LVNLWKStnm1KlvXFKOMGRqM81ZHJwk2SRCw2c5573a5Ied
+    xqDBICoVFyBxVtfCw>
+X-ME-Received: <xmr:p2B8ZTmgIc1IqEO9PEvpaziGfRdYILjGBk06nIjLGaOcx64H_134HE6R166hYkEppIcItar-grZU8JMXlMVXnhPRI_Mlu-JUaLqWJ1usIuIkqERjarrwSRY9-Kzm>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrvddtvddgieefucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomheptehnughr
+    vghsucfhrhgvuhhnugcuoegrnhgurhgvshesrghnrghrrgiivghlrdguvgeqnecuggftrf
+    grthhtvghrnhepvdfffeevhfetveffgeeiteefhfdtvdffjeevhfeuteegleduheetvedu
+    ieettddunecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomh
+    eprghnughrvghssegrnhgrrhgriigvlhdruggv
+X-ME-Proxy: <xmx:p2B8ZWzas_Rxowb2kRWcufhFlu0hRO3s8poBLv8BRsl1EpCQfr42VQ>
+    <xmx:p2B8ZVTMpAao1GXJMTpuuNqpOoKFLdzi_oN-IlfDewWjK0VC0HJW2A>
+    <xmx:p2B8ZRYUFZpb01_T4PrvR9DdfkTFuoAi1FdDThH4XQxJ1meGpa4O2w>
+    <xmx:p2B8ZUFIAyH77oPkH-CjkPMXq9JkhDt_W5MdInR6At-k0LZ3btaTaw>
+Feedback-ID: id4a34324:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
+ 15 Dec 2023 09:20:22 -0500 (EST)
+Date: Fri, 15 Dec 2023 06:20:19 -0800
+From: Andres Freund <andres@anarazel.de>
+To: Thomas Gleixner <tglx@linutronix.de>
+Cc: "Zhang, Rui" <rui.zhang@intel.com>,
+	"jsperbeck@google.com" <jsperbeck@google.com>,
+	"tip-bot2@linutronix.de" <tip-bot2@linutronix.de>,
+	"peterz@infradead.org" <peterz@infradead.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"linux-tip-commits@vger.kernel.org" <linux-tip-commits@vger.kernel.org>,
+	"x86@kernel.org" <x86@kernel.org>
+Subject: Re: [tip: x86/urgent] x86/acpi: Ignore invalid x2APIC entries
+Message-ID: <20231215142019.uvih3wlstacqut6o@alap3.anarazel.de>
+References: <1e565bb08ebdd03897580a5905d1d2de01e15add.camel@intel.com>
+ <87ttonpbnr.ffs@tglx>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.10.0
-Subject: Re: [PATCH v2] tty: Add comments for tty-ldisc module loading logic
-Content-Language: en-CA
-To: Zijun Hu <quic_zijuhu@quicinc.com>, <gregkh@linuxfoundation.org>,
-        <jirislaby@kernel.org>, <quic_qiancai@quicinc.com>,
-        <quic_arandive@quicinc.com>, <quic_saipraka@quicinc.com>,
-        <quic_eberman@quicinc.com>
-CC: <linux-serial@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <1702640236-22824-1-git-send-email-quic_zijuhu@quicinc.com>
- <1702647690-6787-1-git-send-email-quic_zijuhu@quicinc.com>
-From: Vijaya Krishna Nivarthi <quic_vnivarth@quicinc.com>
-In-Reply-To: <1702647690-6787-1-git-send-email-quic_zijuhu@quicinc.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: S3hyn1q1ttcdaf_ODB0WyucHyIpk_vD6
-X-Proofpoint-GUID: S3hyn1q1ttcdaf_ODB0WyucHyIpk_vD6
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-09_01,2023-12-07_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 mlxscore=0
- phishscore=0 adultscore=0 priorityscore=1501 impostorscore=0
- lowpriorityscore=0 mlxlogscore=999 clxscore=1011 suspectscore=0
- spamscore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2311290000 definitions=main-2312150098
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87ttonpbnr.ffs@tglx>
 
 Hi,
 
+On 2023-12-12 18:34:48 +0100, Thomas Gleixner wrote:
+> The simple change below should do the trick.
 
-On 12/15/2023 7:11 PM, Zijun Hu wrote:
-> Current tty-ldisc module loading logic within tty_ldisc_get()
-> is prone to mislead beginner that the module is able to be loaded
-> by a user without capability CAP_SYS_MODULE, add comments to make
-> the logic easy to undertand.
->
-> Signed-off-by: Zijun Hu <quic_zijuhu@quicinc.com>
-> ---
-> Changes in v2:
-> - Remove condition checking changes
->
->   drivers/tty/tty_ldisc.c | 4 ++++
->   1 file changed, 4 insertions(+)
->
-> diff --git a/drivers/tty/tty_ldisc.c b/drivers/tty/tty_ldisc.c
-> index 3f68e213df1f..34526ffaccbc 100644
-> --- a/drivers/tty/tty_ldisc.c
-> +++ b/drivers/tty/tty_ldisc.c
-> @@ -150,6 +150,10 @@ static struct tty_ldisc *tty_ldisc_get(struct tty_struct *tty, int disc)
->   	 */
->   	ldops = get_ldops(disc);
->   	if (IS_ERR(ldops)) {
-> +		/*
-> +		 * Always request tty-ldisc module regardless of user's
-> +		 * CAP_SYS_MODULE if autoload is enabled.
-> +		 */
+Yep, can confirm that that suffices to boot with all CPUs brought up.
 
-Without much knowledge of this file...
+Greetings,
 
-
-What the if condition below accomplishes is evident, it probably doesn't 
-require a comment.
-
-A more useful comment would be why it does so?
-
-Thank you...
-
--Vijay/
-
-
->   		if (!capable(CAP_SYS_MODULE) && !tty_ldisc_autoload)
->   			return ERR_PTR(-EPERM);
->   		request_module("tty-ldisc-%d", disc);
+Andres Freund
 
