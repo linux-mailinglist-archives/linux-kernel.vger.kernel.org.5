@@ -1,134 +1,382 @@
-Return-Path: <linux-kernel+bounces-1263-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-1262-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 79FFF814C8D
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 17:11:04 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5A1C0814C8A
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 17:10:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 32759288E6C
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 16:11:03 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7F3C61C23910
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 16:10:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1965F3DBB3;
-	Fri, 15 Dec 2023 16:10:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE11F3BB43;
+	Fri, 15 Dec 2023 16:10:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="KPXbA2M3"
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="wqNYy4Hy";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="77FOvPPz"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from EUR05-AM6-obe.outbound.protection.outlook.com (mail-am6eur05on2083.outbound.protection.outlook.com [40.107.22.83])
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A1BB3C48A;
-	Fri, 15 Dec 2023 16:10:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ia6+xWWSIyN/KeV+6/3nfR29JHrwH6cIijPAPV4Bs4rN6/mxU3j6Ofxsh2uxlzEr2oyf+HAg7eOisksn2qi8r9wPyPgU4dC64LGzsjaXlcO82mMLfotI9YlPYC4uZX+plhuB5hfDQF0K/a7G1oHteLAI5bCppdNZe+nJEnPfGAFvwTWBKKdhwuL3eBy3YUhpXdYi2Sz2pJ385fAn08Fk5/m5jzmVVbrf3eitl7MeHhzHUJ6/IZ80kMx+bT+LEoyM9HM/bkIk6Ba/5tAuFqLVsdhyupVUJUYVI/RVa8AGGScADfg+cAjhMQjjSXA/Diz43rpF669rGl6wbHtv0Ma/nA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=MPSIrYGK70h/CGaxXzAxwOwzuq0/IBKsfnAxN2tq6rA=;
- b=JhVSNY5I9z8MjHvhHbW1oZUiEmFeQaiu6BHJPbEFgv4etPENAnDxlOrkyCd18ajH78x6Hgs3ykWpqZGUi7xajHvUu+Wycov1yADbHqbJzgFVYDJLg6mrTXbeKUbN9J7FwG4nT4oGNSh4RknMTbFATuIRQvnepRgc7ZvMe6jj9BMMZZULtUEjjKlrUvHZZTwnIMwScxfGCOICxB/SS2G5SWzY6GZVa9hvM4FAbP5wPxF67uRTMNTKVnWQrvjou5vIizlxTzqkS7K/ECRBcAhm24+N4aXTKnUVvE60hqjMtDoht3vL32zFIEmDHcYB9o+vlE5JCz+soS0HpZ7CYFDwqA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=MPSIrYGK70h/CGaxXzAxwOwzuq0/IBKsfnAxN2tq6rA=;
- b=KPXbA2M33FWWmCfrwy4aHW7/W9nnwr2oON81SbDdCoeDnf0bf/7czfEUDHDrCBQxPPd8w4XKF6WVQiD6RODYmmTRe5XXafJ8xgfmp/3kObGM4m8vKhZmE/Q5Vj9/6z35DjHbBqGfftvQKdM0MmwyjFeEu1YvLrdzzfd6uY+ZgEc=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-Received: from AM0PR04MB6452.eurprd04.prod.outlook.com (2603:10a6:208:16d::21)
- by AM9PR04MB8761.eurprd04.prod.outlook.com (2603:10a6:20b:408::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7091.31; Fri, 15 Dec
- 2023 16:10:07 +0000
-Received: from AM0PR04MB6452.eurprd04.prod.outlook.com
- ([fe80::dd33:f07:7cfd:afa4]) by AM0PR04MB6452.eurprd04.prod.outlook.com
- ([fe80::dd33:f07:7cfd:afa4%7]) with mapi id 15.20.7091.030; Fri, 15 Dec 2023
- 16:10:07 +0000
-Date: Fri, 15 Dec 2023 18:10:03 +0200
-From: Vladimir Oltean <vladimir.oltean@nxp.com>
-To: Roger Quadros <rogerq@kernel.org>
-Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-	pabeni@redhat.com, shuah@kernel.org, s-vadapalli@ti.com,
-	r-gunasekaran@ti.com, vigneshr@ti.com, srk@ti.com, horms@kernel.org,
-	p-varis@ti.com, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH net-next v9 03/10] net: ethernet: am65-cpsw: Build
- am65-cpsw-qos only if required
-Message-ID: <20231215161003.jqjqdu77b5ihrpbi@skbuf>
-References: <20231215132048.43727-1-rogerq@kernel.org>
- <20231215132048.43727-4-rogerq@kernel.org>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231215132048.43727-4-rogerq@kernel.org>
-X-ClientProxiedBy: FR2P281CA0163.DEUP281.PROD.OUTLOOK.COM
- (2603:10a6:d10:99::6) To AM0PR04MB6452.eurprd04.prod.outlook.com
- (2603:10a6:208:16d::21)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 56C9C374D4;
+	Fri, 15 Dec 2023 16:10:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+Date: Fri, 15 Dec 2023 16:10:04 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1702656605;
+	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+	 content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=6acx+RWzAs+leXBAMRYDcKzcqztD8teBvwavRFvgEtA=;
+	b=wqNYy4HyJ7smHQHd1X1dEgJgdsTlG2uM2ubBwB/bJXnZgWMoDGvDH00a2PYByV6YT2RMQe
+	/3YKE+riwyJxKZBc6qFtosN8ZVJu4a8okNM0Lm4hELDN0NhvuLbBs1WE3mjCBy7p0MmqxH
+	JsJ/gyOLo80/sSm4RfPZJrv/l8Y8cNmZMcID8kZoOnNF6bQ0yEziOkYXyIY49V6MeSLfRf
+	ARD3U/9yJBrAwCJxJcbZSqZacz50ch+j13BfHUQXYbK1JrWK8zBkCcoX42ozcGnyjpnWSt
+	yIhXl1p4GLc2yabypyzxgzOnZCVwMOhPqASVOGdMuuKg4ZPKRR91zxIeTuRP9w==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1702656605;
+	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+	 content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=6acx+RWzAs+leXBAMRYDcKzcqztD8teBvwavRFvgEtA=;
+	b=77FOvPPz2bjXCGZmkUWCkLgWvX05f1Qwg6nzXm3vsoE5dJc904GgAt30Dq316oi2/UgIzU
+	Zoc1HcERw/4Bp6Ag==
+From: "tip-bot2 for Tony Luck" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To: linux-tip-commits@vger.kernel.org
+Subject: [tip: ras/core] x86/mce: Remove old CMCI storm mitigation code
+Cc: Tony Luck <tony.luck@intel.com>, "Borislav Petkov (AMD)" <bp@alien8.de>,
+ Yazen Ghannam <yazen.ghannam@amd.com>, x86@kernel.org,
+ linux-kernel@vger.kernel.org
+In-Reply-To: <20231115195450.12963-2-tony.luck@intel.com>
+References: <20231115195450.12963-2-tony.luck@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: AM0PR04MB6452:EE_|AM9PR04MB8761:EE_
-X-MS-Office365-Filtering-Correlation-Id: e61daaa3-427b-4469-bbcd-08dbfd884e43
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	tln2pWgcj/r7RFnsbodTOU342PGmJiBQhQFZM6KNg8/hZBdmmVKyalMC5yp9CdlNmHXd6uDR1yruFXg2fxBbvj9L0papc5AZ8ytb3rrnpf47hLe+b6dNKr1FIKnH0zD5kQ7UYh7AnkT07b/FNI0IpGQ1U/b4yXOGNYdO+caMS4nT1irn4rNO37lJn7/sd1YCmR++ote+feQfPQJxXtgELh9L5b3iX7HSa+dnLOmgTgZ2C8xMn9GjlUdRr3x1mRweqFN5j4j9L+wJa4jKeDcICdmg2fvhmB1Q3Dqu3cgpOXHcPtvS99x3e0Z9kqpRciujshl2/Vb6BNzjBgW+vHX7/5yKUISAALPv2TmfMCfmxZ+bA4a47yS8AThANrG0NrI8XSIoKEbL6WU6WdGd+6wB6geMEIKLzgzMhDWZ5MG3VvWrAETWRZpSeD0iAj/R7vmDzSVftoqXCidyGwNxpj+dY0xBXPprQyN0PRKfXsZAQdq0UxLfWNuPrCFODIWnsaQFXbTBdgT+byh+udrse0PSkGt9JQm4CNPkgKhmhi3JJTk4hQCNfplE0f6LgoC6RGFC
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR04MB6452.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(396003)(366004)(376002)(346002)(39860400002)(136003)(230922051799003)(186009)(451199024)(1800799012)(64100799003)(38100700002)(26005)(1076003)(558084003)(86362001)(6506007)(9686003)(6666004)(6512007)(478600001)(6916009)(316002)(66946007)(66556008)(66476007)(2906002)(7416002)(8936002)(4326008)(44832011)(8676002)(5660300002)(33716001)(41300700001)(6486002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?VuwY/5Lwxur3sXbEAGtMvoK2GR4Oqf3oMDzfbcou+a9DxMbf0mHEvGCIGep+?=
- =?us-ascii?Q?cdSOlU2aSc1AXo1YBKuTPssrRU5bh/hOM2BHQHTGOh2KqpodIMmUAs+ZH8V1?=
- =?us-ascii?Q?7KPXs1OyhUpr91ISQuhFaHSwsdDHYaGvwMxD1G9ttGF5agxK/s+wR/6DjxBl?=
- =?us-ascii?Q?Nte0esZ7ij9e+LutQnSxrh16BYlGIFQyb2pgyKfvqrqeSYDc7GqCyorRrVbp?=
- =?us-ascii?Q?v5Giy+NDafap/i5gpVIK64TJkpnyHcUOy8I1FxkTs7Mb3F2OdANDY2Fb8Hps?=
- =?us-ascii?Q?jQSzbNC2WVo7bgB6BLUdZ4g878EGPfqHAyd8/v8r+yH7nbFx4dyseeaDjPtX?=
- =?us-ascii?Q?3dPDYcexTG0V32HASidtUi9tA7ZbSp5DJ4MHZegtwksIW+RuZG++Xwn8u4Wm?=
- =?us-ascii?Q?RDd8FSTlDBgXDWex5jYOUn27Rkkiv+OcX+GDEHCj4+inSouJ+AGB/BJnqff2?=
- =?us-ascii?Q?MAt+yFjFk9cS+kIHInl6CXWSWehEnLvsVG0+CFaMtTQ+eIjy/pK4Iw9+jlRt?=
- =?us-ascii?Q?OPEkoIRBx9QGJ7/MQUZuT5/15dqarlP5Rjs8RB75hM9pqKJVyb6Fxr0KBrc0?=
- =?us-ascii?Q?8y2d0qwv0tCkjo+mUU+PfG9FyWNhWeXIvdH5ArBxiLrmIY1+L1iCrE7+isET?=
- =?us-ascii?Q?MHwwcLjotDDZrHRzRKDuz2nY0Irb+/TPpnCSJPVeG1hKXoZBUvnEZmwcIXVw?=
- =?us-ascii?Q?rYiTceELWCAaTTOAujEGZsp/ekN5QFteuKQlqmek7t/kzhAfgfM1ib0EGb78?=
- =?us-ascii?Q?iGGFFHcCx1oDG4R3iZd2qR7uViHLdtT4xq36TIVMsT2Du7Zf0ZtIIuuT9Ker?=
- =?us-ascii?Q?W52J18Xk00tCx73ioZNt6nccsp+vzre2/Aq1USXZyWvbFRFnq8VzBIGyuywl?=
- =?us-ascii?Q?d5uTBUEIyBpUDRHntnKbhxJADoPb8bpF/4UHVxzqqjkShDmImUFze3EAEMMy?=
- =?us-ascii?Q?fA+ttjC61DFiwZxQPYKn5b9pm+crYB9ssk2qV2kcaH4Z7lLx1b7FSPTCpORQ?=
- =?us-ascii?Q?k89uCtMWJM8PIia366NdiSChDtgaKfThwtGvSDPSS7O+TZQm6x4RoWhuCODi?=
- =?us-ascii?Q?1otwq0bm0iRN4jyE6t5EEna/ZYyqZ1ePlz5k+lkUOzOPQ4MGcCpF1D5uPvTA?=
- =?us-ascii?Q?yv+565cJmLlNGGHfvUyZW6XddyCtuh8zlOAr4G2nBVifMGEfUsGbniL8Vpo0?=
- =?us-ascii?Q?s4YzuXd4EbzO1agdMed25bhLfTGU8qhyn8FsKN2UtqvGm4sOgZre+xxtakO+?=
- =?us-ascii?Q?Tdt46KLtHDSIfLEcQ4syArzs4KfpiafEVWwO/REEjN5COtYKAFSBAgAs/uhh?=
- =?us-ascii?Q?ZzILUKejo9ptk2YvXQjbvcip90my1y4SN/p08TYTSDLbuiUSzbv3KXWzeUDw?=
- =?us-ascii?Q?PBDgKmXzsr340KjYTLINUfvAxJkZDvlgVlMOCKhfUjR0SqUhBHSbOC8Ocxk8?=
- =?us-ascii?Q?wdVvzvDbWCqcXEheEJgOweL+SY2lxs6y+RmVyVzdhyfArx6Nyo16BhPEAKF2?=
- =?us-ascii?Q?AxQLWrqNqiIGuBI+Yauz1WUMYlIFCyvnTF5cTy7DxkM/DFQ0jo3UkGvq7Vut?=
- =?us-ascii?Q?oSKIZOt+UOkR8z98Eydzu88avsPFTQoWQZ2yaByOZ0Le2PlMYMLM0MkfA+oU?=
- =?us-ascii?Q?wA=3D=3D?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e61daaa3-427b-4469-bbcd-08dbfd884e43
-X-MS-Exchange-CrossTenant-AuthSource: AM0PR04MB6452.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Dec 2023 16:10:07.6120
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: TkmLLwWL9nC8G7k5yCdsbD5gVyZKp6tVhXJfxrzT60fSOxKJ51YBPplLifo/yMnKh0KOelnPm3FOB6DqhXzECA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM9PR04MB8761
+Message-ID: <170265660471.398.8068343149455379081.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe:
+ Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Precedence: bulk
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 
-On Fri, Dec 15, 2023 at 03:20:41PM +0200, Roger Quadros wrote:
-> Build am65-cpsw-qos only if CONFIG_TI_AM65_CPSW_TAS is enabled.
-> 
-> Signed-off-by: Roger Quadros <rogerq@kernel.org>
-> ---
+The following commit has been merged into the ras/core branch of tip:
 
-Reviewed-by: Vladimir Oltean <vladimir.oltean@nxp.com>
+Commit-ID:     3ed57b41a4125609e9fd03e32228aec61d95fe1f
+Gitweb:        https://git.kernel.org/tip/3ed57b41a4125609e9fd03e32228aec61d95fe1f
+Author:        Tony Luck <tony.luck@intel.com>
+AuthorDate:    Wed, 15 Nov 2023 11:54:48 -08:00
+Committer:     Borislav Petkov (AMD) <bp@alien8.de>
+CommitterDate: Fri, 15 Dec 2023 13:44:12 +01:00
+
+x86/mce: Remove old CMCI storm mitigation code
+
+When a "storm" of corrected machine check interrupts (CMCI) is detected
+this code mitigates by disabling CMCI interrupt signalling from all of
+the banks owned by the CPU that saw the storm.
+
+There are problems with this approach:
+
+1) It is very coarse grained. In all likelihood only one of the banks
+   was generating the interrupts, but CMCI is disabled for all.  This
+   means Linux may delay seeing and processing errors logged from other
+   banks.
+
+2) Although CMCI stands for Corrected Machine Check Interrupt, it is
+   also used to signal when an uncorrected error is logged. This is
+   a problem because these errors should be handled in a timely manner.
+
+Delete all this code in preparation for a finer grained solution.
+
+Signed-off-by: Tony Luck <tony.luck@intel.com>
+Signed-off-by: Borislav Petkov (AMD) <bp@alien8.de>
+Reviewed-by: Yazen Ghannam <yazen.ghannam@amd.com>
+Tested-by: Yazen Ghannam <yazen.ghannam@amd.com>
+Link: https://lore.kernel.org/r/20231115195450.12963-2-tony.luck@intel.com
+---
+ arch/x86/kernel/cpu/mce/core.c     |  20 +----
+ arch/x86/kernel/cpu/mce/intel.c    | 145 +----------------------------
+ arch/x86/kernel/cpu/mce/internal.h |   6 +-
+ 3 files changed, 1 insertion(+), 170 deletions(-)
+
+diff --git a/arch/x86/kernel/cpu/mce/core.c b/arch/x86/kernel/cpu/mce/core.c
+index 1642018..b2ef487 100644
+--- a/arch/x86/kernel/cpu/mce/core.c
++++ b/arch/x86/kernel/cpu/mce/core.c
+@@ -1617,13 +1617,6 @@ static unsigned long check_interval = INITIAL_CHECK_INTERVAL;
+ static DEFINE_PER_CPU(unsigned long, mce_next_interval); /* in jiffies */
+ static DEFINE_PER_CPU(struct timer_list, mce_timer);
+ 
+-static unsigned long mce_adjust_timer_default(unsigned long interval)
+-{
+-	return interval;
+-}
+-
+-static unsigned long (*mce_adjust_timer)(unsigned long interval) = mce_adjust_timer_default;
+-
+ static void __start_timer(struct timer_list *t, unsigned long interval)
+ {
+ 	unsigned long when = jiffies + interval;
+@@ -1653,15 +1646,9 @@ static void mce_timer_fn(struct timer_list *t)
+ 
+ 	iv = __this_cpu_read(mce_next_interval);
+ 
+-	if (mce_available(this_cpu_ptr(&cpu_info))) {
++	if (mce_available(this_cpu_ptr(&cpu_info)))
+ 		mc_poll_banks();
+ 
+-		if (mce_intel_cmci_poll()) {
+-			iv = mce_adjust_timer(iv);
+-			goto done;
+-		}
+-	}
+-
+ 	/*
+ 	 * Alert userspace if needed. If we logged an MCE, reduce the polling
+ 	 * interval, otherwise increase the polling interval.
+@@ -1671,7 +1658,6 @@ static void mce_timer_fn(struct timer_list *t)
+ 	else
+ 		iv = min(iv * 2, round_jiffies_relative(check_interval * HZ));
+ 
+-done:
+ 	__this_cpu_write(mce_next_interval, iv);
+ 	__start_timer(t, iv);
+ }
+@@ -2011,7 +1997,6 @@ static void mce_zhaoxin_feature_init(struct cpuinfo_x86 *c)
+ 
+ 	intel_init_cmci();
+ 	intel_init_lmce();
+-	mce_adjust_timer = cmci_intel_adjust_timer;
+ }
+ 
+ static void mce_zhaoxin_feature_clear(struct cpuinfo_x86 *c)
+@@ -2024,7 +2009,6 @@ static void __mcheck_cpu_init_vendor(struct cpuinfo_x86 *c)
+ 	switch (c->x86_vendor) {
+ 	case X86_VENDOR_INTEL:
+ 		mce_intel_feature_init(c);
+-		mce_adjust_timer = cmci_intel_adjust_timer;
+ 		break;
+ 
+ 	case X86_VENDOR_AMD: {
+@@ -2678,8 +2662,6 @@ static void mce_reenable_cpu(void)
+ 
+ static int mce_cpu_dead(unsigned int cpu)
+ {
+-	mce_intel_hcpu_update(cpu);
+-
+ 	/* intentionally ignoring frozen here */
+ 	if (!cpuhp_tasks_frozen)
+ 		cmci_rediscover();
+diff --git a/arch/x86/kernel/cpu/mce/intel.c b/arch/x86/kernel/cpu/mce/intel.c
+index 52bce53..fc4ffc4 100644
+--- a/arch/x86/kernel/cpu/mce/intel.c
++++ b/arch/x86/kernel/cpu/mce/intel.c
+@@ -42,15 +42,6 @@
+ static DEFINE_PER_CPU(mce_banks_t, mce_banks_owned);
+ 
+ /*
+- * CMCI storm detection backoff counter
+- *
+- * During storm, we reset this counter to INITIAL_CHECK_INTERVAL in case we've
+- * encountered an error. If not, we decrement it by one. We signal the end of
+- * the CMCI storm when it reaches 0.
+- */
+-static DEFINE_PER_CPU(int, cmci_backoff_cnt);
+-
+-/*
+  * cmci_discover_lock protects against parallel discovery attempts
+  * which could race against each other.
+  */
+@@ -64,21 +55,6 @@ static DEFINE_RAW_SPINLOCK(cmci_discover_lock);
+ static DEFINE_SPINLOCK(cmci_poll_lock);
+ 
+ #define CMCI_THRESHOLD		1
+-#define CMCI_POLL_INTERVAL	(30 * HZ)
+-#define CMCI_STORM_INTERVAL	(HZ)
+-#define CMCI_STORM_THRESHOLD	15
+-
+-static DEFINE_PER_CPU(unsigned long, cmci_time_stamp);
+-static DEFINE_PER_CPU(unsigned int, cmci_storm_cnt);
+-static DEFINE_PER_CPU(unsigned int, cmci_storm_state);
+-
+-enum {
+-	CMCI_STORM_NONE,
+-	CMCI_STORM_ACTIVE,
+-	CMCI_STORM_SUBSIDED,
+-};
+-
+-static atomic_t cmci_storm_on_cpus;
+ 
+ static int cmci_supported(int *banks)
+ {
+@@ -134,124 +110,6 @@ static bool lmce_supported(void)
+ 	return tmp & FEAT_CTL_LMCE_ENABLED;
+ }
+ 
+-bool mce_intel_cmci_poll(void)
+-{
+-	if (__this_cpu_read(cmci_storm_state) == CMCI_STORM_NONE)
+-		return false;
+-
+-	/*
+-	 * Reset the counter if we've logged an error in the last poll
+-	 * during the storm.
+-	 */
+-	if (machine_check_poll(0, this_cpu_ptr(&mce_banks_owned)))
+-		this_cpu_write(cmci_backoff_cnt, INITIAL_CHECK_INTERVAL);
+-	else
+-		this_cpu_dec(cmci_backoff_cnt);
+-
+-	return true;
+-}
+-
+-void mce_intel_hcpu_update(unsigned long cpu)
+-{
+-	if (per_cpu(cmci_storm_state, cpu) == CMCI_STORM_ACTIVE)
+-		atomic_dec(&cmci_storm_on_cpus);
+-
+-	per_cpu(cmci_storm_state, cpu) = CMCI_STORM_NONE;
+-}
+-
+-static void cmci_toggle_interrupt_mode(bool on)
+-{
+-	unsigned long flags, *owned;
+-	int bank;
+-	u64 val;
+-
+-	raw_spin_lock_irqsave(&cmci_discover_lock, flags);
+-	owned = this_cpu_ptr(mce_banks_owned);
+-	for_each_set_bit(bank, owned, MAX_NR_BANKS) {
+-		rdmsrl(MSR_IA32_MCx_CTL2(bank), val);
+-
+-		if (on)
+-			val |= MCI_CTL2_CMCI_EN;
+-		else
+-			val &= ~MCI_CTL2_CMCI_EN;
+-
+-		wrmsrl(MSR_IA32_MCx_CTL2(bank), val);
+-	}
+-	raw_spin_unlock_irqrestore(&cmci_discover_lock, flags);
+-}
+-
+-unsigned long cmci_intel_adjust_timer(unsigned long interval)
+-{
+-	if ((this_cpu_read(cmci_backoff_cnt) > 0) &&
+-	    (__this_cpu_read(cmci_storm_state) == CMCI_STORM_ACTIVE)) {
+-		mce_notify_irq();
+-		return CMCI_STORM_INTERVAL;
+-	}
+-
+-	switch (__this_cpu_read(cmci_storm_state)) {
+-	case CMCI_STORM_ACTIVE:
+-
+-		/*
+-		 * We switch back to interrupt mode once the poll timer has
+-		 * silenced itself. That means no events recorded and the timer
+-		 * interval is back to our poll interval.
+-		 */
+-		__this_cpu_write(cmci_storm_state, CMCI_STORM_SUBSIDED);
+-		if (!atomic_sub_return(1, &cmci_storm_on_cpus))
+-			pr_notice("CMCI storm subsided: switching to interrupt mode\n");
+-
+-		fallthrough;
+-
+-	case CMCI_STORM_SUBSIDED:
+-		/*
+-		 * We wait for all CPUs to go back to SUBSIDED state. When that
+-		 * happens we switch back to interrupt mode.
+-		 */
+-		if (!atomic_read(&cmci_storm_on_cpus)) {
+-			__this_cpu_write(cmci_storm_state, CMCI_STORM_NONE);
+-			cmci_toggle_interrupt_mode(true);
+-			cmci_recheck();
+-		}
+-		return CMCI_POLL_INTERVAL;
+-	default:
+-
+-		/* We have shiny weather. Let the poll do whatever it thinks. */
+-		return interval;
+-	}
+-}
+-
+-static bool cmci_storm_detect(void)
+-{
+-	unsigned int cnt = __this_cpu_read(cmci_storm_cnt);
+-	unsigned long ts = __this_cpu_read(cmci_time_stamp);
+-	unsigned long now = jiffies;
+-	int r;
+-
+-	if (__this_cpu_read(cmci_storm_state) != CMCI_STORM_NONE)
+-		return true;
+-
+-	if (time_before_eq(now, ts + CMCI_STORM_INTERVAL)) {
+-		cnt++;
+-	} else {
+-		cnt = 1;
+-		__this_cpu_write(cmci_time_stamp, now);
+-	}
+-	__this_cpu_write(cmci_storm_cnt, cnt);
+-
+-	if (cnt <= CMCI_STORM_THRESHOLD)
+-		return false;
+-
+-	cmci_toggle_interrupt_mode(false);
+-	__this_cpu_write(cmci_storm_state, CMCI_STORM_ACTIVE);
+-	r = atomic_add_return(1, &cmci_storm_on_cpus);
+-	mce_timer_kick(CMCI_STORM_INTERVAL);
+-	this_cpu_write(cmci_backoff_cnt, INITIAL_CHECK_INTERVAL);
+-
+-	if (r == 1)
+-		pr_notice("CMCI storm detected: switching to poll mode\n");
+-	return true;
+-}
+-
+ /*
+  * The interrupt handler. This is called on every event.
+  * Just call the poller directly to log any events.
+@@ -260,9 +118,6 @@ static bool cmci_storm_detect(void)
+  */
+ static void intel_threshold_interrupt(void)
+ {
+-	if (cmci_storm_detect())
+-		return;
+-
+ 	machine_check_poll(MCP_TIMESTAMP, this_cpu_ptr(&mce_banks_owned));
+ }
+ 
+diff --git a/arch/x86/kernel/cpu/mce/internal.h b/arch/x86/kernel/cpu/mce/internal.h
+index e13a26c..b18e990 100644
+--- a/arch/x86/kernel/cpu/mce/internal.h
++++ b/arch/x86/kernel/cpu/mce/internal.h
+@@ -41,9 +41,6 @@ struct dentry *mce_get_debugfs_dir(void);
+ extern mce_banks_t mce_banks_ce_disabled;
+ 
+ #ifdef CONFIG_X86_MCE_INTEL
+-unsigned long cmci_intel_adjust_timer(unsigned long interval);
+-bool mce_intel_cmci_poll(void);
+-void mce_intel_hcpu_update(unsigned long cpu);
+ void cmci_disable_bank(int bank);
+ void intel_init_cmci(void);
+ void intel_init_lmce(void);
+@@ -51,9 +48,6 @@ void intel_clear_lmce(void);
+ bool intel_filter_mce(struct mce *m);
+ bool intel_mce_usable_address(struct mce *m);
+ #else
+-# define cmci_intel_adjust_timer mce_adjust_timer_default
+-static inline bool mce_intel_cmci_poll(void) { return false; }
+-static inline void mce_intel_hcpu_update(unsigned long cpu) { }
+ static inline void cmci_disable_bank(int bank) { }
+ static inline void intel_init_cmci(void) { }
+ static inline void intel_init_lmce(void) { }
 
