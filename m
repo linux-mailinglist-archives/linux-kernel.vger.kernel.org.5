@@ -1,169 +1,166 @@
-Return-Path: <linux-kernel+bounces-1433-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-1435-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 44FEB814EF9
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 18:40:50 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A828E814EFD
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 18:41:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C141B287D4A
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 17:40:48 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6058F2887B6
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 17:41:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 299C730118;
-	Fri, 15 Dec 2023 17:40:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bitbyteword.org header.i=@bitbyteword.org header.b="BVtp74CP"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9676030114;
+	Fri, 15 Dec 2023 17:41:05 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ot1-f45.google.com (mail-ot1-f45.google.com [209.85.210.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D343330103
-	for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 17:40:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bitbyteword.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bitbyteword.org
-Received: by mail-ot1-f45.google.com with SMTP id 46e09a7af769-6d9f4eed60eso726565a34.1
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 09:40:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bitbyteword.org; s=google; t=1702662036; x=1703266836; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=2xNwxrUoQHabToj/i/64zScVcUx7+IRz98c/crxfGeI=;
-        b=BVtp74CPxjNm5QaKeaSkn2w0WyrHXpP8EKKdjrCHGQgBiDjsFLPXLVku0qk2U0cBiz
-         AlnmI+wgYFgMMt7Ma0YZAkQ/vVCah/5xqW5blOCxVr2c0E4dUAtCXZF7XmA5rZ1jcdzW
-         pfzNyzpMr2qmGlRsVFGOJf8hZUnU4le3FcXa/VKqDaFs0023d3BWv8sfgmAfzE/bD6vj
-         b0i77gmETNiZXcf0MIu10MPp6hNUuAxs/iXxZGmlXbTqz3oQKS6clrhAJEps52CqC6bj
-         QMQVS7GbHbiATPIqi6JrGB89Dg88oUCaTv5EqeZ19hvHg6DtBiOctmtQHd/WlDbAiU/f
-         /v1A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702662036; x=1703266836;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=2xNwxrUoQHabToj/i/64zScVcUx7+IRz98c/crxfGeI=;
-        b=muK4orRqS88zSon1ilVLexT2PADG3bVs88pfh/k7XziYTSyk7GpzCW4hYuZWof9phL
-         0ttCCV/kW6j7wHcw88fdzzY7wQ1Ejl6e1oBg+3ljhUzdsfg3lrhoqN6Eud9DfqbvvHeN
-         0fhpeIP7gE6uRts69a3cGcqga4Ig1kEqHrkAXDM28wEKWsFmigNhPLEBbbmcwfFrQYiD
-         +t9yUZLP1Lfs4czX/IsXkUzJggRrghtoOvMX9qBcs3Uxys7Os7/fbH3QeyaUSKurrA6F
-         eWbefHT7DmNiTxD7x1Q4Bf1uou0cCPqgHA1yU473VUiJtjK0/LsGDHopKJOD+iifWXbh
-         oY0A==
-X-Gm-Message-State: AOJu0YwnFYmS6cnQHbzGfQ1eDkKH5yATZ1fhAC8ec1NDlMj7Fdx5iS2I
-	ntNPe0Bw0Spn2jCW8YgP4ibuVcqc91GtSaoPbRhqww==
-X-Google-Smtp-Source: AGHT+IEZFg9Ga9F9cLX+1b4+m4Vq0StxR+3I2Y87jSC/8Vw5HOHVENnoE+BwBn2fZGPSKTAo7P+qKG4Vg3+mLBJAWtg=
-X-Received: by 2002:a9d:7518:0:b0:6d9:ebaf:a5fa with SMTP id
- r24-20020a9d7518000000b006d9ebafa5famr11871714otk.54.1702662035860; Fri, 15
- Dec 2023 09:40:35 -0800 (PST)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1071630115
+	for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 17:41:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 72BEAC15;
+	Fri, 15 Dec 2023 09:41:47 -0800 (PST)
+Received: from [10.57.4.221] (unknown [10.57.4.221])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id EF8873F5A1;
+	Fri, 15 Dec 2023 09:40:57 -0800 (PST)
+Message-ID: <6aed34de-99ab-4601-ba4b-0870992c5da1@arm.com>
+Date: Fri, 15 Dec 2023 17:40:55 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231214024727.3503870-1-vineeth@bitbyteword.org>
- <ZXsvl7mabUuNkWcY@google.com> <CAO7JXPihjjko6qe8tr6e6UE=L7uSR6AACq1Zwg+7n95s5A-yoQ@mail.gmail.com>
- <ZXth7hu7jaHbJZnj@google.com> <CAO7JXPhQ3zPzsNeuUphLx7o_+DOfJrmCoyRXXjcQMEzrKnGc9g@mail.gmail.com>
- <ZXuiM7s7LsT5hL3_@google.com> <CAO7JXPik9eMgef6amjCk5JPeEhg66ghDXowWQESBrd_fAaEsCA@mail.gmail.com>
- <ZXyFWTSU3KRk7EtQ@google.com>
-In-Reply-To: <ZXyFWTSU3KRk7EtQ@google.com>
-From: Vineeth Remanan Pillai <vineeth@bitbyteword.org>
-Date: Fri, 15 Dec 2023 12:40:24 -0500
-Message-ID: <CAO7JXPgH6Z9X5sWXLa_15VMQ-LU6Zy-tArauRowyDNTDWjwA2g@mail.gmail.com>
-Subject: Re: [RFC PATCH 0/8] Dynamic vcpu priority management in kvm
-To: Sean Christopherson <seanjc@google.com>
-Cc: Ben Segall <bsegall@google.com>, Borislav Petkov <bp@alien8.de>, 
-	Daniel Bristot de Oliveira <bristot@redhat.com>, Dave Hansen <dave.hansen@linux.intel.com>, 
-	Dietmar Eggemann <dietmar.eggemann@arm.com>, "H . Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>, 
-	Juri Lelli <juri.lelli@redhat.com>, Mel Gorman <mgorman@suse.de>, 
-	Paolo Bonzini <pbonzini@redhat.com>, Andy Lutomirski <luto@kernel.org>, 
-	Peter Zijlstra <peterz@infradead.org>, Steven Rostedt <rostedt@goodmis.org>, 
-	Thomas Gleixner <tglx@linutronix.de>, Valentin Schneider <vschneid@redhat.com>, 
-	Vincent Guittot <vincent.guittot@linaro.org>, Vitaly Kuznetsov <vkuznets@redhat.com>, 
-	Wanpeng Li <wanpengli@tencent.com>, Suleiman Souhlal <suleiman@google.com>, 
-	Masami Hiramatsu <mhiramat@google.com>, kvm@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	x86@kernel.org, Tejun Heo <tj@kernel.org>, Josh Don <joshdon@google.com>, 
-	Barret Rhoden <brho@google.com>, David Vernet <dvernet@meta.com>, 
-	Joel Fernandes <joel@joelfernandes.org>
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v7 02/24] x86/resctrl: kfree() rmid_ptrs from
+ rdtgroup_exit()
+Content-Language: en-US
+To: Reinette Chatre <reinette.chatre@intel.com>, x86@kernel.org,
+ linux-kernel@vger.kernel.org
+Cc: Fenghua Yu <fenghua.yu@intel.com>, Thomas Gleixner <tglx@linutronix.de>,
+ Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+ H Peter Anvin <hpa@zytor.com>, Babu Moger <Babu.Moger@amd.com>,
+ shameerali.kolothum.thodi@huawei.com,
+ D Scott Phillips OS <scott@os.amperecomputing.com>,
+ carl@os.amperecomputing.com, lcherian@marvell.com,
+ bobo.shaobowang@huawei.com, tan.shaopeng@fujitsu.com,
+ baolin.wang@linux.alibaba.com, Jamie Iles <quic_jiles@quicinc.com>,
+ Xin Hao <xhao@linux.alibaba.com>, peternewman@google.com,
+ dfustini@baylibre.com, amitsinght@marvell.com
+References: <20231025180345.28061-1-james.morse@arm.com>
+ <20231025180345.28061-3-james.morse@arm.com>
+ <208c3ade-a8c3-41cc-b136-4ab9b7e938e5@intel.com>
+ <bd3afbfd-3372-cac9-600e-ace19ddd3199@arm.com>
+ <cddbbbae-599b-42c0-abe1-4ca74d5ce36c@intel.com>
+ <a5ef6b40-a9b3-5338-a12a-6a4540cda861@arm.com>
+ <c53872e2-1d2e-44b3-80f1-e39fb0a7330d@intel.com>
+From: James Morse <james.morse@arm.com>
+Autocrypt: addr=james.morse@arm.com; keydata=
+ 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
+In-Reply-To: <c53872e2-1d2e-44b3-80f1-e39fb0a7330d@intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-[...snip...]
-> > > IMO, this has a significantly lower ceiling than what is possible with something
-> > > like sched_ext, e.g. it requires a host tick to make scheduling decisions, and
-> > > because it'd require a kernel-defined ABI, would essentially be limited to knobs
-> > > that are broadly useful.  I.e. every bit of information that you want to add to
-> > > the guest/host ABI will need to get approval from at least the affected subsystems
-> > > in the guest, from KVM, and possibly from the host scheduler too.  That's going
-> > > to make for a very high bar.
-> > >
-> > Just thinking out  loud, The ABI could be very simple to start with. A
-> > shared page with dedicated guest and host areas. Guest fills details
-> > about its priority requirements, host fills details about the actions
-> > it took(boost/unboost, priority/sched class etc). Passing this
-> > information could be in-band or out-of-band. out-of-band could be used
-> > by dedicated userland schedulers. If both guest and host agrees on
-> > in-band during guest startup, kvm could hand over the data to
-> > scheduler using a scheduler callback. I feel this small addition to
-> > kvm could be maintainable and by leaving the protocol for interpreting
-> > shared memory to guest and host, this would be very generic and cater
-> > to multiple use cases. Something like above could be used both by
-> > low-end devices and high-end server like systems and guest and host
-> > could have custom protocols to interpret the data and make decisions.
-> >
-> > In this RFC, we have a miniature form of the above, where we have a
-> > shared memory area and the scheduler callback is basically
-> > sched_setscheduler. But it could be made very generic as part of ABI
-> > design. For out-of-band schedulers, this call back could be setup by
-> > sched_ext, a userland scheduler and any similar out-of-band scheduler.
-> >
-> > I agree, getting a consensus and approval is non-trivial. IMHO, this
-> > use case is compelling for such an ABI because out-of-band schedulers
-> > might not give the desired results for low-end devices.
-> >
-> > > > Having a formal paravirt scheduling ABI is something we would want to
-> > > > pursue (as I mentioned in the cover letter) and this could help not
-> > > > only with latencies, but optimal task placement for efficiency, power
-> > > > utilization etc. kvm's role could be to set the stage and share
-> > > > information with minimum delay and less resource overhead.
-> > >
-> > > Making KVM middle-man is most definitely not going to provide minimum delay or
-> > > overhead.  Minimum delay would be the guest directly communicating with the host
-> > > scheduler.  I get that convincing the sched folks to add a bunch of paravirt
-> > > stuff is a tall order (for very good reason), but that's exactly why I Cc'd the
-> > > sched_ext folks.
-> > >
-> > As mentioned above, guest directly talking to host scheduler without
-> > involving kvm would mean an out-of-band scheduler and the
-> > effectiveness depends on how fast the scheduler gets to run.
->
-> No, the "host scheduler" could very well be a dedicated in-kernel paravirt
-> scheduler.  It could be a sched_ext BPF program that for all intents and purposes
-> is in-band.
->
-Yes, if the scheduler is on the same physical cpu and acts on events
-like VMEXIT/VMENTRY etc, this would work perfectly. Having the VM talk
-to a scheduler running on another cpu and making decisions might not
-be quick enough when we do not have enough cpu capacity.
+Hi Reinette,
 
-> You are basically proposing that KVM bounce-buffer data between guest and host.
-> I'm saying there's no _technical_ reason to use a bounce-buffer, just do zero copy.
->
-I was also meaning zero copy only. The help required from the kvm side is:
-- Pass the address of the shared memory to bpf programs/scheduler once
-the guest sets it up.
-- Invoke scheduler registered callbacks on events like VMEXIT,
-VEMENTRY, interrupt injection etc. Its the job of guest and host
-paravirt scheduler to interpret the shared memory contents and take
-actions.
+On 12/14/23 19:06, Reinette Chatre wrote:
+> On 12/14/2023 10:28 AM, James Morse wrote:
+>> On 13/12/2023 23:27, Reinette Chatre wrote:
+>>> On 12/13/2023 10:03 AM, James Morse wrote:
+>>>> On 09/11/2023 17:39, Reinette Chatre wrote:
+>>>>> I expect cleanup to do the inverse of init. I do not know what was the
+>>>>> motivation for the rdtgroup_exit() to follow cpuhp_remove_state()
+>>>>
+>>>> This will invoke the hotplug callbacks, making it look to resctrl like all CPUs are
+>>>> offline. This means it is then impossible for rdtgroup_exit() to race with the hotplug
+>>>> notifiers. (if you could run this code...)
+>>
+>>> hmmm ... if there is a risk of such a race would the init code not also be
+>>> vulnerable to that with the notifiers up before rdtgroup_init()?
+>>
+>> Nope, because this array is allocated behind rdt_get_mon_l3_config(), which ultimately
+>> comes from get_rdt_resources() in resctrl_late_init() - which calls cpuhp_setup_state()
+>> after all this init work has been done.
+>>
+>> (cpu hp always gives me a headache1)
+> 
+> Right. My comment was actually and specifically about rdtgroup_init() and attempting to
+> understand your view of its races with the hotplug notifiers in response to your comment about
+> its (the hotplug notifiers) races with rdtgroup_exit().
+> 
+> The current order of state initialization you mention and hotplug notifiers needing the
+> state is sane and implies to expect an inverse order of teardown.
+> 
+>>> The races you mention
+>>> are not obvious to me. I see the filesystem and hotplug code protected against races via
+>>> the mutex and static keys. Could you please elaborate on the flows of concern?
+>>
+>> Functions like __check_limbo() (calling __rmid_entry()) are called under the
+>> rdtgroup_mutex, but they don't consider that rmid_ptrs[] may be NULL.
+>>
+>> But this could only happen if the limbo work ran after cpuhp_remove_state() - this can't
+>> happen because the hotplug callbacks cancel the limbo work, and won't reschedule it if the
+>> domain is going offline.
+>>
+>>
+>> The only other path is via free_rmid(), I've not thought too much about this as
+>> resctrl_exit() can't actually be invoked - this code is discarded by the linker.
+>>
+>> It could be run on MPAM, but only in response to an 'error interrupt' (which is optional)
+>> - and all the MPAM error interrupts indicate a software bug.
+> 
+> This still just considers the resctrl state and hotplug notifiers.
+> 
+> I clearly am missing something. It is still not clear to me how this connects to your earlier
+> comment about races with the rdtgroup_exit() code ... how the hotplug notifiers races with the
+> filesystem register/unregister code.
 
-I admit current RFC doesn't strictly implement hooks and callbacks -
-it calls sched_setscheduler in place of all callbacks that I mentioned
-above. I guess this was your strongest objection.
+I don't think there is a specific problem there, this was mostly about unexpected surprises because cpuhp/limbo_handler/overflow_handler all run asynchronously. I may also have added confusion because the code added here moves into rdtgroup_exit() which is renamed resctrl_exit() as part of dragging all this out to /fs/. (This is also why I tried to initially add it in its final location)
 
-As you mentioned in the reply to Joel, if it is fine for kvm to allow
-hooks into events (VMEXIT, VMENTRY, interrupt injection etc) then, it
-makes it easier to develop the ABI I was mentioning and have the hooks
-implemented by a paravirt scheduler. We shall re-design the
-architecture based on this for v2.
 
 Thanks,
-Vineeth
+
+James
 
