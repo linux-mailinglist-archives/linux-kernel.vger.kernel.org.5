@@ -1,117 +1,121 @@
-Return-Path: <linux-kernel+bounces-1551-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-1552-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2A8F4814FFC
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 20:09:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9D9C6814FFD
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 20:09:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CF4051F24DD3
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 19:09:22 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 52B7F1F24CE6
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 19:09:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 99A693FE4B;
-	Fri, 15 Dec 2023 19:09:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD5003FE40;
+	Fri, 15 Dec 2023 19:09:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com header.b="vXDHXPbf"
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="3wI1NN5+";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="KkijHHHK"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp-relay-internal-1.canonical.com (smtp-relay-internal-1.canonical.com [185.125.188.123])
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D78D23FE30
-	for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 19:09:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canonical.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canonical.com
-Received: from mail-lj1-f197.google.com (mail-lj1-f197.google.com [209.85.208.197])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 02D873F2BA
-	for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 19:09:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-	s=20210705; t=1702667352;
-	bh=MRZYQIHPmA7btUFQOfGYSO5VRHm0MVyK696kIcZXcYo=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version;
-	b=vXDHXPbfzSLvnSVOKE6TP9QsztVOCO+29wlniVxZ5suCImxukbCNBKzlRtHHFovq0
-	 Dnbw5xlINqbVff5kgEm1iF7We8h/7XcNal7X0YLJM9RlygqhCuy24Y+E1uPLYtGQGQ
-	 quOLMBfyyxI49oqKyouIZWTs9JQOHQX1p9oo/ArWUbZU3PHE5jE0x6LcbeU3bXRrmn
-	 P81PCEujycca4ie25Qp6Pe9NDZ/uBqRyE5WjEeHIshl/MGpOntnCk7WDUgh876b4VA
-	 B7h2yBhyEJc38xyXwtXHkQpRVo2cqOnnsgk1YHQ67B07EcBrWixIQ7Eg+lE1vhFdtT
-	 9vs5zMeRzRdxw==
-Received: by mail-lj1-f197.google.com with SMTP id 38308e7fff4ca-2cc4b538b37so8199811fa.0
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 11:09:11 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702667351; x=1703272151;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=MRZYQIHPmA7btUFQOfGYSO5VRHm0MVyK696kIcZXcYo=;
-        b=XFNPb7Hn9E4jC9RicFsMTdZ3VUzctmFRT7MY01eHRhdu92DUk3M6+sa1jDUV0z4siZ
-         v4ZdYieNaJaxcajLom03UvL2YmvMSAirCeQZrgnOrCdymQ0UNCebdXWUKDiIIpawEYsN
-         j0G6T10pVeyjxOFkertmjCbq8nnNTk4Z8vEAqCVMjolGcRmOsbpwIDbtvnq3Jy93gf/Z
-         hgKWmugJCldNW6feVT3DCL3dN5nB1Ec7pGZ7hZHDKuizbaorPn09cvrNv8cYIBGRnjbV
-         Q+afXHanY22m3T2ZRr84XESR191+5aYHV9Y6Ak1tSsxzSQBQMo/KuvdqVK+xQF6x2xa5
-         HHsA==
-X-Gm-Message-State: AOJu0Yzv701W8MmqQ2b7yScW4DM9U/JbUOpDAwFFHzknIBec7nUBSV5+
-	G0WH5qf/iH+HSFXz0eqdpwwsE3VQDc5nU0jze9j5lFvZv0lAE10tyYHSWoCvw4HejHH6ONIzsLK
-	k/MxbGLHw+ryPrIVcZo7vEWeueJfAZ4pmBUXMpDaBIg==
-X-Received: by 2002:a05:6512:4847:b0:50a:a5f7:47fb with SMTP id ep7-20020a056512484700b0050aa5f747fbmr5071612lfb.49.1702667351117;
-        Fri, 15 Dec 2023 11:09:11 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IHHfU/LDng1X8+W90PqDysrUy0Azr/q6l0EAbqvK90+Z7EyHsMSWUvd4IZQoXgYzTA4LDhgYQ==
-X-Received: by 2002:a05:6512:4847:b0:50a:a5f7:47fb with SMTP id ep7-20020a056512484700b0050aa5f747fbmr5071607lfb.49.1702667350770;
-        Fri, 15 Dec 2023 11:09:10 -0800 (PST)
-Received: from stitch.. ([152.115.213.158])
-        by smtp.gmail.com with ESMTPSA id et14-20020a056402378e00b005527cfaa2dfsm1700456edb.49.2023.12.15.11.09.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Dec 2023 11:09:10 -0800 (PST)
-From: Emil Renner Berthing <emil.renner.berthing@canonical.com>
-To: linux-riscv@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Cc: Paul Walmsley <paul.walmsley@sifive.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Conor Dooley <conor.dooley@microchip.com>,
-	Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH] riscv: errata: Make ERRATA_STARFIVE_JH7100 depend on !DMA_DIRECT_REMAP
-Date: Fri, 15 Dec 2023 20:09:09 +0100
-Message-Id: <20231215190909.3722757-1-emil.renner.berthing@canonical.com>
-X-Mailer: git-send-email 2.40.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D9E973FB11
+	for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 19:09:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+From: Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1702667367;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=XdoNIFgiKKjltF4d35fDvG6l9Px6HFW2fOBXd8f2UN8=;
+	b=3wI1NN5+yNmVu/AqvyeGuaWppDOdo9WTn+Jgs5VU9aH7NVHOqe3Uz6A2b/pPGygllUbwYI
+	H9KXBvtmZbc2FQX7f55UNaQVoXO89KXWzTfLc/y5ju96zCEWSbSwvaESDRW6LEhtEPRU3q
+	I1wmjnohlWtsB/z7KBTthUGXi7vLPzke+ea/KWMGPin4yEX0Z+Yf8gQd48lzUGLdjdxQaS
+	smCid615OtOT2SWVFOp/WVA3y7d7cUVRCaUCPD5hozPniN+k5343VSTZISj6xgXJAEa8IW
+	8lubTGpaQexBEJqFhYL7F1SdNusOLJDXIxY5r1ji81DrNafj9kdz+e8cRIY9bA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1702667367;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=XdoNIFgiKKjltF4d35fDvG6l9Px6HFW2fOBXd8f2UN8=;
+	b=KkijHHHKwrD5Nqa0XioXOX9S/s6w3dr6sFH2uCNTRuln6fZml1iHZThYDuqNiZ8lMXQK0b
+	24dc6Ji3xm+brbBQ==
+To: Sven Schnelle <svens@linux.ibm.com>, Peter Zijlstra
+ <peterz@infradead.org>, Andy Lutomirski <luto@kernel.org>
+Cc: linux-kernel@vger.kernel.org, Heiko Carstens <hca@linux.ibm.com>
+Subject: Re: [PATCH 1/3] entry: move exit to usermode functions to header file
+In-Reply-To: <20231205133015.752543-2-svens@linux.ibm.com>
+References: <20231205133015.752543-1-svens@linux.ibm.com>
+ <20231205133015.752543-2-svens@linux.ibm.com>
+Date: Fri, 15 Dec 2023 20:09:27 +0100
+Message-ID: <87r0jnmgew.ffs@tglx>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 
-Similar to the Renesas RZ/Five[1] the JH7100 SoC needs the non-portable
-CONFIG_DMA_GLOBAL_POOL enabled which is incompatible with DMA_DIRECT_REMAP
-selected by RISCV_ISA_ZICBOM.
+On Tue, Dec 05 2023 at 14:30, Sven Schnelle wrote:
+> +/**
+> + * exit_to_user_mode_loop - do any pending work before leaving to user space
+> + */
+> +static __always_inline unsigned long exit_to_user_mode_loop(struct pt_regs *regs,
+> +							    unsigned long ti_work)
+> +{
+> +	/*
+> +	 * Before returning to user space ensure that all pending work
+> +	 * items have been completed.
+> +	 */
+> +	while (ti_work & EXIT_TO_USER_MODE_WORK) {
+> +
+> +		local_irq_enable_exit_to_user(ti_work);
+> +
+> +		if (ti_work & _TIF_NEED_RESCHED)
+> +			schedule();
+> +
+> +		if (ti_work & _TIF_UPROBE)
+> +			uprobe_notify_resume(regs);
+> +
+> +		if (ti_work & _TIF_PATCH_PENDING)
+> +			klp_update_patch_state(current);
+> +
+> +		if (ti_work & (_TIF_SIGPENDING | _TIF_NOTIFY_SIGNAL))
+> +			arch_do_signal_or_restart(regs);
+> +
+> +		if (ti_work & _TIF_NOTIFY_RESUME)
+> +			resume_user_mode_work(regs);
+> +
+> +		/* Architecture specific TIF work */
+> +		arch_exit_to_user_mode_work(regs, ti_work);
+> +
+> +		/*
+> +		 * Disable interrupts and reevaluate the work flags as they
+> +		 * might have changed while interrupts and preemption was
+> +		 * enabled above.
+> +		 */
+> +		local_irq_disable_exit_to_user();
+> +
+> +		/* Check if any of the above work has queued a deferred wakeup */
+> +		tick_nohz_user_enter_prepare();
+> +
+> +		ti_work = read_thread_flags();
+> +	}
+> +
+> +	/* Return the latest work state for arch_exit_to_user_mode() */
+> +	return ti_work;
+> +}
 
-[1]: commit 31b2daea0764 ("soc: renesas: Make RZ/Five depend on !DMA_DIRECT_REMAP")
+I'm not really sure about this part. exit_to_user_mode_loop() is the
+slowpath when a TIF work flag is set. I can see the benefit on the
+fastpath functions which are way smaller.
 
-Link: https://lore.kernel.org/all/24942b4d-d16a-463f-b39a-f9dfcb89d742@infradead.org/
-Fixes: 64fc984a8a54 ("riscv: errata: Add StarFive JH7100 errata")
-Signed-off-by: Emil Renner Berthing <emil.renner.berthing@canonical.com>
----
- arch/riscv/Kconfig.errata | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+Thanks,
 
-diff --git a/arch/riscv/Kconfig.errata b/arch/riscv/Kconfig.errata
-index 692de149141f..f5c432b005e7 100644
---- a/arch/riscv/Kconfig.errata
-+++ b/arch/riscv/Kconfig.errata
-@@ -55,7 +55,9 @@ config ERRATA_SIFIVE_CIP_1200
- 
- config ERRATA_STARFIVE_JH7100
- 	bool "StarFive JH7100 support"
--	depends on ARCH_STARFIVE && NONPORTABLE
-+	depends on ARCH_STARFIVE
-+	depends on !DMA_DIRECT_REMAP
-+	depends on NONPORTABLE
- 	select DMA_GLOBAL_POOL
- 	select RISCV_DMA_NONCOHERENT
- 	select RISCV_NONSTANDARD_CACHE_OPS
--- 
-2.40.1
+        tglx
 
 
