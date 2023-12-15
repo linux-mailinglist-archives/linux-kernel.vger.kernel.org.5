@@ -1,66 +1,66 @@
-Return-Path: <linux-kernel+bounces-1783-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-1784-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5337A8153E3
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 23:43:51 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 988338153E5
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 23:44:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0970B2832E9
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 22:43:50 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BE8611C24754
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 22:44:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D5B5F13B12E;
-	Fri, 15 Dec 2023 22:43:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C96C19452;
+	Fri, 15 Dec 2023 22:43:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=yahoo.com header.i=@yahoo.com header.b="LNfEV2M2"
+	dkim=pass (2048-bit key) header.d=yahoo.com header.i=@yahoo.com header.b="Te5/75Ah"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from sonic316-27.consmr.mail.ne1.yahoo.com (sonic316-27.consmr.mail.ne1.yahoo.com [66.163.187.153])
+Received: from sonic302-28.consmr.mail.ne1.yahoo.com (sonic302-28.consmr.mail.ne1.yahoo.com [66.163.186.154])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 08EA718EAC
-	for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 22:43:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5509718B06
+	for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 22:43:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=schaufler-ca.com
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=schaufler-ca.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1702680221; bh=NuchN7LWq+7dR5oCIrU3dqcwUFeyKlFDBPhpyQdG6gM=; h=From:To:Cc:Subject:Date:In-Reply-To:References:From:Subject:Reply-To; b=LNfEV2M2x3AhAouQU996hBof6gSHadROPBvcNl6jSwDmqAgwTMwKD51vgsF3tpnzeTm+NiJwX/pZbQCcpNRi4pytUnEs3pnEuWOddteKmTIczsgLzw/TQtG7os7uP6FC4B5blWE8IzKkzy7mEd2zUpn3CmqVIAphpBOZ5l3MVhsvozJgFMYnsHkYygvFzVuIoSngaYEKafP2aH3sytyfNZcFFshLn8ZywnEPZ15Lcu8BhBzDrnBzjWEk8JIXhRmMtYjB4SGA51x0BeLDpv53vsZ1O89754S/bP7ztoIK0u2YEyCGvkevLq/9sMoln7NbqRgqTUPAUqkkbgJLshFjUA==
-X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1702680221; bh=99tChxCy/47LiTe3kp/zL7x3mbeHpcRS7ymKZm7mlez=; h=X-Sonic-MF:From:To:Subject:Date:From:Subject; b=SVuu7mux7yxU2IT5thac09F0yiwx1pPPATUntIUmqOMbjwSiHKk+uXqDt98LtxdtxkjlBKi2RNx2NTl5fLbWrANZn4vQWR0LxEm80RelLHrMjR2bcBg+6Em4zrMGcMhJ90HHTWFA7usHWTKOnXjI5ehjG0wQfwqZ5NXTGPw5gY4TGlJNPlmEpv8HPBfYhsRv5wNMvxjcPIwqs8j7BdGflombzlpoOVILzyvBrVxNFhj/+GwpDXBv0oIr3YcHqbT3ieUcpzOZyJP5iiDfzCMrmqmci0soihPeFmS4xaWucwKE72uYf/cNsDSEn8zAV0YvkoaQBfXE/UNI8WGvxaVCDw==
-X-YMail-OSG: 6F_hx6sVM1l2Sp7xn_RpIj6KUhGj.KY8cx1OV5K6jzcSd0YKqE2AcPtu773ohVu
- oMgpvLNX9lt3nkZbLC7NvmkeYu8iVqFjVP.2IYvwsR3aJ7pJk0D06xvdtu0US6Kn2Ih22QBILbAM
- zDyzValcq7lQ4o3TxYcYEGwd5miELrMFhhpxLNfrQnlcQXz7J48tHUb1VvO300oFaNxOw.HGXr7d
- uFeaKRSqlFty2JXns.wFWUEoQcShd0sGXlPZCIseoXFzjy5nX0UemQIojiALs7B_uIPBqQRT1kwG
- F6Kf1mcCfWL1z3N1CsGfC8b.s8WsJA.YrIKiU3aFcWc8LTLER18gSPoMlrn.aUMwREqFoJ.14PYL
- I1Fi6HbpfdtsFFxqR.8BIgMfjqOkyQMba6YJ7mcBHFQUXLAzuV88EHTR9AWKsLQExpqJV_QUJeuG
- 1V4T_EbuE2KzxLidclOISihL8PWmFdWXL4fqvtmSz45GgVJMm7jvCNw8J318TfwExMlpDM76RK_z
- 64kwfl2RZAUbIYjDCpcN2_jsv6tNBwwomrz6.fAYCjm4dL2jp6nHfOreqib6hMJfr1xQQlj8zAGn
- neEvsjJDkpIoKE8BYDOsWR6pTiM6Py_csfMVsPZF0dpSn3II4mBLPeWFVT94dDYmzgn4rOlYlN78
- 2Nn9nahaRnQH3jjNHfF9BegGYhh0dAQLJImQw9pU21MzOVp.fOWdKHeZ.95t7C.TB8_mo.z.02U5
- G1cd_VWlXzjTdCzKh3Dql0KITOmUMaxSojJbyYhHHp42X0HQIc0.cgPdRSuRrspM2nUbSUpisXMM
- _akftguzIff5aI0W2JXeX_Lzxp0q4j945ZGpvBQdUhebIqTbo_gp_j0eKJk0e7oNBy5e14idix7N
- nV2v9AQhIKRVFmWo9X5DLFBy6GjBCOhHiOGbnRYEzHk1QVERGlP53kg0FyXoZPLYf_On8AT5MZCp
- bU9XwAwE69L280c5s4fBdGyRqTjlUSlQo3Cx6EBmpgVl7CdZeO.8939Y8KdoCQtOJWkiPZXXMRFY
- WyV1b59VABlD5eMwTUd8AnGsXDENVk6G4NZ1RHwux4uv3fMlQcu2yCwAUTdedm1YTen8GsojzpPr
- BVRxPEna6QX139rnhZEbsP2NjDWO0pIU0SqMw0axLNYCDdLYa0f1uYkMSSMyRhVlrJJfBvv0ceAl
- SJmKwG_r7_CBmicBThuFRzQHvd_COHURz2rXOELXxrNvDt7F3b7ohjOeOU2arMAI92h0y_yXKVRP
- n7cVN04VqPQYoZONLAYYYI7ZktrxxSymIZ6sdsWDX4bKSzAlm3lRKon8zz5aiSg.ieYwWTQYz.ik
- XYDPYT5lgCGIq8CtYHjsuc.VN52gzeqkdPKPePj.SD1ujM1sV.jNGKvOmXF7ELJKa1xifemUvoow
- O9vjmrj.ShX7kmMKksLx2QE2FRZOEJs2EyB5Scnhdvfcef5eE71A5YhB10SUdZW5jI.CzRDgkajZ
- 6csbnhkpT_AErsApe6vZ8cf7CrPofh7HYTHxIGCT5czkflxIAgDZQ7LpywlQcbzhfTMmjFX6MKMm
- S4P9TcL1VGEWA33361AlmuzEz4h4phtplgi3YaWCxnWIw0W69tf0WnV8w_BIBgywxcdPduO9ZUJu
- oM2QPNX8Ku93wKFP04GcbJY1iXlVLuSvRJv9BzVvOxVsO7ju8Q01HiZVJh37WiXdoE9M5iR6HRak
- slutT817fDY.E6yzw4kHeekra.f92TxN8VAvHd2qw2rbuyPTGlq2Yj1PzlwaBqx8oynG5GMdZPH3
- .QXbyqMMBpXEuXDJiqTNPqxtpixsYpaPm0O7Qc7O2lOBueox9yUshrOQFLMlWD.UfwOGTCcxmYc4
- lnpZnol7IYTloIWsBpYyELb3wJuVLdo1x4FcqZ69.WnHwkka2yCG3bnnReshabgKfBVAlL8saI6o
- r8FwQl4c_7BP7chJGs3RPs8grYHGVUZm3P1RZTkT3THF9O2WqQlGezYKyldaZMBEe2OuGiXdXxdv
- QPZTWgWVetcH7Za5agtYwtWQqG5BjtlkCme2o6xoYkFnlX3ulIPnvySznHP9291ZR9Q5NqhOmy7L
- Sld9r6xx07lHOIPiFda4Ivpkg0VYYI.V9xZ1xvRQ5OLx8QASs0ac6J7WfnZCURHFPkcp3bCLuawC
- Yd3.o9I6ZlpTCJKVXjctsRG_BcK06Zt4.Ip330f7Cc6rzWDrHX.t_Z7BM53YN4lxHx9TJQqXki3W
- qfQLw5zbM68oa7NHc2KrbrFhJ856Hla1.XR06SlGXUD9I2BmBLEFOv_IkHuW0hOja21XY39_KTTS
- bXSehd6gwn.2qrOVgXKLDejkZXys-
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1702680223; bh=OP/fe7KTWBlNrxCDPndD55sIV1PdVPH4756etwgkPBQ=; h=From:To:Cc:Subject:Date:In-Reply-To:References:From:Subject:Reply-To; b=Te5/75Ah40FU7JV5zv4gA6YC/GtWU4lkiluweGh8clYFZtrSecHKgjyvJcnL2vUHmln8cpd1eBYM34ZXb59MyNxqxEmyTYETJkF2f5S4GBbS2MZKRvEVg2iTguKW8xcOO9W2vETPJP+rAQtEdR3F8NksGHm9KMjQVkuugnCdrrpUyfIBesDpVJnENqAqW5ebAmDt/cWlimu0gz/4fTSjnIJMxLV7vlhxm0gRFvj56NKNl8/2n4yikBUHyUXeIogyGVNvj7XwEs5m0djCVNQkPVk/mssQefrMVnDt+eP1WhfDPFG2VAoRGU+v/olcB3Ev/78CQP8IX13MHdffadM1sQ==
+X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1702680223; bh=7cFt1PnR65sziyB7/ELmNrG9oDxSfh9AtHlEi4CMFj3=; h=X-Sonic-MF:From:To:Subject:Date:From:Subject; b=XZkZ0BrR3fReGnMSvRUVFxa+FWXY1wSRN4ATIbczwhmoZznlZO5P+tbD+xrnDR8qQk7CSEKN3ALVI+ESoJGlSXwRvkL63qsQnRmi4tHO8+5Sjg8gqSv7OdkhDs26UntIJ1MZLmZLm9hMQuulpUpSJXebh7Kv5XDrGLD9gbkQjOA85wimp6X8ii9lRQsgobAQ8NiZMLWd6ijPIMneKIjNZ+8JCv5zQt+4SLDUI57Jgw+Ulr/YntJ19MVAsJAMXO2P7GmK09Sy2pYDI9nISVmuCEFs8+CR1ZxHtezdcMRxeZcHoe7Bh7ijj9S2tyq1WYdmENan70m67yEoQLGPvV1frw==
+X-YMail-OSG: eciJ4hsVM1n5pF1jj95VYuHjVLjV.aaiZGxotjXzMoKI.BOXVgAVgqMmPG6tuq5
+ oNHFI65wJIE59K.OLoIgW.9DdrNZjmQwKCHRSBWuDNVt6zecmseorjWPzmo5QXzdCOSBd9kfX8fG
+ 2L2_g97ZxZ8VsSO0WIRe8BdhtiUh1JP5GVeJLtW22MTCoNYIjnOuzrIyek5h.CcD9nPSpuba.ZA0
+ eA7TTDsLlvWefCfvaLdvZUltxAFR_FVTbL0j0r_rd50OVSZCxqPJNShF8sSBqPO0x0FegF_u4jC4
+ gtvy9SIduFMYwLmmHktPMaSeVtAYdLFEjCSQKB8Nq3NZjgvyi0F1P3Mij9u3VV9xqZSAnpR9mEqK
+ XS8JUGWe70fphe6h1or6mJ660l2Lq4XaOAycECYj9Co3TXYA7UJ1zNgZm8xbPvQnqgCeb__a63MI
+ LPiYdFKPbBChOTqALqaNQ28_ZwJQGApRiey9TDOTSI43wHbkogIhp8IEx.ntF7Oobtr.kkK1GO6V
+ j46eO_AvuX4bffOyGBz9grJDdcDR64n808WsgC35FwfE0WTHqptLV3pwckuHVjoViqjir0uFDwHG
+ vTZ2R2VcHtZOFjRWPfJhIXLk20Gfim4VsBiOkFCBWrAmHZjUTPQpl6NBVq_NvIiZ4yZ.u_3ZkUCp
+ ZImS5eZ3mxjwnK0QdeFIg3BAiBzY6FON4X.kdLS6xW82xip2QCYSQ0Kj7OHvkkrhAxKDRarWNOiE
+ FiKptJWZ89NrwQYb7QdGYyBj2nylIDXQk4O5cMggyrOMZNbkBOQb_amksd1KgCMm4zX.RbCAU0Sw
+ PmVC1GBdwdR66Kn.kIUWPV6WntiIp71JpecCw5HwsSgxvFH46QrBFQnqaEFX9fCfNk4cqKfy0DOd
+ _g7oOrcPjGJgX.0wIQ3y_ytSvymxpah0Nv7XinVeAQGyWtFL_LJem.yGsd5OSM4415PRqR_AQ_WS
+ MgwzdeXyXWKgv_mwKKqxxj9gguQwa3SCSZnXvw6SuEZG5o4TPnCQESOOPD40CWwm.aH4popS3pmT
+ ST7d9edcPJZocwXjUwoEB61ibRYI6eGu3c3evE.iKzZkgBRxtWGwnl0RtlNoF3kr6XbKK7PNSNZ5
+ 6E9XbVJ.e9DtT5eRMsFP3Ld3PZXl0L0dH7s3RP19eDXzonhHATgOQMOsx7k2vrrxuIHiTKHrmcDG
+ RVBX.ZGV3NgwbTS40lMoJQz7G4aSegWDXxlRh59l3h.lkRv8cHold1ANAKGbgpCIxi4QDqORIqIr
+ n2T50RsanKwqS.xpLoZlztfyA4Ck2QyObh_l0tA069NC229Kr0xA4O7rQuYxMWJgrUbKY1yhheoO
+ iU14FWi1JLQlZmJBopNOCEt_4D.CJlbV7fVk8WHd0ZO2OyDsH_7RSmTs4faXJXIOQ2BbHLipsx0s
+ 43ZAtl5cIaJGT.lyjnm_ZvQ_xaKqp8iJn3aji7BJTKiaFN8RctW9GmnR5lMzpHpJDRxJMMjCedCz
+ YFpjB4oDalkz8KXvsAAYBZMo20uTQ4w456yWe2J5qoi0WxMzKWEscWijRgLjazlypEXkJkpj974X
+ FHgs0ATyBVx6tNw9uotJIhWMScF5uxWlIMhMufGIzHg27fo3vGZOssjMCvbtyeRkZebSo0zFmWtF
+ 4kzgyWSBD2GDbwn_aTN.NYlxPRCXf7WETO6Ck6nSepv7ya5MJWW24tJtg0rUXT_tZSjTay3SeoA1
+ TZxE43YtdBCRPFNIe7orin_pk72OoXOcxTrEWgwBozCqhnsEzrbMGdT_NkwzEhO_QA3B2hK8Sipn
+ 8_KWSoqbW6JOLOIwZztNeJPFBTdvFT6rGepvuwtBSBwM0OzKXgDx9_Oe4J1f0fbrEgyDgrxgABd8
+ 33HhBI_S8PgfCcqGrwOplPEcLlgcU0KPTYNa3IMxP8N6eLA7ASIBsYH6iqiTDgBx0IPp.Vu1sSF5
+ v9ZOS3IKtpof7wlWJZcGSYzRciEGcPV9zZMGLQTy4N1.aFkL9EAh.TBpwSBk3jiI6f7K5KT0QrTy
+ B1DYNslbtD4hx8PJyR_oOhpfprZH9nt.eE6Z4y_31OJ1ld2N9iJ1jl47ChHFxlex53NyhlO4JMDL
+ VTFD.R8Lb61F6thncA6sn6Djaa7eYa1NS1OFzQkaQyRS2apCxRsZZwuLGxwEgPR_oG5npcHCdxXS
+ SglOwZ9ZGIZtYiPrdJFbDxU4wQQuzuPt7qVmXFJ.AeHaAEZlN_xdsACSeDGfJ.d.eLFi418D_4yO
+ qdxWumaX1I24q6cIN39TRf1SEgyQk7v_zhmjh.6oQzszOrtL2BmEsJ6YMnwGGLBofdDkVWBP4E1y
+ 0Xw_lRfrOf9pX7TbfC0i_VI1JWw--
 X-Sonic-MF: <casey@schaufler-ca.com>
-X-Sonic-ID: 869ce3e1-48f0-48d5-8d86-93a5ceaf74f1
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic316.consmr.mail.ne1.yahoo.com with HTTP; Fri, 15 Dec 2023 22:43:41 +0000
+X-Sonic-ID: 787729f1-851d-4e07-aff2-45c0a9d88a4a
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic302.consmr.mail.ne1.yahoo.com with HTTP; Fri, 15 Dec 2023 22:43:43 +0000
 Received: by hermes--production-gq1-6949d6d8f9-k52jv (Yahoo Inc. Hermes SMTP Server) with ESMTPA ID ca4128361bb8b08e481604451b6f4d3b;
-          Fri, 15 Dec 2023 22:43:39 +0000 (UTC)
+          Fri, 15 Dec 2023 22:43:40 +0000 (UTC)
 From: Casey Schaufler <casey@schaufler-ca.com>
 To: casey@schaufler-ca.com,
 	paul@paul-moore.com,
@@ -73,9 +73,9 @@ Cc: jmorris@namei.org,
 	stephen.smalley.work@gmail.com,
 	linux-kernel@vger.kernel.org,
 	mic@digikod.net
-Subject: [PATCH v39 34/42] LSM: Add mount opts blob size tracking
-Date: Fri, 15 Dec 2023 14:16:28 -0800
-Message-ID: <20231215221636.105680-35-casey@schaufler-ca.com>
+Subject: [PATCH v39 35/42] LSM: allocate mnt_opts blobs instead of module specific data
+Date: Fri, 15 Dec 2023 14:16:29 -0800
+Message-ID: <20231215221636.105680-36-casey@schaufler-ca.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20231215221636.105680-1-casey@schaufler-ca.com>
 References: <20231215221636.105680-1-casey@schaufler-ca.com>
@@ -87,72 +87,100 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Add mount option data to the blob size accounting in anticipation
-of using a shared mnt_opts blob.
+Replace allocations of LSM specific mount data with the
+shared mnt_opts blob.
 
 Signed-off-by: Casey Schaufler <casey@schaufler-ca.com>
 ---
- include/linux/lsm_hooks.h  | 1 +
- security/security.c        | 2 ++
- security/selinux/hooks.c   | 1 +
- security/smack/smack_lsm.c | 1 +
- 4 files changed, 5 insertions(+)
+ include/linux/lsm_hooks.h  |  1 +
+ security/security.c        | 12 ++++++++++++
+ security/selinux/hooks.c   | 10 +++++++---
+ security/smack/smack_lsm.c |  4 ++--
+ 4 files changed, 22 insertions(+), 5 deletions(-)
 
 diff --git a/include/linux/lsm_hooks.h b/include/linux/lsm_hooks.h
-index 4deb1a4d2d1a..59085248809a 100644
+index 59085248809a..24a0f62ec2ac 100644
 --- a/include/linux/lsm_hooks.h
 +++ b/include/linux/lsm_hooks.h
-@@ -81,6 +81,7 @@ struct lsm_blob_sizes {
- 	int	lbs_msg_msg;
- 	int	lbs_task;
- 	int	lbs_xattr_count; /* number of xattr slots in new_xattrs array */
-+	int	lbs_mnt_opts;
- 	bool	lbs_secmark;	/* expressed desire for secmark use */
- };
+@@ -156,5 +156,6 @@ extern struct lsm_info __start_early_lsm_info[], __end_early_lsm_info[];
+ 		__aligned(sizeof(unsigned long))
  
+ extern int lsm_inode_alloc(struct inode *inode);
++extern void *lsm_mnt_opts_alloc(gfp_t priority);
+ 
+ #endif /* ! __LINUX_LSM_HOOKS_H */
 diff --git a/security/security.c b/security/security.c
-index 8576121fadb9..fd429f67d2da 100644
+index fd429f67d2da..7a9fbe706525 100644
 --- a/security/security.c
 +++ b/security/security.c
-@@ -232,6 +232,7 @@ static void __init lsm_set_blob_sizes(struct lsm_blob_sizes *needed)
- 	lsm_set_blob_size(&needed->lbs_task, &blob_sizes.lbs_task);
- 	lsm_set_blob_size(&needed->lbs_xattr_count,
- 			  &blob_sizes.lbs_xattr_count);
-+	lsm_set_blob_size(&needed->lbs_mnt_opts, &blob_sizes.lbs_mnt_opts);
- 	if (needed->lbs_secmark) {
- 		if (!blob_sizes.lbs_secmark)
- 			blob_sizes.lbs_secmark = true;
-@@ -453,6 +454,7 @@ static void __init ordered_lsm_init(void)
- 	init_debug("superblock blob size = %d\n", blob_sizes.lbs_superblock);
- 	init_debug("task blob size       = %d\n", blob_sizes.lbs_task);
- 	init_debug("xattr slots          = %d\n", blob_sizes.lbs_xattr_count);
-+	init_debug("mnt_opts blob size   = %d\n", blob_sizes.lbs_mnt_opts);
+@@ -1385,6 +1385,18 @@ void security_sb_free(struct super_block *sb)
+ 	sb->s_security = NULL;
+ }
  
- 	/*
- 	 * Create any kmem_caches needed for blobs
++/**
++ * lsm_mnt_opts_alloc - allocate a mnt_opts blob
++ * @priority: memory allocation priority
++ *
++ * Returns a newly allocated mnt_opts blob or NULL if
++ * memory isn't available.
++ */
++void *lsm_mnt_opts_alloc(gfp_t priority)
++{
++	return kzalloc(blob_sizes.lbs_mnt_opts, priority);
++}
++
+ /**
+  * security_free_mnt_opts() - Free memory associated with mount options
+  * @mnt_opts: LSM processed mount options
 diff --git a/security/selinux/hooks.c b/security/selinux/hooks.c
-index 3e590f632f59..e0f6f2093708 100644
+index e0f6f2093708..3d046c9d0121 100644
 --- a/security/selinux/hooks.c
 +++ b/security/selinux/hooks.c
-@@ -6970,6 +6970,7 @@ struct lsm_blob_sizes selinux_blob_sizes __ro_after_init = {
- 	.lbs_sock = sizeof(struct sk_security_struct),
- 	.lbs_superblock = sizeof(struct superblock_security_struct),
- 	.lbs_xattr_count = SELINUX_INODE_INIT_XATTRS,
-+	.lbs_mnt_opts = sizeof(struct selinux_mnt_opts),
- 	.lbs_secmark = true,
- };
+@@ -2787,7 +2787,7 @@ static int selinux_fs_context_submount(struct fs_context *fc,
+ 	if (!(sbsec->flags & (FSCONTEXT_MNT|CONTEXT_MNT|DEFCONTEXT_MNT)))
+ 		return 0;
  
+-	opts = kzalloc(sizeof(*opts), GFP_KERNEL);
++	opts = lsm_mnt_opts_alloc(GFP_KERNEL);
+ 	if (!opts)
+ 		return -ENOMEM;
+ 
+@@ -2809,8 +2809,12 @@ static int selinux_fs_context_dup(struct fs_context *fc,
+ 	if (!src)
+ 		return 0;
+ 
+-	fc->security = kmemdup(src, sizeof(*src), GFP_KERNEL);
+-	return fc->security ? 0 : -ENOMEM;
++	fc->security = lsm_mnt_opts_alloc(GFP_KERNEL);
++	if (!fc->security)
++		return -ENOMEM;
++
++	memcpy(fc->security, src, sizeof(*src));
++	return 0;
+ }
+ 
+ static const struct fs_parameter_spec selinux_fs_parameters[] = {
 diff --git a/security/smack/smack_lsm.c b/security/smack/smack_lsm.c
-index c93e81facf1b..573d5bffb9e1 100644
+index 573d5bffb9e1..97ffb07797e9 100644
 --- a/security/smack/smack_lsm.c
 +++ b/security/smack/smack_lsm.c
-@@ -5064,6 +5064,7 @@ struct lsm_blob_sizes smack_blob_sizes __ro_after_init = {
- 	.lbs_sock = sizeof(struct socket_smack),
- 	.lbs_superblock = sizeof(struct superblock_smack),
- 	.lbs_xattr_count = SMACK_INODE_INIT_XATTRS,
-+	.lbs_mnt_opts = sizeof(struct smack_mnt_opts),
- 	.lbs_secmark = true,
- };
+@@ -638,7 +638,7 @@ static int smack_fs_context_submount(struct fs_context *fc,
+ 	struct smack_mnt_opts *ctx;
+ 	struct inode_smack *isp;
+ 
+-	ctx = kzalloc(sizeof(*ctx), GFP_KERNEL);
++	ctx = lsm_mnt_opts_alloc(GFP_KERNEL);
+ 	if (!ctx)
+ 		return -ENOMEM;
+ 	fc->security = ctx;
+@@ -689,7 +689,7 @@ static int smack_fs_context_dup(struct fs_context *fc,
+ 	if (!src)
+ 		return 0;
+ 
+-	fc->security = kzalloc(sizeof(struct smack_mnt_opts), GFP_KERNEL);
++	fc->security = lsm_mnt_opts_alloc(GFP_KERNEL);
+ 	if (!fc->security)
+ 		return -ENOMEM;
  
 -- 
 2.41.0
