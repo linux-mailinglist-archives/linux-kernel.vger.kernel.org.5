@@ -1,219 +1,169 @@
-Return-Path: <linux-kernel+bounces-631-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-569-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5665F8143DA
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 09:41:05 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 84F6B814311
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 08:59:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7AC7F1C22774
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 08:41:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 103651F228F0
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 07:59:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2722E19455;
-	Fri, 15 Dec 2023 08:40:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5DFA610A27;
+	Fri, 15 Dec 2023 07:58:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="qGIva2UR"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="hSq1FQQh"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-wr1-f48.google.com (mail-wr1-f48.google.com [209.85.221.48])
+Received: from mail-ej1-f42.google.com (mail-ej1-f42.google.com [209.85.218.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D636B1946E
-	for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 08:40:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
-Received: by mail-wr1-f48.google.com with SMTP id ffacd0b85a97d-3333074512bso842096f8f.1
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 00:40:11 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A2261094A
+	for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 07:58:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ej1-f42.google.com with SMTP id a640c23a62f3a-a1f8a1e9637so59534866b.1
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 23:58:47 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1702629610; x=1703234410; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:in-reply-to:date
-         :subject:cc:to:from:user-agent:references:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=7YtVAfSplXJke0Lc4PMkOXYv6bL4Yj/HkhXbIEQJcK4=;
-        b=qGIva2URjNFEI9h9gt95v8HZZJP/NOlO435Gr2jk/gOrUTdGshtKVv6hit9Nt8K4St
-         QFxvx8a6yp3z8v3PnsapLyd8CE+1BM0btq/8XuCb4NCRmgb1KdRXs7J4YS19Qy7f6I4c
-         nRlGJgoYfIMSQHoPVU6k20Cd8bNGwr4gA7/Mz+5wOJEJkyoPWwG/XmxWtBCu61p+d29e
-         H9gZPkBO5AuM990wqW+q4kN8U43EZnYmNEUFiXPFC+WrtI1Ii/pwpk26Z0wYb53QcAdl
-         hM2aKmtUDzh45B9BIw7NZ/vGkMOvO6U0Y66zpEENx+JbomCIR3sOCsj2a3/kJ1V0noCX
-         kmmw==
+        d=linaro.org; s=google; t=1702627126; x=1703231926; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=EmMERqa5FRYDmluuYvOt81FmFQ/Yl19qAIoykajJP44=;
+        b=hSq1FQQhMt0hq2CraE7vbzr8AOVvt/eUooKWtwtf6fJT0mKUMP3Nc2LMPcLyABl8GM
+         HMdgkjDZqMXmdj1tMMuLHzzodJgU19nl3AUjV2hJ2vRmLSyTLBZl33dvqSLM4cYoCfmw
+         +wyh83KSW9hzMwaW34G5Ea1E7PccoIRezbS8mFBke9idalx6FuhnimK9AdYrDeapY4Q0
+         OccjTHmsuyoHZm02UhmflSLATHI0Yii8TUdmmByWol9G0XdTMidZaRI6jeS4js1JXubo
+         zrqRIg2VJ/01Txd9nIU7sJPoO6Tw9g1LGWL8HFE1MQvcEk3xthT6M3XDydb9Am4sF1EH
+         1boA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702629610; x=1703234410;
-        h=content-transfer-encoding:mime-version:message-id:in-reply-to:date
-         :subject:cc:to:from:user-agent:references:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=7YtVAfSplXJke0Lc4PMkOXYv6bL4Yj/HkhXbIEQJcK4=;
-        b=vwFhDQgSEWoQdJ3aZqpkaQRWMajN634gLwPH96EY+KLabS+PRJ+R/DACXzQGNhHMIQ
-         V44g/SkOwIDf6iVny5ks0p0KADYZ/zXQLSXs4VFza3rbrshnGOozIM83UQOV+v0edGUc
-         1Wj8w1yvCN54560yhceWNlfRhluC51YXKPH25iEv+1hmYsBv/giqnyaw+ZdvE3FVCXXU
-         XmCVMRasjJHKbPnz/EyELOVK2BqyLI5qmfLIQbNfFz3cNl8dEo+2kzaUd89etUa+N+57
-         XkRwQKAr9+eBXYty/bNsib2pUt/Q2Op6d3m2MxqYRN1XU1p3dmo3+tbvDlP1OCv+XGW0
-         nlVw==
-X-Gm-Message-State: AOJu0YxCinYJp0DkGPVmODqDYEb3C3uebbPOvQUJ/7eiy9krWMh0DxQu
-	Ye76IEysixei1dubV/B258/uw4GbmFfCW9stYtCXeQ==
-X-Google-Smtp-Source: AGHT+IGFZfTLkMYS21w0oGbQOTfR0aJ4jsw/dLyqHOqHoVp9u5QTN/Jj53IQ/SW0XSMaY6Xrcsnb0A==
-X-Received: by 2002:a05:600c:34ce:b0:40c:6cbe:aacf with SMTP id d14-20020a05600c34ce00b0040c6cbeaacfmr168118wmq.165.1702629609931;
-        Fri, 15 Dec 2023 00:40:09 -0800 (PST)
-Received: from localhost ([2a01:e0a:3c5:5fb1:95b3:332a:9768:b3f2])
-        by smtp.gmail.com with ESMTPSA id fc17-20020a05600c525100b0040c42681fcesm21307104wmb.15.2023.12.15.00.40.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Dec 2023 00:40:09 -0800 (PST)
-References: <20231106104013.704356-1-jbrunet@baylibre.com>
- <CADYyEwTNyY+fR9SgfDa-g6iiDwkU3MUdPVCYexs2_3wbcM8_vg@mail.gmail.com>
-User-agent: mu4e 1.10.8; emacs 29.1
-From: Jerome Brunet <jbrunet@baylibre.com>
-To: Zhengqiao Xia <xiazhengqiao@huaqin.corp-partner.google.com>
-Cc: Jerome Brunet <jbrunet@baylibre.com>, Mark Brown <broonie@kernel.org>,
- alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Hsin-Yi Wang
- <hsinyi@google.com>
-Subject: Re: [PATCH] ASoC: hdmi-codec: register hpd callback on component probe
-Date: Fri, 15 Dec 2023 08:57:39 +0100
-In-reply-to: <CADYyEwTNyY+fR9SgfDa-g6iiDwkU3MUdPVCYexs2_3wbcM8_vg@mail.gmail.com>
-Message-ID: <1jil4zq2on.fsf@starbuckisacylon.baylibre.com>
+        d=1e100.net; s=20230601; t=1702627126; x=1703231926;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=EmMERqa5FRYDmluuYvOt81FmFQ/Yl19qAIoykajJP44=;
+        b=oaaxzW42AHZIRuamNmIZFgThzvbb/bHOH1ctWl+ZOvma5eJ5O1NYir4LRbU4OseuFt
+         lfG+1n1tNEbf/d5qfpzfSqgUowMpEs5LswLwNnUTLaCgV7xpaF/pG1hB7W3zmqeJAgUF
+         81GzRV5EhoTW5MziZ/xD/IEFpax64pgv0TDQps+Rzkvx/HN1+Pe6Zl+Cu7FQFAbI1AXt
+         ofX1jFPGR8uDgTIDuWF76G/5sa7W02XDj+1mMaom1Vlhdvv7CUBVVfm3n9dy1wrHD2lN
+         4MYBAyt8tgeDDjYnQwfPqUk212i3X/u726MHfkpk0oAUzBbNTF5++ABugzlOo8WyhWVs
+         fZ6g==
+X-Gm-Message-State: AOJu0YxlJmT3A+Qqj7h5Ex8ciBIuok7QUgzPswJG8WEDX7EllAkheOJH
+	n4AutrWUT7IUOb3uJYVwStoSgg==
+X-Google-Smtp-Source: AGHT+IHOzQJai3Azprj89Mkp8JBuaOF1cI0Z5MpZn/dzeX8pzvT1rplL3kytYJFd3f7nVYWD1WZiAA==
+X-Received: by 2002:a17:906:8a55:b0:a1a:81aa:56cc with SMTP id gx21-20020a1709068a5500b00a1a81aa56ccmr12349703ejc.26.1702627125988;
+        Thu, 14 Dec 2023 23:58:45 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.218.27])
+        by smtp.gmail.com with ESMTPSA id qo5-20020a170907874500b00a1b7b0cc30dsm10410257ejc.7.2023.12.14.23.58.43
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 14 Dec 2023 23:58:45 -0800 (PST)
+Message-ID: <8e3335dc-915c-4db2-8884-e16795e166de@linaro.org>
+Date: Fri, 15 Dec 2023 08:58:42 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 04/13] dt-bindings: serial: samsung: gs101: make
+ reg-io-width required property
+Content-Language: en-US
+To: Tudor Ambarus <tudor.ambarus@linaro.org>, peter.griffin@linaro.org,
+ robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+ mturquette@baylibre.com, sboyd@kernel.org, conor+dt@kernel.org,
+ andi.shyti@kernel.org, alim.akhtar@samsung.com, gregkh@linuxfoundation.org,
+ jirislaby@kernel.org, catalin.marinas@arm.com, will@kernel.org,
+ s.nawrocki@samsung.com, tomasz.figa@gmail.com, cw00.choi@samsung.com,
+ arnd@arndb.de, semen.protsenko@linaro.org
+Cc: andre.draszik@linaro.org, saravanak@google.com, willmcvicker@google.com,
+ linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org,
+ linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-i2c@vger.kernel.org,
+ linux-serial@vger.kernel.org
+References: <20231214105243.3707730-1-tudor.ambarus@linaro.org>
+ <20231214105243.3707730-5-tudor.ambarus@linaro.org>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
+ cFgcqTTuNHjAvxtUG8pQgGTHAObYs6xeYJtjUH0ZX6ndJ33FJYf5V3yXqqjcZ30FgHzJCFUu
+ JMp7PSyMPzpUXfU12yfcRYVEMQrmplNZssmYhiTeVicuOOypWugZKVLGNm0IweVCaZ/DJDIH
+ gNbpvVwjcKYrx85m9cBVEBUGaQP6AT7qlVCkrf50v8bofSIyVa2xmubbAwwFA1oxoOusjPIE
+ J3iadrwpFvsZjF5uHAKS+7wHLoW9hVzOnLbX6ajk5Hf8Pb1m+VH/E8bPBNNYKkfTtypTDUCj
+ NYcd27tjnXfG+SDs/EXNUAIRefCyvaRG7oRYF3Ec+2RgQDRnmmjCjoQNbFrJvJkFHlPeHaeS
+ BosGY+XWKydnmsfY7SSnjAzLUGAFhLd/XDVpb1Een2XucPpKvt9ORF+48gy12FA5GduRLhQU
+ vK4tU7ojoem/G23PcowM1CwPurC8sAVsQb9KmwTGh7rVz3ks3w/zfGBy3+WmLg++C2Wct6nM
+ Pd8/6CBVjEWqD06/RjI2AnjIq5fSEH/BIfXXfC68nMp9BZoy3So4ZsbOlBmtAPvMYX6U8VwD
+ TNeBxJu5Ex0Izf1NV9CzC3nNaFUYOY8KfN01X5SExAoVTr09ewARAQABzTRLcnp5c3p0b2Yg
+ S296bG93c2tpIDxrcnp5c3p0b2Yua296bG93c2tpQGxpbmFyby5vcmc+wsGUBBMBCgA+FiEE
+ m9B+DgxR+NWWd7dUG5NDfTtBYpsFAmI+BxMCGwMFCRRfreEFCwkIBwIGFQoJCAsCBBYCAwEC
+ HgECF4AACgkQG5NDfTtBYptgbhAAjAGunRoOTduBeC7V6GGOQMYIT5n3OuDSzG1oZyM4kyvO
+ XeodvvYv49/ng473E8ZFhXfrre+c1olbr1A8pnz9vKVQs9JGVa6wwr/6ddH7/yvcaCQnHRPK
+ mnXyP2BViBlyDWQ71UC3N12YCoHE2cVmfrn4JeyK/gHCvcW3hUW4i5rMd5M5WZAeiJj3rvYh
+ v8WMKDJOtZFXxwaYGbvFJNDdvdTHc2x2fGaWwmXMJn2xs1ZyFAeHQvrp49mS6PBQZzcx0XL5
+ cU9ZjhzOZDn6Apv45/C/lUJvPc3lo/pr5cmlOvPq1AsP6/xRXsEFX/SdvdxJ8w9KtGaxdJuf
+ rpzLQ8Ht+H0lY2On1duYhmro8WglOypHy+TusYrDEry2qDNlc/bApQKtd9uqyDZ+rx8bGxyY
+ qBP6bvsQx5YACI4p8R0J43tSqWwJTP/R5oPRQW2O1Ye1DEcdeyzZfifrQz58aoZrVQq+innR
+ aDwu8qDB5UgmMQ7cjDSeAQABdghq7pqrA4P8lkA7qTG+aw8Z21OoAyZdUNm8NWJoQy8m4nUP
+ gmeeQPRc0vjp5JkYPgTqwf08cluqO6vQuYL2YmwVBIbO7cE7LNGkPDA3RYMu+zPY9UUi/ln5
+ dcKuEStFZ5eqVyqVoZ9eu3RTCGIXAHe1NcfcMT9HT0DPp3+ieTxFx6RjY3kYTGLOwU0EVUNc
+ NAEQAM2StBhJERQvgPcbCzjokShn0cRA4q2SvCOvOXD+0KapXMRFE+/PZeDyfv4dEKuCqeh0
+ hihSHlaxTzg3TcqUu54w2xYskG8Fq5tg3gm4kh1Gvh1LijIXX99ABA8eHxOGmLPRIBkXHqJY
+ oHtCvPc6sYKNM9xbp6I4yF56xVLmHGJ61KaWKf5KKWYgA9kfHufbja7qR0c6H79LIsiYqf92
+ H1HNq1WlQpu/fh4/XAAaV1axHFt/dY/2kU05tLMj8GjeQDz1fHas7augL4argt4e+jum3Nwt
+ yupodQBxncKAUbzwKcDrPqUFmfRbJ7ARw8491xQHZDsP82JRj4cOJX32sBg8nO2N5OsFJOcd
+ 5IE9v6qfllkZDAh1Rb1h6DFYq9dcdPAHl4zOj9EHq99/CpyccOh7SrtWDNFFknCmLpowhct9
+ 5ZnlavBrDbOV0W47gO33WkXMFI4il4y1+Bv89979rVYn8aBohEgET41SpyQz7fMkcaZU+ok/
+ +HYjC/qfDxT7tjKXqBQEscVODaFicsUkjheOD4BfWEcVUqa+XdUEciwG/SgNyxBZepj41oVq
+ FPSVE+Ni2tNrW/e16b8mgXNngHSnbsr6pAIXZH3qFW+4TKPMGZ2rZ6zITrMip+12jgw4mGjy
+ 5y06JZvA02rZT2k9aa7i9dUUFggaanI09jNGbRA/ABEBAAHCwXwEGAEKACYCGwwWIQSb0H4O
+ DFH41ZZ3t1Qbk0N9O0FimwUCYDzvagUJFF+UtgAKCRAbk0N9O0Fim9JzD/0auoGtUu4mgnna
+ oEEpQEOjgT7l9TVuO3Qa/SeH+E0m55y5Fjpp6ZToc481za3xAcxK/BtIX5Wn1mQ6+szfrJQ6
+ 59y2io437BeuWIRjQniSxHz1kgtFECiV30yHRgOoQlzUea7FgsnuWdstgfWi6LxstswEzxLZ
+ Sj1EqpXYZE4uLjh6dW292sO+j4LEqPYr53hyV4I2LPmptPE9Rb9yCTAbSUlzgjiyyjuXhcwM
+ qf3lzsm02y7Ooq+ERVKiJzlvLd9tSe4jRx6Z6LMXhB21fa5DGs/tHAcUF35hSJrvMJzPT/+u
+ /oVmYDFZkbLlqs2XpWaVCo2jv8+iHxZZ9FL7F6AHFzqEFdqGnJQqmEApiRqH6b4jRBOgJ+cY
+ qc+rJggwMQcJL9F+oDm3wX47nr6jIsEB5ZftdybIzpMZ5V9v45lUwmdnMrSzZVgC4jRGXzsU
+ EViBQt2CopXtHtYfPAO5nAkIvKSNp3jmGxZw4aTc5xoAZBLo0OV+Ezo71pg3AYvq0a3/oGRG
+ KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
+ fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20231214105243.3707730-5-tudor.ambarus@linaro.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
+On 14/12/2023 11:52, Tudor Ambarus wrote:
+> GS101 only allows 32-bit register accesses. When using 8-bit reg
+> accesses on gs101, a SError Interrupt is raised causing the system
+> unusable.
+> 
+> Make reg-io-width a required property and expect for it a value of 4.
+> 
+> Signed-off-by: Tudor Ambarus <tudor.ambarus@linaro.org>
+> ---
+>  Documentation/devicetree/bindings/serial/samsung_uart.yaml | 4 ++++
+>  1 file changed, 4 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/serial/samsung_uart.yaml b/Documentation/devicetree/bindings/serial/samsung_uart.yaml
+> index 133259ed3a34..cc896d7e2a3d 100644
+> --- a/Documentation/devicetree/bindings/serial/samsung_uart.yaml
+> +++ b/Documentation/devicetree/bindings/serial/samsung_uart.yaml
+> @@ -143,6 +143,10 @@ allOf:
+>      then:
+>        required:
+>          - samsung,uart-fifosize
+> +        - reg-io-width
+> +      properties:
+> +        reg-io-width:
+> +          const: 4
 
-On Fri 15 Dec 2023 at 12:51, Zhengqiao Xia <xiazhengqiao@huaqin.corp-partne=
-r.google.com> wrote:
+If all your ports are like this, then I say this is compatible-specific.
+Make it here "reg-io-width: false" and set in the driver proper type in
+s3c24xx_serial_init_port_default() (or new function).
 
-> Hi Jerome,
->
-> After my testing, I found that this patch will cause the audio on the ext=
-ernal display to not work properly after
-> restart.=20
-> You move the plugged_cb to run in hdmi_probe, at this time hcp- > jack =
-=3D NULL, the driver cannot report `SND_JACK_LINEOUT
-> ` normally.
-> static void hdmi_codec_jack_report(struct hdmi_codec_priv *hcp,
-> 				   unsigned int jack_status)
-> {
-> 	printk("xzq-866 hdmi_codec_jack_report: jack=3D%x, jack_status=3D%d", hc=
-p->jack, jack_status !=3D hcp->jack_status);
-> 	if (hcp->jack && jack_status !=3D hcp->jack_status) {
-> 		snd_soc_jack_report(hcp->jack, jack_status, SND_JACK_LINEOUT);
-> 		hcp->jack_status =3D jack_status;
-> 	}
-> }
-> So we must call  plugged_cb  in hdmi_codec_set_jack,  Can you make some c=
-hanges?
+Although maybe let's first resolve discussion of next patch.
 
-Hi Zhengqiao,
+Best regards,
+Krzysztof
 
-That is unfortunate. Sorry.
-
-This patch has changed when the hpd callback is registered, no when it
-comes in effect. This is still dependent on calling .set_jack() and it
-is not happening any later than it was before. So, in theory, it should
-not have changed anything, if your driver actually relies on the HPD
-event.
-
-Trying to guess what is happening for you, I suppose your HDMI driver is
-"faking" an HPD event to report the initial jack status when the
-hook_plugged_cb() is called. Could you point me to the hdmi driver you
-are using so I can have a look ?
-
-My reference when testing this was dw-hdmi-i2s-audio and it does not do
-that, it just registers the callback. I think this is what it supposed
-to do TBH.
-
-An idea I have been thinking about for a while is have the hdmi-codec
-insert the jack in the card itself, instead of the card doing. That
-would give the jack "for free" to any user of the HDMI codec and might
-also solve your issue. It would require a small rework of the cards doing
-the hdmi jack register, but there are not many of these AFAIK.
-
->
-> On Mon, Nov 6, 2023 at 6:40=E2=80=AFPM Jerome Brunet <jbrunet@baylibre.co=
-m> wrote:
->
->  The HDMI hotplug callback to the hdmi-codec is currently registered when
->  jack is set.
->
->  The hotplug not only serves to report the ASoC jack state but also to get
->  the ELD. It should be registered when the component probes instead, so it
->  does not depend on the card driver registering a jack for the HDMI to
->  properly report the ELD.
->
->  Fixes: 25ce4f2b3593 ("ASoC: hdmi-codec: Get ELD in before reporting plug=
-ged event")
->  Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
->  ---
->   sound/soc/codecs/hdmi-codec.c | 27 +++++++++++++++++++--------
->   1 file changed, 19 insertions(+), 8 deletions(-)
->
->  diff --git a/sound/soc/codecs/hdmi-codec.c b/sound/soc/codecs/hdmi-codec=
-.c
->  index 09eef6042aad..20da1eaa4f1c 100644
->  --- a/sound/soc/codecs/hdmi-codec.c
->  +++ b/sound/soc/codecs/hdmi-codec.c
->  @@ -877,18 +877,13 @@ static int hdmi_codec_set_jack(struct snd_soc_comp=
-onent *component,
->                                 void *data)
->   {
->          struct hdmi_codec_priv *hcp =3D snd_soc_component_get_drvdata(co=
-mponent);
->  -       int ret =3D -ENOTSUPP;
->
->          if (hcp->hcd.ops->hook_plugged_cb) {
->                  hcp->jack =3D jack;
->  -               ret =3D hcp->hcd.ops->hook_plugged_cb(component->dev->pa=
-rent,
->  -                                                   hcp->hcd.data,
->  -                                                   plugged_cb,
->  -                                                   component->dev);
->  -               if (ret)
->  -                       hcp->jack =3D NULL;
->  +               return 0;
->          }
->  -       return ret;
->  +
->  +       return -ENOTSUPP;
->   }
->
->   static int hdmi_dai_spdif_probe(struct snd_soc_dai *dai)
->  @@ -982,6 +977,21 @@ static int hdmi_of_xlate_dai_id(struct snd_soc_comp=
-onent *component,
->          return ret;
->   }
->
->  +static int hdmi_probe(struct snd_soc_component *component)
->  +{
->  +       struct hdmi_codec_priv *hcp =3D snd_soc_component_get_drvdata(co=
-mponent);
->  +       int ret =3D 0;
->  +
->  +       if (hcp->hcd.ops->hook_plugged_cb) {
->  +               ret =3D hcp->hcd.ops->hook_plugged_cb(component->dev->pa=
-rent,
->  +                                                   hcp->hcd.data,
->  +                                                   plugged_cb,
->  +                                                   component->dev);
->  +       }
->  +
->  +       return ret;
->  +}
->  +
->   static void hdmi_remove(struct snd_soc_component *component)
->   {
->          struct hdmi_codec_priv *hcp =3D snd_soc_component_get_drvdata(co=
-mponent);
->  @@ -992,6 +1002,7 @@ static void hdmi_remove(struct snd_soc_component *c=
-omponent)
->   }
->
->   static const struct snd_soc_component_driver hdmi_driver =3D {
->  +       .probe                  =3D hdmi_probe,
->          .remove                 =3D hdmi_remove,
->          .dapm_widgets           =3D hdmi_widgets,
->          .num_dapm_widgets       =3D ARRAY_SIZE(hdmi_widgets),
-
-
---=20
-Jerome
 
