@@ -1,222 +1,162 @@
-Return-Path: <linux-kernel+bounces-1523-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-1524-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DDD88814FAC
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 19:25:15 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9BBCF814FAD
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 19:25:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 555F6B22DFB
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 18:25:13 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 880CA1C23D00
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 18:25:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 584AE3013A;
-	Fri, 15 Dec 2023 18:25:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 35FBF30133;
+	Fri, 15 Dec 2023 18:25:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b="xNPEa4WB"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from smtpout.efficios.com (smtpout.efficios.com [167.114.26.122])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED46E41846;
-	Fri, 15 Dec 2023 18:25:04 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0040AC433C7;
-	Fri, 15 Dec 2023 18:25:03 +0000 (UTC)
-Date: Fri, 15 Dec 2023 13:25:02 -0500
-From: Steven Rostedt <rostedt@goodmis.org>
-To: LKML <linux-kernel@vger.kernel.org>, Linux trace kernel
- <linux-trace-kernel@vger.kernel.org>
-Cc: Masami Hiramatsu <mhiramat@kernel.org>, Mark Rutland
- <mark.rutland@arm.com>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Subject: [PATCH v2] tracing: Add filter-buffer option
-Message-ID: <20231215132502.1ae9c1a6@rorschach.local.home>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F22E03FB1A;
+	Fri, 15 Dec 2023 18:25:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=efficios.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=efficios.com;
+	s=smtpout1; t=1702664707;
+	bh=8pPkSg7S8q66WlYRj2KvGV3oLWL1XOnV3HYHrzVW4Kk=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=xNPEa4WB8PBvgLT8QYmtc303UO/pA+OM68GS4Fa8SAbRhp7LHDeemUkWWwEA2kSUw
+	 jG9n8DRjlKIH+5gFnxIEqFhKPyR8ikJjhwC/CekPVcRmwAtXQeuvIFvP0bgEafsyPy
+	 V9UI6RW3IhzZ13dsEvVKaJNXfRkqck+gIuTWTXe87ooikzVSWd+dCWj+0IDmp8KRsE
+	 feXgwP/gCibF12nhej6EFS9oubZVd0VYluL05PbEHsjynzvZlBmRHC4P/QRbMBr6pd
+	 Us0BGQZtYKh5MCHQh9nCtgnU1Jd95ZNo8tdteuXajYNR7CPeglR2u6MVnvmk7rYkHg
+	 agtrgeDd1sT8Q==
+Received: from [172.16.0.134] (192-222-143-198.qc.cable.ebox.net [192.222.143.198])
+	by smtpout.efficios.com (Postfix) with ESMTPSA id 4SsHh35CVQzH3B;
+	Fri, 15 Dec 2023 13:25:07 -0500 (EST)
+Message-ID: <f1a75239-341e-4611-a48d-88e10407dcd4@efficios.com>
+Date: Fri, 15 Dec 2023 13:25:07 -0500
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] tracing: Add disable-filter-buf option
+Content-Language: en-US
+To: Steven Rostedt <rostedt@goodmis.org>
+Cc: LKML <linux-kernel@vger.kernel.org>,
+ Linux trace kernel <linux-trace-kernel@vger.kernel.org>,
+ Masami Hiramatsu <mhiramat@kernel.org>, Mark Rutland <mark.rutland@arm.com>
+References: <20231215102633.7a24cb77@rorschach.local.home>
+ <21936075-3858-446a-9391-a38e8d8968e7@efficios.com>
+ <20231215120417.567d5ea4@rorschach.local.home>
+ <fbf8991a-ce83-462c-b87a-b60c6635d223@efficios.com>
+ <20231215123458.63f57238@rorschach.local.home>
+From: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+In-Reply-To: <20231215123458.63f57238@rorschach.local.home>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-=46rom 62a1de0f0f9d942934565e625a7880fd85ae216a Mon Sep 17 00:00:00 2001
-From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
-Date: Fri, 15 Dec 2023 10:26:33 -0500
-Subject: [PATCH] tracing: Add filter-buffer option
+On 2023-12-15 12:34, Steven Rostedt wrote:
+> On Fri, 15 Dec 2023 12:24:14 -0500
+> Mathieu Desnoyers <mathieu.desnoyers@efficios.com> wrote:
+> 
+>> On 2023-12-15 12:04, Steven Rostedt wrote:
+>>> On Fri, 15 Dec 2023 10:53:39 -0500
+>>> Mathieu Desnoyers <mathieu.desnoyers@efficios.com> wrote:
+>> [...]
+>>>>
+>>>> So rather than stacking tons of "on/off" switches for filter
+>>>> features, how about you let users express the mechanism they
+>>>> want to use for filtering with a string instead ? e.g.
+>>>>
+>>>> filter-method="temp-buffer"
+>>>> filter-method="ring-buffer"
+>>>> filter-method="input-arguments"
+>>>
+>>> If I add other ways to filter, it will be a separate file to control
+>>> that, but all options are on/off switches. Even if I add other
+>>> functionality to the way buffers are created, this will still have the
+>>> same functionality to turn the entire thing on or off.
+>>
+>> I'll be clearer then: I think this is a bad ABI. In your reply, you justify
+>> this bad ABI by implementation motivations.
+> 
+> What's wrong with a way to stop the copying ?
 
-Normally, when the filter is enabled, a temporary buffer is created to
-copy the event data into it to perform the filtering logic. If the filter
-passes and the event should be recorded, then the event is copied from the
-temporary buffer into the ring buffer. If the event is to be discarded
-then it is simply dropped. If another event comes in via an interrupt, it
-will not use the temporary buffer as it is busy and will write directly
-into the ring buffer.
+I am not against exposing an ABI that allows userspace to alter the
+filter behavior. I disagree on the way you plan to expose the ABI.
 
-The filter-buffer option will allow the user to disable this feature. By
-default, it is enabled. When disabled, it disables the temporary buffer
-and always writes into the ring buffer. This will avoid the copy when the
-event is to be recorded, but also adds a bit more overhead on the discard,
-and if another event were to interrupt the event that is to be discarded,
-then the event will not be removed from the ring buffer but instead
-converted to padding that will not be read by the reader. Padding will
-still take up space on the ring buffer.
+Exposing this option as an ABI in this way exposes too much internal
+ring buffer implementation details to userspace.
 
-This option can be beneficial if most events are recorded and not
-discarded, or simply for debugging the discard functionality of the ring
-buffer.
+It exposes the following details which IMHO should be hidden or
+configurable in a way that allows moving to a whole new mechanism
+which will have significantly different characteristics in the
+future:
 
-Also fix some whitespace (that was fixed by editing this in vscode).
+It exposes that:
 
-Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
----
-Changes since v1: https://lore.kernel.org/linux-trace-kernel/20231215102633=
-.7a24cb77@rorschach.local.home
+- filtering uses a copy to a temporary buffer, and
+- that this copy is enabled by default.
 
-- Renamed "disable-filter-buffer" to "filter-buffer" and made it
-  default enabled, where the user needs to disable it. (Mathieu Desnoyers)
+Once exposed, those design constraints become immutable due to ABI.
 
+> 
+> The option is just a way to say "I don't want to do the copy into the
+> buffer, I want to go directly into it"
 
- Documentation/trace/ftrace.rst | 23 ++++++++++++++++++++
- kernel/trace/trace.c           | 39 ++++++++++++++++++++--------------
- kernel/trace/trace.h           |  1 +
- 3 files changed, 47 insertions(+), 16 deletions(-)
+My main concern is how this concept, once exposed to userspace,
+becomes not only an internal implementation detail, but a fundamental
+part of the design which cannot ever go away without breaking the ABI
+or making parts of the ABI irrelevant.
 
-diff --git a/Documentation/trace/ftrace.rst b/Documentation/trace/ftrace.rst
-index 23572f6697c0..7ec26eb814e9 100644
---- a/Documentation/trace/ftrace.rst
-+++ b/Documentation/trace/ftrace.rst
-@@ -1239,6 +1239,29 @@ Here are the available options:
- 	When the free_buffer is closed, tracing will
- 	stop (tracing_on set to 0).
-=20
-+  filter-buffer
-+	Normally, when the filter is enabled, a temporary buffer is
-+	created to copy the event data into it to perform the
-+	filtering logic. If the filter passes and the event should
-+	be recorded, then the event is copied from the temporary
-+	buffer into the ring buffer. If the event is to be discarded
-+	then it is simply dropped. If another event comes in via
-+	an interrupt, it will not use the temporary buffer as it is
-+	busy and will write directly into the ring buffer.
-+
-+	This option, when cleared, will disable the temporary buffer and always
-+	write into the ring buffer. This will avoid the copy when
-+	the event is to be recorded, but also adds a bit more
-+	overhead on the discard, and if another event were to interrupt
-+	the event that is to be discarded, then the event will not
-+	be removed from the ring buffer but instead converted to
-+	padding that will not be read by the reader. Padding will
-+	still take up space on the ring buffer.
-+
-+	This option can be beneficial if most events are recorded and
-+	not discarded, or simply for debugging the discard functionality
-+	of the ring buffer.
-+
-   irq-info
- 	Shows the interrupt, preempt count, need resched data.
- 	When disabled, the trace looks like::
-diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
-index 55dabee4c78b..e18c83104e24 100644
---- a/kernel/trace/trace.c
-+++ b/kernel/trace/trace.c
-@@ -466,7 +466,7 @@ EXPORT_SYMBOL_GPL(unregister_ftrace_export);
- 	 TRACE_ITER_ANNOTATE | TRACE_ITER_CONTEXT_INFO |		\
- 	 TRACE_ITER_RECORD_CMD | TRACE_ITER_OVERWRITE |			\
- 	 TRACE_ITER_IRQ_INFO | TRACE_ITER_MARKERS |			\
--	 TRACE_ITER_HASH_PTR)
-+	 TRACE_ITER_HASH_PTR | TRACE_ITER_FILTER_BUF)
-=20
- /* trace_options that are only supported by global_trace */
- #define TOP_LEVEL_TRACE_FLAGS (TRACE_ITER_PRINTK |			\
-@@ -5398,6 +5398,8 @@ int trace_keep_overwrite(struct tracer *tracer, u32 m=
-ask, int set)
- 	return 0;
- }
-=20
-+static int __tracing_set_filter_buffering(struct trace_array *tr, bool set=
-);
-+
- int set_tracer_flag(struct trace_array *tr, unsigned int mask, int enabled)
- {
- 	int *map;
-@@ -5451,6 +5453,9 @@ int set_tracer_flag(struct trace_array *tr, unsigned =
-int mask, int enabled)
- 	if (mask =3D=3D TRACE_ITER_FUNC_FORK)
- 		ftrace_pid_follow_fork(tr, enabled);
-=20
-+	if (mask =3D=3D TRACE_ITER_FILTER_BUF)
-+		__tracing_set_filter_buffering(tr, !enabled);
-+
- 	if (mask =3D=3D TRACE_ITER_OVERWRITE) {
- 		ring_buffer_change_overwrite(tr->array_buffer.buffer, enabled);
- #ifdef CONFIG_TRACER_MAX_TRACE
-@@ -6464,7 +6469,7 @@ static void tracing_set_nop(struct trace_array *tr)
- {
- 	if (tr->current_trace =3D=3D &nop_trace)
- 		return;
--=09
-+
- 	tr->current_trace->enabled--;
-=20
- 	if (tr->current_trace->reset)
-@@ -7552,27 +7557,29 @@ u64 tracing_event_time_stamp(struct trace_buffer *b=
-uffer, struct ring_buffer_eve
- 	return ring_buffer_event_time_stamp(buffer, rbe);
- }
-=20
--/*
-- * Set or disable using the per CPU trace_buffer_event when possible.
-- */
--int tracing_set_filter_buffering(struct trace_array *tr, bool set)
-+static int __tracing_set_filter_buffering(struct trace_array *tr, bool set)
- {
--	int ret =3D 0;
--
--	mutex_lock(&trace_types_lock);
--
- 	if (set && tr->no_filter_buffering_ref++)
--		goto out;
-+		return 0;
-=20
- 	if (!set) {
--		if (WARN_ON_ONCE(!tr->no_filter_buffering_ref)) {
--			ret =3D -EINVAL;
--			goto out;
--		}
-+		if (WARN_ON_ONCE(!tr->no_filter_buffering_ref))
-+			return -EINVAL;
-=20
- 		--tr->no_filter_buffering_ref;
- 	}
-- out:
-+	return 0;
-+}
-+
-+/*
-+ * Set or disable using the per CPU trace_buffer_event when possible.
-+ */
-+int tracing_set_filter_buffering(struct trace_array *tr, bool set)
-+{
-+	int ret;
-+
-+	mutex_lock(&trace_types_lock);
-+	ret =3D __tracing_set_filter_buffering(tr, set);
- 	mutex_unlock(&trace_types_lock);
-=20
- 	return ret;
-diff --git a/kernel/trace/trace.h b/kernel/trace/trace.h
-index 79180aed13ee..f82dce7ea3ff 100644
---- a/kernel/trace/trace.h
-+++ b/kernel/trace/trace.h
-@@ -1251,6 +1251,7 @@ extern int trace_get_user(struct trace_parser *parser=
-, const char __user *ubuf,
- 		C(EVENT_FORK,		"event-fork"),		\
- 		C(PAUSE_ON_TRACE,	"pause-on-trace"),	\
- 		C(HASH_PTR,		"hash-ptr"),	/* Print hashed pointer */ \
-+		C(FILTER_BUF,		"filter-buffer"),	\
- 		FUNCTION_FLAGS					\
- 		FGRAPH_FLAGS					\
- 		STACK_FLAGS					\
---=20
-2.42.0
+I can make a parallel with the scheduler: this is as if the sched
+feature knobs (which are there only for development/debugging purposes)
+would all be exposed as userspace ABI. This would seriously
+limit the evolution of the scheduler design in the future. I see this
+as the same problem at the ring buffer level.
+
+> 
+>>
+>> I don't care about the implementation, I care about the ABI, and
+>> I feel that your reply is not addressing my concern at all.
+> 
+> Maybe I don't understand your concern.
+> 
+> It's an on/off switch (like all options are). This is just a way to say
+> "I want to indirect copying of the event before filtering or not".
+
+Not all tracefs options are booleans. The "current_tracer" file ABI
+exposes a string input/output parameter. I would recommend the same
+for the equivalent of a "current_filter" file.
+
+> 
+> The "input-argument" part above may never happen. What's different
+> between tracefs and LTTng, is that all events are created by the
+> subsystem not by me. You don't use the TRACE_EVENT() macro, but you
+> need to manually create each event you care about yourself. It's more
+> of a burden but you also then have the luxury of hooking to the input
+> portion. That is not exposed, and that is by design. As that could
+> possibly make all tracepoints an ABI, and you'll have people like
+> peterz nacking any new tracepoint in the scheduler. He doesn't allow
+> trace events anymore because of that exposure.
+
+I'm not arguing for moving to the input-argument scheme, I just used
+this as an hypothetical example to show why we should not expose
+internal implementation details to userspace which will prevent future
+evolution only for the sake of having debugging knobs.
+
+Thanks,
+
+Mathieu
+
+-- 
+Mathieu Desnoyers
+EfficiOS Inc.
+https://www.efficios.com
 
 
