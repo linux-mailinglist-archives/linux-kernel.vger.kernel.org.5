@@ -1,76 +1,99 @@
-Return-Path: <linux-kernel+bounces-1029-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-1030-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 618CA814979
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 14:41:24 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9485181497B
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 14:41:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 021DE1F241DF
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 13:41:24 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 269A0B22F8D
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 13:41:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 144D62DF96;
-	Fri, 15 Dec 2023 13:41:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D9282DF68;
+	Fri, 15 Dec 2023 13:41:26 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from relay3-d.mail.gandi.net (relay3-d.mail.gandi.net [217.70.183.195])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC3D32DB8B;
-	Fri, 15 Dec 2023 13:41:16 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8FBE4C433C9;
-	Fri, 15 Dec 2023 13:41:15 +0000 (UTC)
-Date: Fri, 15 Dec 2023 08:41:14 -0500
-From: Steven Rostedt <rostedt@goodmis.org>
-To: LKML <linux-kernel@vger.kernel.org>, Linux trace kernel
- <linux-trace-kernel@vger.kernel.org>
-Cc: Masami Hiramatsu <mhiramat@kernel.org>, Mark Rutland
- <mark.rutland@arm.com>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Subject: [PATCH] ring-buffer: Have rb_time_cmpxchg() set the msb counter too
-Message-ID: <20231215084114.20899342@rorschach.local.home>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 97BC92E650;
+	Fri, 15 Dec 2023 13:41:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ghiti.fr
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ghiti.fr
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 3B03760005;
+	Fri, 15 Dec 2023 13:41:17 +0000 (UTC)
+Message-ID: <b8db3a8b-8de1-4db9-ba50-b2ba121767a5@ghiti.fr>
+Date: Fri, 15 Dec 2023 14:41:16 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/5] tools: selftests: riscv: Fix compile warnings in
+ hwprobe
+Content-Language: en-US
+To: Christoph Muellner <christoph.muellner@vrull.eu>,
+ linux-riscv@lists.infradead.org, linux-kselftest@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Palmer Dabbelt <palmer@dabbelt.com>,
+ Paul Walmsley <paul.walmsley@sifive.com>, Albert Ou <aou@eecs.berkeley.edu>,
+ Shuah Khan <shuah@kernel.org>
+Cc: Philipp Tomsich <philipp.tomsich@vrull.eu>,
+ Andrew Jones <ajones@ventanamicro.com>, Evan Green <evan@rivosinc.com>,
+ Xiao Wang <xiao.w.wang@intel.com>, Alexandre Ghiti <alexghiti@rivosinc.com>,
+ Andy Chiu <andy.chiu@sifive.com>, =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?=
+ <bjorn@rivosinc.com>, Charlie Jenkins <charlie@rivosinc.com>
+References: <20231123185821.2272504-1-christoph.muellner@vrull.eu>
+ <20231123185821.2272504-2-christoph.muellner@vrull.eu>
+From: Alexandre Ghiti <alex@ghiti.fr>
+In-Reply-To: <20231123185821.2272504-2-christoph.muellner@vrull.eu>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-GND-Sasl: alex@ghiti.fr
 
-From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
+On 23/11/2023 19:58, Christoph Muellner wrote:
+> From: Christoph Müllner <christoph.muellner@vrull.eu>
+>
+> GCC prints a couple of format string warnings when compiling
+> the hwprobe test. Let's follow the recommendation in
+> Documentation/printk-formats.txt to fix these warnings.
+>
+> Signed-off-by: Christoph Müllner <christoph.muellner@vrull.eu>
+> ---
+>   tools/testing/selftests/riscv/hwprobe/hwprobe.c | 4 ++--
+>   1 file changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/tools/testing/selftests/riscv/hwprobe/hwprobe.c b/tools/testing/selftests/riscv/hwprobe/hwprobe.c
+> index c474891df307..abb825811c70 100644
+> --- a/tools/testing/selftests/riscv/hwprobe/hwprobe.c
+> +++ b/tools/testing/selftests/riscv/hwprobe/hwprobe.c
+> @@ -29,7 +29,7 @@ int main(int argc, char **argv)
+>   		/* Fail if the kernel claims not to recognize a base key. */
+>   		if ((i < 4) && (pairs[i].key != i))
+>   			ksft_exit_fail_msg("Failed to recognize base key: key != i, "
+> -					   "key=%ld, i=%ld\n", pairs[i].key, i);
+> +					   "key=%lld, i=%ld\n", pairs[i].key, i);
+>   
+>   		if (pairs[i].key != RISCV_HWPROBE_KEY_BASE_BEHAVIOR)
+>   			continue;
+> @@ -37,7 +37,7 @@ int main(int argc, char **argv)
+>   		if (pairs[i].value & RISCV_HWPROBE_BASE_BEHAVIOR_IMA)
+>   			continue;
+>   
+> -		ksft_exit_fail_msg("Unexpected pair: (%ld, %ld)\n", pairs[i].key, pairs[i].value);
+> +		ksft_exit_fail_msg("Unexpected pair: (%lld, %llu)\n", pairs[i].key, pairs[i].value);
+>   	}
+>   
+>   	out = riscv_hwprobe(pairs, 8, 0, 0, 0);
 
-The rb_time_cmpxchg() on 32-bit architectures requires setting three
-32-bit words to represent the 64-bit timestamp, with some salt for
-synchronization. Those are: msb, top, and bottom
 
-The issue is, the rb_time_cmpxchg() did not properly salt the msb portion,
-and the msb that was written was stale.
+You can add:
 
-Fixes: f03f2abce4f39 ("ring-buffer: Have 32 bit time stamps use all 64 bits")
-Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
----
- kernel/trace/ring_buffer.c | 2 ++
- 1 file changed, 2 insertions(+)
+Reviewed-by: Alexandre Ghiti <alexghiti@rivosinc.com>
 
-diff --git a/kernel/trace/ring_buffer.c b/kernel/trace/ring_buffer.c
-index 78aacc78f03a..e9c10eabdb95 100644
---- a/kernel/trace/ring_buffer.c
-+++ b/kernel/trace/ring_buffer.c
-@@ -722,10 +722,12 @@ static bool rb_time_cmpxchg(rb_time_t *t, u64 expect, u64 set)
- 	 cnt2 = cnt + 1;
- 
- 	 rb_time_split(val, &top, &bottom, &msb);
-+	 msb = rb_time_val_cnt(msb, cnt);
- 	 top = rb_time_val_cnt(top, cnt);
- 	 bottom = rb_time_val_cnt(bottom, cnt);
- 
- 	 rb_time_split(set, &top2, &bottom2, &msb2);
-+	 msb2 = rb_time_val_cnt(msb2, cnt);
- 	 top2 = rb_time_val_cnt(top2, cnt2);
- 	 bottom2 = rb_time_val_cnt(bottom2, cnt2);
- 
--- 
-2.42.0
+Thanks!
+
+Alex
 
 
