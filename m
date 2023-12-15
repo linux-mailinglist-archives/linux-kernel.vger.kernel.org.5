@@ -1,57 +1,70 @@
-Return-Path: <linux-kernel+bounces-1194-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-1195-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1A2C6814B87
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 16:17:48 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B8448814B88
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 16:18:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 827631F24586
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 15:17:47 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 700AB2861D0
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 15:18:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C41141851;
-	Fri, 15 Dec 2023 15:15:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9ECAE3715E;
+	Fri, 15 Dec 2023 15:15:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="o3P6fWjz"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="f+HJko4f"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 32D9D3EA6C
-	for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 15:15:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=zjfLxXDbrMtHt/IyeLuzZsV/+Apk943HO/rR5xaRTGI=; b=o3P6fWjzbD/C8zfyWzMpXV6vTA
-	Gy9uSbGXW+ugPp30wKDTaFcGsu7humKRDLTD7YxPkju0ayrcMDYIAA3nanHL5zqbL2OJi4vOJvBic
-	YZMdYh9S29R5THiAwWgZ21NOUDMLvr+bNn4NbxY72VWFLW5O/IjeHSkZzpNw4+Ig3EO62e69nk4Dc
-	2b6jvZygLQ2i6Q33TP6uTrfXbJApxg2HmEoFsuWM3d0DePXIOPMjkrwP+yuHUOmjJ1xhPjE3yMSF7
-	KUM/GYRRwP1qgz9pjOSY+2IdxuaOecvZ6f6y//vWHjQxrbvsqyGYLzYa9rzKSP0CiyE/SPDs8EYI8
-	wMrh9Fbw==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-	by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-	id 1rE9tc-009xM4-05;
-	Fri, 15 Dec 2023 15:14:37 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-	id CF1243005B2; Fri, 15 Dec 2023 16:14:34 +0100 (CET)
-Date: Fri, 15 Dec 2023 16:14:34 +0100
-From: Peter Zijlstra <peterz@infradead.org>
-To: Keisuke Nishimura <keisuke.nishimura@inria.fr>
-Cc: Ingo Molnar <mingo@redhat.com>, Abel Wu <wuyun.abel@bytedance.com>,
-	Josh Don <joshdon@google.com>,
-	Mel Gorman <mgorman@techsingularity.net>,
-	Xunlei Pang <xlpang@linux.alibaba.com>,
-	Dietmar Eggemann <dietmar.eggemann@arm.com>,
-	Valentin Schneider <vschneid@redhat.com>,
-	Julia Lawall <julia.lawall@inria.fr>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] sched/fair: take into account scheduling domain in
- select_idle_smt()
-Message-ID: <20231215151434.GK36716@noisy.programming.kicks-ass.net>
-References: <20231214175551.629945-1-keisuke.nishimura@inria.fr>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C6971364DA
+	for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 15:15:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1702653320;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=xmBbuKgtcJTPsoI80iq/qmH5+IN/NVMKCIFpG3IS32o=;
+	b=f+HJko4faCJiY4tIsQysHl1wYcHcsDlswAx0RGMMhbMv6FiqtgQVVP+zmjlFTqjVLgAtWZ
+	5RaZV3/z7cc1kyafc6ENt3hBZsEiwHPOSQ1If/tLExOMiohqDjNJf/MTa9ktQ0BX0B6ND8
+	WV5o8RKIVFY7bE46x7UGAeNGJ3lOjWw=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-328-wXEn5tR-OSyoYd0oxYHwjQ-1; Fri, 15 Dec 2023 10:15:16 -0500
+X-MC-Unique: wXEn5tR-OSyoYd0oxYHwjQ-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.rdu2.redhat.com [10.11.54.7])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 1742D8432A4;
+	Fri, 15 Dec 2023 15:15:15 +0000 (UTC)
+Received: from localhost (unknown [10.72.116.38])
+	by smtp.corp.redhat.com (Postfix) with ESMTPS id 064EE1C060B1;
+	Fri, 15 Dec 2023 15:15:13 +0000 (UTC)
+Date: Fri, 15 Dec 2023 23:15:10 +0800
+From: Baoquan He <bhe@redhat.com>
+To: Yuntao Wang <ytcoode@gmail.com>
+Cc: linux-kernel@vger.kernel.org, kexec@lists.infradead.org, x86@kernel.org,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	"H. Peter Anvin" <hpa@zytor.com>, Vivek Goyal <vgoyal@redhat.com>,
+	Dave Young <dyoung@redhat.com>,
+	Hari Bathini <hbathini@linux.ibm.com>,
+	Eric DeVolder <eric.devolder@oracle.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Sourabh Jain <sourabhjain@linux.ibm.com>,
+	Sean Christopherson <seanjc@google.com>,
+	Takashi Iwai <tiwai@suse.de>, Lianbo Jiang <lijiang@redhat.com>
+Subject: Re: [PATCH 3/3] crash_core: fix and simplify the logic of
+ crash_exclude_mem_range()
+Message-ID: <ZXxtfpXpuFXLd+ge@MiWiFi-R3L-srv>
+References: <20231214163842.129139-1-ytcoode@gmail.com>
+ <20231214163842.129139-4-ytcoode@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -60,84 +73,156 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231214175551.629945-1-keisuke.nishimura@inria.fr>
+In-Reply-To: <20231214163842.129139-4-ytcoode@gmail.com>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.7
 
-On Thu, Dec 14, 2023 at 06:55:50PM +0100, Keisuke Nishimura wrote:
-> When picking out a CPU on a task wakeup, select_idle_smt() has to take
-> into account the scheduling domain of @target. This is because cpusets
-> and isolcpus can remove CPUs from the domain to isolate them from other
-> SMT siblings.
+On 12/15/23 at 12:38am, Yuntao Wang wrote:
+> The purpose of crash_exclude_mem_range() is to remove all memory ranges
+> that overlap with [mstart-mend]. However, the current logic only removes
+> the first overlapping memory range.
 > 
-> This fix checks if the candidate CPU is in the target scheduling domain.
+> Commit a2e9a95d2190 ("kexec: Improve & fix crash_exclude_mem_range() to
+> handle overlapping ranges") attempted to address this issue, but it did not
+> fix all error cases.
+
+Hmm, this is a specific function for kdump kernel loading. So far it's
+sufficiently meet demands. Say so because we only need to exclude
+crashk_res and crashk_low_res when constructing elfcorehdr. region
+crashk_res/crashk_low_res are digged out from system RAM region. That's
+why the break is taken in the for loop in the current code. X86 needs
+exclude low 1M, the low 1M could span several system RAM regions because
+BIOS under low 1M reserved some spaces. And the elfcorehdr exluding from
+crashkernel region taken in x86 is also a splitting.
+
+Generally speaking, crashk_res/crashk_low_res is inside a big chunk of
+continuous region. On x86, low 1M spans several complete region on x86,
+elfcorehdr region is inside continuous crashk_res region.
+
+You can see why crash_exclude_mem_range() looks like now it is. This patch
+makes crash_exclude_mem_range() be a generic region removing function. I do
+see the memmove can improve code readbility, while I have concern about the
+while loop.
+
+Imagine we have a crashkernel region 256M reserved under 4G, say [2G, 2G+256M].
+Then after excluding the 256M from a region, it should stop. But now, this patch
+will make it continue scanning. Not sure if it's all in my mind.
+
 > 
-> The commit df3cb4ea1fb6 ("sched/fair: Fix wrong cpu selecting from isolated
-> domain") originally proposed this fix by adding the check of the scheduling
-> domain in the loop. However, the commit 3e6efe87cd5cc ("sched/fair: Remove
-> redundant check in select_idle_smt()") accidentally removed the check.
-> This commit brings the check back with the tiny optimization of computing
-> the intersection of the task's CPU mask and the sched domain mask up front.
+> Let's fix and simplify the logic of crash_exclude_mem_range().
 > 
-> Fixes: 3e6efe87cd5c ("sched/fair: Remove redundant check in select_idle_smt()")
-
-Simply reverting that patch is simpler no? That cpumask_and() is likely
-more expensive than anything else that function does.
-
-And I'm probably already in holiday more, but I don't immediately
-understand the problem, if you're doing cpusets, then the affinity in
-p->cpus_ptr should never cross your set, so how can it go wrong?
-
-Is this some isolcpus idiocy? (I so hate that option)
-
-> Signed-off-by: Keisuke Nishimura <keisuke.nishimura@inria.fr>
-> Signed-off-by: Julia Lawall <julia.lawall@inria.fr>
+> Signed-off-by: Yuntao Wang <ytcoode@gmail.com>
 > ---
->  kernel/sched/fair.c | 15 +++++++++++----
->  1 file changed, 11 insertions(+), 4 deletions(-)
+>  kernel/crash_core.c | 70 ++++++++++++---------------------------------
+>  1 file changed, 19 insertions(+), 51 deletions(-)
 > 
-> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index bcd0f230e21f..71306b48cf68 100644
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -7284,11 +7284,18 @@ static int select_idle_core(struct task_struct *p, int core, struct cpumask *cpu
->  /*
->   * Scan the local SMT mask for idle CPUs.
->   */
-> -static int select_idle_smt(struct task_struct *p, int target)
-> +static int select_idle_smt(struct task_struct *p, struct sched_domain *sd, int target)
+> diff --git a/kernel/crash_core.c b/kernel/crash_core.c
+> index efe87d501c8c..0292a4c8bb2f 100644
+> --- a/kernel/crash_core.c
+> +++ b/kernel/crash_core.c
+> @@ -565,9 +565,8 @@ int crash_prepare_elf64_headers(struct crash_mem *mem, int need_kernel_map,
+>  int crash_exclude_mem_range(struct crash_mem *mem,
+>  			    unsigned long long mstart, unsigned long long mend)
 >  {
->  	int cpu;
-> +	struct cpumask *cpus = this_cpu_cpumask_var_ptr(select_rq_mask);
-> +
-> +	/*
-> +	 * Check if a candidate cpu is in the LLC scheduling domain where target exists.
-> +	 * Due to isolcpus and cpusets, there is no guarantee that it holds.
-> +	 */
-> +	cpumask_and(cpus, sched_domain_span(sd), p->cpus_ptr);
+> -	int i, j;
+> +	int i;
+>  	unsigned long long start, end, p_start, p_end;
+> -	struct range temp_range = {0, 0};
 >  
-> -	for_each_cpu_and(cpu, cpu_smt_mask(target), p->cpus_ptr) {
-> +	for_each_cpu_and(cpu, cpu_smt_mask(target), cpus) {
->  		if (cpu == target)
+>  	for (i = 0; i < mem->nr_ranges; i++) {
+>  		start = mem->ranges[i].start;
+> @@ -575,72 +574,41 @@ int crash_exclude_mem_range(struct crash_mem *mem,
+>  		p_start = mstart;
+>  		p_end = mend;
+>  
+> -		if (mstart > end || mend < start)
+> +		if (p_start > end || p_end < start)
 >  			continue;
->  		if (available_idle_cpu(cpu) || sched_idle_cpu(cpu))
-> @@ -7314,7 +7321,7 @@ static inline int select_idle_core(struct task_struct *p, int core, struct cpuma
->  	return __select_idle_cpu(core, p);
+>  
+>  		/* Truncate any area outside of range */
+> -		if (mstart < start)
+> +		if (p_start < start)
+>  			p_start = start;
+> -		if (mend > end)
+> +		if (p_end > end)
+>  			p_end = end;
+>  
+>  		/* Found completely overlapping range */
+>  		if (p_start == start && p_end == end) {
+> -			mem->ranges[i].start = 0;
+> -			mem->ranges[i].end = 0;
+> -			if (i < mem->nr_ranges - 1) {
+> -				/* Shift rest of the ranges to left */
+> -				for (j = i; j < mem->nr_ranges - 1; j++) {
+> -					mem->ranges[j].start =
+> -						mem->ranges[j+1].start;
+> -					mem->ranges[j].end =
+> -							mem->ranges[j+1].end;
+> -				}
+> -
+> -				/*
+> -				 * Continue to check if there are another overlapping ranges
+> -				 * from the current position because of shifting the above
+> -				 * mem ranges.
+> -				 */
+> -				i--;
+> -				mem->nr_ranges--;
+> -				continue;
+> -			}
+> +			memmove(&mem->ranges[i], &mem->ranges[i + 1],
+> +				(mem->nr_ranges - (i + 1)) * sizeof(mem->ranges[i]));
+> +			i--;
+>  			mem->nr_ranges--;
+> -			return 0;
+> -		}
+> -
+> -		if (p_start > start && p_end < end) {
+> +		} else if (p_start > start && p_end < end) {
+>  			/* Split original range */
+> +			if (mem->nr_ranges >= mem->max_nr_ranges)
+> +				return -ENOMEM;
+> +
+> +			memmove(&mem->ranges[i + 2], &mem->ranges[i + 1],
+> +				(mem->nr_ranges - (i + 1)) * sizeof(mem->ranges[i]));
+> +
+>  			mem->ranges[i].end = p_start - 1;
+> -			temp_range.start = p_end + 1;
+> -			temp_range.end = end;
+> +			mem->ranges[i + 1].start = p_end + 1;
+> +			mem->ranges[i + 1].end = end;
+> +
+> +			i++;
+> +			mem->nr_ranges++;
+>  		} else if (p_start != start)
+>  			mem->ranges[i].end = p_start - 1;
+>  		else
+>  			mem->ranges[i].start = p_end + 1;
+> -		break;
+> -	}
+> -
+> -	/* If a split happened, add the split to array */
+> -	if (!temp_range.end)
+> -		return 0;
+> -
+> -	/* Split happened */
+> -	if (i == mem->max_nr_ranges - 1)
+> -		return -ENOMEM;
+> -
+> -	/* Location where new range should go */
+> -	j = i + 1;
+> -	if (j < mem->nr_ranges) {
+> -		/* Move over all ranges one slot towards the end */
+> -		for (i = mem->nr_ranges - 1; i >= j; i--)
+> -			mem->ranges[i + 1] = mem->ranges[i];
+>  	}
+>  
+> -	mem->ranges[j].start = temp_range.start;
+> -	mem->ranges[j].end = temp_range.end;
+> -	mem->nr_ranges++;
+>  	return 0;
 >  }
 >  
-> -static inline int select_idle_smt(struct task_struct *p, int target)
-> +static inline int select_idle_smt(struct task_struct *p, struct sched_domain *sd, int target)
->  {
->  	return -1;
->  }
-> @@ -7564,7 +7571,7 @@ static int select_idle_sibling(struct task_struct *p, int prev, int target)
->  		has_idle_core = test_idle_cores(target);
->  
->  		if (!has_idle_core && cpus_share_cache(prev, target)) {
-> -			i = select_idle_smt(p, prev);
-> +			i = select_idle_smt(p, sd, prev);
->  			if ((unsigned int)i < nr_cpumask_bits)
->  				return i;
->  		}
 > -- 
-> 2.34.1
+> 2.43.0
 > 
+
 
