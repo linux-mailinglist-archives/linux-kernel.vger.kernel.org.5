@@ -1,105 +1,101 @@
-Return-Path: <linux-kernel+bounces-1146-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-1148-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6C3C3814B1A
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 16:02:05 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8BBF5814B1E
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 16:02:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id EFA4E1F23F75
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 15:02:04 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BF1331C23A9B
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 15:02:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5CAA8364B6;
-	Fri, 15 Dec 2023 15:01:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E0A4364C3;
+	Fri, 15 Dec 2023 15:02:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="keOMVEms"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gmt/0byx"
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C9F135F01
-	for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 15:01:46 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B7E4EC433C9;
-	Fri, 15 Dec 2023 15:01:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED997364A7
+	for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 15:02:26 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 91D9EC433C7;
+	Fri, 15 Dec 2023 15:02:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1702652506;
-	bh=1IdD+DH0O1yFnPHJhW8z4I+GBWeEhlCskAt74iuVyEc=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=keOMVEmscLIpnT1JxKd1YAPO7n+f+LDbpYsYu2FlxCHNO1juc4GeFFpg3LLzEwu7V
-	 Gqr6Af+eeXBhaw0rkiTq6qA7XRup8c08EuFWGiw7g4O+6dnM0ygckjOP47XFlf61Hp
-	 RtRevd1TfMi8Rl1bRT8ZYNnIKkuGRIYwX2dHksIGMVWrdBem2V1a3fwbyrWad11Aov
-	 K3oqQ756Ph+3EJ3wxE00y293jN8gJ2oexroRfL4z284KJ2eqL/RaMvZedumyYuoUxt
-	 2EnRGRtHW8R/KpwnKboMNEXZZYWK/FB8uiSNY8hU1Mx/o0OEz5VBpAPG3ED0Y6R54G
-	 s7CApqPfDPZvw==
-Message-ID: <fa32d038-e42a-43a2-9450-403ead5bada8@kernel.org>
-Date: Fri, 15 Dec 2023 23:01:41 +0800
+	s=k20201202; t=1702652546;
+	bh=7Uq12NB3Lqmbyv5BBuMWFV0Ip7hUgad8tYf8ESmKAd4=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=gmt/0byxqdwxs1tIKjUxtRAvGv1Lixtlv6Svzfa1IYAnHHWZi12E9s5m0y6sDh+86
+	 wnT3cvE3mCaqBEViRK8vFTkffUFmqilB+aEismErN70gta3lMn4YTSyH5UERIwMPEz
+	 64RCbSbd9GDfFzmXRtmPlJVCFBC4wHQUBjxSlwxXmO99ikm/s2fhUYfaosusaTLczK
+	 jrIyftKCgAS5jDWH04h14OXed/QxqgkA9q0/JDOqB2SFovtYI5lo/x8jjTzlyGdcMi
+	 bPmp9pudhOmkdMX58WT49ICJ+Cac5I47zj2AeeTg9uu2ta2AaXcIObAUU4xNxrXvND
+	 o9YELesNRPFIA==
+Date: Fri, 15 Dec 2023 15:02:21 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Gergo Koteles <soyer@irl.hu>
+Cc: Shenghao Ding <shenghao-ding@ti.com>, Kevin Lu <kevin-lu@ti.com>,
+	Baojun Xu <baojun.xu@ti.com>, Jaroslav Kysela <perex@perex.cz>,
+	Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>,
+	linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
+Subject: Re: [PATCH 03/16] ASoC: tas2781: disable regmap regcache
+Message-ID: <e5ee2ef9-2cf5-46aa-adae-27040faccc3d@sirena.org.uk>
+References: <cover.1701906455.git.soyer@irl.hu>
+ <21a183b5a08cb23b193af78d4b1114cc59419272.1701906455.git.soyer@irl.hu>
+ <0b836c10-b21b-4275-8dd0-254dd5467497@sirena.org.uk>
+ <47097f19398808b64f4cc87c2a3c7cc462fb2416.camel@irl.hu>
+ <5f3f0306-799f-4f3b-9e05-fbd300c59d5d@sirena.org.uk>
+ <b0ab21657f2e4f0825579de97ca012e294d1e743.camel@irl.hu>
+ <bf24488f-e4e1-4d3e-a67e-fe74c05acda4@sirena.org.uk>
+ <9a2b85a8a19e002093e2471a97850d26e335900f.camel@irl.hu>
+ <5b2eb7eb-761e-406d-8d55-b7ea8cddefa8@sirena.org.uk>
+ <f135963cb14d9bef6cddbe0bd1ce0aaa6d4ac7d9.camel@irl.hu>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] erofs: fix ztailpacking for subpage compressed blocks
-Content-Language: en-US
-To: Gao Xiang <hsiangkao@linux.alibaba.com>, linux-erofs@lists.ozlabs.org
-Cc: LKML <linux-kernel@vger.kernel.org>
-References: <20231214161337.753049-1-hsiangkao@linux.alibaba.com>
-From: Chao Yu <chao@kernel.org>
-Autocrypt: addr=chao@kernel.org; keydata=
- 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
-In-Reply-To: <20231214161337.753049-1-hsiangkao@linux.alibaba.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="NJ1n80rz/G09dKBQ"
+Content-Disposition: inline
+In-Reply-To: <f135963cb14d9bef6cddbe0bd1ce0aaa6d4ac7d9.camel@irl.hu>
+X-Cookie: PARDON me, am I speaking ENGLISH?
 
-On 2023/12/15 0:13, Gao Xiang wrote:
-> `pageofs_in` should be the compressed data offset of the page rather
-> than of the block.
-> 
-> Signed-off-by: Gao Xiang <hsiangkao@linux.alibaba.com>
 
-Acked-by: Chao Yu <chao@kernel.org>
+--NJ1n80rz/G09dKBQ
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Thanks,
+On Fri, Dec 15, 2023 at 03:42:43PM +0100, Gergo Koteles wrote:
+> On Fri, 2023-12-15 at 12:55 +0000, Mark Brown wrote:
+
+> > No, I mean that the amplifiers don't talk to each other at a hardware
+> > level and the grouping is all in software.
+
+> No, they don't talk to each other. But they have a global i2c address
+> to speed up configuration, but the module doesn't use it yet.
+
+That's hardware level synchronisation between the devices, that makes
+all this a bit less horrifying though it seems like a lot of the issues
+would go away if the broadcast write address were actually being used
+more.
+
+--NJ1n80rz/G09dKBQ
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmV8anwACgkQJNaLcl1U
+h9A4aQf/cqN2aD+4gfz7tn5+zGNcYbOnxBwjcif5LeQFESiiPswlZkYhCE9WaV7T
+6TiNXejvAQgg4B68jz095xef6UA3iZLlWiBmIjUywYNHfaODdrn8sYAbvzPwn1gC
+zVd2mvNaMpUPfEuvlLinLm4+f5t2Ij5n+6v0yfPPpPgXr+Ej+mpX6hwgeV792uBB
+hYoPyJP0pBF30PuIA8Hwh8ur1SmGxEUb/jdud2q9BY3L1tsNPC45LfyeNqyWtCkP
+crWfXJzmr99txwkARhkybS8d7vzjuYchJsg6W9oDE0pCUSGPK4Yjz4Duor6Z2qT5
+w1lTECv+bXmgRL2bcs5iAmKwl+K+KQ==
+=bLE1
+-----END PGP SIGNATURE-----
+
+--NJ1n80rz/G09dKBQ--
 
