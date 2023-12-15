@@ -1,45 +1,53 @@
-Return-Path: <linux-kernel+bounces-330-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-329-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D63E7813F7A
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 02:52:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 398E4813F75
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 02:51:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 11E461C2215F
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 01:52:35 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6BA4B1C220FE
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 01:51:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A2064A44;
-	Fri, 15 Dec 2023 01:52:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 41E39809;
+	Fri, 15 Dec 2023 01:51:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=zytor.com header.i=@zytor.com header.b="Ko9BU3RN"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="MDmlLjKQ"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail.zytor.com (terminus.zytor.com [198.137.202.136])
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 348B3468C;
-	Fri, 15 Dec 2023 01:52:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zytor.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zytor.com
-Received: from [IPV6:2601:646:8002:4641:eb14:ad94:2806:1c1a] ([IPv6:2601:646:8002:4641:eb14:ad94:2806:1c1a])
-	(authenticated bits=0)
-	by mail.zytor.com (8.17.2/8.17.1) with ESMTPSA id 3BF1p8ju3422931
-	(version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NO);
-	Thu, 14 Dec 2023 17:51:09 -0800
-DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 3BF1p8ju3422931
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
-	s=2023121201; t=1702605070;
-	bh=V5+Mh+vAvnbIoWj79wEvhgtTOB599w/6t78stUt4jko=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=Ko9BU3RN/mr7W5ck/3mbDE4qKSw33iFOYqtP3Bs8t7H7TxLB+/0ExArIn930tFBEi
-	 wWbvQQoYiUA7zMZvjSaeXKgyHzcb9mAkrJ87Z2gsAbhvkmy6EbjDtjTwdW6FMy0FYc
-	 VgdPLrTe3CHOz3Xo7SPARoBWimh+KFFFPdBO7jNfjgY9FJtcSQhWgFJV3jlS5Cz7mo
-	 S/PJcXtZmE6b+S5qI9ETjyCjHpeMTV7pk75QbVPr9Jlmf7SFThEQoF2YVfA6hc4UAS
-	 Kn1skMzQ1FKQeIswTvZJQueASmlEY9ufG5Z+3vml4ygCKhmYWXGplfjznWRxPZLQH2
-	 oP8f2Lo3MSN7Q==
-Message-ID: <c0c7c605-d487-483e-a034-983b76ee1dfa@zytor.com>
-Date: Thu, 14 Dec 2023 17:51:03 -0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 42EBC1FD6;
+	Fri, 15 Dec 2023 01:51:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1702605077; x=1734141077;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=B8ZnBuUqYeF5LUId9bwYmxo/DbwCwkj6wYLDz93eA1o=;
+  b=MDmlLjKQ0meym/7/2vDxz0Bbr0+7jdfJuW1emL6uyu1BlNnGa4px4Z5R
+   ADSJQ3/efJWc9DUUZxzesmDYSlYl+E4elnL/XbNlgXmi3Y9K+WJ26xdSI
+   vfFTcY4jLCE76ELKfumsi1UIJGXdM8FNkz+uFMmg/OZRKOIbi0d4Eeu26
+   enGbHnQzE6nPP3/00xOcc3LSnIZQLPpH0Tp6C4B2ztFfY6fwnUC3thT5n
+   8aWvsfQyhM28l6srD654jfAXsSmV6JEd97lDDGwPTFsgXVhL1BobSvblD
+   CMnmxXUY2p1Wz++z4yh/fgHlxh0w0SXwXVxSyQNtIjv+PUKAdcxOG0c5M
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10924"; a="394088293"
+X-IronPort-AV: E=Sophos;i="6.04,277,1695711600"; 
+   d="scan'208";a="394088293"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Dec 2023 17:51:15 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10924"; a="844948298"
+X-IronPort-AV: E=Sophos;i="6.04,277,1695711600"; 
+   d="scan'208";a="844948298"
+Received: from zhaohaif-mobl.ccr.corp.intel.com (HELO [10.255.30.96]) ([10.255.30.96])
+  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Dec 2023 17:51:13 -0800
+Message-ID: <a121f7ee-6993-4784-a199-e747643d441a@linux.intel.com>
+Date: Fri, 15 Dec 2023 09:51:10 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -47,65 +55,68 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v13 24/35] x86/fred: Add a NMI entry stub for FRED
-Content-Language: en-US
-To: Xin Li <xin3.li@intel.com>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-edac@vger.kernel.org,
-        linux-hyperv@vger.kernel.org, kvm@vger.kernel.org,
-        xen-devel@lists.xenproject.org
-Cc: tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
-        dave.hansen@linux.intel.com, x86@kernel.org, luto@kernel.org,
-        pbonzini@redhat.com, seanjc@google.com, peterz@infradead.org,
-        jgross@suse.com, ravi.v.shankar@intel.com, mhiramat@kernel.org,
-        andrew.cooper3@citrix.com, jiangshanlai@gmail.com,
-        nik.borisov@suse.com, shan.kang@intel.com
-References: <20231205105030.8698-1-xin3.li@intel.com>
- <20231205105030.8698-25-xin3.li@intel.com>
-From: "H. Peter Anvin" <hpa@zytor.com>
-In-Reply-To: <20231205105030.8698-25-xin3.li@intel.com>
+Subject: Re: [PATCH 2/2] iommu/vt-d: don's issue devTLB flush request when
+ device is disconnected
+To: Baolu Lu <baolu.lu@linux.intel.com>, bhelgaas@google.com,
+ dwmw2@infradead.org, will@kernel.org, robin.murphy@arm.com
+Cc: linux-pci@vger.kernel.org, iommu@lists.linux.dev,
+ linux-kernel@vger.kernel.org, Haorong Ye <yehaorong@bytedance.com>
+References: <20231213034637.2603013-1-haifeng.zhao@linux.intel.com>
+ <20231213034637.2603013-3-haifeng.zhao@linux.intel.com>
+ <96051115-c928-4f3c-bd65-4f3f8e83ca9c@linux.intel.com>
+ <e6fddbb0-fa8f-43d4-8a5e-d177e9465912@linux.intel.com>
+ <8c8a1e49-5447-4d61-b3ba-782873cc0f4a@linux.intel.com>
+ <2f49219e-601d-4ddc-a7b7-6ea8968a2f80@linux.intel.com>
+From: Ethan Zhao <haifeng.zhao@linux.intel.com>
+In-Reply-To: <2f49219e-601d-4ddc-a7b7-6ea8968a2f80@linux.intel.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-So we have recently discovered an overlooked interaction with VT-x. 
-Immediately before VMENTER and after VMEXIT, CR2 is live with the 
-*guest* CR2. Regardless of if the guest uses FRED or not, this is guest 
-state and SHOULD NOT be corrupted. Furthermore, host state MUST NOT leak 
-into the guest.
 
-NMIs are blocked on VMEXIT if the cause was an NMI, but not for other 
-reasons, so a NMI coming in during this window that then #PFs could 
-corrupt the guest CR2.
+On 12/15/2023 9:34 AM, Baolu Lu wrote:
+> On 2023/12/15 9:03, Ethan Zhao wrote:
+>>
+>> 2. supprise_removal
+>>
+>>   Users remove the devece directly or bring the device link down/turn 
+>> off
+>>
+>>   device power first by setting pci config space, link-down/not-present/
+>>
+>>   power-off are all handled by pciehp the same way 
+>> "supprise_removal", in
+>>
+>>   such case, pciehp_ist() will flag the device as "disconnected" 
+>> first, then
+>>
+>>   unconfig the devcie, unload driver, iommu release device(issing 
+>> devTLB flush)
+>>
+>>   delete device. so we checking the device state could work such cases.
+>
+> If so, then it is fine for the iommu driver. As Robin said, if the
+> device needs more cleanup, the iommu core should register a right
+> callback to the driver core and handle it before the device goes away.
+>
+> Disabling PCI features seems to be a reasonable device cleanup. This
+> gives us another reason to move ATS enabling/disabling out from the
 
-Intel is exploring ways to close this hole, but for schedule reasons, it 
-will not be available at the same time as the first implementation of 
-FRED. Therefore, as a workaround, it turns out that the FRED NMI stub 
-*will*, unfortunately, have to save and restore CR2 after all when (at 
-least) Intel KVM is in use.
+For supprise_removal, device was already removed, powered-off, iommu
 
-Note that this is airtight: it does add a performance penalty to the NMI 
-path (two read CR2 in the common case of no #PF), but there is no gap 
-during which a bad CR2 value could be introduced in the guest, no matter 
-in which sequence the events happen.
+device-release got notification  or cleanup callback is  invoked to disable
 
-In theory the performance penalty could be further reduced by 
-conditionalizing this on the NMI happening in the critical region in the 
-KVM code, but it seems to be pretty far from necessary to me.
+ATS to not-present device etc ,
 
-This obviously was an unfortunate oversight on our part, but the 
-workaround is simple and doesn't affect any non-NMI paths.
+I didn't get the meaning to do so, perhaps I misunderstand ?
 
-	-hpa
+Thanks,
 
-On 12/5/23 02:50, Xin Li wrote:
-> +
-> +	if (IS_ENABLED(CONFIG_SMP) && arch_cpu_is_offline(smp_processor_id()))
-> +		return;
-> +
+Ethan
 
-This is cut & paste from elsewhere in the NMI code, but I believe the 
-IS_ENABLED() is unnecessary (not to mention ugly): smp_processor_id() 
-should always return zero on UP, and arch_cpu_is_offline() reduces to 
-!(cpu == 0), so this is a statically true condition on UP.
-
-	-hpa
+> iommu subsystem. Once this is done, the device driver will enable ATS
+> during its probe and disable it during its release. There will be no
+> such workaround in the iommu driver anymore.
+>
+> Best regards,
+> baolu
 
