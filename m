@@ -1,108 +1,117 @@
-Return-Path: <linux-kernel+bounces-1660-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-1662-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 986348151AB
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 22:11:48 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 574468151B1
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 22:12:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C76C61C23822
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 21:11:47 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EBA841F261CA
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 21:12:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E3F147F7A;
-	Fri, 15 Dec 2023 21:11:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4356B48CE6;
+	Fri, 15 Dec 2023 21:12:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZQsJlxhp"
+	dkim=pass (2048-bit key) header.d=soleen.com header.i=@soleen.com header.b="N6wBlilf"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-oa1-f42.google.com (mail-oa1-f42.google.com [209.85.160.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9AEAE495E7;
-	Fri, 15 Dec 2023 21:11:18 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AB1B5C433C7;
-	Fri, 15 Dec 2023 21:11:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1702674678;
-	bh=Pz52bZEiMprhIzxQzx7OqDCYrqRjBlVKFlQrM+jTYv0=;
-	h=Date:From:To:Cc:Subject:From;
-	b=ZQsJlxhp+zwITeFPYwXsDVQhF9yaGKhCx2bfckBmAnXzcR/34DYJjznCqQaKWjpfL
-	 lnO+LjEGlbBdJF8bJ9DtT8wGgKyhAQVBf4sO2NCgjCSQe6Esd7rvfB56BZiptAG8YJ
-	 InQVUUJSGuXfxgeFnGpPAkyLysxTBRrZaO2mKicZNUYnNXPgiK5ehQQEmFnVdZclBv
-	 IYTMXezynPTiSmFPLoenuHvDVQaZhnAjpTHqeKVQzJ/5TXreOot4ihufrw6w8SCVVM
-	 I/1Z3qZpVnPJwcukaFAq0rXeAUjn2kZhMriVOWEbV4rFIu6OWS57DAAgiWrevCXCwn
-	 i81bCurFrZTFw==
-Date: Fri, 15 Dec 2023 15:11:15 -0600
-From: Bjorn Helgaas <helgaas@kernel.org>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kwilczynski@kernel.org>,
-	Jiaxun Yang <jiaxun.yang@flygoat.com>,
-	Huacai Chen <chenhuacai@loongson.cn>,
-	Johan Hovold <johan+linaro@kernel.org>,
-	Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-	Igor Mammedov <imammedo@redhat.com>,
-	Fiona Ebner <f.ebner@proxmox.com>,
-	Dongli Zhang <dongli.zhang@oracle.com>,
-	Jonathan Woithe <jwoithe@just42.net>
-Subject: [GIT PULL] PCI fixes for v6.7
-Message-ID: <20231215211115.GA1141361@bhelgaas>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4AA81563A7
+	for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 21:11:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=soleen.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=soleen.com
+Received: by mail-oa1-f42.google.com with SMTP id 586e51a60fabf-20308664c13so714258fac.3
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 13:11:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=soleen.com; s=google; t=1702674715; x=1703279515; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=b9KJ+4BbcKeSEG7077PFa7FVZHENUrxS+8ivlb7RAxY=;
+        b=N6wBlilfI55+czR8cmZ6G0UtIUVB0bXS/J8gqZ7UM8gyFPhprH55om1aQkAYd/i0ey
+         8u3McsxGkx7smNVvNhmwVXU4cSM1MQXM12tjl2Vu2s0gn0aAvZ67W7yJXfBjlyKY/qoT
+         MZEnUf7RV29cPfcPyqHiGrV+GA0/e+QFdZUcyIPg53U5I0i+dxOWo2J6l/Cq5lsKJsVC
+         trjpTAOGuNYPhDUQeR3L8e9Vrzyx0/VnySWOR0eM+nuTM/vg8xiElSOn4a9IuzBTfQ+f
+         CFl+xVEosabj7YSjngBL7c1C75lZl7pTBNFy9MyGLUXlt8XRnrKZtW8aM7zsL4g0BRvU
+         DHxQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702674715; x=1703279515;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=b9KJ+4BbcKeSEG7077PFa7FVZHENUrxS+8ivlb7RAxY=;
+        b=YkPmPS2eyfqw+60wgLsiw3U03UzQ0zElF6xUY+CRn4MD53Ca8LtNCdo/Kl1oaEfWVy
+         lWVk7HjcTfKwSRopQ0tYfkqwMun/gWUTfJfmYIDmirVPyhkGoW11Oe+KXYHkhGUgBpg3
+         MN5YYu637+IETmuJ+qEQdIIliiNeTPLo4kW9e6bUEuC/tDS6qOlzeyrS7KgIjBz69CSz
+         xKCBTUzltqy97ZDyLzg1c/rTnP+066a6rE9SKZepLKgx/YANFO1VnI66lpOMOhzedKl6
+         KZIED2Wb9GIWU6RerKWpnYgEZfN+vMHzhNy/3wSzGi2WdislnzxsSoUystZ4L245TEY9
+         +g7Q==
+X-Gm-Message-State: AOJu0YxqPDRbDAjkgXOOtfN6TmWU2ZKdVS70HT1z7yxKVdkToUFYY+cc
+	3s41aPrhFK72u2P67OsgkIRP+MsMfFJ3Kw14e8vxlQ==
+X-Google-Smtp-Source: AGHT+IFHrLpndT4XCwAesdcyNwQf00aMOvX02D4/8uxdog8acvbjKfsi57jpp2aqEyynfGVCKlt0IXuLjUhCsHgb3nk=
+X-Received: by 2002:a05:6870:c09:b0:203:7ccc:b6e8 with SMTP id
+ le9-20020a0568700c0900b002037cccb6e8mr1214533oab.25.1702674715317; Fri, 15
+ Dec 2023 13:11:55 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+References: <20231130201504.2322355-1-pasha.tatashin@soleen.com>
+ <20231130201504.2322355-11-pasha.tatashin@soleen.com> <c0d23d3e-39e6-57af-fd38-eb1b885d7da4@google.com>
+In-Reply-To: <c0d23d3e-39e6-57af-fd38-eb1b885d7da4@google.com>
+From: Pasha Tatashin <pasha.tatashin@soleen.com>
+Date: Fri, 15 Dec 2023 16:11:18 -0500
+Message-ID: <CA+CK2bD0Wz8mzB_BGKEYKCHRJKKVwr0CPK7OOC0tD_Sxi5Rp5g@mail.gmail.com>
+Subject: Re: [PATCH v2 10/10] iommu: account IOMMU allocated memory
+To: David Rientjes <rientjes@google.com>
+Cc: akpm@linux-foundation.org, alim.akhtar@samsung.com, alyssa@rosenzweig.io, 
+	asahi@lists.linux.dev, baolu.lu@linux.intel.com, bhelgaas@google.com, 
+	cgroups@vger.kernel.org, corbet@lwn.net, david@redhat.com, 
+	dwmw2@infradead.org, hannes@cmpxchg.org, heiko@sntech.de, 
+	iommu@lists.linux.dev, jernej.skrabec@gmail.com, jonathanh@nvidia.com, 
+	joro@8bytes.org, krzysztof.kozlowski@linaro.org, linux-doc@vger.kernel.org, 
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-mm@kvack.org, linux-rockchip@lists.infradead.org, 
+	linux-samsung-soc@vger.kernel.org, linux-sunxi@lists.linux.dev, 
+	linux-tegra@vger.kernel.org, lizefan.x@bytedance.com, marcan@marcan.st, 
+	mhiramat@kernel.org, m.szyprowski@samsung.com, paulmck@kernel.org, 
+	rdunlap@infradead.org, robin.murphy@arm.com, samuel@sholland.org, 
+	suravee.suthikulpanit@amd.com, sven@svenpeter.dev, thierry.reding@gmail.com, 
+	tj@kernel.org, tomas.mudrunka@gmail.com, vdumpa@nvidia.com, wens@csie.org, 
+	will@kernel.org, yu-cheng.yu@intel.com
+Content-Type: text/plain; charset="UTF-8"
 
-The following changes since commit b85ea95d086471afb4ad062012a4d73cd328fa86:
+> > diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-guide/cgroup-v2.rst
+> > index 3f85254f3cef..e004e05a7cde 100644
+> > --- a/Documentation/admin-guide/cgroup-v2.rst
+> > +++ b/Documentation/admin-guide/cgroup-v2.rst
+> > @@ -1418,7 +1418,7 @@ PAGE_SIZE multiple when read back.
+> >         sec_pagetables
+> >               Amount of memory allocated for secondary page tables,
+> >               this currently includes KVM mmu allocations on x86
+> > -             and arm64.
+> > +             and arm64 and IOMMU page tables.
+>
+> Hmm, if existing users are parsing this field and alerting when it exceeds
+> an expected value (a cloud provider, let's say), is it safe to add in a
+> whole new set of page tables?
+>
+> I understand the documentation allows for it, but I think potential impact
+> on userspace would be more interesting.
 
-  Linux 6.7-rc1 (2023-11-12 16:19:07 -0800)
+Hi David,
 
-are available in the Git repository at:
+This is something that was discussed at LPC'23. I also was proposing a
+separate counter for iommu page tables, but it was noted that we
+specifically have sec_pagetables called this way to include all non
+regular CPU page tables, and we should therefore account for them
+together.
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/pci/pci.git tags/pci-v6.7-fixes-1
+Please also see this discussion from the previous version of this patch series:
+https://lore.kernel.org/all/CAJD7tkb1FqTqwONrp2nphBDkEamQtPCOFm0208H3tp0Gq2OLMQ@mail.gmail.com/
 
-for you to fetch changes up to 5df12742b7e3aae2594a30a9d14d5d6e9e7699f4:
-
-  Revert "PCI: acpiphp: Reassign resources on bridge if necessary" (2023-12-15 14:55:10 -0600)
-
-----------------------------------------------------------------
-- Limit Max_Read_Request_Size (MRRS) on some MIPS Loongson systems because
-  they don't all support MRRS > 256, and firmware doesn't always initialize
-  it correctly, which meant some PCIe devices didn't work (Jiaxun Yang)
-
-- Add and use pci_enable_link_state_locked() to prevent potential deadlocks
-  in vmd and qcom drivers (Johan Hovold)
-
-- Revert recent (v6.5) acpiphp resource assignment changes that fixed
-  issues with hot-adding devices on a root bus or with large BARs, but
-  introduced new issues with GPU initialization and hot-adding SCSI disks
-  in QEMU VMs and (Bjorn Helgaas)
-
-----------------------------------------------------------------
-Bjorn Helgaas (1):
-      Revert "PCI: acpiphp: Reassign resources on bridge if necessary"
-
-Jiaxun Yang (1):
-      PCI: loongson: Limit MRRS to 256
-
-Johan Hovold (6):
-      PCI/ASPM: Add pci_enable_link_state_locked()
-      PCI: vmd: Fix potential deadlock when enabling ASPM
-      PCI: qcom: Fix potential deadlock when enabling ASPM
-      PCI: qcom: Clean up ASPM comment
-      PCI/ASPM: Clean up __pci_disable_link_state() 'sem' parameter
-      PCI/ASPM: Add pci_disable_link_state_locked() lockdep assert
-
- drivers/pci/controller/dwc/pcie-qcom.c |  7 ++--
- drivers/pci/controller/pci-loongson.c  | 46 +++++++++++++++++++++---
- drivers/pci/controller/vmd.c           |  2 +-
- drivers/pci/hotplug/acpiphp_glue.c     |  9 ++---
- drivers/pci/pcie/aspm.c                | 65 ++++++++++++++++++++++++----------
- include/linux/pci.h                    |  3 ++
- 6 files changed, 100 insertions(+), 32 deletions(-)
+Pasha
 
