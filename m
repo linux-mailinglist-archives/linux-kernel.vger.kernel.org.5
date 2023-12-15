@@ -1,175 +1,120 @@
-Return-Path: <linux-kernel+bounces-1032-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-1033-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9DCD9814981
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 14:42:05 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A4A7F814987
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 14:43:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0A476B237A8
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 13:42:03 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5990B1F235B7
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 13:43:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C32BF2EB19;
-	Fri, 15 Dec 2023 13:41:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3AAE02E3FE;
+	Fri, 15 Dec 2023 13:42:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BAbLq0a4"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="lG7viCNz"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [78.32.30.218])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0439C2DF97;
-	Fri, 15 Dec 2023 13:41:44 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8B574C433C8;
-	Fri, 15 Dec 2023 13:41:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1702647704;
-	bh=ofCPvhE3rPFrA60eGlM3ABSTLtZ1mI9JLqdMqmvW9mY=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=BAbLq0a4k8KxFFquNN34idVISj8/qphcRB/0zIg2gLy223GHS4OSCkrm2M0x/+q0x
-	 7b8r9THOzs0M6mzYX3LHbNsrL9TJn3+BxVqyCopjz6pe/nAgDh7aiPAWgoHfvHN3OE
-	 q6A3anYQ+c/1CytuIyuCOQVuDnxXK/Tegkc1PVAHXMsTsngIos6IIWdDgRNPoZ1ntE
-	 mDVje97TaV5JHyLx5oyh04CqXYGGWFz5WH1hPQsGg1UcwZSZdZNy5SbrwnPLiRfJKl
-	 UcCeyjO9BppBSPOgOmwex+qNQbSnGyeb61bvgINSCj1+EbNafYodkOBjrE7dIMiE7c
-	 Eem1jJWp4fRZg==
-Date: Fri, 15 Dec 2023 13:41:38 +0000
-From: Conor Dooley <conor@kernel.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 808ED30321;
+	Fri, 15 Dec 2023 13:42:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=armlinux.org.uk
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=pv0AaHgjkAy6u95Pj8OOH2/guQb3Aq8ffCZaWiu1IRg=; b=lG7viCNzqAjzgDF7gJwFPmDEJ4
+	LjsCYZjzFLR2bZTBYmuCcgLYwjT2eW9VGwCO+J8AgkzFFivO5Y7jx6u5khrCR4Kkl4tlxWeuARR2b
+	zMIyXm8Iw1VWdmpe0o5eNSF6ZWnuBYXaG/cztXM6PEZZy1ymzgxCUOZO8jZncwaeoMOr4oanxJXn0
+	ll8PMs9VoKw1NBUkvId0gijqpyLdeSttPDx6Hl4oRPmhTqnfP67dt0/H46tVkz+qs4X+J+xnZk4Bs
+	4Ai6ePEieplGWO8h2S/Ebeqd8RRMMEukMDHCztZcjftHBa+R5107awrpcm5Sl6NPywXQdXVA6PY8f
+	/E2uAr8g==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:51368)
+	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <linux@armlinux.org.uk>)
+	id 1rE8Sd-0002hd-1H;
+	Fri, 15 Dec 2023 13:42:39 +0000
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+	(envelope-from <linux@shell.armlinux.org.uk>)
+	id 1rE8Sc-0003em-Gu; Fri, 15 Dec 2023 13:42:38 +0000
+Date: Fri, 15 Dec 2023 13:42:38 +0000
+From: "Russell King (Oracle)" <linux@armlinux.org.uk>
 To: Jie Luo <quic_luoj@quicinc.com>
-Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, agross@kernel.org,
-	andersson@kernel.org, konrad.dybcio@linaro.org, davem@davemloft.net,
-	edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-	robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-	conor+dt@kernel.org, andrew@lunn.ch, hkallweit1@gmail.com,
-	linux@armlinux.org.uk, robert.marko@sartura.hr,
-	linux-arm-msm@vger.kernel.org, netdev@vger.kernel.org,
+Cc: Andrew Lunn <andrew@lunn.ch>,
+	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+	davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+	pabeni@redhat.com, robh+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+	hkallweit1@gmail.com, corbet@lwn.net, p.zabel@pengutronix.de,
+	f.fainelli@gmail.com, netdev@vger.kernel.org,
 	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-	quic_srichara@quicinc.com
-Subject: Re: [PATCH v2 5/5] dt-bindings: net: ipq4019-mdio: Document ipq5332
- platform
-Message-ID: <20231215-gauze-sprinkled-172729f22b6c@spud>
-References: <a1e5ffec-a20d-4389-83f9-ee09bd9d733d@linaro.org>
- <a84a36af-69f8-46af-967e-b06d028597a3@quicinc.com>
- <26c8b0b1-5ea9-45cc-adf3-0d0b03a1284d@linaro.org>
- <4b9c56b8-3b29-4861-a3d5-2da26fbc14b4@quicinc.com>
- <2e77e3b1-00b6-46b9-bfed-7cae3ffa15e9@linaro.org>
- <7bae46fd-63fd-4b86-9a56-73052cf0ea95@quicinc.com>
- <5a8095e6-b6a6-4d11-b006-31519e8d8622@linaro.org>
- <7466b655-2b7e-44f2-a510-6e0cc1b95248@quicinc.com>
- <602759ce-c93d-4111-9272-1dce7e4a170a@linaro.org>
- <f656d1c7-ea86-405a-9165-9eb079ea6f2a@quicinc.com>
+	linux-doc@vger.kernel.org
+Subject: Re: [PATCH v8 14/14] dt-bindings: net: ar803x: add qca8084 PHY
+ properties
+Message-ID: <ZXxXzm8hP68KrXYs@shell.armlinux.org.uk>
+References: <20231215074005.26976-1-quic_luoj@quicinc.com>
+ <20231215074005.26976-15-quic_luoj@quicinc.com>
+ <bdfba8a7-9197-4aae-a7f9-6075a375f60b@linaro.org>
+ <c3391e33-e770-4c61-855e-d90e82b95f75@quicinc.com>
+ <4cb2bd57-f3d3-49f9-9c02-a922fd270572@lunn.ch>
+ <ed0dd288-be8a-4161-a19f-2d4d2d17b3ec@quicinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="TU1olG04/N/WRNt5"
-Content-Disposition: inline
-In-Reply-To: <f656d1c7-ea86-405a-9165-9eb079ea6f2a@quicinc.com>
-
-
---TU1olG04/N/WRNt5
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <ed0dd288-be8a-4161-a19f-2d4d2d17b3ec@quicinc.com>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 
-On Fri, Dec 15, 2023 at 08:40:20PM +0800, Jie Luo wrote:
->=20
->=20
-> On 12/15/2023 8:19 PM, Krzysztof Kozlowski wrote:
-> > On 15/12/2023 12:42, Jie Luo wrote:
-> > > > > > > > > > Which clocks are these mentioned in the property? From =
-where do they come?
-> > > > > > > > > >=20
-> > > > > > > > > > Anyway, property is in existing form is not correct - t=
-his is not a
-> > > > > > > > > > generic property.
-> > > > > > > > > >=20
-> > > > > > > > >=20
-> > > > > > > > > This property cmn-reference-clock is just the hardware re=
-gister
-> > > > > > > > > configuration, since the different IPQ platform needs to =
-select
-> > > > > > > > > the different reference clock source for the CMN PLL bloc=
-k that
-> > > > > > > > > provides the various clock outputs to the all kinds of Et=
-hernet
-> > > > > > > > > devices, which is not from GCC provider.
-> > > > > > > >=20
-> > > > > > > > AGAIN: where do the clocks come from? Which device generate=
-s them?
-> > > > > > >=20
-> > > > > > > Oh, OK, the reference clock is from wifi that provides 48MHZ =
-to
-> > > > > > > Ethernet block.
-> > > > > >=20
-> > > > > > Then WiFi should be providing you the clock and this device sho=
-uld be
-> > > > > > clock consumer, right?
-> > > > >=20
-> > > > > Yes, wifi provides 48MHz clock to CMM PLL block, there is no GCC
-> > > > > for this 48MHZ clock output, it is the hardware PIN connection.
-> > > >=20
-> > > > All clocks are some hardware pin connections.
-> > > >=20
-> > > > Best regards,
-> > > > Krzysztof
-> > > >=20
-> > >=20
-> > > Yes, all reference clocks here are from hardware pin connection.
-> >=20
-> > You keep answering with short sentences without touching the root of the
-> > problem. I don't know exactly why, but I feel this discussion leads
-> > nowhere. After long discussion you finally admitted that clocks came
-> > from another device - Wifi. It took us like 6 emails?
-> >=20
-> > So last statement: if you have clock provider and clock consumer, you
-> > must represent it in the bindings or provide rationale why it should not
-> > or must not be represented in the bindings. So far I do not see any of
-> > such arguments.
-> >=20
-> > If you use arguments like:
-> > "My driver....": sorry, bindings are not about drivers
-> > "I don't have clock driver for WiFi": sorry, it does not matter if you
-> > can write one, right?
-> >=20
-> > Please reach internally your colleagues to solve these problems and make
-> > review process smoother.
+On Fri, Dec 15, 2023 at 08:16:53PM +0800, Jie Luo wrote:
+> On 12/15/2023 7:25 PM, Andrew Lunn wrote:
+> > > The "maxItems: 1" of the property resets is defined in ethernet-phy.yaml
+> > > that is referenced by qca,ar803x.yaml, but i have 11 reset instances
+> > > used for qca8084 PHY
+> > 
+> > 11!?!?? Really? Why?
+> > 
+> > I assume the order and timer matters, otherwise why would you need
+> > 11? So the PHY driver needs to handle this, not phylib framework. So
+> > you will be adding vendor properties to describe all 11 of them. So
+> > ethernet-phy.yaml does not matter.
+> > 
+> > 	Andrew
+> 
+> Since these resets need to be configured in the special sequence, and
+> these clocks need to be configured with different clock rate.
+> 
+> But the clock instance get, the property name is fixed to "clock-names"
+> according to the function of_parse_clkspec, and the reset property name
+> is also fixed to "reset-names" from function __of_reset_control_get.
 
-> These reference clocks source do not need the hardware configuration,
-> that is the reason why the clock provider is not needed, some reference
-> clock source are even from external crystal.
+I think you need to give more details about this.
 
-I fail to understand how that makes this clock different to the clocks
-on any other platform. Clocks from external crystals are present in many
-many systems. See for example fixed-clock.yaml.
+Where are these 11 resets located? What is the sequence? Why does the
+PHY driver need to deal with each individual reset?
 
-> There is also no enable control for the reference clocks since it is
-> inputted by the hardware PIN connection, i will update these description
-> in the DT to make it more clear.
+IMHO, a PHY driver should _not_ be dealing with the resets outside of
+the PHY device itself, and I find it hard to imagine that qca8084
+would have 11 external resets.
 
-Again, this does not justify having custom properties for this clock,
-as it is no different to other platforms. As far as I can tell, the only
-thing that a standard "clocks" property cannot convey here is the
-internal reference. I would suggest that since there is only one
-internal clock frequency, the absence of this particular clock in the
-"clocks" property can be used to determine that the reference is the
-internal one.
+If these are 11 internal resets (to qca8084) then why are you using the
+reset subsystem, and why do you need to describe them in DT? Surely if
+they are internal to the PHY, that can be encapsulated within the PHY
+driver?
 
-Thanks,
-Conor.
+This is an example of why it is useful to have an _example_ of the use
+of this binding, because it would answer some of the above questions.
 
---TU1olG04/N/WRNt5
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZXxXjgAKCRB4tDGHoIJi
-0ktnAQDXBBwhZHLj4sCIUSdyx4+oOH09y7pvBGaGOqmUTOcvqAEAzJuNBZWAf+Y6
-Z4suZfbVe+CoDxDWfXUAiedmYQY7kgA=
-=tykB
------END PGP SIGNATURE-----
-
---TU1olG04/N/WRNt5--
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
 
