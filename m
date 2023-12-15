@@ -1,44 +1,44 @@
-Return-Path: <linux-kernel+bounces-776-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-777-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id EB01A8145E4
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 11:46:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 85EC18145E8
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 11:46:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8A2171F235DD
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 10:46:19 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2598F1F2360E
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 10:46:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A161E1C2A8;
-	Fri, 15 Dec 2023 10:46:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D3FD624A18;
+	Fri, 15 Dec 2023 10:46:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="pb8PJbqp"
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="tI07Sy1t"
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6350C1A70D;
-	Fri, 15 Dec 2023 10:46:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 50C9A1A711;
+	Fri, 15 Dec 2023 10:46:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1702637164;
-	bh=vBgnugLtJ2ksG5oto5YXrGX8SezSV/Kyn/381DDZeYc=;
-	h=From:To:Cc:Subject:Date:From;
-	b=pb8PJbqphVWYId84ZtJMvFx1CSLEHxwibQFvmpAV6BPTT5zPu4AEd59vDh7i6d1By
-	 y53CNsHbMrgc2CEi94oADY0uGtBCNQpWRRCyDBK/Zc0BcZ891quCtKhe6q+6gcLx+j
-	 L2UJkfxoaFXO69OGz+62j0dy0CsX1J8KsDhd6ZBEAokxqtSSZU+rJvmefOEwkb9D7W
-	 FS6I+6ZMMAuNnWIMGFxtMOw+IKwTr/On/GaIMWe2x+10JqnFqyfnqnqtitpUjs3b8L
-	 xbvoEaKKSxY7c9Q9sonGldx3Bg0Gs+GfsA6nhU9zxm2IwMAbsSe9imTTo99Ty3Q72y
-	 K0Hq1FGidKiCA==
+	s=mail; t=1702637165;
+	bh=Sv5bStRniU7BlQ2lH9mBsZ8VDZEclT6+b2lYCvkM7yU=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=tI07Sy1tbkkyJC92kNuBzpUFvGbbH845ZXpo/Qo15BSqjgRDo0ZDSqIJuLWLl4pcw
+	 lWp75z2xZjLU+JWhEC7Xcvs8V6oAR3Gr3lb9zjGySN1VA1yYJN1pfC81eBRpZ8QXQK
+	 Mm4bQWvHEP/epNMd/kAp3cY+kDM5BU0WiFKiinomSJqysURg5M+jSPWvx8cEu5wYE8
+	 Av2Lkfl5K/KCa87lrF396h73z1xtmlzNwubZ2G3Vq7DxKhLdk+toFfLaQbkCj2TEg9
+	 82QrCctaJBsmmTMZKsCSJnCTyMPTcZfhUr2xqsC+Por97/hK3msX6JnxsnTOWz0bWW
+	 qFXmmp3dB6lHw==
 Received: from eugen-station.. (cola.collaboradmins.com [195.201.22.229])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
 	(Authenticated sender: ehristev)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id B3207378107D;
-	Fri, 15 Dec 2023 10:46:03 +0000 (UTC)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id B198F3781FD5;
+	Fri, 15 Dec 2023 10:46:04 +0000 (UTC)
 From: Eugen Hristev <eugen.hristev@collabora.com>
 To: linux-mediatek@lists.infradead.org
 Cc: linux-arm-kernel@lists.infradead.org,
@@ -50,10 +50,12 @@ Cc: linux-arm-kernel@lists.infradead.org,
 	tiffany.lin@mediatek.com,
 	andrew-ct.chen@mediatek.com,
 	Eugen Hristev <eugen.hristev@collabora.com>
-Subject: [PATCH v2 1/7] media: mediatek: vcodec: fix possible unbalanced PM counter
-Date: Fri, 15 Dec 2023 12:45:45 +0200
-Message-Id: <20231215104551.233679-1-eugen.hristev@collabora.com>
+Subject: [PATCH v2 2/7] dt-bindings: media: mtk-vcodec-encoder: add dma-ranges
+Date: Fri, 15 Dec 2023 12:45:46 +0200
+Message-Id: <20231215104551.233679-2-eugen.hristev@collabora.com>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20231215104551.233679-1-eugen.hristev@collabora.com>
+References: <20231215104551.233679-1-eugen.hristev@collabora.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -62,81 +64,30 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-It is possible that mtk_vcodec_enc_pw_on fails, and in that scenario
-the PM counter is not incremented, and subsequent call to
-mtk_vcodec_enc_pw_off decrements the counter, leading to a PM imbalance.
-Fix by bailing out of venc_if_encode in the case when mtk_vcodec_enc_pw_on
-fails.
+As IOMMUs are supported, dma-ranges is not mentioned but
+additionalProperties=false, thus we have an error when adding dma-ranges.
+Add dma-ranges as a possible property because this may be present.
 
-Fixes: 4e855a6efa54 ("[media] vcodec: mediatek: Add Mediatek V4L2 Video Encoder Driver")
 Signed-off-by: Eugen Hristev <eugen.hristev@collabora.com>
-Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 ---
 Changes in v2:
-- collect R-b
+- none.
+ .../devicetree/bindings/media/mediatek,vcodec-encoder.yaml      | 2 ++
+ 1 file changed, 2 insertions(+)
 
- .../platform/mediatek/vcodec/encoder/mtk_vcodec_enc_pm.c     | 4 +++-
- .../platform/mediatek/vcodec/encoder/mtk_vcodec_enc_pm.h     | 2 +-
- drivers/media/platform/mediatek/vcodec/encoder/venc_drv_if.c | 5 ++++-
- 3 files changed, 8 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/media/platform/mediatek/vcodec/encoder/mtk_vcodec_enc_pm.c b/drivers/media/platform/mediatek/vcodec/encoder/mtk_vcodec_enc_pm.c
-index a22b7dfc656e..1a2b14a3e219 100644
---- a/drivers/media/platform/mediatek/vcodec/encoder/mtk_vcodec_enc_pm.c
-+++ b/drivers/media/platform/mediatek/vcodec/encoder/mtk_vcodec_enc_pm.c
-@@ -58,13 +58,15 @@ int mtk_vcodec_init_enc_clk(struct mtk_vcodec_enc_dev *mtkdev)
- 	return 0;
- }
+diff --git a/Documentation/devicetree/bindings/media/mediatek,vcodec-encoder.yaml b/Documentation/devicetree/bindings/media/mediatek,vcodec-encoder.yaml
+index a2051b31fa29..403530de5624 100644
+--- a/Documentation/devicetree/bindings/media/mediatek,vcodec-encoder.yaml
++++ b/Documentation/devicetree/bindings/media/mediatek,vcodec-encoder.yaml
+@@ -38,6 +38,8 @@ properties:
+     minItems: 1
+     maxItems: 5
  
--void mtk_vcodec_enc_pw_on(struct mtk_vcodec_pm *pm)
-+int mtk_vcodec_enc_pw_on(struct mtk_vcodec_pm *pm)
- {
- 	int ret;
- 
- 	ret = pm_runtime_resume_and_get(pm->dev);
- 	if (ret)
- 		dev_err(pm->dev, "pm_runtime_resume_and_get fail: %d", ret);
++  dma-ranges: true
 +
-+	return ret;
- }
+   assigned-clocks: true
  
- void mtk_vcodec_enc_pw_off(struct mtk_vcodec_pm *pm)
-diff --git a/drivers/media/platform/mediatek/vcodec/encoder/mtk_vcodec_enc_pm.h b/drivers/media/platform/mediatek/vcodec/encoder/mtk_vcodec_enc_pm.h
-index 157ea08ba9e3..2e28f25e36cc 100644
---- a/drivers/media/platform/mediatek/vcodec/encoder/mtk_vcodec_enc_pm.h
-+++ b/drivers/media/platform/mediatek/vcodec/encoder/mtk_vcodec_enc_pm.h
-@@ -10,7 +10,7 @@
- #include "mtk_vcodec_enc_drv.h"
- 
- int mtk_vcodec_init_enc_clk(struct mtk_vcodec_enc_dev *dev);
--void mtk_vcodec_enc_pw_on(struct mtk_vcodec_pm *pm);
-+int mtk_vcodec_enc_pw_on(struct mtk_vcodec_pm *pm);
- void mtk_vcodec_enc_pw_off(struct mtk_vcodec_pm *pm);
- void mtk_vcodec_enc_clock_on(struct mtk_vcodec_pm *pm);
- void mtk_vcodec_enc_clock_off(struct mtk_vcodec_pm *pm);
-diff --git a/drivers/media/platform/mediatek/vcodec/encoder/venc_drv_if.c b/drivers/media/platform/mediatek/vcodec/encoder/venc_drv_if.c
-index c402a686f3cb..e83747b8d69a 100644
---- a/drivers/media/platform/mediatek/vcodec/encoder/venc_drv_if.c
-+++ b/drivers/media/platform/mediatek/vcodec/encoder/venc_drv_if.c
-@@ -64,7 +64,9 @@ int venc_if_encode(struct mtk_vcodec_enc_ctx *ctx,
- 	ctx->dev->curr_ctx = ctx;
- 	spin_unlock_irqrestore(&ctx->dev->irqlock, flags);
- 
--	mtk_vcodec_enc_pw_on(&ctx->dev->pm);
-+	ret = mtk_vcodec_enc_pw_on(&ctx->dev->pm);
-+	if (ret)
-+		goto venc_if_encode_pw_on_err;
- 	mtk_vcodec_enc_clock_on(&ctx->dev->pm);
- 	ret = ctx->enc_if->encode(ctx->drv_handle, opt, frm_buf,
- 				  bs_buf, result);
-@@ -75,6 +77,7 @@ int venc_if_encode(struct mtk_vcodec_enc_ctx *ctx,
- 	ctx->dev->curr_ctx = NULL;
- 	spin_unlock_irqrestore(&ctx->dev->irqlock, flags);
- 
-+venc_if_encode_pw_on_err:
- 	mtk_venc_unlock(ctx);
- 	return ret;
- }
+   assigned-clock-parents: true
 -- 
 2.34.1
 
