@@ -1,187 +1,215 @@
-Return-Path: <linux-kernel+bounces-1791-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-1794-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 657828153F4
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 23:48:24 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id D32A58153FB
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 23:49:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C5836B20EC3
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 22:48:21 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 604B11F24961
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 22:49:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C52B5F844;
-	Fri, 15 Dec 2023 22:48:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5582918EC1;
+	Fri, 15 Dec 2023 22:48:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="OAbuHoNq"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="2x7HTmy/"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-lj1-f170.google.com (mail-lj1-f170.google.com [209.85.208.170])
+Received: from mail-wm1-f44.google.com (mail-wm1-f44.google.com [209.85.128.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC9725F843
-	for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 22:48:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=joelfernandes.org
-Received: by mail-lj1-f170.google.com with SMTP id 38308e7fff4ca-2c9f559b82cso11704411fa.0
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 14:48:10 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 95AA81DDC5
+	for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 22:48:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-wm1-f44.google.com with SMTP id 5b1f17b1804b1-40c32bea30dso20145e9.0
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 14:48:32 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1702680489; x=1703285289; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1702680511; x=1703285311; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=XIWED5BaLhRY/GkvDBwpljGf7EHBV+YYams2Uza/KBE=;
-        b=OAbuHoNqA5zSlwKqAHuhhVkJ7izLcQgTNc0Cnt8hGgjACBp0FZfNoRQxU3F9KWRTZB
-         CyD4tChU3sKJuRMJyQCruY6cl3s8zIoTjAII9EvftYvzLg8Gvwj7rzJKeWI+X6+VEZt5
-         46jBvvVRbP2rKXHabI8olFl2sSrnV1h0RnFeA=
+        bh=nbI008FwkAGh6OQKmN5oST6SiRX3AZBUL7LLv+QG9V0=;
+        b=2x7HTmy/Y0wkJsdO8FH2y/FOE6L/xsfTjUTDHTYgcuzoM/fSetZVC4X/FNCHQ/NLaJ
+         sdf3aPoD/jH+nO8zmiuf8dkrsdd8eX7aSO+Cm7iN9eusGEKYW/BCisKFY+OC5tFO+BzN
+         B56nT91cWFgPKDHBnixf1z4bKzoWLhfZHd3EXkOaHIEJA6eQ+6vT8PkCDkg75xVnEoxN
+         rQ/sd0JW4Z6/94Fw1ksF/Nm5NX9QpXO9mQdLzYqymZ6rL1zEiG/SfeHUJ6XhaAd6SuJa
+         kx/2HmN5Krrff9bDE6CRUDkGhFRqoqR9Z7n2Svh+FOJl3qxxPKwDb9JT3R3x5U+7eNsC
+         Tpnw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702680489; x=1703285289;
+        d=1e100.net; s=20230601; t=1702680511; x=1703285311;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=XIWED5BaLhRY/GkvDBwpljGf7EHBV+YYams2Uza/KBE=;
-        b=rTtiVbBcMx832tiTobTB7God5NvjLtzgZvOiRMTsntlaAcqS+e46Yt54Pto2QDD+SL
-         7+I/Si059JEk3A1LLpN31jdOFfBUbzpIq2v3Kb999rtGDmiwLIZf57xcM9q4crqk+Swg
-         SrAQFF+d5Ei93BC20uFrD5qZuESfaJkb/OtFu0Hu4yFid+euzfDSHvnHr5sNkd5JHGS7
-         QH81apwhWTwEg9RaKpnw6kafN6bskLXXygVtDpot2y2okFJYTEp0ByvwmXMvPF1ovSwf
-         /XQPDOi5HfRkd0JPegwVfW5di6EmeiHetL/dLfBDdlOGX1LdMC6CiqzN6GaX8+TxF0Or
-         iECg==
-X-Gm-Message-State: AOJu0YwQ6Y3PV3LUEm9L/s1QlxTDnukHSBU+gT50ZoPU7lSInbzZMRlY
-	O8urWTsuJfnHygkXvxRf9hcKCew0TDqjqSrIHeDX7Q==
-X-Google-Smtp-Source: AGHT+IHJMNOxbb+3vlrV0p0QacQeSsk+1FtOZ4roLmHJ01KF4ncPe0O23RCUgig7taxPkZtzOKUIZ14L3QdbWytPKhM=
-X-Received: by 2002:a05:651c:151:b0:2cc:430a:a3c6 with SMTP id
- c17-20020a05651c015100b002cc430aa3c6mr1541241ljd.77.1702680488844; Fri, 15
- Dec 2023 14:48:08 -0800 (PST)
+        bh=nbI008FwkAGh6OQKmN5oST6SiRX3AZBUL7LLv+QG9V0=;
+        b=pw8MRsipxchmxlgx2/q5E8OpCGCd+gNeV1V9nPRh/LuJoCh2/Qw1VTjxBYKTOzpK/b
+         1Ev4K9xQoOMdSYtH9fLQMXhDY3WUwHgrMW3HLUw7Xs+Q5dawzJzK2M/1KLf9AdcqR5m+
+         TME36YR0fCXMLhs1AwUgTkHASU+liNhfypRuOANgKCzPuau/5zpzkpzwfV+/r6jV2I1Y
+         j0hjJdZXlFUIukXtWd2ECFjAKBwEXDO4ADTsnL1Ix/CZNFzg+VkmdBJB25rA+hdjXPT6
+         8hHfA6ZWoAt7Xlc8eKs6I0TPBy2PjJ574ogFTAkGfkompp+47qpJNoGZlIZ/aILJGbPj
+         O6Yg==
+X-Gm-Message-State: AOJu0YwL/6bq+1xmFSHRfWjSFnP+h2ghUQq9ZhNvEAxLKqSscpSUuzFq
+	bJgFeI/Llzu8WTW36QTGsZJ9JClsK3bEEk3RMnnML4j1iUXb
+X-Google-Smtp-Source: AGHT+IEH+Qv9RSKhq/9jfnZdW9wTtoZNpMp0oTYJLHBu5gyf33Rz+fOC//89NFuG+KLCZxxYdvGGUhPx3em0gRZM++U=
+X-Received: by 2002:a05:600c:1c28:b0:40a:483f:f828 with SMTP id
+ j40-20020a05600c1c2800b0040a483ff828mr46852wms.4.1702680510823; Fri, 15 Dec
+ 2023 14:48:30 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231203011252.233748-1-qyousef@layalina.io> <ZXhTjrTqZvMTXKtK@pc636>
- <CAEXW_YSMwmG_joipkK5W1Bdwzdjm_a3f86BijkAkAJTHOWkE0Q@mail.gmail.com>
- <ZXmI9zDW8KlZqQj7@pc636> <CAEXW_YRdgQywfJ+A9fa1itDojPDiZ_Xc3M8n6dS=M2LHX9hSFg@mail.gmail.com>
- <ZXyFz1BD6Nh1zsnc@pc636> <f1a6e96e-43d7-4872-9db5-c43bc767bf9e@paulmck-laptop>
-In-Reply-To: <f1a6e96e-43d7-4872-9db5-c43bc767bf9e@paulmck-laptop>
-From: Joel Fernandes <joel@joelfernandes.org>
-Date: Fri, 15 Dec 2023 17:47:57 -0500
-Message-ID: <CAEXW_YRcYvhpXXWYCb+_W9rB-0tFqXDgNUtR8+Ug=P4iOt7JBQ@mail.gmail.com>
-Subject: Re: [PATCH v2] rcu: Provide a boot time parameter to control lazy RCU
-To: paulmck@kernel.org
-Cc: Uladzislau Rezki <urezki@gmail.com>, Qais Yousef <qyousef@layalina.io>, 
-	Frederic Weisbecker <frederic@kernel.org>, Neeraj Upadhyay <quic_neeraju@quicinc.com>, 
-	Josh Triplett <josh@joshtriplett.org>, Boqun Feng <boqun.feng@gmail.com>, 
-	Steven Rostedt <rostedt@goodmis.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
-	Lai Jiangshan <jiangshanlai@gmail.com>, Zqiang <qiang.zhang1211@gmail.com>, 
-	Andrea Righi <andrea.righi@canonical.com>, John Stultz <jstultz@google.com>, 
-	linux-kernel@vger.kernel.org, rcu@vger.kernel.org
+References: <20231215-kunit_bus-v4-0-4f5160e2f95e@google.com> <20231215-kunit_bus-v4-5-4f5160e2f95e@google.com>
+In-Reply-To: <20231215-kunit_bus-v4-5-4f5160e2f95e@google.com>
+From: Rae Moar <rmoar@google.com>
+Date: Fri, 15 Dec 2023 17:48:18 -0500
+Message-ID: <CA+GJov5k35_SLnDXdTOAyrRUStc-fk__u0b6HXshfzLQovOhtQ@mail.gmail.com>
+Subject: Re: [PATCH v4 5/5] drm/tests: Switch to kunit devices
+To: davidgow@google.com
+Cc: Brendan Higgins <brendan.higgins@linux.dev>, 
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Matti Vaittinen <mazziesaccount@gmail.com>, 
+	Stephen Boyd <sboyd@kernel.org>, Shuah Khan <skhan@linuxfoundation.org>, 
+	Jonathan Corbet <corbet@lwn.net>, Kees Cook <keescook@chromium.org>, 
+	Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, 
+	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Maxime Ripard <mripard@kernel.org>, 
+	linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com, 
+	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-hardening@vger.kernel.org, linux-sound@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Dec 15, 2023 at 1:46=E2=80=AFPM Paul E. McKenney <paulmck@kernel.or=
-g> wrote:
+On Fri, Dec 15, 2023 at 2:39=E2=80=AFAM <davidgow@google.com> wrote:
 >
-> On Fri, Dec 15, 2023 at 05:58:55PM +0100, Uladzislau Rezki wrote:
-> > Hello, Joel!
-> >
-> > > [....]
-> > > > > > > +       Use rcutree.enable_rcu_lazy=3D0 to turn it off at boo=
-t time.
-> > > > > > > +
-> > > > > > > +config RCU_LAZY_DEFAULT_OFF
-> > > > > > > +     bool "Turn RCU lazy invocation off by default"
-> > > > > > > +     depends on RCU_LAZY
-> > > > > > > +     default n
-> > > > > > > +     help
-> > > > > > > +       Allows building the kernel with CONFIG_RCU_LAZY=3Dy y=
-et keep it default
-> > > > > > > +       off. Boot time param rcutree.enable_rcu_lazy=3D1 can =
-be used to switch
-> > > > > > > +       it back on.
-> > > > > > > +
-> > > > > > >  config RCU_DOUBLE_CHECK_CB_TIME
-> > > > > > >       bool "RCU callback-batch backup time check"
-> > > > > > >       depends on RCU_EXPERT
-> > > > > > > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> > > > > > > index 3ac3c846105f..8b7675624815 100644
-> > > > > > > --- a/kernel/rcu/tree.c
-> > > > > > > +++ b/kernel/rcu/tree.c
-> > > > > > > @@ -2719,6 +2719,9 @@ __call_rcu_common(struct rcu_head *head=
-, rcu_callback_t func, bool lazy_in)
-> > > > > > >  }
-> > > > > > >
-> > > > > > >  #ifdef CONFIG_RCU_LAZY
-> > > > > > > +static bool enable_rcu_lazy __read_mostly =3D !IS_ENABLED(CO=
-NFIG_RCU_LAZY_DEFAULT_OFF);
-> > > > > > > +module_param(enable_rcu_lazy, bool, 0444);
-> > > > > > > +
-> > > > > > >  /**
-> > > > > > >   * call_rcu_hurry() - Queue RCU callback for invocation afte=
-r grace period, and
-> > > > > > >   * flush all lazy callbacks (including the new one) to the m=
-ain ->cblist while
-> > > > > > > @@ -2744,6 +2747,8 @@ void call_rcu_hurry(struct rcu_head *he=
-ad, rcu_callback_t func)
-> > > > > > >       __call_rcu_common(head, func, false);
-> > > > > > >  }
-> > > > > > >  EXPORT_SYMBOL_GPL(call_rcu_hurry);
-> > > > > > > +#else
-> > > > > > > +#define enable_rcu_lazy              false
-> > > > > > >  #endif
-> > > > > > >
-> > > > > > >  /**
-> > > > > > > @@ -2792,7 +2797,7 @@ EXPORT_SYMBOL_GPL(call_rcu_hurry);
-> > > > > > >   */
-> > > > > > >  void call_rcu(struct rcu_head *head, rcu_callback_t func)
-> > > > > > >  {
-> > > > > > > -     __call_rcu_common(head, func, IS_ENABLED(CONFIG_RCU_LAZ=
-Y));
-> > > > > > > +     __call_rcu_common(head, func, enable_rcu_lazy);
-> > > > > > >  }
-> > > > > > >  EXPORT_SYMBOL_GPL(call_rcu);
-> > > > > > >
-> > > > > > I think, it makes sense. Especially for devices/systems where i=
-t is hard
-> > > > > > to recompile the kernel and deploy it. For example, Google and =
-GKI approach.
-> > > > >
-> > > > > My concerns had nothing to do with recompiling the kernel. Passin=
-g a
-> > > > > boot parameter (without a kernel compile) can just as well
-> > > > > default-disable the feature.
-> > > > >
-> > > > > I think what Qais is saying is that passing a boot parameter is i=
-tself
-> > > > > a hassle in Android (something I did not know about) because of G=
-KI
-> > > > > etc.
-> > > > >
-> > > > That is true. Doing:
-> > > >
-> > > > echo 1 > /sys/.../enable_lazy
-> > > >
-> > > > is a way how to make it easy and flexible.
-> > >
-> > > Hey Vlad, are you suggesting that the boot parameter be made to
-> > > support runtime? We can keep that for later as it may get complicated=
-.
-> > > Qais's boot parameter is designed only for boot time.
-> > >
-> > No problem. Yes, i meant a runtime one. But as you stated there might
-> > be hidden issues witch we are not aware of yet.
+> From: Maxime Ripard <mripard@kernel.org>
 >
-> My current thought is that Qais's version currently in -rcu for
-> the merge window after next (v6.9) suits our current situation.
-> But if we are eventually able to support runtime changes to this new
-> rcutree.enable_rcu_lazy module parameter via simplification to the
-> rcu_nocb_try_bypass() function (or maybe a better analysis of it),
-> then at that point it would be good to allow this module parameter to
-> be changed via sysfs at runtime.
+> Kunit recently gained helpers to create test managed devices. This means
+> that we no longer have to roll our own helpers in KMS and we can reuse
+> them.
 
-Yes, that's right.
+Hello!
 
-> Does that make sense, or am I missing some aspect or use case?
+This looks good to me. Thanks!
 
-No you are not missing anything.
+Reviewed-by: Rae Moar <rmoar@google.com>
 
-Thanks.
+-Rae
+
+>
+> Signed-off-by: Maxime Ripard <mripard@kernel.org>
+> Tested-by: David Gow <davidgow@google.com>
+> Signed-off-by: David Gow <davidgow@google.com>
+> ---
+>  drivers/gpu/drm/tests/drm_kunit_helpers.c | 66 ++-----------------------=
+------
+>  1 file changed, 3 insertions(+), 63 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/tests/drm_kunit_helpers.c b/drivers/gpu/drm/=
+tests/drm_kunit_helpers.c
+> index c251e6b34de0..ca4f8e4c5d5d 100644
+> --- a/drivers/gpu/drm/tests/drm_kunit_helpers.c
+> +++ b/drivers/gpu/drm/tests/drm_kunit_helpers.c
+> @@ -5,6 +5,7 @@
+>  #include <drm/drm_kunit_helpers.h>
+>  #include <drm/drm_managed.h>
+>
+> +#include <kunit/device.h>
+>  #include <kunit/resource.h>
+>
+>  #include <linux/device.h>
+> @@ -15,28 +16,6 @@
+>  static const struct drm_mode_config_funcs drm_mode_config_funcs =3D {
+>  };
+>
+> -static int fake_probe(struct platform_device *pdev)
+> -{
+> -       return 0;
+> -}
+> -
+> -static struct platform_driver fake_platform_driver =3D {
+> -       .probe  =3D fake_probe,
+> -       .driver =3D {
+> -               .name   =3D KUNIT_DEVICE_NAME,
+> -       },
+> -};
+> -
+> -KUNIT_DEFINE_ACTION_WRAPPER(kunit_action_platform_driver_unregister,
+> -                           platform_driver_unregister,
+> -                           struct platform_driver *);
+> -KUNIT_DEFINE_ACTION_WRAPPER(kunit_action_platform_device_put,
+> -                           platform_device_put,
+> -                           struct platform_device *);
+> -KUNIT_DEFINE_ACTION_WRAPPER(kunit_action_platform_device_del,
+> -                           platform_device_del,
+> -                           struct platform_device *);
+> -
+>  /**
+>   * drm_kunit_helper_alloc_device - Allocate a mock device for a KUnit te=
+st
+>   * @test: The test context object
+> @@ -54,34 +33,7 @@ KUNIT_DEFINE_ACTION_WRAPPER(kunit_action_platform_devi=
+ce_del,
+>   */
+>  struct device *drm_kunit_helper_alloc_device(struct kunit *test)
+>  {
+> -       struct platform_device *pdev;
+> -       int ret;
+> -
+> -       ret =3D platform_driver_register(&fake_platform_driver);
+> -       KUNIT_ASSERT_EQ(test, ret, 0);
+> -
+> -       ret =3D kunit_add_action_or_reset(test,
+> -                                       kunit_action_platform_driver_unre=
+gister,
+> -                                       &fake_platform_driver);
+> -       KUNIT_ASSERT_EQ(test, ret, 0);
+> -
+> -       pdev =3D platform_device_alloc(KUNIT_DEVICE_NAME, PLATFORM_DEVID_=
+NONE);
+> -       KUNIT_ASSERT_NOT_ERR_OR_NULL(test, pdev);
+> -
+> -       ret =3D kunit_add_action_or_reset(test,
+> -                                       kunit_action_platform_device_put,
+> -                                       pdev);
+> -       KUNIT_ASSERT_EQ(test, ret, 0);
+> -
+> -       ret =3D platform_device_add(pdev);
+> -       KUNIT_ASSERT_EQ(test, ret, 0);
+> -
+> -       ret =3D kunit_add_action_or_reset(test,
+> -                                       kunit_action_platform_device_del,
+> -                                       pdev);
+> -       KUNIT_ASSERT_EQ(test, ret, 0);
+> -
+> -       return &pdev->dev;
+> +       return kunit_device_register(test, KUNIT_DEVICE_NAME);
+>  }
+>  EXPORT_SYMBOL_GPL(drm_kunit_helper_alloc_device);
+>
+> @@ -94,19 +46,7 @@ EXPORT_SYMBOL_GPL(drm_kunit_helper_alloc_device);
+>   */
+>  void drm_kunit_helper_free_device(struct kunit *test, struct device *dev=
+)
+>  {
+> -       struct platform_device *pdev =3D to_platform_device(dev);
+> -
+> -       kunit_release_action(test,
+> -                            kunit_action_platform_device_del,
+> -                            pdev);
+> -
+> -       kunit_release_action(test,
+> -                            kunit_action_platform_device_put,
+> -                            pdev);
+> -
+> -       kunit_release_action(test,
+> -                            kunit_action_platform_driver_unregister,
+> -                            &fake_platform_driver);
+> +       kunit_device_unregister(test, dev);
+>  }
+>  EXPORT_SYMBOL_GPL(drm_kunit_helper_free_device);
+>
+>
+> --
+> 2.43.0.472.g3155946c3a-goog
+>
 
