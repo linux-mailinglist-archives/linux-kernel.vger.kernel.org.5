@@ -1,70 +1,70 @@
-Return-Path: <linux-kernel+bounces-1117-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-1118-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1A8E1814AB9
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 15:41:27 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id E04B8814ABD
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 15:41:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CA41A282247
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 14:41:25 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 52432B237D3
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 14:41:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A8ADA3C062;
-	Fri, 15 Dec 2023 14:39:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 819293C486;
+	Fri, 15 Dec 2023 14:39:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com header.b="YaU60cO9"
+	dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com header.b="t2dlhJNb"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp-relay-internal-0.canonical.com (smtp-relay-internal-0.canonical.com [185.125.188.122])
+Received: from smtp-relay-internal-1.canonical.com (smtp-relay-internal-1.canonical.com [185.125.188.123])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93EC639FCB
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7AB6739FC3
 	for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 14:39:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canonical.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canonical.com
-Received: from mail-lf1-f71.google.com (mail-lf1-f71.google.com [209.85.167.71])
+Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com [209.85.218.70])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 032BD3F2C9
+	by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id D03F53F2BA
 	for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 14:39:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
 	s=20210705; t=1702651157;
-	bh=zIhpWVKJJnmCyP1zy08oHrKsokOM6OlCzyTjReVqd1E=;
+	bh=Ybq5UjTeoIDvQGsMjYKQSlN8FhlG+exm++rGqALpbk8=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
 	 MIME-Version;
-	b=YaU60cO98uLmQ66bhD7RR9Jc1pvU8QBqcudlm8twsM7J4uWRrEpCBSD9+wr3/8SYB
-	 YE5GTFTamFezWn5h9yKRRZHTjmEXkiKSDhHQmSETHyH07L1OIuZDSw5vAPnIsMIqHc
-	 xHKZ1pPohTVPXWolzCU8pmHC2tuKhW1J6ksU0wNO7KfC9FPVW8X5OqAMSyqxrQFx62
-	 6J59Don6YOjcrYB4depAQ48282Jtk0Hn15fwXsZrTDFG7wXYoZAFFDaNy9yAqwtU8+
-	 VxE/u+d7C5XhzsEV7mWCdd/wy44Zm/ak+CAmSKTfHmMRkKs3vALud51jkMhZjXlAtn
-	 obw4n/muNx/LA==
-Received: by mail-lf1-f71.google.com with SMTP id 2adb3069b0e04-50be5899082so589467e87.2
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 06:39:16 -0800 (PST)
+	b=t2dlhJNbN8Z6RMja54gEcGzN7bH6tD5jiK5BEsLVB8sj9TlJN7X9ob2XhzWaHCG2i
+	 cgOk8SuVYFbpCouJFOPlGGqVNJPBUDbj7yZV9WOW/MfCPJuOCVYEPj+evw7WQxYm73
+	 1nFnY2Ow6X4KeX/tTxxt8DHlyjxbX3cYzv45zsDqNfumbEBN7MxLitfQd7hEsoOETA
+	 MLh606DSvA+U6RmuKNUUiosozbLSJrcXD43niTQQvCdlur/Mu+cd7bKUWXedruVCOW
+	 y3M3mpJAJ9KbEou76Hwy2iruOGBcnRdfFsCL7s/1F50FfSGTMWSRpieIoIcF6fly27
+	 Xr7ptUdYmgENg==
+Received: by mail-ej1-f70.google.com with SMTP id a640c23a62f3a-a1e88d2d7faso44312666b.1
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 06:39:17 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702651156; x=1703255956;
+        d=1e100.net; s=20230601; t=1702651157; x=1703255957;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=zIhpWVKJJnmCyP1zy08oHrKsokOM6OlCzyTjReVqd1E=;
-        b=pS3vXB8dPcFY+ssX1FkvUXNEDePOXw7L99xvjrhCET5g+VpKLSkDDgoM3VMAciD38a
-         yzNdaf2bVlwnYk9gni/RCxonA301ULmXVLaj28/OF2ftRn+IDXJn0PJZzhvlDmjPyzIF
-         BNo5Je5JCoSZSjfOuYidlYTuxFMELXlewQY3EI2seCHz3gyKIb73Pv5KPwCGUitGv/Tq
-         D+isrDADtEsr0gvRF2GWV47q9zU4eHWAnA8J/I5GNgPvXxdAyiuh8onxjN70CezEwQSW
-         drKvEE6U6S63YyisRBipBSXbarwjIcnkXxMpquYJW5ab4/xsx9ZDGnHSERU2lGF4UD4E
-         d2VQ==
-X-Gm-Message-State: AOJu0Yz8pXr9qe64Mm9kIH+W1g2ACHc6vRYlf5Oo6SCgzKjJqvdQ6ss6
-	O8W3reMf/EskptkZpn8sPKgjBoIlFIREM81Fw5Hx7bU/upnlxNJXkqIgAGpH4JtSwtYenQ0mu0G
-	4ygHMgLuPBLbC+tO+VbS7LnLjCOuUSiR3kiY/oeujBQ==
-X-Received: by 2002:ac2:562c:0:b0:508:11c3:c8ca with SMTP id b12-20020ac2562c000000b0050811c3c8camr5154670lff.7.1702651156260;
-        Fri, 15 Dec 2023 06:39:16 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IH7Vuhei34AU13Jnm38bp/hQV39eU5/IVQg8JqEo+wN89ajcH21veCiM3jRU6Sxf9xyyOAt1Q==
-X-Received: by 2002:ac2:562c:0:b0:508:11c3:c8ca with SMTP id b12-20020ac2562c000000b0050811c3c8camr5154659lff.7.1702651155941;
-        Fri, 15 Dec 2023 06:39:15 -0800 (PST)
+        bh=Ybq5UjTeoIDvQGsMjYKQSlN8FhlG+exm++rGqALpbk8=;
+        b=PwTnoFY5UWbZXLVpngwF1G9CCd7z0N0XSVnE5R55H0dEK/6Jtllqs8Qhpimsd6ITDY
+         1CTWiC+ZnlVHGMYdhepNGHTjur2c4b3NlkH2tL3ecSbhPc6oXksB8Ek4kp0TCAgr+Jzr
+         1EO563BWjNvolidA2Zuf8s/t1v+l11SKqBVO6ddHflYbgvemS2e2Kdn0gEbinlI7vcO+
+         7TGSCgSxBzI2gRAAjVBnjPXYoHDtCNpdMzTklJ1GRdODSfr4h4giCJtNMn4+M3o4vHBt
+         KfDjjDkw+fDWe20Puo1c5zgQezzgh7WLwPfMUWd7BjDQo2aavR+J+MT6XuarX5vCho5O
+         0L3g==
+X-Gm-Message-State: AOJu0YzYl9EdyrJlA1zCW4j/7ZSXvNkenZN3Sw6PAHjyRjXI1Lboybpw
+	Xdrd+Ej6HsNZfxPNHt/bwy5H7TFsvC1748jH7d8eKxANGil8z4yvL2+pzbQi3A3xO1L1mIbO/sB
+	grmpEj1ZvyooxafNfQUoh7oFLXfmW1DhOVWyHALVJ5g==
+X-Received: by 2002:a17:906:530b:b0:a22:f068:7f6f with SMTP id h11-20020a170906530b00b00a22f0687f6fmr2487179ejo.103.1702651157457;
+        Fri, 15 Dec 2023 06:39:17 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IHlQI/l2ZAFLp1q43IDXNIJcNIW2onNCcYx/a2Yji69pawtw9Ir+cUHT9Sd1e0dwlnqyRXDFQ==
+X-Received: by 2002:a17:906:530b:b0:a22:f068:7f6f with SMTP id h11-20020a170906530b00b00a22f0687f6fmr2487171ejo.103.1702651157255;
+        Fri, 15 Dec 2023 06:39:17 -0800 (PST)
 Received: from stitch.. ([152.115.213.158])
-        by smtp.gmail.com with ESMTPSA id tm6-20020a170907c38600b00a1db955c809sm10789122ejc.73.2023.12.15.06.39.14
+        by smtp.gmail.com with ESMTPSA id tm6-20020a170907c38600b00a1db955c809sm10789122ejc.73.2023.12.15.06.39.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Dec 2023 06:39:15 -0800 (PST)
+        Fri, 15 Dec 2023 06:39:16 -0800 (PST)
 From: Emil Renner Berthing <emil.renner.berthing@canonical.com>
 To: linux-gpio@vger.kernel.org,
 	devicetree@vger.kernel.org,
@@ -83,9 +83,9 @@ Cc: Hoan Tran <hoan@os.amperecomputing.com>,
 	Fu Wei <wefu@redhat.com>,
 	Paul Walmsley <paul.walmsley@sifive.com>,
 	Palmer Dabbelt <palmer@dabbelt.com>
-Subject: [PATCH v1 5/8] riscv: dts: thead: Add TH1520 GPIO ranges
-Date: Fri, 15 Dec 2023 15:39:03 +0100
-Message-Id: <20231215143906.3651122-6-emil.renner.berthing@canonical.com>
+Subject: [PATCH v1 6/8] riscv: dts: thead: Adjust TH1520 GPIO labels
+Date: Fri, 15 Dec 2023 15:39:04 +0100
+Message-Id: <20231215143906.3651122-7-emil.renner.berthing@canonical.com>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20231215143906.3651122-1-emil.renner.berthing@canonical.com>
 References: <20231215143906.3651122-1-emil.renner.berthing@canonical.com>
@@ -97,77 +97,152 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Add gpio-ranges properties to the TH1520 device tree, so user space can
-change basic pinconf settings for GPIOs and are not allowed to use pads
-already used by other functions.
+Adjust labels for the TH1520 GPIO controllers such that GPIOs can be
+referenced by the names used by the documentation. Eg.
 
-Adjust number of GPIOs available for the different controllers.
+GPIO0_X  -> <&gpio0 X Y>
+GPIO1_X  -> <&gpio1 X Y>
+GPIO2_X  -> <&gpio2 X Y>
+GPIO3_X  -> <&gpio3 X Y>
+GPIO4_X  -> <&gpio4 X Y>
+AOGPIO_X -> <&aogpio X Y>
+
+Remove labels for the parent GPIO devices that shouldn't need to be
+referenced.
 
 Signed-off-by: Emil Renner Berthing <emil.renner.berthing@canonical.com>
 ---
- arch/riscv/boot/dts/thead/th1520.dtsi | 14 ++++++++++----
- 1 file changed, 10 insertions(+), 4 deletions(-)
+ .../boot/dts/thead/th1520-beaglev-ahead.dts   |  2 ++
+ .../boot/dts/thead/th1520-lichee-pi-4a.dts    |  2 ++
+ arch/riscv/boot/dts/thead/th1520.dtsi         | 24 +++++++++----------
+ 3 files changed, 16 insertions(+), 12 deletions(-)
 
+diff --git a/arch/riscv/boot/dts/thead/th1520-beaglev-ahead.dts b/arch/riscv/boot/dts/thead/th1520-beaglev-ahead.dts
+index 70e8042c8304..91ba96588ae8 100644
+--- a/arch/riscv/boot/dts/thead/th1520-beaglev-ahead.dts
++++ b/arch/riscv/boot/dts/thead/th1520-beaglev-ahead.dts
+@@ -17,6 +17,8 @@ aliases {
+ 		gpio1 = &gpio1;
+ 		gpio2 = &gpio2;
+ 		gpio3 = &gpio3;
++		gpio4 = &gpio4;
++		gpio5 = &aogpio;
+ 		serial0 = &uart0;
+ 		serial1 = &uart1;
+ 		serial2 = &uart2;
+diff --git a/arch/riscv/boot/dts/thead/th1520-lichee-pi-4a.dts b/arch/riscv/boot/dts/thead/th1520-lichee-pi-4a.dts
+index 9a3884a73e13..0ae2c20d5641 100644
+--- a/arch/riscv/boot/dts/thead/th1520-lichee-pi-4a.dts
++++ b/arch/riscv/boot/dts/thead/th1520-lichee-pi-4a.dts
+@@ -14,6 +14,8 @@ aliases {
+ 		gpio1 = &gpio1;
+ 		gpio2 = &gpio2;
+ 		gpio3 = &gpio3;
++		gpio4 = &gpio4;
++		gpio5 = &aogpio;
+ 		serial0 = &uart0;
+ 		serial1 = &uart1;
+ 		serial2 = &uart2;
 diff --git a/arch/riscv/boot/dts/thead/th1520.dtsi b/arch/riscv/boot/dts/thead/th1520.dtsi
-index 397d5c71bd3d..d5e2378a1afa 100644
+index d5e2378a1afa..17ca214b5a97 100644
 --- a/arch/riscv/boot/dts/thead/th1520.dtsi
 +++ b/arch/riscv/boot/dts/thead/th1520.dtsi
-@@ -217,6 +217,7 @@ portc: gpio-controller@0 {
- 				gpio-controller;
- 				#gpio-cells = <2>;
- 				ngpios = <32>;
-+				gpio-ranges = <&padctrl0_apsys 0 0 32>;
- 				reg = <0>;
- 				interrupt-controller;
- 				#interrupt-cells = <2>;
-@@ -234,7 +235,8 @@ portd: gpio-controller@0 {
+@@ -206,13 +206,13 @@ uart3: serial@ffe7f04000 {
+ 			status = "disabled";
+ 		};
+ 
+-		gpio2: gpio@ffe7f34000 {
++		gpio@ffe7f34000 {
+ 			compatible = "snps,dw-apb-gpio";
+ 			reg = <0xff 0xe7f34000 0x0 0x1000>;
+ 			#address-cells = <1>;
+ 			#size-cells = <0>;
+ 
+-			portc: gpio-controller@0 {
++			gpio2: gpio-controller@0 {
  				compatible = "snps,dw-apb-gpio-port";
  				gpio-controller;
  				#gpio-cells = <2>;
--				ngpios = <32>;
-+				ngpios = <23>;
-+				gpio-ranges = <&padctrl0_apsys 0 32 23>;
- 				reg = <0>;
- 				interrupt-controller;
- 				#interrupt-cells = <2>;
-@@ -258,6 +260,7 @@ porta: gpio-controller@0 {
- 				gpio-controller;
- 				#gpio-cells = <2>;
- 				ngpios = <32>;
-+				gpio-ranges = <&padctrl1_apsys 0 0 32>;
- 				reg = <0>;
- 				interrupt-controller;
- 				#interrupt-cells = <2>;
-@@ -275,7 +278,8 @@ portb: gpio-controller@0 {
+@@ -225,13 +225,13 @@ portc: gpio-controller@0 {
+ 			};
+ 		};
+ 
+-		gpio3: gpio@ffe7f38000 {
++		gpio@ffe7f38000 {
+ 			compatible = "snps,dw-apb-gpio";
+ 			reg = <0xff 0xe7f38000 0x0 0x1000>;
+ 			#address-cells = <1>;
+ 			#size-cells = <0>;
+ 
+-			portd: gpio-controller@0 {
++			gpio3: gpio-controller@0 {
  				compatible = "snps,dw-apb-gpio-port";
  				gpio-controller;
  				#gpio-cells = <2>;
--				ngpios = <32>;
-+				ngpios = <31>;
-+				gpio-ranges = <&padctrl1_apsys 0 32 31>;
- 				reg = <0>;
- 				interrupt-controller;
- 				#interrupt-cells = <2>;
-@@ -416,7 +420,8 @@ porte: gpio-controller@0 {
+@@ -249,13 +249,13 @@ padctrl1_apsys: pinctrl@ffe7f3c000 {
+ 			reg = <0xff 0xe7f3c000 0x0 0x1000>;
+ 		};
+ 
+-		gpio0: gpio@ffec005000 {
++		gpio@ffec005000 {
+ 			compatible = "snps,dw-apb-gpio";
+ 			reg = <0xff 0xec005000 0x0 0x1000>;
+ 			#address-cells = <1>;
+ 			#size-cells = <0>;
+ 
+-			porta: gpio-controller@0 {
++			gpio0: gpio-controller@0 {
  				compatible = "snps,dw-apb-gpio-port";
  				gpio-controller;
  				#gpio-cells = <2>;
--				ngpios = <32>;
-+				ngpios = <16>;
-+				gpio-ranges = <&padctrl_aosys 0 9 16>;
- 				reg = <0>;
- 				interrupt-controller;
- 				#interrupt-cells = <2>;
-@@ -439,7 +444,8 @@ portf: gpio-controller@0 {
+@@ -268,13 +268,13 @@ porta: gpio-controller@0 {
+ 			};
+ 		};
+ 
+-		gpio1: gpio@ffec006000 {
++		gpio@ffec006000 {
+ 			compatible = "snps,dw-apb-gpio";
+ 			reg = <0xff 0xec006000 0x0 0x1000>;
+ 			#address-cells = <1>;
+ 			#size-cells = <0>;
+ 
+-			portb: gpio-controller@0 {
++			gpio1: gpio-controller@0 {
  				compatible = "snps,dw-apb-gpio-port";
  				gpio-controller;
  				#gpio-cells = <2>;
--				ngpios = <32>;
-+				ngpios = <23>;
-+				gpio-ranges = <&padctrl_aosys 0 25 22>, <&padctrl_aosys 22 7 1>;
- 				reg = <0>;
- 				interrupt-controller;
- 				#interrupt-cells = <2>;
+@@ -410,13 +410,13 @@ timer7: timer@ffffc3303c {
+ 			status = "disabled";
+ 		};
+ 
+-		ao_gpio0: gpio@fffff41000 {
++		gpio@fffff41000 {
+ 			compatible = "snps,dw-apb-gpio";
+ 			reg = <0xff 0xfff41000 0x0 0x1000>;
+ 			#address-cells = <1>;
+ 			#size-cells = <0>;
+ 
+-			porte: gpio-controller@0 {
++			aogpio: gpio-controller@0 {
+ 				compatible = "snps,dw-apb-gpio-port";
+ 				gpio-controller;
+ 				#gpio-cells = <2>;
+@@ -434,13 +434,13 @@ padctrl_aosys: pinctrl@fffff4a000 {
+ 			reg = <0xff 0xfff4a000 0x0 0x2000>;
+ 		};
+ 
+-		ao_gpio1: gpio@fffff52000 {
++		gpio@fffff52000 {
+ 			compatible = "snps,dw-apb-gpio";
+ 			reg = <0xff 0xfff52000 0x0 0x1000>;
+ 			#address-cells = <1>;
+ 			#size-cells = <0>;
+ 
+-			portf: gpio-controller@0 {
++			gpio4: gpio-controller@0 {
+ 				compatible = "snps,dw-apb-gpio-port";
+ 				gpio-controller;
+ 				#gpio-cells = <2>;
 -- 
 2.40.1
 
