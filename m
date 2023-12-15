@@ -1,138 +1,109 @@
-Return-Path: <linux-kernel+bounces-466-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-467-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 25352814198
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 06:54:45 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5C06A81419B
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 06:55:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D07141F22ABD
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 05:54:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BA77E28440A
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 05:55:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E5DA5CA6F;
-	Fri, 15 Dec 2023 05:54:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IP/wLE+c"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 11F237470;
+	Fri, 15 Dec 2023 05:55:24 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-oi1-f174.google.com (mail-oi1-f174.google.com [209.85.167.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from ex01.ufhost.com (ex01.ufhost.com [61.152.239.75])
+	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA46ECA64
-	for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 05:54:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oi1-f174.google.com with SMTP id 5614622812f47-3ba40df6881so96700b6e.2
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 21:54:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702619675; x=1703224475; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=hCJOW0HTWFqTjpEhxTj1el+zslba+C9AgKBFgvSSX8M=;
-        b=IP/wLE+ckmTYWdZBSu35s6LuXSILrbL7HyMsjSbbGpgoqfcHxPSlN7yNx9B86VjCTq
-         Phb85DpWslefw71iMw+nlfX0ln+bM6s+gNQfUS/VqLwjLEeB+Hs/DVpgzkCD543vRJOo
-         VNA2AI4vNbHb+30Rr4eOViyLpkgHZBRe6KHQORAdOusgMCFYzvaza6nsxnHaz6SJaE+T
-         pDXOrpPs/PNrivp3CLfZhGpkgkXnqQE1VKPOvezEeOZRYfkkSf1QOtNTIUiXjMUnDRlL
-         viTodVoWxr5TlPYY9mxdUHB0MNBvBSpmP+jQGsKVdke30PwSYqwPaEbTn9usSL7Ch9H5
-         qcRQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702619675; x=1703224475;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=hCJOW0HTWFqTjpEhxTj1el+zslba+C9AgKBFgvSSX8M=;
-        b=NllW8cLcHkg0PDH8a87Z5k+R5Mn2c73IwfnQII2aZXAw6V8P0QdmKTbKo1+t+zcPMi
-         ucUS7zIw8ofK2zp8pNldFN3ospzsMT9dYsUEMLNXGFr/saq4ve/t3RUv78Js0TxIaSWA
-         x37VdC5GVvmZesMYuLeIRm5POItfPVS/+26Lq5VUqvrqJfEoK2sWxrbe4cCArveD0z/R
-         nT5Z96QPJkuY49VEr9pZIE9Bz07bm13/BWh+ksuRT47+2gRLEKx+pfeTP1zhqvAHwquT
-         DUxT+ItKebFflh3IbTfM1MWf5o89cL/0eyS8486ThSKYfVYdbvt64n1XV7My+jkm/ALR
-         b5HQ==
-X-Gm-Message-State: AOJu0YxZGX9gq7XSOaIxSBRxr+buiRR9KrKOjh/ApR4Y3IYYqsPUWNvC
-	y3UfKsHb0cEI05snJqs48eVK8O/YkBDFriSuh4I=
-X-Google-Smtp-Source: AGHT+IFSHbIbrncQrnBc79uTTFBIB1KX1UP5iOvBoXKujoMLbJ+yAfaSq9uVSeyXU4SFuEsOkGxbg5LqUQlxNV+crJ4=
-X-Received: by 2002:a05:6808:1250:b0:3b8:b063:9b6f with SMTP id
- o16-20020a056808125000b003b8b0639b6fmr12501939oiv.97.1702619674806; Thu, 14
- Dec 2023 21:54:34 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 32C4479ED;
+	Fri, 15 Dec 2023 05:55:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=starfivetech.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=starfivetech.com
+Received: from EXMBX166.cuchost.com (unknown [175.102.18.54])
+	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+	(Client CN "EXMBX166", Issuer "EXMBX166" (not verified))
+	by ex01.ufhost.com (Postfix) with ESMTP id F0E7124E233;
+	Fri, 15 Dec 2023 13:55:10 +0800 (CST)
+Received: from EXMBX062.cuchost.com (172.16.6.62) by EXMBX166.cuchost.com
+ (172.16.6.76) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Fri, 15 Dec
+ 2023 13:55:10 +0800
+Received: from [192.168.125.107] (113.72.145.168) by EXMBX062.cuchost.com
+ (172.16.6.62) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Fri, 15 Dec
+ 2023 13:55:09 +0800
+Message-ID: <e6059181-a1bb-438b-8490-108c64316171@starfivetech.com>
+Date: Fri, 15 Dec 2023 13:55:09 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231215053016.552019-1-ghanshyam1898@gmail.com> <346d12b2-a78e-4372-880a-e522fdca7169@infradead.org>
-In-Reply-To: <346d12b2-a78e-4372-880a-e522fdca7169@infradead.org>
-From: Ghanshyam Agrawal <ghanshyam1898@gmail.com>
-Date: Fri, 15 Dec 2023 11:23:58 +0530
-Message-ID: <CAG-Bmod7tsFzh=5vzHCy6CUy5FFBGfg19NYmbVUsvniC4hGiaQ@mail.gmail.com>
-Subject: Re: [PATCH] drivers: gpu: drm: vmwgfx: fixed typos
-To: Randy Dunlap <rdunlap@infradead.org>
-Cc: zackr@vmware.com, linux-graphics-maintainer@vmware.com, 
-	maarten.lankhorst@linux.intel.com, mripard@kernel.org, tzimmermann@suse.de, 
-	airlied@gmail.com, daniel@ffwll.ch, dri-devel@lists.freedesktop.org, 
-	linux-kernel@vger.kernel.org
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1 1/9] media: v4l2-ctrls: Add user controls for StarFive
+ JH7110 ISP
+Content-Language: en-US
+To: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+CC: Mauro Carvalho Chehab <mchehab@kernel.org>, Greg Kroah-Hartman
+	<gregkh@linuxfoundation.org>, Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+	"Marvin Lin" <milkfafa@gmail.com>, Bryan O'Donoghue
+	<bryan.odonoghue@linaro.org>, "Ming Qian" <ming.qian@nxp.com>, Nicolas
+ Dufresne <nicolas.dufresne@collabora.com>, Benjamin Gaignard
+	<benjamin.gaignard@collabora.com>, Tomi Valkeinen
+	<tomi.valkeinen+renesas@ideasonboard.com>, Mingjia Zhang
+	<mingjia.zhang@mediatek.com>, Geert Uytterhoeven <geert+renesas@glider.be>,
+	Sakari Ailus <sakari.ailus@linux.intel.com>, Dan Carpenter
+	<dan.carpenter@linaro.org>, Jack Zhu <jack.zhu@starfivetech.com>,
+	<linux-media@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<linux-staging@lists.linux.dev>
+References: <20231214065027.28564-1-changhuang.liang@starfivetech.com>
+ <20231214065027.28564-2-changhuang.liang@starfivetech.com>
+ <20231214113955.GK12450@pendragon.ideasonboard.com>
+From: Changhuang Liang <changhuang.liang@starfivetech.com>
+In-Reply-To: <20231214113955.GK12450@pendragon.ideasonboard.com>
 Content-Type: text/plain; charset="UTF-8"
+X-ClientProxiedBy: EXCAS066.cuchost.com (172.16.6.26) To EXMBX062.cuchost.com
+ (172.16.6.62)
+X-YovoleRuleAgent: yovoleflag
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Dec 15, 2023 at 11:05=E2=80=AFAM Randy Dunlap <rdunlap@infradead.or=
-g> wrote:
->
->
->
-> On 12/14/23 21:30, Ghanshyam Agrawal wrote:
-> > Fixed some typos in vmwgfx_execbuf.c
-> >
-> > Signed-off-by: Ghanshyam Agrawal <ghanshyam1898@gmail.com>
-> > ---
-> >  drivers/gpu/drm/vmwgfx/vmwgfx_execbuf.c | 4 ++--
-> >  1 file changed, 2 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/drivers/gpu/drm/vmwgfx/vmwgfx_execbuf.c b/drivers/gpu/drm/=
-vmwgfx/vmwgfx_execbuf.c
-> > index 36987ef3fc30..272141b6164c 100644
-> > --- a/drivers/gpu/drm/vmwgfx/vmwgfx_execbuf.c
-> > +++ b/drivers/gpu/drm/vmwgfx/vmwgfx_execbuf.c
-> > @@ -621,10 +621,10 @@ static int vmw_resources_reserve(struct vmw_sw_co=
-ntext *sw_context)
-> >   * @sw_context: Pointer to the software context.
-> >   * @res_type: Resource type.
-> >   * @dirty: Whether to change dirty status.
-> > - * @converter: User-space visisble type specific information.
-> > + * @converter: User-space visible type specific information.
->
-> ack.
->
-> >   * @id_loc: Pointer to the location in the command buffer currently be=
-ing parsed
-> >   * from where the user-space resource id handle is located.
-> > - * @p_res: Pointer to pointer to resource validalidation node. Populat=
-ed on
-> > + * @p_res: Pointer to pointer to resource validation node. Populated o=
-n
-> >   * exit.
->
-> ack.
->
-> >   */
-> >  static int
->
-> Please also fix this one:
-> vmwgfx_execbuf.c:1072: asynchronus =3D=3D> asynchronous
->
-> I suggest that you try codespell.
->
-> Thanks.
-> --
-> #Randy
-> https://people.kernel.org/tglx/notes-about-netiquette
-> https://subspace.kernel.org/etiquette.html
+Hi Laurent
 
-Hi Randy,
+Thanks for your comments.
 
-Thanks for your acknowledgements and feedback. Codespell did suggest one
-more change but I am not sure if it should be applied. Let me ask someone.
-I will make changes and resend the second patch.
+On 2023/12/14 19:39, Laurent Pinchart wrote:
+> Hi Changhuang,
+>=20
+> Thank you for the patch.
+>=20
+> On Wed, Dec 13, 2023 at 10:50:19PM -0800, Changhuang Liang wrote:
+>> Add a control base for StarFive JH7110 ISP driver controls, and reserv=
+e
+>> 32 controls=EF=BC=8Calso add some controls for StarFive JH7110 ISP.
+>=20
+> ISP parameters should be passed through parameters buffers, not V4L2
+> control. See for instance the V4L2_META_FMT_RK_ISP1_PARAMS format in th=
+e
+> mainline kernel, it describes how to store ISP parameters in a buffer.
+> The rkisp1 driver is an example of how this can be implemented.
+>=20
 
-Thanks & Regards,
-Ghanshyam Agrawal
+That means I need to add a video output device before ISP subdev? And=20
+use queue/dequeue buffer to get the ISP paremeters?
+
+> Please note that the ISP parameters need to be documented precisely,
+> regardless of how they're passed by userspace to the kernel. Even with
+> V4L2 controls, documentation would be needed. Please see below for
+> additional comments.
+>=20
+
+I will add annotations for this file next version.
+
+>> Signed-off-by: Changhuang Liang <changhuang.liang@starfivetech.com>
+>> ---
+>>  MAINTAINERS                        |   1 +
+>>  include/uapi/linux/jh7110-isp.h    | 342 ++++++++++++++++++++++++++++=
++
+>>  include/uapi/linux/v4l2-controls.h |   6 +
+[...]
 
