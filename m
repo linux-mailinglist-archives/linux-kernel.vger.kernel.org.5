@@ -1,152 +1,152 @@
-Return-Path: <linux-kernel+bounces-1346-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-1347-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 135EA814DC1
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 18:02:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id E817A814DC4
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 18:02:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BD02B285F4C
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 17:01:59 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A5BDB2855C7
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 17:02:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4DC6E3FB36;
-	Fri, 15 Dec 2023 17:01:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 934EF3EA98;
+	Fri, 15 Dec 2023 17:02:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OsUsLrAB"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="PQkTfPy1"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-yb1-f182.google.com (mail-yb1-f182.google.com [209.85.219.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 592143EA9B
-	for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 17:01:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yb1-f182.google.com with SMTP id 3f1490d57ef6-dbce7338330so687917276.0
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 09:01:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702659697; x=1703264497; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=6Nfn9bvVvuLHxdnWDcg+9EWXTr0TX8gO/J71FKN83mM=;
-        b=OsUsLrABexB9iP83Yc1/PcXElrYIDPjpE4JTNZbxFO/9huiUorYNUpicpuPs3zeTIT
-         p+U6s/HXIhFElceIJMg3nLXdIslq7KIZ6cF2abGGlQVyz19T1WtLDrcEKNbeIy+9OvPT
-         Z7Hyptr/NsU9hqM8L1Fb392NBNRj6sxXajH3RJobsTUeYhrYbWmfjvgaqF718j1iqsnz
-         nGCWnM+6iqHdSvOBBqlbgLAA1z7Ip39jaOQ7PQ7LHth4SL0O4UzaBlUg0phhsBHyVdXu
-         QQB3U1OHl9toNZ4VvVViimdgWTv4iB8n1U35RySG3HWV7VZj38aFh0Ld4Syu1IcXwYSh
-         sqog==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702659697; x=1703264497;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=6Nfn9bvVvuLHxdnWDcg+9EWXTr0TX8gO/J71FKN83mM=;
-        b=gZAK7QnWH85WfbWeG7wl4o7+dWbOiUq1cH+V73tl+7Pep8cNUCaNnGNGhLMtxajTtC
-         HCgx6/ggr3ueoAqIYP4MvKfsoFYTnvoXsWTHWRbjonO1E9XBBIAXUNU3z9UsTwmKZO9l
-         9caEeGadkcpU1ztyzzFG630RT39EpBYf1B875PGGFrgmLzxA29e2Uu9oUX2scA0/0nv+
-         5e4cByDVUXvAD4amnsnm1QlErD5ug47FrTjjpWuQOhdXjpt2TShL6cQ0CCGIyxAWIBKV
-         z+iJLgVT48/oGgE85uTtxoUP8RHQ8dk85V9X3JaQHDF/Ufzk3HzXCtEVjfkw8eNcuuJ5
-         xO7A==
-X-Gm-Message-State: AOJu0YzO/bDSP5D9gDhiSTZDjTHO/XOHyf+zJVCvmQKDOWSMply/ms25
-	ox73kThfb1dIkS2MrPPlRNk=
-X-Google-Smtp-Source: AGHT+IFK38IskUKhPTS6SBpMM4pgyoPjKBgP/iNpKZiqeBw+ns39FwPwr7lqj7g5IHTTuZ+aALnSGg==
-X-Received: by 2002:a25:d68f:0:b0:db4:5cdd:f6b4 with SMTP id n137-20020a25d68f000000b00db45cddf6b4mr8546969ybg.14.1702659697087;
-        Fri, 15 Dec 2023 09:01:37 -0800 (PST)
-Received: from localhost ([2601:344:8301:57f0:e177:373d:4717:ff6c])
-        by smtp.gmail.com with ESMTPSA id c81-20020a25c054000000b00dbd043e4fb8sm150464ybf.31.2023.12.15.09.01.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Dec 2023 09:01:36 -0800 (PST)
-Date: Fri, 15 Dec 2023 09:01:34 -0800
-From: Yury Norov <yury.norov@gmail.com>
-To: Alexander Potapenko <glider@google.com>
-Cc: catalin.marinas@arm.com, will@kernel.org, pcc@google.com,
-	andreyknvl@gmail.com, andriy.shevchenko@linux.intel.com,
-	aleksander.lobakin@intel.com, linux@rasmusvillemoes.dk,
-	alexandru.elisei@arm.com, linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, eugenis@google.com,
-	syednwaris@gmail.com, william.gray@linaro.org
-Subject: Re: [PATCH v10-mte 4/7] arm64: mte: implement CONFIG_ARM64_MTE_COMP
-Message-ID: <ZXyGbhJqzNxbd3ay@yury-ThinkPad>
-References: <20231214110639.2294687-1-glider@google.com>
- <20231214110639.2294687-5-glider@google.com>
- <ZXtircr4TllpqyeS@yury-ThinkPad>
- <CAG_fn=WcrNqV4burBRPZZwoBLwgia7kerZ8g2vV5spzWF=houQ@mail.gmail.com>
- <ZXyAXPxlmq11rp2Y@yury-ThinkPad>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E9C93FB28;
+	Fri, 15 Dec 2023 17:02:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0353728.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3BFGwALZ020777;
+	Fri, 15 Dec 2023 17:02:13 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : in-reply-to : references : mime-version :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=B2YPCL9awtaXdHC9oWXUXcPCAxjjCJr0Vn0rYyQXOJo=;
+ b=PQkTfPy19H+mSenEhnpAiTSvzh99ikxC/N8xceArJNxfudZcsbS0iOFt+hC3Kj8ja6T8
+ UPTff1wKw+WBjX3WrJhILb3ZQ14r22XUASmkpKxeUEQsYdVMco2e6feitgRiI+kTQIZZ
+ B8djZ5swFOcvuTSZFpj3MMJQDkE1ClPmW/fmCAhkm7pO/x/xjyys/Zh0zHmMH+HLc+CX
+ /SCEsUAPPyX3MBoZYp0tUJOxo7e2lpW+SyN+vnlQ1oow7pFzKfzV7As2MYeNy76kpKjG
+ 7jJFh/woJavBz8s9wXz23TkFkX4pRSiLGsIIbFnsnyoDE7l6JbVMDcLZuX44bwbZlFAY gw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3v0tft8qpg-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 15 Dec 2023 17:02:13 +0000
+Received: from m0353728.ppops.net (m0353728.ppops.net [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3BFGjUjK006288;
+	Fri, 15 Dec 2023 17:02:12 GMT
+Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3v0tft8qnu-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 15 Dec 2023 17:02:12 +0000
+Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3BFFXtGX013937;
+	Fri, 15 Dec 2023 17:02:11 GMT
+Received: from smtprelay02.fra02v.mail.ibm.com ([9.218.2.226])
+	by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3uw592rwft-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 15 Dec 2023 17:02:11 +0000
+Received: from smtpav07.fra02v.mail.ibm.com (smtpav07.fra02v.mail.ibm.com [10.20.54.106])
+	by smtprelay02.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3BFH28GG27853434
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Fri, 15 Dec 2023 17:02:08 GMT
+Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 8CD1B20043;
+	Fri, 15 Dec 2023 17:02:08 +0000 (GMT)
+Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 5FF8A20040;
+	Fri, 15 Dec 2023 17:02:08 +0000 (GMT)
+Received: from p-imbrenda (unknown [9.152.224.66])
+	by smtpav07.fra02v.mail.ibm.com (Postfix) with ESMTP;
+	Fri, 15 Dec 2023 17:02:08 +0000 (GMT)
+Date: Fri, 15 Dec 2023 18:02:06 +0100
+From: Claudio Imbrenda <imbrenda@linux.ibm.com>
+To: Nina Schoetterl-Glausch <nsg@linux.ibm.com>
+Cc: Paolo Bonzini <pbonzini@redhat.com>, Shuah Khan <shuah@kernel.org>,
+        Janosch Frank <frankja@linux.ibm.com>,
+        Christian Borntraeger
+ <borntraeger@linux.ibm.com>,
+        kvm@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        David Hildenbrand <david@redhat.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] KVM: s390: selftest: memop: Fix undefined behavior
+Message-ID: <20231215180206.740df738@p-imbrenda>
+In-Reply-To: <20231215161125.943551-1-nsg@linux.ibm.com>
+References: <20231215161125.943551-1-nsg@linux.ibm.com>
+Organization: IBM
+X-Mailer: Claws Mail 4.2.0 (GTK 3.24.38; x86_64-redhat-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZXyAXPxlmq11rp2Y@yury-ThinkPad>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: p_xIXzpWKEXFMQuEJFyjrgTdOUj5Kojn
+X-Proofpoint-GUID: sAFCq5iOnK_QJcqwHmouXldvP6Q9_rtw
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-15_10,2023-12-14_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ suspectscore=0 adultscore=0 mlxscore=0 mlxlogscore=999 spamscore=0
+ malwarescore=0 clxscore=1011 impostorscore=0 phishscore=0 bulkscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311290000 definitions=main-2312150118
 
-On Fri, Dec 15, 2023 at 08:35:43AM -0800, Yury Norov wrote:
-> On Fri, Dec 15, 2023 at 04:19:27PM +0100, Alexander Potapenko wrote:
-> > >
-> > > That looks weird... You're casting address of a 'data' to a bitmap
-> > > instead of 'data'. At the 1st glance it makes little sense because
-> > > 'data' is passed as parameter. Moreover, in mte_is_compressed()
-> > > you pass 'data', not '&data'. Can you please comment on your
-> > > intention?
-> > 
-> > Although `data` is a void*, it actually contains 64 bits of compressed
-> > data, so we pass &data to mte_bitmap_read() to read its contents.
-> > Perhaps I'd better make `data` an unsigned long to avoid confusion.
+On Fri, 15 Dec 2023 17:11:25 +0100
+Nina Schoetterl-Glausch <nsg@linux.ibm.com> wrote:
+
+> If an integer's type has x bits, shifting the integer left by x or more
+> is undefined behavior.
+> This can happen in the rotate function when attempting to do a rotation
+> of the whole value by 0.
+
+is 0 the only problematic value? because in that case... 
+
+> 
+> Fixes: 0dd714bfd200 ("KVM: s390: selftest: memop: Add cmpxchg tests")
+> Signed-off-by: Nina Schoetterl-Glausch <nsg@linux.ibm.com>
+> ---
+>  tools/testing/selftests/kvm/s390x/memop.c | 8 +++++---
+>  1 file changed, 5 insertions(+), 3 deletions(-)
+> 
+> diff --git a/tools/testing/selftests/kvm/s390x/memop.c b/tools/testing/selftests/kvm/s390x/memop.c
+> index bb3ca9a5d731..2eba9575828e 100644
+> --- a/tools/testing/selftests/kvm/s390x/memop.c
+> +++ b/tools/testing/selftests/kvm/s390x/memop.c
+> @@ -485,11 +485,13 @@ static bool popcount_eq(__uint128_t a, __uint128_t b)
 >  
-> Still don't understand. Let's consider this example:
-> 
-> yury:linux$ cat tst.c
-> #include <stdio.h>
-> 
-> unsigned long data[1] = {0xabc};
-> 
-> void foo(unsigned long *data)
-> {
-> 	printf("foo:  *data\t%lx\n", (unsigned long)*data);
-> 	printf("foo:   data\t%lx\n",  (unsigned long)data);
-> 	printf("foo:  &data\t%lx\n", (unsigned long)&data);
-> }
-> 
-> void bar(unsigned long *data)
-> {
-> 	volatile unsigned long x[100];
-> 
-> 	printf("bar:  *data\t%lx\n", (unsigned long)*data);
-> 	printf("bar:   data\t%lx\n",  (unsigned long)data);
-> 	printf("bar:  &data\t%lx\n", (unsigned long)&data);
-> }
-> 
-> int main(int argc, char *argv[])
-> {
-> 
-> 	foo(data);
-> 	bar(data);
-> 
-> 	printf("main: *data\t%lx\n", (unsigned long)*data);
-> 	printf("main:  data\t%lx\n",  (unsigned long)data);
-> 	printf("main: &data\t%lx\n", (unsigned long)&data);
-> 
-> 	return 0;
-> }
-> yury:linux$ gcc tst.c -O0
-> yury:linux$ ./a.out
-> foo:  *data	abc
-> foo:   data	555b2cef9010
-> foo:  &data	7fff39d6e5f8
-> bar:  *data	abc
-> bar:   data	555b2cef9010
-> bar:  &data	7fff39d6e2c8
-> main: *data	abc
-> main:  data	555b2cef9010
-> main: &data	555b2cef9010
-> 
-> Data and *data have their meaning across scope boundary: a pointer and
-> a content. The &data is pretty much a random number - a pointer to
-> somewhere on a function's stack. Isn't?
+>  static __uint128_t rotate(int size, __uint128_t val, int amount)
+>  {
+> -	unsigned int bits = size * 8;
+> +	unsigned int left, right, bits = size * 8;
+>  
 
-OK, I read now. Your 'void *data' is not a pointer, but an actual data.
-Very confusing indeed... Maybe add a comment for that cast?
- 
+...why not just:
+
+if (!amount)
+	return val;
+
+?
+
+> -	amount = (amount + bits) % bits;
+> +	right = (amount + bits) % bits;
+> +	/* % 128 prevents left shift UB if size == 16 && right == 0 */
+> +	left = (bits - right) % 128;
+>  	val = cut_to_size(size, val);
+> -	return (val << (bits - amount)) | (val >> amount);
+> +	return (val << left) | (val >> right);
+>  }
+>  
+>  const unsigned int max_block = 16;
+> 
+> base-commit: 305230142ae0637213bf6e04f6d9f10bbcb74af8
+
 
