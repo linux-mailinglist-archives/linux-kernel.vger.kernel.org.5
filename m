@@ -1,104 +1,96 @@
-Return-Path: <linux-kernel+bounces-1428-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-1430-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id F0314814EEC
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 18:35:20 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id C86B7814EF3
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 18:37:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A97A1286DAD
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 17:35:19 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 678901F24810
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 17:37:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED44182EF2;
-	Fri, 15 Dec 2023 17:35:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 184233011F;
+	Fri, 15 Dec 2023 17:37:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="jHJfNHKo"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D7083011B;
-	Fri, 15 Dec 2023 17:35:00 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B2F60C433C8;
-	Fri, 15 Dec 2023 17:34:59 +0000 (UTC)
-Date: Fri, 15 Dec 2023 12:34:58 -0500
-From: Steven Rostedt <rostedt@goodmis.org>
-To: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc: LKML <linux-kernel@vger.kernel.org>, Linux trace kernel
- <linux-trace-kernel@vger.kernel.org>, Masami Hiramatsu
- <mhiramat@kernel.org>, Mark Rutland <mark.rutland@arm.com>
-Subject: Re: [PATCH] tracing: Add disable-filter-buf option
-Message-ID: <20231215123458.63f57238@rorschach.local.home>
-In-Reply-To: <fbf8991a-ce83-462c-b87a-b60c6635d223@efficios.com>
-References: <20231215102633.7a24cb77@rorschach.local.home>
-	<21936075-3858-446a-9391-a38e8d8968e7@efficios.com>
-	<20231215120417.567d5ea4@rorschach.local.home>
-	<fbf8991a-ce83-462c-b87a-b60c6635d223@efficios.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AFDBD30108;
+	Fri, 15 Dec 2023 17:37:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 8147940E00C6;
+	Fri, 15 Dec 2023 17:37:28 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+	header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id Rb52ClGutCPv; Fri, 15 Dec 2023 17:37:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+	t=1702661845; bh=L/eQchWNcZ+GPbxxL6Z1CyW4o2naLvFk2gMbKMczlLs=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=jHJfNHKoPxhrxJahFXjpcEdTG+QLB74z64Lwg5u3qdBPRe50hzFIBz/BXqUpvbSLx
+	 P+dA8fwi7PU63uOpq0hUxFY6BrUlZh/7SPmdYoFC6e7mu5jd3W26LooHdsIwIsj3sG
+	 qIOwGMk6x7dlOY1RLJZqJ7wqmKqRjcyFInQDOQzWTUh0YPdylZIUPQh+KdDOG9Hgxe
+	 S/tRuTHhh4nABOFxqOFWzHEMDe6CfinpW8x1IYzCghewSnXfSMLDp32a+dxiwtxvHB
+	 aGhWt6W3ecFgfOvQ6JvGcef4g9oVGQHAs4mfa0O+984LrGBa2MKNTLX0nBMxw+DSuU
+	 aFfkFhsuCRSh4fKmWDI7uU5UDAPizhv9YxuHr+Y9SjZnxAm/sx8kPHVea1mh9kqR15
+	 MeVcsXlaNh+88GwcYBJl9SvVpIY+6i6jRMonYdczmyEVNnZ0oKC7VM8MmXxs0aoiD9
+	 7hOW2L+mIf0XSFMi+MmqQPqryK0aqC07kBhy0kklNREKiDgLuLCGBzOjXZ384wMUfG
+	 5ifzB5vLQIY+dWsEJ4m1noRxpq5050SQUV6hDRF7sbLm+OuAlFou77lVgkQdevDdJk
+	 VvNiqY/rMBlq7Qj01GDxO8wNeovL5TS0qPFozkNNB5zGnNXtuNYgmtQX/OizQW6Bj9
+	 41gVlQncpOKLrvsS7B7RYv64=
+Received: from zn.tnic (pd95304da.dip0.t-ipconnect.de [217.83.4.218])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id E22F840E00A9;
+	Fri, 15 Dec 2023 17:37:20 +0000 (UTC)
+Date: Fri, 15 Dec 2023 18:37:14 +0100
+From: Borislav Petkov <bp@alien8.de>
+To: "Luck, Tony" <tony.luck@intel.com>
+Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"linux-tip-commits@vger.kernel.org" <linux-tip-commits@vger.kernel.org>,
+	"x86@kernel.org" <x86@kernel.org>
+Subject: Re: [tip: ras/core] x86/mce: Handle Intel threshold interrupt storms
+Message-ID: <20231215173714.GBZXyOymaUEB5tvMYP@fat_crate.local>
+References: <20231115195450.12963-4-tony.luck@intel.com>
+ <170265660288.398.1352223643373155784.tip-bot2@tip-bot2>
+ <SJ1PR11MB6083E1B502165AA27D685AB7FC93A@SJ1PR11MB6083.namprd11.prod.outlook.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <SJ1PR11MB6083E1B502165AA27D685AB7FC93A@SJ1PR11MB6083.namprd11.prod.outlook.com>
 
-On Fri, 15 Dec 2023 12:24:14 -0500
-Mathieu Desnoyers <mathieu.desnoyers@efficios.com> wrote:
-
-> On 2023-12-15 12:04, Steven Rostedt wrote:
-> > On Fri, 15 Dec 2023 10:53:39 -0500
-> > Mathieu Desnoyers <mathieu.desnoyers@efficios.com> wrote:  
-> [...]
-> >>
-> >> So rather than stacking tons of "on/off" switches for filter
-> >> features, how about you let users express the mechanism they
-> >> want to use for filtering with a string instead ? e.g.
-> >>
-> >> filter-method="temp-buffer"
-> >> filter-method="ring-buffer"
-> >> filter-method="input-arguments"  
-> > 
-> > If I add other ways to filter, it will be a separate file to control
-> > that, but all options are on/off switches. Even if I add other
-> > functionality to the way buffers are created, this will still have the
-> > same functionality to turn the entire thing on or off.  
+On Fri, Dec 15, 2023 at 05:21:12PM +0000, Luck, Tony wrote:
+> > The following commit has been merged into the ras/core branch of tip:
+> >
+> > Commit-ID:     1f68ce2a027250aeeb1756391110cdc4dc97c797
+> > Gitweb:        https://git.kernel.org/tip/1f68ce2a027250aeeb1756391110cdc4dc97c797
+> > Author:        Tony Luck <tony.luck@intel.com>
+> > AuthorDate:    Wed, 15 Nov 2023 11:54:50 -08:00
+> > Committer:     Borislav Petkov (AMD) <bp@alien8.de>
+> > CommitterDate: Fri, 15 Dec 2023 14:53:42 +01:00
 > 
-> I'll be clearer then: I think this is a bad ABI. In your reply, you justify
-> this bad ABI by implementation motivations.
+> Early X-Mas present for me!  Thanks Boris.
 
-What's wrong with a way to stop the copying ?
+:-)
 
-The option is just a way to say "I don't want to do the copy into the
-buffer, I want to go directly into it"
+You're welcome - thanks for answering my silly questions.
 
-> 
-> I don't care about the implementation, I care about the ABI, and
-> I feel that your reply is not addressing my concern at all.
+-- 
+Regards/Gruss,
+    Boris.
 
-Maybe I don't understand your concern.
-
-It's an on/off switch (like all options are). This is just a way to say
-"I want to indirect copying of the event before filtering or not".
-
-The "input-argument" part above may never happen. What's different
-between tracefs and LTTng, is that all events are created by the
-subsystem not by me. You don't use the TRACE_EVENT() macro, but you
-need to manually create each event you care about yourself. It's more
-of a burden but you also then have the luxury of hooking to the input
-portion. That is not exposed, and that is by design. As that could
-possibly make all tracepoints an ABI, and you'll have people like
-peterz nacking any new tracepoint in the scheduler. He doesn't allow
-trace events anymore because of that exposure.
-
-> 
-> Moreover, double-negative boolean options (disable-X=false) are confusing.
-
-I agree with this, and will rename it to "filter-buffer" instead. I
-blame getting up at 3am for my 5:15am flight for not thinking clearly
-on that ;-)
-
-Thanks!
-
--- Steve
+https://people.kernel.org/tglx/notes-about-netiquette
 
