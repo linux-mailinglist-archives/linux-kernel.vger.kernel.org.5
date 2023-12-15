@@ -1,139 +1,250 @@
-Return-Path: <linux-kernel+bounces-1396-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-1391-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B088E814E70
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 18:22:16 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 73E45814E66
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 18:20:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3AC552855FC
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 17:22:15 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 88A911C21087
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 17:20:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 21FC176DCB;
-	Fri, 15 Dec 2023 17:12:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="YLMRoKKn"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4BBF646527;
+	Fri, 15 Dec 2023 17:12:34 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from relay6-d.mail.gandi.net (relay6-d.mail.gandi.net [217.70.183.198])
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0AC4E47F48;
-	Fri, 15 Dec 2023 17:12:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 0C929C0005;
-	Fri, 15 Dec 2023 17:12:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1702660366;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=KoglPoPxMjohGlT19IV2d4irMqcCP5CPPQtgcH9Zsx0=;
-	b=YLMRoKKnAUa9V7xJHgVwKZv6oJTp8Q2KJuV26+i+wFtvUNqqkuA3FOaYRkp3O8ShbnVuel
-	b4lXchIE17nVN8NXlKNHJvhlsdjJqyNq9XVkIhlBIocsQKgp0Wlzn3ZUSNrZxUIYztSzU6
-	YtHmA9d3ZuuGN+PzCrZZP2Hr7g5ofViwRa2OAWmv4oNGiUci34JFHNnESgqTrKcQDbIx52
-	OPZ319L4wF/aC15Yj4gPRtUGIg9ALMfxuOE0X1JwK43yXp1XSufQwKvKxrgy7D1ZuDJ7/A
-	X87uIJ6jYWe+bLmq0hF7Mrn1veS4emcSVovmRZaQ5cIYNkj94NuWM3iVn3og7Q==
-From: Maxime Chevallier <maxime.chevallier@bootlin.com>
-To: davem@davemloft.net
-Cc: Maxime Chevallier <maxime.chevallier@bootlin.com>,
-	netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	thomas.petazzoni@bootlin.com,
-	Andrew Lunn <andrew@lunn.ch>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Eric Dumazet <edumazet@google.com>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Russell King <linux@armlinux.org.uk>,
-	linux-arm-kernel@lists.infradead.org,
-	Christophe Leroy <christophe.leroy@csgroup.eu>,
-	Herve Codina <herve.codina@bootlin.com>,
-	Florian Fainelli <f.fainelli@gmail.com>,
-	Heiner Kallweit <hkallweit1@gmail.com>,
-	Vladimir Oltean <vladimir.oltean@nxp.com>,
-	=?UTF-8?q?K=C3=B6ry=20Maincent?= <kory.maincent@bootlin.com>,
-	Jesse Brandeburg <jesse.brandeburg@intel.com>,
-	Jonathan Corbet <corbet@lwn.net>,
-	=?UTF-8?q?Marek=20Beh=C3=BAn?= <kabel@kernel.org>,
-	Piergiorgio Beruto <piergiorgio.beruto@gmail.com>,
-	Oleksij Rempel <o.rempel@pengutronix.de>,
-	=?UTF-8?q?Nicol=C3=B2=20Veronese?= <nicveronese@gmail.com>
-Subject: [PATCH net-next v4 04/13] net: sfp: Add helper to return the SFP bus name
-Date: Fri, 15 Dec 2023 18:12:26 +0100
-Message-ID: <20231215171237.1152563-5-maxime.chevallier@bootlin.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20231215171237.1152563-1-maxime.chevallier@bootlin.com>
-References: <20231215171237.1152563-1-maxime.chevallier@bootlin.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9357D446DA;
+	Fri, 15 Dec 2023 17:12:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.18.186.216])
+	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4SsG1y3GNgz6K8qY;
+	Sat, 16 Dec 2023 01:10:30 +0800 (CST)
+Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
+	by mail.maildlp.com (Postfix) with ESMTPS id 5989E140447;
+	Sat, 16 Dec 2023 01:12:29 +0800 (CST)
+Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Fri, 15 Dec
+ 2023 17:12:28 +0000
+Date: Fri, 15 Dec 2023 17:12:27 +0000
+From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To: "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>
+CC: <linux-pm@vger.kernel.org>, <loongarch@lists.linux.dev>,
+	<linux-acpi@vger.kernel.org>, <linux-arch@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+	<linux-riscv@lists.infradead.org>, <kvmarm@lists.linux.dev>,
+	<x86@kernel.org>, <acpica-devel@lists.linuxfoundation.org>,
+	<linux-csky@vger.kernel.org>, <linux-doc@vger.kernel.org>,
+	<linux-ia64@vger.kernel.org>, <linux-parisc@vger.kernel.org>, Salil Mehta
+	<salil.mehta@huawei.com>, Jean-Philippe Brucker <jean-philippe@linaro.org>,
+	<jianyong.wu@arm.com>, <justin.he@arm.com>, James Morse
+	<james.morse@arm.com>, Jose Marinho <jose.marinho@arm.com>, Samer
+ El-Haj-Mahmoud <Samer.El-Haj-Mahmoud@arm.com>
+Subject: Re: [PATCH RFC v3 20/21] ACPI: Add _OSC bits to advertise OS
+ support for toggling CPU present/enabled
+Message-ID: <20231215171227.00006550@Huawei.com>
+In-Reply-To: <E1rDOhS-00Dvla-7i@rmk-PC.armlinux.org.uk>
+References: <ZXmn46ptis59F0CO@shell.armlinux.org.uk>
+	<E1rDOhS-00Dvla-7i@rmk-PC.armlinux.org.uk>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-GND-Sasl: maxime.chevallier@bootlin.com
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: lhrpeml100004.china.huawei.com (7.191.162.219) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
 
-Knowing the bus name is helpful when we want to expose the link topology
-to userspace, add a helper to return the SFP bus name.
+On Wed, 13 Dec 2023 12:50:54 +0000
+Russell King (Oracle) <rmk+kernel@armlinux.org.uk> wrote:
 
-Signed-off-by: Maxime Chevallier <maxime.chevallier@bootlin.com>
----
-V4: - No changes
+> From: James Morse <james.morse@arm.com>
+> 
+> Platform firmware can disabled a CPU, or make it not-present by making
+> an eject-request notification, then waiting for the os to make it offline
+OS
 
-V3: - Added RTNL assert
-    - Made the stub inline
-V2: New patch
+> and call _EJx. After the firmware updates _STA with the new status.
+> 
+> Not all operating systems support this. For arm64 making CPUs not-present
+> has never been supported. For all ACPI architectures, making CPUs disabled
+> has recently been added. Firmware can't know what the OS has support for.
+> 
+> Add two new _OSC bits to advertise whether the OS supports the _STA enabled
+> or present bits being toggled for CPUs. This will be important for arm64
+> if systems that support physical CPU hotplug ever appear as arm64 linux
+> doesn't currently support this, so firmware shouldn't try.
+> 
+> Advertising this support to firmware is useful for cloud orchestrators
+> to know whether they can scale a particular VM by adding CPUs.
+> 
+> Signed-off-by: James Morse <james.morse@arm.com>
+> Tested-by: Miguel Luis <miguel.luis@oracle.com>
+> Tested-by: Vishnu Pajjuri <vishnu@os.amperecomputing.com>
+> Tested-by: Jianyong Wu <jianyong.wu@arm.com>
 
- drivers/net/phy/sfp-bus.c | 11 +++++++++++
- include/linux/sfp.h       |  6 ++++++
- 2 files changed, 17 insertions(+)
+I'm very much in favor of this _OSC but it hasn't been accepted yet I think...
+https://bugzilla.tianocore.org/show_bug.cgi?id=4481
 
-diff --git a/drivers/net/phy/sfp-bus.c b/drivers/net/phy/sfp-bus.c
-index 3a86c41e1235..fb1c102714b5 100644
---- a/drivers/net/phy/sfp-bus.c
-+++ b/drivers/net/phy/sfp-bus.c
-@@ -859,3 +859,14 @@ void sfp_unregister_socket(struct sfp_bus *bus)
- 	sfp_bus_put(bus);
- }
- EXPORT_SYMBOL_GPL(sfp_unregister_socket);
-+
-+const char *sfp_get_name(struct sfp_bus *bus)
-+{
-+	ASSERT_RTNL();
-+
-+	if (bus->sfp_dev)
-+		return dev_name(bus->sfp_dev);
-+
-+	return NULL;
-+}
-+EXPORT_SYMBOL_GPL(sfp_get_name);
-diff --git a/include/linux/sfp.h b/include/linux/sfp.h
-index 0573e53b0c11..55c0ab17c9e2 100644
---- a/include/linux/sfp.h
-+++ b/include/linux/sfp.h
-@@ -570,6 +570,7 @@ struct sfp_bus *sfp_bus_find_fwnode(const struct fwnode_handle *fwnode);
- int sfp_bus_add_upstream(struct sfp_bus *bus, void *upstream,
- 			 const struct sfp_upstream_ops *ops);
- void sfp_bus_del_upstream(struct sfp_bus *bus);
-+const char *sfp_get_name(struct sfp_bus *bus);
- #else
- static inline int sfp_parse_port(struct sfp_bus *bus,
- 				 const struct sfp_eeprom_id *id,
-@@ -648,6 +649,11 @@ static inline int sfp_bus_add_upstream(struct sfp_bus *bus, void *upstream,
- static inline void sfp_bus_del_upstream(struct sfp_bus *bus)
- {
- }
-+
-+static inline const char *sfp_get_name(struct sfp_bus *bus)
-+{
-+	return NULL;
-+}
- #endif
- 
- #endif
--- 
-2.43.0
+Jose? Github suggests you are the proposer on this.
+
+btw v4 looks ok but v5 in the tianocore github seems to have lost the actual OSC part.
+
+Jonathan
+
+> ---
+> I'm assuming Loongarch machines do not support physical CPU hotplug.
+> 
+> Changes since RFC v3:
+>  * Drop ia64 changes
+>  * Update James' comment below "---" to remove reference to ia64
+> 
+> Outstanding comment:
+>  https://lore.kernel.org/r/20230914175021.000018fd@Huawei.com
+
+
+
+> ---
+>  arch/x86/Kconfig              |  1 +
+>  drivers/acpi/Kconfig          |  9 +++++++++
+>  drivers/acpi/acpi_processor.c | 14 +++++++++++++-
+>  drivers/acpi/bus.c            | 16 ++++++++++++++++
+>  include/linux/acpi.h          |  4 ++++
+>  5 files changed, 43 insertions(+), 1 deletion(-)
+> 
+> diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+> index 64fc7c475ab0..33fc4dcd950c 100644
+> --- a/arch/x86/Kconfig
+> +++ b/arch/x86/Kconfig
+> @@ -60,6 +60,7 @@ config X86
+>  	select ACPI_LEGACY_TABLES_LOOKUP	if ACPI
+>  	select ACPI_SYSTEM_POWER_STATES_SUPPORT	if ACPI
+>  	select ACPI_HOTPLUG_PRESENT_CPU		if ACPI_PROCESSOR && HOTPLUG_CPU
+> +	select ACPI_HOTPLUG_IGNORE_OSC		if ACPI && HOTPLUG_CPU
+>  	select ARCH_32BIT_OFF_T			if X86_32
+>  	select ARCH_CLOCKSOURCE_INIT
+>  	select ARCH_CORRECT_STACKTRACE_ON_KRETPROBE
+> diff --git a/drivers/acpi/Kconfig b/drivers/acpi/Kconfig
+> index 9c5a43d0aff4..020e7c0ab985 100644
+> --- a/drivers/acpi/Kconfig
+> +++ b/drivers/acpi/Kconfig
+> @@ -311,6 +311,15 @@ config ACPI_HOTPLUG_PRESENT_CPU
+>  	depends on ACPI_PROCESSOR && HOTPLUG_CPU
+>  	select ACPI_CONTAINER
+>  
+> +config ACPI_HOTPLUG_IGNORE_OSC
+> +	bool
+> +	depends on ACPI_HOTPLUG_PRESENT_CPU
+> +	help
+> +	  Ignore whether firmware acknowledged support for toggling the CPU
+> +	  present bit in _STA. Some architectures predate the _OSC bits, so
+> +	  firmware doesn't know to do this.
+> +
+> +
+>  config ACPI_PROCESSOR_AGGREGATOR
+>  	tristate "Processor Aggregator"
+>  	depends on ACPI_PROCESSOR
+> diff --git a/drivers/acpi/acpi_processor.c b/drivers/acpi/acpi_processor.c
+> index ea12e70dfd39..5bb207a7a1dd 100644
+> --- a/drivers/acpi/acpi_processor.c
+> +++ b/drivers/acpi/acpi_processor.c
+> @@ -182,6 +182,18 @@ static void __init acpi_pcc_cpufreq_init(void)
+>  static void __init acpi_pcc_cpufreq_init(void) {}
+>  #endif /* CONFIG_X86 */
+>  
+> +static bool acpi_processor_hotplug_present_supported(void)
+> +{
+> +	if (!IS_ENABLED(CONFIG_ACPI_HOTPLUG_PRESENT_CPU))
+> +		return false;
+> +
+> +	/* x86 systems pre-date the _OSC bit */
+> +	if (IS_ENABLED(CONFIG_ACPI_HOTPLUG_IGNORE_OSC))
+> +		return true;
+> +
+> +	return osc_sb_hotplug_present_support_acked;
+> +}
+> +
+>  /* Initialization */
+>  static int acpi_processor_make_present(struct acpi_processor *pr)
+>  {
+> @@ -189,7 +201,7 @@ static int acpi_processor_make_present(struct acpi_processor *pr)
+>  	acpi_status status;
+>  	int ret;
+>  
+> -	if (!IS_ENABLED(CONFIG_ACPI_HOTPLUG_PRESENT_CPU)) {
+> +	if (!acpi_processor_hotplug_present_supported()) {
+>  		pr_err_once("Changing CPU present bit is not supported\n");
+>  		return -ENODEV;
+>  	}
+> diff --git a/drivers/acpi/bus.c b/drivers/acpi/bus.c
+> index 72e64c0718c9..7122450739d6 100644
+> --- a/drivers/acpi/bus.c
+> +++ b/drivers/acpi/bus.c
+> @@ -298,6 +298,13 @@ EXPORT_SYMBOL_GPL(osc_sb_native_usb4_support_confirmed);
+>  
+>  bool osc_sb_cppc2_support_acked;
+>  
+> +/*
+> + * ACPI 6.? Proposed Operating System Capabilities for modifying CPU
+> + * present/enable.
+> + */
+> +bool osc_sb_hotplug_enabled_support_acked;
+> +bool osc_sb_hotplug_present_support_acked;
+> +
+>  static u8 sb_uuid_str[] = "0811B06E-4A27-44F9-8D60-3CBBC22E7B48";
+>  static void acpi_bus_osc_negotiate_platform_control(void)
+>  {
+> @@ -346,6 +353,11 @@ static void acpi_bus_osc_negotiate_platform_control(void)
+>  
+>  	if (!ghes_disable)
+>  		capbuf[OSC_SUPPORT_DWORD] |= OSC_SB_APEI_SUPPORT;
+> +
+> +	capbuf[OSC_SUPPORT_DWORD] |= OSC_SB_HOTPLUG_ENABLED_SUPPORT;
+> +	if (IS_ENABLED(CONFIG_ACPI_HOTPLUG_PRESENT_CPU))
+> +		capbuf[OSC_SUPPORT_DWORD] |= OSC_SB_HOTPLUG_PRESENT_SUPPORT;
+> +
+>  	if (ACPI_FAILURE(acpi_get_handle(NULL, "\\_SB", &handle)))
+>  		return;
+>  
+> @@ -383,6 +395,10 @@ static void acpi_bus_osc_negotiate_platform_control(void)
+>  			capbuf_ret[OSC_SUPPORT_DWORD] & OSC_SB_NATIVE_USB4_SUPPORT;
+>  		osc_cpc_flexible_adr_space_confirmed =
+>  			capbuf_ret[OSC_SUPPORT_DWORD] & OSC_SB_CPC_FLEXIBLE_ADR_SPACE;
+> +		osc_sb_hotplug_enabled_support_acked =
+> +			capbuf_ret[OSC_SUPPORT_DWORD] & OSC_SB_HOTPLUG_ENABLED_SUPPORT;
+> +		osc_sb_hotplug_present_support_acked =
+> +			capbuf_ret[OSC_SUPPORT_DWORD] & OSC_SB_HOTPLUG_PRESENT_SUPPORT;
+>  	}
+>  
+>  	kfree(context.ret.pointer);
+> diff --git a/include/linux/acpi.h b/include/linux/acpi.h
+> index 00be66683505..c572abac803c 100644
+> --- a/include/linux/acpi.h
+> +++ b/include/linux/acpi.h
+> @@ -559,12 +559,16 @@ acpi_status acpi_run_osc(acpi_handle handle, struct acpi_osc_context *context);
+>  #define OSC_SB_NATIVE_USB4_SUPPORT		0x00040000
+>  #define OSC_SB_PRM_SUPPORT			0x00200000
+>  #define OSC_SB_FFH_OPR_SUPPORT			0x00400000
+> +#define OSC_SB_HOTPLUG_ENABLED_SUPPORT		0x00800000
+> +#define OSC_SB_HOTPLUG_PRESENT_SUPPORT		0x01000000
+>  
+>  extern bool osc_sb_apei_support_acked;
+>  extern bool osc_pc_lpi_support_confirmed;
+>  extern bool osc_sb_native_usb4_support_confirmed;
+>  extern bool osc_sb_cppc2_support_acked;
+>  extern bool osc_cpc_flexible_adr_space_confirmed;
+> +extern bool osc_sb_hotplug_enabled_support_acked;
+> +extern bool osc_sb_hotplug_present_support_acked;
+>  
+>  /* USB4 Capabilities */
+>  #define OSC_USB_USB3_TUNNELING			0x00000001
 
 
