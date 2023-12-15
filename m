@@ -1,93 +1,69 @@
-Return-Path: <linux-kernel+bounces-1573-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-1574-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2811F815049
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 20:40:43 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 37C96815050
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 20:42:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5AE561C230D5
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 19:40:42 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E563B2828BC
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 19:42:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE7D741866;
-	Fri, 15 Dec 2023 19:40:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 828D341863;
+	Fri, 15 Dec 2023 19:42:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="CdG5taBA";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="AkWe3gTm"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lRBkB8ZS"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 76D2046531;
-	Fri, 15 Dec 2023 19:40:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-From: Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1702669228;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=py2PeKKW0Gg3Y7O2QlrezYfuYNsNwRB8EFj8qodJKBQ=;
-	b=CdG5taBAB6NTGzrM1rVvHjEwlby6utivd6CtHCQ/SbU/I0bckLsyLiBKkgFxHtVPownMHz
-	5T8olK/qGeNpaRlM7L5jERG1xMONRGfJKovMfz/HsRMtryBgfVSSBp146avw0XqPAvs+hd
-	1VajQ9M8qfvAEi+x7fpa/LbJRNsPoTBneTU2l0pCSv/fG28o4g74Ia0roq11PfKpJym18J
-	2CJ1VF0FxfTwZppVnajmd6+9Q20FqIdDBs9Zk7N2tnUgdmEbq2b4x4ujKF+vDauHDKUNx2
-	ktWw7oS5G8SIUH6h9kxMTknyF6WlsYPA+KTBwbzdtkMoMD0gpOTMeFvPV0swhA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1702669228;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=py2PeKKW0Gg3Y7O2QlrezYfuYNsNwRB8EFj8qodJKBQ=;
-	b=AkWe3gTm8O5beIsABX3PYEheunlmtyOLR3tMy+HnIHu9N4zr8/Q64ZQBWBzRCznskC2rHp
-	BwvqYKEXsjJzgQAQ==
-To: Russell King <rmk+kernel@armlinux.org.uk>, linux-pm@vger.kernel.org,
- loongarch@lists.linux.dev, linux-acpi@vger.kernel.org,
- linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-riscv@lists.infradead.org,
- kvmarm@lists.linux.dev, x86@kernel.org,
- acpica-devel@lists.linuxfoundation.org, linux-csky@vger.kernel.org,
- linux-doc@vger.kernel.org, linux-ia64@vger.kernel.org,
- linux-parisc@vger.kernel.org
-Cc: Salil Mehta <salil.mehta@huawei.com>, Jean-Philippe Brucker
- <jean-philippe@linaro.org>, jianyong.wu@arm.com, justin.he@arm.com, James
- Morse <james.morse@arm.com>
-Subject: Re: [PATCH RFC v3 21/21] cpumask: Add enabled cpumask for present
- CPUs that can be brought online
-In-Reply-To: <E1rDOhX-00Dvlg-Ci@rmk-PC.armlinux.org.uk>
-References: <ZXmn46ptis59F0CO@shell.armlinux.org.uk>
- <E1rDOhX-00Dvlg-Ci@rmk-PC.armlinux.org.uk>
-Date: Fri, 15 Dec 2023 20:40:28 +0100
-Message-ID: <87le9vmez7.ffs@tglx>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C034041843;
+	Fri, 15 Dec 2023 19:42:14 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D1473C433C7;
+	Fri, 15 Dec 2023 19:42:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1702669334;
+	bh=RHN6Ed0fgIKVWx3mi/jQi+t/oJQO9mY686auJYDuwOU=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=lRBkB8ZScW6ebe5uPWkKzHERuHCqWCsK/wQCvSrHSRvtrExjKLuvzgJk8EflWyiff
+	 5xyRJkWjLSOTpeAwj7KyKmodXnWJFXvK911U55pDY4IRqeIvcTB+3qGbNj0hBSX9ww
+	 rQ9Uc+2Sl4Qe8Otw4kW8QJ4o9IK60WHB8v+83oQKgL3DHb4zzNyVlMAajUYHatyXbw
+	 Ux16teJFEtotfFT6wWEdfQ+0+GoMnFiAGhAzWmhM+w40OYIY6dL7tCJQcVrfEtyGCM
+	 n8FL5BJ/T6DaRR0asFgsIg70bQSfweQTLDGBtzwNo06ccu5BwEq1vt5RTY2nu/Z6P2
+	 oSDLdMM3APNIA==
+Received: (nullmailer pid 271794 invoked by uid 1000);
+	Fri, 15 Dec 2023 19:42:10 -0000
+Date: Fri, 15 Dec 2023 13:42:10 -0600
+From: Rob Herring <robh@kernel.org>
+To: Tudor Ambarus <tudor.ambarus@linaro.org>
+Cc: will@kernel.org, jirislaby@kernel.org, alim.akhtar@samsung.com, arnd@arndb.de, peter.griffin@linaro.org, linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org, s.nawrocki@samsung.com, andi.shyti@kernel.org, linux-serial@vger.kernel.org, saravanak@google.com, sboyd@kernel.org, cw00.choi@samsung.com, linux-i2c@vger.kernel.org, andre.draszik@linaro.org, robh+dt@kernel.org, willmcvicker@google.com, linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org, tomasz.figa@gmail.com, conor+dt@kernel.org, catalin.marinas@arm.com, linux-samsung-soc@vger.kernel.org, gregkh@linuxfoundation.org, krzysztof.kozlowski+dt@linaro.org, mturquette@baylibre.com, semen.protsenko@linaro.org
+Subject: Re: [PATCH 03/13] dt-bindings: i2c: exynos5: add google,gs101-hsi2c
+ compatible
+Message-ID: <170266933016.271733.6481546184634336779.robh@kernel.org>
+References: <20231214105243.3707730-1-tudor.ambarus@linaro.org>
+ <20231214105243.3707730-4-tudor.ambarus@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231214105243.3707730-4-tudor.ambarus@linaro.org>
 
-On Wed, Dec 13 2023 at 12:50, Russell King (Oracle) wrote:
-> From: James Morse <james.morse@arm.com>
->
-> The 'offline' file in sysfs shows all offline CPUs, including those
-> that aren't present. User-space is expected to remove not-present CPUs
-> from this list to learn which CPUs could be brought online.
->
-> CPUs can be present but not-enabled. These CPUs can't be brought online
-> until the firmware policy changes, which comes with an ACPI notification
-> that will register the CPUs.
->
-> With only the offline and present files, user-space is unable to
-> determine which CPUs it can try to bring online. Add a new CPU mask
-> that shows this based on all the registered CPUs.
->
-> Signed-off-by: James Morse <james.morse@arm.com>
-> Tested-by: Miguel Luis <miguel.luis@oracle.com>
-> Tested-by: Vishnu Pajjuri <vishnu@os.amperecomputing.com>
-> Tested-by: Jianyong Wu <jianyong.wu@arm.com>
 
-Acked-by: Thomas Gleixner <tglx@linutronix.de>
+On Thu, 14 Dec 2023 10:52:33 +0000, Tudor Ambarus wrote:
+> Add google,gs101-hsi2c dedicated compatible for representing
+> I2C of Google GS101 SoC.
+> 
+> Signed-off-by: Tudor Ambarus <tudor.ambarus@linaro.org>
+> ---
+>  Documentation/devicetree/bindings/i2c/i2c-exynos5.yaml | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+
+Acked-by: Rob Herring <robh@kernel.org>
+
 
