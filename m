@@ -1,131 +1,107 @@
-Return-Path: <linux-kernel+bounces-983-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-990-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 481658148D9
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 14:15:17 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C245E8148E6
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 14:17:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 983FAB20FDB
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 13:15:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 53C51286482
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 13:17:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 40AAB30CE7;
-	Fri, 15 Dec 2023 13:14:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1597C2D05F;
+	Fri, 15 Dec 2023 13:16:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=crapouillou.net header.i=@crapouillou.net header.b="DIiMSFMx"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="h0qVfuuU"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from aposti.net (aposti.net [89.234.176.197])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C44693065B;
-	Fri, 15 Dec 2023 13:14:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=crapouillou.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=crapouillou.net
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crapouillou.net;
-	s=mail; t=1702646031;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=kAeMuIy1XyR2uI2Lp4H2je64QseMIBGkzrSyKbKGd4Y=;
-	b=DIiMSFMxTT1aXlDXsy/PFjuLsM+XpoHYg0O5x93fbK0H4ObtJC8KMmoG5cWrdP7CLuV480
-	S8lKlFIBKgMSWMsyyCDK0whoT0VT03xXOTmqvGWPh3Z1LLgqLy5DfaF0oe8XdNfIl+nw6X
-	aD/W6o2E4+ikDbHVRK0jH8lN3mUCMko=
-From: Paul Cercueil <paul@crapouillou.net>
-To: Vinod Koul <vkoul@kernel.org>
-Cc: Lars-Peter Clausen <lars@metafoo.de>,
-	=?UTF-8?q?Nuno=20S=C3=A1?= <noname.nuno@gmail.com>,
-	Michael Hennerich <Michael.Hennerich@analog.com>,
-	dmaengine@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Paul Cercueil <paul@crapouillou.net>
-Subject: [PATCH v2 5/5] dmaengine: axi-dmac: Improve cyclic DMA transfers in SG mode
-Date: Fri, 15 Dec 2023 14:13:13 +0100
-Message-ID: <20231215131313.23840-6-paul@crapouillou.net>
-In-Reply-To: <20231215131313.23840-1-paul@crapouillou.net>
-References: <20231215131313.23840-1-paul@crapouillou.net>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6AE3D2D7BE
+	for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 13:16:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1702646174; x=1734182174;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=EV/kG4sinT3otF7Cj9i3xRL9iFuhxd2et3B7nxiTSb0=;
+  b=h0qVfuuU87rDAvtR/AGeMen9jwb/1zgmU+aEkf+2Wnh8jLst91T38RMi
+   4MCuNixvJvwjcze9ur661KWfpWWDsqBUwp8ctN5KEHHduMC/iqCFZesSG
+   TAwk27CSpjjS+2p4P+UGRho7YLC5OtsdCg7E6q4yzBmM9xHtsnLo7UjhM
+   M8fwKisVpfc2IFzXcQM+qAQD0qCo4tEMZcReMWF2t8nZAfIGVh6MdgOg0
+   lMsjoe5jLzrxuIq/uwn/inxZFZfxKtLAEAEKYAc2TSTlTSOmAlQbuY4IC
+   pbOp7IlnYJgYcdmZOt4C5h5kkNxI68qFizjp670WsnVZJt2hs07GX/5Z8
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10924"; a="2440860"
+X-IronPort-AV: E=Sophos;i="6.04,278,1695711600"; 
+   d="scan'208";a="2440860"
+Received: from orviesa002.jf.intel.com ([10.64.159.142])
+  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Dec 2023 05:16:14 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.04,278,1695711600"; 
+   d="scan'208";a="16294273"
+Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
+  by orviesa002.jf.intel.com with ESMTP; 15 Dec 2023 05:16:11 -0800
+Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rE82z-0000Ee-0Q;
+	Fri, 15 Dec 2023 13:16:09 +0000
+Date: Fri, 15 Dec 2023 21:15:24 +0800
+From: kernel test robot <lkp@intel.com>
+To: Tudor Ambarus <tudor.ambarus@microchip.com>
+Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+	linux-kernel@vger.kernel.org, Vinod Koul <vkoul@kernel.org>
+Subject: scripts/kernel-doc: drivers/dma/at_hdmac.c:253: warning: Function
+ parameter or struct member 'boundary' not described in 'at_desc'
+Message-ID: <202312152131.DQztdy4c-lkp@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam: Yes
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-For cyclic transfers, chain the last descriptor to the first one, and
-disable IRQ generation if there is no callback registered with the
-cyclic transfer.
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   3f7168591ebf7bbdb91797d02b1afaf00a4289b1
+commit: 5cecadc3e2a4fb72ab37d9420df0a9e1179b8a3e dmaengine: at_hdmac: Keep register definitions and structures private to at_hdmac.c
+date:   1 year, 1 month ago
+config: arm-randconfig-001-20231215 (https://download.01.org/0day-ci/archive/20231215/202312152131.DQztdy4c-lkp@intel.com/config)
+compiler: clang version 15.0.7 (https://github.com/llvm/llvm-project.git 8dfdcc7b7bf66834a761bd8de445840ef68e4d1a)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231215/202312152131.DQztdy4c-lkp@intel.com/reproduce)
 
-Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202312152131.DQztdy4c-lkp@intel.com/
 
----
-v2: New patch
----
- drivers/dma/dma-axi-dmac.c | 22 ++++++++++++++--------
- 1 file changed, 14 insertions(+), 8 deletions(-)
+All warnings (new ones prefixed by >>):
 
-diff --git a/drivers/dma/dma-axi-dmac.c b/drivers/dma/dma-axi-dmac.c
-index f63acae511fb..4e339c04fc1e 100644
---- a/drivers/dma/dma-axi-dmac.c
-+++ b/drivers/dma/dma-axi-dmac.c
-@@ -285,12 +285,14 @@ static void axi_dmac_start_transfer(struct axi_dmac_chan *chan)
- 
- 	/*
- 	 * If the hardware supports cyclic transfers and there is no callback to
--	 * call and only a single segment, enable hw cyclic mode to avoid
--	 * unnecessary interrupts.
-+	 * call, enable hw cyclic mode to avoid unnecessary interrupts.
- 	 */
--	if (chan->hw_cyclic && desc->cyclic && !desc->vdesc.tx.callback &&
--		desc->num_sgs == 1)
--		flags |= AXI_DMAC_FLAG_CYCLIC;
-+	if (chan->hw_cyclic && desc->cyclic && !desc->vdesc.tx.callback) {
-+		if (chan->hw_sg)
-+			desc->sg[desc->num_sgs - 1].hw->flags &= ~AXI_DMAC_HW_FLAG_IRQ;
-+		else if (desc->num_sgs == 1)
-+			flags |= AXI_DMAC_FLAG_CYCLIC;
-+	}
- 
- 	if (chan->hw_partial_xfer)
- 		flags |= AXI_DMAC_FLAG_PARTIAL_REPORT;
-@@ -411,7 +413,6 @@ static bool axi_dmac_transfer_done(struct axi_dmac_chan *chan,
- 	if (chan->hw_sg) {
- 		if (active->cyclic) {
- 			vchan_cyclic_callback(&active->vdesc);
--			start_next = true;
- 		} else {
- 			list_del(&active->vdesc.node);
- 			vchan_cookie_complete(&active->vdesc);
-@@ -667,7 +668,7 @@ static struct dma_async_tx_descriptor *axi_dmac_prep_dma_cyclic(
- {
- 	struct axi_dmac_chan *chan = to_axi_dmac_chan(c);
- 	struct axi_dmac_desc *desc;
--	unsigned int num_periods, num_segments;
-+	unsigned int num_periods, num_segments, num_sgs;
- 
- 	if (direction != chan->direction)
- 		return NULL;
-@@ -681,11 +682,16 @@ static struct dma_async_tx_descriptor *axi_dmac_prep_dma_cyclic(
- 
- 	num_periods = buf_len / period_len;
- 	num_segments = DIV_ROUND_UP(period_len, chan->max_length);
-+	num_sgs = num_periods * num_segments;
- 
--	desc = axi_dmac_alloc_desc(chan, num_periods * num_segments);
-+	desc = axi_dmac_alloc_desc(chan, num_sgs);
- 	if (!desc)
- 		return NULL;
- 
-+	/* Chain the last descriptor to the first, and remove its "last" flag */
-+	desc->sg[num_sgs - 1].hw->next_sg_addr = desc->sg[0].hw_phys;
-+	desc->sg[num_sgs - 1].hw->flags &= ~AXI_DMAC_HW_FLAG_LAST;
-+
- 	axi_dmac_fill_linear_sg(chan, direction, buf_addr, num_periods,
- 		period_len, desc->sg);
- 
+   scripts/kernel-doc: drivers/dma/at_hdmac.c:253: warning: Function parameter or struct member 'lli' not described in 'at_desc'
+   scripts/kernel-doc: drivers/dma/at_hdmac.c:253: warning: Function parameter or struct member 'tx_list' not described in 'at_desc'
+>> scripts/kernel-doc: drivers/dma/at_hdmac.c:253: warning: Function parameter or struct member 'boundary' not described in 'at_desc'
+>> scripts/kernel-doc: drivers/dma/at_hdmac.c:253: warning: Function parameter or struct member 'dst_hole' not described in 'at_desc'
+>> scripts/kernel-doc: drivers/dma/at_hdmac.c:253: warning: Function parameter or struct member 'src_hole' not described in 'at_desc'
+>> scripts/kernel-doc: drivers/dma/at_hdmac.c:253: warning: Function parameter or struct member 'memset_buffer' not described in 'at_desc'
+>> scripts/kernel-doc: drivers/dma/at_hdmac.c:253: warning: Function parameter or struct member 'memset_paddr' not described in 'at_desc'
+>> scripts/kernel-doc: drivers/dma/at_hdmac.c:253: warning: Function parameter or struct member 'memset_vaddr' not described in 'at_desc'
+   scripts/kernel-doc: drivers/dma/at_hdmac.c:253: warning: Excess struct member 'at_lli' description in 'at_desc'
+   scripts/kernel-doc: drivers/dma/at_hdmac.c:253: warning: Excess struct member 'at_lli' description in 'at_desc'
+>> scripts/kernel-doc: drivers/dma/at_hdmac.c:269: warning: cannot understand function prototype: 'enum atc_status '
+   scripts/kernel-doc: drivers/dma/at_hdmac.c:384: warning: Function parameter or struct member 'dma_common' not described in 'at_dma'
+>> scripts/kernel-doc: drivers/dma/at_hdmac.c:384: warning: Function parameter or struct member 'regs' not described in 'at_dma'
+>> scripts/kernel-doc: drivers/dma/at_hdmac.c:384: warning: Function parameter or struct member 'memset_pool' not described in 'at_dma'
+   scripts/kernel-doc: drivers/dma/at_hdmac.c:384: warning: Excess struct member 'chan_common' description in 'at_dma'
+>> scripts/kernel-doc: drivers/dma/at_hdmac.c:384: warning: Excess struct member 'atdma_devtype' description in 'at_dma'
+>> scripts/kernel-doc: drivers/dma/at_hdmac.c:384: warning: Excess struct member 'ch_regs' description in 'at_dma'
+>> scripts/kernel-doc: drivers/dma/at_hdmac.c:384: warning: Excess struct member 'atdma_devtype' description in 'at_dma'
+>> scripts/kernel-doc: drivers/dma/at_hdmac.c:384: warning: Excess struct member 'ch_regs' description in 'at_dma'
+   scripts/kernel-doc: drivers/dma/at_hdmac.c:384: warning: Excess struct member 'chan_common' description in 'at_dma'
+
 -- 
-2.42.0
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
