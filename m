@@ -1,189 +1,103 @@
-Return-Path: <linux-kernel+bounces-886-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-885-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id E819181477C
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 12:59:17 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1273881477A
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 12:59:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5CE901F2427C
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 11:59:17 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9627DB20944
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 11:59:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DFB5C28DCF;
-	Fri, 15 Dec 2023 11:59:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A45728E0D;
+	Fri, 15 Dec 2023 11:58:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="p+w9946q"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gNdcbqvO"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-lj1-f175.google.com (mail-lj1-f175.google.com [209.85.208.175])
+Received: from mail-wr1-f49.google.com (mail-wr1-f49.google.com [209.85.221.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 152B52C863
-	for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 11:58:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lj1-f175.google.com with SMTP id 38308e7fff4ca-2c9f62fca3bso6756381fa.0
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 03:58:56 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 25D15288B6;
+	Fri, 15 Dec 2023 11:58:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f49.google.com with SMTP id ffacd0b85a97d-3333b46f26aso409593f8f.1;
+        Fri, 15 Dec 2023 03:58:47 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1702641535; x=1703246335; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=C1qp2ImWnMh4HgY4sW8WfO4bMs2GBayiF7ZjfjZdpiw=;
-        b=p+w9946q/3ZlhkzbnVGJfjAlX/lsClJYLssspdAvvLBZKbbgdlq2l5ACeviaEr2KSI
-         DBwY+uVUiR+gdoIFc3PYGC6mx2VT1kRy/TYa8vlpl25+I6NMZ09ZGUDLuD++uTb1TrKR
-         Lp6AVitoDdDOO/Yf+LP9CbPvLaJJ/mtjo3R7ETarM06eMSGdcvm5/7JTlYwIkxiSZw+4
-         ouWUIRqpJfPsxSzEnMgom/WJfchSrjuI7q4F+M6o1wm56jWY5Nt8/p23kfFSrW0XQFmp
-         NQtC2qaVVcltEG47j2eLICIwIOEhQU8GG8r2FEF4S0QQBLM4xTFoaBntTccf22vM9p+X
-         DVdg==
+        d=gmail.com; s=20230601; t=1702641526; x=1703246326; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=tOSoAzpa9vuWx+zR5R7BQ0XEtmn/eNdVlBchsDDSQ90=;
+        b=gNdcbqvOA3bUNKEFNHsCTwYI6WG1E57YeLE0TwLBZrtHIaP/aG1nqADl0/4106KbyY
+         RuWBN0x7XyRM0QLAKEI74Wn9uEM7/L+ic5zVBhEaUfTcA4arxKz+TR4RpBLfodwbKRtQ
+         aEtdzpkQpa5htzK4hNkLbipxte7axDSZQCTDo5srLtGWAfEjsXles6mgPuu1z9ieEUS5
+         fdQUZUo13ls68sCHaonskPNACDLJ3VLDyaN2RL1EFm+LUX5CaEqXMGjeItWcL0bzo2kO
+         OpanbFe7ZpkT+dcU4nUYA2gMsVVA+lDCAiXFV6oWri6K832bU+im6h1nkqltoiwZ2Gkw
+         Qpeg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702641535; x=1703246335;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=C1qp2ImWnMh4HgY4sW8WfO4bMs2GBayiF7ZjfjZdpiw=;
-        b=Mhzpiv5GjRM9WnynwnwZ4JdQbs/m1O+8SYQ++IksWAdZW9p0mB5iIpDUhnyE/FDzAs
-         m8Yczx1Cl/gRYGqu608eNEwJhXVQTL9u4UAGP6D4d5myrRCklDoM/Kn00C/tTf3noMEu
-         6d9Y8q4ftbqOU22Cz+GZlYAmFjvM4l6xdoz8WokovD2S21ILxuRlCsgYCpVRWyu1aRWZ
-         axG/gwmPeQ+NAzAMMArKc52Jos2d+UxMz30MxWmdLPJlOEotQVDF7opucEKaLv3RBp/7
-         1Xs+tA+fE2e12zTqItO1b90Yy+OlNfLj8MwLbxGW0zU0FTBEOsElzYJ34QoXqKpYvEm3
-         LliA==
-X-Gm-Message-State: AOJu0YzeABcrIA87yIFCKYJoRLOjL11WGKNprtXTn3jmTMqY5tnN20PU
-	xZVS85DyjTdI5q58wvuMPgeS78lfuklbBe+//fApvw==
-X-Google-Smtp-Source: AGHT+IFL3gCvpZefJnQkhx7Hcqlu0g6lgjYhnTSDtJofPhhlD0qt2hrTqJFs6nMNVcXBOGo/ZzwHJ2HkXGBqn/Vv8w0=
-X-Received: by 2002:a05:651c:160a:b0:2cc:1f04:9dd0 with SMTP id
- f10-20020a05651c160a00b002cc1f049dd0mr6855697ljq.6.1702641535121; Fri, 15 Dec
- 2023 03:58:55 -0800 (PST)
+        d=1e100.net; s=20230601; t=1702641526; x=1703246326;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=tOSoAzpa9vuWx+zR5R7BQ0XEtmn/eNdVlBchsDDSQ90=;
+        b=ud8DX6KFpDDknmJfvIt84iNlSOGJWfS55P1CpiT9+2eGCL0mMtwHa6bbWijdg1X2ZZ
+         5wtMWaSfZBf+Bql6jCTUT/HKbLJJlkwDOEOecvLW1jN051shZrYe/0Ywcp2U1AnuBOcY
+         VLrzh8s8p4pcZL0NMm81snt7uTQAqwQVSMn9Mof5mlT6WKSIdPJTBHqONjzSLTOKqIxO
+         5aqN5LPSUm4PUNtSiBwmLadT8ZnGSX3bqX5Uca7zxK6uHxAzh2CDvsD7z0B/M6C3KxD6
+         KjFf+NMTVPK7YE77YHSk9ayDaB8G3+uzNhJmASc2MX/JvPo6SbjBP6aWDSl7a1CBmw5Z
+         x1QQ==
+X-Gm-Message-State: AOJu0YyZdF6W0WcpbCzmkr8xCXc1mBicLTWApEEGGyPvAPh4z/PPEFWl
+	rK4jx+b7uJPp8oORWEUkLQ==
+X-Google-Smtp-Source: AGHT+IFtyUgvvKCCK9/JOMSLBmQVceF3HuZU3hfDP7d7IEqdLuhx12woeZ8z5ATTiPmrG7VHrcKrew==
+X-Received: by 2002:a05:6000:147:b0:333:38bb:f8bc with SMTP id r7-20020a056000014700b0033338bbf8bcmr5920121wrx.102.1702641526238;
+        Fri, 15 Dec 2023 03:58:46 -0800 (PST)
+Received: from [192.168.1.148] (224.69.114.89.rev.vodafone.pt. [89.114.69.224])
+        by smtp.googlemail.com with ESMTPSA id y8-20020adfee08000000b00336490c7433sm4081992wrn.31.2023.12.15.03.58.44
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 15 Dec 2023 03:58:45 -0800 (PST)
+Message-ID: <9095d5cd-5b92-4baa-b7a3-0a84bc1a8a36@gmail.com>
+Date: Fri, 15 Dec 2023 11:58:44 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231215073119.543560-1-ilias.apalodimas@linaro.org> <6fddeb22-0906-e04c-3a84-7836bef9ffa2@huawei.com>
-In-Reply-To: <6fddeb22-0906-e04c-3a84-7836bef9ffa2@huawei.com>
-From: Ilias Apalodimas <ilias.apalodimas@linaro.org>
-Date: Fri, 15 Dec 2023 13:58:19 +0200
-Message-ID: <CAC_iWjLiOdUqLmRHjZmwv9QBsBvYNV=zn30JrRbJa05qMyDBmw@mail.gmail.com>
-Subject: Re: [PATCH net-next] page_pool: Rename frag_users to frag_cnt
-To: Yunsheng Lin <linyunsheng@huawei.com>
-Cc: netdev@vger.kernel.org, Jesper Dangaard Brouer <hawk@kernel.org>, 
-	"David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] rust: sync: Makes `CondVar::wait()` an uninterruptible
+ wait
+Content-Language: en-GB
+To: Boqun Feng <boqun.feng@gmail.com>, rust-for-linux@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+Cc: Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>,
+ Wedson Almeida Filho <wedsonaf@gmail.com>, Gary Guo <gary@garyguo.net>,
+ =?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
+ Alice Ryhl <aliceryhl@google.com>, Benno Lossin <benno.lossin@proton.me>,
+ Andreas Hindborg <a.hindborg@samsung.com>,
+ Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
+ Will Deacon <will@kernel.org>, Waiman Long <longman@redhat.com>,
+ Martin Rodriguez Reboredo <yakoyoku@gmail.com>
+References: <ZXtebif2S1CyJRik@boqun-archlinux>
+ <20231214200421.690629-1-boqun.feng@gmail.com>
+From: Tiago Lam <tiagolam@gmail.com>
+In-Reply-To: <20231214200421.690629-1-boqun.feng@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Hi Yunsheng,
+On 14/12/2023 20:04, Boqun Feng wrote:
+> Currently, `CondVar::wait()` is an interruptible wait, and this is
+> different than `wait_event()` in include/linux/wait.h (which is an
+> uninterruptible wait). To avoid confusion between different APIs on the
+> interruptible/uninterruptible, make `CondVar::wait()` an uninterruptible
+> wait same as `wait_event()`, also rename the old `wait()` to
+> `CondVar::wait_interruptible()`.
+> 
+> Spotted-by: Tiago Lam <tiagolam@gmail.com>
+> Signed-off-by: Boqun Feng <boqun.feng@gmail.com>
 
-On Fri, 15 Dec 2023 at 13:10, Yunsheng Lin <linyunsheng@huawei.com> wrote:
->
-> On 2023/12/15 15:31, Ilias Apalodimas wrote:
-> > Since [0] got merged, it's clear that 'pp_ref_count' is used to track
-> > the number of users for each page. On struct_page though we have
-> > a member called 'frag_users'. Despite of what the name suggests this is
-> > not the number of users. It instead represents the number of fragments of
-> > the current page. When we have a single page this is set to one. When we
-> > split the page this is set to the actual number of frags and later used
-> > in page_pool_drain_frag() to infer the real number of users.
-> >
-> > So let's rename it to something that matches the description above
-> >
-> > [0]
-> > Link: https://lore.kernel.org/netdev/20231212044614.42733-2-liangchen.linux@gmail.com/
-> > Signed-off-by: Ilias Apalodimas <ilias.apalodimas@linaro.org>
-> > ---
-> >  include/net/page_pool.h | 2 +-
-> >  net/core/page_pool.c    | 8 ++++----
-> >  2 files changed, 5 insertions(+), 5 deletions(-)
-> >
-> > diff --git a/include/net/page_pool.h b/include/net/page_pool.h
-> > index 813c93499f20..957cd84bb3f4 100644
-> > --- a/include/net/page_pool.h
-> > +++ b/include/net/page_pool.h
-> > @@ -158,7 +158,7 @@ struct page_pool {
-> >       u32 pages_state_hold_cnt;
-> >       unsigned int frag_offset;
-> >       struct page *frag_page;
-> > -     long frag_users;
-> > +     long frag_cnt;
->
-> I would rename it to something like refcnt_bais to mirror the pagecnt_bias
-> in struct page_frag_cache.
+Thanks, that's clearer.
 
-Sure
-
->
-> >
-> >  #ifdef CONFIG_PAGE_POOL_STATS
-> >       /* these stats are incremented while in softirq context */
-> > diff --git a/net/core/page_pool.c b/net/core/page_pool.c
-> > index 9b203d8660e4..19a56a52ac8f 100644
-> > --- a/net/core/page_pool.c
-> > +++ b/net/core/page_pool.c
-> > @@ -659,7 +659,7 @@ EXPORT_SYMBOL(page_pool_put_page_bulk);
-> >  static struct page *page_pool_drain_frag(struct page_pool *pool,
-> >                                        struct page *page)
-> >  {
-> > -     long drain_count = BIAS_MAX - pool->frag_users;
-> > +     long drain_count = BIAS_MAX - pool->frag_cnt;
->
-> drain_count = pool->refcnt_bais;
-
-I think this is a typo right? This still remains
-long drain_count = BIAS_MAX - pool->refcnt_bias;
-
->
-> or
->
-> remove it and use pool->refcnt_bais directly.
-
-I don't see any reason for inverting the logic. The bias is the number
-of refs that should be accounted for during allocation. I'll just
-stick with the rename
-
->
-> >
-> >       /* Some user is still using the page frag */
-> >       if (likely(page_pool_defrag_page(page, drain_count)))
-> > @@ -678,7 +678,7 @@ static struct page *page_pool_drain_frag(struct page_pool *pool,
-> >
-> >  static void page_pool_free_frag(struct page_pool *pool)
-> >  {
-> > -     long drain_count = BIAS_MAX - pool->frag_users;
-> > +     long drain_count = BIAS_MAX - pool->frag_cnt;
->
-> Same here.
->
-> >       struct page *page = pool->frag_page;
-> >
-> >       pool->frag_page = NULL;
-> > @@ -721,14 +721,14 @@ struct page *page_pool_alloc_frag(struct page_pool *pool,
-> >               pool->frag_page = page;
-> >
-> >  frag_reset:
-> > -             pool->frag_users = 1;
-> > +             pool->frag_cnt = 1;
->
-> pool->refcnt_bais = BIAS_MAX - 1;
->
-> >               *offset = 0;
-> >               pool->frag_offset = size;
-> >               page_pool_fragment_page(page, BIAS_MAX);
-> >               return page;
-> >       }
-> >
-> > -     pool->frag_users++;
-> > +     pool->frag_cnt++;
->
-> pool->refcnt_bais--;
->
-> >       pool->frag_offset = *offset + size;
-> >       alloc_stat_inc(pool, fast);
-> >       return page;
-> > --
-> > 2.37.2
-> >
-> > .
-> >
-
-Thanks
-/Ilias
+Reviewed-by: Tiago Lam <tiagolam@gmail.com>
 
