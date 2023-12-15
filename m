@@ -1,74 +1,72 @@
-Return-Path: <linux-kernel+bounces-1409-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-1411-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5E067814E90
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 18:26:59 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id A25CC814E94
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 18:27:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E06E81F256CA
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 17:26:58 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1C5211F2130A
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 17:27:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 22FA64B124;
-	Fri, 15 Dec 2023 17:16:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9894D49F6E;
+	Fri, 15 Dec 2023 17:16:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="eHCO6StW"
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="0Aq+x8UP"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from EUR04-HE1-obe.outbound.protection.outlook.com (mail-he1eur04on2042.outbound.protection.outlook.com [40.107.7.42])
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2072.outbound.protection.outlook.com [40.107.237.72])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 134383FB12;
-	Fri, 15 Dec 2023 17:16:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6076D4B5B3;
+	Fri, 15 Dec 2023 17:16:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=iCI4crTvzcUzKarpvL+r3yGAAbD5QOwoCQxqkGSsQphK1caKaM6fPbBBYUc2Q/hTT81aHDQ0rrRl6enERqW7lGSu4idSVHmUHbuvzb6AA/Qd04DNh8OlLTGGu81C4Wpk2/EG/CkGYS40FDifIUuQlIccoymT0W3T/6Njlfo9g81/3++ofAlmtO9jTf30UiWP47GyRxRDxu2pdSECohUolTrIcrGYTseDNluyEujVg9YIUecsTsmNlgm2zaKopEo8lFY0shbxvST6JiiY+J40KNC+adzQUHjyldkEOWEm7r25sFwQuHz44MWwNRf0vmb12rARNGS97fisVkQI+QaB1w==
+ b=LRpN/4fdTJZrGx38IUGnB6rtHiDIIa0FOtewoswAXqMfNzOja9ZyYPAIzaSgLx865kPTcEdGwmWguoN6jV8e47jIjNw5PJeGeKEs8Cv/Jny2k841zR4HujhQJK6FiYQt5hKUslR/mjQDl9IT2GWrp4a80wzkqGkKg/9RUdZJvTtUj+j6g8Mt8fb+H4U0azxIgVp0wSP11pg8LjoIjpWrddAiZ8TD9R5+m9HzKE2+5V0fOTgvaAvwy1+LS/2vEcSkG5IckrI0ULVLQR1F+p4DGOMBm2vSylt3nzqbwixlo3RhOQR8nVX+g7z2XBpItmpo4RfOvqmuJAYH1Tsy5X231w==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=+y9Y9QKiIBUPbhw2CUh1eKHMo808IskqA4ajiraBjBk=;
- b=Xp062KDYweF6cJpej2NWemRNl0wCs2DcqytXycvrS1Z3rXnUbNh0J11Lo7rIdhvUtmwMGV4LQovU/WRaidnGzHi0qRmoM+AeRtRPeHONUk+llyILXfDZiqNFfuilFUFnKzPYbBHDMv4w6hqhvYcrUYos8dchmwOZHFN2mLSAxgTvvRJC5KowNPUCD6aMPgfsJ84aJN4Mu8lMoEmcbEyN4YPxPFXVd9iXvFvqBTkjC9OtV6zhyMJD1Az0i/i8fLZvwAAuUwdGGjgbSLZaSiiYVkdUaFeIwoxpYFXLACZqKY+aZV+j4t4doEFIkSzs3se45xBQ9Yt1nPRP1T1J5hIsqA==
+ bh=xDaGjddj6oREkN7REYbXEAYwjbiEXIo82iY1xLNoyfw=;
+ b=U+VsHGrjU/gILLI/QMmJvrl4QLhScUUDtpM36cXm73cqiikIRHtkMWCYIlTfI9lPxsXoivm1xtxkiWVVkoL2d4ZULmpSvP0xX0OBc5KsYnTPu3vEr3G6eeWDFI1HmM5GDatWBBbLKe1PPTM2Y5N7ZAAzNCNSfW5b2Ig+fUSuiboUatG85E38SkFHxFy6tT7t+0B2lyw8A1wdcPg7xgIIW7bVAhIPdGuur25UiKihWRFFgEjbFYen8u1NKTqo2+7gOWnVIcNidG3h+PFVv0t2FlZD7Hf5W0GbpZelqDxv+MkxlSXXuYAgHVUSYFVhvmDGIA6zNhiW6C3El4G3z0sZQg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=+y9Y9QKiIBUPbhw2CUh1eKHMo808IskqA4ajiraBjBk=;
- b=eHCO6StWTp/RarzdhtphDHMJU4wm7JOpqIJYdl9yEruvk38mhLSUhuc/RAVA9CyAinNt/hwWT1joam/hFRYXYY27TJFzXlv8tj1lNG2wL1F/qfyjN5ZJp7kZxxosBODxPDTkKcXyWdU87da5lMFaNrqtGEq+Sus9C9mUJmqmecQ=
+ bh=xDaGjddj6oREkN7REYbXEAYwjbiEXIo82iY1xLNoyfw=;
+ b=0Aq+x8UPu+kbkDDOj2o6KOXSAQ8P/gNUIWlTWWhq9BdwDONy4MoTdPHQmlW8cbFSW6cEx7Pz9zjGlAzhrNQjx93mC38go/QAoJhW+Dr93FNcoUEHuSfbTGgX3tukkaPBIOU+IlMoVahYK3GhjU6aABUDUoC78luoIRT+d6r6pFw=
 Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-Received: from AM0PR04MB6452.eurprd04.prod.outlook.com (2603:10a6:208:16d::21)
- by AS8PR04MB8658.eurprd04.prod.outlook.com (2603:10a6:20b:429::22) with
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from PH0PR12MB7982.namprd12.prod.outlook.com (2603:10b6:510:28d::5)
+ by DM4PR12MB5890.namprd12.prod.outlook.com (2603:10b6:8:66::20) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7091.31; Fri, 15 Dec
- 2023 17:16:02 +0000
-Received: from AM0PR04MB6452.eurprd04.prod.outlook.com
- ([fe80::dd33:f07:7cfd:afa4]) by AM0PR04MB6452.eurprd04.prod.outlook.com
- ([fe80::dd33:f07:7cfd:afa4%7]) with mapi id 15.20.7091.030; Fri, 15 Dec 2023
- 17:16:00 +0000
-Date: Fri, 15 Dec 2023 19:15:55 +0200
-From: Vladimir Oltean <vladimir.oltean@nxp.com>
-To: Roger Quadros <rogerq@kernel.org>
-Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-	pabeni@redhat.com, shuah@kernel.org, s-vadapalli@ti.com,
-	r-gunasekaran@ti.com, vigneshr@ti.com, srk@ti.com, horms@kernel.org,
-	p-varis@ti.com, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH net-next v9 08/10] net: ethernet: ti: am65-cpsw: add
- mqprio qdisc offload in channel mode
-Message-ID: <20231215171555.4emy5fn77ej6oti6@skbuf>
-References: <20231215132048.43727-1-rogerq@kernel.org>
- <20231215132048.43727-1-rogerq@kernel.org>
- <20231215132048.43727-9-rogerq@kernel.org>
- <20231215132048.43727-9-rogerq@kernel.org>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231215132048.43727-9-rogerq@kernel.org>
- <20231215132048.43727-9-rogerq@kernel.org>
-X-ClientProxiedBy: FR4P281CA0246.DEUP281.PROD.OUTLOOK.COM
- (2603:10a6:d10:f5::15) To AM0PR04MB6452.eurprd04.prod.outlook.com
- (2603:10a6:208:16d::21)
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7091.32; Fri, 15 Dec
+ 2023 17:16:07 +0000
+Received: from PH0PR12MB7982.namprd12.prod.outlook.com
+ ([fe80::bec4:77b3:e1d1:5615]) by PH0PR12MB7982.namprd12.prod.outlook.com
+ ([fe80::bec4:77b3:e1d1:5615%5]) with mapi id 15.20.7091.028; Fri, 15 Dec 2023
+ 17:16:04 +0000
+Message-ID: <0edc953a-0357-d054-d9a2-e9a86e90233d@amd.com>
+Date: Fri, 15 Dec 2023 09:16:00 -0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [net PATCH] i40e: fix use-after-free in i40e_aqc_add_filters()
+Content-Language: en-US
+To: Ke Xiao <xiaoke@sangfor.com.cn>, jesse.brandeburg@intel.com,
+ anthony.l.nguyen@intel.com, davem@davemloft.net, edumazet@google.com,
+ kuba@kernel.org, pabeni@redhat.com
+Cc: dinghui@sangfor.com.cn, zhudi2@huawei.com,
+ intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20231213104912.16153-1-xiaoke@sangfor.com.cn>
+From: Brett Creeley <bcreeley@amd.com>
+In-Reply-To: <20231213104912.16153-1-xiaoke@sangfor.com.cn>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SJ0PR03CA0056.namprd03.prod.outlook.com
+ (2603:10b6:a03:33e::31) To PH0PR12MB7982.namprd12.prod.outlook.com
+ (2603:10b6:510:28d::5)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -76,105 +74,174 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: AM0PR04MB6452:EE_|AS8PR04MB8658:EE_
-X-MS-Office365-Filtering-Correlation-Id: 98d3835e-0191-4442-32e9-08dbfd9181c1
+X-MS-TrafficTypeDiagnostic: PH0PR12MB7982:EE_|DM4PR12MB5890:EE_
+X-MS-Office365-Filtering-Correlation-Id: 25c215b7-4eec-418b-10d4-08dbfd9184c1
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
 X-Microsoft-Antispam-Message-Info:
-	wE8YlDbu6I/CtnZz1uTtZHxL22yrsKcyI3rBYViDrvgIU1DarNzFctIObL9B3ql/Q0Qwt5Y6riSDgcY9SL/8wx69bHByUuWNO1cyKFahxNUT7uw4aE7f25PMzhM28xR7pkHdipQLvOx+6tNIc2qChrCf5a2auCAhggmpLk2JX2vFoShKLJDzzELzczlmi1LGIhnvSBC/Ye5vzVeJrD8MTLMT5/GK4Zyx2nqZWKY7Wd1pk6yjjzyCWIzV+tYs4mpWmzNlQnJrt4tz6Xvh+6uu09R+ynaGYLqmWZG4/2iE7aSpFkooTFczmeC4/57NneO6Ml40CaNkSjb3nj5otuVoKsGaK5xhmAw6YkdSXmWljeC3AvWb5ndubM0jUaL0xUPred+DCxZMFpFuAvMTSEjPL/Q8AtyMsNOIVQIQSauDeuQUW2pQ1rjyZOIFHfGO//8dkEEFObzy9rWm5pUH03A3nwuvhz0ZPbDFTVdUIVdwcurYBZeDC2OTnuO2NfRySZ8LRZ6RR3LM/0zaz3BiWWLAfkaz5K+BGGbzip/fP3WL+pEtzFRsMRagQmKJL9O6bdXcrTUDOAbL3Gbf3wQcvYkGpG3zkcL23KAcQ3D+g8qIDlg5ZCfkG/q3+4QW+o8fCFRf
+	eqIKzStThsvZj3v7wMjT0NKbp3qkkqbTvut1L+1+R7Y7XIQHUuXtR/ThxOlHEmdhh0qOUnBcAY1wLhziFGwUAXoe+R3ayTjGLXx5oTNa7aMb8B/7kfya2+bz9wc4C952OgqCFm1yxrDcK+s2v/EVArvDFiuc6A8TZMoJP7sM+BtlWqCe9cVb/gh2wtMjGZeSh3P5YADfepInvr30rmOOp0vAaISw64V1vNQgvZpPdxjf6z+uSXawt6GQHKZgSni6XNfw3a9VS8+QWOv0C3JvI9N3eCr8P3Kw5rKTAIUrftWjCQqwPL2zEIQsFCH1yWS/qk5i5O+UV/BsD0k0ctwSFZngZFlyeDmhZOtUEPzyinLY9YQ8trS+QrUMAMG3adkT/8RswETqjVY1SxUEBBcmXSp20hPH6YdeqXyRzacQFNIRED9Hxj2yymismipBcwth4pCbUxPYPHTrlsiqA2iIdufs3kHMKSvs1+usCOvHGVIHf1zWH8dKqN3wmDh9e+SZVGpYQdUprCA+DvSOGJzNPAFIaHS5ErAx1wZcBtBJwg5qWeFEmV4r4H2c4oPRub0LeTy3cvxKfNr9OatBr95OGQsEEu+o8lXQS2jf2xv+Ce/0dus7SSaFR2VCTZHjCcV4iyDNx+XGD1Lb8ZWJ+DD3KF7GfMnyvblCr+cJVO95kv+PR+F/GKjPKbtICi3me4Ns
 X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR04MB6452.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(136003)(39860400002)(396003)(346002)(366004)(376002)(230922051799003)(230273577357003)(230173577357003)(186009)(451199024)(1800799012)(64100799003)(83380400001)(6486002)(478600001)(6666004)(6506007)(9686003)(1076003)(6512007)(26005)(66556008)(66946007)(6916009)(66476007)(316002)(38100700002)(86362001)(8676002)(4326008)(44832011)(8936002)(5660300002)(7416002)(2906002)(33716001)(41300700001);DIR:OUT;SFP:1101;
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR12MB7982.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(396003)(366004)(376002)(346002)(136003)(230273577357003)(230173577357003)(230922051799003)(64100799003)(186009)(451199024)(1800799012)(31686004)(26005)(2616005)(53546011)(6666004)(6512007)(6506007)(38100700002)(31696002)(36756003)(41300700001)(8676002)(8936002)(4326008)(478600001)(5660300002)(7416002)(2906002)(83380400001)(6486002)(66946007)(66556008)(66476007)(316002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?q6S0W0sjsvUQ5Z5aac2M53BuMVXGEsq07aO2Z7kQn+0PGItc5sO/NeoMHu0r?=
- =?us-ascii?Q?YyD1QdsVXmXrW8SpyYJftWPEZ+3nqwfNT5JPDmjmS32fSta7vnpX2zVXVdhK?=
- =?us-ascii?Q?Qh600Tia5Iw029C7TpnVeAhj3jw/AICduhEKo2rHjGFZdjUN5cyTsRbVPHeD?=
- =?us-ascii?Q?ybWLdkzChSDBVq1IEoIg/NkMsgZXvhGXwiDEhYqz3K6rBD9YZ44xx6eM6JRS?=
- =?us-ascii?Q?/zZPyhqYKqCCxD1HTXHdzaMo7fSDEli9+Lva7pvv6/Su6MWBt/McPkF84dBD?=
- =?us-ascii?Q?Mj66fgQrUFVjoxIYo53cXO9ZxsdAd6Gzf8hz8n+ZFAh+tta36+bldXdtVkIm?=
- =?us-ascii?Q?JKy5bJtmFz2ayyXKcuzKIXzmsfKiT787B3RDXzZrmn3UH4Ij7LnsoZJYoH+x?=
- =?us-ascii?Q?/mQhc4jEbLusbwcUmb28ZHoqV4McmQyCy7SL3V9IrLS+XjYAwVoDeoBsbN2s?=
- =?us-ascii?Q?pM33LfIS+3AeYzr2WQ4zJJqQDbV5Qo1SS0Gm+FScacS3r8yBEeGUFBWNRgzf?=
- =?us-ascii?Q?j5Wt2jvG4WCwpQRdnYFYDugrJbETlSZN5vzcpSNlKYd5tjVw6TGYbK5CAzns?=
- =?us-ascii?Q?xBmmRjdrAQkHNq5maU2IAAupc5Z12wSt+fAjXlvjDe9yOTA6eP45QcmkxCcV?=
- =?us-ascii?Q?bpLkBgjHiaGx8AyEwoJEsI9R+6tpp8BfrfhNIhoDW74Y45ROOZHcevTNYH9g?=
- =?us-ascii?Q?9z6ppAeS3spBmfZNzwk9oja8ktYehGduJyenTgTJ3pGZR1MtUs0MIaI4L2DV?=
- =?us-ascii?Q?9jq90ERjDzT2vGDFng8djdzRsI8wWI4o8tJi5wHN//70E8IxgHuKg8SP8LcO?=
- =?us-ascii?Q?OE6aiUzlGeiTvl64dERGKqB2XPCrtsJidgNT4zKieTgB3gGsQpqndrCLsuc4?=
- =?us-ascii?Q?VfH+BuuICtxa4h7mV+E1Cw4WWXMoWq1X8goGzokpIr1PWqta4jzoV7WUnzkr?=
- =?us-ascii?Q?6It1JxAnc3mX1CQMBBsHB2A0G4Jciwzxl77JhSUuKw6i6qAxnfDd6At506zW?=
- =?us-ascii?Q?zIyMm61qM8t+/rdocCPmc9M48dp0chXdevM24ceCMu9JjkUXkCXwoOsbhstF?=
- =?us-ascii?Q?GWG5ABsgmetOYI8gEzZFfJCdfCL0LC1TZvefPweHDYSREt2qtQVidiQPhEEp?=
- =?us-ascii?Q?4n6rZqHAJtYJoP1aAMTa2Nf7xUJ5ZmQA7jYDPtCcX2cfrRW2SazzfQekn9Z8?=
- =?us-ascii?Q?dVV0BjPGGVYTDjNdi2mmREx5LTHcmQB9GVj4XiLiBgmoa8I39IgaFCbvBork?=
- =?us-ascii?Q?Ao1JHZQiBRMi76iODVzQ+tRnpm4M3Wk2x3MIvFGB7PL8N6gpWyhgC9xtm34p?=
- =?us-ascii?Q?TbtOfxCjwLoXZ1KepNWT5H40XI81Mtx88sR9kDFJaxGAaCtXp44fGOho4D8X?=
- =?us-ascii?Q?7OPN439qlHpvhRfT7ZeJIeroYb9Nm9R/yPtnrfSAa7b0y9kdPnuaz0U0rfmL?=
- =?us-ascii?Q?OxmhX4MouESGvwHHVIVvhny60JDTcNakpdFj+8q1Xd8EyjlsuwNLoSNqnoU9?=
- =?us-ascii?Q?2nM8pl+jyUKpV8ScayuyQQ57vAbh14eIT4YR2oC667DO/0xFSGvGUM58J+Vt?=
- =?us-ascii?Q?+O5ANtLkd9J6yF9uq953roXU43skbUYvPdetRB91h6FxJOU0J/1yLWePbRGN?=
- =?us-ascii?Q?DA=3D=3D?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 98d3835e-0191-4442-32e9-08dbfd9181c1
-X-MS-Exchange-CrossTenant-AuthSource: AM0PR04MB6452.eurprd04.prod.outlook.com
+	=?utf-8?B?YVhBUk8vSUJzbUFnSlpIaWRZazZQYWo5bko0dVA4Vll0MkwrVTc2RFYxZUpU?=
+ =?utf-8?B?aGRxRFcybzBzbnV3OC9DQUljd3hHNTl1bGF1RGh5MEkwWmIwQ3pBY084NG5H?=
+ =?utf-8?B?Qzg4L2ZWMDVuc3R4elAyMCs4R09sWVF5UDZLR3JKNnQ0dENFWS9NVVZoMzI1?=
+ =?utf-8?B?U0ROamRDRWdQOXNkYXdNeklVRHFOMVd0bmFtTkw3ejA4K2E3U3h2S3ZEbHVP?=
+ =?utf-8?B?U09uQXlieHBOOW12RDhHRTNxY056UVZYbW1yVWZzL0VDdTRCK0dKaGtXQUUz?=
+ =?utf-8?B?b005M0pWWlJaMXRtNzVoSVJDY0hzY2VoQnJZMmdJdTZJeUJlYkRMNm1HZk0r?=
+ =?utf-8?B?M2VZSGNFLzRTeXB2Ly9hQi9HeURiNzV1d0NqaFFNTHN3am1iRU1sbGVTL3Vq?=
+ =?utf-8?B?ODZ3d1cyMWozbTZQdUlISUczaHBYdUlYU0s0cVpVNHdnU255L1l6c0pFMnBx?=
+ =?utf-8?B?YTJucVpFeDR3bTNJMmd1Uy9VYVNhUHRkOTB3MlljbnpSdk1LN0JKNjcwbStQ?=
+ =?utf-8?B?QzlBbjkvSFMvZ3VETDluMEtaNnhxdm1EbmtVNmtjWlMzQU5jM1hQV1FTaHpV?=
+ =?utf-8?B?WjJmQnpna0tyMTUxQW5IclJOZGpCSDBqdWd0cTJKb0YwejNiRkRMREU2VktM?=
+ =?utf-8?B?TU0yWnNCWm52UmFkaGp6eWVDbms1ZjJlSTQ0azJFVUVnRlZkdXdORDlpWjVE?=
+ =?utf-8?B?R1ozUFhaRUkyN0YraXcyZi9CdStOeXgvRTVTU096ZFIwWTNoYnFzYlY1VDBi?=
+ =?utf-8?B?RTBGaHpNaTJsWlZPbzF4eVZTaFRLeStad3ZrNUtWZ1FUWkNYR0p2dmQrUzh2?=
+ =?utf-8?B?R0FwcmI3STg2Q3liZ2Q0M3FIL0dNV3FXMzFYK1NoQUxIdGFUYVgxS2ZFSjdX?=
+ =?utf-8?B?enQ5TEEybUF4alhvbnhLM1ROOXpFWmpaVmMybStmVEV3VXVsMzA2YTF3ZmVl?=
+ =?utf-8?B?SHBVeGhibHI3c3VLTWFHYXVDOXY0L0xhVHh2YnV1b1ZpUXNjYXhqdk9iZXl0?=
+ =?utf-8?B?N2VnUkhSSHFRK2syVGRBZTRNSjJNZi9NeDFVWm1HR1RIaDZJNTFyaW4wQnVu?=
+ =?utf-8?B?YTdnSUdvbXZvcmpIdUw5WTBVTWo2em43MFhKekpEcmtoYnkxUkR2WjBtYmlT?=
+ =?utf-8?B?SURaSGYyN1hQRnFRdVhYaXQwK0xSeU1DTndweVpFamE2ZkVLUzZFWnVzRmpI?=
+ =?utf-8?B?QnRoalBPNEZKc2lBeVdPN1VhTHlCQmRyTHBNYzRvaHE4RkNsNnJhQjF0eEdT?=
+ =?utf-8?B?ZEtKaDA5TGxDbWFISytKc2ZUQmlsL3oybFZvNGlVWFNhWCtaSHNVZ0VHa3FX?=
+ =?utf-8?B?UGRKQklvOXdKdkg4Ty9EY3dkUFg5ZnNyVzZRRGYrQjNvZEErR2dvbnM2K2Yv?=
+ =?utf-8?B?TTE3WDgwQm9Jcm0rSTFWZTU2ZUdramh2clVGb0ZhUThhbXFDOFY3WDE5bm05?=
+ =?utf-8?B?ckdGeUhtc2lWMnFqOExwWTB3WHloLzZTK05CNEZjNVhadFRHM0ZDdENDQmlz?=
+ =?utf-8?B?ODNUeHF0eWcycW54UytHeFJ5UEVHOUhraHQ1Y3NpNkhwK0JDaE8wTHpncS9k?=
+ =?utf-8?B?VGhNQnkwMkV0a3ZhWk4zSlFrVVEvcGxwdEhxVk1GeXJmSHlKZDFhTDV4UkR5?=
+ =?utf-8?B?UXdMV0JoS2RubDZPVlhCRlZTU01KQmVoN3V4UXBoL1NqSzdINjk4VTRPOW84?=
+ =?utf-8?B?Q0xGLzFxU0U1ZHlSa1RuK2hMNUQ2YUI1UWFyR2RrWTV0czVpclNZRnZFaDlS?=
+ =?utf-8?B?Y1duaWhibWk0WnBQWktmTVJHUTErRzJvM0dLcU9vNmFLY3hVdytjUElobnBz?=
+ =?utf-8?B?UXlPdU1HelVZVUVNa01FV3ZmYjRrMlU1b2JTMGJkK1d1alQraVZJRTBlQ0xn?=
+ =?utf-8?B?WVFrendySk9hN1VtTVQyRmxYZ3o2TUJReHlISzlILzluc1pXOWIxMktlOEJY?=
+ =?utf-8?B?cFh5Q21EQWJJUFA0Z0s2cEUrVjVvekJLYXN0RDlTNXRxa0hZc2xWcDVodDhP?=
+ =?utf-8?B?QmRNdW5PVjQxa1Q2VjY0RnorWTBiWDRRcGlheU5NWWpFZ0YxMG9QQXhDdFZ5?=
+ =?utf-8?B?SVlrajgvUnlNeUNYWXVjY29RMEFFUGMvaEVadXRhUDBySGllMDRwS09xZ1dv?=
+ =?utf-8?Q?zs8T0PHBl2oz/GIK7Cj3ux2rl?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 25c215b7-4eec-418b-10d4-08dbfd9184c1
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR12MB7982.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Dec 2023 17:15:59.3813
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Dec 2023 17:16:04.3742
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 40/UQzZbWaEebX0jJIDrJi13K6DcWNys4CLbSMaa75PXM6p5SzxUo14fXTGwDtpfNx8zJryYKeUwbbOOx0Rf4Q==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR04MB8658
+X-MS-Exchange-CrossTenant-UserPrincipalName: at3akw0b+sOtpedpT54+r4mL0F+wLWOOXFgizA3roLphIQpPYv4xFbkhgZij87+C+DFFhW99/EKGR9n5rHaXfQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB5890
 
-On Fri, Dec 15, 2023 at 03:20:46PM +0200, Roger Quadros wrote:
-> From: Grygorii Strashko <grygorii.strashko@ti.com>
+On 12/13/2023 2:49 AM, Ke Xiao wrote:
+> Caution: This message originated from an External Source. Use proper caution when opening attachments, clicking links, or responding.
 > 
-> This patch adds MQPRIO Qdisc offload in full 'channel' mode which allows
-> not only setting up pri:tc mapping, but also configuring TX shapers
-> (rate-limiting) on external port FIFOs.
 > 
-> The MQPRIO Qdisc offload is expected to work with or without VLAN/priority
-> tagged packets.
+> Commit 3116f59c12bd ("i40e: fix use-after-free in
+> i40e_sync_filters_subtask()") avoided use-after-free issues,
+> by increasing refcount during update the VSI filter list to
+> the HW. However, it missed the unicast situation.
 > 
-> The CPSW external Port FIFO has 8 Priority queues. The rate-limit can be
-> set for each of these priority queues. Which Priority queue a packet is
-> assigned to depends on PN_REG_TX_PRI_MAP register which maps header
-> priority to switch priority.
+> When deleting an unicast FDB entry, the i40e driver will release
+> the mac_filter, and i40e_service_task will concurrently request
+> firmware to add the mac_filter, which will lead to the following
+> use-after-free issue.
 > 
-> The header priority of a packet is assigned via the RX_PRI_MAP_REG which
-> maps packet priority to header priority.
+> Fix again for both netdev->uc and netdev->mc.
 > 
-> The packet priority is either the VLAN priority (for VLAN tagged packets)
-> or the thread/channel offset.
+> BUG: KASAN: use-after-free in i40e_aqc_add_filters+0x55c/0x5b0 [i40e]
+> Read of size 2 at addr ffff888eb3452d60 by task kworker/8:7/6379
 > 
-> For simplicity, we assign the same priority queue to all queues of a
-> Traffic Class so it can be rate-limited correctly.
+> CPU: 8 PID: 6379 Comm: kworker/8:7 Kdump: loaded Tainted: G
+> Workqueue: i40e i40e_service_task [i40e]
+> Call Trace:
+>   dump_stack+0x71/0xab
+>   print_address_description+0x6b/0x290
+>   kasan_report+0x14a/0x2b0
+>   i40e_aqc_add_filters+0x55c/0x5b0 [i40e]
+>   i40e_sync_vsi_filters+0x1676/0x39c0 [i40e]
+>   i40e_service_task+0x1397/0x2bb0 [i40e]
+>   process_one_work+0x56a/0x11f0
+>   worker_thread+0x8f/0xf40
+>   kthread+0x2a0/0x390
+>   ret_from_fork+0x1f/0x40
 > 
-> Configuration example:
->  ethtool -L eth1 tx 5
->  ethtool --set-priv-flags eth1 p0-rx-ptype-rrobin off
+> Allocated by task 21948:
+>   kasan_kmalloc+0xa6/0xd0
+>   kmem_cache_alloc_trace+0xdb/0x1c0
+>   i40e_add_filter+0x11e/0x520 [i40e]
+>   i40e_addr_sync+0x37/0x60 [i40e]
+>   __hw_addr_sync_dev+0x1f5/0x2f0
+>   i40e_set_rx_mode+0x61/0x1e0 [i40e]
+>   dev_uc_add_excl+0x137/0x190
+>   i40e_ndo_fdb_add+0x161/0x260 [i40e]
+>   rtnl_fdb_add+0x567/0x950
+>   rtnetlink_rcv_msg+0x5db/0x880
+>   netlink_rcv_skb+0x254/0x380
+>   netlink_unicast+0x454/0x610
+>   netlink_sendmsg+0x747/0xb00
+>   sock_sendmsg+0xe2/0x120
+>   __sys_sendto+0x1ae/0x290
+>   __x64_sys_sendto+0xdd/0x1b0
+>   do_syscall_64+0xa0/0x370
+>   entry_SYSCALL_64_after_hwframe+0x65/0xca
 > 
->  tc qdisc add dev eth1 parent root handle 100: mqprio num_tc 3 \
->  map 0 0 1 2 0 0 0 0 0 0 0 0 0 0 0 0 \
->  queues 1@0 1@1 1@2 hw 1 mode channel \
->  shaper bw_rlimit min_rate 0 100mbit 200mbit max_rate 0 101mbit 202mbit
+> Freed by task 21948:
+>   __kasan_slab_free+0x137/0x190
+>   kfree+0x8b/0x1b0
+>   __i40e_del_filter+0x116/0x1e0 [i40e]
+>   i40e_del_mac_filter+0x16c/0x300 [i40e]
+>   i40e_addr_unsync+0x134/0x1b0 [i40e]
+>   __hw_addr_sync_dev+0xff/0x2f0
+>   i40e_set_rx_mode+0x61/0x1e0 [i40e]
+>   dev_uc_del+0x77/0x90
+>   rtnl_fdb_del+0x6a5/0x860
+>   rtnetlink_rcv_msg+0x5db/0x880
+>   netlink_rcv_skb+0x254/0x380
+>   netlink_unicast+0x454/0x610
+>   netlink_sendmsg+0x747/0xb00
+>   sock_sendmsg+0xe2/0x120
+>   __sys_sendto+0x1ae/0x290
+>   __x64_sys_sendto+0xdd/0x1b0
+>   do_syscall_64+0xa0/0x370
+>   entry_SYSCALL_64_after_hwframe+0x65/0xca
 > 
->  tc qdisc replace dev eth2 handle 100: parent root mqprio num_tc 1 \
->  map 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 queues 1@0 hw 1
-> 
->  ip link add link eth1 name eth1.100 type vlan id 100
->  ip link set eth1.100 type vlan egress 0:0 1:1 2:2 3:3 4:4 5:5 6:6 7:7
-> 
-> In the above example two ports share the same TX CPPI queue 0 for low
-> priority traffic. 3 traffic classes are defined for eth1 and mapped to:
-> TC0 - low priority, TX CPPI queue 0 -> ext Port 1 fifo0, no rate limit
-> TC1 - prio 2, TX CPPI queue 1 -> ext Port 1 fifo1, CIR=100Mbit/s, EIR=1Mbit/s
-> TC2 - prio 3, TX CPPI queue 2 -> ext Port 1 fifo2, CIR=200Mbit/s, EIR=2Mbit/s
-> 
-> Signed-off-by: Grygorii Strashko <grygorii.strashko@ti.com>
-> Signed-off-by: Roger Quadros <rogerq@kernel.org>
+> Fixes: 3116f59c12bd ("i40e: fix use-after-free in i40e_sync_filters_subtask()")
+> Fixes: 41c445ff0f48 ("i40e: main driver core")
+> Signed-off-by: Ke Xiao <xiaoke@sangfor.com.cn>
+> Signed-off-by: Ding Hui <dinghui@sangfor.com.cn>
+> Cc: Di Zhu <zhudi2@huawei.com>
 > ---
+>   drivers/net/ethernet/intel/i40e/i40e_main.c | 8 +++++++-
+>   1 file changed, 7 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/net/ethernet/intel/i40e/i40e_main.c b/drivers/net/ethernet/intel/i40e/i40e_main.c
+> index 1ab8dbe2d880..16b574d69843 100644
+> --- a/drivers/net/ethernet/intel/i40e/i40e_main.c
+> +++ b/drivers/net/ethernet/intel/i40e/i40e_main.c
+> @@ -108,11 +108,17 @@ static void netdev_hw_addr_refcnt(struct i40e_mac_filter *f,
+>                                    struct net_device *netdev, int delta)
+>   {
+>          struct netdev_hw_addr *ha;
+> +       struct netdev_hw_addr_list *ha_list;
 
-Reviewed-by: Vladimir Oltean <vladimir.oltean@nxp.com>
+Nit, needs to be in Reverse Christmas Tree (RCT) order.
+> 
+>          if (!f || !netdev)
+>                  return;
+> 
+> -       netdev_for_each_mc_addr(ha, netdev) {
+> +       if (is_unicast_ether_addr(f->macaddr) || is_link_local_ether_addr(f->macaddr))
+> +               ha_list = &netdev->uc;
+> +       else
+> +               ha_list = &netdev->mc;
+> +
+> +       netdev_hw_addr_list_for_each(ha, ha_list) {
+>                  if (ether_addr_equal(ha->addr, f->macaddr)) {
+>                          ha->refcount += delta;
+>                          if (ha->refcount <= 0)
+> --
+> 2.17.1
+> 
+> 
 
