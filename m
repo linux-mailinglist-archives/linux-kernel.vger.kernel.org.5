@@ -1,115 +1,163 @@
-Return-Path: <linux-kernel+bounces-787-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-788-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1A134814604
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 11:56:17 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id B5E0B814606
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 11:57:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AD4681F23544
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 10:56:16 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DAE861C23255
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 10:57:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 219E61C2B3;
-	Fri, 15 Dec 2023 10:56:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 021361C2B3;
+	Fri, 15 Dec 2023 10:57:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="4jH4uR7W";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="jEgtJWt9"
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="DX8WnWju"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 784591A729;
-	Fri, 15 Dec 2023 10:56:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-From: Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1702637763;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=AcJ8sEUJ5wj/9ROjAHSdD4NZ0BJCgYAH/QnOMV8p1BM=;
-	b=4jH4uR7WEkvi3q9xmp3Pnfz/VZdVGzqrC2Ng0CQcqzJH+ptjFz5IOlXJ2cY3R0E8m02USo
-	nWZvqcwY6YYDlpWLFfgGxvn4oZ+Qd532l8y8O7JrR/41lk7o/Psa0XhKWVCeI5pnvTGKB9
-	VpUuZLvJlWw6dl4jQuGRqzQQikTGtt7bGTky50xZbdP/4lmgTMQCvvCdFs4q5YGAM6Hkqm
-	BwBNsvrL/Q4/sMKASPFoikKwsPcRyLEcVQpb0yljADrCeihjHwQYoZOi+BqLdSWZ48fVAd
-	rLDRi+LNSxHFLn28JcPrF4XSmJNYPsd5cDjWMeTI8NKuAYyR2O+C3QonbxTYAw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1702637763;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=AcJ8sEUJ5wj/9ROjAHSdD4NZ0BJCgYAH/QnOMV8p1BM=;
-	b=jEgtJWt9e5Q0raTT/BlFzFleI+L8MrVj3EijjrRxmXWwtx4MX49POCfWHUlSiTmLEOxbGC
-	CmtpR1Dee3bgPbDQ==
-To: Serge Semin <fancer.lancer@gmail.com>
-Cc: Linus Walleij <linus.walleij@linaro.org>, Luo Jiaxing
- <luojiaxing@huawei.com>, Marc Zyngier <maz@kernel.org>, Bartosz
- Golaszewski <bgolaszewski@baylibre.com>, Serge Semin
- <Sergey.Semin@baikalelectronics.ru>, Andy Shevchenko
- <andy.shevchenko@gmail.com>, Andy Shevchenko
- <andriy.shevchenko@linux.intel.com>, "open list:GPIO SUBSYSTEM"
- <linux-gpio@vger.kernel.org>, "linux-kernel@vger.kernel.org"
- <linux-kernel@vger.kernel.org>, Linuxarm <linuxarm@huawei.com>
-Subject: Re: [PATCH v1] gpio: dwapb: mask/unmask IRQ when disable/enable it
-In-Reply-To: <cbgdeksaulqu65nbnz7l4wpuwensllkdlyi5babhpngclze4df@zxetbohgpfvg>
-References: <1606728979-44259-1-git-send-email-luojiaxing@huawei.com>
- <CACRpkdYHAecm3ygaze80SsXzNMYSA9p+p6JY4BKO2D+vArb-WA@mail.gmail.com>
- <87fs03opju.ffs@tglx>
- <cbgdeksaulqu65nbnz7l4wpuwensllkdlyi5babhpngclze4df@zxetbohgpfvg>
-Date: Fri, 15 Dec 2023 11:56:02 +0100
-Message-ID: <87a5qbohtp.ffs@tglx>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9887724B22;
+	Fri, 15 Dec 2023 10:57:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1702637856;
+	bh=EI12yaPkWm0eHYHNIsLb+3ZJ50dk+sRbBa6SPm5COJE=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=DX8WnWjuyfGHxff/9Tu5FrQinxye03okq+4IAPtRo8geLH+OWPTx6vtkpZQ+bD8E4
+	 QyubWDb3P9Uut8klFbQRPr5PE7xQgMH65E/gbdI4XIQmQs2bfY1PSnunJJ503VL02s
+	 u/55o3yYonOLRe5x+Ney1S4uHcCaZpIRyHee+iPcn4Wg2V2A8b5oGk2QzfzRrMVIa+
+	 T2BKF2A8LgvKMLleyu6hkMY0yvarD1gK6OeKJEvMXBAuOzW8e/a1X0fhArLUiScrd1
+	 CHkgwibHIJWnFSAA5XVpt46Mkq5swAODhAyrhCz2+klzF9igG5nRo1qPa0mfAQ+HrY
+	 UQfbDZsf0sBLA==
+Received: from [100.115.223.179] (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: cristicc)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 4D9F83781FD5;
+	Fri, 15 Dec 2023 10:57:35 +0000 (UTC)
+Message-ID: <f3d98291-0bf6-45b2-bf4f-b0268d13af63@collabora.com>
+Date: Fri, 15 Dec 2023 12:57:34 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 11/11] ASoC: SOF: topology: Add new DAI type entry for
+ SOF_DAI_AMD_BT
+Content-Language: en-US
+To: Venkata Prasad Potturu <venkataprasad.potturu@amd.com>,
+ Mark Brown <broonie@kernel.org>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>,
+ Takashi Iwai <tiwai@suse.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
+ Bard Liao <yung-chuan.liao@linux.intel.com>,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+ Daniel Baluta <daniel.baluta@nxp.com>,
+ Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+ Alper Nebi Yasak <alpernebiyasak@gmail.com>,
+ Syed Saba Kareem <Syed.SabaKareem@amd.com>,
+ Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+ Marian Postevca <posteuca@mutex.one>,
+ Vijendar Mukunda <Vijendar.Mukunda@amd.com>,
+ V sujith kumar Reddy <Vsujithkumar.Reddy@amd.com>,
+ Mastan Katragadda <Mastan.Katragadda@amd.com>,
+ Ajit Kumar Pandey <AjitKumar.Pandey@amd.com>, linux-sound@vger.kernel.org,
+ linux-kernel@vger.kernel.org, sound-open-firmware@alsa-project.org,
+ kernel@collabora.com
+References: <20231209205351.880797-1-cristian.ciocaltea@collabora.com>
+ <20231209205351.880797-12-cristian.ciocaltea@collabora.com>
+ <fad8a055-eabb-4087-94d5-9e1de00933e4@amd.com>
+ <aa830670-e544-43a2-9ba9-a64f1964a9f5@collabora.com>
+ <318470ce-1631-4c46-b425-755c877dda65@amd.com>
+ <421128f7-6a17-4be9-a72b-272ea4017fbd@collabora.com>
+ <ZXXEsyBUCrBULNgk@finisterre.sirena.org.uk>
+ <5095ce7b-13bd-4805-b81e-f7565ab41b67@collabora.com>
+ <dea5fb18-5fdc-4be4-9981-a6876cf531eb@amd.com>
+ <ca828ee1-93f7-432e-b95d-e67c35cdcdb5@collabora.com>
+ <0de8f81b-e7d4-43f6-b011-eb6ee09cc7fe@amd.com>
+ <913257d4-75dc-4887-97d6-0f206c401057@collabora.com>
+ <188ee32a-a201-4210-a8bc-bf3ba04e2f2b@amd.com>
+From: Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
+In-Reply-To: <188ee32a-a201-4210-a8bc-bf3ba04e2f2b@amd.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Fri, Dec 15 2023 at 13:24, Serge Semin wrote:
-> On Fri, Dec 15, 2023 at 09:09:09AM +0100, Thomas Gleixner wrote:
->> On Sat, Dec 05 2020 at 22:58, Linus Walleij wrote:
->> > Sorry for top posting but I need the help of the irqchip maintainer
->> > Marc Z to hash this out.
->> >
->> > The mask/unmask/disable/enable semantics is something that
->> > you need to work with every day to understand right.
->> 
->> The patch is correct.
->> 
->> The irq_enable() callback is required to be a superset of
->> irq_unmask(). I.e. the core code expects it to do:
->> 
->>   1) Some preparatory work to enable the interrupt line
->> 
->>   2) Unmask the interrupt, which is why the masked state is cleared
->>      by the core after invoking the irq_enable() callback.
->> 
->> #2 is pretty obvious because if an interrupt chip does not implement the
->> irq_enable() callback the core defaults to irq_unmask()
->> 
->> Correspondingly the core expects from the irq_disable() callback:
->> 
->>    1) To mask the interrupt
->> 
->>    2) To do some extra work to disable the interrupt line
->> 
->> Same reasoning as above vs. #1 as the core fallback is to invoke the
->> irq_unmask() callback when the irq_disable() callback is not
->> implemented.
->
-> Just curious. Wouldn't that be more correct/portable for the core to
-> call both callbacks when it's required and if both are provided? So
-> the supersetness requirement would be no longer applied to the
-> IRQ enable/disable callbacks implementation thus avoiding the code
-> duplications in the low-level drivers.
+On 12/15/23 11:58, Venkata Prasad Potturu wrote:
+> 
+> On 12/14/23 22:12, Cristian Ciocaltea wrote:
+>> On 12/14/23 15:15, Venkata Prasad Potturu wrote:
+>>> On 12/14/23 17:53, Cristian Ciocaltea wrote:
+>>>> On 12/11/23 07:58, Venkata Prasad Potturu wrote:
+>>>>> On 12/10/23 21:20, Cristian Ciocaltea wrote:
+>>>>>> On 12/10/23 16:01, Mark Brown wrote:
+>>>>>>> On Sun, Dec 10, 2023 at 12:12:53PM +0200, Cristian Ciocaltea wrote:
+>>>>>>>> On 12/10/23 11:51, Venkata Prasad Potturu wrote:
+>>>>>>>>> This should send to SOF git repo for rewiew, once SOF reviewers
+>>>>>>>>> approved
+>>>>>>>>> this, again need to send to broonie git.
+>>>>>>>>> All the changes in sound/soc/sof/ path should go to SOF git.
+>>>>>>>> Unfortunately I'm not familiar with the SOF dev workflow. So
+>>>>>>>> it's not
+>>>>>>>> enough to have this patch cc-ed to
+>>>>>>>> sound-open-firmware@alsa-project.org?
+>>>>>>> The SOF people basically do their own thing in github at
+>>>>>>>
+>>>>>>>       https://github.com/thesofproject/linux
+>>>>>>>
+>>>>>>> with a github workflow and submit their patches upstream in
+>>>>>>> batches a
+>>>>>>> few times a release, however my understanding is that their
+>>>>>>> workflow can
+>>>>>>> cope with things going in directly upstream as well.
+>>>>>> Thanks for clarifying, Mark!  That would greatly simplify and speedup
+>>>>>> the whole process, at least for trivial patches like this one.
+>>>>> Hi Cristian,
+>>>>>
+>>>>> We have created a Pull request in SOF git hub for I2S BT support.
+>>>>> please hold v2 version SOF patches till below PR get's merged.
+>>>>> PR:- https://github.com/thesofproject/linux/pull/4742
+>>>> Hi Venkata,
+>>>>
+>>>> If this is going to be handled via the github workflow, this patch
+>>>> should be removed from the series.  Since there is no dependency on it,
+>>>> I cannot see a reason to put v2 on hold.
+>>>>
+>>>> Do I miss something?
+>>> Non-sof driver related patches can directly send to broonie git ad v2
+>>> series.
+>>> SOF driver patches should send to SOF github to avoid merge conflicts
+>>> as  per guidelines of SOF community.
+>> Honestly, I don't really see a high risk of conflicts, the patches are
+>> not that complex and can be simply cherry-picked when needed.  Moreover,
+>> as we already had people reviewing this, splitting this up will only add
+>> confusion and unnecessary burden.
+>>
+>> Are there any specific changes you are concerned about and cannot be
+>> really handled here?
+> This is not the concern about this patch series,
+> Generally sof driver patches sends to SOF git hub as a PR, these are the
+> guidelines by SOF maintainers.
+> If you still want to send alsa devel list directly, please discuss with
+> SOF maintainers.
 
-We could do that, but there are chips which require atomicity of the
-operations (#1/#2). Not sure whether it safes much.
+I think this series makes sense as a whole and it's best to be handled
+here, as it only provides trivial fixes to issues found on mainline.
 
-Thanks,
+If the SOF workflow is unable to integrate fixes submitted upstream, I
+would perceive that as a significant drawback of adhering to that
+process.  It is hard to believe, though, that this is really the case.
 
-        tglx
+Hence, I kindly ask everyone here to shed some light and help move this
+forward.
+
+Thank you,
+Cristian
+
 
