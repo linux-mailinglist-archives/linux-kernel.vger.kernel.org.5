@@ -1,75 +1,111 @@
-Return-Path: <linux-kernel+bounces-1283-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-1284-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4D36A814CDE
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 17:20:56 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 71B06814CE1
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 17:22:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0A03028237F
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 16:20:55 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2647E1F253F5
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 16:22:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2BE753C479;
-	Fri, 15 Dec 2023 16:20:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=t-8ch.de header.i=@t-8ch.de header.b="XnQLs3DJ"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B9663C460;
+	Fri, 15 Dec 2023 16:21:58 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from todd.t-8ch.de (todd.t-8ch.de [159.69.126.157])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0CA17381C8;
-	Fri, 15 Dec 2023 16:20:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=t-8ch.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=t-8ch.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=t-8ch.de; s=mail;
-	t=1702657234; bh=gxIU+Cnud2j3bNARAoIX3HgvhIYjXRvzI1SwQ9YSFug=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=XnQLs3DJk/8GvBEHSCEaONRRri1iImcp2JcuA3XM2XBIc6Xz+GTX00I+ZlGIyYmXE
-	 +k/eelNYt3bph8Mmnfr1FugHH3LeLbjYWVapfKVOnpmK2EZloshTt1MiLg393eYSUn
-	 CqLW+LvMLunnQf7VeHExvdKJQ+AZwXQsTJkNc+5c=
-Date: Fri, 15 Dec 2023 17:20:32 +0100
-From: Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <thomas@t-8ch.de>
-To: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-Cc: jikos@kernel.org, jic23@kernel.org, lars@metafoo.de, 
-	Basavaraj.Natikar@amd.com, linux-input@vger.kernel.org, linux-iio@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Subject: Re: [PATCH] iio: light: hid-sensor-als: Avoid failure for
- chromaticity support
-Message-ID: <9be8369c-4e23-4fa0-bc26-b236de669c8c@t-8ch.de>
-References: <20231215160159.648963-1-srinivas.pandruvada@linux.intel.com>
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A0EAE3BB25;
+	Fri, 15 Dec 2023 16:21:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5D2BFC15;
+	Fri, 15 Dec 2023 08:22:40 -0800 (PST)
+Received: from FVFF77S0Q05N (unknown [10.57.45.203])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 1150B3F5A1;
+	Fri, 15 Dec 2023 08:21:52 -0800 (PST)
+Date: Fri, 15 Dec 2023 16:21:45 +0000
+From: Mark Rutland <mark.rutland@arm.com>
+To: James Clark <james.clark@arm.com>
+Cc: linux-arm-kernel@lists.infradead.org, linux-perf-users@vger.kernel.org,
+	linux-next@vger.kernel.org, will@kernel.org,
+	u.kleine-koenig@pengutronix.de,
+	Nathan Chancellor <nathan@kernel.org>,
+	Nick Desaulniers <ndesaulniers@google.com>,
+	Bill Wendling <morbo@google.com>,
+	Justin Stitt <justinstitt@google.com>,
+	Anshuman Khandual <anshuman.khandual@arm.com>,
+	Suzuki K Poulose <suzuki.poulose@arm.com>,
+	linux-kernel@vger.kernel.org, llvm@lists.linux.dev
+Subject: Re: [PATCH 1/2] arm: perf: Fix ARCH=arm build with GCC in
+ armv8pmu_write_evtype()
+Message-ID: <ZXx9GW1onSy4eBEB@FVFF77S0Q05N>
+References: <20231215150040.3342183-1-james.clark@arm.com>
+ <20231215150040.3342183-2-james.clark@arm.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20231215160159.648963-1-srinivas.pandruvada@linux.intel.com>
+In-Reply-To: <20231215150040.3342183-2-james.clark@arm.com>
 
-On 2023-12-15 08:01:59-0800, Srinivas Pandruvada wrote:
-> With the commit ee3710f39f9d ("iio: hid-sensor-als: Add light chromaticity
-> support"), there is an assumption that the every HID ALS descriptor has
-> support of usage ids for chromaticity support. If they are not present,
-> probe fails for the driver . This breaks ALS functionality on majority of
-> platforms.
+On Fri, Dec 15, 2023 at 03:00:38PM +0000, James Clark wrote:
+> LLVM ignores everything inside the if statement and doesn't generate
+> errors, but GCC doesn't ignore it, resulting in the following error:
 > 
-> It is possible that chromaticity usage ids are not present. When not
-> present, restrict number of IIO channels to not include support for
-> chromaticity and continue.
+>   drivers/perf/arm_pmuv3.c: In function 'armv8pmu_write_evtype':
+>   include/linux/bits.h:34:29: error: left shift count >= width of type [-Werror=shift-count-overflow]
+>   	34 |         (((~UL(0)) - (UL(1) << (l)) + 1) & \
 > 
-> Fixes: ee3710f39f9d ("iio: hid-sensor-als: Add light chromaticity support")
-> Reported-by: Thomas Weißschuh <thomas@t-8ch.de>
-> Closes: https://bugzilla.kernel.org/show_bug.cgi?id=218223
-> Signed-off-by: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-> Cc: stable@vger.kernel.org
+> Fix it by changing the if to #if.
+
+I reckon it'd be cleaner to use GENMASK_ULL for the TH and TC fields, in
+include/linux/perf/arm_pmu.h have:
+
+| /*
+|  * PMXEVTYPER: Event selection reg
+|  */
+| #define ARMV8_PMU_EVTYPE_EVENT GENMASK(15, 0)          /* Mask for EVENT bits */
+| #define ARMV8_PMU_EVTYPE_TH    GENMASK_ULL(43, 32)     /* arm64 only */
+| #define ARMV8_PMU_EVTYPE_TC    GENMASK_ULL(63, 61)     /* arm64 only */
+
+IIUC that should silence this warning, and it'd remove the need for the
+ifdeffery and other changes in patch 2.
+
+Does that work, or am I missing something?
+
+Thanks,
+Mark.
+
+> 
+> Fixes: 3115ee021bfb ("arm64: perf: Include threshold control fields in PMEVTYPER mask")
+> Reported-by: Uwe Kleine-K"onig <u.kleine-koenig@pengutronix.de>
+> Closes: https://lore.kernel.org/linux-arm-kernel/20231215120817.h2f3akgv72zhrtqo@pengutronix.de/
+> Signed-off-by: James Clark <james.clark@arm.com>
 > ---
->  drivers/iio/light/hid-sensor-als.c | 24 ++++++++++++++++--------
->  1 file changed, 16 insertions(+), 8 deletions(-)
-
-Thanks!
-
-Tested-by: Thomas Weißschuh <linux@weissschuh.net> # on Framework 13 AMD
+>  drivers/perf/arm_pmuv3.c | 5 +++--
+>  1 file changed, 3 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/perf/arm_pmuv3.c b/drivers/perf/arm_pmuv3.c
+> index 23fa6c5da82c..3ed2086cefc3 100644
+> --- a/drivers/perf/arm_pmuv3.c
+> +++ b/drivers/perf/arm_pmuv3.c
+> @@ -631,8 +631,9 @@ static void armv8pmu_write_evtype(int idx, unsigned long val)
+>  			     ARMV8_PMU_EXCLUDE_EL0 |
+>  			     ARMV8_PMU_EXCLUDE_EL1;
+>  
+> -	if (IS_ENABLED(CONFIG_ARM64))
+> -		mask |= ARMV8_PMU_EVTYPE_TC | ARMV8_PMU_EVTYPE_TH;
+> +#if IS_ENABLED(CONFIG_ARM64)
+> +	mask |= ARMV8_PMU_EVTYPE_TC | ARMV8_PMU_EVTYPE_TH;
+> +#endif
+>  
+>  	val &= mask;
+>  	write_pmevtypern(counter, val);
+> -- 
+> 2.34.1
+> 
 
