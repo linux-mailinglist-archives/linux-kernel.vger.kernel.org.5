@@ -1,156 +1,162 @@
-Return-Path: <linux-kernel+bounces-1300-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-1301-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A7741814D15
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 17:31:55 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9DEDF814D16
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 17:32:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DA6201C23C27
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 16:31:54 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 540391F24AEA
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 16:32:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ADC4A3DBBB;
-	Fri, 15 Dec 2023 16:31:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D08993FB1D;
+	Fri, 15 Dec 2023 16:32:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SY43EWQG"
+	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="P7CNJ3qe"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-lj1-f178.google.com (mail-lj1-f178.google.com [209.85.208.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 099063DB9D
-	for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 16:31:40 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 44E71C433C7;
-	Fri, 15 Dec 2023 16:31:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1702657900;
-	bh=0LosaE7u8eBehBbtOhhzbFfU8u6hU9TUHpdDqS95mg4=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=SY43EWQGoVCv6gr4NvXcCWAkQbCPGd2r0YmySPpP5h7SBC63JBgxNxcMtxvu7IDds
-	 6Kog+3oBVOvPm2LUvZ9PPkNH9P2cxlEmt9RmSC35gGR3ChvMvbanuKlXifEYY7q3bX
-	 iSNvLRo9KdNrCbCOlPLPORYLV6FN1WaBZXtiMzpEOUA7glVs/R2hjNyvOn3XCFW8ze
-	 mA5mT6A/OjkQ6tKIxMNQiHNEogOIaboPeXGr3T2oFBMLfooOtX6ApP1z1Hr/tDHINC
-	 yeWAdFwRTw2T3zLe01ilRW5hN3VcyabKv2gtFedEQeBxv8sQI9iolXp9WscdC0Uhoa
-	 PU6sCApIKlPXQ==
-Date: Fri, 15 Dec 2023 17:31:38 +0100
-From: Maxime Ripard <mripard@kernel.org>
-To: =?utf-8?Q?Micha=C5=82?= Winiarski <michal.winiarski@intel.com>
-Cc: intel-xe@lists.freedesktop.org, dri-devel@lists.freedesktop.org, 
-	linux-kernel@vger.kernel.org, Rodrigo Vivi <rodrigo.vivi@intel.com>, 
-	Michal Wajdeczko <michal.wajdeczko@intel.com>, Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, 
-	Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>, 
-	Daniel Vetter <daniel@ffwll.ch>, Javier Martinez Canillas <javierm@redhat.com>, 
-	=?utf-8?B?TWHDrXJh?= Canal <mcanal@igalia.com>
-Subject: Re: [PATCH v3 3/3] drm/tests: managed: Add a simple test for
- drmm_managed_release
-Message-ID: <mwdzi5424bvw57pqred3e2hcq7tp6xkaywj3dabixkbmq5hkbf@emquthxzlth3>
-References: <20231211220939.215024-1-michal.winiarski@intel.com>
- <20231211220939.215024-4-michal.winiarski@intel.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DFF6E3FB06
+	for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 16:32:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=joelfernandes.org
+Received: by mail-lj1-f178.google.com with SMTP id 38308e7fff4ca-2ca0f21e48cso10344601fa.2
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 08:32:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google; t=1702657940; x=1703262740; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ojDU/9VN5GeC3dLaid8BphJaGimgFMHJdaFdGJs6sOs=;
+        b=P7CNJ3qeJMN3y/cujteH1AaQmFBJlmmtrMGDE196bIzJU0iw7r9ozi9cDbOJNw3bnr
+         A0x0Y5N++UgNZmVZva/wlFCsVBqmxTcnpgm9rZ5DLKvBDwxZZBKI6YmTXgJTDQ+JHIpc
+         MN6VzFWlLnt1inypJo5fprHpFPQU2wp+3Iol8=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702657940; x=1703262740;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ojDU/9VN5GeC3dLaid8BphJaGimgFMHJdaFdGJs6sOs=;
+        b=O2vl1fncHIF+PYd3sC/Odaexn4FCCSpPEls/cUrvWDm+cXhFT8ElImKbQ9hYdXnOAU
+         oa4MbZpeFf4wTZn8knH2LjCm7Aml803YZFc7Jma2TS9zOvwR1o4v83QKenY50pQ2LCVH
+         hK8aVLg6xAUbi6lNdbdV8+41bAGn049UMz9meAvsc2NwauxI3kyRRG3gAaPZRxTSU+5E
+         C66qN/Y/tOQ+hBsB6Tt6zyyQLuNb34SrCfzI7rbEmJijg6CoRbtFlGyPwR5rZkXynl/D
+         PL7Yyg2ptmC0HFqiQNbPzKc/3yYRgGPZtGUdew9ELOfhh6y7Z4Cvb5oPIX9T/UkwOolc
+         c35w==
+X-Gm-Message-State: AOJu0Yz+4CSb9eVxf9+vTK51yphPXwvTo953AnLlC3HuagKTdZWEshlS
+	CXRWgdhskqgnVWuC3Wc4ejkby7BrTFjweFT3xLBNjA==
+X-Google-Smtp-Source: AGHT+IGY6RKV7kOjHCo00Xasu9YBIUHdxyiAoiCv3LSuwch9yvWFnkm3keeK7vWU0VlytqR7XOrQRgv4YBQrVOx/m5o=
+X-Received: by 2002:a2e:be0c:0:b0:2cc:200f:4392 with SMTP id
+ z12-20020a2ebe0c000000b002cc200f4392mr5299553ljq.46.1702657939891; Fri, 15
+ Dec 2023 08:32:19 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="awnvecwbuslupev3"
-Content-Disposition: inline
-In-Reply-To: <20231211220939.215024-4-michal.winiarski@intel.com>
-
-
---awnvecwbuslupev3
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+References: <20231203011252.233748-1-qyousef@layalina.io> <ZXhTjrTqZvMTXKtK@pc636>
+ <CAEXW_YSMwmG_joipkK5W1Bdwzdjm_a3f86BijkAkAJTHOWkE0Q@mail.gmail.com> <ZXmI9zDW8KlZqQj7@pc636>
+In-Reply-To: <ZXmI9zDW8KlZqQj7@pc636>
+From: Joel Fernandes <joel@joelfernandes.org>
+Date: Fri, 15 Dec 2023 11:32:08 -0500
+Message-ID: <CAEXW_YRdgQywfJ+A9fa1itDojPDiZ_Xc3M8n6dS=M2LHX9hSFg@mail.gmail.com>
+Subject: Re: [PATCH v2] rcu: Provide a boot time parameter to control lazy RCU
+To: Uladzislau Rezki <urezki@gmail.com>
+Cc: Qais Yousef <qyousef@layalina.io>, "Paul E. McKenney" <paulmck@kernel.org>, 
+	Frederic Weisbecker <frederic@kernel.org>, Neeraj Upadhyay <quic_neeraju@quicinc.com>, 
+	Josh Triplett <josh@joshtriplett.org>, Boqun Feng <boqun.feng@gmail.com>, 
+	Steven Rostedt <rostedt@goodmis.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
+	Lai Jiangshan <jiangshanlai@gmail.com>, Zqiang <qiang.zhang1211@gmail.com>, 
+	Andrea Righi <andrea.righi@canonical.com>, John Stultz <jstultz@google.com>, 
+	linux-kernel@vger.kernel.org, rcu@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-Hi,
+On Wed, Dec 13, 2023 at 5:35=E2=80=AFAM Uladzislau Rezki <urezki@gmail.com>=
+ wrote:
+[....]
+> > > > +       Use rcutree.enable_rcu_lazy=3D0 to turn it off at boot time=
+.
+> > > > +
+> > > > +config RCU_LAZY_DEFAULT_OFF
+> > > > +     bool "Turn RCU lazy invocation off by default"
+> > > > +     depends on RCU_LAZY
+> > > > +     default n
+> > > > +     help
+> > > > +       Allows building the kernel with CONFIG_RCU_LAZY=3Dy yet kee=
+p it default
+> > > > +       off. Boot time param rcutree.enable_rcu_lazy=3D1 can be use=
+d to switch
+> > > > +       it back on.
+> > > > +
+> > > >  config RCU_DOUBLE_CHECK_CB_TIME
+> > > >       bool "RCU callback-batch backup time check"
+> > > >       depends on RCU_EXPERT
+> > > > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> > > > index 3ac3c846105f..8b7675624815 100644
+> > > > --- a/kernel/rcu/tree.c
+> > > > +++ b/kernel/rcu/tree.c
+> > > > @@ -2719,6 +2719,9 @@ __call_rcu_common(struct rcu_head *head, rcu_=
+callback_t func, bool lazy_in)
+> > > >  }
+> > > >
+> > > >  #ifdef CONFIG_RCU_LAZY
+> > > > +static bool enable_rcu_lazy __read_mostly =3D !IS_ENABLED(CONFIG_R=
+CU_LAZY_DEFAULT_OFF);
+> > > > +module_param(enable_rcu_lazy, bool, 0444);
+> > > > +
+> > > >  /**
+> > > >   * call_rcu_hurry() - Queue RCU callback for invocation after grac=
+e period, and
+> > > >   * flush all lazy callbacks (including the new one) to the main ->=
+cblist while
+> > > > @@ -2744,6 +2747,8 @@ void call_rcu_hurry(struct rcu_head *head, rc=
+u_callback_t func)
+> > > >       __call_rcu_common(head, func, false);
+> > > >  }
+> > > >  EXPORT_SYMBOL_GPL(call_rcu_hurry);
+> > > > +#else
+> > > > +#define enable_rcu_lazy              false
+> > > >  #endif
+> > > >
+> > > >  /**
+> > > > @@ -2792,7 +2797,7 @@ EXPORT_SYMBOL_GPL(call_rcu_hurry);
+> > > >   */
+> > > >  void call_rcu(struct rcu_head *head, rcu_callback_t func)
+> > > >  {
+> > > > -     __call_rcu_common(head, func, IS_ENABLED(CONFIG_RCU_LAZY));
+> > > > +     __call_rcu_common(head, func, enable_rcu_lazy);
+> > > >  }
+> > > >  EXPORT_SYMBOL_GPL(call_rcu);
+> > > >
+> > > I think, it makes sense. Especially for devices/systems where it is h=
+ard
+> > > to recompile the kernel and deploy it. For example, Google and GKI ap=
+proach.
+> >
+> > My concerns had nothing to do with recompiling the kernel. Passing a
+> > boot parameter (without a kernel compile) can just as well
+> > default-disable the feature.
+> >
+> > I think what Qais is saying is that passing a boot parameter is itself
+> > a hassle in Android (something I did not know about) because of GKI
+> > etc.
+> >
+> That is true. Doing:
+>
+> echo 1 > /sys/.../enable_lazy
+>
+> is a way how to make it easy and flexible.
 
-On Mon, Dec 11, 2023 at 11:09:39PM +0100, Micha=C5=82 Winiarski wrote:
-> Add a simple test that checks whether the action is indeed called right
-> away and that it is not called on the final drm_dev_put().
->=20
-> Signed-off-by: Micha=C5=82 Winiarski <michal.winiarski@intel.com>
-> ---
->  drivers/gpu/drm/tests/drm_managed_test.c | 29 ++++++++++++++++++++++++
->  1 file changed, 29 insertions(+)
->=20
-> diff --git a/drivers/gpu/drm/tests/drm_managed_test.c b/drivers/gpu/drm/t=
-ests/drm_managed_test.c
-> index 15bd2474440b5..ef5e784afbc6d 100644
-> --- a/drivers/gpu/drm/tests/drm_managed_test.c
-> +++ b/drivers/gpu/drm/tests/drm_managed_test.c
-> @@ -48,6 +48,34 @@ static void drm_test_managed_run_action(struct kunit *=
-test)
->  	KUNIT_EXPECT_GT_MSG(test, ret, 0, "Release action was not called");
->  }
-> =20
-> +/*
-> + * The test verifies that the release action is called immediately when
-> + * drmm_release_action is called and that it is not called for a second =
-time
-> + * when the device is released.
-> + */
+Hey Vlad, are you suggesting that the boot parameter be made to
+support runtime? We can keep that for later as it may get complicated.
+Qais's boot parameter is designed only for boot time.
 
-Thanks, it's much clearer now.
+Qais, could you resend the patch with our tags and updated description? Tha=
+nks,
 
-> +static void drm_test_managed_release_action(struct kunit *test)
-> +{
-> +	struct managed_test_priv *priv =3D test->priv;
-> +	int ret;
-> +
-> +	ret =3D drmm_add_action_or_reset(priv->drm, drm_action, priv);
-> +	KUNIT_EXPECT_EQ(test, ret, 0);
-> +
-> +	ret =3D drm_dev_register(priv->drm, 0);
-> +	KUNIT_ASSERT_EQ(test, ret, 0);
-> +
-> +	drmm_release_action(priv->drm, drm_action, priv);
-> +	KUNIT_EXPECT_TRUE_MSG(test, priv->action_done, "Release action was not =
-called");
-> +	priv->action_done =3D false;
-
-We should call wait_event_* here.
-
-> +
-> +	drm_dev_unregister(priv->drm);
-> +	drm_kunit_helper_free_device(test, priv->drm->dev);
-> +
-> +	ret =3D wait_event_interruptible_timeout(priv->action_wq, priv->action_=
-done,
-> +					       msecs_to_jiffies(TEST_TIMEOUT_MS));
-> +	KUNIT_EXPECT_EQ_MSG(test, ret, 0, "Unexpected release action call durin=
-g cleanup");
-> +}
-> +
-
-Tests should in general be as fast as possible. Waiting for 100ms for
-the success case is not ok. We have ~500 tests at the moment, if every
-test was doing that it would take at least 50s to run all our unit
-tests, while it takes less than a second at the moment on a capable
-machine.
-
-And also, I'm not sure we actually need to make sure it never happened.
-If only because nothing actually guarantees it wouldn't have happened
-after the timeout anyway, so the test isn't definitive.
-
-I guess what we could test is whether the action is still in the actions
-list through a function only exported to tests. If it's no longer in the
-action list, then it won't be run.
-
-But unless we ever have a bug, I'm not sure it's worth testing for that.
-
-Maxime
-
---awnvecwbuslupev3
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCZXx/agAKCRDj7w1vZxhR
-xajGAQDG1s2HQsiewBHqi42fHEPuZViUskhPW+PJ7c8GfgqlEQD/RTukNbiKlM+1
-Zl51xfDs0C5H73DX+sfNPRh3vIiq3AQ=
-=VvLf
------END PGP SIGNATURE-----
-
---awnvecwbuslupev3--
+ - Joel
 
