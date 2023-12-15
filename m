@@ -1,286 +1,189 @@
-Return-Path: <linux-kernel+bounces-1084-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-1086-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BCE12814A12
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 15:08:42 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4F07F814A1A
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 15:11:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 72B1C285DB0
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 14:08:41 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CBB8B1F247F1
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 14:11:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8083B3159C;
-	Fri, 15 Dec 2023 14:05:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF0F72FE38;
+	Fri, 15 Dec 2023 14:10:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="CdZmKUUi"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9606A3159D
-	for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 14:05:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 25C08C15;
-	Fri, 15 Dec 2023 06:06:18 -0800 (PST)
-Received: from [10.57.76.37] (unknown [10.57.76.37])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 68DE03F5A1;
-	Fri, 15 Dec 2023 06:05:29 -0800 (PST)
-Message-ID: <f2a3b1f0-0823-4c3a-b0e8-20ac83e855b2@arm.com>
-Date: Fri, 15 Dec 2023 14:05:28 +0000
+Received: from NAM04-BN8-obe.outbound.protection.outlook.com (mail-bn8nam04on2080.outbound.protection.outlook.com [40.107.100.80])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA69E2C690;
+	Fri, 15 Dec 2023 14:10:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=gTrDaHbVZ9M9ZMX4RBBY0yNccoFCJoy2/5oGebDYK236xBZRXCn65uKsQO5FGlhOG0SRe1g04a9hGRei5mzTwZw3lR8hYQcP8NxlGsKG8/FcY3VW5Qavgw7daJk4x9psTwbrsd7p91RJy38mz05O0hx1aV4D3K7K5J7DmfwurYNGbFPIUJ+EGiGWzpPxXmzXYMnfCbnRTB+iLg+leiwoyOtpk5l68r55GePAhKqUlJsT2MloKgrGxla9eQAYk3bB0INYbZYjCToeBGW8BZLnnx6KyxAxt+1xKqNSd5geb6XR+zKURndwrHdvxOFaiIV8zYDd2GwXVjxGl9Mh0fMCNg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=h3bDamNp7w9RhGYX2eG3i6r44AqHUHgDiEZAOdTMFpk=;
+ b=WaPZgvG9N4DGapZIe4a0rF0YqnZtk6bw1TT0rrVVf7+duYG2YkpeTbTQjkahBXeLkPigoxbPbrKJi6wwQsOqlfpXf9I2Jh7IroDpPNPN1n+V8Ufh3vY23Q3ijR1GG1O4ZkoNRX3c7ekFWqiHeJJw22npp/F27rq/QnotH41yqtZuJFwgJNdQ5KtE0PB1RGIG04MKonjgO/rdWWRXlowmgPid0s0yzNk6Qjvw+rwf04pQym8YVpmkOkT0MiSe0PwVQ1s+TyauDgYWJqjUKaiN4/dEQqnYkHMIgYJ/xz0b5AR5NfuVFbRnUPkqxeuJ+NnXj5dH1jJIbGfCJrmYsKdG5Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=h3bDamNp7w9RhGYX2eG3i6r44AqHUHgDiEZAOdTMFpk=;
+ b=CdZmKUUi18mQnYGhPzB8U/O2d7fWssWj4LTXc55EKIbe6iPn2DLwvn20e/bTYZ78DGEU2H0hN4WyCqyg5RrmaeLAGP55TMVR4PDvvbXYuY75lcXyHhwPRmxBqY4LY5hbTMYVBDyuUm6AK07ozo09CCzn3z6Ane1JUxczlLHzXql+oBJysXxBEJyWDqUjdWgKJCO+zeIwJhX/ZdpbCt5YXIJG/mCaCWl1Jhjkf8kjEI5GfxIELprd98m5pIlIJN5dGgLPgfKoMhsYKZlhlSbDmtOeXNic61UniPUuyECIb0BLpnkaLr8zpKjgvGwbD+3b1S0Ul13H1G+nfhnJmK8uHA==
+Received: from DM6PR12MB5565.namprd12.prod.outlook.com (2603:10b6:5:1b6::13)
+ by MN2PR12MB4270.namprd12.prod.outlook.com (2603:10b6:208:1d9::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7091.32; Fri, 15 Dec
+ 2023 14:10:51 +0000
+Received: from DM6PR12MB5565.namprd12.prod.outlook.com
+ ([fe80::bd76:47ad:38a9:a258]) by DM6PR12MB5565.namprd12.prod.outlook.com
+ ([fe80::bd76:47ad:38a9:a258%5]) with mapi id 15.20.7091.030; Fri, 15 Dec 2023
+ 14:10:51 +0000
+From: Dragos Tatulea <dtatulea@nvidia.com>
+To: "virtualization@lists.linux-foundation.org"
+	<virtualization@lists.linux-foundation.org>, "eperezma@redhat.com"
+	<eperezma@redhat.com>, Gal Pressman <gal@nvidia.com>, "si-wei.liu@oracle.com"
+	<si-wei.liu@oracle.com>, "mst@redhat.com" <mst@redhat.com>, "leon@kernel.org"
+	<leon@kernel.org>, Saeed Mahameed <saeedm@nvidia.com>, "jasowang@redhat.com"
+	<jasowang@redhat.com>
+CC: "kvm@vger.kernel.org" <kvm@vger.kernel.org>, Parav Pandit
+	<parav@nvidia.com>, "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>, "xuanzhuo@linux.alibaba.com"
+	<xuanzhuo@linux.alibaba.com>
+Subject: Re: [PATCH vhost v3 0/6] vdpa/mlx5: Add support for resumable vqs
+Thread-Topic: [PATCH vhost v3 0/6] vdpa/mlx5: Add support for resumable vqs
+Thread-Index: AQHaL19NytSBM0QiS0K5X9wVZSQk7bCqYkQA
+Date: Fri, 15 Dec 2023 14:10:51 +0000
+Message-ID: <53cc19f4c6a1f5984b56e03c5bc105d9685be103.camel@nvidia.com>
+References: <20231215140146.95816-1-dtatulea@nvidia.com>
+In-Reply-To: <20231215140146.95816-1-dtatulea@nvidia.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+user-agent: Evolution 3.50.2 (3.50.2-1.fc39) 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: DM6PR12MB5565:EE_|MN2PR12MB4270:EE_
+x-ms-office365-filtering-correlation-id: e680ad96-7f41-4182-72ee-08dbfd77a4ee
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info:
+ RvhCQ8qejRZiuaTtT/hlnt2QBC+/9m6jLkVGaHtYNaI9n+pVDSR5wrAGUKvqU9DhcnOdd14WpEmkgBR7P2737TxO5Ht3oHWsqK6i529VlD4IFqA3AgubjL7qvJ4avZGDQX7GGIkIXJkEtfyZGN7pIqwjSPd2eP2CnzwgxrxQAW0MTK69p18a6xl6s9SY9kV5mRc7bqhkdkw2CGTuQ0rI/gSZ5eD11+scluTaSohKmW3DYknh/VfGuqWjBhU9zvG3dUVHCsP9/HV/Lwf+7SzpDJfuKR92Kpfc0ZQrsWgpJmej2PHN3MuOhFPYgqNfFCIuusyh5HMaVeNB4XWjzxqCuS5tTTlkASsY8Ez5e0ApQtc3LIS2yIaMQwMxPnpD1dwO3uZxJo80/eoM0EC93tNtBMsSIuM995ROoz29lkRBPehLawUrA5m+ROgEjs0knZnKl7b3iGJk9Ap6iV1/SurfIoV4/Q/TR2pdIfGiwC4rzC72wN7iswNp6ZtgwbhdTURx+T0O1AoYFWvjpGZ+9PUJPmShgh6tUOSyI9jrkGVmVIsBCavEPqOD8vCVPvzXTeFHZ3Z0AdiKcJUtJPKqRIbMT2WdWeLza9p6Rb+erx7oQjKCl7mk/rvSd8mIabLE7NBkFc6tpQLlbhh5qj4KaHlsC2O0cWZLyFom8P0zefycwHU=
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB5565.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(366004)(376002)(346002)(39860400002)(136003)(230922051799003)(186009)(451199024)(1800799012)(64100799003)(122000001)(38100700002)(2616005)(83380400001)(71200400001)(36756003)(86362001)(38070700009)(6506007)(6512007)(478600001)(316002)(110136005)(66946007)(66556008)(66476007)(66446008)(64756008)(54906003)(91956017)(76116006)(4001150100001)(2906002)(8936002)(4326008)(8676002)(5660300002)(41300700001)(966005)(6486002);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?utf-8?B?c0dRd3pWUEMrT2YzU0NpY0g4ajBrZjBFNFNSWFVsamZhbUxzUVd0eHppQ0lL?=
+ =?utf-8?B?ZzNybkpTelE0bWlZdjRyQW54a2RkRzVkeHM5K1Q3N0FqOFJFcGJtSmMzd2Js?=
+ =?utf-8?B?M04zdjVURmpoZTJIaXpmRzM2QnVaSkNjcVNwdjQ2VzcydFlmSjN5ckI1STRX?=
+ =?utf-8?B?RWRnSklVSmpGVjNNOUZVME5GK2U2TEZpYkxHOUc3VUpMV00walAzRjV2a2FY?=
+ =?utf-8?B?cEhWVXBBQzgzMXlYY2h2SndycUxSWjhLUHUzSkVVWmhFUjVlZVZFRmJrUVlj?=
+ =?utf-8?B?bU13VHRYNVZiYkdLTVkza0JEY3JxT0R3cUNNTENwemQ3UVFLK29Ka0ZiWUR1?=
+ =?utf-8?B?ZFN5b3RuVTR5cGFvTldzWFczWkJ4bGtPbjVGUTFsSXJIYXlkY0FTSXo5dTZh?=
+ =?utf-8?B?Vm1PMUw5MlZvU2RXSXVNdmlJekwvM0JtTytBV0loUnJUVWgxMzRoVkRRYTZt?=
+ =?utf-8?B?NGZCRXN4MHN5Uy9jWFFveUZYZE9aU3lQTWhmV3N5WklvS2dFNm1PUVhUaFBt?=
+ =?utf-8?B?OXFJRExxMndWSGpwVkczSmhmS1FXRTNadWYxaXMwaWxSS3lBNHBoVGhUejI1?=
+ =?utf-8?B?ZXNUT2NiMFFUU0FwU3JnVHpiYnZuSzQxeEhGWnEzWFRDcHVadjhJV1c0SXV2?=
+ =?utf-8?B?bzZHTUYwa1JXMG5td0s4OFhMUzd3SkhBaFY4RkxTeHB1OW01RE1PYmdGdmE3?=
+ =?utf-8?B?N0xISmcvQXRmNHF6TEgzVTVLcis1NE1YaXcwUG82OXVrUWtaKzJyRzRmTjdB?=
+ =?utf-8?B?K3owVm03UVlCd1B4bXFpTEZaUVF4S0xHSmZTeU44WTRsbi82T0toQ0dzNGVp?=
+ =?utf-8?B?L0Z2VTA1eEp6WG5xSzZDWC8vNU5FdVlUMTMwcjd0Q3UvUFg2WS9MbHFIVE5L?=
+ =?utf-8?B?Vk5YcVR5ckIva0VObjRWaWFubTdwTi9QeVdqc2taN0FOU2pKc2M0dUdSZHdr?=
+ =?utf-8?B?dVhsZUE2ZlZGcElsb3pSN0NqQUViYjVYZUJLOSsrS2QxTnJhbEtTUHR2ai93?=
+ =?utf-8?B?U3JJbGRlK2t5bHZYZHlvQjVrT3hkb1FYWTFaUm5HdVh2U0pzOUMxYkdzVGdQ?=
+ =?utf-8?B?M1N1VWorNjM1RW5reWRPSmwrTHNTdEs3eVdGRXI1MVVyb2k3a2hnVEUxMkFJ?=
+ =?utf-8?B?WWp5ZU51LzBwTmpiNHNOVWdjajIzTTZKd1hPRFUyeDI2Ky9sVWNyZE1uV3VN?=
+ =?utf-8?B?ZEkvOE5Ja1crb3BFamNtVm1yYlpmd3NVNmpTQTVJSFZTcGxxdzF3RnlPcG5z?=
+ =?utf-8?B?YVJnYWNQY1ZBNDRTN0Y4YkJpREdrK1hOR2pFQ3o4c3ZqY2ZZWk82WHl0VjRw?=
+ =?utf-8?B?ZndFSGQwbU1tRURqK1ludTBYZmJBM0ViVWJleUFkUWxZK3VVNndTayttUjFu?=
+ =?utf-8?B?UUM3dmpEbGx2ZDZFcnlGK01kYWZSMDRGUUxCQ1VSVDFoQ05IakIxdkZBaHp3?=
+ =?utf-8?B?QmdLMHZxMjk3ckRrVTROU0hiRXRFUGVRV0tlUElvZ2gvRkZLYWtySU9qVzJT?=
+ =?utf-8?B?ckhHM29sWkd1VCtNaTZPQnhtcUlRSFBkdFFOcFlDVUp4bUNHdExTWkxmSTF3?=
+ =?utf-8?B?cy9Dc3pJVE82LzBvMVdoYzllWXFob3I3RGk3UW5IS3hRZldBWEo5TEFZMEFK?=
+ =?utf-8?B?RGdTZGoxRmVnY1F4ZGhuVlhIY1UzVFZ0YUUzcnlxOERRWWpJMk5rSDFraXhr?=
+ =?utf-8?B?U1RYTnFtMFNNYzU2am9uVVNxNFBvZTFES0xIOVlUY1paNUFFOGdZUE8wdmY2?=
+ =?utf-8?B?cWRNVWxKdGhxQ1BaVit5cDdmbWRJVm9vakVEZHNwOWNXeHhKNy83RVZUQXI1?=
+ =?utf-8?B?MnhPZWdYNnZHTC9KRHdRSjZXbDJxY0xXWWVOa1JxUEQrYjZVa2hPcDJ5KzhY?=
+ =?utf-8?B?MlYyeDZmREJydndPTFBhK0liRHdDa2p1RDFuYnRvOVcyKy81ZTlmKzk5eXBt?=
+ =?utf-8?B?bHhtVURUQzZ5NWtjcXlKVm90bkloQXFhUUpzZmwvZVNsdFZTSkNXaUNOZU5x?=
+ =?utf-8?B?RDVFRThNT3pwUTN5WjNHZHd1VWVaZUQxeERLYnorbWcxUmpCSGJJajIxZG5p?=
+ =?utf-8?B?clJGZHQ4dEliQkJBdmxBUmI4L0dTMWRSVUo3ODlTMkdwTU04dUE5ckFEOXN2?=
+ =?utf-8?B?bjFGOE1RR0JTQlZnZjA2WjhHendVWXNCbWtmekVNc09qdmpXeUMzcm1ZWUJS?=
+ =?utf-8?Q?2Yhta/1+QgjqfNIrK0SUPKZ5p0mxb0hmE/X/uTBEtqA4?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <341398C1F3280040BB1D346C956E4EEF@namprd12.prod.outlook.com>
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 14/15] arm64/mm: Implement ptep_set_wrprotects() to
- optimize fork()
-Content-Language: en-GB
-To: Alistair Popple <apopple@nvidia.com>
-Cc: Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
- Ard Biesheuvel <ardb@kernel.org>, Marc Zyngier <maz@kernel.org>,
- Oliver Upton <oliver.upton@linux.dev>, James Morse <james.morse@arm.com>,
- Suzuki K Poulose <suzuki.poulose@arm.com>, Zenghui Yu
- <yuzenghui@huawei.com>, Andrey Ryabinin <ryabinin.a.a@gmail.com>,
- Alexander Potapenko <glider@google.com>,
- Andrey Konovalov <andreyknvl@gmail.com>, Dmitry Vyukov <dvyukov@google.com>,
- Vincenzo Frascino <vincenzo.frascino@arm.com>,
- Andrew Morton <akpm@linux-foundation.org>,
- Anshuman Khandual <anshuman.khandual@arm.com>,
- Matthew Wilcox <willy@infradead.org>, Yu Zhao <yuzhao@google.com>,
- Mark Rutland <mark.rutland@arm.com>, David Hildenbrand <david@redhat.com>,
- Kefeng Wang <wangkefeng.wang@huawei.com>, John Hubbard
- <jhubbard@nvidia.com>, Zi Yan <ziy@nvidia.com>,
- Barry Song <21cnbao@gmail.com>, Yang Shi <shy828301@gmail.com>,
- linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
- linux-kernel@vger.kernel.org
-References: <20231204105440.61448-1-ryan.roberts@arm.com>
- <20231204105440.61448-15-ryan.roberts@arm.com>
- <87cyvha2xd.fsf@nvdebian.thelocal>
- <ecf129dd-000f-45be-95dc-1e8dad5a8c12@arm.com>
- <87fs0413rx.fsf@nvdebian.thelocal>
-From: Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <87fs0413rx.fsf@nvdebian.thelocal>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB5565.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: e680ad96-7f41-4182-72ee-08dbfd77a4ee
+X-MS-Exchange-CrossTenant-originalarrivaltime: 15 Dec 2023 14:10:51.2866
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: EfriQGk5hSerGyePn252PWjYiARpEabzPOWzlylLEN7FFbF3nMS/LrDBkuu48McFLDtLSUyKTrMZECaQq6iG8g==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB4270
 
-On 15/12/2023 04:32, Alistair Popple wrote:
-> 
-> Ryan Roberts <ryan.roberts@arm.com> writes:
-> 
->> On 08/12/2023 01:37, Alistair Popple wrote:
->>>
->>> Ryan Roberts <ryan.roberts@arm.com> writes:
->>>
->>>> With the core-mm changes in place to batch-copy ptes during fork, we can
->>>> take advantage of this in arm64 to greatly reduce the number of tlbis we
->>>> have to issue, and recover the lost fork performance incured when adding
->>>> support for transparent contiguous ptes.
->>>>
->>>> If we are write-protecting a whole contig range, we can apply the
->>>> write-protection to the whole range and know that it won't change
->>>> whether the range should have the contiguous bit set or not. For ranges
->>>> smaller than the contig range, we will still have to unfold, apply the
->>>> write-protection, then fold if the change now means the range is
->>>> foldable.
->>>>
->>>> This optimization is possible thanks to the tightening of the Arm ARM in
->>>> respect to the definition and behaviour when 'Misprogramming the
->>>> Contiguous bit'. See section D21194 at
->>>> https://developer.arm.com/documentation/102105/latest/
->>>>
->>>> Performance tested with the following test written for the will-it-scale
->>>> framework:
->>>>
->>>> -------
->>>>
->>>> char *testcase_description = "fork and exit";
->>>>
->>>> void testcase(unsigned long long *iterations, unsigned long nr)
->>>> {
->>>> 	int pid;
->>>> 	char *mem;
->>>>
->>>> 	mem = malloc(SZ_128M);
->>>> 	assert(mem);
->>>> 	memset(mem, 1, SZ_128M);
->>>>
->>>> 	while (1) {
->>>> 		pid = fork();
->>>> 		assert(pid >= 0);
->>>>
->>>> 		if (!pid)
->>>> 			exit(0);
->>>>
->>>> 		waitpid(pid, NULL, 0);
->>>>
->>>> 		(*iterations)++;
->>>> 	}
->>>> }
->>>>
->>>> -------
->>>>
->>>> I see huge performance regression when PTE_CONT support was added, then
->>>> the regression is mostly fixed with the addition of this change. The
->>>> following shows regression relative to before PTE_CONT was enabled
->>>> (bigger negative value is bigger regression):
->>>>
->>>> |   cpus |   before opt |   after opt |
->>>> |-------:|-------------:|------------:|
->>>> |      1 |       -10.4% |       -5.2% |
->>>> |      8 |       -15.4% |       -3.5% |
->>>> |     16 |       -38.7% |       -3.7% |
->>>> |     24 |       -57.0% |       -4.4% |
->>>> |     32 |       -65.8% |       -5.4% |
->>>>
->>>> Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
->>>> ---
->>>>  arch/arm64/include/asm/pgtable.h | 30 ++++++++++++++++++++---
->>>>  arch/arm64/mm/contpte.c          | 42 ++++++++++++++++++++++++++++++++
->>>>  2 files changed, 69 insertions(+), 3 deletions(-)
->>>>
->>>> diff --git a/arch/arm64/include/asm/pgtable.h b/arch/arm64/include/asm/pgtable.h
->>>> index 15bc9cf1eef4..9bd2f57a9e11 100644
->>>> --- a/arch/arm64/include/asm/pgtable.h
->>>> +++ b/arch/arm64/include/asm/pgtable.h
->>>> @@ -984,6 +984,16 @@ static inline void __ptep_set_wrprotect(struct mm_struct *mm,
->>>>  	} while (pte_val(pte) != pte_val(old_pte));
->>>>  }
->>>>  
->>>> +static inline void __ptep_set_wrprotects(struct mm_struct *mm,
->>>> +					unsigned long address, pte_t *ptep,
->>>> +					unsigned int nr)
->>>> +{
->>>> +	unsigned int i;
->>>> +
->>>> +	for (i = 0; i < nr; i++, address += PAGE_SIZE, ptep++)
->>>> +		__ptep_set_wrprotect(mm, address, ptep);
->>>> +}
->>>> +
->>>>  #ifdef CONFIG_TRANSPARENT_HUGEPAGE
->>>>  #define __HAVE_ARCH_PMDP_SET_WRPROTECT
->>>>  static inline void pmdp_set_wrprotect(struct mm_struct *mm,
->>>> @@ -1139,6 +1149,8 @@ extern int contpte_ptep_test_and_clear_young(struct vm_area_struct *vma,
->>>>  				unsigned long addr, pte_t *ptep);
->>>>  extern int contpte_ptep_clear_flush_young(struct vm_area_struct *vma,
->>>>  				unsigned long addr, pte_t *ptep);
->>>> +extern void contpte_set_wrprotects(struct mm_struct *mm, unsigned long addr,
->>>> +				pte_t *ptep, unsigned int nr);
->>>>  extern int contpte_ptep_set_access_flags(struct vm_area_struct *vma,
->>>>  				unsigned long addr, pte_t *ptep,
->>>>  				pte_t entry, int dirty);
->>>> @@ -1290,13 +1302,25 @@ static inline int ptep_clear_flush_young(struct vm_area_struct *vma,
->>>>  	return contpte_ptep_clear_flush_young(vma, addr, ptep);
->>>>  }
->>>>  
->>>> +#define ptep_set_wrprotects ptep_set_wrprotects
->>>> +static inline void ptep_set_wrprotects(struct mm_struct *mm, unsigned long addr,
->>>> +				pte_t *ptep, unsigned int nr)
->>>> +{
->>>> +	if (!contpte_is_enabled(mm))
->>>> +		__ptep_set_wrprotects(mm, addr, ptep, nr);
->>>> +	else if (nr == 1) {
->>>
->>> Why do we need the special case here? Couldn't we just call
->>> contpte_set_wrprotects() with nr == 1?
->>
->> My intention is for this to be a fast path for ptep_set_wrprotect(). I'm having
->> to work hard to prevent regressing the order-0 folios case.
-> 
-> This ends up calling three functions anyway so I'm curious - does
-> removing the one function call really make that much of difference?
-
-Yes; big time. All the functions in the fast path are inlined. The version
-regresses a fork() microbenchmark that David gave me by ~30%. I've had to work
-quite hard to reduce that to 2%, even from this starting point. There is so
-little in the inner loop that even the __ptep_get(ptep) (which is a READ_ONCE())
-makes a measurable difference.
-
-Anyway, I'll be posting v4 with these optimizations and all the supporting
-benchmark data on Monday.
-
-> 
-> Either way I think a comment justifying the special case (ie. that this
-> is simply a fast path for nr == 1) would be good.
-
-I've added a comment here in v4.
-
-> 
-> Thanks.
-> 
->>>
->>>> +		contpte_try_unfold(mm, addr, ptep, __ptep_get(ptep));
->>>> +		__ptep_set_wrprotects(mm, addr, ptep, 1);
->>>> +		contpte_try_fold(mm, addr, ptep, __ptep_get(ptep));
->>>> +	} else
->>>> +		contpte_set_wrprotects(mm, addr, ptep, nr);
->>>> +}
->>>> +
->>>>  #define __HAVE_ARCH_PTEP_SET_WRPROTECT
->>>>  static inline void ptep_set_wrprotect(struct mm_struct *mm,
->>>>  				unsigned long addr, pte_t *ptep)
->>>>  {
->>>> -	contpte_try_unfold(mm, addr, ptep, __ptep_get(ptep));
->>>> -	__ptep_set_wrprotect(mm, addr, ptep);
->>>> -	contpte_try_fold(mm, addr, ptep, __ptep_get(ptep));
->>>> +	ptep_set_wrprotects(mm, addr, ptep, 1);
->>>>  }
->>>>  
->>>>  #define __HAVE_ARCH_PTEP_SET_ACCESS_FLAGS
->>>> diff --git a/arch/arm64/mm/contpte.c b/arch/arm64/mm/contpte.c
->>>> index e079ec61d7d1..2a57df16bf58 100644
->>>> --- a/arch/arm64/mm/contpte.c
->>>> +++ b/arch/arm64/mm/contpte.c
->>>> @@ -303,6 +303,48 @@ int contpte_ptep_clear_flush_young(struct vm_area_struct *vma,
->>>>  }
->>>>  EXPORT_SYMBOL(contpte_ptep_clear_flush_young);
->>>>  
->>>> +void contpte_set_wrprotects(struct mm_struct *mm, unsigned long addr,
->>>> +					pte_t *ptep, unsigned int nr)
->>>> +{
->>>> +	unsigned long next;
->>>> +	unsigned long end = addr + (nr << PAGE_SHIFT);
->>>> +
->>>> +	do {
->>>> +		next = pte_cont_addr_end(addr, end);
->>>> +		nr = (next - addr) >> PAGE_SHIFT;
->>>> +
->>>> +		/*
->>>> +		 * If wrprotecting an entire contig range, we can avoid
->>>> +		 * unfolding. Just set wrprotect and wait for the later
->>>> +		 * mmu_gather flush to invalidate the tlb. Until the flush, the
->>>> +		 * page may or may not be wrprotected. After the flush, it is
->>>> +		 * guarranteed wrprotected. If its a partial range though, we
->>>> +		 * must unfold, because we can't have a case where CONT_PTE is
->>>> +		 * set but wrprotect applies to a subset of the PTEs; this would
->>>> +		 * cause it to continue to be unpredictable after the flush.
->>>> +		 */
->>>> +		if (nr != CONT_PTES)
->>>> +			contpte_try_unfold(mm, addr, ptep, __ptep_get(ptep));
->>>> +
->>>> +		__ptep_set_wrprotects(mm, addr, ptep, nr);
->>>> +
->>>> +		addr = next;
->>>> +		ptep += nr;
->>>> +
->>>> +		/*
->>>> +		 * If applying to a partial contig range, the change could have
->>>> +		 * made the range foldable. Use the last pte in the range we
->>>> +		 * just set for comparison, since contpte_try_fold() only
->>>> +		 * triggers when acting on the last pte in the contig range.
->>>> +		 */
->>>> +		if (nr != CONT_PTES)
->>>> +			contpte_try_fold(mm, addr - PAGE_SIZE, ptep - 1,
->>>> +					 __ptep_get(ptep - 1));
->>>> +
->>>> +	} while (addr != end);
->>>> +}
->>>> +EXPORT_SYMBOL(contpte_set_wrprotects);
->>>> +
->>>>  int contpte_ptep_set_access_flags(struct vm_area_struct *vma,
->>>>  					unsigned long addr, pte_t *ptep,
->>>>  					pte_t entry, int dirty)
->>>
-> 
-
+T24gRnJpLCAyMDIzLTEyLTE1IGF0IDE2OjAxICswMjAwLCBEcmFnb3MgVGF0dWxlYSB3cm90ZToN
+Cj4gQWRkIHN1cHBvcnQgZm9yIHJlc3VtYWJsZSB2cXMgaW4gdGhlIGRyaXZlci4gVGhpcyBpcyBh
+IGZpcm13YXJlIGZlYXR1cmUNCj4gdGhhdCBjYW4gYmUgdXNlZCBmb3IgdGhlIGZvbGxvd2luZyBi
+ZW5lZml0czoNCj4gLSBGdWxsIGRldmljZSAuc3VzcGVuZC8ucmVzdW1lLg0KPiAtIC5zZXRfbWFw
+IGRvZXNuJ3QgbmVlZCB0byBkZXN0cm95IGFuZCBjcmVhdGUgbmV3IHZxcyBhbnltb3JlIGp1c3Qg
+dG8NCj4gICB1cGRhdGUgdGhlIG1hcC4gV2hlbiByZXN1bWFibGUgdnFzIGFyZSBzdXBwb3J0ZWQg
+aXQgaXMgZW5vdWdoIHRvDQo+ICAgc3VzcGVuZCB0aGUgdnFzLCBzZXQgdGhlIG5ldyBtYXBzLCBh
+bmQgdGhlbiByZXN1bWUgdGhlIHZxcy4NCj4gDQo+IFRoZSBmaXJzdCBwYXRjaCBleHBvc2VzIHRo
+ZSByZWxldmFudCBiaXRzIGluIG1seDVfaWZjLmguIFRoYXQgbWVhbnMgaXQNCj4gbmVlZHMgdG8g
+YmUgYXBwbGllZCB0byB0aGUgbWx4NS12aG9zdCB0cmVlIFswXSBmaXJzdC4gT25jZSBhcHBsaWVk
+DQo+IHRoZXJlLCB0aGUgY2hhbmdlIGhhcyB0byBiZSBwdWxsZWQgZnJvbSBtbHg1LXZob3N0IGlu
+dG8gdGhlIHZob3N0IHRyZWUNCj4gYW5kIG9ubHkgdGhlbiB0aGUgcmVtYWluaW5nIHBhdGNoZXMg
+Y2FuIGJlIGFwcGxpZWQuIFNhbWUgZmxvdyBhcyB0aGUgdnENCj4gZGVzY3JpcHRvciBtYXBwaW5n
+cyBwYXRjaHNldCBbMV0uDQo+IA0KPiBUaGUgc2Vjb25kIHBhcnQgYWRkcyBzdXBwb3J0IGZvciBy
+ZXN1bWFibGUgdnFzIGluIHRoZSBmb3JtIG9mIGEgZGV2aWNlIC5yZXN1bWUNCj4gb3BlcmF0aW9u
+IGJ1dCBhbHNvIGZvciB0aGUgLnNldF9tYXAgY2FsbCAoc3VzcGVuZC9yZXN1bWUgZGV2aWNlIGlu
+c3RlYWQNCj4gb2YgcmUtY3JlYXRpbmcgdnFzIHdpdGggbmV3IG1hcHBpbmdzKS4NCj4gDQo+IFRo
+ZSBsYXN0IHBhcnQgb2YgdGhlIHNlcmllcyBpbnRyb2R1Y2VzIHJlZmVyZW5jZSBjb3VudGluZyBm
+b3IgbXJzIHdoaWNoDQo+IGlzIG5lY2Vzc2FyeSB0byBhdm9pZCBmcmVlaW5nIG1rZXlzIHRvbyBl
+YXJseSBvciBsZWFraW5nIHRoZW0uDQo+IA0KPiAqIENoYW5nZXMgaW4gdjM6DQo+IC0gRHJvcHBl
+ZCBwYXRjaGVzIHRoYXQgYWxsb3dlZCB2cSBtb2RpZmljYXRpb24gb2Ygc3RhdGUgYW5kIGFkZHJl
+c3Nlcw0KPiAgIHdoZW4gc3RhdGUgaXMgRFJJVkVSX09LLiBUaGlzIGlzIG5vdCBhbGxvd2VkIGJ5
+IHRoZSBzdGFuZGFyZC4NCj4gICBTaG91bGQgYmUgcmUtYWRkZWQgdW5kZXIgYSB2ZHBhIGZlYXR1
+cmUgZmxhZy4NCj4gDQo+ICogQ2hhbmdlcyBpbiB2MjoNCj4gLSBBZGRlZCBtciByZWZjb3VudGlu
+ZyBwYXRjaGVzLg0KPiAtIERlbGV0ZWQgdW5uZWNlc3NhcnkgcGF0Y2g6ICJ2ZHBhL21seDU6IFNw
+bGl0IGZ1bmN0aW9uIGludG8gbG9ja2VkIGFuZA0KPiAgIHVubG9ja2VkIHZhcmlhbnRzIg0KPiAt
+IFNtYWxsIHByaW50IGltcHJvdmVtZW50IGluICJJbnRyb2R1Y2UgcGVyIHZxIGFuZCBkZXZpY2Ug
+cmVzdW1lIg0KPiAgIHBhdGNoLg0KPiAtIFBhdGNoIDEvNyBoYXMgYmVlbiBhcHBsaWVkIHRvIG1s
+eDUtdmhvc3QgYnJhbmNoLg0KPiANCj4gWzBdIGh0dHBzOi8vZ2l0Lmtlcm5lbC5vcmcvcHViL3Nj
+bS9saW51eC9rZXJuZWwvZ2l0L21lbGxhbm94L2xpbnV4LmdpdC9sb2cvP2g9bWx4NS12aG9zdA0K
+PiBbMV0gaHR0cHM6Ly9sb3JlLmtlcm5lbC5vcmcvdmlydHVhbGl6YXRpb24vMjAyMzEwMTgxNzE0
+NTYuMTYyNDAzMC0yLWR0YXR1bGVhQG52aWRpYS5jb20vDQo+IA0KPiANCj4gRHJhZ29zIFRhdHVs
+ZWEgKDYpOg0KPiAgIHZkcGEvbWx4NTogRXhwb3NlIHJlc3VtYWJsZSB2cSBjYXBhYmlsaXR5DQo+
+ICAgdmRwYS9tbHg1OiBBbGxvdyBtb2RpZnlpbmcgbXVsdGlwbGUgdnEgZmllbGRzIGluIG9uZSBt
+b2RpZnkgY29tbWFuZA0KPiAgIHZkcGEvbWx4NTogSW50cm9kdWNlIHBlciB2cSBhbmQgZGV2aWNl
+IHJlc3VtZQ0KPiAgIHZkcGEvbWx4NTogVXNlIHZxIHN1c3BlbmQvcmVzdW1lIGR1cmluZyAuc2V0
+X21hcA0KPiAgIHZkcGEvbWx4NTogSW50cm9kdWNlIHJlZmVyZW5jZSBjb3VudGluZyB0byBtcnMN
+Cj4gICB2ZHBhL21seDU6IEFkZCBta2V5IGxlYWsgZGV0ZWN0aW9uDQo+IA0KPiAgZHJpdmVycy92
+ZHBhL21seDUvY29yZS9tbHg1X3ZkcGEuaCB8ICAxMCArLQ0KPiAgZHJpdmVycy92ZHBhL21seDUv
+Y29yZS9tci5jICAgICAgICB8ICA2OSArKysrKysrLS0tDQo+ICBkcml2ZXJzL3ZkcGEvbWx4NS9u
+ZXQvbWx4NV92bmV0LmMgIHwgMTk0ICsrKysrKysrKysrKysrKysrKysrKysrKystLS0tDQo+ICBp
+bmNsdWRlL2xpbnV4L21seDUvbWx4NV9pZmMuaCAgICAgIHwgICAzICstDQo+ICBpbmNsdWRlL2xp
+bnV4L21seDUvbWx4NV9pZmNfdmRwYS5oIHwgICAxICsNCj4gIDUgZmlsZXMgY2hhbmdlZCwgMjM5
+IGluc2VydGlvbnMoKyksIDM4IGRlbGV0aW9ucygtKQ0KPiANCg0KUGxlYXNlIGRpc3JlZ2FyZCB0
+aGlzIHZlcnNpb24uIEkgd2lsbCBzZW5kIGEgdjQuIFNvcnJ5IGFib3V0IHRoZSBub2lzZS4NCg==
 
