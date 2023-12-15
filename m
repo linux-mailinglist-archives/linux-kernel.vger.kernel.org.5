@@ -1,203 +1,304 @@
-Return-Path: <linux-kernel+bounces-431-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-428-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9848F814108
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 05:48:45 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4B1C6814101
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 05:37:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CA9321C222E0
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 04:48:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 02FAF28384D
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 04:37:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C5035C8B;
-	Fri, 15 Dec 2023 04:48:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 035B463B8;
+	Fri, 15 Dec 2023 04:37:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="blWWs3oA"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Z3NJrGTA"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
+Received: from out-188.mta0.migadu.com (out-188.mta0.migadu.com [91.218.175.188])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C5DA61C31;
-	Fri, 15 Dec 2023 04:48:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-	by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 3BF4ZMPm007874;
-	Thu, 14 Dec 2023 22:35:22 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1702614922;
-	bh=TqkuE3IaNsfxGluCRlbhiAbEisNRx1SSuG+cTdskFHE=;
-	h=Date:Subject:To:CC:References:From:In-Reply-To;
-	b=blWWs3oAptNKU2UgSac/LIDWL3b9wJiLR8/lTyJrWJV4bmQnkBoYlz6tqF1+JdYrU
-	 KqyUJeC+A8VMiwIsoZEA6b1cx3VahgcgnBaXzcrlLARFNGFyVv8rUHv9fniRZWQtjf
-	 Ujbaw/E/ialE+vBL/V+cy5ze9CAW5XnpScOSi2cs=
-Received: from DLEE108.ent.ti.com (dlee108.ent.ti.com [157.170.170.38])
-	by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 3BF4ZMe0077973
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Thu, 14 Dec 2023 22:35:22 -0600
-Received: from DLEE111.ent.ti.com (157.170.170.22) by DLEE108.ent.ti.com
- (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 14
- Dec 2023 22:35:22 -0600
-Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DLEE111.ent.ti.com
- (157.170.170.22) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Thu, 14 Dec 2023 22:35:22 -0600
-Received: from [172.24.227.36] (a0497641-hp-z2-tower-g9-workstation-desktop-pc.dhcp.ti.com [172.24.227.36])
-	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 3BF4ZJPW117255;
-	Thu, 14 Dec 2023 22:35:19 -0600
-Message-ID: <babed3d7-0daf-4aa0-8bab-627d585ca224@ti.com>
-Date: Fri, 15 Dec 2023 10:05:18 +0530
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 73967569C
+	for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 04:37:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <50f082a8-b805-5d66-45f4-2af58e99a67f@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1702615023;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=oMTQvMW92QfKnIxa39K+CCGnV2PPSQbzW7nt0Rm9e8w=;
+	b=Z3NJrGTAWaoJyemZ+IxBaSKq/eFQeLUp5taJjgqJZ7yc9EXzkOVRSsrZHVvBiZ3a/pcWMf
+	ANhH1k7qH2Im1NL5eovjsuWB2VlfMfNHyW5/g4baAVv8nylRMSl8JC45v+XB2RRle2nD0u
+	5QELYTH+1R+nT2c4QbN0QrgPCA8xxkA=
+Date: Fri, 15 Dec 2023 12:36:57 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] arm64: dts: ti: k3-j721e: Add support for DFS in J721E
- A72
-To: Nishanth Menon <nm@ti.com>
-CC: <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
-        <vigneshr@ti.com>, <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <a-nandan@ti.com>, <kristo@kernel.org>, <u-kumar1@ti.com>
-References: <20231214075637.176586-1-n-francis@ti.com>
- <20231214125130.zqtq6ioj4c533wha@elbow>
-Content-Language: en-US
-From: Neha Malcom Francis <n-francis@ti.com>
-In-Reply-To: <20231214125130.zqtq6ioj4c533wha@elbow>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Subject: Re: [PATCH 2/3] arm64: mm: HVO: support BBM of vmemmap pgtable safely
+To: Nanyong Sun <sunnanyong@huawei.com>, catalin.marinas@arm.com,
+ will@kernel.org, mike.kravetz@oracle.com, akpm@linux-foundation.org,
+ anshuman.khandual@arm.com
+Cc: willy@infradead.org, wangkefeng.wang@huawei.com,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+ linux-mm@kvack.org
+References: <20231214073912.1938330-1-sunnanyong@huawei.com>
+ <20231214073912.1938330-3-sunnanyong@huawei.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Muchun Song <muchun.song@linux.dev>
+In-Reply-To: <20231214073912.1938330-3-sunnanyong@huawei.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-Hi Nishanth
 
-On 14/12/23 18:21, Nishanth Menon wrote:
-> On 13:26-20231214, Neha Malcom Francis wrote:
->> Add 2G, 1.5G, 1G, 750M, 500M and 250M as the supported frequencies for
->> A72. This enables support for Dynamic Frequency Scaling (DFS).
->>
-> 
-> Just curious, since I picked up the PMIC support... can we do dvfs? if
-> not, please indicate that in the commit message.
-> 
 
-DVFS is not supported on J7 devices, I'll mention that in v2.
+On 2023/12/14 15:39, Nanyong Sun wrote:
+> Implement vmemmap_update_pmd and vmemmap_update_pte on arm64 to do
+> BBM(break-before-make) logic when change the page table of vmemmap
+> address, they will under the init_mm.page_table_lock.
+> If a translation fault of vmemmap address concurrently happened after
+> pte/pmd cleared, vmemmap page fault handler will acquire the
+> init_mm.page_table_lock to wait for vmemmap update to complete,
+> by then the virtual address is valid again, so PF can return and
+> access can continue.
+> In other case, do the traditional kernel fault.
 
->> Signed-off-by: Neha Malcom Francis <n-francis@ti.com>
->> ---
->> Boot logs:
->> https://gist.github.com/nehamalcom/e3c3d0446f0467e7fd28706f7ffaeea8
->>
->> J721E SoC has three different speed grade devices (see [1], 7.5
->> Operating Performance Points) which as of today are indiscernible in
->> software, users of a different speed grade device must manually change
->> the DTS to ensure their maximum speed frequency is supported.
->>
->> [1] https://www.ti.com/lit/gpn/tda4vm
-> This is critical info in the commit message and in documentation of
-> source.
-> 
+Yes. BTW, we already use the same scheme to support arm64
+in our internal production. So the whole approach LGTM.
 
-Will put that in the commit message.
+> Implement flush_tlb_vmemmap_all and flush_tlb_vmemmap_range on arm64
+> with nothing to do because tlb already flushed in every single BBM.
+>
+> Signed-off-by: Nanyong Sun <sunnanyong@huawei.com>
+> ---
+>   arch/arm64/include/asm/esr.h |  4 ++
+>   arch/arm64/include/asm/mmu.h | 20 ++++++++
+>   arch/arm64/mm/fault.c        | 94 ++++++++++++++++++++++++++++++++++++
+>   arch/arm64/mm/mmu.c          | 28 +++++++++++
+>   4 files changed, 146 insertions(+)
+>
+> diff --git a/arch/arm64/include/asm/esr.h b/arch/arm64/include/asm/esr.h
+> index ae35939f395b..1c63256efd25 100644
+> --- a/arch/arm64/include/asm/esr.h
+> +++ b/arch/arm64/include/asm/esr.h
+> @@ -116,6 +116,10 @@
+>   #define ESR_ELx_FSC_SERROR	(0x11)
+>   #define ESR_ELx_FSC_ACCESS	(0x08)
+>   #define ESR_ELx_FSC_FAULT	(0x04)
+> +#define ESR_ELx_FSC_FAULT_L0    (0x04)
+> +#define ESR_ELx_FSC_FAULT_L1    (0x05)
+> +#define ESR_ELx_FSC_FAULT_L2    (0x06)
+> +#define ESR_ELx_FSC_FAULT_L3    (0x07)
+>   #define ESR_ELx_FSC_PERM	(0x0C)
+>   #define ESR_ELx_FSC_SEA_TTW0	(0x14)
+>   #define ESR_ELx_FSC_SEA_TTW1	(0x15)
+> diff --git a/arch/arm64/include/asm/mmu.h b/arch/arm64/include/asm/mmu.h
+> index 2fcf51231d6e..fcec5827f54f 100644
+> --- a/arch/arm64/include/asm/mmu.h
+> +++ b/arch/arm64/include/asm/mmu.h
+> @@ -76,5 +76,25 @@ extern bool kaslr_requires_kpti(void);
+>   #define INIT_MM_CONTEXT(name)	\
+>   	.pgd = init_pg_dir,
+>   
+> +#ifdef CONFIG_HUGETLB_PAGE_OPTIMIZE_VMEMMAP
+> +void vmemmap_update_pmd(unsigned long start, pmd_t *pmd, pte_t *pgtable);
+> +#define vmemmap_update_pmd vmemmap_update_pmd
+> +void vmemmap_update_pte(unsigned long addr, pte_t *pte, pte_t entry);
+> +#define vmemmap_update_pte vmemmap_update_pte
+> +
+> +static inline void flush_tlb_vmemmap_all(void)
+> +{
+> +	/* do nothing, already flushed tlb in every single BBM */
+> +}
+> +#define flush_tlb_vmemmap_all flush_tlb_vmemmap_all
+> +
+> +static inline void flush_tlb_vmemmap_range(unsigned long start,
+> +					   unsigned long end)
+> +{
+> +	/* do nothing, already flushed tlb in every single BBM */
+> +}
+> +#define flush_tlb_vmemmap_range flush_tlb_vmemmap_range
+> +#endif
+> +
+>   #endif	/* !__ASSEMBLY__ */
+>   #endif
+> diff --git a/arch/arm64/mm/fault.c b/arch/arm64/mm/fault.c
+> index 460d799e1296..7066a273c1e0 100644
+> --- a/arch/arm64/mm/fault.c
+> +++ b/arch/arm64/mm/fault.c
+> @@ -368,6 +368,97 @@ static bool is_el1_mte_sync_tag_check_fault(unsigned long esr)
+>   	return false;
+>   }
+>   
+> +#ifdef CONFIG_HUGETLB_PAGE_OPTIMIZE_VMEMMAP
+> +static inline bool is_vmemmap_address(unsigned long addr)
+> +{
+> +	return (addr >= VMEMMAP_START) && (addr < VMEMMAP_END);
+> +}
+> +
+> +static inline bool vmemmap_fault_may_fixup(unsigned long addr,
+> +					   unsigned long esr)
+> +{
+> +	if (!is_vmemmap_address(addr))
+> +		return false;
+> +
+> +	/*
+> +	 * Only try to handle translation fault level 2 or level 3,
+> +	 * because hugetlb vmemmap optimize only clear pmd or pte.
+> +	 */
+> +	switch (esr & ESR_ELx_FSC) {
+> +	case ESR_ELx_FSC_FAULT_L2:
+> +	case ESR_ELx_FSC_FAULT_L3:
+> +		return true;
+> +	default:
+> +		return false;
+> +	}
+> +}
+> +
+> +/*
+> + * PMD mapped vmemmap should has been split as PTE mapped
+> + * by HVO now, here we only check this case, other cases
+> + * should fail.
+> + * Also should check the addr is healthy enough that will not cause
+> + * a level2 or level3 translation fault again after page fault
+> + * handled with success, so we need check both bits[1:0] of PMD and
+> + * PTE as ARM Spec mentioned below:
+> + * A Translation fault is generated if bits[1:0] of a translation
+> + * table descriptor identify the descriptor as either a Fault
+> + * encoding or a reserved encoding.
+> + */
+> +static inline bool vmemmap_addr_healthy(unsigned long addr)
+> +{
+> +	pgd_t *pgdp;
+> +	p4d_t *p4dp;
+> +	pud_t *pudp, pud;
+> +	pmd_t *pmdp, pmd;
+> +	pte_t *ptep, pte;
+> +
+> +	pgdp = pgd_offset_k(addr);
+> +	if (pgd_none(READ_ONCE(*pgdp)))
+> +		return false;
+> +
+> +	p4dp = p4d_offset(pgdp, addr);
+> +	if (p4d_none(READ_ONCE(*p4dp)))
+> +		return false;
+> +
+> +	pudp = pud_offset(p4dp, addr);
+> +	pud = READ_ONCE(*pudp);
+> +	if (pud_none(pud))
+> +		return false;
+> +
+> +	pmdp = pmd_offset(pudp, addr);
 
-> I am also concerned if the table should be separated out as a dtsi and
-> included at board.dts level to prevent downstream users going crazy..
-> 
+We already make sure it is a translation fault of level 2 or 3
+here, so we could use pmd_offset_k() macro to simplify the code
+a little. Right?
 
-Hm... could you elaborate on that more? I don't understand the reasoning of 
-including this at a board level for a SoC problem.
+> +	pmd = READ_ONCE(*pmdp);
+> +	if (!pmd_table(pmd))
+> +		return false;
+> +
+> +	ptep = pte_offset_kernel(pmdp, addr);
+> +	pte = READ_ONCE(*ptep);
 
-> Are you absolutely sure this has no detection logic that can be
-> implemented? Almost all TI K3 SoCs seem to have a standard scheme to
-> detect the speed grades till date. /me wonders what the heck happened
-> here..
-> 
+Please use ptep_get (which is supposed to do this) to access the
+raw pte, see commit c33c794828f21217.
 
-Going through the reference manual and data sheet I didn't find anything that 
-could differentiate between speed grades, this was confirmed for J7200, I'll do 
-the needful to confirm this for J721E as well before v2.
+> +	return (pte_val(pte) & PTE_TYPE_MASK) == PTE_TYPE_PAGE;
+> +}
+> +
+> +static bool vmemmap_handle_page_fault(unsigned long addr,
+> +				      unsigned long esr)
+> +{
+> +	bool ret = false;
+> +
+> +	if (likely(!vmemmap_fault_may_fixup(addr, esr)))
+> +		return false;
+> +
+> +	spin_lock(&init_mm.page_table_lock);
+> +	if (vmemmap_addr_healthy(addr))
+> +		ret = true;
 
->>
->>   arch/arm64/boot/dts/ti/k3-j721e.dtsi | 35 ++++++++++++++++++++++++++++
->>   1 file changed, 35 insertions(+)
->>
->> diff --git a/arch/arm64/boot/dts/ti/k3-j721e.dtsi b/arch/arm64/boot/dts/ti/k3-j721e.dtsi
->> index a200810df54a..fe92879f5812 100644
->> --- a/arch/arm64/boot/dts/ti/k3-j721e.dtsi
->> +++ b/arch/arm64/boot/dts/ti/k3-j721e.dtsi
->> @@ -48,6 +48,9 @@ cpu0: cpu@0 {
->>   			d-cache-line-size = <64>;
->>   			d-cache-sets = <256>;
->>   			next-level-cache = <&L2_0>;
->> +			clocks = <&k3_clks 202 2>;
->> +			clock-names = "cpu";
->> +			operating-points-v2 = <&cpu0_opp_table>;
->>   		};
->>   
->>   		cpu1: cpu@1 {
->> @@ -62,9 +65,41 @@ cpu1: cpu@1 {
->>   			d-cache-line-size = <64>;
->>   			d-cache-sets = <256>;
->>   			next-level-cache = <&L2_0>;
->> +			clocks = <&k3_clks 203 0>;
->> +			clock-names = "cpu";
->> +			operating-points-v2 = <&cpu0_opp_table>;
->>   		};
->>   	};
->>   
->> +	cpu0_opp_table: opp-table {
->> +		compatible = "operating-points-v2";
-> Don't you need opp-shared ?
+It is to assign the return value to ret directly. Like:
 
-opp-shared would imply that the CPUs switch DFS states together... is that 
-something we want?
+         ret = vmemmap_addr_healthy(addr);
 
->> +
->> +		opp6-2000000000 {
->> +			opp-hz = /bits/ 64 <2000000000>;
->> +		};
->> +
->> +		opp5-1500000000 {
->> +			opp-hz = /bits/ 64 <1500000000>;
->> +		};
->> +
->> +		opp4-1000000000 {
->> +			opp-hz = /bits/ 64 <1000000000>;
->> +		};
->> +
->> +		opp3-750000000 {
->> +			opp-hz = /bits/ 64 <750000000>;
->> +		};
->> +
->> +		opp2-500000000 {
->> +			opp-hz = /bits/ 64 <500000000>;
->> +		};
->> +
->> +		opp1-250000000 {
->> +			opp-hz = /bits/ 64 <250000000>;
-> Could you add clock-latency-ns ?
+The the initializetion to ret also can be dropped.
 
-Will add in v2.
+> +	spin_unlock(&init_mm.page_table_lock);
+> +
+> +	return ret;
+> +}
+> +#else
+> +static inline bool vmemmap_handle_page_fault(unsigned long addr,
+> +					     unsigned long esr)
+> +{
+> +	return false;
+> +}
+> +#endif /*CONFIG_HUGETLB_PAGE_OPTIMIZE_VMEMMAP */
+           ^
+Miss a blank between "*" and "C" here.
 
->> +		};
->> +
->> +	};
->> +
->>   	L2_0: l2-cache0 {
->>   		compatible = "cache";
->>   		cache-level = <2>;
->> -- 
->> 2.34.1
->>
-> 
-> 
+Thanks.
 
-Thanks for reviewing!
+> +
+>   static bool is_translation_fault(unsigned long esr)
+>   {
+>   	return (esr & ESR_ELx_FSC_TYPE) == ESR_ELx_FSC_FAULT;
+> @@ -409,6 +500,9 @@ static void __do_kernel_fault(unsigned long addr, unsigned long esr,
+>   		    kfence_handle_page_fault(addr, esr & ESR_ELx_WNR, regs))
+>   			return;
+>   
+> +		if (vmemmap_handle_page_fault(addr, esr))
+> +			return;
+> +
+>   		msg = "paging request";
+>   	}
+>   
+> diff --git a/arch/arm64/mm/mmu.c b/arch/arm64/mm/mmu.c
+> index 15f6347d23b6..81a600ccac7c 100644
+> --- a/arch/arm64/mm/mmu.c
+> +++ b/arch/arm64/mm/mmu.c
+> @@ -1146,6 +1146,34 @@ int __meminit vmemmap_check_pmd(pmd_t *pmdp, int node,
+>   	return 1;
+>   }
+>   
+> +#ifdef CONFIG_HUGETLB_PAGE_OPTIMIZE_VMEMMAP
+> +/*
+> + * In the window between the page table entry is cleared and filled
+> + * with a new value, other threads have the opportunity to concurrently
+> + * access the vmemmap area then page translation fault occur.
+> + * Therefore, we need to ensure that the init_mm.page_table_lock is held
+> + * to synchronize the vmemmap page fault handling which will wait for
+> + * this lock to be released to ensure that the page table entry has been
+> + * refreshed with a new valid value.
+> + */
+> +void vmemmap_update_pmd(unsigned long start, pmd_t *pmd, pte_t *pgtable)
+> +{
+> +	lockdep_assert_held(&init_mm.page_table_lock);
+> +	pmd_clear(pmd);
+> +	flush_tlb_kernel_range(start, start + PMD_SIZE);
+> +	pmd_populate_kernel(&init_mm, pmd, pgtable);
+> +}
+> +
+> +void vmemmap_update_pte(unsigned long addr, pte_t *pte, pte_t entry)
+> +{
+> +	spin_lock(&init_mm.page_table_lock);
+> +	pte_clear(&init_mm, addr, pte);
+> +	flush_tlb_kernel_range(addr, addr + PAGE_SIZE);
+> +	set_pte_at(&init_mm, addr, pte, entry);
+> +	spin_unlock(&init_mm.page_table_lock);
+> +}
+> +#endif
+> +
+>   int __meminit vmemmap_populate(unsigned long start, unsigned long end, int node,
+>   		struct vmem_altmap *altmap)
+>   {
 
--- 
-Thanking You
-Neha Malcom Francis
 
