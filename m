@@ -1,179 +1,98 @@
-Return-Path: <linux-kernel+bounces-1043-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-1044-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9EDA98149A9
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 14:52:32 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5D5D88149B0
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 14:52:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2619CB210F6
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 13:52:30 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0EDB41F240F7
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 13:52:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 62C0A2E623;
-	Fri, 15 Dec 2023 13:52:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="AhQMg725"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 435C92E633;
+	Fri, 15 Dec 2023 13:52:44 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from relay6-d.mail.gandi.net (relay6-d.mail.gandi.net [217.70.183.198])
+Received: from relay5-d.mail.gandi.net (relay5-d.mail.gandi.net [217.70.183.197])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DEE0E30321;
-	Fri, 15 Dec 2023 13:52:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 3536CC0002;
-	Fri, 15 Dec 2023 13:52:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1702648330;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=67tH9Lo75qwYdI0cY5235H5ZCDe4KzYpnxFS6WHpsZU=;
-	b=AhQMg725HDtwge0C7ZYbVFamrWIvnnqMmX5bOvdVGgduFneloWsGRK1qTb482V1QEmwiIY
-	N3LvDMKW1IoEsIAoA8zdYBNPFUee4OH32mov7xifnXCJzuDuYDlgw+w//JdQ44chBc8ZyL
-	kYlGPI9g8wFfi5OQ5x9S8Z3Sslnqievz7esEZsytFuoa4Ud6tQyXce8FnjuxAgixBuXAh1
-	Vy3MbELUnRB0UBnpSG82Z5lN7Ed7tjqdJL7uRkftBj/YmpUs2hIz5M6n2C54ZrkfwUVxLm
-	GWLR3vVlmJtDN4KiXP4CibygA9z81a4y9EQbjqVYgecH6orHbfnPp6ui48SIxw==
-Date: Fri, 15 Dec 2023 14:52:07 +0100
-From: Herve Codina <herve.codina@bootlin.com>
-To: Rob Herring <robh@kernel.org>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, "Rafael J. Wysocki"
- <rafael@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>, Lizhi Hou
- <lizhi.hou@amd.com>, Max Zhen <max.zhen@amd.com>, Sonal Santan
- <sonal.santan@amd.com>, Stefano Stabellini <stefano.stabellini@xilinx.com>,
- Jonathan Cameron <Jonathan.Cameron@huawei.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, PCI
- <linux-pci@vger.kernel.org>, Allan Nielsen <allan.nielsen@microchip.com>,
- Horatiu Vultur <horatiu.vultur@microchip.com>, Steen Hegelund
- <steen.hegelund@microchip.com>, Thomas Petazzoni
- <thomas.petazzoni@bootlin.com>
-Subject: Re: [PATCH v2 0/2] Attach DT nodes to existing PCI devices
-Message-ID: <20231215145207.0cf098e5@bootlin.com>
-In-Reply-To: <CAL_JsqLtCS3otZ1sfiPEWwrWB4dyNpu4e0xANWJriCEUYr+4Og@mail.gmail.com>
-References: <20231130165700.685764-1-herve.codina@bootlin.com>
-	<CAL_JsqJvt6FpXK+FgAwE8xN3G5Z23Ktq=SEY-K7VA7nM5XgZRg@mail.gmail.com>
-	<20231204134335.3ded3d46@bootlin.com>
-	<CAL_JsqLtCS3otZ1sfiPEWwrWB4dyNpu4e0xANWJriCEUYr+4Og@mail.gmail.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 795D83032A;
+	Fri, 15 Dec 2023 13:52:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ghiti.fr
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ghiti.fr
+Received: by mail.gandi.net (Postfix) with ESMTPSA id B162F1C0004;
+	Fri, 15 Dec 2023 13:52:33 +0000 (UTC)
+Message-ID: <d0cd4629-9f12-4251-8dd5-274c093476b3@ghiti.fr>
+Date: Fri, 15 Dec 2023 14:52:33 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/5] tools: selftests: riscv: Fix compile warnings in
+ hwprobe
+Content-Language: en-US
+To: Christoph Muellner <christoph.muellner@vrull.eu>,
+ linux-riscv@lists.infradead.org, linux-kselftest@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Palmer Dabbelt <palmer@dabbelt.com>,
+ Paul Walmsley <paul.walmsley@sifive.com>, Albert Ou <aou@eecs.berkeley.edu>,
+ Shuah Khan <shuah@kernel.org>
+Cc: Philipp Tomsich <philipp.tomsich@vrull.eu>,
+ Andrew Jones <ajones@ventanamicro.com>, Evan Green <evan@rivosinc.com>,
+ Xiao Wang <xiao.w.wang@intel.com>, Alexandre Ghiti <alexghiti@rivosinc.com>,
+ Andy Chiu <andy.chiu@sifive.com>, =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?=
+ <bjorn@rivosinc.com>, Charlie Jenkins <charlie@rivosinc.com>
+References: <20231123185821.2272504-1-christoph.muellner@vrull.eu>
+ <20231123185821.2272504-2-christoph.muellner@vrull.eu>
+From: Alexandre Ghiti <alex@ghiti.fr>
+In-Reply-To: <20231123185821.2272504-2-christoph.muellner@vrull.eu>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-GND-Sasl: herve.codina@bootlin.com
+X-GND-Sasl: alex@ghiti.fr
 
-Hi Rob,
+On 23/11/2023 19:58, Christoph Muellner wrote:
+> From: Christoph Müllner <christoph.muellner@vrull.eu>
+>
+> GCC prints a couple of format string warnings when compiling
+> the hwprobe test. Let's follow the recommendation in
+> Documentation/printk-formats.txt to fix these warnings.
+>
+> Signed-off-by: Christoph Müllner <christoph.muellner@vrull.eu>
+> ---
+>   tools/testing/selftests/riscv/hwprobe/hwprobe.c | 4 ++--
+>   1 file changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/tools/testing/selftests/riscv/hwprobe/hwprobe.c b/tools/testing/selftests/riscv/hwprobe/hwprobe.c
+> index c474891df307..abb825811c70 100644
+> --- a/tools/testing/selftests/riscv/hwprobe/hwprobe.c
+> +++ b/tools/testing/selftests/riscv/hwprobe/hwprobe.c
+> @@ -29,7 +29,7 @@ int main(int argc, char **argv)
+>   		/* Fail if the kernel claims not to recognize a base key. */
+>   		if ((i < 4) && (pairs[i].key != i))
+>   			ksft_exit_fail_msg("Failed to recognize base key: key != i, "
+> -					   "key=%ld, i=%ld\n", pairs[i].key, i);
+> +					   "key=%lld, i=%ld\n", pairs[i].key, i);
+>   
+>   		if (pairs[i].key != RISCV_HWPROBE_KEY_BASE_BEHAVIOR)
+>   			continue;
+> @@ -37,7 +37,7 @@ int main(int argc, char **argv)
+>   		if (pairs[i].value & RISCV_HWPROBE_BASE_BEHAVIOR_IMA)
+>   			continue;
+>   
+> -		ksft_exit_fail_msg("Unexpected pair: (%ld, %ld)\n", pairs[i].key, pairs[i].value);
+> +		ksft_exit_fail_msg("Unexpected pair: (%lld, %llu)\n", pairs[i].key, pairs[i].value);
+>   	}
+>   
+>   	out = riscv_hwprobe(pairs, 8, 0, 0, 0);
 
-On Mon, 4 Dec 2023 07:59:09 -0600
-Rob Herring <robh@kernel.org> wrote:
+You can add:
 
-> On Mon, Dec 4, 2023 at 6:43 AM Herve Codina <herve.codina@bootlin.com> wrote:
-> >
-> > Hi Rob,
-> >
-> > On Fri, 1 Dec 2023 16:26:45 -0600
-> > Rob Herring <robh@kernel.org> wrote:
-> >  
-> > > On Thu, Nov 30, 2023 at 10:57 AM Herve Codina <herve.codina@bootlin.com> wrote:  
-> > > >
-> > > > Hi,
-> > > >
-> > > > The commit 407d1a51921e ("PCI: Create device tree node for bridge")
-> > > > creates of_node for PCI devices.
-> > > > During the insertion handling of these new DT nodes done by of_platform,
-> > > > new devices (struct device) are created.
-> > > > For each PCI devices a struct device is already present (created and
-> > > > handled by the PCI core).
-> > > > Creating a new device from a DT node leads to some kind of wrong struct
-> > > > device duplication to represent the exact same PCI device.
-> > > >
-> > > > This patch series first introduces device_{add,remove}_of_node() in
-> > > > order to add or remove a newly created of_node to an already existing
-> > > > device.
-> > > > Then it fixes the DT node creation for PCI devices to add or remove the
-> > > > created node to the existing PCI device without any new device creation.  
-> > >
-> > > I think the simpler solution is to get the DT node created earlier. We
-> > > are just asking for pain if the DT node is set for the device at
-> > > different times compared to static DT nodes.
-> > >
-> > > The following fixes the lack of of_node link. The DT unittest fails
-> > > with the change though and I don't see why.
-> > >
-> > > Also, no idea if the bridge part works because my qemu setup doesn't
-> > > create bridges (anyone got a magic cmdline to create them?).
-> > >
-> > > diff --git a/drivers/pci/bus.c b/drivers/pci/bus.c
-> > > index 9c2137dae429..46b252bbe500 100644
-> > > --- a/drivers/pci/bus.c
-> > > +++ b/drivers/pci/bus.c
-> > > @@ -342,8 +342,6 @@ void pci_bus_add_device(struct pci_dev *dev)
-> > >          */
-> > >         pcibios_bus_add_device(dev);
-> > >         pci_fixup_device(pci_fixup_final, dev);
-> > > -       if (pci_is_bridge(dev))
-> > > -               of_pci_make_dev_node(dev);
-> > >         pci_create_sysfs_dev_files(dev);
-> > >         pci_proc_attach_device(dev);
-> > >         pci_bridge_d3_update(dev);
-> > > diff --git a/drivers/pci/of.c b/drivers/pci/of.c
-> > > index 51e3dd0ea5ab..e15eaf0127fc 100644
-> > > --- a/drivers/pci/of.c
-> > > +++ b/drivers/pci/of.c
-> > > @@ -31,6 +31,8 @@ int pci_set_of_node(struct pci_dev *dev)
-> > >                 return 0;
-> > >
-> > >         node = of_pci_find_child_device(dev->bus->dev.of_node, dev->devfn);
-> > > +       if (!node && pci_is_bridge(dev))
-> > > +               of_pci_make_dev_node(dev);
-> > >         if (!node)
-> > >                 return 0;  
-> >
-> > Maybe it is too early.
-> > of_pci_make_dev_node() creates a node and fills some properties based on
-> > some already set values available in the PCI device such as its struct resource
-> > values.
-> > We need to have some values set by the PCI infra in order to create our DT node
-> > with correct values.  
-> 
-> Indeed, that's probably the issue I'm having. In that case,
-> DECLARE_PCI_FIXUP_HEADER should work. That's later, but still before
-> device_add().
-> 
-> I think modifying sysfs after device_add() is going to race with
-> userspace. Userspace is notified of a new device, and then the of_node
-> link may or may not be there when it reads sysfs. Also, not sure if
-> we'll need DT modaliases with PCI devices, but they won't work if the
-> DT node is not set before device_add().
-> 
-> Rob
+Reviewed-by: Alexandre Ghiti <alexghiti@rivosinc.com>
 
-DECLARE_PCI_FIXUP_HEADER is too early as well as doing the DT node creation
-just before the device_add() call.
-Indeed, in order to fill the DT properties, resources need to be assigned
-(needed for the 'ranges' property used for addresses translation).
-The resources assignment is done after the call to device_add().
+Thanks!
 
-Some PCI sysfs files are already created after adding the device by the
-pci_create_sysfs_dev_files() call:
-  https://elixir.bootlin.com/linux/v6.6/source/drivers/pci/bus.c#L347
+Alex
 
-Is it really an issue to add the of_node link to sysfs on an already present
-device ?
-
-Maybe we can add the of_node link before the device_add() call and add the
-'ranges' property in the DT node later, once resources are assigned.
-In that case, the race condition is not fixed but moved from the PCI device
-to the DT node the device is pointing to.
-With DT overlays and of_changeset_*(), modifying nodes is a normal behavior.
-Is that acceptable for the 'ranges' property in this use-case ?
-
-Best regards,
-Hervé
 
