@@ -1,199 +1,117 @@
-Return-Path: <linux-kernel+bounces-1351-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-1352-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id D7045814DD4
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 18:04:51 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8879A814DD6
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 18:05:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4DF25B23373
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 17:04:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B54701C24129
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 17:05:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 448F43FE2D;
-	Fri, 15 Dec 2023 17:04:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 416623FB06;
+	Fri, 15 Dec 2023 17:05:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=inria.fr header.i=@inria.fr header.b="LOQXWakv"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+Received: from mail3-relais-sop.national.inria.fr (mail3-relais-sop.national.inria.fr [192.134.164.104])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD6203EA82;
-	Fri, 15 Dec 2023 17:04:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.18.186.31])
-	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4SsFsm2gd0z6JB0q;
-	Sat, 16 Dec 2023 01:03:24 +0800 (CST)
-Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
-	by mail.maildlp.com (Postfix) with ESMTPS id 2B695140390;
-	Sat, 16 Dec 2023 01:04:30 +0800 (CST)
-Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
- (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Fri, 15 Dec
- 2023 17:04:29 +0000
-Date: Fri, 15 Dec 2023 17:04:28 +0000
-From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To: "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>
-CC: <linux-pm@vger.kernel.org>, <loongarch@lists.linux.dev>,
-	<linux-acpi@vger.kernel.org>, <linux-arch@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
-	<linux-riscv@lists.infradead.org>, <kvmarm@lists.linux.dev>,
-	<x86@kernel.org>, <acpica-devel@lists.linuxfoundation.org>,
-	<linux-csky@vger.kernel.org>, <linux-doc@vger.kernel.org>,
-	<linux-ia64@vger.kernel.org>, <linux-parisc@vger.kernel.org>, Salil Mehta
-	<salil.mehta@huawei.com>, Jean-Philippe Brucker <jean-philippe@linaro.org>,
-	<jianyong.wu@arm.com>, <justin.he@arm.com>, James Morse <james.morse@arm.com>
-Subject: Re: [PATCH RFC v3 19/21] arm64: document virtual CPU hotplug's
- expectations
-Message-ID: <20231215170428.00000d81@Huawei.com>
-In-Reply-To: <E1rDOhN-00DvlU-2e@rmk-PC.armlinux.org.uk>
-References: <ZXmn46ptis59F0CO@shell.armlinux.org.uk>
-	<E1rDOhN-00DvlU-2e@rmk-PC.armlinux.org.uk>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 96C993FB30;
+	Fri, 15 Dec 2023 17:05:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=inria.fr
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=inria.fr
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=inria.fr; s=dc;
+  h=date:from:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=b1r61txkB9I8VrHQEVInIZpLPckdP0rJJDvEIPWqnEc=;
+  b=LOQXWakvBy71xew3ASNMm74HJhXhtZmGAWww6FCy4WhqGrbYOkvEXM4a
+   jhWMjanSBJoz+2nppCXYM5oKMZWx0CGF5sk8M8F3MSacN05AhGcRBx45+
+   Y2rLF835GG08AE8+Sep1xKrSZSpyMR0LZlDFp4clPo2WHVVS3kpcLkE0h
+   c=;
+Authentication-Results: mail3-relais-sop.national.inria.fr; dkim=none (message not signed) header.i=none; spf=SoftFail smtp.mailfrom=julia.lawall@inria.fr; dmarc=fail (p=none dis=none) d=inria.fr
+X-IronPort-AV: E=Sophos;i="6.04,279,1695679200"; 
+   d="scan'208";a="74574559"
+Received: from dt-lawall.paris.inria.fr ([128.93.67.65])
+  by mail3-relais-sop.national.inria.fr with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Dec 2023 18:05:04 +0100
+Date: Fri, 15 Dec 2023 18:05:02 +0100 (CET)
+From: Julia Lawall <julia.lawall@inria.fr>
+To: =?ISO-8859-15?Q?Thomas_Wei=DFschuh?= <linux@weissschuh.net>
+cc: Luis Chamberlain <mcgrof@kernel.org>, 
+    Joel Granados <j.granados@samsung.com>, 
+    Dan Carpenter <dan.carpenter@linaro.org>, 
+    Julia Lawall <julia.lawall@inria.fr>, Kees Cook <keescook@chromium.org>, 
+    "Gustavo A. R. Silva" <gustavoars@kernel.org>, 
+    Iurii Zaikin <yzaikin@google.com>, 
+    Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
+    linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org, 
+    linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH v2 00/18] sysctl: constify sysctl ctl_tables
+In-Reply-To: <46d68741-0ac8-47cc-a28f-bf43575e68a1@t-8ch.de>
+Message-ID: <10ea8782-5eea-879-e31e-278bb2fe73a5@inria.fr>
+References: <CGME20231204075237eucas1p27966f7e7da014b5992d3eef89a8fde25@eucas1p2.samsung.com> <20231204-const-sysctl-v2-0-7a5060b11447@weissschuh.net> <20231207104357.kndqvzkhxqkwkkjo@localhost> <fa911908-a14d-4746-a58e-caa7e1d4b8d4@t-8ch.de>
+ <20231208095926.aavsjrtqbb5rygmb@localhost> <8509a36b-ac23-4fcd-b797-f8915662d5e1@t-8ch.de> <20231212090930.y4omk62wenxgo5by@localhost> <ZXligolK0ekZ+Zuf@bombadil.infradead.org> <46d68741-0ac8-47cc-a28f-bf43575e68a1@t-8ch.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: lhrpeml100004.china.huawei.com (7.191.162.219) To
- lhrpeml500005.china.huawei.com (7.191.163.240)
+Content-Type: multipart/mixed; boundary="8323329-1238573808-1702659903=:10294"
 
-On Wed, 13 Dec 2023 12:50:49 +0000
-Russell King (Oracle) <rmk+kernel@armlinux.org.uk> wrote:
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-> From: James Morse <james.morse@arm.com>
-> 
-> Add a description of physical and virtual CPU hotplug, explain the
-> differences and elaborate on what is required in ACPI for a working
-> virtual hotplug system.
-> 
-> Signed-off-by: James Morse <james.morse@arm.com>
-> ---
->  Outstanding comment:
->   https://lore.kernel.org/r/20230914174137.00000a62@Huawei.com
-
-Hmm. This one is the comment that if we allow for a legacy unware guest, we
-have no way of indicating that CPUS that were enabled at boot can ever be removed.
-
-Effectively that means that without the cloud being aware of the VM capabilities
-before it is booted (and can maybe use the proposed OSC) there is no way of knowing
-if a CPU can be removed.  Sounds profitable :)
-
-I'm fine with that.  So as long a people grasp the concern and we make sure that
-the QEMU side doesn't change it's legacy behavior (I think we are fine in Salil's
-latest set).
-
-Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+--8323329-1238573808-1702659903=:10294
+Content-Type: text/plain; charset=ISO-8859-15
+Content-Transfer-Encoding: 8BIT
 
 
-Jonathan
 
+On Fri, 15 Dec 2023, Thomas Weißschuh wrote:
 
-> ---
->  Documentation/arch/arm64/cpu-hotplug.rst | 79 ++++++++++++++++++++++++
->  Documentation/arch/arm64/index.rst       |  1 +
->  2 files changed, 80 insertions(+)
->  create mode 100644 Documentation/arch/arm64/cpu-hotplug.rst
-> 
-> diff --git a/Documentation/arch/arm64/cpu-hotplug.rst b/Documentation/arch/arm64/cpu-hotplug.rst
-> new file mode 100644
-> index 000000000000..76ba8d932c72
-> --- /dev/null
-> +++ b/Documentation/arch/arm64/cpu-hotplug.rst
-> @@ -0,0 +1,79 @@
-> +.. SPDX-License-Identifier: GPL-2.0
-> +.. _cpuhp_index:
-> +
-> +====================
-> +CPU Hotplug and ACPI
-> +====================
-> +
-> +CPU hotplug in the arm64 world is commonly used to describe the kernel taking
-> +CPUs online/offline using PSCI. This document is about ACPI firmware allowing
-> +CPUs that were not available during boot to be added to the system later.
-> +
-> +``possible`` and ``present`` refer to the state of the CPU as seen by linux.
-> +
-> +
-> +CPU Hotplug on physical systems - CPUs not present at boot
-> +----------------------------------------------------------
-> +
-> +Physical systems need to mark a CPU that is ``possible`` but not ``present`` as
-> +being ``present``. An example would be a dual socket machine, where the package
-> +in one of the sockets can be replaced while the system is running.
-> +
-> +This is not supported.
-> +
-> +In the arm64 world CPUs are not a single device but a slice of the system.
-> +There are no systems that support the physical addition (or removal) of CPUs
-> +while the system is running, and ACPI is not able to sufficiently describe
-> +them.
-> +
-> +e.g. New CPUs come with new caches, but the platform's cache toplogy is
-> +described in a static table, the PPTT. How caches are shared between CPUs is
-> +not discoverable, and must be described by firmware.
-> +
-> +e.g. The GIC redistributor for each CPU must be accessed by the driver during
-> +boot to discover the system wide supported features. ACPI's MADT GICC
-> +structures can describe a redistributor associated with a disabled CPU, but
-> +can't describe whether the redistributor is accessible, only that it is not
-> +'always on'.
-> +
-> +arm64's ACPI tables assume that everything described is ``present``.
-> +
-> +
-> +CPU Hotplug on virtual systems - CPUs not enabled at boot
-> +---------------------------------------------------------
-> +
-> +Virtual systems have the advantage that all the properties the system will
-> +ever have can be described at boot. There are no power-domain considerations
-> +as such devices are emulated.
-> +
-> +CPU Hotplug on virtual systems is supported. It is distinct from physical
-> +CPU Hotplug as all resources are described as ``present``, but CPUs may be
-> +marked as disabled by firmware. Only the CPU's online/offline behaviour is
-> +influenced by firmware. An example is where a virtual machine boots with a
-> +single CPU, and additional CPUs are added once a cloud orchestrator deploys
-> +the workload.
-> +
-> +For a virtual machine, the VMM (e.g. Qemu) plays the part of firmware.
-> +
-> +Virtual hotplug is implemented as a firmware policy affecting which CPUs can be
-> +brought online. Firmware can enforce its policy via PSCI's return codes. e.g.
-> +``DENIED``.
-> +
-> +The ACPI tables must describe all the resources of the virtual machine. CPUs
-> +that firmware wishes to disable either from boot (or later) should not be
-> +``enabled`` in the MADT GICC structures, but should have the ``online capable``
-> +bit set, to indicate they can be enabled later. The boot CPU must be marked as
-> +``enabled``.  The 'always on' GICR structure must be used to describe the
-> +redistributors.
-> +
-> +CPUs described as ``online capable`` but not ``enabled`` can be set to enabled
-> +by the DSDT's Processor object's _STA method. On virtual systems the _STA method
-> +must always report the CPU as ``present``. Changes to the firmware policy can
-> +be notified to the OS via device-check or eject-request.
-> +
-> +CPUs described as ``enabled`` in the static table, should not have their _STA
-> +modified dynamically by firmware. Soft-restart features such as kexec will
-> +re-read the static properties of the system from these static tables, and
-> +may malfunction if these no longer describe the running system. Linux will
-> +re-discover the dynamic properties of the system from the _STA method later
-> +during boot.
-> diff --git a/Documentation/arch/arm64/index.rst b/Documentation/arch/arm64/index.rst
-> index d08e924204bf..78544de0a8a9 100644
-> --- a/Documentation/arch/arm64/index.rst
-> +++ b/Documentation/arch/arm64/index.rst
-> @@ -13,6 +13,7 @@ ARM64 Architecture
->      asymmetric-32bit
->      booting
->      cpu-feature-registers
-> +    cpu-hotplug
->      elf_hwcaps
->      hugetlbpage
->      kdump
+> On 2023-12-12 23:51:30-0800, Luis Chamberlain wrote:
+> > On Tue, Dec 12, 2023 at 10:09:30AM +0100, Joel Granados wrote:
+> > > My idea was to do something similar to your originl RFC, where you have
+> > > an temporary proc_handler something like proc_hdlr_const (we would need
+> > > to work on the name) and move each subsystem to the new handler while
+> > > the others stay with the non-const one. At the end, the old proc_handler
+> > > function name would disapear and would be completely replaced by the new
+> > > proc_hdlr_const.
+> > >
+> > > This is of course extra work and might not be worth it if you don't get
+> > > negative feedback related to tree-wide changes. Therefore I stick to my
+> > > previous suggestion. Send the big tree-wide patches and only explore
+> > > this option if someone screams.
+> >
+> > I think we can do better, can't we just increase confidence in that we
+> > don't *need* muttable ctl_cables with something like smatch or
+> > coccinelle so that we can just make them const?
+>
+> The fact that the code compiles should be enough, no?
+> Any funky casting that would trick the compiler to accept it would
+> probably also confuse any other tool.
 
+I don't know the context, but the fact that a particular file compiles
+doesn't mean that all of the lines in the file have been subjected to the
+compiler, due to ifdefs.
+
+julia
+
+>
+> > Seems like a noble endeavor for us to generalize.
+> >
+> > Then we just breeze through by first fixing those that *are* using
+> > mutable tables by having it just de-register and then re-register
+> > new tables if they need to be changed, and then a new series is sent
+> > once we fix all those muttable tables.
+>
+> Ack. But I think the actual constification should really only be started
+> after the first series for the infrastructure is in.
+>
+> Thomas
+>
+--8323329-1238573808-1702659903=:10294--
 
