@@ -1,39 +1,39 @@
-Return-Path: <linux-kernel+bounces-415-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-416-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C44A28140C0
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 04:43:33 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E71568140C3
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 04:43:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B99871C2217F
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 03:43:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9AB8C283FE6
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 03:43:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5AD1ADDC7;
-	Fri, 15 Dec 2023 03:43:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 790E7107A8;
+	Fri, 15 Dec 2023 03:43:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=me.com header.i=@me.com header.b="Tm4gEt2e"
+	dkim=pass (2048-bit key) header.d=me.com header.i=@me.com header.b="1b8ySxpm"
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from pv50p00im-ztdg10021901.me.com (pv50p00im-ztdg10021901.me.com [17.58.6.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 220A0DDB8
-	for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 03:43:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F6F61078F
+	for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 03:43:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=me.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=me.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=me.com; s=1a1hai;
-	t=1702611804; bh=bODnJlG+KG/EKv36cxETUCIM/X+NGX+FI+DxIHyVCJg=;
+	t=1702611814; bh=pu4d5aNzA1zqsUzUFwgPinQJl+CtlywCevtlg+7cEw8=;
 	h=From:To:Subject:Date:Message-Id:MIME-Version;
-	b=Tm4gEt2epNLFRKmu4dJdJWK4EaWsxTyz7iD8+xIaF3Gbt0jw/GH2WIZfHBqbpqWMF
-	 9kaWSqKVqEEhTPzyAAdoklWOFX5NLIsybV7JM8UfW0y4z0PZ5l6zVPpRTF+q74QnyX
-	 px8SumtjYW6GyCTl4MfQioCGfG/yQxmS0ePs34JJISqOGrH3zE4bWnVfEpEot5Ih/w
-	 2v/WWKizvhhvVayAdRyttxlDazD77N3j3SF8Nn9/VXFzdinq7jwzGeC6IizO8GB+q7
-	 4naOrCvtOGV90tEtPQ1oOg2+/vcW2lxPYk5cOLWaYGmMj5wf3iQ0Owda583ogRTSjr
-	 zeWkgzXSurFHA==
+	b=1b8ySxpmUmF/WfrjnX7hWNTOFJXzRUlqS+zypQV+Z3pT5zSf3XGZP6XcgWAOvssI7
+	 RWMTcncJrbal6ww0qvfHjbCGfUV7GUddbxj303J307YALcGK0dQKtHBSak3ri8wCjm
+	 8Ura9mNB7SpAFkwXFVZSokF8Ao2sXriVurQLUfC8BvP1SDepw6yEMBmKs/PQUOC2Dn
+	 PsJk8SqTzsIoB/KiaXEH1UNWB06meJTCKihdhVw8HgFpbwRR2grSMFLT2B0ET5uK/U
+	 1GdDfZKGn+/Ze3d5sh7iky0zU4/le4cpIolAIFl3rjiHM29diH6a7X2Wi4vzl9CJ/O
+	 +Ei9iTA7stBgA==
 Received: from xiongwei.. (pv50p00im-dlb-asmtp-mailmevip.me.com [17.56.9.10])
-	by pv50p00im-ztdg10021901.me.com (Postfix) with ESMTPSA id B4ACB814DA;
-	Fri, 15 Dec 2023 03:42:58 +0000 (UTC)
+	by pv50p00im-ztdg10021901.me.com (Postfix) with ESMTPSA id B57338151D;
+	Fri, 15 Dec 2023 03:43:27 +0000 (UTC)
 From: sxwjean@me.com
 To: vbabka@suse.cz,
 	42.hyeyoo@gmail.com,
@@ -52,9 +52,9 @@ Cc: penberg@kernel.org,
 	linux-doc@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	Xiongwei Song <xiongwei.song@windriver.com>
-Subject: [PATCH v4 2/4] mm/slub: unify all sl[au]b parameters with "slab_$param"
-Date: Fri, 15 Dec 2023 11:41:48 +0800
-Message-Id: <20231215034150.108783-3-sxwjean@me.com>
+Subject: [PATCH v4 3/4] mm/slub: replace slub_$params with slab_$params in slub.rst
+Date: Fri, 15 Dec 2023 11:41:49 +0800
+Message-Id: <20231215034150.108783-4-sxwjean@me.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20231215034150.108783-1-sxwjean@me.com>
 References: <20231215034150.108783-1-sxwjean@me.com>
@@ -65,8 +65,8 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Proofpoint-GUID: VflpYgzwl0eQjRpp7fpmWdTvV29PQhUV
-X-Proofpoint-ORIG-GUID: VflpYgzwl0eQjRpp7fpmWdTvV29PQhUV
+X-Proofpoint-GUID: irjatwxLXpPhIhTP0epExD4SmTt0yzW1
+X-Proofpoint-ORIG-GUID: irjatwxLXpPhIhTP0epExD4SmTt0yzW1
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
  definitions=2023-12-14_17,2023-12-14_01,2023-05-22_02
@@ -77,364 +77,210 @@ X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 ad
 
 From: Xiongwei Song <xiongwei.song@windriver.com>
 
-Since the SLAB allocator has been removed, so we can clean up the
-sl[au]b_$params. With only one slab allocator left, it's better to use the
-generic "slab" term instead of "slub" which is an implementation detail,
-which is pointed out by Vlastimil Babka. For more information please see
-[1]. Hence, we are going to use "slab_$param" as the primary prefix.
-
-This patch is changing the following slab parameters
-- slub_max_order
-- slub_min_order
-- slub_min_objects
-- slub_debug
-to
-- slab_max_order
-- slab_min_order
-- slab_min_objects
-- slab_debug
-as the primary slab parameters for all references of them in docs and
-comments. But this patch won't change variables and functions inside
-slub as we will have wider slub/slab change.
-
-Meanwhile, "slub_$params" can also be passed by command line, which is
-to keep backward compatibility. Also mark all "slub_$params" as legacy.
-
-Remove the separate descriptions for slub_[no]merge, append legacy tip
-for them at the end of descriptions of slab_[no]merge.
-
-[1] https://lore.kernel.org/linux-mm/7512b350-4317-21a0-fab3-4101bc4d8f7a@suse.cz/
+We've unified slab parameters with "slab_$params", then we can use
+slab_$params in Documentation/mm/slub.rst.
 
 Signed-off-by: Xiongwei Song <xiongwei.song@windriver.com>
 ---
- .../admin-guide/kernel-parameters.txt         | 71 +++++++++----------
- drivers/misc/lkdtm/heap.c                     |  2 +-
- mm/Kconfig.debug                              |  6 +-
- mm/slab.h                                     |  2 +-
- mm/slab_common.c                              |  4 +-
- mm/slub.c                                     | 41 ++++++-----
- 6 files changed, 62 insertions(+), 64 deletions(-)
+ Documentation/mm/slub.rst | 60 +++++++++++++++++++--------------------
+ 1 file changed, 30 insertions(+), 30 deletions(-)
 
-diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-index 9f94baeb2f82..abfc0838feb9 100644
---- a/Documentation/admin-guide/kernel-parameters.txt
-+++ b/Documentation/admin-guide/kernel-parameters.txt
-@@ -5864,65 +5864,58 @@
- 	simeth=		[IA-64]
- 	simscsi=
+diff --git a/Documentation/mm/slub.rst b/Documentation/mm/slub.rst
+index be75971532f5..6579a55b7852 100644
+--- a/Documentation/mm/slub.rst
++++ b/Documentation/mm/slub.rst
+@@ -9,7 +9,7 @@ SLUB can enable debugging only for selected slabs in order to avoid
+ an impact on overall system performance which may make a bug more
+ difficult to find.
  
--	slram=		[HW,MTD]
--
--	slab_merge	[MM]
--			Enable merging of slabs with similar size when the
--			kernel is built without CONFIG_SLAB_MERGE_DEFAULT.
--
--	slab_nomerge	[MM]
--			Disable merging of slabs with similar size. May be
--			necessary if there is some reason to distinguish
--			allocs to different slabs, especially in hardened
--			environments where the risk of heap overflows and
--			layout control by attackers can usually be
--			frustrated by disabling merging. This will reduce
--			most of the exposure of a heap attack to a single
--			cache (risks via metadata attacks are mostly
--			unchanged). Debug options disable merging on their
--			own.
--			For more information see Documentation/mm/slub.rst.
--
--	slab_max_order=	[MM, SLAB]
--			Determines the maximum allowed order for slabs.
--			A high setting may cause OOMs due to memory
--			fragmentation.  Defaults to 1 for systems with
--			more than 32MB of RAM, 0 otherwise.
--
--	slub_debug[=options[,slabs][;[options[,slabs]]...]	[MM, SLUB]
--			Enabling slub_debug allows one to determine the
-+	slab_debug[=options[,slabs][;[options[,slabs]]...]	[MM]
-+			Enabling slab_debug allows one to determine the
- 			culprit if slab objects become corrupted. Enabling
--			slub_debug can create guard zones around objects and
-+			slab_debug can create guard zones around objects and
- 			may poison objects when not in use. Also tracks the
- 			last alloc / free. For more information see
- 			Documentation/mm/slub.rst.
-+			(slub_debug legacy name also accepted for now)
+-In order to switch debugging on one can add an option ``slub_debug``
++In order to switch debugging on one can add an option ``slab_debug``
+ to the kernel command line. That will enable full debugging for
+ all slabs.
  
--	slub_max_order= [MM, SLUB]
-+	slab_max_order= [MM]
- 			Determines the maximum allowed order for slabs.
- 			A high setting may cause OOMs due to memory
- 			fragmentation. For more information see
- 			Documentation/mm/slub.rst.
-+			(slub_max_order legacy name also accepted for now)
-+
-+	slab_merge	[MM]
-+			Enable merging of slabs with similar size when the
-+			kernel is built without CONFIG_SLAB_MERGE_DEFAULT.
-+			(slub_merge legacy name also accepted for now)
+@@ -26,16 +26,16 @@ be enabled on the command line. F.e. no tracking information will be
+ available without debugging on and validation can only partially
+ be performed if debugging was not switched on.
  
--	slub_min_objects=	[MM, SLUB]
-+	slab_min_objects=	[MM]
- 			The minimum number of objects per slab. SLUB will
--			increase the slab order up to slub_max_order to
-+			increase the slab order up to slab_max_order to
- 			generate a sufficiently large slab able to contain
- 			the number of objects indicated. The higher the number
- 			of objects the smaller the overhead of tracking slabs
- 			and the less frequently locks need to be acquired.
- 			For more information see Documentation/mm/slub.rst.
-+			(slub_min_objects legacy name also accepted for now)
+-Some more sophisticated uses of slub_debug:
++Some more sophisticated uses of slab_debug:
+ -------------------------------------------
  
--	slub_min_order=	[MM, SLUB]
-+	slab_min_order=	[MM]
- 			Determines the minimum page order for slabs. Must be
--			lower than slub_max_order.
--			For more information see Documentation/mm/slub.rst.
-+			lower or equal to slab_max_order. For more information see
-+			Documentation/mm/slub.rst.
-+			(slub_min_order legacy name also accepted for now)
+-Parameters may be given to ``slub_debug``. If none is specified then full
++Parameters may be given to ``slab_debug``. If none is specified then full
+ debugging is enabled. Format:
  
--	slub_merge	[MM, SLUB]
--			Same with slab_merge.
-+	slab_nomerge	[MM]
-+			Disable merging of slabs with similar size. May be
-+			necessary if there is some reason to distinguish
-+			allocs to different slabs, especially in hardened
-+			environments where the risk of heap overflows and
-+			layout control by attackers can usually be
-+			frustrated by disabling merging. This will reduce
-+			most of the exposure of a heap attack to a single
-+			cache (risks via metadata attacks are mostly
-+			unchanged). Debug options disable merging on their
-+			own.
-+			For more information see Documentation/mm/slub.rst.
-+			(slub_nomerge legacy name also accepted for now)
+-slub_debug=<Debug-Options>
++slab_debug=<Debug-Options>
+ 	Enable options for all slabs
  
--	slub_nomerge	[MM, SLUB]
--			Same with slab_nomerge. This is supported for legacy.
--			See slab_nomerge for more information.
-+	slram=		[HW,MTD]
+-slub_debug=<Debug-Options>,<slab name1>,<slab name2>,...
++slab_debug=<Debug-Options>,<slab name1>,<slab name2>,...
+ 	Enable options only for select slabs (no spaces
+ 	after a comma)
  
- 	smart2=		[HW]
- 			Format: <io1>[,<io2>[,...,<io8>]]
-diff --git a/drivers/misc/lkdtm/heap.c b/drivers/misc/lkdtm/heap.c
-index 0ce4cbf6abda..076ca9b225de 100644
---- a/drivers/misc/lkdtm/heap.c
-+++ b/drivers/misc/lkdtm/heap.c
-@@ -47,7 +47,7 @@ static void lkdtm_VMALLOC_LINEAR_OVERFLOW(void)
-  * correctly.
-  *
-  * This should get caught by either memory tagging, KASan, or by using
-- * CONFIG_SLUB_DEBUG=y and slub_debug=ZF (or CONFIG_SLUB_DEBUG_ON=y).
-+ * CONFIG_SLUB_DEBUG=y and slab_debug=ZF (or CONFIG_SLUB_DEBUG_ON=y).
-  */
- static void lkdtm_SLAB_LINEAR_OVERFLOW(void)
- {
-diff --git a/mm/Kconfig.debug b/mm/Kconfig.debug
-index 321ab379994f..afc72fde0f03 100644
---- a/mm/Kconfig.debug
-+++ b/mm/Kconfig.debug
-@@ -64,11 +64,11 @@ config SLUB_DEBUG_ON
- 	help
- 	  Boot with debugging on by default. SLUB boots by default with
- 	  the runtime debug capabilities switched off. Enabling this is
--	  equivalent to specifying the "slub_debug" parameter on boot.
-+	  equivalent to specifying the "slab_debug" parameter on boot.
- 	  There is no support for more fine grained debug control like
--	  possible with slub_debug=xxx. SLUB debugging may be switched
-+	  possible with slab_debug=xxx. SLUB debugging may be switched
- 	  off in a kernel built with CONFIG_SLUB_DEBUG_ON by specifying
--	  "slub_debug=-".
-+	  "slab_debug=-".
+@@ -60,23 +60,23 @@ Possible debug options are::
  
- config PAGE_OWNER
- 	bool "Track page owner"
-diff --git a/mm/slab.h b/mm/slab.h
-index 54deeb0428c6..f7df6d701c5b 100644
---- a/mm/slab.h
-+++ b/mm/slab.h
-@@ -528,7 +528,7 @@ static inline bool __slub_debug_enabled(void)
- #endif
+ F.e. in order to boot just with sanity checks and red zoning one would specify::
  
- /*
-- * Returns true if any of the specified slub_debug flags is enabled for the
-+ * Returns true if any of the specified slab_debug flags is enabled for the
-  * cache. Use only for flags parsed by setup_slub_debug() as it also enables
-  * the static key.
-  */
-diff --git a/mm/slab_common.c b/mm/slab_common.c
-index 238293b1dbe1..230ef7cc3467 100644
---- a/mm/slab_common.c
-+++ b/mm/slab_common.c
-@@ -282,7 +282,7 @@ kmem_cache_create_usercopy(const char *name,
+-	slub_debug=FZ
++	slab_debug=FZ
  
- #ifdef CONFIG_SLUB_DEBUG
- 	/*
--	 * If no slub_debug was enabled globally, the static key is not yet
-+	 * If no slab_debug was enabled globally, the static key is not yet
- 	 * enabled by setup_slub_debug(). Enable it if the cache is being
- 	 * created with any of the debugging flags passed explicitly.
- 	 * It's also possible that this is the first cache created with
-@@ -766,7 +766,7 @@ EXPORT_SYMBOL(kmalloc_size_roundup);
- }
+ Trying to find an issue in the dentry cache? Try::
  
- /*
-- * kmalloc_info[] is to make slub_debug=,kmalloc-xx option work at boot time.
-+ * kmalloc_info[] is to make slab_debug=,kmalloc-xx option work at boot time.
-  * kmalloc_index() supports up to 2^21=2MB, so the final entry of the table is
-  * kmalloc-2M.
-  */
-diff --git a/mm/slub.c b/mm/slub.c
-index 02d5299810df..842379a17709 100644
---- a/mm/slub.c
-+++ b/mm/slub.c
-@@ -295,7 +295,7 @@ static inline bool kmem_cache_has_cpu_partial(struct kmem_cache *s)
+-	slub_debug=,dentry
++	slab_debug=,dentry
  
- /*
-  * Debugging flags that require metadata to be stored in the slab.  These get
-- * disabled when slub_debug=O is used and a cache's min order increases with
-+ * disabled when slab_debug=O is used and a cache's min order increases with
-  * metadata.
-  */
- #define DEBUG_METADATA_FLAGS (SLAB_RED_ZONE | SLAB_POISON | SLAB_STORE_USER)
-@@ -1605,7 +1605,7 @@ static inline int free_consistency_checks(struct kmem_cache *s,
- }
+ to only enable debugging on the dentry cache.  You may use an asterisk at the
+ end of the slab name, in order to cover all slabs with the same prefix.  For
+ example, here's how you can poison the dentry cache as well as all kmalloc
+ slabs::
  
- /*
-- * Parse a block of slub_debug options. Blocks are delimited by ';'
-+ * Parse a block of slab_debug options. Blocks are delimited by ';'
-  *
-  * @str:    start of block
-  * @flags:  returns parsed flags, or DEBUG_DEFAULT_FLAGS if none specified
-@@ -1666,7 +1666,7 @@ parse_slub_debug_flags(char *str, slab_flags_t *flags, char **slabs, bool init)
- 			break;
- 		default:
- 			if (init)
--				pr_err("slub_debug option '%c' unknown. skipped\n", *str);
-+				pr_err("slab_debug option '%c' unknown. skipped\n", *str);
- 		}
- 	}
- check_slabs:
-@@ -1725,7 +1725,7 @@ static int __init setup_slub_debug(char *str)
- 	/*
- 	 * For backwards compatibility, a single list of flags with list of
- 	 * slabs means debugging is only changed for those slabs, so the global
--	 * slub_debug should be unchanged (0 or DEBUG_DEFAULT_FLAGS, depending
-+	 * slab_debug should be unchanged (0 or DEBUG_DEFAULT_FLAGS, depending
- 	 * on CONFIG_SLUB_DEBUG_ON). We can extended that to multiple lists as
- 	 * long as there is no option specifying flags without a slab list.
- 	 */
-@@ -1749,7 +1749,8 @@ static int __init setup_slub_debug(char *str)
- 	return 1;
- }
+-	slub_debug=P,kmalloc-*,dentry
++	slab_debug=P,kmalloc-*,dentry
  
--__setup("slub_debug", setup_slub_debug);
-+__setup("slab_debug", setup_slub_debug);
-+__setup_param("slub_debug", slub_debug, setup_slub_debug, 0);
+ Red zoning and tracking may realign the slab.  We can just apply sanity checks
+ to the dentry cache with::
  
- /*
-  * kmem_cache_flags - apply debugging options to the cache
-@@ -1759,7 +1760,7 @@ __setup("slub_debug", setup_slub_debug);
-  *
-  * Debug option(s) are applied to @flags. In addition to the debug
-  * option(s), if a slab name (or multiple) is specified i.e.
-- * slub_debug=<Debug-Options>,<slab name1>,<slab name2> ...
-+ * slab_debug=<Debug-Options>,<slab name1>,<slab name2> ...
-  * then only the select slabs will receive the debug option(s).
-  */
- slab_flags_t kmem_cache_flags(unsigned int object_size,
-@@ -3256,7 +3257,7 @@ slab_out_of_memory(struct kmem_cache *s, gfp_t gfpflags, int nid)
- 		oo_order(s->min));
+-	slub_debug=F,dentry
++	slab_debug=F,dentry
  
- 	if (oo_order(s->min) > get_order(s->object_size))
--		pr_warn("  %s debugging increased min order, use slub_debug=O to disable.\n",
-+		pr_warn("  %s debugging increased min order, use slab_debug=O to disable.\n",
- 			s->name);
+ Debugging options may require the minimum possible slab order to increase as
+ a result of storing the metadata (for example, caches with PAGE_SIZE object
+@@ -84,20 +84,20 @@ sizes).  This has a higher liklihood of resulting in slab allocation errors
+ in low memory situations or if there's high fragmentation of memory.  To
+ switch off debugging for such caches by default, use::
  
- 	for_each_kmem_cache_node(s, node, n) {
-@@ -3785,11 +3786,11 @@ void slab_post_alloc_hook(struct kmem_cache *s,	struct obj_cgroup *objcg,
- 		zero_size = orig_size;
+-	slub_debug=O
++	slab_debug=O
  
- 	/*
--	 * When slub_debug is enabled, avoid memory initialization integrated
-+	 * When slab_debug is enabled, avoid memory initialization integrated
- 	 * into KASAN and instead zero out the memory via the memset below with
- 	 * the proper size. Otherwise, KASAN might overwrite SLUB redzones and
- 	 * cause false-positive reports. This does not lead to a performance
--	 * penalty on production builds, as slub_debug is not intended to be
-+	 * penalty on production builds, as slab_debug is not intended to be
- 	 * enabled there.
- 	 */
- 	if (__slub_debug_enabled())
-@@ -4695,8 +4696,8 @@ static unsigned int slub_min_objects;
-  * activity on the partial lists which requires taking the list_lock. This is
-  * less a concern for large slabs though which are rarely used.
-  *
-- * slub_max_order specifies the order where we begin to stop considering the
-- * number of objects in a slab as critical. If we reach slub_max_order then
-+ * slab_max_order specifies the order where we begin to stop considering the
-+ * number of objects in a slab as critical. If we reach slab_max_order then
-  * we try to keep the page order as low as possible. So we accept more waste
-  * of space in favor of a small page order.
-  *
-@@ -4763,14 +4764,14 @@ static inline int calculate_order(unsigned int size)
- 	 * and backing off gradually.
- 	 *
- 	 * We start with accepting at most 1/16 waste and try to find the
--	 * smallest order from min_objects-derived/slub_min_order up to
--	 * slub_max_order that will satisfy the constraint. Note that increasing
-+	 * smallest order from min_objects-derived/slab_min_order up to
-+	 * slab_max_order that will satisfy the constraint. Note that increasing
- 	 * the order can only result in same or less fractional waste, not more.
- 	 *
- 	 * If that fails, we increase the acceptable fraction of waste and try
- 	 * again. The last iteration with fraction of 1/2 would effectively
- 	 * accept any waste and give us the order determined by min_objects, as
--	 * long as at least single object fits within slub_max_order.
-+	 * long as at least single object fits within slab_max_order.
- 	 */
- 	for (unsigned int fraction = 16; fraction > 1; fraction /= 2) {
- 		order = calc_slab_order(size, min_order, slub_max_order,
-@@ -4780,7 +4781,7 @@ static inline int calculate_order(unsigned int size)
- 	}
+ You can apply different options to different list of slab names, using blocks
+ of options. This will enable red zoning for dentry and user tracking for
+ kmalloc. All other slabs will not get any debugging enabled::
  
- 	/*
--	 * Doh this slab cannot be placed using slub_max_order.
-+	 * Doh this slab cannot be placed using slab_max_order.
- 	 */
- 	order = get_order(size);
- 	if (order <= MAX_ORDER)
-@@ -5306,7 +5307,9 @@ static int __init setup_slub_min_order(char *str)
- 	return 1;
- }
+-	slub_debug=Z,dentry;U,kmalloc-*
++	slab_debug=Z,dentry;U,kmalloc-*
  
--__setup("slub_min_order=", setup_slub_min_order);
-+__setup("slab_min_order=", setup_slub_min_order);
-+__setup_param("slub_min_order=", slub_min_order, setup_slub_min_order, 0);
-+
+ You can also enable options (e.g. sanity checks and poisoning) for all caches
+ except some that are deemed too performance critical and don't need to be
+ debugged by specifying global debug options followed by a list of slab names
+ with "-" as options::
  
- static int __init setup_slub_max_order(char *str)
- {
-@@ -5319,7 +5322,8 @@ static int __init setup_slub_max_order(char *str)
- 	return 1;
- }
+-	slub_debug=FZ;-,zs_handle,zspage
++	slab_debug=FZ;-,zs_handle,zspage
  
--__setup("slub_max_order=", setup_slub_max_order);
-+__setup("slab_max_order=", setup_slub_max_order);
-+__setup_param("slub_max_order=", slub_max_order, setup_slub_max_order, 0);
+ The state of each debug option for a slab can be found in the respective files
+ under::
+@@ -105,7 +105,7 @@ under::
+ 	/sys/kernel/slab/<slab name>/
  
- static int __init setup_slub_min_objects(char *str)
- {
-@@ -5328,7 +5332,8 @@ static int __init setup_slub_min_objects(char *str)
- 	return 1;
- }
+ If the file contains 1, the option is enabled, 0 means disabled. The debug
+-options from the ``slub_debug`` parameter translate to the following files::
++options from the ``slab_debug`` parameter translate to the following files::
  
--__setup("slub_min_objects=", setup_slub_min_objects);
-+__setup("slab_min_objects=", setup_slub_min_objects);
-+__setup_param("slub_min_objects=", slub_min_objects, setup_slub_min_objects, 0);
+ 	F	sanity_checks
+ 	Z	red_zone
+@@ -129,7 +129,7 @@ in order to reduce overhead and increase cache hotness of objects.
+ Slab validation
+ ===============
  
- #ifdef CONFIG_HARDENED_USERCOPY
- /*
+-SLUB can validate all object if the kernel was booted with slub_debug. In
++SLUB can validate all object if the kernel was booted with slab_debug. In
+ order to do so you must have the ``slabinfo`` tool. Then you can do
+ ::
+ 
+@@ -150,29 +150,29 @@ list_lock once in a while to deal with partial slabs. That overhead is
+ governed by the order of the allocation for each slab. The allocations
+ can be influenced by kernel parameters:
+ 
+-.. slub_min_objects=x		(default 4)
+-.. slub_min_order=x		(default 0)
+-.. slub_max_order=x		(default 3 (PAGE_ALLOC_COSTLY_ORDER))
++.. slab_min_objects=x		(default 4)
++.. slab_min_order=x		(default 0)
++.. slab_max_order=x		(default 3 (PAGE_ALLOC_COSTLY_ORDER))
+ 
+-``slub_min_objects``
++``slab_min_objects``
+ 	allows to specify how many objects must at least fit into one
+ 	slab in order for the allocation order to be acceptable.  In
+ 	general slub will be able to perform this number of
+ 	allocations on a slab without consulting centralized resources
+ 	(list_lock) where contention may occur.
+ 
+-``slub_min_order``
++``slab_min_order``
+ 	specifies a minimum order of slabs. A similar effect like
+-	``slub_min_objects``.
++	``slab_min_objects``.
+ 
+-``slub_max_order``
+-	specified the order at which ``slub_min_objects`` should no
++``slab_max_order``
++	specified the order at which ``slab_min_objects`` should no
+ 	longer be checked. This is useful to avoid SLUB trying to
+-	generate super large order pages to fit ``slub_min_objects``
++	generate super large order pages to fit ``slab_min_objects``
+ 	of a slab cache with large object sizes into one high order
+ 	page. Setting command line parameter
+ 	``debug_guardpage_minorder=N`` (N > 0), forces setting
+-	``slub_max_order`` to 0, what cause minimum possible order of
++	``slab_max_order`` to 0, what cause minimum possible order of
+ 	slabs allocation.
+ 
+ SLUB Debug output
+@@ -219,7 +219,7 @@ Here is a sample of slub debug output::
+  FIX kmalloc-8: Restoring Redzone 0xc90f6d28-0xc90f6d2b=0xcc
+ 
+ If SLUB encounters a corrupted object (full detection requires the kernel
+-to be booted with slub_debug) then the following output will be dumped
++to be booted with slab_debug) then the following output will be dumped
+ into the syslog:
+ 
+ 1. Description of the problem encountered
+@@ -239,7 +239,7 @@ into the syslog:
+ 	pid=<pid of the process>
+ 
+    (Object allocation / free information is only available if SLAB_STORE_USER is
+-   set for the slab. slub_debug sets that option)
++   set for the slab. slab_debug sets that option)
+ 
+ 2. The object contents if an object was involved.
+ 
+@@ -262,7 +262,7 @@ into the syslog:
+ 	the object boundary.
+ 
+ 	(Redzone information is only available if SLAB_RED_ZONE is set.
+-	slub_debug sets that option)
++	slab_debug sets that option)
+ 
+    Padding <address> : <bytes>
+ 	Unused data to fill up the space in order to get the next object
+@@ -296,7 +296,7 @@ Emergency operations
+ 
+ Minimal debugging (sanity checks alone) can be enabled by booting with::
+ 
+-	slub_debug=F
++	slab_debug=F
+ 
+ This will be generally be enough to enable the resiliency features of slub
+ which will keep the system running even if a bad kernel component will
+@@ -311,13 +311,13 @@ and enabling debugging only for that cache
+ 
+ I.e.::
+ 
+-	slub_debug=F,dentry
++	slab_debug=F,dentry
+ 
+ If the corruption occurs by writing after the end of the object then it
+ may be advisable to enable a Redzone to avoid corrupting the beginning
+ of other objects::
+ 
+-	slub_debug=FZ,dentry
++	slab_debug=FZ,dentry
+ 
+ Extended slabinfo mode and plotting
+ ===================================
 -- 
 2.34.1
 
