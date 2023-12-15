@@ -1,125 +1,102 @@
-Return-Path: <linux-kernel+bounces-1214-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-1211-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 00CB0814BBB
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 16:27:12 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BB2FD814BB4
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 16:25:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B089128194F
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 15:27:11 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 20060B20E74
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 15:25:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A19473A8D8;
-	Fri, 15 Dec 2023 15:27:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="HkGVcrol"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3760C39FEA;
+	Fri, 15 Dec 2023 15:25:01 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ot1-f52.google.com (mail-ot1-f52.google.com [209.85.210.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1610C39FE4;
-	Fri, 15 Dec 2023 15:26:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1702654020; x=1734190020;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=ZbsUhfpzOlZP4HelxUN8upZJntGREJDIbiHeVV/5Dls=;
-  b=HkGVcrolLgzXdpMT82evrSrZmC4MUlvjtQhMLCITOYcSW9NfNrL0ykOv
-   gEgndiRKywu3lb9sMY0HaOkVAMbwWJH5thL4lWqmxcbC/3fH5LONnczlc
-   +M+rrJkaB8swP5J9tNX7HHbEeJzUFFGaukuoJZfIeAUrq/Hi+T+JB43nz
-   F/Kn7LhBRH/7HGuknP50vgY+9rKW2Bmmt2xVfJ5wpSv+cPWmVaiahfywj
-   7i50tuOnJMUguewWaCoWsA9oBV37bI6fTemICr7fJxA96+cxdWSDuv0Cq
-   OWZadPbYXbmRTYyn5haaAPQXRNwyJgPZccH03ri0C6TDRGfvRWHYfhsKx
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10924"; a="2374449"
-X-IronPort-AV: E=Sophos;i="6.04,279,1695711600"; 
-   d="scan'208";a="2374449"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Dec 2023 07:26:59 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10924"; a="750968704"
-X-IronPort-AV: E=Sophos;i="6.04,279,1695711600"; 
-   d="scan'208";a="750968704"
-Received: from r007s007_zp31l10c01.deacluster.intel.com (HELO fedora.deacluster.intel.com) ([10.219.171.169])
-  by orsmga006.jf.intel.com with ESMTP; 15 Dec 2023 07:26:58 -0800
-From: Lucas Segarra Fernandez <lucas.segarra.fernandez@intel.com>
-To: herbert@gondor.apana.org.au
-Cc: linux-kernel@vger.kernel.org,
-	linux-crypto@vger.kernel.org,
-	qat-linux@intel.com,
-	Lucas Segarra Fernandez <lucas.segarra.fernandez@intel.com>,
-	Giovanni Cabiddu <giovanni.cabiddu@intel.com>,
-	Damian Muszynski <damian.muszynski@intel.com>
-Subject: [PATCH 1/5] math.h: Add avg_array()
-Date: Fri, 15 Dec 2023 16:24:40 +0100
-Message-ID: <20231215152440.34537-1-lucas.segarra.fernandez@intel.com>
-X-Mailer: git-send-email 2.41.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A6B536AEA;
+	Fri, 15 Dec 2023 15:24:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ot1-f52.google.com with SMTP id 46e09a7af769-6d9f7af8918so673341a34.0;
+        Fri, 15 Dec 2023 07:24:59 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702653898; x=1703258698;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=o1KxO6deZnelp4zRShdYeXlRDuUBsn1JgcYXM2Knxlg=;
+        b=PwSl3Iunve/zkU7EPNhxvQyDkFA4RlutWQmk0FaV1xZNWoWRjJiDqyd7nwx9fTI5kk
+         RblVqCFBL64ogERGeARPBpWnINPU4vPRvZ9pjlI3NT2i6MoqLxtfFpflxqGia3ogBZpO
+         UWW5S6U790HOrUDchqwBaGXvJYieJj24mLRjp1OLpnTJ2a98tKdeLyBwd8ReR9kyx9cd
+         wK4r17mhUn2NJYaqrme4/9G13IhNV1ttbqJiFBkeaEzWWijXFVQyqCyUZhMlQOVI3KbB
+         YOOQ4SDEavjtfK/OytwKPgsgSo9XV00txciqf3lS9jXqHpVNcXzBoZuIQYCrWAj2jQV0
+         GAOw==
+X-Gm-Message-State: AOJu0YyXZAUzwytwHBov68jUq+cQjDiPfh3RSR/cJBfPX5keQ5toR8yr
+	9gFs2P4bxQk89VlV7C0BTg==
+X-Google-Smtp-Source: AGHT+IF3DdJW74bPK38SUphJlKZ+n/hKitiokKcgMWBUN3B1WSrWQktRoS8P3zNv/uR0dgu1UFGlXA==
+X-Received: by 2002:a05:6830:1107:b0:6d9:f66e:f557 with SMTP id w7-20020a056830110700b006d9f66ef557mr11375830otq.8.1702653898434;
+        Fri, 15 Dec 2023 07:24:58 -0800 (PST)
+Received: from herring.priv (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
+        by smtp.gmail.com with ESMTPSA id m18-20020a9d6ad2000000b006d7e23c58b6sm3614287otq.38.2023.12.15.07.24.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 15 Dec 2023 07:24:57 -0800 (PST)
+Received: (nullmailer pid 3989129 invoked by uid 1000);
+	Fri, 15 Dec 2023 15:24:56 -0000
+Date: Fri, 15 Dec 2023 09:24:56 -0600
+From: Rob Herring <robh@kernel.org>
+To: Robin Murphy <robin.murphy@arm.com>
+Cc: Albert Ou <aou@eecs.berkeley.edu>, "K. Y. Srinivasan" <kys@microsoft.com>, 
+	David Woodhouse <dwmw2@infradead.org>, Sudeep Holla <sudeep.holla@arm.com>, 
+	Will Deacon <will@kernel.org>, Paul Walmsley <paul.walmsley@sifive.com>, 
+	Palmer Dabbelt <palmer@dabbelt.com>, Frank Rowand <frowand.list@gmail.com>, 
+	Gerald Schaefer <gerald.schaefer@linux.ibm.com>, Jason Gunthorpe <jgg@ziepe.ca>, 
+	linux-arm-kernel@lists.infradead.org, Rob Herring <robh+dt@kernel.org>, 
+	Jason Gunthorpe <jgg@nvidia.com>, iommu@lists.linux.dev, Huacai Chen <chenhuacai@kernel.org>, 
+	Joerg Roedel <joro@8bytes.org>, Dexuan Cui <decui@microsoft.com>, Vineet Gupta <vgupta@kernel.org>, 
+	Jean-Philippe Brucker <jean-philippe@linaro.org>, Lorenzo Pieralisi <lpieralisi@kernel.org>, 
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Lu Baolu <baolu.lu@linux.intel.com>, Niklas Schnelle <schnelle@linux.ibm.com>, 
+	Wei Liu <wei.liu@kernel.org>, Russell King <linux@armlinux.org.uk>, 
+	Christoph Hellwig <hch@lst.de>, Hanjun Guo <guohanjun@huawei.com>, linux-acpi@vger.kernel.org, 
+	Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>, Matthew Rosato <mjrosato@linux.ibm.com>, 
+	Haiyang Zhang <haiyangz@microsoft.com>, Catalin Marinas <catalin.marinas@arm.com>, 
+	Marek Szyprowski <m.szyprowski@samsung.com>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
+	WANG Xuerui <kernel@xen0n.name>
+Subject: Re: [PATCH v2 4/7] dma-mapping: Add helpers for dma_range_map bounds
+Message-ID: <170265389548.3988948.144759236279201432.robh@kernel.org>
+References: <cover.1702486837.git.robin.murphy@arm.com>
+ <16d3e9100cd4a4a397641df963f416cc7f70cc4c.1702486837.git.robin.murphy@arm.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <16d3e9100cd4a4a397641df963f416cc7f70cc4c.1702486837.git.robin.murphy@arm.com>
 
-Add macro to compute average of values within an array.
 
-This patch is based on earlier work done by Wojciech Ziemba.
+On Wed, 13 Dec 2023 17:17:57 +0000, Robin Murphy wrote:
+> Several places want to compute the lower and/or upper bounds of a
+> dma_range_map, so let's factor that out into reusable helpers.
+> 
+> Reviewed-by: Christoph Hellwig <hch@lst.de>
+> Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
+> Signed-off-by: Robin Murphy <robin.murphy@arm.com>
+> ---
+> v2: fix warning for 32-bit builds
+> ---
+>  arch/loongarch/kernel/dma.c |  9 ++-------
+>  drivers/acpi/arm64/dma.c    |  8 +-------
+>  drivers/of/device.c         | 11 ++---------
+>  include/linux/dma-direct.h  | 18 ++++++++++++++++++
+>  4 files changed, 23 insertions(+), 23 deletions(-)
+> 
 
-Signed-off-by: Lucas Segarra Fernandez <lucas.segarra.fernandez@intel.com>
-Reviewed-by: Giovanni Cabiddu <giovanni.cabiddu@intel.com>
-Reviewed-by: Damian Muszynski <damian.muszynski@intel.com>
----
- include/linux/math.h | 33 +++++++++++++++++++++++++++++++++
- 1 file changed, 33 insertions(+)
-
-diff --git a/include/linux/math.h b/include/linux/math.h
-index dd4152711de7..012416c92e89 100644
---- a/include/linux/math.h
-+++ b/include/linux/math.h
-@@ -205,4 +205,37 @@ static inline u32 int_sqrt64(u64 x)
- }
- #endif
- 
-+/**
-+ * avg_array() - Return average of values within an array.
-+ * @array: Array of values.
-+ * @len: Number of elements.
-+ *
-+ * This algorithm computes average of an array without running into overflow.
-+ *
-+ * Return: average of values.
-+ */
-+#define avg_array(array, len) (				\
-+{							\
-+	typeof(&(array)[0]) _array = (array);		\
-+	__unqual_scalar_typeof(_array[0]) _x = 0;	\
-+	__unqual_scalar_typeof(_array[0]) _y = 0;	\
-+	__unqual_scalar_typeof(_array[0]) _a, _b;	\
-+	typeof(len) _len = (len);			\
-+	size_t _i;					\
-+							\
-+	for (_i = 0; _i < _len; _i++) {			\
-+		_a = _array[_i];			\
-+		_b = do_div(_a, _len);			\
-+		_x += _a;				\
-+		if (_y >= _len - _b) {			\
-+			_x++;				\
-+			_y -= _len - _b;		\
-+		} else {				\
-+			_y += _b;			\
-+		}					\
-+	}						\
-+	do_div(_y, _len);				\
-+	(_x + _y);					\
-+})
-+
- #endif	/* _LINUX_MATH_H */
--- 
-2.41.0
+Acked-by: Rob Herring <robh@kernel.org>
 
 
