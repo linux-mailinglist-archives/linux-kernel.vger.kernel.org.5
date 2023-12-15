@@ -1,186 +1,96 @@
-Return-Path: <linux-kernel+bounces-966-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-946-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 463F88148AA
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 14:00:24 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A15DB81485B
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 13:44:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C725B1F24578
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 13:00:23 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 591B6286337
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 12:44:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F3C02D04C;
-	Fri, 15 Dec 2023 13:00:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9220B2DB6B;
+	Fri, 15 Dec 2023 12:44:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="Wb8qv6yO"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from out187-13.us.a.mail.aliyun.com (out187-13.us.a.mail.aliyun.com [47.90.187.13])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C6C7610951
-	for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 13:00:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=antgroup.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=antgroup.com
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R641e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018047198;MF=henry.hj@antgroup.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---.Vl7PTuA_1702644264;
-Received: from localhost(mailfrom:henry.hj@antgroup.com fp:SMTPD_---.Vl7PTuA_1702644264)
-          by smtp.aliyun-inc.com;
-          Fri, 15 Dec 2023 20:44:25 +0800
-From: "Henry Huang" <henry.hj@antgroup.com>
-To: yuzhao@google.com
-Cc:  <akpm@linux-foundation.org>,
-  "Henry Huang" <henry.hj@antgroup.com>,
-  "=?UTF-8?B?6LCI6Ym06ZSL?=" <henry.tjf@antgroup.com>,
-   <linux-kernel@vger.kernel.org>,
-   <linux-mm@kvack.org>,
-  "=?UTF-8?B?5pyx6L6JKOiMtuawtCk=?=" <teawater@antgroup.com>
-Subject: Re: [RFC v2] mm: Multi-Gen LRU: fix use mm/page_idle/bitmap
-Date: Fri, 15 Dec 2023 20:44:17 +0800
-Message-ID: <20231215124423.88878-1-henry.hj@antgroup.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <CAOUHufavCOqwkm4BJJzHY+RUOafFBLH7t0O+KRbw=ns-RdYwdA@mail.gmail.com>
-References: <CAOUHufavCOqwkm4BJJzHY+RUOafFBLH7t0O+KRbw=ns-RdYwdA@mail.gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB8102D7BB;
+	Fri, 15 Dec 2023 12:44:21 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D5A80C433C8;
+	Fri, 15 Dec 2023 12:44:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1702644261;
+	bh=OE6L5PNX6SGRt851a9OF5sucHu+J1674aufGgMwMSXI=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Wb8qv6yOz7kb7SzBjxFcHjpjelmwnipxcMznBaBt6H+xVhnYCcBH9uZ8G03LxTgZe
+	 5PJaTNm5lNhooQavzZeTDPyNQAqYjOWvpNdeVlQARqgiG8PX1PY7e4HHexIht1j3nZ
+	 0pzKzbpFZLMp1lhSVL6hL0bzUI0srek605qS1vVU=
+Date: Fri, 15 Dec 2023 13:44:17 +0100
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: Sam Edwards <cfsworks@gmail.com>
+Cc: Mathias Nyman <mathias.nyman@intel.com>,
+	Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
+	Heiko Stuebner <heiko@sntech.de>, linux-usb@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/2] usb: dwc3: host: Disable USB3 ports if maximum-speed
+ doesn't permit USB3
+Message-ID: <2023121506-persecute-lining-45bf@gregkh>
+References: <20231208210458.912776-1-CFSworks@gmail.com>
+ <20231208210458.912776-3-CFSworks@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231208210458.912776-3-CFSworks@gmail.com>
 
-On Fri, Dec 15, 2023 at 15:23 PM Yu Zhao <yuzhao@google.com> wrote:
->Regarding the change itself, it'd cause a slight regression to other
->use cases (details below).
->
-> > @@ -3355,6 +3359,7 @@ static bool walk_pte_range(pmd_t *pmd, unsigned long start, unsigned long end,
-> >                 unsigned long pfn;
-> >                 struct folio *folio;
-> >                 pte_t ptent = ptep_get(pte + i);
-> > +               bool is_pte_young;
-> >
-> >                 total++;
-> >                 walk->mm_stats[MM_LEAF_TOTAL]++;
-> > @@ -3363,16 +3368,20 @@ static bool walk_pte_range(pmd_t *pmd, unsigned long start, unsigned long end,
-> >                 if (pfn == -1)
-> >                         continue;
-> >
-> > -               if (!pte_young(ptent)) {
-> > -                       walk->mm_stats[MM_LEAF_OLD]++;
->
-> Most overhead from page table scanning normally comes from
-> get_pfn_folio() because it almost always causes a cache miss. This is
-> like a pointer dereference, whereas scanning PTEs is like streaming an
-> array (bad vs good cache performance).
->
-> pte_young() is here to avoid an unnecessary cache miss from
-> get_pfn_folio(). Also see the first comment in get_pfn_folio(). It
-> should be easy to verify the regression -- FlameGraph from the
-> memcached benchmark in the original commit message should do it.
->
-> Would a tracepoint here work for you?
->
->
->
-> > +               is_pte_young = !!pte_young(ptent);
-> > +               folio = get_pfn_folio(pfn, memcg, pgdat, walk->can_swap, is_pte_young);
-> > +               if (!folio) {
-> > +                       if (!is_pte_young)
-> > +                               walk->mm_stats[MM_LEAF_OLD]++;
-> >                         continue;
-> >                 }
-> >
-> > -               folio = get_pfn_folio(pfn, memcg, pgdat, walk->can_swap);
-> > -               if (!folio)
-> > +               if (!folio_test_clear_young(folio) && !is_pte_young) {
-> > +                       walk->mm_stats[MM_LEAF_OLD]++;
-> >                         continue;
-> > +               }
-> >
-> > -               if (!ptep_test_and_clear_young(args->vma, addr, pte + i))
-> > +               if (is_pte_young && !ptep_test_and_clear_young(args->vma, addr, pte + i))
-> >                         VM_WARN_ON_ONCE(true);
-> >
-> >                 young++;
+On Fri, Dec 08, 2023 at 02:04:58PM -0700, Sam Edwards wrote:
+> The DWC3 core can be configured (during IP instantiation, and/or via
+> configuration signals) not to have any USB3 ports. Some SoCs, however,
+> may have USB3 interfaces enabled that do not have USB3 PHYs driving
+> them. This can be due to a few circumstances, including:
+> a) The hardware designer didn't include USB3 PHYs and neglected to
+>    disable the DWC3 core's USB ports (I know of no instance where this
+>    has actually happened, however, and it seems pretty unlikely).
+> b) The USB3 PHYs are present but powered off. Perhaps a driver to enable
+>    the PHYs has not yet been written or merged, or USB3 capability is
+>    unneeded in the system and the system designer would like to conserve
+>    power.
+> c) The USB3 PHYs are muxed to a different controller. This can happen if
+>    the PHYs support non-USB protocols and one of these alternate
+>    functions is needed instead.
+> 
+> In these circumstances, if the DWC3 does not receive clear link status
+> indication on an enabled USB3 port, the DWC3 may not allow even USB2
+> to function: in host mode, the DWC3 generates an endless barrage of
+> PORT_CSC status on the accompanying USB2 port, and the xHCI driver is
+> unable to bring the USB2 port to a functioning state.
+> 
+> Fix this by first checking if the maximum-speed property in the DT
+> permits USB3. If not, pass the new `disable-usb3;` property to the
+> virtual xHCI device, causing the xHCI driver not to enable the USB3
+> ports. This allows USB2 to function even with USB3 PHYs
+> missing/misbehaving, and may be useful even when the USB3 PHYs are
+> well-behaved: a DT author may know that USB3 support is intact, but
+> disconnected (not exposed off-board) and choose to lower the
+> maximum-speed property to avoid an unusable USB3 rhub showing up in
+> sysfs/lsusb where it may mislead end-users.
+> 
+> Signed-off-by: Sam Edwards <CFSworks@gmail.com>
+> ---
+>  drivers/usb/dwc3/host.c | 5 ++++-
+>  1 file changed, 4 insertions(+), 1 deletion(-)
 
-Thanks for replying.
+Where is patch 1/2 of this series?
 
-For avoiding below:
-1. confict between page_idle/bitmap and mglru scan
-2. performance downgrade in mglru page-table scan if call get_pfn_folio for each pte.
+confused,
 
-We have a new idea:
-1. Include a new api under /sys/kernel/mm/page_idle, support mark idle flag only, without
-rmap walking or clearing pte young.
-2. Use mglru proactive scan to clear page idle flag.
-
-workflows:
-      t1                      t2 
-mark pages idle    mglru scan and check pages idle
-
-It's easy for us to know that whether a page is accessed during t1~t2.
-
-Some code changes like these:
-
-We clear idle flags in get_pfn_folio, and in walk_pte_range we still follow
-original design.
-
-static struct folio *get_pfn_folio(unsigned long pfn, struct mem_cgroup *memcg,
-					struct pglist_data *pgdat, bool can_swap, bool clear_idle)
-{
-	struct folio *folio;
-
-	/* try to avoid unnecessary memory loads */
-	if (pfn < pgdat->node_start_pfn || pfn >= pgdat_end_pfn(pgdat))
-		return NULL;
-
-	folio = pfn_folio(pfn);
-+
-+	if (clear_idle && folio_test_idle(folio))
-+		folio_clear_idle(folio);
-+
-	if (folio_nid(folio) != pgdat->node_id)
-		return NULL;
-
-	if (folio_memcg_rcu(folio) != memcg)
-		return NULL;
-
-	/* file VMAs can contain anon pages from COW */
-	if (!folio_is_file_lru(folio) && !can_swap)
-		return NULL;
-
-	return folio;
-}
-
-static bool walk_pte_range(pmd_t *pmd, unsigned long start, unsigned long end,
-			struct mm_walk *args)
-{
-...
-	for (i = pte_index(start), addr = start; addr != end; i++, addr += PAGE_SIZE) {
-		unsigned long pfn;
-		struct folio *folio;
-		pte_t ptent = ptep_get(pte + i);
-
-		total++;
-		walk->mm_stats[MM_LEAF_TOTAL]++;
-
-		pfn = get_pte_pfn(ptent, args->vma, addr);
-		if (pfn == -1)
-			continue;
-
-		if (!pte_young(ptent)) {
-			walk->mm_stats[MM_LEAF_OLD]++;
-			continue;
-		}
-
-+		folio = get_pfn_folio(pfn, memcg, pgdat, walk->can_swap, true);
--		folio = get_pfn_folio(pfn, memcg, pgdat, walk->can_swap);
-		if (!folio)
-			continue;
-...
-}
-
-Is it a good idea or not ?
-
--- 
-2.43.0
-
+greg k-h
 
