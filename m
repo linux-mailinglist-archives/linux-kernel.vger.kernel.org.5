@@ -1,596 +1,64 @@
-Return-Path: <linux-kernel+bounces-585-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-583-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 421F7814348
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 09:08:13 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5A7DE81433F
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 09:07:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EDD36282183
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 08:08:11 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 034501F229A8
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 08:07:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B20DA13AF6;
-	Fri, 15 Dec 2023 08:07:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 12D07111A9;
+	Fri, 15 Dec 2023 08:07:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=8bytes.org header.i=@8bytes.org header.b="A4gInUKe"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from SHSQR01.spreadtrum.com (unknown [222.66.158.135])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail.8bytes.org (mail.8bytes.org [85.214.250.239])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1024312E4E;
+	Fri, 15 Dec 2023 08:07:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=8bytes.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=8bytes.org
+Received: from 8bytes.org (p4ffe1e67.dip0.t-ipconnect.de [79.254.30.103])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8DCBF12E49
-	for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 08:07:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=unisoc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=unisoc.com
-Received: from dlp.unisoc.com ([10.29.3.86])
-	by SHSQR01.spreadtrum.com with ESMTP id 3BF876a0003544;
-	Fri, 15 Dec 2023 16:07:06 +0800 (+08)
-	(envelope-from zhifeng.tang@unisoc.com)
-Received: from SHDLP.spreadtrum.com (shmbx04.spreadtrum.com [10.0.1.214])
-	by dlp.unisoc.com (SkyGuard) with ESMTPS id 4Ss1qw5mB9z2PDtHV;
-	Fri, 15 Dec 2023 16:01:00 +0800 (CST)
-Received: from xm9614pcu.spreadtrum.com (10.13.2.29) by shmbx04.spreadtrum.com
- (10.0.1.214) with Microsoft SMTP Server (TLS) id 15.0.1497.23; Fri, 15 Dec
- 2023 16:07:04 +0800
-From: Zhifeng Tang <zhifeng.tang@unisoc.com>
-To: Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd
-	<sboyd@kernel.org>, Orson Zhai <orsonzhai@gmail.com>,
-        Baolin Wang
-	<baolin.wang@linux.alibaba.com>,
-        Chunyan Zhang <zhang.lyra@gmail.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>
-CC: <linux-clk@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Zhifeng Tang
-	<zhifeng.tang23@gmail.com>,
-        Wenming Wu <wenming.wu@unisoc.com>
-Subject: [PATCH 2/4] clk: sprd: add reset controller driver for UMS512
-Date: Fri, 15 Dec 2023 16:07:02 +0800
-Message-ID: <20231215080702.8089-1-zhifeng.tang@unisoc.com>
-X-Mailer: git-send-email 2.17.1
+	by mail.8bytes.org (Postfix) with ESMTPSA id 121431A230B;
+	Fri, 15 Dec 2023 09:07:12 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=8bytes.org;
+	s=default; t=1702627632;
+	bh=DoLMZzXbG/nWSjrpA3fB74d7qoBKCRr4ZyF52F0eyOM=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=A4gInUKeDrLKf9Y9tGxAqDzDUok/NETBtA5ZDULDobcM2JfCceidpXN+T8+RPivxC
+	 dNiTqxRozUciZ1RqVxu5ylyUp5nMkCXD5J8fpudZGEYIWbC/MhxmcTmELSSJDn38hO
+	 ZX19amG6Inl0vqpkCbx+24iEbyWlkq+UrxBSNIjTHVDFm0VrDQfEVWPDEpCuxqqlAE
+	 DyE9oQE/7IetE179DH8ni/Y+DtrO24AeJklIJaq8+2f7UDDBhH/N73/7BRawyzW099
+	 E8acfqEfhl4mXr2bGWjJJIdnX4DVDRz1K2545et/jltidEFKPDW8MEnHCiGQtTzIH4
+	 XJPUGmDNS0uOg==
+Date: Fri, 15 Dec 2023 09:07:10 +0100
+From: Joerg Roedel <joro@8bytes.org>
+To: Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>
+Cc: Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
+	iommu@lists.linux.dev, linux-kernel@vger.kernel.org,
+	dan.carpenter@linaro.org, kernel-janitors@vger.kernel.org,
+	error27@gmail.com
+Subject: Re: [PATCH] iommu/sva: Fix memory leak in iommu_sva_bind_device()
+Message-ID: <ZXwJLi9EnfdLVAHA@8bytes.org>
+References: <20231213111450.2487861-1-harshit.m.mogalapalli@oracle.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-ClientProxiedBy: SHCAS03.spreadtrum.com (10.0.1.207) To
- shmbx04.spreadtrum.com (10.0.1.214)
-X-MAIL:SHSQR01.spreadtrum.com 3BF876a0003544
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231213111450.2487861-1-harshit.m.mogalapalli@oracle.com>
 
-In most of Unisoc SOCs, reset controller and clock provider are
-combined together.This patch mainly add reset controller driver
-for UMS512.
+On Wed, Dec 13, 2023 at 03:14:50AM -0800, Harshit Mogalapalli wrote:
+>  drivers/iommu/iommu-sva.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
 
-Signed-off-by: Zhifeng Tang <zhifeng.tang@unisoc.com>
----
- drivers/clk/sprd/Makefile     |   1 +
- drivers/clk/sprd/common.c     |   1 +
- drivers/clk/sprd/common.h     |   2 +
- drivers/clk/sprd/reset.c      |  78 +++++++++++
- drivers/clk/sprd/reset.h      |  30 +++++
- drivers/clk/sprd/ums512-clk.c | 240 ++++++++++++++++++++++++++++++++++
- 6 files changed, 352 insertions(+)
- create mode 100644 drivers/clk/sprd/reset.c
- create mode 100644 drivers/clk/sprd/reset.h
-
-diff --git a/drivers/clk/sprd/Makefile b/drivers/clk/sprd/Makefile
-index f25b2c3904fb..72f6ecf8291e 100644
---- a/drivers/clk/sprd/Makefile
-+++ b/drivers/clk/sprd/Makefile
-@@ -7,6 +7,7 @@ clk-sprd-y	+= mux.o
- clk-sprd-y	+= div.o
- clk-sprd-y	+= composite.o
- clk-sprd-y	+= pll.o
-+clk-sprd-y	+= reset.o
- 
- ## SoC support
- obj-$(CONFIG_SPRD_SC9860_CLK)	+= sc9860-clk.o
-diff --git a/drivers/clk/sprd/common.c b/drivers/clk/sprd/common.c
-index 762f0961f17f..4ddec6348447 100644
---- a/drivers/clk/sprd/common.c
-+++ b/drivers/clk/sprd/common.c
-@@ -75,6 +75,7 @@ int sprd_clk_regmap_init(struct platform_device *pdev,
- 	}
- 
- 	sprd_clk_set_regmap(desc, regmap);
-+	platform_set_drvdata(pdev, regmap);
- 
- 	return 0;
- }
-diff --git a/drivers/clk/sprd/common.h b/drivers/clk/sprd/common.h
-index 1d077b39cef6..1ac39af68497 100644
---- a/drivers/clk/sprd/common.h
-+++ b/drivers/clk/sprd/common.h
-@@ -24,6 +24,8 @@ struct sprd_clk_desc {
- 	struct sprd_clk_common		**clk_clks;
- 	unsigned long			num_clk_clks;
- 	struct clk_hw_onecell_data      *hw_clks;
-+	struct sprd_reset_map		*resets;
-+	unsigned long			num_resets;
- };
- 
- static inline struct sprd_clk_common *
-diff --git a/drivers/clk/sprd/reset.c b/drivers/clk/sprd/reset.c
-new file mode 100644
-index 000000000000..92d19465b531
---- /dev/null
-+++ b/drivers/clk/sprd/reset.c
-@@ -0,0 +1,78 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+//
-+// Spreadtrum reset clock driver
-+//
-+// Copyright (C) 2022 Spreadtrum, Inc.
-+// Author: Zhifeng Tang <zhifeng.tang@unisoc.com>
-+
-+#include <linux/delay.h>
-+#include <linux/regmap.h>
-+#include <linux/reset-controller.h>
-+
-+#include "reset.h"
-+
-+static inline struct sprd_reset *to_sprd_reset(struct reset_controller_dev *rcdev)
-+{
-+	return container_of(rcdev, struct sprd_reset, rcdev);
-+}
-+
-+static int sprd_reset_assert(struct reset_controller_dev *rcdev,
-+			    unsigned long id)
-+{
-+	struct sprd_reset *reset = to_sprd_reset(rcdev);
-+	const struct sprd_reset_map *map = &reset->reset_map[id];
-+	unsigned int offset = map->sc_offset;
-+	unsigned long flags;
-+	unsigned int val;
-+
-+	if (map->sc) {
-+		regmap_write(reset->regmap, map->reg + offset, map->mask);
-+	} else {
-+		spin_lock_irqsave(&reset->lock, flags);
-+		regmap_read(reset->regmap, map->reg, &val);
-+		val |= map->mask;
-+		regmap_write(reset->regmap, map->reg, val);
-+		spin_unlock_irqrestore(&reset->lock, flags);
-+	}
-+
-+	return 0;
-+}
-+
-+static int sprd_reset_deassert(struct reset_controller_dev *rcdev,
-+			    unsigned long id)
-+{
-+	struct sprd_reset *reset = to_sprd_reset(rcdev);
-+	const struct sprd_reset_map *map = &reset->reset_map[id];
-+	unsigned int offset = map->sc_offset * 2;
-+	unsigned long flags;
-+	unsigned int val;
-+
-+	if (map->sc) {
-+		regmap_write(reset->regmap, map->reg + offset, map->mask);
-+	} else {
-+		spin_lock_irqsave(&reset->lock, flags);
-+		regmap_read(reset->regmap, map->reg, &val);
-+		val &= ~map->mask;
-+		regmap_write(reset->regmap, map->reg, val);
-+		spin_unlock_irqrestore(&reset->lock, flags);
-+	}
-+
-+	return 0;
-+}
-+
-+static int sprd_reset_reset(struct reset_controller_dev *rcdev,
-+			    unsigned long id)
-+{
-+	sprd_reset_assert(rcdev, id);
-+	udelay(1);
-+	sprd_reset_deassert(rcdev, id);
-+
-+	return 0;
-+}
-+
-+const struct reset_control_ops sprd_reset_ops = {
-+	.assert		= sprd_reset_assert,
-+	.deassert	= sprd_reset_deassert,
-+	.reset		= sprd_reset_reset,
-+};
-+EXPORT_SYMBOL_GPL(sprd_reset_ops);
-diff --git a/drivers/clk/sprd/reset.h b/drivers/clk/sprd/reset.h
-new file mode 100644
-index 000000000000..155330b42775
---- /dev/null
-+++ b/drivers/clk/sprd/reset.h
-@@ -0,0 +1,30 @@
-+/* SPDX-License-Identifier: GPL-2.0-only */
-+//
-+// Spreadtrum reset clock driver
-+//
-+// Copyright (C) 2022 Spreadtrum, Inc.
-+// Author: Zhifeng Tang <zhifeng.tang@unisoc.com>
-+
-+#ifndef _SPRD_RESET_H_
-+#define _SPRD_RESET_H_
-+
-+#include <linux/reset-controller.h>
-+#include <linux/spinlock.h>
-+
-+struct sprd_reset_map {
-+	u32	reg;
-+	u32	mask;
-+	bool	sc;
-+	u32	sc_offset;
-+};
-+
-+struct sprd_reset {
-+	struct reset_controller_dev	rcdev;
-+	const struct sprd_reset_map	*reset_map;
-+	struct regmap			*regmap;
-+	spinlock_t			lock;
-+};
-+
-+extern const struct reset_control_ops sprd_reset_ops;
-+
-+#endif /* _SPRD_RESET_H_ */
-diff --git a/drivers/clk/sprd/ums512-clk.c b/drivers/clk/sprd/ums512-clk.c
-index 9384ecc6c741..cebc83608f0a 100644
---- a/drivers/clk/sprd/ums512-clk.c
-+++ b/drivers/clk/sprd/ums512-clk.c
-@@ -15,6 +15,7 @@
- #include <linux/slab.h>
- 
- #include <dt-bindings/clock/sprd,ums512-clk.h>
-+#include <dt-bindings/reset/sprd,ums512-reset.h>
- 
- #include "common.h"
- #include "composite.h"
-@@ -22,6 +23,7 @@
- #include "gate.h"
- #include "mux.h"
- #include "pll.h"
-+#include "reset.h"
- 
- #define UMS512_MUX_FLAG	\
- 	(CLK_GET_RATE_NOCACHE | CLK_SET_RATE_NO_REPARENT)
-@@ -105,10 +107,42 @@ static struct clk_hw_onecell_data ums512_pmu_gate_hws = {
- 	.num = CLK_PMU_GATE_NUM,
- };
- 
-+static struct sprd_reset_map ums512_pmu_apb_resets[] = {
-+	[RESET_PMU_APB_WTLCP_SOFT_RST]			= { 0x00b0, BIT(0), true, 0x1000 },
-+	[RESET_PMU_APB_PUBCP_SOFT_RST]			= { 0x00b0, BIT(1), true, 0x1000 },
-+	[RESET_PMU_APB_WTLCP_DSP_SOFT_RST]		= { 0x00b0, BIT(2), true, 0x1000 },
-+	[RESET_PMU_APB_MM_SOFT_RST]			= { 0x00b0, BIT(3), true, 0x1000 },
-+	[RESET_PMU_APB_GPU_SOFT_RST]			= { 0x00b0, BIT(4), true, 0x1000 },
-+	[RESET_PMU_APB_AP_SOFT_RST]			= { 0x00b0, BIT(5), true, 0x1000 },
-+	[RESET_PMU_APB_PUB_SOFT_RST]			= { 0x00b0, BIT(6), true, 0x1000 },
-+	[RESET_PMU_APB_APCPU_SOFT_RST]			= { 0x00b0, BIT(7), true, 0x1000 },
-+	[RESET_PMU_APB_SP_SYS_SOFT_RST]			= { 0x00b0, BIT(8), true, 0x1000 },
-+	[RESET_PMU_APB_AUDCP_SYS_SOFT_RST]		= { 0x00b0, BIT(9), true, 0x1000 },
-+	[RESET_PMU_APB_AUDCP_AUDDSP_SOFT_RST]		= { 0x00b0, BIT(10), true, 0x1000 },
-+	[RESET_PMU_APB_CDMA_SOFT_RST]			= { 0x00b0, BIT(11), true, 0x1000 },
-+	[RESET_PMU_APB_WTLCP_AON_SOFT_RST]		= { 0x00b0, BIT(12), true, 0x1000 },
-+	[RESET_PMU_APB_WCDMA_AON_SOFT_RST]		= { 0x00b0, BIT(13), true, 0x1000 },
-+	[RESET_PMU_APB_WTLCP_LDSP_SOFT_RST]		= { 0x00b0, BIT(14), true, 0x1000 },
-+	[RESET_PMU_APB_WTLCP_TGDSP_SOFT_RST]		= { 0x00b0, BIT(15), true, 0x1000 },
-+	[RESET_PMU_APB_AP_VSP_SOFT_RST]			= { 0x00b0, BIT(16), true, 0x1000 },
-+	[RESET_PMU_APB_AP_VDSP_SOFT_RST]		= { 0x00b0, BIT(17), true, 0x1000 },
-+	[RESET_PMU_APB_APCPU_CORE0_MODE_ST_SOFT_RST]	= { 0x00b0, BIT(18), true, 0x1000 },
-+	[RESET_PMU_APB_APCPU_CORE1_MODE_ST_SOFT_RST]	= { 0x00b0, BIT(19), true, 0x1000 },
-+	[RESET_PMU_APB_APCPU_CORE2_MODE_ST_SOFT_RST]	= { 0x00b0, BIT(20), true, 0x1000 },
-+	[RESET_PMU_APB_APCPU_CORE3_MODE_ST_SOFT_RST]	= { 0x00b0, BIT(21), true, 0x1000 },
-+	[RESET_PMU_APB_APCPU_CORE4_MODE_ST_SOFT_RST]	= { 0x00b0, BIT(22), true, 0x1000 },
-+	[RESET_PMU_APB_APCPU_CORE5_MODE_ST_SOFT_RST]	= { 0x00b0, BIT(23), true, 0x1000 },
-+	[RESET_PMU_APB_APCPU_CORE6_MODE_ST_SOFT_RST]	= { 0x00b0, BIT(24), true, 0x1000 },
-+	[RESET_PMU_APB_APCPU_CORE7_MODE_ST_SOFT_RST]	= { 0x00b0, BIT(25), true, 0x1000 },
-+	[RESET_PMU_APB_APCPU_CLUSTER_MODE_ST_SOFT_RST]	= { 0x00b0, BIT(26), true, 0x1000 },
-+};
-+
- static struct sprd_clk_desc ums512_pmu_gate_desc = {
- 	.clk_clks	= ums512_pmu_gate_clks,
- 	.num_clk_clks	= ARRAY_SIZE(ums512_pmu_gate_clks),
- 	.hw_clks        = &ums512_pmu_gate_hws,
-+	.resets		= ums512_pmu_apb_resets,
-+	.num_resets	= ARRAY_SIZE(ums512_pmu_apb_resets),
- };
- 
- /* pll clock at g0 */
-@@ -450,10 +484,30 @@ static struct clk_hw_onecell_data ums512_apahb_gate_hws = {
- 	.num	= CLK_AP_AHB_GATE_NUM,
- };
- 
-+static struct sprd_reset_map ums512_ap_ahb_resets[] = {
-+	[RESET_AP_AHB_DSI_SOFT_RST]		= { 0x0004, BIT(0), true, 0x1000 },
-+	[RESET_AP_AHB_DISPC_SOFT_RST]		= { 0x0004, BIT(1), true, 0x1000 },
-+	[RESET_AP_AHB_VDSP_IDMA_VAU_SOFT_RST]	= { 0x0004, BIT(2), true, 0x1000 },
-+	[RESET_AP_AHB_VDSP_MSTD_VAU_SOFT_RST]	= { 0x0004, BIT(3), true, 0x1000 },
-+	[RESET_AP_AHB_VDSP_MSTI_VAU_SOFT_RST]	= { 0x0004, BIT(4), true, 0x1000 },
-+	[RESET_AP_AHB_VDMA_VAU_SOFT_RST]	= { 0x0004, BIT(5), true, 0x1000 },
-+	[RESET_AP_AHB_IPI_SOFT_RST]		= { 0x0004, BIT(6), true, 0x1000 },
-+	[RESET_AP_AHB_VDMA_SOFT_RST]		= { 0x0004, BIT(7), true, 0x1000 },
-+	[RESET_AP_AHB_DMA_SOFT_RST]		= { 0x0004, BIT(8), true, 0x1000 },
-+	[RESET_AP_AHB_VDSP_SOFT_RST]		= { 0x0004, BIT(9), true, 0x1000 },
-+	[RESET_AP_AHB_VDSP_DEBUG_SOFT_RST]	= { 0x0004, BIT(10), true, 0x1000 },
-+	[RESET_AP_AHB_VSP_GLOBAL_SOFT_RST]	= { 0x0004, BIT(11), true, 0x1000 },
-+	[RESET_AP_AHB_VPP_SOFT_RST]		= { 0x0004, BIT(12), true, 0x1000 },
-+	[RESET_AP_AHB_VSP_SOFT_RST]		= { 0x0004, BIT(13), true, 0x1000 },
-+	[RESET_AP_AHB_DISPC_VAU_SOFT_RST]	= { 0x0004, BIT(14), true, 0x1000 },
-+};
-+
- static struct sprd_clk_desc ums512_apahb_gate_desc = {
- 	.clk_clks	= ums512_apahb_gate,
- 	.num_clk_clks	= ARRAY_SIZE(ums512_apahb_gate),
- 	.hw_clks	= &ums512_apahb_gate_hws,
-+	.resets		= ums512_ap_ahb_resets,
-+	.num_resets	= ARRAY_SIZE(ums512_ap_ahb_resets),
- };
- 
- /* ap clks */
-@@ -1542,10 +1596,82 @@ static struct clk_hw_onecell_data ums512_aon_gate_hws = {
- 	.num	= CLK_AON_APB_GATE_NUM,
- };
- 
-+static struct sprd_reset_map ums512_aon_ahb_resets[] = {
-+	[RESET_AON_APB_RC100M_CAL_SOFT_RST]		= { 0x000c, BIT(0), true, 0x1000 },
-+	[RESET_AON_APB_RFTI_SOFT_RST]			= { 0x000c, BIT(1), true, 0x1000 },
-+	[RESET_AON_APB_DCXO_LC_SOFT_RST]		= { 0x000c, BIT(2), true, 0x1000 },
-+	[RESET_AON_APB_BB_CAL_SOFT_RST]			= { 0x000c, BIT(3), true, 0x1000 },
-+	[RESET_AON_APB_MSPI0_SOFT_RST]			= { 0x000c, BIT(4), true, 0x1000 },
-+	[RESET_AON_APB_MSPI1_SOFT_RST]			= { 0x000c, BIT(5), true, 0x1000 },
-+	[RESET_AON_APB_DAP_MTX_SOFT_RST]		= { 0x000c, BIT(6), true, 0x1000 },
-+	[RESET_AON_APB_LVDSDIS_SOFT_RST]		= { 0x000c, BIT(7), true, 0x1000 },
-+	[RESET_AON_APB_SERDES_DPHY_SOFT_RST]		= { 0x000c, BIT(8), true, 0x1000 },
-+	[RESET_AON_APB_SERDES_DPHY_APB_SOFT_RST]	= { 0x000c, BIT(9), true, 0x1000 },
-+	[RESET_AON_APB_AP_EMMC_SOFT_RST]		= { 0x000c, BIT(10), true, 0x1000 },
-+	[RESET_AON_APB_AP_SDIO0_SOFT_RST]		= { 0x000c, BIT(11), true, 0x1000 },
-+	[RESET_AON_APB_AP_SDIO1_SOFT_RST]		= { 0x000c, BIT(12), true, 0x1000 },
-+	[RESET_AON_APB_AP_SDIO2_SOFT_RST]		= { 0x000c, BIT(13), true, 0x1000 },
-+	[RESET_AON_APB_PUBCP_SDIO0_SOFT_RST]		= { 0x000c, BIT(14), true, 0x1000 },
-+	[RESET_AON_APB_EFUSE_SOFT_RST]			= { 0x0010, BIT(0), true, 0x1000 },
-+	[RESET_AON_APB_GPIO_SOFT_RST]			= { 0x0010, BIT(1), true, 0x1000 },
-+	[RESET_AON_APB_MBOX_SOFT_RST]			= { 0x0010, BIT(2), true, 0x1000 },
-+	[RESET_AON_APB_KPD_SOFT_RST]			= { 0x0010, BIT(3), true, 0x1000 },
-+	[RESET_AON_APB_AON_SYST_SOFT_RST]		= { 0x0010, BIT(4), true, 0x1000 },
-+	[RESET_AON_APB_AP_SYST_SOFT_RST]		= { 0x0010, BIT(5), true, 0x1000 },
-+	[RESET_AON_APB_AON_TMR_SOFT_RST]		= { 0x0010, BIT(6), true, 0x1000 },
-+	[RESET_AON_APB_DVFS_TOP_SOFT_RST]		= { 0x0010, BIT(7), true, 0x1000 },
-+	[RESET_AON_APB_OTG_UTMI_SOFT_RST]		= { 0x0010, BIT(8), true, 0x1000 },
-+	[RESET_AON_APB_OTG_PHY_SOFT_RST]		= { 0x0010, BIT(9), true, 0x1000 },
-+	[RESET_AON_APB_SPLK_SOFT_RST]			= { 0x0010, BIT(10), true, 0x1000 },
-+	[RESET_AON_APB_PIN_SOFT_RST]			= { 0x0010, BIT(11), true, 0x1000 },
-+	[RESET_AON_APB_ANA_SOFT_RST]			= { 0x0010, BIT(12), true, 0x1000 },
-+	[RESET_AON_APB_CKG_SOFT_RST]			= { 0x0010, BIT(13), true, 0x1000 },
-+	[RESET_AON_APB_ETC_SOFT_RST]			= { 0x0010, BIT(14), true, 0x1000 },
-+	[RESET_AON_APB_APCPU_TS0_SOFT_RST]		= { 0x0010, BIT(17), true, 0x1000 },
-+	[RESET_AON_APB_APB_BUSMON_SOFT_RST]		= { 0x0010, BIT(18), true, 0x1000 },
-+	[RESET_AON_APB_AON_IIS_SOFT_RST]		= { 0x0010, BIT(19), true, 0x1000 },
-+	[RESET_AON_APB_SCC_SOFT_RST]			= { 0x0010, BIT(20), true, 0x1000 },
-+	[RESET_AON_APB_THM0_SOFT_RST]			= { 0x0014, BIT(0), true, 0x1000 },
-+	[RESET_AON_APB_THM1_SOFT_RST]			= { 0x0014, BIT(1), true, 0x1000 },
-+	[RESET_AON_APB_THM2_SOFT_RST]			= { 0x0014, BIT(2), true, 0x1000 },
-+	[RESET_AON_APB_AP_SIM_AON_TOP_SOFT_RST]		= { 0x0014, BIT(3), true, 0x1000 },
-+	[RESET_AON_APB_PUBCP_SIM0_AON_TOP_SOFT_RST]	= { 0x0014, BIT(4), true, 0x1000 },
-+	[RESET_AON_APB_PUBCP_SIM1_AON_TOP_SOFT_RST]	= { 0x0014, BIT(5), true, 0x1000 },
-+	[RESET_AON_APB_PUBCP_SIM2_AON_TOP_SOFT_RST]	= { 0x0014, BIT(6), true, 0x1000 },
-+	[RESET_AON_APB_I2C_SOFT_RST]			= { 0x0014, BIT(7), true, 0x1000 },
-+	[RESET_AON_APB_PMU_SOFT_RST]			= { 0x0014, BIT(8), true, 0x1000 },
-+	[RESET_AON_APB_ADI_SOFT_RST]			= { 0x0014, BIT(9), true, 0x1000 },
-+	[RESET_AON_APB_EIC_SOFT_RST]			= { 0x0014, BIT(10), true, 0x1000 },
-+	[RESET_AON_APB_AP_INTC0_SOFT_RST]		= { 0x0014, BIT(11), true, 0x1000 },
-+	[RESET_AON_APB_AP_INTC1_SOFT_RST]		= { 0x0014, BIT(12), true, 0x1000 },
-+	[RESET_AON_APB_AP_INTC2_SOFT_RST]		= { 0x0014, BIT(13), true, 0x1000 },
-+	[RESET_AON_APB_AP_INTC3_SOFT_RST]		= { 0x0014, BIT(14), true, 0x1000 },
-+	[RESET_AON_APB_AP_INTC4_SOFT_RST]		= { 0x0014, BIT(15), true, 0x1000 },
-+	[RESET_AON_APB_AP_INTC5_SOFT_RST]		= { 0x0014, BIT(16), true, 0x1000 },
-+	[RESET_AON_APB_AUDCP_INTC_SOFT_RST]		= { 0x0014, BIT(17), true, 0x1000 },
-+	[RESET_AON_APB_PUBCP_INTC_SOFT_RST]		= { 0x0014, BIT(18), true, 0x1000 },
-+	[RESET_AON_APB_WTLCP_TGDSP_INTC_SOFT_RST]	= { 0x0014, BIT(19), true, 0x1000 },
-+	[RESET_AON_APB_WTLCP_LDSP_INTC_SOFT_RST]	= { 0x0014, BIT(20), true, 0x1000 },
-+	[RESET_AON_APB_WTLCP_INTC_SOFT_RST]		= { 0x0014, BIT(21), true, 0x1000 },
-+	[RESET_AON_APB_AP_TMR0_SOFT_RST]		= { 0x0014, BIT(22), true, 0x1000 },
-+	[RESET_AON_APB_AP_TMR1_SOFT_RST]		= { 0x0014, BIT(23), true, 0x1000 },
-+	[RESET_AON_APB_AP_TMR2_SOFT_RST]		= { 0x0014, BIT(24), true, 0x1000 },
-+	[RESET_AON_APB_PWM0_SOFT_RST]			= { 0x0014, BIT(25), true, 0x1000 },
-+	[RESET_AON_APB_PWM1_SOFT_RST]			= { 0x0014, BIT(26), true, 0x1000 },
-+	[RESET_AON_APB_PWM2_SOFT_RST]			= { 0x0014, BIT(27), true, 0x1000 },
-+	[RESET_AON_APB_PWM3_SOFT_RST]			= { 0x0014, BIT(28), true, 0x1000 },
-+	[RESET_AON_APB_AP_WDG_SOFT_RST]			= { 0x0014, BIT(29), true, 0x1000 },
-+	[RESET_AON_APB_APCPU_WDG_SOFT_RST]		= { 0x0014, BIT(30), true, 0x1000 },
-+	[RESET_AON_APB_SERDES_SOFT_RST]			= { 0x0014, BIT(31), true, 0x1000 },
-+	[RESET_AON_APB_DJTAG_SOFT_RST]			= { 0x0130, BIT(10), true, 0x1000 },
-+};
-+
- static struct sprd_clk_desc ums512_aon_gate_desc = {
- 	.clk_clks	= ums512_aon_gate,
- 	.num_clk_clks	= ARRAY_SIZE(ums512_aon_gate),
- 	.hw_clks	= &ums512_aon_gate_hws,
-+	.resets		= ums512_aon_ahb_resets,
-+	.num_resets	= ARRAY_SIZE(ums512_aon_ahb_resets),
- };
- 
- /* audcp apb gates */
-@@ -1584,10 +1710,18 @@ static struct clk_hw_onecell_data ums512_audcpapb_gate_hws = {
- 	.num	= CLK_AUDCP_APB_GATE_NUM,
- };
- 
-+static struct sprd_reset_map ums512_audcp_apb_resets[] = {
-+	[RESET_AUDCP_APB_WDG_SOFT_RST]	= { 0x0004, BIT(1), true, 0x100 },
-+	[RESET_AUDCP_APB_TMR0_SOFT_RST]	= { 0x0004, BIT(2), true, 0x100 },
-+	[RESET_AUDCP_APB_TMR1_SOFT_RST]	= { 0x0004, BIT(3), true, 0x100 },
-+};
-+
- static const struct sprd_clk_desc ums512_audcpapb_gate_desc = {
- 	.clk_clks	= ums512_audcpapb_gate,
- 	.num_clk_clks	= ARRAY_SIZE(ums512_audcpapb_gate),
- 	.hw_clks	= &ums512_audcpapb_gate_hws,
-+	.resets		= ums512_audcp_apb_resets,
-+	.num_resets	= ARRAY_SIZE(ums512_audcp_apb_resets),
- };
- 
- /* audcp ahb gates */
-@@ -1696,10 +1830,29 @@ static struct clk_hw_onecell_data ums512_audcpahb_gate_hws = {
- 	.num	= CLK_AUDCP_AHB_GATE_NUM,
- };
- 
-+static struct sprd_reset_map ums512_audcp_ahb_resets[] = {
-+	[RESET_AUDCP_AHB_VBC_24M_SOFT_RST]	= { 0x0008, BIT(0), true, 0x100 },
-+	[RESET_AUDCP_AHB_DMA_AP_SOFT_RST]	= { 0x0008, BIT(1), true, 0x100 },
-+	[RESET_AUDCP_AHB_SRC48K_SOFT_RST]	= { 0x0008, BIT(5), true, 0x100 },
-+	[RESET_AUDCP_AHB_MCDT_SOFT_RST]		= { 0x0008, BIT(7), true, 0x100 },
-+	[RESET_AUDCP_AHB_VBCIFD_SOFT_RST]	= { 0x0008, BIT(8), true, 0x100 },
-+	[RESET_AUDCP_AHB_VBC_SOFT_RST]		= { 0x0008, BIT(9), true, 0x100 },
-+	[RESET_AUDCP_AHB_SPINLOCK_SOFT_RST]	= { 0x0008, BIT(10), true, 0x100 },
-+	[RESET_AUDCP_AHB_DMA_CP_SOFT_RST]	= { 0x0008, BIT(11), true, 0x100 },
-+	[RESET_AUDCP_AHB_IIS0_SOFT_RST]		= { 0x0008, BIT(12), true, 0x100 },
-+	[RESET_AUDCP_AHB_IIS1_SOFT_RST]		= { 0x0008, BIT(13), true, 0x100 },
-+	[RESET_AUDCP_AHB_IIS2_SOFT_RST]		= { 0x0008, BIT(14), true, 0x100 },
-+	[RESET_AUDCP_AHB_UART_SOFT_RST]		= { 0x0008, BIT(16), true, 0x100 },
-+	[RESET_AUDCP_AHB_AUD_SOFT_RST]		= { 0x0008, BIT(25), true, 0x100 },
-+	[RESET_AUDCP_AHB_DVFS_SOFT_RST]		= { 0x0008, BIT(26), true, 0x100 },
-+};
-+
- static const struct sprd_clk_desc ums512_audcpahb_gate_desc = {
- 	.clk_clks	= ums512_audcpahb_gate,
- 	.num_clk_clks	= ARRAY_SIZE(ums512_audcpahb_gate),
- 	.hw_clks	= &ums512_audcpahb_gate_hws,
-+	.resets		= ums512_audcp_ahb_resets,
-+	.num_resets	= ARRAY_SIZE(ums512_audcp_ahb_resets),
- };
- 
- /* gpu clocks */
-@@ -1752,10 +1905,17 @@ static struct clk_hw_onecell_data ums512_gpu_clk_hws = {
- 	.num	= CLK_GPU_CLK_NUM,
- };
- 
-+static struct sprd_reset_map ums512_gpu_apb_resets[] = {
-+	[RESET_GPU_APB_GPU_CORE_SOFT_RST]	= { 0x0000, BIT(0), true, 0x1000 },
-+	[RESET_GPU_APB_SYS_SOFT_RST_REQ_CORE]	= { 0x0000, BIT(1), true, 0x1000 },
-+};
-+
- static struct sprd_clk_desc ums512_gpu_clk_desc = {
- 	.clk_clks	= ums512_gpu_clk,
- 	.num_clk_clks	= ARRAY_SIZE(ums512_gpu_clk),
- 	.hw_clks	= &ums512_gpu_clk_hws,
-+	.resets		= ums512_gpu_apb_resets,
-+	.num_resets	= ARRAY_SIZE(ums512_gpu_apb_resets),
- };
- 
- /* mm clocks */
-@@ -1994,10 +2154,42 @@ static struct clk_hw_onecell_data ums512_mm_gate_clk_hws = {
- 	.num	= CLK_MM_GATE_CLK_NUM,
- };
- 
-+static struct sprd_reset_map ums512_mm_ahb_resets[] = {
-+	[RESET_MM_AHB_CKG_SOFT_RST]		= { 0x0004, BIT(0), true, 0x1000 },
-+	[RESET_MM_AHB_JPG_SOFT_RST]		= { 0x0004, BIT(1), true, 0x1000 },
-+	[RESET_MM_AHB_DCAM_AXI_SOFT_RST]	= { 0x0004, BIT(2), true, 0x1000 },
-+	[RESET_MM_AHB_DCAM2_SOFT_RST]		= { 0x0004, BIT(3), true, 0x1000 },
-+	[RESET_MM_AHB_DCAM1_SOFT_RST]		= { 0x0004, BIT(4), true, 0x1000 },
-+	[RESET_MM_AHB_DCAM0_SOFT_RST]		= { 0x0004, BIT(5), true, 0x1000 },
-+	[RESET_MM_AHB_DCAM_VAU_SOFT_RST]	= { 0x0004, BIT(6), true, 0x1000 },
-+	[RESET_MM_AHB_MIPI_CSI2_SOFT_RST]	= { 0x0004, BIT(7), true, 0x1000 },
-+	[RESET_MM_AHB_MIPI_CSI1_SOFT_RST]	= { 0x0004, BIT(8), true, 0x1000 },
-+	[RESET_MM_AHB_MIPI_CSI0_SOFT_RST]	= { 0x0004, BIT(9), true, 0x1000 },
-+	[RESET_MM_AHB_ISP_SOFT_RST]		= { 0x0004, BIT(10), true, 0x1000 },
-+	[RESET_MM_AHB_ISP_VAU_SOFT_RST]		= { 0x0004, BIT(11), true, 0x1000 },
-+	[RESET_MM_AHB_ISP_AHB_SOFT_RST]		= { 0x0004, BIT(12), true, 0x1000 },
-+	[RESET_MM_AHB_CPP_DMA_SOFT_RST]		= { 0x0004, BIT(13), true, 0x1000 },
-+	[RESET_MM_AHB_CPP_PATH1_SOFT_RST]	= { 0x0004, BIT(14), true, 0x1000 },
-+	[RESET_MM_AHB_CPP_PATH0_SOFT_RST]	= { 0x0004, BIT(15), true, 0x1000 },
-+	[RESET_MM_AHB_CPP_SOFT_RST]		= { 0x0004, BIT(16), true, 0x1000 },
-+	[RESET_MM_AHB_MM_MAIN_SOFT_RST]		= { 0x0004, BIT(17), true, 0x1000 },
-+	[RESET_MM_AHB_CPP_SOFT_RST_MASK]	= { 0x0004, BIT(18), true, 0x1000 },
-+	[RESET_MM_AHB_JPG_SOFT_RST_MASK]	= { 0x0004, BIT(19), true, 0x1000 },
-+	[RESET_MM_AHB_JPG_VAU_SOFT_RST]		= { 0x0004, BIT(20), true, 0x1000 },
-+	[RESET_MM_AHB_CPP_VAU_SOFT_RST]		= { 0x0004, BIT(21), true, 0x1000 },
-+	[RESET_MM_AHB_FD_VAU_SOFT_RST]		= { 0x0004, BIT(22), true, 0x1000 },
-+	[RESET_MM_AHB_DCAM_ALL_SOFT_RST]	= { 0x0004, BIT(23), true, 0x1000 },
-+	[RESET_MM_AHB_DVFS_SOFT_RST]		= { 0x0004, BIT(24), true, 0x1000 },
-+	[RESET_MM_AHB_FD_SOFT_RST]		= { 0x0004, BIT(26), true, 0x1000 },
-+	[RESET_MM_AHB_FD_SOFT_RST_MASK]		= { 0x0004, BIT(27), true, 0x1000 },
-+};
-+
- static struct sprd_clk_desc ums512_mm_gate_clk_desc = {
- 	.clk_clks	= ums512_mm_gate_clk,
- 	.num_clk_clks	= ARRAY_SIZE(ums512_mm_gate_clk),
- 	.hw_clks	= &ums512_mm_gate_clk_hws,
-+	.resets		= ums512_mm_ahb_resets,
-+	.num_resets	= ARRAY_SIZE(ums512_mm_ahb_resets),
- };
- 
- /* ap apb gates */
-@@ -2132,10 +2324,38 @@ static struct clk_hw_onecell_data ums512_apapb_gate_hws = {
- 	.num	= CLK_AP_APB_GATE_NUM,
- };
- 
-+static struct sprd_reset_map ums512_ap_apb_resets[] = {
-+	[RESET_AP_APB_SIM0_SOFT_RST]		= { 0x0004, BIT(0), true, 0x1000 },
-+	[RESET_AP_APB_IIS0_SOFT_RST]		= { 0x0004, BIT(1), true, 0x1000 },
-+	[RESET_AP_APB_IIS1_SOFT_RST]		= { 0x0004, BIT(2), true, 0x1000 },
-+	[RESET_AP_APB_IIS2_SOFT_RST]		= { 0x0004, BIT(3), true, 0x1000 },
-+	[RESET_AP_APB_SPI0_SOFT_RST]		= { 0x0004, BIT(4), true, 0x1000 },
-+	[RESET_AP_APB_SPI1_SOFT_RST]		= { 0x0004, BIT(5), true, 0x1000 },
-+	[RESET_AP_APB_SPI2_SOFT_RST]		= { 0x0004, BIT(6), true, 0x1000 },
-+	[RESET_AP_APB_SPI3_SOFT_RST]		= { 0x0004, BIT(7), true, 0x1000 },
-+	[RESET_AP_APB_I2C0_SOFT_RST]		= { 0x0004, BIT(8), true, 0x1000 },
-+	[RESET_AP_APB_I2C1_SOFT_RST]		= { 0x0004, BIT(9), true, 0x1000 },
-+	[RESET_AP_APB_I2C2_SOFT_RST]		= { 0x0004, BIT(10), true, 0x1000 },
-+	[RESET_AP_APB_I2C3_SOFT_RST]		= { 0x0004, BIT(11), true, 0x1000 },
-+	[RESET_AP_APB_I2C4_SOFT_RST]		= { 0x0004, BIT(12), true, 0x1000 },
-+	[RESET_AP_APB_UART0_SOFT_RST]		= { 0x0004, BIT(13), true, 0x1000 },
-+	[RESET_AP_APB_UART1_SOFT_RST]		= { 0x0004, BIT(14), true, 0x1000 },
-+	[RESET_AP_APB_UART2_SOFT_RST]		= { 0x0004, BIT(15), true, 0x1000 },
-+	[RESET_AP_APB_SDIO0_SOFT_RST]		= { 0x0004, BIT(16), true, 0x1000 },
-+	[RESET_AP_APB_SDIO1_SOFT_RST]		= { 0x0004, BIT(17), true, 0x1000 },
-+	[RESET_AP_APB_SDIO2_SOFT_RST]		= { 0x0004, BIT(18), true, 0x1000 },
-+	[RESET_AP_APB_EMMC_SOFT_RST]		= { 0x0004, BIT(19), true, 0x1000 },
-+	[RESET_AP_APB_CE_SEC_SOFT_RST]		= { 0x0004, BIT(20), true, 0x1000 },
-+	[RESET_AP_APB_CE_PUB_SOFT_RST]		= { 0x0004, BIT(21), true, 0x1000 },
-+	[RESET_AP_APB_AP_DVFS_SOFT_RST]		= { 0x0004, BIT(22), true, 0x1000 },
-+};
-+
- static struct sprd_clk_desc ums512_apapb_gate_desc = {
- 	.clk_clks	= ums512_apapb_gate,
- 	.num_clk_clks	= ARRAY_SIZE(ums512_apapb_gate),
- 	.hw_clks	= &ums512_apapb_gate_hws,
-+	.resets		= ums512_ap_apb_resets,
-+	.num_resets	= ARRAY_SIZE(ums512_ap_apb_resets),
- };
- 
- static const struct of_device_id sprd_ums512_clk_ids[] = {
-@@ -2176,6 +2396,7 @@ MODULE_DEVICE_TABLE(of, sprd_ums512_clk_ids);
- static int ums512_clk_probe(struct platform_device *pdev)
- {
- 	const struct sprd_clk_desc *desc;
-+	struct sprd_reset *reset;
- 	int ret;
- 
- 	desc = device_get_match_data(&pdev->dev);
-@@ -2186,6 +2407,25 @@ static int ums512_clk_probe(struct platform_device *pdev)
- 	if (ret)
- 		return ret;
- 
-+	if (desc->num_resets > 0) {
-+		reset = devm_kzalloc(&pdev->dev, sizeof(*reset), GFP_KERNEL);
-+		if (!reset)
-+			return -ENOMEM;
-+
-+		spin_lock_init(&reset->lock);
-+		reset->rcdev.of_node = pdev->dev.of_node;
-+		reset->rcdev.ops = &sprd_reset_ops;
-+		reset->rcdev.nr_resets = desc->num_resets;
-+		reset->reset_map = desc->resets;
-+		reset->regmap = platform_get_drvdata(pdev);
-+
-+		ret = devm_reset_controller_register(&pdev->dev, &reset->rcdev);
-+		if (ret) {
-+			dev_err(&pdev->dev, "Failed to register reset controller\n");
-+			return ret;
-+		}
-+	}
-+
- 	return sprd_clk_probe(&pdev->dev, desc->hw_clks);
- }
- 
--- 
-2.17.1
-
+Applied, thanks.
 
