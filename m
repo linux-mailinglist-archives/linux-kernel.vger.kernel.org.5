@@ -1,89 +1,125 @@
-Return-Path: <linux-kernel+bounces-1209-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-1214-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id BC0FF814BAF
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 16:24:58 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 00CB0814BBB
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 16:27:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EF5B61C21ED6
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 15:24:57 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B089128194F
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 15:27:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B67E36AEA;
-	Fri, 15 Dec 2023 15:24:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A19473A8D8;
+	Fri, 15 Dec 2023 15:27:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="EaoPKP86"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="HkGVcrol"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 039A5364C9
-	for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 15:24:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1610C39FE4;
+	Fri, 15 Dec 2023 15:26:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1702653891; x=1734189891;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=jXQXQlomGFjmJz8HswweNDJQzewf1HjzjMYpjnVcIao=;
-  b=EaoPKP86lPbPlTsb+FuUEk9ka0S6a4Bx7r3NDAN6RBAfqvomspGhMAdk
-   0E5nozZ3nsFyU09F+humh/Eegw3kbAK0sZy+QumVJzR2FYo1gfo1g1X4K
-   uMeldWGqgn8jLeEBYTNueQuJOAcikcyA201fgWMrCZYpApfOYrWbtPmSL
-   MVx7QR7fS8ZE7sXL5H+1hJgLetbVzg/jGbUNtgQbJ6uDL3fRVA17xQPNb
-   3JfzymwuWQbk6BK+8Zmf78pJj252TxTglC3clRzB6Q/3tOzqyn5rYdE6g
-   hL653ThHRfdfUCgFHD8vjV6CmLDIIt3qwC3HzjaJJBNBd/KPEimHLxhZP
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10924"; a="8646431"
+  t=1702654020; x=1734190020;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=ZbsUhfpzOlZP4HelxUN8upZJntGREJDIbiHeVV/5Dls=;
+  b=HkGVcrolLgzXdpMT82evrSrZmC4MUlvjtQhMLCITOYcSW9NfNrL0ykOv
+   gEgndiRKywu3lb9sMY0HaOkVAMbwWJH5thL4lWqmxcbC/3fH5LONnczlc
+   +M+rrJkaB8swP5J9tNX7HHbEeJzUFFGaukuoJZfIeAUrq/Hi+T+JB43nz
+   F/Kn7LhBRH/7HGuknP50vgY+9rKW2Bmmt2xVfJ5wpSv+cPWmVaiahfywj
+   7i50tuOnJMUguewWaCoWsA9oBV37bI6fTemICr7fJxA96+cxdWSDuv0Cq
+   OWZadPbYXbmRTYyn5haaAPQXRNwyJgPZccH03ri0C6TDRGfvRWHYfhsKx
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10924"; a="2374449"
 X-IronPort-AV: E=Sophos;i="6.04,279,1695711600"; 
-   d="scan'208";a="8646431"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Dec 2023 07:24:44 -0800
+   d="scan'208";a="2374449"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Dec 2023 07:26:59 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10924"; a="840694243"
+X-IronPort-AV: E=McAfee;i="6600,9927,10924"; a="750968704"
 X-IronPort-AV: E=Sophos;i="6.04,279,1695711600"; 
-   d="scan'208";a="840694243"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by fmsmga008.fm.intel.com with ESMTP; 15 Dec 2023 07:24:43 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rEA3M-0000Me-2z;
-	Fri, 15 Dec 2023 15:24:40 +0000
-Date: Fri, 15 Dec 2023 23:24:21 +0800
-From: kernel test robot <lkp@intel.com>
-To: Ard Biesheuvel <ardb@kernel.org>
-Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: scripts/kernel-doc: drivers/firmware/efi/libstub/alignedmem.c:27:
- warning: Function parameter or struct member 'memory_type' not described in
- 'efi_allocate_pages_aligned'
-Message-ID: <202312152342.b4KOX5yb-lkp@intel.com>
+   d="scan'208";a="750968704"
+Received: from r007s007_zp31l10c01.deacluster.intel.com (HELO fedora.deacluster.intel.com) ([10.219.171.169])
+  by orsmga006.jf.intel.com with ESMTP; 15 Dec 2023 07:26:58 -0800
+From: Lucas Segarra Fernandez <lucas.segarra.fernandez@intel.com>
+To: herbert@gondor.apana.org.au
+Cc: linux-kernel@vger.kernel.org,
+	linux-crypto@vger.kernel.org,
+	qat-linux@intel.com,
+	Lucas Segarra Fernandez <lucas.segarra.fernandez@intel.com>,
+	Giovanni Cabiddu <giovanni.cabiddu@intel.com>,
+	Damian Muszynski <damian.muszynski@intel.com>
+Subject: [PATCH 1/5] math.h: Add avg_array()
+Date: Fri, 15 Dec 2023 16:24:40 +0100
+Message-ID: <20231215152440.34537-1-lucas.segarra.fernandez@intel.com>
+X-Mailer: git-send-email 2.41.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   3f7168591ebf7bbdb91797d02b1afaf00a4289b1
-commit: 9cf42bca30e98a1c6c9e8abf876940a551eaa3d1 efi: libstub: use EFI_LOADER_CODE region when moving the kernel in memory
-date:   1 year, 1 month ago
-config: x86_64-defconfig (https://download.01.org/0day-ci/archive/20231215/202312152342.b4KOX5yb-lkp@intel.com/config)
-compiler: gcc-11 (Debian 11.3.0-12) 11.3.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231215/202312152342.b4KOX5yb-lkp@intel.com/reproduce)
+Add macro to compute average of values within an array.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202312152342.b4KOX5yb-lkp@intel.com/
+This patch is based on earlier work done by Wojciech Ziemba.
 
-All warnings (new ones prefixed by >>):
+Signed-off-by: Lucas Segarra Fernandez <lucas.segarra.fernandez@intel.com>
+Reviewed-by: Giovanni Cabiddu <giovanni.cabiddu@intel.com>
+Reviewed-by: Damian Muszynski <damian.muszynski@intel.com>
+---
+ include/linux/math.h | 33 +++++++++++++++++++++++++++++++++
+ 1 file changed, 33 insertions(+)
 
->> scripts/kernel-doc: drivers/firmware/efi/libstub/alignedmem.c:27: warning: Function parameter or struct member 'memory_type' not described in 'efi_allocate_pages_aligned'
-
+diff --git a/include/linux/math.h b/include/linux/math.h
+index dd4152711de7..012416c92e89 100644
+--- a/include/linux/math.h
++++ b/include/linux/math.h
+@@ -205,4 +205,37 @@ static inline u32 int_sqrt64(u64 x)
+ }
+ #endif
+ 
++/**
++ * avg_array() - Return average of values within an array.
++ * @array: Array of values.
++ * @len: Number of elements.
++ *
++ * This algorithm computes average of an array without running into overflow.
++ *
++ * Return: average of values.
++ */
++#define avg_array(array, len) (				\
++{							\
++	typeof(&(array)[0]) _array = (array);		\
++	__unqual_scalar_typeof(_array[0]) _x = 0;	\
++	__unqual_scalar_typeof(_array[0]) _y = 0;	\
++	__unqual_scalar_typeof(_array[0]) _a, _b;	\
++	typeof(len) _len = (len);			\
++	size_t _i;					\
++							\
++	for (_i = 0; _i < _len; _i++) {			\
++		_a = _array[_i];			\
++		_b = do_div(_a, _len);			\
++		_x += _a;				\
++		if (_y >= _len - _b) {			\
++			_x++;				\
++			_y -= _len - _b;		\
++		} else {				\
++			_y += _b;			\
++		}					\
++	}						\
++	do_div(_y, _len);				\
++	(_x + _y);					\
++})
++
+ #endif	/* _LINUX_MATH_H */
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.41.0
+
 
