@@ -1,152 +1,127 @@
-Return-Path: <linux-kernel+bounces-1347-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-1349-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E817A814DC4
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 18:02:28 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BA9BD814DCB
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 18:03:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A5BDB2855C7
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 17:02:27 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EDCFA1C23E16
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 17:03:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 934EF3EA98;
-	Fri, 15 Dec 2023 17:02:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E3D63FB31;
+	Fri, 15 Dec 2023 17:03:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="PQkTfPy1"
+	dkim=pass (2048-bit key) header.d=foss.st.com header.i=@foss.st.com header.b="QbLIf5Bm"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com [185.132.182.106])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E9C93FB28;
-	Fri, 15 Dec 2023 17:02:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353728.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3BFGwALZ020777;
-	Fri, 15 Dec 2023 17:02:13 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : in-reply-to : references : mime-version :
- content-type : content-transfer-encoding; s=pp1;
- bh=B2YPCL9awtaXdHC9oWXUXcPCAxjjCJr0Vn0rYyQXOJo=;
- b=PQkTfPy19H+mSenEhnpAiTSvzh99ikxC/N8xceArJNxfudZcsbS0iOFt+hC3Kj8ja6T8
- UPTff1wKw+WBjX3WrJhILb3ZQ14r22XUASmkpKxeUEQsYdVMco2e6feitgRiI+kTQIZZ
- B8djZ5swFOcvuTSZFpj3MMJQDkE1ClPmW/fmCAhkm7pO/x/xjyys/Zh0zHmMH+HLc+CX
- /SCEsUAPPyX3MBoZYp0tUJOxo7e2lpW+SyN+vnlQ1oow7pFzKfzV7As2MYeNy76kpKjG
- 7jJFh/woJavBz8s9wXz23TkFkX4pRSiLGsIIbFnsnyoDE7l6JbVMDcLZuX44bwbZlFAY gw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3v0tft8qpg-1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E0CB03EA78;
+	Fri, 15 Dec 2023 17:03:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foss.st.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=foss.st.com
+Received: from pps.filterd (m0241204.ppops.net [127.0.0.1])
+	by mx07-00178001.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 3BFDLSlT017503;
+	Fri, 15 Dec 2023 18:02:48 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
+	from:to:cc:subject:date:message-id:mime-version
+	:content-transfer-encoding:content-type; s=selector1; bh=vD6h9pH
+	zJnmCBjscGPQb18sMsLi5KfISG29RwhbGxYI=; b=QbLIf5BmFBOSkCIpMkerL7K
+	93jFOZqTkajmC9EvJt+jWRyOqE+oj6zCuny5JcWWdvIviwGMcfh0f1ziVqck8DVk
+	OuuoujyjkcyA0I5zNJV32aCKMjsy6afNBIjV2bVnqDBa3g23KEu6LBbft6tACNRV
+	xiUEQQqGJg+gU+kpJE4npqDlJlyQBKVpui92RsAipq3P+a8WRS3XE1qjPYFE9uqE
+	3nHZP3QCxrjHqti6o53BojNaMP+T6nyNI6MjqVwLqLuXpsO3Dm4PsAvZgWUHPo9E
+	+IRlLR0YERGrr3PuVduuKROcboPQYK+XRIL2hPbRK/CK1FcCvcyyo0lYfbEmgsw=
+	=
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+	by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3v0cbtuhhn-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 15 Dec 2023 17:02:13 +0000
-Received: from m0353728.ppops.net (m0353728.ppops.net [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3BFGjUjK006288;
-	Fri, 15 Dec 2023 17:02:12 GMT
-Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3v0tft8qnu-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 15 Dec 2023 17:02:12 +0000
-Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3BFFXtGX013937;
-	Fri, 15 Dec 2023 17:02:11 GMT
-Received: from smtprelay02.fra02v.mail.ibm.com ([9.218.2.226])
-	by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3uw592rwft-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 15 Dec 2023 17:02:11 +0000
-Received: from smtpav07.fra02v.mail.ibm.com (smtpav07.fra02v.mail.ibm.com [10.20.54.106])
-	by smtprelay02.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3BFH28GG27853434
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Fri, 15 Dec 2023 17:02:08 GMT
-Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 8CD1B20043;
-	Fri, 15 Dec 2023 17:02:08 +0000 (GMT)
-Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 5FF8A20040;
-	Fri, 15 Dec 2023 17:02:08 +0000 (GMT)
-Received: from p-imbrenda (unknown [9.152.224.66])
-	by smtpav07.fra02v.mail.ibm.com (Postfix) with ESMTP;
-	Fri, 15 Dec 2023 17:02:08 +0000 (GMT)
-Date: Fri, 15 Dec 2023 18:02:06 +0100
-From: Claudio Imbrenda <imbrenda@linux.ibm.com>
-To: Nina Schoetterl-Glausch <nsg@linux.ibm.com>
-Cc: Paolo Bonzini <pbonzini@redhat.com>, Shuah Khan <shuah@kernel.org>,
-        Janosch Frank <frankja@linux.ibm.com>,
-        Christian Borntraeger
- <borntraeger@linux.ibm.com>,
-        kvm@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        David Hildenbrand <david@redhat.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] KVM: s390: selftest: memop: Fix undefined behavior
-Message-ID: <20231215180206.740df738@p-imbrenda>
-In-Reply-To: <20231215161125.943551-1-nsg@linux.ibm.com>
-References: <20231215161125.943551-1-nsg@linux.ibm.com>
-Organization: IBM
-X-Mailer: Claws Mail 4.2.0 (GTK 3.24.38; x86_64-redhat-linux-gnu)
+	Fri, 15 Dec 2023 18:02:47 +0100 (CET)
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+	by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 64E4C100052;
+	Fri, 15 Dec 2023 18:02:46 +0100 (CET)
+Received: from Webmail-eu.st.com (shfdag1node1.st.com [10.75.129.69])
+	by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 585F4237D9B;
+	Fri, 15 Dec 2023 18:02:46 +0100 (CET)
+Received: from localhost (10.129.178.213) by SHFDAG1NODE1.st.com
+ (10.75.129.69) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Fri, 15 Dec
+ 2023 18:02:46 +0100
+From: Alain Volmat <alain.volmat@foss.st.com>
+To: Andi Shyti <andi.shyti@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley
+	<conor+dt@kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre
+ Torgue <alexandre.torgue@foss.st.com>,
+        Pierre-Yves MORDRET
+	<pierre-yves.mordret@foss.st.com>,
+        Alain Volmat <alain.volmat@foss.st.com>
+CC: Conor Dooley <conor@kernel.org>, <linux-i2c@vger.kernel.org>,
+        <devicetree@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH v3 0/7] i2c: stm32f7: enhancements and support for stm32mp25
+Date: Fri, 15 Dec 2023 18:02:10 +0100
+Message-ID: <20231215170223.95549-1-alain.volmat@foss.st.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: p_xIXzpWKEXFMQuEJFyjrgTdOUj5Kojn
-X-Proofpoint-GUID: sAFCq5iOnK_QJcqwHmouXldvP6Q9_rtw
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: SHFCAS1NODE2.st.com (10.75.129.73) To SHFDAG1NODE1.st.com
+ (10.75.129.69)
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
  definitions=2023-12-15_10,2023-12-14_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- suspectscore=0 adultscore=0 mlxscore=0 mlxlogscore=999 spamscore=0
- malwarescore=0 clxscore=1011 impostorscore=0 phishscore=0 bulkscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311290000 definitions=main-2312150118
 
-On Fri, 15 Dec 2023 17:11:25 +0100
-Nina Schoetterl-Glausch <nsg@linux.ibm.com> wrote:
+This series first perform enhancements in the way interrupt are handled
+and cleanup in messages.
+Then it adds support for the stm32mp25 which differs in that
+it only has a single irq line for both event/error and has a
+different handling of the FastModePlus.
+Support is then enabled within the stm32mp25 related device-trees.
 
-> If an integer's type has x bits, shifting the integer left by x or more
-> is undefined behavior.
-> This can happen in the rotate function when attempting to do a rotation
-> of the whole value by 0.
+Changelog:
+v3: - addition of 2 commits dealing with readl_relaxed(I2C_ISR) in
+      isr handler and a second one to use dev_err_probe during probe
+    - correction of SOB in commit
 
-is 0 the only problematic value? because in that case... 
+v2: - correct st,stm32-i2c.yaml.  Use if then else scheme to indicate
+      number of interrupts / interrupt-names depending on the
+      compatible while keeping the description within the common part
 
-> 
-> Fixes: 0dd714bfd200 ("KVM: s390: selftest: memop: Add cmpxchg tests")
-> Signed-off-by: Nina Schoetterl-Glausch <nsg@linux.ibm.com>
-> ---
->  tools/testing/selftests/kvm/s390x/memop.c | 8 +++++---
->  1 file changed, 5 insertions(+), 3 deletions(-)
-> 
-> diff --git a/tools/testing/selftests/kvm/s390x/memop.c b/tools/testing/selftests/kvm/s390x/memop.c
-> index bb3ca9a5d731..2eba9575828e 100644
-> --- a/tools/testing/selftests/kvm/s390x/memop.c
-> +++ b/tools/testing/selftests/kvm/s390x/memop.c
-> @@ -485,11 +485,13 @@ static bool popcount_eq(__uint128_t a, __uint128_t b)
->  
->  static __uint128_t rotate(int size, __uint128_t val, int amount)
->  {
-> -	unsigned int bits = size * 8;
-> +	unsigned int left, right, bits = size * 8;
->  
+    - correct 2 maybe-uninitialized warnings
+          * ret in stm32f7_i2c_write_fm_plus_bits
+          * irq_error in stm32f7_i2c_probe, move the platform_get_irq
+            within the same if block as devm_request_threaded_irq
 
-...why not just:
+Alain Volmat (9):
+  i2c: stm32f7: use dev_err_probe upon calls of devm_request_irq
+  i2c: stm32f7: perform most of irq job in threaded handler
+  i2c: stm32f7: simplify status messages in case of errors
+  dt-bindings: i2c: document st,stm32mp25-i2c compatible
+  i2c: stm32f7: perform I2C_ISR read once at beginning of event isr
+  i2c: stm32f7: add support for stm32mp25 soc
+  arm64: dts: st: add all 8 i2c nodes on stm32mp251
+  arm64: dts: st: add i2c2/i2c8 pins for stm32mp25
+  arm64: dts: st: add i2c2 / i2c8 properties on stm32mp257f-ev1
 
-if (!amount)
-	return val;
+ .../devicetree/bindings/i2c/st,stm32-i2c.yaml |  28 ++
+ arch/arm64/boot/dts/st/stm32mp25-pinctrl.dtsi |  36 ++
+ arch/arm64/boot/dts/st/stm32mp251.dtsi        |  96 +++++
+ arch/arm64/boot/dts/st/stm32mp257f-ev1.dts    |  20 +
+ drivers/i2c/busses/i2c-stm32f7.c              | 342 +++++++++---------
+ 5 files changed, 358 insertions(+), 164 deletions(-)
 
-?
-
-> -	amount = (amount + bits) % bits;
-> +	right = (amount + bits) % bits;
-> +	/* % 128 prevents left shift UB if size == 16 && right == 0 */
-> +	left = (bits - right) % 128;
->  	val = cut_to_size(size, val);
-> -	return (val << (bits - amount)) | (val >> amount);
-> +	return (val << left) | (val >> right);
->  }
->  
->  const unsigned int max_block = 16;
-> 
-> base-commit: 305230142ae0637213bf6e04f6d9f10bbcb74af8
+-- 
+2.25.1
 
 
