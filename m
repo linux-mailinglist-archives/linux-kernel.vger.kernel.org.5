@@ -1,163 +1,120 @@
-Return-Path: <linux-kernel+bounces-1642-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-1643-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E3D17815161
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 21:48:22 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C8985815165
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 21:49:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EFE111C21327
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 20:48:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8373F285995
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 20:49:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F5264655E;
-	Fri, 15 Dec 2023 20:48:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C2BE34655E;
+	Fri, 15 Dec 2023 20:49:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=jrtc27.com header.i=@jrtc27.com header.b="Y10e4GVl"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="XvRTC+PU"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-wm1-f52.google.com (mail-wm1-f52.google.com [209.85.128.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4678C46547
-	for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 20:48:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=jrtc27.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=jrtc27.com
-Received: by mail-wm1-f52.google.com with SMTP id 5b1f17b1804b1-40c6736d10fso13220165e9.1
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 12:48:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=jrtc27.com; s=gmail.jrtc27.user; t=1702673290; x=1703278090; darn=vger.kernel.org;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=XkbA3FPlNo1r+U6O6Ao4SqV6N3qGQHbqxTmiKmAK7ww=;
-        b=Y10e4GVl5p3c7s5ut1pfDNzZZjIb5zWf7PaoHS89DSdvpe3YC9ndnXZCqvpGo1mghB
-         FwxSotXHXgw9yTiQ50CdGFzQ3MABscjqZdDfQn4Ibyf6Apq5999Eytsz+PzzIEJkj7Nw
-         b+KBqA1Ng7c2lgZirrs9P1pIWOIQEO2rwh/DPz1E4vcDs17RuHedQZvHgVsuj9MbIiCr
-         UUQCXwOPKaHZ79J/7vORmH08rcJcYqQFQgprJb6fev9FGZpxtTcEHWKwdaS5b1AuS8gI
-         mKIMfoMEtqSDKuEOvl4m4gwzQUz9r4Fzfx7VPmUN70tRGrv7wexc6YwMiXg4UQEqDM5T
-         7/fg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702673290; x=1703278090;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=XkbA3FPlNo1r+U6O6Ao4SqV6N3qGQHbqxTmiKmAK7ww=;
-        b=VW30MDMutmwjFGKW3+vsk2MRlKL8Ldqrs3Nhgn1/OvqmemNRkd9Y9rnjIkdQ4mwDRB
-         2YvcCfobovCG/ywwZau7rYLAhLmqD80nDpYSE7OG3ns+mqAhUKqNAv75l/G0p5xmO/Le
-         DWQ7NxtEqWsVwepDDlb8g20FruCSVYGBzQTP9sEKajwAU8Kr1mpgi4dwvTyxxYGrQWFQ
-         X9Z3uSS9ccD/DiAqp8MN6orJgbw5gR4PY2KjKUyJw2WrcTshzCp2zLyi3bSDYQsAdN9I
-         I2DM79qfR1QJDlDP1evkPw1kPkch9g5qWHlUBZaH7SLwxwAiIcQwuRpdTyhycEbnSXua
-         VmmA==
-X-Gm-Message-State: AOJu0Yw5kgt3S5jNb3rP29H6/yDaDtCpG7ShrQ7blY7LjxcGn8VMJTzX
-	HICX7l+IuRMyEoxO58TrgvyVdA==
-X-Google-Smtp-Source: AGHT+IHmyxYXA7TlsEHSBZ2x2Q3ZtE6ks/hZmTMZ9YZV6t1R+oDgMn/QNCqxM1cqDO/CM4Y9PqXh7w==
-X-Received: by 2002:a05:600c:808b:b0:40b:5e21:dd24 with SMTP id ew11-20020a05600c808b00b0040b5e21dd24mr6411929wmb.82.1702673290406;
-        Fri, 15 Dec 2023 12:48:10 -0800 (PST)
-Received: from smtpclient.apple ([131.111.5.246])
-        by smtp.gmail.com with ESMTPSA id p8-20020a05600c358800b0040b40468c98sm31891322wmq.10.2023.12.15.12.48.09
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 15 Dec 2023 12:48:09 -0800 (PST)
-Content-Type: text/plain;
-	charset=utf-8
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B7FC64652A
+	for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 20:49:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1702673366; x=1734209366;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=im4yuzz2NaICKGTqfVhlKbQyCi5H5jypE3Z7ynJaThw=;
+  b=XvRTC+PUHniW8eRzkzU6M2dj2Fg/Z5ltC+EvAV/kVxJSxW00PxAdPsV4
+   7AOC31s1tPKM0UEumewwyr/zHm0TuxCv/jVOVLuPn7GXllYCU+9ShHt+v
+   N8xA7kGKs8Ouy5gobYhzLh9/6RIFW357XwUs6nRBcDF9ZhAIo704Kh1U7
+   YjDjy8xktL3X5gCJsWqkqcO+3MF+jBMfqfya9EWMNDXvSnnViv/+ulV0m
+   AiosFxCx1O4rt56kWld2ofMgmy7SOynQ1t/HOzx6ngw/AfTIItQMf05W3
+   hUwNyAyr2KsYhZkoAlH67b9c64mXs3P+qU6TcL3xlX4iC/eRX7Yh59gND
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10925"; a="395066802"
+X-IronPort-AV: E=Sophos;i="6.04,279,1695711600"; 
+   d="scan'208";a="395066802"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Dec 2023 12:49:24 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10925"; a="751054344"
+X-IronPort-AV: E=Sophos;i="6.04,279,1695711600"; 
+   d="scan'208";a="751054344"
+Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
+  by orsmga006.jf.intel.com with ESMTP; 15 Dec 2023 12:49:21 -0800
+Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rEF7Y-0000k5-2o;
+	Fri, 15 Dec 2023 20:49:20 +0000
+Date: Sat, 16 Dec 2023 04:49:11 +0800
+From: kernel test robot <lkp@intel.com>
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: drivers/mtd/nand/raw/sh_flctl.c:512:17: sparse: sparse: cast from
+ restricted __be32
+Message-ID: <202312160441.W5Plqog2-lkp@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3774.200.91.1.1\))
-Subject: Re: [PATCH v3 2/9] dt-bindings: net: starfive,jh7110-dwmac: Add
- JH7100 SoC compatible
-From: Jessica Clarke <jrtc27@jrtc27.com>
-In-Reply-To: <20231215204050.2296404-3-cristian.ciocaltea@collabora.com>
-Date: Fri, 15 Dec 2023 20:47:58 +0000
-Cc: "David S. Miller" <davem@davemloft.net>,
- Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>,
- Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>,
- Emil Renner Berthing <kernel@esmil.dk>,
- Samin Guo <samin.guo@starfivetech.com>,
- Paul Walmsley <paul.walmsley@sifive.com>,
- Palmer Dabbelt <palmer@dabbelt.com>,
- Albert Ou <aou@eecs.berkeley.edu>,
- Hal Feng <hal.feng@starfivetech.com>,
- Michael Turquette <mturquette@baylibre.com>,
- Stephen Boyd <sboyd@kernel.org>,
- Alexandre Torgue <alexandre.torgue@foss.st.com>,
- Jose Abreu <joabreu@synopsys.com>,
- Maxime Coquelin <mcoquelin.stm32@gmail.com>,
- Richard Cochran <richardcochran@gmail.com>,
- Giuseppe Cavallaro <peppe.cavallaro@st.com>,
- netdev@vger.kernel.org,
- "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" <devicetree@vger.kernel.org>,
- LKML <linux-kernel@vger.kernel.org>,
- linux-riscv <linux-riscv@lists.infradead.org>,
- linux-clk@vger.kernel.org,
- linux-stm32@st-md-mailman.stormreply.com,
- linux-arm-kernel@lists.infradead.org,
- kernel@collabora.com
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <A7C96942-07CB-40FD-AAAA-4A8947DEE7CA@jrtc27.com>
-References: <20231215204050.2296404-1-cristian.ciocaltea@collabora.com>
- <20231215204050.2296404-3-cristian.ciocaltea@collabora.com>
-To: Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
-X-Mailer: Apple Mail (2.3774.200.91.1.1)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-On 15 Dec 2023, at 20:40, Cristian Ciocaltea =
-<cristian.ciocaltea@collabora.com> wrote:
->=20
-> The Synopsys DesignWare MAC found on StarFive JH7100 SoC is mostly
-> similar to the newer JH7110, but it requires only two interrupts and a
-> single reset line, which is 'ahb' instead of the commonly used
-> 'stmmaceth'.
->=20
-> Since the common binding 'snps,dwmac' allows selecting 'ahb' only in
-> conjunction with 'stmmaceth', extend the logic to also permit =
-exclusive
-> usage of the 'ahb' reset name.  This ensures the following use cases =
-are
-> supported:
->=20
->  JH7110: reset-names =3D "stmmaceth", "ahb";
->  JH7100: reset-names =3D "ahb";
->  other:  reset-names =3D "stmmaceth";
->=20
-> Also note the need to use a different dwmac fallback, as v5.20 applies
-> to JH7110 only, while JH7100 relies on v3.7x.
->=20
-> Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
-> ---
-> .../devicetree/bindings/net/snps,dwmac.yaml   |  3 +-
-> .../bindings/net/starfive,jh7110-dwmac.yaml   | 74 +++++++++++++------
-> 2 files changed, 55 insertions(+), 22 deletions(-)
->=20
-> diff --git a/Documentation/devicetree/bindings/net/snps,dwmac.yaml =
-b/Documentation/devicetree/bindings/net/snps,dwmac.yaml
-> index 5c2769dc689a..c1380ff1c054 100644
-> --- a/Documentation/devicetree/bindings/net/snps,dwmac.yaml
-> +++ b/Documentation/devicetree/bindings/net/snps,dwmac.yaml
-> @@ -95,6 +95,7 @@ properties:
->         - snps,dwmac-5.20
->         - snps,dwxgmac
->         - snps,dwxgmac-2.10
-> +        - starfive,jh7100-dwmac
->         - starfive,jh7110-dwmac
->=20
->   reg:
-> @@ -146,7 +147,7 @@ properties:
->   reset-names:
->     minItems: 1
->     items:
-> -      - const: stmmaceth
-> +      - enum: [stmmaceth, ahb]
->       - const: ahb
+Hi Miquel,
 
-I=E2=80=99m not so well-versed in the YAML bindings, but would this not =
-allow
-reset-names =3D "ahb", "ahb"?
+FYI, the error/warning was bisected to this commit, please ignore it if it's irrelevant.
 
-Jess
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   26e7a301419d2ef4696e581109c61b4e772e1fb8
+commit: 72c5af00272339af6bbed6fe7275cd731f57be2d mtd: rawnand: Clarify Kconfig entry MTD_NAND
+date:   4 years, 8 months ago
+config: arm-randconfig-r123-20231107 (https://download.01.org/0day-ci/archive/20231216/202312160441.W5Plqog2-lkp@intel.com/config)
+compiler: arm-linux-gnueabi-gcc (GCC) 13.2.0
+reproduce: (https://download.01.org/0day-ci/archive/20231216/202312160441.W5Plqog2-lkp@intel.com/reproduce)
 
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202312160441.W5Plqog2-lkp@intel.com/
+
+sparse warnings: (new ones prefixed by >>)
+   drivers/mtd/nand/raw/sh_flctl.c:458:16: sparse: sparse: cast to restricted __le32
+   drivers/mtd/nand/raw/sh_flctl.c:481:26: sparse: sparse: cast to restricted __be32
+   drivers/mtd/nand/raw/sh_flctl.c:496:38: sparse: sparse: cast to restricted __be32
+>> drivers/mtd/nand/raw/sh_flctl.c:512:17: sparse: sparse: cast from restricted __be32
+   drivers/mtd/nand/raw/sh_flctl.c:525:24: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned long @@     got restricted __be32 [usertype] @@
+   drivers/mtd/nand/raw/sh_flctl.c:525:24: sparse:     expected unsigned long
+   drivers/mtd/nand/raw/sh_flctl.c:525:24: sparse:     got restricted __be32 [usertype]
+
+vim +512 drivers/mtd/nand/raw/sh_flctl.c
+
+6028aa01f759a1d drivers/mtd/nand/sh_flctl.c Yoshihiro Shimoda 2008-10-14  502  
+e8a9d8f31c592ee drivers/mtd/nand/sh_flctl.c Bastian Hecht     2012-10-19  503  static void write_fiforeg(struct sh_flctl *flctl, int rlen,
+e8a9d8f31c592ee drivers/mtd/nand/sh_flctl.c Bastian Hecht     2012-10-19  504  						unsigned int offset)
+6028aa01f759a1d drivers/mtd/nand/sh_flctl.c Yoshihiro Shimoda 2008-10-14  505  {
+6028aa01f759a1d drivers/mtd/nand/sh_flctl.c Yoshihiro Shimoda 2008-10-14  506  	int i, len_4align;
+e8a9d8f31c592ee drivers/mtd/nand/sh_flctl.c Bastian Hecht     2012-10-19  507  	unsigned long *buf = (unsigned long *)&flctl->done_buff[offset];
+6028aa01f759a1d drivers/mtd/nand/sh_flctl.c Yoshihiro Shimoda 2008-10-14  508  
+6028aa01f759a1d drivers/mtd/nand/sh_flctl.c Yoshihiro Shimoda 2008-10-14  509  	len_4align = (rlen + 3) / 4;
+6028aa01f759a1d drivers/mtd/nand/sh_flctl.c Yoshihiro Shimoda 2008-10-14  510  	for (i = 0; i < len_4align; i++) {
+6028aa01f759a1d drivers/mtd/nand/sh_flctl.c Yoshihiro Shimoda 2008-10-14  511  		wait_wfifo_ready(flctl);
+e8a9d8f31c592ee drivers/mtd/nand/sh_flctl.c Bastian Hecht     2012-10-19 @512  		writel(cpu_to_be32(buf[i]), FLDTFIFO(flctl));
+6028aa01f759a1d drivers/mtd/nand/sh_flctl.c Yoshihiro Shimoda 2008-10-14  513  	}
+6028aa01f759a1d drivers/mtd/nand/sh_flctl.c Yoshihiro Shimoda 2008-10-14  514  }
+6028aa01f759a1d drivers/mtd/nand/sh_flctl.c Yoshihiro Shimoda 2008-10-14  515  
+
+:::::: The code at line 512 was first introduced by commit
+:::::: e8a9d8f31c592eea89f1b0d3fd425e7a96944e88 mtd: sh_flctl: Minor cleanups
+
+:::::: TO: Bastian Hecht <hechtb@googlemail.com>
+:::::: CC: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
