@@ -1,122 +1,96 @@
-Return-Path: <linux-kernel+bounces-955-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-929-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7A338814878
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 13:52:51 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id B1ECF814829
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 13:34:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1969D1F23767
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 12:52:51 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DDF6C1C23550
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 12:34:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD7112D7A7;
-	Fri, 15 Dec 2023 12:52:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A4452C69E;
+	Fri, 15 Dec 2023 12:34:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="b36cOM1C"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from szxga06-in.huawei.com (szxga06-in.huawei.com [45.249.212.32])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7952D2F842;
-	Fri, 15 Dec 2023 12:52:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.214])
-	by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4Ss7tx5HrKz2mGxD;
-	Fri, 15 Dec 2023 20:34:01 +0800 (CST)
-Received: from dggpemm500005.china.huawei.com (unknown [7.185.36.74])
-	by mail.maildlp.com (Postfix) with ESMTPS id 944321A0190;
-	Fri, 15 Dec 2023 20:34:06 +0800 (CST)
-Received: from [10.69.30.204] (10.69.30.204) by dggpemm500005.china.huawei.com
- (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Fri, 15 Dec
- 2023 20:34:06 +0800
-Subject: Re: [PATCH net-next] page_pool: Rename frag_users to frag_cnt
-To: Ilias Apalodimas <ilias.apalodimas@linaro.org>
-CC: <netdev@vger.kernel.org>, Jesper Dangaard Brouer <hawk@kernel.org>, "David
- S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Jakub
- Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	<linux-kernel@vger.kernel.org>
-References: <20231215073119.543560-1-ilias.apalodimas@linaro.org>
- <6fddeb22-0906-e04c-3a84-7836bef9ffa2@huawei.com>
- <CAC_iWjLiOdUqLmRHjZmwv9QBsBvYNV=zn30JrRbJa05qMyDBmw@mail.gmail.com>
-From: Yunsheng Lin <linyunsheng@huawei.com>
-Message-ID: <fb0f33d8-d09a-57fc-83b0-ccf152277355@huawei.com>
-Date: Fri, 15 Dec 2023 20:34:05 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.2.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A8E5B2574B;
+	Fri, 15 Dec 2023 12:34:30 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D714FC433CB;
+	Fri, 15 Dec 2023 12:34:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1702643670;
+	bh=FKxZBM/eGnkcCWYq8ROqWWg4oGWQUMqw+sFNUzKW6/8=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=b36cOM1C5UV7HdfqDsWF5sWuveQJXujHtiSXuKWT5dtHcXCspO+ncwxNERXQ++q8A
+	 iGM45bHMBWXS7IxdnbSE08EMqH59r7xE0AoDkqtdNVjKKOOUqiXfxmiT8oCOttqtsd
+	 Y7T2RhT3GEcw+dUCXsw0Xfoq4mk27lPSYdhz2qgQ=
+Date: Fri, 15 Dec 2023 13:34:26 +0100
+From: Greg KH <gregkh@linuxfoundation.org>
+To: Piro Yang <piroyangg@gmail.com>
+Cc: linux-staging@lists.linux.dev,
+	Linux Outreachy <outreachy@lists.linux.dev>,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] staging:vme_user:fix the issue of using the wrong
+ error code
+Message-ID: <2023121505-viewer-kindle-5ed5@gregkh>
+References: <20231211173610.106501-1-piroyangg@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <CAC_iWjLiOdUqLmRHjZmwv9QBsBvYNV=zn30JrRbJa05qMyDBmw@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- dggpemm500005.china.huawei.com (7.185.36.74)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231211173610.106501-1-piroyangg@gmail.com>
 
-On 2023/12/15 19:58, Ilias Apalodimas wrote:
-> Hi Yunsheng,
+On Tue, Dec 12, 2023 at 01:36:10AM +0800, Piro Yang wrote:
+> the error code of ENOSYS indicates Invalid system call number, but there is not system call
 > 
-> On Fri, 15 Dec 2023 at 13:10, Yunsheng Lin <linyunsheng@huawei.com> wrote:
->>
->> On 2023/12/15 15:31, Ilias Apalodimas wrote:
->>> Since [0] got merged, it's clear that 'pp_ref_count' is used to track
->>> the number of users for each page. On struct_page though we have
->>> a member called 'frag_users'. Despite of what the name suggests this is
->>> not the number of users. It instead represents the number of fragments of
->>> the current page. When we have a single page this is set to one. When we
->>> split the page this is set to the actual number of frags and later used
->>> in page_pool_drain_frag() to infer the real number of users.
->>>
->>> So let's rename it to something that matches the description above
->>>
->>> [0]
->>> Link: https://lore.kernel.org/netdev/20231212044614.42733-2-liangchen.linux@gmail.com/
->>> Signed-off-by: Ilias Apalodimas <ilias.apalodimas@linaro.org>
->>> ---
->>>  include/net/page_pool.h | 2 +-
->>>  net/core/page_pool.c    | 8 ++++----
->>>  2 files changed, 5 insertions(+), 5 deletions(-)
->>>
->>> diff --git a/include/net/page_pool.h b/include/net/page_pool.h
->>> index 813c93499f20..957cd84bb3f4 100644
->>> --- a/include/net/page_pool.h
->>> +++ b/include/net/page_pool.h
->>> @@ -158,7 +158,7 @@ struct page_pool {
->>>       u32 pages_state_hold_cnt;
->>>       unsigned int frag_offset;
->>>       struct page *frag_page;
->>> -     long frag_users;
->>> +     long frag_cnt;
->>
->> I would rename it to something like refcnt_bais to mirror the pagecnt_bias
->> in struct page_frag_cache.
+> Signed-off-by: Piro Yang <piroyangg@gmail.com>
+> ---
+>  v2: split two different changes,
+>      only fix the issue of wrong error code
+> ---
+>  drivers/staging/vme_user/vme.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> Sure
-> 
->>
->>>
->>>  #ifdef CONFIG_PAGE_POOL_STATS
->>>       /* these stats are incremented while in softirq context */
->>> diff --git a/net/core/page_pool.c b/net/core/page_pool.c
->>> index 9b203d8660e4..19a56a52ac8f 100644
->>> --- a/net/core/page_pool.c
->>> +++ b/net/core/page_pool.c
->>> @@ -659,7 +659,7 @@ EXPORT_SYMBOL(page_pool_put_page_bulk);
->>>  static struct page *page_pool_drain_frag(struct page_pool *pool,
->>>                                        struct page *page)
->>>  {
->>> -     long drain_count = BIAS_MAX - pool->frag_users;
->>> +     long drain_count = BIAS_MAX - pool->frag_cnt;
->>
->> drain_count = pool->refcnt_bais;
-> 
-> I think this is a typo right? This still remains
 
-It would be better to invert logic too, as it is mirroring:
+Hi,
 
-https://elixir.bootlin.com/linux/v6.7-rc5/source/mm/page_alloc.c#L4745
+This is the friendly patch-bot of Greg Kroah-Hartman.  You have sent him
+a patch that has triggered this response.  He used to manually respond
+to these common problems, but in order to save his sanity (he kept
+writing the same thing over and over, yet to different people), I was
+created.  Hopefully you will not take offence and will fix the problem
+in your patch and resubmit it so that it can be accepted into the Linux
+kernel tree.
+
+You are receiving this message because of the following common error(s)
+as indicated below:
+- You did not specify a description of why the patch is needed, or
+  possibly, any description at all, in the email body.  Please read the
+  section entitled "The canonical patch format" in the kernel file,
+  Documentation/process/submitting-patches.rst for what is needed in
+  order to properly describe the change.
+
+- You did not write a descriptive Subject: for the patch, allowing Greg,
+  and everyone else, to know what this patch is all about.  Please read
+  the section entitled "The canonical patch format" in the kernel file,
+  Documentation/process/submitting-patches.rst for what a proper
+  Subject: line should look like.
+
+If you wish to discuss this problem further, or you have questions about
+how to resolve this issue, please feel free to respond to this email and
+Greg will reply once he has dug out from the pending patches received
+from other developers.
+
+thanks,
+
+greg k-h's patch email bot
 
