@@ -1,60 +1,62 @@
-Return-Path: <linux-kernel+bounces-1902-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-1903-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1A999815585
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 01:32:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5A15581558A
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 01:33:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C49091F25A5B
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 00:32:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0F59C1F25A72
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 00:33:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F23B749B;
-	Sat, 16 Dec 2023 00:23:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 753933527A;
+	Sat, 16 Dec 2023 00:23:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Dor0919s"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="I2bgX0By"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
+Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com [209.85.221.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 366815675;
-	Sat, 16 Dec 2023 00:23:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5460B6127;
+	Sat, 16 Dec 2023 00:23:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-40c2718a768so11796825e9.0;
-        Fri, 15 Dec 2023 16:23:07 -0800 (PST)
+Received: by mail-wr1-f42.google.com with SMTP id ffacd0b85a97d-3332efd75c9so938141f8f.2;
+        Fri, 15 Dec 2023 16:23:09 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702686186; x=1703290986; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:to
-         :from:from:to:cc:subject:date:message-id:reply-to;
-        bh=I2cQQHTukUtPE/uR7ah1Fmgn0krkwrRifPUQAFLRAB0=;
-        b=Dor0919sjHLJZ4NqGrIyvh5qAm604y+rPPova9ukVvqF8ot6P3u4/aSWfdxNt6MMrW
-         Qk3hO0Xzzezv/lVwrW7wCVZb7/4SGQ67Yaq9SjpvoQKNmtMKmTbmttSStdxC1ximohl3
-         S5B3hX+K5ghei03lPaS3V4D6xKxrF87pZqa3j2MmP96pWRENWoZKdL4r4cn+w2Bdqz4t
-         g6c8+Yu0jL2UFCqQ9p4yw57kR8RzSEyVkVFtbfrIEFQNv0ZccibiSYugkD7c0/LOh+R2
-         Gk9OU8mNsB5vr4x+V4YC7Qb68h+8C5hP3dHbePY4WQljEdbwNu6z3/u5MO31sU1rjqeE
-         IBdA==
+        d=gmail.com; s=20230601; t=1702686187; x=1703290987; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=0uIS1xvpcGYFfMf9N01u33T+TCWbWjii1imIi3mSLAk=;
+        b=I2bgX0ByCIK5LsvxD3qeHX/7h6c2eZu1vtBZYJXnhb1PzwTi2X+6nRhsrKjfzIXVS9
+         vPrl6ATH4W/g5TX+Ksz0n12vU3LwfwFNNgKlYgAPEVuGC6o1J5zp5x1FtEDpe5XGyJde
+         g88WJG7EVhGAKxCjB/qByWhbksDLld51AhNmwse1Tcj1UyGN2h4W2NB6cw/dIu+HuktY
+         +mvamT+nwMng0fSZrPQ79FP84SwvbuKFl3mhaxLufzfbV3uzpbW5fBQFzBcsZnsANoDG
+         tv+xFlJrl/lDbHtxMmt0W7/UY0cXBxQo7wwwrgiDLT6AgDKDmxInYNm2JrXcF06oIyL7
+         pZtg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702686186; x=1703290986;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=I2cQQHTukUtPE/uR7ah1Fmgn0krkwrRifPUQAFLRAB0=;
-        b=u0+7sde2nXevrTax6Y2YiDca6Vz8UZVb8DKEVN3+4gERtLMm8SFyo2ZpYiKk+lUNCu
-         EL+mA0kDaMSoYtQz2JtQ8bHcWnMmr2ImywXDFuTgJy3p6L3Oz+FtNISusdCBAJw2W/bM
-         XDbdvK0pzBQ4qwtBLFWrqIC7qw6e51bJ0D/GGTc3OI5w0DTEV8BpKrNnfTWcFpu+9uYX
-         E0ikI0j0GKCYC8lBFXAUh/2nWWR9JpMpSdV9CAcUK053bE8iCl6z2Xu+FsOcTIa/YexB
-         4cOSyZOA543X5cVTgxfDxU2BNaoT0TNSvXIjcjxtL21Q93X7JC8GPCjlUEBMQcFvXwC7
-         jCpA==
-X-Gm-Message-State: AOJu0YwY1UCs1ipdTjMuk3yyK63AVggP72/61NLE/p7U8x5hMC8aZJsg
-	Q3QN5jE/zwso21Gx4UB99qc=
-X-Google-Smtp-Source: AGHT+IF+9FqV+Lr9UMveMWtugElQgByzvoxFfDjtG/GBrvhJpi0XjLDpI57BBQHWqDolF7Z7Gqy9NA==
-X-Received: by 2002:a7b:c7ca:0:b0:40b:5e1b:54ac with SMTP id z10-20020a7bc7ca000000b0040b5e1b54acmr7682448wmk.56.1702686186209;
-        Fri, 15 Dec 2023 16:23:06 -0800 (PST)
+        d=1e100.net; s=20230601; t=1702686187; x=1703290987;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=0uIS1xvpcGYFfMf9N01u33T+TCWbWjii1imIi3mSLAk=;
+        b=gadwxLqdWXcs7/0vDvvz4jMId3ZhEn7mg9IlZl6k+aIG9iSUNiqQ9d7DzYygsHDX2L
+         ORZDTEH03p4Md6bVBkHx0itxRdj7axtvtitwpaeidQfVWp+ZpI/doq1SdY3pyDB5EnAE
+         eAwzk5yrfOY45jFny0vZ2vT5OVYT59S/BjRgoe9bN/xvNExjrJQSqG9Fp9C+5N30MI80
+         ANZKsuFuORPVMEwAJugVvZHlCTKKsRBHrcBV+hhSgZqhmvfwNbrO/NMnBUZ8oiqMXvLS
+         m19hB9IkzfSK69Ia5DabWu4vwPPu8tnzXAETKKstFpNPzGJG6woHG/hjqs6CkJhMtxnb
+         n2Kw==
+X-Gm-Message-State: AOJu0Ywf3jF5wmX3M+hK/RTL0V76i21zaGZzZ2CJ40HOljmrB7/Y/iZ/
+	VtDvlXgJWcs5Qp2oU8l3GvA=
+X-Google-Smtp-Source: AGHT+IGMq3ofsVqjDxA9LwdQcYL65+HjS9wukreCSpXDsSYXBAJhSPgRVkTNNZZ8NkyDthWA5jPOiA==
+X-Received: by 2002:a05:6000:b4a:b0:333:4052:bfeb with SMTP id dk10-20020a0560000b4a00b003334052bfebmr2988930wrb.208.1702686187282;
+        Fri, 15 Dec 2023 16:23:07 -0800 (PST)
 Received: from localhost.localdomain (93-34-89-13.ip49.fastwebnet.it. [93.34.89.13])
-        by smtp.googlemail.com with ESMTPSA id a15-20020a5d508f000000b0033330846e76sm1496191wrt.86.2023.12.15.16.23.05
+        by smtp.googlemail.com with ESMTPSA id a15-20020a5d508f000000b0033330846e76sm1496191wrt.86.2023.12.15.16.23.06
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Dec 2023 16:23:05 -0800 (PST)
+        Fri, 15 Dec 2023 16:23:06 -0800 (PST)
 From: Christian Marangi <ansuelsmth@gmail.com>
 To: Andrew Lunn <andrew@lunn.ch>,
 	Heiner Kallweit <hkallweit1@gmail.com>,
@@ -72,10 +74,12 @@ To: Andrew Lunn <andrew@lunn.ch>,
 	devicetree@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	Tobias Waldekranz <tobias@waldekranz.com>
-Subject: [net-next PATCH v4 0/4] net: phy: generic polarity + LED support for qca808x
-Date: Fri, 15 Dec 2023 22:22:40 +0100
-Message-Id: <20231215212244.1658-1-ansuelsmth@gmail.com>
+Subject: [net-next PATCH v4 1/4] dt-bindings: net: phy: Document new LEDs polarity property
+Date: Fri, 15 Dec 2023 22:22:41 +0100
+Message-Id: <20231215212244.1658-2-ansuelsmth@gmail.com>
 X-Mailer: git-send-email 2.40.1
+In-Reply-To: <20231215212244.1658-1-ansuelsmth@gmail.com>
+References: <20231215212244.1658-1-ansuelsmth@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -84,38 +88,54 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-This small series add LEDs support for qca808x.
+Document new LEDs polarity property to define what mode the LED needs to
+be put to turn it on.
 
-Qca808x apply on PHY reset a strange polarity settings and require
-some tweak to apply a more common configuration found on devices.
-On adding support for it, it was pointed out that a similar
-feature is also being implemented for a marvell PHY where
-LED polarity is set per LED (and not global) and also have
-a special mode where the LED is tristated.
+Currently supported modes are:
 
-The first 2 patch are to generalize this as we expect more PHY
-in the future to have a similar configuration.
+- active-low
+- active-high
+- active-low-tristate
+- active-high-tristate
 
-The implementation is extensible to support additional special
-mode in the future with minimal changes and don't create regression
-on already implemented PHY drivers.
+Mode is optional and if it's not defined, a default value is chosed by
+the driver.
 
-(changelog present in single patch)
+Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
+---
+Changes v4:
+- Drop support for global active-low
+- Rework to polarity option (for marvell10g series support)
+Changes v3:
+- Out of RFC
+Changes v2:
+- Add this patch
 
-Christian Marangi (4):
-  dt-bindings: net: phy: Document new LEDs polarity property
-  net: phy: add support for PHY LEDs polarity modes
-  dt-bindings: net: Document QCA808x PHYs
-  net: phy: at803x: add LED support for qca808x
+ .../devicetree/bindings/net/ethernet-phy.yaml         | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
- .../devicetree/bindings/net/ethernet-phy.yaml |  11 +
- .../devicetree/bindings/net/qca,qca808x.yaml  |  54 +++
- drivers/net/phy/at803x.c                      | 308 ++++++++++++++++++
- drivers/net/phy/phy_device.c                  |  45 +++
- include/linux/phy.h                           |  25 ++
- 5 files changed, 443 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/net/qca,qca808x.yaml
-
+diff --git a/Documentation/devicetree/bindings/net/ethernet-phy.yaml b/Documentation/devicetree/bindings/net/ethernet-phy.yaml
+index 8fb2a6ee7e5b..282bf18f50fd 100644
+--- a/Documentation/devicetree/bindings/net/ethernet-phy.yaml
++++ b/Documentation/devicetree/bindings/net/ethernet-phy.yaml
+@@ -225,6 +225,17 @@ properties:
+               driver dependent and required for ports that define multiple
+               LED for the same port.
+ 
++          polarity:
++            description: |
++              Electrical polarity and drive type for the LED to turn it
++              on.
++            $ref: /schemas/types.yaml#/definitions/string
++            enum:
++              - active-low
++              - active-high
++              - active-low-tristate
++              - active-high-tristate
++
+         required:
+           - reg
+ 
 -- 
 2.40.1
 
