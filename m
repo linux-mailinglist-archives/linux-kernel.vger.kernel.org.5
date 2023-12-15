@@ -1,116 +1,119 @@
-Return-Path: <linux-kernel+bounces-830-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-831-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B461A8146CB
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 12:24:45 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 593C48146CD
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 12:25:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 70501283930
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 11:24:44 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0EFF11F2321F
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 11:25:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5CEA525546;
-	Fri, 15 Dec 2023 11:24:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="AcJG9psP"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A752250E6;
+	Fri, 15 Dec 2023 11:24:58 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-pl1-f169.google.com (mail-pl1-f169.google.com [209.85.214.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 74AE024A15
-	for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 11:24:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-pl1-f169.google.com with SMTP id d9443c01a7336-1d3470496e2so4385155ad.1
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 03:24:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1702639461; x=1703244261; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=8GgkumGp/FPRWi8vrZgqlN3O931tkPc+89ybT2NhK6s=;
-        b=AcJG9psP4sMMUOU8cLZedY3WASC0EQr0JWA39nwMNY3LscqUwG55hwPPTf8vgSyyG8
-         wWCH1rKieUrjp15SpwxY9LfB5pkOaA0wWMaLS3ibW7jficCQPJ6eLjBYQn98Zq0rRxET
-         p0T/ZIqSjrOg9exOL6pPgjSOcFy36ZjWNdBP9ys6OXlmv2CQ2MraVSV2T1k79iEZqBGg
-         xwjcMaHSPO+eY53N2ge+bdon2jBE8JQLb27/fh1ypx4UfzwQWRnW6nYCIz+6Roz5U10h
-         C1arWNojkWYYOKGXQOKDDqjWNEhFF6fd0Qxv3Ejwcys+Qbmg5H7Y0lilu9qTZfhUSvTv
-         6pCw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702639461; x=1703244261;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=8GgkumGp/FPRWi8vrZgqlN3O931tkPc+89ybT2NhK6s=;
-        b=I/r0FBvoVfkT/Y0yhX01J6lASBowFEBsskBXUAW74LOBLkyqUlbFhObNcIn0C8SOV3
-         3qglhd4/2I6x5F3etPiAF7SyNOlQbrO8uu8+DjHKBbaKwzghrAdrP1FJc+KsNB+NbImj
-         PDXwbTvNZOa+rK8zjaPxs0ctuPH42PVmWoCkQSLp6nvEYyZOI2n0dAdOqEMnFwmdSkPw
-         +R5R6L9ii9kYyedxGeDEYjiHO3TcOJODF43A5cT1jgeJ5hy5KqJqK8POgil0YpnO/8Pn
-         K/2v6KfK15Nt1XGFeR1YTGszX5y2KYg1Hk185VwoU20g7btGbhSiZkRndcixA3ODkj3a
-         Z0Lw==
-X-Gm-Message-State: AOJu0YxXwLkNRrzGEjizPiAfJXr3LtlCMT0CnXOK6I37SWSw+D92zvW7
-	C5d4rOILxB3DIP3IZaRNHUYYog==
-X-Google-Smtp-Source: AGHT+IFEG9bLz2JAciUhtK/pd6aXcCMzmYZ3wFbUvxt15TRzn9C+JcBv3Iuzl2Sww2LzvlF/sW1gxg==
-X-Received: by 2002:a17:903:32ce:b0:1d3:6110:32fa with SMTP id i14-20020a17090332ce00b001d3611032famr4422003plr.67.1702639460881;
-        Fri, 15 Dec 2023 03:24:20 -0800 (PST)
-Received: from localhost ([122.172.82.6])
-        by smtp.gmail.com with ESMTPSA id w23-20020a170902a71700b001d0c418174fsm8243159plq.117.2023.12.15.03.24.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Dec 2023 03:24:20 -0800 (PST)
-Date: Fri, 15 Dec 2023 16:54:18 +0530
-From: Viresh Kumar <viresh.kumar@linaro.org>
-To: Tiago Lam <tiagolam@gmail.com>
-Cc: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
-	Miguel Ojeda <ojeda@kernel.org>,
-	Alex Gaynor <alex.gaynor@gmail.com>,
-	Wedson Almeida Filho <wedsonaf@gmail.com>,
-	Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
-	=?utf-8?B?QmrDtnJu?= Roy Baron <bjorn3_gh@protonmail.com>,
-	Benno Lossin <benno.lossin@proton.me>,
-	Andreas Hindborg <a.hindborg@samsung.com>,
-	Alice Ryhl <aliceryhl@google.com>, Jonathan Corbet <corbet@lwn.net>,
-	Vincent Guittot <vincent.guittot@linaro.org>,
-	rust-for-linux@vger.kernel.org, linux-doc@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH V2] docs: rust: Clarify that 'rustup override' applies to
- build directory
-Message-ID: <20231215112418.usky65sibhbiubyx@vireshk-i7>
-References: <e2b943eca92abebbf035447b3569f09a7176c770.1702366951.git.viresh.kumar@linaro.org>
- <1c03eb18-a6ac-45c8-8fea-46097bb4e132@gmail.com>
- <CANiq72=mvca8PXoxwzSao+QFbAHDCecSKCDtV+ffd+YgZNFaww@mail.gmail.com>
- <20231215064823.ltm55fk4zclsuuwq@vireshk-i7>
- <a2aca039-7360-476e-a1b1-e950698cd26b@gmail.com>
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B47C24B39
+	for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 11:24:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E4849C15;
+	Fri, 15 Dec 2023 03:25:40 -0800 (PST)
+Received: from lakrids.cambridge.arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id A98DD3F738;
+	Fri, 15 Dec 2023 03:24:54 -0800 (PST)
+From: Mark Rutland <mark.rutland@arm.com>
+To: linux-kernel@vger.kernel.org,
+	Ingo Molnar <mingo@redhat.com>,
+	Borislav Petkov <bp@alien8.de>,
+	Peter Zijlstra <peterz@infradead.org>
+Cc: lucas.demarchi@intel.com,
+	mark.rutland@arm.com,
+	pengfei.xu@intel.com
+Subject: [PATCH] perf: Fix perf_event_validate_size() lockdep splat
+Date: Fri, 15 Dec 2023 11:24:50 +0000
+Message-Id: <20231215112450.3972309-1-mark.rutland@arm.com>
+X-Mailer: git-send-email 2.30.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <a2aca039-7360-476e-a1b1-e950698cd26b@gmail.com>
+Content-Transfer-Encoding: 8bit
 
-On 15-12-23, 11:14, Tiago Lam wrote:
-> 	If ``rustup`` is being used, enter the checked out source code directory,
-> or your build directory (if you're using the `O=` option to build the
-> kernel), and run::
+When lockdep is enabled, the for_each_sibling_event(sibling, event)
+macro checks that event->ctx->mutex is held. When creating a new group
+leader event, we call perf_event_validate_size() on a partially
+initialized event where event->ctx is NULL, and so when
+for_each_sibling_event() attempts to check event->ctx->mutex, we get a
+splat, as reported by Lucas De Marchi:
 
-I thought people aren't required to enter the build directory now (but
-just source code directory) and simply do:
+  WARNING: CPU: 8 PID: 1471 at kernel/events/core.c:1950 __do_sys_perf_event_open+0xf37/0x1080
 
-         	make LLVM=1 O=<builddir> rustupoverride
+This only happens for a new event which is its own group_leader, and in
+this case there cannot be any sibling events. Thus it's safe to skip the
+check for siblings, which avoids having to make invasive and ugly
+changes to for_each_sibling_event().
 
-> 
->         	make LLVM=1 rustupoverride
+Avoid the splat by bailing out early when the new event is its own
+group_leader.
 
-Will this still work if we are in the build directory ?
+Fixes: 382c27f4ed28f803 ("perf: Fix perf_event_validate_size()")
+Reported-by: Lucas De Marchi <lucas.demarchi@intel.com>
+Closes: https://lore.kernel.org/lkml/20231214000620.3081018-1-lucas.demarchi@intel.com/
+Reported-by: Pengfei Xu <pengfei.xu@intel.com>
+Closes: https://lore.kernel.org/lkml/ZXpm6gQ%2Fd59jGsuW@xpf.sh.intel.com/
+Signed-off-by: Mark Rutland <mark.rutland@arm.com>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Borislav Petkov <bp@alien8.de>
+Cc: Peter Zijlstra <peterz@infradead.org>
+---
+ kernel/events/core.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-> 	This will configure your current directory to use the correct version of
-> ``rustc`` without affecting your default toolchain.
-> 
-> 	If you are not using ``rustup``, fetch a standalone installer from:
->      	
-> https://forge.rust-lang.org/infra/other-installation-methods.html#standalone
+Hi Ingo, Boris, Peter,
 
+I'm not sure who's still around and who has disappeared for the
+holidays, but I'm hoping at least one of you is able to queue this. I've
+tested the patch on arm64 with Syzkaller (and syz-repro); before this
+patch it hits the splat near-instantly, and after this patch all seems
+well.
+
+The broken commit was merged in v6.7-rc5 via:
+
+  https://lore.kernel.org/lkml/20231210105949.GAZXWaJe6DeHU9+ofl@fat_crate.local/
+
+... in merge commit:
+
+  537ccb5d28d6f398 ("Merge tag 'perf_urgent_for_v6.7_rc5' of git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip")
+
+Mark.
+
+diff --git a/kernel/events/core.c b/kernel/events/core.c
+index c9d123e13b579..9efd0d7775e7c 100644
+--- a/kernel/events/core.c
++++ b/kernel/events/core.c
+@@ -1947,6 +1947,16 @@ static bool perf_event_validate_size(struct perf_event *event)
+ 				   group_leader->nr_siblings + 1) > 16*1024)
+ 		return false;
+ 
++	/*
++	 * When creating a new group leader, group_leader->ctx is initialized
++	 * after the size has been validated, but we cannot safely use
++	 * for_each_sibling_event() until group_leader->ctx is set. A new group
++	 * leader cannot have any siblings yet, so we can safely skip checking
++	 * the non-existent siblings.
++	 */
++	if (event == group_leader)
++		return true;
++
+ 	for_each_sibling_event(sibling, group_leader) {
+ 		if (__perf_event_read_size(sibling->attr.read_format,
+ 					   group_leader->nr_siblings + 1) > 16*1024)
 -- 
-viresh
+2.30.2
+
 
