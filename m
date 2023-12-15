@@ -1,208 +1,181 @@
-Return-Path: <linux-kernel+bounces-408-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-409-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9A9098140A9
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 04:32:42 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5888C8140AB
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 04:33:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EDB37B22146
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 03:32:39 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AB197283EB8
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 03:33:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1434F53A9;
-	Fri, 15 Dec 2023 03:32:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 20A3C568C;
+	Fri, 15 Dec 2023 03:33:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="fZXTJvsi"
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="nKLyUDij"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2068.outbound.protection.outlook.com [40.107.93.68])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 694EF5382
-	for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 03:32:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1702611150; x=1734147150;
-  h=date:from:to:cc:subject:message-id;
-  bh=STU6jhfdqRIUUhxzPNw4/srXryc7mGsK4nsDErSR8lY=;
-  b=fZXTJvsislyKXBiMoz4uAE4zB92aQuv41ih5ntyrT0XFflTu7UjmAALl
-   jS0wzU0dZxWbKT5SSoGX/e7HmqdHJopI8aufOTFvctSex0ajeoPvPWZFj
-   oTPOB1rsCVPeeCAq1uxft8rAhJBKfKxUkVgPmT7o5MAfwoWl4X922g//4
-   7HT5PnarQ4XdxwUrrwaT1Hq1BuHD2KJPzui7+EhzZZiSDky8kuv8M54oq
-   pn2bV6M+citJ8zD4O7BaYf0zjPwsbXU0+Pk2wOK4GsPP7Gz9Kx68693wy
-   uHBssvZX/3b4EJ6mOn0vsfKYtKp+zzvtce+rCLvbNJ70Nem/EJKjrejFg
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10924"; a="8583133"
-X-IronPort-AV: E=Sophos;i="6.04,277,1695711600"; 
-   d="scan'208";a="8583133"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Dec 2023 19:32:30 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10924"; a="947813868"
-X-IronPort-AV: E=Sophos;i="6.04,277,1695711600"; 
-   d="scan'208";a="947813868"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by orsmga005.jf.intel.com with ESMTP; 14 Dec 2023 19:32:28 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rDyw6-000N3d-1Y;
-	Fri, 15 Dec 2023 03:32:26 +0000
-Date: Fri, 15 Dec 2023 11:32:05 +0800
-From: kernel test robot <lkp@intel.com>
-To: "x86-ml" <x86@kernel.org>
-Cc: linux-kernel@vger.kernel.org
-Subject: [tip:x86/paravirt] BUILD SUCCESS
- f7af6977621a41661696d94c0c0a20c761404476
-Message-ID: <202312151102.iE1RpXQv-lkp@intel.com>
-User-Agent: s-nail v14.9.24
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 96894CA64;
+	Fri, 15 Dec 2023 03:33:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Qee+1FP2EB7mtT9cV2yyH1Zqb3jCmoxpfj7UKyJxWj9pyBb7KPZS7ZrP3u6F4wwJ5uKO1Aqj2Wr2ZHJDtLo59b/xVupBLWo34JiSVQ5inhyIwG/pEZStjQKd5kVhQCE177U+JHhv+0Rtzbir+YqHfcms/B8FmJc69h+pW/NEId5aeKfae6CK/cwsBZXVnggJI2MzHbjVFakmkQVH6ESzgnEn9jTj5chDVelHEsbMGYEjt6Pd13IkzhManC7eEYit6Z+Qozvn2CtDYd21/Hlgg/WmMItywzTDOh0JiUlrOvTPBIOF6i/b/jtIT3hbWRMQ8lWi3PzlnC6W+quCXfcwYA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=CyjGi4ObX3NHk3lO21RwvEoSmrWt5eea14/t2U46MXs=;
+ b=hSeZWihqH39xnUKk/6D7AVpHqIQ8X/yls/Jub+PlbwI0ARYTdlxu/AaoZ8utc1EQisijosdpW1G2lMnOp6l54unYEcdJGPxTAqTV6eWW0DXwv2rAdJfyg2g7s+Bk9M45otNDUKbowMcB7DOIu3hHUjF6rcDPgKgd3cWwMCCSzm9864xeZL1FREDhAfiSOJCWL1eE8OLsIO69f8cft2RzLGxKWfop2K2zobAgWRvCdNiFPTmr50ZnxE8B7jTBEBt+qcemsaXflgdeWe4e6P1bvZp1cFZM3gM99BpJQg9vBG0aBWWxkNkrCSQB3+5dyJgp+83pmBTCCzdEPiIltYEldw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.117.160) smtp.rcpttodomain=intel.com smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=CyjGi4ObX3NHk3lO21RwvEoSmrWt5eea14/t2U46MXs=;
+ b=nKLyUDijfKFotkXeEm1HViwoayXMAEeSTKiUCCmn88kLbFncXPtFXnpS30A4i49yW7jJjarvcpH4JNknyDicwZPcFcn8G0BkiSyH8eVYPsnDeC7/MHbYP12WUTa+J4ejyVVJs5up0gsCYqMZrPKAG5aPKQPrbkWzWf9XWYdAVDtiRz6ULYFQKmUR1m20sGPCppdEhLyeKWJ3cZO83a2adgTFvhpATHwDjLkfTihs46u0nIPLzSlI6KXAf31u/zwVrkJxPdW0kIp3DFLce9/TyDl2005ntMOKk3vDNJgY1Nf8M8BFlpcAMxrDrG2BOuZQxz60rdGyXB0a9xGiW96Bww==
+Received: from MN2PR05CA0020.namprd05.prod.outlook.com (2603:10b6:208:c0::33)
+ by MN0PR12MB5836.namprd12.prod.outlook.com (2603:10b6:208:37b::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7091.28; Fri, 15 Dec
+ 2023 03:33:04 +0000
+Received: from MN1PEPF0000F0E1.namprd04.prod.outlook.com
+ (2603:10b6:208:c0:cafe::5d) by MN2PR05CA0020.outlook.office365.com
+ (2603:10b6:208:c0::33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7113.12 via Frontend
+ Transport; Fri, 15 Dec 2023 03:33:04 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.160)
+ smtp.mailfrom=nvidia.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.117.160 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.117.160; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.117.160) by
+ MN1PEPF0000F0E1.mail.protection.outlook.com (10.167.242.39) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.7091.26 via Frontend Transport; Fri, 15 Dec 2023 03:33:03 +0000
+Received: from rnnvmail203.nvidia.com (10.129.68.9) by mail.nvidia.com
+ (10.129.200.66) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Thu, 14 Dec
+ 2023 19:32:45 -0800
+Received: from rnnvmail201.nvidia.com (10.129.68.8) by rnnvmail203.nvidia.com
+ (10.129.68.9) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Thu, 14 Dec
+ 2023 19:32:44 -0800
+Received: from Asurada-Nvidia (10.127.8.9) by mail.nvidia.com (10.129.68.8)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41 via Frontend
+ Transport; Thu, 14 Dec 2023 19:32:42 -0800
+Date: Thu, 14 Dec 2023 19:32:40 -0800
+From: Nicolin Chen <nicolinc@nvidia.com>
+To: "Tian, Kevin" <kevin.tian@intel.com>
+CC: "Liu, Yi L" <yi.l.liu@intel.com>, "joro@8bytes.org" <joro@8bytes.org>,
+	"alex.williamson@redhat.com" <alex.williamson@redhat.com>, "jgg@nvidia.com"
+	<jgg@nvidia.com>, "robin.murphy@arm.com" <robin.murphy@arm.com>,
+	"baolu.lu@linux.intel.com" <baolu.lu@linux.intel.com>, "cohuck@redhat.com"
+	<cohuck@redhat.com>, "eric.auger@redhat.com" <eric.auger@redhat.com>,
+	"kvm@vger.kernel.org" <kvm@vger.kernel.org>, "mjrosato@linux.ibm.com"
+	<mjrosato@linux.ibm.com>, "chao.p.peng@linux.intel.com"
+	<chao.p.peng@linux.intel.com>, "yi.y.sun@linux.intel.com"
+	<yi.y.sun@linux.intel.com>, "peterx@redhat.com" <peterx@redhat.com>,
+	"jasowang@redhat.com" <jasowang@redhat.com>,
+	"shameerali.kolothum.thodi@huawei.com"
+	<shameerali.kolothum.thodi@huawei.com>, "lulu@redhat.com" <lulu@redhat.com>,
+	"suravee.suthikulpanit@amd.com" <suravee.suthikulpanit@amd.com>,
+	"iommu@lists.linux.dev" <iommu@lists.linux.dev>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>, "Duan,
+ Zhenzhong" <zhenzhong.duan@intel.com>, "joao.m.martins@oracle.com"
+	<joao.m.martins@oracle.com>, "Zeng, Xin" <xin.zeng@intel.com>, "Zhao, Yan Y"
+	<yan.y.zhao@intel.com>
+Subject: Re: [PATCH v7 1/3] iommufd: Add data structure for Intel VT-d
+ stage-1 cache invalidation
+Message-ID: <ZXvI2IiXwwuHRE8V@Asurada-Nvidia>
+References: <20231117131816.24359-1-yi.l.liu@intel.com>
+ <20231117131816.24359-2-yi.l.liu@intel.com>
+ <c967e716-9112-4d1a-b6f7-9a005e28202d@intel.com>
+ <BN9PR11MB5276D14D2A7FF60B41A6A7B48C93A@BN9PR11MB5276.namprd11.prod.outlook.com>
+ <ZXu5whlIGfiq16wF@Asurada-Nvidia>
+ <BN9PR11MB52766D7F774510E0181CC89B8C93A@BN9PR11MB5276.namprd11.prod.outlook.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <BN9PR11MB52766D7F774510E0181CC89B8C93A@BN9PR11MB5276.namprd11.prod.outlook.com>
+X-NV-OnPremToCloud: ExternallySecured
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: MN1PEPF0000F0E1:EE_|MN0PR12MB5836:EE_
+X-MS-Office365-Filtering-Correlation-Id: 925208fa-dd8e-40c7-8976-08dbfd1e8bd9
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	5bQiBqpVEMDfqgBQA3oQe4+QEOKDex625gksc/7UPBpdtfEUgNPMwU/iQUOaVcpL2RehMfghgSJD+jVynt53JTEuWc1wZKNHxfTHYUODAtnycZnmuO10v959l8AEdCkAfoCB/NYvf0JJONByYFKSjjxl3VgVsvmnffyPppRt4iD2raJFGiifC2jpK/WcDrboxAEsJxakSLTXPLPBYB5cU0Hr3p2q4AlQiqeUPqS+Gqz82c5lIoW3vV6WfE0tUJMAnqzrisNNJU09SvLD/FsHC3gl3+CF1buGUc4QBlk+gZ+KScaw3jkjhSS2SB7jep2XIpBaRxFdxMeQa4B+QWDCd35n1a0IfQuj/+2KlV6tqtQnAW0S34sU+nNr3evTzP7+PTIpO7I4o0tZMNz4T1e/L/9FktKCgBsYeJvH9SvxDfpXE3UEkcUn9e+m0euYnHM+GNH6DpopOVZ4jhN1x6eXQUgwLfaIhoMY0mfvijTe4nJagkaVhf00i7lUnwkLJoCeGzkCoqKWTih0o5jZSqhcS5MrpvB8imn4ithj8nB6kb4kMv5+CbCDygs5kyg1dwZ3vB6h2E+OmzJVMZFCQkVrMS3JnjdNsqY2fJLucOCzNxr0TgIJumSWRESk9Q/Yz3MULnyAVNS27pSY8CxxjHLnfMQLJ2nnBcvuCPuq7364MyoAM/GaWi7pvuQ+gihsHtgbAhFe9sQP+n8dG9oDpt1pb43tl4/+8ovLR4NbJGeX4pMygRNHZHXYSn3ZlFb8wz68
+X-Forefront-Antispam-Report:
+	CIP:216.228.117.160;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge1.nvidia.com;CAT:NONE;SFS:(13230031)(4636009)(396003)(346002)(376002)(136003)(39860400002)(230922051799003)(186009)(64100799003)(1800799012)(82310400011)(451199024)(46966006)(40470700004)(36840700001)(336012)(40460700003)(9686003)(356005)(40480700001)(83380400001)(36860700001)(7636003)(426003)(47076005)(82740400003)(55016003)(26005)(478600001)(41300700001)(70586007)(70206006)(8676002)(8936002)(54906003)(6916009)(316002)(4326008)(86362001)(33716001)(2906002)(7416002)(5660300002);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Dec 2023 03:33:03.8161
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 925208fa-dd8e-40c7-8976-08dbfd1e8bd9
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.160];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	MN1PEPF0000F0E1.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN0PR12MB5836
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/paravirt
-branch HEAD: f7af6977621a41661696d94c0c0a20c761404476  x86/paravirt: Remove no longer needed paravirt patching code
+On Fri, Dec 15, 2023 at 03:04:44AM +0000, Tian, Kevin wrote:
+> > From: Nicolin Chen <nicolinc@nvidia.com>
+> > Sent: Friday, December 15, 2023 10:28 AM
+> > On Fri, Dec 15, 2023 at 01:50:07AM +0000, Tian, Kevin wrote:
+> > > > From: Liu, Yi L <yi.l.liu@intel.com>
+> > > > Sent: Thursday, December 14, 2023 7:27 PM
+> > > >
+> > > > On 2023/11/17 21:18, Yi Liu wrote:> This adds the data structure for
+> > > > flushing iotlb for the nested domain
+> > > >
+> > > > +struct iommu_hwpt_vtd_s1_invalidate {
+> > > > +     __aligned_u64 addr;
+> > > > +     __aligned_u64 npages;
+> > > > +     __u32 flags;
+> > > > +     __u32 __reserved;
+> > > > +     __u32 error;
+> > > > +     __u32 dev_id;
+> > > > +};
+> > > >
+> > > > dev_id is used to report the failed device, userspace should be able to
+> > map
+> > > > it to a vRID, and inject it to VM as part of ITE/ICE error.
 
-elapsed time: 953m
+> > > and for this error reporting case what we actually require is the
+> > > reverse map i.e. pRID->vRID. Not sure whether we can leverage the
+> > > same RID mapping uAPI as for ARM/AMD but ignore viommu_id
+> > > and then store vRID under device_domain_info. a bit tricky on
+> > > life cycle management and also incompatible with SIOV...
+> >
+> > One thing that I am not very clear here: since both vRID and dev_id
+> > are given by the VMM, shouldn't it already know the mapping if the
+> > point is to translate (pRID->)dev_id->vRID?
+> >
+> 
+> it's true for current Qemu.
+> 
+> but there is plan to support Qemu accepting a fd passed by Libvirt.
+> In that case Qemu even doesn't see the sysfs path hence is not
+> aware of pRID. otherwise yes we could leave the translation to
+> VMM instead.
 
-configs tested: 126
-configs skipped: 136
-
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-tested configs:
-alpha                             allnoconfig   gcc  
-alpha                               defconfig   gcc  
-arc                               allnoconfig   gcc  
-arc                                 defconfig   gcc  
-arc                            hsdk_defconfig   gcc  
-arc                   randconfig-001-20231215   gcc  
-arc                   randconfig-002-20231215   gcc  
-arm                               allnoconfig   gcc  
-arm                       imx_v6_v7_defconfig   gcc  
-arm                          pxa3xx_defconfig   gcc  
-arm                           tegra_defconfig   gcc  
-arm64                            allmodconfig   clang
-arm64                             allnoconfig   gcc  
-arm64                               defconfig   gcc  
-csky                              allnoconfig   gcc  
-csky                                defconfig   gcc  
-csky                  randconfig-001-20231215   gcc  
-csky                  randconfig-002-20231215   gcc  
-hexagon                          allmodconfig   clang
-hexagon                          allyesconfig   clang
-i386                             allmodconfig   clang
-i386                              allnoconfig   clang
-i386                             allyesconfig   clang
-i386                                defconfig   gcc  
-i386                  randconfig-011-20231215   gcc  
-i386                  randconfig-012-20231215   gcc  
-i386                  randconfig-013-20231215   gcc  
-i386                  randconfig-014-20231215   gcc  
-i386                  randconfig-015-20231215   gcc  
-i386                  randconfig-016-20231215   gcc  
-loongarch                        allmodconfig   gcc  
-loongarch                         allnoconfig   gcc  
-loongarch                        allyesconfig   gcc  
-loongarch                           defconfig   gcc  
-loongarch             randconfig-001-20231215   gcc  
-loongarch             randconfig-002-20231215   gcc  
-m68k                             allmodconfig   gcc  
-m68k                              allnoconfig   gcc  
-m68k                             allyesconfig   gcc  
-m68k                                defconfig   gcc  
-m68k                        stmark2_defconfig   gcc  
-microblaze                       allmodconfig   gcc  
-microblaze                        allnoconfig   gcc  
-microblaze                       allyesconfig   gcc  
-microblaze                          defconfig   gcc  
-mips                             allmodconfig   gcc  
-mips                             allyesconfig   gcc  
-mips                         cobalt_defconfig   gcc  
-mips                       rbtx49xx_defconfig   gcc  
-nios2                            allmodconfig   gcc  
-nios2                             allnoconfig   gcc  
-nios2                            allyesconfig   gcc  
-nios2                               defconfig   gcc  
-nios2                 randconfig-001-20231215   gcc  
-nios2                 randconfig-002-20231215   gcc  
-openrisc                         allmodconfig   gcc  
-openrisc                          allnoconfig   gcc  
-openrisc                         allyesconfig   gcc  
-openrisc                            defconfig   gcc  
-parisc                           allmodconfig   gcc  
-parisc                            allnoconfig   gcc  
-parisc                           allyesconfig   gcc  
-parisc                              defconfig   gcc  
-parisc                randconfig-001-20231215   gcc  
-parisc                randconfig-002-20231215   gcc  
-parisc64                            defconfig   gcc  
-powerpc                           allnoconfig   gcc  
-powerpc                      cm5200_defconfig   gcc  
-powerpc                 linkstation_defconfig   gcc  
-powerpc                     stx_gp3_defconfig   gcc  
-powerpc                     tqm8548_defconfig   gcc  
-riscv                            allmodconfig   gcc  
-riscv                            allyesconfig   gcc  
-riscv                               defconfig   gcc  
-s390                              allnoconfig   gcc  
-s390                          debug_defconfig   gcc  
-s390                                defconfig   gcc  
-s390                  randconfig-001-20231215   gcc  
-s390                  randconfig-002-20231215   gcc  
-sh                                allnoconfig   gcc  
-sh                         ap325rxa_defconfig   gcc  
-sh                                  defconfig   gcc  
-sh                            migor_defconfig   gcc  
-sh                    randconfig-001-20231215   gcc  
-sh                    randconfig-002-20231215   gcc  
-sh                   rts7751r2dplus_defconfig   gcc  
-sh                           se7206_defconfig   gcc  
-sparc                            alldefconfig   gcc  
-sparc                            allyesconfig   gcc  
-sparc64                             defconfig   gcc  
-sparc64               randconfig-001-20231215   gcc  
-sparc64               randconfig-002-20231215   gcc  
-um                               allmodconfig   clang
-um                               allyesconfig   clang
-um                                  defconfig   gcc  
-um                             i386_defconfig   gcc  
-um                           x86_64_defconfig   gcc  
-x86_64                            allnoconfig   gcc  
-x86_64                           allyesconfig   clang
-x86_64       buildonly-randconfig-001-20231215   clang
-x86_64       buildonly-randconfig-002-20231215   clang
-x86_64       buildonly-randconfig-003-20231215   clang
-x86_64       buildonly-randconfig-004-20231215   clang
-x86_64       buildonly-randconfig-005-20231215   clang
-x86_64       buildonly-randconfig-006-20231215   clang
-x86_64                              defconfig   gcc  
-x86_64                                  kexec   gcc  
-x86_64                randconfig-011-20231215   clang
-x86_64                randconfig-012-20231215   clang
-x86_64                randconfig-013-20231215   clang
-x86_64                randconfig-014-20231215   clang
-x86_64                randconfig-015-20231215   clang
-x86_64                randconfig-016-20231215   clang
-x86_64                randconfig-071-20231215   clang
-x86_64                randconfig-072-20231215   clang
-x86_64                randconfig-073-20231215   clang
-x86_64                randconfig-074-20231215   clang
-x86_64                randconfig-075-20231215   clang
-x86_64                randconfig-076-20231215   clang
-x86_64                          rhel-8.3-rust   clang
-x86_64                               rhel-8.3   gcc  
-xtensa                            allnoconfig   gcc  
-xtensa                           allyesconfig   gcc  
-xtensa                  nommu_kc705_defconfig   gcc  
-xtensa                randconfig-001-20231215   gcc  
-xtensa                randconfig-002-20231215   gcc  
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+I think I misread Yi's narrative: dev_id is a working approach
+for VMM to convert to a vRID, while he is asking for a better
+alternative :)
 
