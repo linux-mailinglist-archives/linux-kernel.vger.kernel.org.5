@@ -1,120 +1,148 @@
-Return-Path: <linux-kernel+bounces-1105-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-1107-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1AB5F814A74
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 15:27:18 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id ABBF0814A89
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 15:31:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CBB5D284CEF
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 14:27:16 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 33537B22FB3
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 14:31:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E9CE6315BC;
-	Fri, 15 Dec 2023 14:27:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D2EF135F09;
+	Fri, 15 Dec 2023 14:31:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="mv/g2a0A"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Kq4UbYwL"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com [209.85.128.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-177.mta1.migadu.com (out-177.mta1.migadu.com [95.215.58.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B7BA43172A
-	for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 14:27:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-40c6736d10fso8925905e9.1
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 06:27:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1702650426; x=1703255226; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=1ULcrY3kIS+SQU2mVVxzzl29mcLOvRWX6tiA+fzMsL4=;
-        b=mv/g2a0AckdP9zFPrNNeicALESrEjRzQzXAWHjhhI5Se2nIjxB+WoIZ+BafNcIucJe
-         gp3oJBeZEswi85O0e+1CwslkYaVvjG5kz9wJzXSEpYQMau1FMKuKiwv8TkSh4kpam2HV
-         Lu4pXD2P5thBtqHx+9KJ+h/GGMQGJviIKy+hsRgX6FYDm3/km1SDvb5KW0yjMCmaekto
-         M9Oyc3KHhms7RZN140Ll0cvFWLWenZ2Jfnk4/m4IUY70Yx3YOV3P93gmVYpRqQvwfJPd
-         xB/+vkB1hJzhFaO6T/9T8r59+DQy21Hl/Xg3m3T7TO445qVG9R4FauweskREfduQfcyH
-         zVEA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702650426; x=1703255226;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=1ULcrY3kIS+SQU2mVVxzzl29mcLOvRWX6tiA+fzMsL4=;
-        b=bpjdi62OJRJaiX24gqx6qjZJIP5uwVmAIJQ0WCbajOj4Foq84/qjQoLhkOWcPYVvLh
-         kiuCKS+r9GvO9d5QzZlegXQ0gyKBG1+YozDT1BzyE5lcHgHDQPW8xDnlql+XQFtlrAQs
-         FSKfdLV0V/ChWe0HitCxHC+LllK+ibLhG1VcpJOmvu8Mkowukv9/Mj4t3kIDKyDlC4WQ
-         qa+hnqLyMKp7WIm6O7z7NI37MPa1s9oEKQ2uv6NfW1e3Dn6HrhNePALiUKVpzpc4eAsT
-         aCPLnQ7qunJw5Z6lwlEhryi7RsIdNU3PzQVuJVsfZjQIDsRUobKzSHO4xrINs58HfN7P
-         A8Bw==
-X-Gm-Message-State: AOJu0YzM+9/cy+0uVNdpqpUeBItT6E3mdSpiA5ymSE4ggGUvLhZANvOD
-	poMj6nDBc9/4dLoDnCqcOpWS1r869QJWmXSkNWsxpAty
-X-Google-Smtp-Source: AGHT+IG9wf3SYeMcofeEHL7KS2b9aU+fXLb7V7ILTLAzv7W8hMu9mJz+xFNugNdx/mptsH4eZrmAVg==
-X-Received: by 2002:a7b:ce8a:0:b0:40c:61f1:7fcd with SMTP id q10-20020a7bce8a000000b0040c61f17fcdmr1715937wmj.155.1702650426028;
-        Fri, 15 Dec 2023 06:27:06 -0800 (PST)
-Received: from arrakeen.starnux.net ([2a01:e0a:982:cbb0:8261:5fff:fe11:bdda])
-        by smtp.gmail.com with ESMTPSA id bd21-20020a05600c1f1500b0040c25abd724sm32158835wmb.9.2023.12.15.06.27.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Dec 2023 06:27:05 -0800 (PST)
-From: Neil Armstrong <neil.armstrong@linaro.org>
-To: Rob Herring <robh+dt@kernel.org>, 
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
- Conor Dooley <conor+dt@kernel.org>, Kevin Hilman <khilman@baylibre.com>, 
- Jerome Brunet <jbrunet@baylibre.com>, 
- Martin Blumenstingl <martin.blumenstingl@googlemail.com>, 
- Xianwei Zhao <xianwei.zhao@amlogic.com>
-Cc: devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
- linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20231215-s4-dts-v1-1-7831ab6972be@amlogic.com>
-References: <20231215-s4-dts-v1-1-7831ab6972be@amlogic.com>
-Subject: Re: [PATCH] arm64: dts: amlogic: fix format for s4 uart node
-Message-Id: <170265042524.3306004.7156643290374411600.b4-ty@linaro.org>
-Date: Fri, 15 Dec 2023 15:27:05 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A7562583
+	for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 14:31:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <b4865347-110f-4648-a16e-2d453d849323@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1702650676;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Qe4Vv2WCEvd4ouMbR/Hft2N+D0eJgtFU87sk0W4t3gI=;
+	b=Kq4UbYwLOU0kjnanSGnEYL9yQST4aXjg2RXUgAgjJd73Pkm5str2CvQlKZPVjFJp2aFNrS
+	xBRgtIGGSoCQK4Og5hngQcM4GQhvJqgqCaH13M3d/T9GENasLYbcCezlZLIhdpRF/wAuEq
+	E6OHe8GWPuieH0LVb29wuPwsIcmbVdk=
+Date: Fri, 15 Dec 2023 06:31:08 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.12.4
+Subject: Re: [RFC PATCH v3 1/3] bpf: cgroup: Introduce helper
+ cgroup_bpf_current_enabled()
+Content-Language: en-GB
+To: =?UTF-8?Q?Michael_Wei=C3=9F?= <michael.weiss@aisec.fraunhofer.de>,
+ Christian Brauner <brauner@kernel.org>,
+ Alexander Mikhalitsyn <alexander@mihalicyn.com>,
+ Alexei Starovoitov <ast@kernel.org>, Paul Moore <paul@paul-moore.com>
+Cc: Daniel Borkmann <daniel@iogearbox.net>,
+ Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau
+ <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
+ Yonghong Song <yhs@fb.com>, John Fastabend <john.fastabend@gmail.com>,
+ KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
+ Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+ Quentin Monnet <quentin@isovalent.com>,
+ Alexander Viro <viro@zeniv.linux.org.uk>, Miklos Szeredi
+ <miklos@szeredi.hu>, Amir Goldstein <amir73il@gmail.com>,
+ "Serge E. Hallyn" <serge@hallyn.com>, bpf@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+ linux-security-module@vger.kernel.org, gyroidos@aisec.fraunhofer.de,
+ Alexander Mikhalitsyn <aleksandr.mikhalitsyn@canonical.com>
+References: <20231213143813.6818-1-michael.weiss@aisec.fraunhofer.de>
+ <20231213143813.6818-2-michael.weiss@aisec.fraunhofer.de>
+ <6960ef41-fe22-4297-adc7-c85264288b6d@linux.dev>
+ <3e085cef-e74d-417b-ab9b-b8795fa5e5c3@aisec.fraunhofer.de>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Yonghong Song <yonghong.song@linux.dev>
+In-Reply-To: <3e085cef-e74d-417b-ab9b-b8795fa5e5c3@aisec.fraunhofer.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-Hi,
 
-On Fri, 15 Dec 2023 16:28:00 +0800, Xianwei Zhao wrote:
-> Aliases use lowercase letters and place status in end.
-> 
-> 
+On 12/14/23 12:17 AM, Michael Weiß wrote:
+> On 13.12.23 17:59, Yonghong Song wrote:
+>> On 12/13/23 6:38 AM, Michael Weiß wrote:
+>>> This helper can be used to check if a cgroup-bpf specific program is
+>>> active for the current task.
+>>>
+>>> Signed-off-by: Michael Weiß <michael.weiss@aisec.fraunhofer.de>
+>>> Reviewed-by: Alexander Mikhalitsyn <aleksandr.mikhalitsyn@canonical.com>
+>>> ---
+>>>    include/linux/bpf-cgroup.h |  2 ++
+>>>    kernel/bpf/cgroup.c        | 14 ++++++++++++++
+>>>    2 files changed, 16 insertions(+)
+>>>
+>>> diff --git a/include/linux/bpf-cgroup.h b/include/linux/bpf-cgroup.h
+>>> index a789266feac3..7cb49bde09ff 100644
+>>> --- a/include/linux/bpf-cgroup.h
+>>> +++ b/include/linux/bpf-cgroup.h
+>>> @@ -191,6 +191,8 @@ static inline bool cgroup_bpf_sock_enabled(struct sock *sk,
+>>>    	return array != &bpf_empty_prog_array.hdr;
+>>>    }
+>>>    
+>>> +bool cgroup_bpf_current_enabled(enum cgroup_bpf_attach_type type);
+>>> +
+>>>    /* Wrappers for __cgroup_bpf_run_filter_skb() guarded by cgroup_bpf_enabled. */
+>>>    #define BPF_CGROUP_RUN_PROG_INET_INGRESS(sk, skb)			      \
+>>>    ({									      \
+>>> diff --git a/kernel/bpf/cgroup.c b/kernel/bpf/cgroup.c
+>>> index 491d20038cbe..9007165abe8c 100644
+>>> --- a/kernel/bpf/cgroup.c
+>>> +++ b/kernel/bpf/cgroup.c
+>>> @@ -24,6 +24,20 @@
+>>>    DEFINE_STATIC_KEY_ARRAY_FALSE(cgroup_bpf_enabled_key, MAX_CGROUP_BPF_ATTACH_TYPE);
+>>>    EXPORT_SYMBOL(cgroup_bpf_enabled_key);
+>>>    
+>>> +bool cgroup_bpf_current_enabled(enum cgroup_bpf_attach_type type)
+>>> +{
+>>> +	struct cgroup *cgrp;
+>>> +	struct bpf_prog_array *array;
+>>> +
+>>> +	rcu_read_lock();
+>>> +	cgrp = task_dfl_cgroup(current);
+>>> +	rcu_read_unlock();
+>>> +
+>>> +	array = rcu_access_pointer(cgrp->bpf.effective[type]);
+>> This seems wrong here. The cgrp could become invalid once leaving
+>> rcu critical section.
+> You are right, maybe we where to opportunistic here. We just wanted
+> to hold the lock as short as possible.
+>
+>>> +	return array != &bpf_empty_prog_array.hdr;
+>> I guess you need include 'array' usage as well in the rcu cs.
+>> So overall should look like:
+>>
+>> 	rcu_read_lock();
+>> 	cgrp = task_dfl_cgroup(current);
+>> 	array = rcu_access_pointer(cgrp->bpf.effective[type]);
+> Looks reasonable, but that we are in the cs now I would change this to
+> rcu_dereference() then.
 
-Thanks, Applied to https://git.kernel.org/pub/scm/linux/kernel/git/amlogic/linux.git (v6.8/arm64-dt)
+copy-paste error. Right, should use rcu_deference() indeed.
 
-[1/1] arm64: dts: amlogic: fix format for s4 uart node
-      https://git.kernel.org/amlogic/c/f1e2e85bb06b942db86992a8a3187ffe9807939c
-
-These changes has been applied on the intermediate git tree [1].
-
-The v6.8/arm64-dt branch will then be sent via a formal Pull Request to the Linux SoC maintainers
-for inclusion in their intermediate git branches in order to be sent to Linus during
-the next merge window, or sooner if it's a set of fixes.
-
-In the cases of fixes, those will be merged in the current release candidate
-kernel and as soon they appear on the Linux master branch they will be
-backported to the previous Stable and Long-Stable kernels [2].
-
-The intermediate git branches are merged daily in the linux-next tree [3],
-people are encouraged testing these pre-release kernels and report issues on the
-relevant mailing-lists.
-
-If problems are discovered on those changes, please submit a signed-off-by revert
-patch followed by a corrective changeset.
-
-[1] https://git.kernel.org/pub/scm/linux/kernel/git/amlogic/linux.git
-[2] https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git
-[3] https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
-
--- 
-Neil
-
+>
+>> 	bpf_prog_exists = array != &bpf_empty_prog_array.hdr;
+>> 	rcu_read_unlock();
+>>
+>> 	return bpf_prog_exists;
+>>
+>>> +}
+>>> +EXPORT_SYMBOL(cgroup_bpf_current_enabled);
+>>> +
+>>>    /* __always_inline is necessary to prevent indirect call through run_prog
+>>>     * function pointer.
+>>>     */
 
