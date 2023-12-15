@@ -1,140 +1,136 @@
-Return-Path: <linux-kernel+bounces-1526-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-1525-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6824D814FB0
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 19:27:16 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E2DA4814FAE
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 19:26:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 077C11F2444C
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 18:27:16 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 99A58281E2C
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 18:26:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0FA463FE5F;
-	Fri, 15 Dec 2023 18:27:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C9963588B;
+	Fri, 15 Dec 2023 18:26:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="WDql3P5U"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PyKhJrsi"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 180403FE40;
-	Fri, 15 Dec 2023 18:27:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BFIDXRU018255;
-	Fri, 15 Dec 2023 18:26:55 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	from:date:subject:mime-version:content-type
-	:content-transfer-encoding:message-id:to:cc; s=qcppdkim1; bh=t6s
-	jwTTEMurBtYFGKNA1rJneCPYBdA2fvAB/fMn1cDk=; b=WDql3P5Uu4yoQSjEmkp
-	jvL2HXRLgC0lbOC0inGuRz0rKgUYswXgtJWhEmSv5NwRllAyFlN0tAt0TlUC1qw/
-	2J4J9qEMN439hpHYG+RYY608nTR5GgJyUHEIwQPHG6y3WBoAh4OAMbu2zpxpD2Z0
-	ALCVo9bYrjnEAWQlGb7rqgKQOoodMVKP77T/A8LK3Uz67p5HGNqosVeH8XkpCzUT
-	vf1CNfiJBgiKj8EmFHtQBvdZqOWtq76Dzq9GJurkJhF67upf9twp9HnudegCDVZk
-	Y085iGCaVahUFmy7snP/XS22dUjK2F7DwQXT8WVUQXT2AFZw/Bsx65IFugh7FvVU
-	usQ==
-Received: from nasanppmta01.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3v0up201sm-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 15 Dec 2023 18:26:55 +0000 (GMT)
-Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
-	by NASANPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3BFIQtrd001897
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 15 Dec 2023 18:26:55 GMT
-Received: from [169.254.0.1] (10.49.16.6) by nasanex01b.na.qualcomm.com
- (10.46.141.250) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Fri, 15 Dec
- 2023 10:26:54 -0800
-From: Elliot Berman <quic_eberman@quicinc.com>
-Date: Fri, 15 Dec 2023 10:26:40 -0800
-Subject: [PATCH] scripts/decode_stacktrace.sh: Use LLVM environment
- variable
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D2F3730130;
+	Fri, 15 Dec 2023 18:26:49 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1178DC433C8;
+	Fri, 15 Dec 2023 18:26:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1702664809;
+	bh=Uxm+Ld+49+IKhlPh3+Lb8jzwdKp8zlKxeU1rGQh+uUU=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=PyKhJrsiRdLEraV527cDOWhQbObcRjmIiegnkMgjULdaB9RzGb1HQkGRM+Lm7TaU3
+	 Vd2dNC1zrVz/PzMIrXykUKke7H9RrYz9YFA1DNmU+m4fMQsq9jDV8li1Zq/wY8LeqC
+	 pvzYyEOUF+BF14YGXPZOhrG2XnTjzVq0Jl34g6rC9jHAvCep/zilYrFVY7VPybFNWI
+	 RONJmn9L9AtfqemjvL87HZiR8bGD4h7Wdsv3hQBgkUNU59nVuaDwDSr7lyfnueujQN
+	 gWhDD1rmFg8806u2BzFSf4ldI1i1/judHa1Kr6Ql5wAoFbF6mhK3IHPN4Zpxcyz5T+
+	 VwduapuXXn36w==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+	id 5A65F403EF; Fri, 15 Dec 2023 15:26:46 -0300 (-03)
+Date: Fri, 15 Dec 2023 15:26:46 -0300
+From: Arnaldo Carvalho de Melo <acme@kernel.org>
+To: "Liang, Kan" <kan.liang@linux.intel.com>
+Cc: Mark Rutland <mark.rutland@arm.com>, Ian Rogers <irogers@google.com>,
+	Namhyung Kim <namhyung@kernel.org>, maz@kernel.org,
+	marcan@marcan.st, linux-kernel@vger.kernel.org,
+	linux-perf-users@vger.kernel.org
+Subject: Re: [PATCH] perf top: Use evsel's cpus to replace user_requested_cpus
+Message-ID: <ZXyaZjwrpy6toGf6@kernel.org>
+References: <20231208210855.407580-1-kan.liang@linux.intel.com>
+ <ZXd7ZuxbNNsjAyqm@kernel.org>
+ <07677ab2-c29b-499b-b473-f7535fb27a8c@linux.intel.com>
+ <CAM9d7ci-VVhubefMqkSQgK-B2e2z4QU1=TLJtC49wbWW=VNc8g@mail.gmail.com>
+ <CAP-5=fVd-0aSovYVsOmTo2dfKb5_PHz1KV7ePipi35_JbfJ6qQ@mail.gmail.com>
+ <ZXim6U5251q0_bB2@FVFF77S0Q05N.cambridge.arm.com>
+ <ZXxyanyZgWBTOnoK@kernel.org>
+ <4658ca16-9749-434e-9296-3893aa2a34da@linux.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-ID: <20231215-llvm-decode-stacktrace-v1-1-201cb86f4879@quicinc.com>
-X-B4-Tracking: v=1; b=H4sIAF+afGUC/4WNTQ6CMBBGr0JmbU1/VKgr72FY4HSUidBqi42Gc
- HcrF3D5XvK9b4ZEkSnBsZohUubEwRdQmwqw7/yNBLvCoKU2SqudGIY8CkcYHIk0dXifYockpN2
- bxtZWyoODMn5EuvJ7DZ/bwj2nKcTP+pPVz/5NZiWUaKy+1Abrxhp9er4Y2eMWwwjtsixfUfICO
- L4AAAA=
-To: Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers
-	<ndesaulniers@google.com>,
-        Bill Wendling <morbo@google.com>,
-        Justin Stitt
-	<justinstitt@google.com>,
-        Manuel Traut <manut@linutronix.de>
-CC: <linux-arm-msm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <llvm@lists.linux.dev>, Elliot Berman <quic_eberman@quicinc.com>
-X-Mailer: b4 0.13-dev
-X-ClientProxiedBy: nalasex01b.na.qualcomm.com (10.47.209.197) To
- nasanex01b.na.qualcomm.com (10.46.141.250)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: 63bvn7dcg4qWbRItjJ2-hdFyotm5vUcs
-X-Proofpoint-ORIG-GUID: 63bvn7dcg4qWbRItjJ2-hdFyotm5vUcs
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-09_01,2023-12-07_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 bulkscore=0
- mlxscore=0 phishscore=0 adultscore=0 suspectscore=0 mlxlogscore=427
- impostorscore=0 priorityscore=1501 clxscore=1011 malwarescore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2311290000 definitions=main-2312150129
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <4658ca16-9749-434e-9296-3893aa2a34da@linux.intel.com>
+X-Url: http://acmel.wordpress.com
 
-When using LLVM as the compiler, decode_stacktrace should also use
-llvm-addr2line. Check if LLVM is set and add the appropriate
-suffix/prefix.
+Em Fri, Dec 15, 2023 at 12:59:22PM -0500, Liang, Kan escreveu:
+> On 2023-12-15 10:36 a.m., Arnaldo Carvalho de Melo wrote:
+> 
+> #perf report --header-only | grep event
+> # event : name = cpu_atom/cycles:P/, , id = { 7360, 7361, 7362, 7363,
+> 7364, 7365, 7366, 7367, 7368, 7369 }, type = 0 (PERF_TYPE_HARDWARE),
+> size = 136, config = 0xa00000000, { sample_period, sample_freq } = 3000,
+> sample_type = IP|TID|TIME|PERIOD|IDENTIFIER, read_format = ID|LOST,
+> disabled = 1, inherit = 1, freq = 1, enable_on_exec = 1, precise_ip = 3,
+> sample_id_all = 1
+> # event : name = cpu_core/cycles:P/, , id = { 7370, 7371, 7372, 7373,
+> 7374, 7375, 7376, 7377, 7378, 7379, 7380, 7381 }, type = 0
+> (PERF_TYPE_HARDWARE), size = 136, config = 0x400000000, { sample_period,
+> sample_freq } = 3000, sample_type = IP|TID|TIME|PERIOD|IDENTIFIER,
+> read_format = ID|LOST, disabled = 1, inherit = 1, freq = 1,
+> enable_on_exec = 1, precise_ip = 3, sample_id_all = 1
+> 
+> I think we should move all the modifiers after the "/". The below patch
+> can fix it.
+> 
+> https://lore.kernel.org/lkml/20231215175455.1300261-1-kan.liang@linux.intel.com/
 
-Signed-off-by: Elliot Berman <quic_eberman@quicinc.com>
+Right, I implemented it in a slightly different way, but end result
+should be the same:
+
+From 5dd1b7ab1ba69ebb8e070923dcc214b7b489ffc2 Mon Sep 17 00:00:00 2001
+From: Arnaldo Carvalho de Melo <acme@redhat.com>
+Date: Fri, 15 Dec 2023 15:23:30 -0300
+Subject: [PATCH 1/1] perf evlist: Move event attributes to after the / when
+ uniquefying using the PMU name
+
+Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 ---
- scripts/decode_stacktrace.sh | 12 +++++++++++-
- 1 file changed, 11 insertions(+), 1 deletion(-)
+ tools/perf/util/evlist.c | 14 +++++++++++---
+ 1 file changed, 11 insertions(+), 3 deletions(-)
 
-diff --git a/scripts/decode_stacktrace.sh b/scripts/decode_stacktrace.sh
-index 564c5632e1a2..189b00f4e120 100755
---- a/scripts/decode_stacktrace.sh
-+++ b/scripts/decode_stacktrace.sh
-@@ -16,6 +16,16 @@ elif type c++filt >/dev/null 2>&1 ; then
- 	cppfilt_opts=-i
- fi
+diff --git a/tools/perf/util/evlist.c b/tools/perf/util/evlist.c
+index 6f0892803c2249af..3a9505c99490b372 100644
+--- a/tools/perf/util/evlist.c
++++ b/tools/perf/util/evlist.c
+@@ -2522,7 +2522,7 @@ void evlist__warn_user_requested_cpus(struct evlist *evlist, const char *cpu_lis
+ void evlist__uniquify_name(struct evlist *evlist)
+ {
+ 	struct evsel *pos;
+-	char *new_name;
++	char *new_name, *attributes;
+ 	int ret;
  
-+if [[ "${LLVM}" == "1" ]] ; then
-+	addr2line="llvm-addr2line"
-+elif [[ "${LLVM}" == */ ]] ; then
-+	addr2line="${LLVM}llvm-addr2line"
-+elif [[ "${LLVM}" == -* ]] ; then
-+	addr2line="llvm-addr2line${LLVM}"
-+else
-+	addr2line="${CROSS_COMPILE}addr2line"
-+fi
+ 	if (perf_pmus__num_core_pmus() == 1)
+@@ -2535,8 +2535,16 @@ void evlist__uniquify_name(struct evlist *evlist)
+ 		if (strchr(pos->name, '/'))
+ 			continue;
+ 
+-		ret = asprintf(&new_name, "%s/%s/",
+-			       pos->pmu_name, pos->name);
++		attributes = strchr(pos->name, ':');
++		if (attributes)
++			*attributes = '\0';
 +
- if [[ $1 == "-r" ]] ; then
- 	vmlinux=""
- 	basepath="auto"
-@@ -169,7 +179,7 @@ parse_symbol() {
- 	if [[ $aarray_support == true && "${cache[$module,$address]+isset}" == "isset" ]]; then
- 		local code=${cache[$module,$address]}
- 	else
--		local code=$(${CROSS_COMPILE}addr2line -i -e "$objfile" "$address" 2>/dev/null)
-+		local code=$(${addr2line} -i -e "$objfile" "$address" 2>/dev/null)
- 		if [[ $aarray_support == true ]]; then
- 			cache[$module,$address]=$code
- 		fi
-
----
-base-commit: 3f7168591ebf7bbdb91797d02b1afaf00a4289b1
-change-id: 20231214-llvm-decode-stacktrace-09538979006d
-
-Best regards,
++		ret = asprintf(&new_name, "%s/%s/%s",
++			       pos->pmu_name, pos->name, attributes ? attributes + 1 : "");
++
++		if (attributes)
++			*attributes = ':';
++
+ 		if (ret) {
+ 			free(pos->name);
+ 			pos->name = new_name;
 -- 
-Elliot Berman <quic_eberman@quicinc.com>
+2.43.0
 
 
