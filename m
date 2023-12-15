@@ -1,137 +1,120 @@
-Return-Path: <linux-kernel+bounces-498-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-499-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8E3A58141FC
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 07:51:28 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B447A8141FD
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 07:51:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1DD3DB22238
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 06:51:26 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7150C2839AA
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 06:51:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 50A8BD297;
-	Fri, 15 Dec 2023 06:50:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 011E610A17;
+	Fri, 15 Dec 2023 06:50:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="XqoU46jL"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A0809CA68;
-	Fri, 15 Dec 2023 06:50:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=realtek.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=realtek.com
-X-SpamFilter-By: ArmorX SpamTrap 5.78 with qID 3BF6oWWU11442510, This message is accepted by code: ctloc85258
-Received: from mail.realtek.com (rtexh36506.realtek.com.tw[172.21.6.27])
-	by rtits2.realtek.com.tw (8.15.2/2.95/5.92) with ESMTPS id 3BF6oWWU11442510
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Fri, 15 Dec 2023 14:50:32 +0800
-Received: from RTEXMBS06.realtek.com.tw (172.21.6.99) by
- RTEXH36506.realtek.com.tw (172.21.6.27) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.17; Fri, 15 Dec 2023 14:50:33 +0800
-Received: from RTEXMBS04.realtek.com.tw (172.21.6.97) by
- RTEXMBS06.realtek.com.tw (172.21.6.99) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.34; Fri, 15 Dec 2023 14:50:33 +0800
-Received: from RTEXMBS04.realtek.com.tw ([fe80::40c2:6c24:2df4:e6c7]) by
- RTEXMBS04.realtek.com.tw ([fe80::40c2:6c24:2df4:e6c7%5]) with mapi id
- 15.01.2375.007; Fri, 15 Dec 2023 14:50:33 +0800
-From: =?big5?B?VFlfQ2hhbmdbsWmkbLZoXQ==?= <tychang@realtek.com>
-To: Andy Shevchenko <andy@kernel.org>, Michael Walle <michael@walle.cc>
-CC: Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski
-	<brgl@bgdev.pl>, Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski
-	<krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH v3 2/2] Add GPIO support for Realtek DHC(Digital Home Center) RTD SoCs.
-Thread-Topic: [PATCH v3 2/2] Add GPIO support for Realtek DHC(Digital Home
- Center) RTD SoCs.
-Thread-Index: AQHaKPU79lITdFvfw06smVDh+ZvZWbCdTzKAgAeXZrCAAdUdAIABjNeAgAAKpoCAAJR9c4AA01hw
-Date: Fri, 15 Dec 2023 06:50:32 +0000
-Message-ID: <be8db58b51d04043a255a702a08cdaba@realtek.com>
-References: <20231207100723.15015-1-tychang@realtek.com>
- <20231207100723.15015-3-tychang@realtek.com>
- <ZXHMbZRXLXGa_tq8@smile.fi.intel.com>
- <989146448858478b975c66899b8f3fed@realtek.com>
- <ZXm0MIub8X2q_lnp@smile.fi.intel.com>
- <23574204547646779d02f0109c20b3ff@realtek.com>
- <ZXsKAyIlY3y3tgUi@smile.fi.intel.com>
- <0f0b3b65a838aea6797ae78c47d6af49@walle.cc>
- <ZXsV96xhuvVSyc1f@smile.fi.intel.com>
-In-Reply-To: <ZXsV96xhuvVSyc1f@smile.fi.intel.com>
-Accept-Language: zh-TW, en-US
-Content-Language: zh-TW
-x-kse-serverinfo: RTEXMBS06.realtek.com.tw, 9
-x-kse-antispam-interceptor-info: fallback
-x-kse-antivirus-interceptor-info: fallback
-Content-Type: text/plain; charset="big5"
-Content-Transfer-Encoding: base64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DDF5C10973
+	for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 06:50:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1702623055;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=gC1JfTqJ9MdUe1APXMHHq5zDpWh9AyaHnyrlMTWegK8=;
+	b=XqoU46jL1Bh3WtccXXgH6rvYZRpoLu0bjfk8IM6ElRfGcPNNwdCUmCxn77SUg4k4n+Dh3x
+	hYswT7fxTuQEKADEc98Oht1FFxH8WRkaWH0AfE3TDB2UHY/+5q4qX7bwjN/MmM32gaEmkJ
+	qTr4Tb+Y/7v6AzNWiXUKn0z/e1Ln0+g=
+Received: from mail-qv1-f71.google.com (mail-qv1-f71.google.com
+ [209.85.219.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-206-qAK8QrfwP62FmMy7sYAxog-1; Fri, 15 Dec 2023 01:50:54 -0500
+X-MC-Unique: qAK8QrfwP62FmMy7sYAxog-1
+Received: by mail-qv1-f71.google.com with SMTP id 6a1803df08f44-67ee87ff6bfso4080336d6.3
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 22:50:53 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702623052; x=1703227852;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=gC1JfTqJ9MdUe1APXMHHq5zDpWh9AyaHnyrlMTWegK8=;
+        b=wJRm1ebLriy4eQYtpQy4vf05auCatoXsswvBCu2iwm6PGFO0MsmZouNpmeVTphjgtX
+         Eg2gLZVx0inYEkJGwTbPbELMB6O7ECbQE0zcUJuUYzpC9hzsA2xq8qY9eiP+aSMVQMnd
+         QxNb6i9yDp9nRUB76BqexaX06jfNLkML6nzaEQaQiX91pTltVu8CSzAAdHjMUGLrqG53
+         7x1kCMzN5lE/A3QmSrfN47f6XGl9ujMBkrold3bR/Bp1ABQ1q4ahZtuymvfdMPUOr/Kz
+         T2oYoXIhB+TeO7p6FXpWV+tBLuSt3eHF/arwzTzyYAZVmuXr/63Kcyb2zPu2tdN4Bcfx
+         xdFQ==
+X-Gm-Message-State: AOJu0YxzF7X23flb0prAzzVm+x8cJtJq6hUUBN7/6wzxK/iZ9nWeLbFu
+	/mRr/wypK8AgfIaxdqngKhiS9PKqYIjYp3x6lccNSfv+o6i+yVVaPvIzGZ/ZtLaUUYRHkSORfd0
+	WKRLBGo8c1QaNNMuFXeclk58sX0q7SWfn
+X-Received: by 2002:a05:620a:3915:b0:77d:8f07:d3da with SMTP id qr21-20020a05620a391500b0077d8f07d3damr10429259qkn.40.1702623052599;
+        Thu, 14 Dec 2023 22:50:52 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IE/EZu1ps9aGyJ7Sllj9zA4OsO2Apdl51SLBU4Ps4/yFiYnMt07yhuanoyj0rF1fUln4ONaEQ==
+X-Received: by 2002:a05:620a:3915:b0:77d:8f07:d3da with SMTP id qr21-20020a05620a391500b0077d8f07d3damr10429254qkn.40.1702623052330;
+        Thu, 14 Dec 2023 22:50:52 -0800 (PST)
+Received: from localhost.localdomain ([151.29.78.8])
+        by smtp.gmail.com with ESMTPSA id b19-20020a05620a271300b0077d7eaefc08sm5876283qkp.87.2023.12.14.22.50.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 Dec 2023 22:50:51 -0800 (PST)
+Date: Fri, 15 Dec 2023 07:50:46 +0100
+From: Juri Lelli <juri.lelli@redhat.com>
+To: Tejun Heo <tj@kernel.org>
+Cc: Aaron Tomlin <atomlin@atomlin.com>, linux-kernel@vger.kernel.org,
+	jiangshanlai@gmail.com, peterz@infradead.org
+Subject: Re: [RFC PATCH 0/2] workqueue: Introduce PF_WQ_RESCUE_WORKER
+Message-ID: <ZXv3RnYNkpaPGYb_@localhost.localdomain>
+References: <um77hym4t6zyypfbhwbaeqxpfdzc657oa7vgowdfah7cuctjak@pexots3mfb24>
+ <ZXdXdBzvbkI4Y4fL@slm.duckdns.org>
+ <ZXguMgcKLCLn16T4@localhost.localdomain>
+ <ZXiVCOKk90Fjpmhw@slm.duckdns.org>
+ <ZXlyfjDsFGbYcMU6@localhost.localdomain>
+ <ZXnPVtISKQ2JFDNn@slm.duckdns.org>
+ <ZXn4qiMetd7zY1sb@localhost.localdomain>
+ <ZXn6J5bN-dPC1WSk@slm.duckdns.org>
+ <ZXrmJYvekzrLSaGo@localhost.localdomain>
+ <ZXtb066P-ZnjxfgK@slm.duckdns.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-KSE-AntiSpam-Interceptor-Info: fallback
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZXtb066P-ZnjxfgK@slm.duckdns.org>
 
-SGkgQW5keSwNCg0KPk9uIFRodSwgRGVjIDE0LCAyMDIzIGF0IDAzOjM1OjE4UE0gKzAxMDAsIE1p
-Y2hhZWwgV2FsbGUgd3JvdGU6DQo+DQo+PiA+ID4gPj4gPj4gVGhpcyBkcml2ZXIgZW5hYmxlcyBj
-b25maWd1cmF0aW9uIG9mIEdQSU8gZGlyZWN0aW9uLCBHUElPDQo+PiA+ID4gPj4gPj4gdmFsdWVz
-LCBHUElPIGRlYm91bmNlIHNldHRpbmdzIGFuZCBoYW5kbGVzIEdQSU8gaW50ZXJydXB0cy4NCj4+
-ID4gPiA+PiA+DQo+PiA+ID4gPj4gPldoeSBncGlvLXJlZ21hcCBjYW4ndCBiZSB1c2VkPw0KPj4g
-PiA+ID4+DQo+PiA+ID4gPj4gSSB3aWxsIHRyeSB0byB1c2UgZ3Bpby1yZW1hcCBpbiB0aGUgbmV4
-dCB2ZXJzaW9uLg0KPj4gPiA+ID4NCj4+ID4gPiA+SWYgaXQgYXBwZWFycyB0aGF0IGl0IG1ha2Vz
-IGNvZGUgdWdsaWVyIC8gY29tcGxpY2F0ZWQsIHBsZWFzZSBhZGQNCj4+ID4gPiA+dGhlIG5vdGUg
-c29tZXdoZXJlIHRvIGFuc3dlciB0aGUgYWJvdmUgcXVlc3Rpb24uDQo+PiA+ID4NCj4+ID4gPiBJ
-J3ZlIHRyYWNlZCB0aGUgZ3Bpby1yZWdtYXAuYyBmaWxlLiBJdCBhcHBlYXJzIHRoYXQgZm9yIHRo
-ZSBkcml2ZXINCj4+ID4gPiB0byByZWdpc3RlciBncGlvX2lycV9jaGlwLCBpdCBtdXN0IGNyZWF0
-ZSB0aGUgaXJxX2RvbWFpbiBhbmQgYWRkDQo+PiA+ID4gaXQgaW50byBncGlvX3JlZ21hcF9jb25m
-aWcuDQo+PiA+ID4gQWRkaXRpb25hbGx5LCB0aGUgZHJpdmVyIG5lZWRzIHRvIHJlZ2lzdGVyIHRo
-ZSBpcnEgaGFuZGxlciBieSBpdHNlbGYuDQo+PiA+ID4gSG93ZXZlciwgdGhpcyBwcm9jZXNzIGNh
-biBiZSBtYW5hZ2VkIGJ5IHRoZSBncGlvbGliIGlmIHRoZSBkcml2ZXINCj4+ID4gPiBmaWxscyBp
-biB0aGUgc3RydWN0IGdwaW9faXJxX2NoaXAgaW5zaWRlIHN0cnVjdCBncGlvX2NoaXAgYmVmb3Jl
-DQo+PiA+ID4gaW52b2tpbmcgZ3Bpb2NoaXBfYWRkX2RhdGEuDQo+PiA+DQo+PiA+IEhtbS4uLiBJ
-IHRob3VnaHQgdGhpcyBpcyBzb2x2YWJsZSBpc3N1ZS4NCj4+ID4gTWljaGFlbCwgaXMgdGhlcmUg
-YSBsaW1pdGF0aW9uIGluIEdQSU8gcmVnbWFwIHRoYXQgdGhpcyBkcml2ZXIgY2FuJ3QNCj4+ID4g
-YmUgY29udmVydGVkPw0KPj4NCj4+IGdwaW8tcmVnbWFwIGlzIGRlc2lnbmVkIHRoYXQgcmVnbWFw
-LWlycSAoZHJpdmVycy9iYXNlL3JlZ21hcC9pcnEuYykNCj4+IGNhbiBiZSB1c2VkLiBTbywgaWYg
-cmVnbWFwLWlycSBmaXQgdGhpcyBkcml2ZXIsIHRoZW4gaXQgY2FuIGJlIHVzZWQNCj4+IHRvZ2V0
-aGVyIHdpdGggZ3Bpby1yZWdtYXAuDQo+Pg0KPj4gRnJvbSBhIHF1aWNrIGdsYW5jZSBhdCB0aGUg
-cGF0Y2gsIGl0IGxvb2tzIGxpa2UgdGhlIGdwaW8gcG9ydGlvbiBtaWdodA0KPj4gZml0IGdwaW8t
-cmVnbWFwLg0KPj4NCj4+ID4gPiBNb3Jlb3ZlciwgYXBhcnQgZnJvbSBtYW5hZ2luZyB0aGUgcmVn
-aXN0ZXJzIGZvciBncGlvIGRpcmVjdGlvbiBhbmQNCj4+ID4gPiB2YWx1ZSwgdGhlcmUgYXJlIHNl
-dmVyYWwgb3RoZXIgcmVnaXN0ZXJzIHRoYXQgcmVxdWlyZQ0KPj4gPiA+IGFjY2VzcyhpbnRlcnJ1
-cHQgZW5hYmxlLCBkZWJvdW5jZS4uLikuDQo+PiA+ID4gVGhlIEdQSU8gSVJRIHN0YXR1cyByZWdp
-c3RlcnMgYXJlIGxvY2F0ZWQgYXQgZGlmZmVyZW50IGJhc2UNCj4+ID4gPiBhZGRyZXNzZXMgYW5k
-IGFyZSBub3QgY29udGlndW91cy4gSXQgbWF5IG5lZWQgdG8gY3JlYXRlIGFuDQo+PiA+ID4gYWRk
-aXRpb25hbCByZWdtYXAgYW5kIGFzc2lnbiB0aGUgYWNjZXNzIHRhYmxlIHRvIHRoaXMgcmVnbWFw
-Lg0KPj4gPg0KPj4gPiBBRkFJSyB0aGlzIGlzIG5vdCBhIHByb2JsZW0gYXMgeW91IGNhbiBwcm92
-aWRlIHlvdXIgb3duIHhsYXRlDQo+PiA+IGZ1bmN0aW9uIHRoYXQgd2lsbCB0YWtlIGNhcmUgYWJv
-dXQgcmVnaXN0ZXIgbWFwcGluZy4NCj4+DQo+PiBKdXN0IGZvciB0aGUgZ3BpbyBwYXJ0LiBJSVJD
-IHJlZ21hcCBoYXMgaXQgb3duIHRyYW5zbGF0aW9uIChyZWdtYXAgZmllbGRzKS4NCj4+DQo+PiA+
-ID4gV2l0aCB0aGUgYWJvdmUgY29uc2lkZXJhdGlvbiwgSSB0ZW5kIHRvIGtlZXAgdXNpbmcgdGhl
-IGV4aXN0aW5nDQo+PiA+ID4gbWV0aG9kLg0KPj4gPg0KPj4gPiBJIHdvdWxkIGxpa2UgdG8gaGVh
-ciBmcm9tIE1pY2hhZWwgaWYgaXQncyBpbmRlZWQgYSBiaWcgb2JzdGFjbGUuDQo+Pg0KPj4gU28s
-IHJlZ2FyZGluZyB0aGUgaXJxIHBvcnRpb24sIGFnYWluLCBpdCBtdXN0IGZpdCB0aGUgcmVnbWFw
-LWlycS4gRm9yDQo+PiB0aGUgYWRkaXRpb25hbCByZXF1aXJlbWVudCB0byBzZXQgdGhlIGRlYm91
-bmNlLCB5b3UgY2FuIGFkZCBhDQo+PiAuc2V0X2NvbmZpZyB0byBncGlvX3JlZ21hcF9jb25maWcg
-YW5kIHN1cHBseSB5b3VyIG93biBzZXRfY29uZmlnIGNhbGxiYWNrLg0KPlNlZSBhbHNvIFsxXS4N
-Cj4NCj5UaGFuayB5b3UsIE1pY2hhZWwsIGZvciB0aGUgcHJvbXB0IGFuc3dlci4gSXQncyBpbnNp
-Z2h0ZnVsIHRvIG1lLCBJIHdpbGwgdHJ5IHRvDQo+cmVtZW1iZXIgdGhlc2UgYXNwZWN0cyBmb3Ig
-dGhlIGZ1dHVyZSByZXZpZXdzLg0KPg0KPj4gWzFdDQo+Pg0KPmh0dHBzOi8vbG9yZS5rZXJuZWwu
-b3JnL2xpbnV4LWdwaW8vZDRhNmE2NDBjMzczYjZkOTM5ZTE0NzY5MWVmYTU5NmNAd2ENCj4+IGxs
-ZS5jYy8NCj4NCg0KSSBoYXZlIGxvb2tlZCBpbnRvIHJlZ21hcC1pcnEsIGl0IGFwcGVhcnMgdGhh
-dCB1c2luZyB0aGUgZGVmYXVsdCBpcnENCnRocmVhZF9mbihyZWdtYXBfaXJxX3RocmVhZCkgaXMg
-cmVxdWlyZWQuIEhvd2V2ZXIsIGR1ZSB0byBoYXJkd2FyZSBsaW1pdGF0aW9uLA0Kd2UgbmVlZCB0
-byBpbnNwZWN0IHRoZSBJUlFfVFlQRSB0byBkZXRlcm1pbmUgd2hldGhlciB0byBtYW5hZ2UgdGhl
-IGlycSB3aXRoaW4NCnRoZSBpcnEgaGFuZGxlci4gSSB0aGluayBvdXIgaXJxIHBvcnRpb24gZG9l
-cyBub3QgcGVyZmVjdGx5IGZpdCB0aGUgcmVnbWFwLWlycS4NCk1vcmVvdmVyLCBpdCBzZWVtcyB0
-aGF0IHRoZSBncGlvLXJlZ21hcC5jIGZpbGUgbmVlZHMgdG8gYmUgbW9kaWZpZWQgaWYgdGhlIEdQ
-SU8gZHJpdmVyDQpyZXF1aXJlcyBkZWJvdW5jZSBzZXR0aW5ncy4gSSB0aGluayB0aGUgZ3Bpby1y
-ZWdtYXAgbWF5IG5vdCBiZSBhcHByb3ByaWF0ZSBmb3Igb3VyIGRyaXZlci4NCkRvIHlvdSBoYXZl
-IGFueSBzdWdnZXN0aW9ucz8NCg0KVGhhbmtzLA0KVHp1eWkgQ2hhbmcNCg==
+On 14/12/23 09:47, Tejun Heo wrote:
+> Hello,
+> 
+> On Thu, Dec 14, 2023 at 12:25:25PM +0100, Juri Lelli wrote:
+> > > So, we have to use set_cpus_allowed_ptr() but we still don't want to change
+> > > the affinity of a rescuer which is already running a task for a pool.
+> > 
+> > But then, even today, a rescuer might keep handling work on a cpu
+> > outside its wq cpumask if the associated wq cpumask change can proceed
+> > w/o waiting for it to finish the iteration?
+> 
+> Yeah, that can happen and pool cpumasks naturally being subsets of the wq's
+> cpumask that they're serving, your original approach likely isn't broken
+> either.
+> 
+> > BTW, apologies for all the questions, but I'd like to make sure I can
+> > get the implications hopefully right. :)
+> 
+> I obviously haven't thought through it very well, so thanks for the
+> questions. So, yeah, I think we actually need to set the rescuer's cpumask
+> when wq's cpumask changes and doing it where you were suggesting should
+> probably work.
+
+OK. Going to send a proper patch asap.
+
+Thanks!
+Juri
+
 
