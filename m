@@ -1,243 +1,153 @@
-Return-Path: <linux-kernel+bounces-702-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-703-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id CC7BB8144DA
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 10:50:21 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 16DA28144DC
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 10:50:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 83726283A74
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 09:50:20 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A6A891F239E8
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 09:50:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 78EA218C09;
-	Fri, 15 Dec 2023 09:50:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 51DF818E24;
+	Fri, 15 Dec 2023 09:50:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="RgWfEKNt"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="g96uBB21"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2753D182CA;
-	Fri, 15 Dec 2023 09:50:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BF5VRwn002763;
-	Fri, 15 Dec 2023 09:49:43 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=gfyAeUwdG3kWmiG3zDIkkFIHvBG2DgV0KYTjf8nFcfI=; b=Rg
-	WfEKNtiyGOEfZnSZOI4vMjBbQe69Uoq+PGUvLdqUcAN8hbhoMsiGuDQc1fSTZvLr
-	Hp82GVaCS3w8dE7NGXsaEwIA5df96BWCjwZPhbMWfb5r9Umsf9MbfrB8a56HJfbL
-	Qoo/0PCGwMuZ2XprvfSrxqW9nZtGm9rSBYEBK6pTRjmNkXR0kgbKhL8SxMIFK6dL
-	ZooBIGxCVvoAQeYWwCsZPKGJoNVAfOTLpO4UekVYecnlayawuSzboBVJDLWBcMAJ
-	GAT+Wej7/5Wiws4mczbs4S0SKYOEirHdupBLdJQ4I3iCf8ADiK2PVrj9GoCC8t2L
-	KR3CMZh9iVJaX8YKMqTw==
-Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3v0a37hren-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 15 Dec 2023 09:49:43 +0000 (GMT)
-Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
-	by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3BF9ng6q009472
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 15 Dec 2023 09:49:42 GMT
-Received: from [10.253.13.71] (10.80.80.8) by nalasex01c.na.qualcomm.com
- (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Fri, 15 Dec
- 2023 01:49:36 -0800
-Message-ID: <a84a36af-69f8-46af-967e-b06d028597a3@quicinc.com>
-Date: Fri, 15 Dec 2023 17:49:33 +0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA19918C1D
+	for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 09:50:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1702633838;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=2jUFk+kWF85SdiIX9/ky14z9K9zUyz1416eEiXRguD8=;
+	b=g96uBB21EwDdbbEK4/z1GRHQrUCoSFRAG50O0P4wm3rIrM3UW39f1xXk6f3+DTYZnvoDf1
+	4Cz3KxMfSpu8yQtDXRRDUMkWqxpJEwEpSZP5kZqPwVYRoKZg4U6SXFDLp4MUeZuhePy+TO
+	65Xn45uJLZN6Yb1t8nFBZRbfaUnKcdM=
+Received: from mail-yw1-f197.google.com (mail-yw1-f197.google.com
+ [209.85.128.197]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-629-gkTnKiVcMbqsjdJ46jJbLA-1; Fri, 15 Dec 2023 04:50:37 -0500
+X-MC-Unique: gkTnKiVcMbqsjdJ46jJbLA-1
+Received: by mail-yw1-f197.google.com with SMTP id 00721157ae682-5e46cbc3d34so3535207b3.3
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 01:50:37 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702633837; x=1703238637;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=2jUFk+kWF85SdiIX9/ky14z9K9zUyz1416eEiXRguD8=;
+        b=n0U+co14RuBezm4+kNMD+wmgP4C9fo23im3gpjqxTALZEanAfJuAmzN16tsMlQf7XG
+         8n0GEtC3izgP4vusPR0x7R27gMAxMhy9VD9E3XhtT5SYlZOHWq3oDG8owDfWpRMLUCsU
+         CKeBf/NcAwXKoTxdZablqtjzhTUbvA7Ja1FOGw3fNLLhqKQQX7sF6tOGdTOWCGIb/WI7
+         +rQM0Se9L8w6stxEZ0X6rqBeG37IZD3PW6kr2FTEQER7dtvajUPxplqNvj3zOB8DEWVj
+         Ygh+xBNNqd4T1KncXpH0PEQQWjsTyCH667q4+YgAoEHGcqQx3ZbVrZs+6TTBilvkpiWJ
+         0Kag==
+X-Gm-Message-State: AOJu0YwAPERMAkzs7gyrqiY80k4zAaw+alylZE4wN52LTJwWv8xx44n4
+	Z6HZqmBPFcPH6lieFs9lIhASJliyLQxgZsWViTAGLiBFEqTL37BDhBnIgiW/WVQ+mhX3jb7aiLc
+	xnbpL2P+eOr3aFEdbIb9i2AXbR45S3cwimYovyioo
+X-Received: by 2002:a0d:f842:0:b0:5d7:1940:b377 with SMTP id i63-20020a0df842000000b005d71940b377mr9389541ywf.67.1702633837025;
+        Fri, 15 Dec 2023 01:50:37 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IEj0WCc7h2W06gwb0544zgPnIeghTyp6d8BMs+Gqvk9Yl1q2nTxcxfziVYO7Ty/itdzxF+rd+Jc9exaxn2+BMo=
+X-Received: by 2002:a0d:f842:0:b0:5d7:1940:b377 with SMTP id
+ i63-20020a0df842000000b005d71940b377mr9389520ywf.67.1702633836737; Fri, 15
+ Dec 2023 01:50:36 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 5/5] dt-bindings: net: ipq4019-mdio: Document ipq5332
- platform
-Content-Language: en-US
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Conor Dooley
-	<conor@kernel.org>
-CC: <agross@kernel.org>, <andersson@kernel.org>, <konrad.dybcio@linaro.org>,
-        <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
-        <pabeni@redhat.com>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <andrew@lunn.ch>, <hkallweit1@gmail.com>, <linux@armlinux.org.uk>,
-        <robert.marko@sartura.hr>, <linux-arm-msm@vger.kernel.org>,
-        <netdev@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <quic_srichara@quicinc.com>
-References: <20231212115151.20016-1-quic_luoj@quicinc.com>
- <20231212115151.20016-6-quic_luoj@quicinc.com>
- <20231212-caution-improvise-ed3cc6a1d305@spud>
- <11ffc985-3f2b-46b9-ae0b-911f7abe98d1@quicinc.com>
- <20231214-outshine-shush-8a11c68607cd@spud>
- <c5123ce7-6fdc-43c7-ac07-251c39196e66@quicinc.com>
- <a1e5ffec-a20d-4389-83f9-ee09bd9d733d@linaro.org>
-From: Jie Luo <quic_luoj@quicinc.com>
-In-Reply-To: <a1e5ffec-a20d-4389-83f9-ee09bd9d733d@linaro.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01c.na.qualcomm.com (10.47.97.35)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: OT9xVU3sVdR7qO0SnfVKInj3WAR011_h
-X-Proofpoint-ORIG-GUID: OT9xVU3sVdR7qO0SnfVKInj3WAR011_h
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-09_01,2023-12-07_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 suspectscore=0
- malwarescore=0 clxscore=1015 bulkscore=0 adultscore=0 mlxlogscore=999
- spamscore=0 phishscore=0 impostorscore=0 lowpriorityscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2311290000 definitions=main-2312150066
+References: <20231207192406.3809579-1-nphamcs@gmail.com> <CAF8kJuPEKWbr_1a-OzqrYKSPmuty==KhC2vbTPAmm9xcJHo4cg@mail.gmail.com>
+ <CAKEwX=Oj0Rur8i9Oo7y2Py7svx-g11sEj3GKQfMVL62x=4hvdA@mail.gmail.com>
+ <CAF8kJuNpnqTM5x1QmQ7h-FaRWVnHBdNGvGvB3txohSOmZhYA-Q@mail.gmail.com>
+ <20231209034229.GA1001962@cmpxchg.org> <ZXeTb_ACou7TEVsa@google.com>
+ <20231214171137.GA261942@cmpxchg.org> <CAOUHufbvafDiURT9qBjKPpRSNwc60S-bDg2yMH_m4bNSWQcV4g@mail.gmail.com>
+ <CA+PVUaR9EtUMke-K8mM0gmJXdOm9equ1JHqBjZ0T5V0tiHVc8Q@mail.gmail.com>
+ <CAF8kJuMLDOaP6-Xyz-+hzLbDuYW7gfG9jA06j6t5v7XX2rPOdw@mail.gmail.com>
+ <CA+PVUaRxXdndKCodgPKFcsCUQwO-8mGtU65OkkudoR-8rB=KaA@mail.gmail.com> <CAF8kJuMKCu=Bf4K6RryFdGGgC+RhyanwaXc-ZGtURk7Wbckq6Q@mail.gmail.com>
+In-Reply-To: <CAF8kJuMKCu=Bf4K6RryFdGGgC+RhyanwaXc-ZGtURk7Wbckq6Q@mail.gmail.com>
+From: Fabian Deutsch <fdeutsch@redhat.com>
+Date: Fri, 15 Dec 2023 10:50:16 +0100
+Message-ID: <CA+PVUaRnd0vjTNQqdFG-pLYVqaquP46+YOOYWtMpJkNtkF+S6Q@mail.gmail.com>
+Subject: Re: [PATCH v6] zswap: memcontrol: implement zswap writeback disabling
+To: Chris Li <chrisl@kernel.org>
+Cc: Yu Zhao <yuzhao@google.com>, Johannes Weiner <hannes@cmpxchg.org>, 
+	Minchan Kim <minchan@kernel.org>, Nhat Pham <nphamcs@gmail.com>, 
+	"akpm@linux-foundation.org" <akpm@linux-foundation.org>, "tj@kernel.org" <tj@kernel.org>, 
+	"lizefan.x@bytedance.com" <lizefan.x@bytedance.com>, 
+	"cerasuolodomenico@gmail.com" <cerasuolodomenico@gmail.com>, 
+	"yosryahmed@google.com" <yosryahmed@google.com>, "sjenning@redhat.com" <sjenning@redhat.com>, 
+	"ddstreet@ieee.org" <ddstreet@ieee.org>, "vitaly.wool@konsulko.com" <vitaly.wool@konsulko.com>, 
+	"mhocko@kernel.org" <mhocko@kernel.org>, "roman.gushchin@linux.dev" <roman.gushchin@linux.dev>, 
+	"shakeelb@google.com" <shakeelb@google.com>, "muchun.song@linux.dev" <muchun.song@linux.dev>, 
+	"hughd@google.com" <hughd@google.com>, "corbet@lwn.net" <corbet@lwn.net>, 
+	"konrad.wilk@oracle.com" <konrad.wilk@oracle.com>, 
+	"senozhatsky@chromium.org" <senozhatsky@chromium.org>, "rppt@kernel.org" <rppt@kernel.org>, 
+	"linux-mm@kvack.org" <linux-mm@kvack.org>, "kernel-team@meta.com" <kernel-team@meta.com>, 
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, 
+	"linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>, "david@ixit.cz" <david@ixit.cz>, 
+	Kairui Song <kasong@tencent.com>, Zhongkun He <hezhongkun.hzk@bytedance.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+On Fri, Dec 15, 2023 at 10:40=E2=80=AFAM Chris Li <chrisl@kernel.org> wrote=
+:
+>
+> On Thu, Dec 14, 2023 at 11:42=E2=80=AFPM Fabian Deutsch <fdeutsch@redhat.=
+com> wrote:.
+> > >
+> > > Just to clarify, the "node" you mean the "node" in kubernetes sense,
+> > > which is the whole machine. In the Linux kernel MM context, the node
+> > > often refers to the NUMA memory node, that is not what you mean here,
+> > > right?
+> >
+> > Correct, I was referring to a kubernetes node, not numa node.
+> >
+> > >
+> > >> - With todays node level swap, and setting memory.swap.max=3D0 for a=
+ll cgroups allows you toachieve a similar behavior (only opt-in cgroups wil=
+l get swap).
+> > >> - the above approach however will still have a shared swap backend f=
+or all cgroups.
+> > >
+> > > Yes, the "memory.swap.tires" idea is trying to allow cgroups to selec=
+t
+> > > a subset of the swap backend in a specific order. It is still in the
+> > > early stage of discussion. If you have any suggestion or feedback in
+> > > that direction, I am looking forward to hearing that.
+> >
+> > Interesting. There have been concerns to leak confidential data acciden=
+tally when it's getting written to a swap device.
+>
+> One common solution is to encrypt the data written to the device. If
+> someone gets hold of the swapped outed device without the key, they
+> can't get to the memory data without the key.
 
 
+Yes - I guess like writing it onto a dmcrypt device with some random key.
+Nevertheless, this was one of the topics.
 
-On 12/15/2023 3:29 PM, Krzysztof Kozlowski wrote:
-> On 15/12/2023 07:46, Jie Luo wrote:
->>
->>
->> On 12/15/2023 1:12 AM, Conor Dooley wrote:
->>> On Wed, Dec 13, 2023 at 04:26:56PM +0800, Jie Luo wrote:
->>>>
->>>>
->>>> On 12/13/2023 12:06 AM, Conor Dooley wrote:
->>>>> On Tue, Dec 12, 2023 at 07:51:50PM +0800, Luo Jie wrote:
->>>>>> Update the yaml file for the new DTS properties.
->>>>>>
->>>>>> 1. cmn-reference-clock for the CMN PLL source clock select.
->>>>>> 2. clock-frequency for MDIO clock frequency config.
->>>>>> 3. add uniphy AHB & SYS GCC clocks.
->>>>>> 4. add reset-gpios for MDIO bus level reset.
->>>>>>
->>>>>> Signed-off-by: Luo Jie <quic_luoj@quicinc.com>
->>>>>> ---
->>>>>>     .../bindings/net/qcom,ipq4019-mdio.yaml       | 157 +++++++++++++++++-
->>>>>>     1 file changed, 153 insertions(+), 4 deletions(-)
->>>>>>
->>>>>> diff --git a/Documentation/devicetree/bindings/net/qcom,ipq4019-mdio.yaml b/Documentation/devicetree/bindings/net/qcom,ipq4019-mdio.yaml
->>>>>> index 3407e909e8a7..9546a6ad7841 100644
->>>>>> --- a/Documentation/devicetree/bindings/net/qcom,ipq4019-mdio.yaml
->>>>>> +++ b/Documentation/devicetree/bindings/net/qcom,ipq4019-mdio.yaml
->>>>>> @@ -20,6 +20,8 @@ properties:
->>>>>>               - enum:
->>>>>>                   - qcom,ipq6018-mdio
->>>>>>                   - qcom,ipq8074-mdio
->>>>>> +              - qcom,ipq9574-mdio
->>>>>> +              - qcom,ipq5332-mdio
->>>>>>               - const: qcom,ipq4019-mdio
->>>>>>       "#address-cells":
->>>>>> @@ -30,19 +32,71 @@ properties:
->>>>>>       reg:
->>>>>>         minItems: 1
->>>>>> -    maxItems: 2
->>>>>> +    maxItems: 5
->>>>>>         description:
->>>>>> -      the first Address and length of the register set for the MDIO controller.
->>>>>> -      the second Address and length of the register for ethernet LDO, this second
->>>>>> -      address range is only required by the platform IPQ50xx.
->>>>>> +      the first Address and length of the register set for the MDIO controller,
->>>>>> +      the optional second, third and fourth address and length of the register
->>>>>> +      for ethernet LDO, these three address range are required by the platform
->>>>>> +      IPQ50xx/IPQ5332/IPQ9574, the last address and length is for the CMN clock
->>>>>> +      to select the reference clock.
->>>>>> +
->>>>>> +  reg-names:
->>>>>> +    minItems: 1
->>>>>> +    maxItems: 5
->>>>>>       clocks:
->>>>>> +    minItems: 1
->>>>>>         items:
->>>>>>           - description: MDIO clock source frequency fixed to 100MHZ
->>>>>> +      - description: UNIPHY0 AHB clock source frequency fixed to 100MHZ
->>>>>> +      - description: UNIPHY1 AHB clock source frequency fixed to 100MHZ
->>>>>> +      - description: UNIPHY0 SYS clock source frequency fixed to 24MHZ
->>>>>> +      - description: UNIPHY1 SYS clock source frequency fixed to 24MHZ
->>>>>>       clock-names:
->>>>>> +    minItems: 1
->>>>>>         items:
->>>>>>           - const: gcc_mdio_ahb_clk
->>>>>> +      - const: gcc_uniphy0_ahb_clk
->>>>>> +      - const: gcc_uniphy1_ahb_clk
->>>>>> +      - const: gcc_uniphy0_sys_clk
->>>>>> +      - const: gcc_uniphy1_sys_clk
->>>>>
->>>>>> +  cmn-reference-clock:
->>>>>> +    oneOf:
->>>>>> +      - items:
->>>>>> +          - enum:
->>>>>> +              - 0   # CMN PLL reference internal 48MHZ
->>>>>> +              - 1   # CMN PLL reference external 25MHZ
->>>>>> +              - 2   # CMN PLL reference external 31250KHZ
->>>>>> +              - 3   # CMN PLL reference external 40MHZ
->>>>>> +              - 4   # CMN PLL reference external 48MHZ
->>>>>> +              - 5   # CMN PLL reference external 50MHZ
->>>>>> +              - 6   # CMN PLL reference internal 96MHZ
->>>>>
->>>>> Why is this not represented by an element of the clocks property?
->>>>
->>>> This property is for the reference clock source selection of CMN PLL,
->>>> CMN PLL generates the different clock rates for the different Ethernet
->>>> blocks, this CMN PLL configuration is not located in the GCC, so the
->>>> clock framework can't be used, which is the general hardware register
->>>> instead of RCG register for GCC.
->>>
->>> I don't see how the clock being provided by the "GCC" (whatever that is)
->>> or by some other clock controller or fixed clock makes a difference.
->>> Why can't the other clock provider be represented in the devicetree?
->>>
->>
->> cmn-reference-clock is for selecting the reference clock source for the
->> whole Ethernet block, which is just the standalone configure register.
-> 
-> Sure, you are aware though that all clocks are just configure registers?
-> 
-> Which clocks are these mentioned in the property? From where do they come?
-> 
-> Anyway, property is in existing form is not correct - this is not a
-> generic property.
-> 
+>
+>
+> > The other less discussed item was QoS for swap io traffic.
+> >
+> > At a first glance it seems like tires could help with the second use-ca=
+se.
+>
+> The idea is that you can select the swap tiers list for each cgroup.
+> That way  you can assign different swap QoS to different cgroup.
 
-This property cmn-reference-clock is just the hardware register 
-configuration, since the different IPQ platform needs to select
-the different reference clock source for the CMN PLL block that
-provides the various clock outputs to the all kinds of Ethernet
-devices, which is not from GCC provider.
 
-This is indeed not a generic property, which is the Ethernet
-function configs same as clock-frequency.
+Yes, it sounds like a fit.
+What use-cases did you have in mind for the tiers feature?
 
-> 
->> however the clock provider has the logical register distribution, such
->> as for one clock tree, there is RCG, DIVIDER and branch registers in
->> the qcom soc chip.
->>
->> The clock consumer defines the clock IDs of device tree to reference the
->> clocks provided by the clock controller, and these clock IDs are
->> provided by the header file of clock provider.
->>
->> like this,
->> clocks = <&gcc GCC_MDIO_AHB_CLK>,
->>
->>            <&gcc GCC_UNIPHY0_AHB_CLK>,
->>
->>            <&gcc GCC_UNIPHY1_AHB_CLK>,
->>
->>            <&gcc GCC_UNIPHY0_SYS_CLK>,
->>
->>            <&gcc GCC_UNIPHY1_SYS_CLK>;
->>
->> gcc is the device node of clock provider, and GCC_MDIO_AHB_CLK is the
->> clock ID.
-> 
-> 
-> 
-> Best regards,
-> Krzysztof
-> 
 
