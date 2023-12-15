@@ -1,104 +1,79 @@
-Return-Path: <linux-kernel+bounces-1145-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-1147-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 67196814B18
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 16:01:49 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id AABC7814B1B
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 16:02:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8976A1C239E1
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 15:01:48 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 68C972835DD
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 15:02:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 48CD237162;
-	Fri, 15 Dec 2023 15:01:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B0DAB37156;
+	Fri, 15 Dec 2023 15:01:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="QEP7jk7Q"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3DD803714C;
-	Fri, 15 Dec 2023 15:01:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id CA28CC15;
-	Fri, 15 Dec 2023 07:01:52 -0800 (PST)
-Received: from e127643.broadband (unknown [172.31.20.19])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id BB2853F5A1;
-	Fri, 15 Dec 2023 07:01:04 -0800 (PST)
-From: James Clark <james.clark@arm.com>
-To: linux-arm-kernel@lists.infradead.org,
-	linux-perf-users@vger.kernel.org,
-	linux-next@vger.kernel.org,
-	will@kernel.org,
-	u.kleine-koenig@pengutronix.de
-Cc: James Clark <james.clark@arm.com>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Nathan Chancellor <nathan@kernel.org>,
-	Nick Desaulniers <ndesaulniers@google.com>,
-	Bill Wendling <morbo@google.com>,
-	Justin Stitt <justinstitt@google.com>,
-	Anshuman Khandual <anshuman.khandual@arm.com>,
-	Suzuki K Poulose <suzuki.poulose@arm.com>,
-	linux-kernel@vger.kernel.org,
-	llvm@lists.linux.dev
-Subject: [PATCH 2/2] arm: perf: Fix ARCH=arm build with GCC in armv8pmu_set_event_filter()
-Date: Fri, 15 Dec 2023 15:00:39 +0000
-Message-Id: <20231215150040.3342183-3-james.clark@arm.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231215150040.3342183-1-james.clark@arm.com>
-References: <20231215150040.3342183-1-james.clark@arm.com>
+Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 454CE36AFF
+	for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 15:01:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=fpNr8tLv7DaR3O7eSvBZDrzrhRmQRH0saU7oGWLT/Ng=; b=QEP7jk7QKVzggKrwd8F8h78Y8i
+	Xxq+GkDU4ZLXQka8SyG5MAc6oqRvmsXdnT3l6YfPtOzsakpYEMzl4/iV7V4icASVErZ82fn8xG82Q
+	H7WPX35sxIEx+ESMNW3lj3J9A1v08xQ44JW4HOewQwkIlJr1oCxavk2JBTDqmq0JzOS3kk2l0EsuC
+	YmvPhA8C0eMlPugu4A70uwIjwQ07tjkbuCUSfEC61c/9H4bdFe7wmHLdSKZm4dwdWFtizJHmXeA8U
+	YfvrugFq3wI7xqhwlHp6b5WIkA6TyvCDDJ9cNIdgRU44UQUK6NVRpGE5LjSThBIP0wyQ5AHb29Uw8
+	JvSBWkRw==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+	id 1rE9h0-000Yy1-IV; Fri, 15 Dec 2023 15:01:34 +0000
+Date: Fri, 15 Dec 2023 15:01:34 +0000
+From: Matthew Wilcox <willy@infradead.org>
+To: Baolin Wang <baolin.wang@linux.alibaba.com>
+Cc: akpm@linux-foundation.org, david@redhat.com, ying.huang@intel.com,
+	ziy@nvidia.com, xuyu@linux.alibaba.com, linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mm: migrate: fix getting incorrect page mapping during
+ page migration
+Message-ID: <ZXxqTjZR0OAvjaXr@casper.infradead.org>
+References: <e60b17a88afc38cb32f84c3e30837ec70b343d2b.1702641709.git.baolin.wang@linux.alibaba.com>
+ <ZXxn/0oixJxxAnpF@casper.infradead.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZXxn/0oixJxxAnpF@casper.infradead.org>
 
-LLVM ignores everything inside the if statement and doesn't generate
-errors, but GCC does, resulting in the following:
+On Fri, Dec 15, 2023 at 02:51:43PM +0000, Matthew Wilcox wrote:
+> I'm not saying no to this fix, but dump_mapping() is supposed to be
+> resilient against this.  Is the issue that 'dentry' is NULL, or is it
+> some field within dentry that is NULL?  eg, would this fix your
+> case?
 
-  drivers/perf/arm_pmuv3.c: In function armv8pmu_set_event_filter:
-  include/linux/bits.h:34:29: error: left shift count >= width of type [-Werror=shift-count-overflow]
-  34 |         (((~UL(0)) - (UL(1) << (l)) + 1) & \
+Uh, dentry is an on-stack dentry.  So obviously it's a pointer within it
+that's NULL.  Maybe this, having stared at the implementation of %pd?
 
-Fix it by changing the if to #if. This results in an unused function
-warning for armv8pmu_event_threshold_control(), so suppress that too.
++++ b/fs/inode.c
+@@ -588,7 +588,8 @@ void dump_mapping(const struct address_space *mapping)
+        }
 
-Fixes: 816c26754447 ("arm64: perf: Add support for event counting threshold")
-Signed-off-by: James Clark <james.clark@arm.com>
----
- drivers/perf/arm_pmuv3.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/perf/arm_pmuv3.c b/drivers/perf/arm_pmuv3.c
-index 3ed2086cefc3..8aa23878019a 100644
---- a/drivers/perf/arm_pmuv3.c
-+++ b/drivers/perf/arm_pmuv3.c
-@@ -338,7 +338,7 @@ static bool armv8pmu_event_want_user_access(struct perf_event *event)
- 	return ATTR_CFG_GET_FLD(&event->attr, rdpmc);
- }
- 
--static u8 armv8pmu_event_threshold_control(struct perf_event_attr *attr)
-+static __maybe_unused u8 armv8pmu_event_threshold_control(struct perf_event_attr *attr)
- {
- 	u8 th_compare = ATTR_CFG_GET_FLD(attr, threshold_compare);
- 	u8 th_count = ATTR_CFG_GET_FLD(attr, threshold_count);
-@@ -1040,11 +1040,13 @@ static int armv8pmu_set_event_filter(struct hw_perf_event *event,
- 		return -EINVAL;
- 	}
- 
--	if (IS_ENABLED(CONFIG_ARM64) && th) {
-+#if IS_ENABLED(CONFIG_ARM64)
-+	if (th) {
- 		config_base |= FIELD_PREP(ARMV8_PMU_EVTYPE_TH, th);
- 		config_base |= FIELD_PREP(ARMV8_PMU_EVTYPE_TC,
- 					  armv8pmu_event_threshold_control(attr));
- 	}
-+#endif
- 
- 	/*
- 	 * Install the filter into config_base as this is used to
--- 
-2.34.1
+        dentry_ptr = container_of(dentry_first, struct dentry, d_u.d_alias);
+-       if (get_kernel_nofault(dentry, dentry_ptr)) {
++       if (get_kernel_nofault(dentry, dentry_ptr) ||
++           !dentry->d_parent || !dentry->d_name) {
+                pr_warn("aops:%ps ino:%lx invalid dentry:%px\n",
+                                a_ops, ino, dentry_ptr);
+                return;
 
 
