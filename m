@@ -1,186 +1,232 @@
-Return-Path: <linux-kernel+bounces-337-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-340-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id AD548813FA5
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 03:17:43 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C3FD6813FB3
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 03:24:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D133F1C21F7F
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 02:17:42 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F14CA283FC6
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 02:24:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B55E7A38;
-	Fri, 15 Dec 2023 02:17:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IbZRVB8E"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E4C1CA48;
+	Fri, 15 Dec 2023 02:24:31 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-yw1-f193.google.com (mail-yw1-f193.google.com [209.85.128.193])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 511BA53A0;
-	Fri, 15 Dec 2023 02:17:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f193.google.com with SMTP id 00721157ae682-5e32af77f15so1522627b3.2;
-        Thu, 14 Dec 2023 18:17:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702606650; x=1703211450; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=FHC0g7TxjnoDlXpoO2sk8yHPL9OSrBgd0saG+LoF+14=;
-        b=IbZRVB8EW/R3b40mXHkrkejAOOwssT/SXJyL/JSP0KJWXrlCirfF3BPsXS+H27/iqr
-         FPC8F5xFkIR57ANHkzCC9OWgvLsEgViZp1rIdktXClVCMNhqPjclJxA51/W9O4pnPOxv
-         taGNiM38Bxp0+o+tlJAa9y/1vDJLqjJEnOPt29D0TniO1f95CE6jql/qj9uOsMyY7co6
-         7zrKIMUMVGHEJ6YvqGA4YA+sjF2IU0X37NQjkuGQZTaJILt/J6Ibd7HLl92fUlOKhKry
-         aQ894sRyHqRyayYCoNRPRsgZla+hZetb8wLIMGXOiWAu4pk9P3iUtQJvdbcqNNlvl6p+
-         tntg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702606650; x=1703211450;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=FHC0g7TxjnoDlXpoO2sk8yHPL9OSrBgd0saG+LoF+14=;
-        b=QAEX1QRkqgj1gDSMzzkufz5Gw8kE+TJglAmdvP+MSPORjZeW4umakzKjpkAzv7E2mb
-         wCu/dUBnj3CGBPnxLehu0fezqhbPUDCElaLmLvEb5NzBw2rZia4Gu9JQ2dXXbjHPmmeQ
-         y5R6cvSUV2pHW39dH9+2jmNpLqFMhOnbp26i2qadR50yLxu8N82pOmOeFOao9oyPQCgq
-         Pj6Ynb28VuCrnDZFFZ8UiYVWriFk39rcstG0IQpb55sA4zZu9BGUHT37Dk1VT4vEehn8
-         0w3ZSzJFff5xM2NjQiudSWWxUOUKT8i+JNaxh18DY3YuOB4PrNCLElRZbv1j+/yLnEDP
-         s8vQ==
-X-Gm-Message-State: AOJu0Yzh26fi0xvl3QHNgcdSWepHKOxnx1gGAdhkWgWlYsYZ3YWF5a/w
-	10Evgbg62/fYyxUoLL1bUpQb4NUCdu7Kzoa3d1A=
-X-Google-Smtp-Source: AGHT+IHIlLEN/LIHWzGPceKJyEZmh1J+JxEJzDy6iX3IyTPLxygFgF1NxCUnebMy/N80cCQpORMWZr72Q6N861mh980=
-X-Received: by 2002:a81:8401:0:b0:5e2:b258:4e1e with SMTP id
- u1-20020a818401000000b005e2b2584e1emr3673494ywf.16.1702606649933; Thu, 14 Dec
- 2023 18:17:29 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B8E57FC;
+	Fri, 15 Dec 2023 02:24:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylinos.cn
+X-UUID: 5f9506ed13284b069b9c8d4c3b12dcb9-20231215
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.33,REQID:6ba37212-3642-47fd-9174-d574b1e86a4f,IP:25,
+	URL:0,TC:0,Content:0,EDM:0,RT:0,SF:-15,FILE:0,BULK:28,RULE:Release_Ham,ACT
+	ION:release,TS:38
+X-CID-INFO: VERSION:1.1.33,REQID:6ba37212-3642-47fd-9174-d574b1e86a4f,IP:25,UR
+	L:0,TC:0,Content:0,EDM:0,RT:0,SF:-15,FILE:0,BULK:28,RULE:Release_Ham,ACTIO
+	N:release,TS:38
+X-CID-META: VersionHash:364b77b,CLOUDID:717a32bd-2ac7-4da2-9f94-677a477649d9,B
+	ulkID:231212231719IH1VMLZ5,BulkQuantity:31,Recheck:0,SF:64|66|38|24|17|19|
+	44|102,TC:nil,Content:0,EDM:-3,IP:-2,URL:1,File:nil,Bulk:40|20,QS:nil,BEC:
+	nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
+X-CID-BVR: 0,NGT
+X-CID-BAS: 0,NGT,0,_
+X-CID-FACTOR: TF_CID_SPAM_ULS,TF_CID_SPAM_SNR,TF_CID_SPAM_FAS,TF_CID_SPAM_FSD,
+	TF_CID_SPAM_FSI,TF_CID_SPAM_OBB,TF_CID_SPAM_FCD
+X-UUID: 5f9506ed13284b069b9c8d4c3b12dcb9-20231215
+Received: from node4.com.cn [(39.156.73.12)] by mailgw
+	(envelope-from <xiongxin@kylinos.cn>)
+	(Generic MTA)
+	with ESMTP id 1143155449; Fri, 15 Dec 2023 10:18:59 +0800
+Received: from node4.com.cn (localhost [127.0.0.1])
+	by node4.com.cn (NSMail) with SMTP id B892B16001CD6;
+	Fri, 15 Dec 2023 10:18:58 +0800 (CST)
+X-ns-mid: postfix-657BB792-606681329
+Received: from [172.20.116.203] (unknown [172.20.116.203])
+	by node4.com.cn (NSMail) with ESMTPA id 6E1F516001CD6;
+	Fri, 15 Dec 2023 02:18:56 +0000 (UTC)
+Message-ID: <a6db4a82-3d04-47c0-8f29-0e2e5932face@kylinos.cn>
+Date: Fri, 15 Dec 2023 10:18:55 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231214062434.3565630-1-menglong8.dong@gmail.com>
- <20231214062434.3565630-3-menglong8.dong@gmail.com> <CAEf4BzZdLvwbh_-GNoqD=ghgK+GxgXwUBKP6yQQH=vWMP4Csqw@mail.gmail.com>
-In-Reply-To: <CAEf4BzZdLvwbh_-GNoqD=ghgK+GxgXwUBKP6yQQH=vWMP4Csqw@mail.gmail.com>
-From: Menglong Dong <menglong8.dong@gmail.com>
-Date: Fri, 15 Dec 2023 10:17:18 +0800
-Message-ID: <CADxym3Zv+cbQApEFgRVYj1p9B9i8Hyj6V4Cm5etA8dgWP2Vwqw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 2/2] selftests/bpf: activate the OP_NE login
- in range_cond()
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: andrii@kernel.org, eddyz87@gmail.com, yonghong.song@linux.dev, 
-	ast@kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com, 
-	martin.lau@linux.dev, song@kernel.org, kpsingh@kernel.org, sdf@google.com, 
-	haoluo@google.com, jolsa@kernel.org, bpf@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] irq: Resolve that mask_irq/unmask_irq may not be called
+ in pairs
+Content-Language: en-US
+To: Andy Shevchenko <andy@kernel.org>, Serge Semin <fancer.lancer@gmail.com>,
+ Thomas Gleixner <tglx@linutronix.de>
+Cc: jikos@kernel.org, benjamin.tissoires@redhat.com,
+ linux-input@vger.kernel.org, stable@vger.kernel.org,
+ Riwen Lu <luriwen@kylinos.cn>, hoan@os.amperecomputing.com,
+ linus.walleij@linaro.org, brgl@bgdev.pl, linux-gpio@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20231207014003.12919-1-xiongxin@kylinos.cn> <87ttosssxd.ffs@tglx>
+ <e125491c-4cdb-4870-924a-baeb7453bf78@kylinos.cn> <874jgnqwlo.ffs@tglx>
+ <bf4004bf-4868-4953-8d8e-0c0e03be673e@kylinos.cn> <875y12p2r0.ffs@tglx>
+ <1844c927-2dd4-49b4-a6c4-c4c176b1f75d@kylinos.cn>
+ <f5vtfoqylht5ijj6tdvxee3f3u6ywps2it7kv3fhmfsx75od2y@ftjlt4t4z4dk>
+ <ZXspNGWszB9jAown@smile.fi.intel.com>
+From: xiongxin <xiongxin@kylinos.cn>
+In-Reply-To: <ZXspNGWszB9jAown@smile.fi.intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Dec 15, 2023 at 7:24=E2=80=AFAM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
->
-> On Wed, Dec 13, 2023 at 10:28=E2=80=AFPM Menglong Dong <menglong8.dong@gm=
-ail.com> wrote:
-> >
-> > The edge range checking for the registers is supported by the verifier
-> > now, so we can activate the extended login in
-> > tools/testing/selftests/bpf/prog_tests/reg_bounds.c/range_cond() to tes=
-t
-> > such logic.
-> >
-> > Besides, I added some cases to the "crafted_cases" array for this logic=
-.
-> > These cases are mainly used to test the edge of the src reg and dst reg=
-.
-> >
-> > Signed-off-by: Menglong Dong <menglong8.dong@gmail.com>
-> > ---
-> > v2:
-> > - add some cases to the "crafted_cases"
-> > ---
-> >  .../selftests/bpf/prog_tests/reg_bounds.c     | 25 ++++++++++++++-----
-> >  1 file changed, 19 insertions(+), 6 deletions(-)
-> >
-> > diff --git a/tools/testing/selftests/bpf/prog_tests/reg_bounds.c b/tool=
-s/testing/selftests/bpf/prog_tests/reg_bounds.c
-> > index 0c9abd279e18..53b8711cfd2d 100644
-> > --- a/tools/testing/selftests/bpf/prog_tests/reg_bounds.c
-> > +++ b/tools/testing/selftests/bpf/prog_tests/reg_bounds.c
-> > @@ -590,12 +590,7 @@ static void range_cond(enum num_t t, struct range =
-x, struct range y,
-> >                 *newy =3D range(t, max_t(t, x.a, y.a), min_t(t, x.b, y.=
-b));
-> >                 break;
-> >         case OP_NE:
-> > -               /* generic case, can't derive more information */
-> > -               *newx =3D range(t, x.a, x.b);
-> > -               *newy =3D range(t, y.a, y.b);
-> > -               break;
-> > -
-> > -               /* below extended logic is not supported by verifier ju=
-st yet */
-> > +               /* below logic is supported by the verifier now */
-> >                 if (x.a =3D=3D x.b && x.a =3D=3D y.a) {
-> >                         /* X is a constant matching left side of Y */
-> >                         *newx =3D range(t, x.a, x.b);
-> > @@ -2101,6 +2096,24 @@ static struct subtest_case crafted_cases[] =3D {
-> >         {S32, S64, {(u32)(s32)S32_MIN, (u32)(s32)-255}, {(u32)(s32)-2, =
-0}},
-> >         {S32, S64, {0, 1}, {(u32)(s32)S32_MIN, (u32)(s32)S32_MIN}},
-> >         {S32, U32, {(u32)(s32)S32_MIN, (u32)(s32)S32_MIN}, {(u32)(s32)S=
-32_MIN, (u32)(s32)S32_MIN}},
-> > +
-> > +       /* edge overlap testings for BPF_NE */
-> > +       {U64, U64, {1, 1}, {1, 0x80000000}},
-> > +       {U64, S64, {1, 1}, {1, 0x80000000}},
-> > +       {U64, U32, {1, 1}, {1, 0x80000000}},
-> > +       {U64, S32, {1, 1}, {1, 0x80000000}},
-> > +       {U64, U64, {0x80000000, 0x80000000}, {1, 0x80000000}},
-> > +       {U64, S64, {0x80000000, 0x80000000}, {1, 0x80000000}},
-> > +       {U64, U32, {0x80000000, 0x80000000}, {1, 0x80000000}},
-> > +       {U64, S32, {0x80000000, 0x80000000}, {1, 0x80000000}},
-> > +       {U64, U64, {1, 0x80000000}, {1, 1}},
-> > +       {U64, S64, {1, 0x80000000}, {1, 1}},
-> > +       {U64, U32, {1, 0x80000000}, {1, 1}},
-> > +       {U64, S32, {1, 0x80000000}, {1, 1}},
-> > +       {U64, U64, {1, 0x80000000}, {0x80000000, 0x80000000}},
-> > +       {U64, S64, {1, 0x80000000}, {0x80000000, 0x80000000}},
-> > +       {U64, U32, {1, 0x80000000}, {0x80000000, 0x80000000}},
-> > +       {U64, S32, {1, 0x80000000}, {0x80000000, 0x80000000}},
->
-> JNE and JEQ are sign-agnostic, so there is no need to use both U64 and
-> S64 variants for comparison. As for the choice of values. Wouldn't it
-> make sense to use really a boundary conditions:
->
-> 0, 0xffffffffffffffff, and 0x80000000000000 for 64-bit and
-> 0, 0xffffffff, and 0x80000000 for 32-bit? For this one use U32 as the ini=
-t type?
->
+=E5=9C=A8 2023/12/15 00:11, Andy Shevchenko =E5=86=99=E9=81=93:
+> On Thu, Dec 14, 2023 at 01:06:23PM +0300, Serge Semin wrote:
+>> On Thu, Dec 14, 2023 at 09:54:06AM +0800, xiongxin wrote:
+>>> =E5=9C=A8 2023/12/13 22:59, Thomas Gleixner =E5=86=99=E9=81=93:
+>>>> On Wed, Dec 13 2023 at 10:29, xiongxin wrote:
+>>>>> =E5=9C=A8 2023/12/12 23:17, Thomas Gleixner =E5=86=99=E9=81=93:
+>>>>> Sorry, the previous reply may not have clarified the BUG process. I
+>>>>> re-debugged and confirmed it yesterday. The current BUG execution
+>>>>> sequence is described as follows:
+>>>>
+>>>> It's the sequence how this works and it works correctly.
+>>>>
+>>>> Just because it does not work on your machine it does not mean that =
+this
+>>>> is incorrect and a BUG.
+>>>>
+>>>> You are trying to fix a symptom and thereby violating guarantees of =
+the
+>>>> core code.
+>>>>
+>>>>> That is, there is a time between the 1:handle_level_irq() and
+>>>>> 3:irq_thread_fn() calls for the 2:disable_irq() call to acquire the=
+ lock
+>>>>> and then implement the irq_state_set_disabled() operation. When fin=
+ally
+>>>>> call irq_thread_fn()->irq_finalize_oneshot(), it cannot enter the
+>>>>> unmask_thread_irq() process.
+>>>>
+>>>> Correct, because the interrupt has been DISABLED in the mean time.
+>>>>
+>>>>> In this case, the gpio irq_chip irq_mask()/irq_unmask() callback pa=
+irs
+>>>>> are not called in pairs, so I think this is a BUG, but not necessar=
+ily
+>>>>> fixed from the irq core code layer.
+>>>>
+>>>> No. It is _NOT_ a BUG. unmask() is not allowed to be invoked when th=
+e
+>>>> interrupt is DISABLED. That's the last time I'm going to tell you th=
+at.
+>>>> Only enable_irq() can undo the effect of disable_irq(), period.
+>>>>
+>>>>> Next, when the gpio controller driver calls the suspend/resume proc=
+ess,
+>>>>> it is as follows:
+>>>>>
+>>>>> suspend process:
+>>>>> dwapb_gpio_suspend()
+>>>>>        ctx->int_mask   =3D dwapb_read(gpio, GPIO_INTMASK);
+>>>>>
+>>>>> resume process:
+>>>>> dwapb_gpio_resume()
+>>>>>        dwapb_write(gpio, GPIO_INTMASK, ctx->int_mask);
+>>>>
+>>>> Did you actually look at the sequence I gave you?
+>>>>
+>>>>      Suspend:
+>>>>
+>>>> 	  i2c_hid_core_suspend()
+>>>> 	     disable_irq();       <- Marks it disabled and eventually
+>>>> 				     masks it.
+>>>>
+>>>> 	  gpio_irq_suspend()
+>>>> 	     save_registers();    <- Saves masked interrupt
+>>>>
+>>>>      Resume:
+>>>>
+>>>> 	  gpio_irq_resume()
+>>>> 	     restore_registers(); <- Restores masked interrupt
+>>>>
+>>>> 	  i2c_hid_core_resume()
+>>>> 	     enable_irq();        <- Unmasks interrupt and removes the
+>>>> 				     disabled marker
+>>>>
+>>>>
+>>>> Have you verified that this order of invocations is what happens on
+>>>> your machine?
+>>>>
+>>>> Thanks,
+>>>>
+>>>>           tglx
+>>>
+>>> As described earlier, in the current situation, the irq_mask() callba=
+ck of
+>>> gpio irq_chip is called in mask_irq(), followed by the disable_irq() =
+in
+>>> i2c_hid_core_suspend(), unmask_irq() will not be executed.
+>>>
+>>> Then call enable_irq() in i2c_hid_core_resume(). Since gpio irq_chip =
+does
+>>> not implement the irq_startup() callback, it ends up calling irq_enab=
+le().
+>>>
+>>> The irq_enable() function is then implemented as follows:
+>>>
+>>> irq_state_clr_disabled(desc);
+>>> if (desc->irq_data.chip->irq_enable) {
+>>> 	desc->irq_data.chip->irq_enable(&desc->irq_data);
+>>> 	irq_state_clr_masked(desc);
+>>> } else {
+>>> 	unmask_irq(desc);
+>>> }
+>>>
+>>> Because gpio irq_chip implements irq_enable(), unmask_irq() is not ex=
+ecuted,
+>>> and gpio irq_chip's irq_unmask() callback is not called. Instead,
+>>> irq_state_clr_masked() was called to clear the masked flag.
+>>>
+>>> The irq masked behavior is actually controlled by the
+>>> irq_mask()/irq_unmask() callback function pairs in gpio irq_chip. Whe=
+n the
+>>> whole situation occurs, there is one more irq_mask() operation, or on=
+e less
+>>> irq_unmask() operation. This ends the i2c hid resume and the gpio
+>>> corresponding i2c hid interrupt is also masked.
+>>>
+>>> Please help confirm whether the current situation is a BUG, or sugges=
+t other
+>>> solutions to fix it.
+>>
+>> I has just been Cc'ed to this thread from the very start of the thread
+>> so not sure whether I fully understand the problem. But a while ago an
+>> IRQ disable/undisable-mask/unmask-unpairing problem was reported for
+>> DW APB GPIO driver implementation, but in a another context though:
+>> https://lore.kernel.org/linux-gpio/1606728979-44259-1-git-send-email-l=
+uojiaxing@huawei.com/
+>> We didn't come to a final conclusion back then, so the patch got lost
+>> in the emails archive. Xiong, is it related to the problem in your
+>> case?
+>=20
+>  From what explained it sounds to me that GPIO driver has missing part =
+and
+> this seems the missing patch (in one or another form). Perhaps we can g=
+et
+> a second round of review,
+>=20
 
-Yeah, this makes sense.
+Yes, the current case is exactly the situation described in the link,=20
+and the specific implementation process is as described in my previous=20
+email. After adding the patch for retest, the exception can be=20
+effectively solved. And at present, can the patch be incorporated?
 
-> BTW, all these cases should be tested with auto-generated tests, so
-> please make sure to run
->
-> sudo SLOW_TESTS=3D1 ./test_progs -t reg_bounds_gen -j
->
-> locally. It will take a bit of time, but should help to get confidence
-> in that everything is working and nothing regressed.
->
+Thank you Thomas for your kind advice!
 
-I have already run the slow testing (it indeed takes some time)
-and everything works well. I'll add the test results to the commit
-log in the next version too.
+My previous focus has been locked until mask_irq()/unmask_irq() is not=20
+called in pairs, in fact, it can turn on the corresponding irq masked in=20
+enable_irq. Looking at the irq_enable() callback implementation of other=20
+GPIO interrupt controllers, there are indeed operations on masked registe=
+rs.
 
-Thanks!
-Menglong Dong
-
-> >  };
-> >
-> >  /* Go over crafted hard-coded cases. This is fast, so we do it as part=
- of
-> > --
-> > 2.39.2
-> >
+Thank you all!
 
