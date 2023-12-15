@@ -1,193 +1,270 @@
-Return-Path: <linux-kernel+bounces-1678-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-1679-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8E424815200
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 22:41:37 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id ACC54815207
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 22:45:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D8B32B23928
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 21:41:34 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6289D28201D
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 21:45:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 83C2948CD4;
-	Fri, 15 Dec 2023 21:41:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8939048CC5;
+	Fri, 15 Dec 2023 21:45:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=yahoo.com header.i=@yahoo.com header.b="soRwR4Tb"
+	dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="MoWzIPNn"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from sonic302-28.consmr.mail.ne1.yahoo.com (sonic302-28.consmr.mail.ne1.yahoo.com [66.163.186.154])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from EUR04-HE1-obe.outbound.protection.outlook.com (mail-he1eur04on2081.outbound.protection.outlook.com [40.107.7.81])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 59685482C8
-	for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 21:41:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=schaufler-ca.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=schaufler-ca.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1702676482; bh=1/ESIGcwLpGZVC5X2wR8bKtmXxMiwhmiGVSgfbFIMjc=; h=Date:Subject:To:Cc:References:From:In-Reply-To:From:Subject:Reply-To; b=soRwR4TbKW8qq83crBGFNFJZk6JSk1p1EdsjVI1AeVIJYjA3gcWB9/S7oG/To78oxR0y+zL7gI0ZWDZQERShJXik4REovFJwIrczmGi7rPxKLNINdQzVWJazFJjxhgh7SlJiiNk8mWFVvtOMC0yjhX++cA8PEYNlNfG1B6BQK7l/rG5Gz53sVZDCCvgTy969pejXNOqsJYt80GMLZsN1ZaO2CTA/vrGyZVwU0+zDoL4TmOzsWT+zAi/GIGX8k7Ln44kGOSvIVxxwYkbuL2j4ZVuLii/6GACWpouikQiZbcj7fB+t4Vwqpl0NOtTEgREadZw6UlRvQqLHi8wrtWvNpA==
-X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1702676482; bh=/n9PtqtMnVFYCeiPLx4nqLz+xzIBClbzNXAThbF5kn/=; h=X-Sonic-MF:Date:Subject:To:From:From:Subject; b=gXXYbMKSwsGUHS16vuvaQ/f83CwJk/ih/IQdNhWIqBphiIIhwOathhJ4spJ8N0OrqhBVvpCQKL73pOFyYD57M+T12BSiJOHAxTgXeNgRWiS0DS4xqvKlS7sLUXbaDNTN+SDzHZWoKLY6Mrd2fhVkTZezyk2X8MQpxHJjGR25YOtwsebj0/fxRieGdBc5KoTMXvobwHgLc3UVqSqhFyuS27fcI8wcVnaBre9EmrulitCA2iv89VeeokASSsyuNJ0m6jBVHMp3yQi7NYDjedsJIyzVlQiYvlJZ3E6yp/onsn0u079WE9Wer0CT4yc5L/tTgL9deZ1nXPT+gf8wmC209g==
-X-YMail-OSG: D7Z.78wVM1kMAAl.AP4Ohbxq7pxxE2vCTH.TTDoOTWhJXFzHiIW8fzXM6EpjUZo
- H.Qr5dkmyEbmJL_lUjot9ivQl.FrTVUsdw3OPT4fvkUX7fqyKRD2rOgG7CmvSRoTJRwc5sQ78iWR
- nEVNGNzLp0hIv.O8VJXdhKPdSCdXF507Minl0Bx5jKXQrghr8vQNWlSWchWJ20jPVDkW6DKJyhBp
- 4j9PiD_LJg9pqiY6TJLfLuwze6yxr2aH5X4JFLEfBShu_zyt4he6cb10DkENactrDlohkRCqnbIa
- ubJB6B6DacYgyqHMx._dO8hlMLKNz27t4QIGwx4v8.YK1gVZfXBaCDKxHvK.e36Zv9dfY4lrUxdG
- dHi8A1Th8oG6e4FKsfb7Qplnz13twPw7SsCP1jeiITHq60pJ.6Q5wePB.aYd5xxVYAhK6hRH0xXX
- 17CySSdkeKqZZnocIVXaOY7UTMniRVuJKKCnzk7wKbB9_ryacVu1GzjpOX3DITelqOilnrU3XwZK
- uS3vsJpT1Mw2TE.RL2TdDV8EMSGUYWTBU1w3D3pVkrcfE88ecykkNLeom3F0SMCLO9uxny3kltb9
- w40zzhzclF.E9GolNWLGsN.XYtMbSa3G8xo0JDrDXP9Nyk1ZkjpPlvydOsdiBRZwk275Gh9xf_MX
- mzHzKy3YN5.0THByKKGqbZwfcbM03iDlxNUb26bbpZrcBJLLrjhJVDLOPcGOWMwS0oeFkmN9islb
- RyctHdCv1Pw.MG_f6yXZvt.C_uKODSLGS5V7EyhkeZGlgQCTdhZasGu.RInvnifDqPKRBBelxFw0
- Ne1IBjLG_D5FOPYAg3HT6CVICTiOHsxbM0c5RsLr2T4i76AQZeP01D3tKk1KXqVhlxs04ptdHOmI
- cZo4LOREk3zGmja5OEoeUVjpsqEnqrkZzamj0sWVE8wOsCL.4BJCRIahtgMu.xSUOlgcmBmWuMc4
- lGvPSqJ.xAqux73Ua0JqzI5_.oe_DdkpLfC0CSNOf.0of4trOLGJqj7zUgZSZMVN9hAh28THgn.7
- b3o4Yjim_lmXkIrLsOgHFFqKnq16HdmOhAW4N9t7ZesYCIOjk6Qc0VFg77i7IQtw2UsbjBDIcuTj
- NVwAf84qHQPKzsG1Uifz7ZAXNMR1RqUo92JUnEznBcHKnCd1t1gayQtVLJsOUoQDT3P0I4.AMhQU
- WYvSQY3018_Q3FBtUVq3zGeItDQ2eRrmbETeK3inIedg8pMSoPLuzWawakO0wUII0D1yeMaDp2Gm
- 9RHgjBx6eBfe9ZwLs4jDwASiaHDlEAeUws6ZvmNIrlZGZpKDnBJCPclS_SI4_QZDCJmhFny.DdHr
- Y17AjBXTENldZbUp2vnqMh3w.6RusPC.rSwYxHDAk4eyA51JBpmAdefxd1lE5gBbSDAXaxXd2zNY
- WdEmOP.0c5m7YFxevi9SZksgaPUyo3.v1cd6lnhTyoQnrQWwyqA7iEwEtxSXHe3b_2XNxCqzcc5h
- WBJW0lR884XO8T8_e9Nhz4DIDkXxfaddG1rRUJh1XW7JpF9tJCYSbnpfBzn_B1wqUuDHigZYaVjx
- DfJia2SqAJuiY95XNznRbsPm0Kawct6H8xznHLR8Qa64SQTQlE_glAv9dmdEwP1ZPOksg6_xGALE
- izmuf.TNE41D7tUlZbHTlB2W2lLrzbN92tKXuH0HYAq44GlEq02JodJlsKl1GrwgM3aKJKKN3BHp
- Jz4pWRBpel6uyawoxJOwziScfcm2xIh_fSgM4iLxfz0OL_CS5QGeuQfYT0dMFHkwlkBhJXJ5iC9r
- kAa_9Y_nVJcqbkTfVNEwVfmNbEW5FDU157e2qaLLFFDF3hbO9TJAylO2Ecg.MXnHmcS4cS57l1Wy
- fxd9Vn0eIEfIXtae8YxVfcpq7u7V7blM2DdTREYTNd86Wuddqy7Xe7jOl9hp6PbQRM3EUyBRuDQD
- PCe1ivtejt5hja4IXWtI06NtOIH0vAG4_6ycAHILQHYOFZKC8pueA_som9PWxssj0eQKojWkphL1
- 1vOLQuVl7G3AybsTXIjzXgc6sTitnb9_uExmEDN4QeAJkcAPZGWT3PNNDffArE.H76MX_kjHWILg
- 5VI.aWlXFOa.B4Oh.OfpkxzQYWoWE2D35lyNLxlwiuTpUzhWdjoeJGlQp5ClkVltl3nF2oULUXsO
- FH4gLZXciyREFnl30wnSS94u6w0ZBVKaGNETz9Utpenp0JGVwdklafQokOmRf0gr4s8y9Ocv9vEh
- qOiNRPtHRWRmRsjtR6yFWmeyMfEChE3Ho5Q2PMWHC
-X-Sonic-MF: <casey@schaufler-ca.com>
-X-Sonic-ID: e79f5337-3e62-4527-b030-e0a3b0d998cd
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic302.consmr.mail.ne1.yahoo.com with HTTP; Fri, 15 Dec 2023 21:41:22 +0000
-Received: by hermes--production-gq1-6949d6d8f9-bvfr7 (Yahoo Inc. Hermes SMTP Server) with ESMTPA ID fe5a77b47a76a7cd1cc4bf39259b4cdf;
-          Fri, 15 Dec 2023 21:41:19 +0000 (UTC)
-Message-ID: <a9a4f233-4867-41a1-8c1d-11d20226c491@schaufler-ca.com>
-Date: Fri, 15 Dec 2023 13:41:18 -0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 52404358B0;
+	Fri, 15 Dec 2023 21:45:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=hmrxNDOL9ik2SY4x9SlWtGwwjZjhNqOSqz8uX3VKeTDg/av/vBXuU/RlvGL1zzbhM+fUqQLs/YjM1d9XrPT9kwX2/eULYr+w4wFojmOIJjZ6ET6Lt+4vsfbnTbjjx8FcycbrkERLUKPpEaNVLbxtue70E3Vsanq5LM28A8e+xatrTZOytK4nabnZ4WpB7Tfm5BgFy4k7BUTdAI8dVTj59RvR7jvZ9kEhB6hTYyNNrC4qcVMMe27rgdezpL7Bb5X1CHVd+vbsoCcAwTlr0EtcvZpAARxGv/dz6T5Kg02uTTP7JoePEWdMdmpKLQv1KOu8L4394mFsBEpS0V+kdoluRw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=f06pJ8dPs7Tni5hIzB5LrTXTg8HTsmftsVMug+ylt0w=;
+ b=FjfVdVca3vsjY3fMa9CTK9rhhRRhpYtlWDNw/9gIkTU7OltYqDpBGxg1eO4b+LtHYsqCbmpw0Cix2s2N1uE+ippY6XUBgtU+LbcjRcFa9Ft1yl9K31k+yYV5FMJbFFZij3vWsRTPr1WDVK0/hkh5SPN+ehyCQR7hhIp3tQSGZL/+zpzahhZmyakz2BySS01tMcldSvugD84uXUxotcGvpusNTYivtzMl2nPo797ruYllQ817IIt1jCB7NNCBzXejPOwTxcB92k4rmSqnBo09Llt4ah+GeAlLXkqON0eXSeglue/K/j6gTQMR/3hiM4TK9eCD/wnyZ6V55Z2i7ZCfRg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=f06pJ8dPs7Tni5hIzB5LrTXTg8HTsmftsVMug+ylt0w=;
+ b=MoWzIPNnhVz4+3Dykoi1MS+24Rhlg8pF/FVwJkTN7K6JA+ADxT+9GIG9MZkZP5iqIApPsnjjjITiykq8lClWxRzjGb/4CJTUUNsmlVZZKSqd5vesmjrt57Yqo1WuiOX49FL27ZaezabQ4hFhQjCpz5lQ7aHLgNLzdHGT0yQsJng=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+Received: from AM0PR04MB6452.eurprd04.prod.outlook.com (2603:10a6:208:16d::21)
+ by DU2PR04MB8823.eurprd04.prod.outlook.com (2603:10a6:10:2e2::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7091.31; Fri, 15 Dec
+ 2023 21:45:27 +0000
+Received: from AM0PR04MB6452.eurprd04.prod.outlook.com
+ ([fe80::dd33:f07:7cfd:afa4]) by AM0PR04MB6452.eurprd04.prod.outlook.com
+ ([fe80::dd33:f07:7cfd:afa4%7]) with mapi id 15.20.7091.030; Fri, 15 Dec 2023
+ 21:45:27 +0000
+Date: Fri, 15 Dec 2023 23:45:23 +0200
+From: Vladimir Oltean <vladimir.oltean@nxp.com>
+To: Maxime Chevallier <maxime.chevallier@bootlin.com>
+Cc: davem@davemloft.net, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org, thomas.petazzoni@bootlin.com,
+	Andrew Lunn <andrew@lunn.ch>, Jakub Kicinski <kuba@kernel.org>,
+	Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>,
+	Russell King <linux@armlinux.org.uk>,
+	linux-arm-kernel@lists.infradead.org,
+	Christophe Leroy <christophe.leroy@csgroup.eu>,
+	Herve Codina <herve.codina@bootlin.com>,
+	Florian Fainelli <f.fainelli@gmail.com>,
+	Heiner Kallweit <hkallweit1@gmail.com>,
+	=?utf-8?B?S8O2cnk=?= Maincent <kory.maincent@bootlin.com>,
+	Jesse Brandeburg <jesse.brandeburg@intel.com>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Marek =?utf-8?B?QmVow7pu?= <kabel@kernel.org>,
+	Piergiorgio Beruto <piergiorgio.beruto@gmail.com>,
+	Oleksij Rempel <o.rempel@pengutronix.de>,
+	=?utf-8?Q?Nicol=C3=B2?= Veronese <nicveronese@gmail.com>
+Subject: Re: [PATCH net-next v4 01/13] net: phy: Introduce ethernet link
+ topology representation
+Message-ID: <20231215214523.ntk5kec32mb5vqjs@skbuf>
+References: <20231215171237.1152563-1-maxime.chevallier@bootlin.com>
+ <20231215171237.1152563-1-maxime.chevallier@bootlin.com>
+ <20231215171237.1152563-2-maxime.chevallier@bootlin.com>
+ <20231215171237.1152563-2-maxime.chevallier@bootlin.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231215171237.1152563-2-maxime.chevallier@bootlin.com>
+ <20231215171237.1152563-2-maxime.chevallier@bootlin.com>
+X-ClientProxiedBy: VI1PR0102CA0078.eurprd01.prod.exchangelabs.com
+ (2603:10a6:803:15::19) To AM0PR04MB6452.eurprd04.prod.outlook.com
+ (2603:10a6:208:16d::21)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v8 13/24] security: Introduce file_release hook
-Content-Language: en-US
-To: Roberto Sassu <roberto.sassu@huaweicloud.com>, viro@zeniv.linux.org.uk,
- brauner@kernel.org, chuck.lever@oracle.com, jlayton@kernel.org,
- neilb@suse.de, kolga@netapp.com, Dai.Ngo@oracle.com, tom@talpey.com,
- paul@paul-moore.com, jmorris@namei.org, serge@hallyn.com,
- zohar@linux.ibm.com, dmitry.kasatkin@gmail.com, dhowells@redhat.com,
- jarkko@kernel.org, stephen.smalley.work@gmail.com, eparis@parisplace.org,
- shuah@kernel.org, mic@digikod.net
-Cc: linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-nfs@vger.kernel.org, linux-security-module@vger.kernel.org,
- linux-integrity@vger.kernel.org, keyrings@vger.kernel.org,
- selinux@vger.kernel.org, linux-kselftest@vger.kernel.org,
- Roberto Sassu <roberto.sassu@huawei.com>,
- Casey Schaufler <casey@schaufler-ca.com>
-References: <20231214170834.3324559-1-roberto.sassu@huaweicloud.com>
- <20231214170834.3324559-14-roberto.sassu@huaweicloud.com>
-From: Casey Schaufler <casey@schaufler-ca.com>
-In-Reply-To: <20231214170834.3324559-14-roberto.sassu@huaweicloud.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Mailer: WebService/1.1.21952 mail.backend.jedi.jws.acl:role.jedi.acl.token.atz.jws.hermes.yahoo
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: AM0PR04MB6452:EE_|DU2PR04MB8823:EE_
+X-MS-Office365-Filtering-Correlation-Id: 1bfc1dfc-ec51-499e-a7f8-08dbfdb72689
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	zhgkncRdcLUlLSDLXlRjanNV0H0htOKWFMBgSA49wz61BuQxNivlY2RFNrx1T4RLhVVFQCDi151Q5DCEpVAhrBFdqoaZP+P2sgig5trSDbgPvl1zS4GAb2NRRK0ZhsOwOimBcU0lritLjtyxsWJMfcv9u0ojjRpghmo8lgE0kNtkjaqCL0Gqf3HDXJ0/fAgVO9qAu8vjC3pqyQYEugWxr2bPl0ApPCcJFtOqfi3kZdL115HE+/7pPvlBwwMCqgHkLXMgTbQdvFDvGVumHDOyMeYG5dO4mAaPBTVO6nygvkdenR6pgL3b8KTwQsA9q5qD/e1aF9ZLcGKT0yDsQxQbgG4D/Q5uwJeNg1QPJpTz87fhaitZjvXjSGempZudysL91VsREXiWyrE+rmgJK0G90fZYPW1omA/eiB/3R2LSXqePpL59L+sojR4MJ1iYVhjEMMcbNztj+N96Pdqg+EufVobxLNpDitZnHE81TRyadkSd2vFKXTZKb/zKGq+4OEv3ibmSBO1QhgGRjJeA79hyrqzezwb/fY4OR1fzm3w2+l6HHS+5FgcToPhWXkvtZQhJA0AyDkgLpx41CTTxbhAj7obpNdFBxPaw76hpmMKGZdwdTmqG2MWXSBQ2lqSgM0O9
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR04MB6452.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(366004)(396003)(39860400002)(136003)(346002)(376002)(230922051799003)(230173577357003)(230273577357003)(451199024)(1800799012)(186009)(64100799003)(26005)(6506007)(1076003)(86362001)(38100700002)(83380400001)(4326008)(5660300002)(44832011)(7416002)(6512007)(9686003)(6666004)(6916009)(316002)(66946007)(8676002)(6486002)(8936002)(54906003)(66556008)(66476007)(2906002)(41300700001)(33716001)(478600001)(45080400002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?6Xs1Xq13eGdp3xcpNSB3Yyk55AEXo95fDwrue4g6hBWrbQT2TkvZlO/Jn5fV?=
+ =?us-ascii?Q?n912z9dQy2HfuGobofhixCRptQ8vkUARg/6b3AUKYSic1YuBW87GEb6MMUip?=
+ =?us-ascii?Q?9VWBkllUzzXq7UxewCFA61+OEIo4936k3PyU9yLLGJuJMiBB8Spe6UXVDL4P?=
+ =?us-ascii?Q?IniUQMfWYxoKElVs8xh087iTsqG1BnVJqfMdRurC4oSllEe45NSf7ga8Yk5e?=
+ =?us-ascii?Q?PEBvdT89KgX/rwxCICeTI25k51Q/jQlCVk0JBk/Op6lREQNVD2zJzsDzxlrX?=
+ =?us-ascii?Q?FrKwOA1oOZ07LMywYT/E9Ey9cW/wX1anYbxyqGs+fEfxQhaaWtVPbOqkPJ5O?=
+ =?us-ascii?Q?moyzqoFLQnBo4QjRkeTkqMS0oQbcuLnNrE08wVPmLItAMJYGi5Z+BUw6sgll?=
+ =?us-ascii?Q?fqnTbgYlXMmQHKy5/HwbdGTpD57RPXmemr8YwWdWl/v8IA7Q7lseiNNKkbGR?=
+ =?us-ascii?Q?9EElTcQ8CyJvsNjpUMtfx9aNjwe806E/X5m8ZJ5AoCFtsR2FAriJJ43rIdY0?=
+ =?us-ascii?Q?d/DOeemFz1Ic5EhLThnI+oZg6lP9oh9Hnm9ohqJGJ9PxAtO6p4ZpIwiitD2Z?=
+ =?us-ascii?Q?+kOTkz+axkYGgg98QkqKRY7PRBpB6MJjP8S2ZqQrIaQXxmpPTeZbKTYRskCm?=
+ =?us-ascii?Q?fp/RlhlMkC+eUV19v4U45OMmm1oBLYqgBc65rlLE/6l/Blom6qtrPQa/XKoj?=
+ =?us-ascii?Q?kwytYKWU1lVaP9U+ZRjkyFHJeazf2cH7zsyOUfFTBX55jRicxCukKg0b+RHP?=
+ =?us-ascii?Q?u3cogWNx2rJOFLRrAOcx9mzA4X57M4Nk/tgtjKVEckNLgiY/H+uUEtvZPKvi?=
+ =?us-ascii?Q?+Ow9jX2w7DxR3qMarU57YSRZcoKQTX187ar4jPM7RQGxGJuqfMJNYsZOhRoI?=
+ =?us-ascii?Q?nkxQIOgibID9FrjfUN/gx9p8oa6LXw1qXTyCAeZAvQRFXWwEJNbcOofz3Mgc?=
+ =?us-ascii?Q?KIw6Ngq9pkE9r6AGq8y9aRhj8KpaTBQvK6jlXdV5mLnbZlDxKNCK83yQqzDl?=
+ =?us-ascii?Q?H0r6uy4Jkspm56JkN5q4mXtGeC65WLxQYrCKuZcYQiKM+8+ro+wmJHxc9iIE?=
+ =?us-ascii?Q?83sk1hFk14lPH1jfYDpwzrlpT4GW1rTb94R2WUqznMLpd7fpjVjygLlaKNp3?=
+ =?us-ascii?Q?/XLS+sEXEeYfvbw0XprUvp3jmw/mof9T5xscvLt54gA/5abGEszLKT+fTSDb?=
+ =?us-ascii?Q?gDbX4gLqxMK1yCb+Pc4SZ7tElgnZTr+DlqPlYJ7vOm/mQ4Ex4Zrzk3tEV9rZ?=
+ =?us-ascii?Q?rJLMsK7nEXgOPZZcgtGJs9kvwmBIiCcqkzoi8zNb3d4ll6aZqGvktfWc/+Zs?=
+ =?us-ascii?Q?YDXvO5jFlkLlBw7eoHIh4+CJcpDUTmG+kDtrA3tqWhPga0+6VaTspFBsitBN?=
+ =?us-ascii?Q?EyOkUivqHOUYSTSiCLTxLmrfes3JaPNKR9mcqqL/Ra5IcEMIHlE/ro8sl+86?=
+ =?us-ascii?Q?f0Ti+8Qine3sVel2TmLhHuzKmgfQ03VlfWWd/aZZ/FJN8zV5UPyt6n0waeFE?=
+ =?us-ascii?Q?zxttb4sPjoCSUK9Yn8hmw2ZNmWpwXaqWYaSMUL1qXhgHN6Qs4cBL4FmSGm6u?=
+ =?us-ascii?Q?/BNQcu8VSnx0NqISM3t0PzNs7F3cbPvTO3XRwaF1euKUeDwKGuv0OgGXQUj/?=
+ =?us-ascii?Q?Lg=3D=3D?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1bfc1dfc-ec51-499e-a7f8-08dbfdb72689
+X-MS-Exchange-CrossTenant-AuthSource: AM0PR04MB6452.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Dec 2023 21:45:27.2991
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 5ccs/ewb2ZZ134BcVDPn4SvIC0V5ANB5exj9my/Ju2x7FK9riueFxqidMCIS+dewwdyjWWfOTFyZsIIm1nFB5A==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DU2PR04MB8823
 
-On 12/14/2023 9:08 AM, Roberto Sassu wrote:
-> From: Roberto Sassu <roberto.sassu@huawei.com>
->
-> In preparation for moving IMA and EVM to the LSM infrastructure, introduce
-> the file_release hook.
->
-> IMA calculates at file close the new digest of the file content and writes
-> it to security.ima, so that appraisal at next file access succeeds.
->
-> LSMs could also take some action before the last reference of a file is
-> released.
-
-You could make this more convincing with an example. Perhaps:
-
-An LSM could implement an exclusive access scheme for files,
-only allowing access to files that have no references.
-
-
->
-> The new hook cannot return an error and cannot cause the operation to be
-> reverted.
->
-> Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
-> ---
->  fs/file_table.c               |  1 +
->  include/linux/lsm_hook_defs.h |  1 +
->  include/linux/security.h      |  4 ++++
->  security/security.c           | 11 +++++++++++
->  4 files changed, 17 insertions(+)
->
-> diff --git a/fs/file_table.c b/fs/file_table.c
-> index de4a2915bfd4..c72dc75f2bd3 100644
-> --- a/fs/file_table.c
-> +++ b/fs/file_table.c
-> @@ -385,6 +385,7 @@ static void __fput(struct file *file)
->  	eventpoll_release(file);
->  	locks_remove_file(file);
+On Fri, Dec 15, 2023 at 06:12:23PM +0100, Maxime Chevallier wrote:
+> diff --git a/drivers/net/phy/phy_device.c b/drivers/net/phy/phy_device.c
+> index d8e9335d415c..89daaccc9276 100644
+> --- a/drivers/net/phy/phy_device.c
+> +++ b/drivers/net/phy/phy_device.c
+> @@ -1491,6 +1500,11 @@ int phy_attach_direct(struct net_device *dev, struct phy_device *phydev,
 >  
-> +	security_file_release(file);
->  	ima_file_free(file);
->  	if (unlikely(file->f_flags & FASYNC)) {
->  		if (file->f_op->fasync)
-> diff --git a/include/linux/lsm_hook_defs.h b/include/linux/lsm_hook_defs.h
-> index e2b45fee94e2..175ca00a6b1d 100644
-> --- a/include/linux/lsm_hook_defs.h
-> +++ b/include/linux/lsm_hook_defs.h
-> @@ -173,6 +173,7 @@ LSM_HOOK(int, 0, kernfs_init_security, struct kernfs_node *kn_dir,
->  	 struct kernfs_node *kn)
->  LSM_HOOK(int, 0, file_permission, struct file *file, int mask)
->  LSM_HOOK(int, 0, file_alloc_security, struct file *file)
-> +LSM_HOOK(void, LSM_RET_VOID, file_release, struct file *file)
->  LSM_HOOK(void, LSM_RET_VOID, file_free_security, struct file *file)
->  LSM_HOOK(int, 0, file_ioctl, struct file *file, unsigned int cmd,
->  	 unsigned long arg)
-> diff --git a/include/linux/security.h b/include/linux/security.h
-> index c360458920b1..4c3585e3dcb4 100644
-> --- a/include/linux/security.h
-> +++ b/include/linux/security.h
-> @@ -395,6 +395,7 @@ int security_kernfs_init_security(struct kernfs_node *kn_dir,
->  				  struct kernfs_node *kn);
->  int security_file_permission(struct file *file, int mask);
->  int security_file_alloc(struct file *file);
-> +void security_file_release(struct file *file);
->  void security_file_free(struct file *file);
->  int security_file_ioctl(struct file *file, unsigned int cmd, unsigned long arg);
->  int security_mmap_file(struct file *file, unsigned long prot,
-> @@ -1006,6 +1007,9 @@ static inline int security_file_alloc(struct file *file)
->  	return 0;
->  }
->  
-> +static inline void security_file_release(struct file *file)
-> +{ }
+>  		if (phydev->sfp_bus_attached)
+>  			dev->sfp_bus = phydev->sfp_bus;
 > +
->  static inline void security_file_free(struct file *file)
->  { }
+> +		err = phy_link_topo_add_phy(&dev->link_topo, phydev,
+> +					    PHY_UPSTREAM_MAC, dev);
+> +		if (err)
+> +			goto error;
+>  	}
 >  
-> diff --git a/security/security.c b/security/security.c
-> index fe6a160afc35..9aa072ca5a19 100644
-> --- a/security/security.c
-> +++ b/security/security.c
-> @@ -2724,6 +2724,17 @@ int security_file_alloc(struct file *file)
->  	return rc;
->  }
+>  	/* Some Ethernet drivers try to connect to a PHY device before
+> @@ -1816,6 +1830,7 @@ void phy_detach(struct phy_device *phydev)
+>  	if (dev) {
+>  		phydev->attached_dev->phydev = NULL;
+>  		phydev->attached_dev = NULL;
+> +		phy_link_topo_del_phy(&dev->link_topo, phydev);
+>  	}
+>  	phydev->phylink = NULL;
 >  
-> +/**
-> + * security_file_release() - Perform actions before releasing the file ref
-> + * @file: the file
-> + *
-> + * Perform actions before releasing the last reference to a file.
-> + */
-> +void security_file_release(struct file *file)
+> diff --git a/drivers/net/phy/phy_link_topology.c b/drivers/net/phy/phy_link_topology.c
+> new file mode 100644
+> index 000000000000..22f6372d002c
+> --- /dev/null
+> +++ b/drivers/net/phy/phy_link_topology.c
+> +int phy_link_topo_add_phy(struct phy_link_topology *topo,
+> +			  struct phy_device *phy,
+> +			  enum phy_upstream upt, void *upstream)
 > +{
-> +	call_void_hook(file_release, file);
-> +}
+> +	struct phy_device_node *pdn;
+> +	int ret;
 > +
->  /**
->   * security_file_free() - Free a file's LSM blob
->   * @file: the file
+> +	/* Protects phy and upstream */
+> +	ASSERT_RTNL();
+
+Something to think for the PHY library maintainers. This is probably
+the first time when the rtnl_lock() requirement is asserted at
+phy_attach_direct() time.
+
+I haven't done too much with the patch set yet, so I don't understand
+exactly from the comment what this is protecting. But I get the
+following assertion failure with DSA:
+
+[    4.157160] ------------[ cut here ]------------
+[    4.161805] RTNL: assertion failed at drivers/net/phy/phy_link_topology.c (35)
+[    4.169124] WARNING: CPU: 0 PID: 26 at drivers/net/phy/phy_link_topology.c:35 phy_link_topo_add_phy+0x128/0x130
+[    4.179263] Modules linked in:
+[    4.209232] pc : phy_link_topo_add_phy+0x128/0x130
+[    4.214040] lr : phy_link_topo_add_phy+0x128/0x130
+[    4.293822] Call trace:
+[    4.296271]  phy_link_topo_add_phy+0x128/0x130
+[    4.300730]  phy_attach_direct+0xbc/0x3c4
+[    4.304752]  phylink_fwnode_phy_connect+0xa8/0xf8
+[    4.309473]  phylink_of_phy_connect+0x1c/0x28
+[    4.313844]  dsa_user_create+0x318/0x5ac
+[    4.317778]  dsa_port_setup+0x100/0x144
+[    4.321626]  dsa_register_switch+0xe90/0x11f8
+[    4.325997]  sja1105_probe+0x2bc/0x2e4
+[    4.329759]  spi_probe+0xa4/0xc4
+[    4.332995]  really_probe+0x16c/0x3fc
+[    4.336669]  __driver_probe_device+0xa4/0x168
+[    4.341041]  driver_probe_device+0x3c/0x220
+[    4.345238]  __device_attach_driver+0x128/0x1cc
+[    4.349784]  bus_for_each_drv+0xf4/0x14c
+[    4.353719]  __device_attach+0xfc/0x1bc
+[    4.357567]  device_initial_probe+0x14/0x20
+[    4.361764]  bus_probe_device+0x94/0x100
+[    4.385371] ---[ end trace 0000000000000000 ]---
+
+Someone please correct me if I'm wrong, but at least up until now, calling
+this unlocked has been quite harmless, because we call dsa_user_phy_setup()
+before register_netdevice(), and thus, the net_device is pretty much
+inaccessible to the world when we attach it to the PHY.
+
+And, while having the phydev->attached_dev pointer populated technically
+makes the net_device now accessible from the PHY, this is a moot point,
+because no user space command targets the PHY directly. They all target
+the netdev, and through that, netdev->phydev. The netdev is still
+unregistered, so it's ok to not have rtnl_lock().
+
+It is rather going to be something that concerns those drivers which call
+phy_attach_direct() after registering, for example from ndo_open().
+
+Interestingly, phylink_disconnect_phy() has an ASSERT_RTNL() in it
+even though the phylink_attach_phy() derivatives do not. I'm unable
+to ascertain whether a previous unregister_netdevice() call makes this
+requirement redundant or not.
+
+> +
+> +	pdn = kzalloc(sizeof(*pdn), GFP_KERNEL);
+> +	if (!pdn)
+> +		return -ENOMEM;
+> +
+> +	pdn->phy = phy;
+> +	switch (upt) {
+> +	case PHY_UPSTREAM_MAC:
+> +		pdn->upstream.netdev = (struct net_device *)upstream;
+> +		if (phy_on_sfp(phy))
+> +			pdn->parent_sfp_bus = pdn->upstream.netdev->sfp_bus;
+> +		break;
+> +	case PHY_UPSTREAM_PHY:
+> +		pdn->upstream.phydev = (struct phy_device *)upstream;
+> +		if (phy_on_sfp(phy))
+> +			pdn->parent_sfp_bus = pdn->upstream.phydev->sfp_bus;
+> +		break;
+> +	default:
+> +		ret = -EINVAL;
+> +		goto err;
+> +	}
+> +	pdn->upstream_type = upt;
+> +
+> +	ret = xa_alloc_cyclic(&topo->phys, &phy->phyindex, pdn, xa_limit_32b,
+> +			      &topo->next_phy_index, GFP_KERNEL);
+> +	if (ret)
+> +		goto err;
+> +
+> +	return 0;
+> +
+> +err:
+> +	kfree(pdn);
+> +	return ret;
+> +}
+> +EXPORT_SYMBOL_GPL(phy_link_topo_add_phy);
 
