@@ -1,120 +1,185 @@
-Return-Path: <linux-kernel+bounces-499-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-500-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B447A8141FD
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 07:51:41 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4FCB4814202
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 07:55:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7150C2839AA
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 06:51:40 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0CE732833C8
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 06:55:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 011E610A17;
-	Fri, 15 Dec 2023 06:50:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B70F7D28D;
+	Fri, 15 Dec 2023 06:55:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="XqoU46jL"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ODUYZIqb"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f174.google.com (mail-pf1-f174.google.com [209.85.210.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DDF5C10973
-	for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 06:50:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1702623055;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=gC1JfTqJ9MdUe1APXMHHq5zDpWh9AyaHnyrlMTWegK8=;
-	b=XqoU46jL1Bh3WtccXXgH6rvYZRpoLu0bjfk8IM6ElRfGcPNNwdCUmCxn77SUg4k4n+Dh3x
-	hYswT7fxTuQEKADEc98Oht1FFxH8WRkaWH0AfE3TDB2UHY/+5q4qX7bwjN/MmM32gaEmkJ
-	qTr4Tb+Y/7v6AzNWiXUKn0z/e1Ln0+g=
-Received: from mail-qv1-f71.google.com (mail-qv1-f71.google.com
- [209.85.219.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-206-qAK8QrfwP62FmMy7sYAxog-1; Fri, 15 Dec 2023 01:50:54 -0500
-X-MC-Unique: qAK8QrfwP62FmMy7sYAxog-1
-Received: by mail-qv1-f71.google.com with SMTP id 6a1803df08f44-67ee87ff6bfso4080336d6.3
-        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 22:50:53 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702623052; x=1703227852;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD716D268
+	for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 06:55:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f174.google.com with SMTP id d2e1a72fcca58-6ceba6c4b8dso280631b3a.1
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 22:55:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1702623313; x=1703228113; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=gC1JfTqJ9MdUe1APXMHHq5zDpWh9AyaHnyrlMTWegK8=;
-        b=wJRm1ebLriy4eQYtpQy4vf05auCatoXsswvBCu2iwm6PGFO0MsmZouNpmeVTphjgtX
-         Eg2gLZVx0inYEkJGwTbPbELMB6O7ECbQE0zcUJuUYzpC9hzsA2xq8qY9eiP+aSMVQMnd
-         QxNb6i9yDp9nRUB76BqexaX06jfNLkML6nzaEQaQiX91pTltVu8CSzAAdHjMUGLrqG53
-         7x1kCMzN5lE/A3QmSrfN47f6XGl9ujMBkrold3bR/Bp1ABQ1q4ahZtuymvfdMPUOr/Kz
-         T2oYoXIhB+TeO7p6FXpWV+tBLuSt3eHF/arwzTzyYAZVmuXr/63Kcyb2zPu2tdN4Bcfx
-         xdFQ==
-X-Gm-Message-State: AOJu0YxzF7X23flb0prAzzVm+x8cJtJq6hUUBN7/6wzxK/iZ9nWeLbFu
-	/mRr/wypK8AgfIaxdqngKhiS9PKqYIjYp3x6lccNSfv+o6i+yVVaPvIzGZ/ZtLaUUYRHkSORfd0
-	WKRLBGo8c1QaNNMuFXeclk58sX0q7SWfn
-X-Received: by 2002:a05:620a:3915:b0:77d:8f07:d3da with SMTP id qr21-20020a05620a391500b0077d8f07d3damr10429259qkn.40.1702623052599;
-        Thu, 14 Dec 2023 22:50:52 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IE/EZu1ps9aGyJ7Sllj9zA4OsO2Apdl51SLBU4Ps4/yFiYnMt07yhuanoyj0rF1fUln4ONaEQ==
-X-Received: by 2002:a05:620a:3915:b0:77d:8f07:d3da with SMTP id qr21-20020a05620a391500b0077d8f07d3damr10429254qkn.40.1702623052330;
-        Thu, 14 Dec 2023 22:50:52 -0800 (PST)
-Received: from localhost.localdomain ([151.29.78.8])
-        by smtp.gmail.com with ESMTPSA id b19-20020a05620a271300b0077d7eaefc08sm5876283qkp.87.2023.12.14.22.50.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Dec 2023 22:50:51 -0800 (PST)
-Date: Fri, 15 Dec 2023 07:50:46 +0100
-From: Juri Lelli <juri.lelli@redhat.com>
-To: Tejun Heo <tj@kernel.org>
-Cc: Aaron Tomlin <atomlin@atomlin.com>, linux-kernel@vger.kernel.org,
-	jiangshanlai@gmail.com, peterz@infradead.org
-Subject: Re: [RFC PATCH 0/2] workqueue: Introduce PF_WQ_RESCUE_WORKER
-Message-ID: <ZXv3RnYNkpaPGYb_@localhost.localdomain>
-References: <um77hym4t6zyypfbhwbaeqxpfdzc657oa7vgowdfah7cuctjak@pexots3mfb24>
- <ZXdXdBzvbkI4Y4fL@slm.duckdns.org>
- <ZXguMgcKLCLn16T4@localhost.localdomain>
- <ZXiVCOKk90Fjpmhw@slm.duckdns.org>
- <ZXlyfjDsFGbYcMU6@localhost.localdomain>
- <ZXnPVtISKQ2JFDNn@slm.duckdns.org>
- <ZXn4qiMetd7zY1sb@localhost.localdomain>
- <ZXn6J5bN-dPC1WSk@slm.duckdns.org>
- <ZXrmJYvekzrLSaGo@localhost.localdomain>
- <ZXtb066P-ZnjxfgK@slm.duckdns.org>
+        bh=wW3WF9+yE7Fm8DHl64+vajrAUnSKM81cqUzh0Jur8M8=;
+        b=ODUYZIqbG31opih5NjZ/0tAbHtZumbjHDD6c1mShUwUh7DP6e1vDUdtqABYdtN5/h5
+         z7HpEs0KwHdD7bd3h2ySScupyN18HUqPqQyziXAGOZJ76xspHhyotNANP/k8TSW1YkW1
+         Dpobp6rYlSgCoBX7SSj27AY1uV1RcCiAWqg+P4R0cPemEg3RH4YqZTJdkgXWJe50i8ip
+         pHSeV1E4XBUHX3lo7+OT0DxbeCnOvTcyHWuv1Xqr2He5gUPtwBaBdAhunQefY7KWzxex
+         eVSpweJZPZcSZBIuZYFhDUWRAHupMKyUNJDeMPvXYBaxLkfEV4QsMOt8fW2Wa7+AwzZ4
+         S9pg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702623313; x=1703228113;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=wW3WF9+yE7Fm8DHl64+vajrAUnSKM81cqUzh0Jur8M8=;
+        b=gyYONX3X+BeXDcMhbvQEqbCv5jt2UaTG0aQK4G5znUYe2h5G/WiWSt3yGZ9lCrWpp6
+         H9cEFK+dU3+zsgUY/br3mq/hOdAoHrL+xkJoY9fqGJ5gcY0FCBb/mn6+ESdm3PA8gt5m
+         PR7CvgjREBofMnKP2cdJf7kyqOj2be8TiywYlPMIjoy+EOnMpX01llzMckIGa1J0saa4
+         bdWFoAgb4NoIc1ImIsCOuf19MzGKbMZkPkYEMDKDr2YZfbJKpZNP4RNKvsarDu6JrqtF
+         PYG0sX107MkANklq9D3OnzGyWewLPFIpliaOsoBqfR9fUSsBrvAPAU+jRDiYizD2mGOv
+         7jwg==
+X-Gm-Message-State: AOJu0YxAZLlDWnAPMq5Fw7xEM1TZY/nwCu65Yix1FpVjBc6DR0oViKq4
+	61u9ugUG/KQhnDPs6R4yGaXeGeTA9ksQY+SPBec=
+X-Google-Smtp-Source: AGHT+IGPkfV7hNbg63dlvmC9Me/aKmPpSuwzxEZdk0PYRCQAfXjtY5wCwqdgCiwgYgU1akmtIIUMwo4xZdFuEsr0N30=
+X-Received: by 2002:a05:6a00:4653:b0:6ce:6f99:4ec4 with SMTP id
+ kp19-20020a056a00465300b006ce6f994ec4mr14009886pfb.1.1702623313006; Thu, 14
+ Dec 2023 22:55:13 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZXtb066P-ZnjxfgK@slm.duckdns.org>
+References: <20231215052033.550509-1-ghanshyam1898@gmail.com> <5a58e510-e5b4-42ae-95a3-257ca802212a@infradead.org>
+In-Reply-To: <5a58e510-e5b4-42ae-95a3-257ca802212a@infradead.org>
+From: Ghanshyam Agrawal <ghanshyam1898@gmail.com>
+Date: Fri, 15 Dec 2023 12:24:36 +0530
+Message-ID: <CAG-Bmocu0nL-AW=nR7ZaTG4fzRvw4XSq5grk4N-wDRF0opMR4Q@mail.gmail.com>
+Subject: Re: [PATCH] gpu: drm: amd: fixed typos
+To: Randy Dunlap <rdunlap@infradead.org>
+Cc: alexander.deucher@amd.com, christian.koenig@amd.com, Xinhui.Pan@amd.com, 
+	airlied@gmail.com, daniel@ffwll.ch, Hawking.Zhang@amd.com, candice.li@amd.com, 
+	Le.Ma@amd.com, lijo.lazar@amd.com, amd-gfx@lists.freedesktop.org, 
+	dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 14/12/23 09:47, Tejun Heo wrote:
-> Hello,
-> 
-> On Thu, Dec 14, 2023 at 12:25:25PM +0100, Juri Lelli wrote:
-> > > So, we have to use set_cpus_allowed_ptr() but we still don't want to change
-> > > the affinity of a rescuer which is already running a task for a pool.
-> > 
-> > But then, even today, a rescuer might keep handling work on a cpu
-> > outside its wq cpumask if the associated wq cpumask change can proceed
-> > w/o waiting for it to finish the iteration?
-> 
-> Yeah, that can happen and pool cpumasks naturally being subsets of the wq's
-> cpumask that they're serving, your original approach likely isn't broken
-> either.
-> 
-> > BTW, apologies for all the questions, but I'd like to make sure I can
-> > get the implications hopefully right. :)
-> 
-> I obviously haven't thought through it very well, so thanks for the
-> questions. So, yeah, I think we actually need to set the rescuer's cpumask
-> when wq's cpumask changes and doing it where you were suggesting should
-> probably work.
+On Fri, Dec 15, 2023 at 10:59=E2=80=AFAM Randy Dunlap <rdunlap@infradead.or=
+g> wrote:
+>
+> Hi--
+>
+> On 12/14/23 21:20, Ghanshyam Agrawal wrote:
+> > Fixed multiple typos in atomfirmware.h
+> >
+> > Signed-off-by: Ghanshyam Agrawal <ghanshyam1898@gmail.com>
+> > ---
+> >  drivers/gpu/drm/amd/include/atomfirmware.h | 8 ++++----
+> >  1 file changed, 4 insertions(+), 4 deletions(-)
+> >
+> > diff --git a/drivers/gpu/drm/amd/include/atomfirmware.h b/drivers/gpu/d=
+rm/amd/include/atomfirmware.h
+> > index fa7d6ced786f..41d553921adf 100644
+> > --- a/drivers/gpu/drm/amd/include/atomfirmware.h
+> > +++ b/drivers/gpu/drm/amd/include/atomfirmware.h
+> > @@ -210,7 +210,7 @@ atom_bios_string          =3D "ATOM"
+> >  };
+> >  */
+> >
+> > -#pragma pack(1)                          /* BIOS data must use byte al=
+igment*/
+> > +#pragma pack(1)                          /* BIOS data must use byte al=
+ignment */
+> >
+> >  enum atombios_image_offset{
+> >    OFFSET_TO_ATOM_ROM_HEADER_POINTER          =3D 0x00000048,
+> > @@ -452,7 +452,7 @@ struct atom_dtd_format
+> >    uint8_t   refreshrate;
+> >  };
+> >
+> > -/* atom_dtd_format.modemiscinfo defintion */
+> > +/* atom_dtd_format.modemiscinfo definition */
+> >  enum atom_dtd_format_modemiscinfo{
+> >    ATOM_HSYNC_POLARITY    =3D 0x0002,
+> >    ATOM_VSYNC_POLARITY    =3D 0x0004,
+> > @@ -645,7 +645,7 @@ struct lcd_info_v2_1
+> >    uint32_t reserved1[8];
+> >  };
+> >
+> > -/* lcd_info_v2_1.panel_misc defintion */
+> > +/* lcd_info_v2_1.panel_misc definition */
+> >  enum atom_lcd_info_panel_misc{
+> >    ATOM_PANEL_MISC_FPDI            =3D0x0002,
+> >  };
+> > @@ -683,7 +683,7 @@ enum atom_gpio_pin_assignment_gpio_id {
+> >    /* gpio_id pre-define id for multiple usage */
+> >    /* GPIO use to control PCIE_VDDC in certain SLT board */
+> >    PCIE_VDDC_CONTROL_GPIO_PINID =3D 56,
+> > -  /* if PP_AC_DC_SWITCH_GPIO_PINID in Gpio_Pin_LutTable, AC/DC swithin=
+g feature is enable */
+> > +  /* if PP_AC_DC_SWITCH_GPIO_PINID in Gpio_Pin_LutTable, AC/DC switchi=
+ng feature is enable */
+>
+> s/enable/enabled/
+>
+> >    PP_AC_DC_SWITCH_GPIO_PINID =3D 60,
+> >    /* VDDC_REGULATOR_VRHOT_GPIO_PINID in Gpio_Pin_LutTable, VRHot featu=
+re is enable */
+>
+> Ditto.
+> There may be a few more that need this same treatment.
+>
+> >    VDDC_VRHOT_GPIO_PINID =3D 61,
+>
+> The other changes look good as far as they go, but codespell reports
+> a few more misspellings to consider:
+>
+> atomfirmware.h:213: aligment =3D=3D> alignment
+> atomfirmware.h:257: Offest =3D=3D> Offset
+> atomfirmware.h:258: Offest =3D=3D> Offset
+> atomfirmware.h:390: Offest =3D=3D> Offset
+> atomfirmware.h:455: defintion =3D=3D> definition
+> atomfirmware.h:648: defintion =3D=3D> definition
+> atomfirmware.h:686: swithing =3D=3D> switching
+> atomfirmware.h:704: calcualted =3D=3D> calculated
+> atomfirmware.h:967: compability =3D=3D> compatibility
+> atomfirmware.h:981: intenal =3D=3D> internal
+> atomfirmware.h:993: intenal =3D=3D> internal
+> atomfirmware.h:3469: sequece =3D=3D> sequence
+> atomfirmware.h:3507: indiate =3D=3D> indicate
+> atomfirmware.h:4429: stucture =3D=3D> structure
+> atomfirmware.h:4430: stucture =3D=3D> structure
+> atomfirmware.h:4462: regiser =3D=3D> register
+>
+>
+> thanks.
+> --
+> #Randy
+> https://people.kernel.org/tglx/notes-about-netiquette
+> https://subspace.kernel.org/etiquette.html
 
-OK. Going to send a proper patch asap.
+Hi Randy,
 
-Thanks!
-Juri
+Thanks for your feedback. I will correct the grammatical errors.
 
+Regarding the other codespell suggestions, if I make the changes
+then checkpatch script gives a lot of errors and warnings. Some
+are related to usage of tabs, line lengths etc. Being a beginner
+in the linux kernel development, I am not sure how to fix
+(or whether to ignore) those warnings. Would it be okay if I
+proceed with only the small number of changes I have suggested
+with this patch itself?
+
+Thanks & Regards,
+Ghanshyam Agrawal
 
