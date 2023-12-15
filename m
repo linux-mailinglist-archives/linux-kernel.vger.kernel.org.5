@@ -1,126 +1,98 @@
-Return-Path: <linux-kernel+bounces-525-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-526-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id AC9C1814276
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 08:35:10 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 22CB781427B
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 08:35:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6744B284101
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 07:35:09 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C0E191F23DE8
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 07:35:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B3D510949;
-	Fri, 15 Dec 2023 07:34:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A941111A7;
+	Fri, 15 Dec 2023 07:34:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b="IuNcTckm"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HpD4UKJh"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mailgw01.mediatek.com (unknown [60.244.123.138])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A613D535;
-	Fri, 15 Dec 2023 07:34:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mediatek.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mediatek.com
-X-UUID: 65d7f52a9b1c11eea5db2bebc7c28f94-20231215
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-	h=Content-Type:Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From; bh=+M5H9LZDjB4Gr0VbOYbLmnpUdU+OSS0M0aKqqzvm/n4=;
-	b=IuNcTckm88kscxNXDpmu8lCTMrFbnRrnDpv8CvohOVo1WjhDO9zIsFqJSyrkeoJNat/ZTKzLeo3PGmjDo9IrFxKeVDsNEbIq9qJ8tK1MYdXvkrGva+RtcBAGsqo/QRBAqgPjNoThcie9vkQFhXrENZFCm0jfn9CtCA1OMv+/L+E=;
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.35,REQID:48ef63f1-dc5d-4ff7-9e65-f0adc70ca935,IP:0,U
-	RL:0,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
-	release,TS:0
-X-CID-META: VersionHash:5d391d7,CLOUDID:8b1cd373-1bd3-4f48-b671-ada88705968c,B
-	ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
-	RL:11|1,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:
-	NO,DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0
-X-CID-BAS: 0,_,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_ULN
-X-UUID: 65d7f52a9b1c11eea5db2bebc7c28f94-20231215
-Received: from mtkmbs14n1.mediatek.inc [(172.21.101.75)] by mailgw01.mediatek.com
-	(envelope-from <chunfeng.yun@mediatek.com>)
-	(Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-	with ESMTP id 686694639; Fri, 15 Dec 2023 15:34:36 +0800
-Received: from mtkmbs11n2.mediatek.inc (172.21.101.187) by
- mtkmbs10n2.mediatek.inc (172.21.101.183) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.26; Fri, 15 Dec 2023 15:34:35 +0800
-Received: from mhfsdcap04.gcn.mediatek.inc (10.17.3.154) by
- mtkmbs11n2.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
- 15.2.1118.26 via Frontend Transport; Fri, 15 Dec 2023 15:34:34 +0800
-From: Chunfeng Yun <chunfeng.yun@mediatek.com>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Rob Herring
-	<robh+dt@kernel.org>, Krzysztof Kozlowski
-	<krzysztof.kozlowski+dt@linaro.org>, AngeloGioacchino Del Regno
-	<angelogioacchino.delregno@collabora.com>
-CC: Chunfeng Yun <chunfeng.yun@mediatek.com>, Conor Dooley
-	<conor+dt@kernel.org>, Matthias Brugger <matthias.bgg@gmail.com>, "Mathias
- Nyman" <mathias.nyman@intel.com>, <linux-usb@vger.kernel.org>,
-	<linux-arm-kernel@lists.infradead.org>, <linux-mediatek@lists.infradead.org>,
-	<devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>, Macpaul Lin
-	<macpaul.lin@mediatek.com>, Eddie Hung <eddie.hung@mediatek.com>
-Subject: [PATCH v2 3/3] arm64: dts: mediatek: mt8195: Add 'rx-fifo-depth' for cherry
-Date: Fri, 15 Dec 2023 15:34:31 +0800
-Message-ID: <20231215073431.8512-3-chunfeng.yun@mediatek.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20231215073431.8512-1-chunfeng.yun@mediatek.com>
-References: <20231215073431.8512-1-chunfeng.yun@mediatek.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 631781096B;
+	Fri, 15 Dec 2023 07:34:45 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CFFB8C433CB;
+	Fri, 15 Dec 2023 07:34:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1702625684;
+	bh=ccmOE9j3jNhe4GDIdM1CW0I44hLwXu8dmx+o/QgsK+0=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=HpD4UKJhNlD8/uebof6RQdb+aUvamm7Xl7XMyPaL/3KLU9qCdNJfISUWjS9XhFI93
+	 tbXBqqXVbRbMAyAY5qPzLjL+CeiTLfJAnUZkNebVc5+BxOdZBr1ufqzFgZj6M6txsI
+	 tvTR8UqrZgRNTv/cmj/yFjbiyJENmTklp9X/zAyqqP0k22r92+CnhUzL6dI8Je+KzD
+	 /GqVrTX70r5tUe2kIEfsLTrSds44PSed3O/NiOTlqzqkDI2HE4YdJpII+VgYSi2JZ/
+	 I2EFC64gljV1y/2KirKfWFjrAOorKc52tTXb1LW12WNnKHf1qnUC3E17gPL1uDu7vu
+	 /Ef5Airp/WBoA==
+Received: from johan by xi.lan with local (Exim 4.96.2)
+	(envelope-from <johan@kernel.org>)
+	id 1rE2iV-00066d-2I;
+	Fri, 15 Dec 2023 08:34:39 +0100
+Date: Fri, 15 Dec 2023 08:34:39 +0100
+From: Johan Hovold <johan@kernel.org>
+To: Richard Acayan <mailingradian@gmail.com>
+Cc: Johan Hovold <johan+linaro@kernel.org>,
+	Bjorn Andersson <andersson@kernel.org>,
+	Andy Gross <agross@kernel.org>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Krishna Kurapati PSSNV <quic_kriskura@quicinc.com>,
+	linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Subject: Re: [PATCH 1/3] arm64: dts: qcom: sdm670: fix USB DP/DM HS PHY
+ interrupts
+Message-ID: <ZXwBj-EAZ1rE8erk@hovoldconsulting.com>
+References: <20231214074319.11023-1-johan+linaro@kernel.org>
+ <20231214074319.11023-2-johan+linaro@kernel.org>
+ <ZXuv8zgm4kl3fwZV@radian>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-TM-AS-Product-Ver: SMEX-14.0.0.3152-9.1.1006-23728.005
-X-TM-AS-Result: No-10-2.228900-8.000000
-X-TMASE-MatchedRID: SmKlVN5gTYOLwgJA7qJvFEf49ONH0RaSGSqdEmeD/nUQVRHC3B6FYFfe
-	kLFvP8UVQt2470g7vecqScZQsLRFpMBMY+N44zjMsyNb+yeIRApdbaVmBOzqbN9RlPzeVuQQvY7
-	h2n/VF9/i8zVgXoAltsYlDcGKIsCCC24oEZ6SpSmb4wHqRpnaDltH4i4943sOplq7dpcYh22JNH
-	vktzo2RZp/wp2NBZeVWvGJ+zF5IOKEPS7K8ncBJaIGIL3b97hRPiWqg5y7R3BU52lAwkS22fI2n
-	uDg9d7QFezHPq6MHFSrV/xdKQcFSY0leYQxW8u2mJ2Ady5u17E=
-X-TM-AS-User-Approved-Sender: No
-X-TM-AS-User-Blocked-Sender: No
-X-TMASE-Result: 10-2.228900-8.000000
-X-TMASE-Version: SMEX-14.0.0.3152-9.1.1006-23728.005
-X-TM-SNTS-SMTP: 69A3CD59A0556046AF55792D357EF196CCC2DA0401934A0138F8CFA0D68014D32000:8
-X-MTK: N
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZXuv8zgm4kl3fwZV@radian>
 
-Add the quirk property "rx-fifo-depth" to work around Gen1 isoc-in
-transfer issue which send out unexpected ACK even after device
-already finished the burst transfer with a short patcket, specially
-for a 4K camera device.
+On Thu, Dec 14, 2023 at 08:46:27PM -0500, Richard Acayan wrote:
+> On Thu, Dec 14, 2023 at 08:43:17AM +0100, Johan Hovold wrote:
+> > The USB DP/DM HS PHY interrupts need to be provided by the PDC interrupt
+> > controller in order to be able to wake the system up from low-power
+> > states and to be able to detect disconnect events, which requires
+> > triggering on falling edges.
+> >
+> > A recent commit updated the trigger type but failed to change the
+> > interrupt provider as required. This leads to the current Linux driver
+> > failing to probe instead of printing an error during suspend and USB
+> > wakeup not working as intended.
+> >
+> > Fixes: de3b3de30999 ("arm64: dts: qcom: sdm670: fix USB wakeup interrupt types")
+> > Fixes: 07c8ded6e373 ("arm64: dts: qcom: add sdm670 and pixel 3a device trees")
+> > Cc: stable@vger.kernel.org      # 6.2
+> > Cc: Richard Acayan <mailingradian@gmail.com>
+> > Signed-off-by: Johan Hovold <johan+linaro@kernel.org>
+> > ---
+> 
+> Tested-by: Richard Acayan <mailingradian@gmail.com>
+> 
+> On a Pixel 3a, plugging in a USB cable doesn't wake up the device
+> (presumably because there is no wakeup-source property) but this gets
+> USB working again on linux-next.
 
-Signed-off-by: Chunfeng Yun <chunfeng.yun@mediatek.com>
----
-v2: use 'rx-fifo-depth' property
----
- arch/arm64/boot/dts/mediatek/mt8195-cherry.dtsi | 2 ++
- 1 file changed, 2 insertions(+)
+Thanks for testing. And yes, the wakeup interrupts will indeed not be
+enabled at system suspend unless the wakeup-source property is there.
+Did you try adding it?
 
-diff --git a/arch/arm64/boot/dts/mediatek/mt8195-cherry.dtsi b/arch/arm64/boot/dts/mediatek/mt8195-cherry.dtsi
-index dd5b89b73190..132baeab675e 100644
---- a/arch/arm64/boot/dts/mediatek/mt8195-cherry.dtsi
-+++ b/arch/arm64/boot/dts/mediatek/mt8195-cherry.dtsi
-@@ -1185,6 +1185,7 @@
- 
- 	vusb33-supply = <&mt6359_vusb_ldo_reg>;
- 	vbus-supply = <&usb_vbus>;
-+	rx-fifo-depth = <2>;
- };
- 
- &xhci1 {
-@@ -1192,6 +1193,7 @@
- 
- 	vusb33-supply = <&mt6359_vusb_ldo_reg>;
- 	vbus-supply = <&usb_vbus>;
-+	rx-fifo-depth = <2>;
- };
- 
- &xhci2 {
--- 
-2.18.0
-
+Johan
 
