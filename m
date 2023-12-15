@@ -1,50 +1,50 @@
-Return-Path: <linux-kernel+bounces-1378-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-1379-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4BE50814E36
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 18:16:00 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D646B814E3B
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 18:16:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 69EA71C23EA9
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 17:15:59 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8FC37284B4E
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 17:16:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A4E83697B1;
-	Fri, 15 Dec 2023 17:10:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2674A48CF5;
+	Fri, 15 Dec 2023 17:10:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="U2uSkbD+";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="xR47XjeC"
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="EBbpW7sF";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="Kx2HJ8gu"
 X-Original-To: linux-kernel@vger.kernel.org
 Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A155049F7D;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2086D56381;
 	Fri, 15 Dec 2023 17:10:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
 From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1702660239;
+	s=2020; t=1702660240;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=rzieE1bdCDU7ZEE1pZ3W32UoA/gXNQn5x2kQlc+EJVs=;
-	b=U2uSkbD+NpMBTLSNNot26VG9U32jW+WuGSigX1H2dsAJHh0RiWL9bkRUxHu+zMwWE96uXB
-	GXxqnmpJAn7ZSm6y2Wo8M8d3ookGUh+NWnNtG7PhLOUrF1qovGkgZyFJxniTa08ldaWDT+
-	KK7rLMb/yr4rw4uYPRonA6KAlxr3S94Rh67FP+QnqeMZknVqukBtyqDpcKymKTh9tDHmTZ
-	02mF3VFOoBiCHEkVULLrMoST1FTPmR4FhSehWPFG1I1TVQHeLMgNGZw7WDi5G+NqKHsv4H
-	F2PE22hMCiJo3cRTeBfGjqj0ahQcOyrbdJ8qLvv+VjMNgIjN/48OfF3CDSUm5w==
+	bh=y7c3Sac8dmyVQ4hqle9rQ/Ik/z8HPOaNJezqWJL8Lx4=;
+	b=EBbpW7sFFbB1fi7zZJOMAUqG0fNWpdhwl+36f6JGSng5DX9KJ7mc98Fyk438SZJrVm4iUZ
+	E+SHLTy48qAfEBKBD1d9wXOsK8FbeZGL2mbWbt6SdXjnxo2n691PJM1JgDNyR/jJbP+cq+
+	YSDqoeMtMqK07aMmirlvGm+ltUZdcDVte8qc0vM6fZlFkXvCyTdEWMA5Vm4bit+yg0OSbc
+	Np9oF9XObiwHU0wKk6QMUBgINODSjQiQcLH/5NLDf9MccsV3WqkfDY65FNxafa5nczHAR2
+	5IH2apHHbikJJ8gIPoCcQlDFV8KsJeq+AZ1wJ3FKwH1cLLO+nT6TrUikc7nbfQ==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1702660239;
+	s=2020e; t=1702660240;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=rzieE1bdCDU7ZEE1pZ3W32UoA/gXNQn5x2kQlc+EJVs=;
-	b=xR47XjeCsKRff47ftRL3dngUnv52a3CC+b6k684V9u9q0dYWYnMFrl9eQzdyykaw/kwJZc
-	Ot6Y1WRGJvAg6pCA==
+	bh=y7c3Sac8dmyVQ4hqle9rQ/Ik/z8HPOaNJezqWJL8Lx4=;
+	b=Kx2HJ8guXixJQvIThAGi9sONmjTWLdYavjuJOXtz876lDz/n34peXGd9z+zsaDJwBf/tv4
+	Uvg8tcNSC4J+MYCA==
 To: linux-kernel@vger.kernel.org,
 	netdev@vger.kernel.org
 Cc: "David S. Miller" <davem@davemloft.net>,
@@ -61,19 +61,20 @@ Cc: "David S. Miller" <davem@davemloft.net>,
 	Will Deacon <will@kernel.org>,
 	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
 	Alexei Starovoitov <ast@kernel.org>,
-	Arthur Kiyanovski <akiyano@amazon.com>,
-	David Arinzon <darinzon@amazon.com>,
-	Igor Russkikh <irusskikh@marvell.com>,
+	Clark Wang <xiaoning.wang@nxp.com>,
+	Claudiu Manoil <claudiu.manoil@nxp.com>,
+	Ioana Ciornei <ioana.ciornei@nxp.com>,
 	Jesper Dangaard Brouer <hawk@kernel.org>,
 	John Fastabend <john.fastabend@gmail.com>,
-	Michael Chan <michael.chan@broadcom.com>,
-	Noam Dagan <ndagan@amazon.com>,
-	Saeed Bishara <saeedb@amazon.com>,
-	Shay Agroskin <shayagr@amazon.com>,
-	Sunil Goutham <sgoutham@marvell.com>
-Subject: [PATCH net-next 17/24] net: amazon, aquanti, broadcom, cavium, engleder: Use nested-BH locking for XDP redirect.
-Date: Fri, 15 Dec 2023 18:07:36 +0100
-Message-ID: <20231215171020.687342-18-bigeasy@linutronix.de>
+	Madalin Bucur <madalin.bucur@nxp.com>,
+	NXP Linux Team <linux-imx@nxp.com>,
+	Shenwei Wang <shenwei.wang@nxp.com>,
+	Vladimir Oltean <vladimir.oltean@nxp.com>,
+	Wei Fang <wei.fang@nxp.com>,
+	bpf@vger.kernel.org
+Subject: [PATCH net-next 18/24] net: Freescale: Use nested-BH locking for XDP redirect.
+Date: Fri, 15 Dec 2023 18:07:37 +0100
+Message-ID: <20231215171020.687342-19-bigeasy@linutronix.de>
 In-Reply-To: <20231215171020.687342-1-bigeasy@linutronix.de>
 References: <20231215171020.687342-1-bigeasy@linutronix.de>
 Precedence: bulk
@@ -108,156 +109,128 @@ free/ alloc of memory, =E2=80=A6) would happen outside of the locked sectio=
 n.
 
 Cc: Alexei Starovoitov <ast@kernel.org>
-Cc: Arthur Kiyanovski <akiyano@amazon.com>
-Cc: David Arinzon <darinzon@amazon.com>
-Cc: Igor Russkikh <irusskikh@marvell.com>
+Cc: Clark Wang <xiaoning.wang@nxp.com>
+Cc: Claudiu Manoil <claudiu.manoil@nxp.com>
+Cc: Ioana Ciornei <ioana.ciornei@nxp.com>
 Cc: Jesper Dangaard Brouer <hawk@kernel.org>
 Cc: John Fastabend <john.fastabend@gmail.com>
-Cc: Michael Chan <michael.chan@broadcom.com>
-Cc: Noam Dagan <ndagan@amazon.com>
-Cc: Saeed Bishara <saeedb@amazon.com>
-Cc: Shay Agroskin <shayagr@amazon.com>
-Cc: Sunil Goutham <sgoutham@marvell.com>
+Cc: Madalin Bucur <madalin.bucur@nxp.com>
+Cc: NXP Linux Team <linux-imx@nxp.com>
+Cc: Shenwei Wang <shenwei.wang@nxp.com>
+Cc: Vladimir Oltean <vladimir.oltean@nxp.com>
+Cc: Wei Fang <wei.fang@nxp.com>
+Cc: bpf@vger.kernel.org
 Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 ---
- drivers/net/ethernet/amazon/ena/ena_netdev.c  |  1 +
- .../net/ethernet/aquantia/atlantic/aq_ring.c  | 26 ++++++++++++-------
- drivers/net/ethernet/broadcom/bnxt/bnxt_xdp.c |  1 +
- .../net/ethernet/cavium/thunder/nicvf_main.c  |  3 ++-
- drivers/net/ethernet/engleder/tsnep_main.c    | 17 +++++++-----
- 5 files changed, 31 insertions(+), 17 deletions(-)
+ .../net/ethernet/freescale/dpaa/dpaa_eth.c    |  1 +
+ .../net/ethernet/freescale/dpaa2/dpaa2-eth.c  |  1 +
+ .../net/ethernet/freescale/dpaa2/dpaa2-xsk.c  | 30 ++++++++++---------
+ drivers/net/ethernet/freescale/enetc/enetc.c  |  1 +
+ drivers/net/ethernet/freescale/fec_main.c     |  1 +
+ 5 files changed, 20 insertions(+), 14 deletions(-)
 
-diff --git a/drivers/net/ethernet/amazon/ena/ena_netdev.c b/drivers/net/eth=
-ernet/amazon/ena/ena_netdev.c
-index b5bca48148309..cf075bc5e2b13 100644
---- a/drivers/net/ethernet/amazon/ena/ena_netdev.c
-+++ b/drivers/net/ethernet/amazon/ena/ena_netdev.c
-@@ -385,6 +385,7 @@ static int ena_xdp_execute(struct ena_ring *rx_ring, st=
-ruct xdp_buff *xdp)
- 	if (!xdp_prog)
- 		goto out;
+diff --git a/drivers/net/ethernet/freescale/dpaa/dpaa_eth.c b/drivers/net/e=
+thernet/freescale/dpaa/dpaa_eth.c
+index dcbc598b11c6c..8adc766282fde 100644
+--- a/drivers/net/ethernet/freescale/dpaa/dpaa_eth.c
++++ b/drivers/net/ethernet/freescale/dpaa/dpaa_eth.c
+@@ -2597,6 +2597,7 @@ static u32 dpaa_run_xdp(struct dpaa_priv *priv, struc=
+t qm_fd *fd, void *vaddr,
+ 	}
+ #endif
 =20
 +	guard(local_lock_nested_bh)(&bpf_run_lock.redirect_lock);
- 	verdict =3D bpf_prog_run_xdp(xdp_prog, xdp);
+ 	xdp_act =3D bpf_prog_run_xdp(xdp_prog, &xdp);
 =20
- 	switch (verdict) {
-diff --git a/drivers/net/ethernet/aquantia/atlantic/aq_ring.c b/drivers/net=
-/ethernet/aquantia/atlantic/aq_ring.c
-index 694daeaf3e615..5d33d478d5109 100644
---- a/drivers/net/ethernet/aquantia/atlantic/aq_ring.c
-+++ b/drivers/net/ethernet/aquantia/atlantic/aq_ring.c
-@@ -458,7 +458,24 @@ static struct sk_buff *aq_xdp_run_prog(struct aq_nic_s=
- *aq_nic,
- 	if (xdp_buff_has_frags(xdp) && !prog->aux->xdp_has_frags)
- 		goto out_aborted;
-=20
-+	local_lock_nested_bh(&bpf_run_lock.redirect_lock);
- 	act =3D bpf_prog_run_xdp(prog, xdp);
-+	if (act =3D=3D XDP_REDIRECT) {
-+		if (xdp_do_redirect(aq_nic->ndev, xdp, prog) < 0) {
-+			local_unlock_nested_bh(&bpf_run_lock.redirect_lock);
-+			goto out_aborted;
-+		}
-+		local_unlock_nested_bh(&bpf_run_lock.redirect_lock);
-+
-+		xdp_do_flush();
-+		u64_stats_update_begin(&rx_ring->stats.rx.syncp);
-+		++rx_ring->stats.rx.xdp_redirect;
-+		u64_stats_update_end(&rx_ring->stats.rx.syncp);
-+		aq_get_rxpages_xdp(buff, xdp);
-+	} else {
-+		local_unlock_nested_bh(&bpf_run_lock.redirect_lock);
-+	}
-+
- 	switch (act) {
- 	case XDP_PASS:
- 		skb =3D aq_xdp_build_skb(xdp, aq_nic->ndev, buff);
-@@ -481,15 +498,6 @@ static struct sk_buff *aq_xdp_run_prog(struct aq_nic_s=
- *aq_nic,
- 		u64_stats_update_end(&rx_ring->stats.rx.syncp);
- 		aq_get_rxpages_xdp(buff, xdp);
- 		break;
--	case XDP_REDIRECT:
--		if (xdp_do_redirect(aq_nic->ndev, xdp, prog) < 0)
--			goto out_aborted;
--		xdp_do_flush();
--		u64_stats_update_begin(&rx_ring->stats.rx.syncp);
--		++rx_ring->stats.rx.xdp_redirect;
--		u64_stats_update_end(&rx_ring->stats.rx.syncp);
--		aq_get_rxpages_xdp(buff, xdp);
--		break;
- 	default:
- 		fallthrough;
- 	case XDP_ABORTED:
-diff --git a/drivers/net/ethernet/broadcom/bnxt/bnxt_xdp.c b/drivers/net/et=
-hernet/broadcom/bnxt/bnxt_xdp.c
-index 96f5ca778c67d..c4d989da7fade 100644
---- a/drivers/net/ethernet/broadcom/bnxt/bnxt_xdp.c
-+++ b/drivers/net/ethernet/broadcom/bnxt/bnxt_xdp.c
-@@ -253,6 +253,7 @@ bool bnxt_rx_xdp(struct bnxt *bp, struct bnxt_rx_ring_i=
-nfo *rxr, u16 cons,
- 	/* BNXT_RX_PAGE_MODE(bp) when XDP enabled */
- 	orig_data =3D xdp.data;
+ 	/* Update the length and the offset of the FD */
+diff --git a/drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c b/drivers/net=
+/ethernet/freescale/dpaa2/dpaa2-eth.c
+index 888509cf1f210..08be35a3e3de7 100644
+--- a/drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c
++++ b/drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c
+@@ -442,6 +442,7 @@ static u32 dpaa2_eth_run_xdp(struct dpaa2_eth_priv *pri=
+v,
+ 	xdp_prepare_buff(&xdp, vaddr + offset, XDP_PACKET_HEADROOM,
+ 			 dpaa2_fd_get_len(fd), false);
 =20
 +	guard(local_lock_nested_bh)(&bpf_run_lock.redirect_lock);
- 	act =3D bpf_prog_run_xdp(xdp_prog, &xdp);
+ 	xdp_act =3D bpf_prog_run_xdp(xdp_prog, &xdp);
 =20
- 	tx_avail =3D bnxt_tx_avail(bp, txr);
-diff --git a/drivers/net/ethernet/cavium/thunder/nicvf_main.c b/drivers/net=
-/ethernet/cavium/thunder/nicvf_main.c
-index eff350e0bc2a8..8e1406101f71b 100644
---- a/drivers/net/ethernet/cavium/thunder/nicvf_main.c
-+++ b/drivers/net/ethernet/cavium/thunder/nicvf_main.c
-@@ -554,7 +554,8 @@ static inline bool nicvf_xdp_rx(struct nicvf *nic, stru=
-ct bpf_prog *prog,
- 	xdp_prepare_buff(&xdp, hard_start, data - hard_start, len, false);
- 	orig_data =3D xdp.data;
+ 	/* xdp.data pointer may have changed */
+diff --git a/drivers/net/ethernet/freescale/dpaa2/dpaa2-xsk.c b/drivers/net=
+/ethernet/freescale/dpaa2/dpaa2-xsk.c
+index 051748b997f3f..e3ae9de6b0a34 100644
+--- a/drivers/net/ethernet/freescale/dpaa2/dpaa2-xsk.c
++++ b/drivers/net/ethernet/freescale/dpaa2/dpaa2-xsk.c
+@@ -56,23 +56,25 @@ static u32 dpaa2_xsk_run_xdp(struct dpaa2_eth_priv *pri=
+v,
+ 	xdp_buff->rxq =3D &ch->xdp_rxq;
 =20
--	action =3D bpf_prog_run_xdp(prog, &xdp);
-+	scoped_guard(local_lock_nested_bh, &bpf_run_lock.redirect_lock)
-+		action =3D bpf_prog_run_xdp(prog, &xdp);
-=20
- 	len =3D xdp.data_end - xdp.data;
- 	/* Check if XDP program has changed headers */
-diff --git a/drivers/net/ethernet/engleder/tsnep_main.c b/drivers/net/ether=
-net/engleder/tsnep_main.c
-index df40c720e7b23..acda3502d274f 100644
---- a/drivers/net/ethernet/engleder/tsnep_main.c
-+++ b/drivers/net/ethernet/engleder/tsnep_main.c
-@@ -1268,6 +1268,7 @@ static bool tsnep_xdp_run_prog(struct tsnep_rx *rx, s=
-truct bpf_prog *prog,
-=20
- 	length =3D xdp->data_end - xdp->data_hard_start - XDP_PACKET_HEADROOM;
-=20
-+	guard(local_lock_nested_bh)(&bpf_run_lock.redirect_lock);
- 	act =3D bpf_prog_run_xdp(prog, xdp);
- 	switch (act) {
- 	case XDP_PASS:
-@@ -1309,14 +1310,16 @@ static bool tsnep_xdp_run_prog_zc(struct tsnep_rx *=
-rx, struct bpf_prog *prog,
- {
- 	u32 act;
-=20
--	act =3D bpf_prog_run_xdp(prog, xdp);
+ 	xsk_buff_dma_sync_for_cpu(xdp_buff, ch->xsk_pool);
+-	xdp_act =3D bpf_prog_run_xdp(xdp_prog, xdp_buff);
 +	scoped_guard(local_lock_nested_bh, &bpf_run_lock.redirect_lock) {
-+		act =3D bpf_prog_run_xdp(prog, xdp);
++		xdp_act =3D bpf_prog_run_xdp(xdp_prog, xdp_buff);
 =20
--	/* XDP_REDIRECT is the main action for zero-copy */
--	if (likely(act =3D=3D XDP_REDIRECT)) {
--		if (xdp_do_redirect(rx->adapter->netdev, xdp, prog) < 0)
--			goto out_failure;
--		*status |=3D TSNEP_XDP_REDIRECT;
--		return true;
-+		/* XDP_REDIRECT is the main action for zero-copy */
-+		if (likely(act =3D=3D XDP_REDIRECT)) {
-+			if (xdp_do_redirect(rx->adapter->netdev, xdp, prog) < 0)
-+				goto out_failure;
-+			*status |=3D TSNEP_XDP_REDIRECT;
-+			return true;
-+		}
+-	/* xdp.data pointer may have changed */
+-	dpaa2_fd_set_offset(fd, xdp_buff->data - vaddr);
+-	dpaa2_fd_set_len(fd, xdp_buff->data_end - xdp_buff->data);
++		/* xdp.data pointer may have changed */
++		dpaa2_fd_set_offset(fd, xdp_buff->data - vaddr);
++		dpaa2_fd_set_len(fd, xdp_buff->data_end - xdp_buff->data);
+=20
+-	if (likely(xdp_act =3D=3D XDP_REDIRECT)) {
+-		err =3D xdp_do_redirect(priv->net_dev, xdp_buff, xdp_prog);
+-		if (unlikely(err)) {
+-			ch->stats.xdp_drop++;
+-			dpaa2_eth_recycle_buf(priv, ch, addr);
+-		} else {
+-			ch->buf_count--;
+-			ch->stats.xdp_redirect++;
++		if (likely(xdp_act =3D=3D XDP_REDIRECT)) {
++			err =3D xdp_do_redirect(priv->net_dev, xdp_buff, xdp_prog);
++			if (unlikely(err)) {
++				ch->stats.xdp_drop++;
++				dpaa2_eth_recycle_buf(priv, ch, addr);
++			} else {
++				ch->buf_count--;
++				ch->stats.xdp_redirect++;
++			}
++
++			goto xdp_redir;
+ 		}
+-
+-		goto xdp_redir;
  	}
 =20
- 	switch (act) {
+ 	switch (xdp_act) {
+diff --git a/drivers/net/ethernet/freescale/enetc/enetc.c b/drivers/net/eth=
+ernet/freescale/enetc/enetc.c
+index cffbf27c4656b..d516b28815af4 100644
+--- a/drivers/net/ethernet/freescale/enetc/enetc.c
++++ b/drivers/net/ethernet/freescale/enetc/enetc.c
+@@ -1578,6 +1578,7 @@ static int enetc_clean_rx_ring_xdp(struct enetc_bdr *=
+rx_ring,
+ 			rx_byte_cnt +=3D VLAN_HLEN;
+ 		rx_byte_cnt +=3D xdp_get_buff_len(&xdp_buff);
+=20
++		guard(local_lock_nested_bh)(&bpf_run_lock.redirect_lock);
+ 		xdp_act =3D bpf_prog_run_xdp(prog, &xdp_buff);
+=20
+ 		switch (xdp_act) {
+diff --git a/drivers/net/ethernet/freescale/fec_main.c b/drivers/net/ethern=
+et/freescale/fec_main.c
+index c3b7694a74851..335b1e307d468 100644
+--- a/drivers/net/ethernet/freescale/fec_main.c
++++ b/drivers/net/ethernet/freescale/fec_main.c
+@@ -1587,6 +1587,7 @@ fec_enet_run_xdp(struct fec_enet_private *fep, struct=
+ bpf_prog *prog,
+ 	int err;
+ 	u32 act;
+=20
++	guard(local_lock_nested_bh)(&bpf_run_lock.redirect_lock);
+ 	act =3D bpf_prog_run_xdp(prog, xdp);
+=20
+ 	/* Due xdp_adjust_tail and xdp_adjust_head: DMA sync for_device cover
 --=20
 2.43.0
 
