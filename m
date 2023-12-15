@@ -1,127 +1,164 @@
-Return-Path: <linux-kernel+bounces-1829-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-1831-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8E073815498
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 00:40:44 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D9F7E81549B
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Dec 2023 00:41:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1B0C31F258CC
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 23:40:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0A8E31C240C4
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 23:41:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC5AA30101;
-	Fri, 15 Dec 2023 23:40:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E665B49F66;
+	Fri, 15 Dec 2023 23:41:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="cM8ByoCM"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="l0ByrVu7"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A542B18EDD
-	for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 23:40:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1702683632; x=1734219632;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=44FJtxbX5C7L4WV9gh5M8a9vA4YqCTksm1Jvicb6dj4=;
-  b=cM8ByoCMRYF0zWcXcOOLwM65tqfkUexSrL2inyCcjOGEGLIvs5C6iS34
-   WO6wn7I1t6yR/K4DUMRiItTa/JS5OMXdotGxDXaUZADWCGcFMQTthOKjj
-   nsPVTLSkPDpygmFdJ2hj3rSqUu0PNKKm1xDtvqAzT/Ig18NM9RHvdKIMp
-   UwOLX22qeqhHEL52S4yEAX9o8saDIRR/g+Kde/+BuWhSaFoW9Ggxfso8a
-   NpJCMBDcUA3Bqct3qr3zHCLVfgfcwG5UqevS9D/ppoqWK9DQw5JZUWtjE
-   hw9FEygfljv723VeLdknwxUtNZUNAzx681lX3ZpFVIorSt6y7XX5gzhYe
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10925"; a="385759594"
-X-IronPort-AV: E=Sophos;i="6.04,280,1695711600"; 
-   d="scan'208";a="385759594"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Dec 2023 15:40:32 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10925"; a="1106280748"
-X-IronPort-AV: E=Sophos;i="6.04,280,1695711600"; 
-   d="scan'208";a="1106280748"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by fmsmga005.fm.intel.com with ESMTP; 15 Dec 2023 15:40:30 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rEHn9-0000to-1v;
-	Fri, 15 Dec 2023 23:40:27 +0000
-Date: Sat, 16 Dec 2023 07:39:44 +0800
-From: kernel test robot <lkp@intel.com>
-To: Kees Cook <keescook@chromium.org>
-Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-	Lee Jones <lee@kernel.org>,
-	"Gustavo A. R. Silva" <gustavoars@kernel.org>
-Subject: drivers/leds/leds-lm3697.c:93: warning: Excess struct member 'leds'
- description in 'lm3697'
-Message-ID: <202312160738.1Uq3Ohq0-lkp@intel.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0050149F6D
+	for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 23:41:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+	MIME-Version:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
+	Content-ID:Content-Description:In-Reply-To:References;
+	bh=TfwCAA9rMzkhfqrrIg704MCtQiFwiMoz9kpT2FQboTI=; b=l0ByrVu7BkDBMKvnQ2RLOLYv8q
+	b3X/1R/EdNoP5+MFQp8UqtS7rO562f040IgJk93pXEmTu7ND2Ap43Q3x/6wdBNJSqM0QfvxEqpsxv
+	I9pjmWx5IbLhzoZ9I/piKUjuf5B+uqe/xtJbNN0K/TGwBlVvWRLF0uwv1Uh6VcKjqE9aTrYpCjL9T
+	QNFFsSxWhXOKUdk1021kyLXkYCf6M06RUAnXF+Am5jw8Hkfx9ou/HM1NBLLTkBbLkCHGTDyf0u2E5
+	b98Z0o3tAvt9sU3+r49aFgXh7SZRBIlE2BpufcDNP1VfkpBPt99eL5e4Is82eVkGRcLwj76ulUtxj
+	oHASiC1Q==;
+Received: from [50.53.46.231] (helo=bombadil.infradead.org)
+	by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+	id 1rEHnj-004sOp-1A;
+	Fri, 15 Dec 2023 23:41:03 +0000
+From: Randy Dunlap <rdunlap@infradead.org>
+To: linux-kernel@vger.kernel.org
+Cc: Randy Dunlap <rdunlap@infradead.org>,
+	kernel test robot <lkp@intel.com>,
+	Zack Rusin <zackr@vmware.com>,
+	VMware Graphics Reviewers <linux-graphics-maintainer@vmware.com>,
+	dri-devel@lists.freedesktop.org,
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+	Maxime Ripard <mripard@kernel.org>,
+	Thomas Zimmermann <tzimmermann@suse.de>
+Subject: [PATCH] drm/vmwgfx: fix all kernel-doc warnings in stdu
+Date: Fri, 15 Dec 2023 15:41:02 -0800
+Message-ID: <20231215234102.16574-1-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   3bd7d748816927202268cb335921f7f68b3ca723
-commit: bcbadbb29cb6aa6f51505514ae635fd467ebca43 leds: lm3697: Annotate struct lm3697 with __counted_by
-date:   6 weeks ago
-config: arm-randconfig-r081-20231214 (https://download.01.org/0day-ci/archive/20231216/202312160738.1Uq3Ohq0-lkp@intel.com/config)
-compiler: arm-linux-gnueabi-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231216/202312160738.1Uq3Ohq0-lkp@intel.com/reproduce)
+kernel test robot reports one kernel-doc warning in stdu, but
+running scripts/kernel-doc in -Wall mode reports several more,
+so fix all of them at one time:
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202312160738.1Uq3Ohq0-lkp@intel.com/
+vmwgfx_stdu.c:76: warning: Excess struct member 'transfer' description in 'vmw_stdu_dirty'
+vmwgfx_stdu.c:103: warning: missing initial short description on line:
+ * struct vmw_screen_target_display_unit
+vmwgfx_stdu.c:215: warning: No description found for return value of 'vmw_stdu_bind_st'
+vmwgfx_stdu.c:320: warning: No description found for return value of 'vmw_stdu_destroy_st'
+vmwgfx_stdu.c:551: warning: No description found for return value of 'vmw_kms_stdu_readback'
+vmwgfx_stdu.c:719: warning: No description found for return value of 'vmw_kms_stdu_surface_dirty'
+vmwgfx_stdu.c:895: warning: No description found for return value of 'vmw_stdu_primary_plane_prepare_fb'
+vmwgfx_stdu.c:1470: warning: No description found for return value of 'vmw_stdu_init'
 
-All warnings (new ones prefixed by >>):
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Reported-by: kernel test robot <lkp@intel.com>
+Closes: https://lore.kernel.org/oe-kbuild-all/202312150347.5icezNlK-lkp@intel.com/
+Cc: Zack Rusin <zackr@vmware.com>
+Cc: VMware Graphics Reviewers <linux-graphics-maintainer@vmware.com>
+Cc: dri-devel@lists.freedesktop.org
+Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+Cc: Maxime Ripard <mripard@kernel.org>
+Cc: Thomas Zimmermann <tzimmermann@suse.de>
+---
+ drivers/gpu/drm/vmwgfx/vmwgfx_stdu.c |   17 ++++++++++++-----
+ 1 file changed, 12 insertions(+), 5 deletions(-)
 
->> drivers/leds/leds-lm3697.c:93: warning: Excess struct member 'leds' description in 'lm3697'
-
-
-vim +93 drivers/leds/leds-lm3697.c
-
-5c1d824cda9f605 Dan Murphy    2019-05-06  68  
-5c1d824cda9f605 Dan Murphy    2019-05-06  69  /**
-5c1d824cda9f605 Dan Murphy    2019-05-06  70   * struct lm3697 -
-5c1d824cda9f605 Dan Murphy    2019-05-06  71   * @enable_gpio: Hardware enable gpio
-5c1d824cda9f605 Dan Murphy    2019-05-06  72   * @regulator: LED supply regulator pointer
-5c1d824cda9f605 Dan Murphy    2019-05-06  73   * @client: Pointer to the I2C client
-5c1d824cda9f605 Dan Murphy    2019-05-06  74   * @regmap: Devices register map
-5c1d824cda9f605 Dan Murphy    2019-05-06  75   * @dev: Pointer to the devices device struct
-5c1d824cda9f605 Dan Murphy    2019-05-06  76   * @lock: Lock for reading/writing the device
-5c1d824cda9f605 Dan Murphy    2019-05-06  77   * @leds: Array of LED strings
-6e174d3911f1580 Lee Jones     2021-05-28  78   * @bank_cfg: OUTPUT_CONFIG register values
-6e174d3911f1580 Lee Jones     2021-05-28  79   * @num_banks: Number of control banks
-5c1d824cda9f605 Dan Murphy    2019-05-06  80   */
-5c1d824cda9f605 Dan Murphy    2019-05-06  81  struct lm3697 {
-5c1d824cda9f605 Dan Murphy    2019-05-06  82  	struct gpio_desc *enable_gpio;
-5c1d824cda9f605 Dan Murphy    2019-05-06  83  	struct regulator *regulator;
-5c1d824cda9f605 Dan Murphy    2019-05-06  84  	struct i2c_client *client;
-5c1d824cda9f605 Dan Murphy    2019-05-06  85  	struct regmap *regmap;
-5c1d824cda9f605 Dan Murphy    2019-05-06  86  	struct device *dev;
-5c1d824cda9f605 Dan Murphy    2019-05-06  87  	struct mutex lock;
-5c1d824cda9f605 Dan Murphy    2019-05-06  88  
-5c1d824cda9f605 Dan Murphy    2019-05-06  89  	int bank_cfg;
-98d278ca00bd8f6 Gabriel David 2020-10-02  90  	int num_banks;
-5c1d824cda9f605 Dan Murphy    2019-05-06  91  
-bcbadbb29cb6aa6 Kees Cook     2023-09-15  92  	struct lm3697_led leds[] __counted_by(num_banks);
-5c1d824cda9f605 Dan Murphy    2019-05-06 @93  };
-5c1d824cda9f605 Dan Murphy    2019-05-06  94  
-
-:::::: The code at line 93 was first introduced by commit
-:::::: 5c1d824cda9f6059ee5fb6cc83cd4f47c85cf215 leds: lm3697: Introduce the lm3697 driver
-
-:::::: TO: Dan Murphy <dmurphy@ti.com>
-:::::: CC: Jacek Anaszewski <jacek.anaszewski@gmail.com>
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+diff -- a/drivers/gpu/drm/vmwgfx/vmwgfx_stdu.c b/drivers/gpu/drm/vmwgfx/vmwgfx_stdu.c
+--- a/drivers/gpu/drm/vmwgfx/vmwgfx_stdu.c
++++ b/drivers/gpu/drm/vmwgfx/vmwgfx_stdu.c
+@@ -53,7 +53,6 @@ enum stdu_content_type {
+  * struct vmw_stdu_dirty - closure structure for the update functions
+  *
+  * @base: The base type we derive from. Used by vmw_kms_helper_dirty().
+- * @transfer: Transfer direction for DMA command.
+  * @left: Left side of bounding box.
+  * @right: Right side of bounding box.
+  * @top: Top side of bounding box.
+@@ -100,7 +99,7 @@ struct vmw_stdu_update_gb_image {
+ };
+ 
+ /**
+- * struct vmw_screen_target_display_unit
++ * struct vmw_screen_target_display_unit - conglomerated STDU structure
+  *
+  * @base: VMW specific DU structure
+  * @display_srf: surface to be displayed.  The dimension of this will always
+@@ -208,6 +207,8 @@ static int vmw_stdu_define_st(struct vmw
+  * @res: Buffer to bind to the screen target.  Set to NULL to blank screen.
+  *
+  * Binding a surface to a Screen Target the same as flipping
++ *
++ * Returns: %0 on success or -errno code on failure
+  */
+ static int vmw_stdu_bind_st(struct vmw_private *dev_priv,
+ 			    struct vmw_screen_target_display_unit *stdu,
+@@ -314,6 +315,9 @@ static int vmw_stdu_update_st(struct vmw
+  *
+  * @dev_priv:  VMW DRM device
+  * @stdu: display unit to destroy
++ *
++ * Returns: %0 on success, negative error code on failure. -ERESTARTSYS if
++ * interrupted.
+  */
+ static int vmw_stdu_destroy_st(struct vmw_private *dev_priv,
+ 			       struct vmw_screen_target_display_unit *stdu)
+@@ -536,7 +540,8 @@ static void vmw_stdu_bo_cpu_commit(struc
+  * If DMA-ing till the screen target system, the function will also notify
+  * the screen target system that a bounding box of the cliprects has been
+  * updated.
+- * Returns 0 on success, negative error code on failure. -ERESTARTSYS if
++ *
++ * Returns: %0 on success, negative error code on failure. -ERESTARTSYS if
+  * interrupted.
+  */
+ int vmw_kms_stdu_readback(struct vmw_private *dev_priv,
+@@ -703,7 +708,7 @@ static void vmw_kms_stdu_surface_fifo_co
+  * case the device has already synchronized.
+  * @crtc: If crtc is passed, perform surface dirty on that crtc only.
+  *
+- * Returns 0 on success, negative error code on failure. -ERESTARTSYS if
++ * Returns: %0 on success, negative error code on failure. -ERESTARTSYS if
+  * interrupted.
+  */
+ int vmw_kms_stdu_surface_dirty(struct vmw_private *dev_priv,
+@@ -887,7 +892,7 @@ vmw_stdu_primary_plane_cleanup_fb(struct
+  * backed by a buffer object.  The display surface is pinned here, and it'll
+  * be unpinned in .cleanup_fb()
+  *
+- * Returns 0 on success
++ * Returns: %0 on success
+  */
+ static int
+ vmw_stdu_primary_plane_prepare_fb(struct drm_plane *plane,
+@@ -1465,6 +1470,8 @@ static const struct drm_crtc_helper_func
+  * This function is called once per CRTC, and allocates one Screen Target
+  * display unit to represent that CRTC.  Since the SVGA device does not separate
+  * out encoder and connector, they are represented as part of the STDU as well.
++ *
++ * Returns: %0 on success or -errno code on failure
+  */
+ static int vmw_stdu_init(struct vmw_private *dev_priv, unsigned unit)
+ {
 
