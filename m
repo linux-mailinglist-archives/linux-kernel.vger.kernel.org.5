@@ -1,160 +1,186 @@
-Return-Path: <linux-kernel+bounces-945-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-966-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0DF4B814858
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 13:44:30 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 463F88148AA
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 14:00:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 312171C23B1B
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 12:44:29 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C725B1F24578
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 13:00:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 850AA2D033;
-	Fri, 15 Dec 2023 12:43:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F3C02D04C;
+	Fri, 15 Dec 2023 13:00:14 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF9502C6A2;
-	Fri, 15 Dec 2023 12:43:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 68394C15;
-	Fri, 15 Dec 2023 04:44:38 -0800 (PST)
-Received: from [192.168.1.3] (unknown [172.31.20.19])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7635C3F738;
-	Fri, 15 Dec 2023 04:43:49 -0800 (PST)
-Message-ID: <732aa152-53cc-1101-4292-0906266a4c01@arm.com>
-Date: Fri, 15 Dec 2023 12:43:44 +0000
+Received: from out187-13.us.a.mail.aliyun.com (out187-13.us.a.mail.aliyun.com [47.90.187.13])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C6C7610951
+	for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 13:00:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=antgroup.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=antgroup.com
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R641e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018047198;MF=henry.hj@antgroup.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---.Vl7PTuA_1702644264;
+Received: from localhost(mailfrom:henry.hj@antgroup.com fp:SMTPD_---.Vl7PTuA_1702644264)
+          by smtp.aliyun-inc.com;
+          Fri, 15 Dec 2023 20:44:25 +0800
+From: "Henry Huang" <henry.hj@antgroup.com>
+To: yuzhao@google.com
+Cc:  <akpm@linux-foundation.org>,
+  "Henry Huang" <henry.hj@antgroup.com>,
+  "=?UTF-8?B?6LCI6Ym06ZSL?=" <henry.tjf@antgroup.com>,
+   <linux-kernel@vger.kernel.org>,
+   <linux-mm@kvack.org>,
+  "=?UTF-8?B?5pyx6L6JKOiMtuawtCk=?=" <teawater@antgroup.com>
+Subject: Re: [RFC v2] mm: Multi-Gen LRU: fix use mm/page_idle/bitmap
+Date: Fri, 15 Dec 2023 20:44:17 +0800
+Message-ID: <20231215124423.88878-1-henry.hj@antgroup.com>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <CAOUHufavCOqwkm4BJJzHY+RUOafFBLH7t0O+KRbw=ns-RdYwdA@mail.gmail.com>
+References: <CAOUHufavCOqwkm4BJJzHY+RUOafFBLH7t0O+KRbw=ns-RdYwdA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH v7 05/11] arm64: perf: Include threshold control fields in
- PMEVTYPER mask
-Content-Language: en-US
-To: =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>,
- Will Deacon <will@kernel.org>
-Cc: linux-arm-kernel@lists.infradead.org, linux-perf-users@vger.kernel.org,
- suzuki.poulose@arm.com, mark.rutland@arm.com, anshuman.khandual@arm.com,
- namhyung@gmail.com, Catalin Marinas <catalin.marinas@arm.com>,
- Jonathan Corbet <corbet@lwn.net>, Peter Zijlstra <peterz@infradead.org>,
- Ingo Molnar <mingo@redhat.com>, Arnaldo Carvalho de Melo <acme@kernel.org>,
- Alexander Shishkin <alexander.shishkin@linux.intel.com>,
- Jiri Olsa <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>,
- Ian Rogers <irogers@google.com>, Adrian Hunter <adrian.hunter@intel.com>,
- Russell King <linux@armlinux.org.uk>, Marc Zyngier <maz@kernel.org>,
- Oliver Upton <oliver.upton@linux.dev>, James Morse <james.morse@arm.com>,
- Zenghui Yu <yuzenghui@huawei.com>, Paolo Bonzini <pbonzini@redhat.com>,
- Shuah Khan <shuah@kernel.org>, Zaid Al-Bassam <zalbassam@google.com>,
- Raghavendra Rao Ananta <rananta@google.com>, linux-doc@vger.kernel.org,
- linux-kernel@vger.kernel.org, kvmarm@lists.linux.dev, kvm@vger.kernel.org,
- linux-kselftest@vger.kernel.org
-References: <20231211161331.1277825-1-james.clark@arm.com>
- <20231211161331.1277825-6-james.clark@arm.com>
- <20231215120817.h2f3akgv72zhrtqo@pengutronix.de>
-From: James Clark <james.clark@arm.com>
-In-Reply-To: <20231215120817.h2f3akgv72zhrtqo@pengutronix.de>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
+On Fri, Dec 15, 2023 at 15:23 PM Yu Zhao <yuzhao@google.com> wrote:
+>Regarding the change itself, it'd cause a slight regression to other
+>use cases (details below).
+>
+> > @@ -3355,6 +3359,7 @@ static bool walk_pte_range(pmd_t *pmd, unsigned long start, unsigned long end,
+> >                 unsigned long pfn;
+> >                 struct folio *folio;
+> >                 pte_t ptent = ptep_get(pte + i);
+> > +               bool is_pte_young;
+> >
+> >                 total++;
+> >                 walk->mm_stats[MM_LEAF_TOTAL]++;
+> > @@ -3363,16 +3368,20 @@ static bool walk_pte_range(pmd_t *pmd, unsigned long start, unsigned long end,
+> >                 if (pfn == -1)
+> >                         continue;
+> >
+> > -               if (!pte_young(ptent)) {
+> > -                       walk->mm_stats[MM_LEAF_OLD]++;
+>
+> Most overhead from page table scanning normally comes from
+> get_pfn_folio() because it almost always causes a cache miss. This is
+> like a pointer dereference, whereas scanning PTEs is like streaming an
+> array (bad vs good cache performance).
+>
+> pte_young() is here to avoid an unnecessary cache miss from
+> get_pfn_folio(). Also see the first comment in get_pfn_folio(). It
+> should be easy to verify the regression -- FlameGraph from the
+> memcached benchmark in the original commit message should do it.
+>
+> Would a tracepoint here work for you?
+>
+>
+>
+> > +               is_pte_young = !!pte_young(ptent);
+> > +               folio = get_pfn_folio(pfn, memcg, pgdat, walk->can_swap, is_pte_young);
+> > +               if (!folio) {
+> > +                       if (!is_pte_young)
+> > +                               walk->mm_stats[MM_LEAF_OLD]++;
+> >                         continue;
+> >                 }
+> >
+> > -               folio = get_pfn_folio(pfn, memcg, pgdat, walk->can_swap);
+> > -               if (!folio)
+> > +               if (!folio_test_clear_young(folio) && !is_pte_young) {
+> > +                       walk->mm_stats[MM_LEAF_OLD]++;
+> >                         continue;
+> > +               }
+> >
+> > -               if (!ptep_test_and_clear_young(args->vma, addr, pte + i))
+> > +               if (is_pte_young && !ptep_test_and_clear_young(args->vma, addr, pte + i))
+> >                         VM_WARN_ON_ONCE(true);
+> >
+> >                 young++;
 
+Thanks for replying.
 
-On 15/12/2023 12:08, Uwe Kleine-König wrote:
-> Hello,
-> 
-> On Mon, Dec 11, 2023 at 04:13:17PM +0000, James Clark wrote:
->> FEAT_PMUv3_TH (Armv8.8) adds two new fields to PMEVTYPER, so include
->> them in the mask. These aren't writable on 32 bit kernels as they are in
->> the high part of the register, so only include them for arm64.
->>
->> It would be difficult to do this statically in the asm header files for
->> each platform without resulting in circular includes or #ifdefs inline
->> in the code. For that reason the ARMV8_PMU_EVTYPE_MASK definition has
->> been removed and the mask is constructed programmatically.
->>
->> Reviewed-by: Suzuki K Poulose <suzuki.poulose@arm.com>
->> Reviewed-by: Anshuman Khandual <anshuman.khandual@arm.com>
->> Signed-off-by: James Clark <james.clark@arm.com>
-> 
-> This change is in today's next as commit
-> 3115ee021bfb04efde2e96507bfcc1330261a6a1. this breaks allmodconfig
-> building on ARCH=arm:
-> 
-> 	In file included from include/linux/ratelimit_types.h:5,
-> 			 from include/linux/printk.h:9,
-> 			 from include/asm-generic/bug.h:22,
-> 			 from arch/arm/include/asm/bug.h:60,
-> 			 from include/linux/bug.h:5,
-> 			 from include/linux/mmdebug.h:5,
-> 			 from include/linux/percpu.h:5,
-> 			 from include/asm-generic/irq_regs.h:11,
-> 			 from ./arch/arm/include/generated/asm/irq_regs.h:1,
-> 			 from drivers/perf/arm_pmuv3.c:11:
-> 	drivers/perf/arm_pmuv3.c: In function ‘armv8pmu_write_evtype’:
-> 	include/linux/bits.h:34:29: error: left shift count >= width of type [-Werror=shift-count-overflow]
-> 	   34 |         (((~UL(0)) - (UL(1) << (l)) + 1) & \
-> 	      |                             ^~
-> 	include/linux/bits.h:37:38: note: in expansion of macro ‘__GENMASK’
-> 	   37 |         (GENMASK_INPUT_CHECK(h, l) + __GENMASK(h, l))
-> 	      |                                      ^~~~~~~~~
-> 	include/linux/perf/arm_pmuv3.h:238:33: note: in expansion of macro ‘GENMASK’
-> 	  238 | #define ARMV8_PMU_EVTYPE_TC     GENMASK(63, 61)
-> 	      |                                 ^~~~~~~
-> 	drivers/perf/arm_pmuv3.c:567:25: note: in expansion of macro ‘ARMV8_PMU_EVTYPE_TC’
-> 	  567 |                 mask |= ARMV8_PMU_EVTYPE_TC | ARMV8_PMU_EVTYPE_TH;
-> 	      |                         ^~~~~~~~~~~~~~~~~~~
-> 	include/linux/bits.h:35:18: error: right shift count is negative [-Werror=shift-count-negative]
-> 	   35 |          (~UL(0) >> (BITS_PER_LONG - 1 - (h))))
-> 	      |                  ^~
-> 	include/linux/bits.h:37:38: note: in expansion of macro ‘__GENMASK’
-> 	   37 |         (GENMASK_INPUT_CHECK(h, l) + __GENMASK(h, l))
-> 	      |                                      ^~~~~~~~~
-> 	include/linux/perf/arm_pmuv3.h:238:33: note: in expansion of macro ‘GENMASK’
-> 	  238 | #define ARMV8_PMU_EVTYPE_TC     GENMASK(63, 61)
-> 	      |                                 ^~~~~~~
-> 	drivers/perf/arm_pmuv3.c:567:25: note: in expansion of macro ‘ARMV8_PMU_EVTYPE_TC’
-> 	  567 |                 mask |= ARMV8_PMU_EVTYPE_TC | ARMV8_PMU_EVTYPE_TH;
-> 	      |                         ^~~~~~~~~~~~~~~~~~~
-> 	include/linux/bits.h:34:29: error: left shift count >= width of type [-Werror=shift-count-overflow]
-> 	   34 |         (((~UL(0)) - (UL(1) << (l)) + 1) & \
-> 	      |                             ^~
-> 	include/linux/bits.h:37:38: note: in expansion of macro ‘__GENMASK’
-> 	   37 |         (GENMASK_INPUT_CHECK(h, l) + __GENMASK(h, l))
-> 	      |                                      ^~~~~~~~~
-> 	include/linux/perf/arm_pmuv3.h:237:33: note: in expansion of macro ‘GENMASK’
-> 	  237 | #define ARMV8_PMU_EVTYPE_TH     GENMASK(43, 32)
-> 	      |                                 ^~~~~~~
-> 	drivers/perf/arm_pmuv3.c:567:47: note: in expansion of macro ‘ARMV8_PMU_EVTYPE_TH’
-> 	  567 |                 mask |= ARMV8_PMU_EVTYPE_TC | ARMV8_PMU_EVTYPE_TH;
-> 	      |                                               ^~~~~~~~~~~~~~~~~~~
-> 	include/linux/bits.h:35:18: error: right shift count is negative [-Werror=shift-count-negative]
-> 	   35 |          (~UL(0) >> (BITS_PER_LONG - 1 - (h))))
-> 	      |                  ^~
-> 	include/linux/bits.h:37:38: note: in expansion of macro ‘__GENMASK’
-> 	   37 |         (GENMASK_INPUT_CHECK(h, l) + __GENMASK(h, l))
-> 	      |                                      ^~~~~~~~~
-> 	include/linux/perf/arm_pmuv3.h:237:33: note: in expansion of macro ‘GENMASK’
-> 	  237 | #define ARMV8_PMU_EVTYPE_TH     GENMASK(43, 32)
-> 	      |                                 ^~~~~~~
-> 	drivers/perf/arm_pmuv3.c:567:47: note: in expansion of macro ‘ARMV8_PMU_EVTYPE_TH’
-> 	  567 |                 mask |= ARMV8_PMU_EVTYPE_TC | ARMV8_PMU_EVTYPE_TH;
-> 	      |                                               ^~~~~~~~~~~~~~~~~~~
-> 
-> I guess that's easy to fix but I didn't look into that.
-> 
-> Best regards
-> Uwe
-> 
+For avoiding below:
+1. confict between page_idle/bitmap and mglru scan
+2. performance downgrade in mglru page-table scan if call get_pfn_folio for each pte.
 
-Thanks for the report. I see that the build is only broken with GCC and
-is working with LLVM. I will look into a fix.
+We have a new idea:
+1. Include a new api under /sys/kernel/mm/page_idle, support mark idle flag only, without
+rmap walking or clearing pte young.
+2. Use mglru proactive scan to clear page idle flag.
 
-Worst case the if can be changed to an #ifdef
+workflows:
+      t1                      t2 
+mark pages idle    mglru scan and check pages idle
 
-James
+It's easy for us to know that whether a page is accessed during t1~t2.
+
+Some code changes like these:
+
+We clear idle flags in get_pfn_folio, and in walk_pte_range we still follow
+original design.
+
+static struct folio *get_pfn_folio(unsigned long pfn, struct mem_cgroup *memcg,
+					struct pglist_data *pgdat, bool can_swap, bool clear_idle)
+{
+	struct folio *folio;
+
+	/* try to avoid unnecessary memory loads */
+	if (pfn < pgdat->node_start_pfn || pfn >= pgdat_end_pfn(pgdat))
+		return NULL;
+
+	folio = pfn_folio(pfn);
++
++	if (clear_idle && folio_test_idle(folio))
++		folio_clear_idle(folio);
++
+	if (folio_nid(folio) != pgdat->node_id)
+		return NULL;
+
+	if (folio_memcg_rcu(folio) != memcg)
+		return NULL;
+
+	/* file VMAs can contain anon pages from COW */
+	if (!folio_is_file_lru(folio) && !can_swap)
+		return NULL;
+
+	return folio;
+}
+
+static bool walk_pte_range(pmd_t *pmd, unsigned long start, unsigned long end,
+			struct mm_walk *args)
+{
+...
+	for (i = pte_index(start), addr = start; addr != end; i++, addr += PAGE_SIZE) {
+		unsigned long pfn;
+		struct folio *folio;
+		pte_t ptent = ptep_get(pte + i);
+
+		total++;
+		walk->mm_stats[MM_LEAF_TOTAL]++;
+
+		pfn = get_pte_pfn(ptent, args->vma, addr);
+		if (pfn == -1)
+			continue;
+
+		if (!pte_young(ptent)) {
+			walk->mm_stats[MM_LEAF_OLD]++;
+			continue;
+		}
+
++		folio = get_pfn_folio(pfn, memcg, pgdat, walk->can_swap, true);
+-		folio = get_pfn_folio(pfn, memcg, pgdat, walk->can_swap);
+		if (!folio)
+			continue;
+...
+}
+
+Is it a good idea or not ?
+
+-- 
+2.43.0
+
 
