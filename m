@@ -1,161 +1,133 @@
-Return-Path: <linux-kernel+bounces-1669-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-1670-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D2F098151EA
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 22:28:52 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 320A18151EC
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 22:31:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1092A1C24201
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 21:28:52 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E3ABD286E80
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 21:31:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5DD3A482EC;
-	Fri, 15 Dec 2023 21:28:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B642547F7E;
+	Fri, 15 Dec 2023 21:31:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="bTLc9lOv"
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="eSRi0qgc"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ed1-f44.google.com (mail-ed1-f44.google.com [209.85.208.44])
+Received: from mail-lj1-f181.google.com (mail-lj1-f181.google.com [209.85.208.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E8A4847F71
-	for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 21:28:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ed1-f44.google.com with SMTP id 4fb4d7f45d1cf-552e4a68de0so1019570a12.0
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 13:28:39 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D6D03FE44
+	for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 21:31:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-lj1-f181.google.com with SMTP id 38308e7fff4ca-2c9ea37ac87so14247021fa.3
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 13:31:13 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1702675718; x=1703280518; darn=vger.kernel.org;
+        d=chromium.org; s=google; t=1702675870; x=1703280670; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=cC1bTSXVCMzouBImm4Lunm53BHd7q+29uIzARRshG/Q=;
-        b=bTLc9lOvky3hnqhxyB3qjrvvSj24oJ76O9Fo+kz4prIC3/67Zr4hbepSfTtZEIYb8D
-         CQKUltMB8EkpS6plbFJ+q2luSKHC398Yun0LQDsXDz5dTENqVvzLXfx2vz9mDMQtO5rf
-         KUzX/KmZQDoCM3blBuw8dz4kpHPKL+2+lhvf2lgUTqX8/uqBeAKZUhlLKdGvDOyfBEMx
-         cwfcd1KmOzTdWzVcUoVH15MorVl1u4ZfQfoipHMRBL0MzluTEdFhiGdIYu8Nm/5fN8dk
-         9lD4NxpADZHaU2sI7aQSVOrjHGzslfcma3kCM5keLM9VFEchS+ugTPURdgoTwWIa50wC
-         AtLw==
+        bh=3oeurpi6f1dt89GCMIZpe52BTKf//uzB0betOyA87Xw=;
+        b=eSRi0qgc43wGdQ5F9QFZNKscb2DgaZuxAQSLlzjVZQ3lvVQ4G+cR+g/muCC9UkkwUC
+         ffU58cJlwP1iM5RvoodfM6ok8Lua4isB2W5yuhQXy0xJzZz+UucBzZKbEtWXQ00BzaoC
+         feVekUjRVssM98ziQ1nZxQLJOOc0MUyb/H+pI=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702675718; x=1703280518;
+        d=1e100.net; s=20230601; t=1702675870; x=1703280670;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=cC1bTSXVCMzouBImm4Lunm53BHd7q+29uIzARRshG/Q=;
-        b=WFiDADrMJw0bui6n239ftrFaee7w52grMpIA8s0+HtYpQjTwAfnKCcvfRYzEkDnT5D
-         HicG2N4kI3AMW9S5nWlfF53D18XSJTqU4XIL4PmaNHHI70ui87Ay9uYh/raYUZGS7AXN
-         LMGxdxEEOHq+GiHN6S6Kuy9e4bY2X8DrINWaAmz+K3jXwqt4ca2kqCdF7DsFgzxBw9Dd
-         TcGIyyB/13s34wcvSL/Bf1dfJdtyZH8yAtgQECATDm0LZWY5beDiJh/wOzrFUvbfE3fN
-         dfvmV7awwjkPqYSBgsURo07s3wrtrxeGP0+Sa9zwjRFhqbdFXO01r91+7HkVOPVT0bYr
-         BxCA==
-X-Gm-Message-State: AOJu0YwQzdXe5m7Xmrtvz92FRzukjOLb7u6Qp10jfK0XK76TwQ85fBQG
-	1wv+zxejtKJDepd6D/sPFXvMHU6rGzsz2YuKj/Q9cA==
-X-Google-Smtp-Source: AGHT+IE2mXg2+E2jLeKihSLfRCnuQkYt+4zI+WvSBMFz2WgpbdwhTo/O+qkSxIF4jSezpRGJphrMSKQXA2O0/0ant9E=
-X-Received: by 2002:a50:cd53:0:b0:551:cfab:5538 with SMTP id
- d19-20020a50cd53000000b00551cfab5538mr6411620edj.32.1702675718126; Fri, 15
- Dec 2023 13:28:38 -0800 (PST)
+        bh=3oeurpi6f1dt89GCMIZpe52BTKf//uzB0betOyA87Xw=;
+        b=fPFJ/HO2UBy6r6KUHQOoDv3JxhkUHgZgEPRKHP079PsXQ4Foru5KCNI+0OyVwOm3LU
+         T60M2LnlvMpQ9k77YR2Ej0uxoduFb5SRQeUSi7zaTLZbxOj2ks/5VeY3TnhaKYaCtTgT
+         FjmM1gCN2RbO3UWrD2wvAhZZnEYk2EQ12uHzgPlPi19NhcWQksTX230XWoINDVI2lu7v
+         gDYbum1YjPgHWLN3d3FIbFrbQFcekgolhpOa5puCZfTzbokJToo1eOYhrsYhlIO8C1Rp
+         GlLgEPkIBKbNtS85WGQb1Ggfeq5SN3vBnXpYxkS+iNfAzdvcZMa6NrGWIzK8BfGZtMJa
+         zjPg==
+X-Gm-Message-State: AOJu0Yw8R0dtXBf/RSzyQxmyeEWnYMAHZpTPqPo7ZOW5IW7KD6OrxiMB
+	UjtwYoy8MI5rEi6Cfxbbwdwl1h6o/Zbc9sakr6UBPA==
+X-Google-Smtp-Source: AGHT+IFxgZ/W9QhZJGq1gEFESSQDaQahakGZv83CTioXb6qxEBbCCqFXJDTAaIkDLGqnS8MQcFB+DA==
+X-Received: by 2002:a05:651c:1186:b0:2cc:2adb:de58 with SMTP id w6-20020a05651c118600b002cc2adbde58mr2746924ljo.2.1702675870266;
+        Fri, 15 Dec 2023 13:31:10 -0800 (PST)
+Received: from mail-wm1-f52.google.com (mail-wm1-f52.google.com. [209.85.128.52])
+        by smtp.gmail.com with ESMTPSA id u16-20020a50c050000000b0054d486674d8sm8457894edd.45.2023.12.15.13.31.09
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 15 Dec 2023 13:31:09 -0800 (PST)
+Received: by mail-wm1-f52.google.com with SMTP id 5b1f17b1804b1-40c3963f9fcso4145e9.1
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 13:31:09 -0800 (PST)
+X-Received: by 2002:a05:600c:35c9:b0:405:320a:44f9 with SMTP id
+ r9-20020a05600c35c900b00405320a44f9mr13760wmq.5.1702675869278; Fri, 15 Dec
+ 2023 13:31:09 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231215124751.175191-1-ojeda@kernel.org>
-In-Reply-To: <20231215124751.175191-1-ojeda@kernel.org>
-From: Justin Stitt <justinstitt@google.com>
-Date: Fri, 15 Dec 2023 13:28:26 -0800
-Message-ID: <CAFhGd8pHtfuMYfx=uEzssvesQDZ-BS0BzPwn06WbasXKUfPBJg@mail.gmail.com>
-Subject: Re: [PATCH] docs: rust: remove `CC=clang` mentions
-To: Miguel Ojeda <ojeda@kernel.org>
-Cc: Wedson Almeida Filho <wedsonaf@gmail.com>, Alex Gaynor <alex.gaynor@gmail.com>, 
-	Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, 
-	=?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, 
-	Benno Lossin <benno.lossin@proton.me>, Andreas Hindborg <a.hindborg@samsung.com>, 
-	Alice Ryhl <aliceryhl@google.com>, rust-for-linux@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, patches@lists.linux.dev, 
-	Jonathan Corbet <corbet@lwn.net>, Nathan Chancellor <nathan@kernel.org>, 
-	Nick Desaulniers <ndesaulniers@google.com>, Bill Wendling <morbo@google.com>, linux-doc@vger.kernel.org, 
-	llvm@lists.linux.dev
+References: <1701876771-10695-1-git-send-email-quic_mojha@quicinc.com>
+In-Reply-To: <1701876771-10695-1-git-send-email-quic_mojha@quicinc.com>
+From: Doug Anderson <dianders@chromium.org>
+Date: Fri, 15 Dec 2023 13:30:52 -0800
+X-Gmail-Original-Message-ID: <CAD=FV=XA6nYCkpET9MQ4jbZBeM2fM8KF-pPAz=KdxOF0JxEzQw@mail.gmail.com>
+Message-ID: <CAD=FV=XA6nYCkpET9MQ4jbZBeM2fM8KF-pPAz=KdxOF0JxEzQw@mail.gmail.com>
+Subject: Re: [PATCH v2] soc: qcom: llcc: Fix dis_cap_alloc and retain_on_pc configuration
+To: Mukesh Ojha <quic_mojha@quicinc.com>
+Cc: agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org, 
+	linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Atul Dhudase <quic_adhudase@quicinc.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
 Hi,
 
-On Fri, Dec 15, 2023 at 4:48=E2=80=AFAM Miguel Ojeda <ojeda@kernel.org> wro=
-te:
+On Wed, Dec 6, 2023 at 7:33=E2=80=AFAM Mukesh Ojha <quic_mojha@quicinc.com>=
+ wrote:
 >
-> Nowadays all architectures except s390 recommend using `LLVM=3D1` instead=
- of
-> `CC=3Dclang`, and since commit a3c6bfba4429 ("Documentation/llvm: refresh
-> docs") the Kbuild LLVM documentation makes `LLVM=3D1` the way to go:
+> From: Atul Dhudase <quic_adhudase@quicinc.com>
 >
->     We want to encourage the use of ``LLVM=3D1`` rather than just
->     ``CC=3Dclang``. Make that suggestion "above the fold" and "front and
->     center" in our docs.
+> Commit c14e64b46944 ("soc: qcom: llcc: Support chipsets that can
+>  write to llcc") add the support for chipset where capacity based
+> allocation and retention through power collapse can be programmed
+> based on content of SCT table mentioned in the llcc driver where
+> the target like sdm845 where the entire programming related to it
+> is controlled in firmware. However, the commit introduces a bug
+> where capacity/retention register get overwritten each time it
+> gets programmed for each slice and that results in misconfiguration
+> of the register based on SCT table and that is not expected
+> behaviour instead it should be read modify write to retain the
+> configuration of other slices.
 >
-> In particular, that commit removes the examples with `CC=3Dclang`.
+> This issue is totally caught from code review and programming test
+> and not through any power/perf numbers so, it is not known what
+> impact this could make if we don't have this change however,
+> this feature are for these targets and they should have been
+> programmed accordingly as per their configuration mentioned in
+> SCT table like others bits information.
 >
-> Thus do the same in the Rust Quick Start guide, i.e. remove the `CC=3Dcla=
-ng`
-> mentions, especially since the architectures that have had their Rust
-> support upstreamed (or soon to be upstreamed) are all `LLVM=3D1` ones
-> anyway. And perhaps by the time Rust is supported for s390 (or new
-> architectures), it may have moved to `LLVM=3D1` anyway. Otherwise,
-> this can be added back if needed (or perhaps an extra link to
-> Documentation/kbuild/llvm.rst).
+> This change brings one difference where it keeps capacity/retention
+> bits of the slices that are not mentioned in SCT table in unknown
+> state where as earlier it was initialized to zero.
 >
-> This should also help avoiding potential confusion around `CC=3Dclang` [1=
-].
->
-
-Yes!
-
-
-> Link: https://lore.kernel.org/rust-for-linux/6df6e8e5-8d5b-4d3d-91b5-bc0e=
-90c424ea@nvidia.com/ [1]
-> Signed-off-by: Miguel Ojeda <ojeda@kernel.org>
-
-Reviewed-by: Justin Stitt <justinstitt@google.com>
-
+> Fixes: c14e64b46944 ("soc: qcom: llcc: Support chipsets that can write to=
+ llcc")
+> Signed-off-by: Atul Dhudase <quic_adhudase@quicinc.com>
+> Signed-off-by: Mukesh Ojha <quic_mojha@quicinc.com>
 > ---
->  Documentation/rust/quick-start.rst | 6 +-----
->  1 file changed, 1 insertion(+), 5 deletions(-)
+> Changes in v2: https://lore.kernel.org/lkml/20231103105712.1159213-1-quic=
+_adhudase@quicinc.com/
+>  - Rewritten the commit text based on feedback in v1
+>  - Aligned the lines in the code.
 >
-> diff --git a/Documentation/rust/quick-start.rst b/Documentation/rust/quic=
-k-start.rst
-> index f382914f4191..75faa987079a 100644
-> --- a/Documentation/rust/quick-start.rst
-> +++ b/Documentation/rust/quick-start.rst
-> @@ -76,7 +76,7 @@ libclang
->
->  ``libclang`` (part of LLVM) is used by ``bindgen`` to understand the C c=
-ode
->  in the kernel, which means LLVM needs to be installed; like when the ker=
-nel
-> -is compiled with ``CC=3Dclang`` or ``LLVM=3D1``.
-> +is compiled with ``LLVM=3D1``.
->
->  Linux distributions are likely to have a suitable one available, so it i=
-s
->  best to check that first.
-> @@ -229,10 +229,6 @@ at the moment. That is::
->
->         make LLVM=3D1
->
-> -For architectures that do not support a full LLVM toolchain, use::
-> -
-> -       make CC=3Dclang
-> -
->  Using GCC also works for some configurations, but it is very experimenta=
-l at
->  the moment.
->
->
-> base-commit: a39b6ac3781d46ba18193c9dbb2110f31e9bffe9
-> --
-> 2.43.0
->
+>  drivers/soc/qcom/llcc-qcom.c | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
 
-Thanks
-Justin
+The commit message is much more clear now, though I wish we actually
+had more real details about what was in the other bits in the register
+that aren't being cleared now and also if this has any effect on
+power/performance. In any case, this still seems worthwhile to me to
+land.
+
+Reviewed-by: Douglas Anderson <dianders@chromium.org>
 
