@@ -1,46 +1,64 @@
-Return-Path: <linux-kernel+bounces-1646-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-1647-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 287E6815174
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 21:57:22 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 36887815177
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 21:59:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 891FB285EDC
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 20:57:20 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5995C1C22A68
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 20:59:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4291C47F5B;
-	Fri, 15 Dec 2023 20:57:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F49047776;
+	Fri, 15 Dec 2023 20:59:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="4kW0X2uh"
+	dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b="KU5EIgtC"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-oi1-f175.google.com (mail-oi1-f175.google.com [209.85.167.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1BC2346554;
-	Fri, 15 Dec 2023 20:56:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1702673818;
-	bh=llzOJtxbkH31ZdRai4uKosxuCv2h8SX3YoPj7mI7JtY=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=4kW0X2uhqogD19NjUBIqkwvrcTnDHeRo2eT4VKcg8nrVYlMVtXeQFz7QLnJS6fNRc
-	 jG+6SL6EOqe5B7tG+vwIz9WiEA7wm2g31zNmD+ff3WO45KF5qH4W6KTyZBRvC/qq5O
-	 NGqHr5yZ/jJ0Rphill5GVsz8ve5swsoJW7OuZfDdZBa+eakXmSqzndVYYWaywPO5mj
-	 O4vRCR4Vf/PID9hCg+euDIPFeoZVPEYOkKTpLBjt7acfgpA80jLC3r4ZBvs9XlTb4z
-	 AJkLkF6qJuaoWZy3TMFftwDoV/T3QWuOGLGAQsw3EIgZl9wxPJGMIBGUJRtmhjq+93
-	 Z8ropt8cC3HHQ==
-Received: from [100.115.223.179] (cola.collaboradmins.com [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: cristicc)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 4261B3781FD5;
-	Fri, 15 Dec 2023 20:56:56 +0000 (UTC)
-Message-ID: <491f1a89-aabd-4c38-b33a-a298add1bdb3@collabora.com>
-Date: Fri, 15 Dec 2023 22:56:54 +0200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F7024655F
+	for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 20:59:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sifive.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sifive.com
+Received: by mail-oi1-f175.google.com with SMTP id 5614622812f47-3b9e1a3e3f0so781267b6e.1
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 12:59:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=sifive.com; s=google; t=1702673959; x=1703278759; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=lV7l2nTXRo6puPksf2Bwbtc+9l9srdKWeAOzTx3pqZU=;
+        b=KU5EIgtCK4hVTxEEZxXq7NbhYD5qiIM4WmTT5l+3tSK4lixfIwF2ZDhcGSqTqxYB29
+         JxFp3OD3Ee/JMVqO0SPmVVcv2Xdx7oUkqul746gfHgy2s6PdYlNaYOXF9fEMGASjrrwW
+         CT4LHPNMPhULbiNgC0+Ql741Fzj0YSqXxaUmSaAdraGzzvmBEQKHQf7x9YiakUMB2IuF
+         vXRUldbcwZQ5qmMSk72etRWkYG9SC1NJGqb8EwVai94+r8HdyLhILcg2H13xcFRt1KKp
+         a3R78jsr9K/DKgNVTug/BbkgvLtc50WR5jfir69Ce6NP/nbUWFQ1c2xywrKnqV53s0SV
+         x8VQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702673959; x=1703278759;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=lV7l2nTXRo6puPksf2Bwbtc+9l9srdKWeAOzTx3pqZU=;
+        b=FJxlI9pCEhnJj2b0PUSHDDYZ6T0dOT4e0ykUf0HX1dI7J4xcofDMYXHmwJaQacPxWl
+         JPyVncr+EWmXFxn1kbRN3tr4uitPacfKtdxy0ryw7IBLqYlwAvS+9MT84v/wLxJKh9o2
+         rVkxBs/GJd87Duzp7pC6kf1e7OqzFywLEObt8yCUGlRwWcGcrnlL/nzJMpg+sXjiope6
+         0TMp1WjDXZ7MvqBY5cIRyXjfw++fjUkXC9SjyjicURQxUUSVgF7y1IuVzuGZpx9b7FxK
+         Ur6rWrDtHH38aNk8rUshyM5AjzS/eGxI1wMMk2qk0dqGEapo9R/SENpuBwgAX1TRuAD4
+         JnRg==
+X-Gm-Message-State: AOJu0YwAW3LjSu1aCftaEF7RVcyBjBD9bDt5wrY1bMMPDDmDlwodZ3FB
+	0TuPdT3ctWGtjoxpTlYpJcjYBA==
+X-Google-Smtp-Source: AGHT+IEe4Kr9nZGM8rgYvZk36QtswTXFAg2l00r9jHu+UOaHWgP1pqPIoOBpVHQ2/argXUQTanExYw==
+X-Received: by 2002:a05:6808:1a0e:b0:3b9:da30:77fa with SMTP id bk14-20020a0568081a0e00b003b9da3077famr15925945oib.2.1702673959682;
+        Fri, 15 Dec 2023 12:59:19 -0800 (PST)
+Received: from ?IPV6:2600:1700:2000:b002:18ee:711a:b78b:5489? ([2600:1700:2000:b002:18ee:711a:b78b:5489])
+        by smtp.gmail.com with ESMTPSA id v16-20020a0cf910000000b0067a53aa6df2sm7151683qvn.46.2023.12.15.12.59.18
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 15 Dec 2023 12:59:19 -0800 (PST)
+Message-ID: <65fd52f1-6861-42b0-9148-266766d054b1@sifive.com>
+Date: Fri, 15 Dec 2023 14:59:17 -0600
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -51,7 +69,8 @@ User-Agent: Mozilla Thunderbird
 Subject: Re: [PATCH v3 2/9] dt-bindings: net: starfive,jh7110-dwmac: Add
  JH7100 SoC compatible
 Content-Language: en-US
-To: Jessica Clarke <jrtc27@jrtc27.com>
+To: Jessica Clarke <jrtc27@jrtc27.com>,
+ Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
 Cc: "David S. Miller" <davem@davemloft.net>,
  Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
  Paolo Abeni <pabeni@redhat.com>, Rob Herring <robh+dt@kernel.org>,
@@ -75,12 +94,12 @@ Cc: "David S. Miller" <davem@davemloft.net>,
 References: <20231215204050.2296404-1-cristian.ciocaltea@collabora.com>
  <20231215204050.2296404-3-cristian.ciocaltea@collabora.com>
  <A7C96942-07CB-40FD-AAAA-4A8947DEE7CA@jrtc27.com>
-From: Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
+From: Samuel Holland <samuel.holland@sifive.com>
 In-Reply-To: <A7C96942-07CB-40FD-AAAA-4A8947DEE7CA@jrtc27.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-On 12/15/23 22:47, Jessica Clarke wrote:
+On 2023-12-15 2:47 PM, Jessica Clarke wrote:
 > On 15 Dec 2023, at 20:40, Cristian Ciocaltea <cristian.ciocaltea@collabora.com> wrote:
 >>
 >> The Synopsys DesignWare MAC found on StarFive JH7100 SoC is mostly
@@ -129,12 +148,16 @@ On 12/15/23 22:47, Jessica Clarke wrote:
 > I’m not so well-versed in the YAML bindings, but would this not allow
 > reset-names = "ahb", "ahb"?
 
-Yes, as I already pointed out in [1], I wasn't able to come up with a
-proper solution to avoid that.
+Yes, it would. You need something like:
 
-Thanks,
-Cristian
+reset-names:
+  oneOf:
+    - enum: [stmmaceth, ahb]
+    - items:
+        - const: stmmaceth
+        - const: ahb
 
-> Jess
-> 
+Regards,
+Samuel
+
 
