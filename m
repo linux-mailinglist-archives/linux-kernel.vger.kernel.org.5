@@ -1,128 +1,109 @@
-Return-Path: <linux-kernel+bounces-1520-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-1522-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id BA030814FA3
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 19:21:14 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6D199814FAB
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 19:24:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 593141F24204
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 18:21:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F234F28687D
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 18:24:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A2FDB30139;
-	Fri, 15 Dec 2023 18:20:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D998F3C6AC;
+	Fri, 15 Dec 2023 18:24:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=manjaro.org header.i=@manjaro.org header.b="K4D21S36"
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="Tt8mXvCE"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail.manjaro.org (mail.manjaro.org [116.203.91.91])
-	(using TLSv1.2 with cipher DHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC4AB3FB28;
-	Fri, 15 Dec 2023 18:20:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=manjaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=manjaro.org
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B7DBD3FB0B;
+	Fri, 15 Dec 2023 18:24:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3BFICaEs019649;
+	Fri, 15 Dec 2023 18:23:45 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=dVW3SnfMl0mCJfi3oJkoPR9xq6Yf+K2lsGRlI93QcLg=; b=Tt
+	8mXvCEfCTwjl3pgVPOVK/+OT7XOu2YOQBzPdIuUe3MZ5licAb0gxu0IMBnb4yV85
+	jzKXXprHfUNKtz0RMAEdIO0JkC4wE02Uq68Nzmj+XEMf5SXIB5hdhX9hJTamEbTe
+	4DHXqMsHIyXub4Ts9S0zAEB4lkUcxolkhdo9qYy3786nqxmbGZ6rbyGDbA813C4+
+	x3mLTaYbEw2fBWc6GURTQcmjJpUNcsay/c8sag4VKjpEgHklZAptPSJFEIXNjF6X
+	Ubb6aAgbkMFpUku2GYwd4FyJQO6pLo1H6UDzcD+QaozPjgguh1tVz0UIBy45sWmW
+	UYKhzYqbN8Tv8jQGKWMA==
+Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3v0p100xfu-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 15 Dec 2023 18:23:45 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3BFINhRd026163
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 15 Dec 2023 18:23:44 GMT
+Received: from [10.226.59.182] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Fri, 15 Dec
+ 2023 10:23:43 -0800
+Message-ID: <8aee3661-f04d-f9db-3513-2cd14b6fa67b@quicinc.com>
+Date: Fri, 15 Dec 2023 11:23:42 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=manjaro.org; s=2021;
-	t=1702664451;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=kdamCqjRtgR4H2j8cWSZZKks1yiKAdE2PPQajEtV960=;
-	b=K4D21S36po9STPxTJatpUcsaVOOhhFAeaDCcHOXV2QkyxFUv/02KPsHyvImWXz6DuZMQW+
-	YGiN8M+jUjFoBcWhThuScNK3j/QV+11ijxq5K/3RYSkbbBMyemuD2/g0gLmfxUP+Fv0Ap4
-	eD63ztjYxKsGncRkgAXqPAbSdCBWS2wgz39EkN22ImQMDFg1ExnpoSKSms3xBPW9gXc5SM
-	UbLUAOEG/v5muxM198w920kUkuxswpIrEjdPeNwf1wQSwwWxBlrH4kFggX+oJPi9aSKf8X
-	k1ixsAwmCx7KyfHD4eFIeZmz3MEaSRB4PDHMgGm00t1DlYjO6+2vny3u0ncE/w==
-Date: Fri, 15 Dec 2023 19:20:51 +0100
-From: Dragan Simic <dsimic@manjaro.org>
-To: Stefan Nagy <stefan.nagy@ixypsilon.net>
-Cc: Heiko Stuebner <heiko@sntech.de>, linux-rockchip@lists.infradead.org,
- linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] arm64: dts: rockchip: Increase maximum frequency of SPI
- flash for ROCK Pi 4A/B/C
-In-Reply-To: <33e632c38fa57053585c0016652ed8c8@manjaro.org>
-References: <20231215122848.59534-1-stefan.nagy@ixypsilon.net>
- <33e632c38fa57053585c0016652ed8c8@manjaro.org>
-Message-ID: <4fce0de996d6cc3056d972cd3fc3fb93@manjaro.org>
-X-Sender: dsimic@manjaro.org
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.6.0
+Subject: Re: [PATCH v5 1/2] bus: mhi: host: Add spinlock to protect WP access
+ when queueing TREs
+Content-Language: en-US
+To: Qiang Yu <quic_qianyu@quicinc.com>, <mani@kernel.org>
+CC: <mhi@lists.linux.dev>, <linux-arm-msm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <quic_cang@quicinc.com>,
+        <quic_mrana@quicinc.com>, Bhaumik Bhatt <bbhatt@codeaurora.org>,
+        <stable@vger.kernel.org>
+References: <1702276972-41296-1-git-send-email-quic_qianyu@quicinc.com>
+ <1702276972-41296-2-git-send-email-quic_qianyu@quicinc.com>
+From: Jeffrey Hugo <quic_jhugo@quicinc.com>
+In-Reply-To: <1702276972-41296-2-git-send-email-quic_qianyu@quicinc.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
-Authentication-Results: ORIGINATING;
-	auth=pass smtp.auth=dsimic@manjaro.org smtp.mailfrom=dsimic@manjaro.org
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: vIFhtdXyPc9OFpGAyf7fJHgL8XeBr0fA
+X-Proofpoint-ORIG-GUID: vIFhtdXyPc9OFpGAyf7fJHgL8XeBr0fA
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-09_02,2023-12-07_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 adultscore=0
+ spamscore=0 bulkscore=0 mlxlogscore=715 lowpriorityscore=0
+ priorityscore=1501 phishscore=0 malwarescore=0 impostorscore=0
+ clxscore=1011 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2311290000 definitions=main-2312150129
 
-On 2023-12-15 19:15, Dragan Simic wrote:
-> On 2023-12-15 13:28, Stefan Nagy wrote:
->> The ROCK Pi 4A/B/C boards come with a 32 Mbit SPI NOR flash chip (XTX
->> Technology Limited XT25F32) which has a maximum clock frequency of 108
->> MHz. However, the Rockchip SPI controller driver limits the maximum
->> SPI clock frequency to 50 MHz. Use this limit for spi-max-freq.
->> 
->> This patch has been tested on ROCK Pi 4A.
->> 
->> Signed-off-by: Stefan Nagy <stefan.nagy@ixypsilon.net>
->> ---
->>  arch/arm64/boot/dts/rockchip/rk3399-rock-pi-4a.dts | 2 +-
->>  arch/arm64/boot/dts/rockchip/rk3399-rock-pi-4b.dts | 2 +-
->>  arch/arm64/boot/dts/rockchip/rk3399-rock-pi-4c.dts | 2 +-
->>  3 files changed, 3 insertions(+), 3 deletions(-)
->> 
->> diff --git a/arch/arm64/boot/dts/rockchip/rk3399-rock-pi-4a.dts
->> b/arch/arm64/boot/dts/rockchip/rk3399-rock-pi-4a.dts
->> index d5df8939a..30e63e62a 100644
->> --- a/arch/arm64/boot/dts/rockchip/rk3399-rock-pi-4a.dts
->> +++ b/arch/arm64/boot/dts/rockchip/rk3399-rock-pi-4a.dts
->> @@ -19,6 +19,6 @@ &spi1 {
->>  	flash@0 {
->>  		compatible = "jedec,spi-nor";
->>  		reg = <0>;
->> -		spi-max-frequency = <10000000>;
->> +		spi-max-frequency = <50000000>;
->>  	};
->>  };
->> diff --git a/arch/arm64/boot/dts/rockchip/rk3399-rock-pi-4b.dts
->> b/arch/arm64/boot/dts/rockchip/rk3399-rock-pi-4b.dts
->> index bee6d7588..7122bf6c0 100644
->> --- a/arch/arm64/boot/dts/rockchip/rk3399-rock-pi-4b.dts
->> +++ b/arch/arm64/boot/dts/rockchip/rk3399-rock-pi-4b.dts
->> @@ -37,7 +37,7 @@ &spi1 {
->>  	flash@0 {
->>  		compatible = "jedec,spi-nor";
->>  		reg = <0>;
->> -		spi-max-frequency = <10000000>;
->> +		spi-max-frequency = <50000000>;
->>  	};
->>  };
->> 
->> diff --git a/arch/arm64/boot/dts/rockchip/rk3399-rock-pi-4c.dts
->> b/arch/arm64/boot/dts/rockchip/rk3399-rock-pi-4c.dts
->> index de2ebe4cb..8af75bc7c 100644
->> --- a/arch/arm64/boot/dts/rockchip/rk3399-rock-pi-4c.dts
->> +++ b/arch/arm64/boot/dts/rockchip/rk3399-rock-pi-4c.dts
->> @@ -49,7 +49,7 @@ &spi1 {
->>  	flash@0 {
->>  		compatible = "jedec,spi-nor";
->>  		reg = <0>;
->> -		spi-max-frequency = <10000000>;
->> +		spi-max-frequency = <50000000>;
->>  	};
->>  };
+On 12/10/2023 11:42 PM, Qiang Yu wrote:
+> From: Bhaumik Bhatt <bbhatt@codeaurora.org>
 > 
-> It would be better to upstream these changes to the Linux kernel
-> first, and then sync them back to U-Boot.
+> Protect WP accesses such that multiple threads queueing buffers for
+> incoming data do not race.
+> 
+> Meanwhile, if CONFIG_TRACE_IRQFLAGS is enabled, irq will be enabled once
+> __local_bh_enable_ip is called as part of write_unlock_bh. Hence, let's
+> take irqsave lock after TRE is generated to avoid running write_unlock_bh
+> when irqsave lock is held.
+> 
+> Cc: <stable@vger.kernel.org>
+> Fixes: 189ff97cca53 ("bus: mhi: core: Add support for data transfer")
+> Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
+> Signed-off-by: Qiang Yu <quic_qianyu@quicinc.com>
 
-Oops, my bad, sorry, I got confused with your other patch on the U-Boot 
-mailing list.
+Seems to work fine for AIC100
 
-Regarding the new spi-max-frequency value, it should be better to have 
-it set to what the SPI chip actually supports, and let the SPI driver do 
-its thing.
+Reviewed-by: Jeffrey Hugo <quic_jhugo@quicinc.com>
+Tested-by: Jeffrey Hugo <quic_jhugo@quicinc.com>
 
