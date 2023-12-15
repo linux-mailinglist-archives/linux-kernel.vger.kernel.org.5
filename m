@@ -1,93 +1,163 @@
-Return-Path: <linux-kernel+bounces-1217-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-1226-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8EA00814BDC
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 16:31:09 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7C74B814C0B
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 16:46:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 138F2B2257C
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 15:31:07 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AF81D1C21288
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 15:46:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F0AD137169;
-	Fri, 15 Dec 2023 15:30:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BAC81381B2;
+	Fri, 15 Dec 2023 15:46:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=lwn.net header.i=@lwn.net header.b="FduCbGYA"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F0DF237152;
-	Fri, 15 Dec 2023 15:30:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 619E3C15;
-	Fri, 15 Dec 2023 07:31:40 -0800 (PST)
-Received: from [10.57.85.151] (unknown [10.57.85.151])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D441A3F5A1;
-	Fri, 15 Dec 2023 07:30:53 -0800 (PST)
-Message-ID: <30891c4e-0fec-4477-ba49-905ea05a4545@arm.com>
-Date: Fri, 15 Dec 2023 15:31:57 +0000
+Received: from ms.lwn.net (ms.lwn.net [45.79.88.28])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E0FD36AF3;
+	Fri, 15 Dec 2023 15:46:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lwn.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lwn.net
+Received: from localhost (unknown [IPv6:2601:280:5e00:7e19::646])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by ms.lwn.net (Postfix) with ESMTPSA id 67DD146A;
+	Fri, 15 Dec 2023 15:36:07 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 67DD146A
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
+	t=1702654567; bh=0z7tbYu86nQ9SX1OTqU2DL4AXEXhHB+guJ/OzNfBsgY=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+	b=FduCbGYAwm9ZD8xBLalG4d6x8noYSA2T+QJHE4CzhwmF+Qp0vbp3IOeqom0tkJYiQ
+	 kEfm9kCetJM8xfZc5aGSkCTRWGMlJdNTgqcY6ARsS6Xg4AVV9+7bczTwjLq2PE4XUs
+	 nfww1DGPd0LWG3+0V2rqRYtaacVxdLIRk8G6CHfKCbx8FpRgdjtttmY8rOcKXOKC2L
+	 Tjgz8FQDKJVu5fhU/3OXRfo5AsXHtk5CGw6E+kZzofg8hvgJ0K3YTQNSybis+K/tc/
+	 fYuS6HF+8eSmeN/hjmqeB82tPbUoZWU4Sh93SiQz0YjKBPhNFSm00jS+3nObPmyDJ3
+	 QIW7lyc3F9ndw==
+From: Jonathan Corbet <corbet@lwn.net>
+To: Akira Yokosawa <akiyks@gmail.com>, linux-doc@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org, Mauro Carvalho Chehab
+ <mchehab@kernel.org>, Akira Yokosawa <akiyks@gmail.com>
+Subject: Re: [PATCH v2] docs: Raise the minimum Sphinx requirement to 2.4.4
+In-Reply-To: <50830030-dca7-4c43-bcc8-449c7cfa9fbb@gmail.com>
+References: <874jgs47fq.fsf@meer.lwn.net>
+ <50830030-dca7-4c43-bcc8-449c7cfa9fbb@gmail.com>
+Date: Fri, 15 Dec 2023 08:36:06 -0700
+Message-ID: <87sf43qxzt.fsf@meer.lwn.net>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1] thermal: core: Fix NULL pointer dereference in zone
- registration error path
-Content-Language: en-US
-To: "Rafael J. Wysocki" <rjw@rjwysocki.net>
-Cc: Linux PM <linux-pm@vger.kernel.org>,
- Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
- Zhang Rui <rui.zhang@intel.com>, Linux ACPI <linux-acpi@vger.kernel.org>,
- LKML <linux-kernel@vger.kernel.org>, Dan Carpenter
- <dan.carpenter@linaro.org>, Daniel Lezcano <daniel.lezcano@linaro.org>
-References: <5737641.DvuYhMxLoT@kreacher>
-From: Lukasz Luba <lukasz.luba@arm.com>
-In-Reply-To: <5737641.DvuYhMxLoT@kreacher>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+
+Akira Yokosawa <akiyks@gmail.com> writes:
+
+> With this patch applied, I get a confusing looking warning from
+> "make htmldocs" on a machine where the Sphinx version is 2.4.5:
+>
+> --------
+> Warning: It is recommended at least Sphinx version 3.4.3.
+> To upgrade Sphinx, use:
+>
+> 	/home/akira/sphinx-2.4.5/bin/python3 -m venv sphinx_2.4.4
+> 	. sphinx_2.4.4/bin/activate
+> 	pip install -r ./Documentation/sphinx/requirements.txt
+>
+>     If you want to exit the virtualenv, you can use:
+> 	deactivate
+> --------
+>
+> Looks like we need to update requirements.txt as well so that it
+> installs Sphinx 3.4.3.  Appended below is a fixup patch to that
+> effect.
+
+So I can apply this, certainly, but it makes me feel like perhaps we
+need to reconsider our approach a bit.  It's kind of weird that we have
+a minimum supported version, then a semi-random "recommended" version
+that is still pretty old.
+
+Is there a reason to suggest to people that they should run something
+other than current sphinx, especially if they are updating it anyway?
+So our "recommended version" is really "recommended *minimum* version"? 
 
 
-
-On 12/14/23 10:52, Rafael J. Wysocki wrote:
-> From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> 
-> If device_register() in thermal_zone_device_register_with_trips()
-> returns an error, the tz variable is set to NULL and subsequently
-> dereferenced in kfree(tz->tzp).
-> 
-> Commit adc8749b150c ("thermal/drivers/core: Use put_device() if
-> device_register() fails") added the tz = NULL assignment in question to
-> avoid a possible double-free after dropping the reference to the zone
-> device.  However, after commit 4649620d9404 ("thermal: core: Make
-> thermal_zone_device_unregister() return after freeing the zone"), that
-> assignment has become redundant, because dropping the reference to the
-> zone device does not cause the zone object to be freed any more.
-> 
-> Drop it to address the NULL pointer dereference.
-> 
-> Fixes: 3d439b1a2ad3 ("thermal/core: Alloc-copy-free the thermal zone parameters structure")
-> Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> ----8<----
+> From: Akira Yokosawa <akiyks@gmail.com>
+> Subject: [PATCH] docs: sphinx/requirement.txt: Reflect recommended Sphinx version
+>
+> sphinx_pre_install parses the version of Sphinx in requirements.txt
+> and emits messages based on it.
+> Update requirements.txt so that it installs Sphinx 3.4.3, as well as
+> the examples in documentation.
+>
+> Signed-off-by: Akira Yokosawa <akiyks@gmail.com>
 > ---
->   drivers/thermal/thermal_core.c |    1 -
->   1 file changed, 1 deletion(-)
-> 
-> Index: linux-pm/drivers/thermal/thermal_core.c
-> ===================================================================
-> --- linux-pm.orig/drivers/thermal/thermal_core.c
-> +++ linux-pm/drivers/thermal/thermal_core.c
-> @@ -1394,7 +1394,6 @@ unregister:
->   	device_del(&tz->device);
->   release_device:
->   	put_device(&tz->device);
-> -	tz = NULL;
->   remove_id:
->   	ida_free(&thermal_tz_ida, id);
->   free_tzp:
-> 
-> 
-> 
+>  Documentation/doc-guide/sphinx.rst    | 14 +++++++-------
+>  Documentation/sphinx/requirements.txt |  4 +++-
+>  2 files changed, 10 insertions(+), 8 deletions(-)
+>
+> diff --git a/Documentation/doc-guide/sphinx.rst b/Documentation/doc-guide/sphinx.rst
+> index 3d125fb4139d..5227a2611026 100644
+> --- a/Documentation/doc-guide/sphinx.rst
+> +++ b/Documentation/doc-guide/sphinx.rst
+> @@ -48,13 +48,13 @@ or ``virtualenv``, depending on how your distribution packaged Python 3.
+>        on the Sphinx version, it should be installed separately,
+>        with ``pip install sphinx_rtd_theme``.
+>  
+> -In summary, if you want to install Sphinx version 2.4.4, you should do::
+> +In summary, if you want to install Sphinx version 3.4.3, you should do::
+>  
+> -       $ virtualenv sphinx_2.4.4
+> -       $ . sphinx_2.4.4/bin/activate
+> -       (sphinx_2.4.4) $ pip install -r Documentation/sphinx/requirements.txt
+> +       $ virtualenv sphinx_3.4.3
+> +       $ . sphinx_3.4.3/bin/activate
+> +       (sphinx_3.4.3) $ pip install -r Documentation/sphinx/requirements.txt
 
-Reviewed-by: Lukasz Luba <lukasz.luba@arm.com>
+Here we could take version numbers out entirely; otherwise we'll always
+be updating this.
+
+> -After running ``. sphinx_2.4.4/bin/activate``, the prompt will change,
+> +After running ``. sphinx_3.4.3/bin/activate``, the prompt will change,
+>  in order to indicate that you're using the new environment. If you
+>  open a new shell, you need to rerun this command to enter again at
+>  the virtual environment before building the documentation.
+> @@ -118,8 +118,8 @@ command line options for your distro::
+>  	You should run:
+>  
+>  		sudo dnf install -y texlive-luatex85
+> -		/usr/bin/virtualenv sphinx_2.4.4
+> -		. sphinx_2.4.4/bin/activate
+> +		/usr/bin/virtualenv sphinx_3.4.3
+> +		. sphinx_3.4.3/bin/activate
+>  		pip install -r Documentation/sphinx/requirements.txt
+>  
+>  	Can't build as 1 mandatory dependency is missing at ./scripts/sphinx-pre-install line 468.
+> diff --git a/Documentation/sphinx/requirements.txt b/Documentation/sphinx/requirements.txt
+> index 335b53df35e2..89329e67e788 100644
+> --- a/Documentation/sphinx/requirements.txt
+> +++ b/Documentation/sphinx/requirements.txt
+> @@ -1,3 +1,5 @@
+>  # jinja2>=3.1 is not compatible with Sphinx<4.0
+>  jinja2<3.1
+> -Sphinx==2.4.4
+> +# docutils>=0.18 is not compatible with 3.0 <= Sphinx < 4.0
+> +docutils<0.18
+> +Sphinx==3.4.3
+
+I'd forgotten about the docutils fun.  I wonder of our recommended
+minimum should actually be 4.0, then here we could put simply:
+
+  Sphinx>4.0
+
+?
+
+Thanks,
+
+jon
 
