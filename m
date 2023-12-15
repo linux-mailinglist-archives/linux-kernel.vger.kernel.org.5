@@ -1,119 +1,86 @@
-Return-Path: <linux-kernel+bounces-938-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-939-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3068A814847
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 13:41:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9291081484A
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 13:41:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 31A231C21E1C
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 12:41:17 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C44501C21C66
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 12:41:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C89F2D61E;
-	Fri, 15 Dec 2023 12:40:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 00FF32C6AB;
+	Fri, 15 Dec 2023 12:41:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=nexus-software-ie.20230601.gappssmtp.com header.i=@nexus-software-ie.20230601.gappssmtp.com header.b="EjeWhxIP"
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="oift66yL"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-wm1-f41.google.com (mail-wm1-f41.google.com [209.85.128.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2825C2D047
-	for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 12:40:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nexus-software.ie
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=nexus-software.ie
-Received: by mail-wm1-f41.google.com with SMTP id 5b1f17b1804b1-40c38e292c8so3197805e9.0
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 04:40:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=nexus-software-ie.20230601.gappssmtp.com; s=20230601; t=1702644047; x=1703248847; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=fNtmiBWPHlC/LwlBwvLKuqfbmVBFPg3plNoHQEQoN/I=;
-        b=EjeWhxIPKHywT//YuEL5Lg7iOE0UH6DdEDiEgpZRz3hJUclhYXTPrtTr8GMHKCkpIu
-         wusvN+g4wOU+/lErCDHJaicm71rHwMruY2YwfWyzgF+JJ9TitSa2M/R4YjYrRaA8hBIm
-         crJA3bDB9/p/aJNJt2aoaNBHT7U+pJNSwywckKckRdJ2G+FfgXloaVmkogd+rF6L8Oxo
-         0FvgK2obeVvWqT6OgDKynNdLWi1jCU9idSxb2PyGeVFCyFbnUPc+sjpu1D9neDSMPk/H
-         YPnWHsKRzKUC4Jtf/DhhEbiz2DhAFp0O64WwNzFoPAEXMKSc9HhIaV4RJ6NdCLXDwKwK
-         EE5g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702644047; x=1703248847;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=fNtmiBWPHlC/LwlBwvLKuqfbmVBFPg3plNoHQEQoN/I=;
-        b=XscTj+XfOBKBVQTslnDltRr4LeVAv+TR07ivAbINbIYV2n0KOU+/Zj77SUivGdrCiG
-         L0NjCSefjqyhzXbRcFc9Wifkbiy26LJ6qocIVmCbiWk4cnY+MhoT2MrsUtJGK4qciOsB
-         MeIxqXB0Nv0T4S9pFiiLXH6UHWAzoUfO/HnZBOwlphfH87CDh0CTxLqZd6n5bWlvoeNi
-         X75kBEdWQI93JEe0Rlo/vM5Ue9E5Jd5EHPXOOuZvEv9FrgxGVDX9YK2GqvNJWT3NF3ht
-         SNoTzDoOeomU1b1r8Relb278jjbEpL6mC89bPMTUN1EFMYvof4a+CURWqg7a44h98Bzr
-         HhKA==
-X-Gm-Message-State: AOJu0YxjQEcx3Vv/UYpwdAZv0KsGfN2hkpZe49V/L/j5RyrRuL2VLaqV
-	YY8t7gW55RkZZbzpG1UwGFi8BA==
-X-Google-Smtp-Source: AGHT+IGiN3j4Qb8EtMxTkG4LySvEND8uLeelHp6zvDnIHcQUdtmycW6VA3EM7ZimDrcWJ4hDHRkLlQ==
-X-Received: by 2002:a05:600c:4511:b0:40c:2d0c:a3ca with SMTP id t17-20020a05600c451100b0040c2d0ca3camr6080783wmo.89.1702644047102;
-        Fri, 15 Dec 2023 04:40:47 -0800 (PST)
-Received: from [192.168.100.102] ([37.228.218.3])
-        by smtp.gmail.com with ESMTPSA id bd21-20020a05600c1f1500b0040c25abd724sm31774158wmb.9.2023.12.15.04.40.45
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 15 Dec 2023 04:40:46 -0800 (PST)
-Message-ID: <fc6f8e78-f704-4104-b3c5-bd10627c33b4@nexus-software.ie>
-Date: Fri, 15 Dec 2023 12:40:45 +0000
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D6972DB6F;
+	Fri, 15 Dec 2023 12:41:00 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5D637C433C8;
+	Fri, 15 Dec 2023 12:40:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1702644059;
+	bh=H5vSnFV7lt8AZLObSg4tyj2EUOKsSjouP970nDGMkbc=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=oift66yLi2kgVZWCqJIbdxJ0IPCj2z4/h1jbGxhZvbg3m0tubNvAzKCk1TAXx9DHc
+	 SKPqGJ9me6ZoomoBysmKoAnH9VTDvV4GDdSNe6n2ckm0MttGaXYyJdwHOLJcZTO5Vk
+	 crQdlzR5nGV+QVw7S5Zrb3YacGANSRFm5pf6o8Zo=
+Date: Fri, 15 Dec 2023 13:40:57 +0100
+From: Greg KH <gregkh@linuxfoundation.org>
+To: Yajun Deng <yajun.deng@linux.dev>
+Cc: marcel@holtmann.org, johan.hedberg@gmail.com, luiz.dentz@gmail.com,
+	wg@grandegger.com, mkl@pengutronix.de, aspriel@gmail.com,
+	franky.lin@broadcom.com, hante.meuleman@broadcom.com,
+	kvalo@kernel.org, briannorris@chromium.org, mka@chromium.org,
+	johan@kernel.org, oneukum@suse.com, stern@rowland.harvard.edu,
+	valentina.manea.m@gmail.com, shuah@kernel.org,
+	linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] USB: core: Use device_driver directly in struct
+ usb_driver and usb_device_driver
+Message-ID: <2023121505-dexterity-rectal-8898@gregkh>
+References: <20231215063101.792991-1-yajun.deng@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 08/10] clk: qcom: Add GPU clock driver for x1e80100
-Content-Language: en-US
-To: Abel Vesa <abel.vesa@linaro.org>, Andy Gross <agross@kernel.org>,
- Bjorn Andersson <andersson@kernel.org>,
- Konrad Dybcio <konrad.dybcio@linaro.org>,
- Michael Turquette <mturquette@baylibre.com>, Stephen Boyd
- <sboyd@kernel.org>, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Philipp Zabel <p.zabel@pengutronix.de>,
- Neil Armstrong <neil.armstrong@linaro.org>,
- Vladimir Zapolskiy <vladimir.zapolskiy@linaro.org>,
- Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Cc: linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
- linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
- Rajendra Nayak <quic_rjendra@quicinc.com>
-References: <20231214-x1e80100-clock-controllers-v2-0-2b0739bebd27@linaro.org>
- <20231214-x1e80100-clock-controllers-v2-8-2b0739bebd27@linaro.org>
-From: Bryan O'Donoghue <pure.logic@nexus-software.ie>
-In-Reply-To: <20231214-x1e80100-clock-controllers-v2-8-2b0739bebd27@linaro.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231215063101.792991-1-yajun.deng@linux.dev>
 
-On 14/12/2023 16:49, Abel Vesa wrote:
-> From: Rajendra Nayak <quic_rjendra@quicinc.com>
-> 
-> Add Graphics Clock Controller (GPUCC) support for X1E80100 platform.
-> 
-> Signed-off-by: Rajendra Nayak <quic_rjendra@quicinc.com>
-> Signed-off-by: Abel Vesa <abel.vesa@linaro.org>
+On Fri, Dec 15, 2023 at 02:31:01PM +0800, Yajun Deng wrote:
+> There is usbdrv_wrap in struct usb_driver and usb_device_driver,
+> it contains device_driver and for_devices. for_devices is used to
+> distinguish between device drivers and interface drivers.
 
-> +static struct platform_driver gpu_cc_x1e80100_driver = {
-> +	.probe = gpu_cc_x1e80100_probe,
-> +	.driver = {
-> +		.name = "gpu_cc-x1e80100",
+Yes.
 
-I think these underscores are very unnecessary and subtractive of meaning.
+> We can compare that if 'drv->probe' is equal to usb_probe_device instead
+> of using for_devices in is_usb_device_driver().
 
-.name = "gpucc-x1e80100"
+Why?
 
-> +		.of_match_table = gpu_cc_x1e80100_match_table,
-> +	},
-> +};
-> +module_platform_driver(gpu_cc_x1e80100_driver);
-> +
-> +MODULE_DESCRIPTION("QTI GPU_CC x1e80100 Driver");
+> Remove struct usbdrv_wrap, use device_driver directly in struct usb_driver
+> and usb_device_driver. This makes the code more concise.
 
-"QTI GPU Clock Controller Driver"
+Really?  What does this help out with?  Are there future changes that
+require this?
 
----
-bod
+I'm all for cleanups, but I don't see what this helps with.
+
+Also, you have a coding style issue in this patch, which means I
+couldn't take it anyway:
+
+> +extern int usb_probe_device(struct device *dev);
+
+We don't do that in .c files :(
+
+thanks,
+
+greg k-h
 
