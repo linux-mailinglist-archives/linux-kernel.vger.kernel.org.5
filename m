@@ -1,188 +1,312 @@
-Return-Path: <linux-kernel+bounces-1420-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-1421-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id ABEA8814EC2
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 18:30:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id DD4EE814EC7
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 18:31:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 166761F258EE
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 17:30:49 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 52AC41F24C02
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 17:31:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B599C82EC9;
-	Fri, 15 Dec 2023 17:26:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="IKn9mPIl";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="+kWi05ef"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3994D82EF2;
+	Fri, 15 Dec 2023 17:27:10 +0000 (UTC)
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 71DCE30103;
-	Fri, 15 Dec 2023 17:26:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-From: Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1702661212;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=VYZRdTrUfLSjIbMuwr8q2hB5IoUOm77UOIngwqn7iJU=;
-	b=IKn9mPIlQGHLdLYlt72NR+6gXNAd57/ptU/wmG/+bXyc75gESDFrSFuhOKC+Fd3eSrWNco
-	/mkGCExYeIF5nNf8Acaqio4f5rKehxBjL9KjOZSH2PSru2oCd/58B0jnkppKR64LFFLiFd
-	wxSczyy8IQqz4cHwp2NcbTfegKR2uCzQgqM2ene3gCxZ0PmTNOozw0YEMJORi7XC5lF6tF
-	b3t0OGE29QZSq+RNJXVceX0vOZAp/Vw1jFqLIRGq7ty8G06cYVs4jhiNSeVxQ9+g1f/PjS
-	V6e9iQYPQthSHBGOMC2OzRmP108pPenk6X4RoHbi2mYjSaAsAc1SzBJqltqqZw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1702661212;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=VYZRdTrUfLSjIbMuwr8q2hB5IoUOm77UOIngwqn7iJU=;
-	b=+kWi05ef+R91pM1ddNPnVDIOyZmI5bJhC1nemoVwP66Q+Y3daQdLyWxmXjB1BpSmsvh97o
-	t1lywhsYkDEFZLBQ==
-To: "Vineeth Pillai (Google)" <vineeth@bitbyteword.org>, Ben Segall
- <bsegall@google.com>, Borislav Petkov <bp@alien8.de>, Daniel Bristot de
- Oliveira <bristot@redhat.com>, Dave Hansen <dave.hansen@linux.intel.com>,
- Dietmar Eggemann <dietmar.eggemann@arm.com>, "H . Peter Anvin"
- <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>, Juri Lelli
- <juri.lelli@redhat.com>, Mel Gorman <mgorman@suse.de>, Paolo Bonzini
- <pbonzini@redhat.com>, Andy Lutomirski <luto@kernel.org>, Peter Zijlstra
- <peterz@infradead.org>, Sean Christopherson <seanjc@google.com>, Steven
- Rostedt <rostedt@goodmis.org>, Valentin Schneider <vschneid@redhat.com>,
- Vincent Guittot <vincent.guittot@linaro.org>, Vitaly Kuznetsov
- <vkuznets@redhat.com>, Wanpeng Li <wanpengli@tencent.com>
-Cc: "Vineeth Pillai (Google)" <vineeth@bitbyteword.org>, Suleiman Souhlal
- <suleiman@google.com>, Masami Hiramatsu <mhiramat@google.com>,
- kvm@vger.kernel.org, linux-kernel@vger.kernel.org, x86@kernel.org, Joel
- Fernandes <joel@joelfernandes.org>
-Subject: Re: [RFC PATCH 8/8] irq: boost/unboost in irq/nmi entry/exit and
- softirq
-In-Reply-To: <20231214024727.3503870-9-vineeth@bitbyteword.org>
-References: <20231214024727.3503870-1-vineeth@bitbyteword.org>
- <20231214024727.3503870-9-vineeth@bitbyteword.org>
-Date: Fri, 15 Dec 2023 18:26:51 +0100
-Message-ID: <87zfybml5w.ffs@tglx>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5AA933012B;
+	Fri, 15 Dec 2023 17:27:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=kernel.org
+X-IronPort-AV: E=McAfee;i="6600,9927,10925"; a="8727217"
+X-IronPort-AV: E=Sophos;i="6.04,279,1695711600"; 
+   d="scan'208";a="8727217"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Dec 2023 09:27:07 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10925"; a="892973975"
+X-IronPort-AV: E=Sophos;i="6.04,279,1695711600"; 
+   d="scan'208";a="892973975"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Dec 2023 09:27:03 -0800
+Received: from andy by smile.fi.intel.com with local (Exim 4.97)
+	(envelope-from <andy@kernel.org>)
+	id 1rEBxk-00000006BAk-29KE;
+	Fri, 15 Dec 2023 19:27:00 +0200
+Date: Fri, 15 Dec 2023 19:27:00 +0200
+From: Andy Shevchenko <andy@kernel.org>
+To: Emil Renner Berthing <emil.renner.berthing@canonical.com>
+Cc: linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
+	Hoan Tran <hoan@os.amperecomputing.com>,
+	Serge Semin <fancer.lancer@gmail.com>,
+	Linus Walleij <linus.walleij@linaro.org>,
+	Bartosz Golaszewski <brgl@bgdev.pl>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Jisheng Zhang <jszhang@kernel.org>, Guo Ren <guoren@kernel.org>,
+	Fu Wei <wefu@redhat.com>, Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>
+Subject: Re: [PATCH v1 2/8] pinctrl: Add driver for the T-Head TH1520 SoC
+Message-ID: <ZXyMZKvREy_FIl46@smile.fi.intel.com>
+References: <20231215143906.3651122-1-emil.renner.berthing@canonical.com>
+ <20231215143906.3651122-3-emil.renner.berthing@canonical.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231215143906.3651122-3-emil.renner.berthing@canonical.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
-On Wed, Dec 13 2023 at 21:47, Vineeth Pillai (Google) wrote:
-> The host proactively boosts the VCPU threads during irq/nmi injection.
-> However, the host is unaware of posted interrupts, and therefore, the
-> guest should request a boost if it has not already been boosted.
->
-> Similarly, guest should request an unboost on irq/nmi/softirq exit if
-> the vcpu doesn't need the boost any more.
+On Fri, Dec 15, 2023 at 03:39:00PM +0100, Emil Renner Berthing wrote:
+> Add pinctrl driver for the T-Head TH1520 RISC-V SoC.
 
-That's giving a hint but no context for someone who is not familiar with
-the problem which is tried to be solved here.
+...
 
-> @@ -327,6 +327,13 @@ noinstr irqentry_state_t irqentry_enter(struct pt_regs *regs)
->  		.exit_rcu = false,
->  	};
->  
-> +#ifdef CONFIG_PARAVIRT_SCHED
-> +	instrumentation_begin();
++ array_size.h
++ bits.h
++ device.h
 
-Slapping instrumentation_begin() at it silences the objtool checker, but
-that does not make it correct in any way.
+(and so on, please make sure you follow IWYU principle --
+ "include what you use")
 
-You _cannot_ call random code _before_ the kernel has established
-context. It's clearly documented:
+> +#include <linux/io.h>
+> +#include <linux/mod_devicetable.h>
+> +#include <linux/module.h>
+> +#include <linux/mutex.h>
 
-  https://www.kernel.org/doc/html/latest/core-api/entry.html
+> +#include <linux/of.h>
 
-No?
+Can you use device property API instead?
 
-> +	if (pv_sched_enabled())
-> +		pv_sched_boost_vcpu_lazy();
-> +	instrumentation_end();
-> +#endif
+(I briefly checked, all of the used of_ ones have the respective generic
+ implementations either in fwnode_property_ or device_property_ namespace).
+
+OTOH, it's used in xlate/map functions which have device_node as a parameter...
+
+> +#include <linux/platform_device.h>
+> +#include <linux/seq_file.h>
+> +#include <linux/spinlock.h>
+
+...
+
+> +#include "core.h"
+> +#include "pinmux.h"
+> +#include "pinconf.h"
+
+All of them are needed?
+
+...
+
+> +static unsigned int th1520_padcfg_shift(unsigned int pin)
+> +{
+> +	return 16 * (pin & 0x1U);
+
+BIT(0) ?
+
+> +}
+
+...
+
+> +static unsigned int th1520_muxcfg_shift(unsigned int pin)
+> +{
+> +	return 4 * (pin & 0x7U);
+
+GENMASK() ?
+
+> +}
+
+...
+
+> +			return dev_err_probe(thp->pctl->dev, -EINVAL,
+> +					     "no pins selected for %pOFn.%pOFn\n",
+> +					     np, child);
+
+> +			dev_err(thp->pctl->dev, "error parsing pin config of group %pOFn.%pOFn\n",
+> +				np, child);
+
+In the very same function you are using dev_err_probe(), please make sure
+you use the same for all error messages as it will be a unified format
+(in case of dev_err_probe() or if you explicitly do that with dev_err()
+calls).
+
+> +		}
+
+...
+
+> +static const struct pinctrl_ops th1520_pinctrl_ops = {
+> +	.get_groups_count = th1520_pinctrl_get_groups_count,
+> +	.get_group_name = th1520_pinctrl_get_group_name,
+> +	.get_group_pins = th1520_pinctrl_get_group_pins,
+
+> +	.pin_dbg_show = th1520_pin_dbg_show,
+
+Is ifdeffery needed for this one?
+
+
+> +	.dt_node_to_map = th1520_pinctrl_dt_node_to_map,
+> +	.dt_free_map = th1520_pinctrl_dt_free_map,
+
+Is ifdeffery needed for these two?
+
+> +};
+
+...
+
+> +	mask = 0xfU << shift;
+> +	value = ((uintptr_t)func->data & 0xfU) << shift;
+
+GENMASK() in both cases.
+
+> +	raw_spin_lock_irqsave(&thp->lock, flags);
+> +	value |= readl_relaxed(muxcfg) & ~mask;
+
+Instead of above, use the traditional pattern
+
+	value = read()
+	value = (value & ~mask) | (newval & mask);
+	write()
+
+where newval is defined with a proper type and you get rid of all those ugly
+castings at once.
+
+> +	writel_relaxed(value, muxcfg);
+> +	raw_spin_unlock_irqrestore(&thp->lock, flags);
+
+...
+
+> +static u16 th1520_drive_strength_from_mA(u32 arg)
+> +{
+> +	u16 v;
 > +
->  	if (user_mode(regs)) {
->  		irqentry_enter_from_user_mode(regs);
->  		return ret;
-> @@ -452,6 +459,18 @@ noinstr void irqentry_exit(struct pt_regs *regs, irqentry_state_t state)
->  		if (state.exit_rcu)
->  			ct_irq_exit();
->  	}
+> +	for (v = 0; v < ARRAY_SIZE(th1520_drive_strength_in_mA) - 1; v++) {
+
+You may drop -1 here AFAIU (see below).
+
+> +		if (arg <= th1520_drive_strength_in_mA[v])
+> +			break;
+
+return directly.
+
+> +	}
+
+> +	return v;
+
+return explicit value which will be robust against changes in the for-loop or
+elsewhere in the code.
+
+> +}
+
+...
+
+> +static int th1520_padcfg_rmw(struct th1520_pinctrl *thp, unsigned int pin,
+> +			     u16 _mask, u16 _value)
+
+Why not naming them without underscores?
+
+> +{
+> +	void __iomem *padcfg = th1520_padcfg(thp, pin);
+> +	unsigned int shift = th1520_padcfg_shift(pin);
+
+> +	u32 mask = (u32)_mask << shift;
+> +	u32 value = (u32)_value << shift;
+
+Oh, no castings, please.
+
+> +	unsigned long flags;
 > +
-> +#ifdef CONFIG_PARAVIRT_SCHED
-> +	instrumentation_begin();
+> +	raw_spin_lock_irqsave(&thp->lock, flags);
 
-Broken too
+Use cleanup.h.
 
-> +	/*
-> +	 * On irq exit, request a deboost from hypervisor if no softirq pending
-> +	 * and current task is not RT and !need_resched.
-> +	 */
-> +	if (pv_sched_enabled() && !local_softirq_pending() &&
-> +			!need_resched() && !task_is_realtime(current))
-> +		pv_sched_unboost_vcpu();
-> +	instrumentation_end();
-> +#endif
->  }
->  
->  irqentry_state_t noinstr irqentry_nmi_enter(struct pt_regs *regs)
-> @@ -469,6 +488,11 @@ irqentry_state_t noinstr irqentry_nmi_enter(struct pt_regs *regs)
->  	kmsan_unpoison_entry_regs(regs);
->  	trace_hardirqs_off_finish();
->  	ftrace_nmi_enter();
+> +	value |= readl_relaxed(padcfg) & ~mask;
+> +	writel_relaxed(value, padcfg);
+> +	raw_spin_unlock_irqrestore(&thp->lock, flags);
+> +	return 0;
+> +}
+
+...
+
+> +#define PIN_CONFIG_THEAD_STRONG_PULL_UP	(PIN_CONFIG_END + 1)
+
+Oh, custom flag! Linus, what is the expected approach for custom flags like this?
+I believe this is quite error prone.
+
+...
+
+> +	value = readl_relaxed(th1520_padcfg(thp, pin));
+> +	value = (value >> th1520_padcfg_shift(pin)) & 0x3ffU;
+
+GENMASK() and in many other places like this.
+
+...
+
+> +		enabled = value & TH1520_PADCFG_IE;
+> +		arg = enabled;
+
+Assigning boolean to integer... Hmm...
+
+> +		break;
+> +	case PIN_CONFIG_INPUT_SCHMITT_ENABLE:
+> +		enabled = value & TH1520_PADCFG_ST;
+> +		arg = enabled;
+> +		break;
+> +	case PIN_CONFIG_SLEW_RATE:
+> +		enabled = value & TH1520_PADCFG_SL;
+> +		arg = enabled;
+> +		break;
+
+...
+
+> +static int th1520_pinctrl_probe(struct platform_device *pdev)
+> +{
+
+	struct device *dev = &pdev->dev;
+
+may give you some benefits.
+
+> +	const struct th1520_padgroup *group = device_get_match_data(&pdev->dev);
+> +	struct th1520_pinctrl *thp;
+> +	int ret;
 > +
-> +#ifdef CONFIG_PARAVIRT_SCHED
-> +	if (pv_sched_enabled())
-> +		pv_sched_boost_vcpu_lazy();
-> +#endif
->  	instrumentation_end();
->  
->  	return irq_state;
-> @@ -482,6 +506,12 @@ void noinstr irqentry_nmi_exit(struct pt_regs *regs, irqentry_state_t irq_state)
->  		trace_hardirqs_on_prepare();
->  		lockdep_hardirqs_on_prepare();
->  	}
+> +	thp = devm_kzalloc(&pdev->dev, sizeof(*thp), GFP_KERNEL);
+> +	if (!thp)
+> +		return -ENOMEM;
 > +
-> +#ifdef CONFIG_PARAVIRT_SCHED
-> +	if (pv_sched_enabled() && !in_hardirq() && !local_softirq_pending() &&
-> +			!need_resched() && !task_is_realtime(current))
-> +		pv_sched_unboost_vcpu();
-> +#endif
+> +	thp->base = devm_platform_ioremap_resource(pdev, 0);
+> +	if (IS_ERR(thp->base))
+> +		return PTR_ERR(thp->base);
+> +
+> +	thp->desc.name = group->name;
+> +	thp->desc.pins = group->pins;
+> +	thp->desc.npins = group->npins;
+> +	thp->desc.pctlops = &th1520_pinctrl_ops;
+> +	thp->desc.pmxops = &th1520_pinmux_ops;
+> +	thp->desc.confops = &th1520_pinconf_ops;
+> +	thp->desc.owner = THIS_MODULE;
+> +	thp->desc.num_custom_params = ARRAY_SIZE(th1520_pinconf_custom_params);
+> +	thp->desc.custom_params = th1520_pinconf_custom_params;
+> +	thp->desc.custom_conf_items = th1520_pinconf_custom_conf_items;
+> +	mutex_init(&thp->mutex);
+> +	raw_spin_lock_init(&thp->lock);
+> +
+> +	ret = devm_pinctrl_register_and_init(&pdev->dev, &thp->desc, thp, &thp->pctl);
+> +	if (ret)
+> +		return dev_err_probe(&pdev->dev, ret, "could not register pinctrl driver\n");
+> +
+> +	return pinctrl_enable(thp->pctl);
+> +}
 
-Symmetry is overrated. Just pick a spot and slap your hackery in.
+-- 
+With Best Regards,
+Andy Shevchenko
 
-Aside of that this whole #ifdeffery is tasteless at best.
 
->  	instrumentation_end();
-
-> +#ifdef CONFIG_PARAVIRT_SCHED
-> +	if (pv_sched_enabled())
-> +		pv_sched_boost_vcpu_lazy();
-> +#endif
-
-But what's worse is that this is just another approach of sprinkling
-random hints all over the place and see what sticks.
-
-Abusing KVM as the man in the middle to communicate between guest and
-host scheduler is creative, but ill defined.
-
-From the host scheduler POV the vCPU is just a user space thread and
-making the guest special is just the wrong approach.
-
-The kernel has no proper general interface to convey information from a
-user space task to the scheduler.
-
-So instead of adding some ad-hoc KVM hackery the right thing is to solve
-this problem from ground up in a generic way and KVM can just utilize
-that instead of having the special snow-flake hackery which is just a
-maintainability nightmare.
-
-Thanks,
-
-        tglx
 
