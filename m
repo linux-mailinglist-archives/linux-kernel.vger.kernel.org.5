@@ -1,109 +1,118 @@
-Return-Path: <linux-kernel+bounces-821-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-882-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8C2ED8146A2
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 12:18:56 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A540981476E
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 12:55:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A65931C210FE
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 11:18:55 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 609D8285643
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 11:55:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7CD4F2C698;
-	Fri, 15 Dec 2023 11:17:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 16CFF2DB71;
+	Fri, 15 Dec 2023 11:55:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="e/zVvaE6"
+	dkim=pass (2048-bit key) header.d=foss.st.com header.i=@foss.st.com header.b="t3tBdg/M"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-oi1-f175.google.com (mail-oi1-f175.google.com [209.85.167.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx07-00178001.pphosted.com (mx08-00178001.pphosted.com [91.207.212.93])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D447F2556E;
-	Fri, 15 Dec 2023 11:17:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oi1-f175.google.com with SMTP id 5614622812f47-3b9e1a3e3f0so405858b6e.1;
-        Fri, 15 Dec 2023 03:17:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702639020; x=1703243820; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=mLkJMM9DCab1jUL3ywOV/kzfDGhJU5IagWi1Fm0lmhM=;
-        b=e/zVvaE6bN81xB2ZcF5U5KSFyR9yphEMGtbRJORJz3tIH10eHdtuG1EqJS+BaVikm8
-         yXbx44iodABIbQAJphUX8BlnPVsc69gXqMk+P4NZKXukv5QTy9N5DT4/sK6SJu8ie7Jc
-         8BUjy+o/ifG48cMWfA59WjKayo4TfXbak3TOWGuLkDR1dXEvmu7Qv11S7+xDIwjzeFWA
-         uLrzynQsfI3ZdAqZS0e6FZpU+BR25xKst70nxIbOQssrHyOBA9RuXoPepnGcRfEyTkyM
-         H0zU3+RO+rsf3Z8OKxa/m4HpTjfjOYxDeQdT9z8Ghj49cHZ4YQ6UcDfYWXq52xuhtK8Y
-         Ps/A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702639020; x=1703243820;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=mLkJMM9DCab1jUL3ywOV/kzfDGhJU5IagWi1Fm0lmhM=;
-        b=gt3b9LKIklAPpXnSIhIT0i4/UgtwNN8QBDhJ+RFlYGICuL/BVK7IqmyUZFxkJQ7wEo
-         /ax/NvdniPdjcsWXO2WNKw9LswLxXUnIHflV4FZvg+THUdWkP0VxbfP5ypxrY3E5QLK0
-         NAnuP4J0BgroNkQ8GM5OTiHT1Q6X+qzavZDuSWoU6JofPo7hyTJOHZEaBJUQE4tCokKF
-         /BJgpSbQ8DM3vMrKbvJlrxInhwWXQJsd3LLXIpO+VxCR5lDpxrA7iETjeyzEYgU4QppQ
-         5UY2JM/ZlQHuLSAYkHe7XxCd3wLl7+RVuvI8XLpZyxNc6VIVlwvotc8UTPGKAhDPBdcr
-         kDww==
-X-Gm-Message-State: AOJu0YzvjaE/10wTdYINqCRrifCYhx7t/RfSjP3yMp3GRM4d422zv7u2
-	VjVJklsJTKRdQXU4CbXldHf+tZrvP3tAqqKyvBQ=
-X-Google-Smtp-Source: AGHT+IE6TmWubCkEC1dWBUYJlK8dhq/P+LNxUWyFvOaI1YMrxUMWXv9M10VKTLC3NL+NAR89QGcT8C2TBqXImPajgSg=
-X-Received: by 2002:a05:6808:120e:b0:3b8:b063:a1c7 with SMTP id
- a14-20020a056808120e00b003b8b063a1c7mr13832820oil.81.1702639020528; Fri, 15
- Dec 2023 03:17:00 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A2B6A2C86C;
+	Fri, 15 Dec 2023 11:55:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foss.st.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=foss.st.com
+Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
+	by mx07-00178001.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3BF9ZBLs018517;
+	Fri, 15 Dec 2023 12:19:09 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
+	from:to:cc:subject:date:message-id:mime-version
+	:content-transfer-encoding:content-type; s=selector1; bh=EXThrm7
+	r2Zne08IzRuM6iVKji7vFve1z4gpTqwOxd18=; b=t3tBdg/MiCqNpIB6GCXwL6f
+	qqDNiklz9eMqXuU9dl5VPKlFmYelJDismj312Je3vlnb0KEzNrswuJUUl37MMLdo
+	2Mqm43NdHvPSS+dzfWekfrr5RBdNMOs0RKigVLFWAvk0OSNLp2hHPUcyfCxmD2ay
+	unEEVAIM5Na4dXhl8J1XHJB1dAWt1vAVMKnHNNYjpXIUX1McwH1334eZszuouoeQ
+	wBfg5r5wZgSKW1ZHUyT81l5RrsBXpj16zGMQGHSrvmeIdhcsqOGqdewC7xPAa64A
+	zzFB1W50hQjGPoYiJRom3mmjKaW5cYC0TP9J4PtmpEZWMWqFpD4zOi9oIjVnRFg=
+	=
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+	by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3uyb2k9ec1-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 15 Dec 2023 12:19:08 +0100 (CET)
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+	by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 9BED4100052;
+	Fri, 15 Dec 2023 12:19:04 +0100 (CET)
+Received: from Webmail-eu.st.com (shfdag1node3.st.com [10.75.129.71])
+	by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 618EE2138D7;
+	Fri, 15 Dec 2023 12:19:04 +0100 (CET)
+Received: from localhost (10.201.20.61) by SHFDAG1NODE3.st.com (10.75.129.71)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Fri, 15 Dec
+ 2023 12:19:04 +0100
+From: Thomas Bourgoin <thomas.bourgoin@foss.st.com>
+To: Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S . Miller"
+	<davem@davemloft.net>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre
+ Torgue <alexandre.torgue@foss.st.com>,
+        Dan Carpenter <error27@gmail.com>
+CC: <linux-crypto@vger.kernel.org>, <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+        Thomas Bourgoin <thomas.bourgoin@foss.st.com>,
+        kernel test robot
+	<lkp@intel.com>
+Subject: [PATCH] crypto: stm32/crc32 - fix parsing list of devices
+Date: Fri, 15 Dec 2023 12:17:24 +0100
+Message-ID: <20231215111724.864051-1-thomas.bourgoin@foss.st.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <202312151817+0800-wangjinchao@xfusion.com>
-In-Reply-To: <202312151817+0800-wangjinchao@xfusion.com>
-From: Amir Goldstein <amir73il@gmail.com>
-Date: Fri, 15 Dec 2023 13:16:49 +0200
-Message-ID: <CAOQ4uxhoYTtnwKX0k3GwORWzJaYAJwpxu9B-ONu5Y0gdkavo8g@mail.gmail.com>
-Subject: Re: [PATCH] fs: remove duplicated including of posix_acl.h
-To: Wang Jinchao <wangjinchao@xfusion.com>
-Cc: Miklos Szeredi <miklos@szeredi.hu>, linux-unionfs@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, stone.xulei@xfusion.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: EQNCAS1NODE4.st.com (10.75.129.82) To SHFDAG1NODE3.st.com
+ (10.75.129.71)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-15_06,2023-12-14_01,2023-05-22_02
 
-On Fri, Dec 15, 2023 at 12:17=E2=80=AFPM Wang Jinchao <wangjinchao@xfusion.=
-com> wrote:
->
-> remove the second including of linux/posix_acl.h
->
-> Signed-off-by: Wang Jinchao <wangjinchao@xfusion.com>
-> ---
->  fs/overlayfs/inode.c | 1 -
->  1 file changed, 1 deletion(-)
->
-> diff --git a/fs/overlayfs/inode.c b/fs/overlayfs/inode.c
-> index c63b31a460be..2003425875d9 100644
-> --- a/fs/overlayfs/inode.c
-> +++ b/fs/overlayfs/inode.c
-> @@ -14,7 +14,6 @@
->  #include <linux/fileattr.h>
->  #include <linux/security.h>
->  #include <linux/namei.h>
-> -#include <linux/posix_acl.h>
->  #include <linux/posix_acl_xattr.h>
->  #include "overlayfs.h"
->
+smatch warnings:
+drivers/crypto/stm32/stm32-crc32.c:108 stm32_crc_get_next_crc() warn:
+can 'crc' even be NULL?
 
-Since both posix_acl.h and posix_acl_xattr.h are included by overlayfs.h
-I would rather remove them both including the first posix_acl.h include.
+Use list_first_entry_or_null instead of list_first_entry to retrieve
+the first device registered.
+The function list_first_entry always return a non NULL pointer even if
+the list is empty. Hence checking if the pointer returned is NULL does
+not tell if the list is empty or not.
 
-It is far from being the only duplicate include in "overlayfs.h" and it is =
-not
-important enough IMO to start a cleanup project, but if you are going to
-tidy up includes for a particular file, I'd rather use the opportunity to
-cleanup that duplicity as well.
+Reported-by: kernel test robot <lkp@intel.com>
+Closes: https://lore.kernel.org/r/202311281111.ou2oUL2i-lkp@intel.com/
+Reported-by: Dan Carpenter <error27@gmail.com>
+Closes: https://lore.kernel.org/r/202311281111.ou2oUL2i-lkp@intel.com/
+Signed-off-by: Thomas Bourgoin <thomas.bourgoin@foss.st.com>
+---
+ drivers/crypto/stm32/stm32-crc32.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Thanks,
-Amir.
+diff --git a/drivers/crypto/stm32/stm32-crc32.c b/drivers/crypto/stm32/stm32-crc32.c
+index b2d5c8921ab3..b0cf6d2fd352 100644
+--- a/drivers/crypto/stm32/stm32-crc32.c
++++ b/drivers/crypto/stm32/stm32-crc32.c
+@@ -104,7 +104,7 @@ static struct stm32_crc *stm32_crc_get_next_crc(void)
+ 	struct stm32_crc *crc;
+ 
+ 	spin_lock_bh(&crc_list.lock);
+-	crc = list_first_entry(&crc_list.dev_list, struct stm32_crc, list);
++	crc = list_first_entry_or_null(&crc_list.dev_list, struct stm32_crc, list);
+ 	if (crc)
+ 		list_move_tail(&crc->list, &crc_list.dev_list);
+ 	spin_unlock_bh(&crc_list.lock);
+-- 
+2.25.1
+
 
