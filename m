@@ -1,181 +1,306 @@
-Return-Path: <linux-kernel+bounces-462-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-463-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1DD1A81417C
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 06:47:47 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id D4FB1814183
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 06:50:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4FDC31C22434
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 05:47:46 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 62EC91F23120
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 05:50:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A7E56ADE;
-	Fri, 15 Dec 2023 05:47:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6814D79E5;
+	Fri, 15 Dec 2023 05:50:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="WHMR8htq"
+	dkim=pass (2048-bit key) header.d=daynix-com.20230601.gappssmtp.com header.i=@daynix-com.20230601.gappssmtp.com header.b="lRG3mKWA"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-oi1-f179.google.com (mail-oi1-f179.google.com [209.85.167.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0050FD266;
-	Fri, 15 Dec 2023 05:47:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-	by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 3BF5lQ2P025894;
-	Thu, 14 Dec 2023 23:47:26 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1702619246;
-	bh=7A27bnkq/YPvUJRBGKKNkhpKPuydlLKX445lS/WVm1k=;
-	h=From:To:CC:Subject:Date;
-	b=WHMR8htqybt5NPW711/q2x2BZRPV2nSot3Y5TASB4PWuw/1udMHuQo8guBqNI/OmD
-	 pb8V4w8a4xJuW6vth4cFLTgVPPSBmih+oxcY+MQfHgjo7sqxOHV0mnhAvcv6feqxfS
-	 5E668IOk4IPdYo9sXshyfNPwJtyReNn/brQ+6kIY=
-Received: from DFLE102.ent.ti.com (dfle102.ent.ti.com [10.64.6.23])
-	by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 3BF5lQvx005968
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Thu, 14 Dec 2023 23:47:26 -0600
-Received: from DFLE100.ent.ti.com (10.64.6.21) by DFLE102.ent.ti.com
- (10.64.6.23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 14
- Dec 2023 23:47:26 -0600
-Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DFLE100.ent.ti.com
- (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Thu, 14 Dec 2023 23:47:26 -0600
-Received: from uda0492258.dhcp.ti.com (uda0492258.dhcp.ti.com [172.24.227.9])
-	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 3BF5lLfp076019;
-	Thu, 14 Dec 2023 23:47:22 -0600
-From: Siddharth Vadapalli <s-vadapalli@ti.com>
-To: <nm@ti.com>, <vigneshr@ti.com>, <kristo@kernel.org>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>
-CC: <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <danishanwar@ti.com>,
-        <r-gunasekaran@ti.com>, <srk@ti.com>, <s-vadapalli@ti.com>
-Subject: [PATCH v3] arm64: dts: ti: k3-am654-icssg2: Enable PHY interrupt for ICSSG2 PHY0
-Date: Fri, 15 Dec 2023 11:17:21 +0530
-Message-ID: <20231215054721.1975642-1-s-vadapalli@ti.com>
-X-Mailer: git-send-email 2.34.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 28C6F6ADB
+	for <linux-kernel@vger.kernel.org>; Fri, 15 Dec 2023 05:50:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=daynix.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=daynix.com
+Received: by mail-oi1-f179.google.com with SMTP id 5614622812f47-3b9fcb3223dso312593b6e.3
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Dec 2023 21:50:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=daynix-com.20230601.gappssmtp.com; s=20230601; t=1702619404; x=1703224204; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=xFKDorqrFC5bosM2lt/mDyJdprik2aA7TxjdYt0y1e4=;
+        b=lRG3mKWA3hLhxbJ++HHf2NQEw8lqXc4lAMsww+H2XM0tm7saisSRA+cLHbbE8/UDme
+         I+pd4IgdOJS51g9TaOsFo9DSUB1r1GPlU01PsitywapE+hKrxLQQL+q3VLcvpdAkp/we
+         v1jCBTl22HwIyhlBAvTLS5nfoCRqbCawuHUwNsOCeTT70UGUS1dl1pzIbeLUbo9iWDeW
+         U+lsTWy8I4z+1tfJYsac0MfM6wVmihVEHvFb6eNNfgqX3V8LymQ86PNGJjQV6KLRHvJS
+         +stmpcKGsrnM7ow/47GQHGZnjCEKU50wCskwqDxRPUIIq96wxE00q46nWVzTl/Nf6jMs
+         eBUQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702619404; x=1703224204;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=xFKDorqrFC5bosM2lt/mDyJdprik2aA7TxjdYt0y1e4=;
+        b=POjBNYtezckhss27FdfsDLmdRGL3B4/Y4vBhOHJKDske8D/noXDSUYIBX+wE8LrGBn
+         nR6IvS1exDkwPrI49DH8+4bl0zGR1Vkc7Cfrxr7MuzqdUMD1VTUYFbv0zvqlOsMvKi4D
+         o1aFrAHhL1bgRdwvbFIvQxdNaNzoQQzd/VubZ8rw7TW4+snZ3dkdoXpVN5GVSS3bVr9b
+         Kbt5JBnFSdANLwn0e+s2iMoqkI52IMiBKA/Ggw1hSu/0Og0IgGa1s8XZm9YRLZzIKm4N
+         2wmZtEkTTDiqLZH3U/x76PDOzNaAFLfKcoltZsxpKAzJ07jhg+kxwWgbbF0HjB4FWE3o
+         Fsmw==
+X-Gm-Message-State: AOJu0YxdBk4Pv/cW3jk07xO6VB/7S0l4yachJLtqgiu70r8WG8+Nwg9u
+	Xt1ODyi+eTqXl++Wk+Dmnxk6rw==
+X-Google-Smtp-Source: AGHT+IGx2R7EsZiNCgpjAWLFVnSbXZ01T55zLVZoewTO79uTMzNCSJGSk/7hhmSoBW352drVsZLTPg==
+X-Received: by 2002:a05:6808:16a3:b0:3b9:e7e2:f30 with SMTP id bb35-20020a05680816a300b003b9e7e20f30mr13382782oib.7.1702619403985;
+        Thu, 14 Dec 2023 21:50:03 -0800 (PST)
+Received: from [157.82.205.15] ([157.82.205.15])
+        by smtp.gmail.com with ESMTPSA id q5-20020a170902bd8500b001c9d011581dsm13310686pls.164.2023.12.14.21.49.57
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 14 Dec 2023 21:50:03 -0800 (PST)
+Message-ID: <72b8e198-7058-469a-a1e0-17f48330deca@daynix.com>
+Date: Fri, 15 Dec 2023 14:49:56 +0900
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: Should I add BPF kfuncs for userspace apps? And how?
+To: Stephen Hemminger <stephen@networkplumber.org>
+Cc: Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+ Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+ Jason Wang <jasowang@redhat.com>, Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
+ Martin KaFai Lau <martin.lau@linux.dev>,
+ Yonghong Song <yonghong.song@linux.dev>,
+ John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
+ Jiri Olsa <jolsa@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
+ Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+ "Michael S. Tsirkin" <mst@redhat.com>, Xuan Zhuo
+ <xuanzhuo@linux.alibaba.com>, Mykola Lysenko <mykolal@fb.com>,
+ Shuah Khan <shuah@kernel.org>, Yuri Benditovich
+ <yuri.benditovich@daynix.com>, Andrew Melnychenko <andrew@daynix.com>,
+ Benjamin Tissoires <bentiss@kernel.org>, bpf <bpf@vger.kernel.org>,
+ "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>, kvm@vger.kernel.org,
+ LKML <linux-kernel@vger.kernel.org>,
+ virtualization@lists.linux-foundation.org,
+ "open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>,
+ Network Development <netdev@vger.kernel.org>
+References: <2f33be45-fe11-4b69-8e89-4d2824a0bf01@daynix.com>
+ <CAO-hwJJhzHtKrUEw0zrjgub3+eapgJG-zsG0HRB=PaPi6BxG+w@mail.gmail.com>
+ <e256c6df-0a66-4f86-ae96-bff17920c2fb@daynix.com>
+ <CAO-hwJKMrWYRNpuprDj9=k87V0yHtLPEJuQ94bpOF3O81=v0kA@mail.gmail.com>
+ <0d68722c-9e29-407b-9ef0-331683c995d2@daynix.com>
+ <20231214094042.75f704f6@hermes.local>
+Content-Language: en-US
+From: Akihiko Odaki <akihiko.odaki@daynix.com>
+In-Reply-To: <20231214094042.75f704f6@hermes.local>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-Enable interrupt mode of operation of the DP83867 Ethernet PHY which is
-used by ICSSG2. The DP83867 PHY driver already supports interrupt handling
-for interrupts generated by the PHY. Thus, add the necessary device-tree
-support to enable it.
+On 2023/12/15 2:40, Stephen Hemminger wrote:
+> On Thu, 14 Dec 2023 14:51:12 +0900
+> Akihiko Odaki <akihiko.odaki@daynix.com> wrote:
+> 
+>> On 2023/12/13 19:22, Benjamin Tissoires wrote:
+>>> On Tue, Dec 12, 2023 at 1:41 PM Akihiko Odaki <akihiko.odaki@daynix.com> wrote:
+>>>>
+>>>> On 2023/12/12 19:39, Benjamin Tissoires wrote:
+>>>>> Hi,
+>>>>>
+>>>>> On Tue, Dec 12, 2023 at 9:11 AM Akihiko Odaki <akihiko.odaki@daynix.com> wrote:
+>>>>>>
+>>>>>> Hi,
+>>>>
+>>>> Hi,
+>>>>
+>>>> Thanks for reply.
+>>>>   
+>>>>>>
+>>>>>> It is said eBPF is a safe way to extend kernels and that is very
+>>>>>> attarctive, but we need to use kfuncs to add new usage of eBPF and
+>>>>>> kfuncs are said as unstable as EXPORT_SYMBOL_GPL. So now I'd like to ask
+>>>>>> some questions:
+>>>>>>
+>>>>>> 1) Which should I choose, BPF kfuncs or ioctl, when adding a new feature
+>>>>>> for userspace apps?
+>>>>>> 2) How should I use BPF kfuncs from userspace apps if I add them?
+>>>>>>
+>>>>>> Here, a "userspace app" means something not like a system-wide daemon
+>>>>>> like systemd (particularly, I have QEMU in mind). I'll describe the
+>>>>>> context more below:
+>>>>>
+>>>>> I'm probably not the best person in the world to answer your
+>>>>> questions, Alexei and others from the BPF core group are, but given
+>>>>> that you pointed at a thread I was involved in, I feel I can give you
+>>>>> a few pointers.
+>>>>>
+>>>>> But first and foremost, I encourage you to schedule an agenda item in
+>>>>> the BPF office hour[4]. Being able to talk with the core people
+>>>>> directly was tremendously helpful to me to understand their point.
+>>>>
+>>>> I prefer emails because I'm not very fluent when speaking in English and
+>>>> may have a difficultly to listen to other people, but I may try it in
+>>>> future.
+>>>>   
+>>>>>
+>>>>>   
+>>>>>>
+>>>>>> ---
+>>>>>>
+>>>>>> I'm working on a new feature that aids virtio-net implementations using
+>>>>>> tuntap virtual network device. You can see [1] for details, but
+>>>>>> basically it's to extend BPF_PROG_TYPE_SOCKET_FILTER to report four more
+>>>>>> bytes.
+>>>>>>
+>>>>>> However, with long discussions we have confirmed extending
+>>>>>> BPF_PROG_TYPE_SOCKET_FILTER is not going to happen, and adding kfuncs is
+>>>>>> the way forward. So I decided how to add kfuncs to the kernel and how to
+>>>>>> use it. There are rich documentations for the kernel side, but I found
+>>>>>> little about the userspace. The best I could find is a systemd change
+>>>>>> proposal that is based on WIP kernel changes[2].
+>>>>>
+>>>>> Yes, as Alexei already replied, BPF is not adding new stable APIs,
+>>>>> only kfuncs. The reason being that once it's marked as stable, you
+>>>>> can't really remove it, even if you think it's badly designed and
+>>>>> useless.
+>>>>>
+>>>>> Kfuncs, OTOH are "unstable" by default meaning that the constraints
+>>>>> around it are more relaxed.
+>>>>>
+>>>>> However, "unstable" doesn't mean "unusable". It just means that the
+>>>>> kernel might or might not have the function when you load your program
+>>>>> in userspace. So you have to take that fact into account from day one,
+>>>>> both from the kernel side and the userspace side. The kernel docs have
+>>>>> a nice paragraph explaining that situation and makes the distinction
+>>>>> between relatively unused kfuncs, and well known established ones.
+>>>>>
+>>>>> Regarding the systemd discussion you are mentioning ([2]), this is
+>>>>> something that I have on my plate for a long time. I think I even
+>>>>> mentioned it to Alexei at Kernel Recipes this year, and he frowned his
+>>>>> eyebrows when I mentioned it. And looking at the systemd code and the
+>>>>> benefits over a plain ioctl, it is clearer that in that case, a plain
+>>>>> ioctl is better, mostly because we already know the API and the
+>>>>> semantic.
+>>>>>
+>>>>> A kfunc would be interesting in cases where you are not sure about the
+>>>>> overall design, and so you can give a shot at various API solutions
+>>>>> without having to keep your bad v1 design forever.
+>>>>>   
+>>>>>>
+>>>>>> So now I'm wondering how I should use BPF kfuncs from userspace apps if
+>>>>>> I add them. In the systemd discussion, it is told that Linus said it's
+>>>>>> fine to use BPF kfuncs in a private infrastructure big companies own, or
+>>>>>> in systemd as those users know well about the system[3]. Indeed, those
+>>>>>> users should be able to make more assumptions on the kernel than
+>>>>>> "normal" userspace applications can.
+>>>>>>
+>>>>>> Returning to my proposal, I'm proposing a new feature to be used by QEMU
+>>>>>> or other VMM applications. QEMU is more like a normal userspace
+>>>>>> application, and usually does not make much assumptions on the kernel it
+>>>>>> runs on. For example, it's generally safe to run a Debian container
+>>>>>> including QEMU installed with apt on Fedora. BPF kfuncs may work even in
+>>>>>> such a situation thanks to CO-RE, but it sounds like *accidentally*
+>>>>>> creating UAPIs.
+>>>>>>
+>>>>>> Considering all above, how can I integrate BPF kfuncs to the application?
+>>>>>
+>>>>> FWIW, I'm not sure you can rely on BPF calls from a container. There
+>>>>> is a high chance the syscall gets disabled by the runtime.
+>>>>
+>>>> Right. Container runtimes will not pass CAP_BPF by default, but that
+>>>> restriction can be lifted and I think that's a valid scenario.
+>>>>   
+>>>>>   
+>>>>>>
+>>>>>> If BPF kfuncs are like EXPORT_SYMBOL_GPL, the natural way to handle them
+>>>>>> is to think of BPF programs as some sort of kernel modules and
+>>>>>> incorporate logic that behaves like modprobe. More concretely, I can put
+>>>>>> eBPF binaries to a directory like:
+>>>>>> /usr/local/share/qemu/ebpf/$KERNEL_RELEASE
+>>>>>
+>>>>> I would advise against that (one program per kernel release). Simply
+>>>>> because your kfunc may or may not have been backported to kernel
+>>>>> release v6.X.Y+1 while it was not there when v6.X.Y was out. So
+>>>>> relying on the kernel number is just going to be a headache.
+>>>>>
+>>>>> As I understand it, the way forward is to rely on the kernel, libbpf
+>>>>> and CO-RE: if the function is not available, the program will simply
+>>>>> not load, and you'll know that this version of the code is not
+>>>>> available (or has changed API).
+>>>>>
+>>>>> So what I would do if some kfunc API is becoming deprecated, is
+>>>>> embedding both code paths in the same BPF unit, but marking them as
+>>>>> not loaded by libppf. Then I can load the compilation unit, try v2 of
+>>>>> the API, and if it's not available, try v1, and if not, then mention
+>>>>> that I can not rely on BPF. Of course, this can also be done with
+>>>>> separate compilation units.
+>>>>
+>>>> Doesn't it mean that the kernel is free to break old versions of QEMU
+>>>> including BPF programs? That's something I'd like to avoid.
+>>>
+>>> Couple of points here:
+>>> - when you say "the kernel", it feels like you are talking about an
+>>> external actor tampering with your code. But if you submit a kernel
+>>> patch with a specific use case and get yourself involved in the
+>>> community, why would anybody change your kfunc API without you knowing
+>>> it?
+>>
+>> You are right in the practical aspect.  I can pay efforts to keep kfunc
+>> APIs alive and I'm also sure other developers would also try not to
+>> break them for good.
+>>
+>> Nevertheless I'm being careful to evaluate APIs from both of the kernel
+>> and userspace (QEMU) viewpoints. If I fail to keep kfuncs stable because
+>> I die in an accident, for example, it's a poor excuse for other QEMU
+>> developers that I intended to keep them stable with my personal effort.
+>>
+>>> - the whole warning about "unstable" policy means that the user space
+>>> component should not take for granted the capability. So if the kfunc
+>>> changes/disappears for good reasons (because it was marked as well
+>>> used and deprecated for quite some time), qemu should not *break*, it
+>>> should not provide the functionality, or have a secondary plan.
+>>>
+>>> But even if you are encountering such issues, in case of a change in
+>>> the ABI of your kfunc, it should be easy enough to backport the bpf
+>>> changes to your old QEMUs and ask users to upgrade the user space if
+>>> they upgrade their kernel.
+>>>
+>>> AFAIU, it is as unstable as you want it to be. It's just that we are
+>>> not in the "we don't break user space" contract, because we are
+>>> talking about adding a kernel functionality from userspace, which
+>>> requires knowing the kernel intrinsics.
+>>
+>> I must admit I'm still not convinced the proposed BPF program
+>> functionality needs to know internals of the kernel.
+>>
+>> The eBPF program QEMU carries is just to calculate hashes from packets.
+>> It doesn't need to know the details of how the kernel handles packets.
+>> It only needs to have an access to the packet content.
+>>
+>> It is exactly what BPF_PROG_TYPE_SOCKET_FILTER does, but it lacks a
+>> mechanism to report hash values so I need to extend it or invent a new
+>> method. Extending BPF_PROG_TYPE_SOCKET_FILTER is not a way forward since
+>> CO-RE is superior to the context rewrite it relies on. But apparently
+>> adopting kfuncs and CO-RE also means to lose the "we don't break user
+>> space" contract although I have no intention to expose kernel internals
+>> to the eBPF program.
+> 
+> An example is how one part of DPDK recomputes RSS over TAP.
+> 
+> https://git.dpdk.org/dpdk/tree/drivers/net/tap/bpf/tap_bpf_program.c
+> 
+> This feature is likely to be removed, because it is not actively used
+> and the changes in BPF program loading broke it on current kernel
+> releases.  Which brings up the point that since the kernel does
+> not have stable API/ABI for BPF program infrastructure, I would
+> avoid it for projects that don't want to deal with that.
 
-Since the GPIO1_87 line is muxed with EXT_REFCLK1 and SYNC1_OUT, update
-the pinmux to select GPIO1_87 for routing the interrupt.
-
-The GPIO1_87 interrupt line is shared by both the PHYs used by ICSSG2 due
-to the board design. Since the SoC only supports Edge-Triggered interrupts
-and Edge-Triggered interrupts cannot be shared, enable interrupt mode of
-operation for ICSSG2 PHY0 alone while ICSSG2 PHY1 shall continue operating
-in polled mode.
-
-Signed-off-by: Siddharth Vadapalli <s-vadapalli@ti.com>
-Reviewed-by: MD Danish Anwar <danishanwar@ti.com>
----
-Hello,
-
-This patch is based on linux-next tagged next-20231215.
-
-v2:
-https://lore.kernel.org/r/20231213080216.1710730-1-s-vadapalli@ti.com/
-Changes since v2:
-- Rebased patch on next-20231215.
-- As pointed out by Nishanth Menon <nm@ti.com> at:
-  https://lore.kernel.org/r/20231213123819.tqh3lm2ceir3qjbk@swimmer/
-  the interrupt being shared between both the PHYs is an Edge-Triggered
-  interrupt, due to which it shouldn't be shared. Thus, as discussed at:
-  https://lore.kernel.org/r/0cef8f50-6608-cf3d-ad62-1afd3f5560ea@ti.com/
-  the interrupt shall be dedicated to ICSSG2 PHY0 while ICSSG2 PHY1 shall
-  continue operating in polled mode.
-- Removed interrupt specific configuration from icssg2_phy1 which was
-  present in the v2 patch.
-- Added comment above icssg2_phy0 indicating why the interrupt mode of
-  operation is only being enabled for icssg2_phy0 and not for icssg2_phy1.
-- Updated commit message to match the new implementation.
-
-v1:
-https://lore.kernel.org/r/20231120063159.539306-1-s-vadapalli@ti.com/
-Changes since v1:
-- Rebased patch on next-20231213.
-- Collected Reviewed-by tag from
-  MD Danish Anwar <danishanwar@ti.com>
-- Moved pinctrl from MDIO node to Ethernet PHY node based on feedback from
-  Nishanth Menon <nm@ti.com>
-- Replaced the hard-coded value 0x2 with IRQ_TYPE_EDGE_FALLING for
-  setting the interrupt trigger type and level flag based on feedback from
-  Nishanth Menon <nm@ti.com>
-- Included dt-bindings/interrupt-controller/irq.h in the overlay.
-- Updated commit message with details of the pinmux resource allocation.
-
-Regards,
-Siddharth.
-
- arch/arm64/boot/dts/ti/k3-am654-icssg2.dtso | 23 +++++++++++++++++++++
- 1 file changed, 23 insertions(+)
-
-diff --git a/arch/arm64/boot/dts/ti/k3-am654-icssg2.dtso b/arch/arm64/boot/dts/ti/k3-am654-icssg2.dtso
-index ec8cf20ca3ac..cce3f60904f1 100644
---- a/arch/arm64/boot/dts/ti/k3-am654-icssg2.dtso
-+++ b/arch/arm64/boot/dts/ti/k3-am654-icssg2.dtso
-@@ -8,6 +8,7 @@
- /dts-v1/;
- /plugin/;
- 
-+#include <dt-bindings/interrupt-controller/irq.h>
- #include <dt-bindings/net/ti-dp83867.h>
- #include "k3-pinctrl.h"
- 
-@@ -124,6 +125,15 @@ AM65X_IOPAD(0x0088, PIN_INPUT, 2) /* (AG17) PRG2_PRU0_GPO4.PRG2_RGMII1_RX_CTL */
- 	};
- };
- 
-+&main_pmx1 {
-+	/* Select GPIO1_87 for ICSSG2 PHY interrupt */
-+	icssg2_phy_irq_pins_default: icssg2-phy-irq-default-pins {
-+		pinctrl-single,pins = <
-+			AM65X_IOPAD(0x0014, PIN_INPUT, 7) /* (A22) EXT_REFCLK1.GPIO1_87 */
-+		>;
-+	};
-+};
-+
- &icssg2_mdio {
- 	status = "okay";
- 	pinctrl-names = "default";
-@@ -131,8 +141,21 @@ &icssg2_mdio {
- 	#address-cells = <1>;
- 	#size-cells = <0>;
- 
-+	/*
-+	 * icssg2_phy0 and icssg2_phy1 share the same interrupt:
-+	 * "GPIO1_87" due to the board design.
-+	 * Since the SoC only supports Edge-Triggered interrupts and
-+	 * Edge-Triggered interrupts cannot be shared, the interrupt will
-+	 * be dedicated solely for icssg2_phy0's use while icssg2_phy1
-+	 * shall continue operating in polled mode.
-+	 */
- 	icssg2_phy0: ethernet-phy@0 {
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&icssg2_phy_irq_pins_default>;
-+
- 		reg = <0>;
-+		interrupt-parent = <&main_gpio1>;
-+		interrupts = <87 IRQ_TYPE_EDGE_FALLING>;
- 		ti,rx-internal-delay = <DP83867_RGMIIDCTL_2_00_NS>;
- 		ti,fifo-depth = <DP83867_PHYCR_FIFO_DEPTH_4_B_NIB>;
- 	};
--- 
-2.34.1
-
+It's unfortunate to hear that, but thanks for the information.
+I'll consider more about the option not using BPF (plain ioctl and 
+in-kernel implementation).
 
