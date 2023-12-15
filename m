@@ -1,91 +1,106 @@
-Return-Path: <linux-kernel+bounces-855-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-856-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id BE639814716
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 12:37:38 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8C5A781471C
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 12:41:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 572A61F22CF8
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 11:37:38 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EF559B21F11
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Dec 2023 11:41:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 25203250FA;
-	Fri, 15 Dec 2023 11:37:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 321BF250F6;
+	Fri, 15 Dec 2023 11:40:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ECdepV4+"
 X-Original-To: linux-kernel@vger.kernel.org
-Received: from mail-ot1-f47.google.com (mail-ot1-f47.google.com [209.85.210.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6AE9D250E3;
-	Fri, 15 Dec 2023 11:37:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ot1-f47.google.com with SMTP id 46e09a7af769-6d9db92bd71so162836a34.1;
-        Fri, 15 Dec 2023 03:37:24 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702640243; x=1703245043;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=chmxXCVKTjnWRwvktM7WJmrnV0qr6vYgbWjqnpS7IJo=;
-        b=Fe7aChh+3ejMtqF5Om8aJGgVcLkq5rNdYcJ+DZu03zYkIvJCGN725P2rheWvJFiKAS
-         DKRqdpILre21UTeyC2lO+Nrh1BDmmemd24LCAylcJea5/2m4YBv4RNTEGfyBmIMN8iF/
-         YkF+mCIrPGSPAbNM4yx+y4sw6K5hoo1cLIe0kEtVRO+IM+H9hF662urcF7AUv6gs+i6H
-         hA5K+TLDQdO5oXKxoKlY8zXkeHlKAPFcJrNgjjsbQZHId7w5ecjTNeOMO0QL3q+9qhpl
-         2HSlSZ2KzwNntu+n8zsCX/YCnoAytPZyO9PsXYOQuQjHvajz+xDksJXw4Weh0ClHSSpr
-         VGNQ==
-X-Gm-Message-State: AOJu0YzkPDKskCsntnS5tOt7tSMHnJrCaCUV7Dwr93UBD64YbDdtFkks
-	prSapoS3ifc+MzODZ82IPiqBVg50eiCGFNqztU4=
-X-Google-Smtp-Source: AGHT+IHTDUq4BO4EjBrWxr3vF8ypXzDh/RIrRjQ+P+DlBmh/k3JHusO3Z8YMKWXD+gagQce78H4HrFlNyrnOYcvrN0k=
-X-Received: by 2002:a05:6870:860c:b0:203:7c44:b622 with SMTP id
- h12-20020a056870860c00b002037c44b622mr225641oal.0.1702640243406; Fri, 15 Dec
- 2023 03:37:23 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2192224B31;
+	Fri, 15 Dec 2023 11:40:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1702640448; x=1734176448;
+  h=date:from:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=PbtD99dYPA9EHTb3b9FLxpZzIQ0yDjkgxxrR4eFWJYs=;
+  b=ECdepV4+vqHfM5ol045Ydpd97ykMs6H+rf16C7KwkAKza1uXKqxbzL9h
+   j4J27Fo4/TmgUVJRUlzd19eNeMxbVTg2cuv3diQ0knMfYSHpo6JfpnPGm
+   8MxDqlsshFd4LjF0pXg0iMhpT2N5ZMrE4Z0aBVpqT7vJEgt8Ak/u1W6CP
+   BtawFQuGbagsJrMBhr0AvyueZzQ+n37CGI4WCdEtbjpPMstKoDwfVhvqX
+   8eM8jFbqLLWGJg40bNKlc4UQ68vBq4uFq7dJrdycSE1reF112mTMl5oFr
+   YMPqbG02nrhbo7CRflPc06frAGJ5rZoxNJkRFyP7WehybwkoKk6CXr2k/
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10924"; a="398056158"
+X-IronPort-AV: E=Sophos;i="6.04,278,1695711600"; 
+   d="scan'208";a="398056158"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Dec 2023 03:40:47 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10924"; a="898113841"
+X-IronPort-AV: E=Sophos;i="6.04,278,1695711600"; 
+   d="scan'208";a="898113841"
+Received: from plchavex-mobl.amr.corp.intel.com ([10.249.34.221])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Dec 2023 03:40:45 -0800
+Date: Fri, 15 Dec 2023 13:40:40 +0200 (EET)
+From: =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
+To: Colin Ian King <colin.i.king@gmail.com>
+cc: Henry Shi <henryshi2018@gmail.com>, Hans de Goede <hdegoede@redhat.com>, 
+    platform-driver-x86@vger.kernel.org, kernel-janitors@vger.kernel.org, 
+    LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH][next] platform/x86: silicom-platform: Fix spelling
+ mistake "platfomr" -> "platform"
+In-Reply-To: <20231215112746.13752-1-colin.i.king@gmail.com>
+Message-ID: <9e1d8d9-5d59-a29a-73b6-e7e04f98a96@linux.intel.com>
+References: <20231215112746.13752-1-colin.i.king@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231215112950.13916-1-colin.i.king@gmail.com>
-In-Reply-To: <20231215112950.13916-1-colin.i.king@gmail.com>
-From: "Rafael J. Wysocki" <rafael@kernel.org>
-Date: Fri, 15 Dec 2023 12:37:12 +0100
-Message-ID: <CAJZ5v0juh7nO-KenieqCRLnhmBSDUSNYRcYBDKpSsMORUiKseQ@mail.gmail.com>
-Subject: Re: [PATCH][next] PM: hibernate: Fix spelling mistake "hiberantion"
- -> "hibernation"
-To: Colin Ian King <colin.i.king@gmail.com>
-Cc: "Rafael J . Wysocki" <rafael@kernel.org>, Len Brown <len.brown@intel.com>, Pavel Machek <pavel@ucw.cz>, 
-	linux-pm@vger.kernel.org, kernel-janitors@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/mixed; boundary="8323329-1452261007-1702640447=:2400"
 
-On Fri, Dec 15, 2023 at 12:29=E2=80=AFPM Colin Ian King <colin.i.king@gmail=
-.com> wrote:
->
-> There is a spelling mistake in a pr_info message. Fix it.
->
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
+
+--8323329-1452261007-1702640447=:2400
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8BIT
+
+On Fri, 15 Dec 2023, Colin Ian King wrote:
+
+> There is a spelling mistake in a literal string. Fix it.
+> 
 > Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
 > ---
->  kernel/power/hibernate.c | 2 +-
+>  drivers/platform/x86/silicom-platform.c | 2 +-
 >  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/kernel/power/hibernate.c b/kernel/power/hibernate.c
-> index f8c81ef5b172..4b0b7cf2e019 100644
-> --- a/kernel/power/hibernate.c
-> +++ b/kernel/power/hibernate.c
-> @@ -671,7 +671,7 @@ static void power_down(void)
->                 if (error =3D=3D -EAGAIN || error =3D=3D -EBUSY) {
->                         swsusp_unmark();
->                         events_check_enabled =3D false;
-> -                       pr_info("Wakeup event detected during hiberantion=
-, rolling back.\n");
-> +                       pr_info("Wakeup event detected during hibernation=
-, rolling back.\n");
->                         return;
->                 }
->                 fallthrough;
-> --
+> 
+> diff --git a/drivers/platform/x86/silicom-platform.c b/drivers/platform/x86/silicom-platform.c
+> index 84b92b3f9f4b..6ce43ccb3112 100644
+> --- a/drivers/platform/x86/silicom-platform.c
+> +++ b/drivers/platform/x86/silicom-platform.c
+> @@ -866,7 +866,7 @@ static int silicom_fan_control_read_labels(struct device *dev,
+>  {
+>  	switch (type) {
+>  	case hwmon_fan:
+> -		*str = "Silicom_platfomr: Fan Speed";
+> +		*str = "Silicom_platform: Fan Speed";
+>  		return 0;
+>  	case hwmon_temp:
+>  		*str = "Silicom_platform: Thermostat Sensor";
+> 
 
-Thanks, I've fixed it in the tree in the meantime.
+Reviewed-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
+
+
+-- 
+ i.
+
+--8323329-1452261007-1702640447=:2400--
 
